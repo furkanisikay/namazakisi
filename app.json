@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Namaz Akışı",
-    "slug": "namazakisirn",
+    "slug": "namazakisi",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,7 +29,10 @@
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.SCHEDULE_EXACT_ALARM",
-        "android.permission.USE_EXACT_ALARM"
+        "android.permission.USE_EXACT_ALARM",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.WAKE_LOCK"
       ]
     },
     "web": {
@@ -51,7 +54,7 @@
     "owner": "furkanisikay",
     "extra": {
       "eas": {
-        "projectId": "2086bf1c-0ede-4b2d-b734-844dc80e0085"
+        "projectId": "53674e2a-7561-4e11-a548-3c36760daa4f"
       }
     }
   }
