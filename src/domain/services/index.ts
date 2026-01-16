@@ -10,5 +10,6 @@ export * from './BildirimServisi';
 export * from './NamazMuhafiziServisi';
 export * from './NamazVaktiHesaplayiciServisi';
 export * from './TurkiyeKonumServisi';
+export * from './KonumYoneticiServisi';
 
 

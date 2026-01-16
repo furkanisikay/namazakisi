@@ -4,7 +4,7 @@
  */
 
 import * as React from 'react';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -25,9 +25,111 @@ import {
   ozelGunModuDurumunuGuncelle,
   ozelGunBaslat,
 } from '../store/seriSlice';
-import { GUN_BITIS_SAATI_SECENEKLERI } from '../../core/types/SeriTipleri';
+import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { OzelGunTakvimi } from '../components';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
+
+// ==================== SAYISAL SECİCİ BİLEŞENİ ====================
+
+interface SayisalSeciciProps {
+  deger: number;
+  min: number;
+  max: number;
+  adim?: number;
+  birim?: string;
+  onChange: (yeniDeger: number) => void;
+  renk?: string;
+}
+
+const SayisalSecici: React.FC<SayisalSeciciProps> = ({
+  deger,
+  min,
+  max,
+  adim = 1,
+  birim = '',
+  onChange,
+  renk,
+}) => {
+  const renkler = useRenkler();
+  const butonRenk = renk || renkler.birincil;
+
+  const azalt = useCallback(() => {
+    const yeni = Math.max(min, deger - adim);
+    onChange(yeni);
+  }, [deger, min, adim, onChange]);
+
+  const artir = useCallback(() => {
+    const yeni = Math.min(max, deger + adim);
+    onChange(yeni);
+  }, [deger, max, adim, onChange]);
+
+  return (
+    <View style={sayisalStyles.container}>
+      <TouchableOpacity
+        style={[sayisalStyles.buton, { backgroundColor: deger <= min ? renkler.sinir : butonRenk }]}
+        onPress={azalt}
+        disabled={deger <= min}
+        activeOpacity={0.7}
+      >
+        <Text style={sayisalStyles.butonMetin}>−</Text>
+      </TouchableOpacity>
+      <View style={[sayisalStyles.degerContainer, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
+        <Text style={[sayisalStyles.deger, { color: renkler.metin }]}>
+          {String(deger).padStart(2, '0')}
+        </Text>
+        {birim ? <Text style={[sayisalStyles.birim, { color: renkler.metinIkincil }]}>{birim}</Text> : null}
+      </View>
+      <TouchableOpacity
+        style={[sayisalStyles.buton, { backgroundColor: deger >= max ? renkler.sinir : butonRenk }]}
+        onPress={artir}
+        disabled={deger >= max}
+        activeOpacity={0.7}
+      >
+        <Text style={sayisalStyles.butonMetin}>+</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+const sayisalStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  buton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  butonMetin: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  degerContainer: {
+    minWidth: 60,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+  },
+  deger: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  birim: {
+    fontSize: 14,
+  },
+});
 
 /**
  * Secim buton grubu bileseni
@@ -128,6 +230,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
   const { butonTiklandiFeedback } = useFeedback();
 
   const { ayarlar: seriAyarlari, ozelGunAyarlari } = useAppSelector((state) => state.seri);
+  const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const { kullanici } = useAppSelector((state) => state.auth);
   const [takvimGorunur, setTakvimGorunur] = useState(false);
 
@@ -143,6 +246,29 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
     }).start();
   }, []);
 
+  // Konum servisi instance
+  const konumServisi = KonumYoneticiServisi.getInstance();
+
+  // İmsak vakti state
+  const [imsakVakti, setImsakVakti] = useState<Date | null>(null);
+  const [konumMetni, setKonumMetni] = useState<string>('Konum yükleniyor...');
+
+  // Konum bilgisini yükle ve imsak vaktini hesapla
+  useEffect(() => {
+    const konumYukle = async () => {
+      // Muhafız ayarlarından konum bilgisini al
+      const muhafizKonum = muhafizAyarlari.koordinatlar;
+      if (muhafizKonum) {
+        konumServisi.koordinatlarAyarla(muhafizKonum.lat, muhafizKonum.lng);
+      }
+
+      const vakit = konumServisi.sonrakiGunImsakVaktiGetir();
+      setImsakVakti(vakit);
+      setKonumMetni(konumServisi.getKonumMetni());
+    };
+    konumYukle();
+  }, [muhafizAyarlari.koordinatlar]);
+
   // Tam gun esigi secenekleri
   const tamGunEsikleri = [
     { deger: 3, etiket: '3 vakit' },
@@ -150,20 +276,82 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
     { deger: 5, etiket: '5 vakit' },
   ];
 
-  // Gun bitis saati secenekleri
-  const gunBitisSecenekleri = GUN_BITIS_SAATI_SECENEKLERI.map((s) => ({
-    deger: s.deger,
-    etiket: s.etiket,
-  }));
+  // Mod seçenekleri
+  const modSecenekleri = [
+    { deger: 'otomatik' as GunSonuBildirimModu, etiket: '🔄 Otomatik' },
+    { deger: 'sabit' as GunSonuBildirimModu, etiket: '⏰ Sabit' },
+  ];
+
+  // Gün seçenekleri (sabit mod için)
+  const gunSecenekleri = [
+    { deger: 'ayniGun' as BildirimGunSecimi, etiket: 'Aynı Gün' },
+    { deger: 'ertesiGun' as BildirimGunSecimi, etiket: 'Ertesi Gün' },
+  ];
 
   // Handlers
   const handleEsikSecimi = (esik: number) => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { tamGunEsigi: esik } }));
   };
 
-  const handleGunBitisSaatiSecimi = (saat: string) => {
-    dispatch(seriAyarlariniGuncelle({ ayarlar: { gunBitisSaati: saat } }));
+  const handleModSecimi = (mod: GunSonuBildirimModu) => {
+    dispatch(seriAyarlariniGuncelle({ ayarlar: { gunSonuBildirimModu: mod } }));
   };
+
+  const handleGunSecimi = (gun: BildirimGunSecimi) => {
+    dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimGunSecimi: gun } }));
+  };
+
+  const handleImsakOncesiDakikaChange = (dakika: number) => {
+    dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimImsakOncesiDk: dakika } }));
+  };
+
+  const handleSabitSaatChange = (saat: number) => {
+    // Validasyon: Ertesi gün seçiliyse imsak vaktini geçemez
+    if (seriAyarlari.bildirimGunSecimi === 'ertesiGun' && imsakVakti) {
+      const imsakSaat = imsakVakti.getHours();
+      const imsakDakika = imsakVakti.getMinutes();
+      const seciliToplam = saat * 60 + (seriAyarlari.bildirimDakikasi || 0);
+      const imsakToplam = imsakSaat * 60 + imsakDakika;
+
+      if (seciliToplam >= imsakToplam) {
+        Alert.alert(
+          'Uyarı',
+          `Seçilen saat imsak vaktini (${String(imsakSaat).padStart(2, '0')}:${String(imsakDakika).padStart(2, '0')}) geçemez.`
+        );
+        return;
+      }
+    }
+    dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimSaati: saat } }));
+  };
+
+  const handleSabitDakikaChange = (dakika: number) => {
+    // Validasyon: Ertesi gün seçiliyse imsak vaktini geçemez
+    if (seriAyarlari.bildirimGunSecimi === 'ertesiGun' && imsakVakti) {
+      const imsakSaat = imsakVakti.getHours();
+      const imsakDakika = imsakVakti.getMinutes();
+      const seciliToplam = (seriAyarlari.bildirimSaati || 0) * 60 + dakika;
+      const imsakToplam = imsakSaat * 60 + imsakDakika;
+
+      if (seciliToplam >= imsakToplam) {
+        Alert.alert(
+          'Uyarı',
+          `Seçilen saat imsak vaktini (${String(imsakSaat).padStart(2, '0')}:${String(imsakDakika).padStart(2, '0')}) geçemez.`
+        );
+        return;
+      }
+    }
+    dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimDakikasi: dakika } }));
+  };
+
+  // Hesaplanmış bildirim saatini formatla
+  const hesaplananBildirimSaati = React.useMemo(() => {
+    if (seriAyarlari.gunSonuBildirimModu === 'otomatik' && imsakVakti) {
+      const bildirimMs = imsakVakti.getTime() - (seriAyarlari.bildirimImsakOncesiDk || 30) * 60 * 1000;
+      const bildirim = new Date(bildirimMs);
+      return `${String(bildirim.getHours()).padStart(2, '0')}:${String(bildirim.getMinutes()).padStart(2, '0')}`;
+    }
+    return `${String(seriAyarlari.bildirimSaati || 4).padStart(2, '0')}:${String(seriAyarlari.bildirimDakikasi || 0).padStart(2, '0')}`;
+  }, [seriAyarlari, imsakVakti]);
 
   const handleOzelGunModuToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -227,21 +415,27 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             />
           </AyarKarti>
 
-          <AyarKarti
-            baslik="Gun Bitis Saati"
-            aciklama="Yatsi namazini ertesi gun bu saate kadar girebilirsiniz"
-            ikon="🌙"
-          >
-            <SecimGrubu
-              secenekler={gunBitisSecenekleri}
-              seciliDeger={seriAyarlari.gunBitisSaati}
-              onSecim={handleGunBitisSaatiSecimi}
-            />
-            <Text style={[styles.ekAciklama, { color: renkler.metinIkincil }]}>
-              Ornek: {seriAyarlari.gunBitisSaati} secilirse, yatsi namazini ertesi gun
-              saat {seriAyarlari.gunBitisSaati}'e kadar girebilirsiniz.
-            </Text>
-          </AyarKarti>
+          {/* Gün Bitiş Saati - Bilgi Kartı */}
+          <View style={[styles.bilgiKarti, { backgroundColor: renkler.kartArkaplan }]}>
+            <View style={styles.bilgiKartiIcerik}>
+              <Text style={styles.bilgiKartiIkon}>🌙</Text>
+              <View style={styles.bilgiKartiMetinContainer}>
+                <Text style={[styles.bilgiKartiBaslik, { color: renkler.metin }]}>
+                  Gün Bitiş Saati
+                </Text>
+                <Text style={[styles.bilgiKartiAciklama, { color: renkler.metinIkincil }]}>
+                  Yatsı namazını ertesi gün imsak vaktine kadar girebilirsiniz
+                </Text>
+              </View>
+            </View>
+            {imsakVakti && (
+              <View style={[styles.bilgiKartiDeger, { backgroundColor: renkler.birincilAcik }]}>
+                <Text style={[styles.bilgiKartiDegerMetin, { color: renkler.birincil }]}>
+                  İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')}
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Ozel Gun Modu Bolumu */}
@@ -473,5 +667,92 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
     opacity: 0.8,
+  },
+  // Gün bitiş modu stilleri
+  modIcerik: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+  },
+  modBaslik: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 12,
+  },
+  ayarSatiri: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  ayarEtiketi: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  bilgiMetni: {
+    fontSize: 13,
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  saatSeciciContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    gap: 12,
+  },
+  saatSecici: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  saatAyirici: {
+    fontSize: 24,
+    fontWeight: '700',
+    marginHorizontal: 4,
+  },
+  uyariMetni: {
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 12,
+  },
+  // Bilgi kartı stilleri
+  bilgiKarti: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  bilgiKartiIcerik: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bilgiKartiIkon: {
+    fontSize: 24,
+    marginRight: 14,
+  },
+  bilgiKartiMetinContainer: {
+    flex: 1,
+  },
+  bilgiKartiBaslik: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bilgiKartiAciklama: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  bilgiKartiDeger: {
+    marginTop: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  bilgiKartiDegerMetin: {
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

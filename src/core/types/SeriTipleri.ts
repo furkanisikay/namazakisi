@@ -157,6 +157,22 @@ export interface SeviyeDurumu {
   rankIkonu: string;
 }
 
+// ==================== GÜN SONU BİLDİRİM MODU TİPLERİ ====================
+
+/**
+ * Gün sonu bildirim modu
+ * - otomatik: İmsak vaktine göre hesaplanır
+ * - sabit: Kullanıcının belirlediği sabit saat
+ */
+export type GunSonuBildirimModu = 'otomatik' | 'sabit';
+
+/**
+ * Sabit bildirim modu için gün seçimi
+ * - ayniGun: Gece yarısından önce (18:00-23:59)
+ * - ertesiGun: Gece yarısından sonra, imsak öncesi (00:00-imsak)
+ */
+export type BildirimGunSecimi = 'ayniGun' | 'ertesiGun';
+
 // ==================== KULLANICI AYARLARI ====================
 
 /**
@@ -165,7 +181,7 @@ export interface SeviyeDurumu {
 export interface SeriAyarlari {
   /** Tam gun esigi - kac namaz kilinirsa gun tam sayilir (3, 4 veya 5) */
   tamGunEsigi: number;
-  /** Gun bitis saati - ertesi gun bu saate kadar namaz girilebilir (ornegin "05:00") */
+  /** Gun bitis saati - DEPRECATED: Artık otomatik hesaplanıyor (imsak vaktine göre) */
   gunBitisSaati: string;
   /** Seri hatirlaticilari aktif mi */
   bildirimlerAktif: boolean;
@@ -173,8 +189,20 @@ export interface SeriAyarlari {
   toparlanmaGunSayisi: number;
   /** Gun sonu bildirimi aktif mi */
   gunSonuBildirimAktif: boolean;
-  /** Gun bitiminden ne kadar once bildirim gonderilsin (dakika) */
+  /** Gun bitiminden ne kadar once bildirim gonderilsin (dakika) - DEPRECATED */
   gunSonuBildirimDk: number;
+
+  // ====== YENİ: Gün Sonu Bildirim Ayarları ======
+  /** Gün sonu bildirim modu: otomatik (imsak öncesi) veya sabit (kullanıcı seçimi) */
+  gunSonuBildirimModu: GunSonuBildirimModu;
+  /** Otomatik mod: İmsak vaktinden kaç dakika önce bildirim (0-60) */
+  bildirimImsakOncesiDk: number;
+  /** Sabit mod: Aynı gün mü ertesi gün mü */
+  bildirimGunSecimi: BildirimGunSecimi;
+  /** Sabit mod: Bildirim saati (0-23) */
+  bildirimSaati: number;
+  /** Sabit mod: Bildirim dakikası (0-59) */
+  bildirimDakikasi: number;
 }
 
 /**
@@ -182,11 +210,17 @@ export interface SeriAyarlari {
  */
 export const VARSAYILAN_SERI_AYARLARI: SeriAyarlari = {
   tamGunEsigi: 5,
-  gunBitisSaati: '05:00',
+  gunBitisSaati: '05:00', // DEPRECATED - artık otomatik hesaplanıyor
   bildirimlerAktif: true,
   toparlanmaGunSayisi: 5,
   gunSonuBildirimAktif: true,
-  gunSonuBildirimDk: 60,
+  gunSonuBildirimDk: 60, // DEPRECATED
+  // Yeni gün sonu bildirim ayarları
+  gunSonuBildirimModu: 'otomatik',
+  bildirimImsakOncesiDk: 30,
+  bildirimGunSecimi: 'ertesiGun',
+  bildirimSaati: 4,
+  bildirimDakikasi: 0,
 };
 
 // ==================== PUAN SISTEMI ====================
