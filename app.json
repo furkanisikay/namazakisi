@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "Namaz Akışı",
+    "slug": "namazakisirn",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "scheme": "namazakisirn",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4CAF50"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.furkanisikay.namazakisirn"
+    },
+    "android": {
+      "package": "com.furkanisikay.namazakisirn",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4CAF50"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-audio",
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "./assets/sounds/bildirim.mp3"
+          ]
+        }
+      ],
+      "expo-task-manager",
+      "expo-background-fetch"
+    ],
+    "owner": "furkanisikay",
+    "extra": {
+      "eas": {
+        "projectId": "2086bf1c-0ede-4b2d-b734-844dc80e0085"
+      }
+    }
+  }
+}
