@@ -20,6 +20,7 @@ import {
   BildirimAyarlariSayfasi,
   SeriHedefAyarlariSayfasi,
   HakkindaSayfasi,
+  KonumAyarlariSayfasi,
 } from '../presentation/screens';
 import { useRenkler } from '../core/theme';
 
@@ -50,6 +51,11 @@ const AyarlarStack: React.FC = () => {
         name="AyarlarAna"
         component={AyarlarSayfasi}
         options={{ title: 'Ayarlar' }}
+      />
+      <Stack.Screen
+        name="KonumAyarlari"
+        component={KonumAyarlariSayfasi}
+        options={{ title: 'Konum Ayarları' }}
       />
       <Stack.Screen
         name="GorünumAyarlari"

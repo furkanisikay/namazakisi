@@ -7,6 +7,7 @@ import authReducer from './authSlice';
 import namazReducer from './namazSlice';
 import seriReducer from './seriSlice';
 import muhafizReducer from './muhafizSlice';
+import konumReducer from './konumSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     namaz: namazReducer,
     seri: seriReducer,
     muhafiz: muhafizReducer,
+    konum: konumReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

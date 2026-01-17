@@ -284,6 +284,7 @@ export const AnaSayfa: React.FC = () => {
   }, [gunlukNamazlar, mevcutTarih, dispatch, kullanici]);
 
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
+  const konumAyarlari = useAppSelector((state) => state.konum);
 
   // Arka plan muhafiz bildirimleri icin debounce ref
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -293,8 +294,8 @@ export const AnaSayfa: React.FC = () => {
 
     // Vakit hesaplayiciyi her zaman yapılandır (Sayaç için gerekli)
     s.yapilandir({
-      latitude: muhafizAyarlari.koordinatlar.lat,
-      longitude: muhafizAyarlari.koordinatlar.lng,
+      latitude: konumAyarlari.koordinatlar.lat,
+      longitude: konumAyarlari.koordinatlar.lng,
       method: 'Turkey',
       madhab: 'Hanafi'
     });
@@ -321,7 +322,7 @@ export const AnaSayfa: React.FC = () => {
 
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
           aktif: muhafizAyarlari.aktif,
-          koordinatlar: muhafizAyarlari.koordinatlar,
+          koordinatlar: konumAyarlari.koordinatlar,
           esikler: {
             seviye1: muhafizAyarlari.esikler.seviye1,
             seviye1Siklik: sikliklar.seviye1 || 15,
@@ -378,7 +379,7 @@ export const AnaSayfa: React.FC = () => {
         clearTimeout(arkaplanMuhafizTimeoutRef.current);
       }
     };
-  }, [muhafizAyarlari]);
+  }, [muhafizAyarlari, konumAyarlari.koordinatlar]);
 
   // Kutlama modalini kapat
   const kutlamaKapat = () => {

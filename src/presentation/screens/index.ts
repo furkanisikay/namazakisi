@@ -10,6 +10,7 @@ export { RozetlerSayfasi } from './RozetlerSayfasi';
 
 // Ayarlar sayfalari
 export { AyarlarSayfasi } from './AyarlarSayfasi';
+export { KonumAyarlariSayfasi } from './KonumAyarlariSayfasi';
 export { GorünumAyarlariSayfasi } from './GorünumAyarlariSayfasi';
 export { BildirimAyarlariSayfasi } from './BildirimAyarlariSayfasi';
 export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';

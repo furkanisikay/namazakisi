@@ -146,6 +146,18 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
   // Menu ogelerini tanimla
   const menuOgeleri = [
     {
+      baslik: 'Konum',
+      aciklama: 'Namaz vakitleri için konum ayarları',
+      ikon: '📍',
+      sayfa: 'KonumAyarlari',
+    },
+    {
+      baslik: 'Namaz Muhafızı',
+      aciklama: 'Hatırlatma bildirimleri ve sıklık ayarları',
+      ikon: '🛡️',
+      sayfa: 'MuhafizAyarlari',
+    },
+    {
       baslik: 'Görüntü',
       aciklama: 'Tema ve renk paleti ayarları',
       ikon: '🎨',

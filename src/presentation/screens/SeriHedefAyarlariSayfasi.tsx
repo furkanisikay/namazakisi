@@ -230,7 +230,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
   const { butonTiklandiFeedback } = useFeedback();
 
   const { ayarlar: seriAyarlari, ozelGunAyarlari } = useAppSelector((state) => state.seri);
-  const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
+  const konumAyarlari = useAppSelector((state) => state.konum);
   const { kullanici } = useAppSelector((state) => state.auth);
   const [takvimGorunur, setTakvimGorunur] = useState(false);
 
@@ -256,10 +256,10 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
   // Konum bilgisini yükle ve imsak vaktini hesapla
   useEffect(() => {
     const konumYukle = async () => {
-      // Muhafız ayarlarından konum bilgisini al
-      const muhafizKonum = muhafizAyarlari.koordinatlar;
-      if (muhafizKonum) {
-        konumServisi.koordinatlarAyarla(muhafizKonum.lat, muhafizKonum.lng);
+      // Konum ayarlarindan koordinatlari al
+      const koordinatlar = konumAyarlari.koordinatlar;
+      if (koordinatlar) {
+        konumServisi.koordinatlarAyarla(koordinatlar.lat, koordinatlar.lng);
       }
 
       const vakit = konumServisi.sonrakiGunImsakVaktiGetir();
@@ -267,7 +267,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
       setKonumMetni(konumServisi.getKonumMetni());
     };
     konumYukle();
-  }, [muhafizAyarlari.koordinatlar]);
+  }, [konumAyarlari.koordinatlar]);
 
   // Tam gun esigi secenekleri
   const tamGunEsikleri = [

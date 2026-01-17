@@ -19,6 +19,9 @@ export const BILDIRIM_YENILEME_GOREVI = 'BILDIRIM_YENILEME_GOREVI';
 // Minimum aralık (dakika) - Android için minimum 15 dakika
 const MINIMUM_ARALIK_DAKIKA = 15;
 
+/** Konum ayarlari depolama anahtari */
+const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
+
 /**
  * Arka plan görevini tanımla
  * Bu kod modül seviyesinde çalışmalı (import edildiğinde)
@@ -31,7 +34,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         const ayarlarJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
 
         if (!ayarlarJson) {
-            console.log('[ArkaplanGorev] Ayarlar bulunamadı');
+            console.log('[ArkaplanGorev] Muhafiz ayarlari bulunamadi');
             return BackgroundFetch.BackgroundFetchResult.NoData;
         }
 
@@ -43,29 +46,42 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             return BackgroundFetch.BackgroundFetchResult.NoData;
         }
 
+        // Konum ayarlarini al (ayri slice'tan)
+        const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        let koordinatlar = { lat: 41.0082, lng: 28.9784 }; // Varsayilan: Istanbul
+
+        if (konumAyarlariJson) {
+            const konumAyarlari = JSON.parse(konumAyarlariJson);
+            if (konumAyarlari.koordinatlar) {
+                koordinatlar = konumAyarlari.koordinatlar;
+            }
+        } else if (ayarlar.koordinatlar) {
+            // Geriye uyumluluk: Eski veride koordinatlar muhafiz ayarlarinda olabilir
+            koordinatlar = ayarlar.koordinatlar;
+        }
+
         // Bildirimleri yeniden planla
-        // Sikliklar eski veride olmayabilir, bu yuzden optional chain ve default deger kullaniyoruz
         const varsayilanSikliklar = { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
         const sikliklar = ayarlar.sikliklar || varsayilanSikliklar;
 
         const muhafizAyarlari: ArkaplanMuhafizAyarlari = {
             aktif: ayarlar.aktif,
-            koordinatlar: ayarlar.koordinatlar,
+            koordinatlar: koordinatlar,
             esikler: {
-                seviye1: ayarlar.esikler.seviye1,
+                seviye1: ayarlar.esikler?.seviye1 || 45,
                 seviye1Siklik: sikliklar.seviye1 || 15,
-                seviye2: ayarlar.esikler.seviye2,
+                seviye2: ayarlar.esikler?.seviye2 || 25,
                 seviye2Siklik: sikliklar.seviye2 || 10,
-                seviye3: ayarlar.esikler.seviye3,
+                seviye3: ayarlar.esikler?.seviye3 || 10,
                 seviye3Siklik: sikliklar.seviye3 || 5,
-                seviye4: ayarlar.esikler.seviye4,
+                seviye4: ayarlar.esikler?.seviye4 || 3,
                 seviye4Siklik: sikliklar.seviye4 || 1,
             },
         };
 
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);
 
-        console.log('[ArkaplanGorev] Bildirimler yeniden planlandı');
+        console.log('[ArkaplanGorev] Bildirimler yeniden planlandi (koordinat:', koordinatlar.lat.toFixed(2), ',', koordinatlar.lng.toFixed(2), ')');
         return BackgroundFetch.BackgroundFetchResult.NewData;
 
     } catch (error) {

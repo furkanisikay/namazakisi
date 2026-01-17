@@ -1,3 +1,9 @@
+/**
+ * Muhafiz State Yonetimi
+ * Namaz hatirlatma bildirimleri ayarlari
+ * SOLID: Single Responsibility - Sadece hatirlatma ayarlari
+ */
+
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
@@ -37,96 +43,91 @@ export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>,
     },
 };
 
+/**
+ * Muhafiz ayarlari arayuzu
+ * Sadece hatirlatma ile ilgili alanlar
+ */
 export interface MuhafizAyarlari {
+    /** Muhafiz aktif mi */
     aktif: boolean;
     /** Hatirlatma yogunlugu preset secimi */
     yogunluk: HatirlatmaYogunlugu;
-    /** Gelismis mod acik mi? */
+    /** Gelismis mod acik mi */
     gelismisMod: boolean;
-    konumModu: 'oto' | 'manuel';
-    /** @deprecated Eski sistem - seciliIlId ve seciliIlceId kullanin */
-    seciliSehirId: string;
-    /** Secili il ID'si (1-81) */
-    seciliIlId: number | null;
-    /** Secili ilce ID'si */
-    seciliIlceId: number | null;
-    /** Secili il adi (gosterim icin) */
-    seciliIlAdi: string;
-    /** Secili ilce adi (gosterim icin) */
-    seciliIlceAdi: string;
-    /** GPS konum icin adres bilgisi (semt/ilce/il) */
-    gpsAdres: {
-        semt: string;
-        ilce: string;
-        il: string;
-    } | null;
-    koordinatlar: {
-        lat: number;
-        lng: number;
-    };
+    /** Seviye esikleri (dakika) */
     esikler: {
-        seviye1: number; // dk
+        seviye1: number;
         seviye2: number;
         seviye3: number;
         seviye4: number;
     };
+    /** Tekrar sikliklari (dakika) */
     sikliklar: {
-        seviye1: number; // dk
+        seviye1: number;
         seviye2: number;
         seviye3: number;
         seviye4: number;
     };
 }
 
+/**
+ * Varsayilan muhafiz ayarlari
+ */
 const initialState: MuhafizAyarlari = {
     aktif: true,
     yogunluk: 'normal',
     gelismisMod: false,
-    konumModu: 'manuel',
-    seciliSehirId: '34', // Eski sistem - geriye uyumluluk
-    seciliIlId: 34, // Istanbul
-    seciliIlceId: null,
-    seciliIlAdi: 'İstanbul',
-    seciliIlceAdi: '',
-    gpsAdres: null,
-    koordinatlar: {
-        lat: 41.0082,
-        lng: 28.9784,
-    },
     esikler: HATIRLATMA_PRESETLERI.normal.esikler,
     sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
 };
 
 /**
- * Muhafiz ayarlarini yukle
+ * Muhafiz ayarlarini AsyncStorage'dan yukle
  */
 export const muhafizAyarlariniYukle = createAsyncThunk(
     'muhafiz/yukle',
     async () => {
         try {
             const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
-            return veri ? JSON.parse(veri) : null;
-        } catch (e) {
-            console.error('Muhafiz ayarlari yuklenemedi:', e);
+            if (veri) {
+                const parsed = JSON.parse(veri);
+                // Eski veriden sadece muhafiz ile ilgili alanlari al
+                return {
+                    aktif: parsed.aktif ?? initialState.aktif,
+                    yogunluk: parsed.yogunluk ?? initialState.yogunluk,
+                    gelismisMod: parsed.gelismisMod ?? initialState.gelismisMod,
+                    esikler: parsed.esikler ?? initialState.esikler,
+                    sikliklar: parsed.sikliklar ?? initialState.sikliklar,
+                };
+            }
+            return null;
+        } catch (hata) {
+            console.error('Muhafiz ayarlari yuklenemedi:', hata);
             return null;
         }
     }
 );
 
+/**
+ * Muhafiz slice tanimlamasi
+ */
 const muhafizSlice = createSlice({
     name: 'muhafiz',
     initialState,
     reducers: {
+        /**
+         * Muhafiz ayarlarini guncelle
+         */
         muhafizAyarlariniGuncelle: (state, action: PayloadAction<Partial<MuhafizAyarlari>>) => {
-            const newState = { ...state, ...action.payload };
-            // Ayarlari kaydet (arka planda)
-            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(newState));
-            return newState;
+            const yeniState = { ...state, ...action.payload };
+            // Ayarlari kaydet
+            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
+            return yeniState;
         },
-        konumGuncelle: (state, action: PayloadAction<{ lat: number, lng: number }>) => {
-            state.koordinatlar = action.payload;
-            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(state));
-        },
+
+        /**
+         * Muhafiz state'ini sifirla
+         */
         muhafizStateSifirla: () => {
             AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
             return initialState;
@@ -141,5 +142,5 @@ const muhafizSlice = createSlice({
     },
 });
 
-export const { muhafizAyarlariniGuncelle, konumGuncelle, muhafizStateSifirla } = muhafizSlice.actions;
+export const { muhafizAyarlariniGuncelle, muhafizStateSifirla } = muhafizSlice.actions;
 export default muhafizSlice.reducer;
