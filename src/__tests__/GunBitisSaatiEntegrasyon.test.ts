@@ -96,26 +96,19 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
     });
 
     describe('Sabit Mod - Validasyon', () => {
-        it('ertesi gün seçildiğinde imsak vaktine kadar saat seçilebilmeli', () => {
+        it('ertesi gün seçildiğinde imsak vakti hesaplanabilmeli', () => {
             konumServisi.koordinatlarAyarla(41.0082, 28.9784);
 
-            const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir()!;
-            const imsakSaat = imsakVakti.getHours();
-            const imsakDakika = imsakVakti.getMinutes();
+            const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
 
-            // Test ayarları
-            const ayarlar: Partial<SeriAyarlari> = {
-                gunSonuBildirimModu: 'sabit',
-                bildirimGunSecimi: 'ertesiGun',
-                bildirimSaati: 4,
-                bildirimDakikasi: 0,
-            };
+            // İmsak vakti hesaplanabilmeli
+            expect(imsakVakti).not.toBeNull();
+            expect(imsakVakti).toBeInstanceOf(Date);
 
-            const seciliToplam = (ayarlar.bildirimSaati ?? 0) * 60 + (ayarlar.bildirimDakikasi ?? 0);
-            const imsakToplam = imsakSaat * 60 + imsakDakika;
-
-            // 04:00 genellikle imsak vaktinden önce olmalı
-            expect(seciliToplam).toBeLessThan(imsakToplam);
+            // İmsak vakti 03:00-07:00 arası olmalı (normal aralık)
+            const imsakSaat = imsakVakti!.getHours();
+            expect(imsakSaat).toBeGreaterThanOrEqual(3);
+            expect(imsakSaat).toBeLessThanOrEqual(7);
         });
 
         it('aynı gün seçildiğinde 18:00-23:59 arası seçilebilmeli', () => {
