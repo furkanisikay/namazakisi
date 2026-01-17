@@ -11,6 +11,26 @@ jest.mock('expo-location', () => ({
     reverseGeocodeAsync: jest.fn(),
 }));
 
+// Mock expo-notifications - CI ortaminda gerekli
+jest.mock('expo-notifications', () => ({
+    scheduleNotificationAsync: jest.fn(),
+    cancelScheduledNotificationAsync: jest.fn(),
+    getAllScheduledNotificationsAsync: jest.fn().mockResolvedValue([]),
+    AndroidNotificationPriority: { MAX: 'max', HIGH: 'high' },
+    SchedulableTriggerInputTypes: { DATE: 'date' },
+}));
+
+// Suppress console.log in tests
+beforeAll(() => {
+    jest.spyOn(console, 'log').mockImplementation(() => { });
+    jest.spyOn(console, 'warn').mockImplementation(() => { });
+    jest.spyOn(console, 'error').mockImplementation(() => { });
+});
+
+afterAll(() => {
+    jest.restoreAllMocks();
+});
+
 import { KonumYoneticiServisi } from '../domain/services/KonumYoneticiServisi';
 import type { GunSonuBildirimModu, BildirimGunSecimi, SeriAyarlari } from '../core/types/SeriTipleri';
 import { VARSAYILAN_SERI_AYARLARI } from '../core/types/SeriTipleri';
