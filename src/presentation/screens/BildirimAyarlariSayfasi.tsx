@@ -249,10 +249,6 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   }, []);
 
   // Handlers
-  const handleBildirimToggle = (yeniDeger: boolean) => {
-    dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimlerAktif: yeniDeger } }));
-  };
-
   const handleGunSonuBildirimToggle = (yeniDeger: boolean) => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { gunSonuBildirimAktif: yeniDeger } }));
   };
@@ -317,155 +313,160 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             SERİ BİLDİRİMLERİ
           </Text>
 
-          <AyarSatiri
-            baslik="Seri Hatırlatıcıları"
-            aciklama="Serinin bozulmasını önlemek için bildirim al"
-            ikon="🔔"
-            deger={seriAyarlari.bildirimlerAktif}
-            degerDegistir={handleBildirimToggle}
-          />
-
-          <AyarSatiri
-            baslik="Gün Sonu Bildirimleri"
-            aciklama="Gün bitmeden serinizi kurtarmanız için bildirim al"
-            ikon="🕒"
-            deger={seriAyarlari.gunSonuBildirimAktif}
-            degerDegistir={handleGunSonuBildirimToggle}
-          />
-
-          {seriAyarlari.gunSonuBildirimAktif && (
-            <View style={[styles.altAyarKutusu, { backgroundColor: renkler.kartArkaplan }]}>
-              {/* Bildirim Modu Seçici */}
-              <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
-                Bildirim Modu
-              </Text>
-              <View style={styles.sureContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.sureButon,
-                    {
-                      backgroundColor: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincil : renkler.kartArkaplan,
-                      borderColor: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincil : renkler.sinir,
-                    },
-                  ]}
-                  onPress={() => handleBildirimModuSecimi('otomatik')}
-                >
-                  <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin }]}>
-                    🔄 İmsak Öncesi
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.sureButon,
-                    {
-                      backgroundColor: seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincil : renkler.kartArkaplan,
-                      borderColor: seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincil : renkler.sinir,
-                    },
-                  ]}
-                  onPress={() => handleBildirimModuSecimi('sabit')}
-                >
-                  <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin }]}>
-                    ⏰ Sabit Zamanlı
-                  </Text>
-                </TouchableOpacity>
+          {/* Seri Hatirlatici - Toggle ve ayarlar tek kartta */}
+          <View style={[styles.seriHatirlaticiKart, { backgroundColor: renkler.kartArkaplan }]}>
+            {/* Header: Toggle */}
+            <View style={styles.seriHatirlaticiHeader}>
+              <Text style={styles.ayarIkon}>🔔</Text>
+              <View style={styles.ayarMetinContainer}>
+                <Text style={[styles.ayarBaslik, { color: renkler.metin }]}>Seri Hatırlatıcı</Text>
+                <Text style={[styles.ayarAciklama, { color: renkler.metinIkincil }]}>
+                  Gün bitmeden serinizi kurtarmanız için bildirim al
+                </Text>
               </View>
+              <Switch
+                value={seriAyarlari.gunSonuBildirimAktif}
+                onValueChange={handleGunSonuBildirimToggle}
+                trackColor={{ false: renkler.sinir, true: renkler.birincilAcik }}
+                thumbColor={seriAyarlari.gunSonuBildirimAktif ? renkler.birincil : '#f4f3f4'}
+              />
+            </View>
 
-              {/* Otomatik Mod Ayarları */}
-              {seriAyarlari.gunSonuBildirimModu === 'otomatik' && (
-                <View style={{ marginTop: 16 }}>
-                  <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
-                    İmsak vaktinden ne kadar önce?
-                  </Text>
-                  <View style={styles.saatSeciciContainer}>
-                    <SaatSecici
-                      deger={seriAyarlari.bildirimImsakOncesiDk || 30}
-                      min={5}
-                      max={120}
-                      adim={5}
-                      birim="dk"
-                      onChange={handleBildirimImsakOncesiDk}
-                    />
-                  </View>
-                  {imsakVakti && (
-                    <Text style={[styles.bilgiMetniKucuk, { color: renkler.metinIkincil }]}>
-                      İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')}
+            {/* Alt ayarlar - aktifse goster */}
+            {seriAyarlari.gunSonuBildirimAktif && (
+              <View style={styles.seriHatirlaticiAyarlar}>
+                {/* Bildirim Modu Seçici */}
+                <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
+                  Bildirim Modu
+                </Text>
+                <View style={styles.sureContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.sureButon,
+                      {
+                        backgroundColor: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincil : renkler.kartArkaplan,
+                        borderColor: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincil : renkler.sinir,
+                      },
+                    ]}
+                    onPress={() => handleBildirimModuSecimi('otomatik')}
+                  >
+                    <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin }]}>
+                      🔄 İmsak Öncesi
                     </Text>
-                  )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.sureButon,
+                      {
+                        backgroundColor: seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincil : renkler.kartArkaplan,
+                        borderColor: seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincil : renkler.sinir,
+                      },
+                    ]}
+                    onPress={() => handleBildirimModuSecimi('sabit')}
+                  >
+                    <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin }]}>
+                      ⏰ Sabit Zamanlı
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-              )}
 
-              {/* Sabit Mod Ayarları */}
-              {seriAyarlari.gunSonuBildirimModu === 'sabit' && (
-                <View style={{ marginTop: 16 }}>
-                  <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
-                    Bildirim zamanı
-                  </Text>
-                  <View style={styles.sureContainer}>
-                    <TouchableOpacity
-                      style={[
-                        styles.sureButon,
-                        {
-                          backgroundColor: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? renkler.birincil : renkler.kartArkaplan,
-                          borderColor: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? renkler.birincil : renkler.sinir,
-                        },
-                      ]}
-                      onPress={() => handleBildirimGunSecimi('ayniGun')}
-                    >
-                      <Text style={[styles.sureMetin, { color: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? '#FFF' : renkler.metin }]}>
-                        Aynı Gün
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[
-                        styles.sureButon,
-                        {
-                          backgroundColor: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? renkler.birincil : renkler.kartArkaplan,
-                          borderColor: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? renkler.birincil : renkler.sinir,
-                        },
-                      ]}
-                      onPress={() => handleBildirimGunSecimi('ertesiGun')}
-                    >
-                      <Text style={[styles.sureMetin, { color: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? '#FFF' : renkler.metin }]}>
-                        Ertesi Gün
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  {/* Saat Seçici */}
-                  <View style={styles.saatSeciciContainer}>
-                    <Text style={[styles.saatLabel, { color: renkler.metinIkincil }]}>Saat:</Text>
-                    <View style={styles.saatSeciciRow}>
+                {/* Otomatik Mod Ayarları */}
+                {seriAyarlari.gunSonuBildirimModu === 'otomatik' && (
+                  <View style={{ marginTop: 16 }}>
+                    <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
+                      İmsak vaktinden ne kadar önce?
+                    </Text>
+                    <View style={styles.saatSeciciContainer}>
                       <SaatSecici
-                        deger={seriAyarlari.bildirimSaati || (seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0)}
-                        min={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0}
-                        max={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? 23 : (imsakVakti ? imsakVakti.getHours() : 6)}
-                        onChange={handleBildirimSaatiChange}
-                      />
-                      <Text style={[styles.saatAyirici, { color: renkler.metin }]}>:</Text>
-                      <SaatSecici
-                        deger={seriAyarlari.bildirimDakikasi || 0}
-                        min={0}
-                        max={59}
-                        adim={15}
-                        onChange={handleBildirimDakikasiChange}
+                        deger={seriAyarlari.bildirimImsakOncesiDk || 30}
+                        min={5}
+                        max={120}
+                        adim={5}
+                        birim="dk"
+                        onChange={handleBildirimImsakOncesiDk}
                       />
                     </View>
+                    {imsakVakti && (
+                      <Text style={[styles.bilgiMetniKucuk, { color: renkler.metinIkincil }]}>
+                        İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')}
+                      </Text>
+                    )}
                   </View>
+                )}
 
-                  {seriAyarlari.bildirimGunSecimi === 'ertesiGun' && imsakVakti && (
-                    <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
-                      ⚠️ İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')} vaktinden sonrası seçilemez
+                {/* Sabit Mod Ayarları */}
+                {seriAyarlari.gunSonuBildirimModu === 'sabit' && (
+                  <View style={{ marginTop: 16 }}>
+                    <Text style={[styles.altAyarBaslik, { color: renkler.metinIkincil }]}>
+                      Bildirim zamanı
                     </Text>
-                  )}
-                  {seriAyarlari.bildirimGunSecimi === 'ayniGun' && yatsiVakti && (
-                    <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
-                      ⚠️ Yatsı: {String(yatsiVakti.getHours()).padStart(2, '0')}:{String(yatsiVakti.getMinutes()).padStart(2, '0')} vaktinden öncesi seçilemez
-                    </Text>
-                  )}
-                </View>
-              )}
-            </View>
-          )}
+                    <View style={styles.sureContainer}>
+                      <TouchableOpacity
+                        style={[
+                          styles.sureButon,
+                          {
+                            backgroundColor: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? renkler.birincil : renkler.kartArkaplan,
+                            borderColor: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? renkler.birincil : renkler.sinir,
+                          },
+                        ]}
+                        onPress={() => handleBildirimGunSecimi('ayniGun')}
+                      >
+                        <Text style={[styles.sureMetin, { color: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? '#FFF' : renkler.metin }]}>
+                          Aynı Gün
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[
+                          styles.sureButon,
+                          {
+                            backgroundColor: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? renkler.birincil : renkler.kartArkaplan,
+                            borderColor: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? renkler.birincil : renkler.sinir,
+                          },
+                        ]}
+                        onPress={() => handleBildirimGunSecimi('ertesiGun')}
+                      >
+                        <Text style={[styles.sureMetin, { color: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? '#FFF' : renkler.metin }]}>
+                          Ertesi Gün
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Saat Seçici */}
+                    <View style={styles.saatSeciciContainer}>
+                      <Text style={[styles.saatLabel, { color: renkler.metinIkincil }]}>Saat:</Text>
+                      <View style={styles.saatSeciciRow}>
+                        <SaatSecici
+                          deger={seriAyarlari.bildirimSaati || (seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0)}
+                          min={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0}
+                          max={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? 23 : (imsakVakti ? imsakVakti.getHours() : 6)}
+                          onChange={handleBildirimSaatiChange}
+                        />
+                        <Text style={[styles.saatAyirici, { color: renkler.metin }]}>:</Text>
+                        <SaatSecici
+                          deger={seriAyarlari.bildirimDakikasi || 0}
+                          min={0}
+                          max={59}
+                          adim={15}
+                          onChange={handleBildirimDakikasiChange}
+                        />
+                      </View>
+                    </View>
+
+                    {seriAyarlari.bildirimGunSecimi === 'ertesiGun' && (
+                      <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
+                        ⚠️ İmsak{imsakVakti ? `: ${String(imsakVakti.getHours()).padStart(2, '0')}:${String(imsakVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden sonrası seçilemez
+                      </Text>
+                    )}
+                    {seriAyarlari.bildirimGunSecimi === 'ayniGun' && (
+                      <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
+                        ⚠️ Yatsı{yatsiVakti ? `: ${String(yatsiVakti.getHours()).padStart(2, '0')}:${String(yatsiVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden öncesi seçilemez
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
         </View>
 
         {/* Namaz Muhafizi Bolumu */}
@@ -641,5 +642,27 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'center',
     marginTop: 12,
+  },
+  // Seri Hatirlatici kart stilleri
+  seriHatirlaticiKart: {
+    borderRadius: 12,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+  seriHatirlaticiHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+  },
+  seriHatirlaticiAyarlar: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
   },
 });
