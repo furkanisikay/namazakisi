@@ -11,7 +11,7 @@ export type NamazAdi = (typeof NAMAZ_ISIMLERI)[number];
 // Uygulama meta verileri
 export const UYGULAMA = {
   ADI: 'Namaz Akışı',
-  VERSIYON: '1.0.1',
+  VERSIYON: '1.0.2',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
 } as const;
 
