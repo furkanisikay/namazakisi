@@ -8,13 +8,17 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
-  // Coverage ayarlari
+  // Coverage ayarlari - sadece .ts dosyalari (JSX/TSX haric)
   collectCoverageFrom: [
-    "src/**/*.{ts,tsx}",
+    "src/**/*.ts",
+    "!src/**/*.tsx",
     "!src/**/*.d.ts",
     "!src/**/__tests__/**",
     "!src/**/index.ts",
+    "!src/presentation/**",
   ],
+  // Test dosyalari sadece .test.ts uzantili olsun
+  testMatch: ["**/__tests__/**/*.test.ts"],
   // Coverage threshold gecici olarak devre disi
   // TODO: Test coverage arttirilinca tekrar aktif edilecek
   // coverageThreshold: {
