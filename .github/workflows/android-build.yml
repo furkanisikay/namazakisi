@@ -15,15 +15,7 @@ on:
         options:
           - debug
           - release
-      version_type:
-        description: 'Versiyon tipi (sadece release build icin)'
-        required: false
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+
 
 concurrency:
   group: android-build
@@ -44,6 +36,7 @@ jobs:
   debug-build:
     name: 🔧 Debug APK Build
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     if: ${{ inputs.build_type == 'debug' }}
 
     steps:
@@ -69,6 +62,12 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
 
@@ -82,7 +81,12 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug \
+            --no-daemon \
+            --parallel \
+            --build-cache \
+            --configure-on-demand \
+            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
 
       - name: 📦 APK'yi yeniden adlandir
         id: rename
@@ -99,19 +103,23 @@ jobs:
         with:
           name: ${{ steps.rename.outputs.apk_name }}
           path: ${{ steps.rename.outputs.apk_name }}
-          retention-days: 30
+          retention-days: 3
 
       - name: 📊 Build ozeti
         run: |
-          echo "========================================"
-          echo "✅ DEBUG BUILD TAMAMLANDI!"
-          echo "========================================"
-          echo "📱 APK: ${{ steps.rename.outputs.apk_name }}"
-          echo "📦 Boyut: $(du -h ${{ steps.rename.outputs.apk_name }} | cut -f1)"
-          echo ""
-          echo "📥 APK'yi indirmek icin:"
-          echo "   Actions > Bu workflow > Artifacts bolumu"
-          echo "========================================"
+          {
+            echo "### ✅ Debug Build Basarili!"
+            echo "---"
+            echo "| Detay | Bilgi |"
+            echo "|---|---|"
+            echo "| � **APK Ismi** | \`${{ steps.rename.outputs.apk_name }}\` |"
+            echo "| � **Boyut** | $(du -h ${{ steps.rename.outputs.apk_name }} | cut -f1) |"
+            echo "| ⏱️ **Tarih** | $(date '+%Y-%m-%d %H:%M:%S') |"
+            echo ""
+            echo "### 📥 Nasil Indirilir?"
+            echo "1. Yukaridaki **Artifacts** kismina gidin"
+            echo "2. **${{ steps.rename.outputs.apk_name }}** dosyasina tiklayin"
+          } >> $GITHUB_STEP_SUMMARY
 
   # ============================================
   # Release Build - Versioning + Changelog + APK
@@ -119,6 +127,7 @@ jobs:
   release-build:
     name: 🚀 Release APK Build
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     if: ${{ inputs.build_type == 'release' }}
 
     steps:
@@ -140,6 +149,12 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
 
@@ -155,48 +170,16 @@ jobs:
       # ============================================
       # Semantic Versioning
       # ============================================
-      - name: 🔢 Semantic Versiyon Hesapla
+      - name: 🏷️ Calculate Next Version
         id: version
-        run: |
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Mevcut versiyon: $CURRENT_VERSION"
-
-          VERSION_TYPE="${{ inputs.version_type }}"
-          echo "Versiyon tipi: $VERSION_TYPE"
-
-          # Semantic versioning hesapla
-          IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
-          MAJOR=${VERSION_PARTS[0]}
-          MINOR=${VERSION_PARTS[1]}
-          PATCH=${VERSION_PARTS[2]}
-
-          case $VERSION_TYPE in
-            major)
-              # Breaking changes - X.0.0
-              MAJOR=$((MAJOR + 1))
-              MINOR=0
-              PATCH=0
-              ;;
-            minor)
-              # New features - x.X.0
-              MINOR=$((MINOR + 1))
-              PATCH=0
-              ;;
-            patch)
-              # Bug fixes - x.x.X
-              PATCH=$((PATCH + 1))
-              ;;
-          esac
-
-          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
-          TAG="v$NEW_VERSION"
-
-          echo "✨ Yeni versiyon: $NEW_VERSION"
-          echo "🏷️ Tag: $TAG"
-
-          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
-          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          version_format: "${major}.${minor}.${patch}"
+          search_commit_body: true
+          user_format_type: "csv"
 
       - name: 📝 Versiyon dosyalarini guncelle
         run: |
@@ -210,6 +193,13 @@ jobs:
             const fs = require('fs');
             const appJson = JSON.parse(fs.readFileSync('./app.json', 'utf8'));
             appJson.expo.version = '$NEW_VERSION';
+            
+            // Auto increment Android versionCode
+            if (!appJson.expo.android) appJson.expo.android = {};
+            const currentCode = appJson.expo.android.versionCode || 0;
+            appJson.expo.android.versionCode = currentCode + 1;
+            console.log('Use new versionCode: ' + appJson.expo.android.versionCode);
+            
             fs.writeFileSync('./app.json', JSON.stringify(appJson, null, 2) + '\n');
           "
           
@@ -365,19 +355,7 @@ jobs:
           
           echo "previous_tag=$LAST_TAG" >> $GITHUB_OUTPUT
 
-      # ============================================
-      # Commit & Tag
-      # ============================================
-      - name: 📤 Commit ve Tag olustur
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git add package.json package-lock.json app.json src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
-          git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
-          git tag -a ${{ steps.version.outputs.tag }} -m "Release ${{ steps.version.outputs.tag }}"
-          git push origin master
-          git push origin ${{ steps.version.outputs.tag }}
+
 
       # ============================================
       # APK Build
@@ -449,7 +427,12 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleRelease \
+            --no-daemon \
+            --parallel \
+            --build-cache \
+            --configure-on-demand \
+            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
 
       - name: 📦 APK'yi yeniden adlandir
         id: rename
@@ -463,12 +446,27 @@ jobs:
           echo "apk_size=$(du -h $APK_NAME | cut -f1)" >> $GITHUB_OUTPUT
 
       # ============================================
+      # Commit & Tag (Build basariliysa)
+      # ============================================
+      - name: 📤 Commit ve Tag olustur
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add package.json package-lock.json app.json src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
+          git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
+          git tag -a ${{ steps.version.outputs.version_tag }} -m "Release ${{ steps.version.outputs.version_tag }}"
+          git push origin master
+          git push origin ${{ steps.version.outputs.version_tag }}
+
+      # ============================================
       # GitHub Release
       # ============================================
       - name: 🚀 GitHub Release olustur
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
+          tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
           body: |
             ${{ steps.release_notes.outputs.notes }}
@@ -482,9 +480,9 @@ jobs:
             
             ---
             
-            📄 [Tüm değişiklikler (CHANGELOG.md)](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.tag }}/CHANGELOG.md)
+            📄 [Tüm değişiklikler (CHANGELOG.md)](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.version_tag }}/CHANGELOG.md)
             
-            ${{ steps.release_notes.outputs.previous_tag != '' && format('🔗 **Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.release_notes.outputs.previous_tag, steps.version.outputs.tag) || '' }}
+            ${{ steps.release_notes.outputs.previous_tag != '' && format('🔗 **Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.release_notes.outputs.previous_tag, steps.version.outputs.version_tag) || '' }}
           files: ${{ steps.rename.outputs.apk_name }}
           draft: false
           prerelease: false
@@ -493,13 +491,17 @@ jobs:
 
       - name: 📊 Build ozeti
         run: |
-          echo "========================================"
-          echo "✅ RELEASE BUILD TAMAMLANDI!"
-          echo "========================================"
-          echo "📌 Versiyon: ${{ steps.version.outputs.current_version }} → ${{ steps.version.outputs.version }}"
-          echo "🏷️ Tag: ${{ steps.version.outputs.tag }}"
-          echo "📱 APK: ${{ steps.rename.outputs.apk_name }}"
-          echo "📦 Boyut: ${{ steps.rename.outputs.apk_size }}"
-          echo ""
-          echo "🔗 Release: https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.tag }}"
-          echo "========================================"
+          {
+            echo "### 🚀 Release Build Basarili!"
+            echo "---"
+            echo "| Detay | Bilgi |"
+            echo "|---|---|"
+            echo "| 📌 **Versiyon** | \`${{ steps.version.outputs.current_version }}\` → \`${{ steps.version.outputs.version }}\` |"
+            echo "| 🏷️ **Tag** | \`${{ steps.version.outputs.version_tag }}\` |"
+            echo "| � **APK Ismi** | \`${{ steps.rename.outputs.apk_name }}\` |"
+            echo "| � **Boyut** | ${{ steps.rename.outputs.apk_size }} |"
+            echo ""
+            echo "### 🔗 Baglantilar"
+            echo "- [📦 Release Sayfasi](https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version_tag }})"
+            echo "- [📄 Changelog](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.version_tag }}/CHANGELOG.md)"
+          } >> $GITHUB_STEP_SUMMARY
