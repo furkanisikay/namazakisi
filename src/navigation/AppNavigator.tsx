@@ -13,7 +13,6 @@ import { Text, StyleSheet } from 'react-native';
 import {
   AnaSayfa,
   IstatistikSayfasi,
-  ProfilSayfasi,
   AyarlarSayfasi,
   RozetlerSayfasi,
   MuhafizAyarlariSayfasi,
@@ -166,22 +165,6 @@ export const AppNavigator: React.FC = () => {
             tabBarIcon: ({ focused }) => (
               <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
                 📊
-              </Text>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profil"
-          component={ProfilSayfasi}
-          options={{
-            title: 'Profil',
-            tabBarLabel: 'Profil',
-            headerStyle: {
-              backgroundColor: renkler.birincil,
-            },
-            tabBarIcon: ({ focused }) => (
-              <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
-                👤
               </Text>
             ),
           }}

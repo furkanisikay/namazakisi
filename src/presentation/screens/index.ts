@@ -6,7 +6,6 @@
 // Ana sayfalar
 export { AnaSayfa } from './AnaSayfa';
 export { IstatistikSayfasi } from './IstatistikSayfasi';
-export { ProfilSayfasi } from './ProfilSayfasi';
 export { RozetlerSayfasi } from './RozetlerSayfasi';
 
 // Ayarlar sayfalari
