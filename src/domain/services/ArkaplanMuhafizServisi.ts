@@ -332,20 +332,20 @@ export class ArkaplanMuhafizServisi {
     private bildirimMesajiOlustur(vakit: VakitAdi, seviye: number, kalanDakika: number): string {
         const vakitAdlari: Record<VakitAdi, string> = {
             imsak: 'Sabah',
-            gunes: 'Gunes',
-            ogle: 'Ogle',
-            ikindi: 'Ikindi',
-            aksam: 'Aksam',
-            yatsi: 'Yatsi',
+            gunes: 'Güneş',
+            ogle: 'Öğle',
+            ikindi: 'İkindi',
+            aksam: 'Akşam',
+            yatsi: 'Yatsı',
         };
 
         const vakitAdi = vakitAdlari[vakit];
 
         switch (seviye) {
             case 1:
-                return `${vakitAdi} namazinin vakti bitmesine ${kalanDakika} dakika kaldi.`;
+                return `${vakitAdi} namazının vakti bitmesine ${kalanDakika} dakika kaldı.`;
             case 2:
-                return `Vakit daraliyor! ${vakitAdi} namazini sona birakma. (${kalanDakika} dk kaldi)`;
+                return `Vakit daralıyor! ${vakitAdi} namazını sona bırakma. (${kalanDakika} dk kaldı)`;
             case 3:
                 // Seytanla mucadele icerigi
                 const icerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === 3);
@@ -353,11 +353,11 @@ export class ArkaplanMuhafizServisi {
                     const rastgele = Math.floor(Math.random() * icerikler.length);
                     return icerikler[rastgele].metin;
                 }
-                return `Seytana uyma, ${vakitAdi} namazini kil! (${kalanDakika} dk kaldi)`;
+                return `Şeytana uyma, ${vakitAdi} namazını kıl! (${kalanDakika} dk kaldı)`;
             case 4:
-                return `VAKIT CIKIYOR! Hemen secdeye kapan! ${vakitAdi} namazina ${kalanDakika} dakika kaldi!`;
+                return `VAKİT ÇIKIYOR! Hemen secdeye kapan! ${vakitAdi} namazına ${kalanDakika} dakika kaldı!`;
             default:
-                return `${vakitAdi} namazina ${kalanDakika} dakika kaldi.`;
+                return `${vakitAdi} namazına ${kalanDakika} dakika kaldı.`;
         }
     }
 

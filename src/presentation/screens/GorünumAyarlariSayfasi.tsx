@@ -26,8 +26,8 @@ const TemaModuSecici: React.FC = () => {
   const { butonTiklandiFeedback } = useFeedback();
 
   const modlar: { id: TemaModu; etiket: string; ikon: string; aciklama: string }[] = [
-    { id: 'sistem', etiket: 'Sistem', ikon: '📱', aciklama: 'Cihaz ayarini takip et' },
-    { id: 'acik', etiket: 'Acik', ikon: '☀️', aciklama: 'Her zaman acik tema' },
+    { id: 'sistem', etiket: 'Sistem', ikon: '📱', aciklama: 'Sistem ayarlarına göre' },
+    { id: 'acik', etiket: 'Açık', ikon: '☀️', aciklama: 'Her zaman açık tema' },
     { id: 'koyu', etiket: 'Koyu', ikon: '🌙', aciklama: 'Her zaman koyu tema' },
   ];
 
@@ -167,7 +167,7 @@ export const GorünumAyarlariSayfasi: React.FC = () => {
         {/* Renk Paleti Bolumu */}
         <View style={styles.bolum}>
           <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
-            RENK PALETI
+            RENK PALETİ
           </Text>
           <RenkPaletiSecici />
         </View>

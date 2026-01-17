@@ -404,8 +404,8 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           </Text>
 
           <AyarKarti
-            baslik="Tam Gun Esigi"
-            aciklama="Seride sayilmak icin gunluk minimum namaz"
+            baslik="Tam Gün Eşiği"
+            aciklama="O günün serisini tamamlandı saymak için günde kılmanız gereken minimum namaz sayısını belirler"
             ikon="📊"
           >
             <SecimGrubu
@@ -414,44 +414,22 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
               onSecim={handleEsikSecimi}
             />
           </AyarKarti>
-
-          {/* Gün Bitiş Saati - Bilgi Kartı */}
-          <View style={[styles.bilgiKarti, { backgroundColor: renkler.kartArkaplan }]}>
-            <View style={styles.bilgiKartiIcerik}>
-              <Text style={styles.bilgiKartiIkon}>🌙</Text>
-              <View style={styles.bilgiKartiMetinContainer}>
-                <Text style={[styles.bilgiKartiBaslik, { color: renkler.metin }]}>
-                  Gün Bitiş Saati
-                </Text>
-                <Text style={[styles.bilgiKartiAciklama, { color: renkler.metinIkincil }]}>
-                  Yatsı namazını ertesi gün imsak vaktine kadar girebilirsiniz
-                </Text>
-              </View>
-            </View>
-            {imsakVakti && (
-              <View style={[styles.bilgiKartiDeger, { backgroundColor: renkler.birincilAcik }]}>
-                <Text style={[styles.bilgiKartiDegerMetin, { color: renkler.birincil }]}>
-                  İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')}
-                </Text>
-              </View>
-            )}
-          </View>
         </View>
 
         {/* Ozel Gun Modu Bolumu */}
         <View style={styles.bolum}>
           <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
-            OZEL GUN MODU
+            ÖZEL GÜN MODU
           </Text>
 
           <View style={[styles.toggleSatiri, { backgroundColor: renkler.kartArkaplan }]}>
             <Text style={styles.toggleIkon}>✨</Text>
             <View style={styles.toggleMetinContainer}>
               <Text style={[styles.toggleBaslik, { color: renkler.metin }]}>
-                Ozel Gun Modu
+                Özel Gün Modu
               </Text>
               <Text style={[styles.toggleAciklama, { color: renkler.metinIkincil }]}>
-                Mazeret durumlarinda seriyi dondurma imkani
+                Özel günlerde seriyi dondurma imkanı sağlar
               </Text>
             </View>
             <Switch
@@ -468,14 +446,14 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
               onPress={() => setTakvimGorunur(true)}
               activeOpacity={0.8}
             >
-              <Text style={styles.aksiyonButonMetin}>🌸 Mazeret Donemi Baslat</Text>
+              <Text style={styles.aksiyonButonMetin}>🌸 Özel Gün Başlat</Text>
             </TouchableOpacity>
           )}
 
           {ozelGunAyarlari.aktifOzelGun && (
             <View style={[styles.aktifMazeretKutusu, { backgroundColor: '#FFF0F5' }]}>
               <Text style={[styles.aktifMazeretBaslik, { color: '#D81B60' }]}>
-                Aktif Mazeret Donemi
+                Aktif Özel Gün
               </Text>
               <Text style={[styles.aktifMazeretTarih, { color: '#AD1457' }]}>
                 {new Date(ozelGunAyarlari.aktifOzelGun.baslangicTarihi).toLocaleDateString(
@@ -493,7 +471,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
         {/* Tehlikeli Bolge */}
         <View style={styles.bolum}>
           <Text style={[styles.bolumBaslik, { color: '#DC2626' }]}>
-            TEHLIKELI BOLGE
+            TEHLİKELİ BÖLGE
           </Text>
 
           <TouchableOpacity
@@ -504,10 +482,10 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             <Text style={styles.tehlikeIkon}>⚠️</Text>
             <View style={styles.tehlikeMetinContainer}>
               <Text style={[styles.tehlikeBaslik, { color: '#DC2626' }]}>
-                Seri Verilerini Sifirla
+                Seri Verilerini Sıfırla
               </Text>
               <Text style={[styles.tehlikeAciklama, { color: '#DC2626' }]}>
-                Tum seri, rozet ve puan verilerini sil
+                Tüm seri, rozet ve puan verilerini siler
               </Text>
             </View>
           </TouchableOpacity>

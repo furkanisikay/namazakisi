@@ -18,7 +18,7 @@ export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>,
     sikliklar: { seviye1: number; seviye2: number; seviye3: number; seviye4: number };
 }> = {
     hafif: {
-        aciklama: 'Az hatirlatma',
+        aciklama: 'Az hatırlatma',
         ikon: '🔔',
         esikler: { seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2 },
         sikliklar: { seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2 },
@@ -30,7 +30,7 @@ export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>,
         sikliklar: { seviye1: 20, seviye2: 10, seviye3: 5, seviye4: 2 },
     },
     yogun: {
-        aciklama: 'Cok hatirlatma',
+        aciklama: 'Çok hatırlatma',
         ikon: '🔔🔔🔔',
         esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
         sikliklar: { seviye1: 10, seviye2: 5, seviye3: 3, seviye4: 1 },

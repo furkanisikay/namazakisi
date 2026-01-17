@@ -88,8 +88,8 @@ export const HakkindaSayfasi: React.FC = () => {
   }, []);
 
   // Web sitesini ac
-  const handleWebSitesiAc = () => {
-    Linking.openURL('https://furkanisikay.com.tr');
+  const handleWebSitesiAc = (url: string) => {
+    Linking.openURL(url);
   };
 
   return (
@@ -112,9 +112,6 @@ export const HakkindaSayfasi: React.FC = () => {
           <Text style={[styles.uygulamaAdi, { color: renkler.metin }]}>
             {UYGULAMA.ADI}
           </Text>
-          <Text style={[styles.versiyon, { color: renkler.metinIkincil }]}>
-            Versiyon {UYGULAMA.VERSIYON}
-          </Text>
           <Text style={[styles.aciklama, { color: renkler.metinIkincil }]}>
             {UYGULAMA.ACIKLAMA}
           </Text>
@@ -128,11 +125,15 @@ export const HakkindaSayfasi: React.FC = () => {
 
           <View style={[styles.bilgiKart, { backgroundColor: renkler.kartArkaplan }]}>
             <BilgiSatiri etiket="Versiyon" deger={UYGULAMA.VERSIYON} />
-            <BilgiSatiri etiket="Geliştirici" deger="Furkan Işıkay" />
             <BilgiSatiri
-              etiket="Web Sitesi"
-              deger="furkanisikay.com.tr"
-              onPress={handleWebSitesiAc}
+              etiket="Geliştirici"
+              deger="Furkan IŞIKAY"
+              onPress={() => handleWebSitesiAc('https://furkanisikay.com.tr')}
+            />
+            <BilgiSatiri
+              etiket="Github"
+              deger="namazakisi"
+              onPress={() => handleWebSitesiAc('https://github.com/furkanisikay/namazakisi')}
             />
           </View>
         </View>
@@ -140,7 +141,7 @@ export const HakkindaSayfasi: React.FC = () => {
         {/* Telif Hakkı */}
         <View style={styles.telifContainer}>
           <Text style={[styles.telifMetin, { color: renkler.metinIkincil }]}>
-            © {guncelYil} Furkan Işıkay
+            © {guncelYil} Furkan IŞIKAY
           </Text>
           <Text style={[styles.telifMetin, { color: renkler.metinIkincil }]}>
             Tüm hakları saklıdır.

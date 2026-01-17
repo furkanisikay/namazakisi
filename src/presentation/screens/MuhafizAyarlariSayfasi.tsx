@@ -40,9 +40,9 @@ const SEVIYE_RENKLERI = {
  * Seviye bilgileri
  */
 const SEVIYE_BILGILERI = [
-    { id: 'seviye1', baslik: 'Nazik Hatirlatma', ikon: '🔔', renk: SEVIYE_RENKLERI.seviye1, minEsik: 15, maxEsik: 90 },
-    { id: 'seviye2', baslik: 'Uyari', ikon: '⚠️', renk: SEVIYE_RENKLERI.seviye2, minEsik: 10, maxEsik: 60 },
-    { id: 'seviye3', baslik: 'Seytanla Mucadele', ikon: '🔥', renk: SEVIYE_RENKLERI.seviye3, minEsik: 5, maxEsik: 30 },
+    { id: 'seviye1', baslik: 'Nazik Hatırlatma', ikon: '🔔', renk: SEVIYE_RENKLERI.seviye1, minEsik: 15, maxEsik: 90 },
+    { id: 'seviye2', baslik: 'Uyarı', ikon: '⚠️', renk: SEVIYE_RENKLERI.seviye2, minEsik: 10, maxEsik: 60 },
+    { id: 'seviye3', baslik: 'Şeytanla Mücadele', ikon: '🔥', renk: SEVIYE_RENKLERI.seviye3, minEsik: 5, maxEsik: 30 },
     { id: 'seviye4', baslik: 'Acil Alarm', ikon: '🚨', renk: SEVIYE_RENKLERI.seviye4, minEsik: 1, maxEsik: 15 },
 ];
 
@@ -632,9 +632,9 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                 activeOpacity={0.7}
             >
                 <View style={styles.onizlemeBaslikSol}>
-                    <Text style={[styles.onizlemeBaslik, { color: renkler.metin }]}>📊 Bildirim Ozeti</Text>
+                    <Text style={[styles.onizlemeBaslik, { color: renkler.metin }]}>📊 Bildirim Özeti</Text>
                     <View style={[styles.toplamBadge, { backgroundColor: renkler.birincil }]}>
-                        <Text style={styles.toplamBadgeMetin}>{tumBildirimler.length}</Text>
+                        <Text style={styles.toplamBadgeMetin}>{tumBildirimler.length} Bildirim</Text>
                     </View>
                 </View>
                 <Animated.Text style={[
@@ -671,7 +671,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                     }
                 ]}>
                     <Text style={[styles.detayBaslik, { color: renkler.metinIkincil }]}>
-                        Zaman Cizelgesi
+                        Zaman Çizelgesi
                     </Text>
 
                     {/* Timeline Gorsel */}
@@ -702,14 +702,15 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                                             {bildirim.dakika} dk kala
                                         </Text>
                                         <View style={[styles.timelineBadge, { backgroundColor: bildirim.renk }]}>
-                                            <Text style={styles.timelineBadgeMetin}>Svye {bildirim.seviye}</Text>
+                                            <Text style={styles.timelineBadgeMetin}>Seviye {bildirim.seviye}</Text>
                                         </View>
                                     </View>
                                     <Text style={[styles.timelineAciklama, { color: renkler.metinIkincil }]}>
-                                        {bildirim.seviye === 1 && 'Nazik hatirlatma'}
-                                        {bildirim.seviye === 2 && 'Uyari bildirimi'}
-                                        {bildirim.seviye === 3 && 'Seytanla mucadele'}
-                                        {bildirim.seviye === 4 && 'Acil alarm!'}
+                                        {bildirim.seviye === 1 && 'Nazik Hatırlatma'}
+                                        {bildirim.seviye === 2 && 'Uyarı'}
+                                        {bildirim.seviye === 3 && 'Şeytanla mücadele'}
+                                        {bildirim.seviye === 4 && 'Acil alarm'}
+                                        {' bildirimi'}
                                         {bildirim.tekrarMi && ' (tekrar)'}
                                     </Text>
                                 </View>
@@ -719,16 +720,16 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                         {/* Vakit Cikisi */}
                         <View style={styles.timelineSatir}>
                             <View style={styles.timelineSol}>
-                                <View style={[styles.timelineNokta, { backgroundColor: '#1a1a1a' }]}>
+                                <View style={[styles.timelineNokta, { backgroundColor: renkler.sinir }]}>
                                     <Text style={styles.timelineNoktaIkon}>⏰</Text>
                                 </View>
                             </View>
                             <View style={[
                                 styles.timelineKart,
-                                { backgroundColor: '#1a1a1a15', borderColor: '#1a1a1a', borderWidth: 1.5 }
+                                { backgroundColor: '#1a1a1a15', borderColor: renkler.sinir, borderWidth: 1.5 }
                             ]}>
-                                <Text style={[styles.timelineDakika, { color: '#1a1a1a' }]}>
-                                    Vakit Cikisi
+                                <Text style={[styles.timelineDakika, { color: renkler.metinIkincil }]}>
+                                    Vakit Çıkışı
                                 </Text>
                                 <Text style={[styles.timelineAciklama, { color: renkler.metinIkincil }]}>
                                     Namaz vaktinin sonu
@@ -861,10 +862,10 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                     <Text style={styles.anaSwitchIkon}>{muhafizAyarlari.aktif ? '🛡️' : '💤'}</Text>
                     <View style={styles.anaSwitchMetin}>
                         <Text style={[styles.anaSwitchBaslik, { color: muhafizAyarlari.aktif ? '#FFF' : renkler.metin }]}>
-                            Namaz Muhafizi
+                            Namaz Muhafızı
                         </Text>
                         <Text style={[styles.anaSwitchAlt, { color: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }]}>
-                            {muhafizAyarlari.aktif ? 'Hatirlatmalar aktif' : 'Hatirlatmalar kapali'}
+                            {muhafizAyarlari.aktif ? 'Hatırlatmalar aktif' : 'Hatırlatmalar kapalı'}
                         </Text>
                     </View>
                 </View>
@@ -881,7 +882,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                 <View style={[styles.kapaliMesaj, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
                     <Text style={styles.kapaliIkon}>😴</Text>
                     <Text style={[styles.kapaliMetin, { color: renkler.metinIkincil }]}>
-                        Muhafiz kapali. Namaz vakitleri hatirlatilmayacak.
+                        Muhafız kapalı. Namaz vakitleri hatırlatılmayacak.
                     </Text>
                 </View>
             )}
@@ -897,7 +898,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                     <View style={[styles.basitKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
                         <View style={styles.basitKartBaslik}>
                             <Text style={styles.basitKartIkon}>📍</Text>
-                            <Text style={[styles.basitKartEtiket, { color: renkler.metinIkincil }]}>Konum Ayari</Text>
+                            <Text style={[styles.basitKartEtiket, { color: renkler.metinIkincil }]}>Konum Ayarı</Text>
                         </View>
 
                         {/* GPS Secenegi */}
@@ -932,7 +933,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                                 ? `${muhafizAyarlari.gpsAdres.ilce}, ${muhafizAyarlari.gpsAdres.il}`
                                                 : (muhafizAyarlari.gpsAdres.ilce || muhafizAyarlari.gpsAdres.il || 'Konum alindi'))
                                             : 'Konum takip ediliyor')
-                                        : 'Konumunuzu otomatik takip eder'
+                                        : 'Konumunuzu GPS üzerinden alır'
                                     }
                                 </Text>
                             </View>
@@ -963,14 +964,14 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             </View>
                             <View style={styles.konumSecenegiMetin}>
                                 <Text style={[styles.konumSecenegiBaslik, { color: renkler.metin }]}>
-                                    🏙️ Manuel Secim
+                                    🏙️ Manuel Seçim
                                 </Text>
                                 <Text style={[styles.konumSecenegiAlt, { color: renkler.metinIkincil }]}>
                                     {muhafizAyarlari.konumModu === 'manuel' && muhafizAyarlari.seciliIlAdi
                                         ? (muhafizAyarlari.seciliIlceAdi
                                             ? `${muhafizAyarlari.seciliIlceAdi}, ${muhafizAyarlari.seciliIlAdi}`
                                             : muhafizAyarlari.seciliIlAdi)
-                                        : 'Sehir ve ilce seciniz'
+                                        : 'Şehir ve İlçe seçiniz'
                                     }
                                 </Text>
                             </View>
@@ -1022,7 +1023,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                             styles.yogunlukBaslik,
                                             { color: seciliMi ? '#FFF' : renkler.metin }
                                         ]}>
-                                            {yog === 'hafif' ? 'Hafif' : yog === 'normal' ? 'Normal' : 'Yogun'}
+                                            {yog === 'hafif' ? 'Hafif' : yog === 'normal' ? 'Normal' : 'Yoğun'}
                                         </Text>
                                         <Text style={[
                                             styles.yogunlukAlt,
@@ -1058,10 +1059,10 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             <Text style={styles.ozelButonIkon}>⚙️</Text>
                             <View style={styles.ozelButonMetin}>
                                 <Text style={[styles.ozelButonBaslik, { color: renkler.metin }]}>
-                                    Ozel Ayarlar
+                                    Özel Seçim
                                 </Text>
                                 <Text style={[styles.ozelButonAlt, { color: renkler.metinIkincil }]}>
-                                    Kendin ayarla
+                                    Hatırlatma bildirimlerini kendine göre ayarla
                                 </Text>
                             </View>
                         </TouchableOpacity>
@@ -1071,10 +1072,10 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                     {muhafizAyarlari.yogunluk === 'ozel' && (
                         <View style={[styles.ozelAyarlarContainer, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
                             <Text style={[styles.ozelAyarlarBaslik, { color: renkler.metin }]}>
-                                ⚙️ Ozel Bildirim Ayarlari
+                                ⚙️ Özel Bildirim Ayarları
                             </Text>
                             <Text style={[styles.ozelAyarlarAciklama, { color: renkler.metinIkincil }]}>
-                                Her seviyenin zamanini ve tekrar sikligini ayarlayin.
+                                Her seviyenin zamanını ve tekrar sıklığını ayarlayın. Hangi seviyedeki bildirimin ne zaman geleceğini ve ne sıklıkla tekrar edeceğini belirleyebilirsiniz.
                             </Text>
 
                             {SEVIYE_BILGILERI.map((seviye, index) => {

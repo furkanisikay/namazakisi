@@ -35,7 +35,7 @@ export interface Tema {
 export const RENK_PALETLERI: RenkPaleti[] = [
   {
     id: 'zumrut',
-    ad: 'Zumrut',
+    ad: 'Zümrüt',
     birincil: '#4CAF50',
     birincilKoyu: '#388E3C',
     birincilAcik: '#C8E6C9',
@@ -59,7 +59,7 @@ export const RENK_PALETLERI: RenkPaleti[] = [
   },
   {
     id: 'gunes',
-    ad: 'Gunes',
+    ad: 'Güneş',
     birincil: '#FF9800',
     birincilKoyu: '#F57C00',
     birincilAcik: '#FFE0B2',

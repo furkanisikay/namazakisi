@@ -37,7 +37,7 @@ export const SeriAtesiKarti: React.FC<SeriAtesiKartiProps> = ({
   onPress,
 }) => {
   const renkler = useRenkler();
-  
+
   // Ates animasyonu
   const atesAnim = useRef(new Animated.Value(1)).current;
   const parlamaAnim = useRef(new Animated.Value(0)).current;
@@ -127,11 +127,11 @@ export const SeriAtesiKarti: React.FC<SeriAtesiKartiProps> = ({
             styles.baslik,
             { color: mevcutSeri > 0 ? '#FFFFFF' : renkler.metin }
           ]}>
-            {mevcutSeri > 0 ? 'SERI ATESIN YANIYOR!' : 'SERIYI BASLAT!'}
+            {mevcutSeri > 0 ? 'SERİ ATEŞİN YANIYOR!' : 'SERİYİ BAŞLAT!'}
           </Text>
           {mevcutSeri > 0 && (
             <Text style={styles.enUzunSeri}>
-              En uzun: {enUzunSeri} gun
+              En uzun seri: {enUzunSeri} gün
             </Text>
           )}
         </View>
@@ -164,7 +164,7 @@ export const SeriAtesiKarti: React.FC<SeriAtesiKartiProps> = ({
             styles.gunYazisi,
             { color: mevcutSeri > 0 ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }
           ]}>
-            GUN
+            GÜN
           </Text>
         </View>
       </View>

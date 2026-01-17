@@ -16,12 +16,12 @@ interface MotivasyonBannerProps {
 
 // Motivasyon mesajlari
 const MOTIVASYON_MESAJLARI = {
-  0: { mesaj: 'Haydi baslayalim! Ilk namaz seni bekliyor 🤲', ikon: '🌟' },
-  1: { mesaj: 'Guzel baslangic! Devam et 💪', ikon: '🔥' },
-  2: { mesaj: 'Iyi gidiyorsun! Yari yola geldin 🎯', ikon: '⚡' },
-  3: { mesaj: 'Harika! Az kaldi 🚀', ikon: '✨' },
-  4: { mesaj: 'Muhteşem! Son bir namaz kaldi 🏆', ikon: '🎖️' },
-  5: { mesaj: 'MUKEMMEL! Tum namazlar tamam! 🎉', ikon: '👑' },
+  0: { mesaj: 'Haydi başlayalım! İlk namaz seni bekliyor 🤲', ikon: '🌟' },
+  1: { mesaj: 'Güzel başlangıç! Devam et 💪', ikon: '🔥' },
+  2: { mesaj: 'İyi gidiyorsun! Yarı yola geldin 🎯', ikon: '⚡' },
+  3: { mesaj: 'Harika! Az kaldı 🚀', ikon: '✨' },
+  4: { mesaj: 'Muhteşem! Son bir namaz kaldı 🏆', ikon: '🎖️' },
+  5: { mesaj: 'MÜKEMMEL! Tüm namazlar tamam! 🎉', ikon: '👑' },
 };
 
 /**
@@ -32,7 +32,7 @@ export const MotivasyonBanner: React.FC<MotivasyonBannerProps> = ({
   toplam,
 }) => {
   const renkler = useRenkler();
-  
+
   // Animasyon degerleri - hepsi useNativeDriver: false ile tutarli
   const slideAnim = useRef(new Animated.Value(30)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -44,7 +44,7 @@ export const MotivasyonBanner: React.FC<MotivasyonBannerProps> = ({
 
   // Mesaj guncelleme ve animasyon
   useEffect(() => {
-    const yeniMesaj = MOTIVASYON_MESAJLARI[tamamlanan as keyof typeof MOTIVASYON_MESAJLARI] 
+    const yeniMesaj = MOTIVASYON_MESAJLARI[tamamlanan as keyof typeof MOTIVASYON_MESAJLARI]
       || MOTIVASYON_MESAJLARI[0];
 
     // Eger tamamlanan sayisi arttiysa ozel animasyon

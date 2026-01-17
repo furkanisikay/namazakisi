@@ -314,20 +314,20 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
         {/* Seri Bildirimleri Bolumu */}
         <View style={styles.bolum}>
           <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
-            SERI BILDIRIMLERI
+            SERİ BİLDİRİMLERİ
           </Text>
 
           <AyarSatiri
-            baslik="Seri Hatirlaticilari"
-            aciklama="Serinin bozulmamasi icin bildirim al"
+            baslik="Seri Hatırlatıcıları"
+            aciklama="Serinin bozulmasını önlemek için bildirim al"
             ikon="🔔"
             deger={seriAyarlari.bildirimlerAktif}
             degerDegistir={handleBildirimToggle}
           />
 
           <AyarSatiri
-            baslik="Gun Sonu Hatirlatici"
-            aciklama="Gun bitmeden serinizi kurtarmaniz icin hatirlatma"
+            baslik="Gün Sonu Bildirimleri"
+            aciklama="Gün bitmeden serinizi kurtarmanız için bildirim al"
             ikon="🕒"
             deger={seriAyarlari.gunSonuBildirimAktif}
             degerDegistir={handleGunSonuBildirimToggle}
@@ -351,7 +351,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                   onPress={() => handleBildirimModuSecimi('otomatik')}
                 >
                   <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin }]}>
-                    🔄 Otomatik
+                    🔄 İmsak Öncesi
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -365,7 +365,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                   onPress={() => handleBildirimModuSecimi('sabit')}
                 >
                   <Text style={[styles.sureMetin, { color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin }]}>
-                    ⏰ Sabit
+                    ⏰ Sabit Zamanlı
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -436,7 +436,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                     <Text style={[styles.saatLabel, { color: renkler.metinIkincil }]}>Saat:</Text>
                     <View style={styles.saatSeciciRow}>
                       <SaatSecici
-                        deger={seriAyarlari.bildirimSaati || (seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 4)}
+                        deger={seriAyarlari.bildirimSaati || (seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0)}
                         min={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? (yatsiVakti ? yatsiVakti.getHours() : 18) : 0}
                         max={seriAyarlari.bildirimGunSecimi === 'ayniGun' ? 23 : (imsakVakti ? imsakVakti.getHours() : 6)}
                         onChange={handleBildirimSaatiChange}
@@ -454,7 +454,12 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
 
                   {seriAyarlari.bildirimGunSecimi === 'ertesiGun' && imsakVakti && (
                     <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
-                      ⚠️ İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')}
+                      ⚠️ İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:{String(imsakVakti.getMinutes()).padStart(2, '0')} vaktinden sonrası seçilemez
+                    </Text>
+                  )}
+                  {seriAyarlari.bildirimGunSecimi === 'ayniGun' && yatsiVakti && (
+                    <Text style={[styles.uyariMetni, { color: '#FF9800' }]}>
+                      ⚠️ Yatsı: {String(yatsiVakti.getHours()).padStart(2, '0')}:{String(yatsiVakti.getMinutes()).padStart(2, '0')} vaktinden öncesi seçilemez
                     </Text>
                   )}
                 </View>
@@ -470,8 +475,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
           </Text>
 
           <NavigasyonSatiri
-            baslik="Muhafiz Ayarlari"
-            aciklama="Hatirlatma sikligi ve konum ayarlari"
+            baslik="Muhafız Ayarları"
+            aciklama="Hatırlatma sıklığı ve konum ayarları"
             ikon="🛡️"
             onPress={() => navigation.navigate('MuhafizAyarlari')}
           />
@@ -481,8 +486,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
         <View style={[styles.bilgiKutusu, { backgroundColor: renkler.kartArkaplan }]}>
           <Text style={styles.bilgiIkon}>💡</Text>
           <Text style={[styles.bilgiMetin, { color: renkler.metinIkincil }]}>
-            Bildirimlerin calisabilmesi icin cihaz ayarlarindan uygulama bildirimlerinin
-            acik olduguna emin olun.
+            Bildirimlerin çalışabilmesi için cihaz ayarlarindan uygulama bildirimlerinin
+            açık olduğuna emin olun.
           </Text>
         </View>
       </Animated.View>

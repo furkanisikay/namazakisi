@@ -146,25 +146,25 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
   // Menu ogelerini tanimla
   const menuOgeleri = [
     {
-      baslik: 'Gorunum',
-      aciklama: 'Tema ve renk paleti ayarlari',
+      baslik: 'Görüntü',
+      aciklama: 'Tema ve renk paleti ayarları',
       ikon: '🎨',
       sayfa: 'GorünumAyarlari',
     },
     {
       baslik: 'Bildirimler',
-      aciklama: 'Hatirlatici ve bildirim tercihleri',
+      aciklama: 'Hatırlatıcı ve bildirim tercihleri',
       ikon: '🔔',
       sayfa: 'BildirimAyarlari',
     },
     {
       baslik: 'Seri ve Hedefler',
-      aciklama: 'Seri esikleri ve ozel gun modu',
+      aciklama: 'Seri eşikleri ve özel gün modu',
       ikon: '🎯',
       sayfa: 'SeriHedefAyarlari',
     },
     {
-      baslik: 'Hakkinda',
+      baslik: 'Hakkında',
       aciklama: 'Uygulama bilgileri ve versiyon',
       ikon: 'ℹ️',
       sayfa: 'Hakkinda',
@@ -203,8 +203,8 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
           </Text>
 
           <ToggleAyarSatiri
-            baslik="Titresim"
-            aciklama="Etkilesimlerde titresim geri bildirimi"
+            baslik="Titreşim"
+            aciklama="Etkileşimlerde telefon titrer."
             ikon="📳"
             deger={ayarlar.titresimAktif}
             onDegistir={titresimDurumunuDegistir}
@@ -212,7 +212,7 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
 
           <ToggleAyarSatiri
             baslik="Ses Efektleri"
-            aciklama="Etkilesimlerde ses geri bildirimi"
+            aciklama="Etkileşimlerde ses efektleri verir."
             ikon="🔊"
             deger={ayarlar.sesAktif}
             onDegistir={sesDurumunuDegistir}

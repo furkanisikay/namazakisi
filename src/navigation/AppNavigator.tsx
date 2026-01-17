@@ -55,7 +55,7 @@ const AyarlarStack: React.FC = () => {
       <Stack.Screen
         name="GorünumAyarlari"
         component={GorünumAyarlariSayfasi}
-        options={{ title: 'Gorunum' }}
+        options={{ title: 'Görünüm' }}
       />
       <Stack.Screen
         name="BildirimAyarlari"
@@ -70,12 +70,12 @@ const AyarlarStack: React.FC = () => {
       <Stack.Screen
         name="MuhafizAyarlari"
         component={MuhafizAyarlariSayfasi}
-        options={{ title: 'Namaz Muhafizi' }}
+        options={{ title: 'Namaz Muhafızı' }}
       />
       <Stack.Screen
         name="Hakkinda"
         component={HakkindaSayfasi}
-        options={{ title: 'Hakkinda' }}
+        options={{ title: 'Hakkında' }}
       />
     </Stack.Navigator>
   );
@@ -129,7 +129,7 @@ export const AppNavigator: React.FC = () => {
           name="AnaSayfa"
           component={AnaSayfa}
           options={{
-            title: 'Namaz Akisi',
+            title: 'Namaz Akışı',
             tabBarLabel: 'Ana Sayfa',
             tabBarIcon: ({ focused }) => (
               <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
@@ -158,8 +158,8 @@ export const AppNavigator: React.FC = () => {
           name="Istatistikler"
           component={IstatistikSayfasi}
           options={{
-            title: 'Istatistikler',
-            tabBarLabel: 'Istatistik',
+            title: 'İstatistikler',
+            tabBarLabel: 'İstatistik',
             headerStyle: {
               backgroundColor: renkler.birincil,
             },

@@ -1,6 +1,5 @@
 /**
- * Ana sayfa ekrani - Yeni Tasarim
- * Duolingo tarzinda kompakt, animasyonlu ve etkilesimli
+ * Ana sayfa ekrani
  */
 
 import * as React from 'react';
@@ -466,7 +465,7 @@ export const AnaSayfa: React.FC = () => {
               </Text>
               <View style={styles.kaydirmaIpucu}>
                 <Text style={[styles.kaydirmaIpucuMetin, { color: renkler.metinIkincil }]}>
-                  ◀ Kaydirarak gun degistir ▶
+                  ◀ Kaydırarak gün değiştir ▶
                 </Text>
               </View>
             </View>
@@ -557,7 +556,7 @@ export const AnaSayfa: React.FC = () => {
             )}
 
             {/* Dairesel Progress */}
-            <View style={styles.progressContainer}>
+            {/* <View style={styles.progressContainer}>
               <DaireselProgress
                 yuzde={yuzde}
                 boyut={140}
@@ -565,7 +564,7 @@ export const AnaSayfa: React.FC = () => {
                 animasyonSuresi={1200}
                 ekBilgi={`${tamamlanan}/${toplam} Namaz`}
               />
-            </View>
+            </View> */}
 
             {/* Namaz Grid */}
             <View style={styles.gridContainer}>
@@ -589,7 +588,7 @@ export const AnaSayfa: React.FC = () => {
           <View style={styles.butonSatiri}>
             <View style={styles.butonWrapper}>
               <AnimasyonluButon
-                metin="Tumunu Tamamla"
+                metin="Tümünü Tamamla"
                 ikon="✓"
                 onPress={tumunuTamamla}
                 tip="birincil"
@@ -600,7 +599,7 @@ export const AnaSayfa: React.FC = () => {
             <View style={styles.butonAraligi} />
             <View style={styles.butonWrapper}>
               <AnimasyonluButon
-                metin="Sifirla"
+                metin="Sıfırla"
                 ikon="↺"
                 onPress={tumunuSifirla}
                 tip="ikincil"

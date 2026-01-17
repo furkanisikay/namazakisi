@@ -67,7 +67,7 @@ export const IstatistikSayfasi: React.FC = () => {
         >
           <Text style={styles.tabIkon}>📊</Text>
           <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'gunluk' && { color: renkler.birincil, fontWeight: 'bold' }]}>
-            Gunluk
+            Günlük
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -76,7 +76,7 @@ export const IstatistikSayfasi: React.FC = () => {
         >
           <Text style={styles.tabIkon}>📅</Text>
           <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'haftalik' && { color: renkler.birincil, fontWeight: 'bold' }]}>
-            Haftalik
+            Haftalık
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -85,7 +85,7 @@ export const IstatistikSayfasi: React.FC = () => {
         >
           <Text style={styles.tabIkon}>📆</Text>
           <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'aylik' && { color: renkler.birincil, fontWeight: 'bold' }]}>
-            Aylik
+            Aylık
           </Text>
         </TouchableOpacity>
       </View>
@@ -150,10 +150,10 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
 
   // Motivasyon mesaji
   const getMotivasyon = () => {
-    if (yuzde === 100) return { mesaj: 'Mukemmel! Bugun tum namazlarinizi kildiniz! 🎉', ikon: '🏆', renk: '#FFD700' };
-    if (yuzde >= 80) return { mesaj: 'Harika gidiyorsunuz! Biraz daha gayret! 💪', ikon: '📈', renk: renkler.birincil };
-    if (yuzde >= 50) return { mesaj: 'Iyi bir baslangic! Devam edin! 🌟', ikon: '🧠', renk: renkler.durum.bilgi };
-    return { mesaj: 'Bugun biraz daha gayret gosterebiliriz! 🤲', ikon: '❤️', renk: '#FF9800' };
+    if (yuzde === 100) return { mesaj: 'Mükemmel! Bugun tüm namazlarınızı kıldınız! 🎉', ikon: '🏆', renk: '#FFD700' };
+    if (yuzde >= 80) return { mesaj: 'Harika gidiyoruz! Biraz daha gayret! 💪', ikon: '📈', renk: renkler.birincil };
+    if (yuzde >= 50) return { mesaj: 'İyi bir başlangıç! Devam edin! 🌟', ikon: '🧠', renk: renkler.durum.bilgi };
+    return { mesaj: 'Bugün biraz daha gayret gösterebiliriz! 🤲', ikon: '❤️', renk: '#FF9800' };
   };
 
   const motivasyon = getMotivasyon();
@@ -163,7 +163,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
       {/* Tamamlanma Karti */}
       <View style={[styles.tamamlanmaKarti, { backgroundColor: renkler.birincil, shadowColor: renkler.birincil }]}>
         <View style={styles.tamamlanmaUst}>
-          <Text style={styles.tamamlanmaBaslik}>Bugunku Durum</Text>
+          <Text style={styles.tamamlanmaBaslik}>Bugünkü Durum</Text>
           <View style={styles.tarihBadge}>
             <Text style={styles.tarihBadgeMetin}>
               {new Date().getDate()}/{new Date().getMonth() + 1}
@@ -173,7 +173,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
         <View style={styles.tamamlanmaIcerik}>
           <View style={styles.tamamlanmaSol}>
             <Text style={styles.yuzdeText}>{yuzde}%</Text>
-            <Text style={styles.tamamlandiMetin}>Tamamlandi</Text>
+            <Text style={styles.tamamlandiMetin}>Tamamlandı</Text>
           </View>
           <View style={styles.daireContainer}>
             <View style={styles.daireArkaplan}>
@@ -190,7 +190,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
       <View style={[styles.detayKart, { backgroundColor: renkler.kartArkaplan }]}>
         <View style={styles.detayBaslik}>
           <Text style={styles.detayBaslikIkon}>📋</Text>
-          <Text style={[styles.detayBaslikMetin, { color: renkler.metin }]}>Namaz Detaylari</Text>
+          <Text style={[styles.detayBaslikMetin, { color: renkler.metin }]}>Namaz Detayları</Text>
         </View>
         {namazlar.namazlar?.map((namaz: any) => (
           <View
@@ -228,7 +228,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
                 styles.namazDurumMetin,
                 namaz.tamamlandi ? { color: renkler.birincilKoyu } : { color: '#E65100' }
               ]}>
-                {namaz.tamamlandi ? '✓ Kilindi' : '○ Bekliyor'}
+                {namaz.tamamlandi ? '✓ Kılındı' : '○ Bekliyor'}
               </Text>
             </View>
           </View>
@@ -270,7 +270,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
     <View style={styles.istatistikContainer}>
       {/* Haftalik Grafik */}
       <View style={[styles.grafikKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.grafikBaslik, { color: renkler.metin }]}>Haftalik Performans</Text>
+        <Text style={[styles.grafikBaslik, { color: renkler.metin }]}>Haftalık Performans</Text>
         <View style={styles.grafikContainer}>
           {istatistik.gunlukVeriler?.map((gun: any) => {
             const yuzde = gun.tamamlanmaYuzdesi || 0;
@@ -308,7 +308,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text style={[styles.miniKartDeger, { color: renkler.birincil }]}>
             {istatistik.tamamlananNamaz}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Toplam Kilinan</Text>
+          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Toplam Kılınan</Text>
           <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>Namaz</Text>
         </View>
 
@@ -319,8 +319,8 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text style={[styles.miniKartDeger, { color: renkler.durum.bilgi }]}>
             %{istatistik.tamamlanmaYuzdesi}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Haftalik Oran</Text>
-          <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>Basari</Text>
+          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Haftalık Oran</Text>
+          <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>Başarı</Text>
         </View>
 
         <View style={[styles.miniKart, { backgroundColor: '#FFF8E1' }]}>
@@ -330,7 +330,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text style={[styles.miniKartDeger, { color: '#FFB300' }]}>
             {istatistik.enIyiGun?.gunAdi || '-'}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>En Iyi Gun</Text>
+          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>En İyi Gün</Text>
           <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>
             {istatistik.enIyiGun ? `%${istatistik.enIyiGun.tamamlanmaYuzdesi}` : '-'}
           </Text>
@@ -339,7 +339,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
 
       {/* Haftalik Hedefler */}
       <View style={[styles.hedeflerKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.hedeflerBaslik, { color: renkler.metin }]}>Haftalik Hedefler</Text>
+        <Text style={[styles.hedeflerBaslik, { color: renkler.metin }]}>Haftalık Hedefler</Text>
         <HedefItem
           baslik="35 Namaz Hedefi"
           mevcut={istatistik.tamamlananNamaz}
@@ -348,14 +348,14 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           renkler={renkler}
         />
         <HedefItem
-          baslik="80% Basari Orani"
+          baslik="80% Başarı Oranı"
           mevcut={istatistik.tamamlanmaYuzdesi}
           hedef={80}
           renk={renkler.durum.bilgi}
           renkler={renkler}
         />
         <HedefItem
-          baslik="Haftanin 7 Gunu"
+          baslik="Haftanın 7 Günü"
           mevcut={istatistik.gunlukVeriler?.filter((g: any) => g.tamamlananNamaz > 0).length || 0}
           hedef={7}
           renk="#9C27B0"
@@ -391,7 +391,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
       {/* Aylik Genel Bakis */}
       <View style={[styles.aylikGenelKart, { backgroundColor: renkler.kartArkaplan }]}>
         <View style={styles.aylikBaslikRow}>
-          <Text style={[styles.aylikGenelBaslik, { color: renkler.metin }]}>Aylik Genel Bakis</Text>
+          <Text style={[styles.aylikGenelBaslik, { color: renkler.metin }]}>Aylık Genel Bakış</Text>
           <View style={[styles.ayBadge, { backgroundColor: `${renkler.birincil}20` }]}>
             <Text style={[styles.ayBadgeMetin, { color: renkler.birincil }]}>
               {istatistik.ayAdi} {istatistik.yil}
@@ -403,13 +403,13 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
             <Text style={[styles.aylikStatDeger, { color: renkler.durum.bilgi }]}>
               {new Date().getDate()}
             </Text>
-            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Toplam Gun</Text>
+            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Toplam Gün</Text>
           </View>
           <View style={[styles.aylikStatItem, { backgroundColor: `${renkler.birincil}15` }]}>
             <Text style={[styles.aylikStatDeger, { color: renkler.birincil }]}>
               {istatistik.aktifGunSayisi}
             </Text>
-            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Aktif Gun</Text>
+            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Aktif Gün</Text>
           </View>
           <View style={[styles.aylikStatItem, { backgroundColor: '#FFF3E0' }]}>
             <Text style={[styles.aylikStatDeger, { color: '#FF9800' }]}>
@@ -422,7 +422,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
 
       {/* Aylik Ilerleme - Namaz Bazinda */}
       <View style={[styles.namazIlerlemeKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.namazIlerlemeBaslik, { color: renkler.metin }]}>Aylik Ilerleme</Text>
+        <Text style={[styles.namazIlerlemeBaslik, { color: renkler.metin }]}>Aylık İlerleme</Text>
         {NAMAZ_ISIMLERI.map((namazAdi, index) => {
           const yuzde = istatistik.namazBazindaYuzdeler?.[namazAdi] || 0;
           return (
@@ -449,24 +449,24 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
 
       {/* Aylik Trendler */}
       <View style={[styles.trendlerKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.trendlerBaslik, { color: renkler.metin }]}>Aylik Trendler</Text>
+        <Text style={[styles.trendlerBaslik, { color: renkler.metin }]}>Aylık Trendler</Text>
         <TrendItem
-          baslik="Basari Orani"
-          deger={`%${istatistik.tamamlanmaYuzdesi} tamamlandi`}
+          baslik="Basarı Oranı"
+          deger={`%${istatistik.tamamlanmaYuzdesi} tamamlandı`}
           ikon="📈"
           renk={renkler.birincil}
           renkler={renkler}
         />
         <TrendItem
-          baslik="Aktif Gunler"
-          deger={`${istatistik.aktifGunSayisi} gun aktif`}
+          baslik="Aktif Günler"
+          deger={`${istatistik.aktifGunSayisi} gün aktif`}
           ikon="⭐"
           renk="#FFB300"
           renkler={renkler}
         />
         <TrendItem
           baslik="Toplam Namaz"
-          deger={`${istatistik.tamamlananNamaz} namaz kilindi`}
+          deger={`${istatistik.tamamlananNamaz} namaz kılındı`}
           ikon="🕌"
           renk={renkler.durum.bilgi}
           renkler={renkler}
@@ -474,7 +474,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         {istatistik.tamamlanmaYuzdesi >= 80 ? (
           <TrendItem
             baslik="Hedef Durumu"
-            deger="Hedef tamamlandi! 🎉"
+            deger="Hedef tamamlandı! 🎉"
             ikon="🏆"
             renk="#FFD700"
             renkler={renkler}
@@ -482,7 +482,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         ) : (
           <TrendItem
             baslik="Hedef Durumu"
-            deger={`%80 hedefine ${80 - istatistik.tamamlanmaYuzdesi} puan kaldi`}
+            deger={`%80 hedefine ${80 - istatistik.tamamlanmaYuzdesi} puan kaldı`}
             ikon="🎯"
             renk="#FF9800"
             renkler={renkler}

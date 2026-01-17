@@ -101,7 +101,7 @@ export const RozetlerSayfasi: React.FC = () => {
               </Text>
               <View style={styles.seviyeMetinler}>
                 <Text style={[styles.seviyeRank, { color: renkler.metin }]}>
-                  {seviyeDurumu?.rank || 'Mubtedi'}
+                  {seviyeDurumu?.rank || 'Mübtedi'}
                 </Text>
                 <Text style={[styles.seviyeNumara, { color: renkler.birincil }]}>
                   Seviye {seviyeDurumu?.mevcutSeviye || 1}
@@ -142,7 +142,7 @@ export const RozetlerSayfasi: React.FC = () => {
               </Text>
               {sonrakiSeviye && (
                 <Text style={[styles.seviyeProgressMetin, { color: renkler.metinIkincil }]}>
-                  {sonrakiSeviye.rank} icin {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldi
+                  {sonrakiSeviye.rank} için {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldı
                 </Text>
               )}
             </View>
@@ -174,9 +174,9 @@ export const RozetlerSayfasi: React.FC = () => {
         {/* Tab Bar */}
         <View style={[styles.tabBar, { backgroundColor: renkler.kartArkaplan }]}>
           {[
-            { id: 'tumu' as TabTipi, etiket: 'Tumu', ikon: '🏆' },
+            { id: 'tumu' as TabTipi, etiket: 'Tümü', ikon: '🏆' },
             { id: 'seri' as TabTipi, etiket: 'Seri', ikon: '🔥' },
-            { id: 'ozel' as TabTipi, etiket: 'Ozel', ikon: '⭐' },
+            { id: 'ozel' as TabTipi, etiket: 'Özel', ikon: '⭐' },
             { id: 'toplam' as TabTipi, etiket: 'Toplam', ikon: '📊' },
           ].map((tab) => (
             <View
@@ -208,11 +208,11 @@ export const RozetlerSayfasi: React.FC = () => {
         <View style={styles.rozetlerContainer}>
           <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
             {aktifTab === 'tumu'
-              ? 'TUM ROZETLER'
+              ? 'TÜM ROZETLER'
               : aktifTab === 'seri'
-                ? 'SERI ROZETLERI'
+                ? 'SERİ ROZETLERİ'
                 : aktifTab === 'ozel'
-                  ? 'OZEL ROZETLER'
+                  ? 'ÖZEL ROZETLER'
                   : 'TOPLAM ROZETLER'}
           </Text>
 
@@ -232,7 +232,7 @@ export const RozetlerSayfasi: React.FC = () => {
         {/* Seviye Yol Haritasi */}
         <View style={styles.yolHaritasiContainer}>
           <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
-            SEVIYE YOL HARITASI
+            SEVİYE YOL HARİTASI
           </Text>
 
           <View

@@ -4,15 +4,15 @@
  */
 
 // Namaz isimleri
-export const NAMAZ_ISIMLERI = ['Sabah', 'Ogle', 'Ikindi', 'Aksam', 'Yatsi'] as const;
+export const NAMAZ_ISIMLERI = ['Sabah', 'Öğle', 'İkindi', 'Akşam', 'Yatsı'] as const;
 
 export type NamazAdi = (typeof NAMAZ_ISIMLERI)[number];
 
 // Uygulama meta verileri
 export const UYGULAMA = {
-  ADI: 'Namaz Akisi',
+  ADI: 'Namaz Akışı',
   VERSIYON: '1.0.0',
-  ACIKLAMA: 'Gunluk namaz takip uygulamasi',
+  ACIKLAMA: 'Günlük namaz takip uygulaması',
 } as const;
 
 // Renk paleti

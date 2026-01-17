@@ -280,29 +280,29 @@ export interface SeriHedefi {
 export const SERI_HEDEFLERI: SeriHedefi[] = [
   {
     gun: 7,
-    ad: 'Ilk Hafta',
-    aciklama: '7 gun kesintisiz namaz kil',
+    ad: 'İlk Hafta',
+    aciklama: '7 gün kesintisiz namaz kıl',
     ikon: '🌱',
     rozetId: 'ilk_adim',
   },
   {
     gun: 21,
-    ad: 'Aliskanlik Ustasi',
-    aciklama: '21 gun - aliskanlik olusturma suresi',
+    ad: 'Alışkanlık Ustası',
+    aciklama: '21 gun - alışkanlık oluşturma süresi',
     ikon: '🔥',
     rozetId: 'aliskanlik_ustasi',
   },
   {
     gun: 60,
-    ad: 'Kararlilik',
-    aciklama: '60 gun kesintisiz devam',
+    ad: 'Kararlılık',
+    aciklama: '60 gün kesintisiz devam',
     ikon: '💎',
     rozetId: 'kararlilik',
   },
   {
     gun: 90,
     ad: 'Efsane',
-    aciklama: '90 gun - ustun kararlilik',
+    aciklama: '90 gün - üstün kararlılık',
     ikon: '👑',
     rozetId: 'efsane',
   },
@@ -314,13 +314,13 @@ export const SERI_HEDEFLERI: SeriHedefi[] = [
  * Tum seviye tanimlari
  */
 export const SEVIYE_TANIMLARI: SeviyeTanimi[] = [
-  { seviye: 1, minPuan: 0, rank: 'Mubtedi', ikon: '🌙' },
-  { seviye: 2, minPuan: 100, rank: 'Talip', ikon: '⭐' },
-  { seviye: 3, minPuan: 300, rank: 'Salik', ikon: '🌟' },
-  { seviye: 4, minPuan: 600, rank: 'Murid', ikon: '💫' },
-  { seviye: 5, minPuan: 1000, rank: 'Arif', ikon: '✨' },
-  { seviye: 6, minPuan: 1500, rank: 'Hafiz', ikon: '🏆' },
-  { seviye: 7, minPuan: 2500, rank: 'Kamil', ikon: '👑' },
+  { seviye: 1, minPuan: 0, rank: 'Mübtedi', ikon: '🌙' },
+  { seviye: 2, minPuan: 100, rank: 'Tâlip', ikon: '⭐' },
+  { seviye: 3, minPuan: 300, rank: 'Sâlik', ikon: '🌟' },
+  { seviye: 4, minPuan: 600, rank: 'Mürid', ikon: '💫' },
+  { seviye: 5, minPuan: 1000, rank: 'Ârif', ikon: '✨' },
+  { seviye: 6, minPuan: 1500, rank: 'Hâfız', ikon: '🏆' },
+  { seviye: 7, minPuan: 2500, rank: 'Kâmil', ikon: '👑' },
 ];
 
 // ==================== ROZET TANIMLARI ====================
@@ -332,49 +332,49 @@ export const ROZET_TANIMLARI: RozetTanimi[] = [
   // Seri rozetleri
   {
     id: 'ilk_adim',
-    ad: 'Ilk Adim',
-    aciklama: 'Ilk haftayi tamamladiniz!',
+    ad: 'İlk Adım',
+    aciklama: 'İlk haftayı tamamladınız!',
     ikon: '🌱',
     tip: 'seri',
     seviye: 'bronz',
     kosul: 7,
-    kosulAciklamasi: '7 gunluk seri',
+    kosulAciklamasi: '7 günlük seri',
   },
   {
     id: 'aliskanlik_ustasi',
-    ad: 'Aliskanlik Ustasi',
-    aciklama: '21 gun - aliskanlik olusturma suresi tamamlandi!',
+    ad: 'Alışkanlık Ustası',
+    aciklama: '21 gün - alışkanlık oluşturma süresi tamamlandı!',
     ikon: '🔥',
     tip: 'seri',
     seviye: 'gumus',
     kosul: 21,
-    kosulAciklamasi: '21 gunluk seri',
+    kosulAciklamasi: '21 günlük seri',
   },
   {
     id: 'kararlilik',
-    ad: 'Kararlilik',
-    aciklama: '60 gun kesintisiz namaz kildiniz!',
+    ad: 'Kararlı',
+    aciklama: '60 gün kesintisiz namaz kıldınız!',
     ikon: '💎',
     tip: 'seri',
     seviye: 'altin',
     kosul: 60,
-    kosulAciklamasi: '60 gunluk seri',
+    kosulAciklamasi: '60 günlük seri',
   },
   {
     id: 'efsane',
     ad: 'Efsane',
-    aciklama: '90 gun - ustun kararlilik gosterdiniz!',
+    aciklama: '90 gün - üstün kararlılık gösterdiniz!',
     ikon: '👑',
     tip: 'seri',
     seviye: 'elmas',
     kosul: 90,
-    kosulAciklamasi: '90 gunluk seri',
+    kosulAciklamasi: '90 günlük seri',
   },
   // Ozel rozetler
   {
     id: 'toparlanma_ustasi',
-    ad: 'Toparlanma Ustasi',
-    aciklama: '3 kez toparlanma modunu basariyla tamamladiniz!',
+    ad: 'Toparlanma Ustası',
+    aciklama: '3 kez toparlanma modunu başarıyla tamamladınız!',
     ikon: '🔄',
     tip: 'ozel',
     seviye: 'gumus',
@@ -383,34 +383,34 @@ export const ROZET_TANIMLARI: RozetTanimi[] = [
   },
   {
     id: 'mukemmeliyetci',
-    ad: 'Mukemmeliyetci',
-    aciklama: '30 gun boyunca 5/5 namaz kildiniz!',
+    ad: 'Mükemmeliyetçi',
+    aciklama: '30 gün boyunca 5/5 namaz kıldınız!',
     ikon: '⭐',
     tip: 'ozel',
     seviye: 'altin',
     kosul: 30,
-    kosulAciklamasi: '30 gun 5/5 namaz',
+    kosulAciklamasi: '30 gün 5/5 namaz',
   },
   // Toplam rozetler
   {
     id: 'yuz_namaz',
     ad: '100 Namaz',
-    aciklama: 'Toplam 100 namaz kildiniz!',
+    aciklama: 'Toplam 100 namaz kıldınız!',
     ikon: '💯',
     tip: 'toplam',
     seviye: 'bronz',
     kosul: 100,
-    kosulAciklamasi: '100 namaz kilmak',
+    kosulAciklamasi: '100 namaz kılmak',
   },
   {
     id: 'bin_namaz',
     ad: '1000 Namaz',
-    aciklama: 'Toplam 1000 namaz kildiniz!',
+    aciklama: 'Toplam 1000 namaz kıldınız!',
     ikon: '🏅',
     tip: 'toplam',
     seviye: 'altin',
     kosul: 1000,
-    kosulAciklamasi: '1000 namaz kilmak',
+    kosulAciklamasi: '1000 namaz kılmak',
   },
 ];
 
@@ -432,9 +432,9 @@ export interface GunBitisSaatiSecenegi {
  * Varsayilan gun bitis saati secenekleri
  */
 export const GUN_BITIS_SAATI_SECENEKLERI: GunBitisSaatiSecenegi[] = [
-  { deger: '04:00', etiket: '04:00', aciklama: 'Erken yatanlar icin' },
-  { deger: '05:00', etiket: '05:00', aciklama: 'Varsayilan - cogu imsak vaktinden once' },
-  { deger: '06:00', etiket: '06:00', aciklama: 'Gec yatanlar icin' },
+  { deger: '04:00', etiket: '04:00', aciklama: 'Erken yatanlar için' },
+  { deger: '05:00', etiket: '05:00', aciklama: 'Varsayılan - çoğu imsak vaktinden önce' },
+  { deger: '06:00', etiket: '06:00', aciklama: 'Geç yatanlar için' },
 ];
 
 // ==================== KUTLAMA TIPLERI ====================

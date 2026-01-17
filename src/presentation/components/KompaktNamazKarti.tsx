@@ -4,10 +4,10 @@
  */
 
 import React, { useRef, useEffect, useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
   StyleSheet,
   Animated,
   Easing,
@@ -41,15 +41,15 @@ interface KompaktNamazKartiProps {
  * Kompakt namaz karti
  * Animasyonlu tiklanabilir kart
  */
-export const KompaktNamazKarti: React.FC<KompaktNamazKartiProps> = ({ 
-  namaz, 
+export const KompaktNamazKarti: React.FC<KompaktNamazKartiProps> = ({
+  namaz,
   onToggle,
   disabled = false,
   animasyonGecikmesi = 0,
 }) => {
   const renkler = useRenkler();
   const { namazTamamlandiFeedback, butonTiklandiFeedback } = useFeedback();
-  
+
   // Animasyon degerleri
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -177,11 +177,11 @@ export const KompaktNamazKarti: React.FC<KompaktNamazKartiProps> = ({
               )}
             </Animated.View>
           </View>
-          
+
           {/* Namaz adi */}
-          <Text 
+          <Text
             style={[
-              styles.namazAdi, 
+              styles.namazAdi,
               { color: namaz.tamamlandi ? renkler.birincil : renkler.metin }
             ]}
             numberOfLines={1}
@@ -190,13 +190,13 @@ export const KompaktNamazKarti: React.FC<KompaktNamazKartiProps> = ({
           </Text>
 
           {/* Durum metni */}
-          <Text 
+          <Text
             style={[
               styles.durumMetni,
               { color: namaz.tamamlandi ? renkler.birincil : renkler.metinIkincil }
             ]}
           >
-            {namaz.tamamlandi ? 'Kilindi' : 'Bekliyor'}
+            {namaz.tamamlandi ? 'Kılındı' : 'Bekliyor'}
           </Text>
         </Animated.View>
       </TouchableOpacity>
