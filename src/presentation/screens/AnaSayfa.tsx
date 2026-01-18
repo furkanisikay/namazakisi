@@ -217,25 +217,8 @@ export const AnaSayfa: React.FC = () => {
 
     if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
 
-    arkaplanMuhafizTimeoutRef.current = setTimeout(async () => {
-      const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
-      try {
-        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
-          aktif: muhafizAyarlari.aktif,
-          koordinatlar: konumAyarlari.koordinatlar,
-          esikler: {
-            seviye1: muhafizAyarlari.esikler.seviye1,
-            seviye1Siklik: sikliklar.seviye1 || 15,
-            seviye2: muhafizAyarlari.esikler.seviye2,
-            seviye2Siklik: sikliklar.seviye2 || 10,
-            seviye3: muhafizAyarlari.esikler.seviye3,
-            seviye3Siklik: sikliklar.seviye3 || 5,
-            seviye4: muhafizAyarlari.esikler.seviye4,
-            seviye4Siklik: sikliklar.seviye4 || 1,
-          },
-        });
-      } catch (e) { console.error(e); }
-    }, 1000);
+    // Not: ArkaplanMuhafizServisi.yapilandirVePlanla App.tsx'te cagriliyor
+    // Burada tekrar cagirmak gereksiz ve cift bildirim planlamasina neden oluyor
 
     const muhafiz = NamazMuhafiziServisi.getInstance();
     if (muhafizAyarlari.aktif) {
