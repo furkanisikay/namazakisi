@@ -26,6 +26,10 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.SCHEDULE_EXACT_ALARM",
@@ -47,6 +51,16 @@
           "sounds": [
             "./assets/sounds/bildirim.mp3"
           ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin doğru hesaplanması için konum bilginize ihtiyaç var.",
+          "locationAlwaysPermission": "Hareket halindeyken namaz vakitlerini otomatik güncellemek için arka plan konum iznine ihtiyaç var.",
+          "locationWhenInUsePermission": "Namaz vakitlerinin doğru hesaplanması için konum bilginize ihtiyaç var.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
         }
       ],
       "expo-task-manager",

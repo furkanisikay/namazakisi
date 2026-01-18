@@ -21,6 +21,7 @@ import {
     Pressable,
     Switch,
     Alert,
+    Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { useRenkler } from '../../core/theme';
@@ -515,8 +516,23 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 text: 'İzin Ver',
                                 onPress: async () => {
                                     const basarili = await servis.baslat();
-                                    setTakipAktif(basarili);
-                                    dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: basarili }));
+                                    if (basarili) {
+                                        setTakipAktif(true);
+                                        dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
+                                    } else {
+                                        // Izin reddedildi - ayarlar sayfasina yonlendir
+                                        Alert.alert(
+                                            'İzin Gerekli',
+                                            'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
+                                            [
+                                                { text: 'Vazgeç', style: 'cancel' },
+                                                {
+                                                    text: 'Ayarlara Git',
+                                                    onPress: () => Linking.openSettings(),
+                                                },
+                                            ]
+                                        );
+                                    }
                                     setTakipDurumuYukleniyor(false);
                                 },
                             },
@@ -527,8 +543,23 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 }
 
                 const basarili = await servis.baslat();
-                setTakipAktif(basarili);
-                dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: basarili }));
+                if (basarili) {
+                    setTakipAktif(true);
+                    dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
+                } else {
+                    // Izin reddedildi - ayarlar sayfasina yonlendir
+                    Alert.alert(
+                        'İzin Gerekli',
+                        'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
+                        [
+                            { text: 'Vazgeç', style: 'cancel' },
+                            {
+                                text: 'Ayarlara Git',
+                                onPress: () => Linking.openSettings(),
+                            },
+                        ]
+                    );
+                }
             } else {
                 await servis.durdur();
                 setTakipAktif(false);
@@ -696,11 +727,11 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                             </Text>
                         </View>
                     </View>
-                    <View style={[styles.mevcutKonumBadge, { 
-                        backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320' 
+                    <View style={[styles.mevcutKonumBadge, {
+                        backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320'
                     }]}>
-                        <Text style={[styles.mevcutKonumBadgeMetin, { 
-                            color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3' 
+                        <Text style={[styles.mevcutKonumBadgeMetin, {
+                            color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3'
                         }]}>
                             {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
                         </Text>

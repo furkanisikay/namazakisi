@@ -195,30 +195,47 @@ export class KonumTakipServisi {
 
     /**
      * Konum takibini baslat
+     * @returns true ise basarili, false ise izin reddedildi veya hata olustu
      */
     public async baslat(): Promise<boolean> {
         try {
-            // Arka plan konum izni kontrol et
-            const { status: onPlanIzni } = await Location.requestForegroundPermissionsAsync();
-            if (onPlanIzni !== 'granted') {
-                console.log('[KonumTakip] On plan izni reddedildi');
-                return false;
+            // 1. Once foreground izni kontrol et ve iste
+            const { status: mevcutOnPlanIzni } = await Location.getForegroundPermissionsAsync();
+            console.log('[KonumTakip] Mevcut on plan izni:', mevcutOnPlanIzni);
+
+            if (mevcutOnPlanIzni !== 'granted') {
+                const { status: onPlanIzni } = await Location.requestForegroundPermissionsAsync();
+                if (onPlanIzni !== 'granted') {
+                    console.log('[KonumTakip] On plan izni reddedildi');
+                    return false;
+                }
             }
 
-            const { status: arkaPlanIzni } = await Location.requestBackgroundPermissionsAsync();
-            if (arkaPlanIzni !== 'granted') {
-                console.log('[KonumTakip] Arka plan izni reddedildi');
-                return false;
+            // 2. Arka plan izni kontrol et
+            const { status: mevcutArkaPlanIzni, canAskAgain } = await Location.getBackgroundPermissionsAsync();
+            console.log('[KonumTakip] Mevcut arka plan izni:', mevcutArkaPlanIzni, 'Tekrar sorulabilir:', canAskAgain);
+
+            if (mevcutArkaPlanIzni !== 'granted') {
+                // Android 11+ icin requestBackgroundPermissionsAsync() sistem ayarlarini acar
+                // Bu noktada kullanici ayarlar sayfasina yonlendirilir
+                console.log('[KonumTakip] Arka plan izni isteniyor (Android 11+ icin ayarlar sayfasi acilacak)...');
+                const { status: arkaPlanIzni } = await Location.requestBackgroundPermissionsAsync();
+                console.log('[KonumTakip] Arka plan izni sonucu:', arkaPlanIzni);
+
+                if (arkaPlanIzni !== 'granted') {
+                    console.log('[KonumTakip] Arka plan izni reddedildi veya beklemede');
+                    return false;
+                }
             }
 
-            // Gorev zaten kayitli mi kontrol et
+            // 3. Gorev zaten kayitli mi kontrol et
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
             if (kayitliMi) {
                 console.log('[KonumTakip] Gorev zaten kayitli');
                 return true;
             }
 
-            // Konum takibini baslat
+            // 4. Konum takibini baslat
             await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
                 accuracy: Location.Accuracy.Balanced, // Pil dostu
                 timeInterval: MINIMUM_ZAMAN_SANIYE * 1000, // Minimum 15 dakika
@@ -235,7 +252,7 @@ export class KonumTakipServisi {
                 activityType: Location.ActivityType.Other,
             });
 
-            // Ayarlari kaydet
+            // 5. Ayarlari kaydet
             await this.ayarlariKaydet({ aktif: true, sonKoordinatlar: null, sonGuncellemeTarihi: null });
 
             console.log('[KonumTakip] Konum takibi baslatildi');
