@@ -1,84 +1,44 @@
 /**
  * Konum State Yonetimi
  * Uygulama genelinde konum bilgisini yoneten slice
- * SOLID: Single Responsibility - Sadece konum islemleri
+ * 
+ * SOLID: Single Responsibility - Sadece state yonetimi
+ * Persistence islemleri LocalKonumServisi'ne devredildi
  */
 
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    localKonumAyarlariniGetir,
+    localKonumAyarlariniKaydet,
+    localKonumVerileriniTemizle,
+    KonumAyarlari,
+    GpsAdres,
+    Koordinatlar,
+    KonumModu,
+    VARSAYILAN_KONUM_AYARLARI,
+} from '../../data/local/LocalKonumServisi';
 
-/** Depolama anahtari */
-const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
-
-/**
- * GPS adres bilgisi
- */
-export interface GpsAdres {
-    semt: string;
-    ilce: string;
-    il: string;
-}
-
-/**
- * Koordinat bilgisi
- */
-export interface Koordinatlar {
-    lat: number;
-    lng: number;
-}
-
-/**
- * Konum modu tipi
- */
-export type KonumModu = 'oto' | 'manuel';
+// Tipleri re-export et (geriye uyumluluk icin)
+export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari };
 
 /**
  * Konum state arayuzu
+ * KonumAyarlari + yukleniyor durumu
  */
-export interface KonumState {
-    /** Konum modu: oto (GPS) veya manuel (sehir secimi) */
-    konumModu: KonumModu;
-    /** @deprecated Eski sistem - seciliIlId ve seciliIlceId kullanin */
-    seciliSehirId: string;
-    /** Secili il ID'si (1-81) */
-    seciliIlId: number | null;
-    /** Secili ilce ID'si */
-    seciliIlceId: number | null;
-    /** Secili il adi (gosterim icin) */
-    seciliIlAdi: string;
-    /** Secili ilce adi (gosterim icin) */
-    seciliIlceAdi: string;
-    /** GPS konum icin adres bilgisi */
-    gpsAdres: GpsAdres | null;
-    /** Koordinat bilgisi */
-    koordinatlar: Koordinatlar;
+export interface KonumState extends KonumAyarlari {
     /** Konum yuklenme durumu */
     yukleniyor: boolean;
-    /** Son GPS guncelleme zamani (ISO string) */
-    sonGpsGuncellemesi: string | null;
-    /** Akilli konum takibi aktif mi (arka plan) */
-    akilliTakipAktif: boolean;
 }
 
 /**
  * Varsayilan konum state'i (Istanbul)
  */
 const varsayilanKonum: KonumState = {
-    konumModu: 'manuel',
-    seciliSehirId: '34',
-    seciliIlId: 34,
-    seciliIlceId: null,
-    seciliIlAdi: 'İstanbul',
-    seciliIlceAdi: '',
-    gpsAdres: null,
-    koordinatlar: {
-        lat: 41.0082,
-        lng: 28.9784,
-    },
+    ...VARSAYILAN_KONUM_AYARLARI,
     yukleniyor: false,
-    sonGpsGuncellemesi: null,
-    akilliTakipAktif: false,
 };
+
+// ==================== ASYNC THUNKS ====================
 
 /**
  * Konum ayarlarini AsyncStorage'dan yukle
@@ -86,19 +46,56 @@ const varsayilanKonum: KonumState = {
 export const konumAyarlariniYukle = createAsyncThunk(
     'konum/yukle',
     async () => {
-        try {
-            console.log('[KonumSlice] AsyncStorage\'dan yukleniyor...');
-            const veri = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
-            console.log('[KonumSlice] Yuklenen veri:', veri);
-            const parsed = veri ? JSON.parse(veri) : null;
-            console.log('[KonumSlice] Parse edilmis veri:', parsed?.konumModu, parsed?.seciliIlAdi);
-            return parsed;
-        } catch (hata) {
-            console.error('[KonumSlice] Konum ayarlari yuklenemedi:', hata);
-            return null;
+        const yanit = await localKonumAyarlariniGetir();
+        if (!yanit.basarili) {
+            throw new Error(yanit.hata || 'Konum ayarlari yuklenemedi');
         }
+        return yanit.veri;
     }
 );
+
+/**
+ * Konum ayarlarini AsyncStorage'a kaydet
+ */
+export const konumAyarlariniKaydetAsync = createAsyncThunk(
+    'konum/kaydet',
+    async (ayarlar: Partial<KonumState>, { getState }) => {
+        const state = getState() as { konum: KonumState };
+        const mevcutAyarlar = state.konum;
+
+        // yukleniyor state'te tutulur, storage'a kaydedilmez
+        const { yukleniyor: _yukleniyor, ...mevcutKonumAyarlari } = mevcutAyarlar;
+        const { yukleniyor: _yeniYukleniyor, ...yeniAyarlar } = ayarlar as Partial<KonumState>;
+
+        const guncelAyarlar: KonumAyarlari = {
+            ...mevcutKonumAyarlari,
+            ...yeniAyarlar,
+        };
+
+        const yanit = await localKonumAyarlariniKaydet(guncelAyarlar);
+        if (!yanit.basarili) {
+            throw new Error(yanit.hata || 'Konum ayarlari kaydedilemedi');
+        }
+
+        return guncelAyarlar;
+    }
+);
+
+/**
+ * Konum verilerini temizle (sifirla)
+ */
+export const konumVerileriniTemizleAsync = createAsyncThunk(
+    'konum/temizle',
+    async () => {
+        const yanit = await localKonumVerileriniTemizle();
+        if (!yanit.basarili) {
+            throw new Error(yanit.hata || 'Konum verileri temizlenemedi');
+        }
+        return true;
+    }
+);
+
+// ==================== SLICE ====================
 
 /**
  * Konum slice tanimlamasi
@@ -108,32 +105,47 @@ const konumSlice = createSlice({
     initialState: varsayilanKonum,
     reducers: {
         /**
-         * Konum ayarlarini guncelle
+         * Konum ayarlarini guncelle (senkron + async kayit)
+         * Eski API ile uyumluluk icin tutuluyor
+         * Yeni kodlarda konumAyarlariniKaydetAsync tercih edilmeli
          */
         konumAyarlariniGuncelle: (state, action: PayloadAction<Partial<KonumState>>) => {
             const yeniState = { ...state, ...action.payload };
-            console.log('[KonumSlice] Kaydediliyor:', yeniState.konumModu, yeniState.seciliIlAdi);
-            // Ayarlari kaydet (arka planda)
-            AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(yeniState))
-                .then(() => console.log('[KonumSlice] AsyncStorage kayit BASARILI'))
-                .catch((err) => console.error('[KonumSlice] AsyncStorage kayit HATA:', err));
+            console.log('[KonumSlice] State guncelleniyor (sync):', yeniState.konumModu, yeniState.seciliIlAdi);
+
+            // Arka planda kaydet (fire-and-forget)
+            // Not: Bu sync reducer icinde async islem - ideal degil ama geriye uyumluluk icin
+            const { yukleniyor: _yukleniyor, ...konumAyarlari } = yeniState;
+            localKonumAyarlariniKaydet(konumAyarlari)
+                .then(() => console.log('[KonumSlice] Arka plan kayit basarili'))
+                .catch((err) => console.error('[KonumSlice] Arka plan kayit hatasi:', err));
+
             return yeniState;
         },
 
         /**
-         * Sadece koordinatlari guncelle
+         * Sadece koordinatlari guncelle (senkron)
          */
         koordinatlariGuncelle: (state, action: PayloadAction<Koordinatlar>) => {
             state.koordinatlar = action.payload;
-            AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(state));
+
+            // Arka planda kaydet
+            const { yukleniyor: _yukleniyor, ...konumAyarlari } = state;
+            localKonumAyarlariniKaydet(konumAyarlari);
         },
 
         /**
-         * GPS adresini guncelle
+         * GPS adresini guncelle (senkron)
          */
         gpsAdresiniGuncelle: (state, action: PayloadAction<GpsAdres | null>) => {
             state.gpsAdres = action.payload;
-            AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(state));
+            if (action.payload) {
+                state.sonGpsGuncellemesi = new Date().toISOString();
+            }
+
+            // Arka planda kaydet
+            const { yukleniyor: _yukleniyor, ...konumAyarlari } = state;
+            localKonumAyarlariniKaydet(konumAyarlari);
         },
 
         /**
@@ -144,29 +156,49 @@ const konumSlice = createSlice({
         },
 
         /**
-         * Konum state'ini sifirla
+         * Konum state'ini sifirla (senkron)
+         * Async temizlik icin konumVerileriniTemizleAsync kullanin
          */
         konumStateSifirla: () => {
-            AsyncStorage.removeItem(KONUM_DEPOLAMA_ANAHTARI);
+            // Arka planda temizle
+            localKonumVerileriniTemizle();
             return varsayilanKonum;
         },
     },
     extraReducers: (builder) => {
+        // Konum ayarlarini yukle
         builder
             .addCase(konumAyarlariniYukle.pending, (state) => {
                 state.yukleniyor = true;
             })
             .addCase(konumAyarlariniYukle.fulfilled, (state, action) => {
-                // ONEMLI: Immer'da ya state'i mutate et YA DA yeni deger return et, ikisini birden yapma!
+                // ONEMLI: Immer'da ya state'i mutate et YA DA yeni deger return et
                 if (action.payload) {
                     console.log('[KonumSlice] State guncelleniyor, konumModu:', action.payload.konumModu);
                     return { ...state, ...action.payload, yukleniyor: false };
                 }
-                // Payload yoksa sadece yukleniyor'u kapat
+                // Payload yoksa (ilk calisma) sadece yukleniyor'u kapat
                 return { ...state, yukleniyor: false };
             })
             .addCase(konumAyarlariniYukle.rejected, (state) => {
                 state.yukleniyor = false;
+            });
+
+        // Konum ayarlarini kaydet (async)
+        builder
+            .addCase(konumAyarlariniKaydetAsync.fulfilled, (state, action) => {
+                console.log('[KonumSlice] Async kayit basarili:', action.payload.konumModu);
+                return { ...state, ...action.payload };
+            })
+            .addCase(konumAyarlariniKaydetAsync.rejected, (_state, action) => {
+                console.error('[KonumSlice] Async kayit hatasi:', action.error.message);
+            });
+
+        // Konum verilerini temizle
+        builder
+            .addCase(konumVerileriniTemizleAsync.fulfilled, () => {
+                console.log('[KonumSlice] Veriler temizlendi, varsayilana donuluyor');
+                return varsayilanKonum;
             });
     },
 });

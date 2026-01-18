@@ -83,6 +83,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
   // Muhafiz sistemi
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // Konum sistemi
+  KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
 } as const;
 
 // Tarih formatlari

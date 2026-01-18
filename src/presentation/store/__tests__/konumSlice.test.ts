@@ -31,7 +31,7 @@ describe('konumSlice', () => {
         seciliSehirId: '34',
         seciliIlId: 34,
         seciliIlceId: null,
-        seciliIlAdi: 'İstanbul',
+        seciliIlAdi: 'Istanbul',
         seciliIlceAdi: '',
         gpsAdres: null,
         koordinatlar: {
@@ -53,7 +53,7 @@ describe('konumSlice', () => {
 
             expect(state.konumModu).toBe('manuel');
             expect(state.seciliIlId).toBe(34);
-            expect(state.seciliIlAdi).toBe('İstanbul');
+            expect(state.seciliIlAdi).toBe('Istanbul');
             expect(state.koordinatlar.lat).toBeCloseTo(41.0082);
             expect(state.koordinatlar.lng).toBeCloseTo(28.9784);
             expect(state.yukleniyor).toBe(false);
@@ -134,7 +134,7 @@ describe('konumSlice', () => {
             expect(state.koordinatlar.lng).toBeCloseTo(27.1428);
             // Diger degerler degismemeli
             expect(state.konumModu).toBe('manuel');
-            expect(state.seciliIlAdi).toBe('İstanbul');
+            expect(state.seciliIlAdi).toBe('Istanbul');
         });
     });
 
@@ -185,7 +185,7 @@ describe('konumSlice', () => {
 
             expect(state.konumModu).toBe('manuel');
             expect(state.seciliIlId).toBe(34);
-            expect(state.seciliIlAdi).toBe('İstanbul');
+            expect(state.seciliIlAdi).toBe('Istanbul');
             expect(state.akilliTakipAktif).toBe(false);
         });
 
