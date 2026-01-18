@@ -65,6 +65,7 @@ import { NamazVaktiHesaplayiciServisi, VakitBilgisi } from '../../domain/service
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
 import { ArkaplanGorevServisi } from '../../domain/services/ArkaplanGorevServisi';
 import { muhafizAyarlariniYukle } from '../store/muhafizSlice';
+import { konumAyarlariniYukle } from '../store/konumSlice';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { SesServisi } from '../../core/feedback/SesServisi';
@@ -153,6 +154,8 @@ export const AnaSayfa: React.FC = () => {
     dispatch(seriVerileriniYukle());
     // Muhafiz ayarlarini yukle
     dispatch(muhafizAyarlariniYukle());
+    // Konum ayarlarini yukle
+    dispatch(konumAyarlariniYukle());
 
     // Bildirim izinlerini iste
     BildirimServisi.getInstance().izinIste();
