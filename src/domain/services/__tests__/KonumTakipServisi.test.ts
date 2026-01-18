@@ -18,8 +18,9 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
 // Expo Location mock
 jest.mock('expo-location', () => ({
     requestForegroundPermissionsAsync: jest.fn(),
+    getForegroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'undetermined' })),
     requestBackgroundPermissionsAsync: jest.fn(),
-    getBackgroundPermissionsAsync: jest.fn(),
+    getBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'undetermined', canAskAgain: true })),
     startLocationUpdatesAsync: jest.fn(),
     stopLocationUpdatesAsync: jest.fn(),
     reverseGeocodeAsync: jest.fn(),
@@ -361,6 +362,9 @@ describe('Konum Takip Entegrasyon Senaryolari', () => {
 
     it('izin reddedildiginde kullanici bilgilendirilmeli', async () => {
         // On plan izni ver, arka plan izni reddet
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'undetermined' });
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'undetermined' });
         (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
         (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
 
