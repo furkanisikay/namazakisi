@@ -5,9 +5,10 @@ import { useRenkler } from '../../core/theme';
 interface AnimasyonluSayacProps {
   hedefZaman: Date | string | null;
   seviye: number; // 0: Normal, 1: Uyari, 2: Orta, 3: Kritik, 4: Alarm
+  konumModu?: 'oto' | 'manuel'; // Konum modu ikonu icin
 }
 
-export const AnimasyonluSayac: React.FC<AnimasyonluSayacProps> = ({ hedefZaman, seviye }) => {
+export const AnimasyonluSayac: React.FC<AnimasyonluSayacProps> = ({ hedefZaman, seviye, konumModu }) => {
   const renkler = useRenkler();
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const [sureMetni, setSureMetni] = useState('--:--');
@@ -85,7 +86,14 @@ export const AnimasyonluSayac: React.FC<AnimasyonluSayacProps> = ({ hedefZaman, 
         transform: [{ scale: pulseAnim }]
       }
     ]}>
-      <Text style={[styles.sure, { color: getRenk() }]}>{sureMetni}</Text>
+      <View style={styles.sureRow}>
+        {konumModu && (
+          <Text style={styles.konumIkon}>
+            {konumModu === 'oto' ? '📡' : '📍'}
+          </Text>
+        )}
+        <Text style={[styles.sure, { color: getRenk() }]}>{sureMetni}</Text>
+      </View>
       <Text style={[styles.etiket, { color: getRenk() }]}>KALDI</Text>
     </Animated.View>
   );
@@ -112,6 +120,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '900',
     fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  sureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  konumIkon: {
+    fontSize: 10,
   },
   etiket: {
     fontSize: 7,

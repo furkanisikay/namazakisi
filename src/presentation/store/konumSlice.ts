@@ -87,10 +87,14 @@ export const konumAyarlariniYukle = createAsyncThunk(
     'konum/yukle',
     async () => {
         try {
+            console.log('[KonumSlice] AsyncStorage\'dan yukleniyor...');
             const veri = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
-            return veri ? JSON.parse(veri) : null;
+            console.log('[KonumSlice] Yuklenen veri:', veri);
+            const parsed = veri ? JSON.parse(veri) : null;
+            console.log('[KonumSlice] Parse edilmis veri:', parsed?.konumModu, parsed?.seciliIlAdi);
+            return parsed;
         } catch (hata) {
-            console.error('Konum ayarlari yuklenemedi:', hata);
+            console.error('[KonumSlice] Konum ayarlari yuklenemedi:', hata);
             return null;
         }
     }
@@ -108,8 +112,11 @@ const konumSlice = createSlice({
          */
         konumAyarlariniGuncelle: (state, action: PayloadAction<Partial<KonumState>>) => {
             const yeniState = { ...state, ...action.payload };
+            console.log('[KonumSlice] Kaydediliyor:', yeniState.konumModu, yeniState.seciliIlAdi);
             // Ayarlari kaydet (arka planda)
-            AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(yeniState));
+            AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(yeniState))
+                .then(() => console.log('[KonumSlice] AsyncStorage kayit BASARILI'))
+                .catch((err) => console.error('[KonumSlice] AsyncStorage kayit HATA:', err));
             return yeniState;
         },
 
@@ -150,10 +157,13 @@ const konumSlice = createSlice({
                 state.yukleniyor = true;
             })
             .addCase(konumAyarlariniYukle.fulfilled, (state, action) => {
-                state.yukleniyor = false;
+                // ONEMLI: Immer'da ya state'i mutate et YA DA yeni deger return et, ikisini birden yapma!
                 if (action.payload) {
+                    console.log('[KonumSlice] State guncelleniyor, konumModu:', action.payload.konumModu);
                     return { ...state, ...action.payload, yukleniyor: false };
                 }
+                // Payload yoksa sadece yukleniyor'u kapat
+                return { ...state, yukleniyor: false };
             })
             .addCase(konumAyarlariniYukle.rejected, (state) => {
                 state.yukleniyor = false;

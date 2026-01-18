@@ -15,6 +15,7 @@ import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
 import { BildirimServisi } from './src/domain/services/BildirimServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
+import { konumAyarlariniYukle } from './src/presentation/store/konumSlice';
 
 /**
  * Yukleme ekrani
@@ -39,6 +40,9 @@ const YuklemeEkrani: React.FC = () => {
  */
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
   try {
+    // Oncelikle konum ayarlarini yukle (koordinatlar muhafiz icin gerekli)
+    await store.dispatch(konumAyarlariniYukle()).unwrap();
+
     // Muhafiz ayarlarini yukle
     const sonuc = await store.dispatch(muhafizAyarlariniYukle()).unwrap();
     const state = store.getState();
@@ -50,10 +54,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     // Sıklıklar için varsayılan değerler
     const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
 
+    // Konum bilgisini al
+    const konumState = state.konum;
+
     // Arka plan muhafizini yapilandir ve bildirimleri planla
     await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
       aktif: muhafizAyarlari.aktif,
-      koordinatlar: muhafizAyarlari.koordinatlar,
+      koordinatlar: konumState.koordinatlar,
       esikler: {
         seviye1: muhafizAyarlari.esikler.seviye1,
         seviye1Siklik: sikliklar.seviye1 || 15,

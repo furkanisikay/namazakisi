@@ -476,6 +476,7 @@ export const AnaSayfa: React.FC = () => {
                 <AnimasyonluSayac
                   hedefZaman={vakitBilgisi.sonrakiVakitGiris}
                   seviye={muhafizDurumu.seviye}
+                  konumModu={konumAyarlari.konumModu}
                 />
               </View>
             )}
