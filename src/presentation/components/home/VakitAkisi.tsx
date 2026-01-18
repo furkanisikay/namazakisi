@@ -20,7 +20,7 @@ const getVakitIkonu = (vakit: string): string => {
         case NamazAdi.Ogle: return 'sun';
         case NamazAdi.Ikindi: return 'cloud-sun';
         case NamazAdi.Aksam: return 'moon';
-        case NamazAdi.Yatsi: return 'star-and-crescent';
+        case NamazAdi.Yatsi: return 'star';
         default: return 'mosque';
     }
 };
@@ -58,29 +58,21 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                     if ((namaz.namazAdi as any) === NamazAdi.Gunes) return null;
 
                     const aktifMi = namaz.namazAdi === suankiVakitAdi;
-                    const tamamlandi = namaz.tamamlandi;
+                    const tamamlandi = namaz.tamamlandi === true; // undefined veya false durumunda false
                     const vakitIkonu = getVakitIkonu(namaz.namazAdi);
 
                     // Kart Stili
-                    let kartStili = "flex-row items-center gap-4 p-3 rounded-xl border shadow-sm";
+                    let kartStili = "flex-row items-center gap-4 p-3 rounded-xl shadow-sm";
                     let opacity = 1;
 
                     if (tamamlandi) {
                         opacity = 0.6;
-                        kartStili += " border-transparent";
                     } else if (aktifMi) {
-                        kartStili = "flex-row items-center gap-4 p-4 rounded-xl border-l-4 shadow-md overflow-hidden relative";
-                    } else {
-                        kartStili += " border-transparent";
+                        kartStili = "flex-row items-center gap-4 p-4 rounded-xl shadow-md overflow-hidden relative";
                     }
 
                     // Arka plan rengi belirleme
-                    let arkaplanRengi = renkler.kartArkaplan;
-                    if (aktifMi) {
-                        arkaplanRengi = renkler.kartArkaplan;
-                    }
-
-                    const aktifBorderColor = aktifMi ? renkler.birincil : 'transparent';
+                    const arkaplanRengi = renkler.kartArkaplan;
 
                     return (
                         <TouchableOpacity
@@ -89,8 +81,10 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                             style={{
                                 backgroundColor: arkaplanRengi,
                                 opacity,
-                                borderColor: aktifMi ? aktifBorderColor : 'transparent',
+                                borderColor: 'transparent',
                                 borderLeftColor: aktifMi ? renkler.birincil : 'transparent',
+                                borderLeftWidth: aktifMi ? 4 : 0,
+                                minHeight: 60,
                             }}
                             activeOpacity={0.7}
                             onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
@@ -102,7 +96,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                             )}
 
                             {/* Sol İkon (Check / Hourglass / Lock) */}
-                            <View className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-4 z-10 ${aktifMi ? 'shadow-sm' : ''}`}
+                            <View className={`w-10 h-10 rounded-full items-center justify-center shrink-0 border-4 ${aktifMi ? 'shadow-sm' : ''}`}
                                 style={{
                                     backgroundColor: tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.arkaplan),
                                     borderColor: renkler.kartArkaplan
@@ -117,7 +111,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                             </View>
 
                             {/* Orta Kısım */}
-                            <View className="flex-1 z-10">
+                            <View className="flex-1">
                                 <Text
                                     className={`font-bold ${aktifMi ? 'text-lg' : ''}`}
                                     style={{
@@ -131,7 +125,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                                     style={{
                                         color: tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil)
                                     }}>
-                                    {tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : '')}
+                                    {tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor')}
                                 </Text>
                             </View>
 
@@ -140,7 +134,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                                 name={vakitIkonu}
                                 size={aktifMi ? 20 : 16}
                                 color={aktifMi ? renkler.birincil : renkler.sinir}
-                                style={{ opacity: tamamlandi ? 0.5 : 1, zIndex: 10 }}
+                                style={{ opacity: tamamlandi ? 0.5 : 1 }}
                             />
 
                         </TouchableOpacity>
