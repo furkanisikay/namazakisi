@@ -17,6 +17,11 @@ jest.mock('expo-notifications', () => ({
     },
 }));
 
+// Mock BildirimServisi (MUHAFIZ_KATEGORISI icin)
+jest.mock('../BildirimServisi', () => ({
+    MUHAFIZ_KATEGORISI: 'muhafiz_category',
+}));
+
 // Mock AsyncStorage
 jest.mock('@react-native-async-storage/async-storage', () => ({
     getItem: jest.fn().mockResolvedValue(null),

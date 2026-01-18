@@ -51,6 +51,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     // Bildirim izinlerini iste
     await BildirimServisi.getInstance().izinIste();
 
+    // Bildirim dinleyicisini baslat (Kildim aksiyonu icin)
+    await BildirimServisi.getInstance().baslatBildirimDinleyicisi();
+
     // Sıklıklar için varsayılan değerler
     const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
 

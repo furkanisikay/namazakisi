@@ -11,6 +11,7 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { MUHAFIZ_KATEGORISI } from './BildirimServisi';
 
 /**
  * Vakit tipi (Turkce)
@@ -336,7 +337,15 @@ export class ArkaplanMuhafizServisi {
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
             const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_ONEK.DAKIKA + kalanDk;
 
-            await this.tekBildirimPlanla(bildirimId, veri.baslik, mesaj, bildirimZamani, veri.seviye);
+            await this.tekBildirimPlanla(
+                bildirimId,
+                veri.baslik,
+                mesaj,
+                bildirimZamani,
+                veri.seviye,
+                vakit.vakit,
+                vakit.tarih
+            );
         }
 
         console.log(`[ArkaplanMuhafiz] ${vakit.vakit} (${vakit.tarih}) icin ${dakikaGruplari.size} bildirim planlandi`);
@@ -344,13 +353,22 @@ export class ArkaplanMuhafizServisi {
 
     /**
      * Tek bir bildirim planla
+     * @param id Bildirim ID'si
+     * @param baslik Bildirim basligi
+     * @param mesaj Bildirim mesaji
+     * @param zaman Bildirim zamani
+     * @param seviye Bildirim seviyesi (1-4)
+     * @param vakit Vakit adi (imsak, ogle, ikindi, aksam, yatsi)
+     * @param tarih Vakit tarihi (YYYY-MM-DD)
      */
     private async tekBildirimPlanla(
         id: string,
         baslik: string,
         mesaj: string,
         zaman: Date,
-        seviye: number
+        seviye: number,
+        vakit: VakitAdi,
+        tarih: string
     ): Promise<void> {
         try {
             // Zamanin gecerli oldugundan emin ol
@@ -368,9 +386,12 @@ export class ArkaplanMuhafizServisi {
                     priority: seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
+                    categoryIdentifier: MUHAFIZ_KATEGORISI,
                     data: {
                         tip: 'muhafiz',
                         seviye: seviye,
+                        vakit: vakit,
+                        tarih: tarih,
                     },
                 },
                 trigger: {
