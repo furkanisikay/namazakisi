@@ -10,6 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Text, StyleSheet } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   AnaSayfa,
   IstatistikSayfasi,
@@ -136,10 +137,9 @@ export const AppNavigator: React.FC = () => {
           options={{
             title: 'Namaz Akışı',
             tabBarLabel: 'Ana Sayfa',
-            tabBarIcon: ({ focused }) => (
-              <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
-                🕌
-              </Text>
+            headerShown: false,
+            tabBarIcon: ({ focused, color, size }) => (
+              <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
           }}
         />
@@ -152,10 +152,8 @@ export const AppNavigator: React.FC = () => {
             headerStyle: {
               backgroundColor: renkler.birincil,
             },
-            tabBarIcon: ({ focused }) => (
-              <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
-                🏆
-              </Text>
+            tabBarIcon: ({ focused, color, size }) => (
+              <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
           }}
         />
@@ -168,10 +166,8 @@ export const AppNavigator: React.FC = () => {
             headerStyle: {
               backgroundColor: renkler.birincil,
             },
-            tabBarIcon: ({ focused }) => (
-              <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
-                📊
-              </Text>
+            tabBarIcon: ({ focused, color, size }) => (
+              <FontAwesome5 name="chart-bar" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
           }}
         />
@@ -181,10 +177,8 @@ export const AppNavigator: React.FC = () => {
           options={{
             headerShown: false,
             tabBarLabel: 'Ayarlar',
-            tabBarIcon: ({ focused }) => (
-              <Text style={[styles.tabIcon, { opacity: focused ? 1 : 0.6 }]}>
-                ⚙️
-              </Text>
+            tabBarIcon: ({ focused, color, size }) => (
+              <FontAwesome5 name="cog" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
           }}
         />
@@ -193,8 +187,4 @@ export const AppNavigator: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  tabIcon: {
-    fontSize: 24,
-  },
-});
+

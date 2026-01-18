@@ -1,63 +1,20 @@
-/**
- * Ana sayfa ekrani
- */
-
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Platform,
-  TouchableOpacity,
-  Animated,
-  Easing,
-  StatusBar,
-  ScrollView,
-} from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import {
-  namazlariYukle,
-  namazDurumunuDegistir,
-  tumNamazlariTamamla,
-  tumNamazlariSifirla,
-  tarihiDegistir,
-} from '../store/namazSlice';
-import {
-  seriVerileriniYukle,
-  seriKontrolet,
-  namazKilindiPuanla,
-  kutlamayiKaldir,
-  seriOzetiSelector,
-  ilkKutlamaSelector,
-  ozelGunBitir,
-  ozelGunIptal,
-} from '../store/seriSlice';
-import {
-  DaireselProgress,
-  NamazGrid,
-  MotivasyonBanner,
-  AnimasyonluButon,
-  YuklemeGostergesi,
-  KutlamaAnimasyonu,
-  SeriAtesiKarti,
-  ToparlanmaKarti,
-  OzelGunKarti,
-  KutlamaModal,
-  KalanSureSayaci,
-  AnimasyonluSayac,
-} from '../components';
+import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
+import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
+import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon } from '../components';
+import { HomeHeader } from '../components/home/HomeHeader';
+import { VakitKarti } from '../components/home/VakitKarti';
+import { VakitAkisi } from '../components/home/VakitAkisi';
+import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
-import {
-  bugunuAl,
-  tarihiGorunumFormatinaCevir,
-  gunAdiniAl,
-  bugunMu,
-  tarihiISOFormatinaCevir,
-  gunEkle,
-} from '../../core/utils/TarihYardimcisi';
+import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
@@ -68,69 +25,55 @@ import { muhafizAyarlariniYukle } from '../store/muhafizSlice';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { SesServisi } from '../../core/feedback/SesServisi';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Namaz } from '../../core/types';
 
-// Baslangic sayfasi (ortada)
+// Baslangic sayfasi
 const BASLANGIC_SAYFA_INDEKSI = 1000;
 
 export const AnaSayfa: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<any>();
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
   const { koyuMu } = useTema();
-  const { tumNamazlarTamamlandiFeedback, butonTiklandiFeedback } = useFeedback();
+  const { tumNamazlarTamamlandiFeedback } = useFeedback();
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
   const [tarihSeciciGorunur, setTarihSeciciGorunur] = useState(false);
+  const [seriModalGorunur, setSeriModalGorunur] = useState(false);
   const [kutlamaGoster, setKutlamaGoster] = useState(false);
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
+  const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
 
-  // Animasyon degerleri - useNativeDriver: false cunku opacity ve translateY interpolate kullaniliyor
-  const headerAnim = useRef(new Animated.Value(0)).current;
-  const contentAnim = useRef(new Animated.Value(0)).current;
-
-  const {
-    mevcutTarih,
-    gunlukNamazlar,
-    yukleniyor,
-    guncelleniyor,
-    hata,
-  } = useAppSelector(state => state.namaz);
-  const { kullanici } = useAppSelector(state => state.auth);
-
-  // Seri state
-  const { seriDurumu, bekleyenKutlamalar, ozelGunAyarlari } = useAppSelector(state => state.seri);
+  const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
+  const { ozelGunAyarlari } = useAppSelector(state => state.seri);
   const seriOzeti = useAppSelector(seriOzetiSelector);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
+  const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
+  const konumAyarlari = useAppSelector((state) => state.konum);
 
-  // Onceki tamamlanan sayisi (kutlama icin)
   const oncekiTamamlananRef = useRef<number>(0);
+  const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Giris animasyonlari - useNativeDriver: false cunku interpolate kullaniliyor
-  useEffect(() => {
-    Animated.stagger(150, [
-      Animated.spring(headerAnim, {
-        toValue: 1,
-        friction: 6,
-        tension: 80,
-        useNativeDriver: false,
-      }),
-      Animated.spring(contentAnim, {
-        toValue: 1,
-        friction: 6,
-        tension: 80,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, []);
+  // Servis vaktini NamazAdi enum'ına çeviren map
+  const servisToNamazAdi: Record<string, NamazAdi> = useMemo(() => ({
+    'imsak': NamazAdi.Sabah,
+    'gunes': NamazAdi.Gunes,
+    'ogle': NamazAdi.Ogle,
+    'ikindi': NamazAdi.Ikindi,
+    'aksam': NamazAdi.Aksam,
+    'yatsi': NamazAdi.Yatsi
+  }), []);
 
-  // Sayfa indeksini tarihe cevir
+  // Tarih dönüşümleri
   const sayfaIndeksiniTariheCevir = useCallback((sayfaIndeksi: number): string => {
     const gunFarki = sayfaIndeksi - BASLANGIC_SAYFA_INDEKSI;
     return gunEkle(bugunuAl(), gunFarki);
   }, []);
 
-  // Tarihi sayfa indeksine cevir
   const tarihiSayfaIndeksineCevir = useCallback((tarih: string): number => {
     const bugun = new Date(bugunuAl());
     const hedefTarih = new Date(tarih);
@@ -138,161 +81,109 @@ export const AnaSayfa: React.FC = () => {
     return BASLANGIC_SAYFA_INDEKSI + gunFarki;
   }, []);
 
-  // Namazlari yukle
+  // Veri yükleme
   const namazlariGetir = useCallback((tarih: string) => {
-    dispatch(namazlariYukle({
-      tarih,
+    dispatch(namazlariYukle({ tarih }));
+  }, [dispatch]);
+
+  // Günlük namazları saat bilgisi ile zenginleştir
+  const uiNamazlar = useMemo(() => {
+    if (!gunlukNamazlar || !konumAyarlari.koordinatlar) return [];
+
+    const date = new Date(mevcutTarih);
+    const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
+    const params = CalculationMethod.Turkey();
+    const prayerTimes = new PrayerTimes(coordinates, date, params);
+
+    const zamanFormatla = (d: Date) => {
+      return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    };
+
+    const vakitSaatleri: Record<NamazAdi, string> = {
+      [NamazAdi.Sabah]: zamanFormatla(prayerTimes.fajr),
+      [NamazAdi.Gunes]: zamanFormatla(prayerTimes.sunrise),
+      [NamazAdi.Ogle]: zamanFormatla(prayerTimes.dhuhr),
+      [NamazAdi.Ikindi]: zamanFormatla(prayerTimes.asr),
+      [NamazAdi.Aksam]: zamanFormatla(prayerTimes.maghrib),
+      [NamazAdi.Yatsi]: zamanFormatla(prayerTimes.isha),
+    };
+
+    return gunlukNamazlar.namazlar.map(namaz => ({
+      ...namaz,
+      saat: vakitSaatleri[namaz.namazAdi] || ''
     }));
-  }, [dispatch, kullanici]);
+  }, [gunlukNamazlar, konumAyarlari.koordinatlar, mevcutTarih]);
 
-  // Ilk yukleme
+
+  // Aktif Gün Hesaplama (İmsak öncesi ise önceki gün)
+  const aktifGun = useMemo(() => {
+    let tarih = bugunuAl();
+
+    if (konumAyarlari.koordinatlar) {
+      const now = new Date();
+      const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
+      const params = CalculationMethod.Turkey();
+      const prayerTimes = new PrayerTimes(coordinates, now, params);
+
+      // Eğer şu an imsak vaktinden önceyse, aktif gün dündür (Yatsı süreci devam ediyor)
+      if (now < prayerTimes.fajr) {
+        tarih = gunEkle(tarih, -1);
+      }
+    }
+    return tarih;
+  }, [konumAyarlari.koordinatlar]); // Dependencies: updates when location changes (or strictly only initially mostly) - effectively runs fast.
+
+  // Initial Load - Aktif güne git
   useEffect(() => {
-    const bugun = bugunuAl();
-    namazlariGetir(bugun);
-    // Seri verilerini de yukle
-    dispatch(seriVerileriniYukle());
-    // Muhafiz ayarlarini yukle
-    dispatch(muhafizAyarlariniYukle());
+    namazlariGetir(aktifGun);
+    // Eğer başlangıçta aktif gün bugünden farklıysa (gece yarısı durumu), o güne git
+    if (aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+      const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
+      // Dispatch ve setPage işlemleri namazlariGetir sonrasinda veya senkron
+      dispatch(tarihiDegistir(aktifGun));
+      setMevcutSayfaIndeksi(yeniIndeks);
+      // Pager ref update needs delay usually or layout ready? 
+      // InitialPage prop handles first render. But if we change state dynamic?
+      // We will handle via useEffect dependency or explicit call.
+      setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
+    }
 
-    // Bildirim izinlerini iste
+    dispatch(seriVerileriniYukle());
+    dispatch(muhafizAyarlariniYukle());
     BildirimServisi.getInstance().izinIste();
 
-    // Arka plan görevini başlat (telefon restart sonrası için)
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
-      .then(basarili => {
-        if (basarili) {
-          console.log('[AnaSayfa] Arka plan görevi başlatıldı');
-        }
-      })
+      .then(basarili => basarili && console.log('[AnaSayfa] Arka plan görevi başlatıldı'))
       .catch(err => console.error('[AnaSayfa] Arka plan görevi hatası:', err));
 
     return () => {
-      try {
-        NamazMuhafiziServisi.getInstance().durdur();
-      } catch (e) { }
+      try { NamazMuhafiziServisi.getInstance().durdur(); } catch (e) { }
     };
-  }, [namazlariGetir, dispatch, kullanici]);
+  }, [aktifGun]); // Changed dependency from generic dispatch/namazlariGetir to aktifGun to trigger on recalc.
 
-  // Tum namazlar tamamlandiginda kutlama
-  // Bug 3 duzeltmesi: tumNamazlarTamamlandiFeedback dependency array'e eklendi
+  // Seri Kontrolü
   useEffect(() => {
-    if (gunlukNamazlar) {
-      const tamamlanan = gunlukNamazlar.namazlar.filter(n => n.tamamlandi).length;
-      const toplam = gunlukNamazlar.namazlar.length;
-
-      if (tamamlanan === toplam && oncekiTamamlananRef.current < toplam && oncekiTamamlananRef.current > 0) {
-        setKutlamaGoster(true);
-        tumNamazlarTamamlandiFeedback();
-      }
-
-      oncekiTamamlananRef.current = tamamlanan;
-    }
-  }, [gunlukNamazlar, tumNamazlarTamamlandiFeedback]);
-
-  // Sayfa degistiginde
-  const sayfaDegistigindeIsle = (e: { nativeEvent: { position: number } }) => {
-    const yeniIndeks = e.nativeEvent.position;
-    setMevcutSayfaIndeksi(yeniIndeks);
-    const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
-    dispatch(tarihiDegistir(yeniTarih));
-    namazlariGetir(yeniTarih);
-    oncekiTamamlananRef.current = 0; // Sayfa degisince sifirla
-  };
-
-  // Tarih seciciden tarih secildiginde
-  const tarihSecildigindeIsle = (event: any, seciliTarih?: Date) => {
-    setTarihSeciciGorunur(Platform.OS === 'ios');
-
-    if (seciliTarih) {
-      const yeniTarih = tarihiISOFormatinaCevir(seciliTarih);
-      const yeniIndeks = tarihiSayfaIndeksineCevir(yeniTarih);
-
-      dispatch(tarihiDegistir(yeniTarih));
-      namazlariGetir(yeniTarih);
-      oncekiTamamlananRef.current = 0;
-
-      pagerRef.current?.setPage(yeniIndeks);
-      setMevcutSayfaIndeksi(yeniIndeks);
-    }
-  };
-
-  // Bugune don
-  const buguneDon = async () => {
-    await butonTiklandiFeedback();
-    const bugun = bugunuAl();
-    const bugunIndeks = BASLANGIC_SAYFA_INDEKSI;
-
-    dispatch(tarihiDegistir(bugun));
-    namazlariGetir(bugun);
-    oncekiTamamlananRef.current = 0;
-    pagerRef.current?.setPage(bugunIndeks);
-    setMevcutSayfaIndeksi(bugunIndeks);
-  };
-
-  // Namaz durumunu degistir
-  const namazToggle = async (namazAdi: string, tamamlandi: boolean) => {
-    dispatch(namazDurumunuDegistir({
-      tarih: mevcutTarih,
-      namazAdi: namazAdi as NamazAdi,
-      tamamlandi,
-    }));
-
-    // Eger namaz tamamlandiysa puan ekle
-    if (tamamlandi) {
-      dispatch(namazKilindiPuanla({
-        namazSayisi: 1,
-      }));
-      // Muhafiz'a bildir (on plandaki servis icin)
-      try {
-        NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi);
-        setMuhafizDurumu({ mesaj: '', seviye: 0 }); // Bildirimi temizle
-      } catch (e) { }
-
-      // Arka plan muhafiz bildirimlerini iptal et
-      // namazAdi -> vakit adi donusumu
-      const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
-        'Sabah': 'imsak',
-        'Ogle': 'ogle',
-        'Ikindi': 'ikindi',
-        'Aksam': 'aksam',
-        'Yatsi': 'yatsi',
-      };
-
-      const vakitAdi = vakitDonusumu[namazAdi];
-      if (vakitAdi) {
-        try {
-          await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi);
-          console.log(`[AnaSayfa] ${namazAdi} icin arka plan bildirimleri iptal edildi`);
-        } catch (e) {
-          console.error('[AnaSayfa] Bildirim iptal hatasi:', e);
-        }
-      }
-    }
-  };
-
-  // Seri kontrolu - gun degistiginde veya namazlar yuklendiginde
-  useEffect(() => {
-    if (gunlukNamazlar && bugunMu(mevcutTarih)) {
-      // Dunun verilerini almak icin onceki gunu hesapla
-      const dun = gunEkle(mevcutTarih, -1);
-      // Seri kontrolu yap
+    // gunlukNamazlar yüklendiğinde ve aktif gündeysek
+    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun) {
+      // Logic: if active day is yesterday, we verify yesterday's streak?
+      // Seri checking usually expects "Today". But if we are legally in Yesterday mode...
+      // Seri slice usually works with "Today".
+      // Let's keep strict "bugunMu(mevcutTarih)" for seri? 
+      // Or if we are finishing Yesterday's Salah, we are extending Yesterday's streak.
+      // For safety, let's keep original check or adapt if needed.
+      // Original: if (gunlukNamazlar && bugunMu(mevcutTarih))
+      // If we are on Yesterday (18 Jan) because it's 00:04. We complete Yatsi. Streak continues.
+      // So checking the active displayed day is correct.
       dispatch(seriKontrolet({
         bugunNamazlar: gunlukNamazlar,
-        dunNamazlar: null, // Basit implementasyon - dun verisini ayr yerde almak gerekir
+        dunNamazlar: null
       }));
     }
-  }, [gunlukNamazlar, mevcutTarih, dispatch, kullanici]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch]);
 
-  const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
-  const konumAyarlari = useAppSelector((state) => state.konum);
-
-  // Arka plan muhafiz bildirimleri icin debounce ref
-  const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {
     const s = NamazVaktiHesaplayiciServisi.getInstance();
-
-    // Vakit hesaplayiciyi her zaman yapılandır (Sayaç için gerekli)
     s.yapilandir({
       latitude: konumAyarlari.koordinatlar.lat,
       longitude: konumAyarlari.koordinatlar.lng,
@@ -300,26 +191,35 @@ export const AnaSayfa: React.FC = () => {
       madhab: 'Hanafi'
     });
 
-    const guncelle = () => {
+    const updateTimer = () => {
       const bilgi = s.getSuankiVakitBilgisi();
       setVakitBilgisi(bilgi);
+
+      if (bilgi) {
+        const simdi = new Date();
+        const hedef = new Date(bilgi.sonrakiVakitGiris); // String ise Date'e
+        let fark = hedef.getTime() - simdi.getTime();
+
+        if (fark < 0) fark = 0;
+
+        const saat = Math.floor(fark / (1000 * 60 * 60));
+        const dakika = Math.floor((fark % (1000 * 60 * 60)) / (1000 * 60));
+        const saniye = Math.floor((fark % (1000 * 60)) / 1000);
+
+        setKalanSureStr(
+          `${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`
+        );
+      }
     };
 
-    guncelle();
-    const interval = setInterval(guncelle, 60000);
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
 
-    // Arka plan muhafiz bildirimlerini debounce ile guncelle
-    // Kullanici hizli tiklasa bile sadece son ayar uygulanir
-    if (arkaplanMuhafizTimeoutRef.current) {
-      clearTimeout(arkaplanMuhafizTimeoutRef.current);
-    }
+    if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
 
     arkaplanMuhafizTimeoutRef.current = setTimeout(async () => {
-      console.log('[AnaSayfa] Arka plan muhafiz bildirimleri guncelleniyor (debounced)');
+      const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
       try {
-        // Sıklıklar için varsayılan değerler
-        const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
-
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
           aktif: muhafizAyarlari.aktif,
           koordinatlar: konumAyarlari.koordinatlar,
@@ -334,12 +234,9 @@ export const AnaSayfa: React.FC = () => {
             seviye4Siklik: sikliklar.seviye4 || 1,
           },
         });
-      } catch (err) {
-        console.error('[AnaSayfa] Arka plan muhafiz hatasi:', err);
-      }
-    }, 1000); // 1 saniye bekle, kullanici durunca uygula
+      } catch (e) { console.error(e); }
+    }, 1000);
 
-    // Muhafiz servisi sadece aktifse başlasın (on plan icin)
     const muhafiz = NamazMuhafiziServisi.getInstance();
     if (muhafizAyarlari.aktif) {
       muhafiz.yapilandir({
@@ -352,19 +249,10 @@ export const AnaSayfa: React.FC = () => {
         seviye3SiklikDk: muhafizAyarlari.sikliklar.seviye3,
         seviye4SiklikDk: muhafizAyarlari.sikliklar.seviye4,
       });
-
       muhafiz.baslat((mesaj, seviye) => {
         setMuhafizDurumu({ mesaj, seviye });
-
-        // Uygulama açıkken sadece titreşim ve ses ile uyar
-        // Bildirim göndermiyoruz çünkü ArkaplanMuhafizServisi zaten zamanlanmış
-        // bildirimler gönderiyor - bu çift bildirime neden oluyordu
-        if (seviye >= 3) {
-          HaptikServisi.gucluTitresim();
-          SesServisi.bildirimSesiCal();
-        } else {
-          HaptikServisi.uyariTitresimi();
-        }
+        if (seviye >= 3) { HaptikServisi.gucluTitresim(); SesServisi.bildirimSesiCal(); }
+        else { HaptikServisi.uyariTitresimi(); }
       });
     } else {
       muhafiz.durdur();
@@ -372,477 +260,215 @@ export const AnaSayfa: React.FC = () => {
     }
 
     return () => {
-      clearInterval(interval);
+      clearInterval(timerInterval);
       muhafiz.durdur();
-      // Debounce timeout'u temizle
-      if (arkaplanMuhafizTimeoutRef.current) {
-        clearTimeout(arkaplanMuhafizTimeoutRef.current);
-      }
+      if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
     };
-  }, [muhafizAyarlari, konumAyarlari.koordinatlar]);
+  }, [konumAyarlari.koordinatlar, muhafizAyarlari]);
 
-  // Kutlama modalini kapat
-  const kutlamaKapat = () => {
-    dispatch(kutlamayiKaldir());
+
+  // Kutlama mantığı
+  useEffect(() => {
+    if (gunlukNamazlar) {
+      const tamamlanan = gunlukNamazlar.namazlar.filter(n => n.tamamlandi).length;
+      const toplam = gunlukNamazlar.namazlar.length;
+      if (tamamlanan === toplam && oncekiTamamlananRef.current < toplam && oncekiTamamlananRef.current > 0) {
+        setKutlamaGoster(true);
+        tumNamazlarTamamlandiFeedback();
+      }
+      oncekiTamamlananRef.current = tamamlanan;
+    }
+  }, [gunlukNamazlar, tumNamazlarTamamlandiFeedback]);
+
+  // Namaz İşlemleri
+  const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
+    dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    if (tamamlandi) {
+      dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
+      try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
+
+      // Arka plan iptali
+      const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
+        [NamazAdi.Sabah]: 'imsak',
+        [NamazAdi.Ogle]: 'ogle',
+        [NamazAdi.Ikindi]: 'ikindi',
+        [NamazAdi.Aksam]: 'aksam',
+        [NamazAdi.Yatsi]: 'yatsi',
+      };
+      const vakitAdi = vakitDonusumu[namazAdi];
+      if (vakitAdi) {
+        try { await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi); } catch (e) { }
+      }
+    }
   };
 
-  // Tumunu tamamla
-  const tumunuTamamla = () => {
-    dispatch(tumNamazlariTamamla({
-      tarih: mevcutTarih,
-    }));
+  const suankiVakitTamamla = () => {
+    if (vakitBilgisi && vakitBilgisi.vakit) {
+      const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
+      if (namazAdi) {
+        namazToggle(namazAdi, true);
+      }
+    }
   };
 
-  // Tumunu sifirla
-  const tumunuSifirla = () => {
-    dispatch(tumNamazlariSifirla({
-      tarih: mevcutTarih,
-    }));
-  };
+  const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
+  const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
 
-  // Tarih etiketi
-  const getTarihEtiketi = (tarih: string) => {
-    const bugun = new Date(bugunuAl());
-    const hedefTarih = new Date(tarih);
-    const gunFarki = Math.round((hedefTarih.getTime() - bugun.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (gunFarki === 0) return 'Bugun';
-    if (gunFarki === -1) return 'Dun';
-    if (gunFarki === 1) return 'Yarin';
-    return gunAdiniAl(tarih);
-  };
-
-  // Istatistikler
-  const tamamlanan = gunlukNamazlar?.namazlar.filter(n => n.tamamlandi).length || 0;
-  const toplam = gunlukNamazlar?.namazlar.length || 5;
-  const yuzde = toplam > 0 ? Math.round((tamamlanan / toplam) * 100) : 0;
-  const bugunMuKontrol = bugunMu(mevcutTarih);
-  const tarihEtiketi = getTarihEtiketi(mevcutTarih);
-
-  // Sayfa icerigi olustur
+  // Sayfa içeriği render
   const sayfaIcerigiOlustur = (sayfaIndeksi: number) => {
     const sayfaTarihi = sayfaIndeksiniTariheCevir(sayfaIndeksi);
     const mevcutSayfaMi = sayfaIndeksi === mevcutSayfaIndeksi;
 
-    if (!mevcutSayfaMi || !gunlukNamazlar) {
-      return <View key={sayfaIndeksi} style={styles.bosKonteyner} />;
+    if (!mevcutSayfaMi || !gunlukNamazlar) return <View key={sayfaIndeksi} className="flex-1" />;
+
+    const tamamlanan = gunlukNamazlar.namazlar.filter(n => n.tamamlandi).length;
+    const toplam = gunlukNamazlar.namazlar.length;
+    const aktifGunKontrol = sayfaTarihi === aktifGun;
+
+    // Şu anki vakit bilgisi (sadece aktif gün için geçerli)
+    let suankiVakitAdi = "Vakit";
+    let vakitAraligi = "00:00 - 00:00";
+    let suankiVakitTamamlandi = false;
+
+    if (aktifGunKontrol && vakitBilgisi) {
+      suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
+
+      const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
+      if (suankiNamaz) {
+        suankiVakitTamamlandi = suankiNamaz.tamamlandi;
+
+        const suankiIndex = uiNamazlar.findIndex(n => n.namazAdi === suankiVakitAdi);
+        const sonrakiNamaz = uiNamazlar[suankiIndex + 1];
+
+        if (sonrakiNamaz) {
+          vakitAraligi = `${suankiNamaz.saat} - ${sonrakiNamaz.saat}`;
+        } else {
+          vakitAraligi = `${suankiNamaz.saat} - ...`;
+        }
+      }
     }
 
     return (
-      <View key={sayfaIndeksi} style={[styles.sayfaContainer, { backgroundColor: renkler.arkaplan }]}>
-        {/* Kutlama Animasyonu */}
-        <KutlamaAnimasyonu
-          gorunsun={kutlamaGoster}
-          boyut={300}
-          animasyonBittiCallback={() => setKutlamaGoster(false)}
-        />
+      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+        <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
-        {/* Header - Tarih */}
-        <Animated.View
-          style={[
-            styles.headerContainer,
-            {
-              backgroundColor: renkler.kartArkaplan,
-              borderBottomColor: renkler.sinir,
-              opacity: headerAnim,
-              transform: [{
-                translateY: headerAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [-20, 0],
-                }),
-              }],
-            },
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.tarihButonu}
-            onPress={() => setTarihSeciciGorunur(true)}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.tarihIkon}>📅</Text>
-            <View style={styles.tarihMetinContainer}>
-              <Text style={[styles.tarihMetin, { color: renkler.metin }]}>
-                {tarihiGorunumFormatinaCevir(sayfaTarihi)}
+        {/* Muhafiz Uyarı Kartı */}
+        {aktifGunKontrol && muhafizDurumu.seviye > 0 && (
+          <View className="mb-4 p-4 rounded-xl flex-row items-center gap-3 shadow-sm"
+            style={{ backgroundColor: muhafizDurumu.seviye >= 3 ? '#FEE2E2' : '#FFEDD5' }}>
+            <FontAwesome5 name="exclamation-triangle" size={24} color={muhafizDurumu.seviye >= 3 ? '#DC2626' : '#EA580C'} />
+            <View className="flex-1">
+              <Text className="font-bold text-sm" style={{ color: muhafizDurumu.seviye >= 3 ? '#991B1B' : '#9A3412' }}>
+                {muhafizDurumu.seviye >= 3 ? "⚠️ ŞEYTANLA MÜCADELE MODU" : "⚠️ VAKİT ÇIKIYOR"}
               </Text>
-              <View style={styles.kaydirmaIpucu}>
-                <Text style={[styles.kaydirmaIpucuMetin, { color: renkler.metinIkincil }]}>
-                  ◀ Kaydırarak gün değiştir ▶
-                </Text>
-              </View>
-            </View>
-
-            {bugunMuKontrol && vakitBilgisi && (
-              <View style={styles.sayacContainer}>
-                <AnimasyonluSayac
-                  hedefZaman={vakitBilgisi.sonrakiVakitGiris}
-                  seviye={muhafizDurumu.seviye}
-                  konumModu={konumAyarlari.konumModu}
-                />
-              </View>
-            )}
-
-            {!bugunMuKontrol && (
-              <View style={[
-                styles.tarihEtiketi,
-                { backgroundColor: renkler.birincilAcik }
-              ]}>
-                <Text style={[
-                  styles.tarihEtiketiMetin,
-                  { color: renkler.birincil }
-                ]}>
-                  {tarihEtiketi}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        </Animated.View>
-
-        {/* Ana Icerik */}
-        <Animated.View
-          style={[
-            styles.anaIcerik,
-            {
-              opacity: contentAnim,
-              transform: [{
-                translateY: contentAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [30, 0],
-                }),
-              }],
-            },
-          ]}
-        >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollIcerik}
-          >
-
-            {/* Seri Atesi Karti veya Toparlanma Karti */}
-            {/* Muhafiz Bildirimi (Varsa) */}
-            {muhafizDurumu.seviye > 0 && (
-              <View style={[
-                styles.muhafizContainer,
-                {
-                  backgroundColor: muhafizDurumu.seviye >= 3 ? '#FF3B30' : '#FF9500',
-                  transform: [{ scale: muhafizDurumu.seviye >= 3 ? 1.05 : 1 }]
-                }
-              ]}>
-                <Text style={styles.muhafizBaslik}>
-                  {muhafizDurumu.seviye >= 3 ? "⚠️ ŞEYTANLA MÜCADELE MODU" : "⚠️ VAKİT ÇIKIYOR"}
-                </Text>
-                <Text style={styles.muhafizMetin}>{muhafizDurumu.mesaj}</Text>
-              </View>
-            )}
-
-            {seriDurumu?.toparlanmaDurumu ? (
-              <ToparlanmaKarti
-                toparlanmaDurumu={seriDurumu.toparlanmaDurumu}
-                oncekiSeri={seriDurumu.toparlanmaDurumu.oncekiSeri}
-              />
-            ) : (
-              <>
-                {ozelGunAyarlari.aktifOzelGun && (
-                  <OzelGunKarti
-                    aktifOzelGun={ozelGunAyarlari.aktifOzelGun}
-                    onBitir={() => dispatch(ozelGunBitir())}
-                    onIptal={() => dispatch(ozelGunIptal())}
-                  />
-                )}
-                <SeriAtesiKarti
-                  mevcutSeri={seriOzeti.mevcutSeri}
-                  enUzunSeri={seriOzeti.enUzunSeri}
-                  sonrakiHedef={seriOzeti.sonrakiHedef}
-                  hedefeKalanGun={seriOzeti.hedefeKalanGun}
-                />
-              </>
-            )}
-
-            {/* Dairesel Progress */}
-            {/* <View style={styles.progressContainer}>
-              <DaireselProgress
-                yuzde={yuzde}
-                boyut={140}
-                cizgiKalinligi={12}
-                animasyonSuresi={1200}
-                ekBilgi={`${tamamlanan}/${toplam} Namaz`}
-              />
-            </View> */}
-
-            {/* Namaz Grid */}
-            <View style={styles.gridContainer}>
-              <NamazGrid
-                namazlar={gunlukNamazlar.namazlar}
-                onToggle={namazToggle}
-                disabled={guncelleniyor}
-              />
-            </View>
-
-            {/* Motivasyon Banner */}
-            <MotivasyonBanner
-              tamamlanan={tamamlanan}
-              toplam={toplam}
-            />
-          </ScrollView>
-        </Animated.View>
-
-        {/* Alt Butonlar */}
-        <View style={[styles.altButonlar, { backgroundColor: renkler.kartArkaplan, borderTopColor: renkler.sinir }]}>
-          <View style={styles.butonSatiri}>
-            <View style={styles.butonWrapper}>
-              <AnimasyonluButon
-                metin="Tümünü Tamamla"
-                ikon="✓"
-                onPress={tumunuTamamla}
-                tip="birincil"
-                disabled={guncelleniyor || tamamlanan === toplam}
-                tamGenislik
-              />
-            </View>
-            <View style={styles.butonAraligi} />
-            <View style={styles.butonWrapper}>
-              <AnimasyonluButon
-                metin="Sıfırla"
-                ikon="↺"
-                onPress={tumunuSifirla}
-                tip="ikincil"
-                disabled={guncelleniyor || tamamlanan === 0}
-                tamGenislik
-              />
+              <Text className="text-xs mt-1" style={{ color: muhafizDurumu.seviye >= 3 ? '#7F1D1D' : '#7C2D12' }}>
+                {muhafizDurumu.mesaj}
+              </Text>
             </View>
           </View>
-        </View>
-      </View >
+        )}
+
+        {/* Ana Vakit Kartı (Hero) - Sadece aktif gün gösterilir */}
+        {aktifGunKontrol ? (
+          <VakitKarti
+            vakitBilgisi={vakitBilgisi}
+            kalanSureStr={kalanSureStr}
+            suankiVakitAdi={suankiVakitAdi}
+            vakitAraligi={vakitAraligi}
+            tamamlandi={suankiVakitTamamlandi}
+            onTamamla={suankiVakitTamamla}
+          />
+        ) : (
+          <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
+            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
+            <Text className="text-xl font-bold" style={{ color: renkler.metin }}>
+              {tarihiGorunumFormatinaCevir(sayfaTarihi)}
+            </Text>
+            <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
+              Geçmiş/Gelecek gün görüntüleniyor
+            </Text>
+          </View>
+        )}
+
+        {/* Akış Listesi */}
+        <VakitAkisi
+          namazlar={uiNamazlar}
+          suankiVakitAdi={aktifGunKontrol ? suankiVakitAdi : ''}
+          tamamlananSayisi={tamamlanan}
+          toplamSayi={toplam}
+          onVakitTikla={(namazAdi, val) => namazToggle(namazAdi as NamazAdi, val)}
+        />
+        {/* ScrollView sonu için boşluk */}
+        <View className="h-10" />
+      </ScrollView>
     );
   };
 
-  if (yukleniyor && !gunlukNamazlar) {
-    return (
-      <View style={[styles.yuklemeContainer, { backgroundColor: renkler.arkaplan }]}>
-        <YuklemeGostergesi mesaj="Namazlar yükleniyor..." />
-      </View>
-    );
-  }
-
-  if (hata && !gunlukNamazlar) {
-    return (
-      <View style={[styles.hataContainer, { backgroundColor: renkler.arkaplan }]}>
-        <Text style={styles.hataIkon}>😔</Text>
-        <Text style={[styles.hataText, { color: renkler.hata }]}>
-          {hata}
-        </Text>
-        <AnimasyonluButon
-          metin="Tekrar Dene"
-          ikon="🔄"
-          onPress={() => namazlariGetir(mevcutTarih)}
-          tip="birincil"
-        />
-      </View>
-    );
-  }
+  if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
+  if (hata && !gunlukNamazlar) return <View className="flex-1 justify-center items-center p-6" style={{ backgroundColor: renkler.arkaplan }}><Text className="text-red-500 mb-4">{hata}</Text><AnimasyonluButon metin="Tekrar Dene" ikon="🔄" onPress={() => namazlariGetir(mevcutTarih)} tip="birincil" /></View>;
 
   return (
-    <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
-      <StatusBar
-        backgroundColor={renkler.birincil}
-        barStyle={koyuMu ? 'light-content' : 'dark-content'}
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
+      <StatusBar backgroundColor={renkler.kartArkaplan} barStyle={koyuMu ? 'light-content' : 'dark-content'} />
+
+      {/* Header */}
+      <HomeHeader
+        tarih={mevcutTarih}
+        streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
+        bugunMu={bugunMu(mevcutTarih)}
+        aktifGunMu={mevcutTarih === aktifGun}
+        onTarihTikla={() => setTarihSeciciGorunur(true)}
+        onSeriTikla={() => setSeriModalGorunur(true)}
       />
 
-      {/* Bugun'e Don Butonu - Header'in altinda konumlandirildi */}
-      {!bugunMuKontrol && (
-        <TouchableOpacity
-          style={[styles.buguneDonButonu, { backgroundColor: renkler.birincil }]}
-          onPress={buguneDon}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.buguneDonMetin}>📍 Bugune Don</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Kaydirmali Sayfa Gorunumu */}
+      {/* Pager */}
       <PagerView
         ref={pagerRef}
-        style={styles.pagerView}
+        style={{ flex: 1 }}
         initialPage={BASLANGIC_SAYFA_INDEKSI}
-        onPageSelected={sayfaDegistigindeIsle}
-        overdrag={true}
+        onPageSelected={(e) => {
+          const yeniIndeks = e.nativeEvent.position;
+          setMevcutSayfaIndeksi(yeniIndeks);
+          const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
+          dispatch(tarihiDegistir(yeniTarih));
+          namazlariGetir(yeniTarih);
+          oncekiTamamlananRef.current = 0;
+        }}
       >
         {Array.from({ length: 2001 }, (_, i) => i).map(sayfaIndeksi => (
-          <View key={sayfaIndeksi} collapsable={false}>
-            {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 2
-              ? sayfaIcerigiOlustur(sayfaIndeksi)
-              : <View style={styles.bosKonteyner} />
-            }
+          <View key={sayfaIndeksi}>
+            {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 2 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
           </View>
         ))}
       </PagerView>
 
-      {/* Tarih Secici Dialog */}
+      {/* Modals */}
       {tarihSeciciGorunur && (
         <DateTimePicker
           value={new Date(mevcutTarih)}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={tarihSecildigindeIsle}
-          maximumDate={new Date(gunEkle(bugunuAl(), 365))}
-          minimumDate={new Date('2020-01-01')}
+          onChange={(event, date) => {
+            setTarihSeciciGorunur(Platform.OS === 'ios');
+            if (date) {
+              const tarih = tarihiISOFormatinaCevir(date);
+              const indeks = tarihiSayfaIndeksineCevir(tarih);
+              dispatch(tarihiDegistir(tarih));
+              namazlariGetir(tarih);
+              pagerRef.current?.setPage(indeks);
+              setMevcutSayfaIndeksi(indeks);
+            }
+          }}
         />
       )}
+      <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
-      {/* Kutlama Modal */}
-      <KutlamaModal
-        kutlama={ilkKutlama}
-        gorunur={!!ilkKutlama}
-        onKapat={kutlamaKapat}
+      <SeriKartiModal
+        gorunur={seriModalGorunur}
+        onKapat={() => setSeriModalGorunur(false)}
+        mevcutSeri={seriOzeti ? seriOzeti.mevcutSeri : 0}
+        enUzunSeri={seriOzeti ? seriOzeti.enUzunSeri : 0}
       />
-    </View>
+    </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  pagerView: {
-    flex: 1,
-  },
-  sayfaContainer: {
-    flex: 1,
-  },
-  bosKonteyner: {
-    flex: 1,
-  },
-  yuklemeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  hataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  hataIkon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  hataText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  headerContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-  },
-  tarihButonu: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  tarihIkon: {
-    fontSize: 28,
-    marginRight: 12,
-  },
-  tarihMetinContainer: {
-    flex: 1,
-    marginRight: 8,
-  },
-  sayacContainer: {
-    minWidth: 85,
-    alignItems: 'flex-end',
-  },
-  tarihMetin: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  kaydirmaIpucu: {
-    marginTop: 2,
-  },
-  kaydirmaIpucuMetin: {
-    fontSize: 11,
-  },
-  tarihEtiketi: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  tarihEtiketiMetin: {
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  anaIcerik: {
-    flex: 1,
-    paddingVertical: 8,
-  },
-  scrollIcerik: {
-    paddingBottom: 16,
-  },
-  progressContainer: {
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  gridContainer: {
-    paddingHorizontal: 8,
-  },
-  altButonlar: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderTopWidth: 1,
-  },
-  butonSatiri: {
-    flexDirection: 'row',
-  },
-  butonWrapper: {
-    flex: 1,
-  },
-  butonAraligi: {
-    width: 12,
-  },
-  buguneDonButonu: {
-    position: 'absolute',
-    top: 70,
-    left: 16,
-    zIndex: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buguneDonMetin: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  muhafizContainer: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  muhafizBaslik: {
-    color: '#FFF',
-    fontWeight: '900',
-    fontSize: 14,
-    marginBottom: 4,
-    textTransform: 'uppercase',
-  },
-  muhafizMetin: {
-    color: '#FFF',
-    fontWeight: '600',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-});

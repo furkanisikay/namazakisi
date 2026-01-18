@@ -3,10 +3,36 @@
  * SOLID prensiplerini takip ederek arayuz sabitlerini ayiriyoruz
  */
 
-// Namaz isimleri
-export const NAMAZ_ISIMLERI = ['Sabah', 'Öğle', 'İkindi', 'Akşam', 'Yatsı'] as const;
+// Namaz isimleri (Veritabanı ve Kod içinde kullanım için)
+// NOT: Veritabanında Türkçe karakterli saklandığı için değerler Türkçe olmalı.
+export enum NamazAdi {
+  Sabah = 'Sabah',
+  Gunes = 'Güneş', // UI ve Vakit hesaplama için gerekli, DB'de yok
+  Ogle = 'Öğle',
+  Ikindi = 'İkindi',
+  Aksam = 'Akşam',
+  Yatsi = 'Yatsı',
+}
 
-export type NamazAdi = (typeof NAMAZ_ISIMLERI)[number];
+// UI'da gösterilecek isimler (Enum değerleri zaten Türkçe olduğu için birebir aynı olabilir, veya farklı formatlanabilir)
+export const NAMAZ_GORUNUM_ISIMLERI: Record<NamazAdi, string> = {
+  [NamazAdi.Sabah]: 'Sabah',
+  [NamazAdi.Gunes]: 'Güneş',
+  [NamazAdi.Ogle]: 'Öğle',
+  [NamazAdi.Ikindi]: 'İkindi',
+  [NamazAdi.Aksam]: 'Akşam',
+  [NamazAdi.Yatsi]: 'Yatsı',
+};
+
+// Veritabanı oluşturulurken kullanılan liste (5 Vakit)
+// Güneş vakti namaz olarak kılınmadığı/işaretlenmediği için burada yer almaz.
+export const NAMAZ_ISIMLERI = [
+  NamazAdi.Sabah,
+  NamazAdi.Ogle,
+  NamazAdi.Ikindi,
+  NamazAdi.Aksam,
+  NamazAdi.Yatsi,
+] as const;
 
 // Uygulama meta verileri
 export const UYGULAMA = {

@@ -11,6 +11,8 @@ import {
 import { GunlukNamazlar } from '../../../core/types';
 import * as TarihYardimcisi from '../../../core/utils/TarihYardimcisi';
 
+import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+
 // Tarih yardimcisini gercek haliyle kullanalim
 const { tarihiISOFormatinaCevir, gunEkle } = TarihYardimcisi;
 
@@ -29,22 +31,22 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
   const tamNamazlar = (tarih: string): GunlukNamazlar => ({
     tarih,
     namazlar: [
-      { namazAdi: 'Sabah', tamamlandi: true, tarih },
-      { namazAdi: 'Öğle', tamamlandi: true, tarih },
-      { namazAdi: 'İkindi', tamamlandi: true, tarih },
-      { namazAdi: 'Akşam', tamamlandi: true, tarih },
-      { namazAdi: 'Yatsı', tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Sabah, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Ogle, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Ikindi, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Aksam, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Yatsi, tamamlandi: true, tarih },
     ],
   });
 
   const eksikNamazlar = (tarih: string): GunlukNamazlar => ({
     tarih,
     namazlar: [
-      { namazAdi: 'Sabah', tamamlandi: true, tarih },
-      { namazAdi: 'Öğle', tamamlandi: false, tarih },
-      { namazAdi: 'İkindi', tamamlandi: true, tarih },
-      { namazAdi: 'Akşam', tamamlandi: false, tarih },
-      { namazAdi: 'Yatsı', tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Sabah, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Ogle, tamamlandi: false, tarih },
+      { namazAdi: NamazAdi.Ikindi, tamamlandi: true, tarih },
+      { namazAdi: NamazAdi.Aksam, tamamlandi: false, tarih },
+      { namazAdi: NamazAdi.Yatsi, tamamlandi: true, tarih },
     ],
   });
 

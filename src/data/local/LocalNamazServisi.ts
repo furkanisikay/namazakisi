@@ -4,16 +4,16 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  Namaz, 
-  GunlukNamazlar, 
+import {
+  Namaz,
+  GunlukNamazlar,
   LocalNamazVerileri,
-  ApiYanit 
+  ApiYanit
 } from '../../core/types';
-import { 
-  NAMAZ_ISIMLERI, 
-  NamazAdi, 
-  DEPOLAMA_ANAHTARLARI 
+import {
+  NAMAZ_ISIMLERI,
+  NamazAdi,
+  DEPOLAMA_ANAHTARLARI
 } from '../../core/constants/UygulamaSabitleri';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 
@@ -135,7 +135,7 @@ export const localTarihAraligindakiNamazlariGetir = async (
     let mevcutTarih = baslangicTarihi;
     while (mevcutTarih <= bitisTarihi) {
       const tarihVerileri = tumVeriler[mevcutTarih] || {};
-      
+
       const namazlar: Namaz[] = NAMAZ_ISIMLERI.map((namazAdi) => ({
         namazAdi,
         tamamlandi: tarihVerileri[namazAdi] || false,
@@ -168,7 +168,7 @@ export const localVerileriSenkronizasyonIcinAl = async (): Promise<
 
   Object.entries(tumVeriler).forEach(([tarih, namazlar]) => {
     Object.entries(namazlar).forEach(([namazAdi, tamamlandi]) => {
-      if (NAMAZ_ISIMLERI.includes(namazAdi as NamazAdi)) {
+      if (NAMAZ_ISIMLERI.includes(namazAdi as any)) {
         sonuc.push({
           tarih,
           namazAdi: namazAdi as NamazAdi,
