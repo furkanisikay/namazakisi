@@ -24,6 +24,7 @@ interface VakitZamani {
     vakit: VakitAdi;
     giris: Date;
     cikis: Date;
+    tarih: string; // YYYY-MM-DD formatinda vakit gunu (yatsi icin onceki gun olabilir)
 }
 
 /**
@@ -118,6 +119,7 @@ export class ArkaplanMuhafizServisi {
 
     /**
      * Bugun icin tum namaz vakitlerini hesapla
+     * Gece yarisi gecislerini dogru sekilde ele alir
      */
     private bugunVakitleriniHesapla(): VakitZamani[] {
         if (!this.ayarlar) return [];
@@ -125,41 +127,75 @@ export class ArkaplanMuhafizServisi {
         const { lat, lng } = this.ayarlar.koordinatlar;
         const coordinates = new Coordinates(lat, lng);
         const params = CalculationMethod.Turkey();
-        const bugun = new Date();
-        const prayerTimes = new PrayerTimes(coordinates, bugun, params);
+        const simdi = new Date();
 
-        // Yarin icin de hesapla (gece yarisi gecisleri icin)
-        const yarin = new Date();
-        yarin.setDate(yarin.getDate() + 1);
-        const yarinPrayerTimes = new PrayerTimes(coordinates, yarin, params);
+        // Bugun ve dun icin hesapla (gece yarisi gecisleri icin)
+        const bugunTarih = new Date(simdi);
+        const dunTarih = new Date(simdi);
+        dunTarih.setDate(dunTarih.getDate() - 1);
+        const yarinTarih = new Date(simdi);
+        yarinTarih.setDate(yarinTarih.getDate() + 1);
 
-        const vakitler: VakitZamani[] = [
+        const bugunPrayerTimes = new PrayerTimes(coordinates, bugunTarih, params);
+        const dunPrayerTimes = new PrayerTimes(coordinates, dunTarih, params);
+        const yarinPrayerTimes = new PrayerTimes(coordinates, yarinTarih, params);
+
+        // Tarih formatla - yerel saat dilimine gore (UTC degil!)
+        const formatDate = (d: Date) => {
+            const yil = d.getFullYear();
+            const ay = String(d.getMonth() + 1).padStart(2, '0');
+            const gun = String(d.getDate()).padStart(2, '0');
+            return `${yil}-${ay}-${gun}`;
+        };
+        const bugunStr = formatDate(bugunTarih);
+        const dunStr = formatDate(dunTarih);
+
+        const vakitler: VakitZamani[] = [];
+
+        // Eger su an imsak vaktinden onceyse, dunun yatsi vakti hala aktiftir
+        if (simdi < bugunPrayerTimes.fajr) {
+            // Dunun yatsisi hala devam ediyor (gece yarisi gecmis ama imsak olmamis)
+            vakitler.push({
+                vakit: 'yatsi',
+                giris: dunPrayerTimes.isha,
+                cikis: bugunPrayerTimes.fajr,
+                tarih: dunStr, // Dune ait!
+            });
+        }
+
+        // Bugunun vakitleri
+        vakitler.push(
             {
                 vakit: 'imsak',
-                giris: prayerTimes.fajr,
-                cikis: prayerTimes.sunrise,
+                giris: bugunPrayerTimes.fajr,
+                cikis: bugunPrayerTimes.sunrise,
+                tarih: bugunStr,
             },
             {
                 vakit: 'ogle',
-                giris: prayerTimes.dhuhr,
-                cikis: prayerTimes.asr,
+                giris: bugunPrayerTimes.dhuhr,
+                cikis: bugunPrayerTimes.asr,
+                tarih: bugunStr,
             },
             {
                 vakit: 'ikindi',
-                giris: prayerTimes.asr,
-                cikis: prayerTimes.maghrib,
+                giris: bugunPrayerTimes.asr,
+                cikis: bugunPrayerTimes.maghrib,
+                tarih: bugunStr,
             },
             {
                 vakit: 'aksam',
-                giris: prayerTimes.maghrib,
-                cikis: prayerTimes.isha,
+                giris: bugunPrayerTimes.maghrib,
+                cikis: bugunPrayerTimes.isha,
+                tarih: bugunStr,
             },
             {
                 vakit: 'yatsi',
-                giris: prayerTimes.isha,
+                giris: bugunPrayerTimes.isha,
                 cikis: yarinPrayerTimes.fajr, // Yarinin imsak vaktine kadar
-            },
-        ];
+                tarih: bugunStr,
+            }
+        );
 
         return vakitler;
     }
@@ -275,12 +311,13 @@ export class ArkaplanMuhafizServisi {
             const bildirimZamani = new Date(cikisSuresi - kalanDk * 60 * 1000);
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, veri.seviye, veri.dakika);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
-            const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye) + BILDIRIM_ONEK.DAKIKA + kalanDk;
+            // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
+            const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_ONEK.DAKIKA + kalanDk;
 
             await this.tekBildirimPlanla(bildirimId, veri.baslik, mesaj, bildirimZamani, veri.seviye);
         }
 
-        console.log(`[ArkaplanMuhafiz] ${vakit.vakit} icin ${dakikaGruplari.size} bildirim planlandi`);
+        console.log(`[ArkaplanMuhafiz] ${vakit.vakit} (${vakit.tarih}) icin ${dakikaGruplari.size} bildirim planlandi`);
     }
 
     /**
@@ -363,10 +400,12 @@ export class ArkaplanMuhafizServisi {
 
     /**
      * Bildirim ID'si olustur
+     * @param vakit Vakit adi
+     * @param seviye Bildirim seviyesi
+     * @param tarih Vaktin ait oldugu tarih (YYYY-MM-DD)
      */
-    private bildirimIdOlustur(vakit: VakitAdi, seviye: number): string {
-        const bugun = new Date().toISOString().split('T')[0];
-        return `${BILDIRIM_ONEK.MUHAFIZ}${bugun}${BILDIRIM_ONEK.VAKIT}${vakit}${BILDIRIM_ONEK.SEVIYE}${seviye}`;
+    private bildirimIdOlustur(vakit: VakitAdi, seviye: number, tarih: string): string {
+        return `${BILDIRIM_ONEK.MUHAFIZ}${tarih}${BILDIRIM_ONEK.VAKIT}${vakit}${BILDIRIM_ONEK.SEVIYE}${seviye}`;
     }
 
     /**
