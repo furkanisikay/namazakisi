@@ -1,5 +1,12 @@
 import './global.css';
 import { registerRootComponent } from 'expo';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+
+// Reanimated strict mode uyarilarini kapat (3. parti kutuphaneler nedeniyle)
+configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false,
+});
 
 import App from './App';
 
