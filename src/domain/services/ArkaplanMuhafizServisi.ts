@@ -100,13 +100,35 @@ export class ArkaplanMuhafizServisi {
         const vakitler = this.bugunVakitleriniHesapla();
         const simdi = new Date();
 
-        // Cikis suresi henuz gecmemis (gelecekte olan) tum vakitler icin planlama yap
-        // Sadece bir sonraki vakit degil, gunun geri kalani icin planlama yapiyoruz
-        // Cunku background fetch her zaman calismayabilir
-        const gelecekVakitler = vakitler.filter(v => v.cikis.getTime() > simdi.getTime());
+        // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
+        const kilinanVakitlerBugun = await this.tarihIcinKilinanVakitleriAl(this.bugunTarihiAl());
+        const kilinanVakitlerDun = await this.tarihIcinKilinanVakitleriAl(this.dunTarihiAl());
+
+        // Kolay erisim icin tarihe gore map olustur
+        const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
+            [this.bugunTarihiAl()]: kilinanVakitlerBugun,
+            [this.dunTarihiAl()]: kilinanVakitlerDun,
+        };
+
+        // Cikis suresi henuz gecmemis (gelecekte olan) VE kilinmamis vakitler icin planlama yap
+        const gelecekVakitler = vakitler.filter(v => {
+            // Vakit zamani gecmis mi?
+            if (v.cikis.getTime() <= simdi.getTime()) {
+                return false;
+            }
+
+            // Bu vakit kilinmis mi? (vaktin ait oldugu tarihe gore kontrol et)
+            const tarihinKilinanVakitleri = kilinanVakitlerMap[v.tarih] || [];
+            if (tarihinKilinanVakitleri.includes(v.vakit)) {
+                console.log(`[ArkaplanMuhafiz] ${v.vakit} (${v.tarih}) zaten kilinmis, atlaniyor`);
+                return false;
+            }
+
+            return true;
+        });
 
         if (gelecekVakitler.length === 0) {
-            console.log('[ArkaplanMuhafiz] Gelecek vakit bulunamadi');
+            console.log('[ArkaplanMuhafiz] Gelecek veya kilinmamis vakit bulunamadi');
             return;
         }
 
@@ -413,20 +435,33 @@ export class ArkaplanMuhafizServisi {
      * (Namaz kilindigi zaman cagirilir)
      */
     public async vakitBildirimleriniIptalEt(vakit: VakitAdi): Promise<void> {
-        const bugun = new Date().toISOString().split('T')[0];
+        // Hem bugun hem de dun icin iptal et (gece yarisi gecisleri icin)
+        const bugun = this.bugunTarihiAl();
+        const dun = this.dunTarihiAl();
+        const tarihler = [bugun, dun];
 
-        for (let seviye = 1; seviye <= 4; seviye++) {
-            const bildirimId = `${BILDIRIM_ONEK.MUHAFIZ}${bugun}${BILDIRIM_ONEK.VAKIT}${vakit}${BILDIRIM_ONEK.SEVIYE}${seviye}`;
-            try {
-                await Notifications.cancelScheduledNotificationAsync(bildirimId);
-                console.log(`[ArkaplanMuhafiz] Bildirim iptal edildi: ${bildirimId}`);
-            } catch (error) {
-                // Bildirim bulunamazsa hata verme
+        // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
+        const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
+
+        for (const bildirim of tumBildirimler) {
+            // Bu vakite ait muhafiz bildirimi mi kontrol et
+            for (const tarih of tarihler) {
+                const bildirimOneki = `${BILDIRIM_ONEK.MUHAFIZ}${tarih}${BILDIRIM_ONEK.VAKIT}${vakit}`;
+                if (bildirim.identifier.startsWith(bildirimOneki)) {
+                    try {
+                        await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
+                        console.log(`[ArkaplanMuhafiz] Bildirim iptal edildi: ${bildirim.identifier}`);
+                    } catch (error) {
+                        // Bildirim bulunamazsa hata verme
+                    }
+                }
             }
         }
 
-        // Iptal edilen vakti kaydet
-        await this.kilinanVaktiKaydet(vakit);
+        // Iptal edilen vakti dogru tarihe kaydet
+        const now = new Date();
+        const kayitTarihi = this.vakitIcinDogruTarihiAl(vakit, now);
+        await this.kilinanVaktiKaydetTarihli(vakit, kayitTarihi);
     }
 
     /**
@@ -448,13 +483,89 @@ export class ArkaplanMuhafizServisi {
         }
     }
 
+    // ============================================================
+    // TARIH YARDIMCI METOTLARI
+    // ============================================================
+
     /**
-     * Kilinan vakti async storage'a kaydet
+     * Bugunun tarih string'ini dondurur (YYYY-MM-DD)
+     * @returns Bugunun tarihi
      */
-    private async kilinanVaktiKaydet(vakit: VakitAdi): Promise<void> {
+    private bugunTarihiAl(): string {
+        const bugun = new Date();
+        const yil = bugun.getFullYear();
+        const ay = String(bugun.getMonth() + 1).padStart(2, '0');
+        const gun = String(bugun.getDate()).padStart(2, '0');
+        return `${yil}-${ay}-${gun}`;
+    }
+
+    /**
+     * Dunun tarih string'ini dondurur (YYYY-MM-DD)
+     * @returns Dunun tarihi
+     */
+    private dunTarihiAl(): string {
+        const dun = new Date();
+        dun.setDate(dun.getDate() - 1);
+        const yil = dun.getFullYear();
+        const ay = String(dun.getMonth() + 1).padStart(2, '0');
+        const gun = String(dun.getDate()).padStart(2, '0');
+        return `${yil}-${ay}-${gun}`;
+    }
+
+    /**
+     * Vakit icin dogru kayit tarihini belirler
+     * Gece yarisi sonrasi (imsak oncesi) yatsi icin dunu dondurur
+     * @param vakit Kontrol edilecek vakit
+     * @param simdi Referans zaman
+     * @returns Dogru tarih string'i
+     */
+    private vakitIcinDogruTarihiAl(vakit: VakitAdi, simdi: Date): string {
+        if (!this.ayarlar) return this.bugunTarihiAl();
+
+        // Yatsi vakti ve imsak oncesi mi?
+        if (vakit === 'yatsi') {
+            const { lat, lng } = this.ayarlar.koordinatlar;
+            const coordinates = new Coordinates(lat, lng);
+            const params = CalculationMethod.Turkey();
+            const bugunPrayerTimes = new PrayerTimes(coordinates, simdi, params);
+
+            // Eger su an imsak vaktinden onceyse, bu yatsi dune aittir
+            if (simdi < bugunPrayerTimes.fajr) {
+                return this.dunTarihiAl();
+            }
+        }
+
+        return this.bugunTarihiAl();
+    }
+
+    // ============================================================
+    // KILINAN VAKIT YONETIMI
+    // ============================================================
+
+    /**
+     * Belirli bir tarih icin kilinan vakitleri al
+     * @param tarih YYYY-MM-DD formatinda tarih
+     * @returns Kilinan vakitler listesi
+     */
+    private async tarihIcinKilinanVakitleriAl(tarih: string): Promise<VakitAdi[]> {
         try {
-            const bugun = new Date().toISOString().split('T')[0];
-            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${bugun}`;
+            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
+            const veri = await AsyncStorage.getItem(anahtar);
+            return veri ? JSON.parse(veri) : [];
+        } catch (error) {
+            console.error('[ArkaplanMuhafiz] Kilinan vakitler alinamadi:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Kilinan vakti belirtilen tarihe kaydet
+     * @param vakit Kaydedilecek vakit
+     * @param tarih Kayit tarihi (YYYY-MM-DD)
+     */
+    private async kilinanVaktiKaydetTarihli(vakit: VakitAdi, tarih: string): Promise<void> {
+        try {
+            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
 
             const mevcutVeri = await AsyncStorage.getItem(anahtar);
             const kilinanlar: string[] = mevcutVeri ? JSON.parse(mevcutVeri) : [];
@@ -463,24 +574,50 @@ export class ArkaplanMuhafizServisi {
                 kilinanlar.push(vakit);
                 await AsyncStorage.setItem(anahtar, JSON.stringify(kilinanlar));
             }
+
+            console.log(`[ArkaplanMuhafiz] Vakit kaydedildi: ${vakit} (${tarih})`);
         } catch (error) {
             console.error('[ArkaplanMuhafiz] Kilinan vakit kaydedilemedi:', error);
         }
     }
 
     /**
-     * Bugun kilinan vakitleri al
+     * Kilinan vakti listeden kaldir ve bildirimleri yeniden planla
+     * Kullanici "kilmadim" sectiginde cagrilir
+     * @param vakit Kaldirilacak vakit
+     */
+    public async vakitKilindisiniGeriAl(vakit: VakitAdi): Promise<void> {
+        // Dogru tarihi bul
+        const now = new Date();
+        const tarih = this.vakitIcinDogruTarihiAl(vakit, now);
+
+        try {
+            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
+
+            const mevcutVeri = await AsyncStorage.getItem(anahtar);
+            const kilinanlar: string[] = mevcutVeri ? JSON.parse(mevcutVeri) : [];
+
+            // Vakti listeden kaldir
+            const yeniListe = kilinanlar.filter(v => v !== vakit);
+            await AsyncStorage.setItem(anahtar, JSON.stringify(yeniListe));
+
+            console.log(`[ArkaplanMuhafiz] Vakit kilindisi geri alindi: ${vakit} (${tarih})`);
+
+            // Eger ayarlar varsa bildirimleri yeniden planla
+            if (this.ayarlar) {
+                await this.yapilandirVePlanla(this.ayarlar);
+            }
+        } catch (error) {
+            console.error('[ArkaplanMuhafiz] Vakit kilindisi geri alinamadi:', error);
+        }
+    }
+
+    /**
+     * Bugun kilinan vakitleri al (geriye uyumluluk icin)
+     * @returns Bugun kilinan vakitler listesi
      */
     public async bugunKilinanVakitleriAl(): Promise<VakitAdi[]> {
-        try {
-            const bugun = new Date().toISOString().split('T')[0];
-            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${bugun}`;
-
-            const veri = await AsyncStorage.getItem(anahtar);
-            return veri ? JSON.parse(veri) : [];
-        } catch (error) {
-            return [];
-        }
+        return this.tarihIcinKilinanVakitleriAl(this.bugunTarihiAl());
     }
 
     /**

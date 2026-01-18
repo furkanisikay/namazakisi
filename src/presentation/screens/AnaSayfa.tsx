@@ -283,21 +283,30 @@ export const AnaSayfa: React.FC = () => {
   // Namaz İşlemleri
   const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+
+    // Vakit donusumu (servis icin)
+    const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
+      [NamazAdi.Sabah]: 'imsak',
+      [NamazAdi.Ogle]: 'ogle',
+      [NamazAdi.Ikindi]: 'ikindi',
+      [NamazAdi.Aksam]: 'aksam',
+      [NamazAdi.Yatsi]: 'yatsi',
+    };
+    const vakitAdi = vakitDonusumu[namazAdi];
+
     if (tamamlandi) {
+      // Namaz kilindi
       dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
-      // Arka plan iptali
-      const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
-        [NamazAdi.Sabah]: 'imsak',
-        [NamazAdi.Ogle]: 'ogle',
-        [NamazAdi.Ikindi]: 'ikindi',
-        [NamazAdi.Aksam]: 'aksam',
-        [NamazAdi.Yatsi]: 'yatsi',
-      };
-      const vakitAdi = vakitDonusumu[namazAdi];
+      // Arka plan bildirimlerini iptal et
       if (vakitAdi) {
         try { await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi); } catch (e) { }
+      }
+    } else {
+      // Namaz kilmadim - bildirimleri yeniden aktif et
+      if (vakitAdi) {
+        try { await ArkaplanMuhafizServisi.getInstance().vakitKilindisiniGeriAl(vakitAdi); } catch (e) { }
       }
     }
   };

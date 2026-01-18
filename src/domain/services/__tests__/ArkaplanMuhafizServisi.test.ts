@@ -127,4 +127,46 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         // Her dakikada sadece 1 bildirim olmalı
         expect(uniqueZamanlar.size).toBe(zamanlar.length);
     });
+
+    test('Kılınmış vakitler için bildirim planlanmamalı', async () => {
+        const AsyncStorage = require('@react-native-async-storage/async-storage');
+
+        // Yatsı için kılınmış olarak simüle et
+        const bugun = new Date();
+        const tarih = `${bugun.getFullYear()}-${String(bugun.getMonth() + 1).padStart(2, '0')}-${String(bugun.getDate()).padStart(2, '0')}`;
+        const kilinanAnahtar = `muhafiz_ayarlari_kilinan_${tarih}`;
+
+        // Mock AsyncStorage - yatsı kılınmış
+        AsyncStorage.getItem.mockImplementation((key: string) => {
+            if (key === kilinanAnahtar) {
+                return Promise.resolve(JSON.stringify(['yatsi']));
+            }
+            return Promise.resolve(null);
+        });
+
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: {
+                seviye1: 25,
+                seviye1Siklik: 15,
+                seviye2: 20,
+                seviye2Siklik: 10,
+                seviye3: 15,
+                seviye3Siklik: 5,
+                seviye4: 10,
+                seviye4Siklik: 2,
+            },
+        });
+
+        const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
+
+        // Yatsı bildirimleri olmamalı
+        const yatsiBildirimleri = scheduleCalllari.filter((call) =>
+            call[0].identifier?.includes('_vakit_yatsi')
+        );
+
+        console.log('Yatsı bildirimleri (kılınmış):', yatsiBildirimleri.length);
+        expect(yatsiBildirimleri.length).toBe(0);
+    });
 });
