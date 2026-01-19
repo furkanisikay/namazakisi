@@ -37,7 +37,7 @@ export const NAMAZ_ISIMLERI = [
 // Uygulama meta verileri
 export const UYGULAMA = {
   ADI: 'Namaz Akışı',
-  VERSIYON: '1.0.3',
+  VERSIYON: '1.1.0',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
 } as const;
 

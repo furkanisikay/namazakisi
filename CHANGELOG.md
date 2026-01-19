@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-18
+
+### Added
+- [bildirim] namaz muhafızı için 'kıldım' aksiyonu ve otomatik temizleme özelliği eklendi
+- [config] configure Reanimated logger to suppress strict mode warnings
+- improve home screen UX, fix midnight logic, add streak modal
+
+### Fixed
+- [test] update KonumTakipServisi test mocks to match actual implementation
+- [deps] add cosmiconfig to resolve npm ci error
+- [muhafiz] cift bildirim planlama sorunu duzeltildi
+- [muhafiz] kilinmis namazlar icin bildirim kontrolu eklendi
+- [ui] resolve Yatsi prayer card rendering issue in uncompleted state
+- [notifications] correct date calculation for Yatsi prayer notifications
+- [location] Android release build arka plan konum izni duzeltildi
+
+### Changed
+- [konum] konum persistence islemlerini LocalKonumServisi'ne tasindi
+
 ## [1.0.3] - 2026-01-18
 
 ### Fixed
