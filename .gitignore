@@ -57,3 +57,6 @@ ios/Pods/
 *.log
 tmp/
 temp/
+
+# Agent
+.agent/
