@@ -1,0 +1,468 @@
+/**
+ * Seri (Streak), Rozet ve Seviye sistemleri icin TypeScript tipleri
+ * Baris Ozcan'in "zinciri kirma" motivasyonu ve Duolingo streak sisteminden esinlenilmistir
+ */
+
+// ==================== SERI (STREAK) TIPLERI ====================
+
+/**
+ * Toparlanma (Recovery) Durumu - Seri bozuldugunda aktif olur
+ * Kullanici 5 gun tam kilarak onceki serisini kurtarabilir
+ */
+export interface ToparlanmaDurumu {
+  /** Tamamlanan toparlanma gun sayisi */
+  tamamlananGun: number;
+  /** Toparlanma baslangic tarihi (ISO format) */
+  baslangicTarihi: string;
+  /** Hedef gun sayisi (varsayilan 5) */
+  hedefGunSayisi: number;
+  /** Kurtarilacak onceki seri degeri */
+  oncekiSeri: number;
+}
+
+/**
+ * Seri (Streak) Durumu
+ * Kullanicinin mevcut seri bilgilerini icerir
+ */
+export interface SeriDurumu {
+  /** Mevcut seri gun sayisi */
+  mevcutSeri: number;
+  /** En uzun seri rekoru */
+  enUzunSeri: number;
+  /** Son tam kilinan gun tarihi (ISO format) */
+  sonTamGun: string | null;
+  /** Mevcut serinin baslangic tarihi (ISO format) */
+  seriBaslangici: string | null;
+  /** Toparlanma modu durumu (null ise normal mod) */
+  toparlanmaDurumu: ToparlanmaDurumu | null;
+  /** Seri donduruldu mu (ozel gun modu) */
+  dondurulduMu: boolean;
+  /** Seri dondurulma tarihi (ISO format) */
+  dondurulmaTarihi: string | null;
+  /** Son guncelleme zamani (ISO format) */
+  sonGuncelleme: string;
+}
+
+// ==================== OZEL GUN (MAZERET) TIPLERI ====================
+
+/**
+ * Ozel Gun (Mazeret) Kaydi
+ */
+export interface OzelGunKaydi {
+  id: string;
+  baslangicTarihi: string;  // ISO format (YYYY-MM-DD)
+  bitisTarihi: string;      // ISO format (YYYY-MM-DD)
+  aciklama?: string;        // Opsiyonel not
+  olusturulmaTarihi: string;
+}
+
+/**
+ * Kullanici Ozel Gun Ayarlari
+ */
+export interface OzelGunAyarlari {
+  /** Kullanici bu ozelligi kullanmak istiyor mu */
+  ozelGunModuAktif: boolean;
+  /** Suanda aktif olan ozel gun */
+  aktifOzelGun: OzelGunKaydi | null;
+  /** Gecmis ozel gun kayitlari */
+  gecmisKayitlar: OzelGunKaydi[];
+}
+
+
+// ==================== ROZET TIPLERI ====================
+
+/**
+ * Rozet tipleri
+ * - seri: Seri hedeflerine ulasildiginda kazanilir
+ * - toplam: Toplam namaz sayisina gore kazanilir
+ * - ozel: Ozel basarimlar icin kazanilir
+ */
+export type RozetTipi = 'seri' | 'toplam' | 'ozel';
+
+/**
+ * Rozet seviyeleri - Nadirlik derecesi
+ */
+export type RozetSeviyesi = 'bronz' | 'gumus' | 'altin' | 'elmas';
+
+/**
+ * Rozet tanimi
+ */
+export interface RozetTanimi {
+  /** Benzersiz rozet kimlik numarasi */
+  id: string;
+  /** Rozet adi */
+  ad: string;
+  /** Rozet aciklamasi */
+  aciklama: string;
+  /** Rozet ikonu (emoji) */
+  ikon: string;
+  /** Rozet tipi */
+  tip: RozetTipi;
+  /** Rozet seviyesi */
+  seviye: RozetSeviyesi;
+  /** Kazanma kosulu (ornegin 21 gun seri) */
+  kosul: number;
+  /** Kosul aciklamasi */
+  kosulAciklamasi: string;
+}
+
+/**
+ * Kullanici rozeti - Kazanilan rozet bilgisi
+ */
+export interface KullaniciRozeti {
+  /** Rozet tanimi ID'si */
+  rozetId: string;
+  /** Rozet kazanildi mi */
+  kazanildiMi: boolean;
+  /** Kazanilma tarihi (ISO format, null ise henuz kazanilmamis) */
+  kazanilmaTarihi: string | null;
+}
+
+/**
+ * Rozet ile tanimi birlestirilmis hali
+ */
+export interface RozetDetay extends RozetTanimi, KullaniciRozeti { }
+
+// ==================== SEVIYE/RANK TIPLERI ====================
+
+/**
+ * Seviye tanimi
+ */
+export interface SeviyeTanimi {
+  /** Seviye numarasi */
+  seviye: number;
+  /** Bu seviye icin gereken minimum puan */
+  minPuan: number;
+  /** Rank adi */
+  rank: string;
+  /** Rank ikonu (emoji) */
+  ikon: string;
+}
+
+/**
+ * Kullanicinin seviye durumu
+ */
+export interface SeviyeDurumu {
+  /** Mevcut seviye numarasi */
+  mevcutSeviye: number;
+  /** Toplam kazanilan puan */
+  toplamPuan: number;
+  /** Mevcut seviyedeki puan (min puandan baslayarak) */
+  mevcutSeviyePuani: number;
+  /** Bir sonraki seviyeye kalan puan */
+  sonrakiSeviyeKalanPuan: number;
+  /** Mevcut rank adi */
+  rank: string;
+  /** Mevcut rank ikonu */
+  rankIkonu: string;
+}
+
+// ==================== GÜN SONU BİLDİRİM MODU TİPLERİ ====================
+
+/**
+ * Gün sonu bildirim modu
+ * - otomatik: İmsak vaktine göre hesaplanır
+ * - sabit: Kullanıcının belirlediği sabit saat
+ */
+export type GunSonuBildirimModu = 'otomatik' | 'sabit';
+
+/**
+ * Sabit bildirim modu için gün seçimi
+ * - ayniGun: Gece yarısından önce (18:00-23:59)
+ * - ertesiGun: Gece yarısından sonra, imsak öncesi (00:00-imsak)
+ */
+export type BildirimGunSecimi = 'ayniGun' | 'ertesiGun';
+
+// ==================== KULLANICI AYARLARI ====================
+
+/**
+ * Kullanici seri ayarlari
+ */
+export interface SeriAyarlari {
+  /** Tam gun esigi - kac namaz kilinirsa gun tam sayilir (3, 4 veya 5) */
+  tamGunEsigi: number;
+  /** Gun bitis saati - DEPRECATED: Artık otomatik hesaplanıyor (imsak vaktine göre) */
+  gunBitisSaati: string;
+  /** Seri hatirlaticilari aktif mi */
+  bildirimlerAktif: boolean;
+  /** Toparlanma icin gereken gun sayisi (varsayilan 5) */
+  toparlanmaGunSayisi: number;
+  /** Gun sonu bildirimi aktif mi */
+  gunSonuBildirimAktif: boolean;
+  /** Gun bitiminden ne kadar once bildirim gonderilsin (dakika) - DEPRECATED */
+  gunSonuBildirimDk: number;
+
+  // ====== YENİ: Gün Sonu Bildirim Ayarları ======
+  /** Gün sonu bildirim modu: otomatik (imsak öncesi) veya sabit (kullanıcı seçimi) */
+  gunSonuBildirimModu: GunSonuBildirimModu;
+  /** Otomatik mod: İmsak vaktinden kaç dakika önce bildirim (0-60) */
+  bildirimImsakOncesiDk: number;
+  /** Sabit mod: Aynı gün mü ertesi gün mü */
+  bildirimGunSecimi: BildirimGunSecimi;
+  /** Sabit mod: Bildirim saati (0-23) */
+  bildirimSaati: number;
+  /** Sabit mod: Bildirim dakikası (0-59) */
+  bildirimDakikasi: number;
+}
+
+/**
+ * Varsayilan seri ayarlari
+ */
+export const VARSAYILAN_SERI_AYARLARI: SeriAyarlari = {
+  tamGunEsigi: 5,
+  gunBitisSaati: '05:00', // DEPRECATED - artık otomatik hesaplanıyor
+  bildirimlerAktif: true,
+  toparlanmaGunSayisi: 5,
+  gunSonuBildirimAktif: true,
+  gunSonuBildirimDk: 60, // DEPRECATED
+  // Yeni gün sonu bildirim ayarları
+  gunSonuBildirimModu: 'otomatik',
+  bildirimImsakOncesiDk: 30,
+  bildirimGunSecimi: 'ertesiGun',
+  bildirimSaati: 4,
+  bildirimDakikasi: 0,
+};
+
+// ==================== PUAN SISTEMI ====================
+
+/**
+ * Puan kazanma tipleri
+ */
+export type PuanTipi =
+  | 'namaz_kilindi'      // Her kilinin namaz
+  | 'tam_gun'            // Gunun tum namazlari kilindiginda bonus
+  | 'seri_devam'         // Seri devam ettiginde (seri sayisi kadar puan)
+  | 'rozet_kazanildi'    // Rozet kazanildiginda
+  | 'toparlanma_tamamlandi'; // Toparlanma basariyla tamamlandiginda
+
+/**
+ * Puan degerleri
+ */
+export const PUAN_DEGERLERI: Record<PuanTipi, number> = {
+  namaz_kilindi: 5,
+  tam_gun: 10,
+  seri_devam: 1, // Seri sayisi ile carpilir
+  rozet_kazanildi: 50, // Rozet seviyesine gore artar
+  toparlanma_tamamlandi: 25,
+};
+
+/**
+ * Rozet seviyesine gore bonus puan carpani
+ */
+export const ROZET_SEVIYE_CARPANI: Record<RozetSeviyesi, number> = {
+  bronz: 1,
+  gumus: 2,
+  altin: 3,
+  elmas: 4,
+};
+
+// ==================== SERI HEDEFLERI ====================
+
+/**
+ * Seri hedef tipi
+ */
+export interface SeriHedefi {
+  /** Hedef gun sayisi */
+  gun: number;
+  /** Hedef adi */
+  ad: string;
+  /** Hedef aciklamasi */
+  aciklama: string;
+  /** Hedef ikonu */
+  ikon: string;
+  /** Iliskili rozet ID'si */
+  rozetId: string;
+}
+
+/**
+ * Onceden tanimlanmis seri hedefleri
+ */
+export const SERI_HEDEFLERI: SeriHedefi[] = [
+  {
+    gun: 7,
+    ad: 'İlk Hafta',
+    aciklama: '7 gün kesintisiz namaz kıl',
+    ikon: '🌱',
+    rozetId: 'ilk_adim',
+  },
+  {
+    gun: 21,
+    ad: 'Alışkanlık Ustası',
+    aciklama: '21 gun - alışkanlık oluşturma süresi',
+    ikon: '🔥',
+    rozetId: 'aliskanlik_ustasi',
+  },
+  {
+    gun: 60,
+    ad: 'Kararlılık',
+    aciklama: '60 gün kesintisiz devam',
+    ikon: '💎',
+    rozetId: 'kararlilik',
+  },
+  {
+    gun: 90,
+    ad: 'Efsane',
+    aciklama: '90 gün - üstün kararlılık',
+    ikon: '👑',
+    rozetId: 'efsane',
+  },
+];
+
+// ==================== SEVIYE TANIMLARI ====================
+
+/**
+ * Tum seviye tanimlari
+ */
+export const SEVIYE_TANIMLARI: SeviyeTanimi[] = [
+  { seviye: 1, minPuan: 0, rank: 'Mübtedi', ikon: '🌙' },
+  { seviye: 2, minPuan: 100, rank: 'Tâlip', ikon: '⭐' },
+  { seviye: 3, minPuan: 300, rank: 'Sâlik', ikon: '🌟' },
+  { seviye: 4, minPuan: 600, rank: 'Mürid', ikon: '💫' },
+  { seviye: 5, minPuan: 1000, rank: 'Ârif', ikon: '✨' },
+  { seviye: 6, minPuan: 1500, rank: 'Hâfız', ikon: '🏆' },
+  { seviye: 7, minPuan: 2500, rank: 'Kâmil', ikon: '👑' },
+];
+
+// ==================== ROZET TANIMLARI ====================
+
+/**
+ * Tum rozet tanimlari
+ */
+export const ROZET_TANIMLARI: RozetTanimi[] = [
+  // Seri rozetleri
+  {
+    id: 'ilk_adim',
+    ad: 'İlk Adım',
+    aciklama: 'İlk haftayı tamamladınız!',
+    ikon: '🌱',
+    tip: 'seri',
+    seviye: 'bronz',
+    kosul: 7,
+    kosulAciklamasi: '7 günlük seri',
+  },
+  {
+    id: 'aliskanlik_ustasi',
+    ad: 'Alışkanlık Ustası',
+    aciklama: '21 gün - alışkanlık oluşturma süresi tamamlandı!',
+    ikon: '🔥',
+    tip: 'seri',
+    seviye: 'gumus',
+    kosul: 21,
+    kosulAciklamasi: '21 günlük seri',
+  },
+  {
+    id: 'kararlilik',
+    ad: 'Kararlı',
+    aciklama: '60 gün kesintisiz namaz kıldınız!',
+    ikon: '💎',
+    tip: 'seri',
+    seviye: 'altin',
+    kosul: 60,
+    kosulAciklamasi: '60 günlük seri',
+  },
+  {
+    id: 'efsane',
+    ad: 'Efsane',
+    aciklama: '90 gün - üstün kararlılık gösterdiniz!',
+    ikon: '👑',
+    tip: 'seri',
+    seviye: 'elmas',
+    kosul: 90,
+    kosulAciklamasi: '90 günlük seri',
+  },
+  // Ozel rozetler
+  {
+    id: 'toparlanma_ustasi',
+    ad: 'Toparlanma Ustası',
+    aciklama: '3 kez toparlanma modunu başarıyla tamamladınız!',
+    ikon: '🔄',
+    tip: 'ozel',
+    seviye: 'gumus',
+    kosul: 3,
+    kosulAciklamasi: '3 kez toparlanma',
+  },
+  {
+    id: 'mukemmeliyetci',
+    ad: 'Mükemmeliyetçi',
+    aciklama: '30 gün boyunca 5/5 namaz kıldınız!',
+    ikon: '⭐',
+    tip: 'ozel',
+    seviye: 'altin',
+    kosul: 30,
+    kosulAciklamasi: '30 gün 5/5 namaz',
+  },
+  // Toplam rozetler
+  {
+    id: 'yuz_namaz',
+    ad: '100 Namaz',
+    aciklama: 'Toplam 100 namaz kıldınız!',
+    ikon: '💯',
+    tip: 'toplam',
+    seviye: 'bronz',
+    kosul: 100,
+    kosulAciklamasi: '100 namaz kılmak',
+  },
+  {
+    id: 'bin_namaz',
+    ad: '1000 Namaz',
+    aciklama: 'Toplam 1000 namaz kıldınız!',
+    ikon: '🏅',
+    tip: 'toplam',
+    seviye: 'altin',
+    kosul: 1000,
+    kosulAciklamasi: '1000 namaz kılmak',
+  },
+];
+
+// ==================== GUN BITIS SAATI SECENEKLERI ====================
+
+/**
+ * Gun bitis saati secenegi
+ */
+export interface GunBitisSaatiSecenegi {
+  /** Saat degeri (HH:mm format) */
+  deger: string;
+  /** Gosterilecek etiket */
+  etiket: string;
+  /** Aciklama */
+  aciklama: string;
+}
+
+/**
+ * Varsayilan gun bitis saati secenekleri
+ */
+export const GUN_BITIS_SAATI_SECENEKLERI: GunBitisSaatiSecenegi[] = [
+  { deger: '04:00', etiket: '04:00', aciklama: 'Erken yatanlar için' },
+  { deger: '05:00', etiket: '05:00', aciklama: 'Varsayılan - çoğu imsak vaktinden önce' },
+  { deger: '06:00', etiket: '06:00', aciklama: 'Geç yatanlar için' },
+];
+
+// ==================== KUTLAMA TIPLERI ====================
+
+/**
+ * Kutlama tipi
+ */
+export type KutlamaTipi =
+  | 'rozet_kazanildi'
+  | 'hedef_tamamlandi'
+  | 'seviye_atlandi'
+  | 'toparlanma_tamamlandi'
+  | 'en_uzun_seri';
+
+/**
+ * Kutlama bilgisi
+ */
+export interface KutlamaBilgisi {
+  /** Kutlama tipi */
+  tip: KutlamaTipi;
+  /** Baslik */
+  baslik: string;
+  /** Mesaj */
+  mesaj: string;
+  /** Ikon */
+  ikon: string;
+  /** Ekstra veri (rozet, seviye, vb.) */
+  ekstraVeri?: Record<string, unknown>;
+}
+
+

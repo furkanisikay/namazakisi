@@ -1,0 +1,194 @@
+/**
+ * Uygulama genelinde kullanilan sabitler
+ * SOLID prensiplerini takip ederek arayuz sabitlerini ayiriyoruz
+ */
+
+// Namaz isimleri (Veritabanı ve Kod içinde kullanım için)
+// NOT: Veritabanında Türkçe karakterli saklandığı için değerler Türkçe olmalı.
+export enum NamazAdi {
+  Sabah = 'Sabah',
+  Gunes = 'Güneş', // UI ve Vakit hesaplama için gerekli, DB'de yok
+  Ogle = 'Öğle',
+  Ikindi = 'İkindi',
+  Aksam = 'Akşam',
+  Yatsi = 'Yatsı',
+}
+
+// UI'da gösterilecek isimler (Enum değerleri zaten Türkçe olduğu için birebir aynı olabilir, veya farklı formatlanabilir)
+export const NAMAZ_GORUNUM_ISIMLERI: Record<NamazAdi, string> = {
+  [NamazAdi.Sabah]: 'Sabah',
+  [NamazAdi.Gunes]: 'Güneş',
+  [NamazAdi.Ogle]: 'Öğle',
+  [NamazAdi.Ikindi]: 'İkindi',
+  [NamazAdi.Aksam]: 'Akşam',
+  [NamazAdi.Yatsi]: 'Yatsı',
+};
+
+// Veritabanı oluşturulurken kullanılan liste (5 Vakit)
+// Güneş vakti namaz olarak kılınmadığı/işaretlenmediği için burada yer almaz.
+export const NAMAZ_ISIMLERI = [
+  NamazAdi.Sabah,
+  NamazAdi.Ogle,
+  NamazAdi.Ikindi,
+  NamazAdi.Aksam,
+  NamazAdi.Yatsi,
+] as const;
+
+// Uygulama meta verileri
+export const UYGULAMA = {
+  ADI: 'Namaz Akışı',
+  VERSIYON: '1.0.0',
+  ACIKLAMA: 'Günlük namaz takip uygulaması',
+} as const;
+
+// Renk paleti
+export const RENKLER = {
+  // Ana renkler
+  BIRINCIL: '#4CAF50',
+  BIRINCIL_KOYU: '#388E3C',
+  BIRINCIL_ACIK: '#C8E6C9',
+
+  // Durum renkleri
+  BASARILI: '#4CAF50',
+  UYARI: '#FFC107',
+  HATA: '#F44336',
+  BILGI: '#2196F3',
+
+  // Nötr renkler
+  BEYAZ: '#FFFFFF',
+  SIYAH: '#000000',
+  GRI_ACIK: '#F5F5F5',
+  GRI: '#9E9E9E',
+  GRI_KOYU: '#616161',
+
+  // Arka plan
+  ARKAPLAN: '#FAFAFA',
+  KART_ARKAPLAN: '#FFFFFF',
+} as const;
+
+// Boyutlar
+export const BOYUTLAR = {
+  // Padding
+  PADDING_KUCUK: 8,
+  PADDING_ORTA: 16,
+  PADDING_BUYUK: 24,
+
+  // Margin
+  MARGIN_KUCUK: 8,
+  MARGIN_ORTA: 16,
+  MARGIN_BUYUK: 24,
+
+  // Border radius
+  YUVARLATMA_KUCUK: 8,
+  YUVARLATMA_ORTA: 12,
+  YUVARLATMA_BUYUK: 16,
+
+  // Font boyutlari
+  FONT_KUCUK: 12,
+  FONT_NORMAL: 14,
+  FONT_ORTA: 16,
+  FONT_BUYUK: 20,
+  FONT_BASLIK: 24,
+} as const;
+
+// AsyncStorage anahtarlari
+export const DEPOLAMA_ANAHTARLARI = {
+  NAMAZ_VERILERI: 'namaz_verileri',
+  KULLANICI_AYARLARI: 'kullanici_ayarlari',
+  SON_SENKRONIZASYON: 'son_senkronizasyon',
+  // Seri sistemi anahtarlari
+  SERI_DURUMU: 'seri_durumu',
+  ROZET_VERILERI: 'rozet_verileri',
+  SEVIYE_DURUMU: 'seviye_durumu',
+  SERI_AYARLARI: 'seri_ayarlari',
+  // Istatistikler
+  TOPLAM_KILILAN_NAMAZ: 'toplam_kililan_namaz',
+  TOPARLANMA_SAYISI: 'toparlanma_sayisi',
+  MUKEMMEL_GUN_SAYISI: 'mukemmel_gun_sayisi',
+  // Ozel gun sistemi
+  OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
+  // Muhafiz sistemi
+  MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // Konum sistemi
+  KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
+} as const;
+
+// Tarih formatlari
+export const TARIH_FORMATLARI = {
+  ISO: 'yyyy-MM-dd',
+  GORUNUM: 'dd MMMM yyyy',
+  GUN_ADI: 'EEEE',
+  KISA: 'dd/MM/yyyy',
+} as const;
+
+// Istatistik periyotlari
+export const ISTATISTIK_PERIYOTLARI = {
+  HAFTALIK: 7,
+  AYLIK: 30,
+} as const;
+
+// Performans esikleri
+export const PERFORMANS_ESIKLERI = {
+  MUKEMMEL: 100,
+  COK_IYI: 80,
+  IYI: 60,
+  ORTA: 40,
+} as const;
+
+// Google OAuth ayarlari
+// NOT: Bu degerleri Google Cloud Console'dan alin
+// https://console.cloud.google.com/apis/credentials
+export const GOOGLE_OAUTH = {
+  // Expo Go ve web icin
+  WEB_CLIENT_ID: '658761433733-maut0baqrkvqbf44qlultmf56qidh0se.apps.googleusercontent.com',
+  // Android icin (package: com.furkanisikay.namazakisirn)
+  ANDROID_CLIENT_ID: 'YOUR_ANDROID_CLIENT_ID',
+  // iOS icin (bundle: com.furkanisikay.namazakisirn)
+  IOS_CLIENT_ID: 'YOUR_IOS_CLIENT_ID',
+} as const;
+
+// ==================== SERI SISTEMI SABITLERI ====================
+
+/**
+ * Seri hedef gun sayilari
+ */
+export const SERI_HEDEF_GUNLERI = {
+  ILK_HAFTA: 7,
+  ALISKANLIK: 21,
+  KARARLILIK: 60,
+  EFSANE: 90,
+} as const;
+
+/**
+ * Varsayilan seri ayarlari
+ */
+export const VARSAYILAN_SERI_AYARLARI = {
+  TAM_GUN_ESIGI: 5,
+  GUN_BITIS_SAATI: '05:00',
+  TOPARLANMA_GUN_SAYISI: 5,
+  BILDIRIMLER_AKTIF: true,
+} as const;
+
+/**
+ * Seri renkleri - UI icin
+ */
+export const SERI_RENKLERI = {
+  ATES: '#FF6B35',
+  ATES_ACIK: '#FFE4D6',
+  TOPARLANMA: '#FFC107',
+  TOPARLANMA_ACIK: '#FFF8E1',
+  BOZUK: '#F44336',
+  BOZUK_ACIK: '#FFEBEE',
+} as const;
+
+/**
+ * Rozet seviye renkleri
+ */
+export const ROZET_RENKLERI = {
+  BRONZ: '#CD7F32',
+  GUMUS: '#C0C0C0',
+  ALTIN: '#FFD700',
+  ELMAS: '#B9F2FF',
+} as const;
+
+

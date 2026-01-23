@@ -1,0 +1,31 @@
+# Değişiklik Günlüğü (Changelog)
+
+Projedeki tüm önemli değişiklikler bu dosyada belgelenecektir.
+
+Biçim [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) standardına dayanmaktadır
+ve bu proje [Semantic Versioning](https://semver.org/spec/v2.0.0.html) kurallarına uymaktadır.
+
+## [1.0.0] - 2026-01-23
+
+### 🎉 İlk Sürüm (Initial Release)
+
+**Namaz Akışı**, GPLv3 lisansı altında "Sadaka-i Cariye" projesi olarak ilk kez herkese açık olarak yayınlandı.
+
+### ✨ Özellikler
+
+*   **Çevrimdışı & Gizlilik:** Bulut bağımlılıkları tamamen kaldırıldı. Tüm veriler yerel olarak `AsyncStorage` kullanılarak saklanır.
+*   **Akıllı Vakit Hesaplama:** Konuma dayalı olarak `adhan` kütüphanesi kullanılarak (Diyanet uyumlu) otomatik hesaplama yapılır.
+*   **'Muhafız' Bildirim Sistemi:**
+    *   **İnteraktif Aksiyonlar:** Bildirimler üzerinden doğrudan ("Kıldım") diyerek namazı işaretleyebilme.
+    *   **Artan Aciliyet:** 4 seviyeli hatırlatma sistemi (Hatırlatma -> Uyarı -> Mücadele -> Son Çağrı).
+    *   **Otomatik Temizlik:** Namaz kılındığında veya yeni vakit girdiğinde eski bildirimleri otomatik temizler.
+    *   **Akıllı Sıklık:** Her aciliyet seviyesi için özelleştirilebilir aralıklar.
+*   **Kaza Namazı Takibi:** Kılınmayan namazların otomatik tespiti ve kaydedilmesi.
+*   **Seri & Oyunlaştırma:** Sürekliliği artırmak için görsel seri takibi ve rozet sistemi.
+*   **Modern Arayüz:** Akıcı animasyonlarla optimize edilmiş Karanlık Mod.
+*   **Konum Kalıcılığı:** Arka plan izin desteği ile sağlam konum yönetimi.
+
+### 🛠 Teknik
+
+*   **Mimari:** React Native (Expo) + TypeScript + Redux Toolkit.
+*   **Lisans:** GNU GPLv3.

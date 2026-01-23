@@ -1,0 +1,507 @@
+name: Android Build (Gradle)
+
+# EAS olmadan, GitHub Actions uzerinde direkt Gradle ile APK build
+# Debug: Sadece APK olusturur
+# Release: Semantic versioning + Changelog + GitHub Release + APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build tipi'
+        required: true
+        default: 'debug'
+        type: choice
+        options:
+          - debug
+          - release
+
+
+concurrency:
+  group: android-build
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: '20'
+  JAVA_VERSION: '17'
+  use_debug_signing: 'false'
+
+jobs:
+  # ============================================
+  # Debug Build - Sadece APK
+  # ============================================
+  debug-build:
+    name: 🔧 Debug APK Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: ${{ inputs.build_type == 'debug' }}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔢 Versiyon bilgisi al
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Versiyon: $VERSION"
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+
+      - name: 🤖 Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔧 Expo Prebuild
+        run: npx expo prebuild --platform android --clean
+
+      - name: 🏗️ Build Debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug \
+            --no-daemon \
+            --parallel \
+            --build-cache \
+            --configure-on-demand \
+            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+
+      - name: 📦 APK'yi yeniden adlandir
+        id: rename
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          APK_NAME="NamazAkisi-v${VERSION}-debug-${TIMESTAMP}.apk"
+          
+          mv android/app/build/outputs/apk/debug/app-debug.apk "$APK_NAME"
+          echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
+
+      - name: 📤 APK'yi Artifact olarak yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.rename.outputs.apk_name }}
+          path: ${{ steps.rename.outputs.apk_name }}
+          retention-days: 3
+
+      - name: 📊 Build ozeti
+        run: |
+          {
+            echo "### ✅ Debug Build Basarili!"
+            echo "---"
+            echo "| Detay | Bilgi |"
+            echo "|---|---|"
+            echo "| � **APK Ismi** | \`${{ steps.rename.outputs.apk_name }}\` |"
+            echo "| � **Boyut** | $(du -h ${{ steps.rename.outputs.apk_name }} | cut -f1) |"
+            echo "| ⏱️ **Tarih** | $(date '+%Y-%m-%d %H:%M:%S') |"
+            echo ""
+            echo "### 📥 Nasil Indirilir?"
+            echo "1. Yukaridaki **Artifacts** kismina gidin"
+            echo "2. **${{ steps.rename.outputs.apk_name }}** dosyasina tiklayin"
+          } >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # Release Build - Versioning + Changelog + APK
+  # ============================================
+  release-build:
+    name: 🚀 Release APK Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: ${{ inputs.build_type == 'release' }}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: wrapper
+          cache-read-only: false
+
+      - name: 🤖 Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔧 Kod kontrolleri
+        run: |
+          npm run typecheck || true
+          npm run lint
+          npm test
+
+      # ============================================
+      # Semantic Versioning
+      # ============================================
+      - name: 🏷️ Calculate Next Version
+        id: version
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "BREAKING CHANGE:"
+          minor_pattern: "feat:"
+          version_format: "${major}.${minor}.${patch}"
+          search_commit_body: true
+          user_format_type: "csv"
+
+      - name: 📝 Versiyon dosyalarini guncelle
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.version }}"
+          
+          # package.json
+          npm version $NEW_VERSION --no-git-tag-version
+          
+          # app.json
+          node -e "
+            const fs = require('fs');
+            const appJson = JSON.parse(fs.readFileSync('./app.json', 'utf8'));
+            appJson.expo.version = '$NEW_VERSION';
+            
+            // Auto increment Android versionCode
+            if (!appJson.expo.android) appJson.expo.android = {};
+            const currentCode = appJson.expo.android.versionCode || 0;
+            appJson.expo.android.versionCode = currentCode + 1;
+            console.log('Use new versionCode: ' + appJson.expo.android.versionCode);
+            
+            fs.writeFileSync('./app.json', JSON.stringify(appJson, null, 2) + '\n');
+          "
+          
+          # UygulamaSabitleri.ts
+          node -e "
+            const fs = require('fs');
+            const path = './src/core/constants/UygulamaSabitleri.ts';
+            let content = fs.readFileSync(path, 'utf8');
+            content = content.replace(/VERSIYON: '[0-9]+\.[0-9]+\.[0-9]+'/, \"VERSIYON: '$NEW_VERSION'\");
+            fs.writeFileSync(path, content);
+          "
+          
+          echo "✅ Versiyon dosyalari guncellendi: $NEW_VERSION"
+
+      # ============================================
+      # Changelog Olustur (Repo'ya commit edilecek)
+      # ============================================
+      - name: 📄 CHANGELOG.md guncelle
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.version }}"
+          TODAY=$(date +"%Y-%m-%d")
+          LAST_TAG=$(git tag --sort=-version:refname | head -1)
+          
+          echo "📝 Changelog olusturuluyor..."
+          echo "   Son tag: $LAST_TAG"
+          
+          # Yeni changelog entry
+          {
+            echo "# Changelog"
+            echo ""
+            echo "All notable changes to this project will be documented in this file."
+            echo ""
+            echo "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),"
+            echo "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)."
+            echo ""
+            echo "## [${NEW_VERSION}] - ${TODAY}"
+            echo ""
+          } > CHANGELOG_NEW.md
+          
+          if [ -n "$LAST_TAG" ]; then
+            # Added (feat)
+            FEATURES=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^feat" 2>/dev/null || true)
+            if [ -n "$FEATURES" ]; then
+              echo "### Added" >> CHANGELOG_NEW.md
+              git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
+                sed 's/^- feat(\([^)]*\)): /- [\1] /' | \
+                sed 's/^- feat: /- /' >> CHANGELOG_NEW.md
+              echo "" >> CHANGELOG_NEW.md
+              echo "" >> CHANGELOG_NEW.md
+            fi
+            
+            # Fixed
+            FIXES=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^fix" 2>/dev/null || true)
+            if [ -n "$FIXES" ]; then
+              echo "### Fixed" >> CHANGELOG_NEW.md
+              git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
+                sed 's/^- fix(\([^)]*\)): /- [\1] /' | \
+                sed 's/^- fix: /- /' >> CHANGELOG_NEW.md
+              echo "" >> CHANGELOG_NEW.md
+              echo "" >> CHANGELOG_NEW.md
+            fi
+            
+            # Changed (refactor, perf)
+            REFACTOR=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^refactor" 2>/dev/null || true)
+            PERF=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^perf" 2>/dev/null || true)
+            if [ -n "$REFACTOR" ] || [ -n "$PERF" ]; then
+              echo "### Changed" >> CHANGELOG_NEW.md
+              if [ -n "$REFACTOR" ]; then
+                git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
+                  sed 's/^- refactor(\([^)]*\)): /- [\1] /' | \
+                  sed 's/^- refactor: /- /' >> CHANGELOG_NEW.md
+              fi
+              if [ -n "$PERF" ]; then
+                git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
+                  sed 's/^- perf(\([^)]*\)): /- [\1] /' | \
+                  sed 's/^- perf: /- /' >> CHANGELOG_NEW.md
+              fi
+              echo "" >> CHANGELOG_NEW.md
+              echo "" >> CHANGELOG_NEW.md
+            fi
+          else
+            echo "### 🎉 Initial Release" >> CHANGELOG_NEW.md
+            echo "" >> CHANGELOG_NEW.md
+          fi
+          
+          # Eski changelog'u ekle
+          if [ -f CHANGELOG.md ]; then
+            tail -n +8 CHANGELOG.md >> CHANGELOG_NEW.md
+          fi
+          
+          mv CHANGELOG_NEW.md CHANGELOG.md
+          echo "✅ CHANGELOG.md guncellendi"
+
+      # ============================================
+      # Release Notes Olustur (Sadece GitHub Release body icin)
+      # ============================================
+      - name: 📝 Release Notes olustur
+        id: release_notes
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.version }}"
+          TODAY=$(date +"%d %B %Y" | sed 's/January/Ocak/;s/February/Subat/;s/March/Mart/;s/April/Nisan/;s/May/Mayis/;s/June/Haziran/;s/July/Temmuz/;s/August/Agustos/;s/September/Eylul/;s/October/Ekim/;s/November/Kasim/;s/December/Aralik/')
+          LAST_TAG=$(git tag --sort=-version:refname | head -1)
+          
+          # Release notes icerigi (repo'ya pushlanMAyacak, sadece body icin)
+          NOTES=""
+          
+          if [ -n "$LAST_TAG" ]; then
+            COMMIT_COUNT=$(git rev-list ${LAST_TAG}..HEAD --count 2>/dev/null || echo "0")
+            NOTES="📊 **${COMMIT_COUNT}** commit | Önceki: [${LAST_TAG}](https://github.com/${{ github.repository }}/releases/tag/${LAST_TAG})"
+            NOTES="${NOTES}\n\n"
+            
+            # Features
+            FEATURES=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
+              sed 's/^- feat(\([^)]*\)): /- **\1**: /' | \
+              sed 's/^- feat: /- /' || true)
+            if [ -n "$FEATURES" ]; then
+              NOTES="${NOTES}### ✨ Yeni Özellikler\n${FEATURES}\n\n"
+            fi
+            
+            # Fixes
+            FIXES=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
+              sed 's/^- fix(\([^)]*\)): /- **\1**: /' | \
+              sed 's/^- fix: /- /' || true)
+            if [ -n "$FIXES" ]; then
+              NOTES="${NOTES}### 🐛 Hata Düzeltmeleri\n${FIXES}\n\n"
+            fi
+            
+            # Performance
+            PERF=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
+              sed 's/^- perf(\([^)]*\)): /- **\1**: /' | \
+              sed 's/^- perf: /- /' || true)
+            if [ -n "$PERF" ]; then
+              NOTES="${NOTES}### ⚡ Performans\n${PERF}\n\n"
+            fi
+            
+            # Refactor
+            REFACTOR=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
+              sed 's/^- refactor(\([^)]*\)): /- **\1**: /' | \
+              sed 's/^- refactor: /- /' || true)
+            if [ -n "$REFACTOR" ]; then
+              NOTES="${NOTES}### ♻️ Refactoring\n${REFACTOR}\n\n"
+            fi
+          else
+            NOTES="🎉 **İlk Release!**\n\n"
+          fi
+          
+          # Multi-line output
+          {
+            echo "notes<<NOTES_EOF"
+            echo -e "$NOTES"
+            echo "NOTES_EOF"
+          } >> $GITHUB_OUTPUT
+          
+          echo "previous_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+
+
+
+      # ============================================
+      # APK Build
+      # ============================================
+      - name: 🔧 Expo Prebuild
+        run: npx expo prebuild --platform android --clean
+
+      - name: 🔐 Keystore olustur
+        run: |
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "⚠️ Keystore bulunamadi, debug signing kullanilacak"
+            echo "use_debug_signing=true" >> $GITHUB_ENV
+          else
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+            echo "✅ Keystore olusturuldu"
+            echo "use_debug_signing=false" >> $GITHUB_ENV
+          fi
+
+      - name: 📝 Gradle signing ayarlari
+        if: env.use_debug_signing == 'false'
+        run: |
+          cat >> android/gradle.properties << EOF
+          
+          RELEASE_STORE_FILE=release.keystore
+          RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      - name: 🔧 Build.gradle signing config
+        if: env.use_debug_signing == 'false'
+        run: |
+
+          cat << 'EOF' > update_signing.js
+          const fs = require('fs');
+          const path = 'android/app/build.gradle';
+          let content = fs.readFileSync(path, 'utf8');
+          
+          if (!content.includes('signingConfigs')) {
+            const signingConfig = `
+          signingConfigs {
+              release {
+                  if (project.hasProperty('RELEASE_STORE_FILE')) {
+                      storeFile file(RELEASE_STORE_FILE)
+                      storePassword RELEASE_STORE_PASSWORD
+                      keyAlias RELEASE_KEY_ALIAS
+                      keyPassword RELEASE_KEY_PASSWORD
+                  }
+              }
+          }
+          `;
+            content = content.replace(/(android\s*\{)/, '$1' + signingConfig);
+          }
+          
+          if (!content.includes('signingConfig signingConfigs.release')) {
+            content = content.replace(
+              /(buildTypes\s*\{[\s\S]*?release\s*\{)/,
+              '$1\n            signingConfig signingConfigs.release'
+            );
+          }
+          
+          fs.writeFileSync(path, content);
+          EOF
+          
+          node update_signing.js
+          rm update_signing.js
+
+      - name: 🏗️ Build Release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease \
+            --no-daemon \
+            --parallel \
+            --build-cache \
+            --configure-on-demand \
+            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+
+      - name: 📦 APK'yi yeniden adlandir
+        id: rename
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          APK_NAME="NamazAkisi-v${VERSION}.apk"
+          
+          mv android/app/build/outputs/apk/release/app-release.apk "$APK_NAME"
+          
+          echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
+          echo "apk_size=$(du -h $APK_NAME | cut -f1)" >> $GITHUB_OUTPUT
+
+      # ============================================
+      # Commit & Tag (Build basariliysa)
+      # ============================================
+      - name: 📤 Commit ve Tag olustur
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add package.json package-lock.json app.json src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
+          git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
+          git tag -a ${{ steps.version.outputs.version_tag }} -m "Release ${{ steps.version.outputs.version_tag }}"
+          git push origin master
+          git push origin ${{ steps.version.outputs.version_tag }}
+
+      # ============================================
+      # GitHub Release
+      # ============================================
+      - name: 🚀 GitHub Release olustur
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version_tag }}
+          name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
+          body: |
+            ${{ steps.release_notes.outputs.notes }}
+            ---
+            
+            ## 📱 İndirme
+            
+            | Dosya | Boyut |
+            |-------|-------|
+            | ${{ steps.rename.outputs.apk_name }} | ${{ steps.rename.outputs.apk_size }} |
+            
+            ---
+            
+            📄 [Tüm değişiklikler (CHANGELOG.md)](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.version_tag }}/CHANGELOG.md)
+            
+            ${{ steps.release_notes.outputs.previous_tag != '' && format('🔗 **Full Changelog**: https://github.com/{0}/compare/{1}...{2}', github.repository, steps.release_notes.outputs.previous_tag, steps.version.outputs.version_tag) || '' }}
+          files: ${{ steps.rename.outputs.apk_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📊 Build ozeti
+        run: |
+          {
+            echo "### 🚀 Release Build Basarili!"
+            echo "---"
+            echo "| Detay | Bilgi |"
+            echo "|---|---|"
+            echo "| 📌 **Versiyon** | \`${{ steps.version.outputs.current_version }}\` → \`${{ steps.version.outputs.version }}\` |"
+            echo "| 🏷️ **Tag** | \`${{ steps.version.outputs.version_tag }}\` |"
+            echo "| � **APK Ismi** | \`${{ steps.rename.outputs.apk_name }}\` |"
+            echo "| � **Boyut** | ${{ steps.rename.outputs.apk_size }} |"
+            echo ""
+            echo "### 🔗 Baglantilar"
+            echo "- [📦 Release Sayfasi](https://github.com/${{ github.repository }}/releases/tag/${{ steps.version.outputs.version_tag }})"
+            echo "- [📄 Changelog](https://github.com/${{ github.repository }}/blob/${{ steps.version.outputs.version_tag }}/CHANGELOG.md)"
+          } >> $GITHUB_STEP_SUMMARY

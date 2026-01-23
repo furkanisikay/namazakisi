@@ -1,0 +1,142 @@
+name: Expo Build (PlayStore)
+
+# PlayStore icin EAS Build - Versiyon degistirmez!
+# Mevcut versiyon ile Expo/EAS uzerinden build alir
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+      profile:
+        description: 'Build profili'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+      wait_for_build:
+        description: 'Build tamamlanana kadar bekle'
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: expo-build
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: 🚀 EAS Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔢 Versiyon bilgisi
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "========================================"
+          echo "📦 Mevcut Versiyon: $VERSION"
+          echo "🎯 Platform: ${{ inputs.platform }}"
+          echo "📋 Profil: ${{ inputs.profile }}"
+          echo "========================================"
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 🚀 Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🔍 EXPO_TOKEN kontrolu
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "❌ EXPO_TOKEN bulunamadi!"
+            echo "💡 GitHub Secrets'a EXPO_TOKEN eklediginizden emin olun."
+            echo "   https://expo.dev/accounts/[account]/settings/access-tokens"
+            exit 1
+          fi
+          echo "✅ EXPO_TOKEN mevcut"
+
+      # ============================================
+      # Android Build
+      # ============================================
+      - name: 🤖 Android Build
+        if: ${{ inputs.platform == 'android' || inputs.platform == 'all' }}
+        run: |
+          echo "🚀 Android EAS Build baslatiliyor..."
+          echo "   Profil: ${{ inputs.profile }}"
+          echo "   Versiyon: ${{ steps.version.outputs.version }}"
+          
+          if [ "${{ inputs.wait_for_build }}" == "true" ]; then
+            eas build --platform android --profile ${{ inputs.profile }} --non-interactive
+          else
+            eas build --platform android --profile ${{ inputs.profile }} --non-interactive --no-wait
+          fi
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ============================================
+      # iOS Build
+      # ============================================
+      - name: 🍎 iOS Build
+        if: ${{ inputs.platform == 'ios' || inputs.platform == 'all' }}
+        continue-on-error: true
+        run: |
+          echo "🚀 iOS EAS Build baslatiliyor..."
+          echo "   Profil: ${{ inputs.profile }}"
+          echo "   Versiyon: ${{ steps.version.outputs.version }}"
+          
+          if [ "${{ inputs.wait_for_build }}" == "true" ]; then
+            eas build --platform ios --profile ${{ inputs.profile }} --non-interactive
+          else
+            eas build --platform ios --profile ${{ inputs.profile }} --non-interactive --no-wait
+          fi
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📊 Build ozeti
+        run: |
+          {
+            echo "### 🚀 EAS Build Baslatildi!"
+            echo "---"
+            echo "| Detay | Bilgi |"
+            echo "|---|---|"
+            echo "| 📦 **Versiyon** | \`${{ steps.version.outputs.version }}\` |"
+            echo "| 🎯 **Platform** | \`${{ inputs.platform }}\` |"
+            echo "| 📋 **Profil** | \`${{ inputs.profile }}\` |"
+            echo "| ⏳ **Bekleme** | \`${{ inputs.wait_for_build }}\` |"
+            echo ""
+            echo "### 🔗 Baglantilar"
+            echo "- [📱 Expo Dashboard](https://expo.dev/accounts/${{ secrets.EXPO_ACCOUNT || 'furkanisikay' }}/projects/namazakisi/builds)"
+            
+            if [ "${{ inputs.wait_for_build }}" != "true" ]; then
+              echo ""
+              echo "> ⚠️ **Not:** Build arka planda devam ediyor. Sonuclari Expo Dashboard uzerinden takip edebilirsiniz."
+            fi
+          } >> $GITHUB_STEP_SUMMARY
