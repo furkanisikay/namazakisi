@@ -1,6 +1,6 @@
 name: Android Build (Gradle)
 
-# EAS olmadan, GitHub Actions uzerinde direkt Gradle ile APK build
+# EAS kullanmadan, GitHub Actions uzerinden direkt Gradle ile APK build alir.
 # Debug: Sadece APK olusturur
 # Release: Semantic versioning + Changelog + GitHub Release + APK
 
