@@ -2,22 +2,25 @@
  * Rozetler Sayfasi
  * Kullanicinin kazandigi ve kazanabilecegi rozetleri gosteren galeri sayfasi
  * Ayrica seviye/rank bilgisini de icerir
+ * 
+ * NativeWind + Expo Vector Icons ile guncellenmis versiyon
  */
 
 import React, { useEffect, useCallback, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   RefreshControl,
-  Animated,
+  TouchableOpacity,
 } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { RozetKarti, YuklemeGostergesi } from '../components';
 import { useRenkler } from '../../core/theme';
-import { BOYUTLAR, ROZET_RENKLERI } from '../../core/constants/UygulamaSabitleri';
+import { ROZET_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import {
   ROZET_TANIMLARI,
   SEVIYE_TANIMLARI,
@@ -25,6 +28,25 @@ import {
 } from '../../core/types/SeriTipleri';
 
 type TabTipi = 'tumu' | 'seri' | 'ozel' | 'toplam';
+
+// Tab ikon eslesmesi
+const TAB_IKONLARI: Record<TabTipi, { name: string; solid?: boolean }> = {
+  tumu: { name: 'trophy', solid: true },
+  seri: { name: 'fire-alt', solid: true },
+  ozel: { name: 'star', solid: true },
+  toplam: { name: 'chart-bar', solid: true },
+};
+
+// Seviye ikon eslesmesi (emoji yerine FontAwesome5)
+const SEVIYE_IKONLARI: Record<string, string> = {
+  '🌙': 'moon',
+  '⭐': 'star',
+  '🌟': 'star',
+  '💫': 'star',
+  '✨': 'magic',
+  '🏆': 'trophy',
+  '👑': 'crown',
+};
 
 /**
  * Rozetler Sayfasi Komponenti
@@ -73,14 +95,21 @@ export const RozetlerSayfasi: React.FC = () => {
     ? SEVIYE_TANIMLARI.find((s) => s.seviye === seviyeDurumu.mevcutSeviye + 1)
     : null;
 
+  // Seviye ikonu al
+  const seviyeIkonuAl = (emojiIkon: string | undefined): string => {
+    if (!emojiIkon) return 'moon';
+    return SEVIYE_IKONLARI[emojiIkon] || 'moon';
+  };
+
   if (yukleniyor && rozetDetaylari.length === 0) {
     return <YuklemeGostergesi mesaj="Rozetler yükleniyor..." />;
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
+    <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
       <ScrollView
-        contentContainerStyle={styles.icerik}
+        className="flex-1 px-4 pt-4"
+        contentContainerStyle={{ paddingBottom: 40 }}
         refreshControl={
           <RefreshControl
             refreshing={yukleniyor}
@@ -92,79 +121,131 @@ export const RozetlerSayfasi: React.FC = () => {
       >
         {/* Seviye Karti */}
         <View
-          style={[styles.seviyeKart, { backgroundColor: renkler.kartArkaplan }]}
+          className="rounded-2xl p-5 mb-4 shadow-sm"
+          style={{ backgroundColor: renkler.kartArkaplan }}
         >
-          <View style={styles.seviyeUst}>
-            <View style={styles.seviyeBilgi}>
-              <Text style={styles.seviyeIkon}>
-                {seviyeDurumu?.rankIkonu || '🌙'}
-              </Text>
-              <View style={styles.seviyeMetinler}>
-                <Text style={[styles.seviyeRank, { color: renkler.metin }]}>
+          {/* Ust Bilgi */}
+          <View className="flex-row justify-between items-center mb-4">
+            <View className="flex-row items-center">
+              <View
+                className="w-14 h-14 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${renkler.birincil}20` }}
+              >
+                <FontAwesome5
+                  name={seviyeIkonuAl(seviyeDurumu?.rankIkonu)}
+                  size={24}
+                  color={renkler.birincil}
+                  solid
+                />
+              </View>
+              <View>
+                <Text
+                  className="text-xl font-bold"
+                  style={{ color: renkler.metin }}
+                >
                   {seviyeDurumu?.rank || 'Mübtedi'}
                 </Text>
-                <Text style={[styles.seviyeNumara, { color: renkler.birincil }]}>
+                <Text
+                  className="text-sm font-semibold"
+                  style={{ color: renkler.birincil }}
+                >
                   Seviye {seviyeDurumu?.mevcutSeviye || 1}
                 </Text>
               </View>
             </View>
-            <View style={styles.puanBilgi}>
-              <Text style={[styles.puanBaslik, { color: renkler.metinIkincil }]}>
+            <View className="items-end">
+              <Text
+                className="text-xs"
+                style={{ color: renkler.metinIkincil }}
+              >
                 Toplam Puan
               </Text>
-              <Text style={[styles.puanDeger, { color: renkler.birincil }]}>
+              <Text
+                className="text-2xl font-bold"
+                style={{ color: renkler.birincil }}
+              >
                 {seviyeDurumu?.toplamPuan || 0}
               </Text>
             </View>
           </View>
 
-          {/* Seviye progress bar */}
-          <View style={styles.seviyeProgressContainer}>
+          {/* Progress Bar */}
+          <View className="mb-4">
             <View
-              style={[
-                styles.seviyeProgressArkaplan,
-                { backgroundColor: renkler.sinir },
-              ]}
+              className="h-2 rounded-full overflow-hidden"
+              style={{ backgroundColor: renkler.sinir }}
             >
               <View
-                style={[
-                  styles.seviyeProgressDolgu,
-                  {
-                    backgroundColor: renkler.birincil,
-                    width: `${seviyeIlerleme}%`,
-                  },
-                ]}
+                className="h-full rounded-full"
+                style={{
+                  backgroundColor: renkler.birincil,
+                  width: `${seviyeIlerleme}%`,
+                }}
               />
             </View>
-            <View style={styles.seviyeProgressMetinler}>
-              <Text style={[styles.seviyeProgressMetin, { color: renkler.metinIkincil }]}>
+            <View className="flex-row justify-between mt-1">
+              <Text
+                className="text-xs"
+                style={{ color: renkler.metinIkincil }}
+              >
                 {seviyeDurumu?.mevcutSeviyePuani || 0} puan
               </Text>
               {sonrakiSeviye && (
-                <Text style={[styles.seviyeProgressMetin, { color: renkler.metinIkincil }]}>
-                  {sonrakiSeviye.rank} için {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldı
+                <Text
+                  className="text-xs"
+                  style={{ color: renkler.metinIkincil }}
+                >
+                  {sonrakiSeviye.rank} icin {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldi
                 </Text>
               )}
             </View>
           </View>
 
           {/* Istatistikler */}
-          <View style={styles.istatistiklerContainer}>
-            <View style={[styles.istatistikItem, { backgroundColor: `${renkler.birincil}15` }]}>
-              <Text style={styles.istatistikIkon}>🕌</Text>
-              <Text style={[styles.istatistikDeger, { color: renkler.birincil }]}>
+          <View className="flex-row justify-around">
+            <View
+              className="flex-1 items-center py-3 rounded-xl mx-1"
+              style={{ backgroundColor: `${renkler.birincil}10` }}
+            >
+              <FontAwesome5
+                name="mosque"
+                size={20}
+                color={renkler.birincil}
+                solid
+              />
+              <Text
+                className="text-lg font-bold mt-1"
+                style={{ color: renkler.birincil }}
+              >
                 {toplamKilinanNamaz}
               </Text>
-              <Text style={[styles.istatistikEtiket, { color: renkler.metinIkincil }]}>
+              <Text
+                className="text-xs"
+                style={{ color: renkler.metinIkincil }}
+              >
                 Namaz
               </Text>
             </View>
-            <View style={[styles.istatistikItem, { backgroundColor: `${ROZET_RENKLERI.ALTIN}15` }]}>
-              <Text style={styles.istatistikIkon}>🏅</Text>
-              <Text style={[styles.istatistikDeger, { color: ROZET_RENKLERI.ALTIN }]}>
+            <View
+              className="flex-1 items-center py-3 rounded-xl mx-1"
+              style={{ backgroundColor: `${ROZET_RENKLERI.ALTIN}10` }}
+            >
+              <FontAwesome5
+                name="medal"
+                size={20}
+                color={ROZET_RENKLERI.ALTIN}
+                solid
+              />
+              <Text
+                className="text-lg font-bold mt-1"
+                style={{ color: ROZET_RENKLERI.ALTIN }}
+              >
                 {kazanilanSayisi}/{toplamRozet}
               </Text>
-              <Text style={[styles.istatistikEtiket, { color: renkler.metinIkincil }]}>
+              <Text
+                className="text-xs"
+                style={{ color: renkler.metinIkincil }}
+              >
                 Rozet
               </Text>
             </View>
@@ -172,41 +253,53 @@ export const RozetlerSayfasi: React.FC = () => {
         </View>
 
         {/* Tab Bar */}
-        <View style={[styles.tabBar, { backgroundColor: renkler.kartArkaplan }]}>
-          {[
-            { id: 'tumu' as TabTipi, etiket: 'Tümü', ikon: '🏆' },
-            { id: 'seri' as TabTipi, etiket: 'Seri', ikon: '🔥' },
-            { id: 'ozel' as TabTipi, etiket: 'Özel', ikon: '⭐' },
-            { id: 'toplam' as TabTipi, etiket: 'Toplam', ikon: '📊' },
-          ].map((tab) => (
-            <View
-              key={tab.id}
-              style={[
-                styles.tab,
-                aktifTab === tab.id && {
-                  borderBottomColor: renkler.birincil,
-                  borderBottomWidth: 2,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.tabMetin,
-                  {
-                    color: aktifTab === tab.id ? renkler.birincil : renkler.metinIkincil,
-                  },
-                ]}
+        <View
+          className="flex-row rounded-xl mb-4 overflow-hidden"
+          style={{ backgroundColor: renkler.kartArkaplan }}
+        >
+          {([
+            { id: 'tumu' as TabTipi, etiket: 'Tümü' },
+            { id: 'seri' as TabTipi, etiket: 'Seri' },
+            { id: 'ozel' as TabTipi, etiket: 'Özel' },
+            { id: 'toplam' as TabTipi, etiket: 'Toplam' },
+          ]).map((tab) => {
+            const aktifMi = aktifTab === tab.id;
+            const ikonBilgi = TAB_IKONLARI[tab.id];
+            return (
+              <TouchableOpacity
+                key={tab.id}
+                className="flex-1 py-3 items-center border-b-2"
+                style={{
+                  borderBottomColor: aktifMi ? renkler.birincil : 'transparent',
+                }}
                 onPress={() => setAktifTab(tab.id)}
+                activeOpacity={0.7}
               >
-                {tab.ikon} {tab.etiket}
-              </Text>
-            </View>
-          ))}
+                <FontAwesome5
+                  name={ikonBilgi.name}
+                  size={14}
+                  color={aktifMi ? renkler.birincil : renkler.metinIkincil}
+                  solid={ikonBilgi.solid}
+                />
+                <Text
+                  className="text-xs font-semibold mt-1"
+                  style={{
+                    color: aktifMi ? renkler.birincil : renkler.metinIkincil,
+                  }}
+                >
+                  {tab.etiket}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Rozet Listesi */}
-        <View style={styles.rozetlerContainer}>
-          <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
             {aktifTab === 'tumu'
               ? 'TÜM ROZETLER'
               : aktifTab === 'seri'
@@ -217,8 +310,16 @@ export const RozetlerSayfasi: React.FC = () => {
           </Text>
 
           {filtrelenmisRozetler.length === 0 ? (
-            <View style={styles.bosContainer}>
-              <Text style={[styles.bosMetin, { color: renkler.metinIkincil }]}>
+            <View className="items-center py-8">
+              <FontAwesome5
+                name="search"
+                size={24}
+                color={renkler.metinIkincil}
+              />
+              <Text
+                className="text-sm mt-2"
+                style={{ color: renkler.metinIkincil }}
+              >
                 Bu kategoride rozet bulunamadi
               </Text>
             </View>
@@ -230,64 +331,65 @@ export const RozetlerSayfasi: React.FC = () => {
         </View>
 
         {/* Seviye Yol Haritasi */}
-        <View style={styles.yolHaritasiContainer}>
-          <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
             SEVİYE YOL HARİTASI
           </Text>
 
           <View
-            style={[
-              styles.yolHaritasiKart,
-              { backgroundColor: renkler.kartArkaplan },
-            ]}
+            className="flex-row justify-between items-start p-3 rounded-2xl overflow-hidden"
+            style={{ backgroundColor: renkler.kartArkaplan }}
           >
             {SEVIYE_TANIMLARI.map((seviye, index) => {
               const aktifMi = seviyeDurumu?.mevcutSeviye === seviye.seviye;
               const tamamlandiMi = (seviyeDurumu?.mevcutSeviye || 1) > seviye.seviye;
 
               return (
-                <View key={seviye.seviye} style={styles.seviyeItem}>
+                <View key={seviye.seviye} className="items-center flex-1 relative">
                   <View
-                    style={[
-                      styles.seviyeItemDaire,
-                      tamamlandiMi && { backgroundColor: renkler.birincil },
-                      aktifMi && {
-                        backgroundColor: `${renkler.birincil}30`,
-                        borderColor: renkler.birincil,
-                        borderWidth: 3,
-                      },
-                      !tamamlandiMi && !aktifMi && { backgroundColor: renkler.sinir },
-                    ]}
+                    className="w-9 h-9 rounded-full items-center justify-center mb-1"
+                    style={{
+                      backgroundColor: tamamlandiMi
+                        ? renkler.birincil
+                        : aktifMi
+                          ? `${renkler.birincil}30`
+                          : renkler.sinir,
+                      borderWidth: aktifMi ? 2 : 0,
+                      borderColor: aktifMi ? renkler.birincil : 'transparent',
+                    }}
                   >
-                    <Text
-                      style={[
-                        styles.seviyeItemIkon,
-                        { opacity: tamamlandiMi || aktifMi ? 1 : 0.4 },
-                      ]}
-                    >
-                      {tamamlandiMi ? '✓' : seviye.ikon}
-                    </Text>
+                    {tamamlandiMi ? (
+                      <FontAwesome5 name="check" size={14} color="#fff" />
+                    ) : (
+                      <FontAwesome5
+                        name={seviyeIkonuAl(seviye.ikon)}
+                        size={12}
+                        color={aktifMi ? renkler.birincil : renkler.metinIkincil}
+                        solid
+                        style={{ opacity: aktifMi ? 1 : 0.5 }}
+                      />
+                    )}
                   </View>
                   <Text
-                    style={[
-                      styles.seviyeItemRank,
-                      {
-                        color: aktifMi
-                          ? renkler.birincil
-                          : tamamlandiMi
-                            ? renkler.metin
-                            : renkler.metinIkincil,
-                        fontWeight: aktifMi ? 'bold' : 'normal',
-                      },
-                    ]}
+                    className="text-center"
+                    style={{
+                      fontSize: 8,
+                      color: aktifMi
+                        ? renkler.birincil
+                        : tamamlandiMi
+                          ? renkler.metin
+                          : renkler.metinIkincil,
+                      fontWeight: aktifMi ? 'bold' : 'normal',
+                    }}
                   >
                     {seviye.rank}
                   </Text>
                   <Text
-                    style={[
-                      styles.seviyeItemPuan,
-                      { color: renkler.metinIkincil },
-                    ]}
+                    className="text-center mt-0.5"
+                    style={{ fontSize: 7, color: renkler.metinIkincil }}
                   >
                     {seviye.minPuan}+
                   </Text>
@@ -295,14 +397,12 @@ export const RozetlerSayfasi: React.FC = () => {
                   {/* Baglanti cizgisi */}
                   {index < SEVIYE_TANIMLARI.length - 1 && (
                     <View
-                      style={[
-                        styles.baglantiCizgisi,
-                        {
-                          backgroundColor: tamamlandiMi
-                            ? renkler.birincil
-                            : renkler.sinir,
-                        },
-                      ]}
+                      className="absolute top-4 -right-6 w-12 h-0.5 -z-10"
+                      style={{
+                        backgroundColor: tamamlandiMi
+                          ? renkler.birincil
+                          : renkler.sinir,
+                      }}
                     />
                   )}
                 </View>
@@ -311,189 +411,9 @@ export const RozetlerSayfasi: React.FC = () => {
           </View>
         </View>
 
-        {/* Alt bosluk */}
-        <View style={styles.altBosluk} />
+        {/* Alt Bosluk */}
+        <View className="h-10" />
       </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  icerik: {
-    padding: BOYUTLAR.PADDING_ORTA,
-    paddingBottom: BOYUTLAR.PADDING_BUYUK * 2,
-  },
-  // Seviye Karti
-  seviyeKart: {
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_BUYUK,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  seviyeUst: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  seviyeBilgi: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  seviyeIkon: {
-    fontSize: 48,
-    marginRight: BOYUTLAR.MARGIN_ORTA,
-  },
-  seviyeMetinler: {},
-  seviyeRank: {
-    fontSize: BOYUTLAR.FONT_BUYUK,
-    fontWeight: 'bold',
-  },
-  seviyeNumara: {
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    fontWeight: '600',
-  },
-  puanBilgi: {
-    alignItems: 'flex-end',
-  },
-  puanBaslik: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-  },
-  puanDeger: {
-    fontSize: BOYUTLAR.FONT_BASLIK,
-    fontWeight: 'bold',
-  },
-  seviyeProgressContainer: {
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  seviyeProgressArkaplan: {
-    height: 8,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  seviyeProgressDolgu: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  seviyeProgressMetinler: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  seviyeProgressMetin: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-  },
-  istatistiklerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  istatistikItem: {
-    flex: 1,
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_ORTA,
-    marginHorizontal: 4,
-  },
-  istatistikIkon: {
-    fontSize: 24,
-    marginBottom: 4,
-  },
-  istatistikDeger: {
-    fontSize: BOYUTLAR.FONT_BUYUK,
-    fontWeight: 'bold',
-  },
-  istatistikEtiket: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-  },
-  // Tab Bar
-  tabBar: {
-    flexDirection: 'row',
-    borderRadius: BOYUTLAR.YUVARLATMA_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    overflow: 'hidden',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: BOYUTLAR.PADDING_ORTA,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabMetin: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    fontWeight: '600',
-  },
-  // Rozetler
-  rozetlerContainer: {
-    marginBottom: BOYUTLAR.MARGIN_BUYUK,
-  },
-  bolumBaslik: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  bosContainer: {
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_BUYUK,
-  },
-  bosMetin: {
-    fontSize: BOYUTLAR.FONT_NORMAL,
-  },
-  // Yol Haritasi
-  yolHaritasiContainer: {
-    marginBottom: BOYUTLAR.MARGIN_BUYUK,
-  },
-  yolHaritasiKart: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    overflow: 'hidden',
-  },
-  seviyeItem: {
-    alignItems: 'center',
-    flex: 1,
-    position: 'relative',
-  },
-  seviyeItemDaire: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  seviyeItemIkon: {
-    fontSize: 16,
-  },
-  seviyeItemRank: {
-    fontSize: 9,
-    textAlign: 'center',
-  },
-  seviyeItemPuan: {
-    fontSize: 8,
-    marginTop: 2,
-  },
-  baglantiCizgisi: {
-    position: 'absolute',
-    top: 18,
-    right: -25,
-    width: 50,
-    height: 2,
-    zIndex: -1,
-  },
-  altBosluk: {
-    height: 40,
-  },
-});
-
-
