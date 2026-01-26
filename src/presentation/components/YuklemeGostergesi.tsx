@@ -1,42 +1,48 @@
 /**
- * Yukleme gostergesi komponenti
- * Lottie animasyonu ile yukleme gosterir
+ * Yükleme göstergesi komponenti
+ * Basit ve profesyonel ActivityIndicator
  */
 
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { RENKLER, BOYUTLAR } from '../../core/constants/UygulamaSabitleri';
-import { YukleniyorAnimasyonu } from './LottieAnimasyon';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { useRenkler } from '../../core/theme';
 
 interface YuklemeGostergesiProps {
   mesaj?: string;
-  boyut?: number;
+  boyut?: 'small' | 'large';
 }
 
 export const YuklemeGostergesi: React.FC<YuklemeGostergesiProps> = ({
   mesaj = 'Yükleniyor...',
-  boyut = 80,
+  boyut = 'large',
 }) => {
+  const renkler = useRenkler();
+
   return (
-    <View style={styles.container}>
-      <YukleniyorAnimasyonu boyut={boyut} />
-      <Text style={styles.mesaj}>{mesaj}</Text>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: renkler.arkaplan,
+        paddingBottom: 50,
+      }}
+    >
+      <ActivityIndicator
+        size={boyut}
+        color={renkler.birincil}
+      />
+      {mesaj && (
+        <Text
+          style={{
+            marginTop: 16,
+            fontSize: 14,
+            color: renkler.metinIkincil,
+          }}
+        >
+          {mesaj}
+        </Text>
+      )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    paddingTop: 80,
-    backgroundColor: RENKLER.ARKAPLAN,
-  },
-  mesaj: {
-    marginTop: BOYUTLAR.MARGIN_ORTA,
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    color: RENKLER.GRI_KOYU,
-  },
-});
-
