@@ -1,8 +1,8 @@
 /**
- * Bildirim Ayarlari Sayfasi
- * Seri hatirlaticilari ve gun sonu bildirimi ayarlari
+ * Bildirim Ayarları Sayfası
+ * Seri hatırlatıcıları ve gün sonu bildirimi ayarları
  * 
- * NativeWind + Expo Vector Icons ile guncellenmis versiyon
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import * as React from 'react';
@@ -174,10 +174,10 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            SERI BILDIRIMLERI
+            SERİ BİLDİRİMLERİ
           </Text>
 
-          {/* Seri Hatirlatici - Toggle ve ayarlar tek kartta */}
+          {/* Seri Hatırlatıcı - Toggle ve ayarlar tek kartta */}
           <View
             className="rounded-xl overflow-hidden shadow-sm"
             style={{ backgroundColor: renkler.kartArkaplan }}
@@ -192,10 +192,10 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
               </View>
               <View className="flex-1">
                 <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                  Seri Hatirlatici
+                  Seri Hatırlatıcı
                 </Text>
                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                  Gun bitmeden serinizi kurtarmaniz icin bildirim al
+                  Gün bitmeden serinizi kurtarmanız için bildirim al
                 </Text>
               </View>
               <Switch
@@ -240,7 +240,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                         color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin,
                       }}
                     >
-                      Imsak Oncesi
+                      İmsak Öncesi
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -266,7 +266,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                         color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin,
                       }}
                     >
-                      Sabit Zamanli
+                      Sabit Zamanlı
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -278,7 +278,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                       className="text-xs font-semibold mb-3"
                       style={{ color: renkler.metinIkincil }}
                     >
-                      Imsak vaktinden ne kadar once?
+                      İmsak vaktinden ne kadar önce?
                     </Text>
                     <View className="items-center">
                       <SaatSecici
@@ -309,7 +309,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                       className="text-xs font-semibold mb-3"
                       style={{ color: renkler.metinIkincil }}
                     >
-                      Bildirim zamani
+                      Bildirim zamanı
                     </Text>
                     <View className="flex-row gap-2 mb-3">
                       <TouchableOpacity
@@ -330,7 +330,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                             color: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? '#FFF' : renkler.metin,
                           }}
                         >
-                          Ayni Gun
+                          Aynı Gün
                         </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
@@ -351,7 +351,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                             color: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? '#FFF' : renkler.metin,
                           }}
                         >
-                          Ertesi Gun
+                          Ertesi Gün
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -383,7 +383,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                       <View className="flex-row items-center justify-center mt-3 gap-1">
                         <FontAwesome5 name="exclamation-triangle" size={12} color="#FF9800" />
                         <Text className="text-xs font-medium" style={{ color: '#FF9800' }}>
-                          Imsak{imsakVakti ? `: ${String(imsakVakti.getHours()).padStart(2, '0')}:${String(imsakVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden sonrasi secilemez
+                          İmsak{imsakVakti ? `: ${String(imsakVakti.getHours()).padStart(2, '0')}:${String(imsakVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden sonrası seçilemez
                         </Text>
                       </View>
                     )}
@@ -391,7 +391,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                       <View className="flex-row items-center justify-center mt-3 gap-1">
                         <FontAwesome5 name="exclamation-triangle" size={12} color="#FF9800" />
                         <Text className="text-xs font-medium" style={{ color: '#FF9800' }}>
-                          Yatsi{yatsiVakti ? `: ${String(yatsiVakti.getHours()).padStart(2, '0')}:${String(yatsiVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden oncesi secilemez
+                          Yatsı{yatsiVakti ? `: ${String(yatsiVakti.getHours()).padStart(2, '0')}:${String(yatsiVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden öncesi seçilemez
                         </Text>
                       </View>
                     )}
@@ -417,8 +417,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             className="flex-1 text-xs leading-4"
             style={{ color: renkler.metinIkincil }}
           >
-            Bildirimlerin calisabilmesi icin cihaz ayarlarindan uygulama bildirimlerinin
-            acik olduguna emin olun.
+            Bildirimlerin çalışabilmesi için cihaz ayarlarından uygulama bildirimlerinin
+            açık olduğuna emin olun.
           </Text>
         </View>
       </Animated.View>

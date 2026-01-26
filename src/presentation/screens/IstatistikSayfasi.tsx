@@ -1,8 +1,8 @@
 /**
- * Istatistik sayfasi
- * Gunluk, Haftalik ve Aylik istatistikler - 3 tab yapisi
+ * İstatistik sayfası
+ * Günlük, Haftalık ve Aylık istatistikler - 3 tab yapısı
  * 
- * NativeWind + Expo Vector Icons ile guncellenmis versiyon
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -83,7 +83,7 @@ export const IstatistikSayfasi: React.FC = () => {
               fontWeight: aktifTab === 'gunluk' ? '700' : '500'
             }}
           >
-            Gunluk
+            Günlük
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -103,7 +103,7 @@ export const IstatistikSayfasi: React.FC = () => {
               fontWeight: aktifTab === 'haftalik' ? '700' : '500'
             }}
           >
-            Haftalik
+            Haftalık
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -123,7 +123,7 @@ export const IstatistikSayfasi: React.FC = () => {
               fontWeight: aktifTab === 'aylik' ? '700' : '500'
             }}
           >
-            Aylik
+            Aylık
           </Text>
         </TouchableOpacity>
       </View>
@@ -164,20 +164,20 @@ export const IstatistikSayfasi: React.FC = () => {
   );
 };
 
-// ==================== GUNLUK ICERIK ====================
+// ==================== GÜNLÜK İÇERİK ====================
 const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any }> = ({
   namazlar,
   yukleniyor,
   renkler
 }) => {
   if (yukleniyor && !namazlar) {
-    return <YuklemeGostergesi mesaj="Gunluk veriler yukleniyor..." />;
+    return <YuklemeGostergesi mesaj="Günlük veriler yükleniyor..." />;
   }
 
   if (!namazlar) {
     return (
       <View className="flex-1 items-center justify-center p-12">
-        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henuz veri yok</Text>
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
@@ -188,10 +188,10 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
 
   // Motivasyon mesaji
   const getMotivasyon = () => {
-    if (yuzde === 100) return { mesaj: 'Mukemmel! Bugun tum namazlarinizi kildiniz!', ikonAdi: 'trophy', renk: '#FFD700' };
+    if (yuzde === 100) return { mesaj: 'Mükemmel! Bugün tüm namazlarınızı kıldınız!', ikonAdi: 'trophy', renk: '#FFD700' };
     if (yuzde >= 80) return { mesaj: 'Harika gidiyoruz! Biraz daha gayret!', ikonAdi: 'chart-line', renk: renkler.birincil };
-    if (yuzde >= 50) return { mesaj: 'Iyi bir baslangic! Devam edin!', ikonAdi: 'star', renk: renkler.durum.bilgi };
-    return { mesaj: 'Bugun biraz daha gayret gosterebiliriz!', ikonAdi: 'heart', renk: '#FF9800' };
+    if (yuzde >= 50) return { mesaj: 'İyi bir başlangıç! Devam edin!', ikonAdi: 'star', renk: renkler.durum.bilgi };
+    return { mesaj: 'Bugün biraz daha gayret gösterebiliriz!', ikonAdi: 'heart', renk: '#FF9800' };
   };
 
   const motivasyon = getMotivasyon();
@@ -204,7 +204,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
         style={{ backgroundColor: renkler.birincil }}
       >
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-base font-semibold text-white">Bugunku Durum</Text>
+          <Text className="text-base font-semibold text-white">Bugünkü Durum</Text>
           <View className="bg-white/20 px-3 py-1 rounded-xl">
             <Text className="text-white font-bold text-xs">
               {new Date().getDate()}/{new Date().getMonth() + 1}
@@ -214,7 +214,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
         <View className="flex-row items-center">
           <View className="flex-1">
             <Text className="text-4xl font-bold text-white">{yuzde}%</Text>
-            <Text className="text-sm text-white/70">Tamamlandi</Text>
+            <Text className="text-sm text-white/70">Tamamlandı</Text>
           </View>
           <View className="w-24 items-center">
             <View className="w-24 h-2 bg-white/30 rounded-full overflow-hidden">
@@ -233,7 +233,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
         <View className="flex-row items-center mb-4">
           <FontAwesome5 name="list-alt" size={18} color={renkler.metin} />
           <Text className="text-base font-bold ml-2" style={{ color: renkler.metin }}>
-            Namaz Detaylari
+            Namaz Detayları
           </Text>
         </View>
         {namazlar.namazlar?.map((namaz: any) => (
@@ -269,7 +269,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
                 className="text-xs font-bold"
                 style={{ color: namaz.tamamlandi ? renkler.birincilKoyu : '#E65100' }}
               >
-                {namaz.tamamlandi ? 'Kilindi' : 'Bekliyor'}
+                {namaz.tamamlandi ? 'Kılındı' : 'Bekliyor'}
               </Text>
             </View>
           </View>
@@ -295,20 +295,20 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
   );
 };
 
-// ==================== HAFTALIK ICERIK ====================
+// ==================== HAFTALIK İÇERİK ====================
 const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any }> = ({
   istatistik,
   yukleniyor,
   renkler
 }) => {
   if (yukleniyor && !istatistik) {
-    return <YuklemeGostergesi mesaj="Haftalik istatistikler yukleniyor..." />;
+    return <YuklemeGostergesi mesaj="Haftalık istatistikler yükleniyor..." />;
   }
 
   if (!istatistik) {
     return (
       <View className="flex-1 items-center justify-center p-12">
-        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henuz veri yok</Text>
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
@@ -321,7 +321,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
         style={{ backgroundColor: renkler.kartArkaplan }}
       >
         <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>
-          Haftalik Performans
+          Haftalık Performans
         </Text>
         <View className="flex-row justify-around items-end h-32">
           {istatistik.gunlukVeriler?.map((gun: any) => {
@@ -368,7 +368,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text className="text-xl font-bold" style={{ color: renkler.birincil }}>
             {istatistik.tamamlananNamaz}
           </Text>
-          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Toplam Kilinan</Text>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Toplam Kılınan</Text>
           <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>Namaz</Text>
         </View>
 
@@ -385,8 +385,8 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text className="text-xl font-bold" style={{ color: renkler.durum.bilgi }}>
             %{istatistik.tamamlanmaYuzdesi}
           </Text>
-          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Haftalik Oran</Text>
-          <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>Basari</Text>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Haftalık Oran</Text>
+          <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>Başarı</Text>
         </View>
 
         <View
@@ -399,7 +399,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           <Text className="text-lg font-bold" style={{ color: '#FFB300' }}>
             {istatistik.enIyiGun?.gunAdi || '-'}
           </Text>
-          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>En Iyi Gun</Text>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>En İyi Gün</Text>
           <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>
             {istatistik.enIyiGun ? `%${istatistik.enIyiGun.tamamlanmaYuzdesi}` : '-'}
           </Text>
@@ -411,7 +411,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
         className="rounded-2xl p-4 shadow-sm"
         style={{ backgroundColor: renkler.kartArkaplan }}
       >
-        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Haftalik Hedefler</Text>
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Haftalık Hedefler</Text>
         <HedefItem
           baslik="35 Namaz Hedefi"
           mevcut={istatistik.tamamlananNamaz}
@@ -420,14 +420,14 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
           renkler={renkler}
         />
         <HedefItem
-          baslik="80% Basari Orani"
+          baslik="80% Başarı Oranı"
           mevcut={istatistik.tamamlanmaYuzdesi}
           hedef={80}
           renk={renkler.durum.bilgi}
           renkler={renkler}
         />
         <HedefItem
-          baslik="Haftanin 7 Gunu"
+          baslik="Haftanın 7 Günü"
           mevcut={istatistik.gunlukVeriler?.filter((g: any) => g.tamamlananNamaz > 0).length || 0}
           hedef={7}
           renk="#9C27B0"
@@ -438,20 +438,20 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
   );
 };
 
-// ==================== AYLIK ICERIK ====================
+// ==================== AYLIK İÇERİK ====================
 const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any }> = ({
   istatistik,
   yukleniyor,
   renkler
 }) => {
   if (yukleniyor && !istatistik) {
-    return <YuklemeGostergesi mesaj="Aylik istatistikler yukleniyor..." />;
+    return <YuklemeGostergesi mesaj="Aylık istatistikler yükleniyor..." />;
   }
 
   if (!istatistik) {
     return (
       <View className="flex-1 items-center justify-center p-12">
-        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henuz veri yok</Text>
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
@@ -466,7 +466,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         style={{ backgroundColor: renkler.kartArkaplan }}
       >
         <View className="flex-row justify-between items-center mb-4">
-          <Text className="text-base font-bold" style={{ color: renkler.metin }}>Aylik Genel Bakis</Text>
+          <Text className="text-base font-bold" style={{ color: renkler.metin }}>Aylık Genel Bakış</Text>
           <View className="px-3 py-1 rounded-xl" style={{ backgroundColor: `${renkler.birincil}15` }}>
             <Text className="text-xs font-bold" style={{ color: renkler.birincil }}>
               {istatistik.ayAdi} {istatistik.yil}
@@ -481,7 +481,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
             <Text className="text-2xl font-bold" style={{ color: renkler.durum.bilgi }}>
               {new Date().getDate()}
             </Text>
-            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Toplam Gun</Text>
+            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Toplam Gün</Text>
           </View>
           <View
             className="flex-1 items-center p-4 rounded-xl mx-1"
@@ -490,7 +490,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
             <Text className="text-2xl font-bold" style={{ color: renkler.birincil }}>
               {istatistik.aktifGunSayisi}
             </Text>
-            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Aktif Gun</Text>
+            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Aktif Gün</Text>
           </View>
           <View
             className="flex-1 items-center p-4 rounded-xl mx-1"
@@ -509,7 +509,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         className="rounded-2xl p-4 mb-4 shadow-sm"
         style={{ backgroundColor: renkler.kartArkaplan }}
       >
-        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylik Ilerleme</Text>
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylık İlerleme</Text>
         {NAMAZ_ISIMLERI.map((namazAdi, index) => {
           const yuzde = istatistik.namazBazindaYuzdeler?.[namazAdi] || 0;
           return (
@@ -537,24 +537,24 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         className="rounded-2xl p-4 shadow-sm"
         style={{ backgroundColor: renkler.kartArkaplan }}
       >
-        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylik Trendler</Text>
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylık Trendler</Text>
         <TrendItem
-          baslik="Basari Orani"
-          deger={`%${istatistik.tamamlanmaYuzdesi} tamamlandi`}
+          baslik="Başarı Oranı"
+          deger={`%${istatistik.tamamlanmaYuzdesi} tamamlandı`}
           ikonAdi="chart-line"
           renk={renkler.birincil}
           renkler={renkler}
         />
         <TrendItem
-          baslik="Aktif Gunler"
-          deger={`${istatistik.aktifGunSayisi} gun aktif`}
+          baslik="Aktif Günler"
+          deger={`${istatistik.aktifGunSayisi} gün aktif`}
           ikonAdi="star"
           renk="#FFB300"
           renkler={renkler}
         />
         <TrendItem
           baslik="Toplam Namaz"
-          deger={`${istatistik.tamamlananNamaz} namaz kilindi`}
+          deger={`${istatistik.tamamlananNamaz} namaz kılındı`}
           ikonAdi="mosque"
           renk={renkler.durum.bilgi}
           renkler={renkler}
@@ -562,7 +562,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         {istatistik.tamamlanmaYuzdesi >= 80 ? (
           <TrendItem
             baslik="Hedef Durumu"
-            deger="Hedef tamamlandi!"
+            deger="Hedef tamamlandı!"
             ikonAdi="trophy"
             renk="#FFD700"
             renkler={renkler}
@@ -570,7 +570,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
         ) : (
           <TrendItem
             baslik="Hedef Durumu"
-            deger={`%80 hedefine ${80 - istatistik.tamamlanmaYuzdesi} puan kaldi`}
+            deger={`%80 hedefine ${80 - istatistik.tamamlanmaYuzdesi} puan kaldı`}
             ikonAdi="bullseye"
             renk="#FF9800"
             renkler={renkler}

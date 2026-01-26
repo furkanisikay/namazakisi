@@ -1,8 +1,8 @@
 /**
- * Konum Ayarlari Sayfasi
- * Kullanicinin konumunu GPS veya manuel secim ile belirlemesini saglar
+ * Konum Ayarları Sayfası
+ * Kullanıcının konumunu GPS veya manuel seçim ile belirlemesini sağlar
  * 
- * NativeWind + Expo Vector Icons ile guncellenmis versiyon
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import * as React from 'react';

@@ -1,8 +1,8 @@
 /**
- * Muhafiz Ayarlari Sayfasi
- * Namaz hatirlatma bildirimleri ayarlari
+ * Muhafız Ayarları Sayfası
+ * Namaz hatırlatma bildirimleri ayarları
  * 
- * NativeWind + Expo Vector Icons ile guncellenmis versiyon
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import * as React from 'react';
@@ -26,23 +26,23 @@ import { useFeedback } from '../../core/feedback';
  * Seviye renkleri
  */
 const SEVIYE_RENKLERI = {
-    seviye1: '#4CAF50', // Yesil - Nazik
-    seviye2: '#FF9800', // Turuncu - Uyari
-    seviye3: '#F44336', // Kirmizi - Mucadele
-    seviye4: '#D32F2F', // Koyu Kirmizi - Alarm
+    seviye1: '#4CAF50', // Yeşil - Nazik
+    seviye2: '#FF9800', // Turuncu - Uyarı
+    seviye3: '#F44336', // Kırmızı - Mücadele
+    seviye4: '#D32F2F', // Koyu Kırmızı - Alarm
 };
 
 /**
  * Seviye bilgileri
  */
 const SEVIYE_BILGILERI = [
-    { id: 'seviye1', baslik: 'Nazik Hatirlatma', ikonAdi: 'bell', renk: SEVIYE_RENKLERI.seviye1, minEsik: 15, maxEsik: 90 },
-    { id: 'seviye2', baslik: 'Uyari', ikonAdi: 'exclamation-triangle', renk: SEVIYE_RENKLERI.seviye2, minEsik: 10, maxEsik: 60 },
-    { id: 'seviye3', baslik: 'Seytanla Mucadele', ikonAdi: 'fire-alt', renk: SEVIYE_RENKLERI.seviye3, minEsik: 5, maxEsik: 30 },
+    { id: 'seviye1', baslik: 'Nazik Hatırlatma', ikonAdi: 'bell', renk: SEVIYE_RENKLERI.seviye1, minEsik: 15, maxEsik: 90 },
+    { id: 'seviye2', baslik: 'Uyarı', ikonAdi: 'exclamation-triangle', renk: SEVIYE_RENKLERI.seviye2, minEsik: 10, maxEsik: 60 },
+    { id: 'seviye3', baslik: 'Şeytanla Mücadele', ikonAdi: 'fire-alt', renk: SEVIYE_RENKLERI.seviye3, minEsik: 5, maxEsik: 30 },
     { id: 'seviye4', baslik: 'Acil Alarm', ikonAdi: 'exclamation-circle', renk: SEVIYE_RENKLERI.seviye4, minEsik: 1, maxEsik: 15 },
 ];
 
-// Throttle suresi (ms)
+// Throttle süresi (ms)
 const THROTTLE_SURESI = 100;
 
 /**
@@ -219,7 +219,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                 <View className="flex-row items-center">
                     <FontAwesome5 name="chart-bar" size={14} color={renkler.metin} />
                     <Text className="text-sm font-bold ml-2" style={{ color: renkler.metin }}>
-                        Bildirim Ozeti
+                        Bildirim Özeti
                     </Text>
                     <View className="ml-2 px-2 py-0.5 rounded-lg" style={{ backgroundColor: renkler.birincil }}>
                         <Text className="text-xs font-bold text-white">{tumBildirimler.length} Bildirim</Text>
@@ -237,7 +237,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                 </Animated.View>
             </TouchableOpacity>
 
-            {/* Kompakt Ozet */}
+            {/* Kompakt Özet */}
             <View className="flex-row px-3.5 pb-3 gap-2">
                 {seviyeSayilari.map((item) => (
                     <View
@@ -251,7 +251,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                 ))}
             </View>
 
-            {/* Genisletilmis Detay */}
+            {/* Genişletilmiş Detay */}
             {acikMi && (
                 <Animated.View
                     className="border-t px-3.5 py-3"
@@ -261,7 +261,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                         className="text-xs font-semibold mb-2.5 tracking-wider"
                         style={{ color: renkler.metinIkincil }}
                     >
-                        ZAMAN CIZELGESI
+                        ZAMAN ÇİZELGESİ
                     </Text>
 
                     <View className="mt-1">
@@ -296,9 +296,9 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                                         </View>
                                     </View>
                                     <Text className="text-[11px]" style={{ color: renkler.metinIkincil }}>
-                                        {bildirim.seviye === 1 && 'Nazik Hatirlatma'}
-                                        {bildirim.seviye === 2 && 'Uyari'}
-                                        {bildirim.seviye === 3 && 'Seytanla mucadele'}
+                                        {bildirim.seviye === 1 && 'Nazik Hatırlatma'}
+                                        {bildirim.seviye === 2 && 'Uyarı'}
+                                        {bildirim.seviye === 3 && 'Şeytanla mücadele'}
                                         {bildirim.seviye === 4 && 'Acil alarm'}
                                         {' bildirimi'}
                                         {bildirim.tekrarMi && ' (tekrar)'}
@@ -307,7 +307,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                             </View>
                         ))}
 
-                        {/* Vakit Cikisi */}
+                        {/* Vakit Çıkışı */}
                         <View className="flex-row items-start">
                             <View className="w-11 items-center">
                                 <View
@@ -322,7 +322,7 @@ const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar 
                                 style={{ backgroundColor: `${renkler.sinir}20`, borderColor: renkler.sinir }}
                             >
                                 <Text className="text-sm font-bold" style={{ color: renkler.metinIkincil }}>
-                                    Vakit Cikisi
+                                    Vakit Çıkışı
                                 </Text>
                                 <Text className="text-[11px]" style={{ color: renkler.metinIkincil }}>
                                     Namaz vaktinin sonu
@@ -442,13 +442,13 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             className="text-xl font-bold"
                             style={{ color: muhafizAyarlari.aktif ? '#FFF' : renkler.metin }}
                         >
-                            Namaz Muhafizi
+                            Namaz Muhafızı
                         </Text>
                         <Text
                             className="text-sm mt-0.5"
                             style={{ color: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
                         >
-                            {muhafizAyarlari.aktif ? 'Hatirlatmalar aktif' : 'Hatirlatmalar kapali'}
+                            {muhafizAyarlari.aktif ? 'Hatırlatmalar aktif' : 'Hatırlatmalar kapalı'}
                         </Text>
                     </View>
                 </View>
@@ -460,7 +460,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                 />
             </View>
 
-            {/* Kapali ise mesaj goster */}
+            {/* Kapalı ise mesaj göster */}
             {!muhafizAyarlari.aktif && (
                 <View
                     className="items-center p-10 rounded-2xl border"
@@ -468,7 +468,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                 >
                     <FontAwesome5 name="bed" size={48} color={renkler.metinIkincil} />
                     <Text className="text-base text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                        Muhafiz kapali. Namaz vakitleri hatirlatilmayacak.
+                        Muhafız kapalı. Namaz vakitleri hatırlatılmayacak.
                     </Text>
                 </View>
             )}
@@ -530,7 +530,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                         <View className="flex-row items-center mb-3">
                             <FontAwesome5 name="bell" size={16} color={renkler.metinIkincil} solid />
                             <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                                HATIRLATMA SIKLIGI
+                                HATIRLATMA SIKLIĞI
                             </Text>
                         </View>
 
@@ -560,7 +560,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                             className="text-sm font-bold mt-1.5"
                                             style={{ color: seciliMi ? '#FFF' : renkler.metin }}
                                         >
-                                            {yog === 'hafif' ? 'Hafif' : yog === 'normal' ? 'Normal' : 'Yogun'}
+                                            {yog === 'hafif' ? 'Hafif' : yog === 'normal' ? 'Normal' : 'Yoğun'}
                                         </Text>
                                         <Text
                                             className="text-[10px] mt-0.5 text-center"
@@ -573,7 +573,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             })}
                         </View>
 
-                        {/* Ozel Secenegi */}
+                        {/* Özel Seçeneği */}
                         <TouchableOpacity
                             className="flex-row items-center p-3.5 rounded-xl border-2 mt-2.5"
                             style={{
@@ -594,16 +594,16 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             <FontAwesome5 name="cog" size={16} color={renkler.metin} />
                             <View className="flex-1 ml-2.5">
                                 <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                    Ozel Secim
+                                    Özel Seçim
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Hatirlatma bildirimlerini kendine gore ayarla
+                                    Hatırlatma bildirimlerini kendine göre ayarla
                                 </Text>
                             </View>
                         </TouchableOpacity>
                     </View>
 
-                    {/* OZEL AYARLAR */}
+                    {/* ÖZEL AYARLAR */}
                     {muhafizAyarlari.yogunluk === 'ozel' && (
                         <View
                             className="rounded-2xl border p-4 mb-4"
@@ -612,11 +612,11 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                             <View className="flex-row items-center mb-1">
                                 <FontAwesome5 name="cog" size={16} color={renkler.metin} />
                                 <Text className="text-base font-bold ml-2" style={{ color: renkler.metin }}>
-                                    Ozel Bildirim Ayarlari
+                                    Özel Bildirim Ayarları
                                 </Text>
                             </View>
                             <Text className="text-xs mb-4" style={{ color: renkler.metinIkincil }}>
-                                Her seviyenin zamanini ve tekrar sikligini ayarlayin.
+                                Her seviyenin zamanını ve tekrar sıklığını ayarlayın.
                             </Text>
 
                             {SEVIYE_BILGILERI.map((seviye, index) => {
