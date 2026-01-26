@@ -1,6 +1,8 @@
 /**
- * Istatistik sayfasi
- * Gunluk, Haftalik ve Aylik istatistikler - 3 tab yapisi
+ * İstatistik sayfası
+ * Günlük, Haftalık ve Aylık istatistikler - 3 tab yapısı
+ * 
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -8,11 +10,11 @@ import {
   View,
   Text,
   ScrollView,
-  StyleSheet,
   TouchableOpacity,
   RefreshControl,
-  Animated,
 } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   namazlariYukle,
@@ -20,7 +22,7 @@ import {
   aylikIstatistikleriYukle
 } from '../store/namazSlice';
 import { YuklemeGostergesi } from '../components';
-import { BOYUTLAR, NAMAZ_ISIMLERI, RENKLER } from '../../core/constants/UygulamaSabitleri';
+import { NAMAZ_ISIMLERI } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { useRenkler } from '../../core/theme';
 
@@ -58,40 +60,76 @@ export const IstatistikSayfasi: React.FC = () => {
   }, [verileriYukle]);
 
   return (
-    <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
+    <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
       {/* Tab Bar - 3 Tab */}
-      <View style={[styles.tabBar, { backgroundColor: renkler.kartArkaplan, borderBottomColor: renkler.sinir }]}>
+      <View
+        className="flex-row border-b"
+        style={{ backgroundColor: renkler.kartArkaplan, borderBottomColor: renkler.sinir }}
+      >
         <TouchableOpacity
-          style={[styles.tab, aktifTab === 'gunluk' && { borderBottomColor: renkler.birincil, borderBottomWidth: 2 }]}
+          className="flex-1 py-3 items-center border-b-2"
+          style={{ borderBottomColor: aktifTab === 'gunluk' ? renkler.birincil : 'transparent' }}
           onPress={() => setAktifTab('gunluk')}
         >
-          <Text style={styles.tabIkon}>📊</Text>
-          <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'gunluk' && { color: renkler.birincil, fontWeight: 'bold' }]}>
+          <FontAwesome5
+            name="chart-bar"
+            size={16}
+            color={aktifTab === 'gunluk' ? renkler.birincil : renkler.metinIkincil}
+          />
+          <Text
+            className="text-xs mt-1"
+            style={{
+              color: aktifTab === 'gunluk' ? renkler.birincil : renkler.metinIkincil,
+              fontWeight: aktifTab === 'gunluk' ? '700' : '500'
+            }}
+          >
             Günlük
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, aktifTab === 'haftalik' && { borderBottomColor: renkler.birincil, borderBottomWidth: 2 }]}
+          className="flex-1 py-3 items-center border-b-2"
+          style={{ borderBottomColor: aktifTab === 'haftalik' ? renkler.birincil : 'transparent' }}
           onPress={() => setAktifTab('haftalik')}
         >
-          <Text style={styles.tabIkon}>📅</Text>
-          <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'haftalik' && { color: renkler.birincil, fontWeight: 'bold' }]}>
+          <FontAwesome5
+            name="calendar-week"
+            size={16}
+            color={aktifTab === 'haftalik' ? renkler.birincil : renkler.metinIkincil}
+          />
+          <Text
+            className="text-xs mt-1"
+            style={{
+              color: aktifTab === 'haftalik' ? renkler.birincil : renkler.metinIkincil,
+              fontWeight: aktifTab === 'haftalik' ? '700' : '500'
+            }}
+          >
             Haftalık
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, aktifTab === 'aylik' && { borderBottomColor: renkler.birincil, borderBottomWidth: 2 }]}
+          className="flex-1 py-3 items-center border-b-2"
+          style={{ borderBottomColor: aktifTab === 'aylik' ? renkler.birincil : 'transparent' }}
           onPress={() => setAktifTab('aylik')}
         >
-          <Text style={styles.tabIkon}>📆</Text>
-          <Text style={[styles.tabText, { color: renkler.metinIkincil }, aktifTab === 'aylik' && { color: renkler.birincil, fontWeight: 'bold' }]}>
+          <FontAwesome5
+            name="calendar-alt"
+            size={16}
+            color={aktifTab === 'aylik' ? renkler.birincil : renkler.metinIkincil}
+          />
+          <Text
+            className="text-xs mt-1"
+            style={{
+              color: aktifTab === 'aylik' ? renkler.birincil : renkler.metinIkincil,
+              fontWeight: aktifTab === 'aylik' ? '700' : '500'
+            }}
+          >
             Aylık
           </Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView
-        style={styles.icerik}
+        className="flex-1"
         refreshControl={
           <RefreshControl
             refreshing={yukleniyor}
@@ -126,7 +164,7 @@ export const IstatistikSayfasi: React.FC = () => {
   );
 };
 
-// ==================== GUNLUK ICERIK ====================
+// ==================== GÜNLÜK İÇERİK ====================
 const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any }> = ({
   namazlar,
   yukleniyor,
@@ -138,8 +176,8 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
 
   if (!namazlar) {
     return (
-      <View style={styles.bosContainer}>
-        <Text style={[styles.bosText, { color: renkler.metinIkincil }]}>Henuz veri yok</Text>
+      <View className="flex-1 items-center justify-center p-12">
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
@@ -150,85 +188,88 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
 
   // Motivasyon mesaji
   const getMotivasyon = () => {
-    if (yuzde === 100) return { mesaj: 'Mükemmel! Bugun tüm namazlarınızı kıldınız! 🎉', ikon: '🏆', renk: '#FFD700' };
-    if (yuzde >= 80) return { mesaj: 'Harika gidiyoruz! Biraz daha gayret! 💪', ikon: '📈', renk: renkler.birincil };
-    if (yuzde >= 50) return { mesaj: 'İyi bir başlangıç! Devam edin! 🌟', ikon: '🧠', renk: renkler.durum.bilgi };
-    return { mesaj: 'Bugün biraz daha gayret gösterebiliriz! 🤲', ikon: '❤️', renk: '#FF9800' };
+    if (yuzde === 100) return { mesaj: 'Mükemmel! Bugün tüm namazlarınızı kıldınız!', ikonAdi: 'trophy', renk: '#FFD700' };
+    if (yuzde >= 80) return { mesaj: 'Harika gidiyoruz! Biraz daha gayret!', ikonAdi: 'chart-line', renk: renkler.birincil };
+    if (yuzde >= 50) return { mesaj: 'İyi bir başlangıç! Devam edin!', ikonAdi: 'star', renk: renkler.durum.bilgi };
+    return { mesaj: 'Bugün biraz daha gayret gösterebiliriz!', ikonAdi: 'heart', renk: '#FF9800' };
   };
 
   const motivasyon = getMotivasyon();
 
   return (
-    <View style={styles.istatistikContainer}>
+    <View className="p-4 pb-10">
       {/* Tamamlanma Karti */}
-      <View style={[styles.tamamlanmaKarti, { backgroundColor: renkler.birincil, shadowColor: renkler.birincil }]}>
-        <View style={styles.tamamlanmaUst}>
-          <Text style={styles.tamamlanmaBaslik}>Bugünkü Durum</Text>
-          <View style={styles.tarihBadge}>
-            <Text style={styles.tarihBadgeMetin}>
+      <View
+        className="rounded-2xl p-5 mb-4 shadow-lg"
+        style={{ backgroundColor: renkler.birincil }}
+      >
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-base font-semibold text-white">Bugünkü Durum</Text>
+          <View className="bg-white/20 px-3 py-1 rounded-xl">
+            <Text className="text-white font-bold text-xs">
               {new Date().getDate()}/{new Date().getMonth() + 1}
             </Text>
           </View>
         </View>
-        <View style={styles.tamamlanmaIcerik}>
-          <View style={styles.tamamlanmaSol}>
-            <Text style={styles.yuzdeText}>{yuzde}%</Text>
-            <Text style={styles.tamamlandiMetin}>Tamamlandı</Text>
+        <View className="flex-row items-center">
+          <View className="flex-1">
+            <Text className="text-4xl font-bold text-white">{yuzde}%</Text>
+            <Text className="text-sm text-white/70">Tamamlandı</Text>
           </View>
-          <View style={styles.daireContainer}>
-            <View style={styles.daireArkaplan}>
-              <View style={[styles.daireDolgu, {
-                width: `${yuzde}%`,
-              }]} />
+          <View className="w-24 items-center">
+            <View className="w-24 h-2 bg-white/30 rounded-full overflow-hidden">
+              <View className="h-full bg-white rounded-full" style={{ width: `${yuzde}%` }} />
             </View>
-            <Text style={styles.daireMerkezMetin}>{tamamlanan}/{toplam}</Text>
+            <Text className="text-white font-bold mt-1 text-sm">{tamamlanan}/{toplam}</Text>
           </View>
         </View>
       </View>
 
       {/* Namaz Detaylari */}
-      <View style={[styles.detayKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <View style={styles.detayBaslik}>
-          <Text style={styles.detayBaslikIkon}>📋</Text>
-          <Text style={[styles.detayBaslikMetin, { color: renkler.metin }]}>Namaz Detayları</Text>
+      <View
+        className="rounded-2xl p-4 mb-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <View className="flex-row items-center mb-4">
+          <FontAwesome5 name="list-alt" size={18} color={renkler.metin} />
+          <Text className="text-base font-bold ml-2" style={{ color: renkler.metin }}>
+            Namaz Detayları
+          </Text>
         </View>
         {namazlar.namazlar?.map((namaz: any) => (
           <View
             key={namaz.namazAdi}
-            style={[
-              styles.namazItem,
-              namaz.tamamlandi
-                ? { backgroundColor: `${renkler.birincil}15`, borderColor: `${renkler.birincil}40` }
-                : { backgroundColor: '#FFF3E0', borderColor: '#FFE0B2' }
-            ]}
+            className="flex-row items-center p-3.5 rounded-xl mb-2 border"
+            style={{
+              backgroundColor: namaz.tamamlandi ? `${renkler.birincil}10` : '#FFF3E0',
+              borderColor: namaz.tamamlandi ? `${renkler.birincil}30` : '#FFE0B2',
+            }}
           >
-            <View style={[
-              styles.namazItemIkon,
-              namaz.tamamlandi
-                ? { backgroundColor: `${renkler.birincil}30` }
-                : { backgroundColor: '#FFE0B2' }
-            ]}>
-              <Text style={styles.namazIkonText}>
-                {namaz.tamamlandi ? '✓' : '⏳'}
-              </Text>
+            <View
+              className="w-8 h-8 rounded-lg items-center justify-center mr-3"
+              style={{ backgroundColor: namaz.tamamlandi ? `${renkler.birincil}25` : '#FFE0B2' }}
+            >
+              <FontAwesome5
+                name={namaz.tamamlandi ? 'check' : 'clock'}
+                size={14}
+                color={namaz.tamamlandi ? renkler.birincilKoyu : '#E65100'}
+              />
             </View>
-            <Text style={[
-              styles.namazAdiMetin,
-              namaz.tamamlandi ? { color: renkler.birincilKoyu } : { color: '#E65100' }
-            ]}>
+            <Text
+              className="flex-1 text-base font-semibold"
+              style={{ color: namaz.tamamlandi ? renkler.birincilKoyu : '#E65100' }}
+            >
               {namaz.namazAdi}
             </Text>
-            <View style={[
-              styles.namazDurumBadge,
-              namaz.tamamlandi
-                ? { backgroundColor: `${renkler.birincil}30` }
-                : { backgroundColor: '#FFE0B2' }
-            ]}>
-              <Text style={[
-                styles.namazDurumMetin,
-                namaz.tamamlandi ? { color: renkler.birincilKoyu } : { color: '#E65100' }
-              ]}>
-                {namaz.tamamlandi ? '✓ Kılındı' : '○ Bekliyor'}
+            <View
+              className="px-2.5 py-1 rounded-lg"
+              style={{ backgroundColor: namaz.tamamlandi ? `${renkler.birincil}20` : '#FFE0B2' }}
+            >
+              <Text
+                className="text-xs font-bold"
+                style={{ color: namaz.tamamlandi ? renkler.birincilKoyu : '#E65100' }}
+              >
+                {namaz.tamamlandi ? 'Kılındı' : 'Bekliyor'}
               </Text>
             </View>
           </View>
@@ -236,11 +277,17 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
       </View>
 
       {/* Motivasyon Karti */}
-      <View style={[styles.motivasyonKart, { backgroundColor: `${motivasyon.renk}20` }]}>
-        <View style={[styles.motivasyonIkon, { backgroundColor: `${motivasyon.renk}30` }]}>
-          <Text style={styles.motivasyonIkonText}>{motivasyon.ikon}</Text>
+      <View
+        className="flex-row items-center p-4 rounded-2xl"
+        style={{ backgroundColor: `${motivasyon.renk}15` }}
+      >
+        <View
+          className="w-10 h-10 rounded-xl items-center justify-center mr-3"
+          style={{ backgroundColor: `${motivasyon.renk}25` }}
+        >
+          <FontAwesome5 name={motivasyon.ikonAdi} size={18} color={motivasyon.renk} solid />
         </View>
-        <Text style={[styles.motivasyonMetin, { color: motivasyon.renk }]}>
+        <Text className="flex-1 text-sm font-semibold" style={{ color: motivasyon.renk }}>
           {motivasyon.mesaj}
         </Text>
       </View>
@@ -248,7 +295,7 @@ const GunlukIcerik: React.FC<{ namazlar: any; yukleniyor: boolean; renkler: any 
   );
 };
 
-// ==================== HAFTALIK ICERIK ====================
+// ==================== HAFTALIK İÇERİK ====================
 const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any }> = ({
   istatistik,
   yukleniyor,
@@ -260,18 +307,23 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
 
   if (!istatistik) {
     return (
-      <View style={styles.bosContainer}>
-        <Text style={[styles.bosText, { color: renkler.metinIkincil }]}>Henuz veri yok</Text>
+      <View className="flex-1 items-center justify-center p-12">
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.istatistikContainer}>
+    <View className="p-4 pb-10">
       {/* Haftalik Grafik */}
-      <View style={[styles.grafikKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.grafikBaslik, { color: renkler.metin }]}>Haftalık Performans</Text>
-        <View style={styles.grafikContainer}>
+      <View
+        className="rounded-2xl p-4 mb-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>
+          Haftalık Performans
+        </Text>
+        <View className="flex-row justify-around items-end h-32">
           {istatistik.gunlukVeriler?.map((gun: any) => {
             const yuzde = gun.tamamlanmaYuzdesi || 0;
             let barRenk: string = renkler.durum.hata;
@@ -279,20 +331,22 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
             else if (yuzde >= 60) barRenk = '#FFC107';
 
             return (
-              <View key={gun.tarih} style={styles.grafikBar}>
-                <View style={[styles.barContainer, { backgroundColor: renkler.sinir }]}>
+              <View key={gun.tarih} className="items-center flex-1">
+                <View
+                  className="w-7 h-20 rounded justify-end overflow-hidden"
+                  style={{ backgroundColor: renkler.sinir }}
+                >
                   <View
-                    style={[
-                      styles.barDolgu,
-                      {
-                        height: `${yuzde}%`,
-                        backgroundColor: barRenk,
-                      }
-                    ]}
+                    className="w-full rounded"
+                    style={{ height: `${yuzde}%`, backgroundColor: barRenk }}
                   />
                 </View>
-                <Text style={[styles.barEtiket, { color: renkler.metin }]}>{gun.gunAdi}</Text>
-                <Text style={[styles.barDeger, { color: renkler.metinIkincil }]}>{gun.tamamlananNamaz}/{gun.toplamNamaz}</Text>
+                <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>
+                  {gun.gunAdi}
+                </Text>
+                <Text className="text-[8px]" style={{ color: renkler.metinIkincil }}>
+                  {gun.tamamlananNamaz}/{gun.toplamNamaz}
+                </Text>
               </View>
             );
           })}
@@ -300,46 +354,64 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
       </View>
 
       {/* Haftalik Istatistikler */}
-      <View style={styles.istatistikKartlari}>
-        <View style={[styles.miniKart, { backgroundColor: `${renkler.birincil}15` }]}>
-          <View style={[styles.miniKartIkon, { backgroundColor: renkler.birincil }]}>
-            <Text style={styles.miniKartIkonText}>✓</Text>
+      <View className="flex-row justify-between mb-4">
+        <View
+          className="flex-1 items-center p-4 rounded-2xl mx-1"
+          style={{ backgroundColor: `${renkler.birincil}10` }}
+        >
+          <View
+            className="w-8 h-8 rounded-lg items-center justify-center mb-2"
+            style={{ backgroundColor: renkler.birincil }}
+          >
+            <FontAwesome5 name="check" size={14} color="#FFF" />
           </View>
-          <Text style={[styles.miniKartDeger, { color: renkler.birincil }]}>
+          <Text className="text-xl font-bold" style={{ color: renkler.birincil }}>
             {istatistik.tamamlananNamaz}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Toplam Kılınan</Text>
-          <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>Namaz</Text>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Toplam Kılınan</Text>
+          <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>Namaz</Text>
         </View>
 
-        <View style={[styles.miniKart, { backgroundColor: `${renkler.durum.bilgi}15` }]}>
-          <View style={[styles.miniKartIkon, { backgroundColor: renkler.durum.bilgi }]}>
-            <Text style={styles.miniKartIkonText}>📈</Text>
+        <View
+          className="flex-1 items-center p-4 rounded-2xl mx-1"
+          style={{ backgroundColor: `${renkler.durum.bilgi}10` }}
+        >
+          <View
+            className="w-8 h-8 rounded-lg items-center justify-center mb-2"
+            style={{ backgroundColor: renkler.durum.bilgi }}
+          >
+            <FontAwesome5 name="chart-line" size={14} color="#FFF" />
           </View>
-          <Text style={[styles.miniKartDeger, { color: renkler.durum.bilgi }]}>
+          <Text className="text-xl font-bold" style={{ color: renkler.durum.bilgi }}>
             %{istatistik.tamamlanmaYuzdesi}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>Haftalık Oran</Text>
-          <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>Başarı</Text>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>Haftalık Oran</Text>
+          <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>Başarı</Text>
         </View>
 
-        <View style={[styles.miniKart, { backgroundColor: '#FFF8E1' }]}>
-          <View style={[styles.miniKartIkon, { backgroundColor: '#FFB300' }]}>
-            <Text style={styles.miniKartIkonText}>⭐</Text>
+        <View
+          className="flex-1 items-center p-4 rounded-2xl mx-1"
+          style={{ backgroundColor: '#FFF8E1' }}
+        >
+          <View className="w-8 h-8 rounded-lg items-center justify-center mb-2" style={{ backgroundColor: '#FFB300' }}>
+            <FontAwesome5 name="star" size={14} color="#FFF" solid />
           </View>
-          <Text style={[styles.miniKartDeger, { color: '#FFB300' }]}>
+          <Text className="text-lg font-bold" style={{ color: '#FFB300' }}>
             {istatistik.enIyiGun?.gunAdi || '-'}
           </Text>
-          <Text style={[styles.miniKartBaslik, { color: renkler.metin }]}>En İyi Gün</Text>
-          <Text style={[styles.miniKartAltBaslik, { color: renkler.metinIkincil }]}>
+          <Text className="text-[10px] font-semibold mt-1" style={{ color: renkler.metin }}>En İyi Gün</Text>
+          <Text className="text-[9px]" style={{ color: renkler.metinIkincil }}>
             {istatistik.enIyiGun ? `%${istatistik.enIyiGun.tamamlanmaYuzdesi}` : '-'}
           </Text>
         </View>
       </View>
 
       {/* Haftalik Hedefler */}
-      <View style={[styles.hedeflerKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.hedeflerBaslik, { color: renkler.metin }]}>Haftalık Hedefler</Text>
+      <View
+        className="rounded-2xl p-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Haftalık Hedefler</Text>
         <HedefItem
           baslik="35 Namaz Hedefi"
           mevcut={istatistik.tamamlananNamaz}
@@ -366,7 +438,7 @@ const HaftalikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: 
   );
 };
 
-// ==================== AYLIK ICERIK ====================
+// ==================== AYLIK İÇERİK ====================
 const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any }> = ({
   istatistik,
   yukleniyor,
@@ -378,8 +450,8 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
 
   if (!istatistik) {
     return (
-      <View style={styles.bosContainer}>
-        <Text style={[styles.bosText, { color: renkler.metinIkincil }]}>Henuz veri yok</Text>
+      <View className="flex-1 items-center justify-center p-12">
+        <Text className="text-base" style={{ color: renkler.metinIkincil }}>Henüz veri yok</Text>
       </View>
     );
   }
@@ -387,59 +459,72 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
   const barRenkleri = [renkler.durum.bilgi, renkler.birincil, '#FF9800', '#9C27B0', renkler.durum.hata];
 
   return (
-    <View style={styles.istatistikContainer}>
+    <View className="p-4 pb-10">
       {/* Aylik Genel Bakis */}
-      <View style={[styles.aylikGenelKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <View style={styles.aylikBaslikRow}>
-          <Text style={[styles.aylikGenelBaslik, { color: renkler.metin }]}>Aylık Genel Bakış</Text>
-          <View style={[styles.ayBadge, { backgroundColor: `${renkler.birincil}20` }]}>
-            <Text style={[styles.ayBadgeMetin, { color: renkler.birincil }]}>
+      <View
+        className="rounded-2xl p-4 mb-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <View className="flex-row justify-between items-center mb-4">
+          <Text className="text-base font-bold" style={{ color: renkler.metin }}>Aylık Genel Bakış</Text>
+          <View className="px-3 py-1 rounded-xl" style={{ backgroundColor: `${renkler.birincil}15` }}>
+            <Text className="text-xs font-bold" style={{ color: renkler.birincil }}>
               {istatistik.ayAdi} {istatistik.yil}
             </Text>
           </View>
         </View>
-        <View style={styles.aylikIstatRow}>
-          <View style={[styles.aylikStatItem, { backgroundColor: `${renkler.durum.bilgi}15` }]}>
-            <Text style={[styles.aylikStatDeger, { color: renkler.durum.bilgi }]}>
+        <View className="flex-row justify-between">
+          <View
+            className="flex-1 items-center p-4 rounded-xl mx-1"
+            style={{ backgroundColor: `${renkler.durum.bilgi}10` }}
+          >
+            <Text className="text-2xl font-bold" style={{ color: renkler.durum.bilgi }}>
               {new Date().getDate()}
             </Text>
-            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Toplam Gün</Text>
+            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Toplam Gün</Text>
           </View>
-          <View style={[styles.aylikStatItem, { backgroundColor: `${renkler.birincil}15` }]}>
-            <Text style={[styles.aylikStatDeger, { color: renkler.birincil }]}>
+          <View
+            className="flex-1 items-center p-4 rounded-xl mx-1"
+            style={{ backgroundColor: `${renkler.birincil}10` }}
+          >
+            <Text className="text-2xl font-bold" style={{ color: renkler.birincil }}>
               {istatistik.aktifGunSayisi}
             </Text>
-            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Aktif Gün</Text>
+            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Aktif Gün</Text>
           </View>
-          <View style={[styles.aylikStatItem, { backgroundColor: '#FFF3E0' }]}>
-            <Text style={[styles.aylikStatDeger, { color: '#FF9800' }]}>
+          <View
+            className="flex-1 items-center p-4 rounded-xl mx-1"
+            style={{ backgroundColor: '#FFF3E0' }}
+          >
+            <Text className="text-2xl font-bold" style={{ color: '#FF9800' }}>
               %{istatistik.tamamlanmaYuzdesi}
             </Text>
-            <Text style={[styles.aylikStatEtiket, { color: renkler.metinIkincil }]}>Oran</Text>
+            <Text className="text-xs font-semibold mt-1" style={{ color: renkler.metinIkincil }}>Oran</Text>
           </View>
         </View>
       </View>
 
       {/* Aylik Ilerleme - Namaz Bazinda */}
-      <View style={[styles.namazIlerlemeKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.namazIlerlemeBaslik, { color: renkler.metin }]}>Aylık İlerleme</Text>
+      <View
+        className="rounded-2xl p-4 mb-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylık İlerleme</Text>
         {NAMAZ_ISIMLERI.map((namazAdi, index) => {
           const yuzde = istatistik.namazBazindaYuzdeler?.[namazAdi] || 0;
           return (
-            <View key={namazAdi} style={styles.ilerlemeRow}>
-              <Text style={[styles.ilerlemeNamazAdi, { color: renkler.metin }]}>{namazAdi}</Text>
-              <View style={[styles.ilerlemeBarContainer, { backgroundColor: renkler.sinir }]}>
+            <View key={namazAdi} className="flex-row items-center mb-4">
+              <Text className="w-16 text-sm font-semibold" style={{ color: renkler.metin }}>{namazAdi}</Text>
+              <View className="flex-1 h-2.5 rounded-full mx-3 overflow-hidden" style={{ backgroundColor: renkler.sinir }}>
                 <View
-                  style={[
-                    styles.ilerlemeBarDolgu,
-                    {
-                      width: `${yuzde}%`,
-                      backgroundColor: barRenkleri[index % barRenkleri.length]
-                    }
-                  ]}
+                  className="h-full rounded-full"
+                  style={{ width: `${yuzde}%`, backgroundColor: barRenkleri[index % barRenkleri.length] }}
                 />
               </View>
-              <Text style={[styles.ilerlemeYuzde, { color: barRenkleri[index % barRenkleri.length] }]}>
+              <Text
+                className="w-10 text-sm font-bold text-right"
+                style={{ color: barRenkleri[index % barRenkleri.length] }}
+              >
                 %{yuzde}
               </Text>
             </View>
@@ -448,34 +533,37 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
       </View>
 
       {/* Aylik Trendler */}
-      <View style={[styles.trendlerKart, { backgroundColor: renkler.kartArkaplan }]}>
-        <Text style={[styles.trendlerBaslik, { color: renkler.metin }]}>Aylık Trendler</Text>
+      <View
+        className="rounded-2xl p-4 shadow-sm"
+        style={{ backgroundColor: renkler.kartArkaplan }}
+      >
+        <Text className="text-base font-bold mb-4" style={{ color: renkler.metin }}>Aylık Trendler</Text>
         <TrendItem
-          baslik="Basarı Oranı"
+          baslik="Başarı Oranı"
           deger={`%${istatistik.tamamlanmaYuzdesi} tamamlandı`}
-          ikon="📈"
+          ikonAdi="chart-line"
           renk={renkler.birincil}
           renkler={renkler}
         />
         <TrendItem
           baslik="Aktif Günler"
           deger={`${istatistik.aktifGunSayisi} gün aktif`}
-          ikon="⭐"
+          ikonAdi="star"
           renk="#FFB300"
           renkler={renkler}
         />
         <TrendItem
           baslik="Toplam Namaz"
           deger={`${istatistik.tamamlananNamaz} namaz kılındı`}
-          ikon="🕌"
+          ikonAdi="mosque"
           renk={renkler.durum.bilgi}
           renkler={renkler}
         />
         {istatistik.tamamlanmaYuzdesi >= 80 ? (
           <TrendItem
             baslik="Hedef Durumu"
-            deger="Hedef tamamlandı! 🎉"
-            ikon="🏆"
+            deger="Hedef tamamlandı!"
+            ikonAdi="trophy"
             renk="#FFD700"
             renkler={renkler}
           />
@@ -483,7 +571,7 @@ const AylikIcerik: React.FC<{ istatistik: any; yukleniyor: boolean; renkler: any
           <TrendItem
             baslik="Hedef Durumu"
             deger={`%80 hedefine ${80 - istatistik.tamamlanmaYuzdesi} puan kaldı`}
-            ikon="🎯"
+            ikonAdi="bullseye"
             renk="#FF9800"
             renkler={renkler}
           />
@@ -506,15 +594,13 @@ const HedefItem: React.FC<{
   const yuzde = Math.min((mevcut / hedef) * 100, 100);
 
   return (
-    <View style={styles.hedefItem}>
-      <View style={styles.hedefBaslikRow}>
-        <Text style={[styles.hedefItemBaslik, { color: renkler.metin }]}>{baslik}</Text>
-        <Text style={[styles.hedefItemDeger, { color: renkler.metinIkincil }]}>{mevcut}/{hedef}</Text>
+    <View className="mb-4">
+      <View className="flex-row justify-between mb-1.5">
+        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>{baslik}</Text>
+        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{mevcut}/{hedef}</Text>
       </View>
-      <View style={[styles.hedefBarContainer, { backgroundColor: renkler.sinir }]}>
-        <View
-          style={[styles.hedefBarDolgu, { width: `${yuzde}%`, backgroundColor: renk }]}
-        />
+      <View className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: renkler.sinir }}>
+        <View className="h-full rounded-full" style={{ width: `${yuzde}%`, backgroundColor: renk }} />
       </View>
     </View>
   );
@@ -524,588 +610,19 @@ const HedefItem: React.FC<{
 const TrendItem: React.FC<{
   baslik: string;
   deger: string;
-  ikon: string;
+  ikonAdi: string;
   renk: string;
   renkler: any;
-}> = ({ baslik, deger, ikon, renk, renkler }) => {
+}> = ({ baslik, deger, ikonAdi, renk, renkler }) => {
   return (
-    <View style={styles.trendItem}>
-      <View style={[styles.trendIkon, { backgroundColor: `${renk}20` }]}>
-        <Text style={styles.trendIkonText}>{ikon}</Text>
+    <View className="flex-row items-center mb-4">
+      <View className="w-9 h-9 rounded-lg items-center justify-center mr-3" style={{ backgroundColor: `${renk}15` }}>
+        <FontAwesome5 name={ikonAdi} size={16} color={renk} solid />
       </View>
-      <View style={styles.trendMetinler}>
-        <Text style={[styles.trendBaslik, { color: renkler.metin }]}>{baslik}</Text>
-        <Text style={[styles.trendDeger, { color: renkler.metinIkincil }]}>{deger}</Text>
+      <View className="flex-1">
+        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>{baslik}</Text>
+        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>{deger}</Text>
       </View>
     </View>
   );
 };
-
-// ==================== STYLES ====================
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: RENKLER.ARKAPLAN,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: RENKLER.BEYAZ,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabAktif: {
-    borderBottomColor: RENKLER.BIRINCIL,
-  },
-  tabIkon: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  tabText: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    color: RENKLER.GRI,
-    fontWeight: '500',
-  },
-  tabTextAktif: {
-    color: RENKLER.BIRINCIL,
-    fontWeight: 'bold',
-  },
-  icerik: {
-    flex: 1,
-  },
-  istatistikContainer: {
-    padding: BOYUTLAR.PADDING_ORTA,
-    paddingBottom: BOYUTLAR.PADDING_BUYUK * 2,
-  },
-  bosContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 50,
-  },
-  bosText: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    color: RENKLER.GRI,
-  },
-
-  // Bolum Basligi
-  bolumBasligi: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: RENKLER.BEYAZ,
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  baslikIkon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#E8F5E9',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  baslikIkonText: {
-    fontSize: 20,
-  },
-  bolumBaslikMetin: {
-    fontSize: BOYUTLAR.FONT_BUYUK,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-    marginLeft: BOYUTLAR.MARGIN_ORTA,
-  },
-
-  // Tamamlanma Karti
-  tamamlanmaKarti: {
-    backgroundColor: RENKLER.BIRINCIL,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_BUYUK,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.BIRINCIL,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  tamamlanmaUst: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  tamamlanmaBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: '600',
-    color: RENKLER.BEYAZ,
-  },
-  tarihBadge: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  tarihBadgeMetin: {
-    color: RENKLER.BEYAZ,
-    fontWeight: 'bold',
-    fontSize: BOYUTLAR.FONT_KUCUK,
-  },
-  tamamlanmaIcerik: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  tamamlanmaSol: {
-    flex: 1,
-  },
-  yuzdeText: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: RENKLER.BEYAZ,
-  },
-  tamamlandiMetin: {
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    color: 'rgba(255,255,255,0.7)',
-  },
-  daireContainer: {
-    width: 100,
-    alignItems: 'center',
-  },
-  daireArkaplan: {
-    width: 100,
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  daireDolgu: {
-    height: '100%',
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: 4,
-  },
-  daireMerkezMetin: {
-    color: RENKLER.BEYAZ,
-    fontWeight: 'bold',
-    marginTop: 4,
-    fontSize: BOYUTLAR.FONT_NORMAL,
-  },
-
-  // Detay Karti
-  detayKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  detayBaslik: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  detayBaslikIkon: {
-    fontSize: 20,
-    marginRight: BOYUTLAR.MARGIN_KUCUK,
-  },
-  detayBaslikMetin: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-  },
-
-  // Namaz Item
-  namazItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_KUCUK,
-  },
-  namazItemTamamlandi: {
-    backgroundColor: '#E8F5E9',
-    borderWidth: 1,
-    borderColor: '#C8E6C9',
-  },
-  namazItemBekliyor: {
-    backgroundColor: '#FFF3E0',
-    borderWidth: 1,
-    borderColor: '#FFE0B2',
-  },
-  namazItemIkon: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: BOYUTLAR.MARGIN_ORTA,
-  },
-  namazItemIkonTamamlandi: {
-    backgroundColor: '#C8E6C9',
-  },
-  namazItemIkonBekliyor: {
-    backgroundColor: '#FFE0B2',
-  },
-  namazIkonText: {
-    fontSize: 16,
-  },
-  namazAdiMetin: {
-    flex: 1,
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: '600',
-  },
-  namazAdiTamamlandi: {
-    color: RENKLER.BIRINCIL_KOYU,
-  },
-  namazAdiBekliyor: {
-    color: '#E65100',
-  },
-  namazDurumBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  namazDurumTamamlandi: {
-    backgroundColor: '#C8E6C9',
-  },
-  namazDurumBekliyor: {
-    backgroundColor: '#FFE0B2',
-  },
-  namazDurumMetin: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    fontWeight: 'bold',
-  },
-  namazDurumMetinTamamlandi: {
-    color: RENKLER.BIRINCIL_KOYU,
-  },
-  namazDurumMetinBekliyor: {
-    color: '#E65100',
-  },
-
-  // Motivasyon Karti
-  motivasyonKart: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  motivasyonIkon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: BOYUTLAR.MARGIN_ORTA,
-  },
-  motivasyonIkonText: {
-    fontSize: 20,
-  },
-  motivasyonMetin: {
-    flex: 1,
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: '600',
-  },
-
-  // Grafik Karti
-  grafikKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  grafikBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  grafikContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
-    height: 120,
-  },
-  grafikBar: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  barContainer: {
-    width: 30,
-    height: 80,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
-    justifyContent: 'flex-end',
-    overflow: 'hidden',
-  },
-  barDolgu: {
-    width: '100%',
-    borderRadius: 4,
-  },
-  barEtiket: {
-    fontSize: 10,
-    color: RENKLER.GRI_KOYU,
-    marginTop: 4,
-    fontWeight: '600',
-  },
-  barDeger: {
-    fontSize: 8,
-    color: RENKLER.GRI,
-  },
-
-  // Mini Kartlar
-  istatistikKartlari: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  miniKart: {
-    flex: 1,
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    marginHorizontal: 4,
-  },
-  miniKartIkon: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  miniKartIkonText: {
-    fontSize: 16,
-    color: RENKLER.BEYAZ,
-  },
-  miniKartDeger: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  miniKartBaslik: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: RENKLER.GRI_KOYU,
-    marginTop: 4,
-  },
-  miniKartAltBaslik: {
-    fontSize: 9,
-    color: RENKLER.GRI,
-  },
-
-  // Hedefler Karti
-  hedeflerKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  hedeflerBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  hedefItem: {
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  hedefBaslikRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-  },
-  hedefItemBaslik: {
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    fontWeight: '600',
-    color: RENKLER.GRI_KOYU,
-  },
-  hedefItemDeger: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    color: RENKLER.GRI,
-  },
-  hedefBarContainer: {
-    height: 6,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  hedefBarDolgu: {
-    height: '100%',
-    borderRadius: 3,
-  },
-
-  // Aylik Kartlar
-  aylikGenelKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  aylikBaslikRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  aylikGenelBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-  },
-  ayBadge: {
-    backgroundColor: '#E3F2FD',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  ayBadgeMetin: {
-    color: RENKLER.BILGI,
-    fontWeight: 'bold',
-    fontSize: BOYUTLAR.FONT_KUCUK,
-  },
-  aylikIstatRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  aylikStatItem: {
-    flex: 1,
-    alignItems: 'center',
-    padding: BOYUTLAR.PADDING_ORTA,
-    borderRadius: BOYUTLAR.YUVARLATMA_ORTA,
-    marginHorizontal: 4,
-  },
-  aylikStatDeger: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  aylikStatEtiket: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    fontWeight: '600',
-    color: RENKLER.GRI,
-    marginTop: 4,
-  },
-
-  // Namaz Ilerleme Karti
-  namazIlerlemeKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  namazIlerlemeBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  ilerlemeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  ilerlemeNamazAdi: {
-    width: 60,
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    fontWeight: '600',
-    color: RENKLER.GRI_KOYU,
-  },
-  ilerlemeBarContainer: {
-    flex: 1,
-    height: 10,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 5,
-    marginHorizontal: 12,
-    overflow: 'hidden',
-  },
-  ilerlemeBarDolgu: {
-    height: '100%',
-    borderRadius: 5,
-  },
-  ilerlemeYuzde: {
-    width: 40,
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    fontWeight: 'bold',
-    textAlign: 'right',
-  },
-
-  // Trendler Karti
-  trendlerKart: {
-    backgroundColor: RENKLER.BEYAZ,
-    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    padding: BOYUTLAR.PADDING_ORTA,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-    shadowColor: RENKLER.SIYAH,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  trendlerBaslik: {
-    fontSize: BOYUTLAR.FONT_ORTA,
-    fontWeight: 'bold',
-    color: RENKLER.GRI_KOYU,
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  trendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  trendIkon: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: BOYUTLAR.MARGIN_ORTA,
-  },
-  trendIkonText: {
-    fontSize: 18,
-  },
-  trendMetinler: {
-    flex: 1,
-  },
-  trendBaslik: {
-    fontSize: BOYUTLAR.FONT_NORMAL,
-    fontWeight: '600',
-    color: RENKLER.GRI_KOYU,
-  },
-  trendDeger: {
-    fontSize: BOYUTLAR.FONT_KUCUK,
-    color: RENKLER.GRI,
-    marginTop: 2,
-  },
-});
-

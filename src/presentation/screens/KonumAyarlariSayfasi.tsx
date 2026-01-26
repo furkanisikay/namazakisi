@@ -1,7 +1,8 @@
 /**
- * Konum Ayarlari Sayfasi
- * Kullanicinin konumunu GPS veya manuel secim ile belirlemesini saglar
- * SOLID: Single Responsibility - Sadece konum ayarlari
+ * Konum Ayarları Sayfası
+ * Kullanıcının konumunu GPS veya manuel seçim ile belirlemesini sağlar
+ * 
+ * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
  */
 
 import * as React from 'react';
@@ -9,7 +10,6 @@ import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import {
     View,
     Text,
-    StyleSheet,
     ScrollView,
     TouchableOpacity,
     ActivityIndicator,
@@ -24,6 +24,7 @@ import {
     Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumAyarlariniGuncelle, GpsAdres } from '../store/konumSlice';
@@ -47,7 +48,6 @@ interface IlIlceSeciciProps {
 
 /**
  * Profesyonel Il/Ilce Secici Komponenti
- * Cascading dropdown: Il sec -> Ilce sec
  */
 const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
     seciliIlId,
@@ -65,10 +65,8 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
     const [adim, setAdim] = useState<'il' | 'ilce'>('il');
     const animDeger = useRef(new Animated.Value(0)).current;
 
-    // Iller listesi (offline + API)
     const [iller, setIller] = useState<Il[]>(TURKIYE_ILLERI_OFFLINE);
 
-    // Baslangicta illeri yukle
     useEffect(() => {
         const illerYukle = async () => {
             const illerData = await TurkiyeKonumServisi.illeriGetir();
@@ -77,7 +75,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         illerYukle();
     }, []);
 
-    // Turkce karakter normalizasyonu
     const normalizeMetin = useCallback((metin: string) => {
         return metin.toLowerCase().replace(/[ığüşöçİ]/g, (char) => {
             const harita: Record<string, string> = {
@@ -87,7 +84,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         });
     }, []);
 
-    // Filtrelenmis iller
     const filtreliIller = useMemo(() => {
         if (!aramaMetni) return iller.sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
         const aramaKucuk = normalizeMetin(aramaMetni);
@@ -96,7 +92,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
             .sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
     }, [iller, aramaMetni, normalizeMetin]);
 
-    // Filtrelenmis ilceler
     const filtreliIlceler = useMemo(() => {
         if (!aramaMetni) return ilceler.sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
         const aramaKucuk = normalizeMetin(aramaMetni);
@@ -105,7 +100,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
             .sort((a, b) => a.ad.localeCompare(b.ad, 'tr'));
     }, [ilceler, aramaMetni, normalizeMetin]);
 
-    // Modal ac
     const modalAc = useCallback(() => {
         setModalGorunum(true);
         setAdim('il');
@@ -119,7 +113,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         }).start();
     }, [animDeger]);
 
-    // Modal kapat
     const modalKapat = useCallback(() => {
         Animated.timing(animDeger, {
             toValue: 0,
@@ -133,27 +126,21 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         });
     }, [animDeger]);
 
-    // Il secimi
     const ilSecHandler = useCallback(async (il: Il) => {
         setSecilenIl(il);
         setAramaMetni('');
         setIlcelerYukleniyor(true);
-
-        // Ilceleri yukle
         const ilceData = await TurkiyeKonumServisi.ilceleriGetir(il.id);
         setIlceler(ilceData);
         setIlcelerYukleniyor(false);
-
         if (ilceData.length > 0) {
             setAdim('ilce');
         } else {
-            // Ilce yoksa direkt il ile devam et
             onKonumSec(il);
             modalKapat();
         }
     }, [onKonumSec, modalKapat]);
 
-    // Ilce secimi
     const ilceSecHandler = useCallback((ilce: Ilce) => {
         if (secilenIl) {
             onKonumSec(secilenIl, ilce);
@@ -161,101 +148,87 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         }
     }, [secilenIl, onKonumSec, modalKapat]);
 
-    // Geri butonu (ilce -> il)
     const geriHandler = useCallback(() => {
         setAdim('il');
         setSecilenIl(null);
         setAramaMetni('');
     }, []);
 
-    // Il listesi ogesi render
     const ilOgesiRender = useCallback(({ item }: { item: Il }) => {
         const seciliMi = item.id === seciliIlId;
         return (
             <TouchableOpacity
-                style={[
-                    styles.sehirListeOge,
-                    {
-                        backgroundColor: seciliMi ? `${renkler.birincil}15` : 'transparent',
-                        borderColor: seciliMi ? renkler.birincil : 'transparent',
-                    }
-                ]}
+                className="flex-row items-center justify-between py-3.5 px-4 rounded-xl mb-2 border"
+                style={{
+                    backgroundColor: seciliMi ? `${renkler.birincil}15` : 'transparent',
+                    borderColor: seciliMi ? renkler.birincil : 'transparent',
+                }}
                 onPress={() => ilSecHandler(item)}
                 activeOpacity={0.7}
             >
-                <View style={styles.sehirListeIcerik}>
-                    <View style={[
-                        styles.sehirListeIkon,
-                        { backgroundColor: seciliMi ? renkler.birincil : renkler.sinir }
-                    ]}>
-                        <Text style={styles.sehirListeIkonMetin}>{item.plakaKodu}</Text>
+                <View className="flex-row items-center flex-1">
+                    <View
+                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                        style={{ backgroundColor: seciliMi ? renkler.birincil : renkler.sinir }}
+                    >
+                        <Text className="text-base text-white font-semibold">{item.plakaKodu}</Text>
                     </View>
-                    <View style={styles.sehirListeMetin}>
-                        <Text style={[
-                            styles.sehirListeAd,
-                            {
-                                color: seciliMi ? renkler.birincil : renkler.metin,
-                                fontWeight: seciliMi ? '700' : '500'
-                            }
-                        ]}>
+                    <View className="flex-1">
+                        <Text
+                            className="text-base"
+                            style={{ color: seciliMi ? renkler.birincil : renkler.metin, fontWeight: seciliMi ? '700' : '500' }}
+                        >
                             {item.ad}
                         </Text>
-                        <Text style={[styles.sehirListeKoordinat, { color: renkler.metinIkincil }]}>
+                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                             {item.lat.toFixed(2)}°K, {item.lng.toFixed(2)}°D
                         </Text>
                     </View>
                 </View>
-                <Text style={[styles.sehirOkIkon, { color: renkler.metinIkincil }]}>▶</Text>
+                <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
             </TouchableOpacity>
         );
     }, [seciliIlId, renkler, ilSecHandler]);
 
-    // Ilce listesi ogesi render
     const ilceOgesiRender = useCallback(({ item }: { item: Ilce }) => {
         const seciliMi = item.id === seciliIlceId;
         return (
             <TouchableOpacity
-                style={[
-                    styles.sehirListeOge,
-                    {
-                        backgroundColor: seciliMi ? `${renkler.birincil}15` : 'transparent',
-                        borderColor: seciliMi ? renkler.birincil : 'transparent',
-                    }
-                ]}
+                className="flex-row items-center justify-between py-3.5 px-4 rounded-xl mb-2 border"
+                style={{
+                    backgroundColor: seciliMi ? `${renkler.birincil}15` : 'transparent',
+                    borderColor: seciliMi ? renkler.birincil : 'transparent',
+                }}
                 onPress={() => ilceSecHandler(item)}
                 activeOpacity={0.7}
             >
-                <View style={styles.sehirListeIcerik}>
-                    <View style={[
-                        styles.sehirListeIkon,
-                        { backgroundColor: seciliMi ? renkler.birincil : renkler.sinir }
-                    ]}>
-                        <Text style={styles.sehirListeIkonMetin}>
-                            {seciliMi ? '✓' : '📍'}
-                        </Text>
+                <View className="flex-row items-center flex-1">
+                    <View
+                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                        style={{ backgroundColor: seciliMi ? renkler.birincil : renkler.sinir }}
+                    >
+                        <FontAwesome5
+                            name={seciliMi ? 'check' : 'map-marker-alt'}
+                            size={16}
+                            color="#FFF"
+                        />
                     </View>
-                    <View style={styles.sehirListeMetin}>
-                        <Text style={[
-                            styles.sehirListeAd,
-                            {
-                                color: seciliMi ? renkler.birincil : renkler.metin,
-                                fontWeight: seciliMi ? '700' : '500'
-                            }
-                        ]}>
-                            {item.ad}
-                        </Text>
-                    </View>
+                    <Text
+                        className="text-base flex-1"
+                        style={{ color: seciliMi ? renkler.birincil : renkler.metin, fontWeight: seciliMi ? '700' : '500' }}
+                    >
+                        {item.ad}
+                    </Text>
                 </View>
                 {seciliMi && (
-                    <View style={[styles.seciliBadge, { backgroundColor: renkler.birincil }]}>
-                        <Text style={styles.seciliBadgeMetin}>Secili</Text>
+                    <View className="px-2.5 py-1 rounded-lg" style={{ backgroundColor: renkler.birincil }}>
+                        <Text className="text-xs font-semibold text-white">Secili</Text>
                     </View>
                 )}
             </TouchableOpacity>
         );
     }, [seciliIlceId, renkler, ilceSecHandler]);
 
-    // Konum metni
     const konumMetni = useMemo(() => {
         if (seciliIlceAdi && seciliIlAdi) {
             return `${seciliIlceAdi}, ${seciliIlAdi}`;
@@ -270,111 +243,117 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         <>
             {/* Konum Secici Butonu */}
             <TouchableOpacity
-                style={[
-                    styles.sehirSeciciButon,
-                    {
-                        backgroundColor: renkler.kartArkaplan,
-                        borderColor: seciliIlId ? renkler.birincil : renkler.sinir,
-                        borderWidth: seciliIlId ? 2 : 1,
-                    }
-                ]}
+                className="rounded-2xl p-4 flex-row items-center justify-between"
+                style={{
+                    backgroundColor: renkler.kartArkaplan,
+                    borderColor: seciliIlId ? renkler.birincil : renkler.sinir,
+                    borderWidth: seciliIlId ? 2 : 1,
+                }}
                 onPress={modalAc}
                 activeOpacity={0.8}
             >
-                <View style={styles.sehirSeciciIcerik}>
-                    <View style={[
-                        styles.sehirSeciciIkonContainer,
-                        { backgroundColor: seciliIlId ? `${renkler.birincil}20` : renkler.sinir }
-                    ]}>
-                        <Text style={styles.sehirSeciciIkon}>📍</Text>
+                <View className="flex-row items-center flex-1">
+                    <View
+                        className="w-12 h-12 rounded-xl items-center justify-center mr-3.5"
+                        style={{ backgroundColor: seciliIlId ? `${renkler.birincil}20` : renkler.sinir }}
+                    >
+                        <FontAwesome5 name="map-marker-alt" size={20} color={seciliIlId ? renkler.birincil : renkler.metinIkincil} solid />
                     </View>
-                    <View style={styles.sehirSeciciMetin}>
-                        <Text style={[styles.sehirSeciciEtiket, { color: renkler.metinIkincil }]}>
-                            Konum
+                    <View className="flex-1">
+                        <Text className="text-xs font-medium tracking-wider mb-0.5" style={{ color: renkler.metinIkincil }}>
+                            KONUM
                         </Text>
-                        <Text style={[
-                            styles.sehirSeciciDeger,
-                            { color: seciliIlId ? renkler.metin : renkler.metinIkincil }
-                        ]}>
+                        <Text
+                            className="text-lg font-semibold"
+                            style={{ color: seciliIlId ? renkler.metin : renkler.metinIkincil }}
+                        >
                             {konumMetni}
                         </Text>
                     </View>
                 </View>
-                <View style={styles.sehirSeciciOk}>
-                    <Text style={[styles.sehirSeciciOkMetin, { color: renkler.metinIkincil }]}>▼</Text>
+                <View className="w-8 h-8 rounded-lg items-center justify-center">
+                    <FontAwesome5 name="chevron-down" size={12} color={renkler.metinIkincil} />
                 </View>
             </TouchableOpacity>
 
             {/* Il/Ilce Secim Modali */}
-            <Modal
-                visible={modalGorunum}
-                transparent
-                animationType="none"
-                onRequestClose={modalKapat}
-            >
-                <Pressable
-                    style={styles.modalArkaplan}
-                    onPress={modalKapat}
-                >
+            <Modal visible={modalGorunum} transparent animationType="none" onRequestClose={modalKapat}>
+                <Pressable className="flex-1 bg-black/50 justify-end" onPress={modalKapat}>
                     <Animated.View
-                        style={[
-                            styles.modalContainer,
-                            {
-                                backgroundColor: renkler.arkaplan,
-                                transform: [{
-                                    translateY: animDeger.interpolate({
-                                        inputRange: [0, 1],
-                                        outputRange: [EKRAN_YUKSEKLIGI, 0],
-                                    })
-                                }]
-                            }
-                        ]}
+                        style={{
+                            height: EKRAN_YUKSEKLIGI * 0.75,
+                            backgroundColor: renkler.arkaplan,
+                            borderTopLeftRadius: 24,
+                            borderTopRightRadius: 24,
+                            overflow: 'hidden',
+                            transform: [{
+                                translateY: animDeger.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [EKRAN_YUKSEKLIGI, 0],
+                                })
+                            }]
+                        }}
                     >
                         <Pressable style={{ flex: 1 }} onPress={(e) => e.stopPropagation()}>
                             {/* Modal Baslik */}
-                            <View style={[styles.modalBaslik, { borderBottomColor: renkler.sinir }]}>
+                            <View className="flex-row items-center justify-between px-5 pt-4 pb-4 border-b" style={{ borderBottomColor: renkler.sinir }}>
                                 {adim === 'ilce' && (
                                     <TouchableOpacity
-                                        style={[styles.geriButon, { backgroundColor: renkler.sinir }]}
+                                        className="w-9 h-9 rounded-full items-center justify-center mr-2"
+                                        style={{ backgroundColor: renkler.sinir }}
                                         onPress={geriHandler}
                                     >
-                                        <Text style={[styles.geriButonMetin, { color: renkler.metin }]}>◀</Text>
+                                        <FontAwesome5 name="arrow-left" size={14} color={renkler.metin} />
                                     </TouchableOpacity>
                                 )}
-                                <View style={[styles.modalBaslikTutucu, adim === 'ilce' && { display: 'none' }]} />
-                                <View style={styles.modalBaslikIcerik}>
-                                    <Text style={[styles.modalBaslikMetin, { color: renkler.metin }]}>
-                                        {adim === 'il' ? '🏙️ İl Seçimi' : `📍 ${secilenIl?.ad} - İlçe Seçimi`}
-                                    </Text>
-                                    <Text style={[styles.modalAltBaslik, { color: renkler.metinIkincil }]}>
-                                        {adim === 'il' ? '81 il arasından seçin' : 'İlçe seçerek devam edin'}
+                                <View className="flex-1">
+                                    <View className="flex-row items-center">
+                                        <FontAwesome5 name={adim === 'il' ? 'city' : 'map-marker-alt'} size={16} color={renkler.metin} />
+                                        <Text className="text-xl font-bold ml-2" style={{ color: renkler.metin }}>
+                                            {adim === 'il' ? 'Il Secimi' : `${secilenIl?.ad} - Ilce Secimi`}
+                                        </Text>
+                                    </View>
+                                    <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                        {adim === 'il' ? '81 il arasindan secin' : 'Ilce secerek devam edin'}
                                     </Text>
                                 </View>
                                 <TouchableOpacity
-                                    style={[styles.modalKapatButon, { backgroundColor: renkler.sinir }]}
+                                    className="w-9 h-9 rounded-full items-center justify-center"
+                                    style={{ backgroundColor: renkler.sinir }}
                                     onPress={modalKapat}
                                 >
-                                    <Text style={[styles.modalKapatMetin, { color: renkler.metin }]}>✕</Text>
+                                    <FontAwesome5 name="times" size={14} color={renkler.metin} />
                                 </TouchableOpacity>
                             </View>
 
-                            {/* Breadcrumb - Sadece ilce adiminda */}
+                            {/* Breadcrumb */}
                             {adim === 'ilce' && secilenIl && (
-                                <View style={[styles.breadcrumb, { backgroundColor: `${renkler.birincil}10` }]}>
-                                    <Text style={[styles.breadcrumbMetin, { color: renkler.birincil }]}>
-                                        📍 {secilenIl.ad} ({secilenIl.plakaKodu})
+                                <View
+                                    className="mx-4 mt-2 px-4 py-2.5 rounded-lg flex-row items-center"
+                                    style={{ backgroundColor: `${renkler.birincil}10` }}
+                                >
+                                    <FontAwesome5 name="map-marker-alt" size={12} color={renkler.birincil} />
+                                    <Text className="text-sm font-semibold ml-2" style={{ color: renkler.birincil }}>
+                                        {secilenIl.ad} ({secilenIl.plakaKodu})
                                     </Text>
                                 </View>
                             )}
 
                             {/* Arama Alani */}
-                            <View style={[styles.aramaContainer, { backgroundColor: renkler.kartArkaplan }]}>
-                                <View style={[styles.aramaIkon, { backgroundColor: renkler.sinir }]}>
-                                    <Text>🔍</Text>
+                            <View
+                                className="flex-row items-center mx-4 my-3 rounded-xl px-3 h-12"
+                                style={{ backgroundColor: renkler.kartArkaplan }}
+                            >
+                                <View
+                                    className="w-8 h-8 rounded-lg items-center justify-center mr-2.5"
+                                    style={{ backgroundColor: renkler.sinir }}
+                                >
+                                    <FontAwesome5 name="search" size={12} color={renkler.metinIkincil} />
                                 </View>
                                 <TextInput
-                                    style={[styles.aramaInput, { color: renkler.metin }]}
-                                    placeholder={adim === 'il' ? 'İl ara...' : 'İlçe ara...'}
+                                    className="flex-1 text-base h-12"
+                                    style={{ color: renkler.metin }}
+                                    placeholder={adim === 'il' ? 'Il ara...' : 'Ilce ara...'}
                                     placeholderTextColor={renkler.metinIkincil}
                                     value={aramaMetni}
                                     onChangeText={setAramaMetni}
@@ -382,30 +361,30 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 />
                                 {aramaMetni.length > 0 && (
                                     <TouchableOpacity
-                                        style={styles.aramaTemizle}
+                                        className="w-7 h-7 items-center justify-center"
                                         onPress={() => setAramaMetni('')}
                                     >
-                                        <Text style={{ color: renkler.metinIkincil }}>✕</Text>
+                                        <FontAwesome5 name="times-circle" size={14} color={renkler.metinIkincil} />
                                     </TouchableOpacity>
                                 )}
                             </View>
 
                             {/* Sonuc Sayisi */}
-                            <View style={styles.sonucBilgi}>
-                                <Text style={[styles.sonucMetin, { color: renkler.metinIkincil }]}>
+                            <View className="px-4 mb-2">
+                                <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
                                     {adim === 'il'
                                         ? `${filtreliIller.length} il listeleniyor`
-                                        : `${filtreliIlceler.length} ilçe listeleniyor`
+                                        : `${filtreliIlceler.length} ilce listeleniyor`
                                     }
                                 </Text>
                             </View>
 
                             {/* Liste */}
                             {ilcelerYukleniyor ? (
-                                <View style={styles.yuklemeContainer}>
+                                <View className="flex-1 items-center justify-center py-12">
                                     <ActivityIndicator size="large" color={renkler.birincil} />
-                                    <Text style={[styles.yuklemeMetin, { color: renkler.metinIkincil }]}>
-                                        İlçeler yükleniyor...
+                                    <Text className="text-sm mt-3" style={{ color: renkler.metinIkincil }}>
+                                        Ilceler yukleniyor...
                                     </Text>
                                 </View>
                             ) : adim === 'il' ? (
@@ -413,15 +392,15 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                     data={filtreliIller}
                                     keyExtractor={(item) => String(item.id)}
                                     renderItem={ilOgesiRender}
-                                    contentContainerStyle={styles.sehirListeContainer}
+                                    contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
                                     showsVerticalScrollIndicator={false}
                                     keyboardShouldPersistTaps="handled"
                                     initialNumToRender={20}
                                     ListEmptyComponent={
-                                        <View style={styles.bosListeContainer}>
-                                            <Text style={styles.bosListeIkon}>🔍</Text>
-                                            <Text style={[styles.bosListeMetin, { color: renkler.metinIkincil }]}>
-                                                "{aramaMetni}" için sonuç bulunamadı
+                                        <View className="items-center py-12">
+                                            <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
+                                            <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
+                                                "{aramaMetni}" icin sonuc bulunamadi
                                             </Text>
                                         </View>
                                     }
@@ -431,17 +410,17 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                     data={filtreliIlceler}
                                     keyExtractor={(item) => String(item.id)}
                                     renderItem={ilceOgesiRender}
-                                    contentContainerStyle={styles.sehirListeContainer}
+                                    contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
                                     showsVerticalScrollIndicator={false}
                                     keyboardShouldPersistTaps="handled"
                                     initialNumToRender={20}
                                     ListEmptyComponent={
-                                        <View style={styles.bosListeContainer}>
-                                            <Text style={styles.bosListeIkon}>🔍</Text>
-                                            <Text style={[styles.bosListeMetin, { color: renkler.metinIkincil }]}>
+                                        <View className="items-center py-12">
+                                            <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
+                                            <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
                                                 {aramaMetni
-                                                    ? `"${aramaMetni}" için sonuç bulunamadı`
-                                                    : 'Bu il için ilçe verisi bulunamadı'
+                                                    ? `"${aramaMetni}" icin sonuc bulunamadi`
+                                                    : 'Bu il icin ilce verisi bulunamadi'
                                                 }
                                             </Text>
                                         </View>
@@ -458,7 +437,6 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
 
 /**
  * Konum Ayarlari Sayfasi
- * GPS veya manuel sehir secimi ile konum belirleme
  */
 export const KonumAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
@@ -469,7 +447,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const [takipDurumuYukleniyor, setTakipDurumuYukleniyor] = useState(false);
     const [takipAktif, setTakipAktif] = useState(konumAyarlari.akilliTakipAktif);
 
-    // Baslangicta takip durumunu kontrol et
     useEffect(() => {
         const takipDurumunuKontrolEt = async () => {
             const aktifMi = await KonumTakipServisi.getInstance().aktifMi();
@@ -481,7 +458,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         takipDurumunuKontrolEt();
     }, []);
 
-    // Manuel moda gecildiginde takibi durdur
     useEffect(() => {
         const takibiDurdur = async () => {
             if (konumAyarlari.konumModu === 'manuel' && takipAktif) {
@@ -493,9 +469,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         takibiDurdur();
     }, [konumAyarlari.konumModu]);
 
-    /**
-     * Akilli konum takibini ac/kapat
-     */
     const handleAkilliTakipDegistir = async (aktif: boolean) => {
         await butonTiklandiFeedback();
         setTakipDurumuYukleniyor(true);
@@ -504,32 +477,27 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             const servis = KonumTakipServisi.getInstance();
 
             if (aktif) {
-                // Arka plan izni kontrolu
                 const arkaPlanIzniVar = await servis.arkaPlanIzniVarMi();
                 if (!arkaPlanIzniVar) {
                     Alert.alert(
-                        'Arka Plan Konum İzni',
-                        'Akıllı konum takibi için "Her zaman" konum iznine ihtiyaç var. Bu sayede hareket halindeyken konumunuz otomatik güncellenir.\n\nPil tüketimi minimumdur - sadece 5km+ değişikliklerde tetiklenir.',
+                        'Arka Plan Konum Izni',
+                        'Akilli konum takibi icin "Her zaman" konum iznine ihtiyac var. Bu sayede hareket halindeyken konumunuz otomatik guncellenir.\n\nPil tuketimi minimumdur - sadece 5km+ degisikliklerde tetiklenir.',
                         [
-                            { text: 'İptal', style: 'cancel' },
+                            { text: 'Iptal', style: 'cancel' },
                             {
-                                text: 'İzin Ver',
+                                text: 'Izin Ver',
                                 onPress: async () => {
                                     const basarili = await servis.baslat();
                                     if (basarili) {
                                         setTakipAktif(true);
                                         dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                                     } else {
-                                        // Izin reddedildi - ayarlar sayfasina yonlendir
                                         Alert.alert(
-                                            'İzin Gerekli',
-                                            'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
+                                            'Izin Gerekli',
+                                            'Arka plan konum izni verilemedi. Ayarlar sayfasindan "Konum" bolumune gidip "Her zaman izin ver" secenegini etkinlestirin.',
                                             [
-                                                { text: 'Vazgeç', style: 'cancel' },
-                                                {
-                                                    text: 'Ayarlara Git',
-                                                    onPress: () => Linking.openSettings(),
-                                                },
+                                                { text: 'Vazgec', style: 'cancel' },
+                                                { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
                                             ]
                                         );
                                     }
@@ -547,16 +515,12 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     setTakipAktif(true);
                     dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                 } else {
-                    // Izin reddedildi - ayarlar sayfasina yonlendir
                     Alert.alert(
-                        'İzin Gerekli',
-                        'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
+                        'Izin Gerekli',
+                        'Arka plan konum izni verilemedi. Ayarlar sayfasindan "Konum" bolumune gidip "Her zaman izin ver" secenegini etkinlestirin.',
                         [
-                            { text: 'Vazgeç', style: 'cancel' },
-                            {
-                                text: 'Ayarlara Git',
-                                onPress: () => Linking.openSettings(),
-                            },
+                            { text: 'Vazgec', style: 'cancel' },
+                            { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
                         ]
                     );
                 }
@@ -567,15 +531,12 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             }
         } catch (hata) {
             console.error('Konum takibi hatasi:', hata);
-            Alert.alert('Hata', 'Konum takibi ayarlanırken bir hata oluştu.');
+            Alert.alert('Hata', 'Konum takibi ayarlanirken bir hata olustu.');
         } finally {
             setTakipDurumuYukleniyor(false);
         }
     };
 
-    /**
-     * GPS ile otomatik konum al
-     */
     const handleKonumOto = async () => {
         await butonTiklandiFeedback();
         setYukleniyor(true);
@@ -584,7 +545,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             const sonuc = await NamazVaktiHesaplayiciServisi.getInstance().guncelleKonumOto();
 
             if (sonuc) {
-                // Reverse geocoding ile adres bilgisi al
                 let gpsAdres: GpsAdres | null = null;
 
                 try {
@@ -597,12 +557,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                         const adres = adresler[0];
                         const ilce = adres.district || adres.subregion || '';
                         const il = adres.city || adres.region || '';
-
-                        gpsAdres = {
-                            semt: '',
-                            ilce: ilce,
-                            il: il,
-                        };
+                        gpsAdres = { semt: '', ilce, il };
                     }
                 } catch (geoError) {
                     console.warn('Reverse geocoding basarisiz:', geoError);
@@ -611,22 +566,16 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 dispatch(konumAyarlariniGuncelle({
                     konumModu: 'oto',
                     koordinatlar: sonuc,
-                    gpsAdres: gpsAdres,
+                    gpsAdres,
                     seciliSehirId: '',
                     sonGpsGuncellemesi: new Date().toISOString(),
                 }));
-            } else {
-                // Hata durumu - kullaniciya bildir
-                console.warn('Konum alinamadi');
             }
         } finally {
             setYukleniyor(false);
         }
     };
 
-    /**
-     * Il/Ilce manuel secimi
-     */
     const handleKonumSecimi = async (il: Il, ilce?: Ilce) => {
         await butonTiklandiFeedback();
         const lat = ilce?.lat || il.lat;
@@ -645,9 +594,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         }));
     };
 
-    /**
-     * Mevcut konum metnini olustur
-     */
     const konumMetniOlustur = (): string => {
         if (konumAyarlari.konumModu === 'oto') {
             if (konumAyarlari.gpsAdres) {
@@ -663,9 +609,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         return konumAyarlari.seciliIlAdi || 'Konum secilmedi';
     };
 
-    /**
-     * Son GPS guncelleme zamanini formatla
-     */
     const sonGuncellemeMetniOlustur = (): string | null => {
         if (konumAyarlari.konumModu !== 'oto' || !konumAyarlari.sonGpsGuncellemesi) {
             return null;
@@ -678,70 +621,82 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         const farkSaat = Math.floor(farkMs / (1000 * 60 * 60));
         const farkGun = Math.floor(farkMs / (1000 * 60 * 60 * 24));
 
-        if (farkDakika < 1) {
-            return 'Az önce güncellendi';
-        } else if (farkDakika < 60) {
-            return `${farkDakika} dakika önce güncellendi`;
-        } else if (farkSaat < 24) {
-            return `${farkSaat} saat önce güncellendi`;
-        } else if (farkGun === 1) {
-            return 'Dün güncellendi';
-        } else if (farkGun < 7) {
-            return `${farkGun} gün önce güncellendi`;
-        } else {
-            // Tarih formatla: "15 Ocak 2026"
-            const aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-                'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
-            return `${guncellemeTarihi.getDate()} ${aylar[guncellemeTarihi.getMonth()]} ${guncellemeTarihi.getFullYear()}`;
-        }
+        if (farkDakika < 1) return 'Az once guncellendi';
+        if (farkDakika < 60) return `${farkDakika} dakika once guncellendi`;
+        if (farkSaat < 24) return `${farkSaat} saat once guncellendi`;
+        if (farkGun === 1) return 'Dun guncellendi';
+        if (farkGun < 7) return `${farkGun} gun once guncellendi`;
+
+        const aylar = ['Ocak', 'Subat', 'Mart', 'Nisan', 'Mayis', 'Haziran', 'Temmuz', 'Agustos', 'Eylul', 'Ekim', 'Kasim', 'Aralik'];
+        return `${guncellemeTarihi.getDate()} ${aylar[guncellemeTarihi.getMonth()]} ${guncellemeTarihi.getFullYear()}`;
     };
 
     const sonGuncellemeMetni = sonGuncellemeMetniOlustur();
 
     return (
-        <ScrollView style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
+        <ScrollView className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
             {/* Baslik Karti */}
-            <View style={[styles.baslikKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-                <Text style={styles.baslikIkon}>📍</Text>
-                <Text style={[styles.baslikMetin, { color: renkler.metin }]}>
-                    Konum Ayarları
+            <View
+                className="items-center p-6 rounded-2xl border mb-4 mt-2"
+                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+            >
+                <View
+                    className="w-16 h-16 rounded-full items-center justify-center mb-3"
+                    style={{ backgroundColor: `${renkler.birincil}15` }}
+                >
+                    <FontAwesome5 name="map-marker-alt" size={28} color={renkler.birincil} solid />
+                </View>
+                <Text className="text-xl font-bold mb-2" style={{ color: renkler.metin }}>
+                    Konum Ayarlari
                 </Text>
-                <Text style={[styles.baslikAciklama, { color: renkler.metinIkincil }]}>
-                    Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin
+                <Text className="text-sm text-center leading-5" style={{ color: renkler.metinIkincil }}>
+                    Namaz vakitlerinin dogru hesaplanabilmesi icin konumunuzu belirleyin
                 </Text>
             </View>
 
             {/* Mevcut Konum Gosterimi */}
-            <View style={[styles.mevcutKonumKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-                <View style={styles.mevcutKonumUst}>
-                    <View style={styles.mevcutKonumBaslik}>
-                        <Text style={styles.mevcutKonumIkon}>
-                            {konumAyarlari.konumModu === 'oto' ? '📡' : '🏙️'}
-                        </Text>
-                        <View style={styles.mevcutKonumMetin}>
-                            <Text style={[styles.mevcutKonumEtiket, { color: renkler.metinIkincil }]}>
+            <View
+                className="p-4 rounded-2xl border mb-4"
+                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+            >
+                <View className="flex-row items-center justify-between">
+                    <View className="flex-row items-center flex-1">
+                        <View
+                            className="w-12 h-12 rounded-full items-center justify-center mr-3"
+                            style={{ backgroundColor: `${renkler.birincil}15` }}
+                        >
+                            <FontAwesome5
+                                name={konumAyarlari.konumModu === 'oto' ? 'satellite-dish' : 'city'}
+                                size={20}
+                                color={renkler.birincil}
+                                solid
+                            />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-xs font-medium mb-0.5" style={{ color: renkler.metinIkincil }}>
                                 Mevcut Konum
                             </Text>
-                            <Text style={[styles.mevcutKonumDeger, { color: renkler.metin }]}>
+                            <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
                                 {konumMetniOlustur()}
                             </Text>
                         </View>
                     </View>
-                    <View style={[styles.mevcutKonumBadge, {
-                        backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320'
-                    }]}>
-                        <Text style={[styles.mevcutKonumBadgeMetin, {
-                            color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3'
-                        }]}>
+                    <View
+                        className="px-3 py-1.5 rounded-full"
+                        style={{ backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320' }}
+                    >
+                        <Text
+                            className="text-xs font-bold"
+                            style={{ color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3' }}
+                        >
                             {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
                         </Text>
                     </View>
                 </View>
-                {/* Son Guncelleme Bilgisi - Sadece GPS modunda */}
                 {sonGuncellemeMetni && (
-                    <View style={[styles.sonGuncellemeContainer, { borderTopColor: renkler.sinir }]}>
-                        <Text style={styles.sonGuncellemeIkon}>🕐</Text>
-                        <Text style={[styles.sonGuncellemeMetin, { color: renkler.metinIkincil }]}>
+                    <View className="flex-row items-center mt-3 pt-3 border-t" style={{ borderTopColor: renkler.sinir }}>
+                        <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} />
+                        <Text className="text-sm ml-1.5" style={{ color: renkler.metinIkincil }}>
                             {sonGuncellemeMetni}
                         </Text>
                     </View>
@@ -749,41 +704,45 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             </View>
 
             {/* Konum Secim Secenekleri */}
-            <View style={[styles.seceneklerKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-                <View style={styles.seceneklerBaslik}>
-                    <Text style={styles.seceneklerIkon}>⚙️</Text>
-                    <Text style={[styles.seceneklerEtiket, { color: renkler.metinIkincil }]}>
-                        Konum Belirleme Yöntemi
+            <View
+                className="rounded-2xl border p-4 mb-4"
+                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+            >
+                <View className="flex-row items-center mb-4">
+                    <FontAwesome5 name="cog" size={16} color={renkler.metinIkincil} />
+                    <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
+                        KONUM BELIRLEME YONTEMI
                     </Text>
                 </View>
 
                 {/* GPS Secenegi */}
                 <TouchableOpacity
-                    style={[
-                        styles.konumSecenegi,
-                        {
-                            backgroundColor: konumAyarlari.konumModu === 'oto' ? `${renkler.birincil}15` : 'transparent',
-                            borderColor: konumAyarlari.konumModu === 'oto' ? renkler.birincil : renkler.sinir,
-                        }
-                    ]}
+                    className="flex-row items-center p-3.5 rounded-xl border-2 mb-2.5"
+                    style={{
+                        backgroundColor: konumAyarlari.konumModu === 'oto' ? `${renkler.birincil}15` : 'transparent',
+                        borderColor: konumAyarlari.konumModu === 'oto' ? renkler.birincil : renkler.sinir,
+                    }}
                     onPress={handleKonumOto}
                     disabled={yukleniyor}
                     activeOpacity={0.7}
                 >
-                    <View style={[
-                        styles.radioButon,
-                        { borderColor: konumAyarlari.konumModu === 'oto' ? renkler.birincil : renkler.sinir }
-                    ]}>
+                    <View
+                        className="w-5.5 h-5.5 rounded-full border-2 items-center justify-center mr-3"
+                        style={{ borderColor: konumAyarlari.konumModu === 'oto' ? renkler.birincil : renkler.sinir }}
+                    >
                         {konumAyarlari.konumModu === 'oto' && (
-                            <View style={[styles.radioButonIc, { backgroundColor: renkler.birincil }]} />
+                            <View className="w-3 h-3 rounded-full" style={{ backgroundColor: renkler.birincil }} />
                         )}
                     </View>
-                    <View style={styles.konumSecenegiMetin}>
-                        <Text style={[styles.konumSecenegiBaslik, { color: renkler.metin }]}>
-                            📡 Otomatik (GPS)
-                        </Text>
-                        <Text style={[styles.konumSecenegiAlt, { color: renkler.metinIkincil }]}>
-                            Cihazınızın GPS'ini kullanarak konumunuzu otomatik belirler
+                    <View className="flex-1">
+                        <View className="flex-row items-center">
+                            <FontAwesome5 name="satellite-dish" size={14} color={renkler.metin} />
+                            <Text className="text-base font-semibold ml-2" style={{ color: renkler.metin }}>
+                                Otomatik (GPS)
+                            </Text>
+                        </View>
+                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                            Cihazinizin GPS'ini kullanarak konumunuzu otomatik belirler
                         </Text>
                     </View>
                     {yukleniyor && <ActivityIndicator size="small" color={renkler.birincil} />}
@@ -791,39 +750,38 @@ export const KonumAyarlariSayfasi: React.FC = () => {
 
                 {/* Manuel Secenegi */}
                 <TouchableOpacity
-                    style={[
-                        styles.konumSecenegi,
-                        {
-                            backgroundColor: konumAyarlari.konumModu === 'manuel' ? `${renkler.birincil}15` : 'transparent',
-                            borderColor: konumAyarlari.konumModu === 'manuel' ? renkler.birincil : renkler.sinir,
-                        }
-                    ]}
-                    onPress={() => {
-                        dispatch(konumAyarlariniGuncelle({ konumModu: 'manuel' }));
+                    className="flex-row items-center p-3.5 rounded-xl border-2"
+                    style={{
+                        backgroundColor: konumAyarlari.konumModu === 'manuel' ? `${renkler.birincil}15` : 'transparent',
+                        borderColor: konumAyarlari.konumModu === 'manuel' ? renkler.birincil : renkler.sinir,
                     }}
+                    onPress={() => dispatch(konumAyarlariniGuncelle({ konumModu: 'manuel' }))}
                     activeOpacity={0.7}
                 >
-                    <View style={[
-                        styles.radioButon,
-                        { borderColor: konumAyarlari.konumModu === 'manuel' ? renkler.birincil : renkler.sinir }
-                    ]}>
+                    <View
+                        className="w-5.5 h-5.5 rounded-full border-2 items-center justify-center mr-3"
+                        style={{ borderColor: konumAyarlari.konumModu === 'manuel' ? renkler.birincil : renkler.sinir }}
+                    >
                         {konumAyarlari.konumModu === 'manuel' && (
-                            <View style={[styles.radioButonIc, { backgroundColor: renkler.birincil }]} />
+                            <View className="w-3 h-3 rounded-full" style={{ backgroundColor: renkler.birincil }} />
                         )}
                     </View>
-                    <View style={styles.konumSecenegiMetin}>
-                        <Text style={[styles.konumSecenegiBaslik, { color: renkler.metin }]}>
-                            🏙️ Manuel Seçim
-                        </Text>
-                        <Text style={[styles.konumSecenegiAlt, { color: renkler.metinIkincil }]}>
-                            İl ve ilçe seçerek konumunuzu belirleyin
+                    <View className="flex-1">
+                        <View className="flex-row items-center">
+                            <FontAwesome5 name="city" size={14} color={renkler.metin} />
+                            <Text className="text-base font-semibold ml-2" style={{ color: renkler.metin }}>
+                                Manuel Secim
+                            </Text>
+                        </View>
+                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                            Il ve ilce secerek konumunuzu belirleyin
                         </Text>
                     </View>
                 </TouchableOpacity>
 
                 {/* Sehir Secici - Sadece Manuel Modda */}
                 {konumAyarlari.konumModu === 'manuel' && (
-                    <View style={styles.sehirSeciciWrapper}>
+                    <View className="mt-2">
                         <IlIlceSecici
                             seciliIlId={konumAyarlari.seciliIlId}
                             seciliIlceId={konumAyarlari.seciliIlceId}
@@ -837,21 +795,24 @@ export const KonumAyarlariSayfasi: React.FC = () => {
 
             {/* Akilli Konum Takibi - Sadece GPS modunda */}
             {konumAyarlari.konumModu === 'oto' && (
-                <View style={[styles.akilliTakipKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-                    <View style={styles.akilliTakipBaslik}>
-                        <Text style={styles.akilliTakipIkon}>🧭</Text>
-                        <Text style={[styles.akilliTakipEtiket, { color: renkler.metinIkincil }]}>
-                            Akıllı Konum Takibi
+                <View
+                    className="p-4 rounded-2xl border mb-4"
+                    style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+                >
+                    <View className="flex-row items-center mb-3">
+                        <FontAwesome5 name="compass" size={16} color={renkler.metinIkincil} />
+                        <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
+                            AKILLI KONUM TAKIBI
                         </Text>
                     </View>
 
-                    <View style={styles.akilliTakipIcerik}>
-                        <View style={styles.akilliTakipMetin}>
-                            <Text style={[styles.akilliTakipBaslikMetin, { color: renkler.metin }]}>
-                                Hareket Halinde Güncelle
+                    <View className="flex-row items-center justify-between">
+                        <View className="flex-1 mr-3">
+                            <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                                Hareket Halinde Guncelle
                             </Text>
-                            <Text style={[styles.akilliTakipAciklama, { color: renkler.metinIkincil }]}>
-                                5km+ konum değişikliğinde otomatik günceller. Pil dostu.
+                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                5km+ konum degisikliginde otomatik gunceller. Pil dostu.
                             </Text>
                         </View>
                         {takipDurumuYukleniyor ? (
@@ -860,16 +821,19 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                             <Switch
                                 value={takipAktif}
                                 onValueChange={handleAkilliTakipDegistir}
-                                trackColor={{ false: renkler.sinir, true: renkler.birincilAcik }}
+                                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                                 thumbColor={takipAktif ? renkler.birincil : '#f4f3f4'}
                             />
                         )}
                     </View>
 
                     {takipAktif && (
-                        <View style={[styles.takipAktifBadge, { backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }]}>
-                            <Text style={styles.takipAktifIkon}>✓</Text>
-                            <Text style={[styles.takipAktifMetin, { color: '#4CAF50' }]}>
+                        <View
+                            className="flex-row items-center mt-3 p-2.5 rounded-lg border"
+                            style={{ backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }}
+                        >
+                            <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
+                            <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
                                 Arka planda konum takibi aktif
                             </Text>
                         </View>
@@ -878,505 +842,34 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             )}
 
             {/* Koordinat Bilgisi */}
-            <View style={[styles.koordinatKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-                <Text style={[styles.koordinatBaslik, { color: renkler.metinIkincil }]}>
-                    🌍 Koordinatlar
-                </Text>
-                <View style={styles.koordinatDegerler}>
-                    <View style={styles.koordinatItem}>
-                        <Text style={[styles.koordinatEtiket, { color: renkler.metinIkincil }]}>Enlem</Text>
-                        <Text style={[styles.koordinatDeger, { color: renkler.metin }]}>
+            <View
+                className="p-4 rounded-2xl border"
+                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+            >
+                <View className="flex-row items-center mb-3">
+                    <FontAwesome5 name="globe" size={14} color={renkler.metinIkincil} />
+                    <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
+                        KOORDINATLAR
+                    </Text>
+                </View>
+                <View className="flex-row items-center">
+                    <View className="flex-1 items-center">
+                        <Text className="text-xs mb-1" style={{ color: renkler.metinIkincil }}>Enlem</Text>
+                        <Text className="text-lg font-bold" style={{ color: renkler.metin }}>
                             {konumAyarlari.koordinatlar.lat.toFixed(4)}°K
                         </Text>
                     </View>
-                    <View style={[styles.koordinatAyrac, { backgroundColor: renkler.sinir }]} />
-                    <View style={styles.koordinatItem}>
-                        <Text style={[styles.koordinatEtiket, { color: renkler.metinIkincil }]}>Boylam</Text>
-                        <Text style={[styles.koordinatDeger, { color: renkler.metin }]}>
+                    <View className="w-px h-10 mx-4" style={{ backgroundColor: renkler.sinir }} />
+                    <View className="flex-1 items-center">
+                        <Text className="text-xs mb-1" style={{ color: renkler.metinIkincil }}>Boylam</Text>
+                        <Text className="text-lg font-bold" style={{ color: renkler.metin }}>
                             {konumAyarlari.koordinatlar.lng.toFixed(4)}°D
                         </Text>
                     </View>
                 </View>
             </View>
 
-            <View style={{ height: 40 }} />
+            <View className="h-10" />
         </ScrollView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-    },
-    // Baslik Karti
-    baslikKart: {
-        alignItems: 'center',
-        padding: 24,
-        borderRadius: 20,
-        borderWidth: 1,
-        marginBottom: 16,
-        marginTop: 8,
-    },
-    baslikIkon: {
-        fontSize: 48,
-        marginBottom: 12,
-    },
-    baslikMetin: {
-        fontSize: 22,
-        fontWeight: '700',
-        marginBottom: 8,
-    },
-    baslikAciklama: {
-        fontSize: 14,
-        textAlign: 'center',
-        lineHeight: 20,
-    },
-    // Mevcut Konum Karti
-    mevcutKonumKart: {
-        padding: 16,
-        borderRadius: 16,
-        borderWidth: 1,
-        marginBottom: 16,
-    },
-    mevcutKonumUst: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    mevcutKonumBaslik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-    },
-    mevcutKonumIkon: {
-        fontSize: 28,
-        marginRight: 12,
-    },
-    mevcutKonumMetin: {
-        flex: 1,
-    },
-    mevcutKonumEtiket: {
-        fontSize: 12,
-        fontWeight: '500',
-        marginBottom: 2,
-    },
-    mevcutKonumDeger: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    mevcutKonumBadge: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 20,
-    },
-    mevcutKonumBadgeMetin: {
-        fontSize: 12,
-        fontWeight: '700',
-    },
-    sonGuncellemeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 12,
-        paddingTop: 12,
-        borderTopWidth: 1,
-    },
-    sonGuncellemeIkon: {
-        fontSize: 14,
-        marginRight: 6,
-    },
-    sonGuncellemeMetin: {
-        fontSize: 13,
-    },
-    // Secenekler Karti
-    seceneklerKart: {
-        borderRadius: 16,
-        borderWidth: 1,
-        padding: 16,
-        marginBottom: 16,
-    },
-    seceneklerBaslik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    seceneklerIkon: {
-        fontSize: 20,
-        marginRight: 8,
-    },
-    seceneklerEtiket: {
-        fontSize: 13,
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-    },
-    // Konum Secenekleri
-    konumSecenegi: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 14,
-        borderRadius: 12,
-        borderWidth: 2,
-        marginBottom: 10,
-    },
-    radioButon: {
-        width: 22,
-        height: 22,
-        borderRadius: 11,
-        borderWidth: 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 12,
-    },
-    radioButonIc: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-    },
-    konumSecenegiMetin: {
-        flex: 1,
-    },
-    konumSecenegiBaslik: {
-        fontSize: 15,
-        fontWeight: '600',
-    },
-    konumSecenegiAlt: {
-        fontSize: 12,
-        marginTop: 2,
-    },
-    sehirSeciciWrapper: {
-        marginTop: 8,
-    },
-    // Akilli Takip Karti
-    akilliTakipKart: {
-        padding: 16,
-        borderRadius: 16,
-        borderWidth: 1,
-        marginBottom: 16,
-    },
-    akilliTakipBaslik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 12,
-    },
-    akilliTakipIkon: {
-        fontSize: 20,
-        marginRight: 8,
-    },
-    akilliTakipEtiket: {
-        fontSize: 13,
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-    },
-    akilliTakipIcerik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    akilliTakipMetin: {
-        flex: 1,
-        marginRight: 12,
-    },
-    akilliTakipBaslikMetin: {
-        fontSize: 15,
-        fontWeight: '600',
-    },
-    akilliTakipAciklama: {
-        fontSize: 12,
-        marginTop: 2,
-    },
-    takipAktifBadge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 12,
-        padding: 10,
-        borderRadius: 10,
-        borderWidth: 1,
-    },
-    takipAktifIkon: {
-        fontSize: 14,
-        marginRight: 8,
-        color: '#4CAF50',
-    },
-    takipAktifMetin: {
-        fontSize: 13,
-        fontWeight: '500',
-    },
-    // Koordinat Karti
-    koordinatKart: {
-        padding: 16,
-        borderRadius: 16,
-        borderWidth: 1,
-    },
-    koordinatBaslik: {
-        fontSize: 13,
-        fontWeight: '600',
-        marginBottom: 12,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-    },
-    koordinatDegerler: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    koordinatItem: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    koordinatEtiket: {
-        fontSize: 12,
-        marginBottom: 4,
-    },
-    koordinatDeger: {
-        fontSize: 18,
-        fontWeight: '700',
-    },
-    koordinatAyrac: {
-        width: 1,
-        height: 40,
-        marginHorizontal: 16,
-    },
-    // Sehir Secici Stilleri
-    sehirSeciciButon: {
-        borderRadius: 16,
-        padding: 16,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    sehirSeciciIcerik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-    },
-    sehirSeciciIkonContainer: {
-        width: 48,
-        height: 48,
-        borderRadius: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 14,
-    },
-    sehirSeciciIkon: {
-        fontSize: 24,
-    },
-    sehirSeciciMetin: {
-        flex: 1,
-    },
-    sehirSeciciEtiket: {
-        fontSize: 12,
-        fontWeight: '500',
-        marginBottom: 2,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-    },
-    sehirSeciciDeger: {
-        fontSize: 17,
-        fontWeight: '600',
-    },
-    sehirSeciciOk: {
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    sehirSeciciOkMetin: {
-        fontSize: 12,
-    },
-    // Modal Stilleri
-    modalArkaplan: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'flex-end',
-    },
-    modalContainer: {
-        height: EKRAN_YUKSEKLIGI * 0.75,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        overflow: 'hidden',
-    },
-    modalBaslik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingTop: 16,
-        paddingBottom: 16,
-        borderBottomWidth: 1,
-    },
-    modalBaslikTutucu: {
-        width: 40,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: '#ccc',
-        position: 'absolute',
-        top: 8,
-        left: '50%',
-        marginLeft: -20,
-    },
-    modalBaslikIcerik: {
-        flex: 1,
-    },
-    modalBaslikMetin: {
-        fontSize: 20,
-        fontWeight: '700',
-    },
-    modalAltBaslik: {
-        fontSize: 13,
-        marginTop: 2,
-    },
-    modalKapatButon: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalKapatMetin: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    // Geri Butonu
-    geriButon: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 8,
-    },
-    geriButonMetin: {
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    // Breadcrumb
-    breadcrumb: {
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        marginHorizontal: 16,
-        marginTop: 8,
-        borderRadius: 8,
-    },
-    breadcrumbMetin: {
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    // Yukleme Container
-    yuklemeContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 48,
-    },
-    yuklemeMetin: {
-        fontSize: 14,
-        marginTop: 12,
-    },
-    // Arama Stilleri
-    aramaContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginHorizontal: 16,
-        marginVertical: 12,
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        height: 48,
-    },
-    aramaIkon: {
-        width: 32,
-        height: 32,
-        borderRadius: 8,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 10,
-    },
-    aramaInput: {
-        flex: 1,
-        fontSize: 16,
-        height: 48,
-    },
-    aramaTemizle: {
-        width: 28,
-        height: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    sonucBilgi: {
-        paddingHorizontal: 16,
-        marginBottom: 8,
-    },
-    sonucMetin: {
-        fontSize: 12,
-        fontWeight: '500',
-    },
-    // Sehir Liste Stilleri
-    sehirListeContainer: {
-        paddingHorizontal: 16,
-        paddingBottom: 24,
-    },
-    sehirListeOge: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        borderRadius: 14,
-        marginBottom: 8,
-        borderWidth: 1,
-    },
-    sehirListeIcerik: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-    },
-    sehirListeIkon: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 12,
-    },
-    sehirListeIkonMetin: {
-        fontSize: 16,
-        color: '#FFF',
-    },
-    sehirListeMetin: {
-        flex: 1,
-    },
-    sehirListeAd: {
-        fontSize: 16,
-    },
-    sehirListeKoordinat: {
-        fontSize: 12,
-        marginTop: 2,
-    },
-    sehirOkIkon: {
-        fontSize: 12,
-    },
-    seciliBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
-    },
-    seciliBadgeMetin: {
-        color: '#FFF',
-        fontSize: 11,
-        fontWeight: '600',
-    },
-    bosListeContainer: {
-        alignItems: 'center',
-        paddingVertical: 48,
-    },
-    bosListeIkon: {
-        fontSize: 48,
-        marginBottom: 16,
-        opacity: 0.5,
-    },
-    bosListeMetin: {
-        fontSize: 15,
-        textAlign: 'center',
-    },
-});

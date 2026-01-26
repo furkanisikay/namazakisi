@@ -2,6 +2,8 @@
  * Ayarlar Sayfasi
  * Temiz ve minimal ayarlar listesi
  * Her kategori ayri sayfaya yonlendirir
+ * 
+ * NativeWind + Expo Vector Icons ile guncellenmis versiyon
  */
 
 import * as React from 'react';
@@ -9,15 +11,35 @@ import { useRef, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   TouchableOpacity,
   Switch,
   Animated,
   Easing,
 } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
+
+// Ikon tipleri
+type IkonTipi = {
+  name: string;
+  family: 'fa5' | 'material';
+  solid?: boolean;
+};
+
+// Menu ogesi ikon eslesmesi
+const MENU_IKONLARI: Record<string, IkonTipi> = {
+  konum: { name: 'map-marker-alt', family: 'fa5', solid: true },
+  muhafiz: { name: 'shield-alt', family: 'fa5', solid: true },
+  goruntu: { name: 'palette', family: 'fa5', solid: true },
+  bildirim: { name: 'bell', family: 'fa5', solid: true },
+  hedef: { name: 'bullseye', family: 'fa5', solid: true },
+  hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
+  titresim: { name: 'vibration', family: 'material' },
+  ses: { name: 'volume-up', family: 'fa5', solid: true },
+};
 
 /**
  * Ayar menu satiri props arayuzu
@@ -25,7 +47,7 @@ import { useFeedback } from '../../core/feedback';
 interface AyarMenuSatiriProps {
   baslik: string;
   aciklama: string;
-  ikon: string;
+  ikonAdi: string;
   onPress: () => void;
 }
 
@@ -35,11 +57,12 @@ interface AyarMenuSatiriProps {
 const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
   baslik,
   aciklama,
-  ikon,
+  ikonAdi,
   onPress,
 }) => {
   const renkler = useRenkler();
   const { butonTiklandiFeedback } = useFeedback();
+  const ikonBilgi = MENU_IKONLARI[ikonAdi];
 
   const handlePress = async () => {
     await butonTiklandiFeedback();
@@ -48,20 +71,49 @@ const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.menuSatiri, { backgroundColor: renkler.kartArkaplan }]}
+      className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl shadow-sm"
+      style={{ backgroundColor: renkler.kartArkaplan }}
       onPress={handlePress}
       activeOpacity={0.7}
     >
-      <View style={[styles.ikonContainer, { backgroundColor: renkler.birincilAcik }]}>
-        <Text style={styles.menuIkon}>{ikon}</Text>
+      <View
+        className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+        style={{ backgroundColor: `${renkler.birincil}15` }}
+      >
+        {ikonBilgi?.family === 'material' ? (
+          <MaterialIcons
+            name={ikonBilgi.name as any}
+            size={22}
+            color={renkler.birincil}
+          />
+        ) : (
+          <FontAwesome5
+            name={ikonBilgi?.name || 'cog'}
+            size={20}
+            color={renkler.birincil}
+            solid={ikonBilgi?.solid}
+          />
+        )}
       </View>
-      <View style={styles.menuMetinContainer}>
-        <Text style={[styles.menuBaslik, { color: renkler.metin }]}>{baslik}</Text>
-        <Text style={[styles.menuAciklama, { color: renkler.metinIkincil }]}>
+      <View className="flex-1">
+        <Text
+          className="text-base font-semibold"
+          style={{ color: renkler.metin }}
+        >
+          {baslik}
+        </Text>
+        <Text
+          className="text-xs mt-0.5"
+          style={{ color: renkler.metinIkincil }}
+        >
           {aciklama}
         </Text>
       </View>
-      <Text style={[styles.okIsareti, { color: renkler.metinIkincil }]}>›</Text>
+      <FontAwesome5
+        name="chevron-right"
+        size={14}
+        color={renkler.metinIkincil}
+      />
     </TouchableOpacity>
   );
 };
@@ -72,7 +124,7 @@ const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
 interface ToggleAyarSatiriProps {
   baslik: string;
   aciklama: string;
-  ikon: string;
+  ikonAdi: string;
   deger: boolean;
   onDegistir: (yeniDeger: boolean) => void;
 }
@@ -83,12 +135,13 @@ interface ToggleAyarSatiriProps {
 const ToggleAyarSatiri: React.FC<ToggleAyarSatiriProps> = ({
   baslik,
   aciklama,
-  ikon,
+  ikonAdi,
   deger,
   onDegistir,
 }) => {
   const renkler = useRenkler();
   const { butonTiklandiFeedback } = useFeedback();
+  const ikonBilgi = MENU_IKONLARI[ikonAdi];
 
   const handleToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -96,20 +149,47 @@ const ToggleAyarSatiri: React.FC<ToggleAyarSatiriProps> = ({
   };
 
   return (
-    <View style={[styles.toggleSatiri, { backgroundColor: renkler.kartArkaplan }]}>
-      <View style={[styles.ikonContainer, { backgroundColor: renkler.birincilAcik }]}>
-        <Text style={styles.menuIkon}>{ikon}</Text>
+    <View
+      className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl shadow-sm"
+      style={{ backgroundColor: renkler.kartArkaplan }}
+    >
+      <View
+        className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+        style={{ backgroundColor: `${renkler.birincil}15` }}
+      >
+        {ikonBilgi?.family === 'material' ? (
+          <MaterialIcons
+            name={ikonBilgi.name as any}
+            size={22}
+            color={renkler.birincil}
+          />
+        ) : (
+          <FontAwesome5
+            name={ikonBilgi?.name || 'cog'}
+            size={20}
+            color={renkler.birincil}
+            solid={ikonBilgi?.solid}
+          />
+        )}
       </View>
-      <View style={styles.menuMetinContainer}>
-        <Text style={[styles.menuBaslik, { color: renkler.metin }]}>{baslik}</Text>
-        <Text style={[styles.menuAciklama, { color: renkler.metinIkincil }]}>
+      <View className="flex-1">
+        <Text
+          className="text-base font-semibold"
+          style={{ color: renkler.metin }}
+        >
+          {baslik}
+        </Text>
+        <Text
+          className="text-xs mt-0.5"
+          style={{ color: renkler.metinIkincil }}
+        >
           {aciklama}
         </Text>
       </View>
       <Switch
         value={deger}
         onValueChange={handleToggle}
-        trackColor={{ false: renkler.sinir, true: renkler.birincilAcik }}
+        trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
         thumbColor={deger ? renkler.birincil : '#f4f3f4'}
       />
     </View>
@@ -148,45 +228,46 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
     {
       baslik: 'Konum',
       aciklama: 'Namaz vakitleri için konum ayarları',
-      ikon: '📍',
+      ikonAdi: 'konum',
       sayfa: 'KonumAyarlari',
     },
     {
       baslik: 'Namaz Muhafızı',
       aciklama: 'Hatırlatma bildirimleri ve sıklık ayarları',
-      ikon: '🛡️',
+      ikonAdi: 'muhafiz',
       sayfa: 'MuhafizAyarlari',
     },
     {
       baslik: 'Görüntü',
       aciklama: 'Tema ve renk paleti ayarları',
-      ikon: '🎨',
+      ikonAdi: 'goruntu',
       sayfa: 'GorünumAyarlari',
     },
     {
       baslik: 'Bildirimler',
       aciklama: 'Hatırlatıcı ve bildirim tercihleri',
-      ikon: '🔔',
+      ikonAdi: 'bildirim',
       sayfa: 'BildirimAyarlari',
     },
     {
       baslik: 'Seri ve Hedefler',
       aciklama: 'Seri eşikleri ve özel gün modu',
-      ikon: '🎯',
+      ikonAdi: 'hedef',
       sayfa: 'SeriHedefAyarlari',
     },
     {
       baslik: 'Hakkında',
       aciklama: 'Uygulama bilgileri ve versiyon',
-      ikon: 'ℹ️',
+      ikonAdi: 'hakkinda',
       sayfa: 'Hakkinda',
     },
   ];
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: renkler.arkaplan }]}
-      contentContainerStyle={styles.contentContainer}
+      className="flex-1"
+      style={{ backgroundColor: renkler.arkaplan }}
+      contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
     >
       <Animated.View
@@ -196,36 +277,39 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
         }}
       >
         {/* Ana Menu Bolumu */}
-        <View style={styles.bolum}>
-          {menuOgeleri.map((oge, index) => (
+        <View className="mb-6">
+          {menuOgeleri.map((oge) => (
             <AyarMenuSatiri
               key={oge.sayfa}
               baslik={oge.baslik}
               aciklama={oge.aciklama}
-              ikon={oge.ikon}
+              ikonAdi={oge.ikonAdi}
               onPress={() => navigation.navigate(oge.sayfa)}
             />
           ))}
         </View>
 
         {/* Hizli Ayarlar Bolumu */}
-        <View style={styles.bolum}>
-          <Text style={[styles.bolumBaslik, { color: renkler.metinIkincil }]}>
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mx-4 mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
             HIZLI AYARLAR
           </Text>
 
           <ToggleAyarSatiri
-            baslik="Titreşim"
-            aciklama="Etkileşimlerde telefon titrer."
-            ikon="📳"
+            baslik="Titresim"
+            aciklama="Etkilesimlerde telefon titrer."
+            ikonAdi="titresim"
             deger={ayarlar.titresimAktif}
             onDegistir={titresimDurumunuDegistir}
           />
 
           <ToggleAyarSatiri
             baslik="Ses Efektleri"
-            aciklama="Etkileşimlerde ses efektleri verir."
-            ikon="🔊"
+            aciklama="Etkilesimlerde ses efektleri verir."
+            ikonAdi="ses"
             deger={ayarlar.sesAktif}
             onDegistir={sesDurumunuDegistir}
           />
@@ -234,79 +318,3 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingVertical: 16,
-    paddingBottom: 40,
-  },
-  bolum: {
-    marginBottom: 24,
-  },
-  bolumBaslik: {
-    fontSize: 13,
-    fontWeight: '700',
-    letterSpacing: 1,
-    marginHorizontal: 16,
-    marginBottom: 12,
-  },
-  // Menu satiri stilleri
-  menuSatiri: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginHorizontal: 16,
-    marginBottom: 8,
-    borderRadius: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  ikonContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  menuIkon: {
-    fontSize: 22,
-  },
-  menuMetinContainer: {
-    flex: 1,
-  },
-  menuBaslik: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  menuAciklama: {
-    fontSize: 13,
-    marginTop: 2,
-  },
-  okIsareti: {
-    fontSize: 24,
-    fontWeight: '300',
-  },
-  // Toggle satiri stilleri
-  toggleSatiri: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginHorizontal: 16,
-    marginBottom: 8,
-    borderRadius: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-});

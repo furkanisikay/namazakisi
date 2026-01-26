@@ -51,7 +51,7 @@ const AyarlarStack: React.FC = () => {
       <Stack.Screen
         name="AyarlarAna"
         component={AyarlarSayfasi}
-        options={{ title: 'Ayarlar' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="KonumAyarlari"
@@ -149,9 +149,7 @@ export const AppNavigator: React.FC = () => {
           options={{
             title: 'Rozetler',
             tabBarLabel: 'Rozetler',
-            headerStyle: {
-              backgroundColor: renkler.birincil,
-            },
+            headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
               <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
@@ -163,9 +161,7 @@ export const AppNavigator: React.FC = () => {
           options={{
             title: 'İstatistikler',
             tabBarLabel: 'İstatistik',
-            headerStyle: {
-              backgroundColor: renkler.birincil,
-            },
+            headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
               <FontAwesome5 name="chart-bar" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
             ),
