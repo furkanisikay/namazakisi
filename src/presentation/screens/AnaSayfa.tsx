@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -377,7 +377,7 @@ export const AnaSayfa: React.FC = () => {
               {tarihiGorunumFormatinaCevir(sayfaTarihi)}
             </Text>
             <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
-              Geçmiş/Gelecek gün görüntüleniyor
+              Geçmiş gün görüntüleniyor
             </Text>
           </View>
         )}
@@ -389,6 +389,7 @@ export const AnaSayfa: React.FC = () => {
           tamamlananSayisi={tamamlanan}
           toplamSayi={toplam}
           onVakitTikla={(namazAdi, val) => namazToggle(namazAdi as NamazAdi, val)}
+          aktifGunMu={aktifGunKontrol}
         />
         {/* ScrollView sonu için boşluk */}
         <View className="h-10" />
@@ -420,8 +421,21 @@ export const AnaSayfa: React.FC = () => {
         initialPage={BASLANGIC_SAYFA_INDEKSI}
         onPageSelected={(e) => {
           const yeniIndeks = e.nativeEvent.position;
-          setMevcutSayfaIndeksi(yeniIndeks);
           const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
+
+          // Gelecek gunlere kayma engeli
+          if (yeniTarih > aktifGun) {
+            // Haptic feedback ve toast mesaji
+            HaptikServisi.uyariTitresimi();
+            if (Platform.OS === 'android') {
+              ToastAndroid.show('Gelecek gunlere gidemezsiniz', ToastAndroid.SHORT);
+            }
+            // Aktif gune geri don
+            pagerRef.current?.setPage(tarihiSayfaIndeksineCevir(aktifGun));
+            return;
+          }
+
+          setMevcutSayfaIndeksi(yeniIndeks);
           dispatch(tarihiDegistir(yeniTarih));
           namazlariGetir(yeniTarih);
           oncekiTamamlananRef.current = 0;
@@ -440,10 +454,20 @@ export const AnaSayfa: React.FC = () => {
           value={new Date(mevcutTarih)}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          maximumDate={new Date(aktifGun + 'T23:59:59')}
           onChange={(event, date) => {
             setTarihSeciciGorunur(Platform.OS === 'ios');
+            if (event.type === 'dismissed') {
+              return;
+            }
             if (date) {
               const tarih = tarihiISOFormatinaCevir(date);
+
+              // Gelecek tarih secilmisse engelle
+              if (tarih > aktifGun) {
+                return;
+              }
+
               const indeks = tarihiSayfaIndeksineCevir(tarih);
               dispatch(tarihiDegistir(tarih));
               namazlariGetir(tarih);

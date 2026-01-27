@@ -11,6 +11,7 @@ interface VakitAkisiProps {
     tamamlananSayisi: number;
     toplamSayi: number;
     onVakitTikla: (namazAdi: string, tamamlandi: boolean) => void;
+    aktifGunMu?: boolean;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -30,9 +31,20 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
     suankiVakitAdi,
     tamamlananSayisi,
     toplamSayi,
-    onVakitTikla
+    onVakitTikla,
+    aktifGunMu = false
 }) => {
     const renkler = useRenkler();
+
+    // Vaktin gecip gecmedigini kontrol eder
+    const vakitGectiMi = (vakitSaati: string): boolean => {
+        if (!vakitSaati) return false;
+        const [saat, dakika] = vakitSaati.split(':').map(Number);
+        const simdi = new Date();
+        const vakitZamani = new Date();
+        vakitZamani.setHours(saat, dakika, 0, 0);
+        return simdi >= vakitZamani;
+    };
 
     return (
         <View className="flex-1">
@@ -61,11 +73,18 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                     const tamamlandi = namaz.tamamlandi === true; // undefined veya false durumunda false
                     const vakitIkonu = getVakitIkonu(namaz.namazAdi);
 
+                    // Vakit gecti mi kontrolu (sadece aktif gun icin)
+                    const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat) : true;
+                    const gelecekMi = aktifGunMu && !gecmisMi && !aktifMi;
+                    const pasifMi = gelecekMi || namaz.namazAdi === NamazAdi.Gunes;
+
                     // Kart Stili
                     let kartStili = "flex-row items-center gap-4 p-3 rounded-xl shadow-sm";
                     let opacity = 1;
 
-                    if (tamamlandi) {
+                    if (pasifMi) {
+                        opacity = 0.4;
+                    } else if (tamamlandi) {
                         opacity = 0.6;
                     } else if (aktifMi) {
                         kartStili = "flex-row items-center gap-4 p-4 rounded-xl shadow-md overflow-hidden relative";
@@ -88,7 +107,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                             }}
                             activeOpacity={0.7}
                             onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
-                            disabled={namaz.namazAdi === NamazAdi.Gunes}
+                            disabled={pasifMi}
                         >
                             {aktifMi && (
                                 <View className="absolute right-0 top-0 bottom-0 w-24 opacity-5 pointer-events-none z-0"
@@ -123,9 +142,9 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                                 </Text>
                                 <Text className="text-xs font-medium"
                                     style={{
-                                        color: tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil)
+                                        color: pasifMi ? renkler.metinIkincil : (tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil))
                                     }}>
-                                    {tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor')}
+                                    {pasifMi ? 'Vakti Bekleniyor' : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
                                 </Text>
                             </View>
 
