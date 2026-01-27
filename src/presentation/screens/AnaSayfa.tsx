@@ -3,7 +3,7 @@ import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
-import DatePicker from 'react-native-date-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
@@ -47,6 +47,9 @@ export const AnaSayfa: React.FC = () => {
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
+  // Issue #13 fix: DateTimePicker icin gecici tarih state'i
+  // Picker acilidginda mevcut tarihi kopyalar, kapatildiginda Redux'a dispatch edilir
+  const [geciciTarih, setGeciciTarih] = useState<Date | null>(null);
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
   const { ozelGunAyarlari } = useAppSelector(state => state.seri);
@@ -448,30 +451,34 @@ export const AnaSayfa: React.FC = () => {
       </PagerView>
 
       {/* Modals */}
-      <DatePicker
-        modal
-        open={tarihSeciciGorunur}
-        date={new Date(mevcutTarih)}
-        mode="date"
-        maximumDate={new Date(aktifGun + 'T23:59:59')}
-        locale="tr"
-        title="Tarih Secin"
-        confirmText="Tamam"
-        cancelText="Iptal"
-        onConfirm={(date) => {
-          setTarihSeciciGorunur(false);
-          const tarih = tarihiISOFormatinaCevir(date);
-          // Gelecek tarih secilmisse engelle
-          if (tarih <= aktifGun) {
-            const indeks = tarihiSayfaIndeksineCevir(tarih);
-            dispatch(tarihiDegistir(tarih));
-            namazlariGetir(tarih);
-            pagerRef.current?.setPage(indeks);
-            setMevcutSayfaIndeksi(indeks);
-          }
-        }}
-        onCancel={() => setTarihSeciciGorunur(false)}
-      />
+      {tarihSeciciGorunur && (
+        <DateTimePicker
+          value={geciciTarih || new Date(mevcutTarih)}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          maximumDate={new Date(aktifGun + 'T23:59:59')}
+          onChange={(event, date) => {
+            // Android'de picker her zaman kapanir
+            if (Platform.OS === 'android') {
+              setTarihSeciciGorunur(false);
+              setGeciciTarih(null);
+            }
+
+            // Sadece 'set' (onay) durumunda tarih degistir
+            if (event.type === 'set' && date) {
+              const tarih = tarihiISOFormatinaCevir(date);
+              // Gelecek tarih secilmisse engelle
+              if (tarih <= aktifGun) {
+                const indeks = tarihiSayfaIndeksineCevir(tarih);
+                dispatch(tarihiDegistir(tarih));
+                namazlariGetir(tarih);
+                pagerRef.current?.setPage(indeks);
+                setMevcutSayfaIndeksi(indeks);
+              }
+            }
+          }}
+        />
+      )}
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
       <SeriKartiModal
