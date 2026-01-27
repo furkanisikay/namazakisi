@@ -3,7 +3,8 @@ import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateType } from 'react-native-ui-datepicker';
+import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
@@ -47,9 +48,9 @@ export const AnaSayfa: React.FC = () => {
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
-  // Issue #13 fix: DateTimePicker icin gecici tarih state'i
-  // Picker acilidginda mevcut tarihi kopyalar, kapatildiginda Redux'a dispatch edilir
-  const [geciciTarih, setGeciciTarih] = useState<Date | null>(null);
+  // Issue #13 fix: Calendar picker icin gecici tarih state'i
+  // Modal acildiginda mevcut tarihi kopyalar, Tamam'a basilinca Redux'a dispatch edilir
+  const [geciciTarih, setGeciciTarih] = useState<DateType>(new Date());
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
   const { ozelGunAyarlari } = useAppSelector(state => state.seri);
@@ -455,35 +456,103 @@ export const AnaSayfa: React.FC = () => {
         ))}
       </PagerView>
 
-      {/* Modals */}
-      {tarihSeciciGorunur && (
-        <DateTimePicker
-          value={geciciTarih || new Date(mevcutTarih)}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          maximumDate={new Date(aktifGun + 'T23:59:59')}
-          onChange={(event, date) => {
-            // Android'de picker her zaman kapanir
-            if (Platform.OS === 'android') {
-              setTarihSeciciGorunur(false);
-              setGeciciTarih(null);
-            }
+      {/* Tarih Secici Modal - Issue #13 fix */}
+      <Modal
+        visible={tarihSeciciGorunur}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setTarihSeciciGorunur(false)}
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}>
+          <View style={{
+            backgroundColor: koyuMu ? '#1f2937' : '#ffffff',
+            borderRadius: 16,
+            padding: 16,
+            width: '90%',
+            maxWidth: 400,
+          }}>
+            <Text style={{
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginBottom: 16,
+              color: koyuMu ? '#ffffff' : '#1f2937',
+            }}>Tarih Secin</Text>
 
-            // Sadece 'set' (onay) durumunda tarih degistir
-            if (event.type === 'set' && date) {
-              const tarih = tarihiISOFormatinaCevir(date);
-              // Gelecek tarih secilmisse engelle
-              if (tarih <= aktifGun) {
-                const indeks = tarihiSayfaIndeksineCevir(tarih);
-                dispatch(tarihiDegistir(tarih));
-                namazlariGetir(tarih);
-                pagerRef.current?.setPage(indeks);
-                setMevcutSayfaIndeksi(indeks);
-              }
-            }
-          }}
-        />
-      )}
+            <DateTimePicker
+              mode="single"
+              date={geciciTarih}
+              onChange={({ date }) => setGeciciTarih(date)}
+              maxDate={new Date(aktifGun + 'T23:59:59')}
+              locale="tr"
+              styles={{
+                selected: { backgroundColor: '#f97316' },
+                selected_label: { color: '#ffffff' },
+                day_label: { color: koyuMu ? '#ffffff' : '#1f2937' },
+                weekday_label: { color: koyuMu ? '#9ca3af' : '#6b7280' },
+                month_selector_label: { color: koyuMu ? '#ffffff' : '#1f2937' },
+                year_selector_label: { color: koyuMu ? '#ffffff' : '#1f2937' },
+              }}
+            />
+
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 16,
+              gap: 12,
+            }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  borderRadius: 8,
+                  backgroundColor: koyuMu ? '#374151' : '#e5e7eb',
+                }}
+                onPress={() => setTarihSeciciGorunur(false)}
+              >
+                <Text style={{
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  color: koyuMu ? '#ffffff' : '#1f2937',
+                }}>Iptal</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  padding: 12,
+                  borderRadius: 8,
+                  backgroundColor: '#f97316',
+                }}
+                onPress={() => {
+                  setTarihSeciciGorunur(false);
+                  if (geciciTarih) {
+                    const tarih = tarihiISOFormatinaCevir(new Date(geciciTarih as Date));
+                    if (tarih <= aktifGun) {
+                      const indeks = tarihiSayfaIndeksineCevir(tarih);
+                      dispatch(tarihiDegistir(tarih));
+                      namazlariGetir(tarih);
+                      pagerRef.current?.setPage(indeks);
+                      setMevcutSayfaIndeksi(indeks);
+                    }
+                  }
+                }}
+              >
+                <Text style={{
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  color: '#ffffff',
+                }}>Tamam</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
       <SeriKartiModal
