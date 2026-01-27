@@ -57,6 +57,7 @@ export const AnaSayfa: React.FC = () => {
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const ilkYuklemeRef = useRef<boolean>(true); // Issue #13 fix: DateTimePicker tarih secimi icin
 
   // Servis vaktini NamazAdi enum'ına çeviren map
   const servisToNamazAdi: Record<string, NamazAdi> = useMemo(() => ({
@@ -136,15 +137,13 @@ export const AnaSayfa: React.FC = () => {
   // Initial Load - Aktif güne git
   useEffect(() => {
     namazlariGetir(aktifGun);
-    // Eğer başlangıçta aktif gün bugünden farklıysa (gece yarısı durumu), o güne git
-    if (aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+    // Sadece ilk yuklemede aktif gune git (gece yarisi durumu icin)
+    // Issue #13: ilkYuklemeRef ile DateTimePicker secimi sirasinda tarihin sifirlanmasi engellenir
+    if (ilkYuklemeRef.current && aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+      ilkYuklemeRef.current = false;
       const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
-      // Dispatch ve setPage işlemleri namazlariGetir sonrasinda veya senkron
       dispatch(tarihiDegistir(aktifGun));
       setMevcutSayfaIndeksi(yeniIndeks);
-      // Pager ref update needs delay usually or layout ready? 
-      // InitialPage prop handles first render. But if we change state dynamic?
-      // We will handle via useEffect dependency or explicit call.
       setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
     }
 
