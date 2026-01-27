@@ -3,7 +3,7 @@ import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
@@ -448,34 +448,30 @@ export const AnaSayfa: React.FC = () => {
       </PagerView>
 
       {/* Modals */}
-      {tarihSeciciGorunur && (
-        <DateTimePicker
-          value={new Date(mevcutTarih)}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          maximumDate={new Date(aktifGun + 'T23:59:59')}
-          onChange={(event, date) => {
-            setTarihSeciciGorunur(Platform.OS === 'ios');
-            if (event.type === 'dismissed') {
-              return;
-            }
-            if (date) {
-              const tarih = tarihiISOFormatinaCevir(date);
-
-              // Gelecek tarih secilmisse engelle
-              if (tarih > aktifGun) {
-                return;
-              }
-
-              const indeks = tarihiSayfaIndeksineCevir(tarih);
-              dispatch(tarihiDegistir(tarih));
-              namazlariGetir(tarih);
-              pagerRef.current?.setPage(indeks);
-              setMevcutSayfaIndeksi(indeks);
-            }
-          }}
-        />
-      )}
+      <DatePicker
+        modal
+        open={tarihSeciciGorunur}
+        date={new Date(mevcutTarih)}
+        mode="date"
+        maximumDate={new Date(aktifGun + 'T23:59:59')}
+        locale="tr"
+        title="Tarih Secin"
+        confirmText="Tamam"
+        cancelText="Iptal"
+        onConfirm={(date) => {
+          setTarihSeciciGorunur(false);
+          const tarih = tarihiISOFormatinaCevir(date);
+          // Gelecek tarih secilmisse engelle
+          if (tarih <= aktifGun) {
+            const indeks = tarihiSayfaIndeksineCevir(tarih);
+            dispatch(tarihiDegistir(tarih));
+            namazlariGetir(tarih);
+            pagerRef.current?.setPage(indeks);
+            setMevcutSayfaIndeksi(indeks);
+          }
+        }}
+        onCancel={() => setTarihSeciciGorunur(false)}
+      />
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
       <SeriKartiModal
