@@ -139,15 +139,20 @@ export const AnaSayfa: React.FC = () => {
 
   // Initial Load - Aktif güne git
   useEffect(() => {
-    namazlariGetir(aktifGun);
-    // Sadece ilk yuklemede aktif gune git (gece yarisi durumu icin)
-    // Issue #13: ilkYuklemeRef ile DateTimePicker secimi sirasinda tarihin sifirlanmasi engellenir
-    if (ilkYuklemeRef.current && aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+    // Issue #13 fix: namazlariGetir sadece ilk yuklemede cagrilir
+    // Sonraki tarih degisiklikleri DateTimePicker veya PagerView tarafindan yonetilir
+    if (ilkYuklemeRef.current) {
+      namazlariGetir(aktifGun);
+
+      // Eger baslangicta aktif gun bugunden farkliysa (gece yarisi durumu), o gune git
+      if (aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+        const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
+        dispatch(tarihiDegistir(aktifGun));
+        setMevcutSayfaIndeksi(yeniIndeks);
+        setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
+      }
+
       ilkYuklemeRef.current = false;
-      const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
-      dispatch(tarihiDegistir(aktifGun));
-      setMevcutSayfaIndeksi(yeniIndeks);
-      setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
     }
 
     dispatch(seriVerileriniYukle());
