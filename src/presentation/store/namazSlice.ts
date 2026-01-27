@@ -254,7 +254,9 @@ const namazSlice = createSlice({
       .addCase(namazlariYukle.fulfilled, (state, action) => {
         state.yukleniyor = false;
         state.gunlukNamazlar = action.payload;
-        state.mevcutTarih = action.payload.tarih;
+        // Not: mevcutTarih artik burada guncellenmeyecek.
+        // Tarih degisikligi sadece tarihiDegistir action'i ile yonetilir.
+        // Bu degisiklik Issue #13'u (DateTimePicker tarih secme problemi) cozer.
       })
       .addCase(namazlariYukle.rejected, (state, action) => {
         state.yukleniyor = false;
