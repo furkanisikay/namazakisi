@@ -21,10 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🎉 Initial Release
 
-## [1.0.0] - 2026-01-23
-
-### 🎉 İlk Sürüm (Initial Release)
-
 **Namaz Akışı**, GPLv3 lisansı altında "Sadaka-i Cariye" projesi olarak ilk kez herkese açık olarak yayınlandı.
 
 ### ✨ Özellikler
