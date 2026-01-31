@@ -191,4 +191,32 @@ export const ROZET_RENKLERI = {
   ELMAS: '#B9F2FF',
 } as const;
 
+// ==================== BILDIRIM SISTEMI SABITLERI ====================
+
+/**
+ * Bildirim sistemi sabitleri
+ */
+export const BILDIRIM_SABITLERI = {
+  // Muhafiz aksiyonlari
+  AKSIYONLAR: {
+    KILDIM: 'kildim_action',
+  },
+  // Kategoriler
+  KATEGORI: {
+    MUHAFIZ: 'muhafiz_category',
+  },
+  // Bildirim ID Onekleri
+  ONEKLEME: {
+    MUHAFIZ: 'muhafiz_',
+    VAKIT: '_vakit_',
+    SEVIYE: '_seviye_',
+    DAKIKA: '_dk_',
+  },
+  // Bildirim Kanallari
+  KANALLAR: {
+    VARSAYILAN: 'default',
+    MUHAFIZ: 'muhafiz',
+    MUHAFIZ_ACIL: 'muhafiz_acil',
+  },
+} as const;
 

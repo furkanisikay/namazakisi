@@ -10,13 +10,12 @@ import * as Notifications from 'expo-notifications';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../core/data/SeytanlaMucadeleIcerigi';
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
-import { MUHAFIZ_KATEGORISI } from './BildirimServisi';
+import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 
 /**
  * Vakit tipi (Turkce)
  */
-type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 
 /**
  * Namaz vakti bilgisi
@@ -48,16 +47,6 @@ export interface ArkaplanMuhafizAyarlari {
         seviye4Siklik: number; // siklik dk (orn: 1)
     };
 }
-
-/**
- * Bildirim ID onek sabitleri
- */
-const BILDIRIM_ONEK = {
-    MUHAFIZ: 'muhafiz_',
-    VAKIT: '_vakit_',
-    SEVIYE: '_seviye_',
-    DAKIKA: '_dk_',
-};
 
 /**
  * Arka plan muhafiz servisini yoneten sinif
@@ -335,7 +324,7 @@ export class ArkaplanMuhafizServisi {
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, veri.seviye, veri.dakika);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
-            const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_ONEK.DAKIKA + kalanDk;
+            const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + kalanDk;
 
             await this.tekBildirimPlanla(
                 bildirimId,
@@ -386,7 +375,7 @@ export class ArkaplanMuhafizServisi {
                     priority: seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
-                    categoryIdentifier: MUHAFIZ_KATEGORISI,
+                    categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
                     data: {
                         tip: 'muhafiz',
                         seviye: seviye,
@@ -448,7 +437,7 @@ export class ArkaplanMuhafizServisi {
      * @param tarih Vaktin ait oldugu tarih (YYYY-MM-DD)
      */
     private bildirimIdOlustur(vakit: VakitAdi, seviye: number, tarih: string): string {
-        return `${BILDIRIM_ONEK.MUHAFIZ}${tarih}${BILDIRIM_ONEK.VAKIT}${vakit}${BILDIRIM_ONEK.SEVIYE}${seviye}`;
+        return `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}${BILDIRIM_SABITLERI.ONEKLEME.SEVIYE}${seviye}`;
     }
 
     /**
@@ -467,7 +456,7 @@ export class ArkaplanMuhafizServisi {
         for (const bildirim of tumBildirimler) {
             // Bu vakite ait muhafiz bildirimi mi kontrol et
             for (const tarih of tarihler) {
-                const bildirimOneki = `${BILDIRIM_ONEK.MUHAFIZ}${tarih}${BILDIRIM_ONEK.VAKIT}${vakit}`;
+                const bildirimOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
                 if (bildirim.identifier.startsWith(bildirimOneki)) {
                     try {
                         await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
@@ -493,7 +482,7 @@ export class ArkaplanMuhafizServisi {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
 
             for (const bildirim of tumBildirimler) {
-                if (bildirim.identifier.startsWith(BILDIRIM_ONEK.MUHAFIZ)) {
+                if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
                     await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
                 }
             }
@@ -649,7 +638,7 @@ export class ArkaplanMuhafizServisi {
         console.log('[ArkaplanMuhafiz] Planlanan bildirimler:');
 
         for (const bildirim of bildirimler) {
-            if (bildirim.identifier.startsWith(BILDIRIM_ONEK.MUHAFIZ)) {
+            if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
                 console.log(`  - ${bildirim.identifier}: ${bildirim.content.title}`);
             }
         }

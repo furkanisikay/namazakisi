@@ -9,6 +9,11 @@ configureReanimatedLogger({
 });
 
 import App from './App';
+import { BildirimServisi } from './src/domain/services/BildirimServisi';
+
+// Bildirim dinleyicisini global olarak baslat
+// Bu, uygulama kapali veya arka plandayken gelen bildirim aksiyonlarini yakalamak icin kritiktir
+BildirimServisi.getInstance().baslatBildirimDinleyicisi();
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,
