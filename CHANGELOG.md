@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-01-31
+
+### Fixed
+- Merge pull request #16 from furkanisikay/fix/issue-7-seri-hatirlatici-saat-bugu-1810295291482891570
+- seri hatırlatıcı sabit saat ayarını düzelt
+- seri hatırlatıcı sabit saat ayarını düzelt
+- [notifications] move listener to global scope and sync background service
+- [notifications] move listener to global scope and sync background service
+- [notifications] move listener to global scope and sync background service
+
 ## [0.1.0] - 2026-01-26
 
 ### Added
