@@ -23,6 +23,15 @@ jest.mock('../domain/services/BildirimServisi', () => ({
     },
 }));
 
+// Mock KonumYoneticiServisi to avoid expo-location issues
+jest.mock('../domain/services/KonumYoneticiServisi', () => ({
+    KonumYoneticiServisi: {
+        getInstance: () => ({
+            sonrakiGunImsakVaktiGetir: jest.fn(),
+        }),
+    },
+}));
+
 // Mock LocalSeriServisi (simplified)
 jest.mock('../data/local/LocalSeriServisi', () => ({
     localTumSeriVerileriniGetir: jest.fn().mockResolvedValue({ basarili: true, veri: { /* mock data needed? */ } }),
