@@ -1,24 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
+import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
-
-/**
- * Bildirim ID onek sabiti (ArkaplanMuhafizServisi ile eslesir)
- */
-const MUHAFIZ_BILDIRIM_ONEK = 'muhafiz_';
-
-/**
- * Muhafiz bildirim aksiyonlari
- */
-export const MUHAFIZ_AKSIYONLARI = {
-  KILDIM: 'kildim_action',
-} as const;
-
-/**
- * Muhafiz bildirim kategorisi
- */
-export const MUHAFIZ_KATEGORISI = 'muhafiz_category';
+import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -33,6 +17,13 @@ const vakitAdiToNamazAdi: Record<string, NamazAdi> = {
 };
 
 /**
+ * String'in gecerli bir VakitAdi olup olmadigini kontrol et
+ */
+function isVakitAdi(vakit: string): vakit is VakitAdi {
+  return ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'].includes(vakit);
+}
+
+/**
  * Onceki muhafiz bildirimlerini bildirim merkezinden temizle
  * Yeni bildirim geldiginde eski bildirimlerin birikmesini onler
  */
@@ -43,7 +34,7 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
     for (const bildirim of mevcutBildirimler) {
       // Muhafiz bildirimi mi ve yeni gelen bildirim degil mi?
       if (
-        bildirim.request.identifier.startsWith(MUHAFIZ_BILDIRIM_ONEK) &&
+        bildirim.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ) &&
         bildirim.request.identifier !== yeniBildirimId
       ) {
         await Notifications.dismissNotificationAsync(bildirim.request.identifier);
@@ -55,33 +46,12 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
 }
 
 /**
- * Belirli bir vakit icin planlanan tum bildirimleri iptal et
- * @param vakit Vakit adi (imsak, ogle, ikindi, aksam, yatsi)
- * @param tarih Vakit tarihi (YYYY-MM-DD)
- */
-async function vakitBildirimleriniIptalEt(vakit: string, tarih: string): Promise<void> {
-  try {
-    const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-    const bildirimOneki = `${MUHAFIZ_BILDIRIM_ONEK}${tarih}_vakit_${vakit}`;
-
-    for (const bildirim of tumBildirimler) {
-      if (bildirim.identifier.startsWith(bildirimOneki)) {
-        await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-        console.log(`[BildirimServisi] Bildirim iptal edildi: ${bildirim.identifier}`);
-      }
-    }
-  } catch (error) {
-    console.error('[BildirimServisi] Vakit bildirimleri iptal edilirken hata:', error);
-  }
-}
-
-/**
  * Bildirim ayarlarini yapilandir
  */
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     // Eger bu bir muhafiz bildirimiyse, onceki muhafiz bildirimlerini temizle
-    if (notification.request.identifier.startsWith(MUHAFIZ_BILDIRIM_ONEK)) {
+    if (notification.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
       await oncekiMuhafizBildirimleriniTemizle(notification.request.identifier);
     }
 
@@ -95,15 +65,6 @@ Notifications.setNotificationHandler({
     };
   },
 });
-
-/**
- * Bildirim kanallari
- */
-const BILDIRIM_KANALLARI = {
-  VARSAYILAN: 'default',
-  MUHAFIZ: 'muhafiz',
-  MUHAFIZ_ACIL: 'muhafiz_acil',
-};
 
 /**
  * Bildirim response listener subscription
@@ -157,9 +118,9 @@ export class BildirimServisi {
 
     try {
       // Muhafiz kategorisi - "Kildim" aksiyonu ile
-      await Notifications.setNotificationCategoryAsync(MUHAFIZ_KATEGORISI, [
+      await Notifications.setNotificationCategoryAsync(BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ, [
         {
-          identifier: MUHAFIZ_AKSIYONLARI.KILDIM,
+          identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
           buttonTitle: '✅ Kıldım',
           options: {
             opensAppToForeground: false, // Uygulama acilmadan islem yapilsin
@@ -200,7 +161,7 @@ export class BildirimServisi {
     }
 
     // "Kildim" aksiyonuna mi tiklandi?
-    if (actionIdentifier === MUHAFIZ_AKSIYONLARI.KILDIM) {
+    if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) {
       await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
     }
   }
@@ -231,7 +192,12 @@ export class BildirimServisi {
       console.log(`[BildirimServisi] Namaz kilindi: ${namazAdi} (${tarih})`);
 
       // Bu vakit icin kalan tum bildirimleri iptal et
-      await vakitBildirimleriniIptalEt(vakit, tarih);
+      // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
+      if (isVakitAdi(vakit)) {
+        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit);
+      } else {
+        console.warn('[BildirimServisi] Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
+      }
 
       // Bildirim merkezindeki bu bildirimi de kapat
       await Notifications.dismissAllNotificationsAsync();
@@ -261,7 +227,7 @@ export class BildirimServisi {
     // Android icin bildirim kanallarini olustur
     if (Platform.OS === 'android') {
       // Varsayilan kanal
-      await Notifications.setNotificationChannelAsync(BILDIRIM_KANALLARI.VARSAYILAN, {
+      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VARSAYILAN, {
         name: 'Genel Bildirimler',
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
@@ -269,7 +235,7 @@ export class BildirimServisi {
       });
 
       // Muhafiz kanali (normal)
-      await Notifications.setNotificationChannelAsync(BILDIRIM_KANALLARI.MUHAFIZ, {
+      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ, {
         name: 'Namaz Muhafızı',
         description: 'Namaz vakti hatırlatmaları',
         importance: Notifications.AndroidImportance.HIGH,
@@ -279,7 +245,7 @@ export class BildirimServisi {
       });
 
       // Muhafiz acil kanali (seviye 3-4)
-      await Notifications.setNotificationChannelAsync(BILDIRIM_KANALLARI.MUHAFIZ_ACIL, {
+      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL, {
         name: 'Acil Namaz Hatırlatıcı',
         description: 'Vakit çıkmak üzere - acil hatırlatmalar',
         importance: Notifications.AndroidImportance.MAX,
