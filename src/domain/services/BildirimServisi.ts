@@ -17,6 +17,13 @@ const vakitAdiToNamazAdi: Record<string, NamazAdi> = {
 };
 
 /**
+ * String'in gecerli bir VakitAdi olup olmadigini kontrol et
+ */
+function isVakitAdi(vakit: string): vakit is VakitAdi {
+  return ['imsak', 'gunes', 'ogle', 'ikindi', 'aksam', 'yatsi'].includes(vakit);
+}
+
+/**
  * Onceki muhafiz bildirimlerini bildirim merkezinden temizle
  * Yeni bildirim geldiginde eski bildirimlerin birikmesini onler
  */
@@ -186,7 +193,11 @@ export class BildirimServisi {
 
       // Bu vakit icin kalan tum bildirimleri iptal et
       // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
-      await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as VakitAdi);
+      if (isVakitAdi(vakit)) {
+        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit);
+      } else {
+        console.warn('[BildirimServisi] Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
+      }
 
       // Bildirim merkezindeki bu bildirimi de kapat
       await Notifications.dismissAllNotificationsAsync();
