@@ -18,6 +18,7 @@ import {
 import { GunlukNamazlar } from '../../core/types';
 import * as LocalSeriServisi from '../../data/local/LocalSeriServisi';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
+import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 import {
   seriHesapla,
   seriOzetiniOlustur,
@@ -108,14 +109,30 @@ export const seriAyarlariniGuncelle = createAsyncThunk(
     // Bildirimleri planla veya iptal et
     const bildirim = BildirimServisi.getInstance();
     if (yeniAyarlar.gunSonuBildirimAktif) {
-      const [saatStr, dakikaStr] = yeniAyarlar.gunBitisSaati.split(':');
-      let saat = parseInt(saatStr, 10);
-      let dakika = parseInt(dakikaStr, 10);
+      let planlanmisSaat: number;
+      let planlanmisDakika: number;
 
-      // Bildirim dakikasini cikar
-      const toplamDakika = saat * 60 + dakika - yeniAyarlar.gunSonuBildirimDk;
-      const planlanmisSaat = Math.floor((toplamDakika + 1440) % 1440 / 60);
-      const planlanmisDakika = (toplamDakika + 1440) % 1440 % 60;
+      if (yeniAyarlar.gunSonuBildirimModu === 'sabit') {
+        // SABIT MOD: Kullanicinin sectigi sabit saat ve dakika
+        planlanmisSaat = yeniAyarlar.bildirimSaati;
+        planlanmisDakika = yeniAyarlar.bildirimDakikasi;
+      } else {
+        // OTOMATIK MOD: Imsak vaktinden X dakika once
+        const konumServisi = KonumYoneticiServisi.getInstance();
+        const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
+
+        if (imsakVakti) {
+          const imsakDakikaTarih = new Date(imsakVakti);
+          imsakDakikaTarih.setMinutes(imsakDakikaTarih.getMinutes() - yeniAyarlar.bildirimImsakOncesiDk);
+
+          planlanmisSaat = imsakDakikaTarih.getHours();
+          planlanmisDakika = imsakDakikaTarih.getMinutes();
+        } else {
+          // Konum yoksa varsayilan (Eski davranis: 05:00 - 60dk = 04:00)
+          planlanmisSaat = 4;
+          planlanmisDakika = 0;
+        }
+      }
 
       await bildirim.bildirimPlanla(
         'gun_sonu_hatirlatici',
