@@ -14,6 +14,8 @@ import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
 import { BildirimServisi } from './src/domain/services/BildirimServisi';
+import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
+import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { konumAyarlariniYukle } from './src/presentation/store/konumSlice';
 
@@ -73,7 +75,18 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       },
     });
 
-    console.log('[App] Arka plan muhafiz bildirimleri planlandi');
+    // Namaz hesaplayiciyi yapilandir (Vakit bildirimleri icin gerekli)
+    if (konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0) {
+      NamazVaktiHesaplayiciServisi.getInstance().yapilandir({
+        latitude: konumState.koordinatlar.lat,
+        longitude: konumState.koordinatlar.lng,
+      });
+
+      // Vakit bildirimlerini guncelle
+      await VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle();
+    }
+
+    console.log('[App] Arka plan muhafiz ve vakit bildirimleri planlandi');
   } catch (error) {
     console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
   }
