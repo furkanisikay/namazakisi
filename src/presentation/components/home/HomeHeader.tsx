@@ -11,6 +11,7 @@ interface HomeHeaderProps {
     aktifGunMu?: boolean;
     onTarihTikla: () => void;
     onSeriTikla?: () => void;
+    onKibleTikla?: () => void;
 }
 
 export const HomeHeader: React.FC<HomeHeaderProps> = ({
@@ -19,7 +20,8 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
     bugunMu,
     aktifGunMu,
     onTarihTikla,
-    onSeriTikla
+    onSeriTikla,
+    onKibleTikla
 }) => {
     const renkler = useRenkler();
 
@@ -69,20 +71,36 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
-                style={{
-                    backgroundColor: renkler.durum.uyari + '20', // Opacity 20
-                    borderColor: renkler.durum.uyari + '50' // Opacity 50
-                }}
-                onPress={onSeriTikla}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="fire" size={14} color={renkler.durum.uyari} />
-                <Text className="font-bold text-sm" style={{ color: renkler.durum.uyari }}>
-                    {streakGun} Gün
-                </Text>
-            </TouchableOpacity>
+            <View className="flex-row items-center gap-2">
+                {/* Kıble Butonu */}
+                <TouchableOpacity
+                    className="flex-row items-center justify-center w-8 h-8 rounded-full border"
+                    style={{
+                        backgroundColor: renkler.arkaplan,
+                        borderColor: renkler.sinir
+                    }}
+                    onPress={onKibleTikla}
+                    activeOpacity={0.7}
+                >
+                    <FontAwesome5 name="compass" size={14} color={renkler.birincil} />
+                </TouchableOpacity>
+
+                {/* Seri Butonu */}
+                <TouchableOpacity
+                    className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
+                    style={{
+                        backgroundColor: renkler.durum.uyari + '20', // Opacity 20
+                        borderColor: renkler.durum.uyari + '50' // Opacity 50
+                    }}
+                    onPress={onSeriTikla}
+                    activeOpacity={0.7}
+                >
+                    <FontAwesome5 name="fire" size={14} color={renkler.durum.uyari} />
+                    <Text className="font-bold text-sm" style={{ color: renkler.durum.uyari }}>
+                        {streakGun}
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
