@@ -12,6 +12,7 @@ interface VakitKartiProps {
     vakitAraligi: string; // "15:15 - 17:42"
     tamamlandi: boolean;
     onTamamla: () => void;
+    kilitli?: boolean;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -33,7 +34,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     suankiVakitAdi,
     vakitAraligi,
     tamamlandi,
-    onTamamla
+    onTamamla,
+    kilitli = false
 }) => {
     const renkler = useRenkler();
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
@@ -56,15 +58,17 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
             <View className="p-6 text-center items-center">
                 {/* Badge: Şu Anki Vakit */}
                 <View className="flex-row items-center gap-2 px-3 py-1 rounded-full mb-4"
-                    style={{ backgroundColor: renkler.birincil + '15' }}>
-                    <View className="relative flex h-2 w-2">
-                        <View className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                            style={{ backgroundColor: renkler.birincil }} />
-                        <View className="relative inline-flex rounded-full h-2 w-2"
-                            style={{ backgroundColor: renkler.birincil }} />
-                    </View>
-                    <Text className="text-xs font-bold" style={{ color: renkler.birincil }}>
-                        ŞU ANKİ VAKİT
+                    style={{ backgroundColor: kilitli ? renkler.metinIkincil + '15' : renkler.birincil + '15' }}>
+                    {!kilitli && (
+                        <View className="relative flex h-2 w-2">
+                            <View className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                                style={{ backgroundColor: renkler.birincil }} />
+                            <View className="relative inline-flex rounded-full h-2 w-2"
+                                style={{ backgroundColor: renkler.birincil }} />
+                        </View>
+                    )}
+                    <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
+                        {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
                     </Text>
                 </View>
 
@@ -95,17 +99,24 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 {/* Buton */}
                 <TouchableOpacity
                     className="w-full py-4 px-6 rounded-2xl shadow-md flex-row items-center justify-center gap-3 active:scale-95 transition-transform"
-                    style={{ backgroundColor: tamamlandi ? renkler.durum.basarili : renkler.birincil }}
+                    style={{
+                        backgroundColor: tamamlandi ? renkler.durum.basarili : (kilitli ? renkler.metinIkincil : renkler.birincil),
+                        opacity: kilitli ? 0.7 : 1
+                    }}
                     onPress={onTamamla}
-                    disabled={tamamlandi}
+                    disabled={tamamlandi || kilitli}
                 >
-                    <FontAwesome5 name={tamamlandi ? "check-circle" : "pray"} size={20} color="#fff" />
+                    <FontAwesome5
+                        name={tamamlandi ? "check-circle" : (kilitli ? "clock" : "pray")}
+                        size={20}
+                        color="#fff"
+                    />
                     <Text className="text-white font-bold text-lg">
-                        {tamamlandi ? "Kılındı" : "Kılındı Olarak İşaretle"}
+                        {tamamlandi ? "Kılındı" : (kilitli ? "Vakit Girmedi" : "Kılındı Olarak İşaretle")}
                     </Text>
                 </TouchableOpacity>
 
-                {!tamamlandi && (
+                {!tamamlandi && !kilitli && (
                     <Text className="text-xs text-center mt-4" style={{ color: renkler.metinIkincil }}>
                         Seriyi bozma! 🔥
                     </Text>
