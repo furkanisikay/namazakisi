@@ -321,9 +321,17 @@ export const AnaSayfa: React.FC = () => {
     let suankiVakitAdi = "Vakit";
     let vakitAraligi = "00:00 - 00:00";
     let suankiVakitTamamlandi = false;
+    let kilitli = false;
 
     if (aktifGunKontrol && vakitBilgisi) {
-      suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
+      // Eğer vakit 'Güneş' ise (kerahat vakti), kullanıcıya bir sonraki vakit olan 'Öğle'yi gösteriyoruz
+      // Ancak buton 'Vakit Girmedi' şeklinde pasif olacak
+      if (vakitBilgisi.vakit === 'gunes') {
+        suankiVakitAdi = NamazAdi.Ogle;
+        kilitli = true;
+      } else {
+        suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
+      }
 
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
       if (suankiNamaz) {
@@ -331,6 +339,10 @@ export const AnaSayfa: React.FC = () => {
 
         const suankiIndex = uiNamazlar.findIndex(n => n.namazAdi === suankiVakitAdi);
         const sonrakiNamaz = uiNamazlar[suankiIndex + 1];
+
+        // Eğer vakit gunes ise, UI'da Ogle gosteriyoruz.
+        // Vakit aralığı: Ogle Saati - Ikindi Saati olmalı (Normal bir vakit gibi)
+        // VakitKarti'na "Vakit Girmedi" durumunu yansıtmak için kilitli prop'u var.
 
         if (sonrakiNamaz) {
           vakitAraligi = `${suankiNamaz.saat} - ${sonrakiNamaz.saat}`;
@@ -344,7 +356,7 @@ export const AnaSayfa: React.FC = () => {
       <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
-        {/* Muhafiz Uyarı Kartı */}
+        {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
         {aktifGunKontrol && muhafizDurumu.seviye > 0 && (
           <View className="mb-4 p-4 rounded-xl flex-row items-center gap-3 shadow-sm"
             style={{ backgroundColor: muhafizDurumu.seviye >= 3 ? '#FEE2E2' : '#FFEDD5' }}>
@@ -369,6 +381,7 @@ export const AnaSayfa: React.FC = () => {
             vakitAraligi={vakitAraligi}
             tamamlandi={suankiVakitTamamlandi}
             onTamamla={suankiVakitTamamla}
+            kilitli={kilitli}
           />
         ) : (
           <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
