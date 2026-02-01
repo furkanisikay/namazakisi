@@ -19,9 +19,13 @@ module.exports = {
   ],
   // Test dosyalari sadece .test.ts uzantili olsun
   testMatch: ["**/__tests__/**/*.test.ts"],
+  moduleNameMapper: {
+    "^expo-notifications$": "<rootDir>/__mocks__/expo-notifications.js",
+    "^expo-location$": "<rootDir>/__mocks__/expo-location.js",
+  },
   // Expo modullerini transform et
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|expo-.*|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|expo-.*|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|adhan|@expo/vector-icons|expo-modules-core)"
   ],
   // Coverage threshold gecici olarak devre disi
   // TODO: Test coverage arttirilinca tekrar aktif edilecek
