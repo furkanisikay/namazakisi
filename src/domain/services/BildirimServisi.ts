@@ -255,6 +255,15 @@ export class BildirimServisi {
         enableVibrate: true,
         bypassDnd: true,
       });
+
+      // Vakit Bildirimleri kanali
+      await Notifications.setNotificationChannelAsync(BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM, {
+        name: 'Vakit Bildirimleri',
+        description: 'Vakit girdiğinde gönderilen hatırlatmalar',
+        importance: Notifications.AndroidImportance.DEFAULT,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#4CAF50',
+      });
     }
 
     return true;

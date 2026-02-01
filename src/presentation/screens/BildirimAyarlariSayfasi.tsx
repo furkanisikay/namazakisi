@@ -22,6 +22,8 @@ import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
+import { vakitBildirimAyariniGuncelle, vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
+import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 
@@ -110,11 +112,13 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
   const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
+  const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    dispatch(vakitBildirimAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -124,6 +128,11 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   }, []);
 
   // Handlers
+  const handleVakitBildirimToggle = async (vakit: string, yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    dispatch(vakitBildirimAyariniGuncelle({ vakit: vakit as any, aktif: yeniDeger }));
+  };
+
   const handleGunSonuBildirimToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
     dispatch(seriAyarlariniGuncelle({ ayarlar: { gunSonuBildirimAktif: yeniDeger } }));
@@ -168,6 +177,68 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View style={{ opacity: fadeAnim }}>
+        {/* Vakit Bildirimleri Bölümü */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            VAKİT BİLDİRİMLERİ
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            {/* Bilgi Başlığı */}
+            <View className="p-4 border-b" style={{ borderBottomColor: `${renkler.sinir}50` }}>
+               <View className="flex-row items-center">
+                  <View
+                    className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                    style={{ backgroundColor: `${renkler.birincil}15` }}
+                  >
+                    <FontAwesome5 name="mosque" size={18} color={renkler.birincil} solid />
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                      Namaz Vakti Bildirimleri
+                    </Text>
+                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                      Vakit girdiğinde ayet ve hadislerle hatırlatma al
+                    </Text>
+                  </View>
+               </View>
+            </View>
+
+            {/* Vakit Switchleri */}
+            <View className="p-2">
+              {[
+                { key: 'imsak', label: NamazAdi.Sabah },
+                { key: 'ogle', label: NamazAdi.Ogle },
+                { key: 'ikindi', label: NamazAdi.Ikindi },
+                { key: 'aksam', label: NamazAdi.Aksam },
+                { key: 'yatsi', label: NamazAdi.Yatsi },
+              ].map((item, index) => (
+                <View
+                  key={item.key}
+                  className={`flex-row items-center justify-between p-3 ${index !== 4 ? 'border-b' : ''}`}
+                  style={{ borderBottomColor: `${renkler.sinir}30` }}
+                >
+                  <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
+                    {item.label} Vakti
+                  </Text>
+                  <Switch
+                    value={(vakitAyarlari as any)[item.key]}
+                    onValueChange={(val) => handleVakitBildirimToggle(item.key, val)}
+                    trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                    thumbColor={(vakitAyarlari as any)[item.key] ? renkler.birincil : '#f4f3f4'}
+                  />
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+
         {/* Seri Bildirimleri Bolumu */}
         <View className="mb-6">
           <Text

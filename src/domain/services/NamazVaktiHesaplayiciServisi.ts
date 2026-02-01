@@ -37,6 +37,13 @@ export class NamazVaktiHesaplayiciServisi {
     }
 
     /**
+     * Mevcut yapılandırmayı döndürür
+     */
+    public getKonfig(): NamazVaktiHesaplayiciKonfig | null {
+        return this.config;
+    }
+
+    /**
      * Cihazın anlık konumunu kullanarak yapılandırır
      */
     public async guncelleKonumOto(): Promise<{ lat: number, lng: number } | null> {

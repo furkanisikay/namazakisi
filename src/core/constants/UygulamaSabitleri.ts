@@ -109,6 +109,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
   // Muhafiz sistemi
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // Vakit Bildirim Ayarları
+  VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Konum sistemi
   KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
 } as const;
@@ -217,6 +219,7 @@ export const BILDIRIM_SABITLERI = {
     VARSAYILAN: 'default',
     MUHAFIZ: 'muhafiz',
     MUHAFIZ_ACIL: 'muhafiz_acil',
+    VAKIT_BILDIRIM: 'vakit_bildirim',
   },
 } as const;
 
