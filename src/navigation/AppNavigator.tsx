@@ -22,11 +22,13 @@ import {
   SeriHedefAyarlariSayfasi,
   HakkindaSayfasi,
   KonumAyarlariSayfasi,
+  KibleSayfasi,
 } from '../presentation/screens';
 import { useRenkler } from '../core/theme';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 /**
  * Ayarlar Alt Navigasyonu
@@ -88,99 +90,109 @@ const AyarlarStack: React.FC = () => {
 };
 
 /**
- * Ana navigator - Tab navigation
- * Tema destekli
+ * Ana Tab Navigasyonu
  */
-export const AppNavigator: React.FC = () => {
+const MainTabs: React.FC = () => {
   const renkler = useRenkler();
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="AnaSayfa"
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: renkler.birincil,
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerTintColor: '#FFFFFF',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 18,
-          },
-          tabBarStyle: {
-            backgroundColor: renkler.kartArkaplan,
-            borderTopColor: renkler.sinir,
-            borderTopWidth: 1,
-            paddingBottom: 8,
-            paddingTop: 8,
-            height: 65,
-            elevation: 8,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: -2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 4,
-          },
-          tabBarActiveTintColor: renkler.birincil,
-          tabBarInactiveTintColor: renkler.metinIkincil,
-          tabBarLabelStyle: {
-            fontSize: 11,
-            fontWeight: '600',
-            marginTop: 2,
-          },
+    <Tab.Navigator
+      initialRouteName="AnaSayfa"
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: renkler.birincil,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 18,
+        },
+        tabBarStyle: {
+          backgroundColor: renkler.kartArkaplan,
+          borderTopColor: renkler.sinir,
+          borderTopWidth: 1,
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 65,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+        },
+        tabBarActiveTintColor: renkler.birincil,
+        tabBarInactiveTintColor: renkler.metinIkincil,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
+          marginTop: 2,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="AnaSayfa"
+        component={AnaSayfa}
+        options={{
+          title: 'Namaz Akışı',
+          tabBarLabel: 'Ana Sayfa',
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          ),
         }}
-      >
-        <Tab.Screen
-          name="AnaSayfa"
-          component={AnaSayfa}
-          options={{
-            title: 'Namaz Akışı',
-            tabBarLabel: 'Ana Sayfa',
-            headerShown: false,
-            tabBarIcon: ({ focused, color, size }) => (
-              <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Rozetler"
-          component={RozetlerSayfasi}
-          options={{
-            title: 'Rozetler',
-            tabBarLabel: 'Rozetler',
-            headerShown: false,
-            tabBarIcon: ({ focused, color, size }) => (
-              <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Istatistikler"
-          component={IstatistikSayfasi}
-          options={{
-            title: 'İstatistikler',
-            tabBarLabel: 'İstatistik',
-            headerShown: false,
-            tabBarIcon: ({ focused, color, size }) => (
-              <FontAwesome5 name="chart-bar" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Ayarlar"
-          component={AyarlarStack}
-          options={{
-            headerShown: false,
-            tabBarLabel: 'Ayarlar',
-            tabBarIcon: ({ focused, color, size }) => (
-              <FontAwesome5 name="cog" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+      />
+      <Tab.Screen
+        name="Rozetler"
+        component={RozetlerSayfasi}
+        options={{
+          title: 'Rozetler',
+          tabBarLabel: 'Rozetler',
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Istatistikler"
+        component={IstatistikSayfasi}
+        options={{
+          title: 'İstatistikler',
+          tabBarLabel: 'İstatistik',
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome5 name="chart-bar" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Ayarlar"
+        component={AyarlarStack}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Ayarlar',
+          tabBarIcon: ({ focused, color, size }) => (
+            <FontAwesome5 name="cog" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 
-
+/**
+ * Ana navigator - Root Stack
+ * Tema destekli
+ */
+export const AppNavigator: React.FC = () => {
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Screen name="MainTabs" component={MainTabs} />
+        <RootStack.Screen name="KibleSayfasi" component={KibleSayfasi} />
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+};

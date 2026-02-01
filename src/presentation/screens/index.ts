@@ -7,6 +7,7 @@
 export { AnaSayfa } from './AnaSayfa';
 export { IstatistikSayfasi } from './IstatistikSayfasi';
 export { RozetlerSayfasi } from './RozetlerSayfasi';
+export { KibleSayfasi } from './KibleSayfasi/KibleSayfasi';
 
 // Ayarlar sayfalari
 export { AyarlarSayfasi } from './AyarlarSayfasi';
