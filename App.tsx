@@ -6,6 +6,7 @@
 
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
 import { AppNavigator } from './src/navigation/AppNavigator';
@@ -141,11 +142,13 @@ const AppIcerik: React.FC = () => {
  */
 const ProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <TemaProvider>
-      <FeedbackProvider>
-        {children}
-      </FeedbackProvider>
-    </TemaProvider>
+    <SafeAreaProvider>
+      <TemaProvider>
+        <FeedbackProvider>
+          {children}
+        </FeedbackProvider>
+      </TemaProvider>
+    </SafeAreaProvider>
   );
 };
 
