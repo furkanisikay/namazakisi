@@ -14,6 +14,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -106,7 +107,7 @@ export const RozetlerSayfasi: React.FC = () => {
   }
 
   return (
-    <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top']}>
       <ScrollView
         className="flex-1 px-4 pt-4"
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -414,6 +415,6 @@ export const RozetlerSayfasi: React.FC = () => {
         {/* Alt Bosluk */}
         <View className="h-10" />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };

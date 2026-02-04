@@ -17,6 +17,7 @@ import {
   Animated,
   Easing,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
@@ -264,57 +265,59 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
   ];
 
   return (
-    <ScrollView
-      className="flex-1"
-      style={{ backgroundColor: renkler.arkaplan }}
-      contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <Animated.View
-        style={{
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        }}
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top']}>
+      <ScrollView
+        className="flex-1"
+        style={{ backgroundColor: renkler.arkaplan }}
+        contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Ana Menu Bolumu */}
-        <View className="mb-6">
-          {menuOgeleri.map((oge) => (
-            <AyarMenuSatiri
-              key={oge.sayfa}
-              baslik={oge.baslik}
-              aciklama={oge.aciklama}
-              ikonAdi={oge.ikonAdi}
-              onPress={() => navigation.navigate(oge.sayfa)}
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          {/* Ana Menu Bolumu */}
+          <View className="mb-6">
+            {menuOgeleri.map((oge) => (
+              <AyarMenuSatiri
+                key={oge.sayfa}
+                baslik={oge.baslik}
+                aciklama={oge.aciklama}
+                ikonAdi={oge.ikonAdi}
+                onPress={() => navigation.navigate(oge.sayfa)}
+              />
+            ))}
+          </View>
+
+          {/* Hizli Ayarlar Bolumu */}
+          <View className="mb-6">
+            <Text
+              className="text-xs font-bold tracking-wider mx-4 mb-3"
+              style={{ color: renkler.metinIkincil }}
+            >
+              HIZLI AYARLAR
+            </Text>
+
+            <ToggleAyarSatiri
+              baslik="Titresim"
+              aciklama="Etkilesimlerde telefon titrer."
+              ikonAdi="titresim"
+              deger={ayarlar.titresimAktif}
+              onDegistir={titresimDurumunuDegistir}
             />
-          ))}
-        </View>
 
-        {/* Hizli Ayarlar Bolumu */}
-        <View className="mb-6">
-          <Text
-            className="text-xs font-bold tracking-wider mx-4 mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            HIZLI AYARLAR
-          </Text>
-
-          <ToggleAyarSatiri
-            baslik="Titresim"
-            aciklama="Etkilesimlerde telefon titrer."
-            ikonAdi="titresim"
-            deger={ayarlar.titresimAktif}
-            onDegistir={titresimDurumunuDegistir}
-          />
-
-          <ToggleAyarSatiri
-            baslik="Ses Efektleri"
-            aciklama="Etkilesimlerde ses efektleri verir."
-            ikonAdi="ses"
-            deger={ayarlar.sesAktif}
-            onDegistir={sesDurumunuDegistir}
-          />
-        </View>
-      </Animated.View>
-    </ScrollView>
+            <ToggleAyarSatiri
+              baslik="Ses Efektleri"
+              aciklama="Etkilesimlerde ses efektleri verir."
+              ikonAdi="ses"
+              deger={ayarlar.sesAktif}
+              onDegistir={sesDurumunuDegistir}
+            />
+          </View>
+        </Animated.View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
