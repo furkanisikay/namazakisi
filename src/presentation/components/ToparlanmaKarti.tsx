@@ -108,7 +108,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       {/* Motivasyon mesaji */}
       <View style={styles.mesajContainer}>
         <Text style={[styles.mesaj, { color: renkler.metin }]}>
-          <Text style={styles.vurgulu}>{oncekiSeri} gunluk</Text> serini kurtarabilirsin!
+          <Text style={styles.vurgulu}>{oncekiSeri} günlük</Text> serini kurtarabilirsin!
         </Text>
       </View>
 
@@ -118,7 +118,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
           {daireler}
         </View>
         <Text style={[styles.progressYazisi, { color: renkler.metinIkincil }]}>
-          {toparlanmaDurumu.tamamlananGun}/{toparlanmaDurumu.hedefGunSayisi} gun tamamlandi
+          {toparlanmaDurumu.tamamlananGun}/{toparlanmaDurumu.hedefGunSayisi} gün tamamlandı
         </Text>
       </View>
 
@@ -144,11 +144,11 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       <View style={styles.altMesajContainer}>
         {kalanGun > 0 ? (
           <Text style={[styles.altMesaj, { color: SERI_RENKLERI.TOPARLANMA }]}>
-            {kalanGun} gun daha tam kil ve seriyi kurtar! 💪
+            {kalanGun} gün daha tam kıl ve seriyi kurtar! 💪
           </Text>
         ) : (
           <Text style={[styles.altMesaj, { color: renkler.durum.basarili }]}>
-            Bugun tam kilarak serini kurtar! 🎉
+            Bugün tam kılarak serini kurtar! 🎉
           </Text>
         )}
       </View>
@@ -157,7 +157,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       <View style={[styles.uyariContainer, { backgroundColor: 'rgba(255,193,7,0.2)' }]}>
         <Text style={styles.uyariIkonKucuk}>⚡</Text>
         <Text style={[styles.uyariMetin, { color: renkler.metinIkincil }]}>
-          Dikkat: Toparlanma modunda bir gun bile kacirilirsa seri tamamen sifirlanir!
+          Dikkat: Toparlanma modunda bir gün bile kaçırılırsa seri tamamen sıfırlanır!
         </Text>
       </View>
     </Animated.View>

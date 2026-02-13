@@ -193,6 +193,60 @@ export const ROZET_RENKLERI = {
   ELMAS: '#B9F2FF',
 } as const;
 
+// ==================== KONUM TAKIP PROFILLERI ====================
+
+/**
+ * Takip hassasiyet profili tipi
+ */
+export type TakipHassasiyeti = 'pil_dostu' | 'dengeli' | 'hassas';
+
+/**
+ * Takip profili konfigurasyonu
+ */
+export interface TakipProfilKonfigurasyonu {
+    /** Minimum mesafe degisikligi (metre) */
+    mesafe: number;
+    /** Minimum zaman araligi (saniye) */
+    zaman: number;
+    /** Konum dogruluk seviyesi (expo-location Accuracy enum degeri) */
+    dogruluk: number; // Location.Accuracy degerine karsilik gelir
+    /** iOS: Hareketsizken guncellemeleri duraklat */
+    duraklatma: boolean;
+}
+
+/**
+ * Takip hassasiyet profilleri
+ *
+ * Pil Dostu: Minimum batarya tuketimi, sehirler arasi yolculuk icin yeterli
+ * Dengeli: Cogu kullanici icin ideal, pil ve hassasiyet dengesi
+ * Hassas: Sik hareket edenler icin, daha fazla pil tuketir
+ */
+export const TAKIP_PROFILLERI: Record<TakipHassasiyeti, TakipProfilKonfigurasyonu> = {
+    pil_dostu: {
+        mesafe: 10000,  // 10km
+        zaman: 1800,    // 30 dakika
+        dogruluk: 2,    // Location.Accuracy.Low (hucre kulesi, GPS yok)
+        duraklatma: true,
+    },
+    dengeli: {
+        mesafe: 5000,   // 5km
+        zaman: 900,     // 15 dakika
+        dogruluk: 2,    // Location.Accuracy.Low (hucre kulesi, GPS yok)
+        duraklatma: false,
+    },
+    hassas: {
+        mesafe: 2000,   // 2km
+        zaman: 300,     // 5 dakika
+        dogruluk: 3,    // Location.Accuracy.Balanced (Wi-Fi + hucre kulesi)
+        duraklatma: false,
+    },
+} as const;
+
+/**
+ * Varsayilan takip hassasiyeti
+ */
+export const VARSAYILAN_TAKIP_HASSASIYETI: TakipHassasiyeti = 'dengeli';
+
 // ==================== BILDIRIM SISTEMI SABITLERI ====================
 
 /**

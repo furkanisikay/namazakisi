@@ -65,7 +65,7 @@ export const NamazKarti: React.FC<NamazKartiProps> = ({
           styles.durumMetni,
           namaz.tamamlandi ? styles.durumMetniTamamlandi : styles.durumMetniBekliyor,
         ]}>
-          {namaz.tamamlandi ? '✓ Kilindi' : '○ Bekliyor'}
+          {namaz.tamamlandi ? '✓ Kılındı' : '○ Bekliyor'}
         </Text>
       </View>
     </TouchableOpacity>

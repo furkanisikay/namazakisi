@@ -46,7 +46,7 @@ export const TarihNavigasyonu: React.FC<TarihNavigasyonuProps> = ({
         <Text style={styles.tarih}>{tarihiGorunumFormatinaCevir(tarih)}</Text>
         {bugunMuKontrol && (
           <View style={styles.bugunBadge}>
-            <Text style={styles.bugunText}>Bugun</Text>
+            <Text style={styles.bugunText}>Bugün</Text>
           </View>
         )}
       </TouchableOpacity>

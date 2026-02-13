@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -60,7 +61,7 @@ export const IstatistikSayfasi: React.FC = () => {
   }, [verileriYukle]);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
       {/* Tab Bar - 3 Tab */}
       <View
         className="flex-row border-b"
@@ -160,7 +161,7 @@ export const IstatistikSayfasi: React.FC = () => {
           />
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 

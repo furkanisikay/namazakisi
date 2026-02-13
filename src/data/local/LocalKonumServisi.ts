@@ -58,11 +58,14 @@ export interface KonumAyarlari {
     sonGpsGuncellemesi: string | null;
     /** Akilli konum takibi aktif mi (arka plan) */
     akilliTakipAktif: boolean;
+    /** Takip hassasiyet profili */
+    takipHassasiyeti: TakipHassasiyeti;
 }
 
 // ==================== SABITLER ====================
 
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { DEPOLAMA_ANAHTARLARI, VARSAYILAN_TAKIP_HASSASIYETI } from '../../core/constants/UygulamaSabitleri';
+import type { TakipHassasiyeti } from '../../core/constants/UygulamaSabitleri';
 
 /** Depolama anahtari */
 const KONUM_DEPOLAMA_ANAHTARI = DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI;
@@ -84,6 +87,7 @@ export const VARSAYILAN_KONUM_AYARLARI: KonumAyarlari = {
     },
     sonGpsGuncellemesi: null,
     akilliTakipAktif: false,
+    takipHassasiyeti: VARSAYILAN_TAKIP_HASSASIYETI,
 };
 
 // ==================== SERVIS FONKSIYONLARI ====================

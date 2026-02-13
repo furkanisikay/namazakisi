@@ -28,6 +28,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumAyarlariniGuncelle, GpsAdres } from '../store/konumSlice';
+import type { TakipHassasiyeti } from '../store/konumSlice';
+import { TAKIP_PROFILLERI, VARSAYILAN_TAKIP_HASSASIYETI } from '../../core/constants/UygulamaSabitleri';
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { TurkiyeKonumServisi, Il, Ilce, TURKIYE_ILLERI_OFFLINE } from '../../domain/services/TurkiyeKonumServisi';
 import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
@@ -222,7 +224,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                 </View>
                 {seciliMi && (
                     <View className="px-2.5 py-1 rounded-lg" style={{ backgroundColor: renkler.birincil }}>
-                        <Text className="text-xs font-semibold text-white">Secili</Text>
+                        <Text className="text-xs font-semibold text-white">Seçili</Text>
                     </View>
                 )}
             </TouchableOpacity>
@@ -236,7 +238,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         if (seciliIlAdi) {
             return seciliIlAdi;
         }
-        return 'Konum seciniz...';
+        return 'Konum seçiniz...';
     }, [seciliIlAdi, seciliIlceAdi]);
 
     return (
@@ -310,11 +312,11 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                     <View className="flex-row items-center">
                                         <FontAwesome5 name={adim === 'il' ? 'city' : 'map-marker-alt'} size={16} color={renkler.metin} />
                                         <Text className="text-xl font-bold ml-2" style={{ color: renkler.metin }}>
-                                            {adim === 'il' ? 'Il Secimi' : `${secilenIl?.ad} - Ilce Secimi`}
+                                            {adim === 'il' ? 'İl Seçimi' : `${secilenIl?.ad} - İlçe Seçimi`}
                                         </Text>
                                     </View>
                                     <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                        {adim === 'il' ? '81 il arasindan secin' : 'Ilce secerek devam edin'}
+                                        {adim === 'il' ? '81 il arasından seçin' : 'İlçe seçerek devam edin'}
                                     </Text>
                                 </View>
                                 <TouchableOpacity
@@ -353,7 +355,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 <TextInput
                                     className="flex-1 text-base h-12"
                                     style={{ color: renkler.metin }}
-                                    placeholder={adim === 'il' ? 'Il ara...' : 'Ilce ara...'}
+                                    placeholder={adim === 'il' ? 'İl ara...' : 'İlçe ara...'}
                                     placeholderTextColor={renkler.metinIkincil}
                                     value={aramaMetni}
                                     onChangeText={setAramaMetni}
@@ -374,7 +376,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
                                     {adim === 'il'
                                         ? `${filtreliIller.length} il listeleniyor`
-                                        : `${filtreliIlceler.length} ilce listeleniyor`
+                                        : `${filtreliIlceler.length} ilçe listeleniyor`
                                     }
                                 </Text>
                             </View>
@@ -384,7 +386,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                 <View className="flex-1 items-center justify-center py-12">
                                     <ActivityIndicator size="large" color={renkler.birincil} />
                                     <Text className="text-sm mt-3" style={{ color: renkler.metinIkincil }}>
-                                        Ilceler yukleniyor...
+                                        İlçeler yükleniyor...
                                     </Text>
                                 </View>
                             ) : adim === 'il' ? (
@@ -400,7 +402,7 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                         <View className="items-center py-12">
                                             <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
                                             <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
-                                                "{aramaMetni}" icin sonuc bulunamadi
+                                                "{aramaMetni}" için sonuç bulunamadı
                                             </Text>
                                         </View>
                                     }
@@ -419,8 +421,8 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
                                             <FontAwesome5 name="search" size={40} color={renkler.metinIkincil} style={{ opacity: 0.5 }} />
                                             <Text className="text-base text-center mt-4" style={{ color: renkler.metinIkincil }}>
                                                 {aramaMetni
-                                                    ? `"${aramaMetni}" icin sonuc bulunamadi`
-                                                    : 'Bu il icin ilce verisi bulunamadi'
+                                                    ? `"${aramaMetni}" için sonuç bulunamadı`
+                                                    : 'Bu il için ilçe verisi bulunamadı'
                                                 }
                                             </Text>
                                         </View>
@@ -446,6 +448,9 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const [yukleniyor, setYukleniyor] = useState(false);
     const [takipDurumuYukleniyor, setTakipDurumuYukleniyor] = useState(false);
     const [takipAktif, setTakipAktif] = useState(konumAyarlari.akilliTakipAktif);
+    const [seciliHassasiyet, setSeciliHassasiyet] = useState<TakipHassasiyeti>(
+        konumAyarlari.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI
+    );
 
     useEffect(() => {
         const takipDurumunuKontrolEt = async () => {
@@ -469,6 +474,23 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         takibiDurdur();
     }, [konumAyarlari.konumModu]);
 
+    const handleHassasiyetDegistir = async (yeniHassasiyet: TakipHassasiyeti) => {
+        await butonTiklandiFeedback();
+        setSeciliHassasiyet(yeniHassasiyet);
+        dispatch(konumAyarlariniGuncelle({ takipHassasiyeti: yeniHassasiyet }));
+
+        // Takip aktifse profili hemen uygula (durdur + yeniden baslat)
+        if (takipAktif) {
+            try {
+                const servis = KonumTakipServisi.getInstance();
+                await servis.durdur();
+                await servis.baslat();
+            } catch (e) {
+                console.error('Hassasiyet degistirme hatasi:', e);
+            }
+        }
+    };
+
     const handleAkilliTakipDegistir = async (aktif: boolean) => {
         await butonTiklandiFeedback();
         setTakipDurumuYukleniyor(true);
@@ -480,12 +502,12 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 const arkaPlanIzniVar = await servis.arkaPlanIzniVarMi();
                 if (!arkaPlanIzniVar) {
                     Alert.alert(
-                        'Arka Plan Konum Izni',
-                        'Akilli konum takibi icin "Her zaman" konum iznine ihtiyac var. Bu sayede hareket halindeyken konumunuz otomatik guncellenir.\n\nPil tuketimi minimumdur - sadece 5km+ degisikliklerde tetiklenir.',
+                        'Arka Plan Konum İzni',
+                        'Akıllı konum takibi için "Her zaman" konum iznine ihtiyaç var. Bu sayede hareket halindeyken konumunuz otomatik güncellenir.\n\nPil tüketimi minimumdur - seçtiğiniz hassasiyet profiline göre tetiklenir.',
                         [
-                            { text: 'Iptal', style: 'cancel' },
+                            { text: 'İptal', style: 'cancel' },
                             {
-                                text: 'Izin Ver',
+                                text: 'İzin Ver',
                                 onPress: async () => {
                                     const basarili = await servis.baslat();
                                     if (basarili) {
@@ -493,10 +515,10 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                         dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                                     } else {
                                         Alert.alert(
-                                            'Izin Gerekli',
-                                            'Arka plan konum izni verilemedi. Ayarlar sayfasindan "Konum" bolumune gidip "Her zaman izin ver" secenegini etkinlestirin.',
+                                            'İzin Gerekli',
+                                            'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
                                             [
-                                                { text: 'Vazgec', style: 'cancel' },
+                                                { text: 'Vazgeç', style: 'cancel' },
                                                 { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
                                             ]
                                         );
@@ -516,10 +538,10 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                 } else {
                     Alert.alert(
-                        'Izin Gerekli',
-                        'Arka plan konum izni verilemedi. Ayarlar sayfasindan "Konum" bolumune gidip "Her zaman izin ver" secenegini etkinlestirin.',
+                        'İzin Gerekli',
+                        'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
                         [
-                            { text: 'Vazgec', style: 'cancel' },
+                            { text: 'Vazgeç', style: 'cancel' },
                             { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
                         ]
                     );
@@ -531,7 +553,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             }
         } catch (hata) {
             console.error('Konum takibi hatasi:', hata);
-            Alert.alert('Hata', 'Konum takibi ayarlanirken bir hata olustu.');
+            Alert.alert('Hata', 'Konum takibi ayarlanırken bir hata oluştu.');
         } finally {
             setTakipDurumuYukleniyor(false);
         }
@@ -599,14 +621,14 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             if (konumAyarlari.gpsAdres) {
                 const { ilce, il } = konumAyarlari.gpsAdres;
                 if (ilce && il) return `${ilce}, ${il}`;
-                return ilce || il || 'GPS konumu alindi';
+                return ilce || il || 'GPS konumu alındı';
             }
             return 'Konum takip ediliyor';
         }
         if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
             return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
         }
-        return konumAyarlari.seciliIlAdi || 'Konum secilmedi';
+        return konumAyarlari.seciliIlAdi || 'Konum seçilmedi';
     };
 
     const sonGuncellemeMetniOlustur = (): string | null => {
@@ -621,13 +643,13 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         const farkSaat = Math.floor(farkMs / (1000 * 60 * 60));
         const farkGun = Math.floor(farkMs / (1000 * 60 * 60 * 24));
 
-        if (farkDakika < 1) return 'Az once guncellendi';
-        if (farkDakika < 60) return `${farkDakika} dakika once guncellendi`;
-        if (farkSaat < 24) return `${farkSaat} saat once guncellendi`;
-        if (farkGun === 1) return 'Dun guncellendi';
-        if (farkGun < 7) return `${farkGun} gun once guncellendi`;
+        if (farkDakika < 1) return 'Az önce güncellendi';
+        if (farkDakika < 60) return `${farkDakika} dakika önce güncellendi`;
+        if (farkSaat < 24) return `${farkSaat} saat önce güncellendi`;
+        if (farkGun === 1) return 'Dün güncellendi';
+        if (farkGun < 7) return `${farkGun} gün önce güncellendi`;
 
-        const aylar = ['Ocak', 'Subat', 'Mart', 'Nisan', 'Mayis', 'Haziran', 'Temmuz', 'Agustos', 'Eylul', 'Ekim', 'Kasim', 'Aralik'];
+        const aylar = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
         return `${guncellemeTarihi.getDate()} ${aylar[guncellemeTarihi.getMonth()]} ${guncellemeTarihi.getFullYear()}`;
     };
 
@@ -647,10 +669,10 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     <FontAwesome5 name="map-marker-alt" size={28} color={renkler.birincil} solid />
                 </View>
                 <Text className="text-xl font-bold mb-2" style={{ color: renkler.metin }}>
-                    Konum Ayarlari
+                    Konum Ayarları
                 </Text>
                 <Text className="text-sm text-center leading-5" style={{ color: renkler.metinIkincil }}>
-                    Namaz vakitlerinin dogru hesaplanabilmesi icin konumunuzu belirleyin
+                    Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin
                 </Text>
             </View>
 
@@ -711,7 +733,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 <View className="flex-row items-center mb-4">
                     <FontAwesome5 name="cog" size={16} color={renkler.metinIkincil} />
                     <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                        KONUM BELIRLEME YONTEMI
+                        KONUM BELİRLEME YÖNTEMİ
                     </Text>
                 </View>
 
@@ -742,7 +764,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                             </Text>
                         </View>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Cihazinizin GPS'ini kullanarak konumunuzu otomatik belirler
+                            Cihazınızın GPS'ini kullanarak konumunuzu otomatik belirler
                         </Text>
                     </View>
                     {yukleniyor && <ActivityIndicator size="small" color={renkler.birincil} />}
@@ -770,11 +792,11 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                         <View className="flex-row items-center">
                             <FontAwesome5 name="city" size={14} color={renkler.metin} />
                             <Text className="text-base font-semibold ml-2" style={{ color: renkler.metin }}>
-                                Manuel Secim
+                                Manuel Seçim
                             </Text>
                         </View>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                            Il ve ilce secerek konumunuzu belirleyin
+                            İl ve ilçe seçerek konumunuzu belirleyin
                         </Text>
                     </View>
                 </TouchableOpacity>
@@ -802,17 +824,17 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     <View className="flex-row items-center mb-3">
                         <FontAwesome5 name="compass" size={16} color={renkler.metinIkincil} />
                         <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                            AKILLI KONUM TAKIBI
+                            AKILLI KONUM TAKİBİ
                         </Text>
                     </View>
 
                     <View className="flex-row items-center justify-between">
                         <View className="flex-1 mr-3">
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                Hareket Halinde Guncelle
+                                Hareket Halinde Güncelle
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                5km+ konum degisikliginde otomatik gunceller. Pil dostu.
+                                {`${(TAKIP_PROFILLERI[seciliHassasiyet].mesafe / 1000).toFixed(0)}km+ konum değişikliğinde otomatik günceller`}
                             </Text>
                         </View>
                         {takipDurumuYukleniyor ? (
@@ -828,15 +850,108 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     </View>
 
                     {takipAktif && (
-                        <View
-                            className="flex-row items-center mt-3 p-2.5 rounded-lg border"
-                            style={{ backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }}
-                        >
-                            <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
-                            <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
-                                Arka planda konum takibi aktif
-                            </Text>
-                        </View>
+                        <>
+                            <View
+                                className="flex-row items-center mt-3 p-2.5 rounded-lg border"
+                                style={{ backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }}
+                            >
+                                <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
+                                <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
+                                    Arka planda konum takibi aktif
+                                </Text>
+                            </View>
+
+                            {/* Takip Hassasiyeti Secici */}
+                            <View className="mt-4 pt-4 border-t" style={{ borderTopColor: renkler.sinir }}>
+                                <View className="flex-row items-center mb-3">
+                                    <FontAwesome5 name="sliders-h" size={14} color={renkler.metinIkincil} />
+                                    <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
+                                        TAKİP HASSASİYETİ
+                                    </Text>
+                                </View>
+
+                                {/* Pil Dostu */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF5010' : 'transparent',
+                                        borderColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF50' : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('pil_dostu')}
+                                    activeOpacity={0.7}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF5020' : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="battery-full" size={16} color={seciliHassasiyet === 'pil_dostu' ? '#4CAF50' : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Pil Dostu</Text>
+                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            10km / 30dk - Şehirler arası yolculuk için
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'pil_dostu' && (
+                                        <FontAwesome5 name="check-circle" size={16} color="#4CAF50" solid />
+                                    )}
+                                </TouchableOpacity>
+
+                                {/* Dengeli */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'dengeli' ? '#2196F310' : 'transparent',
+                                        borderColor: seciliHassasiyet === 'dengeli' ? '#2196F3' : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('dengeli')}
+                                    activeOpacity={0.7}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'dengeli' ? '#2196F320' : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="balance-scale" size={16} color={seciliHassasiyet === 'dengeli' ? '#2196F3' : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Dengeli</Text>
+                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            5km / 15dk - Çoğu kullanıcı için ideal
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'dengeli' && (
+                                        <FontAwesome5 name="check-circle" size={16} color="#2196F3" solid />
+                                    )}
+                                </TouchableOpacity>
+
+                                {/* Hassas */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'hassas' ? '#FF980010' : 'transparent',
+                                        borderColor: seciliHassasiyet === 'hassas' ? '#FF9800' : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('hassas')}
+                                    activeOpacity={0.7}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'hassas' ? '#FF980020' : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="crosshairs" size={16} color={seciliHassasiyet === 'hassas' ? '#FF9800' : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Hassas</Text>
+                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            2km / 5dk - Sık hareket edenler için
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'hassas' && (
+                                        <FontAwesome5 name="check-circle" size={16} color="#FF9800" solid />
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+                        </>
                     )}
                 </View>
             )}

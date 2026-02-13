@@ -189,7 +189,7 @@ export const HakkindaSayfasi: React.FC = () => {
             © {guncelYil} Furkan ISIKAY
           </Text>
           <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-            Tum haklari saklidir.
+            Tüm hakları saklıdır.
           </Text>
         </View>
       </Animated.View>

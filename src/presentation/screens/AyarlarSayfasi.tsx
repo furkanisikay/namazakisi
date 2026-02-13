@@ -17,6 +17,7 @@ import {
   Animated,
   Easing,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
@@ -264,9 +265,9 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
   ];
 
   return (
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
     <ScrollView
       className="flex-1"
-      style={{ backgroundColor: renkler.arkaplan }}
       contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
     >
@@ -316,5 +317,6 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
         </View>
       </Animated.View>
     </ScrollView>
+    </SafeAreaView>
   );
 };

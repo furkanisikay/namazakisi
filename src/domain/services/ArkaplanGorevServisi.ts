@@ -1,17 +1,25 @@
 /**
  * Arka Plan Görev Servisi
- * 
+ *
  * Telefon yeniden başladığında veya uygulama öldürüldüğünde bile
- * bildirimlerin yeniden planlanmasını sağlar.
- * 
+ * bildirimlerin yeniden planlanmasını ve konum takibinin
+ * yeniden başlatılmasını sağlar.
+ *
  * NOT: Bu servis development build gerektirir (Expo Go'da çalışmaz)
  */
 
+import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import {
+    DEPOLAMA_ANAHTARLARI,
+    TAKIP_PROFILLERI,
+    VARSAYILAN_TAKIP_HASSASIYETI,
+    TakipHassasiyeti,
+} from '../../core/constants/UygulamaSabitleri';
+import { KONUM_TAKIP_GOREVI } from './KonumTakipServisi';
 
 // Görev adı sabiti
 export const BILDIRIM_YENILEME_GOREVI = 'BILDIRIM_YENILEME_GOREVI';
@@ -22,14 +30,156 @@ const MINIMUM_ARALIK_DAKIKA = 15;
 /** Konum ayarlari depolama anahtari */
 const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
 
+/** Konum takip ayarlari depolama anahtari */
+const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
+
+/**
+ * Aktif takip profilini AsyncStorage'dan okur
+ * ArkaplanGorevServisi icin - gorev canlandirirken profil bilgisi gerekir
+ */
+async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogruluk: number; duraklatma: boolean }> {
+    try {
+        const konumJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumJson) {
+            const konum = JSON.parse(konumJson);
+            const hassasiyet: TakipHassasiyeti = konum.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI;
+            return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+        }
+    } catch (e) {
+        console.warn('[ArkaplanGorev] Profil okuma hatasi:', e);
+    }
+    return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+}
+
+/**
+ * Konum izinlerini kontrol eder, iptal edildiyse takibi devre disi birakir
+ * @returns true ise izin iptal edilmis (takip baslatilmamali)
+ */
+async function izinIptalKontrolEt(takipAyarlari: { aktif: boolean }): Promise<boolean> {
+    const { status: arkaPlanIzni } = await Location.getBackgroundPermissionsAsync();
+    if (arkaPlanIzni !== 'granted') {
+        console.log('[ArkaplanGorev] Arka plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
+            ...takipAyarlari,
+            aktif: false,
+        }));
+        return true;
+    }
+
+    const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
+    if (onPlanIzni !== 'granted') {
+        console.log('[ArkaplanGorev] On plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
+            ...takipAyarlari,
+            aktif: false,
+        }));
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * Arka plandan konum takibini yeniden baslat
+ * Bu fonksiyon arka plan gorevinden (background fetch) cagrilir
+ * Uygulama kapaliyken veya telefon yeniden basladiginda konum takibini canlandirir
+ *
+ * Senaryo akisi:
+ * 1. Kullanici daha once akilli takibi actiysa → aktif: true AsyncStorage'da kalir
+ * 2. Telefon reboot / app kill / OS tarafindan olduruldu → konum gorevi olur
+ * 3. Background fetch 15dk'da bir tetiklenir (startOnBoot + stopOnTerminate:false)
+ * 4. Bu fonksiyon konum gorevinin olup olmedigini kontrol eder
+ * 5. Olmemisse → dokunmaz. Olmüsse → yeniden baslatir.
+ * 6. Izin iptal edildiyse → graceful deactivation yapar
+ */
+export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
+    try {
+        // 1. Konum takip ayarlarini kontrol et - kullanici daha once aktif etmis mi?
+        const takipAyarlariJson = await AsyncStorage.getItem(KONUM_TAKIP_AYARLARI_ANAHTAR);
+        if (!takipAyarlariJson) {
+            return; // Kullanici hic aktif etmemis
+        }
+
+        const takipAyarlari = JSON.parse(takipAyarlariJson);
+        if (!takipAyarlari.aktif) {
+            return; // Kullanici kapattiysa dokunma
+        }
+
+        // 2. Konum modu GPS mi kontrol et
+        const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumAyarlariJson) {
+            const konumAyarlari = JSON.parse(konumAyarlariJson);
+            if (konumAyarlari.konumModu !== 'oto') {
+                return; // Manuel modda konum takibine gerek yok
+            }
+        }
+
+        // 3. Izinleri kontrol et (kullanici ayarlardan iptal etmis olabilir)
+        const izinIptalEdildi = await izinIptalKontrolEt(takipAyarlari);
+        if (izinIptalEdildi) {
+            return;
+        }
+
+        // 5. Gorev hala kayitli mi kontrol et
+        // NOT: baslat() her zaman stop+start yapar (kullanici tetikler, profil degismis olabilir)
+        // Burada ise sadece olmus gorevi canlandiriyoruz - zaten calisan goreve dokunmuyoruz
+        const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
+        if (kayitliMi) {
+            console.log('[ArkaplanGorev] Konum takip gorevi zaten kayitli ve calisiyor');
+            return; // Gorev hala calisiyor, dokunma
+        }
+
+        // 6. KRITIK: Gorev kayitli degil ama aktif olmasi gerekiyor - yeniden baslat!
+        // Bu durum genellikle su senaryolarda olusur:
+        // - Telefon yeniden basladi
+        // - OS uygulamayi pil icin oldurdu
+        // - Kullanici uygulamayi swipe ile kapatti
+        console.log('[ArkaplanGorev] Konum takip gorevi ölmüş, yeniden başlatılıyor...');
+        const profil = await aktifProfilGetir();
+        await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
+            accuracy: profil.dogruluk,
+            timeInterval: profil.zaman * 1000,
+            distanceInterval: profil.mesafe,
+            deferredUpdatesInterval: profil.zaman * 1000,
+            deferredUpdatesDistance: profil.mesafe,
+            showsBackgroundLocationIndicator: true,
+            foregroundService: {
+                notificationTitle: 'Namaz Akışı',
+                notificationBody: 'Şehir değişikliğini takip ediyor',
+                notificationColor: '#4A90D9',
+            },
+            pausesUpdatesAutomatically: profil.duraklatma,
+            activityType: Location.ActivityType.Other,
+        });
+
+        console.log('[ArkaplanGorev] Konum takip gorevi yeniden baslatildi');
+    } catch (error) {
+        console.error('[ArkaplanGorev] Konum takip yeniden baslatma hatasi:', error);
+    }
+}
+
 /**
  * Arka plan görevini tanımla
  * Bu kod modül seviyesinde çalışmalı (import edildiğinde)
+ *
+ * Her 15 dakikada bir tetiklenir ve su islemleri yapar:
+ * 1. Konum takibini canlandirir (olmusse)
+ * 2. Bildirimleri yeniden planlar
  */
 TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
     console.log('[ArkaplanGorev] Görev tetiklendi');
 
     try {
+        // =====================================================
+        // ADIM 1: KONUM TAKIBINI CANLANDIR
+        // Telefon reboot, app kill, OS kill senaryolarini ele al
+        // =====================================================
+        await arkaplandanKonumTakibiniYenidenBaslat();
+
+        // =====================================================
+        // ADIM 2: BILDIRIMLERI YENIDEN PLANLA
+        // =====================================================
+
         // Muhafız ayarlarını AsyncStorage'dan al
         const ayarlarJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
 

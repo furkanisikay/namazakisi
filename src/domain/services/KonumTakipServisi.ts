@@ -8,7 +8,13 @@ import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import {
+    DEPOLAMA_ANAHTARLARI,
+    TAKIP_PROFILLERI,
+    VARSAYILAN_TAKIP_HASSASIYETI,
+    TakipHassasiyeti,
+    TakipProfilKonfigurasyonu,
+} from '../../core/constants/UygulamaSabitleri';
 
 /** Arka plan konum gorevi adi */
 export const KONUM_TAKIP_GOREVI = 'KONUM_TAKIP_GOREVI';
@@ -17,11 +23,23 @@ export const KONUM_TAKIP_GOREVI = 'KONUM_TAKIP_GOREVI';
 const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
 const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
 
-/** Minimum mesafe degisikligi (metre) - 5km */
-const MINIMUM_MESAFE_METRE = 5000;
-
-/** Minimum zaman araligi (saniye) - 15 dakika */
-const MINIMUM_ZAMAN_SANIYE = 900;
+/**
+ * Aktif takip profilini AsyncStorage'dan okur
+ * Arka plan gorevi ve servis tarafindan kullanilir
+ */
+async function aktifProfilGetir(): Promise<TakipProfilKonfigurasyonu> {
+    try {
+        const konumJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumJson) {
+            const konum = JSON.parse(konumJson);
+            const hassasiyet: TakipHassasiyeti = konum.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI;
+            return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+        }
+    } catch (e) {
+        console.warn('[KonumTakip] Profil okuma hatasi:', e);
+    }
+    return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+}
 
 /**
  * Konum takip ayarlari
@@ -90,17 +108,26 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
             return;
         }
 
+        // Aktif profil ayarlarini al
+        const profil = await aktifProfilGetir();
+
         // Son konum ile karsilastir
         const sonLat = konumAyarlari.koordinatlar?.lat;
         const sonLng = konumAyarlari.koordinatlar?.lng;
 
         if (sonLat && sonLng) {
             const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
-            console.log(`[KonumTakip] Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km`);
+            console.log(`[KonumTakip] Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(profil.mesafe / 1000).toFixed(0)} km)`);
 
-            // Mesafe yeterli degilse guncelleme yapma
-            if (mesafe < MINIMUM_MESAFE_METRE) {
-                console.log('[KonumTakip] Mesafe esigi asilmadi, guncelleme atlanıyor');
+            // Mesafe yeterli degilse konum guncelleme yapma ama son kontrol zamanini guncelle
+            if (mesafe < profil.mesafe) {
+                console.log('[KonumTakip] Mesafe esigi asilmadi, konum guncelleme atlanıyor');
+                // Son kontrol zamanini guncelle (takibin aktif oldugunu gostermek icin)
+                const guncelAyarlarZaman = {
+                    ...konumAyarlari,
+                    sonGpsGuncellemesi: new Date().toISOString(),
+                };
+                await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlarZaman));
                 return;
             }
         }
@@ -228,27 +255,35 @@ export class KonumTakipServisi {
                 }
             }
 
-            // 3. Gorev zaten kayitli mi kontrol et
+            // 3. Gorev zaten kayitli ise durdur ve yeniden baslat
+            // OS arka plan gorevini durdurmus olabilir, bu yuzden her zaman yeniden baslatiyoruz
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
             if (kayitliMi) {
-                console.log('[KonumTakip] Gorev zaten kayitli');
-                return true;
+                console.log('[KonumTakip] Gorev zaten kayitli, yeniden baslatiliyor');
+                try {
+                    await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
+                } catch (stopError) {
+                    console.warn('[KonumTakip] Mevcut gorev durdurulamadi:', stopError);
+                }
             }
 
-            // 4. Konum takibini baslat
+            // 4. Aktif profili oku ve konum takibini baslat
+            const profil = await aktifProfilGetir();
+            console.log(`[KonumTakip] Profil: mesafe=${profil.mesafe}m, zaman=${profil.zaman}s, dogruluk=${profil.dogruluk}`);
+
             await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
-                accuracy: Location.Accuracy.Balanced, // Pil dostu
-                timeInterval: MINIMUM_ZAMAN_SANIYE * 1000, // Minimum 15 dakika
-                distanceInterval: MINIMUM_MESAFE_METRE, // Minimum 5km
-                deferredUpdatesInterval: MINIMUM_ZAMAN_SANIYE * 1000,
-                deferredUpdatesDistance: MINIMUM_MESAFE_METRE,
-                showsBackgroundLocationIndicator: false,
+                accuracy: profil.dogruluk,
+                timeInterval: profil.zaman * 1000,
+                distanceInterval: profil.mesafe,
+                deferredUpdatesInterval: profil.zaman * 1000,
+                deferredUpdatesDistance: profil.mesafe,
+                showsBackgroundLocationIndicator: true,
                 foregroundService: {
                     notificationTitle: 'Namaz Akışı',
-                    notificationBody: 'Konum takibi aktif',
+                    notificationBody: 'Şehir değişikliğini takip ediyor',
                     notificationColor: '#4A90D9',
                 },
-                pausesUpdatesAutomatically: true,
+                pausesUpdatesAutomatically: profil.duraklatma,
                 activityType: Location.ActivityType.Other,
             });
 
@@ -288,7 +323,8 @@ export class KonumTakipServisi {
     public async aktifMi(): Promise<boolean> {
         try {
             return await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
-        } catch {
+        } catch (e) {
+            console.warn('[KonumTakip] aktifMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -300,7 +336,8 @@ export class KonumTakipServisi {
         try {
             const { status } = await Location.getBackgroundPermissionsAsync();
             return status === 'granted';
-        } catch {
+        } catch (e) {
+            console.warn('[KonumTakip] arkaPlanIzniVarMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -321,8 +358,84 @@ export class KonumTakipServisi {
             if (json) {
                 return JSON.parse(json);
             }
-        } catch { }
+        } catch (e) {
+            console.warn('[KonumTakip] Ayarlar okuma hatasi:', e);
+        }
         return { aktif: false, sonKoordinatlar: null, sonGuncellemeTarihi: null };
+    }
+
+    /**
+     * Konum takibini yeniden baslat
+     * Uygulama on plana geldiginde cagrilmali
+     * OS tarafindan durdurulan gorevi yeniden canlandirir
+     *
+     * Izin iptal senaryosu:
+     * Kullanici sistem ayarlarindan izni iptal ettiyse, takibi graceful
+     * olarak devre disi birakir ve ayarlari gunceller.
+     */
+    public async yenidenBaslat(): Promise<boolean> {
+        try {
+            const ayarlar = await this.ayarlariGetir();
+            if (!ayarlar.aktif) {
+                console.log('[KonumTakip] Takip aktif degil, yeniden baslatma atlanıyor');
+                return false;
+            }
+
+            // Izin iptal kontrolu - kullanici sistem ayarlarindan izni kaldirmis olabilir
+            const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
+            if (!arkaPlanIzniVar) {
+                console.log('[KonumTakip] Arka plan izni iptal edilmis, takip devre disi birakiliyor');
+                // Izin iptal edilmis - ayarlari guncelle ve durdur
+                await this.ayarlariKaydet({ ...ayarlar, aktif: false });
+                return false;
+            }
+
+            // On plan izni de kontrol et
+            try {
+                const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
+                if (onPlanIzni !== 'granted') {
+                    console.log('[KonumTakip] On plan izni iptal edilmis, takip devre disi birakiliyor');
+                    await this.ayarlariKaydet({ ...ayarlar, aktif: false });
+                    return false;
+                }
+            } catch (e) {
+                console.warn('[KonumTakip] On plan izin kontrolu hatasi:', e);
+            }
+
+            console.log('[KonumTakip] Konum takibi yeniden baslatiliyor...');
+            return await this.baslat();
+        } catch (e) {
+            console.error('[KonumTakip] Yeniden baslatma hatasi:', e);
+            return false;
+        }
+    }
+
+    /**
+     * Arka plandan guncellenen konum verisini AsyncStorage'dan okur
+     * Uygulama on plana geldiginde Redux state'ini guncellemek icin kullanilir
+     * @returns Guncel konum ayarlari veya null
+     */
+    public async sonKonumBilgisiniGetir(): Promise<{
+        koordinatlar: { lat: number; lng: number };
+        gpsAdres: { semt: string; ilce: string; il: string } | null;
+        sonGpsGuncellemesi: string | null;
+    } | null> {
+        try {
+            const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+            if (!konumAyarlariJson) return null;
+
+            const konumAyarlari = JSON.parse(konumAyarlariJson);
+            if (konumAyarlari.konumModu !== 'oto') return null;
+
+            return {
+                koordinatlar: konumAyarlari.koordinatlar,
+                gpsAdres: konumAyarlari.gpsAdres,
+                sonGpsGuncellemesi: konumAyarlari.sonGpsGuncellemesi,
+            };
+        } catch (e) {
+            console.warn('[KonumTakip] Son konum bilgisi okuma hatasi:', e);
+            return null;
+        }
     }
 
     /**
@@ -335,11 +448,12 @@ export class KonumTakipServisi {
     }> {
         const takipAktif = await this.aktifMi();
         const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
+        const profil = await aktifProfilGetir();
 
         return {
             takipAktif,
             arkaPlanIzniVar,
-            minimumMesafe: MINIMUM_MESAFE_METRE,
+            minimumMesafe: profil.mesafe,
         };
     }
 }

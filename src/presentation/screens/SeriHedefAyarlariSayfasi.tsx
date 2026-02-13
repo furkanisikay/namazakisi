@@ -251,23 +251,23 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
     );
     setTakvimGorunur(false);
     Alert.alert(
-      'Basarili',
-      'Ozel gun modu baslatildi. Seriniz secilen tarihler arasinda dondurulacaktir.'
+      'Başarılı',
+      'Özel gün modu başlatıldı. Seriniz seçilen tarihler arasında dondurulacaktır.'
     );
   };
 
   const handleSeriSifirla = () => {
     Alert.alert(
-      'Seri Sifirla',
-      'Tum seri verileriniz (seri, rozetler, puanlar) sifirlanacak. Bu islem geri alinamaz. Devam etmek istiyor musunuz?',
+      'Seri Sıfırla',
+      'Tüm seri verileriniz (seri, rozetler, puanlar) sıfırlanacak. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?',
       [
-        { text: 'Iptal', style: 'cancel' },
+        { text: 'İptal', style: 'cancel' },
         {
-          text: 'Sifirla',
+          text: 'Sıfırla',
           style: 'destructive',
           onPress: () => {
             dispatch(seriStateSifirla());
-            Alert.alert('Basarili', 'Seri verileriniz sifirlandi.');
+            Alert.alert('Başarılı', 'Seri verileriniz sıfırlandı.');
           },
         },
       ]
@@ -292,8 +292,8 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           </Text>
 
           <AyarKarti
-            baslik="Tam Gun Esigi"
-            aciklama="O gunun serisini tamamlandi saymak icin gunde kilmaniz gereken minimum namaz sayisini belirler"
+            baslik="Tam Gün Eşiği"
+            aciklama="O günün serisini tamamlandı saymak için günde kılmanız gereken minimum namaz sayısını belirler"
             ikonAdi="chart-bar"
           >
             <SecimGrubu
@@ -310,7 +310,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            OZEL GUN MODU
+            ÖZEL GÜN MODU
           </Text>
 
           <View
@@ -325,10 +325,10 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             </View>
             <View className="flex-1">
               <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                Ozel Gun Modu
+                Özel Gün Modu
               </Text>
               <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                Ozel gunlerde seriyi dondurma imkani saglar
+                Özel günlerde seriyi dondurma imkanı sağlar
               </Text>
             </View>
             <Switch
@@ -348,7 +348,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             >
               <FontAwesome5 name="calendar-plus" size={16} color="#FFFFFF" />
               <Text className="text-base font-bold text-white">
-                Ozel Gun Baslat
+                Özel Gün Başlat
               </Text>
             </TouchableOpacity>
           )}
@@ -361,7 +361,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
               <View className="flex-row items-center gap-2 mb-2">
                 <FontAwesome5 name="check-circle" size={16} color="#D81B60" solid />
                 <Text className="text-sm font-bold" style={{ color: '#D81B60' }}>
-                  Aktif Ozel Gun
+                  Aktif Özel Gün
                 </Text>
               </View>
               <Text className="text-sm" style={{ color: '#AD1457' }}>
@@ -379,7 +379,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: '#DC2626' }}
           >
-            TEHLIKELI BOLGE
+            TEHLİKELİ BÖLGE
           </Text>
 
           <TouchableOpacity
@@ -395,10 +395,10 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             </View>
             <View className="flex-1">
               <Text className="text-base font-semibold" style={{ color: '#DC2626' }}>
-                Seri Verilerini Sifirla
+                Seri Verilerini Sıfırla
               </Text>
               <Text className="text-xs mt-0.5" style={{ color: '#DC2626', opacity: 0.8 }}>
-                Tum seri, rozet ve puan verilerini siler
+                Tüm seri, rozet ve puan verilerini siler
               </Text>
             </View>
             <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />

@@ -35,8 +35,8 @@ const TemaModuSecici: React.FC = () => {
   const { butonTiklandiFeedback } = useFeedback();
 
   const modlar: { id: TemaModu; etiket: string; aciklama: string }[] = [
-    { id: 'sistem', etiket: 'Sistem', aciklama: 'Sistem ayarlarina gore' },
-    { id: 'acik', etiket: 'Acik', aciklama: 'Her zaman acik tema' },
+    { id: 'sistem', etiket: 'Sistem', aciklama: 'Sistem ayarlarına göre' },
+    { id: 'acik', etiket: 'Açık', aciklama: 'Her zaman açık tema' },
     { id: 'koyu', etiket: 'Koyu', aciklama: 'Her zaman koyu tema' },
   ];
 
