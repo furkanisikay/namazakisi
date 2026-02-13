@@ -26,7 +26,7 @@ export const HizliIslemler: React.FC<HizliIslemlerProps> = ({
         activeOpacity={0.7}
         disabled={disabled}
       >
-        <Text style={styles.butonText}>✓ Tumunu Tamamla</Text>
+        <Text style={styles.butonText}>✓ Tümünü Tamamla</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -35,7 +35,7 @@ export const HizliIslemler: React.FC<HizliIslemlerProps> = ({
         activeOpacity={0.7}
         disabled={disabled}
       >
-        <Text style={[styles.butonText, styles.sifirlaText]}>↺ Sifirla</Text>
+        <Text style={[styles.butonText, styles.sifirlaText]}>↺ Sıfırla</Text>
       </TouchableOpacity>
     </View>
   );

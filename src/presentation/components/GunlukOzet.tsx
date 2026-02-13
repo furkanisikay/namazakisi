@@ -42,10 +42,10 @@ export const GunlukOzet: React.FC<GunlukOzetProps> = ({ gunlukNamazlar }) => {
   }, [yuzde, mevcutTarih]);
 
   const getMotivasyon = () => {
-    if (yuzde === 100) return { mesaj: 'Mukemmel! Tum namazlar kilindi! 🎉', renk: '#FFD700', ikon: '🏆' };
+    if (yuzde === 100) return { mesaj: 'Mükemmel! Tüm namazlar kılındı! 🎉', renk: '#FFD700', ikon: '🏆' };
     if (yuzde >= 80) return { mesaj: 'Harika gidiyorsunuz! 💪', renk: RENKLER.BIRINCIL, ikon: '📈' };
-    if (yuzde >= 50) return { mesaj: 'Iyi bir baslangic! 🌟', renk: RENKLER.BILGI, ikon: '🌟' };
-    return { mesaj: 'Haydi baslayalim! 🤲', renk: '#FF9800', ikon: '🤲' };
+    if (yuzde >= 50) return { mesaj: 'İyi bir başlangıç! 🌟', renk: RENKLER.BILGI, ikon: '🌟' };
+    return { mesaj: 'Haydi başlayalım! 🤲', renk: '#FF9800', ikon: '🤲' };
   };
 
   const motivasyon = getMotivasyon();

@@ -272,7 +272,7 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
                 expect.objectContaining({
                     foregroundService: expect.objectContaining({
                         notificationTitle: 'Namaz Akışı',
-                        notificationBody: 'Sehir degisikligini takip ediyor',
+                        notificationBody: 'Şehir değişikliğini takip ediyor',
                     }),
                 })
             );

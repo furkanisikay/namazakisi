@@ -205,7 +205,7 @@ export const SeriAtesiKarti: React.FC<SeriAtesiKartiProps> = ({
             styles.sonrakiHedef,
             { color: mevcutSeri > 0 ? 'rgba(255,255,255,0.9)' : renkler.metinIkincil }
           ]}>
-            Sonraki hedef: {sonrakiHedef.ad} ({hedefeKalanGun} gun kaldi)
+            Sonraki hedef: {sonrakiHedef.ad} ({hedefeKalanGun} gün kaldı)
           </Text>
         )}
 

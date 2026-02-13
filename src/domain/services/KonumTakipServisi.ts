@@ -280,7 +280,7 @@ export class KonumTakipServisi {
                 showsBackgroundLocationIndicator: true,
                 foregroundService: {
                     notificationTitle: 'Namaz Akışı',
-                    notificationBody: 'Sehir degisikligini takip ediyor',
+                    notificationBody: 'Şehir değişikliğini takip ediyor',
                     notificationColor: '#4A90D9',
                 },
                 pausesUpdatesAutomatically: profil.duraklatma,

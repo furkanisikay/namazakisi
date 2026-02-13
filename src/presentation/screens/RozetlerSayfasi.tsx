@@ -196,7 +196,7 @@ export const RozetlerSayfasi: React.FC = () => {
                   className="text-xs"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  {sonrakiSeviye.rank} icin {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldi
+                  {sonrakiSeviye.rank} için {seviyeDurumu?.sonrakiSeviyeKalanPuan || 0} kaldı
                 </Text>
               )}
             </View>

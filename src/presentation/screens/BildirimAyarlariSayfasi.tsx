@@ -366,7 +366,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                         className="text-xs text-center mt-2"
                         style={{ color: renkler.metinIkincil }}
                       >
-                        Imsak: {String(imsakVakti.getHours()).padStart(2, '0')}:
+                        İmsak: {String(imsakVakti.getHours()).padStart(2, '0')}:
                         {String(imsakVakti.getMinutes()).padStart(2, '0')}
                       </Text>
                     )}
