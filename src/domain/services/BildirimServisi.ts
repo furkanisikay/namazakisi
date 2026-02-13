@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
+import { gunEkle } from '../../core/utils/TarihYardimcisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -25,17 +26,26 @@ function isVakitAdi(vakit: string): vakit is VakitAdi {
 
 /**
  * Onceki muhafiz bildirimlerini bildirim merkezinden temizle
- * Yeni bildirim geldiginde eski bildirimlerin birikmesini onler
+ * Yeni bildirim geldiginde sadece AYNI VAKTin eski bildirimlerini temizler
+ * Farkli vakitlerin bildirimleri korunur
  */
 async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promise<void> {
   try {
     const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
 
+    // Yeni bildirimin vakit onekini cikar (ornegin: "muhafiz_2025-02-13_vakit_iksam")
+    // ID format: muhafiz_YYYY-MM-DD_vakit_VAKITADI_seviye_X_dk_Y
+    const vakitOnekMatch = yeniBildirimId.match(
+      new RegExp(`^(${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}\\d{4}-\\d{2}-\\d{2}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}[a-z]+)`)
+    );
+    const yeniVakitOneki = vakitOnekMatch ? vakitOnekMatch[1] : null;
+
     for (const bildirim of mevcutBildirimler) {
-      // Muhafiz bildirimi mi ve yeni gelen bildirim degil mi?
+      // Ayni vaktin eski muhafiz bildirimi mi ve yeni gelen bildirim degil mi?
       if (
-        bildirim.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ) &&
-        bildirim.request.identifier !== yeniBildirimId
+        bildirim.request.identifier !== yeniBildirimId &&
+        yeniVakitOneki &&
+        bildirim.request.identifier.startsWith(yeniVakitOneki)
       ) {
         await Notifications.dismissNotificationAsync(bildirim.request.identifier);
       }
@@ -72,13 +82,27 @@ Notifications.setNotificationHandler({
 let responseListenerSubscription: Notifications.EventSubscription | null = null;
 
 /**
- * Uygulama bildirimlerini yoneten servis
+ * Kildim aksiyonu callback tipi
+ * Domain katmanindan presentation katmanina olay bildirimi icin kullanilir
  */
+type KildimCallback = (tarih: string, namazAdi: NamazAdi) => void;
+
 export class BildirimServisi {
   private static instance: BildirimServisi;
   private kategorilerOlusturuldu: boolean = false;
+  private islenmisYanitId: string | null = null; // Cold-start tekrar isleme korumasi
+  private onKildimCallback: KildimCallback | null = null;
 
   private constructor() { }
+
+  /**
+   * Kildim aksiyonu callback'ini ayarla
+   * Presentation katmani bu callback uzerinden Redux store'u gunceller
+   * Bu sayede domain katmani store'a dogrudan bagimli olmaz
+   */
+  public setOnKildimCallback(callback: KildimCallback): void {
+    this.onKildimCallback = callback;
+  }
 
   public static getInstance(): BildirimServisi {
     if (!BildirimServisi.instance) {
@@ -105,6 +129,17 @@ export class BildirimServisi {
       this.bildirimYanitiniIsle.bind(this)
     );
 
+    // Cold-start kontrolu: Uygulama bildirim aksiyonuyla baslatildiysa
+    // getLastNotificationResponseAsync ile kacirilmis aksiyonu yakala
+    try {
+      const sonYanit = await Notifications.getLastNotificationResponseAsync();
+      if (sonYanit) {
+        await this.bildirimYanitiniIsle(sonYanit);
+      }
+    } catch (error) {
+      console.error('[BildirimServisi] Cold-start bildirim kontrolu hatasi:', error);
+    }
+
     console.log('[BildirimServisi] Bildirim dinleyicisi baslatildi');
   }
 
@@ -123,7 +158,7 @@ export class BildirimServisi {
           identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
           buttonTitle: '✅ Kıldım',
           options: {
-            opensAppToForeground: false, // Uygulama acilmadan islem yapilsin
+            opensAppToForeground: true, // Uygulama oldurulmus olsa bile aksiyonun calismasi icin true
           },
         },
       ]);
@@ -143,6 +178,14 @@ export class BildirimServisi {
     response: Notifications.NotificationResponse
   ): Promise<void> {
     const { actionIdentifier, notification } = response;
+
+    // Ayni yaniti tekrar isleme (cold-start + listener cift tetikleme korumasi)
+    const yanitId = notification.request.identifier + '_' + actionIdentifier;
+    if (this.islenmisYanitId === yanitId) {
+      console.log('[BildirimServisi] Yanit zaten islendi, atlaniyor:', yanitId);
+      return;
+    }
+
     const data = notification.request.content.data as {
       tip?: string;
       vakit?: string;
@@ -162,7 +205,14 @@ export class BildirimServisi {
 
     // "Kildim" aksiyonuna mi tiklandi?
     if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) {
-      await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
+      try {
+        await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
+        // Basariyla islendikten sonra tekrar islemeyi engelle
+        this.islenmisYanitId = yanitId;
+      } catch (error) {
+        // Basarisiz oldu - yanitId set edilmez, boylece retry mumkun
+        console.error('[BildirimServisi] Kildim isleme basarisiz, tekrar denenebilir:', error);
+      }
     }
   }
 
@@ -191,6 +241,15 @@ export class BildirimServisi {
       await LocalNamazServisi.localNamazDurumunuGuncelle(tarih, namazAdi, true);
       console.log(`[BildirimServisi] Namaz kilindi: ${namazAdi} (${tarih})`);
 
+      // Presentation katmanini bilgilendir (UI guncellemesi icin)
+      if (this.onKildimCallback) {
+        try {
+          this.onKildimCallback(tarih, namazAdi);
+        } catch (callbackError) {
+          console.warn('[BildirimServisi] Kildim callback hatasi:', callbackError);
+        }
+      }
+
       // Bu vakit icin kalan tum bildirimleri iptal et
       // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
       if (isVakitAdi(vakit)) {
@@ -199,12 +258,38 @@ export class BildirimServisi {
         console.warn('[BildirimServisi] Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
       }
 
-      // Bildirim merkezindeki bu bildirimi de kapat
-      await Notifications.dismissAllNotificationsAsync();
+      // Bildirim merkezinde sadece bu vakte ait muhafiz bildirimlerini kapat
+      await this.vakitBildirimleriniKapat(vakit, tarih);
 
       console.log(`[BildirimServisi] ${vakit} icin kalan bildirimler iptal edildi`);
     } catch (error) {
       console.error('[BildirimServisi] Kildim aksiyonu isleme hatasi:', error);
+      throw error; // Hatayi yukari ilet (deduplikasyon retry mekanizmasi icin)
+    }
+  }
+
+  /**
+   * Sadece belirli bir vakte ait muhafiz bildirimlerini bildirim merkezinden kapat
+   * Diger vakitlerin bildirimleri korunur
+   */
+  private async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
+    try {
+      const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
+      // Timezone-safe: gunEkle YYYY-MM-DD string uzerinde calisir, new Date() UTC sorununa yol acmaz
+      const dunStr = gunEkle(tarih, -1);
+
+      // Prefix'leri dongu disinda hesapla (performans)
+      const bugunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
+      const dunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${dunStr}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
+
+      for (const bildirim of mevcutBildirimler) {
+        const id = bildirim.request.identifier;
+        if (id.startsWith(bugunOneki) || id.startsWith(dunOneki)) {
+          await Notifications.dismissNotificationAsync(id);
+        }
+      }
+    } catch (error) {
+      console.error('[BildirimServisi] Vakit bildirimleri kapatilirken hata:', error);
     }
   }
 
