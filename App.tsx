@@ -17,8 +17,9 @@ import { BildirimServisi } from './src/domain/services/BildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
-import { konumAyarlariniYukle } from './src/presentation/store/konumSlice';
+import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle } from './src/presentation/store/namazSlice';
+import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -46,6 +47,42 @@ const YuklemeEkrani: React.FC = () => {
       </Text>
     </View>
   );
+};
+
+/**
+ * Konum takibini yeniden baslat ve Redux state'ini senkronize et
+ * Uygulama basladiginda ve on plana geldiginde cagrilir
+ */
+const konumTakibiniSenkronizeEt = async () => {
+  try {
+    const konumState = store.getState().konum;
+
+    // Sadece GPS modunda ve akilli takip aktifse
+    if (konumState.konumModu !== 'oto' || !konumState.akilliTakipAktif) {
+      return;
+    }
+
+    const servis = KonumTakipServisi.getInstance();
+
+    // Arka plandan guncellenmis konum verisini Redux'a senkronize et
+    const sonKonum = await servis.sonKonumBilgisiniGetir();
+    if (sonKonum && sonKonum.sonGpsGuncellemesi) {
+      // Sadece arka planda daha yeni bir guncelleme varsa Redux'i guncelle
+      if (sonKonum.sonGpsGuncellemesi !== konumState.sonGpsGuncellemesi) {
+        store.dispatch(konumAyarlariniGuncelle({
+          koordinatlar: sonKonum.koordinatlar,
+          gpsAdres: sonKonum.gpsAdres,
+          sonGpsGuncellemesi: sonKonum.sonGpsGuncellemesi,
+        }));
+        console.log('[App] Konum state arka plan verisinden senkronize edildi');
+      }
+    }
+
+    // Konum takibini yeniden baslat (OS tarafindan durdurulan gorevi canlandir)
+    await servis.yenidenBaslat();
+  } catch (error) {
+    console.error('[App] Konum takip senkronizasyon hatasi:', error);
+  }
 };
 
 /**
@@ -118,11 +155,16 @@ const AppIcerik: React.FC = () => {
     // Arkaplan muhafiz bildirimlerini planla
     arkaplanMuhafiziBildirimleriniPlanla();
 
-    // Uygulama on plana geldiginde bildirimleri yeniden planla
+    // Konum takibini senkronize et ve yeniden baslat
+    konumTakibiniSenkronizeEt();
+
+    // Uygulama on plana geldiginde bildirimleri yeniden planla ve konum takibini senkronize et
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
         // Uygulama on plana geldi, bildirimleri yenile
         arkaplanMuhafiziBildirimleriniPlanla();
+        // Konum takibini senkronize et ve yeniden baslat
+        konumTakibiniSenkronizeEt();
       }
     });
 

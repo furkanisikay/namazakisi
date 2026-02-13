@@ -98,9 +98,15 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
             const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
             console.log(`[KonumTakip] Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km`);
 
-            // Mesafe yeterli degilse guncelleme yapma
+            // Mesafe yeterli degilse konum guncelleme yapma ama son kontrol zamanini guncelle
             if (mesafe < MINIMUM_MESAFE_METRE) {
-                console.log('[KonumTakip] Mesafe esigi asilmadi, guncelleme atlanıyor');
+                console.log('[KonumTakip] Mesafe esigi asilmadi, konum guncelleme atlanıyor');
+                // Son kontrol zamanini guncelle (takibin aktif oldugunu gostermek icin)
+                const guncelAyarlarZaman = {
+                    ...konumAyarlari,
+                    sonGpsGuncellemesi: new Date().toISOString(),
+                };
+                await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlarZaman));
                 return;
             }
         }
@@ -228,11 +234,16 @@ export class KonumTakipServisi {
                 }
             }
 
-            // 3. Gorev zaten kayitli mi kontrol et
+            // 3. Gorev zaten kayitli ise durdur ve yeniden baslat
+            // OS arka plan gorevini durdurmus olabilir, bu yuzden her zaman yeniden baslatiyoruz
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
             if (kayitliMi) {
-                console.log('[KonumTakip] Gorev zaten kayitli');
-                return true;
+                console.log('[KonumTakip] Gorev zaten kayitli, yeniden baslatiliyor');
+                try {
+                    await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
+                } catch (stopError) {
+                    console.warn('[KonumTakip] Mevcut gorev durdurulamadi:', stopError);
+                }
             }
 
             // 4. Konum takibini baslat
@@ -248,7 +259,7 @@ export class KonumTakipServisi {
                     notificationBody: 'Konum takibi aktif',
                     notificationColor: '#4A90D9',
                 },
-                pausesUpdatesAutomatically: true,
+                pausesUpdatesAutomatically: false,
                 activityType: Location.ActivityType.Other,
             });
 
@@ -323,6 +334,60 @@ export class KonumTakipServisi {
             }
         } catch { }
         return { aktif: false, sonKoordinatlar: null, sonGuncellemeTarihi: null };
+    }
+
+    /**
+     * Konum takibini yeniden baslat
+     * Uygulama on plana geldiginde cagrilmali
+     * OS tarafindan durdurulan gorevi yeniden canlandirir
+     */
+    public async yenidenBaslat(): Promise<boolean> {
+        try {
+            const ayarlar = await this.ayarlariGetir();
+            if (!ayarlar.aktif) {
+                console.log('[KonumTakip] Takip aktif degil, yeniden baslatma atlanıyor');
+                return false;
+            }
+
+            const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
+            if (!arkaPlanIzniVar) {
+                console.log('[KonumTakip] Arka plan izni yok, yeniden baslatma atlanıyor');
+                return false;
+            }
+
+            console.log('[KonumTakip] Konum takibi yeniden baslatiliyor...');
+            return await this.baslat();
+        } catch (e) {
+            console.error('[KonumTakip] Yeniden baslatma hatasi:', e);
+            return false;
+        }
+    }
+
+    /**
+     * Arka plandan guncellenen konum verisini AsyncStorage'dan okur
+     * Uygulama on plana geldiginde Redux state'ini guncellemek icin kullanilir
+     * @returns Guncel konum ayarlari veya null
+     */
+    public async sonKonumBilgisiniGetir(): Promise<{
+        koordinatlar: { lat: number; lng: number };
+        gpsAdres: { semt: string; ilce: string; il: string } | null;
+        sonGpsGuncellemesi: string | null;
+    } | null> {
+        try {
+            const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+            if (!konumAyarlariJson) return null;
+
+            const konumAyarlari = JSON.parse(konumAyarlariJson);
+            if (konumAyarlari.konumModu !== 'oto') return null;
+
+            return {
+                koordinatlar: konumAyarlari.koordinatlar,
+                gpsAdres: konumAyarlari.gpsAdres,
+                sonGpsGuncellemesi: konumAyarlari.sonGpsGuncellemesi,
+            };
+        } catch {
+            return null;
+        }
     }
 
     /**

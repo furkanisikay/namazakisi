@@ -91,7 +91,7 @@ describe('KonumTakipServisi', () => {
             expect(sonuc).toBe(false);
         });
 
-        it('gorev zaten kayitliysa yeni gorev baslatmamali', async () => {
+        it('gorev zaten kayitliysa once durdurp yeniden baslatmali', async () => {
             (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
                 status: 'granted',
             });
@@ -99,11 +99,21 @@ describe('KonumTakipServisi', () => {
                 status: 'granted',
             });
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
+            (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
 
             const sonuc = await servis.baslat();
 
             expect(sonuc).toBe(true);
-            expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
+            // Once mevcut gorevi durdurmali
+            expect(Location.stopLocationUpdatesAsync).toHaveBeenCalledWith(KONUM_TAKIP_GOREVI);
+            // Sonra yeniden baslatmali
+            expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+                KONUM_TAKIP_GOREVI,
+                expect.objectContaining({
+                    accuracy: Location.Accuracy.Balanced,
+                })
+            );
         });
 
         it('tum izinler varsa konum takibini baslatmali', async () => {
@@ -280,12 +290,100 @@ describe('KonumTakipServisi', () => {
             expect(sonuc.minimumMesafe).toBe(5000); // 5km
         });
     });
+
+    describe('yenidenBaslat', () => {
+        it('takip aktif degilse false donmeli', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+                aktif: false,
+                sonKoordinatlar: null,
+                sonGuncellemeTarihi: null,
+            }));
+
+            const sonuc = await servis.yenidenBaslat();
+
+            expect(sonuc).toBe(false);
+            expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
+        });
+
+        it('arka plan izni yoksa false donmeli', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+                aktif: true,
+                sonKoordinatlar: null,
+                sonGuncellemeTarihi: null,
+            }));
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'denied',
+            });
+
+            const sonuc = await servis.yenidenBaslat();
+
+            expect(sonuc).toBe(false);
+        });
+
+        it('takip aktif ve izin varsa baslat cagirmali', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+                aktif: true,
+                sonKoordinatlar: null,
+                sonGuncellemeTarihi: null,
+            }));
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+            const sonuc = await servis.yenidenBaslat();
+
+            expect(sonuc).toBe(true);
+            expect(Location.startLocationUpdatesAsync).toHaveBeenCalled();
+        });
+    });
+
+    describe('sonKonumBilgisiniGetir', () => {
+        it('konum ayarlari yoksa null donmeli', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+            const sonuc = await servis.sonKonumBilgisiniGetir();
+
+            expect(sonuc).toBeNull();
+        });
+
+        it('manuel modda null donmeli', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+                konumModu: 'manuel',
+                koordinatlar: { lat: 41.0082, lng: 28.9784 },
+                sonGpsGuncellemesi: '2026-01-17T12:00:00.000Z',
+            }));
+
+            const sonuc = await servis.sonKonumBilgisiniGetir();
+
+            expect(sonuc).toBeNull();
+        });
+
+        it('oto modda konum bilgisini donmeli', async () => {
+            const konumVerisi = {
+                konumModu: 'oto',
+                koordinatlar: { lat: 39.9334, lng: 32.8597 },
+                gpsAdres: { semt: '', ilce: 'Cankaya', il: 'Ankara' },
+                sonGpsGuncellemesi: '2026-02-13T10:00:00.000Z',
+            };
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(konumVerisi));
+
+            const sonuc = await servis.sonKonumBilgisiniGetir();
+
+            expect(sonuc).not.toBeNull();
+            expect(sonuc!.koordinatlar.lat).toBeCloseTo(39.9334);
+            expect(sonuc!.koordinatlar.lng).toBeCloseTo(32.8597);
+            expect(sonuc!.gpsAdres?.il).toBe('Ankara');
+            expect(sonuc!.sonGpsGuncellemesi).toBe('2026-02-13T10:00:00.000Z');
+        });
+    });
 });
 
-describe('Haversine Mesafe Hesaplama ve Sabitler', () => {
-    // mesafeHesapla fonksiyonu private, bu yuzden dogrudan test edemiyoruz
-    // Ancak servisin dogru ayarlarla calistigini test edebiliriz
-
+describe('Konum Takip Ayarlari ve Sabitler', () => {
     it('KONUM_TAKIP_GOREVI dogru tanimlanmali', () => {
         expect(KONUM_TAKIP_GOREVI).toBe('KONUM_TAKIP_GOREVI');
     });
@@ -304,6 +402,25 @@ describe('Haversine Mesafe Hesaplama ve Sabitler', () => {
             KONUM_TAKIP_GOREVI,
             expect.objectContaining({
                 distanceInterval: 5000, // 5km minimum mesafe
+            })
+        );
+    });
+
+    it('konum takibi pausesUpdatesAutomatically false ile baslatilmali', async () => {
+        (KonumTakipServisi as any).instance = undefined;
+        const servis = KonumTakipServisi.getInstance();
+
+        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+        await servis.baslat();
+
+        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+            KONUM_TAKIP_GOREVI,
+            expect.objectContaining({
+                pausesUpdatesAutomatically: false,
             })
         );
     });
