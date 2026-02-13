@@ -18,6 +18,18 @@ import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildiri
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { konumAyarlariniYukle } from './src/presentation/store/konumSlice';
+import { namazlariYukle } from './src/presentation/store/namazSlice';
+
+// Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
+// Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
+BildirimServisi.getInstance().setOnKildimCallback((tarih, _namazAdi) => {
+  const state = store.getState();
+  // Sadece kullanici su an ayni tarihi goruntuluyorsa UI'yi guncelle
+  // Farkli bir tarih goruntuluyorsa gereksiz veri yukleme ve tarih atlama riski onlenir
+  if (state.namaz.mevcutTarih === tarih) {
+    store.dispatch(namazlariYukle({ tarih }));
+  }
+});
 
 /**
  * Yukleme ekrani

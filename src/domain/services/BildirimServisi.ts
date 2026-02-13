@@ -3,8 +3,7 @@ import { Platform } from 'react-native';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
-import { store } from '../../presentation/store/store';
-import { namazlariYukle } from '../../presentation/store/namazSlice';
+import { gunEkle } from '../../core/utils/TarihYardimcisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -83,14 +82,27 @@ Notifications.setNotificationHandler({
 let responseListenerSubscription: Notifications.EventSubscription | null = null;
 
 /**
- * Uygulama bildirimlerini yoneten servis
+ * Kildim aksiyonu callback tipi
+ * Domain katmanindan presentation katmanina olay bildirimi icin kullanilir
  */
+type KildimCallback = (tarih: string, namazAdi: NamazAdi) => void;
+
 export class BildirimServisi {
   private static instance: BildirimServisi;
   private kategorilerOlusturuldu: boolean = false;
   private islenmisYanitId: string | null = null; // Cold-start tekrar isleme korumasi
+  private onKildimCallback: KildimCallback | null = null;
 
   private constructor() { }
+
+  /**
+   * Kildim aksiyonu callback'ini ayarla
+   * Presentation katmani bu callback uzerinden Redux store'u gunceller
+   * Bu sayede domain katmani store'a dogrudan bagimli olmaz
+   */
+  public setOnKildimCallback(callback: KildimCallback): void {
+    this.onKildimCallback = callback;
+  }
 
   public static getInstance(): BildirimServisi {
     if (!BildirimServisi.instance) {
@@ -146,7 +158,7 @@ export class BildirimServisi {
           identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
           buttonTitle: '✅ Kıldım',
           options: {
-            opensAppToForeground: true, // Uygulama oldurumus olsa bile aksiyonun calismasi icin true
+            opensAppToForeground: true, // Uygulama oldurulmus olsa bile aksiyonun calismasi icin true
           },
         },
       ]);
@@ -173,7 +185,6 @@ export class BildirimServisi {
       console.log('[BildirimServisi] Yanit zaten islendi, atlaniyor:', yanitId);
       return;
     }
-    this.islenmisYanitId = yanitId;
 
     const data = notification.request.content.data as {
       tip?: string;
@@ -195,6 +206,8 @@ export class BildirimServisi {
     // "Kildim" aksiyonuna mi tiklandi?
     if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) {
       await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
+      // Basariyla islendikten sonra tekrar islemeyi engelle
+      this.islenmisYanitId = yanitId;
     }
   }
 
@@ -223,11 +236,13 @@ export class BildirimServisi {
       await LocalNamazServisi.localNamazDurumunuGuncelle(tarih, namazAdi, true);
       console.log(`[BildirimServisi] Namaz kilindi: ${namazAdi} (${tarih})`);
 
-      // Redux store'u guncelle - UI aninda yansimasi icin
-      try {
-        store.dispatch(namazlariYukle({ tarih }));
-      } catch (storeError) {
-        console.warn('[BildirimServisi] Redux store guncellenemedi (store henuz hazir olmayabilir):', storeError);
+      // Presentation katmanini bilgilendir (UI guncellemesi icin)
+      if (this.onKildimCallback) {
+        try {
+          this.onKildimCallback(tarih, namazAdi);
+        } catch (callbackError) {
+          console.warn('[BildirimServisi] Kildim callback hatasi:', callbackError);
+        }
       }
 
       // Bu vakit icin kalan tum bildirimleri iptal et
@@ -254,17 +269,15 @@ export class BildirimServisi {
   private async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
     try {
       const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
-      const bugun = tarih;
-      // Dun tarihini de kontrol et (gece yarisi gecisleri icin)
-      const dunTarih = new Date(tarih);
-      dunTarih.setDate(dunTarih.getDate() - 1);
-      const dunStr = `${dunTarih.getFullYear()}-${String(dunTarih.getMonth() + 1).padStart(2, '0')}-${String(dunTarih.getDate()).padStart(2, '0')}`;
+      // Timezone-safe: gunEkle YYYY-MM-DD string uzerinde calisir, new Date() UTC sorununa yol acmaz
+      const dunStr = gunEkle(tarih, -1);
+
+      // Prefix'leri dongu disinda hesapla (performans)
+      const bugunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
+      const dunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${dunStr}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
 
       for (const bildirim of mevcutBildirimler) {
         const id = bildirim.request.identifier;
-        // Bu vakte ait muhafiz bildirimi mi?
-        const bugunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${bugun}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
-        const dunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${dunStr}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
         if (id.startsWith(bugunOneki) || id.startsWith(dunOneki)) {
           await Notifications.dismissNotificationAsync(id);
         }
