@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-13
+
+### Added
+- yapılandırılabilir takip profilleri ve pil optimizasyonları eklendi
+- arka plan konum canlandırma ve izin iptali yönetimi eklendi
+
+### Fixed
+- Merge pull request #23 from furkanisikay/claude/fix-safearea-location-tracking-eb4Pq
+- tüm arayüz metinlerinde Türkçe karakter düzeltmesi
+- tüm sayfalara SafeArea eklendi ve arka plan konum takibi düzeltildi
+
+### Changed
+- PR inceleme önerileri uygulandı (Copilot ve Gemini)
+
 ## [0.2.1] - 2026-02-13
 
 ### Fixed
