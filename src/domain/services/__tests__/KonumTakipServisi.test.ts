@@ -305,7 +305,7 @@ describe('KonumTakipServisi', () => {
             expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
         });
 
-        it('arka plan izni yoksa false donmeli', async () => {
+        it('arka plan izni iptal edilmisse false donmeli ve takibi devre disi birakmali', async () => {
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
                 aktif: true,
                 sonKoordinatlar: null,
@@ -318,6 +318,33 @@ describe('KonumTakipServisi', () => {
             const sonuc = await servis.yenidenBaslat();
 
             expect(sonuc).toBe(false);
+            // Ayarlari aktif: false olarak guncellemeli (graceful deactivation)
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+                '@namaz_akisi/konum_takip_ayarlari',
+                expect.stringContaining('"aktif":false')
+            );
+        });
+
+        it('on plan izni iptal edilmisse false donmeli ve takibi devre disi birakmali', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+                aktif: true,
+                sonKoordinatlar: null,
+                sonGuncellemeTarihi: null,
+            }));
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'denied',
+            });
+
+            const sonuc = await servis.yenidenBaslat();
+
+            expect(sonuc).toBe(false);
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+                '@namaz_akisi/konum_takip_ayarlari',
+                expect.stringContaining('"aktif":false')
+            );
         });
 
         it('takip aktif ve izin varsa baslat cagirmali', async () => {

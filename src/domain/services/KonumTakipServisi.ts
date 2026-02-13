@@ -340,6 +340,10 @@ export class KonumTakipServisi {
      * Konum takibini yeniden baslat
      * Uygulama on plana geldiginde cagrilmali
      * OS tarafindan durdurulan gorevi yeniden canlandirir
+     *
+     * Izin iptal senaryosu:
+     * Kullanici sistem ayarlarindan izni iptal ettiyse, takibi graceful
+     * olarak devre disi birakir ve ayarlari gunceller.
      */
     public async yenidenBaslat(): Promise<boolean> {
         try {
@@ -349,10 +353,25 @@ export class KonumTakipServisi {
                 return false;
             }
 
+            // Izin iptal kontrolu - kullanici sistem ayarlarindan izni kaldirmis olabilir
             const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
             if (!arkaPlanIzniVar) {
-                console.log('[KonumTakip] Arka plan izni yok, yeniden baslatma atlanıyor');
+                console.log('[KonumTakip] Arka plan izni iptal edilmis, takip devre disi birakiliyor');
+                // Izin iptal edilmis - ayarlari guncelle ve durdur
+                await this.ayarlariKaydet({ ...ayarlar, aktif: false });
                 return false;
+            }
+
+            // On plan izni de kontrol et
+            try {
+                const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
+                if (onPlanIzni !== 'granted') {
+                    console.log('[KonumTakip] On plan izni iptal edilmis, takip devre disi birakiliyor');
+                    await this.ayarlariKaydet({ ...ayarlar, aktif: false });
+                    return false;
+                }
+            } catch {
+                // Izin kontrolu basarisiz - yine de denemeye devam et
             }
 
             console.log('[KonumTakip] Konum takibi yeniden baslatiliyor...');
