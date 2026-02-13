@@ -17,9 +17,10 @@ import {
     KonumModu,
     VARSAYILAN_KONUM_AYARLARI,
 } from '../../data/local/LocalKonumServisi';
+import type { TakipHassasiyeti } from '../../core/constants/UygulamaSabitleri';
 
 // Tipleri re-export et (geriye uyumluluk icin)
-export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari };
+export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari, TakipHassasiyeti };
 
 /**
  * Konum state arayuzu

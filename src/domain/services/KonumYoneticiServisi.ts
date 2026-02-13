@@ -91,7 +91,14 @@ export class KonumYoneticiServisi {
             }
             this.durum.gpsIzniVar = true;
 
-            const location = await Location.getCurrentPositionAsync({});
+            // Pil optimizasyonu: Once son bilinen konumu dene (GPS kullanmaz)
+            let location = await Location.getLastKnownPositionAsync();
+            if (!location) {
+                // Son bilinen konum yoksa GPS ile al (daha fazla pil tuketir)
+                location = await Location.getCurrentPositionAsync({
+                    accuracy: Location.Accuracy.Low,
+                });
+            }
             const koordinatlar = {
                 lat: location.coords.latitude,
                 lng: location.coords.longitude,

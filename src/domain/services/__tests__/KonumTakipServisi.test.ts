@@ -25,7 +25,11 @@ jest.mock('expo-location', () => ({
     stopLocationUpdatesAsync: jest.fn(),
     reverseGeocodeAsync: jest.fn(),
     Accuracy: {
+        Lowest: 1,
+        Low: 2,
         Balanced: 3,
+        High: 4,
+        Highest: 5,
     },
     ActivityType: {
         Other: 1,
@@ -107,11 +111,11 @@ describe('KonumTakipServisi', () => {
             expect(sonuc).toBe(true);
             // Once mevcut gorevi durdurmali
             expect(Location.stopLocationUpdatesAsync).toHaveBeenCalledWith(KONUM_TAKIP_GOREVI);
-            // Sonra yeniden baslatmali
+            // Sonra yeniden baslatmali (varsayilan dengeli profil: dogruluk=2 Low)
             expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
                 KONUM_TAKIP_GOREVI,
                 expect.objectContaining({
-                    accuracy: Location.Accuracy.Balanced,
+                    accuracy: 2, // Accuracy.Low (dengeli profil)
                 })
             );
         });
@@ -132,7 +136,7 @@ describe('KonumTakipServisi', () => {
             expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
                 KONUM_TAKIP_GOREVI,
                 expect.objectContaining({
-                    accuracy: Location.Accuracy.Balanced,
+                    accuracy: 2, // Accuracy.Low (varsayilan dengeli profil)
                     distanceInterval: 5000, // 5km
                     timeInterval: 900000, // 15 dakika
                 })
@@ -469,6 +473,119 @@ describe('Konum Takip Ayarlari ve Sabitler', () => {
                 timeInterval: 900000, // 15 dakika (saniye * 1000)
             })
         );
+    });
+});
+
+describe('Profil Sistemi', () => {
+    let servis: KonumTakipServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (KonumTakipServisi as any).instance = undefined;
+        servis = KonumTakipServisi.getInstance();
+    });
+
+    it('hassas profil secildiginde dogru ayarlarla baslatmali', async () => {
+        // Hassas profili AsyncStorage'da ayarla
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === '@namaz_akisi/konum_ayarlari') {
+                return Promise.resolve(JSON.stringify({
+                    takipHassasiyeti: 'hassas',
+                    konumModu: 'oto',
+                }));
+            }
+            if (key === '@namaz_akisi/konum_takip_ayarlari') {
+                return Promise.resolve(null);
+            }
+            return Promise.resolve(null);
+        });
+        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+        await servis.baslat();
+
+        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+            KONUM_TAKIP_GOREVI,
+            expect.objectContaining({
+                accuracy: 3, // Accuracy.Balanced (hassas profil)
+                distanceInterval: 2000, // 2km
+                timeInterval: 300000, // 5 dakika
+                pausesUpdatesAutomatically: false,
+            })
+        );
+    });
+
+    it('pil_dostu profil secildiginde dogru ayarlarla baslatmali', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === '@namaz_akisi/konum_ayarlari') {
+                return Promise.resolve(JSON.stringify({
+                    takipHassasiyeti: 'pil_dostu',
+                    konumModu: 'oto',
+                }));
+            }
+            if (key === '@namaz_akisi/konum_takip_ayarlari') {
+                return Promise.resolve(null);
+            }
+            return Promise.resolve(null);
+        });
+        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+        await servis.baslat();
+
+        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+            KONUM_TAKIP_GOREVI,
+            expect.objectContaining({
+                accuracy: 2, // Accuracy.Low (pil_dostu profil)
+                distanceInterval: 10000, // 10km
+                timeInterval: 1800000, // 30 dakika
+                pausesUpdatesAutomatically: true,
+            })
+        );
+    });
+
+    it('profil ayari yoksa varsayilan dengeli profil kullanmali', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+        await servis.baslat();
+
+        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+            KONUM_TAKIP_GOREVI,
+            expect.objectContaining({
+                accuracy: 2, // Accuracy.Low (dengeli profil)
+                distanceInterval: 5000, // 5km
+                timeInterval: 900000, // 15 dakika
+                pausesUpdatesAutomatically: false,
+            })
+        );
+    });
+
+    it('durumBilgisiGetir profil mesafesini donmeli', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === '@namaz_akisi/konum_ayarlari') {
+                return Promise.resolve(JSON.stringify({
+                    takipHassasiyeti: 'hassas',
+                }));
+            }
+            if (key === '@namaz_akisi/konum_takip_ayarlari') {
+                return Promise.resolve(null);
+            }
+            return Promise.resolve(null);
+        });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+
+        const durum = await servis.durumBilgisiGetir();
+
+        expect(durum.minimumMesafe).toBe(2000); // hassas profil: 2km
     });
 });
 

@@ -13,7 +13,12 @@ import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
-import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import {
+    DEPOLAMA_ANAHTARLARI,
+    TAKIP_PROFILLERI,
+    VARSAYILAN_TAKIP_HASSASIYETI,
+    TakipHassasiyeti,
+} from '../../core/constants/UygulamaSabitleri';
 import { KONUM_TAKIP_GOREVI } from './KonumTakipServisi';
 
 // Görev adı sabiti
@@ -28,11 +33,21 @@ const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
 /** Konum takip ayarlari depolama anahtari */
 const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
 
-/** Minimum mesafe degisikligi (metre) - 5km */
-const MINIMUM_MESAFE_METRE = 5000;
-
-/** Minimum zaman araligi (saniye) - 15 dakika */
-const MINIMUM_ZAMAN_SANIYE = 900;
+/**
+ * Aktif takip profilini AsyncStorage'dan okur
+ * ArkaplanGorevServisi icin - gorev canlandirirken profil bilgisi gerekir
+ */
+async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogruluk: number; duraklatma: boolean }> {
+    try {
+        const konumJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumJson) {
+            const konum = JSON.parse(konumJson);
+            const hassasiyet: TakipHassasiyeti = konum.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI;
+            return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+        }
+    } catch { }
+    return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+}
 
 /**
  * Arka plandan konum takibini yeniden baslat
@@ -105,19 +120,20 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
         // - OS uygulamayi pil icin oldurdu
         // - Kullanici uygulamayi swipe ile kapatti
         console.log('[ArkaplanGorev] Konum takip gorevi ölmüş, yeniden başlatılıyor...');
+        const profil = await aktifProfilGetir();
         await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
-            accuracy: Location.Accuracy.Balanced,
-            timeInterval: MINIMUM_ZAMAN_SANIYE * 1000,
-            distanceInterval: MINIMUM_MESAFE_METRE,
-            deferredUpdatesInterval: MINIMUM_ZAMAN_SANIYE * 1000,
-            deferredUpdatesDistance: MINIMUM_MESAFE_METRE,
+            accuracy: profil.dogruluk,
+            timeInterval: profil.zaman * 1000,
+            distanceInterval: profil.mesafe,
+            deferredUpdatesInterval: profil.zaman * 1000,
+            deferredUpdatesDistance: profil.mesafe,
             showsBackgroundLocationIndicator: false,
             foregroundService: {
                 notificationTitle: 'Namaz Akışı',
-                notificationBody: 'Konum takibi aktif',
+                notificationBody: 'Sehir degisikligini takip ediyor',
                 notificationColor: '#4A90D9',
             },
-            pausesUpdatesAutomatically: false,
+            pausesUpdatesAutomatically: profil.duraklatma,
             activityType: Location.ActivityType.Other,
         });
 

@@ -29,7 +29,7 @@ jest.mock('expo-location', () => ({
     startLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
     stopLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
     reverseGeocodeAsync: jest.fn(),
-    Accuracy: { Balanced: 3 },
+    Accuracy: { Lowest: 1, Low: 2, Balanced: 3, High: 4, Highest: 5 },
     ActivityType: { Other: 1 },
 }));
 
@@ -235,11 +235,11 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
 
             await arkaplandanKonumTakibiniYenidenBaslat();
 
-            // Yeniden baslatilmali
+            // Yeniden baslatilmali (varsayilan dengeli profil: dogruluk=2, mesafe=5000, zaman=900)
             expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
                 KONUM_TAKIP_GOREVI,
                 expect.objectContaining({
-                    accuracy: Location.Accuracy.Balanced,
+                    accuracy: 2, // Accuracy.Low (dengeli profil)
                     pausesUpdatesAutomatically: false,
                     distanceInterval: 5000,
                     timeInterval: 900000,
@@ -272,8 +272,81 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
                 expect.objectContaining({
                     foregroundService: expect.objectContaining({
                         notificationTitle: 'Namaz Akışı',
-                        notificationBody: 'Konum takibi aktif',
+                        notificationBody: 'Sehir degisikligini takip ediyor',
                     }),
+                })
+            );
+        });
+    });
+
+    // ==========================================
+    // SENARYO 5b: Profil ile canlandirma
+    // ==========================================
+    describe('profil tabanli canlandirma', () => {
+        it('hassas profil kayitliysa hassas profil ayarlariyla yeniden baslatmali', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+                if (key === KONUM_TAKIP_AYARLARI_ANAHTAR) {
+                    return Promise.resolve(JSON.stringify({ aktif: true }));
+                }
+                if (key === KONUM_DEPOLAMA_ANAHTARI) {
+                    return Promise.resolve(JSON.stringify({
+                        konumModu: 'oto',
+                        takipHassasiyeti: 'hassas',
+                    }));
+                }
+                return Promise.resolve(null);
+            });
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+                KONUM_TAKIP_GOREVI,
+                expect.objectContaining({
+                    accuracy: 3, // Accuracy.Balanced (hassas profil)
+                    distanceInterval: 2000, // 2km
+                    timeInterval: 300000, // 5 dakika
+                    pausesUpdatesAutomatically: false,
+                })
+            );
+        });
+
+        it('pil_dostu profil kayitliysa pil_dostu ayarlariyla yeniden baslatmali', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+                if (key === KONUM_TAKIP_AYARLARI_ANAHTAR) {
+                    return Promise.resolve(JSON.stringify({ aktif: true }));
+                }
+                if (key === KONUM_DEPOLAMA_ANAHTARI) {
+                    return Promise.resolve(JSON.stringify({
+                        konumModu: 'oto',
+                        takipHassasiyeti: 'pil_dostu',
+                    }));
+                }
+                return Promise.resolve(null);
+            });
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+                status: 'granted',
+            });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
+                KONUM_TAKIP_GOREVI,
+                expect.objectContaining({
+                    accuracy: 2, // Accuracy.Low (pil_dostu profil)
+                    distanceInterval: 10000, // 10km
+                    timeInterval: 1800000, // 30 dakika
+                    pausesUpdatesAutomatically: true,
                 })
             );
         });
