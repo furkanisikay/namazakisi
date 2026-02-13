@@ -95,7 +95,7 @@ describe('KonumTakipServisi', () => {
             expect(sonuc).toBe(false);
         });
 
-        it('gorev zaten kayitliysa once durdurp yeniden baslatmali', async () => {
+        it('gorev zaten kayitliysa once durdurup yeniden baslatmali', async () => {
             (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
                 status: 'granted',
             });

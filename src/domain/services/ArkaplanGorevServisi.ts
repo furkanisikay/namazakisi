@@ -45,8 +45,38 @@ async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogr
             const hassasiyet: TakipHassasiyeti = konum.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI;
             return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
         }
-    } catch { }
+    } catch (e) {
+        console.warn('[ArkaplanGorev] Profil okuma hatasi:', e);
+    }
     return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
+}
+
+/**
+ * Konum izinlerini kontrol eder, iptal edildiyse takibi devre disi birakir
+ * @returns true ise izin iptal edilmis (takip baslatilmamali)
+ */
+async function izinIptalKontrolEt(takipAyarlari: { aktif: boolean }): Promise<boolean> {
+    const { status: arkaPlanIzni } = await Location.getBackgroundPermissionsAsync();
+    if (arkaPlanIzni !== 'granted') {
+        console.log('[ArkaplanGorev] Arka plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
+            ...takipAyarlari,
+            aktif: false,
+        }));
+        return true;
+    }
+
+    const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
+    if (onPlanIzni !== 'granted') {
+        console.log('[ArkaplanGorev] On plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
+            ...takipAyarlari,
+            aktif: false,
+        }));
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -56,7 +86,7 @@ async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogr
  *
  * Senaryo akisi:
  * 1. Kullanici daha once akilli takibi actiysa → aktif: true AsyncStorage'da kalir
- * 2. Telefon reboot / app kill / OS tarafindan olduruld → konum gorevi olur
+ * 2. Telefon reboot / app kill / OS tarafindan olduruldu → konum gorevi olur
  * 3. Background fetch 15dk'da bir tetiklenir (startOnBoot + stopOnTerminate:false)
  * 4. Bu fonksiyon konum gorevinin olup olmedigini kontrol eder
  * 5. Olmemisse → dokunmaz. Olmüsse → yeniden baslatir.
@@ -84,30 +114,15 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
             }
         }
 
-        // 3. Arka plan izni hala var mi kontrol et (kullanici ayarlardan iptal etmis olabilir)
-        const { status: arkaPlanIzni } = await Location.getBackgroundPermissionsAsync();
-        if (arkaPlanIzni !== 'granted') {
-            console.log('[ArkaplanGorev] Arka plan konum izni iptal edilmis, takip devre disi birakiliyor');
-            // Izin iptal edilmis - ayarlari guncelle ki tekrar tekrar denemesin
-            await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
-                ...takipAyarlari,
-                aktif: false,
-            }));
-            return;
-        }
-
-        // 4. Foreground izni hala var mi kontrol et
-        const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
-        if (onPlanIzni !== 'granted') {
-            console.log('[ArkaplanGorev] On plan konum izni iptal edilmis, takip devre disi birakiliyor');
-            await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
-                ...takipAyarlari,
-                aktif: false,
-            }));
+        // 3. Izinleri kontrol et (kullanici ayarlardan iptal etmis olabilir)
+        const izinIptalEdildi = await izinIptalKontrolEt(takipAyarlari);
+        if (izinIptalEdildi) {
             return;
         }
 
         // 5. Gorev hala kayitli mi kontrol et
+        // NOT: baslat() her zaman stop+start yapar (kullanici tetikler, profil degismis olabilir)
+        // Burada ise sadece olmus gorevi canlandiriyoruz - zaten calisan goreve dokunmuyoruz
         const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
         if (kayitliMi) {
             console.log('[ArkaplanGorev] Konum takip gorevi zaten kayitli ve calisiyor');
@@ -127,7 +142,7 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
             distanceInterval: profil.mesafe,
             deferredUpdatesInterval: profil.zaman * 1000,
             deferredUpdatesDistance: profil.mesafe,
-            showsBackgroundLocationIndicator: false,
+            showsBackgroundLocationIndicator: true,
             foregroundService: {
                 notificationTitle: 'Namaz Akışı',
                 notificationBody: 'Sehir degisikligini takip ediyor',

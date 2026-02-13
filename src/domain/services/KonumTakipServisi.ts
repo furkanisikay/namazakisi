@@ -35,7 +35,9 @@ async function aktifProfilGetir(): Promise<TakipProfilKonfigurasyonu> {
             const hassasiyet: TakipHassasiyeti = konum.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI;
             return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
         }
-    } catch { }
+    } catch (e) {
+        console.warn('[KonumTakip] Profil okuma hatasi:', e);
+    }
     return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
 }
 
@@ -275,7 +277,7 @@ export class KonumTakipServisi {
                 distanceInterval: profil.mesafe,
                 deferredUpdatesInterval: profil.zaman * 1000,
                 deferredUpdatesDistance: profil.mesafe,
-                showsBackgroundLocationIndicator: false,
+                showsBackgroundLocationIndicator: true,
                 foregroundService: {
                     notificationTitle: 'Namaz Akışı',
                     notificationBody: 'Sehir degisikligini takip ediyor',
@@ -321,7 +323,8 @@ export class KonumTakipServisi {
     public async aktifMi(): Promise<boolean> {
         try {
             return await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
-        } catch {
+        } catch (e) {
+            console.warn('[KonumTakip] aktifMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -333,7 +336,8 @@ export class KonumTakipServisi {
         try {
             const { status } = await Location.getBackgroundPermissionsAsync();
             return status === 'granted';
-        } catch {
+        } catch (e) {
+            console.warn('[KonumTakip] arkaPlanIzniVarMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -354,7 +358,9 @@ export class KonumTakipServisi {
             if (json) {
                 return JSON.parse(json);
             }
-        } catch { }
+        } catch (e) {
+            console.warn('[KonumTakip] Ayarlar okuma hatasi:', e);
+        }
         return { aktif: false, sonKoordinatlar: null, sonGuncellemeTarihi: null };
     }
 
@@ -392,8 +398,8 @@ export class KonumTakipServisi {
                     await this.ayarlariKaydet({ ...ayarlar, aktif: false });
                     return false;
                 }
-            } catch {
-                // Izin kontrolu basarisiz - yine de denemeye devam et
+            } catch (e) {
+                console.warn('[KonumTakip] On plan izin kontrolu hatasi:', e);
             }
 
             console.log('[KonumTakip] Konum takibi yeniden baslatiliyor...');
@@ -426,7 +432,8 @@ export class KonumTakipServisi {
                 gpsAdres: konumAyarlari.gpsAdres,
                 sonGpsGuncellemesi: konumAyarlari.sonGpsGuncellemesi,
             };
-        } catch {
+        } catch (e) {
+            console.warn('[KonumTakip] Son konum bilgisi okuma hatasi:', e);
             return null;
         }
     }
