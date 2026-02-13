@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-02-13
+
+### Fixed
+- Merge pull request #22 from furkanisikay/claude/fix-prayer-notifications-WhfeI
+- prayer notification Kıldım button reliability and UI sync
+
+### Changed
+- address PR review feedback from Gemini and Copilot
+
 ## [0.2.0] - 2026-02-01
 
 ### Added
