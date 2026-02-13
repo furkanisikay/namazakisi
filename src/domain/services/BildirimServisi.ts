@@ -205,9 +205,14 @@ export class BildirimServisi {
 
     // "Kildim" aksiyonuna mi tiklandi?
     if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) {
-      await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
-      // Basariyla islendikten sonra tekrar islemeyi engelle
-      this.islenmisYanitId = yanitId;
+      try {
+        await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
+        // Basariyla islendikten sonra tekrar islemeyi engelle
+        this.islenmisYanitId = yanitId;
+      } catch (error) {
+        // Basarisiz oldu - yanitId set edilmez, boylece retry mumkun
+        console.error('[BildirimServisi] Kildim isleme basarisiz, tekrar denenebilir:', error);
+      }
     }
   }
 
@@ -259,6 +264,7 @@ export class BildirimServisi {
       console.log(`[BildirimServisi] ${vakit} icin kalan bildirimler iptal edildi`);
     } catch (error) {
       console.error('[BildirimServisi] Kildim aksiyonu isleme hatasi:', error);
+      throw error; // Hatayi yukari ilet (deduplikasyon retry mekanizmasi icin)
     }
   }
 
