@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-02-14
+
+### Added
+- Merge pull request #28 from furkanisikay/claude/merge-kible-to-master-bRa1M
+- Add Qibla finder feature with comprehensive code review fixes
+- kible gosterici ozelligi eklendi
+
+### Changed
+- Apply comprehensive code review fixes for SOLID, DRY, KISS, and Clean Code principles- [ci] optimize build times with caching and Gradle configuration
+
 ## [0.5.0] - 2026-02-14
 
 ### Added

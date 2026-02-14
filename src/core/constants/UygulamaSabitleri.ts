@@ -37,7 +37,7 @@ export const NAMAZ_ISIMLERI = [
 // Uygulama meta verileri
 export const UYGULAMA = {
   ADI: 'Namaz Akışı',
-  VERSIYON: '0.5.0',
+  VERSIYON: '0.6.0',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
   GITHUB_REPO: 'furkanisikay/namazakisi',
 } as const;
