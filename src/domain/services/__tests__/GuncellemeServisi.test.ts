@@ -450,6 +450,28 @@ describe('GuncellemeServisi', () => {
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
   });
+
+  it('uygulama guncellendiginde cache gecersiz hale gelir', async () => {
+    // Senaryo: Uygulama versiyonu ile ayni versiyonu cache'e kaydet
+    // (kullanici uygulamayi guncelledi, artik mevcut versiyon == cache'deki "yeni versiyon")
+    const mevcutVersiyon = UYGULAMA.VERSIYON;
+    mockFetch.mockResolvedValue(githubYanitiOlustur(mevcutVersiyon));
+
+    const servis = GuncellemeServisi.getInstance();
+
+    // Ilk kontrol - cache'e kaydeder
+    await servis.guncellemeKontrolEt(true);
+    const ilkFetchCount = mockFetch.mock.calls.length;
+
+    // Simdi cache'de "yeni versiyon" = UYGULAMA.VERSIYON var
+    // Bu cache gecersiz olmali cunku artik "yeni versiyon" mevcut versiyon
+
+    // Ikinci kontrol (zorla degil) - cache gecersiz oldugu icin yeniden API cagrisi yapmali
+    await servis.guncellemeKontrolEt(false);
+
+    // Yeni API cagrisi yapilmis olmali
+    expect(mockFetch.mock.calls.length).toBeGreaterThan(ilkFetchCount);
+  });
 });
 
 describe('guvenilirBaglantiMi', () => {
