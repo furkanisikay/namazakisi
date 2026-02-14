@@ -2,6 +2,12 @@
  * Konum Takip Servisi
  * Onemli konum degisikliklerini takip eder ve gunceller
  * Pil dostu: Sadece belirli mesafe degisikliklerinde tetiklenir
+ *
+ * NOT: Bu servis domain katmaninda olmasina ragmen React Native API'lerine (AppState, Platform)
+ * dogrudan bagli calisir. Bu, Clean Architecture'in Dependency Rule'unu teknik olarak ihlal eder,
+ * ancak React Native projeleri icin pragmatik bir trade-off'tur. Alternatif olarak bu bagimliliklar
+ * dependency injection ile soyutlanabilir, fakat bu projede mevcut pattern ile tutarlilik icin
+ * dogrudan kullanim tercih edilmistir.
  */
 
 import * as Location from 'expo-location';
@@ -208,6 +214,9 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
  */
 export class KonumTakipServisi {
     private static instance: KonumTakipServisi;
+    private baslatmaDenemeSayisi = 0;
+    private readonly MAX_BASLATMA_DENEME = 3;
+    private pendingAppStateSubscription: ReturnType<typeof AppState.addEventListener> | null = null;
 
     private constructor() { }
 
@@ -299,6 +308,9 @@ export class KonumTakipServisi {
             // 5. Ayarlari kaydet
             await this.ayarlariKaydet({ aktif: true, sonKoordinatlar: null, sonGuncellemeTarihi: null });
 
+            // Basarili baslatma - deneme sayacini sifirla
+            this.baslatmaDenemeSayisi = 0;
+
             console.log('[KonumTakip] Konum takibi baslatildi');
             return true;
         } catch (e: any) {
@@ -318,11 +330,28 @@ export class KonumTakipServisi {
      * Android'de foreground service kisitlamasi nedeniyle gereklidir
      */
     private onPlanaGelinceDene(): void {
-        const subscription = AppState.addEventListener('change', async (nextState) => {
+        // Maksimum deneme sayisina ulasilmissa ek deneme yapma
+        if (this.baslatmaDenemeSayisi >= this.MAX_BASLATMA_DENEME) {
+            console.warn('[KonumTakip] Maksimum deneme sayisina ulasildi, on plana gelince deneme durduruldu');
+            return;
+        }
+
+        // Mevcut bekleme varsa tekrar ekleme (memory leak onleme)
+        if (this.pendingAppStateSubscription) {
+            return;
+        }
+
+        this.baslatmaDenemeSayisi++;
+        this.pendingAppStateSubscription = AppState.addEventListener('change', async (nextState) => {
             if (nextState === 'active') {
-                subscription.remove();
+                this.pendingAppStateSubscription?.remove();
+                this.pendingAppStateSubscription = null;
                 console.log('[KonumTakip] Uygulama on plana geldi, konum takibi baslatiliyor...');
-                await this.baslat();
+                const basarili = await this.baslat();
+                // Basarili olduysa deneme sayacini sifirla
+                if (basarili) {
+                    this.baslatmaDenemeSayisi = 0;
+                }
             }
         });
     }
@@ -337,6 +366,11 @@ export class KonumTakipServisi {
                 await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
                 console.log('[KonumTakip] Konum takibi durduruldu');
             }
+
+            // Bekleyen AppState subscription varsa temizle
+            this.pendingAppStateSubscription?.remove();
+            this.pendingAppStateSubscription = null;
+            this.baslatmaDenemeSayisi = 0;
 
             // Ayarlari guncelle
             const mevcutAyarlar = await this.ayarlariGetir();

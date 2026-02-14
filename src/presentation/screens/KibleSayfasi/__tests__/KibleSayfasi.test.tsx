@@ -53,6 +53,7 @@ describe('KibleSayfasi', () => {
     arkaplan: '#ffffff',
     kartArkaplan: '#f0f0f0',
     birincil: '#000000',
+    birincilMetin: '#ffffff',
     metin: '#333333',
     metinIkincil: '#666666',
     sinir: '#cccccc',
@@ -80,12 +81,9 @@ describe('KibleSayfasi', () => {
 
   it('geri butonuna basıldığında navigation.goBack çağrılmalıdır', () => {
     const { getByTestId } = render(<KibleSayfasi />);
-    // Butona testID vermemiştik, icon adından veya bileşen yapısından bulabiliriz.
-    // Ancak test edilebilirliği artırmak için source koda testID eklemek en iyisidir.
-    // Şimdilik native-base componentleri olmadığı için FontAwesome5'i bulmaya çalışabiliriz
-    // veya basitçe başlığı kontrol ettik.
-    // En iyisi koda ufak bir dokunuş yapıp testID eklemek veya componenti bulmak.
-    // Varsayım: TouchableOpacity (Header'daki ilk) geri butonu.
+    const backButton = getByTestId('back-button');
+    fireEvent.press(backButton);
+    expect(mockNavigation.goBack).toHaveBeenCalledTimes(1);
   });
 
   it('varsayılan olarak Native Pusula (offline) modu açılmalıdır', () => {

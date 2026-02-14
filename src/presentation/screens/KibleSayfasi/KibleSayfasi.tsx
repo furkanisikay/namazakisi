@@ -7,6 +7,12 @@ import { WebPusulaView } from './WebPusulaView';
 import { useRenkler } from '../../../core/theme';
 import { useNavigation } from '@react-navigation/native';
 
+/** Tab konfigurasyonlari */
+const TABS = [
+  { key: 'native' as const, label: 'Pusula', a11yLabel: 'Pusula modu' },
+  { key: 'web' as const, label: 'Google AR', a11yLabel: 'Google AR modu' },
+];
+
 /**
  * Qibla finder screen component.
  * Provides two modes: native compass view and Google AR WebView.
@@ -21,6 +27,7 @@ export const KibleSayfasi = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: renkler.arkaplan }]} edges={['top', 'left', 'right']}>
       <View style={[styles.header, { borderBottomColor: renkler.sinir }]}>
         <TouchableOpacity
+          testID="back-button"
           onPress={() => navigation.goBack()}
           style={styles.backButton}
           accessibilityLabel="Geri dön"
@@ -29,49 +36,33 @@ export const KibleSayfasi = () => {
           <FontAwesome5 name="arrow-left" size={20} color={renkler.metin} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: renkler.metin }]}>Kıbleyi Bul</Text>
-        <View style={{ width: 20 }} />
+        <View style={styles.headerSpacer} />
       </View>
 
       <View style={styles.tabWrapper}>
         <View style={[styles.tabContainer, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              aktifMod === 'native' && { backgroundColor: renkler.birincil },
-            ]}
-            onPress={() => setAktifMod('native')}
-            accessibilityLabel="Pusula modu"
-            accessibilityRole="tab"
-            accessibilityState={{ selected: aktifMod === 'native' }}
-          >
-            <Text
+          {TABS.map(tab => (
+            <TouchableOpacity
+              key={tab.key}
               style={[
-                styles.tabText,
-                { color: aktifMod === 'native' ? '#FFFFFF' : renkler.metin },
+                styles.tabButton,
+                aktifMod === tab.key && { backgroundColor: renkler.birincil },
               ]}
+              onPress={() => setAktifMod(tab.key)}
+              accessibilityLabel={tab.a11yLabel}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: aktifMod === tab.key }}
             >
-              Pusula
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              aktifMod === 'web' && { backgroundColor: renkler.birincil },
-            ]}
-            onPress={() => setAktifMod('web')}
-            accessibilityLabel="Google AR modu"
-            accessibilityRole="tab"
-            accessibilityState={{ selected: aktifMod === 'web' }}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                { color: aktifMod === 'web' ? '#FFFFFF' : renkler.metin },
-              ]}
-            >
-              Google AR
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[
+                  styles.tabText,
+                  { color: aktifMod === tab.key ? renkler.birincilMetin : renkler.metin },
+                ]}
+              >
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
@@ -96,6 +87,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: 8,
+  },
+  headerSpacer: {
+    width: 20,
   },
   title: {
     fontSize: 18,
