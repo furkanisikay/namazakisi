@@ -7,6 +7,7 @@
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState, Platform } from 'react-native';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -226,6 +227,14 @@ export class KonumTakipServisi {
      */
     public async baslat(): Promise<boolean> {
         try {
+            // 0. Android'de uygulama arka plandaysa foreground service baslatilamaz
+            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
+                console.log('[KonumTakip] Uygulama arka planda, baslatma erteleniyor...');
+                // On plana gelince tekrar dene
+                this.onPlanaGelinceDene();
+                return false;
+            }
+
             // 1. Once foreground izni kontrol et ve iste
             const { status: mevcutOnPlanIzni } = await Location.getForegroundPermissionsAsync();
             console.log('[KonumTakip] Mevcut on plan izni:', mevcutOnPlanIzni);
@@ -292,10 +301,30 @@ export class KonumTakipServisi {
 
             console.log('[KonumTakip] Konum takibi baslatildi');
             return true;
-        } catch (e) {
+        } catch (e: any) {
+            // Android foreground service hatasi - uygulama arka plana gecmis olabilir
+            if (Platform.OS === 'android' && e?.message?.includes('foreground service')) {
+                console.warn('[KonumTakip] Foreground service baslatilamadi, on plana gelince tekrar denenecek');
+                this.onPlanaGelinceDene();
+                return false;
+            }
             console.error('[KonumTakip] Baslama hatasi:', e);
             return false;
         }
+    }
+
+    /**
+     * Uygulama on plana geldiginde konum takibini baslatmayi dener
+     * Android'de foreground service kisitlamasi nedeniyle gereklidir
+     */
+    private onPlanaGelinceDene(): void {
+        const subscription = AppState.addEventListener('change', async (nextState) => {
+            if (nextState === 'active') {
+                subscription.remove();
+                console.log('[KonumTakip] Uygulama on plana geldi, konum takibi baslatiliyor...');
+                await this.baslat();
+            }
+        });
     }
 
     /**
@@ -375,6 +404,13 @@ export class KonumTakipServisi {
      */
     public async yenidenBaslat(): Promise<boolean> {
         try {
+            // Android'de arka plandaysa erken cik
+            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
+                console.log('[KonumTakip] Uygulama arka planda, yeniden baslatma erteleniyor...');
+                this.onPlanaGelinceDene();
+                return false;
+            }
+
             const ayarlar = await this.ayarlariGetir();
             if (!ayarlar.aktif) {
                 console.log('[KonumTakip] Takip aktif degil, yeniden baslatma atlanıyor');
