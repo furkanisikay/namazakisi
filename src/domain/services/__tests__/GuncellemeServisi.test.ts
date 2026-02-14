@@ -15,6 +15,7 @@ import {
   GitHubGuncellemeKaynagi,
   versiyonKarsilastir,
   yayinTarihiniFormatla,
+  guvenilirBaglantiMi,
   GuncellemeKaynagi,
   GuncellemeKontrolSonucu,
 } from '../GuncellemeServisi';
@@ -41,6 +42,12 @@ jest.mock('react-native', () => ({
   Platform: {
     OS: 'android',
   },
+}));
+
+// NetInfo mock
+const mockNetInfoFetch = jest.fn().mockResolvedValue({ isConnected: true });
+jest.mock('@react-native-community/netinfo', () => ({
+  fetch: () => mockNetInfoFetch(),
 }));
 
 // Global fetch mock
@@ -76,15 +83,10 @@ function githubYanitiOlustur(versiyon: string, options: {
 }
 
 /**
- * Basarili ag kontrolu icin fetch mock ayarla
+ * Basarili GitHub API kontrolu icin fetch mock ayarla
  */
 function agBasariliMock() {
-  mockFetch.mockImplementation((url: string) => {
-    if (url.includes('/zen')) {
-      return Promise.resolve({ ok: true });
-    }
-    return Promise.resolve(githubYanitiOlustur('1.0.0'));
-  });
+  mockFetch.mockResolvedValue(githubYanitiOlustur('1.0.0'));
 }
 
 // ==================== TESTLER ====================
@@ -268,6 +270,7 @@ describe('GuncellemeServisi', () => {
     // Her test oncesi temizle
     GuncellemeServisi.resetInstance();
     mockFetch.mockReset();
+    mockNetInfoFetch.mockReset().mockResolvedValue({ isConnected: true });
     // AsyncStorage temizle
     Object.keys(asyncStorageMock).forEach(key => delete asyncStorageMock[key]);
   });
@@ -287,13 +290,7 @@ describe('GuncellemeServisi', () => {
 
   it('guncelleme mevcut oldugunda dogru sonuc dondurur', async () => {
     const yeniVersiyon = '99.0.0';
-
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
@@ -303,12 +300,7 @@ describe('GuncellemeServisi', () => {
   });
 
   it('guncelleme yokken dogru sonuc dondurur', async () => {
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(UYGULAMA.VERSIYON));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(UYGULAMA.VERSIYON));
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
@@ -316,24 +308,21 @@ describe('GuncellemeServisi', () => {
     expect(sonuc.guncellemeMevcut).toBe(false);
   });
 
-  it('cevrimdisi iken kontrol atlaniyor', async () => {
-    // Ag kontrolu basarisiz
-    mockFetch.mockRejectedValue(new Error('Network error'));
+  it('cevrimdisi iken guvenli sonuc dondurur', async () => {
+    // NetInfo cevrimdisi rapor ediyor
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false });
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
 
     expect(sonuc.guncellemeMevcut).toBe(false);
+    // fetch cagirilmamis olmali
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('onbellek gecerli iken tekrar API cagrisi yapmiyor', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -344,19 +333,14 @@ describe('GuncellemeServisi', () => {
     // Ikinci kontrol - onbellekten doner (zorla degil)
     const sonuc = await servis.guncellemeKontrolEt(false);
 
-    // Ek API cagrisi yapilmamis olmali (sadece onbellek yukleme)
+    // Ek API cagrisi yapilmamis olmali
     expect(mockFetch.mock.calls.length).toBe(fetchCallCount);
     expect(sonuc.guncellemeMevcut).toBe(true);
   });
 
   it('zorla kontrol onbellegi atlar', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -372,12 +356,7 @@ describe('GuncellemeServisi', () => {
 
   it('erteleme dogru calisir', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -389,7 +368,7 @@ describe('GuncellemeServisi', () => {
 
     // Zorla degil kontrol - erteleme icinde olmali
     const fetchCallCountBefore = mockFetch.mock.calls.length;
-    const sonuc = await servis.guncellemeKontrolEt(false);
+    await servis.guncellemeKontrolEt(false);
 
     // API cagrisi yapilmamis olmali (erteleme sureci devam ediyor)
     expect(mockFetch.mock.calls.length).toBe(fetchCallCountBefore);
@@ -415,14 +394,8 @@ describe('GuncellemeServisi', () => {
       enSonSurumuKontrolEt: jest.fn().mockResolvedValue(ozelSonuc),
     };
 
-    // Ag kontrolu basarili
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      // GitHub kaynak basarisiz olsun
-      return Promise.resolve({ ok: false, status: 404 });
-    });
+    // GitHub kaynak basarisiz olsun
+    mockFetch.mockResolvedValue({ ok: false, status: 404 });
 
     const servis = GuncellemeServisi.getInstance();
     servis.kaynakEkle(ozelKaynak);
@@ -441,12 +414,7 @@ describe('GuncellemeServisi', () => {
       enSonSurumuKontrolEt: jest.fn(),
     };
 
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(UYGULAMA.VERSIYON));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(UYGULAMA.VERSIYON));
 
     const servis = GuncellemeServisi.getInstance();
     servis.kaynakEkle(desteklenmeyenKaynak);
@@ -457,12 +425,7 @@ describe('GuncellemeServisi', () => {
   });
 
   it('onbellek AsyncStorage a kaydedilir', async () => {
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur('99.0.0'));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
 
     const servis = GuncellemeServisi.getInstance();
     await servis.guncellemeKontrolEt(true);
@@ -486,5 +449,39 @@ describe('GuncellemeServisi', () => {
 
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
+  });
+});
+
+describe('guvenilirBaglantiMi', () => {
+  it('github.com HTTPS baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://github.com/furkanisikay/namazakisi/releases')).toBe(true);
+  });
+
+  it('objects.githubusercontent.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://objects.githubusercontent.com/some-asset')).toBe(true);
+  });
+
+  it('play.google.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://play.google.com/store/apps/details?id=com.test')).toBe(true);
+  });
+
+  it('apps.apple.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://apps.apple.com/app/test/id123')).toBe(true);
+  });
+
+  it('HTTP baglantisini reddeder', () => {
+    expect(guvenilirBaglantiMi('http://github.com/test')).toBe(false);
+  });
+
+  it('bilinmeyen domaini reddeder', () => {
+    expect(guvenilirBaglantiMi('https://evil-site.com/malware.apk')).toBe(false);
+  });
+
+  it('gecersiz URL icin false dondurur', () => {
+    expect(guvenilirBaglantiMi('not-a-url')).toBe(false);
+  });
+
+  it('bos string icin false dondurur', () => {
+    expect(guvenilirBaglantiMi('')).toBe(false);
   });
 });

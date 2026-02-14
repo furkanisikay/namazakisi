@@ -39,7 +39,7 @@ const baslangicDurumu: GuncellemeState = {
  */
 export const guncellemeKontrolEt = createAsyncThunk(
   'guncelleme/kontrolEt',
-  async (zorla: boolean = false) => {
+  async (zorla: boolean) => {
     const servis = GuncellemeServisi.getInstance();
     return await servis.guncellemeKontrolEt(zorla);
   }
@@ -79,17 +79,19 @@ const guncellemeSlice = createSlice({
       })
       .addCase(guncellemeKontrolEt.fulfilled, (state, action) => {
         state.kontrolEdiliyor = false;
-        state.guncellemeMevcut = action.payload.guncellemeMevcut;
-        state.bilgi = action.payload.bilgi;
 
         // Yeni versiyon tespit edildiyse bildirim durumunu sifirla
+        // ONEMLI: eskiVer'i state.bilgi uzerine yazmadan ONCE oku
         if (action.payload.guncellemeMevcut) {
-          const yeniVer = action.payload.bilgi?.yeniVersiyon;
           const eskiVer = state.bilgi?.yeniVersiyon;
+          const yeniVer = action.payload.bilgi?.yeniVersiyon;
           if (yeniVer && yeniVer !== eskiVer) {
             state.bildirimiKapatti = false;
           }
         }
+
+        state.guncellemeMevcut = action.payload.guncellemeMevcut;
+        state.bilgi = action.payload.bilgi;
       })
       .addCase(guncellemeKontrolEt.rejected, (state, action) => {
         state.kontrolEdiliyor = false;

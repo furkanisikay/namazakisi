@@ -223,5 +223,75 @@ describe('guncellemeSlice', () => {
       store.dispatch(bildirimiSifirla());
       expect(store.getState().guncelleme.bildirimiKapatti).toBe(false);
     });
+
+    it('yeni versiyon geldiginde bildirim durumu sifirlanir', async () => {
+      // Ilk versiyon
+      __mockKontrolEt.mockResolvedValue({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      });
+
+      const store = storeOlustur();
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(false);
+
+      // Kullanici bildirimi kapatti
+      store.dispatch(bildirimiKapat());
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+      // Yeni versiyon geldi - bildirim tekrar gosterilmeli
+      __mockKontrolEt.mockResolvedValue({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '2.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      });
+
+      await store.dispatch(guncellemeKontrolEt(false));
+      // BUG-1 fix: bildirimiKapatti SIFIRLANMALI cunku yeni versiyon geldi
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(false);
+      expect(store.getState().guncelleme.bilgi?.yeniVersiyon).toBe('2.0.0');
+    });
+
+    it('ayni versiyon tekrar geldiginde bildirim durumu korunur', async () => {
+      __mockKontrolEt.mockResolvedValue({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      });
+
+      const store = storeOlustur();
+      await store.dispatch(guncellemeKontrolEt(false));
+
+      // Kullanici bildirimi kapatti
+      store.dispatch(bildirimiKapat());
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+      // Ayni versiyon tekrar kontrol edildi
+      await store.dispatch(guncellemeKontrolEt(false));
+      // Ayni versiyon, bildirim kapali kalmali
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+    });
   });
 });

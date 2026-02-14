@@ -14,6 +14,7 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import {
   UYGULAMA,
   GUNCELLEME_SABITLERI,
@@ -114,14 +115,14 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
         }
       );
 
-      clearTimeout(timeoutId);
-
       if (!yanit.ok) {
+        clearTimeout(timeoutId);
         console.warn(`[GuncellemeServisi] GitHub API hatasi: ${yanit.status}`);
         return { guncellemeMevcut: false, bilgi: null };
       }
 
       const veri = await yanit.json();
+      clearTimeout(timeoutId);
       const yeniVersiyon = (veri.tag_name || '').replace(/^v/, '');
       const mevcutVersiyon = UYGULAMA.VERSIYON;
 
@@ -211,7 +212,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
  * ```
  */
 export class GuncellemeServisi {
-  private static instance: GuncellemeServisi;
+  private static instance: GuncellemeServisi | null = null;
   private kaynaklar: GuncellemeKaynagi[] = [];
   private onbellek: GuncellemeOnbellek | null = null;
 
@@ -221,7 +222,7 @@ export class GuncellemeServisi {
   }
 
   public static getInstance(): GuncellemeServisi {
-    if (!GuncellemeServisi.instance) {
+    if (GuncellemeServisi.instance === null) {
       GuncellemeServisi.instance = new GuncellemeServisi();
     }
     return GuncellemeServisi.instance;
@@ -231,7 +232,7 @@ export class GuncellemeServisi {
    * Test icin instance'i sifirla
    */
   public static resetInstance(): void {
-    GuncellemeServisi.instance = undefined as any;
+    GuncellemeServisi.instance = null;
   }
 
   /**
@@ -267,11 +268,10 @@ export class GuncellemeServisi {
         }
       }
 
-      // Ag baglantisi kontrol et
-      const cevrimiciMi = await this.agBaglantisiKontrolEt();
-      if (!cevrimiciMi) {
+      // Ag baglantisi kontrolu (NetInfo ile hizli ve guvenilir)
+      const agDurumu = await NetInfo.fetch();
+      if (!agDurumu.isConnected) {
         console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
-        // Cevrimdisi ise onbellekteki sonucu don (varsa)
         return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
       }
 
@@ -359,27 +359,6 @@ export class GuncellemeServisi {
   }
 
   /**
-   * Basit ag baglantisi kontrolu
-   * GitHub API'ye kucuk bir istek atarak cevrimici olup olmadigimizi anlariz
-   */
-  private async agBaglantisiKontrolEt(): Promise<boolean> {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-      const yanit = await fetch('https://api.github.com/zen', {
-        method: 'HEAD',
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-      return yanit.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  /**
    * Onbellegi AsyncStorage'dan yukle
    */
   private async onbellegiYukle(): Promise<void> {
@@ -453,6 +432,30 @@ export function versiyonKarsilastir(v1: string, v2: string): number {
   }
 
   return 0;
+}
+
+/** Guncelleme indirme baglantilari icin guvenilir domainler */
+const GUVENILIR_DOMAINLER = [
+  'github.com',
+  'objects.githubusercontent.com',
+  'play.google.com',
+  'apps.apple.com',
+];
+
+/**
+ * Indirme baglantisinin guvenilir bir domaine ait olup olmadigini kontrol et
+ * API'den gelen URL'lerin phishing icin manipule edilmediginden emin olur
+ */
+export function guvenilirBaglantiMi(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') return false;
+    return GUVENILIR_DOMAINLER.some(
+      (domain) => parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**

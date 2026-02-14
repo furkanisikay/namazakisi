@@ -29,7 +29,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { guncellemeErtele, bildirimiKapat } from '../../store/guncellemeSlice';
-import { yayinTarihiniFormatla } from '../../../domain/services/GuncellemeServisi';
+import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 
 /**
  * Guncelleme bildirimi bileseni
@@ -39,9 +39,9 @@ export const GuncellemeBildirimi: React.FC = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
 
-  const { guncellemeMevcut, bilgi, bildirimiKapatti } = useAppSelector(
-    (state) => state.guncelleme
-  );
+  const guncellemeMevcut = useAppSelector((state) => state.guncelleme.guncellemeMevcut);
+  const bilgi = useAppSelector((state) => state.guncelleme.bilgi);
+  const bildirimiKapatti = useAppSelector((state) => state.guncelleme.bildirimiKapatti);
 
   // Animasyon degerleri
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -88,8 +88,10 @@ export const GuncellemeBildirimi: React.FC = () => {
    * Guncelleme baglantisini ac
    */
   const guncelleBasildi = useCallback(() => {
-    if (bilgi?.indirmeBaglantisi) {
-      Linking.openURL(bilgi.indirmeBaglantisi);
+    if (bilgi?.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
+      Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
+        console.warn('[GuncellemeBildirimi] Baglanti acilamadi:', hata);
+      });
     }
   }, [bilgi]);
 
@@ -124,7 +126,7 @@ export const GuncellemeBildirimi: React.FC = () => {
       }}
       pointerEvents={gosterilsinMi ? 'auto' : 'none'}
     >
-      {/* Yarimm saydam arka plan overlay */}
+      {/* Yarim saydam arka plan overlay */}
       <View
         style={{
           marginHorizontal: 12,
@@ -158,7 +160,7 @@ export const GuncellemeBildirimi: React.FC = () => {
               width: 44,
               height: 44,
               borderRadius: 12,
-              backgroundColor: `${renkler.bilgi}15`,
+              backgroundColor: `${renkler.bilgi}26`,
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: 12,
@@ -234,7 +236,7 @@ export const GuncellemeBildirimi: React.FC = () => {
               width: 28,
               height: 28,
               borderRadius: 14,
-              backgroundColor: `${renkler.metinIkincil}15`,
+              backgroundColor: `${renkler.metinIkincil}26`,
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -255,7 +257,7 @@ export const GuncellemeBildirimi: React.FC = () => {
               marginBottom: 12,
               paddingHorizontal: 12,
               paddingVertical: 8,
-              backgroundColor: `${renkler.metinIkincil}08`,
+              backgroundColor: `${renkler.metinIkincil}14`,
               borderRadius: 8,
             }}
           >
@@ -290,7 +292,7 @@ export const GuncellemeBildirimi: React.FC = () => {
               borderRadius: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: `${renkler.metinIkincil}12`,
+              backgroundColor: `${renkler.metinIkincil}1F`,
             }}
             activeOpacity={0.7}
           >
