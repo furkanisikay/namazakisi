@@ -23,7 +23,7 @@ const VARSAYILAN_YAPILANDIRMA: MuhafizYapilandirmasi = {
     seviye4SiklikDk: 1,
 };
 
-type BildirimCallback = (mesaj: string, seviye: 1 | 2 | 3 | 4) => void;
+type BildirimCallback = (mesaj: string, seviye: 0 | 1 | 2 | 3 | 4) => void;
 
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
@@ -92,9 +92,14 @@ export class NamazMuhafiziServisi {
         const { vakit, kalanSureMs } = vakitBilgisi;
         const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
 
-        // Eğer bu vakit zaten kılındıysa rahatsız etme
+        // Eğer bu vakit zaten kılındıysa banner'ı temizle ve rahatsız etme
         const bugun = new Date().toDateString();
-        if (this.kilinanVakitler[`${bugun}_${vakit}`]) return;
+        if (this.kilinanVakitler[`${bugun}_${vakit}`]) {
+            if (this.onBildirim) {
+                this.onBildirim('', 0);
+            }
+            return;
+        }
 
         // Seviye Kontrolü
         let aktifSeviye: 1 | 2 | 3 | 4 | 0 = 0;

@@ -235,7 +235,7 @@ export const AnaSayfa: React.FC = () => {
       muhafiz.baslat((mesaj, seviye) => {
         setMuhafizDurumu({ mesaj, seviye });
         if (seviye >= 3) { HaptikServisi.gucluTitresim(); SesServisi.bildirimSesiCal(); }
-        else { HaptikServisi.uyariTitresimi(); }
+        else if (seviye > 0) { HaptikServisi.uyariTitresimi(); }
       });
     } else {
       muhafiz.durdur();
