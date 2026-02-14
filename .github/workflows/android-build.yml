@@ -56,6 +56,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      - name: 💾 Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
@@ -72,21 +79,30 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: 📚 Install dependencies
+        if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: 🔧 Expo Prebuild
         run: npx expo prebuild --platform android --clean
 
+      - name: ⚡ Optimize Gradle properties
+        run: |
+          cat >> android/gradle.properties << 'EOF'
+
+          # CI Build optimizations
+          org.gradle.caching=true
+          org.gradle.parallel=true
+          org.gradle.configuration-cache=true
+          org.gradle.configuration-cache.problems=warn
+          org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError
+          kotlin.daemon.jvmargs=-Xmx2g
+          EOF
+
       - name: 🏗️ Build Debug APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --parallel \
-            --build-cache \
-            --configure-on-demand \
-            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+          ./gradlew assembleDebug --no-daemon
 
       - name: 📦 APK'yi yeniden adlandir
         id: rename
@@ -143,6 +159,13 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      - name: 💾 Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
         with:
@@ -159,6 +182,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: 📚 Install dependencies
+        if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: 🔧 Kod kontrolleri
@@ -363,6 +387,19 @@ jobs:
       - name: 🔧 Expo Prebuild
         run: npx expo prebuild --platform android --clean
 
+      - name: ⚡ Optimize Gradle properties
+        run: |
+          cat >> android/gradle.properties << 'EOF'
+
+          # CI Build optimizations
+          org.gradle.caching=true
+          org.gradle.parallel=true
+          org.gradle.configuration-cache=true
+          org.gradle.configuration-cache.problems=warn
+          org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError
+          kotlin.daemon.jvmargs=-Xmx2g
+          EOF
+
       - name: 🔐 Keystore olustur
         run: |
           if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
@@ -427,12 +464,7 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease \
-            --no-daemon \
-            --parallel \
-            --build-cache \
-            --configure-on-demand \
-            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+          ./gradlew assembleRelease --no-daemon
 
       - name: 📦 APK'yi yeniden adlandir
         id: rename
