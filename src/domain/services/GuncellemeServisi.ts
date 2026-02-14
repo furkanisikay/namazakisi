@@ -186,17 +186,85 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
 
   /**
    * GitHub release notlarini temizle ve kisalt
+   * Yeni ozellikleri ve bug fixleri anlamli sekilde formatla
    */
   private degisiklikNotlariniDuzenle(ham: string): string {
     if (!ham) return '';
 
-    // Markdown basliklarini ve fazla boslugu temizle
-    return ham
-      .replace(/^#+\s*/gm, '')
-      .replace(/\*\*/g, '')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim()
-      .slice(0, 500);
+    const satirlar = ham.split('\n');
+    const yeniOzellikler: string[] = [];
+    const hatalar: string[] = [];
+    let aktifBolum: 'added' | 'fixed' | 'changed' | null = null;
+
+    // Gereksiz satirlari filtrelemek icin pattern'ler (satirin basindan kontrol edilir)
+    const gereksizPatternler = [
+      /^merge pull request/i,
+      /^merge pr/i,
+      /^pr bot/i,
+    ];
+
+    for (const satir of satirlar) {
+      const temizSatir = satir.trim();
+
+      // Bolum basliklarini tespit et
+      if (temizSatir.toLowerCase().includes('### added')) {
+        aktifBolum = 'added';
+        continue;
+      } else if (temizSatir.toLowerCase().includes('### fixed')) {
+        aktifBolum = 'fixed';
+        continue;
+      } else if (temizSatir.toLowerCase().includes('### changed')) {
+        aktifBolum = 'changed';
+        continue;
+      }
+
+      // Liste elemanlarini isle (- ile baslayan satirlar)
+      if (temizSatir.startsWith('-') || temizSatir.startsWith('*')) {
+        const icerik = temizSatir.substring(1).trim();
+        if (!icerik) continue;
+
+        // Gereksiz satirlari atla (satirin basindan kontrol et)
+        const gereksizMi = gereksizPatternler.some(pattern =>
+          pattern.test(icerik)
+        );
+        if (gereksizMi) continue;
+
+        if (aktifBolum === 'added') {
+          yeniOzellikler.push(icerik);
+        } else if (aktifBolum === 'fixed') {
+          hatalar.push(icerik);
+        }
+      }
+    }
+
+    // Sonuc metnini olustur
+    const parcalar: string[] = [];
+
+    if (yeniOzellikler.length > 0) {
+      parcalar.push('Yeni Özellikler:');
+      yeniOzellikler.forEach(ozellik => {
+        parcalar.push(`• ${ozellik}`);
+      });
+    }
+
+    if (hatalar.length > 0) {
+      if (parcalar.length > 0) parcalar.push(''); // Bos satir ekle
+      parcalar.push('Hatalar giderildi');
+    }
+
+    const sonuc = parcalar.join('\n').trim();
+
+    // Hala bos ise, ham metni temizleyerek dondur (fallback)
+    if (!sonuc) {
+      return ham
+        .replace(/^#+\s*/gm, '')
+        .replace(/\*\*/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+        .slice(0, 500);
+    }
+
+    return sonuc.slice(0, 500);
   }
 }
 
