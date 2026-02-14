@@ -114,14 +114,14 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
         }
       );
 
-      clearTimeout(timeoutId);
-
       if (!yanit.ok) {
+        clearTimeout(timeoutId);
         console.warn(`[GuncellemeServisi] GitHub API hatasi: ${yanit.status}`);
         return { guncellemeMevcut: false, bilgi: null };
       }
 
       const veri = await yanit.json();
+      clearTimeout(timeoutId);
       const yeniVersiyon = (veri.tag_name || '').replace(/^v/, '');
       const mevcutVersiyon = UYGULAMA.VERSIYON;
 
@@ -211,7 +211,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
  * ```
  */
 export class GuncellemeServisi {
-  private static instance: GuncellemeServisi;
+  private static instance: GuncellemeServisi | null = null;
   private kaynaklar: GuncellemeKaynagi[] = [];
   private onbellek: GuncellemeOnbellek | null = null;
 
@@ -221,7 +221,7 @@ export class GuncellemeServisi {
   }
 
   public static getInstance(): GuncellemeServisi {
-    if (!GuncellemeServisi.instance) {
+    if (GuncellemeServisi.instance === null) {
       GuncellemeServisi.instance = new GuncellemeServisi();
     }
     return GuncellemeServisi.instance;
@@ -231,7 +231,7 @@ export class GuncellemeServisi {
    * Test icin instance'i sifirla
    */
   public static resetInstance(): void {
-    GuncellemeServisi.instance = undefined as any;
+    GuncellemeServisi.instance = null;
   }
 
   /**
@@ -267,15 +267,8 @@ export class GuncellemeServisi {
         }
       }
 
-      // Ag baglantisi kontrol et
-      const cevrimiciMi = await this.agBaglantisiKontrolEt();
-      if (!cevrimiciMi) {
-        console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
-        // Cevrimdisi ise onbellekteki sonucu don (varsa)
-        return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
-      }
-
       // Desteklenen kaynaklardan kontrol et
+      // Ag baglantisi yoksa fetch zaten hata firlatir, ayri kontrol gereksiz
       const sonuc = await this.kaynaklardanKontrolEt();
 
       // Onbellege kaydet
@@ -356,27 +349,6 @@ export class GuncellemeServisi {
 
     const gecenSure = Date.now() - this.onbellek.sonKontrolZamani;
     return gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
-  }
-
-  /**
-   * Basit ag baglantisi kontrolu
-   * GitHub API'ye kucuk bir istek atarak cevrimici olup olmadigimizi anlariz
-   */
-  private async agBaglantisiKontrolEt(): Promise<boolean> {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-      const yanit = await fetch('https://api.github.com/zen', {
-        method: 'HEAD',
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-      return yanit.ok;
-    } catch {
-      return false;
-    }
   }
 
   /**

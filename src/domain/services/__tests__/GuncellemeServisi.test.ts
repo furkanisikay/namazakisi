@@ -76,15 +76,10 @@ function githubYanitiOlustur(versiyon: string, options: {
 }
 
 /**
- * Basarili ag kontrolu icin fetch mock ayarla
+ * Basarili GitHub API kontrolu icin fetch mock ayarla
  */
 function agBasariliMock() {
-  mockFetch.mockImplementation((url: string) => {
-    if (url.includes('/zen')) {
-      return Promise.resolve({ ok: true });
-    }
-    return Promise.resolve(githubYanitiOlustur('1.0.0'));
-  });
+  mockFetch.mockResolvedValue(githubYanitiOlustur('1.0.0'));
 }
 
 // ==================== TESTLER ====================
@@ -287,13 +282,7 @@ describe('GuncellemeServisi', () => {
 
   it('guncelleme mevcut oldugunda dogru sonuc dondurur', async () => {
     const yeniVersiyon = '99.0.0';
-
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
@@ -303,12 +292,7 @@ describe('GuncellemeServisi', () => {
   });
 
   it('guncelleme yokken dogru sonuc dondurur', async () => {
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(UYGULAMA.VERSIYON));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(UYGULAMA.VERSIYON));
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
@@ -316,8 +300,8 @@ describe('GuncellemeServisi', () => {
     expect(sonuc.guncellemeMevcut).toBe(false);
   });
 
-  it('cevrimdisi iken kontrol atlaniyor', async () => {
-    // Ag kontrolu basarisiz
+  it('cevrimdisi iken guvenli sonuc dondurur', async () => {
+    // Ag baglantisi yok - fetch basarisiz
     mockFetch.mockRejectedValue(new Error('Network error'));
 
     const servis = GuncellemeServisi.getInstance();
@@ -328,12 +312,7 @@ describe('GuncellemeServisi', () => {
 
   it('onbellek gecerli iken tekrar API cagrisi yapmiyor', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -344,19 +323,14 @@ describe('GuncellemeServisi', () => {
     // Ikinci kontrol - onbellekten doner (zorla degil)
     const sonuc = await servis.guncellemeKontrolEt(false);
 
-    // Ek API cagrisi yapilmamis olmali (sadece onbellek yukleme)
+    // Ek API cagrisi yapilmamis olmali
     expect(mockFetch.mock.calls.length).toBe(fetchCallCount);
     expect(sonuc.guncellemeMevcut).toBe(true);
   });
 
   it('zorla kontrol onbellegi atlar', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -372,12 +346,7 @@ describe('GuncellemeServisi', () => {
 
   it('erteleme dogru calisir', async () => {
     const yeniVersiyon = '99.0.0';
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(yeniVersiyon));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon));
 
     const servis = GuncellemeServisi.getInstance();
 
@@ -389,7 +358,7 @@ describe('GuncellemeServisi', () => {
 
     // Zorla degil kontrol - erteleme icinde olmali
     const fetchCallCountBefore = mockFetch.mock.calls.length;
-    const sonuc = await servis.guncellemeKontrolEt(false);
+    await servis.guncellemeKontrolEt(false);
 
     // API cagrisi yapilmamis olmali (erteleme sureci devam ediyor)
     expect(mockFetch.mock.calls.length).toBe(fetchCallCountBefore);
@@ -415,14 +384,8 @@ describe('GuncellemeServisi', () => {
       enSonSurumuKontrolEt: jest.fn().mockResolvedValue(ozelSonuc),
     };
 
-    // Ag kontrolu basarili
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      // GitHub kaynak basarisiz olsun
-      return Promise.resolve({ ok: false, status: 404 });
-    });
+    // GitHub kaynak basarisiz olsun
+    mockFetch.mockResolvedValue({ ok: false, status: 404 });
 
     const servis = GuncellemeServisi.getInstance();
     servis.kaynakEkle(ozelKaynak);
@@ -441,12 +404,7 @@ describe('GuncellemeServisi', () => {
       enSonSurumuKontrolEt: jest.fn(),
     };
 
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur(UYGULAMA.VERSIYON));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur(UYGULAMA.VERSIYON));
 
     const servis = GuncellemeServisi.getInstance();
     servis.kaynakEkle(desteklenmeyenKaynak);
@@ -457,12 +415,7 @@ describe('GuncellemeServisi', () => {
   });
 
   it('onbellek AsyncStorage a kaydedilir', async () => {
-    mockFetch.mockImplementation((url: string) => {
-      if (url.includes('/zen')) {
-        return Promise.resolve({ ok: true });
-      }
-      return Promise.resolve(githubYanitiOlustur('99.0.0'));
-    });
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
 
     const servis = GuncellemeServisi.getInstance();
     await servis.guncellemeKontrolEt(true);

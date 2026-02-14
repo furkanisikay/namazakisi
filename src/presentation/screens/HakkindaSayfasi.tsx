@@ -90,9 +90,9 @@ export const HakkindaSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
 
   // Guncelleme durumu
-  const { kontrolEdiliyor, guncellemeMevcut, bilgi } = useAppSelector(
-    (state) => state.guncelleme
-  );
+  const kontrolEdiliyor = useAppSelector((state) => state.guncelleme.kontrolEdiliyor);
+  const guncellemeMevcut = useAppSelector((state) => state.guncelleme.guncellemeMevcut);
+  const bilgi = useAppSelector((state) => state.guncelleme.bilgi);
 
   // Guncel yil
   const guncelYil = new Date().getFullYear();
@@ -120,7 +120,9 @@ export const HakkindaSayfasi: React.FC = () => {
 
   // Web sitesini ac
   const handleWebSitesiAc = (url: string) => {
-    Linking.openURL(url);
+    Linking.openURL(url).catch((hata) => {
+      console.warn('[HakkindaSayfasi] Baglanti acilamadi:', hata);
+    });
   };
 
   // Manuel guncelleme kontrolu
@@ -228,7 +230,7 @@ export const HakkindaSayfasi: React.FC = () => {
           >
             <View
               className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
-              style={{ backgroundColor: `${guncellemeDurumRengi}15` }}
+              style={{ backgroundColor: `${guncellemeDurumRengi}26` }}
             >
               {kontrolEdiliyor ? (
                 <ActivityIndicator size="small" color={renkler.bilgi} />
