@@ -265,10 +265,10 @@ jobs:
           
           if [ -n "$LAST_TAG" ]; then
             # Added (feat)
-            FEATURES=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^feat" 2>/dev/null || true)
+            FEATURES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^feat" 2>/dev/null || true)
             if [ -n "$FEATURES" ]; then
               echo "### Added" >> CHANGELOG_NEW.md
-              git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
+              git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
                 sed 's/^- feat(\([^)]*\)): /- [\1] /' | \
                 sed 's/^- feat: /- /' >> CHANGELOG_NEW.md
               echo "" >> CHANGELOG_NEW.md
@@ -276,10 +276,10 @@ jobs:
             fi
             
             # Fixed
-            FIXES=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^fix" 2>/dev/null || true)
+            FIXES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^fix" 2>/dev/null || true)
             if [ -n "$FIXES" ]; then
               echo "### Fixed" >> CHANGELOG_NEW.md
-              git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
+              git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
                 sed 's/^- fix(\([^)]*\)): /- [\1] /' | \
                 sed 's/^- fix: /- /' >> CHANGELOG_NEW.md
               echo "" >> CHANGELOG_NEW.md
@@ -287,17 +287,17 @@ jobs:
             fi
             
             # Changed (refactor, perf)
-            REFACTOR=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^refactor" 2>/dev/null || true)
-            PERF=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s" --grep="^perf" 2>/dev/null || true)
+            REFACTOR=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^refactor" 2>/dev/null || true)
+            PERF=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^perf" 2>/dev/null || true)
             if [ -n "$REFACTOR" ] || [ -n "$PERF" ]; then
               echo "### Changed" >> CHANGELOG_NEW.md
               if [ -n "$REFACTOR" ]; then
-                git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
+                git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
                   sed 's/^- refactor(\([^)]*\)): /- [\1] /' | \
                   sed 's/^- refactor: /- /' >> CHANGELOG_NEW.md
               fi
               if [ -n "$PERF" ]; then
-                git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
+                git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
                   sed 's/^- perf(\([^)]*\)): /- [\1] /' | \
                   sed 's/^- perf: /- /' >> CHANGELOG_NEW.md
               fi
@@ -336,7 +336,7 @@ jobs:
             NOTES="${NOTES}\n\n"
             
             # Features
-            FEATURES=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
+            FEATURES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
               sed 's/^- feat(\([^)]*\)): /- **\1**: /' | \
               sed 's/^- feat: /- /' || true)
             if [ -n "$FEATURES" ]; then
@@ -344,7 +344,7 @@ jobs:
             fi
             
             # Fixes
-            FIXES=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
+            FIXES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
               sed 's/^- fix(\([^)]*\)): /- **\1**: /' | \
               sed 's/^- fix: /- /' || true)
             if [ -n "$FIXES" ]; then
@@ -352,7 +352,7 @@ jobs:
             fi
             
             # Performance
-            PERF=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
+            PERF=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^perf" 2>/dev/null | \
               sed 's/^- perf(\([^)]*\)): /- **\1**: /' | \
               sed 's/^- perf: /- /' || true)
             if [ -n "$PERF" ]; then
@@ -360,7 +360,7 @@ jobs:
             fi
             
             # Refactor
-            REFACTOR=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
+            REFACTOR=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
               sed 's/^- refactor(\([^)]*\)): /- **\1**: /' | \
               sed 's/^- refactor: /- /' || true)
             if [ -n "$REFACTOR" ]; then
