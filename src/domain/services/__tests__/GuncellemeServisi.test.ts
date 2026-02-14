@@ -252,6 +252,32 @@ describe('GitHubGuncellemeKaynagi', () => {
     expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('**');
   });
 
+  it('Added ve Fixed bolumleri dogru formatlar', async () => {
+    const releaseNot = `## [0.6.0] - 2026-02-14
+
+### Added
+- Merge pull request #28 from furkanisikay/claude/merge-kible-to-master-bRa1M
+- Add Qibla finder feature with comprehensive code review fixes
+- kible gosterici ozelligi eklendi
+
+### Fixed
+- PR bot yorumları uygulandı - NetInfo, URL doğrulama, typo
+- code review düzeltmeleri - kritik hatalar ve iyileştirmeler`;
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      body: releaseNot,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Yeni Özellikler:');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Qibla finder');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('kible gosterici');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Hatalar giderildi');
+    // Gereksiz merge commit mesajlari filtrelenmis olmali
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('Merge pull request');
+  });
+
   it('zaman asimi durumunu ele alir', async () => {
     // AbortError simule et
     const abortError = new Error('Aborted');
