@@ -131,7 +131,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 2);
     });
 
-    test('Namaz kılındı işareti bildirimleri durdurmalı', () => {
+    test('Namaz kılındı işareti banner\'ı temizlemeli', () => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
             kalanSureMs: 5 * 60 * 1000,
@@ -139,10 +139,11 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         // Önce işaretle
         muhafiz.namazKilindiIsaretle('ogle');
-        
+
         muhafiz.baslat(bildirimSpx);
-        
-        expect(bildirimSpx).not.toHaveBeenCalled();
+
+        // Banner temizleme için seviye 0 ile çağrılmalı
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
     });
 
     test('Yapılandırma değişikliği etkili olmalı', () => {
