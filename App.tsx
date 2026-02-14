@@ -20,6 +20,8 @@ import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
+import { GuncellemeBildirimi } from './src/presentation/components/guncelleme/GuncellemeBildirimi';
+import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -158,6 +160,9 @@ const AppIcerik: React.FC = () => {
     // Konum takibini senkronize et ve yeniden baslat
     konumTakibiniSenkronizeEt();
 
+    // Guncelleme kontrolu (sessiz, arka planda)
+    store.dispatch(guncellemeKontrolEt(false));
+
     // Uygulama on plana geldiginde bildirimleri yeniden planla ve konum takibini senkronize et
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
@@ -165,6 +170,8 @@ const AppIcerik: React.FC = () => {
         arkaplanMuhafiziBildirimleriniPlanla();
         // Konum takibini senkronize et ve yeniden baslat
         konumTakibiniSenkronizeEt();
+        // Guncelleme kontrolu (onbellek gecerlilik surecine uyar)
+        store.dispatch(guncellemeKontrolEt(false));
       }
     });
 
@@ -179,13 +186,14 @@ const AppIcerik: React.FC = () => {
   }
 
   return (
-    <>
+    <View style={styles.container}>
       <StatusBar
         backgroundColor={renkler.birincil}
         barStyle="light-content"
       />
       <AppNavigator />
-    </>
+      <GuncellemeBildirimi />
+    </View>
   );
 };
 

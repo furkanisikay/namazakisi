@@ -1,0 +1,474 @@
+/**
+ * Guncelleme Servisi
+ *
+ * Uygulama guncelleme kontrolu icin provider tabanli mimari.
+ * Su an GitHub Releases destekler, ileride Google Play ve App Store
+ * kaynaklari kolayca eklenebilir.
+ *
+ * Ozellikler:
+ * - Provider pattern ile genisletilebilir kaynak destegi
+ * - Offline-aware: ag baglantisi yoksa sessizce atlar
+ * - Akilli onbellekleme: gereksiz API cagrilarindan kacinir
+ * - Erteleme destegi: kullanici "Sonra" dedikten sonra belirli sure gostermez
+ */
+
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  UYGULAMA,
+  GUNCELLEME_SABITLERI,
+  GuncellemeKaynagiTipi,
+} from '../../core/constants/UygulamaSabitleri';
+
+// ==================== TIPLER ====================
+
+/**
+ * Guncelleme bilgisi
+ */
+export interface GuncellemeBilgisi {
+  /** Yeni versiyon numarasi */
+  yeniVersiyon: string;
+  /** Mevcut versiyon numarasi */
+  mevcutVersiyon: string;
+  /** Degisiklik notlari */
+  degisiklikNotlari: string;
+  /** Indirme/guncelleme baglantisi */
+  indirmeBaglantisi: string;
+  /** Yayinlanma tarihi */
+  yayinTarihi: string;
+  /** Guncelleme kaynagi */
+  kaynak: GuncellemeKaynagiTipi;
+  /** Zorunlu guncelleme mi */
+  zorunluMu: boolean;
+}
+
+/**
+ * Guncelleme kontrol sonucu
+ */
+export interface GuncellemeKontrolSonucu {
+  /** Guncelleme mevcut mu */
+  guncellemeMevcut: boolean;
+  /** Guncelleme bilgisi (mevcut ise) */
+  bilgi: GuncellemeBilgisi | null;
+}
+
+/**
+ * Onbellek durumu (AsyncStorage'da saklanir)
+ */
+interface GuncellemeOnbellek {
+  /** Son kontrol zamani (timestamp) */
+  sonKontrolZamani: number;
+  /** Son kontrol sonucu */
+  sonSonuc: GuncellemeKontrolSonucu;
+  /** Kullanicinin erteledigi versiyon */
+  ertelenenVersiyon: string | null;
+  /** Erteleme zamani (timestamp) */
+  ertelemeZamani: number | null;
+}
+
+// ==================== GUNCELLEME KAYNAGI ARAYUZU ====================
+
+/**
+ * Guncelleme kaynagi arayuzu
+ * Yeni kaynaklar (Play Store, App Store) bu arayuzu uygulayarak eklenir
+ */
+export interface GuncellemeKaynagi {
+  /** Kaynak tipi */
+  readonly tip: GuncellemeKaynagiTipi;
+  /** Bu platformda destekleniyor mu */
+  destekleniyor(): boolean;
+  /** En son surumu kontrol et */
+  enSonSurumuKontrolEt(): Promise<GuncellemeKontrolSonucu>;
+}
+
+// ==================== GITHUB GUNCELLEME KAYNAGI ====================
+
+/**
+ * GitHub Releases API uzerinden guncelleme kontrolu
+ */
+export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
+  readonly tip: GuncellemeKaynagiTipi = 'github';
+  private readonly repoAdresi: string;
+
+  constructor(repoAdresi: string = UYGULAMA.GITHUB_REPO) {
+    this.repoAdresi = repoAdresi;
+  }
+
+  destekleniyor(): boolean {
+    // GitHub releases tum platformlarda calisir
+    return true;
+  }
+
+  async enSonSurumuKontrolEt(): Promise<GuncellemeKontrolSonucu> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), GUNCELLEME_SABITLERI.API_ZAMAN_ASIMI);
+
+    try {
+      const yanit = await fetch(
+        `https://api.github.com/repos/${this.repoAdresi}/releases/latest`,
+        {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json',
+          },
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      if (!yanit.ok) {
+        console.warn(`[GuncellemeServisi] GitHub API hatasi: ${yanit.status}`);
+        return { guncellemeMevcut: false, bilgi: null };
+      }
+
+      const veri = await yanit.json();
+      const yeniVersiyon = (veri.tag_name || '').replace(/^v/, '');
+      const mevcutVersiyon = UYGULAMA.VERSIYON;
+
+      if (!yeniVersiyon) {
+        return { guncellemeMevcut: false, bilgi: null };
+      }
+
+      const guncellemeMevcut = versiyonKarsilastir(yeniVersiyon, mevcutVersiyon) > 0;
+
+      if (!guncellemeMevcut) {
+        return { guncellemeMevcut: false, bilgi: null };
+      }
+
+      // Platform'a uygun indirme baglantisi bul
+      const indirmeBaglantisi = this.indirmeBaglantisiBul(veri);
+
+      return {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon,
+          mevcutVersiyon,
+          degisiklikNotlari: this.degisiklikNotlariniDuzenle(veri.body || ''),
+          indirmeBaglantisi,
+          yayinTarihi: veri.published_at || '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      };
+    } catch (hata: any) {
+      clearTimeout(timeoutId);
+
+      if (hata?.name === 'AbortError') {
+        console.warn('[GuncellemeServisi] GitHub API zaman asimi');
+      } else {
+        console.warn('[GuncellemeServisi] GitHub API hatasi:', hata?.message);
+      }
+
+      return { guncellemeMevcut: false, bilgi: null };
+    }
+  }
+
+  /**
+   * Platform'a uygun APK/IPA indirme baglantisi bul
+   * Bulamazsa release sayfasina yonlendir
+   */
+  private indirmeBaglantisiBul(releaseVeri: any): string {
+    const assets = releaseVeri.assets || [];
+    const releaseSayfasi = releaseVeri.html_url || `https://github.com/${this.repoAdresi}/releases/latest`;
+
+    if (Platform.OS === 'android') {
+      const apk = assets.find(
+        (a: any) => a.name?.toLowerCase().endsWith('.apk')
+      );
+      if (apk?.browser_download_url) {
+        return apk.browser_download_url;
+      }
+    }
+
+    return releaseSayfasi;
+  }
+
+  /**
+   * GitHub release notlarini temizle ve kisalt
+   */
+  private degisiklikNotlariniDuzenle(ham: string): string {
+    if (!ham) return '';
+
+    // Markdown basliklarini ve fazla boslugu temizle
+    return ham
+      .replace(/^#+\s*/gm, '')
+      .replace(/\*\*/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim()
+      .slice(0, 500);
+  }
+}
+
+// ==================== ANA SERVIS ====================
+
+/**
+ * Guncelleme Servisi (Singleton)
+ *
+ * Kullanim:
+ * ```typescript
+ * const servis = GuncellemeServisi.getInstance();
+ * const sonuc = await servis.guncellemeKontrolEt();
+ * ```
+ */
+export class GuncellemeServisi {
+  private static instance: GuncellemeServisi;
+  private kaynaklar: GuncellemeKaynagi[] = [];
+  private onbellek: GuncellemeOnbellek | null = null;
+
+  private constructor() {
+    // Varsayilan olarak GitHub kaynagini ekle
+    this.kaynaklar.push(new GitHubGuncellemeKaynagi());
+  }
+
+  public static getInstance(): GuncellemeServisi {
+    if (!GuncellemeServisi.instance) {
+      GuncellemeServisi.instance = new GuncellemeServisi();
+    }
+    return GuncellemeServisi.instance;
+  }
+
+  /**
+   * Test icin instance'i sifirla
+   */
+  public static resetInstance(): void {
+    GuncellemeServisi.instance = undefined as any;
+  }
+
+  /**
+   * Yeni guncelleme kaynagi ekle
+   * Ileride Play Store veya App Store kaynagi eklenebilir
+   */
+  public kaynakEkle(kaynak: GuncellemeKaynagi): void {
+    // Ayni tipte kaynak varsa degistir
+    this.kaynaklar = this.kaynaklar.filter(k => k.tip !== kaynak.tip);
+    this.kaynaklar.push(kaynak);
+  }
+
+  /**
+   * Guncelleme kontrol et
+   * Onbellek, erteleme ve ag durumunu otomatik yonetir
+   *
+   * @param zorla - Onbellek ve ertelemeyi atlayarak zorla kontrol et
+   */
+  public async guncellemeKontrolEt(zorla: boolean = false): Promise<GuncellemeKontrolSonucu> {
+    try {
+      // Onbellegi yukle
+      await this.onbellegiYukle();
+
+      if (!zorla) {
+        // Erteleme kontrolu
+        if (this.ertelemeSurecindeMi()) {
+          return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
+        }
+
+        // Onbellek gecerli mi kontrol et
+        if (this.onbellekGecerliMi()) {
+          return this.onbellek!.sonSonuc;
+        }
+      }
+
+      // Ag baglantisi kontrol et
+      const cevrimiciMi = await this.agBaglantisiKontrolEt();
+      if (!cevrimiciMi) {
+        console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
+        // Cevrimdisi ise onbellekteki sonucu don (varsa)
+        return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
+      }
+
+      // Desteklenen kaynaklardan kontrol et
+      const sonuc = await this.kaynaklardanKontrolEt();
+
+      // Onbellege kaydet
+      await this.onbellegeKaydet(sonuc);
+
+      return sonuc;
+    } catch (hata) {
+      console.error('[GuncellemeServisi] Guncelleme kontrol hatasi:', hata);
+      return { guncellemeMevcut: false, bilgi: null };
+    }
+  }
+
+  /**
+   * Kullanici guncellemeyi ertelediginde cagrilir
+   */
+  public async guncellemeErtele(versiyon: string): Promise<void> {
+    await this.onbellegiYukle();
+
+    if (this.onbellek) {
+      this.onbellek.ertelenenVersiyon = versiyon;
+      this.onbellek.ertelemeZamani = Date.now();
+    } else {
+      this.onbellek = {
+        sonKontrolZamani: Date.now(),
+        sonSonuc: { guncellemeMevcut: false, bilgi: null },
+        ertelenenVersiyon: versiyon,
+        ertelemeZamani: Date.now(),
+      };
+    }
+
+    await this.onbellegiSakla();
+  }
+
+  // ==================== YARDIMCI METODLAR ====================
+
+  /**
+   * Desteklenen kaynaklardan sirasyla kontrol et
+   * Ilk basarili sonucu dondurur
+   */
+  private async kaynaklardanKontrolEt(): Promise<GuncellemeKontrolSonucu> {
+    for (const kaynak of this.kaynaklar) {
+      if (!kaynak.destekleniyor()) {
+        continue;
+      }
+
+      try {
+        const sonuc = await kaynak.enSonSurumuKontrolEt();
+        if (sonuc.guncellemeMevcut) {
+          return sonuc;
+        }
+      } catch (hata) {
+        console.warn(`[GuncellemeServisi] ${kaynak.tip} kaynagi hatasi:`, hata);
+      }
+    }
+
+    return { guncellemeMevcut: false, bilgi: null };
+  }
+
+  /**
+   * Erteleme sureci devam ediyor mu?
+   */
+  private ertelemeSurecindeMi(): boolean {
+    if (!this.onbellek?.ertelemeZamani || !this.onbellek?.ertelenenVersiyon) {
+      return false;
+    }
+
+    const gecenSure = Date.now() - this.onbellek.ertelemeZamani;
+    return gecenSure < GUNCELLEME_SABITLERI.ERTELEME_SURESI;
+  }
+
+  /**
+   * Onbellek hala gecerli mi?
+   */
+  private onbellekGecerliMi(): boolean {
+    if (!this.onbellek?.sonKontrolZamani) {
+      return false;
+    }
+
+    const gecenSure = Date.now() - this.onbellek.sonKontrolZamani;
+    return gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
+  }
+
+  /**
+   * Basit ag baglantisi kontrolu
+   * GitHub API'ye kucuk bir istek atarak cevrimici olup olmadigimizi anlariz
+   */
+  private async agBaglantisiKontrolEt(): Promise<boolean> {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+      const yanit = await fetch('https://api.github.com/zen', {
+        method: 'HEAD',
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      return yanit.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Onbellegi AsyncStorage'dan yukle
+   */
+  private async onbellegiYukle(): Promise<void> {
+    if (this.onbellek) return;
+
+    try {
+      const veri = await AsyncStorage.getItem(GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI);
+      if (veri) {
+        this.onbellek = JSON.parse(veri);
+      }
+    } catch (hata) {
+      console.warn('[GuncellemeServisi] Onbellek yuklenemedi:', hata);
+    }
+  }
+
+  /**
+   * Sonucu onbellege kaydet
+   */
+  private async onbellegeKaydet(sonuc: GuncellemeKontrolSonucu): Promise<void> {
+    this.onbellek = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: sonuc,
+      ertelenenVersiyon: this.onbellek?.ertelenenVersiyon || null,
+      ertelemeZamani: this.onbellek?.ertelemeZamani || null,
+    };
+
+    await this.onbellegiSakla();
+  }
+
+  /**
+   * Onbellegi AsyncStorage'a yaz
+   */
+  private async onbellegiSakla(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(
+        GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI,
+        JSON.stringify(this.onbellek)
+      );
+    } catch (hata) {
+      console.warn('[GuncellemeServisi] Onbellek kaydedilemedi:', hata);
+    }
+  }
+}
+
+// ==================== YARDIMCI FONKSIYONLAR ====================
+
+/**
+ * Semantik versiyon karsilastirma
+ *
+ * @returns pozitif: v1 > v2, negatif: v1 < v2, sifir: esit
+ */
+export function versiyonKarsilastir(v1: string, v2: string): number {
+  const parcala = (v: string): number[] => {
+    return v
+      .replace(/^v/, '')
+      .split('.')
+      .map(p => {
+        const sayi = parseInt(p, 10);
+        return isNaN(sayi) ? 0 : sayi;
+      });
+  };
+
+  const p1 = parcala(v1);
+  const p2 = parcala(v2);
+  const uzunluk = Math.max(p1.length, p2.length);
+
+  for (let i = 0; i < uzunluk; i++) {
+    const a = p1[i] || 0;
+    const b = p2[i] || 0;
+    if (a !== b) return a - b;
+  }
+
+  return 0;
+}
+
+/**
+ * Yayinlanma tarihini okunabilir formata cevir
+ */
+export function yayinTarihiniFormatla(isoTarih: string): string {
+  if (!isoTarih) return '';
+
+  try {
+    const tarih = new Date(isoTarih);
+    if (isNaN(tarih.getTime())) return '';
+    const gun = tarih.getDate().toString().padStart(2, '0');
+    const ay = (tarih.getMonth() + 1).toString().padStart(2, '0');
+    const yil = tarih.getFullYear();
+    return `${gun}.${ay}.${yil}`;
+  } catch {
+    return '';
+  }
+}

@@ -1,12 +1,13 @@
 /**
  * Hakkinda Sayfasi
  * Uygulama bilgileri ve versiyonu
- * 
+ * Guncelleme kontrolu dahil
+ *
  * NativeWind + Expo Vector Icons ile guncellenmis versiyon
  */
 
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -15,10 +16,14 @@ import {
   Easing,
   Linking,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { guncellemeKontrolEt } from '../store/guncellemeSlice';
 
 /**
  * Bilgi satiri bileseni
@@ -82,6 +87,12 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
  */
 export const HakkindaSayfasi: React.FC = () => {
   const renkler = useRenkler();
+  const dispatch = useAppDispatch();
+
+  // Guncelleme durumu
+  const { kontrolEdiliyor, guncellemeMevcut, bilgi } = useAppSelector(
+    (state) => state.guncelleme
+  );
 
   // Guncel yil
   const guncelYil = new Date().getFullYear();
@@ -111,6 +122,22 @@ export const HakkindaSayfasi: React.FC = () => {
   const handleWebSitesiAc = (url: string) => {
     Linking.openURL(url);
   };
+
+  // Manuel guncelleme kontrolu
+  const handleGuncellemeKontrol = useCallback(() => {
+    dispatch(guncellemeKontrolEt(true));
+  }, [dispatch]);
+
+  // Guncelleme butonu icerigi
+  const guncellemeDurumMetni = kontrolEdiliyor
+    ? 'Kontrol ediliyor...'
+    : guncellemeMevcut && bilgi
+      ? `v${bilgi.yeniVersiyon} mevcut`
+      : 'Güncel';
+
+  const guncellemeDurumRengi = guncellemeMevcut && bilgi
+    ? renkler.bilgi
+    : renkler.basarili;
 
   return (
     <ScrollView
@@ -181,6 +208,71 @@ export const HakkindaSayfasi: React.FC = () => {
               onPress={() => handleWebSitesiAc('https://github.com/furkanisikay/namazakisi')}
             />
           </View>
+        </View>
+
+        {/* Guncelleme Kontrolu */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            GÜNCELLEME
+          </Text>
+
+          <TouchableOpacity
+            onPress={handleGuncellemeKontrol}
+            disabled={kontrolEdiliyor}
+            activeOpacity={0.7}
+            className="flex-row items-center py-3.5 px-4 rounded-xl"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            <View
+              className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+              style={{ backgroundColor: `${guncellemeDurumRengi}15` }}
+            >
+              {kontrolEdiliyor ? (
+                <ActivityIndicator size="small" color={renkler.bilgi} />
+              ) : (
+                <MaterialIcons
+                  name="system-update"
+                  size={22}
+                  color={guncellemeDurumRengi}
+                />
+              )}
+            </View>
+            <View className="flex-1">
+              <Text
+                className="text-base font-semibold"
+                style={{ color: renkler.metin }}
+              >
+                Güncelleme Kontrolü
+              </Text>
+              <Text
+                className="text-xs mt-0.5"
+                style={{ color: guncellemeDurumRengi }}
+              >
+                {guncellemeDurumMetni}
+              </Text>
+            </View>
+            {guncellemeMevcut && bilgi ? (
+              <TouchableOpacity
+                onPress={() => handleWebSitesiAc(bilgi.indirmeBaglantisi)}
+                className="px-3 py-1.5 rounded-lg"
+                style={{ backgroundColor: renkler.bilgi }}
+                activeOpacity={0.7}
+              >
+                <Text className="text-xs font-bold" style={{ color: '#FFFFFF' }}>
+                  İndir
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <MaterialIcons
+                name="refresh"
+                size={20}
+                color={renkler.metinIkincil}
+              />
+            )}
+          </TouchableOpacity>
         </View>
 
         {/* Telif Hakki */}

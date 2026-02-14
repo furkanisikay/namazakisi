@@ -39,6 +39,28 @@ export const UYGULAMA = {
   ADI: 'Namaz Akışı',
   VERSIYON: '0.3.0',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
+  GITHUB_REPO: 'furkanisikay/namazakisi',
+} as const;
+
+// ==================== GUNCELLEME SISTEMI SABITLERI ====================
+
+/**
+ * Guncelleme kontrol kaynaklari
+ */
+export type GuncellemeKaynagiTipi = 'github' | 'playstore' | 'appstore';
+
+/**
+ * Guncelleme kontrol ayarlari
+ */
+export const GUNCELLEME_SABITLERI = {
+  /** Kontroller arasi minimum bekleme suresi (milisaniye) - 6 saat */
+  KONTROL_ARALIGI: 6 * 60 * 60 * 1000,
+  /** GitHub API zaman asimi (milisaniye) */
+  API_ZAMAN_ASIMI: 10000,
+  /** Kullanicinin "Sonra" dedikten sonra tekrar gostermeden once bekleme (milisaniye) - 24 saat */
+  ERTELEME_SURESI: 24 * 60 * 60 * 1000,
+  /** AsyncStorage anahtari */
+  DEPOLAMA_ANAHTARI: '@namaz_akisi/guncelleme_durumu',
 } as const;
 
 // Renk paleti
