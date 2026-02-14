@@ -9,7 +9,7 @@ module.exports = {
   // Coverage ayarlari
   collectCoverageFrom: [
     "src/**/*.ts",
-    "src/**/*.tsx", // TSX'i de ekleyelim
+    "src/**/*.tsx",
     "!src/**/*.d.ts",
     "!src/**/__tests__/**",
     "!src/**/index.ts",
@@ -25,4 +25,5 @@ module.exports = {
     "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|expo-.*|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|adhan|@expo/vector-icons|expo-modules-core)"
   ],
   coverageDirectory: "coverage",
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };

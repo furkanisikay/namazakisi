@@ -4,6 +4,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { tarihiGorunumFormatinaCevir, gunAdiniAl } from '../../../core/utils/TarihYardimcisi';
 
+/**
+ * Home page header component props.
+ */
 interface HomeHeaderProps {
     tarih: string;
     streakGun: number;
@@ -11,15 +14,23 @@ interface HomeHeaderProps {
     aktifGunMu?: boolean;
     onTarihTikla: () => void;
     onSeriTikla?: () => void;
+    onKibleTikla?: () => void;
 }
 
+/**
+ * Home page header component.
+ * Displays current date, streak counter, and qibla shortcut button.
+ * @param {HomeHeaderProps} props - Component props.
+ * @returns {React.JSX.Element} Header with date info, qibla and streak buttons.
+ */
 export const HomeHeader: React.FC<HomeHeaderProps> = ({
     tarih,
     streakGun,
     bugunMu,
     aktifGunMu,
     onTarihTikla,
-    onSeriTikla
+    onSeriTikla,
+    onKibleTikla
 }) => {
     const renkler = useRenkler();
 
@@ -69,20 +80,40 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
-                className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
-                style={{
-                    backgroundColor: renkler.durum.uyari + '20', // Opacity 20
-                    borderColor: renkler.durum.uyari + '50' // Opacity 50
-                }}
-                onPress={onSeriTikla}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="fire" size={14} color={renkler.durum.uyari} />
-                <Text className="font-bold text-sm" style={{ color: renkler.durum.uyari }}>
-                    {streakGun} Gün
-                </Text>
-            </TouchableOpacity>
+            <View className="flex-row items-center gap-2">
+                {/* Kıble Butonu */}
+                <TouchableOpacity
+                    className="flex-row items-center justify-center w-8 h-8 rounded-full border"
+                    style={{
+                        backgroundColor: renkler.arkaplan,
+                        borderColor: renkler.sinir
+                    }}
+                    onPress={onKibleTikla}
+                    activeOpacity={0.7}
+                    accessibilityLabel="Kıble yönünü bul"
+                    accessibilityRole="button"
+                >
+                    <FontAwesome5 name="compass" size={14} color={renkler.birincil} />
+                </TouchableOpacity>
+
+                {/* Seri Butonu */}
+                <TouchableOpacity
+                    className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
+                    style={{
+                        backgroundColor: renkler.durum.uyari + '20',
+                        borderColor: renkler.durum.uyari + '50'
+                    }}
+                    onPress={onSeriTikla}
+                    activeOpacity={0.7}
+                    accessibilityLabel={`Seri: ${streakGun} gün`}
+                    accessibilityRole="button"
+                >
+                    <FontAwesome5 name="fire" size={14} color={renkler.durum.uyari} />
+                    <Text className="font-bold text-sm" style={{ color: renkler.durum.uyari }}>
+                        {streakGun} Gün
+                    </Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
