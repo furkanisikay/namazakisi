@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import * as Location from 'expo-location';
-import { Magnetometer } from 'expo-sensors';
 import { Coordinates, Qibla } from 'adhan';
 
 /**
@@ -36,7 +35,6 @@ export const useKible = (): UseKibleSonuc => {
   const [hata, setHata] = useState<string | null>(null);
 
   useEffect(() => {
-    let magnetometerSubscription: { remove: () => void } | null = null;
     let headingSubscription: { remove: () => void } | null = null;
     let isMounted = true;
 
@@ -47,7 +45,6 @@ export const useKible = (): UseKibleSonuc => {
         if (status !== 'granted') {
           if (isMounted) {
             setHata('Konum izni verilmedi. Kıble yönünü hesaplamak için konum izni gereklidir.');
-            setYukleniyor(false);
           }
           return;
         }
@@ -76,31 +73,21 @@ export const useKible = (): UseKibleSonuc => {
 
           setPusulaYonelimi(heading);
         });
-
-        // Yedek olarak Magnetometer da dinle (bazi cihazlarda heading API calismayabilir)
-        Magnetometer.setUpdateInterval(100);
-        magnetometerSubscription = Magnetometer.addListener((data) => {
-          if (!isMounted) return;
-          // Heading API zaten calisiyor ise magnetometer verisini gormezden gel
-          // Bu listener sadece heading API calismayan cihazlar icin yedektir
-        });
-
-        if (isMounted) setYukleniyor(false);
-      } catch (err: any) {
-        const hataMesaji = err?.message || '';
+      } catch (err: unknown) {
+        const hataMesaji = (err as Error)?.message || '';
         if (hataMesaji.includes('location is unavailable') || hataMesaji.includes('location services')) {
           console.warn('[Kible] Konum servisi kullanilamiyor:', hataMesaji);
           if (isMounted) {
             setHata('Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.');
-            setYukleniyor(false);
           }
         } else {
           console.error('Kible servisi hatasi:', err);
           if (isMounted) {
             setHata('Kıble servisi başlatılamadı.');
-            setYukleniyor(false);
           }
         }
+      } finally {
+        if (isMounted) setYukleniyor(false);
       }
     };
 
@@ -108,9 +95,6 @@ export const useKible = (): UseKibleSonuc => {
 
     return () => {
       isMounted = false;
-      if (magnetometerSubscription) {
-        magnetometerSubscription.remove();
-      }
       if (headingSubscription) {
         headingSubscription.remove();
       }
@@ -121,8 +105,11 @@ export const useKible = (): UseKibleSonuc => {
   // Pusula Yonelimi: Gercek kuzey (0) ne tarafta (heading)
   // Kible Acisi: Kuzey'e gore Kabe (orn: 150 derece)
   // Kabe'nin telefona gore acisi = kibleAcisi - pusulaYonelimi
-  let hedefAcisi = kibleAcisi - pusulaYonelimi;
-  if (hedefAcisi < 0) hedefAcisi += 360;
+  const hedefAcisi = useMemo(() => {
+    let aci = kibleAcisi - pusulaYonelimi;
+    if (aci < 0) aci += 360;
+    return aci;
+  }, [kibleAcisi, pusulaYonelimi]);
 
   return {
     kibleAcisi,

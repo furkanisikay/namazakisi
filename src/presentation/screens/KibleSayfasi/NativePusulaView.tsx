@@ -5,6 +5,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useKible } from '../../hooks/useKible';
 import { useRenkler } from '../../../core/theme';
 
+/** Kible hizalama hassasiyet esigi (derece cinsinden) */
+const KIBLE_HIZALAMA_ESIGI = 10;
+
 /**
  * Native compass view component for Qibla direction.
  * Renders an animated compass dial that rotates based on device heading
@@ -64,7 +67,7 @@ export const NativePusulaView = () => {
   }
 
   // Kible hizalama gostergesi
-  const hizalandiMi = hedefAcisi < 10 || hedefAcisi > 350;
+  const hizalandiMi = hedefAcisi < KIBLE_HIZALAMA_ESIGI || hedefAcisi > (360 - KIBLE_HIZALAMA_ESIGI);
 
   return (
     <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
@@ -102,10 +105,10 @@ export const NativePusulaView = () => {
           }
         ]}>
           {/* Yon Isaretleri */}
-          <Text style={[styles.yonMetni, styles.kuzey, { color: 'red' }]}>N</Text>
-          <Text style={[styles.yonMetni, styles.guney, { color: renkler.metin }]}>S</Text>
-          <Text style={[styles.yonMetni, styles.dogu, { color: renkler.metin }]}>E</Text>
-          <Text style={[styles.yonMetni, styles.bati, { color: renkler.metin }]}>W</Text>
+          <Text style={[styles.yonMetni, styles.kuzey, { color: renkler.hata }]}>K</Text>
+          <Text style={[styles.yonMetni, styles.guney, { color: renkler.metin }]}>G</Text>
+          <Text style={[styles.yonMetni, styles.dogu, { color: renkler.metin }]}>D</Text>
+          <Text style={[styles.yonMetni, styles.bati, { color: renkler.metin }]}>B</Text>
 
           {/* Ara Cizgiler (Gorsel Zenginlik) */}
           <View style={[styles.crossHair, { backgroundColor: renkler.sinir }]} />
