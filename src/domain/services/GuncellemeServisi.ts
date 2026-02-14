@@ -14,6 +14,7 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import {
   UYGULAMA,
   GUNCELLEME_SABITLERI,
@@ -267,8 +268,14 @@ export class GuncellemeServisi {
         }
       }
 
+      // Ag baglantisi kontrolu (NetInfo ile hizli ve guvenilir)
+      const agDurumu = await NetInfo.fetch();
+      if (!agDurumu.isConnected) {
+        console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
+        return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
+      }
+
       // Desteklenen kaynaklardan kontrol et
-      // Ag baglantisi yoksa fetch zaten hata firlatir, ayri kontrol gereksiz
       const sonuc = await this.kaynaklardanKontrolEt();
 
       // Onbellege kaydet
@@ -425,6 +432,30 @@ export function versiyonKarsilastir(v1: string, v2: string): number {
   }
 
   return 0;
+}
+
+/** Guncelleme indirme baglantilari icin guvenilir domainler */
+const GUVENILIR_DOMAINLER = [
+  'github.com',
+  'objects.githubusercontent.com',
+  'play.google.com',
+  'apps.apple.com',
+];
+
+/**
+ * Indirme baglantisinin guvenilir bir domaine ait olup olmadigini kontrol et
+ * API'den gelen URL'lerin phishing icin manipule edilmediginden emin olur
+ */
+export function guvenilirBaglantiMi(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') return false;
+    return GUVENILIR_DOMAINLER.some(
+      (domain) => parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
+    );
+  } catch {
+    return false;
+  }
 }
 
 /**

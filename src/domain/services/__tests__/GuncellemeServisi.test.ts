@@ -15,6 +15,7 @@ import {
   GitHubGuncellemeKaynagi,
   versiyonKarsilastir,
   yayinTarihiniFormatla,
+  guvenilirBaglantiMi,
   GuncellemeKaynagi,
   GuncellemeKontrolSonucu,
 } from '../GuncellemeServisi';
@@ -41,6 +42,12 @@ jest.mock('react-native', () => ({
   Platform: {
     OS: 'android',
   },
+}));
+
+// NetInfo mock
+const mockNetInfoFetch = jest.fn().mockResolvedValue({ isConnected: true });
+jest.mock('@react-native-community/netinfo', () => ({
+  fetch: () => mockNetInfoFetch(),
 }));
 
 // Global fetch mock
@@ -263,6 +270,7 @@ describe('GuncellemeServisi', () => {
     // Her test oncesi temizle
     GuncellemeServisi.resetInstance();
     mockFetch.mockReset();
+    mockNetInfoFetch.mockReset().mockResolvedValue({ isConnected: true });
     // AsyncStorage temizle
     Object.keys(asyncStorageMock).forEach(key => delete asyncStorageMock[key]);
   });
@@ -301,13 +309,15 @@ describe('GuncellemeServisi', () => {
   });
 
   it('cevrimdisi iken guvenli sonuc dondurur', async () => {
-    // Ag baglantisi yok - fetch basarisiz
-    mockFetch.mockRejectedValue(new Error('Network error'));
+    // NetInfo cevrimdisi rapor ediyor
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false });
 
     const servis = GuncellemeServisi.getInstance();
     const sonuc = await servis.guncellemeKontrolEt(true);
 
     expect(sonuc.guncellemeMevcut).toBe(false);
+    // fetch cagirilmamis olmali
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('onbellek gecerli iken tekrar API cagrisi yapmiyor', async () => {
@@ -439,5 +449,39 @@ describe('GuncellemeServisi', () => {
 
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
+  });
+});
+
+describe('guvenilirBaglantiMi', () => {
+  it('github.com HTTPS baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://github.com/furkanisikay/namazakisi/releases')).toBe(true);
+  });
+
+  it('objects.githubusercontent.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://objects.githubusercontent.com/some-asset')).toBe(true);
+  });
+
+  it('play.google.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://play.google.com/store/apps/details?id=com.test')).toBe(true);
+  });
+
+  it('apps.apple.com baglantisini kabul eder', () => {
+    expect(guvenilirBaglantiMi('https://apps.apple.com/app/test/id123')).toBe(true);
+  });
+
+  it('HTTP baglantisini reddeder', () => {
+    expect(guvenilirBaglantiMi('http://github.com/test')).toBe(false);
+  });
+
+  it('bilinmeyen domaini reddeder', () => {
+    expect(guvenilirBaglantiMi('https://evil-site.com/malware.apk')).toBe(false);
+  });
+
+  it('gecersiz URL icin false dondurur', () => {
+    expect(guvenilirBaglantiMi('not-a-url')).toBe(false);
+  });
+
+  it('bos string icin false dondurur', () => {
+    expect(guvenilirBaglantiMi('')).toBe(false);
   });
 });

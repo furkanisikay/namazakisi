@@ -29,7 +29,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { guncellemeErtele, bildirimiKapat } from '../../store/guncellemeSlice';
-import { yayinTarihiniFormatla } from '../../../domain/services/GuncellemeServisi';
+import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 
 /**
  * Guncelleme bildirimi bileseni
@@ -88,7 +88,7 @@ export const GuncellemeBildirimi: React.FC = () => {
    * Guncelleme baglantisini ac
    */
   const guncelleBasildi = useCallback(() => {
-    if (bilgi?.indirmeBaglantisi) {
+    if (bilgi?.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
       Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
         console.warn('[GuncellemeBildirimi] Baglanti acilamadi:', hata);
       });
@@ -126,7 +126,7 @@ export const GuncellemeBildirimi: React.FC = () => {
       }}
       pointerEvents={gosterilsinMi ? 'auto' : 'none'}
     >
-      {/* Yarimm saydam arka plan overlay */}
+      {/* Yarim saydam arka plan overlay */}
       <View
         style={{
           marginHorizontal: 12,
