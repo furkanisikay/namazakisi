@@ -2,11 +2,18 @@
  * Konum Takip Servisi
  * Onemli konum degisikliklerini takip eder ve gunceller
  * Pil dostu: Sadece belirli mesafe degisikliklerinde tetiklenir
+ *
+ * NOT: Bu servis domain katmaninda olmasina ragmen React Native API'lerine (AppState, Platform)
+ * dogrudan bagli calisir. Bu, Clean Architecture'in Dependency Rule'unu teknik olarak ihlal eder,
+ * ancak React Native projeleri icin pragmatik bir trade-off'tur. Alternatif olarak bu bagimliliklar
+ * dependency injection ile soyutlanabilir, fakat bu projede mevcut pattern ile tutarlilik icin
+ * dogrudan kullanim tercih edilmistir.
  */
 
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppState, Platform } from 'react-native';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -207,6 +214,9 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
  */
 export class KonumTakipServisi {
     private static instance: KonumTakipServisi;
+    private baslatmaDenemeSayisi = 0;
+    private readonly MAX_BASLATMA_DENEME = 3;
+    private pendingAppStateSubscription: ReturnType<typeof AppState.addEventListener> | null = null;
 
     private constructor() { }
 
@@ -226,6 +236,14 @@ export class KonumTakipServisi {
      */
     public async baslat(): Promise<boolean> {
         try {
+            // 0. Android'de uygulama arka plandaysa foreground service baslatilamaz
+            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
+                console.log('[KonumTakip] Uygulama arka planda, baslatma erteleniyor...');
+                // On plana gelince tekrar dene
+                this.onPlanaGelinceDene();
+                return false;
+            }
+
             // 1. Once foreground izni kontrol et ve iste
             const { status: mevcutOnPlanIzni } = await Location.getForegroundPermissionsAsync();
             console.log('[KonumTakip] Mevcut on plan izni:', mevcutOnPlanIzni);
@@ -290,12 +308,52 @@ export class KonumTakipServisi {
             // 5. Ayarlari kaydet
             await this.ayarlariKaydet({ aktif: true, sonKoordinatlar: null, sonGuncellemeTarihi: null });
 
+            // Basarili baslatma - deneme sayacini sifirla
+            this.baslatmaDenemeSayisi = 0;
+
             console.log('[KonumTakip] Konum takibi baslatildi');
             return true;
-        } catch (e) {
+        } catch (e: any) {
+            // Android foreground service hatasi - uygulama arka plana gecmis olabilir
+            if (Platform.OS === 'android' && e?.message?.includes('foreground service')) {
+                console.warn('[KonumTakip] Foreground service baslatilamadi, on plana gelince tekrar denenecek');
+                this.onPlanaGelinceDene();
+                return false;
+            }
             console.error('[KonumTakip] Baslama hatasi:', e);
             return false;
         }
+    }
+
+    /**
+     * Uygulama on plana geldiginde konum takibini baslatmayi dener
+     * Android'de foreground service kisitlamasi nedeniyle gereklidir
+     */
+    private onPlanaGelinceDene(): void {
+        // Maksimum deneme sayisina ulasilmissa ek deneme yapma
+        if (this.baslatmaDenemeSayisi >= this.MAX_BASLATMA_DENEME) {
+            console.warn('[KonumTakip] Maksimum deneme sayisina ulasildi, on plana gelince deneme durduruldu');
+            return;
+        }
+
+        // Mevcut bekleme varsa tekrar ekleme (memory leak onleme)
+        if (this.pendingAppStateSubscription) {
+            return;
+        }
+
+        this.baslatmaDenemeSayisi++;
+        this.pendingAppStateSubscription = AppState.addEventListener('change', async (nextState) => {
+            if (nextState === 'active') {
+                this.pendingAppStateSubscription?.remove();
+                this.pendingAppStateSubscription = null;
+                console.log('[KonumTakip] Uygulama on plana geldi, konum takibi baslatiliyor...');
+                const basarili = await this.baslat();
+                // Basarili olduysa deneme sayacini sifirla
+                if (basarili) {
+                    this.baslatmaDenemeSayisi = 0;
+                }
+            }
+        });
     }
 
     /**
@@ -308,6 +366,11 @@ export class KonumTakipServisi {
                 await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
                 console.log('[KonumTakip] Konum takibi durduruldu');
             }
+
+            // Bekleyen AppState subscription varsa temizle
+            this.pendingAppStateSubscription?.remove();
+            this.pendingAppStateSubscription = null;
+            this.baslatmaDenemeSayisi = 0;
 
             // Ayarlari guncelle
             const mevcutAyarlar = await this.ayarlariGetir();
@@ -375,6 +438,13 @@ export class KonumTakipServisi {
      */
     public async yenidenBaslat(): Promise<boolean> {
         try {
+            // Android'de arka plandaysa erken cik
+            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
+                console.log('[KonumTakip] Uygulama arka planda, yeniden baslatma erteleniyor...');
+                this.onPlanaGelinceDene();
+                return false;
+            }
+
             const ayarlar = await this.ayarlariGetir();
             if (!ayarlar.aktif) {
                 console.log('[KonumTakip] Takip aktif degil, yeniden baslatma atlanıyor');

@@ -425,6 +425,7 @@ export const AnaSayfa: React.FC = () => {
         aktifGunMu={mevcutTarih === aktifGun}
         onTarihTikla={() => setTarihSeciciGorunur(true)}
         onSeriTikla={() => setSeriModalGorunur(true)}
+        onKibleTikla={() => navigation.navigate('KibleSayfasi')}
       />
 
       {/* Pager */}

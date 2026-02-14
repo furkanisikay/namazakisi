@@ -67,6 +67,8 @@ export const useRenkler = () => {
     birincilKoyu: palet.birincilKoyu,
     birincilAcik: palet.birincilAcik,
     vurgu: palet.vurgu,
+    // Birincil renk üzerindeki metin rengi (butonlar, vb.)
+    birincilMetin: '#FFFFFF',
   }), [tema, palet]);
 };
 
