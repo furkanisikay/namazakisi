@@ -515,6 +515,70 @@ describe('GuncellemeServisi', () => {
     // API cagrisi yapilmis olmali (cache gecersiz oldugu icin)
     expect(mockFetch).toHaveBeenCalled();
   });
+
+  it('ertelenmi cache uygulama guncellendiginde stale olmamali', async () => {
+    // BUG SENARYO: Kullanici guncelleme erteledi, sonra uygulamayi guncelledi
+    // Cache'de ertelenen versiyon mevcut uygulama versiyonuna esit
+    const eskiCache = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Artik mevcut versiyon ile ayni
+          mevcutVersiyon: '0.6.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: UYGULAMA.VERSIYON, // Erteleme aktif
+      ertelemeZamani: Date.now() - (60 * 60 * 1000), // 1 saat once
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(eskiCache);
+    GuncellemeServisi.resetInstance();
+    const servis = GuncellemeServisi.getInstance();
+
+    // Kontrol et - stale cache donmemeli
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Guncelleme mevcut olmamali (uygulama zaten guncellendi)
+    expect(sonuc.guncellemeMevcut).toBe(false);
+  });
+
+  it('offline iken stale cache donmemeli', async () => {
+    // BUG SENARYO: Cache'de eski guncelleme var, uygulama guncellendi, offline
+    const eskiCache = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Artik mevcut versiyon ile ayni
+          mevcutVersiyon: '0.6.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(eskiCache);
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false }); // Offline
+    GuncellemeServisi.resetInstance();
+    const servis = GuncellemeServisi.getInstance();
+
+    // Kontrol et - stale cache donmemeli
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Guncelleme mevcut olmamali (uygulama zaten guncellendi)
+    expect(sonuc.guncellemeMevcut).toBe(false);
+  });
 });
 
 describe('guvenilirBaglantiMi', () => {

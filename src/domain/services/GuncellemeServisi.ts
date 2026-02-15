@@ -327,6 +327,10 @@ export class GuncellemeServisi {
       if (!zorla) {
         // Erteleme kontrolu
         if (this.ertelemeSurecindeMi()) {
+          // Cache stale ise guncelleme yok olarak dondur
+          if (this.cacheStaleMi()) {
+            return { guncellemeMevcut: false, bilgi: null };
+          }
           return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
         }
 
@@ -340,6 +344,10 @@ export class GuncellemeServisi {
       const agDurumu = await NetInfo.fetch();
       if (!agDurumu.isConnected) {
         console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
+        // Cache stale ise guncelleme yok olarak dondur
+        if (this.cacheStaleMi()) {
+          return { guncellemeMevcut: false, bilgi: null };
+        }
         return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
       }
 
@@ -415,6 +423,21 @@ export class GuncellemeServisi {
   }
 
   /**
+   * Cache'deki guncelleme bilgisi stale mi (eski/gecersiz)?
+   * 
+   * Stale kabul edilir eger cache'deki "yeni versiyon" artik mevcut 
+   * uygulama versiyonuna esit veya daha eskiyse.
+   * Bu durum kullanicinin uygulamayi guncelledigini gosterir.
+   */
+  private cacheStaleMi(): boolean {
+    const { bilgi } = this.onbellek?.sonSonuc || {};
+    if (!bilgi) {
+      return false;
+    }
+    return versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0;
+  }
+
+  /**
    * Onbellek hala gecerli mi?
    *
    * Cache gecersiz kabul edilir eger:
@@ -430,10 +453,8 @@ export class GuncellemeServisi {
     const gecenSure = Date.now() - this.onbellek.sonKontrolZamani;
     const zamanGecerli = gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
 
-    // Eger cache'de bir guncelleme bilgisi varsa ve bu guncelleme
-    // mevcut uygulama versiyonuna esit veya daha eskiyse, cache'i gecersiz kil.
-    const { bilgi } = this.onbellek.sonSonuc;
-    if (bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0) {
+    // Cache stale ise gecersiz
+    if (this.cacheStaleMi()) {
       return false;
     }
 
