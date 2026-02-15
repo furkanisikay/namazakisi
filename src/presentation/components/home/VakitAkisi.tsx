@@ -4,6 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -148,7 +149,15 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                                 </Text>
                             </View>
 
-                            {/* Sağ İkon (Güneş/Ay) */}
+                            {/* Sağ Kısım: Puan Göstergesi ve İkon */}
+                            {!tamamlandi && !pasifMi && (
+                                <View className="px-1.5 py-0.5 rounded-full mr-1"
+                                    style={{ backgroundColor: renkler.birincil + '15' }}>
+                                    <Text className="text-[10px] font-bold" style={{ color: renkler.birincil }}>
+                                        +{PUAN_DEGERLERI.namaz_kilindi}
+                                    </Text>
+                                </View>
+                            )}
                             <FontAwesome5
                                 name={vakitIkonu}
                                 size={aktifMi ? 20 : 16}
@@ -160,6 +169,25 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                     );
                 })}
             </View>
+
+            {/* Günlük Bonus Bilgisi */}
+            {tamamlananSayisi === toplamSayi && toplamSayi > 0 ? (
+                <View className="flex-row items-center justify-center gap-2 mt-4 py-2 px-3 rounded-xl"
+                    style={{ backgroundColor: renkler.durum.basarili + '15' }}>
+                    <FontAwesome5 name="trophy" size={14} color={renkler.durum.basarili} />
+                    <Text className="text-sm font-bold" style={{ color: renkler.durum.basarili }}>
+                        Tam gün bonusu kazanıldı! +{PUAN_DEGERLERI.tam_gun} puan
+                    </Text>
+                </View>
+            ) : toplamSayi > 0 ? (
+                <View className="flex-row items-center justify-center gap-2 mt-4 py-2 px-3 rounded-xl"
+                    style={{ backgroundColor: renkler.birincil + '08' }}>
+                    <FontAwesome5 name="trophy" size={12} color={renkler.metinIkincil} />
+                    <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                        Tüm namazları kıl, +{PUAN_DEGERLERI.tam_gun} bonus puan kazan!
+                    </Text>
+                </View>
+            ) : null}
         </View>
     );
 };

@@ -4,6 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
+import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 
 interface VakitKartiProps {
     vakitBilgisi: VakitBilgisi | null;
@@ -117,9 +118,18 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 </TouchableOpacity>
 
                 {!tamamlandi && !kilitli && (
-                    <Text className="text-xs text-center mt-4" style={{ color: renkler.metinIkincil }}>
-                        Seriyi bozma! 🔥
-                    </Text>
+                    <View className="flex-row items-center justify-center mt-4 gap-3">
+                        <View className="flex-row items-center gap-1 px-2 py-1 rounded-full"
+                            style={{ backgroundColor: renkler.birincil + '10' }}>
+                            <FontAwesome5 name="star" size={10} color={renkler.birincil} />
+                            <Text className="text-xs font-bold" style={{ color: renkler.birincil }}>
+                                +{PUAN_DEGERLERI.namaz_kilindi} puan
+                            </Text>
+                        </View>
+                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                            Seriyi bozma! 🔥
+                        </Text>
+                    </View>
                 )}
             </View>
         </View>
