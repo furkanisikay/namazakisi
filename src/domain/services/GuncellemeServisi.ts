@@ -362,17 +362,11 @@ export class GuncellemeServisi {
     const gecenSure = Date.now() - this.onbellek.sonKontrolZamani;
     const zamanGecerli = gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
 
-    // Eger cache'de guncelleme mevcut ve bilgi varsa,
-    // cached "yeni versiyon" ile mevcut versiyon karsilastir
-    if (this.onbellek.sonSonuc.guncellemeMevcut && this.onbellek.sonSonuc.bilgi) {
-      const cachedYeniVersiyon = this.onbellek.sonSonuc.bilgi.yeniVersiyon;
-      const mevcutVersiyon = UYGULAMA.VERSIYON;
-
-      // Cache'deki "yeni versiyon" artik mevcut versiyon veya daha eskiyse,
-      // cache gecersiz (kullanici uygulamayi guncelledi)
-      if (versiyonKarsilastir(cachedYeniVersiyon, mevcutVersiyon) <= 0) {
-        return false;
-      }
+    // Eger cache'de bir guncelleme bilgisi varsa ve bu guncelleme
+    // mevcut uygulama versiyonuna esit veya daha eskiyse, cache'i gecersiz kil.
+    const { bilgi } = this.onbellek.sonSonuc;
+    if (bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0) {
+      return false;
     }
 
     return zamanGecerli;
