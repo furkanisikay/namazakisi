@@ -7,6 +7,32 @@ import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 jest.mock('expo-notifications');
 jest.mock('../../../data/local/LocalNamazServisi');
 jest.mock('../ArkaplanMuhafizServisi');
+jest.mock('@notifee/react-native', () => ({
+    __esModule: true,
+    default: {
+        createChannel: jest.fn(),
+        displayNotification: jest.fn(),
+        cancelNotification: jest.fn(),
+        cancelTriggerNotification: jest.fn(),
+        getTriggerNotificationIds: jest.fn().mockResolvedValue([]),
+        getDisplayedNotifications: jest.fn().mockResolvedValue([]),
+        createTriggerNotification: jest.fn(),
+        onForegroundEvent: jest.fn(() => jest.fn()),
+        onBackgroundEvent: jest.fn(),
+    },
+    TriggerType: { TIMESTAMP: 0 },
+    AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
+    EventType: { ACTION_PRESS: 1, DISMISSED: 2 },
+}));
+jest.mock('../VakitSayacBildirimServisi', () => ({
+    VakitSayacBildirimServisi: {
+        getInstance: jest.fn().mockReturnValue({
+            vakitSayaciniIptalEt: jest.fn().mockResolvedValue(undefined),
+            yapilandirVePlanla: jest.fn().mockResolvedValue(undefined),
+            tumSayacBildirimleriniTemizle: jest.fn().mockResolvedValue(undefined),
+        }),
+    },
+}));
 jest.mock('../../../core/utils/TarihYardimcisi', () => ({
   gunEkle: jest.fn((tarih: string, gun: number) => {
     // Basit timezone-safe implementasyon (test icin)

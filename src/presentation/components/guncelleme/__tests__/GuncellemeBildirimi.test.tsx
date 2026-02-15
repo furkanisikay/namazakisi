@@ -65,7 +65,7 @@ function storeOlustur(preloadedState?: any) {
   return configureStore({
     reducer: {
       guncelleme: guncellemeReducer,
-    },
+    } as any,
     preloadedState,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }),
