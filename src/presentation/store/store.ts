@@ -9,6 +9,7 @@ import seriReducer from './seriSlice';
 import muhafizReducer from './muhafizSlice';
 import konumReducer from './konumSlice';
 import vakitBildirimReducer from './vakitBildirimSlice';
+import vakitSayacReducer from './vakitSayacSlice';
 import guncellemeReducer from './guncellemeSlice';
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
     muhafiz: muhafizReducer,
     konum: konumReducer,
     vakitBildirim: vakitBildirimReducer,
+    vakitSayac: vakitSayacReducer,
     guncelleme: guncellemeReducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -3,12 +3,14 @@ import { Platform } from 'react-native';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
+import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
+ * Export edildi: notifee background handler tarafindan kullaniliyor
  */
-const vakitAdiToNamazAdi: Record<string, NamazAdi> = {
+export const vakitAdiToNamazAdi: Record<string, NamazAdi> = {
   'imsak': NamazAdi.Sabah,
   'gunes': NamazAdi.Gunes,
   'ogle': NamazAdi.Ogle,
@@ -254,6 +256,8 @@ export class BildirimServisi {
       // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
       if (isVakitAdi(vakit)) {
         await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit);
+        // Vakit sayaci bildirimini de iptal et
+        await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit);
       } else {
         console.warn('[BildirimServisi] Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
       }

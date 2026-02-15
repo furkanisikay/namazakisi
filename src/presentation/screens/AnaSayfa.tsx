@@ -20,8 +20,10 @@ import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi, VakitBilgisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
+import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { ArkaplanGorevServisi } from '../../domain/services/ArkaplanGorevServisi';
 import { muhafizAyarlariniYukle } from '../store/muhafizSlice';
+import { store } from '../store/store';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { SesServisi } from '../../core/feedback/SesServisi';
@@ -285,11 +287,26 @@ export const AnaSayfa: React.FC = () => {
       // Arka plan bildirimlerini iptal et
       if (vakitAdi) {
         try { await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi); } catch (e) { }
+        try { await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakitAdi); } catch (e) { }
       }
     } else {
       // Namaz kilmadim - bildirimleri yeniden aktif et
       if (vakitAdi) {
         try { await ArkaplanMuhafizServisi.getInstance().vakitKilindisiniGeriAl(vakitAdi); } catch (e) { }
+
+        // Sayac aktifse yeniden planla
+        try {
+          const state = store.getState();
+          if (state.vakitSayac?.ayarlar?.aktif) {
+            const konumState = state.konum;
+            const muhafizState = state.muhafiz;
+            await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+              aktif: true,
+              koordinatlar: konumState.koordinatlar,
+              seviye2Esik: muhafizState.esikler.seviye2,
+            });
+          }
+        } catch (e) { }
       }
     }
   };

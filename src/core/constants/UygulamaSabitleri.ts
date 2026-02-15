@@ -133,6 +133,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
   // Vakit Bildirim Ayarları
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
+  // Vakit Sayacı Ayarları
+  VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // Konum sistemi
   KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
 } as const;
@@ -289,6 +291,7 @@ export const BILDIRIM_SABITLERI = {
     VAKIT: '_vakit_',
     SEVIYE: '_seviye_',
     DAKIKA: '_dk_',
+    SAYAC: 'sayac_',
   },
   // Bildirim Kanallari
   KANALLAR: {
@@ -296,6 +299,7 @@ export const BILDIRIM_SABITLERI = {
     MUHAFIZ: 'muhafiz',
     MUHAFIZ_ACIL: 'muhafiz_acil',
     VAKIT_BILDIRIM: 'vakit_bildirim',
+    VAKIT_SAYAC: 'vakit_sayac',
   },
 } as const;
 
