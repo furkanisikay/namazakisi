@@ -10,7 +10,6 @@ interface PaylasilabilirRozetProps {
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85; // Story formatına uygun genişlik (yaklaşık)
-const CARD_HEIGHT = CARD_WIDTH * 1.77; // 16:9 oranı
 
 export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet }) => {
 
@@ -27,7 +26,7 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
 
     const gradientColors = seviyeRengiAl(rozet.seviye);
 
-    // Motivasyon mesajları (Ben Dili)
+    // Motivasyon mesajları (Ben Dili) - Aynı rozet için deterministik mesaj
     const getMotivationMessage = () => {
         const messages = [
             "Bugün kendim için harika bir adım attım! 🌟",
@@ -36,7 +35,16 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
             "Ruhuma iyi gelen bu akışta ben de varım! ✨",
             "Küçük adımlar, büyük huzur getirir. 🍃"
         ];
-        return messages[Math.floor(Math.random() * messages.length)];
+        
+        // Rozet ID'sine göre deterministik bir indeks hesapla
+        const key = String(rozet.id);
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
+        }
+        const index = hash % messages.length;
+        
+        return messages[index];
     };
 
     const rozetIkonuAl = (emojiIkon: string): string => {

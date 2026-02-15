@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -18,15 +18,20 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
   children,
 }) => {
   const renkler = useRenkler();
-  const viewRef = useRef<View>(null);
+  const viewRef = useRef<View | null>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [captureLayout, setCaptureLayout] = useState({ width: 0, height: 0 });
 
   const paylas = async () => {
     try {
       setPaylasiliyor(true);
 
-      if (dimensions.width === 0 || dimensions.height === 0) {
+      if (!viewRef.current) {
+        Alert.alert('Hata', 'Görsel henüz hazır değil.');
+        return;
+      }
+
+      if (captureLayout.width === 0 || captureLayout.height === 0) {
         console.warn("Görsel boyutları henüz hesaplanamadı.");
         // Fallback: boyut belirtmeden yakala (cihaz çözünürlüğü)
         const uri = await captureRef(viewRef, {
@@ -43,15 +48,15 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
         format: 'png',
         quality: 1,
         result: 'tmpfile', // Geçici dosya olarak kaydet
-        width: dimensions.width * 2, // 2x Genişlik
-        height: dimensions.height * 2, // 2x Yükseklik
+        width: captureLayout.width * 2, // 2x Genişlik
+        height: captureLayout.height * 2, // 2x Yükseklik
       });
 
       await shareImage(uri);
 
     } catch (error) {
       console.error('Paylaşım hatası:', error);
-      alert('Görsel oluşturulurken bir hata oluştu.');
+      Alert.alert('Hata', 'Görsel oluşturulurken bir hata oluştu.');
     } finally {
       setPaylasiliyor(false);
     }
@@ -69,7 +74,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
         UTI: 'public.png', // iOS için
       });
     } else {
-      alert("Paylaşım özelliği bu cihazda kullanılamıyor.");
+      Alert.alert('Uyarı', 'Paylaşım özelliği bu cihazda kullanılamıyor.');
     }
   };
 
@@ -119,7 +124,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               style={{ backgroundColor: 'transparent' }}
               onLayout={(event) => {
                 const { width, height } = event.nativeEvent.layout;
-                setDimensions({ width, height });
+                setCaptureLayout({ width, height });
               }}
             >
               {children}
