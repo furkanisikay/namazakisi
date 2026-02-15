@@ -20,12 +20,15 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { RozetKarti, YuklemeGostergesi } from '../components';
+import { PaylasimModal } from '../components/Sharing/PaylasimModal';
+import { PaylasilabilirRozet } from '../components/Sharing/PaylasilabilirRozet';
 import { useRenkler } from '../../core/theme';
 import { ROZET_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import {
   ROZET_TANIMLARI,
   SEVIYE_TANIMLARI,
   RozetTipi,
+  RozetDetay,
 } from '../../core/types/SeriTipleri';
 
 type TabTipi = 'tumu' | 'seri' | 'ozel' | 'toplam';
@@ -100,6 +103,17 @@ export const RozetlerSayfasi: React.FC = () => {
   const seviyeIkonuAl = (emojiIkon: string | undefined): string => {
     if (!emojiIkon) return 'moon';
     return SEVIYE_IKONLARI[emojiIkon] || 'moon';
+  };
+
+  // Paylasim icin state
+  const [paylasimModalGorunur, setPaylasimModalGorunur] = useState(false);
+  const [secilenRozet, setSecilenRozet] = useState<RozetDetay | null>(null);
+
+  const rozetPaylas = (rozet: RozetDetay) => {
+    if (rozet.kazanildiMi) {
+      setSecilenRozet(rozet);
+      setPaylasimModalGorunur(true);
+    }
   };
 
   if (yukleniyor && rozetDetaylari.length === 0) {
@@ -326,7 +340,11 @@ export const RozetlerSayfasi: React.FC = () => {
             </View>
           ) : (
             filtrelenmisRozetler.map((rozet) => (
-              <RozetKarti key={rozet.id} rozet={rozet} />
+              <RozetKarti
+                key={rozet.id}
+                rozet={rozet}
+                onPress={() => rozetPaylas(rozet)}
+              />
             ))
           )}
         </View>
@@ -412,9 +430,16 @@ export const RozetlerSayfasi: React.FC = () => {
           </View>
         </View>
 
-        {/* Alt Bosluk */}
-        <View className="h-10" />
+
       </ScrollView>
+
+      {/* Paylasim Modali */}
+      <PaylasimModal
+        gorunur={paylasimModalGorunur}
+        onKapat={() => setPaylasimModalGorunur(false)}
+      >
+        {secilenRozet && <PaylasilabilirRozet rozet={secilenRozet} />}
+      </PaylasimModal>
     </SafeAreaView>
   );
 };

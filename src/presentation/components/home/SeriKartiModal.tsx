@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useTema } from '../../../core/theme';
+import { PaylasimModal } from '../Sharing/PaylasimModal';
+import { PaylasilabilirSeri } from '../Sharing/PaylasilabilirSeri';
 
 interface SeriKartiModalProps {
     gorunur: boolean;
@@ -19,6 +21,7 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
     enUzunSeri
 }) => {
     const { koyuMu } = useTema();
+    const [paylasimModalGorunur, setPaylasimModalGorunur] = useState(false);
 
     // Hedef hesaplama (basit mantık: sonraki eşiği bul)
     const hedefler = [7, 21, 60];
@@ -109,7 +112,7 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                         </View>
 
                         {/* Footer Pill */}
-                        <View className="items-center">
+                        <View className="items-center mb-4">
                             <View className="bg-black/10 px-4 py-1.5 rounded-full">
                                 <Text className="text-xs text-orange-100 font-medium">
                                     Sonraki hedef: {sonrakiHedef}. Gün ({kalanGun > 0 ? `${kalanGun} gün kaldı` : 'Tamamlandı!'})
@@ -117,9 +120,27 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                             </View>
                         </View>
 
+                        {/* Paylas Butonu */}
+                        <TouchableOpacity
+                            onPress={() => setPaylasimModalGorunur(true)}
+                            className="bg-white/20 py-3 rounded-xl flex-row items-center justify-center space-x-2 border border-white/30"
+                            activeOpacity={0.8}
+                        >
+                            <FontAwesome5 name="share-alt" size={16} color="white" style={{ marginRight: 8 }} />
+                            <Text className="text-white font-bold text-sm">BAŞARIMI PAYLAŞ</Text>
+                        </TouchableOpacity>
+
                     </LinearGradient>
                 </TouchableOpacity>
             </TouchableOpacity>
+
+            {/* Paylasim Modali */}
+            <PaylasimModal
+                gorunur={paylasimModalGorunur}
+                onKapat={() => setPaylasimModalGorunur(false)}
+            >
+                <PaylasilabilirSeri mevcutSeri={mevcutSeri} enUzunSeri={enUzunSeri} />
+            </PaylasimModal>
         </Modal>
     );
 };
