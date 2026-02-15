@@ -289,6 +289,49 @@ describe('GitHubGuncellemeKaynagi', () => {
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
   });
+
+  it('Turkce emoji basliklari dogru formatlar', async () => {
+    const releaseNot = `📊 **3** commit | Önceki: [v0.4.0](https://github.com/furkanisikay/namazakisi/releases/tag/v0.4.0)
+
+### ✨ Yeni Özellikler
+- Add auto-update feature
+- Kible bulucu eklendi
+
+### 🐛 Hata Düzeltmeleri
+- Fix update cache invalidation
+- URL validation fixes`;
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      body: releaseNot,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Yeni Özellikler:');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Add auto-update feature');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Kible bulucu');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Hatalar giderildi');
+    // Commit sayisi ve onceki versiyon linkleri gosterilmemeli
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('commit');
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('Önceki');
+  });
+
+  it('bolum basliklari olmadan anlamli fallback mesaji dondurur', async () => {
+    const releaseNot = `📊 **3** commit | Önceki: [v0.4.0](https://github.com/furkanisikay/namazakisi/releases/tag/v0.4.0)`;
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      body: releaseNot,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    // Anlamli bir fallback mesaji gostermeli
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Yeni güncelleme mevcut');
+    // Gereksiz commit sayisi ve link bilgilerini gostermemeli
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('commit');
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('Önceki');
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('v0.4.0');
+  });
 });
 
 describe('GuncellemeServisi', () => {
