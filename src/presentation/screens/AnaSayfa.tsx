@@ -374,7 +374,7 @@ export const AnaSayfa: React.FC = () => {
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
-        {aktifGunKontrol && muhafizDurumu.seviye > 0 && (
+        {aktifGunKontrol && muhafizDurumu.seviye > 0 && !suankiVakitTamamlandi && (
           <View className="mb-4 p-4 rounded-xl flex-row items-center gap-3 shadow-sm"
             style={{ backgroundColor: muhafizDurumu.seviye >= 3 ? '#FEE2E2' : '#FFEDD5' }}>
             <FontAwesome5 name="exclamation-triangle" size={24} color={muhafizDurumu.seviye >= 3 ? '#DC2626' : '#EA580C'} />
