@@ -28,6 +28,7 @@ import {
   rozetDetaylariniAl,
   tamGuncellemeyiYap,
   bosSeviyeDurumuOlustur,
+  puanEkle,
 } from '../../domain/services/RozetYoneticisiServisi';
 
 // ==================== STATE TIPI ====================
@@ -264,9 +265,8 @@ export const namazKilindiPuanla = createAsyncThunk(
     await LocalSeriServisi.localToplamKilinanNamaziKaydet(yeniToplam);
 
     // Seviyeye puan ekle
-    const puanEkleme = await import('../../domain/services/RozetYoneticisiServisi');
-    const seviyeSonucu = puanEkleme.puanEkle(
-      state.seri.seviyeDurumu || puanEkleme.bosSeviyeDurumuOlustur(),
+    const seviyeSonucu = puanEkle(
+      state.seri.seviyeDurumu || bosSeviyeDurumuOlustur(),
       namazSayisi * 5 // Her namaz 5 puan
     );
 

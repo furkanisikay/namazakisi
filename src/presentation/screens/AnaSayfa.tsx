@@ -51,7 +51,8 @@ export const AnaSayfa: React.FC = () => {
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
-  const { ozelGunAyarlari, sonYukleme: seriYuklendi } = useAppSelector(state => state.seri);
+  const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
+  const seriYuklendiMi = !!seriSonYukleme;
   const seriOzeti = useAppSelector(seriOzetiSelector);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
@@ -166,13 +167,13 @@ export const AnaSayfa: React.FC = () => {
   // Seri Kontrolü
   useEffect(() => {
     // gunlukNamazlar yüklendiğinde, aktif gündeysek ve seri verileri yüklenmişse
-    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendi) {
+    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendiMi) {
       dispatch(seriKontrolet({
         bugunNamazlar: gunlukNamazlar,
         dunNamazlar: null
       }));
     }
-  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendi]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi]);
 
   // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {
@@ -271,8 +272,10 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      // Namaz kilindi
-      dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
+      // Namaz kilindi - seri verileri yuklenmisse puan ekle
+      if (seriYuklendiMi) {
+        dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
+      }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
       // Arka plan bildirimlerini iptal et

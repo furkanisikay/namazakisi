@@ -7,7 +7,7 @@
  * - seriVerileriniYukle sonrasi seriKontrolet dogru calismali
  */
 
-import { configureStore, EnhancedStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import seriReducer, {
   seriVerileriniYukle,
   seriKontrolet,
@@ -221,23 +221,41 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(mockLocalSeviyeDurumunuKaydet).not.toHaveBeenCalled();
     });
 
-    test('seri verileri yuklendikten sonra namazKilindiPuanla condition guard gecmeli', async () => {
+    test('seri verileri yuklendikten sonra namazKilindiPuanla thunk calismali ve state guncellenmeli', async () => {
       // Once verileri yukle
       mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(mockSeriVerileri());
+      mockLocalToplamKilinanNamaziKaydet.mockResolvedValue({ basarili: true });
+      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
 
       await store.dispatch(seriVerileriniYukle());
 
       // sonYukleme set olmali - condition guard gecmeli
-      expect(store.getState().seri.sonYukleme).not.toBeNull();
+      const oncekiSeriState = store.getState().seri;
+      expect(oncekiSeriState.sonYukleme).not.toBeNull();
 
-      // namazKilindiPuanla icindeki dynamic import Jest'te calismadigindan
-      // sadece condition guard'in gectigini dogruluyoruz
+      const oncekiToplam = oncekiSeriState.toplamKilinanNamaz;
+      const oncekiSeviyeDurumu = oncekiSeriState.seviyeDurumu;
+
+      const namazSayisi = 1;
       const sonuc = await store.dispatch(
-        namazKilindiPuanla({ namazSayisi: 1 })
+        namazKilindiPuanla({ namazSayisi })
       );
 
       // Thunk condition tarafindan engellenmemeli (condition gecmeli)
       expect(sonuc.meta.condition).not.toBe(true);
+      // Thunk basariyla tamamlanmali
+      expect(sonuc.type).toContain('fulfilled');
+
+      const guncelSeriState = store.getState().seri;
+      // toplamKilinanNamaz artmali
+      expect(guncelSeriState.toplamKilinanNamaz).toBe(oncekiToplam + namazSayisi);
+      // seviyeDurumu guncellenmis olmali (puan artmali)
+      expect(guncelSeriState.seviyeDurumu).not.toEqual(oncekiSeviyeDurumu);
+      expect(guncelSeriState.seviyeDurumu!.toplamPuan).toBeGreaterThan(oncekiSeviyeDurumu!.toplamPuan);
+
+      // AsyncStorage/persistence cagrilmis olmali
+      expect(mockLocalToplamKilinanNamaziKaydet).toHaveBeenCalled();
+      expect(mockLocalSeviyeDurumunuKaydet).toHaveBeenCalled();
     });
   });
 });
