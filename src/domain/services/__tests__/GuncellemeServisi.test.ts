@@ -452,25 +452,42 @@ describe('GuncellemeServisi', () => {
   });
 
   it('uygulama guncellendiginde cache gecersiz hale gelir', async () => {
-    // Senaryo: Uygulama versiyonu ile ayni versiyonu cache'e kaydet
-    // (kullanici uygulamayi guncelledi, artik mevcut versiyon == cache'deki "yeni versiyon")
-    const mevcutVersiyon = UYGULAMA.VERSIYON;
-    mockFetch.mockResolvedValue(githubYanitiOlustur(mevcutVersiyon));
+    // Senaryo: Kullanici once uygulamayi guncelledi, artik mevcut versiyon == cache'deki "yeni versiyon"
+    // AsyncStorage'a manuel olarak eski bir guncelleme cache'i ekle
+    const eskiCache = {
+      sonKontrolZamani: Date.now(), // Zaman gecerli (simdi)
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Cache'deki "yeni versiyon" artik mevcut versiyon
+          mevcutVersiyon: '0.5.0', // Eski versiyon
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
 
+    // AsyncStorage'a cache ekle
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(eskiCache);
+
+    // Yeni bir servis instance'i olustur (cache yuklensin)
+    GuncellemeServisi.resetInstance();
     const servis = GuncellemeServisi.getInstance();
 
-    // Ilk kontrol - cache'e kaydeder
-    await servis.guncellemeKontrolEt(true);
-    const ilkFetchCount = mockFetch.mock.calls.length;
+    // Yeni versiyon mevcut (99.0.0 > mevcut versiyon)
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
 
-    // Simdi cache'de "yeni versiyon" = UYGULAMA.VERSIYON var
-    // Bu cache gecersiz olmali cunku artik "yeni versiyon" mevcut versiyon
-
-    // Ikinci kontrol (zorla degil) - cache gecersiz oldugu icin yeniden API cagrisi yapmali
+    // Kontrol et - cache gecersiz olmali (cached yeni versiyon = mevcut versiyon)
+    // Bu yuzden API cagrisi yapmali
     await servis.guncellemeKontrolEt(false);
 
-    // Yeni API cagrisi yapilmis olmali
-    expect(mockFetch.mock.calls.length).toBeGreaterThan(ilkFetchCount);
+    // API cagrisi yapilmis olmali (cache gecersiz oldugu icin)
+    expect(mockFetch).toHaveBeenCalled();
   });
 });
 
