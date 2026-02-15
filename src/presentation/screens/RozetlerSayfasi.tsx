@@ -28,6 +28,7 @@ import {
   ROZET_TANIMLARI,
   SEVIYE_TANIMLARI,
   RozetTipi,
+  RozetDetay,
 } from '../../core/types/SeriTipleri';
 
 type TabTipi = 'tumu' | 'seri' | 'ozel' | 'toplam';
@@ -106,9 +107,9 @@ export const RozetlerSayfasi: React.FC = () => {
 
   // Paylasim icin state
   const [paylasimModalGorunur, setPaylasimModalGorunur] = useState(false);
-  const [secilenRozet, setSecilenRozet] = useState<any>(null);
+  const [secilenRozet, setSecilenRozet] = useState<RozetDetay | null>(null);
 
-  const rozetPaylas = (rozet: any) => {
+  const rozetPaylas = (rozet: RozetDetay) => {
     if (rozet.kazanildiMi) {
       setSecilenRozet(rozet);
       setPaylasimModalGorunur(true);
