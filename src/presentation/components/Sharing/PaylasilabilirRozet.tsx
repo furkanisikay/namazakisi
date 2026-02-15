@@ -37,12 +37,12 @@ export const PaylasilabilirRozet: React.FC<PaylasilabilirRozetProps> = ({ rozet 
         ];
         
         // Rozet ID'sine göre deterministik bir indeks hesapla
-        const key = String(rozet.id ?? "");
+        const key = String(rozet.id);
         let hash = 0;
         for (let i = 0; i < key.length; i++) {
             hash = (hash * 31 + key.charCodeAt(i)) >>> 0;
         }
-        const index = messages.length > 0 ? hash % messages.length : 0;
+        const index = hash % messages.length;
         
         return messages[index];
     };
