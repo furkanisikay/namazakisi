@@ -1,6 +1,8 @@
 import './global.css';
 import { registerRootComponent } from 'expo';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+import notifee, { EventType } from '@notifee/react-native';
+import { Platform } from 'react-native';
 
 // Reanimated strict mode uyarilarini kapat (3. parti kutuphaneler nedeniyle)
 configureReanimatedLogger({
@@ -9,7 +11,45 @@ configureReanimatedLogger({
 });
 
 import App from './App';
-import { BildirimServisi } from './src/domain/services/BildirimServisi';
+import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
+
+// notifee arka plan olay işleyicisi (Android sayaç için)
+// Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar
+if (Platform.OS === 'android') {
+    notifee.onBackgroundEvent(async ({ type, detail }) => {
+        if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
+            const bildirimId = detail.notification?.id; // "sayac_2026-02-15_ogle"
+            if (bildirimId && bildirimId.startsWith('sayac_')) {
+                try {
+                    // ID'den tarih ve vakit çıkar
+                    const parts = bildirimId.replace('sayac_', '').split('_');
+                    const tarih = parts[0]; // "2026-02-15"
+                    const vakit = parts[1]; // "ogle"
+
+                    // Kıldım işlemini yap (background'da Redux yok, direkt AsyncStorage)
+                    const LocalNamazServisi = await import('./src/data/local/LocalNamazServisi');
+                    const namazAdi = vakitAdiToNamazAdi[vakit];
+
+                    if (namazAdi && tarih) {
+                        await LocalNamazServisi.localNamazDurumunuGuncelle(tarih, namazAdi, true);
+                        console.log(`[index.ts/notifee] Namaz kıldım: ${namazAdi} (${tarih})`);
+                    }
+
+                    // Bildirimi iptal et
+                    await notifee.cancelNotification(bildirimId);
+
+                    // Muhafız bildirimlerini de iptal et
+                    const { ArkaplanMuhafizServisi } = await import('./src/domain/services/ArkaplanMuhafizServisi');
+                    if (vakit) {
+                        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
+                    }
+                } catch (error) {
+                    console.error('[index.ts/notifee] Kıldım işleme hatası:', error);
+                }
+            }
+        }
+    });
+}
 
 // Bildirim dinleyicisini global olarak baslat
 // Bu, uygulama kapali veya arka plandayken gelen bildirim aksiyonlarini yakalamak icin kritiktir

@@ -41,6 +41,7 @@ describe('konumSlice', () => {
         yukleniyor: false,
         sonGpsGuncellemesi: null,
         akilliTakipAktif: false,
+        takipHassasiyeti: 'dengeli',
     };
 
     beforeEach(() => {

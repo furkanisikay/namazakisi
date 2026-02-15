@@ -5,7 +5,8 @@
  */
 
 import React, { useEffect } from 'react';
-import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus } from 'react-native';
+import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform } from 'react-native';
+import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
 import { AppNavigator } from './src/navigation/AppNavigator';
@@ -13,12 +14,14 @@ import { misafirModunaGec } from './src/presentation/store/authSlice';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
-import { BildirimServisi } from './src/domain/services/BildirimServisi';
+import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
+import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
+import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
-import { namazlariYukle } from './src/presentation/store/namazSlice';
+import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { GuncellemeBildirimi } from './src/presentation/components/guncelleme/GuncellemeBildirimi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
@@ -137,7 +140,16 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       await VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle();
     }
 
-    console.log('[App] Arka plan muhafiz ve vakit bildirimleri planlandi');
+    // Vakit sayaci bildirimlerini planla
+    await store.dispatch(vakitSayacAyarlariniYukle());
+    const sayacState = store.getState().vakitSayac;
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: sayacState.ayarlar.aktif,
+      koordinatlar: konumState.koordinatlar,
+      seviye2Esik: muhafizAyarlari.esikler.seviye2,
+    });
+
+    console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
   } catch (error) {
     console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
   }
@@ -175,8 +187,43 @@ const AppIcerik: React.FC = () => {
       }
     });
 
+    // notifee foreground event handler (Android sayac icin)
+    // Uygulama on plandayken "Kildim" aksiyonunu yakalar
+    let notifeeUnsubscribe: (() => void) | undefined;
+    if (Platform.OS === 'android') {
+      notifeeUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
+        if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
+          const bildirimId = detail.notification?.id;
+          if (bildirimId && bildirimId.startsWith('sayac_')) {
+            try {
+              // ID'den tarih ve vakit cikar
+              const parts = bildirimId.replace('sayac_', '').split('_');
+              const tarih = parts[0]; // "2026-02-15"
+              const vakit = parts[1]; // "ogle"
+              const namazAdi = vakitAdiToNamazAdi[vakit];
+
+              if (namazAdi && tarih) {
+                // Redux dispatch ile namaz isaretle
+                store.dispatch(namazDurumunuDegistir({ tarih, namazAdi, tamamlandi: true }));
+                console.log(`[App/notifee] Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
+
+                // Sayac ve muhafiz bildirimlerini iptal et
+                await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as any);
+                await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
+              }
+            } catch (error) {
+              console.error('[App/notifee] Kıldım işleme hatası:', error);
+            }
+          }
+        }
+      });
+    }
+
     return () => {
       appStateListener.remove();
+      if (notifeeUnsubscribe) {
+        notifeeUnsubscribe();
+      }
     };
   }, []);
 

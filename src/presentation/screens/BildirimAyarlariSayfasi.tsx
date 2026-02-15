@@ -23,9 +23,12 @@ import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
 import { vakitBildirimAyariniGuncelle, vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
+import { vakitSayacAyariniGuncelle, vakitSayacAyarlariniYukle } from '../store/vakitSayacSlice';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
+import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
+import { store } from '../store/store';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -113,12 +116,14 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const { butonTiklandiFeedback } = useFeedback();
   const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
   const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
+  const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     dispatch(vakitBildirimAyarlariniYukle());
+    dispatch(vakitSayacAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -158,6 +163,22 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
 
   const handleBildirimDakikasiChange = (dakika: number) => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimDakikasi: dakika } }));
+  };
+
+  const handleSayacToggle = async (yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    dispatch(vakitSayacAyariniGuncelle({ aktif: yeniDeger }));
+
+    // Bildirimleri hemen yeniden planla
+    const state = store.getState();
+    const muhafizState = state.muhafiz;
+    const konumState = state.konum;
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: yeniDeger,
+      koordinatlar: konumState.koordinatlar,
+      seviye2Esik: muhafizState.esikler.seviye2,
+    });
   };
 
   // Konum servisi ve namaz vakitleri
@@ -236,6 +257,59 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                 </View>
               ))}
             </View>
+          </View>
+        </View>
+
+        {/* Vakit Sayaci Bolumu */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            VAKİT SAYACI
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            {/* Header: Toggle */}
+            <View className="flex-row items-center p-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${renkler.birincil}15` }}
+              >
+                <FontAwesome5 name="hourglass-half" size={18} color={renkler.birincil} solid />
+              </View>
+              <View className="flex-1">
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                  Vakit Sayacı
+                </Text>
+                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  Vakit çıkmadan önce bildirimde dk:sn geri sayım göster
+                </Text>
+              </View>
+              <Switch
+                value={sayacAyarlari.aktif}
+                onValueChange={handleSayacToggle}
+                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                thumbColor={sayacAyarlari.aktif ? renkler.birincil : '#f4f3f4'}
+              />
+            </View>
+
+            {/* Alt bilgi - aktifse göster */}
+            {sayacAyarlari.aktif && (
+              <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
+                <View className="flex-row items-start mt-3 gap-2">
+                  <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+                  <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                    Vakit çıkmak üzereyken bildirim panelinde gerçek zamanlı geri sayım gösterilir.
+                    Kıldım işaretleyince otomatik kaybolur. {'\n'}
+                    <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
+                  </Text>
+                </View>
+              </View>
+            )}
           </View>
         </View>
 
