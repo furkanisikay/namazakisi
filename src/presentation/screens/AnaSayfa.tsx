@@ -51,7 +51,8 @@ export const AnaSayfa: React.FC = () => {
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
-  const { ozelGunAyarlari } = useAppSelector(state => state.seri);
+  const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
+  const seriYuklendiMi = !!seriSonYukleme;
   const seriOzeti = useAppSelector(seriOzetiSelector);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
@@ -165,23 +166,14 @@ export const AnaSayfa: React.FC = () => {
 
   // Seri Kontrolü
   useEffect(() => {
-    // gunlukNamazlar yüklendiğinde ve aktif gündeysek
-    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun) {
-      // Logic: if active day is yesterday, we verify yesterday's streak?
-      // Seri checking usually expects "Today". But if we are legally in Yesterday mode...
-      // Seri slice usually works with "Today".
-      // Let's keep strict "bugunMu(mevcutTarih)" for seri? 
-      // Or if we are finishing Yesterday's Salah, we are extending Yesterday's streak.
-      // For safety, let's keep original check or adapt if needed.
-      // Original: if (gunlukNamazlar && bugunMu(mevcutTarih))
-      // If we are on Yesterday (18 Jan) because it's 00:04. We complete Yatsi. Streak continues.
-      // So checking the active displayed day is correct.
+    // gunlukNamazlar yüklendiğinde, aktif gündeysek ve seri verileri yüklenmişse
+    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendiMi) {
       dispatch(seriKontrolet({
         bugunNamazlar: gunlukNamazlar,
         dunNamazlar: null
       }));
     }
-  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi]);
 
   // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {
@@ -280,8 +272,10 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      // Namaz kilindi
-      dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
+      // Namaz kilindi - seri verileri yuklenmisse puan ekle
+      if (seriYuklendiMi) {
+        dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
+      }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
       // Arka plan bildirimlerini iptal et

@@ -28,6 +28,7 @@ import {
   rozetDetaylariniAl,
   tamGuncellemeyiYap,
   bosSeviyeDurumuOlustur,
+  puanEkle,
 } from '../../domain/services/RozetYoneticisiServisi';
 
 // ==================== STATE TIPI ====================
@@ -236,6 +237,13 @@ export const seriKontrolet = createAsyncThunk(
       toparlanmaSayisi,
       mukemmelGunSayisi,
     };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
   }
 );
 
@@ -257,9 +265,8 @@ export const namazKilindiPuanla = createAsyncThunk(
     await LocalSeriServisi.localToplamKilinanNamaziKaydet(yeniToplam);
 
     // Seviyeye puan ekle
-    const puanEkleme = await import('../../domain/services/RozetYoneticisiServisi');
-    const seviyeSonucu = puanEkleme.puanEkle(
-      state.seri.seviyeDurumu || puanEkleme.bosSeviyeDurumuOlustur(),
+    const seviyeSonucu = puanEkle(
+      state.seri.seviyeDurumu || bosSeviyeDurumuOlustur(),
       namazSayisi * 5 // Her namaz 5 puan
     );
 
@@ -271,6 +278,13 @@ export const namazKilindiPuanla = createAsyncThunk(
       seviyeAtlandi: seviyeSonucu.seviyeAtlandi,
       yeniSeviye: seviyeSonucu.yeniSeviye,
     };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
   }
 );
 
