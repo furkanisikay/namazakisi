@@ -476,6 +476,45 @@ describe('GuncellemeServisi', () => {
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
   });
+
+  it('uygulama guncellendiginde cache gecersiz hale gelir', async () => {
+    // Senaryo: Kullanici once uygulamayi guncelledi, artik mevcut versiyon == cache'deki "yeni versiyon"
+    // AsyncStorage'a manuel olarak eski bir guncelleme cache'i ekle
+    const eskiCache = {
+      sonKontrolZamani: Date.now(), // Zaman gecerli (simdi)
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Cache'deki "yeni versiyon" artik mevcut versiyon
+          mevcutVersiyon: '0.5.0', // Eski versiyon
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
+
+    // AsyncStorage'a cache ekle
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(eskiCache);
+
+    // Yeni bir servis instance'i olustur (cache yuklensin)
+    GuncellemeServisi.resetInstance();
+    const servis = GuncellemeServisi.getInstance();
+
+    // Yeni versiyon mevcut (99.0.0 > mevcut versiyon)
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
+
+    // Kontrol et - cache gecersiz olmali (cached yeni versiyon = mevcut versiyon)
+    // Bu yuzden API cagrisi yapmali
+    await servis.guncellemeKontrolEt(false);
+
+    // API cagrisi yapilmis olmali (cache gecersiz oldugu icin)
+    expect(mockFetch).toHaveBeenCalled();
+  });
 });
 
 describe('guvenilirBaglantiMi', () => {
