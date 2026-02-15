@@ -416,6 +416,11 @@ export class GuncellemeServisi {
 
   /**
    * Onbellek hala gecerli mi?
+   *
+   * Cache gecersiz kabul edilir eger:
+   * 1. Zaman asimi gectiyse (6 saat)
+   * 2. Cache'deki "yeni versiyon" artik mevcut uygulama versiyonu ise
+   *    (kullanici uygulamayi guncelledi)
    */
   private onbellekGecerliMi(): boolean {
     if (!this.onbellek?.sonKontrolZamani) {
@@ -423,7 +428,16 @@ export class GuncellemeServisi {
     }
 
     const gecenSure = Date.now() - this.onbellek.sonKontrolZamani;
-    return gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
+    const zamanGecerli = gecenSure < GUNCELLEME_SABITLERI.KONTROL_ARALIGI;
+
+    // Eger cache'de bir guncelleme bilgisi varsa ve bu guncelleme
+    // mevcut uygulama versiyonuna esit veya daha eskiyse, cache'i gecersiz kil.
+    const { bilgi } = this.onbellek.sonSonuc;
+    if (bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0) {
+      return false;
+    }
+
+    return zamanGecerli;
   }
 
   /**

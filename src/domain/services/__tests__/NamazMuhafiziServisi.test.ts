@@ -131,7 +131,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 2);
     });
 
-    test('Namaz kılındı işareti bildirimleri durdurmalı', () => {
+    test('Namaz kılındı işareti banner\'ı temizlemeli', () => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
             kalanSureMs: 5 * 60 * 1000,
@@ -139,9 +139,33 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         // Önce işaretle
         muhafiz.namazKilindiIsaretle('ogle');
-        
+
         muhafiz.baslat(bildirimSpx);
-        
+
+        // Banner temizleme için seviye 0 ile çağrılmalı
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+    });
+
+    test('Temizleme bildirimi sadece bir kez gönderilmeli (gereksiz tekrar çağrıları önlenmeli)', () => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 5 * 60 * 1000,
+        });
+
+        // Önce işaretle
+        muhafiz.namazKilindiIsaretle('ogle');
+
+        muhafiz.baslat(bildirimSpx);
+
+        // Banner temizleme için seviye 0 ile bir kez çağrılmalı
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+
+        // Zaman ilerlet ve tekrar kontrol et
+        bildirimSpx.mockClear();
+        jest.advanceTimersByTime(60 * 1000);
+
+        // İkinci kez çağrılmamalı (gereksiz UI güncellemesini önlemek için)
         expect(bildirimSpx).not.toHaveBeenCalled();
     });
 

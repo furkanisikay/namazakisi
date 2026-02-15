@@ -23,7 +23,7 @@ const VARSAYILAN_YAPILANDIRMA: MuhafizYapilandirmasi = {
     seviye4SiklikDk: 1,
 };
 
-type BildirimCallback = (mesaj: string, seviye: 1 | 2 | 3 | 4) => void;
+type BildirimCallback = (mesaj: string, seviye: 0 | 1 | 2 | 3 | 4) => void;
 
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
@@ -34,6 +34,9 @@ export class NamazMuhafiziServisi {
 
     // Namaz kılındı mı durumu (vakit bazlı)
     private kilinanVakitler: Record<string, boolean> = {};
+
+    // Temizleme bildirimi gönderilen vakitler (gereksiz tekrar çağrıları önlemek için)
+    private temizlenenVakitler: Record<string, boolean> = {};
 
     private constructor() {
         this.hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
@@ -69,6 +72,7 @@ export class NamazMuhafiziServisi {
     public sifirla() {
         this.durdur();
         this.kilinanVakitler = {};
+        this.temizlenenVakitler = {};
         this.config = VARSAYILAN_YAPILANDIRMA;
         this.onBildirim = null;
     }
@@ -92,9 +96,17 @@ export class NamazMuhafiziServisi {
         const { vakit, kalanSureMs } = vakitBilgisi;
         const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
 
-        // Eğer bu vakit zaten kılındıysa rahatsız etme
+        // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
         const bugun = new Date().toDateString();
-        if (this.kilinanVakitler[`${bugun}_${vakit}`]) return;
+        const vakitAnahtari = `${bugun}_${vakit}`;
+        if (this.kilinanVakitler[vakitAnahtari]) {
+            // Temizleme bildirimi henüz gönderilmediyse gönder
+            if (!this.temizlenenVakitler[vakitAnahtari] && this.onBildirim) {
+                this.onBildirim('', 0);
+                this.temizlenenVakitler[vakitAnahtari] = true;
+            }
+            return;
+        }
 
         // Seviye Kontrolü
         let aktifSeviye: 1 | 2 | 3 | 4 | 0 = 0;
