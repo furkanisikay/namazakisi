@@ -207,13 +207,15 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
       const temizSatir = satir.trim();
 
       // Bolum basliklarini tespit et
-      if (temizSatir.toLowerCase().includes('### added')) {
+      // Hem İngilizce (Added/Fixed/Changed) hem de Türkçe emoji başlıkları desteklenir
+      const lowerSatir = temizSatir.toLowerCase();
+      if (lowerSatir.includes('### added') || lowerSatir.includes('yeni özellik')) {
         aktifBolum = 'added';
         continue;
-      } else if (temizSatir.toLowerCase().includes('### fixed')) {
+      } else if (lowerSatir.includes('### fixed') || lowerSatir.includes('hata düzelt')) {
         aktifBolum = 'fixed';
         continue;
-      } else if (temizSatir.toLowerCase().includes('### changed')) {
+      } else if (lowerSatir.includes('### changed') || lowerSatir.includes('değişiklik')) {
         aktifBolum = 'changed';
         continue;
       }
@@ -254,14 +256,10 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
 
     const sonuc = parcalar.join('\n').trim();
 
-    // Hala bos ise, ham metni temizleyerek dondur (fallback)
+    // Hala bos ise, anlamli bir fallback mesaji dondur
+    // Ham metindeki gereksiz bilgileri (commit sayisi, linkler vb.) gostermeyin
     if (!sonuc) {
-      return ham
-        .replace(/^#+\s*/gm, '')
-        .replace(/\*\*/g, '')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim()
-        .slice(0, 500);
+      return 'Yeni güncelleme mevcut. Detaylar için uygulama mağazasını ziyaret edin.';
     }
 
     return sonuc.slice(0, 500);
