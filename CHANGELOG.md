@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-02-15
+
+### Added
+- add point indicators to prayer time cards and daily flow
+- Add Vakit Sayacı (Prayer Time Countdown) feature with notifee
+- Rozet ve Seri paylaşım görselleri iyileştirildi
+
+### Fixed
+- seri verileri yuklenmeden seriKontrolet/namazKilindiPuanla calismasini engelle ve veri migrasyonu ekle
+- hide muhafiz banner when current prayer is completed
+- Resolve test failures and add vakitSayacSlice tests
+- Improve hash-based message selection in PaylasilabilirRozet
+- Address PR review comments - typing, imports, and consistency
+
+### Changed
+- address PR review feedback - improve naming, guard UI dispatch, fix dynamic import, improve test
+
 ## [0.6.1] - 2026-02-15
 
 ### Fixed
