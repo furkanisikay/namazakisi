@@ -236,6 +236,13 @@ export const seriKontrolet = createAsyncThunk(
       toparlanmaSayisi,
       mukemmelGunSayisi,
     };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
   }
 );
 
@@ -271,6 +278,13 @@ export const namazKilindiPuanla = createAsyncThunk(
       seviyeAtlandi: seviyeSonucu.seviyeAtlandi,
       yeniSeviye: seviyeSonucu.yeniSeviye,
     };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
   }
 );
 

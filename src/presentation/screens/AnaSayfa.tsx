@@ -51,7 +51,7 @@ export const AnaSayfa: React.FC = () => {
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
-  const { ozelGunAyarlari } = useAppSelector(state => state.seri);
+  const { ozelGunAyarlari, sonYukleme: seriYuklendi } = useAppSelector(state => state.seri);
   const seriOzeti = useAppSelector(seriOzetiSelector);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
@@ -165,23 +165,14 @@ export const AnaSayfa: React.FC = () => {
 
   // Seri Kontrolü
   useEffect(() => {
-    // gunlukNamazlar yüklendiğinde ve aktif gündeysek
-    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun) {
-      // Logic: if active day is yesterday, we verify yesterday's streak?
-      // Seri checking usually expects "Today". But if we are legally in Yesterday mode...
-      // Seri slice usually works with "Today".
-      // Let's keep strict "bugunMu(mevcutTarih)" for seri? 
-      // Or if we are finishing Yesterday's Salah, we are extending Yesterday's streak.
-      // For safety, let's keep original check or adapt if needed.
-      // Original: if (gunlukNamazlar && bugunMu(mevcutTarih))
-      // If we are on Yesterday (18 Jan) because it's 00:04. We complete Yatsi. Streak continues.
-      // So checking the active displayed day is correct.
+    // gunlukNamazlar yüklendiğinde, aktif gündeysek ve seri verileri yüklenmişse
+    if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendi) {
       dispatch(seriKontrolet({
         bugunNamazlar: gunlukNamazlar,
         dunNamazlar: null
       }));
     }
-  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendi]);
 
   // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {

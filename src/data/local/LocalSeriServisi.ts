@@ -18,6 +18,7 @@ import { bosSeriDurumuOlustur } from '../../domain/services/SeriHesaplayiciServi
 import {
   bosKullaniciRozetleriOlustur,
   bosSeviyeDurumuOlustur,
+  seviyeHesapla,
 } from '../../domain/services/RozetYoneticisiServisi';
 
 // ==================== SERI DURUMU ====================
@@ -32,7 +33,17 @@ export const localSeriDurumunuGetir = async (): Promise<
     const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SERI_DURUMU);
 
     if (veri) {
-      return { basarili: true, veri: JSON.parse(veri) };
+      const parsed = JSON.parse(veri) as SeriDurumu;
+
+      // Eski versiyondan gelen verilerde dondurulduMu/dondurulmaTarihi eksik olabilir
+      if (parsed.dondurulduMu === undefined) {
+        parsed.dondurulduMu = false;
+      }
+      if (parsed.dondurulmaTarihi === undefined) {
+        parsed.dondurulmaTarihi = null;
+      }
+
+      return { basarili: true, veri: parsed };
     }
 
     // Veri yoksa bos durum dondur
@@ -124,7 +135,16 @@ export const localSeviyeDurumunuGetir = async (): Promise<
     const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU);
 
     if (veri) {
-      return { basarili: true, veri: JSON.parse(veri) };
+      const parsed = JSON.parse(veri) as SeviyeDurumu;
+
+      // Eski versiyondan gelen verilerde rank ve rankIkonu eksik olabilir
+      if (!parsed.rank || !parsed.rankIkonu) {
+        const seviyeTanimi = seviyeHesapla(parsed.toplamPuan || 0);
+        parsed.rank = parsed.rank || seviyeTanimi.rank;
+        parsed.rankIkonu = parsed.rankIkonu || seviyeTanimi.ikon;
+      }
+
+      return { basarili: true, veri: parsed };
     }
 
     // Veri yoksa bos durum dondur
