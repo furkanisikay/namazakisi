@@ -18,6 +18,7 @@ import {
     VARSAYILAN_KONUM_AYARLARI,
 } from '../../data/local/LocalKonumServisi';
 import type { TakipHassasiyeti } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 // Tipleri re-export et (geriye uyumluluk icin)
 export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari, TakipHassasiyeti };
@@ -112,14 +113,14 @@ const konumSlice = createSlice({
          */
         konumAyarlariniGuncelle: (state, action: PayloadAction<Partial<KonumState>>) => {
             const yeniState = { ...state, ...action.payload };
-            console.log('[KonumSlice] State guncelleniyor (sync):', yeniState.konumModu, yeniState.seciliIlAdi);
+            Logger.debug('KonumSlice', 'State guncelleniyor (sync)', { konumModu: yeniState.konumModu, seciliIlAdi: yeniState.seciliIlAdi });
 
             // Arka planda kaydet (fire-and-forget)
             // Not: Bu sync reducer icinde async islem - ideal degil ama geriye uyumluluk icin
             const { yukleniyor: _yukleniyor, ...konumAyarlari } = yeniState;
             localKonumAyarlariniKaydet(konumAyarlari)
-                .then(() => console.log('[KonumSlice] Arka plan kayit basarili'))
-                .catch((err) => console.error('[KonumSlice] Arka plan kayit hatasi:', err));
+                .then(() => Logger.debug('KonumSlice', 'Arka plan kayit basarili'))
+                .catch((err) => Logger.error('KonumSlice', 'Arka plan kayit hatasi', err));
 
             return yeniState;
         },
@@ -175,7 +176,7 @@ const konumSlice = createSlice({
             .addCase(konumAyarlariniYukle.fulfilled, (state, action) => {
                 // ONEMLI: Immer'da ya state'i mutate et YA DA yeni deger return et
                 if (action.payload) {
-                    console.log('[KonumSlice] State guncelleniyor, konumModu:', action.payload.konumModu);
+                    Logger.debug('KonumSlice', 'State guncelleniyor', { konumModu: action.payload.konumModu });
                     return { ...state, ...action.payload, yukleniyor: false };
                 }
                 // Payload yoksa (ilk calisma) sadece yukleniyor'u kapat
@@ -188,17 +189,17 @@ const konumSlice = createSlice({
         // Konum ayarlarini kaydet (async)
         builder
             .addCase(konumAyarlariniKaydetAsync.fulfilled, (state, action) => {
-                console.log('[KonumSlice] Async kayit basarili:', action.payload.konumModu);
+                Logger.debug('KonumSlice', 'Async kayit basarili', { konumModu: action.payload.konumModu });
                 return { ...state, ...action.payload };
             })
             .addCase(konumAyarlariniKaydetAsync.rejected, (_state, action) => {
-                console.error('[KonumSlice] Async kayit hatasi:', action.error.message);
+                Logger.error('KonumSlice', 'Async kayit hatasi', action.error.message);
             });
 
         // Konum verilerini temizle
         builder
             .addCase(konumVerileriniTemizleAsync.fulfilled, () => {
-                console.log('[KonumSlice] Veriler temizlendi, varsayilana donuluyor');
+                Logger.info('KonumSlice', 'Veriler temizlendi, varsayilana donuluyor');
                 return varsayilanKonum;
             });
     },

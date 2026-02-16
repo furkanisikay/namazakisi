@@ -123,7 +123,7 @@ export const HakkindaSayfasi: React.FC = () => {
   // Web sitesini ac
   const handleWebSitesiAc = (url: string) => {
     Linking.openURL(url).catch((hata) => {
-      console.warn('[HakkindaSayfasi] Baglanti acilamadi:', hata);
+      Logger.warn('HakkindaSayfasi', 'Baglanti acilamadi', hata);
     });
   };
 

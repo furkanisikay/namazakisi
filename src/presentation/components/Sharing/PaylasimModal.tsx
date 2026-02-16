@@ -5,6 +5,7 @@ import * as Sharing from 'expo-sharing';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { BlurView } from 'expo-blur';
+import { Logger } from '../../../core/utils/Logger';
 
 interface PaylasimModalProps {
   gorunur: boolean;
@@ -32,7 +33,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
       }
 
       if (captureLayout.width === 0 || captureLayout.height === 0) {
-        console.warn("Görsel boyutları henüz hesaplanamadı.");
+        Logger.warn('PaylasimModal', 'Gorsel boyutlari henuz hesaplanamadi');
         // Fallback: boyut belirtmeden yakala (cihaz çözünürlüğü)
         const uri = await captureRef(viewRef, {
           format: 'png',
@@ -55,7 +56,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
       await shareImage(uri);
 
     } catch (error) {
-      console.error('Paylaşım hatası:', error);
+      Logger.error('PaylasimModal', 'Paylasim hatasi', error);
       Alert.alert('Hata', 'Görsel oluşturulurken bir hata oluştu.');
     } finally {
       setPaylasiliyor(false);
