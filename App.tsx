@@ -165,7 +165,9 @@ const AppIcerik: React.FC = () => {
 
   useEffect(() => {
     // Logger'i baslat
-    Logger.initialize().catch(err => console.error('[App] Logger baslatilamadi:', err));
+    Logger.initialize()
+      .then(() => Logger.info('App', 'Uygulama basladi'))
+      .catch(err => console.error('[App] Logger baslatilamadi:', err));
 
     // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
     // store.dispatch(misafirModunaGec()); // Initial state zaten misafir/local
