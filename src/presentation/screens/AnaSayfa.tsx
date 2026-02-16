@@ -30,6 +30,7 @@ import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
+import { Logger } from '../../core/utils/Logger';
 
 // Baslangic sayfasi
 const BASLANGIC_SAYFA_INDEKSI = 1000;
@@ -156,8 +157,14 @@ export const AnaSayfa: React.FC = () => {
     BildirimServisi.getInstance().izinIste();
 
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
-      .then(basarili => basarili && console.log('[AnaSayfa] Arka plan görevi başlatıldı'))
-      .catch(err => console.error('[AnaSayfa] Arka plan görevi hatası:', err));
+      .then(basarili => {
+        if (basarili) {
+          Logger.info('AnaSayfa', 'Arka plan görevi başlatıldı');
+        }
+      })
+      .catch(err => {
+        Logger.error('AnaSayfa', 'Arka plan görevi hatası', err);
+      });
 
     return () => {
       try { NamazMuhafiziServisi.getInstance().durdur(); } catch (e) { }

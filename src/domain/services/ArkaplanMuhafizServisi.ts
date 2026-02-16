@@ -11,6 +11,7 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Vakit tipi (Turkce)
@@ -75,14 +76,14 @@ export class ArkaplanMuhafizServisi {
     public async yapilandirVePlanla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
         this.ayarlar = ayarlar;
 
-        console.log('[ArkaplanMuhafiz] Yapılandırma alındı:', JSON.stringify(ayarlar.esikler));
+        Logger.info('ArkaplanMuhafiz', 'Yapılandırma alındı:', JSON.stringify(ayarlar.esikler));
 
         // Once tum eski muhafiz bildirimlerini temizle
         await this.tumMuhafizBildirimleriniTemizle();
 
         // Ayarlar aktif degilse sadece temizle ve cik
         if (!ayarlar.aktif) {
-            console.log('[ArkaplanMuhafiz] Muhafiz devre disi, bildirimler temizlendi');
+            Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
 
@@ -110,7 +111,7 @@ export class ArkaplanMuhafizServisi {
             // Bu vakit kilinmis mi? (vaktin ait oldugu tarihe gore kontrol et)
             const tarihinKilinanVakitleri = kilinanVakitlerMap[v.tarih] || [];
             if (tarihinKilinanVakitleri.includes(v.vakit)) {
-                console.log(`[ArkaplanMuhafiz] ${v.vakit} (${v.tarih}) zaten kilinmis, atlaniyor`);
+                Logger.info('ArkaplanMuhafiz', `${v.vakit} (${v.tarih}) zaten kilinmis, atlaniyor`);
                 return false;
             }
 
@@ -118,7 +119,7 @@ export class ArkaplanMuhafizServisi {
         });
 
         if (gelecekVakitler.length === 0) {
-            console.log('[ArkaplanMuhafiz] Gelecek veya kilinmamis vakit bulunamadi');
+            Logger.info('ArkaplanMuhafiz', 'Gelecek veya kilinmamis vakit bulunamadi');
             return;
         }
 
@@ -126,7 +127,7 @@ export class ArkaplanMuhafizServisi {
             await this.vakitIcinBildirimPlanla(vakit);
         }
 
-        console.log(`[ArkaplanMuhafiz] Toplam ${gelecekVakitler.length} vakit icin bildirimler planlandi`);
+        Logger.info('ArkaplanMuhafiz', `Toplam ${gelecekVakitler.length} vakit icin bildirimler planlandi`);
     }
 
     /**
@@ -337,7 +338,7 @@ export class ArkaplanMuhafizServisi {
             );
         }
 
-        console.log(`[ArkaplanMuhafiz] ${vakit.vakit} (${vakit.tarih}) icin ${dakikaGruplari.size} bildirim planlandi`);
+        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${dakikaGruplari.size} bildirim planlandi`);
     }
 
     /**
@@ -389,9 +390,9 @@ export class ArkaplanMuhafizServisi {
                 },
             });
 
-            console.log(`[ArkaplanMuhafiz] Bildirim planlandi: ${id} - ${zaman.toLocaleTimeString()}`);
+            Logger.info('ArkaplanMuhafiz', `Bildirim planlandi: ${id} - ${zaman.toLocaleTimeString()}`);
         } catch (error) {
-            console.error(`[ArkaplanMuhafiz] Bildirim planlanamadi: ${id}`, error);
+            Logger.error('ArkaplanMuhafiz', `Bildirim planlanamadi: ${id}`, error);
         }
     }
 
@@ -460,7 +461,7 @@ export class ArkaplanMuhafizServisi {
                 if (bildirim.identifier.startsWith(bildirimOneki)) {
                     try {
                         await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-                        console.log(`[ArkaplanMuhafiz] Bildirim iptal edildi: ${bildirim.identifier}`);
+                        Logger.info('ArkaplanMuhafiz', `Bildirim iptal edildi: ${bildirim.identifier}`);
                     } catch (error) {
                         // Bildirim bulunamazsa hata verme
                     }
@@ -487,9 +488,9 @@ export class ArkaplanMuhafizServisi {
                 }
             }
 
-            console.log('[ArkaplanMuhafiz] Tum muhafiz bildirimleri temizlendi');
+            Logger.info('ArkaplanMuhafiz', 'Tum muhafiz bildirimleri temizlendi');
         } catch (error) {
-            console.error('[ArkaplanMuhafiz] Bildirimler temizlenirken hata:', error);
+            Logger.error('ArkaplanMuhafiz', 'Bildirimler temizlenirken hata:', error);
         }
     }
 
@@ -563,7 +564,7 @@ export class ArkaplanMuhafizServisi {
             const veri = await AsyncStorage.getItem(anahtar);
             return veri ? JSON.parse(veri) : [];
         } catch (error) {
-            console.error('[ArkaplanMuhafiz] Kilinan vakitler alinamadi:', error);
+            Logger.error('ArkaplanMuhafiz', 'Kilinan vakitler alinamadi:', error);
             return [];
         }
     }
@@ -585,9 +586,9 @@ export class ArkaplanMuhafizServisi {
                 await AsyncStorage.setItem(anahtar, JSON.stringify(kilinanlar));
             }
 
-            console.log(`[ArkaplanMuhafiz] Vakit kaydedildi: ${vakit} (${tarih})`);
+            Logger.info('ArkaplanMuhafiz', `Vakit kaydedildi: ${vakit} (${tarih})`);
         } catch (error) {
-            console.error('[ArkaplanMuhafiz] Kilinan vakit kaydedilemedi:', error);
+            Logger.error('ArkaplanMuhafiz', 'Kilinan vakit kaydedilemedi:', error);
         }
     }
 
@@ -611,14 +612,14 @@ export class ArkaplanMuhafizServisi {
             const yeniListe = kilinanlar.filter(v => v !== vakit);
             await AsyncStorage.setItem(anahtar, JSON.stringify(yeniListe));
 
-            console.log(`[ArkaplanMuhafiz] Vakit kilindisi geri alindi: ${vakit} (${tarih})`);
+            Logger.info('ArkaplanMuhafiz', `Vakit kilindisi geri alindi: ${vakit} (${tarih})`);
 
             // Eger ayarlar varsa bildirimleri yeniden planla
             if (this.ayarlar) {
                 await this.yapilandirVePlanla(this.ayarlar);
             }
         } catch (error) {
-            console.error('[ArkaplanMuhafiz] Vakit kilindisi geri alinamadi:', error);
+            Logger.error('ArkaplanMuhafiz', 'Vakit kilindisi geri alinamadi:', error);
         }
     }
 
@@ -635,11 +636,11 @@ export class ArkaplanMuhafizServisi {
      */
     public async planlanmisBildirimleriListele(): Promise<void> {
         const bildirimler = await Notifications.getAllScheduledNotificationsAsync();
-        console.log('[ArkaplanMuhafiz] Planlanan bildirimler:');
+        Logger.info('ArkaplanMuhafiz', 'Planlanan bildirimler:');
 
         for (const bildirim of bildirimler) {
             if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
-                console.log(`  - ${bildirim.identifier}: ${bildirim.content.title}`);
+                Logger.info('ArkaplanMuhafiz', `  - ${bildirim.identifier}: ${bildirim.content.title}`);
             }
         }
     }

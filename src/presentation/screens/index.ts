@@ -17,3 +17,4 @@ export { BildirimAyarlariSayfasi } from './BildirimAyarlariSayfasi';
 export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';
 export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
+export { DebugLogsSayfasi } from './DebugLogsSayfasi';

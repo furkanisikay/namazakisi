@@ -7,6 +7,7 @@ import React, { createContext, useState, useEffect, useCallback, useMemo, ReactN
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HaptikServisi, TitresimTipi } from './HaptikServisi';
 import { SesServisi, SesTipi } from './SesServisi';
+import { Logger } from '../utils/Logger';
 
 // AsyncStorage anahtarlari
 const FEEDBACK_AYARLARI_ANAHTAR = 'feedback_ayarlari';
@@ -84,7 +85,7 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({ children }) 
           setAyarlar(JSON.parse(kayitliAyarlar));
         }
       } catch (hata) {
-        console.error('Feedback ayarlari yuklenirken hata:', hata);
+        Logger.error('FeedbackContext', 'Feedback ayarlari yuklenirken hata:', hata);
       } finally {
         setYukleniyor(false);
       }
@@ -103,7 +104,7 @@ export const FeedbackProvider: React.FC<FeedbackProviderProps> = ({ children }) 
     try {
       await AsyncStorage.setItem(FEEDBACK_AYARLARI_ANAHTAR, JSON.stringify(yeniAyarlar));
     } catch (hata) {
-      console.error('Feedback ayarlari kaydedilirken hata:', hata);
+      Logger.error('FeedbackContext', 'Feedback ayarlari kaydedilirken hata:', hata);
     }
   }, []);
 

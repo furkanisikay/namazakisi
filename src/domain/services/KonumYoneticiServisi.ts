@@ -6,6 +6,7 @@
 
 import * as Location from 'expo-location';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Logger } from '../../core/utils/Logger';
 import { TurkiyeKonumServisi, Il, Ilce } from './TurkiyeKonumServisi';
 
 // =====================
@@ -120,7 +121,7 @@ export class KonumYoneticiServisi {
                     };
                 }
             } catch (e) {
-                console.warn('Reverse geocoding hatası:', e);
+                Logger.warn('KonumYoneticiServisi', 'Reverse geocoding hatası:', e);
             }
 
             // Durumu güncelle
@@ -131,7 +132,7 @@ export class KonumYoneticiServisi {
 
             return { koordinatlar, adres };
         } catch (e) {
-            console.error('GPS konumu alınamadı:', e);
+            Logger.error('KonumYoneticiServisi', 'GPS konumu alınamadı:', e);
             return null;
         }
     }

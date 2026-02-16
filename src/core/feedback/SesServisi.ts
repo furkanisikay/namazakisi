@@ -4,6 +4,7 @@
  */
 
 import { createAudioPlayer, setAudioModeAsync, AudioPlayer } from 'expo-audio';
+import { Logger } from '../utils/Logger';
 
 /**
  * Ses tipleri
@@ -37,7 +38,7 @@ const sesDosyasiniYukle = (sesTipi: SesTipi): AudioPlayer | undefined => {
     yukluSesler.set(sesTipi, player);
     return player;
   } catch (hata) {
-    console.debug(`Ses dosyasi yuklenemedi (${sesTipi}):`, hata);
+    Logger.debug('SesServisi', `Ses dosyasi yuklenemedi (${sesTipi}):`, hata);
     return undefined;
   }
 };
@@ -69,7 +70,7 @@ const guvenliSesCal = async (sesTipi: SesTipi, volume: number = 0.5): Promise<vo
 
   } catch (hata) {
     // Ses calinamazsa sessizce devam et
-    console.debug(`Ses calinamadi (${sesTipi}):`, hata);
+    Logger.debug('SesServisi', `Ses calinamadi (${sesTipi}):`, hata);
   }
 };
 
@@ -92,7 +93,7 @@ export const SesServisi = {
         shouldPlayInBackground: false,
       });
     } catch (hata) {
-      console.warn('Ses sistemi hazirlama hatasi:', hata);
+      Logger.warn('SesServisi', 'Ses sistemi hazirlama hatasi:', hata);
     }
   },
 

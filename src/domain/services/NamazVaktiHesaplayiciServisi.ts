@@ -1,5 +1,6 @@
 import { Coordinates, CalculationMethod, PrayerTimes, Madhab, SunnahTimes } from 'adhan';
 import * as Location from 'expo-location';
+import { Logger } from '../../core/utils/Logger';
 import { TURKIYE_ILLERI_OFFLINE } from './TurkiyeKonumServisi';
 
 export interface VakitBilgisi {
@@ -63,7 +64,7 @@ export class NamazVaktiHesaplayiciServisi {
 
             return { lat: location.coords.latitude, lng: location.coords.longitude };
         } catch (e) {
-            console.error("GPS Alınamadı:", e);
+            Logger.error('NamazVaktiHesaplayiciServisi', 'GPS Alınamadı:', e);
             return null;
         }
     }
@@ -100,7 +101,7 @@ export class NamazVaktiHesaplayiciServisi {
 
     public getSuankiVakitBilgisi(): VakitBilgisi | null {
         if (!this.config) {
-            console.warn("NamazVaktiHesaplayici yapılandırılmadı!");
+            Logger.warn('NamazVaktiHesaplayiciServisi', 'NamazVaktiHesaplayici yapılandırılmadı!');
             return null;
         }
 

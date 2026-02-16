@@ -14,6 +14,7 @@ import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppState, Platform } from 'react-native';
+import { Logger } from '../../core/utils/Logger';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -43,7 +44,7 @@ async function aktifProfilGetir(): Promise<TakipProfilKonfigurasyonu> {
             return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
         }
     } catch (e) {
-        console.warn('[KonumTakip] Profil okuma hatasi:', e);
+        Logger.warn('KonumTakip', 'Profil okuma hatasi:', e);
     }
     return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
 }
@@ -84,12 +85,12 @@ function mesafeHesapla(lat1: number, lng1: number, lat2: number, lng2: number): 
  */
 TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.TaskManagerTaskBody<{ locations: Location.LocationObject[] }>) => {
     if (error) {
-        console.error('[KonumTakip] Gorev hatasi:', error);
+        Logger.error('KonumTakip', 'Gorev hatasi:', error);
         return;
     }
 
     if (!data || !data.locations || data.locations.length === 0) {
-        console.log('[KonumTakip] Konum verisi yok');
+        Logger.info('KonumTakip', 'Konum verisi yok');
         return;
     }
 
@@ -97,13 +98,13 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
     const yeniLat = yeniKonum.coords.latitude;
     const yeniLng = yeniKonum.coords.longitude;
 
-    console.log(`[KonumTakip] Yeni konum alindi: ${yeniLat.toFixed(4)}, ${yeniLng.toFixed(4)}`);
+    Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(4)}, ${yeniLng.toFixed(4)}`);
 
     try {
         // Mevcut konum ayarlarini al
         const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
         if (!konumAyarlariJson) {
-            console.log('[KonumTakip] Konum ayarlari bulunamadi');
+            Logger.info('KonumTakip', 'Konum ayarlari bulunamadi');
             return;
         }
 
@@ -111,7 +112,7 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
 
         // GPS modu degilse cik
         if (konumAyarlari.konumModu !== 'oto') {
-            console.log('[KonumTakip] GPS modu aktif degil');
+            Logger.info('KonumTakip', 'GPS modu aktif degil');
             return;
         }
 
@@ -124,11 +125,11 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
 
         if (sonLat && sonLng) {
             const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
-            console.log(`[KonumTakip] Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(profil.mesafe / 1000).toFixed(0)} km)`);
+            Logger.info('KonumTakip', `Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(profil.mesafe / 1000).toFixed(0)} km)`);
 
             // Mesafe yeterli degilse konum guncelleme yapma ama son kontrol zamanini guncelle
             if (mesafe < profil.mesafe) {
-                console.log('[KonumTakip] Mesafe esigi asilmadi, konum guncelleme atlanıyor');
+                Logger.info('KonumTakip', 'Mesafe esigi asilmadi, konum guncelleme atlanıyor');
                 // Son kontrol zamanini guncelle (takibin aktif oldugunu gostermek icin)
                 const guncelAyarlarZaman = {
                     ...konumAyarlari,
@@ -155,7 +156,7 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
                 };
             }
         } catch (geoError) {
-            console.warn('[KonumTakip] Reverse geocoding hatasi:', geoError);
+            Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
         }
 
         // Konum ayarlarini guncelle
@@ -167,7 +168,7 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
         };
 
         await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlar));
-        console.log('[KonumTakip] Konum guncellendi');
+        Logger.info('KonumTakip', 'Konum guncellendi');
 
         // =====================================================
         // ONEMLI: Bildirimleri yeni konuma gore yeniden planla
@@ -197,15 +198,15 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
                     };
 
                     await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(arkaplanAyarlari);
-                    console.log('[KonumTakip] Bildirimler yeni konuma gore yeniden planlandi');
+                    Logger.info('KonumTakip', 'Bildirimler yeni konuma gore yeniden planlandi');
                 }
             }
         } catch (bildirimHatasi) {
-            console.error('[KonumTakip] Bildirim guncelleme hatasi:', bildirimHatasi);
+            Logger.error('KonumTakip', 'Bildirim guncelleme hatasi:', bildirimHatasi);
         }
 
     } catch (e) {
-        console.error('[KonumTakip] Islem hatasi:', e);
+        Logger.error('KonumTakip', 'Islem hatasi:', e);
     }
 });
 
@@ -238,7 +239,7 @@ export class KonumTakipServisi {
         try {
             // 0. Android'de uygulama arka plandaysa foreground service baslatilamaz
             if (Platform.OS === 'android' && AppState.currentState !== 'active') {
-                console.log('[KonumTakip] Uygulama arka planda, baslatma erteleniyor...');
+                Logger.info('KonumTakip', 'Uygulama arka planda, baslatma erteleniyor...');
                 // On plana gelince tekrar dene
                 this.onPlanaGelinceDene();
                 return false;
@@ -246,29 +247,29 @@ export class KonumTakipServisi {
 
             // 1. Once foreground izni kontrol et ve iste
             const { status: mevcutOnPlanIzni } = await Location.getForegroundPermissionsAsync();
-            console.log('[KonumTakip] Mevcut on plan izni:', mevcutOnPlanIzni);
+            Logger.info('KonumTakip', 'Mevcut on plan izni:', mevcutOnPlanIzni);
 
             if (mevcutOnPlanIzni !== 'granted') {
                 const { status: onPlanIzni } = await Location.requestForegroundPermissionsAsync();
                 if (onPlanIzni !== 'granted') {
-                    console.log('[KonumTakip] On plan izni reddedildi');
+                    Logger.info('KonumTakip', 'On plan izni reddedildi');
                     return false;
                 }
             }
 
             // 2. Arka plan izni kontrol et
             const { status: mevcutArkaPlanIzni, canAskAgain } = await Location.getBackgroundPermissionsAsync();
-            console.log('[KonumTakip] Mevcut arka plan izni:', mevcutArkaPlanIzni, 'Tekrar sorulabilir:', canAskAgain);
+            Logger.info('KonumTakip', 'Mevcut arka plan izni:', mevcutArkaPlanIzni, 'Tekrar sorulabilir:', canAskAgain);
 
             if (mevcutArkaPlanIzni !== 'granted') {
                 // Android 11+ icin requestBackgroundPermissionsAsync() sistem ayarlarini acar
                 // Bu noktada kullanici ayarlar sayfasina yonlendirilir
-                console.log('[KonumTakip] Arka plan izni isteniyor (Android 11+ icin ayarlar sayfasi acilacak)...');
+                Logger.info('KonumTakip', 'Arka plan izni isteniyor (Android 11+ icin ayarlar sayfasi acilacak)...');
                 const { status: arkaPlanIzni } = await Location.requestBackgroundPermissionsAsync();
-                console.log('[KonumTakip] Arka plan izni sonucu:', arkaPlanIzni);
+                Logger.info('KonumTakip', 'Arka plan izni sonucu:', arkaPlanIzni);
 
                 if (arkaPlanIzni !== 'granted') {
-                    console.log('[KonumTakip] Arka plan izni reddedildi veya beklemede');
+                    Logger.info('KonumTakip', 'Arka plan izni reddedildi veya beklemede');
                     return false;
                 }
             }
@@ -277,17 +278,17 @@ export class KonumTakipServisi {
             // OS arka plan gorevini durdurmus olabilir, bu yuzden her zaman yeniden baslatiyoruz
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
             if (kayitliMi) {
-                console.log('[KonumTakip] Gorev zaten kayitli, yeniden baslatiliyor');
+                Logger.info('KonumTakip', 'Gorev zaten kayitli, yeniden baslatiliyor');
                 try {
                     await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
                 } catch (stopError) {
-                    console.warn('[KonumTakip] Mevcut gorev durdurulamadi:', stopError);
+                    Logger.warn('KonumTakip', 'Mevcut gorev durdurulamadi:', stopError);
                 }
             }
 
             // 4. Aktif profili oku ve konum takibini baslat
             const profil = await aktifProfilGetir();
-            console.log(`[KonumTakip] Profil: mesafe=${profil.mesafe}m, zaman=${profil.zaman}s, dogruluk=${profil.dogruluk}`);
+            Logger.info('KonumTakip', `Profil: mesafe=${profil.mesafe}m, zaman=${profil.zaman}s, dogruluk=${profil.dogruluk}`);
 
             await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
                 accuracy: profil.dogruluk,
@@ -311,16 +312,16 @@ export class KonumTakipServisi {
             // Basarili baslatma - deneme sayacini sifirla
             this.baslatmaDenemeSayisi = 0;
 
-            console.log('[KonumTakip] Konum takibi baslatildi');
+            Logger.info('KonumTakip', 'Konum takibi baslatildi');
             return true;
         } catch (e: any) {
             // Android foreground service hatasi - uygulama arka plana gecmis olabilir
             if (Platform.OS === 'android' && e?.message?.includes('foreground service')) {
-                console.warn('[KonumTakip] Foreground service baslatilamadi, on plana gelince tekrar denenecek');
+                Logger.warn('KonumTakip', 'Foreground service baslatilamadi, on plana gelince tekrar denenecek');
                 this.onPlanaGelinceDene();
                 return false;
             }
-            console.error('[KonumTakip] Baslama hatasi:', e);
+            Logger.error('KonumTakip', 'Baslama hatasi:', e);
             return false;
         }
     }
@@ -332,7 +333,7 @@ export class KonumTakipServisi {
     private onPlanaGelinceDene(): void {
         // Maksimum deneme sayisina ulasilmissa ek deneme yapma
         if (this.baslatmaDenemeSayisi >= this.MAX_BASLATMA_DENEME) {
-            console.warn('[KonumTakip] Maksimum deneme sayisina ulasildi, on plana gelince deneme durduruldu');
+            Logger.warn('KonumTakip', 'Maksimum deneme sayisina ulasildi, on plana gelince deneme durduruldu');
             return;
         }
 
@@ -346,7 +347,7 @@ export class KonumTakipServisi {
             if (nextState === 'active') {
                 this.pendingAppStateSubscription?.remove();
                 this.pendingAppStateSubscription = null;
-                console.log('[KonumTakip] Uygulama on plana geldi, konum takibi baslatiliyor...');
+                Logger.info('KonumTakip', 'Uygulama on plana geldi, konum takibi baslatiliyor...');
                 const basarili = await this.baslat();
                 // Basarili olduysa deneme sayacini sifirla
                 if (basarili) {
@@ -364,7 +365,7 @@ export class KonumTakipServisi {
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
             if (kayitliMi) {
                 await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
-                console.log('[KonumTakip] Konum takibi durduruldu');
+                Logger.info('KonumTakip', 'Konum takibi durduruldu');
             }
 
             // Bekleyen AppState subscription varsa temizle
@@ -376,7 +377,7 @@ export class KonumTakipServisi {
             const mevcutAyarlar = await this.ayarlariGetir();
             await this.ayarlariKaydet({ ...mevcutAyarlar, aktif: false });
         } catch (e) {
-            console.error('[KonumTakip] Durdurma hatasi:', e);
+            Logger.error('KonumTakip', 'Durdurma hatasi:', e);
         }
     }
 
@@ -387,7 +388,7 @@ export class KonumTakipServisi {
         try {
             return await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
         } catch (e) {
-            console.warn('[KonumTakip] aktifMi kontrol hatasi:', e);
+            Logger.warn('KonumTakip', 'aktifMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -400,7 +401,7 @@ export class KonumTakipServisi {
             const { status } = await Location.getBackgroundPermissionsAsync();
             return status === 'granted';
         } catch (e) {
-            console.warn('[KonumTakip] arkaPlanIzniVarMi kontrol hatasi:', e);
+            Logger.warn('KonumTakip', 'arkaPlanIzniVarMi kontrol hatasi:', e);
             return false;
         }
     }
@@ -422,7 +423,7 @@ export class KonumTakipServisi {
                 return JSON.parse(json);
             }
         } catch (e) {
-            console.warn('[KonumTakip] Ayarlar okuma hatasi:', e);
+            Logger.warn('KonumTakip', 'Ayarlar okuma hatasi:', e);
         }
         return { aktif: false, sonKoordinatlar: null, sonGuncellemeTarihi: null };
     }
@@ -440,21 +441,21 @@ export class KonumTakipServisi {
         try {
             // Android'de arka plandaysa erken cik
             if (Platform.OS === 'android' && AppState.currentState !== 'active') {
-                console.log('[KonumTakip] Uygulama arka planda, yeniden baslatma erteleniyor...');
+                Logger.info('KonumTakip', 'Uygulama arka planda, yeniden baslatma erteleniyor...');
                 this.onPlanaGelinceDene();
                 return false;
             }
 
             const ayarlar = await this.ayarlariGetir();
             if (!ayarlar.aktif) {
-                console.log('[KonumTakip] Takip aktif degil, yeniden baslatma atlanıyor');
+                Logger.info('KonumTakip', 'Takip aktif degil, yeniden baslatma atlanıyor');
                 return false;
             }
 
             // Izin iptal kontrolu - kullanici sistem ayarlarindan izni kaldirmis olabilir
             const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
             if (!arkaPlanIzniVar) {
-                console.log('[KonumTakip] Arka plan izni iptal edilmis, takip devre disi birakiliyor');
+                Logger.info('KonumTakip', 'Arka plan izni iptal edilmis, takip devre disi birakiliyor');
                 // Izin iptal edilmis - ayarlari guncelle ve durdur
                 await this.ayarlariKaydet({ ...ayarlar, aktif: false });
                 return false;
@@ -464,18 +465,18 @@ export class KonumTakipServisi {
             try {
                 const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
                 if (onPlanIzni !== 'granted') {
-                    console.log('[KonumTakip] On plan izni iptal edilmis, takip devre disi birakiliyor');
+                    Logger.info('KonumTakip', 'On plan izni iptal edilmis, takip devre disi birakiliyor');
                     await this.ayarlariKaydet({ ...ayarlar, aktif: false });
                     return false;
                 }
             } catch (e) {
-                console.warn('[KonumTakip] On plan izin kontrolu hatasi:', e);
+                Logger.warn('KonumTakip', 'On plan izin kontrolu hatasi:', e);
             }
 
-            console.log('[KonumTakip] Konum takibi yeniden baslatiliyor...');
+            Logger.info('KonumTakip', 'Konum takibi yeniden baslatiliyor...');
             return await this.baslat();
         } catch (e) {
-            console.error('[KonumTakip] Yeniden baslatma hatasi:', e);
+            Logger.error('KonumTakip', 'Yeniden baslatma hatasi:', e);
             return false;
         }
     }
@@ -503,7 +504,7 @@ export class KonumTakipServisi {
                 sonGpsGuncellemesi: konumAyarlari.sonGpsGuncellemesi,
             };
         } catch (e) {
-            console.warn('[KonumTakip] Son konum bilgisi okuma hatasi:', e);
+            Logger.warn('KonumTakip', 'Son konum bilgisi okuma hatasi:', e);
             return null;
         }
     }

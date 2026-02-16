@@ -8,6 +8,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApiYanit } from '../../core/types';
+import { Logger } from '../../core/utils/Logger';
 
 // ==================== TIPLER ====================
 
@@ -98,11 +99,11 @@ export const VARSAYILAN_KONUM_AYARLARI: KonumAyarlari = {
  */
 export const localKonumAyarlariniGetir = async (): Promise<ApiYanit<KonumAyarlari>> => {
     try {
-        console.log('[LocalKonumServisi] AsyncStorage\'dan yukleniyor...');
+        Logger.info('LocalKonumServisi', 'AsyncStorage\'dan yukleniyor...');
         const veri = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
 
         if (!veri) {
-            console.log('[LocalKonumServisi] Kayitli veri bulunamadi, varsayilan degerler donduruluyor');
+            Logger.info('LocalKonumServisi', 'Kayitli veri bulunamadi, varsayilan degerler donduruluyor');
             return {
                 basarili: true,
                 veri: null as unknown as KonumAyarlari, // null dondurup slice'in varsayilan kullanmasini sagliyoruz
@@ -110,14 +111,14 @@ export const localKonumAyarlariniGetir = async (): Promise<ApiYanit<KonumAyarlar
         }
 
         const parsed = JSON.parse(veri) as KonumAyarlari;
-        console.log('[LocalKonumServisi] Yuklenen veri:', parsed.konumModu, parsed.seciliIlAdi);
+        Logger.info('LocalKonumServisi', 'Yuklenen veri:', parsed.konumModu, parsed.seciliIlAdi);
 
         return {
             basarili: true,
             veri: parsed,
         };
     } catch (error) {
-        console.error('[LocalKonumServisi] Konum ayarlari yuklenemedi:', error);
+        Logger.error('LocalKonumServisi', 'Konum ayarlari yuklenemedi:', error);
         return {
             basarili: false,
             hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
@@ -133,13 +134,13 @@ export const localKonumAyarlariniKaydet = async (
     ayarlar: KonumAyarlari
 ): Promise<ApiYanit<void>> => {
     try {
-        console.log('[LocalKonumServisi] Kaydediliyor:', ayarlar.konumModu, ayarlar.seciliIlAdi);
+        Logger.info('LocalKonumServisi', 'Kaydediliyor:', ayarlar.konumModu, ayarlar.seciliIlAdi);
         await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(ayarlar));
-        console.log('[LocalKonumServisi] Kayit basarili');
+        Logger.info('LocalKonumServisi', 'Kayit basarili');
 
         return { basarili: true };
     } catch (error) {
-        console.error('[LocalKonumServisi] Kayit hatasi:', error);
+        Logger.error('LocalKonumServisi', 'Kayit hatasi:', error);
         return {
             basarili: false,
             hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
@@ -271,10 +272,10 @@ export const localIlIlceSeciminiGuncelle = async (
 export const localKonumVerileriniTemizle = async (): Promise<ApiYanit<void>> => {
     try {
         await AsyncStorage.removeItem(KONUM_DEPOLAMA_ANAHTARI);
-        console.log('[LocalKonumServisi] Konum verileri temizlendi');
+        Logger.info('LocalKonumServisi', 'Konum verileri temizlendi');
         return { basarili: true };
     } catch (error) {
-        console.error('[LocalKonumServisi] Temizleme hatasi:', error);
+        Logger.error('LocalKonumServisi', 'Temizleme hatasi:', error);
         return {
             basarili: false,
             hata: error instanceof Error ? error.message : 'Bilinmeyen hata',

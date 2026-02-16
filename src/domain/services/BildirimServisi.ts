@@ -5,6 +5,7 @@ import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -53,7 +54,7 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
       }
     }
   } catch (error) {
-    console.error('[BildirimServisi] Onceki muhafiz bildirimleri temizlenirken hata:', error);
+    Logger.error('BildirimServisi', 'Onceki muhafiz bildirimleri temizlenirken hata:', error);
   }
 }
 
@@ -139,10 +140,10 @@ export class BildirimServisi {
         await this.bildirimYanitiniIsle(sonYanit);
       }
     } catch (error) {
-      console.error('[BildirimServisi] Cold-start bildirim kontrolu hatasi:', error);
+      Logger.error('BildirimServisi', 'Cold-start bildirim kontrolu hatasi:', error);
     }
 
-    console.log('[BildirimServisi] Bildirim dinleyicisi baslatildi');
+    Logger.info('BildirimServisi', 'Bildirim dinleyicisi baslatildi');
   }
 
   /**
@@ -166,9 +167,9 @@ export class BildirimServisi {
       ]);
 
       this.kategorilerOlusturuldu = true;
-      console.log('[BildirimServisi] Bildirim kategorileri olusturuldu');
+      Logger.info('BildirimServisi', 'Bildirim kategorileri olusturuldu');
     } catch (error) {
-      console.error('[BildirimServisi] Kategori olusturma hatasi:', error);
+      Logger.error('BildirimServisi', 'Kategori olusturma hatasi:', error);
     }
   }
 
@@ -184,7 +185,7 @@ export class BildirimServisi {
     // Ayni yaniti tekrar isleme (cold-start + listener cift tetikleme korumasi)
     const yanitId = notification.request.identifier + '_' + actionIdentifier;
     if (this.islenmisYanitId === yanitId) {
-      console.log('[BildirimServisi] Yanit zaten islendi, atlaniyor:', yanitId);
+      Logger.info('BildirimServisi', 'Yanit zaten islendi, atlaniyor:', yanitId);
       return;
     }
 
@@ -195,7 +196,7 @@ export class BildirimServisi {
       seviye?: number;
     };
 
-    console.log('[BildirimServisi] Bildirim yaniti alindi:', {
+    Logger.info('BildirimServisi', 'Bildirim yaniti alindi:', {
       actionIdentifier,
       data,
     });
@@ -213,7 +214,7 @@ export class BildirimServisi {
         this.islenmisYanitId = yanitId;
       } catch (error) {
         // Basarisiz oldu - yanitId set edilmez, boylece retry mumkun
-        console.error('[BildirimServisi] Kildim isleme basarisiz, tekrar denenebilir:', error);
+        Logger.error('BildirimServisi', 'Kildim isleme basarisiz, tekrar denenebilir:', error);
       }
     }
   }
@@ -227,7 +228,7 @@ export class BildirimServisi {
     tarih: string | undefined
   ): Promise<void> {
     if (!vakit || !tarih) {
-      console.error('[BildirimServisi] Vakit veya tarih eksik');
+      Logger.error('BildirimServisi', 'Vakit veya tarih eksik');
       return;
     }
 
@@ -235,20 +236,20 @@ export class BildirimServisi {
       // Vakit adini NamazAdi enum'una donustur
       const namazAdi = vakitAdiToNamazAdi[vakit];
       if (!namazAdi) {
-        console.error('[BildirimServisi] Gecersiz vakit:', vakit);
+        Logger.error('BildirimServisi', 'Gecersiz vakit:', vakit);
         return;
       }
 
       // Namaz durumunu guncelle
       await LocalNamazServisi.localNamazDurumunuGuncelle(tarih, namazAdi, true);
-      console.log(`[BildirimServisi] Namaz kilindi: ${namazAdi} (${tarih})`);
+      Logger.info('BildirimServisi', `Namaz kilindi: ${namazAdi} (${tarih})`);
 
       // Presentation katmanini bilgilendir (UI guncellemesi icin)
       if (this.onKildimCallback) {
         try {
           this.onKildimCallback(tarih, namazAdi);
         } catch (callbackError) {
-          console.warn('[BildirimServisi] Kildim callback hatasi:', callbackError);
+          Logger.warn('BildirimServisi', 'Kildim callback hatasi:', callbackError);
         }
       }
 
@@ -259,15 +260,15 @@ export class BildirimServisi {
         // Vakit sayaci bildirimini de iptal et
         await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit);
       } else {
-        console.warn('[BildirimServisi] Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
+        Logger.warn('BildirimServisi', 'Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
       }
 
       // Bildirim merkezinde sadece bu vakte ait muhafiz bildirimlerini kapat
       await this.vakitBildirimleriniKapat(vakit, tarih);
 
-      console.log(`[BildirimServisi] ${vakit} icin kalan bildirimler iptal edildi`);
+      Logger.info('BildirimServisi', `${vakit} icin kalan bildirimler iptal edildi`);
     } catch (error) {
-      console.error('[BildirimServisi] Kildim aksiyonu isleme hatasi:', error);
+      Logger.error('BildirimServisi', 'Kildim aksiyonu isleme hatasi:', error);
       throw error; // Hatayi yukari ilet (deduplikasyon retry mekanizmasi icin)
     }
   }
@@ -293,7 +294,7 @@ export class BildirimServisi {
         }
       }
     } catch (error) {
-      console.error('[BildirimServisi] Vakit bildirimleri kapatilirken hata:', error);
+      Logger.error('BildirimServisi', 'Vakit bildirimleri kapatilirken hata:', error);
     }
   }
 
@@ -402,7 +403,7 @@ export class BildirimServisi {
         },
       });
     } catch (error) {
-      console.error('Bildirim planlanamadı:', error);
+      Logger.error('BildirimServisi', 'Bildirim planlanamadı:', error);
     }
   }
 

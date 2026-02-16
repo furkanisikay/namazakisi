@@ -6,6 +6,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Vakit sayacı ayarları
@@ -43,7 +44,7 @@ export const vakitSayacAyarlariniYukle = createAsyncThunk(
       }
       return { aktif: false };
     } catch (error) {
-      console.error('[vakitSayacSlice] Ayarlar yüklenemedi:', error);
+      Logger.error('vakitSayacSlice', 'Ayarlar yuklenemedi', error);
       return { aktif: false };
     }
   }
@@ -69,7 +70,7 @@ export const vakitSayacAyariniGuncelle = createAsyncThunk(
 
       return yeniAyarlar;
     } catch (error) {
-      console.error('[vakitSayacSlice] Ayar güncellenemedi:', error);
+      Logger.error('vakitSayacSlice', 'Ayar guncellenemedi', error);
       throw error;
     }
   }
