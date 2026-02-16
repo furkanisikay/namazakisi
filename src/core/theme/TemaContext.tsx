@@ -17,6 +17,7 @@ import {
   VARSAYILAN_TERCIHLER,
   VARSAYILAN_PALET_ID,
 } from './temalar';
+import { Logger } from '../utils/Logger';
 
 // AsyncStorage anahtari
 const TEMA_TERCIHLERI_ANAHTAR = 'tema_tercihleri';
@@ -80,7 +81,7 @@ export const TemaProvider: React.FC<TemaProviderProps> = ({ children }) => {
           setTercihler(parse);
         }
       } catch (hata) {
-        console.error('Tema tercihleri yuklenirken hata:', hata);
+        Logger.error('TemaContext', 'Tema tercihleri yuklenirken hata:', hata);
       } finally {
         setYukleniyor(false);
       }
@@ -94,7 +95,7 @@ export const TemaProvider: React.FC<TemaProviderProps> = ({ children }) => {
     try {
       await AsyncStorage.setItem(TEMA_TERCIHLERI_ANAHTAR, JSON.stringify(yeniTercihler));
     } catch (hata) {
-      console.error('Tema tercihleri kaydedilirken hata:', hata);
+      Logger.error('TemaContext', 'Tema tercihleri kaydedilirken hata:', hata);
     }
   }, []);
 
