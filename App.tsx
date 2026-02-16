@@ -25,6 +25,7 @@ import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { GuncellemeBildirimi } from './src/presentation/components/guncelleme/GuncellemeBildirimi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
+import { Logger } from './src/core/utils/Logger';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -163,6 +164,9 @@ const AppIcerik: React.FC = () => {
   const renkler = useRenkler();
 
   useEffect(() => {
+    // Logger'i baslat
+    Logger.initialize().catch(err => console.error('[App] Logger baslatilamadi:', err));
+
     // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
     // store.dispatch(misafirModunaGec()); // Initial state zaten misafir/local
 

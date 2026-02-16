@@ -18,6 +18,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
@@ -88,6 +89,7 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
 export const HakkindaSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   // Guncelleme durumu
   const kontrolEdiliyor = useAppSelector((state) => state.guncelleme.kontrolEdiliyor);
@@ -274,6 +276,53 @@ export const HakkindaSayfasi: React.FC = () => {
                 color={renkler.metinIkincil}
               />
             )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Debug Logs */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            GELİŞTİRİCİ
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('DebugLogs' as never)}
+            activeOpacity={0.7}
+            className="flex-row items-center py-3.5 px-4 rounded-xl"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            <View
+              className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+              style={{ backgroundColor: `${renkler.metinIkincil}26` }}
+            >
+              <FontAwesome5
+                name="bug"
+                size={20}
+                color={renkler.metinIkincil}
+              />
+            </View>
+            <View className="flex-1">
+              <Text
+                className="text-base font-semibold"
+                style={{ color: renkler.metin }}
+              >
+                Debug Logları
+              </Text>
+              <Text
+                className="text-xs mt-0.5"
+                style={{ color: renkler.metinIkincil }}
+              >
+                Hata ayıklama ve log görüntüleme
+              </Text>
+            </View>
+            <FontAwesome5
+              name="chevron-right"
+              size={14}
+              color={renkler.metinIkincil}
+            />
           </TouchableOpacity>
         </View>
 
