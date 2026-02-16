@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Vakit Bildirim Ayarları
@@ -35,7 +36,7 @@ export const LocalVakitBildirimServisi = {
             }
             return VARSAYILAN_AYARLAR;
         } catch (e) {
-            console.error('Vakit bildirim ayarları okunamadı:', e);
+            Logger.error('LocalVakitBildirimServisi', 'Vakit bildirim ayarları okunamadı:', e);
             return VARSAYILAN_AYARLAR;
         }
     },
@@ -49,7 +50,7 @@ export const LocalVakitBildirimServisi = {
             await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI, jsonValue);
             return true;
         } catch (e) {
-            console.error('Vakit bildirim ayarları kaydedilemedi:', e);
+            Logger.error('LocalVakitBildirimServisi', 'Vakit bildirim ayarları kaydedilemedi:', e);
             return false;
         }
     },
@@ -64,7 +65,7 @@ export const LocalVakitBildirimServisi = {
             await LocalVakitBildirimServisi.saveAyarlar(yeniAyarlar);
             return yeniAyarlar;
         } catch (e) {
-            console.error('Vakit ayarı güncellenemedi:', e);
+            Logger.error('LocalVakitBildirimServisi', 'Vakit ayarı güncellenemedi:', e);
             return null;
         }
     }

@@ -7,13 +7,14 @@
 
 import { Platform, Linking, Alert } from 'react-native';
 import * as IntentLauncher from 'expo-intent-launcher';
+import { Logger } from './Logger';
 
 /**
  * Kullanıcıyı batarya optimizasyonu ayarlarına yönlendir
  */
 export async function bataryaOptimizasyonuAyarlarinaGit(): Promise<void> {
     if (Platform.OS !== 'android') {
-        console.log('[BataryaOpt] iOS\'ta batarya optimizasyonu ayarı yok');
+        Logger.info('BataryaOpt', 'iOS\'ta batarya optimizasyonu ayarı yok');
         return;
     }
 
@@ -23,13 +24,13 @@ export async function bataryaOptimizasyonuAyarlarinaGit(): Promise<void> {
             IntentLauncher.ActivityAction.IGNORE_BATTERY_OPTIMIZATION_SETTINGS
         );
     } catch (error) {
-        console.error('[BataryaOpt] Ayarlar açılamadı:', error);
+        Logger.error('BataryaOpt', 'Ayarlar açılamadı:', error);
 
         // Fallback: Genel uygulama ayarlarını aç
         try {
             await Linking.openSettings();
         } catch (e) {
-            console.error('[BataryaOpt] Fallback de başarısız:', e);
+            Logger.error('BataryaOpt', 'Fallback de başarısız:', e);
         }
     }
 }
