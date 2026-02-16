@@ -83,7 +83,7 @@ export class ArkaplanMuhafizServisi {
 
         // Ayarlar aktif degilse sadece temizle ve cik
         if (!ayarlar.aktif) {
-            console.log('[ArkaplanMuhafiz] Muhafiz devre disi, bildirimler temizlendi');
+            Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
 
