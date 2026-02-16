@@ -15,6 +15,7 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import { Logger } from '../../core/utils/Logger';
 import {
   UYGULAMA,
   GUNCELLEME_SABITLERI,
@@ -117,7 +118,7 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
 
       if (!yanit.ok) {
         clearTimeout(timeoutId);
-        console.warn(`[GuncellemeServisi] GitHub API hatasi: ${yanit.status}`);
+        Logger.warn('GuncellemeServisi', `GitHub API hatasi: ${yanit.status}`);
         return { guncellemeMevcut: false, bilgi: null };
       }
 
@@ -155,9 +156,9 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
       clearTimeout(timeoutId);
 
       if (hata?.name === 'AbortError') {
-        console.warn('[GuncellemeServisi] GitHub API zaman asimi');
+        Logger.warn('GuncellemeServisi', 'GitHub API zaman asimi');
       } else {
-        console.warn('[GuncellemeServisi] GitHub API hatasi:', hata?.message);
+        Logger.warn('GuncellemeServisi', 'GitHub API hatasi:', hata?.message);
       }
 
       return { guncellemeMevcut: false, bilgi: null };
@@ -339,7 +340,7 @@ export class GuncellemeServisi {
       // Ag baglantisi kontrolu (NetInfo ile hizli ve guvenilir)
       const agDurumu = await NetInfo.fetch();
       if (!agDurumu.isConnected) {
-        console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
+        Logger.info('GuncellemeServisi', 'Cevrimdisi - kontrol atlaniyor');
         return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
       }
 
@@ -351,7 +352,7 @@ export class GuncellemeServisi {
 
       return sonuc;
     } catch (hata) {
-      console.error('[GuncellemeServisi] Guncelleme kontrol hatasi:', hata);
+      Logger.error('GuncellemeServisi', 'Guncelleme kontrol hatasi:', hata);
       return { guncellemeMevcut: false, bilgi: null };
     }
   }
@@ -395,7 +396,7 @@ export class GuncellemeServisi {
           return sonuc;
         }
       } catch (hata) {
-        console.warn(`[GuncellemeServisi] ${kaynak.tip} kaynagi hatasi:`, hata);
+        Logger.warn('GuncellemeServisi', `${kaynak.tip} kaynagi hatasi:`, hata);
       }
     }
 
@@ -452,7 +453,7 @@ export class GuncellemeServisi {
         this.onbellek = JSON.parse(veri);
       }
     } catch (hata) {
-      console.warn('[GuncellemeServisi] Onbellek yuklenemedi:', hata);
+      Logger.warn('GuncellemeServisi', 'Onbellek yuklenemedi:', hata);
     }
   }
 
@@ -480,7 +481,7 @@ export class GuncellemeServisi {
         JSON.stringify(this.onbellek)
       );
     } catch (hata) {
-      console.warn('[GuncellemeServisi] Onbellek kaydedilemedi:', hata);
+      Logger.warn('GuncellemeServisi', 'Onbellek kaydedilemedi:', hata);
     }
   }
 }
