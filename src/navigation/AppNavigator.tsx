@@ -26,6 +26,7 @@ import {
   KonumAyarlariSayfasi,
   KibleSayfasi,
   RamazanAyarlariSayfasi,
+  DebugLogsSayfasi,
 } from '../presentation/screens';
 import { useRenkler } from '../core/theme';
 
@@ -104,6 +105,11 @@ const AyarlarStack: React.FC = () => {
         name="RamazanAyarlari"
         component={RamazanAyarlariSayfasi}
         options={{ title: 'Ramazan Özel' }}
+      />
+      <Stack.Screen
+        name="DebugLogs"
+        component={DebugLogsSayfasi}
+        options={{ title: 'Debug Logları' }}
       />
     </Stack.Navigator>
   );
