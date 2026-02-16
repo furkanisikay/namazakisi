@@ -7,6 +7,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -102,7 +103,7 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
             }
             return null;
         } catch (hata) {
-            console.error('Muhafiz ayarlari yuklenemedi:', hata);
+            Logger.error('MuhafizSlice', 'Muhafiz ayarlari yuklenemedi', hata);
             return null;
         }
     }

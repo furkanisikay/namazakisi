@@ -84,14 +84,14 @@ const konumTakibiniSenkronizeEt = async () => {
           gpsAdres: sonKonum.gpsAdres,
           sonGpsGuncellemesi: sonKonum.sonGpsGuncellemesi,
         }));
-        console.log('[App] Konum state arka plan verisinden senkronize edildi');
+        Logger.info('App', 'Konum state arka plan verisinden senkronize edildi');
       }
     }
 
     // Konum takibini yeniden baslat (OS tarafindan durdurulan gorevi canlandir)
     await servis.yenidenBaslat();
   } catch (error) {
-    console.error('[App] Konum takip senkronizasyon hatasi:', error);
+    Logger.error('App', 'Konum takip senkronizasyon hatasi', error);
   }
 };
 
@@ -165,9 +165,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       }),
     ]);
 
-    console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
+    Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
   } catch (error) {
-    console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
+    Logger.error('App', 'Arka plan muhafiz ayarlanamadi', error);
   }
 };
 
@@ -182,7 +182,7 @@ const AppIcerik: React.FC = () => {
     // Logger'i baslat
     Logger.initialize()
       .then(() => Logger.info('App', 'Uygulama basladi'))
-      .catch(err => console.error('[App] Logger baslatilamadi:', err));
+      .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
     // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
 
@@ -243,14 +243,14 @@ const AppIcerik: React.FC = () => {
               if (namazAdi && tarih) {
                 // Redux dispatch ile namaz isaretle
                 store.dispatch(namazDurumunuDegistir({ tarih, namazAdi, tamamlandi: true }));
-                console.log(`[App/notifee] Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
+                Logger.info('App/notifee', `Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
 
                 // Sayac ve muhafiz bildirimlerini iptal et
                 await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as any);
                 await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
               }
             } catch (error) {
-              console.error('[App/notifee] Kıldım işleme hatası:', error);
+              Logger.error('App/notifee', 'Kıldım işleme hatası', error);
             }
           }
         }
