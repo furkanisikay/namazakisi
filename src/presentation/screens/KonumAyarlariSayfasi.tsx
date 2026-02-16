@@ -34,6 +34,7 @@ import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHe
 import { TurkiyeKonumServisi, Il, Ilce, TURKIYE_ILLERI_OFFLINE } from '../../domain/services/TurkiyeKonumServisi';
 import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
 import { useFeedback } from '../../core/feedback';
+import { Logger } from '../../core/utils/Logger';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -486,7 +487,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 await servis.durdur();
                 await servis.baslat();
             } catch (e) {
-                console.error('Hassasiyet degistirme hatasi:', e);
+                Logger.error('KonumAyarlariSayfasi', 'Hassasiyet degistirme hatasi', e);
             }
         }
     };
@@ -552,7 +553,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: false }));
             }
         } catch (hata) {
-            console.error('Konum takibi hatasi:', hata);
+            Logger.error('KonumAyarlariSayfasi', 'Konum takibi hatasi', hata);
             Alert.alert('Hata', 'Konum takibi ayarlanırken bir hata oluştu.');
         } finally {
             setTakipDurumuYukleniyor(false);
@@ -582,7 +583,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                         gpsAdres = { semt: '', ilce, il };
                     }
                 } catch (geoError) {
-                    console.warn('Reverse geocoding basarisiz:', geoError);
+                    Logger.warn('KonumAyarlariSayfasi', 'Reverse geocoding basarisiz', geoError);
                 }
 
                 dispatch(konumAyarlariniGuncelle({

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Qibla direction hook result interface.
@@ -76,12 +77,12 @@ export const useKible = (): UseKibleSonuc => {
       } catch (err: unknown) {
         const hataMesaji = (err as Error)?.message || '';
         if (hataMesaji.includes('location is unavailable') || hataMesaji.includes('location services')) {
-          console.warn('[Kible] Konum servisi kullanilamiyor:', hataMesaji);
+          Logger.warn('Kible', 'Konum servisi kullanilamiyor', hataMesaji);
           if (isMounted) {
             setHata('Konum servislerine erişilemiyor. Lütfen cihazınızın konum ayarlarını kontrol edin.');
           }
         } else {
-          console.error('Kible servisi hatasi:', err);
+          Logger.error('Kible', 'Kible servisi hatasi', err);
           if (isMounted) {
             setHata('Kıble servisi başlatılamadı.');
           }

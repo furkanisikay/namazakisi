@@ -212,7 +212,7 @@ export const DebugLogsSayfasi: React.FC = () => {
         Alert.alert('Hata', 'Paylaşım bu cihazda desteklenmiyor');
       }
     } catch (error) {
-      console.error('Log paylasim hatasi:', error);
+      Logger.error('DebugLogsSayfasi', 'Log paylasim hatasi', error);
       Alert.alert('Hata', 'Loglar paylaşılırken hata oluştu');
     }
   };
