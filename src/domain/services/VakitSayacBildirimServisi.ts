@@ -10,6 +10,7 @@ import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 
@@ -53,13 +54,13 @@ export class VakitSayacBildirimServisi {
 
     // iOS'ta desteklenmiyor
     if (Platform.OS !== 'android') {
-      console.log('[VakitSayac] iOS desteklenmiyor, atlanıyor');
+      Logger.info('VakitSayac', 'iOS desteklenmiyor, atlanıyor');
       return;
     }
 
     // Aktif değilse bitir
     if (!ayarlar.aktif) {
-      console.log('[VakitSayac] Sayaç devre dışı');
+      Logger.info('VakitSayac', 'Sayaç devre dışı');
       return;
     }
 
@@ -93,7 +94,7 @@ export class VakitSayacBildirimServisi {
       // Bu vakit kılınmış mı?
       const tarihinKilinanVakitleri = kilinanMap[v.tarih] || [];
       if (tarihinKilinanVakitleri.includes(v.vakit)) {
-        console.log(`[VakitSayac] ${v.vakit} (${v.tarih}) zaten kılınmış, atlanıyor`);
+        Logger.info('VakitSayac', `${v.vakit} (${v.tarih}) zaten kılınmış, atlanıyor`);
         return false;
       }
 
@@ -101,7 +102,7 @@ export class VakitSayacBildirimServisi {
     });
 
     if (gelecekVakitler.length === 0) {
-      console.log('[VakitSayac] Gelecek veya kılınmamış vakit bulunamadı');
+      Logger.info('VakitSayac', 'Gelecek veya kılınmamış vakit bulunamadı');
       return;
     }
 
@@ -109,7 +110,7 @@ export class VakitSayacBildirimServisi {
       await this.vakitIcinSayacPlanla(vakit);
     }
 
-    console.log(`[VakitSayac] Toplam ${gelecekVakitler.length} vakit için sayaç planlandı`);
+    Logger.info('VakitSayac', `Toplam ${gelecekVakitler.length} vakit için sayaç planlandı`);
   }
 
   /**
@@ -134,9 +135,9 @@ export class VakitSayacBildirimServisi {
       });
 
       this.kanalOlusturuldu = true;
-      console.log('[VakitSayac] notifee kanalı oluşturuldu');
+      Logger.info('VakitSayac', 'notifee kanalı oluşturuldu');
     } catch (error) {
-      console.error('[VakitSayac] Kanal oluşturulamadı:', error);
+      Logger.error('VakitSayac', 'Kanal oluşturulamadı:', error);
     }
   }
 
@@ -261,9 +262,9 @@ export class VakitSayacBildirimServisi {
           channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
           themeType: 'vakit',
         });
-        console.log(`[VakitSayac] ${vakit.vakit} icin native sayac hemen baslatildi`);
+        Logger.info('VakitSayac', `${vakit.vakit} icin native sayac hemen baslatildi`);
       } catch (error) {
-        console.error(`[VakitSayac] Native sayac baslatilamadi (${vakit.vakit}):`, error);
+        Logger.error('VakitSayac', `Native sayac baslatilamadi (${vakit.vakit}):`, error);
       }
     } else {
       // Gelecekte tetiklenecek - trigger ile placeholder bildirim gonder,
@@ -292,9 +293,9 @@ export class VakitSayacBildirimServisi {
         };
         await notifee.createTriggerNotification(bildirimIcerigi, trigger);
         const tetikTarih = new Date(tetikZamani);
-        console.log(`[VakitSayac] ${vakit.vakit} icin sayac planlandi: ${tetikTarih.toLocaleTimeString()}`);
+        Logger.info('VakitSayac', `${vakit.vakit} icin sayac planlandi: ${tetikTarih.toLocaleTimeString()}`);
       } catch (error) {
-        console.error(`[VakitSayac] Trigger bildirim planalamadi (${vakit.vakit}):`, error);
+        Logger.error('VakitSayac', `Trigger bildirim planlanamadı (${vakit.vakit}):`, error);
       }
     }
 
@@ -321,9 +322,9 @@ export class VakitSayacBildirimServisi {
         temizlemeTrigger
       );
 
-      console.log(`[VakitSayac] ${vakit.vakit} için temizleme planlandı`);
+      Logger.info('VakitSayac', `${vakit.vakit} için temizleme planlandı`);
     } catch (error) {
-      console.error(`[VakitSayac] Temizleme planlanamadı (${vakit.vakit}):`, error);
+      Logger.error('VakitSayac', `Temizleme planlanamadı (${vakit.vakit}):`, error);
     }
   }
 
@@ -341,7 +342,7 @@ export class VakitSayacBildirimServisi {
         await notifee.cancelTriggerNotification(bildirimId);
         // Temizleme trigger'ini da iptal et
         await notifee.cancelTriggerNotification(`${bildirimId}_bitis`);
-        console.log(`[VakitSayac] Bildirim iptal edildi: ${bildirimId}`);
+        Logger.info('VakitSayac', `Bildirim iptal edildi: ${bildirimId}`);
       } catch (error) {
         // Hata olsa bile devam et
       }
@@ -371,9 +372,9 @@ export class VakitSayacBildirimServisi {
         }
       }
 
-      console.log('[VakitSayac] Tum sayac bildirimleri temizlendi');
+      Logger.info('VakitSayac', 'Tum sayac bildirimleri temizlendi');
     } catch (error) {
-      console.error('[VakitSayac] Bildirimler temizlenirken hata:', error);
+      Logger.error('VakitSayac', 'Bildirimler temizlenirken hata:', error);
     }
   }
 
@@ -408,7 +409,7 @@ export class VakitSayacBildirimServisi {
       const veri = await AsyncStorage.getItem(anahtar);
       return veri ? JSON.parse(veri) : [];
     } catch (error) {
-      console.error('[VakitSayac] Kılınan vakitler alınamadı:', error);
+      Logger.error('VakitSayac', 'Kılınan vakitler alınamadı:', error);
       return [];
     }
   }
