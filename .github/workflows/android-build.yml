@@ -430,10 +430,11 @@ jobs:
           const fs = require('fs');
           const path = 'android/app/build.gradle';
           let content = fs.readFileSync(path, 'utf8');
-          
-          if (!content.includes('signingConfigs')) {
-            const signingConfig = `
-          signingConfigs {
+
+          // expo prebuild zaten signingConfigs { debug {...} } olusturur
+          // Bu yuzden 'signingConfigs' yerine release-spesifik 'RELEASE_STORE_FILE' kontrolu yapiyoruz
+          if (!content.includes('RELEASE_STORE_FILE')) {
+            const releaseSigningConfig = `
               release {
                   if (project.hasProperty('RELEASE_STORE_FILE')) {
                       storeFile file(RELEASE_STORE_FILE)
@@ -442,21 +443,34 @@ jobs:
                       keyPassword RELEASE_KEY_PASSWORD
                   }
               }
-          }
           `;
-            content = content.replace(/(android\s*\{)/, '$1' + signingConfig);
+            if (content.includes('signingConfigs')) {
+              // Mevcut signingConfigs bloguna release ekle
+              content = content.replace(
+                /(signingConfigs\s*\{)/,
+                '$1' + releaseSigningConfig
+              );
+            } else {
+              // Hic signingConfigs yoksa yeni blok olustur
+              const signingConfig = `
+          signingConfigs {
+          ${releaseSigningConfig}}
+          `;
+              content = content.replace(/(android\s*\{)/, '$1' + signingConfig);
+            }
           }
-          
+
           if (!content.includes('signingConfig signingConfigs.release')) {
             content = content.replace(
               /(buildTypes\s*\{[\s\S]*?release\s*\{)/,
               '$1\n            signingConfig signingConfigs.release'
             );
           }
-          
+
           fs.writeFileSync(path, content);
+          console.log('✅ build.gradle signing config guncellendi');
           EOF
-          
+
           node update_signing.js
           rm update_signing.js
 
@@ -471,9 +485,21 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           APK_NAME="NamazAkisi-v${VERSION}.apk"
-          
-          mv android/app/build/outputs/apk/release/app-release.apk "$APK_NAME"
-          
+
+          # Release APK imzali ise app-release.apk, imzasiz ise app-release-unsigned.apk olur
+          if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+            APK_SOURCE="android/app/build/outputs/apk/release/app-release.apk"
+          elif [ -f "android/app/build/outputs/apk/release/app-release-unsigned.apk" ]; then
+            APK_SOURCE="android/app/build/outputs/apk/release/app-release-unsigned.apk"
+            APK_NAME="NamazAkisi-v${VERSION}-unsigned.apk"
+          else
+            echo "❌ APK dosyasi bulunamadi!"
+            ls -la android/app/build/outputs/apk/release/ || true
+            exit 1
+          fi
+
+          mv "$APK_SOURCE" "$APK_NAME"
+
           echo "apk_name=$APK_NAME" >> $GITHUB_OUTPUT
           echo "apk_size=$(du -h $APK_NAME | cut -f1)" >> $GITHUB_OUTPUT
 
@@ -489,7 +515,7 @@ jobs:
           git add package.json package-lock.json app.json src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
           git tag -a ${{ steps.version.outputs.version_tag }} -m "Release ${{ steps.version.outputs.version_tag }}"
-          git push origin master
+          git push origin HEAD:${{ github.ref_name }}
           git push origin ${{ steps.version.outputs.version_tag }}
 
       # ============================================
