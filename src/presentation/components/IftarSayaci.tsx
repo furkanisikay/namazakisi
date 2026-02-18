@@ -21,7 +21,7 @@ interface IftarSayaciProps {
 }
 
 interface SayacDurumu {
-  gopirunur: boolean;
+  gorunur: boolean;
   geriSayim: boolean;
   saat: number;
   dakika: number;
@@ -36,7 +36,7 @@ function sayacDurumuHesapla(
   koordinatlar: { lat: number; lng: number } | null
 ): SayacDurumu {
   const varsayilan: SayacDurumu = {
-    gopirunur: false,
+    gorunur: false,
     geriSayim: false,
     saat: 0,
     dakika: 0,
@@ -70,7 +70,7 @@ function sayacDurumuHesapla(
     }
 
     return {
-      gopirunur: true,
+      gorunur: true,
       geriSayim: false,
       saat: 0,
       dakika: 0,
@@ -86,7 +86,7 @@ function sayacDurumuHesapla(
   const saniye = Math.floor((kalanMs % (1000 * 60)) / 1000);
 
   return {
-    gopirunur: true,
+    gorunur: true,
     geriSayim: true,
     saat,
     dakika,
@@ -141,7 +141,7 @@ export const IftarSayaci: React.FC<IftarSayaciProps> = ({ koordinatlar }) => {
 
   // Giriş animasyonu
   useEffect(() => {
-    if (durum.gopirunur && ayarlar.aktif) {
+    if (durum.gorunur && ayarlar.aktif) {
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 400,
@@ -150,9 +150,9 @@ export const IftarSayaci: React.FC<IftarSayaciProps> = ({ koordinatlar }) => {
     } else {
       fadeAnim.setValue(0);
     }
-  }, [durum.gopirunur, ayarlar.aktif, fadeAnim]);
+  }, [durum.gorunur, ayarlar.aktif, fadeAnim]);
 
-  if (!ayarlar.aktif || !durum.gopirunur || !koordinatlar) return null;
+  if (!ayarlar.aktif || !durum.gorunur || !koordinatlar) return null;
 
   const zamanStr = `${String(durum.saat).padStart(2, '0')}:${String(durum.dakika).padStart(2, '0')}:${String(durum.saniye).padStart(2, '0')}`;
 
