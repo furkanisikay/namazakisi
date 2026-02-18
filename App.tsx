@@ -20,6 +20,7 @@ import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildiri
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
+import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
@@ -150,6 +151,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     });
 
     console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
+
+    // İftar sayaci ayarlarini yukle
+    await store.dispatch(iftarSayacAyarlariniYukle());
   } catch (error) {
     console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
   }

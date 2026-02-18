@@ -37,6 +37,7 @@ const MENU_IKONLARI: Record<string, IkonTipi> = {
   goruntu: { name: 'palette', family: 'fa5', solid: true },
   bildirim: { name: 'bell', family: 'fa5', solid: true },
   hedef: { name: 'bullseye', family: 'fa5', solid: true },
+  ramazan: { name: 'moon', family: 'fa5', solid: true },
   hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
   titresim: { name: 'vibration', family: 'material' },
   ses: { name: 'volume-up', family: 'fa5', solid: true },
@@ -255,6 +256,12 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
       aciklama: 'Seri eşikleri ve özel gün modu',
       ikonAdi: 'hedef',
       sayfa: 'SeriHedefAyarlari',
+    },
+    {
+      baslik: 'Ramazan Özel',
+      aciklama: 'İftar sayacı ve Ramazan ayarları',
+      ikonAdi: 'ramazan',
+      sayfa: 'RamazanAyarlari',
     },
     {
       baslik: 'Hakkında',
