@@ -135,6 +135,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Vakit Sayacı Ayarları
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
+  // İftar Sayacı Ayarları
+  IFTAR_SAYAC_AYARLARI: 'iftar_sayac_ayarlari',
   // Konum sistemi
   KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
 } as const;
