@@ -21,6 +21,8 @@ import {
   iftarSayacAyariniGuncelle,
   iftarSayacAyarlariniYukle,
 } from '../store/iftarSayacSlice';
+import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
+import { store } from '../store/store';
 
 /**
  * Ramazan Ayarlari Sayfasi
@@ -46,7 +48,16 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
 
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
-    dispatch(iftarSayacAyariniGuncelle({ aktif: yeniDeger }));
+    await dispatch(iftarSayacAyariniGuncelle({ aktif: yeniDeger }));
+
+    // Bildirim servisini güncelle
+    const konumState = store.getState().konum;
+    if (konumState.koordinatlar) {
+      await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: yeniDeger,
+        koordinatlar: konumState.koordinatlar,
+      });
+    }
   };
 
   const iftarRenk = '#E65100';
@@ -92,7 +103,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
               className="text-xs text-center"
               style={{ color: renkler.metinIkincil }}
             >
-              Ramazan ayına özel iftar geri sayım sayacı
+              Ramazan ayına özel iftar geri sayım bildirimi
             </Text>
           </View>
         </View>
@@ -134,7 +145,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
                   className="text-xs mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Ana sayfada iftar vaktine geri sayım göster
+                  Bildirim menüsünde iftar vaktine geri sayım göster
                 </Text>
               </View>
               <Switch
@@ -165,9 +176,9 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
                     className="text-xs flex-1"
                     style={{ color: renkler.metinIkincil }}
                   >
-                    Sabah namazından sonra aktif olur ve akşam namazı vaktine
-                    kalan süreyi gösterir. Vakit girdikten 10 dakika sonra
-                    otomatik kaybolur.
+                    Sabah namazından sonra bildirim menüsünde aktif olur ve
+                    akşam namazı vaktine kalan süreyi gösterir. Vakit girdikten
+                    10 dakika sonra otomatik kaybolur.
                   </Text>
                 </View>
               </View>
