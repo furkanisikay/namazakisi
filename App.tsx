@@ -16,6 +16,7 @@ import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
+import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
@@ -152,8 +153,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
 
     console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
 
-    // İftar sayaci ayarlarini yukle
+    // İftar sayaci ayarlarini yukle ve bildirim planla
     await store.dispatch(iftarSayacAyarlariniYukle());
+    const iftarState = store.getState().iftarSayac;
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: iftarState.ayarlar.aktif,
+      koordinatlar: konumState.koordinatlar,
+    });
   } catch (error) {
     console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
   }

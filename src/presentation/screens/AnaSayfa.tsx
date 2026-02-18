@@ -30,8 +30,8 @@ import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
-import { IftarSayaci } from '../components/IftarSayaci';
 import { iftarSayacAyarlariniYukle } from '../store/iftarSayacSlice';
+import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
 
 // Baslangic sayfasi
 const BASLANGIC_SAYFA_INDEKSI = 1000;
@@ -155,7 +155,15 @@ export const AnaSayfa: React.FC = () => {
 
     dispatch(seriVerileriniYukle());
     dispatch(muhafizAyarlariniYukle());
-    dispatch(iftarSayacAyarlariniYukle());
+    dispatch(iftarSayacAyarlariniYukle()).then(() => {
+      const iftarState = store.getState().iftarSayac;
+      if (iftarState.ayarlar.aktif && konumAyarlari.koordinatlar) {
+        IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+          aktif: true,
+          koordinatlar: konumAyarlari.koordinatlar,
+        }).catch(() => {});
+      }
+    });
     BildirimServisi.getInstance().izinIste();
 
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
@@ -384,11 +392,6 @@ export const AnaSayfa: React.FC = () => {
               </Text>
             </View>
           </View>
-        )}
-
-        {/* İftar Sayacı - Sadece aktif gün gösterilir */}
-        {aktifGunKontrol && (
-          <IftarSayaci koordinatlar={konumAyarlari.koordinatlar} />
         )}
 
         {/* Ana Vakit Kartı (Hero) - Sadece aktif gün gösterilir */}
