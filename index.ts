@@ -17,6 +17,21 @@ import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/Bildi
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar
 if (Platform.OS === 'android') {
     notifee.onBackgroundEvent(async ({ type, detail }) => {
+        // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
+        if (type === EventType.DELIVERED) {
+            const bildirimId = detail.notification?.id;
+            if (bildirimId) {
+                if (bildirimId.endsWith('_vakitgirdi')) {
+                    const baseId = bildirimId.replace('_vakitgirdi', '');
+                    await notifee.cancelNotification(baseId);
+                } else if (bildirimId.endsWith('_bitis')) {
+                    const baseId = bildirimId.replace('_bitis', '');
+                    await notifee.cancelNotification(baseId);
+                    await notifee.cancelNotification(baseId + '_vakitgirdi');
+                }
+            }
+        }
+
         if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
             const bildirimId = detail.notification?.id; // "sayac_2026-02-15_ogle"
             if (bildirimId && bildirimId.startsWith('sayac_')) {
@@ -37,6 +52,9 @@ if (Platform.OS === 'android') {
 
                     // Bildirimi iptal et
                     await notifee.cancelNotification(bildirimId);
+
+                    // Temizleme trigger'ini da iptal et
+                    try { await notifee.cancelTriggerNotification(bildirimId + '_bitis'); } catch (_) {}
 
                     // Muhafız bildirimlerini de iptal et
                     const { ArkaplanMuhafizServisi } = await import('./src/domain/services/ArkaplanMuhafizServisi');

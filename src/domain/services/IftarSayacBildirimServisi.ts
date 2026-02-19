@@ -70,26 +70,28 @@ export class IftarSayacBildirimServisi {
 
     const bugun = this.bugunTarihiAl();
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC}${bugun}`;
+    const vakitGirdiId = `${bildirimId}_vakitgirdi`;
+    const temizlemeId = `${bildirimId}_bitis`;
 
     if (simdi < sabahVakti) {
       // Sabah namazından önce: sabah vaktinde geri sayım başlat
       await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster
-      await this.vakitGirdiBildirimiPlanla(bildirimId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle
-      await this.temizlemePlanla(bildirimId, aksamArti10.getTime());
+      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID - trigger cakismasini onler)
+      await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
+      // Akşam + 10 dk'da temizle (farkli ID)
+      await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
       // Sabah ile akşam arası: hemen geri sayım göster
       await this.geriSayimHemenGoster(bildirimId, aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster
-      await this.vakitGirdiBildirimiPlanla(bildirimId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle
-      await this.temizlemePlanla(bildirimId, aksamArti10.getTime());
+      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID)
+      await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
+      // Akşam + 10 dk'da temizle (farkli ID)
+      await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {
       // Akşam ile akşam+10dk arası: "vakit girdi" hemen göster
-      await this.vakitGirdiBildirimiHemenGoster(bildirimId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle
-      await this.temizlemePlanla(bildirimId, aksamArti10.getTime());
+      await this.vakitGirdiBildirimiHemenGoster(vakitGirdiId, aksamVakti.getTime());
+      // Akşam + 10 dk'da temizle (farkli ID)
+      await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     }
     // Akşam + 10 dk'dan sonra: hiçbir şey gösterme
   }
@@ -101,13 +103,16 @@ export class IftarSayacBildirimServisi {
     if (this.kanalOlusturuldu) return;
 
     try {
+      // Eski kanali sil (LOW importance, Samsung'da gorunmuyor)
+      try { await notifee.deleteChannel('iftar_sayac'); } catch (_) {}
+
       await notifee.createChannel({
         id: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
         name: 'İftar Sayacı',
         description: 'İftar vaktine geri sayım bildirimi',
-        importance: AndroidImportance.LOW, // Sessiz, titreşimsiz
+        importance: AndroidImportance.DEFAULT,
         vibration: false,
-        sound: undefined,
+        sound: '', // Sessiz
       });
 
       this.kanalOlusturuldu = true;

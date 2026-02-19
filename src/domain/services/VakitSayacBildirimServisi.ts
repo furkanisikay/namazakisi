@@ -120,13 +120,16 @@ export class VakitSayacBildirimServisi {
     }
 
     try {
+      // Eski kanali sil (LOW importance, Samsung'da gorunmuyor)
+      try { await notifee.deleteChannel('vakit_sayac'); } catch (_) {}
+
       await notifee.createChannel({
         id: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
         name: 'Vakit Sayacı',
         description: 'Vakit çıkmadan önce geri sayım bildirimi',
-        importance: AndroidImportance.LOW, // Sessiz, titreşimsiz
+        importance: AndroidImportance.DEFAULT,
         vibration: false,
-        sound: undefined, // Sessiz
+        sound: '', // Sessiz
       });
 
       this.kanalOlusturuldu = true;
@@ -290,7 +293,8 @@ export class VakitSayacBildirimServisi {
       }
     }
 
-    // B) Vakit sonu temizleme (replace + otomatik kapanma)
+    // B) Vakit sonu temizleme (farkli ID - trigger cakismasini onler)
+    const temizlemeId = `${bildirimId}_bitis`;
     try {
       const temizlemeTrigger: TimestampTrigger = {
         type: TriggerType.TIMESTAMP,
@@ -299,7 +303,7 @@ export class VakitSayacBildirimServisi {
 
       await notifee.createTriggerNotification(
         {
-          id: bildirimId, // Aynı ID - replace eder
+          id: temizlemeId,
           title: '',
           body: '',
           android: {
@@ -330,6 +334,9 @@ export class VakitSayacBildirimServisi {
       const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${tarih}_${vakit}`;
       try {
         await notifee.cancelNotification(bildirimId);
+        await notifee.cancelTriggerNotification(bildirimId);
+        // Temizleme trigger'ini da iptal et
+        await notifee.cancelTriggerNotification(`${bildirimId}_bitis`);
         console.log(`[VakitSayac] Bildirim iptal edildi: ${bildirimId}`);
       } catch (error) {
         // Hata olsa bile devam et
