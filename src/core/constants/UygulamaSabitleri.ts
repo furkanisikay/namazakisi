@@ -302,8 +302,8 @@ export const BILDIRIM_SABITLERI = {
     MUHAFIZ: 'muhafiz',
     MUHAFIZ_ACIL: 'muhafiz_acil',
     VAKIT_BILDIRIM: 'vakit_bildirim',
-    VAKIT_SAYAC: 'vakit_sayac',
-    IFTAR_SAYAC: 'iftar_sayac',
+    VAKIT_SAYAC: 'vakit_sayac_v2',
+    IFTAR_SAYAC: 'iftar_sayac_v2',
   },
 } as const;
 

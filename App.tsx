@@ -202,6 +202,21 @@ const AppIcerik: React.FC = () => {
     let notifeeUnsubscribe: (() => void) | undefined;
     if (Platform.OS === 'android') {
       notifeeUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
+        // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
+        if (type === EventType.DELIVERED) {
+          const bildirimId = detail.notification?.id;
+          if (bildirimId) {
+            if (bildirimId.endsWith('_vakitgirdi')) {
+              const baseId = bildirimId.replace('_vakitgirdi', '');
+              await notifee.cancelNotification(baseId);
+            } else if (bildirimId.endsWith('_bitis')) {
+              const baseId = bildirimId.replace('_bitis', '');
+              await notifee.cancelNotification(baseId);
+              await notifee.cancelNotification(baseId + '_vakitgirdi');
+            }
+          }
+        }
+
         if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
           const bildirimId = detail.notification?.id;
           if (bildirimId && bildirimId.startsWith('sayac_')) {
