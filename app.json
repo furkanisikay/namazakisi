@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "namazakisirn",
+    "scheme": "namazakisi",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -15,10 +15,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.furkanisikay.namazakisirn"
+      "bundleIdentifier": "com.furkanisikay.namazakisi"
     },
     "android": {
-      "package": "com.furkanisikay.namazakisirn",
+      "package": "com.furkanisikay.namazakisi",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4CAF50"
