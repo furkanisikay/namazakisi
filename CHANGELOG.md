@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.9.1] - 2026-02-19
+
+### Düzeltildi
+- Samsung bildirim gorunurlugu - kanal importance DEFAULT, trigger ID cakismasi cozumu
+- release notes parsing and stale update cache after app update
+
 ## [0.9.0] - 2026-02-18
 
 ### Eklendi
