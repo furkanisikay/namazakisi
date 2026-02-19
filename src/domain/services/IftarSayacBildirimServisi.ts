@@ -75,22 +75,26 @@ export class IftarSayacBildirimServisi {
 
     if (simdi < sabahVakti) {
       // Sabah namazından önce: sabah vaktinde geri sayım başlat
-      await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID - trigger cakismasini onler)
+      // timeoutAfter = akşam - sabah (bildirim sabahta gösterileceği için)
+      const timeoutAfterMs = aksamVakti.getTime() - sabahVakti.getTime();
+      await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime(), timeoutAfterMs);
+      // Akşam vaktinde statik "vakit girdi" bildirimi (10 dk timeout)
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Akşam + 10 dk'da temizle (yedek mekanizma)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
       // Sabah ile akşam arası: hemen geri sayım göster
-      await this.geriSayimHemenGoster(bildirimId, aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID)
+      // timeoutAfter = akşam - şimdi
+      const timeoutAfterMs = aksamVakti.getTime() - simdi.getTime();
+      await this.geriSayimHemenGoster(bildirimId, aksamVakti.getTime(), timeoutAfterMs);
+      // Akşam vaktinde statik "vakit girdi" bildirimi (10 dk timeout)
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Akşam + 10 dk'da temizle (yedek mekanizma)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {
-      // Akşam ile akşam+10dk arası: "vakit girdi" hemen göster
-      await this.vakitGirdiBildirimiHemenGoster(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Akşam ile akşam+10dk arası: statik "vakit girdi" hemen göster
+      await this.vakitGirdiBildirimiHemenGoster(vakitGirdiId);
+      // Akşam + 10 dk'da temizle (yedek mekanizma)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     }
     // Akşam + 10 dk'dan sonra: hiçbir şey gösterme
@@ -127,7 +131,8 @@ export class IftarSayacBildirimServisi {
   private async geriSayimPlanla(
     bildirimId: string,
     tetikZamani: number,
-    aksamVaktiMs: number
+    aksamVaktiMs: number,
+    timeoutAfterMs: number
   ): Promise<void> {
     try {
       const trigger: TimestampTrigger = {
@@ -136,7 +141,7 @@ export class IftarSayacBildirimServisi {
       };
 
       await notifee.createTriggerNotification(
-        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs),
+        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs, timeoutAfterMs),
         trigger
       );
     } catch (error) {
@@ -149,11 +154,12 @@ export class IftarSayacBildirimServisi {
    */
   private async geriSayimHemenGoster(
     bildirimId: string,
-    aksamVaktiMs: number
+    aksamVaktiMs: number,
+    timeoutAfterMs: number
   ): Promise<void> {
     try {
       await notifee.displayNotification(
-        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs)
+        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs, timeoutAfterMs)
       );
     } catch (error) {
       // Gösterilemezse sessizce devam et
@@ -162,8 +168,9 @@ export class IftarSayacBildirimServisi {
 
   /**
    * Geri sayım bildirim içeriği
+   * timeoutAfter: akşam vaktinde otomatik kapanır (negatife düşmez)
    */
-  private geriSayimBildirimIcerigi(bildirimId: string, aksamVaktiMs: number) {
+  private geriSayimBildirimIcerigi(bildirimId: string, aksamVaktiMs: number, timeoutAfterMs: number) {
     return {
       id: bildirimId,
       title: '🌙 İftar Sayacı',
@@ -175,6 +182,7 @@ export class IftarSayacBildirimServisi {
         showChronometer: true,
         chronometerCountDown: true,
         timestamp: aksamVaktiMs,
+        timeoutAfter: Math.max(0, timeoutAfterMs), // Akşam vaktinde otomatik kapat
         smallIcon: 'ic_notification',
         pressAction: { id: 'default' },
       },
@@ -182,7 +190,7 @@ export class IftarSayacBildirimServisi {
   }
 
   /**
-   * "Vakit girdi" bildirimini gelecekte planla (akşam vakti girince)
+   * "Vakit girdi" statik bildirimini akşam vaktinde tetiklenecek şekilde planla
    */
   private async vakitGirdiBildirimiPlanla(
     bildirimId: string,
@@ -195,7 +203,7 @@ export class IftarSayacBildirimServisi {
       };
 
       await notifee.createTriggerNotification(
-        this.vakitGirdiBildirimIcerigi(bildirimId, aksamVaktiMs),
+        this.vakitGirdiBildirimIcerigi(bildirimId),
         trigger
       );
     } catch (error) {
@@ -204,15 +212,14 @@ export class IftarSayacBildirimServisi {
   }
 
   /**
-   * "Vakit girdi" bildirimini hemen göster
+   * "Vakit girdi" bildirimini hemen göster (statik, kronometer yok)
    */
   private async vakitGirdiBildirimiHemenGoster(
-    bildirimId: string,
-    aksamVaktiMs: number
+    bildirimId: string
   ): Promise<void> {
     try {
       await notifee.displayNotification(
-        this.vakitGirdiBildirimIcerigi(bildirimId, aksamVaktiMs)
+        this.vakitGirdiBildirimIcerigi(bildirimId)
       );
     } catch (error) {
       // Gösterilemezse sessizce devam et
@@ -220,20 +227,19 @@ export class IftarSayacBildirimServisi {
   }
 
   /**
-   * "Vakit girdi" bildirim içeriği - chronometer yukarı sayarak geçen süreyi gösterir
+   * "Vakit girdi" bildirim içeriği - statik metin, kronometer yok, 10 dk sonra otomatik kapanır
    */
-  private vakitGirdiBildirimIcerigi(bildirimId: string, aksamVaktiMs: number) {
+  private vakitGirdiBildirimIcerigi(bildirimId: string) {
     return {
-      id: bildirimId, // Aynı ID - geri sayımı replace eder
+      id: bildirimId,
       title: '🌙 İftar Vakti Girdi!',
       body: 'Hayırlı iftarlar! — Ezanı duymadan orucunuzu açmayınız!',
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
-        ongoing: true,
-        autoCancel: false,
-        showChronometer: true,
-        chronometerCountDown: false, // Yukarı sayar (geçen süre)
-        timestamp: aksamVaktiMs,
+        ongoing: false,
+        autoCancel: true,
+        showChronometer: false, // Statik bildirim - eksiye düşmez
+        timeoutAfter: 10 * 60 * 1000, // 10 dk sonra otomatik kapat
         smallIcon: 'ic_notification',
         pressAction: { id: 'default' },
       },

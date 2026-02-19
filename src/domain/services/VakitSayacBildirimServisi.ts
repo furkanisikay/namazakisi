@@ -244,6 +244,11 @@ export class VakitSayacBildirimServisi {
       yatsi: 'Yatsı',
     };
 
+    // Seviye 2 başlangıç zamanı
+    const tetikZamani = Math.max(seviye2Baslangic, simdi.getTime() + 5000);
+    // Vakit bitiminde otomatik kapanma süresi (bildirim gösterildiği andan itibaren)
+    const timeoutAfterMs = Math.max(0, cikisSuresi - tetikZamani);
+
     // A) Geri sayım bildirimi
     const bildirimIcerigi = {
       id: bildirimId,
@@ -256,6 +261,7 @@ export class VakitSayacBildirimServisi {
         showChronometer: true, // Chronometer göster
         chronometerCountDown: true, // Geri sayım modu
         timestamp: cikisSuresi, // Hedef zaman (vakit çıkışı)
+        timeoutAfter: timeoutAfterMs, // Vakit bitiminde otomatik kapat (negatife düşmesin)
         smallIcon: 'ic_notification',
         pressAction: { id: 'default' },
         actions: [
@@ -266,9 +272,6 @@ export class VakitSayacBildirimServisi {
         ],
       },
     };
-
-    // Seviye 2 başlangıç zamanı
-    const tetikZamani = Math.max(seviye2Baslangic, simdi.getTime() + 5000);
 
     // Eğer zaten seviye 2 aralığındaysak hemen göster
     if (tetikZamani <= simdi.getTime() + 5000) {
