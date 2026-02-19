@@ -169,9 +169,9 @@ export const PERFORMANS_ESIKLERI = {
 export const GOOGLE_OAUTH = {
   // Expo Go ve web icin
   WEB_CLIENT_ID: '658761433733-maut0baqrkvqbf44qlultmf56qidh0se.apps.googleusercontent.com',
-  // Android icin (package: com.furkanisikay.namazakisirn)
+  // Android icin (package: com.furkanisikay.namazakisi)
   ANDROID_CLIENT_ID: 'YOUR_ANDROID_CLIENT_ID',
-  // iOS icin (bundle: com.furkanisikay.namazakisirn)
+  // iOS icin (bundle: com.furkanisikay.namazakisi)
   IOS_CLIENT_ID: 'YOUR_IOS_CLIENT_ID',
 } as const;
 
