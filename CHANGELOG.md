@@ -1,105 +1,105 @@
-# Changelog
+# Değişiklik Günlüğü
 
-All notable changes to this project will be documented in this file.
+Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
+[Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
 ## [0.9.0] - 2026-02-18
 
-### Added
+### Eklendi
 - iftar sayacini ana ekrandan bildirim menusune tasi
 
 ## [0.8.0] - 2026-02-18
 
-### Added
+### Eklendi
 - add Ramazan iftar counter feature with settings, component, and tests
 
-### Fixed
+### Düzeltildi
 - rename typo gopirunur to gorunur in IftarSayaci component
 
 ## [0.7.1] - 2026-02-18
 
-### Fixed
+### Düzeltildi
 - [ci] android release action 3 kritik hatasi duzelt
 
 ## [0.7.0] - 2026-02-15
 
-### Added
+### Eklendi
 - add point indicators to prayer time cards and daily flow
 - Add Vakit Sayacı (Prayer Time Countdown) feature with notifee
 - Rozet ve Seri paylaşım görselleri iyileştirildi
 
-### Fixed
+### Düzeltildi
 - seri verileri yuklenmeden seriKontrolet/namazKilindiPuanla calismasini engelle ve veri migrasyonu ekle
 - hide muhafiz banner when current prayer is completed
 - Resolve test failures and add vakitSayacSlice tests
 - Improve hash-based message selection in PaylasilabilirRozet
 - Address PR review comments - typing, imports, and consistency
 
-### Changed
+### Değiştirildi
 - address PR review feedback - improve naming, guard UI dispatch, fix dynamic import, improve test
 
 ## [0.6.1] - 2026-02-15
 
-### Fixed
+### Düzeltildi
 - Invalidate update cache when app version changes
 - [ci] release notlarından merge commitlerini filtrele
 
-### Changed
+### Değiştirildi
 - Simplify cache validation logic with destructuring
 
 ## [0.6.0] - 2026-02-14
 
-### Added
+### Eklendi
 - Merge pull request #28 from furkanisikay/claude/merge-kible-to-master-bRa1M
 - Add Qibla finder feature with comprehensive code review fixes
 - kible gosterici ozelligi eklendi
 
-### Changed
+### Değiştirildi
 - Apply comprehensive code review fixes for SOLID, DRY, KISS, and Clean Code principles- [ci] optimize build times with caching and Gradle configuration
 
 ## [0.5.0] - 2026-02-14
 
-### Added
+### Eklendi
 - Merge pull request #25 from furkanisikay/claude/add-auto-update-feature-9Dika
 
-### Fixed
+### Düzeltildi
 - PR bot yorumları uygulandı - NetInfo, URL doğrulama, typo
 - code review düzeltmeleri - kritik hatalar ve iyileştirmeler
 
 ## [0.4.0] - 2026-02-14
 
-### Added
+### Eklendi
 - Merge pull request #24 from furkanisikay/claude/add-auto-update-feature-9Dika
 - otomatik güncelleme kontrolü ve bildirim sistemi eklendi
 
 ## [0.3.0] - 2026-02-13
 
-### Added
+### Eklendi
 - yapılandırılabilir takip profilleri ve pil optimizasyonları eklendi
 - arka plan konum canlandırma ve izin iptali yönetimi eklendi
 
-### Fixed
+### Düzeltildi
 - Merge pull request #23 from furkanisikay/claude/fix-safearea-location-tracking-eb4Pq
 - tüm arayüz metinlerinde Türkçe karakter düzeltmesi
 - tüm sayfalara SafeArea eklendi ve arka plan konum takibi düzeltildi
 
-### Changed
+### Değiştirildi
 - PR inceleme önerileri uygulandı (Copilot ve Gemini)
 
 ## [0.2.1] - 2026-02-13
 
-### Fixed
+### Düzeltildi
 - Merge pull request #22 from furkanisikay/claude/fix-prayer-notifications-WhfeI
 - prayer notification Kıldım button reliability and UI sync
 
-### Changed
+### Değiştirildi
 - address PR review feedback from Gemini and Copilot
 
 ## [0.2.0] - 2026-02-01
 
-### Added
+### Eklendi
 - implement prayer time notifications and fix tests
 - [home] Güneş vaktinde Öğle kartının pasif gösterimi ve testleri
 - add prayer time arrival notifications (excluding sunrise)
@@ -107,7 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2026-01-31
 
-### Fixed
+### Düzeltildi
 - Merge pull request #16 from furkanisikay/fix/issue-7-seri-hatirlatici-saat-bugu-1810295291482891570
 - seri hatırlatıcı sabit saat ayarını düzelt
 - seri hatırlatıcı sabit saat ayarını düzelt
@@ -117,14 +117,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-01-26
 
-### Added
+### Eklendi
 - Merge pull request #2 from furkanisikay/feature/ui-yenileme
 - Faz 2-3 NativeWind + Expo Icons gecisi tamamlandi
 
-### Fixed
+### Düzeltildi
 - Turkce karakterler duzeltildi (o->ö, u->ü, s->ş, g->ğ, i->ı, c->ç)
 
-### Changed
+### Değiştirildi
 - Tab sayfalari header kaldirildi ve YuklemeGostergesi basitlestirildi
 
 ## [0.0.1] - 2026-01-23

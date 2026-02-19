@@ -203,18 +203,23 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
       /^pr bot/i,
     ];
 
+    // Bolum basligini tespit et (### ile baslayan satirlarda anahtar kelime ara)
+    const bolumTespitEt = (satir: string): 'added' | 'fixed' | 'changed' | null => {
+      const alt = satir.toLowerCase();
+      if (!alt.startsWith('###')) return null;
+      if (alt.includes('added') || alt.includes('yeni özellik')) return 'added';
+      if (alt.includes('fixed') || alt.includes('hata')) return 'fixed';
+      if (alt.includes('changed') || alt.includes('refactor')) return 'changed';
+      return null;
+    };
+
     for (const satir of satirlar) {
       const temizSatir = satir.trim();
 
       // Bolum basliklarini tespit et
-      if (temizSatir.toLowerCase().includes('### added')) {
-        aktifBolum = 'added';
-        continue;
-      } else if (temizSatir.toLowerCase().includes('### fixed')) {
-        aktifBolum = 'fixed';
-        continue;
-      } else if (temizSatir.toLowerCase().includes('### changed')) {
-        aktifBolum = 'changed';
+      const tespit = bolumTespitEt(temizSatir);
+      if (tespit !== null) {
+        aktifBolum = tespit;
         continue;
       }
 
@@ -325,8 +330,8 @@ export class GuncellemeServisi {
       await this.onbellegiYukle();
 
       if (!zorla) {
-        // Erteleme kontrolu
-        if (this.ertelemeSurecindeMi()) {
+        // Erteleme kontrolu: erteleme sureci devam ediyorsa VE cache bayat degilse
+        if (this.ertelemeSurecindeMi() && !this.onbellekBayatMi()) {
           return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
         }
 
@@ -340,6 +345,10 @@ export class GuncellemeServisi {
       const agDurumu = await NetInfo.fetch();
       if (!agDurumu.isConnected) {
         console.log('[GuncellemeServisi] Cevrimdisi - kontrol atlaniyor');
+        // Bayat cache varsa guncelleme yok olarak dondur
+        if (this.onbellekBayatMi()) {
+          return { guncellemeMevcut: false, bilgi: null };
+        }
         return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
       }
 
@@ -415,6 +424,17 @@ export class GuncellemeServisi {
   }
 
   /**
+   * Onbellekteki guncelleme sonucu bayat mi?
+   *
+   * Cache'deki "yeni versiyon" mevcut uygulama versiyonuna esit veya
+   * daha eskiyse bayat kabul edilir (kullanici uygulamayi guncelledi).
+   */
+  private onbellekBayatMi(): boolean {
+    const bilgi = this.onbellek?.sonSonuc?.bilgi;
+    return !!(bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0);
+  }
+
+  /**
    * Onbellek hala gecerli mi?
    *
    * Cache gecersiz kabul edilir eger:
@@ -432,8 +452,7 @@ export class GuncellemeServisi {
 
     // Eger cache'de bir guncelleme bilgisi varsa ve bu guncelleme
     // mevcut uygulama versiyonuna esit veya daha eskiyse, cache'i gecersiz kil.
-    const { bilgi } = this.onbellek.sonSonuc;
-    if (bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0) {
+    if (this.onbellekBayatMi()) {
       return false;
     }
 

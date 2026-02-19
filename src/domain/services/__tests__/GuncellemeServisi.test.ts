@@ -278,6 +278,39 @@ describe('GitHubGuncellemeKaynagi', () => {
     expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('Merge pull request');
   });
 
+  it('Turkce ve emoji bolum basliklari dogru formatlar', async () => {
+    const releaseNot = `📊 **3** commit | Önceki: [v0.8.0](https://github.com/furkanisikay/namazakisi/releases/tag/v0.8.0)
+
+### ✨ Yeni Özellikler
+- iftar sayacini ana ekrandan bildirim menusune tasi
+
+### 🐛 Hata Düzeltmeleri
+- bazi crash duzeltildi
+
+### ♻️ Refactoring
+- kod duzenlendi
+
+---
+
+## 📱 İndirme
+
+🔗 **Full Changelog**: https://github.com/furkanisikay/namazakisi/compare/v0.8.0...v0.9.0
+`;
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      body: releaseNot,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Yeni Özellikler:');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('iftar sayacini');
+    expect(sonuc.bilgi?.degisiklikNotlari).toContain('Hatalar giderildi');
+    // Ham commit sayisi satiri gorunmemeli
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('commit');
+    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('Önceki');
+  });
+
   it('zaman asimi durumunu ele alir', async () => {
     // AbortError simule et
     const abortError = new Error('Aborted');
@@ -514,6 +547,79 @@ describe('GuncellemeServisi', () => {
 
     // API cagrisi yapilmis olmali (cache gecersiz oldugu icin)
     expect(mockFetch).toHaveBeenCalled();
+  });
+
+  it('erteleme surecinde bayat cache varsa API cagrisi yapar', async () => {
+    // Senaryo: Kullanici guncellemeyi ertelemisti, ama sonra uygulamayi guncelledi.
+    // Erteleme sureci hala aktif olsa bile guncelleme popup gostermemeli.
+    const bayatCache = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Artik mevcut versiyon
+          mevcutVersiyon: '0.5.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: UYGULAMA.VERSIYON,
+      ertelemeZamani: Date.now(), // Erteleme hala aktif
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(bayatCache);
+
+    GuncellemeServisi.resetInstance();
+    const servis = GuncellemeServisi.getInstance();
+
+    // API artik guncelleme yok diyecek
+    mockFetch.mockResolvedValue(githubYanitiOlustur(UYGULAMA.VERSIYON));
+
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Erteleme aktif olsa bile bayat cache yuzunden API cagrisi yapilmali
+    expect(mockFetch).toHaveBeenCalled();
+    // Ve guncelleme mevcut olmamali (zaten guncel)
+    expect(sonuc.guncellemeMevcut).toBe(false);
+  });
+
+  it('cevrimdisi iken bayat cache varsa guncelleme gostermez', async () => {
+    // Senaryo: Kullanici guncellemeyi kurdu, ama ilk acilista cevrimdisi.
+    // Eski cache "guncelleme var" diyor ama artik gecersiz.
+    const bayatCache = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Artik mevcut versiyon
+          mevcutVersiyon: '0.5.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '2026-01-01',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(bayatCache);
+
+    GuncellemeServisi.resetInstance();
+    const servis = GuncellemeServisi.getInstance();
+
+    // Cevrimdisi
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false });
+
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Cevrimdisi + bayat cache = guncelleme yok
+    expect(sonuc.guncellemeMevcut).toBe(false);
+    expect(sonuc.bilgi).toBeNull();
   });
 });
 

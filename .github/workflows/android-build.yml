@@ -252,22 +252,22 @@ jobs:
           
           # Yeni changelog entry
           {
-            echo "# Changelog"
+            echo "# Değişiklik Günlüğü"
             echo ""
-            echo "All notable changes to this project will be documented in this file."
+            echo "Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir."
             echo ""
-            echo "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),"
-            echo "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)."
+            echo "Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır."
+            echo "[Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır."
             echo ""
             echo "## [${NEW_VERSION}] - ${TODAY}"
             echo ""
           } > CHANGELOG_NEW.md
           
           if [ -n "$LAST_TAG" ]; then
-            # Added (feat)
+            # Eklendi (feat)
             FEATURES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^feat" 2>/dev/null || true)
             if [ -n "$FEATURES" ]; then
-              echo "### Added" >> CHANGELOG_NEW.md
+              echo "### Eklendi" >> CHANGELOG_NEW.md
               git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^feat" 2>/dev/null | \
                 sed 's/^- feat(\([^)]*\)): /- [\1] /' | \
                 sed 's/^- feat: /- /' >> CHANGELOG_NEW.md
@@ -275,10 +275,10 @@ jobs:
               echo "" >> CHANGELOG_NEW.md
             fi
             
-            # Fixed
+            # Duzeltildi (fix)
             FIXES=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^fix" 2>/dev/null || true)
             if [ -n "$FIXES" ]; then
-              echo "### Fixed" >> CHANGELOG_NEW.md
+              echo "### Düzeltildi" >> CHANGELOG_NEW.md
               git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^fix" 2>/dev/null | \
                 sed 's/^- fix(\([^)]*\)): /- [\1] /' | \
                 sed 's/^- fix: /- /' >> CHANGELOG_NEW.md
@@ -286,11 +286,11 @@ jobs:
               echo "" >> CHANGELOG_NEW.md
             fi
             
-            # Changed (refactor, perf)
+            # Degistirildi (refactor, perf)
             REFACTOR=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^refactor" 2>/dev/null || true)
             PERF=$(git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"%s" --grep="^perf" 2>/dev/null || true)
             if [ -n "$REFACTOR" ] || [ -n "$PERF" ]; then
-              echo "### Changed" >> CHANGELOG_NEW.md
+              echo "### Değiştirildi" >> CHANGELOG_NEW.md
               if [ -n "$REFACTOR" ]; then
                 git log ${LAST_TAG}..HEAD --no-merges --pretty=format:"- %s" --grep="^refactor" 2>/dev/null | \
                   sed 's/^- refactor(\([^)]*\)): /- [\1] /' | \
@@ -305,7 +305,7 @@ jobs:
               echo "" >> CHANGELOG_NEW.md
             fi
           else
-            echo "### 🎉 Initial Release" >> CHANGELOG_NEW.md
+            echo "### 🎉 İlk Sürüm" >> CHANGELOG_NEW.md
             echo "" >> CHANGELOG_NEW.md
           fi
           
