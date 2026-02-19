@@ -32,6 +32,7 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
 import { iftarSayacAyarlariniYukle } from '../store/iftarSayacSlice';
 import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
+import { IftarSayaci } from '../components/IftarSayaci';
 
 // Baslangic sayfasi
 const BASLANGIC_SAYFA_INDEKSI = 1000;
@@ -414,6 +415,13 @@ export const AnaSayfa: React.FC = () => {
             <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
               Geçmiş gün görüntüleniyor
             </Text>
+          </View>
+        )}
+
+        {/* İftar Sayacı - Sadece aktif günde gösterilir */}
+        {aktifGunKontrol && (
+          <View style={{ marginHorizontal: -20 }}>
+            <IftarSayaci koordinatlar={konumAyarlari.koordinatlar} />
           </View>
         )}
 

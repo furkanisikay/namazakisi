@@ -167,7 +167,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
 
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
-    dispatch(vakitSayacAyariniGuncelle({ aktif: yeniDeger }));
+    await dispatch(vakitSayacAyariniGuncelle({ aktif: yeniDeger }));
 
     // Bildirimleri hemen yeniden planla
     const state = store.getState();
