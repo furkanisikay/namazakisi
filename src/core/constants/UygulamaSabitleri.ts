@@ -137,6 +137,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // İftar Sayacı Ayarları
   IFTAR_SAYAC_AYARLARI: 'iftar_sayac_ayarlari',
+  // Seri Sayacı Ayarları
+  SERI_SAYAC_AYARLARI: 'seri_sayac_ayarlari',
   // Konum sistemi
   KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
 } as const;
@@ -295,6 +297,7 @@ export const BILDIRIM_SABITLERI = {
     DAKIKA: '_dk_',
     SAYAC: 'sayac_',
     IFTAR_SAYAC: 'iftar_sayac_',
+    SERI_SAYAC: 'seri_sayac_',
   },
   // Bildirim Kanallari
   KANALLAR: {
@@ -304,6 +307,7 @@ export const BILDIRIM_SABITLERI = {
     VAKIT_BILDIRIM: 'vakit_bildirim',
     VAKIT_SAYAC: 'vakit_sayac_v2',
     IFTAR_SAYAC: 'iftar_sayac_v2',
+    SERI_SAYAC: 'seri_sayac_v1',
   },
 } as const;
 

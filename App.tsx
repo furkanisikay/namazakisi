@@ -17,11 +17,13 @@ import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizSer
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
+import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
+import { seriSayacAyarlariniYukle } from './src/presentation/store/seriSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
@@ -158,6 +160,14 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const iftarState = store.getState().iftarSayac;
     await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: iftarState.ayarlar.aktif,
+      koordinatlar: konumState.koordinatlar,
+    });
+
+    // Seri sayaci ayarlarini yukle ve bildirim planla (imsak geri sayim)
+    await store.dispatch(seriSayacAyarlariniYukle());
+    const seriSayacState = store.getState().seriSayac;
+    await SeriSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: seriSayacState.ayarlar.aktif,
       koordinatlar: konumState.koordinatlar,
     });
   } catch (error) {

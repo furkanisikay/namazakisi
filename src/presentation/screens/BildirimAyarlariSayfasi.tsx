@@ -24,10 +24,12 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
 import { vakitBildirimAyariniGuncelle, vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
 import { vakitSayacAyariniGuncelle, vakitSayacAyarlariniYukle } from '../store/vakitSayacSlice';
+import { seriSayacAyariniGuncelle, seriSayacAyarlariniYukle } from '../store/seriSayacSlice';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
+import { SeriSayacBildirimServisi } from '../../domain/services/SeriSayacBildirimServisi';
 import { store } from '../store/store';
 
 /**
@@ -117,6 +119,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
   const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
+  const { ayarlar: seriSayacAyarlari } = useAppSelector((state) => state.seriSayac);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -124,6 +127,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
     dispatch(vakitBildirimAyarlariniYukle());
     dispatch(vakitSayacAyarlariniYukle());
+    dispatch(seriSayacAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -178,6 +182,20 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
       seviye2Esik: muhafizState.esikler.seviye2,
+    });
+  };
+
+  const handleSeriSayacToggle = async (yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    await dispatch(seriSayacAyariniGuncelle({ aktif: yeniDeger }));
+
+    // Bildirimi hemen yeniden planla
+    const state = store.getState();
+    const konumState = state.konum;
+
+    await SeriSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: yeniDeger,
+      koordinatlar: konumState.koordinatlar,
     });
   };
 
@@ -305,6 +323,59 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                   <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
                     Vakit çıkmak üzereyken bildirim panelinde gerçek zamanlı geri sayım gösterilir.
                     Kıldım işaretleyince otomatik kaybolur. {'\n'}
+                    <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Seri Sayaci Bolumu */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            SERİ SAYACI
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            {/* Header: Toggle */}
+            <View className="flex-row items-center p-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: '#FF6B3515' }}
+              >
+                <FontAwesome5 name="fire" size={18} color="#FF6B35" solid />
+              </View>
+              <View className="flex-1">
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                  Seri Geri Sayımı
+                </Text>
+                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  İmsak vaktine kalan süreyi bildirim panelinde göster
+                </Text>
+              </View>
+              <Switch
+                value={seriSayacAyarlari.aktif}
+                onValueChange={handleSeriSayacToggle}
+                trackColor={{ false: renkler.sinir, true: '#FF6B3560' }}
+                thumbColor={seriSayacAyarlari.aktif ? '#FF6B35' : '#f4f3f4'}
+              />
+            </View>
+
+            {/* Alt bilgi - aktifse göster */}
+            {seriSayacAyarlari.aktif && (
+              <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
+                <View className="flex-row items-start mt-3 gap-2">
+                  <FontAwesome5 name="info-circle" size={12} color="#FF6B35" style={{ marginTop: 2 }} />
+                  <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                    İmsak vaktinden 1 saat önce bildirim panelinde 🔥 geri sayım başlar.{'\n'}
+                    Duolingo tarzı: imsak vakti gelene kadar kalan süre gösterilir.{'\n'}
                     <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
                   </Text>
                 </View>
