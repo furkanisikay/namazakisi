@@ -15,6 +15,7 @@ jest.mock('@notifee/react-native', () => ({
     },
     TriggerType: { TIMESTAMP: 0 },
     AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
+    AndroidStyle: { BIGTEXT: 0 },
 }));
 
 jest.mock('react-native', () => ({ Platform: { OS: 'android' } }));

@@ -177,7 +177,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
-      seviye2Esik: muhafizState.esikler.seviye2,
+      baslangicEsikDk: muhafizState.esikler.seviye1,
     });
   };
 

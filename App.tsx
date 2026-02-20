@@ -142,13 +142,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       await VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle();
     }
 
-    // Vakit sayaci bildirimlerini planla
+    // Vakit sayaci bildirimlerini planla (muhafiz ilk bildirimle eş zamanlı)
     await store.dispatch(vakitSayacAyarlariniYukle());
     const sayacState = store.getState().vakitSayac;
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: sayacState.ayarlar.aktif,
       koordinatlar: konumState.koordinatlar,
-      seviye2Esik: muhafizAyarlari.esikler.seviye2,
+      baslangicEsikDk: muhafizAyarlari.esikler.seviye1,
     });
 
     console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
