@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.9.2] - 2026-02-21
+
+### Düzeltildi
+- remove @notifee/react-native from plugins (not a valid config plugin since v7.8.0)
+- vakit sayacı ve iftar sayacı bildirimlerinin release APK'da çalışmamasını düzelt
+
 ## [0.9.1] - 2026-02-19
 
 ### Düzeltildi
