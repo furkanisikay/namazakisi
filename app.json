@@ -45,7 +45,6 @@
     },
     "plugins": [
       "expo-audio",
-      "@notifee/react-native",
       [
         "expo-notifications",
         {
@@ -57,9 +56,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin doğru hesaplanması için konum bilginize ihtiyaç var.",
-          "locationAlwaysPermission": "Hareket halindeyken namaz vakitlerini otomatik güncellemek için arka plan konum iznine ihtiyaç var.",
-          "locationWhenInUsePermission": "Namaz vakitlerinin doğru hesaplanması için konum bilginize ihtiyaç var.",
+          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin dogru hesaplanmasi icin konum bilginize ihtiyac var.",
+          "locationAlwaysPermission": "Hareket halindeyken namaz vakitlerini otomatik guncellemek icin arka plan konum iznine ihtiyac var.",
+          "locationWhenInUsePermission": "Namaz vakitlerinin dogru hesaplanmasi icin konum bilginize ihtiyac var.",
           "isAndroidBackgroundLocationEnabled": true,
           "isAndroidForegroundServiceEnabled": true
         }
