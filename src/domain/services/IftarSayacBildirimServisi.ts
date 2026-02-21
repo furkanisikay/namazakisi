@@ -11,7 +11,7 @@
  * - Zamanlanmış bildirimler (her dk tetiklenen) KULLANMAZ, tek chronometer yeterli
  */
 
-import notifee, { TriggerType, AndroidImportance, TimestampTrigger } from '@notifee/react-native';
+import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
@@ -167,7 +167,7 @@ export class IftarSayacBildirimServisi {
     return {
       id: bildirimId,
       title: '🌙 İftar Sayacı',
-      body: 'Akşam namazı vaktine kalan süre — Ezanı duymadan orucunuzu açmayınız!',
+      body: 'İftar vaktine kalan süre',
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
         ongoing: true,
@@ -175,8 +175,11 @@ export class IftarSayacBildirimServisi {
         showChronometer: true,
         chronometerCountDown: true,
         timestamp: aksamVaktiMs,
-        smallIcon: 'ic_notification',
         pressAction: { id: 'default' },
+        style: {
+          type: AndroidStyle.BIGTEXT as const,
+          text: 'İftar vaktine kalan süre\n\n⚠️ Ezanı duymadan orucunuzu açmayınız!',
+        },
       },
     };
   }
@@ -224,18 +227,21 @@ export class IftarSayacBildirimServisi {
    */
   private vakitGirdiBildirimIcerigi(bildirimId: string, aksamVaktiMs: number) {
     return {
-      id: bildirimId, // Aynı ID - geri sayımı replace eder
+      id: bildirimId,
       title: '🌙 İftar Vakti Girdi!',
-      body: 'Hayırlı iftarlar! — Ezanı duymadan orucunuzu açmayınız!',
+      body: 'Hayırlı iftarlar!',
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
         ongoing: true,
         autoCancel: false,
         showChronometer: true,
-        chronometerCountDown: false, // Yukarı sayar (geçen süre)
+        chronometerCountDown: false,
         timestamp: aksamVaktiMs,
-        smallIcon: 'ic_notification',
         pressAction: { id: 'default' },
+        style: {
+          type: AndroidStyle.BIGTEXT as const,
+          text: 'Hayırlı iftarlar!\n\n⚠️ Ezanı duymadan orucunuzu açmayınız!',
+        },
       },
     };
   }
@@ -255,15 +261,14 @@ export class IftarSayacBildirimServisi {
 
       await notifee.createTriggerNotification(
         {
-          id: bildirimId, // Aynı ID - replace eder
+          id: bildirimId,
           title: '',
           body: '',
           android: {
             channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
             ongoing: false,
             autoCancel: true,
-            timeoutAfter: 100, // 100ms sonra otomatik kapan
-            smallIcon: 'ic_notification',
+            timeoutAfter: 100,
           },
         },
         trigger

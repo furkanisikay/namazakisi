@@ -15,6 +15,7 @@ jest.mock('@notifee/react-native', () => ({
     },
     TriggerType: { TIMESTAMP: 0 },
     AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
+    AndroidStyle: { BIGTEXT: 0 },
 }));
 
 jest.mock('react-native', () => ({ Platform: { OS: 'android' } }));
@@ -61,7 +62,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      seviye2Esik: 30,
+      baslangicEsikDk: 30,
     });
 
     expect(notifee.deleteChannel).toHaveBeenCalledWith('vakit_sayac');
@@ -91,7 +92,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      seviye2Esik: 30,
+      baslangicEsikDk: 30,
     });
 
     const createCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;

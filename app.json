@@ -45,6 +45,7 @@
     },
     "plugins": [
       "expo-audio",
+      "@notifee/react-native",
       [
         "expo-notifications",
         {

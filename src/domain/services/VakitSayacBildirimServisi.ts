@@ -6,7 +6,7 @@
  * tarafından otomatik güncellenir.
  */
 
-import notifee, { TriggerType, AndroidImportance, TimestampTrigger } from '@notifee/react-native';
+import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,7 +24,7 @@ interface VakitZamani {
 interface SayacAyarlari {
   aktif: boolean;
   koordinatlar: { lat: number; lng: number };
-  seviye2Esik: number; // Dakika (muhafiz seviye 2 başlangıcı)
+  baslangicEsikDk: number; // Dakika (muhafiz seviye 1 başlangıcı - ilk bildirimle eş zamanlı)
 }
 
 export class VakitSayacBildirimServisi {
@@ -223,7 +223,7 @@ export class VakitSayacBildirimServisi {
   /**
    * Belirli bir vakit için sayaç bildirimi planla
    * Her vakit için 2 trigger notification:
-   * 1. Seviye 2 zamanında başlayan chronometer countdown
+   * 1. Muhafiz ilk bildirimle eş zamanlı başlayan chronometer countdown
    * 2. Vakit çıkışında replace + otomatik kapanma
    */
   private async vakitIcinSayacPlanla(vakit: VakitZamani): Promise<void> {
@@ -231,7 +231,7 @@ export class VakitSayacBildirimServisi {
 
     const simdi = new Date();
     const cikisSuresi = vakit.cikis.getTime();
-    const seviye2Baslangic = cikisSuresi - (this.ayarlar.seviye2Esik * 60 * 1000);
+    const sayacBaslangic = cikisSuresi - (this.ayarlar.baslangicEsikDk * 60 * 1000);
 
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${vakit.tarih}_${vakit.vakit}`;
 
@@ -248,16 +248,19 @@ export class VakitSayacBildirimServisi {
     const bildirimIcerigi = {
       id: bildirimId,
       title: `⏱️ ${vakitAdlari[vakit.vakit]} Namazı`,
-      body: 'Vakit çıkmak üzere! Namazını kıl!',
+      body: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere! Namazını kıl!`,
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
-        ongoing: true, // Kaydırılamaz
+        ongoing: true,
         autoCancel: false,
-        showChronometer: true, // Chronometer göster
-        chronometerCountDown: true, // Geri sayım modu
-        timestamp: cikisSuresi, // Hedef zaman (vakit çıkışı)
-        smallIcon: 'ic_notification',
+        showChronometer: true,
+        chronometerCountDown: true,
+        timestamp: cikisSuresi,
         pressAction: { id: 'default' },
+        style: {
+          type: AndroidStyle.BIGTEXT as const,
+          text: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!\nHemen namazını kıl, vakit geçmesin!`,
+        },
         actions: [
           {
             title: '✅ Kıldım',
@@ -267,10 +270,10 @@ export class VakitSayacBildirimServisi {
       },
     };
 
-    // Seviye 2 başlangıç zamanı
-    const tetikZamani = Math.max(seviye2Baslangic, simdi.getTime() + 5000);
+    // Muhafiz ilk bildirimle eş zamanlı başlangıç
+    const tetikZamani = Math.max(sayacBaslangic, simdi.getTime() + 5000);
 
-    // Eğer zaten seviye 2 aralığındaysak hemen göster
+    // Eğer zaten muhafiz başlangıç aralığındaysak hemen göster
     if (tetikZamani <= simdi.getTime() + 5000) {
       try {
         await notifee.displayNotification(bildirimIcerigi);
@@ -310,8 +313,7 @@ export class VakitSayacBildirimServisi {
             channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
             ongoing: false,
             autoCancel: true,
-            timeoutAfter: 100, // 100ms sonra otomatik kapan
-            smallIcon: 'ic_notification',
+            timeoutAfter: 100,
           },
         },
         temizlemeTrigger

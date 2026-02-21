@@ -308,7 +308,7 @@ export const AnaSayfa: React.FC = () => {
             await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
               aktif: true,
               koordinatlar: konumState.koordinatlar,
-              seviye2Esik: muhafizState.esikler.seviye2,
+              baslangicEsikDk: muhafizState.esikler.seviye1,
             });
           }
         } catch (e) { }
