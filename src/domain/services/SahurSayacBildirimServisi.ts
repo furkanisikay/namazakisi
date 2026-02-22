@@ -156,16 +156,13 @@ export class SahurSayacBildirimServisi {
         hedefImsakMs: number
     ): void {
         try {
-            // Temaya simdilik iftar temasini verebiliriz, ya da yeni sahur temasi Kotlin kisminda eklenirse 'sahur' deriz. 
-            // User 'sahur' theam planladi dedi. Fakat Kotlin kisminde Theme enum'da sahur henuz yok, o yuzden default veya 'vakit' verilebilir.
-            // Kotlinde 'themeType' isimlendirmesinde default fallback 'vakit' idi. Simdilik 'iftar' diyelim ayni gece hissiyati versin.
             startCountdown({
                 id: bildirimId,
                 targetTimeMs: hedefImsakMs,
                 title: '\uD83C\uDF19 Sahur Sayaci',
-                bodyTemplate: 'İmsak vaktine kalan sure:\n\u23F1\uFE0F {time}',
+                bodyTemplate: 'Yemeye icmeye devam, imsak yaklasiyor!\n\u23F1\uFE0F {time}',
                 channelId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
-                themeType: 'iftar', // TODO: Native modülde sahur teması eklendiğinde 'sahur' olarak güncelle
+                themeType: 'sahur',
             });
             console.log('[SahurSayac] Native countdown baslatildi');
         } catch (error) {

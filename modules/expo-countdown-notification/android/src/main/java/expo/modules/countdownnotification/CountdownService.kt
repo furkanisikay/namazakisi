@@ -250,9 +250,16 @@ class CountdownService : Service() {
     private fun showCountdownNotification(entry: CountdownEntry, millisRemaining: Long) {
         val timeFormatted = formatTime(millisRemaining)
 
-        val isIftar = entry.themeType == "iftar"
-        val collapsedLayoutRes = if (isIftar) R.layout.custom_iftar_notification_collapsed else R.layout.custom_vakit_notification_collapsed
-        val expandedLayoutRes = if (isIftar) R.layout.custom_iftar_notification else R.layout.custom_vakit_notification
+        val collapsedLayoutRes = when (entry.themeType) {
+            "iftar" -> R.layout.custom_iftar_notification_collapsed
+            "sahur" -> R.layout.custom_sahur_notification_collapsed
+            else -> R.layout.custom_vakit_notification_collapsed
+        }
+        val expandedLayoutRes = when (entry.themeType) {
+            "iftar" -> R.layout.custom_iftar_notification
+            "sahur" -> R.layout.custom_sahur_notification
+            else -> R.layout.custom_vakit_notification
+        }
 
         // Custom Collapsed RemoteViews (Dar Alan)
         val remoteViewsCollapsed = RemoteViews(packageName, collapsedLayoutRes)
@@ -264,7 +271,11 @@ class CountdownService : Service() {
 
         // Eger bodyTemplate icinde '{time}' varsa temizle veya description olarak duzenle
         val descriptionText = entry.bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()
-        val descFinal = descriptionText.takeIf { it.isNotEmpty() } ?: if (isIftar) "Zaman daralıyor!" else "Acele et, vaktin çıkmasına az kaldı!"
+        val descFinal = descriptionText.takeIf { it.isNotEmpty() } ?: when (entry.themeType) {
+            "iftar" -> "Zaman daralıyor!"
+            "sahur" -> "Yemeye içmeye devam, imsak yaklaşıyor!"
+            else -> "Acele et, vaktin çıkmasına az kaldı!"
+        }
         remoteViewsExpanded.setTextViewText(R.id.tv_description, descFinal)
 
         val builder = NotificationCompat.Builder(this, entry.channelId)

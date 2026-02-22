@@ -18,7 +18,7 @@ export interface CountdownConfig {
     /** Small icon resource name (optional, defaults to app icon) */
     smallIcon?: string;
     /** Theme type for the custom notification (optional, defaults to vakit) */
-    themeType?: 'iftar' | 'vakit';
+    themeType?: 'iftar' | 'vakit' | 'sahur';
 }
 
 const ExpoCountdownNotification = requireNativeModule('ExpoCountdownNotification');
