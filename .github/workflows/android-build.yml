@@ -16,6 +16,15 @@ on:
           - debug
           - release
 
+  # CI workflow'undan otomatik tetikleme
+  workflow_call:
+    inputs:
+      build_type:
+        description: 'Build tipi'
+        required: true
+        default: 'release'
+        type: string
+
 
 concurrency:
   group: android-build

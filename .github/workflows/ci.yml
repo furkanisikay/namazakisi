@@ -100,9 +100,13 @@ jobs:
           retention-days: 7
 
   # ============================================
-  # NOT: Build islemleri CI'da YAPILMAZ
-  # EAS kredilerini korumak icin build sadece
-  # Release workflow'da yapilir.
-  #
-  # APK almak icin: Actions > Release & Deploy > Run workflow
+  # Otomatik Release: master'a push + CI basarili
   # ============================================
+  auto-release:
+    name: 🚀 Otomatik Release
+    needs: [quality, test]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    uses: ./.github/workflows/android-build.yml
+    with:
+      build_type: 'release'
+    secrets: inherit
