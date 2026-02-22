@@ -1,0 +1,38 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:1:1-12:12
+INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:1:1-12:12
+	package
+		INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:1:11-69
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:2:3-75
+	android:name
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:2:20-72
+uses-permission#android.permission.FOREGROUND_SERVICE_SPECIAL_USE
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:3:3-87
+	android:name
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:3:20-84
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:4:3-75
+	android:name
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:4:20-72
+application
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:6:3-11:17
+service#expo.modules.countdownnotification.CountdownService
+ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:7:5-10:52
+	android:exported
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:9:7-31
+	android:foregroundServiceType
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:10:7-49
+	android:name
+		ADDED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml:8:7-73
+uses-sdk
+INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml
+INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\Repos\NamazAkisi-Public\modules\expo-countdown-notification\android\src\main\AndroidManifest.xml
