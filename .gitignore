@@ -60,3 +60,6 @@ temp/
 
 # Agent
 .agent/
+
+# Expo Module Build Outputs
+modules/expo-countdown-notification/android/build/

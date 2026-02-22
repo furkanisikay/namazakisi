@@ -34,7 +34,8 @@ class ExpoCountdownNotificationModule : Module() {
             title: String,
             bodyTemplate: String,
             channelId: String,
-            smallIcon: String ->
+            smallIcon: String,
+            themeType: String ->
 
             val context = appContext.reactContext
             if (context != null) {
@@ -46,6 +47,7 @@ class ExpoCountdownNotificationModule : Module() {
                     putExtra(CountdownService.EXTRA_BODY_TEMPLATE, bodyTemplate)
                     putExtra(CountdownService.EXTRA_CHANNEL_ID, channelId)
                     putExtra(CountdownService.EXTRA_SMALL_ICON, smallIcon)
+                    putExtra(CountdownService.EXTRA_THEME_TYPE, themeType)
                 }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

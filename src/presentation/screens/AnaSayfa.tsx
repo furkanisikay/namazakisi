@@ -32,6 +32,8 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
 import { iftarSayacAyarlariniYukle } from '../store/iftarSayacSlice';
 import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
+import { sahurSayacAyarlariniYukle } from '../store/sahurSayacSlice';
+import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 
 // Baslangic sayfasi
 const BASLANGIC_SAYFA_INDEKSI = 1000;
@@ -161,9 +163,20 @@ export const AnaSayfa: React.FC = () => {
         IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
           aktif: true,
           koordinatlar: konumAyarlari.koordinatlar,
-        }).catch(() => {});
+        }).catch(() => { });
       }
     });
+
+    dispatch(sahurSayacAyarlariniYukle()).then(() => {
+      const sahurState = store.getState().sahurSayac;
+      if (sahurState.ayarlar.aktif && konumAyarlari.koordinatlar) {
+        SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+          aktif: true,
+          koordinatlar: konumAyarlari.koordinatlar,
+        }).catch(() => { });
+      }
+    });
+
     BildirimServisi.getInstance().izinIste();
 
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()

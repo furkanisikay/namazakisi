@@ -11,6 +11,7 @@ import konumReducer from './konumSlice';
 import vakitBildirimReducer from './vakitBildirimSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
+import sahurSayacReducer from './sahurSayacSlice';
 import guncellemeReducer from './guncellemeSlice';
 
 export const store = configureStore({
@@ -23,6 +24,7 @@ export const store = configureStore({
     vakitBildirim: vakitBildirimReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,
+    sahurSayac: sahurSayacReducer,
     guncelleme: guncellemeReducer,
   },
   middleware: (getDefaultMiddleware) =>

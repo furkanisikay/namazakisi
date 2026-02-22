@@ -22,6 +22,7 @@ data class CountdownEntry(
     val bodyTemplate: String,
     val channelId: String,
     val smallIcon: String,
+    val themeType: String,
     val notificationId: Int,
     var timer: CountDownTimer? = null
 )

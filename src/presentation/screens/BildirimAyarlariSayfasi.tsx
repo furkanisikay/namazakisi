@@ -117,6 +117,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const { ayarlar: seriAyarlari } = useAppSelector((state) => state.seri);
   const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
+  const muhafizState = useAppSelector((state) => state.muhafiz);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -165,19 +166,45 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimDakikasi: dakika } }));
   };
 
+  const getBaslangicEsikDk = (seviye: number, state: any) => {
+    switch (seviye) {
+      case 2: return state.esikler.seviye2;
+      case 3: return state.esikler.seviye3;
+      case 4: return state.esikler.seviye4;
+      default: return state.esikler.seviye1;
+    }
+  };
+
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
     dispatch(vakitSayacAyariniGuncelle({ aktif: yeniDeger }));
 
     // Bildirimleri hemen yeniden planla
     const state = store.getState();
-    const muhafizState = state.muhafiz;
+    const guncelMuhafizState = state.muhafiz;
     const konumState = state.konum;
+    const seviye = sayacAyarlari.sayacBaslangicSeviyesi || 1;
 
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: muhafizState.esikler.seviye1,
+      baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
+    });
+  };
+
+  const handleSayacBaslangicSeviyesiChange = async (seviye: number) => {
+    await butonTiklandiFeedback();
+    dispatch(vakitSayacAyariniGuncelle({ sayacBaslangicSeviyesi: seviye }));
+
+    // Bildirimleri hemen yeniden planla
+    const state = store.getState();
+    const guncelMuhafizState = state.muhafiz;
+    const konumState = state.konum;
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: sayacAyarlari.aktif,
+      koordinatlar: konumState.koordinatlar,
+      baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
     });
   };
 
@@ -213,22 +240,22 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
           >
             {/* Bilgi Başlığı */}
             <View className="p-4 border-b" style={{ borderBottomColor: `${renkler.sinir}50` }}>
-               <View className="flex-row items-center">
-                  <View
-                    className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                    style={{ backgroundColor: `${renkler.birincil}15` }}
-                  >
-                    <FontAwesome5 name="mosque" size={18} color={renkler.birincil} solid />
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                      Namaz Vakti Bildirimleri
-                    </Text>
-                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                      Vakit girdiğinde ayet ve hadislerle hatırlatma al
-                    </Text>
-                  </View>
-               </View>
+              <View className="flex-row items-center">
+                <View
+                  className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                  style={{ backgroundColor: `${renkler.birincil}15` }}
+                >
+                  <FontAwesome5 name="mosque" size={18} color={renkler.birincil} solid />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                    Namaz Vakti Bildirimleri
+                  </Text>
+                  <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                    Vakit girdiğinde ayet ve hadislerle hatırlatma al
+                  </Text>
+                </View>
+              </View>
             </View>
 
             {/* Vakit Switchleri */}
@@ -300,7 +327,55 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             {/* Alt bilgi - aktifse göster */}
             {sayacAyarlari.aktif && (
               <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
-                <View className="flex-row items-start mt-3 gap-2">
+
+                {/* Seviye Secimi */}
+                <Text
+                  className="text-xs font-semibold mt-4 mb-3"
+                  style={{ color: renkler.metinIkincil }}
+                >
+                  Ne zaman çalışmaya başlasın?
+                </Text>
+
+                <View className="flex-col gap-2">
+                  {[
+                    { seviye: 1, metin: `Son ${muhafizState.esikler.seviye1} Dakika` },
+                    { seviye: 2, metin: `Son ${muhafizState.esikler.seviye2} Dakika` },
+                    { seviye: 3, metin: `Son ${muhafizState.esikler.seviye3} Dakika` },
+                    { seviye: 4, metin: `Son ${muhafizState.esikler.seviye4} Dakika` },
+                  ].map((secenek) => {
+                    const isSelected = (sayacAyarlari.sayacBaslangicSeviyesi || 1) === secenek.seviye;
+                    return (
+                      <TouchableOpacity
+                        key={secenek.seviye}
+                        className="flex-row py-3 px-3 rounded-xl border-2 items-center"
+                        style={{
+                          backgroundColor: isSelected ? renkler.birincil : renkler.kartArkaplan,
+                          borderColor: isSelected ? renkler.birincil : renkler.sinir,
+                        }}
+                        onPress={() => handleSayacBaslangicSeviyesiChange(secenek.seviye)}
+                      >
+                        <View
+                          className="w-5 h-5 rounded-full border-2 items-center justify-center mr-3"
+                          style={{
+                            borderColor: isSelected ? '#FFFFFF' : renkler.metinIkincil,
+                          }}
+                        >
+                          {isSelected && (
+                            <View className="w-2.5 h-2.5 rounded-full bg-white" />
+                          )}
+                        </View>
+                        <Text
+                          className="text-sm font-semibold flex-1"
+                          style={{ color: isSelected ? '#FFFFFF' : renkler.metin }}
+                        >
+                          {secenek.metin} (Seviye {secenek.seviye})
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                <View className="flex-row items-start mt-4 gap-2">
                   <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
                   <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
                     Vakit çıkmak üzereyken bildirim panelinde gerçek zamanlı geri sayım gösterilir.
@@ -546,6 +621,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             )}
           </View>
         </View>
+
+
 
         {/* Bilgi Notu */}
         <View

@@ -12,6 +12,7 @@ import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
  */
 export interface VakitSayacAyarlari {
   aktif: boolean;  // Master toggle
+  sayacBaslangicSeviyesi?: number; // 1, 2, 3, 4 (Muhafız seviyeleri)
 }
 
 interface VakitSayacState {
@@ -23,6 +24,7 @@ interface VakitSayacState {
 const initialState: VakitSayacState = {
   ayarlar: {
     aktif: false,  // Varsayılan olarak kapalı
+    sayacBaslangicSeviyesi: 1, // Varsayılan olarak Seviye 1
   },
   yukleniyor: false,
   hata: null,

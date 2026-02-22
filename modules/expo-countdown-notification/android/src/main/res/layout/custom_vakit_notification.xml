@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_vakit_gradient"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/iv_mascot"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_vakit_mascot" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@+id/iv_mascot"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical">
+        
+        <TextView
+            android:id="@+id/tv_prefix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vaktin Çıkmasına"
+            android:textColor="#FFD54F"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textColor="#FFFFFF"
+            android:textSize="42sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-black" />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Acele et, vaktin çıkmasına az kaldı!"
+            android:textColor="#EFEFEF"
+            android:textSize="16sp" />
+    </LinearLayout>
+</RelativeLayout>

@@ -21,7 +21,12 @@ import {
   iftarSayacAyariniGuncelle,
   iftarSayacAyarlariniYukle,
 } from '../store/iftarSayacSlice';
+import {
+  sahurSayacAyariniGuncelle,
+  sahurSayacAyarlariniYukle,
+} from '../store/sahurSayacSlice';
 import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
+import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 import { store } from '../store/store';
 
 /**
@@ -31,20 +36,24 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
-  const { ayarlar } = useAppSelector((state) => state.iftarSayac);
+  const iftarSayac = useAppSelector((state) => state.iftarSayac);
+  const sahurSayac = useAppSelector((state) => state.sahurSayac);
+  const ayarlar = iftarSayac?.ayarlar || { aktif: false };
+  const sahurAyarlar = sahurSayac?.ayarlar || { aktif: false };
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     dispatch(iftarSayacAyarlariniYukle());
+    dispatch(sahurSayacAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [dispatch, fadeAnim]);
 
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -60,8 +69,24 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
     }
   };
 
+  const handleSahurSayacToggle = async (yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    await dispatch(sahurSayacAyariniGuncelle({ aktif: yeniDeger }));
+
+    // Bildirim servisini güncelle
+    const konumState = store.getState().konum;
+    if (konumState.koordinatlar) {
+      await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: yeniDeger,
+        koordinatlar: konumState.koordinatlar,
+      });
+    }
+  };
+
   const iftarRenk = '#E65100';
   const iftarRenkAcik = '#FFF3E0';
+  const sahurRenk = '#3F51B5'; // İftar turuncu, Sahur lacivert/mavi
+  const sahurRenkAcik = '#E8EAF6';
 
   return (
     <ScrollView
@@ -178,6 +203,84 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
                   >
                     Sabah namazından sonra bildirim menüsünde aktif olur ve
                     akşam namazı vaktine kalan süreyi gösterir. Vakit girdikten
+                    10 dakika sonra otomatik kaybolur.
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Sahur Sayacı Ayarı */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            SAHUR SAYACI
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            {/* Header: Toggle */}
+            <View className="flex-row items-center p-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${sahurRenk}15` }}
+              >
+                <FontAwesome5
+                  name="utensils"
+                  size={18}
+                  color={sahurRenk}
+                  solid
+                />
+              </View>
+              <View className="flex-1">
+                <Text
+                  className="text-base font-semibold"
+                  style={{ color: renkler.metin }}
+                >
+                  Sahur Sayacı
+                </Text>
+                <Text
+                  className="text-xs mt-0.5"
+                  style={{ color: renkler.metinIkincil }}
+                >
+                  Bildirim menüsünde gece boyu sahur vaktine geri sayım göster
+                </Text>
+              </View>
+              <Switch
+                value={sahurAyarlar.aktif}
+                onValueChange={handleSahurSayacToggle}
+                trackColor={{
+                  false: renkler.sinir,
+                  true: `${sahurRenk}60`,
+                }}
+                thumbColor={sahurAyarlar.aktif ? sahurRenk : '#f4f3f4'}
+              />
+            </View>
+
+            {/* Alt bilgi - aktifse göster */}
+            {sahurAyarlar.aktif && (
+              <View
+                className="px-4 pb-4 border-t"
+                style={{ borderTopColor: `${renkler.sinir}50` }}
+              >
+                <View className="flex-row items-start mt-3 gap-2">
+                  <FontAwesome5
+                    name="info-circle"
+                    size={12}
+                    color={renkler.metinIkincil}
+                    style={{ marginTop: 2 }}
+                  />
+                  <Text
+                    className="text-xs flex-1"
+                    style={{ color: renkler.metinIkincil }}
+                  >
+                    Yatsı vaktinden sonra bildirim menüsünde aktif olur ve
+                    imsak (sahur bitiş) vaktine kalan süreyi gösterir. İmsak girdikten
                     10 dakika sonra otomatik kaybolur.
                   </Text>
                 </View>

@@ -17,6 +17,8 @@ export interface CountdownConfig {
     channelId: string;
     /** Small icon resource name (optional, defaults to app icon) */
     smallIcon?: string;
+    /** Theme type for the custom notification (optional, defaults to vakit) */
+    themeType?: 'iftar' | 'vakit';
 }
 
 const ExpoCountdownNotification = requireNativeModule('ExpoCountdownNotification');
@@ -40,7 +42,8 @@ export function startCountdown(config: CountdownConfig): void {
         config.title,
         config.bodyTemplate,
         config.channelId,
-        config.smallIcon ?? ''
+        config.smallIcon ?? '',
+        config.themeType ?? 'vakit'
     );
 }
 

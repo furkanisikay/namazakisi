@@ -167,8 +167,9 @@ export class IftarSayacBildirimServisi {
         id: bildirimId,
         targetTimeMs: aksamVaktiMs,
         title: '\uD83C\uDF19 Iftar Sayaci',
-        bodyTemplate: 'Iftar vaktine kalan sure:\n\u23F1\uFE0F {time}',
+        bodyTemplate: 'Ezanı duymadan orucunuzu açmayınız!\n\u23F1\uFE0F {time}',
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
+        themeType: 'iftar',
       });
       console.log('[IftarSayac] Native countdown baslatildi');
     } catch (error) {
@@ -232,7 +233,7 @@ export class IftarSayacBildirimServisi {
           text: 'Hayirli iftarlar!\n\n\u26A0\uFE0F Ezani duymadan orucunuzu acmayiniz!',
         },
       },
-    };
+    } as any; // Notifee Notification Type Issue
   }
 
   /**

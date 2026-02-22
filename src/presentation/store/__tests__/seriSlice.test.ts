@@ -156,7 +156,7 @@ describe('seriSlice - Race Condition Korumasi', () => {
 
       // condition false dondurdugu icin thunk engellenmeli (meta.condition === true)
       expect(sonuc.type).toContain('rejected');
-      expect(sonuc.meta.condition).toBe(true);
+      expect((sonuc.meta as any).condition).toBe(true);
       // State degismemeli
       expect(store.getState().seri.seviyeDurumu).toBeNull();
       expect(store.getState().seri.toplamKilinanNamaz).toBe(0);
@@ -188,7 +188,7 @@ describe('seriSlice - Race Condition Korumasi', () => {
       );
 
       // Thunk calismali (condition engellememeli)
-      expect(sonuc.meta.condition).not.toBe(true);
+      expect((sonuc.meta as any).condition).not.toBe(true);
     });
 
     test('seri verileri yuklenmeden puanlar sifirlanmamali', async () => {
@@ -213,7 +213,7 @@ describe('seriSlice - Race Condition Korumasi', () => {
 
       // condition false dondurdugu icin thunk engellenmeli
       expect(sonuc.type).toContain('rejected');
-      expect(sonuc.meta.condition).toBe(true);
+      expect((sonuc.meta as any).condition).toBe(true);
       // State degismemeli - toplamKilinanNamaz 0 kalmali
       expect(store.getState().seri.toplamKilinanNamaz).toBe(0);
       // AsyncStorage'a yazilmamali
@@ -242,7 +242,7 @@ describe('seriSlice - Race Condition Korumasi', () => {
       );
 
       // Thunk condition tarafindan engellenmemeli (condition gecmeli)
-      expect(sonuc.meta.condition).not.toBe(true);
+      expect((sonuc.meta as any).condition).not.toBe(true);
       // Thunk basariyla tamamlanmali
       expect(sonuc.type).toContain('fulfilled');
 

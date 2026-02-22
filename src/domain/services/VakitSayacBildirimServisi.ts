@@ -259,6 +259,7 @@ export class VakitSayacBildirimServisi {
           title: vakitBasligi,
           bodyTemplate: bodyTemplate,
           channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
+          themeType: 'vakit',
         });
         console.log(`[VakitSayac] ${vakit.vakit} icin native sayac hemen baslatildi`);
       } catch (error) {

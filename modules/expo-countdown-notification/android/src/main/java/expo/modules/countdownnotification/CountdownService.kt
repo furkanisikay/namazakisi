@@ -13,6 +13,7 @@ import android.os.CountDownTimer
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import android.widget.RemoteViews
 
 /**
  * Android Foreground Service that manages countdown notifications.
@@ -41,6 +42,7 @@ class CountdownService : Service() {
         const val EXTRA_BODY_TEMPLATE = "body_template"
         const val EXTRA_CHANNEL_ID = "channel_id"
         const val EXTRA_SMALL_ICON = "small_icon"
+        const val EXTRA_THEME_TYPE = "theme_type"
 
         // Foreground servisin kendi bildirimi icin sabit ID
         private const val FOREGROUND_NOTIFICATION_ID = 49999
@@ -82,7 +84,7 @@ class CountdownService : Service() {
             val channel = NotificationChannel(
                 FOREGROUND_CHANNEL_ID,
                 "Geri Sayim Servisi",
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_MIN
             ).apply {
                 description = "Geri sayim bildirimleri icin arka plan servisi"
                 setShowBadge(false)
@@ -134,6 +136,7 @@ class CountdownService : Service() {
         val bodyTemplate = intent.getStringExtra(EXTRA_BODY_TEMPLATE) ?: "{time}"
         val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID) ?: FOREGROUND_CHANNEL_ID
         val smallIcon = intent.getStringExtra(EXTRA_SMALL_ICON) ?: ""
+        val themeType = intent.getStringExtra(EXTRA_THEME_TYPE) ?: "vakit"
 
         val now = System.currentTimeMillis()
         val remaining = targetTimeMs - now
@@ -153,6 +156,7 @@ class CountdownService : Service() {
             bodyTemplate = bodyTemplate,
             channelId = channelId,
             smallIcon = smallIcon,
+            themeType = themeType,
             notificationId = notificationId
         )
         manager.addOrReplace(entry)
@@ -213,10 +217,13 @@ class CountdownService : Service() {
      * This is required by Android for long-running background work.
      */
     private fun ensureForeground() {
+        // Foreground service icin Android 8.0+ uzerinde gosterimi zorunlu bildirim.
+        // Kullaniciyi rahatsiz etmemek adina metinleri kaldiriyor ve en dusuk onceligi (MIN) seciyoruz.
         val notification = NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
-            .setContentTitle("Geri sayim aktif")
+            .setContentTitle(null)
+            .setContentText(null)
             .setSmallIcon(applicationInfo.icon)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setPriority(NotificationCompat.PRIORITY_MIN) // Bildirimi durum cubugundan gizler, sadece altta yigitla cikar
             .setOngoing(true)
             .setSilent(true)
             .build()
@@ -241,26 +248,55 @@ class CountdownService : Service() {
      * @param millisRemaining Remaining milliseconds
      */
     private fun showCountdownNotification(entry: CountdownEntry, millisRemaining: Long) {
-        val timeText = formatTime(millisRemaining)
-        val bodyText = entry.bodyTemplate.replace("{time}", timeText)
+        val timeFormatted = formatTime(millisRemaining)
 
-        val notification = NotificationCompat.Builder(this, entry.channelId)
-            .setContentTitle(entry.title)
-            .setContentText(bodyText)
+        val isIftar = entry.themeType == "iftar"
+        val collapsedLayoutRes = if (isIftar) R.layout.custom_iftar_notification_collapsed else R.layout.custom_vakit_notification_collapsed
+        val expandedLayoutRes = if (isIftar) R.layout.custom_iftar_notification else R.layout.custom_vakit_notification
+
+        // Custom Collapsed RemoteViews (Dar Alan)
+        val remoteViewsCollapsed = RemoteViews(packageName, collapsedLayoutRes)
+        remoteViewsCollapsed.setTextViewText(R.id.tv_countdown, timeFormatted)
+
+        // Custom Expanded RemoteViews (Geniş Alan)
+        val remoteViewsExpanded = RemoteViews(packageName, expandedLayoutRes)
+        remoteViewsExpanded.setTextViewText(R.id.tv_countdown, timeFormatted)
+
+        // Eger bodyTemplate icinde '{time}' varsa temizle veya description olarak duzenle
+        val descriptionText = entry.bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()
+        val descFinal = descriptionText.takeIf { it.isNotEmpty() } ?: if (isIftar) "Zaman daralıyor!" else "Acele et, vaktin çıkmasına az kaldı!"
+        remoteViewsExpanded.setTextViewText(R.id.tv_description, descFinal)
+
+        val builder = NotificationCompat.Builder(this, entry.channelId)
             .setSmallIcon(getSmallIconRes(entry.smallIcon))
+            .setContentTitle(entry.title) // Dekorasyonlu stilde baslik olarak destekleyen cihazlarda ufakca gorunur.
+            .setCustomContentView(remoteViewsCollapsed)
+            .setCustomBigContentView(remoteViewsExpanded) // Genisletilmis haline buyuk tasarimi atar.
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setOngoing(true)
             .setOnlyAlertOnce(true)
-            .setShowWhen(false)
-            .setSilent(true)
+            .setShowWhen(false) // Standart timestamp gizle
             .setContentIntent(getLaunchPendingIntent())
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_PROGRESS)
-            .build()
+            .setSilent(true) // Her saniye ses calinmamasi icin
+
+        // Action buttons
+        val stopIntent = Intent(this, CountdownService::class.java).apply {
+            action = ACTION_STOP
+            putExtra(EXTRA_ID, entry.id)
+        }
+        val stopPendingIntent = PendingIntent.getService(
+            this,
+            entry.id.hashCode(),
+            stopIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Durdur", stopPendingIntent)
 
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(entry.notificationId, notification)
+        nm.notify(entry.notificationId, builder.build())
     }
-
     /**
      * Shows a final notification when the countdown reaches zero.
      */

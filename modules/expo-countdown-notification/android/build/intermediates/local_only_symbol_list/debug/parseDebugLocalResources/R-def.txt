@@ -1,2 +1,18 @@
 R_DEF: Internal format may change without notice
 local
+drawable bg_countdown_gradient
+drawable bg_iftar_gradient
+drawable bg_vakit_gradient
+drawable ic_iftar_mascot
+drawable ic_notification_mascot
+drawable ic_vakit_mascot
+id iv_mascot
+id tv_countdown
+id tv_description
+id tv_prefix
+layout custom_countdown_notification
+layout custom_countdown_notification_collapsed
+layout custom_iftar_notification
+layout custom_iftar_notification_collapsed
+layout custom_vakit_notification
+layout custom_vakit_notification_collapsed
