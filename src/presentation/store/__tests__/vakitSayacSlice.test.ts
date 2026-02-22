@@ -95,7 +95,7 @@ describe('vakitSayacSlice', () => {
             expect(state.ayarlar.aktif).toBe(true);
             expect(AsyncStorage.setItem).toHaveBeenCalledWith(
                 'vakit_sayac_ayarlari',
-                JSON.stringify({ aktif: true })
+                JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 1 })
             );
         });
 
@@ -111,7 +111,7 @@ describe('vakitSayacSlice', () => {
             expect(state.ayarlar.aktif).toBe(false);
             expect(AsyncStorage.setItem).toHaveBeenLastCalledWith(
                 'vakit_sayac_ayarlari',
-                JSON.stringify({ aktif: false })
+                JSON.stringify({ aktif: false, sayacBaslangicSeviyesi: 1 })
             );
         });
 
