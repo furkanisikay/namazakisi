@@ -1,20 +1,21 @@
 /**
- * İftar Sayacı Bildirim Servisi
+ * Iftar Sayaci Bildirim Servisi
  *
- * Notifee kullanarak Android chronometer ile bildirim menüsünde
- * iftar vaktine geri sayım gösterir.
+ * Native Kotlin modulu (expo-countdown-notification) kullanarak
+ * bildirim body'sinde iftar vaktine geri sayim gosterir.
+ * Foreground Service + CountDownTimer ile batarya verimli calisir.
  *
- * - Sabah namazından sonra aktif olur
- * - Akşam namazı vaktine kalan süreyi chronometer ile gösterir
- * - Vakit girdikten sonra 10 dk boyunca "vakit girdi" bildirimi gösterir
+ * - Sabah namazindan sonra aktif olur
+ * - Aksam namazi vaktine kalan sureyi body'de gosterir
+ * - Vakit girdikten sonra 10 dk boyunca "vakit girdi" bildirimi gosterir
  * - 10 dk sonra otomatik kaybolur
- * - Zamanlanmış bildirimler (her dk tetiklenen) KULLANMAZ, tek chronometer yeterli
  */
 
 import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { startCountdown, stopCountdown, stopAll as stopAllCountdowns } from '../../../modules/expo-countdown-notification/src';
 
 interface IftarSayacAyarlari {
   aktif: boolean;
@@ -26,7 +27,7 @@ export class IftarSayacBildirimServisi {
   private ayarlar: IftarSayacAyarlari | null = null;
   private kanalOlusturuldu: boolean = false;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): IftarSayacBildirimServisi {
     if (!IftarSayacBildirimServisi.instance) {
@@ -74,26 +75,26 @@ export class IftarSayacBildirimServisi {
     const temizlemeId = `${bildirimId}_bitis`;
 
     if (simdi < sabahVakti) {
-      // Sabah namazından önce: sabah vaktinde geri sayım başlat
+      // Sabah namazindan once: sabah vaktinde geri sayim baslat (trigger ile)
       await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID - trigger cakismasini onler)
+      // Aksam vaktinde "vakit girdi" bildirimi goster (farkli ID)
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Aksam + 10 dk'da temizle (farkli ID)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
-      // Sabah ile akşam arası: hemen geri sayım göster
-      await this.geriSayimHemenGoster(bildirimId, aksamVakti.getTime());
-      // Akşam vaktinde "vakit girdi" bildirimi göster (farkli ID)
+      // Sabah ile aksam arasi: hemen native countdown baslat
+      this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime());
+      // Aksam vaktinde "vakit girdi" bildirimi goster (farkli ID)
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Aksam + 10 dk'da temizle (farkli ID)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {
-      // Akşam ile akşam+10dk arası: "vakit girdi" hemen göster
+      // Aksam ile aksam+10dk arasi: "vakit girdi" hemen goster
       await this.vakitGirdiBildirimiHemenGoster(vakitGirdiId, aksamVakti.getTime());
-      // Akşam + 10 dk'da temizle (farkli ID)
+      // Aksam + 10 dk'da temizle (farkli ID)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     }
-    // Akşam + 10 dk'dan sonra: hiçbir şey gösterme
+    // Aksam + 10 dk'dan sonra: hicbir sey gosterme
   }
 
   /**
@@ -104,7 +105,7 @@ export class IftarSayacBildirimServisi {
 
     try {
       // Eski kanali sil (LOW importance, Samsung'da gorunmuyor)
-      try { await notifee.deleteChannel('iftar_sayac'); } catch (_) {}
+      try { await notifee.deleteChannel('iftar_sayac'); } catch (_) { }
 
       await notifee.createChannel({
         id: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
@@ -122,7 +123,7 @@ export class IftarSayacBildirimServisi {
   }
 
   /**
-   * Geri sayım bildirimini gelecekte planla (trigger)
+   * Geri sayim bildirimini gelecekte planla (trigger ile placeholder, tetiklenince native countdown baslar)
    */
   private async geriSayimPlanla(
     bildirimId: string,
@@ -136,52 +137,43 @@ export class IftarSayacBildirimServisi {
       };
 
       await notifee.createTriggerNotification(
-        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs),
+        {
+          id: bildirimId,
+          title: '\uD83C\uDF19 Iftar Sayaci',
+          body: 'Iftar vaktine kalan sure hesaplaniyor...',
+          android: {
+            channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
+            ongoing: true,
+            autoCancel: false,
+            pressAction: { id: 'default' },
+          },
+        },
         trigger
       );
     } catch (error) {
-      // Planlanamadıysa sessizce devam et
+      // Planalamadiysa sessizce devam et
     }
   }
 
   /**
-   * Geri sayım bildirimini hemen göster
+   * Native countdown modulu ile geri sayimi hemen baslat
    */
-  private async geriSayimHemenGoster(
+  private nativeCountdownBaslat(
     bildirimId: string,
     aksamVaktiMs: number
-  ): Promise<void> {
+  ): void {
     try {
-      await notifee.displayNotification(
-        this.geriSayimBildirimIcerigi(bildirimId, aksamVaktiMs)
-      );
-    } catch (error) {
-      // Gösterilemezse sessizce devam et
-    }
-  }
-
-  /**
-   * Geri sayım bildirim içeriği
-   */
-  private geriSayimBildirimIcerigi(bildirimId: string, aksamVaktiMs: number) {
-    return {
-      id: bildirimId,
-      title: '🌙 İftar Sayacı',
-      body: 'İftar vaktine kalan süre',
-      android: {
+      startCountdown({
+        id: bildirimId,
+        targetTimeMs: aksamVaktiMs,
+        title: '\uD83C\uDF19 Iftar Sayaci',
+        bodyTemplate: 'Iftar vaktine kalan sure:\n\u23F1\uFE0F {time}',
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
-        ongoing: true,
-        autoCancel: false,
-        showChronometer: true,
-        chronometerCountDown: true,
-        timestamp: aksamVaktiMs,
-        pressAction: { id: 'default' },
-        style: {
-          type: AndroidStyle.BIGTEXT as const,
-          text: 'İftar vaktine kalan süre\n\n⚠️ Ezanı duymadan orucunuzu açmayınız!',
-        },
-      },
-    };
+      });
+      console.log('[IftarSayac] Native countdown baslatildi');
+    } catch (error) {
+      console.error('[IftarSayac] Native countdown baslatilamadi:', error);
+    }
   }
 
   /**
@@ -223,24 +215,21 @@ export class IftarSayacBildirimServisi {
   }
 
   /**
-   * "Vakit girdi" bildirim içeriği - chronometer yukarı sayarak geçen süreyi gösterir
+   * "Vakit girdi" bildirim icerigi - chronometer olmadan statik bildirim
    */
-  private vakitGirdiBildirimIcerigi(bildirimId: string, aksamVaktiMs: number) {
+  private vakitGirdiBildirimIcerigi(bildirimId: string, _aksamVaktiMs: number) {
     return {
       id: bildirimId,
-      title: '🌙 İftar Vakti Girdi!',
-      body: 'Hayırlı iftarlar!',
+      title: '\uD83C\uDF19 Iftar Vakti Girdi!',
+      body: 'Hayirli iftarlar!',
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
         ongoing: true,
         autoCancel: false,
-        showChronometer: true,
-        chronometerCountDown: false,
-        timestamp: aksamVaktiMs,
         pressAction: { id: 'default' },
         style: {
-          type: AndroidStyle.BIGTEXT as const,
-          text: 'Hayırlı iftarlar!\n\n⚠️ Ezanı duymadan orucunuzu açmayınız!',
+          type: AndroidStyle.BIGTEXT,
+          text: 'Hayirli iftarlar!\n\n\u26A0\uFE0F Ezani duymadan orucunuzu acmayiniz!',
         },
       },
     };
@@ -283,6 +272,13 @@ export class IftarSayacBildirimServisi {
    */
   public async tumBildirimleriniTemizle(): Promise<void> {
     try {
+      // Native countdown servisini durdur
+      try {
+        stopAllCountdowns();
+      } catch (_) {
+        // Native modul yuklenmemis olabilir
+      }
+
       // Trigger bildirimleri iptal et
       const triggerIds = await notifee.getTriggerNotificationIds();
       for (const id of triggerIds) {
@@ -291,7 +287,7 @@ export class IftarSayacBildirimServisi {
         }
       }
 
-      // Görüntülenen bildirimleri temizle
+      // Goruntulenen bildirimleri temizle
       const gosterilenler = await notifee.getDisplayedNotifications();
       for (const bildirim of gosterilenler) {
         if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC)) {
@@ -299,7 +295,7 @@ export class IftarSayacBildirimServisi {
         }
       }
     } catch (error) {
-      // Temizleme hatası sessizce geçilir
+      // Temizleme hatasi sessizce gecilir
     }
   }
 

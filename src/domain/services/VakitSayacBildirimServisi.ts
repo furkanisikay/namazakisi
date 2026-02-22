@@ -1,9 +1,9 @@
 /**
- * Vakit Sayacı Bildirim Servisi
+ * Vakit Sayaci Bildirim Servisi
  *
- * Notifee kullanarak Android chronometer ile gerçek zamanlı dk:sn geri sayımı gösterir.
- * Her vakit için tek bir trigger notification yeterli - chronometer Android sistemi
- * tarafından otomatik güncellenir.
+ * Native Kotlin modulu (expo-countdown-notification) kullanarak
+ * bildirim body'sinde gercek zamanli geri sayim gosterir.
+ * Foreground Service + CountDownTimer ile batarya verimli calisir.
  */
 
 import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
@@ -11,6 +11,7 @@ import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { startCountdown, stopCountdown, stopAll as stopAllCountdowns } from '../../../modules/expo-countdown-notification/src';
 
 export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 
@@ -32,7 +33,7 @@ export class VakitSayacBildirimServisi {
   private ayarlar: SayacAyarlari | null = null;
   private kanalOlusturuldu: boolean = false;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): VakitSayacBildirimServisi {
     if (!VakitSayacBildirimServisi.instance) {
@@ -121,7 +122,7 @@ export class VakitSayacBildirimServisi {
 
     try {
       // Eski kanali sil (LOW importance, Samsung'da gorunmuyor)
-      try { await notifee.deleteChannel('vakit_sayac'); } catch (_) {}
+      try { await notifee.deleteChannel('vakit_sayac'); } catch (_) { }
 
       await notifee.createChannel({
         id: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
@@ -244,55 +245,55 @@ export class VakitSayacBildirimServisi {
       yatsi: 'Yatsı',
     };
 
-    // A) Geri sayım bildirimi
-    const bildirimIcerigi = {
-      id: bildirimId,
-      title: `⏱️ ${vakitAdlari[vakit.vakit]} Namazı`,
-      body: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere! Namazını kıl!`,
-      android: {
-        channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
-        ongoing: true,
-        autoCancel: false,
-        showChronometer: true,
-        chronometerCountDown: true,
-        timestamp: cikisSuresi,
-        pressAction: { id: 'default' },
-        style: {
-          type: AndroidStyle.BIGTEXT as const,
-          text: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!\nHemen namazını kıl, vakit geçmesin!`,
-        },
-        actions: [
-          {
-            title: '✅ Kıldım',
-            pressAction: { id: 'kildim' },
-          },
-        ],
-      },
-    };
-
-    // Muhafiz ilk bildirimle eş zamanlı başlangıç
+    // A) Geri sayim bildirimi - native modül ile body'de countdown
     const tetikZamani = Math.max(sayacBaslangic, simdi.getTime() + 5000);
+    const vakitBasligi = `\u23F1\uFE0F ${vakitAdlari[vakit.vakit]} Namazi`;
+    const bodyTemplate = `${vakitAdlari[vakit.vakit]} namazi vakti cikmak uzere!\n\u23F1\uFE0F {time}`;
 
-    // Eğer zaten muhafiz başlangıç aralığındaysak hemen göster
+    // Eger zaten muhafiz baslangic araligindaysak hemen native countdown baslat
     if (tetikZamani <= simdi.getTime() + 5000) {
       try {
-        await notifee.displayNotification(bildirimIcerigi);
-        console.log(`[VakitSayac] ${vakit.vakit} için sayaç hemen gösterildi`);
+        startCountdown({
+          id: bildirimId,
+          targetTimeMs: cikisSuresi,
+          title: vakitBasligi,
+          bodyTemplate: bodyTemplate,
+          channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
+        });
+        console.log(`[VakitSayac] ${vakit.vakit} icin native sayac hemen baslatildi`);
       } catch (error) {
-        console.error(`[VakitSayac] Bildirim gösterilemedi (${vakit.vakit}):`, error);
+        console.error(`[VakitSayac] Native sayac baslatilamadi (${vakit.vakit}):`, error);
       }
     } else {
-      // Gelecekte tetiklenecek
+      // Gelecekte tetiklenecek - trigger ile placeholder bildirim gonder,
+      // arkaplan gorevi (muhafiz) tetiklenince native countdown baslatilacak
       try {
         const trigger: TimestampTrigger = {
           type: TriggerType.TIMESTAMP,
           timestamp: tetikZamani,
         };
+        const bildirimIcerigi = {
+          id: bildirimId,
+          title: vakitBasligi,
+          body: `${vakitAdlari[vakit.vakit]} namazi vakti cikmak uzere!`,
+          android: {
+            channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
+            ongoing: true,
+            autoCancel: false,
+            pressAction: { id: 'default' },
+            actions: [
+              {
+                title: '\u2705 Kildim',
+                pressAction: { id: 'kildim' },
+              },
+            ],
+          },
+        };
         await notifee.createTriggerNotification(bildirimIcerigi, trigger);
         const tetikTarih = new Date(tetikZamani);
-        console.log(`[VakitSayac] ${vakit.vakit} için sayaç planlandı: ${tetikTarih.toLocaleTimeString()}`);
+        console.log(`[VakitSayac] ${vakit.vakit} icin sayac planlandi: ${tetikTarih.toLocaleTimeString()}`);
       } catch (error) {
-        console.error(`[VakitSayac] Trigger bildirim planlanamadı (${vakit.vakit}):`, error);
+        console.error(`[VakitSayac] Trigger bildirim planalamadi (${vakit.vakit}):`, error);
       }
     }
 
@@ -351,6 +352,13 @@ export class VakitSayacBildirimServisi {
    */
   public async tumSayacBildirimleriniTemizle(): Promise<void> {
     try {
+      // Native countdown servisini durdur
+      try {
+        stopAllCountdowns();
+      } catch (_) {
+        // Native modul yuklenmemis olabilir
+      }
+
       // Trigger bildirimleri iptal et
       const triggerIds = await notifee.getTriggerNotificationIds();
       for (const id of triggerIds) {
@@ -359,7 +367,7 @@ export class VakitSayacBildirimServisi {
         }
       }
 
-      // Görüntülenen bildirimleri temizle
+      // Goruntulenen bildirimleri temizle
       const gosterilenler = await notifee.getDisplayedNotifications();
       for (const bildirim of gosterilenler) {
         if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAYAC)) {
@@ -367,7 +375,7 @@ export class VakitSayacBildirimServisi {
         }
       }
 
-      console.log('[VakitSayac] Tüm sayaç bildirimleri temizlendi');
+      console.log('[VakitSayac] Tum sayac bildirimleri temizlendi');
     } catch (error) {
       console.error('[VakitSayac] Bildirimler temizlenirken hata:', error);
     }

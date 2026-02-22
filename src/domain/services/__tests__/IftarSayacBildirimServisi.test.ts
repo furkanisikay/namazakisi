@@ -2,25 +2,34 @@ import notifee from '@notifee/react-native';
 import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 
 jest.mock('@notifee/react-native', () => ({
-    __esModule: true,
-    default: {
-        createChannel: jest.fn().mockResolvedValue('channel-id'),
-        deleteChannel: jest.fn().mockResolvedValue(undefined),
-        displayNotification: jest.fn().mockResolvedValue('notif-id'),
-        cancelNotification: jest.fn().mockResolvedValue(undefined),
-        cancelTriggerNotification: jest.fn().mockResolvedValue(undefined),
-        getTriggerNotificationIds: jest.fn().mockResolvedValue([]),
-        getDisplayedNotifications: jest.fn().mockResolvedValue([]),
-        createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
-    },
-    TriggerType: { TIMESTAMP: 0 },
-    AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
-    AndroidStyle: { BIGTEXT: 0 },
+  __esModule: true,
+  default: {
+    createChannel: jest.fn().mockResolvedValue('channel-id'),
+    deleteChannel: jest.fn().mockResolvedValue(undefined),
+    displayNotification: jest.fn().mockResolvedValue('notif-id'),
+    cancelNotification: jest.fn().mockResolvedValue(undefined),
+    cancelTriggerNotification: jest.fn().mockResolvedValue(undefined),
+    getTriggerNotificationIds: jest.fn().mockResolvedValue([]),
+    getDisplayedNotifications: jest.fn().mockResolvedValue([]),
+    createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
+  },
+  TriggerType: { TIMESTAMP: 0 },
+  AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
+  AndroidStyle: { BIGTEXT: 0 },
 }));
 
 jest.mock('react-native', () => ({ Platform: { OS: 'android' } }));
 jest.mock('adhan');
 jest.mock('@react-native-async-storage/async-storage');
+
+const mockStartCountdown = jest.fn();
+const mockStopCountdown = jest.fn();
+const mockStopAll = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+  startCountdown: (...args: any[]) => mockStartCountdown(...args),
+  stopCountdown: (...args: any[]) => mockStopCountdown(...args),
+  stopAll: (...args: any[]) => mockStopAll(...args),
+}));
 
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
@@ -103,7 +112,15 @@ describe('IftarSayacBildirimServisi', () => {
       koordinatlar: { lat: 41, lng: 29 },
     });
 
-    // displayNotification (geri sayim hemen) + 2 createTriggerNotification (vakitGirdi + temizleme)
+    // Sabah-aksam arasi: native countdown baslatilmali (displayNotification yerine)
+    expect(mockStartCountdown).toHaveBeenCalledWith(
+      expect.objectContaining({
+        channelId: expect.any(String),
+        targetTimeMs: expect.any(Number),
+      })
+    );
+
+    // vakitGirdi ve temizleme trigger'lari Notifee ile planlanmali
     const triggerCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
     const triggerIds = triggerCalls.map((call: any[]) => call[0].id as string);
 
