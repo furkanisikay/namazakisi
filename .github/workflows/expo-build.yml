@@ -1,7 +1,16 @@
-name: Expo Build (PlayStore)
+# ========================================================================
+# Expo Build Pipeline (PlayStore) — Namaz Akisi
+# ========================================================================
+#
+# EAS Build ile PlayStore icin uretim APK/AAB olusturur.
+# Versiyon DEGISTIRMEZ — mevcut app.json versiyonunu kullanir.
+#
+# Not: Versiyonlama android-build.yml tarafindan yonetilir.
+#      Bu workflow sadece EAS uzerinden build almak icindir.
+#
+# ========================================================================
 
-# PlayStore icin EAS Build - Versiyon degistirmez!
-# Mevcut versiyon ile Expo/EAS uzerinden build alir
+name: Expo Build (PlayStore)
 
 on:
   workflow_dispatch:
@@ -31,7 +40,7 @@ on:
         type: boolean
 
 concurrency:
-  group: expo-build
+  group: expo-build-${{ inputs.platform }}-${{ inputs.profile }}
   cancel-in-progress: false
 
 env:
@@ -39,38 +48,37 @@ env:
 
 jobs:
   build:
-    name: 🚀 EAS Build
+    name: 🚀 EAS Build (${{ inputs.platform }} / ${{ inputs.profile }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
+      - name: ⏱️ Zamanlayici
+        id: timer
+        run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
+
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
+      # ==========================================
+      # Versiyon Dogrulama
+      # ==========================================
       - name: 🔒 appVersionSource kontrolu
         run: |
-          # eas.json'in appVersionSource degerini kontrol et
           APP_VERSION_SOURCE=$(node -p "require('./eas.json').cli?.appVersionSource || 'not-set'")
           
           if [ "$APP_VERSION_SOURCE" != "local" ]; then
-            echo "❌ HATA: eas.json'da appVersionSource '$APP_VERSION_SOURCE' olarak ayarli!"
-            echo "   appVersionSource 'local' olmalidir."
-            echo "   EAS remote versiyon yonetimi devre disi birakildi."
-            echo ""
-            echo "   Duzeltmek icin eas.json'da:"
-            echo '   "cli": { "appVersionSource": "local" }'
-            
-            # Otomatik duzelt
+            echo "⚠️ appVersionSource '$APP_VERSION_SOURCE' → 'local' olarak duzeltiliyor..."
             node -e "
               const fs = require('fs');
               const eas = JSON.parse(fs.readFileSync('./eas.json', 'utf8'));
               if (!eas.cli) eas.cli = {};
               eas.cli.appVersionSource = 'local';
               fs.writeFileSync('./eas.json', JSON.stringify(eas, null, 2) + '\n');
-              console.log('✅ appVersionSource otomatik olarak local yapildi');
+              console.log('✅ appVersionSource: local');
             "
           else
-            echo "✅ appVersionSource: local (dogru)"
+            echo "✅ appVersionSource: local"
           fi
 
       - name: 🔢 Versiyon bilgisi
@@ -81,26 +89,25 @@ jobs:
           VERSION_CODE=$(node -p "require('./app.json').expo.android?.versionCode || 'yok'")
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "========================================"
-          echo "📦 package.json Versiyon: $VERSION"
-          echo "📱 app.json Versiyon: $APP_VERSION"
-          echo "🔢 app.json versionCode: $VERSION_CODE"
-          echo "🎯 Platform: ${{ inputs.platform }}"
-          echo "📋 Profil: ${{ inputs.profile }}"
-          echo "📌 appVersionSource: local (app.json kullanilacak)"
-          echo "========================================"
+          echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
+          
+          echo "📦 package.json: $VERSION | app.json: $APP_VERSION | versionCode: $VERSION_CODE"
           
           if [ "$VERSION" != "$APP_VERSION" ]; then
-            echo "⚠️ UYARI: package.json ($VERSION) ve app.json ($APP_VERSION) versiyonlari farkli!"
+            echo "⚠️ UYARI: package.json ($VERSION) ≠ app.json ($APP_VERSION)"
           fi
 
+      # ==========================================
+      # Ortam Hazırlığı
+      # ==========================================
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: 🚀 Setup Expo
+      - name: 🚀 Setup Expo & EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -111,7 +118,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
@@ -121,66 +129,96 @@ jobs:
         run: |
           if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
             echo "❌ EXPO_TOKEN bulunamadi!"
-            echo "💡 GitHub Secrets'a EXPO_TOKEN eklediginizden emin olun."
-            echo "   https://expo.dev/accounts/[account]/settings/access-tokens"
+            echo "💡 GitHub Secrets > EXPO_TOKEN ekleyin."
             exit 1
           fi
           echo "✅ EXPO_TOKEN mevcut"
 
-      # ============================================
-      # Android Build
-      # ============================================
+      # ==========================================
+      # EAS Build
+      # ==========================================
       - name: 🤖 Android Build
-        if: ${{ inputs.platform == 'android' || inputs.platform == 'all' }}
+        if: inputs.platform == 'android' || inputs.platform == 'all'
+        id: android_build
         run: |
-          echo "🚀 Android EAS Build baslatiliyor..."
-          echo "   Profil: ${{ inputs.profile }}"
-          echo "   Versiyon: ${{ steps.version.outputs.version }}"
-          
-          if [ "${{ inputs.wait_for_build }}" == "true" ]; then
-            eas build --platform android --profile ${{ inputs.profile }} --non-interactive
-          else
-            eas build --platform android --profile ${{ inputs.profile }} --non-interactive --no-wait
+          WAIT_FLAG=""
+          if [ "${{ inputs.wait_for_build }}" != "true" ]; then
+            WAIT_FLAG="--no-wait"
           fi
+          
+          eas build \
+            --platform android \
+            --profile ${{ inputs.profile }} \
+            --non-interactive \
+            $WAIT_FLAG
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      # ============================================
-      # iOS Build
-      # ============================================
       - name: 🍎 iOS Build
-        if: ${{ inputs.platform == 'ios' || inputs.platform == 'all' }}
+        if: inputs.platform == 'ios' || inputs.platform == 'all'
+        id: ios_build
         continue-on-error: true
         run: |
-          echo "🚀 iOS EAS Build baslatiliyor..."
-          echo "   Profil: ${{ inputs.profile }}"
-          echo "   Versiyon: ${{ steps.version.outputs.version }}"
-          
-          if [ "${{ inputs.wait_for_build }}" == "true" ]; then
-            eas build --platform ios --profile ${{ inputs.profile }} --non-interactive
-          else
-            eas build --platform ios --profile ${{ inputs.profile }} --non-interactive --no-wait
+          WAIT_FLAG=""
+          if [ "${{ inputs.wait_for_build }}" != "true" ]; then
+            WAIT_FLAG="--no-wait"
           fi
+          
+          eas build \
+            --platform ios \
+            --profile ${{ inputs.profile }} \
+            --non-interactive \
+            $WAIT_FLAG
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: 📊 Build ozeti
+      # ==========================================
+      # Build Ozeti
+      # ==========================================
+      - name: 📊 Build Ozeti
+        if: always()
         run: |
+          END_TIME=$(date +%s)
+          START_TIME="${{ steps.timer.outputs.start }}"
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          
           {
-            echo "### 🚀 EAS Build Baslatildi!"
-            echo "---"
+            echo "## 🚀 EAS Build Sonucu"
+            echo ""
             echo "| Detay | Bilgi |"
-            echo "|---|---|"
+            echo "|-------|-------|"
             echo "| 📦 **Versiyon** | \`${{ steps.version.outputs.version }}\` |"
+            echo "| 🔢 **versionCode** | \`${{ steps.version.outputs.version_code }}\` |"
             echo "| 🎯 **Platform** | \`${{ inputs.platform }}\` |"
             echo "| 📋 **Profil** | \`${{ inputs.profile }}\` |"
             echo "| ⏳ **Bekleme** | \`${{ inputs.wait_for_build }}\` |"
+            echo "| ⏱️ **Sure** | ${MINUTES}dk ${SECONDS}sn |"
+            echo ""
+            
+            # Platform sonuclari
+            echo "### Platform Sonuclari"
+            echo ""
+            echo "| Platform | Durum |"
+            echo "|----------|-------|"
+            
+            if [ "${{ inputs.platform }}" == "android" ] || [ "${{ inputs.platform }}" == "all" ]; then
+              echo "| 🤖 Android | ${{ steps.android_build.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+            fi
+            
+            if [ "${{ inputs.platform }}" == "ios" ] || [ "${{ inputs.platform }}" == "all" ]; then
+              echo "| 🍎 iOS | ${{ steps.ios_build.outcome == 'success' && '✅ Basarili' || (steps.ios_build.outcome == 'skipped' && '⏭️ Atlandi' || '❌ Basarisiz') }} |"
+            fi
+            
+            echo ""
+            echo "---"
             echo ""
             echo "### 🔗 Baglantilar"
             echo "- [📱 Expo Dashboard](https://expo.dev/accounts/${{ secrets.EXPO_ACCOUNT || 'furkanisikay' }}/projects/namazakisi/builds)"
             
             if [ "${{ inputs.wait_for_build }}" != "true" ]; then
               echo ""
-              echo "> ⚠️ **Not:** Build arka planda devam ediyor. Sonuclari Expo Dashboard uzerinden takip edebilirsiniz."
+              echo "> ⚠️ Build arka planda devam ediyor. Expo Dashboard uzerinden takip edin."
             fi
           } >> $GITHUB_STEP_SUMMARY

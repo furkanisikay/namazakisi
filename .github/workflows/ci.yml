@@ -1,3 +1,17 @@
+# ========================================================================
+# CI Pipeline — Namaz Akisi
+# ========================================================================
+#
+# Tetikleyiciler:
+#   - master / develop branch'lerine push
+#   - master / develop branch'lerine PR
+#
+# Pipeline:
+#   quality (lint + typecheck)  ──┐
+#   test    (jest + coverage)   ──┼── ci-summary ── auto-release (sadece master push)
+#                                 │
+# ========================================================================
+
 name: CI
 
 on:
@@ -16,7 +30,6 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
 
-# Ayni branch/PR icin onceki workflow'lari iptal et
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -25,12 +38,13 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  # ============================================
+  # =============================================
   # Kod Kalitesi Kontrolleri
-  # ============================================
+  # =============================================
   quality:
     name: 🔍 Kod Kalitesi
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: 📥 Checkout
@@ -47,25 +61,41 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 🔧 TypeScript check
+      - name: 🔧 TypeScript
+        id: typecheck
         run: npm run typecheck
-        continue-on-error: true  # React 19 tip uyumsuzlugu gecici olarak atlanir
+        continue-on-error: true  # React 19 tip uyumsuzlugu nedeniyle gecici tolere ediliyor
 
       - name: 🧹 ESLint
+        id: lint
         run: npm run lint
 
-  # ============================================
-  # Unit Testler (quality ile paralel calisir)
-  # ============================================
+      - name: 📊 Kalite Ozeti
+        if: always()
+        run: |
+          {
+            echo "### 🔍 Kod Kalitesi"
+            echo ""
+            echo "| Kontrol | Durum |"
+            echo "|---------|-------|"
+            echo "| TypeScript | ${{ steps.typecheck.outcome == 'success' && '✅ Basarili' || '⚠️ Uyari (gecici tolere)' }} |"
+            echo "| ESLint | ${{ steps.lint.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+          } >> $GITHUB_STEP_SUMMARY
+
+  # =============================================
+  # Unit Testler
+  # =============================================
   test:
     name: 🧪 Testler
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - name: 📥 Checkout
@@ -82,16 +112,18 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm ci
 
-      - name: 🧪 Run tests with coverage
+      - name: 🧪 Testleri calistir
+        id: tests
         run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
 
-      - name: 📊 Upload coverage report
+      - name: 📊 Coverage artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -99,9 +131,77 @@ jobs:
           path: coverage/
           retention-days: 7
 
-  # ============================================
-  # Otomatik Release: master'a push + CI basarili
-  # ============================================
+      - name: 📊 Test Ozeti
+        if: always()
+        run: |
+          {
+            echo "### 🧪 Testler"
+            echo ""
+            echo "| Kontrol | Durum |"
+            echo "|---------|-------|"
+            echo "| Unit Tests | ${{ steps.tests.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+            echo ""
+            if [ -f coverage/lcov.info ]; then
+              echo "> 📊 Coverage raporu artifact olarak yuklendi."
+            fi
+          } >> $GITHUB_STEP_SUMMARY
+
+  # =============================================
+  # Pipeline Ozeti
+  # =============================================
+  ci-summary:
+    name: 📊 Pipeline Ozeti
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    if: always()
+    timeout-minutes: 2
+
+    steps:
+      - name: 📊 Ozet Raporu
+        run: |
+          {
+            echo "## 📊 CI Pipeline Sonuclari"
+            echo ""
+            echo "| Job | Durum |"
+            echo "|-----|-------|"
+            echo "| 🔍 Kod Kalitesi | ${{ needs.quality.result == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+            echo "| 🧪 Testler | ${{ needs.test.result == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+            echo ""
+            echo "---"
+            echo ""
+            echo "| Bilgi | Deger |"
+            echo "|-------|-------|"
+            echo "| **Branch** | \`${{ github.ref_name }}\` |"
+            echo "| **Commit** | [\`${GITHUB_SHA::7}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) |"
+            echo "| **Tetikleyen** | @${{ github.actor }} |"
+            echo "| **Olay** | \`${{ github.event_name }}\` |"
+          } >> $GITHUB_STEP_SUMMARY
+          
+          # Tum sonuclari degerlendir
+          if [ "${{ needs.quality.result }}" == "success" ] && [ "${{ needs.test.result }}" == "success" ]; then
+            {
+              echo ""
+              echo "### ✅ Tum kontroller basarili!"
+              if [ "${{ github.ref }}" == "refs/heads/master" ] && [ "${{ github.event_name }}" == "push" ]; then
+                echo ""
+                echo "> 🚀 **Release build otomatik olarak tetikleniyor...**"
+              fi
+            } >> $GITHUB_STEP_SUMMARY
+          else
+            {
+              echo ""
+              echo "### ❌ Pipeline basarisiz!"
+              echo "> Release build tetiklenmeyecek."
+            } >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: ❌ Basarisiz sonuc
+        if: needs.quality.result != 'success' || needs.test.result != 'success'
+        run: exit 1
+
+  # =============================================
+  # Otomatik Release (master push + CI basarili)
+  # =============================================
   auto-release:
     name: 🚀 Otomatik Release
     needs: [quality, test]
