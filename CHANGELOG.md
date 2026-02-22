@@ -5,6 +5,10 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.0.1] - 2026-02-22
+
+### 🎉 İlk Sürüm
+
 ## [0.10.0] - 2026-02-22
 
 ### Eklendi
