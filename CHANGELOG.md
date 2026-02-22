@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.10.0] - 2026-02-22
+
+### Eklendi
+- [notifications] expo-countdown-notification native modülü ve android ayarları eklendi
+- [notifications] native android geri sayım bildirimi entegrasyonu
+
+### Düzeltildi
+- [test] update async storage mock expected values for sayacBaslangicSeviyesi
+
 ## [0.9.2] - 2026-02-21
 
 ### Düzeltildi
