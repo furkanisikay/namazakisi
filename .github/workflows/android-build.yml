@@ -143,7 +143,7 @@ jobs:
           NEW_VERSION="${{ steps.version.outputs.version }}"
           
           # package.json
-          npm version $NEW_VERSION --no-git-tag-version
+          npm version $NEW_VERSION --no-git-tag-version --allow-same-version
           
           # app.json — versiyon + versionCode
           node -e "
