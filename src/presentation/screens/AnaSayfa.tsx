@@ -22,21 +22,18 @@ import { NamazVaktiHesaplayiciServisi, VakitBilgisi } from '../../domain/service
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { ArkaplanGorevServisi } from '../../domain/services/ArkaplanGorevServisi';
-import { muhafizAyarlariniYukle } from '../store/muhafizSlice';
 import { store } from '../store/store';
-import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
-import { iftarSayacAyarlariniYukle } from '../store/iftarSayacSlice';
-import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
 import { sahurSayacAyarlariniYukle } from '../store/sahurSayacSlice';
 import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 
 // Baslangic sayfasi
-const BASLANGIC_SAYFA_INDEKSI = 1000;
+const BASLANGIC_SAYFA_INDEKSI = 365;
+const TOPLAM_SAYFA_SAYISI = 731; // 365 gun geri + bugun + 365 gun ileri
 
 export const AnaSayfa: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -146,26 +143,14 @@ export const AnaSayfa: React.FC = () => {
     // Eğer başlangıçta aktif gün bugünden farklıysa (gece yarısı durumu), o güne git
     if (aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
       const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
-      // Dispatch ve setPage işlemleri namazlariGetir sonrasinda veya senkron
       dispatch(tarihiDegistir(aktifGun));
       setMevcutSayfaIndeksi(yeniIndeks);
-      // Pager ref update needs delay usually or layout ready? 
-      // InitialPage prop handles first render. But if we change state dynamic?
-      // We will handle via useEffect dependency or explicit call.
       setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
     }
 
     dispatch(seriVerileriniYukle());
-    dispatch(muhafizAyarlariniYukle());
-    dispatch(iftarSayacAyarlariniYukle()).then(() => {
-      const iftarState = store.getState().iftarSayac;
-      if (iftarState.ayarlar.aktif && konumAyarlari.koordinatlar) {
-        IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
-          aktif: true,
-          koordinatlar: konumAyarlari.koordinatlar,
-        }).catch(() => { });
-      }
-    });
+    // muhafizAyarlariniYukle, iftarSayacAyarlariniYukle ve BildirimServisi.izinIste
+    // App.tsx arkaplanMuhafiziBildirimleriniPlanla icerisinde zaten paralel yukleniyor
 
     dispatch(sahurSayacAyarlariniYukle()).then(() => {
       const sahurState = store.getState().sahurSayac;
@@ -177,8 +162,6 @@ export const AnaSayfa: React.FC = () => {
       }
     });
 
-    BildirimServisi.getInstance().izinIste();
-
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
       .then(basarili => basarili && console.log('[AnaSayfa] Arka plan görevi başlatıldı'))
       .catch(err => console.error('[AnaSayfa] Arka plan görevi hatası:', err));
@@ -186,7 +169,7 @@ export const AnaSayfa: React.FC = () => {
     return () => {
       try { NamazMuhafiziServisi.getInstance().durdur(); } catch (e) { }
     };
-  }, [aktifGun]); // Changed dependency from generic dispatch/namazlariGetir to aktifGun to trigger on recalc.
+  }, [aktifGun]);
 
   // Seri Kontrolü
   useEffect(() => {
@@ -490,9 +473,9 @@ export const AnaSayfa: React.FC = () => {
           oncekiTamamlananRef.current = 0;
         }}
       >
-        {Array.from({ length: 2001 }, (_, i) => i).map(sayfaIndeksi => (
+        {Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i).map(sayfaIndeksi => (
           <View key={sayfaIndeksi}>
-            {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 2 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
+            {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 1 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
           </View>
         ))}
       </PagerView>

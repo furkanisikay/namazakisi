@@ -63,3 +63,4 @@ temp/
 
 # Expo Module Build Outputs
 modules/expo-countdown-notification/android/build/
+node_modules/
