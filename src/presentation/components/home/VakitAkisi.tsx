@@ -13,6 +13,8 @@ interface VakitAkisiProps {
     toplamSayi: number;
     onVakitTikla: (namazAdi: string, tamamlandi: boolean) => void;
     aktifGunMu?: boolean;
+    /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
+    kilitli?: boolean;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -33,7 +35,8 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
     tamamlananSayisi,
     toplamSayi,
     onVakitTikla,
-    aktifGunMu = false
+    aktifGunMu = false,
+    kilitli = false
 }) => {
     const renkler = useRenkler();
 
@@ -77,7 +80,8 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                     // Vakit gecti mi kontrolu (sadece aktif gun icin)
                     const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat) : true;
                     const gelecekMi = aktifGunMu && !gecmisMi && !aktifMi;
-                    const pasifMi = gelecekMi || namaz.namazAdi === NamazAdi.Gunes;
+                    // Aktif vakit kilitliyse (orn: gunes/kerahat vaktinde ogle) de pasif olarak isaretle
+                    const pasifMi = gelecekMi || namaz.namazAdi === NamazAdi.Gunes || (aktifMi && kilitli);
 
                     // Kart Stili
                     let kartStili = "flex-row items-center gap-4 p-3 rounded-xl shadow-sm";
@@ -145,7 +149,7 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
                                     style={{
                                         color: pasifMi ? renkler.metinIkincil : (tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil))
                                     }}>
-                                    {pasifMi ? 'Vakti Bekleniyor' : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
+                                    {pasifMi ? ((aktifMi && kilitli) ? 'Vakit Girmedi' : 'Vakti Bekleniyor') : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
                                 </Text>
                             </View>
 

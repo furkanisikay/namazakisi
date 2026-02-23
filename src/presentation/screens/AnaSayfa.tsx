@@ -412,6 +412,7 @@ export const AnaSayfa: React.FC = () => {
           toplamSayi={toplam}
           onVakitTikla={(namazAdi, val) => namazToggle(namazAdi as NamazAdi, val)}
           aktifGunMu={aktifGunKontrol}
+          kilitli={kilitli}
         />
         {/* ScrollView sonu için boşluk */}
         <View className="h-10" />
