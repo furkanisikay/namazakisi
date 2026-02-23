@@ -32,8 +32,10 @@ import { sahurSayacAyarlariniYukle } from '../store/sahurSayacSlice';
 import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 
 // Baslangic sayfasi
-const TOPLAM_SAYFA_SAYISI = 731; // 365 gun geri + bugun + 365 gun ileri
-const BASLANGIC_SAYFA_INDEKSI = Math.floor(TOPLAM_SAYFA_SAYISI / 2);
+const GECMIS_GUN_SAYISI = 90; // 3 ay geri
+const GELECEK_GUN_SAYISI = 1; // yarin
+const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
+const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
 
 export const AnaSayfa: React.FC = () => {
   const dispatch = useAppDispatch();

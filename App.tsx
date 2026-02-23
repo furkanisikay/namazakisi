@@ -97,9 +97,20 @@ const konumTakibiniSenkronizeEt = async () => {
  */
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
   try {
-    // Konum ve muhafiz ayarlarini paralel yukle (birbirinden bagimsiz AsyncStorage okumalari)
+    // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
+    await store.dispatch(konumAyarlariniYukle()).unwrap();
+    const konumState = store.getState().konum;
+
+    // Namaz hesaplayiciyi yapilandir (senkron, konum hazir olduktan sonra)
+    if (konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0) {
+      NamazVaktiHesaplayiciServisi.getInstance().yapilandir({
+        latitude: konumState.koordinatlar.lat,
+        longitude: konumState.koordinatlar.lng,
+      });
+    }
+
+    // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
     await Promise.all([
-      store.dispatch(konumAyarlariniYukle()).unwrap(),
       store.dispatch(muhafizAyarlariniYukle()).unwrap(),
       store.dispatch(vakitSayacAyarlariniYukle()),
       store.dispatch(iftarSayacAyarlariniYukle()),
@@ -108,22 +119,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
 
     const state = store.getState();
     const muhafizAyarlari = state.muhafiz;
-    const konumState = state.konum;
     const sayacState = state.vakitSayac;
     const iftarState = state.iftarSayac;
 
     // Sıklıklar için varsayılan değerler
     const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
 
-    // Namaz hesaplayiciyi yapilandir (senkron islem)
-    if (konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0) {
-      NamazVaktiHesaplayiciServisi.getInstance().yapilandir({
-        latitude: konumState.koordinatlar.lat,
-        longitude: konumState.koordinatlar.lng,
-      });
-    }
-
-    // Arka plan servislerini paralel yapilandir (hepsi konum verisine bagimli, ama birbirinden bagimsiz)
+    // 3. Uc servisi paralel yapilandir (hepsi yuklenen konum verisini kullanir, birbirinden bagimsiz)
     await Promise.all([
       ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
         aktif: muhafizAyarlari.aktif,
