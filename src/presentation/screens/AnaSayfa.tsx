@@ -32,8 +32,8 @@ import { sahurSayacAyarlariniYukle } from '../store/sahurSayacSlice';
 import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 
 // Baslangic sayfasi
-const BASLANGIC_SAYFA_INDEKSI = 365;
 const TOPLAM_SAYFA_SAYISI = 731; // 365 gun geri + bugun + 365 gun ileri
+const BASLANGIC_SAYFA_INDEKSI = Math.floor(TOPLAM_SAYFA_SAYISI / 2);
 
 export const AnaSayfa: React.FC = () => {
   const dispatch = useAppDispatch();
