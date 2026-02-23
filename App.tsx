@@ -5,23 +5,24 @@
  */
 
 import React, { useEffect } from 'react';
-import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform } from 'react-native';
+import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager } from 'react-native';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
 import { AppNavigator } from './src/navigation/AppNavigator';
-import { misafirModunaGec } from './src/presentation/store/authSlice';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
+import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
+import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
@@ -98,68 +99,71 @@ const konumTakibiniSenkronizeEt = async () => {
  */
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
   try {
-    // Oncelikle konum ayarlarini yukle (koordinatlar muhafiz icin gerekli)
+    // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
+    const konumState = store.getState().konum;
 
-    // Muhafiz ayarlarini yukle
-    const sonuc = await store.dispatch(muhafizAyarlariniYukle()).unwrap();
-    const state = store.getState();
-    const muhafizAyarlari = state.muhafiz;
-
-    // Bildirim izinlerini iste
-    await BildirimServisi.getInstance().izinIste();
-
-    // Sıklıklar için varsayılan değerler
-    const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
-
-    // Konum bilgisini al
-    const konumState = state.konum;
-
-    // Arka plan muhafizini yapilandir ve bildirimleri planla
-    await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
-      aktif: muhafizAyarlari.aktif,
-      koordinatlar: konumState.koordinatlar,
-      esikler: {
-        seviye1: muhafizAyarlari.esikler.seviye1,
-        seviye1Siklik: sikliklar.seviye1 || 15,
-        seviye2: muhafizAyarlari.esikler.seviye2,
-        seviye2Siklik: sikliklar.seviye2 || 10,
-        seviye3: muhafizAyarlari.esikler.seviye3,
-        seviye3Siklik: sikliklar.seviye3 || 5,
-        seviye4: muhafizAyarlari.esikler.seviye4,
-        seviye4Siklik: sikliklar.seviye4 || 1,
-      },
-    });
-
-    // Namaz hesaplayiciyi yapilandir (Vakit bildirimleri icin gerekli)
+    // Namaz hesaplayiciyi yapilandir (senkron, konum hazir olduktan sonra)
     if (konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0) {
       NamazVaktiHesaplayiciServisi.getInstance().yapilandir({
         latitude: konumState.koordinatlar.lat,
         longitude: konumState.koordinatlar.lng,
       });
-
-      // Vakit bildirimlerini guncelle
-      await VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle();
     }
 
-    // Vakit sayaci bildirimlerini planla (muhafiz ilk bildirimle eş zamanlı)
-    await store.dispatch(vakitSayacAyarlariniYukle());
-    const sayacState = store.getState().vakitSayac;
-    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
-      aktif: sayacState.ayarlar.aktif,
-      koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: muhafizAyarlari.esikler.seviye1,
-    });
+    // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
+    await Promise.all([
+      store.dispatch(muhafizAyarlariniYukle()).unwrap(),
+      store.dispatch(vakitSayacAyarlariniYukle()),
+      store.dispatch(iftarSayacAyarlariniYukle()),
+      store.dispatch(sahurSayacAyarlariniYukle()),
+      BildirimServisi.getInstance().izinIste(),
+    ]);
+
+    const state = store.getState();
+    const muhafizAyarlari = state.muhafiz;
+    const sayacState = state.vakitSayac;
+    const iftarState = state.iftarSayac;
+    const sahurState = state.sahurSayac;
+
+    // Sıklıklar için varsayılan değerler
+    const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
+
+    // 3. Uc servisi paralel yapilandir (hepsi yuklenen konum verisini kullanir, birbirinden bagimsiz)
+    await Promise.all([
+      ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
+        aktif: muhafizAyarlari.aktif,
+        koordinatlar: konumState.koordinatlar,
+        esikler: {
+          seviye1: muhafizAyarlari.esikler.seviye1,
+          seviye1Siklik: sikliklar.seviye1 || 15,
+          seviye2: muhafizAyarlari.esikler.seviye2,
+          seviye2Siklik: sikliklar.seviye2 || 10,
+          seviye3: muhafizAyarlari.esikler.seviye3,
+          seviye3Siklik: sikliklar.seviye3 || 5,
+          seviye4: muhafizAyarlari.esikler.seviye4,
+          seviye4Siklik: sikliklar.seviye4 || 1,
+        },
+      }),
+      konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0
+        ? VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle()
+        : Promise.resolve(),
+      VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: sayacState.ayarlar.aktif,
+        koordinatlar: konumState.koordinatlar,
+        baslangicEsikDk: muhafizAyarlari.esikler.seviye1,
+      }),
+      IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: iftarState.ayarlar.aktif,
+        koordinatlar: konumState.koordinatlar,
+      }),
+      SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: sahurState.ayarlar.aktif,
+        koordinatlar: konumState.koordinatlar,
+      }),
+    ]);
 
     console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
-
-    // İftar sayaci ayarlarini yukle ve bildirim planla
-    await store.dispatch(iftarSayacAyarlariniYukle());
-    const iftarState = store.getState().iftarSayac;
-    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
-      aktif: iftarState.ayarlar.aktif,
-      koordinatlar: konumState.koordinatlar,
-    });
   } catch (error) {
     console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
   }
@@ -174,16 +178,18 @@ const AppIcerik: React.FC = () => {
 
   useEffect(() => {
     // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
-    // store.dispatch(misafirModunaGec()); // Initial state zaten misafir/local
 
     // Arkaplan muhafiz bildirimlerini planla
     arkaplanMuhafiziBildirimleriniPlanla();
 
-    // Konum takibini senkronize et ve yeniden baslat
-    konumTakibiniSenkronizeEt();
+    // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
+    const interactionHandle = InteractionManager.runAfterInteractions(() => {
+      // Konum takibini senkronize et ve yeniden baslat
+      konumTakibiniSenkronizeEt();
 
-    // Guncelleme kontrolu (sessiz, arka planda)
-    store.dispatch(guncellemeKontrolEt(false));
+      // Guncelleme kontrolu (sessiz, arka planda)
+      store.dispatch(guncellemeKontrolEt(false));
+    });
 
     // Uygulama on plana geldiginde bildirimleri yeniden planla ve konum takibini senkronize et
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
@@ -246,6 +252,7 @@ const AppIcerik: React.FC = () => {
 
     return () => {
       appStateListener.remove();
+      interactionHandle.cancel();
       if (notifeeUnsubscribe) {
         notifeeUnsubscribe();
       }

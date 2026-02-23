@@ -11,7 +11,7 @@ import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { startCountdown, stopCountdown, stopAll as stopAllCountdowns } from '../../../modules/expo-countdown-notification/src';
+import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 
 export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
 
@@ -353,11 +353,14 @@ export class VakitSayacBildirimServisi {
    */
   public async tumSayacBildirimleriniTemizle(): Promise<void> {
     try {
-      // Native countdown servisini durdur
-      try {
-        stopAllCountdowns();
-      } catch (_) {
-        // Native modul yuklenmemis olabilir
+      // Goruntulenen vakit sayac bildirimlerinin ID'lerini topla ve native countdown'lari durdur
+      const gosterilenler = await notifee.getDisplayedNotifications();
+      for (const bildirim of gosterilenler) {
+        if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAYAC)) {
+          // Native countdown'i ID bazli durdur (stopAll diger sayaclari da oldurur)
+          try { stopCountdown(bildirim.id); } catch (_) { }
+          await notifee.cancelNotification(bildirim.id);
+        }
       }
 
       // Trigger bildirimleri iptal et
@@ -365,14 +368,6 @@ export class VakitSayacBildirimServisi {
       for (const id of triggerIds) {
         if (id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAYAC)) {
           await notifee.cancelTriggerNotification(id);
-        }
-      }
-
-      // Goruntulenen bildirimleri temizle
-      const gosterilenler = await notifee.getDisplayedNotifications();
-      for (const bildirim of gosterilenler) {
-        if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAYAC)) {
-          await notifee.cancelNotification(bildirim.id);
         }
       }
 

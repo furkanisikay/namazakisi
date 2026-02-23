@@ -15,7 +15,7 @@ import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { startCountdown, stopCountdown, stopAll as stopAllCountdowns } from '../../../modules/expo-countdown-notification/src';
+import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 
 interface SahurSayacAyarlari {
     aktif: boolean;
@@ -260,24 +260,21 @@ export class SahurSayacBildirimServisi {
      */
     public async tumBildirimleriniTemizle(): Promise<void> {
         try {
-            // Native countdown servisini durduralım.
-            // DİKKAT: stopAll() İftar ve Vakit'i de durdurur. 
-            // Ancak ExpoCountdownNotification modülünde stopCountdown(id) fonksiyonunu kullanmalıyız eğer sadece bunu durduracaksak.
-            // Native tarafında belli bir ID'li countdown'ı durdurmak için: stopCountdown(id) desteklenmiyor olabilir. 
-            // Çözüm olarak sadece JS triggerları temizleyeceğiz, native countdown diğer sayaçları etkilemesin diye stopAll demeyip sessizce expire olmasını bekleyebiliriz.
-            // Veya Expo native de stop(id) varsa onu kullanalım. (Şimdilik skip)
+            // Goruntulenen sahur sayac bildirimlerinin ID'lerini topla ve native countdown'lari durdur
+            const gosterilenler = await notifee.getDisplayedNotifications();
+            for (const bildirim of gosterilenler) {
+                if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC)) {
+                    // Native countdown'i ID bazli durdur (stopAll diger sayaclari da oldurur)
+                    try { stopCountdown(bildirim.id); } catch (_) { }
+                    await notifee.cancelNotification(bildirim.id);
+                }
+            }
 
+            // Trigger bildirimleri iptal et
             const triggerIds = await notifee.getTriggerNotificationIds();
             for (const id of triggerIds) {
                 if (id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC)) {
                     await notifee.cancelTriggerNotification(id);
-                }
-            }
-
-            const gosterilenler = await notifee.getDisplayedNotifications();
-            for (const bildirim of gosterilenler) {
-                if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC)) {
-                    await notifee.cancelNotification(bildirim.id);
                 }
             }
         } catch (error) { }
