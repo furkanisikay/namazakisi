@@ -15,7 +15,7 @@ import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { startCountdown, stopCountdown, stopAll as stopAllCountdowns } from '../../../modules/expo-countdown-notification/src';
+import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 
 interface IftarSayacAyarlari {
   aktif: boolean;
@@ -273,11 +273,14 @@ export class IftarSayacBildirimServisi {
    */
   public async tumBildirimleriniTemizle(): Promise<void> {
     try {
-      // Native countdown servisini durdur
-      try {
-        stopAllCountdowns();
-      } catch (_) {
-        // Native modul yuklenmemis olabilir
+      // Goruntulenen iftar sayac bildirimlerinin ID'lerini topla ve native countdown'lari durdur
+      const gosterilenler = await notifee.getDisplayedNotifications();
+      for (const bildirim of gosterilenler) {
+        if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC)) {
+          // Native countdown'i ID bazli durdur (stopAll diger sayaclari da oldurur)
+          try { stopCountdown(bildirim.id); } catch (_) { }
+          await notifee.cancelNotification(bildirim.id);
+        }
       }
 
       // Trigger bildirimleri iptal et
@@ -285,14 +288,6 @@ export class IftarSayacBildirimServisi {
       for (const id of triggerIds) {
         if (id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC)) {
           await notifee.cancelTriggerNotification(id);
-        }
-      }
-
-      // Goruntulenen bildirimleri temizle
-      const gosterilenler = await notifee.getDisplayedNotifications();
-      for (const bildirim of gosterilenler) {
-        if (bildirim.id && bildirim.id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC)) {
-          await notifee.cancelNotification(bildirim.id);
         }
       }
     } catch (error) {
