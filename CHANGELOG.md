@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.11.0] - 2026-02-23
+
+### Eklendi
+- açılış hızlandırıldı, sayaçlar düzeltildi, arayüz hataları giderildi
+- sahur sayaci icin ozel tema eklendi (mor gradient, calar saat mascot, 'Sahurun Bitmesine' prefix)
+
+### Düzeltildi
+- [ci] versiyon hesaplama ve CI startup_failure düzeltildi (#58)
+- [release] fetch-tags eklendi, versiyon 0.11.0 olarak duzeltildi
+- [build] appVersionSource kalici olarak 'local' yapildi ve CI korumalari eklendi
+- [build] appVersionSource 'remote' yerine 'local' olarak degistirildi
+
 ## [0.0.1] - 2026-02-22
 
 ### 🎉 İlk Sürüm

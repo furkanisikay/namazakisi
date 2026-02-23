@@ -40,7 +40,7 @@
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.WAKE_LOCK"
       ],
-      "versionCode": 21
+      "versionCode": 22
     },
     "web": {
       "favicon": "./assets/favicon.png"
