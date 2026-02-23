@@ -28,8 +28,6 @@ import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
-import { sahurSayacAyarlariniYukle } from '../store/sahurSayacSlice';
-import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 
 // Baslangic sayfasi
 const GECMIS_GUN_SAYISI = 90; // 3 ay geri
@@ -151,18 +149,9 @@ export const AnaSayfa: React.FC = () => {
     }
 
     dispatch(seriVerileriniYukle());
-    // muhafizAyarlariniYukle, iftarSayacAyarlariniYukle ve BildirimServisi.izinIste
-    // App.tsx arkaplanMuhafiziBildirimleriniPlanla icerisinde zaten paralel yukleniyor
-
-    dispatch(sahurSayacAyarlariniYukle()).then(() => {
-      const sahurState = store.getState().sahurSayac;
-      if (sahurState.ayarlar.aktif && konumAyarlari.koordinatlar) {
-        SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
-          aktif: true,
-          koordinatlar: konumAyarlari.koordinatlar,
-        }).catch(() => { });
-      }
-    });
+    // muhafizAyarlariniYukle, iftarSayacAyarlariniYukle, sahurSayacAyarlariniYukle
+    // ve BildirimServisi.izinIste App.tsx arkaplanMuhafiziBildirimleriniPlanla icerisinde
+    // konum yuklendikten sonra paralel yukleniyor
 
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
       .then(basarili => basarili && console.log('[AnaSayfa] Arka plan görevi başlatıldı'))
@@ -488,6 +477,7 @@ export const AnaSayfa: React.FC = () => {
           value={new Date(mevcutTarih)}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          minimumDate={new Date(gunEkle(bugunuAl(), -GECMIS_GUN_SAYISI) + 'T00:00:00')}
           maximumDate={new Date(aktifGun + 'T23:59:59')}
           onChange={(event, date) => {
             setTarihSeciciGorunur(Platform.OS === 'ios');

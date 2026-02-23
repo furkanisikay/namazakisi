@@ -16,11 +16,13 @@ import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizSer
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
+import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
+import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
@@ -114,6 +116,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(muhafizAyarlariniYukle()).unwrap(),
       store.dispatch(vakitSayacAyarlariniYukle()),
       store.dispatch(iftarSayacAyarlariniYukle()),
+      store.dispatch(sahurSayacAyarlariniYukle()),
       BildirimServisi.getInstance().izinIste(),
     ]);
 
@@ -121,6 +124,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const muhafizAyarlari = state.muhafiz;
     const sayacState = state.vakitSayac;
     const iftarState = state.iftarSayac;
+    const sahurState = state.sahurSayac;
 
     // Sıklıklar için varsayılan değerler
     const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
@@ -151,6 +155,10 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       }),
       IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: iftarState.ayarlar.aktif,
+        koordinatlar: konumState.koordinatlar,
+      }),
+      SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+        aktif: sahurState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
       }),
     ]);
