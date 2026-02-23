@@ -206,7 +206,7 @@ jobs:
     name: 🚀 Otomatik Release
     needs: [quality, test]
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-    uses: ./.github/workflows/android-build.yml
+    uses: furkanisikay/namazakisi/.github/workflows/android-build.yml@master
     with:
       build_type: 'release'
     secrets: inherit
