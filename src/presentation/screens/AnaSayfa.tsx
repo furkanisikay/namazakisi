@@ -33,7 +33,7 @@ import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildi
 
 // Baslangic sayfasi
 const GECMIS_GUN_SAYISI = 90; // 3 ay geri
-const GELECEK_GUN_SAYISI = 1; // yarin
+const GELECEK_GUN_SAYISI = 1; // 1 gun ileri (yarin)
 const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
 
