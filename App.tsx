@@ -6,6 +6,7 @@
 
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
@@ -295,13 +296,15 @@ const ProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) 
  */
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Provider store={store}>
-        <ProviderWrapper>
-          <AppIcerik />
-        </ProviderWrapper>
-      </Provider>
-    </View>
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Provider store={store}>
+          <ProviderWrapper>
+            <AppIcerik />
+          </ProviderWrapper>
+        </Provider>
+      </View>
+    </SafeAreaProvider>
   );
 }
 
