@@ -5,6 +5,13 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.11.1] - 2026-02-24
+
+### Düzeltildi
+- [workflow] release sirasinda build.gradle versionCode/Name guncelle
+- [android] versionCode 22, versionName 0.11.0 olarak guncellendi
+- [android] versionCode ve versionName app.json'dan dinamik oku
+
 ## [0.11.0] - 2026-02-23
 
 ### Eklendi
