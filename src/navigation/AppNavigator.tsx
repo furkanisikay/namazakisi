@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Text, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
   AnaSayfa,
@@ -113,6 +114,7 @@ const AyarlarStack: React.FC = () => {
  */
 const MainTabs: React.FC = () => {
   const renkler = useRenkler();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -132,9 +134,9 @@ const MainTabs: React.FC = () => {
           backgroundColor: renkler.kartArkaplan,
           borderTopColor: renkler.sinir,
           borderTopWidth: 1,
-          paddingBottom: 8,
+          paddingBottom: 8 + insets.bottom,
           paddingTop: 8,
-          height: 65,
+          height: 65 + insets.bottom,
           elevation: 8,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
