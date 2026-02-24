@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.12.0] - 2026-02-24
+
+### Eklendi
+- kutlama penceresine paylaş butonu eklendi
+
+### Düzeltildi
+- [ui] kutlama penceresi renkleri ve yazıları iyileştirildi
+- sayaç bildirimleri düzeltildi
+
 ## [0.11.2] - 2026-02-24
 
 ### Düzeltildi
