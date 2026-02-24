@@ -162,7 +162,7 @@ class CountdownService : Service() {
         manager.addOrReplace(entry)
 
         // Foreground servis baslat (ilk countdown'da)
-        ensureForeground()
+        //ensureForeground()
 
         // Ilk bildirimi hemen goster
         showCountdownNotification(entry, remaining)
@@ -170,13 +170,15 @@ class CountdownService : Service() {
         // CountDownTimer basalt
         val timer = object : CountDownTimer(remaining, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
-                showCountdownNotification(entry, millisUntilFinished)
+                // UI guncellemesi (RemoteViews update) Chronometer tarafindan otomatik yapilir.
+                // Bu sayede bildirimlerin surekli tetiklenip telefonu uyandirmasi veya ses cikarip 
+                // blank notification sorununa yol acmasi engellenir.
             }
 
             override fun onFinish() {
                 Log.d(tag, "Countdown $id finished")
                 // Son bildirimi guncelle
-                showFinishedNotification(entry)
+                //showFinishedNotification(entry)
                 manager.remove(id)
                 checkAndStopIfEmpty()
             }
@@ -217,8 +219,6 @@ class CountdownService : Service() {
      * This is required by Android for long-running background work.
      */
     private fun ensureForeground() {
-        // Foreground service icin Android 8.0+ uzerinde gosterimi zorunlu bildirim.
-        // Kullaniciyi rahatsiz etmemek adina metinleri kaldiriyor ve en dusuk onceligi (MIN) seciyoruz.
         val notification = NotificationCompat.Builder(this, FOREGROUND_CHANNEL_ID)
             .setContentTitle(null)
             .setContentText(null)
@@ -241,15 +241,13 @@ class CountdownService : Service() {
     }
 
     /**
-     * Updates (or creates) the countdown notification with the current remaining time.
-     * This is called every second by the CountDownTimer.
+     * Updates (or creates) the countdown notification using Chronometer.
+     * This is called only once initially. Chronometer handles the down-ticks.
      *
      * @param entry The countdown entry
-     * @param millisRemaining Remaining milliseconds
+     * @param millisRemaining Remaining milliseconds (only used for elapsed calculation)
      */
     private fun showCountdownNotification(entry: CountdownEntry, millisRemaining: Long) {
-        val timeFormatted = formatTime(millisRemaining)
-
         val collapsedLayoutRes = when (entry.themeType) {
             "iftar" -> R.layout.custom_iftar_notification_collapsed
             "sahur" -> R.layout.custom_sahur_notification_collapsed
@@ -261,13 +259,21 @@ class CountdownService : Service() {
             else -> R.layout.custom_vakit_notification
         }
 
+        val baseTimeMs = android.os.SystemClock.elapsedRealtime() + millisRemaining
+
         // Custom Collapsed RemoteViews (Dar Alan)
         val remoteViewsCollapsed = RemoteViews(packageName, collapsedLayoutRes)
-        remoteViewsCollapsed.setTextViewText(R.id.tv_countdown, timeFormatted)
+        remoteViewsCollapsed.setChronometer(R.id.tv_countdown, baseTimeMs, null, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            remoteViewsCollapsed.setChronometerCountDown(R.id.tv_countdown, true)
+        }
 
         // Custom Expanded RemoteViews (Geniş Alan)
         val remoteViewsExpanded = RemoteViews(packageName, expandedLayoutRes)
-        remoteViewsExpanded.setTextViewText(R.id.tv_countdown, timeFormatted)
+        remoteViewsExpanded.setChronometer(R.id.tv_countdown, baseTimeMs, null, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            remoteViewsExpanded.setChronometerCountDown(R.id.tv_countdown, true)
+        }
 
         // Eger bodyTemplate icinde '{time}' varsa temizle veya description olarak duzenle
         val descriptionText = entry.bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()

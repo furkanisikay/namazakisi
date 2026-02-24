@@ -247,8 +247,8 @@ export class VakitSayacBildirimServisi {
 
     // A) Geri sayim bildirimi - native modül ile body'de countdown
     const tetikZamani = Math.max(sayacBaslangic, simdi.getTime() + 5000);
-    const vakitBasligi = `\u23F1\uFE0F ${vakitAdlari[vakit.vakit]} Namazi`;
-    const bodyTemplate = `${vakitAdlari[vakit.vakit]} namazi vakti cikmak uzere!\n\u23F1\uFE0F {time}`;
+    const vakitBasligi = `\u23F1\uFE0F ${vakitAdlari[vakit.vakit]} Namazı`;
+    const bodyTemplate = `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!\n\u23F1\uFE0F {time}`;
 
     // Eger zaten muhafiz baslangic araligindaysak hemen native countdown baslat
     if (tetikZamani <= simdi.getTime() + 5000) {
@@ -276,7 +276,7 @@ export class VakitSayacBildirimServisi {
         const bildirimIcerigi = {
           id: bildirimId,
           title: vakitBasligi,
-          body: `${vakitAdlari[vakit.vakit]} namazi vakti cikmak uzere!`,
+          body: `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!`,
           android: {
             channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
             ongoing: true,
@@ -284,7 +284,7 @@ export class VakitSayacBildirimServisi {
             pressAction: { id: 'default' },
             actions: [
               {
-                title: '\u2705 Kildim',
+                title: '\u2705 Kıldım',
                 pressAction: { id: 'kildim' },
               },
             ],

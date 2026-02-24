@@ -76,23 +76,21 @@ export class IftarSayacBildirimServisi {
 
     if (simdi < sabahVakti) {
       // Sabah namazindan once: sabah vaktinde geri sayim baslat (trigger ile)
-      await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime());
-      // Aksam vaktinde "vakit girdi" bildirimi goster (farkli ID)
+      // await this.geriSayimPlanla(bildirimId, sabahVakti.getTime(), aksamVakti.getTime());
+      // Aksam vaktinde "vakit girdi" bildirimi goster
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       // Aksam + 10 dk'da temizle (farkli ID)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
       // Sabah ile aksam arasi: hemen native countdown baslat
       this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime());
-      // Aksam vaktinde "vakit girdi" bildirimi goster (farkli ID)
+      // Aksam vaktinde "vakit girdi" bildirimi goster
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       // Aksam + 10 dk'da temizle (farkli ID)
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {
       // Aksam ile aksam+10dk arasi: "vakit girdi" hemen goster
       await this.vakitGirdiBildirimiHemenGoster(vakitGirdiId, aksamVakti.getTime());
-      // Aksam + 10 dk'da temizle (farkli ID)
-      await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     }
     // Aksam + 10 dk'dan sonra: hicbir sey gosterme
   }
@@ -139,8 +137,8 @@ export class IftarSayacBildirimServisi {
       await notifee.createTriggerNotification(
         {
           id: bildirimId,
-          title: '\uD83C\uDF19 Iftar Sayaci',
-          body: 'Iftar vaktine kalan sure hesaplaniyor...',
+          title: '\uD83C\uDF19 İftar Sayacı',
+          body: 'İftar vaktine kalan süre hesaplanıyor...',
           android: {
             channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
             ongoing: true,
@@ -166,7 +164,7 @@ export class IftarSayacBildirimServisi {
       startCountdown({
         id: bildirimId,
         targetTimeMs: aksamVaktiMs,
-        title: '\uD83C\uDF19 Iftar Sayaci',
+        title: '\uD83C\uDF19 İftar Sayacı',
         bodyTemplate: 'Ezanı duymadan orucunuzu açmayınız!\n\u23F1\uFE0F {time}',
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
         themeType: 'iftar',
@@ -221,16 +219,17 @@ export class IftarSayacBildirimServisi {
   private vakitGirdiBildirimIcerigi(bildirimId: string, _aksamVaktiMs: number) {
     return {
       id: bildirimId,
-      title: '\uD83C\uDF19 Iftar Vakti Girdi!',
-      body: 'Hayirli iftarlar!',
+      title: '\uD83C\uDF19 İftar Vakti!',
+      body: 'Hayırlı iftarlar!',
       android: {
         channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
-        ongoing: true,
-        autoCancel: false,
+        ongoing: false,
+        autoCancel: true,
+        timeoutAfter: 10 * 60 * 1000, // 10 dakika sonra otomatik kapanır
         pressAction: { id: 'default' },
         style: {
           type: AndroidStyle.BIGTEXT,
-          text: 'Hayirli iftarlar!\n\n\u26A0\uFE0F Ezani duymadan orucunuzu acmayiniz!',
+          text: 'Hayırlı iftarlar!\n\n\u26A0\uFE0F Ezanı duymadan orucunuzu açmayınız! Duanızda bize de yer vermeyi unutmayın :)',
         },
       },
     } as any; // Notifee Notification Type Issue

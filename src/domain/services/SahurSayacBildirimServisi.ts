@@ -85,7 +85,7 @@ export class SahurSayacBildirimServisi {
         else if (simdi.getTime() < yatsiBugun.getTime()) {
             // Gunduz vakti, sahur sayaci BUGUN YATSI VAKTINDE baslayacak
             const imsakArti10Yarin = new Date(imsakYarin.getTime() + 10 * 60 * 1000);
-            await this.geriSayimPlanla(bildirimId, yatsiBugun.getTime(), imsakYarin.getTime());
+            // await this.geriSayimPlanla(bildirimId, yatsiBugun.getTime(), imsakYarin.getTime());
             await this.vakitGirdiBildirimiPlanla(vakitGirdiId, imsakYarin.getTime());
             await this.temizlemePlanla(temizlemeId, imsakArti10Yarin.getTime());
         }
@@ -134,8 +134,8 @@ export class SahurSayacBildirimServisi {
             await notifee.createTriggerNotification(
                 {
                     id: bildirimId,
-                    title: '\uD83C\uDF19 Sahur Sayaci',
-                    body: 'Sahur vaktine kalan sure hesaplaniyor...',
+                    title: '\uD83C\uDF19 Sahur Sayacı',
+                    body: 'Sahur vaktine kalan süre hesaplanıyor...',
                     android: {
                         channelId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
                         ongoing: true,
@@ -159,8 +159,8 @@ export class SahurSayacBildirimServisi {
             startCountdown({
                 id: bildirimId,
                 targetTimeMs: hedefImsakMs,
-                title: '\uD83C\uDF19 Sahur Sayaci',
-                bodyTemplate: 'Yemeye icmeye devam, imsak yaklasiyor!\n\u23F1\uFE0F {time}',
+                title: '\uD83C\uDF19 Sahur Sayacı',
+                bodyTemplate: 'Yemeye içmeye devam, imsak yaklaşıyor!\n\u23F1\uFE0F {time}',
                 channelId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
                 themeType: 'sahur',
             });
@@ -219,7 +219,7 @@ export class SahurSayacBildirimServisi {
                 pressAction: { id: 'default' },
                 style: {
                     type: AndroidStyle.BIGTEXT,
-                    text: 'İmsak vakti girdi, niyet etmeyi unutmayınız!\n\n\u26A0\uFE0F Sabah namazınızı eda edebilirsiniz.',
+                    text: 'İmsak vakti girdi, niyet etmeyi unutmayınız!\n\n\u26A0\uFE0F Sabah namazınızı eda edebilirsiniz. Duanızda bize de yer vermeyi unutmayın :)',
                 },
             },
         } as any;
