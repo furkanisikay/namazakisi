@@ -62,13 +62,13 @@ export const rozetiKazan = (
   rozetId: string
 ): { rozetler: KullaniciRozeti[]; kazanilanRozet: RozetTanimi | null } => {
   const rozetTanimi = ROZET_TANIMLARI.find((r) => r.id === rozetId);
-  
+
   if (!rozetTanimi) {
     return { rozetler: kullaniciRozetleri, kazanilanRozet: null };
   }
 
   const mevcutRozet = kullaniciRozetleri.find((kr) => kr.rozetId === rozetId);
-  
+
   // Zaten kazanilmissa degisiklik yapma
   if (mevcutRozet?.kazanildiMi) {
     return { rozetler: kullaniciRozetleri, kazanilanRozet: null };
@@ -240,11 +240,11 @@ export const sonrakiSeviyeyiBul = (
   const sonrakiIndex = SEVIYE_TANIMLARI.findIndex(
     (s) => s.seviye === mevcutSeviye
   ) + 1;
-  
+
   if (sonrakiIndex < SEVIYE_TANIMLARI.length) {
     return SEVIYE_TANIMLARI[sonrakiIndex];
   }
-  
+
   return null;
 };
 
@@ -258,7 +258,7 @@ export const puanEkle = (
   const yeniToplamPuan = mevcutDurum.toplamPuan + eklenecekPuan;
   const eskiSeviye = mevcutDurum.mevcutSeviye;
   const yeniSeviyeTanimi = seviyeHesapla(yeniToplamPuan);
-  
+
   const sonrakiSeviye = sonrakiSeviyeyiBul(yeniSeviyeTanimi.seviye);
   const sonrakiSeviyeMinPuan = sonrakiSeviye?.minPuan || yeniToplamPuan;
 
@@ -295,7 +295,7 @@ export const rozetPuaniHesapla = (rozetSeviyesi: RozetSeviyesi): number => {
 export const rozetKutlamasiOlustur = (rozet: RozetTanimi): KutlamaBilgisi => ({
   tip: 'rozet_kazanildi',
   baslik: 'Tebrikler!',
-  mesaj: `"${rozet.ad}" rozetini kazandiniz!`,
+  mesaj: `"${rozet.ad}" rozetini kazandınız!`,
   ikon: rozet.ikon,
   ekstraVeri: { rozet },
 });
@@ -308,8 +308,8 @@ export const hedefKutlamasiOlustur = (
   hedefAd: string
 ): KutlamaBilgisi => ({
   tip: 'hedef_tamamlandi',
-  baslik: `${hedefGun} Gun!`,
-  mesaj: `"${hedefAd}" hedefini tamamladiniz!`,
+  baslik: `${hedefGun} Gün!`,
+  mesaj: `"${hedefAd}" hedefini tamamladınız!`,
   ikon: '🎯',
   ekstraVeri: { hedefGun, hedefAd },
 });
@@ -321,8 +321,8 @@ export const seviyeKutlamasiOlustur = (
   yeniSeviye: SeviyeTanimi
 ): KutlamaBilgisi => ({
   tip: 'seviye_atlandi',
-  baslik: 'Seviye Atladin!',
-  mesaj: `Artik bir "${yeniSeviye.rank}" olarak devam ediyorsunuz!`,
+  baslik: 'Seviye Atladın!',
+  mesaj: `Artık bir "${yeniSeviye.rank}" olarak devam ediyorsunuz!`,
   ikon: yeniSeviye.ikon,
   ekstraVeri: { seviye: yeniSeviye },
 });
@@ -334,8 +334,8 @@ export const toparlanmaKutlamasiOlustur = (
   kurtarilanSeri: number
 ): KutlamaBilgisi => ({
   tip: 'toparlanma_tamamlandi',
-  baslik: 'Seri Kurtarildi!',
-  mesaj: `${kurtarilanSeri} gunluk serinizi basariyla kurtardiniz!`,
+  baslik: 'Seri Kurtardın!',
+  mesaj: `${kurtarilanSeri} günlük serinizi başarıyla kurtardınız!`,
   ikon: '🔄',
   ekstraVeri: { kurtarilanSeri },
 });
@@ -346,7 +346,7 @@ export const toparlanmaKutlamasiOlustur = (
 export const enUzunSeriKutlamasiOlustur = (seri: number): KutlamaBilgisi => ({
   tip: 'en_uzun_seri',
   baslik: 'Yeni Rekor!',
-  mesaj: `${seri} gunluk yeni en uzun seri rekorunuz!`,
+  mesaj: `${seri} günlük yeni en uzun seri rekorunuz!`,
   ikon: '🏆',
   ekstraVeri: { seri },
 });
@@ -385,7 +385,7 @@ export const tamGuncellemeyiYap = (
     seriDurumu.mevcutSeri,
     yeniRozetler
   );
-  
+
   for (const rozet of seriRozetleri) {
     const sonuc = rozetiKazan(yeniRozetler, rozet.id);
     yeniRozetler = sonuc.rozetler;
@@ -401,7 +401,7 @@ export const tamGuncellemeyiYap = (
     toplamKilinanNamaz,
     yeniRozetler
   );
-  
+
   for (const rozet of toplamRozetleri) {
     const sonuc = rozetiKazan(yeniRozetler, rozet.id);
     yeniRozetler = sonuc.rozetler;
@@ -418,7 +418,7 @@ export const tamGuncellemeyiYap = (
     mukemmelGunSayisi,
     yeniRozetler
   );
-  
+
   for (const rozet of ozelRozetler) {
     const sonuc = rozetiKazan(yeniRozetler, rozet.id);
     yeniRozetler = sonuc.rozetler;
@@ -438,7 +438,7 @@ export const tamGuncellemeyiYap = (
 
   // 5. Seviye guncelle
   const seviyeSonucu = puanEkle(seviyeDurumu, toplamPuan);
-  
+
   if (seviyeSonucu.seviyeAtlandi && seviyeSonucu.yeniSeviye) {
     kutlamalar.push(seviyeKutlamasiOlustur(seviyeSonucu.yeniSeviye));
   }

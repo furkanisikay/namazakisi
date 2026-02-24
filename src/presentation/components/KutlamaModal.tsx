@@ -30,27 +30,32 @@ interface KutlamaModalProps {
 }
 
 /**
- * Kutlama tipine gore arka plan rengi
+ * Kutlama tipine gore tema uyumlu vurgu rengi
+ * Arka plan rengi artik temadan (kartArkaplan) aliyor; burada sadece vurgu rengi donduruluyor.
  */
-const kutlamaRengiAl = (tip: KutlamaTipi): { arkaplan: string; vurgu: string } => {
+const kutlamaVurguRengiAl = (
+  tip: KutlamaTipi,
+  renkler: ReturnType<typeof useRenkler>
+): string => {
   switch (tip) {
     case 'rozet_kazanildi':
-      return { arkaplan: '#FFF8E1', vurgu: '#FFD700' };
+      return renkler.uyari;
     case 'hedef_tamamlandi':
-      return { arkaplan: '#E8F5E9', vurgu: '#4CAF50' };
+      return renkler.basarili;
     case 'seviye_atlandi':
-      return { arkaplan: '#E3F2FD', vurgu: '#2196F3' };
+      return renkler.bilgi;
     case 'toparlanma_tamamlandi':
-      return { arkaplan: '#F3E5F5', vurgu: '#9C27B0' };
+      return renkler.vurgu;
     case 'en_uzun_seri':
-      return { arkaplan: '#FFF3E0', vurgu: '#FF6B35' };
+      return renkler.birincil;
     default:
-      return { arkaplan: '#FFFFFF', vurgu: '#4CAF50' };
+      return renkler.birincil;
   }
 };
 
 /**
  * Kutlama Modal Komponenti
+ * Tema sistemiyle tam entegre; hem acik hem koyu temada dogru gorunur.
  */
 export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   kutlama,
@@ -99,9 +104,9 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
 
   if (!kutlama) return null;
 
-  // TypeScript tip guvenceligi icin explicit cast (TS hatalarini asmak icin any)
+  // TypeScript tip guvenceligi icin explicit cast
   const kutlamaBilgisi = kutlama as any;
-  const renkPaleti = kutlamaRengiAl(kutlamaBilgisi.tip);
+  const vurguRengi = kutlamaVurguRengiAl(kutlamaBilgisi.tip, renkler);
 
   const handleKapat = () => {
     // Cikis animasyonu
@@ -114,13 +119,18 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
     });
   };
 
-  // Konfetti parcalari
+  // Konfetti parcalari - palet renkleriyle uyumlu
+  const konfettiRenkleri = [
+    renkler.uyari,
+    renkler.birincil,
+    renkler.basarili,
+    renkler.bilgi,
+    renkler.vurgu,
+  ];
+
   const konfettiParcalari = Array.from({ length: 20 }).map((_, index) => {
     const sol = Math.random() * EKRAN_GENISLIGI;
-    const gecikme = Math.random() * 500;
-    const renk = ['#FFD700', '#FF6B35', '#4CAF50', '#2196F3', '#9C27B0'][
-      index % 5
-    ];
+    const renk = konfettiRenkleri[index % konfettiRenkleri.length];
 
     return (
       <Animated.View
@@ -165,13 +175,13 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
         {/* Konfetti */}
         <View style={styles.konfettiContainer}>{konfettiParcalari}</View>
 
-        {/* Ana kart */}
+        {/* Ana kart - tema karti arkaplan rengiyle */}
         <Animated.View
           style={[
             styles.kartContainer,
             {
-              backgroundColor: renkPaleti.arkaplan,
-              borderColor: renkPaleti.vurgu,
+              backgroundColor: renkler.kartArkaplan,
+              borderColor: vurguRengi,
               transform: [{ scale: scaleAnim }],
             },
           ]}
@@ -186,13 +196,13 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
             />
           </View>
 
-          {/* Ikon */}
+          {/* Ikon - vurgu rengi arkaplanla */}
           <Animated.View
             style={[
               styles.ikonContainer,
               {
-                backgroundColor: `${renkPaleti.vurgu}30`,
-                borderColor: renkPaleti.vurgu,
+                backgroundColor: `${vurguRengi}25`,
+                borderColor: vurguRengi,
                 transform: [
                   {
                     rotate: rotateAnim.interpolate({
@@ -207,44 +217,53 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
             <Text style={styles.ikon}>{kutlamaBilgisi.ikon}</Text>
           </Animated.View>
 
-          <Text style={[styles.baslik, { color: renkPaleti.vurgu }]}>
+          {/* Baslik - vurgu rengiyle */}
+          <Text style={[styles.baslik, { color: vurguRengi }]}>
             {`${kutlamaBilgisi.baslik}`}
           </Text>
 
+          {/* Mesaj - tema metin rengiyle */}
           <Text style={[styles.mesaj, { color: renkler.metin }]}>
             {`${kutlamaBilgisi.mesaj}`}
           </Text>
 
-          {/* Ekstra bilgi (varsa) */}
+          {/* Ekstra bilgi (rozet varsa) */}
           {kutlamaBilgisi.ekstraVeri?.rozet && (
             <View
               style={[
                 styles.ekstraBilgi,
-                { backgroundColor: `${renkPaleti.vurgu}20` },
+                {
+                  backgroundColor: `${vurguRengi}18`,
+                  borderColor: `${vurguRengi}40`,
+                },
               ]}
             >
-              <Text style={[styles.ekstraBilgiMetin, { color: renkPaleti.vurgu }]}>
+              <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
                 🏅 Rozet koleksiyonunuza eklendi!
               </Text>
             </View>
           )}
 
+          {/* Ekstra bilgi (seviye varsa) */}
           {kutlamaBilgisi.ekstraVeri?.seviye && (
             <View
               style={[
                 styles.ekstraBilgi,
-                { backgroundColor: `${renkPaleti.vurgu}20` },
+                {
+                  backgroundColor: `${vurguRengi}18`,
+                  borderColor: `${vurguRengi}40`,
+                },
               ]}
             >
-              <Text style={[styles.ekstraBilgiMetin, { color: renkPaleti.vurgu }]}>
+              <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
                 ⭐ Yeni rank: {(kutlamaBilgisi.ekstraVeri.seviye as { rank: string })?.rank || ''}
               </Text>
             </View>
           )}
 
-          {/* Kapat butonu */}
+          {/* Kapat butonu - birincil renk */}
           <TouchableOpacity
-            style={[styles.kapatButon, { backgroundColor: renkPaleti.vurgu }]}
+            style={[styles.kapatButon, { backgroundColor: vurguRengi }]}
             onPress={handleKapat}
             activeOpacity={0.8}
           >
@@ -328,6 +347,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: BOYUTLAR.PADDING_ORTA,
     paddingVertical: BOYUTLAR.PADDING_KUCUK,
     borderRadius: BOYUTLAR.YUVARLATMA_ORTA,
+    borderWidth: 1,
     marginBottom: BOYUTLAR.MARGIN_ORTA,
   },
   ekstraBilgiMetin: {
@@ -346,4 +366,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
