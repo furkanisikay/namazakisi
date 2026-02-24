@@ -166,7 +166,7 @@ jobs:
             fs.writeFileSync(path, content);
           "
           
-          echo "✅ Tum dosyalar guncellendi: v$NEW_VERSION"
+          # android/app/build.gradle — versionCode + versionName             VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")             sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle             sed -i "s/versionName \"[^\"]*\"/versionName \"$NEW_VERSION\"/" android/app/build.gradle              echo "✅ Tum dosyalar guncellendi: v$NEW_VERSION"
 
       # ==========================================
       # Changelog & Release Notes (Release)
@@ -463,7 +463,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add package.json package-lock.json app.json src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
+          git add package.json package-lock.json app.json android/app/build.gradle src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
           git tag -a ${{ steps.version.outputs.version_tag }} -m "Release ${{ steps.version.outputs.version_tag }}"
           git push origin HEAD:${{ github.ref_name }}
