@@ -166,7 +166,11 @@ jobs:
             fs.writeFileSync(path, content);
           "
           
-          # android/app/build.gradle — versionCode + versionName             VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")             sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle             sed -i "s/versionName \"[^\"]*\"/versionName \"$NEW_VERSION\"/" android/app/build.gradle              echo "✅ Tum dosyalar guncellendi: v$NEW_VERSION"
+          # android/app/build.gradle — versionCode + versionName             
+          VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")             
+          sed -i "s/versionCode [0-9]*/versionCode $VERSION_CODE/" android/app/build.gradle             
+          sed -i "s/versionName \"[^\"]*\"/versionName \"$NEW_VERSION\"/" android/app/build.gradle              
+          echo "✅ Tum dosyalar guncellendi: v$NEW_VERSION"
 
       # ==========================================
       # Changelog & Release Notes (Release)
