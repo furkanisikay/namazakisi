@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.11.2] - 2026-02-24
+
+### Düzeltildi
+- menü tuşlarının navigasyon tuşları altında kalma sorunu giderildi
+
 ## [0.11.1] - 2026-02-24
 
 ### Düzeltildi
