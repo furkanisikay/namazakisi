@@ -1,11 +1,12 @@
 /**
  * Kutlama Modal
  * Rozet kazanildiginda, hedef tamamlandiginda veya seviye atlandiginda
- * gosterilen Lottie animasyonlu kutlama popup'i
+ * gosterilen Lottie animasyonlu kutlama popup'i.
+ * Kullanicilar kutlamalarini PaylasimModal araciligiyla paylaşabilir.
  */
 
 import * as React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -16,10 +17,13 @@ import {
   Easing,
   Dimensions,
 } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../core/theme';
 import { BOYUTLAR } from '../../core/constants/UygulamaSabitleri';
 import { KutlamaBilgisi, KutlamaTipi } from '../../core/types/SeriTipleri';
 import { LottieAnimasyon } from './LottieAnimasyon';
+import { PaylasimModal } from './Sharing/PaylasimModal';
+import { PaylasilabilirKutlama } from './Sharing/PaylasilabilirKutlama';
 
 const { width: EKRAN_GENISLIGI } = Dimensions.get('window');
 
@@ -29,13 +33,22 @@ interface KutlamaModalProps {
   onKapat: () => void;
 }
 
+/** Kutlama tipine gore tema renklerinden alinan vurgu rengi */
+interface TemaRenkleri {
+  uyari: string;
+  basarili: string;
+  bilgi: string;
+  vurgu: string;
+  birincil: string;
+}
+
 /**
  * Kutlama tipine gore tema uyumlu vurgu rengi
  * Arka plan rengi artik temadan (kartArkaplan) aliyor; burada sadece vurgu rengi donduruluyor.
  */
 const kutlamaVurguRengiAl = (
   tip: KutlamaTipi,
-  renkler: ReturnType<typeof useRenkler>
+  renkler: TemaRenkleri
 ): string => {
   switch (tip) {
     case 'rozet_kazanildi':
@@ -56,6 +69,7 @@ const kutlamaVurguRengiAl = (
 /**
  * Kutlama Modal Komponenti
  * Tema sistemiyle tam entegre; hem acik hem koyu temada dogru gorunur.
+ * "Paylas" butonu ile PaylasimModal + PaylasilabilirKutlama acar.
  */
 export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   kutlama,
@@ -63,6 +77,7 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   onKapat,
 }) => {
   const renkler = useRenkler();
+  const [paylasimGorunur, setPaylasimGorunur] = useState(false);
 
   // Animasyonlar
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -96,6 +111,8 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
         })
       ).start();
     } else {
+      // Modal kapaninca paylasim da kapansin
+      setPaylasimGorunur(false);
       scaleAnim.setValue(0);
       konfettiAnim.setValue(0);
       rotateAnim.setValue(0);
@@ -117,6 +134,14 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
     }).start(() => {
       onKapat();
     });
+  };
+
+  const handlePaylasimAc = () => {
+    setPaylasimGorunur(true);
+  };
+
+  const handlePaylasimKapat = () => {
+    setPaylasimGorunur(false);
   };
 
   // Konfetti parcalari - palet renkleriyle uyumlu
@@ -165,113 +190,149 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   });
 
   return (
-    <Modal
-      visible={gorunur}
-      transparent
-      animationType="fade"
-      onRequestClose={handleKapat}
-    >
-      <View style={styles.overlay}>
-        {/* Konfetti */}
-        <View style={styles.konfettiContainer}>{konfettiParcalari}</View>
+    <>
+      <Modal
+        visible={gorunur}
+        transparent
+        animationType="fade"
+        onRequestClose={handleKapat}
+      >
+        <View style={styles.overlay}>
+          {/* Konfetti */}
+          <View style={styles.konfettiContainer}>{konfettiParcalari}</View>
 
-        {/* Ana kart - tema karti arkaplan rengiyle */}
-        <Animated.View
-          style={[
-            styles.kartContainer,
-            {
-              backgroundColor: renkler.kartArkaplan,
-              borderColor: vurguRengi,
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
-        >
-          {/* Lottie animasyon */}
-          <View style={styles.animasyonContainer}>
-            <LottieAnimasyon
-              tip={kutlamaBilgisi.tip === 'rozet_kazanildi' ? 'basari' : 'kutlama'}
-              otomatikOynat
-              dongu={false}
-              stil={styles.lottieAnimasyon}
-            />
-          </View>
-
-          {/* Ikon - vurgu rengi arkaplanla */}
+          {/* Ana kart - tema karti arkaplan rengiyle */}
           <Animated.View
             style={[
-              styles.ikonContainer,
+              styles.kartContainer,
               {
-                backgroundColor: `${vurguRengi}25`,
+                backgroundColor: renkler.kartArkaplan,
                 borderColor: vurguRengi,
-                transform: [
-                  {
-                    rotate: rotateAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ['0deg', '360deg'],
-                    }),
-                  },
-                ],
+                transform: [{ scale: scaleAnim }],
               },
             ]}
           >
-            <Text style={styles.ikon}>{kutlamaBilgisi.ikon}</Text>
+            {/* Lottie animasyon */}
+            <View style={styles.animasyonContainer}>
+              <LottieAnimasyon
+                tip={kutlamaBilgisi.tip === 'rozet_kazanildi' ? 'basari' : 'kutlama'}
+                otomatikOynat
+                dongu={false}
+                stil={styles.lottieAnimasyon}
+              />
+            </View>
+
+            {/* Ikon - vurgu rengi arkaplanla */}
+            <Animated.View
+              style={[
+                styles.ikonContainer,
+                {
+                  backgroundColor: `${vurguRengi}25`,
+                  borderColor: vurguRengi,
+                  transform: [
+                    {
+                      rotate: rotateAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0deg', '360deg'],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              <Text style={styles.ikon}>{kutlamaBilgisi.ikon}</Text>
+            </Animated.View>
+
+            {/* Baslik - vurgu rengiyle */}
+            <Text style={[styles.baslik, { color: vurguRengi }]}>
+              {`${kutlamaBilgisi.baslik}`}
+            </Text>
+
+            {/* Mesaj - tema metin rengiyle */}
+            <Text style={[styles.mesaj, { color: renkler.metin }]}>
+              {`${kutlamaBilgisi.mesaj}`}
+            </Text>
+
+            {/* Ekstra bilgi (rozet varsa) */}
+            {kutlamaBilgisi.ekstraVeri?.rozet && (
+              <View
+                style={[
+                  styles.ekstraBilgi,
+                  {
+                    backgroundColor: `${vurguRengi}18`,
+                    borderColor: `${vurguRengi}40`,
+                  },
+                ]}
+              >
+                <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
+                  🏅 Rozet koleksiyonunuza eklendi!
+                </Text>
+              </View>
+            )}
+
+            {/* Ekstra bilgi (seviye varsa) */}
+            {kutlamaBilgisi.ekstraVeri?.seviye && (
+              <View
+                style={[
+                  styles.ekstraBilgi,
+                  {
+                    backgroundColor: `${vurguRengi}18`,
+                    borderColor: `${vurguRengi}40`,
+                  },
+                ]}
+              >
+                <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
+                  ⭐ Yeni rank: {(kutlamaBilgisi.ekstraVeri.seviye as { rank: string })?.rank || ''}
+                </Text>
+              </View>
+            )}
+
+            {/* Eylem butonlari: Paylas + Devam Et */}
+            <View style={styles.butonSatiri}>
+              {/* Paylas butonu */}
+              <TouchableOpacity
+                style={[
+                  styles.paylasButon,
+                  {
+                    borderColor: vurguRengi,
+                    backgroundColor: `${vurguRengi}15`,
+                  },
+                ]}
+                onPress={handlePaylasimAc}
+                activeOpacity={0.7}
+              >
+                <FontAwesome5
+                  name="share-alt"
+                  size={15}
+                  color={vurguRengi}
+                  style={styles.paylasIkon}
+                />
+                <Text style={[styles.paylasButonMetin, { color: vurguRengi }]}>
+                  Paylaş
+                </Text>
+              </TouchableOpacity>
+
+              {/* Devam Et butonu */}
+              <TouchableOpacity
+                style={[styles.devamButon, { backgroundColor: vurguRengi }]}
+                onPress={handleKapat}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.devamButonMetin}>Devam Et</Text>
+              </TouchableOpacity>
+            </View>
           </Animated.View>
+        </View>
+      </Modal>
 
-          {/* Baslik - vurgu rengiyle */}
-          <Text style={[styles.baslik, { color: vurguRengi }]}>
-            {`${kutlamaBilgisi.baslik}`}
-          </Text>
-
-          {/* Mesaj - tema metin rengiyle */}
-          <Text style={[styles.mesaj, { color: renkler.metin }]}>
-            {`${kutlamaBilgisi.mesaj}`}
-          </Text>
-
-          {/* Ekstra bilgi (rozet varsa) */}
-          {kutlamaBilgisi.ekstraVeri?.rozet && (
-            <View
-              style={[
-                styles.ekstraBilgi,
-                {
-                  backgroundColor: `${vurguRengi}18`,
-                  borderColor: `${vurguRengi}40`,
-                },
-              ]}
-            >
-              <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
-                🏅 Rozet koleksiyonunuza eklendi!
-              </Text>
-            </View>
-          )}
-
-          {/* Ekstra bilgi (seviye varsa) */}
-          {kutlamaBilgisi.ekstraVeri?.seviye && (
-            <View
-              style={[
-                styles.ekstraBilgi,
-                {
-                  backgroundColor: `${vurguRengi}18`,
-                  borderColor: `${vurguRengi}40`,
-                },
-              ]}
-            >
-              <Text style={[styles.ekstraBilgiMetin, { color: vurguRengi }]}>
-                ⭐ Yeni rank: {(kutlamaBilgisi.ekstraVeri.seviye as { rank: string })?.rank || ''}
-              </Text>
-            </View>
-          )}
-
-          {/* Kapat butonu - birincil renk */}
-          <TouchableOpacity
-            style={[styles.kapatButon, { backgroundColor: vurguRengi }]}
-            onPress={handleKapat}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.kapatButonMetin}>Devam Et</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-    </Modal>
+      {/* Paylasim Modal - KutlamaModal'in ustunde acilir */}
+      <PaylasimModal
+        gorunur={paylasimGorunur}
+        onKapat={handlePaylasimKapat}
+      >
+        <PaylasilabilirKutlama kutlama={kutlama} />
+      </PaylasimModal>
+    </>
   );
 };
 
@@ -354,13 +415,38 @@ const styles = StyleSheet.create({
     fontSize: BOYUTLAR.FONT_NORMAL,
     fontWeight: '600',
   },
-  kapatButon: {
-    paddingHorizontal: BOYUTLAR.PADDING_BUYUK * 2,
+  // Buton satiri: Paylas (sol) + Devam Et (sag)
+  butonSatiri: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: BOYUTLAR.MARGIN_ORTA,
+    width: '100%',
+  },
+  paylasButon: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: BOYUTLAR.PADDING_ORTA,
     borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
-    marginTop: BOYUTLAR.MARGIN_ORTA,
+    borderWidth: 2,
+    marginRight: BOYUTLAR.MARGIN_KUCUK,
   },
-  kapatButonMetin: {
+  paylasIkon: {
+    marginRight: 6,
+  },
+  paylasButonMetin: {
+    fontSize: BOYUTLAR.FONT_ORTA,
+    fontWeight: '700',
+  },
+  devamButon: {
+    flex: 2,
+    paddingVertical: BOYUTLAR.PADDING_ORTA,
+    borderRadius: BOYUTLAR.YUVARLATMA_BUYUK,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  devamButonMetin: {
     color: '#FFFFFF',
     fontSize: BOYUTLAR.FONT_ORTA,
     fontWeight: 'bold',
