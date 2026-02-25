@@ -25,6 +25,7 @@ import { useRenkler } from '../../core/theme';
 import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { guncellemeKontrolEt } from '../store/guncellemeSlice';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Bilgi satiri bileseni

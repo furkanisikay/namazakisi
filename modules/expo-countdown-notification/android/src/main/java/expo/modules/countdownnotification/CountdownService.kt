@@ -162,7 +162,7 @@ class CountdownService : Service() {
         manager.addOrReplace(entry)
 
         // Foreground servis baslat (ilk countdown'da)
-        //ensureForeground()
+        ensureForeground()
 
         // Ilk bildirimi hemen goster
         showCountdownNotification(entry, remaining)

@@ -111,7 +111,7 @@ export const localKonumAyarlariniGetir = async (): Promise<ApiYanit<KonumAyarlar
         }
 
         const parsed = JSON.parse(veri) as KonumAyarlari;
-        Logger.info('LocalKonumServisi', 'Yuklenen veri:', parsed.konumModu, parsed.seciliIlAdi);
+        Logger.info('LocalKonumServisi', 'Yuklenen veri:', { mod: parsed.konumModu, il: parsed.seciliIlAdi });
 
         return {
             basarili: true,
@@ -134,7 +134,7 @@ export const localKonumAyarlariniKaydet = async (
     ayarlar: KonumAyarlari
 ): Promise<ApiYanit<void>> => {
     try {
-        Logger.info('LocalKonumServisi', 'Kaydediliyor:', ayarlar.konumModu, ayarlar.seciliIlAdi);
+        Logger.info('LocalKonumServisi', 'Kaydediliyor:', { mod: ayarlar.konumModu, il: ayarlar.seciliIlAdi });
         await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(ayarlar));
         Logger.info('LocalKonumServisi', 'Kayit basarili');
 

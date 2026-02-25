@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
@@ -108,7 +108,7 @@ const LogItem: React.FC<LogItemProps> = ({ log }) => {
           <Text className="text-xs" style={{ color: renkler.metin }}>
             {log.message}
           </Text>
-          {expanded && log.data && (
+          {expanded && !!log.data && (
             <View
               className="mt-2 p-2 rounded"
               style={{ backgroundColor: renkler.arkaplan }}
@@ -157,7 +157,7 @@ export const DebugLogsSayfasi: React.FC = () => {
   const handleToggleDebug = async (value: boolean) => {
     setDebugEnabled(value);
     await Logger.setEnabled(value);
-    
+
     if (value) {
       Alert.alert(
         'Debug Modu Aktif',
@@ -196,11 +196,12 @@ export const DebugLogsSayfasi: React.FC = () => {
     try {
       const content = Logger.exportLogs();
       const fileName = `namazakisi_logs_${Date.now()}.txt`;
-      const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+      const file = new File(Paths.cache, fileName);
 
-      await FileSystem.writeAsStringAsync(fileUri, content, {
-        encoding: FileSystem.EncodingType.UTF8,
+      file.write(content, {
+        encoding: 'utf8',
       });
+      const fileUri = file.uri;
 
       const canShare = await Sharing.isAvailableAsync();
       if (canShare) {
@@ -324,19 +325,23 @@ export const DebugLogsSayfasi: React.FC = () => {
       </View>
 
       {/* Level Filters */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        className="px-4 py-3 border-b"
+      <View
+        className="border-b"
         style={{ backgroundColor: renkler.kartArkaplan, borderBottomColor: renkler.sinir }}
-        contentContainerStyle={{ paddingRight: 16 }}
       >
-        <LevelFilterButton level="ALL" label="Tümü" />
-        <LevelFilterButton level={LogLevel.DEBUG} label="Debug" />
-        <LevelFilterButton level={LogLevel.INFO} label="Info" />
-        <LevelFilterButton level={LogLevel.WARN} label="Warn" />
-        <LevelFilterButton level={LogLevel.ERROR} label="Error" />
-      </ScrollView>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="px-4 py-3"
+          contentContainerStyle={{ paddingRight: 16, alignItems: 'center' }}
+        >
+          <LevelFilterButton level="ALL" label="Tümü" />
+          <LevelFilterButton level={LogLevel.DEBUG} label="Debug" />
+          <LevelFilterButton level={LogLevel.INFO} label="Info" />
+          <LevelFilterButton level={LogLevel.WARN} label="Warn" />
+          <LevelFilterButton level={LogLevel.ERROR} label="Error" />
+        </ScrollView>
+      </View>
 
       {/* Logs List */}
       {loading ? (

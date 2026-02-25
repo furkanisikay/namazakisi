@@ -259,7 +259,7 @@ export class KonumTakipServisi {
 
             // 2. Arka plan izni kontrol et
             const { status: mevcutArkaPlanIzni, canAskAgain } = await Location.getBackgroundPermissionsAsync();
-            Logger.info('KonumTakip', 'Mevcut arka plan izni:', mevcutArkaPlanIzni, 'Tekrar sorulabilir:', canAskAgain);
+            Logger.info('KonumTakip', 'Mevcut arka plan izni:', { izin: mevcutArkaPlanIzni, tekrarSorulabilir: canAskAgain });
 
             if (mevcutArkaPlanIzni !== 'granted') {
                 // Android 11+ icin requestBackgroundPermissionsAsync() sistem ayarlarini acar
