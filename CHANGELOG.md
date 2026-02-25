@@ -38,10 +38,6 @@ Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına day
 - [build] appVersionSource kalici olarak 'local' yapildi ve CI korumalari eklendi
 - [build] appVersionSource 'remote' yerine 'local' olarak degistirildi
 
-## [0.0.1] - 2026-02-22
-
-### 🎉 İlk Sürüm
-
 ## [0.10.0] - 2026-02-22
 
 ### Eklendi
