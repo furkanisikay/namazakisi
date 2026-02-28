@@ -11,6 +11,7 @@ import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import ErrorBoundary from './src/presentation/components/common/ErrorBoundary';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
@@ -27,7 +28,6 @@ import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSl
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
-import { GuncellemeBildirimi } from './src/presentation/components/guncelleme/GuncellemeBildirimi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 import { Logger } from './src/core/utils/Logger';
 
@@ -215,25 +215,25 @@ const AppIcerik: React.FC = () => {
     let notifeeUnsubscribe: (() => void) | undefined;
     if (Platform.OS === 'android') {
       notifeeUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
-        // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
-        if (type === EventType.DELIVERED) {
-          const bildirimId = detail.notification?.id;
-          if (bildirimId) {
-            if (bildirimId.endsWith('_vakitgirdi')) {
-              const baseId = bildirimId.replace('_vakitgirdi', '');
-              await notifee.cancelNotification(baseId);
-            } else if (bildirimId.endsWith('_bitis')) {
-              const baseId = bildirimId.replace('_bitis', '');
-              await notifee.cancelNotification(baseId);
-              await notifee.cancelNotification(baseId + '_vakitgirdi');
+        try {
+          // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
+          if (type === EventType.DELIVERED) {
+            const bildirimId = detail.notification?.id;
+            if (bildirimId) {
+              if (bildirimId.endsWith('_vakitgirdi')) {
+                const baseId = bildirimId.replace('_vakitgirdi', '');
+                await notifee.cancelNotification(baseId);
+              } else if (bildirimId.endsWith('_bitis')) {
+                const baseId = bildirimId.replace('_bitis', '');
+                await notifee.cancelNotification(baseId);
+                await notifee.cancelNotification(baseId + '_vakitgirdi');
+              }
             }
           }
-        }
 
-        if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
-          const bildirimId = detail.notification?.id;
-          if (bildirimId && bildirimId.startsWith('sayac_')) {
-            try {
+          if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
+            const bildirimId = detail.notification?.id;
+            if (bildirimId && bildirimId.startsWith('sayac_')) {
               // ID'den tarih ve vakit cikar
               const parts = bildirimId.replace('sayac_', '').split('_');
               const tarih = parts[0]; // "2026-02-15"
@@ -249,10 +249,10 @@ const AppIcerik: React.FC = () => {
                 await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as any);
                 await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
               }
-            } catch (error) {
-              Logger.error('App/notifee', 'Kıldım işleme hatası', error);
             }
           }
+        } catch (error) {
+          Logger.error('App/notifee', 'Foreground event isleme hatasi', error);
         }
       });
     }
@@ -277,8 +277,9 @@ const AppIcerik: React.FC = () => {
         backgroundColor={renkler.birincil}
         barStyle="light-content"
       />
-      <AppNavigator />
-      <GuncellemeBildirimi />
+      <ErrorBoundary name="AppRoot">
+        <AppNavigator />
+      </ErrorBoundary>
     </View>
   );
 };

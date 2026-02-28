@@ -69,7 +69,6 @@ Notifications.setNotificationHandler({
     }
 
     return {
-      shouldShowAlert: true,
       shouldPlaySound: true,
       shouldSetBadge: false,
       shouldShowBanner: true,
