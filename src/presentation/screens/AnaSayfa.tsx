@@ -135,7 +135,7 @@ export const AnaSayfa: React.FC<{ navigation?: any }> = ({ navigation }) => {
       }
     }
     return tarih;
-  }, [konumAyarlari.koordinatlar]); // Dependencies: updates when location changes (or strictly only initially mostly) - effectively runs fast.
+  }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
   // Initial Load - Aktif güne git
   useEffect(() => {
