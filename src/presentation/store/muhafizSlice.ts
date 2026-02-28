@@ -75,7 +75,7 @@ export interface MuhafizAyarlari {
  * Varsayilan muhafiz ayarlari
  */
 const initialState: MuhafizAyarlari = {
-    aktif: true,
+    aktif: false,
     yogunluk: 'normal',
     gelismisMod: false,
     esikler: HATIRLATMA_PRESETLERI.normal.esikler,

@@ -76,7 +76,7 @@ export class ArkaplanMuhafizServisi {
     public async yapilandirVePlanla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
         this.ayarlar = ayarlar;
 
-        Logger.info('ArkaplanMuhafiz', 'Yapılandırma alındı:', JSON.stringify(ayarlar.esikler));
+        Logger.info('ArkaplanMuhafiz', `Muhafiz yapilandiriliyor (aktif: ${ayarlar.aktif})`);
 
         // Once tum eski muhafiz bildirimlerini temizle
         await this.tumMuhafizBildirimleriniTemizle();
@@ -111,7 +111,7 @@ export class ArkaplanMuhafizServisi {
             // Bu vakit kilinmis mi? (vaktin ait oldugu tarihe gore kontrol et)
             const tarihinKilinanVakitleri = kilinanVakitlerMap[v.tarih] || [];
             if (tarihinKilinanVakitleri.includes(v.vakit)) {
-                Logger.info('ArkaplanMuhafiz', `${v.vakit} (${v.tarih}) zaten kilinmis, atlaniyor`);
+
                 return false;
             }
 
@@ -390,7 +390,7 @@ export class ArkaplanMuhafizServisi {
                 },
             });
 
-            Logger.info('ArkaplanMuhafiz', `Bildirim planlandi: ${id} - ${zaman.toLocaleTimeString()}`);
+
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', `Bildirim planlanamadi: ${id}`, error);
         }
@@ -461,7 +461,7 @@ export class ArkaplanMuhafizServisi {
                 if (bildirim.identifier.startsWith(bildirimOneki)) {
                     try {
                         await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
-                        Logger.info('ArkaplanMuhafiz', `Bildirim iptal edildi: ${bildirim.identifier}`);
+
                     } catch (error) {
                         // Bildirim bulunamazsa hata verme
                     }
@@ -636,12 +636,11 @@ export class ArkaplanMuhafizServisi {
      */
     public async planlanmisBildirimleriListele(): Promise<void> {
         const bildirimler = await Notifications.getAllScheduledNotificationsAsync();
-        Logger.info('ArkaplanMuhafiz', 'Planlanan bildirimler:');
+        const muhafizBildirimleri = bildirimler.filter(b => b.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ));
+        Logger.info('ArkaplanMuhafiz', `Planlanan muhafiz bildirimleri: ${muhafizBildirimleri.length} adet`);
 
-        for (const bildirim of bildirimler) {
-            if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
-                Logger.info('ArkaplanMuhafiz', `  - ${bildirim.identifier}: ${bildirim.content.title}`);
-            }
+        for (const bildirim of muhafizBildirimleri) {
+            Logger.debug('ArkaplanMuhafiz', `  - ${bildirim.identifier}: ${bildirim.content.title}`);
         }
     }
 }
