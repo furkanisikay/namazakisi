@@ -58,6 +58,10 @@ export const AnaSayfa: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const konumAyarlari = useAppSelector((state) => state.konum);
+  // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
+  // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
+  const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
+  const muhafizAyarlariStr = JSON.stringify(muhafizAyarlari);
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -285,7 +289,7 @@ export const AnaSayfa: React.FC<{ navigation?: any }> = ({ navigation }) => {
       muhafiz.durdur();
       if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
     };
-  }, [konumAyarlari.koordinatlar, muhafizAyarlari]);
+  }, [konumAyarlariStr, muhafizAyarlariStr]);
 
   // Kutlama mantığı
   useEffect(() => {
