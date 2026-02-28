@@ -29,6 +29,8 @@ import {
   DebugLogsSayfasi,
 } from '../presentation/screens';
 import { useRenkler } from '../core/theme';
+import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
+import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
 
 /**
  * Root stack navigation parameter list.
@@ -125,6 +127,7 @@ const MainTabs: React.FC = () => {
   return (
     <Tab.Navigator
       initialRouteName="AnaSayfa"
+      detachInactiveScreens={false}
       screenOptions={{
         headerStyle: {
           backgroundColor: renkler.birincil,
@@ -156,6 +159,8 @@ const MainTabs: React.FC = () => {
           fontWeight: '600',
           marginTop: 2,
         },
+        // react-freeze Suspense mekanizmasinin NavigationStateContext'i kaybetmesini engeller
+        freezeOnBlur: false,
       }}
     >
       <Tab.Screen
@@ -216,10 +221,15 @@ const MainTabs: React.FC = () => {
 export const AppNavigator: React.FC = () => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        <RootStack.Screen name="MainTabs" component={MainTabs} />
-        <RootStack.Screen name="KibleSayfasi" component={KibleSayfasi} />
-      </RootStack.Navigator>
+      <ErrorBoundary name="NavigatorBoundary">
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+          <RootStack.Screen name="MainTabs" component={MainTabs} />
+          <RootStack.Screen name="KibleSayfasi" component={KibleSayfasi} />
+        </RootStack.Navigator>
+      </ErrorBoundary>
+      <ErrorBoundary name="GuncellemeBoundary">
+        <GuncellemeBildirimi />
+      </ErrorBoundary>
     </NavigationContainer>
   );
 };
