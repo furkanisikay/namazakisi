@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useNavigation } from '@react-navigation/native';
+import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
 import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
@@ -36,7 +38,8 @@ const GELECEK_GUN_SAYISI = 1; // 1 gun ileri (yarin)
 const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
 
-export const AnaSayfa: React.FC<{ navigation?: any }> = ({ navigation }) => {
+export const AnaSayfa: React.FC = () => {
+  const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();

@@ -25,57 +25,75 @@ const STORAGE_KEY = '@namazakisi:logs';
 const ENABLED_KEY = '@namazakisi:debug_enabled';
 const MAX_LOGS = 500; // Maksimum log sayisi
 const MAX_LOG_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 gun
+const SAVE_DEBOUNCE_MS = 1000; // Ardisik yazimlar birlestirilir
 
 class LoggerClass {
   private enabled: boolean = false;
   private logs: LogEntry[] = [];
   private initialized: boolean = false;
+  // Eslezamanli initialize() cagrilerini tek bir Promise'e baglar
+  private initPromise: Promise<void> | null = null;
+  // Debounced storage yazimi icin timer
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
-   * Logger'i baslatir ve ayarlari yukler
+   * Logger'i baslatir ve ayarlari yukler.
+   * Eslezamanli cagrilarda ayni Promise donulur; basarili veya basarisiz
+   * tamamlanma sonrasinda this.initialized = true set edilir.
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
+    if (this.initPromise) return this.initPromise;
 
-    try {
-      const [enabledStr, logsStr] = await Promise.all([
-        AsyncStorage.getItem(ENABLED_KEY),
-        AsyncStorage.getItem(STORAGE_KEY),
-      ]);
+    this.initPromise = (async () => {
+      try {
+        const [enabledStr, logsStr] = await Promise.all([
+          AsyncStorage.getItem(ENABLED_KEY),
+          AsyncStorage.getItem(STORAGE_KEY),
+        ]);
 
-      this.enabled = enabledStr === 'true';
-      
-      if (logsStr) {
-        const allLogs: LogEntry[] = JSON.parse(logsStr);
-        // Eski loglari temizle
-        const now = Date.now();
-        this.logs = allLogs.filter(
-          (log) => now - log.timestamp < MAX_LOG_AGE_MS
-        );
-        
-        // Fazla loglari temizle
-        if (this.logs.length > MAX_LOGS) {
-          this.logs = this.logs.slice(-MAX_LOGS);
+        this.enabled = enabledStr === 'true';
+
+        if (logsStr) {
+          const allLogs: LogEntry[] = JSON.parse(logsStr);
+          // Eski loglari temizle
+          const now = Date.now();
+          this.logs = allLogs.filter(
+            (log) => now - log.timestamp < MAX_LOG_AGE_MS
+          );
+
+          // Fazla loglari temizle
+          if (this.logs.length > MAX_LOGS) {
+            this.logs = this.logs.slice(-MAX_LOGS);
+          }
+
+          await this.saveLogs();
         }
-        
-        await this.saveLogs();
+      } catch (error) {
+        // Storage okuma veya JSON.parse hatasi: in-memory bos basla, hata sessizce gecilmez
+        console.error('[Logger] initialize() storage okuma/parse hatasi:', error);
+      } finally {
+        // Basarisiz olsa bile tekrar denemeyi engelle
+        this.initialized = true;
+        this.initPromise = null;
       }
+    })();
 
-      this.initialized = true;
-    } catch (error) {
-      console.error('[Logger] Baslangic hatasi:', error);
-    }
+    return this.initPromise;
   }
 
   /**
-   * Debug modunu acip kapatir
+   * Debug modunu acip kapatir.
+   * @returns true ise ayar kalici olarak kaydedildi, false ise sadece oturum icin aktif.
    */
-  async setEnabled(enabled: boolean): Promise<void> {
+  async setEnabled(enabled: boolean): Promise<boolean> {
     this.enabled = enabled;
     try {
       await AsyncStorage.setItem(ENABLED_KEY, enabled ? 'true' : 'false');
+      return true;
     } catch (error) {
       console.error('[Logger] Enabled ayari kaydedilemedi:', error);
+      return false;
     }
   }
 
@@ -87,9 +105,9 @@ class LoggerClass {
   }
 
   /**
-   * Log ekler
+   * Log ekler — senkron (console + in-memory anlık, storage debounced)
    */
-  private async addLog(level: LogLevel, tag: string, message: string, data?: unknown): Promise<void> {
+  private addLog(level: LogLevel, tag: string, message: string, data?: unknown): void {
     // Her zaman console'a yaz (development icin)
     const consoleMsg = `[${tag}] ${message}`;
     switch (level) {
@@ -107,7 +125,7 @@ class LoggerClass {
         break;
     }
 
-    // Debug modu kapaliysa kaydetme
+    // Debug modu kapaliysa storage'a kaydetme
     if (!this.enabled) return;
 
     const entry: LogEntry = {
@@ -125,55 +143,71 @@ class LoggerClass {
       this.logs = this.logs.slice(-MAX_LOGS);
     }
 
-    await this.saveLogs();
+    // Storage yazimini debounce et: ardisik loglar tek bir yazima indirgenir
+    this.scheduleSave();
   }
 
   /**
-   * DEBUG seviyesinde log
+   * Storage yazimini debounce ederek I/O thrashing'i onler
    */
-  async debug(tag: string, message: string, data?: unknown): Promise<void> {
-    await this.addLog(LogLevel.DEBUG, tag, message, data);
+  private scheduleSave(): void {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      this.saveLogs(); // ic metod, kendi try-catch'i var
+    }, SAVE_DEBOUNCE_MS);
   }
 
   /**
-   * INFO seviyesinde log
+   * DEBUG seviyesinde log (senkron)
    */
-  async info(tag: string, message: string, data?: unknown): Promise<void> {
-    await this.addLog(LogLevel.INFO, tag, message, data);
+  debug(tag: string, message: string, data?: unknown): void {
+    this.addLog(LogLevel.DEBUG, tag, message, data);
   }
 
   /**
-   * WARN seviyesinde log
+   * INFO seviyesinde log (senkron)
    */
-  async warn(tag: string, message: string, data?: unknown): Promise<void> {
-    await this.addLog(LogLevel.WARN, tag, message, data);
+  info(tag: string, message: string, data?: unknown): void {
+    this.addLog(LogLevel.INFO, tag, message, data);
   }
 
   /**
-   * ERROR seviyesinde log
+   * WARN seviyesinde log (senkron)
    */
-  async error(tag: string, message: string, data?: unknown): Promise<void> {
-    await this.addLog(LogLevel.ERROR, tag, message, data);
+  warn(tag: string, message: string, data?: unknown): void {
+    this.addLog(LogLevel.WARN, tag, message, data);
   }
 
   /**
-   * Tum loglari dondurur
+   * ERROR seviyesinde log (senkron)
+   */
+  error(tag: string, message: string, data?: unknown): void {
+    this.addLog(LogLevel.ERROR, tag, message, data);
+  }
+
+  /**
+   * Tum loglari dondurur (en yeni once)
    */
   getLogs(): LogEntry[] {
-    return [...this.logs].reverse(); // En yeni log once
+    return [...this.logs].reverse();
   }
 
   /**
-   * Belirli seviyedeki loglari dondurur
+   * Belirli seviyedeki loglari dondurur (en yeni once)
    */
   getLogsByLevel(level: LogLevel): LogEntry[] {
     return this.logs.filter((log) => log.level === level).reverse();
   }
 
   /**
-   * Loglari temizler
+   * Loglari temizler ve hemen storage'a yazar (debounce'u atlar)
    */
   async clearLogs(): Promise<void> {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
     this.logs = [];
     await this.saveLogs();
   }

@@ -98,8 +98,25 @@ const konumTakibiniSenkronizeEt = async () => {
 /**
  * Arka plan muhafiz bildirimlerini planla
  * Bu fonksiyon uygulama basladiginda ve on plana geldiginde cagrilir
+ * Mutex guard: Eşzamanlı çalışmayı önler. Timeout guard: Asili kalan async
+ * operasyonlar (orn. izin dialogu) mutex'i sonsuza kilitlememesi icin 30s'de sifirlar.
  */
+let planlamaDevamEdiyor = false;
+const PLANLAMA_TIMEOUT_MS = 30_000;
+
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
+  if (planlamaDevamEdiyor) {
+    return;
+  }
+  planlamaDevamEdiyor = true;
+
+  const timeoutId = setTimeout(() => {
+    if (planlamaDevamEdiyor) {
+      Logger.warn('App', 'Bildirim planlama zaman asimina ugradi, mutex serbest birakiliyor');
+      planlamaDevamEdiyor = false;
+    }
+  }, PLANLAMA_TIMEOUT_MS);
+
   try {
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
@@ -168,6 +185,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
   } catch (error) {
     Logger.error('App', 'Arka plan muhafiz ayarlanamadi', error);
+  } finally {
+    clearTimeout(timeoutId);
+    planlamaDevamEdiyor = false;
   }
 };
 
@@ -179,15 +199,18 @@ const AppIcerik: React.FC = () => {
   const renkler = useRenkler();
 
   useEffect(() => {
-    // Logger'i baslat
+    // Logger'i baslat; initialize tamamlanmadan once cagirilan Logger.info/error
+    // cagrilari this.enabled = false olacagindan storage'a yazilmaz.
+    // Bu nedenle arkaplanMuhafiziBildirimleriniPlanla initialize tamamlandiktan sonra baslatilir.
     Logger.initialize()
-      .then(() => Logger.info('App', 'Uygulama basladi'))
+      .then(() => {
+        Logger.info('App', 'Uygulama basladi');
+        // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
+
+        // Arkaplan muhafiz bildirimlerini planla (Logger hazir olduktan sonra)
+        arkaplanMuhafiziBildirimleriniPlanla();
+      })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
-
-    // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
-
-    // Arkaplan muhafiz bildirimlerini planla
-    arkaplanMuhafiziBildirimleriniPlanla();
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
     const interactionHandle = InteractionManager.runAfterInteractions(() => {

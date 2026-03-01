@@ -142,7 +142,8 @@ export const DebugLogsSayfasi: React.FC = () => {
       setLogs(allLogs);
       const enabled = Logger.isEnabled();
       setDebugEnabled(enabled);
-    } catch {
+    } catch (error) {
+      Logger.error('DebugLogsSayfasi', 'Loglar yuklenirken hata', error);
       Alert.alert('Hata', 'Loglar yüklenirken hata oluştu');
     } finally {
       setLoading(false);
@@ -155,9 +156,14 @@ export const DebugLogsSayfasi: React.FC = () => {
 
   // Debug modunu degistir
   const handleToggleDebug = async (value: boolean) => {
-    setDebugEnabled(value);
-    await Logger.setEnabled(value);
-
+    setDebugEnabled(value); // iyimser UI guncellemesi
+    const saved = await Logger.setEnabled(value);
+    if (!saved) {
+      // Storage yazimi basarisiz: UI'yi eski haline getir ve kullaniciya bildir
+      setDebugEnabled(!value);
+      Alert.alert('Hata', 'Debug modu ayarı kaydedilemedi. Depolamada yer açıp tekrar deneyin.');
+      return;
+    }
     if (value) {
       Alert.alert(
         'Debug Modu Aktif',
@@ -178,8 +184,13 @@ export const DebugLogsSayfasi: React.FC = () => {
           text: 'Temizle',
           style: 'destructive',
           onPress: async () => {
-            await Logger.clearLogs();
-            await loadLogs();
+            try {
+              await Logger.clearLogs();
+              await loadLogs();
+            } catch (error) {
+              Logger.error('DebugLogsSayfasi', 'Log temizleme hatasi', error);
+              Alert.alert('Hata', 'Loglar temizlenirken hata oluştu');
+            }
           },
         },
       ]
@@ -198,7 +209,8 @@ export const DebugLogsSayfasi: React.FC = () => {
       const fileName = `namazakisi_logs_${Date.now()}.txt`;
       const file = new File(Paths.cache, fileName);
 
-      file.write(content, {
+      // write() sync API; await zararsiz, olasi async versiyonlara karsi guvenli
+      await file.write(content, {
         encoding: 'utf8',
       });
       const fileUri = file.uri;

@@ -44,13 +44,14 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             errorMessage: error.message,
         });
 
-        // Full JS call stack (tam cagri zinciri)
+        // Full JS call stack — 2000 karakter ile sinirlandir (AsyncStorage boyut limitini asmasin)
         if (error.stack) {
-            Logger.error(boundaryName, `JS STACK TRACE:\n${error.stack}`);
+            Logger.error(boundaryName, `JS STACK TRACE:\n${error.stack.slice(0, 2000)}`);
         }
 
         // Component stack is the most important piece for debugging
-        Logger.error(boundaryName, `COMPONENT STACK:\n${errorInfo.componentStack}`);
+        const componentStack = (errorInfo.componentStack ?? '').slice(0, 2000);
+        Logger.error(boundaryName, `COMPONENT STACK:\n${componentStack}`);
 
         this.setState({ errorInfo });
     }
