@@ -1,5 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Logger } from '../../core/utils/Logger';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 import { LocalVakitBildirimServisi, VakitBildirimAyarlari } from '../../data/local/LocalVakitBildirimServisi';
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
@@ -22,7 +23,7 @@ export class VakitBildirimYoneticiServisi {
      * Genellikle ayarlar değiştiğinde veya uygulama açıldığında çağrılır
      */
     public async bildirimleriGuncelle(): Promise<void> {
-        console.log('[VakitBildirim] Bildirimler güncelleniyor...');
+        Logger.info('VakitBildirim', 'Bildirimler güncelleniyor...');
 
         // 1. Mevcut ayarları al
         const ayarlar = await LocalVakitBildirimServisi.getAyarlar();
@@ -35,7 +36,7 @@ export class VakitBildirimYoneticiServisi {
         const config = hesaplayici.getKonfig();
 
         if (!config) {
-            console.warn('[VakitBildirim] Namaz hesaplayıcı yapılandırılmamış (Konum yok), bildirim planlanamıyor.');
+            Logger.warn('VakitBildirim', 'Namaz hesaplayıcı yapılandırılmamış (Konum yok), bildirim planlanamıyor.');
             return;
         }
 
@@ -54,7 +55,7 @@ export class VakitBildirimYoneticiServisi {
         await this.gunlukPlanlamaYap(vakitlerBugun, ayarlar, bugun);
         await this.gunlukPlanlamaYap(vakitlerYarin, ayarlar, yarin);
 
-        console.log('[VakitBildirim] Bildirim planlama tamamlandı.');
+        Logger.info('VakitBildirim', 'Bildirim planlama tamamlandı.');
     }
 
     /**
@@ -155,9 +156,9 @@ export class VakitBildirimYoneticiServisi {
                     channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM, // Expo SDK 44+ support
                 },
             });
-            console.log(`[VakitBildirim] Planlandı: ${baslik} @ ${zaman.toLocaleTimeString()}`);
+            Logger.info('VakitBildirim', `Planlandı: ${baslik} @ ${zaman.toLocaleTimeString()}`);
         } catch (e) {
-            console.error(`[VakitBildirim] Planlama hatası (${vakit}):`, e);
+            Logger.error('VakitBildirim', `Planlama hatası (${vakit}):`, e);
         }
     }
 
@@ -174,7 +175,7 @@ export class VakitBildirimYoneticiServisi {
             await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
         }
         if (silinecekler.length > 0) {
-            console.log(`[VakitBildirim] ${silinecekler.length} adet eski bildirim temizlendi.`);
+            Logger.info('VakitBildirim', `${silinecekler.length} adet eski bildirim temizlendi.`);
         }
     }
 }

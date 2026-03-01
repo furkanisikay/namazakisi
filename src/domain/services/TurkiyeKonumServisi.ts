@@ -5,6 +5,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Logger } from '../../core/utils/Logger';
 
 // =====================
 // TIP TANIMLARI
@@ -213,7 +214,7 @@ class TurkiyeKonumServisiClass {
                 }
             }
         } catch (e) {
-            console.warn('Cache okuma hatasi:', e);
+            Logger.warn('TurkiyeKonumServisi', 'Cache okuma hatasi:', e);
         }
 
         // API'den cekmeyi dene
@@ -243,7 +244,7 @@ class TurkiyeKonumServisiClass {
                 return iller;
             }
         } catch (e) {
-            console.warn('API hatasi, offline veri kullaniliyor:', e);
+            Logger.warn('TurkiyeKonumServisi', 'API hatasi, offline veri kullaniliyor:', e);
         }
 
         // Offline veriyi kullan
@@ -292,7 +293,7 @@ class TurkiyeKonumServisiClass {
                 }
             }
         } catch (e) {
-            console.warn('Ilce cache okuma hatasi:', e);
+            Logger.warn('TurkiyeKonumServisi', 'Ilce cache okuma hatasi:', e);
         }
 
         // API'den cekmeyi dene
@@ -325,7 +326,7 @@ class TurkiyeKonumServisiClass {
                 return ilceler;
             }
         } catch (e) {
-            console.warn('Ilce API hatasi:', e);
+            Logger.warn('TurkiyeKonumServisi', 'Ilce API hatasi:', e);
         }
 
         // Bos dizi dondur (API calismiyorsa)
@@ -395,7 +396,7 @@ class TurkiyeKonumServisiClass {
             );
             await AsyncStorage.multiRemove(turkiyeKeys);
         } catch (e) {
-            console.warn('Cache temizleme hatasi:', e);
+            Logger.warn('TurkiyeKonumServisi', 'Cache temizleme hatasi:', e);
         }
     }
 }

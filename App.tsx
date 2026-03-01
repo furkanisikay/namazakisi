@@ -11,6 +11,7 @@ import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
 import { store } from './src/presentation/store/store';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import ErrorBoundary from './src/presentation/components/common/ErrorBoundary';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
@@ -27,8 +28,8 @@ import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSl
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
-import { GuncellemeBildirimi } from './src/presentation/components/guncelleme/GuncellemeBildirimi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
+import { Logger } from './src/core/utils/Logger';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -83,22 +84,39 @@ const konumTakibiniSenkronizeEt = async () => {
           gpsAdres: sonKonum.gpsAdres,
           sonGpsGuncellemesi: sonKonum.sonGpsGuncellemesi,
         }));
-        console.log('[App] Konum state arka plan verisinden senkronize edildi');
+        Logger.info('App', 'Konum state arka plan verisinden senkronize edildi');
       }
     }
 
     // Konum takibini yeniden baslat (OS tarafindan durdurulan gorevi canlandir)
     await servis.yenidenBaslat();
   } catch (error) {
-    console.error('[App] Konum takip senkronizasyon hatasi:', error);
+    Logger.error('App', 'Konum takip senkronizasyon hatasi', error);
   }
 };
 
 /**
  * Arka plan muhafiz bildirimlerini planla
  * Bu fonksiyon uygulama basladiginda ve on plana geldiginde cagrilir
+ * Mutex guard: Eşzamanlı çalışmayı önler. Timeout guard: Asili kalan async
+ * operasyonlar (orn. izin dialogu) mutex'i sonsuza kilitlememesi icin 30s'de sifirlar.
  */
+let planlamaDevamEdiyor = false;
+const PLANLAMA_TIMEOUT_MS = 30_000;
+
 const arkaplanMuhafiziBildirimleriniPlanla = async () => {
+  if (planlamaDevamEdiyor) {
+    return;
+  }
+  planlamaDevamEdiyor = true;
+
+  const timeoutId = setTimeout(() => {
+    if (planlamaDevamEdiyor) {
+      Logger.warn('App', 'Bildirim planlama zaman asimina ugradi, mutex serbest birakiliyor');
+      planlamaDevamEdiyor = false;
+    }
+  }, PLANLAMA_TIMEOUT_MS);
+
   try {
     // 1. Konum en basta yuklenmeli (muhafiz, vakit sayaci ve iftar sayaci konuma bagimli)
     await store.dispatch(konumAyarlariniYukle()).unwrap();
@@ -164,9 +182,12 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       }),
     ]);
 
-    console.log('[App] Arka plan muhafiz, vakit bildirimleri ve sayaç planlandi');
+    Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
   } catch (error) {
-    console.error('[App] Arka plan muhafiz ayarlanamadi:', error);
+    Logger.error('App', 'Arka plan muhafiz ayarlanamadi', error);
+  } finally {
+    clearTimeout(timeoutId);
+    planlamaDevamEdiyor = false;
   }
 };
 
@@ -178,10 +199,18 @@ const AppIcerik: React.FC = () => {
   const renkler = useRenkler();
 
   useEffect(() => {
-    // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
+    // Logger'i baslat; initialize tamamlanmadan once cagirilan Logger.info/error
+    // cagrilari this.enabled = false olacagindan storage'a yazilmaz.
+    // Bu nedenle arkaplanMuhafiziBildirimleriniPlanla initialize tamamlandiktan sonra baslatilir.
+    Logger.initialize()
+      .then(() => {
+        Logger.info('App', 'Uygulama basladi');
+        // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
 
-    // Arkaplan muhafiz bildirimlerini planla
-    arkaplanMuhafiziBildirimleriniPlanla();
+        // Arkaplan muhafiz bildirimlerini planla (Logger hazir olduktan sonra)
+        arkaplanMuhafiziBildirimleriniPlanla();
+      })
+      .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
     const interactionHandle = InteractionManager.runAfterInteractions(() => {
@@ -209,25 +238,25 @@ const AppIcerik: React.FC = () => {
     let notifeeUnsubscribe: (() => void) | undefined;
     if (Platform.OS === 'android') {
       notifeeUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
-        // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
-        if (type === EventType.DELIVERED) {
-          const bildirimId = detail.notification?.id;
-          if (bildirimId) {
-            if (bildirimId.endsWith('_vakitgirdi')) {
-              const baseId = bildirimId.replace('_vakitgirdi', '');
-              await notifee.cancelNotification(baseId);
-            } else if (bildirimId.endsWith('_bitis')) {
-              const baseId = bildirimId.replace('_bitis', '');
-              await notifee.cancelNotification(baseId);
-              await notifee.cancelNotification(baseId + '_vakitgirdi');
+        try {
+          // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
+          if (type === EventType.DELIVERED) {
+            const bildirimId = detail.notification?.id;
+            if (bildirimId) {
+              if (bildirimId.endsWith('_vakitgirdi')) {
+                const baseId = bildirimId.replace('_vakitgirdi', '');
+                await notifee.cancelNotification(baseId);
+              } else if (bildirimId.endsWith('_bitis')) {
+                const baseId = bildirimId.replace('_bitis', '');
+                await notifee.cancelNotification(baseId);
+                await notifee.cancelNotification(baseId + '_vakitgirdi');
+              }
             }
           }
-        }
 
-        if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
-          const bildirimId = detail.notification?.id;
-          if (bildirimId && bildirimId.startsWith('sayac_')) {
-            try {
+          if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
+            const bildirimId = detail.notification?.id;
+            if (bildirimId && bildirimId.startsWith('sayac_')) {
               // ID'den tarih ve vakit cikar
               const parts = bildirimId.replace('sayac_', '').split('_');
               const tarih = parts[0]; // "2026-02-15"
@@ -237,16 +266,16 @@ const AppIcerik: React.FC = () => {
               if (namazAdi && tarih) {
                 // Redux dispatch ile namaz isaretle
                 store.dispatch(namazDurumunuDegistir({ tarih, namazAdi, tamamlandi: true }));
-                console.log(`[App/notifee] Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
+                Logger.info('App/notifee', `Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
 
                 // Sayac ve muhafiz bildirimlerini iptal et
                 await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as any);
                 await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
               }
-            } catch (error) {
-              console.error('[App/notifee] Kıldım işleme hatası:', error);
             }
           }
+        } catch (error) {
+          Logger.error('App/notifee', 'Foreground event isleme hatasi', error);
         }
       });
     }
@@ -271,8 +300,9 @@ const AppIcerik: React.FC = () => {
         backgroundColor={renkler.birincil}
         barStyle="light-content"
       />
-      <AppNavigator />
-      <GuncellemeBildirimi />
+      <ErrorBoundary name="AppRoot">
+        <AppNavigator />
+      </ErrorBoundary>
     </View>
   );
 };

@@ -18,3 +18,4 @@ export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';
 export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
 export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
+export { DebugLogsSayfasi } from './DebugLogsSayfasi';

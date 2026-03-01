@@ -4,6 +4,7 @@
  */
 
 import * as Haptics from 'expo-haptics';
+import { Logger } from '../utils/Logger';
 
 /**
  * Titresim tipleri
@@ -22,7 +23,7 @@ export const HaptikServisi = {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     } catch (hata) {
-      console.warn('Hafif titresim hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Hafif titresim hatasi:', hata);
     }
   },
 
@@ -33,7 +34,7 @@ export const HaptikServisi = {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } catch (hata) {
-      console.warn('Orta titresim hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Orta titresim hatasi:', hata);
     }
   },
 
@@ -44,7 +45,7 @@ export const HaptikServisi = {
     try {
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     } catch (hata) {
-      console.warn('Guclu titresim hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Guclu titresim hatasi:', hata);
     }
   },
 
@@ -55,7 +56,7 @@ export const HaptikServisi = {
     try {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (hata) {
-      console.warn('Basari titresimi hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Basari titresimi hatasi:', hata);
     }
   },
 
@@ -66,7 +67,7 @@ export const HaptikServisi = {
     try {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     } catch (hata) {
-      console.warn('Uyari titresimi hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Uyari titresimi hatasi:', hata);
     }
   },
 
@@ -77,7 +78,7 @@ export const HaptikServisi = {
     try {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     } catch (hata) {
-      console.warn('Hata titresimi hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Hata titresimi hatasi:', hata);
     }
   },
 
@@ -88,7 +89,7 @@ export const HaptikServisi = {
     try {
       await Haptics.selectionAsync();
     } catch (hata) {
-      console.warn('Secim titresimi hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Secim titresimi hatasi:', hata);
     }
   },
 
@@ -106,7 +107,7 @@ export const HaptikServisi = {
       await new Promise(resolve => setTimeout(resolve, 150));
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (hata) {
-      console.warn('Kutlama titresimi hatasi:', hata);
+      Logger.warn('HaptikServisi', 'Kutlama titresimi hatasi:', hata);
     }
   },
 

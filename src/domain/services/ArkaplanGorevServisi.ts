@@ -20,6 +20,7 @@ import {
     TakipHassasiyeti,
 } from '../../core/constants/UygulamaSabitleri';
 import { KONUM_TAKIP_GOREVI } from './KonumTakipServisi';
+import { Logger } from '../../core/utils/Logger';
 
 // Görev adı sabiti
 export const BILDIRIM_YENILEME_GOREVI = 'BILDIRIM_YENILEME_GOREVI';
@@ -46,7 +47,7 @@ async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogr
             return TAKIP_PROFILLERI[hassasiyet] || TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
         }
     } catch (e) {
-        console.warn('[ArkaplanGorev] Profil okuma hatasi:', e);
+        Logger.warn('ArkaplanGorev', 'Profil okuma hatasi:', e);
     }
     return TAKIP_PROFILLERI[VARSAYILAN_TAKIP_HASSASIYETI];
 }
@@ -58,7 +59,7 @@ async function aktifProfilGetir(): Promise<{ mesafe: number; zaman: number; dogr
 async function izinIptalKontrolEt(takipAyarlari: { aktif: boolean }): Promise<boolean> {
     const { status: arkaPlanIzni } = await Location.getBackgroundPermissionsAsync();
     if (arkaPlanIzni !== 'granted') {
-        console.log('[ArkaplanGorev] Arka plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        Logger.info('ArkaplanGorev', 'Arka plan konum izni iptal edilmis, takip devre disi birakiliyor');
         await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
             ...takipAyarlari,
             aktif: false,
@@ -68,7 +69,7 @@ async function izinIptalKontrolEt(takipAyarlari: { aktif: boolean }): Promise<bo
 
     const { status: onPlanIzni } = await Location.getForegroundPermissionsAsync();
     if (onPlanIzni !== 'granted') {
-        console.log('[ArkaplanGorev] On plan konum izni iptal edilmis, takip devre disi birakiliyor');
+        Logger.info('ArkaplanGorev', 'On plan konum izni iptal edilmis, takip devre disi birakiliyor');
         await AsyncStorage.setItem(KONUM_TAKIP_AYARLARI_ANAHTAR, JSON.stringify({
             ...takipAyarlari,
             aktif: false,
@@ -125,7 +126,7 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
         // Burada ise sadece olmus gorevi canlandiriyoruz - zaten calisan goreve dokunmuyoruz
         const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
         if (kayitliMi) {
-            console.log('[ArkaplanGorev] Konum takip gorevi zaten kayitli ve calisiyor');
+            Logger.info('ArkaplanGorev', 'Konum takip gorevi zaten kayitli ve calisiyor');
             return; // Gorev hala calisiyor, dokunma
         }
 
@@ -134,7 +135,7 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
         // - Telefon yeniden basladi
         // - OS uygulamayi pil icin oldurdu
         // - Kullanici uygulamayi swipe ile kapatti
-        console.log('[ArkaplanGorev] Konum takip gorevi ölmüş, yeniden başlatılıyor...');
+        Logger.info('ArkaplanGorev', 'Konum takip gorevi ölmüş, yeniden başlatılıyor...');
         const profil = await aktifProfilGetir();
         await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
             accuracy: profil.dogruluk,
@@ -152,9 +153,9 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
             activityType: Location.ActivityType.Other,
         });
 
-        console.log('[ArkaplanGorev] Konum takip gorevi yeniden baslatildi');
+        Logger.info('ArkaplanGorev', 'Konum takip gorevi yeniden baslatildi');
     } catch (error) {
-        console.error('[ArkaplanGorev] Konum takip yeniden baslatma hatasi:', error);
+        Logger.error('ArkaplanGorev', 'Konum takip yeniden baslatma hatasi:', error);
     }
 }
 
@@ -167,7 +168,7 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
  * 2. Bildirimleri yeniden planlar
  */
 TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
-    console.log('[ArkaplanGorev] Görev tetiklendi');
+    Logger.info('ArkaplanGorev', 'Görev tetiklendi');
 
     try {
         // =====================================================
@@ -184,7 +185,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         const ayarlarJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
 
         if (!ayarlarJson) {
-            console.log('[ArkaplanGorev] Muhafiz ayarlari bulunamadi');
+            Logger.info('ArkaplanGorev', 'Muhafiz ayarlari bulunamadi');
             return BackgroundFetch.BackgroundFetchResult.NoData;
         }
 
@@ -192,7 +193,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
 
         // Muhafız aktif değilse işlem yapma
         if (!ayarlar.aktif) {
-            console.log('[ArkaplanGorev] Muhafız devre dışı');
+            Logger.info('ArkaplanGorev', 'Muhafız devre dışı');
             return BackgroundFetch.BackgroundFetchResult.NoData;
         }
 
@@ -231,11 +232,11 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
 
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);
 
-        console.log('[ArkaplanGorev] Bildirimler yeniden planlandi (koordinat:', koordinatlar.lat.toFixed(2), ',', koordinatlar.lng.toFixed(2), ')');
+        Logger.info('ArkaplanGorev', `Bildirimler yeniden planlandi (koordinat: ${koordinatlar.lat.toFixed(2)}, ${koordinatlar.lng.toFixed(2)})`);
         return BackgroundFetch.BackgroundFetchResult.NewData;
 
     } catch (error) {
-        console.error('[ArkaplanGorev] Hata:', error);
+        Logger.error('ArkaplanGorev', 'Hata:', error);
         return BackgroundFetch.BackgroundFetchResult.Failed;
     }
 });
@@ -265,7 +266,7 @@ export class ArkaplanGorevServisi {
             const kayitliMi = await TaskManager.isTaskRegisteredAsync(BILDIRIM_YENILEME_GOREVI);
 
             if (kayitliMi) {
-                console.log('[ArkaplanGorev] Görev zaten kayıtlı');
+                Logger.info('ArkaplanGorev', 'Görev zaten kayıtlı');
                 this.kayitli = true;
                 return true;
             }
@@ -278,11 +279,11 @@ export class ArkaplanGorevServisi {
             });
 
             this.kayitli = true;
-            console.log('[ArkaplanGorev] Görev başarıyla kaydedildi');
+            Logger.info('ArkaplanGorev', 'Görev başarıyla kaydedildi');
             return true;
 
         } catch (error) {
-            console.error('[ArkaplanGorev] Kayıt hatası:', error);
+            Logger.error('ArkaplanGorev', 'Kayıt hatası:', error);
             return false;
         }
     }
@@ -296,12 +297,12 @@ export class ArkaplanGorevServisi {
 
             if (kayitliMi) {
                 await BackgroundFetch.unregisterTaskAsync(BILDIRIM_YENILEME_GOREVI);
-                console.log('[ArkaplanGorev] Görev durduruldu');
+                Logger.info('ArkaplanGorev', 'Görev durduruldu');
             }
 
             this.kayitli = false;
         } catch (error) {
-            console.error('[ArkaplanGorev] Durdurma hatası:', error);
+            Logger.error('ArkaplanGorev', 'Durdurma hatası:', error);
         }
     }
 

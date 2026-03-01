@@ -1,5 +1,6 @@
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI, MucadeleIcerigi } from '../../core/data/SeytanlaMucadeleIcerigi';
+import { Logger } from '../../core/utils/Logger';
 
 export interface MuhafizYapilandirmasi {
     seviye1BaslangicDk: number; // Örn: 45
@@ -56,7 +57,7 @@ export class NamazMuhafiziServisi {
         // Her dakika kontrol et
         this.intervalId = setInterval(() => this.kontrolEt(), 60 * 1000);
         this.kontrolEt(); // İlk başlatmada hemen kontrol et
-        console.log("Namaz Muhafızı göreve başladı.");
+        Logger.info('NamazMuhafiziServisi', 'Namaz Muhafızı göreve başladı.');
     }
 
     public durdur() {
@@ -86,7 +87,7 @@ export class NamazMuhafiziServisi {
         // Gerçekte tarih kontrolü yapılmalı
         const bugun = new Date().toDateString();
         this.kilinanVakitler[`${bugun}_${vakit}`] = true;
-        console.log(`${vakit} namazı kılındı olarak işaretlendi. Muhafız bu vakit için dinlenmeye çekiliyor.`);
+        Logger.info('NamazMuhafiziServisi', `${vakit} namazı kılındı olarak işaretlendi. Muhafız bu vakit için dinlenmeye çekiliyor.`);
     }
 
     private kontrolEt() {

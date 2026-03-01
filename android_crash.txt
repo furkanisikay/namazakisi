@@ -1,0 +1,311 @@
+--------- beginning of system
+02-24 07:28:39.681   845   864 W ActivityTaskManager: callingPackage for (uid=2000, pid=2758) has no WPC
+02-24 07:28:39.682   845   864 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 task null, skipping
+02-24 07:28:39.682   845   864 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=null display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443
+--------- beginning of main
+02-24 07:28:39.683   845   864 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@4bf895ba does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+02-24 07:28:39.684   845   864 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 task null, skipping
+02-24 07:28:39.684   845   864 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443
+02-24 07:28:39.685   845   864 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=null activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 task null, skipping
+02-24 07:28:39.685   845   864 V WindowManager: TaskLaunchParamsModifier:phase=3 task=null activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity t-1} display-area-from-current-params=null display-area-from-default-fallback=DefaultTaskDisplayArea@139837443 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 non-freeform-task-display-area display-area=DefaultTaskDisplayArea@139837443 skip-bounds-fullscreen
+02-24 07:28:39.688   845   864 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=Task{6f3cc9d #123 type=standard A=10230:com.furkanisikay.namazakisi} activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 not entering desktop mode, skipping
+02-24 07:28:39.688   845   864 V WindowManager: TaskLaunchParamsModifier:phase=3 task=Task{6f3cc9d #123 type=standard A=10230:com.furkanisikay.namazakisi} activity=ActivityRecord{183533428 u0 com.furkanisikay.namazakisi/.MainActivity t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@139837443 inherit-from-task=fullscreen non-freeform-task-display-area display-area=DefaultTaskDisplayArea@139837443 skip-bounds-fullscreen
+02-24 07:28:39.691   650  1117 I libbinder.BpBinder: onLastStrongRef automatically unlinking death recipients for descriptor: '(not cached)'
+02-24 07:28:39.696   845   864 I ActivityTaskManager: START u0 {flg=0x10000000 xflg=0x5 cmp=com.furkanisikay.namazakisi/.MainActivity} with LAUNCH_SINGLE_TASK from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=0
+02-24 07:28:39.697 27759 27774 V WindowManagerShell: Transition requested (#159): android.os.BinderProxy@aa79ee1 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=123 effectiveUid=10230 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.furkanisikay.namazakisi/.MainActivity } baseActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} topActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} origActivity=null realActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} numActivities=1 lastActiveTime=39892355 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@ecd6406} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{4919ac7 com.furkanisikay.namazakisi.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 159 }
+02-24 07:28:39.697 27759 27774 D ShellSplitScreen: logExit: no-op, mLoggerSessionId is null
+02-24 07:28:39.698 27759 27774 V ShellDesktopMode: DesktopTasksController: handleRequest request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=123 effectiveUid=10230 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.furkanisikay.namazakisi/.MainActivity } baseActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} topActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} origActivity=null realActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} numActivities=1 lastActiveTime=39892355 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@ecd6406} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{4919ac7 com.furkanisikay.namazakisi.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 159 }
+02-24 07:28:39.698 27759 27774 V ShellDesktopMode: DesktopTasksController: skipping handleRequest reason=triggerTask's display doesn't support desktop mode
+02-24 07:28:39.699  1298  1298 D BaseActivity: Launcher flags updated: [state_started|state_resumed|state_deferred_resumed|state_window_focused] -[state_user_active]
+02-24 07:28:39.700  1298  1298 D BaseActivity: Launcher flags updated: [state_started|state_window_focused] -[state_resumed|state_deferred_resumed]
+02-24 07:28:39.700  1298  1298 W SplitSelectStateCtor: Missing session instanceIds
+02-24 07:28:39.700  1298  1298 D StatsLog: LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+02-24 07:28:39.701   709 29610 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:39.704   845  2011 V WindowManager: Defer transition id=159 for TaskFragmentTransaction=android.os.Binder@db67c3f
+02-24 07:28:39.704   845  2011 V WindowManager: deferTransitionReady deferReadyDepth=1 stack=com.android.server.wm.TransitionController.deferTransitionReady:1061 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.dispatchTransaction:517 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1259 com.android.server.wm.TaskFragmentOrganizerController.dispatchPendingEvents:1228 com.android.server.wm.RootWindowContainer.performSurfacePlacement:777 
+02-24 07:28:39.704   709 29610 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:39.708  1298  1298 D RecentsView: onTaskDisplayChanged: 123, new displayId = 0
+02-24 07:28:39.709 27759 27774 D WindowManagerShell: setLauncherKeepClearAreaHeight: visible=false, height=495
+02-24 07:28:39.710   845  1413 V WindowManager: Continue transition id=159 for TaskFragmentTransaction=android.os.Binder@db67c3f
+02-24 07:28:39.710   845  1413 V WindowManager: continueTransitionReady deferReadyDepth=0 stack=com.android.server.wm.TransitionController.continueTransitionReady:1071 com.android.server.wm.TaskFragmentOrganizerController$TaskFragmentOrganizerState.onTransactionFinished:546 com.android.server.wm.TaskFragmentOrganizerController.onTransactionHandled:740 android.window.ITaskFragmentOrganizerController$Stub.onTransact:225 android.os.Binder.execTransactInternal:1473 
+02-24 07:28:39.710   845   873 V GrammaticalInflectionUtils: AttributionSource: android.content.AttributionSource@4bf895ba does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+02-24 07:28:39.713 27759 27774 D ShellDesktopMode: DesktopRepository: Removes freeform task: taskId=122
+02-24 07:28:39.713 27759 27774 W ShellDesktopMode: DesktopRepository: No display id found for task: taskId=122
+02-24 07:28:39.715  1298  1298 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+02-24 07:28:39.715 27759 27783 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@811bbf
+02-24 07:28:39.715  1298  1298 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+02-24 07:28:39.716   845  1076 D BackgroundInstallControlService: Package event received: 0
+02-24 07:28:39.720   845  1413 D CoreBackPreview: Window{c59599 u0 Splash Screen com.furkanisikay.namazakisi}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@850f255, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+02-24 07:28:39.732   577   577 D Zygote  : Forked child process 2761
+02-24 07:28:39.733   845   881 I ActivityManager: Start proc 2761:com.furkanisikay.namazakisi/u0a230 for next-top-activity {com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity}
+02-24 07:28:39.741  2761  2761 I Zygote  : Process 2761 created for com.furkanisikay.namazakisi
+02-24 07:28:39.741  2761  2761 I ikay.namazakisi: Late-enabling -Xcheck:jni
+02-24 07:28:39.771  2761  2761 I ikay.namazakisi: Using CollectorTypeCMC GC.
+02-24 07:28:39.772  2761  2761 W ikay.namazakisi: Unexpected CPU variant for x86: x86_64.
+02-24 07:28:39.772  2761  2761 W ikay.namazakisi: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, default
+02-24 07:28:39.777   659   679 I adbd    : jdwp connection from 2761
+02-24 07:28:39.782  1298  1298 D BaseActivity: Launcher flags updated: [state_started] -[state_window_focused]
+02-24 07:28:39.806  2761  2761 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+02-24 07:28:39.807  1298  1298 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+02-24 07:28:39.860   845  1076 D BackgroundInstallControlService: Package event received: 0
+02-24 07:28:39.923   845   870 V WindowManager: Sent Transition (#159) createdAt=02-24 07:28:39.683 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=123 effectiveUid=10230 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.furkanisikay.namazakisi/.MainActivity } baseActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} topActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} origActivity=null realActivity=ComponentInfo{com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity} numActivities=1 lastActiveTime=39892355 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{a990010 Task{6f3cc9d #123 type=standard A=10230:com.furkanisikay.namazakisi}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{d8a1709 com.furkanisikay.namazakisi.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=undefinedundefined} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 159 }
+02-24 07:28:39.923   845   870 V WindowManager:     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+02-24 07:28:39.923   845   870 V WindowManager:     info={id=159 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+02-24 07:28:39.923   845   870 V WindowManager:         {WCT{RemoteToken{a990010 Task{6f3cc9d #123 type=standard A=10230:com.furkanisikay.namazakisi}}} m=OPEN f=NONE leash=Surface(name=Task=123#2583)/@0xb913d36 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+02-24 07:28:39.923   845   870 V WindowManager:         {WCT{RemoteToken{4387bc4 Task{a70676a #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#1809)/@0x347052f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+02-24 07:28:39.923   845   870 V WindowManager:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{c249b73}#61)/@0x6ec4b8a sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+02-24 07:28:39.923   845   870 V WindowManager:     ]}
+02-24 07:28:39.946 27759 29654 V WindowManagerShell: onTransitionReady(transaction=3629247384356)
+02-24 07:28:39.947 27759 27774 V ShellTaskOrganizer: Task appeared taskId=123 listener=FullscreenTaskListener
+02-24 07:28:39.947 27759 27774 V ShellTaskOrganizer: Fullscreen Task Appeared: #123
+02-24 07:28:39.951 27759 27774 V WindowManagerShell: onTransitionReady (#159) android.os.BinderProxy@aa79ee1: {id=159 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+02-24 07:28:39.951 27759 27774 V WindowManagerShell:         {m=OPEN f=NONE leash=Surface(name=Task=123#2583)/@0xbcdab6 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+02-24 07:28:39.951 27759 27774 V WindowManagerShell:         {m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#1809)/@0x9d0c3b7 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+02-24 07:28:39.951 27759 27774 V WindowManagerShell:         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{c249b73}#61)/@0xf4724 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+02-24 07:28:39.951 27759 27774 V WindowManagerShell:     ]}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell: Playing animation for (#159) android.os.BinderProxy@aa79ee1@0
+02-24 07:28:39.952 27759 27774 V ShellRecents: RecentsTransitionHandler.startAnimation: no controller found
+02-24 07:28:39.952 27759 27774 V ShellDesktopMode: DesktopMixedTransitionHandler: No pending desktop transition
+02-24 07:28:39.952 27759 27774 V WindowManagerShell: Transition doesn't have explicit remote, search filters for match for {id=159 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=123#2583)/@0xbcdab6 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#1809)/@0x9d0c3b7 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{c249b73}#61)/@0xf4724 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell:  Checking filter Pair{{types=[OPEN,TO_FRONT] flags=0x0] notFlags=0x0 checks=[{atype=standard independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null windowingMode=freeform isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@5068c5, appThread = null, debugName = DesktopWindowLimitUnminimize }}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@f86d21a windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@a87914b, appThread = android.app.IApplicationThread$Stub$Proxy@4ffe728, debugName = overlayBackTransition }}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@a53cc41, appThread = android.app.IApplicationThread$Stub$Proxy@92ff5e6, debugName = LauncherToDream }}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell:  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined isCrossDisplayMove=false},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined isCrossDisplayMove=false}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@c3bf727, appThread = android.app.IApplicationThread$Stub$Proxy@a004dd4, debugName = QuickstepLaunchHome }}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell:  Delegate animation for (#159) to null
+02-24 07:28:39.952 27759 27774 V WindowManagerShell: start default transition animation, info = {id=159 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=123#2583)/@0xbcdab6 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1#1809)/@0x9d0c3b7 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{c249b73}#61)/@0xf4724 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+02-24 07:28:39.952 27759 27774 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@6a3e453 animAttr=0x13 type=OPEN isEntrance=false
+02-24 07:28:39.953 27759 27774 V WindowManagerShell: loadAnimation: anim=android.view.animation.AnimationSet@e8bb190 animAttr=0x12 type=OPEN isEntrance=true
+02-24 07:28:39.955 27759 27774 V WindowManagerShell:  animated by com.android.wm.shell.transition.DefaultTransitionHandler@b25f3f9
+02-24 07:28:39.980  1298  1298 D b/417220811: invalidateLoadedTasks - previous requestLoadId: -1
+02-24 07:28:40.264 27759 27774 V WindowManagerShell: Transition animation finished (aborted=false), notifying core (#159) android.os.BinderProxy@aa79ee1@0
+02-24 07:28:40.268   845   870 V WindowManager: Finish Transition (#159): created at 02-24 07:28:39.683 collect-started=0.131ms request-sent=12.19ms started=24.462ms ready=228.005ms sent=237.84ms commit=62.176ms finished=583.6ms
+02-24 07:28:40.268   845  1020 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+02-24 07:28:40.269  1298  1298 D VRI[NexusLauncherActivity]: visibilityChanged oldVisibility=true newVisibility=false
+02-24 07:28:40.270 27759 27847 D WallpaperService: onVisibilityChanged(false): com.android.systemui.wallpapers.ImageWallpaper$CanvasEngine@9f98052
+02-24 07:28:40.272 27759 27774 V WindowManagerShell: Track 0 became idle
+02-24 07:28:40.272 27759 27774 V WindowManagerShell: All active transition animations finished
+02-24 07:28:40.281  1298  1298 D NexusLauncherModelDelegate: notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+02-24 07:28:40.283 27759 27774 D Bubbles : onLocusVisibilityChanged=Overview|DISABLED visible=false taskId=1
+02-24 07:28:40.397  2761  2761 D nativeloader: Configuring clns-9 for other apk /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/lib/x86_64:/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.furkanisikay.namazakisi
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment: Currently set values for:
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment: com.furkanisikay.namazakisi is not listed in per-application setting
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+02-24 07:28:40.421  2761  2761 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+02-24 07:28:40.422  2761  2761 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+02-24 07:28:40.778  2761  2761 W FirebaseApp: Default FirebaseApp failed to initialize because no default options were found. This usually means that com.google.gms:google-services was not applied to your gradle project.
+02-24 07:28:40.778  2761  2761 I FirebaseInitProvider: FirebaseApp initialization unsuccessful
+02-24 07:28:40.791  2761  2761 D WM-WrkMgrInitializer: Initializing WorkManager with default configuration.
+02-24 07:28:40.908  2761  2777 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+02-24 07:28:40.939  2761  2761 D NOTIFEE : (context): received application context
+02-24 07:28:40.997  2761  2761 W SoLoader: Initializing SoLoader: 0
+02-24 07:28:41.002  2761  2761 W SoLoader: Recording new base apk path: /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk
+02-24 07:28:41.002  2761  2761 W SoLoader: Previously recorded 0 base apk paths.
+02-24 07:28:41.007  2761  2761 I SoLoader: Preparing SO source: DirectorySoSource[root = /vendor/lib64 flags = 2]
+02-24 07:28:41.007  2761  2761 I SoLoader: Preparing SO source: DirectorySoSource[root = /system/lib64 flags = 2]
+02-24 07:28:41.007  2761  2761 I SoLoader: Preparing SO source: DirectApkSoSource[root = [/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64]]
+02-24 07:28:41.077  2761  2761 I SoLoader: Preparing SO source: ApplicationSoSource[DirectorySoSource[root = /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/lib/x86_64 flags = 0]]
+02-24 07:28:41.077  2761  2761 I SoLoader: init finish: 4 SO sources prepared
+02-24 07:28:41.078  2761  2761 W SoLoader: SoLoader initialized: 8
+02-24 07:28:41.184  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libc++_shared.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.216  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libjsi.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.226  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libfbjni.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.243  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libreactnative.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Entering merged library JNI_OnLoad.
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing 12 pre-merged libs (including stub)
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libfabricjni_so.  onload_func: 0x7097a589d550
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreact_devsupportjni_so.  onload_func: 0x7097a5a8ac30
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreact_featureflagsjni_so.  onload_func: 0x7097a5a98780
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreact_newarchdefaults_so.  onload_func: 0x7097a5afd1f0
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreactnativeblob_so.  onload_func: 0x7097a5ce5400
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_so.  onload_func: 0x7097a5d2fcb0
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_common_so.  onload_func: 0x7097a5d3fab0
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register librninstance_so.  onload_func: 0x7097a5d85920
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libturbomodulejsijni_so.  onload_func: 0x7097a5ea46a0
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libuimanagerjni_so.  onload_func: 0x7097a5ebc920
+02-24 07:28:41.243  2761  2761 D jni_lib_merge: Preparing to register libyoga_so.  onload_func: 0x7097a5ecb8b0
+02-24 07:28:41.244  2761  2761 D jni_lib_merge: About to register 11 actual methods.
+02-24 07:28:41.259  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libreact_codegen_rnscreens.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Entering merged library JNI_OnLoad.
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing 12 pre-merged libs (including stub)
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libfabricjni_so.  onload_func: 0x7097a589d550
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreact_devsupportjni_so.  onload_func: 0x7097a5a8ac30
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreact_featureflagsjni_so.  onload_func: 0x7097a5a98780
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreact_newarchdefaults_so.  onload_func: 0x7097a5afd1f0
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreactnativeblob_so.  onload_func: 0x7097a5ce5400
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_so.  onload_func: 0x7097a5d2fcb0
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_common_so.  onload_func: 0x7097a5d3fab0
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register librninstance_so.  onload_func: 0x7097a5d85920
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libturbomodulejsijni_so.  onload_func: 0x7097a5ea46a0
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libuimanagerjni_so.  onload_func: 0x7097a5ebc920
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: Preparing to register libyoga_so.  onload_func: 0x7097a5ecb8b0
+02-24 07:28:41.259  2761  2761 D jni_lib_merge: About to register 11 actual methods.
+02-24 07:28:41.265  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libreact_codegen_rnsvg.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Entering merged library JNI_OnLoad.
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing 12 pre-merged libs (including stub)
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing to register libfabricjni_so.  onload_func: 0x7097a589d550
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing to register libreact_devsupportjni_so.  onload_func: 0x7097a5a8ac30
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing to register libreact_featureflagsjni_so.  onload_func: 0x7097a5a98780
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing to register libreact_newarchdefaults_so.  onload_func: 0x7097a5afd1f0
+02-24 07:28:41.265  2761  2761 D jni_lib_merge: Preparing to register libreactnativeblob_so.  onload_func: 0x7097a5ce5400
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_so.  onload_func: 0x7097a5d2fcb0
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register libreactnativejni_common_so.  onload_func: 0x7097a5d3fab0
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register librninstance_so.  onload_func: 0x7097a5d85920
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register libturbomodulejsijni_so.  onload_func: 0x7097a5ea46a0
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register libuimanagerjni_so.  onload_func: 0x7097a5ebc920
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: Preparing to register libyoga_so.  onload_func: 0x7097a5ecb8b0
+02-24 07:28:41.266  2761  2761 D jni_lib_merge: About to register 11 actual methods.
+02-24 07:28:41.271  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libreact_codegen_safeareacontext.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.276  2761  2761 D nativeloader: Load /data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!/lib/x86_64/libappmodules.so using class loader ns clns-9 (caller=/data/app/~~X03OMp4PuY78X_S7vh9NxA==/com.furkanisikay.namazakisi-iPOBJj0sP8V2VnWqbVCb7A==/base.apk!classes20.dex): ok
+02-24 07:28:41.286   845  1076 D BackgroundInstallControlService: Package event received: 0
+02-24 07:28:41.286   845  1076 D BackgroundInstallControlService: Package event received: 0
+02-24 07:28:41.288  2761  2779 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+02-24 07:28:41.355  2761  2779 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv1_CM_emulation.so
+02-24 07:28:41.357  2761  2779 I GFXSTREAM: [eglDisplay.cpp(297)] Opening libGLESv2_emulation.so
+02-24 07:28:41.389  2761  2779 W HWUI    : Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+02-24 07:28:41.389  2761  2779 W HWUI    : Failed to initialize 101010-2 format, error = EGL_SUCCESS
+02-24 07:28:41.442  2761  2761 D DesktopExperienceFlags: Toggle override initialized to: false
+02-24 07:28:41.471  2761  2761 D AppCompatDelegate: Checking for metadata for AppLocalesMetadataHolderService : Service not found
+02-24 07:28:41.471  2781  2781 W libbinder.BackendUnifiedServiceManager: Thread Pool max thread count is 0. Cannot cache binder as linkToDeath cannot be implemented. serviceName: package
+02-24 07:28:41.653  1283  1440 D SatelliteController: iisInCarrierRoamingNbIotNtn: satellite is disabled
+02-24 07:28:41.655  1283  1440 D SatelliteController: getCarrierRoamingNtnConnectType: Falling back to global carrier config connect type: 0
+02-24 07:28:41.655 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/base.odex) is kOatUpToDate with filter 'speed-profile' executable 'false'
+02-24 07:28:41.655   845  1901 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:41.658 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_AdsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.661 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_CronetDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.664 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_DynamiteLoader_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.666 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_DynamiteModulesA_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.668 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_DynamiteModulesC_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.671 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_GoogleCertificates_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.673 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_MapsDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.675 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_MeasurementDynamite_installtime.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.677 18614 18616 I artd    : GetBestInfo: odex next to the dex file (/data/app/~~H0cbksvs8R8tlX-NfKlt_w==/com.google.android.gms-j6TNnqpp-Im92XUOKwC1jg==/oat/x86_64/split_all_locale_splits.odex) is kOatUpToDate with filter 'speed' executable 'false'
+02-24 07:28:41.679 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000008/dl-TfliteDynamiteDynamite.integ_243930802100800.apk has no usable artifacts
+02-24 07:28:41.681 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000b/dl-MlkitBarcodeUi.optional_253434100800.apk has no usable artifacts
+02-24 07:28:41.683 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000010/dl-Appsearch.optional_255034100800.apk has no usable artifacts
+02-24 07:28:41.684 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk has no usable artifacts
+02-24 07:28:41.686 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000014/dl-MlkitOcrCommon.optional_255034100800.apk has no usable artifacts
+02-24 07:28:41.687 18614 18616 I artd    : GetBestInfo: /data/user/0/com.google.android.gms/app_dg_cache/9C3914BA639C225C3270B81DD57E92CD956143E9/the.apk has no usable artifacts
+02-24 07:28:41.688 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000002/DynamiteLoader.apk has no usable artifacts
+02-24 07:28:41.690 18614 18616 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/BE7EF7B4C46169C70551CAA4FB9F9DFEAA13427D/oat/x86_64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+02-24 07:28:41.691 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000012/dl-MlkitBarcodeUi.optional_255034100800.apk has no usable artifacts
+02-24 07:28:41.693 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000005/GoogleCertificates.apk has no usable artifacts
+02-24 07:28:41.695 18614 18616 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/BF7C023AB90CCF01D1F467FC1CEBAF866511FF29/oat/x86_64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+02-24 07:28:41.696 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/0000000f/dl-VisionOcr.optional_255034100000.apk has no usable artifacts
+02-24 07:28:41.699 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000009/dl-Appsearch.optional_253434100800.apk has no usable artifacts
+02-24 07:28:41.701 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000015/dl-PlayCloudSearch.optional_255034100000.apk has no usable artifacts
+02-24 07:28:41.702 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000019/dl-TfliteDynamiteDynamite.integ_252130102100800.apk has no usable artifacts
+02-24 07:28:41.705 18614 18616 I artd    : GetBestInfo: vdex next to the dex file (/data/user/0/com.google.android.gms/app_dg_cache/94DF452EEF4B8E717545DCDEA6CC3C50A319A195/oat/x86_64/the.vdex) is kOatUpToDate with filter 'verify' executable 'false'
+02-24 07:28:41.706 18614 18616 I artd    : GetBestInfo: /data/user_de/0/com.google.android.gms/app_chimera/m/00000007/MeasurementDynamite.apk has no usable artifacts
+02-24 07:28:41.957  2761  2761 W unknown:BridgelessReact: ReactHost{0}.startSurface(surfaceId = 0): Schedule
+02-24 07:28:41.958  2761  2761 W unknown:BridgelessReact: ReactHost{0}.attachSurface(surfaceId = 0)
+02-24 07:28:41.960  2761  2792 W unknown:BridgelessReact: ReactHost{0}.getOrCreateReactInstanceTask()
+02-24 07:28:41.961  2761  2792 W unknown:BridgelessReact: ReactHost{0}.getOrCreateReactInstanceTask(): Start
+02-24 07:28:41.961  2761  2792 W unknown:BridgelessReact: ReactHost{0}.getJSBundleLoader()
+02-24 07:28:41.961  2761  2792 W unknown:BridgelessReact: ReactHost{0}.isMetroRunning()
+02-24 07:28:41.963  2761  2761 D CompatChangeReporter: Compat change id reported: 377864165; UID 10230; state: ENABLED
+02-24 07:28:41.963  2761  2761 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+02-24 07:28:42.001  2761  2761 I ikay.namazakisi: hiddenapi: Accessing hidden method Landroid/view/ViewGroup;->makeOptionalFitsSystemWindows()V (runtime_flags=0, domain=platform, api=unsupported) from Landroidx/appcompat/widget/ViewUtils; (domain=app, TargetSdkVersion=36) using reflection: allowed
+02-24 07:28:42.017   845   864 D WifiNl80211Manager: Scan result ready event
+02-24 07:28:42.018   845   864 D WifiNative: Scan result ready event
+02-24 07:28:42.022  2761  2761 W WindowOnBackDispatcher: OnBackInvokedCallback is not enabled for the application.
+02-24 07:28:42.022  2761  2761 W WindowOnBackDispatcher: Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+02-24 07:28:42.022  4539  4627 I WifiScanner: onFullResults
+02-24 07:28:42.023  4539  4549 I WifiScanner: onFullResults
+02-24 07:28:42.025   845  1020 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+02-24 07:28:42.032  2761  2761 W unknown:BridgelessReact: ReactHost{0}.onHostResume(activity)
+02-24 07:28:42.033  2761  2761 W unknown:ReactNative: Packager connection already open, nooping.
+02-24 07:28:42.053  2761  2761 W HWUI    : Unknown dataspace 0
+02-24 07:28:42.085  2761  2793 W unknown:BridgelessReact: ReactHost{0}.isMetroRunning(): Async result = true
+02-24 07:28:42.085  2761  2792 W unknown:BridgelessReact: ReactHost{0}.loadJSBundleFromMetro()
+02-24 07:28:42.097  2761  2761 D VRI[MainActivity]: WindowInsets changed: 1080x2400 statusBars:[0,63,0,0] navigationBars:[0,0,0,63] mandatorySystemGestures:[0,63,0,84] 
+02-24 07:28:42.123  2761  2761 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@f0ac905
+02-24 07:28:42.123   845   864 D CoreBackPreview: Window{fcaf2ab u0 com.furkanisikay.namazakisi/com.furkanisikay.namazakisi.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@9364ec6, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+02-24 07:28:42.271   845   870 I ActivityTaskManager: Displayed com.furkanisikay.namazakisi/.MainActivity for user 0: +2s590ms
+02-24 07:28:42.306  2761  2761 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda12@6db0cac
+02-24 07:28:42.307   845   864 D CoreBackPreview: Window{6aa709e u0 PopupWindow:71fe880}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@77f534c, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+02-24 07:28:42.307  2761  2761 I HWUI    : Using FreeType backend (prop=Auto)
+02-24 07:28:42.420  2761  2761 W unknown:BridgelessReact: ReactHost{0}.raiseSoftException(onWindowFocusChange(hasFocus = "true")): Tried to access onWindowFocusChange while context is not ready
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: Unhandled SoftException
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: com.facebook.react.bridge.ReactNoCrashSoftException: raiseSoftException(onWindowFocusChange(hasFocus = "true")): Tried to access onWindowFocusChange while context is not ready
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException(ReactHostImpl.kt:787)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.raiseSoftException$default(ReactHostImpl.kt:779)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.runtime.ReactHostImpl.onWindowFocusChange(ReactHostImpl.kt:589)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.ReactDelegate.onWindowFocusChanged(ReactDelegate.kt:217)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.ReactActivityDelegate.onWindowFocusChanged(ReactActivityDelegate.java:236)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invokeSuspend(ReactActivityDelegateWrapper.kt:353)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:8)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$onWindowFocusChanged$1.invoke(Unknown Source:4)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper$launchLifecycleScopeWithLock$1.invokeSuspend(ReactActivityDelegateWrapper.kt:485)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.internal.DispatchedContinuationKt.resumeCancellableWith(DispatchedContinuation.kt:359)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:26)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:358)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:124)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:52)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch(Unknown Source:1)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch$default(Builders.common.kt:43)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at kotlinx.coroutines.BuildersKt.launch$default(Unknown Source:1)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock(ReactActivityDelegateWrapper.kt:483)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.launchLifecycleScopeWithLock$default(ReactActivityDelegateWrapper.kt:479)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at expo.modules.ReactActivityDelegateWrapper.onWindowFocusChanged(ReactActivityDelegateWrapper.kt:351)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.facebook.react.ReactActivity.onWindowFocusChanged(ReactActivity.java:158)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at androidx.appcompat.view.WindowCallbackWrapper.onWindowFocusChanged(WindowCallbackWrapper.java:124)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.android.internal.policy.DecorView.onWindowFocusChanged(DecorView.java:1797)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.View.dispatchWindowFocusChanged(View.java:17124)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewGroup.dispatchWindowFocusChanged(ViewGroup.java:1529)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewRootImpl.dispatchFocusEvent(ViewRootImpl.java:4962)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewRootImpl.handleWindowFocusChanged(ViewRootImpl.java:4866)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewRootImpl.-$$Nest$mhandleWindowFocusChanged(Unknown Source:0)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessageImpl(ViewRootImpl.java:7118)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.view.ViewRootImpl$ViewRootHandler.handleMessage(ViewRootImpl.java:7026)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.os.Handler.dispatchMessage(Handler.java:132)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.os.Looper.dispatchMessage(Looper.java:333)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.os.Looper.loopOnce(Looper.java:263)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.os.Looper.loop(Looper.java:367)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at android.app.ActivityThread.main(ActivityThread.java:9287)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at java.lang.reflect.Method.invoke(Native Method)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:566)
+02-24 07:28:42.423  2761  2761 E unknown:ReactHost: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:929)
+02-24 07:28:42.427   845   978 I ImeTracker: com.furkanisikay.namazakisi:39a5cde7: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+02-24 07:28:42.435  2761  2761 D InsetsController: hide(ime())
+02-24 07:28:42.436  2761  2761 I ImeTracker: com.furkanisikay.namazakisi:39a5cde7: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+02-24 07:28:42.437  1298  1298 D BaseActivity: Launcher flags updated: [] -[state_started]
+02-24 07:28:42.437  1298  1298 D BaseDepthController: setSurface:
+02-24 07:28:42.437  1298  1298 D BaseDepthController: 	mWaitingOnSurfaceValidity: false
+02-24 07:28:42.437  1298  1298 D BaseDepthController: 	mBaseSurface: null
+02-24 07:28:42.437  1298  1298 D BaseDepthController: mSurface is null and mCurrentBlur is: 0
+02-24 07:28:42.438  8345  8345 I GoogleInputMethodService: GoogleInputMethodService.onFinishInput():2113 
+02-24 07:28:42.439  1298  1298 D LauncherStateManager: StateManager.goToState: fromState: Normal, toState: Normal, partial trace:
+02-24 07:28:42.439  1298  1298 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:6)
+02-24 07:28:42.439  1298  1298 D LauncherStateManager: 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:2)
+02-24 07:28:42.439  1298  1298 D LauncherStateManager: 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme f3a19d912c87c27267cfbc05ba0bc7b202ab72a6648bd76225f5f7e128d94583:32)
+02-24 07:28:42.439  1298  1298 D LauncherStateManager: StateManager.onRepeatStateSetAborted: state: Normal
+02-24 07:28:42.439  8345  8345 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 0, locked = false
+02-24 07:28:42.439  1298  1298 D ActivityContext: hideKeyboard
+02-24 07:28:42.439  1298  1298 D ActivityContext: isImeShown: false
+02-24 07:28:42.439   845  1413 I ImeTracker: system_server:a47bf978: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+02-24 07:28:42.440  1298  1298 D StatsLog: LAUNCHER_ONSTOP
+02-24 07:28:42.441  1298  5906 D GmsPlayProvider: Shutdown the binder channel gracefully.
+02-24 07:28:42.441  1298  5906 D GmsPlayProvider: Binder channel is terminated gracefully.
+02-24 07:28:42.441  1298  1298 D StatsLog: LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+02-24 07:28:42.441  8345  8345 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1384 onStartInput(EditorInfo{EditorInfo{packageName=com.furkanisikay.namazakisi, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+02-24 07:28:42.442  8345  8345 I Module  : DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():103 repeatCheckTimes = 1, locked = false
+02-24 07:28:42.444   845  1413 W PackageConfigPersister: App-specific configuration not found for packageName: com.furkanisikay.namazakisi and userId: 0
+02-24 07:28:42.448   845   873 I ImeTracker: system_server:a47bf978: onCancelled at PHASE_SERVER_SHOULD_HIDE
+02-24 07:28:42.451   845  1076 D BackgroundInstallControlService: Package event received: 0
+02-24 07:28:42.579  4539  4549 I FontLog : (REDACTED) Received query %s, URI %s
+02-24 07:28:42.579  4539  4549 I FontLog : (REDACTED) Query [%s] resolved to %s
+02-24 07:28:42.582  4539  4549 I FontLog : (REDACTED) Fetch %s end status %s
+02-24 07:28:42.587   709 29610 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:42.587   709 29610 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:42.602  4539  4627 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+02-24 07:28:42.616  4539  4627 I FontLog : (REDACTED) Pulling font file for id = %d, cache size = %d
+02-24 07:28:42.665   709 20815 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:42.666   709 20815 W libbinder.IPCThreadState: Sending oneway calls to frozen process.
+02-24 07:28:42.675 27759 27783 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): null
+02-24 07:28:42.693   845  1901 D CoreBackPreview: Window{c59599 u0 Splash Screen com.furkanisikay.namazakisi EXITING}: Setting back callback null
+02-24 07:28:43.056  2761  2765 I ikay.namazakisi: Compiler allocated 5087KB to compile void android.view.ViewRootImpl.performTraversals()
+02-24 07:28:43.211   845  1811 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+02-24 07:28:43.279   845  1020 I HalDevMgr: bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]

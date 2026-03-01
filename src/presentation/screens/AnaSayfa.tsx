@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, AppState, AppStateStatus } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { useNavigation } from '@react-navigation/native';
+import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
 import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
@@ -28,6 +30,7 @@ import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
+import { Logger } from '../../core/utils/Logger';
 
 // Baslangic sayfasi
 const GECMIS_GUN_SAYISI = 90; // 3 ay geri
@@ -36,8 +39,8 @@ const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay 
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
 
 export const AnaSayfa: React.FC = () => {
+  const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<any>();
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
   const { koyuMu } = useTema();
@@ -58,6 +61,10 @@ export const AnaSayfa: React.FC = () => {
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const konumAyarlari = useAppSelector((state) => state.konum);
+  // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
+  // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
+  const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
+  const muhafizAyarlariStr = JSON.stringify(muhafizAyarlari);
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -135,7 +142,7 @@ export const AnaSayfa: React.FC = () => {
       }
     }
     return tarih;
-  }, [konumAyarlari.koordinatlar]); // Dependencies: updates when location changes (or strictly only initially mostly) - effectively runs fast.
+  }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
   // Initial Load - Aktif güne git
   useEffect(() => {
@@ -154,8 +161,14 @@ export const AnaSayfa: React.FC = () => {
     // konum yuklendikten sonra paralel yukleniyor
 
     ArkaplanGorevServisi.getInstance().kaydetVeBaslat()
-      .then(basarili => basarili && console.log('[AnaSayfa] Arka plan görevi başlatıldı'))
-      .catch(err => console.error('[AnaSayfa] Arka plan görevi hatası:', err));
+      .then(basarili => {
+        if (basarili) {
+          Logger.info('AnaSayfa', 'Arka plan görevi başlatıldı');
+        }
+      })
+      .catch(err => {
+        Logger.error('AnaSayfa', 'Arka plan görevi hatası', err);
+      });
 
     return () => {
       try { NamazMuhafiziServisi.getInstance().durdur(); } catch (e) { }
@@ -183,13 +196,26 @@ export const AnaSayfa: React.FC = () => {
       madhab: 'Hanafi'
     });
 
+    // Onceki vakit bilgisini ref'te tut (gecis tespiti icin)
+    const oncekiVakitRef = { current: vakitBilgisi?.vakit || null };
+
     const updateTimer = () => {
       const bilgi = s.getSuankiVakitBilgisi();
+
+      // Vakit gecisi tespiti (debug)
+      if (bilgi && oncekiVakitRef.current && bilgi.vakit !== oncekiVakitRef.current) {
+        Logger.info('AnaSayfa/Timer', `*** VAKIT GECISI: ${oncekiVakitRef.current} -> ${bilgi.vakit} ***`);
+        Logger.info('AnaSayfa/Timer', `Sonraki vakit: ${bilgi.sonrakiVakitAdi}, giris: ${bilgi.sonrakiVakitGiris}`);
+        // Vakit degisince muhafiz uyarisini sifirla (yeni vakit icin tekrar hesaplanacak)
+        setMuhafizDurumu({ mesaj: '', seviye: 0 });
+      }
+      oncekiVakitRef.current = bilgi?.vakit || null;
+
       setVakitBilgisi(bilgi);
 
       if (bilgi) {
         const simdi = new Date();
-        const hedef = new Date(bilgi.sonrakiVakitGiris); // String ise Date'e
+        const hedef = new Date(bilgi.sonrakiVakitGiris);
         let fark = hedef.getTime() - simdi.getTime();
 
         if (fark < 0) fark = 0;
@@ -205,12 +231,29 @@ export const AnaSayfa: React.FC = () => {
     };
 
     updateTimer();
-    const timerInterval = setInterval(updateTimer, 1000);
+
+    // Timer interval refs
+    let timerInterval: NodeJS.Timeout | null = null;
+
+    // Uygulama on plandayken calistir, arkada kapat 
+    // (Boylece Background state update sirasina bagli react navigation render crush'lari onlenir)
+    const startLocalTimer = () => {
+      if (!timerInterval) {
+        timerInterval = setInterval(updateTimer, 1000);
+      }
+    };
+
+    const stopLocalTimer = () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    };
+
+    // Ilk render'da ac ve AppState dinleyicisine ekle
+    startLocalTimer();
 
     if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
-
-    // Not: ArkaplanMuhafizServisi.yapilandirVePlanla App.tsx'te cagriliyor
-    // Burada tekrar cagirmak gereksiz ve cift bildirim planlamasina neden oluyor
 
     const muhafiz = NamazMuhafiziServisi.getInstance();
     if (muhafizAyarlari.aktif) {
@@ -234,13 +277,22 @@ export const AnaSayfa: React.FC = () => {
       setMuhafizDurumu({ mesaj: '', seviye: 0 });
     }
 
+    const appStateEvent = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        updateTimer();
+        startLocalTimer();
+      } else {
+        stopLocalTimer();
+      }
+    });
+
     return () => {
-      clearInterval(timerInterval);
+      stopLocalTimer();
+      appStateEvent.remove();
       muhafiz.durdur();
       if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
     };
-  }, [konumAyarlari.koordinatlar, muhafizAyarlari]);
-
+  }, [konumAyarlariStr, muhafizAyarlariStr]);
 
   // Kutlama mantığı
   useEffect(() => {
@@ -362,7 +414,7 @@ export const AnaSayfa: React.FC = () => {
     }
 
     return (
-      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+      <ScrollView key={`${sayfaIndeksi}-${vakitBilgisi?.vakit || 'none'}`} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
@@ -435,7 +487,7 @@ export const AnaSayfa: React.FC = () => {
         aktifGunMu={mevcutTarih === aktifGun}
         onTarihTikla={() => setTarihSeciciGorunur(true)}
         onSeriTikla={() => setSeriModalGorunur(true)}
-        onKibleTikla={() => navigation.navigate('KibleSayfasi')}
+        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
       />
 
       {/* Pager */}

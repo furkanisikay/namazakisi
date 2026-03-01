@@ -28,6 +28,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { Logger } from '../../../core/utils/Logger';
 import { guncellemeErtele, bildirimiKapat } from '../../store/guncellemeSlice';
 import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 
@@ -90,7 +91,7 @@ export const GuncellemeBildirimi: React.FC = () => {
   const guncelleBasildi = useCallback(() => {
     if (bilgi?.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
       Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
-        console.warn('[GuncellemeBildirimi] Baglanti acilamadi:', hata);
+        Logger.warn('GuncellemeBildirimi', 'Baglanti acilamadi', hata);
       });
     }
   }, [bilgi]);
