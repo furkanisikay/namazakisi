@@ -113,6 +113,19 @@ export const BOYUTLAR = {
   FONT_BASLIK: 24,
 } as const;
 
+// ==================== KAZA DEFTERI SABITLERI ====================
+
+export const KAZA_SABITLERI = {
+  /** Motivasyon önerileri için kaza/vakit senaryoları */
+  MOTIVASYON_SENARYOLARI: [1, 2, 3, 5, 10] as const,
+  /** Varsayılan günlük kaza hedefi */
+  VARSAYILAN_GUNLUK_HEDEF: 3,
+  /** Mekruh vakit toleransı (dakika) — güneş doğuş/batışından önce/sonra */
+  MEKRUH_TOLERANS_DK: 20,
+  /** Tempo hesabı için kullanılan gün sayısı */
+  TEMPO_HESAP_GUNLERI: 7,
+} as const;
+
 // AsyncStorage anahtarlari
 export const DEPOLAMA_ANAHTARLARI = {
   NAMAZ_VERILERI: 'namaz_verileri',
@@ -141,6 +154,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   SAHUR_SAYAC_AYARLARI: 'sahur_sayac_ayarlari',
   // Konum sistemi
   KONUM_AYARLARI: '@namaz_akisi/konum_ayarlari',
+  // Kaza Defteri
+  KAZA_DURUMU: '@namaz_akisi/kaza_durumu',
+  KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
 } as const;
 
 // Tarih formatlari
