@@ -3,7 +3,7 @@
  * Kaza namazı takibi: borç ekleme, tamamlama, motivasyon, mekruh vakit uyarısı
  */
 
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -106,9 +106,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   // ==================== MOTİVASYON ====================
 
-  const motivasyonOnerileri = kazaDurumu
-    ? motivasyonOnerileriHesapla(kazaDurumu.toplamKalan)
-    : [];
+  const motivasyonOnerileri = useMemo(
+    () => (kazaDurumu ? motivasyonOnerileriHesapla(kazaDurumu.toplamKalan) : []),
+    [kazaDurumu?.toplamKalan]
+  );
   const aktifOneri = motivasyonOnerileri[motivasyonIndex] ?? motivasyonOnerileri[0];
 
   // ==================== FLASH ANİMASYON ====================
@@ -204,8 +205,10 @@ export const KazaDefteriSayfasi: React.FC = () => {
         )
       : 0;
 
-  const sayiGoster = (sayi: number) =>
-    kazaDurumu?.toplamGizleMi ? '••••' : sayi.toLocaleString('tr-TR');
+  const sayiGoster = useCallback(
+    (sayi: number) => (kazaDurumu?.toplamGizleMi ? '••••' : sayi.toLocaleString('tr-TR')),
+    [kazaDurumu?.toplamGizleMi]
+  );
 
   // ==================== RENDER ====================
 

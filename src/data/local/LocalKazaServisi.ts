@@ -3,7 +3,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { KazaDurumu, KazaNamaz, KAZA_NAMAZ_LISTESI } from '../../core/types/KazaTipleri';
+import { KazaDurumu, KazaNamaz, KazaNamazAdi, KAZA_NAMAZ_LISTESI } from '../../core/types/KazaTipleri';
 import { ApiYanit } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI, KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 
@@ -12,7 +12,7 @@ import { DEPOLAMA_ANAHTARLARI, KAZA_SABITLERI } from '../../core/constants/Uygul
 /**
  * Boş KazaNamaz oluşturur
  */
-const bosKazaNamazOlustur = (namazAdi: KazaDurumu['namazlar'][0]['namazAdi']): KazaNamaz => ({
+const bosKazaNamazOlustur = (namazAdi: KazaNamazAdi): KazaNamaz => ({
   namazAdi,
   toplamBorc: 0,
   kalanBorc: 0,

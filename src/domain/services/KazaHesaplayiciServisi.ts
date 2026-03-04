@@ -235,7 +235,10 @@ export const mekruhVakitKontrolEt = (
       };
     }
 
-    // 3. Gurub: Güneş batış vakti (Akşam ezanına kadar)
+    // 3. Gurub: Güneş batmadan önceki ~20 dakika (pratik yaklaşım).
+    // Fıkhi kural: İkindi kılındıktan sonra güneş batana kadar mekruhtur.
+    // Ancak İkindi vakti bilgisi olmadan bu sınırı belirlemek mümkün değil;
+    // gün batımından 20 dakika geriye bakarak yaklaşık bir uyarı veriliyor.
     const gurubBasi = new Date(sunset.getTime() - toleransMs);
     if (now >= gurubBasi && now <= sunset) {
       return {
