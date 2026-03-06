@@ -123,7 +123,7 @@ export const kazaIstatistikHesapla = (
   let toplamSon7Gun = 0;
   let gunSayisi = 0;
 
-  for (let i = 1; i <= KAZA_SABITLERI.TEMPO_HESAP_GUNLERI; i++) {
+  for (let i = 0; i < KAZA_SABITLERI.TEMPO_HESAP_GUNLERI; i++) {
     const tarih = new Date(bugun);
     tarih.setDate(bugun.getDate() - i);
     const tarihStr = tarih.toISOString().split('T')[0];
