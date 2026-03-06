@@ -13,6 +13,7 @@ import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
 import guncellemeReducer from './guncellemeSlice';
+import kazaReducer from './kazaSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     iftarSayac: iftarSayacReducer,
     sahurSayac: sahurSayacReducer,
     guncelleme: guncellemeReducer,
+    kaza: kazaReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

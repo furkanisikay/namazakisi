@@ -105,9 +105,9 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakVakti).not.toBeNull();
             expect(imsakVakti).toBeInstanceOf(Date);
 
-            // İmsak vakti 03:00-07:00 arası olmalı (normal aralık)
+            // İmsak vakti 02:00-07:00 arası olmalı (normal aralık, mevsime göre değişir)
             const imsakSaat = imsakVakti!.getHours();
-            expect(imsakSaat).toBeGreaterThanOrEqual(3);
+            expect(imsakSaat).toBeGreaterThanOrEqual(2);
             expect(imsakSaat).toBeLessThanOrEqual(7);
         });
 

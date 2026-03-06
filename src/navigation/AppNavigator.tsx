@@ -27,6 +27,7 @@ import {
   KibleSayfasi,
   RamazanAyarlariSayfasi,
   DebugLogsSayfasi,
+  KazaDefteriSayfasi,
 } from '../presentation/screens';
 import { useRenkler } from '../core/theme';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
@@ -184,6 +185,18 @@ const MainTabs: React.FC = () => {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="KazaDefteri"
+        component={KazaDefteriSayfasi}
+        options={{
+          title: 'Kaza Defteri',
+          headerShown: false,
+          tabBarLabel: 'Kaza',
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5 name="book" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
         }}
       />
