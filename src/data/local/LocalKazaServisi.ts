@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { KazaDurumu, KazaNamaz, KazaNamazAdi, KAZA_NAMAZ_LISTESI } from '../../core/types/KazaTipleri';
 import { ApiYanit } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI, KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 
 // ==================== BAŞLANGIÇ DURUMU ====================
 
@@ -28,7 +29,7 @@ export const bosKazaDurumuOlustur = (): KazaDurumu => ({
   toplamTamamlanan: 0,
   gunlukHedef: KAZA_SABITLERI.VARSAYILAN_GUNLUK_HEDEF,
   gunlukTamamlanan: 0,
-  gunlukHedefTarihi: new Date().toISOString().split('T')[0],
+  gunlukHedefTarihi: tarihiISOFormatinaCevir(new Date()),
   toplamGizleMi: false,
   guncellemeTarihi: new Date().toISOString(),
 });
@@ -126,12 +127,12 @@ export const localKazaTempoGuncelleGecmis = async (
 
     // Son 30 günü tut, eskiyi sil
     const yeniGecmis: Record<string, number> = { ...gecmis, [tarih]: sayi };
-    const bugun = new Date();
-    const otuzGunOnce = new Date(bugun);
-    otuzGunOnce.setDate(bugun.getDate() - 30);
+    const otuzGunOnce = new Date();
+    otuzGunOnce.setDate(otuzGunOnce.getDate() - 30);
+    const otuzGunOnceStr = tarihiISOFormatinaCevir(otuzGunOnce);
 
     for (const key of Object.keys(yeniGecmis)) {
-      if (new Date(key) < otuzGunOnce) {
+      if (key < otuzGunOnceStr) {
         delete yeniGecmis[key];
       }
     }

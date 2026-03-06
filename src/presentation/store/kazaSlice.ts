@@ -11,6 +11,7 @@ import {
   kazaIstatistikHesapla,
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { KazaIstatistik } from '../../core/types/KazaTipleri';
+import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 
 // ==================== STATE TİPİ ====================
 
@@ -45,7 +46,7 @@ const toplamlarıYenile = (durumu: KazaDurumu): KazaDurumu => {
  * Günlük sayacı kontrol eder ve gerekirse sıfırlar
  */
 const gunlukSayaciKontrolEt = (durumu: KazaDurumu): KazaDurumu => {
-  const bugun = new Date().toISOString().split('T')[0];
+  const bugun = tarihiISOFormatinaCevir(new Date());
   if (durumu.gunlukHedefTarihi !== bugun) {
     return {
       ...durumu,
@@ -67,8 +68,12 @@ export const kazaVerileriniYukle = createAsyncThunk('kaza/yukle', async () => {
     LocalKazaServisi.localKazaTempoGecmisiniGetir(),
   ]);
 
+  if (!kazaYanit.basarili || !kazaYanit.veri) {
+    throw new Error(kazaYanit.hata || 'Kaza verileri yüklenemedi');
+  }
+
   const tempoGecmis = tempoYanit.veri || {};
-  let kazaDurumu = kazaYanit.veri || LocalKazaServisi.bosKazaDurumuOlustur();
+  let kazaDurumu = kazaYanit.veri;
 
   // Günlük sayacı kontrol et
   kazaDurumu = gunlukSayaciKontrolEt(kazaDurumu);
@@ -169,17 +174,20 @@ export const kazaTamamla = createAsyncThunk(
       );
     }
 
-    const yeniGunlukTamamlanan = durumu.gunlukTamamlanan + sayi;
+    // Gerçekte tamamlanan miktarı hesapla (istenen sayi ile sınırlı kalabilir)
+    const oncekiToplamKalan = durumu.toplamKalan;
+    const geciciDurum = toplamlarıYenile({ ...durumu, namazlar: yeniNamazlar });
+    const gercekTamamlanan = oncekiToplamKalan - geciciDurum.toplamKalan;
+    const yeniGunlukTamamlanan = durumu.gunlukTamamlanan + gercekTamamlanan;
 
-    durumu = toplamlarıYenile({
-      ...durumu,
-      namazlar: yeniNamazlar,
+    durumu = {
+      ...geciciDurum,
       gunlukTamamlanan: yeniGunlukTamamlanan,
       guncellemeTarihi: new Date().toISOString(),
-    });
+    };
 
     // Tempo geçmişini güncelle
-    const bugun = new Date().toISOString().split('T')[0];
+    const bugun = tarihiISOFormatinaCevir(new Date());
     const yeniTempoGecmis = {
       ...state.kaza.tempoGecmis,
       [bugun]: yeniGunlukTamamlanan,
@@ -205,11 +213,15 @@ export const sihirbazIleBaslat = createAsyncThunk(
     const toplamBorc = hesaplaTahminiBorcMiktari(girdi);
     const dagılım = borcuVakitlerePaylaştır(toplamBorc);
 
-    const yeniNamazlar = durumu.namazlar.map((n) => ({
-      ...n,
-      toplamBorc: dagılım[n.namazAdi] || 0,
-      kalanBorc: dagılım[n.namazAdi] || 0,
-    }));
+    const yeniNamazlar = durumu.namazlar.map((n) => {
+      const yeniKalan = dagılım[n.namazAdi] || 0;
+      return {
+        ...n,
+        // toplamBorc = tamamlanan + kalanBorc invariantını koru
+        toplamBorc: yeniKalan + (n.tamamlanan || 0),
+        kalanBorc: yeniKalan,
+      };
+    });
 
     durumu = toplamlarıYenile({
       ...durumu,

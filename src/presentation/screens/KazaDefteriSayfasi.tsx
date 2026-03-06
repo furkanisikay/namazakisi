@@ -74,7 +74,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const [sihirbazKildigiYuzde, setSihirbazKildigiYuzde] = useState(0);
 
   // Seçili motivasyon senaryosu
-  const [motivasyonIndex, setMotivasyonIndex] = useState(1); // Varsayılan 3/vakit
+  const [motivasyonIndex, setMotivasyonIndex] = useState(2); // Varsayılan 3/vakit
 
   // Mekruh vakit
   const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null }>({
@@ -253,9 +253,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
       >
         {/* MEKRUH VAKİT UYARISI */}
         {mekruhBilgi.mekruhMu && mekruhBilgi.aciklama && (
-          <View style={[styles.mekruhBanner, { backgroundColor: '#FFF3CD', borderColor: '#FFC107' }]}>
-            <FontAwesome5 name="exclamation-triangle" size={14} color="#856404" />
-            <Text style={[styles.mekruhMetin, { color: '#856404' }]}>
+          <View style={[styles.mekruhBanner, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}>
+            <FontAwesome5 name="exclamation-triangle" size={14} color={renkler.metinIkincil} />
+            <Text style={[styles.mekruhMetin, { color: renkler.metinIkincil }]}>
               {mekruhBilgi.aciklama}
             </Text>
           </View>
@@ -425,7 +425,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     styles.progressDolgu,
                     {
                       backgroundColor:
-                        gunlukIlerlemeYuzdesi >= 1 ? '#4CAF50' : renkler.birincil,
+                        gunlukIlerlemeYuzdesi >= 1 ? renkler.basarili : renkler.birincil,
                       width: `${gunlukIlerlemeYuzdesi * 100}%`,
                     },
                   ]}

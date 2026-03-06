@@ -192,6 +192,7 @@ const MainTabs: React.FC = () => {
         name="KazaDefteri"
         component={KazaDefteriSayfasi}
         options={{
+          title: 'Kaza Defteri',
           headerShown: false,
           tabBarLabel: 'Kaza',
           tabBarIcon: ({ focused }) => (

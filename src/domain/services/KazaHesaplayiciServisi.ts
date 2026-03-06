@@ -11,6 +11,7 @@ import {
   KAZA_NAMAZ_LISTESI,
 } from '../../core/types/KazaTipleri';
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 
 // ==================== SİHİRBAZ HESABI ====================
 
@@ -126,7 +127,7 @@ export const kazaIstatistikHesapla = (
   for (let i = 0; i < KAZA_SABITLERI.TEMPO_HESAP_GUNLERI; i++) {
     const tarih = new Date(bugun);
     tarih.setDate(bugun.getDate() - i);
-    const tarihStr = tarih.toISOString().split('T')[0];
+    const tarihStr = tarihiISOFormatinaCevir(tarih);
     if (tempoGecmis[tarihStr] !== undefined) {
       toplamSon7Gun += tempoGecmis[tarihStr];
       gunSayisi++;
@@ -159,7 +160,7 @@ export const kazaIstatistikHesapla = (
 
   return {
     haftaOrtalamasi,
-    tahminiTamamlanmaTarihi: tahminiTarih.toISOString().split('T')[0],
+    tahminiTamamlanmaTarihi: tarihiISOFormatinaCevir(tahminiTarih),
     tahminiTamamlanmaGunSayisi,
     motivasyonOnerileri,
   };
