@@ -329,12 +329,9 @@ export const AnaSayfa: React.FC = () => {
       }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
-      // Arka plan bildirimlerini iptal et
+      // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
       if (vakitAdi) {
-        try { await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi); } catch (e) { }
-        try { await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakitAdi); } catch (e) { }
-        // Bildirim merkezinde bekleyen muhafiz bildirimlerini temizle
-        try { await BildirimServisi.getInstance().vakitBildirimleriniKapat(vakitAdi, mevcutTarih); } catch (e) { }
+        try { await BildirimServisi.getInstance().vakitKilindiTemizle(vakitAdi, mevcutTarih); } catch (e) { }
       }
     } else {
       // Namaz kilmadim - bildirimleri yeniden aktif et

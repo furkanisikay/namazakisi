@@ -263,18 +263,11 @@ export class BildirimServisi {
         }
       }
 
-      // Bu vakit icin kalan tum bildirimleri iptal et
-      // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
-      if (isVakitAdi(vakit)) {
-        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit);
-        // Vakit sayaci bildirimini de iptal et
-        await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit);
-      } else {
+      if (!isVakitAdi(vakit)) {
         Logger.warn('BildirimServisi', 'Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
       }
-
-      // Bildirim merkezinde sadece bu vakte ait muhafiz bildirimlerini kapat
-      await this.vakitBildirimleriniKapat(vakit, tarih);
+      // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
+      await this.vakitKilindiTemizle(vakit, tarih);
 
       Logger.info('BildirimServisi', `${vakit} icin kalan bildirimler iptal edildi`);
     } catch (error) {
@@ -284,11 +277,24 @@ export class BildirimServisi {
   }
 
   /**
+   * Namaz kılındığında tüm vakit bildirimlerini temizler:
+   * zamanlanmış muhafız bildirimleri, vakit sayacı ve bildirim merkezindeki aktif bildirimler.
+   * AnaSayfa (uygulama içi toggle) ve kildimAksiyonunuIsle (bildirimden "Kıldım") tarafından kullanılır.
+   */
+  public async vakitKilindiTemizle(vakit: string, tarih: string): Promise<void> {
+    const gorevler: Promise<void>[] = [this.vakitBildirimleriniKapat(vakit, tarih)];
+    if (isVakitAdi(vakit)) {
+      gorevler.push(ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit));
+      gorevler.push(VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit));
+    }
+    await Promise.allSettled(gorevler);
+  }
+
+  /**
    * Sadece belirli bir vakte ait muhafiz bildirimlerini bildirim merkezinden kapat
    * Diger vakitlerin bildirimleri korunur
-   * Uygulama ici "kilindi" isaretlendiginde veya bildirimden "Kildim" tiklandiginda cagrilir
    */
-  public async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
+  private async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
     try {
       const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
       // Timezone-safe: gunEkle YYYY-MM-DD string uzerinde calisir, new Date() UTC sorununa yol acmaz
@@ -298,12 +304,11 @@ export class BildirimServisi {
       const bugunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
       const dunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${dunStr}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
 
-      for (const bildirim of mevcutBildirimler) {
-        const id = bildirim.request.identifier;
-        if (id.startsWith(bugunOneki) || id.startsWith(dunOneki)) {
-          await Notifications.dismissNotificationAsync(id);
-        }
-      }
+      const kapatilacaklar = mevcutBildirimler
+        .map(b => b.request.identifier)
+        .filter(id => id.startsWith(bugunOneki) || id.startsWith(dunOneki));
+
+      await Promise.all(kapatilacaklar.map(id => Notifications.dismissNotificationAsync(id)));
     } catch (error) {
       Logger.error('BildirimServisi', 'Vakit bildirimleri kapatilirken hata:', error);
     }
