@@ -59,6 +59,17 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
 }
 
 /**
+ * Vakit onekini bildirim ID'sinden cikar
+ * Ornek: "muhafiz_2026-03-10_vakit_ikindi_seviye_2_dk_15" → "muhafiz_2026-03-10_vakit_ikindi"
+ */
+function vakitOnekiniCikar(bildirimId: string): string | null {
+  const eslesme = bildirimId.match(
+    new RegExp(`^(${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}\\d{4}-\\d{2}-\\d{2}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}[a-z]+)`)
+  );
+  return eslesme ? eslesme[1] : null;
+}
+
+/**
  * Bildirim ayarlarini yapilandir
  */
 Notifications.setNotificationHandler({
@@ -294,6 +305,50 @@ export class BildirimServisi {
       }
     } catch (error) {
       Logger.error('BildirimServisi', 'Vakit bildirimleri kapatilirken hata:', error);
+    }
+  }
+
+  /**
+   * Bildirim merkezindeki eski muhafiz bildirimlerini temizle
+   * Her vakit icin yalnizca en son gosterilen bildirimi tutar, daha eskileri siler
+   * Uygulama on plana geldiginde veya ilk basladiginda cagrilir (arka plan senaryosu icin)
+   */
+  public async sunulanEskiMuhafizBildirimleriniTemizle(): Promise<void> {
+    try {
+      const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
+
+      // Muhafiz bildirimlerini vakit onekine gore grupla
+      const vakitGruplari = new Map<string, Array<{ id: string; date: number }>>();
+
+      for (const bildirim of mevcutBildirimler) {
+        const id = bildirim.request.identifier;
+        if (!id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) continue;
+
+        const vakitOneki = vakitOnekiniCikar(id);
+        if (!vakitOneki) continue;
+
+        if (!vakitGruplari.has(vakitOneki)) {
+          vakitGruplari.set(vakitOneki, []);
+        }
+        vakitGruplari.get(vakitOneki)!.push({ id, date: bildirim.date });
+      }
+
+      // Her vakit grubu icin en son bildirimi tut, daha eskileri sil
+      for (const [, bildirimler] of vakitGruplari) {
+        if (bildirimler.length <= 1) continue;
+
+        // Tarihe gore sirala (buyukten kucuge) - en son = en buyuk tarih
+        bildirimler.sort((a, b) => b.date - a.date);
+
+        // Ilki (en son) haric diger bildirimleri kaldir
+        for (let i = 1; i < bildirimler.length; i++) {
+          await Notifications.dismissNotificationAsync(bildirimler[i].id);
+        }
+      }
+
+      Logger.info('BildirimServisi', 'Eski muhafiz bildirimleri temizlendi');
+    } catch (error) {
+      Logger.error('BildirimServisi', 'Eski muhafiz bildirimleri temizlenirken hata:', error);
     }
   }
 
