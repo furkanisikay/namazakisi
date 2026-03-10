@@ -286,8 +286,9 @@ export class BildirimServisi {
   /**
    * Sadece belirli bir vakte ait muhafiz bildirimlerini bildirim merkezinden kapat
    * Diger vakitlerin bildirimleri korunur
+   * Uygulama ici "kilindi" isaretlendiginde veya bildirimden "Kildim" tiklandiginda cagrilir
    */
-  private async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
+  public async vakitBildirimleriniKapat(vakit: string, tarih: string): Promise<void> {
     try {
       const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
       // Timezone-safe: gunEkle YYYY-MM-DD string uzerinde calisir, new Date() UTC sorununa yol acmaz
