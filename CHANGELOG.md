@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.14.1] - 2026-03-13
+
+### Düzeltildi
+- muhafız bildirimleri her yeni bildirimde öncekini temizler (#62)
+
 ## [0.14.0] - 2026-03-06
 
 ### Eklendi
