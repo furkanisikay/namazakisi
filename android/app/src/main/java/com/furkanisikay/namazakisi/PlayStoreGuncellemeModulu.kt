@@ -185,6 +185,22 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
             }
     }
 
+    /**
+     * Arka planda indirilmiş, kurulmayı bekleyen güncelleme var mı kontrol eder.
+     * App öne gelince çağrılır; true ise guncellemeYuklemeyiTamamla çağır.
+     */
+    @ReactMethod
+    fun indirilenGuncellemeVarMi(promise: Promise) {
+        appUpdateManager.appUpdateInfo
+            .addOnSuccessListener { info ->
+                val isDownloaded = info.installStatus() == InstallStatus.DOWNLOADED
+                promise.resolve(isDownloaded)
+            }
+            .addOnFailureListener {
+                promise.resolve(false)
+            }
+    }
+
     // NativeEventEmitter için gerekli
     @ReactMethod
     fun addListener(eventName: String) {}

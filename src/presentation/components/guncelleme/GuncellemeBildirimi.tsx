@@ -14,7 +14,7 @@
  */
 
 import * as React from 'react';
-import { useRef, useEffect, useCallback, useState } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,6 @@ import {
   Easing,
   Linking,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -46,8 +45,6 @@ export const GuncellemeBildirimi: React.FC = () => {
   const bilgi = useAppSelector((state) => state.guncelleme.bilgi);
   const bildirimiKapatti = useAppSelector((state) => state.guncelleme.bildirimiKapatti);
 
-  // Play Store güncelleme akışı sırasında yükleniyor durumu
-  const [playStoreYukleniyor, setPlayStoreYukleniyor] = useState(false);
 
   // Animasyon degerleri
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -90,28 +87,38 @@ export const GuncellemeBildirimi: React.FC = () => {
     }
   }, [gosterilsinMi, slideAnim, fadeAnim]);
 
+  // Play Store: DOWNLOADED durumunu dinle ve guncellemeyi tamamla
+  useEffect(() => {
+    if (bilgi?.kaynak !== 'playstore') return;
+
+    const abonelikIptal = PlayStoreModulu.installDurumDinle((olay) => {
+      if (olay.installStatus === 11 /* DOWNLOADED */) {
+        // İndirme tamamlandı — uygulamayı yeniden başlat
+        PlayStoreModulu.guncellemeYuklemeyiTamamla().catch((hata: any) => {
+          Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı', hata?.message);
+        });
+      }
+    });
+
+    return abonelikIptal;
+  }, [bilgi?.kaynak]);
+
   /**
    * Guncelleme butonuna basildi.
-   * Play Store'dan kurulmuşsa: native in-app update flow başlatır.
+   * Play Store'dan kurulmuşsa: native in-app update flow başlatır ve
+   * kendi UI'ını hemen kapatır (Play Store kendi sheet'ini gösterir).
    * GitHub/sideload kurulumda: indirme bağlantısını açar.
    */
   const guncelleBasildi = useCallback(async () => {
     if (!bilgi) return;
 
     if (bilgi.kaynak === 'playstore') {
-      // Play Store native update flow
-      setPlayStoreYukleniyor(true);
+      // Kendi UI'ını kapat — Play Store native sheet devralır
+      dispatch(bildirimiKapat());
       try {
-        // Native bottom sheet açılır, kullanıcı "Güncelle"ye basarsa indirme başlar
-        const sonuc = await PlayStoreModulu.esnekGuncellemeBaslat();
-        if (sonuc === 'DOWNLOADED') {
-          // İndirme tamamlandı — uygulamayı yeniden başlat
-          await PlayStoreModulu.guncellemeYuklemeyiTamamla();
-        }
+        await PlayStoreModulu.esnekGuncellemeBaslat();
       } catch (hata: any) {
-        Logger.warn('GuncellemeBildirimi', 'Play Store update hatası', hata?.message);
-      } finally {
-        setPlayStoreYukleniyor(false);
+        Logger.warn('GuncellemeBildirimi', 'Play Store update başlatılamadı', hata?.message);
       }
     } else {
       // GitHub / sideload — mevcut davranış
@@ -121,7 +128,7 @@ export const GuncellemeBildirimi: React.FC = () => {
         });
       }
     }
-  }, [bilgi]);
+  }, [bilgi, dispatch]);
 
   /**
    * Erteleme butonuna basildi
@@ -338,7 +345,6 @@ export const GuncellemeBildirimi: React.FC = () => {
           {/* Guncelle butonu */}
           <TouchableOpacity
             onPress={guncelleBasildi}
-            disabled={playStoreYukleniyor}
             style={{
               flex: 2,
               flexDirection: 'row',
@@ -346,22 +352,16 @@ export const GuncellemeBildirimi: React.FC = () => {
               borderRadius: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: playStoreYukleniyor
-                ? `${renkler.bilgi}99`
-                : renkler.bilgi,
+              backgroundColor: renkler.bilgi,
               gap: 6,
             }}
             activeOpacity={0.7}
           >
-            {playStoreYukleniyor ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
-            ) : (
-              <MaterialIcons
-                name="file-download"
-                size={16}
-                color="#FFFFFF"
-              />
-            )}
+            <MaterialIcons
+              name="file-download"
+              size={16}
+              color="#FFFFFF"
+            />
             <Text
               style={{
                 fontSize: 13,
@@ -369,7 +369,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                 color: '#FFFFFF',
               }}
             >
-              {playStoreYukleniyor ? 'İndiriliyor...' : 'Güncelle'}
+              Güncelle
             </Text>
           </TouchableOpacity>
         </View>

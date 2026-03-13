@@ -54,6 +54,29 @@ jest.mock('@react-native-community/netinfo', () => ({
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
+// PlayStoreGuncellemeModulu mock
+const mockKurulumKaynagiGetir = jest.fn().mockResolvedValue('sideload');
+jest.mock('../PlayStoreGuncellemeModulu', () => ({
+  PlayStoreModulu: {
+    kurulumKaynagiGetir: () => mockKurulumKaynagiGetir(),
+    guncellemeDurumunuKontrolEt: jest.fn().mockResolvedValue({ guncellemeMevcut: false }),
+    esnekGuncellemeBaslat: jest.fn(),
+    guncellemeYuklemeyiTamamla: jest.fn(),
+    installDurumDinle: jest.fn().mockReturnValue(() => {}),
+    indirilenGuncellemeVarMiKontrolEt: jest.fn(),
+  },
+}));
+
+// PlayStoreGuncellemeKaynagi mock
+const mockPlayStoreKontrolEt = jest.fn().mockResolvedValue({ guncellemeMevcut: false, bilgi: null });
+jest.mock('../PlayStoreGuncellemeKaynagi', () => ({
+  PlayStoreGuncellemeKaynagi: jest.fn().mockImplementation(() => ({
+    tip: 'playstore',
+    destekleniyor: () => true,
+    enSonSurumuKontrolEt: () => mockPlayStoreKontrolEt(),
+  })),
+}));
+
 // ==================== YARDIMCI FONKSIYONLAR ====================
 
 /**
@@ -620,6 +643,164 @@ describe('GuncellemeServisi', () => {
     // Cevrimdisi + bayat cache = guncelleme yok
     expect(sonuc.guncellemeMevcut).toBe(false);
     expect(sonuc.bilgi).toBeNull();
+  });
+});
+
+// ==================== PLAY STORE ENTEGRASYON TESTLERİ ====================
+
+describe('GuncellemeServisi — Play Store kaynak seçimi', () => {
+  beforeEach(() => {
+    // Her test için mock ve servis sıfırla
+    Object.keys(asyncStorageMock).forEach(k => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockResolvedValue({ isConnected: true });
+    mockKurulumKaynagiGetir.mockClear();
+    mockKurulumKaynagiGetir.mockResolvedValue('sideload');
+    mockPlayStoreKontrolEt.mockClear();
+    mockPlayStoreKontrolEt.mockResolvedValue({ guncellemeMevcut: false, bilgi: null });
+    mockFetch.mockClear();
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ tag_name: `v${UYGULAMA.VERSIYON}`, assets: [], body: '' }),
+    });
+  });
+
+  it('sideload kurulumda GitHub provider kullanılır', async () => {
+    mockKurulumKaynagiGetir.mockResolvedValue('sideload');
+    const servis = GuncellemeServisi.getInstance();
+
+    await servis.guncellemeKontrolEt(true);
+
+    // GitHub API çağrılmalı
+    expect(mockFetch).toHaveBeenCalled();
+    // Play Store kontrol çağrılmamalı
+    expect(mockPlayStoreKontrolEt).not.toHaveBeenCalled();
+  });
+
+  it('"unknown" kurulum kaynağında GitHub provider kullanılır', async () => {
+    mockKurulumKaynagiGetir.mockResolvedValue('unknown');
+    const servis = GuncellemeServisi.getInstance();
+
+    await servis.guncellemeKontrolEt(true);
+
+    expect(mockFetch).toHaveBeenCalled();
+    expect(mockPlayStoreKontrolEt).not.toHaveBeenCalled();
+  });
+
+  it('play_store kurulumda Play Store provider kullanılır', async () => {
+    mockKurulumKaynagiGetir.mockResolvedValue('play_store');
+    mockPlayStoreKontrolEt.mockResolvedValue({
+      guncellemeMevcut: true,
+      bilgi: {
+        yeniVersiyon: 'versionCode 28',
+        mevcutVersiyon: UYGULAMA.VERSIYON,
+        degisiklikNotlari: '',
+        indirmeBaglantisi: 'playstore://update',
+        yayinTarihi: '',
+        kaynak: 'playstore',
+        zorunluMu: false,
+      },
+    });
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(true);
+
+    // Play Store provider çağrılmalı
+    expect(mockPlayStoreKontrolEt).toHaveBeenCalled();
+    // GitHub API çağrılmamalı (Play Store provider aktif)
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi!.kaynak).toBe('playstore');
+  });
+
+  it('kurulum kaynağı tespiti sadece bir kez yapılır (lazy init)', async () => {
+    mockKurulumKaynagiGetir.mockResolvedValue('sideload');
+    const servis = GuncellemeServisi.getInstance();
+
+    await servis.guncellemeKontrolEt(true);
+    await servis.guncellemeKontrolEt(true);
+    await servis.guncellemeKontrolEt(true);
+
+    // kurulumKaynagiGetir sadece bir kez çağrılmalı
+    expect(mockKurulumKaynagiGetir).toHaveBeenCalledTimes(1);
+  });
+
+  it('kurulum kaynağı tespiti hata fırlattığında GitHub korunur', async () => {
+    mockKurulumKaynagiGetir.mockRejectedValue(new Error('Tespit hatası'));
+    const servis = GuncellemeServisi.getInstance();
+
+    // Hata durumunda crash olmaz ve GitHub çalışır
+    await expect(servis.guncellemeKontrolEt(true)).resolves.toBeDefined();
+    expect(mockFetch).toHaveBeenCalled();
+  });
+});
+
+describe('GuncellemeServisi — onbellekBayatMi Play Store guard', () => {
+  beforeEach(() => {
+    Object.keys(asyncStorageMock).forEach(k => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false });
+    mockKurulumKaynagiGetir.mockResolvedValue('sideload');
+  });
+
+  it('Play Store cache asla "bayat" sayılmaz (versiyonCode string semantik karşılaştırma yapılmaz)', async () => {
+    // Play Store güncelleme bilgisi olan geçerli cache
+    const playStoreCache = {
+      sonKontrolZamani: Date.now(), // Yeni cache
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: 'versionCode 28',
+          mevcutVersiyon: UYGULAMA.VERSIYON,
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(playStoreCache);
+
+    const servis = GuncellemeServisi.getInstance();
+    // Çevrimdışı — cache geçerliyse cache'i dönmeli
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Cache geçerli olmalı (bayat sayılmamalı), güncelleme gösterilmeli
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi!.kaynak).toBe('playstore');
+  });
+
+  it('GitHub cache versiyonu güncel uygulamayla eşleşince bayat kabul edilir', async () => {
+    const bayatGithubCache = {
+      sonKontrolZamani: Date.now(),
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: UYGULAMA.VERSIYON, // Artık mevcut versiyon
+          mevcutVersiyon: '0.5.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://github.com/test/releases',
+          yayinTarihi: '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    };
+
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify(bayatGithubCache);
+    mockNetInfoFetch.mockResolvedValue({ isConnected: false });
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Bayat GitHub cache: çevrimdışı + bayat = güncelleme yok
+    expect(sonuc.guncellemeMevcut).toBe(false);
   });
 });
 

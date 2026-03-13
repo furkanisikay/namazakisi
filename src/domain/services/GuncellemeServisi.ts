@@ -463,10 +463,17 @@ export class GuncellemeServisi {
    *
    * Cache'deki "yeni versiyon" mevcut uygulama versiyonuna esit veya
    * daha eskiyse bayat kabul edilir (kullanici uygulamayi guncelledi).
+   *
+   * Not: Play Store guncellemeleri "versionCode:XX" formatinda yeniVersiyon
+   * dondurur; semantik versiyon karsilastirmasi yapilamaz. Bu durumda
+   * onbellek hic zaman bayat sayilmaz (6 saatlik TTL ile yonetilir).
    */
   private onbellekBayatMi(): boolean {
     const bilgi = this.onbellek?.sonSonuc?.bilgi;
-    return !!(bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0);
+    if (!bilgi) return false;
+    // Play Store guncelleme versiyonu versionCode tabanlidir — semantik karsilastirma yapma
+    if (bilgi.kaynak === 'playstore') return false;
+    return versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0;
   }
 
   /**

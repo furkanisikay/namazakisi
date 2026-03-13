@@ -115,4 +115,20 @@ export const PlayStoreModulu = {
     const subscription = _emitter.addListener('PlayStoreInstallStateChanged', handler);
     return () => subscription.remove();
   },
+
+  /**
+   * Arka planda indirilmiş bekleyen bir güncelleme varsa otomatik olarak tamamlar.
+   * Uygulama öne geldiğinde çağrılır (App.tsx AppState handler).
+   */
+  async indirilenGuncellemeVarMiKontrolEt(): Promise<void> {
+    if (Platform.OS !== 'android' || !PlayStoreGuncelleme) return;
+    try {
+      const varMi: boolean = await PlayStoreGuncelleme.indirilenGuncellemeVarMi();
+      if (varMi) {
+        await PlayStoreGuncelleme.guncellemeYuklemeyiTamamla();
+      }
+    } catch {
+      // Sessizce yoksay — bu kontrol kritik değil
+    }
+  },
 };
