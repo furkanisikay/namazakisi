@@ -23,6 +23,7 @@ import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi
 import { NamazVaktiHesaplayiciServisi, VakitBilgisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
+import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { ArkaplanGorevServisi } from '../../domain/services/ArkaplanGorevServisi';
 import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
@@ -328,10 +329,9 @@ export const AnaSayfa: React.FC = () => {
       }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
-      // Arka plan bildirimlerini iptal et
+      // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
       if (vakitAdi) {
-        try { await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakitAdi); } catch (e) { }
-        try { await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakitAdi); } catch (e) { }
+        try { await BildirimServisi.getInstance().vakitKilindiTemizle(vakitAdi, mevcutTarih); } catch (e) { }
       }
     } else {
       // Namaz kilmadim - bildirimleri yeniden aktif et

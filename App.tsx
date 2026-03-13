@@ -209,6 +209,8 @@ const AppIcerik: React.FC = () => {
 
         // Arkaplan muhafiz bildirimlerini planla (Logger hazir olduktan sonra)
         arkaplanMuhafiziBildirimleriniPlanla();
+        // Arka planda birikmis eski muhafiz bildirimlerini temizle
+        BildirimServisi.getInstance().sunulanEskiMuhafizBildirimleriniTemizle();
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
@@ -226,6 +228,9 @@ const AppIcerik: React.FC = () => {
       if (nextAppState === 'active') {
         // Uygulama on plana geldi, bildirimleri yenile
         arkaplanMuhafiziBildirimleriniPlanla();
+        // Arka planda birikmis eski muhafiz bildirimlerini temizle
+        // (her vakit icin yalnizca en son bildirimi bildirim merkezinde tut)
+        BildirimServisi.getInstance().sunulanEskiMuhafizBildirimleriniTemizle();
         // Konum takibini senkronize et ve yeniden baslat
         konumTakibiniSenkronizeEt();
         // Guncelleme kontrolu (onbellek gecerlilik surecine uyar)

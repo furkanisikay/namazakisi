@@ -59,6 +59,17 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
 }
 
 /**
+ * Vakit onekini bildirim ID'sinden cikar
+ * Ornek: "muhafiz_2026-03-10_vakit_ikindi_seviye_2_dk_15" → "muhafiz_2026-03-10_vakit_ikindi"
+ */
+function vakitOnekiniCikar(bildirimId: string): string | null {
+  const eslesme = bildirimId.match(
+    new RegExp(`^(${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}\\d{4}-\\d{2}-\\d{2}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}[a-z]+)`)
+  );
+  return eslesme ? eslesme[1] : null;
+}
+
+/**
  * Bildirim ayarlarini yapilandir
  */
 Notifications.setNotificationHandler({
@@ -252,24 +263,31 @@ export class BildirimServisi {
         }
       }
 
-      // Bu vakit icin kalan tum bildirimleri iptal et
-      // ArkaplanMuhafizServisi uzerinden iptal et (boylece kilinanlar listesine de eklenir)
-      if (isVakitAdi(vakit)) {
-        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit);
-        // Vakit sayaci bildirimini de iptal et
-        await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit);
-      } else {
+      if (!isVakitAdi(vakit)) {
         Logger.warn('BildirimServisi', 'Vakit adı doğrulanamadı, iptal işlemi atlandı:', vakit);
       }
-
-      // Bildirim merkezinde sadece bu vakte ait muhafiz bildirimlerini kapat
-      await this.vakitBildirimleriniKapat(vakit, tarih);
+      // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
+      await this.vakitKilindiTemizle(vakit, tarih);
 
       Logger.info('BildirimServisi', `${vakit} icin kalan bildirimler iptal edildi`);
     } catch (error) {
       Logger.error('BildirimServisi', 'Kildim aksiyonu isleme hatasi:', error);
       throw error; // Hatayi yukari ilet (deduplikasyon retry mekanizmasi icin)
     }
+  }
+
+  /**
+   * Namaz kılındığında tüm vakit bildirimlerini temizler:
+   * zamanlanmış muhafız bildirimleri, vakit sayacı ve bildirim merkezindeki aktif bildirimler.
+   * AnaSayfa (uygulama içi toggle) ve kildimAksiyonunuIsle (bildirimden "Kıldım") tarafından kullanılır.
+   */
+  public async vakitKilindiTemizle(vakit: string, tarih: string): Promise<void> {
+    const gorevler: Promise<void>[] = [this.vakitBildirimleriniKapat(vakit, tarih)];
+    if (isVakitAdi(vakit)) {
+      gorevler.push(ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit));
+      gorevler.push(VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit));
+    }
+    await Promise.allSettled(gorevler);
   }
 
   /**
@@ -286,14 +304,57 @@ export class BildirimServisi {
       const bugunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
       const dunOneki = `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${dunStr}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`;
 
-      for (const bildirim of mevcutBildirimler) {
-        const id = bildirim.request.identifier;
-        if (id.startsWith(bugunOneki) || id.startsWith(dunOneki)) {
-          await Notifications.dismissNotificationAsync(id);
-        }
-      }
+      const kapatilacaklar = mevcutBildirimler
+        .map(b => b.request.identifier)
+        .filter(id => id.startsWith(bugunOneki) || id.startsWith(dunOneki));
+
+      await Promise.all(kapatilacaklar.map(id => Notifications.dismissNotificationAsync(id)));
     } catch (error) {
       Logger.error('BildirimServisi', 'Vakit bildirimleri kapatilirken hata:', error);
+    }
+  }
+
+  /**
+   * Bildirim merkezindeki eski muhafiz bildirimlerini temizle
+   * Her vakit icin yalnizca en son gosterilen bildirimi tutar, daha eskileri siler
+   * Uygulama on plana geldiginde veya ilk basladiginda cagrilir (arka plan senaryosu icin)
+   */
+  public async sunulanEskiMuhafizBildirimleriniTemizle(): Promise<void> {
+    try {
+      const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
+
+      // Muhafiz bildirimlerini vakit onekine gore grupla
+      const vakitGruplari = new Map<string, Array<{ id: string; date: number }>>();
+
+      for (const bildirim of mevcutBildirimler) {
+        const id = bildirim.request.identifier;
+        if (!id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) continue;
+
+        const vakitOneki = vakitOnekiniCikar(id);
+        if (!vakitOneki) continue;
+
+        if (!vakitGruplari.has(vakitOneki)) {
+          vakitGruplari.set(vakitOneki, []);
+        }
+        vakitGruplari.get(vakitOneki)!.push({ id, date: bildirim.date });
+      }
+
+      // Her vakit grubu icin en son bildirimi tut, daha eskileri sil
+      for (const [, bildirimler] of vakitGruplari) {
+        if (bildirimler.length <= 1) continue;
+
+        // Tarihe gore sirala (buyukten kucuge) - en son = en buyuk tarih
+        bildirimler.sort((a, b) => b.date - a.date);
+
+        // Ilki (en son) haric diger bildirimleri kaldir
+        for (let i = 1; i < bildirimler.length; i++) {
+          await Notifications.dismissNotificationAsync(bildirimler[i].id);
+        }
+      }
+
+      Logger.info('BildirimServisi', 'Eski muhafiz bildirimleri temizlendi');
+    } catch (error) {
+      Logger.error('BildirimServisi', 'Eski muhafiz bildirimleri temizlenirken hata:', error);
     }
   }
 
