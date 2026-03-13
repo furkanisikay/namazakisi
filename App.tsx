@@ -29,6 +29,7 @@ import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentatio
 import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
+import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { Logger } from './src/core/utils/Logger';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
@@ -235,6 +236,10 @@ const AppIcerik: React.FC = () => {
         konumTakibiniSenkronizeEt();
         // Guncelleme kontrolu (onbellek gecerlilik surecine uyar)
         store.dispatch(guncellemeKontrolEt(false));
+        // Play Store: arka planda indirilen bekleyen guncelleme var mi kontrol et
+        if (Platform.OS === 'android') {
+          PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt();
+        }
       }
     });
 

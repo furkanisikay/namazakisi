@@ -31,6 +31,7 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { Logger } from '../../../core/utils/Logger';
 import { guncellemeErtele, bildirimiKapat } from '../../store/guncellemeSlice';
 import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
+import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeModulu';
 
 /**
  * Guncelleme bildirimi bileseni
@@ -43,6 +44,7 @@ export const GuncellemeBildirimi: React.FC = () => {
   const guncellemeMevcut = useAppSelector((state) => state.guncelleme.guncellemeMevcut);
   const bilgi = useAppSelector((state) => state.guncelleme.bilgi);
   const bildirimiKapatti = useAppSelector((state) => state.guncelleme.bildirimiKapatti);
+
 
   // Animasyon degerleri
   const slideAnim = useRef(new Animated.Value(300)).current;
@@ -85,16 +87,48 @@ export const GuncellemeBildirimi: React.FC = () => {
     }
   }, [gosterilsinMi, slideAnim, fadeAnim]);
 
+  // Play Store: DOWNLOADED durumunu dinle ve guncellemeyi tamamla
+  useEffect(() => {
+    if (bilgi?.kaynak !== 'playstore') return;
+
+    const abonelikIptal = PlayStoreModulu.installDurumDinle((olay) => {
+      if (olay.installStatus === 11 /* DOWNLOADED */) {
+        // İndirme tamamlandı — uygulamayı yeniden başlat
+        PlayStoreModulu.guncellemeYuklemeyiTamamla().catch((hata: any) => {
+          Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı', hata?.message);
+        });
+      }
+    });
+
+    return abonelikIptal;
+  }, [bilgi?.kaynak]);
+
   /**
-   * Guncelleme baglantisini ac
+   * Guncelleme butonuna basildi.
+   * Play Store'dan kurulmuşsa: native in-app update flow başlatır ve
+   * kendi UI'ını hemen kapatır (Play Store kendi sheet'ini gösterir).
+   * GitHub/sideload kurulumda: indirme bağlantısını açar.
    */
-  const guncelleBasildi = useCallback(() => {
-    if (bilgi?.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
-      Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
-        Logger.warn('GuncellemeBildirimi', 'Baglanti acilamadi', hata);
-      });
+  const guncelleBasildi = useCallback(async () => {
+    if (!bilgi) return;
+
+    if (bilgi.kaynak === 'playstore') {
+      // Kendi UI'ını kapat — Play Store native sheet devralır
+      dispatch(bildirimiKapat());
+      try {
+        await PlayStoreModulu.esnekGuncellemeBaslat();
+      } catch (hata: any) {
+        Logger.warn('GuncellemeBildirimi', 'Play Store update başlatılamadı', hata?.message);
+      }
+    } else {
+      // GitHub / sideload — mevcut davranış
+      if (bilgi.indirmeBaglantisi && guvenilirBaglantiMi(bilgi.indirmeBaglantisi)) {
+        Linking.openURL(bilgi.indirmeBaglantisi).catch((hata) => {
+          Logger.warn('GuncellemeBildirimi', 'Baglanti acilamadi', hata);
+        });
+      }
     }
-  }, [bilgi]);
+  }, [bilgi, dispatch]);
 
   /**
    * Erteleme butonuna basildi

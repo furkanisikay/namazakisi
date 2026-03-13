@@ -21,6 +21,8 @@ import {
   GUNCELLEME_SABITLERI,
   GuncellemeKaynagiTipi,
 } from '../../core/constants/UygulamaSabitleri';
+import { PlayStoreModulu } from './PlayStoreGuncellemeModulu';
+import { PlayStoreGuncellemeKaynagi } from './PlayStoreGuncellemeKaynagi';
 
 // ==================== TIPLER ====================
 
@@ -289,9 +291,12 @@ export class GuncellemeServisi {
   private static instance: GuncellemeServisi | null = null;
   private kaynaklar: GuncellemeKaynagi[] = [];
   private onbellek: GuncellemeOnbellek | null = null;
+  /** Kurulum kaynağı tespit edildi mi (lazy init) */
+  private kurulumKaynagiTespitEdildi: boolean = false;
 
   private constructor() {
     // Varsayilan olarak GitHub kaynagini ekle
+    // guncellemeKontrolEt() ilk cagrildiginda Play Store tespiti yapilir
     this.kaynaklar.push(new GitHubGuncellemeKaynagi());
   }
 
@@ -320,6 +325,32 @@ export class GuncellemeServisi {
   }
 
   /**
+   * Kurulum kaynağını tespit ederek uygun provider'ı seç (lazy, sadece bir kez çalışır)
+   *
+   * Play Store'dan kurulduysa: PlayStoreGuncellemeKaynagi aktif, GitHub kaldırılır
+   * Sideload/APK ile kurulduysa: GitHub provider korunur
+   */
+  private async kurulumKaynagiTespitEt(): Promise<void> {
+    if (this.kurulumKaynagiTespitEdildi) return;
+    this.kurulumKaynagiTespitEdildi = true;
+
+    try {
+      const kaynak = await PlayStoreModulu.kurulumKaynagiGetir();
+      Logger.info('GuncellemeServisi', `Kurulum kaynağı: ${kaynak}`);
+
+      if (kaynak === 'play_store') {
+        // GitHub provider'ı kaldır, Play Store provider'ını ekle
+        this.kaynaklar = [new PlayStoreGuncellemeKaynagi()];
+        Logger.info('GuncellemeServisi', 'Play Store provider aktif edildi');
+      }
+      // sideload veya unknown → mevcut GitHub provider korunur
+    } catch (hata) {
+      Logger.warn('GuncellemeServisi', 'Kurulum kaynağı tespit hatası:', hata);
+      // Hata durumunda GitHub provider korunur
+    }
+  }
+
+  /**
    * Guncelleme kontrol et
    * Onbellek, erteleme ve ag durumunu otomatik yonetir
    *
@@ -327,6 +358,9 @@ export class GuncellemeServisi {
    */
   public async guncellemeKontrolEt(zorla: boolean = false): Promise<GuncellemeKontrolSonucu> {
     try {
+      // Kurulum kaynağını tespit et (ilk çalışmada Play Store/GitHub seçimi yapılır)
+      await this.kurulumKaynagiTespitEt();
+
       // Onbellegi yukle
       await this.onbellegiYukle();
 
@@ -429,10 +463,17 @@ export class GuncellemeServisi {
    *
    * Cache'deki "yeni versiyon" mevcut uygulama versiyonuna esit veya
    * daha eskiyse bayat kabul edilir (kullanici uygulamayi guncelledi).
+   *
+   * Not: Play Store guncellemeleri "versionCode:XX" formatinda yeniVersiyon
+   * dondurur; semantik versiyon karsilastirmasi yapilamaz. Bu durumda
+   * onbellek hic zaman bayat sayilmaz (6 saatlik TTL ile yonetilir).
    */
   private onbellekBayatMi(): boolean {
     const bilgi = this.onbellek?.sonSonuc?.bilgi;
-    return !!(bilgi && versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0);
+    if (!bilgi) return false;
+    // Play Store guncelleme versiyonu versionCode tabanlidir — semantik karsilastirma yapma
+    if (bilgi.kaynak === 'playstore') return false;
+    return versiyonKarsilastir(bilgi.yeniVersiyon, UYGULAMA.VERSIYON) <= 0;
   }
 
   /**
