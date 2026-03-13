@@ -21,6 +21,7 @@ import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi, VakitBilgisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
+import { mekruhVakitKontrolEt } from '../../domain/services/KazaHesaplayiciServisi';
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
@@ -54,6 +55,10 @@ export const AnaSayfa: React.FC = () => {
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
+  const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null }>({
+    mekruhMu: false,
+    aciklama: null,
+  });
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
   const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
@@ -295,6 +300,20 @@ export const AnaSayfa: React.FC = () => {
     };
   }, [konumAyarlariStr, muhafizAyarlariStr]);
 
+  // Kerahat vakti kontrolü — her dakika güncelle
+  useEffect(() => {
+    const kontrol = () => {
+      const { lat, lng } = konumAyarlari.koordinatlar || {};
+      if (lat && lng) {
+        const sonuc = mekruhVakitKontrolEt(lat, lng, 'farz');
+        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama });
+      }
+    };
+    kontrol();
+    const interval = setInterval(kontrol, 60 * 1000);
+    return () => clearInterval(interval);
+  }, [konumAyarlariStr]);
+
   // Kutlama mantığı
   useEffect(() => {
     if (gunlukNamazlar) {
@@ -385,13 +404,17 @@ export const AnaSayfa: React.FC = () => {
     let kilitli = false;
 
     if (aktifGunKontrol && vakitBilgisi) {
-      // Eğer vakit 'Güneş' ise (kerahat vakti), kullanıcıya bir sonraki vakit olan 'Öğle'yi gösteriyoruz
+      // Eğer vakit 'Güneş' ise (şuruk/istiwa kerahat vakti), kullanıcıya bir sonraki vakit olan 'Öğle'yi gösteriyoruz
       // Ancak buton 'Vakit Girmedi' şeklinde pasif olacak
       if (vakitBilgisi.vakit === 'gunes') {
         suankiVakitAdi = NamazAdi.Ogle;
         kilitli = true;
       } else {
         suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
+        // Gurub kerahat vaktinde (güneş batış öncesi ~20 dk) butonu kilitle
+        if (mekruhBilgi.mekruhMu) {
+          kilitli = true;
+        }
       }
 
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
@@ -430,6 +453,17 @@ export const AnaSayfa: React.FC = () => {
                 {muhafizDurumu.mesaj}
               </Text>
             </View>
+          </View>
+        )}
+
+        {/* Kerahat Vakti Uyarı Bannerı */}
+        {aktifGunKontrol && mekruhBilgi.mekruhMu && mekruhBilgi.aciklama && (
+          <View className="mb-4 p-3 rounded-xl flex-row items-start gap-3 border"
+            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
+            <FontAwesome5 name="exclamation-triangle" size={14} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+            <Text className="flex-1 text-xs leading-5 font-medium" style={{ color: renkler.metinIkincil }}>
+              {mekruhBilgi.aciklama}
+            </Text>
           </View>
         )}
 
