@@ -14,7 +14,9 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "commit": "cz",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "submit:android": "bash scripts/submit-android.sh",
+    "build:android": "npx eas-cli build --platform android --profile production --non-interactive"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
