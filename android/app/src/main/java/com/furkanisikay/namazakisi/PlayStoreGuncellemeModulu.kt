@@ -141,7 +141,7 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
      */
     @ReactMethod
     fun esnekGuncellemeBaslat(promise: Promise) {
-        val activity = currentActivity
+        val activity = reactApplicationContext.currentActivity
         val info = cachedUpdateInfo
 
         if (activity == null) {
@@ -211,7 +211,7 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
     // ---- ActivityEventListener ----
 
     override fun onActivityResult(
-        activity: Activity?,
+        activity: Activity,
         requestCode: Int,
         resultCode: Int,
         data: Intent?
@@ -226,7 +226,7 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {}
+    override fun onNewIntent(intent: Intent) {}
 
     private fun sendEvent(eventName: String, params: WritableMap) {
         reactApplicationContext
