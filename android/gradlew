@@ -210,6 +210,12 @@ DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 #   * For example: A user cannot expect ${Hostname} to be expanded, as it is an environment variable and will be
 #     treated as '${Hostname}' itself on the command line.
 
+# Inject our AGP-version-forcing init script so it runs before any project
+# buildscript is evaluated (see agp-init.gradle for full explanation).
+if [ -f "$APP_HOME/agp-init.gradle" ]; then
+    set -- "--init-script" "$APP_HOME/agp-init.gradle" "$@"
+fi
+
 set -- \
         "-Dorg.gradle.appname=$APP_BASE_NAME" \
         -classpath "$CLASSPATH" \

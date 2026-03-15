@@ -1,0 +1,30 @@
+// Gradle init script: force AGP 8.11.0 for ALL project buildscript classpaths.
+//
+// WHY THIS FILE EXISTS:
+// Some 3rd-party React Native library build.gradle files declare old Android
+// Gradle Plugin versions (4.x, 7.x, 8.2.x) in their own buildscript blocks.
+// On a fresh EAS build environment (no local Gradle cache), Gradle 8.14 cannot
+// initialize those old AGP versions, causing the Android library plugin to fail
+// silently — resulting in "No variants exist" errors for every affected subproject.
+//
+// WHY AN INIT SCRIPT (not android/build.gradle):
+// In Gradle, all project `buildscript {}` blocks are evaluated in a special early
+// phase, BEFORE the root project's build.gradle body (including `allprojects {}`)
+// runs. A root-project `allprojects { buildscript { ... } }` block therefore
+// arrives too late to affect subproject buildscript classpath resolution.
+// Init scripts are the only hook that fires BEFORE any project's buildscript,
+// making them the correct place for this kind of global classpath override.
+//
+// HOW IT IS LOADED:
+// android/gradlew injects `--init-script "$APP_HOME/agp-init.gradle"` into every
+// Gradle invocation, so this script is active both locally and on EAS.
+
+allprojects {
+    buildscript {
+        configurations.all {
+            resolutionStrategy {
+                force 'com.android.tools.build:gradle:8.11.0'
+            }
+        }
+    }
+}
