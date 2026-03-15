@@ -156,6 +156,11 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // Google Play In-App Update (used by PlayStoreGuncellemeModulu.kt)
+    // app-update-ktx includes both the core API and Kotlin extension properties
+    // (e.g. isFlexibleUpdateAllowed) from com.google.android.play.core.ktx
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
+
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
