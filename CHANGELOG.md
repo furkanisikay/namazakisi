@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.16.0] - 2026-03-15
+
+### Eklendi
+- Play Store submit otomasyonu eklendi
+
+### Düzeltildi
+- [android] force AGP 8.11.0 for all subproject buildscripts to fix EAS "No variants exist" error
+- PlayStoreGuncellemeModulu ActivityEventListener imzaları düzeltildi
+- release notes formatı uygulama içi gösterimle eşleştirildi
+- Play Store in-app update Gradle dependency eklendi
+
 ## [0.15.0] - 2026-03-13
 
 ### Eklendi
