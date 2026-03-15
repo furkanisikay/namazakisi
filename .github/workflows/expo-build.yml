@@ -39,7 +39,7 @@ on:
           - preview
           - production
       publish:
-        description: 'Yayinla (Play Store'"'"'a gonder)'
+        description: "Yayinla (Play Store'a gonder)"
         required: false
         default: true
         type: boolean
