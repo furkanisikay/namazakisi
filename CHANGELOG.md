@@ -5,6 +5,16 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.17.0] - 2026-03-15
+
+### Eklendi
+- [ci] add Play Store auto-submit to Expo Build workflow
+- build+submit automation with auto-publish after EAS build
+
+### Düzeltildi
+- [ci] fix YAML syntax error in expo-build.yml workflow
+- [ci] use fastlane metadata for Android release notes
+
 ## [0.16.1] - 2026-03-15
 
 ### Düzeltildi
