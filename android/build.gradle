@@ -19,6 +19,15 @@ allprojects {
     maven { url 'https://www.jitpack.io' }
     maven { url "$rootDir/../node_modules/@notifee/react-native/android/libs" }
   }
+  // Force all subprojects to use the same AGP version as the root project.
+  // Some 3rd-party library build.gradle files declare old AGP versions (4.x, 7.x) in their
+  // buildscript block. Those older AGPs are incompatible with Gradle 8.14 on a fresh EAS
+  // environment (no local cache), causing "No variants exist" errors during dependency resolution.
+  buildscript {
+    configurations.all {
+      resolutionStrategy.force 'com.android.tools.build:gradle:8.11.0'
+    }
+  }
 }
 
 apply plugin: "expo-root-project"
