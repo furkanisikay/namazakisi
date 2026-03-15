@@ -92,8 +92,8 @@ android {
         applicationId 'com.furkanisikay.namazakisi'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30
-        versionName "0.16.0"
+        versionCode 31
+        versionName "0.16.1"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
@@ -155,11 +155,6 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
-    // Google Play In-App Update (used by PlayStoreGuncellemeModulu.kt)
-    // app-update-ktx includes both the core API and Kotlin extension properties
-    // (e.g. isFlexibleUpdateAllowed) from com.google.android.play.core.ktx
-    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";

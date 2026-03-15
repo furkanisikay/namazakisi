@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.16.1] - 2026-03-15
+
+### Düzeltildi
+- [android] add missing Google Play In-App Update dependency to app/build.gradle
+- [android] use Gradle init script to force AGP 8.11.0 in all subproject buildscripts
+
 ## [0.16.0] - 2026-03-15
 
 ### Eklendi
