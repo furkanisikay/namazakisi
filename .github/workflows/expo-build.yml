@@ -2,11 +2,16 @@
 # Expo Build Pipeline (PlayStore) — Namaz Akisi
 # ========================================================================
 #
-# EAS Build ile PlayStore icin uretim APK/AAB olusturur.
+# EAS Build ile PlayStore icin uretim AAB olusturur.
 # Versiyon DEGISTIRMEZ — mevcut app.json versiyonunu kullanir.
 #
-# Not: Versiyonlama android-build.yml tarafindan yonetilir.
-#      Bu workflow sadece EAS uzerinden build almak icindir.
+# "Yayinla" secenegini isaretli birakinca build bittikten sonra
+# CHANGELOG'dan release notlari alinip Play Store'a otomatik gonderilir.
+#
+# Gereksinimler (Play Store submit icin):
+#   GitHub Secrets:
+#     EXPO_TOKEN               — Expo hesap tokeni
+#     GOOGLE_SERVICE_ACCOUNT   — Google Service Account JSON (tam icerik)
 #
 # ========================================================================
 
@@ -33,11 +38,19 @@ on:
           - development
           - preview
           - production
-      wait_for_build:
-        description: 'Build tamamlanana kadar bekle'
+      publish:
+        description: 'Yayinla (Play Store'"'"'a gonder)'
         required: false
-        default: false
+        default: true
         type: boolean
+      submit_profile:
+        description: 'Submit profili (publish=true ise gecerli)'
+        required: false
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - closed-testing
 
 concurrency:
   group: expo-build-${{ inputs.platform }}-${{ inputs.profile }}
@@ -50,7 +63,7 @@ jobs:
   build:
     name: 🚀 EAS Build (${{ inputs.platform }} / ${{ inputs.profile }})
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: ⏱️ Zamanlayici
@@ -66,7 +79,7 @@ jobs:
       - name: 🔒 appVersionSource kontrolu
         run: |
           APP_VERSION_SOURCE=$(node -p "require('./eas.json').cli?.appVersionSource || 'not-set'")
-          
+
           if [ "$APP_VERSION_SOURCE" != "local" ]; then
             echo "⚠️ appVersionSource '$APP_VERSION_SOURCE' → 'local' olarak duzeltiliyor..."
             node -e "
@@ -87,13 +100,13 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           APP_VERSION=$(node -p "require('./app.json').expo.version")
           VERSION_CODE=$(node -p "require('./app.json').expo.android?.versionCode || 'yok'")
-          
+
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
-          
+
           echo "📦 package.json: $VERSION | app.json: $APP_VERSION | versionCode: $VERSION_CODE"
-          
+
           if [ "$VERSION" != "$APP_VERSION" ]; then
             echo "⚠️ UYARI: package.json ($VERSION) ≠ app.json ($APP_VERSION)"
           fi
@@ -141,11 +154,14 @@ jobs:
         if: inputs.platform == 'android' || inputs.platform == 'all'
         id: android_build
         run: |
-          WAIT_FLAG=""
-          if [ "${{ inputs.wait_for_build }}" != "true" ]; then
+          # publish=true ise build bitene kadar beklemek zorundayiz
+          if [ "${{ inputs.publish }}" == "true" ]; then
+            echo "📦 Yayinlama aktif — build tamamlanana kadar bekleniyor..."
+            WAIT_FLAG=""
+          else
             WAIT_FLAG="--no-wait"
           fi
-          
+
           eas build \
             --platform android \
             --profile ${{ inputs.profile }} \
@@ -159,18 +175,88 @@ jobs:
         id: ios_build
         continue-on-error: true
         run: |
-          WAIT_FLAG=""
-          if [ "${{ inputs.wait_for_build }}" != "true" ]; then
-            WAIT_FLAG="--no-wait"
-          fi
-          
           eas build \
             --platform ios \
             --profile ${{ inputs.profile }} \
             --non-interactive \
-            $WAIT_FLAG
+            --no-wait
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ==========================================
+      # Play Store Submit (publish=true ise)
+      # ==========================================
+      - name: 📋 Release notes hazirla
+        if: |
+          inputs.publish == true &&
+          (inputs.platform == 'android' || inputs.platform == 'all') &&
+          steps.android_build.outcome == 'success'
+        id: release_notes
+        run: |
+          echo "Release notes CHANGELOG'dan cikartiliyor..."
+          NOTES=$(node scripts/extract-changelog.js)
+          echo "--- Release Notes ---"
+          echo "$NOTES"
+          echo "---------------------"
+
+          # Cok satirli output icin dosyaya yaz
+          echo "$NOTES" > /tmp/release-notes.txt
+          echo "notes_file=/tmp/release-notes.txt" >> $GITHUB_OUTPUT
+          echo "✅ Release notes hazir"
+
+      - name: 🔑 Google Service Account hazirla
+        if: |
+          inputs.publish == true &&
+          (inputs.platform == 'android' || inputs.platform == 'all') &&
+          steps.android_build.outcome == 'success'
+        id: gsa
+        run: |
+          if [ -z "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}" ]; then
+            echo "⚠️ GOOGLE_SERVICE_ACCOUNT secret bulunamadi!"
+            echo "💡 GitHub Secrets > GOOGLE_SERVICE_ACCOUNT ekleyin."
+            echo "   (Google Play Console > API erişimi > Service account JSON içeriği)"
+            echo "available=false" >> $GITHUB_OUTPUT
+          else
+            # JSON iceriğini gecici dosyaya yaz
+            echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' > /tmp/google-service-account.json
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "✅ Google Service Account mevcut"
+          fi
+
+      - name: 🚀 Play Store Submit
+        if: |
+          inputs.publish == true &&
+          (inputs.platform == 'android' || inputs.platform == 'all') &&
+          steps.android_build.outcome == 'success' &&
+          steps.gsa.outputs.available == 'true'
+        run: |
+          echo "Play Store'a gonderiliyor (profil: ${{ inputs.submit_profile }})..."
+
+          eas submit \
+            --platform android \
+            --profile ${{ inputs.submit_profile }} \
+            --latest \
+            --release-notes-file "${{ steps.release_notes.outputs.notes_file }}" \
+            --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_GOOGLE_SERVICES_KEY: /tmp/google-service-account.json
+
+      - name: ⚠️ Submit atland (Service Account yok)
+        if: |
+          inputs.publish == true &&
+          (inputs.platform == 'android' || inputs.platform == 'all') &&
+          steps.android_build.outcome == 'success' &&
+          steps.gsa.outputs.available == 'false'
+        run: |
+          echo "⚠️ Play Store submit atlandı — GOOGLE_SERVICE_ACCOUNT secret eksik."
+          echo ""
+          echo "Kurulum için:"
+          echo "1. Google Play Console > Kurulum > API erişimi"
+          echo "2. Bir Service Account oluştur veya bağla"
+          echo "3. JSON anahtarını indir"
+          echo "4. GitHub repo > Settings > Secrets > GOOGLE_SERVICE_ACCOUNT"
+          echo "   (JSON dosyasının tam içeriğini yapıştır)"
 
       # ==========================================
       # Build Ozeti
@@ -183,7 +269,7 @@ jobs:
           DURATION=$((END_TIME - START_TIME))
           MINUTES=$((DURATION / 60))
           SECONDS=$((DURATION % 60))
-          
+
           {
             echo "## 🚀 EAS Build Sonucu"
             echo ""
@@ -193,32 +279,39 @@ jobs:
             echo "| 🔢 **versionCode** | \`${{ steps.version.outputs.version_code }}\` |"
             echo "| 🎯 **Platform** | \`${{ inputs.platform }}\` |"
             echo "| 📋 **Profil** | \`${{ inputs.profile }}\` |"
-            echo "| ⏳ **Bekleme** | \`${{ inputs.wait_for_build }}\` |"
+            echo "| 📤 **Yayinla** | \`${{ inputs.publish }}\` |"
             echo "| ⏱️ **Sure** | ${MINUTES}dk ${SECONDS}sn |"
             echo ""
-            
-            # Platform sonuclari
+
             echo "### Platform Sonuclari"
             echo ""
-            echo "| Platform | Durum |"
-            echo "|----------|-------|"
-            
+            echo "| Platform | Build | Submit |"
+            echo "|----------|-------|--------|"
+
             if [ "${{ inputs.platform }}" == "android" ] || [ "${{ inputs.platform }}" == "all" ]; then
-              echo "| 🤖 Android | ${{ steps.android_build.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
+              BUILD_STATUS="${{ steps.android_build.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }}"
+
+              if [ "${{ inputs.publish }}" == "true" ]; then
+                SUBMIT_STATUS="${{ steps.gsa.outputs.available == 'true' && '✅ Gonderildi' || '⚠️ Secret eksik' }}"
+              else
+                SUBMIT_STATUS="⏭️ Atlandı"
+              fi
+
+              echo "| 🤖 Android | ${BUILD_STATUS} | ${SUBMIT_STATUS} |"
             fi
-            
+
             if [ "${{ inputs.platform }}" == "ios" ] || [ "${{ inputs.platform }}" == "all" ]; then
-              echo "| 🍎 iOS | ${{ steps.ios_build.outcome == 'success' && '✅ Basarili' || (steps.ios_build.outcome == 'skipped' && '⏭️ Atlandi' || '❌ Basarisiz') }} |"
+              echo "| 🍎 iOS | ${{ steps.ios_build.outcome == 'success' && '✅ Basarili' || (steps.ios_build.outcome == 'skipped' && '⏭️ Atlandi' || '❌ Basarisiz') }} | ⏭️ Desteklenmiyor |"
             fi
-            
+
             echo ""
             echo "---"
             echo ""
             echo "### 🔗 Baglantilar"
             echo "- [📱 Expo Dashboard](https://expo.dev/accounts/${{ secrets.EXPO_ACCOUNT || 'furkanisikay' }}/projects/namazakisi/builds)"
-            
-            if [ "${{ inputs.wait_for_build }}" != "true" ]; then
+
+            if [ "${{ inputs.publish }}" != "true" ]; then
               echo ""
-              echo "> ⚠️ Build arka planda devam ediyor. Expo Dashboard uzerinden takip edin."
+              echo "> ⚠️ Build arka planda devam ediyor (Yayinla kapaliydi). Expo Dashboard uzerinden takip edin."
             fi
           } >> $GITHUB_STEP_SUMMARY
