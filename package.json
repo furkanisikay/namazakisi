@@ -16,7 +16,9 @@
     "commit": "cz",
     "postinstall": "patch-package",
     "submit:android": "bash scripts/submit-android.sh",
-    "build:android": "npx eas-cli build --platform android --profile production --non-interactive"
+    "build:android": "bash scripts/build-android.sh",
+    "build:android:no-publish": "bash scripts/build-android.sh --no-publish",
+    "build:android:closed-testing": "bash scripts/build-android.sh --submit-profile closed-testing"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
