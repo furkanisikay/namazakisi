@@ -23,24 +23,41 @@ while [[ "$#" -gt 0 ]]; do
   esac
   shift
 done
-NOTES_FILE=$(mktemp /tmp/release-notes-XXXX.txt)
 
-# CHANGELOG'dan en son versiyon notlarını çıkar
-echo "Release notes çıkarılıyor..."
-node "$(dirname "$0")/extract-changelog.js" > "$NOTES_FILE"
+# ==========================================
+# Release notes → fastlane metadata klasörü
+# EAS Submit bu klasörü otomatik okur.
+# ==========================================
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+VERSION_CODE=$(cd "$ROOT_DIR" && node -p "require('./app.json').expo.android.versionCode")
+METADATA_DIR="$ROOT_DIR/fastlane/metadata/android"
+
+echo "Release notes CHANGELOG'dan çıkarılıyor (versionCode: $VERSION_CODE)..."
+NOTES=$(node "$(dirname "$0")/extract-changelog.js")
 
 echo "--- Release Notes ---"
-cat "$NOTES_FILE"
+echo "$NOTES"
 echo "---------------------"
 
+# Türkçe ve İngilizce metadata klasörlerine yaz
+for LOCALE in "tr-TR" "en-US"; do
+  LOCALE_DIR="$METADATA_DIR/$LOCALE/changelogs"
+  mkdir -p "$LOCALE_DIR"
+  echo "$NOTES" > "$LOCALE_DIR/${VERSION_CODE}.txt"
+done
+
+echo "✅ Release notes metadata klasörüne yazıldı"
+
+# ==========================================
 # Submit komutu
+# ==========================================
 if [ -n "$BUILD_ID" ]; then
   echo "Build $BUILD_ID submit ediliyor (profil: $SUBMIT_PROFILE)..."
   npx eas-cli submit \
     --platform android \
     --profile "$SUBMIT_PROFILE" \
     --id "$BUILD_ID" \
-    --release-notes-file "$NOTES_FILE" \
     --non-interactive
 else
   echo "En son build submit ediliyor (profil: $SUBMIT_PROFILE)..."
@@ -48,9 +65,7 @@ else
     --platform android \
     --profile "$SUBMIT_PROFILE" \
     --latest \
-    --release-notes-file "$NOTES_FILE" \
     --non-interactive
 fi
 
-rm -f "$NOTES_FILE"
 echo "Submit tamamlandı."

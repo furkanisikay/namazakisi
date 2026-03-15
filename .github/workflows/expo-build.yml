@@ -199,10 +199,14 @@ jobs:
           echo "$NOTES"
           echo "---------------------"
 
-          # Cok satirli output icin dosyaya yaz
-          echo "$NOTES" > /tmp/release-notes.txt
-          echo "notes_file=/tmp/release-notes.txt" >> $GITHUB_OUTPUT
-          echo "✅ Release notes hazir"
+          # EAS Submit, fastlane/metadata/android/<locale>/changelogs/<versionCode>.txt dosyasini okur
+          VERSION_CODE=$(node -p "require('./app.json').expo.android.versionCode")
+          for LOCALE in "tr-TR" "en-US"; do
+            mkdir -p "fastlane/metadata/android/$LOCALE/changelogs"
+            echo "$NOTES" > "fastlane/metadata/android/$LOCALE/changelogs/${VERSION_CODE}.txt"
+          done
+
+          echo "✅ Release notes fastlane/metadata klasorune yazildi (versionCode: $VERSION_CODE)"
 
       - name: 🔑 Google Service Account hazirla
         if: |
@@ -236,7 +240,6 @@ jobs:
             --platform android \
             --profile ${{ inputs.submit_profile }} \
             --latest \
-            --release-notes-file "${{ steps.release_notes.outputs.notes_file }}" \
             --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
