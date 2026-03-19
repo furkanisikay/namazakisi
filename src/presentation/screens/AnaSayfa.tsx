@@ -72,6 +72,18 @@ export const AnaSayfa: React.FC = () => {
   const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
   const muhafizAyarlariStr = JSON.stringify(muhafizAyarlari);
 
+  const konumMetni = (() => {
+    if (konumAyarlari.konumModu === 'oto') {
+      const { gpsAdres } = konumAyarlari;
+      if (gpsAdres?.ilce && gpsAdres?.il) return `${gpsAdres.ilce}, ${gpsAdres.il}`;
+      return gpsAdres?.ilce || gpsAdres?.il || 'GPS aktif';
+    }
+    if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
+      return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
+    }
+    return konumAyarlari.seciliIlAdi || undefined;
+  })();
+
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -477,6 +489,8 @@ export const AnaSayfa: React.FC = () => {
             tamamlandi={suankiVakitTamamlandi}
             onTamamla={suankiVakitTamamla}
             kilitli={kilitli}
+            konumModu={konumAyarlari.konumModu}
+            konumMetni={konumMetni}
           />
         ) : (
           <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
