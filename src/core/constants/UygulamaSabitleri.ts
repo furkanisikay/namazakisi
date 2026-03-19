@@ -157,6 +157,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Kaza Defteri
   KAZA_DURUMU: '@namaz_akisi/kaza_durumu',
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
+  // Kurulum sihirbazi
+  ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
 } as const;
 
 // Tarih formatlari

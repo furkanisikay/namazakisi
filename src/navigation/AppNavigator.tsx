@@ -10,9 +10,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AnaSayfa,
   IstatistikSayfasi,
@@ -28,7 +29,9 @@ import {
   RamazanAyarlariSayfasi,
   DebugLogsSayfasi,
   KazaDefteriSayfasi,
+  KurulumSihirbaziSayfasi,
 } from '../presentation/screens';
+import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
@@ -38,6 +41,7 @@ import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
  * Defines all top-level screens and their params.
  */
 export type RootStackParamList = {
+  KurulumSihirbazi: undefined;
   MainTabs: undefined;
   KibleSayfasi: undefined;
 };
@@ -229,13 +233,29 @@ const MainTabs: React.FC = () => {
 
 /**
  * Ana navigator - Root Stack
- * Tema destekli
+ * Tema destekli, ilk kurulum kontrollu
  */
 export const AppNavigator: React.FC = () => {
+  const [ilkKurulum, setIlkKurulum] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI).then(deger => {
+      setIlkKurulum(deger === null);
+    });
+  }, []);
+
+  if (ilkKurulum === null) {
+    return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
+  }
+
   return (
     <NavigationContainer>
       <ErrorBoundary name="NavigatorBoundary">
-        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName={ilkKurulum ? 'KurulumSihirbazi' : 'MainTabs'}
+        >
+          <RootStack.Screen name="KurulumSihirbazi" component={KurulumSihirbaziSayfasi} />
           <RootStack.Screen name="MainTabs" component={MainTabs} />
           <RootStack.Screen name="KibleSayfasi" component={KibleSayfasi} />
         </RootStack.Navigator>

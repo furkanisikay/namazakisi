@@ -18,6 +18,8 @@ import {
   Alert,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -29,6 +31,7 @@ import {
 } from '../store/seriSlice';
 import { OzelGunTakvimi } from '../components';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 
 /**
  * Sayisal secici bileseni
@@ -208,6 +211,7 @@ const AyarKarti: React.FC<AyarKartiProps> = ({
 export const SeriHedefAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
   const { butonTiklandiFeedback } = useFeedback();
 
   const { ayarlar: seriAyarlari, ozelGunAyarlari } = useAppSelector((state) => state.seri);
@@ -268,6 +272,28 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           onPress: () => {
             dispatch(seriStateSifirla());
             Alert.alert('Başarılı', 'Seri verileriniz sıfırlandı.');
+          },
+        },
+      ]
+    );
+  };
+
+  const handleKurulumSifirla = () => {
+    Alert.alert(
+      'Kurulumu Sıfırla',
+      'Kurulum sihirbazı yeniden başlatılacak. Namaz, seri ve puan verileriniz korunacaktır. Devam etmek istiyor musunuz?',
+      [
+        { text: 'İptal', style: 'cancel' },
+        {
+          text: 'Sihirbazı Aç',
+          onPress: async () => {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'KurulumSihirbazi' }],
+              })
+            );
           },
         },
       ]
@@ -402,6 +428,29 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
               </Text>
             </View>
             <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-row items-center p-4 rounded-xl mt-2"
+            style={{ backgroundColor: '#FFF7ED' }}
+            onPress={handleKurulumSifirla}
+            activeOpacity={0.7}
+          >
+            <View
+              className="w-10 h-10 rounded-full items-center justify-center mr-3"
+              style={{ backgroundColor: '#EA580C20' }}
+            >
+              <FontAwesome5 name="redo-alt" size={18} color="#EA580C" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-base font-semibold" style={{ color: '#EA580C' }}>
+                Kurulum Sihirbazını Yeniden Çalıştır
+              </Text>
+              <Text className="text-xs mt-0.5" style={{ color: '#EA580C', opacity: 0.8 }}>
+                Verileriniz silinmez, yalnızca kurulum ekranı açılır
+              </Text>
+            </View>
+            <FontAwesome5 name="chevron-right" size={14} color="#EA580C" />
           </TouchableOpacity>
         </View>
 
