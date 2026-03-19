@@ -199,7 +199,8 @@ export interface MekruhVakitBilgisi {
  */
 export const mekruhVakitKontrolEt = (
   latitude: number,
-  longitude: number
+  longitude: number,
+  namazTipi: 'kaza' | 'farz' = 'kaza'
 ): MekruhVakitBilgisi => {
   try {
     const coordinates = new Coordinates(latitude, longitude);
@@ -214,13 +215,15 @@ export const mekruhVakitKontrolEt = (
     const toleransMs = KAZA_SABITLERI.MEKRUH_TOLERANS_DK * 60 * 1000;
     const istiwaToleransMs = 5 * 60 * 1000; // İstiwa için 5 dakika
 
+    const namazTuru = namazTipi === 'farz' ? 'namaz' : 'kaza namazı';
+
     // 1. Şuruk: Güneş doğumundan 20 dakika sonrasına kadar
     const surukBitis = new Date(sunrise.getTime() + toleransMs);
     if (now >= sunrise && now <= surukBitis) {
       return {
         mekruhMu: true,
         aciklama:
-          'Güneş doğuş vaktidir (şuruk). Bu vakitte kaza namazı kılınması mekruhtur. Güneş iyice yükselene kadar bekleyiniz.',
+          `Güneş doğuş vaktidir (şuruk). Bu vakitte ${namazTuru} kılınması mekruhtur. Güneş iyice yükselene kadar bekleyiniz.`,
         bitis: surukBitis,
       };
     }
@@ -231,7 +234,7 @@ export const mekruhVakitKontrolEt = (
       return {
         mekruhMu: true,
         aciklama:
-          'Güneş tam tepede (istiwa vakti). Bu vakitte kaza namazı kılınması mekruhtur. Öğle ezanını bekleyiniz.',
+          `Güneş tam tepede (istiwa vakti). Bu vakitte ${namazTuru} kılınması mekruhtur. Öğle ezanını bekleyiniz.`,
         bitis: dhuhr,
       };
     }
@@ -245,7 +248,7 @@ export const mekruhVakitKontrolEt = (
       return {
         mekruhMu: true,
         aciklama:
-          'Güneş batış vaktidir (gurub). Bu vakitte kaza namazı kılınması mekruhtur. Akşam ezanını bekleyiniz.',
+          `Güneş batış vaktidir (gurub). Bu vakitte ${namazTuru} kılınması mekruhtur. Akşam ezanını bekleyiniz.`,
         bitis: sunset,
       };
     }

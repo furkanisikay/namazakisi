@@ -14,6 +14,8 @@ interface VakitKartiProps {
     tamamlandi: boolean;
     onTamamla: () => void;
     kilitli?: boolean;
+    konumModu?: 'oto' | 'manuel';
+    konumMetni?: string; // "Nilüfer, Bursa"
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -36,7 +38,9 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     vakitAraligi,
     tamamlandi,
     onTamamla,
-    kilitli = false
+    kilitli = false,
+    konumModu,
+    konumMetni
 }) => {
     const renkler = useRenkler();
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
@@ -57,20 +61,36 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                 style={{ backgroundColor: renkler.vurgu }} />
 
             <View className="p-6 text-center items-center">
-                {/* Badge: Şu Anki Vakit */}
-                <View className="flex-row items-center gap-2 px-3 py-1 rounded-full mb-4"
-                    style={{ backgroundColor: kilitli ? renkler.metinIkincil + '15' : renkler.birincil + '15' }}>
-                    {!kilitli && (
-                        <View className="relative flex h-2 w-2">
-                            <View className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                                style={{ backgroundColor: renkler.birincil }} />
-                            <View className="relative inline-flex rounded-full h-2 w-2"
-                                style={{ backgroundColor: renkler.birincil }} />
+                {/* Badge Satırı: Şu Anki Vakit + Konum */}
+                <View className="flex-row items-center gap-2 mb-4">
+                    <View className="flex-row items-center gap-2 px-3 py-1 rounded-full"
+                        style={{ backgroundColor: kilitli ? renkler.metinIkincil + '15' : renkler.birincil + '15' }}>
+                        {!kilitli && (
+                            <View className="relative flex h-2 w-2">
+                                <View className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                                    style={{ backgroundColor: renkler.birincil }} />
+                                <View className="relative inline-flex rounded-full h-2 w-2"
+                                    style={{ backgroundColor: renkler.birincil }} />
+                            </View>
+                        )}
+                        <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
+                            {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
+                        </Text>
+                    </View>
+
+                    {konumMetni && (
+                        <View className="flex-row items-center gap-1 px-3 py-1 rounded-full"
+                            style={{ backgroundColor: renkler.metinIkincil + '15' }}>
+                            <FontAwesome5
+                                name={konumModu === 'oto' ? 'satellite-dish' : 'map-marker-alt'}
+                                size={10}
+                                color={renkler.metinIkincil}
+                            />
+                            <Text className="text-xs font-semibold" style={{ color: renkler.metinIkincil }}>
+                                {konumMetni}
+                            </Text>
                         </View>
                     )}
-                    <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
-                        {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
-                    </Text>
                 </View>
 
                 {/* İkon ve Başlık */}
