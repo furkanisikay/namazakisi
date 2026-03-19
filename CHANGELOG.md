@@ -5,6 +5,13 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.18.0] - 2026-03-19
+
+### Eklendi
+- vakit kartında konum modu etiketi gösterimi eklendi
+- kıble butonuna etiket metni eklendi
+- kerahat vakti özelliği Ana Sayfa'ya eklendi
+
 ## [0.17.0] - 2026-03-15
 
 ### Eklendi
