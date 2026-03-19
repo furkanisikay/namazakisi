@@ -3,6 +3,9 @@
  * Tum sayfa bilesenlerinin merkezi export noktasi
  */
 
+// Kurulum sihirbazi
+export { KurulumSihirbaziSayfasi } from './KurulumSihirbaziSayfasi';
+
 // Ana sayfalar
 export { AnaSayfa } from './AnaSayfa';
 export { IstatistikSayfasi } from './IstatistikSayfasi';
