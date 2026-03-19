@@ -83,10 +83,10 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
             <View className="flex-row items-center gap-2">
                 {/* Kıble Butonu */}
                 <TouchableOpacity
-                    className="flex-row items-center justify-center w-8 h-8 rounded-full border"
+                    className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
                     style={{
-                        backgroundColor: renkler.arkaplan,
-                        borderColor: renkler.sinir
+                        backgroundColor: renkler.birincil + '15',
+                        borderColor: renkler.birincil + '50'
                     }}
                     onPress={onKibleTikla}
                     activeOpacity={0.7}
@@ -94,6 +94,7 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
                     accessibilityRole="button"
                 >
                     <FontAwesome5 name="compass" size={14} color={renkler.birincil} />
+                    <Text className="font-bold text-sm" style={{ color: renkler.birincil }}>Kıble</Text>
                 </TouchableOpacity>
 
                 {/* Seri Butonu */}
