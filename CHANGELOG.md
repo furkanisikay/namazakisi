@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.19.0] - 2026-03-19
+
+### Eklendi
+- uygulama ilk kurulumda ise kurulumsihirbazı ekranı eklendi (#65)
+
 ## [0.18.0] - 2026-03-19
 
 ### Eklendi
