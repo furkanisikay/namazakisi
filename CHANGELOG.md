@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.19.2] - 2026-03-20
+
+### Düzeltildi
+- [android] restore play:app-update-ktx dependency lost in merge
+- migrate existing users past setup wizard on 0.19.0 update
+
 ## [0.19.1] - 2026-03-20
 
 ### Düzeltildi
