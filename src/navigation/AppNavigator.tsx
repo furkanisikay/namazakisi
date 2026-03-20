@@ -239,22 +239,9 @@ export const AppNavigator: React.FC = () => {
   const [ilkKurulum, setIlkKurulum] = useState<boolean | null>(null);
 
   useEffect(() => {
-    const kurulumKontrolEt = async () => {
-      const tamamlandi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
-      if (tamamlandi !== null) {
-        setIlkKurulum(false);
-        return;
-      }
-      // Mevcut kullanıcı migrasyonu: namaz verisi varsa kurulum tamamlandı say
-      const mevcutVeri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
-      if (mevcutVeri !== null) {
-        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');
-        setIlkKurulum(false);
-        return;
-      }
-      setIlkKurulum(true);
-    };
-    kurulumKontrolEt();
+    AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI).then(deger => {
+      setIlkKurulum(deger === null);
+    });
   }, []);
 
   if (ilkKurulum === null) {
