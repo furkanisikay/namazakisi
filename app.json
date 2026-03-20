@@ -46,6 +46,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "./plugins/withPlayStoreDependency",
       "expo-audio",
       [
         "expo-notifications",
