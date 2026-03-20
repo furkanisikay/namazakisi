@@ -68,7 +68,7 @@ class MainApplication : Application(), ReactApplication {
         packageManager.getPackageInfo(packageName, 0).versionCode
       }
 
-      if (lastVersionCode != -1 && lastVersionCode != currentVersionCode) {
+      if (lastVersionCode != currentVersionCode) {
         // notifee SQLite DB temizle (schema uyumsuzlugu crash'e yol acabilir)
         try {
           listOf("notifee.db", "notifee.db-shm", "notifee.db-wal").forEach { name ->
