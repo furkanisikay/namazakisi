@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import * as Sharing from 'expo-sharing';
-import { File, Paths } from 'expo-file-system';
+import { File, Paths } from 'expo-file-system/next';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
