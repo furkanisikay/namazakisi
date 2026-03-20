@@ -6,6 +6,7 @@
  * gereken Google Play In-App Update bagimliligini otomatik olarak ekler.
  */
 
+// Expo SDK bundles @expo/config-plugins as a transitive dependency
 const { withAppBuildGradle } = require('@expo/config-plugins');
 
 const PLAY_DEPS = `
