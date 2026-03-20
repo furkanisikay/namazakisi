@@ -4,10 +4,24 @@
  * expo prebuild --clean her calistiginda android/app/build.gradle'i
  * sifirdan olusturur. Bu plugin, PlayStoreGuncellemeModulu.kt icin
  * gereken Google Play In-App Update bagimliligini otomatik olarak ekler.
+ *
+ * Not: EAS build'lerde android/ klasoru prebuild ile yeniden olusturulmaz,
+ * commit'teki build.gradle kullanilir. Bu plugin sadece android-build.yml
+ * CI akisindaki `expo prebuild --clean` icin gereklidir.
  */
 
-// Expo SDK bundles @expo/config-plugins as a transitive dependency
-const { withAppBuildGradle } = require('@expo/config-plugins');
+// @expo/config-plugins, Expo SDK'nin transitif bagimliligidır.
+// Global eas-cli fallback modunda bulunamayabilir; bu durumda plugin
+// no-op olarak calisir (EAS build'lerde dep zaten build.gradle'da mevcuttur).
+let withAppBuildGradle;
+try {
+  ({ withAppBuildGradle } = require('@expo/config-plugins'));
+} catch (e) {
+  // Fallback: @expo/config-plugins bulunamadi (ornegin global eas-cli context).
+  // EAS build'lerde android/ klasoru commit'ten kullanildiginda bu sorun olmaz.
+  module.exports = function withPlayStoreDependency(config) { return config; };
+  return; // CommonJS module wrapper icinde gecerlidir
+}
 
 const PLAY_DEPS = `
     // Play Store In-App Updates (PlayStoreGuncellemeModulu.kt)
