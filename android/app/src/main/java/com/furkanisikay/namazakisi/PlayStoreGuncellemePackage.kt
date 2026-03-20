@@ -8,7 +8,15 @@ import com.facebook.react.uimanager.ViewManager
 class PlayStoreGuncellemePackage : ReactPackage {
     override fun createNativeModules(
         reactContext: ReactApplicationContext
-    ): List<NativeModule> = listOf(PlayStoreGuncellemeModulu(reactContext))
+    ): List<NativeModule> {
+        return try {
+            listOf(PlayStoreGuncellemeModulu(reactContext))
+        } catch (e: Throwable) {
+            // Play Store modülü başlatılamazsa uygulamayı çökertme
+            // JS tarafı PlayStoreGuncelleme null olacak, graceful fallback devreye girer
+            emptyList()
+        }
+    }
 
     override fun createViewManagers(
         reactContext: ReactApplicationContext

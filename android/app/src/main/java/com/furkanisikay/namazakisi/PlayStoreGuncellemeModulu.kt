@@ -42,37 +42,55 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
         const val EVENT_INSTALL_STATE = "PlayStoreInstallStateChanged"
     }
 
-    private val appUpdateManager = AppUpdateManagerFactory.create(reactContext)
+    // Nullable: AppUpdateManagerFactory.create() Play Services yoksa veya
+    // cihaz desteklemiyorsa fırlatabilir. Null ise tüm metodlar graceful fallback döner.
+    private val appUpdateManager: com.google.android.play.core.appupdate.AppUpdateManager? = try {
+        AppUpdateManagerFactory.create(reactContext)
+    } catch (e: Throwable) {
+        null
+    }
     private var cachedUpdateInfo: AppUpdateInfo? = null
     private var startUpdatePromise: Promise? = null
 
     private val installStateListener = InstallStateUpdatedListener { state ->
-        val params = Arguments.createMap().apply {
-            putInt("installStatus", state.installStatus())
-            putLong("bytesDownloaded", state.bytesDownloaded())
-            putLong("totalBytesToDownload", state.totalBytesToDownload())
-        }
-        sendEvent(EVENT_INSTALL_STATE, params)
+        try {
+            val params = Arguments.createMap().apply {
+                putInt("installStatus", state.installStatus())
+                putLong("bytesDownloaded", state.bytesDownloaded())
+                putLong("totalBytesToDownload", state.totalBytesToDownload())
+            }
+            sendEvent(EVENT_INSTALL_STATE, params)
 
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            startUpdatePromise?.resolve("DOWNLOADED")
-            startUpdatePromise = null
-        } else if (state.installStatus() == InstallStatus.FAILED ||
-                   state.installStatus() == InstallStatus.CANCELED) {
-            startUpdatePromise?.reject("UPDATE_FAILED", "Install state: ${state.installStatus()}")
-            startUpdatePromise = null
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                startUpdatePromise?.resolve("DOWNLOADED")
+                startUpdatePromise = null
+            } else if (state.installStatus() == InstallStatus.FAILED ||
+                       state.installStatus() == InstallStatus.CANCELED) {
+                startUpdatePromise?.reject("UPDATE_FAILED", "Install state: ${state.installStatus()}")
+                startUpdatePromise = null
+            }
+        } catch (e: Throwable) {
+            // Event gönderilemezse sessizce devam et
         }
     }
 
     init {
-        reactContext.addActivityEventListener(this)
-        appUpdateManager.registerListener(installStateListener)
+        try {
+            reactContext.addActivityEventListener(this)
+            appUpdateManager?.registerListener(installStateListener)
+        } catch (e: Throwable) {
+            // init başarısız olursa modül devre dışı kalır ama uygulama çalışır
+        }
     }
 
     override fun getName(): String = MODULE_NAME
 
     override fun onCatalystInstanceDestroy() {
-        appUpdateManager.unregisterListener(installStateListener)
+        try {
+            appUpdateManager?.unregisterListener(installStateListener)
+        } catch (e: Throwable) {
+            // Sessizce devam et
+        }
         super.onCatalystInstanceDestroy()
     }
 
@@ -111,7 +129,16 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
      */
     @ReactMethod
     fun guncellemeDurumunuKontrolEt(promise: Promise) {
-        appUpdateManager.appUpdateInfo
+        val manager = appUpdateManager
+        if (manager == null) {
+            val result = Arguments.createMap().apply {
+                putBoolean("guncellemeMevcut", false)
+                putString("hata", "Play Store modülü başlatılamadı")
+            }
+            promise.resolve(result)
+            return
+        }
+        manager.appUpdateInfo
             .addOnSuccessListener { info ->
                 cachedUpdateInfo = info
                 val guncellemeMevcut = info.updateAvailability() ==
@@ -162,7 +189,14 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
 
         startUpdatePromise = promise
 
-        appUpdateManager.startUpdateFlow(
+        val manager = appUpdateManager
+        if (manager == null) {
+            startUpdatePromise = null
+            promise.reject("NO_MANAGER", "Play Store modülü başlatılamadı")
+            return
+        }
+
+        manager.startUpdateFlow(
             info,
             activity,
             AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
@@ -178,7 +212,12 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
      */
     @ReactMethod
     fun guncellemeYuklemeyiTamamla(promise: Promise) {
-        appUpdateManager.completeUpdate()
+        val manager = appUpdateManager
+        if (manager == null) {
+            promise.resolve(false)
+            return
+        }
+        manager.completeUpdate()
             .addOnSuccessListener { promise.resolve(true) }
             .addOnFailureListener { e ->
                 promise.reject("COMPLETE_FAILED", e.message ?: "Güncelleme tamamlanamadı")
@@ -191,7 +230,12 @@ class PlayStoreGuncellemeModulu(reactContext: ReactApplicationContext) :
      */
     @ReactMethod
     fun indirilenGuncellemeVarMi(promise: Promise) {
-        appUpdateManager.appUpdateInfo
+        val manager = appUpdateManager
+        if (manager == null) {
+            promise.resolve(false)
+            return
+        }
+        manager.appUpdateInfo
             .addOnSuccessListener { info ->
                 val isDownloaded = info.installStatus() == InstallStatus.DOWNLOADED
                 promise.resolve(isDownloaded)

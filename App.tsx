@@ -34,14 +34,22 @@ import { Logger } from './src/core/utils/Logger';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
-BildirimServisi.getInstance().setOnKildimCallback((tarih, _namazAdi) => {
-  const state = store.getState();
-  // Sadece kullanici su an ayni tarihi goruntuluyorsa UI'yi guncelle
-  // Farkli bir tarih goruntuluyorsa gereksiz veri yukleme ve tarih atlama riski onlenir
-  if (state.namaz.mevcutTarih === tarih) {
-    store.dispatch(namazlariYukle({ tarih }));
-  }
-});
+try {
+  BildirimServisi.getInstance().setOnKildimCallback((tarih, _namazAdi) => {
+    try {
+      const state = store.getState();
+      // Sadece kullanici su an ayni tarihi goruntuluyorsa UI'yi guncelle
+      // Farkli bir tarih goruntuluyorsa gereksiz veri yukleme ve tarih atlama riski onlenir
+      if (state.namaz.mevcutTarih === tarih) {
+        store.dispatch(namazlariYukle({ tarih }));
+      }
+    } catch {
+      // Callback icindeki hatayi sessizce yut
+    }
+  });
+} catch {
+  // BildirimServisi başlatılamazsa uygulama çalışmaya devam etsin
+}
 
 /**
  * Yukleme ekrani
