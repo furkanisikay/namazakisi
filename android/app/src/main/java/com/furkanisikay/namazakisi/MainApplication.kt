@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi
 
 import android.app.Application
 import android.content.res.Configuration
+import java.io.File
 
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -46,8 +47,45 @@ class MainApplication : Application(), ReactApplication {
     } catch (e: IllegalArgumentException) {
       ReleaseLevel.STABLE
     }
+    clearStaleNativeStateOnUpgrade()
     loadReactNative(this)
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
+  }
+
+  /**
+   * Versiyon degistiginde stale native state temizle.
+   * notifee SQLite DB schema uyumsuzlugu ve expo-updates stale cache
+   * JS bundle yuklenirken std::terminate crash'ine yol acabilir.
+   */
+  private fun clearStaleNativeStateOnUpgrade() {
+    try {
+      val prefs = getSharedPreferences("app_upgrade_prefs", MODE_PRIVATE)
+      val lastVersionCode = prefs.getInt("last_version_code", -1)
+      val currentVersionCode = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+        packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
+      } else {
+        @Suppress("DEPRECATION")
+        packageManager.getPackageInfo(packageName, 0).versionCode
+      }
+
+      if (lastVersionCode != -1 && lastVersionCode != currentVersionCode) {
+        // notifee SQLite DB temizle (schema uyumsuzlugu crash'e yol acabilir)
+        try {
+          listOf("notifee.db", "notifee.db-shm", "notifee.db-wal").forEach { name ->
+            val f = getDatabasePath(name)
+            if (f.exists()) f.delete()
+          }
+        } catch (_: Throwable) {}
+
+        // expo-updates stale cache temizle (stale bundle JS hatasina yol acabilir)
+        try {
+          val updatesDir = File(filesDir, "expo-updates")
+          if (updatesDir.exists()) updatesDir.deleteRecursively()
+        } catch (_: Throwable) {}
+      }
+
+      prefs.edit().putInt("last_version_code", currentVersionCode).apply()
+    } catch (_: Throwable) {}
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {

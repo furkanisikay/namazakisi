@@ -16,7 +16,7 @@ import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/Bildi
 // notifee arka plan olay işleyicisi (Android sayaç için)
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar
 if (Platform.OS === 'android') {
-    notifee.onBackgroundEvent(async ({ type, detail }) => {
+    try { notifee.onBackgroundEvent(async ({ type, detail }) => {
         // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
         if (type === EventType.DELIVERED) {
             const bildirimId = detail.notification?.id;
@@ -66,14 +66,18 @@ if (Platform.OS === 'android') {
                 }
             }
         }
-    });
+    }); } catch (_) {}
 }
 
 // Bildirim dinleyicisini global olarak baslat
 // Bu, uygulama kapali veya arka plandayken gelen bildirim aksiyonlarini yakalamak icin kritiktir
-BildirimServisi.getInstance().baslatBildirimDinleyicisi().catch(err => {
-    console.error('[index.ts] Bildirim dinleyicisi başlatılamadı:', err);
-});
+try {
+    BildirimServisi.getInstance().baslatBildirimDinleyicisi().catch(err => {
+        console.error('[index.ts] Bildirim dinleyicisi başlatılamadı:', err);
+    });
+} catch (err) {
+    console.error('[index.ts] Bildirim dinleyicisi başlatılamadı (sync):', err);
+}
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,

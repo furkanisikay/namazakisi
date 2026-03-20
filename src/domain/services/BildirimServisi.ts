@@ -72,22 +72,24 @@ function vakitOnekiniCikar(bildirimId: string): string | null {
 /**
  * Bildirim ayarlarini yapilandir
  */
-Notifications.setNotificationHandler({
-  handleNotification: async (notification) => {
-    // Eger bu bir muhafiz bildirimiyse, onceki muhafiz bildirimlerini temizle
-    if (notification.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
-      await oncekiMuhafizBildirimleriniTemizle(notification.request.identifier);
-    }
+try {
+  Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+      // Eger bu bir muhafiz bildirimiyse, onceki muhafiz bildirimlerini temizle
+      if (notification.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
+        await oncekiMuhafizBildirimleriniTemizle(notification.request.identifier);
+      }
 
-    return {
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-      shouldShowBanner: true,
-      shouldShowList: true,
-      priority: Notifications.AndroidNotificationPriority.HIGH,
-    };
-  },
-});
+      return {
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      };
+    },
+  });
+} catch (_) {}
 
 /**
  * Bildirim response listener subscription
