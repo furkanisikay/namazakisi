@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.19.1] - 2026-03-20
+
+### Düzeltildi
+- [android] add missing play:app-update-ktx dependency for PlayStoreGuncellemeModulu
+- expo-file-system/next import for File and Paths
+
 ## [0.19.0] - 2026-03-19
 
 ### Eklendi
