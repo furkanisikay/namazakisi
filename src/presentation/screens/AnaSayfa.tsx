@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, AppState, AppStateStatus } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, AppState, AppStateStatus, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -10,7 +10,7 @@ import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
 import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
-import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon } from '../components';
+import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
 import { VakitAkisi } from '../components/home/VakitAkisi';
@@ -30,6 +30,7 @@ import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { SesServisi } from '../../core/feedback/SesServisi';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Namaz } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
@@ -51,6 +52,7 @@ export const AnaSayfa: React.FC = () => {
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
   const [tarihSeciciGorunur, setTarihSeciciGorunur] = useState(false);
   const [seriModalGorunur, setSeriModalGorunur] = useState(false);
+  const [toparlanmaModalGorunur, setToparlanmaModalGorunur] = useState(false);
   const [kutlamaGoster, setKutlamaGoster] = useState(false);
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
@@ -64,6 +66,7 @@ export const AnaSayfa: React.FC = () => {
   const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
   const seriYuklendiMi = !!seriSonYukleme;
   const seriOzeti = useAppSelector(seriOzetiSelector);
+  const seriDurumu = useAppSelector(state => state.seri.seriDurumu);
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const konumAyarlari = useAppSelector((state) => state.konum);
@@ -536,7 +539,38 @@ export const AnaSayfa: React.FC = () => {
         onTarihTikla={() => setTarihSeciciGorunur(true)}
         onSeriTikla={() => setSeriModalGorunur(true)}
         onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
+        toparlanmaModu={seriOzeti?.toparlanmaModu}
+        toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
+
+      {/* Toparlanma Banner */}
+      {seriOzeti?.toparlanmaModu && seriOzeti.toparlanmaIlerleme && (
+        <TouchableOpacity
+          style={[
+            anaSayfaStilleri.toparlanmaBanner,
+            { backgroundColor: koyuMu ? '#78350f30' : '#fef3c7', borderColor: '#f59e0b' },
+          ]}
+          onPress={() => setToparlanmaModalGorunur(true)}
+          activeOpacity={0.8}
+          accessibilityLabel="Toparlanma modu detayı için dokun"
+          accessibilityRole="button"
+        >
+          <Text style={{ color: '#92400e', fontWeight: '700', fontSize: 13, flex: 1 }}>
+            ⚡ Toparlanma Modu — {seriOzeti.toparlanmaIlerleme.tamamlanan}/{seriOzeti.toparlanmaIlerleme.hedef} gün tamamlandı
+          </Text>
+          <View style={anaSayfaStilleri.bannerProgressArkaplan}>
+            <View
+              style={[
+                anaSayfaStilleri.bannerProgressDolgu,
+                {
+                  width: `${seriOzeti.toparlanmaIlerleme.hedef > 0 ? (seriOzeti.toparlanmaIlerleme.tamamlanan / seriOzeti.toparlanmaIlerleme.hedef) * 100 : 0}%`,
+                },
+              ]}
+            />
+          </View>
+          <FontAwesome5 name="chevron-right" size={12} color="#92400e" style={{ marginLeft: 8 }} />
+        </TouchableOpacity>
+      )}
 
       {/* Pager */}
       <PagerView
@@ -610,6 +644,41 @@ export const AnaSayfa: React.FC = () => {
         mevcutSeri={seriOzeti ? seriOzeti.mevcutSeri : 0}
         enUzunSeri={seriOzeti ? seriOzeti.enUzunSeri : 0}
       />
+
+      {/* Toparlanma Modal */}
+      {seriDurumu?.toparlanmaDurumu && (
+        <ToparlanmaModal
+          gorunur={toparlanmaModalGorunur}
+          onKapat={() => setToparlanmaModalGorunur(false)}
+          toparlanmaDurumu={seriDurumu.toparlanmaDurumu}
+          oncekiSeri={seriDurumu.toparlanmaDurumu.oncekiSeri}
+        />
+      )}
     </SafeAreaView>
   );
 };
+
+const anaSayfaStilleri = StyleSheet.create({
+  toparlanmaBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 12,
+    marginHorizontal: 12,
+    marginBottom: 4,
+  },
+  bannerProgressArkaplan: {
+    height: 3,
+    backgroundColor: '#f59e0b40',
+    borderRadius: 2,
+    width: 60,
+    overflow: 'hidden',
+  },
+  bannerProgressDolgu: {
+    height: '100%',
+    backgroundColor: '#f59e0b',
+    borderRadius: 2,
+  },
+});
