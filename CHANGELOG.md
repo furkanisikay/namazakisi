@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.19.4] - 2026-03-21
+
+### Düzeltildi
+- [lint] ignore plugins/ directory to fix ESLint parse error
+- [deps] regenerate lockfile for CI npm ci compatibility
+- [deps] upgrade expo-file-system from v17 to v19 to fix startup crash
+- v0.19.6 — fix cleanup not running on first upgrade from pre-tracking versions
+- v0.19.5 — clear stale native state on upgrade, guard module-level throws
+- withPlayStoreDependency plugin graceful fallback for global eas-cli
+- crash-safe PlayStore native modülü ve startup korumaları (v0.19.4)
+
 ## [0.19.3] - 2026-03-20
 
 ### Düzeltildi
