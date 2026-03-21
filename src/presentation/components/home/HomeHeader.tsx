@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { tarihiGorunumFormatinaCevir, gunAdiniAl } from '../../../core/utils/TarihYardimcisi';
+import { SERI_RENKLERI } from '../../../core/constants/UygulamaSabitleri';
 
 /**
  * Home page header component props.
@@ -15,6 +16,8 @@ interface HomeHeaderProps {
     onTarihTikla: () => void;
     onSeriTikla?: () => void;
     onKibleTikla?: () => void;
+    toparlanmaModu?: boolean;
+    toparlanmaIlerleme?: { tamamlanan: number; hedef: number } | null;
 }
 
 /**
@@ -30,7 +33,9 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
     aktifGunMu,
     onTarihTikla,
     onSeriTikla,
-    onKibleTikla
+    onKibleTikla,
+    toparlanmaModu,
+    toparlanmaIlerleme,
 }) => {
     const renkler = useRenkler();
 
@@ -41,6 +46,19 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
     const ay = tarihParcalari[1]?.substring(0, 3); // "Oca"
     const yil = tarihParcalari[2];
     const gunAdi = gunAdiniAl(tarih); // "Pazar"
+
+    // Kademeli ateş rengi — toparlanma moduna göre değişir, useMemo ile hesaplanır
+    const { atesRenk, atesOpacity } = useMemo(() => {
+        if (!toparlanmaModu || !toparlanmaIlerleme) {
+            return { atesRenk: SERI_RENKLERI.ATES, atesOpacity: 1 };
+        }
+        const { tamamlanan, hedef } = toparlanmaIlerleme;
+        const ilerleme = hedef > 0 ? tamamlanan / hedef : 0;
+        if (ilerleme === 0) return { atesRenk: '#9ca3af', atesOpacity: 0.5 };
+        if (ilerleme < 0.5) return { atesRenk: '#f59e0b', atesOpacity: 0.7 };
+        if (ilerleme < 1) return { atesRenk: '#f97316', atesOpacity: 0.85 };
+        return { atesRenk: SERI_RENKLERI.ATES, atesOpacity: 1 }; // tamamlandı → tam alev
+    }, [toparlanmaModu, toparlanmaIlerleme]);
 
     return (
         <View
@@ -99,20 +117,45 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
 
                 {/* Seri Butonu */}
                 <TouchableOpacity
-                    className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
+                    className="items-center px-3 py-1.5 rounded-full border"
                     style={{
-                        backgroundColor: renkler.durum.uyari + '20',
-                        borderColor: renkler.durum.uyari + '50'
+                        backgroundColor: SERI_RENKLERI.ATES + '20',
+                        borderColor: atesRenk + '80',
+                        opacity: atesOpacity,
                     }}
                     onPress={onSeriTikla}
                     activeOpacity={0.7}
-                    accessibilityLabel={`Seri: ${streakGun} gün`}
+                    accessibilityLabel={
+                        toparlanmaModu && toparlanmaIlerleme
+                            ? `Toparlanma modu: ${toparlanmaIlerleme.tamamlanan}/${toparlanmaIlerleme.hedef} gün tamamlandı`
+                            : `Seri: ${streakGun} gün`
+                    }
                     accessibilityRole="button"
                 >
-                    <FontAwesome5 name="fire" size={14} color={renkler.durum.uyari} />
-                    <Text className="font-bold text-sm" style={{ color: renkler.durum.uyari }}>
-                        {streakGun} Gün
-                    </Text>
+                    <View className="flex-row items-center gap-2">
+                        <FontAwesome5
+                            name="fire"
+                            size={14}
+                            color={atesRenk}
+                            accessibilityRole="text"
+                            accessibilityLabel={
+                                toparlanmaModu && toparlanmaIlerleme
+                                    ? `Toparlanma modu: ${toparlanmaIlerleme.tamamlanan}/${toparlanmaIlerleme.hedef} gün tamamlandı`
+                                    : undefined
+                            }
+                        />
+                        <Text className="font-bold text-sm" style={{ color: atesRenk }}>
+                            {streakGun} Gün
+                        </Text>
+                    </View>
+                    {toparlanmaModu && toparlanmaIlerleme && (
+                        <Text
+                            style={{ color: '#f59e0b', fontSize: 10, fontWeight: '600', textAlign: 'center', marginTop: 1 }}
+                            accessibilityElementsHidden
+                        >
+                            🔄 {toparlanmaIlerleme.tamamlanan}/{toparlanmaIlerleme.hedef}
+                        </Text>
+                    )}
                 </TouchableOpacity>
             </View>
         </View>
