@@ -29,38 +29,15 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
   oncekiSeri,
 }) => {
   const renkler = useRenkler();
-  
-  // Animasyonlar
-  const pulseAnim = useRef(new Animated.Value(1)).current;
-  const progressAnim = useRef(new Animated.Value(0)).current;
 
+  // Sadece ikon için hafif pulse
+  const ikonPulseAnim = useRef(new Animated.Value(1)).current;
   useEffect(() => {
-    // Pulse animasyonu
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.05,
-          duration: 800,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 800,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-
-    // Progress animasyonu
-    Animated.timing(progressAnim, {
-      toValue: toparlanmaDurumu.tamamlananGun / toparlanmaDurumu.hedefGunSayisi,
-      duration: 1000,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: false,
-    }).start();
-  }, [toparlanmaDurumu.tamamlananGun]);
+    Animated.loop(Animated.sequence([
+      Animated.timing(ikonPulseAnim, { toValue: 1.12, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      Animated.timing(ikonPulseAnim, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+    ])).start();
+  }, []);
 
   // Progress daireleri
   const daireler = [];
@@ -82,19 +59,18 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
   const kalanGun = toparlanmaDurumu.hedefGunSayisi - toparlanmaDurumu.tamamlananGun;
 
   return (
-    <Animated.View
+    <View
       style={[
         styles.container,
         {
-          backgroundColor: SERI_RENKLERI.TOPARLANMA_ACIK,
+          backgroundColor: renkler.kartArkaplan,
           borderColor: SERI_RENKLERI.TOPARLANMA,
-          transform: [{ scale: pulseAnim }],
         },
       ]}
     >
       {/* Baslik */}
       <View style={styles.baslikContainer}>
-        <Text style={styles.uyariIkon}>⚠️</Text>
+        <Animated.Text style={[styles.uyariIkon, { transform: [{ scale: ikonPulseAnim }] }]}>⚠️</Animated.Text>
         <View style={styles.baslikMetinler}>
           <Text style={[styles.baslik, { color: SERI_RENKLERI.TOPARLANMA }]}>
             TOPARLANMA MODU
@@ -112,7 +88,7 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
         </Text>
       </View>
 
-      {/* Progress gostergesi */}
+      {/* Progress gostergesi — sadece daireler */}
       <View style={styles.progressContainer}>
         <View style={styles.dairelerContainer}>
           {daireler}
@@ -120,24 +96,6 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
         <Text style={[styles.progressYazisi, { color: renkler.metinIkincil }]}>
           {toparlanmaDurumu.tamamlananGun}/{toparlanmaDurumu.hedefGunSayisi} gün tamamlandı
         </Text>
-      </View>
-
-      {/* Progress bar */}
-      <View style={styles.progressBarContainer}>
-        <View style={[styles.progressBarArkaplan, { backgroundColor: renkler.sinir }]}>
-          <Animated.View
-            style={[
-              styles.progressBarDolgu,
-              {
-                backgroundColor: SERI_RENKLERI.TOPARLANMA,
-                width: progressAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0%', '100%'],
-                }),
-              },
-            ]}
-          />
-        </View>
       </View>
 
       {/* Alt mesaj */}
@@ -157,10 +115,10 @@ export const ToparlanmaKarti: React.FC<ToparlanmaKartiProps> = ({
       <View style={[styles.uyariContainer, { backgroundColor: 'rgba(255,193,7,0.2)' }]}>
         <Text style={styles.uyariIkonKucuk}>⚡</Text>
         <Text style={[styles.uyariMetin, { color: renkler.metinIkincil }]}>
-          Dikkat: Toparlanma modunda bir gün bile kaçırılırsa seri tamamen sıfırlanır!
+          Her gün tam kılmaya devam et — aradaki boşluk toparlanmayı sıfırlar.
         </Text>
       </View>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -245,18 +203,6 @@ const styles = StyleSheet.create({
     fontSize: BOYUTLAR.FONT_NORMAL,
     marginTop: BOYUTLAR.MARGIN_KUCUK,
   },
-  progressBarContainer: {
-    marginBottom: BOYUTLAR.MARGIN_ORTA,
-  },
-  progressBarArkaplan: {
-    height: 8,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressBarDolgu: {
-    height: '100%',
-    borderRadius: 4,
-  },
   altMesajContainer: {
     alignItems: 'center',
     marginBottom: BOYUTLAR.MARGIN_ORTA,
@@ -282,5 +228,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-
-
