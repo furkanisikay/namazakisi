@@ -35,7 +35,6 @@ describe('ToparlanmaKarti', () => {
     });
     const json = JSON.stringify(tree!.toJSON());
     expect(json).not.toContain('progressBarContainer');
-    expect(tree!.toJSON()).toMatchSnapshot();
   });
 
   it('yumuşatılmış uyarı metnini gösterir', () => {

@@ -93,7 +93,7 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     };
   };
 
-  test('15 gunluk tam seri, 1 gun bosluk, 5 gun toparlanma senaryosu', () => {
+  test('15 gunluk tam seri, 1 gun bosluk, 3 gun toparlanma senaryosu', () => {
     let mevcutTarih = '2025-01-01';
 
     // 1. Ilk 15 gun tam kiliniyor
@@ -120,8 +120,8 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     expect(seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(15);
     expect(seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
 
-    // 4. Toparlanma devam ediyor (4 gun daha tam)
-    for (let i = 0; i < 4; i++) {
+    // 4. Toparlanma devam ediyor (2 gun daha tam — 3 gunluk toparlanma)
+    for (let i = 0; i < 2; i++) {
       mevcutTarih = gunEkle(mevcutTarih, 1);
       gunSimuleEt(mevcutTarih, tamNamazlar(mevcutTarih));
     }
