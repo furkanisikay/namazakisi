@@ -17,6 +17,7 @@ module.exports = [
       'android/**',
       'ios/**',
       'coverage/**',
+      'plugins/**',
       '*.config.js',
       'babel.config.js',
       'eslint.config.js',
