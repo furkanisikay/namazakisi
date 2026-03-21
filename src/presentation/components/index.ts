@@ -36,3 +36,4 @@ export * from './KalanSureSayaci';
 export { RozetKarti, MiniRozet } from './RozetKarti';
 export { KutlamaModal } from './KutlamaModal';
 export { AnimasyonluSayac } from './AnimasyonluSayac';
+export { ToparlanmaModal } from './ToparlanmaModal';
