@@ -30,6 +30,7 @@ import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
+import { WidgetServisi } from './src/domain/services/WidgetServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
@@ -139,6 +140,8 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
         latitude: konumState.koordinatlar.lat,
         longitude: konumState.koordinatlar.lng,
       });
+      // Widget verilerini güncelle (fire-and-forget, kritik değil)
+      WidgetServisi.getInstance().vakitleriyaz(konumState.koordinatlar).catch(() => {});
     }
 
     // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)

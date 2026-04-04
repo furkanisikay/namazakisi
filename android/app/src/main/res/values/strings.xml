@@ -1,5 +1,7 @@
 <resources>
   <string name="app_name">Namaz Akışı</string>
+  <string name="widget_aciklama">Sonraki namaz vaktine kalan süreyi gösterir</string>
+  <string name="widget_genis_aciklama">Tüm namaz vakitlerini ve geri sayımı gösterir</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 </resources>

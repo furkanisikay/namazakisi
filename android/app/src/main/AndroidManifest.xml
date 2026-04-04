@@ -40,5 +40,39 @@
         <data android:scheme="namazakisi"/>
       </intent-filter>
     </activity>
+
+    <!-- 1x1 Namaz Widget -->
+    <receiver
+        android:name=".widget.NamazWidget"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/widget_namaz_bilgisi" />
+    </receiver>
+
+    <!-- 4x2 Geniş Namaz Widget -->
+    <receiver
+        android:name=".widget.NamazGenisBoyutWidget"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/widget_namaz_genis_bilgisi" />
+    </receiver>
+
+    <!-- Widget dakikalık güncelleme + önyükleme alıcısı -->
+    <receiver
+        android:name=".widget.NamazWidgetAlarmAlici"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>
