@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.20.1] - 2026-04-04
+
+### Eklendi
+- [android] 1x1 ve 4x2 namaz widget'ları eklendi
+
 ## [0.20.0] - 2026-04-04
 
 ### Eklendi
