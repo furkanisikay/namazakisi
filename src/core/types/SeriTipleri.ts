@@ -212,7 +212,7 @@ export const VARSAYILAN_SERI_AYARLARI: SeriAyarlari = {
   tamGunEsigi: 5,
   gunBitisSaati: '05:00', // DEPRECATED - artık otomatik hesaplanıyor
   bildirimlerAktif: true,
-  toparlanmaGunSayisi: 5,
+  toparlanmaGunSayisi: 3,
   gunSonuBildirimAktif: true,
   gunSonuBildirimDk: 60, // DEPRECATED
   // Yeni gün sonu bildirim ayarları

@@ -30,6 +30,8 @@ import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
@@ -140,12 +142,15 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     }
 
     // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
+    // Bildirim izni yalnizca kurulum tamamlandiktan sonra istenir;
+    // sihirbaz acikken OS dialog'u gostermemek icin bu kontrol gereklidir.
+    const kurulumTamamlandi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
     await Promise.all([
       store.dispatch(muhafizAyarlariniYukle()).unwrap(),
       store.dispatch(vakitSayacAyarlariniYukle()),
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
-      BildirimServisi.getInstance().izinIste(),
+      kurulumTamamlandi ? BildirimServisi.getInstance().izinIste() : Promise.resolve(),
     ]);
 
     const state = store.getState();
