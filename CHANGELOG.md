@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.20.0] - 2026-04-04
+
+### Eklendi
+- bildirim izni UX iyileştirmeleri ve seri eşiği düzenlemeleri (#67)
+- [AnaSayfa] toparlanma banner + modal + progressive header fire icon wired up
+- [HomeHeader] progressive fire icon color/opacity for recovery mode
+- [ToparlanmaModal] new bottom-sheet modal wrapping ToparlanmaKarti
+
+### Düzeltildi
+- [tests] use act+fakeTimers for animation tests, update recovery scenario to 3-day expectation
+- [ToparlanmaKarti] dark mode bg, softer warning, remove full-card pulse and redundant progress bar
+
 ## [0.19.4] - 2026-03-21
 
 ### Düzeltildi
