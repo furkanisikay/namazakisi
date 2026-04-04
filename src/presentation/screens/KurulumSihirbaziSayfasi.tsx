@@ -80,7 +80,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   // Bildirim izni
-  const [bildirimIzni, setBildirimIzni] = useState<'bekliyor' | 'verildi' | 'reddedildi'>('bekliyor');
+  const [bildirimIzni, setBildirimIzni] = useState<'bekliyor' | 'isteniyor' | 'verildi' | 'reddedildi'>('bekliyor');
 
   // Konum
   const [konumDurumu, setKonumDurumu] = useState<KonumDurumu>('bekliyor');
@@ -127,9 +127,14 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   // ─── Bildirim İzni ───────────────────────────────────────────────────────
 
   const bildirimIzniIste = useCallback(async () => {
+    setBildirimIzni('isteniyor');
     const { status } = await Notifications.requestPermissionsAsync();
-    setBildirimIzni(status === 'granted' ? 'verildi' : 'reddedildi');
-    ilerle();
+    if (status === 'granted') {
+      setBildirimIzni('verildi');
+      setTimeout(() => ilerle(), 1400);
+    } else {
+      setBildirimIzni('reddedildi');
+    }
   }, [ilerle]);
 
   // ─── Konum İzni + GPS ────────────────────────────────────────────────────
@@ -244,7 +249,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const renderAdim = () => {
     switch (adim) {
       case ADIM.HOSGELDINIZ: return <HosgeldinizAdimi />;
-      case ADIM.BILDIRIM_IZNI: return <BildirimIzniAdimi />;
+      case ADIM.BILDIRIM_IZNI: return <BildirimIzniAdimi bildirimIzni={bildirimIzni} />;
       case ADIM.KONUM: return (
         <KonumAdimi
           konumDurumu={konumDurumu}
@@ -298,6 +303,18 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       );
     }
     if (adim === ADIM.BILDIRIM_IZNI) {
+      if (bildirimIzni === 'isteniyor' || bildirimIzni === 'verildi') return null;
+      if (bildirimIzni === 'reddedildi') {
+        return (
+          <TouchableOpacity
+            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
+            onPress={ilerle}
+          >
+            <FontAwesome5 name="arrow-right" size={16} color="#fff" />
+            <Text style={styles.butonMetin}>Şimdilik Geç</Text>
+          </TouchableOpacity>
+        );
+      }
       return (
         <>
           <TouchableOpacity
@@ -476,21 +493,82 @@ const HosgeldinizAdimi: React.FC = () => {
 
 // ─── Adım 1: Bildirim İzni ───────────────────────────────────────────────────
 
-const BildirimIzniAdimi: React.FC = () => {
+const BildirimIzniAdimi: React.FC<{
+  bildirimIzni: 'bekliyor' | 'isteniyor' | 'verildi' | 'reddedildi';
+}> = ({ bildirimIzni }) => {
   const bellAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
-    Animated.loop(Animated.sequence([
-      Animated.timing(bellAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-      Animated.timing(bellAnim, { toValue: -1, duration: 200, useNativeDriver: true }),
-      Animated.timing(bellAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-      Animated.timing(bellAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
-      Animated.delay(2000),
-    ])).start();
-  }, []);
+    if (bildirimIzni === 'bekliyor') {
+      Animated.loop(Animated.sequence([
+        Animated.timing(bellAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.timing(bellAnim, { toValue: -1, duration: 200, useNativeDriver: true }),
+        Animated.timing(bellAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+        Animated.timing(bellAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+        Animated.delay(2000),
+      ])).start();
+    }
+  }, [bildirimIzni]);
+
+  useEffect(() => {
+    if (bildirimIzni === 'verildi') {
+      Animated.spring(scaleAnim, { toValue: 1, friction: 4, useNativeDriver: true }).start();
+    }
+  }, [bildirimIzni]);
 
   const rotate = bellAnim.interpolate({ inputRange: [-1, 1], outputRange: ['-15deg', '15deg'] });
 
+  // ── İsteniyor (loading) ──
+  if (bildirimIzni === 'isteniyor') {
+    return (
+      <View style={styles.merkezliIcerik}>
+        <ActivityIndicator size="large" color="#f59e0b" style={{ marginBottom: 20 }} />
+        <Text style={styles.adimBaslik}>İzin Bekleniyor...</Text>
+        <Text style={styles.adimAltBaslik}>Açılan sistem ekranında izin verin</Text>
+      </View>
+    );
+  }
+
+  // ── Verildi (başarı) ──
+  if (bildirimIzni === 'verildi') {
+    return (
+      <View style={styles.merkezliIcerik}>
+        <Animated.View style={[styles.buyukIkonCember, { backgroundColor: '#fef3c720', transform: [{ scale: scaleAnim }] }]}>
+          <FontAwesome5 name="check-circle" size={52} color="#10b981" />
+        </Animated.View>
+        <Text style={styles.adimBaslik}>Bildirimler Açık!</Text>
+        <Text style={styles.adimAltBaslik}>Namaz vakitleri yaklaştığında sizi bilgilendireceğiz.</Text>
+        <Text style={{ color: '#9ca3af', fontSize: 13, textAlign: 'center', marginTop: 8 }}>
+          Bir sonraki adıma geçiliyor...
+        </Text>
+      </View>
+    );
+  }
+
+  // ── Reddedildi (fallback) ──
+  if (bildirimIzni === 'reddedildi') {
+    return (
+      <View style={styles.merkezliIcerik}>
+        <View style={[styles.buyukIkonCember, { backgroundColor: '#fef2f220' }]}>
+          <FontAwesome5 name="bell-slash" size={44} color="#ef4444" />
+        </View>
+        <Text style={styles.adimBaslik}>İzin Verilmedi</Text>
+        <Text style={styles.adimAltBaslik}>
+          Bildirimler olmadan da uygulamayı kullanabilirsiniz.
+          {'\n'}Daha sonra Ayarlar → Bildirimler bölümünden açabilirsiniz.
+        </Text>
+        <View style={[styles.bilgiKutu, { marginTop: 16 }]}>
+          <FontAwesome5 name="info-circle" size={14} color="#3b82f6" />
+          <Text style={styles.bilgiKutuMetin}>
+            Bildirimleri açmak için telefonunuzun uygulama ayarlarından izin verebilirsiniz.
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  // ── Bekliyor (varsayılan) ──
   return (
     <ScrollView style={styles.scrollAdim} contentContainerStyle={styles.scrollIcerik} showsVerticalScrollIndicator={false}>
       <Animated.View style={[styles.buyukIkonCember, { backgroundColor: '#fef3c720' }, { transform: [{ rotate }] }]}>
@@ -648,7 +726,16 @@ const TemaAdimi: React.FC<{
   mod: string;
   paletiDegistir: (id: string) => void;
   moduDegistir: (mod: TemaModu) => void;
-}> = ({ palet, mod, paletiDegistir, moduDegistir }) => (
+}> = ({ palet, mod, paletiDegistir, moduDegistir }) => {
+  const { koyuMu } = useTema();
+  // Önizleme için seçili moda göre dark/light hesapla
+  const onizlemeKoyu = mod === 'koyu' ? true : mod === 'acik' ? false : koyuMu;
+  const onizlemeBg = onizlemeKoyu ? '#1f2937' : '#fff';
+  const onizlemeMetin = onizlemeKoyu ? '#f9fafb' : '#111';
+  const onizlemeMetinIkincil = onizlemeKoyu ? '#9ca3af' : '#6b7280';
+  const onizlemeSinir = onizlemeKoyu ? '#374151' : '#e5e7eb';
+
+  return (
   <ScrollView style={styles.scrollAdim} contentContainerStyle={styles.scrollIcerik} showsVerticalScrollIndicator={false}>
     <View style={[styles.buyukIkonCember, { backgroundColor: palet.birincil + '25', alignSelf: 'center' }]}>
       <FontAwesome5 name="palette" size={44} color={palet.birincil} />
@@ -656,8 +743,8 @@ const TemaAdimi: React.FC<{
     <Text style={styles.adimBaslik}>Tema Seçin</Text>
     <Text style={styles.adimAltBaslik}>Renk paleti seçin — uygulama anlık olarak değişir</Text>
 
-    {/* Canlı önizleme */}
-    <View style={[styles.onizlemeKart, { borderColor: palet.birincil + '40' }]}>
+    {/* Canlı önizleme — seçili moda göre dark/light */}
+    <View style={[styles.onizlemeKart, { borderColor: palet.birincil + '40', backgroundColor: onizlemeBg }]}>
       <View style={[styles.onizlemeBaslik, { backgroundColor: palet.birincil }]}>
         <FontAwesome5 name="mosque" size={14} color="#fff" />
         <Text style={styles.onizlemeBaslikMetin}>Namaz Akışı</Text>
@@ -665,14 +752,14 @@ const TemaAdimi: React.FC<{
       <View style={styles.onizlemeIcerik}>
         <View style={[styles.onizlemeVakitSatir, { borderLeftColor: palet.birincil }]}>
           <Text style={[styles.onizlemeVakitAdi, { color: palet.birincil }]}>Öğle</Text>
-          <Text style={styles.onizlemeVakitSaat}>13:24</Text>
+          <Text style={[styles.onizlemeVakitSaat, { color: onizlemeMetinIkincil }]}>13:24</Text>
           <View style={[styles.onizlemeBadge, { backgroundColor: palet.birincilAcik }]}>
             <Text style={[styles.onizlemeBadgeMetin, { color: palet.birincilKoyu }]}>Aktif</Text>
           </View>
         </View>
-        <View style={[styles.onizlemeVakitSatir, { borderLeftColor: '#e5e7eb' }]}>
-          <Text style={styles.onizlemeVakitAdiPasif}>İkindi</Text>
-          <Text style={styles.onizlemeVakitSaat}>16:42</Text>
+        <View style={[styles.onizlemeVakitSatir, { borderLeftColor: onizlemeSinir }]}>
+          <Text style={[styles.onizlemeVakitAdiPasif, { color: onizlemeMetinIkincil }]}>İkindi</Text>
+          <Text style={[styles.onizlemeVakitSaat, { color: onizlemeMetinIkincil }]}>16:42</Text>
         </View>
       </View>
     </View>
@@ -725,7 +812,8 @@ const TemaAdimi: React.FC<{
         : 'Her zaman karanlık görünüm kullanılır'}
     </Text>
   </ScrollView>
-);
+  );
+};
 
 // ─── Adım 4: Vakit Bildirimleri ──────────────────────────────────────────────
 

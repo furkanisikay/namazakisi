@@ -380,24 +380,38 @@ export const seriHesapla = (
       // Yeni hedef kontrolu
       sonuc.yeniHedefTamamlandi = tamamlananHedefiBul(eskiSeri, yeniSeri);
     } else if (sonTamGun && gunFarkiniHesapla(sonTamGun, bugun) > 1) {
-      // Arada gun(ler) kacti - toparlanma moduna gec
-      // Ama bugun tam kilindigi icin toparlanmanin ilk gunu sayilir
-
-      sonuc.seriDurumu = {
-        ...durum,
-        toparlanmaDurumu: {
-          tamamlananGun: 1, // Bugun ilk gun
-          baslangicTarihi: bugun,
-          hedefGunSayisi: ayarlar.toparlanmaGunSayisi,
-          oncekiSeri: durum.mevcutSeri,
-        },
-        sonTamGun: bugun,
-        sonGuncelleme: new Date().toISOString(),
-      };
-
+      // Arada gun(ler) kacti - seri bozuldu
+      if (durum.mevcutSeri >= 7) {
+        // 7+ gunluk seri: toparlanma moduna gec
+        // Bugun tam kilindigi icin toparlanmanin ilk gunu sayilir
+        sonuc.seriDurumu = {
+          ...durum,
+          toparlanmaDurumu: {
+            tamamlananGun: 1, // Bugun ilk gun
+            baslangicTarihi: bugun,
+            hedefGunSayisi: ayarlar.toparlanmaGunSayisi,
+            oncekiSeri: durum.mevcutSeri,
+          },
+          sonTamGun: bugun,
+          sonGuncelleme: new Date().toISOString(),
+        };
+        sonuc.kazanilanPuan = 5; // Dusuk puan - seri bozuldu ama toparlanma basladi
+      } else {
+        // 7 gunun altinda seri: toparlanma yok, sifirdan yeni seri baslat
+        sonuc.seriDurumu = {
+          mevcutSeri: 1,
+          enUzunSeri: Math.max(durum.enUzunSeri, 1),
+          sonTamGun: bugun,
+          seriBaslangici: bugun,
+          toparlanmaDurumu: null,
+          dondurulduMu: false,
+          dondurulmaTarihi: null,
+          sonGuncelleme: new Date().toISOString(),
+        };
+        sonuc.kazanilanPuan = 10;
+      }
       sonuc.seriDegisti = true;
       sonuc.seriBozuldu = true;
-      sonuc.kazanilanPuan = 5; // Dusuk puan - seri bozuldu ama toparlanma basladi
     }
   } else {
     // Bugun tam kilinmadi
