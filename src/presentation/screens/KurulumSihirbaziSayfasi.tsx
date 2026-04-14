@@ -18,6 +18,7 @@ import {
   ScrollView,
   ActivityIndicator,
   FlatList,
+  Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -86,6 +87,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const [konumDurumu, setKonumDurumu] = useState<KonumDurumu>('bekliyor');
   const [konumBilgi, setKonumBilgi] = useState<string>('');
   const [manuelIl, setManuelIl] = useState<Il | null>(null);
+  const [konumAciklamaModal, setKonumAciklamaModal] = useState(false);
 
   // Vakit bildirimleri
   const [bildirimler, setBildirimler] = useState<BildirimAyarlari>({
@@ -177,6 +179,27 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       setKonumDurumu('gpsReddedildi');
     }
   }, [dispatch, ilerle]);
+
+  const konumAciklamaOnayla = useCallback(async () => {
+    try {
+      await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI, 'true');
+    } catch { /* depolama hatası izin akışını engellemesin */ }
+    setKonumAciklamaModal(false);
+    konumIzniIste();
+  }, [konumIzniIste]);
+
+  const konumIzniButonBasildi = useCallback(async () => {
+    try {
+      const gosterildi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI);
+      if (gosterildi) {
+        konumIzniIste();
+      } else {
+        setKonumAciklamaModal(true);
+      }
+    } catch { /* depolama okunamazsa her zaman açıklama göster */
+      setKonumAciklamaModal(true);
+    }
+  }, [konumIzniIste]);
 
   const manuelKonumKaydet = useCallback(() => {
     if (!manuelIl) return;
@@ -336,7 +359,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           <>
             <TouchableOpacity
               style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-              onPress={konumIzniIste}
+              onPress={konumIzniButonBasildi}
             >
               <FontAwesome5 name="map-marker-alt" size={16} color="#fff" />
               <Text style={styles.butonMetin}>Konum İznini Ver</Text>
@@ -448,6 +471,45 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       <View style={styles.butonAlani}>
         {renderButon()}
       </View>
+
+      {/* Konum Açıklama Modalı (Google Play Prominent Disclosure) */}
+      <Modal
+        visible={konumAciklamaModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setKonumAciklamaModal(false)}
+      >
+        <View style={styles.aciklamaOverlay}>
+          <View style={styles.aciklamaKart}>
+            <View style={styles.aciklamaIkonSatir}>
+              <FontAwesome5 name="map-marker-alt" size={28} color={palet.birincil} />
+            </View>
+            <Text style={styles.aciklamaBaslik}>
+              Konum Erişimi / Location Access
+            </Text>
+            <Text style={styles.aciklamaMetin}>
+              Bu uygulama namaz vakitlerini doğru hesaplayabilmek için konumunuza erişim istemektedir. Konum veriniz yalnızca cihazınızda işlenir ve hiçbir sunucuya gönderilmez.
+            </Text>
+            <Text style={styles.aciklamaMetinEn}>
+              This app requests access to your location in order to accurately calculate prayer times. Your location data is processed only on your device and is never sent to any server.
+            </Text>
+            <View style={styles.aciklamaButonlar}>
+              <TouchableOpacity
+                style={styles.aciklamaIptalButon}
+                onPress={() => setKonumAciklamaModal(false)}
+              >
+                <Text style={styles.aciklamaIptalMetin}>İptal / Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.aciklamaDevamButon, { backgroundColor: palet.birincil }]}
+                onPress={konumAciklamaOnayla}
+              >
+                <Text style={styles.aciklamaDevamMetin}>Devam Et / Continue</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -1523,4 +1585,40 @@ const styles = StyleSheet.create({
   },
   adimNumaraMetin: { fontSize: 12, fontWeight: '800', color: '#fff' },
   adimAdimMetin: { flex: 1, fontSize: 13.5, color: '#374151', lineHeight: 20 },
+
+  // ── Konum Açıklama Modalı ──
+  aciklamaOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'center', alignItems: 'center', padding: 24,
+  },
+  aciklamaKart: {
+    backgroundColor: '#fff', borderRadius: 20, padding: 24,
+    width: '100%', maxWidth: 400, elevation: 8,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18, shadowRadius: 8,
+  },
+  aciklamaIkonSatir: { alignItems: 'center', marginBottom: 14 },
+  aciklamaBaslik: {
+    fontSize: 17, fontWeight: '800', color: '#111',
+    textAlign: 'center', marginBottom: 14,
+  },
+  aciklamaMetin: {
+    fontSize: 14, color: '#374151', lineHeight: 22, textAlign: 'center', marginBottom: 10,
+  },
+  aciklamaMetinEn: {
+    fontSize: 13, color: '#6b7280', lineHeight: 20, textAlign: 'center', marginBottom: 20,
+    fontStyle: 'italic',
+  },
+  aciklamaButonlar: {
+    flexDirection: 'row', gap: 10, marginTop: 4,
+  },
+  aciklamaIptalButon: {
+    flex: 1, paddingVertical: 13, borderRadius: 12,
+    backgroundColor: '#f3f4f6', alignItems: 'center',
+  },
+  aciklamaIptalMetin: { fontSize: 14, fontWeight: '700', color: '#6b7280' },
+  aciklamaDevamButon: {
+    flex: 1, paddingVertical: 13, borderRadius: 12, alignItems: 'center',
+  },
+  aciklamaDevamMetin: { fontSize: 14, fontWeight: '700', color: '#fff' },
 });
