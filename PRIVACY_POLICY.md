@@ -1,6 +1,6 @@
 # Gizlilik Politikası / Privacy Policy
 
-**Son Güncelleme / Last Updated:** 21 Şubat 2026
+**Son Güncelleme / Last Updated:** 14 Nisan 2026
 
 **Uygulama / App:** Namaz Akışı  
 **Geliştirici / Developer:** Furkan Işıkay  
@@ -28,9 +28,21 @@ Uygulama, namaz vakitlerini ve diğer hatırlatıcıları size iletmek için bil
 **Ses**
 Ezan sesi ve bildirim seslerinin çalınabilmesi için ses erişimi kullanılmaktadır.
 
-### Veri Depolama
+### Veri Depolama ve Saklama Süresi
 
 Uygulama, kullanıcı tercihleri (şehir, bildirim ayarları, tema vb.) yalnızca cihazınızda yerel olarak saklar. Herhangi bir kişisel veri uzak sunuculara gönderilmez veya üçüncü taraflarla paylaşılmaz.
+
+**Saklama Süresi:** Tüm veriler, uygulamayı cihazınızdan kaldırana kadar saklanır. Uygulama kaldırıldığında tüm yerel veriler otomatik olarak silinir.
+
+**Konum verisi:** Anlık olarak işlenir ve cihazda depolanmaz. Yalnızca namaz vakti hesaplaması sırasında kullanılır.
+
+### Veri Silme
+
+Uygulama tüm verileri cihazınızda yerel olarak sakladığından, verilerinizi silmek için aşağıdaki yöntemlerden birini kullanabilirsiniz:
+
+- **Uygulama verilerini temizleme:** Android Ayarlar > Uygulamalar > Namaz Akışı > Depolama > Verileri Temizle yolunu izleyerek tüm uygulama verilerini silebilirsiniz.
+- **Uygulamayı kaldırma:** Uygulamayı cihazınızdan kaldırdığınızda tüm veriler kalıcı olarak silinir.
+- **E-posta yoluyla talep:** Veri silme talebinizi furkanisikay@gmail.com adresine iletebilirsiniz. Talepler 30 gün içinde yanıtlanır.
 
 ### Üçüncü Taraf Hizmetler
 
@@ -85,9 +97,21 @@ The app uses notification permission to deliver prayer time reminders and other 
 **Audio**
 Audio access is used to play the adhan (call to prayer) and notification sounds.
 
-### Data Storage
+### Data Storage and Retention
 
 The app stores user preferences (city, notification settings, theme, etc.) locally on your device only. No personal data is sent to remote servers or shared with third parties.
+
+**Retention Period:** All data is retained until you uninstall the app from your device. When the app is uninstalled, all local data is automatically deleted.
+
+**Location data:** Is processed in real-time and not stored on the device. It is only used during prayer time calculation.
+
+### Data Deletion
+
+Since all data is stored locally on your device, you can delete your data using one of the following methods:
+
+- **Clear app data:** Go to Android Settings > Apps > Namaz Akışı > Storage > Clear Data to delete all app data.
+- **Uninstall the app:** Uninstalling the app from your device permanently deletes all data.
+- **Request via email:** You may submit a data deletion request to furkanisikay@gmail.com. Requests are responded to within 30 days.
 
 ### Third-Party Services
 
