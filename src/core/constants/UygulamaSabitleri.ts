@@ -159,6 +159,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
+  // Konum açıklama (prominent disclosure)
+  KONUM_ACIKLAMA_GOSTERILDI: '@namaz_akisi/konum_aciklama_gosterildi',
 } as const;
 
 // Tarih formatlari
