@@ -181,16 +181,22 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   }, [dispatch, ilerle]);
 
   const konumAciklamaOnayla = useCallback(async () => {
+    try {
+      await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI, 'true');
+    } catch { /* depolama hatası izin akışını engellemesin */ }
     setKonumAciklamaModal(false);
-    await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI, 'true');
     konumIzniIste();
   }, [konumIzniIste]);
 
   const konumIzniButonBasildi = useCallback(async () => {
-    const gosterildi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI);
-    if (gosterildi) {
-      konumIzniIste();
-    } else {
+    try {
+      const gosterildi = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_ACIKLAMA_GOSTERILDI);
+      if (gosterildi) {
+        konumIzniIste();
+      } else {
+        setKonumAciklamaModal(true);
+      }
+    } catch { /* depolama okunamazsa her zaman açıklama göster */
       setKonumAciklamaModal(true);
     }
   }, [konumIzniIste]);
