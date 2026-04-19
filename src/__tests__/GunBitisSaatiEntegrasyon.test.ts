@@ -105,8 +105,14 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakVakti).not.toBeNull();
             expect(imsakVakti).toBeInstanceOf(Date);
 
-            // İmsak vakti 02:00-07:00 arası olmalı (normal aralık, mevsime göre değişir)
-            const imsakSaat = imsakVakti!.getHours();
+            // Istanbul yerel saatinde imsak 02:00-07:00 arasında olmalı (mevsime göre değişir)
+            // CI UTC'de koştuğu için getHours yerine Istanbul timezone'da saati çıkarıyoruz.
+            const istanbulSaatStr = imsakVakti!.toLocaleString('en-US', {
+                timeZone: 'Europe/Istanbul',
+                hour: '2-digit',
+                hour12: false,
+            });
+            const imsakSaat = parseInt(istanbulSaatStr, 10);
             expect(imsakSaat).toBeGreaterThanOrEqual(2);
             expect(imsakSaat).toBeLessThanOrEqual(7);
         });
