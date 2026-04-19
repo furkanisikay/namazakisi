@@ -38,6 +38,7 @@ import type { AppDispatch } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
 import { TurkiyeKonumServisi, TURKIYE_ILLERI_OFFLINE } from '../../domain/services/TurkiyeKonumServisi';
 import type { Il } from '../../domain/services/TurkiyeKonumServisi';
+import { KonumIzniDisclosureModali } from '../components/KonumIzniDisclosureModali';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
@@ -100,6 +101,10 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const [muhafizAktif, setMuhafizAktif] = useState(true);
   const [muhafizYogunluk, setMuhafizYogunluk] = useState<MuhafizYogunluk>('normal');
 
+  // Konum izni disclosure modal
+  const [disclosureGorunur, setDisclosureGorunur] = useState(false);
+  const disclosureKabulRef = useRef<(() => void) | null>(null);
+
   // ─── Geçiş Animasyonu ────────────────────────────────────────────────────
 
   const gecisYap = useCallback((hedefAdim: number) => {
@@ -139,7 +144,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
   // ─── Konum İzni + GPS ────────────────────────────────────────────────────
 
-  const konumIzniIste = useCallback(async () => {
+  const konumIzniIsteInternal = useCallback(async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -177,6 +182,29 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       setKonumDurumu('gpsReddedildi');
     }
   }, [dispatch, ilerle]);
+
+  const konumIzniIste = useCallback(async () => {
+    const { status } = await Location.getForegroundPermissionsAsync();
+    if (status === 'granted') {
+      await konumIzniIsteInternal();
+      return;
+    }
+    disclosureKabulRef.current = () => { void konumIzniIsteInternal(); };
+    setDisclosureGorunur(true);
+  }, [konumIzniIsteInternal]);
+
+  const disclosureKabulEt = useCallback(() => {
+    setDisclosureGorunur(false);
+    const cb = disclosureKabulRef.current;
+    disclosureKabulRef.current = null;
+    if (cb) cb();
+  }, []);
+
+  const disclosureReddet = useCallback(() => {
+    setDisclosureGorunur(false);
+    disclosureKabulRef.current = null;
+    setKonumDurumu('gpsReddedildi');
+  }, []);
 
   const manuelKonumKaydet = useCallback(() => {
     if (!manuelIl) return;
@@ -448,6 +476,13 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       <View style={styles.butonAlani}>
         {renderButon()}
       </View>
+
+      <KonumIzniDisclosureModali
+        gorunur={disclosureGorunur}
+        tip="onPlan"
+        onKabul={disclosureKabulEt}
+        onReddet={disclosureReddet}
+      />
     </View>
   );
 };
@@ -700,19 +735,19 @@ const KonumAdimi: React.FC<{
       </View>
       <Text style={styles.adimBaslik}>Konumunuz</Text>
       <Text style={styles.adimAltBaslik}>
-        Bulunduğunuz konum, namaz vakitlerinin doğru hesaplanması için gereklidir
+        Namaz vakitleri ve kıble yönünün doğru hesaplanabilmesi için konum bilginize ihtiyacımız var
       </Text>
 
-      <InfoKutu ikon="clock" renk="#10b981" baslik="Doğru Namaz Vakitleri" aciklama="Namaz vakitleri coğrafi konuma göre farklılık gösterir. Konum olmadan vakitler hatalı hesaplanabilir." />
-      <InfoKutu ikon="compass" renk="#f59e0b" baslik="Kıble Yönü" aciklama="Dünyanın neresinde olursanız olun, Kâbe'ye göre doğru kıble yönü gösterilir." />
-      <InfoKutu ikon="map-pin" renk="#8b5cf6" baslik="Otomatik Güncelleme" aciklama="Seyahat ettiğinizde konum otomatik güncellenir, vakitler her zaman doğru kalır." />
+      <InfoKutu ikon="clock" renk="#10b981" baslik="Namaz Vakitleri" aciklama="Konum verisi yalnızca namaz vakitlerini hesaplamak için kullanılır. Coğrafi konuma göre vakitler farklılık gösterir." />
+      <InfoKutu ikon="compass" renk="#f59e0b" baslik="Kıble Yönü" aciklama="Konum verisi, Kâbe'ye göre doğru kıble yönünün hesaplanmasında kullanılır." />
+      <InfoKutu ikon="map-pin" renk="#8b5cf6" baslik="Seyahatte Otomatik Güncelleme" aciklama="İsteğe bağlı seyahat modu; siz bir şehirden diğerine geçtiğinizde namaz vakitlerini sessizce günceller. Varsayılan olarak kapalıdır." />
 
       <View style={styles.gizlilikBanner}>
         <FontAwesome5 name="lock" size={14} color="#059669" />
         <Text style={styles.gizlilikBannerMetin}>
-          Konum bilginiz{' '}
-          <Text style={{ fontWeight: '700' }}>yalnızca cihazınızda saklanır</Text>.
-          Sunucularımıza gönderilmez.
+          Konum veriniz{' '}
+          <Text style={{ fontWeight: '700' }}>yalnızca cihazınızda işlenir</Text>;
+          sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz ve reklam/analitik amacıyla kullanılmaz.
         </Text>
       </View>
     </ScrollView>

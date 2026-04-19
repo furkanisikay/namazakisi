@@ -145,8 +145,8 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
             deferredUpdatesDistance: profil.mesafe,
             showsBackgroundLocationIndicator: true,
             foregroundService: {
-                notificationTitle: 'Namaz Akışı',
-                notificationBody: 'Şehir değişikliğini takip ediyor',
+                notificationTitle: 'Seyahatte otomatik güncelleme',
+                notificationBody: 'Şehir değiştiğinde namaz vakitleri konumunuza göre güncellenir.',
                 notificationColor: '#4A90D9',
             },
             pausesUpdatesAutomatically: profil.duraklatma,

@@ -35,6 +35,7 @@ import { TurkiyeKonumServisi, Il, Ilce, TURKIYE_ILLERI_OFFLINE } from '../../dom
 import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
 import { useFeedback } from '../../core/feedback';
 import { Logger } from '../../core/utils/Logger';
+import { KonumIzniDisclosureModali, IzinTipi } from '../components/KonumIzniDisclosureModali';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -452,6 +453,27 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const [seciliHassasiyet, setSeciliHassasiyet] = useState<TakipHassasiyeti>(
         konumAyarlari.takipHassasiyeti || VARSAYILAN_TAKIP_HASSASIYETI
     );
+    const [disclosureGorunur, setDisclosureGorunur] = useState(false);
+    const [disclosureTipi, setDisclosureTipi] = useState<IzinTipi>('onPlan');
+    const disclosureKabulRef = useRef<(() => void) | null>(null);
+
+    const disclosureGoster = useCallback((tip: IzinTipi, onKabul: () => void) => {
+        setDisclosureTipi(tip);
+        disclosureKabulRef.current = onKabul;
+        setDisclosureGorunur(true);
+    }, []);
+
+    const disclosureKabulEt = useCallback(() => {
+        setDisclosureGorunur(false);
+        const devam = disclosureKabulRef.current;
+        disclosureKabulRef.current = null;
+        if (devam) devam();
+    }, []);
+
+    const disclosureReddet = useCallback(() => {
+        setDisclosureGorunur(false);
+        disclosureKabulRef.current = null;
+    }, []);
 
     useEffect(() => {
         const takipDurumunuKontrolEt = async () => {
@@ -502,34 +524,28 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             if (aktif) {
                 const arkaPlanIzniVar = await servis.arkaPlanIzniVarMi();
                 if (!arkaPlanIzniVar) {
-                    Alert.alert(
-                        'Arka Plan Konum İzni',
-                        'Akıllı konum takibi için "Her zaman" konum iznine ihtiyaç var. Bu sayede hareket halindeyken konumunuz otomatik güncellenir.\n\nPil tüketimi minimumdur - seçtiğiniz hassasiyet profiline göre tetiklenir.',
-                        [
-                            { text: 'İptal', style: 'cancel' },
-                            {
-                                text: 'İzin Ver',
-                                onPress: async () => {
-                                    const basarili = await servis.baslat();
-                                    if (basarili) {
-                                        setTakipAktif(true);
-                                        dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
-                                    } else {
-                                        Alert.alert(
-                                            'İzin Gerekli',
-                                            'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
-                                            [
-                                                { text: 'Vazgeç', style: 'cancel' },
-                                                { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
-                                            ]
-                                        );
-                                    }
-                                    setTakipDurumuYukleniyor(false);
-                                },
-                            },
-                        ]
-                    );
                     setTakipDurumuYukleniyor(false);
+                    disclosureGoster('arkaPlan', async () => {
+                        setTakipDurumuYukleniyor(true);
+                        try {
+                            const basarili = await servis.baslat();
+                            if (basarili) {
+                                setTakipAktif(true);
+                                dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
+                            } else {
+                                Alert.alert(
+                                    'İzin Gerekli',
+                                    'Arka plan konum izni verilemedi. Sistem ayarlarından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirebilirsiniz.',
+                                    [
+                                        { text: 'Vazgeç', style: 'cancel' },
+                                        { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
+                                    ]
+                                );
+                            }
+                        } finally {
+                            setTakipDurumuYukleniyor(false);
+                        }
+                    });
                     return;
                 }
 
@@ -540,7 +556,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 } else {
                     Alert.alert(
                         'İzin Gerekli',
-                        'Arka plan konum izni verilemedi. Ayarlar sayfasından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirin.',
+                        'Arka plan konum izni verilemedi. Sistem ayarlarından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirebilirsiniz.',
                         [
                             { text: 'Vazgeç', style: 'cancel' },
                             { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
@@ -560,10 +576,8 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         }
     };
 
-    const handleKonumOto = async () => {
-        await butonTiklandiFeedback();
+    const guncelleKonumOtoInternal = async () => {
         setYukleniyor(true);
-
         try {
             const sonuc = await NamazVaktiHesaplayiciServisi.getInstance().guncelleKonumOto();
 
@@ -597,6 +611,23 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         } finally {
             setYukleniyor(false);
         }
+    };
+
+    const handleKonumOto = async () => {
+        await butonTiklandiFeedback();
+
+        // Prominent Disclosure: sistem izin diyaloğu açılmadan önce konum
+        // verisinin neden istendiği, nasıl kullanıldığı ve paylaşılmadığı
+        // açıkça bildirilir (Google Play User Data policy gereği).
+        const mevcutIzin = await Location.getForegroundPermissionsAsync();
+        if (mevcutIzin.status !== 'granted') {
+            disclosureGoster('onPlan', () => {
+                guncelleKonumOtoInternal();
+            });
+            return;
+        }
+
+        await guncelleKonumOtoInternal();
     };
 
     const handleKonumSecimi = async (il: Il, ilce?: Ilce) => {
@@ -657,6 +688,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const sonGuncellemeMetni = sonGuncellemeMetniOlustur();
 
     return (
+        <>
         <ScrollView className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
             {/* Baslik Karti */}
             <View
@@ -816,26 +848,26 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                 )}
             </View>
 
-            {/* Akilli Konum Takibi - Sadece GPS modunda */}
+            {/* Seyahatte Otomatik Güncelleme - Sadece GPS modunda */}
             {konumAyarlari.konumModu === 'oto' && (
                 <View
                     className="p-4 rounded-2xl border mb-4"
                     style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
                 >
                     <View className="flex-row items-center mb-3">
-                        <FontAwesome5 name="compass" size={16} color={renkler.metinIkincil} />
+                        <FontAwesome5 name="route" size={16} color={renkler.metinIkincil} />
                         <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                            AKILLI KONUM TAKİBİ
+                            SEYAHATTE OTOMATİK GÜNCELLEME
                         </Text>
                     </View>
 
                     <View className="flex-row items-center justify-between">
                         <View className="flex-1 mr-3">
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                Hareket Halinde Güncelle
+                                Şehir Değiştikçe Vakitleri Güncelle
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {`${(TAKIP_PROFILLERI[seciliHassasiyet].mesafe / 1000).toFixed(0)}km+ konum değişikliğinde otomatik günceller`}
+                                {`${(TAKIP_PROFILLERI[seciliHassasiyet].mesafe / 1000).toFixed(0)} km'den uzun bir mesafe katettiğinizde namaz vakitleri yeni konumunuza göre güncellenir`}
                             </Text>
                         </View>
                         {takipDurumuYukleniyor ? (
@@ -858,7 +890,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                             >
                                 <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
                                 <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
-                                    Arka planda konum takibi aktif
+                                    Seyahatte otomatik güncelleme etkin
                                 </Text>
                             </View>
 
@@ -987,5 +1019,12 @@ export const KonumAyarlariSayfasi: React.FC = () => {
 
             <View className="h-10" />
         </ScrollView>
+        <KonumIzniDisclosureModali
+            gorunur={disclosureGorunur}
+            tip={disclosureTipi}
+            onKabul={disclosureKabulEt}
+            onReddet={disclosureReddet}
+        />
+        </>
     );
 };

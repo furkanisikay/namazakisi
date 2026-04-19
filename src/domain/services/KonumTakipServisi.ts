@@ -98,7 +98,9 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
     const yeniLat = yeniKonum.coords.latitude;
     const yeniLng = yeniKonum.coords.longitude;
 
-    Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(4)}, ${yeniLng.toFixed(4)}`);
+    if (__DEV__) {
+        Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(4)}, ${yeniLng.toFixed(4)}`);
+    }
 
     try {
         // Mevcut konum ayarlarini al
@@ -298,8 +300,10 @@ export class KonumTakipServisi {
                 deferredUpdatesDistance: profil.mesafe,
                 showsBackgroundLocationIndicator: true,
                 foregroundService: {
-                    notificationTitle: 'Namaz Akışı',
-                    notificationBody: 'Şehir değişikliğini takip ediyor',
+                    // Android, arka planda konum okumak için kalıcı bildirim zorunlu kılar.
+                    // Metin, kullanıcıya neden bildirim gördüğünü açık ve sade biçimde anlatır.
+                    notificationTitle: 'Seyahatte otomatik güncelleme',
+                    notificationBody: 'Şehir değiştiğinde namaz vakitleri konumunuza göre güncellenir.',
                     notificationColor: '#4A90D9',
                 },
                 pausesUpdatesAutomatically: profil.duraklatma,
