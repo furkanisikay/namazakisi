@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.20.2] - 2026-04-19
+
+### Düzeltildi
+- Google Play konum izni prominent disclosure ve UX iyileştirmeleri
+- Google Play policy compliance - add data retention/deletion info and update privacy policy
+
+### Değiştirildi
+- KonumIzniDisclosureModali code review fixlerini uygula
+
 ## [0.20.1] - 2026-04-04
 
 ### Eklendi

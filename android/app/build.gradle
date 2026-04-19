@@ -92,8 +92,8 @@ android {
         applicationId 'com.furkanisikay.namazakisi'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 44
-        versionName "0.20.1"
+        versionCode 45
+        versionName "0.20.2"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
