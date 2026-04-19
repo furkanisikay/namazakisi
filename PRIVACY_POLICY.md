@@ -1,10 +1,10 @@
 # Gizlilik Politikası / Privacy Policy
 
-**Son Güncelleme / Last Updated:** 14 Nisan 2026
+**Son Güncelleme / Last Updated:** 18 Nisan 2026
 
 **Uygulama / App:** Namaz Akışı  
 **Geliştirici / Developer:** Furkan Işıkay  
-**İletişim / Contact:** furkanisikay@gmail.com
+**İletişim / Contact:** iletisim@furkanisikay.com
 
 ---
 
@@ -34,7 +34,7 @@ Uygulama, kullanıcı tercihleri (şehir, bildirim ayarları, tema vb.) yalnızc
 
 **Saklama Süresi:** Tüm veriler, uygulamayı cihazınızdan kaldırana kadar saklanır. Uygulama kaldırıldığında tüm yerel veriler otomatik olarak silinir.
 
-**Konum verisi:** Anlık olarak işlenir ve cihazda depolanmaz. Yalnızca namaz vakti hesaplaması sırasında kullanılır.
+**Konum verisi:** Son alınan GPS koordinatları yalnızca namaz vakti ve kıble yönü hesaplaması için cihazınızda yerel olarak saklanır; yeni bir konum alındığında önceki koordinatın üzerine yazılır. Sunuculara veya üçüncü taraflara aktarılmaz.
 
 ### Veri Silme
 
@@ -42,7 +42,7 @@ Uygulama tüm verileri cihazınızda yerel olarak sakladığından, verilerinizi
 
 - **Uygulama verilerini temizleme:** Android Ayarlar > Uygulamalar > Namaz Akışı > Depolama > Verileri Temizle yolunu izleyerek tüm uygulama verilerini silebilirsiniz.
 - **Uygulamayı kaldırma:** Uygulamayı cihazınızdan kaldırdığınızda tüm veriler kalıcı olarak silinir.
-- **E-posta yoluyla talep:** Veri silme talebinizi furkanisikay@gmail.com adresine iletebilirsiniz. Talepler 30 gün içinde yanıtlanır.
+- **E-posta yoluyla talep:** Veri silme talebinizi iletisim@furkanisikay.com adresine iletebilirsiniz. Talepler 30 gün içinde yanıtlanır.
 
 ### Üçüncü Taraf Hizmetler
 
@@ -73,7 +73,7 @@ Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Değişiklikler bu sa
 
 ### İletişim
 
-Gizlilik politikamız hakkında sorularınız için: furkanisikay@gmail.com
+Gizlilik politikamız hakkında sorularınız için: iletisim@furkanisikay.com
 
 ---
 
@@ -103,7 +103,7 @@ The app stores user preferences (city, notification settings, theme, etc.) local
 
 **Retention Period:** All data is retained until you uninstall the app from your device. When the app is uninstalled, all local data is automatically deleted.
 
-**Location data:** Is processed in real-time and not stored on the device. It is only used during prayer time calculation.
+**Location data:** The most recent GPS coordinates are stored locally on your device solely to calculate prayer times and the Qibla direction; new readings overwrite the previous coordinates. They are never transmitted to servers or shared with third parties.
 
 ### Data Deletion
 
@@ -111,7 +111,7 @@ Since all data is stored locally on your device, you can delete your data using 
 
 - **Clear app data:** Go to Android Settings > Apps > Namaz Akışı > Storage > Clear Data to delete all app data.
 - **Uninstall the app:** Uninstalling the app from your device permanently deletes all data.
-- **Request via email:** You may submit a data deletion request to furkanisikay@gmail.com. Requests are responded to within 30 days.
+- **Request via email:** You may submit a data deletion request to iletisim@furkanisikay.com. Requests are responded to within 30 days.
 
 ### Third-Party Services
 
@@ -142,4 +142,4 @@ We may update this privacy policy from time to time. Changes will be published o
 
 ### Contact
 
-For questions about our privacy policy: furkanisikay@gmail.com
+For questions about our privacy policy: iletisim@furkanisikay.com

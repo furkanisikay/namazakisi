@@ -271,8 +271,8 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
                 KONUM_TAKIP_GOREVI,
                 expect.objectContaining({
                     foregroundService: expect.objectContaining({
-                        notificationTitle: 'Namaz Akışı',
-                        notificationBody: 'Şehir değişikliğini takip ediyor',
+                        notificationTitle: 'Seyahatte otomatik güncelleme',
+                        notificationBody: 'Şehir değiştiğinde namaz vakitleri konumunuza göre güncellenir.',
                     }),
                 })
             );
