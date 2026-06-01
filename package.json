@@ -35,6 +35,7 @@
     "expo-audio": "~1.1.1",
     "expo-background-fetch": "~14.0.9",
     "expo-blur": "~15.0.8",
+    "expo-calendar": "~14.0.4",
     "expo-crypto": "~15.0.8",
     "expo-file-system": "~19.0.21",
     "expo-haptics": "~15.0.8",

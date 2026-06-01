@@ -30,6 +30,7 @@ import {
   DebugLogsSayfasi,
   KazaDefteriSayfasi,
   KurulumSihirbaziSayfasi,
+  TakvimAyarlariSayfasi,
 } from '../presentation/screens';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
@@ -117,6 +118,11 @@ const AyarlarStack: React.FC = () => {
         name="DebugLogs"
         component={DebugLogsSayfasi}
         options={{ title: 'Debug Logları' }}
+      />
+      <Stack.Screen
+        name="TakvimAyarlari"
+        component={TakvimAyarlariSayfasi}
+        options={{ title: 'Takvim Entegrasyonu' }}
       />
     </Stack.Navigator>
   );

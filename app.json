@@ -67,7 +67,13 @@
         }
       ],
       "expo-task-manager",
-      "expo-background-fetch"
+      "expo-background-fetch",
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "Namaz vakitlerini takviminize eklemek için takvim iznine ihtiyaç var."
+        }
+      ]
     ],
     "owner": "furkanisikay",
     "extra": {

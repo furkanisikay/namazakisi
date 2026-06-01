@@ -99,6 +99,29 @@ export class NamazVaktiHesaplayiciServisi {
         return false;
     }
 
+    public getGunlukVakitler(tarih: Date): {
+        imsak: Date;
+        gunes: Date;
+        ogle: Date;
+        ikindi: Date;
+        aksam: Date;
+        yatsi: Date;
+    } | null {
+        if (!this.config) return null;
+        const { latitude, longitude } = this.config;
+        const coordinates = new Coordinates(latitude, longitude);
+        const params = CalculationMethod.Turkey();
+        const pt = new PrayerTimes(coordinates, tarih, params);
+        return {
+            imsak:  pt.fajr,
+            gunes:  pt.sunrise,
+            ogle:   pt.dhuhr,
+            ikindi: pt.asr,
+            aksam:  pt.maghrib,
+            yatsi:  pt.isha,
+        };
+    }
+
     public getSuankiVakitBilgisi(): VakitBilgisi | null {
         if (!this.config) {
             Logger.warn('NamazVaktiHesaplayiciServisi', 'NamazVaktiHesaplayici yapılandırılmadı!');

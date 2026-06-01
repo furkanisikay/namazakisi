@@ -39,6 +39,7 @@ const MENU_IKONLARI: Record<string, IkonTipi> = {
   hedef: { name: 'bullseye', family: 'fa5', solid: true },
   ramazan: { name: 'moon', family: 'fa5', solid: true },
   hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
+  takvim: { name: 'calendar-alt', family: 'fa5', solid: true },
   titresim: { name: 'vibration', family: 'material' },
   ses: { name: 'volume-up', family: 'fa5', solid: true },
 };
@@ -262,6 +263,12 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
       aciklama: 'İftar sayacı ve Ramazan ayarları',
       ikonAdi: 'ramazan',
       sayfa: 'RamazanAyarlari',
+    },
+    {
+      baslik: 'Takvim Entegrasyonu',
+      aciklama: 'Namaz vakitlerini cihaz takviminize ekle',
+      ikonAdi: 'takvim',
+      sayfa: 'TakvimAyarlari',
     },
     {
       baslik: 'Hakkında',

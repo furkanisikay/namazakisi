@@ -23,3 +23,4 @@ export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
 export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';
+export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
