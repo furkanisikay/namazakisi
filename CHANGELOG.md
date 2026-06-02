@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.21.0] - 2026-06-02
+
+### Eklendi
+- takvim entegrasyonu (#75)
+
+### Düzeltildi
+- review düzeltmeleri — orphan temizleme, sequential write, IANA timezone, izin UX
+
 ## [0.20.2] - 2026-04-19
 
 ### Düzeltildi
