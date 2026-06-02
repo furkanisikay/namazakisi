@@ -44,13 +44,15 @@ on:
         default: true
         type: boolean
       submit_profile:
-        description: 'Submit profili (publish=true ise gecerli)'
+        description: 'Submit profili (publish=true ise gecerli; auto = build profiline gore secilir)'
         required: false
-        default: 'production'
+        default: 'auto'
         type: choice
         options:
-          - production
+          - auto
+          - internal
           - closed-testing
+          - production
 
 concurrency:
   group: expo-build-${{ inputs.platform }}-${{ inputs.profile }}
@@ -208,6 +210,27 @@ jobs:
 
           echo "✅ Release notes fastlane/metadata klasorune yazildi (versionCode: $VERSION_CODE)"
 
+      - name: 🎯 Submit profili belirle
+        if: |
+          inputs.publish == true &&
+          (inputs.platform == 'android' || inputs.platform == 'all') &&
+          steps.android_build.outcome == 'success'
+        id: resolve_submit
+        run: |
+          if [ "${{ inputs.submit_profile }}" == "auto" ]; then
+            case "${{ inputs.profile }}" in
+              preview)     PROFILE="internal" ;;
+              development) PROFILE="internal" ;;
+              production)  PROFILE="production" ;;
+              *)           PROFILE="internal" ;;
+            esac
+            echo "🎯 auto → $PROFILE (build profili: ${{ inputs.profile }})"
+          else
+            PROFILE="${{ inputs.submit_profile }}"
+            echo "🎯 Manuel profil: $PROFILE"
+          fi
+          echo "profile=$PROFILE" >> $GITHUB_OUTPUT
+
       - name: 🔑 Google Service Account hazirla
         if: |
           inputs.publish == true &&
@@ -234,11 +257,12 @@ jobs:
           steps.android_build.outcome == 'success' &&
           steps.gsa.outputs.available == 'true'
         run: |
-          echo "Play Store'a gonderiliyor (profil: ${{ inputs.submit_profile }})..."
+          SUBMIT_PROFILE="${{ steps.resolve_submit.outputs.profile }}"
+          echo "Play Store'a gonderiliyor (profil: $SUBMIT_PROFILE)..."
 
           eas submit \
             --platform android \
-            --profile ${{ inputs.submit_profile }} \
+            --profile "$SUBMIT_PROFILE" \
             --latest \
             --non-interactive
         env:
@@ -283,6 +307,7 @@ jobs:
             echo "| 🎯 **Platform** | \`${{ inputs.platform }}\` |"
             echo "| 📋 **Profil** | \`${{ inputs.profile }}\` |"
             echo "| 📤 **Yayinla** | \`${{ inputs.publish }}\` |"
+            echo "| 🏪 **Submit Profili** | \`${{ steps.resolve_submit.outputs.profile || inputs.submit_profile }}\` |"
             echo "| ⏱️ **Sure** | ${MINUTES}dk ${SECONDS}sn |"
             echo ""
 
@@ -295,7 +320,8 @@ jobs:
               BUILD_STATUS="${{ steps.android_build.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }}"
 
               if [ "${{ inputs.publish }}" == "true" ]; then
-                SUBMIT_STATUS="${{ steps.gsa.outputs.available == 'true' && '✅ Gonderildi' || '⚠️ Secret eksik' }}"
+                RESOLVED="${{ steps.resolve_submit.outputs.profile }}"
+                SUBMIT_STATUS="${{ steps.gsa.outputs.available == 'true' && '✅ Gonderildi' || '⚠️ Secret eksik' }} ($RESOLVED)"
               else
                 SUBMIT_STATUS="⏭️ Atlandı"
               fi

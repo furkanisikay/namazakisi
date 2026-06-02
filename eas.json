@@ -35,6 +35,12 @@
         "track": "alpha",
         "releaseStatus": "completed"
       }
+    },
+    "internal": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed"
+      }
     }
   }
 }
