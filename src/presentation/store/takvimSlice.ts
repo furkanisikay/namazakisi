@@ -42,7 +42,7 @@ const VARSAYILAN_VAKIT_AYARI: VakitTakvimAyari = {
     aktif: false,
     sureDakika: 15,
     baslangicTipi: 'vakit_girisi',
-    dakika: 0,
+    dakika: 5,
 };
 
 export const VARSAYILAN_TAKVIM_AYARLARI: TakvimAyarlari = {
@@ -92,18 +92,23 @@ export const takvimAyarlariniYukle = createAsyncThunk(
 
 export const takvimAyarlariniGuncelle = createAsyncThunk(
     'takvim/guncelle',
-    async (degisiklik: Partial<TakvimAyarlari>, { getState }) => {
-        const state = getState() as RootState;
-        const mevcutAyarlar = state.takvim.ayarlar;
-        const yeniAyarlar: TakvimAyarlari = {
-            ...mevcutAyarlar,
-            ...degisiklik,
-            vakitAyarlari: degisiklik.vakitAyarlari
-                ? { ...mevcutAyarlar.vakitAyarlari, ...degisiklik.vakitAyarlari }
-                : mevcutAyarlar.vakitAyarlari,
-        };
-        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.TAKVIM_AYARLARI, JSON.stringify(yeniAyarlar));
-        return yeniAyarlar;
+    async (degisiklik: Partial<TakvimAyarlari>, { getState, rejectWithValue }) => {
+        try {
+            const state = getState() as RootState;
+            const mevcutAyarlar = state.takvim.ayarlar;
+            const yeniAyarlar: TakvimAyarlari = {
+                ...mevcutAyarlar,
+                ...degisiklik,
+                vakitAyarlari: degisiklik.vakitAyarlari
+                    ? { ...mevcutAyarlar.vakitAyarlari, ...degisiklik.vakitAyarlari }
+                    : mevcutAyarlar.vakitAyarlari,
+            };
+            await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.TAKVIM_AYARLARI, JSON.stringify(yeniAyarlar));
+            return yeniAyarlar;
+        } catch (hata: any) {
+            Logger.error('TakvimSlice', 'Ayarlar kaydedilemedi', hata);
+            return rejectWithValue(hata?.message || 'Ayarlar kaydedilemedi');
+        }
     }
 );
 
@@ -144,6 +149,10 @@ const takvimSlice = createSlice({
             })
             .addCase(takvimAyarlariniGuncelle.fulfilled, (state, action) => {
                 state.ayarlar = action.payload;
+                state.hata = null;
+            })
+            .addCase(takvimAyarlariniGuncelle.rejected, (state, action) => {
+                state.hata = action.payload as string;
             })
             .addCase(takvimOlaylariniOlustur.pending, (state) => {
                 state.olayOlusturuluyor = true;

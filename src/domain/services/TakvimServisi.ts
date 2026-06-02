@@ -7,7 +7,23 @@ import * as Calendar from 'expo-calendar';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
-import type { TakvimAyarlari, TakvimVakitAdi } from '../../presentation/store/takvimSlice';
+
+// Domain-local tipler — presentation/store'a bağımlılık olmadan yapısal uyum sağlar
+type TakvimVakitAdi = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+type BaslangicTipi = 'vakit_oncesi' | 'vakit_girisi' | 'vakit_sonrasi';
+
+interface VakitTakvimAyari {
+    aktif: boolean;
+    sureDakika: number;
+    baslangicTipi: BaslangicTipi;
+    dakika: number;
+}
+
+interface TakvimAyarlari {
+    takvimId: string | null;
+    kaciGunIlerisi: number;
+    vakitAyarlari: Record<TakvimVakitAdi, VakitTakvimAyari>;
+}
 
 const OLUSTURULDU_NOTU = 'Namaz Akışı tarafından oluşturuldu';
 
@@ -65,7 +81,10 @@ export class TakvimServisi {
             const bugun = new Date();
             bugun.setHours(0, 0, 0, 0);
             const bitis = new Date(bugun);
-            bitis.setDate(bitis.getDate() + gunSayisi + 1);
+            // Kullanici gun sayisini dusurse (ornegin 30->7) eski etkinliklerin yetim kalmamasi icin
+            // her zaman en az 31 gunluk (maksimum sinir) bir araligi temizle
+            const temizlemeGunSayisi = Math.max(gunSayisi, 31);
+            bitis.setDate(bitis.getDate() + temizlemeGunSayisi);
 
             const etkinlikler = await Calendar.getEventsAsync([takvimId], bugun, bitis);
             const silinecekler = etkinlikler.filter(e => e.notes?.includes(OLUSTURULDU_NOTU));
@@ -114,72 +133,67 @@ export class TakvimServisi {
         const params = CalculationMethod.Turkey();
         let toplamOlusturulan = 0;
 
-        const gunIslemleri: Array<Promise<number>> = [];
+        // IANA timezone: 'local' gecersiz, cihazin gercek timezone'unu al
+        const deviceTimeZone = Platform.OS === 'android'
+            ? Intl.DateTimeFormat().resolvedOptions().timeZone
+            : undefined;
 
+        // Sequential loop: 150 eşzamanlı IPC yerine sırayla yazarak takvim DB'yi aşırı yüklemiyoruz
         for (let g = 0; g < ayarlar.kaciGunIlerisi; g++) {
             const tarih = new Date();
             tarih.setDate(tarih.getDate() + g);
             tarih.setHours(0, 0, 0, 0);
 
-            gunIslemleri.push(
-                (async () => {
-                    let gunSayisi = 0;
-                    const pt = new PrayerTimes(coordinates, tarih, params);
+            const pt = new PrayerTimes(coordinates, tarih, params);
 
-                    const yarinTarih = new Date(tarih);
-                    yarinTarih.setDate(yarinTarih.getDate() + 1);
-                    const ptYarin = new PrayerTimes(coordinates, yarinTarih, params);
+            const yarinTarih = new Date(tarih);
+            yarinTarih.setDate(yarinTarih.getDate() + 1);
+            const ptYarin = new PrayerTimes(coordinates, yarinTarih, params);
 
-                    const girisSaatleri: Record<TakvimVakitAdi, Date> = {
-                        imsak:  pt.fajr,
-                        ogle:   pt.dhuhr,
-                        ikindi: pt.asr,
-                        aksam:  pt.maghrib,
-                        yatsi:  pt.isha,
-                    };
+            const girisSaatleri: Record<TakvimVakitAdi, Date> = {
+                imsak:  pt.fajr,
+                ogle:   pt.dhuhr,
+                ikindi: pt.asr,
+                aksam:  pt.maghrib,
+                yatsi:  pt.isha,
+            };
 
-                    const cikisSaatleri: Record<TakvimVakitAdi, Date> = {
-                        imsak:  pt.sunrise,
-                        ogle:   pt.asr,
-                        ikindi: pt.maghrib,
-                        aksam:  pt.isha,
-                        yatsi:  ptYarin.fajr,
-                    };
+            const cikisSaatleri: Record<TakvimVakitAdi, Date> = {
+                imsak:  pt.sunrise,
+                ogle:   pt.asr,
+                ikindi: pt.maghrib,
+                aksam:  pt.isha,
+                yatsi:  ptYarin.fajr,
+            };
 
-                    const vakitSiralari: TakvimVakitAdi[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+            const vakitSiralari: TakvimVakitAdi[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
-                    for (const vakit of vakitSiralari) {
-                        const vakitAyari = ayarlar.vakitAyarlari[vakit];
-                        if (!vakitAyari.aktif) continue;
+            for (const vakit of vakitSiralari) {
+                const vakitAyari = ayarlar.vakitAyarlari[vakit];
+                if (!vakitAyari.aktif) continue;
 
-                        const startDate = this.hesaplaBaslangic(
-                            girisSaatleri[vakit],
-                            cikisSaatleri[vakit],
-                            vakitAyari.baslangicTipi,
-                            vakitAyari.dakika
-                        );
-                        const endDate = new Date(startDate.getTime() + vakitAyari.sureDakika * 60 * 1000);
+                const startDate = this.hesaplaBaslangic(
+                    girisSaatleri[vakit],
+                    cikisSaatleri[vakit],
+                    vakitAyari.baslangicTipi,
+                    vakitAyari.dakika
+                );
+                const endDate = new Date(startDate.getTime() + vakitAyari.sureDakika * 60 * 1000);
 
-                        try {
-                            await Calendar.createEventAsync(ayarlar.takvimId!, {
-                                title: `${VAKIT_ISIMLERI[vakit]} Namazı`,
-                                startDate,
-                                endDate,
-                                notes: OLUSTURULDU_NOTU,
-                                timeZone: Platform.OS === 'android' ? 'local' : undefined,
-                            });
-                            gunSayisi++;
-                        } catch (hata) {
-                            Logger.error('TakvimServisi', `${vakit} etkinliği oluşturulamadı`, hata);
-                        }
-                    }
-                    return gunSayisi;
-                })()
-            );
+                try {
+                    await Calendar.createEventAsync(ayarlar.takvimId!, {
+                        title: `${VAKIT_ISIMLERI[vakit]} Namazı`,
+                        startDate,
+                        endDate,
+                        notes: OLUSTURULDU_NOTU,
+                        timeZone: deviceTimeZone,
+                    });
+                    toplamOlusturulan++;
+                } catch (hata) {
+                    Logger.error('TakvimServisi', `${vakit} etkinliği oluşturulamadı`, hata);
+                }
+            }
         }
-
-        const sonuclar = await Promise.all(gunIslemleri);
-        toplamOlusturulan = sonuclar.reduce((a, b) => a + b, 0);
 
         Logger.info('TakvimServisi', `${toplamOlusturulan} takvim etkinliği oluşturuldu`);
         return toplamOlusturulan;

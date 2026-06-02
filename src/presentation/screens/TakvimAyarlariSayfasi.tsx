@@ -192,7 +192,7 @@ const VakitAyarSatiri: React.FC<VakitAyarSatiriProps> = ({
                                 {ayar.baslangicTipi === 'vakit_oncesi' ? 'Kaç dk önce' : 'Kaç dk sonra'}
                             </Text>
                             <SayisalSecici
-                                deger={ayar.dakika || 5}
+                                deger={ayar.dakika}
                                 min={1}
                                 max={60}
                                 adim={5}
@@ -318,12 +318,18 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
 
     useEffect(() => {
         dispatch(takvimAyarlariniYukle());
-        takvimleriniYenile();
         Animated.parallel([
             Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }),
             Animated.timing(slideAnim, { toValue: 0, duration: 350, easing: Easing.out(Easing.cubic), useNativeDriver: true }),
         ]).start();
     }, []);
+
+    // Takvim izni sadece entegrasyon aktif olduğunda istenir (App Store/Play politikalari)
+    useEffect(() => {
+        if (ayarlar.aktif) {
+            takvimleriniYenile();
+        }
+    }, [ayarlar.aktif]);
 
     const takvimleriniYenile = async () => {
         setTakvimYukleniyor(true);
@@ -488,7 +494,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                         style={{ backgroundColor: `${renkler.birincil}15` }}
                                     >
                                         {takvimYukleniyor
-                                            ? <ActivityIndicator size={12} color={renkler.birincil} />
+                                            ? <ActivityIndicator size="small" color={renkler.birincil} />
                                             : <FontAwesome5 name="sync-alt" size={12} color={renkler.birincil} />
                                         }
                                         <Text className="text-xs" style={{ color: renkler.birincil }}>Yenile</Text>
