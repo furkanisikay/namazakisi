@@ -5,6 +5,15 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.22.0] - 2026-06-02
+
+### Eklendi
+- internal testers için otomatik submit desteği ekle
+- mevcut takvim etkinliklerini temizle butonu eklendi
+
+### Düzeltildi
+- takvim izin ve cleanup duzeltmeleri + testler
+
 ## [0.21.0] - 2026-06-02
 
 ### Eklendi
