@@ -312,6 +312,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
 
     const [cihazTakvimleri, setCihazTakvimleri] = useState<Array<{ id: string; title: string; color: string }>>([]);
     const [takvimYukleniyor, setTakvimYukleniyor] = useState(false);
+    const [temizleniyor, setTemizleniyor] = useState(false);
 
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const slideAnim = useRef(new Animated.Value(20)).current;
@@ -353,6 +354,36 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                 [vakit]: { ...ayarlar.vakitAyarlari[vakit], ...yeni },
             },
         }));
+    };
+
+    const handleEtkinlikleriTemizle = async () => {
+        await butonTiklandiFeedback();
+        if (!ayarlar.takvimId) {
+            Alert.alert('Takvim Seçin', 'Lütfen önce bir takvim seçin.');
+            return;
+        }
+        Alert.alert(
+            'Etkinlikleri Temizle',
+            'Bu takvimde Namaz Akışı tarafından oluşturulmuş tüm etkinlikler silinecek. Devam edilsin mi?',
+            [
+                { text: 'İptal', style: 'cancel' },
+                {
+                    text: 'Temizle',
+                    style: 'destructive',
+                    onPress: async () => {
+                        setTemizleniyor(true);
+                        try {
+                            await TakvimServisi.getInstance().eskiOlaylariTemizle(ayarlar.takvimId!, 31);
+                            Alert.alert('Tamamlandı', 'Takvim etkinlikleri temizlendi.');
+                        } catch {
+                            Alert.alert('Hata', 'Etkinlikler temizlenirken hata oluştu.');
+                        } finally {
+                            setTemizleniyor(false);
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     const handleOlaylariOlustur = async () => {
@@ -623,12 +654,12 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                 )}
                             </View>
 
-                            {/* Etkinlik Oluştur Butonu */}
+                            {/* Butonlar */}
                             <TouchableOpacity
-                                className="flex-row items-center justify-center p-4 rounded-2xl mb-3"
+                                className="flex-row items-center justify-center p-4 rounded-2xl mb-2"
                                 style={{ backgroundColor: renkler.birincil }}
                                 onPress={handleOlaylariOlustur}
-                                disabled={olayOlusturuluyor}
+                                disabled={olayOlusturuluyor || temizleniyor}
                                 activeOpacity={0.8}
                             >
                                 {olayOlusturuluyor ? (
@@ -638,6 +669,29 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                         <FontAwesome5 name="calendar-plus" size={16} color="#FFF" solid style={{ marginRight: 8 }} />
                                         <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
                                             Olayları Oluştur ({ayarlar.kaciGunIlerisi} gün)
+                                        </Text>
+                                    </>
+                                )}
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className="flex-row items-center justify-center p-3.5 rounded-2xl mb-3"
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: '#EF4444',
+                                    backgroundColor: `#EF444415`,
+                                }}
+                                onPress={handleEtkinlikleriTemizle}
+                                disabled={olayOlusturuluyor || temizleniyor}
+                                activeOpacity={0.8}
+                            >
+                                {temizleniyor ? (
+                                    <ActivityIndicator color="#EF4444" />
+                                ) : (
+                                    <>
+                                        <FontAwesome5 name="calendar-times" size={15} color="#EF4444" solid style={{ marginRight: 8 }} />
+                                        <Text className="text-sm font-semibold" style={{ color: '#EF4444' }}>
+                                            Mevcut Etkinlikleri Temizle
                                         </Text>
                                     </>
                                 )}
