@@ -488,10 +488,9 @@ jobs:
               workflow_id: 'expo-build.yml',
               ref: 'master',
               inputs: {
-                platform: 'android',
-                profile: 'production',
-                publish: 'true',
-                submit_profile: 'internal',
+                build_aab: 'true',
+                build_apk: 'false',
+                internal_a_gonder: 'true',
               },
             });
             console.log('✅ EAS Build kuyruğa alındı → internal track');
