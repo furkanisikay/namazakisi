@@ -141,7 +141,14 @@ jobs:
 
           if [ "${REMOTE_VC:-0}" -lt "$LOCAL_VC" ]; then
             echo "⚠️  Remote ($REMOTE_VC) < Local ($LOCAL_VC) — senkronize ediliyor..."
-            printf "%s\n" "$LOCAL_VC" | eas build:version:set -p android
+            # eas build:version:set TTY gerektirir, expect ile simüle ediyoruz
+            expect << EXPECT_SCRIPT
+              set timeout 30
+              spawn eas build:version:set -p android
+              expect -re {version}
+              send "$LOCAL_VC\r"
+              expect eof
+EXPECT_SCRIPT
             echo "✅ EAS remote versionCode $LOCAL_VC'a set edildi"
           else
             echo "✅ EAS remote versionCode güncel ($REMOTE_VC >= $LOCAL_VC)"
