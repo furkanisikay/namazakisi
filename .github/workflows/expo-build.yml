@@ -2,13 +2,18 @@
 # Expo Build Pipeline (PlayStore) — Namaz Akisi
 # ========================================================================
 #
-# EAS Build ile PlayStore icin uretim AAB olusturur.
-# Versiyon DEGISTIRMEZ — mevcut app.json versiyonunu kullanir.
+# Tetikleyiciler:
+#   - Manuel (workflow_dispatch): UI uzerinden herhangi bir profil ile
+#   - Otomatik (workflow_call): android-build.yml'in release adiminin
+#     ardından çağrılır — version bump commit'inden sonra tetiklenir,
+#     EAS o anki master'ı klonladığı için doğru versionCode'u alır.
 #
-# "Yayinla" secenegini isaretli birakinca build bittikten sonra
-# CHANGELOG'dan release notlari alinip Play Store'a otomatik gonderilir.
+# Otomatik akis:
+#   master push → CI gecer → android-build (versioning+APK+tag)
+#              → expo-build (production AAB → internal track)
+#              → Play Console internal testing → manuel promote → production
 #
-# Gereksinimler (Play Store submit icin):
+# Gereksinimler:
 #   GitHub Secrets:
 #     EXPO_TOKEN               — Expo hesap tokeni
 #     GOOGLE_SERVICE_ACCOUNT   — Google Service Account JSON (tam icerik)
@@ -53,6 +58,27 @@ on:
           - internal
           - closed-testing
           - production
+
+  # android-build.yml tarafindan otomatik cagrilir (release sonrasi)
+  workflow_call:
+    inputs:
+      platform:
+        type: string
+        default: 'android'
+      profile:
+        type: string
+        default: 'production'
+      publish:
+        type: boolean
+        default: true
+      submit_profile:
+        type: string
+        default: 'internal'
+    secrets:
+      EXPO_TOKEN:
+        required: true
+      GOOGLE_SERVICE_ACCOUNT:
+        required: false
 
 concurrency:
   group: expo-build-${{ inputs.platform }}-${{ inputs.profile }}
