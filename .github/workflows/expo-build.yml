@@ -142,19 +142,23 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       # ==========================================
-      # APK Build (preview — direkt indirme)
+      # APK Build — Gradle (android-build.yml)
       # ==========================================
-      - name: 📱 APK Build (preview profili)
+      - name: 📱 APK Build Tetikle (Gradle)
         if: inputs.build_apk == true
         id: apk_build
-        run: |
-          echo "📦 APK build başlatılıyor (preview)..."
-          eas build \
-            --platform android \
-            --profile preview \
-            --non-interactive
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'android-build.yml',
+              ref: context.ref,
+              inputs: { build_type: 'debug' },
+            });
+            console.log('✅ Gradle debug APK build kuyruğa alındı');
 
       # ==========================================
       # Play Store Internal Track Submit
@@ -236,7 +240,7 @@ jobs:
             echo "| Build | Durum |"
             echo "|-------|-------|"
             echo "| 🤖 AAB (Play Store) | ${AAB_DURUM} |"
-            echo "| 📱 APK (direkt) | ${APK_DURUM} |"
+            echo "| 📱 APK (Gradle) | ${APK_DURUM} |"
             echo "| 🏪 Internal Submit | ${SUBMIT_DURUM} |"
             echo ""
             echo "---"
