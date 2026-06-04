@@ -141,6 +141,7 @@ jobs:
 
           if [ "${REMOTE_VC:-0}" -lt "$LOCAL_VC" ]; then
             echo "⚠️  Remote ($REMOTE_VC) < Local ($LOCAL_VC) — senkronize ediliyor..."
+            sudo apt-get install -y expect -qq
             # eas build:version:set TTY gerektirir; expect -c ile inline simüle ediyoruz
             expect -c "
               set timeout 30
