@@ -114,6 +114,51 @@ export class TakvimServisi {
         }
     }
 
+    public async etkinlikleriGetir(
+        takvimIds: string[],
+        baslangicTarih: Date,
+        bitisTarih: Date,
+        vakitBasliklari?: string[]
+    ): Promise<Array<{ id: string; title: string; startDate: Date; takvimId: string }>> {
+        const izin = await this.izinIste();
+        if (!izin) return [];
+
+        const sonuclar: Array<{ id: string; title: string; startDate: Date; takvimId: string }> = [];
+
+        for (const takvimId of takvimIds) {
+            try {
+                const etkinlikler = await Calendar.getEventsAsync([takvimId], baslangicTarih, bitisTarih);
+                for (const e of etkinlikler) {
+                    if (!e.notes?.includes(OLUSTURULDU_NOTU)) continue;
+                    if (vakitBasliklari && vakitBasliklari.length > 0 && !vakitBasliklari.includes(e.title)) continue;
+                    sonuclar.push({
+                        id: e.id,
+                        title: e.title,
+                        startDate: new Date(e.startDate as string),
+                        takvimId,
+                    });
+                }
+            } catch (hata) {
+                Logger.error('TakvimServisi', `Takvim ${takvimId} sorgulanamadı`, hata);
+            }
+        }
+
+        return sonuclar.sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+    }
+
+    public async etkinlikleriSil(eventIds: string[]): Promise<number> {
+        let silinen = 0;
+        for (const id of eventIds) {
+            try {
+                await Calendar.deleteEventAsync(id);
+                silinen++;
+            } catch (hata) {
+                Logger.error('TakvimServisi', `Etkinlik ${id} silinemedi`, hata);
+            }
+        }
+        return silinen;
+    }
+
     public async takvimOlaylariOlustur(
         ayarlar: TakvimAyarlari,
         koordinatlar: { lat: number; lng: number }
