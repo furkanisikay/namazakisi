@@ -126,6 +126,30 @@ jobs:
           echo "✅ EXPO_TOKEN mevcut"
 
       # ==========================================
+      # versionCode Senkronizasyonu
+      # EAS remote sayacı local build.gradle'dan düşükse senkronize et
+      # ==========================================
+      - name: 🔢 versionCode senkronize et
+        if: inputs.build_aab == true
+        run: |
+          LOCAL_VC=$(grep -m1 'versionCode' android/app/build.gradle | tr -dc '0-9')
+          echo "📌 Local versionCode: $LOCAL_VC"
+
+          REMOTE_JSON=$(eas build:version:get -p android --json --non-interactive 2>/dev/null || echo '{}')
+          REMOTE_VC=$(echo "$REMOTE_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('buildNumber') or d.get('versionCode') or 0)" 2>/dev/null || echo 0)
+          echo "📡 EAS remote versionCode: $REMOTE_VC"
+
+          if [ "${REMOTE_VC:-0}" -lt "$LOCAL_VC" ]; then
+            echo "⚠️  Remote ($REMOTE_VC) < Local ($LOCAL_VC) — senkronize ediliyor..."
+            printf "%s\n" "$LOCAL_VC" | eas build:version:set -p android
+            echo "✅ EAS remote versionCode $LOCAL_VC'a set edildi"
+          else
+            echo "✅ EAS remote versionCode güncel ($REMOTE_VC >= $LOCAL_VC)"
+          fi
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ==========================================
       # AAB Build (production — Play Store)
       # ==========================================
       - name: 🤖 AAB Build (production profili)
