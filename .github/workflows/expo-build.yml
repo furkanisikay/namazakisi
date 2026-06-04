@@ -13,9 +13,12 @@
 #   android-build.yml APK + GitHub Release'i halleder
 #   Bu workflow sadece AAB → internal track yapar
 #
-# versionCode: EAS remote ile yönetilir (app.json'a dokunmaz)
-#   → Test buildleri git commit oluşturmaz
-#   → Her EAS build otomatik olarak bir sonraki versionCode'u alır
+# versionCode: Build aninda timestamp (date +%s) ile atanir
+#   → Hem test hem master buildleri ayni internal track'e gider,
+#     tek monoton dizi gerekir; timestamp her zaman artar.
+#   → Runner'da local commit edilir (push YOK) — git kirlenmez,
+#     EAS commit'li state'ten okur.
+#   → versionName (0.22.0) android-build.yml semantic versioning'inde kalir.
 #
 # Gereksinimler (GitHub Secrets):
 #   EXPO_TOKEN             — expo.dev hesap tokeni
@@ -88,7 +91,7 @@ jobs:
         run: |
           VERSION=$(node -p "require('./app.json').expo.version")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "📦 v$VERSION | versionCode: EAS remote yönetiminde"
+          echo "📦 v$VERSION | versionCode: build aninda timestamp ile atanacak"
 
       # ==========================================
       # Ortam Hazırlığı
@@ -126,36 +129,38 @@ jobs:
           echo "✅ EXPO_TOKEN mevcut"
 
       # ==========================================
-      # versionCode Senkronizasyonu
-      # EAS remote sayacı local build.gradle'dan düşükse senkronize et
+      # versionCode = timestamp (build aninda, push YOK)
+      # EAS commit'li git state'ten okur; bu yuzden runner'da
+      # local commit ediyoruz (push etmiyoruz). Timestamp her
+      # zaman artar → Play Store monoton dizi sarti saglanir.
       # ==========================================
-      - name: 🔢 versionCode senkronize et
+      - name: 🔢 versionCode ata (timestamp)
         if: inputs.build_aab == true
+        id: vc
         run: |
-          LOCAL_VC=$(grep -m1 'versionCode' android/app/build.gradle | tr -dc '0-9')
-          echo "📌 Local versionCode: $LOCAL_VC"
+          VC=$(date +%s)
+          OLD_VC=$(grep -m1 'versionCode' android/app/build.gradle | tr -dc '0-9')
+          echo "📌 versionCode: $OLD_VC → $VC"
 
-          REMOTE_JSON=$(eas build:version:get -p android --json --non-interactive 2>/dev/null || echo '{}')
-          REMOTE_VC=$(echo "$REMOTE_JSON" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('buildNumber') or d.get('versionCode') or 0)" 2>/dev/null || echo 0)
-          echo "📡 EAS remote versionCode: $REMOTE_VC"
+          # Bare workflow: EAS native build.gradle'i okur.
+          # app.json'u da set ediyoruz — olasi prebuild senaryosuna karsi garanti.
+          sed -i "s/versionCode [0-9]*/versionCode $VC/" android/app/build.gradle
+          node -e "
+            const fs = require('fs');
+            const a = JSON.parse(fs.readFileSync('./app.json', 'utf8'));
+            a.expo.android = a.expo.android || {};
+            a.expo.android.versionCode = $VC;
+            fs.writeFileSync('./app.json', JSON.stringify(a, null, 2) + '\n');
+          "
 
-          if [ "${REMOTE_VC:-0}" -lt "$LOCAL_VC" ]; then
-            echo "⚠️  Remote ($REMOTE_VC) < Local ($LOCAL_VC) — senkronize ediliyor..."
-            sudo apt-get install -y expect -qq
-            # eas build:version:set TTY gerektirir; expect -c ile inline simüle ediyoruz
-            expect -c "
-              set timeout 30
-              spawn eas build:version:set -p android
-              expect -re {What version}
-              send \"${LOCAL_VC}\r\"
-              expect eof
-            "
-            echo "✅ EAS remote versionCode ${LOCAL_VC}'a set edildi"
-          else
-            echo "✅ EAS remote versionCode güncel ($REMOTE_VC >= $LOCAL_VC)"
-          fi
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          # EAS commit'li state okur → push'suz local commit yeterli
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add android/app/build.gradle app.json
+          git commit -m "ci: ephemeral versionCode $VC [skip ci]" --no-verify
+
+          echo "code=$VC" >> $GITHUB_OUTPUT
+          echo "✅ build.gradle versionCode $VC olarak ayarlandı (sadece bu build için)"
 
       # ==========================================
       # AAB Build (production — Play Store)
@@ -164,8 +169,7 @@ jobs:
         if: inputs.build_aab == true
         id: aab_build
         run: |
-          echo "📦 AAB build başlatılıyor (production)..."
-          echo "ℹ️  versionCode EAS tarafından otomatik artırılacak"
+          echo "📦 AAB build başlatılıyor (production, versionCode ${{ steps.vc.outputs.code }})..."
           eas build \
             --platform android \
             --profile production \
@@ -264,7 +268,7 @@ jobs:
             echo "| Detay | Bilgi |"
             echo "|-------|-------|"
             echo "| 📦 **Versiyon** | \`${{ steps.version.outputs.version }}\` |"
-            echo "| 🔢 **versionCode** | EAS remote (otomatik) |"
+            echo "| 🔢 **versionCode** | \`${{ steps.vc.outputs.code }}\` (timestamp) |"
             echo "| 🌿 **Branch** | \`${{ github.ref_name }}\` |"
             echo "| ⏱️ **Süre** | ${MINUTES}dk ${SECONDS}sn |"
             echo ""
