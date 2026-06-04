@@ -431,7 +431,7 @@ interface TemizleModaliProps {
     cihazTakvimleri: Array<{ id: string; title: string; color: string }>;
 }
 
-const ARALIK_PRESETLER: { gun: 7 | 30 | 90; etiket: string; aciklama: string }[] = [
+const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
     { gun: 7,  etiket: '7 Gün',  aciklama: 'Bu hafta' },
     { gun: 30, etiket: '30 Gün', aciklama: 'Bu ay' },
     { gun: 90, etiket: '90 Gün', aciklama: '3 ay' },
@@ -445,7 +445,8 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
 
     const [adim, setAdim] = useState<TemizleAdim>('kriter');
     const [takvimMod, setTakvimMod] = useState<TakvimModTipi>('secili');
-    const [aralikGun, setAralikGun] = useState<7 | 30 | 90>(30);
+    const [aralikGun, setAralikGun] = useState<number>(30);
+    const [ozelAralikAktif, setOzelAralikAktif] = useState(false);
     const [secilenVakitler, setSecilenVakitler] = useState<Set<TakvimVakitAdi>>(
         new Set<TakvimVakitAdi>(VAKIT_SIRASI)
     );
@@ -457,6 +458,7 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
             setAdim('kriter');
             setTakvimMod('secili');
             setAralikGun(30);
+            setOzelAralikAktif(false);
             setSecilenVakitler(new Set<TakvimVakitAdi>(VAKIT_SIRASI));
             setBulunanEtkinlikler([]);
             setSiliniyor(false);
@@ -564,7 +566,7 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                 backgroundColor: renkler.kartArkaplan,
                                 borderTopLeftRadius: 24,
                                 borderTopRightRadius: 24,
-                                maxHeight: EKRAN_YUKSEKLIGI * 0.87,
+                                height: EKRAN_YUKSEKLIGI * 0.87,
                                 paddingBottom: 32,
                             }}
                         >
@@ -667,9 +669,9 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
                                         ZAMAN ARALIĞI (BUGÜNDEN İTİBAREN)
                                     </Text>
-                                    <View className="flex-row gap-2 mb-4">
+                                    <View className="flex-row gap-2 mb-2">
                                         {ARALIK_PRESETLER.map(({ gun, etiket, aciklama }) => {
-                                            const secili = aralikGun === gun;
+                                            const secili = !ozelAralikAktif && aralikGun === gun;
                                             return (
                                                 <TouchableOpacity
                                                     key={gun}
@@ -679,7 +681,7 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                         borderWidth: 1,
                                                         borderColor: secili ? renkler.birincil : renkler.sinir,
                                                     }}
-                                                    onPress={() => setAralikGun(gun)}
+                                                    onPress={() => { setAralikGun(gun); setOzelAralikAktif(false); }}
                                                     activeOpacity={0.7}
                                                 >
                                                     <Text className="text-sm font-bold" style={{ color: secili ? '#FFF' : renkler.metin }}>
@@ -691,7 +693,45 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                 </TouchableOpacity>
                                             );
                                         })}
+                                        <TouchableOpacity
+                                            className="flex-1 py-3 rounded-2xl items-center"
+                                            style={{
+                                                backgroundColor: ozelAralikAktif ? renkler.birincil : renkler.arkaplan,
+                                                borderWidth: 1,
+                                                borderColor: ozelAralikAktif ? renkler.birincil : renkler.sinir,
+                                            }}
+                                            onPress={() => {
+                                                if (!ozelAralikAktif) {
+                                                    const presetler = ARALIK_PRESETLER.map(p => p.gun);
+                                                    if (presetler.includes(aralikGun)) setAralikGun(60);
+                                                }
+                                                setOzelAralikAktif(true);
+                                            }}
+                                            activeOpacity={0.7}
+                                        >
+                                            <Text className="text-sm font-bold" style={{ color: ozelAralikAktif ? '#FFF' : renkler.metin }}>
+                                                Özel
+                                            </Text>
+                                            <Text className="text-xs mt-0.5" style={{ color: ozelAralikAktif ? 'rgba(255,255,255,0.75)' : renkler.metinIkincil }}>
+                                                Gün gir
+                                            </Text>
+                                        </TouchableOpacity>
                                     </View>
+                                    {ozelAralikAktif && (
+                                        <View className="flex-row items-center justify-between mt-1 mb-2">
+                                            <Text className="text-sm" style={{ color: renkler.metin }}>Gün sayısı</Text>
+                                            <SayisalSecici
+                                                deger={aralikGun}
+                                                min={1}
+                                                max={365}
+                                                adim={1}
+                                                birim="gün"
+                                                onChange={setAralikGun}
+                                                renk={renkler.birincil}
+                                            />
+                                        </View>
+                                    )}
+                                    <View className="mb-1" />
 
                                     {/* Vakitler */}
                                     <View className="flex-row items-center justify-between mb-2">
@@ -889,6 +929,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
     const [cihazTakvimleri, setCihazTakvimleri] = useState<Array<{ id: string; title: string; color: string }>>([]);
     const [takvimYukleniyor, setTakvimYukleniyor] = useState(false);
     const [temizleModaliGorunur, setTemizleModaliGorunur] = useState(false);
+    const [ozelGunAktif, setOzelGunAktif] = useState(false);
     const [bildirim, setBildirim] = useState<Bildirim | null>(null);
     const bildirimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -1131,9 +1172,9 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                 <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
                                     KAÇ GÜN İLERİSİ
                                 </Text>
-                                <View className="flex-row gap-2">
+                                <View className="flex-row gap-2 mb-2">
                                     {([7, 14, 30] as const).map(gun => {
-                                        const secili = ayarlar.kaciGunIlerisi === gun;
+                                        const secili = !ozelGunAktif && ayarlar.kaciGunIlerisi === gun;
                                         return (
                                             <TouchableOpacity
                                                 key={gun}
@@ -1143,7 +1184,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                                     borderWidth: 1,
                                                     borderColor: secili ? renkler.birincil : renkler.sinir,
                                                 }}
-                                                onPress={() => dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: gun }))}
+                                                onPress={() => { dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: gun })); setOzelGunAktif(false); }}
                                                 activeOpacity={0.7}
                                             >
                                                 <Text className="text-sm font-semibold" style={{ color: secili ? '#FFF' : renkler.metinIkincil }}>
@@ -1152,7 +1193,42 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                             </TouchableOpacity>
                                         );
                                     })}
+                                    <TouchableOpacity
+                                        className="flex-1 py-2.5 rounded-xl items-center"
+                                        style={{
+                                            backgroundColor: ozelGunAktif ? renkler.birincil : `${renkler.birincil}10`,
+                                            borderWidth: 1,
+                                            borderColor: ozelGunAktif ? renkler.birincil : renkler.sinir,
+                                        }}
+                                        onPress={() => {
+                                            if (!ozelGunAktif) {
+                                                if ([7, 14, 30].includes(ayarlar.kaciGunIlerisi)) {
+                                                    dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: 60 }));
+                                                }
+                                            }
+                                            setOzelGunAktif(true);
+                                        }}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text className="text-sm font-semibold" style={{ color: ozelGunAktif ? '#FFF' : renkler.metinIkincil }}>
+                                            Özel
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
+                                {ozelGunAktif && (
+                                    <View className="flex-row items-center justify-between mt-1">
+                                        <Text className="text-sm" style={{ color: renkler.metin }}>Gün sayısı</Text>
+                                        <SayisalSecici
+                                            deger={ayarlar.kaciGunIlerisi}
+                                            min={1}
+                                            max={90}
+                                            adim={1}
+                                            birim="gün"
+                                            onChange={v => dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: v }))}
+                                            renk={renkler.birincil}
+                                        />
+                                    </View>
+                                )}
                             </View>
 
                             {/* Önizleme */}

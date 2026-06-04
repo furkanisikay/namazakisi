@@ -27,7 +27,7 @@ export interface TakvimAyarlari {
     aktif: boolean;
     takvimId: string | null;
     takvimAdi: string | null;
-    kaciGunIlerisi: 7 | 14 | 30;
+    kaciGunIlerisi: number;
     vakitAyarlari: Record<TakvimVakitAdi, VakitTakvimAyari>;
 }
 
