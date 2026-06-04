@@ -192,7 +192,6 @@ jobs:
             --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          EXPO_GOOGLE_SERVICES_KEY: /tmp/google-service-account.json
 
       - name: ⚠️ Submit atlandı — Secret eksik
         if: |
