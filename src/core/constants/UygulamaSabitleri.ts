@@ -161,6 +161,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu
   TAKVIM_AYARLARI: '@namaz_akisi/takvim_ayarlari',
+  // Yeni özellik duyuruları (görülen/kapatılan)
+  GORULEN_OZELLIKLER: '@namaz_akisi/gorulen_ozellikler',
 } as const;
 
 // Tarih formatlari

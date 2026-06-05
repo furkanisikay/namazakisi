@@ -1279,8 +1279,8 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         tip="temizleme"
                                         baslik="Etkinlikler Temizlendi"
                                         altBaslik={silinenSayi > 0
-                                            ? 'Seçtiğin etkinlikler takvimden başarıyla silindi.'
-                                            : 'Belirtilen kriterlerde silinecek etkinlik kalmadı.'}
+                                            ? 'Seçtiğiniz etkinlikler takviminizden başarıyla silindi.'
+                                            : 'Belirttiğiniz kriterlerde silinecek etkinlik kalmadı.'}
                                         satirlar={temizlemeOzetSatirlari}
                                         onTakvimiAc={handleTakvimiAc}
                                         onKapat={onKapat}
@@ -1760,8 +1760,8 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                 tip="olusturma"
                                 baslik="Etkinlikler Oluşturuldu"
                                 altBaslik={olusturmaSonucu.sayi > 0
-                                    ? 'Namaz vakitlerin takvimine başarıyla eklendi.'
-                                    : 'Eklenecek aktif vakit bulunamadı. Vakit ayarlarını kontrol et.'}
+                                    ? 'Namaz vakitleriniz takviminize başarıyla eklendi.'
+                                    : 'Eklenecek aktif vakit bulunamadı. Lütfen vakit ayarlarınızı kontrol edin.'}
                                 satirlar={[
                                     { ikon: 'calendar-check', etiket: 'Oluşturulan', deger: `${olusturmaSonucu.sayi} etkinlik` },
                                     { ikon: 'bookmark', etiket: 'Takvim', deger: ayarlar.takvimAdi ?? '—' },

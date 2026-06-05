@@ -31,9 +31,13 @@ import {
   KazaDefteriSayfasi,
   KurulumSihirbaziSayfasi,
   TakvimAyarlariSayfasi,
+  NelerYeniSayfasi,
 } from '../presentation/screens';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
+import { useAppDispatch } from '../presentation/store/hooks';
+import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
+import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
 
@@ -124,6 +128,11 @@ const AyarlarStack: React.FC = () => {
         component={TakvimAyarlariSayfasi}
         options={{ title: 'Takvim Entegrasyonu' }}
       />
+      <Stack.Screen
+        name="NelerYeni"
+        component={NelerYeniSayfasi}
+        options={{ title: 'Neler Yeni' }}
+      />
     </Stack.Navigator>
   );
 };
@@ -134,6 +143,13 @@ const AyarlarStack: React.FC = () => {
 const MainTabs: React.FC = () => {
   const renkler = useRenkler();
   const insets = useSafeAreaInsets();
+  const dispatch = useAppDispatch();
+  const { okunmamisVarMi } = useYeniOzellikler();
+
+  // Yeni özellik duyuru durumunu uygulama açılışında yükle (tab rozeti için)
+  useEffect(() => {
+    dispatch(ozellikleriYukle());
+  }, [dispatch]);
 
   return (
     <Tab.Navigator
@@ -228,6 +244,18 @@ const MainTabs: React.FC = () => {
         options={{
           headerShown: false,
           tabBarLabel: 'Ayarlar',
+          // Okunmamış yeni özellik varsa küçük nokta rozeti (anasayfa akışını bozmaz)
+          tabBarBadge: okunmamisVarMi ? '' : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: renkler.birincil,
+            minWidth: 10,
+            maxHeight: 10,
+            borderRadius: 5,
+            fontSize: 1,
+            lineHeight: 10,
+            alignSelf: 'center',
+            marginTop: 4,
+          },
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome5 name="cog" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
