@@ -137,7 +137,7 @@ export const HakkindaSayfasi: React.FC = () => {
   const guncellemeDurumMetni = kontrolEdiliyor
     ? 'Kontrol ediliyor...'
     : guncellemeMevcut && bilgi
-      ? `v${bilgi.yeniVersiyon} mevcut`
+      ? `${bilgi.yeniVersiyonEtiketi ?? `v${bilgi.yeniVersiyon}`} mevcut`
       : 'Güncel';
 
   const guncellemeDurumRengi = guncellemeMevcut && bilgi

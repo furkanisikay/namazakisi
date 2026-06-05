@@ -34,6 +34,11 @@ Yeni bir özellik eklediğinde kullanıcıya duyurmak için **tek yer**: `src/co
 - Durum: `ozelliklerSlice` (`gorulenIdler` rozetleri kaldırır, `kapatilanKartIdler` kartı gizler). Açılışta `ozellikleriYukle` (MainTabs'te) dispatch edilir.
 - Kopya kuralı: `baslik` dikkat çekici, `aciklama` özelliğin ~%70'ini tek bakışta anlatan özet, detaylar tıklayınca açılır. Hepsi kibar "siz" dili.
 
+## Güncelleme Sistemi (gotcha'lar)
+- Provider mimarisi: Play Store'dan kurulduysa `PlayStoreGuncellemeKaynagi` (Play Core), aksi halde `GitHubGuncellemeKaynagi` aktif (`GuncellemeServisi`).
+- **Play Core API sürüm ADINI ve changelog'u VERMEZ**, sadece `availableVersionCode`. Bu yüzden Play Store güncelleme modalı sürüm adı/özellik gösteremez. Çözüm: modal temiz "Yeni sürüm" etiketi gösterir (`yeniVersiyonEtiketi`), yeni özellikler **güncelleme sonrası "Neler Yeni" sistemiyle** (`YeniOzellikler.ts`) duyurulur. Kullanıcıya asla "versionCode N" gösterme.
+- **Önbellek tuzağı**: Play Store sonucu versionCode tabanlı olduğundan `onbellekBayatMi()` ile bayatlığı tespit edilemez → güncelleme sonrası eski "güncelleme var" cache'i takılıp modalı tekrar gösteriyordu. Çözüm: Play Store aktifken `guncellemeKontrolEt` önbelleği ATLAR, her açılışta Play Core'u yeniden sorgular (lokal/ucuz); erteleme ("Sonra") yine de süresince banner'ı bastırır.
+
 ## CI / Sürümleme
 - APK = **Gradle** (`android-build.yml`), EAS DEĞİL. AAB = EAS (`expo-build.yml`) → Play Store internal track'e otomatik submit.
 - `eas.json`: `appVersionSource: local`. CI'da AAB `versionCode` = build anında `date +%s` (timestamp); runner'da local commit edilir, push edilmez.

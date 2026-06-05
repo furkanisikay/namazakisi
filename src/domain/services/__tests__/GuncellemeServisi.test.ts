@@ -804,6 +804,84 @@ describe('GuncellemeServisi — onbellekBayatMi Play Store guard', () => {
   });
 });
 
+describe('GuncellemeServisi — Play Store her açılışta taze sorgular (cache takılmaz)', () => {
+  const playStoreAvailable = (yeniVersiyon = '46') => ({
+    guncellemeMevcut: true,
+    bilgi: {
+      yeniVersiyon,
+      yeniVersiyonEtiketi: 'Yeni sürüm',
+      mevcutVersiyon: UYGULAMA.VERSIYON,
+      degisiklikNotlari: '',
+      indirmeBaglantisi: 'playstore://update',
+      yayinTarihi: '',
+      kaynak: 'playstore' as const,
+      zorunluMu: false,
+    },
+  });
+
+  beforeEach(() => {
+    Object.keys(asyncStorageMock).forEach(k => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockResolvedValue({ isConnected: true });
+    mockKurulumKaynagiGetir.mockReset().mockResolvedValue('play_store');
+    mockPlayStoreKontrolEt.mockReset();
+    mockFetch.mockReset();
+  });
+
+  it('geçerli cache olsa bile Play Core yeniden sorgulanır', async () => {
+    // Geçerli (taze) playstore cache
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: Date.now(),
+      sonSonuc: playStoreAvailable('46'),
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    });
+    mockPlayStoreKontrolEt.mockResolvedValue(playStoreAvailable('46'));
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Cache'e takılmadan Play Core sorgulanmış olmalı
+    expect(mockPlayStoreKontrolEt).toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(true);
+  });
+
+  it('güncelleme sonrası Play Core "yok" derse, eski cache olsa bile modal çıkmaz', async () => {
+    // Eski cache hâlâ "güncelleme var" diyor (kullanıcı güncellemeden önceki durum)
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: Date.now(),
+      sonSonuc: playStoreAvailable('46'),
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    });
+    // Play Core artık güncelleme yok diyor (kullanıcı güncelledi)
+    mockPlayStoreKontrolEt.mockResolvedValue({ guncellemeMevcut: false, bilgi: null });
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    expect(mockPlayStoreKontrolEt).toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(false);
+  });
+
+  it('kullanıcı "Sonra" dediyse erteleme süresince banner bastırılır, zorla kontrol gösterir', async () => {
+    mockPlayStoreKontrolEt.mockResolvedValue(playStoreAvailable('46'));
+
+    const servis = GuncellemeServisi.getInstance();
+    // İlk kontrol + ertele
+    await servis.guncellemeKontrolEt(false);
+    await servis.guncellemeErtele('46');
+
+    // Erteleme aktif → banner bastırılır
+    const ertelenmis = await servis.guncellemeKontrolEt(false);
+    expect(ertelenmis.guncellemeMevcut).toBe(false);
+
+    // Zorla (manuel) kontrol → gerçek durum gösterilir
+    const zorlanmis = await servis.guncellemeKontrolEt(true);
+    expect(zorlanmis.guncellemeMevcut).toBe(true);
+  });
+});
+
 describe('guvenilirBaglantiMi', () => {
   it('github.com HTTPS baglantisini kabul eder', () => {
     expect(guvenilirBaglantiMi('https://github.com/furkanisikay/namazakisi/releases')).toBe(true);

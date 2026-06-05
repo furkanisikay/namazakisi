@@ -247,7 +247,7 @@ export const GuncellemeBildirimi: React.FC = () => {
                   color: renkler.bilgi,
                 }}
               >
-                v{bilgi.yeniVersiyon}
+                {bilgi.yeniVersiyonEtiketi ?? `v${bilgi.yeniVersiyon}`}
               </Text>
               {formatlananTarih ? (
                 <Text
