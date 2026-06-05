@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.1] - 2026-06-05
+
+### Düzeltildi
+- [ci] auto-release job'una actions:write izni (reusable subset kuralı)
+- [ci] release workflow'a actions:write izni + Release'i dispatch öncesine al
+
 ## [0.23.0] - 2026-06-05
 
 ### Eklendi
