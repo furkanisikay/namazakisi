@@ -7,6 +7,7 @@ import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { ToparlanmaKarti } from './ToparlanmaKarti';
 import type { ToparlanmaDurumu } from '../../core/types/SeriTipleri';
 import { useRenkler } from '../../core/theme';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 interface ToparlanmaModalProps {
   gorunur: boolean;
@@ -22,6 +23,7 @@ export const ToparlanmaModal: React.FC<ToparlanmaModalProps> = ({
   oncekiSeri,
 }) => {
   const renkler = useRenkler();
+  useDonanimGeriTusu(gorunur, onKapat);
 
   return (
     <Modal

@@ -30,8 +30,14 @@ import { PlayStoreGuncellemeKaynagi } from './PlayStoreGuncellemeKaynagi';
  * Guncelleme bilgisi
  */
 export interface GuncellemeBilgisi {
-  /** Yeni versiyon numarasi */
+  /** Yeni versiyon numarasi (mantik/erteleme icin; Play Store'da versionCode) */
   yeniVersiyon: string;
+  /**
+   * Kullaniciya gosterilecek temiz surum etiketi (opsiyonel).
+   * Play Store gibi semantik surum adi alinamayan kaynaklarda "Yeni sürüm" gibi
+   * bir metin tutulur; UI bunu varsa `v{yeniVersiyon}` yerine gosterir.
+   */
+  yeniVersiyonEtiketi?: string;
   /** Mevcut versiyon numarasi */
   mevcutVersiyon: string;
   /** Degisiklik notlari */
@@ -364,7 +370,16 @@ export class GuncellemeServisi {
       // Onbellegi yukle
       await this.onbellegiYukle();
 
-      if (!zorla) {
+      // Play Store provider'i Play Core'un YEREL ve GUNCEL durumunu kullanir.
+      // Onbellek "bayat" tespiti yapilamadigindan (versionCode semantik degil,
+      // guncelleme sonrasi tespit edilemiyor) eski "guncelleme var" sonucu takilip
+      // kalabiliyordu. Cozum: Play Store aktifken onbellek kisa devresini ATLA ve
+      // her zaman taze sorgula. GitHub icin ag maliyetli oldugundan onbellek korunur.
+      const playStoreAktif = this.kaynaklar.some(
+        (k) => k.tip === 'playstore' && k.destekleniyor()
+      );
+
+      if (!playStoreAktif && !zorla) {
         // Erteleme kontrolu: erteleme sureci devam ediyorsa VE cache bayat degilse
         if (this.ertelemeSurecindeMi() && !this.onbellekBayatMi()) {
           return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
@@ -376,22 +391,36 @@ export class GuncellemeServisi {
         }
       }
 
-      // Ag baglantisi kontrolu (NetInfo ile hizli ve guvenilir)
-      const agDurumu = await NetInfo.fetch();
-      if (!agDurumu.isConnected) {
-        Logger.info('GuncellemeServisi', 'Cevrimdisi - kontrol atlaniyor');
-        // Bayat cache varsa guncelleme yok olarak dondur
-        if (this.onbellekBayatMi()) {
-          return { guncellemeMevcut: false, bilgi: null };
+      // Ag baglantisi kontrolu yalnizca GitHub icin (Play Core kendi baglantisini yonetir)
+      if (!playStoreAktif) {
+        const agDurumu = await NetInfo.fetch();
+        if (!agDurumu.isConnected) {
+          Logger.info('GuncellemeServisi', 'Cevrimdisi - kontrol atlaniyor');
+          // Bayat cache varsa guncelleme yok olarak dondur
+          if (this.onbellekBayatMi()) {
+            return { guncellemeMevcut: false, bilgi: null };
+          }
+          return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
         }
-        return this.onbellek?.sonSonuc || { guncellemeMevcut: false, bilgi: null };
       }
 
       // Desteklenen kaynaklardan kontrol et
       const sonuc = await this.kaynaklardanKontrolEt();
 
-      // Onbellege kaydet
+      // Gercek durumu onbellege kaydet
       await this.onbellegeKaydet(sonuc);
+
+      // Play Store: kullanici bu surumu "Sonra" dediyse ve erteleme suresi dolmadiysa
+      // banner'i bastir (gercek durum cache'e yazildi; manuel/zorla kontrol gosterir)
+      if (
+        playStoreAktif &&
+        !zorla &&
+        sonuc.guncellemeMevcut &&
+        this.ertelemeSurecindeMi() &&
+        this.onbellek?.ertelenenVersiyon === sonuc.bilgi?.yeniVersiyon
+      ) {
+        return { guncellemeMevcut: false, bilgi: null };
+      }
 
       return sonuc;
     } catch (hata) {

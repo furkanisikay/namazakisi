@@ -36,6 +36,7 @@ import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
 import { useFeedback } from '../../core/feedback';
 import { Logger } from '../../core/utils/Logger';
 import { KonumIzniDisclosureModali, IzinTipi } from '../components/KonumIzniDisclosureModali';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -157,6 +158,13 @@ const IlIlceSecici: React.FC<IlIlceSeciciProps> = ({
         setSecilenIl(null);
         setAramaMetni('');
     }, []);
+
+    // Geri tuşu: ilçe adımındaysa il adımına dön, değilse modalı kapat
+    const handleModalGeri = useCallback(() => {
+        if (adim === 'ilce') geriHandler();
+        else modalKapat();
+    }, [adim, geriHandler, modalKapat]);
+    useDonanimGeriTusu(modalGorunum, handleModalGeri);
 
     const ilOgesiRender = useCallback(({ item }: { item: Il }) => {
         const seciliMi = item.id === seciliIlId;

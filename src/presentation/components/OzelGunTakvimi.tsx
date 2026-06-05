@@ -15,6 +15,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRenkler } from '../../core/theme';
 import { BOYUTLAR } from '../../core/constants/UygulamaSabitleri';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 interface OzelGunTakvimiProps {
     gorunur: boolean;
@@ -33,6 +34,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Varsayilan 7 gun
     );
     const [seciciModu, setSeciciModu] = useState<'baslangic' | 'bitis' | null>(null);
+    useDonanimGeriTusu(gorunur, onKapat);
 
     const handleTarihDegisimi = (_event: any, selectedDate?: Date) => {
         if (Platform.OS === 'android') {

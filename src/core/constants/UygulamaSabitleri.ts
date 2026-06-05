@@ -37,7 +37,7 @@ export const NAMAZ_ISIMLERI = [
 // Uygulama meta verileri
 export const UYGULAMA = {
   ADI: 'Namaz Akışı',
-  VERSIYON: '0.20.2',
+  VERSIYON: '0.22.0',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
   GITHUB_REPO: 'furkanisikay/namazakisi',
 } as const;
@@ -159,6 +159,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
+  // Takvim entegrasyonu
+  TAKVIM_AYARLARI: '@namaz_akisi/takvim_ayarlari',
+  // Yeni özellik duyuruları (görülen/kapatılan)
+  GORULEN_OZELLIKLER: '@namaz_akisi/gorulen_ozellikler',
 } as const;
 
 // Tarih formatlari

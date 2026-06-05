@@ -22,6 +22,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
+import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
+import { YeniRozet } from '../components/YeniRozet';
+import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
 
 // Ikon tipleri
 type IkonTipi = {
@@ -39,6 +42,8 @@ const MENU_IKONLARI: Record<string, IkonTipi> = {
   hedef: { name: 'bullseye', family: 'fa5', solid: true },
   ramazan: { name: 'moon', family: 'fa5', solid: true },
   hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
+  takvim: { name: 'calendar-alt', family: 'fa5', solid: true },
+  nelerYeni: { name: 'gift', family: 'fa5', solid: true },
   titresim: { name: 'vibration', family: 'material' },
   ses: { name: 'volume-up', family: 'fa5', solid: true },
 };
@@ -51,6 +56,7 @@ interface AyarMenuSatiriProps {
   aciklama: string;
   ikonAdi: string;
   onPress: () => void;
+  yeni?: boolean;
 }
 
 /**
@@ -61,6 +67,7 @@ const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
   aciklama,
   ikonAdi,
   onPress,
+  yeni,
 }) => {
   const renkler = useRenkler();
   const { butonTiklandiFeedback } = useFeedback();
@@ -98,12 +105,19 @@ const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
         )}
       </View>
       <View className="flex-1">
-        <Text
-          className="text-base font-semibold"
-          style={{ color: renkler.metin }}
-        >
-          {baslik}
-        </Text>
+        <View className="flex-row items-center">
+          <Text
+            className="text-base font-semibold"
+            style={{ color: renkler.metin }}
+          >
+            {baslik}
+          </Text>
+          {yeni && (
+            <View className="ml-2">
+              <YeniRozet />
+            </View>
+          )}
+        </View>
         <Text
           className="text-xs mt-0.5"
           style={{ color: renkler.metinIkincil }}
@@ -204,6 +218,7 @@ const ToggleAyarSatiri: React.FC<ToggleAyarSatiriProps> = ({
 export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
   const renkler = useRenkler();
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
+  const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -264,12 +279,30 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
       sayfa: 'RamazanAyarlari',
     },
     {
+      baslik: 'Takvim Entegrasyonu',
+      aciklama: 'Namaz vakitlerini cihaz takviminize ekle',
+      ikonAdi: 'takvim',
+      sayfa: 'TakvimAyarlari',
+    },
+    {
+      baslik: 'Neler Yeni',
+      aciklama: 'Uygulamaya eklenen yeni özellikler',
+      ikonAdi: 'nelerYeni',
+      sayfa: 'NelerYeni',
+    },
+    {
       baslik: 'Hakkında',
       aciklama: 'Uygulama bilgileri ve versiyon',
       ikonAdi: 'hakkinda',
       sayfa: 'Hakkinda',
     },
   ];
+
+  // Bir menü öğesi açılınca ilgili özelliği (varsa) görüldü işaretle, sonra geç
+  const menuyeGit = (sayfa: string) => {
+    if (sayfa !== 'NelerYeni') sayfayiGorulduIsaretle(sayfa);
+    navigation.navigate(sayfa);
+  };
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
@@ -284,6 +317,17 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
           transform: [{ translateY: slideAnim }],
         }}
       >
+        {/* Yeni Özellik Tanıtım Kartı (yalnızca Ayarlar'da; anasayfaya dokunmaz) */}
+        {kart && (
+          <YeniOzellikKarti
+            ozellik={kart}
+            onAc={() => {
+              if (kart.hedefSayfa) menuyeGit(kart.hedefSayfa);
+            }}
+            onKapat={() => kartiKapat(kart.id)}
+          />
+        )}
+
         {/* Ana Menu Bolumu */}
         <View className="mb-6">
           {menuOgeleri.map((oge) => (
@@ -292,7 +336,8 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
               baslik={oge.baslik}
               aciklama={oge.aciklama}
               ikonAdi={oge.ikonAdi}
-              onPress={() => navigation.navigate(oge.sayfa)}
+              yeni={oge.sayfa === 'NelerYeni' ? okunmamisVarMi : sayfaOkunmamisMi(oge.sayfa)}
+              onPress={() => menuyeGit(oge.sayfa)}
             />
           ))}
         </View>

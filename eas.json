@@ -35,6 +35,13 @@
         "track": "alpha",
         "releaseStatus": "completed"
       }
+    },
+    "internal": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "completed",
+        "serviceAccountKeyPath": "/tmp/google-service-account.json"
+      }
     }
   }
 }

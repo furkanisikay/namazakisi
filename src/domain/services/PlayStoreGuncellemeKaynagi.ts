@@ -39,11 +39,14 @@ export class PlayStoreGuncellemeKaynagi implements GuncellemeKaynagi {
       return {
         guncellemeMevcut: true,
         bilgi: {
-          // Play Store versiyonları için versionCode kullanılır;
-          // mevcut versionName'i gösteriyoruz, yeni için "Play Store" notu
+          // Play Core sürüm ADINI ve changelog'u vermez; yalnızca versionCode verir.
+          // versionCode'u erteleme/karşılaştırma MANTIĞI için saklarız ama kullanıcıya
+          // göstermeyiz — UI temiz "Yeni sürüm" etiketini gösterir. Özelliklerin
+          // tanıtımı güncelleme sonrası "Neler Yeni" sistemiyle yapılır.
           yeniVersiyon: durum.availableVersionCode
-            ? `versionCode ${durum.availableVersionCode}`
-            : 'Yeni sürüm',
+            ? String(durum.availableVersionCode)
+            : 'playstore',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
           mevcutVersiyon: UYGULAMA.VERSIYON,
           degisiklikNotlari: '',
           // Sembolik URL — GuncellemeBildirimi'nde kaynak 'playstore' olunca

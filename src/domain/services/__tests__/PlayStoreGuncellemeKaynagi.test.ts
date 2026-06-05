@@ -67,6 +67,20 @@ describe('PlayStoreGuncellemeKaynagi', () => {
       expect(sonuc.bilgi!.zorunluMu).toBe(false);
     });
 
+    it('kullanıcıya çirkin "versionCode" göstermez; temiz etiket kullanır', async () => {
+      mockKontrolEt.mockResolvedValue({
+        guncellemeMevcut: true,
+        availableVersionCode: 46,
+      });
+
+      const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+      // versionCode mantık için saklanır ama gösterim etiketi temiz olmalı
+      expect(sonuc.bilgi!.yeniVersiyon).toBe('46');
+      expect(sonuc.bilgi!.yeniVersiyonEtiketi).toBe('Yeni sürüm');
+      expect(sonuc.bilgi!.yeniVersiyon).not.toContain('versionCode');
+    });
+
     it('güncelleme yokken { guncellemeMevcut: false } döner', async () => {
       mockKontrolEt.mockResolvedValue({
         guncellemeMevcut: false,

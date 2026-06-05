@@ -1,6 +1,6 @@
 {
   "name": "namazakisi",
-  "version": "0.20.2",
+  "version": "0.22.0",
   "description": "Free & Open Source Prayer App (Sadaqah Jariyah)",
   "license": "GPL-3.0",
   "main": "index.ts",
@@ -35,6 +35,7 @@
     "expo-audio": "~1.1.1",
     "expo-background-fetch": "~14.0.9",
     "expo-blur": "~15.0.8",
+    "expo-calendar": "~14.0.4",
     "expo-crypto": "~15.0.8",
     "expo-file-system": "~19.0.21",
     "expo-haptics": "~15.0.8",

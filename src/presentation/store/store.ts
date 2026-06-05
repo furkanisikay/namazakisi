@@ -14,6 +14,8 @@ import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
 import guncellemeReducer from './guncellemeSlice';
 import kazaReducer from './kazaSlice';
+import takvimReducer from './takvimSlice';
+import ozelliklerReducer from './ozelliklerSlice';
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +30,8 @@ export const store = configureStore({
     sahurSayac: sahurSayacReducer,
     guncelleme: guncellemeReducer,
     kaza: kazaReducer,
+    takvim: takvimReducer,
+    ozellikler: ozelliklerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
