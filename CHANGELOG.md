@@ -5,6 +5,27 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.0] - 2026-06-05
+
+### Eklendi
+- [duyuru] config-driven yeni özellik duyuru sistemi + CLAUDE.md
+- [takvim] animasyonlu başarı modalı + scroll/geri tuşu düzeltmeleri
+- [takvim] özel gün seçimi ve modal yükseklik bug düzeltmesi
+- takvim UX yeniden tasarımı — özellik tanıtımı + 2 aşamalı temizle akışı
+
+### Düzeltildi
+- [guncelleme] Play Store modalı temiz + güncelleme sonrası tekrar çıkma
+- [ci] replace EAS remote versionCode with build-time timestamp
+- [ci] install expect before using it in version sync step
+- [ci] fix expect heredoc YAML indentation issue
+- [ci] use expect to drive interactive eas build:version:set
+- [ci] auto-sync EAS remote versionCode with local build.gradle
+- [ci] eas submit service account key path
+- APK build EAS preview yerine Gradle ile yapılsın
+
+### Değiştirildi
+- [takvim] vakit ayarlarını bottom-sheet editöre taşı
+
 ## [0.22.0] - 2026-06-02
 
 ### Eklendi
