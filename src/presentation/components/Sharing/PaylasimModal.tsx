@@ -6,6 +6,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { BlurView } from 'expo-blur';
 import { Logger } from '../../../core/utils/Logger';
+import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 interface PaylasimModalProps {
   gorunur: boolean;
@@ -22,6 +23,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
   const viewRef = useRef<View | null>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
   const [captureLayout, setCaptureLayout] = useState({ width: 0, height: 0 });
+  useDonanimGeriTusu(gorunur, onKapat);
 
   const paylas = async () => {
     try {

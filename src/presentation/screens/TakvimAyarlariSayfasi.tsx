@@ -18,6 +18,9 @@ import {
     Animated,
     Easing,
     Dimensions,
+    Linking,
+    Platform,
+    StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -34,6 +37,7 @@ import {
 import { TakvimServisi } from '../../domain/services/TakvimServisi';
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { useFeedback } from '../../core/feedback';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 const THROTTLE_SURESI = 100;
@@ -410,9 +414,181 @@ const OzellikBilgi: React.FC = () => {
     );
 };
 
+// ─── Takvim uygulamasını aç ─────────────────────────────────────────────────
+
+async function takvimUygulamasiniAc(): Promise<boolean> {
+    // Android: takvim provider intent · iOS: calshow scheme
+    const url = Platform.OS === 'ios'
+        ? 'calshow:'
+        : 'content://com.android.calendar/time/';
+    try {
+        await Linking.openURL(url);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+// ─── BasariIcerigi (paylaşılan başarı ekranı) ────────────────────────────────
+
+interface OzetSatir {
+    ikon: string;
+    etiket: string;
+    deger: string;
+}
+
+interface BasariIcerigiProps {
+    tip: 'olusturma' | 'temizleme';
+    baslik: string;
+    altBaslik: string;
+    satirlar: OzetSatir[];
+    onTakvimiAc: () => void;
+    onKapat: () => void;
+}
+
+const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
+    tip, baslik, altBaslik, satirlar, onTakvimiAc, onKapat,
+}) => {
+    const renkler = useRenkler();
+    const renk = tip === 'olusturma' ? '#22C55E' : '#EF4444';
+
+    const ikonScale = useRef(new Animated.Value(0)).current;
+    const halkaScale = useRef(new Animated.Value(0)).current;
+    const halkaOpacity = useRef(new Animated.Value(0.45)).current;
+    const icerikOpacity = useRef(new Animated.Value(0)).current;
+    const icerikY = useRef(new Animated.Value(14)).current;
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.spring(ikonScale, {
+                toValue: 1, friction: 5, tension: 140, useNativeDriver: true,
+            }),
+        ]).start();
+
+        Animated.loop(
+            Animated.parallel([
+                Animated.timing(halkaScale, {
+                    toValue: 1, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true,
+                }),
+                Animated.timing(halkaOpacity, {
+                    toValue: 0, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true,
+                }),
+            ])
+        ).start();
+
+        Animated.parallel([
+            Animated.timing(icerikOpacity, {
+                toValue: 1, duration: 320, delay: 140, useNativeDriver: true,
+            }),
+            Animated.timing(icerikY, {
+                toValue: 0, duration: 320, delay: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true,
+            }),
+        ]).start();
+    }, []);
+
+    return (
+        <View className="px-6 pt-2 pb-1 items-center">
+            {/* Animasyonlu ikon + pulse halka */}
+            <View className="items-center justify-center mb-4" style={{ width: 96, height: 96 }}>
+                <Animated.View
+                    style={{
+                        position: 'absolute',
+                        width: 96, height: 96, borderRadius: 48,
+                        backgroundColor: renk,
+                        opacity: halkaOpacity,
+                        transform: [{ scale: halkaScale.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1.35] }) }],
+                    }}
+                />
+                <Animated.View
+                    style={{
+                        width: 76, height: 76, borderRadius: 38,
+                        backgroundColor: `${renk}1A`,
+                        alignItems: 'center', justifyContent: 'center',
+                        transform: [{ scale: ikonScale }],
+                    }}
+                >
+                    <View
+                        style={{
+                            width: 52, height: 52, borderRadius: 26,
+                            backgroundColor: renk,
+                            alignItems: 'center', justifyContent: 'center',
+                        }}
+                    >
+                        <FontAwesome5 name="check" size={24} color="#FFF" />
+                    </View>
+                </Animated.View>
+            </View>
+
+            <Animated.View
+                style={{ opacity: icerikOpacity, transform: [{ translateY: icerikY }], alignSelf: 'stretch' }}
+            >
+                <Text className="text-lg font-bold text-center" style={{ color: renkler.metin }}>
+                    {baslik}
+                </Text>
+                <Text className="text-sm text-center mt-1 leading-5" style={{ color: renkler.metinIkincil }}>
+                    {altBaslik}
+                </Text>
+
+                {/* Özet kartı */}
+                <View
+                    className="rounded-2xl mt-5 mb-5 overflow-hidden"
+                    style={{ borderWidth: 1, borderColor: renkler.sinir }}
+                >
+                    {satirlar.map((s, i) => (
+                        <View
+                            key={s.etiket}
+                            className="flex-row items-center px-4 py-3"
+                            style={{
+                                borderBottomWidth: i < satirlar.length - 1 ? 1 : 0,
+                                borderBottomColor: renkler.sinir,
+                            }}
+                        >
+                            <View
+                                className="w-8 h-8 rounded-lg items-center justify-center mr-3"
+                                style={{ backgroundColor: `${renk}15` }}
+                            >
+                                <FontAwesome5 name={s.ikon} size={13} color={renk} />
+                            </View>
+                            <Text className="text-sm flex-1" style={{ color: renkler.metinIkincil }}>
+                                {s.etiket}
+                            </Text>
+                            <Text className="text-sm font-semibold ml-2 text-right flex-shrink" style={{ color: renkler.metin }} numberOfLines={1}>
+                                {s.deger}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+
+                {/* CTA */}
+                <TouchableOpacity
+                    className="flex-row items-center justify-center p-4 rounded-2xl mb-2.5"
+                    style={{ backgroundColor: renkler.birincil }}
+                    onPress={onTakvimiAc}
+                    activeOpacity={0.85}
+                >
+                    <FontAwesome5 name="external-link-alt" size={14} color="#FFF" style={{ marginRight: 8 }} />
+                    <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                        Takvim Uygulamasını Aç
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    className="items-center justify-center p-3.5 rounded-2xl"
+                    style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                    onPress={onKapat}
+                    activeOpacity={0.7}
+                >
+                    <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
+                        Tamam
+                    </Text>
+                </TouchableOpacity>
+            </Animated.View>
+        </View>
+    );
+};
+
 // ─── TemizleModali ────────────────────────────────────────────────────────────
 
-type TemizleAdim = 'kriter' | 'taraniyor' | 'onay';
+type TemizleAdim = 'kriter' | 'taraniyor' | 'onay' | 'tamamlandi';
 type TakvimModTipi = 'secili' | 'tumu';
 
 interface BulunanEtkinlik {
@@ -425,7 +601,6 @@ interface BulunanEtkinlik {
 interface TemizleModaliProps {
     gorunur: boolean;
     onKapat: () => void;
-    onTemizlendi: (silinen: number, ozet: string) => void;
     secilenTakvimId: string | null;
     secilenTakvimAdi: string | null;
     cihazTakvimleri: Array<{ id: string; title: string; color: string }>;
@@ -438,7 +613,7 @@ const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
 ];
 
 const TemizleModali: React.FC<TemizleModaliProps> = ({
-    gorunur, onKapat, onTemizlendi,
+    gorunur, onKapat,
     secilenTakvimId, secilenTakvimAdi, cihazTakvimleri,
 }) => {
     const renkler = useRenkler();
@@ -452,6 +627,7 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
     );
     const [bulunanEtkinlikler, setBulunanEtkinlikler] = useState<BulunanEtkinlik[]>([]);
     const [siliniyor, setSiliniyor] = useState(false);
+    const [silinenSayi, setSilinenSayi] = useState(0);
 
     useEffect(() => {
         if (!gorunur) {
@@ -462,6 +638,7 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
             setSecilenVakitler(new Set<TakvimVakitAdi>(VAKIT_SIRASI));
             setBulunanEtkinlikler([]);
             setSiliniyor(false);
+            setSilinenSayi(0);
         }
     }, [gorunur]);
 
@@ -521,17 +698,34 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
         try {
             const ids = bulunanEtkinlikler.map(e => e.id);
             const silinen = await TakvimServisi.getInstance().etkinlikleriSil(ids);
-
-            const takvimOzeti = takvimMod === 'tumu' ? 'Tüm takvimler' : (secilenTakvimAdi ?? 'Seçili takvim');
-            const vakitOzeti = secilenVakitler.size === VAKIT_SIRASI.length
-                ? 'tüm vakitler'
-                : Array.from(secilenVakitler).map(v => VAKIT_GORUNTU_ADLARI[v]).join(', ');
-            onTemizlendi(silinen, `${takvimOzeti} · ${aralikGun} gün · ${vakitOzeti}`);
-            onKapat();
+            setSilinenSayi(silinen);
+            setSiliniyor(false);
+            setAdim('tamamlandi');
         } catch {
             setSiliniyor(false);
         }
     };
+
+    const handleTakvimiAc = async () => {
+        await takvimUygulamasiniAc();
+    };
+
+    const temizlemeOzetSatirlari: OzetSatir[] = [
+        { ikon: 'trash-alt', etiket: 'Silinen', deger: `${silinenSayi} etkinlik` },
+        {
+            ikon: takvimMod === 'tumu' ? 'layer-group' : 'bookmark',
+            etiket: 'Takvim',
+            deger: takvimMod === 'tumu' ? 'Tüm takvimler' : (secilenTakvimAdi ?? 'Seçili takvim'),
+        },
+        { ikon: 'clock', etiket: 'Aralık', deger: `${aralikGun} gün` },
+        {
+            ikon: 'list-ul',
+            etiket: 'Vakitler',
+            deger: secilenVakitler.size === VAKIT_SIRASI.length
+                ? 'Tüm vakitler'
+                : Array.from(secilenVakitler).map(v => VAKIT_GORUNTU_ADLARI[v]).join(', '),
+        },
+    ];
 
     const takvimRengi = (tid: string) =>
         cihazTakvimleri.find(t => t.id === tid)?.color ?? '#007AFF';
@@ -556,20 +750,34 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
 
     const taraButonuAktif = takvimMod === 'secili' ? !!secilenTakvimId : cihazTakvimleri.length > 0;
 
+    // Android donanim geri tusu + backdrop dokunusu: adima gore akilli davranis
+    const handleGeriIstegi = useCallback(() => {
+        if (siliniyor) return;
+        if (adim === 'onay') setAdim('kriter');
+        else if (adim === 'taraniyor') { /* tarama suruyor, yok say */ }
+        else onKapat();
+    }, [siliniyor, adim, onKapat]);
+
+    // New Architecture'da Modal onRequestClose guvenilir degil → BackHandler ile garanti
+    useDonanimGeriTusu(gorunur, handleGeriIstegi);
+
     return (
-        <Modal visible={gorunur} animationType="slide" transparent statusBarTranslucent>
-            <TouchableWithoutFeedback onPress={adim === 'kriter' ? onKapat : undefined}>
-                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}>
-                    <TouchableWithoutFeedback>
-                        <View
-                            style={{
-                                backgroundColor: renkler.kartArkaplan,
-                                borderTopLeftRadius: 24,
-                                borderTopRightRadius: 24,
-                                height: EKRAN_YUKSEKLIGI * 0.87,
-                                paddingBottom: 32,
-                            }}
-                        >
+        <Modal visible={gorunur} animationType="slide" transparent statusBarTranslucent onRequestClose={handleGeriIstegi}>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                {/* Backdrop — absolute sibling: FlatList/ScrollView gesture'larini engellemez */}
+                <TouchableWithoutFeedback onPress={adim === 'kriter' ? onKapat : undefined}>
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+                </TouchableWithoutFeedback>
+
+                <View
+                    style={{
+                        backgroundColor: renkler.kartArkaplan,
+                        borderTopLeftRadius: 24,
+                        borderTopRightRadius: 24,
+                        height: EKRAN_YUKSEKLIGI * 0.87,
+                        paddingBottom: 32,
+                    }}
+                >
                             {/* Handle */}
                             <View className="items-center pt-3 pb-2">
                                 <View
@@ -903,10 +1111,27 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     </View>
                                 </View>
                             )}
-                        </View>
-                    </TouchableWithoutFeedback>
+
+                            {/* ── Aşama: Tamamlandı (başarı) ── */}
+                            {adim === 'tamamlandi' && (
+                                <ScrollView
+                                    showsVerticalScrollIndicator={false}
+                                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+                                >
+                                    <BasariIcerigi
+                                        tip="temizleme"
+                                        baslik="Etkinlikler Temizlendi"
+                                        altBaslik={silinenSayi > 0
+                                            ? 'Seçtiğin etkinlikler takvimden başarıyla silindi.'
+                                            : 'Belirtilen kriterlerde silinecek etkinlik kalmadı.'}
+                                        satirlar={temizlemeOzetSatirlari}
+                                        onTakvimiAc={handleTakvimiAc}
+                                        onKapat={onKapat}
+                                    />
+                                </ScrollView>
+                            )}
                 </View>
-            </TouchableWithoutFeedback>
+            </View>
         </Modal>
     );
 };
@@ -930,6 +1155,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
     const [takvimYukleniyor, setTakvimYukleniyor] = useState(false);
     const [temizleModaliGorunur, setTemizleModaliGorunur] = useState(false);
     const [ozelGunAktif, setOzelGunAktif] = useState(false);
+    const [olusturmaSonucu, setOlusturmaSonucu] = useState<{ sayi: number } | null>(null);
     const [bildirim, setBildirim] = useState<Bildirim | null>(null);
     const bildirimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -985,7 +1211,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
 
         const result = await dispatch(takvimOlaylariniOlustur({ ayarlar, koordinatlar }));
         if (takvimOlaylariniOlustur.fulfilled.match(result)) {
-            bildirimGoster(`${result.payload.olusturulanSayi} etkinlik takvime eklendi.`, 'basari');
+            setOlusturmaSonucu({ sayi: result.payload.olusturulanSayi });
         } else {
             bildirimGoster(String(result.payload) || 'Etkinlikler oluşturulurken hata oluştu.', 'hata');
         }
@@ -1018,6 +1244,10 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
         () => VAKIT_SIRASI.filter(v => ayarlar.vakitAyarlari[v].aktif),
         [ayarlar.vakitAyarlari]
     );
+
+    // Oluşturma başarı modalında donanım geri tuşu modalı kapatsın (ekrandan çıkmasın)
+    const sonucModaliniKapat = useCallback(() => setOlusturmaSonucu(null), []);
+    useDonanimGeriTusu(olusturmaSonucu !== null, sonucModaliniKapat);
 
     const olusturButonuMesaji = !ayarlar.takvimId
         ? 'Takvim seçilmedi'
@@ -1325,14 +1555,60 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
             <TemizleModali
                 gorunur={temizleModaliGorunur}
                 onKapat={() => setTemizleModaliGorunur(false)}
-                onTemizlendi={(silinen, ozet) => {
-                    setTemizleModaliGorunur(false);
-                    bildirimGoster(`${silinen} etkinlik temizlendi. (${ozet})`, 'basari');
-                }}
                 secilenTakvimId={ayarlar.takvimId}
                 secilenTakvimAdi={ayarlar.takvimAdi}
                 cihazTakvimleri={cihazTakvimleri}
             />
+
+            {/* Oluşturma Başarı Modalı */}
+            <Modal
+                visible={olusturmaSonucu !== null}
+                animationType="slide"
+                transparent
+                statusBarTranslucent
+                onRequestClose={() => setOlusturmaSonucu(null)}
+            >
+                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <TouchableWithoutFeedback onPress={() => setOlusturmaSonucu(null)}>
+                        <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+                    </TouchableWithoutFeedback>
+                    <View
+                        style={{
+                            backgroundColor: renkler.kartArkaplan,
+                            borderTopLeftRadius: 24,
+                            borderTopRightRadius: 24,
+                            paddingBottom: 32,
+                        }}
+                    >
+                        <View className="items-center pt-3 pb-1">
+                            <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: renkler.sinir }} />
+                        </View>
+                        {olusturmaSonucu && (
+                            <BasariIcerigi
+                                tip="olusturma"
+                                baslik="Etkinlikler Oluşturuldu"
+                                altBaslik={olusturmaSonucu.sayi > 0
+                                    ? 'Namaz vakitlerin takvimine başarıyla eklendi.'
+                                    : 'Eklenecek aktif vakit bulunamadı. Vakit ayarlarını kontrol et.'}
+                                satirlar={[
+                                    { ikon: 'calendar-check', etiket: 'Oluşturulan', deger: `${olusturmaSonucu.sayi} etkinlik` },
+                                    { ikon: 'bookmark', etiket: 'Takvim', deger: ayarlar.takvimAdi ?? '—' },
+                                    { ikon: 'clock', etiket: 'Süre', deger: `${ayarlar.kaciGunIlerisi} gün` },
+                                    {
+                                        ikon: 'list-ul',
+                                        etiket: 'Vakitler',
+                                        deger: aktifVakitler.length === VAKIT_SIRASI.length
+                                            ? 'Tüm vakitler'
+                                            : aktifVakitler.map(v => VAKIT_GORUNTU_ADLARI[v]).join(', ') || '—',
+                                    },
+                                ]}
+                                onTakvimiAc={() => { takvimUygulamasiniAc(); }}
+                                onKapat={() => setOlusturmaSonucu(null)}
+                            />
+                        )}
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };

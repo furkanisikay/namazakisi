@@ -27,6 +27,7 @@ import {
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 export type IzinTipi = 'onPlan' | 'arkaPlan';
 
@@ -180,6 +181,9 @@ export const KonumIzniDisclosureModali: React.FC<Props> = ({
 
   const handleKabul = () => kapatAnimasyonu(onKabul);
   const handleReddet = () => kapatAnimasyonu(onReddet);
+
+  // Geri tuşu = reddet (animasyonlu kapanış)
+  useDonanimGeriTusu(gorunur, handleReddet);
 
   const translateY = animDeger.interpolate({
     inputRange: [0, 1],

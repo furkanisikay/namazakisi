@@ -35,6 +35,7 @@ import {
   tahminiTarihiFormatla,
   motivasyonOnerileriHesapla,
 } from '../../domain/services/KazaHesaplayiciServisi';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 // ==================== TİPLER ====================
 
@@ -84,6 +85,16 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   // Animasyon: tamamlama flash
   const flashAnim = useRef(new Animated.Value(1)).current;
+
+  // Donanım geri tuşu: sihirbazda önceki adıma dön, değilse aktif modalı kapat
+  const handleModalGeri = useCallback(() => {
+    if (aktifModal?.tip === 'sihirbaz' && aktifModal.adim > 1) {
+      setAktifModal({ tip: 'sihirbaz', adim: (aktifModal.adim - 1) as 1 | 2 | 3 });
+    } else {
+      setAktifModal(null);
+    }
+  }, [aktifModal]);
+  useDonanimGeriTusu(aktifModal !== null, handleModalGeri);
 
   // ==================== YÜKLEME ====================
 

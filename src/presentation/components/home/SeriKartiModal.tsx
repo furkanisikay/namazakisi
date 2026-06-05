@@ -6,6 +6,7 @@ import { BlurView } from 'expo-blur';
 import { useTema } from '../../../core/theme';
 import { PaylasimModal } from '../Sharing/PaylasimModal';
 import { PaylasilabilirSeri } from '../Sharing/PaylasilabilirSeri';
+import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 interface SeriKartiModalProps {
     gorunur: boolean;
@@ -22,6 +23,8 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
 }) => {
     const { koyuMu } = useTema();
     const [paylasimModalGorunur, setPaylasimModalGorunur] = useState(false);
+    // Paylaşım modalı açıkken geri tuşu önce onu kapatsın, değilse ana modalı
+    useDonanimGeriTusu(gorunur && !paylasimModalGorunur, onKapat);
 
     // Hedef hesaplama (basit mantık: sonraki eşiği bul)
     const hedefler = [7, 21, 60];

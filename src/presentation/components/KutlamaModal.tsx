@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import { KutlamaBilgisi, KutlamaTipi } from '../../core/types/SeriTipleri';
 import { LottieAnimasyon } from './LottieAnimasyon';
 import { PaylasimModal } from './Sharing/PaylasimModal';
 import { PaylasilabilirKutlama } from './Sharing/PaylasilabilirKutlama';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
 const { width: EKRAN_GENISLIGI } = Dimensions.get('window');
 
@@ -84,6 +85,20 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const konfettiAnim = useRef(new Animated.Value(0)).current;
 
+  const handleKapat = useCallback(() => {
+    // Cikis animasyonu
+    Animated.timing(scaleAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      onKapat();
+    });
+  }, [scaleAnim, onKapat]);
+
+  // Paylaşım açıkken geri tuşu önce onu kapatsın; değilse kutlamayı kapat
+  useDonanimGeriTusu(gorunur && !!kutlama && !paylasimGorunur, handleKapat);
+
   useEffect(() => {
     if (gorunur) {
       // Giris animasyonu
@@ -124,17 +139,6 @@ export const KutlamaModal: React.FC<KutlamaModalProps> = ({
   // TypeScript tip guvenceligi icin explicit cast
   const kutlamaBilgisi = kutlama as any;
   const vurguRengi = kutlamaVurguRengiAl(kutlamaBilgisi.tip, renkler);
-
-  const handleKapat = () => {
-    // Cikis animasyonu
-    Animated.timing(scaleAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {
-      onKapat();
-    });
-  };
 
   const handlePaylasimAc = () => {
     setPaylasimGorunur(true);
