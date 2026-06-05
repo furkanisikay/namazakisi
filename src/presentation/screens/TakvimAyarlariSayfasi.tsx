@@ -127,15 +127,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
     );
 };
 
-// ─── VakitAyarSatiri ──────────────────────────────────────────────────────────
-
-interface VakitAyarSatiriProps {
-    vakitAdi: TakvimVakitAdi;
-    gorununumAdi: string;
-    ayar: VakitTakvimAyari;
-    onChange: (yeni: Partial<VakitTakvimAyari>) => void;
-    sonMu: boolean;
-}
+// ─── VakitSatiri (kompakt satır) ──────────────────────────────────────────────
 
 const BASLANGIC_TIPLERI: { tip: BaslangicTipi; etiket: string; aciklama: string }[] = [
     { tip: 'vakit_oncesi',  etiket: 'Çıkmadan Önce', aciklama: 'Vakit bitmeden X dk önce' },
@@ -143,96 +135,68 @@ const BASLANGIC_TIPLERI: { tip: BaslangicTipi; etiket: string; aciklama: string 
     { tip: 'vakit_sonrasi', etiket: 'Vakitten Sonra', aciklama: 'Vakit girdikten X dk sonra' },
 ];
 
-const VakitAyarSatiri: React.FC<VakitAyarSatiriProps> = ({
-    vakitAdi, gorununumAdi, ayar, onChange, sonMu,
-}) => {
+function vakitOzetMetni(ayar: VakitTakvimAyari): string {
+    if (!ayar.aktif) return 'Kapalı — eklenmeyecek';
+    const baslangic =
+        ayar.baslangicTipi === 'vakit_girisi' ? 'Vakitte başlar'
+        : ayar.baslangicTipi === 'vakit_oncesi' ? `Çıkmadan ${ayar.dakika} dk önce`
+        : `Vakitten ${ayar.dakika} dk sonra`;
+    return `${baslangic} · ${ayar.sureDakika} dk`;
+}
+
+interface VakitSatiriProps {
+    gorununumAdi: string;
+    ayar: VakitTakvimAyari;
+    onAc: () => void;
+    onToggle: (v: boolean) => void;
+    sonMu: boolean;
+}
+
+const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onToggle, sonMu }) => {
     const renkler = useRenkler();
 
     return (
-        <View
-            className="py-3"
+        <TouchableOpacity
+            className="flex-row items-center py-3"
             style={!sonMu ? { borderBottomWidth: 1, borderBottomColor: renkler.sinir } : undefined}
+            onPress={onAc}
+            activeOpacity={0.6}
         >
-            <View className="flex-row justify-between items-center">
+            <View
+                className="w-9 h-9 rounded-xl items-center justify-center mr-3"
+                style={{ backgroundColor: ayar.aktif ? `${renkler.birincil}15` : renkler.arkaplan }}
+            >
+                <FontAwesome5
+                    name={ayar.aktif ? 'check' : 'minus'}
+                    size={13}
+                    color={ayar.aktif ? renkler.birincil : renkler.metinIkincil}
+                />
+            </View>
+            <View className="flex-1">
                 <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
                     {gorununumAdi} Vakti
                 </Text>
-                <Switch
-                    value={ayar.aktif}
-                    onValueChange={v => onChange({ aktif: v })}
-                    trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                    thumbColor={ayar.aktif ? renkler.birincil : '#f4f3f4'}
-                />
+                <Text
+                    className="text-xs mt-0.5"
+                    style={{ color: ayar.aktif ? renkler.birincil : renkler.metinIkincil }}
+                    numberOfLines={1}
+                >
+                    {vakitOzetMetni(ayar)}
+                </Text>
             </View>
-
-            {ayar.aktif && (
-                <View className="mt-3 gap-3">
-                    <View>
-                        <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
-                            Etkinlik Ne Zaman Başlasın
-                        </Text>
-                        <View className="flex-row gap-1">
-                            {BASLANGIC_TIPLERI.map(({ tip, etiket }) => {
-                                const secili = ayar.baslangicTipi === tip;
-                                return (
-                                    <TouchableOpacity
-                                        key={tip}
-                                        onPress={() => onChange({ baslangicTipi: tip })}
-                                        className="flex-1 py-2 px-1 rounded-lg items-center"
-                                        style={{
-                                            backgroundColor: secili ? renkler.birincil : `${renkler.birincil}15`,
-                                            borderWidth: 1,
-                                            borderColor: secili ? renkler.birincil : renkler.sinir,
-                                        }}
-                                        activeOpacity={0.7}
-                                    >
-                                        <Text
-                                            className="text-xs font-semibold text-center"
-                                            style={{ color: secili ? '#FFF' : renkler.metinIkincil }}
-                                            numberOfLines={2}
-                                        >
-                                            {etiket}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                    </View>
-
-                    {ayar.baslangicTipi !== 'vakit_girisi' && (
-                        <View className="flex-row justify-between items-center">
-                            <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                                {ayar.baslangicTipi === 'vakit_oncesi' ? 'Kaç dk önce' : 'Kaç dk sonra'}
-                            </Text>
-                            <SayisalSecici
-                                deger={ayar.dakika}
-                                min={1}
-                                max={60}
-                                adim={5}
-                                birim="dk"
-                                onChange={v => onChange({ dakika: v })}
-                                renk={renkler.birincil}
-                            />
-                        </View>
-                    )}
-
-                    <View className="flex-row justify-between items-center">
-                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            Etkinlik Süresi
-                        </Text>
-                        <SayisalSecici
-                            deger={ayar.sureDakika}
-                            min={5}
-                            max={120}
-                            adim={5}
-                            birim="dk"
-                            onChange={v => onChange({ sureDakika: v })}
-                            renk={renkler.birincil}
-                        />
-                    </View>
-                </View>
-            )}
-        </View>
+            <FontAwesome5
+                name="sliders-h"
+                size={13}
+                color={renkler.metinIkincil}
+                style={{ marginRight: 12, opacity: 0.55 }}
+            />
+            <Switch
+                value={ayar.aktif}
+                onValueChange={onToggle}
+                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                thumbColor={ayar.aktif ? renkler.birincil : '#f4f3f4'}
+            />
+        </TouchableOpacity>
     );
 };
 
@@ -306,6 +270,199 @@ const OnizlemeSatiri: React.FC<OnizlemeSatiriProps> = ({
                 </Text>
             </View>
         </View>
+    );
+};
+
+// ─── VakitEditorModali (bottom-sheet) ─────────────────────────────────────────
+
+interface VakitEditorModaliProps {
+    gorunur: boolean;
+    onKapat: () => void;
+    vakitAdi: TakvimVakitAdi | null;
+    ayar: VakitTakvimAyari | null;
+    onChange: (yeni: Partial<VakitTakvimAyari>) => void;
+    bugunVakitler: Record<TakvimVakitAdi, Date> | null;
+    bugunCikisVakitleri: Record<TakvimVakitAdi, Date> | null;
+}
+
+const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
+    gorunur, onKapat, vakitAdi, ayar, onChange, bugunVakitler, bugunCikisVakitleri,
+}) => {
+    const renkler = useRenkler();
+    useDonanimGeriTusu(gorunur, onKapat);
+
+    // Kapanış slide-out'u sırasında içerik kaybolmasın diye son geçerli değeri tut
+    const snapRef = useRef<{ vakitAdi: TakvimVakitAdi; ayar: VakitTakvimAyari } | null>(null);
+    if (vakitAdi && ayar) snapRef.current = { vakitAdi, ayar };
+    const snap = snapRef.current;
+
+    const aktifVakit = vakitAdi ?? snap?.vakitAdi ?? null;
+    const aktifAyar = ayar ?? snap?.ayar ?? null;
+    const gorununumAdi = aktifVakit ? VAKIT_GORUNTU_ADLARI[aktifVakit] : '';
+
+    return (
+        <Modal visible={gorunur} animationType="slide" transparent statusBarTranslucent onRequestClose={onKapat}>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                <TouchableWithoutFeedback onPress={onKapat}>
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+                </TouchableWithoutFeedback>
+
+                <View
+                    style={{
+                        backgroundColor: renkler.kartArkaplan,
+                        borderTopLeftRadius: 24,
+                        borderTopRightRadius: 24,
+                        paddingBottom: 32,
+                    }}
+                >
+                    {/* Handle */}
+                    <View className="items-center pt-3 pb-1">
+                        <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: renkler.sinir }} />
+                    </View>
+
+                    {aktifVakit && aktifAyar && (
+                        <View className="px-5 pt-2">
+                            {/* Başlık + aktiflik */}
+                            <View className="flex-row items-center mb-4">
+                                <View
+                                    className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                                    style={{ backgroundColor: `${renkler.birincil}15` }}
+                                >
+                                    <FontAwesome5 name="clock" size={18} color={renkler.birincil} solid />
+                                </View>
+                                <View className="flex-1">
+                                    <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                                        {gorununumAdi} Namazı
+                                    </Text>
+                                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                        {aktifAyar.aktif ? 'Bu vakit takvime eklenecek' : 'Bu vakit şu an kapalı'}
+                                    </Text>
+                                </View>
+                                <Switch
+                                    value={aktifAyar.aktif}
+                                    onValueChange={v => onChange({ aktif: v })}
+                                    trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                                    thumbColor={aktifAyar.aktif ? renkler.birincil : '#f4f3f4'}
+                                />
+                            </View>
+
+                            {aktifAyar.aktif ? (
+                                <View className="gap-4">
+                                    {/* Başlangıç tipi */}
+                                    <View>
+                                        <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
+                                            ETKİNLİK NE ZAMAN BAŞLASIN
+                                        </Text>
+                                        <View className="flex-row gap-2">
+                                            {BASLANGIC_TIPLERI.map(({ tip, etiket, aciklama }) => {
+                                                const secili = aktifAyar.baslangicTipi === tip;
+                                                return (
+                                                    <TouchableOpacity
+                                                        key={tip}
+                                                        onPress={() => onChange({ baslangicTipi: tip })}
+                                                        className="flex-1 py-3 px-1 rounded-2xl items-center"
+                                                        style={{
+                                                            backgroundColor: secili ? renkler.birincil : `${renkler.birincil}10`,
+                                                            borderWidth: 1,
+                                                            borderColor: secili ? renkler.birincil : renkler.sinir,
+                                                        }}
+                                                        activeOpacity={0.7}
+                                                    >
+                                                        <Text
+                                                            className="text-xs font-bold text-center"
+                                                            style={{ color: secili ? '#FFF' : renkler.metin }}
+                                                            numberOfLines={2}
+                                                        >
+                                                            {etiket}
+                                                        </Text>
+                                                        <Text
+                                                            className="text-[10px] text-center mt-1 leading-3"
+                                                            style={{ color: secili ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
+                                                            numberOfLines={2}
+                                                        >
+                                                            {aciklama}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                    </View>
+
+                                    {/* Dakika (offset) */}
+                                    {aktifAyar.baslangicTipi !== 'vakit_girisi' && (
+                                        <View className="flex-row justify-between items-center">
+                                            <Text className="text-sm" style={{ color: renkler.metin }}>
+                                                {aktifAyar.baslangicTipi === 'vakit_oncesi' ? 'Kaç dk önce' : 'Kaç dk sonra'}
+                                            </Text>
+                                            <SayisalSecici
+                                                deger={aktifAyar.dakika}
+                                                min={1}
+                                                max={60}
+                                                adim={5}
+                                                birim="dk"
+                                                onChange={v => onChange({ dakika: v })}
+                                                renk={renkler.birincil}
+                                            />
+                                        </View>
+                                    )}
+
+                                    {/* Süre */}
+                                    <View className="flex-row justify-between items-center">
+                                        <Text className="text-sm" style={{ color: renkler.metin }}>
+                                            Etkinlik süresi
+                                        </Text>
+                                        <SayisalSecici
+                                            deger={aktifAyar.sureDakika}
+                                            min={5}
+                                            max={120}
+                                            adim={5}
+                                            birim="dk"
+                                            onChange={v => onChange({ sureDakika: v })}
+                                            renk={renkler.birincil}
+                                        />
+                                    </View>
+
+                                    {/* Bugün için mini önizleme */}
+                                    {bugunVakitler && bugunCikisVakitleri && (
+                                        <View>
+                                            <Text className="text-xs font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>
+                                                BUGÜN İÇİN ÖNİZLEME
+                                            </Text>
+                                            <OnizlemeSatiri
+                                                vakitAdi={aktifVakit}
+                                                gorununumAdi={gorununumAdi}
+                                                ayar={aktifAyar}
+                                                bugunVakitler={bugunVakitler}
+                                                bugunCikisVakitleri={bugunCikisVakitleri}
+                                            />
+                                        </View>
+                                    )}
+                                </View>
+                            ) : (
+                                <View className="items-center py-8">
+                                    <FontAwesome5 name="bell-slash" size={28} color={renkler.metinIkincil} />
+                                    <Text className="text-sm text-center mt-3 leading-5" style={{ color: renkler.metinIkincil }}>
+                                        Bu vakit için etkinlik oluşturulmayacak.{'\n'}Ayarlamak için yukarıdan aç.
+                                    </Text>
+                                </View>
+                            )}
+
+                            {/* Tamam */}
+                            <TouchableOpacity
+                                className="items-center justify-center p-4 rounded-2xl mt-5"
+                                style={{ backgroundColor: renkler.birincil }}
+                                onPress={onKapat}
+                                activeOpacity={0.85}
+                            >
+                                <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                                    Tamam
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+            </View>
+        </Modal>
     );
 };
 
@@ -1155,6 +1312,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
     const [takvimYukleniyor, setTakvimYukleniyor] = useState(false);
     const [temizleModaliGorunur, setTemizleModaliGorunur] = useState(false);
     const [ozelGunAktif, setOzelGunAktif] = useState(false);
+    const [aktifVakitEditor, setAktifVakitEditor] = useState<TakvimVakitAdi | null>(null);
     const [olusturmaSonucu, setOlusturmaSonucu] = useState<{ sayi: number } | null>(null);
     const [bildirim, setBildirim] = useState<Bildirim | null>(null);
     const bildirimTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1379,16 +1537,19 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                 className="rounded-2xl p-4 mb-4"
                                 style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                             >
-                                <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+                                <Text className="text-xs font-bold tracking-wider mb-1" style={{ color: renkler.metinIkincil }}>
                                     VAKİT AYARLARI
                                 </Text>
+                                <Text className="text-xs mb-2" style={{ color: renkler.metinIkincil }}>
+                                    Ayarlamak için bir vakte dokun
+                                </Text>
                                 {VAKIT_SIRASI.map((vakit, idx) => (
-                                    <VakitAyarSatiri
+                                    <VakitSatiri
                                         key={vakit}
-                                        vakitAdi={vakit}
                                         gorununumAdi={VAKIT_GORUNTU_ADLARI[vakit]}
                                         ayar={ayarlar.vakitAyarlari[vakit]}
-                                        onChange={yeni => handleVakitAyarDegistir(vakit, yeni)}
+                                        onAc={() => setAktifVakitEditor(vakit)}
+                                        onToggle={v => handleVakitAyarDegistir(vakit, { aktif: v })}
                                         sonMu={idx === VAKIT_SIRASI.length - 1}
                                     />
                                 ))}
@@ -1550,6 +1711,17 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                     <View className="h-10" />
                 </Animated.View>
             </ScrollView>
+
+            {/* Vakit Editör Modalı */}
+            <VakitEditorModali
+                gorunur={aktifVakitEditor !== null}
+                onKapat={() => setAktifVakitEditor(null)}
+                vakitAdi={aktifVakitEditor}
+                ayar={aktifVakitEditor ? ayarlar.vakitAyarlari[aktifVakitEditor] : null}
+                onChange={yeni => { if (aktifVakitEditor) handleVakitAyarDegistir(aktifVakitEditor, yeni); }}
+                bugunVakitler={bugunVakitler}
+                bugunCikisVakitleri={bugunCikisVakitleri}
+            />
 
             {/* Temizle Modalı */}
             <TemizleModali
