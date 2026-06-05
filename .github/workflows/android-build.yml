@@ -39,6 +39,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write   # expo-build.yml'i createWorkflowDispatch ile tetiklemek icin gerekli
 
 env:
   NODE_VERSION: '20'
@@ -473,28 +474,6 @@ jobs:
           git push origin HEAD:${{ github.ref_name }}
           git push origin ${{ steps.version.outputs.version_tag }}
 
-      - name: 📦 EAS Build Tetikle — Internal Testing
-        if: inputs.build_type == 'release' && success()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const version = '${{ steps.version.outputs.version }}';
-            const versionCode = require('./app.json').expo.android.versionCode;
-            console.log(`🚀 EAS Build tetikleniyor: v${version} (versionCode: ${versionCode})`);
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'expo-build.yml',
-              ref: 'master',
-              inputs: {
-                build_aab: 'true',
-                build_apk: 'false',
-                internal_a_gonder: 'true',
-              },
-            });
-            console.log('✅ EAS Build kuyruğa alındı → internal track');
-
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
         uses: softprops/action-gh-release@v2
@@ -521,6 +500,30 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # GitHub Release yayinlandiktan SONRA EAS internal build'i tetikle.
+      # Boylece dispatch bir sorun yasarsa (orn. izin/agi) release yine de yayinda kalir.
+      - name: 📦 EAS Build Tetikle — Internal Testing
+        if: inputs.build_type == 'release' && success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const version = '${{ steps.version.outputs.version }}';
+            const versionCode = require('./app.json').expo.android.versionCode;
+            console.log(`🚀 EAS Build tetikleniyor: v${version} (versionCode: ${versionCode})`);
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'expo-build.yml',
+              ref: 'master',
+              inputs: {
+                build_aab: 'true',
+                build_apk: 'false',
+                internal_a_gonder: 'true',
+              },
+            });
+            console.log('✅ EAS Build kuyruğa alındı → internal track');
 
       # ==========================================
       # Build Ozeti
