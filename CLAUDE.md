@@ -49,7 +49,7 @@ Yeni bir özellik eklediğinde kullanıcıya duyurmak için **tek yer**: `src/co
 
 ## CI / Sürümleme
 - APK = **Gradle** (`android-build.yml`), EAS DEĞİL. AAB = EAS (`expo-build.yml`) → Play Store internal track'e otomatik submit.
-- **`android-build.yml` başka workflow'u (`expo-build.yml`) `createWorkflowDispatch` ile tetikler → workflow `permissions:` bloğunda `actions: write` ZORUNLU**, yoksa 403 "Resource not accessible by integration". `contents: write` tek başına yetmez.
+- **`android-build.yml` başka workflow'u (`expo-build.yml`) `createWorkflowDispatch` ile tetikler → izin, hedef değil TETİKLEYEN workflow'da (`android-build.yml`) gerekir: `permissions:` bloğunda `actions: write` ZORUNLU**, yoksa 403 "Resource not accessible by integration". `contents: write` tek başına yetmez.
 - Release adım sırası: önce **GitHub Release yayınla**, EN SON EAS dispatch. Aksi halde dispatch patlarsa release hiç oluşmaz (v0.23.0'da bu yaşandı).
 - `eas.json`: `appVersionSource: local`. CI'da AAB `versionCode` = build anında `date +%s` (timestamp); runner'da local commit edilir, push edilmez.
 - Geliştirme branch'i: `claude/feature-development-*`. Push sonrası PR aç (ready, draft değil).
