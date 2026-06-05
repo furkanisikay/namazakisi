@@ -3,6 +3,14 @@
 > Proaktif İslami ibadet asistanı. React Native + Expo (bare workflow), `android/` native dizini git'te.
 > Bu dosya kısa ve yüksek-sinyal tutulmalıdır; uzun anlatım yerine kural ve reçete yazın.
 
+## ⚙️ Bu dosyayı güncel tut (Claude için talimat)
+Çalışırken öğrendiğin kalıcı bilgileri **proaktif olarak buraya ekle** — kullanıcının ayrıca istemesini bekleme. Şunları öğrendiğinde bu dosyayı güncelle (aynı commit içinde):
+- Tekrar düşmemen gereken bir tuzak/gotcha veya çözümü (örn. platform sınırı, çakışan desen).
+- Yeni bir reçete: "X eklemek için Y dosyasına şunu yap" (örn. yeni özellik duyurusu).
+- Yeni komut, konvansiyon, mimari kararı veya kullanıcının net tercihi (örn. dil/üslup kuralları).
+- Bir şeyin neden öyle yapıldığı (gelecekte yanlışlıkla geri almayasın).
+Kurallar: kısa ve eyleme dönük yaz; mevcut bölümlere ekle, yenisini ancak gerekiyorsa aç; sırrı/jeton/kişisel veri YAZMA; spekülasyon değil yalnızca doğrulanmış bilgi gir; dosyayı şişirme (eskiyen maddeyi güncelle/sil).
+
 ## Komutlar
 - Tip kontrolü: `npx tsc --noEmit`
 - Testler: `npx jest` (tek dosya: `npx jest <isimParçası>`)
