@@ -385,6 +385,11 @@ export class ArkaplanMuhafizServisi {
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
+                    // Android: ozel ses/titresim icin dogru kanala bagla (seviye 3-4 acil).
+                    // Aksi halde varsayilan kanala duser ve MUHAFIZ/MUHAFIZ_ACIL ayarlari uygulanmaz.
+                    channelId: seviye >= 3
+                        ? BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL
+                        : BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ,
                 },
             });
 

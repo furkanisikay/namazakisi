@@ -5,6 +5,8 @@ import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from './ArkaplanMuhafizServisi';
 import type { VakitAdi } from '../../core/types';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
+import { IftarSayacBildirimServisi } from './IftarSayacBildirimServisi';
+import { SahurSayacBildirimServisi } from './SahurSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 
@@ -310,6 +312,14 @@ export class BildirimServisi {
     if (isVakitAdi(vakit)) {
       gorevler.push(ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit));
       gorevler.push(VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit));
+      // K3: ilgili gunluk sayaci da temizle. Sabah(imsak)->Sahur sayaci,
+      // Aksam->Iftar sayaci. Ozellikle Sahur "vakit girdi" bildirimi ongoing
+      // oldugu icin namaz isaretlenince elle temizlenmesi gerekir.
+      if (vakit === 'imsak') {
+        gorevler.push(SahurSayacBildirimServisi.getInstance().tumBildirimleriniTemizle());
+      } else if (vakit === 'aksam') {
+        gorevler.push(IftarSayacBildirimServisi.getInstance().tumBildirimleriniTemizle());
+      }
     }
     await Promise.allSettled(gorevler);
   }
