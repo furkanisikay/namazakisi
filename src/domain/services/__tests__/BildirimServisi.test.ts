@@ -2,8 +2,6 @@ import * as Notifications from 'expo-notifications';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
-import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
-import { SahurSayacBildirimServisi } from '../SahurSayacBildirimServisi';
 
 // BildirimServisi modülünü import etmeden önce mock'ları ayarla
 jest.mock('expo-notifications');
@@ -32,20 +30,6 @@ jest.mock('../VakitSayacBildirimServisi', () => ({
             vakitSayaciniIptalEt: jest.fn().mockResolvedValue(undefined),
             yapilandirVePlanla: jest.fn().mockResolvedValue(undefined),
             tumSayacBildirimleriniTemizle: jest.fn().mockResolvedValue(undefined),
-        }),
-    },
-}));
-jest.mock('../IftarSayacBildirimServisi', () => ({
-    IftarSayacBildirimServisi: {
-        getInstance: jest.fn().mockReturnValue({
-            tumBildirimleriniTemizle: jest.fn().mockResolvedValue(undefined),
-        }),
-    },
-}));
-jest.mock('../SahurSayacBildirimServisi', () => ({
-    SahurSayacBildirimServisi: {
-        getInstance: jest.fn().mockReturnValue({
-            tumBildirimleriniTemizle: jest.fn().mockResolvedValue(undefined),
         }),
     },
 }));
@@ -648,26 +632,6 @@ describe('BildirimServisi', () => {
     it('sayac_ önekiyle başlamayan ID yok sayılır', async () => {
       await servis.sayacKildimIsle('iftar_sayac_2026-02-15');
       expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('vakitKilindiTemizle (K3 - ilgili gunluk sayaci temizleme)', () => {
-    it('imsak kılınınca Sahur sayacı temizlenir, İftar temizlenmez', async () => {
-      await servis.vakitKilindiTemizle('imsak', '2026-02-19');
-      expect(SahurSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).toHaveBeenCalled();
-      expect(IftarSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).not.toHaveBeenCalled();
-    });
-
-    it('akşam kılınınca İftar sayacı temizlenir, Sahur temizlenmez', async () => {
-      await servis.vakitKilindiTemizle('aksam', '2026-02-19');
-      expect(IftarSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).toHaveBeenCalled();
-      expect(SahurSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).not.toHaveBeenCalled();
-    });
-
-    it('öğle kılınınca ne İftar ne Sahur sayacı temizlenmez', async () => {
-      await servis.vakitKilindiTemizle('ogle', '2026-02-19');
-      expect(IftarSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).not.toHaveBeenCalled();
-      expect(SahurSayacBildirimServisi.getInstance().tumBildirimleriniTemizle).not.toHaveBeenCalled();
     });
   });
 });

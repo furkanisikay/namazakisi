@@ -237,7 +237,12 @@ export const kilinanVakitleriAl = async (tarih: string): Promise<VakitAdi[]> => 
   try {
     const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
     const veri = await AsyncStorage.getItem(anahtar);
-    return veri ? JSON.parse(veri) : [];
+    if (veri) {
+      // Bozuk/beklenmedik veri tipine karsi koru (downstream .includes/.map crash'ini onler)
+      const parsed = JSON.parse(veri);
+      return Array.isArray(parsed) ? (parsed as VakitAdi[]) : [];
+    }
+    return [];
   } catch (error) {
     Logger.error('LocalNamaz', 'Kılınan vakitler alınamadı', error);
     return [];

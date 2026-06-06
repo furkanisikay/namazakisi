@@ -118,7 +118,7 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
       title: '🌙 Sahur Vakti Bitti!',
       body: 'Niyet etme vakti geldi.',
       android: {
-        channelId: BILDIRIM_SABITLERI.KANALLAR.SAHUR_SAYAC,
+        channelId: this.konfig.kanalId,
         ongoing: true,
         autoCancel: false,
         pressAction: { id: 'default' },

@@ -105,7 +105,7 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
       title: '🌙 İftar Vakti!',
       body: 'Hayırlı iftarlar!',
       android: {
-        channelId: BILDIRIM_SABITLERI.KANALLAR.IFTAR_SAYAC,
+        channelId: this.konfig.kanalId,
         ongoing: false,
         autoCancel: true,
         timeoutAfter: 10 * 60 * 1000, // 10 dakika sonra otomatik kapanır
