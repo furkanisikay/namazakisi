@@ -8,6 +8,11 @@ import { NamazAdi } from '../constants/UygulamaSabitleri';
 export * from './SeriTipleri';
 
 /**
+ * Namaz vakti adi (Turkce) — uygulama genelinde tek tanim.
+ */
+export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+
+/**
  * Tek bir namaz kaydini temsil eder
  */
 export interface Namaz {

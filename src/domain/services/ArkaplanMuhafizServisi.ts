@@ -7,16 +7,14 @@
  */
 
 import * as Notifications from 'expo-notifications';
+import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
-
-/**
- * Vakit tipi (Turkce)
- */
-export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+import type { VakitAdi } from '../../core/types';
+import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 
 /**
  * Namaz vakti bilgisi
@@ -92,13 +90,13 @@ export class ArkaplanMuhafizServisi {
         const simdi = new Date();
 
         // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
-        const kilinanVakitlerBugun = await this.tarihIcinKilinanVakitleriAl(this.bugunTarihiAl());
-        const kilinanVakitlerDun = await this.tarihIcinKilinanVakitleriAl(this.dunTarihiAl());
+        const kilinanVakitlerBugun = await kilinanVakitleriAl(bugunuAl());
+        const kilinanVakitlerDun = await kilinanVakitleriAl(dunuAl());
 
         // Kolay erisim icin tarihe gore map olustur
         const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
-            [this.bugunTarihiAl()]: kilinanVakitlerBugun,
-            [this.dunTarihiAl()]: kilinanVakitlerDun,
+            [bugunuAl()]: kilinanVakitlerBugun,
+            [dunuAl()]: kilinanVakitlerDun,
         };
 
         // Cikis suresi henuz gecmemis (gelecekte olan) VE kilinmamis vakitler icin planlama yap
@@ -447,8 +445,8 @@ export class ArkaplanMuhafizServisi {
      */
     public async vakitBildirimleriniIptalEt(vakit: VakitAdi): Promise<void> {
         // Hem bugun hem de dun icin iptal et (gece yarisi gecisleri icin)
-        const bugun = this.bugunTarihiAl();
-        const dun = this.dunTarihiAl();
+        const bugun = bugunuAl();
+        const dun = dunuAl();
         const tarihler = [bugun, dun];
 
         // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
@@ -499,31 +497,6 @@ export class ArkaplanMuhafizServisi {
     // ============================================================
 
     /**
-     * Bugunun tarih string'ini dondurur (YYYY-MM-DD)
-     * @returns Bugunun tarihi
-     */
-    private bugunTarihiAl(): string {
-        const bugun = new Date();
-        const yil = bugun.getFullYear();
-        const ay = String(bugun.getMonth() + 1).padStart(2, '0');
-        const gun = String(bugun.getDate()).padStart(2, '0');
-        return `${yil}-${ay}-${gun}`;
-    }
-
-    /**
-     * Dunun tarih string'ini dondurur (YYYY-MM-DD)
-     * @returns Dunun tarihi
-     */
-    private dunTarihiAl(): string {
-        const dun = new Date();
-        dun.setDate(dun.getDate() - 1);
-        const yil = dun.getFullYear();
-        const ay = String(dun.getMonth() + 1).padStart(2, '0');
-        const gun = String(dun.getDate()).padStart(2, '0');
-        return `${yil}-${ay}-${gun}`;
-    }
-
-    /**
      * Vakit icin dogru kayit tarihini belirler
      * Gece yarisi sonrasi (imsak oncesi) yatsi icin dunu dondurur
      * @param vakit Kontrol edilecek vakit
@@ -531,7 +504,7 @@ export class ArkaplanMuhafizServisi {
      * @returns Dogru tarih string'i
      */
     private vakitIcinDogruTarihiAl(vakit: VakitAdi, simdi: Date): string {
-        if (!this.ayarlar) return this.bugunTarihiAl();
+        if (!this.ayarlar) return bugunuAl();
 
         // Yatsi vakti ve imsak oncesi mi?
         if (vakit === 'yatsi') {
@@ -542,32 +515,16 @@ export class ArkaplanMuhafizServisi {
 
             // Eger su an imsak vaktinden onceyse, bu yatsi dune aittir
             if (simdi < bugunPrayerTimes.fajr) {
-                return this.dunTarihiAl();
+                return dunuAl();
             }
         }
 
-        return this.bugunTarihiAl();
+        return bugunuAl();
     }
 
     // ============================================================
     // KILINAN VAKIT YONETIMI
     // ============================================================
-
-    /**
-     * Belirli bir tarih icin kilinan vakitleri al
-     * @param tarih YYYY-MM-DD formatinda tarih
-     * @returns Kilinan vakitler listesi
-     */
-    private async tarihIcinKilinanVakitleriAl(tarih: string): Promise<VakitAdi[]> {
-        try {
-            const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
-            const veri = await AsyncStorage.getItem(anahtar);
-            return veri ? JSON.parse(veri) : [];
-        } catch (error) {
-            Logger.error('ArkaplanMuhafiz', 'Kilinan vakitler alinamadi:', error);
-            return [];
-        }
-    }
 
     /**
      * Kilinan vakti belirtilen tarihe kaydet
@@ -628,7 +585,7 @@ export class ArkaplanMuhafizServisi {
      * @returns Bugun kilinan vakitler listesi
      */
     public async bugunKilinanVakitleriAl(): Promise<VakitAdi[]> {
-        return this.tarihIcinKilinanVakitleriAl(this.bugunTarihiAl());
+        return kilinanVakitleriAl(bugunuAl());
     }
 
     /**

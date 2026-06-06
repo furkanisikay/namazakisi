@@ -12,7 +12,7 @@ configureReanimatedLogger({
 
 import App from './App';
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
-import type { VakitAdi } from './src/domain/services/ArkaplanMuhafizServisi';
+import type { VakitAdi } from './src/core/types';
 
 // notifee arka plan olay işleyicisi (Android sayaç için)
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar

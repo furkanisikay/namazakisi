@@ -37,6 +37,7 @@ import { useFeedback } from '../../core/feedback';
 import { Logger } from '../../core/utils/Logger';
 import { KonumIzniDisclosureModali, IzinTipi } from '../components/KonumIzniDisclosureModali';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { useKonumMetni } from '../hooks/useKonumMetni';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -455,6 +456,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const konumAyarlari = useAppSelector((state) => state.konum);
+    const konumMetni = useKonumMetni(konumAyarlari);
     const [yukleniyor, setYukleniyor] = useState(false);
     const [takipDurumuYukleniyor, setTakipDurumuYukleniyor] = useState(false);
     const [takipAktif, setTakipAktif] = useState(konumAyarlari.akilliTakipAktif);
@@ -656,21 +658,6 @@ export const KonumAyarlariSayfasi: React.FC = () => {
         }));
     };
 
-    const konumMetniOlustur = (): string => {
-        if (konumAyarlari.konumModu === 'oto') {
-            if (konumAyarlari.gpsAdres) {
-                const { ilce, il } = konumAyarlari.gpsAdres;
-                if (ilce && il) return `${ilce}, ${il}`;
-                return ilce || il || 'GPS konumu alındı';
-            }
-            return 'Konum takip ediliyor';
-        }
-        if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
-            return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
-        }
-        return konumAyarlari.seciliIlAdi || 'Konum seçilmedi';
-    };
-
     const sonGuncellemeMetniOlustur = (): string | null => {
         if (konumAyarlari.konumModu !== 'oto' || !konumAyarlari.sonGpsGuncellemesi) {
             return null;
@@ -740,7 +727,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 Mevcut Konum
                             </Text>
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                {konumMetniOlustur()}
+                                {konumMetni}
                             </Text>
                         </View>
                     </View>

@@ -8,7 +8,8 @@ import {
   Namaz,
   GunlukNamazlar,
   LocalNamazVerileri,
-  ApiYanit
+  ApiYanit,
+  VakitAdi
 } from '../../core/types';
 import {
   NAMAZ_ISIMLERI,
@@ -225,5 +226,21 @@ export const sonSenkronizasyonuKaydet = async (): Promise<void> => {
  */
 export const sonSenkronizasyonuAl = async (): Promise<string | null> => {
   return await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SON_SENKRONIZASYON);
+};
+
+/**
+ * Belirli bir tarih icin "kilinan" olarak isaretlenmis vakitleri dondurur.
+ * Muhafiz storage key'ini (MUHAFIZ_AYARLARI_kilinan_<tarih>) okur;
+ * ArkaplanMuhafiz ve VakitSayac servisleri ayni kaydi paylasir.
+ */
+export const kilinanVakitleriAl = async (tarih: string): Promise<VakitAdi[]> => {
+  try {
+    const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
+    const veri = await AsyncStorage.getItem(anahtar);
+    return veri ? JSON.parse(veri) : [];
+  } catch (error) {
+    Logger.error('LocalNamaz', 'Kılınan vakitler alınamadı', error);
+    return [];
+  }
 };
 

@@ -13,6 +13,7 @@
 
 import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
+import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
@@ -64,7 +65,7 @@ export class SahurSayacBildirimServisi {
         const prayerTimesYarin = new PrayerTimes(coordinates, yarin, params);
         const imsakYarin = prayerTimesYarin.fajr;
 
-        const bugunTarihStr = this.bugunTarihiAl();
+        const bugunTarihStr = bugunuAl();
         const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC}${bugunTarihStr}`;
         const vakitGirdiId = `${bildirimId}_vakitgirdi`;
         const temizlemeId = `${bildirimId}_bitis`;
@@ -278,13 +279,5 @@ export class SahurSayacBildirimServisi {
                 }
             }
         } catch (error) { }
-    }
-
-    private bugunTarihiAl(): string {
-        const bugun = new Date();
-        const yil = bugun.getFullYear();
-        const ay = String(bugun.getMonth() + 1).padStart(2, '0');
-        const gun = String(bugun.getDate()).padStart(2, '0');
-        return `${yil}-${ay}-${gun}`;
     }
 }

@@ -13,6 +13,7 @@
 
 import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
+import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
@@ -69,7 +70,7 @@ export class IftarSayacBildirimServisi {
     const aksamVakti = prayerTimes.maghrib;
     const aksamArti10 = new Date(aksamVakti.getTime() + 10 * 60 * 1000);
 
-    const bugun = this.bugunTarihiAl();
+    const bugun = bugunuAl();
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.IFTAR_SAYAC}${bugun}`;
     const vakitGirdiId = `${bildirimId}_vakitgirdi`;
     const temizlemeId = `${bildirimId}_bitis`;
@@ -292,16 +293,5 @@ export class IftarSayacBildirimServisi {
     } catch (error) {
       // Temizleme hatasi sessizce gecilir
     }
-  }
-
-  /**
-   * Bugün tarihini YYYY-MM-DD formatında al
-   */
-  private bugunTarihiAl(): string {
-    const bugun = new Date();
-    const yil = bugun.getFullYear();
-    const ay = String(bugun.getMonth() + 1).padStart(2, '0');
-    const gun = String(bugun.getDate()).padStart(2, '0');
-    return `${yil}-${ay}-${gun}`;
   }
 }

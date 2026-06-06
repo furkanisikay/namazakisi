@@ -21,6 +21,7 @@ import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { muhafizAyarlariniGuncelle, HATIRLATMA_PRESETLERI } from '../store/muhafizSlice';
 import { useFeedback } from '../../core/feedback';
+import { useKonumMetni } from '../hooks/useKonumMetni';
 
 /**
  * Seviye renkleri
@@ -346,24 +347,8 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const { butonTiklandiFeedback } = useFeedback();
     const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
     const konumAyarlari = useAppSelector((state) => state.konum);
+    const konumMetni = useKonumMetni(konumAyarlari);
 
-    /**
-     * Konum metnini olustur
-     */
-    const konumMetniOlustur = (): string => {
-        if (konumAyarlari.konumModu === 'oto') {
-            if (konumAyarlari.gpsAdres) {
-                const { ilce, il } = konumAyarlari.gpsAdres;
-                if (ilce && il) return `${ilce}, ${il}`;
-                return ilce || il || 'GPS konumu';
-            }
-            return 'GPS aktif';
-        }
-        if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
-            return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
-        }
-        return konumAyarlari.seciliIlAdi || 'Konum secilmedi';
-    };
 
     /**
      * Son GPS guncelleme zamanini kisa formatla
@@ -497,7 +482,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                     KONUM {sonGuncellemeKisaMetin() && `• ${sonGuncellemeKisaMetin()}`}
                                 </Text>
                                 <Text className="text-base font-semibold mt-0.5" style={{ color: renkler.metin }}>
-                                    {konumMetniOlustur()}
+                                    {konumMetni}
                                 </Text>
                             </View>
                         </View>
