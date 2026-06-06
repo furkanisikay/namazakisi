@@ -15,8 +15,7 @@ import ErrorBoundary from './src/presentation/components/common/ErrorBoundary';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
 import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
-import type { VakitAdi } from './src/core/types';
-import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
+import { BildirimServisi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
@@ -27,7 +26,7 @@ import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSl
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
-import { namazlariYukle, namazDurumunuDegistir } from './src/presentation/store/namazSlice';
+import { namazlariYukle } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
@@ -266,40 +265,19 @@ const AppIcerik: React.FC = () => {
     if (Platform.OS === 'android') {
       notifeeUnsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
         try {
-          // Sayac asama gecisleri: onceki asama bildirimlerini iptal et
-          if (type === EventType.DELIVERED) {
-            const bildirimId = detail.notification?.id;
-            if (bildirimId) {
-              if (bildirimId.endsWith('_vakitgirdi')) {
-                const baseId = bildirimId.replace('_vakitgirdi', '');
-                await notifee.cancelNotification(baseId);
-              } else if (bildirimId.endsWith('_bitis')) {
-                const baseId = bildirimId.replace('_bitis', '');
-                await notifee.cancelNotification(baseId);
-                await notifee.cancelNotification(baseId + '_vakitgirdi');
-              }
-            }
+          const bildirimId = detail.notification?.id;
+          if (!bildirimId) {
+            return;
           }
 
+          // Sayac asama gecisi: onceki asama bildirimlerini iptal et
+          if (type === EventType.DELIVERED) {
+            await VakitSayacBildirimServisi.getInstance().asamaGecisiniIsle(bildirimId);
+          }
+
+          // "Kildim": namaz isaretle + tam temizlik (arka plan/on plan ORTAK yol -> drift yok)
           if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'kildim') {
-            const bildirimId = detail.notification?.id;
-            if (bildirimId && bildirimId.startsWith('sayac_')) {
-              // ID'den tarih ve vakit cikar
-              const parts = bildirimId.replace('sayac_', '').split('_');
-              const tarih = parts[0]; // "2026-02-15"
-              const vakit = parts[1]; // "ogle"
-              const namazAdi = vakitAdiToNamazAdi[vakit];
-
-              if (namazAdi && tarih) {
-                // Redux dispatch ile namaz isaretle
-                store.dispatch(namazDurumunuDegistir({ tarih, namazAdi, tamamlandi: true }));
-                Logger.info('App/notifee', `Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
-
-                // Sayac ve muhafiz bildirimlerini iptal et
-                await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as VakitAdi);
-                await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as VakitAdi);
-              }
-            }
+            await BildirimServisi.getInstance().sayacKildimIsle(bildirimId);
           }
         } catch (error) {
           Logger.error('App/notifee', 'Foreground event isleme hatasi', error);

@@ -332,6 +332,20 @@ export class VakitSayacBildirimServisi {
   /**
    * Belirli bir vakit için sayaç bildirimini iptal et
    */
+  /**
+   * Sayac bildiriminin asama gecisinde (notifee DELIVERED) onceki asama
+   * bildirimlerini iptal eder. Arka plan ve on plan handler'lari icin ortak.
+   */
+  public async asamaGecisiniIsle(bildirimId: string): Promise<void> {
+    if (bildirimId.endsWith('_vakitgirdi')) {
+      await notifee.cancelNotification(bildirimId.replace('_vakitgirdi', ''));
+    } else if (bildirimId.endsWith('_bitis')) {
+      const baseId = bildirimId.replace('_bitis', '');
+      await notifee.cancelNotification(baseId);
+      await notifee.cancelNotification(`${baseId}_vakitgirdi`);
+    }
+  }
+
   public async vakitSayaciniIptalEt(vakit: VakitAdi): Promise<void> {
     const bugun = bugunuAl();
     const dun = dunuAl();
@@ -339,6 +353,7 @@ export class VakitSayacBildirimServisi {
     for (const tarih of [bugun, dun]) {
       const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${tarih}_${vakit}`;
       try {
+        stopCountdown(bildirimId); // native foreground countdown'u da durdur (toplu temizlemeyle tutarli)
         await notifee.cancelNotification(bildirimId);
         await notifee.cancelTriggerNotification(bildirimId);
         // Temizleme trigger'ini da iptal et

@@ -618,4 +618,20 @@ describe('BildirimServisi', () => {
       );
     });
   });
+
+  describe('sayacKildimIsle (notifee sayac "Kıldım")', () => {
+    it('sayac_<tarih>_<vakit> ID\'sini ayrıştırıp namazı işaretler', async () => {
+      await servis.sayacKildimIsle('sayac_2026-02-15_ogle');
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith(
+        '2026-02-15',
+        NamazAdi.Ogle,
+        true
+      );
+    });
+
+    it('sayac_ önekiyle başlamayan ID yok sayılır', async () => {
+      await servis.sayacKildimIsle('iftar_sayac_2026-02-15');
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+  });
 });
