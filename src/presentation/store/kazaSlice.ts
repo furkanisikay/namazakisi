@@ -2,7 +2,7 @@
  * Kaza Defteri state yönetimi
  */
 
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { KazaDurumu, KazaNamazAdi, HesaplamaSihirbazGirdisi } from '../../core/types/KazaTipleri';
 import * as LocalKazaServisi from '../../data/local/LocalKazaServisi';
 import {
