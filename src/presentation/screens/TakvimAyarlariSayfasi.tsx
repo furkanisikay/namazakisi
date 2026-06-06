@@ -39,9 +39,9 @@ import { TakvimServisi } from '../../domain/services/TakvimServisi';
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { useFeedback } from '../../core/feedback';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { SayisalSecici } from '../components/common/SayisalSecici';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
-const THROTTLE_SURESI = 100;
 
 const VAKIT_GORUNTU_ADLARI: Record<TakvimVakitAdi, string> = {
     imsak:  'Sabah',
@@ -64,69 +64,7 @@ const VAKIT_TEMIZLE_BASLIK: Record<TakvimVakitAdi, string> = {
 
 // ─── SayisalSecici ────────────────────────────────────────────────────────────
 
-interface SayisalSeciciProps {
-    deger: number;
-    min: number;
-    max: number;
-    adim?: number;
-    birim?: string;
-    onChange: (yeniDeger: number) => void;
-    renk: string;
-}
-
-const SayisalSecici: React.FC<SayisalSeciciProps> = ({
-    deger, min, max, adim = 1, birim = 'dk', onChange, renk,
-}) => {
-    const renkler = useRenkler();
-    const sonTiklamaRef = useRef<number>(0);
-
-    const throttleKontrol = useCallback((): boolean => {
-        const simdi = Date.now();
-        if (simdi - sonTiklamaRef.current < THROTTLE_SURESI) return false;
-        sonTiklamaRef.current = simdi;
-        return true;
-    }, []);
-
-    const azalt = useCallback(() => {
-        if (!throttleKontrol()) return;
-        onChange(Math.max(min, deger - adim));
-    }, [deger, min, adim, onChange, throttleKontrol]);
-
-    const artir = useCallback(() => {
-        if (!throttleKontrol()) return;
-        onChange(Math.min(max, deger + adim));
-    }, [deger, max, adim, onChange, throttleKontrol]);
-
-    return (
-        <View className="flex-row items-center rounded-lg overflow-hidden border" style={{ borderColor: renkler.sinir }}>
-            <TouchableOpacity
-                className="w-9 h-9 items-center justify-center"
-                style={{ backgroundColor: deger <= min ? renkler.sinir : renk }}
-                onPress={azalt}
-                disabled={deger <= min}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="minus" size={12} color="#FFF" />
-            </TouchableOpacity>
-            <View
-                className="px-3 h-9 items-center justify-center flex-row min-w-[80px]"
-                style={{ backgroundColor: renkler.kartArkaplan }}
-            >
-                <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{deger}</Text>
-                <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{birim}</Text>
-            </View>
-            <TouchableOpacity
-                className="w-9 h-9 items-center justify-center"
-                style={{ backgroundColor: deger >= max ? renkler.sinir : renk }}
-                onPress={artir}
-                disabled={deger >= max}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="plus" size={12} color="#FFF" />
-            </TouchableOpacity>
-        </View>
-    );
-};
+// SayisalSecici artik ../components/common/SayisalSecici icinde (paylasilan).
 
 // ─── VakitSatiri (kompakt satır) ──────────────────────────────────────────────
 
