@@ -29,7 +29,7 @@ const getVakitIkonu = (vakit: string): string => {
     }
 };
 
-export const VakitAkisi: React.FC<VakitAkisiProps> = ({
+export const VakitAkisi = React.memo<VakitAkisiProps>(({
     namazlar,
     suankiVakitAdi,
     tamamlananSayisi,
@@ -194,4 +194,6 @@ export const VakitAkisi: React.FC<VakitAkisiProps> = ({
             ) : null}
         </View>
     );
-};
+});
+
+VakitAkisi.displayName = 'VakitAkisi';

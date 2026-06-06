@@ -22,6 +22,11 @@ export class NamazVaktiHesaplayiciServisi {
     private static instance: NamazVaktiHesaplayiciServisi;
     private config: NamazVaktiHesaplayiciKonfig | null = null;
     private yapilandirildi: boolean = false;
+    /**
+     * (lat,lng,gun) -> PrayerTimes onbellegi. Vakitler gun icinde sabit oldugu icin
+     * 1sn'lik timer her tick'te `new PrayerTimes` (pahali trig hesabi) yapmasin diye.
+     */
+    private ptCache = new Map<string, PrayerTimes>();
 
     private constructor() { }
 
@@ -35,6 +40,22 @@ export class NamazVaktiHesaplayiciServisi {
     public yapilandir(config: NamazVaktiHesaplayiciKonfig) {
         this.config = config;
         this.yapilandirildi = true;
+        this.ptCache.clear(); // konum/method degisince onbellegi tazele
+    }
+
+    /** Belirli bir gun icin PrayerTimes'i onbellekten getirir (yoksa hesaplayip onbellekler). */
+    private prayerTimesAl(tarih: Date): PrayerTimes {
+        const { latitude, longitude } = this.config!;
+        const anahtar = `${latitude.toFixed(4)},${longitude.toFixed(4)},${tarih.getFullYear()}-${tarih.getMonth()}-${tarih.getDate()}`;
+        let pt = this.ptCache.get(anahtar);
+        if (!pt) {
+            if (this.ptCache.size > 4) this.ptCache.clear(); // sinirsiz buyumeyi onle
+            const coordinates = new Coordinates(latitude, longitude);
+            const params = CalculationMethod.Turkey();
+            pt = new PrayerTimes(coordinates, tarih, params);
+            this.ptCache.set(anahtar, pt);
+        }
+        return pt;
     }
 
     /**
@@ -108,10 +129,7 @@ export class NamazVaktiHesaplayiciServisi {
         yatsi: Date;
     } | null {
         if (!this.config) return null;
-        const { latitude, longitude } = this.config;
-        const coordinates = new Coordinates(latitude, longitude);
-        const params = CalculationMethod.Turkey();
-        const pt = new PrayerTimes(coordinates, tarih, params);
+        const pt = this.prayerTimesAl(tarih);
         return {
             imsak:  pt.fajr,
             gunes:  pt.sunrise,
@@ -128,19 +146,8 @@ export class NamazVaktiHesaplayiciServisi {
             return null;
         }
 
-        const { latitude, longitude } = this.config;
-        const coordinates = new Coordinates(latitude, longitude);
-
-        // Varsayılan olarak Türkiye Diyanet İşleri (Turkey) kullanılır
-        // Ancak adhan kütüphanesinde 'Turkey' ön tanımlı metodlar arasındadır
-        const params = CalculationMethod.Turkey();
-
-        // İkindi vakti asr-ı evvel (çoğunluk) mu asr-ı sani (Hanefi) mi? 
-        // Türkiye'de genelde tek standart vardır ama adhan esneklik sunar
-        // params.madhab = Madhab.Hanafi; 
-
         const date = new Date();
-        const prayerTimes = new PrayerTimes(coordinates, date, params);
+        const prayerTimes = this.prayerTimesAl(date);
 
         // Şimdiki vakti bul
         const current = prayerTimes.currentPrayer();
@@ -151,7 +158,7 @@ export class NamazVaktiHesaplayiciServisi {
         if (!nextTime || next === 'none') {
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowPrayerTimes = new PrayerTimes(coordinates, tomorrow, params);
+            const tomorrowPrayerTimes = this.prayerTimesAl(tomorrow);
             next = 'fajr';
             nextTime = tomorrowPrayerTimes.fajr;
         }
