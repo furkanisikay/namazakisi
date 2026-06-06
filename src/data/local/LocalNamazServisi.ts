@@ -16,6 +16,7 @@ import {
   DEPOLAMA_ANAHTARLARI
 } from '../../core/constants/UygulamaSabitleri';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
+import { Logger } from '../../core/utils/Logger';
 
 /**
  * Tum local verileri getirir
@@ -24,7 +25,8 @@ const tumVerileriAl = async (): Promise<LocalNamazVerileri> => {
   try {
     const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
     return veri ? JSON.parse(veri) : {};
-  } catch {
+  } catch (error) {
+    Logger.error('LocalNamaz', 'Namaz verileri okunamadı', error);
     return {};
   }
 };
@@ -37,6 +39,24 @@ const tumVerileriKaydet = async (veriler: LocalNamazVerileri): Promise<void> => 
     DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
     JSON.stringify(veriler)
   );
+};
+
+/**
+ * Tek anahtarda (NAMAZ_VERILERI) read-modify-write yapan yazma işlemlerini
+ * serileştiren kuyruk. AsyncStorage atomik değildir; eşzamanlı güncellemeler
+ * birbirinin yazımını ezmesin (lost update) diye tüm mutasyonlar bu zincir
+ * üzerinden sırayla çalışır.
+ */
+let yazmaKuyrugu: Promise<unknown> = Promise.resolve();
+
+const yazmaSirasinaAl = <T>(islem: () => Promise<T>): Promise<T> => {
+  const sonuc = yazmaKuyrugu.then(islem, islem);
+  // Bir işlemin hatası kuyruğu kırmasın diye zinciri her durumda sürdür.
+  yazmaKuyrugu = sonuc.then(
+    () => undefined,
+    () => undefined
+  );
+  return sonuc;
 };
 
 /**
@@ -74,25 +94,26 @@ export const localNamazDurumunuGuncelle = async (
   tarih: string,
   namazAdi: NamazAdi,
   tamamlandi: boolean
-): Promise<ApiYanit<void>> => {
-  try {
-    const tumVeriler = await tumVerileriAl();
+): Promise<ApiYanit<void>> =>
+  yazmaSirasinaAl(async () => {
+    try {
+      const tumVeriler = await tumVerileriAl();
 
-    if (!tumVeriler[tarih]) {
-      tumVeriler[tarih] = {};
+      if (!tumVeriler[tarih]) {
+        tumVeriler[tarih] = {};
+      }
+
+      tumVeriler[tarih][namazAdi] = tamamlandi;
+      await tumVerileriKaydet(tumVeriler);
+
+      return { basarili: true };
+    } catch (error) {
+      return {
+        basarili: false,
+        hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+      };
     }
-
-    tumVeriler[tarih][namazAdi] = tamamlandi;
-    await tumVerileriKaydet(tumVeriler);
-
-    return { basarili: true };
-  } catch (error) {
-    return {
-      basarili: false,
-      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
-    };
-  }
-};
+  });
 
 /**
  * Tum namazlari toplu olarak gunceller
@@ -100,25 +121,26 @@ export const localNamazDurumunuGuncelle = async (
 export const localTumNamazlariGuncelle = async (
   tarih: string,
   tamamlandi: boolean
-): Promise<ApiYanit<void>> => {
-  try {
-    const tumVeriler = await tumVerileriAl();
+): Promise<ApiYanit<void>> =>
+  yazmaSirasinaAl(async () => {
+    try {
+      const tumVeriler = await tumVerileriAl();
 
-    tumVeriler[tarih] = {};
-    NAMAZ_ISIMLERI.forEach((namazAdi) => {
-      tumVeriler[tarih][namazAdi] = tamamlandi;
-    });
+      tumVeriler[tarih] = {};
+      NAMAZ_ISIMLERI.forEach((namazAdi) => {
+        tumVeriler[tarih][namazAdi] = tamamlandi;
+      });
 
-    await tumVerileriKaydet(tumVeriler);
+      await tumVerileriKaydet(tumVeriler);
 
-    return { basarili: true };
-  } catch (error) {
-    return {
-      basarili: false,
-      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
-    };
-  }
-};
+      return { basarili: true };
+    } catch (error) {
+      return {
+        basarili: false,
+        hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+      };
+    }
+  });
 
 /**
  * Tarih araligindaki namazlari getirir

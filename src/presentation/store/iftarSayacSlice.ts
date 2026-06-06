@@ -6,6 +6,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
+import type { RootState } from './store';
 
 /**
  * İftar sayacı ayarları
@@ -39,10 +41,12 @@ export const iftarSayacAyarlariniYukle = createAsyncThunk(
     try {
       const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.IFTAR_SAYAC_AYARLARI);
       if (veri) {
-        return JSON.parse(veri) as IftarSayacAyarlari;
+        const parsed = JSON.parse(veri) as Partial<IftarSayacAyarlari> | null;
+        return { aktif: parsed?.aktif === true };
       }
       return { aktif: false };
     } catch (error) {
+      Logger.error('IftarSayac', 'Ayarlar yüklenemedi', error);
       return { aktif: false };
     }
   }
@@ -55,7 +59,7 @@ export const iftarSayacAyariniGuncelle = createAsyncThunk(
   'iftarSayac/guncelle',
   async (ayarlar: Partial<IftarSayacAyarlari>, { getState }) => {
     try {
-      const state = (getState() as any).iftarSayac as IftarSayacState;
+      const state = (getState() as RootState).iftarSayac;
       const yeniAyarlar: IftarSayacAyarlari = {
         ...state.ayarlar,
         ...ayarlar,
@@ -68,6 +72,7 @@ export const iftarSayacAyariniGuncelle = createAsyncThunk(
 
       return yeniAyarlar;
     } catch (error) {
+      Logger.error('IftarSayac', 'Ayar güncellenemedi', error);
       throw error;
     }
   }

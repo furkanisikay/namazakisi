@@ -58,6 +58,10 @@ ios/Pods/
 tmp/
 temp/
 
+# Stray build/debug outputs (asla commit'lenmemeli)
+tsc_output.txt
+android_crash.txt
+
 # Agent
 .agent/
 

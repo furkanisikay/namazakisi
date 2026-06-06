@@ -12,6 +12,7 @@ configureReanimatedLogger({
 
 import App from './App';
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
+import type { VakitAdi } from './src/domain/services/ArkaplanMuhafizServisi';
 
 // notifee arka plan olay işleyicisi (Android sayaç için)
 // Uygulama kapalıyken/arka plandayken "Kıldım" aksiyonunu yakalar
@@ -59,7 +60,7 @@ if (Platform.OS === 'android') {
                     // Muhafız bildirimlerini de iptal et
                     const { ArkaplanMuhafizServisi } = await import('./src/domain/services/ArkaplanMuhafizServisi');
                     if (vakit) {
-                        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
+                        await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as VakitAdi);
                     }
                 } catch (error) {
                     console.error('[index.ts/notifee] Kıldım işleme hatası:', error);

@@ -3,7 +3,7 @@
  * Sadece yerel mod (Offline-only)
  */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Kullanici, AuthDurumu, SenkronizasyonDurumu } from '../../core/types';
 
 interface AuthState {
@@ -34,19 +34,12 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: baslangicDurumu,
   reducers: {
-    misafirModunaGec: (state) => {
-      // Public versiyonda zaten hep misafir/yerel moddayız
-      state.durum = 'misafir';
-    },
     hataTemizle: (state) => {
       state.hata = null;
-    },
-    kullaniciBilgisiGuncelle: (state, action: PayloadAction<Kullanici | null>) => {
-      state.kullanici = action.payload;
     },
   },
 });
 
-export const { misafirModunaGec, hataTemizle, kullaniciBilgisiGuncelle } = authSlice.actions;
+export const { hataTemizle } = authSlice.actions;
 export default authSlice.reducer;
 

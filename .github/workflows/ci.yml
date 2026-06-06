@@ -74,7 +74,6 @@ jobs:
       - name: 🔧 TypeScript
         id: typecheck
         run: npm run typecheck
-        continue-on-error: true  # React 19 tip uyumsuzlugu nedeniyle gecici tolere ediliyor
 
       - name: 🧹 ESLint
         id: lint
@@ -88,7 +87,7 @@ jobs:
             echo ""
             echo "| Kontrol | Durum |"
             echo "|---------|-------|"
-            echo "| TypeScript | ${{ steps.typecheck.outcome == 'success' && '✅ Basarili' || '⚠️ Uyari (gecici tolere)' }} |"
+            echo "| TypeScript | ${{ steps.typecheck.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
             echo "| ESLint | ${{ steps.lint.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
           } >> $GITHUB_STEP_SUMMARY
 

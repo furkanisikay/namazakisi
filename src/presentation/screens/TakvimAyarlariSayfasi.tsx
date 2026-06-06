@@ -25,6 +25,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
+import { Logger } from '../../core/utils/Logger';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
     takvimAyarlariniYukle,
@@ -845,7 +846,8 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
 
             setBulunanEtkinlikler(etkinlikler);
             setAdim('onay');
-        } catch {
+        } catch (error) {
+            Logger.error('TakvimAyarlari', 'Etkinlikler getirilemedi', error);
             setAdim('kriter');
         }
     };
@@ -858,7 +860,8 @@ const TemizleModali: React.FC<TemizleModaliProps> = ({
             setSilinenSayi(silinen);
             setSiliniyor(false);
             setAdim('tamamlandi');
-        } catch {
+        } catch (error) {
+            Logger.error('TakvimAyarlari', 'Etkinlikler silinemedi', error);
             setSiliniyor(false);
         }
     };

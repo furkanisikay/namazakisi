@@ -23,6 +23,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { Logger } from '../../core/utils/Logger';
 import * as Notifications from 'expo-notifications';
 import { useDispatch } from 'react-redux';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -161,12 +162,17 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       try {
         const geo = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng });
         const g = geo[0];
-        gpsAdres = {
-          il: g.city || g.region || '',
-          ilce: g.district || g.subregion || '',
-          semt: g.street || '',
-        };
-      } catch { /* geocode opsiyonel */ }
+        if (g) {
+          gpsAdres = {
+            il: g.city || g.region || '',
+            ilce: g.district || g.subregion || '',
+            semt: g.street || '',
+          };
+        }
+      } catch (error) {
+        // Ters geocode opsiyonel; başarısız olsa da koordinatlar kullanılır.
+        Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
+      }
 
       dispatch(konumAyarlariniGuncelle({
         konumModu: 'oto',
@@ -250,7 +256,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       }
       await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');
       navigation.replace('MainTabs');
-    } catch {
+    } catch (error) {
+      Logger.error('KurulumSihirbazi', 'Kurulum tamamlanamadı', error);
       setYukleniyor(false);
     }
   }, [bildirimler, muhafizAktif, muhafizYogunluk, dispatch, navigation]);

@@ -7,6 +7,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import type { RootState } from './store';
 
 /**
  * Vakit sayacı ayarları
@@ -42,9 +43,16 @@ export const vakitSayacAyarlariniYukle = createAsyncThunk(
     try {
       const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
       if (veri) {
-        return JSON.parse(veri) as VakitSayacAyarlari;
+        const parsed = JSON.parse(veri) as Partial<VakitSayacAyarlari> | null;
+        return {
+          aktif: parsed?.aktif === true,
+          sayacBaslangicSeviyesi:
+            typeof parsed?.sayacBaslangicSeviyesi === 'number'
+              ? parsed.sayacBaslangicSeviyesi
+              : 1,
+        };
       }
-      return { aktif: false };
+      return { aktif: false, sayacBaslangicSeviyesi: 1 };
     } catch (error) {
       Logger.error('vakitSayacSlice', 'Ayarlar yuklenemedi', error);
       return { aktif: false };
@@ -59,7 +67,7 @@ export const vakitSayacAyariniGuncelle = createAsyncThunk(
   'vakitSayac/guncelle',
   async (ayarlar: Partial<VakitSayacAyarlari>, { getState }) => {
     try {
-      const state = (getState() as any).vakitSayac as VakitSayacState;
+      const state = (getState() as RootState).vakitSayac;
       const yeniAyarlar: VakitSayacAyarlari = {
         ...state.ayarlar,
         ...ayarlar,

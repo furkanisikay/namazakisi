@@ -14,7 +14,7 @@ import { AppNavigator } from './src/navigation/AppNavigator';
 import ErrorBoundary from './src/presentation/components/common/ErrorBoundary';
 import { TemaProvider, useTema, useRenkler } from './src/core/theme';
 import { FeedbackProvider } from './src/core/feedback';
-import { ArkaplanMuhafizServisi } from './src/domain/services/ArkaplanMuhafizServisi';
+import { ArkaplanMuhafizServisi, type VakitAdi } from './src/domain/services/ArkaplanMuhafizServisi';
 import { BildirimServisi, vakitAdiToNamazAdi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
@@ -295,8 +295,8 @@ const AppIcerik: React.FC = () => {
                 Logger.info('App/notifee', `Namaz kıldım (foreground): ${namazAdi} (${tarih})`);
 
                 // Sayac ve muhafiz bildirimlerini iptal et
-                await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as any);
-                await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as any);
+                await VakitSayacBildirimServisi.getInstance().vakitSayaciniIptalEt(vakit as VakitAdi);
+                await ArkaplanMuhafizServisi.getInstance().vakitBildirimleriniIptalEt(vakit as VakitAdi);
               }
             }
           }

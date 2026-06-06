@@ -6,6 +6,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
+import type { RootState } from './store';
 
 /**
  * Sahur sayacı ayarları
@@ -39,10 +41,12 @@ export const sahurSayacAyarlariniYukle = createAsyncThunk(
         try {
             const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SAHUR_SAYAC_AYARLARI);
             if (veri) {
-                return JSON.parse(veri) as SahurSayacAyarlari;
+                const parsed = JSON.parse(veri) as Partial<SahurSayacAyarlari> | null;
+                return { aktif: parsed?.aktif === true };
             }
             return { aktif: false };
         } catch (error) {
+            Logger.error('SahurSayac', 'Ayarlar yüklenemedi', error);
             return { aktif: false };
         }
     }
@@ -55,7 +59,7 @@ export const sahurSayacAyariniGuncelle = createAsyncThunk(
     'sahurSayac/guncelle',
     async (ayarlar: Partial<SahurSayacAyarlari>, { getState }) => {
         try {
-            const state = (getState() as any).sahurSayac as SahurSayacState;
+            const state = (getState() as RootState).sahurSayac;
             const yeniAyarlar: SahurSayacAyarlari = {
                 ...state.ayarlar,
                 ...ayarlar,
@@ -68,6 +72,7 @@ export const sahurSayacAyariniGuncelle = createAsyncThunk(
 
             return yeniAyarlar;
         } catch (error) {
+            Logger.error('SahurSayac', 'Ayar güncellenemedi', error);
             throw error;
         }
     }
