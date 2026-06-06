@@ -241,8 +241,18 @@ const AppIcerik: React.FC = () => {
     });
 
     // Uygulama on plana geldiginde bildirimleri yeniden planla ve konum takibini senkronize et
+    // Foreground'a kisa sureli donuslerde tum bildirimleri silip yeniden planlamayi
+    // tekrarlamamak icin debounce (5 dk). Mount aninda init zaten calistigi icin
+    // baslangic referansi simdi.
+    let sonForegroundMs = Date.now();
+    const FOREGROUND_DEBOUNCE_MS = 5 * 60 * 1000;
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
+        const simdiMs = Date.now();
+        if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
+          return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez
+        }
+        sonForegroundMs = simdiMs;
         // Uygulama on plana geldi, bildirimleri yenile
         arkaplanMuhafiziBildirimleriniPlanla();
         // Arka planda birikmis eski muhafiz bildirimlerini temizle
