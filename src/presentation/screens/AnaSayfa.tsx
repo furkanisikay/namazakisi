@@ -460,7 +460,7 @@ export const AnaSayfa: React.FC = () => {
     }
 
     return (
-      <ScrollView key={`${sayfaIndeksi}-${vakitBilgisi?.vakit || 'none'}`} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
