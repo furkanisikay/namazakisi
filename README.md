@@ -64,11 +64,12 @@ Sıradan bir alarm değil, sizi namaza kaldıran akıllı bir sistem:
 
 Modern mobil geliştirme standartları ile inşa edilmiştir:
 
-*   **Core:** React Native (Expo SDK 54), TypeScript
+*   **Core:** React Native (Expo SDK 54, Bare Workflow + New Architecture), TypeScript (strict)
 *   **State:** Redux Toolkit
 *   **Storage:** AsyncStorage (Yerel Veri Tabanı)
 *   **Styling:** NativeWind (TailwindCSS)
-*   **Engine:** Adhan.js, Expo Background Fetch, Expo Notifications
+*   **Engine:** Adhan.js, Notifee + Expo Notifications, Expo Task Manager
+*   **Test:** Jest + jest-expo (birim & entegrasyon testleri)
 
 ---
 
@@ -80,16 +81,15 @@ Modern mobil geliştirme standartları ile inşa edilmiştir:
     cd namazakisi
     ```
 
-2.  **Bağımlılıkları Yükleyin**
+2.  **Bağımlılıkları Yükleyin** (npm sürümü `package.json`'da sabitlenmiştir)
     ```bash
     npm install
-    # veya
-    yarn install
     ```
 
 3.  **Başlatın**
     ```bash
-    npx expo start
+    npx expo start        # Geliştirme sunucusu (Metro)
+    npm run android       # Native Android derlemesi (bare workflow)
     ```
 
 ---
@@ -100,6 +100,11 @@ Bu proje topluluk katkılarına açıktır! Bir hata bulduysanız veya özellik 
 1.  Bir **Issue** açarak tartışın.
 2.  Repoyu fork edin.
 3.  Geliştirmenizi yapın ve **Pull Request** gönderin.
+
+### Geliştirici Notları
+*   **Doğrulama kapısı:** PR açmadan önce `npm run verify` (typecheck + lint + test) çalıştırın; üçü de geçmelidir. Pre-push hook bunu otomatik kontrol eder.
+*   **Proje kuralları & mimari:** Tüm konvansiyonlar, mimari kararlar ve tuzaklar **[AGENTS.md](./AGENTS.md)**'de toplanmıştır — hem insan hem yapay zekâ katkıcılar için tek doğru kaynak.
+*   Kod isimleri Türkçe; kullanıcıya görünen tüm metin kibar "siz" dilindedir.
 
 *Not: Gönderdiğiniz kodların da GPLv3 lisansı kapsamında açık kaynak olacağını kabul etmiş olursunuz.*
 
