@@ -270,4 +270,202 @@ describe('TakvimServisi', () => {
             expect(mockCalendar.deleteEventAsync).toHaveBeenCalledTimes(3);
         });
     });
+
+    // ─── takvimOlaylariOlustur — giriş/çıkış kablolaması ve gün ilerlemesi ───────
+    //
+    // Saat sabit bir öğlene (2026-06-15 12:00, yerel kurucu) DONDURULUR.
+    // Böylece üretimin `new Date()` ile aldığı "bugün" deterministik olur ve
+    // gece-yarısı/gün-sınırı flaky'liği yaşanmaz. (Mock adhan vakitleri yalnızca
+    // geçirilen tarihin yıl/ay/gün'ünü kullandığından dondurulmuş saat yeterli.)
+    describe('takvimOlaylariOlustur — gün ilerlemesi ve çıkış saati kablolaması', () => {
+        beforeEach(() => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date(2026, 5, 15, 12, 0, 0)); // 2026-06-15 öğlen, yerel
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        it('yatsı çıkışı ertesi günün imsakına bağlanır (vakit_oncesi gece-yarısı geçişi)', async () => {
+            // Üretimde cikisSaatleri.yatsi = ptYarin.fajr (ertesi gün imsak/fajr).
+            // Mock ptYarin.fajr -> (bugün+1) 05:00. vakit_oncesi & dakika=30 →
+            // başlangıç = ertesi gün 05:00 - 30 dk = ertesi gün 04:30.
+            // Çıkış haritası karışıp yatsı'ya BUGÜNÜN bir vaktini beslerse
+            // (örn. bugünkü isha/sunrise) hem saat hem TARİH değişir → test FAIL.
+            const ayarlar = ayarlarOlustur({
+                kaciGunIlerisi: 1,
+                vakitAyarlari: {
+                    imsak:  vakit(false),
+                    ogle:   vakit(false),
+                    ikindi: vakit(false),
+                    aksam:  vakit(false),
+                    yatsi:  vakit(true, { baslangicTipi: 'vakit_oncesi', dakika: 30 }),
+                },
+            });
+
+            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+
+            expect(mockCalendar.createEventAsync).toHaveBeenCalledTimes(1);
+            const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
+            // Ertesi gün (16) 04:30 — bugünün (15) değil
+            expect(detay.startDate.getDate()).toBe(16);
+            expect(detay.startDate.getHours()).toBe(4);
+            expect(detay.startDate.getMinutes()).toBe(30);
+        });
+
+        it('aksam çıkışı aynı günün yatsısına (isha) bağlanır (vakit_oncesi, gün taşmaz)', async () => {
+            // cikisSaatleri.aksam = pt.isha (BUGÜNÜN yatsısı = 20:30).
+            // vakit_oncesi & dakika=10 → başlangıç = 20:30 - 10 = 20:20, AYNI gün.
+            // Yanlışlıkla ptYarin.isha gibi ertesi güne bağlanırsa getDate() kayar → FAIL.
+            const ayarlar = ayarlarOlustur({
+                kaciGunIlerisi: 1,
+                vakitAyarlari: {
+                    imsak:  vakit(false),
+                    ogle:   vakit(false),
+                    ikindi: vakit(false),
+                    aksam:  vakit(true, { baslangicTipi: 'vakit_oncesi', dakika: 10 }),
+                    yatsi:  vakit(false),
+                },
+            });
+
+            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+
+            const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
+            expect(detay.startDate.getDate()).toBe(15); // bugün
+            expect(detay.startDate.getHours()).toBe(20);
+            expect(detay.startDate.getMinutes()).toBe(20);
+        });
+
+        it('vakit_sonrasi uçtan uca: giriş saatinden + dakika kadar sonra başlar', async () => {
+            // imsak girişi 05:00 (pt.fajr). vakit_sonrasi & dakika=20 → 05:20.
+            // girisSaatleri haritası karışırsa (örn. imsak'a dhuhr beslenirse) saat kayar → FAIL.
+            const ayarlar = ayarlarOlustur({
+                kaciGunIlerisi: 1,
+                vakitAyarlari: {
+                    imsak:  vakit(true, { baslangicTipi: 'vakit_sonrasi', dakika: 20 }),
+                    ogle:   vakit(false),
+                    ikindi: vakit(false),
+                    aksam:  vakit(false),
+                    yatsi:  vakit(false),
+                },
+            });
+
+            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+
+            const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
+            expect(detay.startDate.getDate()).toBe(15);
+            expect(detay.startDate.getHours()).toBe(5);
+            expect(detay.startDate.getMinutes()).toBe(20);
+        });
+
+        it('kaciGunIlerisi=2: etkinlikler iki ayrı takvim gününe (bugün ve yarın) dağılır', async () => {
+            // 1 aktif vakit (imsak) × 2 gün = 2 etkinlik.
+            // tarih.setDate(getDate()+g) kırılıp hep "bugün"e düşerse iki etkinlik de
+            // 15'ine düşer → bu test FAIL. Doğru davranışta {15, 16} olmalı.
+            const ayarlar = ayarlarOlustur({
+                kaciGunIlerisi: 2,
+                vakitAyarlari: {
+                    imsak:  vakit(true), // varsayılan vakit_girisi
+                    ogle:   vakit(false),
+                    ikindi: vakit(false),
+                    aksam:  vakit(false),
+                    yatsi:  vakit(false),
+                },
+            });
+
+            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+
+            expect(mockCalendar.createEventAsync).toHaveBeenCalledTimes(2);
+            const gunler = (mockCalendar.createEventAsync as jest.Mock).mock.calls
+                .map(([, detay]) => detay.startDate.getDate())
+                .sort((a: number, b: number) => a - b);
+            expect(gunler).toEqual([15, 16]);
+        });
+    });
+
+    // ─── takvimOlaylariOlustur — timeZone alanı ────────────────────────────────
+
+    describe('takvimOlaylariOlustur — timeZone', () => {
+        it('Android için geçerli IANA timeZone geçirir ("local" gibi geçersiz değer değil)', async () => {
+            // Platform.OS mock'u 'android' → deviceTimeZone = Intl ile çözülen IANA tz.
+            // Gotcha: 'local' geçersizdir; gerçek bir bölge/şehir IANA string olmalı.
+            const ayarlar = ayarlarOlustur({
+                kaciGunIlerisi: 1,
+                vakitAyarlari: {
+                    imsak:  vakit(true),
+                    ogle:   vakit(false),
+                    ikindi: vakit(false),
+                    aksam:  vakit(false),
+                    yatsi:  vakit(false),
+                },
+            });
+
+            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+
+            const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
+            expect(typeof detay.timeZone).toBe('string');
+            expect(detay.timeZone).not.toBe('local');
+            // IANA tz kabaca "Bölge/Şehir" biçimindedir (en az bir '/' içerir)
+            expect(detay.timeZone).toMatch(/^[A-Za-z]+\/[A-Za-z_]+/);
+        });
+    });
+
+    // ─── etkinlikleriGetir ─────────────────────────────────────────────────────
+
+    describe('etkinlikleriGetir', () => {
+        const bas = new Date(2026, 5, 1);
+        const bit = new Date(2026, 5, 30);
+
+        it('yalnızca "oluşturuldu" notlu etkinlikleri döndürür ve startDate’e göre artan sıralar', async () => {
+            // Karışık notlu + sırasız startDate'li etkinlikler tek takvimden gelir.
+            (mockCalendar.getEventsAsync as jest.Mock).mockResolvedValue([
+                { id: 'gec',  title: 'Akşam Namazı', notes: OLUSTURULDU_NOTU, startDate: '2026-06-10T19:00:00.000Z' },
+                { id: 'yad',  title: 'Toplantı',     notes: 'kullanıcının kendi etkinliği', startDate: '2026-06-05T09:00:00.000Z' },
+                { id: 'erken', title: 'Sabah Namazı', notes: OLUSTURULDU_NOTU, startDate: '2026-06-02T05:00:00.000Z' },
+                { id: 'bos',  title: 'Notsuz',       notes: undefined, startDate: '2026-06-01T00:00:00.000Z' },
+            ]);
+
+            const sonuc = await servis.etkinlikleriGetir(['cal-1'], bas, bit);
+
+            // Yalnızca 2 "oluşturuldu" notlu etkinlik; yabancı/notsuz atılır
+            expect(sonuc.map(e => e.id)).toEqual(['erken', 'gec']);
+            // Artan startDate sıralaması korunur (erken < gec)
+            expect(sonuc[0].startDate.getTime()).toBeLessThan(sonuc[1].startDate.getTime());
+            expect(sonuc[0].startDate).toBeInstanceOf(Date);
+        });
+
+        it('vakitBasliklari verilirse yalnızca eşleşen başlıkları döndürür', async () => {
+            (mockCalendar.getEventsAsync as jest.Mock).mockResolvedValue([
+                { id: 'sabah', title: 'Sabah Namazı', notes: OLUSTURULDU_NOTU, startDate: '2026-06-02T05:00:00.000Z' },
+                { id: 'yatsi', title: 'Yatsı Namazı', notes: OLUSTURULDU_NOTU, startDate: '2026-06-02T20:30:00.000Z' },
+            ]);
+
+            const sonuc = await servis.etkinlikleriGetir(['cal-1'], bas, bit, ['Yatsı Namazı']);
+
+            expect(sonuc.map(e => e.id)).toEqual(['yatsi']);
+        });
+
+        it('bir takvim sorgulanamasa bile diğer takvimlerin etkinliklerini döndürür', async () => {
+            (mockCalendar.getEventsAsync as jest.Mock)
+                .mockRejectedValueOnce(new Error('takvim okunamadı')) // cal-1 patlar
+                .mockResolvedValueOnce([
+                    { id: 'ok', title: 'Sabah Namazı', notes: OLUSTURULDU_NOTU, startDate: '2026-06-03T05:00:00.000Z' },
+                ]);
+
+            const sonuc = await servis.etkinlikleriGetir(['cal-1', 'cal-2'], bas, bit);
+
+            expect(sonuc.map(e => e.id)).toEqual(['ok']);
+            expect(sonuc[0].takvimId).toBe('cal-2');
+        });
+
+        it('izin yoksa boş dizi döner ve takvim sorgulamaz', async () => {
+            (mockCalendar.requestCalendarPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
+
+            const sonuc = await servis.etkinlikleriGetir(['cal-1'], bas, bit);
+
+            expect(sonuc).toEqual([]);
+            expect(mockCalendar.getEventsAsync).not.toHaveBeenCalled();
+        });
+    });
 });

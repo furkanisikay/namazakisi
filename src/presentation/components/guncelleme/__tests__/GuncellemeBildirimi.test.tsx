@@ -54,11 +54,16 @@ const GUVENILIR_DOMAINLER_TEST = [
   'play.google.com',
   'apps.apple.com',
 ];
+// Stabil spy: guncellemeErtele thunk'i GuncellemeServisi.getInstance().guncellemeErtele'yi
+// cagirir. getInstance her cagrida YENI jest.fn dondurseydi cagriyi izleyemezdik;
+// bu yuzden ayni instance'i (ve ayni spy'i) dondururuz. Boylece "Sonra" butonunun
+// hangi dala (ertele vs sade kapat) gittigini servis cagrisindan kesin ayirt ederiz.
+const mockServisGuncellemeErtele = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../../domain/services/GuncellemeServisi', () => ({
   GuncellemeServisi: {
     getInstance: () => ({
       guncellemeKontrolEt: jest.fn(),
-      guncellemeErtele: jest.fn(),
+      guncellemeErtele: (...args: any[]) => mockServisGuncellemeErtele(...args),
     }),
   },
   yayinTarihiniFormatla: (tarih: string) => tarih ? '14.02.2026' : '',
@@ -84,11 +89,16 @@ jest.mock('../../../../domain/services/GuncellemeServisi', () => ({
 
 // PlayStoreGuncellemeModulu mock
 const mockEsnekGuncellemeBaslat = jest.fn().mockResolvedValue('DOWNLOADED');
-const mockInstallDurumDinle = jest.fn().mockReturnValue(() => {});
+// mockInstallDurumDinle: bilesen installDurumDinle(callback) cagirir; biz callback'i
+// yakalayip testte elle tetikleyecegiz (DOWNLOADED olayini simule etmek icin).
+// Donus degeri (abonelikIptal) ayri bir spy'dir; unmount'ta cagrildigini dogrularz.
+const mockAbonelikIptal = jest.fn();
+const mockInstallDurumDinle = jest.fn().mockReturnValue(mockAbonelikIptal);
+const mockGuncellemeYuklemeyiTamamla = jest.fn().mockResolvedValue(true);
 jest.mock('../../../../domain/services/PlayStoreGuncellemeModulu', () => ({
   PlayStoreModulu: {
     esnekGuncellemeBaslat: (...args: any[]) => mockEsnekGuncellemeBaslat(...args),
-    guncellemeYuklemeyiTamamla: jest.fn().mockResolvedValue(true),
+    guncellemeYuklemeyiTamamla: (...args: any[]) => mockGuncellemeYuklemeyiTamamla(...args),
     installDurumDinle: (...args: any[]) => mockInstallDurumDinle(...args),
     kurulumKaynagiGetir: jest.fn().mockResolvedValue('play_store'),
     guncellemeDurumunuKontrolEt: jest.fn().mockResolvedValue({ guncellemeMevcut: false }),
@@ -696,5 +706,236 @@ describe('GuncellemeBildirimi', () => {
     expect(json).toContain('Güncelle');
 
     act(() => { tree!.unmount(); });
+  });
+
+  // ==================== "SONRA" FALLBACK DALI (yeniVersiyon yok) ====================
+
+  it('"Sonra" basinca yeniVersiyon YOKKEN guncellemeErtele DEGIL sade bildirimiKapat calisir', async () => {
+    // Uretim sonraBasildi(): bilgi?.yeniVersiyon doluysa guncellemeErtele(versiyon),
+    // YOKSA bildirimiKapat(). Mevcut testler yalniz dolu dali kapsiyor.
+    // Bu test bos-versiyon fallback dalini kanitlar: ertele servis cagrisi YAPILMAMALI,
+    // ama bildirim yine kapanmali (bildirimiKapatti=true). Iki dal da bildirimiKapatti'yi
+    // true yaptigindan, ayrimi state degil SERVIS CAGRISI ile yapariz.
+    mockServisGuncellemeErtele.mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          // yeniVersiyon kasitli olarak bos -> fallback dali (bildirimiKapat)
+          yeniVersiyon: '',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://github.com/ornek/repo/releases/download/v1.0.0/app.apk',
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    await act(async () => {
+      butonBul(tree!, 'Sonra').props.onPress();
+    });
+
+    // Fallback dali: ertele thunk'i (ve onun servis cagrisi) tetiklenMEMELI
+    expect(mockServisGuncellemeErtele).not.toHaveBeenCalled();
+    // Ama bildirim yine de kapatilmali (sade bildirimiKapat)
+    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('"Sonra" basinca yeniVersiyon DOLUYKEN guncellemeErtele servis cagrisi YAPILIR (dogru versiyonla)', async () => {
+    // Pozitif kontrast: dolu versiyonda ertele dali secilmeli ve servise TAM versiyon
+    // gecmeli. Bu test ile fallback testi birlikte iki dali kesin ayirir.
+    mockServisGuncellemeErtele.mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '2.5.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://github.com/ornek/repo/releases/download/v2.5.0/app.apk',
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    await act(async () => {
+      butonBul(tree!, 'Sonra').props.onPress();
+    });
+
+    // Ertele dali: servise tam yeniVersiyon gecmeli
+    expect(mockServisGuncellemeErtele).toHaveBeenCalledTimes(1);
+    expect(mockServisGuncellemeErtele).toHaveBeenCalledWith('2.5.0');
+    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  // ==================== PLAY STORE INSTALL DURUM DINLEYICISI ====================
+
+  it('Play Store: installStatus===11 (DOWNLOADED) gelince guncellemeYuklemeyiTamamla cagrilir', async () => {
+    mockInstallDurumDinle.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
+          mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // playstore kaynaginda dinleyici kurulmus olmali
+    expect(mockInstallDurumDinle).toHaveBeenCalledTimes(1);
+    const callback = mockInstallDurumDinle.mock.calls[0][0];
+    expect(typeof callback).toBe('function');
+
+    // DOWNLOADED (11) disi bir durum gelince tamamlama TETIKLENMEMELI
+    await act(async () => {
+      callback({ installStatus: 2 /* DOWNLOADING */ });
+    });
+    expect(mockGuncellemeYuklemeyiTamamla).not.toHaveBeenCalled();
+
+    // DOWNLOADED (11) gelince otomatik yeniden baslatma (tamamla) cagrilmali
+    await act(async () => {
+      callback({ installStatus: 11 /* DOWNLOADED */ });
+    });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store DISI kaynakta install durum dinleyicisi KURULMAZ', () => {
+    mockInstallDurumDinle.mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: 'https://github.com/ornek/repo/releases/download/v1.0.0/app.apk',
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // github kaynaginda (kaynak !== 'playstore') dinleyici erken return ile kurulMAMALI
+    expect(mockInstallDurumDinle).not.toHaveBeenCalled();
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: unmount edilince abonelikIptal cagrilir (sizinti/temizlik)', () => {
+    mockInstallDurumDinle.mockClear();
+    mockAbonelikIptal.mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
+          mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // Dinleyici kuruldu, abonelikIptal henuz cagrilmadi
+    expect(mockInstallDurumDinle).toHaveBeenCalledTimes(1);
+    expect(mockAbonelikIptal).not.toHaveBeenCalled();
+
+    // Unmount -> useEffect cleanup -> abonelikIptal() calismali
+    act(() => { tree!.unmount(); });
+    expect(mockAbonelikIptal).toHaveBeenCalledTimes(1);
   });
 });

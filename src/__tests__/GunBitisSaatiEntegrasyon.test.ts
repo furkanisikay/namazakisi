@@ -171,6 +171,73 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakSaat).toBeLessThanOrEqual(7);
         });
 
+        it('sonraki gün imsak vakti BİLİNEN referans değere eşit olmalı (İstanbul, 15 Haz 2026 → 03:24)', () => {
+            // FİZİKİ DOĞRULUK REFERANSI: Sadece "2-7 arası mı" değil, dakika hassasiyetinde
+            // bilinen bir değere kilitliyoruz. Sistem saatini 14 Haz 2026 öğlene donduruyoruz;
+            // sonrakiGunImsakVaktiGetir() yarını (15 Haz) hesaplar. adhan CalculationMethod.Turkey()
+            // ile İstanbul imsakı 03:24'tür (Avrupa/İstanbul). Yanlış yöntem/açı/parametre
+            // regresyonu (örn. başka bir CalculationMethod) bu dakika değerini kaydırır → FAIL.
+            // Saati Avrupa/İstanbul timezone'ında çıkardığımız için CI'nın UTC olması sonucu DEĞİŞTİRMEZ.
+            jest.useFakeTimers();
+            try {
+                jest.setSystemTime(new Date(2026, 5, 14, 12, 0, 0, 0)); // 14 Haz 2026 12:00 yerel
+                konumServisi.koordinatlarAyarla(41.0082, 28.9784);
+
+                const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
+                expect(imsakVakti).not.toBeNull();
+
+                const istanbulHHMM = imsakVakti!.toLocaleString('en-US', {
+                    timeZone: 'Europe/Istanbul',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                });
+                // adhan referans: İstanbul, 15 Haziran 2026 imsak = 03:24
+                expect(istanbulHHMM).toBe('03:24');
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('sonraki gün imsakı YARININ tarihini kullanır ve bugünkü imsaktan farklıdır (setDate +1)', () => {
+            // sonrakiGunImsakVaktiGetir vs bugunImsakVaktiGetir AYRIMI: yanlışlıkla bugünün
+            // imsakı dönerse (setDate(+1) atlanırsa) bu test FAIL eder. Sistem saatini sabit
+            // bir öğlene donduruyoruz; iki vaktin takvim günü (ve dolayısıyla saniye damgası)
+            // tam olarak 1 gün farklı olmalı.
+            jest.useFakeTimers();
+            try {
+                jest.setSystemTime(new Date(2026, 5, 14, 12, 0, 0, 0)); // 14 Haz 2026 12:00
+                konumServisi.koordinatlarAyarla(41.0082, 28.9784);
+
+                const bugunImsak = konumServisi.bugunImsakVaktiGetir();
+                const yarinImsak = konumServisi.sonrakiGunImsakVaktiGetir();
+
+                expect(bugunImsak).not.toBeNull();
+                expect(yarinImsak).not.toBeNull();
+
+                // Yarının imsakı bugünden SONRA (en az birkaç saat ileri) olmalı.
+                expect(yarinImsak!.getTime()).toBeGreaterThan(bugunImsak!.getTime());
+
+                // Aynı şehir + ardışık iki gün → fark tam 1 gün (1440 dk) civarı olmalı.
+                // (İmsak günden güne ~1 dk değişir; 1 gün ± 5 dk penceresiyle sınırlıyoruz.)
+                const farkDk = (yarinImsak!.getTime() - bugunImsak!.getTime()) / 60000;
+                expect(farkDk).toBeGreaterThan(1440 - 5);
+                expect(farkDk).toBeLessThan(1440 + 5);
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('koordinat YOKKEN sonrakiGunImsakVaktiGetir null döner (gerçek servis fallback kaynağı)', () => {
+            // KONUM YOK FALLBACK kaynağı: thunk 04:00 fallback'ine GİRMESİ için gerçek servisin
+            // koordinat ayarlanmadığında null dönmesi şarttır. sifirla() koordinatları null yapar.
+            // Bu, mock'lanmış getInstance ile değil, GERÇEK üretim metoduyla doğrulanır.
+            konumServisi.sifirla();
+
+            expect(konumServisi.sonrakiGunImsakVaktiGetir()).toBeNull();
+            expect(konumServisi.bugunImsakVaktiGetir()).toBeNull();
+        });
+
         it('otomatik mod: bildirim, imsaktan bildirimImsakOncesiDk kadar önceye planlanır', async () => {
             // Üretim kodu (seriSlice.ts 121-130) imsak vaktini KonumYoneticiServisi'nden alıp
             // setMinutes ile geri çeker ve getHours/getMinutes ile planlar. Burada imsak'ı

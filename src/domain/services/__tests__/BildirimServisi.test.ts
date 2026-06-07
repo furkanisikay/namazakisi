@@ -2,6 +2,7 @@ import * as Notifications from 'expo-notifications';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
+import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 
 // BildirimServisi modülünü import etmeden önce mock'ları ayarla
 jest.mock('expo-notifications');
@@ -49,6 +50,20 @@ const mockVakitBildirimleriniIptalEt = jest.fn().mockResolvedValue(undefined);
 });
 
 import { BildirimServisi } from '../BildirimServisi';
+
+// ==================== MODUL-YUKLEME ANINDA YAKALANAN HANDLER ====================
+//
+// BildirimServisi modulu yuklenirken (yukaridaki import) bir kez
+// Notifications.setNotificationHandler({ handleNotification }) cagrilir.
+// Bu cagri TUM testlerden ve beforeEach'teki jest.clearAllMocks()'tan ONCE,
+// dosya degerlendirme aninda gerceklesir. handleNotification icindeki
+// oncekiMuhafizBildirimleriniTemizle modul-yerel (export edilmemis) oldugundan
+// ona ancak handler referansini burada yakalayarak ulasabiliriz.
+// (clearAllMocks mock.calls'u sildigi icin testin icinde okumak mumkun degildir.)
+const yakalananHandleNotification: (
+  bildirim: { request: { identifier: string } }
+) => Promise<unknown> = (Notifications.setNotificationHandler as jest.Mock).mock.calls[0][0]
+  .handleNotification;
 
 // ==================== YARDIMCI FONKSIYONLAR ====================
 
@@ -685,6 +700,212 @@ describe('BildirimServisi', () => {
     it('sayac_ önekiyle başlamayan ID yok sayılır', async () => {
       await servis.sayacKildimIsle('iftar_sayac_2026-02-15');
       expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+  });
+
+  // ==================== HANDLER: ONCEKI MUHAFIZ BILDIRIMI TEMIZLEME ====================
+  //
+  // setNotificationHandler.handleNotification, yeni bir muhafiz bildirimi
+  // gosterilmeden once oncekiMuhafizBildirimleriniTemizle'yi cagirir.
+  // Bu fonksiyon SADECE ayni vakit onekine sahip ESKI bildirimleri dismiss eder;
+  // farkli vakitleri korur ve gelmekte olan yeni bildirimin KENDISINI dismiss ETMEZ.
+  // (Aksi halde bildirimler yiginlanir veya yeni bildirim kendini iptal eder.)
+  describe('Handler: onceki muhafiz bildirimlerini temizleme (spam onleme)', () => {
+    it('ayni vaktin eskisini dismiss eder, farkli vakti korur, yeni bildirimi dismiss ETMEZ', async () => {
+      const yeniBildirimId = 'muhafiz_2026-02-13_vakit_ikindi_seviye_3_dk_15';
+
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        // Ayni vaktin (ikindi) eski bildirimi -> dismiss EDILMELI
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ikindi_seviye_2_dk_30'),
+        // Yeni gelen bildirimin kendisi -> dismiss EDILMEMELI (identifier === yeniBildirimId)
+        sunulanBildirimOlustur(yeniBildirimId),
+        // Farkli vakit (aksam) -> KORUNMALI
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_aksam_seviye_1_dk_45'),
+        // Farkli vakit (yatsi) -> KORUNMALI
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_seviye_1_dk_60'),
+      ]);
+
+      const sonuc = await yakalananHandleNotification({
+        request: { identifier: yeniBildirimId },
+      });
+
+      // Handler dogru sunum bayraklarini dondurmeli (muhafiz akisi calismis)
+      expect(sonuc).toEqual(
+        expect.objectContaining({ shouldShowBanner: true, shouldPlaySound: true })
+      );
+
+      const dismissCalls = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls
+        .map((c: any[]) => c[0]);
+
+      // Ayni vaktin eskisi dismiss edilmeli
+      expect(dismissCalls).toContain('muhafiz_2026-02-13_vakit_ikindi_seviye_2_dk_30');
+      // Yeni bildirimin kendisi dismiss EDILMEMELI
+      expect(dismissCalls).not.toContain(yeniBildirimId);
+      // Farkli vakitler korunmali
+      expect(dismissCalls).not.toContain('muhafiz_2026-02-13_vakit_aksam_seviye_1_dk_45');
+      expect(dismissCalls).not.toContain('muhafiz_2026-02-13_vakit_yatsi_seviye_1_dk_60');
+      // Toplamda sadece 1 dismiss (yalniz ikindi eskisi)
+      expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(1);
+    });
+
+    it('muhafiz olmayan bir bildirimde temizleme YAPMAZ (getPresentedNotificationsAsync cagrilmaz)', async () => {
+      // muhafiz_ onekiyle baslamayan bir bildirim -> oncekiMuhafizBildirimleriniTemizle atlanir
+      const sonuc = await yakalananHandleNotification({
+        request: { identifier: 'vakit_sayac_v2_2026-02-13_ogle' },
+      });
+
+      expect(Notifications.getPresentedNotificationsAsync).not.toHaveBeenCalled();
+      expect(Notifications.dismissNotificationAsync).not.toHaveBeenCalled();
+      // Bildirim yine de gosterilmeli
+      expect(sonuc).toEqual(
+        expect.objectContaining({ shouldShowBanner: true })
+      );
+    });
+  });
+
+  // ==================== ESKI MUHAFIZ BILDIRIMLERINI TEMIZLEME (GRUP BASINA 1) ====================
+  //
+  // sunulanEskiMuhafizBildirimleriniTemizle vakit onekine ("muhafiz_TARIH_vakit_VAKIT",
+  // seviye/dk ekleri HARIC) gore gruplar; b.date'e gore buyukten kucuge siralar ve
+  // SADECE en yeni (en buyuk date) bildirimi tutar, daha eskileri dismiss eder.
+  // Onek TARIHI icerdiginden ayni gun + ayni vaktin escalation kademeleri
+  // (seviye 2/dk 30, seviye 3/dk 15, seviye 4/dk 2) ayni grupta toplanir.
+  describe('sunulanEskiMuhafizBildirimleriniTemizle', () => {
+    it('ayni gun+vaktin 3 escalation bildiriminden yalniz en yenisini (en buyuk date) tutar', async () => {
+      // Ayni vakit oneki (muhafiz_2026-02-13_vakit_ogle), farkli seviye/dk ekleri.
+      // date alanini deterministik ez: en yeni gosterilen kademe = en buyuk date.
+      const seviye2 = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_30'), date: 100 };
+      const seviye3 = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_3_dk_15'), date: 200 };
+      const seviye4 = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_4_dk_2'), date: 300 };
+
+      // Karisik sirayla ver (siralamanin kodda yapildigini ispatla)
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        seviye3,
+        seviye4,
+        seviye2,
+      ]);
+
+      await servis.sunulanEskiMuhafizBildirimleriniTemizle();
+
+      const dismissCalls = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls
+        .map((c: any[]) => c[0]);
+
+      // En yeni (date=300, seviye 4) korunmali
+      expect(dismissCalls).not.toContain('muhafiz_2026-02-13_vakit_ogle_seviye_4_dk_2');
+      // Iki eski kademe dismiss edilmeli
+      expect(dismissCalls).toContain('muhafiz_2026-02-13_vakit_ogle_seviye_3_dk_15');
+      expect(dismissCalls).toContain('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_30');
+      expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(2);
+    });
+
+    it('farkli vakitleri ayri gruplar; tek elemanli gruba ve muhafiz olmayana dokunmaz', async () => {
+      // ogle: iki kademe (eski dismiss, yeni tut)
+      const ogleEski = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_30'), date: 100 };
+      const ogleYeni = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_3_dk_15'), date: 200 };
+      // ikindi: tek eleman -> dokunulmamali
+      const ikindiTek = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ikindi_seviye_2_dk_30'), date: 150 };
+      // Muhafiz olmayan bir bildirim -> hic dokunulmamali (gruplama disinda kalir)
+      const sayac = { ...sunulanBildirimOlustur('vakit_sayac_v2_2026-02-13_ogle'), date: 999 };
+
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        ogleYeni,
+        ogleEski,
+        ikindiTek,
+        sayac,
+      ]);
+
+      await servis.sunulanEskiMuhafizBildirimleriniTemizle();
+
+      const dismissCalls = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls
+        .map((c: any[]) => c[0]);
+
+      // ogle grubunda yalniz en eskisi dismiss
+      expect(dismissCalls).toEqual(['muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_30']);
+      // ikindi tek elemanli grup -> dokunulmaz; yeni ogle ve sayac korunur
+      expect(dismissCalls).not.toContain('muhafiz_2026-02-13_vakit_ikindi_seviye_2_dk_30');
+      expect(dismissCalls).not.toContain('vakit_sayac_v2_2026-02-13_ogle');
+      expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ==================== GUN/AY SINIRINDA DUN-TARIHLI TEMIZLEME ====================
+  //
+  // vakitBildirimleriniKapat, hem bugunun hem de gunEkle(tarih, -1) ile
+  // hesaplanan DUNUN ayni vakit bildirimlerini dismiss eder. Ay sinirini
+  // gecen tarihlerde (ornek: 2026-03-01 -> 2026-02-28) dun onekinin dogru
+  // hesaplandigi ve eski bildirimin temizlendigi dogrulanir.
+  // Not: bu dosyada gunEkle, timezone-safe (yerel Date kurucusu) bir mock'la
+  // degistirildigi icin ay/yil sinir aritmetigi mock uzerinden dogrulanir;
+  // gercek gunEkle implementasyonunun sinir dogrulugu TarihYardimcisi.test.ts'e aittir.
+  describe('Ay sinirinda dun-tarihli muhafiz bildirimi temizleme', () => {
+    it('tarih ayin ilk gunuyse (2026-03-01) dunun (2026-02-28) bildirimini de temizler', async () => {
+      const yanit = muhafizYanitiOlustur('imsak', '2026-03-01');
+
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        sunulanBildirimOlustur('muhafiz_2026-03-01_vakit_imsak_seviye_2_dk_10'), // bugun
+        sunulanBildirimOlustur('muhafiz_2026-02-28_vakit_imsak_seviye_4_dk_2'), // dun (onceki ay)
+        // Ayni gunun farkli vakti -> KORUNMALI (imsak temizleniyor)
+        sunulanBildirimOlustur('muhafiz_2026-03-01_vakit_ogle_seviye_1_dk_45'),
+      ]);
+
+      let listenerCallback: Function;
+      (Notifications.addNotificationResponseReceivedListener as jest.Mock).mockImplementation(
+        (cb: Function) => {
+          listenerCallback = cb;
+          return { remove: jest.fn() };
+        }
+      );
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+
+      await servis.baslatBildirimDinleyicisi();
+      await listenerCallback!(yanit);
+
+      const dismissCalls = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls
+        .map((c: any[]) => c[0]);
+
+      // Bugun (mart 1) imsak temizlenmeli
+      expect(dismissCalls).toContain('muhafiz_2026-03-01_vakit_imsak_seviye_2_dk_10');
+      // Dun (subat 28) imsak da temizlenmeli — ay sinir aritmetigi dogru olmali
+      expect(dismissCalls).toContain('muhafiz_2026-02-28_vakit_imsak_seviye_4_dk_2');
+      // Ayni gunun farkli vakti korunmali
+      expect(dismissCalls).not.toContain('muhafiz_2026-03-01_vakit_ogle_seviye_1_dk_45');
+    });
+  });
+
+  // ==================== vakitKilindiTemizle HATA IZOLASYONU ====================
+  //
+  // vakitKilindiTemizle alt temizleme islemlerini Promise.allSettled ile kosar.
+  // Biri (or. ArkaplanMuhafizServisi.vakitBildirimleriniIptalEt) reject etse bile
+  // digerleri (vakit sayaci iptali + bildirim merkezinden dismiss) calismali ve
+  // metodun kendisi throw ETMEMELI. 'bir temizleme cokerse digerleri etkilenmesin'.
+  describe('vakitKilindiTemizle hata izolasyonu (Promise.allSettled)', () => {
+    it('ArkaplanMuhafizServisi.vakitBildirimleriniIptalEt reject etse de sayac iptali + dismiss calisir, throw olmaz', async () => {
+      // ArkaplanMuhafiz iptali bu cagride reddetsin
+      mockVakitBildirimleriniIptalEt.mockRejectedValueOnce(new Error('muhafiz iptal hatasi'));
+
+      // VakitSayac mock instance'ini yakala (calisip calismadigini dogrulamak icin)
+      const vakitSayacInstance = (
+        VakitSayacBildirimServisi.getInstance as jest.Mock
+      )();
+      const mockSayacIptal = vakitSayacInstance.vakitSayaciniIptalEt as jest.Mock;
+      mockSayacIptal.mockClear();
+
+      // Bildirim merkezinde dismiss edilecek aktif bir bildirim olsun
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'),
+      ]);
+
+      // Metot kendisi reject ETMEMELI
+      await expect(servis.vakitKilindiTemizle('ogle', '2026-02-13')).resolves.toBeUndefined();
+
+      // Muhafiz iptali cagrildi (ve reddetti) — yine de
+      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledWith('ogle');
+      // Sayac iptali izole sekilde calisti
+      expect(mockSayacIptal).toHaveBeenCalledWith('ogle');
+      // Bildirim merkezindeki ogle bildirimi yine de dismiss edildi
+      expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith(
+        'muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'
+      );
     });
   });
 });

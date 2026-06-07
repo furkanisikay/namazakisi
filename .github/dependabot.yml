@@ -1,0 +1,30 @@
+# Dependabot — bağımlılıkları ve GitHub Actions'ları otomatik güncel tutar.
+# Denetim önerisi: action'lar mutable major-tag'e pinli; Dependabot ile tedarik
+# zinciri izlenir ve güvenli güncellemeler PR olarak gelir.
+version: 2
+updates:
+  # GitHub Actions — workflow'lardaki action sürümlerini takip et
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # npm — devDependencies dahil bağımlılık güvenlik/sürüm güncellemeleri
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(deps)"
+    open-pull-requests-limit: 5
+    # Major sürümler kırıcı olabilir; bilinçli yükseltme için ayrı tutulur
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

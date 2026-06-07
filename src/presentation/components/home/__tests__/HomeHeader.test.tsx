@@ -135,4 +135,112 @@ describe('HomeHeader — Kademeli Ateş İkonu', () => {
     const json = JSON.stringify(tree!.toJSON());
     expect(json).toContain('1/3');
   });
+
+  // ilerleme === 0.5 SINIRI (1/2): kod `ilerleme < 0.5` ile amber, `< 1` ile
+  // turuncu ayırıyor. 0.5 TAM olarak `< 0.5` değildir → turuncu (#f97316) + 0.85.
+  // Eşik `<` yerine `<=` olarak kayarsa (regresyon) bu test FAIL eder; mevcut
+  // 1/3 ve 2/3 testleri 0.5 sınırına denk gelmediğinden bu kaymayı yakalayamaz.
+  it('toparlanma 1/2 (ilerleme === 0.5) → turuncu (amber DEĞİL), opacity 0.85', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(
+        <HomeHeader {...temelProps} toparlanmaModu={true} toparlanmaIlerleme={{ tamamlanan: 1, hedef: 2 }} />
+      );
+    });
+    expect(atesIkonRenginiAl(tree!)).toBe('#f97316');
+    expect(atesIkonRenginiAl(tree!)).not.toBe('#f59e0b'); // amber sınırın içinde DEĞİL
+    expect(seriButonOpacityAl(tree!, 'Toparlanma modu: 1/2 gün tamamlandı')).toBe(0.85);
+  });
+
+  // hedef === 0 SAVUNMA: kod `hedef > 0 ? tamamlanan/hedef : 0` ile sıfıra
+  // bölmeyi koruyor (NaN üretmemeli). ilerleme=0 → gri (#9ca3af) + 0.5.
+  // Guard kaldırılırsa 0/0 = NaN olur; NaN hiçbir karşılaştırmayı geçmez,
+  // son dala (tam alev #FF6B35) düşer ve bu test FAIL eder.
+  it('hedef === 0 (0/0) → sıfıra bölme korunur, gri + opacity 0.5', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(
+        <HomeHeader {...temelProps} toparlanmaModu={true} toparlanmaIlerleme={{ tamamlanan: 0, hedef: 0 }} />
+      );
+    });
+    expect(atesIkonRenginiAl(tree!)).toBe('#9ca3af');
+    expect(atesIkonRenginiAl(tree!)).not.toBe(SERI_RENKLERI.ATES); // NaN→tam alev sızıntısı yok
+    expect(seriButonOpacityAl(tree!, 'Toparlanma modu: 0/0 gün tamamlandı')).toBe(0.5);
+  });
+});
+
+describe('HomeHeader — Erişilebilirlik ve metin', () => {
+  /**
+   * Ağaçta verilen accessibilityLabel'a sahip en az bir node bulunduğunu doğrular.
+   * Hem seri butonu hem ateş ikonu aynı etiketi taşıdığından >=1 beklenir.
+   */
+  function etiketliDugumSayisi(tree: renderer.ReactTestRenderer, etiket: string): number {
+    return tree.root.findAll((n) => n.props?.accessibilityLabel === etiket).length;
+  }
+
+  // Görme engelli kullanıcı için kritik: normal seride buton 'Seri: N gün'
+  // etiketini taşımalı (toparlanma etiketi DEĞİL). Etiket metni üretim
+  // şablonundan (`Seri: ${streakGun} gün`) bozulursa bu test FAIL eder.
+  it('normal modda accessibilityLabel "Seri: 10 gün"', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => { tree = renderer.create(<HomeHeader {...temelProps} streakGun={10} />); });
+    expect(etiketliDugumSayisi(tree!, 'Seri: 10 gün')).toBeGreaterThan(0);
+    // Normal modda toparlanma etiketi SIZMAMALI.
+    expect(etiketliDugumSayisi(tree!, 'Toparlanma modu: 0/3 gün tamamlandı')).toBe(0);
+  });
+
+  // Toparlanma modunda etiket ilerleme metnini taşımalı; normal seri etiketi
+  // (örn. 'Seri: 10 gün') artık görünmemeli — ekran okuyucu yanlış bağlam vermez.
+  it('toparlanma modunda accessibilityLabel "Toparlanma modu: 1/3 gün tamamlandı"', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(
+        <HomeHeader {...temelProps} streakGun={10} toparlanmaModu={true} toparlanmaIlerleme={{ tamamlanan: 1, hedef: 3 }} />
+      );
+    });
+    expect(etiketliDugumSayisi(tree!, 'Toparlanma modu: 1/3 gün tamamlandı')).toBeGreaterThan(0);
+    expect(etiketliDugumSayisi(tree!, 'Seri: 10 gün')).toBe(0);
+  });
+
+  // streakGun ekrana '<N> Gün' olarak yansımalı (satır 148). Sayı yanlış
+  // prop'tan okunursa veya metin formatı bozulursa bu test FAIL eder.
+  it('streakGun ekrana "<N> Gün" olarak yazılır', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => { tree = renderer.create(<HomeHeader {...temelProps} streakGun={42} />); });
+    const json = JSON.stringify(tree!.toJSON());
+    expect(json).toContain('42');
+    expect(json).toContain('Gün');
+  });
+
+  // Tarih bağlam metni mantığı (satır 93): aktifGunMu en yüksek öncelik.
+  it('aktifGunMu=true → "Aktif Gün" gösterir (bugünden bağımsız)', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(<HomeHeader {...temelProps} aktifGunMu={true} bugunMu={false} />);
+    });
+    const json = JSON.stringify(tree!.toJSON());
+    expect(json).toContain('Aktif Gün');
+    expect(json).not.toContain('Seçili Tarih');
+  });
+
+  it('aktifGunMu yok + bugunMu=true → "Bugün" gösterir', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(<HomeHeader {...temelProps} bugunMu={true} />);
+    });
+    const json = JSON.stringify(tree!.toJSON());
+    expect(json).toContain('Bugün');
+    expect(json).not.toContain('Aktif Gün');
+    expect(json).not.toContain('Seçili Tarih');
+  });
+
+  it('aktifGunMu yok + bugunMu=false → "Seçili Tarih" gösterir', () => {
+    let tree: renderer.ReactTestRenderer;
+    act(() => {
+      tree = renderer.create(<HomeHeader {...temelProps} bugunMu={false} />);
+    });
+    const json = JSON.stringify(tree!.toJSON());
+    expect(json).toContain('Seçili Tarih');
+    expect(json).not.toContain('Aktif Gün');
+  });
 });

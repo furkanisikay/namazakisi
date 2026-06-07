@@ -62,6 +62,8 @@ jest.mock('adhan', () => {
 });
 
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
+import { PrayerTimes } from 'adhan';
+import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 
 /**
  * Planlanan bir bildirim cagrisindan dakika son-ekini (_dk_N) cikarir.
@@ -70,6 +72,43 @@ import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 const dkSonEkiniAl = (identifier: string): number => {
     const eslesme = identifier.match(/_dk_(\d+)$/);
     return eslesme ? parseInt(eslesme[1], 10) : NaN;
+};
+
+/**
+ * adhan PrayerTimes mock'unun varsayilan davranisini (modul yuklenirken kurulan)
+ * yeniden uretir. Bir test ozel vakitler kurduktan sonra bu helper ile geri donulur
+ * (jest.clearAllMocks implementasyonu SIFIRLAMAZ, yalniz cagri kayitlarini temizler).
+ *
+ * Varsayilan cizelge (su an = now):
+ *   fajr=now-4s, sunrise=now-3s, dhuhr=now-2s, asr=now-1s, maghrib=now, isha=now+30dk
+ * => yalniz 'aksam' (cikis=isha) gelecekte; tum planlama onun uzerinden olur.
+ */
+const varsayilanVakitleriKur = (): void => {
+    (PrayerTimes as jest.Mock).mockImplementation(() => {
+        const now = new Date();
+        return {
+            fajr: new Date(now.getTime() - 4 * 60 * 60 * 1000),
+            sunrise: new Date(now.getTime() - 3 * 60 * 60 * 1000),
+            dhuhr: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+            asr: new Date(now.getTime() - 1 * 60 * 60 * 1000),
+            maghrib: now,
+            isha: new Date(now.getTime() + 30 * 60 * 1000),
+        };
+    });
+};
+
+/**
+ * jest.clearAllMocks() yalniz cagri kayitlarini temizler; bir onceki testin
+ * KURDUGU mockImplementation/mockResolvedValue'lar SIZAR. Bu helper, paylasilan
+ * AsyncStorage ve bildirim mock'larini temiz varsayilanlara dondurur:
+ *   - getItem -> null (hicbir vakit kilinmamis, hicbir kilinan-listesi yok)
+ *   - getAllScheduledNotificationsAsync -> [] (planli bildirim yok)
+ */
+const varsayilanMocklariSifirla = (): void => {
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    (AsyncStorage.getItem as jest.Mock).mockReset().mockResolvedValue(null);
+    (AsyncStorage.setItem as jest.Mock).mockReset().mockResolvedValue(null);
+    (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockReset().mockResolvedValue([]);
 };
 
 describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
@@ -266,5 +305,344 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
             (c) => c[0].identifier?.includes('_vakit_aksam')
         ).length;
         expect(aksamSonra).toBe(0);
+    });
+});
+
+// ============================================================
+// Esikler: tek planlanabilir vakit (aksam) icin standart 4 seviye.
+// Cogu icerik/zamanlama testi bu sabiti paylasir.
+// ============================================================
+const STANDART_ESIKLER = {
+    seviye1: 25,
+    seviye1Siklik: 15,
+    seviye2: 20,
+    seviye2Siklik: 10,
+    seviye3: 15,
+    seviye3Siklik: 5,
+    seviye4: 10,
+    seviye4Siklik: 2,
+};
+
+describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        // Bir sonraki suite'in varsayilanla baslamasi icin implementasyonu geri al.
+        varsayilanVakitleriKur();
+    });
+
+    test('Seviye>=3 bildirimleri MAX oncelik + acil kanala, seviye<3 HIGH + normal kanala baglanir', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+        expect(bildirimler.length).toBeGreaterThan(0);
+
+        // Her bildirim icin seviye -> oncelik/kanal kontrati DOGRU olmali.
+        for (const b of bildirimler) {
+            const seviye: number = b.content.data.seviye;
+            if (seviye >= 3) {
+                expect(b.content.priority).toBe(Notifications.AndroidNotificationPriority.MAX);
+                expect(b.trigger.channelId).toBe('muhafiz_acil');
+            } else {
+                expect(b.content.priority).toBe(Notifications.AndroidNotificationPriority.HIGH);
+                expect(b.trigger.channelId).toBe('muhafiz');
+            }
+        }
+
+        // En az bir seviye<3 ve bir seviye>=3 ornegi gercekten uretilmis olmali
+        // (aksi halde dallardan biri hic dogrulanmamis sayilir).
+        const seviyeler = bildirimler.map((b) => b.content.data.seviye);
+        expect(seviyeler.some((s) => s < 3)).toBe(true);
+        expect(seviyeler.some((s) => s >= 3)).toBe(true);
+    });
+
+    test('Bildirim data alanlari (tip/seviye/vakit/tarih) ve kategori dogru doldurulur', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+        expect(bildirimler.length).toBeGreaterThan(0);
+
+        const bugun = bugunuAl();
+        for (const b of bildirimler) {
+            expect(b.content.categoryIdentifier).toBe('muhafiz_category');
+            expect(b.content.data.tip).toBe('muhafiz');
+            // Tek planlanabilir vakit 'aksam' ve bugune ait.
+            expect(b.content.data.vakit).toBe('aksam');
+            expect(b.content.data.tarih).toBe(bugun);
+            // data.seviye, identifier'daki _seviye_N ile tutarli olmali.
+            const seviyeEslesme = b.identifier.match(/_seviye_(\d+)_/);
+            expect(seviyeEslesme).not.toBeNull();
+            expect(b.content.data.seviye).toBe(parseInt(seviyeEslesme![1], 10));
+        }
+    });
+
+    test('Bildirim tetik zamani sayisal olarak (cikis - kalanDk*60s) ile birebir eslesir', async () => {
+        // 'aksam' cikisi (isha) = now + 30dk. Her bildirimin trigger.date'i
+        // tam olarak cikis - kalanDk*60sn olmali. Iki bildirimin (25dk ve 10dk)
+        // mutlak zaman farki tam (25-10)=15 dk olmali.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+        const zamanlar = new Map<number, number>();
+        for (const b of bildirimler) {
+            zamanlar.set(dkSonEkiniAl(b.identifier), new Date(b.trigger.date).getTime());
+        }
+
+        // cikis = trigger.date + kalanDk*60sn => her bildirim icin SABIT cikis turetilir.
+        const turetilenCikislar = [...zamanlar.entries()].map(([dk, ts]) => ts + dk * 60 * 1000);
+        const benzersizCikis = new Set(turetilenCikislar);
+        expect(benzersizCikis.size).toBe(1);
+
+        // 25dk ve 10dk bildirimleri arasindaki fark tam 15 dakika (900000 ms) olmali.
+        expect(zamanlar.has(25)).toBe(true);
+        expect(zamanlar.has(10)).toBe(true);
+        expect(zamanlar.get(25)! - zamanlar.get(10)!).toBe(-15 * 60 * 1000);
+        // (25dk kala olan, 10dk kala olandan 15 dk ONCE tetiklenir.)
+        expect(zamanlar.get(10)! - zamanlar.get(25)!).toBe(15 * 60 * 1000);
+    });
+});
+
+describe('ArkaplanMuhafizServisi - Aktif/pasif ve siklik savunmasi', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        varsayilanVakitleriKur();
+    });
+
+    test('aktif:false iken hicbir yeni bildirim planlanmaz, mevcut muhafiz bildirimleri iptal edilir', async () => {
+        // Onceden planlanmis 1 muhafiz + 1 alakasiz bildirim simule et.
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: 'muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20' },
+            { identifier: 'baska_bir_bildirim' },
+        ]);
+
+        await servis.yapilandirVePlanla({
+            aktif: false,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        // Hicbir yeni bildirim planlanmamali.
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+
+        // Yalniz muhafiz onekli eski bildirim iptal edilmeli; alakasiz olan KORUNMALI.
+        const iptalEdilenler = (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map(
+            (c) => c[0]
+        );
+        expect(iptalEdilenler).toContain('muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20');
+        expect(iptalEdilenler).not.toContain('baska_bir_bildirim');
+    });
+
+    test('siklik=0 iken (fark % 0 = NaN) hic bildirim atilmaz ve crash olmaz', async () => {
+        // Tum sikliklar 0 => uretimdeki `aktifSiklik > 0` kapisi her dakikada kapanir.
+        // Beklenti: cagri patlamaz ve 0 bildirim planlanir (baslangic dakikasi dahil).
+        await expect(
+            servis.yapilandirVePlanla({
+                aktif: true,
+                koordinatlar: { lat: 41.0, lng: 29.0 },
+                esikler: {
+                    seviye1: 25,
+                    seviye1Siklik: 0,
+                    seviye2: 20,
+                    seviye2Siklik: 0,
+                    seviye3: 15,
+                    seviye3Siklik: 0,
+                    seviye4: 10,
+                    seviye4Siklik: 0,
+                },
+            })
+        ).resolves.toBeUndefined();
+
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+    });
+});
+
+describe('ArkaplanMuhafizServisi - Gece yarisi: dun-yatsi gecisi', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        // Ozel (fajr=gelecek) vakitleri kurdugumuz icin varsayilana don.
+        varsayilanVakitleriKur();
+    });
+
+    test('imsak vaktinden ONCE iken dunun yatsisi DUN tarihine planlanir', async () => {
+        // Su an imsaktan once: fajr = now + 30dk (gelecek). Boylece uretim
+        // `simdi < bugunPrayerTimes.fajr` dalina girer ve dunun yatsisini
+        // (cikis = bugunun fajr'i) DUN tarihiyle ekler.
+        (PrayerTimes as jest.Mock).mockImplementation(() => {
+            const now = new Date();
+            return {
+                // imsak henuz girmedi: fajr gelecekte.
+                fajr: new Date(now.getTime() + 30 * 60 * 1000),
+                sunrise: new Date(now.getTime() + 90 * 60 * 1000),
+                dhuhr: new Date(now.getTime() + 5 * 60 * 60 * 1000),
+                asr: new Date(now.getTime() + 8 * 60 * 60 * 1000),
+                maghrib: new Date(now.getTime() + 11 * 60 * 60 * 1000),
+                // dunun yatsisi (giris) gecmiste olmali ki pencere makul olsun.
+                isha: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+            };
+        });
+
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            // fajr'a 30 dk var; bu pencerede en az birkac bildirim dussun diye genis esik.
+            esikler: STANDART_ESIKLER,
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+        const dun = dunuAl();
+
+        // Dun-yatsi bildirimleri: hem data.tarih hem identifier DUN tarihini tasimali.
+        const dunYatsiBildirimleri = bildirimler.filter(
+            (b) => b.content.data.vakit === 'yatsi' && b.content.data.tarih === dun
+        );
+        expect(dunYatsiBildirimleri.length).toBeGreaterThan(0);
+        for (const b of dunYatsiBildirimleri) {
+            // ID, dun tarihini ve yatsi vaktini icermeli (yanlislikla bugune yazilirsa FAIL).
+            expect(b.identifier).toContain(`muhafiz_${dun}_vakit_yatsi`);
+            // Tetik zamani gelecekte (henuz girmemis fajr'a dogru) olmali.
+            expect(new Date(b.trigger.date).getTime()).toBeGreaterThan(Date.now());
+        }
+
+        // Bugun tarihine yazilmis bir 'yatsi' bildirimi varsa bile, dun olani ayri
+        // identifier tasidigi icin karismamali: en az bir dun-yatsi mutlaka var.
+        const bugun = bugunuAl();
+        const yanlisTarihliDunYatsi = bildirimler.filter(
+            (b) => b.identifier.includes('_vakit_yatsi') && b.content.data.tarih === dun && b.identifier.includes(`muhafiz_${bugun}_`)
+        );
+        expect(yanlisTarihliDunYatsi.length).toBe(0);
+    });
+});
+
+describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)', () => {
+    let servis: ArkaplanMuhafizServisi;
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        varsayilanVakitleriKur();
+    });
+
+    test('vakitBildirimleriniIptalEt: o vaktin bildirimlerini iptal eder ve kilinani BUGUN tarihine yazar', async () => {
+        // Once muhafizi yapilandir ki this.ayarlar dolsun (vakitIcinDogruTarihiAl
+        // ayarsizken bugunuAl() doner; aksam zaten her durumda bugun).
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        // Planlanmis 2 aksam + 1 alakasiz bildirim simule et.
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: 'muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20' },
+            { identifier: 'muhafiz_2026-06-07_vakit_aksam_seviye_4_dk_10' },
+            { identifier: 'muhafiz_2026-06-07_vakit_ogle_seviye_1_dk_25' },
+        ]);
+        // setItem cagrisini gozlemlemek icin temizle (yapilandir asamasindaki cagrilar sayilmasin).
+        (AsyncStorage.setItem as jest.Mock).mockClear();
+        (Notifications.cancelScheduledNotificationAsync as jest.Mock).mockClear();
+        // kilinan listesi bos baslasin.
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+        await servis.vakitBildirimleriniIptalEt('aksam');
+
+        // Yalniz 'aksam' bildirimleri iptal edilmeli, 'ogle' korunmali.
+        const iptalEdilenler = (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map(
+            (c) => c[0]
+        );
+        expect(iptalEdilenler).toContain('muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20');
+        expect(iptalEdilenler).toContain('muhafiz_2026-06-07_vakit_aksam_seviye_4_dk_10');
+        expect(iptalEdilenler).not.toContain('muhafiz_2026-06-07_vakit_ogle_seviye_1_dk_25');
+
+        // Kilinan 'aksam', BUGUN tarihli anahtara yazilmali (gece-yarisi disindaki vakit).
+        const bugun = bugunuAl();
+        const beklenenAnahtar = `muhafiz_ayarlari_kilinan_${bugun}`;
+        const setItemCagrilari = (AsyncStorage.setItem as jest.Mock).mock.calls;
+        const kayit = setItemCagrilari.find((c: any[]) => c[0] === beklenenAnahtar);
+        expect(kayit).toBeDefined();
+        expect(JSON.parse(kayit![1])).toContain('aksam');
+    });
+
+    test('vakitKilindisiniGeriAl: kilinan listesinden cikarir ve bildirimleri YENIDEN planlar', async () => {
+        // this.ayarlar dolsun ki geri-alma sonrasi yeniden planlama tetiklensin.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            esikler: STANDART_ESIKLER,
+        });
+
+        const bugun = bugunuAl();
+        const kilinanAnahtar = `muhafiz_ayarlari_kilinan_${bugun}`;
+
+        // STATEFUL mock: geri-alma once `['aksam']` okur, sonra `[]` yazar; YENIDEN
+        // planlama sirasinda ayni anahtari tekrar OKUYUNCA artik bos donmeli ki
+        // 'aksam' tekrar planlanabilsin. Statik mock bunu yakalamaz; depo simule et.
+        const depo: Record<string, string> = { [kilinanAnahtar]: JSON.stringify(['aksam']) };
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) =>
+            Promise.resolve(key in depo ? depo[key] : null)
+        );
+        (AsyncStorage.setItem as jest.Mock).mockImplementation((key: string, deger: string) => {
+            depo[key] = deger;
+            return Promise.resolve(null);
+        });
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockClear();
+
+        await servis.vakitKilindisiniGeriAl('aksam');
+
+        // 1) 'aksam' kilinan listesinden cikarilmali (bos diziyle setItem).
+        const setItemCagrilari = (AsyncStorage.setItem as jest.Mock).mock.calls;
+        const geriAlmaKaydi = setItemCagrilari.find((c: any[]) => c[0] === kilinanAnahtar);
+        expect(geriAlmaKaydi).toBeDefined();
+        expect(JSON.parse(geriAlmaKaydi![1])).not.toContain('aksam');
+
+        // 2) Geri alma yeniden planlama tetikledigi icin (kilinan artik bos),
+        //    aksam bildirimleri TEKRAR planlanmali (>0).
+        const yenidenPlanlanan = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.filter(
+            (c) => c[0].identifier?.includes('_vakit_aksam')
+        ).length;
+        expect(yenidenPlanlanan).toBeGreaterThan(0);
     });
 });

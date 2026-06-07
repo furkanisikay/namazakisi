@@ -218,5 +218,167 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         jest.advanceTimersByTime(60 * 1000);
         expect(bildirimSpx).toHaveBeenCalled();
     });
+
+    // ── Seviye eşiği GEÇİŞ SINIRLARI (<= zinciri) ─────────────────────────────
+    // Üretim kontrolEt() <= ile zincirleme if/else kullanıyor:
+    //   kalanDk <= 5  -> L4,  <= 15 -> L3,  <= 30 -> L2,  <= 45 -> L1, aksi L0.
+    // Modulo kapısının seviye seçimini maskelememesi için TÜM sıklıkları 1 yaparız;
+    // böylece her seviye her dakika tetiklenir ve sadece <= sınırını test ederiz.
+    // < vs <= karışması (örn. L4 için `< 5`) bu testlerle ANINDA yakalanır.
+    describe.each([
+        [46, 0], // 46 > 45 -> hiçbir seviye, bildirim YOK
+        [45, 1], // tam üst sınır L1
+        [44, 1], // L1 iç
+        [31, 1], // L1 alt komşu (30'a girmeden)
+        [30, 2], // tam üst sınır L2
+        [16, 2], // L2 alt komşu (15'e girmeden)
+        [15, 3], // tam üst sınır L3
+        [6, 3],  // L3 alt komşu (5'e girmeden)
+        [5, 4],  // tam üst sınır L4
+        [4, 4],  // L4 iç
+    ])('Seviye sınır geçişi: %i dk kala', (kalanDk, beklenenSeviye) => {
+        test(`seviye ${beklenenSeviye} seçilmeli`, () => {
+            // Tüm sıklıkları 1 yap -> modulo kapısı seviye seçimini etkilemesin
+            muhafiz.yapilandir({
+                seviye1SiklikDk: 1,
+                seviye2SiklikDk: 1,
+                seviye3SiklikDk: 1,
+                seviye4SiklikDk: 1,
+            });
+
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: kalanDk * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            if (beklenenSeviye === 0) {
+                // 46 dk: hiçbir eşiğe girmediği için bildirim hiç gönderilmemeli
+                expect(bildirimSpx).not.toHaveBeenCalled();
+            } else {
+                expect(bildirimSpx).toHaveBeenCalledTimes(1);
+                const [, seviye] = bildirimSpx.mock.calls[0];
+                expect(seviye).toBe(beklenenSeviye);
+            }
+        });
+    });
+
+    test('Vakit DOLDUĞUNDA (kalanSureMs negatif) hâlâ Seviye 4 tetiklenir ve mesajda negatif dk gösterilir', () => {
+        // Gerçek getSuankiVakitBilgisi vakit çıkışında kalanSureMs'i NEGATİF döndürür.
+        // Math.floor(-120000/60000) = -2 -> -2 <= 5 -> L4 dalı, modulo bypass (aktifSeviye===4).
+        // Bu, mevcut fiziksel sınır davranışını sabitler: vakit dolmuşken muhafız susmaz,
+        // negatif dakika mesaja sızar. Üretim bu sınırı clamp'lemeye başlarsa test düşer (amaç bu).
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: -2 * 60 * 1000, // vakit 2 dk önce çıktı
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        const [mesaj, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(4);
+        expect(mesaj).toContain('VAKİT ÇIKIYOR');
+        expect(mesaj).toContain('-2 dk kaldı');
+    });
+
+    test('Vakit TAM DOLDUĞUNDA (kalanSureMs===0) Seviye 4 tetiklenir', () => {
+        // Sınır: 0 dk -> 0 <= 5 -> L4, mesaj "(0 dk kaldı)".
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 0,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        const [mesaj, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(4);
+        expect(mesaj).toContain('0 dk kaldı');
+    });
+
+    test('Sıklık modulo kapısı: Seviye 1 boyunca (45->31 dk) yalnızca 45 ve 30\'da tetiklenir, aradaki dakikalar ATLANIR', () => {
+        // Seviye1 sıklık 15: 45 % 15 === 0 -> tetiklenir; 44,43...31 -> atlanır;
+        // 30'a girince Seviye 2 (sıklık 10) ve 30 % 10 === 0 -> tetiklenir.
+        // Bu, "tam dk denk gelmezse atla" davranışını SABİTLER; refactor'da sessizce bozulamaz.
+        // Varsayılan config (beforeEach) zaten s1=15, s2=10 -> ekstra yapılandırma gerekmez.
+        const dakikalar = [45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30];
+        let idx = 0;
+        mockHesaplayici.getSuankiVakitBilgisi.mockImplementation(() => ({
+            vakit: 'ogle',
+            kalanSureMs: dakikalar[Math.min(idx, dakikalar.length - 1)] * 60 * 1000,
+        }));
+
+        // baslat() ilk kontrolEt'i hemen çağırır (idx=0 -> 45 dk)
+        muhafiz.baslat(bildirimSpx);
+        // Kalan dakikalar için her 60 sn'de bir tick
+        for (idx = 1; idx < dakikalar.length; idx++) {
+            jest.advanceTimersByTime(60 * 1000);
+        }
+
+        // 45 (L1, 45%15=0) ve 30 (L2, 30%10=0) -> tam 2 bildirim; aradaki 14 dakika atlanmalı
+        expect(bildirimSpx).toHaveBeenCalledTimes(2);
+        const seviyeler = bildirimSpx.mock.calls.map((c) => c[1]);
+        expect(seviyeler).toEqual([1, 2]);
+    });
+
+    test('Vakit DEĞİŞİMİNDE durum sıfırlanır: öğle kılındı işaretliyken ikindi vakti yeniden uyarır', () => {
+        // kilinanVakitler vakit-bazlı anahtar (tarih_vakit) tutar.
+        // 'ogle' kılındı işaretlenince 'ogle' susar; ama vakit 'ikindi'ye geçince
+        // farklı anahtar -> muhafız ikindi için tekrar uyarmalı. Aksi halde gün boyu
+        // tek bir kılınmış namaz tüm sonraki vakitleri sessizleştirirdi (kritik regresyon).
+        muhafiz.namazKilindiIsaretle('ogle');
+
+        // Önce öğle vakti: kılındı -> banner temizleme (seviye 0)
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 10 * 60 * 1000, // L3 aralığı ama kılındığı için susmalı
+        });
+        muhafiz.baslat(bildirimSpx);
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+
+        bildirimSpx.mockClear();
+
+        // Vakit ikindiye geçti: ikindi kılınmadı -> uyarı gelmeli (seviye 0 DEĞİL)
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ikindi',
+            kalanSureMs: 30 * 60 * 1000, // L2, 30 % 10 === 0 -> tetiklenir
+        });
+        jest.advanceTimersByTime(60 * 1000);
+
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        const [, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(2);
+    });
+
+    test('Gün değişiminde kılındı işareti sıfırlanır: ertesi gün aynı vakit yeniden uyarır', () => {
+        // namazKilindiIsaretle anahtarı new Date().toDateString() ile üretir.
+        // Dün işaretlenen 'ogle', BUGÜN aynı vakit için geçersiz olmalı (yeni gün = yeni anahtar).
+        // Sistem saatini sabit öğlen değerlerine DONDURUYORUZ ki CI gün-sınırında flaky olmasın.
+
+        // 1. gün: 15 Haziran 2026, öğlen (yerel kurucu)
+        jest.setSystemTime(new Date(2026, 5, 15, 12, 0, 0));
+        muhafiz.namazKilindiIsaretle('ogle');
+
+        // Aynı gün öğle vakti: işaretli -> banner temizle (seviye 0), uyarı yok
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 30 * 60 * 1000,
+        });
+        muhafiz.baslat(bildirimSpx);
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+
+        bildirimSpx.mockClear();
+
+        // 2. gün: 16 Haziran 2026, öğlen -> dünkü 'ogle' işareti artık geçersiz
+        jest.setSystemTime(new Date(2026, 5, 16, 12, 0, 0));
+        // Aynı 'ogle' vakti, kılınmamış yeni gün -> uyarı gelmeli (seviye 0 DEĞİL)
+        jest.advanceTimersByTime(60 * 1000);
+
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        const [, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(2); // 30 dk -> L2 (30 % 10 === 0)
+    });
 });
 

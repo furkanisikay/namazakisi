@@ -31,11 +31,34 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   stopAll: (...args: any[]) => mockStopAll(...args),
 }));
 
+// Kilinan vakit kaynagi mock'lanir; varsayilan olarak hicbir vakit kilinmamis.
+const mockKilinanVakitleriAl = jest.fn();
+jest.mock('../../../data/local/LocalNamazServisi', () => ({
+  kilinanVakitleriAl: (...args: any[]) => mockKilinanVakitleriAl(...args),
+}));
+
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 
 const OriginalDate = global.Date;
+
+/**
+ * Sistem saatini sabit bir ana DONDURUR (yalnizca arg'siz `new Date()` icin).
+ * Arg'li `new Date(...)` ve Date.now/parse/UTC orijinal davranisini korur ki
+ * adhan mock'unun urettigi sabit vakit Date'leri etkilenmesin.
+ */
+function saatiDondur(simdi: Date): void {
+  const MockDate = function (...args: any[]) {
+    if (args.length === 0) return simdi;
+    return new (Function.prototype.bind.apply(OriginalDate, [null, ...args] as any))();
+  } as any;
+  MockDate.now = () => simdi.getTime();
+  MockDate.parse = OriginalDate.parse;
+  MockDate.UTC = OriginalDate.UTC;
+  MockDate.prototype = OriginalDate.prototype;
+  global.Date = MockDate;
+}
 
 const mockPrayerTimes = {
   fajr: new Date('2026-02-19T04:00:00'),
@@ -58,6 +81,7 @@ describe('VakitSayacBildirimServisi', () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
     (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    mockKilinanVakitleriAl.mockResolvedValue([]);
     global.Date = OriginalDate;
   });
 
@@ -155,5 +179,154 @@ describe('VakitSayacBildirimServisi', () => {
 
     const bitisCalls = cancelCalls.filter((id: string) => id.endsWith('_bitis'));
     expect(bitisCalls.length).toBeGreaterThan(0);
+  });
+
+  it('iOS: yapilandirVePlanla erken donmeli, kanal/trigger/countdown OLUSTURULMAMALI', async () => {
+    const reactNative = jest.requireMock('react-native');
+    reactNative.Platform.OS = 'ios';
+    try {
+      const servis = VakitSayacBildirimServisi.getInstance();
+
+      await servis.yapilandirVePlanla({
+        aktif: true,
+        koordinatlar: { lat: 41, lng: 29 },
+        baslangicEsikDk: 30,
+      });
+
+      // iOS dalinda yalnizca temizleme calismali; hicbir yeni planlama yapilmamali
+      expect(notifee.createChannel).not.toHaveBeenCalled();
+      expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+      expect(mockStartCountdown).not.toHaveBeenCalled();
+    } finally {
+      // Diger testleri etkilememek icin Android'e geri don
+      reactNative.Platform.OS = 'android';
+    }
+  });
+
+  it('aktif:false: once temizleme calismali, ardindan hicbir yeni bildirim olusturulmamali', async () => {
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await servis.yapilandirVePlanla({
+      aktif: false,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    // Devre disi: temizleme tetiklenir (gosterilen bildirimler taranir) ...
+    expect(notifee.getDisplayedNotifications).toHaveBeenCalled();
+    // ... ama kanal acilmaz ve yeni hicbir sayac/temizleme trigger'i kurulmaz
+    expect(notifee.createChannel).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+  });
+
+  it('gece yarisi: imsak oncesinde (03:00) dunun yatsisi DUN tarihiyle, cikisi bugunun imsagi olmali', async () => {
+    // simdi imsaktan (fajr=04:00) once => dunun yatsisi hala aktif
+    saatiDondur(new OriginalDate('2026-02-19T03:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    const createCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
+    const idVar = (id: string) => createCalls.some((c: any[]) => c[0].id === id);
+
+    // Imsak oncesinde dunun yatsisi DUNE ait tarihle (2026-02-18) planlanmali.
+    // Bu, bugunun yatsisindan (2026-02-19) ayri bir entry'dir; kritik olan dun-tarihli
+    // entry'nin uretilmis olmasi (gece-donumu mantigi simdi < fajr dalini calistirir).
+    const yatsiDunId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-18_yatsi`;
+    expect(idVar(yatsiDunId)).toBe(true);
+
+    // Dun-yatsisinin cikisi BUGUNUN imsagi (fajr=04:00) olmali (gece-donumu sınırı)
+    const yatsiBitis = createCalls.find((c: any[]) => c[0].id === `${yatsiDunId}_bitis`);
+    expect(yatsiBitis).toBeDefined();
+    expect(yatsiBitis![1].timestamp).toBe(mockPrayerTimes.fajr.getTime());
+  });
+
+  it('kilinmis vakit atlanir: ogle kilinmissa ogle icin sayac/temizleme planlanmamali', async () => {
+    // Saati ogle oncesine sabitle ki ogle normalde planlanacak bir aday olsun
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+    // Bugun ogle kilinmis olarak dondur (dun icin bos kalir)
+    mockKilinanVakitleriAl.mockImplementation(async (tarih: string) =>
+      tarih === '2026-02-19' ? ['ogle'] : []
+    );
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const startIds = mockStartCountdown.mock.calls.map((c: any[]) => c[0].id as string);
+    const tumIds = [...createIds, ...startIds];
+
+    const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+    // Kilinmis ogle icin NE trigger NE de countdown / temizleme olusturulmamali
+    expect(tumIds).not.toContain(ogleId);
+    expect(tumIds).not.toContain(`${ogleId}_bitis`);
+    // Kilinmamis ikindi icin planlama yine de yapilmali (filtre fazla agresif degil)
+    const ikindiId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ikindi`;
+    expect(tumIds).toContain(ikindiId);
+  });
+
+  it('gecmis vakit atlanir: 19:00\'da yalnizca akSam (cikis 20:00 > simdi) planlanmali', async () => {
+    // 19:00: imsak(06)/ogle(15)/ikindi(18) cikislari gecmis; aksam cikisi (isha=20:00) gelecekte
+    saatiDondur(new OriginalDate('2026-02-19T19:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const startIds = mockStartCountdown.mock.calls.map((c: any[]) => c[0].id as string);
+    const tumIds = [...createIds, ...startIds];
+    const onek = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_`;
+
+    // Yalnizca aksam planlanmali
+    expect(tumIds).toContain(`${onek}aksam`);
+    expect(tumIds).not.toContain(`${onek}imsak`);
+    expect(tumIds).not.toContain(`${onek}ogle`);
+    expect(tumIds).not.toContain(`${onek}ikindi`);
+  });
+
+  it('esik araliginda: cikisa esikten az kala native countdown HEMEN dogru hedefle baslamali', async () => {
+    // 14:45: ogle cikisi asr=15:00, esik 30dk => sayacBaslangic 14:30 <= simdi => HEMEN baslar
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+    const ogleCountdown = mockStartCountdown.mock.calls.find((c: any[]) => c[0].id === ogleId);
+
+    // Native sayac CAGRILMALI ve hedefi tam vakit cikisi (asr=15:00) olmali
+    expect(ogleCountdown).toBeDefined();
+    expect(ogleCountdown![0].targetTimeMs).toBe(mockPrayerTimes.asr.getTime());
+    expect(ogleCountdown![0].channelId).toBe(BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC);
+
+    // Hemen baslayan sayac icin trigger (placeholder) DEGIL countdown kullanilmali
+    const ogleTrigger = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .find((c: any[]) => c[0].id === ogleId);
+    expect(ogleTrigger).toBeUndefined();
+
+    // Temizleme trigger'i ise yine de tam cikista (15:00) kurulmali
+    const ogleBitis = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .find((c: any[]) => c[0].id === `${ogleId}_bitis`);
+    expect(ogleBitis).toBeDefined();
+    expect(ogleBitis![1].timestamp).toBe(mockPrayerTimes.asr.getTime());
   });
 });

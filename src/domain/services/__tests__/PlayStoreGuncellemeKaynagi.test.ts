@@ -142,5 +142,50 @@ describe('PlayStoreGuncellemeKaynagi', () => {
 
       expect(sonuc.bilgi!.mevcutVersiyon).toBe(UYGULAMA.VERSIYON);
     });
+
+    it('availableVersionCode yokken yeniVersiyon "playstore" olur (fallback dalı)', async () => {
+      // Play Core bazı durumlarda yalnızca güncelleme VAR bilgisini verir,
+      // availableVersionCode'u VERMEZ. Üretim ternary'si:
+      //   yeniVersiyon: durum.availableVersionCode ? String(...) : 'playstore'
+      // Bu falsy dal hiç tetiklenmiyordu — burada açıkça doğrularız.
+      // Eğer ternary kaldırılıp String(undefined) yapılsaydı "undefined" olur,
+      // bu test FAIL ederdi.
+      mockKontrolEt.mockResolvedValue({
+        guncellemeMevcut: true,
+        // availableVersionCode bilerek YOK (undefined)
+      });
+
+      const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+      expect(sonuc.guncellemeMevcut).toBe(true);
+      expect(sonuc.bilgi).not.toBeNull();
+      expect(sonuc.bilgi!.yeniVersiyon).toBe('playstore');
+      // Fallback değeri yine de kullanıcıya çirkin teknik metin sızdırmaz
+      expect(sonuc.bilgi!.yeniVersiyon).not.toContain('undefined');
+      expect(sonuc.bilgi!.yeniVersiyon).not.toContain('versionCode');
+      // Etiket fallback'te de temiz kalmalı
+      expect(sonuc.bilgi!.yeniVersiyonEtiketi).toBe('Yeni sürüm');
+    });
+
+    it('Play Store güncellemesi ASLA zorunlu işaretlenmez (politika kontratı)', async () => {
+      // UX/policy garantisi: Play Core sürüm adı/changelog vermediğinden,
+      // kullanıcıyı zorunlu güncellemeye sokmak yanlış olur. availableVersionCode
+      // OLSA da OLMASA da zorunluMu daima false ve kaynak daima 'playstore' kalmalı.
+      // Üretimde biri zorunluMu: true yazarsa bu test (her iki senaryoda da) FAIL eder.
+      const senaryolar = [
+        { guncellemeMevcut: true, availableVersionCode: 28 },
+        { guncellemeMevcut: true }, // availableVersionCode yok
+      ];
+
+      for (const durum of senaryolar) {
+        mockKontrolEt.mockResolvedValue(durum);
+
+        const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+        expect(sonuc.bilgi).not.toBeNull();
+        expect(sonuc.bilgi!.zorunluMu).toBe(false);
+        expect(sonuc.bilgi!.kaynak).toBe('playstore');
+      }
+    });
   });
 });

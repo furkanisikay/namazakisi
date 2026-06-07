@@ -1,6 +1,7 @@
 import React from 'react';
 import { act } from 'react-test-renderer';
 import renderer from 'react-test-renderer';
+import { BackHandler, TouchableOpacity } from 'react-native';
 import { ToparlanmaModal } from '../ToparlanmaModal';
 
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
@@ -107,5 +108,97 @@ describe('ToparlanmaModal', () => {
     });
 
     expect(onKapat).toHaveBeenCalledTimes(1);
+  });
+
+  it('iç bottom-sheet tıklaması olayı durdurur ve onKapat çağırmaz (yanlışlıkla kapanma yok)', () => {
+    const onKapat = jest.fn();
+    const tree = modalOlustur({ onKapat });
+
+    // İç sheet, overlay'in onPress'inin balonlamasını durdurur; aksi halde sheet'e
+    // her dokunuş modalı kapatır (ToparlanmaModal.tsx:42-44). Bileşen-tipiyle (host
+    // çoğullaması olmadan) bul; iç sheet'i STİLİYLE seç (bottom-sheet'in kavisli üst
+    // köşesi = borderTopLeftRadius). onPress ile yoklamak overlay'in onKapat'ını tetikler,
+    // bu yüzden seçim yan-etkisiz olmalı.
+    const touchablelar = tree.root.findAllByType(TouchableOpacity);
+    const stiliDuzlestir = (stil: unknown): Record<string, unknown> =>
+      Object.assign({}, ...(Array.isArray(stil) ? stil : [stil]));
+    const icSheet = touchablelar.find(
+      (node) => stiliDuzlestir(node.props.style).borderTopLeftRadius === 20
+    );
+    expect(icSheet).toBeDefined();
+
+    const olay = { stopPropagation: jest.fn() };
+    act(() => {
+      icSheet!.props.onPress(olay);
+    });
+
+    // Sözleşme: sheet içine dokunmak olayı tüketir (stopPropagation) ve modalı KAPATMAZ.
+    expect(olay.stopPropagation).toHaveBeenCalledTimes(1);
+    expect(onKapat).not.toHaveBeenCalled();
+  });
+
+  it('toparlanmaDurumu ve oncekiSeri prop’ları ToparlanmaKarti’ya birebir aktarılır', () => {
+    const ozelDurum = {
+      tamamlananGun: 1,
+      hedefGunSayisi: 3,
+      baslangicTarihi: '2026-03-21',
+      oncekiSeri: 7,
+    };
+    const tree = modalOlustur({ toparlanmaDurumu: ozelDurum, oncekiSeri: 7 });
+
+    // ToparlanmaKarti mock'lu (string bileşen) → props doğrudan denetlenebilir.
+    // Yanlış prop adı/değeri ile geçirilirse (regresyon) kart yanlış veri gösterir.
+    const kart = tree.root.findByType('ToparlanmaKarti' as never);
+    expect(kart.props.toparlanmaDurumu).toBe(ozelDurum);
+    expect(kart.props.oncekiSeri).toBe(7);
+  });
+
+  it('Android donanım geri tuşu: modal görünürken onKapat çağrılır ve olay tüketilir', () => {
+    // New Architecture (Fabric) altında <Modal>.onRequestClose donanım geri tuşunda
+    // güvenilmez; bileşen bunu useDonanimGeriTusu(gorunur, onKapat) ile garanti eder
+    // (ToparlanmaModal.tsx:26, AGENTS.md "Kritik desenler"). Bu sözleşme regresyona açık.
+    let yakalananHandler: (() => boolean | void) | undefined;
+    const kaldir = jest.fn();
+    const ekleSpy = jest
+      .spyOn(BackHandler, 'addEventListener')
+      .mockImplementation((_olay, h) => {
+        yakalananHandler = h as () => boolean | void;
+        return { remove: kaldir } as never;
+      });
+
+    try {
+      const onKapat = jest.fn();
+      modalOlustur({ gorunur: true, onKapat });
+
+      // Modal görünürken hardwareBackPress dinleyicisi kaydedilmeli.
+      expect(ekleSpy).toHaveBeenCalledWith('hardwareBackPress', expect.any(Function));
+      expect(yakalananHandler).toBeDefined();
+
+      // Geri tuşuna basılması → onKapat tetiklenir, olay tüketilir (true döner →
+      // uygulamadan çıkmaz / navigasyon olmaz).
+      let donus: boolean | void = undefined;
+      act(() => {
+        donus = yakalananHandler?.();
+      });
+      expect(onKapat).toHaveBeenCalledTimes(1);
+      expect(donus).toBe(true);
+    } finally {
+      ekleSpy.mockRestore();
+    }
+  });
+
+  it('Android donanım geri tuşu: modal gizliyken (gorunur=false) dinleyici kaydedilmez', () => {
+    // Hook aktif=false iken erken döner (useDonanimGeriTusu.ts:22). Gizli modalın
+    // geri tuşunu yutmaması gerekir; aksi halde başka ekranların geri davranışı bozulur.
+    const ekleSpy = jest
+      .spyOn(BackHandler, 'addEventListener')
+      .mockImplementation(() => ({ remove: jest.fn() }) as never);
+
+    try {
+      modalOlustur({ gorunur: false });
+      expect(ekleSpy).not.toHaveBeenCalled();
+    } finally {
+      ekleSpy.mockRestore();
+    }
   });
 });
