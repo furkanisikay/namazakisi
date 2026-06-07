@@ -390,24 +390,36 @@ describe('TakvimServisi', () => {
         it('Android için geçerli IANA timeZone geçirir ("local" gibi geçersiz değer değil)', async () => {
             // Platform.OS mock'u 'android' → deviceTimeZone = Intl ile çözülen IANA tz.
             // Gotcha: 'local' geçersizdir; gerçek bir bölge/şehir IANA string olmalı.
-            const ayarlar = ayarlarOlustur({
-                kaciGunIlerisi: 1,
-                vakitAyarlari: {
-                    imsak:  vakit(true),
-                    ogle:   vakit(false),
-                    ikindi: vakit(false),
-                    aksam:  vakit(false),
-                    yatsi:  vakit(false),
-                },
-            });
+            // deviceTimeZone'u DETERMİNİSTİK kıl: Intl çözümünü sabit bir IANA tz'ye
+            // sabitliyoruz. CI runner UTC döndüğü için ortam tz'sine bağımlı kalmamalı
+            // (yoksa 'UTC' gibi '/'-içermeyen değerlerde test ortama göre patlar).
+            const intlSpy = jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(
+                () => ({ resolvedOptions: () => ({ timeZone: 'Europe/Istanbul' }) }) as unknown as Intl.DateTimeFormat
+            );
+            try {
+                const ayarlar = ayarlarOlustur({
+                    kaciGunIlerisi: 1,
+                    vakitAyarlari: {
+                        imsak:  vakit(true),
+                        ogle:   vakit(false),
+                        ikindi: vakit(false),
+                        aksam:  vakit(false),
+                        yatsi:  vakit(false),
+                    },
+                });
 
-            await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
+                await servis.takvimOlaylariOlustur(ayarlar as any, KOORDINAT);
 
-            const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
-            expect(typeof detay.timeZone).toBe('string');
-            expect(detay.timeZone).not.toBe('local');
-            // IANA tz kabaca "Bölge/Şehir" biçimindedir (en az bir '/' içerir)
-            expect(detay.timeZone).toMatch(/^[A-Za-z]+\/[A-Za-z_]+/);
+                const [, detay] = (mockCalendar.createEventAsync as jest.Mock).mock.calls[0];
+                expect(typeof detay.timeZone).toBe('string');
+                expect(detay.timeZone).not.toBe('local');
+                // IANA tz kabaca "Bölge/Şehir" biçimindedir (en az bir '/' içerir)
+                expect(detay.timeZone).toMatch(/^[A-Za-z]+\/[A-Za-z_]+/);
+                // Android dalı, Intl-çözümlü tz'yi createEventAsync'e birebir geçirmeli
+                expect(detay.timeZone).toBe('Europe/Istanbul');
+            } finally {
+                intlSpy.mockRestore();
+            }
         });
     });
 
