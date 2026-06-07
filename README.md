@@ -30,6 +30,10 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 *   **Kerahat Vakti:** Güneş doğuşu saatlerinde öğle namazı kartı pasif gösterilir, kerahat vakti ana ekranda belirtilir.
 *   **Canlı Vakit Sayacı:** Bir sonraki namaza veya vaktin bitimine kalan süreyi gerçek zamanlı olarak gösterir.
 
+### 📲 Ana Ekran Widget'ları
+*   **Uygulamayı Açmadan:** Bir sonraki vakti ve kalan süreyi telefonunuzun ana ekranından görün.
+*   **İki Boyut:** Kompakt ve geniş widget seçenekleri; gün içinde otomatik güncellenir.
+
 ### 🔔 'Muhafız' Bildirim Sistemi
 Sıradan bir alarm değil, sizi namaza kaldıran akıllı bir sistem:
 *   **4 Aşamalı Uyarı:** Vakit yaklaştıkça artan uyarı seviyeleri (*Hatırlatma -> Uyarı -> Mücadele -> Son Çağrı*).
@@ -41,6 +45,11 @@ Sıradan bir alarm değil, sizi namaza kaldıran akıllı bir sistem:
 ### 🕋 Kıble Pusulası
 *   **Gerçek Zamanlı Kıble:** Cihaz sensörleri ile Kabe yönünü anlık gösterir.
 
+### 📆 Takvim Entegrasyonu
+*   **Vakitler Takviminizde:** Seçtiğiniz namaz vakitlerini telefonunuzun takvimine otomatik etkinlik olarak ekleyin; günlük planınızı vakitlere göre yapın.
+*   **Vakit Başına Özelleştirme:** Her vakit için etkinliğin süresini ve başlangıcını (vakitte / çıkmadan önce / sonra) ayrı ayrı belirleyin.
+*   **İleriye Dönük & Seçici Temizlik:** Dilediğiniz kadar gün ileriye, o günün gerçek vakitleriyle etkinlik oluşturun; takvim, tarih aralığı ve vakit seçerek istediklerinizi kolayca temizleyin.
+
 ### 📅 Ramazan Modülü
 *   **İftar & Sahur Sayacı:** İftara veya sahura kalan süreyi ana ekranda takip edin.
 *   **Özel Sahur Teması:** Sahur sayacı için mor gradient teması ve özel görsel.
@@ -50,12 +59,14 @@ Sıradan bir alarm değil, sizi namaza kaldıran akıllı bir sistem:
 *   **Kaza Defteri:** Kılınamayan namazları tarihe göre kayıt altına alır; geçmişe dönük kaza takibi yapar.
 *   **Seri (Streak) Sistemi:** İbadet devamlılığınızı Zinciri Kırma metoduyla görselleştirin.
 *   **Oyunlaştırma:** İbadet performansınıza göre seviye atlayın ve rozetler kazanın. Vakit kartlarında puan göstergesi bulunur.
+*   **İstatistikler:** Başarı oranınızı, aktif gün sayınızı, toplam namazınızı ve haftalık dökümünüzü tek ekranda görün.
 *   **Paylaşım:** Rozet ve seri başarılarınızı, kutlama ekranından arkadaşlarınızla paylaşın.
 
 ### 🌙 Modern & Kullanıcı Dostu
 *   **Kurulum Sihirbazı:** İlk açılışta konum izni ve bildirim ayarlarını adım adım yapılandırır.
 *   **Otomatik Güncelleme:** Play Store'da yeni sürüm çıktığında uygulama içinden güncelleme teklif eder.
-*   **Göz Yormayan Arayüz:** Gece kullanıma uygun, şık Karanlık Mod.
+*   **6 Renk Paleti & Karanlık Mod:** Görünümü zevkinize göre kişiselleştirin (Zümrüt, Okyanus, Lavanta, Güneş, Mercan, Gece); gece kullanıma uygun şık Karanlık Mod ile göz yormayın.
+*   **Neler Yeni:** Her güncellemeyle gelen yenilikleri uygulama içindeki "Neler Yeni" ekranından takip edin.
 *   **Reklamsız & Sade:** Sizi ibadetten alıkoyacak hiçbir reklam veya dikkat dağıtıcı unsur içermez.
 
 ---
@@ -68,7 +79,7 @@ Modern mobil geliştirme standartları ile inşa edilmiştir:
 *   **State:** Redux Toolkit
 *   **Storage:** AsyncStorage (Yerel Veri Tabanı)
 *   **Styling:** NativeWind (TailwindCSS)
-*   **Engine:** Adhan.js, Notifee + Expo Notifications, Expo Task Manager
+*   **Engine:** Adhan.js, Notifee + Expo Notifications, Expo Calendar, Expo Task Manager
 *   **Test:** Jest + jest-expo (birim & entegrasyon testleri)
 
 ---
