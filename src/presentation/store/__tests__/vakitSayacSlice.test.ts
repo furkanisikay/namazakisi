@@ -55,6 +55,7 @@ describe('vakitSayacSlice', () => {
         });
 
         it('AsyncStorage dolu ise kayitli ayarlari yukler', async () => {
+            // Depoda seviye bilgisi YOK; uretim kodu seviyeyi 1'e default'lamali
             const kayitliAyarlar: VakitSayacAyarlari = { aktif: true };
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(kayitliAyarlar));
 
@@ -62,7 +63,37 @@ describe('vakitSayacSlice', () => {
             const state = store.getState().vakitSayac;
 
             expect(state.ayarlar.aktif).toBe(true);
+            // typeof-number kontrolu (slice satir 49-52): seviye gelmediginde 1'e dusmeli.
+            // Bu default dali kirilirsa (or. undefined birakilirsa) test FAIL eder.
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(1);
             expect(state.yukleniyor).toBe(false);
+        });
+
+        it('AsyncStorage dolu ise kayitli seviyeyi korur', async () => {
+            // Depoda gecerli bir seviye var; round-trip ile aynen korunmali
+            const kayitliAyarlar: VakitSayacAyarlari = { aktif: true, sayacBaslangicSeviyesi: 3 };
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(kayitliAyarlar));
+
+            await store.dispatch(vakitSayacAyarlariniYukle());
+            const state = store.getState().vakitSayac;
+
+            expect(state.ayarlar.aktif).toBe(true);
+            // Seviye 1'e zorla ezilirse (preserve dali kirilirsa) test FAIL eder.
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(3);
+            expect(state.yukleniyor).toBe(false);
+        });
+
+        it('AsyncStorage dolu ama seviye bozuk ise 1 e default lar', async () => {
+            // Bozuk (sayi olmayan) seviye degeri; typeof-number guard bunu 1'e cevirmeli
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+                JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 'bozuk' })
+            );
+
+            await store.dispatch(vakitSayacAyarlariniYukle());
+            const state = store.getState().vakitSayac;
+
+            expect(state.ayarlar.aktif).toBe(true);
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(1);
         });
 
         it('yukleme sirasinda yukleniyor true olmali', () => {
@@ -74,14 +105,56 @@ describe('vakitSayacSlice', () => {
             expect(state.hata).toBeNull();
         });
 
-        it('AsyncStorage hatasi durumunda varsayilan ayarlari doner', async () => {
+        it('AsyncStorage hatasi durumunda guvenli (kapali) varsayilana duser', async () => {
             (AsyncStorage.getItem as jest.Mock).mockRejectedValue(new Error('Storage error'));
+
+            // Thunk depo okunamasa bile reddetmemeli (fulfilled olmali);
+            // hata yutulup guvenli varsayilan doner.
+            const sonuc = await store.dispatch(vakitSayacAyarlariniYukle());
+            expect(sonuc.type).toBe(vakitSayacAyarlariniYukle.fulfilled.type);
+
+            const state = store.getState().vakitSayac;
+
+            // Sozlesme: depo okunamadiginda sayac ASLA acik kalmamali (guvenli taraf).
+            // catch dali aktif:true donerse veya istisnayi yukari sizdirirse test FAIL eder.
+            expect(state.ayarlar.aktif).toBe(false);
+            expect(state.yukleniyor).toBe(false);
+            // Hata yutuldugu icin slice hatasi set edilmemeli (rejected'a dusmemeli).
+            expect(state.hata).toBeNull();
+        });
+
+        it('Bozuk JSON durumunda guvenli (kapali) varsayilana duser', async () => {
+            // getItem gecerli string doner AMA gecersiz JSON; JSON.parse FIRLATIR.
+            // Bu, getItem reject'inden FARKLI bir yol (parse hatasi) -> ayni catch dali.
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue('{bozuk');
+
+            const sonuc = await store.dispatch(vakitSayacAyarlariniYukle());
+            // Parse hatasi yukari sizmamali; thunk yine fulfilled olmali.
+            expect(sonuc.type).toBe(vakitSayacAyarlariniYukle.fulfilled.type);
+
+            const state = store.getState().vakitSayac;
+
+            // Sozlesme: bozuk veri sayaci acmamali; catch guvenli varsayilana dusmeli.
+            // Parse try blogunda yer almazsa (or. parse disari tasarsa) test FAIL eder.
+            expect(state.ayarlar.aktif).toBe(false);
+            expect(state.hata).toBeNull();
+        });
+
+        it('Aralik disi (bozuk) sayisal seviyeyi oldugu gibi kabul eder (clamp yok)', async () => {
+            // Uretim yalnizca typeof === 'number' kontrol eder; aralik (1-4) dogrulamasi YOK.
+            // Bu bir karakterizasyon testi: bugunku davranis 'sayi ise oldugu gibi kabul'.
+            // Ileride clamp eklenirse bu test bilincli olarak kirilir (davranisi sabitler).
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+                JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 99 })
+            );
 
             await store.dispatch(vakitSayacAyarlariniYukle());
             const state = store.getState().vakitSayac;
 
-            expect(state.ayarlar.aktif).toBe(false);
-            expect(state.yukleniyor).toBe(false);
+            expect(state.ayarlar.aktif).toBe(true);
+            // 99 bir sayi oldugundan typeof-number guard'i gecer ve aynen korunur.
+            // Eger guard yanlislikla 99'u 1'e ezerse test FAIL eder.
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(99);
         });
     });
 
@@ -122,6 +195,63 @@ describe('vakitSayacSlice', () => {
             const state = store.getState().vakitSayac;
 
             expect(state.hata).toBeTruthy();
+        });
+
+        it('kismi guncelleme mevcut seviyeyi korur (merge)', async () => {
+            // Once depodan seviye 3 yukle (state.ayarlar.sayacBaslangicSeviyesi = 3)
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+                JSON.stringify({ aktif: false, sayacBaslangicSeviyesi: 3 })
+            );
+            await store.dispatch(vakitSayacAyarlariniYukle());
+
+            // Sonra YALNIZCA aktif'i guncelle; seviye dokunulmamali
+            (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+            await store.dispatch(vakitSayacAyariniGuncelle({ aktif: true }));
+            const state = store.getState().vakitSayac;
+
+            expect(state.ayarlar.aktif).toBe(true);
+            // Uretimdeki `...state.ayarlar` merge'i kaldirilirsa seviye undefined olur -> FAIL.
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(3);
+            // Kaydedilen payload da merge edilmis tam ayar olmali (seviye kaybolmamali).
+            expect(AsyncStorage.setItem).toHaveBeenLastCalledWith(
+                'vakit_sayac_ayarlari',
+                JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 3 })
+            );
+        });
+
+        it('sayacBaslangicSeviyesi guncellenir ve kaydedilir', async () => {
+            // Bu alan bildirim/muhafiz seviyesini yonettiginden state + depo eslesmeli.
+            (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
+
+            await store.dispatch(vakitSayacAyariniGuncelle({ sayacBaslangicSeviyesi: 4 }));
+            const state = store.getState().vakitSayac;
+
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(4);
+            // Baslangicta aktif:false idi; kismi guncelleme onu degistirmemeli (merge).
+            expect(state.ayarlar.aktif).toBe(false);
+            expect(AsyncStorage.setItem).toHaveBeenLastCalledWith(
+                'vakit_sayac_ayarlari',
+                JSON.stringify({ aktif: false, sayacBaslangicSeviyesi: 4 })
+            );
+        });
+
+        it('kaydetme hatasinda mevcut ayarlar bozulmaz', async () => {
+            // Once gecerli bir ayar yukle (seviye 2, aktif:true)
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(
+                JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 2 })
+            );
+            await store.dispatch(vakitSayacAyarlariniYukle());
+
+            // Simdi kaydetme basarisiz olsun
+            (AsyncStorage.setItem as jest.Mock).mockRejectedValue(new Error('Save error'));
+            await store.dispatch(vakitSayacAyariniGuncelle({ aktif: false, sayacBaslangicSeviyesi: 1 }));
+            const state = store.getState().vakitSayac;
+
+            expect(state.hata).toBeTruthy();
+            // rejected reducer ayarlar'a DOKUNMAZ; basarisiz kayit eski ayari korumali.
+            // rejected dali yanlislikla payload uygularsa (or. ayarlar = action.payload) test FAIL eder.
+            expect(state.ayarlar.aktif).toBe(true);
+            expect(state.ayarlar.sayacBaslangicSeviyesi).toBe(2);
         });
     });
 });

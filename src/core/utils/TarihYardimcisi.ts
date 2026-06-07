@@ -34,6 +34,13 @@ export const bugunuAl = (): string => {
 };
 
 /**
+ * Dunun tarihini ISO formatinda dondurur (yyyy-MM-dd)
+ */
+export const dunuAl = (): string => {
+  return gunEkle(bugunuAl(), -1);
+};
+
+/**
  * Tarihe gun ekler/cikarir
  */
 export const gunEkle = (isoTarih: string, gunSayisi: number): string => {

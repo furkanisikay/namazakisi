@@ -21,6 +21,8 @@ import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { muhafizAyarlariniGuncelle, HATIRLATMA_PRESETLERI } from '../store/muhafizSlice';
 import { useFeedback } from '../../core/feedback';
+import { useKonumMetni } from '../hooks/useKonumMetni';
+import { SayisalSecici } from '../components/common/SayisalSecici';
 
 /**
  * Seviye renkleri
@@ -42,88 +44,8 @@ const SEVIYE_BILGILERI = [
     { id: 'seviye4', baslik: 'Acil Alarm', ikonAdi: 'exclamation-circle', renk: SEVIYE_RENKLERI.seviye4, minEsik: 1, maxEsik: 15 },
 ];
 
-// Throttle süresi (ms)
-const THROTTLE_SURESI = 100;
 
-/**
- * Numerik Up/Down Komponenti Props
- */
-interface SayisalSeciciProps {
-    deger: number;
-    min: number;
-    max: number;
-    adim?: number;
-    birim?: string;
-    onChange: (yeniDeger: number) => void;
-    renk: string;
-}
-
-/**
- * Numerik Up/Down Komponenti
- */
-const SayisalSecici: React.FC<SayisalSeciciProps> = ({
-    deger,
-    min,
-    max,
-    adim = 1,
-    birim = 'dk',
-    onChange,
-    renk,
-}) => {
-    const renkler = useRenkler();
-    const sonTiklamaRef = useRef<number>(0);
-
-    const throttleKontrol = useCallback((): boolean => {
-        const simdi = Date.now();
-        if (simdi - sonTiklamaRef.current < THROTTLE_SURESI) {
-            return false;
-        }
-        sonTiklamaRef.current = simdi;
-        return true;
-    }, []);
-
-    const azalt = useCallback(() => {
-        if (!throttleKontrol()) return;
-        const yeni = Math.max(min, deger - adim);
-        onChange(yeni);
-    }, [deger, min, adim, onChange, throttleKontrol]);
-
-    const artir = useCallback(() => {
-        if (!throttleKontrol()) return;
-        const yeni = Math.min(max, deger + adim);
-        onChange(yeni);
-    }, [deger, max, adim, onChange, throttleKontrol]);
-
-    return (
-        <View className="flex-row items-center rounded-lg overflow-hidden border" style={{ borderColor: renkler.sinir }}>
-            <TouchableOpacity
-                className="w-9 h-9 items-center justify-center"
-                style={{ backgroundColor: deger <= min ? renkler.sinir : renk }}
-                onPress={azalt}
-                disabled={deger <= min}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="minus" size={12} color="#FFF" />
-            </TouchableOpacity>
-            <View
-                className="px-3 h-9 items-center justify-center flex-row min-w-[90px]"
-                style={{ backgroundColor: renkler.kartArkaplan }}
-            >
-                <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{deger}</Text>
-                <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{birim}</Text>
-            </View>
-            <TouchableOpacity
-                className="w-9 h-9 items-center justify-center"
-                style={{ backgroundColor: deger >= max ? renkler.sinir : renk }}
-                onPress={artir}
-                disabled={deger >= max}
-                activeOpacity={0.7}
-            >
-                <FontAwesome5 name="plus" size={12} color="#FFF" />
-            </TouchableOpacity>
-        </View>
-    );
-};
+// SayisalSecici artik ../components/common/SayisalSecici icinde (paylasilan).
 
 /**
  * Bildirim bilgisi tipi
@@ -346,24 +268,8 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const { butonTiklandiFeedback } = useFeedback();
     const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
     const konumAyarlari = useAppSelector((state) => state.konum);
+    const konumMetni = useKonumMetni(konumAyarlari);
 
-    /**
-     * Konum metnini olustur
-     */
-    const konumMetniOlustur = (): string => {
-        if (konumAyarlari.konumModu === 'oto') {
-            if (konumAyarlari.gpsAdres) {
-                const { ilce, il } = konumAyarlari.gpsAdres;
-                if (ilce && il) return `${ilce}, ${il}`;
-                return ilce || il || 'GPS konumu';
-            }
-            return 'GPS aktif';
-        }
-        if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
-            return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
-        }
-        return konumAyarlari.seciliIlAdi || 'Konum secilmedi';
-    };
 
     /**
      * Son GPS guncelleme zamanini kisa formatla
@@ -497,7 +403,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                     KONUM {sonGuncellemeKisaMetin() && `• ${sonGuncellemeKisaMetin()}`}
                                 </Text>
                                 <Text className="text-base font-semibold mt-0.5" style={{ color: renkler.metin }}>
-                                    {konumMetniOlustur()}
+                                    {konumMetni}
                                 </Text>
                             </View>
                         </View>

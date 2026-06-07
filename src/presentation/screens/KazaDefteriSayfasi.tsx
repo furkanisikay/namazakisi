@@ -36,6 +36,7 @@ import {
   motivasyonOnerileriHesapla,
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { SayiGirisModali } from '../components/common/SayiGirisModali';
 
 // ==================== TİPLER ====================
 
@@ -556,152 +557,43 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* ==================== MODALLER ==================== */}
 
       {/* BORÇ EKLE MODAL */}
-      <Modal
-        visible={aktifModal?.tip === 'borcEkle'}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setAktifModal(null)}
-      >
-        <KeyboardAvoidingView
-          style={styles.modalArkaPlan}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View style={[styles.modalKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
-            <Text style={[styles.modalBaslik, { color: renkler.metin }]}>
-              Borç Ekle —{' '}
-              {aktifModal?.tip === 'borcEkle' ? aktifModal.namazAdi : ''}
-            </Text>
-            <Text style={[styles.modalAciklama, { color: renkler.metinIkincil }]}>
-              Kaç kaza eklenmesini istiyorsunuz?
-            </Text>
-            <TextInput
-              style={[
-                styles.modalInput,
-                { borderColor: renkler.sinir, color: renkler.metin, backgroundColor: renkler.arkaplan },
-              ]}
-              keyboardType="number-pad"
-              placeholder="Örn: 100"
-              placeholderTextColor={renkler.metinIkincil}
-              value={modalGirdi}
-              onChangeText={setModalGirdi}
-              autoFocus
-            />
-            <View style={styles.modalButonlar}>
-              <TouchableOpacity
-                onPress={() => { setAktifModal(null); setModalGirdi(''); }}
-                style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
-              >
-                <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleBorcEkleGonder}
-                style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
-              >
-                <Text style={styles.modalOnayMetin}>Ekle</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <SayiGirisModali
+        gorunur={aktifModal?.tip === 'borcEkle'}
+        baslik={`Borç Ekle — ${aktifModal?.tip === 'borcEkle' ? aktifModal.namazAdi : ''}`}
+        aciklama="Kaç kaza eklenmesini istiyorsunuz?"
+        placeholder="Örn: 100"
+        onayMetni="Ekle"
+        deger={modalGirdi}
+        onDegisim={setModalGirdi}
+        onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
+        onOnay={handleBorcEkleGonder}
+      />
 
       {/* TOPLU TAMAMLA MODAL */}
-      <Modal
-        visible={aktifModal?.tip === 'topluTamamla'}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setAktifModal(null)}
-      >
-        <KeyboardAvoidingView
-          style={styles.modalArkaPlan}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View style={[styles.modalKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
-            <Text style={[styles.modalBaslik, { color: renkler.metin }]}>
-              Toplu Tamamla
-              {aktifModal?.tip === 'topluTamamla' && aktifModal.namazAdi
-                ? ` — ${aktifModal.namazAdi}`
-                : ''}
-            </Text>
-            <Text style={[styles.modalAciklama, { color: renkler.metinIkincil }]}>
-              Kaç kaza kıldınız?
-            </Text>
-            <TextInput
-              style={[
-                styles.modalInput,
-                { borderColor: renkler.sinir, color: renkler.metin, backgroundColor: renkler.arkaplan },
-              ]}
-              keyboardType="number-pad"
-              placeholder="Örn: 5"
-              placeholderTextColor={renkler.metinIkincil}
-              value={modalGirdi}
-              onChangeText={setModalGirdi}
-              autoFocus
-            />
-            <View style={styles.modalButonlar}>
-              <TouchableOpacity
-                onPress={() => { setAktifModal(null); setModalGirdi(''); }}
-                style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
-              >
-                <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleTopluTamamlaGonder}
-                style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
-              >
-                <Text style={styles.modalOnayMetin}>Kaydet</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <SayiGirisModali
+        gorunur={aktifModal?.tip === 'topluTamamla'}
+        baslik={aktifModal?.tip === 'topluTamamla' && aktifModal.namazAdi ? `Toplu Tamamla — ${aktifModal.namazAdi}` : 'Toplu Tamamla'}
+        aciklama="Kaç kaza kıldınız?"
+        placeholder="Örn: 5"
+        onayMetni="Kaydet"
+        deger={modalGirdi}
+        onDegisim={setModalGirdi}
+        onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
+        onOnay={handleTopluTamamlaGonder}
+      />
 
       {/* GÜNLÜK HEDEF MODAL */}
-      <Modal
-        visible={aktifModal?.tip === 'gunlukHedef'}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setAktifModal(null)}
-      >
-        <KeyboardAvoidingView
-          style={styles.modalArkaPlan}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <View style={[styles.modalKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
-            <Text style={[styles.modalBaslik, { color: renkler.metin }]}>
-              Günlük Hedef
-            </Text>
-            <Text style={[styles.modalAciklama, { color: renkler.metinIkincil }]}>
-              Günlük kaç kaza kılmayı hedefliyorsunuz? (0 = hedefsiz)
-            </Text>
-            <TextInput
-              style={[
-                styles.modalInput,
-                { borderColor: renkler.sinir, color: renkler.metin, backgroundColor: renkler.arkaplan },
-              ]}
-              keyboardType="number-pad"
-              placeholder="Örn: 3"
-              placeholderTextColor={renkler.metinIkincil}
-              value={modalGirdi}
-              onChangeText={setModalGirdi}
-              autoFocus
-            />
-            <View style={styles.modalButonlar}>
-              <TouchableOpacity
-                onPress={() => { setAktifModal(null); setModalGirdi(''); }}
-                style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
-              >
-                <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleGunlukHedefGonder}
-                style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
-              >
-                <Text style={styles.modalOnayMetin}>Kaydet</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <SayiGirisModali
+        gorunur={aktifModal?.tip === 'gunlukHedef'}
+        baslik="Günlük Hedef"
+        aciklama="Günlük kaç kaza kılmayı hedefliyorsunuz? (0 = hedefsiz)"
+        placeholder="Örn: 3"
+        onayMetni="Kaydet"
+        deger={modalGirdi}
+        onDegisim={setModalGirdi}
+        onIptal={() => { setAktifModal(null); setModalGirdi(''); }}
+        onOnay={handleGunlukHedefGonder}
+      />
 
       {/* SİHİRBAZ MODAL */}
       <Modal

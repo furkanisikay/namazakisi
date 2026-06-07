@@ -127,4 +127,74 @@ describe('KibleSayfasi', () => {
     const { getByText } = render(<KibleSayfasi />);
     expect(getByText('Pusula başlatılıyor...')).toBeTruthy();
   });
+
+  // hizalandiMi gostergesi: NativePusulaView'de uygulamanin cekirdek vaadi.
+  // Uretim mantigi: hizalandiMi = hedefAcisi < 10 || hedefAcisi > 350 (KIBLE_HIZALAMA_ESIGI = 10).
+  // hedefAcisi 0 = telefon Kabe'ye dönük demektir; bu esik o aninda kullaniciya geri bildirim verir.
+  describe('Kıble hizalama göstergesi (✓ Kıble yönündesiniz)', () => {
+    const kibleVarsayilan = {
+      kibleAcisi: 150,
+      pusulaYonelimi: 0,
+      izinVerildi: true,
+      yukleniyor: false,
+      hata: null,
+    };
+
+    it('hedefAcisi eşik altında (5°) iken hizalama mesajını göstermelidir', () => {
+      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 5 });
+      const { getByText } = render(<KibleSayfasi />);
+      expect(getByText('✓ Kıble yönündesiniz')).toBeTruthy();
+    });
+
+    it('hedefAcisi üst eşik üstünde (358°) iken hizalama mesajını göstermelidir (0/360 sınırı)', () => {
+      // 358 > (360 - 10) dalini korur; modüler sarma sonrasi Kabe'ye yakinligi dogru yakalanmali.
+      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 358 });
+      const { getByText } = render(<KibleSayfasi />);
+      expect(getByText('✓ Kıble yönündesiniz')).toBeTruthy();
+    });
+
+    it('hedefAcisi eşik dışında (150°) iken hizalama mesajını GÖSTERMEMELİDİR', () => {
+      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 150 });
+      const { queryByText } = render(<KibleSayfasi />);
+      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
+    });
+
+    it('hedefAcisi tam eşikte (10°) iken hizalama mesajını GÖSTERMEMELİDİR (< katı eşitsizlik)', () => {
+      // Uretim `hedefAcisi < 10` kullanir; 10 esik DAHIL DEGIL. < yerine <= regresyonu burada yakalanir.
+      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 10 });
+      const { queryByText } = render(<KibleSayfasi />);
+      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
+    });
+
+    it('hedefAcisi tam üst eşikte (350°) iken hizalama mesajını GÖSTERMEMELİDİR (> katı eşitsizlik)', () => {
+      // Uretim `hedefAcisi > 350` kullanir; 350 esik DAHIL DEGIL. > yerine >= regresyonu burada yakalanir.
+      (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 350 });
+      const { queryByText } = render(<KibleSayfasi />);
+      expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
+    });
+  });
+
+  // Kabe gostergesi ve Kabe Acisi degeri: NativePusulaView, kullaniciya kibleAcisi'ni
+  // "Kabe Açısı: {Math.round(kibleAcisi)}°" olarak gosterir ve kaaba ikonunu render eder.
+  describe('Kabe göstergesi ve açı gösterimi', () => {
+    it('Kabe açısını Math.round ile yuvarlayarak göstermelidir', () => {
+      // 151.62 -> 152 (yuvarlama yukari). Yanlis yuvarlama/format regresyonu yakalanir.
+      (useKible as jest.Mock).mockReturnValue({
+        kibleAcisi: 151.62,
+        pusulaYonelimi: 0,
+        hedefAcisi: 151.62,
+        izinVerildi: true,
+        yukleniyor: false,
+        hata: null,
+      });
+      const { getByText } = render(<KibleSayfasi />);
+      expect(getByText('Kabe Açısı: 152°')).toBeTruthy();
+    });
+
+    it('Kabe yön ikonunu (kaaba) render etmelidir', () => {
+      const { getByText } = render(<KibleSayfasi />);
+      // Mock FontAwesome5, ikonu name metni olarak render eder; kaaba gostergesinin varligini dogrular.
+      expect(getByText('kaaba')).toBeTruthy();
+    });
+  });
 });

@@ -3,6 +3,7 @@
  * Redux state yonetimi icin birim testleri
  */
 
+import { configureStore } from '@reduxjs/toolkit';
 import konumReducer, {
     konumAyarlariniGuncelle,
     koordinatlariGuncelle,
@@ -10,6 +11,8 @@ import konumReducer, {
     yuklemeDurumunuAyarla,
     konumStateSifirla,
     konumAyarlariniYukle,
+    konumAyarlariniKaydetAsync,
+    konumVerileriniTemizleAsync,
     KonumState,
     KonumModu,
     GpsAdres,
@@ -123,6 +126,14 @@ describe('konumSlice', () => {
                 '@namaz_akisi/konum_ayarlari',
                 expect.any(String)
             );
+
+            // Kaydedilen icerigi dogrula: gercek veri persist edildi mi
+            const [anahtar, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            expect(anahtar).toBe('@namaz_akisi/konum_ayarlari');
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen.konumModu).toBe('oto');
+            // Transient 'yukleniyor' alani storage'a sizmamali (reducer ayikliyor)
+            expect(kaydedilen.yukleniyor).toBeUndefined();
         });
     });
 
@@ -140,20 +151,40 @@ describe('konumSlice', () => {
     });
 
     describe('gpsAdresiniGuncelle', () => {
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
         it('GPS adresini guncellemeli', () => {
+            // Saati sabitle: yan etki olan sonGpsGuncellemesi mutlak degerle dogrulanabilsin
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2026-01-17T12:00:00.000Z'));
+
             const yeniAdres: GpsAdres = { semt: 'Alsancak', ilce: 'Konak', il: 'İzmir' };
             const state = konumReducer(varsayilanState, gpsAdresiniGuncelle(yeniAdres));
 
             expect(state.gpsAdres?.semt).toBe('Alsancak');
             expect(state.gpsAdres?.ilce).toBe('Konak');
             expect(state.gpsAdres?.il).toBe('İzmir');
+
+            // Adres set edildiginde sonGpsGuncellemesi YAN ETKI olarak guncellenmeli
+            // (uretim: payload truthy ise new Date().toISOString())
+            expect(varsayilanState.sonGpsGuncellemesi).toBeNull();
+            expect(state.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
         });
 
         it('GPS adresini null yapabilmeli', () => {
-            const oncekiState = { ...varsayilanState, gpsAdres: { semt: 'Test', ilce: 'Test', il: 'Test' } };
+            // Onceki state'te gecerli bir timestamp tohumla; null payload bunu KORUMALI
+            const oncekiState: KonumState = {
+                ...varsayilanState,
+                gpsAdres: { semt: 'Test', ilce: 'Test', il: 'Test' },
+                sonGpsGuncellemesi: '2026-01-17T12:00:00.000Z',
+            };
             const state = konumReducer(oncekiState, gpsAdresiniGuncelle(null));
 
             expect(state.gpsAdres).toBeNull();
+            // Adres null'lanırken zaman damgasi DEGISMEMELI (uretim: payload falsy -> set etme)
+            expect(state.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
         });
     });
 
@@ -310,6 +341,199 @@ describe('konumSlice', () => {
 
             expect(state.koordinatlar.lat).toBeCloseTo(39.9334);
             expect(state.gpsAdres?.il).toBe('Ankara');
+        });
+    });
+
+    // Gercek thunk govdesini calistirmak icin RTK store kur.
+    // Boylece getState/dispatch/async akis (sadece elle action degil) test edilir.
+    const storeOlustur = () =>
+        configureStore({
+            reducer: { konum: konumReducer },
+        });
+
+    describe('konumAyarlariniKaydetAsync (gercek thunk akisi)', () => {
+        it('mevcut ayarlari payload ile birlestirip storage\'a yazmali ve state\'i guncellemeli', async () => {
+            const store = storeOlustur();
+
+            // Baslangic: varsayilan (Istanbul, manuel). Sadece bir alt kume gonder.
+            await store.dispatch(
+                konumAyarlariniKaydetAsync({ konumModu: 'oto', seciliIlAdi: 'Ankara' })
+            );
+
+            const state = store.getState().konum;
+            // Payload uygulandi
+            expect(state.konumModu).toBe('oto');
+            expect(state.seciliIlAdi).toBe('Ankara');
+            // Gonderilmeyen alanlar mevcut ayarlardan KORUNDU (merge dogrulugu)
+            expect(state.seciliIlId).toBe(34);
+            expect(state.koordinatlar.lat).toBeCloseTo(41.0082);
+
+            // Storage'a, birlestirilmis ayar yazildi
+            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+                '@namaz_akisi/konum_ayarlari',
+                expect.any(String)
+            );
+            const sonCagri = (AsyncStorage.setItem as jest.Mock).mock.calls.at(-1);
+            const kaydedilen = JSON.parse(sonCagri[1]);
+            expect(kaydedilen.konumModu).toBe('oto');
+            expect(kaydedilen.seciliIlAdi).toBe('Ankara');
+            expect(kaydedilen.seciliIlId).toBe(34);
+            // Transient 'yukleniyor' alani hem mevcut hem yeni ayardan stripleniyor
+            expect(kaydedilen.yukleniyor).toBeUndefined();
+        });
+
+        it('fulfilled state\'e yukleniyor alanini sizdirmamali (storage temiz kalmali)', async () => {
+            const store = storeOlustur();
+            // yukleniyor:true tohumla (pending), sonra kaydet -> yukleniyor storage'a gitmemeli
+            store.dispatch(yuklemeDurumunuAyarla(true));
+
+            await store.dispatch(konumAyarlariniKaydetAsync({ seciliIlAdi: 'Bursa' }));
+
+            const sonCagri = (AsyncStorage.setItem as jest.Mock).mock.calls.at(-1);
+            const kaydedilen = JSON.parse(sonCagri[1]);
+            expect(kaydedilen.yukleniyor).toBeUndefined();
+            expect(kaydedilen.seciliIlAdi).toBe('Bursa');
+        });
+
+        it('storage yazimi basarisiz olursa (setItem reject) state BOZULMAMALI', async () => {
+            const store = storeOlustur();
+            (AsyncStorage.setItem as jest.Mock).mockRejectedValueOnce(new Error('disk dolu'));
+
+            const sonuc = await store.dispatch(
+                konumAyarlariniKaydetAsync({ konumModu: 'oto', seciliIlAdi: 'Ankara' })
+            );
+
+            // Thunk reddedildi
+            expect(sonuc.type).toBe(konumAyarlariniKaydetAsync.rejected.type);
+            // rejected reducer state'i degistirmemeli -> hala varsayilan
+            const state = store.getState().konum;
+            expect(state.konumModu).toBe('manuel');
+            expect(state.seciliIlAdi).toBe('Istanbul');
+        });
+    });
+
+    describe('konumVerileriniTemizleAsync (gercek thunk akisi)', () => {
+        it('temizleme sonrasi state tam varsayilana donmeli ve storage\'dan silinmeli', async () => {
+            const store = storeOlustur();
+            // Once state'i degistir (Ankara, oto, akilli takip)
+            store.dispatch(
+                konumAyarlariniGuncelle({
+                    konumModu: 'oto',
+                    seciliIlId: 6,
+                    seciliIlAdi: 'Ankara',
+                    akilliTakipAktif: true,
+                })
+            );
+            expect(store.getState().konum.konumModu).toBe('oto');
+
+            const sonuc = await store.dispatch(konumVerileriniTemizleAsync());
+            expect(sonuc.type).toBe(konumVerileriniTemizleAsync.fulfilled.type);
+
+            // State tamamen varsayilana dondu
+            const state = store.getState().konum;
+            expect(state.konumModu).toBe('manuel');
+            expect(state.seciliIlId).toBe(34);
+            expect(state.seciliIlAdi).toBe('Istanbul');
+            expect(state.akilliTakipAktif).toBe(false);
+            expect(state.koordinatlar.lat).toBeCloseTo(41.0082);
+
+            // Storage'dan dogru anahtar silindi
+            expect(AsyncStorage.removeItem).toHaveBeenCalledWith('@namaz_akisi/konum_ayarlari');
+        });
+    });
+
+    describe('konumAyarlariniYukle (gercek async yol)', () => {
+        afterEach(() => {
+            (AsyncStorage.getItem as jest.Mock).mockReset();
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+        });
+
+        it('storage okuma hata verirse thunk reddedilmeli ve yukleniyor false kalmali (state bozulmamali)', async () => {
+            const store = storeOlustur();
+            // getItem reject -> servis basarili:false -> thunk Error firlatir -> rejected
+            (AsyncStorage.getItem as jest.Mock).mockRejectedValueOnce(new Error('okuma hatasi'));
+
+            const sonuc = await store.dispatch(konumAyarlariniYukle());
+
+            expect(sonuc.type).toBe(konumAyarlariniYukle.rejected.type);
+            const state = store.getState().konum;
+            expect(state.yukleniyor).toBe(false);
+            // Hata yolu varsayilan state'i bozmamali
+            expect(state.konumModu).toBe('manuel');
+            expect(state.seciliIlAdi).toBe('Istanbul');
+        });
+
+        it('storage\'da gecerli veri varsa onu yukleyip yukleniyor\'u kapatmali', async () => {
+            const store = storeOlustur();
+            const kayitliJson = JSON.stringify({
+                ...varsayilanState,
+                konumModu: 'oto',
+                seciliIlId: 35,
+                seciliIlAdi: 'İzmir',
+                koordinatlar: { lat: 38.4237, lng: 27.1428 },
+            });
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(kayitliJson);
+
+            const sonuc = await store.dispatch(konumAyarlariniYukle());
+
+            expect(sonuc.type).toBe(konumAyarlariniYukle.fulfilled.type);
+            const state = store.getState().konum;
+            expect(state.yukleniyor).toBe(false);
+            expect(state.konumModu).toBe('oto');
+            expect(state.seciliIlAdi).toBe('İzmir');
+            expect(state.koordinatlar.lat).toBeCloseTo(38.4237);
+        });
+    });
+
+    describe('Persistence yan etkisinin icerigi (koordinat / gps adres)', () => {
+        it('koordinatlariGuncelle storage\'a YENI koordinati yazmali, yukleniyor sizdirmamali', () => {
+            // Reducer icindeki localKonumAyarlariniKaydet senkron olarak (ilk await\'e kadar)
+            // AsyncStorage.setItem\'i cagirir -> dispatch sonrasi mock dolu olur.
+            konumReducer(varsayilanState, koordinatlariGuncelle({ lat: 38.4237, lng: 27.1428 }));
+
+            expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
+            const [anahtar, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            expect(anahtar).toBe('@namaz_akisi/konum_ayarlari');
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen.koordinatlar.lat).toBeCloseTo(38.4237);
+            expect(kaydedilen.koordinatlar.lng).toBeCloseTo(27.1428);
+            // Transient alan storage'a sizmamali
+            expect(kaydedilen.yukleniyor).toBeUndefined();
+        });
+
+        it('gpsAdresiniGuncelle storage\'a adres + sonGpsGuncellemesi yazmali, yukleniyor sizdirmamali', () => {
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2026-01-17T12:00:00.000Z'));
+
+            const adres: GpsAdres = { semt: 'Alsancak', ilce: 'Konak', il: 'İzmir' };
+            konumReducer(varsayilanState, gpsAdresiniGuncelle(adres));
+
+            expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
+            const [, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen.gpsAdres).toEqual(adres);
+            // Yan etki: adres truthy -> sonGpsGuncellemesi guncellendi ve storage'a yazildi
+            expect(kaydedilen.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
+            expect(kaydedilen.yukleniyor).toBeUndefined();
+
+            jest.useRealTimers();
+        });
+
+        it('gpsAdresiniGuncelle(null) storage\'a null adres yazmali ve onceki zaman damgasini KORUMALI', () => {
+            const oncekiState: KonumState = {
+                ...varsayilanState,
+                gpsAdres: { semt: 'Test', ilce: 'Test', il: 'Test' },
+                sonGpsGuncellemesi: '2026-01-17T12:00:00.000Z',
+            };
+
+            konumReducer(oncekiState, gpsAdresiniGuncelle(null));
+
+            expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
+            const [, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen.gpsAdres).toBeNull();
+            // null payload -> sonGpsGuncellemesi DEGISMEMELI (uretim: falsy ise koru)
+            expect(kaydedilen.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
         });
     });
 });

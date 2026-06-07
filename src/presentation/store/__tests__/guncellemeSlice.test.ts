@@ -146,7 +146,7 @@ describe('guncellemeSlice', () => {
       expect(state.bilgi).toBeNull();
     });
 
-    it('rejected durumunda hata mesaji set edilir', async () => {
+    it('rejected durumunda hata mesaji state e tasinir', async () => {
       __mockKontrolEt.mockRejectedValue(new Error('Test hatasi'));
 
       const store = storeOlustur();
@@ -154,7 +154,21 @@ describe('guncellemeSlice', () => {
 
       const state = store.getState().guncelleme;
       expect(state.kontrolEdiliyor).toBe(false);
-      expect(state.hata).toBeDefined();
+      // Reducer action.error.message'i AYNEN state'e tasimali (sadece "tanimsiz degil" yetmez)
+      expect(state.hata).toBe('Test hatasi');
+    });
+
+    it('rejected - mesajsiz hatada varsayilan hata metni kullanilir', async () => {
+      // Bos obje -> RTK serilestirmesinde action.error.message undefined olur,
+      // boylece reducer'daki `|| 'Guncelleme kontrol edilemedi'` fallback dali tetiklenir
+      __mockKontrolEt.mockRejectedValue({});
+
+      const store = storeOlustur();
+      await store.dispatch(guncellemeKontrolEt(false));
+
+      const state = store.getState().guncelleme;
+      expect(state.kontrolEdiliyor).toBe(false);
+      expect(state.hata).toBe('Guncelleme kontrol edilemedi');
     });
 
     it('zorla parametresi servise iletilir', async () => {
@@ -292,6 +306,128 @@ describe('guncellemeSlice', () => {
       await store.dispatch(guncellemeKontrolEt(false));
       // Ayni versiyon, bildirim kapali kalmali
       expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+    });
+  });
+
+  // ==================== EK KAPSAM (denetim gapleri) ====================
+
+  describe('hata temizleme gecisi', () => {
+    it('hatali kontrol sonrasi yeni kontrol baslayinca eski hata temizlenir', async () => {
+      const store = storeOlustur();
+
+      // 1. Ilk kontrol HATA ile sonuclanir -> state.hata dolar
+      __mockKontrolEt.mockRejectedValueOnce(new Error('Ag hatasi'));
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.hata).toBe('Ag hatasi');
+
+      // 2. Kullanici tekrar dener; pending'e gectigi an hata SIFIRLANMALI.
+      //    Cozumlenmemis bir promise vererek thunk'i pending'de tutuyoruz;
+      //    boylece sadece pending reducer'inin etkisini izole olarak gozluyoruz.
+      __mockKontrolEt.mockReturnValueOnce(new Promise(() => {}));
+      store.dispatch(guncellemeKontrolEt(false));
+
+      expect(store.getState().guncelleme.kontrolEdiliyor).toBe(true);
+      // pending reducer state.hata = null yapmali (uretimdeki temizleme dali)
+      expect(store.getState().guncelleme.hata).toBeNull();
+    });
+  });
+
+  describe('guncelleme durumu temizleme gecisleri', () => {
+    it('guncellemeMevcut true->false oldugunda bilgi de temizlenir', async () => {
+      const store = storeOlustur();
+
+      // 1. Once guncelleme MEVCUT ve bilgi DOLU bir state'e ulas
+      const dolu = {
+        yeniVersiyon: '5.0.0',
+        mevcutVersiyon: '0.3.0',
+        degisiklikNotlari: 'Notlar',
+        indirmeBaglantisi: 'https://example.com/app.apk',
+        yayinTarihi: '2026-02-14',
+        kaynak: 'github' as const,
+        zorunluMu: false,
+      };
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: true,
+        bilgi: dolu,
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.guncellemeMevcut).toBe(true);
+      expect(store.getState().guncelleme.bilgi).toEqual(dolu);
+
+      // 2. Kullanici uygulamayi guncelledi -> sonraki kontrol 'guncelleme yok' doner.
+      //    Bilgi DOLU state'ten null'a temizlenmeli (sifir state'ten degil).
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: false,
+        bilgi: null,
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.guncellemeMevcut).toBe(false);
+      expect(store.getState().guncelleme.bilgi).toBeNull();
+    });
+
+    it('guncelleme yok donerse onceden kapatilan bildirim durumu korunur', async () => {
+      const store = storeOlustur();
+
+      // 1. Guncelleme mevcut, kullanici bildirimi kapatti
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '5.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      store.dispatch(bildirimiKapat());
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+      // 2. Sonraki kontrol 'guncelleme yok' doner -> reducer if(guncellemeMevcut)
+      //    bloguna GIRMEZ, dolayisiyla bildirimiKapatti'ya DOKUNMAMALI (true kalmali).
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: false,
+        bilgi: null,
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+    });
+  });
+
+  describe('bildirim sifirlama savunma dali (yeniVer falsy)', () => {
+    it('guncellemeMevcut true ama bilgi null iken kapatilan bildirim sifirlanmaz', async () => {
+      const store = storeOlustur();
+
+      // 1. Gercek bir guncelleme gelir, kullanici kapatir
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://example.com',
+          yayinTarihi: '',
+          kaynak: 'github' as const,
+          zorunluMu: false,
+        },
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      store.dispatch(bildirimiKapat());
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+
+      // 2. guncellemeMevcut=true AMA bilgi=null (yeniVer falsy) gelir.
+      //    Uretimdeki `if (yeniVer && yeniVer !== eskiVer)` savunma dali nedeniyle
+      //    sifirlama YAPILMAMALI -> bildirimiKapatti true KALMALI.
+      //    (yeniVer && korumasi kaldirilsaydi null !== '1.0.0' true olur ve yanlislikla sifirlanirdi.)
+      __mockKontrolEt.mockResolvedValueOnce({
+        guncellemeMevcut: true,
+        bilgi: null,
+      });
+      await store.dispatch(guncellemeKontrolEt(false));
+      expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+      expect(store.getState().guncelleme.bilgi).toBeNull();
     });
   });
 });

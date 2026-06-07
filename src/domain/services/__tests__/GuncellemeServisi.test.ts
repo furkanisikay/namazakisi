@@ -262,17 +262,64 @@ describe('GitHubGuncellemeKaynagi', () => {
     expect(sonuc.bilgi?.indirmeBaglantisi).toBe(htmlUrl);
   });
 
-  it('degisiklik notlarini temizler ve kisaltir', async () => {
-    const uzunNot = '## Yeni Ozellikler\n\n**Birinci ozellik**: Aciklama\n\n\n\nDevam';
+  it('basliksiz/duz metin release notlarinda markdown sembollerini temizler (fallback yolu)', async () => {
+    // Bu metinde "###" bolum basligi YOK (sadece "##") ve "- "/"* " madde listesi
+    // yok; bu yuzden yapilandirilmis dal hicbir sey toplayamaz ve uretim FALLBACK
+    // yoluna (ham metni temizleyerek dondurme) duser. Bu testin amaci o fallback'i
+    // dogrulamaktir: markdown sembolleri silinir, icerik korunur, fazla bos satir
+    // (>=3 \n) tek bos satira indirilir.
+    const hamNot = '## Yeni Ozellikler\n\n**Birinci ozellik**: Aciklama\n\n\n\nDevam';
     mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
-      body: uzunNot,
+      body: hamNot,
     }));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
 
-    // Markdown temizlenmis olmali
-    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('##');
-    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('**');
+    // 1) Markdown sembolleri tamamen temizlenmis olmali (regresyon: temizlik atlanirsa fail)
+    expect(notlar).not.toContain('#');
+    expect(notlar).not.toContain('*');
+
+    // 2) Icerik korunmus olmali (regresyon: fallback metni yutarsa/keserse fail)
+    expect(notlar).toContain('Yeni Ozellikler');
+    expect(notlar).toContain('Birinci ozellik: Aciklama');
+    expect(notlar).toContain('Devam');
+
+    // 3) Uc+ ardisik satir sonu tek bos satira (cift \n) indirilmis olmali
+    //    (regresyon: \n{3,} -> \n\n sadelestirmesi kaldirilirsa fail)
+    expect(notlar).not.toMatch(/\n{3,}/);
+
+    // 4) Tam beklenen cikti — bagimsiz olarak uretim donusumunu birebir kilitler
+    expect(notlar).toBe('Yeni Ozellikler\n\nBirinci ozellik: Aciklama\n\nDevam');
+  });
+
+  it('degisiklik notlarini yapilandirilmis formatta uretir (struct yolu)', async () => {
+    // "###" bolum basliklari + "- " madde listesi => uretim YAPILANDIRILMIS dali
+    // calismali (fallback degil). Bilerek inline "**" KULLANMIYORUZ; cunku
+    // yapilandirilmis dal madde icerigini HAM push eder ve inline markdown'i
+    // temizlemez (uretim satir 247) — boyle bir madde testi mevcut kodda fail ederdi.
+    const releaseNot = `### Yeni Özellikler
+- X özelligi eklendi
+- Y özelligi eklendi
+
+### Hata Düzeltmeleri
+- Z hatasi giderildi`;
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { body: releaseNot }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
+
+    // Yapilandirilmis bicimlendirme yolu calismis olmali (fallback degil):
+    // baslik etiketi + her madde "• " on ekiyle listelenir
+    expect(notlar).toContain('Yeni Özellikler:');
+    expect(notlar).toContain('• X özelligi eklendi');
+    expect(notlar).toContain('• Y özelligi eklendi');
+    // "fixed"/"hata" bolumu dolu oldugundan ozet "Hatalar giderildi" eklenir
+    expect(notlar).toContain('Hatalar giderildi');
+    // Ham markdown bolum basligi sembolleri ciktida kalmamali
+    expect(notlar).not.toContain('###');
+    // Fallback'e dusulmedi: cikti madde isaretli yapilandirilmis bicim
+    expect(notlar.startsWith('Yeni Özellikler:')).toBe(true);
   });
 
   it('Added ve Fixed bolumleri dogru formatlar', async () => {
@@ -913,5 +960,344 @@ describe('guvenilirBaglantiMi', () => {
 
   it('bos string icin false dondurur', () => {
     expect(guvenilirBaglantiMi('')).toBe(false);
+  });
+});
+
+// ==================== EK KAPSAM: DENETIM GAP'LERI ====================
+// Asagidaki testler denetimin tespit ettigi eksik kapsami doldurur:
+// - GitHub APK baglantisi guvenilirBaglantiMi ile DOGRULANMIYOR (gercek guvenlik bosulugu)
+// - Gercek surum (0.23.1) baglaminda off-by-one minor/patch sinir karsilastirmasi
+// - ERTELEME_SURESI (24s) ve KONTROL_ARALIGI (6s) ZAMAN sinirlari
+// - Play Store erteleme: ertelenen surum != yeni surum ise banner GOSTERILMELI
+// - degisiklikNotlari 500 karakter kisaltma
+
+describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik karakterizasyonu)', () => {
+  let kaynak: GitHubGuncellemeKaynagi;
+
+  beforeEach(() => {
+    kaynak = new GitHubGuncellemeKaynagi('furkanisikay/namazakisi');
+    mockFetch.mockReset();
+  });
+
+  it('API guvenilmez bir APK domaini donerse, indirmeBaglantisi SU AN dogrulanmadan aynen donuyor (latent guvenlik bosulugu)', async () => {
+    // GUVENLIK NOTU: Uretim kodu (indirmeBaglantisiBul) API'den gelen
+    // browser_download_url'i guvenilirBaglantiMi ile DOGRULAMIYOR. Bu test mevcut
+    // (guvensiz) davranisi SABITLER: phishing/manipule edilmis bir APK baglantisi
+    // zincirden gecer. guvenilirBaglantiMi'nin bu URL'i ZATEN reddettigini de
+    // gosteririz — yani koruma fonksiyonu var ama akista cagrilmiyor.
+    // Uretime koruma eklenirse (URL reddedilip release sayfasina dusulurse) bu test
+    // KASITLI olarak FAIL eder ve guvenlik duzeltmesinin yapildigini isaret eder.
+    const kotuUrl = 'https://evil-site.com/NamazAkisi-99.0.0.apk';
+    const releaseSayfasi = 'https://github.com/furkanisikay/namazakisi/releases/tag/v99.0.0';
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      assets: [{ name: 'NamazAkisi-99.0.0.apk', browser_download_url: kotuUrl }],
+      html_url: releaseSayfasi,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    // Mevcut davranis: guvenilmez URL aynen donuyor (release sayfasina dusmuyor)
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(kotuUrl);
+    // Koruma fonksiyonu bu URL'i reddederdi — yani akista cagrilsaydi reddedilirdi
+    expect(guvenilirBaglantiMi(kotuUrl)).toBe(false);
+  });
+});
+
+describe('GitHubGuncellemeKaynagi — gercek surum (0.23.1) sinir karsilastirmasi', () => {
+  let kaynak: GitHubGuncellemeKaynagi;
+
+  beforeEach(() => {
+    kaynak = new GitHubGuncellemeKaynagi('furkanisikay/namazakisi');
+    mockFetch.mockReset();
+  });
+
+  it('mevcut surumden bir patch yuksek (0.23.2) -> guncelleme MEVCUT', async () => {
+    // Referans: UYGULAMA.VERSIYON === '0.23.1' (sabit dogrulanir)
+    expect(UYGULAMA.VERSIYON).toBe('0.23.1');
+    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.2'));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.23.2');
+  });
+
+  it('mevcut surumden bir minor yuksek (0.24.0) -> guncelleme MEVCUT', async () => {
+    mockFetch.mockResolvedValue(githubYanitiOlustur('0.24.0'));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.24.0');
+  });
+
+  it('mevcut surumden bir patch dusuk (0.23.0) -> guncelleme YOK', async () => {
+    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.0'));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.guncellemeMevcut).toBe(false);
+    expect(sonuc.bilgi).toBeNull();
+  });
+});
+
+describe('GitHubGuncellemeKaynagi — degisiklik notlari 500 karakter kisaltmasi', () => {
+  let kaynak: GitHubGuncellemeKaynagi;
+
+  beforeEach(() => {
+    kaynak = new GitHubGuncellemeKaynagi('furkanisikay/namazakisi');
+    mockFetch.mockReset();
+  });
+
+  it('cok uzun release notu fallback yolunda 500 karaktere kisaltilir', async () => {
+    // Bolum basligi/madde listesi olmayan duz uzun metin -> fallback yoluna duser
+    // (degisiklikNotlariniDuzenle son satir: .slice(0, 500)).
+    const cokUzunNot = 'A'.repeat(2000);
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { body: cokUzunNot }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
+
+    // Tam 500 karakterde kesilmeli (slice(0,500) regresyonu yakalanir)
+    expect(notlar.length).toBe(500);
+    expect(notlar).toBe('A'.repeat(500));
+  });
+
+  it('yapilandirilmis (madde) yolunda da cikti 500 karakteri asmaz', async () => {
+    // Cok sayida "Added" maddesi -> yapilandirilmis dal; sonuc yine .slice(0,500).
+    const maddeler = Array.from({ length: 60 }, (_, i) =>
+      `- ${'uzun ozellik aciklamasi '.repeat(2)}${i}`
+    ).join('\n');
+    const releaseNot = `### Added\n${maddeler}`;
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { body: releaseNot }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
+
+    expect(notlar.length).toBeLessThanOrEqual(500);
+    // Gercekten uzun girdiden kisaltma yapildigini garanti et (tam sinira ulasti)
+    expect(notlar.length).toBe(500);
+  });
+});
+
+describe('GuncellemeServisi — erteleme ZAMAN siniri (ERTELEME_SURESI = 24 saat)', () => {
+  beforeEach(() => {
+    Object.keys(asyncStorageMock).forEach((k) => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockReset().mockResolvedValue({ isConnected: true });
+    mockKurulumKaynagiGetir.mockReset().mockResolvedValue('sideload'); // GitHub provider
+    mockFetch.mockReset();
+  });
+
+  it('erteleme suresi DOLDUKTAN sonra (25 saat once ertelendi) banner yeniden gosterilir', async () => {
+    // Cache: guncelleme var ('99.0.0' > 0.23.1), 25 saat once ertelendi -> sure doldu.
+    // NOT: TTL (KONTROL_ARALIGI) de DOLU tutulur (7 saat once) cunku taze bir TTL
+    // cache'i erteleme bagimsiz olarak kisa devre yapar; bu testin ayirt edici
+    // boyutu YALNIZCA erteleme suresinin dolmus olmasi -> ilk kisa devre atlanir ve
+    // (TTL de gecersiz oldugundan) taze API sorgusuna ulasilir.
+    const yirmiBesSaatOnce = Date.now() - 25 * 60 * 60 * 1000;
+    const yediSaatOnce = Date.now() - 7 * 60 * 60 * 1000;
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: yediSaatOnce,
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '99.0.0',
+          mevcutVersiyon: UYGULAMA.VERSIYON,
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://github.com/test/releases',
+          yayinTarihi: '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: '99.0.0',
+      ertelemeZamani: yirmiBesSaatOnce, // ERTELEME_SURESI (24s) DOLDU
+    });
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Erteleme suresi dolmus oldugundan kisa devre OLMAMALI -> taze API sorgusu yapilmali
+    expect(mockFetch).toHaveBeenCalled();
+    // Ve guncelleme yeniden gosterilmeli
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi?.yeniVersiyon).toBe('99.0.0');
+  });
+
+  it('erteleme suresi DEVAM ederken (1 saat once ertelendi) banner bastirilir, API cagrilmaz', async () => {
+    // Karsi senaryo: TTL yine DOLU (7 saat once) — yani tek fark erteleme yasi.
+    // Erteleme aktif oldugundan ilk kisa devre devreye girer: cache'deki son sonuc
+    // dondurulur, API CAGRILMAZ. (Ust testle birlikte temiz bir sinir cifti olusturur.)
+    const birSaatOnce = Date.now() - 1 * 60 * 60 * 1000;
+    const yediSaatOnce = Date.now() - 7 * 60 * 60 * 1000;
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: yediSaatOnce,
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '99.0.0',
+          mevcutVersiyon: UYGULAMA.VERSIYON,
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://github.com/test/releases',
+          yayinTarihi: '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: '99.0.0',
+      ertelemeZamani: birSaatOnce, // ERTELEME_SURESI (24s) DEVAM EDIYOR
+    });
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Erteleme aktif + cache bayat degil -> kisa devre: API cagrilmaz, banner gizli
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(true); // cache'deki son sonuc dondurulur
+  });
+});
+
+describe('GuncellemeServisi — onbellek ZAMAN siniri (KONTROL_ARALIGI = 6 saat TTL)', () => {
+  beforeEach(() => {
+    Object.keys(asyncStorageMock).forEach((k) => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockReset().mockResolvedValue({ isConnected: true });
+    mockKurulumKaynagiGetir.mockReset().mockResolvedValue('sideload'); // GitHub provider
+    mockFetch.mockReset();
+  });
+
+  it('cache 7 saat once olusturulmus (TTL dolmus) + surum hala guncel-degil -> yeniden API sorgusu', async () => {
+    // sonKontrolZamani 7 saat once: KONTROL_ARALIGI (6s) asildi -> cache gecersiz.
+    // yeniVersiyon (99.0.0) > mevcut surum oldugundan onbellekBayatMi=false; yani
+    // gecersizlik TAMAMEN zaman boyutundan gelir (bayatlik degil).
+    const yediSaatOnce = Date.now() - 7 * 60 * 60 * 1000;
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: yediSaatOnce, // TTL DOLDU
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '99.0.0',
+          mevcutVersiyon: UYGULAMA.VERSIYON,
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://github.com/test/releases',
+          yayinTarihi: '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    });
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
+
+    const servis = GuncellemeServisi.getInstance();
+    await servis.guncellemeKontrolEt(false);
+
+    // TTL dolmus -> cache kisa devresi OLMAMALI, taze API sorgusu yapilmali
+    expect(mockFetch).toHaveBeenCalled();
+  });
+
+  it('cache 1 saat once olusturulmus (TTL gecerli) -> API cagrilmaz (kisa devre)', async () => {
+    // Karsi senaryo: taze cache -> onbellekGecerliMi=true -> API atlanir.
+    const birSaatOnce = Date.now() - 1 * 60 * 60 * 1000;
+    asyncStorageMock[GUNCELLEME_SABITLERI.DEPOLAMA_ANAHTARI] = JSON.stringify({
+      sonKontrolZamani: birSaatOnce, // TTL gecerli
+      sonSonuc: {
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '99.0.0',
+          mevcutVersiyon: UYGULAMA.VERSIYON,
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'https://github.com/test/releases',
+          yayinTarihi: '',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+      },
+      ertelenenVersiyon: null,
+      ertelemeZamani: null,
+    });
+
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0'));
+
+    const servis = GuncellemeServisi.getInstance();
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    expect(mockFetch).not.toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(true);
+  });
+});
+
+describe('GuncellemeServisi — Play Store erteleme: surum uyusmazliginda banner gosterilir', () => {
+  beforeEach(() => {
+    Object.keys(asyncStorageMock).forEach((k) => delete asyncStorageMock[k]);
+    GuncellemeServisi.resetInstance();
+    mockNetInfoFetch.mockReset().mockResolvedValue({ isConnected: true });
+    mockKurulumKaynagiGetir.mockReset().mockResolvedValue('play_store');
+    mockPlayStoreKontrolEt.mockReset();
+    mockFetch.mockReset();
+  });
+
+  it('ertelenen surum (46) ile YENI surum (47) eslesmiyorsa banner BASTIRILMAZ', async () => {
+    // Uretim satir 415-423: kisa devre yalnizca
+    // onbellek.ertelenenVersiyon === sonuc.bilgi.yeniVersiyon iken olur.
+    // Kullanici 46'yi erteledi; ama Play Core artik 47 donduruyor -> banner gosterilmeli.
+    const playStore47 = {
+      guncellemeMevcut: true,
+      bilgi: {
+        yeniVersiyon: '47',
+        yeniVersiyonEtiketi: 'Yeni sürüm',
+        mevcutVersiyon: UYGULAMA.VERSIYON,
+        degisiklikNotlari: '',
+        indirmeBaglantisi: 'playstore://update',
+        yayinTarihi: '',
+        kaynak: 'playstore' as const,
+        zorunluMu: false,
+      },
+    };
+    mockPlayStoreKontrolEt.mockResolvedValue(playStore47);
+
+    const servis = GuncellemeServisi.getInstance();
+    // Once 46'yi ertele
+    await servis.guncellemeErtele('46');
+
+    // Erteleme aktif AMA yeni surum (47) ertelenen (46) ile eslesmiyor -> banner gosterilir
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    expect(mockPlayStoreKontrolEt).toHaveBeenCalled();
+    expect(sonuc.guncellemeMevcut).toBe(true);
+    expect(sonuc.bilgi?.yeniVersiyon).toBe('47');
+  });
+
+  it('ertelenen surum (46) ile yeni surum (46) eslesirse banner BASTIRILIR (karsi senaryo)', async () => {
+    const playStore46 = {
+      guncellemeMevcut: true,
+      bilgi: {
+        yeniVersiyon: '46',
+        yeniVersiyonEtiketi: 'Yeni sürüm',
+        mevcutVersiyon: UYGULAMA.VERSIYON,
+        degisiklikNotlari: '',
+        indirmeBaglantisi: 'playstore://update',
+        yayinTarihi: '',
+        kaynak: 'playstore' as const,
+        zorunluMu: false,
+      },
+    };
+    mockPlayStoreKontrolEt.mockResolvedValue(playStore46);
+
+    const servis = GuncellemeServisi.getInstance();
+    await servis.guncellemeErtele('46');
+
+    const sonuc = await servis.guncellemeKontrolEt(false);
+
+    // Eslesiyor + erteleme aktif -> banner bastirilir
+    expect(sonuc.guncellemeMevcut).toBe(false);
+    expect(sonuc.bilgi).toBeNull();
   });
 });

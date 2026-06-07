@@ -193,6 +193,90 @@ describe('mekruhVakitKontrolEt — kerahat vakitleri', () => {
     expect(sonuc.aciklama).not.toContain('kaza namazı');
   });
 
+  // ==================== SINIR (BOUNDARY) — TAM EŞİTLİK ====================
+  // Üretim her üç pencerede de kapsayıcı (<=) kullanır. Tam bitiş anında mekruh
+  // HÂLÂ aktif olmalıdır; "<= -> <" regresyonu bu testlerle yakalanır.
+
+  it('şuruk bitiş anının TAM kendisinde (sunrise + 20 dk) hâlâ mekruh (kapsayıcı sınır)', () => {
+    const surukBitisAni = new Date(prayerTimes.sunrise.getTime() + SURUK_BITIS_MS);
+    jest.setSystemTime(surukBitisAni);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    expect(sonuc.mekruhMu).toBe(true);
+    expect(sonuc.aciklama).toContain('şuruk');
+  });
+
+  it('istiwa bitiş anının TAM kendisinde (öğle vakti) hâlâ mekruh (kapsayıcı sınır)', () => {
+    // Üretim: now <= dhuhr. Tam dhuhr anı pencerenin İÇİNDE sayılmalı.
+    jest.setSystemTime(prayerTimes.dhuhr);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    expect(sonuc.mekruhMu).toBe(true);
+    expect(sonuc.aciklama).toContain('istiwa');
+  });
+
+  it('gurub bitiş anının TAM kendisinde (akşam vakti) hâlâ mekruh (kapsayıcı sınır)', () => {
+    // Üretim: now <= sunset. Tam sunset anı pencerenin İÇİNDE sayılmalı.
+    jest.setSystemTime(prayerTimes.maghrib);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    expect(sonuc.mekruhMu).toBe(true);
+    expect(sonuc.aciklama).toContain('gurub');
+  });
+
+  // ==================== SINIR (BOUNDARY) — PENCERE BAŞLANGICININ HEMEN ÖNCESİ ====================
+  // Üretim: now >= başlangıç. Başlangıçtan 1 sn önce pencere DIŞINDA olmalı;
+  // ">= -> >" ya da pencerenin geriye kayması bu testlerle yakalanır.
+
+  it('güneş doğuşundan 1 sn önce henüz şuruk mekruhu yok', () => {
+    const sunriseOncesi = new Date(prayerTimes.sunrise.getTime() - 1000);
+    jest.setSystemTime(sunriseOncesi);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    expect(sonuc.mekruhMu).toBe(false);
+    expect(sonuc.aciklama).toBeNull();
+  });
+
+  it('istiwa başlangıcından 1 sn önce (öğle - 5 dk - 1 sn) henüz istiwa mekruhu yok', () => {
+    const istiwaOncesi = new Date(prayerTimes.dhuhr.getTime() - ISTIWA_TOLERANS_MS - 1000);
+    jest.setSystemTime(istiwaOncesi);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    expect(sonuc.mekruhMu).toBe(false);
+    expect(sonuc.aciklama).toBeNull();
+  });
+
+  // ==================== GURUB — BİLİNÇLİ BASİTLEŞTİRMENİN BELGELENMESİ ====================
+  // Fıkhi kural: ikindi (asr) kılındıktan sonra gün batımına kadar mekruhtur.
+  // Üretim ise asr vaktini kullanmaz; yalnızca gün batımından önceki ~20 dk'yı
+  // mekruh sayar. Dolayısıyla asr ile (sunset - 20 dk) arasındaki uzun aralık
+  // (bu tarih/şehir için ~125 dk) üretimde mekruh DEĞİLDİR. Bu test, yaklaşımın
+  // KAÇIRDIĞI gerçek mekruh aralığını sabitler; üretim gurub mantığı
+  // (örn. asr tabanlı gerçek kurala) değiştirilirse kasıtlı olarak FAIL eder.
+
+  it('ikindiden 30 dk sonra (gurub penceresinden önce) üretim mekruh saymaz — bilinçli basitleştirme', () => {
+    const asr = prayerTimes.asr;
+    const gurubBasi = new Date(prayerTimes.maghrib.getTime() - SURUK_BITIS_MS);
+    const asrSonrasi = new Date(asr.getTime() + 30 * 60 * 1000);
+
+    // Önkoşul: seçilen an gerçekten ikindiden sonra ama gurub penceresinden önce.
+    expect(asrSonrasi.getTime()).toBeGreaterThan(asr.getTime());
+    expect(asrSonrasi.getTime()).toBeLessThan(gurubBasi.getTime());
+
+    jest.setSystemTime(asrSonrasi);
+
+    const sonuc = mekruhVakitKontrolEt(LAT, LNG);
+
+    // Fıkhen mekruh olsa da üretim yaklaşımı bunu kapsamaz -> false.
+    expect(sonuc.mekruhMu).toBe(false);
+    expect(sonuc.aciklama).toBeNull();
+  });
+
   // ==================== HATA DURUMU ====================
 
   it('geçersiz koordinatlarda hata atmaz, mekruhMu false döner', () => {
@@ -200,6 +284,30 @@ describe('mekruhVakitKontrolEt — kerahat vakitleri', () => {
 
     // NaN koordinatları adhan kütüphanesini fırlatır; fonksiyon bunu catch edip false döner
     const sonuc = mekruhVakitKontrolEt(NaN, NaN);
+
+    expect(sonuc.mekruhMu).toBe(false);
+    expect(sonuc.aciklama).toBeNull();
+  });
+
+  it('geçerli ama uç enlemde (kutup, lat 78) güneş doğmadığı günde hata atmaz, mekruhMu false döner', () => {
+    // Adhan kutup bölgelerinde sunrise/sunset için Invalid Date (NaN) üretebilir;
+    // now >= NaN ve now <= NaN her zaman false olduğundan pencereler atlanır.
+    // Seçilen an (kutup öğle vaktinden 3 saat sonrası) geçerli olan tek pencereye
+    // (istiwa) de girmez; dolayısıyla mekruhMu false, çökme yok.
+    const POLAR_LAT = 78.0;
+    const POLAR_LNG = 15.0;
+    const polarCoords = new Coordinates(POLAR_LAT, POLAR_LNG);
+    const polarTimes = new PrayerTimes(polarCoords, TEST_DATE, params);
+
+    // Bu tarihte sunrise/sunset geçersiz, dhuhr geçerli olmalı (önkoşul).
+    expect(Number.isNaN(polarTimes.sunrise.getTime())).toBe(true);
+    expect(Number.isNaN(polarTimes.maghrib.getTime())).toBe(true);
+    expect(Number.isNaN(polarTimes.dhuhr.getTime())).toBe(false);
+
+    const istiwaDisiAn = new Date(polarTimes.dhuhr.getTime() + 3 * 60 * 60 * 1000);
+    jest.setSystemTime(istiwaDisiAn);
+
+    const sonuc = mekruhVakitKontrolEt(POLAR_LAT, POLAR_LNG);
 
     expect(sonuc.mekruhMu).toBe(false);
     expect(sonuc.aciklama).toBeNull();

@@ -389,6 +389,14 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
+  // VakitAkisi (React.memo) icin referans-kararli onVakitTikla:
+  // ref ile en guncel namazToggle'i cagirir, her render'da yeni fonksiyon olusmaz.
+  const namazToggleRef = useRef(namazToggle);
+  namazToggleRef.current = namazToggle;
+  const handleVakitTikla = useCallback((namazAdi: string, val: boolean) => {
+    namazToggleRef.current(namazAdi as NamazAdi, val);
+  }, []);
+
   const suankiVakitTamamla = () => {
     if (vakitBilgisi && vakitBilgisi.vakit) {
       const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
@@ -452,7 +460,7 @@ export const AnaSayfa: React.FC = () => {
     }
 
     return (
-      <ScrollView key={`${sayfaIndeksi}-${vakitBilgisi?.vakit || 'none'}`} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
@@ -513,7 +521,7 @@ export const AnaSayfa: React.FC = () => {
           suankiVakitAdi={aktifGunKontrol ? suankiVakitAdi : ''}
           tamamlananSayisi={tamamlanan}
           toplamSayi={toplam}
-          onVakitTikla={(namazAdi, val) => namazToggle(namazAdi as NamazAdi, val)}
+          onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
         />

@@ -1,0 +1,26 @@
+#!/bin/sh
+# Pre-push doğrulama kapısı — bozuk kod (tip hatası / lint hatası / kırık test)
+# uzağa push'lanmasın diye `npm run verify` çalıştırır.
+#
+# Bu hook, `package.json`'daki `prepare` script'i ile otomatik aktive olur
+# (git config core.hooksPath .githooks). Manuel: aynı komutu çalıştır.
+#
+# Acil durumda atlamak için:  git push --no-verify
+
+# CI ortamında atla (release push'larını yavaşlatmamak/kırmamak için).
+# GitHub Actions, GitLab CI vb. CI=true ayarlar.
+if [ "$CI" = "true" ]; then
+  exit 0
+fi
+
+echo "🔍 pre-push: 'npm run verify' çalışıyor (typecheck + lint + test)..."
+echo "   Atlamak için: git push --no-verify"
+
+if ! npm run verify; then
+  echo ""
+  echo "❌ Doğrulama başarısız — push iptal edildi. Hatayı düzeltip tekrar deneyin."
+  echo "   (Gerçekten gerekiyorsa: git push --no-verify)"
+  exit 1
+fi
+
+echo "✅ Doğrulama geçti — push devam ediyor."

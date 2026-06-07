@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalVakitBildirimServisi, VakitBildirimAyarlari } from '../../data/local/LocalVakitBildirimServisi';
 import { VakitBildirimYoneticiServisi } from '../../domain/services/VakitBildirimYoneticiServisi';
 

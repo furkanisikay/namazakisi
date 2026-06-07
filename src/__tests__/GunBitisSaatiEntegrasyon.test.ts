@@ -1,7 +1,17 @@
 /**
  * Gün Sonu Bildirimi Entegrasyon Testleri
- * SeriAyarlari ve KonumYoneticiServisi entegrasyonunu test eder
+ * SeriAyarlari, seriAyarlariniGuncelle thunk'ı ve KonumYoneticiServisi
+ * entegrasyonunu test eder.
+ *
+ * Bu testler ÜRETİM YOLUNU egzersiz eder: gerçek bir Redux store kurulur,
+ * seriAyarlariniGuncelle thunk'ı dispatch edilir ve BildirimServisi.bildirimPlanla'ya
+ * geçen planlanmış saat/dakika argümanları (saat=4. arg, dakika=5. arg) doğrulanır.
+ * Beklenen değerler üretimle AYNI yöntemle ama BAĞIMSIZ olarak hesaplanır.
  */
+
+import { configureStore } from '@reduxjs/toolkit';
+
+// ==================== MOCKLAR ====================
 
 // Mock expo-location
 jest.mock('expo-location', () => ({
@@ -20,6 +30,29 @@ jest.mock('expo-notifications', () => ({
     SchedulableTriggerInputTypes: { DATE: 'date' },
 }));
 
+// BildirimServisi mock - bildirimPlanla/bildirimIptalEt cagrilarini yakalamak icin
+// SABIT bir mock instance dondur (her getInstance cagrisinda ayni jest.fn'ler gelsin).
+const mockBildirimPlanla = jest.fn();
+const mockBildirimIptalEt = jest.fn();
+jest.mock('../domain/services/BildirimServisi', () => ({
+    BildirimServisi: {
+        getInstance: jest.fn(() => ({
+            bildirimPlanla: mockBildirimPlanla,
+            bildirimIptalEt: mockBildirimIptalEt,
+        })),
+    },
+}));
+
+// LocalSeriServisi mock - thunk icindeki kalicilik AsyncStorage'a gitmesin
+jest.mock('../data/local/LocalSeriServisi', () => ({
+    localSeriAyarlariniKaydet: jest.fn().mockResolvedValue({ basarili: true }),
+    VARSAYILAN_OZEL_GUN_AYARLARI: {
+        ozelGunModuAktif: false,
+        aktifOzelGun: null,
+        gecmisKayitlar: [],
+    },
+}));
+
 // Suppress console.log in tests
 beforeAll(() => {
     jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -32,15 +65,49 @@ afterAll(() => {
 });
 
 import { KonumYoneticiServisi } from '../domain/services/KonumYoneticiServisi';
-import type { GunSonuBildirimModu, BildirimGunSecimi, SeriAyarlari } from '../core/types/SeriTipleri';
+import seriReducer, { seriAyarlariniGuncelle } from '../presentation/store/seriSlice';
+import type { GunSonuBildirimModu, BildirimGunSecimi } from '../core/types/SeriTipleri';
 import { VARSAYILAN_SERI_AYARLARI } from '../core/types/SeriTipleri';
+
+// ==================== YARDIMCI ====================
+
+/** Sadece seri reducer'ini iceren minimal bir test store'u olusturur. */
+function storeOlustur() {
+    return configureStore({
+        reducer: { seri: seriReducer },
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({ serializableCheck: false }),
+    });
+}
+
+/**
+ * seriAyarlariniGuncelle dispatch edip bildirimPlanla'ya gecen
+ * (saat, dakika) ciftini (4. ve 5. pozisyonel argumanlar) dondurur.
+ */
+async function planlananSaatiAl(
+    ayarlar: Partial<typeof VARSAYILAN_SERI_AYARLARI>
+): Promise<{ saat: number; dakika: number }> {
+    mockBildirimPlanla.mockClear();
+    const store = storeOlustur();
+    await store.dispatch(seriAyarlariniGuncelle({ ayarlar }) as never);
+
+    expect(mockBildirimPlanla).toHaveBeenCalledTimes(1);
+    const cagri = mockBildirimPlanla.mock.calls[0];
+    // bildirimPlanla(id, baslik, mesaj, saat, dakika, tekrarla)
+    return { saat: cagri[3] as number, dakika: cagri[4] as number };
+}
 
 describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
     let konumServisi: KonumYoneticiServisi;
 
     beforeEach(() => {
+        jest.clearAllMocks();
         konumServisi = KonumYoneticiServisi.getInstance();
         konumServisi.sifirla();
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     describe('Tip Tanımlamaları', () => {
@@ -82,21 +149,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakVakti).toBeInstanceOf(Date);
         });
 
-        it('imsak öncesi dakika ile bildirim saati hesaplanabilmeli', () => {
-            konumServisi.koordinatlarAyarla(41.0082, 28.9784);
-
-            const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir()!;
-            const bildirimImsakOncesiDk = 30;
-
-            const bildirimSaati = new Date(imsakVakti.getTime() - bildirimImsakOncesiDk * 60 * 1000);
-
-            expect(bildirimSaati.getTime()).toBeLessThan(imsakVakti.getTime());
-            expect(imsakVakti.getTime() - bildirimSaati.getTime()).toBe(30 * 60 * 1000);
-        });
-    });
-
-    describe('Sabit Mod - Validasyon', () => {
-        it('ertesi gün seçildiğinde imsak vakti hesaplanabilmeli', () => {
+        it('sonraki gün imsak vakti İstanbul saatinde makul aralıkta (2-7) olmalı', () => {
             konumServisi.koordinatlarAyarla(41.0082, 28.9784);
 
             const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
@@ -105,8 +158,9 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakVakti).not.toBeNull();
             expect(imsakVakti).toBeInstanceOf(Date);
 
-            // Istanbul yerel saatinde imsak 02:00-07:00 arasında olmalı (mevsime göre değişir)
+            // Istanbul yerel saatinde imsak 02:00-07:00 arasında olmalı (mevsime göre değişir).
             // CI UTC'de koştuğu için getHours yerine Istanbul timezone'da saati çıkarıyoruz.
+            // Bu, CalculationMethod.Turkey() yanlış bir açı/yöntemle değiştirilirse FAIL eder.
             const istanbulSaatStr = imsakVakti!.toLocaleString('en-US', {
                 timeZone: 'Europe/Istanbul',
                 hour: '2-digit',
@@ -117,30 +171,252 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             expect(imsakSaat).toBeLessThanOrEqual(7);
         });
 
-        it('aynı gün seçildiğinde 18:00-23:59 arası seçilebilmeli', () => {
-            const ayarlar: Partial<SeriAyarlari> = {
+        it('sonraki gün imsak vakti BİLİNEN referans değere eşit olmalı (İstanbul, 15 Haz 2026 → 03:24)', () => {
+            // FİZİKİ DOĞRULUK REFERANSI: Sadece "2-7 arası mı" değil, dakika hassasiyetinde
+            // bilinen bir değere kilitliyoruz. Sistem saatini 14 Haz 2026 öğlene donduruyoruz;
+            // sonrakiGunImsakVaktiGetir() yarını (15 Haz) hesaplar. adhan CalculationMethod.Turkey()
+            // ile İstanbul imsakı 03:24'tür (Avrupa/İstanbul). Yanlış yöntem/açı/parametre
+            // regresyonu (örn. başka bir CalculationMethod) bu dakika değerini kaydırır → FAIL.
+            // Saati Avrupa/İstanbul timezone'ında çıkardığımız için CI'nın UTC olması sonucu DEĞİŞTİRMEZ.
+            jest.useFakeTimers();
+            try {
+                jest.setSystemTime(new Date(2026, 5, 14, 12, 0, 0, 0)); // 14 Haz 2026 12:00 yerel
+                konumServisi.koordinatlarAyarla(41.0082, 28.9784);
+
+                const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
+                expect(imsakVakti).not.toBeNull();
+
+                const istanbulHHMM = imsakVakti!.toLocaleString('en-US', {
+                    timeZone: 'Europe/Istanbul',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                });
+                // adhan referans: İstanbul, 15 Haziran 2026 imsak = 03:24
+                expect(istanbulHHMM).toBe('03:24');
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('sonraki gün imsakı YARININ tarihini kullanır ve bugünkü imsaktan farklıdır (setDate +1)', () => {
+            // sonrakiGunImsakVaktiGetir vs bugunImsakVaktiGetir AYRIMI: yanlışlıkla bugünün
+            // imsakı dönerse (setDate(+1) atlanırsa) bu test FAIL eder. Sistem saatini sabit
+            // bir öğlene donduruyoruz; iki vaktin takvim günü (ve dolayısıyla saniye damgası)
+            // tam olarak 1 gün farklı olmalı.
+            jest.useFakeTimers();
+            try {
+                jest.setSystemTime(new Date(2026, 5, 14, 12, 0, 0, 0)); // 14 Haz 2026 12:00
+                konumServisi.koordinatlarAyarla(41.0082, 28.9784);
+
+                const bugunImsak = konumServisi.bugunImsakVaktiGetir();
+                const yarinImsak = konumServisi.sonrakiGunImsakVaktiGetir();
+
+                expect(bugunImsak).not.toBeNull();
+                expect(yarinImsak).not.toBeNull();
+
+                // Yarının imsakı bugünden SONRA (en az birkaç saat ileri) olmalı.
+                expect(yarinImsak!.getTime()).toBeGreaterThan(bugunImsak!.getTime());
+
+                // Aynı şehir + ardışık iki gün → fark tam 1 gün (1440 dk) civarı olmalı.
+                // (İmsak günden güne ~1 dk değişir; 1 gün ± 5 dk penceresiyle sınırlıyoruz.)
+                const farkDk = (yarinImsak!.getTime() - bugunImsak!.getTime()) / 60000;
+                expect(farkDk).toBeGreaterThan(1440 - 5);
+                expect(farkDk).toBeLessThan(1440 + 5);
+            } finally {
+                jest.useRealTimers();
+            }
+        });
+
+        it('koordinat YOKKEN sonrakiGunImsakVaktiGetir null döner (gerçek servis fallback kaynağı)', () => {
+            // KONUM YOK FALLBACK kaynağı: thunk 04:00 fallback'ine GİRMESİ için gerçek servisin
+            // koordinat ayarlanmadığında null dönmesi şarttır. sifirla() koordinatları null yapar.
+            // Bu, mock'lanmış getInstance ile değil, GERÇEK üretim metoduyla doğrulanır.
+            konumServisi.sifirla();
+
+            expect(konumServisi.sonrakiGunImsakVaktiGetir()).toBeNull();
+            expect(konumServisi.bugunImsakVaktiGetir()).toBeNull();
+        });
+
+        it('otomatik mod: bildirim, imsaktan bildirimImsakOncesiDk kadar önceye planlanır', async () => {
+            // Üretim kodu (seriSlice.ts 121-130) imsak vaktini KonumYoneticiServisi'nden alıp
+            // setMinutes ile geri çeker ve getHours/getMinutes ile planlar. Burada imsak'ı
+            // BİLİNEN sabit bir Date'e kilitleyip aynı bağımsız yöntemle beklenen değeri hesaplıyoruz.
+            const imsak = new Date(2026, 1, 1, 6, 15, 0, 0); // 1 Şubat 2026, 06:15 yerel
+            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
+                sonrakiGunImsakVaktiGetir: () => imsak,
+            } as unknown as KonumYoneticiServisi);
+
+            const { saat, dakika } = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
+                gunSonuBildirimModu: 'otomatik',
+                bildirimImsakOncesiDk: 30,
+            });
+
+            // Üretimle aynı yöntem, bağımsız hesap: 06:15 - 30dk = 05:45
+            const beklenen = new Date(imsak);
+            beklenen.setMinutes(beklenen.getMinutes() - 30);
+            expect(saat).toBe(beklenen.getHours());
+            expect(dakika).toBe(beklenen.getMinutes());
+            // Mutlak referans değerlerle de kilitle (regresyon netliği)
+            expect(saat).toBe(5);
+            expect(dakika).toBe(45);
+        });
+
+        it('otomatik mod: gece yarısı sınırında çıkarma bir önceki güne taşar (00:10 - 30dk = 23:40)', async () => {
+            // FİZİKİ SINIR VAKASI: imsak gece yarısından hemen sonra (00:10) ise
+            // 30dk geri çekme bir önceki güne taşmalı; getHours NEGATİF değil 23 dönmeli.
+            // setMinutes'ın tarih devrini doğru yaptığını (saat 23, dakika 40) garanti eder.
+            const imsak = new Date(2026, 1, 1, 0, 10, 0, 0); // 00:10 yerel
+            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
+                sonrakiGunImsakVaktiGetir: () => imsak,
+            } as unknown as KonumYoneticiServisi);
+
+            const { saat, dakika } = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
+                gunSonuBildirimModu: 'otomatik',
+                bildirimImsakOncesiDk: 30,
+            });
+
+            const beklenen = new Date(imsak);
+            beklenen.setMinutes(beklenen.getMinutes() - 30);
+            expect(saat).toBe(beklenen.getHours());
+            expect(dakika).toBe(beklenen.getMinutes());
+            // Mutlak referans: gün taşması doğruysa 23:40 olmalı (0:-20 / -1:40 DEĞİL)
+            expect(saat).toBe(23);
+            expect(dakika).toBe(40);
+        });
+
+        it('otomatik mod: konum (imsak) yoksa varsayılan 04:00 planlanır', async () => {
+            // seriSlice.ts 131-135: imsak null ise fallback 04:00.
+            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
+                sonrakiGunImsakVaktiGetir: () => null,
+            } as unknown as KonumYoneticiServisi);
+
+            const { saat, dakika } = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
+                gunSonuBildirimModu: 'otomatik',
+                bildirimImsakOncesiDk: 30,
+            });
+
+            expect(saat).toBe(4);
+            expect(dakika).toBe(0);
+        });
+    });
+
+    describe('Sabit Mod - Validasyon', () => {
+        it('ertesi gün: kullanıcının seçtiği sabit saat/dakika doğrudan planlanır', async () => {
+            // Üretim kodu (seriSlice.ts 116-119) SABIT modda bildirimGunSecimi'ni saat
+            // hesabında KULLANMAZ; doğrudan bildirimSaati/bildirimDakikasi'nı planlar.
+            // bildirimGunSecimi sadece UI picker aralığı ipucudur.
+            const { saat, dakika } = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
+                gunSonuBildirimModu: 'sabit',
+                bildirimGunSecimi: 'ertesiGun',
+                bildirimSaati: 4,
+                bildirimDakikasi: 0,
+            });
+
+            expect(saat).toBe(4);
+            expect(dakika).toBe(0);
+        });
+
+        it('aynı gün: kullanıcının seçtiği akşam saati (23:30) aynen planlanır, gün seçimi saati değiştirmez', async () => {
+            // 'ayniGun' modunda 18:00-23:59 arası bir saat seçilir. Üretim, seçilen saati
+            // OLDUĞU GİBİ planlamalı (kaydırma/clamp YOK). Aşağıdaki iki dispatch yalnızca
+            // bildirimGunSecimi'nde farklıdır; planlanan saat AYNI kalmalı -> bu, sabit modda
+            // gün seçiminin saat hesabına karışMADIĞI davranışını KİLİTLER.
+            const ayniGun = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
                 gunSonuBildirimModu: 'sabit',
                 bildirimGunSecimi: 'ayniGun',
                 bildirimSaati: 23,
                 bildirimDakikasi: 30,
-            };
+            });
 
-            expect(ayarlar.bildirimSaati).toBeGreaterThanOrEqual(18);
-            expect(ayarlar.bildirimSaati).toBeLessThanOrEqual(23);
+            // Seçilen akşam saati aynen planlanmalı
+            expect(ayniGun.saat).toBe(23);
+            expect(ayniGun.dakika).toBe(30);
+            // Seçilen saat gerçekten geçerli akşam aralığında (18:00-23:59)
+            expect(ayniGun.saat).toBeGreaterThanOrEqual(18);
+            expect(ayniGun.saat).toBeLessThanOrEqual(23);
+
+            // Sadece bildirimGunSecimi 'ertesiGun' iken aynı saat/dakika -> planlanan değişmemeli
+            const ertesiGun = await planlananSaatiAl({
+                gunSonuBildirimAktif: true,
+                gunSonuBildirimModu: 'sabit',
+                bildirimGunSecimi: 'ertesiGun',
+                bildirimSaati: 23,
+                bildirimDakikasi: 30,
+            });
+            expect(ertesiGun.saat).toBe(ayniGun.saat);
+            expect(ertesiGun.dakika).toBe(ayniGun.dakika);
         });
     });
 
     describe('Mod Geçişleri', () => {
-        it('modlar arası geçiş yapılabilmeli', () => {
-            let ayarlar: SeriAyarlari = { ...VARSAYILAN_SERI_AYARLARI };
+        it('sabit -> otomatik geçişinde bildirim imsak-temelli yeni saate yeniden planlanır', async () => {
+            // GÖZLEMLENEBİLİR etki: mod değişince bildirimPlanla yeni (saat,dakika) ile çağrılır.
+            const imsak = new Date(2026, 1, 1, 5, 30, 0, 0); // 05:30
+            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
+                sonrakiGunImsakVaktiGetir: () => imsak,
+            } as unknown as KonumYoneticiServisi);
 
-            // Otomatik moda geç
-            ayarlar = { ...ayarlar, gunSonuBildirimModu: 'otomatik' };
-            expect(ayarlar.gunSonuBildirimModu).toBe('otomatik');
+            const store = storeOlustur();
 
-            // Sabit moda geri dön
-            ayarlar = { ...ayarlar, gunSonuBildirimModu: 'sabit' };
-            expect(ayarlar.gunSonuBildirimModu).toBe('sabit');
+            // 1) Sabit mod -> kullanıcının seçtiği 22:15
+            mockBildirimPlanla.mockClear();
+            await store.dispatch(
+                seriAyarlariniGuncelle({
+                    ayarlar: {
+                        gunSonuBildirimAktif: true,
+                        gunSonuBildirimModu: 'sabit',
+                        bildirimSaati: 22,
+                        bildirimDakikasi: 15,
+                    },
+                }) as never
+            );
+            expect(mockBildirimPlanla).toHaveBeenLastCalledWith(
+                'gun_sonu_hatirlatici',
+                expect.any(String),
+                expect.any(String),
+                22,
+                15
+            );
+
+            // 2) Otomatik moda geçiş -> imsak(05:30) - 30dk = 05:00'e YENİDEN planlanır
+            mockBildirimPlanla.mockClear();
+            await store.dispatch(
+                seriAyarlariniGuncelle({
+                    ayarlar: {
+                        gunSonuBildirimModu: 'otomatik',
+                        bildirimImsakOncesiDk: 30,
+                    },
+                }) as never
+            );
+            expect(mockBildirimPlanla).toHaveBeenLastCalledWith(
+                'gun_sonu_hatirlatici',
+                expect.any(String),
+                expect.any(String),
+                5,
+                0
+            );
+        });
+
+        it('bildirim kapatıldığında planlama yapılmaz, iptal çağrılır', async () => {
+            // gunSonuBildirimAktif:false -> bildirimPlanla DEĞİL bildirimIptalEt çağrılmalı.
+            const store = storeOlustur();
+            mockBildirimPlanla.mockClear();
+            mockBildirimIptalEt.mockClear();
+
+            await store.dispatch(
+                seriAyarlariniGuncelle({
+                    ayarlar: { gunSonuBildirimAktif: false },
+                }) as never
+            );
+
+            expect(mockBildirimPlanla).not.toHaveBeenCalled();
+            expect(mockBildirimIptalEt).toHaveBeenCalledWith('gun_sonu_hatirlatici');
         });
     });
 });

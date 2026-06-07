@@ -7,14 +7,15 @@
  */
 
 import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
+import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
-
-export type VakitAdi = 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+import type { VakitAdi } from '../../core/types';
+import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 
 interface VakitZamani {
   vakit: VakitAdi;
@@ -72,11 +73,11 @@ export class VakitSayacBildirimServisi {
     const simdi = new Date();
 
     // Kılınan vakitleri al (bugün ve dün için - gece yarısı geçişleri)
-    const kilinanBugun = await this.tarihIcinKilinanVakitleriAl(this.bugunTarihiAl());
-    const kilinanDun = await this.tarihIcinKilinanVakitleriAl(this.dunTarihiAl());
+    const kilinanBugun = await kilinanVakitleriAl(bugunuAl());
+    const kilinanDun = await kilinanVakitleriAl(dunuAl());
     const kilinanMap: Record<string, VakitAdi[]> = {
-      [this.bugunTarihiAl()]: kilinanBugun,
-      [this.dunTarihiAl()]: kilinanDun,
+      [bugunuAl()]: kilinanBugun,
+      [dunuAl()]: kilinanDun,
     };
 
     // Çıkış süresi henüz geçmemiş VE kılınmamış vakitler için planlama yap
@@ -331,13 +332,28 @@ export class VakitSayacBildirimServisi {
   /**
    * Belirli bir vakit için sayaç bildirimini iptal et
    */
+  /**
+   * Sayac bildiriminin asama gecisinde (notifee DELIVERED) onceki asama
+   * bildirimlerini iptal eder. Arka plan ve on plan handler'lari icin ortak.
+   */
+  public async asamaGecisiniIsle(bildirimId: string): Promise<void> {
+    if (bildirimId.endsWith('_vakitgirdi')) {
+      await notifee.cancelNotification(bildirimId.replace('_vakitgirdi', ''));
+    } else if (bildirimId.endsWith('_bitis')) {
+      const baseId = bildirimId.replace('_bitis', '');
+      await notifee.cancelNotification(baseId);
+      await notifee.cancelNotification(`${baseId}_vakitgirdi`);
+    }
+  }
+
   public async vakitSayaciniIptalEt(vakit: VakitAdi): Promise<void> {
-    const bugun = this.bugunTarihiAl();
-    const dun = this.dunTarihiAl();
+    const bugun = bugunuAl();
+    const dun = dunuAl();
 
     for (const tarih of [bugun, dun]) {
       const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${tarih}_${vakit}`;
       try {
+        stopCountdown(bildirimId); // native foreground countdown'u da durdur (toplu temizlemeyle tutarli)
         await notifee.cancelNotification(bildirimId);
         await notifee.cancelTriggerNotification(bildirimId);
         // Temizleme trigger'ini da iptal et
@@ -382,35 +398,4 @@ export class VakitSayacBildirimServisi {
   // TARİH YARDIMCI METOTLARI
   // ============================================================
 
-  private bugunTarihiAl(): string {
-    const bugun = new Date();
-    const yil = bugun.getFullYear();
-    const ay = String(bugun.getMonth() + 1).padStart(2, '0');
-    const gun = String(bugun.getDate()).padStart(2, '0');
-    return `${yil}-${ay}-${gun}`;
-  }
-
-  private dunTarihiAl(): string {
-    const dun = new Date();
-    dun.setDate(dun.getDate() - 1);
-    const yil = dun.getFullYear();
-    const ay = String(dun.getMonth() + 1).padStart(2, '0');
-    const gun = String(dun.getDate()).padStart(2, '0');
-    return `${yil}-${ay}-${gun}`;
-  }
-
-  /**
-   * Belirli bir tarih için kılınan vakitleri al
-   * ArkaplanMuhafizServisi ile aynı storage key kullanır
-   */
-  private async tarihIcinKilinanVakitleriAl(tarih: string): Promise<VakitAdi[]> {
-    try {
-      const anahtar = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_${tarih}`;
-      const veri = await AsyncStorage.getItem(anahtar);
-      return veri ? JSON.parse(veri) : [];
-    } catch (error) {
-      Logger.error('VakitSayac', 'Kılınan vakitler alınamadı:', error);
-      return [];
-    }
-  }
 }

@@ -2,7 +2,8 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
-import { ArkaplanMuhafizServisi, VakitAdi } from './ArkaplanMuhafizServisi';
+import { ArkaplanMuhafizServisi } from './ArkaplanMuhafizServisi';
+import type { VakitAdi } from '../../core/types';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
@@ -229,6 +230,27 @@ export class BildirimServisi {
         Logger.error('BildirimServisi', 'Kildim isleme basarisiz, tekrar denenebilir:', error);
       }
     }
+  }
+
+  /**
+   * notifee sayac bildiriminden ("sayac_<tarih>_<vakit>") gelen "Kildim"
+   * aksiyonunu isler. Hem arka plan (index.ts) hem on plan (App.tsx) bu tek
+   * giris noktasini kullanir; namaz isaretleme + tam temizlik (muhafiz + sayac)
+   * her iki yolda ayni sekilde calisir (drift onlenir).
+   */
+  public async sayacKildimIsle(bildirimId: string): Promise<void> {
+    const onek = BILDIRIM_SABITLERI.ONEKLEME.SAYAC;
+    if (!bildirimId.startsWith(onek)) {
+      return;
+    }
+    const kalan = bildirimId.slice(onek.length); // "<tarih>_<vakit>"
+    const ayrac = kalan.indexOf('_');
+    if (ayrac < 0) {
+      return;
+    }
+    const tarih = kalan.slice(0, ayrac);
+    const vakit = kalan.slice(ayrac + 1);
+    await this.kildimAksiyonunuIsle(vakit, tarih);
   }
 
   /**
