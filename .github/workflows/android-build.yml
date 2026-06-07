@@ -75,6 +75,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
+      - name: 📌 npm sürümünü sabitle (deterministik lock)
+        run: npm install -g npm@10.9.8
+
       - name: 💾 Cache node_modules
         id: cache-modules
         uses: actions/cache@v4
@@ -105,15 +108,9 @@ jobs:
       # ==========================================
       # Kod Kontrolleri (Release)
       # ==========================================
-      - name: 🔧 Kod kontrolleri
+      - name: 🔧 Doğrulama kapısı (typecheck + lint + test — blocking)
         if: inputs.build_type == 'release'
-        run: |
-          echo "🔧 TypeScript kontrolu..."
-          npm run typecheck || true
-          echo "🧹 ESLint kontrolu..."
-          npm run lint
-          echo "🧪 Test kontrolu..."
-          npm test
+        run: npm run verify
 
       # ==========================================
       # Versiyon Yonetimi (Release)
