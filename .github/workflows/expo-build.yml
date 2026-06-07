@@ -69,6 +69,10 @@ concurrency:
   group: eas-build-${{ github.ref_name }}
   cancel-in-progress: false
 
+# Least-privilege: varsayilan read-only; dispatch yapan job actions:write ekler
+permissions:
+  contents: read
+
 env:
   NODE_VERSION: '20'
 
@@ -77,6 +81,9 @@ jobs:
     name: 🚀 EAS Build (${{ inputs.build_aab && 'AAB' || '' }}${{ inputs.build_aab && inputs.build_apk && '+' || '' }}${{ inputs.build_apk && 'APK' || '' }})
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    permissions:
+      contents: read
+      actions: write   # APK build dispatch (createWorkflowDispatch) icin gerekli
 
     steps:
       - name: ⏱️ Zamanlayici
@@ -111,16 +118,15 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: 🚀 Setup Expo & EAS
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
         with:
-          eas-version: latest
+          eas-version: 20.1.0
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 🔍 EXPO_TOKEN kontrolu
@@ -205,13 +211,15 @@ jobs:
       - name: 🔑 Google Service Account hazırla
         if: inputs.build_aab == true && inputs.internal_a_gonder == true && steps.aab_build.outcome == 'success'
         id: gsa
+        env:
+          GSA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
-          if [ -z "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}" ]; then
+          if [ -z "$GSA" ]; then
             echo "⚠️ GOOGLE_SERVICE_ACCOUNT secret bulunamadı!"
             echo "💡 GitHub Secrets > GOOGLE_SERVICE_ACCOUNT ekleyin."
             echo "available=false" >> $GITHUB_OUTPUT
           else
-            echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT }}' > /tmp/google-service-account.json
+            printf '%s' "$GSA" > /tmp/google-service-account.json
             echo "available=true" >> $GITHUB_OUTPUT
             echo "✅ Google Service Account mevcut"
           fi

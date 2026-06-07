@@ -35,7 +35,9 @@ on:
 
 concurrency:
   group: android-build-${{ inputs.build_type || 'debug' }}
-  cancel-in-progress: true
+  # Release'i yarıda kesme (commit/tag/push/EAS atomik olmayan zinciri tehlikeli);
+  # sadece debug'da iptal et.
+  cancel-in-progress: ${{ inputs.build_type != 'release' }}
 
 permissions:
   contents: write
@@ -84,7 +86,6 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
 
       - name: ☕ Setup Java
         uses: actions/setup-java@v4
@@ -126,7 +127,7 @@ jobs:
       - name: 🏷️ Semantic Versiyon Hesapla (Release)
         if: inputs.build_type == 'release'
         id: version
-        uses: paulhatch/semantic-version@v5.4.0
+        uses: paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3 # v5.4.0
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
@@ -473,7 +474,7 @@ jobs:
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
@@ -521,6 +522,19 @@ jobs:
               },
             });
             console.log('✅ EAS Build kuyruğa alındı → internal track');
+
+      # ==========================================
+      # Hassas dosya temizligi (imza secret'lari ephemeral runner'dan)
+      # gradle.properties'e yazilan imza parolalari + keystore dosyasi
+      # build sonunda silinir (loglar zaten maskeli; on-disk kaliciligi azalt).
+      # ==========================================
+      - name: 🧹 Hassas dosya temizliği
+        if: always()
+        run: |
+          rm -f android/app/release.keystore || true
+          if [ -f android/gradle.properties ]; then
+            sed -i '/RELEASE_STORE_PASSWORD/d;/RELEASE_KEY_ALIAS/d;/RELEASE_KEY_PASSWORD/d' android/gradle.properties || true
+          fi
 
       # ==========================================
       # Build Ozeti
