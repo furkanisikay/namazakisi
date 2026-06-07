@@ -15,7 +15,7 @@ import seriReducer, {
 } from '../seriSlice';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
-import { bugunuAl } from '../../../domain/services/SeriHesaplayiciServisi';
+import { namazGunuHesapla } from '../../../domain/services/SeriHesaplayiciServisi';
 
 // ==================== MOCKLAR ====================
 
@@ -180,9 +180,11 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(store.getState().seri.seviyeDurumu?.toplamPuan).toBe(450);
 
       // Simdi seriKontrolet calistirilabilmeli
-      // Uretim kodu "bugun"u yerel saatle (tarihiISOFormatinaCevir) hesaplar;
-      // beklenen degeri ayni uretim yardimcisindan (bugunuAl) al ki timezone kaymasi olmasin.
-      const bugun = bugunuAl();
+      // Uretim "bugun"u namazGunuHesapla(now, gunBitisSaati='05:00') ile hesaplar (namaz
+      // gunu = gun-bitis-saati offset'li). bugunuAl() (takvim gunu) gun-bitis-saatinden once
+      // bir onceki gunu verir -> gun-siniri/timezone flakiligi (CI 04:13 UTC'de patladi).
+      // Uretimle BIREBIR ayni hesaplayarak gun-siniri bagimsiz hale getir.
+      const bugun = namazGunuHesapla(new Date(), '05:00');
       const sonuc = await store.dispatch(
         seriKontrolet({
           bugunNamazlar: tamNamazlar(bugun),
@@ -217,7 +219,8 @@ describe('seriSlice - Race Condition Korumasi', () => {
       // seriHesapla'nin "gun zaten islendi" erken-donus dalini (SeriHesaplayiciServisi.ts:287)
       // deterministik tetikliyoruz. Boylece seriDegisti=false olur ve seriKontrolet
       // (seriSlice.ts:183-192) state'teki sayaclari AYNEN geri yazar -> hicbiri sifirlanmamali.
-      const bugun = bugunuAl();
+      // Uretimle ayni gun hesabi (namazGunuHesapla) -> gun-siniri bagimsiz.
+      const bugun = namazGunuHesapla(new Date(), '05:00');
       const veriler = mockSeriVerileri();
       veriler.veri.seriDurumu.sonTamGun = bugun;
       mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(veriler);
