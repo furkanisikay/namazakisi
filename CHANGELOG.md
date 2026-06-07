@@ -5,6 +5,28 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.2] - 2026-06-07
+
+### Düzeltildi
+- [test] TakvimServisi timeZone testini ortam-bagimsiz yap
+- [test] seriSlice gun-siniri flakiligi — uretimle ayni gun hesabi
+- CI lock senkronu + K3 geri al + PR review duzeltmeleri
+- [bildirim] muhafiz kanal baglama (Ö4) + Iftar/Sahur sayac temizleme (K3)
+- [bildirim] "Kıldım" arka plan/ön plan drift'ini gider + native countdown durdur
+
+### Değiştirildi
+- [ui] Kurulum 9 adim bilesenini ayri dosyaya cikar (Faz E)
+- [ui] Kurulum StyleSheet'i ayri module al (Faz E)
+- [ui] TemizleModali'yi ayri dosyaya cikar + sabitler modulu (Faz E)
+- [ui] TakvimAyarlari sunum bilesenlerini ayir (Faz E)
+- [ui] IlIlceSecici'yi ayri bilesene cikar (Faz E)
+- [ui] ortak SayiGirisModali bileseni (KazaDefteri) — Faz E
+- [ui] ortak SayisalSecici bileseni (Takvim + Muhafiz) — Faz E
+- [bildirim] Iftar/Sahur sayac servisleri icin ortak taban sinif (Ö1)
+- Faz C — DRY çekirdeği (tarih, mesafe, kılınan vakit, konum metni, VakitAdi)- [anasayfa] ScrollView key'inden vakit cikarildi (Faz F)
+- perf+chore: AppState foreground debounce (Faz F) + eslint varsIgnorePattern (Faz G)
+- 1sn timer PrayerTimes onbellegi + VakitAkisi memo (Faz F)
+
 ## [0.23.1] - 2026-06-05
 
 ### Düzeltildi
