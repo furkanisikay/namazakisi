@@ -8,6 +8,29 @@ jest.mock('expo-notifications');
 jest.mock('../NamazVaktiHesaplayiciServisi');
 jest.mock('../../../data/local/LocalVakitBildirimServisi');
 
+// adhan mock: PrayerTimes deterministik, geçirilen 'tarih' gününe sabit saatler kurar.
+// Üretim kodu trigger.date olarak doğrudan bu Date'leri kullandığı için
+// beklenen değerleri (saat, gün) bağımsız ve kesin doğrulayabiliriz.
+jest.mock('adhan', () => ({
+    Coordinates: jest.fn(),
+    CalculationMethod: { Turkey: jest.fn(() => ({})) },
+    PrayerTimes: jest.fn().mockImplementation((_koordinatlar, tarih) => {
+        const vakitOlustur = (saat: number) => {
+            const d = new Date(tarih);
+            d.setHours(saat, 0, 0, 0);
+            return d;
+        };
+        return {
+            fajr: vakitOlustur(5),    // imsak  05:00
+            sunrise: vakitOlustur(7), // güneş  07:00
+            dhuhr: vakitOlustur(13),  // öğle   13:00
+            asr: vakitOlustur(17),    // ikindi 17:00
+            maghrib: vakitOlustur(20), // akşam 20:00
+            isha: vakitOlustur(22),   // yatsı  22:00
+        };
+    }),
+}));
+
 describe('VakitBildirimYoneticiServisi', () => {
     let service: VakitBildirimYoneticiServisi;
 
@@ -58,28 +81,128 @@ describe('VakitBildirimYoneticiServisi', () => {
         expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     });
 
-    it('ayarlar aktifse bildirimleri planlamalı', async () => {
-         // Mock getAyarlar some true
-         (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
-            imsak: true, ogle: false, ikindi: true, aksam: false, yatsi: false
-        });
+    it('ayarlar aktifse yalnızca açık vakitleri bugün+yarın için doğru içerikle planlamalı', async () => {
+        // Sistem saatini sabit bir sabah anına (03:00) kilitle: tüm mock vakitler (en erken imsak 05:00)
+        // gelecekte kalır, böylece üretimdeki "geçmiş zaman planlama yapma" kapısı hiçbirini elemez.
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2024-06-15T03:00:00'));
 
-        // Mock config
-        const mockHesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
-        (mockHesaplayici.getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
+        try {
+            // imsak + ikindi açık; ogle/aksam/yatsi KAPALI
+            (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
+                imsak: true, ogle: false, ikindi: true, aksam: false, yatsi: false
+            });
 
-        // Mock scheduleNotificationAsync
-        (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('notification_id');
-        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+            const mockHesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
+            (mockHesaplayici.getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
 
-        await service.bildirimleriGuncelle();
+            (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('notification_id');
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
 
-        // Should schedule for Imsak and Ikindi for Today and Tomorrow (Total 4 calls ideally)
-        // Note: Logic inside service checks if time is past. Assuming mock date is early morning.
-        // Since we can't easily mock "new Date()" inside the function without more complex setup,
-        // we assume at least TOMORROW's notifications will be scheduled for sure.
+            await service.bildirimleriGuncelle();
 
-        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+            // Yalnızca imsak + ikindi, bugün (2024-06-15) + yarın (2024-06-16) = TAM 4 çağrı.
+            // Sayı 4'ten farklıysa ya kapalı vakitler de planlanmış ya da bir gün düşmüştür.
+            expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(4);
+
+            const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map(
+                (c) => c[0]
+            );
+            const idler = cagrilar.map((c) => c.identifier);
+
+            // Açık vakitlerin her ikisi de bugün ve yarın için tam identifier'larla planlanmalı
+            expect(idler).toEqual(
+                expect.arrayContaining([
+                    'vakit_bildirim_imsak_2024-06-15',
+                    'vakit_bildirim_imsak_2024-06-16',
+                    'vakit_bildirim_ikindi_2024-06-15',
+                    'vakit_bildirim_ikindi_2024-06-16',
+                ])
+            );
+
+            // KAPALI vakitler (ogle/aksam/yatsi) için HİÇ bildirim planlanmamalı (ayar kapısı seçiciliği)
+            expect(idler.some((id) => /_(ogle|aksam|yatsi)_/.test(id))).toBe(false);
+
+            // Bugünün imsak çağrısı: başlık + trigger.date + kanal fiziksel olarak doğru olmalı.
+            // adhan mock'unda fajr = bugün 05:00 → trigger.date bu ana eşit olmalı.
+            const bugunImsak = cagrilar.find(
+                (c) => c.identifier === 'vakit_bildirim_imsak_2024-06-15'
+            );
+            expect(bugunImsak).toBeDefined();
+            expect(bugunImsak.content.title).toBe('İmsak Vakti Girdi');
+            expect(bugunImsak.content.data).toEqual({ tip: 'vakit_bildirim', vakit: 'imsak' });
+            expect(bugunImsak.trigger.date).toEqual(new Date('2024-06-15T05:00:00'));
+            expect(bugunImsak.trigger.channelId).toBe('vakit_bildirim');
+            expect(bugunImsak.trigger.type).toBe(Notifications.SchedulableTriggerInputTypes.DATE);
+
+            // Bugünün ikindi çağrısı: asr = bugün 17:00 (farklı başlık + doğru tetik anı)
+            const bugunIkindi = cagrilar.find(
+                (c) => c.identifier === 'vakit_bildirim_ikindi_2024-06-15'
+            );
+            expect(bugunIkindi).toBeDefined();
+            expect(bugunIkindi.content.title).toBe('İkindi Vakti Girdi');
+            expect(bugunIkindi.trigger.date).toEqual(new Date('2024-06-15T17:00:00'));
+
+            // Yarının imsak çağrısı yarın tarihinde (off-by-one / gün kayması regresyonunu yakalar)
+            const yarinImsak = cagrilar.find(
+                (c) => c.identifier === 'vakit_bildirim_imsak_2024-06-16'
+            );
+            expect(yarinImsak).toBeDefined();
+            expect(yarinImsak.trigger.date).toEqual(new Date('2024-06-16T05:00:00'));
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('geçmişte kalan vakitleri planlamamalı (geçmiş-zaman kapısı)', async () => {
+        // Sistem saatini 18:00'e kilitle: bugünün imsak(05:00)/öğle(13:00)/ikindi(17:00) GEÇMİŞTE,
+        // akşam(20:00)/yatsı(22:00) ve yarının tüm vakitleri GELECEKTE.
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2024-06-15T18:00:00'));
+
+        try {
+            // Tüm vakitler açık → geçmiş filtresinin gerçekten elediğini izole edebiliriz
+            (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
+                imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true
+            });
+
+            const mockHesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
+            (mockHesaplayici.getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
+
+            (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('notification_id');
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+
+            await service.bildirimleriGuncelle();
+
+            const idler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map(
+                (c) => c[0].identifier
+            );
+
+            // Bugünün geçmiş vakitleri (imsak/ogle/ikindi @ 05/13/17 < 18:00) planlanmamalı
+            expect(idler).not.toContain('vakit_bildirim_imsak_2024-06-15');
+            expect(idler).not.toContain('vakit_bildirim_ogle_2024-06-15');
+            expect(idler).not.toContain('vakit_bildirim_ikindi_2024-06-15');
+
+            // Bugünün gelecekteki vakitleri (aksam/yatsi @ 20/22 > 18:00) planlanmalı
+            expect(idler).toContain('vakit_bildirim_aksam_2024-06-15');
+            expect(idler).toContain('vakit_bildirim_yatsi_2024-06-15');
+
+            // Yarının tüm vakitleri (5 adet) tamamen gelecekte → hepsi planlanmalı
+            expect(idler).toEqual(
+                expect.arrayContaining([
+                    'vakit_bildirim_imsak_2024-06-16',
+                    'vakit_bildirim_ogle_2024-06-16',
+                    'vakit_bildirim_ikindi_2024-06-16',
+                    'vakit_bildirim_aksam_2024-06-16',
+                    'vakit_bildirim_yatsi_2024-06-16',
+                ])
+            );
+
+            // Toplam: bugün 2 (aksam, yatsi) + yarın 5 = 7 çağrı
+            expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(7);
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it('önceki vakit bildirimlerini temizlemeli', async () => {

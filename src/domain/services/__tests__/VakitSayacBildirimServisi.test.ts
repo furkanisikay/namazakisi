@@ -1,4 +1,4 @@
-import notifee from '@notifee/react-native';
+import notifee, { TriggerType } from '@notifee/react-native';
 import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 
 jest.mock('@notifee/react-native', () => ({
@@ -123,6 +123,26 @@ describe('VakitSayacBildirimServisi', () => {
     for (const id of bitisIds) {
       expect(id).toMatch(/_bitis$/);
     }
+
+    // Sadece benzersiz ID degil, TETIK ZAMANLARI da fiziksel olarak dogru olmali.
+    // Saat 10:00, esik 30dk. Ogle vaktinin cikisi = ikindi girisi = asr (15:00).
+    // => Temizleme tam vakit cikisinda (15:00), sayac ise cikis - 30dk (14:30) tetiklenmeli.
+    const sayacOnek = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+    const ogleSayac = createCalls.find((call: any[]) => call[0].id === sayacOnek);
+    const ogleBitis = createCalls.find((call: any[]) => call[0].id === `${sayacOnek}_bitis`);
+
+    expect(ogleSayac).toBeDefined();
+    expect(ogleBitis).toBeDefined();
+
+    const cikis = mockPrayerTimes.asr.getTime();
+    // Temizleme tam vakit cikisinda tetiklenmeli (otomatik kapanma)
+    expect(ogleBitis![1].timestamp).toBe(cikis);
+    expect(ogleBitis![1].type).toBe(TriggerType.TIMESTAMP);
+    // Sayac, cikis - esikDk*60000 (14:30) tetiklenmeli; simdi+5sn (10:00:05) alt siniri burada baskin degil
+    expect(ogleSayac![1].timestamp).toBe(cikis - 30 * 60 * 1000);
+    expect(ogleSayac![1].type).toBe(TriggerType.TIMESTAMP);
+    // Sayac, temizlemeden ONCE tetiklenmeli (mantiksal sira: once say, sonra temizle)
+    expect(ogleSayac![1].timestamp).toBeLessThan(ogleBitis![1].timestamp);
   });
 
   it('vakitSayaciniIptalEt: bitis trigger\'ini da iptal etmeli', async () => {

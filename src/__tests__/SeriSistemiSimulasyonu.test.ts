@@ -103,10 +103,31 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     }
 
     expect(seriDurumu.mevcutSeri).toBe(15);
-    expect(seviyeDurumu.toplamPuan).toBeGreaterThan(0);
+
+    // Toplam puan, uretimle BAGIMSIZ yontemle hesaplanan kesin referans degere esit olmali.
+    // Seri puani: her tam gun icin kazanilanPuan = 10 + yeniSeri (SeriHesaplayiciServisi:378).
+    //   Sigma_{yeniSeri=1..15}(10 + yeniSeri) = 10*15 + (1+2+...+15) = 150 + 120 = 270.
+    // Rozet puani: 7. gunde 'ilk_adim' (bronz) kazanilir.
+    //   rozetPuaniHesapla(bronz) = PUAN_DEGERLERI.rozet_kazanildi(50) * ROZET_SEVIYE_CARPANI.bronz(1) = 50.
+    //   (15 gun x 5 = 75 namaz < 100 -> 'yuz_namaz' yok; 15 mukemmel gun < 30 -> 'mukemmeliyetci' yok)
+    // Toplam = 270 + 50 = 320.
+    expect(seviyeDurumu.toplamPuan).toBe(320);
+
+    // 320 puan SEVIYE_TANIMLARI esiklerine gore: seviye3 minPuan=300, seviye4 minPuan=600.
+    // 300 <= 320 < 600 -> seviye 3 (Salik). Seviye atlama ve esik mantigi regresyonunu yakalar.
+    expect(seviyeDurumu.mevcutSeviye).toBe(3);
+    expect(seviyeDurumu.rank).toBe('Sâlik');
+
     // 7 gun rozeti kazanilmis olmali
     const ilkAdimRozeti = rozetler.find(r => r.rozetId === 'ilk_adim');
     expect(ilkAdimRozeti?.kazanildiMi).toBe(true);
+
+    // Bu senaryoda SADECE 'ilk_adim' rozeti kazanilmali; baska bir rozetin yanlislikla
+    // tetiklenmesi (ornegin esik kaymasi) puan matematigini bozar ve burada yakalanir.
+    const kazanilanRozetIdleri = rozetler
+      .filter(r => r.kazanildiMi)
+      .map(r => r.rozetId);
+    expect(kazanilanRozetIdleri).toEqual(['ilk_adim']);
 
     // 2. Bir gun kaciriliyor (2025-01-16)
     // Bu gunu pas geciyoruz (namaz yok)

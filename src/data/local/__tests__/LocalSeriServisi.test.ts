@@ -41,11 +41,12 @@ describe('LocalSeriServisi - Veri Migrasyonu', () => {
       // Puanlar korunmali
       expect(sonuc.veri!.toplamPuan).toBe(450);
       expect(sonuc.veri!.mevcutSeviye).toBe(3);
-      // Eksik alanlar doldurulmali
-      expect(sonuc.veri!.rank).toBeDefined();
-      expect(sonuc.veri!.rank).not.toBe('');
-      expect(sonuc.veri!.rankIkonu).toBeDefined();
-      expect(sonuc.veri!.rankIkonu).not.toBe('');
+      // Eksik alanlar 450 puanin GERCEK seviye karsiligi (seviye 3 = Salik)
+      // ile doldurulmali. Sadece "bos degil" demek migrasyon yanlis rank
+      // atarsa regresyonu gizlerdi; bu yuzden kesin referans deger bekleriz.
+      // 450 puan: minPuan esikleri [0,100,300,600] icin seviye 3 (Salik / 🌟).
+      expect(sonuc.veri!.rank).toBe('Sâlik');
+      expect(sonuc.veri!.rankIkonu).toBe('🌟');
     });
 
     test('rank ve rankIkonu olan yeni veriyi degistirmemeli', async () => {

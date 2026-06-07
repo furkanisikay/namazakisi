@@ -15,6 +15,7 @@ import seriReducer, {
 } from '../seriSlice';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
+import { bugunuAl } from '../../../domain/services/SeriHesaplayiciServisi';
 
 // ==================== MOCKLAR ====================
 
@@ -179,7 +180,9 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(store.getState().seri.seviyeDurumu?.toplamPuan).toBe(450);
 
       // Simdi seriKontrolet calistirilabilmeli
-      const bugun = new Date().toISOString().split('T')[0];
+      // Uretim kodu "bugun"u yerel saatle (tarihiISOFormatinaCevir) hesaplar;
+      // beklenen degeri ayni uretim yardimcisindan (bugunuAl) al ki timezone kaymasi olmasin.
+      const bugun = bugunuAl();
       const sonuc = await store.dispatch(
         seriKontrolet({
           bugunNamazlar: tamNamazlar(bugun),
@@ -187,21 +190,72 @@ describe('seriSlice - Race Condition Korumasi', () => {
         })
       );
 
-      // Thunk calismali (condition engellememeli)
+      // Thunk calismali (condition engellememeli) ve basariyla tamamlanmali
       expect((sonuc.meta as any).condition).not.toBe(true);
+      expect(sonuc.type).toContain('fulfilled');
+
+      // Verilen girdide (mevcutSeri=10, sonTamGun cok eski '2026-02-14',
+      // bugun 5/5 tam, dun=null) seriHesapla "arada gun kacti & mevcutSeri>=7"
+      // dalina girer (SeriHesaplayiciServisi.ts:384) ve TOPARLANMA modu baslatir.
+      const guncelDurum = store.getState().seri.seriDurumu!;
+      expect(guncelDurum.sonTamGun).toBe(bugun); // bugun tam gun olarak islendi
+      expect(guncelDurum.toparlanmaDurumu).not.toBeNull(); // toparlanma basladi
+      expect(guncelDurum.toparlanmaDurumu!.oncekiSeri).toBe(10); // onceki seri korundu
+      expect(guncelDurum.toparlanmaDurumu!.tamamlananGun).toBe(1); // bugun ilk toparlanma gunu
+      expect(guncelDurum.toparlanmaDurumu!.baslangicTarihi).toBe(bugun);
+
+      // mevcutSeri toparlanma boyunca degismez; onceki seri toparlanmaDurumu'nda tutulur
+      expect(guncelDurum.mevcutSeri).toBe(10);
+
+      // Tam guncelleme persist edildi (no-op degil, gercek yazma)
+      expect(mockLocalSeriDurumunuKaydet).toHaveBeenCalled();
+      expect(mockLocalSeviyeDurumunuKaydet).toHaveBeenCalled();
     });
 
-    test('seri verileri yuklenmeden puanlar sifirlanmamali', async () => {
-      // Seri verilerini yukle (kullanicinin mevcut puanlari var)
-      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(mockSeriVerileri());
+    test('yuklenmis puanlar degisiklik olmayan seriKontrolet sonrasi sifirlanmaz', async () => {
+      // Kullanicinin mevcut puanlari var; sonTamGun'u bugune esitleyerek
+      // seriHesapla'nin "gun zaten islendi" erken-donus dalini (SeriHesaplayiciServisi.ts:287)
+      // deterministik tetikliyoruz. Boylece seriDegisti=false olur ve seriKontrolet
+      // (seriSlice.ts:183-192) state'teki sayaclari AYNEN geri yazar -> hicbiri sifirlanmamali.
+      const bugun = bugunuAl();
+      const veriler = mockSeriVerileri();
+      veriler.veri.seriDurumu.sonTamGun = bugun;
+      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(veriler);
+      mockLocalSeriDurumunuKaydet.mockResolvedValue({ basarili: true });
+      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
 
       await store.dispatch(seriVerileriniYukle());
 
-      // Puanlar dogru yuklenmis olmali
+      // Puanlar dogru yuklenmis olmali (load echo)
       expect(store.getState().seri.seviyeDurumu?.toplamPuan).toBe(450);
       expect(store.getState().seri.toplamKilinanNamaz).toBe(50);
       expect(store.getState().seri.toparlanmaSayisi).toBe(2);
       expect(store.getState().seri.mukemmelGunSayisi).toBe(5);
+
+      // Degisiklik olmayan bir seriKontrolet (bugun zaten islenmis) -> sayaclar korunmali
+      const sonuc = await store.dispatch(
+        seriKontrolet({
+          bugunNamazlar: tamNamazlar(bugun),
+          dunNamazlar: null,
+        })
+      );
+      // Thunk gercekten calisti (condition engellemedi) ve fulfilled oldu
+      expect((sonuc.meta as any).condition).not.toBe(true);
+      expect(sonuc.type).toContain('fulfilled');
+
+      const s = store.getState().seri;
+      // KRITIK: degisiklik yok yolunda hicbir sayac sifirlanmamali / degismemeli
+      expect(s.toplamKilinanNamaz).toBe(50);
+      expect(s.toparlanmaSayisi).toBe(2);
+      expect(s.mukemmelGunSayisi).toBe(5);
+      expect(s.seviyeDurumu?.toplamPuan).toBe(450);
+      // sonTamGun bugun olarak kalir (degismez), toparlanma baslatilmaz
+      expect(s.seriDurumu?.sonTamGun).toBe(bugun);
+      expect(s.seriDurumu?.toparlanmaDurumu).toBeNull();
+
+      // Degisiklik olmadigi icin durum/seviye persist edilmemeli (gereksiz yazma yok)
+      expect(mockLocalSeriDurumunuKaydet).not.toHaveBeenCalled();
+      expect(mockLocalSeviyeDurumunuKaydet).not.toHaveBeenCalled();
     });
   });
 

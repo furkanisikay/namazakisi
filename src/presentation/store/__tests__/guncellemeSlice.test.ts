@@ -146,7 +146,7 @@ describe('guncellemeSlice', () => {
       expect(state.bilgi).toBeNull();
     });
 
-    it('rejected durumunda hata mesaji set edilir', async () => {
+    it('rejected durumunda hata mesaji state e tasinir', async () => {
       __mockKontrolEt.mockRejectedValue(new Error('Test hatasi'));
 
       const store = storeOlustur();
@@ -154,7 +154,21 @@ describe('guncellemeSlice', () => {
 
       const state = store.getState().guncelleme;
       expect(state.kontrolEdiliyor).toBe(false);
-      expect(state.hata).toBeDefined();
+      // Reducer action.error.message'i AYNEN state'e tasimali (sadece "tanimsiz degil" yetmez)
+      expect(state.hata).toBe('Test hatasi');
+    });
+
+    it('rejected - mesajsiz hatada varsayilan hata metni kullanilir', async () => {
+      // Bos obje -> RTK serilestirmesinde action.error.message undefined olur,
+      // boylece reducer'daki `|| 'Guncelleme kontrol edilemedi'` fallback dali tetiklenir
+      __mockKontrolEt.mockRejectedValue({});
+
+      const store = storeOlustur();
+      await store.dispatch(guncellemeKontrolEt(false));
+
+      const state = store.getState().guncelleme;
+      expect(state.kontrolEdiliyor).toBe(false);
+      expect(state.hata).toBe('Guncelleme kontrol edilemedi');
     });
 
     it('zorla parametresi servise iletilir', async () => {

@@ -8,9 +8,10 @@
  */
 
 import * as React from 'react';
-import { create, act, ReactTestRenderer } from 'react-test-renderer';
+import { create, act, ReactTestRenderer, ReactTestInstance } from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { TouchableOpacity, Text, Linking } from 'react-native';
 import guncellemeReducer, { bildirimiKapat } from '../../../store/guncellemeSlice';
 
 // ==================== MOCKLAR ====================
@@ -44,6 +45,15 @@ jest.mock('../../../../core/theme', () => ({
 }));
 
 // GuncellemeServisi mock
+// NOT: guvenilirBaglantiMi'yi URETIM ile AYNI sozlesmeye gore (https + guvenilir domain)
+// implemente ediyoruz; cunku GuncellemeBildirimi.tsx GitHub dalinda bunu cagiriyor.
+// Mock'tan eksik olsaydi component icinde undefined olup TypeError firlatirdi.
+const GUVENILIR_DOMAINLER_TEST = [
+  'github.com',
+  'objects.githubusercontent.com',
+  'play.google.com',
+  'apps.apple.com',
+];
 jest.mock('../../../../domain/services/GuncellemeServisi', () => ({
   GuncellemeServisi: {
     getInstance: () => ({
@@ -52,12 +62,25 @@ jest.mock('../../../../domain/services/GuncellemeServisi', () => ({
     }),
   },
   yayinTarihiniFormatla: (tarih: string) => tarih ? '14.02.2026' : '',
+  guvenilirBaglantiMi: (url: string) => {
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:') return false;
+      return GUVENILIR_DOMAINLER_TEST.some(
+        (domain) =>
+          parsed.hostname === domain || parsed.hostname.endsWith(`.${domain}`)
+      );
+    } catch {
+      return false;
+    }
+  },
 }));
 
 // Linking mock
-jest.mock('react-native/Libraries/Linking/Linking', () => ({
-  openURL: jest.fn(),
-}));
+// Bilesen `import { Linking } from 'react-native'` kullaniyor; bu yuzden
+// react-native'in dogrudan Linking.openURL'unu jest.fn ile stub'liyoruz
+// (deep path mock'u jest-expo altinda ayni objeyi yakalamiyor).
+(Linking as unknown as { openURL: jest.Mock }).openURL = jest.fn().mockResolvedValue(undefined);
 
 // PlayStoreGuncellemeModulu mock
 const mockEsnekGuncellemeBaslat = jest.fn().mockResolvedValue('DOWNLOADED');
@@ -84,6 +107,27 @@ function storeOlustur(preloadedState?: any) {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }),
   });
+}
+
+/**
+ * Cocuk Text icerigine gore TouchableOpacity butonunu bulur.
+ * Boylece testler gercek onPress handler'ini (guncelleBasildi / sonraBasildi)
+ * tetikleyebilir — JSON string-contains yerine gercek davranisi dogrular.
+ */
+function butonBul(tree: ReactTestRenderer, metin: string): ReactTestInstance {
+  const adaylar = tree.root.findAll(
+    (node) =>
+      node.type === TouchableOpacity &&
+      node.findAll(
+        (c) =>
+          c.type === Text &&
+          JSON.stringify(c.props.children).includes(metin)
+      ).length > 0
+  );
+  if (adaylar.length === 0) {
+    throw new Error(`"${metin}" metnini iceren TouchableOpacity bulunamadi`);
+  }
+  return adaylar[0];
 }
 
 // Bilesenin lazy import'u (mocklardan sonra)
@@ -276,7 +320,9 @@ describe('GuncellemeBildirimi', () => {
     act(() => { tree!.unmount(); });
   });
 
-  it('Sonra ve Guncelle butonlari mevcut', () => {
+  it('Sonra butonuna basinca bildirim kapanir (guncellemeErtele -> bildirimiKapatti true)', async () => {
+    (Linking.openURL as jest.Mock).mockClear();
+
     const store = storeOlustur({
       guncelleme: {
         kontrolEdiliyor: false,
@@ -285,7 +331,8 @@ describe('GuncellemeBildirimi', () => {
           yeniVersiyon: '1.0.0',
           mevcutVersiyon: '0.3.0',
           degisiklikNotlari: 'Test',
-          indirmeBaglantisi: 'https://example.com',
+          // github.com guvenilir domaindir -> guvenilirBaglantiMi(true)
+          indirmeBaglantisi: 'https://github.com/ornek/repo/releases/download/v1.0.0/app.apk',
           yayinTarihi: '2026-02-14',
           kaynak: 'github',
           zorunluMu: false,
@@ -305,9 +352,105 @@ describe('GuncellemeBildirimi', () => {
     });
     act(() => { jest.runAllTimers(); });
 
-    const json = JSON.stringify(tree!.toJSON());
-    expect(json).toContain('Sonra');
-    expect(json).toContain('Güncelle');
+    // "Sonra" butonunun onPress'ini gercekten tetikle (sonraBasildi)
+    await act(async () => {
+      butonBul(tree!, 'Sonra').props.onPress();
+    });
+
+    // yeniVersiyon dolu oldugundan guncellemeErtele thunk'i dispatch edilir;
+    // fulfilled olunca bildirimiKapatti true olur.
+    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+    // Sonra butonu indirme baglantisini ACMAMALI
+    expect(Linking.openURL).not.toHaveBeenCalled();
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Guncelle butonuna (GitHub) basinca guvenilir baglanti Linking.openURL ile acilir', async () => {
+    (Linking.openURL as jest.Mock).mockClear();
+    (Linking.openURL as jest.Mock).mockResolvedValue(undefined);
+
+    const baglanti = 'https://github.com/ornek/repo/releases/download/v1.0.0/app.apk';
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          indirmeBaglantisi: baglanti,
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // "Güncelle" butonunun gercek onPress'i (guncelleBasildi, github dali)
+    await act(async () => {
+      await butonBul(tree!, 'Güncelle').props.onPress();
+    });
+
+    // GitHub dali: indirme baglantisi guvenilir oldugu icin acilmali
+    expect(Linking.openURL).toHaveBeenCalledTimes(1);
+    expect(Linking.openURL).toHaveBeenCalledWith(baglanti);
+    // GitHub dalinda Play Store native akisi tetiklenmemeli
+    expect(mockEsnekGuncellemeBaslat).not.toHaveBeenCalled();
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Guncelle butonuna (GitHub) basinca guvenilmez baglanti ACILMAZ', async () => {
+    (Linking.openURL as jest.Mock).mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '1.0.0',
+          mevcutVersiyon: '0.3.0',
+          degisiklikNotlari: 'Test',
+          // example.com guvenilir domain listesinde DEGIL -> acilmamali
+          indirmeBaglantisi: 'https://example.com/app.apk',
+          yayinTarihi: '2026-02-14',
+          kaynak: 'github',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    await act(async () => {
+      await butonBul(tree!, 'Güncelle').props.onPress();
+    });
+
+    // Guvenilmez domain (example.com) acilmamali — guvenlik kurali
+    expect(Linking.openURL).not.toHaveBeenCalled();
 
     act(() => { tree!.unmount(); });
   });
@@ -337,13 +480,16 @@ describe('GuncellemeBildirimi', () => {
 
   // ==================== PLAY STORE DAL TESTLERİ ====================
 
-  it('Play Store kaynağında bildirim render eder', () => {
+  it('Play Store kaynağında temiz etiket gosterir, ham versionCode SIZDIRMAZ', () => {
+    // Gercekci Play Store state'i: uretimde yeniVersiyon ham versionCode ( or. '28'),
+    // ama kullaniciya yeniVersiyonEtiketi ('Yeni sürüm') gosterilir.
     const store = storeOlustur({
       guncelleme: {
         kontrolEdiliyor: false,
         guncellemeMevcut: true,
         bilgi: {
-          yeniVersiyon: 'versionCode 28',
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
           mevcutVersiyon: '0.14.0',
           degisiklikNotlari: '',
           indirmeBaglantisi: 'playstore://update',
@@ -369,6 +515,52 @@ describe('GuncellemeBildirimi', () => {
     expect(tree!.toJSON()).not.toBeNull();
     const json = JSON.stringify(tree!.toJSON());
     expect(json).toContain('Güncelle');
+    // Temiz etiket gosterilmeli
+    expect(json).toContain('Yeni sürüm');
+    // Kullaniciya ASLA 'versionCode' veya ham versiyon sayisi sizmamali (AGENTS.md kurali)
+    expect(json).not.toContain('versionCode');
+    expect(json).not.toMatch(/v\s?28\b/);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store etiketi eksikse render olur ama versionCode metni SIZMAZ (fallback degismezi)', () => {
+    // yeniVersiyonEtiketi kasitli olarak undefined -> fallback `v${yeniVersiyon}`.
+    // Fallback ham versionCode formati (or. "versionCode 28") icermemeli; bu degismez
+    // kullaniciya ham sayi sizmasini bilesen katmaninda kilitler.
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28',
+          mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    expect(tree!.toJSON()).not.toBeNull();
+    const json = JSON.stringify(tree!.toJSON());
+    expect(json).toContain('Güncelle');
+    // Etiket yoksa bile 'versionCode' ham metni asla gosterilmemeli
+    expect(json).not.toContain('versionCode');
 
     act(() => { tree!.unmount(); });
   });
@@ -376,53 +568,6 @@ describe('GuncellemeBildirimi', () => {
   it('Play Store "Güncelle" butonuna basınca esnekGuncellemeBaslat çağrılır', async () => {
     mockEsnekGuncellemeBaslat.mockReset();
     mockEsnekGuncellemeBaslat.mockResolvedValue('DOWNLOADED');
-
-    const store = storeOlustur({
-      guncelleme: {
-        kontrolEdiliyor: false,
-        guncellemeMevcut: true,
-        bilgi: {
-          yeniVersiyon: 'versionCode 28',
-          mevcutVersiyon: '0.14.0',
-          degisiklikNotlari: '',
-          indirmeBaglantisi: 'playstore://update',
-          yayinTarihi: '',
-          kaynak: 'playstore',
-          zorunluMu: false,
-        },
-        bildirimiKapatti: false,
-        hata: null,
-      },
-    });
-
-    let tree: ReactTestRenderer;
-    act(() => {
-      tree = create(
-        <Provider store={store}>
-          <GuncellemeBildirimi />
-        </Provider>
-      );
-    });
-    act(() => { jest.runAllTimers(); });
-
-    // "Güncelle" butonunu bul ve bas
-    const json = tree!.toJSON() as any;
-    const jsonStr = JSON.stringify(json);
-    // Güncelle butonu mevcut olmalı
-    expect(jsonStr).toContain('Güncelle');
-
-    // bildirimiKapat dispatch edilmeli (Play Store native sheet devralır)
-    await act(async () => {
-      // Butona basma simülasyonu için dispatch kontrolü
-      store.dispatch(bildirimiKapat());
-    });
-    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
-
-    act(() => { tree!.unmount(); });
-  });
-
-  it('Play Store kaynağında Linking.openURL çağrılmaz', async () => {
-    const Linking = require('react-native/Libraries/Linking/Linking');
     (Linking.openURL as jest.Mock).mockClear();
 
     const store = storeOlustur({
@@ -430,7 +575,8 @@ describe('GuncellemeBildirimi', () => {
         kontrolEdiliyor: false,
         guncellemeMevcut: true,
         bilgi: {
-          yeniVersiyon: 'versionCode 28',
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
           mevcutVersiyon: '0.14.0',
           degisiklikNotlari: '',
           indirmeBaglantisi: 'playstore://update',
@@ -443,7 +589,6 @@ describe('GuncellemeBildirimi', () => {
       },
     });
 
-    // Render ve manuel olarak bildirimiKapat dispatch
     let tree: ReactTestRenderer;
     act(() => {
       tree = create(
@@ -454,9 +599,65 @@ describe('GuncellemeBildirimi', () => {
     });
     act(() => { jest.runAllTimers(); });
 
-    // playstore://update URL'si guvenilirBaglantiMi kontrolünden geçmez,
-    // bu yüzden Linking.openURL hiç çağrılmamış olmalı
-    expect(Linking.openURL).not.toHaveBeenCalledWith('playstore://update');
+    // "Güncelle" butonunun GERCEK onPress'ini tetikle (guncelleBasildi, playstore dali)
+    await act(async () => {
+      await butonBul(tree!, 'Güncelle').props.onPress();
+    });
+
+    // Play Store native in-app update akisi baslamali
+    expect(mockEsnekGuncellemeBaslat).toHaveBeenCalledTimes(1);
+    // Play Store native sheet devraldigi icin kendi UI'i hemen kapanmali
+    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
+    // Play Store dalinda harici tarayici/indirme baglantisi ACILMAMALI
+    expect(Linking.openURL).not.toHaveBeenCalled();
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store kaynağında "Güncelle" basinca Linking.openURL çağrılmaz', async () => {
+    mockEsnekGuncellemeBaslat.mockReset();
+    mockEsnekGuncellemeBaslat.mockResolvedValue('DOWNLOADED');
+    (Linking.openURL as jest.Mock).mockClear();
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
+          mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // "Güncelle" butonunun gercek onPress'ini tetikle
+    await act(async () => {
+      await butonBul(tree!, 'Güncelle').props.onPress();
+    });
+
+    // Play Store dalinda native akis kullanilir; harici URL ASLA acilmaz
+    expect(Linking.openURL).not.toHaveBeenCalled();
+    // Bunun yerine native in-app update baslatilir
+    expect(mockEsnekGuncellemeBaslat).toHaveBeenCalledTimes(1);
+    expect(store.getState().guncelleme.bildirimiKapatti).toBe(true);
 
     act(() => { tree!.unmount(); });
   });

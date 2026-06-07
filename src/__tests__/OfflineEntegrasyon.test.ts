@@ -1,7 +1,6 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import namazReducer, { namazDurumunuDegistir, namazlariYukle } from '../presentation/store/namazSlice';
-import seriReducer from '../presentation/store/seriSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazAdi } from '../core/constants/UygulamaSabitleri';
 
@@ -13,41 +12,8 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     clear: jest.fn(),
 }));
 
-// Mock BildirimServisi to avoid expo-notifications issues
-jest.mock('../domain/services/BildirimServisi', () => ({
-    BildirimServisi: {
-        getInstance: () => ({
-            bildirimPlanla: jest.fn(),
-            bildirimIptalEt: jest.fn(),
-        }),
-    },
-}));
 
-// Mock KonumYoneticiServisi to avoid expo-location issues
-jest.mock('../domain/services/KonumYoneticiServisi', () => ({
-    KonumYoneticiServisi: {
-        getInstance: () => ({
-            sonrakiGunImsakVaktiGetir: jest.fn(),
-        }),
-    },
-}));
-
-// Mock LocalSeriServisi (simplified)
-jest.mock('../data/local/LocalSeriServisi', () => ({
-    localTumSeriVerileriniGetir: jest.fn().mockResolvedValue({ basarili: true, veri: { /* mock data needed? */ } }),
-    localSeriAyarlariniKaydet: jest.fn(),
-    localSeriDurumunuKaydet: jest.fn(),
-    localRozetleriKaydet: jest.fn(),
-    localSeviyeDurumunuKaydet: jest.fn(),
-    localToplamKilinanNamaziKaydet: jest.fn(),
-    localToparlanmaSayisiniArttir: jest.fn(),
-    localMukemmelGunSayisiniArttir: jest.fn(),
-    localOzelGunAyarlariniKaydet: jest.fn(),
-    VARSAYILAN_OZEL_GUN_AYARLARI: {},
-}));
-
-
-describe('Offline Entegrasyon Testi (Redux <-> LocalStorage)', () => {
+describe('Offline Namaz Entegrasyon Testi (Redux namazSlice <-> LocalStorage)', () => {
     let store: any;
     const mockDate = '2025-05-15';
 
@@ -55,11 +21,11 @@ describe('Offline Entegrasyon Testi (Redux <-> LocalStorage)', () => {
         // Reset mocks
         jest.clearAllMocks();
 
-        // Store setup
+        // Store setup — bu test dosyasi yalnizca namazSlice <-> LocalStorage
+        // round-trip'ini dogrular; seri/bildirim/konum zinciri burada kapsam disi.
         store = configureStore({
             reducer: {
                 namaz: namazReducer,
-                seri: seriReducer,
             },
         });
     });
@@ -99,14 +65,17 @@ describe('Offline Entegrasyon Testi (Redux <-> LocalStorage)', () => {
     });
 
     test('Namazlar yüklendiğinde AsyncStorage verisi okunmalı', async () => {
-        // 1. Mock existing data in AsyncStorage
+        // 1. Storage'da var olan veriyi mock'la.
+        //    Anahtarlar NamazAdi enum degerleridir (Turkce karakterli: 'Öğle', 'İkindi', ...).
+        //    Storage'da string anahtar olarak Turkce karakterli saklanir; bunlarin storage'dan
+        //    DOGRU sekilde okunup state'e tasindigini (round-trip) dogrularız.
         const mockStorageData = JSON.stringify({
             [mockDate]: {
-                'Sabah': true,
-                'Öğle': false,
-                'İkindi': false,
-                'Akşam': false,
-                'Yatsı': false
+                [NamazAdi.Sabah]: true,
+                [NamazAdi.Ogle]: true,    // 'Öğle' Turkce anahtar round-trip
+                [NamazAdi.Ikindi]: false,
+                [NamazAdi.Aksam]: true,   // 'Akşam' Turkce anahtar round-trip
+                [NamazAdi.Yatsi]: false,
             }
         });
 
@@ -119,12 +88,23 @@ describe('Offline Entegrasyon Testi (Redux <-> LocalStorage)', () => {
         // LocalNamazServisi uses DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI
         expect(AsyncStorage.getItem).toHaveBeenCalled();
 
-        // 4. Verify state is populated from storage
+        // 4. State, storage'daki BES vaktin tamamiyla beslenmis olmali.
+        //    Sadece 'Sabah' (ASCII) degil; Turkce-karakterli enum anahtarlarinin da
+        //    true/false olarak dogru okundugunu net assert ediyoruz. Uretimdeki
+        //    `tarihVerileri[namazAdi] || false` fallback'i, kirik bir anahtar aramasini
+        //    sessizce false'a cevirip regresyonu gizleyebilir; bu yuzden true beklenen
+        //    Turkce anahtarlar (Öğle/Akşam) round-trip'i fiilen kanitlar.
         const state = store.getState();
         const gunlukData = state.namaz.gunlukNamazlar;
         expect(gunlukData).toBeDefined();
-        expect(gunlukData!.namazlar.find((n: any) => n.namazAdi === 'Sabah')?.tamamlandi).toBe(true);
-        // Not: Diger namazlarin kontrolu CI ortaminda encoding sorunu yaratabiliyor
+
+        const bul = (ad: NamazAdi) =>
+            gunlukData!.namazlar.find((n: any) => n.namazAdi === ad)?.tamamlandi;
+        expect(bul(NamazAdi.Sabah)).toBe(true);
+        expect(bul(NamazAdi.Ogle)).toBe(true);    // 'Öğle' Turkce anahtar round-trip
+        expect(bul(NamazAdi.Ikindi)).toBe(false);
+        expect(bul(NamazAdi.Aksam)).toBe(true);   // 'Akşam' Turkce anahtar round-trip
+        expect(bul(NamazAdi.Yatsi)).toBe(false);
     });
 
 

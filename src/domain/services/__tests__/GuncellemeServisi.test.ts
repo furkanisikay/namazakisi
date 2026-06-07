@@ -262,17 +262,64 @@ describe('GitHubGuncellemeKaynagi', () => {
     expect(sonuc.bilgi?.indirmeBaglantisi).toBe(htmlUrl);
   });
 
-  it('degisiklik notlarini temizler ve kisaltir', async () => {
-    const uzunNot = '## Yeni Ozellikler\n\n**Birinci ozellik**: Aciklama\n\n\n\nDevam';
+  it('basliksiz/duz metin release notlarinda markdown sembollerini temizler (fallback yolu)', async () => {
+    // Bu metinde "###" bolum basligi YOK (sadece "##") ve "- "/"* " madde listesi
+    // yok; bu yuzden yapilandirilmis dal hicbir sey toplayamaz ve uretim FALLBACK
+    // yoluna (ham metni temizleyerek dondurme) duser. Bu testin amaci o fallback'i
+    // dogrulamaktir: markdown sembolleri silinir, icerik korunur, fazla bos satir
+    // (>=3 \n) tek bos satira indirilir.
+    const hamNot = '## Yeni Ozellikler\n\n**Birinci ozellik**: Aciklama\n\n\n\nDevam';
     mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
-      body: uzunNot,
+      body: hamNot,
     }));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
 
-    // Markdown temizlenmis olmali
-    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('##');
-    expect(sonuc.bilgi?.degisiklikNotlari).not.toContain('**');
+    // 1) Markdown sembolleri tamamen temizlenmis olmali (regresyon: temizlik atlanirsa fail)
+    expect(notlar).not.toContain('#');
+    expect(notlar).not.toContain('*');
+
+    // 2) Icerik korunmus olmali (regresyon: fallback metni yutarsa/keserse fail)
+    expect(notlar).toContain('Yeni Ozellikler');
+    expect(notlar).toContain('Birinci ozellik: Aciklama');
+    expect(notlar).toContain('Devam');
+
+    // 3) Uc+ ardisik satir sonu tek bos satira (cift \n) indirilmis olmali
+    //    (regresyon: \n{3,} -> \n\n sadelestirmesi kaldirilirsa fail)
+    expect(notlar).not.toMatch(/\n{3,}/);
+
+    // 4) Tam beklenen cikti — bagimsiz olarak uretim donusumunu birebir kilitler
+    expect(notlar).toBe('Yeni Ozellikler\n\nBirinci ozellik: Aciklama\n\nDevam');
+  });
+
+  it('degisiklik notlarini yapilandirilmis formatta uretir (struct yolu)', async () => {
+    // "###" bolum basliklari + "- " madde listesi => uretim YAPILANDIRILMIS dali
+    // calismali (fallback degil). Bilerek inline "**" KULLANMIYORUZ; cunku
+    // yapilandirilmis dal madde icerigini HAM push eder ve inline markdown'i
+    // temizlemez (uretim satir 247) — boyle bir madde testi mevcut kodda fail ederdi.
+    const releaseNot = `### Yeni Özellikler
+- X özelligi eklendi
+- Y özelligi eklendi
+
+### Hata Düzeltmeleri
+- Z hatasi giderildi`;
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', { body: releaseNot }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+    const notlar = sonuc.bilgi?.degisiklikNotlari ?? '';
+
+    // Yapilandirilmis bicimlendirme yolu calismis olmali (fallback degil):
+    // baslik etiketi + her madde "• " on ekiyle listelenir
+    expect(notlar).toContain('Yeni Özellikler:');
+    expect(notlar).toContain('• X özelligi eklendi');
+    expect(notlar).toContain('• Y özelligi eklendi');
+    // "fixed"/"hata" bolumu dolu oldugundan ozet "Hatalar giderildi" eklenir
+    expect(notlar).toContain('Hatalar giderildi');
+    // Ham markdown bolum basligi sembolleri ciktida kalmamali
+    expect(notlar).not.toContain('###');
+    // Fallback'e dusulmedi: cikti madde isaretli yapilandirilmis bicim
+    expect(notlar.startsWith('Yeni Özellikler:')).toBe(true);
   });
 
   it('Added ve Fixed bolumleri dogru formatlar', async () => {

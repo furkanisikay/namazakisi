@@ -39,15 +39,33 @@ describe('PlayStoreGuncellemeKaynagi', () => {
 
   // ==================== destekleniyor() ====================
   describe('destekleniyor()', () => {
-    it('Android\'de true döner', () => {
-      jest.resetModules();
-      jest.doMock('react-native', () => ({ Platform: { OS: 'android' } }));
-      const { PlayStoreGuncellemeKaynagi: K } = require('../PlayStoreGuncellemeKaynagi');
-      expect(new K().destekleniyor()).toBe(true);
-    });
-
     it('tip değeri "playstore" olmalı', () => {
       expect(kaynak.tip).toBe('playstore');
+    });
+
+    it('Android\'de true döner', () => {
+      // Global mock (Platform.OS = 'android') + beforeEach instance zaten 'android';
+      // resetModules/doMock gerekmez. Üretim: `Platform.OS === 'android'`.
+      expect(kaynak.destekleniyor()).toBe(true);
+    });
+
+    it('iOS\'ta false döner (platform gating)', () => {
+      // `=== 'android'` karşılaştırmasının gerçek negatif dalı: iOS'ta destek YOK.
+      // Modül kayıt defterini izole et, react-native'i iOS olarak yeniden mock'la,
+      // taze require ile yeni sınıfı yükle. Temizlik afterEach'te yapılır.
+      jest.resetModules();
+      jest.doMock('react-native', () => ({ Platform: { OS: 'ios' } }));
+      const {
+        PlayStoreGuncellemeKaynagi: K,
+      } = require('../PlayStoreGuncellemeKaynagi');
+      expect(new K().destekleniyor()).toBe(false);
+    });
+
+    afterEach(() => {
+      // iOS testi modül kayıt defterini ve react-native mock'unu değiştirdi.
+      // Sonraki testlerin global 'android' mock'una dönmesi için geri al.
+      jest.dontMock('react-native');
+      jest.resetModules();
     });
   });
 

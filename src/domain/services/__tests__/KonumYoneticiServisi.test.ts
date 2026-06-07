@@ -67,24 +67,64 @@ describe('KonumYoneticiServisi', () => {
             expect(vakit).toBeInstanceOf(Date);
         });
 
-        it('yarının imsak vakti bugünden sonra olmalı', () => {
+        it('yarının imsak vakti yarın tarihinde ve bugünden sonra olmalı', () => {
             servis.koordinatlarAyarla(41.0082, 28.9784);
 
             const vakit = servis.sonrakiGunImsakVaktiGetir();
             const simdi = new Date();
+            const yarin = new Date();
+            yarin.setDate(yarin.getDate() + 1);
 
+            expect(vakit).not.toBeNull();
+            expect(Number.isNaN(vakit!.getTime())).toBe(false); // geçerli Date (Invalid Date değil)
+
+            // Dönen tarih GERÇEKTEN yarın olmalı (gün sınırı / off-by-one regresyonunu yakalar)
+            expect(vakit!.getDate()).toBe(yarin.getDate());
+            expect(vakit!.getMonth()).toBe(yarin.getMonth());
+            expect(vakit!.getFullYear()).toBe(yarin.getFullYear());
+
+            // Her durumda gelecekte olmalı (gece yarısı-fajr arası koşullardan bağımsız)
             expect(vakit!.getTime()).toBeGreaterThan(simdi.getTime());
+
+            // İmsak makul sabah aralığında (İstanbul yerel saati; CI UTC olabilir,
+            // bu yüzden Europe/Istanbul'a sabitle). Yanlış method/açı regresyonunu yakalar.
+            const saatStr = vakit!.toLocaleString('en-US', {
+                timeZone: 'Europe/Istanbul',
+                hour: '2-digit',
+                hour12: false,
+            });
+            const saat = parseInt(saatStr, 10);
+            expect(saat).toBeGreaterThanOrEqual(2);
+            expect(saat).toBeLessThanOrEqual(7);
         });
     });
 
     describe('bugunImsakVaktiGetir', () => {
         it('koordinat varsa bugünün imsak vaktini döndürmeli', () => {
-            servis.koordinatlarAyarla(41.0082, 28.9784);
+            servis.koordinatlarAyarla(41.0082, 28.9784); // İstanbul
+            const simdi = new Date();
 
             const vakit = servis.bugunImsakVaktiGetir();
 
             expect(vakit).not.toBeNull();
             expect(vakit).toBeInstanceOf(Date);
+            expect(Number.isNaN(vakit!.getTime())).toBe(false); // geçerli Date (Invalid Date değil)
+
+            // İmsak/fajr makul bir sabah aralığında olmalı (İstanbul için yıl boyu ~03:00-06:30).
+            // CI UTC olabileceğinden Europe/Istanbul'a sabitle; yanlış method/açı regresyonunu yakalar.
+            const saatStr = vakit!.toLocaleString('en-US', {
+                timeZone: 'Europe/Istanbul',
+                hour: '2-digit',
+                hour12: false,
+            });
+            const saat = parseInt(saatStr, 10);
+            expect(saat).toBeGreaterThanOrEqual(2);
+            expect(saat).toBeLessThanOrEqual(7);
+
+            // Dönen Date'in günü = bugün olmalı (gece yarısı sınırı / yanlış gün regresyonunu yakalar)
+            expect(vakit!.getFullYear()).toBe(simdi.getFullYear());
+            expect(vakit!.getMonth()).toBe(simdi.getMonth());
+            expect(vakit!.getDate()).toBe(simdi.getDate());
         });
     });
 

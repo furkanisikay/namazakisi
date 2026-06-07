@@ -14,7 +14,7 @@ import * as TarihYardimcisi from '../../../core/utils/TarihYardimcisi';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 
 // Tarih yardimcisini gercek haliyle kullanalim
-const { tarihiISOFormatinaCevir, gunEkle } = TarihYardimcisi;
+const { tarihiISOFormatinaCevir } = TarihYardimcisi;
 
 describe('SeriHesaplayiciServisi Unit Testleri', () => {
   let varsayilanAyarlar: SeriAyarlari;
@@ -61,7 +61,7 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     expect(sonuc.seriDegisti).toBe(true);
   });
 
-  test('Seri devam ederken tam gun kilindiginda seri artmali', () => {
+  test('Seri devam ederken tam gun kilindiginda seri artmali (dun argumani sonucu etkilemez)', () => {
     const dun = '2025-12-20';
     const bugun = '2025-12-21';
     jest.setSystemTime(new Date(bugun + 'T12:00:00'));
@@ -72,11 +72,19 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
       sonTamGun: dun,
     };
 
-    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), tamNamazlar(dun), varsayilanAyarlar);
+    // Seri devami yalnizca sonTamGun===dun ile belirlenir (uretim satir 358:
+    // seriDevamEdiyor = sonTamGun === dun). dunNamazlar parametresi devam mantiginda
+    // KULLANILMAZ, dolayisiyla tam/null/eksik girdiler ozdes sonuc vermelidir.
+    const ileTam = seriHesapla(mevcutDurum, tamNamazlar(bugun), tamNamazlar(dun), varsayilanAyarlar);
+    const ileNull = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
+    const ileEksik = seriHesapla(mevcutDurum, tamNamazlar(bugun), eksikNamazlar(dun), varsayilanAyarlar);
 
-    expect(sonuc.seriDurumu.mevcutSeri).toBe(6);
-    expect(sonuc.seriDurumu.sonTamGun).toBe(bugun);
-    expect(sonuc.seriDegisti).toBe(true);
+    expect(ileTam.seriDurumu.mevcutSeri).toBe(6);
+    expect(ileNull.seriDurumu.mevcutSeri).toBe(6); // dun verisi yokken de ayni
+    expect(ileEksik.seriDurumu.mevcutSeri).toBe(6); // dun eksik kilinmis olsa da ayni
+
+    expect(ileTam.seriDurumu.sonTamGun).toBe(bugun);
+    expect(ileTam.seriDegisti).toBe(true);
   });
 
   test('Bir gun kactiginda seri bozulmali ve toparlanma modu baslamali (bugun tam ise)', () => {
@@ -96,21 +104,55 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     expect(sonuc.seriDurumu.toparlanmaDurumu).toBeDefined();
     expect(sonuc.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(10);
     expect(sonuc.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
+    // Toparlanma hedefi ayarlardan gelmeli (sabit deger degil): VARSAYILAN = 3 gun.
+    // Sabit 3 yazmak yerine ayardan turetiyoruz ki ayar degisirse test kirilmasin.
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.hedefGunSayisi).toBe(
+      varsayilanAyarlar.toparlanmaGunSayisi,
+    );
+    // Toparlanma bugunden baslamali (uretim satir 391: baslangicTarihi = bugun)
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.baslangicTarihi).toBe(bugun);
     expect(sonuc.seriBozuldu).toBe(true);
   });
 
-  test('Toparlanma modunda 5 gun tam kilindiginda eski seri kurtarilmali', () => {
+  test('7+ gunluk seri bir gun kacirilinca toparlanma modu uretimden gelen hedefle (3) baslamali', () => {
+    // Toparlanmayi elle kurmak yerine GERCEK uretim akisiyla tetikliyoruz:
+    // 10 gunluk seri + 1 gun bosluk + bugun tam => toparlanma modu acilir.
+    const evvelsiGun = '2025-12-19';
+    const dun = '2025-12-20'; // kacirildi
+    const bugun = '2025-12-21';
+    jest.setSystemTime(new Date(bugun + 'T12:00:00'));
+
+    const mevcutDurum: SeriDurumu = {
+      ...bosSeriDurumuOlustur(),
+      mevcutSeri: 10,
+      sonTamGun: evvelsiGun,
+    };
+
+    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), eksikNamazlar(dun), varsayilanAyarlar);
+
+    // Hedef, ayardan turetilir (uretim satir 392) — elle 5 yazilmaz, varsayilan 3'tur
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.hedefGunSayisi).toBe(
+      varsayilanAyarlar.toparlanmaGunSayisi,
+    );
+    expect(varsayilanAyarlar.toparlanmaGunSayisi).toBe(3); // dokuman/hedef tutarliligi
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1); // bugun ilk gun
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(10);
+    expect(sonuc.seriBozuldu).toBe(true);
+  });
+
+  test('Toparlanmada 3 tam gun (hedef) kilindiginda eski seri kurtarilmali', () => {
     const bugun = '2025-12-25';
     jest.setSystemTime(new Date(bugun + 'T12:00:00'));
 
+    // State'i uretimle uyumlu kur: hedef = ayardan (3), tamamlananGun = 2 => bugun 3. gun
     const mevcutDurum: SeriDurumu = {
       ...bosSeriDurumuOlustur(),
       mevcutSeri: 0, // Toparlanma modunda mevcutSeri 0 olur (ozet haric)
       sonTamGun: '2025-12-24',
       toparlanmaDurumu: {
-        tamamlananGun: 4,
-        baslangicTarihi: '2025-12-21',
-        hedefGunSayisi: 5,
+        tamamlananGun: 2, // 3 gunluk hedefin 2'si bitti; bugun 3. gun
+        baslangicTarihi: '2025-12-23',
+        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3, kaynaktan turetilir
         oncekiSeri: 10,
       },
     };
@@ -118,8 +160,36 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
 
     expect(sonuc.toparlanmaBasarili).toBe(true);
-    expect(sonuc.seriDurumu.mevcutSeri).toBe(11); // 10 + 1 (bugun)
+    expect(sonuc.seriDurumu.mevcutSeri).toBe(11); // oncekiSeri (10) + 1 (bugun)
     expect(sonuc.seriDurumu.toparlanmaDurumu).toBeNull();
+  });
+
+  test('Toparlanma hedef gununden ONCE (3 gunluk hedefte 2. gun) eski seri henuz kurtarilmaz', () => {
+    const bugun = '2025-12-24';
+    jest.setSystemTime(new Date(bugun + 'T12:00:00'));
+
+    // hedef = 3, tamamlananGun = 1 => bugun 2. gun. Esik henuz dolmadi.
+    const mevcutDurum: SeriDurumu = {
+      ...bosSeriDurumuOlustur(),
+      mevcutSeri: 0,
+      sonTamGun: '2025-12-23',
+      toparlanmaDurumu: {
+        tamamlananGun: 1,
+        baslangicTarihi: '2025-12-23',
+        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3
+        oncekiSeri: 10,
+      },
+    };
+
+    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
+
+    // 2. gun tamamlandi ama hedef 3 oldugu icin toparlanma HENUZ bitmemeli
+    expect(sonuc.toparlanmaBasarili).toBe(false);
+    expect(sonuc.seriDurumu.toparlanmaDurumu).not.toBeNull();
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(2);
+    expect(sonuc.seriDurumu.toparlanmaDurumu?.hedefGunSayisi).toBe(3);
+    // Seri henuz kurtarilmadigi icin oncekiSeri'ye geri donulmedi
+    expect(sonuc.seriDurumu.mevcutSeri).toBe(0);
   });
 
   test('Toparlanma modunda bir gun kacirilirsa seri tamamen sifirlanmali', () => {
@@ -134,7 +204,7 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
       toparlanmaDurumu: {
         tamamlananGun: 2,
         baslangicTarihi: '2025-12-21',
-        hedefGunSayisi: 5,
+        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3, kaynaktan turetilir
         oncekiSeri: 10,
       },
     };

@@ -86,22 +86,42 @@ describe('SahurSayacBildirimServisi', () => {
     );
   });
 
-  it('imsak oncesi: native countdown baslar, vakitGirdi/bitis trigger ID\'leri benzersiz', async () => {
-    tarihiSabitle('2026-02-19T02:00:00');
+  it('imsak oncesi: countdown imsak\'a, vakitGirdi imsak\'a, bitis imsak+10dk\'ya planlanir; trigger ID\'leri benzersiz', async () => {
+    tarihiSabitle('2026-02-19T02:00:00'); // imsak (04:00) oncesi -> ilk dal (simdi < imsakBugun)
     const servis = SahurSayacBildirimServisi.getInstance();
 
     await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
 
+    const imsakMs = mockPrayerTimes.fajr.getTime();
+
+    // 1) Native countdown imsak (sahur bitisi) vaktine, sahur_sayac_v2 kanalinda sayar.
+    //    channelId/targetTimeMs sabit degerlere kilitli: yanlis kanal veya yatsi/imsak+10
+    //    karisikligi (yanlis hedef) testte yakalanir.
+    expect(mockStartCountdown).toHaveBeenCalledTimes(1);
     expect(mockStartCountdown).toHaveBeenCalledWith(
-      expect.objectContaining({ channelId: expect.any(String), targetTimeMs: expect.any(Number) })
+      expect.objectContaining({ channelId: 'sahur_sayac_v2', targetTimeMs: imsakMs })
     );
 
-    const triggerIds = (notifee.createTriggerNotification as jest.Mock).mock.calls.map(
-      (call: any[]) => call[0].id as string
-    );
-    expect(triggerIds.filter((id) => id.endsWith('_vakitgirdi')).length).toBeGreaterThan(0);
-    expect(triggerIds.filter((id) => id.endsWith('_bitis')).length).toBeGreaterThan(0);
+    const triggerCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
+    const triggerIds = triggerCalls.map((call: any[]) => call[0].id as string);
+
+    // 2) "vakit girdi" trigger'i TAM imsak vaktine planlanir (ikinci arg = trigger.timestamp).
+    //    Sahur'un vakitGirdiBildirimIcerigi ms param'ini yok saydigi icin zaman icerikten
+    //    degil, mutlaka trigger.timestamp'ten dogrulanir.
+    const vakitGirdiCall = triggerCalls.find((c: any[]) => (c[0].id as string).endsWith('_vakitgirdi'));
+    expect(vakitGirdiCall).toBeDefined();
+    expect(vakitGirdiCall![1].timestamp).toBe(imsakMs);
+
+    // 3) Temizleme (_bitis) trigger'i imsak + 10 dk'ya planlanir.
+    const bitisCall = triggerCalls.find((c: any[]) => (c[0].id as string).endsWith('_bitis'));
+    expect(bitisCall).toBeDefined();
+    expect(bitisCall![1].timestamp).toBe(imsakMs + 10 * 60 * 1000);
+
+    // 4) ID benzersizligi: vakitGirdi ve bitis ayri ID'lerle planlanir (trigger cakismasi olmaz).
+    expect(triggerIds.filter((id) => id.endsWith('_vakitgirdi')).length).toBe(1);
+    expect(triggerIds.filter((id) => id.endsWith('_bitis')).length).toBe(1);
     expect(new Set(triggerIds).size).toBe(triggerIds.length);
+    expect(vakitGirdiCall![0].id).not.toBe(bitisCall![0].id);
   });
 
   it('temizleme: yalnizca sahur_sayac bildirimleri iptal edilir, native countdown durdurulur', async () => {

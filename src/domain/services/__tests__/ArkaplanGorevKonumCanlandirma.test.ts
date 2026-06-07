@@ -146,11 +146,14 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
 
             // Konum takibi baslatilmamali
             expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
-            // Ayarlar aktif: false olarak guncellenmeli
-            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-                KONUM_TAKIP_AYARLARI_ANAHTAR,
-                expect.stringContaining('"aktif":false')
+            // Ayarlar aktif: false olarak guncellenmeli.
+            // stringContaining yerine kaydedilen argumani parse edip net dogrula:
+            // boylece "aktif" anahtari/false degeri uretim kodunda degisirse test kirilir.
+            const kayit = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
+                ([anahtar]) => anahtar === KONUM_TAKIP_AYARLARI_ANAHTAR
             );
+            expect(kayit).toBeDefined();
+            expect(JSON.parse(kayit![1])).toMatchObject({ aktif: false });
         });
 
         it('on plan izni iptal edilmisse takibi devre disi birakmalı', async () => {
@@ -173,10 +176,13 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
             await arkaplandanKonumTakibiniYenidenBaslat();
 
             expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
-            expect(AsyncStorage.setItem).toHaveBeenCalledWith(
-                KONUM_TAKIP_AYARLARI_ANAHTAR,
-                expect.stringContaining('"aktif":false')
+            // Kaydedilen ayar argumanini parse edip aktif:false oldugunu net dogrula
+            // (stringContaining sadece alt-string arar; parse + toMatchObject yapisal kontrol yapar).
+            const kayit = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
+                ([anahtar]) => anahtar === KONUM_TAKIP_AYARLARI_ANAHTAR
             );
+            expect(kayit).toBeDefined();
+            expect(JSON.parse(kayit![1])).toMatchObject({ aktif: false });
         });
     });
 
@@ -381,12 +387,21 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
             await expect(arkaplandanKonumTakibiniYenidenBaslat()).resolves.toBeUndefined();
         });
 
-        it('AsyncStorage hatasi olursa hata firlatmamali', async () => {
+        it('AsyncStorage hatasi olursa hata firlatmamali ve takip baslatmamali', async () => {
             (AsyncStorage.getItem as jest.Mock).mockRejectedValue(
                 new Error('AsyncStorage error')
             );
 
             await expect(arkaplandanKonumTakibiniYenidenBaslat()).resolves.toBeUndefined();
+
+            // Fail-safe: depolama okunamadiginda izin/ayar bilinemez,
+            // dolayisiyla konum takibi ASLA baslatilmamali (gizlilik/izin guvenli tarafi).
+            // Sadece "cokmedi" demek yetmez; getItem her zaman reject ederken bile
+            // start cagrilirsa bu bir regresyondur.
+            expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
+            // Depolama tamamen erisilemezken "aktif:false" yazma denemesi de yapilmamali
+            // (izinIptalKontrolEt'e hic ulasilmadigi icin setItem cagrilmaz).
+            expect(AsyncStorage.setItem).not.toHaveBeenCalled();
         });
     });
 });

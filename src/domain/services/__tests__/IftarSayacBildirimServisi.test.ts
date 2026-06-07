@@ -112,11 +112,12 @@ describe('IftarSayacBildirimServisi', () => {
       koordinatlar: { lat: 41, lng: 29 },
     });
 
-    // Sabah-aksam arasi: native countdown baslatilmali (displayNotification yerine)
+    // Sabah-aksam arasi: native countdown DOGRUDAN aksam ezanina (maghrib) saymali.
+    // targetTimeMs'i tam degere kilitle: yanlis hedef (ogle/yatsi karismasi) yakalanir.
     expect(mockStartCountdown).toHaveBeenCalledWith(
       expect.objectContaining({
-        channelId: expect.any(String),
-        targetTimeMs: expect.any(Number),
+        channelId: 'iftar_sayac_v2',
+        targetTimeMs: mockPrayerTimes.maghrib.getTime(),
       })
     );
 
@@ -130,9 +131,21 @@ describe('IftarSayacBildirimServisi', () => {
     expect(vakitGirdiIds.length).toBeGreaterThan(0);
     expect(bitisIds.length).toBeGreaterThan(0);
 
-    // Tum ID'ler birbirinden farkli olmali
+    // Tum ID'ler birbirinden farkli olmali (asama cakismasi olmamali)
     const uniqueIds = new Set(triggerIds);
     expect(uniqueIds.size).toBe(triggerIds.length);
+
+    // Trigger zamanlarini ID son-ekine gore esle (sira varsayma) ve fiziki kurali dogrula:
+    // vakit-girdi bildirimi TAM ezan vaktinde (maghrib), temizleme ise ezandan 10 dk sonra planlanmali.
+    const vakitGirdiCall = triggerCalls.find((c: any[]) => (c[0].id as string).endsWith('_vakitgirdi'));
+    const bitisCall = triggerCalls.find((c: any[]) => (c[0].id as string).endsWith('_bitis'));
+
+    expect(vakitGirdiCall?.[1]).toEqual(
+      expect.objectContaining({ timestamp: mockPrayerTimes.maghrib.getTime() })
+    );
+    expect(bitisCall?.[1]).toEqual(
+      expect.objectContaining({ timestamp: mockPrayerTimes.maghrib.getTime() + 10 * 60 * 1000 })
+    );
   });
 
   it('temizleme: tum iftar sayac bildirimleri temizlenmeli', async () => {

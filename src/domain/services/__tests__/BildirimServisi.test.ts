@@ -560,28 +560,20 @@ describe('BildirimServisi', () => {
   // ==================== KILDIM AKSIYON ISLEM SIRASI TESTLERI ====================
 
   describe('Kildim aksiyonu islem sirasi', () => {
-    it('islem sirasi: AsyncStorage -> callback -> bildirim iptal -> dismiss', async () => {
-      const islemSirasi: string[] = [];
-
-      (LocalNamazServisi.localNamazDurumunuGuncelle as jest.Mock).mockImplementation(async () => {
-        islemSirasi.push('asyncstorage');
-      });
-
-      const mockCallback = jest.fn().mockImplementation(() => {
-        islemSirasi.push('callback');
-      });
+    // Üretim sözleşmesi (kildimAksiyonunuIsle):
+    //   1) Namaz durumu AsyncStorage'a yazılır (localNamazDurumunuGuncelle) — await edilir
+    //   2) SONRA presentation katmanı callback ile bilgilendirilir (onKildimCallback)
+    //   3) SONRA temizleme yapılır: vakitKilindiTemizle içinde
+    //      vakitBildirimleriniIptalEt + dismissNotificationAsync Promise.allSettled ile
+    //      EŞZAMANLI (paralel) koşar → bu ikisinin BİRBİRİNE GÖRE tamamlanma sırası
+    //      bir sözleşme DEĞİLDİR, sadece ikisinin de çağrılması garanti edilir.
+    it('AsyncStorage callback\'ten, callback ise her iki temizlemeden ÖNCE çalışır (paralel temizlemede sıra iddia edilmez)', async () => {
+      const mockCallback = jest.fn();
       servis.setOnKildimCallback(mockCallback);
-
-      mockVakitBildirimleriniIptalEt.mockImplementation(async () => {
-        islemSirasi.push('bildirim_iptal');
-      });
 
       (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
         sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'),
       ]);
-      (Notifications.dismissNotificationAsync as jest.Mock).mockImplementation(async () => {
-        islemSirasi.push('dismiss');
-      });
 
       let listenerCallback: Function;
       (Notifications.addNotificationResponseReceivedListener as jest.Mock).mockImplementation(
@@ -595,7 +587,68 @@ describe('BildirimServisi', () => {
       await servis.baslatBildirimDinleyicisi();
       await listenerCallback!(muhafizYanitiOlustur('ogle', '2026-02-13'));
 
-      expect(islemSirasi).toEqual(['asyncstorage', 'callback', 'bildirim_iptal', 'dismiss']);
+      // Tüm sözleşme adımları tam olarak bir kez gerçekleşmeli
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledTimes(1);
+      expect(mockCallback).toHaveBeenCalledTimes(1);
+      expect(mockVakitBildirimleriniIptalEt).toHaveBeenCalledTimes(1);
+      expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(1);
+
+      // jest invocationCallOrder ile çağrı sırasını mikrotask zamanlamasına
+      // bağlı kalmadan doğrula (her mock çağrısı için artan global bir sıra numarası)
+      const guncelleOrder = (LocalNamazServisi.localNamazDurumunuGuncelle as jest.Mock).mock
+        .invocationCallOrder[0];
+      const callbackOrder = mockCallback.mock.invocationCallOrder[0];
+      const iptalOrder = mockVakitBildirimleriniIptalEt.mock.invocationCallOrder[0];
+      const dismissOrder = (Notifications.dismissNotificationAsync as jest.Mock).mock
+        .invocationCallOrder[0];
+
+      // Sözleşme 1: namaz AsyncStorage'a yazılması, callback'ten ÖNCE olmalı
+      // (UI, kalıcı yazma başarılı olmadan tetiklenmemeli)
+      expect(guncelleOrder).toBeLessThan(callbackOrder);
+
+      // Sözleşme 2: callback, temizleme işlemlerinin İKİSİNDEN de ÖNCE başlamalı
+      // (önce kullanıcıya/UI'ya kıldı bilgisi, sonra arka temizlik)
+      expect(callbackOrder).toBeLessThan(iptalOrder);
+      expect(callbackOrder).toBeLessThan(dismissOrder);
+
+      // bildirim_iptal ve dismiss Promise.allSettled ile paraleldir;
+      // aralarında sıra İDDİA EDİLMEZ — davranış-koruyan refactor'larda
+      // (allSettled sırası değişse bile) test kırılmamalı.
+    });
+
+    it('AsyncStorage yazımı başarısız olursa callback ve temizleme HİÇ çalışmamalı (kısmi tamamlama olmaz)', async () => {
+      // Üretim: localNamazDurumunuGuncelle throw ederse hata kildimAksiyonunuIsle'de
+      // yakalanıp yukarı iletilir; callback ve vakitKilindiTemizle'ye HİÇ ulaşılmaz.
+      const mockCallback = jest.fn();
+      servis.setOnKildimCallback(mockCallback);
+
+      // Once: yalnızca bu test içindeki tek guncelle çağrısını reddet,
+      // sonraki testlere sızmaması için mockRejectedValueOnce kullan
+      (LocalNamazServisi.localNamazDurumunuGuncelle as jest.Mock).mockRejectedValueOnce(
+        new Error('AsyncStorage yazma hatasi')
+      );
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'),
+      ]);
+
+      let listenerCallback: Function;
+      (Notifications.addNotificationResponseReceivedListener as jest.Mock).mockImplementation(
+        (cb: Function) => {
+          listenerCallback = cb;
+          return { remove: jest.fn() };
+        }
+      );
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+
+      await servis.baslatBildirimDinleyicisi();
+      // bildirimYanitiniIsle hatayı yutar (retry için yanitId set edilmez), çökmemeli
+      await expect(listenerCallback!(muhafizYanitiOlustur('ogle', '2026-02-13'))).resolves
+        .not.toThrow();
+
+      // Kalıcı yazma başarısızsa hiçbir alt adım çalıştırılmamalı
+      expect(mockCallback).not.toHaveBeenCalled();
+      expect(mockVakitBildirimleriniIptalEt).not.toHaveBeenCalled();
+      expect(Notifications.dismissNotificationAsync).not.toHaveBeenCalled();
     });
   });
 

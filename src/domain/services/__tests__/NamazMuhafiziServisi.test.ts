@@ -1,5 +1,6 @@
 import { NamazMuhafiziServisi, MuhafizYapilandirmasi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
+import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
 
 // Mock NamazVaktiHesaplayiciServisi
 jest.mock('../NamazVaktiHesaplayiciServisi', () => {
@@ -88,13 +89,42 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             kalanSureMs: 15 * 60 * 1000,
         });
 
+        // Seviye 3 mesajı gerçekten siddetSeviyesi===3 havuzundan seçilmeli;
+        // fallback ('Şeytana uyma...') veya başka seviye içeriği gelirse test düşmeli.
+        const seviye3Metinler = SEYTANLA_MUCADELE_ICERIGI
+            .filter((i) => i.siddetSeviyesi === 3)
+            .map((i) => i.metin);
+        // Havuzun gerçekten dolu olduğundan emin ol (yoksa "toContain" boş kümede totoloji olur)
+        expect(seviye3Metinler.length).toBeGreaterThan(0);
+
         muhafiz.baslat(bildirimSpx);
 
-        // Seviye 3'te mesajlar SEYTANLA_MUCADELE_ICERIGI'nden gelir
-        expect(bildirimSpx).toHaveBeenCalledWith(
-            expect.any(String),
-            3
-        );
+        const [mesaj, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(3);
+        // Mesaj seviye-3 havuzundan gelmeli; fallback metni havuzda olmadığı için
+        // (üretimde getRandomIcerik filtresi bozulursa) bu assertion kırılır.
+        expect(seviye3Metinler).toContain(mesaj);
+    });
+
+    test('Seviye 3 mesajı deterministik olarak içerik havuzunun ilk elemanını seçer', () => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 15 * 60 * 1000,
+        });
+
+        // Math.random=0 -> Math.floor(0 * uzunluk) = 0 -> havuzun ilk elemanı
+        const randomSpx = jest.spyOn(Math, 'random').mockReturnValue(0);
+        try {
+            const ilkSeviye3Metin = SEYTANLA_MUCADELE_ICERIGI.find(
+                (i) => i.siddetSeviyesi === 3
+            )!.metin;
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledWith(ilkSeviye3Metin, 3);
+        } finally {
+            randomSpx.mockRestore();
+        }
     });
 
     test('Seviye 4 bildirimi (5 dk kala - Acil Durum)', () => {

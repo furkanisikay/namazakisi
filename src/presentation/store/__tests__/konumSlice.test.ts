@@ -123,6 +123,14 @@ describe('konumSlice', () => {
                 '@namaz_akisi/konum_ayarlari',
                 expect.any(String)
             );
+
+            // Kaydedilen icerigi dogrula: gercek veri persist edildi mi
+            const [anahtar, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            expect(anahtar).toBe('@namaz_akisi/konum_ayarlari');
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen.konumModu).toBe('oto');
+            // Transient 'yukleniyor' alani storage'a sizmamali (reducer ayikliyor)
+            expect(kaydedilen.yukleniyor).toBeUndefined();
         });
     });
 
@@ -140,20 +148,40 @@ describe('konumSlice', () => {
     });
 
     describe('gpsAdresiniGuncelle', () => {
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
         it('GPS adresini guncellemeli', () => {
+            // Saati sabitle: yan etki olan sonGpsGuncellemesi mutlak degerle dogrulanabilsin
+            jest.useFakeTimers();
+            jest.setSystemTime(new Date('2026-01-17T12:00:00.000Z'));
+
             const yeniAdres: GpsAdres = { semt: 'Alsancak', ilce: 'Konak', il: 'İzmir' };
             const state = konumReducer(varsayilanState, gpsAdresiniGuncelle(yeniAdres));
 
             expect(state.gpsAdres?.semt).toBe('Alsancak');
             expect(state.gpsAdres?.ilce).toBe('Konak');
             expect(state.gpsAdres?.il).toBe('İzmir');
+
+            // Adres set edildiginde sonGpsGuncellemesi YAN ETKI olarak guncellenmeli
+            // (uretim: payload truthy ise new Date().toISOString())
+            expect(varsayilanState.sonGpsGuncellemesi).toBeNull();
+            expect(state.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
         });
 
         it('GPS adresini null yapabilmeli', () => {
-            const oncekiState = { ...varsayilanState, gpsAdres: { semt: 'Test', ilce: 'Test', il: 'Test' } };
+            // Onceki state'te gecerli bir timestamp tohumla; null payload bunu KORUMALI
+            const oncekiState: KonumState = {
+                ...varsayilanState,
+                gpsAdres: { semt: 'Test', ilce: 'Test', il: 'Test' },
+                sonGpsGuncellemesi: '2026-01-17T12:00:00.000Z',
+            };
             const state = konumReducer(oncekiState, gpsAdresiniGuncelle(null));
 
             expect(state.gpsAdres).toBeNull();
+            // Adres null'lanırken zaman damgasi DEGISMEMELI (uretim: payload falsy -> set etme)
+            expect(state.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
         });
     });
 

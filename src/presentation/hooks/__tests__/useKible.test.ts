@@ -57,7 +57,7 @@ describe('useKible Hook', () => {
     expect(result.current.izinVerildi).toBe(false);
   });
 
-  it('konum izni verilirse ve konum alinirsa kible acisini hesaplamalidir', async () => {
+  it('izin verilip konum alindiginda izinVerildi true, hata null olmali ve kible acisi hesaplanmalidir', async () => {
     (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: {
@@ -74,6 +74,12 @@ describe('useKible Hook', () => {
 
     expect(result.current.izinVerildi).toBe(true);
     expect(result.current.hata).toBeNull();
+
+    // Test adi "kible acisini hesaplamalidir" diyor; govde de bunu gercekten dogrulasin.
+    // Kabe'ye cok yakin bu koordinat icin adhan fiziki referans degeri 324.89...'dur
+    // (Qibla(21.4225, 39.8262) === 324.8923). Boylece izin/konum yolunun sonunda
+    // gercekten bir aci hesaplandigi (0'da kalmadigi) kanitlanir.
+    expect(result.current.kibleAcisi).toBeCloseTo(324.89, 1);
   });
 
   it('Istanbul icin kible acisini dogru hesaplamalidir', async () => {
@@ -91,9 +97,45 @@ describe('useKible Hook', () => {
       expect(result.current.kibleAcisi).toBeGreaterThan(0);
     });
 
-    // Yaklasik deger kontrolu
-    expect(Math.round(result.current.kibleAcisi)).toBeGreaterThan(140);
-    expect(Math.round(result.current.kibleAcisi)).toBeLessThan(160);
+    // adhan deterministiktir; gevsek aralik yerine fiziki referans degere siki bagla.
+    // Bagimsiz dogrulama: Qibla(new Coordinates(41.0082, 28.9784)) === 151.6206...
+    expect(result.current.kibleAcisi).toBeCloseTo(151.62, 1);
+  });
+
+  it('Berlin icin kible acisini dogru hesaplamalidir', async () => {
+    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
+      coords: { latitude: 52.52, longitude: 13.405 },
+    });
+
+    const { result } = renderHook(() => useKible());
+
+    await waitFor(() => {
+      expect(result.current.kibleAcisi).toBeGreaterThan(0);
+    });
+
+    // adhan fiziki referans deger: Qibla(52.52, 13.405) === 136.6849...
+    // Ikinci konum, hesabin tek koordinata ezberlenmedigini (gercekten enlem/boylama
+    // bagli oldugunu) kanitlar.
+    expect(result.current.kibleAcisi).toBeCloseTo(136.68, 1);
+  });
+
+  it('Sydney icin kible acisini dogru hesaplamalidir (guney yarimkure, Mekke batida)', async () => {
+    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
+      coords: { latitude: -33.8688, longitude: 151.2093 },
+    });
+
+    const { result } = renderHook(() => useKible());
+
+    await waitFor(() => {
+      expect(result.current.kibleAcisi).toBeGreaterThan(0);
+    });
+
+    // adhan fiziki referans deger: Qibla(-33.8688, 151.2093) === 277.4996...
+    // Sydney'den Mekke bati-kuzeybati yondedir; bu anchor great-circle yonelimini
+    // (sadece "kuzeydogu civari" degil) gercekten dogrular.
+    expect(result.current.kibleAcisi).toBeCloseTo(277.50, 1);
   });
 
   it('heading verisi geldiginde pusula yonelimini guncellemelidir', async () => {

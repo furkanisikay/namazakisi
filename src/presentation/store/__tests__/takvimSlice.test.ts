@@ -102,23 +102,37 @@ describe('takvimSlice', () => {
         });
 
         it('yuklemede eksik vakit ayarlari varsayilanla merge edilir', async () => {
-            const kayitli: Partial<TakvimAyarlari> = {
+            // Sadece 'ogle' saklanir; imsak/ikindi/aksam/yatsi BILINCLI olarak EKSIK
+            // birakilir ki uretimin merge-doldurma mantigi (takvimSlice.ts:80) gercekten
+            // egzersiz edilsin. O satir silinirse bu test KIRILIR.
+            const kayitli = {
                 aktif: true,
                 vakitAyarlari: {
-                    ...VARSAYILAN_TAKVIM_AYARLARI.vakitAyarlari,
                     ogle: { aktif: true, sureDakika: 10, baslangicTipi: 'vakit_oncesi', dakika: 15 },
                 },
-            };
+            } as unknown as Partial<TakvimAyarlari>;
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify(kayitli));
 
             await store.dispatch(takvimAyarlariniYukle());
             const state = store.getState().takvim;
 
-            expect(state.ayarlar.vakitAyarlari.ogle.aktif).toBe(true);
-            expect(state.ayarlar.vakitAyarlari.ogle.sureDakika).toBe(10);
-            expect(state.ayarlar.vakitAyarlari.ogle.baslangicTipi).toBe('vakit_oncesi');
-            // diger vakitler varsayilan kalmali
-            expect(state.ayarlar.vakitAyarlari.ikindi.aktif).toBe(false);
+            // Saklanan 'ogle' aynen korunur
+            expect(state.ayarlar.vakitAyarlari.ogle).toEqual({
+                aktif: true,
+                sureDakika: 10,
+                baslangicTipi: 'vakit_oncesi',
+                dakika: 15,
+            });
+
+            // EKSIK vakitler VARSAYILAN_VAKIT_AYARI ile DOLDURULUR (merge-doldurma kaniti)
+            (['imsak', 'ikindi', 'aksam', 'yatsi'] as const).forEach((vakit) => {
+                expect(state.ayarlar.vakitAyarlari[vakit]).toEqual({
+                    aktif: false,
+                    sureDakika: 15,
+                    baslangicTipi: 'vakit_girisi',
+                    dakika: 5,
+                });
+            });
         });
 
         it('AsyncStorage hatasi durumunda state bozulmamali', async () => {

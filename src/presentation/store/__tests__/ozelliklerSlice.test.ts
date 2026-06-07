@@ -10,6 +10,7 @@ import ozelliklerReducer, {
     ozellikKartiKapat,
 } from '../ozelliklerSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({
     setItem: jest.fn(() => Promise.resolve()),
@@ -68,11 +69,20 @@ describe('ozelliklerSlice', () => {
         expect(state.kapatilanKartIdler).toEqual([]);
     });
 
-    it('ozellikGorulduIsaretle tek id ekler ve kaydeder', async () => {
+    it('ozellikGorulduIsaretle tek id ekler ve doğru anahtar/şekille kaydeder', async () => {
         await store.dispatch(ozellikGorulduIsaretle('takvim-entegrasyonu'));
         const state = store.getState().ozellikler;
         expect(state.gorulenIdler).toContain('takvim-entegrasyonu');
-        expect(AsyncStorage.setItem).toHaveBeenCalled();
+
+        // Sadece "çağrıldı" değil; DOĞRU anahtara, DOĞRU şekille persist edilmeli.
+        // Üretim id'yi gorulenIdler'a ekleyip kapatilanKartIdler'ı boş bırakmalı.
+        expect(AsyncStorage.setItem).toHaveBeenCalledWith(
+            DEPOLAMA_ANAHTARLARI.GORULEN_OZELLIKLER,
+            JSON.stringify({
+                gorulenIdler: ['takvim-entegrasyonu'],
+                kapatilanKartIdler: [],
+            })
+        );
     });
 
     it('ozellikGorulduIsaretle dizi kabul eder ve tekrarları teklestirir', async () => {
