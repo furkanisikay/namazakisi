@@ -576,10 +576,13 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
         });
 
         // Planlanmis 2 aksam + 1 alakasiz bildirim simule et.
+        // Servis yalniz bugun/dun tarihli ID'leri eslestirdiginden tarih sabit
+        // yazilamaz (testi yazildigi gunden sonra patlatir) — bugunuAl() kullan.
+        const bugunTarihi = bugunuAl();
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
-            { identifier: 'muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20' },
-            { identifier: 'muhafiz_2026-06-07_vakit_aksam_seviye_4_dk_10' },
-            { identifier: 'muhafiz_2026-06-07_vakit_ogle_seviye_1_dk_25' },
+            { identifier: `muhafiz_${bugunTarihi}_vakit_aksam_seviye_2_dk_20` },
+            { identifier: `muhafiz_${bugunTarihi}_vakit_aksam_seviye_4_dk_10` },
+            { identifier: `muhafiz_${bugunTarihi}_vakit_ogle_seviye_1_dk_25` },
         ]);
         // setItem cagrisini gozlemlemek icin temizle (yapilandir asamasindaki cagrilar sayilmasin).
         (AsyncStorage.setItem as jest.Mock).mockClear();
@@ -593,9 +596,9 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
         const iptalEdilenler = (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map(
             (c) => c[0]
         );
-        expect(iptalEdilenler).toContain('muhafiz_2026-06-07_vakit_aksam_seviye_2_dk_20');
-        expect(iptalEdilenler).toContain('muhafiz_2026-06-07_vakit_aksam_seviye_4_dk_10');
-        expect(iptalEdilenler).not.toContain('muhafiz_2026-06-07_vakit_ogle_seviye_1_dk_25');
+        expect(iptalEdilenler).toContain(`muhafiz_${bugunTarihi}_vakit_aksam_seviye_2_dk_20`);
+        expect(iptalEdilenler).toContain(`muhafiz_${bugunTarihi}_vakit_aksam_seviye_4_dk_10`);
+        expect(iptalEdilenler).not.toContain(`muhafiz_${bugunTarihi}_vakit_ogle_seviye_1_dk_25`);
 
         // Kilinan 'aksam', BUGUN tarihli anahtara yazilmali (gece-yarisi disindaki vakit).
         const bugun = bugunuAl();
