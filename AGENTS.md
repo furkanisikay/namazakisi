@@ -44,6 +44,15 @@ Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça r
 - **Bottom-sheet**: backdrop'u içeriği saran `TouchableWithoutFeedback` olarak DEĞİL, `StyleSheet.absoluteFill` ile **kardeş (sibling)** koy — yoksa içteki FlatList/ScrollView scroll'u takılır. Örnek: `TakvimAyarlariSayfasi.tsx`.
 - **Sabit yükseklikli sheet**: `maxHeight` yerine `height` kullan (`flex:1` çocuklar ancak öyle çalışır).
 - Namaz vakti hesabı **gün bazında**: her gün için ayrı `new PrayerTimes(coordinates, tarih, params)` (`TakvimServisi.takvimOlaylariOlustur`).
+- **Testlerde sabit tarih yazma**: muhafız bildirim ID'leri `muhafiz_{tarih}_vakit_...` formatında ve servis bugün/dün ile filtreler — mock ID'lerde sabit tarih, test yazıldığı günden sonra patlar. `bugunuAl()`/`dunuAl()` (`TarihYardimcisi`) kullan.
+- `npm audit fix --omit=dev` node_modules'tan **dev bağımlılıklarını siler** (typecheck "Cannot find name 'describe'" verir) — ardından `npm install` çalıştır.
+
+## Güvenlik kuralları (bu projede öğrenildi)
+- **Harici URL açmadan önce doğrula**: API'den gelen her indirme/yönlendirme linki `guvenilirBaglantiMi` (`GuncellemeServisi.ts`, https + domain beyaz listesi) ile doğrulanır; GitHub kaynağında doğrulama `indirmeBaglantisiBul()` içinde yapılır, güvenilmezse `releases/latest` fallback'i.
+- **Loglara hassas veri yazma**: loglar AsyncStorage'da tutulur ve `DebugLogsSayfasi`'ndan paylaşılabilir. Koordinat loglanacaksa en fazla `toFixed(1)` (~11 km, şehir hassasiyeti).
+- **AndroidManifest izinleri**: `allowBackup="false"`; kullanılmayan izinler (`RECORD_AUDIO`, `SYSTEM_ALERT_WINDOW`, legacy storage) `tools:node="remove"` ile engellenir — kütüphane manifest merge'i geri ekleyemesin. Yeni kütüphane eklerken izin sızıntısını kontrol et.
+- **WebView**: `geolocationEnabled` açıksa `onShouldStartLoadWithRequest` ile host beyaz listesi zorunlu; dış linkleri `Linking.openURL` ile sistem tarayıcısına devret (örnek: `WebPusulaView.tsx`).
+- **CI izinleri**: `ci.yml` üst seviye `contents: read`; yazma izni yalnız `auto-release` job'unda (job-seviyesi izin üst seviyeyi override eder).
 
 ## Reçete — Yeni özellik duyurusu
 Yeni özelliği kullanıcıya duyurmak için **tek yer**: `src/core/constants/YeniOzellikler.ts`. Diziye en üste bir `YeniOzellik` ekle (id, surum, tarih, baslik, aciklama özeti, detayAciklama, detaylar[], ops. hedefSayfa/ctaEtiketi/kartGoster). Ayarlar nokta rozeti + menü "Yeni" rozeti + (kartGoster ise) tanıtım kartı + "Neler Yeni" sayfası **otomatik** beslenir; ek kod gerekmez. Kopya kibar "siz" dilinde.
