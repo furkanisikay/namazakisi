@@ -35,7 +35,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read  # PR/test job'ları için salt okunur yeterli; yazma izni sadece auto-release job'unda
 
 env:
   NODE_VERSION: '20'
