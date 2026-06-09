@@ -175,22 +175,39 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
 
   /**
    * Platform'a uygun APK/IPA indirme baglantisi bul
-   * Bulamazsa release sayfasina yonlendir
+   * Bulamazsa veya baglanti guvenilir degilse release sayfasina yonlendir
+   *
+   * Guvenlik: API'den gelen tum URL'ler guvenilirBaglantiMi() ile dogrulanir.
+   * Dogrulamayi gecemeyen URL'ler (manipule edilmis/phishing) otomatik olarak
+   * sabit release sayfasi fallback'ine dusuler.
    */
   private indirmeBaglantisiBul(releaseVeri: any): string {
     const assets = releaseVeri.assets || [];
-    const releaseSayfasi = releaseVeri.html_url || `https://github.com/${this.repoAdresi}/releases/latest`;
+    // html_url da guvenilir olmayabilir — fallback olarak sabit URL kullan
+    const sabitFallback = `https://github.com/${this.repoAdresi}/releases/latest`;
+    const releaseSayfasi = releaseVeri.html_url || sabitFallback;
 
     if (Platform.OS === 'android') {
       const apk = assets.find(
         (a: any) => a.name?.toLowerCase().endsWith('.apk')
       );
       if (apk?.browser_download_url) {
-        return apk.browser_download_url;
+        // APK baglantisini guvenilirBaglantiMi ile dogrula
+        if (guvenilirBaglantiMi(apk.browser_download_url)) {
+          return apk.browser_download_url;
+        }
+        // Guvenilmez APK baglantisi — sabit fallback'e dus
+        Logger.warn('GuncellemeServisi', 'APK baglantisi guvenilmez domain iceriyor, release sayfasina yonlendiriliyor');
+        return sabitFallback;
       }
     }
 
-    return releaseSayfasi;
+    // Release sayfasini da dogrula; guvenilmezse sabit fallback kullan
+    if (guvenilirBaglantiMi(releaseSayfasi)) {
+      return releaseSayfasi;
+    }
+    Logger.warn('GuncellemeServisi', 'Release sayfasi baglantisi guvenilmez, sabit URL kullaniliyor');
+    return sabitFallback;
   }
 
   /**
