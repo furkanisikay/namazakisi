@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
+import { guvenilirKibleHostuMu } from '../WebPusulaView';
 import { useKible } from '../../../hooks/useKible';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
@@ -171,6 +172,60 @@ describe('KibleSayfasi', () => {
       (useKible as jest.Mock).mockReturnValue({ ...kibleVarsayilan, hedefAcisi: 350 });
       const { queryByText } = render(<KibleSayfasi />);
       expect(queryByText('✓ Kıble yönündesiniz')).toBeNull();
+    });
+  });
+
+  // guvenilirKibleHostuMu: WebPusulaView navigasyon güvenlik filtresi.
+  // Yalnızca Google servislerine ve about:blank'e izin verir; diğerleri reddedilir.
+  describe('guvenilirKibleHostuMu — navigasyon güvenlik filtresi', () => {
+    // --- İzin verilen URL'ler ---
+    it('qiblafinder.withgoogle.com adresine izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('https://qiblafinder.withgoogle.com/intl/tr/')).toBe(true);
+    });
+
+    it('*.google.com alt alan adlarına izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('https://maps.google.com/path')).toBe(true);
+    });
+
+    it('*.gstatic.com adreslerine izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('https://fonts.gstatic.com/s/font.woff2')).toBe(true);
+    });
+
+    it('*.googleapis.com adreslerine izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('https://maps.googleapis.com/api')).toBe(true);
+    });
+
+    it('*.googleusercontent.com adreslerine izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('https://lh3.googleusercontent.com/photo.jpg')).toBe(true);
+    });
+
+    it('about:blank adresine izin vermelidir', () => {
+      expect(guvenilirKibleHostuMu('about:blank')).toBe(true);
+    });
+
+    // --- Reddedilen URL'ler ---
+    it('evil.com adresini reddetmelidir', () => {
+      expect(guvenilirKibleHostuMu('https://evil.com/attack')).toBe(false);
+    });
+
+    it('google.com gibi görünen sahte alanı reddetmelidir (evil.google.com.tr)', () => {
+      expect(guvenilirKibleHostuMu('https://evil.google.com.tr/')).toBe(false);
+    });
+
+    it('http (şifresiz) adresleri reddetmelidir', () => {
+      expect(guvenilirKibleHostuMu('http://qiblafinder.withgoogle.com/intl/tr/')).toBe(false);
+    });
+
+    it('geçersiz URL dizisini reddetmelidir', () => {
+      expect(guvenilirKibleHostuMu('bu-gecersiz-bir-url')).toBe(false);
+    });
+
+    it('boş dizeyi reddetmelidir', () => {
+      expect(guvenilirKibleHostuMu('')).toBe(false);
+    });
+
+    it('javascript: şemasını reddetmelidir', () => {
+      expect(guvenilirKibleHostuMu('javascript:alert(1)')).toBe(false);
     });
   });
 
