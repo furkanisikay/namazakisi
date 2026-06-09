@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
-import { guvenilirKibleHostuMu } from '../WebPusulaView';
+import { guvenilirKibleHostuMu, disaAktarilabilirUrlMu } from '../WebPusulaView';
 import { useKible } from '../../../hooks/useKible';
 import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
@@ -226,6 +226,34 @@ describe('KibleSayfasi', () => {
 
     it('javascript: şemasını reddetmelidir', () => {
       expect(guvenilirKibleHostuMu('javascript:alert(1)')).toBe(false);
+    });
+  });
+
+  // disaAktarilabilirUrlMu: WebView'den reddedilen URL'lerin sistem tarayıcısına
+  // devredilip devredilemeyeceğini belirler — yalnızca http(s) dışarı açılır.
+  describe('disaAktarilabilirUrlMu — harici tarayıcıya devretme filtresi', () => {
+    it('https URL dışarıda açılabilmelidir', () => {
+      expect(disaAktarilabilirUrlMu('https://ornek.com/sayfa')).toBe(true);
+    });
+
+    it('http URL dışarıda açılabilmelidir', () => {
+      expect(disaAktarilabilirUrlMu('http://ornek.com/sayfa')).toBe(true);
+    });
+
+    it('javascript: şeması Linking.openURL\'e geçirilmemelidir', () => {
+      expect(disaAktarilabilirUrlMu('javascript:alert(1)')).toBe(false);
+    });
+
+    it('intent: şeması Linking.openURL\'e geçirilmemelidir', () => {
+      expect(disaAktarilabilirUrlMu('intent://evil#Intent;scheme=http;end')).toBe(false);
+    });
+
+    it('file: şeması Linking.openURL\'e geçirilmemelidir', () => {
+      expect(disaAktarilabilirUrlMu('file:///etc/passwd')).toBe(false);
+    });
+
+    it('geçersiz URL reddedilmelidir', () => {
+      expect(disaAktarilabilirUrlMu('bu-gecersiz-bir-url')).toBe(false);
     });
   });
 

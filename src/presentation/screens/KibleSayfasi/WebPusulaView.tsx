@@ -64,6 +64,24 @@ export function guvenilirKibleHostuMu(url: string): boolean {
 }
 
 /**
+ * Verilen URL'nin sistem tarayıcısına devredilmeye uygun olup olmadığını
+ * kontrol eder. Yalnızca `http:`/`https:` şemalarına izin verilir;
+ * `javascript:`, `intent:`, `file:` gibi şemalar Linking.openURL'e
+ * geçirilmez (şema kaçırma koruması).
+ *
+ * @param url Kontrol edilecek URL dizisi.
+ * @returns Dışarıda açılabilirse `true`, aksi hâlde `false`.
+ */
+export function disaAktarilabilirUrlMu(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    return parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+/**
  * WebView-based Qibla finder component.
  * Renders Google's AR Qibla Finder in a WebView with error handling
  * and retry functionality.
@@ -121,9 +139,13 @@ export const WebPusulaView = () => {
             return true;
           }
           // İzin verilmeyen URL'yi sistem tarayıcısında aç; kullanıcı deneyimi korunsun.
-          Linking.openURL(istek.url).catch(() => {
-            // Bağlantı açılamazsa sessizce yoksay; WebView'de gezinmeyi yine de engelle.
-          });
+          // Yalnızca http(s) dışarı devredilir — javascript:/intent:/file: gibi
+          // şemalar Linking.openURL'e GEÇİRİLMEZ (şema kaçırma koruması).
+          if (disaAktarilabilirUrlMu(istek.url)) {
+            Linking.openURL(istek.url).catch(() => {
+              // Bağlantı açılamazsa sessizce yoksay; WebView'de gezinmeyi yine de engelle.
+            });
+          }
           return false;
         }}
       />
