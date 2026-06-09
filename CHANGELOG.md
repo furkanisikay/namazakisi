@@ -5,6 +5,16 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.3] - 2026-06-09
+
+### Düzeltildi
+- [guvenlik] WebView dış link devrini http(s) şemalarıyla sınırla
+- [deps] npm audit fix ile kritik/yüksek bağımlılık zafiyetlerini gider
+- [guvenlik] Kıble WebView navigasyonunu güvenilir alanlarla sınırla
+- [guvenlik] kullanılmayan Android izinlerini kaldır ve allowBackup'ı kapat
+- [gizlilik] loglardaki konum hassasiyetini şehir seviyesine indir
+- [guvenlik] güncelleme indirme bağlantılarını güvenilir domain doğrulamasından geçir
+
 ## [0.23.2] - 2026-06-07
 
 ### Düzeltildi
