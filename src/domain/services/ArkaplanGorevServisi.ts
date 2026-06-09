@@ -232,7 +232,7 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
 
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);
 
-        Logger.info('ArkaplanGorev', `Bildirimler yeniden planlandi (koordinat: ${koordinatlar.lat.toFixed(2)}, ${koordinatlar.lng.toFixed(2)})`);
+        Logger.info('ArkaplanGorev', 'Bildirimler yeniden planlandi (sehir hassasiyetinde konum)');
         return BackgroundFetch.BackgroundFetchResult.NewData;
 
     } catch (error) {

@@ -81,7 +81,7 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
     const yeniLng = yeniKonum.coords.longitude;
 
     if (__DEV__) {
-        Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(4)}, ${yeniLng.toFixed(4)}`);
+        Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(1)}, ${yeniLng.toFixed(1)}`);
     }
 
     try {
