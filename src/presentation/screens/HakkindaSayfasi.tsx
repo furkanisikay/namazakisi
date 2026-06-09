@@ -26,6 +26,7 @@ import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { guncellemeKontrolEt } from '../store/guncellemeSlice';
 import { Logger } from '../../core/utils/Logger';
+import { guvenilirBaglantiMi } from '../../domain/services/GuncellemeServisi';
 
 /**
  * Bilgi satiri bileseni
@@ -121,11 +122,34 @@ export const HakkindaSayfasi: React.FC = () => {
     ]).start();
   }, []);
 
-  // Web sitesini ac
+  // Web sitesini ac (yalnizca guvenilir HTTPS domainleri)
   const handleWebSitesiAc = (url: string) => {
     Linking.openURL(url).catch((hata) => {
       Logger.warn('HakkindaSayfasi', 'Baglanti acilamadi', hata);
     });
+  };
+
+  /**
+   * Guncelleme indirme/yonlendirme butonuna basildi.
+   * Play Store kaynaginda indirmeBaglantisi 'playstore://update' seklindedir —
+   * guvenilirBaglantiMi bunu reddeder, bu yuzden Play Store akisi ayri ele alinir.
+   * GitHub/sideload icin baglanti guvenilirBaglantiMi ile dogrulanir; gecemezse
+   * sessizce loglanir ve hicbir sey yapilmaz (kullanici zarari olmaz).
+   */
+  const handleIndirBasildi = (indirmeBaglantisi: string) => {
+    if (bilgi?.kaynak === 'playstore') {
+      // Play Store native akisi — Linking ile degil, native modül üzerinden yönetilir.
+      // Bu buton Play Store durumunda zaten gosterilmez (bildirim Play Store
+      // native sheet'ini kullanir), ama savunma amacli kontrol eklenir.
+      Logger.warn('HakkindaSayfasi', 'Play Store guncelleme akisi bu sayfadan baslatilamaz');
+      return;
+    }
+    // Derinlemesine savunma: baglantinin guvenilir oldugunu dogrula
+    if (!guvenilirBaglantiMi(indirmeBaglantisi)) {
+      Logger.warn('HakkindaSayfasi', 'Guncelleme baglantisi guvenilmez domain iceriyor, islemi iptal edildi');
+      return;
+    }
+    handleWebSitesiAc(indirmeBaglantisi);
   };
 
   // Manuel guncelleme kontrolu
@@ -261,7 +285,7 @@ export const HakkindaSayfasi: React.FC = () => {
             </View>
             {guncellemeMevcut && bilgi ? (
               <TouchableOpacity
-                onPress={() => handleWebSitesiAc(bilgi.indirmeBaglantisi)}
+                onPress={() => handleIndirBasildi(bilgi.indirmeBaglantisi)}
                 className="px-3 py-1.5 rounded-lg"
                 style={{ backgroundColor: renkler.bilgi }}
                 activeOpacity={0.7}

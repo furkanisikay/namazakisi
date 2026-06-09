@@ -237,7 +237,8 @@ describe('GitHubGuncellemeKaynagi', () => {
 
   it('APK indirme baglantisinii dogru bulur', async () => {
     const yeniVersiyon = '99.0.0';
-    const apkUrl = `https://example.com/NamazAkisi-v${yeniVersiyon}.apk`;
+    // Guvenilir bir domain kullanmak gerekiyor (guvenlik dogrulamasi aktif)
+    const apkUrl = `https://objects.githubusercontent.com/releases/NamazAkisi-v${yeniVersiyon}.apk`;
     mockFetch.mockResolvedValue(githubYanitiOlustur(yeniVersiyon, {
       assets: [
         { name: `NamazAkisi-v${yeniVersiyon}.apk`, browser_download_url: apkUrl },
@@ -965,13 +966,13 @@ describe('guvenilirBaglantiMi', () => {
 
 // ==================== EK KAPSAM: DENETIM GAP'LERI ====================
 // Asagidaki testler denetimin tespit ettigi eksik kapsami doldurur:
-// - GitHub APK baglantisi guvenilirBaglantiMi ile DOGRULANMIYOR (gercek guvenlik bosulugu)
+// - GitHub APK baglantisi artik guvenilirBaglantiMi ile DOGRULANMAKTADIR (duzeltildi)
 // - Gercek surum (0.23.1) baglaminda off-by-one minor/patch sinir karsilastirmasi
 // - ERTELEME_SURESI (24s) ve KONTROL_ARALIGI (6s) ZAMAN sinirlari
 // - Play Store erteleme: ertelenen surum != yeni surum ise banner GOSTERILMELI
 // - degisiklikNotlari 500 karakter kisaltma
 
-describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik karakterizasyonu)', () => {
+describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik dogrulamasi)', () => {
   let kaynak: GitHubGuncellemeKaynagi;
 
   beforeEach(() => {
@@ -979,27 +980,54 @@ describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik ka
     mockFetch.mockReset();
   });
 
-  it('API guvenilmez bir APK domaini donerse, indirmeBaglantisi SU AN dogrulanmadan aynen donuyor (latent guvenlik bosulugu)', async () => {
-    // GUVENLIK NOTU: Uretim kodu (indirmeBaglantisiBul) API'den gelen
-    // browser_download_url'i guvenilirBaglantiMi ile DOGRULAMIYOR. Bu test mevcut
-    // (guvensiz) davranisi SABITLER: phishing/manipule edilmis bir APK baglantisi
-    // zincirden gecer. guvenilirBaglantiMi'nin bu URL'i ZATEN reddettigini de
-    // gosteririz — yani koruma fonksiyonu var ama akista cagrilmiyor.
-    // Uretime koruma eklenirse (URL reddedilip release sayfasina dusulurse) bu test
-    // KASITLI olarak FAIL eder ve guvenlik duzeltmesinin yapildigini isaret eder.
+  it('API guvenilmez bir APK domaini donerse, indirmeBaglantisi sabit fallbackine dusuyor', async () => {
+    // GUVENLIK DUZELTMESI: indirmeBaglantisiBul artik API'den gelen
+    // browser_download_url'i guvenilirBaglantiMi ile DOGRULIYOR. Guvenilmez URL
+    // (phishing/manipule edilmis domain) reddedilerek sabit releases/latest URL'ine
+    // dusulmektedir. html_url'de guvenilir olsa da APK reddi durumunda sabit
+    // fallback kullanilir (html_url de manipule edilmis olabilir).
     const kotuUrl = 'https://evil-site.com/NamazAkisi-99.0.0.apk';
-    const releaseSayfasi = 'https://github.com/furkanisikay/namazakisi/releases/tag/v99.0.0';
+    const sabitFallback = 'https://github.com/furkanisikay/namazakisi/releases/latest';
     mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
       assets: [{ name: 'NamazAkisi-99.0.0.apk', browser_download_url: kotuUrl }],
-      html_url: releaseSayfasi,
+      html_url: 'https://github.com/furkanisikay/namazakisi/releases/tag/v99.0.0',
     }));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
-    // Mevcut davranis: guvenilmez URL aynen donuyor (release sayfasina dusmuyor)
-    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(kotuUrl);
-    // Koruma fonksiyonu bu URL'i reddederdi — yani akista cagrilsaydi reddedilirdi
+    // Yeni davranis: guvenilmez APK URL'i reddedilir, sabit releases/latest'e dusulur
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(sabitFallback);
+    // kotuUrl'in reddedildigini dogrula
     expect(guvenilirBaglantiMi(kotuUrl)).toBe(false);
+  });
+
+  it('API guvenilmez bir html_url donerse, sabit fallback URL kullaniliyor', async () => {
+    // html_url manipule edilmisse bile sabit github.com/releases/latest URL'i kullanilir
+    const kotuHtmlUrl = 'https://evil-site.com/fake-release';
+    const sabitFallback = 'https://github.com/furkanisikay/namazakisi/releases/latest';
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      assets: [], // APK yok, html_url'e dusecek
+      html_url: kotuHtmlUrl,
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    // Guvenilmez html_url reddedilir, sabit fallback kullanilir
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(sabitFallback);
+    expect(guvenilirBaglantiMi(kotuHtmlUrl)).toBe(false);
+  });
+
+  it('guvenilir bir APK baglantisi oldugu gibi donuluyor', async () => {
+    // Guvenilir domain iceren APK URL'i korunmali
+    const guvenilirApkUrl = 'https://objects.githubusercontent.com/releases/NamazAkisi-99.0.0.apk';
+    mockFetch.mockResolvedValue(githubYanitiOlustur('99.0.0', {
+      assets: [{ name: 'NamazAkisi-99.0.0.apk', browser_download_url: guvenilirApkUrl }],
+    }));
+
+    const sonuc = await kaynak.enSonSurumuKontrolEt();
+
+    expect(sonuc.bilgi?.indirmeBaglantisi).toBe(guvenilirApkUrl);
+    expect(guvenilirBaglantiMi(guvenilirApkUrl)).toBe(true);
   });
 });
 
@@ -1011,15 +1039,15 @@ describe('GitHubGuncellemeKaynagi — gercek surum (0.23.1) sinir karsilastirmas
     mockFetch.mockReset();
   });
 
-  it('mevcut surumden bir patch yuksek (0.23.2) -> guncelleme MEVCUT', async () => {
-    // Referans: UYGULAMA.VERSIYON === '0.23.1' (sabit dogrulanir)
-    expect(UYGULAMA.VERSIYON).toBe('0.23.1');
-    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.2'));
+  it('mevcut surumden bir patch yuksek (0.23.3) -> guncelleme MEVCUT', async () => {
+    // Referans: UYGULAMA.VERSIYON === '0.23.2' (sabit dogrulanir)
+    expect(UYGULAMA.VERSIYON).toBe('0.23.2');
+    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.3'));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
     expect(sonuc.guncellemeMevcut).toBe(true);
-    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.23.2');
+    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.23.3');
   });
 
   it('mevcut surumden bir minor yuksek (0.24.0) -> guncelleme MEVCUT', async () => {
@@ -1031,8 +1059,8 @@ describe('GitHubGuncellemeKaynagi — gercek surum (0.23.1) sinir karsilastirmas
     expect(sonuc.bilgi?.yeniVersiyon).toBe('0.24.0');
   });
 
-  it('mevcut surumden bir patch dusuk (0.23.0) -> guncelleme YOK', async () => {
-    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.0'));
+  it('mevcut surumden bir patch dusuk (0.23.1) -> guncelleme YOK', async () => {
+    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.1'));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
