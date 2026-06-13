@@ -25,7 +25,6 @@ import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi
 import {
   seriHesapla,
   seriOzetiniOlustur,
-  kilinanNamazSayisi,
 } from '../../domain/services/SeriHesaplayiciServisi';
 import {
   rozetDetaylariniAl,
@@ -178,8 +177,9 @@ export const seriKontrolet = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { seri: SeriState };
-    const { seriDurumu, kullaniciRozetleri, seviyeDurumu, ayarlar, ozelGunAyarlari } = state.seri;
-    let { toplamKilinanNamaz, toparlanmaSayisi, mukemmelGunSayisi } = state.seri;
+    const { seriDurumu, kullaniciRozetleri, seviyeDurumu, ayarlar, ozelGunAyarlari, toplamKilinanNamaz, mukemmelGunSayisi } = state.seri;
+    let toparlanmaSayisi = state.seri.toparlanmaSayisi;
+    let bonusPuan = state.seri.bonusPuan;
 
     // Seri hesapla
     const hesapSonucu = seriHesapla(
@@ -197,9 +197,8 @@ export const seriKontrolet = createAsyncThunk(
         kullaniciRozetleri,
         seviyeDurumu: seviyeDurumu || bosSeviyeDurumuOlustur(),
         kutlamalar: [] as KutlamaBilgisi[],
-        toplamKilinanNamaz,
         toparlanmaSayisi,
-        mukemmelGunSayisi,
+        bonusPuan,
       };
     }
 
@@ -209,14 +208,9 @@ export const seriKontrolet = createAsyncThunk(
       await LocalSeriServisi.localToparlanmaSayisiniArttir();
     }
 
-    // Bugun 5/5 ise mukemmel gun sayisini artir
-    const bugunKilinan = kilinanNamazSayisi(bugunNamazlar);
-    if (bugunKilinan === 5) {
-      mukemmelGunSayisi += 1;
-      await LocalSeriServisi.localMukemmelGunSayisiniArttir();
-    }
-
-    // Tam guncellemeyi yap (rozetler, seviye, kutlamalar)
+    // NOT: mukemmel gun artik kayittan TUREVdir (puanlamayiYenidenHesapla); burada artirilmaz.
+    // tamGuncellemeyiYap'a gecilen seviyeDurumu invariant'i (= tabanPuan + bonusPuan) korur;
+    // donen toplamKazanilanPuan bonusPuan'a eklenir, seviye buna gore guncellenir.
     const guncellemeSonucu = tamGuncellemeyiYap(
       hesapSonucu.seriDurumu,
       kullaniciRozetleri,
@@ -228,6 +222,8 @@ export const seriKontrolet = createAsyncThunk(
       hesapSonucu.toparlanmaBasarili
     );
 
+    bonusPuan += guncellemeSonucu.toplamKazanilanPuan;
+
     // Local'e kaydet
     await Promise.all([
       LocalSeriServisi.localSeriDurumunuKaydet(hesapSonucu.seriDurumu),
@@ -237,6 +233,7 @@ export const seriKontrolet = createAsyncThunk(
       LocalSeriServisi.localSeviyeDurumunuKaydet(
         guncellemeSonucu.yeniSeviyeDurumu
       ),
+      LocalSeriServisi.localBonusPuaniKaydet(bonusPuan),
     ]);
 
     return {
@@ -244,9 +241,8 @@ export const seriKontrolet = createAsyncThunk(
       kullaniciRozetleri: guncellemeSonucu.yeniKullaniciRozetleri,
       seviyeDurumu: guncellemeSonucu.yeniSeviyeDurumu,
       kutlamalar: guncellemeSonucu.kutlamalar,
-      toplamKilinanNamaz,
       toparlanmaSayisi,
-      mukemmelGunSayisi,
+      bonusPuan,
     };
   },
   {
@@ -258,46 +254,9 @@ export const seriKontrolet = createAsyncThunk(
   }
 );
 
-/**
- * Namaz kilindiginda toplam sayiyi arttirir
- */
-export const namazKilindiPuanla = createAsyncThunk(
-  'seri/namazKilindiPuanla',
-  async (
-    {
-      namazSayisi,
-    }: { namazSayisi: number },
-    { getState }
-  ) => {
-    const state = getState() as { seri: SeriState };
-
-    // Toplam kilinin namazi artir
-    const yeniToplam = state.seri.toplamKilinanNamaz + namazSayisi;
-    await LocalSeriServisi.localToplamKilinanNamaziKaydet(yeniToplam);
-
-    // Seviyeye puan ekle
-    const seviyeSonucu = puanEkle(
-      state.seri.seviyeDurumu || bosSeviyeDurumuOlustur(),
-      namazSayisi * 5 // Her namaz 5 puan
-    );
-
-    await LocalSeriServisi.localSeviyeDurumunuKaydet(seviyeSonucu.yeniDurum);
-
-    return {
-      toplamKilinanNamaz: yeniToplam,
-      seviyeDurumu: seviyeSonucu.yeniDurum,
-      seviyeAtlandi: seviyeSonucu.seviyeAtlandi,
-      yeniSeviye: seviyeSonucu.yeniSeviye,
-    };
-  },
-  {
-    condition: (_, { getState }) => {
-      const state = getState() as { seri: SeriState };
-      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
-      return !!state.seri.sonYukleme;
-    },
-  }
-);
+// NOT: namazKilindiPuanla KALDIRILDI. Olay-tetiklemeli +5/+1 artisi toggle ile sismeye
+// yol aciyordu (ve arka plan/un-toggle ile tutarsizlasiyordu). Yerine puanlamayiYenidenHesapla
+// (kayittan turev) gecti; taban puan/sayac tek dogru kaynaktan hesaplanir.
 
 /**
  * Ozel gun modunu aktif/pasif yapar
@@ -528,9 +487,9 @@ const seriSlice = createSlice({
         state.seriDurumu = action.payload.seriDurumu;
         state.kullaniciRozetleri = action.payload.kullaniciRozetleri;
         state.seviyeDurumu = action.payload.seviyeDurumu;
-        state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
         state.toparlanmaSayisi = action.payload.toparlanmaSayisi;
-        state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        state.bonusPuan = action.payload.bonusPuan;
+        // toplamKilinanNamaz / mukemmelGunSayisi artik turev (puanlamayiYenidenHesapla) — burada yazilmaz
         // Rozet detaylarini guncelle
         state.rozetDetaylari = rozetDetaylariniAl(
           action.payload.kullaniciRozetleri
@@ -546,19 +505,6 @@ const seriSlice = createSlice({
       .addCase(seriKontrolet.rejected, (state, action) => {
         state.guncelleniyor = false;
         state.hata = action.error.message || 'Seri guncellenemedi';
-      })
-      // Namaz kilindi puanla
-      .addCase(namazKilindiPuanla.fulfilled, (state, action) => {
-        state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
-        state.seviyeDurumu = action.payload.seviyeDurumu;
-
-        // Seviye atlandiysa kutlama ekle
-        if (action.payload.seviyeAtlandi && action.payload.yeniSeviye) {
-          const { seviyeKutlamasiOlustur } = require('../../domain/services/RozetYoneticisiServisi');
-          state.bekleyenKutlamalar.push(
-            seviyeKutlamasiOlustur(action.payload.yeniSeviye)
-          );
-        }
       })
       // Puanlama reconcile (turev) — toplamKilinan/mukemmelGun/taban kayittan, bonus korunur
       .addCase(puanlamayiYenidenHesapla.fulfilled, (state, action) => {

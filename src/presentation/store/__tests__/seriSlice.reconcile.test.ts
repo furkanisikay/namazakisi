@@ -58,7 +58,7 @@ function storeOlustur() {
 const gunKayitlari = (tarih: string, kilinan: number) =>
   NAMAZ_ISIMLERI.map((namazAdi, i) => ({ tarih, namazAdi: namazAdi as NamazAdi, tamamlandi: i < kilinan }));
 
-const seriVerileri = (over: Partial<{ toplamPuan: number; toplamKilinanNamaz: number; mukemmelGunSayisi: number; tamGunEsigi: number }> = {}) => ({
+const seriVerileri = (over: Partial<{ toplamPuan: number; toplamKilinanNamaz: number; mukemmelGunSayisi: number; tamGunEsigi: number; mevcutSeviye: number }> = {}) => ({
   basarili: true,
   veri: {
     seriDurumu: {
@@ -67,7 +67,7 @@ const seriVerileri = (over: Partial<{ toplamPuan: number; toplamKilinanNamaz: nu
     },
     rozetler: [],
     seviyeDurumu: {
-      mevcutSeviye: 3, toplamPuan: over.toplamPuan ?? 450, mevcutSeviyePuani: 150,
+      mevcutSeviye: over.mevcutSeviye ?? 3, toplamPuan: over.toplamPuan ?? 450, mevcutSeviyePuani: 150,
       sonrakiSeviyeKalanPuan: 150, rank: 'Salik', rankIkonu: 'X',
     },
     ayarlar: {
@@ -157,5 +157,44 @@ describe('puanlamayiYenidenHesapla (reconcile)', () => {
 
     await yukleVeReconcile(store);
     expect(store.getState().seri.mukemmelGunSayisi).toBe(1);
+  });
+
+  test('sessiz=false ve gercek seviye atlamada kutlama eklenir', async () => {
+    // Baslangic seviye 1, puan 0; 21 namaz -> taban 105 -> seviye 2 (esik 100). Atlama kutlanir.
+    mockLocalTumSeriVerileriniGetir.mockResolvedValue(
+      seriVerileri({ toplamPuan: 0, toplamKilinanNamaz: 0, mevcutSeviye: 1 })
+    );
+    mockLocalBonusPuaniGetir.mockResolvedValue({ basarili: true, veri: 0 });
+    mockLocalVerileriSenkronizasyonIcinAl.mockResolvedValue(
+      Array.from({ length: 5 }, (_, g) => gunKayitlari(`2026-05-0${g + 1}`, 5)).flat().slice(0, 21)
+    );
+
+    await store.dispatch(seriVerileriniYukle());
+    await store.dispatch(puanlamayiYenidenHesapla({ sessiz: false }));
+    const s = store.getState().seri;
+
+    expect(s.tabanPuan).toBe(105);
+    expect(s.seviyeDurumu!.mevcutSeviye).toBeGreaterThanOrEqual(2);
+    expect(s.bekleyenKutlamalar).toHaveLength(1);
+    expect(s.bekleyenKutlamalar[0].tip).toBe('seviye_atlandi');
+  });
+
+  test('idempotent: ayni kayitlarla iki kez reconcile -> sismeme (toggle on/off/on senaryosu)', async () => {
+    mockLocalTumSeriVerileriniGetir.mockResolvedValue(seriVerileri({ toplamPuan: 0, toplamKilinanNamaz: 0 }));
+    mockLocalBonusPuaniGetir.mockResolvedValue({ basarili: true, veri: 0 });
+    mockLocalVerileriSenkronizasyonIcinAl.mockResolvedValue(gunKayitlari('2026-06-14', 5));
+
+    await store.dispatch(seriVerileriniYukle());
+    await store.dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
+    const ilk = store.getState().seri;
+
+    // Kayit ayni kaldigi surece tekrar reconcile sonucu DEGISTIRMEZ (sisme imkansiz)
+    await store.dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
+    const ikinci = store.getState().seri;
+
+    expect(ikinci.toplamKilinanNamaz).toBe(ilk.toplamKilinanNamaz);
+    expect(ikinci.tabanPuan).toBe(ilk.tabanPuan);
+    expect(ikinci.seviyeDurumu!.toplamPuan).toBe(ilk.seviyeDurumu!.toplamPuan);
+    expect(ikinci.toplamKilinanNamaz).toBe(5);
   });
 });

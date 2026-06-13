@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
-import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
+import { seriVerileriniYukle, seriKontrolet, puanlamayiYenidenHesapla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
 import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
@@ -176,7 +176,10 @@ export const AnaSayfa: React.FC = () => {
       setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
     }
 
-    dispatch(seriVerileriniYukle());
+    dispatch(seriVerileriniYukle()).then(() => {
+      // Acilista puanlamayi tek dogru kaynaktan SESSIZCE uzlastir (sisme + arka plan duzeltmesi)
+      dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
+    });
     // muhafizAyarlariniYukle, iftarSayacAyarlariniYukle, sahurSayacAyarlariniYukle
     // ve BildirimServisi.izinIste App.tsx arkaplanMuhafiziBildirimleriniPlanla icerisinde
     // konum yuklendikten sonra paralel yukleniyor
@@ -344,7 +347,12 @@ export const AnaSayfa: React.FC = () => {
 
   // Namaz İşlemleri
   const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
-    dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    await dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+
+    // Puanlamayi tek dogru kaynaktan yeniden turet (toggle/un-toggle simetrik; sismeyi yapisal onler)
+    if (seriYuklendiMi) {
+      dispatch(puanlamayiYenidenHesapla({ sessiz: !tamamlandi }));
+    }
 
     // Vakit donusumu (servis icin)
     const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
@@ -357,10 +365,6 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      // Namaz kilindi - seri verileri yuklenmisse puan ekle
-      if (seriYuklendiMi) {
-        dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
-      }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
       // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
@@ -406,8 +410,14 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
-  const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
-  const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
+  const tumunuTamamla = async () => {
+    await dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
+    if (seriYuklendiMi) dispatch(puanlamayiYenidenHesapla({ sessiz: false }));
+  };
+  const tumunuSifirla = async () => {
+    await dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
+    if (seriYuklendiMi) dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
+  };
 
   // Sayfa içeriği render
   const sayfaIcerigiOlustur = (sayfaIndeksi: number) => {

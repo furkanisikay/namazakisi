@@ -11,7 +11,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import seriReducer, {
   seriVerileriniYukle,
   seriKontrolet,
-  namazKilindiPuanla,
+  puanlamayiYenidenHesapla,
 } from '../seriSlice';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
@@ -27,6 +27,7 @@ const mockLocalSeviyeDurumunuKaydet = jest.fn();
 const mockLocalToplamKilinanNamaziKaydet = jest.fn();
 const mockLocalToparlanmaSayisiniArttir = jest.fn();
 const mockLocalMukemmelGunSayisiniArttir = jest.fn();
+const mockLocalBonusPuaniKaydet = jest.fn();
 
 jest.mock('../../../data/local/LocalSeriServisi', () => ({
   localTumSeriVerileriniGetir: (...args: any[]) => mockLocalTumSeriVerileriniGetir(...args),
@@ -36,6 +37,7 @@ jest.mock('../../../data/local/LocalSeriServisi', () => ({
   localToplamKilinanNamaziKaydet: (...args: any[]) => mockLocalToplamKilinanNamaziKaydet(...args),
   localToparlanmaSayisiniArttir: (...args: any[]) => mockLocalToparlanmaSayisiniArttir(...args),
   localMukemmelGunSayisiniArttir: (...args: any[]) => mockLocalMukemmelGunSayisiniArttir(...args),
+  localBonusPuaniKaydet: (...args: any[]) => mockLocalBonusPuaniKaydet(...args),
   VARSAYILAN_OZEL_GUN_AYARLARI: {
     ozelGunModuAktif: false,
     aktifOzelGun: null,
@@ -262,59 +264,8 @@ describe('seriSlice - Race Condition Korumasi', () => {
     });
   });
 
-  describe('namazKilindiPuanla condition guard', () => {
-    test('seri verileri yuklenmeden namazKilindiPuanla calistirilamamali', async () => {
-      const sonuc = await store.dispatch(
-        namazKilindiPuanla({ namazSayisi: 1 })
-      );
-
-      // condition false dondurdugu icin thunk engellenmeli
-      expect(sonuc.type).toContain('rejected');
-      expect((sonuc.meta as any).condition).toBe(true);
-      // State degismemeli - toplamKilinanNamaz 0 kalmali
-      expect(store.getState().seri.toplamKilinanNamaz).toBe(0);
-      // AsyncStorage'a yazilmamali
-      expect(mockLocalToplamKilinanNamaziKaydet).not.toHaveBeenCalled();
-      expect(mockLocalSeviyeDurumunuKaydet).not.toHaveBeenCalled();
-    });
-
-    test('seri verileri yuklendikten sonra namazKilindiPuanla thunk calismali ve state guncellenmeli', async () => {
-      // Once verileri yukle
-      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(mockSeriVerileri());
-      mockLocalToplamKilinanNamaziKaydet.mockResolvedValue({ basarili: true });
-      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
-
-      await store.dispatch(seriVerileriniYukle());
-
-      // sonYukleme set olmali - condition guard gecmeli
-      const oncekiSeriState = store.getState().seri;
-      expect(oncekiSeriState.sonYukleme).not.toBeNull();
-
-      const oncekiToplam = oncekiSeriState.toplamKilinanNamaz;
-      const oncekiSeviyeDurumu = oncekiSeriState.seviyeDurumu;
-
-      const namazSayisi = 1;
-      const sonuc = await store.dispatch(
-        namazKilindiPuanla({ namazSayisi })
-      );
-
-      // Thunk condition tarafindan engellenmemeli (condition gecmeli)
-      expect((sonuc.meta as any).condition).not.toBe(true);
-      // Thunk basariyla tamamlanmali
-      expect(sonuc.type).toContain('fulfilled');
-
-      const guncelSeriState = store.getState().seri;
-      // toplamKilinanNamaz artmali
-      expect(guncelSeriState.toplamKilinanNamaz).toBe(oncekiToplam + namazSayisi);
-      // seviyeDurumu guncellenmis olmali (puan artmali)
-      expect(guncelSeriState.seviyeDurumu).not.toEqual(oncekiSeviyeDurumu);
-      expect(guncelSeriState.seviyeDurumu!.toplamPuan).toBeGreaterThan(oncekiSeviyeDurumu!.toplamPuan);
-
-      // AsyncStorage/persistence cagrilmis olmali
-      expect(mockLocalToplamKilinanNamaziKaydet).toHaveBeenCalled();
-      expect(mockLocalSeviyeDurumunuKaydet).toHaveBeenCalled();
-    });
-  });
+  // NOT: namazKilindiPuanla KALDIRILDI (-> puanlamayiYenidenHesapla). Condition guard ve
+  // seviye-atlama testleri seriSlice.reconcile.test.ts'e tasindi.
 
   // ==================== seriKontrolet PAYLOAD -> STATE DOGRULUGU ====================
   describe('seriKontrolet payload state reducer dogrulugu', () => {
@@ -370,9 +321,8 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(s.seriDurumu!.seriBaslangici).toBe(bugun);
       expect(s.seriDurumu!.toparlanmaDurumu).toBeNull();
 
-      // 5/5 tam gun -> mukemmelGunSayisi +1 (seriSlice.ts:202-206 dali)
-      expect(s.mukemmelGunSayisi).toBe(1);
-      expect(mockLocalMukemmelGunSayisiniArttir).toHaveBeenCalledTimes(1);
+      // mukemmel gun artik TUREVdir (puanlamayiYenidenHesapla); seriKontrolet artirmaz
+      expect(mockLocalMukemmelGunSayisiniArttir).not.toHaveBeenCalled();
       // Toparlanma yok -> toparlanma sayaci artmamali
       expect(mockLocalToparlanmaSayisiniArttir).not.toHaveBeenCalled();
 
@@ -438,68 +388,19 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(s.toparlanmaSayisi).toBe(3);
       expect(mockLocalToparlanmaSayisiniArttir).toHaveBeenCalledTimes(1);
 
-      // Bugun 5/5 tam -> mukemmel gun de artmali
-      expect(mockLocalMukemmelGunSayisiniArttir).toHaveBeenCalledTimes(1);
+      // mukemmel gun artik TUREVdir; seriKontrolet artirmaz
+      expect(mockLocalMukemmelGunSayisiniArttir).not.toHaveBeenCalled();
 
       expect(mockLocalSeriDurumunuKaydet).toHaveBeenCalled();
     });
   });
 
-  // ==================== namazKilindiPuanla SEVIYE ATLAMA + KUTLAMA ====================
-  describe('namazKilindiPuanla seviye atlama ve kutlama kuyrugu', () => {
-    test('seviye sinirini asan puanla seviyeAtlandi olur ve bekleyenKutlamalar kuyruga eklenir', async () => {
-      // Yuklenen seviye: mevcutSeviye=3, toplamPuan=450. Seviye 4 esigi = 600 (SEVIYE_TANIMLARI).
-      // namazSayisi=30 -> 30*5=150 puan -> 450+150=600 -> seviye 4 (Mürid). Atlama tetiklenir.
-      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(mockSeriVerileri());
-      mockLocalToplamKilinanNamaziKaydet.mockResolvedValue({ basarili: true });
-      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
-
-      await store.dispatch(seriVerileriniYukle());
-      expect(store.getState().seri.seviyeDurumu!.mevcutSeviye).toBe(3);
-      // Onceden kutlama kuyrugu bos olmali
-      expect(store.getState().seri.bekleyenKutlamalar.length).toBe(0);
-
-      const sonuc = await store.dispatch(
-        namazKilindiPuanla({ namazSayisi: 30 })
-      );
-      expect((sonuc.meta as any).condition).not.toBe(true);
-      expect(sonuc.type).toContain('fulfilled');
-
-      const s = store.getState().seri;
-      // Tam 600 puan -> seviye 4'e atladi (referans esik dogrulugu)
-      expect(s.seviyeDurumu!.toplamPuan).toBe(600);
-      expect(s.seviyeDurumu!.mevcutSeviye).toBe(4);
-      expect(s.seviyeDurumu!.rank).toBe('Mürid');
-
-      // seviyeAtlandi dali (seriSlice.ts:488-493): kutlama kuyruga eklendi
-      expect(s.bekleyenKutlamalar.length).toBe(1);
-      const kutlama = s.bekleyenKutlamalar[0];
-      expect(kutlama.tip).toBe('seviye_atlandi');
-      // Kutlama yeni seviyenin (Mürid) bilgisini tasimali
-      expect((kutlama.ekstraVeri as any).seviye.seviye).toBe(4);
-    });
-
-    test('seviye atlatmayan kucuk puanda kutlama kuyruga eklenmez', async () => {
-      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(mockSeriVerileri());
-      mockLocalToplamKilinanNamaziKaydet.mockResolvedValue({ basarili: true });
-      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
-
-      await store.dispatch(seriVerileriniYukle());
-
-      // namazSayisi=1 -> 5 puan -> 450+5=455 (<600), seviye 3'te kalir -> atlama yok
-      await store.dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
-
-      const s = store.getState().seri;
-      expect(s.seviyeDurumu!.toplamPuan).toBe(455);
-      expect(s.seviyeDurumu!.mevcutSeviye).toBe(3);
-      // Seviye atlanmadi -> kutlama kuyrugu bos kalmali
-      expect(s.bekleyenKutlamalar.length).toBe(0);
-    });
-  });
+  // NOT: seviye-atlama + kutlama testleri puanlamayiYenidenHesapla (sessiz=false) uzerinden
+  // seriSlice.reconcile.test.ts'e tasindi (namazKilindiPuanla kaldirildi).
 
   // ==================== ESZAMANLI (RACE) GUARD PENCERESI ====================
   describe('eszamanli dispatch guard penceresi', () => {
-    test('seriVerileriniYukle pending iken eszamanli seriKontrolet/namazKilindiPuanla bloklanir', async () => {
+    test('seriVerileriniYukle pending iken eszamanli seriKontrolet/puanlamayiYenidenHesapla bloklanir', async () => {
       // Yukleme cozulmesini elimizde tutarak (sonYukleme hala null) GERCEK race penceresini simule et.
       let yuklemeyiCoz: (deger: ReturnType<typeof mockSeriVerileri>) => void;
       const yuklemePromise = new Promise<ReturnType<typeof mockSeriVerileri>>((resolve) => {
@@ -523,7 +424,7 @@ describe('seriSlice - Race Condition Korumasi', () => {
         store.dispatch(
           seriKontrolet({ bugunNamazlar: tamNamazlar(bugun), dunNamazlar: null })
         ),
-        store.dispatch(namazKilindiPuanla({ namazSayisi: 1 })),
+        store.dispatch(puanlamayiYenidenHesapla({ sessiz: true })),
       ]);
 
       // Guard ikisini de bloklamali (condition === true -> rejected, calismadi)

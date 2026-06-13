@@ -27,6 +27,7 @@ import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSl
 import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle } from './src/presentation/store/namazSlice';
+import { puanlamayiYenidenHesapla } from './src/presentation/store/seriSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
@@ -46,6 +47,9 @@ try {
       if (state.namaz.mevcutTarih === tarih) {
         store.dispatch(namazlariYukle({ tarih }));
       }
+      // Arka plandan "Kildim" -> puanlamayi tek dogru kaynaktan SESSIZCE yeniden turet
+      // (bug #2: arka plan isaretleri puana/seviyeye/toplama katilmiyordu)
+      store.dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
     } catch {
       // Callback icindeki hatayi sessizce yut
     }
