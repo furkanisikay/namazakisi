@@ -19,6 +19,7 @@
     },
     "android": {
       "package": "com.furkanisikay.namazakisi",
+      "allowBackup": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4CAF50"
