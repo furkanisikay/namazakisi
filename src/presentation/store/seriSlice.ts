@@ -50,6 +50,10 @@ interface SeriState {
   // toplamPuan (= seviyeDurumu.toplamPuan) = tabanPuan + bonusPuan.
   tabanPuan: number;
   bonusPuan: number;
+  // Bu yuklemede bonusPuan migrasyonu yapildi mi? Ilk senkronu yalniz migrasyonda SESSIZ
+  // tutmak icin (de-inflasyon yanlis "seviye atladin" kutlamasi tetiklemesin; migrasyon yoksa
+  // arka planda kazanilan seviye atlamasi yutulmasin).
+  migreEdildi: boolean;
   ozelGunAyarlari: OzelGunAyarlari;
   // Kutlama queue - gosterilecek kutlamalar
   bekleyenKutlamalar: KutlamaBilgisi[];
@@ -71,6 +75,7 @@ const baslangicDurumu: SeriState = {
   mukemmelGunSayisi: 0,
   tabanPuan: 0,
   bonusPuan: 0,
+  migreEdildi: false,
   ozelGunAyarlari: LocalSeriServisi.VARSAYILAN_OZEL_GUN_AYARLARI,
   bekleyenKutlamalar: [],
   yukleniyor: false,
@@ -105,11 +110,13 @@ export const seriVerileriniYukle = createAsyncThunk(
     // boylece "bayat-0 uzerine yazma" yarisi ve migrasyon-atlama kaynakli VERI KAYBI olusmaz.
     const bonusHam = (await LocalSeriServisi.localBonusPuaniGetir()).veri;
     let bonusPuan: number;
+    let migreEdildi = false;
     if (bonusHam === null || bonusHam === undefined) {
       const eskiToplamPuan = veriler.seviyeDurumu?.toplamPuan ?? 0;
       const eskiTaban = veriler.toplamKilinanNamaz * PUAN_DEGERLERI.namaz_kilindi;
       bonusPuan = Math.max(0, eskiToplamPuan - eskiTaban);
       await LocalSeriServisi.localBonusPuaniKaydet(bonusPuan);
+      migreEdildi = true;
     } else {
       bonusPuan = bonusHam;
     }
@@ -118,6 +125,7 @@ export const seriVerileriniYukle = createAsyncThunk(
       ...veriler,
       rozetDetaylari,
       bonusPuan,
+      migreEdildi,
     };
   }
 );
@@ -266,8 +274,9 @@ export const seriKontrolet = createAsyncThunk(
   {
     condition: (_, { getState }) => {
       const state = getState() as { seri: SeriState };
-      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
-      return !!state.seri.sonYukleme;
+      // Yuklenmeden VEYA baska bir seriKontrolet in-flight iken atla: eszamanli oku-degistir-yaz
+      // (cift toparlanma artisi) ve cift seviye kutlamasi yarisini onler.
+      return !!state.seri.sonYukleme && !state.seri.guncelleniyor;
     },
   }
 );
@@ -481,6 +490,7 @@ const seriSlice = createSlice({
         // (reconcile birazdan kayittan kesin degeri turetecek).
         state.bonusPuan = action.payload.bonusPuan;
         state.tabanPuan = Math.max(0, (action.payload.seviyeDurumu?.toplamPuan ?? 0) - action.payload.bonusPuan);
+        state.migreEdildi = action.payload.migreEdildi;
         state.sonYukleme = new Date().toISOString();
       })
       .addCase(seriVerileriniYukle.rejected, (state, action) => {
@@ -531,9 +541,18 @@ const seriSlice = createSlice({
         state.bonusPuan = action.payload.bonusPuan;
         state.seviyeDurumu = action.payload.seviyeDurumu;
         if (action.payload.seviyeAtlandi && action.payload.yeniSeviye) {
-          state.bekleyenKutlamalar.push(
-            seviyeKutlamasiOlustur(action.payload.yeniSeviye)
+          const yeniSeviyeNo = action.payload.yeniSeviye.seviye;
+          // Ayni seviye icin kuyrukta zaten kutlama varsa tekrar ekleme (eszamanli reconcile cift kutlamasi)
+          const zatenVar = state.bekleyenKutlamalar.some(
+            (k) =>
+              k.tip === 'seviye_atlandi' &&
+              (k.ekstraVeri as { seviye?: { seviye?: number } })?.seviye?.seviye === yeniSeviyeNo
           );
+          if (!zatenVar) {
+            state.bekleyenKutlamalar.push(
+              seviyeKutlamasiOlustur(action.payload.yeniSeviye)
+            );
+          }
         }
       })
       // Ozel gun thunk'lari

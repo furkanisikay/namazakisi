@@ -202,9 +202,12 @@ export const AnaSayfa: React.FC = () => {
   // seriKontrolet'i AWAIT edip ARDINDAN reconcile'i zincirle -> TEK-YAZICI, yaris yok.
   // Ilk senkron (acilis) SESSIZ; sonraki (gercek kullanici eylemi) seviye atlamada kutlar.
   const seriIlkSenkronRef = useRef(true);
+  const migreEdildi = useAppSelector((state) => state.seri.migreEdildi);
   useEffect(() => {
     if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendiMi) {
-      const sessiz = seriIlkSenkronRef.current;
+      // Ilk senkron YALNIZ migrasyon yapildiysa sessiz (de-inflasyon yanlis kutlama tetiklemesin).
+      // Migrasyon yoksa ilk senkron da seviye atlamayi kutlar -> arka planda kazanilan seviye yutulmaz.
+      const sessiz = seriIlkSenkronRef.current && migreEdildi;
       seriIlkSenkronRef.current = false;
       const bugunNamazlar = gunlukNamazlar;
       (async () => {
@@ -212,7 +215,7 @@ export const AnaSayfa: React.FC = () => {
         dispatch(puanlamayiYenidenHesapla({ sessiz }));
       })();
     }
-  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi, migreEdildi]);
 
   // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {

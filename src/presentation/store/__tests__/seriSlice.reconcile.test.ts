@@ -197,4 +197,35 @@ describe('puanlamayiYenidenHesapla (reconcile)', () => {
     expect(ikinci.seviyeDurumu!.toplamPuan).toBe(ilk.seviyeDurumu!.toplamPuan);
     expect(ikinci.toplamKilinanNamaz).toBe(5);
   });
+
+  test('migreEdildi: bonus diskte null ise true, varsa false', async () => {
+    mockLocalTumSeriVerileriniGetir.mockResolvedValue(seriVerileri({ toplamPuan: 450, toplamKilinanNamaz: 50 }));
+    mockLocalVerileriSenkronizasyonIcinAl.mockResolvedValue(gunKayitlari('2026-06-14', 5));
+
+    mockLocalBonusPuaniGetir.mockResolvedValue({ basarili: true, veri: null });
+    await store.dispatch(seriVerileriniYukle());
+    expect(store.getState().seri.migreEdildi).toBe(true);
+
+    const store2 = storeOlustur();
+    mockLocalBonusPuaniGetir.mockResolvedValue({ basarili: true, veri: 200 });
+    await store2.dispatch(seriVerileriniYukle());
+    expect(store2.getState().seri.migreEdildi).toBe(false);
+  });
+
+  test('cift reconcile (sessiz:false) seviye atlamada TEK kutlama uretir (dedupe)', async () => {
+    mockLocalTumSeriVerileriniGetir.mockResolvedValue(
+      seriVerileri({ toplamPuan: 0, toplamKilinanNamaz: 0, mevcutSeviye: 1 })
+    );
+    mockLocalBonusPuaniGetir.mockResolvedValue({ basarili: true, veri: 0 });
+    mockLocalVerileriSenkronizasyonIcinAl.mockResolvedValue(
+      Array.from({ length: 5 }, (_, g) => gunKayitlari(`2026-05-0${g + 1}`, 5)).flat().slice(0, 21)
+    );
+
+    await store.dispatch(seriVerileriniYukle());
+    await store.dispatch(puanlamayiYenidenHesapla({ sessiz: false }));
+    await store.dispatch(puanlamayiYenidenHesapla({ sessiz: false }));
+
+    const kutlamalar = store.getState().seri.bekleyenKutlamalar.filter((k) => k.tip === 'seviye_atlandi');
+    expect(kutlamalar).toHaveLength(1);
+  });
 });
