@@ -28,6 +28,7 @@ const mockLocalToplamKilinanNamaziKaydet = jest.fn();
 const mockLocalToparlanmaSayisiniArttir = jest.fn();
 const mockLocalMukemmelGunSayisiniArttir = jest.fn();
 const mockLocalBonusPuaniKaydet = jest.fn();
+const mockLocalBonusPuaniGetir = jest.fn(async () => ({ basarili: true, veri: 0 as number | null }));
 
 jest.mock('../../../data/local/LocalSeriServisi', () => ({
   localTumSeriVerileriniGetir: (...args: any[]) => mockLocalTumSeriVerileriniGetir(...args),
@@ -38,6 +39,7 @@ jest.mock('../../../data/local/LocalSeriServisi', () => ({
   localToparlanmaSayisiniArttir: (...args: any[]) => mockLocalToparlanmaSayisiniArttir(...args),
   localMukemmelGunSayisiniArttir: (...args: any[]) => mockLocalMukemmelGunSayisiniArttir(...args),
   localBonusPuaniKaydet: (...args: any[]) => mockLocalBonusPuaniKaydet(...args),
+  localBonusPuaniGetir: () => mockLocalBonusPuaniGetir(),
   VARSAYILAN_OZEL_GUN_AYARLARI: {
     ozelGunModuAktif: false,
     aktifOzelGun: null,
@@ -211,9 +213,10 @@ describe('seriSlice - Race Condition Korumasi', () => {
       // mevcutSeri toparlanma boyunca degismez; onceki seri toparlanmaDurumu'nda tutulur
       expect(guncelDurum.mevcutSeri).toBe(10);
 
-      // Tam guncelleme persist edildi (no-op degil, gercek yazma)
+      // Tam guncelleme persist edildi. seviyeyi artik reconcile yazar; seriKontrolet
+      // seri durumu + bonusPuan yazar.
       expect(mockLocalSeriDurumunuKaydet).toHaveBeenCalled();
-      expect(mockLocalSeviyeDurumunuKaydet).toHaveBeenCalled();
+      expect(mockLocalBonusPuaniKaydet).toHaveBeenCalled();
     });
 
     test('yuklenmis puanlar degisiklik olmayan seriKontrolet sonrasi sifirlanmaz', async () => {
@@ -326,16 +329,16 @@ describe('seriSlice - Race Condition Korumasi', () => {
       // Toparlanma yok -> toparlanma sayaci artmamali
       expect(mockLocalToparlanmaSayisiniArttir).not.toHaveBeenCalled();
 
-      // Kazanilan puan seviyeye yansidi: yeni seri=1 icin seriHesapla 10+1=11 puan verir.
-      // tamGuncellemeyiYap rozet/seviye eklerse puan >=11 olur; en azindan artmis olmali.
-      expect(s.seviyeDurumu!.toplamPuan).toBeGreaterThanOrEqual(11);
+      // Kazanilan puan bonusPuan kovasina yansidi (seviyeyi artik reconcile turetir):
+      // yeni seri=1 icin seriHesapla 10+1=11 puan verir.
+      expect(s.bonusPuan).toBeGreaterThanOrEqual(11);
 
       // Reducer rozet detaylarini da turetmis olmali (bos degil)
       expect(s.rozetDetaylari.length).toBeGreaterThan(0);
 
-      // Tam guncelleme persist edildi
+      // Tam guncelleme persist edildi (seviyeyi reconcile yazar; burada bonusPuan)
       expect(mockLocalSeriDurumunuKaydet).toHaveBeenCalled();
-      expect(mockLocalSeviyeDurumunuKaydet).toHaveBeenCalled();
+      expect(mockLocalBonusPuaniKaydet).toHaveBeenCalled();
     });
 
     test('toparlanma SON gununde toparlanmaBasarili dali calisir: seri kurtarilir, sayac artar, rekor guncellenir', async () => {

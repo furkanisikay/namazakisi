@@ -99,9 +99,25 @@ export const seriVerileriniYukle = createAsyncThunk(
     // Rozet detaylarini olustur
     const rozetDetaylari = rozetDetaylariniAl(veriler.rozetler);
 
+    // bonusPuan'i tek dogru kaynaktan (disk) yukle. null ise MIGRATE et (ilk calisma):
+    // eski toplamPuan - eski taban (sisme cikarimda sadelesir, mesru bonus korunur).
+    // Migrasyon BURADA (yuklemede) yapilir ki seriKontrolet/reconcile'dan ONCE kesinlessin;
+    // boylece "bayat-0 uzerine yazma" yarisi ve migrasyon-atlama kaynakli VERI KAYBI olusmaz.
+    const bonusHam = (await LocalSeriServisi.localBonusPuaniGetir()).veri;
+    let bonusPuan: number;
+    if (bonusHam === null || bonusHam === undefined) {
+      const eskiToplamPuan = veriler.seviyeDurumu?.toplamPuan ?? 0;
+      const eskiTaban = veriler.toplamKilinanNamaz * PUAN_DEGERLERI.namaz_kilindi;
+      bonusPuan = Math.max(0, eskiToplamPuan - eskiTaban);
+      await LocalSeriServisi.localBonusPuaniKaydet(bonusPuan);
+    } else {
+      bonusPuan = bonusHam;
+    }
+
     return {
       ...veriler,
       rozetDetaylari,
+      bonusPuan,
     };
   }
 );
@@ -195,7 +211,6 @@ export const seriKontrolet = createAsyncThunk(
       return {
         seriDurumu: hesapSonucu.seriDurumu,
         kullaniciRozetleri,
-        seviyeDurumu: seviyeDurumu || bosSeviyeDurumuOlustur(),
         kutlamalar: [] as KutlamaBilgisi[],
         toparlanmaSayisi,
         bonusPuan,
@@ -224,14 +239,18 @@ export const seriKontrolet = createAsyncThunk(
 
     bonusPuan += guncellemeSonucu.toplamKazanilanPuan;
 
-    // Local'e kaydet
+    // TEK-YAZICI: seriKontrolet seviyeDurumu/seviye-kutlamasi URETMEZ; bunun tek sahibi
+    // puanlamayiYenidenHesapla (reconcile). Burada yalniz seri/rozet/toparlanma + bonusPuan
+    // yazilir. Seviye atlama kutlamasi reconcile'a birakilir (cift kutlama/yaris olmasin).
+    const kutlamalar = guncellemeSonucu.kutlamalar.filter(
+      (k) => k.tip !== 'seviye_atlandi'
+    );
+
+    // Local'e kaydet (seviyeDurumu HARIC — onu reconcile yazar)
     await Promise.all([
       LocalSeriServisi.localSeriDurumunuKaydet(hesapSonucu.seriDurumu),
       LocalSeriServisi.localRozetleriKaydet(
         guncellemeSonucu.yeniKullaniciRozetleri
-      ),
-      LocalSeriServisi.localSeviyeDurumunuKaydet(
-        guncellemeSonucu.yeniSeviyeDurumu
       ),
       LocalSeriServisi.localBonusPuaniKaydet(bonusPuan),
     ]);
@@ -239,8 +258,7 @@ export const seriKontrolet = createAsyncThunk(
     return {
       seriDurumu: hesapSonucu.seriDurumu,
       kullaniciRozetleri: guncellemeSonucu.yeniKullaniciRozetleri,
-      seviyeDurumu: guncellemeSonucu.yeniSeviyeDurumu,
-      kutlamalar: guncellemeSonucu.kutlamalar,
+      kutlamalar,
       toparlanmaSayisi,
       bonusPuan,
     };
@@ -372,15 +390,10 @@ export const puanlamayiYenidenHesapla = createAsyncThunk(
     const kayitlar = await localVerileriSenkronizasyonIcinAl();
     const turev = puanlamayiYenidenDegerlendir(kayitlar, state.ayarlar.tamGunEsigi);
 
-    // Migrasyon (ilk calisma): bonusPuan yoksa eski toplamPuan - eski tabandan tureterek koru.
-    const bonusYanit = await LocalSeriServisi.localBonusPuaniGetir();
-    let bonusPuan = bonusYanit.veri;
-    if (bonusPuan === null || bonusPuan === undefined) {
-      const eskiToplamPuan = state.seviyeDurumu?.toplamPuan ?? 0;
-      const eskiTaban = state.toplamKilinanNamaz * PUAN_DEGERLERI.namaz_kilindi;
-      bonusPuan = Math.max(0, eskiToplamPuan - eskiTaban);
-      await LocalSeriServisi.localBonusPuaniKaydet(bonusPuan);
-    }
+    // bonusPuan tek dogru kaynaktan = state (yuklemede disk'ten migrate edilerek set edildi,
+    // seriKontrolet gunceller). Reconcile bonusPuan'a DOKUNMAZ; yalniz seviyeyi turetir
+    // (tek-yazici). Migrasyon seriVerileriniYukle'ye tasindi -> burada yari/atlama riski yok.
+    const bonusPuan = state.bonusPuan;
 
     const toplamPuan = turev.tabanPuan + bonusPuan;
     const eskiSeviye = state.seviyeDurumu?.mevcutSeviye ?? 1;
@@ -464,6 +477,10 @@ const seriSlice = createSlice({
         state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
         state.toparlanmaSayisi = action.payload.toparlanmaSayisi;
         state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        // bonusPuan tek dogru kaynaktan (disk/migrasyon) yuklendi; tabanPuan invariant'i koru
+        // (reconcile birazdan kayittan kesin degeri turetecek).
+        state.bonusPuan = action.payload.bonusPuan;
+        state.tabanPuan = Math.max(0, (action.payload.seviyeDurumu?.toplamPuan ?? 0) - action.payload.bonusPuan);
         state.sonYukleme = new Date().toISOString();
       })
       .addCase(seriVerileriniYukle.rejected, (state, action) => {
@@ -486,7 +503,7 @@ const seriSlice = createSlice({
         state.guncelleniyor = false;
         state.seriDurumu = action.payload.seriDurumu;
         state.kullaniciRozetleri = action.payload.kullaniciRozetleri;
-        state.seviyeDurumu = action.payload.seviyeDurumu;
+        // seviyeDurumu TEK-YAZICI: yalniz reconcile yazar; seriKontrolet dokunmaz (yaris/cift-yazici yok)
         state.toparlanmaSayisi = action.payload.toparlanmaSayisi;
         state.bonusPuan = action.payload.bonusPuan;
         // toplamKilinanNamaz / mukemmelGunSayisi artik turev (puanlamayiYenidenHesapla) — burada yazilmaz
