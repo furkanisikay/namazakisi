@@ -14,9 +14,12 @@ import {
   VARSAYILAN_SERI_AYARLARI,
   OzelGunAyarlari,
   OzelGunKaydi,
+  PUAN_DEGERLERI,
 } from '../../core/types/SeriTipleri';
 import { GunlukNamazlar } from '../../core/types';
 import * as LocalSeriServisi from '../../data/local/LocalSeriServisi';
+import { localVerileriSenkronizasyonIcinAl } from '../../data/local/LocalNamazServisi';
+import { puanlamayiYenidenDegerlendir } from '../../domain/services/PuanlamaServisi';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 import {
@@ -29,6 +32,8 @@ import {
   tamGuncellemeyiYap,
   bosSeviyeDurumuOlustur,
   puanEkle,
+  seviyeHesapla,
+  seviyeKutlamasiOlustur,
 } from '../../domain/services/RozetYoneticisiServisi';
 
 // ==================== STATE TIPI ====================
@@ -42,6 +47,10 @@ interface SeriState {
   toplamKilinanNamaz: number;
   toparlanmaSayisi: number;
   mukemmelGunSayisi: number;
+  // Karma turev/defter modeli: tabanPuan kayittan turev, bonusPuan kalici.
+  // toplamPuan (= seviyeDurumu.toplamPuan) = tabanPuan + bonusPuan.
+  tabanPuan: number;
+  bonusPuan: number;
   ozelGunAyarlari: OzelGunAyarlari;
   // Kutlama queue - gosterilecek kutlamalar
   bekleyenKutlamalar: KutlamaBilgisi[];
@@ -61,6 +70,8 @@ const baslangicDurumu: SeriState = {
   toplamKilinanNamaz: 0,
   toparlanmaSayisi: 0,
   mukemmelGunSayisi: 0,
+  tabanPuan: 0,
+  bonusPuan: 0,
   ozelGunAyarlari: LocalSeriServisi.VARSAYILAN_OZEL_GUN_AYARLARI,
   bekleyenKutlamalar: [],
   yukleniyor: false,
@@ -385,6 +396,63 @@ export const ozelGunIptal = createAsyncThunk(
   }
 );
 
+/**
+ * Puanlamayi tek dogru kaynaktan (namaz kayitlari) yeniden hesaplar (reconcile).
+ * tabanPuan / toplamKilinanNamaz / mukemmelGun TURETILIR; bonusPuan kalici korunur.
+ * Ilk calismada bonusPuan migrate edilir: eski toplamPuan - eski taban (sisme cikarimda
+ * sadelesir, mesru bonuslar korunur). sessiz=true ise kutlama uretmez (acilis/migrasyon),
+ * sessiz=false ise yalniz gercek seviye atlamada kutlar.
+ */
+export const puanlamayiYenidenHesapla = createAsyncThunk(
+  'seri/puanlamayiYenidenHesapla',
+  async (arg: { sessiz?: boolean } | undefined, { getState }) => {
+    const state = (getState() as { seri: SeriState }).seri;
+    const sessiz = arg?.sessiz ?? true;
+
+    // Tek dogru kaynak: tum namaz kayitlari
+    const kayitlar = await localVerileriSenkronizasyonIcinAl();
+    const turev = puanlamayiYenidenDegerlendir(kayitlar, state.ayarlar.tamGunEsigi);
+
+    // Migrasyon (ilk calisma): bonusPuan yoksa eski toplamPuan - eski tabandan tureterek koru.
+    const bonusYanit = await LocalSeriServisi.localBonusPuaniGetir();
+    let bonusPuan = bonusYanit.veri;
+    if (bonusPuan === null || bonusPuan === undefined) {
+      const eskiToplamPuan = state.seviyeDurumu?.toplamPuan ?? 0;
+      const eskiTaban = state.toplamKilinanNamaz * PUAN_DEGERLERI.namaz_kilindi;
+      bonusPuan = Math.max(0, eskiToplamPuan - eskiTaban);
+      await LocalSeriServisi.localBonusPuaniKaydet(bonusPuan);
+    }
+
+    const toplamPuan = turev.tabanPuan + bonusPuan;
+    const eskiSeviye = state.seviyeDurumu?.mevcutSeviye ?? 1;
+    const seviyeDurumu = puanEkle(bosSeviyeDurumuOlustur(), toplamPuan).yeniDurum;
+    const seviyeAtlandi = !sessiz && seviyeDurumu.mevcutSeviye > eskiSeviye;
+
+    await Promise.all([
+      LocalSeriServisi.localToplamKilinanNamaziKaydet(turev.toplamKilinanNamaz),
+      LocalSeriServisi.localMukemmelGunSayisiniKaydet(turev.mukemmelGunSayisi),
+      LocalSeriServisi.localSeviyeDurumunuKaydet(seviyeDurumu),
+    ]);
+
+    return {
+      toplamKilinanNamaz: turev.toplamKilinanNamaz,
+      mukemmelGunSayisi: turev.mukemmelGunSayisi,
+      tabanPuan: turev.tabanPuan,
+      bonusPuan,
+      seviyeDurumu,
+      seviyeAtlandi,
+      yeniSeviye: seviyeAtlandi ? seviyeHesapla(toplamPuan) : null,
+    };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri yuklenmeden calistirma (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
+  }
+);
+
 // ==================== SLICE ====================
 
 const seriSlice = createSlice({
@@ -487,6 +555,19 @@ const seriSlice = createSlice({
         // Seviye atlandiysa kutlama ekle
         if (action.payload.seviyeAtlandi && action.payload.yeniSeviye) {
           const { seviyeKutlamasiOlustur } = require('../../domain/services/RozetYoneticisiServisi');
+          state.bekleyenKutlamalar.push(
+            seviyeKutlamasiOlustur(action.payload.yeniSeviye)
+          );
+        }
+      })
+      // Puanlama reconcile (turev) — toplamKilinan/mukemmelGun/taban kayittan, bonus korunur
+      .addCase(puanlamayiYenidenHesapla.fulfilled, (state, action) => {
+        state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
+        state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        state.tabanPuan = action.payload.tabanPuan;
+        state.bonusPuan = action.payload.bonusPuan;
+        state.seviyeDurumu = action.payload.seviyeDurumu;
+        if (action.payload.seviyeAtlandi && action.payload.yeniSeviye) {
           state.bekleyenKutlamalar.push(
             seviyeKutlamasiOlustur(action.payload.yeniSeviye)
           );

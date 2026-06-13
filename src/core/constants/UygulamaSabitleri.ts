@@ -163,6 +163,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   TAKVIM_AYARLARI: '@namaz_akisi/takvim_ayarlari',
   // Yeni özellik duyuruları (görülen/kapatılan)
   GORULEN_OZELLIKLER: '@namaz_akisi/gorulen_ozellikler',
+  // Puan defteri (karma türev/defter modeli) — yol-bağımlı bonus puanı kalıcı tutulur.
+  // null/yok = ilk çalışma (migrasyon: eski toplamPuan - eski tabanPuan).
+  BONUS_PUAN: '@namaz_akisi/bonus_puan',
 } as const;
 
 // Tarih formatlari
