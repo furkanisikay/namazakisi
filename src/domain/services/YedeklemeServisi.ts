@@ -174,6 +174,12 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
 };
 
 /**
+ * Mevcut yerel verinin anlık görüntüsünü `YedekPayload` olarak toplar (şifrelemeden).
+ * İçe-aktarma orkestratörü (yedeklemeSlice) birleştirme için mevcut tarafı bununla alır.
+ */
+export const mevcutVeriyiTopla = (): Promise<YedekPayload> => payloadOlustur();
+
+/**
  * Tüm yerel veriyi okur, payload'ı kurar, bütünlük özetini hesaplar, şifreler ve
  * dış zarfı JSON string olarak döndürür (diske/paylaşıma hazır).
  */
