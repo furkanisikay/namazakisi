@@ -12,9 +12,36 @@ import {
   coz as cozGercek,
   kontrolHesapla as kontrolHesaplaGercek,
 } from '../../../core/utils/yedekSifreleme';
-import { yedekZarfiOlustur, zarfiCoz } from '../YedeklemeServisi';
+import { yedekZarfiOlustur, zarfiCoz, yedeginiPaylas } from '../YedeklemeServisi';
 import { YEDEK_BICIMI, YEDEK_SURUMU, YedekZarfi } from '../../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+
+// expo-file-system/next: File sınıfı ve Paths önbellek dizini mock'u.
+// Değişken adları `mock` önekiyle başlar — jest.mock hoisting kuralı gereği.
+const mockDosyaYaz = jest.fn().mockResolvedValue(undefined);
+let mockDosyaUri = 'file:///cache/namaz-yedek-2026-06-14.json';
+jest.mock('expo-file-system/next', () => ({
+  File: jest.fn().mockImplementation(() => ({
+    write: mockDosyaYaz,
+    get uri() {
+      return mockDosyaUri;
+    },
+  })),
+  Paths: { cache: '/cache' },
+}));
+
+// expo-sharing: isAvailableAsync + shareAsync mock'u.
+const mockIsAvailable = jest.fn().mockResolvedValue(true);
+const mockShareAsync = jest.fn().mockResolvedValue(undefined);
+jest.mock('expo-sharing', () => ({
+  isAvailableAsync: () => mockIsAvailable(),
+  shareAsync: (...args: unknown[]) => mockShareAsync(...args),
+}));
+
+// TarihYardimcisi: bugunuAl deterministik döner.
+jest.mock('../../../core/utils/TarihYardimcisi', () => ({
+  bugunuAl: () => '2026-06-14',
+}));
 
 // Depolama: tüm metotları kontrol edilebilir mock olarak ver.
 jest.mock('../../../data/local/Depolama', () => ({
@@ -216,5 +243,47 @@ describe('YedeklemeServisi — zarfiCoz', () => {
     const zarf = JSON.parse(zarfStr) as YedekZarfi;
     cozMock.mockReturnValueOnce(null); // çözme MAC hatası simülasyonu
     expect(await zarfiCoz(JSON.stringify(zarf))).toBeNull();
+  });
+});
+
+describe('YedeklemeServisi — yedeginiPaylas', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    depolamayiAyarla();
+    mockIsAvailable.mockResolvedValue(true);
+    mockDosyaYaz.mockResolvedValue(undefined);
+    mockShareAsync.mockResolvedValue(undefined);
+    mockDosyaUri = 'file:///cache/namaz-yedek-2026-06-14.json';
+  });
+
+  it('cache dizinine doğru isimde dosya yazar', async () => {
+    const { File: MockFile } = jest.requireMock('expo-file-system/next') as {
+      File: jest.Mock;
+    };
+    await yedeginiPaylas();
+    expect(MockFile).toHaveBeenCalledWith('/cache', 'namaz-yedek-2026-06-14.json');
+    expect(mockDosyaYaz).toHaveBeenCalledTimes(1);
+    const [icerik, secenekler] = mockDosyaYaz.mock.calls[0] as [string, { encoding: string }];
+    // Yedek içeriği geçerli JSON ve yedek zarfını içermeli.
+    const zarf = JSON.parse(icerik) as YedekZarfi;
+    expect(zarf.bicim).toBe(YEDEK_BICIMI);
+    expect(secenekler.encoding).toBe('utf8');
+  });
+
+  it('shareAsync doğru uri, mimeType ve dialogTitle ile çağrılır', async () => {
+    await yedeginiPaylas();
+    expect(mockShareAsync).toHaveBeenCalledTimes(1);
+    expect(mockShareAsync).toHaveBeenCalledWith(mockDosyaUri, {
+      mimeType: 'application/json',
+      dialogTitle: 'Yedeğinizi paylaşın',
+    });
+  });
+
+  it('paylaşım desteklenmiyorsa (isAvailableAsync false) sessizce döner, shareAsync çağrılmaz', async () => {
+    mockIsAvailable.mockResolvedValue(false);
+    await expect(yedeginiPaylas()).resolves.toBeUndefined();
+    expect(mockShareAsync).not.toHaveBeenCalled();
+    // Dosya yine de yazılmış olmalı.
+    expect(mockDosyaYaz).toHaveBeenCalledTimes(1);
   });
 });

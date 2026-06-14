@@ -16,6 +16,8 @@
  * Tasarım: docs/superpowers/specs/2026-06-14-yerel-yedekleme-aktarim-design.md
  */
 
+import * as Sharing from 'expo-sharing';
+import { File, Paths } from 'expo-file-system/next';
 import {
   YedekZarfi,
   YedekPayload,
@@ -27,6 +29,7 @@ import {
 import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Depolama } from '../../data/local/Depolama';
 import { sifrele, coz, kontrolHesapla } from '../../core/utils/yedekSifreleme';
+import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -192,6 +195,25 @@ export const yedekZarfiOlustur = async (): Promise<string> => {
   };
 
   return JSON.stringify(zarf);
+};
+
+/**
+ * Tüm yerel veriyi yedek zarfına alır, cache dizinine JSON dosyası olarak yazar ve
+ * sistem paylaşım iletişim kutusunu açar (DebugLogsSayfasi.handleShareLogs deseni).
+ * `Sharing.isAvailableAsync()` false ise sessizce döner.
+ */
+export const yedeginiPaylas = async (): Promise<void> => {
+  const zarf = await yedekZarfiOlustur();
+  const dosyaAdi = `namaz-yedek-${bugunuAl()}.json`;
+  const dosya = new File(Paths.cache, dosyaAdi);
+  await dosya.write(zarf, { encoding: 'utf8' });
+  const paylasimVar = await Sharing.isAvailableAsync();
+  if (paylasimVar) {
+    await Sharing.shareAsync(dosya.uri, {
+      mimeType: 'application/json',
+      dialogTitle: 'Yedeğinizi paylaşın',
+    });
+  }
 };
 
 /**
