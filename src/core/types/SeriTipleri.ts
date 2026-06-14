@@ -41,6 +41,23 @@ export interface SeriDurumu {
   dondurulmaTarihi: string | null;
   /** Son guncelleme zamani (ISO format) */
   sonGuncelleme: string;
+  /**
+   * Bugun "tam" sayilmadan ONCEki streak durumu. Ayni-gun geri-alimi (5/5 -> 4/5) icin:
+   * bugun tam sayildiginda doldurulur, ayni gun tam-altina dusurulurse bu duruma donulur.
+   * Eski verilerde olmayabilir (opsiyonel).
+   */
+  bugunOncesi?: BugunOncesiSnapshot | null;
+}
+
+/** seriHesapla'nin ayni-gun geri-alimi icin sakladigi minimal onceki-durum snapshot'i. */
+export interface BugunOncesiSnapshot {
+  mevcutSeri: number;
+  enUzunSeri: number;
+  sonTamGun: string | null;
+  seriBaslangici: string | null;
+  toparlanmaDurumu: ToparlanmaDurumu | null;
+  dondurulduMu: boolean;
+  dondurulmaTarihi: string | null;
 }
 
 // ==================== OZEL GUN (MAZERET) TIPLERI ====================

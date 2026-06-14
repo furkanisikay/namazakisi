@@ -14,6 +14,7 @@ import {
   SeriDurumu,
   SeriAyarlari,
   ToparlanmaDurumu,
+  BugunOncesiSnapshot,
   VARSAYILAN_SERI_AYARLARI,
   SERI_HEDEFLERI,
   SeriHedefi,
@@ -283,9 +284,32 @@ export const seriHesapla = (
   // Bugun tam kilindi mi?
   const bugunTam = gunTamMi(bugunNamazlar, ayarlar.tamGunEsigi);
 
-  // Gun zaten islendiyse tekrar isleme
+  // Bugun "tam" sayilmadan ONCEki durum (Bug #4: ayni-gun geri-alimi icin saklanir)
+  const bugunOncesiSnapshot: BugunOncesiSnapshot = {
+    mevcutSeri: durum.mevcutSeri,
+    enUzunSeri: durum.enUzunSeri,
+    sonTamGun: durum.sonTamGun,
+    seriBaslangici: durum.seriBaslangici,
+    toparlanmaDurumu: durum.toparlanmaDurumu,
+    dondurulduMu: durum.dondurulduMu,
+    dondurulmaTarihi: durum.dondurulmaTarihi,
+  };
+
+  // Bugun zaten islenmisse:
   if (durum.sonTamGun === bugun) {
-    // Bugun zaten tam olarak isaretlendi, degisiklik yok
+    if (bugunTam) {
+      // Hala tam -> degisiklik yok (idempotent)
+      return sonuc;
+    }
+    // Bug #4: bugun artik tam DEGIL -> bugunu geri al (snapshot'tan once-bugun durumuna don)
+    if (durum.bugunOncesi) {
+      sonuc.seriDurumu = {
+        ...durum.bugunOncesi,
+        bugunOncesi: null,
+        sonGuncelleme: new Date().toISOString(),
+      };
+      sonuc.seriDegisti = true;
+    }
     return sonuc;
   }
 
@@ -421,6 +445,11 @@ export const seriHesapla = (
       // Kullanici bugun tam kilarsa toparlanma baslar
       sonuc.seriBozuldu = true;
     }
+  }
+
+  // Bug #4: Bugun YENI tam sayildiysa onceki-durum snapshot'ini sakla (ayni-gun geri-alimi icin).
+  if (sonuc.seriDegisti && sonuc.seriDurumu.sonTamGun === bugun) {
+    sonuc.seriDurumu = { ...sonuc.seriDurumu, bugunOncesi: bugunOncesiSnapshot };
   }
 
   return sonuc;
