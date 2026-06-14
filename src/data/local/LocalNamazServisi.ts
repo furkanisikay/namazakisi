@@ -42,9 +42,8 @@ const anahtardanTarih = (anahtar: string): string =>
  * - Gun-anahtari zaten varsa EZMEZ (skip-if-exists, atomik) -> goc-sonrasi yeni veriyi bozmaz.
  * - Eski blob SILINMEZ (guvenlik).
  * - Bayrak ile bir kez calisir; bayrak yoksa (kismi cokme dahil) tekrar guvenle calisabilir.
- * Modul-onbellegi YOK (testlerde/uygulamada bayrak diskten okunur) -> capraz-kontaminasyon olmaz.
  */
-const migrasyonyiGarantile = async (): Promise<void> => {
+const migrasyonuYurut = async (): Promise<void> => {
   const tamam = await Depolama.ham(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON);
   if (tamam === '1') return;
 
@@ -62,6 +61,22 @@ const migrasyonyiGarantile = async (): Promise<void> => {
   await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
 };
 
+// Bellek-ici IN-FLIGHT kilidi: eszamanli cagrilar tek gocu paylasir (her cagri blob okuyup
+// donguyu tekrar kosmasin -> gecmisi cok kullanicida perf darbogazini onler). finally'de
+// temizlenir => KALICI onbellek YOK: goc bitince sonraki cagri bayragi diskten yeniden okur
+// (clear sonrasi testler/uygulama tekrar goc edebilir). Capraz-kontaminasyon olmaz.
+let migrasyonKilidi: Promise<void> | null = null;
+
+const migrasyonyiGarantile = async (): Promise<void> => {
+  if (migrasyonKilidi) return migrasyonKilidi;
+  migrasyonKilidi = migrasyonuYurut();
+  try {
+    await migrasyonKilidi;
+  } finally {
+    migrasyonKilidi = null;
+  }
+};
+
 /** Bir gunun verisini getirir (yoksa bos). */
 const gunVerisiniAl = async (tarih: string): Promise<GunVerisi> => {
   const veri = await Depolama.oku<GunVerisi>(gunAnahtari(tarih));
@@ -76,6 +91,24 @@ const gunlukNamazlariOlustur = (tarih: string, gun: GunVerisi): GunlukNamazlar =
     tarih,
   })) as Namaz[],
 });
+
+/**
+ * cogunuOku'dan gelen HAM gun-anahtari degerini guvenli sekilde GunVerisi'ne cozer.
+ * JSON.parse("null") -> null, JSON.parse("42") -> sayi gibi nesne-disi/null sonuclar
+ * downstream'de (gun[namazAdi] / Object.entries(gun)) cokmeye yol acardi; bunlari {} yapar.
+ * (Depolama.oku zaten guvenli; bu yalniz multiGet'in ham-string yolu icindir.)
+ */
+const hamGunVerisiniCoz = (ham: string | null | undefined): GunVerisi => {
+  if (!ham) return {};
+  try {
+    const cozulen: unknown = JSON.parse(ham);
+    return cozulen !== null && typeof cozulen === 'object'
+      ? (cozulen as GunVerisi)
+      : {};
+  } catch {
+    return {};
+  }
+};
 
 /**
  * Belirli bir tarihe ait namazlari getirir
@@ -160,15 +193,7 @@ export const localTarihAraligindakiNamazlariGetir = async (
     const ciftler = await Depolama.cogunuOku(tarihler.map(gunAnahtari));
     const hamHarita = new Map(ciftler);
     const sonuc: GunlukNamazlar[] = tarihler.map((tarih) => {
-      const ham = hamHarita.get(gunAnahtari(tarih));
-      let gun: GunVerisi = {};
-      if (ham) {
-        try {
-          gun = JSON.parse(ham) as GunVerisi;
-        } catch {
-          gun = {};
-        }
-      }
+      const gun = hamGunVerisiniCoz(hamHarita.get(gunAnahtari(tarih)));
       return gunlukNamazlariOlustur(tarih, gun);
     });
     return { basarili: true, veri: sonuc };
@@ -195,13 +220,7 @@ export const localVerileriSenkronizasyonIcinAl = async (): Promise<
   const sonuc: { tarih: string; namazAdi: NamazAdi; tamamlandi: boolean }[] = [];
 
   for (const [anahtar, ham] of ciftler) {
-    if (!ham) continue;
-    let gun: GunVerisi;
-    try {
-      gun = JSON.parse(ham) as GunVerisi;
-    } catch {
-      continue;
-    }
+    const gun = hamGunVerisiniCoz(ham);
     const tarih = anahtardanTarih(anahtar);
     Object.entries(gun).forEach(([namazAdi, tamamlandi]) => {
       if ((NAMAZ_ISIMLERI as readonly string[]).includes(namazAdi)) {
