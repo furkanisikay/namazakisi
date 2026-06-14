@@ -17,7 +17,7 @@
  */
 
 import * as Sharing from 'expo-sharing';
-import { File, Paths } from 'expo-file-system/next';
+import * as FileSystem from 'expo-file-system/legacy';
 import {
   YedekZarfi,
   YedekPayload,
@@ -211,11 +211,13 @@ export const yedekZarfiOlustur = async (): Promise<string> => {
 export const yedeginiPaylas = async (): Promise<void> => {
   const zarf = await yedekZarfiOlustur();
   const dosyaAdi = `namaz-yedek-${bugunuAl()}.json`;
-  const dosya = new File(Paths.cache, dosyaAdi);
-  await dosya.write(zarf, { encoding: 'utf8' });
+  const dosyaUri = `${FileSystem.cacheDirectory ?? ''}${dosyaAdi}`;
+  await FileSystem.writeAsStringAsync(dosyaUri, zarf, {
+    encoding: FileSystem.EncodingType.UTF8,
+  });
   const paylasimVar = await Sharing.isAvailableAsync();
   if (paylasimVar) {
-    await Sharing.shareAsync(dosya.uri, {
+    await Sharing.shareAsync(dosyaUri, {
       mimeType: 'application/json',
       dialogTitle: 'Yedeğinizi paylaşın',
     });

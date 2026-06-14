@@ -16,18 +16,14 @@ import { yedekZarfiOlustur, zarfiCoz, yedeginiPaylas } from '../YedeklemeServisi
 import { YEDEK_BICIMI, YEDEK_SURUMU, YedekZarfi } from '../../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
-// expo-file-system/next: File sınıfı ve Paths önbellek dizini mock'u.
+// expo-file-system/legacy: klasik writeAsStringAsync + cacheDirectory mock'u.
 // Değişken adları `mock` önekiyle başlar — jest.mock hoisting kuralı gereği.
 const mockDosyaYaz = jest.fn().mockResolvedValue(undefined);
-let mockDosyaUri = 'file:///cache/namaz-yedek-2026-06-14.json';
-jest.mock('expo-file-system/next', () => ({
-  File: jest.fn().mockImplementation(() => ({
-    write: mockDosyaYaz,
-    get uri() {
-      return mockDosyaUri;
-    },
-  })),
-  Paths: { cache: '/cache' },
+const beklenenDosyaUri = 'file:///cache/namaz-yedek-2026-06-14.json';
+jest.mock('expo-file-system/legacy', () => ({
+  writeAsStringAsync: (...args: unknown[]) => mockDosyaYaz(...args),
+  cacheDirectory: 'file:///cache/',
+  EncodingType: { UTF8: 'utf8' },
 }));
 
 // expo-sharing: isAvailableAsync + shareAsync mock'u.
@@ -253,17 +249,17 @@ describe('YedeklemeServisi — yedeginiPaylas', () => {
     mockIsAvailable.mockResolvedValue(true);
     mockDosyaYaz.mockResolvedValue(undefined);
     mockShareAsync.mockResolvedValue(undefined);
-    mockDosyaUri = 'file:///cache/namaz-yedek-2026-06-14.json';
   });
 
   it('cache dizinine doğru isimde dosya yazar', async () => {
-    const { File: MockFile } = jest.requireMock('expo-file-system/next') as {
-      File: jest.Mock;
-    };
     await yedeginiPaylas();
-    expect(MockFile).toHaveBeenCalledWith('/cache', 'namaz-yedek-2026-06-14.json');
     expect(mockDosyaYaz).toHaveBeenCalledTimes(1);
-    const [icerik, secenekler] = mockDosyaYaz.mock.calls[0] as [string, { encoding: string }];
+    const [uri, icerik, secenekler] = mockDosyaYaz.mock.calls[0] as [
+      string,
+      string,
+      { encoding: string },
+    ];
+    expect(uri).toBe(beklenenDosyaUri);
     // Yedek içeriği geçerli JSON ve yedek zarfını içermeli.
     const zarf = JSON.parse(icerik) as YedekZarfi;
     expect(zarf.bicim).toBe(YEDEK_BICIMI);
@@ -273,7 +269,7 @@ describe('YedeklemeServisi — yedeginiPaylas', () => {
   it('shareAsync doğru uri, mimeType ve dialogTitle ile çağrılır', async () => {
     await yedeginiPaylas();
     expect(mockShareAsync).toHaveBeenCalledTimes(1);
-    expect(mockShareAsync).toHaveBeenCalledWith(mockDosyaUri, {
+    expect(mockShareAsync).toHaveBeenCalledWith(beklenenDosyaUri, {
       mimeType: 'application/json',
       dialogTitle: 'Yedeğinizi paylaşın',
     });

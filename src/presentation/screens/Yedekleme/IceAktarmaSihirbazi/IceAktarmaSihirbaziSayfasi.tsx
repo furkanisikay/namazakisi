@@ -27,7 +27,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
-import { File } from 'expo-file-system/next';
+import * as FileSystem from 'expo-file-system/legacy';
 
 import { styles } from './stiller';
 import {
@@ -186,7 +186,10 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       if (sonuc.canceled || !sonuc.assets?.[0]) return;
 
       const uri = sonuc.assets[0].uri;
-      const icerik = await new File(uri).text();
+      // Klasik readAsStringAsync, Android'in content:// URI'lerini güvenle okur.
+      const icerik = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
       await dosyayiCozumle(icerik);
     } catch (error) {
       Logger.error('IceAktarmaSihirbazi', 'Dosya seçilemedi/okunamadı', error);

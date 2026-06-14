@@ -130,11 +130,12 @@ const birlestirKilinanVakitler = (
 ): Record<string, string[]> => {
   const sonuc: Record<string, string[]> = {};
   for (const tarih of Object.keys(mevcut)) {
-    sonuc[tarih] = [...mevcut[tarih]];
+    sonuc[tarih] = Array.isArray(mevcut[tarih]) ? [...mevcut[tarih]] : [];
   }
 
   for (const tarih of Object.keys(gelen)) {
-    const gelenDizi = gelen[tarih] ?? [];
+    // Bozuk/elle değiştirilmiş yedekte gelen[tarih] dizi olmayabilir → güvenli daralt.
+    const gelenDizi = Array.isArray(gelen[tarih]) ? gelen[tarih] : [];
     const mevcutDizi = sonuc[tarih];
 
     if (mevcutDizi === undefined) {

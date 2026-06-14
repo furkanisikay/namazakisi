@@ -29,10 +29,11 @@ import type { YedekPayload, FarkOzeti } from '../../../../../core/types';
 jest.mock('@react-navigation/native');
 jest.mock('expo-document-picker', () => ({ getDocumentAsync: jest.fn() }));
 
-// expo-file-system/next → File(uri).text() içerik döndürür.
+// expo-file-system/legacy → readAsStringAsync içerik döndürür.
 const mockDosyaIcerik = jest.fn();
-jest.mock('expo-file-system/next', () => ({
-  File: jest.fn().mockImplementation(() => ({ text: mockDosyaIcerik })),
+jest.mock('expo-file-system/legacy', () => ({
+  readAsStringAsync: (...args: unknown[]) => mockDosyaIcerik(...args),
+  EncodingType: { UTF8: 'utf8' },
 }));
 
 jest.mock('../../../../../core/theme', () => ({ useRenkler: jest.fn() }));
