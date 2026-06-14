@@ -84,7 +84,7 @@ describe('Offline Namaz Entegrasyon Testi (Redux namazSlice <-> LocalStorage)', 
         });
         (AsyncStorage.getItem as jest.Mock).mockImplementation(async (anahtar: string) => {
             if (anahtar === `namaz_gun_${mockDate}`) return gunVerisi;
-            if (anahtar === 'namaz_gun_migrasyon_tamam') return '1';
+            if (anahtar === '@namaz_akisi/namaz_gun_migrasyon_tamam') return '1';
             return null;
         });
 

@@ -385,4 +385,20 @@ describe('LocalNamazServisi — gun-bazli goc (Faz 1)', () => {
     const sonuc = await localVerileriSenkronizasyonIcinAl();
     expect(sonuc).toContainEqual({ tarih: '2026-03-08', namazAdi: NamazAdi.Ikindi, tamamlandi: true });
   });
+
+  // Regresyon: migrasyon bayrak anahtari gun-anahtari onekiyle CAKISMAMALI; yoksa
+  // onEkiOlanAnahtarlar bayragi yakalar ve sahte tarih kaydi sizardi.
+  it('migrasyon bayragi senkronizasyon listesine SIZMAZ (onek cakismasi yok)', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-09': { [NamazAdi.Sabah]: true } })
+    );
+
+    await localNamazlariGetir('2026-03-09'); // goc + bayrak set
+    expect(await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON)).toBe('1');
+
+    const sonuc = await localVerileriSenkronizasyonIcinAl();
+    // Yalniz gercek kayit; bayrak anahtarindan tureyen sahte/ekstra kayit OLMAMALI
+    expect(sonuc).toEqual([{ tarih: '2026-03-09', namazAdi: NamazAdi.Sabah, tamamlandi: true }]);
+  });
 });

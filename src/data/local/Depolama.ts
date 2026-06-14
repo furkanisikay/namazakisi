@@ -21,13 +21,18 @@ const anahtarSirasinaAl = <T>(anahtar: string, islem: () => Promise<T>): Promise
   const onceki = yazmaKuyruklari.get(anahtar) ?? Promise.resolve();
   // Onceki islem hata verse de zincir surdurulur (then'in ikinci argumani).
   const sonuc = onceki.then(islem, islem);
-  yazmaKuyruklari.set(
-    anahtar,
-    sonuc.then(
-      () => undefined,
-      () => undefined
-    )
+  const kuyrukUcu = sonuc.then(
+    () => undefined,
+    () => undefined
   );
+  yazmaKuyruklari.set(anahtar, kuyrukUcu);
+  // Bu islem zincirin son halkasiysa Map girisini temizle (sinirsiz buyumeyi/sizintiyi onle).
+  // Arada yeni islem geldiyse Map daha yeni ucu gosterir -> dokunma.
+  kuyrukUcu.then(() => {
+    if (yazmaKuyruklari.get(anahtar) === kuyrukUcu) {
+      yazmaKuyruklari.delete(anahtar);
+    }
+  });
   return sonuc;
 };
 

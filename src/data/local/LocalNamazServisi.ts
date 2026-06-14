@@ -150,13 +150,27 @@ export const localTarihAraligindakiNamazlariGetir = async (
 ): Promise<ApiYanit<GunlukNamazlar[]>> => {
   try {
     await migrasyonyiGarantile();
-    const sonuc: GunlukNamazlar[] = [];
+    // Aralikitaki tum gunleri TEK batch (multiGet) ile oku -> O(aralik) sirali round-trip yerine tek tur.
+    const tarihler: string[] = [];
     let mevcutTarih = baslangicTarihi;
     while (mevcutTarih <= bitisTarihi) {
-      const gun = await gunVerisiniAl(mevcutTarih);
-      sonuc.push(gunlukNamazlariOlustur(mevcutTarih, gun));
+      tarihler.push(mevcutTarih);
       mevcutTarih = gunEkle(mevcutTarih, 1);
     }
+    const ciftler = await Depolama.cogunuOku(tarihler.map(gunAnahtari));
+    const hamHarita = new Map(ciftler);
+    const sonuc: GunlukNamazlar[] = tarihler.map((tarih) => {
+      const ham = hamHarita.get(gunAnahtari(tarih));
+      let gun: GunVerisi = {};
+      if (ham) {
+        try {
+          gun = JSON.parse(ham) as GunVerisi;
+        } catch {
+          gun = {};
+        }
+      }
+      return gunlukNamazlariOlustur(tarih, gun);
+    });
     return { basarili: true, veri: sonuc };
   } catch (error) {
     return {
@@ -203,6 +217,9 @@ export const localVerileriSenkronizasyonIcinAl = async (): Promise<
  * Tum local namaz verilerini temizler (tum gun-anahtarlari + eski blob)
  */
 export const localVerileriTemizle = async (): Promise<void> => {
+  // Once gocu tamamla: askida kalan bir gocun, silme sonrasi bayat blob'dan veri "diriltmesini"
+  // engeller (goc bitince bayrak set olur, sonraki goc calismaz).
+  await migrasyonyiGarantile();
   const anahtarlar = await Depolama.onEkiOlanAnahtarlar(
     DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK
   );

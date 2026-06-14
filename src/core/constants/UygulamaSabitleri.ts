@@ -132,7 +132,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Gun-bazli namaz kayitlari (Faz 1): namaz_gun_<tarih>. Migrasyon eski tek-blob'dan tasir,
   // eski blob SILINMEZ (veri-kaybi riski yok). NAMAZ_GUN_MIGRASYON bayragi gocun bir kez calismasini saglar.
   NAMAZ_GUN_ONEK: 'namaz_gun_',
-  NAMAZ_GUN_MIGRASYON: 'namaz_gun_migrasyon_tamam',
+  // ONEMLI: bu anahtar NAMAZ_GUN_ONEK ('namaz_gun_') ile BASLAMAMALI; yoksa
+  // onEkiOlanAnahtarlar('namaz_gun_') bayragi gun-anahtari sanip listeye katar.
+  NAMAZ_GUN_MIGRASYON: '@namaz_akisi/namaz_gun_migrasyon_tamam',
   KULLANICI_AYARLARI: 'kullanici_ayarlari',
   SON_SENKRONIZASYON: 'son_senkronizasyon',
   // Seri sistemi anahtarlari
