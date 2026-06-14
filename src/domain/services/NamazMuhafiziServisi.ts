@@ -1,6 +1,8 @@
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI, MucadeleIcerigi } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { Logger } from '../../core/utils/Logger';
+import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
+import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 
 export interface MuhafizYapilandirmasi {
     seviye1BaslangicDk: number; // Örn: 45
@@ -88,6 +90,58 @@ export class NamazMuhafiziServisi {
         const bugun = new Date().toDateString();
         this.kilinanVakitler[`${bugun}_${vakit}`] = true;
         Logger.info('NamazMuhafiziServisi', `${vakit} namazı kılındı olarak işaretlendi. Muhafız bu vakit için dinlenmeye çekiliyor.`);
+    }
+
+    /**
+     * Namaz "kılınmadı" işaretlenince bellek-içi kılınmışlık kaydını temizler; aksi
+     * halde muhafız o vakit için bir daha uyarı vermez (#101 review). `namazKilindiIsaretle`
+     * ile birebir aynı anahtar formatı: `${Date.toDateString()}_${vakit}` (küçük harf vakit).
+     */
+    public namazKilindiTemizle(vakit: string) {
+        const bugun = new Date().toDateString();
+        delete this.kilinanVakitler[`${bugun}_${vakit}`];
+        delete this.temizlenenVakitler[`${bugun}_${vakit}`];
+        Logger.info('NamazMuhafiziServisi', `${vakit} namazı kılınmadı olarak işaretlendi; muhafız yeniden devrede.`);
+    }
+
+    /**
+     * Açılışta diskteki kalıcı kılınmışlık kaydını (kilinanVakitleriAl) bellek-içi
+     * kilinanVakitler map'ine yükler. Aksi halde uygulama yeniden açıldığında map BOŞ
+     * olur ve zaten kılınmış namaz için vakte kısa süre kala (seviye >= 3) çan sesi
+     * çalardı (#92). baslat()'tan ÖNCE await edilmeli ki ilk senkron kontrolEt() dolu
+     * map ile çalışsın (yarış yok).
+     *
+     * Bugün VE dün okunur: imsak öncesi gece yarısı geçişinde dünün yatsısı hâlâ aktiftir.
+     * Map anahtarı kontrolEt()/namazKilindiIsaretle() ile birebir aynı format olmalı:
+     * `${Date.toDateString()}_${vakit}`.
+     */
+    public async acilistaKilinanlariYukle(): Promise<void> {
+        try {
+            const bugunTarih = new Date();
+            const dunTarih = new Date();
+            dunTarih.setDate(dunTarih.getDate() - 1);
+
+            const [kilinanBugun, kilinanDun] = await Promise.all([
+                kilinanVakitleriAl(bugunuAl()),
+                kilinanVakitleriAl(dunuAl()),
+            ]);
+
+            for (const vakit of kilinanBugun) {
+                this.kilinanVakitler[`${bugunTarih.toDateString()}_${vakit}`] = true;
+            }
+            for (const vakit of kilinanDun) {
+                this.kilinanVakitler[`${dunTarih.toDateString()}_${vakit}`] = true;
+                // Gece yarısı geçişi: imsak öncesinde dünün yatsısı hâlâ aktiftir ve
+                // kontrolEt() onu BUGÜNÜN tarih anahtarıyla kontrol eder. Bu yüzden dünün
+                // yatsısını bugünün anahtarıyla da işaretle (gündüz zararsız: vakit aktif değil).
+                if (vakit === 'yatsi') {
+                    this.kilinanVakitler[`${bugunTarih.toDateString()}_${vakit}`] = true;
+                }
+            }
+        } catch (error) {
+            // Disk okunamazsa sessizce devam et (muhafız çalışmaya devam etsin)
+            Logger.error('NamazMuhafiziServisi', 'Açılışta kılınan vakitler yüklenemedi:', error);
+        }
     }
 
     private kontrolEt() {
