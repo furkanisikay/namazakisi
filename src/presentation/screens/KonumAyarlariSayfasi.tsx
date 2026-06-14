@@ -16,7 +16,6 @@ import {
     Modal,
     TextInput,
     Switch,
-    Alert,
     Linking,
 } from 'react-native';
 import * as Location from 'expo-location';
@@ -35,6 +34,22 @@ import { KonumIzniDisclosureModali, IzinTipi } from '../components/KonumIzniDisc
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { useKonumMetni } from '../hooks/useKonumMetni';
 import { IlIlceSecici } from '../components/IlIlceSecici';
+import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+
+/**
+ * Bildirim modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir.
+ * İsteğe bağlı birincil eylem (ör. "Ayarlara Git") ve etiket/ikon taşır.
+ */
+interface KonumBildirimi {
+    gorunur: boolean;
+    tip: BildirimTipi;
+    baslik: string;
+    mesaj: string;
+    birincilEtiket?: string;
+    birincilIkon?: string;
+    onBirincil?: () => void;
+    kapatEtiketi?: string;
+}
 
 
 
@@ -56,6 +71,34 @@ export const KonumAyarlariSayfasi: React.FC = () => {
     const [disclosureGorunur, setDisclosureGorunur] = useState(false);
     const [disclosureTipi, setDisclosureTipi] = useState<IzinTipi>('onPlan');
     const disclosureKabulRef = useRef<(() => void) | null>(null);
+
+    // Alert.alert yerine tema-uyumlu bildirim modalı
+    const [bildirim, setBildirim] = useState<KonumBildirimi>({
+        gorunur: false,
+        tip: 'hata',
+        baslik: '',
+        mesaj: '',
+    });
+    const bildirimKapat = useCallback(
+        () => setBildirim((onceki) => ({ ...onceki, gorunur: false })),
+        []
+    );
+    // Arka plan izni verilemediğinde: kullanıcıyı sistem ayarlarına yönlendiren onay modalı
+    const izinGerekliBildiriminiGoster = useCallback(() => {
+        setBildirim({
+            gorunur: true,
+            tip: 'bilgi',
+            baslik: 'İzin Gerekli',
+            mesaj: 'Arka plan konum izni verilemedi. Sistem ayarlarından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirebilirsiniz.',
+            birincilEtiket: 'Ayarlara Git',
+            birincilIkon: 'cog',
+            onBirincil: () => {
+                setBildirim((onceki) => ({ ...onceki, gorunur: false }));
+                Linking.openSettings();
+            },
+            kapatEtiketi: 'Vazgeç',
+        });
+    }, []);
 
     const disclosureGoster = useCallback((tip: IzinTipi, onKabul: () => void) => {
         setDisclosureTipi(tip);
@@ -133,14 +176,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 setTakipAktif(true);
                                 dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                             } else {
-                                Alert.alert(
-                                    'İzin Gerekli',
-                                    'Arka plan konum izni verilemedi. Sistem ayarlarından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirebilirsiniz.',
-                                    [
-                                        { text: 'Vazgeç', style: 'cancel' },
-                                        { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
-                                    ]
-                                );
+                                izinGerekliBildiriminiGoster();
                             }
                         } finally {
                             setTakipDurumuYukleniyor(false);
@@ -154,14 +190,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     setTakipAktif(true);
                     dispatch(konumAyarlariniGuncelle({ akilliTakipAktif: true }));
                 } else {
-                    Alert.alert(
-                        'İzin Gerekli',
-                        'Arka plan konum izni verilemedi. Sistem ayarlarından "Konum" bölümüne gidip "Her zaman izin ver" seçeneğini etkinleştirebilirsiniz.',
-                        [
-                            { text: 'Vazgeç', style: 'cancel' },
-                            { text: 'Ayarlara Git', onPress: () => Linking.openSettings() },
-                        ]
-                    );
+                    izinGerekliBildiriminiGoster();
                 }
             } else {
                 await servis.durdur();
@@ -170,7 +199,12 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             }
         } catch (hata) {
             Logger.error('KonumAyarlariSayfasi', 'Konum takibi hatasi', hata);
-            Alert.alert('Hata', 'Konum takibi ayarlanırken bir hata oluştu.');
+            setBildirim({
+                gorunur: true,
+                tip: 'hata',
+                baslik: 'Bir hata oluştu',
+                mesaj: 'Konum takibi ayarlanırken bir hata oluştu. Lütfen tekrar deneyin.',
+            });
         } finally {
             setTakipDurumuYukleniyor(false);
         }
@@ -609,6 +643,18 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             tip={disclosureTipi}
             onKabul={disclosureKabulEt}
             onReddet={disclosureReddet}
+        />
+        {/* Bilgi/hata bildirimi — Alert.alert yerine tema-uyumlu modal */}
+        <BildirimModali
+            gorunur={bildirim.gorunur}
+            tip={bildirim.tip}
+            baslik={bildirim.baslik}
+            mesaj={bildirim.mesaj}
+            birincilEtiket={bildirim.birincilEtiket}
+            birincilIkon={bildirim.birincilIkon}
+            onBirincil={bildirim.onBirincil}
+            kapatEtiketi={bildirim.kapatEtiketi}
+            onKapat={bildirimKapat}
         />
         </>
     );

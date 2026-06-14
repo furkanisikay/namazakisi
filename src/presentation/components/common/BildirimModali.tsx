@@ -20,6 +20,17 @@ export interface BildirimModaliProps {
     birincilEtiket?: string;
     /** Birincil eyleme basılınca çağrılır (birincilEtiket verildiyse) */
     onBirincil?: () => void;
+    /**
+     * Birincil butonun FontAwesome5 ikon adı. Varsayılan 'redo' (mevcut "Tekrar dene"
+     * davranışını korur). "Tamam"/"Sil"/"Aç" gibi senaryolar için uygun ikon geçilebilir;
+     * boş string ('') verilerek ikon tümden gizlenebilir.
+     */
+    birincilIkon?: string;
+    /**
+     * Yıkıcı (tehlikeli) eylem mi? true ise birincil buton `renkler.hata` rengini kullanır
+     * (örn: "Sil", "Sıfırla" onayları). Varsayılan false (birincil renk).
+     */
+    tehlikeli?: boolean;
     /** Kapat / geri tuşu / backdrop çağrısı */
     onKapat: () => void;
     /** Kapat butonu etiketi (varsayılan "Kapat") */
@@ -43,6 +54,8 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
     mesaj,
     birincilEtiket,
     onBirincil,
+    birincilIkon = 'redo',
+    tehlikeli = false,
     onKapat,
     kapatEtiketi = 'Kapat',
 }) => {
@@ -129,13 +142,15 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
                         {birincilVar && (
                             <TouchableOpacity
                                 className="flex-[1.4] flex-row items-center justify-center py-3.5 rounded-2xl"
-                                style={{ backgroundColor: renkler.birincil }}
+                                style={{ backgroundColor: tehlikeli ? renkler.hata : renkler.birincil }}
                                 onPress={onBirincil}
                                 activeOpacity={0.85}
                                 accessibilityRole="button"
                                 accessibilityLabel={birincilEtiket}
                             >
-                                <FontAwesome5 name="redo" size={13} color="#FFF" style={{ marginRight: 8 }} />
+                                {!!birincilIkon && (
+                                    <FontAwesome5 name={birincilIkon} size={13} color="#FFF" style={{ marginRight: 8 }} />
+                                )}
                                 <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
                                     {birincilEtiket}
                                 </Text>

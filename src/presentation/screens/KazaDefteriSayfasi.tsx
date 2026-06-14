@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
-  Alert,
   StyleSheet,
   Animated,
   KeyboardAvoidingView,
@@ -37,6 +36,7 @@ import {
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { SayiGirisModali } from '../components/common/SayiGirisModali';
+import { BildirimModali } from '../components/common/BildirimModali';
 
 // ==================== TİPLER ====================
 
@@ -69,6 +69,18 @@ export const KazaDefteriSayfasi: React.FC = () => {
   // Modal state
   const [aktifModal, setAktifModal] = useState<ModalTipi | null>(null);
   const [modalGirdi, setModalGirdi] = useState('');
+
+  // Alert.alert yerine tema-uyumlu hata bildirimi (tek-butonlu validasyon uyarıları)
+  const [hataModali, setHataModali] = useState<{ gorunur: boolean; mesaj: string }>({
+    gorunur: false,
+    mesaj: '',
+  });
+  const hataGoster = useCallback((mesaj: string) => {
+    setHataModali({ gorunur: true, mesaj });
+  }, []);
+  const hataKapat = useCallback(() => {
+    setHataModali((onceki) => ({ ...onceki, gorunur: false }));
+  }, []);
 
   // Sihirbaz state
   const [sihirbazDogumYili, setSihirbazDogumYili] = useState('');
@@ -149,7 +161,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const handleTopluTamamlaGonder = useCallback(() => {
     const sayi = parseInt(modalGirdi, 10);
     if (!sayi || sayi <= 0) {
-      Alert.alert('Hata', 'Geçerli bir sayı giriniz.');
+      hataGoster('Geçerli bir sayı giriniz.');
       return;
     }
     const modal = aktifModal as { tip: 'topluTamamla'; namazAdi: KazaNamazAdi | null };
@@ -157,36 +169,36 @@ export const KazaDefteriSayfasi: React.FC = () => {
     tamamlamaFlash();
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash]);
+  }, [dispatch, aktifModal, modalGirdi, tamamlamaFlash, hataGoster]);
 
   const handleBorcEkleGonder = useCallback(() => {
     const sayi = parseInt(modalGirdi, 10);
     if (!sayi || sayi <= 0) {
-      Alert.alert('Hata', 'Geçerli bir sayı giriniz.');
+      hataGoster('Geçerli bir sayı giriniz.');
       return;
     }
     const modal = aktifModal as { tip: 'borcEkle'; namazAdi: KazaNamazAdi };
     dispatch(borcEkle({ namazAdi: modal.namazAdi, sayi }));
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, aktifModal, modalGirdi]);
+  }, [dispatch, aktifModal, modalGirdi, hataGoster]);
 
   const handleGunlukHedefGonder = useCallback(() => {
     const hedef = parseInt(modalGirdi, 10);
     if (isNaN(hedef) || hedef < 0) {
-      Alert.alert('Hata', 'Geçerli bir sayı giriniz (0 = hedefsiz).');
+      hataGoster('Geçerli bir sayı giriniz (0 = hedefsiz).');
       return;
     }
     dispatch(gunlukHedefiGuncelle({ hedef }));
     setAktifModal(null);
     setModalGirdi('');
-  }, [dispatch, modalGirdi]);
+  }, [dispatch, modalGirdi, hataGoster]);
 
   const handleSihirbazTamamla = useCallback(() => {
     const dogumYili = parseInt(sihirbazDogumYili, 10);
     const bugunYili = new Date().getFullYear();
     if (!dogumYili || dogumYili < 1900 || dogumYili > bugunYili - 5) {
-      Alert.alert('Hata', 'Geçerli bir doğum yılı giriniz.');
+      hataGoster('Geçerli bir doğum yılı giriniz.');
       return;
     }
     const dogumTarihi = `${dogumYili}-01-01`;
@@ -199,7 +211,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
     );
     setAktifModal(null);
     setSihirbazDogumYili('');
-  }, [dispatch, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde]);
+  }, [dispatch, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde, hataGoster]);
 
   // ==================== YARDIMCI ====================
 
@@ -648,7 +660,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     onPress={() => {
                       const yil = parseInt(sihirbazDogumYili, 10);
                       if (!yil || yil < 1900 || yil > new Date().getFullYear() - 5) {
-                        Alert.alert('Hata', 'Geçerli bir doğum yılı giriniz.');
+                        hataGoster('Geçerli bir doğum yılı giriniz.');
                         return;
                       }
                       setAktifModal({ tip: 'sihirbaz', adim: 2 });
@@ -768,6 +780,18 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Hata bildirimi — Alert.alert yerine tema-uyumlu modal */}
+      <BildirimModali
+        gorunur={hataModali.gorunur}
+        tip="hata"
+        baslik="Geçersiz giriş"
+        mesaj={hataModali.mesaj}
+        birincilEtiket="Tamam"
+        birincilIkon="check"
+        onBirincil={hataKapat}
+        onKapat={hataKapat}
+      />
     </SafeAreaView>
   );
 };
