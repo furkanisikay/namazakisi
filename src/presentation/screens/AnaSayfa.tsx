@@ -380,7 +380,7 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
+      try { if (vakitAdi) NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(vakitAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
       // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
       if (vakitAdi) {
@@ -389,6 +389,7 @@ export const AnaSayfa: React.FC = () => {
     } else {
       // Namaz kilmadim - bildirimleri yeniden aktif et
       if (vakitAdi) {
+        try { NamazMuhafiziServisi.getInstance().namazKilindiTemizle(vakitAdi); } catch (e) { }
         try { await ArkaplanMuhafizServisi.getInstance().vakitKilindisiniGeriAl(vakitAdi); } catch (e) { }
 
         // Sayac aktifse yeniden planla

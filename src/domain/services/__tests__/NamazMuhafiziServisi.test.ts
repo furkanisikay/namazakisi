@@ -210,6 +210,28 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         expect(bildirimSpx).not.toHaveBeenCalled();
     });
 
+    test('namazKilindiTemizle: kılındı geri alınınca muhafız o vakit için yeniden uyarır (#101)', () => {
+        // Önce kıl: 'ogle' susmalı (banner temizleme, seviye 0)
+        muhafiz.namazKilindiIsaretle('ogle');
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 30 * 60 * 1000, // L2 (30 % 10 === 0)
+        });
+        muhafiz.baslat(bildirimSpx);
+        expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+
+        bildirimSpx.mockClear();
+
+        // Kılınmadı'ya geri al -> bellek-içi kayıt temizlenmeli -> uyarı geri gelmeli.
+        // (Aksi halde işaret kaldırılsa bile muhafız o vakit için bir daha uyarmazdı.)
+        muhafiz.namazKilindiTemizle('ogle');
+        jest.advanceTimersByTime(60 * 1000);
+
+        expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        const [, seviye] = bildirimSpx.mock.calls[0];
+        expect(seviye).toBe(2);
+    });
+
     test('Yapılandırma değişikliği etkili olmalı', () => {
         // Seviye 1 başlangıcını 60 dk'ya çekelim
         muhafiz.yapilandir({ seviye1BaslangicDk: 60 });

@@ -93,6 +93,18 @@ export class NamazMuhafiziServisi {
     }
 
     /**
+     * Namaz "kılınmadı" işaretlenince bellek-içi kılınmışlık kaydını temizler; aksi
+     * halde muhafız o vakit için bir daha uyarı vermez (#101 review). `namazKilindiIsaretle`
+     * ile birebir aynı anahtar formatı: `${Date.toDateString()}_${vakit}` (küçük harf vakit).
+     */
+    public namazKilindiTemizle(vakit: string) {
+        const bugun = new Date().toDateString();
+        delete this.kilinanVakitler[`${bugun}_${vakit}`];
+        delete this.temizlenenVakitler[`${bugun}_${vakit}`];
+        Logger.info('NamazMuhafiziServisi', `${vakit} namazı kılınmadı olarak işaretlendi; muhafız yeniden devrede.`);
+    }
+
+    /**
      * Açılışta diskteki kalıcı kılınmışlık kaydını (kilinanVakitleriAl) bellek-içi
      * kilinanVakitler map'ine yükler. Aksi halde uygulama yeniden açıldığında map BOŞ
      * olur ve zaten kılınmış namaz için vakte kısa süre kala (seviye >= 3) çan sesi
