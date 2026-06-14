@@ -17,6 +17,7 @@ import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { sayacBaslangicEsikDkHesapla } from '../../core/utils/vakitSayacYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
@@ -389,7 +390,10 @@ export const AnaSayfa: React.FC = () => {
             await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
               aktif: true,
               koordinatlar: konumState.koordinatlar,
-              baslangicEsikDk: muhafizState.esikler.seviye1,
+              baslangicEsikDk: sayacBaslangicEsikDkHesapla(
+                state.vakitSayac?.ayarlar?.sayacBaslangicSeviyesi,
+                muhafizState
+              ),
               muhafizAktif: muhafizState.aktif,
             });
           }
