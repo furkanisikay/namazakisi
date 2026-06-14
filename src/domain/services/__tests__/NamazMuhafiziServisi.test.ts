@@ -1,6 +1,8 @@
 import { NamazMuhafiziServisi, MuhafizYapilandirmasi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
+import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
+import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 
 // Mock NamazVaktiHesaplayiciServisi
 jest.mock('../NamazVaktiHesaplayiciServisi', () => {
@@ -10,6 +12,13 @@ jest.mock('../NamazVaktiHesaplayiciServisi', () => {
         }
     };
 });
+
+// Diskteki kalici kilinmislik kaydini mock'la (acilista hydrate kaynagi)
+jest.mock('../../../data/local/LocalNamazServisi', () => ({
+    kilinanVakitleriAl: jest.fn().mockResolvedValue([]),
+}));
+
+const mockKilinanVakitleriAl = kilinanVakitleriAl as jest.Mock;
 
 describe('NamazMuhafiziServisi Unit Testleri', () => {
     let muhafiz: NamazMuhafiziServisi;
@@ -22,6 +31,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             getSuankiVakitBilgisi: jest.fn()
         };
         (NamazVaktiHesaplayiciServisi.getInstance as jest.Mock).mockReturnValue(mockHesaplayici);
+        // Varsayilan: diskte kilinmis vakit yok (mevcut testlerin davranisi degismesin)
+        mockKilinanVakitleriAl.mockResolvedValue([]);
         
         // Singleton'ı zorla sıfırla ki mock hesaplayıcıyı alabilsin
         (NamazMuhafiziServisi as any).instance = undefined;
@@ -379,6 +390,74 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         expect(bildirimSpx).toHaveBeenCalledTimes(1);
         const [, seviye] = bildirimSpx.mock.calls[0];
         expect(seviye).toBe(2); // 30 dk -> L2 (30 % 10 === 0)
+    });
+
+    // ── AÇILIŞTA DİSKTEN KILINMIŞLIK YÜKLEME (#92) ────────────────────────────
+    // Bug: uygulama yeniden açıldığında foreground muhafızın bellek-içi kilinanVakitler
+    // map'i BOŞ olur; namaz zaten kılınmış olsa bile vakte kısa süre kala (seviye >= 3)
+    // çan sesi (SesServisi.bildirimSesiCal) çalardı. Düzeltme: acilistaKilinanlariYukle()
+    // diskteki kalıcı kaydı (kilinanVakitleriAl) map'e hydrate eder.
+    describe('acilistaKilinanlariYukle (#92 — açılışta kılınmış namaza ses yok)', () => {
+        test('Diskte kılınmış öğle varken, açılışta vakte 10 dk kala (L3) UYARI/SES GELMEMELİ — yalnız banner temizleme', async () => {
+            // Disk: bugün öğle kılınmış
+            mockKilinanVakitleriAl.mockImplementation(async (tarih: string) =>
+                tarih === bugunuAl() ? ['ogle'] : []
+            );
+
+            // L3 aralığı (10 dk) — düzeltme olmadan seviye 3 -> ses çalardı
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 10 * 60 * 1000,
+            });
+
+            // Açılış akışı: önce diskten hydrate, sonra baslat (AnaSayfa ile aynı sıra)
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            // Kılınmış -> yalnız seviye 0 (banner temizleme); seviye >= 1 ASLA gelmemeli
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+            const seviyeler = bildirimSpx.mock.calls.map((c) => c[1]);
+            expect(seviyeler).not.toContain(3);
+            expect(seviyeler).not.toContain(4);
+        });
+
+        test('Diskte kılınmamış vakit için açılışta uyarı normal şekilde gelir (regresyon koruması)', async () => {
+            // Disk: hiçbir vakit kılınmamış
+            mockKilinanVakitleriAl.mockResolvedValue([]);
+
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 15 * 60 * 1000, // L3
+            });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            const [, seviye] = bildirimSpx.mock.calls[0];
+            expect(seviye).toBe(3);
+        });
+
+        test('Gece yarısı geçişi: imsak öncesi dün yatsı kılınmışsa, açılışta yatsı için ses GELMEMELİ', async () => {
+            // Disk: dünün yatsısı kılınmış (gece yarısı sonrası hâlâ aktif vakit)
+            mockKilinanVakitleriAl.mockImplementation(async (tarih: string) =>
+                tarih === dunuAl() ? ['yatsi'] : []
+            );
+
+            // L4 (3 dk): aktifSeviye===4 modülo'yu bypass eder -> kılınmamış olsa kesin çalardı.
+            // Kılınmış olduğu için yalnız banner temizleme (seviye 0) gelmeli, ses YOK.
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                kalanSureMs: 3 * 60 * 1000,
+            });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
     });
 });
 

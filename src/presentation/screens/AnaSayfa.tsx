@@ -286,6 +286,10 @@ export const AnaSayfa: React.FC = () => {
 
     if (arkaplanMuhafizTimeoutRef.current) clearTimeout(arkaplanMuhafizTimeoutRef.current);
 
+    // Effect temizlenirse geç gelen async baslat'ı iptal et (eski effect'in muhafızı
+    // yeniden başlatmasını / stale callback set etmesini önler).
+    let iptalEdildi = false;
+
     const muhafiz = NamazMuhafiziServisi.getInstance();
     if (muhafizAyarlari.aktif) {
       muhafiz.yapilandir({
@@ -298,10 +302,16 @@ export const AnaSayfa: React.FC = () => {
         seviye3SiklikDk: muhafizAyarlari.sikliklar.seviye3,
         seviye4SiklikDk: muhafizAyarlari.sikliklar.seviye4,
       });
-      muhafiz.baslat((mesaj, seviye) => {
-        setMuhafizDurumu({ mesaj, seviye });
-        if (seviye >= 3) { HaptikServisi.gucluTitresim(); SesServisi.bildirimSesiCal(); }
-        else if (seviye > 0) { HaptikServisi.uyariTitresimi(); }
+      // ÖNCE diskteki kılınmışlık kaydını yükle, SONRA başlat. Aksi halde açılışta
+      // bellek-içi map boş olur ve zaten kılınmış namaza vakte kısa süre kala (seviye >= 3)
+      // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
+      muhafiz.acilistaKilinanlariYukle().finally(() => {
+        if (iptalEdildi) return;
+        muhafiz.baslat((mesaj, seviye) => {
+          setMuhafizDurumu({ mesaj, seviye });
+          if (seviye >= 3) { HaptikServisi.gucluTitresim(); SesServisi.bildirimSesiCal(); }
+          else if (seviye > 0) { HaptikServisi.uyariTitresimi(); }
+        });
       });
     } else {
       muhafiz.durdur();
@@ -318,6 +328,7 @@ export const AnaSayfa: React.FC = () => {
     });
 
     return () => {
+      iptalEdildi = true;
       stopLocalTimer();
       appStateEvent.remove();
       muhafiz.durdur();
