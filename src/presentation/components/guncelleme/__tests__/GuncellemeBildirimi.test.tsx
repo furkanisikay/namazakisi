@@ -917,6 +917,91 @@ describe('GuncellemeBildirimi', () => {
     act(() => { tree!.unmount(); });
   });
 
+  it('Play Store: "Yeniden Başlat" kartindaki kapatma (X) butonu indirme durumunu sifirlar', async () => {
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28', yeniVersiyonEtiketi: 'Yeni sürüm', mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '', indirmeBaglantisi: 'playstore://update', yayinTarihi: '',
+          kaynak: 'playstore', zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // Kapatma (X) butonunda Text cocugu yok → accessibilityLabel ile bulunur.
+    const kapatButonu = tree!.root.findAll(
+      (node) => node.type === TouchableOpacity && node.props.accessibilityLabel === 'Kapat'
+    )[0];
+    expect(kapatButonu).toBeTruthy();
+
+    await act(async () => {
+      kapatButonu.props.onPress();
+    });
+
+    // Kart kapanmali: indirmeTamamlandi false olmali (kullanici sonra tamamlayabilir).
+    expect(store.getState().guncelleme.indirmeTamamlandi).toBe(false);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: completeUpdate false donerse "Yeniden Başlat" tekrar denenebilir (ref sifirlanir)', async () => {
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    // Native modul hazir degil / Android disi: firlatmaz, false doner.
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(false);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28', yeniVersiyonEtiketi: 'Yeni sürüm', mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '', indirmeBaglantisi: 'playstore://update', yayinTarihi: '',
+          kaynak: 'playstore', zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    const buton = butonBul(tree!, 'Yeniden Başlat');
+    // 1. deneme: false döner → idempotency ref'i sıfırlanmalı.
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+    // 2. deneme: ref sıfırlandığı için TEKRAR çağrılabilmeli (kilit takılı kalmamalı).
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(2);
+
+    // Sonraki testler için varsayilani geri al.
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
+    act(() => { tree!.unmount(); });
+  });
+
   it('Play Store DISI kaynakta install durum dinleyicisi KURULMAZ', () => {
     mockInstallDurumDinle.mockClear();
 

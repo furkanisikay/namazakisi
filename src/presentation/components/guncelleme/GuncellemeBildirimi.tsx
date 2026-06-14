@@ -33,6 +33,7 @@ import {
   guncellemeErtele,
   bildirimiKapat,
   indirmeTamamlandiIsaretle,
+  indirmeDurumuSifirla,
 } from '../../store/guncellemeSlice';
 import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeModulu';
@@ -130,7 +131,12 @@ export const GuncellemeBildirimi: React.FC = () => {
     if (tamamlamaBaslatildi.current) return;
     tamamlamaBaslatildi.current = true;
     try {
-      await PlayStoreModulu.guncellemeYuklemeyiTamamla();
+      const basarili = await PlayStoreModulu.guncellemeYuklemeyiTamamla();
+      if (!basarili) {
+        // Native modül hazır değil / Android dışı: fırlatmaz, false döner → tekrar denenebilsin.
+        tamamlamaBaslatildi.current = false;
+        Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı (modül false döndü)');
+      }
     } catch (hata: any) {
       // Tamamlama basarisizsa kullanici tekrar deneyebilsin
       tamamlamaBaslatildi.current = false;
@@ -245,6 +251,22 @@ export const GuncellemeBildirimi: React.FC = () => {
                 Kurulumu tamamlamak için uygulamayı yeniden başlatın.
               </Text>
             </View>
+            <TouchableOpacity
+              onPress={() => dispatch(indirmeDurumuSifirla())}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              accessibilityLabel="Kapat"
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 14,
+                backgroundColor: `${renkler.metinIkincil}26`,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 8,
+              }}
+            >
+              <MaterialIcons name="close" size={16} color={renkler.metinIkincil} />
+            </TouchableOpacity>
           </View>
 
           <View
