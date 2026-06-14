@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -7,11 +7,20 @@ import { useRenkler } from '../../../core/theme';
 import { BlurView } from 'expo-blur';
 import { Logger } from '../../../core/utils/Logger';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { BildirimModali, BildirimTipi } from '../common/BildirimModali';
 
 interface PaylasimModalProps {
   gorunur: boolean;
   onKapat: () => void;
   children: React.ReactNode; // Paylaşılacak içerik buraya gelecek
+}
+
+/** Bildirim modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir */
+interface BildirimDurumu {
+  gorunur: boolean;
+  tip: BildirimTipi;
+  baslik: string;
+  mesaj: string;
 }
 
 export const PaylasimModal: React.FC<PaylasimModalProps> = ({
@@ -23,6 +32,16 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
   const viewRef = useRef<View | null>(null);
   const [paylasiliyor, setPaylasiliyor] = useState(false);
   const [captureLayout, setCaptureLayout] = useState({ width: 0, height: 0 });
+  // Alert.alert yerine tema-uyumlu bildirim modalı
+  const [bildirim, setBildirim] = useState<BildirimDurumu>({
+    gorunur: false,
+    tip: 'hata',
+    baslik: '',
+    mesaj: '',
+  });
+  const bildirimGoster = (tip: BildirimTipi, baslik: string, mesaj: string) =>
+    setBildirim({ gorunur: true, tip, baslik, mesaj });
+  const bildirimKapat = () => setBildirim((onceki) => ({ ...onceki, gorunur: false }));
   useDonanimGeriTusu(gorunur, onKapat);
 
   const paylas = async () => {
@@ -30,7 +49,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
       setPaylasiliyor(true);
 
       if (!viewRef.current) {
-        Alert.alert('Hata', 'Görsel henüz hazır değil.');
+        bildirimGoster('hata', 'Görsel hazır değil', 'Görsel henüz hazır değil. Lütfen birkaç saniye sonra tekrar deneyin.');
         return;
       }
 
@@ -59,7 +78,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
 
     } catch (error) {
       Logger.error('PaylasimModal', 'Paylasim hatasi', error);
-      Alert.alert('Hata', 'Görsel oluşturulurken bir hata oluştu.');
+      bildirimGoster('hata', 'Görsel oluşturulamadı', 'Görsel oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setPaylasiliyor(false);
     }
@@ -77,11 +96,12 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
         UTI: 'public.png', // iOS için
       });
     } else {
-      Alert.alert('Uyarı', 'Paylaşım özelliği bu cihazda kullanılamıyor.');
+      bildirimGoster('bilgi', 'Paylaşım kullanılamıyor', 'Paylaşım özelliği bu cihazda kullanılamıyor.');
     }
   };
 
   return (
+    <>
     <Modal
       animationType="slide"
       transparent={true}
@@ -169,5 +189,18 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
         </View>
       </View>
     </Modal>
+
+    {/* Hata/bilgi bildirimi — Alert.alert yerine tema-uyumlu modal */}
+    <BildirimModali
+      gorunur={bildirim.gorunur}
+      tip={bildirim.tip}
+      baslik={bildirim.baslik}
+      mesaj={bildirim.mesaj}
+      birincilEtiket="Tamam"
+      birincilIkon="check"
+      onBirincil={bildirimKapat}
+      onKapat={bildirimKapat}
+    />
+    </>
   );
 };

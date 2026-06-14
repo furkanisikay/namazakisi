@@ -15,7 +15,6 @@ import {
   Switch,
   Animated,
   Easing,
-  Alert,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation, CommonActions } from '@react-navigation/native';
@@ -32,6 +31,24 @@ import {
 import { OzelGunTakvimi } from '../components';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+
+/**
+ * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile
+ * gösterilir. İki-butonlu onaylarda (sıfırla/sihirbaz) birincil eylem + tehlikeli stil,
+ * tek-butonlu başarı bildirimlerinde yalnız "Tamam" kullanılır.
+ */
+interface SeriBildirimi {
+  gorunur: boolean;
+  tip: BildirimTipi;
+  baslik: string;
+  mesaj: string;
+  birincilEtiket?: string;
+  birincilIkon?: string;
+  onBirincil?: () => void;
+  kapatEtiketi?: string;
+  tehlikeli?: boolean;
+}
 
 /**
  * Sayisal secici bileseni
@@ -217,6 +234,22 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
   const { ayarlar: seriAyarlari, ozelGunAyarlari } = useAppSelector((state) => state.seri);
   const [takvimGorunur, setTakvimGorunur] = useState(false);
 
+  // Alert.alert yerine tema-uyumlu bildirim/onay modalı
+  const [bildirim, setBildirim] = useState<SeriBildirimi>({
+    gorunur: false,
+    tip: 'basari',
+    baslik: '',
+    mesaj: '',
+  });
+  const bildirimKapat = useCallback(
+    () => setBildirim((onceki) => ({ ...onceki, gorunur: false })),
+    []
+  );
+  // Tek-butonlu başarı/bilgi bildirimi göster
+  const basariBildiriminiGoster = useCallback((baslik: string, mesaj: string) => {
+    setBildirim({ gorunur: true, tip: 'basari', baslik, mesaj });
+  }, []);
+
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -254,50 +287,49 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
       })
     );
     setTakvimGorunur(false);
-    Alert.alert(
+    basariBildiriminiGoster(
       'Başarılı',
       'Özel gün modu başlatıldı. Seriniz seçilen tarihler arasında dondurulacaktır.'
     );
   };
 
   const handleSeriSifirla = () => {
-    Alert.alert(
-      'Seri Sıfırla',
-      'Tüm seri verileriniz (seri, rozetler, puanlar) sıfırlanacak. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?',
-      [
-        { text: 'İptal', style: 'cancel' },
-        {
-          text: 'Sıfırla',
-          style: 'destructive',
-          onPress: () => {
-            dispatch(seriStateSifirla());
-            Alert.alert('Başarılı', 'Seri verileriniz sıfırlandı.');
-          },
-        },
-      ]
-    );
+    setBildirim({
+      gorunur: true,
+      tip: 'hata',
+      baslik: 'Seri Sıfırla',
+      mesaj: 'Tüm seri verileriniz (seri, rozetler, puanlar) sıfırlanacak. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?',
+      birincilEtiket: 'Sıfırla',
+      birincilIkon: 'trash-alt',
+      tehlikeli: true,
+      kapatEtiketi: 'İptal',
+      onBirincil: () => {
+        dispatch(seriStateSifirla());
+        basariBildiriminiGoster('Başarılı', 'Seri verileriniz sıfırlandı.');
+      },
+    });
   };
 
   const handleKurulumSifirla = () => {
-    Alert.alert(
-      'Kurulumu Sıfırla',
-      'Kurulum sihirbazı yeniden başlatılacak. Namaz, seri ve puan verileriniz korunacaktır. Devam etmek istiyor musunuz?',
-      [
-        { text: 'İptal', style: 'cancel' },
-        {
-          text: 'Sihirbazı Aç',
-          onPress: async () => {
-            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: 'KurulumSihirbazi' }],
-              })
-            );
-          },
-        },
-      ]
-    );
+    setBildirim({
+      gorunur: true,
+      tip: 'bilgi',
+      baslik: 'Kurulumu Sıfırla',
+      mesaj: 'Kurulum sihirbazı yeniden başlatılacak. Namaz, seri ve puan verileriniz korunacaktır. Devam etmek istiyor musunuz?',
+      birincilEtiket: 'Sihirbazı Aç',
+      birincilIkon: 'magic',
+      kapatEtiketi: 'İptal',
+      onBirincil: async () => {
+        bildirimKapat();
+        await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'KurulumSihirbazi' }],
+          })
+        );
+      },
+    });
   };
 
   return (
@@ -459,6 +491,20 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           gorunur={takvimGorunur}
           onKapat={() => setTakvimGorunur(false)}
           onBaslat={handleMazeretBaslat}
+        />
+
+        {/* Bildirim/onay modalı — Alert.alert yerine tema-uyumlu modal */}
+        <BildirimModali
+          gorunur={bildirim.gorunur}
+          tip={bildirim.tip}
+          baslik={bildirim.baslik}
+          mesaj={bildirim.mesaj}
+          birincilEtiket={bildirim.birincilEtiket}
+          birincilIkon={bildirim.birincilIkon}
+          onBirincil={bildirim.onBirincil}
+          tehlikeli={bildirim.tehlikeli}
+          kapatEtiketi={bildirim.kapatEtiketi}
+          onKapat={bildirimKapat}
         />
       </Animated.View>
     </ScrollView>

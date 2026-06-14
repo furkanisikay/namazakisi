@@ -19,7 +19,6 @@ import {
   Animated,
   Easing,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -28,6 +27,7 @@ import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { yedeginiPaylas } from '../../../domain/services/YedeklemeServisi';
 import { Logger } from '../../../core/utils/Logger';
+import { BildirimModali } from '../../components/common/BildirimModali';
 
 /**
  * Büyük aksiyon kartı — birincil eylem (yedek oluştur) ve ikincil eylem
@@ -105,6 +105,8 @@ export const YedeklemeSayfasi: React.FC = () => {
   const { butonTiklandiFeedback, hataFeedback } = useFeedback();
 
   const [yedekleniyor, setYedekleniyor] = useState(false);
+  // Yedek hatası: Alert yerine tema-uyumlu BildirimModali gösterilir.
+  const [hataModaliGorunur, setHataModaliGorunur] = useState(false);
 
   // Giriş animasyonu (Kurulum Sihirbazı / Ramazan deseni — 300ms cubic fade)
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -121,19 +123,23 @@ export const YedeklemeSayfasi: React.FC = () => {
   const handleYedekOlustur = async () => {
     if (yedekleniyor) return;
     await butonTiklandiFeedback();
+    setHataModaliGorunur(false);
     setYedekleniyor(true);
     try {
       await yedeginiPaylas();
     } catch (error) {
       Logger.error('YedeklemeSayfasi', 'Yedek oluşturulamadı', error);
       await hataFeedback();
-      Alert.alert(
-        'Yedekleme',
-        'Yedeğiniz oluşturulurken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.'
-      );
+      setHataModaliGorunur(true);
     } finally {
       setYedekleniyor(false);
     }
+  };
+
+  // "Tekrar dene" — modalı kapatıp yeniden yedek oluşturmayı dener.
+  const handleTekrarDene = async () => {
+    setHataModaliGorunur(false);
+    await handleYedekOlustur();
   };
 
   const handleIceAktar = async () => {
@@ -242,6 +248,17 @@ export const YedeklemeSayfasi: React.FC = () => {
           />
         </Animated.View>
       </ScrollView>
+
+      {/* Yedek hatası — Alert yerine tema-uyumlu bildirim modalı */}
+      <BildirimModali
+        gorunur={hataModaliGorunur}
+        tip="hata"
+        baslik="Yedek oluşturulamadı"
+        mesaj="Yedeğiniz oluşturulurken bir sorun oluştu. Lütfen tekrar deneyin veya daha sonra yeniden deneyiniz."
+        birincilEtiket="Tekrar dene"
+        onBirincil={handleTekrarDene}
+        onKapat={() => setHataModaliGorunur(false)}
+      />
     </SafeAreaView>
   );
 };

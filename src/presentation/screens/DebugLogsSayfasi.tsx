@@ -10,7 +10,6 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Alert,
   Switch,
   ActivityIndicator,
 } from 'react-native';
@@ -20,6 +19,23 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { Logger, LogLevel, LogEntry } from '../../core/utils/Logger';
+import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+
+/**
+ * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir.
+ * Tek-butonlu hata/bilgi ve iki-butonlu (temizle) onay senaryolarını taşır.
+ */
+interface DebugBildirimi {
+  gorunur: boolean;
+  tip: BildirimTipi;
+  baslik: string;
+  mesaj: string;
+  birincilEtiket?: string;
+  birincilIkon?: string;
+  onBirincil?: () => void;
+  kapatEtiketi?: string;
+  tehlikeli?: boolean;
+}
 
 /**
  * Log level renkleri
@@ -134,6 +150,24 @@ export const DebugLogsSayfasi: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedLevel, setSelectedLevel] = useState<LogLevel | 'ALL'>('ALL');
 
+  // Alert.alert yerine tema-uyumlu bildirim/onay modalı
+  const [bildirim, setBildirim] = useState<DebugBildirimi>({
+    gorunur: false,
+    tip: 'hata',
+    baslik: '',
+    mesaj: '',
+  });
+  const bildirimKapat = useCallback(
+    () => setBildirim((onceki) => ({ ...onceki, gorunur: false })),
+    []
+  );
+  // Tek-butonlu hata/bilgi bildirimi göster
+  const basitBildirimGoster = useCallback(
+    (tip: BildirimTipi, baslik: string, mesaj: string) =>
+      setBildirim({ gorunur: true, tip, baslik, mesaj }),
+    []
+  );
+
   // Loglari yukle
   const loadLogs = useCallback(async () => {
     setLoading(true);
@@ -144,11 +178,11 @@ export const DebugLogsSayfasi: React.FC = () => {
       setDebugEnabled(enabled);
     } catch (error) {
       Logger.error('DebugLogsSayfasi', 'Loglar yuklenirken hata', error);
-      Alert.alert('Hata', 'Loglar yüklenirken hata oluştu');
+      basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [basitBildirimGoster]);
 
   useEffect(() => {
     loadLogs();
@@ -161,46 +195,50 @@ export const DebugLogsSayfasi: React.FC = () => {
     if (!saved) {
       // Storage yazimi basarisiz: UI'yi eski haline getir ve kullaniciya bildir
       setDebugEnabled(!value);
-      Alert.alert('Hata', 'Debug modu ayarı kaydedilemedi. Depolamada yer açıp tekrar deneyin.');
+      basitBildirimGoster(
+        'hata',
+        'Ayar kaydedilemedi',
+        'Debug modu ayarı kaydedilemedi. Depolamada yer açıp tekrar deneyin.'
+      );
       return;
     }
     if (value) {
-      Alert.alert(
+      basitBildirimGoster(
+        'bilgi',
         'Debug Modu Aktif',
-        'Debug logları artık kaydediliyor. Uygulama kullanımınız sırasında oluşan olaylar loglanacak.',
-        [{ text: 'Tamam' }]
+        'Debug logları artık kaydediliyor. Uygulama kullanımınız sırasında oluşan olaylar loglanacak.'
       );
     }
   };
 
   // Loglari temizle
   const handleClearLogs = () => {
-    Alert.alert(
-      'Logları Temizle',
-      'Tüm loglar silinecek. Emin misiniz?',
-      [
-        { text: 'İptal', style: 'cancel' },
-        {
-          text: 'Temizle',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await Logger.clearLogs();
-              await loadLogs();
-            } catch (error) {
-              Logger.error('DebugLogsSayfasi', 'Log temizleme hatasi', error);
-              Alert.alert('Hata', 'Loglar temizlenirken hata oluştu');
-            }
-          },
-        },
-      ]
-    );
+    setBildirim({
+      gorunur: true,
+      tip: 'hata',
+      baslik: 'Logları Temizle',
+      mesaj: 'Tüm loglar silinecek. Emin misiniz?',
+      birincilEtiket: 'Temizle',
+      birincilIkon: 'trash-alt',
+      tehlikeli: true,
+      kapatEtiketi: 'İptal',
+      onBirincil: async () => {
+        bildirimKapat();
+        try {
+          await Logger.clearLogs();
+          await loadLogs();
+        } catch (error) {
+          Logger.error('DebugLogsSayfasi', 'Log temizleme hatasi', error);
+          basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar temizlenirken bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+      },
+    });
   };
 
   // Loglari paylas
   const handleShareLogs = async () => {
     if (logs.length === 0) {
-      Alert.alert('Uyarı', 'Paylaşılacak log bulunamadı');
+      basitBildirimGoster('bilgi', 'Paylaşılacak log yok', 'Paylaşılacak log bulunamadı.');
       return;
     }
 
@@ -222,11 +260,11 @@ export const DebugLogsSayfasi: React.FC = () => {
           dialogTitle: 'Debug Loglarını Paylaş',
         });
       } else {
-        Alert.alert('Hata', 'Paylaşım bu cihazda desteklenmiyor');
+        basitBildirimGoster('bilgi', 'Paylaşım kullanılamıyor', 'Paylaşım bu cihazda desteklenmiyor.');
       }
     } catch (error) {
       Logger.error('DebugLogsSayfasi', 'Log paylasim hatasi', error);
-      Alert.alert('Hata', 'Loglar paylaşılırken hata oluştu');
+      basitBildirimGoster('hata', 'Bir hata oluştu', 'Loglar paylaşılırken bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
 
@@ -393,6 +431,20 @@ export const DebugLogsSayfasi: React.FC = () => {
           ))}
         </ScrollView>
       )}
+
+      {/* Bildirim/onay modalı — Alert.alert yerine tema-uyumlu modal */}
+      <BildirimModali
+        gorunur={bildirim.gorunur}
+        tip={bildirim.tip}
+        baslik={bildirim.baslik}
+        mesaj={bildirim.mesaj}
+        birincilEtiket={bildirim.birincilEtiket}
+        birincilIkon={bildirim.birincilIkon}
+        onBirincil={bildirim.onBirincil}
+        tehlikeli={bildirim.tehlikeli}
+        kapatEtiketi={bildirim.kapatEtiketi}
+        onKapat={bildirimKapat}
+      />
     </View>
   );
 };

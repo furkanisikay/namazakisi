@@ -37,6 +37,7 @@ Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça r
 - **Kod isimleri Türkçe** (değişken/fonksiyon/dosya): `vakit`, `ayarlar`, `olustur`, `temizle`...
 - **Kullanıcıya görünen TÜM metin kibar "siz" dilinde**: "ekleyebilirsiniz", "kontrol edin", "vakitleriniz". Asla "sen/senin". CTA da kibar: "Hemen kurun", "İnceleyin".
 - State: her slice `*Yukle` / `*Guncelle` desenini izler; kalıcılık AsyncStorage ile thunk içinde.
+- **`Alert.alert` KULLANMA** (kullanıcıya görünen geri bildirim için): yerel/kötü görünür, uygulamanın görsel diline uymaz → tema-uyumlu modal kullan. Genel hata/bilgi/başarı bildirimi için **`BildirimModali`** (`src/presentation/components/common/BildirimModali.tsx`; `tip: 'hata'|'bilgi'|'basari'`, ops. `birincilEtiket`/`onBirincil`), onay için `KerahatOnayModal` kalitesinde modal. (Not: kod tabanında hâlâ ~23 eski `Alert.alert` var; yenisini EKLEME, dokunduğun akışı dönüştür.)
 - Stil/format kurallarını **sen kovalama** — `npm run lint` yapar. (Kullanıcıyla daima **Türkçe** konuş.)
 
 ## Kritik desenler ve tuzaklar (bu projede öğrenildi)
