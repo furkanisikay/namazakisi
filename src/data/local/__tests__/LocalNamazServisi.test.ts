@@ -157,6 +157,11 @@ describe('LocalNamazServisi — yazma kuyruğu dayanıklılığı (hata izolasyo
 
   beforeEach(async () => {
     await AsyncStorage.clear();
+    // Migrasyon bayragini ONCEDEN set et: aksi halde her yazma yolu once migrasyonu
+    // tetikler ve bos storage'da ILK setItem migrasyon-bayrak yazimi (hamYaz) olur —
+    // yani testteki "1. yazma reddedildi" senaryosu yanlislikla bayrak yazimini test ederdi.
+    // Bayrak hazirken migrasyon no-op olur; ilk basarisiz setItem ASIL namaz-gun yazimina deger.
+    await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
   });
 
   afterEach(() => {
@@ -278,6 +283,26 @@ describe('LocalNamazServisi — localTarihAraligindakiNamazlariGetir', () => {
     expect(gun11.namazlar.find((n) => n.namazAdi === NamazAdi.Ogle)?.tamamlandi).toBe(true);
     expect(gun10.namazlar.find((n) => n.namazAdi === NamazAdi.Ogle)?.tamamlandi).toBe(false);
   });
+
+  // Savunma: bir gün-anahtarı "null" string'i tutarsa (JSON.parse('null') === null),
+  // gunlukNamazlariOlustur içinde gun[namazAdi] erişimi çökerdi. Güvenli-parse {} gibi
+  // davranıp 5 namazı false döndürmeli (basarili:true, çökme yok).
+  it('gün-anahtarı "null" string ise çökmeden 5 namazı false döndürür', async () => {
+    await AsyncStorage.setItem(`${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}2026-06-25`, 'null');
+    const sonuc = await localTarihAraligindakiNamazlariGetir('2026-06-25', '2026-06-25');
+    expect(sonuc.basarili).toBe(true);
+    expect(sonuc.veri).toHaveLength(1);
+    expect(sonuc.veri![0].namazlar).toHaveLength(NAMAZ_ISIMLERI.length);
+    expect(sonuc.veri![0].namazlar.every((n) => n.tamamlandi === false)).toBe(true);
+  });
+
+  // Geçerli JSON ama nesne DEĞİL (sayı): yine {} gibi davranmalı (çökme yok).
+  it('gün-anahtarı nesne olmayan geçerli JSON (sayı) ise çökmeden 5 namazı false döndürür', async () => {
+    await AsyncStorage.setItem(`${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}2026-06-26`, '42');
+    const sonuc = await localTarihAraligindakiNamazlariGetir('2026-06-26', '2026-06-26');
+    expect(sonuc.basarili).toBe(true);
+    expect(sonuc.veri![0].namazlar.every((n) => n.tamamlandi === false)).toBe(true);
+  });
 });
 
 describe('LocalNamazServisi — localVerileriSenkronizasyonIcinAl', () => {
@@ -328,6 +353,19 @@ describe('LocalNamazServisi — localVerileriSenkronizasyonIcinAl', () => {
 
     expect(sonuc).toContainEqual({ tarih: '2026-06-22', namazAdi: NamazAdi.Ikindi, tamamlandi: true });
     expect(sonuc).toContainEqual({ tarih: '2026-06-23', namazAdi: NamazAdi.Aksam, tamamlandi: true });
+  });
+
+  // Savunma: bir gün-anahtarı "null" string'i tutarsa Object.entries(null) ile çökerdi.
+  // O anahtar atlanmalı, diğer günler sağlam dönmeli (çökme yok).
+  it('gün-anahtarı "null" string ise o günü atlar, çökmeden diğerlerini döndürür', async () => {
+    // 2026-06-27 anahtarını doğrudan "null" string'i ile boz (göç bu anahtara dokunmaz).
+    await AsyncStorage.setItem(`${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}2026-06-27`, 'null');
+    await localNamazDurumunuGuncelle('2026-06-28', NamazAdi.Sabah, true);
+
+    const sonuc = await localVerileriSenkronizasyonIcinAl();
+
+    expect(sonuc).toContainEqual({ tarih: '2026-06-28', namazAdi: NamazAdi.Sabah, tamamlandi: true });
+    expect(sonuc.some((e) => e.tarih === '2026-06-27')).toBe(false);
   });
 });
 
@@ -400,5 +438,53 @@ describe('LocalNamazServisi — gun-bazli goc (Faz 1)', () => {
     const sonuc = await localVerileriSenkronizasyonIcinAl();
     // Yalniz gercek kayit; bayrak anahtarindan tureyen sahte/ekstra kayit OLMAMALI
     expect(sonuc).toEqual([{ tarih: '2026-03-09', namazAdi: NamazAdi.Sabah, tamamlandi: true }]);
+  });
+});
+
+describe('LocalNamazServisi — migrasyon eşzamanlılık kilidi', () => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+  });
+
+  // Bot bulgusu (high): migrasyonyiGarantile eşzamanlı çağrılırsa her çağrı eski blob'u
+  // okuyup göç döngüsünü tekrar koşar (geçmişi çok kullanıcıda perf darboğazı). Bellek-içi
+  // kilit tek in-flight göçü paylaştırmalı -> eski blob YALNIZ BİR KEZ okunmalı.
+  it('eşzamanlı ilk-açılış göçünde eski blob yalnız bir kez okunur', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-20': { [NamazAdi.Sabah]: true } })
+    );
+    const getItemMock = AsyncStorage.getItem as jest.Mock;
+    getItemMock.mockClear();
+
+    await Promise.all([
+      localVerileriSenkronizasyonIcinAl(),
+      localVerileriSenkronizasyonIcinAl(),
+    ]);
+
+    const blobOkumaSayisi = getItemMock.mock.calls.filter(
+      ([anahtar]: [string]) => anahtar === DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI
+    ).length;
+    expect(blobOkumaSayisi).toBe(1);
+  });
+
+  // Kilit KALICI önbellek OLMAMALI: göç bitince temizlenmeli ki sonraki (clear sonrası)
+  // çağrı bayrağı yeniden okuyup gerekirse tekrar göç edebilsin. (Botun yalnız-hata-da-temizle
+  // varyantı bu durumda göçü kalıcı atlardı; finally-temizle bunu önler.)
+  it('göç sonrası kilit temizlenir: yeni veriyle ikinci göç yeniden çalışır', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-21': { [NamazAdi.Ogle]: true } })
+    );
+    await localVerileriSenkronizasyonIcinAl(); // 1. göç
+    expect(await AsyncStorage.getItem('namaz_gun_2026-03-21')).not.toBeNull();
+
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-22': { [NamazAdi.Ikindi]: true } })
+    );
+    const sonuc = await localVerileriSenkronizasyonIcinAl(); // 2. göç (kilit temizlenmiş olmalı)
+    expect(sonuc).toContainEqual({ tarih: '2026-03-22', namazAdi: NamazAdi.Ikindi, tamamlandi: true });
   });
 });
