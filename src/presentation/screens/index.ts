@@ -26,3 +26,4 @@ export { DebugLogsSayfasi } from './DebugLogsSayfasi';
 export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
 export { NelerYeniSayfasi } from './NelerYeniSayfasi';
 export { YedeklemeSayfasi } from './Yedekleme/YedeklemeSayfasi';
+export { IceAktarmaSihirbaziSayfasi } from './Yedekleme/IceAktarmaSihirbazi/IceAktarmaSihirbaziSayfasi';
