@@ -5,6 +5,28 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.6] - 2026-06-14
+
+### Eklendi
+- [yedekleme] ayarlar menusu, navigasyon rotalari ve yeni-ozellik duyurusu
+- [yedekleme] akilli ice-aktarma sihirbazi (cok adimli UI)
+- [yedekleme] yedekleme giris sayfasi (UI)
+- [yedekleme] ice-aktarma orkestrator thunk + slice
+- [yedekleme] disa aktarma dosya yaz + sistem paylasimi
+- [yedekleme] fark + birlestirme plan servisi (4 strateji, 4 kategori)
+- [yedekleme] topla -> sifreli zarf ve coz/dogrula servisi
+- [yedekleme] uygulama-anahtarli sifreleme util (tweetnacl)
+- [yedekleme] yedek zarf/payload/strateji tipleri (core/types)
+
+### Düzeltildi
+- [vakit-sayaci] baslangic esigi kullanicinin sectigi seviyeye uysun (#90 review)
+- [muhafiz] gercek-zamanli kilindi/geri-al anahtar tutarliligi (#101 review)
+- [kerahat] modal kapanirken namazAdi flicker'ini onle
+- [yedekleme] klasik expo-file-system/legacy API + lockfile senkron + dizi guard
+- [muhafiz] acilista kilinmis namaza ses calma bug'i (#92)
+- [bildirim] muhafiz aciksa vakit sayacinin cakisan bildirimini bastir (#90)
+- [anasayfa] kerahat vaktinde namaz işaretlemeyi engelleme, kibar onayla izin ver
+
 ## [0.23.5] - 2026-06-14
 
 ### Düzeltildi
