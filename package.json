@@ -1,6 +1,6 @@
 {
   "name": "namazakisi",
-  "version": "0.23.3",
+  "version": "0.23.4",
   "description": "Free & Open Source Prayer App (Sadaqah Jariyah)",
   "license": "GPL-3.0",
   "main": "index.ts",
