@@ -306,9 +306,12 @@ export const seriHesapla = (
       sonuc.seriDurumu = {
         ...durum.bugunOncesi,
         bugunOncesi: null,
+        bugunKazanilanPuan: null,
         sonGuncelleme: new Date().toISOString(),
       };
       sonuc.seriDegisti = true;
+      // Faz 1b: bugun verilen seri/gun bonusunu da geri al (negatif kazanilanPuan).
+      sonuc.kazanilanPuan = -(durum.bugunKazanilanPuan ?? 0);
     }
     return sonuc;
   }
@@ -447,9 +450,14 @@ export const seriHesapla = (
     }
   }
 
-  // Bug #4: Bugun YENI tam sayildiysa onceki-durum snapshot'ini sakla (ayni-gun geri-alimi icin).
+  // Bug #4 + Faz 1b: Bugun YENI tam sayildiysa onceki-durum snapshot'ini ve bugun verilen
+  // bonusu sakla (ayni-gun geri-alimi hem seriyi hem bonusu geri alabilsin).
   if (sonuc.seriDegisti && sonuc.seriDurumu.sonTamGun === bugun) {
-    sonuc.seriDurumu = { ...sonuc.seriDurumu, bugunOncesi: bugunOncesiSnapshot };
+    sonuc.seriDurumu = {
+      ...sonuc.seriDurumu,
+      bugunOncesi: bugunOncesiSnapshot,
+      bugunKazanilanPuan: sonuc.kazanilanPuan,
+    };
   }
 
   return sonuc;

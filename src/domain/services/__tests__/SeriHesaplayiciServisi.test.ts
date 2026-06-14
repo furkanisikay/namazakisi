@@ -657,12 +657,15 @@ describe('SeriHesaplayiciServisi - Bug #4: ayni gun tam-alti dusurulunce geri sa
     const s1 = seriHesapla(baslangicDurumu(dun), gun(bugun, 5), null, ayarlar);
     expect(s1.seriDurumu.mevcutSeri).toBe(6);
     expect(s1.seriDurumu.sonTamGun).toBe(bugun);
+    expect(s1.kazanilanPuan).toBeGreaterThan(0); // bugun seri/gun bonusu verildi
 
     const s2 = seriHesapla(s1.seriDurumu, gun(bugun, 4), null, ayarlar);
     expect(s2.seriDegisti).toBe(true);
     expect(s2.seriDurumu.mevcutSeri).toBe(5);
     expect(s2.seriDurumu.sonTamGun).toBe(dun);
     expect(s2.seriDurumu.enUzunSeri).toBe(8); // rekor dusurulmez
+    // Faz 1b: bugun verilen bonus da geri alindi (negatif, esit miktar)
+    expect(s2.kazanilanPuan).toBe(-(s1.kazanilanPuan));
   });
 
   test('geri aldiktan sonra tekrar 5/5 yapilinca yeniden sayilir (simetrik)', () => {

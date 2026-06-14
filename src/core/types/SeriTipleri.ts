@@ -47,6 +47,11 @@ export interface SeriDurumu {
    * Eski verilerde olmayabilir (opsiyonel).
    */
   bugunOncesi?: BugunOncesiSnapshot | null;
+  /**
+   * Bugun icin verilen seri/gun bonusu (Faz 1b). Bugun tam sayilirken set edilir; ayni gun
+   * geri alininca bu kadar bonus da geri dusulur (negatif kazanilanPuan). Eski verilerde olmayabilir.
+   */
+  bugunKazanilanPuan?: number | null;
 }
 
 /** seriHesapla'nin ayni-gun geri-alimi icin sakladigi minimal onceki-durum snapshot'i. */

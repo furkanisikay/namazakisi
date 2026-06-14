@@ -245,7 +245,8 @@ export const seriKontrolet = createAsyncThunk(
       hesapSonucu.toparlanmaBasarili
     );
 
-    bonusPuan += guncellemeSonucu.toplamKazanilanPuan;
+    // Faz 1b: bonus geri-alimi (negatif kazanilanPuan) bonusPuan'i dusurebilir; 0 alt sinir.
+    bonusPuan = Math.max(0, bonusPuan + guncellemeSonucu.toplamKazanilanPuan);
 
     // TEK-YAZICI: seriKontrolet seviyeDurumu/seviye-kutlamasi URETMEZ; bunun tek sahibi
     // puanlamayiYenidenHesapla (reconcile). Burada yalniz seri/rozet/toparlanma + bonusPuan
