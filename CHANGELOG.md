@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.5] - 2026-06-14
+
+### Düzeltildi
+- [depolama] göç eşzamanlılık kilidi + multiGet ham-string güvenli parse (#98)
+
 ## [0.23.4] - 2026-06-14
 
 ### Eklendi
