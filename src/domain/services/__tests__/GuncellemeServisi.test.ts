@@ -63,7 +63,7 @@ jest.mock('../PlayStoreGuncellemeModulu', () => ({
     esnekGuncellemeBaslat: jest.fn(),
     guncellemeYuklemeyiTamamla: jest.fn(),
     installDurumDinle: jest.fn().mockReturnValue(() => {}),
-    indirilenGuncellemeVarMiKontrolEt: jest.fn(),
+    bekleyenGuncellemeVarMi: jest.fn().mockResolvedValue(false),
   },
 }));
 

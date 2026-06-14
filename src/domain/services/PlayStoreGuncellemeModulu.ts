@@ -117,18 +117,24 @@ export const PlayStoreModulu = {
   },
 
   /**
-   * Arka planda indirilmiş bekleyen bir güncelleme varsa otomatik olarak tamamlar.
+   * Arka planda indirilmiş, kurulmayı bekleyen bir güncelleme var mı kontrol eder.
    * Uygulama öne geldiğinde çağrılır (App.tsx AppState handler).
+   *
+   * ISSUE #91: Bu metot ARTIK OTOMATİK completeUpdate ÇAĞIRMAZ. completeUpdate
+   * uygulamayı aniden yeniden başlatıp kullanıcıyı ekranı görmeden dışarı atıyordu
+   * (ve birden çok yerden tetiklenip açıl-kapan döngüsüne yol açıyordu). Bunun
+   * yerine yalnızca durumu döner; çağıran (App.tsx) kullanıcıya "Yeniden başlat"
+   * onayı gösterir ve completeUpdate yalnızca onayla çağrılır.
+   *
+   * @returns Bekleyen (DOWNLOADED) güncelleme varsa true.
    */
-  async indirilenGuncellemeVarMiKontrolEt(): Promise<void> {
-    if (Platform.OS !== 'android' || !PlayStoreGuncelleme) return;
+  async bekleyenGuncellemeVarMi(): Promise<boolean> {
+    if (Platform.OS !== 'android' || !PlayStoreGuncelleme) return false;
     try {
-      const varMi: boolean = await PlayStoreGuncelleme.indirilenGuncellemeVarMi();
-      if (varMi) {
-        await PlayStoreGuncelleme.guncellemeYuklemeyiTamamla();
-      }
+      return await PlayStoreGuncelleme.indirilenGuncellemeVarMi();
     } catch {
       // Sessizce yoksay — bu kontrol kritik değil
+      return false;
     }
   },
 };

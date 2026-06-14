@@ -29,7 +29,7 @@ import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSl
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
 import { namazlariYukle } from './src/presentation/store/namazSlice';
 import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
-import { guncellemeKontrolEt } from './src/presentation/store/guncellemeSlice';
+import { guncellemeKontrolEt, indirmeTamamlandiIsaretle } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { WidgetServisi } from './src/domain/services/WidgetServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -271,9 +271,18 @@ const AppIcerik: React.FC = () => {
         konumTakibiniSenkronizeEt();
         // Guncelleme kontrolu (onbellek gecerlilik surecine uyar)
         store.dispatch(guncellemeKontrolEt(false));
-        // Play Store: arka planda indirilen bekleyen guncelleme var mi kontrol et
+        // Play Store: arka planda indirilen bekleyen guncelleme varsa kullaniciya
+        // "Yeniden baslat" onayi gosterilsin diye state'e isaretle.
+        // ISSUE #91: burada OTOMATIK completeUpdate YOK (onaysiz ani restart +
+        // cift tetikle acil-kapan dongusunu onler).
         if (Platform.OS === 'android') {
-          PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt();
+          PlayStoreModulu.bekleyenGuncellemeVarMi()
+            .then((varMi) => {
+              if (varMi) {
+                store.dispatch(indirmeTamamlandiIsaretle());
+              }
+            })
+            .catch(() => {});
         }
       }
     });
