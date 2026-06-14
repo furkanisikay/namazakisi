@@ -35,6 +35,15 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
 }) => {
     const renkler = useRenkler();
 
+    // Modal "fade" ile kapanırken parent namazAdi'yı boşaltır; son geçerli adı
+    // önbelleğe alıp animasyon boyunca göstererek metin kaymasını (flicker) önle.
+    const [sonNamazAdi, setSonNamazAdi] = React.useState(namazAdi || 'Namaz');
+    React.useEffect(() => {
+        if (gorunur && namazAdi) {
+            setSonNamazAdi(namazAdi);
+        }
+    }, [gorunur, namazAdi]);
+
     // New Architecture'da Modal onRequestClose güvenilir değil → BackHandler ile garanti
     useDonanimGeriTusu(gorunur, onVazgec);
 
@@ -70,7 +79,7 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                                 Kerahat Vakti
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {namazAdi} namazını işaretliyorsunuz
+                                {sonNamazAdi} namazını işaretliyorsunuz
                             </Text>
                         </View>
                     </View>
@@ -89,7 +98,7 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
 
                     {/* Onay sorusu — kibar "siz" dili */}
                     <Text className="text-sm leading-5 mb-5" style={{ color: renkler.metin }}>
-                        Kerahat vakti olsa da {namazAdi} namazınızı kıldığınız için işaretleyebilirsiniz.
+                        Kerahat vakti olsa da {sonNamazAdi} namazınızı kıldığınız için işaretleyebilirsiniz.
                         Yine de kılındı olarak işaretlemek istiyor musunuz?
                     </Text>
 
