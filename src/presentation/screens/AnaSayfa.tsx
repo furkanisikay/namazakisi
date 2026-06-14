@@ -15,6 +15,7 @@ import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
+import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
@@ -61,6 +62,9 @@ export const AnaSayfa: React.FC = () => {
     mekruhMu: false,
     aciklama: null,
   });
+  // Kerahat vaktinde işaretleme öncesi kibar onay modalı için bekleyen namaz (issue #82).
+  // null değilse modal görünür; onaylanırsa bu namaz "kılındı" işaretlenir.
+  const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
   const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
@@ -352,8 +356,8 @@ export const AnaSayfa: React.FC = () => {
     }
   }, [gunlukNamazlar, tumNamazlarTamamlandiFeedback]);
 
-  // Namaz İşlemleri
-  const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
+  // Namaz İşlemleri — gerçek işaretleme (kerahat onayından geçtikten sonra çağrılır)
+  const namazIsaretle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
     // Puanlama + seri: gunlukNamazlar degisince yukaridaki useEffect (seriKontrolet -> reconcile)
     // SIRALI ve TEK-YAZICI olarak otomatik kosar; burada ayrica dispatch GEREKMEZ (yaris onlenir).
@@ -397,6 +401,28 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
+  // Namaz toggle giriş noktası — kerahat (mekruh) vaktinde işaretlemeyi ENGELLEMEZ,
+  // önce kibar bir onay modalı gösterir (issue #82). Kullanıcı onaylarsa işaretlenir.
+  // Sadece AKTİF günde + "kılındı" yönünde işaretlerken uyarı çıkar; geçmiş gün ve
+  // "kılmadım" (geri alma) doğrudan geçer.
+  const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
+    if (tamamlandi && mekruhBilgi.mekruhMu && mevcutTarih === aktifGun) {
+      setKerahatOnayBekleyen(namazAdi);
+      return;
+    }
+    await namazIsaretle(namazAdi, tamamlandi);
+  };
+
+  // Kerahat onay modalı sonucu: onaylanırsa bekleyen namazı işaretle, her durumda kapat.
+  const kerahatOnayla = () => {
+    const bekleyen = kerahatOnayBekleyen;
+    setKerahatOnayBekleyen(null);
+    if (bekleyen) {
+      namazIsaretle(bekleyen, true);
+    }
+  };
+  const kerahatVazgec = () => setKerahatOnayBekleyen(null);
+
   // VakitAkisi (React.memo) icin referans-kararli onVakitTikla:
   // ref ile en guncel namazToggle'i cagirir, her render'da yeni fonksiyon olusmaz.
   const namazToggleRef = useRef(namazToggle);
@@ -439,14 +465,14 @@ export const AnaSayfa: React.FC = () => {
       // Eğer vakit 'Güneş' ise (şuruk/istiwa kerahat vakti), kullanıcıya bir sonraki vakit olan 'Öğle'yi gösteriyoruz
       // Ancak buton 'Vakit Girmedi' şeklinde pasif olacak
       if (vakitBilgisi.vakit === 'gunes') {
+        // Güneş (şuruk/istiwa) vaktinde henüz Öğle vakti GİRMEDİĞİ için buton "Vakit Girmedi"
+        // olarak kilitli kalır (bu bir kerahat engeli değil, vaktin girmemiş olmasıdır).
         suankiVakitAdi = NamazAdi.Ogle;
         kilitli = true;
       } else {
+        // Vakti girmiş namazlarda kerahat (gurub vb.) işaretlemeyi ENGELLEMEZ (issue #82):
+        // buton açık kalır; işaretlemeden önce kibar onay modalı gösterilir (kerahatOnayBekleyen).
         suankiVakitAdi = servisToNamazAdi[vakitBilgisi.vakit] || "Sabah";
-        // Gurub kerahat vaktinde (güneş batış öncesi ~20 dk) butonu kilitle
-        if (mekruhBilgi.mekruhMu) {
-          kilitli = true;
-        }
       }
 
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
@@ -654,6 +680,15 @@ export const AnaSayfa: React.FC = () => {
         />
       )}
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
+
+      {/* Kerahat (mekruh) vaktinde işaretleme öncesi kibar onay (issue #82) */}
+      <KerahatOnayModal
+        gorunur={kerahatOnayBekleyen !== null}
+        aciklama={mekruhBilgi.aciklama}
+        namazAdi={kerahatOnayBekleyen ?? ''}
+        onOnayla={kerahatOnayla}
+        onVazgec={kerahatVazgec}
+      />
 
       <SeriKartiModal
         gorunur={seriModalGorunur}
