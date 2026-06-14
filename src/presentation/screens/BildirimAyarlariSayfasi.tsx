@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { sayacBaslangicEsikDkHesapla } from '../../core/utils/vakitSayacYardimcisi';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -166,15 +167,6 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     dispatch(seriAyarlariniGuncelle({ ayarlar: { bildirimDakikasi: dakika } }));
   };
 
-  const getBaslangicEsikDk = (seviye: number, state: any) => {
-    switch (seviye) {
-      case 2: return state.esikler.seviye2;
-      case 3: return state.esikler.seviye3;
-      case 4: return state.esikler.seviye4;
-      default: return state.esikler.seviye1;
-    }
-  };
-
   const handleSayacToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
     dispatch(vakitSayacAyariniGuncelle({ aktif: yeniDeger }));
@@ -188,7 +180,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
+      baslangicEsikDk: sayacBaslangicEsikDkHesapla(seviye, guncelMuhafizState),
+      muhafizAktif: guncelMuhafizState.aktif,
     });
   };
 
@@ -204,7 +197,8 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: sayacAyarlari.aktif,
       koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
+      baslangicEsikDk: sayacBaslangicEsikDkHesapla(seviye, guncelMuhafizState),
+      muhafizAktif: guncelMuhafizState.aktif,
     });
   };
 

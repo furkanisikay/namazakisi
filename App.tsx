@@ -23,6 +23,7 @@ import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildiri
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
+import { sayacBaslangicEsikDkHesapla } from './src/core/utils/vakitSayacYardimcisi';
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
@@ -191,7 +192,11 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
-        baslangicEsikDk: muhafizAyarlari.esikler.seviye1,
+        baslangicEsikDk: sayacBaslangicEsikDkHesapla(
+          sayacState.ayarlar.sayacBaslangicSeviyesi,
+          muhafizAyarlari
+        ),
+        muhafizAktif: muhafizAyarlari.aktif,
       }),
       IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: iftarState.ayarlar.aktif,
