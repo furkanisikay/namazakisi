@@ -17,8 +17,9 @@ import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
-import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { sayacBaslangicEsikDkHesapla } from '../../core/utils/vakitSayacYardimcisi';
+import { aktifGunuHesapla, gelecekGuneGecisMi } from '../../core/utils/gunNavigasyonYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
@@ -94,6 +95,10 @@ export const AnaSayfa: React.FC = () => {
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // Programatik pager geçişi (açılış snap'i / tarih seçici / aktif güne dönüş) sırasında
+  // onPageSelected'ın yanlışlıkla "gelecek gün" toast'ı + geri-snap yapmasını önleyen bayrak.
+  // Yalnızca kullanıcı ELLE gelecek bir güne kaydırınca toast çıkmalı (#13 + gece yarısı bug).
+  const programatikGecisRef = useRef(false);
 
   // Servis vaktini NamazAdi enum'ına çeviren map
   const servisToNamazAdi: Record<string, NamazAdi> = useMemo(() => ({
@@ -112,8 +117,11 @@ export const AnaSayfa: React.FC = () => {
   }, []);
 
   const tarihiSayfaIndeksineCevir = useCallback((tarih: string): number => {
-    const bugun = new Date(bugunuAl());
-    const hedefTarih = new Date(tarih);
+    // YEREL-gün aritmetiği (ISOTarihiDateNesnesiNeCevir) ile hesapla — sayfaIndeksiniTariheCevir
+    // (gunEkle) ile TUTARLI olmalı. Önceden `new Date(isoString)` UTC gece yarısı üretip
+    // negatif timezone'larda ±1 gün kayma riski taşıyordu (#13 kırılganlık kaynağı).
+    const bugun = ISOTarihiDateNesnesiNeCevir(bugunuAl());
+    const hedefTarih = ISOTarihiDateNesnesiNeCevir(tarih);
     const gunFarki = Math.round((hedefTarih.getTime() - bugun.getTime()) / (1000 * 60 * 60 * 24));
     return BASLANGIC_SAYFA_INDEKSI + gunFarki;
   }, []);
@@ -152,33 +160,37 @@ export const AnaSayfa: React.FC = () => {
   }, [gunlukNamazlar, konumAyarlari.koordinatlar, mevcutTarih]);
 
 
-  // Aktif Gün Hesaplama (İmsak öncesi ise önceki gün)
+  // Aktif Gün Hesaplama (İmsak öncesi ise önceki gün — yatsı süreci devam ediyor).
+  // Karar mantığı saf yardımcıda (gunNavigasyonYardimcisi.aktifGunuHesapla) — adhan'a
+  // bağımlı olmadan test edilebilir; AnaSayfa yalnız imsak (fajr) zamanını besler.
   const aktifGun = useMemo(() => {
-    let tarih = bugunuAl();
+    const bugun = bugunuAl();
+    const now = new Date();
+    let imsakZamani: Date | null = null;
 
     if (konumAyarlari.koordinatlar) {
-      const now = new Date();
       const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
       const params = CalculationMethod.Turkey();
       const prayerTimes = new PrayerTimes(coordinates, now, params);
-
-      // Eğer şu an imsak vaktinden önceyse, aktif gün dündür (Yatsı süreci devam ediyor)
-      if (now < prayerTimes.fajr) {
-        tarih = gunEkle(tarih, -1);
-      }
+      imsakZamani = prayerTimes.fajr;
     }
-    return tarih;
+
+    return aktifGunuHesapla(bugun, now, imsakZamani, gunEkle(bugun, -1));
   }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
   // Initial Load - Aktif güne git
   useEffect(() => {
     namazlariGetir(aktifGun);
-    // Eğer başlangıçta aktif gün bugünden farklıysa (gece yarısı durumu), o güne git
-    if (aktifGun !== mevcutTarih && mevcutSayfaIndeksi === BASLANGIC_SAYFA_INDEKSI) {
+    // Aktif gün gösterilen günden farklıysa (gece yarısı: yatsı sürerken aktif gün dün)
+    // doğrudan aktif güne yerleş. setPageWithoutAnimation ile GÖRÜNÜR zıplama olmaz; ayrıca
+    // programatikGecisRef set edilerek onPageSelected'ın "gelecek gün" toast'ı bastırılır
+    // (pager initialPage=bugün iken aktif gün dün olunca yanlış toast çıkıyordu).
+    if (aktifGun !== mevcutTarih) {
       const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
+      programatikGecisRef.current = true;
       dispatch(tarihiDegistir(aktifGun));
       setMevcutSayfaIndeksi(yeniIndeks);
-      setTimeout(() => pagerRef.current?.setPage(yeniIndeks), 100);
+      pagerRef.current?.setPageWithoutAnimation(yeniIndeks);
     }
 
     dispatch(seriVerileriniYukle());
@@ -641,14 +653,21 @@ export const AnaSayfa: React.FC = () => {
           const yeniIndeks = e.nativeEvent.position;
           const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
 
-          // Gelecek gunlere kayma engeli
-          if (yeniTarih > aktifGun) {
-            // Haptic feedback ve toast mesaji
+          // Programatik geçiş (açılış snap'i / tarih seçici / aktif güne dönüş) ise toast
+          // ve geri-snap YAPMA — yalnız state'i senkronize et. Bayrağı tüket.
+          const programatik = programatikGecisRef.current;
+          programatikGecisRef.current = false;
+
+          // Gelecek günlere kayma engeli — SADECE kullanıcı ELLE gelecek bir güne kaydırınca.
+          // Programatik geçişler (ör. gece yarısı pager initialPage=bugün iken aktif gün dün)
+          // yanlışlıkla "gelecek gün" sayılıp toast tetiklemesin (#13 + gece yarısı bug).
+          if (!programatik && gelecekGuneGecisMi(yeniTarih, aktifGun)) {
             HaptikServisi.uyariTitresimi();
             if (Platform.OS === 'android') {
               ToastAndroid.show('Gelecek gunlere gidemezsiniz', ToastAndroid.SHORT);
             }
             // Aktif gune geri don
+            programatikGecisRef.current = true;
             pagerRef.current?.setPage(tarihiSayfaIndeksineCevir(aktifGun));
             return;
           }
@@ -683,15 +702,22 @@ export const AnaSayfa: React.FC = () => {
               const tarih = tarihiISOFormatinaCevir(date);
 
               // Gelecek tarih secilmisse engelle
-              if (tarih > aktifGun) {
+              if (gelecekGuneGecisMi(tarih, aktifGun)) {
                 return;
               }
 
+              // Programatik geçiş: setPage'in tetikleyeceği onPageSelected'ın seçilen günü
+              // "gelecek gün" sanıp aktif güne geri-snap etmesini önle (#13 kök neden).
+              // Bayrak yalnız GERÇEKTEN farklı sayfaya geçişte set edilir; aynı sayfaya
+              // setPage event üretmez ve bayrak asılı kalıp sonraki kaydırmayı bozardı.
               const indeks = tarihiSayfaIndeksineCevir(tarih);
               dispatch(tarihiDegistir(tarih));
               namazlariGetir(tarih);
-              pagerRef.current?.setPage(indeks);
-              setMevcutSayfaIndeksi(indeks);
+              if (indeks !== mevcutSayfaIndeksi) {
+                programatikGecisRef.current = true;
+                pagerRef.current?.setPage(indeks);
+                setMevcutSayfaIndeksi(indeks);
+              }
             }
           }}
         />
