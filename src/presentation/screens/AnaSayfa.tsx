@@ -390,6 +390,7 @@ export const AnaSayfa: React.FC = () => {
               aktif: true,
               koordinatlar: konumState.koordinatlar,
               baslangicEsikDk: muhafizState.esikler.seviye1,
+              muhafizAktif: muhafizState.aktif,
             });
           }
         } catch (e) { }

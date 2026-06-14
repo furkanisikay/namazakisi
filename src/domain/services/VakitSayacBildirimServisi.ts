@@ -28,6 +28,13 @@ interface SayacAyarlari {
   aktif: boolean;
   koordinatlar: { lat: number; lng: number };
   baslangicEsikDk: number; // Dakika (muhafiz seviye 1 başlangıcı - ilk bildirimle eş zamanlı)
+  /**
+   * Namaz muhafızı aktif mi? Aktifse vakit sayacı bildirimi planlanmaz:
+   * sayaç tam olarak muhafız seviye-1 eşiğinde (baslangicEsikDk) başladığından
+   * muhafızın ilk-seviye hatırlatmasıyla EŞ ZAMANLI çakışan gereksiz bir
+   * "çıkmak üzere" bildirimi üretir. Muhafız kapalıyken sayaç normal çalışır.
+   */
+  muhafizAktif?: boolean;
 }
 
 export class VakitSayacBildirimServisi {
@@ -62,6 +69,14 @@ export class VakitSayacBildirimServisi {
     // Aktif değilse bitir
     if (!ayarlar.aktif) {
       Logger.info('VakitSayac', 'Sayaç devre dışı');
+      return;
+    }
+
+    // Muhafız aktifse sayaç bildirimi planlama: sayaç muhafız seviye-1 eşiğinde
+    // başladığından muhafızın ilk hatırlatmasıyla eş zamanlı çakışan gereksiz
+    // bir "çıkmak üzere" bildirimi olur. Yalnız temizlik yapıp çık (#90).
+    if (ayarlar.muhafizAktif) {
+      Logger.info('VakitSayac', 'Muhafız aktif, sayaç bildirimi çakışmayı önlemek için atlanıyor');
       return;
     }
 

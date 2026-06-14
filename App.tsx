@@ -192,6 +192,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
         baslangicEsikDk: muhafizAyarlari.esikler.seviye1,
+        muhafizAktif: muhafizAyarlari.aktif,
       }),
       IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: iftarState.ayarlar.aktif,

@@ -329,4 +329,59 @@ describe('VakitSayacBildirimServisi', () => {
     expect(ogleBitis).toBeDefined();
     expect(ogleBitis![1].timestamp).toBe(mockPrayerTimes.asr.getTime());
   });
+
+  it('muhafiz aktif: cakismayi onlemek icin sayac bildirimi PLANLANMAMALI (yalniz temizlik) (#90)', async () => {
+    // Saati ogle oncesine sabitle ki muhafiz olmasaydi normalde planlanacak adaylar olsun
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+      muhafizAktif: true,
+    });
+
+    // Once temizleme calismali (gosterilen bildirimler taranir) ...
+    expect(notifee.getDisplayedNotifications).toHaveBeenCalled();
+    // ... ama muhafiz acikken kanal acilmaz ve YENI hicbir bildirim olusturulmaz
+    expect(notifee.createChannel).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+  });
+
+  it('muhafiz kapali: sayac bildirimi normal planlanmali (cakisma yokken bastirma yapilmamali) (#90)', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+      muhafizAktif: false,
+    });
+
+    // Muhafiz kapaliyken sayac normal calismali: kanal acilir ve ogle icin trigger kurulur
+    expect(notifee.createChannel).toHaveBeenCalled();
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+    expect(createIds).toContain(ogleId);
+  });
+
+  it('muhafizAktif belirtilmemis: geriye uyumlu sekilde sayac normal planlanmali', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    });
+
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+    expect(createIds).toContain(ogleId);
+  });
 });

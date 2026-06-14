@@ -189,6 +189,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
       baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
+      muhafizAktif: guncelMuhafizState.aktif,
     });
   };
 
@@ -205,6 +206,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
       aktif: sayacAyarlari.aktif,
       koordinatlar: konumState.koordinatlar,
       baslangicEsikDk: getBaslangicEsikDk(seviye, guncelMuhafizState),
+      muhafizAktif: guncelMuhafizState.aktif,
     });
   };
 
