@@ -41,6 +41,25 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'yerel-yedekleme',
+        surum: '0.24.0',
+        tarih: '2026-06-14',
+        baslik: 'Yedekleme & Aktarım',
+        aciklama:
+            'Verilerinizi şifreli bir dosyaya yedekleyin ve dilediğiniz zaman geri yükleyin.',
+        detayAciklama:
+            'Tüm namaz kayıtlarınızı ve ayarlarınızı tek dokunuşla şifreli bir yedek dosyasına alabilirsiniz. Yeni bir cihaza geçtiğinizde akıllı sihirbaz, dosyanızı güvenle geri yükler ve mevcut kayıtlarınızla çakışan veriler korunur.',
+        ikon: 'cloud-download-alt',
+        hedefSayfa: 'YedeklemeAktarim',
+        ctaEtiketi: 'Hemen yedekleyin',
+        kartGoster: true,
+        detaylar: [
+            'Tek dokunuşla şifreli yedek oluşturun',
+            'Akıllı sihirbazla güvenle geri yükleyin',
+            'Çakışan kayıtlarınız korunur — veri kaybı olmaz',
+        ],
+    },
+    {
         id: 'takvim-entegrasyonu',
         surum: '0.22.0',
         tarih: '2026-06-05',

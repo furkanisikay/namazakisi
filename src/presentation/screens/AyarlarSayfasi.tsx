@@ -43,6 +43,7 @@ const MENU_IKONLARI: Record<string, IkonTipi> = {
   ramazan: { name: 'moon', family: 'fa5', solid: true },
   hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
   takvim: { name: 'calendar-alt', family: 'fa5', solid: true },
+  yedekleme: { name: 'cloud-download-alt', family: 'fa5', solid: true },
   nelerYeni: { name: 'gift', family: 'fa5', solid: true },
   titresim: { name: 'vibration', family: 'material' },
   ses: { name: 'volume-up', family: 'fa5', solid: true },
@@ -283,6 +284,12 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
       aciklama: 'Namaz vakitlerini cihaz takviminize ekle',
       ikonAdi: 'takvim',
       sayfa: 'TakvimAyarlari',
+    },
+    {
+      baslik: 'Yedekleme & Aktarım',
+      aciklama: 'Verilerinizi yedekleyin ve başka cihaza aktarın',
+      ikonAdi: 'yedekleme',
+      sayfa: 'YedeklemeAktarim',
     },
     {
       baslik: 'Neler Yeni',
