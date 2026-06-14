@@ -20,6 +20,14 @@ interface GuncellemeState {
   bilgi: GuncellemeBilgisi | null;
   /** Kullanici bildirimi kapatti mi */
   bildirimiKapatti: boolean;
+  /**
+   * Play Store esnek guncelleme indirilip kurulmaya HAZIR mi.
+   *
+   * true oldugunda kullaniciya "Yeniden baslat" onayi gosterilir; uygulama
+   * ONAY OLMADAN otomatik yeniden baslatilmaz (issue #91: onaysiz completeUpdate
+   * kullaniciyi ekrani gormeden disari atiyordu).
+   */
+  indirmeTamamlandi: boolean;
   /** Hata mesaji */
   hata: string | null;
 }
@@ -29,6 +37,7 @@ const baslangicDurumu: GuncellemeState = {
   guncellemeMevcut: false,
   bilgi: null,
   bildirimiKapatti: false,
+  indirmeTamamlandi: false,
   hata: null,
 };
 
@@ -69,6 +78,17 @@ const guncellemeSlice = createSlice({
     bildirimiSifirla(state) {
       state.bildirimiKapatti = false;
     },
+    /**
+     * Play Store esnek guncellemenin indirilip kurulmaya hazir oldugunu isaretler.
+     * UI bunu gorunce "Yeniden baslat" onayini gosterir (otomatik restart YOK).
+     */
+    indirmeTamamlandiIsaretle(state) {
+      state.indirmeTamamlandi = true;
+    },
+    /** Indirme-tamamlandi onay durumunu sifirlar (ornegin onay UI'i kapatilinca). */
+    indirmeDurumuSifirla(state) {
+      state.indirmeTamamlandi = false;
+    },
   },
   extraReducers: (builder) => {
     // Guncelleme kontrol
@@ -106,5 +126,10 @@ const guncellemeSlice = createSlice({
   },
 });
 
-export const { bildirimiKapat, bildirimiSifirla } = guncellemeSlice.actions;
+export const {
+  bildirimiKapat,
+  bildirimiSifirla,
+  indirmeTamamlandiIsaretle,
+  indirmeDurumuSifirla,
+} = guncellemeSlice.actions;
 export default guncellemeSlice.reducer;
