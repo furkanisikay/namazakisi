@@ -91,7 +91,7 @@ jobs:
         run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: 📥 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🔢 Versiyon bilgisi
         id: version
@@ -104,7 +104,7 @@ jobs:
       # Ortam Hazırlığı
       # ==========================================
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -114,7 +114,7 @@ jobs:
 
       - name: 💾 Cache node_modules
         id: cache-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
@@ -124,7 +124,7 @@ jobs:
         run: npm ci
 
       - name: 🚀 Setup Expo & EAS
-        uses: expo/expo-github-action@c7b66a9c327a43a8fa7c0158e7f30d6040d2481e # v8
+        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # v9
         with:
           eas-version: 20.1.0
           token: ${{ secrets.EXPO_TOKEN }}
@@ -192,7 +192,7 @@ jobs:
       - name: 📱 APK Build Tetikle (Gradle)
         if: inputs.build_apk == true
         id: apk_build
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

@@ -65,14 +65,14 @@ jobs:
         run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: 📥 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: ${{ inputs.build_type == 'release' && '0' || '1' }}
           fetch-tags: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -82,25 +82,25 @@ jobs:
 
       - name: 💾 Cache node_modules
         id: cache-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
 
       - name: ☕ Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: 🐘 Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: wrapper
           cache-read-only: false
 
       - name: 🤖 Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
@@ -127,7 +127,7 @@ jobs:
       - name: 🏷️ Semantic Versiyon Hesapla (Release)
         if: inputs.build_type == 'release'
         id: version
-        uses: paulhatch/semantic-version@a8f8f59fd7f0625188492e945240f12d7ad2dca3 # v5.4.0
+        uses: paulhatch/semantic-version@9f72830310d5ed81233b641ee59253644cd8a8fc # v6.0.2
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
@@ -451,7 +451,7 @@ jobs:
       # ==========================================
       - name: 📤 APK Artifact (Debug)
         if: inputs.build_type == 'debug'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.rename.outputs.apk_name }}
           path: ${{ steps.rename.outputs.apk_name }}
@@ -474,7 +474,7 @@ jobs:
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
           tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
@@ -503,7 +503,7 @@ jobs:
       # Boylece dispatch bir sorun yasarsa (orn. izin/agi) release yine de yayinda kalir.
       - name: 📦 EAS Build Tetikle — Internal Testing
         if: inputs.build_type == 'release' && success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
