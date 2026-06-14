@@ -917,6 +917,43 @@ describe('GuncellemeBildirimi', () => {
     act(() => { tree!.unmount(); });
   });
 
+  it('Play Store: guncellemeMevcut=false/bilgi=null olsa bile indirmeTamamlandi ise kart gosterilir (#104 review)', async () => {
+    // Senaryo: indirme DOWNLOADED'a gecince native updateAvailability artik
+    // UPDATE_AVAILABLE donmez → guncellemeKontrolEt guncellemeMevcut=false, bilgi=null
+    // yazar. Indirilen guncelleme yine de kurulabilmeli (onay karti gosterilmeli).
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: false,
+        bilgi: null,
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // Kart render olmali (null DEGIL) ve "Yeniden Başlat" butonu calismali.
+    expect(tree!.toJSON()).not.toBeNull();
+    const buton = butonBul(tree!, 'Yeniden Başlat');
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+
+    act(() => { tree!.unmount(); });
+  });
+
   it('Play Store: "Yeniden Başlat" kartindaki kapatma (X) butonu indirme durumunu sifirlar', async () => {
     const store = storeOlustur({
       guncelleme: {

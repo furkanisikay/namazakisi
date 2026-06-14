@@ -65,8 +65,12 @@ export const GuncellemeBildirimi: React.FC = () => {
   // "Yeniden baslat" sorulur; onay UI'i ana guncelleme banner'i kapatilmis olsa
   // bile gosterilir (kullanici "Guncelle"ye basinca banner kapanir, indirme arka
   // planda devam eder, sonra bu onay cikar).
-  const yenidenBaslatGoster =
-    guncellemeMevcut && bilgi?.kaynak === 'playstore' && indirmeTamamlandi;
+  // indirmeTamamlandi YALNIZCA Play Store esnek-güncelleme akışında set edilir
+  // (install dinleyici + bekleyenGuncellemeVarMi) → kaynak zaten playstore.
+  // guncellemeMevcut/bilgi'ye BAĞLAMA: indirme DOWNLOADED'a geçince native
+  // updateAvailability artık UPDATE_AVAILABLE dönmez → guncellemeKontrolEt
+  // bilgi'yi null'a çekebilir; o durumda da onay kartı gösterilmeli (#104 review).
+  const yenidenBaslatGoster = indirmeTamamlandi;
 
   const gosterilsinMi =
     (guncellemeMevcut && bilgi && !bildirimiKapatti) || yenidenBaslatGoster;
@@ -183,11 +187,11 @@ export const GuncellemeBildirimi: React.FC = () => {
   }, [bilgi, dispatch]);
 
   // Gosterilmeyecekse bos render
-  if (!guncellemeMevcut || !bilgi) {
+  if ((!guncellemeMevcut || !bilgi) && !yenidenBaslatGoster) {
     return null;
   }
 
-  const formatlananTarih = yayinTarihiniFormatla(bilgi.yayinTarihi);
+  const formatlananTarih = bilgi ? yayinTarihiniFormatla(bilgi.yayinTarihi) : '';
 
   // Indirme tamamlandi: kullaniciya "Yeniden baslat" ONAY kartini goster
   // (otomatik restart YOK — issue #91).
@@ -300,6 +304,11 @@ export const GuncellemeBildirimi: React.FC = () => {
         </View>
       </Animated.View>
     );
+  }
+
+  // Buradan sonrası normal güncelleme banner'ı — bilgi kesin dolu (yukarıda guard'landı).
+  if (!bilgi) {
+    return null;
   }
 
   return (
