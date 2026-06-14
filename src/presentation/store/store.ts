@@ -16,6 +16,7 @@ import guncellemeReducer from './guncellemeSlice';
 import kazaReducer from './kazaSlice';
 import takvimReducer from './takvimSlice';
 import ozelliklerReducer from './ozelliklerSlice';
+import yedeklemeReducer from './yedeklemeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     kaza: kazaReducer,
     takvim: takvimReducer,
     ozellikler: ozelliklerReducer,
+    yedekleme: yedeklemeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
