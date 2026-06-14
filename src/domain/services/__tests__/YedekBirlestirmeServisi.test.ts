@@ -132,7 +132,7 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     kilinanVakitler: { g1: ['sabah'] },
     bonusPuan: 100,
     rozetler: [{ id: 'a' }, { id: 'b' }],
-    seri: { mevcutSeri: 9 },
+    seri: { mevcutSeri: 9, enUzunSeri: 10 },
     seviye: { seviye: 5 },
     istatistik: { toplamKilinan: 999, mukemmelGun: 50, toparlanma: 7 },
     ayarlar: { ...bosAyarlar, konum: { sehir: 'Cihazınız' } },
@@ -142,6 +142,7 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     kilinanVakitler: { g1: ['ogle'], g2: ['yatsi'] },
     bonusPuan: 40,
     rozetler: [{ id: 'b' }, { id: 'c' }],
+    seri: { mevcutSeri: 4, enUzunSeri: 30 },
     kaza: { toplamTamamlanan: 3 },
     ayarlar: { ...bosAyarlar, konum: { sehir: 'Gelen' } },
   });
@@ -167,12 +168,15 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     expect(rozetler.map((r) => r.id).sort()).toEqual(['a', 'b', 'c']);
   });
 
-  it('seviye/istatistik/seri anahtarları YAZILMAZ (reconcile türetir)', () => {
+  it('seviye/istatistik anahtarları YAZILMAZ (reconcile türetir)', () => {
     expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SEVIYE_DURUMU);
-    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SERI_DURUMU);
     expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ);
     expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI);
     expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI);
+  });
+
+  it('seri akilli: enUzunSeri max korunur (rekor kaybolmaz); güncel durum reconcile\'a bırakılır', () => {
+    expect(plan[DEPOLAMA_ANAHTARLARI.SERI_DURUMU]).toEqual({ mevcutSeri: 9, enUzunSeri: 30 });
   });
 
   it('ayarlar akilli: hiçbir ayar anahtarı yazılmaz (cihaz korunur)', () => {
@@ -183,6 +187,22 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
 
   it('kaza akilli: daha ilerlemiş anlık görüntü gelen ise KAZA_DURUMU=gelen yazılır', () => {
     expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_DURUMU]).toEqual({ toplamTamamlanan: 3 });
+  });
+});
+
+describe('YedekBirlestirmeServisi — seri birleştirme kenar durumları (akilli)', () => {
+  it('yeni/boş cihaz (mevcut seri yok) → yedeğin serisi tümden geri yüklenir', () => {
+    const mevcut = payloadKur({ seri: null });
+    const gelen = payloadKur({ seri: { mevcutSeri: 12, enUzunSeri: 45 } });
+    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('akilli'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.SERI_DURUMU]).toEqual({ mevcutSeri: 12, enUzunSeri: 45 });
+  });
+
+  it('yedekte seri yoksa SERI_DURUMU yazılmaz (mevcut korunur)', () => {
+    const mevcut = payloadKur({ seri: { mevcutSeri: 3, enUzunSeri: 8 } });
+    const gelen = payloadKur({ seri: null });
+    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('akilli'));
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SERI_DURUMU);
   });
 });
 

@@ -197,7 +197,28 @@ const namazPlaniEkle = (
   }
 };
 
-/** Puan kategorisini plana ekler (bonus/rozet; uzerineYaz'da ek olarak seviye/istatistik/seri). */
+/** unknown'dan güvenli sayı okur (sayı değilse 0). */
+const sayiAl = (deger: unknown): number =>
+  typeof deger === 'number' && Number.isFinite(deger) ? deger : 0;
+
+/**
+ * Akıllı modda seri (streak) durumunu birleştirir. `enUzunSeri` (rekor) yol-bağımlıdır;
+ * reconcile onu kayıttan TÜRETMEZ → birleştirmezsek boş cihaza akıllı içe-aktarmada
+ * yedekteki rekor kaybolur. Kural:
+ * - Yedekte seri yoksa → undefined (yazma, mevcut korunur).
+ * - Mevcut seri yoksa (yeni/boş cihaz) → yedeğin serisini tümden geri yükle.
+ * - İkisi de varsa → mevcut güncel durum korunur (reconcile sonradan kayıttan yeniden
+ *   hesaplar), yalnız `enUzunSeri = max(mevcut, gelen)` alınır (rekor kaybolmaz).
+ */
+const seriBirlestir = (mevcut: unknown, gelen: unknown): unknown | undefined => {
+  if (gelen === null || gelen === undefined || typeof gelen !== 'object') return undefined;
+  if (mevcut === null || mevcut === undefined || typeof mevcut !== 'object') return gelen;
+  const m = mevcut as Record<string, unknown>;
+  const g = gelen as Record<string, unknown>;
+  return { ...m, enUzunSeri: Math.max(sayiAl(m.enUzunSeri), sayiAl(g.enUzunSeri)) };
+};
+
+/** Puan kategorisini plana ekler (bonus/rozet/seri; uzerineYaz'da ek olarak seviye/istatistik). */
 const puanPlaniEkle = (
   plan: YazimPlani,
   strateji: KategoriStratejisi,
@@ -213,7 +234,12 @@ const puanPlaniEkle = (
       mevcut.rozetler,
       gelen.rozetler
     );
-    // seviye/istatistik/seri YAZILMAZ — Task 7'de reconcile birleşmiş kayıtlardan türetir.
+    // Seri: enUzunSeri (rekor) reconcile'dan türetilemez → birleştir (yoksa rekor kaybolur).
+    const birlesikSeri = seriBirlestir(mevcut.seri, gelen.seri);
+    if (birlesikSeri !== undefined) {
+      plan[DEPOLAMA_ANAHTARLARI.SERI_DURUMU] = birlesikSeri;
+    }
+    // seviye/istatistik YAZILMAZ — Task 7'de reconcile birleşmiş kayıtlardan türetir.
     return;
   }
 
