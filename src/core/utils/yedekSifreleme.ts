@@ -13,6 +13,16 @@ import nacl from 'tweetnacl';
 import naclUtil from 'tweetnacl-util';
 import * as Crypto from 'expo-crypto';
 
+// React Native (Hermes) ortamında tweetnacl'in güvenli PRNG'si YOKTUR: ne tarayıcı
+// (`self.crypto`) ne de Node (`require('crypto')`) bulunduğundan modül yükünde PRNG
+// kurulamaz ve `nacl.randomBytes` "no PRNG" hatası fırlatır. Bu yüzden cihazda yedek
+// oluşturma (`sifrele` → `nacl.randomBytes`) patlardı; Jest node ortamında PRNG
+// bulunduğundan testler yeşildi. expo-crypto'nun senkron `getRandomBytes`'i (CSPRNG)
+// ile besleyerek bunu kalıcı çözeriz.
+nacl.setPRNG((x, n) => {
+  x.set(Crypto.getRandomBytes(n));
+});
+
 // 32 bayt uygulama anahtarı ("NamazAkisiYedek2026Key!@#$%^&*()")
 const ANAHTAR_BAYTLARI = new Uint8Array([
   0x4e, 0x61, 0x6d, 0x61, 0x7a, 0x41, 0x6b, 0x69, 0x73, 0x69, 0x59, 0x65,

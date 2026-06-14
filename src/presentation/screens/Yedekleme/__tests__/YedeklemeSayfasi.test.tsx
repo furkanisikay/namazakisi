@@ -1,5 +1,4 @@
 import React from 'react';
-import { Alert } from 'react-native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { YedeklemeSayfasi } from '../YedeklemeSayfasi';
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +12,10 @@ jest.mock('../../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../../core/feedback', () => ({ useFeedback: jest.fn() }));
 jest.mock('../../../../domain/services/YedeklemeServisi', () => ({
   yedeginiPaylas: jest.fn(),
+}));
+// BildirimModali donanım geri tuşu hook'unu kullanır → test ortamında pasif geç
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({
+  useDonanimGeriTusu: jest.fn(),
 }));
 jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
@@ -42,6 +45,7 @@ describe('YedeklemeSayfasi', () => {
     sinir: '#cccccc',
     basarili: '#10b981',
     hata: '#ff0000',
+    bilgi: '#2196F3',
   };
 
   const mockFeedback = {
@@ -79,9 +83,8 @@ describe('YedeklemeSayfasi', () => {
     });
   });
 
-  it('yedekleme başarısız olursa hata geri bildirimi ve kibar uyarı gösterilmelidir', async () => {
+  it('yedekleme başarısız olursa hata geri bildirimi ve tema modalı (Alert DEĞİL) gösterilmelidir', async () => {
     (yedeginiPaylas as jest.Mock).mockRejectedValue(new Error('boom'));
-    const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
     // Beklenen Logger.error gürültüsünü test çıktısından bastır.
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -90,9 +93,33 @@ describe('YedeklemeSayfasi', () => {
     await waitFor(() => {
       expect(mockFeedback.hataFeedback).toHaveBeenCalledTimes(1);
     });
-    expect(alertSpy).toHaveBeenCalledWith('Yedekleme', expect.any(String));
 
-    alertSpy.mockRestore();
+    // Artık native Alert yerine tema-uyumlu BildirimModali görünmeli
+    await waitFor(() => {
+      expect(getByText('Yedek oluşturulamadı')).toBeTruthy();
+    });
+    // "Tekrar dene" birincil eylemi sunulmalı
+    expect(getByText('Tekrar dene')).toBeTruthy();
+
+    errSpy.mockRestore();
+  });
+
+  it('"Tekrar dene"ye basınca yeniden yedek oluşturulmaya çalışılır', async () => {
+    (yedeginiPaylas as jest.Mock).mockRejectedValue(new Error('boom'));
+    const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const { getByText } = render(<YedeklemeSayfasi />);
+    fireEvent.press(getByText('Yedek oluştur'));
+    await waitFor(() => {
+      expect(getByText('Tekrar dene')).toBeTruthy();
+    });
+    expect(yedeginiPaylas).toHaveBeenCalledTimes(1);
+
+    fireEvent.press(getByText('Tekrar dene'));
+    await waitFor(() => {
+      expect(yedeginiPaylas).toHaveBeenCalledTimes(2);
+    });
+
     errSpy.mockRestore();
   });
 });
