@@ -63,11 +63,9 @@ describe('Offline Namaz Entegrasyon Testi (Redux namazSlice <-> LocalStorage)', 
         expect(AsyncStorage.setItem).toHaveBeenCalled();
         const callArgs = (AsyncStorage.setItem as jest.Mock).mock.lastCall;
 
-        // First arg is key (namaz_verileri), we don't check exact string content of key if we use constant, 
-        // but based on logs it is likely "namaz_verileri". 
-        // Second arg is validated
-        expect(callArgs[1]).toContain(mockDate); // The JSON content should have the date key
-        expect(callArgs[1]).toContain('"Sabah":true'); // The JSON content should have the updated status
+        // Gun-bazli model (Faz 1): anahtar `namaz_gun_<tarih>`, deger o gunun {namazAdi:bool} JSON'i.
+        expect(callArgs[0]).toContain(mockDate); // Tarih artik ANAHTARDA
+        expect(callArgs[1]).toContain('"Sabah":true'); // Deger guncel durumu icermeli
     });
 
     test('Namazlar yüklendiğinde AsyncStorage verisi okunmalı', async () => {
@@ -75,17 +73,20 @@ describe('Offline Namaz Entegrasyon Testi (Redux namazSlice <-> LocalStorage)', 
         //    Anahtarlar NamazAdi enum degerleridir (Turkce karakterli: 'Öğle', 'İkindi', ...).
         //    Storage'da string anahtar olarak Turkce karakterli saklanir; bunlarin storage'dan
         //    DOGRU sekilde okunup state'e tasindigini (round-trip) dogrularız.
-        const mockStorageData = JSON.stringify({
-            [mockDate]: {
-                [NamazAdi.Sabah]: true,
-                [NamazAdi.Ogle]: true,    // 'Öğle' Turkce anahtar round-trip
-                [NamazAdi.Ikindi]: false,
-                [NamazAdi.Aksam]: true,   // 'Akşam' Turkce anahtar round-trip
-                [NamazAdi.Yatsi]: false,
-            }
+        // Gun-bazli model (Faz 1): veri `namaz_gun_<tarih>` anahtarinda {namazAdi:bool} olarak durur.
+        // Migrasyon bayragi '1' -> goc atlanir, dogrudan gun-anahtari okunur (anahtar-bazli mock).
+        const gunVerisi = JSON.stringify({
+            [NamazAdi.Sabah]: true,
+            [NamazAdi.Ogle]: true,    // 'Öğle' Turkce anahtar round-trip
+            [NamazAdi.Ikindi]: false,
+            [NamazAdi.Aksam]: true,   // 'Akşam' Turkce anahtar round-trip
+            [NamazAdi.Yatsi]: false,
         });
-
-        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(mockStorageData);
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (anahtar: string) => {
+            if (anahtar === `namaz_gun_${mockDate}`) return gunVerisi;
+            if (anahtar === 'namaz_gun_migrasyon_tamam') return '1';
+            return null;
+        });
 
         // 2. Dispatch load action
         await store.dispatch(namazlariYukle({ tarih: mockDate }));
@@ -279,9 +280,9 @@ describe('Offline Kalici Entegrasyon (stateful AsyncStorage <-> Redux)', () => {
             expect(bul(state, ad)).toBe(true);
         });
 
-        // Depodaki ham JSON da bes vakti icermeli (state'e degil, kaliciliga da bakiyoruz).
-        const ham = JSON.parse(bellek['namaz_verileri']);
-        expect(Object.keys(ham[tarih])).toHaveLength(NAMAZ_ISIMLERI.length);
+        // Depodaki ham JSON da bes vakti icermeli (gun-anahtari: namaz_gun_<tarih>).
+        const ham = JSON.parse(bellek[`namaz_gun_${tarih}`]);
+        expect(Object.keys(ham)).toHaveLength(NAMAZ_ISIMLERI.length);
     });
 
     test('Toplu tamamla: tumNamazlariTamamla 5 vakti hem state hem depoda true yapmali', async () => {
@@ -296,10 +297,10 @@ describe('Offline Kalici Entegrasyon (stateful AsyncStorage <-> Redux)', () => {
             expect(bul(state, ad)).toBe(true);
         });
 
-        // Depo: kalici JSON'da da bes vakit true.
-        const ham = JSON.parse(bellek['namaz_verileri']);
+        // Depo: gun-anahtarinda da bes vakit true.
+        const ham = JSON.parse(bellek[`namaz_gun_${tarih}`]);
         NAMAZ_ISIMLERI.forEach((ad) => {
-            expect(ham[tarih][ad]).toBe(true);
+            expect(ham[ad]).toBe(true);
         });
     });
 
@@ -316,9 +317,9 @@ describe('Offline Kalici Entegrasyon (stateful AsyncStorage <-> Redux)', () => {
             expect(bul(state, ad)).toBe(false);
         });
 
-        const ham = JSON.parse(bellek['namaz_verileri']);
+        const ham = JSON.parse(bellek[`namaz_gun_${tarih}`]);
         NAMAZ_ISIMLERI.forEach((ad) => {
-            expect(ham[tarih][ad]).toBe(false);
+            expect(ham[ad]).toBe(false);
         });
     });
 });

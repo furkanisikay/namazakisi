@@ -129,6 +129,10 @@ export const KAZA_SABITLERI = {
 // AsyncStorage anahtarlari
 export const DEPOLAMA_ANAHTARLARI = {
   NAMAZ_VERILERI: 'namaz_verileri',
+  // Gun-bazli namaz kayitlari (Faz 1): namaz_gun_<tarih>. Migrasyon eski tek-blob'dan tasir,
+  // eski blob SILINMEZ (veri-kaybi riski yok). NAMAZ_GUN_MIGRASYON bayragi gocun bir kez calismasini saglar.
+  NAMAZ_GUN_ONEK: 'namaz_gun_',
+  NAMAZ_GUN_MIGRASYON: 'namaz_gun_migrasyon_tamam',
   KULLANICI_AYARLARI: 'kullanici_ayarlari',
   SON_SENKRONIZASYON: 'son_senkronizasyon',
   // Seri sistemi anahtarlari
