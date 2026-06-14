@@ -7,6 +7,9 @@ import { NamazAdi } from '../constants/UygulamaSabitleri';
 // Seri, Rozet ve Seviye tiplerini export et
 export * from './SeriTipleri';
 
+// Yedekleme & aktarım tiplerini export et
+export * from './YedeklemeTipleri';
+
 /**
  * Namaz vakti adi (Turkce) — uygulama genelinde tek tanim.
  */
