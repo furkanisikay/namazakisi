@@ -68,6 +68,9 @@ export interface KategoriSecimleri {
   ayarlar: KategoriStratejisi;
 }
 
+/** İçe-aktarma yazım planı: AsyncStorage anahtarı → yazılacak değer. Boş = yazma. */
+export type YazimPlani = Record<string, unknown>;
+
 /** İçe-aktarma öncesi kullanıcıya gösterilen karşılaştırma özeti. */
 export interface FarkOzeti {
   gelenGunSayisi: number;
