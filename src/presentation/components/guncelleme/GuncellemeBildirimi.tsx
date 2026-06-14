@@ -29,7 +29,12 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../../core/theme';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { Logger } from '../../../core/utils/Logger';
-import { guncellemeErtele, bildirimiKapat } from '../../store/guncellemeSlice';
+import {
+  guncellemeErtele,
+  bildirimiKapat,
+  indirmeTamamlandiIsaretle,
+  indirmeDurumuSifirla,
+} from '../../store/guncellemeSlice';
 import { yayinTarihiniFormatla, guvenilirBaglantiMi } from '../../../domain/services/GuncellemeServisi';
 import { PlayStoreModulu } from '../../../domain/services/PlayStoreGuncellemeModulu';
 
@@ -44,13 +49,31 @@ export const GuncellemeBildirimi: React.FC = () => {
   const guncellemeMevcut = useAppSelector((state) => state.guncelleme.guncellemeMevcut);
   const bilgi = useAppSelector((state) => state.guncelleme.bilgi);
   const bildirimiKapatti = useAppSelector((state) => state.guncelleme.bildirimiKapatti);
+  const indirmeTamamlandi = useAppSelector((state) => state.guncelleme.indirmeTamamlandi);
 
 
   // Animasyon degerleri
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const gosterilsinMi = guncellemeMevcut && bilgi && !bildirimiKapatti;
+  // Issue #91: completeUpdate yalnizca BIR KEZ cagrilsin. completeUpdate uygulamayi
+  // yeniden baslatir; birden fazla tetik (cift tiklama, tekrar DOWNLOADED olayi)
+  // ust uste restart denemesine yol acardi.
+  const tamamlamaBaslatildi = useRef(false);
+
+  // Indirme tamamlandi onayi: Play Store esnek guncelleme indirilince kullaniciya
+  // "Yeniden baslat" sorulur; onay UI'i ana guncelleme banner'i kapatilmis olsa
+  // bile gosterilir (kullanici "Guncelle"ye basinca banner kapanir, indirme arka
+  // planda devam eder, sonra bu onay cikar).
+  // indirmeTamamlandi YALNIZCA Play Store esnek-güncelleme akışında set edilir
+  // (install dinleyici + bekleyenGuncellemeVarMi) → kaynak zaten playstore.
+  // guncellemeMevcut/bilgi'ye BAĞLAMA: indirme DOWNLOADED'a geçince native
+  // updateAvailability artık UPDATE_AVAILABLE dönmez → guncellemeKontrolEt
+  // bilgi'yi null'a çekebilir; o durumda da onay kartı gösterilmeli (#104 review).
+  const yenidenBaslatGoster = indirmeTamamlandi;
+
+  const gosterilsinMi =
+    (guncellemeMevcut && bilgi && !bildirimiKapatti) || yenidenBaslatGoster;
 
   useEffect(() => {
     if (gosterilsinMi) {
@@ -87,21 +110,43 @@ export const GuncellemeBildirimi: React.FC = () => {
     }
   }, [gosterilsinMi, slideAnim, fadeAnim]);
 
-  // Play Store: DOWNLOADED durumunu dinle ve guncellemeyi tamamla
+  // Play Store: DOWNLOADED durumunu dinle.
+  // ISSUE #91: indirme bitince OTOMATIK completeUpdate cagirma. completeUpdate
+  // uygulamayi aninda yeniden baslatir; kullanici ekrani gormeden disari atilirdi.
+  // Bunun yerine durumu Redux'a isaretle -> kullaniciya "Yeniden baslat" ONAYI gosterilir.
   useEffect(() => {
     if (bilgi?.kaynak !== 'playstore') return;
 
     const abonelikIptal = PlayStoreModulu.installDurumDinle((olay) => {
       if (olay.installStatus === 11 /* DOWNLOADED */) {
-        // İndirme tamamlandı — uygulamayı yeniden başlat
-        PlayStoreModulu.guncellemeYuklemeyiTamamla().catch((hata: any) => {
-          Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı', hata?.message);
-        });
+        dispatch(indirmeTamamlandiIsaretle());
       }
     });
 
     return abonelikIptal;
-  }, [bilgi?.kaynak]);
+  }, [bilgi?.kaynak, dispatch]);
+
+  /**
+   * "Yeniden baslat" onayina basildi.
+   * completeUpdate uygulamayi yeniden baslatip guncellemeyi kurar — bu YALNIZCA
+   * kullanici onayinca cagrilir (issue #91). Idempotent: bir kez tetiklenir.
+   */
+  const yenidenBaslatBasildi = useCallback(async () => {
+    if (tamamlamaBaslatildi.current) return;
+    tamamlamaBaslatildi.current = true;
+    try {
+      const basarili = await PlayStoreModulu.guncellemeYuklemeyiTamamla();
+      if (!basarili) {
+        // Native modül hazır değil / Android dışı: fırlatmaz, false döner → tekrar denenebilsin.
+        tamamlamaBaslatildi.current = false;
+        Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı (modül false döndü)');
+      }
+    } catch (hata: any) {
+      // Tamamlama basarisizsa kullanici tekrar deneyebilsin
+      tamamlamaBaslatildi.current = false;
+      Logger.warn('GuncellemeBildirimi', 'Güncelleme tamamlanamadı', hata?.message);
+    }
+  }, []);
 
   /**
    * Guncelleme butonuna basildi.
@@ -142,11 +187,129 @@ export const GuncellemeBildirimi: React.FC = () => {
   }, [bilgi, dispatch]);
 
   // Gosterilmeyecekse bos render
-  if (!guncellemeMevcut || !bilgi) {
+  if ((!guncellemeMevcut || !bilgi) && !yenidenBaslatGoster) {
     return null;
   }
 
-  const formatlananTarih = yayinTarihiniFormatla(bilgi.yayinTarihi);
+  const formatlananTarih = bilgi ? yayinTarihiniFormatla(bilgi.yayinTarihi) : '';
+
+  // Indirme tamamlandi: kullaniciya "Yeniden baslat" ONAY kartini goster
+  // (otomatik restart YOK — issue #91).
+  if (yenidenBaslatGoster) {
+    return (
+      <Animated.View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 9999,
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        }}
+        pointerEvents="auto"
+      >
+        <View
+          style={{
+            marginHorizontal: 12,
+            marginBottom: Platform.OS === 'ios' ? 34 : 80,
+            borderRadius: 16,
+            overflow: 'hidden',
+            backgroundColor: renkler.kartArkaplan,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 12,
+            elevation: 16,
+            borderWidth: 1,
+            borderColor: renkler.sinir,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 16,
+              paddingTop: 16,
+              paddingBottom: 8,
+            }}
+          >
+            <View
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                backgroundColor: `${renkler.basarili}26`,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 12,
+              }}
+            >
+              <MaterialIcons name="check-circle" size={24} color={renkler.basarili} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 15, fontWeight: '700', color: renkler.metin }}>
+                Güncelleme indirildi
+              </Text>
+              <Text style={{ fontSize: 12, color: renkler.metinIkincil, marginTop: 2 }}>
+                Kurulumu tamamlamak için uygulamayı yeniden başlatın.
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => dispatch(indirmeDurumuSifirla())}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              accessibilityLabel="Kapat"
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 14,
+                backgroundColor: `${renkler.metinIkincil}26`,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: 8,
+              }}
+            >
+              <MaterialIcons name="close" size={16} color={renkler.metinIkincil} />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: 16,
+              paddingBottom: 16,
+              gap: 8,
+            }}
+          >
+            <TouchableOpacity
+              onPress={yenidenBaslatBasildi}
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                paddingVertical: 10,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: renkler.basarili,
+                gap: 6,
+              }}
+              activeOpacity={0.7}
+            >
+              <MaterialIcons name="restart-alt" size={16} color="#FFFFFF" />
+              <Text style={{ fontSize: 13, fontWeight: '700', color: '#FFFFFF' }}>
+                Yeniden Başlat
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Animated.View>
+    );
+  }
+
+  // Buradan sonrası normal güncelleme banner'ı — bilgi kesin dolu (yukarıda guard'landı).
+  if (!bilgi) {
+    return null;
+  }
 
   return (
     <Animated.View

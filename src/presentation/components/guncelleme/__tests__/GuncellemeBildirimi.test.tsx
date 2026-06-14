@@ -102,7 +102,7 @@ jest.mock('../../../../domain/services/PlayStoreGuncellemeModulu', () => ({
     installDurumDinle: (...args: any[]) => mockInstallDurumDinle(...args),
     kurulumKaynagiGetir: jest.fn().mockResolvedValue('play_store'),
     guncellemeDurumunuKontrolEt: jest.fn().mockResolvedValue({ guncellemeMevcut: false }),
-    indirilenGuncellemeVarMiKontrolEt: jest.fn(),
+    bekleyenGuncellemeVarMi: jest.fn().mockResolvedValue(false),
   },
 }));
 
@@ -806,7 +806,9 @@ describe('GuncellemeBildirimi', () => {
 
   // ==================== PLAY STORE INSTALL DURUM DINLEYICISI ====================
 
-  it('Play Store: installStatus===11 (DOWNLOADED) gelince guncellemeYuklemeyiTamamla cagrilir', async () => {
+  // ISSUE #91: DOWNLOADED gelince OTOMATIK completeUpdate (restart) cagrilmaz;
+  // kullaniciya "Yeniden Baslat" ONAYI gosterilir. completeUpdate yalnizca onayla cagrilir.
+  it('Play Store: installStatus===11 (DOWNLOADED) gelince OTOMATIK restart cagrilmaz, onay gosterilir', async () => {
     mockInstallDurumDinle.mockClear();
     mockGuncellemeYuklemeyiTamamla.mockClear();
     mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
@@ -826,6 +828,7 @@ describe('GuncellemeBildirimi', () => {
           zorunluMu: false,
         },
         bildirimiKapatti: false,
+        indirmeTamamlandi: false,
         hata: null,
       },
     });
@@ -845,18 +848,194 @@ describe('GuncellemeBildirimi', () => {
     const callback = mockInstallDurumDinle.mock.calls[0][0];
     expect(typeof callback).toBe('function');
 
-    // DOWNLOADED (11) disi bir durum gelince tamamlama TETIKLENMEMELI
+    // DOWNLOADED (11) disi bir durum gelince hicbir sey olmamali
     await act(async () => {
       callback({ installStatus: 2 /* DOWNLOADING */ });
     });
     expect(mockGuncellemeYuklemeyiTamamla).not.toHaveBeenCalled();
+    expect(store.getState().guncelleme.indirmeTamamlandi).toBe(false);
 
-    // DOWNLOADED (11) gelince otomatik yeniden baslatma (tamamla) cagrilmali
+    // DOWNLOADED (11) gelince: OTOMATIK restart YOK; sadece onay durumu isaretlenir
     await act(async () => {
       callback({ installStatus: 11 /* DOWNLOADED */ });
     });
+    expect(mockGuncellemeYuklemeyiTamamla).not.toHaveBeenCalled();
+    expect(store.getState().guncelleme.indirmeTamamlandi).toBe(true);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: "Yeniden Başlat" onayina basinca completeUpdate cagrilir (idempotent)', async () => {
+    mockInstallDurumDinle.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28',
+          yeniVersiyonEtiketi: 'Yeni sürüm',
+          mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '',
+          indirmeBaglantisi: 'playstore://update',
+          yayinTarihi: '',
+          kaynak: 'playstore',
+          zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        // Indirme zaten tamamlanmis -> onay kartini gostermeli
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // "Yeniden Başlat" butonu gorunmeli ve onPress completeUpdate cagirmali
+    const buton = butonBul(tree!, 'Yeniden Başlat');
+    await act(async () => {
+      await buton.props.onPress();
+    });
     expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
 
+    // Idempotent: ikinci tiklama tekrar restart denememeli (ust uste restart onlenir)
+    await act(async () => {
+      await buton.props.onPress();
+    });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: guncellemeMevcut=false/bilgi=null olsa bile indirmeTamamlandi ise kart gosterilir (#104 review)', async () => {
+    // Senaryo: indirme DOWNLOADED'a gecince native updateAvailability artik
+    // UPDATE_AVAILABLE donmez → guncellemeKontrolEt guncellemeMevcut=false, bilgi=null
+    // yazar. Indirilen guncelleme yine de kurulabilmeli (onay karti gosterilmeli).
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: false,
+        bilgi: null,
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // Kart render olmali (null DEGIL) ve "Yeniden Başlat" butonu calismali.
+    expect(tree!.toJSON()).not.toBeNull();
+    const buton = butonBul(tree!, 'Yeniden Başlat');
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: "Yeniden Başlat" kartindaki kapatma (X) butonu indirme durumunu sifirlar', async () => {
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28', yeniVersiyonEtiketi: 'Yeni sürüm', mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '', indirmeBaglantisi: 'playstore://update', yayinTarihi: '',
+          kaynak: 'playstore', zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    // Kapatma (X) butonunda Text cocugu yok → accessibilityLabel ile bulunur.
+    const kapatButonu = tree!.root.findAll(
+      (node) => node.type === TouchableOpacity && node.props.accessibilityLabel === 'Kapat'
+    )[0];
+    expect(kapatButonu).toBeTruthy();
+
+    await act(async () => {
+      kapatButonu.props.onPress();
+    });
+
+    // Kart kapanmali: indirmeTamamlandi false olmali (kullanici sonra tamamlayabilir).
+    expect(store.getState().guncelleme.indirmeTamamlandi).toBe(false);
+
+    act(() => { tree!.unmount(); });
+  });
+
+  it('Play Store: completeUpdate false donerse "Yeniden Başlat" tekrar denenebilir (ref sifirlanir)', async () => {
+    mockGuncellemeYuklemeyiTamamla.mockClear();
+    // Native modul hazir degil / Android disi: firlatmaz, false doner.
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(false);
+
+    const store = storeOlustur({
+      guncelleme: {
+        kontrolEdiliyor: false,
+        guncellemeMevcut: true,
+        bilgi: {
+          yeniVersiyon: '28', yeniVersiyonEtiketi: 'Yeni sürüm', mevcutVersiyon: '0.14.0',
+          degisiklikNotlari: '', indirmeBaglantisi: 'playstore://update', yayinTarihi: '',
+          kaynak: 'playstore', zorunluMu: false,
+        },
+        bildirimiKapatti: false,
+        indirmeTamamlandi: true,
+        hata: null,
+      },
+    });
+
+    let tree: ReactTestRenderer;
+    act(() => {
+      tree = create(
+        <Provider store={store}>
+          <GuncellemeBildirimi />
+        </Provider>
+      );
+    });
+    act(() => { jest.runAllTimers(); });
+
+    const buton = butonBul(tree!, 'Yeniden Başlat');
+    // 1. deneme: false döner → idempotency ref'i sıfırlanmalı.
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(1);
+    // 2. deneme: ref sıfırlandığı için TEKRAR çağrılabilmeli (kilit takılı kalmamalı).
+    await act(async () => { await buton.props.onPress(); });
+    expect(mockGuncellemeYuklemeyiTamamla).toHaveBeenCalledTimes(2);
+
+    // Sonraki testler için varsayilani geri al.
+    mockGuncellemeYuklemeyiTamamla.mockResolvedValue(true);
     act(() => { tree!.unmount(); });
   });
 

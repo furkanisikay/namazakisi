@@ -14,6 +14,8 @@ import guncellemeReducer, {
   guncellemeErtele,
   bildirimiKapat,
   bildirimiSifirla,
+  indirmeTamamlandiIsaretle,
+  indirmeDurumuSifirla,
 } from '../guncellemeSlice';
 import { GuncellemeServisi } from '../../../domain/services/GuncellemeServisi';
 
@@ -71,6 +73,7 @@ describe('guncellemeSlice', () => {
       expect(state.guncellemeMevcut).toBe(false);
       expect(state.bilgi).toBeNull();
       expect(state.bildirimiKapatti).toBe(false);
+      expect(state.indirmeTamamlandi).toBe(false);
       expect(state.hata).toBeNull();
     });
   });
@@ -92,6 +95,25 @@ describe('guncellemeSlice', () => {
 
       store.dispatch(bildirimiSifirla());
       expect(store.getState().guncelleme.bildirimiKapatti).toBe(false);
+    });
+
+    it('indirmeTamamlandiIsaretle indirmeTamamlandi true yapar', () => {
+      const store = storeOlustur();
+
+      // Issue #91: indirme bitince OTOMATIK restart YOK; sadece onay durumu isaretlenir.
+      store.dispatch(indirmeTamamlandiIsaretle());
+
+      expect(store.getState().guncelleme.indirmeTamamlandi).toBe(true);
+    });
+
+    it('indirmeDurumuSifirla indirmeTamamlandi false yapar', () => {
+      const store = storeOlustur();
+
+      store.dispatch(indirmeTamamlandiIsaretle());
+      expect(store.getState().guncelleme.indirmeTamamlandi).toBe(true);
+
+      store.dispatch(indirmeDurumuSifirla());
+      expect(store.getState().guncelleme.indirmeTamamlandi).toBe(false);
     });
   });
 

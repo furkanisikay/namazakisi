@@ -215,9 +215,11 @@ describe('PlayStoreGuncellemeModulu', () => {
     });
   });
 
-  // ==================== indirilenGuncellemeVarMiKontrolEt ====================
-  describe('indirilenGuncellemeVarMiKontrolEt', () => {
-    it('bekleyen güncelleme varsa tamamlar', async () => {
+  // ==================== bekleyenGuncellemeVarMi ====================
+  // ISSUE #91: Bu metot ARTIK OTOMATIK completeUpdate CAGIRMAZ. Yalnizca bekleyen
+  // (DOWNLOADED) guncelleme var mi bilgisini doner; restart kullanici onayina birakilir.
+  describe('bekleyenGuncellemeVarMi', () => {
+    it('bekleyen güncelleme varsa true döner ve completeUpdate ÇAĞIRMAZ', async () => {
       const mockVarMi = jest.fn().mockResolvedValue(true);
       const mockTamamla = jest.fn().mockResolvedValue(true);
       jest.doMock('react-native', () => ({
@@ -234,13 +236,15 @@ describe('PlayStoreGuncellemeModulu', () => {
       }));
 
       const { PlayStoreModulu } = require('../PlayStoreGuncellemeModulu');
-      await PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt();
+      const sonuc = await PlayStoreModulu.bekleyenGuncellemeVarMi();
 
+      expect(sonuc).toBe(true);
       expect(mockVarMi).toHaveBeenCalled();
-      expect(mockTamamla).toHaveBeenCalled();
+      // KRITIK: otomatik tamamlama (restart) TETIKLENMEMELI
+      expect(mockTamamla).not.toHaveBeenCalled();
     });
 
-    it('bekleyen güncelleme yoksa tamamlamaz', async () => {
+    it('bekleyen güncelleme yoksa false döner', async () => {
       const mockVarMi = jest.fn().mockResolvedValue(false);
       const mockTamamla = jest.fn();
       jest.doMock('react-native', () => ({
@@ -257,12 +261,13 @@ describe('PlayStoreGuncellemeModulu', () => {
       }));
 
       const { PlayStoreModulu } = require('../PlayStoreGuncellemeModulu');
-      await PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt();
+      const sonuc = await PlayStoreModulu.bekleyenGuncellemeVarMi();
 
+      expect(sonuc).toBe(false);
       expect(mockTamamla).not.toHaveBeenCalled();
     });
 
-    it('hata durumunda sessizce devam eder', async () => {
+    it('hata durumunda false döner (sessizce)', async () => {
       const mockVarMi = jest.fn().mockRejectedValue(new Error('native crash'));
       jest.doMock('react-native', () => ({
         Platform: { OS: 'android' },
@@ -275,12 +280,12 @@ describe('PlayStoreGuncellemeModulu', () => {
       }));
 
       const { PlayStoreModulu } = require('../PlayStoreGuncellemeModulu');
-      await expect(PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt()).resolves.toBeUndefined();
+      await expect(PlayStoreModulu.bekleyenGuncellemeVarMi()).resolves.toBe(false);
     });
 
-    it('iOS\'ta native modülü hiç çağırmadan sessizce çıkar', async () => {
-      // iOS/null-modül erken-return dalı: native varMi/tamamla ASLA çağrılmamalı,
-      // Promise undefined ile resolve olmalı (graceful no-op).
+    it('iOS\'ta native modülü hiç çağırmadan false döner', async () => {
+      // iOS/null-modül erken-return dalı: native varMi ASLA çağrılmamalı,
+      // Promise false ile resolve olmalı (graceful no-op).
       const mockVarMi = jest.fn();
       const mockTamamla = jest.fn();
       jest.doMock('react-native', () => ({
@@ -297,7 +302,7 @@ describe('PlayStoreGuncellemeModulu', () => {
       }));
 
       const { PlayStoreModulu } = require('../PlayStoreGuncellemeModulu');
-      await expect(PlayStoreModulu.indirilenGuncellemeVarMiKontrolEt()).resolves.toBeUndefined();
+      await expect(PlayStoreModulu.bekleyenGuncellemeVarMi()).resolves.toBe(false);
       expect(mockVarMi).not.toHaveBeenCalled();
       expect(mockTamamla).not.toHaveBeenCalled();
     });
