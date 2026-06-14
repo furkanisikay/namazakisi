@@ -14,21 +14,25 @@ import {
   VARSAYILAN_SERI_AYARLARI,
   OzelGunAyarlari,
   OzelGunKaydi,
+  PUAN_DEGERLERI,
 } from '../../core/types/SeriTipleri';
 import { GunlukNamazlar } from '../../core/types';
 import * as LocalSeriServisi from '../../data/local/LocalSeriServisi';
+import { localVerileriSenkronizasyonIcinAl } from '../../data/local/LocalNamazServisi';
+import { puanlamayiYenidenDegerlendir } from '../../domain/services/PuanlamaServisi';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 import {
   seriHesapla,
   seriOzetiniOlustur,
-  kilinanNamazSayisi,
 } from '../../domain/services/SeriHesaplayiciServisi';
 import {
   rozetDetaylariniAl,
   tamGuncellemeyiYap,
   bosSeviyeDurumuOlustur,
   puanEkle,
+  seviyeHesapla,
+  seviyeKutlamasiOlustur,
 } from '../../domain/services/RozetYoneticisiServisi';
 
 // ==================== STATE TIPI ====================
@@ -42,6 +46,14 @@ interface SeriState {
   toplamKilinanNamaz: number;
   toparlanmaSayisi: number;
   mukemmelGunSayisi: number;
+  // Karma turev/defter modeli: tabanPuan kayittan turev, bonusPuan kalici.
+  // toplamPuan (= seviyeDurumu.toplamPuan) = tabanPuan + bonusPuan.
+  tabanPuan: number;
+  bonusPuan: number;
+  // Bu yuklemede bonusPuan migrasyonu yapildi mi? Ilk senkronu yalniz migrasyonda SESSIZ
+  // tutmak icin (de-inflasyon yanlis "seviye atladin" kutlamasi tetiklemesin; migrasyon yoksa
+  // arka planda kazanilan seviye atlamasi yutulmasin).
+  migreEdildi: boolean;
   ozelGunAyarlari: OzelGunAyarlari;
   // Kutlama queue - gosterilecek kutlamalar
   bekleyenKutlamalar: KutlamaBilgisi[];
@@ -61,6 +73,9 @@ const baslangicDurumu: SeriState = {
   toplamKilinanNamaz: 0,
   toparlanmaSayisi: 0,
   mukemmelGunSayisi: 0,
+  tabanPuan: 0,
+  bonusPuan: 0,
+  migreEdildi: false,
   ozelGunAyarlari: LocalSeriServisi.VARSAYILAN_OZEL_GUN_AYARLARI,
   bekleyenKutlamalar: [],
   yukleniyor: false,
@@ -89,9 +104,28 @@ export const seriVerileriniYukle = createAsyncThunk(
     // Rozet detaylarini olustur
     const rozetDetaylari = rozetDetaylariniAl(veriler.rozetler);
 
+    // bonusPuan'i tek dogru kaynaktan (disk) yukle. null ise MIGRATE et (ilk calisma):
+    // eski toplamPuan - eski taban (sisme cikarimda sadelesir, mesru bonus korunur).
+    // Migrasyon BURADA (yuklemede) yapilir ki seriKontrolet/reconcile'dan ONCE kesinlessin;
+    // boylece "bayat-0 uzerine yazma" yarisi ve migrasyon-atlama kaynakli VERI KAYBI olusmaz.
+    const bonusHam = (await LocalSeriServisi.localBonusPuaniGetir()).veri;
+    let bonusPuan: number;
+    let migreEdildi = false;
+    if (bonusHam === null || bonusHam === undefined) {
+      const eskiToplamPuan = veriler.seviyeDurumu?.toplamPuan ?? 0;
+      const eskiTaban = veriler.toplamKilinanNamaz * PUAN_DEGERLERI.namaz_kilindi;
+      bonusPuan = Math.max(0, eskiToplamPuan - eskiTaban);
+      await LocalSeriServisi.localBonusPuaniKaydet(bonusPuan);
+      migreEdildi = true;
+    } else {
+      bonusPuan = bonusHam;
+    }
+
     return {
       ...veriler,
       rozetDetaylari,
+      bonusPuan,
+      migreEdildi,
     };
   }
 );
@@ -167,8 +201,9 @@ export const seriKontrolet = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { seri: SeriState };
-    const { seriDurumu, kullaniciRozetleri, seviyeDurumu, ayarlar, ozelGunAyarlari } = state.seri;
-    let { toplamKilinanNamaz, toparlanmaSayisi, mukemmelGunSayisi } = state.seri;
+    const { seriDurumu, kullaniciRozetleri, seviyeDurumu, ayarlar, ozelGunAyarlari, toplamKilinanNamaz, mukemmelGunSayisi } = state.seri;
+    let toparlanmaSayisi = state.seri.toparlanmaSayisi;
+    let bonusPuan = state.seri.bonusPuan;
 
     // Seri hesapla
     const hesapSonucu = seriHesapla(
@@ -184,11 +219,9 @@ export const seriKontrolet = createAsyncThunk(
       return {
         seriDurumu: hesapSonucu.seriDurumu,
         kullaniciRozetleri,
-        seviyeDurumu: seviyeDurumu || bosSeviyeDurumuOlustur(),
         kutlamalar: [] as KutlamaBilgisi[],
-        toplamKilinanNamaz,
         toparlanmaSayisi,
-        mukemmelGunSayisi,
+        bonusPuan,
       };
     }
 
@@ -198,14 +231,9 @@ export const seriKontrolet = createAsyncThunk(
       await LocalSeriServisi.localToparlanmaSayisiniArttir();
     }
 
-    // Bugun 5/5 ise mukemmel gun sayisini artir
-    const bugunKilinan = kilinanNamazSayisi(bugunNamazlar);
-    if (bugunKilinan === 5) {
-      mukemmelGunSayisi += 1;
-      await LocalSeriServisi.localMukemmelGunSayisiniArttir();
-    }
-
-    // Tam guncellemeyi yap (rozetler, seviye, kutlamalar)
+    // NOT: mukemmel gun artik kayittan TUREVdir (puanlamayiYenidenHesapla); burada artirilmaz.
+    // tamGuncellemeyiYap'a gecilen seviyeDurumu invariant'i (= tabanPuan + bonusPuan) korur;
+    // donen toplamKazanilanPuan bonusPuan'a eklenir, seviye buna gore guncellenir.
     const guncellemeSonucu = tamGuncellemeyiYap(
       hesapSonucu.seriDurumu,
       kullaniciRozetleri,
@@ -217,76 +245,46 @@ export const seriKontrolet = createAsyncThunk(
       hesapSonucu.toparlanmaBasarili
     );
 
-    // Local'e kaydet
+    // Faz 1b: bonus geri-alimi (negatif kazanilanPuan) bonusPuan'i dusurebilir; 0 alt sinir.
+    bonusPuan = Math.max(0, bonusPuan + guncellemeSonucu.toplamKazanilanPuan);
+
+    // TEK-YAZICI: seriKontrolet seviyeDurumu/seviye-kutlamasi URETMEZ; bunun tek sahibi
+    // puanlamayiYenidenHesapla (reconcile). Burada yalniz seri/rozet/toparlanma + bonusPuan
+    // yazilir. Seviye atlama kutlamasi reconcile'a birakilir (cift kutlama/yaris olmasin).
+    const kutlamalar = guncellemeSonucu.kutlamalar.filter(
+      (k) => k.tip !== 'seviye_atlandi'
+    );
+
+    // Local'e kaydet (seviyeDurumu HARIC — onu reconcile yazar)
     await Promise.all([
       LocalSeriServisi.localSeriDurumunuKaydet(hesapSonucu.seriDurumu),
       LocalSeriServisi.localRozetleriKaydet(
         guncellemeSonucu.yeniKullaniciRozetleri
       ),
-      LocalSeriServisi.localSeviyeDurumunuKaydet(
-        guncellemeSonucu.yeniSeviyeDurumu
-      ),
+      LocalSeriServisi.localBonusPuaniKaydet(bonusPuan),
     ]);
 
     return {
       seriDurumu: hesapSonucu.seriDurumu,
       kullaniciRozetleri: guncellemeSonucu.yeniKullaniciRozetleri,
-      seviyeDurumu: guncellemeSonucu.yeniSeviyeDurumu,
-      kutlamalar: guncellemeSonucu.kutlamalar,
-      toplamKilinanNamaz,
+      kutlamalar,
       toparlanmaSayisi,
-      mukemmelGunSayisi,
+      bonusPuan,
     };
   },
   {
     condition: (_, { getState }) => {
       const state = getState() as { seri: SeriState };
-      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
-      return !!state.seri.sonYukleme;
+      // Yuklenmeden VEYA baska bir seriKontrolet in-flight iken atla: eszamanli oku-degistir-yaz
+      // (cift toparlanma artisi) ve cift seviye kutlamasi yarisini onler.
+      return !!state.seri.sonYukleme && !state.seri.guncelleniyor;
     },
   }
 );
 
-/**
- * Namaz kilindiginda toplam sayiyi arttirir
- */
-export const namazKilindiPuanla = createAsyncThunk(
-  'seri/namazKilindiPuanla',
-  async (
-    {
-      namazSayisi,
-    }: { namazSayisi: number },
-    { getState }
-  ) => {
-    const state = getState() as { seri: SeriState };
-
-    // Toplam kilinin namazi artir
-    const yeniToplam = state.seri.toplamKilinanNamaz + namazSayisi;
-    await LocalSeriServisi.localToplamKilinanNamaziKaydet(yeniToplam);
-
-    // Seviyeye puan ekle
-    const seviyeSonucu = puanEkle(
-      state.seri.seviyeDurumu || bosSeviyeDurumuOlustur(),
-      namazSayisi * 5 // Her namaz 5 puan
-    );
-
-    await LocalSeriServisi.localSeviyeDurumunuKaydet(seviyeSonucu.yeniDurum);
-
-    return {
-      toplamKilinanNamaz: yeniToplam,
-      seviyeDurumu: seviyeSonucu.yeniDurum,
-      seviyeAtlandi: seviyeSonucu.seviyeAtlandi,
-      yeniSeviye: seviyeSonucu.yeniSeviye,
-    };
-  },
-  {
-    condition: (_, { getState }) => {
-      const state = getState() as { seri: SeriState };
-      // Seri verileri henuz yuklenmemisse islemi atla (race condition korumasi)
-      return !!state.seri.sonYukleme;
-    },
-  }
-);
+// NOT: namazKilindiPuanla KALDIRILDI. Olay-tetiklemeli +5/+1 artisi toggle ile sismeye
+// yol aciyordu (ve arka plan/un-toggle ile tutarsizlasiyordu). Yerine puanlamayiYenidenHesapla
+// (kayittan turev) gecti; taban puan/sayac tek dogru kaynaktan hesaplanir.
 
 /**
  * Ozel gun modunu aktif/pasif yapar
@@ -385,6 +383,58 @@ export const ozelGunIptal = createAsyncThunk(
   }
 );
 
+/**
+ * Puanlamayi tek dogru kaynaktan (namaz kayitlari) yeniden hesaplar (reconcile).
+ * tabanPuan / toplamKilinanNamaz / mukemmelGun TURETILIR; bonusPuan kalici korunur.
+ * Ilk calismada bonusPuan migrate edilir: eski toplamPuan - eski taban (sisme cikarimda
+ * sadelesir, mesru bonuslar korunur). sessiz=true ise kutlama uretmez (acilis/migrasyon),
+ * sessiz=false ise yalniz gercek seviye atlamada kutlar.
+ */
+export const puanlamayiYenidenHesapla = createAsyncThunk(
+  'seri/puanlamayiYenidenHesapla',
+  async (arg: { sessiz?: boolean } | undefined, { getState }) => {
+    const state = (getState() as { seri: SeriState }).seri;
+    const sessiz = arg?.sessiz ?? true;
+
+    // Tek dogru kaynak: tum namaz kayitlari
+    const kayitlar = await localVerileriSenkronizasyonIcinAl();
+    const turev = puanlamayiYenidenDegerlendir(kayitlar, state.ayarlar.tamGunEsigi);
+
+    // bonusPuan tek dogru kaynaktan = state (yuklemede disk'ten migrate edilerek set edildi,
+    // seriKontrolet gunceller). Reconcile bonusPuan'a DOKUNMAZ; yalniz seviyeyi turetir
+    // (tek-yazici). Migrasyon seriVerileriniYukle'ye tasindi -> burada yari/atlama riski yok.
+    const bonusPuan = state.bonusPuan;
+
+    const toplamPuan = turev.tabanPuan + bonusPuan;
+    const eskiSeviye = state.seviyeDurumu?.mevcutSeviye ?? 1;
+    const seviyeDurumu = puanEkle(bosSeviyeDurumuOlustur(), toplamPuan).yeniDurum;
+    const seviyeAtlandi = !sessiz && seviyeDurumu.mevcutSeviye > eskiSeviye;
+
+    await Promise.all([
+      LocalSeriServisi.localToplamKilinanNamaziKaydet(turev.toplamKilinanNamaz),
+      LocalSeriServisi.localMukemmelGunSayisiniKaydet(turev.mukemmelGunSayisi),
+      LocalSeriServisi.localSeviyeDurumunuKaydet(seviyeDurumu),
+    ]);
+
+    return {
+      toplamKilinanNamaz: turev.toplamKilinanNamaz,
+      mukemmelGunSayisi: turev.mukemmelGunSayisi,
+      tabanPuan: turev.tabanPuan,
+      bonusPuan,
+      seviyeDurumu,
+      seviyeAtlandi,
+      yeniSeviye: seviyeAtlandi ? seviyeHesapla(toplamPuan) : null,
+    };
+  },
+  {
+    condition: (_, { getState }) => {
+      const state = getState() as { seri: SeriState };
+      // Seri verileri yuklenmeden calistirma (race condition korumasi)
+      return !!state.seri.sonYukleme;
+    },
+  }
+);
+
 // ==================== SLICE ====================
 
 const seriSlice = createSlice({
@@ -437,6 +487,11 @@ const seriSlice = createSlice({
         state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
         state.toparlanmaSayisi = action.payload.toparlanmaSayisi;
         state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        // bonusPuan tek dogru kaynaktan (disk/migrasyon) yuklendi; tabanPuan invariant'i koru
+        // (reconcile birazdan kayittan kesin degeri turetecek).
+        state.bonusPuan = action.payload.bonusPuan;
+        state.tabanPuan = Math.max(0, (action.payload.seviyeDurumu?.toplamPuan ?? 0) - action.payload.bonusPuan);
+        state.migreEdildi = action.payload.migreEdildi;
         state.sonYukleme = new Date().toISOString();
       })
       .addCase(seriVerileriniYukle.rejected, (state, action) => {
@@ -459,10 +514,10 @@ const seriSlice = createSlice({
         state.guncelleniyor = false;
         state.seriDurumu = action.payload.seriDurumu;
         state.kullaniciRozetleri = action.payload.kullaniciRozetleri;
-        state.seviyeDurumu = action.payload.seviyeDurumu;
-        state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
+        // seviyeDurumu TEK-YAZICI: yalniz reconcile yazar; seriKontrolet dokunmaz (yaris/cift-yazici yok)
         state.toparlanmaSayisi = action.payload.toparlanmaSayisi;
-        state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        state.bonusPuan = action.payload.bonusPuan;
+        // toplamKilinanNamaz / mukemmelGunSayisi artik turev (puanlamayiYenidenHesapla) — burada yazilmaz
         // Rozet detaylarini guncelle
         state.rozetDetaylari = rozetDetaylariniAl(
           action.payload.kullaniciRozetleri
@@ -479,17 +534,26 @@ const seriSlice = createSlice({
         state.guncelleniyor = false;
         state.hata = action.error.message || 'Seri guncellenemedi';
       })
-      // Namaz kilindi puanla
-      .addCase(namazKilindiPuanla.fulfilled, (state, action) => {
+      // Puanlama reconcile (turev) — toplamKilinan/mukemmelGun/taban kayittan, bonus korunur
+      .addCase(puanlamayiYenidenHesapla.fulfilled, (state, action) => {
         state.toplamKilinanNamaz = action.payload.toplamKilinanNamaz;
+        state.mukemmelGunSayisi = action.payload.mukemmelGunSayisi;
+        state.tabanPuan = action.payload.tabanPuan;
+        state.bonusPuan = action.payload.bonusPuan;
         state.seviyeDurumu = action.payload.seviyeDurumu;
-
-        // Seviye atlandiysa kutlama ekle
         if (action.payload.seviyeAtlandi && action.payload.yeniSeviye) {
-          const { seviyeKutlamasiOlustur } = require('../../domain/services/RozetYoneticisiServisi');
-          state.bekleyenKutlamalar.push(
-            seviyeKutlamasiOlustur(action.payload.yeniSeviye)
+          const yeniSeviyeNo = action.payload.yeniSeviye.seviye;
+          // Ayni seviye icin kuyrukta zaten kutlama varsa tekrar ekleme (eszamanli reconcile cift kutlamasi)
+          const zatenVar = state.bekleyenKutlamalar.some(
+            (k) =>
+              k.tip === 'seviye_atlandi' &&
+              (k.ekstraVeri as { seviye?: { seviye?: number } })?.seviye?.seviye === yeniSeviyeNo
           );
+          if (!zatenVar) {
+            state.bekleyenKutlamalar.push(
+              seviyeKutlamasiOlustur(action.payload.yeniSeviye)
+            );
+          }
         }
       })
       // Ozel gun thunk'lari

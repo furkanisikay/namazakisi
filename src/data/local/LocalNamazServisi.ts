@@ -1,6 +1,14 @@
 /**
- * AsyncStorage ile local namaz verilerini yoneten servis
- * Offline kullanim ve misafir modu icin
+ * Gun-bazli local namaz verisi servisi (Faz 1).
+ *
+ * Veriler artik tek buyuk JSON blob'unda (NAMAZ_VERILERI) DEGIL, her gun icin ayri anahtarda
+ * tutulur: `namaz_gun_<tarih>` -> { [namazAdi]: boolean }. Bu sayede tek namaz isaretlemek
+ * tum gecmisi degil yalniz o gunu okur/yazar (O(n) -> O(1)).
+ *
+ * GUVENLI GOC: eski tek-blob, ilk erisimde gun-anahtarlarina TASINIR ama SILINMEZ (veri-kaybi
+ * riski yok; bayatlar, yok sayilir). Goc idempotenttir (atomik skip-if-exists) ve bir kez calisir.
+ *
+ * Esyamanlilik: tum yazimlar Depolama'nin anahtar-bazli atomik kuyrugundan gecer (lost-update yok).
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,56 +17,65 @@ import {
   GunlukNamazlar,
   LocalNamazVerileri,
   ApiYanit,
-  VakitAdi
+  VakitAdi,
 } from '../../core/types';
 import {
   NAMAZ_ISIMLERI,
   NamazAdi,
-  DEPOLAMA_ANAHTARLARI
+  DEPOLAMA_ANAHTARLARI,
 } from '../../core/constants/UygulamaSabitleri';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
+import { Depolama } from './Depolama';
+
+/** Tek bir gunun verisi: namazAdi -> kilindi mi. */
+type GunVerisi = Record<string, boolean>;
+
+const gunAnahtari = (tarih: string): string =>
+  `${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}${tarih}`;
+
+const anahtardanTarih = (anahtar: string): string =>
+  anahtar.slice(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK.length);
 
 /**
- * Tum local verileri getirir
+ * Eski tek-blob verisini gun-anahtarlarina tasir (bir kez). Idempotent ve veri-kaybi-korumali:
+ * - Gun-anahtari zaten varsa EZMEZ (skip-if-exists, atomik) -> goc-sonrasi yeni veriyi bozmaz.
+ * - Eski blob SILINMEZ (guvenlik).
+ * - Bayrak ile bir kez calisir; bayrak yoksa (kismi cokme dahil) tekrar guvenle calisabilir.
+ * Modul-onbellegi YOK (testlerde/uygulamada bayrak diskten okunur) -> capraz-kontaminasyon olmaz.
  */
-const tumVerileriAl = async (): Promise<LocalNamazVerileri> => {
-  try {
-    const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
-    return veri ? JSON.parse(veri) : {};
-  } catch (error) {
-    Logger.error('LocalNamaz', 'Namaz verileri okunamadı', error);
-    return {};
+const migrasyonyiGarantile = async (): Promise<void> => {
+  const tamam = await Depolama.ham(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON);
+  if (tamam === '1') return;
+
+  const eski = await Depolama.oku<LocalNamazVerileri>(
+    DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI
+  );
+  if (eski) {
+    for (const [tarih, gun] of Object.entries(eski)) {
+      // Atomik skip-if-exists: mevcut gun verisi varsa KORU (yeni isaretleri ezme).
+      await Depolama.guncelle<GunVerisi>(gunAnahtari(tarih), (mevcut) =>
+        mevcut ?? (gun as GunVerisi)
+      );
+    }
   }
+  await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
 };
 
-/**
- * Tum local verileri kaydeder
- */
-const tumVerileriKaydet = async (veriler: LocalNamazVerileri): Promise<void> => {
-  await AsyncStorage.setItem(
-    DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
-    JSON.stringify(veriler)
-  );
+/** Bir gunun verisini getirir (yoksa bos). */
+const gunVerisiniAl = async (tarih: string): Promise<GunVerisi> => {
+  const veri = await Depolama.oku<GunVerisi>(gunAnahtari(tarih));
+  return veri ?? {};
 };
 
-/**
- * Tek anahtarda (NAMAZ_VERILERI) read-modify-write yapan yazma işlemlerini
- * serileştiren kuyruk. AsyncStorage atomik değildir; eşzamanlı güncellemeler
- * birbirinin yazımını ezmesin (lost update) diye tüm mutasyonlar bu zincir
- * üzerinden sırayla çalışır.
- */
-let yazmaKuyrugu: Promise<unknown> = Promise.resolve();
-
-const yazmaSirasinaAl = <T>(islem: () => Promise<T>): Promise<T> => {
-  const sonuc = yazmaKuyrugu.then(islem, islem);
-  // Bir işlemin hatası kuyruğu kırmasın diye zinciri her durumda sürdür.
-  yazmaKuyrugu = sonuc.then(
-    () => undefined,
-    () => undefined
-  );
-  return sonuc;
-};
+const gunlukNamazlariOlustur = (tarih: string, gun: GunVerisi): GunlukNamazlar => ({
+  tarih,
+  namazlar: NAMAZ_ISIMLERI.map((namazAdi) => ({
+    namazAdi,
+    tamamlandi: gun[namazAdi] || false,
+    tarih,
+  })) as Namaz[],
+});
 
 /**
  * Belirli bir tarihe ait namazlari getirir
@@ -67,19 +84,9 @@ export const localNamazlariGetir = async (
   tarih: string
 ): Promise<ApiYanit<GunlukNamazlar>> => {
   try {
-    const tumVeriler = await tumVerileriAl();
-    const tarihVerileri = tumVeriler[tarih] || {};
-
-    const namazlar: Namaz[] = NAMAZ_ISIMLERI.map((namazAdi) => ({
-      namazAdi,
-      tamamlandi: tarihVerileri[namazAdi] || false,
-      tarih,
-    }));
-
-    return {
-      basarili: true,
-      veri: { tarih, namazlar },
-    };
+    await migrasyonyiGarantile();
+    const gun = await gunVerisiniAl(tarih);
+    return { basarili: true, veri: gunlukNamazlariOlustur(tarih, gun) };
   } catch (error) {
     return {
       basarili: false,
@@ -89,59 +96,50 @@ export const localNamazlariGetir = async (
 };
 
 /**
- * Namaz durumunu gunceller
+ * Namaz durumunu gunceller (yalniz o gunun anahtarini, atomik)
  */
 export const localNamazDurumunuGuncelle = async (
   tarih: string,
   namazAdi: NamazAdi,
   tamamlandi: boolean
-): Promise<ApiYanit<void>> =>
-  yazmaSirasinaAl(async () => {
-    try {
-      const tumVeriler = await tumVerileriAl();
-
-      if (!tumVeriler[tarih]) {
-        tumVeriler[tarih] = {};
-      }
-
-      tumVeriler[tarih][namazAdi] = tamamlandi;
-      await tumVerileriKaydet(tumVeriler);
-
-      return { basarili: true };
-    } catch (error) {
-      return {
-        basarili: false,
-        hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
-      };
-    }
-  });
+): Promise<ApiYanit<void>> => {
+  try {
+    await migrasyonyiGarantile();
+    await Depolama.guncelle<GunVerisi>(gunAnahtari(tarih), (mevcut) => ({
+      ...(mevcut ?? {}),
+      [namazAdi]: tamamlandi,
+    }));
+    return { basarili: true };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
 
 /**
- * Tum namazlari toplu olarak gunceller
+ * Tum namazlari toplu olarak gunceller (gunu tamamen yeniden yazar)
  */
 export const localTumNamazlariGuncelle = async (
   tarih: string,
   tamamlandi: boolean
-): Promise<ApiYanit<void>> =>
-  yazmaSirasinaAl(async () => {
-    try {
-      const tumVeriler = await tumVerileriAl();
-
-      tumVeriler[tarih] = {};
-      NAMAZ_ISIMLERI.forEach((namazAdi) => {
-        tumVeriler[tarih][namazAdi] = tamamlandi;
-      });
-
-      await tumVerileriKaydet(tumVeriler);
-
-      return { basarili: true };
-    } catch (error) {
-      return {
-        basarili: false,
-        hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
-      };
-    }
-  });
+): Promise<ApiYanit<void>> => {
+  try {
+    await migrasyonyiGarantile();
+    const gun: GunVerisi = {};
+    NAMAZ_ISIMLERI.forEach((namazAdi) => {
+      gun[namazAdi] = tamamlandi;
+    });
+    await Depolama.yaz(gunAnahtari(tarih), gun);
+    return { basarili: true };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
 
 /**
  * Tarih araligindaki namazlari getirir
@@ -151,26 +149,28 @@ export const localTarihAraligindakiNamazlariGetir = async (
   bitisTarihi: string
 ): Promise<ApiYanit<GunlukNamazlar[]>> => {
   try {
-    const tumVeriler = await tumVerileriAl();
-    const sonuc: GunlukNamazlar[] = [];
-
-    // Tarih araligini olustur
+    await migrasyonyiGarantile();
+    // Aralikitaki tum gunleri TEK batch (multiGet) ile oku -> O(aralik) sirali round-trip yerine tek tur.
+    const tarihler: string[] = [];
     let mevcutTarih = baslangicTarihi;
     while (mevcutTarih <= bitisTarihi) {
-      const tarihVerileri = tumVeriler[mevcutTarih] || {};
-
-      const namazlar: Namaz[] = NAMAZ_ISIMLERI.map((namazAdi) => ({
-        namazAdi,
-        tamamlandi: tarihVerileri[namazAdi] || false,
-        tarih: mevcutTarih,
-      }));
-
-      sonuc.push({ tarih: mevcutTarih, namazlar });
-
-      // Sonraki gune gec
+      tarihler.push(mevcutTarih);
       mevcutTarih = gunEkle(mevcutTarih, 1);
     }
-
+    const ciftler = await Depolama.cogunuOku(tarihler.map(gunAnahtari));
+    const hamHarita = new Map(ciftler);
+    const sonuc: GunlukNamazlar[] = tarihler.map((tarih) => {
+      const ham = hamHarita.get(gunAnahtari(tarih));
+      let gun: GunVerisi = {};
+      if (ham) {
+        try {
+          gun = JSON.parse(ham) as GunVerisi;
+        } catch {
+          gun = {};
+        }
+      }
+      return gunlukNamazlariOlustur(tarih, gun);
+    });
     return { basarili: true, veri: sonuc };
   } catch (error) {
     return {
@@ -181,33 +181,49 @@ export const localTarihAraligindakiNamazlariGetir = async (
 };
 
 /**
- * Tum local verileri senkronizasyon formatinda dondurur
+ * Tum local verileri senkronizasyon/turetme formatinda dondurur.
+ * (Puan reconcile bunu kullanir — davranis korunur: yalniz gercek NAMAZ_ISIMLERI dahil.)
  */
 export const localVerileriSenkronizasyonIcinAl = async (): Promise<
   { tarih: string; namazAdi: NamazAdi; tamamlandi: boolean }[]
 > => {
-  const tumVeriler = await tumVerileriAl();
+  await migrasyonyiGarantile();
+  const anahtarlar = await Depolama.onEkiOlanAnahtarlar(
+    DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK
+  );
+  const ciftler = await Depolama.cogunuOku(anahtarlar);
   const sonuc: { tarih: string; namazAdi: NamazAdi; tamamlandi: boolean }[] = [];
 
-  Object.entries(tumVeriler).forEach(([tarih, namazlar]) => {
-    Object.entries(namazlar).forEach(([namazAdi, tamamlandi]) => {
-      if (NAMAZ_ISIMLERI.includes(namazAdi as any)) {
-        sonuc.push({
-          tarih,
-          namazAdi: namazAdi as NamazAdi,
-          tamamlandi,
-        });
+  for (const [anahtar, ham] of ciftler) {
+    if (!ham) continue;
+    let gun: GunVerisi;
+    try {
+      gun = JSON.parse(ham) as GunVerisi;
+    } catch {
+      continue;
+    }
+    const tarih = anahtardanTarih(anahtar);
+    Object.entries(gun).forEach(([namazAdi, tamamlandi]) => {
+      if ((NAMAZ_ISIMLERI as readonly string[]).includes(namazAdi)) {
+        sonuc.push({ tarih, namazAdi: namazAdi as NamazAdi, tamamlandi });
       }
     });
-  });
+  }
 
   return sonuc;
 };
 
 /**
- * Local verileri temizler
+ * Tum local namaz verilerini temizler (tum gun-anahtarlari + eski blob)
  */
 export const localVerileriTemizle = async (): Promise<void> => {
+  // Once gocu tamamla: askida kalan bir gocun, silme sonrasi bayat blob'dan veri "diriltmesini"
+  // engeller (goc bitince bayrak set olur, sonraki goc calismaz).
+  await migrasyonyiGarantile();
+  const anahtarlar = await Depolama.onEkiOlanAnahtarlar(
+    DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK
+  );
+  await Depolama.cogunuSil(anahtarlar);
   await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
 };
 
@@ -248,4 +264,3 @@ export const kilinanVakitleriAl = async (tarih: string): Promise<VakitAdi[]> => 
     return [];
   }
 };
-

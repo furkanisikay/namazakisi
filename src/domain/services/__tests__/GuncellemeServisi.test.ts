@@ -1031,36 +1031,61 @@ describe('GitHubGuncellemeKaynagi — guvenilmez indirme baglantisi (guvenlik do
   });
 });
 
-describe('GitHubGuncellemeKaynagi — gercek surum (0.23.1) sinir karsilastirmasi', () => {
+describe('GitHubGuncellemeKaynagi — mevcut surume gore sinir karsilastirmasi', () => {
   let kaynak: GitHubGuncellemeKaynagi;
+
+  // Komsu surumler UYGULAMA.VERSIYON'dan TURETILIR; sabit pin yoktur -> her
+  // release'de (or. 0.23.2 -> 0.23.3) test bir daha kirilmaz.
+  const surumParcala = (v: string): [number, number, number] => {
+    const [a, b, c] = v.split('.').map((p) => parseInt(p, 10) || 0);
+    return [a, b, c];
+  };
+  const patchYukselt = (v: string): string => {
+    const [a, b, c] = surumParcala(v);
+    return `${a}.${b}.${c + 1}`;
+  };
+  const minorYukselt = (v: string): string => {
+    const [a, b] = surumParcala(v);
+    return `${a}.${b + 1}.0`;
+  };
+  const surumDusur = (v: string): string | null => {
+    const [a, b, c] = surumParcala(v);
+    if (c > 0) return `${a}.${b}.${c - 1}`;
+    if (b > 0) return `${a}.${b - 1}.0`;
+    if (a > 0) return `${a - 1}.0.0`;
+    return null;
+  };
 
   beforeEach(() => {
     kaynak = new GitHubGuncellemeKaynagi('furkanisikay/namazakisi');
     mockFetch.mockReset();
   });
 
-  it('mevcut surumden bir patch yuksek (0.23.3) -> guncelleme MEVCUT', async () => {
-    // Referans: UYGULAMA.VERSIYON === '0.23.2' (sabit dogrulanir)
-    expect(UYGULAMA.VERSIYON).toBe('0.23.2');
-    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.3'));
+  it('mevcut surumden bir patch yuksek -> guncelleme MEVCUT', async () => {
+    const yeni = patchYukselt(UYGULAMA.VERSIYON);
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeni));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
     expect(sonuc.guncellemeMevcut).toBe(true);
-    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.23.3');
+    expect(sonuc.bilgi?.yeniVersiyon).toBe(yeni);
   });
 
-  it('mevcut surumden bir minor yuksek (0.24.0) -> guncelleme MEVCUT', async () => {
-    mockFetch.mockResolvedValue(githubYanitiOlustur('0.24.0'));
+  it('mevcut surumden bir minor yuksek -> guncelleme MEVCUT', async () => {
+    const yeni = minorYukselt(UYGULAMA.VERSIYON);
+    mockFetch.mockResolvedValue(githubYanitiOlustur(yeni));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 
     expect(sonuc.guncellemeMevcut).toBe(true);
-    expect(sonuc.bilgi?.yeniVersiyon).toBe('0.24.0');
+    expect(sonuc.bilgi?.yeniVersiyon).toBe(yeni);
   });
 
-  it('mevcut surumden bir patch dusuk (0.23.1) -> guncelleme YOK', async () => {
-    mockFetch.mockResolvedValue(githubYanitiOlustur('0.23.1'));
+  it('mevcut surumden bir patch dusuk -> guncelleme YOK', async () => {
+    const dusuk = surumDusur(UYGULAMA.VERSIYON);
+    expect(dusuk).not.toBeNull();
+    if (dusuk === null) return;
+    mockFetch.mockResolvedValue(githubYanitiOlustur(dusuk));
 
     const sonuc = await kaynak.enSonSurumuKontrolEt();
 

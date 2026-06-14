@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
-import { seriVerileriniYukle, seriKontrolet, namazKilindiPuanla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
+import { seriVerileriniYukle, seriKontrolet, puanlamayiYenidenHesapla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
 import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
@@ -177,6 +177,8 @@ export const AnaSayfa: React.FC = () => {
     }
 
     dispatch(seriVerileriniYukle());
+    // Puanlama/seri senkronu, gunlukNamazlar yuklenince yukaridaki useEffect ile
+    // (seriKontrolet -> reconcile) otomatik ve SIRALI kosar.
     // muhafizAyarlariniYukle, iftarSayacAyarlariniYukle, sahurSayacAyarlariniYukle
     // ve BildirimServisi.izinIste App.tsx arkaplanMuhafiziBildirimleriniPlanla icerisinde
     // konum yuklendikten sonra paralel yukleniyor
@@ -196,16 +198,24 @@ export const AnaSayfa: React.FC = () => {
     };
   }, [aktifGun]);
 
-  // Seri Kontrolü
+  // Seri + puanlama senkronu: gunlukNamazlar her degistiginde (yukleme/toggle/toplu) once
+  // seriKontrolet'i AWAIT edip ARDINDAN reconcile'i zincirle -> TEK-YAZICI, yaris yok.
+  // Ilk senkron (acilis) SESSIZ; sonraki (gercek kullanici eylemi) seviye atlamada kutlar.
+  const seriIlkSenkronRef = useRef(true);
+  const migreEdildi = useAppSelector((state) => state.seri.migreEdildi);
   useEffect(() => {
-    // gunlukNamazlar yüklendiğinde, aktif gündeysek ve seri verileri yüklenmişse
     if (gunlukNamazlar && gunlukNamazlar.tarih === aktifGun && seriYuklendiMi) {
-      dispatch(seriKontrolet({
-        bugunNamazlar: gunlukNamazlar,
-        dunNamazlar: null
-      }));
+      // Ilk senkron YALNIZ migrasyon yapildiysa sessiz (de-inflasyon yanlis kutlama tetiklemesin).
+      // Migrasyon yoksa ilk senkron da seviye atlamayi kutlar -> arka planda kazanilan seviye yutulmaz.
+      const sessiz = seriIlkSenkronRef.current && migreEdildi;
+      seriIlkSenkronRef.current = false;
+      const bugunNamazlar = gunlukNamazlar;
+      (async () => {
+        await dispatch(seriKontrolet({ bugunNamazlar, dunNamazlar: null }));
+        dispatch(puanlamayiYenidenHesapla({ sessiz }));
+      })();
     }
-  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi]);
+  }, [gunlukNamazlar, mevcutTarih, aktifGun, dispatch, seriYuklendiMi, migreEdildi]);
 
   // Vakit Hesaplayıcı ve Sayaç
   useEffect(() => {
@@ -345,6 +355,8 @@ export const AnaSayfa: React.FC = () => {
   // Namaz İşlemleri
   const namazToggle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    // Puanlama + seri: gunlukNamazlar degisince yukaridaki useEffect (seriKontrolet -> reconcile)
+    // SIRALI ve TEK-YAZICI olarak otomatik kosar; burada ayrica dispatch GEREKMEZ (yaris onlenir).
 
     // Vakit donusumu (servis icin)
     const vakitDonusumu: Record<string, 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi'> = {
@@ -357,10 +369,6 @@ export const AnaSayfa: React.FC = () => {
     const vakitAdi = vakitDonusumu[namazAdi];
 
     if (tamamlandi) {
-      // Namaz kilindi - seri verileri yuklenmisse puan ekle
-      if (seriYuklendiMi) {
-        dispatch(namazKilindiPuanla({ namazSayisi: 1 }));
-      }
       try { NamazMuhafiziServisi.getInstance().namazKilindiIsaretle(namazAdi); setMuhafizDurumu({ mesaj: '', seviye: 0 }); } catch (e) { }
 
       // Zamanlanmış/aktif tüm vakit bildirimlerini temizle
@@ -406,6 +414,7 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
+  // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
 

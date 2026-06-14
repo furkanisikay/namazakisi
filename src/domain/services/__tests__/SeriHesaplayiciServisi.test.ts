@@ -3,6 +3,7 @@ import {
   bosSeriDurumuOlustur,
   namazGunuHesapla,
   gunTamMi,
+  oncekiGunuAl,
 } from '../SeriHesaplayiciServisi';
 import {
   SeriDurumu,
@@ -625,6 +626,57 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
       expect(sonuc.seriDurumu.sonTamGun).toBe(bugun);
       expect(sonuc.seriBozuldu).toBe(false);
     });
+  });
+});
+
+describe('SeriHesaplayiciServisi - Bug #4: ayni gun tam-alti dusurulunce geri sarma', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-06-14T12:00:00'));
+  });
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  const ayarlar: SeriAyarlari = { ...VARSAYILAN_SERI_AYARLARI, tamGunEsigi: 5 };
+  const gun = (tarih: string, kilinan: number): GunlukNamazlar => ({
+    tarih,
+    namazlar: [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, NamazAdi.Yatsi]
+      .map((namazAdi, i) => ({ namazAdi, tamamlandi: i < kilinan, tarih })),
+  });
+  const baslangicDurumu = (sonTamGun: string): SeriDurumu => ({
+    mevcutSeri: 5, enUzunSeri: 8, sonTamGun, seriBaslangici: '2026-06-09',
+    toparlanmaDurumu: null, dondurulduMu: false, dondurulmaTarihi: null,
+    sonGuncelleme: new Date().toISOString(),
+  });
+
+  test('5/5 sayilan gun ayni gun 4/5e dusurulunce mevcutSeri ve sonTamGun geri sarilir', () => {
+    const bugun = namazGunuHesapla(new Date(), '05:00');
+    const dun = oncekiGunuAl(bugun);
+
+    const s1 = seriHesapla(baslangicDurumu(dun), gun(bugun, 5), null, ayarlar);
+    expect(s1.seriDurumu.mevcutSeri).toBe(6);
+    expect(s1.seriDurumu.sonTamGun).toBe(bugun);
+    expect(s1.kazanilanPuan).toBeGreaterThan(0); // bugun seri/gun bonusu verildi
+
+    const s2 = seriHesapla(s1.seriDurumu, gun(bugun, 4), null, ayarlar);
+    expect(s2.seriDegisti).toBe(true);
+    expect(s2.seriDurumu.mevcutSeri).toBe(5);
+    expect(s2.seriDurumu.sonTamGun).toBe(dun);
+    expect(s2.seriDurumu.enUzunSeri).toBe(8); // rekor dusurulmez
+    // Faz 1b: bugun verilen bonus da geri alindi (negatif, esit miktar)
+    expect(s2.kazanilanPuan).toBe(-(s1.kazanilanPuan));
+  });
+
+  test('geri aldiktan sonra tekrar 5/5 yapilinca yeniden sayilir (simetrik)', () => {
+    const bugun = namazGunuHesapla(new Date(), '05:00');
+    const dun = oncekiGunuAl(bugun);
+
+    const s1 = seriHesapla(baslangicDurumu(dun), gun(bugun, 5), null, ayarlar);
+    const s2 = seriHesapla(s1.seriDurumu, gun(bugun, 4), null, ayarlar);
+    const s3 = seriHesapla(s2.seriDurumu, gun(bugun, 5), null, ayarlar);
+    expect(s3.seriDurumu.mevcutSeri).toBe(6);
+    expect(s3.seriDurumu.sonTamGun).toBe(bugun);
   });
 });
 

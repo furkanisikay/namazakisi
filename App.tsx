@@ -46,6 +46,10 @@ try {
       if (state.namaz.mevcutTarih === tarih) {
         store.dispatch(namazlariYukle({ tarih }));
       }
+      // NOT: arka planda SESSIZ reconcile YOK. Sessiz reconcile seviyeyi gizlice bumpler ve
+      // foreground "seviye atladin" kutlamasini yutardi. Puan/seri foreground'da (AnaSayfa
+      // useEffect: seriKontrolet -> reconcile) hesaplanir; veri kayittan TUREV oldugu icin
+      // arka plan isaretleri foreground'da dogru sayilir (bug #2 hala kapali, kayip yok).
     } catch {
       // Callback icindeki hatayi sessizce yut
     }

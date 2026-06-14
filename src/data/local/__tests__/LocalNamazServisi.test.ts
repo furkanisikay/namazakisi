@@ -330,3 +330,75 @@ describe('LocalNamazServisi — localVerileriSenkronizasyonIcinAl', () => {
     expect(sonuc).toContainEqual({ tarih: '2026-06-23', namazAdi: NamazAdi.Aksam, tamamlandi: true });
   });
 });
+
+describe('LocalNamazServisi — gun-bazli goc (Faz 1)', () => {
+  beforeEach(async () => {
+    await AsyncStorage.clear();
+  });
+
+  it('eski tek-blob ilk erisimde gun-anahtarlarina tasinir ve eski blob SILINMEZ', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({
+        '2026-03-01': { [NamazAdi.Sabah]: true, [NamazAdi.Ogle]: true },
+        '2026-03-02': { [NamazAdi.Yatsi]: true },
+      })
+    );
+
+    // Ilk erisim gocu tetikler
+    const g1 = await localNamazlariGetir('2026-03-01');
+    expect(g1.veri!.namazlar.find((n) => n.namazAdi === NamazAdi.Sabah)?.tamamlandi).toBe(true);
+    expect(g1.veri!.namazlar.find((n) => n.namazAdi === NamazAdi.Ogle)?.tamamlandi).toBe(true);
+
+    // Gun-anahtari yazilmis olmali
+    expect(await AsyncStorage.getItem('namaz_gun_2026-03-01')).not.toBeNull();
+    // Eski blob SILINMEMIS olmali (veri-kaybi korumasi)
+    expect(await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI)).not.toBeNull();
+    // Migrasyon bayragi set edilmis
+    expect(await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON)).toBe('1');
+
+    // Ikinci gun de tasinmis
+    const g2 = await localNamazlariGetir('2026-03-02');
+    expect(g2.veri!.namazlar.find((n) => n.namazAdi === NamazAdi.Yatsi)?.tamamlandi).toBe(true);
+  });
+
+  it('goc idempotent: goc sonrasi yeni isaret eski blob tarafindan EZILMEZ', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-05': { [NamazAdi.Sabah]: true } })
+    );
+
+    await localNamazlariGetir('2026-03-05'); // ilk goc
+    await localNamazDurumunuGuncelle('2026-03-05', NamazAdi.Ogle, true); // gocten sonra yeni isaret
+
+    const g = await localNamazlariGetir('2026-03-05'); // migrasyonyiGarantile yine cagrilir (no-op)
+    expect(g.veri!.namazlar.find((n) => n.namazAdi === NamazAdi.Sabah)?.tamamlandi).toBe(true);
+    expect(g.veri!.namazlar.find((n) => n.namazAdi === NamazAdi.Ogle)?.tamamlandi).toBe(true);
+  });
+
+  it('goc edilen veri senkronizasyon listesine de yansir', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-08': { [NamazAdi.Ikindi]: true } })
+    );
+
+    const sonuc = await localVerileriSenkronizasyonIcinAl();
+    expect(sonuc).toContainEqual({ tarih: '2026-03-08', namazAdi: NamazAdi.Ikindi, tamamlandi: true });
+  });
+
+  // Regresyon: migrasyon bayrak anahtari gun-anahtari onekiyle CAKISMAMALI; yoksa
+  // onEkiOlanAnahtarlar bayragi yakalar ve sahte tarih kaydi sizardi.
+  it('migrasyon bayragi senkronizasyon listesine SIZMAZ (onek cakismasi yok)', async () => {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI,
+      JSON.stringify({ '2026-03-09': { [NamazAdi.Sabah]: true } })
+    );
+
+    await localNamazlariGetir('2026-03-09'); // goc + bayrak set
+    expect(await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON)).toBe('1');
+
+    const sonuc = await localVerileriSenkronizasyonIcinAl();
+    // Yalniz gercek kayit; bayrak anahtarindan tureyen sahte/ekstra kayit OLMAMALI
+    expect(sonuc).toEqual([{ tarih: '2026-03-09', namazAdi: NamazAdi.Sabah, tamamlandi: true }]);
+  });
+});

@@ -129,6 +129,12 @@ export const KAZA_SABITLERI = {
 // AsyncStorage anahtarlari
 export const DEPOLAMA_ANAHTARLARI = {
   NAMAZ_VERILERI: 'namaz_verileri',
+  // Gun-bazli namaz kayitlari (Faz 1): namaz_gun_<tarih>. Migrasyon eski tek-blob'dan tasir,
+  // eski blob SILINMEZ (veri-kaybi riski yok). NAMAZ_GUN_MIGRASYON bayragi gocun bir kez calismasini saglar.
+  NAMAZ_GUN_ONEK: 'namaz_gun_',
+  // ONEMLI: bu anahtar NAMAZ_GUN_ONEK ('namaz_gun_') ile BASLAMAMALI; yoksa
+  // onEkiOlanAnahtarlar('namaz_gun_') bayragi gun-anahtari sanip listeye katar.
+  NAMAZ_GUN_MIGRASYON: '@namaz_akisi/namaz_gun_migrasyon_tamam',
   KULLANICI_AYARLARI: 'kullanici_ayarlari',
   SON_SENKRONIZASYON: 'son_senkronizasyon',
   // Seri sistemi anahtarlari
@@ -163,6 +169,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   TAKVIM_AYARLARI: '@namaz_akisi/takvim_ayarlari',
   // Yeni özellik duyuruları (görülen/kapatılan)
   GORULEN_OZELLIKLER: '@namaz_akisi/gorulen_ozellikler',
+  // Puan defteri (karma türev/defter modeli) — yol-bağımlı bonus puanı kalıcı tutulur.
+  // null/yok = ilk çalışma (migrasyon: eski toplamPuan - eski tabanPuan).
+  BONUS_PUAN: '@namaz_akisi/bonus_puan',
 } as const;
 
 // Tarih formatlari

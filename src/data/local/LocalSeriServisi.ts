@@ -424,6 +424,66 @@ export const localMukemmelGunSayisiniArttir = async (): Promise<
   }
 };
 
+/**
+ * Mukemmel gun sayisini dogrudan ayarlar (turev reconcile icin; Arttir yerine set).
+ */
+export const localMukemmelGunSayisiniKaydet = async (
+  sayi: number
+): Promise<ApiYanit<void>> => {
+  try {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI,
+      Math.max(0, Math.round(sayi)).toString()
+    );
+    return { basarili: true };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
+
+// ==================== BONUS PUAN (kalici defter) ====================
+
+/**
+ * Kalici bonus puanini getirir.
+ * null => anahtar yok = henuz migrate edilmedi (ilk calisma).
+ */
+export const localBonusPuaniGetir = async (): Promise<
+  ApiYanit<number | null>
+> => {
+  try {
+    const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.BONUS_PUAN);
+    return { basarili: true, veri: veri !== null ? parseInt(veri, 10) : null };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
+
+/**
+ * Kalici bonus puanini kaydeder (alt sinir 0).
+ */
+export const localBonusPuaniKaydet = async (
+  puan: number
+): Promise<ApiYanit<void>> => {
+  try {
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.BONUS_PUAN,
+      Math.max(0, Math.round(puan)).toString()
+    );
+    return { basarili: true };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
+
 // ==================== TOPLU ISLEMLER ====================
 
 /**
@@ -497,6 +557,7 @@ export const localTumSeriVerileriniTemizle = async (): Promise<
       AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ),
       AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI),
       AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI),
+      AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.BONUS_PUAN),
       // Ayarlar korunur
     ]);
     return { basarili: true };
