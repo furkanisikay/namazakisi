@@ -126,7 +126,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
     kontrol();
     const interval = setInterval(kontrol, 60 * 1000);
     return () => clearInterval(interval);
-  }, [koordinatlar]);
+    // Nesne yerine primitive bağımlılık: koordinatlar referansı değişse de (ör. her
+    // render yeni nesne) yalnız gerçek lat/lng değişiminde yeniden kur → render döngüsü olmaz.
+  }, [koordinatlar?.lat, koordinatlar?.lng]);
 
   // ==================== MOTİVASYON ====================
 

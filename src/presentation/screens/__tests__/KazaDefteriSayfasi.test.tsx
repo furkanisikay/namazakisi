@@ -68,6 +68,15 @@ const kazaDurumu = {
   ],
 };
 
+// Redux useSelector ÜRETİMDE stabil referans döndürür. Mock'ta da TEK ve SABİT bir
+// state nesnesi kullan: her render'da yeni nesne dönerse `konum.koordinatlar` referansı
+// değişir, mekruh useEffect'i her render tetiklenip setState ile SONSUZ DÖNGÜYE girer
+// (testi asardı). Sabit referans bunu önler.
+const KAZA_STATE = {
+  kaza: { kazaDurumu, istatistik: null, yukleniyor: false },
+  konum: { koordinatlar: { lat: 41, lng: 29 } },
+};
+
 describe('KazaDefteriSayfasi — validasyon hata modalı', () => {
   const dispatchMock = jest.fn();
 
@@ -76,10 +85,7 @@ describe('KazaDefteriSayfasi — validasyon hata modalı', () => {
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
     (useAppSelector as unknown as jest.Mock).mockImplementation((selector: any) =>
-      selector({
-        kaza: { kazaDurumu, istatistik: null, yukleniyor: false },
-        konum: { koordinatlar: { lat: 41, lng: 29 } },
-      })
+      selector(KAZA_STATE)
     );
   });
 
