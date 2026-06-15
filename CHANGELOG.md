@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.8] - 2026-06-15
+
+### Düzeltildi
+- [kaza] KazaDefteri testi sonsuz render dongusu (mock stabil referans + primitive efekt bagimliligi)
+- [yedek] RN PRNG yoklugu duzeltmesi + Alert.alert yerine tema modali
+- [guncelleme] indirilen guncelleme onay karti guncellemeMevcut'tan bagimsiz gosterilsin (#104 review)
+- [guncelleme] yeniden-baslat kartina kapatma butonu + false-donuste tekrar deneme (#104 review)
+- [navigasyon] gun navigasyonu snap-back ve gece yarisi ziplama/toast (#13)
+- [guncelleme] otomatik güncelleme sonrası açıl-kapan döngüsünü gider (#91)
+
+### Değiştirildi
+- [bildirim] kalan tum Alert.alert kullanimlarini BildirimModali'ya tasi
+
 ## [0.23.7] - 2026-06-14
 
 ### Eklendi
