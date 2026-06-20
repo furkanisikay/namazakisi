@@ -13,6 +13,8 @@ npm run verify    # = typecheck + lint + test (ÜÇÜ DE geçmeli)
 
 Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça raporla. Bozuk kod (tip hatası, tanımsız referans, kırık test) asla teslim edilmez; uygulama runtime'da çöker.
 
+> **Lint warning'leri kapı DEĞİL** — yalnız *error* `verify`'ı durdurur. Ama dokunduğun dosyaya **yeni warning EKLEME** (`any`, kullanılmayan değişken, `console.log`…); mevcut warning'leri temizlemek zorunda değilsin, yenisini bırakma.
+
 ## Komutlar
 | Amaç | Komut |
 |---|---|
@@ -37,7 +39,7 @@ Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça r
 - **Kod isimleri Türkçe** (değişken/fonksiyon/dosya): `vakit`, `ayarlar`, `olustur`, `temizle`...
 - **Kullanıcıya görünen TÜM metin kibar "siz" dilinde**: "ekleyebilirsiniz", "kontrol edin", "vakitleriniz". Asla "sen/senin". CTA da kibar: "Hemen kurun", "İnceleyin".
 - State: her slice `*Yukle` / `*Guncelle` desenini izler; kalıcılık AsyncStorage ile thunk içinde.
-- **`Alert.alert` KULLANMA** (kullanıcıya görünen geri bildirim için): yerel/kötü görünür, uygulamanın görsel diline uymaz → tema-uyumlu modal kullan. Genel hata/bilgi/başarı bildirimi için **`BildirimModali`** (`src/presentation/components/common/BildirimModali.tsx`; `tip: 'hata'|'bilgi'|'basari'`, ops. `birincilEtiket`/`onBirincil`), onay için `KerahatOnayModal` kalitesinde modal. (Not: kod tabanında hâlâ ~23 eski `Alert.alert` var; yenisini EKLEME, dokunduğun akışı dönüştür.)
+- **`Alert.alert` KULLANMA** (kullanıcıya görünen geri bildirim için): yerel/kötü görünür, uygulamanın görsel diline uymaz → tema-uyumlu modal kullan. Genel hata/bilgi/başarı bildirimi için **`BildirimModali`** (`src/presentation/components/common/BildirimModali.tsx`; `tip: 'hata'|'bilgi'|'basari'`, ops. `birincilEtiket`/`onBirincil`), onay için `KerahatOnayModal` kalitesinde modal. Aktif `Alert.alert` çağrısı **kalmadı** (dönüşüm tamam); yenisini EKLEME.
 - Stil/format kurallarını **sen kovalama** — `npm run lint` yapar. (Kullanıcıyla daima **Türkçe** konuş.)
 
 ## Kritik desenler ve tuzaklar (bu projede öğrenildi)
@@ -86,6 +88,7 @@ Provider: Play Store kurulumu → `PlayStoreGuncellemeKaynagi` (Play Core), aksi
 - Slice testleri `src/presentation/store/__tests__`, servis testleri `src/domain/services/__tests__`.
 - `jest.mock` ile mock'la: `expo-calendar`, `adhan`, `@react-native-async-storage/async-storage`, `react-native` (`Platform`). Örnek: `TakvimServisi.test.ts`.
 - Redux state Immer ile **donmuş** → diziyi `.sort()` etmeden önce `[...dizi]` ile kopyala.
+- **Yük/zayıf-VM dayanıklı süre sınırları (İKİ ayrı sınır var):** Tam-sayfa RN render testleri (KazaDefteri/DebugLogs/PaylasimModal/KonumAyarlari/IceAktarma gibi) gerçek timer + `waitFor` kullanır → CPU yükü altında veya Jules'un zayıf VM'inde varsayılanları aşıp **flaky timeout** verirdi (test bozuk değil, yalnız yavaş; boştayken hepsi geçer). İkisi de gerçek render maliyetine göre ayarlı, **düşürme**: (1) `jest.config.js > testTimeout: 30000` (test gövdesi sınırı; varsayılan 5000ms); (2) `jest.setup.js > configure({ asyncUtilTimeout: 10000 })` (`waitFor`/`findBy` penceresi; varsayılan 1000ms — testTimeout'tan BAĞIMSIZ, ayrı büyütülmeli). Yeni ağır sayfa testinde mümkünse `jest.useFakeTimers()` ile gerçek timer'lardan (setInterval/setTimeout, Logger debounce) kaçın.
 
 ## 🚧 Sınırlar
 **✅ Her zaman:** `src/`'e yaz · değişiklikten sonra `npm run verify` çalıştır ve geçir · kibar "siz" dili · var olan deseni izle.
@@ -94,7 +97,13 @@ Provider: Play Store kurulumu → `PlayStoreGuncellemeKaynagi` (Play Core), aksi
 
 ## Jules / agent ortam kurulumu
 Jules kısa ömürlü bir Ubuntu VM açar. **Jules proje ayarlarında** şunları MUTLAKA tanımla (yoksa kendini doğrulamaz, bozuk PR açar — Jules'un en yaygın hata sebebi budur):
-- **Setup script:** `npm install`
+- **Setup script:** `npm ci` (lockfile ile paritede; CI de her yerde `npm ci` kullanır → "Jules'ta geçti, CI'da patladı" sapmasını önler). **İstisna:** Jules görev içinde `package.json`'a yeni bağımlılık eklerse `npm ci` o paketi kuramaz → o görevde `npm install` ile `package-lock.json`'u yeniden üretmelidir.
 - **Test / validation command:** `npm run verify`
 
 Böylece Jules PR açmadan önce typecheck + lint + test geçişini çalıştırır, başarısızsa suite geçene kadar iterasyon yapar. Prod anahtarı koyma; stub/local-only kullan.
+
+**Ortam gerçekleri (Jules VM):**
+- **Node 20** kullan (CI pin'i ile aynı; `package.json > engines.node >= 20.19.4`).
+- `npm ci`/`npm install` **`postinstall: patch-package`**'i çalıştırır → `patches/` git'te, taze VM'de yamalar otomatik uygulanır; bu adımı **ATLAMA** (yoksa `react-native-css-interop` sessizce bozulur).
+- **PR hedef dalı: `master`** (develop değil).
+- Jules `git push` kullanıyorsa panelde **`CI=true`** env tanımla → `.githooks/pre-push` push'ta `verify`'ı gereksiz yere tekrar koşmaz (Jules GitHub App API ile PR açıyorsa hook tetiklenmez, gerek yok).

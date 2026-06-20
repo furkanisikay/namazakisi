@@ -2,10 +2,18 @@
 module.exports = {
   preset: "react-native",
   testEnvironment: "node",
+  // Tam-sayfa RN render testleri (KazaDefteri/DebugLogs vb.) gerçek timer + waitFor
+  // kullanır; CPU yükü altında veya Jules'un zayıf VM'inde varsayılan 5000ms'i aşıp
+  // flaky "timeout" verirler (test BOZUK değil, yalnız yavaş). Bütçeyi gerçek render
+  // maliyetine göre genişlet — boştayken tüm suite ~30sn, sınır yalnız üst-bant içindir.
+  testTimeout: 30000,
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
   setupFiles: ["<rootDir>/jest.setup.js"],
+  // waitFor/findBy süresini (asyncUtilTimeout) burada genişletiyoruz; @testing-library
+  // import'u expect gerektirdiği için setupFiles'ta DEĞİL, env kurulduktan SONRA olmalı.
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.after-env.js"],
   // Coverage ayarlari
   collectCoverageFrom: [
     "src/**/*.ts",
