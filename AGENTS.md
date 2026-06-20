@@ -88,6 +88,7 @@ Provider: Play Store kurulumu → `PlayStoreGuncellemeKaynagi` (Play Core), aksi
 - Slice testleri `src/presentation/store/__tests__`, servis testleri `src/domain/services/__tests__`.
 - `jest.mock` ile mock'la: `expo-calendar`, `adhan`, `@react-native-async-storage/async-storage`, `react-native` (`Platform`). Örnek: `TakvimServisi.test.ts`.
 - Redux state Immer ile **donmuş** → diziyi `.sort()` etmeden önce `[...dizi]` ile kopyala.
+- **`testTimeout: 30000` (jest.config.js):** Tam-sayfa RN render testleri (KazaDefteri/DebugLogs gibi) gerçek timer + `waitFor` kullanır → CPU yükü altında veya Jules'un zayıf VM'inde varsayılan 5000ms'i aşıp **flaky timeout** verirdi (test bozuk değil, yalnız yavaş; boştayken hepsi geçer). Bu sınır gerçek render maliyetine göre ayarlı — **düşürme**; sayfa testi yazarken `jest.useFakeTimers()` ile gerçek timer'lardan (setInterval/setTimeout, Logger debounce) kaçın, gerek yoksa süreyi uzatma.
 
 ## 🚧 Sınırlar
 **✅ Her zaman:** `src/`'e yaz · değişiklikten sonra `npm run verify` çalıştır ve geçir · kibar "siz" dili · var olan deseni izle.
