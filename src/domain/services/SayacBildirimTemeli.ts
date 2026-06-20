@@ -114,19 +114,30 @@ export abstract class SayacBildirimTemeli {
   /** Bu servise ait tum bildirimleri (prefix bazli) temizle + native countdown'lari durdur. */
   public async tumBildirimleriniTemizle(): Promise<void> {
     try {
-      const gosterilenler = await notifee.getDisplayedNotifications();
+      // Optimizasyon: Bildirim okuma islemlerini paralel yap
+      const [gosterilenler, triggerIds] = await Promise.all([
+        notifee.getDisplayedNotifications().catch(() => []),
+        notifee.getTriggerNotificationIds().catch(() => [])
+      ]);
+
+      const iptalIslemleri: Promise<void>[] = [];
+
       for (const bildirim of gosterilenler) {
-        if (bildirim.id && bildirim.id.startsWith(this.konfig.idOneki)) {
+        if (bildirim && bildirim.id && bildirim.id.startsWith(this.konfig.idOneki)) {
           try { stopCountdown(bildirim.id); } catch (_) { /* yok sayilabilir */ }
-          await notifee.cancelNotification(bildirim.id);
+          iptalIslemleri.push(notifee.cancelNotification(bildirim.id).catch(() => {}));
         }
       }
 
-      const triggerIds = await notifee.getTriggerNotificationIds();
       for (const id of triggerIds) {
-        if (id.startsWith(this.konfig.idOneki)) {
-          await notifee.cancelTriggerNotification(id);
+        if (id && id.startsWith(this.konfig.idOneki)) {
+          iptalIslemleri.push(notifee.cancelTriggerNotification(id).catch(() => {}));
         }
+      }
+
+      // Tum iptal islemlerini paralel olarak gerceklestir
+      if (iptalIslemleri.length > 0) {
+        await Promise.all(iptalIslemleri);
       }
     } catch (_) { /* temizleme hatasi sessizce gecilir */ }
   }
