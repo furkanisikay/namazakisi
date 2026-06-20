@@ -11,6 +11,9 @@ module.exports = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
   setupFiles: ["<rootDir>/jest.setup.js"],
+  // waitFor/findBy süresini (asyncUtilTimeout) burada genişletiyoruz; @testing-library
+  // import'u expect gerektirdiği için setupFiles'ta DEĞİL, env kurulduktan SONRA olmalı.
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.after-env.js"],
   // Coverage ayarlari
   collectCoverageFrom: [
     "src/**/*.ts",
