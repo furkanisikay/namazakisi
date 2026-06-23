@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.11] - 2026-06-23
+
+### Düzeltildi
+- [deps] lockfile npm 10 paritesi (cosmiconfig senkronu) (#117)
+
 ## [0.23.10] - 2026-06-23
 
 ### Düzeltildi
