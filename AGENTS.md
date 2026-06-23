@@ -27,6 +27,8 @@ Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça r
 
 > ⚠️ `package.json`'a yeni bağımlılık eklendiyse **veya master'dan yeni commit çektiysen önce `npm install` çalıştır** — yoksa typecheck "modül bulunamadı" verir. Bu bir kod hatası DEĞİL, senkronsuz `node_modules`'tır.
 
+> ⚠️ **Lockfile'ı yeniden üretirken CI'nin npm sürümünü kullan (npm 10 / Node 20).** Yerelde npm 11 (Node 24) ile `npm install` yapıp lockfile'ı commit'lersen, npm 11 bazı transitifleri (yaşanmış: `cosmiconfig@9.0.2` — `@commitlint`/`cosmiconfig-typescript-loader` bağımlılığı) lockfile'dan **düşürür**; CI'nin npm 10 `npm ci`'ı `Missing: <paket> from lock file` ile patlar → master kırmızı, **auto-release atlanır (release kesilmez)**. `npm run verify` yerelde GEÇER (mevcut `node_modules`'ı kullanır, `npm ci` bütünlük kontrolünü yapmaz) → yanıltıcı. Doğru akış: `npx -y npm@10 install` ile yeniden üret, sonra **`npx -y npm@10 ci`** ile doğrula (CI'nin tam komutu; exit 0 = senkron). Combine ettiğin dependabot lockfile'larında bu özellikle önemli.
+
 ## Proje yapısı
 - `src/domain/` — servisler, iş kuralı (**store'a BAĞIMLI OLMAMALI**; tipleri dosya-içi yerelleştir, yapısal uyum yeter)
 - `src/data/local/` — veri erişim katmanı (AsyncStorage)
