@@ -59,7 +59,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   return (
     <View className="flex-row items-center rounded-lg overflow-hidden border" style={{ borderColor: renkler.sinir }}>
       <TouchableOpacity
-        className="w-9 h-9 items-center justify-center"
+        className="w-11 h-11 items-center justify-center"
         style={{ backgroundColor: deger <= min ? renkler.sinir : renk }}
         onPress={azalt}
         disabled={deger <= min}
@@ -70,14 +70,14 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         <FontAwesome5 name="minus" size={12} color="#FFF" />
       </TouchableOpacity>
       <View
-        className="px-3 h-9 items-center justify-center flex-row"
+        className="px-3 h-11 items-center justify-center flex-row"
         style={{ backgroundColor: renkler.kartArkaplan, minWidth: degerGenisligi }}
       >
         <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{deger}</Text>
         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{birim}</Text>
       </View>
       <TouchableOpacity
-        className="w-9 h-9 items-center justify-center"
+        className="w-11 h-11 items-center justify-center"
         style={{ backgroundColor: deger >= max ? renkler.sinir : renk }}
         onPress={artir}
         disabled={deger >= max}

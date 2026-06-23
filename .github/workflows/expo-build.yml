@@ -91,7 +91,7 @@ jobs:
         run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: 🔢 Versiyon bilgisi
         id: version
