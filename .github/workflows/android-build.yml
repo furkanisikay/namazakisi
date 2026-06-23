@@ -65,7 +65,7 @@ jobs:
         run: echo "start=$(date +%s)" >> $GITHUB_OUTPUT
 
       - name: 📥 Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: ${{ inputs.build_type == 'release' && '0' || '1' }}
           fetch-tags: true
@@ -474,7 +474,7 @@ jobs:
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
         with:
           tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
