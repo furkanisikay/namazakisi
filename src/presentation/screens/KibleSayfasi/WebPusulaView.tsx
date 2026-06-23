@@ -127,6 +127,10 @@ export const WebPusulaView = () => {
         javaScriptEnabled={true}
         domStorageEnabled={true}
         startInLoadingState={true}
+        allowFileAccess={false}
+        allowFileAccessFromFileURLs={false}
+        allowUniversalAccessFromFileURLs={false}
+        originWhitelist={['https://*', 'about:blank']}
         onError={() => setHataOlustu(true)}
         onHttpError={() => setHataOlustu(true)}
         renderLoading={() => (
