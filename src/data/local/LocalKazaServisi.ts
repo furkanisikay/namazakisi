@@ -7,6 +7,7 @@ import { KazaDurumu, KazaNamaz, KazaNamazAdi, KAZA_NAMAZ_LISTESI } from '../../c
 import { ApiYanit } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI, KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { Logger } from '../../core/utils/Logger';
 
 // ==================== BAŞLANGIÇ DURUMU ====================
 
@@ -43,36 +44,61 @@ export const localKazaDurumunuGetir = async (): Promise<ApiYanit<KazaDurumu>> =>
   try {
     const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
 
-    if (veri) {
-      const parsed = JSON.parse(veri) as KazaDurumu;
-
-      // Eski versiyondan gelen verilerde eksik alanlar olabilir
-      if (!parsed.namazlar || parsed.namazlar.length === 0) {
-        parsed.namazlar = KAZA_NAMAZ_LISTESI.map(bosKazaNamazOlustur);
-      }
-      // Vitir sonradan eklendiyse listeye ekle
-      const mevcutAdlar = parsed.namazlar.map((n) => n.namazAdi);
-      for (const ad of KAZA_NAMAZ_LISTESI) {
-        if (!mevcutAdlar.includes(ad)) {
-          parsed.namazlar.push(bosKazaNamazOlustur(ad));
-        }
-      }
-      if (parsed.toplamGizleMi === undefined) {
-        parsed.toplamGizleMi = false;
-      }
-      if (parsed.gunlukHedef === undefined) {
-        parsed.gunlukHedef = KAZA_SABITLERI.VARSAYILAN_GUNLUK_HEDEF;
-      }
-
-      return { basarili: true, veri: parsed };
+    if (!veri) {
+      return { basarili: true, veri: bosKazaDurumuOlustur() };
     }
 
-    return { basarili: true, veri: bosKazaDurumuOlustur() };
+    // Bozuk/beklenmedik veride OKUMA ASLA REDDETMEMELİ — yoksa sayfa sonsuz
+    // "Yükleniyor..."da kilitlenir (kazaVerileriniYukle reddolur → kazaDurumu null).
+    // Ham değeri ÜZERİNE YAZMAYIZ (kurtarma için diskte korunur), yalnızca boş
+    // (kullanılabilir) durumla devam eder ve durumu loglarız.
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(veri);
+    } catch {
+      Logger.warn('LocalKazaServisi', 'KAZA_DURUMU parse edilemedi, boş durumla devam ediliyor', {
+        uzunluk: veri.length,
+        onek: veri.slice(0, 120),
+      });
+      return { basarili: true, veri: bosKazaDurumuOlustur() };
+    }
+
+    // Beklenen biçim: düz nesne. null / dizi / sayı / string kullanılamaz.
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      Logger.warn('LocalKazaServisi', 'KAZA_DURUMU beklenmeyen biçimde, boş durumla devam ediliyor', {
+        tip: Array.isArray(parsed) ? 'array' : typeof parsed,
+      });
+      return { basarili: true, veri: bosKazaDurumuOlustur() };
+    }
+
+    const durum = parsed as KazaDurumu;
+
+    // Eski versiyondan gelen verilerde eksik alanlar olabilir
+    if (!Array.isArray(durum.namazlar) || durum.namazlar.length === 0) {
+      durum.namazlar = KAZA_NAMAZ_LISTESI.map(bosKazaNamazOlustur);
+    }
+    // Vitir sonradan eklendiyse listeye ekle
+    const mevcutAdlar = durum.namazlar.map((n) => n.namazAdi);
+    for (const ad of KAZA_NAMAZ_LISTESI) {
+      if (!mevcutAdlar.includes(ad)) {
+        durum.namazlar.push(bosKazaNamazOlustur(ad));
+      }
+    }
+    if (durum.toplamGizleMi === undefined) {
+      durum.toplamGizleMi = false;
+    }
+    if (durum.gunlukHedef === undefined) {
+      durum.gunlukHedef = KAZA_SABITLERI.VARSAYILAN_GUNLUK_HEDEF;
+    }
+
+    return { basarili: true, veri: durum };
   } catch (error) {
-    return {
-      basarili: false,
+    // Beklenmeyen okuma hatası (ör. AsyncStorage erişimi) — yine de kilitlenme;
+    // boş durumla başarılı dön (sayfa açılsın), hatayı logla.
+    Logger.error('LocalKazaServisi', 'KAZA_DURUMU okunamadı, boş durumla devam ediliyor', {
       hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
-    };
+    });
+    return { basarili: true, veri: bosKazaDurumuOlustur() };
   }
 };
 
