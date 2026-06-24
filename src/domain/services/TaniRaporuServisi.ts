@@ -4,7 +4,7 @@
  */
 
 // İki ondalıklı koordinat çiftlerini yakalar: "41.0082, 28.9784"
-const KOORDINAT = /(-?\d{1,3}\.\d{2,})\s*,\s*(-?\d{1,3}\.\d{2,})/g;
+const KOORDINAT = /(-?\d{1,3}\.\d{1,})\s*,\s*(-?\d{1,3}\.\d{1,})/g;
 // token=..., api_key: ..., bearer ... gibi gizli değerler
 const SIR = /\b(token|api[_-]?key|secret|bearer|password|authorization)\b\s*[:=]?\s*\S+/gi;
 
