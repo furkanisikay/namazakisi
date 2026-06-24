@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.13] - 2026-06-24
+
+### Eklendi
+- [tani] kullanıcı-onaylı, cihazda-kalan sorun bildirme akışı (#120)
+
 ## [0.23.12] - 2026-06-24
 
 ### Düzeltildi
