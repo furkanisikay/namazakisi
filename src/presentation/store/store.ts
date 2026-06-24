@@ -3,6 +3,7 @@
  */
 
 import { configureStore } from '@reduxjs/toolkit';
+import { taniListenerMiddleware } from './taniListener';
 import authReducer from './authSlice';
 import namazReducer from './namazSlice';
 import seriReducer from './seriSlice';
@@ -40,7 +41,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).prepend(taniListenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
