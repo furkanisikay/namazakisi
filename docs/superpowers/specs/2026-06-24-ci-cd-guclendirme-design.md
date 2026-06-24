@@ -39,6 +39,7 @@ GitHub **ruleset** (modern; `gh api`/Settings ile) master'a:
 - **Composite "setup" action** (`.github/actions/kurulum/action.yml`): checkout + setup-node(cache:npm) + `npm ci` tekrarını quality+test (ve gerekirse build) job'larında tekille.
 - **Zengin `$GITHUB_STEP_SUMMARY`:** test sayıları + coverage% (C), release sürüm/changelog (android-build), güvenlik bulgu özeti (CodeQL/dependency-review), tutarlı tablo formatı. Mevcut `ci-summary` job korunur/genişletilir.
 - **Standardizasyon:** başlık doküman blokları tek şablon; build workflow'larına `concurrency`; her job'da explicit `timeout-minutes` + en dar `permissions`.
+- **Release-push robustluğu (yaşanmış olay, 2026-06-24):** `auto-release`/`android-build.yml`'in "Commit ve Tag" adımı `git push origin HEAD:master`'ı `pull --rebase` yapmadan çalıştırıyor → master'a araya kaçan *herhangi* bir push (docs dahil) release'i `non-fast-forward` ile **kırıyor** (v0.23.13 release'i bu yüzden başarısız oldu — native build başarılıydı). Düzeltme: push'tan önce `git pull --rebase origin master` + sınırlı **retry** (rebase→push döngüsü, 2-3 deneme). Bu, A'daki ruleset linear-history kuralıyla da uyumlu olmalı (bot push'u hâlâ fast-forward).
 
 ## 4. Faz sırası (tek spec, fazlı uygulama)
 1. **Faz 1 — A + C:** coverageThreshold + run-summary coverage; sonra master ruleset (release-bot bypass doğrulanarak). En yüksek kaldıraç. *Sıra önemli: ruleset'i açmadan önce quality+test check adlarının kararlı olduğundan emin ol.*
@@ -51,6 +52,7 @@ GitHub **ruleset** (modern; `gh api`/Settings ile) master'a:
 - Kalite: coverage eşiği altına düşen bir değişiklik testi **fail** eder.
 - Workflow'lar: `actionlint` (veya gh) ile geçerli; mevcut `npm run verify` ve release akışı bozulmaz; her job'da timeout+permissions.
 - Hiçbir faz auto-release'i (master direct push) kırmaz.
+- Release-push robustluğu: build sürerken master'a araya bir commit kaçsa bile release push'u (rebase+retry ile) **başarılı** olur.
 
 ## 6. Sınırlar / riskler
 - **Ruleset bypass** repo planına/araçlarına bağlı; bypass kurulamazsa "Hafif" moda (sadece zorunlu check, require-PR yok) düşülür — yine de auto-release korunur. Bu, implementasyonda doğrulanacak ilk şey.
