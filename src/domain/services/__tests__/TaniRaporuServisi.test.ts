@@ -6,6 +6,7 @@ jest.mock('../../../core/utils/Logger', () => ({
 }));
 
 import { loglariMaskele, taniRaporuOlustur } from '../TaniRaporuServisi';
+import { UYGULAMA } from '../../../core/constants/UygulamaSabitleri';
 
 describe('loglariMaskele', () => {
   test('konumDahil=false → koordinatları gizler', () => {
@@ -20,6 +21,7 @@ describe('loglariMaskele', () => {
     expect(m).toContain('41.0');
     expect(m).toContain('29.0');
     expect(m).not.toContain('41.0082');
+    expect(m).not.toContain('28.9784');
   });
 
   test('token/anahtar desenlerini redakte eder', () => {
@@ -27,6 +29,28 @@ describe('loglariMaskele', () => {
     expect(m).not.toContain('abc123secret');
     expect(m).not.toContain('ZZZ');
     expect(m).toContain('[gizlendi]');
+  });
+
+  test('Authorization: Bearer <jwt> → JWT tümden gizlenir', () => {
+    const m = loglariMaskele('Authorization: Bearer eyJ0.payload.sig', { konumDahil: false });
+    expect(m).not.toContain('eyJ0');
+    expect(m).not.toContain('payload.sig');
+    expect(m).toContain('[gizlendi]');
+  });
+
+  test('SIR koordinatı yutmamalı: "secret 41.0082, 28.9784" → koordinat sızmaz', () => {
+    const m = loglariMaskele('secret 41.0082, 28.9784', { konumDahil: false });
+    expect(m).not.toContain('41.0082');
+    expect(m).not.toContain('28.9784');
+    expect(m).toContain('[gizlendi]');
+  });
+
+  test('konumDahil=false → adres alanını gizler', () => {
+    const log = 'Data: {\n  "adres": "Atatürk Cad. No:5",\n  "konumModu": "manuel"\n}';
+    const m = loglariMaskele(log, { konumDahil: false });
+    expect(m).not.toContain('Atatürk Cad. No:5');
+    expect(m).toContain('[konum gizlendi]');
+    expect(m).toContain('"konumModu": "manuel"');
   });
 
   test('sıradan teknik logu değiştirmez', () => {
@@ -100,7 +124,7 @@ describe('loglariMaskele', () => {
 describe('taniRaporuOlustur', () => {
   test('konu sürümü içerir, gövde ortam+bağlam taşır, log maskeli (konum kapalı)', () => {
     const r = taniRaporuOlustur({ baglam: 'Kaza sayfası yüklenemedi', konumDahil: false, neOldu: 'açılmadı' });
-    expect(r.konu).toContain('0.23.11');
+    expect(r.konu).toContain(UYGULAMA.VERSIYON);
     expect(r.govde).toContain('Kaza sayfası yüklenemedi');
     expect(r.govde).toContain('SM-S721B');
     expect(r.govde).toContain('açılmadı');
