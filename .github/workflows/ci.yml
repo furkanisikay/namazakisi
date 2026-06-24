@@ -147,6 +147,8 @@ jobs:
             echo "|---------|-------|"
             echo "| Unit Tests | ${{ steps.tests.outcome == 'success' && '✅ Basarili' || '❌ Basarisiz' }} |"
             echo ""
+            # NOT: aşağıdaki "S50 / B35 / F40 / L50" etiketi yalnız bilgi amaçlı; eşik
+            # değerleri jest.config.js > coverageThreshold'da zorlanır — orayı değiştirirken bu etiketi de güncelle.
             if [ -f coverage/coverage-summary.json ]; then
               echo "#### 📊 Coverage (eşik: S50 / B35 / F40 / L50)"
               echo ""
