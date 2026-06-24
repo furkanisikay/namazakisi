@@ -1,4 +1,11 @@
-import { loglariMaskele } from '../TaniRaporuServisi';
+jest.mock('react-native', () => ({
+  Platform: { OS: 'android', Version: 34, constants: { Model: 'SM-S721B', Release: '16' } },
+}));
+jest.mock('../../../core/utils/Logger', () => ({
+  Logger: { exportLogs: () => 'konum 41.0082, 28.9784\nKaza render error' },
+}));
+
+import { loglariMaskele, taniRaporuOlustur } from '../TaniRaporuServisi';
 
 describe('loglariMaskele', () => {
   test('konumDahil=false → koordinatları gizler', () => {
@@ -43,5 +50,22 @@ describe('loglariMaskele', () => {
     const m = loglariMaskele('a 41.0, -0.12 b 38.4, 27.1', { konumDahil: false });
     expect(m).not.toContain('41.0, -0.12');
     expect(m).not.toContain('38.4, 27.1');
+  });
+});
+
+describe('taniRaporuOlustur', () => {
+  test('konu sürümü içerir, gövde ortam+bağlam taşır, log maskeli (konum kapalı)', () => {
+    const r = taniRaporuOlustur({ baglam: 'Kaza sayfası yüklenemedi', konumDahil: false, neOldu: 'açılmadı' });
+    expect(r.konu).toContain('0.23.11');
+    expect(r.govde).toContain('Kaza sayfası yüklenemedi');
+    expect(r.govde).toContain('SM-S721B');
+    expect(r.govde).toContain('açılmadı');
+    expect(r.logMetni).toContain('[konum gizlendi]');
+    expect(r.logMetni).not.toContain('41.0082');
+  });
+
+  test('konumDahil=true → log şehir düzeyi konum içerir', () => {
+    const r = taniRaporuOlustur({ konumDahil: true });
+    expect(r.logMetni).toContain('41.0');
   });
 });
