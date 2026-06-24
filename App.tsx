@@ -35,6 +35,8 @@ import { WidgetServisi } from './src/domain/services/WidgetServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
+import { TaniBildirModali } from './src/presentation/components/Tani/TaniBildirModali';
+import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
 // Kullanici bildirimden "Kildim" yaptiginda Redux store'u gunceller
@@ -233,6 +235,9 @@ const AppIcerik: React.FC = () => {
         Logger.info('App', 'Uygulama basladi');
         // Sadece yerel/misafir modu kullanildigi icin direkt giris yapmis sayiyoruz
 
+        // Tanı hatırlatma ayarını diskten yükle (TaniBildirModali açılışta doğru durumu okusun)
+        store.dispatch(hatirlatmaAyariniYukle());
+
         // Arkaplan muhafiz bildirimlerini planla (Logger hazir olduktan sonra)
         arkaplanMuhafiziBildirimleriniPlanla();
         // Arka planda birikmis eski muhafiz bildirimlerini temizle
@@ -336,6 +341,8 @@ const AppIcerik: React.FC = () => {
       <ErrorBoundary name="AppRoot">
         <AppNavigator />
       </ErrorBoundary>
+      {/* Tanı/sorun bildirme otomatik uyarı modalı — kök seviyede host edilir */}
+      <TaniBildirModali />
     </View>
   );
 };
