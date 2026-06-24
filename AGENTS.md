@@ -44,6 +44,14 @@ Geçmiyorsa iş **bitmemiştir** — hatayı düzelt, çözemiyorsan açıkça r
 - **`Alert.alert` KULLANMA** (kullanıcıya görünen geri bildirim için): yerel/kötü görünür, uygulamanın görsel diline uymaz → tema-uyumlu modal kullan. Genel hata/bilgi/başarı bildirimi için **`BildirimModali`** (`src/presentation/components/common/BildirimModali.tsx`; `tip: 'hata'|'bilgi'|'basari'`, ops. `birincilEtiket`/`onBirincil`), onay için `KerahatOnayModal` kalitesinde modal. Aktif `Alert.alert` çağrısı **kalmadı** (dönüşüm tamam); yenisini EKLEME.
 - Stil/format kurallarını **sen kovalama** — `npm run lint` yapar. (Kullanıcıyla daima **Türkçe** konuş.)
 
+## Ekran / UI tasarım standardı (zorunlu)
+Yeni bir ekran, modal veya görünür akış tasarlarken **"çalışsın" yetmez** — şu çıta ve süreç zorunlu:
+- **Süreç:** `superpowers:brainstorming` ile gereksinim+tasarımı netleştir → görsel/etkileşim kararları için **`frontend-design`** skill'ini kullan → gerekiyorsa **`deep-research`** ile en iyi pratikleri araştır → tasarımı kullanıcıya **onaylat** → sonra kur. Kod yazmadan önce onay şart.
+- **Kalite hedefi:** en basit kullanım; en acemi kullanıcının bile tek bakışta anladığı netlik; anlamlı ikon + görsel yönlendirme; ölçülü/zarif animasyon (abartma, "AI-üretimi" hissi verme); temiz ama akılda kalıcı ("wow"). Cesareti **tek bir imza öğesinde** harca, gerisini sakin tut.
+- **Mevcut görsel dile SADIK kal** (yeni kimlik icat etme): tema tokenları `useRenkler` (ASLA hardcoded renk), kart `borderRadius: 24` + `rounded-xl/2xl`, tonlu ikon-çipi (`renk + '20'`), `FontAwesome5`, buton deseni (ikincil = `arkaplan` + `sinir`; birincil = dolu `birincil` + ikon + beyaz metin, hafif daha geniş), `<Modal animationType="fade" transparent statusBarTranslucent>` + backdrop'u `StyleSheet.absoluteFill` ile **kardeş**, `useDonanimGeriTusu`. Referans kalite: `KerahatOnayModal` / `BildirimModali`.
+- **Erişilebilirlik tabanı:** dokunma hedefi ≥44dp (`w-11 h-11`), `accessibilityRole`/`accessibilityLabel`, açık disabled/focus durumları, reduced-motion'a saygı.
+- **Metin = tasarım malzemesi:** kibar "siz", sentence case, aktif fiil; aksiyon adı tüm akışta sabit (buton "Gönder" → sonuç "Gönderildi"); boş/hata ekranları yön gösterir (özür/muğlaklık değil).
+
 ## Kritik desenler ve tuzaklar (bu projede öğrenildi)
 - **New Architecture açık** → RN core `<Modal>` `onRequestClose`'u Android donanım geri tuşunda **güvenilmez**. Her modalda `useDonanimGeriTusu(gorunur, onKapat)` kullan (`src/presentation/hooks/useDonanimGeriTusu.ts`). `onRequestClose`'u da bırak (zarar yok).
 - **Bottom-sheet**: backdrop'u içeriği saran `TouchableWithoutFeedback` olarak DEĞİL, `StyleSheet.absoluteFill` ile **kardeş (sibling)** koy — yoksa içteki FlatList/ScrollView scroll'u takılır. Örnek: `TakvimAyarlariSayfasi.tsx`.
