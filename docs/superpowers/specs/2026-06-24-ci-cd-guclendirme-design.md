@@ -43,7 +43,7 @@ GitHub **ruleset** (modern; `gh api`/Settings ile) master'a:
 
 ### E) Build çıktıları + EAS-bağımsız AAB (Gradle → Play)
 Bugünkü olay (EAS kota bitik → Play'e hiç AAB çıkamadı) bunu tetikledi. Hedef: release self-yeterli olsun.
-- **Gradle AAB:** `android-build.yml`'e `./gradlew bundleRelease` → imzalı `.aab`, **her release'de** APK'nın yanında üretilir ("EAS down mu" tespiti YOK; her zaman üret).
+- **Gradle AAB — PERFORMANS KRİTİK (yaşanmış: AAB'yi ayrı build yapmak süreyi ~ikiye katlıyordu):** mevcut `assembleRelease` (APK) tek başına **~21.5 dk** (süre = tek ağır native derleme; Gradle caching/parallel/config-cache/Xmx4g zaten açık). AAB'yi **ikinci ayrı build olarak ÜRETME.** Çözüm: APK+AAB'yi **TEK Gradle çağrısından** çıkar → `./gradlew assembleRelease bundleRelease` (paylaşılan derleme/JS-bundle/resource-merge **bir kez**; AAB yalnız kendi paketleme adımını ekler, tahmini **+2-5 dk**). APK bugünküyle birebir kalır. *Alternatif (daha yalın): sadece `bundleRelease` + `bundletool build-apks --mode=universal` ile AAB'den imzalı universal APK çıkar (saniyeler) → tek derleme, iki çıktı, ~bugünkü süre.* Gerçek delta implementasyonda **ölçülür**; kabul kriteri: release süresi bugünkünün **belirgin üstüne çıkmamalı**.
 - **Ortak yayın (ayrı yer):** APK + AAB **ikisi de GitHub Release asset'i** (sürüm-versiyonlu tek indirilebilir yer; `NamazAkisi-vX.Y.Z.apk` / `.aab`) + kısa-retention **workflow artifact**. APK = sideload/test, AAB = Play.
 - **Otomatik Play upload:** Gradle AAB, **Play Developer API** ile internal track'e yüklenir (`r0adkll/upload-google-play` veya fastlane supply); yeni secret **`PLAY_SERVICE_ACCOUNT_JSON`**. GitHub Release yayınından SONRA (mevcut sıra kuralıyla uyumlu).
 - **EAS ilişkisi (mimari karar):** Gradle+PlayAPI **birincil otomatik Play-upload** olur; **EAS auto-leg'i (`expo-build.yml` çağrısı) auto-release zincirinden ÇIKARILIR** → aynı sürümün çift-upload çakışması önlenir + EAS kota bağımlılığı tümden kalkar. `expo-build.yml` **manuel `workflow_dispatch` için korunur** (yedek/deneme), zincirden kaldırılır.
@@ -64,6 +64,7 @@ Bugünkü olay (EAS kota bitik → Play'e hiç AAB çıkamadı) bunu tetikledi. 
 - Hiçbir faz auto-release'i (master direct push) kırmaz.
 - Release-push robustluğu: build sürerken master'a araya bir commit kaçsa bile release push'u (rebase+retry ile) **başarılı** olur.
 - Build çıktıları: her release'de **APK + AAB** GitHub Release'e eklenir; AAB imzalı ve (E2 etkinse) Play internal track'e **otomatik yüklenir** (test cihazında/internal track'te doğrulanır). EAS bitikken bile Play'e çıkış **mümkün**.
+- **Build süresi:** APK+AAB **tek native derlemeden** üretilir; release toplam süresi bugünkü (~21-24 dk) seviyenin **belirgin üstüne çıkmaz** (AAB ikinci tam build OLARAK üretilmez). CI step-timing ile doğrulanır.
 
 ## 6. Sınırlar / riskler
 - **Ruleset bypass** repo planına/araçlarına bağlı; bypass kurulamazsa "Hafif" moda (sadece zorunlu check, require-PR yok) düşülür — yine de auto-release korunur. Bu, implementasyonda doğrulanacak ilk şey.
