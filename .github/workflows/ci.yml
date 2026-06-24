@@ -127,7 +127,7 @@ jobs:
 
       - name: 🧪 Testleri calistir
         id: tests
-        run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
+        run: npm test -- --coverage
 
       - name: 📊 Coverage artifact
         uses: actions/upload-artifact@v7
