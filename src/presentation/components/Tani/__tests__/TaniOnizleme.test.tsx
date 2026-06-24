@@ -35,17 +35,21 @@ describe('TaniOnizleme', () => {
     await waitFor(() => expect(mockAc).toHaveBeenCalledWith(expect.objectContaining({ konumDahil: false })));
   });
 
-  test('sonuç "gonderildi" → teyit (başarı) modalı görünür', async () => {
+  test('sonuç "gonderildi" → teyit (başarı) modalı görünür + onKapat çağrılır', async () => {
     mockAc.mockResolvedValueOnce('gonderildi');
-    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={() => {}} onLoglariGor={() => {}} />);
+    const onKapat = jest.fn();
+    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={onKapat} onLoglariGor={() => {}} />);
     fireEvent.press(getByText('E-postayı aç'));
     await waitFor(() => expect(getByText('Teşekkürler')).toBeTruthy());
+    expect(onKapat).toHaveBeenCalled();
   });
 
-  test('sonuç "hata" → hata modalı görünür', async () => {
+  test('sonuç "hata" → hata modalı görünür + önizleme açık kalır (onKapat çağrılmaz)', async () => {
     mockAc.mockResolvedValueOnce('hata');
-    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={() => {}} onLoglariGor={() => {}} />);
+    const onKapat = jest.fn();
+    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={onKapat} onLoglariGor={() => {}} />);
     fireEvent.press(getByText('E-postayı aç'));
     await waitFor(() => expect(getByText('Gönderilemedi')).toBeTruthy());
+    expect(onKapat).not.toHaveBeenCalled();
   });
 });

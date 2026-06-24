@@ -34,13 +34,20 @@ export const TaniBildirModali: React.FC = () => {
 
     const gorunur = sorunAlgilandi && hatirlatmaAcik;
 
-    // New Architecture'da Modal onRequestClose güvenilmez → BackHandler ile garanti
-    // dispatch dönüş değeri action object olduğundan void'e indirgenip handler tipine uyum sağlanır
-    useDonanimGeriTusu(gorunur, () => { dispatch(taniModaliKapat()); });
-
-    const simdidegil = () => {
+    // Stabil handler ref'leri (her render'da yeni arrow üretip back-handler/effect
+    // churn'ünü tetiklemesin).
+    const simdidegil = React.useCallback(() => {
         dispatch(taniModaliKapat());
-    };
+    }, [dispatch]);
+
+    const onizlemeKapat = React.useCallback(() => {
+        setOnizleme(false);
+        dispatch(taniModaliKapat());
+    }, [dispatch]);
+
+    // New Architecture'da Modal onRequestClose güvenilmez → BackHandler ile garanti.
+    // Memoize edilmiş simdidegil geçilir (stabil ref → gereksiz yeniden-bağlamayı önler).
+    useDonanimGeriTusu(gorunur, simdidegil);
 
     const birDahaSorma = () => {
         dispatch(hatirlatmayiGuncelle(false));
@@ -49,11 +56,6 @@ export const TaniBildirModali: React.FC = () => {
 
     const bildir = () => {
         setOnizleme(true);
-    };
-
-    const onizlemeKapat = () => {
-        setOnizleme(false);
-        dispatch(taniModaliKapat());
     };
 
     return (
@@ -194,12 +196,12 @@ export const TaniBildirModali: React.FC = () => {
                 </View>
             </Modal>
 
-            {/* TaniOnizleme — "Bildir" basılınca açılır; kapanınca taniModaliKapat dispatch'ler */}
+            {/* TaniOnizleme — "Bildir" basılınca açılır; kapanınca taniModaliKapat dispatch'ler.
+                onLoglariGor verilmez → kök-modal bağlamında "Tam kaydı görüntüle" gizlenir. */}
             <TaniOnizleme
                 gorunur={onizleme}
                 baglam={baglam}
                 onKapat={onizlemeKapat}
-                onLoglariGor={() => {}}
             />
         </>
     );

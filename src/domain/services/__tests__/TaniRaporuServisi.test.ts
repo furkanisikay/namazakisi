@@ -45,6 +45,20 @@ describe('loglariMaskele', () => {
     expect(m).toContain('[gizlendi]');
   });
 
+  test('tırnaklı çok-kelimeli sır → değer tümden gizlenir', () => {
+    const m = loglariMaskele('"password": "my secret password"', { konumDahil: false });
+    expect(m).not.toContain('secret password');
+    expect(m).not.toContain('my secret password');
+    expect(m).toContain('[gizlendi]');
+  });
+
+  test('konumDahil=false → büyük-harfli "Il" alanındaki şehir adını gizler', () => {
+    const log = 'Data: {\n  "Il": "Istanbul",\n  "konumModu": "manuel"\n}';
+    const m = loglariMaskele(log, { konumDahil: false });
+    expect(m).not.toContain('Istanbul');
+    expect(m).toContain('[konum gizlendi]');
+  });
+
   test('konumDahil=false → adres alanını gizler', () => {
     const log = 'Data: {\n  "adres": "Atatürk Cad. No:5",\n  "konumModu": "manuel"\n}';
     const m = loglariMaskele(log, { konumDahil: false });

@@ -22,8 +22,8 @@ export interface TaniOnizlemeProps {
     baglam: string | null;
     /** Kapat / geri tuşu çağrısı */
     onKapat: () => void;
-    /** "Tam kaydı görüntüle" basılınca çağrılır */
-    onLoglariGor: () => void;
+    /** "Tam kaydı görüntüle" basılınca çağrılır; verilmezse o satır gizlenir */
+    onLoglariGor?: () => void;
 }
 
 /**
@@ -60,14 +60,17 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                 konumDahil,
                 neOldu: neOldu.trim() || undefined,
             });
-            // Önizleme modalını kapat; teyit/hata modalı kardeş olduğundan kapanış
-            // sonrası state set güvenli (bileşen unmount olmaz, yalnız Modal gizlenir).
-            onKapat();
+            // Hata'da önizlemeyi KAPATMA — kullanıcı baştan başlamadan tekrar deneyebilsin.
+            // Başarı/iptal'de kapat; teyit/hata modalı kardeş olduğundan kapanış sonrası
+            // state set güvenli (bileşen unmount olmaz, yalnız Modal gizlenir).
             if (sonuc === 'hata') {
                 setHataBildirimi(true);
-            } else if (sonuc === 'gonderildi' || sonuc === 'paylasildi') {
-                // 'iptal'de sessiz kal; gönderim/paylaşım hazırlandıysa teyit göster.
-                setBasariBildirimi(true);
+            } else {
+                if (sonuc === 'gonderildi' || sonuc === 'paylasildi') {
+                    // 'iptal'de sessiz kal; gönderim/paylaşım hazırlandıysa teyit göster.
+                    setBasariBildirimi(true);
+                }
+                onKapat();
             }
         } finally {
             setGonderiyor(false);
@@ -183,23 +186,26 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                                 value={konumDahil}
                                 onValueChange={setKonumDahil}
                                 trackColor={{ true: renkler.birincil, false: renkler.sinir }}
+                                thumbColor={konumDahil ? renkler.birincil : '#f4f3f4'}
                                 accessibilityLabel="Yaklaşık konumu ekle"
                             />
                         </View>
 
-                        {/* Tam kaydı görüntüle */}
-                        <TouchableOpacity
-                            onPress={onLoglariGor}
-                            accessibilityRole="button"
-                            className="py-3 mb-4"
-                        >
-                            <Text
-                                className="text-xs text-center"
-                                style={{ color: renkler.birincil }}
+                        {/* Tam kaydı görüntüle — yalnız onLoglariGor verildiyse göster */}
+                        {onLoglariGor && (
+                            <TouchableOpacity
+                                onPress={onLoglariGor}
+                                accessibilityRole="button"
+                                className="py-3 mb-4"
                             >
-                                Tam kaydı görüntüle
-                            </Text>
-                        </TouchableOpacity>
+                                <Text
+                                    className="text-xs text-center"
+                                    style={{ color: renkler.birincil }}
+                                >
+                                    Tam kaydı görüntüle
+                                </Text>
+                            </TouchableOpacity>
+                        )}
 
                         {/* Butonlar */}
                         <View className="flex-row gap-3">

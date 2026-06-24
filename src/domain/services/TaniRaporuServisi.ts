@@ -9,16 +9,17 @@ import { Logger } from '../../core/utils/Logger';
 
 // Ondalıklı koordinat çiftlerini yakalar (en az 1 ondalık): "41.0082, 28.9784"
 const KOORDINAT = /(-?\d{1,3}\.\d{1,})\s*,\s*(-?\d{1,3}\.\d{1,})/g;
-// "Authorization: Bearer <jwt>" / "bearer <jwt>" — değeri (tek token) gizle.
-// Ayrı kural; aşağıdaki SIR "bearer"ı yakalasa da tek \S+ ile JWT'yi kaçırırdı.
-const BEARER = /\b(bearer)\s+\S+/gi;
-// token=..., api_key: ..., secret ..., password=... gibi gizli DEĞERLER.
-// Değer yakalaması virgülde durur (koordinat çiftini yutup KOORDINAT'ı atlamasın).
-const SIR = /\b(token|api[_-]?key|secret|password|authorization)\b\s*[:=]?\s*[^\s,]+/gi;
+// token=..., api_key: ..., secret ..., password=..., authorization ... gibi gizli DEĞERLER.
+// Değer yakalaması (sırayla): "bearer <jwt>" (Authorization: Bearer ... — tek \S+ JWT'yi
+// kaçırmasın), "tırnaklı çok-kelimeli değer" (örn. "password": "my secret password" — ilk
+// boşlukten sonrasını sızdırmasın), aksi halde tek token \S+. "bearer" anahtar olarak da
+// listede → kendi başına da yakalanır.
+const SIR = /\b(token|api[_-]?key|secret|bearer|password|authorization)\b\s*[:=]?\s*(bearer\s+\S+|"[^"]+"|'[^']+'|\S+)/gi;
 // JSON log data'sında şehir/ilçe/adres adlarını taşıyan alanlar
 // exportLogs() formatı: "alan": "değer"  (JSON.stringify ile 2-boşluk girintili)
 // Yeni konum taşıyan log alanı eklenirse buraya kaydedilmeli; isim-bazlı, en iyi-çaba.
-const SEHIR_ALANI = /"(il|seciliIlAdi|ilAdi|ilce|sehir|adres|mahalle|bolge|semt)"\s*:\s*"([^"]*)"/g;
+// i bayrağı: "Il"/"Sehir" gibi büyük-harfli alan adları da yakalansın.
+const SEHIR_ALANI = /"(il|seciliIlAdi|ilAdi|ilce|sehir|adres|mahalle|bolge|semt)"\s*:\s*"([^"]*)"/gi;
 
 export function loglariMaskele(metin: string, secenek: { konumDahil: boolean }): string {
   // KOORDINAT'ı SIR'den ÖNCE çalıştır: aksi halde "secret 41.0082, 28.9784" gibi
@@ -28,7 +29,6 @@ export function loglariMaskele(metin: string, secenek: { konumDahil: boolean }):
       ? `${parseFloat(lat).toFixed(1)}, ${parseFloat(lng).toFixed(1)}`
       : '[konum gizlendi]'
   );
-  cikti = cikti.replace(BEARER, '$1 [gizlendi]');
   cikti = cikti.replace(SIR, '$1=[gizlendi]');
   if (!secenek.konumDahil) {
     cikti = cikti.replace(SEHIR_ALANI, '"$1": "[konum gizlendi]"');
