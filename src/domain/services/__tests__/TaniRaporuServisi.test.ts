@@ -34,6 +34,50 @@ describe('loglariMaskele', () => {
     expect(loglariMaskele(girdi, { konumDahil: false })).toBe(girdi);
   });
 
+  // exportLogs() formatı: [tarih] [SEVİYE] [TAG] mesaj\nData: {"alan": "değer"}
+  const exampleLogLine =
+    '[2024-01-01T10:00:00.000Z] [INFO] [LocalKonumServisi] Yuklenen veri:\nData: {\n  "mod": "manuel",\n  "il": "Istanbul"\n}';
+
+  test('konumDahil=false → il alanındaki şehir adını gizler', () => {
+    const m = loglariMaskele(exampleLogLine, { konumDahil: false });
+    expect(m).not.toContain('Istanbul');
+    expect(m).toContain('[konum gizlendi]');
+    // Alan adı ve yapı korunmalı
+    expect(m).toContain('"il"');
+  });
+
+  test('konumDahil=true → il alanındaki şehir adı korunur', () => {
+    const m = loglariMaskele(exampleLogLine, { konumDahil: true });
+    expect(m).toContain('Istanbul');
+    expect(m).not.toContain('[konum gizlendi]');
+  });
+
+  test('konumDahil=false → seciliIlAdi alanını gizler', () => {
+    const log =
+      '[2024-01-01T10:00:00.000Z] [DEBUG] [KonumSlice] State guncelleniyor (sync)\nData: {\n  "konumModu": "manuel",\n  "seciliIlAdi": "Ankara"\n}';
+    const m = loglariMaskele(log, { konumDahil: false });
+    expect(m).not.toContain('Ankara');
+    expect(m).toContain('[konum gizlendi]');
+    // konumModu gibi konum-dışı alan etkilenmemeli
+    expect(m).toContain('"konumModu": "manuel"');
+  });
+
+  test('konumDahil=false → ilce alanını gizler', () => {
+    const log = 'Data: {\n  "ilce": "Kadıköy",\n  "il": "Istanbul"\n}';
+    const m = loglariMaskele(log, { konumDahil: false });
+    expect(m).not.toContain('Kadıköy');
+    expect(m).not.toContain('Istanbul');
+    expect(m).toContain('[konum gizlendi]');
+  });
+
+  test('konumDahil=false → konum-dışı string alanı etkilenmez', () => {
+    const log = 'Data: {\n  "mesaj": "islem tamam",\n  "tag": "LocalKonumServisi"\n}';
+    const m = loglariMaskele(log, { konumDahil: false });
+    // "mesaj" ve "tag" şehir alanı değil — maskelenmemeli
+    expect(m).toContain('"mesaj": "islem tamam"');
+    expect(m).toContain('"tag": "LocalKonumServisi"');
+  });
+
   test('1-ondalıklı koordinatı gizler (konumDahil=false)', () => {
     const m = loglariMaskele('Yeni konum: 41.0, 28.9 alindi', { konumDahil: false });
     expect(m).toContain('[konum gizlendi]');
