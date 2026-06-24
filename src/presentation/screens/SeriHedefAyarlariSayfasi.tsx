@@ -93,6 +93,8 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         onPress={azalt}
         disabled={deger <= min}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel="Azalt"
       >
         <FontAwesome5
           name="minus"
@@ -117,6 +119,8 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         onPress={artir}
         disabled={deger >= max}
         activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel="Artır"
       >
         <FontAwesome5
           name="plus"
@@ -164,6 +168,8 @@ const SecimGrubu: React.FC<SecimGrubuProps> = ({
             }}
             onPress={() => handleSecim(secenek.deger)}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={secenek.etiket}
           >
             <Text
               className="text-sm font-semibold"
@@ -403,6 +409,8 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
               style={{ backgroundColor: '#D81B60' }}
               onPress={() => setTakvimGorunur(true)}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Özel Gün Başlat"
             >
               <FontAwesome5 name="calendar-plus" size={16} color="#FFFFFF" />
               <Text className="text-base font-bold text-white">
@@ -445,6 +453,8 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             style={{ backgroundColor: '#FEE2E2' }}
             onPress={handleSeriSifirla}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Seri Verilerini Sıfırla"
           >
             <View className="w-10 h-10 rounded-full items-center justify-center mr-3"
               style={{ backgroundColor: '#DC262620' }}
@@ -467,6 +477,8 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             style={{ backgroundColor: '#FFF7ED' }}
             onPress={handleKurulumSifirla}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Kurulum Sihirbazını Yeniden Çalıştır"
           >
             <View
               className="w-10 h-10 rounded-full items-center justify-center mr-3"
