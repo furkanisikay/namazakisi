@@ -27,3 +27,4 @@ export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
 export { NelerYeniSayfasi } from './NelerYeniSayfasi';
 export { YedeklemeSayfasi } from './Yedekleme/YedeklemeSayfasi';
 export { IceAktarmaSihirbaziSayfasi } from './Yedekleme/IceAktarmaSihirbazi/IceAktarmaSihirbaziSayfasi';
+export { TaniGeriBildirimSayfasi } from './TaniGeriBildirimSayfasi';

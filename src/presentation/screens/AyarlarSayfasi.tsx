@@ -45,6 +45,7 @@ const MENU_IKONLARI: Record<string, IkonTipi> = {
   takvim: { name: 'calendar-alt', family: 'fa5', solid: true },
   yedekleme: { name: 'cloud-download-alt', family: 'fa5', solid: true },
   nelerYeni: { name: 'gift', family: 'fa5', solid: true },
+  taniGeriBildirim: { name: 'comment-dots', family: 'fa5', solid: true },
   titresim: { name: 'vibration', family: 'material' },
   ses: { name: 'volume-up', family: 'fa5', solid: true },
 };
@@ -302,6 +303,12 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
       aciklama: 'Uygulama bilgileri ve versiyon',
       ikonAdi: 'hakkinda',
       sayfa: 'Hakkinda',
+    },
+    {
+      baslik: 'Tanı ve Geri Bildirim',
+      aciklama: 'Sorun bildirin, tanı kaydını paylaşın',
+      ikonAdi: 'taniGeriBildirim',
+      sayfa: 'TaniGeriBildirim',
     },
   ];
 

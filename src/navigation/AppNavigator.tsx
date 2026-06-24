@@ -34,6 +34,7 @@ import {
   NelerYeniSayfasi,
   YedeklemeSayfasi,
   IceAktarmaSihirbaziSayfasi,
+  TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
@@ -143,6 +144,11 @@ const AyarlarStack: React.FC = () => {
       <Stack.Screen
         name="IceAktarmaSihirbazi"
         component={IceAktarmaSihirbaziSayfasi}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TaniGeriBildirim"
+        component={TaniGeriBildirimSayfasi}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
