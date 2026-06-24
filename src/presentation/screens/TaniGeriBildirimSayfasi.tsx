@@ -27,7 +27,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
-  const hatirlatmaAcik = useAppSelector((state: { tani: { hatirlatmaAcik: boolean } }) => state.tani.hatirlatmaAcik);
+  const hatirlatmaAcik = useAppSelector((state) => state.tani.hatirlatmaAcik);
   const [onizleme, setOnizleme] = useState(false);
 
   return (

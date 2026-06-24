@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 
 interface TaniState {
   sorunAlgilandi: boolean;
@@ -17,12 +18,26 @@ const baslangic: TaniState = {
 };
 
 export const hatirlatmaAyariniYukle = createAsyncThunk('tani/hatirlatmaYukle', async () => {
-  const v = await Depolama.oku<boolean>(DEPOLAMA_ANAHTARLARI.TANI_HATIRLATMA_ACIK);
-  return v === null ? true : v;
+  try {
+    const v = await Depolama.oku<boolean>(DEPOLAMA_ANAHTARLARI.TANI_HATIRLATMA_ACIK);
+    return v === null ? true : v;
+  } catch (hata) {
+    Logger.error('taniSlice', 'hatırlatma ayarı okunamadı', {
+      hata: hata instanceof Error ? hata.message : 'bilinmeyen',
+    });
+    return true; // güvenli varsayılan
+  }
 });
 
 export const hatirlatmayiGuncelle = createAsyncThunk('tani/hatirlatmaGuncelle', async (acik: boolean) => {
-  await Depolama.yaz(DEPOLAMA_ANAHTARLARI.TANI_HATIRLATMA_ACIK, acik);
+  try {
+    await Depolama.yaz(DEPOLAMA_ANAHTARLARI.TANI_HATIRLATMA_ACIK, acik);
+  } catch (hata) {
+    Logger.error('taniSlice', 'hatırlatma ayarı yazılamadı', {
+      hata: hata instanceof Error ? hata.message : 'bilinmeyen',
+    });
+    throw hata; // reddet → reducer state'i değiştirmesin
+  }
   return acik;
 });
 
@@ -43,7 +58,9 @@ const taniSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(hatirlatmaAyariniYukle.fulfilled, (state, a) => { state.hatirlatmaAcik = a.payload; })
-      .addCase(hatirlatmayiGuncelle.fulfilled, (state, a) => { state.hatirlatmaAcik = a.payload; });
+      .addCase(hatirlatmaAyariniYukle.rejected, (state) => { state.hatirlatmaAcik = true; })
+      .addCase(hatirlatmayiGuncelle.fulfilled, (state, a) => { state.hatirlatmaAcik = a.payload; })
+      .addCase(hatirlatmayiGuncelle.rejected, () => { /* yazım başarısız → state'i değiştirme */ });
   },
 });
 
