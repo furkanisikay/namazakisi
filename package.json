@@ -49,6 +49,7 @@
     "expo-intent-launcher": "~13.0.8",
     "expo-linear-gradient": "~15.0.8",
     "expo-location": "~19.0.8",
+    "expo-mail-composer": "~15.0.8",
     "expo-notifications": "~0.32.15",
     "expo-sensors": "~15.0.8",
     "expo-sharing": "~14.0.8",
