@@ -157,7 +157,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                         <TouchableOpacity
                             onPress={onLoglariGor}
                             accessibilityRole="button"
-                            className="py-2 mb-4"
+                            className="py-3 mb-4"
                         >
                             <Text
                                 className="text-xs text-center"
@@ -189,8 +189,8 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                                 disabled={gonderiyor}
                                 accessibilityRole="button"
                             >
-                                <FontAwesome5 name="envelope" size={14} color="#FFF" style={{ marginRight: 8 }} />
-                                <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
+                                <FontAwesome5 name="envelope" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                                <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
                                     E-postayı aç
                                 </Text>
                             </TouchableOpacity>
