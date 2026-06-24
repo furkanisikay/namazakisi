@@ -3,6 +3,7 @@
  */
 
 import { configureStore } from '@reduxjs/toolkit';
+import { taniListenerMiddleware } from './taniListener';
 import authReducer from './authSlice';
 import namazReducer from './namazSlice';
 import seriReducer from './seriSlice';
@@ -17,6 +18,7 @@ import kazaReducer from './kazaSlice';
 import takvimReducer from './takvimSlice';
 import ozelliklerReducer from './ozelliklerSlice';
 import yedeklemeReducer from './yedeklemeSlice';
+import taniReducer from './taniSlice';
 
 export const store = configureStore({
   reducer: {
@@ -34,11 +36,12 @@ export const store = configureStore({
     takvim: takvimReducer,
     ozellikler: ozelliklerReducer,
     yedekleme: yedeklemeReducer,
+    tani: taniReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).prepend(taniListenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

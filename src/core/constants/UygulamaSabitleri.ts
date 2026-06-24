@@ -40,6 +40,7 @@ export const UYGULAMA = {
   VERSIYON: '0.23.12',
   ACIKLAMA: 'Günlük namaz takip uygulaması',
   GITHUB_REPO: 'furkanisikay/namazakisi',
+  DESTEK_EPOSTA: 'support@furkanisikay.com',
 } as const;
 
 // ==================== GUNCELLEME SISTEMI SABITLERI ====================
@@ -172,6 +173,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Puan defteri (karma türev/defter modeli) — yol-bağımlı bonus puanı kalıcı tutulur.
   // null/yok = ilk çalışma (migrasyon: eski toplamPuan - eski tabanPuan).
   BONUS_PUAN: '@namaz_akisi/bonus_puan',
+  // Tanı/sorun bildir sistemi
+  TANI_HATIRLATMA_ACIK: '@namaz_akisi/tani_hatirlatma_acik',
 } as const;
 
 // Tarih formatlari

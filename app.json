@@ -73,7 +73,8 @@
         {
           "calendarPermission": "Namaz vakitlerini takviminize eklemek için takvim iznine ihtiyaç var."
         }
-      ]
+      ],
+      "expo-mail-composer"
     ],
     "owner": "furkanisikay",
     "extra": {
