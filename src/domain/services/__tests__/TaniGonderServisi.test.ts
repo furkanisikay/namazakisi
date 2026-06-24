@@ -28,6 +28,20 @@ describe('taniEpostasiniAc', () => {
     expect(r).toBe('gonderildi');
   });
 
+  test('Android "undetermined" status → "gonderildi" (devam edildi sayılır)', async () => {
+    mockMailAvail.mockResolvedValue(true);
+    mockCompose.mockResolvedValue({ status: 'undetermined' });
+    const r = await taniEpostasiniAc({ konumDahil: false });
+    expect(r).toBe('gonderildi');
+  });
+
+  test('"cancelled" status → "iptal"', async () => {
+    mockMailAvail.mockResolvedValue(true);
+    mockCompose.mockResolvedValue({ status: 'cancelled' });
+    const r = await taniEpostasiniAc({ konumDahil: false });
+    expect(r).toBe('iptal');
+  });
+
   test('mail yoksa share-sheet fallback → "paylasildi"', async () => {
     mockMailAvail.mockResolvedValue(false);
     const r = await taniEpostasiniAc({ konumDahil: false });

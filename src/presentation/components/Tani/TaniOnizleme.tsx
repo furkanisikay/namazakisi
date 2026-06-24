@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
+    TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
     Modal,
@@ -42,7 +43,9 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
 }) => {
     const renkler = useRenkler();
     const [konumDahil, setKonumDahil] = useState(false);
+    const [neOldu, setNeOldu] = useState('');
     const [hataBildirimi, setHataBildirimi] = useState(false);
+    const [basariBildirimi, setBasariBildirimi] = useState(false);
     const [gonderiyor, setGonderiyor] = useState(false);
 
     // New Architecture'da Modal onRequestClose güvenilir değil → BackHandler ile garanti
@@ -52,10 +55,19 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
         if (gonderiyor) return;
         setGonderiyor(true);
         try {
-            const sonuc = await taniEpostasiniAc({ baglam: baglam ?? undefined, konumDahil });
+            const sonuc = await taniEpostasiniAc({
+                baglam: baglam ?? undefined,
+                konumDahil,
+                neOldu: neOldu.trim() || undefined,
+            });
+            // Önizleme modalını kapat; teyit/hata modalı kardeş olduğundan kapanış
+            // sonrası state set güvenli (bileşen unmount olmaz, yalnız Modal gizlenir).
             onKapat();
             if (sonuc === 'hata') {
                 setHataBildirimi(true);
+            } else if (sonuc === 'gonderildi' || sonuc === 'paylasildi') {
+                // 'iptal'de sessiz kal; gönderim/paylaşım hazırlandıysa teyit göster.
+                setBasariBildirimi(true);
             }
         } finally {
             setGonderiyor(false);
@@ -137,6 +149,28 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                             )}
                         </View>
 
+                        {/* Ne oldu? (isteğe bağlı serbest metin) */}
+                        <Text className="text-xs font-semibold mb-2" style={{ color: renkler.metinIkincil }}>
+                            Ne oldu? (isteğe bağlı)
+                        </Text>
+                        <TextInput
+                            value={neOldu}
+                            onChangeText={setNeOldu}
+                            placeholder="Kısaca ne yaşadığınızı yazabilirsiniz"
+                            placeholderTextColor={renkler.metinIkincil}
+                            multiline
+                            textAlignVertical="top"
+                            className="rounded-xl p-3 mb-3 text-sm"
+                            style={{
+                                backgroundColor: renkler.arkaplan,
+                                borderWidth: 1,
+                                borderColor: renkler.sinir,
+                                color: renkler.metin,
+                                minHeight: 64,
+                            }}
+                            accessibilityLabel="Ne oldu? İsteğe bağlı açıklama"
+                        />
+
                         {/* Konum Switch */}
                         <View
                             className="flex-row items-center justify-between py-3 mb-1"
@@ -199,12 +233,21 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                 </View>
             </Modal>
 
-            {/* Hata bildirimi — Modal kapatıldıktan sonra gösterilir */}
+            {/* Başarı/teyit bildirimi — önizleme kapatıldıktan sonra gösterilir */}
+            <BildirimModali
+                gorunur={basariBildirimi}
+                tip="basari"
+                baslik="Teşekkürler"
+                mesaj="Tanı kaydınız e-posta uygulamanızda hazırlandı; göndererek bize iletebilirsiniz."
+                onKapat={() => setBasariBildirimi(false)}
+            />
+
+            {/* Hata bildirimi — önizleme kapatıldıktan sonra gösterilir */}
             <BildirimModali
                 gorunur={hataBildirimi}
                 tip="hata"
-                baslik="E-posta açılamadı"
-                mesaj="E-posta uygulaması açılamadı. Lütfen cihazınızda e-posta uygulamasının kurulu olduğunu kontrol edin."
+                baslik="Gönderilemedi"
+                mesaj="Tanı kaydı gönderilemedi. Birazdan tekrar deneyin; sorun sürerse cihazınızda e-posta veya paylaşım uygulaması olduğundan emin olun."
                 onKapat={() => setHataBildirimi(false)}
             />
         </>

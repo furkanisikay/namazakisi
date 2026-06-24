@@ -23,13 +23,18 @@ export async function taniEpostasiniAc(opts: {
         body: rapor.govde,
         attachments: [dosya.uri],
       });
-      return sonuc.status === 'sent' ? 'gonderildi' : 'iptal';
+      // composeAsync status: sent | saved | cancelled | undetermined.
+      // Android'de OS intent gönder/iptal'i bildirmez → sonuç neredeyse her zaman
+      // 'undetermined'; bunu iptal saymak başarılı gönderimi yutar. Yalnız 'cancelled'
+      // iptaldir; gerisi (sent/saved/undetermined) kullanıcının devam ettiği kabul edilir.
+      return sonuc.status === 'cancelled' ? 'iptal' : 'gonderildi';
     }
 
     if (await Sharing.isAvailableAsync()) {
       await Sharing.shareAsync(dosya.uri, { mimeType: 'text/plain', dialogTitle: rapor.konu });
       return 'paylasildi';
     }
+    Logger.error('TaniGonderServisi', 'Ne e-posta ne paylaşım kullanılabilir', {});
     return 'hata';
   } catch (error) {
     Logger.error('TaniGonderServisi', 'Tanı e-postası açılamadı', {

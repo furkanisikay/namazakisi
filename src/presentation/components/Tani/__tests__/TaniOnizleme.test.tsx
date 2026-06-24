@@ -34,4 +34,18 @@ describe('TaniOnizleme', () => {
     fireEvent.press(getByText('E-postayı aç'));
     await waitFor(() => expect(mockAc).toHaveBeenCalledWith(expect.objectContaining({ konumDahil: false })));
   });
+
+  test('sonuç "gonderildi" → teyit (başarı) modalı görünür', async () => {
+    mockAc.mockResolvedValueOnce('gonderildi');
+    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={() => {}} onLoglariGor={() => {}} />);
+    fireEvent.press(getByText('E-postayı aç'));
+    await waitFor(() => expect(getByText('Teşekkürler')).toBeTruthy());
+  });
+
+  test('sonuç "hata" → hata modalı görünür', async () => {
+    mockAc.mockResolvedValueOnce('hata');
+    const { getByText } = render(<TaniOnizleme gorunur baglam="x" onKapat={() => {}} onLoglariGor={() => {}} />);
+    fireEvent.press(getByText('E-postayı aç'));
+    await waitFor(() => expect(getByText('Gönderilemedi')).toBeTruthy());
+  });
 });
