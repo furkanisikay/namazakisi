@@ -34,15 +34,20 @@ module.exports = {
   ],
   // CI özeti coverage/coverage-summary.json'u okur (Task 2); text+lcov korunur.
   coverageReporters: ["text", "lcov", "json-summary"],
-  // Ratchet: mevcut seviyenin birkaç puan altı → erozyonu durdurur, mevcut suite'i bloklamaz.
-  // Coverage yükseldikçe bu tabanlar da yükseltilmeli (yukarı doğru ratchet).
+  // Klasör-bazlı ratchet (mühendislik toleranslı). Kritik iş mantığı (domain) ve veri
+  // katmanı YÜKSEKTE kilitli → erozyonları engellenir, yukarı ratchet'lenmeli. Geri kalan
+  // (presentation/UI, core, navigation) tolere edilebilir global tabanla korunur — UI
+  // render testine zorlamadan, ama eklenen store-slice/hook kazanımı erimeyecek kadar.
+  // Mevcut (2026-06-25): domain ~94/87, data ~92/64, global toplam L64/B45; global bucket
+  // (domain+data düşülmüş = presentation+core+nav) ~L42/B27. Tabanlar achieved'in birkaç
+  // puan altı; coverage yükseldikçe yukarı çekin.
+  // NOT: glob anahtarı (**/*.ts) eşiği HER DOSYAYA ayrı uygular; AGGREGATE (klasör toplamı)
+  // istediğimiz için DİZİN-YOLU anahtarı kullanılır. Dizin-yolu eşleşen dosyaları global'den
+  // düşer, eşik klasör toplamına uygulanır.
   coverageThreshold: {
-    global: {
-      statements: 50,
-      branches: 35,
-      functions: 40,
-      lines: 50,
-    },
+    global: { statements: 38, branches: 24, functions: 32, lines: 38 },
+    "./src/domain/": { statements: 88, branches: 78, functions: 85, lines: 88 },
+    "./src/data/": { statements: 78, branches: 53, functions: 80, lines: 78 },
   },
   coverageDirectory: "coverage",
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
