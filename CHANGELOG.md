@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.15] - 2026-06-25
+
+### Eklendi
+- [ux] Seri Hedef Ayarları sayfasındaki düğmelere erişilebilirlik (a11y) etiketleri eklendi (#123)
+
 ## [0.23.14] - 2026-06-25
 
 ## [0.23.13] - 2026-06-24
