@@ -384,4 +384,175 @@ describe('VakitSayacBildirimServisi', () => {
     const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
     expect(createIds).toContain(ogleId);
   });
+
+  it('kanal idempotency: ikinci yapilandirmada kanal TEKRAR olusturulmamali', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    const ayarlar = {
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikDk: 30,
+    };
+
+    await servis.yapilandirVePlanla(ayarlar);
+    expect(notifee.createChannel).toHaveBeenCalledTimes(1);
+
+    // Ikinci kez yapilandir: kanal zaten olusturuldu bayragi set => tekrar acilmamali
+    await servis.yapilandirVePlanla(ayarlar);
+    expect(notifee.createChannel).toHaveBeenCalledTimes(1);
+  });
+
+  it('kanal olusturma hatasi: createChannel reddetse bile akis cokmemeli (catch yutulur)', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+    (notifee.createChannel as jest.Mock).mockRejectedValueOnce(new Error('kanal patladi'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    // Kanal acilamasa da yapilandirma reddetmemeli; planlama yine de denenmeli
+    await expect(
+      servis.yapilandirVePlanla({
+        aktif: true,
+        koordinatlar: { lat: 41, lng: 29 },
+        baslangicEsikDk: 30,
+      })
+    ).resolves.toBeUndefined();
+
+    // Kanal hatasi yutuldu, vakit planlamasi yine de yapildi
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    expect(createIds).toContain(`${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`);
+  });
+
+  it('hemen baslayan sayac hatasi: startCountdown firlatsa bile temizleme trigger\'i yine kurulmali', async () => {
+    // 14:45: ogle cikisi 15:00, esik 30dk => HEMEN native countdown baslar (firlatacak)
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    mockStartCountdown.mockImplementationOnce(() => {
+      throw new Error('native sayac patladi');
+    });
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await expect(
+      servis.yapilandirVePlanla({
+        aktif: true,
+        koordinatlar: { lat: 41, lng: 29 },
+        baslangicEsikDk: 30,
+      })
+    ).resolves.toBeUndefined();
+
+    // Native sayac firlatti ama akis devam etti: ogle icin temizleme (_bitis) trigger'i kuruldu
+    const ogleBitis = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .find((c: any[]) => c[0].id === `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle_bitis`);
+    expect(ogleBitis).toBeDefined();
+  });
+
+  it('trigger planlama hatasi: createTriggerNotification reddetse bile diger vakitler planlanmaya devam etmeli', async () => {
+    // 10:00: ogle/ikindi/aksam/yatsi gelecekte; ilk trigger cagrisi reddedilsin
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+    (notifee.createTriggerNotification as jest.Mock).mockRejectedValueOnce(new Error('trigger patladi'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await expect(
+      servis.yapilandirVePlanla({
+        aktif: true,
+        koordinatlar: { lat: 41, lng: 29 },
+        baslangicEsikDk: 30,
+      })
+    ).resolves.toBeUndefined();
+
+    // Ilk trigger reddedildi (catch yutuldu) ama sonraki vakitler icin cagri devam etti
+    expect((notifee.createTriggerNotification as jest.Mock).mock.calls.length).toBeGreaterThan(1);
+  });
+
+  it('asamaGecisiniIsle: _vakitgirdi sonekli ID temel bildirimi iptal etmeli', async () => {
+    const servis = VakitSayacBildirimServisi.getInstance();
+    const temelId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+
+    await servis.asamaGecisiniIsle(`${temelId}_vakitgirdi`);
+
+    expect(notifee.cancelNotification).toHaveBeenCalledWith(temelId);
+  });
+
+  it('asamaGecisiniIsle: _bitis sonekli ID hem temel hem _vakitgirdi bildirimini iptal etmeli', async () => {
+    const servis = VakitSayacBildirimServisi.getInstance();
+    const temelId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
+
+    await servis.asamaGecisiniIsle(`${temelId}_bitis`);
+
+    const iptalEdilenler = (notifee.cancelNotification as jest.Mock).mock.calls.map((c: any[]) => c[0]);
+    expect(iptalEdilenler).toContain(temelId);
+    expect(iptalEdilenler).toContain(`${temelId}_vakitgirdi`);
+  });
+
+  it('asamaGecisiniIsle: eslesmeyen sonekte hicbir iptal yapilmamali', async () => {
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await servis.asamaGecisiniIsle(`${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`);
+
+    expect(notifee.cancelNotification).not.toHaveBeenCalled();
+  });
+
+  it('temizleme trigger hatasi: _bitis trigger\'i reddetse bile sonraki vakitler planlanmaya devam etmeli', async () => {
+    // 14:45: ogle HEMEN baslar (startCountdown), ardindan ilk createTriggerNotification cagrisi
+    // ogle'nin _bitis temizleme trigger'idir; bunu reddet => catch (343) calisir, akis devam eder.
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    (notifee.createTriggerNotification as jest.Mock).mockRejectedValueOnce(new Error('bitis trigger patladi'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await expect(
+      servis.yapilandirVePlanla({
+        aktif: true,
+        koordinatlar: { lat: 41, lng: 29 },
+        baslangicEsikDk: 30,
+      })
+    ).resolves.toBeUndefined();
+
+    // Ilk _bitis reddedildi (catch yutuldu) ama sonraki vakitlerin (ikindi/aksam/yatsi) planlamasi surdu
+    expect((notifee.createTriggerNotification as jest.Mock).mock.calls.length).toBeGreaterThan(1);
+  });
+
+  it('temizleme: gosterilen sayac bildirimleri iptal edilmeli, sayac olmayanlar dokunulmamali', async () => {
+    const onek = BILDIRIM_SABITLERI.ONEKLEME.SAYAC;
+    const sayacBildirimId = `${onek}2026-02-19_ogle`;
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([
+      { id: sayacBildirimId },
+      { id: 'baska_bildirim_123' }, // sayac onekli degil -> dokunulmamali
+      { id: undefined }, // id'siz -> guvenli atlanmali
+    ]);
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.tumSayacBildirimleriniTemizle();
+
+    // Sayac onekli bildirim icin native countdown durdurulup notifee iptali yapilmali
+    expect(mockStopCountdown).toHaveBeenCalledWith(sayacBildirimId);
+    expect(notifee.cancelNotification).toHaveBeenCalledWith(sayacBildirimId);
+    // Sayac olmayan bildirim icin iptal yapilmamali
+    expect(notifee.cancelNotification).not.toHaveBeenCalledWith('baska_bildirim_123');
+  });
+
+  it('temizleme: sayac onekli trigger ID\'leri iptal edilmeli, digerleri korunmali', async () => {
+    const onek = BILDIRIM_SABITLERI.ONEKLEME.SAYAC;
+    const sayacTriggerId = `${onek}2026-02-19_yatsi`;
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([
+      sayacTriggerId,
+      'muhafiz_2026-02-19_ogle', // baska servisin trigger'i -> korunmali
+    ]);
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.tumSayacBildirimleriniTemizle();
+
+    expect(notifee.cancelTriggerNotification).toHaveBeenCalledWith(sayacTriggerId);
+    expect(notifee.cancelTriggerNotification).not.toHaveBeenCalledWith('muhafiz_2026-02-19_ogle');
+  });
+
+  it('temizleme hatasi: getDisplayedNotifications reddetse bile metot reddetmemeli (catch yutulur)', async () => {
+    (notifee.getDisplayedNotifications as jest.Mock).mockRejectedValueOnce(new Error('liste alinamadi'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+
+    await expect(servis.tumSayacBildirimleriniTemizle()).resolves.toBeUndefined();
+  });
 });
