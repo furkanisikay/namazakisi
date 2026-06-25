@@ -6,10 +6,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   StyleSheet,
   Platform,
 } from 'react-native';
 import { useRenkler } from '../../../core/theme';
+import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 /**
  * Tek sayı girişli onay modalı (number-pad + İptal/Onay).
@@ -40,12 +42,18 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
 }) => {
   const renkler = useRenkler();
 
+  // New Architecture'da Modal onRequestClose güvenilir değil → BackHandler ile garanti
+  useDonanimGeriTusu(gorunur, onIptal);
+
   return (
     <Modal visible={gorunur} transparent animationType="fade" onRequestClose={onIptal}>
       <KeyboardAvoidingView
         style={styles.modalArkaPlan}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        <TouchableWithoutFeedback onPress={onIptal}>
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
+        </TouchableWithoutFeedback>
         <View style={[styles.modalKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
           <Text style={[styles.modalBaslik, { color: renkler.metin }]}>{baslik}</Text>
           <Text style={[styles.modalAciklama, { color: renkler.metinIkincil }]}>{aciklama}</Text>
@@ -88,7 +96,6 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
 const styles = StyleSheet.create({
   modalArkaPlan: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   modalKonteyner: {
