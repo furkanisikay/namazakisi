@@ -262,8 +262,9 @@ describe('NamazVaktiHesaplayiciServisi', () => {
             const bugun = new Date();
             expect(bilgi.saat).toEqual(vakitTreti(bugun, 16, 0));
             expect(bilgi.sonrakiVakitGiris).toBe(vakitTreti(bugun, 16, 0).toISOString());
-            // kalanSureMs = nextTime - now; ileri bir saat olduğundan
-            expect(typeof bilgi.kalanSureMs).toBe('number');
+            // kalanSureMs = nextTime - now; gerçek duvar saati kullanıldığından işaret belirsiz,
+            // bu yüzden değer/işaret değil yalnız sonlu-sayı tipi doğrulanır.
+            expect(Number.isFinite(bilgi.kalanSureMs)).toBe(true);
         });
 
         it('yatsı sonrası (next=none) yarının imsak vaktine geçer', () => {

@@ -37,13 +37,15 @@ module.exports = {
   // Klasör-bazlı ratchet (mühendislik toleranslı). Kritik iş mantığı (domain) ve veri
   // katmanı YÜKSEKTE kilitli → erozyonları engellenir, yukarı ratchet'lenmeli. Geri kalan
   // (presentation/UI, core, navigation) tolere edilebilir global tabanla korunur — UI
-  // render testine zorlamadan. Mevcut (2026-06-25): domain 94/87, data 87/63, global L63/B45.
-  // Tabanlar achieved seviyenin birkaç puan altı; coverage yükseldikçe yukarı çekin.
+  // render testine zorlamadan, ama eklenen store-slice/hook kazanımı erimeyecek kadar.
+  // Mevcut (2026-06-25): domain ~94/87, data ~92/64, global toplam L64/B45; global bucket
+  // (domain+data düşülmüş = presentation+core+nav) ~L42/B27. Tabanlar achieved'in birkaç
+  // puan altı; coverage yükseldikçe yukarı çekin.
   // NOT: glob anahtarı (**/*.ts) eşiği HER DOSYAYA ayrı uygular; AGGREGATE (klasör toplamı)
   // istediğimiz için DİZİN-YOLU anahtarı kullanılır. Dizin-yolu eşleşen dosyaları global'den
   // düşer, eşik klasör toplamına uygulanır.
   coverageThreshold: {
-    global: { statements: 35, branches: 20, functions: 30, lines: 35 },
+    global: { statements: 38, branches: 24, functions: 32, lines: 38 },
     "./src/domain/": { statements: 88, branches: 78, functions: 85, lines: 88 },
     "./src/data/": { statements: 78, branches: 53, functions: 80, lines: 78 },
   },

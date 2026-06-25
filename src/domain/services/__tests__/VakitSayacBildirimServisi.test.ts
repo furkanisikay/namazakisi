@@ -496,7 +496,7 @@ describe('VakitSayacBildirimServisi', () => {
 
   it('temizleme trigger hatasi: _bitis trigger\'i reddetse bile sonraki vakitler planlanmaya devam etmeli', async () => {
     // 14:45: ogle HEMEN baslar (startCountdown), ardindan ilk createTriggerNotification cagrisi
-    // ogle'nin _bitis temizleme trigger'idir; bunu reddet => catch (343) calisir, akis devam eder.
+    // ogle'nin _bitis temizleme trigger'idir; bunu reddet => _bitis trigger'inin catch'i yutar, akis devam eder.
     saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
     (notifee.createTriggerNotification as jest.Mock).mockRejectedValueOnce(new Error('bitis trigger patladi'));
 
