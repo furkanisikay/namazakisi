@@ -982,7 +982,7 @@ describe('GuncellemeBildirimi', () => {
 
     // Kapatma (X) butonunda Text cocugu yok → accessibilityLabel ile bulunur.
     const kapatButonu = tree!.root.findAll(
-      (node) => node.type === TouchableOpacity && node.props.accessibilityLabel === 'Kapat'
+      (node) => node.type === TouchableOpacity && node.props.accessibilityLabel === 'Bildirimi kapat'
     )[0];
     expect(kapatButonu).toBeTruthy();
 
