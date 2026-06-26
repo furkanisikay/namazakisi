@@ -43,6 +43,7 @@ const GECMIS_GUN_SAYISI = 90; // 3 ay geri
 const GELECEK_GUN_SAYISI = 1; // 1 gun ileri (yarin)
 const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
+const SAYFA_INDEKSLERI = Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i);
 
 export const AnaSayfa: React.FC = () => {
   const navigation = useNavigation<RootNavigationProp>();
@@ -678,7 +679,7 @@ export const AnaSayfa: React.FC = () => {
           oncekiTamamlananRef.current = 0;
         }}
       >
-        {Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i).map(sayfaIndeksi => (
+        {SAYFA_INDEKSLERI.map(sayfaIndeksi => (
           <View key={sayfaIndeksi}>
             {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 1 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
           </View>
