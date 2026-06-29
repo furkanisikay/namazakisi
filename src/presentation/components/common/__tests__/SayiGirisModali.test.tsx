@@ -13,7 +13,12 @@ jest.mock('../../../../core/theme', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({
+  useDonanimGeriTusu: jest.fn(),
+}));
+
 import { SayiGirisModali } from '../SayiGirisModali';
+import { useDonanimGeriTusu } from '../../../hooks/useDonanimGeriTusu';
 
 const temelProps = {
   gorunur: true,
@@ -82,6 +87,11 @@ describe('SayiGirisModali', () => {
   it('gorunur=false iken Modal visible=false geçirir (modal gizli)', () => {
     const { UNSAFE_getByType } = render(<SayiGirisModali {...temelProps} gorunur={false} />);
     expect(UNSAFE_getByType(Modal).props.visible).toBe(false);
+  });
+
+  it('useDonanimGeriTusu hookunu gorunur ve onIptal ile çağırır', () => {
+    render(<SayiGirisModali {...temelProps} gorunur={true} />);
+    expect(useDonanimGeriTusu).toHaveBeenCalledWith(true, temelProps.onIptal);
   });
 
   // Gap 3: Sayı doğrulaması UPSTREAM'dedir — bu bileşen ham metni filtrelemeden iletir.
