@@ -14,7 +14,7 @@ import {
   Easing,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRenkler } from '../../core/theme';
+import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -34,6 +34,7 @@ import { store } from '../store/store';
  */
 export const RamazanAyarlariSayfasi: React.FC<any> = () => {
   const renkler = useRenkler();
+  const { koyuMu } = useTema();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
   const iftarSayac = useAppSelector((state) => state.iftarSayac);
@@ -83,10 +84,9 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
     }
   };
 
-  const iftarRenk = '#E65100';
-  const iftarRenkAcik = '#FFF3E0';
-  const sahurRenk = '#3F51B5'; // İftar turuncu, Sahur lacivert/mavi
-  const sahurRenkAcik = '#E8EAF6';
+  const iftarRenk = renkler.durum.uyari;
+  const iftarRenkAcik = koyuMu ? `${iftarRenk}15` : `${iftarRenk}10`;
+  const sahurRenk = renkler.durum.bilgi; // İftar turuncu (uyarı), Sahur lacivert/mavi (bilgi)
 
   return (
     <ScrollView
@@ -296,12 +296,12 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
         >
           <View
             className="w-8 h-8 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: '#FF980015' }}
+            style={{ backgroundColor: `${renkler.durum.uyari}15` }}
           >
             <FontAwesome5
               name="exclamation-triangle"
               size={14}
-              color="#FF9800"
+              color={renkler.durum.uyari}
             />
           </View>
           <Text
