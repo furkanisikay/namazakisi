@@ -130,7 +130,14 @@ export const WebPusulaView = () => {
         allowFileAccess={false}
         allowFileAccessFromFileURLs={false}
         allowUniversalAccessFromFileURLs={false}
-        originWhitelist={['https://*', 'about:blank']}
+        originWhitelist={[
+          'https://*.google.com',
+          'https://*.googleapis.com',
+          'https://*.gstatic.com',
+          'https://*.googleusercontent.com',
+          'https://qiblafinder.withgoogle.com',
+          'about:blank'
+        ]}
         onError={() => setHataOlustu(true)}
         onHttpError={() => setHataOlustu(true)}
         renderLoading={() => (
