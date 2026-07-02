@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useRenkler } from '../../../core/theme';
+import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 
 /**
  * Tek sayı girişli onay modalı (number-pad + İptal/Onay).
@@ -39,6 +40,8 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
   onOnay,
 }) => {
   const renkler = useRenkler();
+
+  useDonanimGeriTusu(gorunur, onIptal);
 
   return (
     <Modal visible={gorunur} transparent animationType="fade" onRequestClose={onIptal}>

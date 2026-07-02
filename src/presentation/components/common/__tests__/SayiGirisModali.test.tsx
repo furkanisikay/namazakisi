@@ -13,7 +13,12 @@ jest.mock('../../../../core/theme', () => ({
   }),
 }));
 
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({
+  useDonanimGeriTusu: jest.fn(),
+}));
+
 import { SayiGirisModali } from '../SayiGirisModali';
+import { useDonanimGeriTusu } from '../../../hooks/useDonanimGeriTusu';
 
 const temelProps = {
   gorunur: true,
@@ -28,6 +33,15 @@ const temelProps = {
 };
 
 describe('SayiGirisModali', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('gorunur olduğunda useDonanimGeriTusu kancasını çağırmalıdır', () => {
+    render(<SayiGirisModali {...temelProps} />);
+    expect(useDonanimGeriTusu).toHaveBeenCalledWith(true, temelProps.onIptal);
+  });
+
   it('onay butonu onOnay çağırır', () => {
     const onOnay = jest.fn();
     const { getByLabelText } = render(<SayiGirisModali {...temelProps} onOnay={onOnay} />);
