@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.16] - 2026-07-02
+
+### Düzeltildi
+- [security] WebView originWhitelist zafiyeti giderildi (#143)
+- [ux] SayiGirisModali icin donanim geri tusu destegi eklendi (#144)
+
 ## [0.23.15] - 2026-06-25
 
 ### Eklendi
