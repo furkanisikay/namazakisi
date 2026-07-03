@@ -97,12 +97,16 @@ describe('ToparlanmaModal', () => {
     const onKapat = jest.fn();
     const tree = modalOlustur({ onKapat });
 
-    // En dış overlay TouchableOpacity'si onPress={onKapat} taşır (ToparlanmaModal.tsx:36-40).
-    // activeOpacity=1 olan iki TouchableOpacity var; en dıştaki (ilk bulunan) overlay'dir.
-    const dokunulabilirler = tree.root.findAll(
-      (node) => node.props?.activeOpacity === 1 && typeof node.props?.onPress === 'function'
+    // En dış overlay'i absoluteFill kullanan element ile bul.
+    const stiliDuzlestir = (stil: unknown): Record<string, unknown> =>
+      Object.assign({}, ...(Array.isArray(stil) ? stil : [stil]));
+
+    const overlayler = tree.root.findAll(
+      (node) => stiliDuzlestir(node.props.style).backgroundColor === 'rgba(0,0,0,0.5)' && typeof node.props?.onPress === 'function'
     );
-    const overlay = dokunulabilirler[0];
+
+    expect(overlayler.length).toBeGreaterThan(0);
+    const overlay = overlayler[0];
     act(() => {
       overlay.props.onPress();
     });
@@ -110,32 +114,6 @@ describe('ToparlanmaModal', () => {
     expect(onKapat).toHaveBeenCalledTimes(1);
   });
 
-  it('iç bottom-sheet tıklaması olayı durdurur ve onKapat çağırmaz (yanlışlıkla kapanma yok)', () => {
-    const onKapat = jest.fn();
-    const tree = modalOlustur({ onKapat });
-
-    // İç sheet, overlay'in onPress'inin balonlamasını durdurur; aksi halde sheet'e
-    // her dokunuş modalı kapatır (ToparlanmaModal.tsx:42-44). Bileşen-tipiyle (host
-    // çoğullaması olmadan) bul; iç sheet'i STİLİYLE seç (bottom-sheet'in kavisli üst
-    // köşesi = borderTopLeftRadius). onPress ile yoklamak overlay'in onKapat'ını tetikler,
-    // bu yüzden seçim yan-etkisiz olmalı.
-    const touchablelar = tree.root.findAllByType(TouchableOpacity);
-    const stiliDuzlestir = (stil: unknown): Record<string, unknown> =>
-      Object.assign({}, ...(Array.isArray(stil) ? stil : [stil]));
-    const icSheet = touchablelar.find(
-      (node) => stiliDuzlestir(node.props.style).borderTopLeftRadius === 20
-    );
-    expect(icSheet).toBeDefined();
-
-    const olay = { stopPropagation: jest.fn() };
-    act(() => {
-      icSheet!.props.onPress(olay);
-    });
-
-    // Sözleşme: sheet içine dokunmak olayı tüketir (stopPropagation) ve modalı KAPATMAZ.
-    expect(olay.stopPropagation).toHaveBeenCalledTimes(1);
-    expect(onKapat).not.toHaveBeenCalled();
-  });
 
   it('toparlanmaDurumu ve oncekiSeri prop’ları ToparlanmaKarti’ya birebir aktarılır', () => {
     const ozelDurum = {

@@ -3,7 +3,7 @@
  * Seri toparlanma durumunu tam ekranda gösterir
  */
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { ToparlanmaKarti } from './ToparlanmaKarti';
 import type { ToparlanmaDurumu } from '../../core/types/SeriTipleri';
 import { useRenkler } from '../../core/theme';
@@ -32,18 +32,14 @@ export const ToparlanmaModal: React.FC<ToparlanmaModalProps> = ({
       animationType="slide"
       onRequestClose={onKapat}
     >
-      {/* Overlay — tıklayınca kapat */}
-      <TouchableOpacity
-        style={styles.overlay}
-        activeOpacity={1}
-        onPress={onKapat}
-      >
-        {/* Bottom sheet — tıklamayı durdur */}
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={e => e.stopPropagation()}
-          style={[styles.sheet, { backgroundColor: renkler.arkaplan }]}
-        >
+      <View style={styles.overlayContainer}>
+        {/* Backdrop — absolute fill sibling */}
+        <Pressable
+          style={[StyleSheet.absoluteFill, styles.overlayBackdrop]}
+          onPress={onKapat}
+        />
+        {/* Bottom sheet */}
+        <View style={[styles.sheet, { backgroundColor: renkler.arkaplan }]}>
           {/* Drag handle */}
           <View style={[styles.handle, { backgroundColor: renkler.sinir }]} />
 
@@ -60,17 +56,19 @@ export const ToparlanmaModal: React.FC<ToparlanmaModalProps> = ({
           >
             <Text style={styles.anladimMetin}>Anladım</Text>
           </TouchableOpacity>
-        </TouchableOpacity>
-      </TouchableOpacity>
+        </View>
+      </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
+  overlayContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
+  },
+  overlayBackdrop: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   sheet: {
     borderTopLeftRadius: 20,
