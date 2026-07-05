@@ -26,7 +26,7 @@ interface HomeHeaderProps {
  * @param {HomeHeaderProps} props - Component props.
  * @returns {React.JSX.Element} Header with date info, qibla and streak buttons.
  */
-export const HomeHeader: React.FC<HomeHeaderProps> = ({
+export const HomeHeader = React.memo<HomeHeaderProps>(({
     tarih,
     streakGun,
     bugunMu,
@@ -160,4 +160,4 @@ export const HomeHeader: React.FC<HomeHeaderProps> = ({
             </View>
         </View>
     );
-};
+});

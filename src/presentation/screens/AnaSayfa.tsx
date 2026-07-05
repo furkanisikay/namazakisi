@@ -471,6 +471,11 @@ export const AnaSayfa: React.FC = () => {
 
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
+
+  const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
+  const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
+  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
+
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
 
   // Sayfa içeriği render
@@ -608,9 +613,9 @@ export const AnaSayfa: React.FC = () => {
         streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
         bugunMu={bugunMu(mevcutTarih)}
         aktifGunMu={mevcutTarih === aktifGun}
-        onTarihTikla={() => setTarihSeciciGorunur(true)}
-        onSeriTikla={() => setSeriModalGorunur(true)}
-        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
+        onTarihTikla={handleTarihTikla}
+        onSeriTikla={handleSeriTikla}
+        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
