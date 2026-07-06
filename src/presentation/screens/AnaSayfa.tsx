@@ -43,6 +43,7 @@ const GECMIS_GUN_SAYISI = 90; // 3 ay geri
 const GELECEK_GUN_SAYISI = 1; // 1 gun ileri (yarin)
 const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
+const SAYFA_INDEKSLERI = Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i);
 
 export const AnaSayfa: React.FC = () => {
   const navigation = useNavigation<RootNavigationProp>();
@@ -473,6 +474,11 @@ export const AnaSayfa: React.FC = () => {
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
 
+  // Memoized handlers for HomeHeader to prevent unnecessary re-renders
+  const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
+  const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
+  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
+
   // Sayfa içeriği render
   const sayfaIcerigiOlustur = (sayfaIndeksi: number) => {
     const sayfaTarihi = sayfaIndeksiniTariheCevir(sayfaIndeksi);
@@ -608,9 +614,9 @@ export const AnaSayfa: React.FC = () => {
         streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
         bugunMu={bugunMu(mevcutTarih)}
         aktifGunMu={mevcutTarih === aktifGun}
-        onTarihTikla={() => setTarihSeciciGorunur(true)}
-        onSeriTikla={() => setSeriModalGorunur(true)}
-        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
+        onTarihTikla={handleTarihTikla}
+        onSeriTikla={handleSeriTikla}
+        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
@@ -678,7 +684,7 @@ export const AnaSayfa: React.FC = () => {
           oncekiTamamlananRef.current = 0;
         }}
       >
-        {Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i).map(sayfaIndeksi => (
+        {SAYFA_INDEKSLERI.map(sayfaIndeksi => (
           <View key={sayfaIndeksi}>
             {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 1 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
           </View>
