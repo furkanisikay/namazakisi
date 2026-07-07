@@ -245,8 +245,6 @@ export const KonumAdimi: React.FC<{
                 manuelIl?.id === item.id && styles.ilSatirSecili,
               ]}
               onPress={() => setManuelIl(item)}
-              accessibilityRole="button"
-              accessibilityLabel={`${item.ad} şehrini seç${manuelIl?.id === item.id ? ', şu an seçili' : ''}`}
             >
               <Text style={[
                 styles.ilAdi,
@@ -343,8 +341,6 @@ export const TemaAdimi: React.FC<{
           key={p.id}
           style={[styles.paletKart, palet.id === p.id && { borderColor: p.birincil }]}
           onPress={() => paletiDegistir(p.id)}
-          accessibilityRole="button"
-          accessibilityLabel={`${p.ad} renk paleti${palet.id === p.id ? ', şu an seçili' : ''}`}
         >
           <View style={[styles.paletRenk, { backgroundColor: p.birincil }]} />
           <View style={[styles.paletVurgu, { backgroundColor: p.vurgu }]} />
@@ -365,8 +361,6 @@ export const TemaAdimi: React.FC<{
           key={m}
           style={[styles.modButon, mod === m && { backgroundColor: palet.birincil }]}
           onPress={() => moduDegistir(m)}
-          accessibilityRole="button"
-          accessibilityLabel={`${m === 'acik' ? 'Açık' : m === 'koyu' ? 'Koyu' : 'Sistem'} tema${mod === m ? ', şu an seçili' : ''}`}
         >
           <FontAwesome5
             name={m === 'acik' ? 'sun' : m === 'koyu' ? 'moon' : 'mobile-alt'}
@@ -432,8 +426,6 @@ export const VakitBildirimAdimi: React.FC<{
             key={v.anahtar}
             style={[styles.bildirimSatir, bildirimler[v.anahtar] && { borderColor: v.renk + '50', borderWidth: 1.5 }]}
             onPress={() => onToggle(v.anahtar)}
-            accessibilityRole="button"
-            accessibilityLabel={`${v.ad} bildirimi, ${bildirimler[v.anahtar] ? 'açık' : 'kapalı'}`}
           >
             <View style={[styles.vakitIkon, { backgroundColor: v.renk + '18' }]}>
               <FontAwesome5 name={v.ikon} size={18} color={v.renk} />
@@ -670,8 +662,6 @@ export const MuhafizYogunlukAdimi: React.FC<{
               key={s.id}
               style={[styles.yogunlukKart, secili && { borderColor: s.renk, borderWidth: 2, backgroundColor: s.renk + '06' }]}
               onPress={() => setYogunluk(s.id)}
-              accessibilityRole="button"
-              accessibilityLabel={`${s.ad} yoğunluk seviyesi, ${s.detay}${secili ? ', şu an seçili' : ''}`}
             >
               <View style={styles.yogunlukKartUst}>
                 <View style={[styles.yogunlukIkon, { backgroundColor: s.renk + '18' }]}>
