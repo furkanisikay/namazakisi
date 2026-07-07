@@ -460,6 +460,11 @@ export const AnaSayfa: React.FC = () => {
     namazToggleRef.current(namazAdi as NamazAdi, val);
   }, []);
 
+  // HomeHeader (React.memo) icin referans-kararli callback'ler
+  const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
+  const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
+  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
+
   const suankiVakitTamamla = () => {
     if (vakitBilgisi && vakitBilgisi.vakit) {
       const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
@@ -608,9 +613,9 @@ export const AnaSayfa: React.FC = () => {
         streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
         bugunMu={bugunMu(mevcutTarih)}
         aktifGunMu={mevcutTarih === aktifGun}
-        onTarihTikla={() => setTarihSeciciGorunur(true)}
-        onSeriTikla={() => setSeriModalGorunur(true)}
-        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
+        onTarihTikla={handleTarihTikla}
+        onSeriTikla={handleSeriTikla}
+        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
