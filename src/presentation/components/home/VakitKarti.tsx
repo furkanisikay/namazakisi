@@ -126,6 +126,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     }}
                     onPress={onTamamla}
                     disabled={tamamlandi || kilitli}
+                    accessibilityRole="button"
+                    accessibilityLabel={tamamlandi ? "Namaz kılındı" : (kilitli ? "Vakit girmedi" : "Kılındı olarak işaretle")}
                 >
                     <FontAwesome5
                         name={tamamlandi ? "check-circle" : (kilitli ? "clock" : "pray")}

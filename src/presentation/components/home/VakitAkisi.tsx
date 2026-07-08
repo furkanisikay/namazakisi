@@ -113,6 +113,8 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                             activeOpacity={0.7}
                             onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
                             disabled={pasifMi}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${namaz.namazAdi} vakti${tamamlandi ? ', kılındı' : (aktifMi ? ', vakti geldi' : (pasifMi ? ', vakit girmedi' : ', vakti bekleniyor'))}`}
                         >
                             {aktifMi && (
                                 <View className="absolute right-0 top-0 bottom-0 w-24 opacity-5 pointer-events-none z-0"
