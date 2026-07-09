@@ -283,7 +283,7 @@ export const AnaSayfa: React.FC = () => {
     // Timer interval refs
     let timerInterval: NodeJS.Timeout | null = null;
 
-    // Uygulama on plandayken calistir, arkada kapat 
+    // Uygulama on plandayken calistir, arkada kapat
     // (Boylece Background state update sirasina bagli react navigation render crush'lari onlenir)
     const startLocalTimer = () => {
       if (!timerInterval) {
@@ -460,22 +460,18 @@ export const AnaSayfa: React.FC = () => {
     namazToggleRef.current(namazAdi as NamazAdi, val);
   }, []);
 
-  const suankiVakitTamamla = useCallback(() => {
+  const suankiVakitTamamla = () => {
     if (vakitBilgisi && vakitBilgisi.vakit) {
       const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
       if (namazAdi) {
-        namazToggleRef.current(namazAdi, true);
+        namazToggle(namazAdi, true);
       }
     }
-  }, [vakitBilgisi, servisToNamazAdi]);
+  };
 
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
-
-  const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
-  const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
-  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
 
   // Sayfa içeriği render
   const sayfaIcerigiOlustur = (sayfaIndeksi: number) => {
@@ -612,9 +608,9 @@ export const AnaSayfa: React.FC = () => {
         streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
         bugunMu={bugunMu(mevcutTarih)}
         aktifGunMu={mevcutTarih === aktifGun}
-        onTarihTikla={handleTarihTikla}
-        onSeriTikla={handleSeriTikla}
-        onKibleTikla={handleKibleTikla}
+        onTarihTikla={() => setTarihSeciciGorunur(true)}
+        onSeriTikla={() => setSeriModalGorunur(true)}
+        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />

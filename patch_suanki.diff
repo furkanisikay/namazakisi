@@ -1,0 +1,20 @@
+--- src/presentation/screens/AnaSayfa.tsx
++++ src/presentation/screens/AnaSayfa.tsx
+@@ -460,14 +460,14 @@
+     namazToggleRef.current(namazAdi as NamazAdi, val);
+   }, []);
+
+-  const suankiVakitTamamla = () => {
++  const suankiVakitTamamla = useCallback(() => {
+     if (vakitBilgisi && vakitBilgisi.vakit) {
+       const namazAdi = servisToNamazAdi[vakitBilgisi.vakit];
+       if (namazAdi) {
+-        namazToggle(namazAdi, true);
++        namazToggleRef.current(namazAdi, true);
+       }
+     }
+-  };
++  }, [vakitBilgisi, servisToNamazAdi]);
+
+   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
+   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
