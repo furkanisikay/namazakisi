@@ -79,7 +79,7 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
               accessibilityRole="button"
               accessibilityLabel={onayMetni}
             >
-              <Text style={styles.modalOnayMetin}>{onayMetni}</Text>
+              <Text style={[styles.modalOnayMetin, { color: renkler.birincilMetin }]}>{onayMetni}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -142,6 +142,5 @@ const styles = StyleSheet.create({
   modalOnayMetin: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#fff',
   },
 });
