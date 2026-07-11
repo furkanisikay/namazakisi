@@ -111,6 +111,8 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
         }}
         onPress={onPress}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={`${rozet.ad} rozeti, ${rozet.kazanildiMi ? 'kazanıldı' : 'kilitli'}`}
       >
         <View className="mb-1">
           {rozet.kazanildiMi ? (
@@ -155,6 +157,8 @@ export const RozetKarti: React.FC<RozetKartiProps> = ({
       }}
       onPress={onPress}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityLabel={`${rozet.ad} rozeti, ${rozet.kazanildiMi ? 'kazanıldı' : 'kilitli'}`}
     >
       {/* Parlama efekti */}
       {rozet.kazanildiMi && (
