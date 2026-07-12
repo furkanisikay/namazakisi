@@ -43,6 +43,7 @@ const GECMIS_GUN_SAYISI = 90; // 3 ay geri
 const GELECEK_GUN_SAYISI = 1; // 1 gun ileri (yarin)
 const TOPLAM_SAYFA_SAYISI = GECMIS_GUN_SAYISI + 1 + GELECEK_GUN_SAYISI; // 3 ay geri + bugun + yarin
 const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
+const SAYFA_INDEKSLERI = Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i);
 
 export const AnaSayfa: React.FC = () => {
   const navigation = useNavigation<RootNavigationProp>();
@@ -67,6 +68,12 @@ export const AnaSayfa: React.FC = () => {
   // Kerahat vaktinde işaretleme öncesi kibar onay modalı için bekleyen namaz (issue #82).
   // null değilse modal görünür; onaylanırsa bu namaz "kılındı" işaretlenir.
   const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
+
+  // Stabil callbackler (gereksiz re-render önlemek için)
+  const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
+  const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
+  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
+  const handleToparlanmaModalGoster = useCallback(() => setToparlanmaModalGorunur(true), []);
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
   const { ozelGunAyarlari, sonYukleme: seriSonYukleme } = useAppSelector(state => state.seri);
@@ -255,11 +262,16 @@ export const AnaSayfa: React.FC = () => {
         Logger.info('AnaSayfa/Timer', `*** VAKIT GECISI: ${oncekiVakitRef.current} -> ${bilgi.vakit} ***`);
         Logger.info('AnaSayfa/Timer', `Sonraki vakit: ${bilgi.sonrakiVakitAdi}, giris: ${bilgi.sonrakiVakitGiris}`);
         // Vakit degisince muhafiz uyarisini sifirla (yeni vakit icin tekrar hesaplanacak)
-        setMuhafizDurumu({ mesaj: '', seviye: 0 });
+        setMuhafizDurumu(prev => prev.seviye !== 0 || prev.mesaj !== '' ? { mesaj: '', seviye: 0 } : prev);
       }
       oncekiVakitRef.current = bilgi?.vakit || null;
 
-      setVakitBilgisi(bilgi);
+      // Fonksiyonel guncelleme ile vakit bilgisi degismediyse bail out (onceki referansi dondur)
+      setVakitBilgisi(prev => {
+         if (!prev && !bilgi) return prev;
+         if (prev && bilgi && prev.vakit === bilgi.vakit && prev.sonrakiVakitGiris === bilgi.sonrakiVakitGiris) return prev;
+         return bilgi;
+      });
 
       if (bilgi) {
         const simdi = new Date();
@@ -272,9 +284,10 @@ export const AnaSayfa: React.FC = () => {
         const dakika = Math.floor((fark % (1000 * 60 * 60)) / (1000 * 60));
         const saniye = Math.floor((fark % (1000 * 60)) / 1000);
 
-        setKalanSureStr(
-          `${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`
-        );
+        const yeniKalanSureStr = `${saat.toString().padStart(2, '0')}:${dakika.toString().padStart(2, '0')}:${saniye.toString().padStart(2, '0')}`;
+
+        // Eger kalan sure stringi ayniysa re-render'dan kacin
+        setKalanSureStr(prev => prev === yeniKalanSureStr ? prev : yeniKalanSureStr);
       }
     };
 
@@ -608,9 +621,9 @@ export const AnaSayfa: React.FC = () => {
         streakGun={seriOzeti ? seriOzeti.mevcutSeri : 0}
         bugunMu={bugunMu(mevcutTarih)}
         aktifGunMu={mevcutTarih === aktifGun}
-        onTarihTikla={() => setTarihSeciciGorunur(true)}
-        onSeriTikla={() => setSeriModalGorunur(true)}
-        onKibleTikla={() => navigation?.navigate('KibleSayfasi')}
+        onTarihTikla={handleTarihTikla}
+        onSeriTikla={handleSeriTikla}
+        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
@@ -622,7 +635,7 @@ export const AnaSayfa: React.FC = () => {
             anaSayfaStilleri.toparlanmaBanner,
             { backgroundColor: koyuMu ? '#78350f30' : '#fef3c7', borderColor: '#f59e0b' },
           ]}
-          onPress={() => setToparlanmaModalGorunur(true)}
+          onPress={handleToparlanmaModalGoster}
           activeOpacity={0.8}
           accessibilityLabel="Toparlanma modu detayı için dokun"
           accessibilityRole="button"
@@ -678,7 +691,7 @@ export const AnaSayfa: React.FC = () => {
           oncekiTamamlananRef.current = 0;
         }}
       >
-        {Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i).map(sayfaIndeksi => (
+        {SAYFA_INDEKSLERI.map(sayfaIndeksi => (
           <View key={sayfaIndeksi}>
             {Math.abs(sayfaIndeksi - mevcutSayfaIndeksi) <= 1 ? sayfaIcerigiOlustur(sayfaIndeksi) : <View className="flex-1" />}
           </View>
