@@ -399,6 +399,8 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     onPress={handleKonumOto}
                     disabled={yukleniyor}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel={konumAyarlari.konumModu === 'oto' ? 'Otomatik konum seçili' : 'Otomatik konum seç'}
                 >
                     <View
                         className="w-5.5 h-5.5 rounded-full border-2 items-center justify-center mr-3"
@@ -431,6 +433,8 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     }}
                     onPress={() => dispatch(konumAyarlariniGuncelle({ konumModu: 'manuel' }))}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
+                    accessibilityLabel={konumAyarlari.konumModu === 'manuel' ? 'Manuel konum seçili' : 'Manuel konum seç'}
                 >
                     <View
                         className="w-5.5 h-5.5 rounded-full border-2 items-center justify-center mr-3"
@@ -526,17 +530,19 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 <TouchableOpacity
                                     className="flex-row items-center p-3 rounded-xl border-2 mb-2"
                                     style={{
-                                        backgroundColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF5010' : 'transparent',
-                                        borderColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF50' : renkler.sinir,
+                                        backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.sinir,
                                     }}
                                     onPress={() => handleHassasiyetDegistir('pil_dostu')}
                                     activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'pil_dostu' ? 'Pil Dostu hassasiyet seçili' : 'Pil Dostu hassasiyet seç'}
                                 >
                                     <View
                                         className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'pil_dostu' ? '#4CAF5020' : renkler.sinir }}
+                                        style={{ backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}20` : renkler.sinir }}
                                     >
-                                        <FontAwesome5 name="battery-full" size={16} color={seciliHassasiyet === 'pil_dostu' ? '#4CAF50' : renkler.metinIkincil} />
+                                        <FontAwesome5 name="battery-full" size={16} color={seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.metinIkincil} />
                                     </View>
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Pil Dostu</Text>
@@ -545,7 +551,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'pil_dostu' && (
-                                        <FontAwesome5 name="check-circle" size={16} color="#4CAF50" solid />
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.basarili} solid />
                                     )}
                                 </TouchableOpacity>
 
@@ -553,17 +559,19 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 <TouchableOpacity
                                     className="flex-row items-center p-3 rounded-xl border-2 mb-2"
                                     style={{
-                                        backgroundColor: seciliHassasiyet === 'dengeli' ? '#2196F310' : 'transparent',
-                                        borderColor: seciliHassasiyet === 'dengeli' ? '#2196F3' : renkler.sinir,
+                                        backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.sinir,
                                     }}
                                     onPress={() => handleHassasiyetDegistir('dengeli')}
                                     activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'dengeli' ? 'Dengeli hassasiyet seçili' : 'Dengeli hassasiyet seç'}
                                 >
                                     <View
                                         className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'dengeli' ? '#2196F320' : renkler.sinir }}
+                                        style={{ backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}20` : renkler.sinir }}
                                     >
-                                        <FontAwesome5 name="balance-scale" size={16} color={seciliHassasiyet === 'dengeli' ? '#2196F3' : renkler.metinIkincil} />
+                                        <FontAwesome5 name="balance-scale" size={16} color={seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.metinIkincil} />
                                     </View>
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Dengeli</Text>
@@ -572,7 +580,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'dengeli' && (
-                                        <FontAwesome5 name="check-circle" size={16} color="#2196F3" solid />
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.bilgi} solid />
                                     )}
                                 </TouchableOpacity>
 
@@ -580,17 +588,19 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                 <TouchableOpacity
                                     className="flex-row items-center p-3 rounded-xl border-2"
                                     style={{
-                                        backgroundColor: seciliHassasiyet === 'hassas' ? '#FF980010' : 'transparent',
-                                        borderColor: seciliHassasiyet === 'hassas' ? '#FF9800' : renkler.sinir,
+                                        backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.sinir,
                                     }}
                                     onPress={() => handleHassasiyetDegistir('hassas')}
                                     activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'hassas' ? 'Hassas hassasiyet seçili' : 'Hassas hassasiyet seç'}
                                 >
                                     <View
                                         className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'hassas' ? '#FF980020' : renkler.sinir }}
+                                        style={{ backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}20` : renkler.sinir }}
                                     >
-                                        <FontAwesome5 name="crosshairs" size={16} color={seciliHassasiyet === 'hassas' ? '#FF9800' : renkler.metinIkincil} />
+                                        <FontAwesome5 name="crosshairs" size={16} color={seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.metinIkincil} />
                                     </View>
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Hassas</Text>
@@ -599,7 +609,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'hassas' && (
-                                        <FontAwesome5 name="check-circle" size={16} color="#FF9800" solid />
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.uyari} solid />
                                     )}
                                 </TouchableOpacity>
                             </View>
