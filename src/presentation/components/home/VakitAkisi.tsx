@@ -101,6 +101,8 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     return (
                         <TouchableOpacity
                             key={namaz.namazAdi}
+                            accessibilityRole="button"
+                            accessibilityLabel={`${namaz.namazAdi} ${pasifMi ? ((aktifMi && kilitli) ? 'Vakit Girmedi' : 'Vakti Bekleniyor') : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi, Şimdi Kıl' : 'Bekliyor'))}`}
                             className={kartStili}
                             style={{
                                 backgroundColor: arkaplanRengi,
