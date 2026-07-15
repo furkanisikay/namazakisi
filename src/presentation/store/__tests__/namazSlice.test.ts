@@ -337,9 +337,10 @@ describe('namazSlice', () => {
       const bugun = bugunuAl();
       // Iki gun: birinde Sabah tamamli, digerinde Sabah+Ogle tamamli
       const gun1 = gunOlustur(bugun, { [NamazAdi.Sabah]: true });
-      // Aydaki ikinci bir tarih uret (bugun ayinin 1'i degilse onceki gun, degilse sonraki):
+      // Aydaki ikinci bir tarih uret (bugun ayin 1'i degilse onceki gun, degilse sonraki):
       const tarihObj = new Date(bugun);
-      const ikinciTarih = new Date(tarihObj.getFullYear(), tarihObj.getMonth(), 15)
+      const testGun = tarihObj.getDate() === 15 ? 16 : 15;
+      const ikinciTarih = new Date(tarihObj.getFullYear(), tarihObj.getMonth(), testGun)
         .toISOString()
         .split('T')[0];
       const gun2 = gunOlustur(ikinciTarih, { [NamazAdi.Sabah]: true, [NamazAdi.Ogle]: true });
