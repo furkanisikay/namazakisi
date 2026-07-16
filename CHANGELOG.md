@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.17] - 2026-07-16
+
+### Düzeltildi
+- ToparlanmaModal backdrop mimarisi düzeltildi
+
 ## [0.23.16] - 2026-07-02
 
 ### Düzeltildi
