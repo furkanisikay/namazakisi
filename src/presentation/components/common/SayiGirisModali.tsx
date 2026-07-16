@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   StyleSheet,
   Platform,
 } from 'react-native';
@@ -49,6 +50,10 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
         style={styles.modalArkaPlan}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        {/* Backdrop: icerigi saran degil, absoluteFill ile kardes → TextInput/scroll takilmaz */}
+        <TouchableWithoutFeedback onPress={onIptal} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          <View style={[StyleSheet.absoluteFill, styles.backdrop]} />
+        </TouchableWithoutFeedback>
         <View style={[styles.modalKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
           <Text style={[styles.modalBaslik, { color: renkler.metin }]}>{baslik}</Text>
           <Text style={[styles.modalAciklama, { color: renkler.metinIkincil }]}>{aciklama}</Text>
@@ -91,8 +96,10 @@ export const SayiGirisModali: React.FC<SayiGirisModaliProps> = ({
 const styles = StyleSheet.create({
   modalArkaPlan: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalKonteyner: {
     borderTopLeftRadius: 20,
