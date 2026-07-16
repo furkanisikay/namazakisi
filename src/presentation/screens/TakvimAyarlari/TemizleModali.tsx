@@ -308,7 +308,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                         className="w-5 h-5 rounded-full items-center justify-center"
                                                         style={{ borderWidth: 2, borderColor: secili ? renkler.birincil : renkler.sinir, backgroundColor: secili ? renkler.birincil : 'transparent' }}
                                                     >
-                                                        {secili && <FontAwesome5 name="check" size={9} color="#FFF" />}
+                                                        {secili && <FontAwesome5 name="check" size={9} color={renkler.birincilMetin} />}
                                                     </View>
                                                 </TouchableOpacity>
                                             );
@@ -420,7 +420,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                             borderColor: secili ? renkler.birincil : renkler.sinir,
                                                         }}
                                                     >
-                                                        {secili && <FontAwesome5 name="check" size={10} color="#FFF" />}
+                                                        {secili && <FontAwesome5 name="check" size={10} color={renkler.birincilMetin} />}
                                                     </View>
                                                     <Text className="text-sm" style={{ color: renkler.metin, fontWeight: secili ? '600' : '400' }}>
                                                         {VAKIT_GORUNTU_ADLARI[vakit]} Namazı
@@ -443,8 +443,8 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         disabled={!taraButonuAktif}
                                         activeOpacity={0.8}
                                     >
-                                        <FontAwesome5 name="search" size={14} color="#FFF" style={{ marginRight: 8 }} />
-                                        <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                                        <FontAwesome5 name="search" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                                        <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                             Etkinlikleri Tara
                                         </Text>
                                     </TouchableOpacity>
@@ -538,11 +538,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             activeOpacity={0.8}
                                         >
                                             {siliniyor ? (
-                                                <ActivityIndicator size="small" color="#FFF" />
+                                                <ActivityIndicator size="small" color={renkler.birincilMetin} />
                                             ) : (
                                                 <>
-                                                    <FontAwesome5 name="trash-alt" size={14} color="#FFF" style={{ marginRight: 8 }} />
-                                                    <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                                                    <FontAwesome5 name="trash-alt" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                                                    <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                                         {bulunanEtkinlikler.length > 0
                                                             ? `${bulunanEtkinlikler.length} Etkinliği Sil`
                                                             : 'Silinecek Etkinlik Yok'}
