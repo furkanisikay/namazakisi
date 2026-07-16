@@ -258,7 +258,8 @@ export const GuncellemeBildirimi: React.FC = () => {
             <TouchableOpacity
               onPress={() => dispatch(indirmeDurumuSifirla())}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-              accessibilityLabel="Kapat"
+              accessibilityRole="button"
+              accessibilityLabel="Bildirimi kapat"
               style={{
                 width: 28,
                 height: 28,
@@ -283,6 +284,8 @@ export const GuncellemeBildirimi: React.FC = () => {
           >
             <TouchableOpacity
               onPress={yenidenBaslatBasildi}
+              accessibilityRole="button"
+              accessibilityLabel="Uygulamayı yeniden başlat"
               style={{
                 flex: 1,
                 flexDirection: 'row',
@@ -430,6 +433,8 @@ export const GuncellemeBildirimi: React.FC = () => {
           <TouchableOpacity
             onPress={sonraBasildi}
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+            accessibilityRole="button"
+            accessibilityLabel="Bildirimi kapat"
             style={{
               width: 28,
               height: 28,
@@ -484,6 +489,8 @@ export const GuncellemeBildirimi: React.FC = () => {
           {/* Sonra butonu */}
           <TouchableOpacity
             onPress={sonraBasildi}
+            accessibilityRole="button"
+            accessibilityLabel="Sonra güncelle"
             style={{
               flex: 1,
               paddingVertical: 10,
@@ -508,6 +515,8 @@ export const GuncellemeBildirimi: React.FC = () => {
           {/* Guncelle butonu */}
           <TouchableOpacity
             onPress={guncelleBasildi}
+            accessibilityRole="button"
+            accessibilityLabel="Şimdi güncelle"
             style={{
               flex: 2,
               flexDirection: 'row',
