@@ -126,8 +126,8 @@ const OzellikKarti: React.FC<OzellikKartiProps> = ({ ozellik, acik, onTogglePres
                             onPress={onAc}
                             activeOpacity={0.85}
                         >
-                            <FontAwesome5 name="arrow-right" size={13} color="#FFF" style={{ marginRight: 8 }} />
-                            <Text className="text-sm font-semibold" style={{ color: '#FFF' }}>
+                            <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                            <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
                                 {ozellik.ctaEtiketi ?? 'İnceleyin'}
                             </Text>
                         </TouchableOpacity>

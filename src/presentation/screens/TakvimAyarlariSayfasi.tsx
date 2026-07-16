@@ -372,7 +372,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 onPress={onKapat}
                                 activeOpacity={0.85}
                             >
-                                <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                                <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                     Tamam
                                 </Text>
                             </TouchableOpacity>
@@ -751,11 +751,11 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                                 activeOpacity={0.8}
                             >
                                 {olayOlusturuluyor ? (
-                                    <ActivityIndicator color="#FFF" />
+                                    <ActivityIndicator color={renkler.birincilMetin} />
                                 ) : (
                                     <>
-                                        <FontAwesome5 name="calendar-plus" size={16} color="#FFF" solid style={{ marginRight: 8 }} />
-                                        <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                                        <FontAwesome5 name="calendar-plus" size={16} color={renkler.birincilMetin} solid style={{ marginRight: 8 }} />
+                                        <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                             Olayları Oluştur ({ayarlar.kaciGunIlerisi} gün)
                                         </Text>
                                     </>
