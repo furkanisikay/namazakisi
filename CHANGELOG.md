@@ -5,6 +5,21 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.18] - 2026-07-16
+
+### Eklendi
+- [ux] presentation katmanındaki sabit renkleri tema token'larıyla değiştir ve erişilebilirliği artır
+
+### Düzeltildi
+- [ux] SayiGirisModali disariya tiklayinca kapansin
+- [a11y] add accessibility roles and labels to setup wizard buttons
+- [SayiGirisModali] remove hardcoded white color and use theme token `birincilMetin`
+- [a11y] GuncellemeBildirimi bileşenine erişilebilirlik rolleri eklendi
+- [a11y] RozetKarti bileşenine accessibilityRole ve accessibilityLabel eklendi
+
+### Değiştirildi
+- [ui] add a11y labels and roles to prayer time cards- [AnaSayfa] timer kaynaklı gereksiz renderları önle
+
 ## [0.23.17] - 2026-07-16
 
 ### Düzeltildi
