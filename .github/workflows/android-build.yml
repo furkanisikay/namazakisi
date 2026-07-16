@@ -463,14 +463,46 @@ jobs:
       - name: 📤 Commit ve Tag (Release)
         if: inputs.build_type == 'release' && success()
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
+          DAL="${{ github.ref_name }}"
+          SURUM_TAG="${{ steps.version.outputs.version_tag }}"
+
           git add package.json package-lock.json app.json android/app/build.gradle src/core/constants/UygulamaSabitleri.ts CHANGELOG.md
           git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]"
-          git tag -a ${{ steps.version.outputs.version_tag }} -m "Release ${{ steps.version.outputs.version_tag }}"
-          git push origin HEAD:${{ github.ref_name }}
-          git push origin ${{ steps.version.outputs.version_tag }}
+
+          # Bu koşu sürerken $DAL ilerlemiş olabilir (araya kaçan docs push'u, merge...).
+          # Eskiden push dogrudan yapiliyordu -> non-fast-forward reddi = release
+          # sessizce kesilmezdi (APK/tag/Release yok). Simdi rebase + retry.
+          #
+          # TAG'I PUSH'TAN SONRA ATIYORUZ: once atilsaydi rebase commit'i yeniden
+          # yazacagi icin tag $DAL'da olmayan YETIM bir commit'i gosterirdi.
+          for deneme in 1 2 3; do
+            if ! git pull --rebase --autostash origin "$DAL"; then
+              git rebase --abort 2>/dev/null || true
+              echo "::error::Release commit'i $DAL uzerine rebase edilemedi (cakisma). Elle mudahale gerekiyor."
+              exit 1
+            fi
+
+            if git push origin "HEAD:$DAL"; then
+              echo "✅ Release commit'i push edildi (deneme $deneme)"
+              break
+            fi
+
+            if [ "$deneme" -eq 3 ]; then
+              echo "::error::$DAL dalina push 3 denemede de reddedildi."
+              exit 1
+            fi
+
+            echo "::warning::push reddedildi ($DAL ilerledi) — yeniden deneniyor ($deneme/3)"
+            sleep 5
+          done
+
+          git tag -a "$SURUM_TAG" -m "Release $SURUM_TAG"
+          git push origin "$SURUM_TAG"
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
