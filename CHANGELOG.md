@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.20] - 2026-07-17
+
+### Eklendi
+- [muhafiz] icerik havuzunu vakte gore yeniden kur, dogrulanmamis nasslari ayikla
+- [muhafiz] saf metin modulu -- sure basliga tasindi
+
+### Düzeltildi
+- [muhafiz] sen dili + emir kipine don, "secdeye kapan" mantik hatasini gider
+- [test] banner test basligina seviye ekle + AGENTS.md tr buyuk harf tuzagi
+- [muhafiz] "namazını" → "namazı" kip hatası + test parametresi cleanup
+- [muhafiz] banner metinlerini kibar 'siz' diline cevir
+- [muhafiz] bildirim basliginda kalan sureyi basa al
+
 ## [0.23.19] - 2026-07-16
 
 ## [0.23.18] - 2026-07-16
