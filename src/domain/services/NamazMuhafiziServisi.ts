@@ -1,8 +1,9 @@
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
-import { SEYTANLA_MUCADELE_ICERIGI, MucadeleIcerigi } from '../../core/data/SeytanlaMucadeleIcerigi';
+import { uygunIcerikleriBul, icerikMetniOlustur, MucadeleIcerigi } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import type { VakitAdi } from '../../core/types';
 
 export interface MuhafizYapilandirmasi {
     seviye1BaslangicDk: number; // Örn: 45
@@ -169,10 +170,10 @@ export class NamazMuhafiziServisi {
 
         if (kalanDk <= this.config.seviye4BaslangicDk) {
             aktifSeviye = 4;
-            mesaj = `VAKİT ÇIKIYOR! Hemen secdeye kapan! (${kalanDk} dk kaldı)`;
+            mesaj = `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
         } else if (kalanDk <= this.config.seviye3BaslangicDk) {
             aktifSeviye = 3;
-            mesaj = this.getRandomIcerik(3);
+            mesaj = this.getRandomIcerik(vakit, 3);
         } else if (kalanDk <= this.config.seviye2BaslangicDk) {
             aktifSeviye = 2;
             mesaj = `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
@@ -208,11 +209,15 @@ export class NamazMuhafiziServisi {
         }
     }
 
-    private getRandomIcerik(seviye: number): string {
-        const uygunIcerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === seviye);
-        if (uygunIcerikler.length === 0) return "Şeytana uyma, namazını kıl.";
+    /**
+     * Havuzdan (vakit, seviye) icin rastgele icerik. Vakte ozgu nass yalniz kendi
+     * vaktinde cikar; nass ise kunye de eklenir. Havuz bossa yedek metin.
+     */
+    private getRandomIcerik(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4): string {
+        const uygunIcerikler = uygunIcerikleriBul(vakit, seviye);
+        if (uygunIcerikler.length === 0) return "Şeytana uyma, namazı kıl.";
 
         const random = Math.floor(Math.random() * uygunIcerikler.length);
-        return uygunIcerikler[random].metin;
+        return icerikMetniOlustur(uygunIcerikler[random]);
     }
 }

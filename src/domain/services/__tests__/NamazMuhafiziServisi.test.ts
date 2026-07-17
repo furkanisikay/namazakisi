@@ -481,5 +481,22 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(bildirimSpx).toHaveBeenCalledWith('', 0);
         });
     });
+
+    // NÖBETÇİ: "secdeye kapan" mantık hatasıydı — secde namazın İÇİNDEKİ bir rükün,
+    // başlangıcı değil. Vakit daralınca kişi namaza durur, secdeye kapanmaz.
+    // Mevcut testler stringContaining ile PARÇA kontrol ettiği için bu regresyonu
+    // yakalayamaz; bu test onu yakalar.
+    test('seviye 4 banner mesajı "namaza dur" der, "secde" demez', () => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 3 * 60 * 1000,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        const [mesaj] = bildirimSpx.mock.calls[0];
+        expect(mesaj).toContain('namaza dur');
+        expect(mesaj).not.toMatch(/secde/i);
+    });
 });
 

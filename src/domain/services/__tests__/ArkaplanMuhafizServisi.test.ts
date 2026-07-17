@@ -149,7 +149,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         // Birlesen tek bildirim, cakisan en yuksek seviyeyi (seviye 4) tasimali
         const tekBildirim = scheduleCalllari[0][0];
         expect(tekBildirim.content.data.seviye).toBe(4);
-        expect(tekBildirim.content.title).toBe('🚨 VAKİT ÇIKIYOR!');
+        expect(tekBildirim.content.title).toBe('🚨 25 dk · AKŞAM VAKTİ ÇIKIYOR');
         // Cakisma 25. dakikada oldugu icin ID son-eki _dk_25 olmali
         expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(25);
         // Seviye 4 acil kanala baglanmali (ses/titresim ayarlari icin)
@@ -187,7 +187,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         expect(onDkBildirimleri.length).toBe(1);
         // Ve bu bildirim cakismada kazanan en yuksek seviyeyi (4) tasimali
         expect(onDkBildirimleri[0].content.data.seviye).toBe(4);
-        expect(onDkBildirimleri[0].content.title).toBe('🚨 VAKİT ÇIKIYOR!');
+        expect(onDkBildirimleri[0].content.title).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
     });
 
     test('Farklı dakikalara düşen bildirimler ayrı planlanmalı', async () => {
@@ -235,15 +235,15 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
             dkToBildirim.set(dkSonEkiniAl(b.identifier), b);
         }
         expect(dkToBildirim.get(25)!.content.data.seviye).toBe(1);
-        expect(dkToBildirim.get(25)!.content.title).toBe('⏰ Namaz Hatırlatıcı');
+        expect(dkToBildirim.get(25)!.content.title).toBe('⏰ 25 dk · Akşam vakti');
         expect(dkToBildirim.get(20)!.content.data.seviye).toBe(2);
-        expect(dkToBildirim.get(20)!.content.title).toBe('⚠️ Vakit Daralıyor');
+        expect(dkToBildirim.get(20)!.content.title).toBe('⚠️ 20 dk · Akşam vakti daralıyor');
         expect(dkToBildirim.get(15)!.content.data.seviye).toBe(3);
-        expect(dkToBildirim.get(15)!.content.title).toBe('🔥 Şeytanla Mücadele!');
+        expect(dkToBildirim.get(15)!.content.title).toBe('🔥 15 dk · Akşam vakti kaçıyor');
         // k=10,8,6,4,2 tamamen seviye 4 olmali
         for (const k of [10, 8, 6, 4, 2]) {
             expect(dkToBildirim.get(k)!.content.data.seviye).toBe(4);
-            expect(dkToBildirim.get(k)!.content.title).toBe('🚨 VAKİT ÇIKIYOR!');
+            expect(dkToBildirim.get(k)!.content.title).toBe(`🚨 ${k} dk · AKŞAM VAKTİ ÇIKIYOR`);
         }
 
         // 4) ID'deki dakika son-eki gercek planlanan zamanla TUTARLI olmali.
