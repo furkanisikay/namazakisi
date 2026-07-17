@@ -169,13 +169,13 @@ export class NamazMuhafiziServisi {
 
         if (kalanDk <= this.config.seviye4BaslangicDk) {
             aktifSeviye = 4;
-            mesaj = `VAKİT ÇIKIYOR! Hemen secdeye kapanın! (${kalanDk} dk kaldı)`;
+            mesaj = `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
         } else if (kalanDk <= this.config.seviye3BaslangicDk) {
             aktifSeviye = 3;
             mesaj = this.getRandomIcerik(3);
         } else if (kalanDk <= this.config.seviye2BaslangicDk) {
             aktifSeviye = 2;
-            mesaj = `Vakit daralıyor, namazı sona bırakmayın. (${kalanDk} dk kaldı)`;
+            mesaj = `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
         } else if (kalanDk <= this.config.seviye1BaslangicDk) {
             aktifSeviye = 1;
             mesaj = `Namaz vaktinin bitmesine ${kalanDk} dakika kaldı.`;
@@ -210,7 +210,7 @@ export class NamazMuhafiziServisi {
 
     private getRandomIcerik(seviye: number): string {
         const uygunIcerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === seviye);
-        if (uygunIcerikler.length === 0) return "Şeytana uymayın, namazı kılın.";
+        if (uygunIcerikler.length === 0) return "Şeytana uyma, namazı kıl.";
 
         const random = Math.floor(Math.random() * uygunIcerikler.length);
         return uygunIcerikler[random].metin;

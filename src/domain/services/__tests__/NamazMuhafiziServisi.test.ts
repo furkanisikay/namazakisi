@@ -482,24 +482,21 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
     });
 
-    // NÖBETÇİ: banner metinleri kibar "siz" dilinde kalmalı (AGENTS.md zorunlu).
-    // Mevcut testler stringContaining ile PARÇA kontrol ettiği için "kapanın" ->
-    // "kapan" regresyonunu yakalayamaz; bu test onu yakalar.
-    test.each([
-        [45 * 60 * 1000, 1],
-        [30 * 60 * 1000, 2],
-        [3 * 60 * 1000, 4],
-    ])('banner mesajı "sen" dili kullanmaz (kalan %i ms, seviye %i)', (kalanSureMs) => {
+    // NÖBETÇİ: "secdeye kapan" mantık hatasıydı — secde namazın İÇİNDEKİ bir rükün,
+    // başlangıcı değil. Vakit daralınca kişi namaza durur, secdeye kapanmaz.
+    // Mevcut testler stringContaining ile PARÇA kontrol ettiği için bu regresyonu
+    // yakalayamaz; bu test onu yakalar.
+    test('seviye 4 banner mesajı "namaza dur" der, "secde" demez', () => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
-            kalanSureMs,
+            kalanSureMs: 3 * 60 * 1000,
         });
 
         muhafiz.baslat(bildirimSpx);
 
         const [mesaj] = bildirimSpx.mock.calls[0];
-        // "kapan/bırakma/uyma/kıl" tek başına = sen dili; "-ın/-ınız/-ayın" ekli hâli siz dili.
-        expect(mesaj).not.toMatch(/\b(kapan|bırakma|uyma|kıl)\b(?!ın|ınız|ayın)/u);
+        expect(mesaj).toContain('namaza dur');
+        expect(mesaj).not.toMatch(/secde/i);
     });
 });
 

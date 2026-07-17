@@ -66,10 +66,11 @@ describe('bildirimGovdesiOlustur', () => {
     expect(bildirimGovdesiOlustur(2)).not.toContain('daralıyor');
   });
 
-  test('kibar "siz" dili — emir kipinde "sen" kalıbı yok', () => {
-    const senKaliplari = /\b(kapan|bırakma|uyma|kıl)\b(?!ın|ınız|ayın)/u;
-    for (const s of [1, 2, 3, 4] as const) {
-      expect(bildirimGovdesiOlustur(s)).not.toMatch(senKaliplari);
-    }
+  // NÖBETÇİ: "secdeye kapan" mantık hatasıydı — secde namazın İÇİNDEKİ bir rükün,
+  // başlangıcı değil. Vakit daralınca kişi namaza durur, secdeye kapanmaz.
+  test('seviye 4: "namaza dur" der, "secde" demez', () => {
+    const govde = bildirimGovdesiOlustur(4);
+    expect(govde).toContain('namaza dur');
+    expect(govde).not.toMatch(/secde/i);
   });
 });

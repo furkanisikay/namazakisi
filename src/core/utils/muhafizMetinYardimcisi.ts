@@ -60,16 +60,23 @@ export function basligiOlustur(
  * Bildirim govdesi. Vakit adi ve kalan sure ALMAZ - ikisi de baslikta.
  * Seviye 3'un govdesi havuzdan gelir (bkz. ArkaplanMuhafizServisi); buradaki
  * seviye 3 metni yalnizca havuz bos oldugunda kullanilan YEDEKtir.
+ *
+ * DIL: Muhafiz, AGENTS.md'deki "kibar siz dili" kuralinin BILINCLI ISTISNASIDIR
+ * -- ic ses / sert koc kaydi: sen dili + emir kipi. Bkz. AGENTS.md "Metin dili:
+ * aray uz vs ibadet-hatirlatma". Aray uz metinlerinde (ayarlar/buton/hata) siz.
+ *
+ * "Secdeye kapan" DEGIL "namaza dur": secde namazin icindeki bir rukun, baslangici
+ * degil -- vakit daralinca kisi namaza durur, secdeye kapanmaz.
  */
 export function bildirimGovdesiOlustur(seviye: MuhafizSeviye): string {
   switch (seviye) {
     case 1:
-      return 'Vakit daralmaya başladı, fırsat varken kılabilirsiniz.';
+      return 'Vakit daralmaya başladı, fırsat varken kıl.';
     case 2:
-      return 'Namazı sona bırakmayın; şimdi kılmak için vakit uygun.';
+      return 'Namazı sona bırakma; şimdi kılmak için vakit uygun.';
     case 3:
-      return 'Şeytana uymayın, namazı kılın!';
+      return 'Şeytana uyma, namazı kıl!';
     case 4:
-      return 'Hemen secdeye kapanın — sonra kaza etmek zorunda kalırsınız.';
+      return 'Hemen namaza dur — sonra kaza etmek zorunda kalırsın.';
   }
 }
