@@ -15,6 +15,7 @@ import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/U
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { basligiOlustur, bildirimGovdesiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 
 /**
  * Namaz vakti bilgisi
@@ -227,7 +228,7 @@ export class ArkaplanMuhafizServisi {
         }
 
         const esikler = this.ayarlar.esikler;
-        const dakikaGruplari: Map<number, { seviye: number, dakika: number, baslik: string }> = new Map();
+        const dakikaGruplari: Map<number, { seviye: number, dakika: number }> = new Map();
 
         // En genis araliktan (Seviye 1) baslayarak en dar araliga (Seviye 4) kadar tum dakikalari tara
         // Maksimum kontrol edilecek dakika: Seviye 1 baslangic dakikasi
@@ -244,32 +245,27 @@ export class ArkaplanMuhafizServisi {
         // 1 dakikaya kadar geri say
         for (let k = baslangicDk; k > 0; k--) {
             let aktifSeviye = 0;
-            let aktifBaslik = '';
             let aktifSiklik = 0;
 
             // Hangi seviye araligindayiz? (Kucukten buyuge kontrol et ki overwrite etsin)
             // Seviye 1
             if (k <= esikler.seviye1) {
                 aktifSeviye = 1;
-                aktifBaslik = '⏰ Namaz Hatırlatıcı';
                 aktifSiklik = esikler.seviye1Siklik;
             }
             // Seviye 2
             if (k <= esikler.seviye2) {
                 aktifSeviye = 2;
-                aktifBaslik = '⚠️ Vakit Daralıyor';
                 aktifSiklik = esikler.seviye2Siklik;
             }
             // Seviye 3
             if (k <= esikler.seviye3) {
                 aktifSeviye = 3;
-                aktifBaslik = '🔥 Şeytanla Mücadele!';
                 aktifSiklik = esikler.seviye3Siklik;
             }
             // Seviye 4
             if (k <= esikler.seviye4) {
                 aktifSeviye = 4;
-                aktifBaslik = '🚨 VAKİT ÇIKIYOR!';
                 aktifSiklik = esikler.seviye4Siklik;
             }
 
@@ -308,7 +304,6 @@ export class ArkaplanMuhafizServisi {
                         dakikaGruplari.set(k, {
                             seviye: aktifSeviye,
                             dakika: k,
-                            baslik: aktifBaslik
                         });
                     } else {
                         // console.log(`[ArkaplanMuhafiz] Zaman geçmiş: ${k}dk`);
@@ -320,14 +315,16 @@ export class ArkaplanMuhafizServisi {
         // Gruplanan bildirimleri planla
         for (const [kalanDk, veri] of dakikaGruplari) {
             const bildirimZamani = new Date(cikisSuresi - kalanDk * 60 * 1000);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, veri.seviye, veri.dakika);
+            const seviye = veri.seviye as MuhafizSeviye;
+            const baslik = basligiOlustur(vakit.vakit, seviye, veri.dakika);
+            const mesaj = this.bildirimMesajiOlustur(seviye);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
             const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + kalanDk;
 
             await this.tekBildirimPlanla(
                 bildirimId,
-                veri.baslik,
+                baslik,
                 mesaj,
                 bildirimZamani,
                 veri.seviye,
@@ -400,38 +397,19 @@ export class ArkaplanMuhafizServisi {
     }
 
     /**
-     * Bildirim mesaji olustur
+     * Bildirim govdesi.
+     * Vakit adi ve kalan sure ALMAZ -> ikisi de baslikta (bkz. basligiOlustur).
+     * Seviye 3 govdesi mucadele havuzundan rastgele secilir; havuz bossa yedek metin.
      */
-    private bildirimMesajiOlustur(vakit: VakitAdi, seviye: number, kalanDakika: number): string {
-        const vakitAdlari: Record<VakitAdi, string> = {
-            imsak: 'Sabah',
-            gunes: 'Güneş',
-            ogle: 'Öğle',
-            ikindi: 'İkindi',
-            aksam: 'Akşam',
-            yatsi: 'Yatsı',
-        };
-
-        const vakitAdi = vakitAdlari[vakit];
-
-        switch (seviye) {
-            case 1:
-                return `${vakitAdi} namazının vakti bitmesine ${kalanDakika} dakika kaldı.`;
-            case 2:
-                return `Vakit daralıyor! ${vakitAdi} namazını sona bırakma. (${kalanDakika} dk kaldı)`;
-            case 3:
-                // Seytanla mucadele icerigi
-                const icerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === 3);
-                if (icerikler.length > 0) {
-                    const rastgele = Math.floor(Math.random() * icerikler.length);
-                    return icerikler[rastgele].metin;
-                }
-                return `Şeytana uyma, ${vakitAdi} namazını kıl! (${kalanDakika} dk kaldı)`;
-            case 4:
-                return `VAKİT ÇIKIYOR! Hemen secdeye kapan! ${vakitAdi} namazına ${kalanDakika} dakika kaldı!`;
-            default:
-                return `${vakitAdi} namazına ${kalanDakika} dakika kaldı.`;
+    private bildirimMesajiOlustur(seviye: MuhafizSeviye): string {
+        if (seviye === 3) {
+            const icerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === 3);
+            if (icerikler.length > 0) {
+                const rastgele = Math.floor(Math.random() * icerikler.length);
+                return icerikler[rastgele].metin;
+            }
         }
+        return bildirimGovdesiOlustur(seviye);
     }
 
     /**
