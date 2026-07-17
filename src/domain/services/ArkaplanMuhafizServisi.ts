@@ -10,7 +10,7 @@ import * as Notifications from 'expo-notifications';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SEYTANLA_MUCADELE_ICERIGI } from '../../core/data/SeytanlaMucadeleIcerigi';
+import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
@@ -317,7 +317,7 @@ export class ArkaplanMuhafizServisi {
             const bildirimZamani = new Date(cikisSuresi - kalanDk * 60 * 1000);
             const seviye = veri.seviye as MuhafizSeviye;
             const baslik = basligiOlustur(vakit.vakit, seviye, veri.dakika);
-            const mesaj = this.bildirimMesajiOlustur(seviye);
+            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
             const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + kalanDk;
@@ -399,15 +399,17 @@ export class ArkaplanMuhafizServisi {
     /**
      * Bildirim govdesi.
      * Vakit adi ve kalan sure ALMAZ -> ikisi de baslikta (bkz. basligiOlustur).
-     * Seviye 3 govdesi mucadele havuzundan rastgele secilir; havuz bossa yedek metin.
+     *
+     * Govde mucadele havuzundan gelir; havuz VAKTE gore filtrelenir (vakte ozgu
+     * nass yanlis vakitte cikmasin). Havuzda o (vakit, seviye) icin hicbir sey
+     * yoksa yedek metne duser -> govde asla bos kalmaz.
+     * Nass ise kunye de eklenir (icerikMetniOlustur).
      */
-    private bildirimMesajiOlustur(seviye: MuhafizSeviye): string {
-        if (seviye === 3) {
-            const icerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === 3);
-            if (icerikler.length > 0) {
-                const rastgele = Math.floor(Math.random() * icerikler.length);
-                return icerikler[rastgele].metin;
-            }
+    private bildirimMesajiOlustur(vakit: VakitAdi, seviye: MuhafizSeviye): string {
+        const icerikler = uygunIcerikleriBul(vakit, seviye);
+        if (icerikler.length > 0) {
+            const rastgele = Math.floor(Math.random() * icerikler.length);
+            return icerikMetniOlustur(icerikler[rastgele]);
         }
         return bildirimGovdesiOlustur(seviye);
     }
