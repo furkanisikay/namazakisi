@@ -1,8 +1,8 @@
 # Tasarım: Muhafız ekranı yeniden kurulumu + vakit/seviye bazlı sesli uyarı (TTS)
 
 **Tarih:** 2026-07-17
-**Durum:** Tasarım onaylandı (brainstorming), implementasyon fazlara bölündü — henüz başlanmadı.
-**İlgili:** #78 (namaza özel bildirim/ses), muhafız bildirim başlığı PR #172.
+**Durum:** Tasarım onaylandı (brainstorming) + Fable 5 spec review düzeltmeleri işlendi. Implementasyon fazlara bölündü — Faz 1 planlanabilir.
+**İlgili:** #78 (namaza özel bildirim/ses), muhafız bildirim başlığı spec `2026-07-17-muhafiz-bildirim-basligi-design.md` + PR #172.
 
 ---
 
@@ -11,145 +11,145 @@
 İki bağlantılı sorun:
 
 1. **Muhafız ayarları ekranı karışık.** Kullanıcı 4 iç içe zaman penceresini ("Nazik Hatırlatma", "Uyarı", "Şeytanla Mücadele", "Acil Alarm") ve her birinin eşik + sıklığını (özel modda 8 sayısal ayar) aynı anda kafasında kurmak zorunda. Eşiklerin sıralı olması gerekiyor; bozulursa davranış tuhaflaşıyor.
-2. **Sesli uyarı yok.** Kullanıcı vaktin çıkmasına az kala telefonu cebindeyken bildirimi görmeyebilir. Sesli anons ("İkindi vakti çıkıyor, son 3 dakika") bu boşluğu doldurur — ama kullanıcı bunu **vakit ve seviye bazında** kontrol edebilmeli.
+2. **Sesli uyarı yok.** Kullanıcı vaktin çıkmasına az kala telefonu cebindeyken bildirimi görmeyebilir. Sesli anons bu boşluğu doldurur — kullanıcı bunu **vakit ve seviye bazında** kontrol edebilmeli.
 
 ## 2. Hedef ve kısıt
 
-- Kullanıcı **her vakit × her seviye** için nasıl uyarılacağını seçebilsin: sessiz / bildirim / sesli / ikisi.
-- Ayrıca her hücre için: **kaç dk kala** (eşik), **sıklık**, **bildirim sesi**, **sesli anons metni**.
+- Kullanıcı **her vakit × her seviye** için: sessiz / bildirim / sesli / ikisi.
+- Her hücre için ayrıca: **kaç dk kala** (eşik), **sıklık**, **bildirim sesi**, **sesli anons metni**.
 - **Tek tık ile tüm vakitlere uygula.**
-- Tüm bu granülariteye rağmen ekran **basit ve anlaşılır** kalsın (kullanıcının açık isteği).
-- Sesli uyarı uygulama kapalıyken de çalışsın (asıl değer bu).
-
-Bu iki hedef — maksimum kontrol ve sadelik — doğal gerilimde. Çözüm: **progressive disclosure** (katmanlı gizleme). Üst katman sade; granülarite talep üzerine açılır.
+- Granülariteye rağmen ekran **basit ve anlaşılır** kalsın → progressive disclosure.
+- Sesli uyarı uygulama kapalıyken de çalışsın.
 
 ## 3. Kullanıcı deneyimi — üç katman
 
-### Katman 1: Vakit listesi (en sade)
-- Ana switch (muhafız açık/kapalı) + Yoğunluk preset'i (Hafif/Normal/Yoğun — global, tek seçim).
-- 5 vakit satırı: İmsak, Öğle, İkindi, Akşam, Yatsı. (Güneş muhafızda planlanmaz.)
-- Her satırda **dinamik özet** (ayarlara göre canlı üretilir): "Öğle — Sadece bildirim", "İkindi — Sesli + bildirim".
-- Kullanıcı hiçbir şey açmadan durumu görür. 20 hücre görünmez.
+### Katman 1: Vakit listesi
+- Ana switch + Yoğunluk preset'i (global — bkz. 4.1).
+- 5 vakit satırı: **Sabah, Öğle, İkindi, Akşam, Yatsı**. (Güneş muhafızda planlanmaz.)
+  - Görünen adlar kardeş spec ile tutarlı: `imsak→Sabah` (`VAKIT_ADLARI`, `muhafizMetinYardimcisi`). "İmsak" değil "Sabah" gösterilir. [M2]
+- Her satırda **dinamik özet** (ayarlara göre canlı): "Öğle — Sadece bildirim".
 
 ### Katman 2: Vakit açık → adımlar
-- Vakite dokununca o vaktin **4 sabit seviyesi** (adımı) listelenir: Nazik hatırlatma / Uyarı / Sert uyarı / Acil.
-- **Adım sayısı sabittir** — kullanıcı ekleyip çıkaramaz (öngörülebilirlik). Her adım düzenlenir veya kapatılır (sessiz = kapalı).
-- Her adım satırı **dinamik özet** taşır: "30 dk kala · bildirim · çan", "15 dk kala · bildirim + sesli anons · melodi". Özet, seçili mod/eşik/ses'e göre canlı üretilir; statik değildir.
+- 4 **sabit** seviye: Nazik hatırlatma / Uyarı / Sert uyarı / Acil. Ekle/çıkar yok; her adım düzenlenir veya kapatılır (sessiz).
+- Her adım satırı **dinamik özet**: "30 dk kala · bildirim · çan". Mod/eşik/ses'ten türetilir, kalıcı değil.
 - İki buton:
-  - **"Tüm vakitlere uygula"** — bu vaktin tüm ayarını diğer 4 vakte kopyalar. Ana karmaşıklık yönetim aracı: kullanıcı bir vakti kurar, hepsine yayar.
-  - **"Akışı önizle"** — bu vaktin tüm hatırlatma akışını canlı gösterir (bkz. 3.4).
+  - **"Tüm vakitlere uygula"** — bu vaktin ayarını diğer 4 vakte kopyalar (bkz. 4.3, `{vakit}` placeholder sayesinde metin güvenli).
+  - **"Akışı önizle"** — vaktin tüm hatırlatma akışını oynatır (bkz. 3.4).
 
 ### Katman 3: Adıma dokun → detay
-Bir adımın tüm boyutları, sade satırlar halinde:
-- **Nasıl uyarsın** — mod segmenti: sessiz / bildirim / sesli / ikisi (4 seçenek, ikonlu).
-- **Kaç dk kala** — eşik, artı/eksi stepper (ör. 30 dk).
-- **Sıklık** — bir kez / tekrarlı (ör. her 15 dk).
-- **Bildirim sesi** — uygulama içi hazır seslerden (çan/melodi/alarm…) + ▶ önizleme. (Mod bildirim/ikisi ise görünür.)
-- **Sesli anons metni** — mod sesli/ikisi ise görünür. Hazır şablon + serbest düzenleme (bkz. 3.3).
+- **Nasıl uyarsın** — mod: sessiz / bildirim / sesli / ikisi.
+- **Kaç dk kala** — eşik stepper.
+- **Sıklık** — bir kez / tekrarlı (her N dk).
+- **Bildirim sesi** — uygulama içi seslerden + ▶ önizleme (mod bildirim/ikisi ise). Kanal stratejisi: bkz. 6.
+- **Sesli anons metni** — mod sesli/ikisi ise. Şablon + serbest düzenleme (bkz. 3.3).
 
-### 3.3 Dinamik sesli anons metni (kritik)
-- Metin **statik süre içermez.** `{süre}` yer tutucusu kullanılır: "İkindi vakti çıkıyor, son **{süre}** dakika."
-- Sebep: sıklık "tekrarlı" ise her tetiklemede kalan süre değişir (30 → 24 → 18). Statik "30 dakika" yanlış olur.
-- TTS her konuşmada `{süre}`'yi o anki gerçek kalan dakikayla değiştirir.
-- Kullanıcı `{süre}`'yi cümlede **istediği yere** koyabilir. Hazır şablonlar verilir ("Vakit çıkıyor, son {süre} dakika" / "İkindi vaktini kaçırma, {süre} dakika kaldı"); isteyen kendi metnini yazar.
-- Şablon + serbest düzenleme: kolay başlangıç + tam özgürlük. Boş kutu bırakılmaz (kötü ilk deneyim).
+### 3.3 Dinamik sesli anons metni
+- Metin statik süre/vakit içermez. **İki yer tutucu:** `{vakit}` ve `{süre}`.
+  - `{süre}` → o anki gerçek kalan dakika (tekrarlı sıklıkta her tetiklemede değişir: 30→24→18).
+  - `{vakit}` → o vaktin adı ("Sabah"/"İkindi"…). **Bu, "tümüne uygula"nın metni bozmamasının anahtarı** [I1]: şablon "İkindi" yazmaz, `{vakit}` yazar; kopyalanınca Öğle'de doğru okunur.
+- Hazır şablonlar **vakit-agnostik**: "{vakit} vakti çıkıyor, son {süre} dakika." / "{vakit} namazını kaçırma, {süre} dakika kaldı."
+- Kullanıcı yer tutucuları cümlede istediği yere koyar; kendi metnini yazabilir.
+- **Dil:** Sesli anons bir ibadet-hatırlatma metnidir → AGENTS.md'deki **muhafız sen-dili istisnası** kapsamında ("kullanıcı uygulamayı yönetiyorsa siz; ibadete çağırıyorsa sen"; #172 ile AGENTS.md'ye yazıldı). Şablonlar sen + emir kipi ("kaçırma"). Ekran arayüzü (butonlar/etiketler) kibar siz kalır. [M1]
+- **Kopya sonrası uyarı:** kullanıcı serbest metne elle bir vakit adı yazdıysa ("İkindi") "tümüne uygula" onu düzeltmez → uygula onayında "metinlerde `{vakit}` kullanın" ipucu göster.
 
 ### 3.4 Önizleme — vaktin tüm akışı
-- Vakit düzeyinde "Akışı önizle": o vaktin adımlarını **zaman çizelgesinde sırayla** oynatır (30dk→nazik, 15dk→uyarı, 3dk→acil).
-- Her adımda: bildirim iner → (varsa) ses çalar → (varsa) sesli anons konuşur, `{süre}` gerçek değerle.
-- Amaç: kullanıcı ayarladığı bildirimlerin gerçekte **hangi akışla ve nasıl** geleceğini kurarken görsün.
-- Not: tek-adım önizlemesi değil, tüm-akış seçildi. Detay sayfasındaki "önizle" de bu akıştan o adımı vurgulayabilir.
+- Vakit düzeyinde "Akışı önizle": adımları zaman çizelgesinde sırayla oynatır (30dk→nazik … 3dk→acil). Her adımda bildirim + (varsa) ses + (varsa) anons, `{vakit}`/`{süre}` gerçek değerle.
 
 ## 4. Veri modeli
 
-Mevcut `ArkaplanMuhafizAyarlari` (global eşik/sıklık) yerine vakit×seviye matrisi:
-
 ```
+type MuhafizVakti = Exclude<VakitAdi, 'gunes'>   // Sabah/Öğle/İkindi/Akşam/Yatsı [M6]
+
 MuhafizAyarlari {
   aktif: boolean
-  koordinatlar: {lat, lng}
-  yogunluk: 'hafif' | 'normal' | 'yogun'   // global preset (eşikleri toplu ölçekler)
-  vakitler: Record<VakitAdi, VakitMuhafizAyari>   // imsak/ogle/ikindi/aksam/yatsi
+  yogunluk: 'hafif' | 'normal' | 'yogun' | 'ozel'   // 'ozel' KORUNUR [I3]
+  vakitler: Record<MuhafizVakti, VakitMuhafizAyari>
+  // NOT: koordinatlar burada TUTULMAZ — çağrı anında konum state'inden enjekte edilir [M3]
 }
 
-VakitMuhafizAyari {
-  seviyeler: [SeviyeAyari, SeviyeAyari, SeviyeAyari, SeviyeAyari]  // sabit 4: nazik/uyari/sert/acil
-}
+VakitMuhafizAyari { seviyeler: [SeviyeAyari × 4] }   // sabit: nazik/uyari/sert/acil
 
 SeviyeAyari {
   mod: 'sessiz' | 'bildirim' | 'sesli' | 'ikisi'
-  esikDk: number          // kaç dk kala
-  siklik: 'birkez' | number  // birkez | her N dk
-  bildirimSesi: string    // uygulama içi ses id (mod bildirim/ikisi ise)
-  anonsMetni: string      // {süre} placeholder içerebilir (mod sesli/ikisi ise)
+  esikDk: number
+  siklik: 'birkez' | { herDk: number }
+  bildirimSesi: string     // uygulama içi ses id
+  anonsMetni: string       // {vakit}/{süre} içerebilir
 }
 ```
 
-- **Türetilmiş özet** (UI): `mod + esikDk + bildirimSesi`'nden dinamik metin üretilir. Kalıcı değil.
-- **"Tüm vakitlere uygula":** bir `VakitMuhafizAyari`'yı diğer tüm anahtarlara kopyalar (saf fonksiyon).
-- Store deseni: mevcut `*Yukle`/`*Guncelle` + AsyncStorage thunk. Muhafız ayarları zaten Redux'ta; şekil genişler.
+### 4.1 Yoğunluk ↔ hücre etkileşimi [I3, Y2]
+- `yogunluk` bir **preset**: hafif/normal/yogun tüm hücrelerin **yalnız `esikDk` + `siklik`** değerlerini toplu ayarlar. **`mod`/`bildirimSesi`/`anonsMetni` ASLA preset'ten etkilenmez** — bunlar kullanıcının ayrı ekseni (Y2: ezme kapsamı = sadece zamanlama).
+- Kullanıcı **bir hücrenin eşik/sıklığını** elle değiştirince yoğunluk otomatik `'ozel'` olur (mevcut `gelismisMod` mantığının yerini alır). Mod/ses/anons değişikliği yoğunluğu `'ozel'` yapmaz (onlar preset ekseninde değil).
+- Preset (hafif/normal/yogun) seçmek elle ayarlanmış **eşik/sıklıkları** preset değerlerine döndürür — kullanıcıya "özel eşik ayarlarınız preset'e dönecek" onayı gösterilir. Mod/ses/anons korunur.
+- `'ozel'` iken preset çubuğunda hiçbiri seçili görünmez ("Özel" etiketi).
 
-## 5. TTS mimari (native — araştırma sentezi)
+### 4.2 Eşik çakışma / sıralama semantiği [I2] — motive eden problem #1'in çözümü
+- Eşikleri **zorla sıralama** (nazik>uyarı>sert>acil) — kullanıcı ters giremesin; stepper sınırları komşu seviyelere göre kısıtlanır.
+- Aktif seviye kuralı (mevcut kodun "aynı dakikada en yüksek seviye" davranışını netleştirir): **kalan dakikayı kapsayan en küçük eşikli (en acil) aktif seviye kazanır.** Sessiz (kapalı) seviye pencere sağlamaz; o aralıkta bir alt seviye aktifse onun sıklığı işler.
+- Faz 1 test kapsamı: ters sıra reddi, çakışan pencerede doğru seviye, sessiz seviyenin alt seviyeye etkisi.
 
-Kaynak: 2026-07-17 araştırması. Doğrulama fazı oturum limitine takıldı ama iddialar developer.android.com'dan çıkarılmış standart platform davranışları.
+### 4.3 "Tüm vakitlere uygula"
+- Bir `VakitMuhafizAyari`'yı diğer tüm `MuhafizVakti` anahtarlarına kopyalar (saf fonksiyon).
+- Metin güvenli çünkü şablonlar `{vakit}` kullanır (bkz. 3.3).
 
-**Nerede:** Mevcut Kotlin foreground service içinde (`modules/expo-countdown-notification`). Android 15'te audio focus zaten yalnız foreground service'e verilir — mevcut mimari doğru yer.
+## 5. TTS / sesli uyarı mimari — GERÇEK kod tabanına göre [C1]
 
-**Tetikleme:** Mevcut `expo-notifications` trigger'ları Doze'da çalışıyor (kullanıcı bildirimleri alıyor); TTS aynı noktada tetiklenir. (Gerekirse `setExactAndAllowWhileIdle` Doze'u delen yedek.)
+**Düzeltme:** `modules/expo-countdown-notification` bir foreground service İÇERMEZ. Bugünkü yapı: `CountdownNotificationHelper.kt` (düz `NotificationManager.notify` + chronometer `RemoteViews`), `CountdownReceiver.kt` (AlarmManager broadcast). Manifest'te `<service>` kaydı yok.
 
-**Ses akışı / DND:** `USAGE_ALARM` (STREAM_ALARM) — sessiz modu ve DND'yi aşar, ezan/namaz uygulaması kullanıcı beklentisi. **Varsayılan karar:** sesli uyarı alarm akışında çalar. (İstenirse ileride "sessizde çalma" seçeneği eklenebilir; ilk sürümde alarm akışı.)
+Dolayısıyla TTS için:
+- **Foreground service SIFIRDAN yazılacak** (yeni `Service` + manifest kaydı + type). "Mevcut mimari doğru yer" değildi.
+- **Tetikleme mekanizması (açık soru, Faz 4 araştırması):** Zamanlanmış bir `expo-notifications` bildiriminin *gösterilmesi* uygulama kodu çalıştırmaz → TTS'i tetikleyecek kanca YOK. Seçenekler: (a) AlarmManager exact alarm → BroadcastReceiver → FGS başlat + konuş; (b) mevcut `CountdownReceiver` desenini genişlet. **Android 12+ arkaplandan FGS başlatma kısıtı var** — exact-alarm-tetikli receiver'ın FGS başlatma muafiyeti (ve `setExactAndAllowWhileIdle` vs `setAlarmClock` farkı; `setAlarmClock` durum çubuğunda alarm ikonu gösterir) Faz 4 öncesi **doğrulanmalı**.
+- **Ses akışı / DND:** `USAGE_ALARM` — sessiz modu/DND'yi aşar (namaz uygulaması beklentisi). İlk sürüm varsayılanı; ileride "sessizde çalma" opt-out'u.
+- **Audio focus:** `AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK`; `AudioAttributes` TTS'e `setAudioAttributes`. Konuşma bitince `abandonAudioFocus`.
+- **Lifecycle:** `TextToSpeech` init asenkron (`OnInitListener`); `UtteranceProgressListener` ile bitişi bekle → focus bırak → servisi durdur.
+- **Türkçe dil:** `isLanguageAvailable(tr-TR)`; eksikse `ACTION_INSTALL_TTS_DATA` yönlendirmesi **veya** sessizce sadece-bildirime düş + ayarlarda uyarı.
+- **İzinler (Android 13/14/15):** `FOREGROUND_SERVICE` (+ Android 14 için type ve eşleşen `FOREGROUND_SERVICE_*` izni), `POST_NOTIFICATIONS`, exact-alarm izni. **AÇIK RİSK:** FGS type `mediaPlayback` (Play "kullanıcı-başlatan sürekli medya" ister → kısa uyarı uymayabilir, **reddi riski**) vs `specialUse` (Play review). Faz 4 ÖNCESİ karar.
+- **Pil:** `TextToSpeech` her konuşmada init/shutdown (singleton hazır tutma pil/RAM yer).
 
-**Audio focus:** `AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK` — müzik/podcast kısılır, TTS konuşur, biter, geri gelir. Konuşma bitince `abandonAudioFocus`. `AudioAttributes` TTS'e `setAudioAttributes` ile bağlanır (aynı attributes hem focus hem player'da).
+## 6. Bildirim sesleri — kanal stratejisi [I4]
 
-**Lifecycle tuzağı:** `TextToSpeech` init'i asenkron (`OnInitListener`). Servis TTS hazır olmadan konuşamaz. `UtteranceProgressListener` ile bitişi bekle → sonra audio focus bırak + servisi durdur. Yoksa konuşma yarıda kesilir.
+**Android 8+ gerçeği:** bildirim sesi **notification channel özelliği**; kanal oluşturulunca ses değiştirilemez. Yani "hücre başına bildirimSesi" pratikte **ses başına ayrı kanal** demek.
 
-**Türkçe dil:** her cihazda garanti değil (bazı Huawei/Çin cihazları). `isLanguageAvailable(tr-TR)` kontrol → `LANG_MISSING_DATA`/`LANG_NOT_SUPPORTED` ise (a) kullanıcıyı `ACTION_INSTALL_TTS_DATA`'ya yönlendir **veya** (b) sessizce sadece-bildirime düş (TTS'siz). İlk sürüm: yoksa bildirime düş + ayarlarda uyarı göster.
+- Ses dosyaları `android/app/src/main/res/raw/` = **native değişiklik** (AGENTS.md "android/ önce sor"). Bu yüzden **bildirim sesleri Faz 2'de değil, native fazda** ele alınır — Faz 2 saf RN/UI değildir bu açıdan; kanal stratejisi native gerektirir.
+- Strateji: sabit bir "ses paleti" (çan/melodi/alarm/sessiz) → her biri için önceden tanımlı kanal; hücre `bildirimSesi` bir kanal seçer. Mevcut kod zaten seviye≥3'ü ayrı kanala bağlıyor (`ArkaplanMuhafizServisi` `channelId`, `MUHAFIZ_ACIL`) — yeni palet bununla **birleştirilmeli**, kanal enflasyonu (sonsuz kanal) önlenmeli. Eski/kullanılmayan kanal temizliği + kullanıcının sistemden kanalı susturması ele alınmalı.
 
-**İzinler (Android 13/14/15):** `FOREGROUND_SERVICE` (mevcut), `POST_NOTIFICATIONS` (mevcut). Android 14+ foreground service **type** zorunlu.
-- **AÇIK RİSK:** TTS için `mediaPlayback` (+`FOREGROUND_SERVICE_MEDIA_PLAYBACK`) mantıklı görünür ama Google Play `mediaPlayback`'i "kullanıcının başlattığı sürekli medya" için ister; kısa uyarı TTS'i buna uymayabilir → **uygulama reddi riski**. `specialUse` alternatifi Play review gerektirir. **Bu karar implementasyondan ÖNCE netleşmeli** (Play Console policy + mevcut countdown service'in hâlihazırdaki type'ı incelenerek).
-
-**Pil/performans:** `TextToSpeech` her konuşma için init/shutdown (singleton sürekli hazır tutmak pil/RAM yer). Foreground service zaten kısa ömürlü (countdown süresince).
-
-## 6. Bildirim sesleri
-- **Kaynak:** uygulama içi hazır sesler (çan/melodi/alarm…). Cihaz zil sesi karışmaz; telif temiz; öngörülebilir.
-- Ses dosyaları `android/app/src/main/res/raw/` veya notification channel'a bağlı.
-- ▶ önizleme: ayarda sesi çalıp dinletir.
-
-## 7. Migrasyon
+## 7. Migrasyon [M4]
 Mevcut global muhafız ayarı → vakit×seviye modeli:
-- Mevcut global eşik/sıklık **tüm 5 vakit × 4 seviyeye** kopyalanır (varsayılan hepsi aynı).
-- Mod = `bildirim` (mevcut davranış; ses yoktu).
-- `bildirimSesi` = varsayılan, `anonsMetni` = boş (TTS kapalı — opt-in).
-- İdempotent, veri kaybı yok (mevcut ayar korunur, dönüştürülür).
+- Mevcut global eşik/sıklık **tüm 5 vakit × 4 seviyeye** kopyalanır.
+- `mod = 'bildirim'` (mevcut davranış; ses yoktu). `bildirimSesi` = varsayılan.
+- `anonsMetni = ''` (TTS opt-in kapalı). Kullanıcı modu sesli/ikisi'ye çevirince UI, anons kutusunu vakit-agnostik şablonla (3.3) **ön-doldurur** — kullanıcı boş kutuyla karşılaşmaz.
+- `yogunluk`: mevcut değeri korunur; mevcut `'ozel'`/`gelismisMod=true` → `'ozel'`.
+- İdempotent, veri kaybı yok.
 
-## 8. Karar günlüğü (brainstorming)
-- Sunum: **vakit-merkezli progressive disclosure** (global+override ve tam-matris elendi — biri granülariteyi gömüyor, diğeri 380px'de okunmuyor).
-- Adım modeli: **sabit 4 seviye** (esnek ekle/çıkar elendi — sadelik).
-- TTS içeriği: **kullanıcı seçsin** (kısa anons / içerik metni) + `{süre}` dinamik.
-- Anons metni: **şablon + serbest düzenleme**.
-- Bildirim sesi: **uygulama içi hazır sesler** (cihaz sesi ileride).
-- Önizleme: **vaktin tüm akışı**.
-- TTS motoru: **native foreground service** (expo-speech/JS elendi — kapalıyken çalışmaz).
+## 8. Karar günlüğü (brainstorming + review)
+- Sunum: vakit-merkezli progressive disclosure (global+override, tam-matris elendi).
+- Adım modeli: sabit 4 seviye (esnek ekle/çıkar elendi).
+- TTS içeriği: kullanıcı seçsin + `{vakit}`/`{süre}` dinamik.
+- Anons metni: şablon + serbest; şablonlar vakit-agnostik.
+- Bildirim sesi: uygulama içi hazır sesler (kanal-tabanlı).
+- Önizleme: vaktin tüm akışı.
+- TTS motoru: native FGS (sıfırdan; expo-speech/JS elendi — kapalıyken çalışmaz).
+- **Seviye-3 içerik havuzu** (`SEYTANLA_MUCADELE_ICERIGI`): mevcut bildirim gövdesi havuzu ile yeni `anonsMetni` AYRI şeyler [M5]. Havuz bildirim GÖVDESİNİ besler (kardeş spec), `anonsMetni` sesli anonstur. "Şeytanla Mücadele" görünen adı ekranda "Sert uyarı" olur (bilinçli — kod id'leri değişmez).
 
-## 9. Implementasyon fazları (decomposition)
+## 9. Implementasyon fazları
 
-Bu tek PR değil. Bağımlılık sırasıyla:
+- **Faz 1 — Veri modeli + davranış semantiği (saf, native yok, test edilebilir).** `MuhafizVakti`/`MuhafizAyarlari` yeni şekil, slice, kalıcılık, migrasyon, "tümüne uygula" saf fonksiyonu, dinamik özet üreticisi, `{vakit}`/`{süre}` interpolasyon motoru, **eşik çakışma/sıralama kuralı (4.2)**, yoğunluk↔hücre kuralı (4.1). Cihaz gerektirmez.
+- **Faz 2 — Ekran (RN/UI).** 3 katman + mod/eşik/sıklık UI + "tümüne uygula" + yoğunluk. Yalnız **bildirim modları** (TTS'siz) aktif; sesli mod satırı görünür ama pasif ("yakında").
+- **Faz 3 — Motor adaptörü [C2].** Üç tüketiciyi (`ArkaplanMuhafizServisi`, `NamazMuhafiziServisi`, `VakitSayacBildirimServisi`) yeni matristen okuyacak şekilde güncelle: mod=sessiz atla, per-vakit eşik/sıklık, bastırma (#90: sayaç vs muhafız), bildirim sesi kanal seçimi. **Bu olmadan Faz 2'nin yazdığını hiçbir şey uygulamaz.** Kanal stratejisi (bölüm 6) burada.
+- **Faz 4 — TTS native.** FGS sıfırdan + tetikleme + audio focus + Türkçe dil + izinler. **Play Store FGS-type + Android 12+ FGS-başlatma kararı ÖNCE.** Cihazda doğrula (debug APK). En riskli.
+- **Faz 5 — TTS'i ekrana bağla + tüm-akış önizleme.** Sesli mod aktifleşir; `anonsMetni` native köprüye; önizleme animasyonu.
 
-- **Faz 1 — Veri modeli + migrasyon (saf, native yok).** `MuhafizAyarlari` yeni şekil, slice, kalıcılık, migrasyon, "tümüne uygula" saf fonksiyonu, dinamik özet üreticisi, `{süre}` interpolasyon motoru. Tamamı test edilebilir, cihaz gerektirmez.
-- **Faz 2 — Ekran yeniden kurulumu (RN/UI, TTS'siz).** 3 katman: vakit listesi → adımlar → detay. Mod/eşik/sıklık/ses UI. "Tümüne uygula" butonu. Sesli mod satırları görünür ama "yakında" (Faz 3'e kadar pasif) VEYA yalnız bildirim modları aktif. Bildirim sesleri (uygulama içi) bu fazda çalışır.
-- **Faz 3 — TTS native altyapı.** Kotlin foreground service'e TTS + audio focus + Türkçe dil kontrolü + izinler. **Play Store FGS-type kararı ÖNCE.** Sabit anonsla cihazda doğrula (debug APK build). En riskli faz.
-- **Faz 4 — TTS'i ekrana bağla.** Sesli mod aktifleşir, anons metni Faz 3 köprüsüne gider.
-- **Faz 5 — Tüm-akış önizleme.** Vakit düzeyinde animasyonlu önizleme (bildirim + ses + TTS simülasyonu).
-
-Her faz kendi spec/plan/PR döngüsüne sahip olabilir. Native fazlar (3) cihaz doğrulaması ister (`gh workflow run android-build.yml`).
+Her faz kendi spec/plan/PR döngüsü. Native fazlar (3 kanal, 4 TTS) cihaz doğrulaması ister.
 
 ## 10. Açık riskler / karara bağlı
-1. **Play Store FGS-type** (mediaPlayback vs specialUse) — Faz 3 öncesi netleşmeli, uygulama reddi riski.
-2. **Cihaz doğrulaması** — TTS davranışı (Doze, audio focus, sessiz mod, Türkçe dil eksik cihaz) yalnız gerçek cihazda doğrulanır; unit test yetmez.
-3. **DND/alarm akışı** — varsayılan alarm akışı agresif; kullanıcı geri bildirimine göre "sessizde çalma" opt-out'u gerekebilir.
-4. **Sıklık × dinamik metin** — tekrarlı hatırlatmada `{süre}` doğru interpolasyon (Faz 1 test kapsamı).
+1. **[C1] TTS tetikleme + FGS başlatma** — mevcut FGS yok; Android 12+ arkaplandan-FGS-başlatma kısıtı + exact-alarm muafiyeti Faz 4 öncesi doğrulanmalı.
+2. **Play Store FGS-type** (mediaPlayback vs specialUse) — reddi riski, Faz 4 öncesi.
+3. **Cihaz doğrulaması** — TTS + bildirim kanalları yalnız gerçek cihazda doğrulanır.
+4. **DND/alarm akışı** — varsayılan agresif; opt-out gerekebilir.
+5. **Kanal enflasyonu** [I4] — ses paleti sabit tutulmalı, sonsuz kanal üretilmemeli.
 
-## 11. Kapsam dışı (bu tasarım DEĞİL)
-- Cuma namazı hatırlatıcısı (#173 — ayrı issue).
-- Cihaz zil seslerinden seçim (ileride, Faz 6+).
+## 11. Kapsam dışı
+- Cuma namazı hatırlatıcısı (#173).
+- Cihaz zil seslerinden seçim (ileride).
 - iOS TTS (proje Android).
