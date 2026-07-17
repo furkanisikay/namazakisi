@@ -5,6 +5,23 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.22] - 2026-07-17
+
+### Eklendi
+- [muhafiz] slice'a matris alanı + yükleme migrasyonu + initialState matris
+- [muhafiz] eski ayardan matrise migrasyon
+- [muhafiz] tümüne uygula + preset uygula
+- [muhafiz] aktif seviye çakışma kuralı
+- [muhafiz] dinamik seviye özeti
+- [muhafiz] anons metni {vakit}/{süre} interpolasyonu
+- [muhafiz] matris tipleri ve sabitler
+
+### Düzeltildi
+- [muhafiz] code-review max bulgulari — matris bayatlamasi + savunma + verimlilik
+
+### Değiştirildi
+- fix(muhafiz): code-review max bulgulari — matris bayatlamasi + savunma + verimlilik
+
 ## [0.23.21] - 2026-07-17
 
 ### Değiştirildi
