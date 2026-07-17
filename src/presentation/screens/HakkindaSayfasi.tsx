@@ -304,6 +304,56 @@ export const HakkindaSayfasi: React.FC = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Tanı ve Geri Bildirim */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            DESTEK
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('TaniGeriBildirim' as never)}
+            activeOpacity={0.7}
+            className="flex-row items-center py-3.5 px-4 rounded-xl"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+            accessibilityRole="button"
+            accessibilityLabel="Tanı ve geri bildirim"
+          >
+            <View
+              className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+              style={{ backgroundColor: `${renkler.birincil}26` }}
+            >
+              <FontAwesome5
+                name="comment-dots"
+                size={20}
+                color={renkler.birincil}
+                solid
+              />
+            </View>
+            <View className="flex-1">
+              <Text
+                className="text-base font-semibold"
+                style={{ color: renkler.metin }}
+              >
+                Tanı ve Geri Bildirim
+              </Text>
+              <Text
+                className="text-xs mt-0.5"
+                style={{ color: renkler.metinIkincil }}
+              >
+                Sorun bildirin, tanı kaydını paylaşın
+              </Text>
+            </View>
+            <FontAwesome5
+              name="chevron-right"
+              size={14}
+              color={renkler.metinIkincil}
+            />
+          </TouchableOpacity>
+        </View>
+
         {/* Debug Logs */}
         <View className="mb-6">
           <Text
