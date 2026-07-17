@@ -8,6 +8,8 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
+import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -69,6 +71,8 @@ export interface MuhafizAyarlari {
         seviye3: number;
         seviye4: number;
     };
+    /** Vakit x seviye matrisi (Faz 1+; eski alanlar Faz 3'e kadar paralel korunur) */
+    matris?: MuhafizMatrisi;
 }
 
 /**
@@ -80,6 +84,10 @@ const initialState: MuhafizAyarlari = {
     gelismisMod: false,
     esikler: HATIRLATMA_PRESETLERI.normal.esikler,
     sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
+    matris: eskidenMatriseGoc({
+        esikler: HATIRLATMA_PRESETLERI.normal.esikler,
+        sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
+    }),
 };
 
 /**
@@ -93,13 +101,14 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
             if (veri) {
                 const parsed = JSON.parse(veri);
                 // Eski veriden sadece muhafiz ile ilgili alanlari al
-                return {
+                const temel = {
                     aktif: parsed.aktif ?? initialState.aktif,
                     yogunluk: parsed.yogunluk ?? initialState.yogunluk,
                     gelismisMod: parsed.gelismisMod ?? initialState.gelismisMod,
                     esikler: parsed.esikler ?? initialState.esikler,
                     sikliklar: parsed.sikliklar ?? initialState.sikliklar,
                 };
+                return { ...temel, matris: parsed.matris ?? eskidenMatriseGoc(temel) };
             }
             return null;
         } catch (hata) {
@@ -133,6 +142,15 @@ const muhafizSlice = createSlice({
             AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
             return initialState;
         },
+
+        /**
+         * Vakit x seviye matrisini guncelle
+         */
+        matrisiGuncelle: (state, action: PayloadAction<MuhafizMatrisi>) => {
+            const yeniState = { ...state, matris: action.payload };
+            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
+            return yeniState;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(muhafizAyarlariniYukle.fulfilled, (state, action) => {
@@ -143,5 +161,5 @@ const muhafizSlice = createSlice({
     },
 });
 
-export const { muhafizAyarlariniGuncelle, muhafizStateSifirla } = muhafizSlice.actions;
+export const { muhafizAyarlariniGuncelle, muhafizStateSifirla, matrisiGuncelle } = muhafizSlice.actions;
 export default muhafizSlice.reducer;
