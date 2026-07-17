@@ -245,6 +245,25 @@ describe('muhafizSlice matris', () => {
         expect(sonra.esikler).toEqual(bas.esikler);   // eski alan korundu
         expect(sonra.yogunluk).toEqual(bas.yogunluk); // yogunluk'a dokunulmadı
     });
+    test('muhafizAyarlariniGuncelle: esik/sıklık değişince matris senkronlanır (bayatlamaz)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, muhafizAyarlariniGuncelle({
+            yogunluk: 'yogun',
+            esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
+            sikliklar: { seviye1: 10, seviye2: 5, seviye3: 3, seviye4: 1 },
+        }));
+        // matris yeni eşiklerden türetilmeli — initialState 'Normal' değerlerinde KALMAMALI
+        expect(sonra.matris!.imsak.seviyeler[0].esikDk).toBe(60); // nazik
+        expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(5);  // acil
+    });
+    test('muhafizAyarlariniGuncelle: matris payload gelince eski-alan senkronu onu EZMEZ', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, muhafizAyarlariniGuncelle({
+            esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
+            matris: bosMatris(),
+        }));
+        expect(sonra.matris!.imsak.seviyeler).toEqual([]); // payload matris korundu
+    });
 });
 
 describe('muhafizAyarlariniYukle matris [M2]', () => {

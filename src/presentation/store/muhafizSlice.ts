@@ -100,13 +100,17 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
             const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
             if (veri) {
                 const parsed = JSON.parse(veri);
-                // Eski veriden sadece muhafiz ile ilgili alanlari al
+                // Eski veriden sadece muhafiz ile ilgili alanlari al.
+                // esikler/sikliklar ALAN-BAZLI birlestirilir: diskteki nesne mevcut ama
+                // icindeki bir seviyeN eksikse (bozuk/kismi kayit), nesne-duzeyi `??`
+                // devreye girmez ve undefined esik/siklik matrise sizardi -> initialState
+                // ile spread ederek eksik alanlari doldur.
                 const temel = {
                     aktif: parsed.aktif ?? initialState.aktif,
                     yogunluk: parsed.yogunluk ?? initialState.yogunluk,
                     gelismisMod: parsed.gelismisMod ?? initialState.gelismisMod,
-                    esikler: parsed.esikler ?? initialState.esikler,
-                    sikliklar: parsed.sikliklar ?? initialState.sikliklar,
+                    esikler: { ...initialState.esikler, ...parsed.esikler },
+                    sikliklar: { ...initialState.sikliklar, ...parsed.sikliklar },
                 };
                 return { ...temel, matris: parsed.matris ?? eskidenMatriseGoc(temel) };
             }
@@ -130,7 +134,14 @@ const muhafizSlice = createSlice({
          */
         muhafizAyarlariniGuncelle: (state, action: PayloadAction<Partial<MuhafizAyarlari>>) => {
             const yeniState = { ...state, ...action.payload };
-            // Ayarlari kaydet
+            // Faz 1'de matris eski alanlarin (esik/siklik) TUREVI'dir. Eski alanlar
+            // degisip matris payload'da GELMEZSE matris'i yeniden turet; aksi halde
+            // matris ilk ayar degisikliginde initialState degerlerinde BAYATLAR ve
+            // yukleme migrasyonu (parsed.matris dolu oldugu icin) bir daha calismaz.
+            // (Faz 2'de UI matris'i dogrudan matrisiGuncelle ile yazacak.)
+            if ((action.payload.esikler || action.payload.sikliklar) && !action.payload.matris) {
+                yeniState.matris = eskidenMatriseGoc(yeniState);
+            }
             AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
             return yeniState;
         },

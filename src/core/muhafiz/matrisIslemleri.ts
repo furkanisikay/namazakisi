@@ -4,7 +4,9 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
 const derinKopya = <T>(o: T): T => JSON.parse(JSON.stringify(o));
 
 export function tumVakitlereUygula(matris: MuhafizMatrisi, kaynak: MuhafizVakti): MuhafizMatrisi {
-  const sonuc = derinKopya(matris);
+  // Bos nesneyle basla: her vakit zaten kaynagin taze kopyasiyla dolduruluyor,
+  // bu yuzden bastaki tam-matris klonu atil is olurdu (JSON round-trip x2).
+  const sonuc = {} as MuhafizMatrisi;
   for (const v of MUHAFIZ_VAKITLERI) {
     sonuc[v] = derinKopya(matris[kaynak]);
   }
