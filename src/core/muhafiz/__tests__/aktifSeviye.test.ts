@@ -25,6 +25,12 @@ describe('aktifSeviyeyiBul', () => {
     const v: VakitMuhafizAyari = { seviyeler: [sv('nazik', 30), sv('uyari', 15), sv('sert', 8), sv('acil', 3, 'sessiz')] };
     expect(aktifSeviyeyiBul(v, 2)?.kademe).toBe('sert');
   });
+  test('sınır: kalanDk == esikDk dahildir (8 dk kala sert kapsar)', () => {
+    expect(aktifSeviyeyiBul(vakitAyari, 8)?.kademe).toBe('sert');
+  });
+  test('sınır: kalanDk == en büyük eşik (30) nazik kapsar', () => {
+    expect(aktifSeviyeyiBul(vakitAyari, 30)?.kademe).toBe('nazik');
+  });
 });
 
 describe('esikSiralamasiGecerliMi', () => {
@@ -33,5 +39,8 @@ describe('esikSiralamasiGecerliMi', () => {
   });
   test('ters/eşit sıra geçersiz', () => {
     expect(esikSiralamasiGecerliMi([sv('nazik', 10), sv('uyari', 15), sv('sert', 8), sv('acil', 3)])).toBe(false);
+  });
+  test('eşit eşik geçersiz (kesin azalan olmalı)', () => {
+    expect(esikSiralamasiGecerliMi([sv('nazik', 15), sv('uyari', 15), sv('sert', 8), sv('acil', 3)])).toBe(false);
   });
 });
