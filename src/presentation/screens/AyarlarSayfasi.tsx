@@ -300,15 +300,9 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
     },
     {
       baslik: 'Hakkında',
-      aciklama: 'Uygulama bilgileri ve versiyon',
+      aciklama: 'Uygulama bilgileri, sürüm ve geri bildirim',
       ikonAdi: 'hakkinda',
       sayfa: 'Hakkinda',
-    },
-    {
-      baslik: 'Tanı ve Geri Bildirim',
-      aciklama: 'Sorun bildirin, tanı kaydını paylaşın',
-      ikonAdi: 'taniGeriBildirim',
-      sayfa: 'TaniGeriBildirim',
     },
   ];
 
