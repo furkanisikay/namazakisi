@@ -14,11 +14,15 @@ import reducer, {
     muhafizAyarlariniGuncelle,
     muhafizStateSifirla,
     muhafizAyarlariniYukle,
+    matrisiGuncelle,
     HATIRLATMA_PRESETLERI,
     MuhafizAyarlari,
 } from '../muhafizSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { configureStore } from '@reduxjs/toolkit';
+import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
+import { MUHAFIZ_VAKITLERI } from '../../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
 // Global jest.setup mock'unu kasıtlı override ediyoruz ki yazılan ham JSON'u assert edebilelim
@@ -154,7 +158,7 @@ describe('muhafizSlice', () => {
 
             expect(sonuc.type).toBe('muhafiz/yukle/fulfilled');
             const state = store.getState().muhafiz as MuhafizAyarlari;
-            expect(state).toEqual(kayitli);
+            expect(state).toEqual({ ...kayitli, matris: eskidenMatriseGoc(kayitli) });
         });
 
         it('fulfilled: eksik alanlar ?? ile initialState varsayılanından doldurulur', async () => {
@@ -222,5 +226,53 @@ describe('muhafizSlice', () => {
             const state = store.getState().muhafiz as MuhafizAyarlari;
             expect(state.aktif).toBe(true); // bozuk veri mevcut state'i bozmamalı
         });
+    });
+});
+
+const bosMatris = (): MuhafizMatrisi =>
+    MUHAFIZ_VAKITLERI.reduce((a, v) => ({ ...a, [v]: { seviyeler: [] } }), {}) as MuhafizMatrisi;
+
+describe('muhafizSlice matris', () => {
+    test('initialState taze kurulumda dolu bir matris içerir', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.matris).toBeDefined();
+        expect(Object.keys(bas.matris!).sort()).toEqual([...MUHAFIZ_VAKITLERI].sort());
+    });
+    test('matrisiGuncelle matrisi yazar, eski alanları bozmaz', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, matrisiGuncelle(bosMatris()));
+        expect(sonra.matris!.imsak.seviyeler).toEqual([]);
+        expect(sonra.esikler).toEqual(bas.esikler);   // eski alan korundu
+        expect(sonra.yogunluk).toEqual(bas.yogunluk); // yogunluk'a dokunulmadı
+    });
+    test('muhafizAyarlariniGuncelle: esik/sıklık değişince matris senkronlanır (bayatlamaz)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, muhafizAyarlariniGuncelle({
+            yogunluk: 'yogun',
+            esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
+            sikliklar: { seviye1: 10, seviye2: 5, seviye3: 3, seviye4: 1 },
+        }));
+        // matris yeni eşiklerden türetilmeli — initialState 'Normal' değerlerinde KALMAMALI
+        expect(sonra.matris!.imsak.seviyeler[0].esikDk).toBe(60); // nazik
+        expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(5);  // acil
+    });
+    test('muhafizAyarlariniGuncelle: matris payload gelince eski-alan senkronu onu EZMEZ', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, muhafizAyarlariniGuncelle({
+            esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
+            matris: bosMatris(),
+        }));
+        expect(sonra.matris!.imsak.seviyeler).toEqual([]); // payload matris korundu
+    });
+});
+
+describe('muhafizAyarlariniYukle matris [M2]', () => {
+    test('diskte matris VARSA migrasyon çalışmaz, mevcut matris korunur', async () => {
+        const ozelMatris = bosMatris();
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, matris: ozelMatris }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        const state = store.getState().muhafiz;
+        expect(state.matris).toEqual(ozelMatris); // türetilmedi, korundu
     });
 });
