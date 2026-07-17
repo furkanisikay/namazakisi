@@ -30,16 +30,26 @@ Kalan süre, her seviyede, **başlıkta ve sabit konumda** görünsün; kullanı
 <ikon> <süre> · <vakit adı> vakti <durum>
 ```
 
-Süre daima 3. karakterde → göz, metni okumadan sayıyı yakalar.
+Süre **daima aynı yerde: ikondan hemen sonra, ilk sözcük** → göz, metni okumadan sayıyı yakalar. (Karakter indeksi vermiyoruz: `⚠️`/`🚨` iki UTF-16 birimi, `⏰` bir birim; sabit olan **görsel konum**, indeks değil.)
 
 | Seviye | Başlık | Gövde |
 |---|---|---|
 | 1 | `⏰ 30 dk · Sabah vakti` | Vakit daralmaya başladı, fırsat varken kılabilirsiniz. |
 | 2 | `⚠️ 15 dk · Sabah vakti daralıyor` | Namazı sona bırakmayın; şimdi kılmak için vakit uygun. |
 | 3 | `🔥 8 dk · Sabah vakti kaçıyor` | *(içerik havuzundan — bu spec'te değişmiyor)* |
-| 4 | `🚨 3 dk · SABAH VAKTİ ÇIKIYOR` | Vakit çıkmak üzere! Hemen secdeye kapanın. |
+| 4 | `🚨 3 dk · SABAH VAKTİ ÇIKIYOR` | Hemen secdeye kapanın — sonra kaza etmek zorunda kalırsınız. |
 
 Vakit adları: Sabah · Öğle · İkindi · Akşam · Yatsı. (`gunes` isim haritasında var ama muhafız onun için **planlama yapmıyor** — doğrulandı; ölü kayıt, dokunulmuyor.)
+
+### Büyük harf: `toUpperCase()` KULLANMA (Türkçe tuzağı)
+
+Seviye 4 başlığı büyük harf ister. **`'İkindi'.toUpperCase()` → `İKINDI`** üretir (noktalı `İ` kaybolur, `i`→`I`) → kullanıcıya **yanlış yazılmış namaz adı** gider. Ölçüldü:
+
+| Girdi | `toUpperCase()` | `toLocaleUpperCase('tr-TR')` |
+|---|---|---|
+| İkindi | `İKINDI` ❌ | `İKİNDİ` ✅ |
+
+**Karar: sabit büyük-harf haritası** (`VAKIT_ADLARI_BUYUK`), `toLocaleUpperCase('tr-TR')` değil. Gerekçe: locale-tabanlı çözüm Hermes'te Intl/ICU varlığına bağlıdır ve ortama göre değişebilir; sabit harita motordan **bağımsız ve kesin**. Yalnız `İkindi` etkilenir, ama görünür bir hatadır.
 
 ### Kırpılma değerlendirmesi
 
@@ -56,7 +66,11 @@ En uzun hâl `⚠️ 15 dk · İkindi vakti daralıyor` ≈ 33 karakter. Kırpı
    - "namazını sona bırakma" → "namazı sona bırakmayın"
    - "Şeytana uyma, namazını kıl!" → "Şeytana uymayın, namazı kılın!" *(seviye 3 **fallback**'i — havuz boşken kullanılır)*
 
-> **Sınır:** Seviye 3'ün **fallback** metni bu spec'in kapsamındadır (servis dosyasında, `bildirimMesajiOlustur` içinde). `SeytanlaMucadeleIcerigi.ts`'teki **havuz** metinleri kapsam dışıdır — onlar içerik işine aittir ve orada "sen" dili ayrıca düzeltilecektir.
+> **Sınır — dosya sahipliğine göre:** **Servis dosyalarındaki** metinler kapsamdadır; **havuz dosyasındaki** (`SeytanlaMucadeleIcerigi.ts`) metinler değildir. Kapsama giren iki seviye-3 fallback'i vardır ve **ikisi de** düzeltilir:
+> - `ArkaplanMuhafizServisi.bildirimMesajiOlustur` içindeki fallback (bildirim yüzeyi)
+> - `NamazMuhafiziServisi.getRandomIcerik` içindeki `"Şeytana uyma, namazını kıl."` (banner yüzeyi)
+>
+> İkisinden yalnız birini düzeltmek, spec'in kendi drift önlemi ilkesini çiğnerdi.
 
 ### İki yüzey, iki kural (drift önlemi)
 
@@ -69,7 +83,7 @@ Aynı mesaj mantığının **iki kopyası** var:
 
 Banner'da başlık sabittir (`AnaSayfa.tsx`, hardcoded) ve kırpılma yoktur → oradaki kalan süre (`(3 dk kaldı)`) **korunur**; yalnız "sen" dili düzeltilir.
 
-İkisi ayrı ayrı düzeltilirse **kayarlar** — AGENTS.md'de "Kıldım handler drift'i" olarak yaşanmış bir bug. Bu yüzden ikisi **aynı commit'te**, tutarlı ton ve sözcük dağarcığıyla düzeltilir.
+İkisi ayrı ayrı düzeltilirse **kayarlar** — bu repoda yaşanmış bir kalıp ("Kıldım" handler drift'i, `docs/repo-denetim-2026-06-06.md`). Bu yüzden ikisi **aynı commit'te**, tutarlı ton ve sözcük dağarcığıyla düzeltilir.
 
 ## Kapsam dışı (bilinçli)
 
@@ -79,6 +93,7 @@ Banner'da başlık sabittir (`AnaSayfa.tsx`, hardcoded) ve kırpılma yoktur →
 | TTS ("son 3 dakika" sesli) | Ayrı iş: yeni bağımlılık (`expo-speech`) + cihaz doğrulaması. |
 | `siddetSeviyesi` 1 ve 2 ölü verisi | İçerik işine ait yapısal sorun (aşağıda "Bilinen borç"). |
 | Banner'ın hardcoded renkleri | `AnaSayfa.tsx`'te `#FEE2E2`/`#DC2626` vb. var; ayrı iş, görsel doğrulama ister. |
+| Ayarlar'daki seviye adları | `MuhafizAyarlariSayfasi.tsx:43` seviye 3'ü "Şeytanla Mücadele" diye adlandırıyor. Bildirim başlığı artık `🔥 8 dk · <vakit> vakti kaçıyor` olacağı için ayar adı ile bildirim görünümü **kopuyor**. Bilinçli kabul: seviye 3'ün kimliği gövdede (havuz içeriğinde) yaşamaya devam ediyor; ayar adı içerik işinde yeniden ele alınacak. |
 | Eşikler / sıklıklar / kanallar / sesler | Davranış değişmiyor. |
 | Vakit sayacı bildirimi | Ayrı bildirim; muhafız açıkken zaten bastırılıyor (#90). |
 
@@ -89,15 +104,39 @@ Banner'da başlık sabittir (`AnaSayfa.tsx`, hardcoded) ve kırpılma yoktur →
 3. **Vakte uymayan hadis.** `s1` (Buhârî, Ezân 34) *yatsı ve sabah*a özgüdür ama rastgele seçildiği için **öğlede de çıkabiliyor**.
 4. **Telif riski (mevcut).** Dosyada kaynağı belirsiz meal metinleri var (Meryem 59, Alak 19). Türkçe mealler FSEK m.6/1 uyarınca **işlenme eser**; Kur'an'ın kamu malı olması meali serbestleştirmez. Karar: içerik işinde meal **gömülmeyecek**, kendi özgün metnimiz + künye kullanılacak.
 
+## Gerekli refactor (test edilebilirlik için)
+
+Başlık üretimi şu an **fonksiyon bile değil**: `ArkaplanMuhafizServisi`'nin planlama döngüsü içinde inline sabit atamalar (`aktifBaslik = '🚨 VAKİT ÇIKIYOR!'` vb.). `bildirimMesajiOlustur` ise `private` ve seviye 3'te `Math.random()` içeriyor → **saf değil**.
+
+Bu yüzden metinleri doğrudan test edebilmek için küçük bir **extract** şart:
+
+- Saf `basligiOlustur(vakit: VakitAdi, seviye: 1|2|3|4, kalanDk: number): string` çıkarılır.
+- `vakitAdlari` haritası `bildirimMesajiOlustur` içinden **çıkarılıp paylaşılır** (başlık da aynı adlara ihtiyaç duyuyor) + `VAKIT_ADLARI_BUYUK` eklenir.
+- `kalanDk` erişilebilir — doğrulandı: planlama döngüsünde `k` / `veri.dakika` mevcut.
+- Rastgelelik (`Math.random`) `basligiOlustur`'a **girmez**; başlık deterministik kalır.
+
+Bu refactor kapsamın parçasıdır, ayrı iş değildir — onsuz spec'in test maddeleri yazılamaz.
+
 ## Test
 
-`bildirimMesajiOlustur` ve başlık üretimi saf → metinler doğrudan test edilir:
-
-- Her seviyede başlık `<ikon> <süre> dk · ` ile başlar (süre konumu sabit).
-- Gövde, başlığın durum ifadesini **tekrarlamaz**.
+**Yeni testler:**
+- Her seviyede başlık `<ikon> <süre> dk · ` öneki ile başlar (regex; karakter indeksi değil).
+- Gövde, başlığın durum ifadesini **birebir tekrarlamaz**.
 - Gövdede (bildirim) sondaki `(N dk kaldı)` **yoktur**; banner mesajında **vardır**.
 - Beş vaktin beşi de doğru ada çözülür.
-- Hiçbir kullanıcı metninde "sen" dili kalıbı geçmez.
+- **`İkindi` → `İKİNDİ`** (noktalı) — `İKINDI` **değil**. Bu testi yazmak zorunlu; tuzağın nöbetçisi budur.
+- Bu spec'te değiştirilen metinlerde "sen" dili kalıbı geçmez. *(Havuz metinleri hariç — s4 hâlâ "sana… dinleme!" diyor ve seviye 3 gövdesi olarak gösterilmeye devam edecek; içerik işinde düzeltilecek.)*
+
+**Güncellenmesi gereken MEVCUT testler** — eski başlıkları birebir assert ediyorlar, yeni format hepsini kırar:
+
+| Dosya | Satır | Assert |
+|---|---|---|
+| `ArkaplanMuhafizServisi.test.ts` | 152, 190, 246 | `'🚨 VAKİT ÇIKIYOR!'` |
+| `ArkaplanMuhafizServisi.test.ts` | 238 | `'⏰ Namaz Hatırlatıcı'` |
+| `ArkaplanMuhafizServisi.test.ts` | 240 | `'⚠️ Vakit Daralıyor'` |
+| `ArkaplanMuhafizServisi.test.ts` | 242 | `'🔥 Şeytanla Mücadele!'` |
+
+`NamazMuhafiziServisi.test.ts` **kırılmaz** (`stringContaining` kullanıyor ve banner'da süre + "VAKİT ÇIKIYOR" korunuyor) — doğrulandı.
 
 **Tuzak:** muhafız bildirim ID'leri tarih içerir; testlerde sabit tarih yazma — `bugunuAl()`/`dunuAl()` kullan (AGENTS.md).
 
