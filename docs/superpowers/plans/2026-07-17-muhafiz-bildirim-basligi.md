@@ -312,9 +312,14 @@ Döngüde (~245-274) `aktifBaslik` değişkeni ve 4 atamasını sil. Sonuç:
                 aktifSeviye = 4;
                 aktifSiklik = esikler.seviye4Siklik;
             }
+
+            // ⚠️ SNIPPET BURADA BİTİYOR — döngünün geri kalanı (`if (aktifSeviye > 0)`
+            // bloğu: seviyeBaslangic switch'i, `fark % aktifSiklik` sıklık kontrolü,
+            // bildirimZamani hesabı, geçmiş-zaman elemesi) **DEĞİŞMEDEN KALIR**.
+            // Onları silme — sıklık/modulo mantığı kaybolur ve 3 test kırılır.
 ```
 
-`dakikaGruplari.set(...)` çağrısından `baslik` alanını çıkar (~308-312):
+`dakikaGruplari.set(...)` çağrısından `baslik` alanını çıkar (~308-312) — bu satırlar `if (aktifSeviye > 0)` bloğunun **içinde**, yerinde duruyor:
 
 ```typescript
                         dakikaGruplari.set(k, {
@@ -460,20 +465,50 @@ Expected: PASS. (Bu testler `stringContaining` kullanıyor ve tuttukları ifadel
         if (uygunIcerikler.length === 0) return "Şeytana uymayın, namazı kılın.";
 ```
 
-- [ ] **Step 3: Testleri çalıştır**
+- [ ] **Step 3: Banner için "sen" dili nöbetçi testi ekle**
+
+Mevcut testler `stringContaining('VAKİT ÇIKIYOR')` gibi **parça** kontrol ediyor → biri "kapanın"ı "kapan"a geri döndürürse **sessizce geçerler**. Regresyonu yakalayan bir nöbetçi gerekiyor (Task 1'deki `senKaliplari` testinin banner karşılığı).
+
+`src/domain/services/__tests__/NamazMuhafiziServisi.test.ts` içine, mevcut seviye testlerinin yanına ekle:
+
+```typescript
+    // NÖBETÇİ: banner metinleri kibar "siz" dilinde kalmalı (AGENTS.md zorunlu).
+    // Mevcut testler stringContaining ile PARÇA kontrol ettiği için "kapanın" ->
+    // "kapan" regresyonunu yakalayamaz; bu test onu yakalar.
+    test.each([
+        [45 * 60 * 1000, 1],
+        [30 * 60 * 1000, 2],
+        [3 * 60 * 1000, 4],
+    ])('banner mesajı "sen" dili kullanmaz (kalan %i ms, seviye %i)', (kalanSureMs) => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        const [mesaj] = bildirimSpx.mock.calls[0];
+        // "kapan/bırakma/uyma/kıl" tek başına = sen dili; "-ın/-ınız/-ayın" ekli hâli siz dili.
+        expect(mesaj).not.toMatch(/\b(kapan|bırakma|uyma|kıl)\b(?!ın|ınız|ayın)/u);
+    });
+```
+
+> Seviye 3 bilinçli olarak DIŞARIDA: gövdesi `SeytanlaMucadeleIcerigi.ts` havuzundan geliyor ve havuz bu planın kapsamı dışında — s4 metni hâlâ "sana… dinleme!" diyor. Havuza test yazmak kırmızı verirdi. Havuz, içerik işinde düzeltilecek.
+
+- [ ] **Step 4: Testleri çalıştır**
 
 Run: `npx jest NamazMuhafiziServisi`
-Expected: PASS — hiçbir test kırılmamalı.
+Expected: PASS — mevcut testlerin hiçbiri kırılmamalı, yeni nöbetçi geçmeli.
 
-- [ ] **Step 4: Doğrulama kapısı**
+- [ ] **Step 5: Doğrulama kapısı**
 
 Run: `npm run verify`
 Expected: typecheck + lint + test **üçü de** geçer. Lint'te **yeni warning yok**.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/domain/services/NamazMuhafiziServisi.ts
+git add src/domain/services/NamazMuhafiziServisi.ts src/domain/services/__tests__/NamazMuhafiziServisi.test.ts
 git commit -m "fix(muhafiz): banner metinlerini kibar 'siz' diline cevir
 
 AGENTS.md zorunlu kurali: kullaniciya gorunen TUM metin kibar 'siz'
