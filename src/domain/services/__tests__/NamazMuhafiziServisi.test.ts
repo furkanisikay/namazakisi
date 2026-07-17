@@ -481,5 +481,25 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(bildirimSpx).toHaveBeenCalledWith('', 0);
         });
     });
+
+    // NÖBETÇİ: banner metinleri kibar "siz" dilinde kalmalı (AGENTS.md zorunlu).
+    // Mevcut testler stringContaining ile PARÇA kontrol ettiği için "kapanın" ->
+    // "kapan" regresyonunu yakalayamaz; bu test onu yakalar.
+    test.each([
+        [45 * 60 * 1000, 1],
+        [30 * 60 * 1000, 2],
+        [3 * 60 * 1000, 4],
+    ])('banner mesajı "sen" dili kullanmaz (kalan %i ms, seviye %i)', (kalanSureMs, _seviye) => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        const [mesaj] = bildirimSpx.mock.calls[0];
+        // "kapan/bırakma/uyma/kıl" tek başına = sen dili; "-ın/-ınız/-ayın" ekli hâli siz dili.
+        expect(mesaj).not.toMatch(/\b(kapan|bırakma|uyma|kıl)\b(?!ın|ınız|ayın)/u);
+    });
 });
 
