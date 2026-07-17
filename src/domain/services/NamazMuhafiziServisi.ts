@@ -210,7 +210,7 @@ export class NamazMuhafiziServisi {
 
     private getRandomIcerik(seviye: number): string {
         const uygunIcerikler = SEYTANLA_MUCADELE_ICERIGI.filter(i => i.siddetSeviyesi === seviye);
-        if (uygunIcerikler.length === 0) return "Şeytana uymayın, namazını kılın.";
+        if (uygunIcerikler.length === 0) return "Şeytana uymayın, namazı kılın.";
 
         const random = Math.floor(Math.random() * uygunIcerikler.length);
         return uygunIcerikler[random].metin;

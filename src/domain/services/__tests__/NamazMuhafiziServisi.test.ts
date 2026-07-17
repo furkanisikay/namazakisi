@@ -489,7 +489,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         [45 * 60 * 1000, 1],
         [30 * 60 * 1000, 2],
         [3 * 60 * 1000, 4],
-    ])('banner mesajı "sen" dili kullanmaz (kalan %i ms, seviye %i)', (kalanSureMs, _seviye) => {
+    ])('banner mesajı "sen" dili kullanmaz (kalan %i ms)', (kalanSureMs) => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
             kalanSureMs,
