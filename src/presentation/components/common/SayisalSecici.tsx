@@ -22,6 +22,12 @@ export interface SayisalSeciciProps {
   renk: string;
   /** Deger kutusunun minimum genisligi (px). Varsayilan 80. */
   degerGenisligi?: number;
+  /**
+   * Neyin ayarlandigi (ornegin "Kac dk kala"). Verilirse erisilebilirlik
+   * etiketleri "<aciklama> artir/azalt" olur — ayni ekranda birden fazla
+   * secici varsa ekran okuyucu (ve testler) ayirt edebilsin diye.
+   */
+  aciklama?: string;
 }
 
 export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
@@ -33,8 +39,11 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   onChange,
   renk,
   degerGenisligi = 80,
+  aciklama,
 }) => {
   const renkler = useRenkler();
+  const azaltEtiketi = aciklama ? `${aciklama} azalt` : 'Azalt';
+  const artirEtiketi = aciklama ? `${aciklama} artır` : 'Artır';
   const sonTiklamaRef = useRef<number>(0);
 
   const throttleKontrol = useCallback((): boolean => {
@@ -65,7 +74,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         disabled={deger <= min}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel="Azalt"
+        accessibilityLabel={azaltEtiketi}
       >
         <FontAwesome5 name="minus" size={12} color="#FFF" />
       </TouchableOpacity>
@@ -83,7 +92,7 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         disabled={deger >= max}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel="Artır"
+        accessibilityLabel={artirEtiketi}
       >
         <FontAwesome5 name="plus" size={12} color="#FFF" />
       </TouchableOpacity>
