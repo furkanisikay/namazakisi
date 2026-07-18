@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.23] - 2026-07-18
+
+### Eklendi
+- [muhafiz] Faz 5 duyurusu + bilgi tabanı güncellemesi
+- [muhafiz] sesli modu ekrana bağla + akış önizleme (Faz 5)
+- [muhafiz] ön plan sesli anonsu + çift konuşma önleme (Faz 5)
+- [muhafiz] arkaplan bildirimlerine sesli anons bağlantısı (Faz 4)
+- [muhafiz] native sesli anons altyapısı — alarm + goAsync TTS (Faz 4)
+- [muhafiz] motor adaptörü — üç tüketici vakit×seviye matrisinden okur (Faz 3)
+- [muhafiz] vakit-merkezli muhafız ayarları ekranı (Faz 2)
+- [muhafiz] vakit özeti + eşik sınırı saf yardımcıları (Faz 2 altyapı)
+
 ## [0.23.22] - 2026-07-17
 
 ### Eklendi
