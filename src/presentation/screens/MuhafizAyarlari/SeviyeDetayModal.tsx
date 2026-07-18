@@ -54,16 +54,19 @@ export interface SeviyeDetayModalProps {
     onKapat: () => void;
 }
 
-/** Bolum basligi (kucuk, harf arali) */
-const BolumBasligi: React.FC<{ metin: string }> = ({ metin }) => {
+/** Bolum basligi (kucuk, harf arali); `sag` ile satirin sagina aksiyon konabilir. */
+const BolumBasligi: React.FC<{ metin: string; sag?: React.ReactNode }> = ({ metin, sag }) => {
     const renkler = useRenkler();
     return (
-        <Text
-            className="text-[11px] font-semibold tracking-wider mb-2 mt-4"
-            style={{ color: renkler.metinIkincil }}
-        >
-            {metin}
-        </Text>
+        <View className="flex-row items-center justify-between mb-2 mt-4">
+            <Text
+                className="text-[11px] font-semibold tracking-wider"
+                style={{ color: renkler.metinIkincil }}
+            >
+                {metin}
+            </Text>
+            {sag}
+        </View>
     );
 };
 
@@ -328,7 +331,20 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                 {/* ── Bildirim sesi ── */}
                                 {bildirimliMi && (
                                     <>
-                                        <BolumBasligi metin="BİLDİRİM SESİ" />
+                                        {/* Sag aksiyon: SES secimini dogrudan duymak icin — mod 'ikisi'
+                                            olsa bile burada YALNIZ ses calinir (secimin yanindaki buton
+                                            secimi dinletmelidir, akisi degil; akis icin asagidaki
+                                            "ornek okunus" butonu var). */}
+                                        <BolumBasligi
+                                            metin="BİLDİRİM SESİ"
+                                            sag={
+                                                <DinleButonu
+                                                    mod="bildirim"
+                                                    bildirimSesi={seviye.bildirimSesi}
+                                                    erisimEtiketi="Bildirim sesini dinleyin"
+                                                />
+                                            }
+                                        />
                                         <View className="flex-row gap-2">
                                             {SES_PALETI.map((ses) => {
                                                 const secili = seviye.bildirimSesi === ses.id;
@@ -439,9 +455,17 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                     <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
                                                         {anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
                                                     </Text>
+                                                    {/* Mod 'ikisi' ise gercek akisla ayni sirayla calar:
+                                                        once bildirim sesi, ardindan anons. */}
                                                     <DinleButonu
+                                                        mod={seviye.mod}
+                                                        bildirimSesi={seviye.bildirimSesi}
                                                         cozulmusMetin={anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
-                                                        erisimEtiketi="Örnek okunuşu dinleyin"
+                                                        erisimEtiketi={
+                                                            seviye.mod === 'ikisi'
+                                                                ? 'Bildirim sesini ve örnek okunuşu dinleyin'
+                                                                : 'Örnek okunuşu dinleyin'
+                                                        }
                                                     />
                                                 </View>
                                             </View>

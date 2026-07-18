@@ -27,6 +27,13 @@ module.exports = {
   moduleNameMapper: {
     "^expo-notifications$": "<rootDir>/__mocks__/expo-notifications.js",
     "^expo-location$": "<rootDir>/__mocks__/expo-location.js",
+    // expo-audio native EventEmitter'a dokunur → import eden suite hiç çalışmadan
+    // patlar (AGENTS.md requireNativeModule tuzağı). Global mock ile ses çalan
+    // servisi DOLAYLI yükleyen testler de ayakta kalır.
+    "^expo-audio$": "<rootDir>/__mocks__/expo-audio.js",
+    // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı
+    // bıraktığı için ham mp3 require'ı SyntaxError verir.
+    "\\.(mp3|wav|m4a|ogg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",
   },
   // Expo modullerini transform et
   transformIgnorePatterns: [

@@ -45,6 +45,15 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   trDestekleniyorMu: () =>
     ttsDurumu.hataVer ? Promise.reject(new Error('native yok')) : Promise.resolve(ttsDurumu.destekli),
 }));
+// Önizleme bildirim sesi (uygulama içi, expo-audio). Gerçek ses çalmasın; yalnız
+// hangi modda çağrıldığı ölçülebilsin.
+const mockBildirimSesiniCal = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../domain/services/OnizlemeSesServisi', () => ({
+  OnizlemeSesServisi: {
+    bildirimSesiniCal: (...args: unknown[]) => mockBildirimSesiniCal(...args),
+    temizle: jest.fn(),
+  },
+}));
 
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
@@ -428,6 +437,103 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
   });
 
+  // ── Adım detayında "Dinle": mod başına doğru ses kombinasyonu ─────────────
+  describe('Adım detayı — Dinle', () => {
+    const detayiAc = async (matris?: MuhafizMatrisi) => {
+      const ekran = await kur(matris ? { matris } : {});
+      fireEvent.press(ekran.getByText('Öğle'));
+      fireEvent.press(ekran.getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      return ekran;
+    };
+
+    const moduAyarla = (mod: string, ekle: Partial<{ anonsMetni: string; bildirimSesi: string }> = {}) => {
+      const matris = varsayilanMatris();
+      Object.assign(matris.ogle.seviyeler[0], { mod, ...ekle });
+      return matris;
+    };
+
+    it("'bildirim' modunda Dinle butonu vardır ve YALNIZ bildirim sesini çalar", async () => {
+      // Şikâyet #1: sadece bildirim seçiliyken sesi dinleyecek buton yoktu.
+      const { getByLabelText } = await detayiAc();
+
+      fireEvent.press(getByLabelText('Bildirim sesini dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledWith('can');
+      expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    it('seçili ses değişince o ses çalınır', async () => {
+      const { getByLabelText } = await detayiAc(moduAyarla('bildirim', { bildirimSesi: 'melodi' }));
+
+      fireEvent.press(getByLabelText('Bildirim sesini dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledWith('melodi');
+    });
+
+    it("'sesli' modunda bildirim sesi bölümü yoktur; Dinle yalnız konuşur", async () => {
+      const matris = moduAyarla('sesli', { anonsMetni: '{vakit} vakti çıkıyor, son {süre} dakika.' });
+      const { getByLabelText, queryByLabelText, queryByText } = await detayiAc(matris);
+
+      expect(queryByText('BİLDİRİM SESİ')).toBeNull();
+      expect(queryByLabelText('Bildirim sesini dinleyin')).toBeNull();
+
+      fireEvent.press(getByLabelText('Örnek okunuşu dinleyin'));
+
+      expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+      expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
+    });
+
+    it("'ikisi' modunda örnek okunuş Dinle'si HEM sesi HEM anonsu çalar", async () => {
+      const matris = moduAyarla('ikisi', {
+        anonsMetni: '{vakit} vakti çıkıyor, son {süre} dakika.',
+        bildirimSesi: 'alarm',
+      });
+      const { getByLabelText } = await detayiAc(matris);
+
+      fireEvent.press(getByLabelText('Bildirim sesini ve örnek okunuşu dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledWith('alarm');
+      expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+      const [, zaman] = mockPlanlaAnons.mock.calls[0];
+      // Anons bildirim sesinin ARDINDAN gelir (üstüne binmez)
+      expect(zaman - Date.now()).toBeGreaterThan(1000);
+    });
+
+    it("'ikisi' modunda ses bölümündeki Dinle yalnız SESİ çalar (seçimi dinletir)", async () => {
+      const matris = moduAyarla('ikisi', {
+        anonsMetni: '{vakit} vakti çıkıyor, son {süre} dakika.',
+      });
+      const { getByLabelText } = await detayiAc(matris);
+
+      fireEvent.press(getByLabelText('Bildirim sesini dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledTimes(1);
+      expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    it("'sessiz' adımda hiçbir Dinle butonu gösterilmez", async () => {
+      const { queryByLabelText } = await detayiAc(moduAyarla('sessiz'));
+
+      expect(queryByLabelText('Bildirim sesini dinleyin')).toBeNull();
+      expect(queryByLabelText('Örnek okunuşu dinleyin')).toBeNull();
+      expect(queryByLabelText('Bildirim sesini ve örnek okunuşu dinleyin')).toBeNull();
+    });
+
+    it('üst üste basmak sesi çoğaltmaz — her basış tek çağrı, tekilleştirme serviste', async () => {
+      const { getByLabelText } = await detayiAc();
+      const buton = getByLabelText('Bildirim sesini dinleyin');
+
+      fireEvent.press(buton);
+      fireEvent.press(buton);
+      fireEvent.press(buton);
+
+      // Her basış TEK çalma isteği üretir; üst üste binmeyi OnizlemeSesServisi
+      // (tek çalar + başa sarma) engeller — bkz. OnizlemeSesServisi.test.ts
+      expect(mockBildirimSesiniCal).toHaveBeenCalledTimes(3);
+      expect(mockBildirimSesiniCal).toHaveBeenLastCalledWith('can');
+    });
+  });
+
   // ── Faz 5: Akışı önizle (spec 3.4) ────────────────────────────────────────
   describe('Akışı önizle', () => {
     it('vakit açılınca "Akışı önizle" butonu görünür ve akış modalını açar', async () => {
@@ -467,12 +573,43 @@ describe('MuhafizAyarlariSayfasi', () => {
       // {vakit}/{süre} gerçek değerle çözülür
       expect(getByText('İkindi vakti çıkıyor, son 45 dakika.')).toBeTruthy();
 
-      fireEvent.press(getByLabelText('45 dakika kala okunacak anonsu dinleyin'));
+      fireEvent.press(getByLabelText('45 dakika kala çalacak uyarıyı dinleyin'));
       expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
       const [id, , metin] = mockPlanlaAnons.mock.calls[0];
       expect(metin).toBe('İkindi vakti çıkıyor, son 45 dakika.');
       // Önizleme SABİT id kullanır → gerçek muhafız bildirim id'leriyle çakışmaz
       expect(id).toBe('muhafiz_anons_onizleme');
+      // Mod yalnız 'sesli' → bildirim sesi ÇALINMAZ
+      expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
+    });
+
+    it('SADECE BİLDİRİM olan adımda da "Dinle" vardır ve bildirim sesini çalar', async () => {
+      // Şikâyet #2: bildirimli adımlarda hiç ses duyulmuyordu (buton yalnız sesli
+      // adımlarda çiziliyordu) → artık her duyulur adımda buton var.
+      const { getByText, getByLabelText } = await kur();
+
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+      fireEvent.press(getByLabelText('45 dakika kala çalacak uyarıyı dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledWith('can');
+      // Bildirim modunda TTS yok → sessizlik + konuşma yerine yalnız ses
+      expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    it("'ikisi' adımında hem bildirim sesi hem anons çalar", async () => {
+      const matris = varsayilanMatris();
+      matris.ikindi.seviyeler.forEach((s, i) => { s.mod = i === 0 ? 'ikisi' : 'sessiz'; });
+      matris.ikindi.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
+      matris.ikindi.seviyeler[0].bildirimSesi = 'alarm';
+      const { getByText, getByLabelText } = await kur({ matris });
+
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+      fireEvent.press(getByLabelText('45 dakika kala çalacak uyarıyı dinleyin'));
+
+      expect(mockBildirimSesiniCal).toHaveBeenCalledWith('alarm');
+      expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
     });
 
     it('tüm adımlar sessizse boş durum gösterilir', async () => {
@@ -493,6 +630,7 @@ describe('MuhafizAyarlariSayfasi', () => {
       fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
 
       expect(mockPlanlaAnons).not.toHaveBeenCalled();
+      expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
     });
   });
 

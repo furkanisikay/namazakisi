@@ -3,8 +3,9 @@
  * cizelgesinde sirayla gosterir: 45 dk kala nazik ... 3 dk kala acil.
  *
  * ONEMLI: Burasi bir ONIZLEMEdir — GERCEK BILDIRIM GONDERMEZ, hicbir sey
- * planlamaz. Yalniz kullanicinin istegiyle ("Dinle") tek bir adimin sesli
- * anonsu okutulur (bkz. `AnonsOnizlemeServisi`).
+ * planlamaz. Yalniz kullanicinin istegiyle ("Dinle") tek bir adim oldugu gibi
+ * calinir: bildirimli adimda BILDIRIM SESI (uygulama ici, expo-audio), sesli
+ * adimda TTS, 'ikisi'nde once ses sonra anons (bkz. `AnonsOnizlemeServisi`).
  *
  * Adimlar motor adaptorunun SAF `vakitUyariPlaniOlustur` fonksiyonundan gelir —
  * yani ekranda gorulen sira, arka planin gercekten planlayacagi sirayla
@@ -37,7 +38,7 @@ import {
 import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
-import { SEVIYE_BILGILERI, ONIZLEME_TARAMA_SINIRI_DK } from './sabitler';
+import { SEVIYE_BILGILERI, ONIZLEME_TARAMA_SINIRI_DK, BILDIRIMLI_MODLAR } from './sabitler';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -137,8 +138,8 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                 style={{ marginRight: 8, marginTop: 1 }}
                             />
                             <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metinIkincil }}>
-                                Bu bir önizlemedir; bildirim gönderilmez. Sesli anonsu duymak için ilgili adımın
-                                “Dinle” düğmesine dokunun.
+                                Bu bir önizlemedir; bildirim gönderilmez. Bir adımın nasıl duyulacağını
+                                denemek için “Dinle” düğmesine dokunun.
                             </Text>
                         </View>
 
@@ -162,6 +163,8 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                         adim.sesliAnons && adim.anonsMetni.trim().length > 0
                                             ? anonsMetniniCoz(adim.anonsMetni, vakit, adim.kalanDk)
                                             : null;
+                                    // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
+                                    const dinlenebilir = BILDIRIMLI_MODLAR.includes(adim.mod) || !!anonsMetni;
 
                                     return (
                                         <View
@@ -221,7 +224,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 })}
                                             </Text>
 
-                                            {/* Sesli anons — cozulmus metin + dinle */}
+                                            {/* Sesli anons — cozulmus metin */}
                                             {anonsMetni && (
                                                 <View
                                                     className="flex-row items-center p-2.5 rounded-xl mt-2.5"
@@ -234,12 +237,23 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                         solid
                                                         style={{ marginRight: 8 }}
                                                     />
-                                                    <Text className="flex-1 text-xs pr-2" style={{ color: renkler.metin }}>
+                                                    <Text className="flex-1 text-xs" style={{ color: renkler.metin }}>
                                                         {anonsMetni}
                                                     </Text>
+                                                </View>
+                                            )}
+
+                                            {/* Adimi OLDUGU GIBI dinle — sadece-bildirim adimlarinda da ses
+                                                cikar (eskiden yalniz sesli adimlarda buton vardi, bildirimli
+                                                adimlar sessiz kaliyordu). 'ikisi'de sira gercek akisla ayni:
+                                                once bildirim sesi, sonra anons. */}
+                                            {dinlenebilir && (
+                                                <View className="flex-row justify-end mt-2.5">
                                                     <DinleButonu
-                                                        cozulmusMetin={anonsMetni}
-                                                        erisimEtiketi={`${adim.kalanDk} dakika kala okunacak anonsu dinleyin`}
+                                                        mod={adim.mod}
+                                                        bildirimSesi={adim.bildirimSesi}
+                                                        cozulmusMetin={anonsMetni ?? ''}
+                                                        erisimEtiketi={`${adim.kalanDk} dakika kala çalacak uyarıyı dinleyin`}
                                                     />
                                                 </View>
                                             )}
