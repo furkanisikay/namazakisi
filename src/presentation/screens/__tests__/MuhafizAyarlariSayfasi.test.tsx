@@ -22,11 +22,11 @@ jest.mock('../../hooks/useKonumMetni', () => ({ useKonumMetni: () => 'İstanbul'
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
-  return (props: any) => <Text>{props.name}</Text>;
+  return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
-  return { FontAwesome5: (props: any) => <Text>{props.name}</Text> };
+  return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
@@ -73,8 +73,8 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   const kur = (ustyaz: Record<string, unknown> = {}) => {
-    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: any) =>
-      selector(stateOlustur(ustyaz))
+    (useAppSelector as unknown as jest.Mock).mockImplementation(
+      (selector: (state: ReturnType<typeof stateOlustur>) => unknown) => selector(stateOlustur(ustyaz))
     );
     const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
     return render(<MuhafizAyarlariSayfasi />);
