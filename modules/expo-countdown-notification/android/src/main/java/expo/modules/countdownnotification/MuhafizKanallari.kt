@@ -60,8 +60,12 @@ object MuhafizKanallari {
         if (yonetici.getNotificationChannel(kanalId) != null) return
 
         try {
+            // ONEM TABAN KANALLARLA AYNI OLMALI (BildirimServisi.izinIste):
+            // `muhafiz_acil` = MAX(5), `muhafiz` = HIGH(4). Bir kademe dusuk verilirse
+            // (HIGH/DEFAULT) kullanici ozel ses sectigi anda hatirlatma SESSIZCE
+            // zayiflar — normal seviye DEFAULT'a dusunce heads-up bandi hic cikmaz.
             val onem =
-                if (acilMi) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_DEFAULT
+                if (acilMi) NotificationManager.IMPORTANCE_MAX else NotificationManager.IMPORTANCE_HIGH
             val kanal = NotificationChannel(kanalId, kanalAdi, onem).apply {
                 description = aciklama
                 enableVibration(true)
