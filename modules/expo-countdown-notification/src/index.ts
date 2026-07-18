@@ -120,3 +120,122 @@ export async function trDestekleniyorMu(): Promise<boolean> {
         return false;
     }
 }
+
+// ============================================================
+// BILDIRIM SESI SECIMI (sistem ses secici + kanal yonetimi)
+// ============================================================
+//
+// IZIN YOK: `RingtoneManager.ACTION_RINGTONE_PICKER` hicbir izin istemez ve
+// kullanicinin kendi ekledigi sesleri de listeler. Bu yuzden ne yeni manifest
+// izni ne de "prominent disclosure" modali gerekir.
+
+export interface SecilenSes {
+    /** `content://...` — dogrudan bildirim kanalinin sesi olur */
+    uri: string;
+    /** Kullaniciya gosterilecek ad; cozulemezse bos string */
+    ad: string;
+}
+
+/**
+ * Sistem ses secicisini acar. Kullanici vazgecerse (veya Android disinda)
+ * `null` doner. Asla firlatmaz — ekran akisi bir secici yuzunden dusmemeli.
+ *
+ * @param mevcutUri Halihazirda secili ses (secicide isaretlenir)
+ * @param baslik Secici ekraninin basligi
+ */
+export async function sesSec(
+    mevcutUri: string | null,
+    baslik: string
+): Promise<SecilenSes | null> {
+    if (Platform.OS !== 'android') return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.sesSecAsync(mevcutUri ?? null, baslik);
+        if (!sonuc || typeof sonuc.uri !== 'string' || sonuc.uri.length === 0) return null;
+        return { uri: sonuc.uri, ad: typeof sonuc.ad === 'string' ? sonuc.ad : '' };
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * URI'nin gosterilecek adini cozer (ses silinmis/erisilemezse bos string).
+ * Kayitli bir secimin adi diskte yoksa bunu kullanin.
+ */
+export async function sesAdiAl(uri: string): Promise<string> {
+    if (Platform.OS !== 'android' || !uri) return '';
+    try {
+        const ad = await ExpoCountdownNotification.sesAdiAl(uri);
+        return typeof ad === 'string' ? ad : '';
+    } catch {
+        return '';
+    }
+}
+
+// NATIVE TARAFTA HEPSI `AsyncFunction` — `Function` olsalardi JS THREAD'INDE
+// SENKRON calisirlardi ve `RingtoneManager`/`MediaPlayer.prepare` (senkron I/O)
+// ile `NotificationManager` binder cagrilari arayuzu dondururdu (ANR riski).
+// Bu yuzden asagidakiler `Promise` doner; cagiran taraf `await`lemeli.
+
+/**
+ * `content://` sesini aninda calar (onizleme).
+ * `expo-audio`'nun bu semayi calabildigi dogrulanmadigi icin native yol kullanilir.
+ */
+export async function sesiOnizle(uri: string): Promise<void> {
+    if (Platform.OS !== 'android' || !uri) return;
+    await ExpoCountdownNotification.sesiOnizle(uri);
+}
+
+/** Calan ses onizlemesini durdurur (idempotent). */
+export async function onizlemeyiDurdur(): Promise<void> {
+    if (Platform.OS !== 'android') return;
+    await ExpoCountdownNotification.onizlemeyiDurdur();
+}
+
+/**
+ * Native ses onizlemesi HALA caliyor mu?
+ *
+ * Kullanicinin sectigi ses rastgele uzunlukta olabilir (3 dakikalik bir muzik
+ * dahil); sesli anonsu sabit bir gecikmeyle ustune bindirmemek icin bitis
+ * yoklanir. Asla firlatmaz — bilinmiyorsa `false` (bekleme uzamasin).
+ */
+export async function onizlemeCaliyorMu(): Promise<boolean> {
+    if (Platform.OS !== 'android') return false;
+    try {
+        return (await ExpoCountdownNotification.onizlemeCaliyorMu()) === true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Ozel sesli muhafiz kanalini YOKSA olusturur.
+ *
+ * Kanal sesi olusturulduktan sonra DEGISTIRILEMEZ, silip yeniden olusturmak da
+ * tombstone'a takilir → kanal id'si sesin hash'inden uretilir (bkz.
+ * `core/muhafiz/sesKimligi.ts`) ve boyle bir degisiklik ihtiyaci hic dogmaz.
+ */
+export async function muhafizKanaliniGarantile(
+    kanalId: string,
+    kanalAdi: string,
+    aciklama: string,
+    sesUri: string | null,
+    acilMi: boolean
+): Promise<void> {
+    if (Platform.OS !== 'android' || !kanalId) return;
+    await ExpoCountdownNotification.muhafizKanaliniGarantile(
+        kanalId,
+        kanalAdi,
+        aciklama,
+        sesUri ?? null,
+        acilMi
+    );
+}
+
+/**
+ * Artik referans verilmeyen hash'li muhafiz kanallarini siler.
+ * TABAN kanallara (`muhafiz`, `muhafiz_acil`) dokunmaz.
+ */
+export async function muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void> {
+    if (Platform.OS !== 'android') return;
+    await ExpoCountdownNotification.muhafizKanallariniTemizle(korunacakIdler);
+}

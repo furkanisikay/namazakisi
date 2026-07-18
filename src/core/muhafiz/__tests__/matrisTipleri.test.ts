@@ -1,4 +1,9 @@
-import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, SES_PALETI } from '../matrisTipleri';
+import {
+  MUHAFIZ_VAKITLERI,
+  SEVIYE_KADEMELERI,
+  VARSAYILAN_SES,
+  VARSAYILAN_SES_ADI,
+} from '../matrisTipleri';
 
 describe('matrisTipleri sabitleri', () => {
   test('5 muhafız vakti (gunes hariç)', () => {
@@ -8,9 +13,9 @@ describe('matrisTipleri sabitleri', () => {
   test('4 sabit seviye kademesi, azalan eşik sırası', () => {
     expect(SEVIYE_KADEMELERI).toEqual(['nazik', 'uyari', 'sert', 'acil']);
   });
-  test('ses paleti dolu ve id\'ler benzersiz', () => {
-    expect(SES_PALETI.length).toBeGreaterThan(0);
-    const idler = SES_PALETI.map((s) => s.id);
-    expect(new Set(idler).size).toBe(idler.length);
+  test('varsayılan ses kimliği bir URI DEĞİL — kanal id üretiminde taban kanala düşer', () => {
+    expect(VARSAYILAN_SES).toBe('varsayilan');
+    expect(VARSAYILAN_SES.startsWith('content://')).toBe(false);
+    expect(VARSAYILAN_SES_ADI.length).toBeGreaterThan(0);
   });
 });

@@ -22,8 +22,13 @@ import type {
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
 import { aktifSeviyeyiBul } from './aktifSeviye';
-import { eskidenMatriseGoc, type EskiMuhafizAyari } from './muhafizGoc';
-import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
+import {
+  ESKI_ALARM_SESI,
+  eskiAlarmSesiniGoc,
+  eskidenMatriseGoc,
+  type EskiMuhafizAyari,
+} from './muhafizGoc';
+import { muhafizKanalIdOlustur } from './sesKimligi';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
 export type SeviyeNo = 1 | 2 | 3 | 4;
@@ -41,6 +46,17 @@ export function siklikDakikasi(siklik: Siklik): number | null {
 /** mod sesli anons (Faz 4 TTS) istiyor mu? */
 export function sesliAnonsGerekliMi(mod: UyariModu): boolean {
   return mod === 'sesli' || mod === 'ikisi';
+}
+
+/**
+ * mod BILDIRIM SESI calmali mi?
+ *
+ * TEK KAYNAK: ekran (`BILDIRIMLI_MODLAR` idi) ve domain (`AnonsOnizlemeServisi`)
+ * ayni kurali AYRI AYRI yaziyordu; ikizler ayrisirsa onizleme gercek akistan
+ * sapar. `sesliAnonsGerekliMi` gibi burada paylasilir.
+ */
+export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
+  return mod === 'bildirim' || mod === 'ikisi';
 }
 
 /**
@@ -68,7 +84,12 @@ export interface UyariPlani {
   kalanDk: number;
   seviye: SeviyeNo;
   mod: UyariModu;
+  /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
   bildirimSesi: string;
+  /** Secilen sesin adi — kanal ADInda gosterilir (Android ayarlarinda ayirt edilsin) */
+  sesAdi?: string;
+  /** Hucrenin acil kanal tercihi (ham); cozulmus hali icin `muhafizAcilKanalMi` */
+  acilKanal?: boolean;
   anonsMetni: string;
   /** Faz 4 TTS bayragi (mod 'sesli' | 'ikisi') */
   sesliAnons: boolean;
@@ -103,6 +124,8 @@ export function vakitUyariPlaniOlustur(
       seviye: kademeSeviyeNo(kazanan.kademe),
       mod: kazanan.mod,
       bildirimSesi: kazanan.bildirimSesi,
+      sesAdi: kazanan.sesAdi,
+      acilKanal: kazanan.acilKanal,
       anonsMetni: kazanan.anonsMetni,
       sesliAnons: sesliAnonsGerekliMi(kazanan.mod),
     });
@@ -111,22 +134,58 @@ export function vakitUyariPlaniOlustur(
 }
 
 /**
- * Hucrenin `bildirimSesi` secimi + seviye -> bildirim kanali.
+ * Bu adim ACIL kanaldan mi gonderilmeli? (MAX onem + bypassDnd)
  *
- * Spec 6: Android'de bildirim sesi KANAL ozelligidir; her ses icin ayri kanal
- * gerekir. Kanal ENFLASYONU yasak -> palet SABIT. Bugun yalnizca iki muhafiz
- * kanali var (`MUHAFIZ`, `MUHAFIZ_ACIL`); res/raw ses dosyalari native degisiklik
- * gerektirdigi icin gercek ses paleti Faz 4'e birakildi. Bu yuzden secim
- * MEVCUT kanallarla birlestirilir:
- *   - 'alarm' sesi seciliyse seviye ne olursa olsun acil kanal (yuksek onem),
- *   - aksi halde onceki kural korunur: seviye >= 3 -> acil, degilse normal.
- * Seçim ayrıca bildirim `data`sina yazilir (Faz 4 gercek kanali oradan turetir).
+ * SES ILE ONEM AYRILDI: aciliyet artik `acilKanal` alanindan gelir; ses
+ * kullanicinin secimidir ve onem tasimaz.
+ *
+ * `acilKanal` UC DURUMLUdur — bu SART, cunku alan yalnizca yukseltebilseydi
+ * (OR) preset'lerin yazdigi `false` OLU BAYRAK olurdu:
+ *   - `true`      -> ACIL (seviye ne olursa olsun)
+ *   - `false`     -> ACIL DEGIL (seviye ne olursa olsun). "Hafif" yogunlugu
+ *     secen kullanicinin sert/acil adimlari `acilKanal: false` tasir; OR
+ *     semantiginde bunlar yine `muhafiz_acil` kanalina (IMPORTANCE_MAX +
+ *     setBypassDnd) dusuyor ve kullanicinin Rahatsiz Etmeyin modu deliniyordu.
+ *     Preset yazarinin niyeti zaten aciktir: "'dengeli' yogunlukta sessizce
+ *     acil kanala dusulmesin" (bkz. `matrisIslemleri.PresetSeviyeAyari`).
+ *   - `undefined` -> alan hic yazilmamis (ESKI kayit) -> tarihsel taban kural.
+ *
+ * Eski kayit yedegi (`acilKanal` yokken): `bildirimSesi === 'alarm'` aciliyet
+ * sayilir — eski semada aciliyet ses id'siyle tasiniyordu. Bu deger normalde
+ * `eskiAlarmSesiniGoc` ile `acilKanal: true`'ya TASINIR; buradaki dal, goc
+ * yolundan gecmemis ham bir kayit dogrudan motora ulasirsa aciliyeti kaybetmesin
+ * diye duruyor.
  */
-export function muhafizKanaliSec(seviye: SeviyeNo, bildirimSesi: string): string {
-  if (bildirimSesi === 'alarm') return BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL;
-  return seviye >= 3
-    ? BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL
-    : BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ;
+export function muhafizAcilKanalMi(
+  seviye: SeviyeNo,
+  bildirimSesi: string,
+  acilKanal?: boolean
+): boolean {
+  if (typeof acilKanal === 'boolean') return acilKanal;
+  if (bildirimSesi === ESKI_ALARM_SESI) return true;
+  return seviye >= 3;
+}
+
+/**
+ * Hucrenin (ses, aciliyet) secimi -> bildirim kanal id'si.
+ *
+ * Kanal id SESIN FONKSIYONUDUR (bkz. `sesKimligi.ts`): Android'de kanal sesi
+ * olusturulduktan sonra degistirilemez, silip yeniden olusturmak da tombstone'a
+ * takilir. Id'yi sese baglayinca bu tuzaklarin ikisi de dogar dogmaz olur.
+ *
+ * TUM TUKETICILER BU FONKSIYONDAN GECMELI — kanal id artik DINAMIK oldugu icin
+ * elle yazilan bir id (ozellikle ham AsyncStorage okuyan arka plan yollarinda)
+ * bayat kalir ve kullanici SESSIZCE yanlis sesi duyar.
+ */
+export function muhafizKanaliSec(
+  seviye: SeviyeNo,
+  bildirimSesi: string,
+  acilKanal?: boolean
+): string {
+  return muhafizKanalIdOlustur(
+    bildirimSesi,
+    muhafizAcilKanalMi(seviye, bildirimSesi, acilKanal)
+  );
 }
 
 /** Matris yapisal olarak kullanilabilir mi? (5 vakit x 4 seviye + gecerli esik) */
@@ -152,7 +211,14 @@ export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
  * matris yoksa VEYA yapisal olarak bozuksa eski global esik/sikliklardan
  * (`eskidenMatriseGoc`) turetilir. Boylece bozuk tek bir kayit muhafizi
  * tamamen susturamaz.
+ *
+ * Eski 'alarm' ses id'si BURADA da goc ettirilir (`eskiAlarmSesiniGoc`): bes
+ * tuketicinin ikisi (`ArkaplanGorevServisi`, `KonumTakipServisi`) store'u degil
+ * HAM AsyncStorage'i okur, yani slice'in yukleme gocunden gecmez. Goc gerekmiyorsa
+ * AYNI referans doner (kimlik korunur).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
-  return matrisGecerliMi(kaynak.matris) ? kaynak.matris : eskidenMatriseGoc(kaynak);
+  return matrisGecerliMi(kaynak.matris)
+    ? eskiAlarmSesiniGoc(kaynak.matris)
+    : eskidenMatriseGoc(kaynak);
 }

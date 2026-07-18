@@ -125,8 +125,29 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         expect(bildirimSpx).toHaveBeenCalledWith(
             expect.stringContaining('Namaz vaktinin bitmesine 45 dakika kaldı'),
-            1
+            1,
+            expect.any(String)
         );
+    });
+
+    test("banner geri çağrısı ADIMIN KENDİ sesini taşır (ön plan varsayılan çana düşmesin)", () => {
+        // Ekran bu değeri çalar. Taşınmazsa AYNI adım uygulama AÇIKKEN paketlenmiş
+        // varsayılan çan, KAPALIYKEN (kanal sesi) kullanıcının seçtiği ses ile
+        // duyulur — aynı hatırlatma iki farklı sesle çalardı.
+        const OZEL_SES = 'content://media/internal/audio/media/42';
+        const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[3].bildirimSesi = OZEL_SES;
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 5 * 60 * 1000, // seviye 4
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 4, OZEL_SES);
     });
 
     test('Seviye 2 bildirimi (30 dk kala)', () => {
@@ -139,7 +160,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         expect(bildirimSpx).toHaveBeenCalledWith(
             expect.stringContaining('Vakit daralıyor'),
-            2
+            2,
+            expect.any(String)
         );
     });
 
@@ -181,7 +203,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
             muhafiz.baslat(bildirimSpx);
 
-            expect(bildirimSpx).toHaveBeenCalledWith(ilkSeviye3Metin, 3);
+            expect(bildirimSpx).toHaveBeenCalledWith(ilkSeviye3Metin, 3, expect.any(String));
         } finally {
             randomSpx.mockRestore();
         }
@@ -197,7 +219,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         expect(bildirimSpx).toHaveBeenCalledWith(
             expect.stringContaining('VAKİT ÇIKIYOR'),
-            4
+            4,
+            expect.any(String)
         );
     });
 
@@ -218,7 +241,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         jest.advanceTimersByTime(60 * 1000); // 1 dk ilerlet
-        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 2);
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 2, expect.any(String));
     });
 
     test('Namaz kılındı işareti banner\'ı temizlemeli', () => {

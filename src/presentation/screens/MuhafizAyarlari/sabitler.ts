@@ -49,7 +49,11 @@ export const MOD_BILGILERI: ModBilgisi[] = [
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
 export const SESLI_MODLAR: UyariModu[] = ['sesli', 'ikisi'];
-export const BILDIRIMLI_MODLAR: UyariModu[] = ['bildirim', 'ikisi'];
+
+// NOT: "bu mod bildirim sesi calar mi?" kurali BURADA DEGIL — `motorAdaptoru`
+// icindeki `bildirimSesiGerekliMi`'dedir. Eskiden burada `BILDIRIMLI_MODLAR`
+// olarak ikinci bir kopyasi vardi ve domain tarafinda (`AnonsOnizlemeServisi`)
+// ucuncu bir kopyasi; ikizler ayrisirsa onizleme gercek akistan sapar.
 
 /** Tekrarli sikliga gecilirken kullanilan varsayilan aralik. */
 export const VARSAYILAN_TEKRAR_DK = 5;
@@ -58,18 +62,6 @@ export const TEKRAR_MAX_DK = 30;
 
 /** Esik stepper adimi (SayisalSecici sinira otomatik kenetler). */
 export const ESIK_ADIM_DK = 5;
-
-/** Eski preset sekli (seviye1..4) → yeni kademe anahtarlari. */
-export function presetiKademeyeCevir(
-    deger: { seviye1: number; seviye2: number; seviye3: number; seviye4: number }
-): Record<SeviyeKademe, number> {
-    return {
-        nazik: deger.seviye1,
-        uyari: deger.seviye2,
-        sert: deger.seviye3,
-        acil: deger.seviye4,
-    };
-}
 
 export const YOGUNLUK_BILGILERI: { id: 'hafif' | 'normal' | 'yogun'; etiket: string; ikon: string }[] = [
     { id: 'hafif', etiket: 'Hafif', ikon: 'feather-alt' },

@@ -6,7 +6,9 @@ import * as React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import { anonsuOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
+import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
+import type { UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -45,15 +47,44 @@ export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ deste
     );
 };
 
+export interface DinleButonuProps {
+    /** Onizlenecek adimin modu — hangi seslerin calacagini BU belirler. */
+    mod: UyariModu;
+    /** Ses kimligi ('varsayilan' | kullanicinin sectigi 'content://...') */
+    bildirimSesi: string;
+    /** Yer tutuculari COZULMUS anons metni; bossa konusma yapilmaz. */
+    cozulmusMetin?: string;
+    /**
+     * Ekran okuyucu etiketi — ZORUNLU. Ayni ekranda birden cok "Dinle" bulunur
+     * (her adim icin bir tane); ortak etiket hem kullaniciyi hem testi (getByLabelText
+     * "Found multiple elements") yaniltir.
+     */
+    erisimEtiketi: string;
+}
+
 /**
- * Cozulmus anons metnini ~1 sn sonra okutan kucuk buton (dokunma hedefi ≥44dp).
- * Gercek bildirim GONDERMEZ; yalniz TTS konusur.
+ * Bir adimi GERCEKTE nasil duyulacaksa oyle calan kucuk buton (dokunma hedefi ≥44dp).
+ *
+ * Gercek bildirim GONDERMEZ: bildirim sesi uygulama icinden (expo-audio), sesli
+ * anons ise kisa gecikmeli tek atislik TTS ile calinir (bkz. `adimiOnizle`).
+ *
+ * Duyulacak bir sey yoksa (mod 'sessiz', ya da metinsiz 'sesli') HIC CIZILMEZ —
+ * basildiginda sessiz kalan bir buton kullaniciyi "bozuk" hissine surukler.
+ * Ikon duyulacagi ima eder: yalniz ses → zil, yalniz anons → hoparlor, ikisi → megafon.
  */
-export const DinleButonu: React.FC<{ cozulmusMetin: string; erisimEtiketi?: string }> = ({
-    cozulmusMetin,
+export const DinleButonu: React.FC<DinleButonuProps> = ({
+    mod,
+    bildirimSesi,
+    cozulmusMetin = '',
     erisimEtiketi,
 }) => {
     const renkler = useRenkler();
+
+    const anonsCalinacak = sesliAnonsGerekliMi(mod) && cozulmusMetin.trim().length > 0;
+    const bildirimCalinacak = bildirimSesiGerekliMi(mod);
+    if (!anonsCalinacak && !bildirimCalinacak) return null;
+
+    const ikon = anonsCalinacak && bildirimCalinacak ? 'bullhorn' : anonsCalinacak ? 'volume-up' : 'bell';
 
     return (
         <TouchableOpacity
@@ -63,12 +94,14 @@ export const DinleButonu: React.FC<{ cozulmusMetin: string; erisimEtiketi?: stri
                 backgroundColor: renkler.arkaplan,
                 borderColor: renkler.sinir,
             }}
-            onPress={() => anonsuOnizle(cozulmusMetin)}
+            // Yangin-ve-unut: `adimiOnizle` sesin bitisini bekledigi icin artik
+            // async; servis kendi hatalarini yutar, buton beklemez.
+            onPress={() => { void adimiOnizle({ mod, bildirimSesi, cozulmusMetin }); }}
             activeOpacity={0.7}
             accessibilityRole="button"
-            accessibilityLabel={erisimEtiketi ?? 'Sesli anonsu dinleyin'}
+            accessibilityLabel={erisimEtiketi}
         >
-            <FontAwesome5 name="play" size={11} color={renkler.birincil} solid style={{ marginRight: 7 }} />
+            <FontAwesome5 name={ikon} size={11} color={renkler.birincil} solid style={{ marginRight: 7 }} />
             <Text className="text-xs font-semibold" style={{ color: renkler.birincil }}>
                 Dinle
             </Text>

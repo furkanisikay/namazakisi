@@ -24,16 +24,20 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../../components/common/SayisalSecici';
 import type { MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
-import { SES_PALETI } from '../../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { sesSec } from '../../../../modules/expo-countdown-notification/src';
+import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
+import { SesSecimSatiri } from './SesSecimSatiri';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
+import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import {
     SEVIYE_BILGILERI,
     MOD_BILGILERI,
     SESLI_MODLAR,
-    BILDIRIMLI_MODLAR,
     VARSAYILAN_TEKRAR_DK,
     TEKRAR_MIN_DK,
     TEKRAR_MAX_DK,
@@ -54,16 +58,19 @@ export interface SeviyeDetayModalProps {
     onKapat: () => void;
 }
 
-/** Bolum basligi (kucuk, harf arali) */
-const BolumBasligi: React.FC<{ metin: string }> = ({ metin }) => {
+/** Bolum basligi (kucuk, harf arali); `sag` ile satirin sagina aksiyon konabilir. */
+const BolumBasligi: React.FC<{ metin: string; sag?: React.ReactNode }> = ({ metin, sag }) => {
     const renkler = useRenkler();
     return (
-        <Text
-            className="text-[11px] font-semibold tracking-wider mb-2 mt-4"
-            style={{ color: renkler.metinIkincil }}
-        >
-            {metin}
-        </Text>
+        <View className="flex-row items-center justify-between mb-2 mt-4">
+            <Text
+                className="text-[11px] font-semibold tracking-wider"
+                style={{ color: renkler.metinIkincil }}
+            >
+                {metin}
+            </Text>
+            {sag}
+        </View>
     );
 };
 
@@ -80,11 +87,21 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const seviye = seviyeler[indeks];
 
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
+    /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
+    const [seciciAcik, setSeciciAcik] = useState(false);
 
     // Modal acilinca / baska adima gecince taslagi tazele
     useEffect(() => {
         if (gorunur) setMetinTaslak(seviye?.anonsMetni ?? '');
     }, [gorunur, vakit, indeks, seviye?.anonsMetni]);
+
+    // "Dinle" ile baslatilan ses modal kapaninca DEVAM ETMEMELI: native
+    // `RingtoneManager` calmayi surdurur ve `AudioPlayer` serbest birakilmaz.
+    useEffect(() => {
+        if (gorunur) return;
+        OnizlemeSesServisi.temizle();
+    }, [gorunur]);
+    useEffect(() => () => OnizlemeSesServisi.temizle(), []);
 
     const metniIsle = useCallback(() => {
         if (!seviye) return;
@@ -107,7 +124,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const sinirlar = esikSinirlariniHesapla(seviyeler, indeks);
     const sessizMi = seviye.mod === 'sessiz';
     const sesliMi = SESLI_MODLAR.includes(seviye.mod);
-    const bildirimliMi = BILDIRIMLI_MODLAR.includes(seviye.mod);
+    const bildirimliMi = bildirimSesiGerekliMi(seviye.mod);
     const tekrarliMi = seviye.siklik !== 'birkez';
     const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
 
@@ -122,6 +139,30 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const sablonSec = (sablon: string) => {
         setMetinTaslak(sablon);
         onDegistir({ ...seviye, anonsMetni: sablon });
+    };
+
+    /**
+     * Sistem ses secicisini acar. IZIN ISTEMEZ (RingtoneManager) — bu yuzden
+     * disclosure modali da yoktur; secici kullanicinin kendi ekledigi sesleri de
+     * listeler. Vazgecilirse (`null`) mevcut secim BOZULMADAN kalir.
+     *
+     * CIFT DOKUNUS KORUMASI: native taraf tek slotlu bir promise tutar; ikinci
+     * cagri (kullanici satira iki kez dokunursa) reddedilir. Butonu bekleyen sure
+     * boyunca kilitleyerek kullaniciya da "bir sey oluyor" geri bildirimi verilir.
+     */
+    const sesiSec = async () => {
+        if (seciciAcik) return;
+        setSeciciAcik(true);
+        try {
+            const secilen = await sesSec(
+                ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null,
+                'Bildirim sesi'
+            );
+            if (!secilen) return;
+            onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad });
+        } finally {
+            setSeciciAcik(false);
+        }
     };
 
     return (
@@ -325,44 +366,47 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                     </View>
                                 )}
 
-                                {/* ── Bildirim sesi ── */}
+                                {/* ── Bildirim sesi ──
+                                    Tek satir: secili sesin adi + "dinle" + secici.
+                                    (Eski uc cipli palet ucunu de AYNI dosyaya cozuyordu — kaldirildi.) */}
                                 {bildirimliMi && (
                                     <>
                                         <BolumBasligi metin="BİLDİRİM SESİ" />
-                                        <View className="flex-row gap-2">
-                                            {SES_PALETI.map((ses) => {
-                                                const secili = seviye.bildirimSesi === ses.id;
-                                                return (
-                                                    <TouchableOpacity
-                                                        key={ses.id}
-                                                        className="flex-1 items-center justify-center py-3 rounded-2xl border"
-                                                        style={{
-                                                            backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
-                                                            borderColor: secili ? renkler.birincil : renkler.sinir,
-                                                            borderWidth: secili ? 2 : 1,
-                                                            minHeight: 44,
-                                                        }}
-                                                        onPress={() => onDegistir({ ...seviye, bildirimSesi: ses.id })}
-                                                        activeOpacity={0.7}
-                                                        accessibilityRole="button"
-                                                        accessibilityState={{ selected: secili }}
-                                                        accessibilityLabel={`Bildirim sesi: ${ses.ad}`}
-                                                    >
-                                                        <FontAwesome5
-                                                            name="music"
-                                                            size={13}
-                                                            color={secili ? renkler.birincil : renkler.metinIkincil}
-                                                        />
-                                                        <Text
-                                                            className="text-xs font-semibold mt-1"
-                                                            style={{ color: secili ? renkler.birincil : renkler.metin }}
-                                                        >
-                                                            {ses.ad}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                );
-                                            })}
-                                        </View>
+                                        <SesSecimSatiri
+                                            bildirimSesi={seviye.bildirimSesi}
+                                            sesAdi={seviye.sesAdi}
+                                            seciliyor={seciciAcik}
+                                            onSec={() => { void sesiSec(); }}
+                                            onDinle={() => {
+                                                void OnizlemeSesServisi.bildirimSesiniCal(seviye.bildirimSesi);
+                                            }}
+                                        />
+                                        {ozelSesMi(seviye.bildirimSesi) && (
+                                            <TouchableOpacity
+                                                className="flex-row items-center justify-center mt-2 px-3 rounded-xl"
+                                                style={{ minHeight: 44 }}
+                                                onPress={() =>
+                                                    onDegistir({
+                                                        ...seviye,
+                                                        bildirimSesi: VARSAYILAN_SES,
+                                                        sesAdi: undefined,
+                                                    })
+                                                }
+                                                activeOpacity={0.7}
+                                                accessibilityRole="button"
+                                                accessibilityLabel="Uygulama sesine dönün"
+                                            >
+                                                <FontAwesome5
+                                                    name="undo"
+                                                    size={11}
+                                                    color={renkler.metinIkincil}
+                                                    style={{ marginRight: 7 }}
+                                                />
+                                                <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
+                                                    Uygulama sesine dön
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )}
                                     </>
                                 )}
 
@@ -439,9 +483,17 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                     <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
                                                         {anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
                                                     </Text>
+                                                    {/* Mod 'ikisi' ise gercek akisla ayni sirayla calar:
+                                                        once bildirim sesi, ardindan anons. */}
                                                     <DinleButonu
+                                                        mod={seviye.mod}
+                                                        bildirimSesi={seviye.bildirimSesi}
                                                         cozulmusMetin={anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
-                                                        erisimEtiketi="Örnek okunuşu dinleyin"
+                                                        erisimEtiketi={
+                                                            seviye.mod === 'ikisi'
+                                                                ? 'Bildirim sesini ve örnek okunuşu dinleyin'
+                                                                : 'Örnek okunuşu dinleyin'
+                                                        }
                                                     />
                                                 </View>
                                             </View>

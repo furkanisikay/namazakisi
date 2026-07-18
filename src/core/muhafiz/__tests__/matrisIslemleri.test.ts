@@ -1,12 +1,39 @@
-import { tumVakitlereUygula, presetUygula, zamanlamaDegistiMi } from '../matrisIslemleri';
-import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
+import {
+  tumVakitlereUygula,
+  presetUygula,
+  presetMatrisiOlustur,
+  presetSesliIceriyorMu,
+  presetZamanlamasiniUygula,
+  zamanlamaDegistiMi,
+  type PresetSeviyeleri,
+} from '../matrisIslemleri';
+import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari, UyariModu, VakitMuhafizAyari } from '../matrisTipleri';
+import { ANONS_SABLONLARI } from '../anonsMetni';
 
-const sv = (esikDk: number, mod: UyariModu = 'bildirim', ses = 'can'): SeviyeAyari =>
+const OZEL_SES = 'content://media/internal/audio/media/42';
+
+const sv = (esikDk: number, mod: UyariModu = 'bildirim', ses = VARSAYILAN_SES): SeviyeAyari =>
   ({ kademe: 'nazik', mod, esikDk, siklik: 'birkez', bildirimSesi: ses, anonsMetni: '' });
 const vakit = (esik: number): VakitMuhafizAyari => ({ seviyeler: [sv(esik), sv(esik - 5), sv(esik - 10), sv(esik - 15)] });
 const matris = (): MuhafizMatrisi =>
   Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit(30)])) as MuhafizMatrisi;
+
+/** "normal" preset'e denk örnek: son adım sesli ('ikisi'). */
+const SESLI_PRESET: PresetSeviyeleri = {
+  nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+  uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
+  sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
+  acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', acilKanal: true },
+};
+
+/** "hafif" preset'e denk örnek: hiçbir adımda ses yok. */
+const SESSIZ_PRESET: PresetSeviyeleri = {
+  nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+  uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+  sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+  acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+};
 
 describe('tumVakitlereUygula', () => {
   test('kaynak vaktin ayarını tüm vakitlere kopyalar', () => {
@@ -25,17 +52,142 @@ describe('tumVakitlereUygula', () => {
   });
 });
 
+describe('presetSesliIceriyorMu', () => {
+  test('sesli adım varsa true', () => {
+    expect(presetSesliIceriyorMu(SESLI_PRESET)).toBe(true);
+  });
+  test('tüm adımlar bildirimse false (hafif kasten sessizdir)', () => {
+    expect(presetSesliIceriyorMu(SESSIZ_PRESET)).toBe(false);
+  });
+});
+
 describe('presetUygula', () => {
-  test('yalnız eşik/sıklık değişir, mod/ses korunur', () => {
+  test('eşik ve sıklığı tüm vakitlere yazar', () => {
+    const sonuc = presetUygula(matris(), SESLI_PRESET, true);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(sonuc[v].seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+      expect(sonuc[v].seviyeler[0].siklik).toBe('birkez');
+      expect(sonuc[v].seviyeler[1].siklik).toEqual({ herDk: 10 });
+    }
+  });
+
+  test('SÖZLEŞME: mod ve ACİLİYET yazılır', () => {
     const m = matris();
-    m.ogle.seviyeler[0].mod = 'ikisi';
-    m.ogle.seviyeler[0].bildirimSesi = 'alarm';
-    const esikler = { nazik: 45, uyari: 25, sert: 10, acil: 3 };
-    const sikliklar = { nazik: 20, uyari: 10, sert: 5, acil: 2 };
-    const sonuc = presetUygula(m, esikler, sikliklar);
-    expect(sonuc.ogle.seviyeler[0].esikDk).toBe(45);
-    expect(sonuc.ogle.seviyeler[0].mod).toBe('ikisi');       // korundu
-    expect(sonuc.ogle.seviyeler[0].bildirimSesi).toBe('alarm'); // korundu
+    m.ogle.seviyeler[3].mod = 'sessiz';
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+    expect(sonuc.ogle.seviyeler[3].mod).toBe('ikisi');
+    expect(sonuc.ogle.seviyeler[3].acilKanal).toBe(true);
+  });
+
+  /**
+   * MİMARİ SÖZÜ: preset ACİLİYETİ yazar, SESİ kullanıcı seçer.
+   * Eskiden aciliyet `bildirimSesi: 'alarm'` ile taşınıyordu → preset'e her
+   * dokunuş kullanıcının seçtiği müziği SİLERDİ. Ayrım bunu imkânsız kılar.
+   */
+  test('kullanıcının SEÇTİĞİ SES preset uygulamasında KORUNUR', () => {
+    const m = matris();
+    m.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
+    m.ogle.seviyeler[3].sesAdi = 'Hızır';
+
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+
+    expect(sonuc.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
+    expect(sonuc.ogle.seviyeler[3].sesAdi).toBe('Hızır');
+  });
+
+  test('ACİLİYET YAPIŞMAZ: yoğun→hafif geçişinde acil bayrağı geri düşer', () => {
+    const yogunSonrasi = presetUygula(matris(), SESLI_PRESET, true);
+    expect(yogunSonrasi.ogle.seviyeler[3].acilKanal).toBe(true);
+
+    const hafifSonrasi = presetUygula(yogunSonrasi, SESSIZ_PRESET, true);
+    expect(hafifSonrasi.ogle.seviyeler[3].acilKanal).toBe(false);
+  });
+
+  test('sesliIzinVar false ise sesli hücreler bildirime düşer, preset yine uygulanır', () => {
+    const sonuc = presetUygula(matris(), SESLI_PRESET, false);
+    expect(sonuc.ogle.seviyeler[3].mod).toBe('bildirim');
+    // Zamanlama yine de yazıldı — kullanıcı adım kaybetmez
+    expect(sonuc.ogle.seviyeler[3].esikDk).toBe(3);
+    // Sesli olmayan adımlar etkilenmez
+    expect(sonuc.ogle.seviyeler[0].mod).toBe('bildirim');
+  });
+
+  test('sesliIzinVar false iken anons metni de doldurulmaz', () => {
+    const sonuc = presetUygula(matris(), SESLI_PRESET, false);
+    expect(sonuc.ogle.seviyeler[3].anonsMetni).toBe('');
+  });
+
+  test('sesli hücrede boş anons kutusu şablonla doldurulur (sessiz kalmasın)', () => {
+    const sonuc = presetUygula(matris(), SESLI_PRESET, true);
+    expect(sonuc.ogle.seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI[0]);
+  });
+
+  test('kullanıcının kendi anons metni ASLA ezilmez', () => {
+    const m = matris();
+    m.ogle.seviyeler[3].anonsMetni = 'Kalk, {vakit} namazına {süre} dakika.';
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+    expect(sonuc.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
+  });
+
+  test('kademe alanı korunur (yalnız zamanlama/mod/ses yazılır)', () => {
+    const m = matris();
+    m.ogle.seviyeler[2].kademe = 'sert';
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+    expect(sonuc.ogle.seviyeler[2].kademe).toBe('sert');
+  });
+
+  test('derin kopya: sonucu değiştirmek kaynağı bozmaz', () => {
+    const m = matris();
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+    sonuc.ogle.seviyeler[0].esikDk = 999;
+    expect(m.ogle.seviyeler[0].esikDk).toBe(30);
+  });
+});
+
+describe('presetMatrisiOlustur (sıfırdan matris — sihirbaz / initialState)', () => {
+  test('5 vakit x 4 seviye üretir, kademeler doğru sırada', () => {
+    const m = presetMatrisiOlustur(SESLI_PRESET, true);
+    expect(Object.keys(m).sort()).toEqual([...MUHAFIZ_VAKITLERI].sort());
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(m[v].seviyeler.map((s) => s.kademe)).toEqual(SEVIYE_KADEMELERI);
+    }
+  });
+
+  test('preset MODUNU taşır — sihirbaz yolunda sesli anons ölmez', () => {
+    // Regresyon: eski yol preset'i eskidenMatriseGoc ile türetiyordu, o da
+    // mod'u DAİMA 'bildirim' sabitliyordu → sihirbazdan geçen kullanıcıda
+    // sesli preset'ler hiç çalışmıyordu.
+    const m = presetMatrisiOlustur(SESLI_PRESET, true);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(m[v].seviyeler[3].mod).toBe('ikisi');
+      expect(m[v].seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI[0]);
+      expect(m[v].seviyeler[3].acilKanal).toBe(true);
+    }
+  });
+
+  test('sesliIzinVar false ise hiçbir hücre sesli açılmaz', () => {
+    const m = presetMatrisiOlustur(SESLI_PRESET, false);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(m[v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+      expect(m[v].seviyeler.every((s) => s.anonsMetni === '')).toBe(true);
+    }
+  });
+
+  test('eşik/sıklık preset ile birebir', () => {
+    const m = presetMatrisiOlustur(SESLI_PRESET, true);
+    expect(m.imsak.seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+    expect(m.imsak.seviyeler.map((s) => s.siklik)).toEqual([
+      'birkez',
+      { herDk: 10 },
+      { herDk: 5 },
+      'birkez',
+    ]);
+  });
+
+  test('vakitler birbirinden bağımsız kopyadır', () => {
+    const m = presetMatrisiOlustur(SESLI_PRESET, true);
+    m.ogle.seviyeler[0].esikDk = 999;
+    expect(m.ikindi.seviyeler[0].esikDk).toBe(45);
   });
 });
 
@@ -50,10 +202,52 @@ describe('zamanlamaDegistiMi (spec 4.1 elle-değişiklik → ozel)', () => {
   });
   test('yalnız mod/ses değişince false (zamanlama ekseni değil)', () => {
     const a = matris(); const b = matris();
-    b.aksam.seviyeler[0].mod = 'sesli'; b.aksam.seviyeler[0].bildirimSesi = 'alarm';
+    b.aksam.seviyeler[0].mod = 'sesli'; b.aksam.seviyeler[0].bildirimSesi = OZEL_SES;
     expect(zamanlamaDegistiMi(a, b)).toBe(false);
   });
   test('aynı matris false', () => {
     expect(zamanlamaDegistiMi(matris(), matris())).toBe(false);
+  });
+});
+
+/**
+ * Bir kerelik preset göçü bunu kullanır: göçün amacı ETKİSİZ TEKRARI kesmekti,
+ * kullanıcının uyarı BİÇİMİNİ değiştirmek değil. Mod göçle ezilseydi, "Yatsı'yı
+ * susturmuş ama yoğunluğu 'normal' kalmış" kullanıcının seçimi sessizce geri
+ * alınırdı (mod değişikliği yoğunluğu 'ozel' YAPMAZ — spec 4.1).
+ */
+describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
+  test('eşik ve sıklığı preset değerleriyle yazar', () => {
+    const m = presetZamanlamasiniUygula(matris(), SESLI_PRESET);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(m[v].seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+      expect(m[v].seviyeler[1].siklik).toEqual({ herDk: 10 });
+      expect(m[v].seviyeler[3].siklik).toBe('birkez');
+    }
+  });
+
+  test('mod / aciliyet / ses / anons metnine DOKUNMAZ', () => {
+    const kaynak = matris();
+    kaynak.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; });
+    kaynak.ogle.seviyeler[3].mod = 'ikisi';
+    kaynak.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
+    kaynak.ogle.seviyeler[3].anonsMetni = 'Kalk, {vakit} namazına {süre} dakika.';
+    kaynak.aksam.seviyeler[3].acilKanal = true;
+
+    const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
+
+    expect(m.yatsi.seviyeler.every((s) => s.mod === 'sessiz')).toBe(true);
+    expect(m.ogle.seviyeler[3].mod).toBe('ikisi');
+    expect(m.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
+    expect(m.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
+    expect(m.aksam.seviyeler[3].acilKanal).toBe(true);
+    // presetUygula ile FARK: o mod'u ezerdi
+    expect(presetUygula(kaynak, SESLI_PRESET, true).yatsi.seviyeler[0].mod).toBe('bildirim');
+  });
+
+  test('kaynağı mutasyona uğratmaz (derin kopya)', () => {
+    const kaynak = matris();
+    presetZamanlamasiniUygula(kaynak, SESLI_PRESET).ogle.seviyeler[0].esikDk = 999;
+    expect(kaynak.ogle.seviyeler[0].esikDk).toBe(30);
   });
 });

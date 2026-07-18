@@ -38,6 +38,17 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
     iptalEtAnons: (...args: unknown[]) => mockIptalEtAnons(...args),
     iptalEtTumAnonslar: (...args: unknown[]) => mockIptalEtTumAnonslar(...args),
     trDestekleniyorMu: jest.fn().mockResolvedValue(true),
+    muhafizKanaliniGarantile: jest.fn(),
+    muhafizKanallariniTemizle: jest.fn(),
+}));
+
+// Kanal hazirligi: gercek native cagri yerine SIRAYI gozlemek istiyoruz —
+// kanal planlamadan ONCE hazirlanmali, yoksa Android 8+ bildirimi hic gostermez.
+const mockKanallariHazirla = jest.fn();
+jest.mock('../MuhafizKanalServisi', () => ({
+    MuhafizKanalServisi: {
+        hazirla: (...args: unknown[]) => mockKanallariHazirla(...args),
+    },
 }));
 
 // Mock adhan
@@ -78,6 +89,7 @@ import { PrayerTimes } from 'adhan';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
 
 /** Tek bir seviye hucresi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
@@ -86,6 +98,8 @@ interface SeviyeTanimi {
     mod?: UyariModu;
     ses?: string;
     anons?: string;
+    /** Aciliyet — sesten BAGIMSIZ eksen (bkz. muhafizAcilKanalMi) */
+    acilKanal?: boolean;
 }
 
 const seviyeKur = (indeks: number, t: SeviyeTanimi): SeviyeAyari => ({
@@ -94,6 +108,7 @@ const seviyeKur = (indeks: number, t: SeviyeTanimi): SeviyeAyari => ({
     esikDk: t.esikDk,
     siklik: { herDk: t.siklikDk },
     bildirimSesi: t.ses ?? VARSAYILAN_SES,
+    acilKanal: t.acilKanal,
     anonsMetni: t.anons ?? '',
 });
 
@@ -1021,5 +1036,99 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         expect(iptalEdilenAnonslar).toContain(`muhafiz_${bugunTarihi}_vakit_aksam_seviye_4_dk_10`);
         // Baska vaktin anonsu susturulmamali
         expect(iptalEdilenAnonslar).not.toContain(`muhafiz_${bugunTarihi}_vakit_ogle_seviye_1_dk_25`);
+    });
+});
+
+/**
+ * SES SECIMI — kanal id artik SESIN FONKSIYONU.
+ *
+ * Bu blok mimarinin iki kritik sozunu bekcilendirir:
+ *  1. Planlamadan ONCE kanallar hazirlanir (yoksa Android 8+ bildirimi hic gostermez).
+ *  2. Planlanan bildirimin `channelId`'si hucrenin sectigi sesten TURETILIR — elle
+ *     yazilmis/bayat bir id kalirsa kullanici SESSIZCE yanlis sesi duyar.
+ */
+describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
+    const OZEL_SES = 'content://media/internal/audio/media/42';
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanVakitleriKur();
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    const planla = async (ses: string, acilKanal?: boolean) =>
+        servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris(
+                [
+                    { esikDk: 25, siklikDk: 15 },
+                    { esikDk: 20, siklikDk: 10 },
+                    { esikDk: 15, siklikDk: 5 },
+                    { esikDk: 10, siklikDk: 2 },
+                ],
+                {
+                    aksam: [
+                        { esikDk: 20, siklikDk: 30, ses, acilKanal },
+                        { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
+                        { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
+                        { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                    ],
+                }
+            ),
+        });
+
+    const aksamBildirimleri = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+    test('kanallar planlamadan ÖNCE hazırlanır (var olmayan kanala bildirim gitmez)', async () => {
+        await planla(OZEL_SES);
+
+        expect(mockKanallariHazirla).toHaveBeenCalledTimes(1);
+        // Sıra kanıtı: hazırlama çağrısının invocation order'ı ilk planlamadan küçük.
+        const hazirlamaSirasi = mockKanallariHazirla.mock.invocationCallOrder[0];
+        const ilkPlanlamaSirasi = (Notifications.scheduleNotificationAsync as jest.Mock)
+            .mock.invocationCallOrder[0];
+        expect(hazirlamaSirasi).toBeLessThan(ilkPlanlamaSirasi);
+    });
+
+    test('ÖZEL ses seçilince kanal id ses hash\'inden türetilir (taban kanal DEĞİL)', async () => {
+        await planla(OZEL_SES);
+
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        expect(bildirim).toBeDefined();
+        expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, false));
+        expect(bildirim.trigger.channelId).not.toBe('muhafiz');
+    });
+
+    test('VARSAYILAN ses taban kanalda kalır (mevcut kurulumlarla birebir uyum)', async () => {
+        await planla(VARSAYILAN_SES);
+
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        expect(bildirim.trigger.channelId).toBe('muhafiz');
+    });
+
+    test('acilKanal bayrağı SESİ değiştirmeden aciliyeti yükseltir', async () => {
+        await planla(OZEL_SES, true);
+
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        // Aynı ses hash'i, acil taban → ses ile önem BAĞIMSIZ eksenler.
+        expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, true));
+    });
+
+    test('muhafız kapalıyken kanal OLUŞTURULMAZ ama ÖKSÜZ kanallar toplanır', async () => {
+        // Kanal GC yalnız `hazirla(matris)` yolunda çalışsaydı, muhafızı kapatan
+        // kullanıcının özel sesli kanalları bildirim ayarlarında SONSUZA KADAR
+        // öksüz kalırdı. Matrissiz çağrı = "hiçbir kanal gerekmiyor" → hepsi toplanır.
+        await servis.yapilandirVePlanla({
+            aktif: false,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }], {}),
+        });
+
+        expect(mockKanallariHazirla).toHaveBeenCalledWith();
     });
 });

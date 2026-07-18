@@ -25,6 +25,7 @@ import {
     iptalEtAnons,
     iptalEtTumAnonslar,
 } from '../../../modules/expo-countdown-notification/src';
+import { MuhafizKanalServisi } from './MuhafizKanalServisi';
 
 /**
  * Namaz vakti bilgisi
@@ -85,11 +86,28 @@ export class ArkaplanMuhafizServisi {
         // Once tum eski muhafiz bildirimlerini temizle
         await this.tumMuhafizBildirimleriniTemizle();
 
-        // Ayarlar aktif degilse sadece temizle ve cik
+        // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
+        // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
+        // kanallari aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
         if (!ayarlar.aktif) {
+            await MuhafizKanalServisi.hazirla();
             Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
+
+        // Kanal id'leri artik SESIN fonksiyonu (bkz. core/muhafiz/sesKimligi.ts) →
+        // planlamadan ONCE gerekli kanallar olusturulmali; var olmayan bir kanala
+        // gonderilen bildirim Android 8+'ta hic gosterilmez. Ayni cagri oksuz
+        // kalmis eski kanallari da toplar.
+        //
+        // DONEN MATRIS KULLANILIR: `hazirla` cozulemeyen `content://` seslerini
+        // (baska cihazdan gelen yedek, silinmis dosya) varsayilana dusurur. Planlama
+        // ham matrisle yapilirsa kanal id'si olusturulan kanalla ayrisir ve bildirim
+        // VAR OLMAYAN kanala gider = hic gosterilmez.
+        this.ayarlar = {
+            ...ayarlar,
+            matris: (await MuhafizKanalServisi.hazirla(ayarlar.matris)) ?? ayarlar.matris,
+        };
 
         // Bugunun vakit zamanlarini al
         const vakitler = this.bugunVakitleriniHesapla();
@@ -331,9 +349,10 @@ export class ArkaplanMuhafizServisi {
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
-                    // Android: ozel ses/titresim icin dogru kanala bagla. Kanal secimi
-                    // hucrenin `bildirimSesi`'ni de hesaba katar (bkz. muhafizKanaliSec).
-                    channelId: muhafizKanaliSec(uyari.seviye, uyari.bildirimSesi),
+                    // Android: ses KANAL ozelligidir → kanal id hucrenin sectigi
+                    // sesten TURETILIR (`muhafizKanaliSec`). Aciliyet ayri alandan
+                    // (`acilKanal`) gelir; ses artik onem tasimaz.
+                    channelId: muhafizKanaliSec(uyari.seviye, uyari.bildirimSesi, uyari.acilKanal),
                 },
             });
 

@@ -10,6 +10,18 @@ import android.util.Log
 
 class ExpoCountdownNotificationModule : Module() {
 
+    /**
+     * Acik ses secici ekraninin promise'i. Ayni anda yalniz BIR secici acilabilir
+     * (kullanici tek ekranla etkilesir); `OnActivityResult` bunu cozup temizler.
+     *
+     * `@Volatile` SART: `sesSecAsync` modul kuyrugunda (arka plan thread'i),
+     * `OnActivityResult` ise ANA thread'de calisir. Gorunurluk garantisi olmadan
+     * ana thread bayat bir deger okuyabilir → promise hic cozulmez ve ekran asili
+     * kalir. Yeniden-giris de burada engellenir (bkz. `sesSecAsync`).
+     */
+    @Volatile
+    private var bekleyenSecim: Promise? = null
+
     override fun definition() = ModuleDefinition {
         Name("ExpoCountdownNotification")
 
@@ -141,6 +153,143 @@ class ExpoCountdownNotificationModule : Module() {
                 AnonsZamanlayici.tumunuIptal(context.applicationContext)
             }
             Unit
+        }
+
+        // ============================================================
+        // BILDIRIM SESI SECIMI (sistem ses secici + kanal yonetimi)
+        // ============================================================
+
+        /**
+         * Sistem ses secicisini acar; kullanicinin sectigi sesi
+         * `{ uri, ad }` olarak dondurur. Vazgecilirse `null` doner.
+         *
+         * IZIN GEREKTIRMEZ (RingtoneManager). `RegisterActivityContracts` yerine
+         * `OnActivityResult` kullanilir — Expo dokumani birincisi icin Activity
+         * yasam dongusu uyumsuzlugu notu dusuyor.
+         */
+        AsyncFunction("sesSecAsync") { mevcutUri: String?, baslik: String, promise: Promise ->
+            val aktivite = appContext.currentActivity
+            if (aktivite == null) {
+                promise.resolve(null)
+                return@AsyncFunction
+            }
+
+            // YENIDEN-GIRIS KORUMASI: tek slotlu `bekleyenSecim` ikinci bir cagriyla
+            // ezilirse ILK promise asla cozulmez (JS tarafi sonsuza kadar bekler) ve
+            // ust uste iki secici acilir. Zaten acik bir secici varken yeni cagri
+            // "vazgecildi" (null) ile kapatilir — ekran akisi bozulmaz, ilk secici
+            // kullanicinin gordugu ekran olarak kalir.
+            if (bekleyenSecim != null) {
+                Log.w("CountdownModule", "Ses secici zaten acik; ikinci cagri yok sayildi")
+                promise.resolve(null)
+                return@AsyncFunction
+            }
+
+            try {
+                bekleyenSecim = promise
+                aktivite.startActivityForResult(
+                    SesSecici.seciciIntenti(baslik, mevcutUri),
+                    SesSecici.ISTEK_KODU
+                )
+            } catch (e: Exception) {
+                Log.e("CountdownModule", "Ses secici acilamadi: ${e.message}")
+                bekleyenSecim = null
+                promise.resolve(null)
+            }
+        }
+
+        /** URI'nin gosterilecek adi; cozulemezse bos string. */
+        AsyncFunction("sesAdiAl") { uri: String?, promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(if (context == null) "" else SesSecici.sesAdi(context, uri))
+        }
+
+        // ── NEDEN BURADAN ITIBAREN `AsyncFunction` ──────────────────────────────
+        // Expo'da `Function` JS THREAD'INDE SENKRON calisir; `AsyncFunction` modul
+        // kuyruguna (arka plan thread'i) duser. Asagidaki cagrilarin hepsi AGIR:
+        //   - `RingtoneManager.getRingtone()` + `Ringtone.play()/getTitle()` ic
+        //     MediaPlayer'i kurar → `setDataSource` + `prepare` SENKRON I/O yapar;
+        //     ses bulutta/SD kartta ise gorunur donma (ANR riski) yasanir.
+        //   - kanal islemleri `NotificationManager` uzerinden BINDER cagrisidir;
+        //     GC ayrica TUM kanallari enumerate eder.
+        // JS thread'ini bloklamamak icin hepsi async; cagiran taraf `await`'ler.
+
+        /** Secilen sesi aninda calar (onizleme). */
+        AsyncFunction("sesiOnizle") { uri: String?, promise: Promise ->
+            appContext.reactContext?.let { SesSecici.onizle(it, uri) }
+            promise.resolve(null)
+        }
+
+        /** Calan onizlemeyi durdurur. */
+        AsyncFunction("onizlemeyiDurdur") { promise: Promise ->
+            SesSecici.durdur()
+            promise.resolve(null)
+        }
+
+        /** Onizleme hala caliyor mu? (JS bitisi bekleyebilsin diye.) */
+        AsyncFunction("onizlemeCaliyorMu") { promise: Promise ->
+            promise.resolve(SesSecici.caliyorMu())
+        }
+
+        /**
+         * Ozel sesli muhafiz kanalini YOKSA olusturur (tembel).
+         * Kanal id'si JS tarafinda sesin hash'inden uretilir (bkz. sesKimligi.ts).
+         */
+        AsyncFunction("muhafizKanaliniGarantile") {
+            kanalId: String,
+            kanalAdi: String,
+            aciklama: String,
+            sesUri: String?,
+            acilMi: Boolean,
+            promise: Promise ->
+            appContext.reactContext?.let {
+                MuhafizKanallari.garantile(it, kanalId, kanalAdi, aciklama, sesUri, acilMi)
+            }
+            promise.resolve(null)
+        }
+
+        /** Artik kullanilmayan hash'li muhafiz kanallarini siler (GC). */
+        AsyncFunction("muhafizKanallariniTemizle") { korunacakIdler: List<String>, promise: Promise ->
+            appContext.reactContext?.let { MuhafizKanallari.copleriTopla(it, korunacakIdler) }
+            promise.resolve(null)
+        }
+
+        /**
+         * Ses secici sonucu. `sesSecAsync` promise'i BURADA cozulur; her sonuc
+         * yolunda (secim/iptal/hata) tam olarak BIR kez cozulur ve
+         * `bekleyenSecim` temizlenir — aksi halde ekran ikinci acilista asili kalir.
+         */
+        OnActivityResult { _, payload ->
+            if (payload.requestCode == SesSecici.ISTEK_KODU) {
+                val promise = bekleyenSecim
+                bekleyenSecim = null
+                if (promise != null) {
+                    // SONUC COZUMU KORUMALI: `payload.data` UCUNCU TARAF bir
+                    // Activity'den gelir; extras'i unmarshall etmek OEM secicilerinde
+                    // `BadParcelableException` firlatabilir (bkz. SesSecici.sonucuCoz).
+                    // Burada yakalanmazsa (a) ana thread'de coker, (b) `bekleyenSecim`
+                    // zaten null'landigi icin promise SAHIPSIZ kalir ve JS sonsuza
+                    // kadar bekler. Hata da bir SONUCTUR: null ile cozulur.
+                    try {
+                        val uri = SesSecici.sonucuCoz(payload.data)
+                        if (uri == null) {
+                            promise.resolve(null)
+                        } else {
+                            val context = appContext.reactContext
+                            val uriMetni = uri.toString()
+                            promise.resolve(
+                                mapOf(
+                                    "uri" to uriMetni,
+                                    "ad" to (context?.let { SesSecici.sesAdi(it, uriMetni) } ?: "")
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.e("CountdownModule", "Ses secici sonucu islenemedi: ${e.message}")
+                        promise.resolve(null)
+                    }
+                }
+            }
         }
 
         /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */

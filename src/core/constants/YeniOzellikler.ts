@@ -41,6 +41,27 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-bildirim-sesi-secimi',
+        surum: '0.24.0',
+        tarih: '2026-07-18',
+        baslik: 'Hatırlatma Sesini Kendiniz Seçin',
+        aciklama:
+            'Her hatırlatma adımı için telefonunuzdaki bildirim seslerinden birini ya da kendi müziğinizi seçebilirsiniz.',
+        detayAciklama:
+            'Muhafız hatırlatmalarının sesi artık gerçekten sizin seçiminiz. Bir adımın ayarlarını açıp bildirim sesi satırına dokunduğunuzda telefonunuzun ses seçicisi açılır; buradan sistem bildirim seslerinden birini seçebilir ya da cihazınıza kendi eklediğiniz bir müziği kullanabilirsiniz. Seçtiğiniz sesi kaydetmeden önce dinleyebilir, dilediğinizde tek dokunuşla uygulama sesine geri dönebilirsiniz. Seçim adım adım yapılır: örneğin nazik hatırlatma için sakin bir ses, son dakikalardaki acil uyarı için daha dikkat çekici bir ses kullanabilirsiniz. Hazır yoğunluklardan birine geçseniz bile seçtiğiniz sesler korunur. Bu özellik hiçbir yeni izin gerektirmez.',
+        ikon: 'music',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Sesinizi seçin',
+        kartGoster: true,
+        detaylar: [
+            'Telefonunuzun bildirim seslerinden seçin ya da kendi müziğinizi kullanın',
+            'Her hatırlatma adımı için ayrı ses seçebilirsiniz',
+            'Seçmeden önce dinleyin; dilediğinizde uygulama sesine geri dönün',
+            'Hazır yoğunluğa geçseniz de seçtiğiniz sesler korunur',
+            'Yeni bir izin istenmez',
+        ],
+    },
+    {
         id: 'muhafiz-vakit-seviye-sesli-anons',
         surum: '0.24.0',
         tarih: '2026-07-18',
@@ -48,13 +69,15 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Her namaz vaktini ayrı ayrı ayarlayabilir, dilerseniz hatırlatmayı sesli anonsla duyabilirsiniz.',
         detayAciklama:
-            'Muhafız ayarları yenilendi. Sabah, Öğle, İkindi, Akşam ve Yatsı için dört hatırlatma adımını (nazik hatırlatma, uyarı, sert uyarı, acil) vakit vakit ayarlayabilirsiniz. Her adımda kaç dakika kala uyarılacağınızı, ne sıklıkla tekrarlanacağını ve nasıl uyarılacağınızı seçersiniz: sessiz, bildirim, sesli anons ya da ikisi birden. Sesli anons metnini kendiniz yazabilir, {vakit} ve {süre} yer tutucularıyla vakit adının ve kalan sürenin otomatik okunmasını sağlayabilirsiniz.',
+            'Muhafız ayarları yenilendi. Sabah, Öğle, İkindi, Akşam ve Yatsı için dört hatırlatma adımını (nazik hatırlatma, uyarı, sert uyarı, acil) vakit vakit ayarlayabilirsiniz. Her adımda kaç dakika kala uyarılacağınızı, ne sıklıkla tekrarlanacağını ve nasıl uyarılacağınızı seçersiniz: sessiz, bildirim, sesli anons ya da ikisi birden. Sesli anons metnini kendiniz yazabilir, {vakit} ve {süre} yer tutucularıyla vakit adının ve kalan sürenin otomatik okunmasını sağlayabilirsiniz. Hazır yoğunluklar da elden geçirildi: art arda gelen ve bir süre sonra fark edilmez hâle gelen tekrarlar azaltıldı, bunun yerine vaktin son dakikalarında sesli anons devreye giriyor. Bu sayede daha az bildirim alırsınız ama aldıklarınızı daha zor kaçırırsınız. Yeni zamanlama hesabınıza kendiliğinden uygulandı; sesli anons ise siz onaylamadan açılmaz. Vakitlere özel ayar yaptıysanız ayarlarınıza dokunulmadı.',
         ikon: 'bullhorn',
         hedefSayfa: 'MuhafizAyarlari',
         ctaEtiketi: 'Hemen ayarlayın',
         kartGoster: true,
         detaylar: [
             'Her vakit için dört hatırlatma adımını ayrı ayrı ayarlayın',
+            'Hatırlatma sayısı azaldı, etkisi arttı: gereksiz tekrarlar yerine son dakikalarda sesli anons (Hafif seçeneği sessiz kalır)',
+            'Yeni zamanlama hesabınıza kendiliğinden uygulandı; sesli anons siz onaylamadan açılmaz',
             'Sesli anons metnini kendiniz yazın; vakit adı ve kalan süre otomatik okunur',
             'Bir vaktin ayarını tek dokunuşla diğer tüm vakitlere kopyalayın',
             '“Akışı önizle” ile o vakitte alacağınız tüm hatırlatmaları önceden görün ve dinleyin',

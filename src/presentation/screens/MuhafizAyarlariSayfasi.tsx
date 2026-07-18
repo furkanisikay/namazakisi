@@ -11,7 +11,7 @@
  */
 
 import * as React from 'react';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
     muhafizAyarlariniGuncelle,
     matrisiGuncelle,
+    ozelMatrisYedegiGuncelle,
+    ozelYogunluguGeriYukle,
     HATIRLATMA_PRESETLERI,
 } from '../store/muhafizSlice';
 import { useFeedback } from '../../core/feedback';
@@ -27,16 +29,38 @@ import { useKonumMetni } from '../hooks/useKonumMetni';
 import { BildirimModali } from '../components/common/BildirimModali';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
-import { tumVakitlereUygula, presetUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import {
+    tumVakitlereUygula,
+    presetUygula,
+    presetSesliIceriyorMu,
+    zamanlamaDegistiMi,
+} from '../../core/muhafiz/matrisIslemleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
+import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
+import {
+    sayacBaslangicEsikleriHesapla,
+    muhafizUyarilanVakitleriBul,
+} from '../../core/utils/vakitSayacYardimcisi';
+import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
+import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
+import { Logger } from '../../core/utils/Logger';
 import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
 import { SeviyeDetayModal } from './MuhafizAyarlari/SeviyeDetayModal';
 import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
-import { presetiKademeyeCevir, YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
+import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
+import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 
 type PresetYogunlugu = 'hafif' | 'normal' | 'yogun';
+
+/**
+ * Ayar değişikliğinden sonra bildirimleri yeniden planlamadan önce beklenen süre.
+ * Stepper'a arka arkaya basmak tek planlamaya iner; ekrandan çıkarken bekleyen
+ * planlama zaten anında uygulanır.
+ */
+const YENIDEN_PLANLAMA_GECIKMESI_MS = 1200;
 
 /** Ayarlar stack'i tiplenmemiş; `any` yerine ihtiyaç duyulan minimum yüzey. */
 type AyarNavigasyonu = { navigate: (ekran: string) => void };
@@ -48,11 +72,13 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const { butonTiklandiFeedback } = useFeedback();
     const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
     const konumAyarlari = useAppSelector((state) => state.konum);
+    const sayacAyarlari = useAppSelector((state) => state.vakitSayac?.ayarlar);
     const konumMetni = useKonumMetni(konumAyarlari);
 
     const [acikVakit, setAcikVakit] = useState<MuhafizVakti | null>(null);
     const [detay, setDetay] = useState<{ vakit: MuhafizVakti; indeks: number } | null>(null);
     const [presetOnayi, setPresetOnayi] = useState<PresetYogunlugu | null>(null);
+    const [sesliOnayi, setSesliOnayi] = useState<PresetYogunlugu | null>(null);
     const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
     const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
 
@@ -67,6 +93,85 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     );
 
     /**
+     * Planlamada kullanılan güncel değerler. Debounce edilen geri çağrı kapanış
+     * (closure) değil REF okur — gecikme boyunca değişen ayar kaybolmasın.
+     */
+    const planlamaVerisiRef = useRef({
+        aktif: muhafizAyarlari.aktif,
+        matris,
+        koordinatlar: konumAyarlari.koordinatlar,
+        sayacAyarlari,
+    });
+    planlamaVerisiRef.current = {
+        aktif: muhafizAyarlari.aktif,
+        matris,
+        koordinatlar: konumAyarlari.koordinatlar,
+        sayacAyarlari,
+    };
+
+    /**
+     * Ekranda yapılan değişikliği GERÇEK plana yansıtır.
+     *
+     * NEDEN ZORUNLU: bildirimler vakit başına ÖNCEDEN planlanır ve kanal kimliği
+     * seçilen sesin fonksiyonudur. Yeniden planlamazsak kullanıcı sesi/eşiği
+     * değiştirip uygulamayı kapattığında o günün kalan bildirimleri ESKİ kanaldan
+     * ESKİ sesle çalar → "ayarım kaydedilmedi" hissi.
+     *
+     * Vakit sayacı da yeniden kurulur: bastırma listesi (`muhafizUyarilanVakitler`)
+     * ve sayaç başlangıç eşiği matristen türer; eksik geçilirse sayaç bastırması bozulur.
+     */
+    const yenidenPlanla = useCallback(async () => {
+        const { aktif, matris: guncelMatris, koordinatlar, sayacAyarlari: sayac } =
+            planlamaVerisiRef.current;
+        try {
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
+                aktif,
+                koordinatlar,
+                matris: guncelMatris,
+            });
+            await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+                aktif: sayac?.aktif === true,
+                koordinatlar,
+                baslangicEsikleri: sayacBaslangicEsikleriHesapla(
+                    sayac?.sayacBaslangicSeviyesi,
+                    guncelMatris
+                ),
+                muhafizAktif: aktif,
+                muhafizUyarilanVakitler: muhafizUyarilanVakitleriBul(guncelMatris),
+            });
+        } catch (hata) {
+            Logger.error('MuhafizAyarlari', 'Bildirimler yeniden planlanamadi', hata);
+        }
+    }, []);
+
+    const zamanlayiciRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const bekleyenPlanlamaRef = useRef(false);
+
+    /** Değişikliği kuyruğa alır (debounce) — her dokunuşta planlama yapılmaz. */
+    const planlamayiKuyrugaAl = useCallback(() => {
+        bekleyenPlanlamaRef.current = true;
+        if (zamanlayiciRef.current) clearTimeout(zamanlayiciRef.current);
+        zamanlayiciRef.current = setTimeout(() => {
+            zamanlayiciRef.current = null;
+            bekleyenPlanlamaRef.current = false;
+            void yenidenPlanla();
+        }, YENIDEN_PLANLAMA_GECIKMESI_MS);
+    }, [yenidenPlanla]);
+
+    // Ekrandan çıkışta bekleyen planlama varsa HEMEN uygula — kullanıcı ayarı
+    // değiştirip geri tuşuna basabilir; bekleyen iş sessizce kaybolmamalı.
+    useEffect(
+        () => () => {
+            if (zamanlayiciRef.current) clearTimeout(zamanlayiciRef.current);
+            if (bekleyenPlanlamaRef.current) {
+                bekleyenPlanlamaRef.current = false;
+                void yenidenPlanla();
+            }
+        },
+        [yenidenPlanla]
+    );
+
+    /**
      * Matrisi yaz + spec 4.1: elle ZAMANLAMA (eşik/sıklık) değişikliği yoğunluğu
      * 'ozel' yapar. Mod/ses/anons değişikliği yoğunluğu değiştirmez.
      */
@@ -76,8 +181,15 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
             if (muhafizAyarlari.yogunluk !== 'ozel' && zamanlamaDegistiMi(matris, yeni)) {
                 dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' }));
             }
+            // Elle yapılan HER değişiklik yedeklenir — zamanlama olsun (yoğunluk
+            // 'ozel'e döner) olmasın (mod/ses/anons; yoğunluk preset kalır, spec 4.1).
+            // Mod/ses değişikliğini yedeklemezsek sonraki preset dokunuşu onu UYARISIZ
+            // siler ve "Özel" seçeneği de görünmediği için geri dönüş kalmaz.
+            // (Preset uygulaması `matrisiYaz`'dan GEÇMEZ → yedeği ezmez.)
+            dispatch(ozelMatrisYedegiGuncelle(yeni));
+            planlamayiKuyrugaAl();
         },
-        [dispatch, matris, muhafizAyarlari.yogunluk]
+        [dispatch, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]
     );
 
     const seviyeGuncelle = useCallback(
@@ -92,37 +204,95 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
         [matris, matrisiYaz]
     );
 
+    /**
+     * Preset'i yazar. `sesliIzinVar` false ise sesli hücreler 'bildirim'e düşer —
+     * preset yine tümüyle uygulanır (kullanıcı hiçbir adımı kaybetmez).
+     */
     const presetiUygula = useCallback(
-        async (yogunluk: PresetYogunlugu) => {
+        async (yogunluk: PresetYogunlugu, sesliIzinVar: boolean) => {
             await butonTiklandiFeedback();
+            // Özelden çıkılıyorsa mevcut matrisi yedekle — matrisiYaz zaten sürekli
+            // günceller ama eski/göçmüş kayıtlarda yedek eksik olabilir (güvenlik ağı).
+            if (muhafizAyarlari.yogunluk === 'ozel') {
+                dispatch(ozelMatrisYedegiGuncelle(matris));
+            }
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
-            // presetUygula YALNIZ eşik/sıklığı ezer; mod/ses/anons korunur (spec 4.1).
+            // Preset artık zamanlamanın YANI SIRA mod + bildirim sesini de yazar;
+            // korunan tek kullanıcı verisi anons metnidir.
+            dispatch(matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar)));
             dispatch(
-                matrisiGuncelle(
-                    presetUygula(
-                        matris,
-                        presetiKademeyeCevir(preset.esikler),
-                        presetiKademeyeCevir(preset.sikliklar)
-                    )
+                muhafizAyarlariniGuncelle(
+                    // Onay yalnız VERİLDİĞİNDE kalıcılaşır; "sesli olmadan uygula"
+                    // bir daha sorulmasını engellemez (bilinçli).
+                    sesliIzinVar && !muhafizAyarlari.sesliOnayi
+                        ? { yogunluk, sesliOnayi: true }
+                        : { yogunluk }
                 )
             );
-            dispatch(muhafizAyarlariniGuncelle({ yogunluk }));
+            planlamayiKuyrugaAl();
         },
-        [butonTiklandiFeedback, dispatch, matris]
+        [
+            butonTiklandiFeedback,
+            dispatch,
+            matris,
+            muhafizAyarlari.yogunluk,
+            muhafizAyarlari.sesliOnayi,
+            planlamayiKuyrugaAl,
+        ]
+    );
+
+    /**
+     * Preset uygulamasının son kapısı: sesli içeren bir yoğunluk İLK kez
+     * seçiliyorsa önce bilgilendirme + onay modalı çıkar.
+     */
+    const presetiBaslat = useCallback(
+        (yogunluk: PresetYogunlugu) => {
+            const sesliVar = presetSesliIceriyorMu(HATIRLATMA_PRESETLERI[yogunluk].seviyeler);
+            if (sesliVar && !muhafizAyarlari.sesliOnayi) {
+                setSesliOnayi(yogunluk);
+                return;
+            }
+            void presetiUygula(yogunluk, sesliVar);
+        },
+        [muhafizAyarlari.sesliOnayi, presetiUygula]
     );
 
     const yogunlukSec = useCallback(
         (yogunluk: PresetYogunlugu) => {
-            if (yogunluk === muhafizAyarlari.yogunluk) return;
+            if (yogunluk === muhafizAyarlari.yogunluk) {
+                // ZATEN SEÇİLİ preset: normalde yapılacak bir şey yok. TEK istisna,
+                // sesli içeren bir yoğunlukta sesli onayının hiç verilmemiş olması —
+                // bu durumda kartın altyazısı "sesli" der ama hücreler 'bildirim'e
+                // düşmüştür ve sessiz dönseydik kullanıcının sesliyi açmasının yolu
+                // KALMAZDI (tek kaçış başka bir preset'e geçip zamanlamayı ezmek).
+                const sesliVar = presetSesliIceriyorMu(HATIRLATMA_PRESETLERI[yogunluk].seviyeler);
+                if (sesliVar && !muhafizAyarlari.sesliOnayi) setSesliOnayi(yogunluk);
+                return;
+            }
             // Elle ayarlanmış zamanlama varsa (yogunluk === 'ozel') önce onay iste.
             if (muhafizAyarlari.yogunluk === 'ozel') {
                 setPresetOnayi(yogunluk);
                 return;
             }
-            void presetiUygula(yogunluk);
+            presetiBaslat(yogunluk);
         },
-        [muhafizAyarlari.yogunluk, presetiUygula]
+        [muhafizAyarlari.yogunluk, muhafizAyarlari.sesliOnayi, presetiBaslat]
     );
+
+    /** Onay modalındaki örnek okunuş — seçilen preset'in sesli adımının eşiğiyle. */
+    const sesliOrnekMetni = useMemo(() => {
+        if (!sesliOnayi) return '';
+        const acil = HATIRLATMA_PRESETLERI[sesliOnayi].seviyeler.acil;
+        return anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', acil.esikDk);
+    }, [sesliOnayi]);
+
+    /** "Özel" seçeneğine dönüş: yedeklenen matrisi geri yükler (onay istemez — veri kaybı yok). */
+    const ozelSec = useCallback(() => {
+        if (muhafizAyarlari.yogunluk === 'ozel') return;
+        void butonTiklandiFeedback();
+        dispatch(ozelYogunluguGeriYukle());
+        planlamayiKuyrugaAl();
+    }, [muhafizAyarlari.yogunluk, butonTiklandiFeedback, dispatch, planlamayiKuyrugaAl]);
 
     const tumVakitlereUygulaOnayla = useCallback(() => {
         if (!tumuneOnayi) return;
@@ -188,7 +358,10 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                     </View>
                     <Switch
                         value={muhafizAyarlari.aktif}
-                        onValueChange={(val) => { dispatch(muhafizAyarlariniGuncelle({ aktif: val })); }}
+                        onValueChange={(val) => {
+                            dispatch(muhafizAyarlariniGuncelle({ aktif: val }));
+                            planlamayiKuyrugaAl();
+                        }}
                         trackColor={{ false: renkler.sinir, true: 'rgba(255,255,255,0.3)' }}
                         thumbColor={muhafizAyarlari.aktif ? '#FFF' : '#f4f3f4'}
                         accessibilityLabel="Namaz Muhafızı"
@@ -329,6 +502,38 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                         </TouchableOpacity>
                                     );
                                 })}
+                                {/* "Özel" — yalnızca daha önce yedeklenmiş GEÇERLİ bir özel
+                                    yapılandırma VARSA görünür (spec: yoksa gizli, boş buton
+                                    gösterme). Bozuk yedek gösterilseydi dokunuşta matrise
+                                    yazılır ve ekran her açılışta çökerdi. */}
+                                {matrisGecerliMi(muhafizAyarlari.ozelMatrisYedegi) && (
+                                    <TouchableOpacity
+                                        className="flex-1 items-center py-4 px-2 rounded-xl border-2"
+                                        style={{
+                                            backgroundColor: ozelMi ? renkler.birincil : 'transparent',
+                                            borderColor: ozelMi ? renkler.birincil : renkler.sinir,
+                                        }}
+                                        onPress={ozelSec}
+                                        activeOpacity={0.7}
+                                        accessibilityRole="button"
+                                        accessibilityState={{ selected: ozelMi }}
+                                        accessibilityLabel="Özel yoğunluk — kaydedilmiş ayarlarınıza dönün"
+                                    >
+                                        <FontAwesome5 name="sliders-h" size={18} color={ozelMi ? '#FFF' : renkler.metin} />
+                                        <Text
+                                            className="text-sm font-bold mt-1.5"
+                                            style={{ color: ozelMi ? '#FFF' : renkler.metin }}
+                                        >
+                                            Özel
+                                        </Text>
+                                        <Text
+                                            className="text-[10px] mt-0.5 text-center"
+                                            style={{ color: ozelMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
+                                        >
+                                            Kaydedilmiş ayarlarınız
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         </View>
 
@@ -388,21 +593,44 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                 />
             )}
 
-            {/* Preset onayı — elle ayarlanmış zamanlama geri alınacak (spec 4.1) */}
+            {/* Preset onayı — elle ayarlanmış zamanlama bu hazır yoğunluğa döner, ama
+                kaybolmaz: yedeklenir ve "Özel"e dönünce geri gelir. */}
             <BildirimModali
                 gorunur={presetOnayi !== null}
                 tip="bilgi"
-                baslik="Özel zamanlamanız sıfırlanacak"
-                mesaj="Vakitlere özel ayarladığınız süre ve tekrar değerleri bu hazır yoğunluğa dönecek. Uyarı biçimi, bildirim sesi ve anons metinleriniz korunur."
+                baslik="Özel ayarlarınız hazır yoğunluğa dönecek"
+                mesaj="Her adımın süresi, tekrar sıklığı ve uyarı biçimi (sesli / yalnız bildirim) seçtiğiniz hazır yoğunluğun değerlerine döner. Seçtiğiniz bildirim sesleri ve anons metinleriniz korunur. Özel ayarlarınız saklanacak; istediğinizde Özel'e dönüp kaldığınız yerden devam edebilirsiniz."
                 birincilEtiket="Uygula"
                 birincilIkon="check"
                 onBirincil={() => {
-                    if (presetOnayi) void presetiUygula(presetOnayi);
+                    if (presetOnayi) presetiBaslat(presetOnayi);
                     setPresetOnayi(null);
                 }}
                 onKapat={() => setPresetOnayi(null)}
                 kapatEtiketi="Vazgeç"
             />
+
+            {/* Sesli anons ilk-kez onayı — sessiz mod/DND delineceği için tek seferlik
+                bilgilendirme. Reddedilirse preset sesli hücreler olmadan uygulanır. */}
+            {sesliOnayi && (
+                <SesliOnayModal
+                    gorunur
+                    yogunlukEtiketi={
+                        YOGUNLUK_BILGILERI.find((y) => y.id === sesliOnayi)?.etiket ?? ''
+                    }
+                    ornekMetin={sesliOrnekMetni}
+                    ttsDestekli={ttsDestekli}
+                    onOnayla={() => {
+                        void presetiUygula(sesliOnayi, true);
+                        setSesliOnayi(null);
+                    }}
+                    onSessizUygula={() => {
+                        void presetiUygula(sesliOnayi, false);
+                        setSesliOnayi(null);
+                    }}
+                    onIptal={() => setSesliOnayi(null)}
+                />
+            )}
 
             {/* Tüm vakitlere uygula onayı (spec 3.3 {vakit} ipucu) */}
             <BildirimModali
