@@ -16,6 +16,8 @@ import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { basligiOlustur, bildirimGovdesiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
+import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
+import { vakitUyariPlaniOlustur, muhafizKanaliSec, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
 
 /**
  * Namaz vakti bilgisi
@@ -29,6 +31,10 @@ interface VakitZamani {
 
 /**
  * Muhafiz ayarlari arayuzu
+ *
+ * Faz 3: global `esikler`/`sikliklar` yerine vakit x seviye MATRISI okunur.
+ * Cagiran taraf matrisi `muhafizMatrisiniCoz(state.muhafiz)` ile uretir
+ * (matris yoksa/bozuksa eski alanlardan turetilir).
  */
 export interface ArkaplanMuhafizAyarlari {
     aktif: boolean;
@@ -36,16 +42,8 @@ export interface ArkaplanMuhafizAyarlari {
         lat: number;
         lng: number;
     };
-    esikler: {
-        seviye1: number; // baslangic dk (orn: 45)
-        seviye1Siklik: number; // siklik dk (orn: 15)
-        seviye2: number; // baslangic dk (orn: 30)
-        seviye2Siklik: number; // ciklik dk (orn: 10)
-        seviye3: number; // baslangic dk (orn: 15)
-        seviye3Siklik: number; // siklik dk (orn: 5)
-        seviye4: number; // baslangic dk (orn: 5)
-        seviye4Siklik: number; // siklik dk (orn: 1)
-    };
+    /** Her vaktin kendi 4 seviyesi (esik/siklik/mod/ses/anons) */
+    matris: MuhafizMatrisi;
 }
 
 /**
@@ -213,8 +211,12 @@ export class ArkaplanMuhafizServisi {
     }
 
     /**
-     * Belirli bir vakit icin tum seviye bildirimlerini planla
-     * Ayni dakikaya dusen bildirimleri gruplayip sadece en yuksek seviyeli olani planlar
+     * Belirli bir vakit icin tum seviye bildirimlerini planla.
+     *
+     * Faz 3: dakika taramasi + seviye/siklik karari SAF `vakitUyariPlaniOlustur`
+     * icinde (o vaktin kendi matris satiri okunur). Sessiz (mod='sessiz') seviye
+     * pencere saglamaz -> hic planlanmaz; ayni dakikaya birden cok seviye dusemez
+     * (en acil kazanir) -> cakisma dogal olarak tekildir.
      */
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
@@ -227,113 +229,40 @@ export class ArkaplanMuhafizServisi {
             return;
         }
 
-        const esikler = this.ayarlar.esikler;
-        const dakikaGruplari: Map<number, { seviye: number, dakika: number }> = new Map();
-
-        // En genis araliktan (Seviye 1) baslayarak en dar araliga (Seviye 4) kadar tum dakikalari tara
-        // Maksimum kontrol edilecek dakika: Seviye 1 baslangic dakikasi
-        const maxDakika = Math.max(esikler.seviye1, esikler.seviye2, esikler.seviye3, esikler.seviye4);
+        // 'gunes' muhafizda planlanmaz -> matriste satiri yoktur.
+        const vakitAyari = this.ayarlar.matris[vakit.vakit as MuhafizVakti];
+        if (!vakitAyari) return;
 
         // Vaktin cikmasina kac dakika kaldi? (Su andan itibaren)
         const suankiKalanDakika = Math.floor((cikisSuresi - simdi.getTime()) / (60 * 1000));
+        const plan = vakitUyariPlaniOlustur(vakitAyari, suankiKalanDakika);
 
-        // Kontrol edilecek baslangic noktasi: min(suankiKalanDk, maxDk)
-        // Yani eger vakte 2 saat varsa, 2 saatten degil 45 dk'dan (maxDk) basla.
-        // Eger vakte 10 dk varsa, 10 dk'dan basla.
-        const baslangicDk = Math.min(suankiKalanDakika, maxDakika);
+        let planlanan = 0;
+        for (const uyari of plan) {
+            const bildirimZamani = new Date(cikisSuresi - uyari.kalanDk * 60 * 1000);
+            // Zaten gecmisse atla (dakika yuvarlamasi sinirda geriye dusebilir)
+            if (bildirimZamani.getTime() <= simdi.getTime()) continue;
 
-        // 1 dakikaya kadar geri say
-        for (let k = baslangicDk; k > 0; k--) {
-            let aktifSeviye = 0;
-            let aktifSiklik = 0;
-
-            // Hangi seviye araligindayiz? (Kucukten buyuge kontrol et ki overwrite etsin)
-            // Seviye 1
-            if (k <= esikler.seviye1) {
-                aktifSeviye = 1;
-                aktifSiklik = esikler.seviye1Siklik;
-            }
-            // Seviye 2
-            if (k <= esikler.seviye2) {
-                aktifSeviye = 2;
-                aktifSiklik = esikler.seviye2Siklik;
-            }
-            // Seviye 3
-            if (k <= esikler.seviye3) {
-                aktifSeviye = 3;
-                aktifSiklik = esikler.seviye3Siklik;
-            }
-            // Seviye 4
-            if (k <= esikler.seviye4) {
-                aktifSeviye = 4;
-                aktifSiklik = esikler.seviye4Siklik;
-            }
-
-            // Eger bir seviye aktifse ve sıklık kuralına uyuyorsa
-            // Tam esik degerindeyse VEYA (esik - k) % siklik == 0 ise
-            // Ornek: Esik 45, Siklik 15. k=45 (0%15=0) OK, k=30 (15%15=0) OK, k=15 OK.
-            if (aktifSeviye > 0) {
-                // Her seviyenin kendi baslangicina gore goreceli mod aliyoruz ki
-                // seviye gecislerinde (orn 30'da) mutlaka bildirim olsun.
-                // Baslangic noktasinda (k == seviyeBaslangic) kesin bildirim at.
-                // Digerlerinde modulus kontrol et.
-
-                // İlgili seviyenin başlangıç dakikasını bul
-                let seviyeBaslangic = 0;
-                switch (aktifSeviye) {
-                    case 1: seviyeBaslangic = esikler.seviye1; break;
-                    case 2: seviyeBaslangic = esikler.seviye2; break;
-                    case 3: seviyeBaslangic = esikler.seviye3; break;
-                    case 4: seviyeBaslangic = esikler.seviye4; break;
-                }
-
-                const fark = seviyeBaslangic - k;
-
-                // Fark negatif olamaz cunku yukarida if (k <= esikler...) kontrolu yaptik
-                // Sıklık undefined/0 ise Infinity olur, mod NaN olur
-                if (aktifSiklik > 0 && fark % aktifSiklik === 0) {
-                    // Bu dakikaya bildirim ekle
-                    // UTC zamani hesapla
-                    const bildirimZamani = new Date(cikisSuresi - k * 60 * 1000);
-
-                    // Zaten gecmisse ekleme
-                    if (bildirimZamani.getTime() > simdi.getTime()) {
-                        // Dakika bazinda map'e at (cakisma varsa ust seviye override eder mi? 
-                        // Donguyu genisten dara yaptigimiz icin (yukarida if'ler override ediyor),
-                        // su anki aktifSeviye zaten o dakika icin gecerli en yuksek seviye.
-                        dakikaGruplari.set(k, {
-                            seviye: aktifSeviye,
-                            dakika: k,
-                        });
-                    } else {
-                        // console.log(`[ArkaplanMuhafiz] Zaman geçmiş: ${k}dk`);
-                    }
-                }
-            }
-        }
-
-        // Gruplanan bildirimleri planla
-        for (const [kalanDk, veri] of dakikaGruplari) {
-            const bildirimZamani = new Date(cikisSuresi - kalanDk * 60 * 1000);
-            const seviye = veri.seviye as MuhafizSeviye;
-            const baslik = basligiOlustur(vakit.vakit, seviye, veri.dakika);
+            const seviye = uyari.seviye as MuhafizSeviye;
+            const baslik = basligiOlustur(vakit.vakit, seviye, uyari.kalanDk);
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
-            const bildirimId = this.bildirimIdOlustur(vakit.vakit, veri.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + kalanDk;
+            const bildirimId = this.bildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + uyari.kalanDk;
 
             await this.tekBildirimPlanla(
                 bildirimId,
                 baslik,
                 mesaj,
                 bildirimZamani,
-                veri.seviye,
+                uyari,
                 vakit.vakit,
                 vakit.tarih
             );
+            planlanan++;
         }
 
-        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${dakikaGruplari.size} bildirim planlandi`);
+        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${planlanan} bildirim planlandi`);
     }
 
     /**
@@ -342,7 +271,7 @@ export class ArkaplanMuhafizServisi {
      * @param baslik Bildirim basligi
      * @param mesaj Bildirim mesaji
      * @param zaman Bildirim zamani
-     * @param seviye Bildirim seviyesi (1-4)
+     * @param uyari Matristen turetilen uyari (seviye/mod/ses/anons)
      * @param vakit Vakit adi (imsak, ogle, ikindi, aksam, yatsi)
      * @param tarih Vakit tarihi (YYYY-MM-DD)
      */
@@ -351,7 +280,7 @@ export class ArkaplanMuhafizServisi {
         baslik: string,
         mesaj: string,
         zaman: Date,
-        seviye: number,
+        uyari: UyariPlani,
         vakit: VakitAdi,
         tarih: string
     ): Promise<void> {
@@ -368,25 +297,29 @@ export class ArkaplanMuhafizServisi {
                     title: baslik,
                     body: mesaj,
                     sound: true,
-                    priority: seviye >= 3
+                    priority: uyari.seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
                     categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
                     data: {
                         tip: 'muhafiz',
-                        seviye: seviye,
+                        seviye: uyari.seviye,
                         vakit: vakit,
                         tarih: tarih,
+                        // Faz 4 kancasi: TTS bayragi + anons metni + secilen ses veriye tasinir.
+                        // (Sesli anonsu native FGS Faz 4'te bu alanlardan okuyacak.)
+                        mod: uyari.mod,
+                        bildirimSesi: uyari.bildirimSesi,
+                        sesliAnons: uyari.sesliAnons,
+                        anonsMetni: uyari.anonsMetni,
                     },
                 },
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
-                    // Android: ozel ses/titresim icin dogru kanala bagla (seviye 3-4 acil).
-                    // Aksi halde varsayilan kanala duser ve MUHAFIZ/MUHAFIZ_ACIL ayarlari uygulanmaz.
-                    channelId: seviye >= 3
-                        ? BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ_ACIL
-                        : BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ,
+                    // Android: ozel ses/titresim icin dogru kanala bagla. Kanal secimi
+                    // hucrenin `bildirimSesi`'ni de hesaba katar (bkz. muhafizKanaliSec).
+                    channelId: muhafizKanaliSec(uyari.seviye, uyari.bildirimSesi),
                 },
             });
 

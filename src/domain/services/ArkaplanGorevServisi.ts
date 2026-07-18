@@ -13,6 +13,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
+import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
     TAKIP_PROFILLERI,
@@ -215,19 +216,28 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         const varsayilanSikliklar = { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
         const sikliklar = ayarlar.sikliklar || varsayilanSikliklar;
 
+        // Faz 3: motor vakit x seviye matrisinden okur. Diskteki kayitta matris
+        // varsa O kullanilir; yoksa/bozuksa eski global esik/sikliklardan turetilir.
+        // (Aksi halde bu arkaplan gorevi, ekranda kurulan matrisi bayat global
+        // esiklerle EZERDI.)
         const muhafizAyarlari: ArkaplanMuhafizAyarlari = {
             aktif: ayarlar.aktif,
             koordinatlar: koordinatlar,
-            esikler: {
-                seviye1: ayarlar.esikler?.seviye1 || 45,
-                seviye1Siklik: sikliklar.seviye1 || 15,
-                seviye2: ayarlar.esikler?.seviye2 || 25,
-                seviye2Siklik: sikliklar.seviye2 || 10,
-                seviye3: ayarlar.esikler?.seviye3 || 10,
-                seviye3Siklik: sikliklar.seviye3 || 5,
-                seviye4: ayarlar.esikler?.seviye4 || 3,
-                seviye4Siklik: sikliklar.seviye4 || 1,
-            },
+            matris: muhafizMatrisiniCoz({
+                matris: ayarlar.matris,
+                esikler: {
+                    seviye1: ayarlar.esikler?.seviye1 || 45,
+                    seviye2: ayarlar.esikler?.seviye2 || 25,
+                    seviye3: ayarlar.esikler?.seviye3 || 10,
+                    seviye4: ayarlar.esikler?.seviye4 || 3,
+                },
+                sikliklar: {
+                    seviye1: sikliklar.seviye1 || 15,
+                    seviye2: sikliklar.seviye2 || 10,
+                    seviye3: sikliklar.seviye3 || 5,
+                    seviye4: sikliklar.seviye4 || 1,
+                },
+            }),
         };
 
         await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(muhafizAyarlari);

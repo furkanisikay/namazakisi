@@ -64,6 +64,50 @@ jest.mock('adhan', () => {
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 import { PrayerTimes } from 'adhan';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+
+/** Tek bir seviye hucresi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
+interface SeviyeTanimi {
+    esikDk: number;
+    siklikDk: number;
+    mod?: UyariModu;
+    ses?: string;
+    anons?: string;
+}
+
+const seviyeKur = (indeks: number, t: SeviyeTanimi): SeviyeAyari => ({
+    kademe: SEVIYE_KADEMELERI[indeks],
+    mod: t.mod ?? 'bildirim',
+    esikDk: t.esikDk,
+    siklik: { herDk: t.siklikDk },
+    bildirimSesi: t.ses ?? VARSAYILAN_SES,
+    anonsMetni: t.anons ?? '',
+});
+
+/**
+ * TUM vakitlere AYNI 4 seviyeyi veren matris — eski global esik/siklik
+ * testlerinin birebir karsiligi (o testler global ayar varsayardi).
+ */
+const tekDuzeMatris = (seviyeler: SeviyeTanimi[]): MuhafizMatrisi => {
+    const matris = {} as MuhafizMatrisi;
+    for (const vakit of MUHAFIZ_VAKITLERI) {
+        matris[vakit] = { seviyeler: seviyeler.map((t, i) => seviyeKur(i, t)) };
+    }
+    return matris;
+};
+
+/** Vakit bazli matris: her vakit kendi satirini alir (Faz 3'un asil yetenegi). */
+const vakitBazliMatris = (
+    varsayilan: SeviyeTanimi[],
+    ozel: Partial<Record<MuhafizVakti, SeviyeTanimi[]>>
+): MuhafizMatrisi => {
+    const matris = tekDuzeMatris(varsayilan);
+    for (const [vakit, seviyeler] of Object.entries(ozel)) {
+        matris[vakit as MuhafizVakti] = { seviyeler: seviyeler!.map((t, i) => seviyeKur(i, t)) };
+    }
+    return matris;
+};
 
 /**
  * Planlanan bir bildirim cagrisindan dakika son-ekini (_dk_N) cikarir.
@@ -128,16 +172,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: {
-                seviye1: 25,
-                seviye1Siklik: 30,
-                seviye2: 25,
-                seviye2Siklik: 30,
-                seviye3: 25,
-                seviye3Siklik: 30,
-                seviye4: 25,
-                seviye4Siklik: 30,
-            },
+            matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }]),
         });
 
         const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -164,16 +199,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: {
-                seviye1: 25,
-                seviye1Siklik: 15,
-                seviye2: 20,
-                seviye2Siklik: 10,
-                seviye3: 15,
-                seviye3Siklik: 5,
-                seviye4: 10,
-                seviye4Siklik: 5,
-            },
+            matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 5 }]),
         });
 
         const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -204,16 +230,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: {
-                seviye1: 25,
-                seviye1Siklik: 15,
-                seviye2: 20,
-                seviye2Siklik: 10,
-                seviye3: 15,
-                seviye3Siklik: 5,
-                seviye4: 10,
-                seviye4Siklik: 2,
-            },
+            matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }]),
         });
 
         const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -264,16 +281,12 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         const bugun = new Date();
         const tarih = `${bugun.getFullYear()}-${String(bugun.getMonth() + 1).padStart(2, '0')}-${String(bugun.getDate()).padStart(2, '0')}`;
         const kilinanAnahtar = `muhafiz_ayarlari_kilinan_${tarih}`;
-        const esikler = {
-            seviye1: 25,
-            seviye1Siklik: 15,
-            seviye2: 20,
-            seviye2Siklik: 10,
-            seviye3: 15,
-            seviye3Siklik: 5,
-            seviye4: 10,
-            seviye4Siklik: 2,
-        };
+        const matris = tekDuzeMatris([
+            { esikDk: 25, siklikDk: 15 },
+            { esikDk: 20, siklikDk: 10 },
+            { esikDk: 15, siklikDk: 5 },
+            { esikDk: 10, siklikDk: 2 },
+        ]);
 
         // (a) BASELINE: 'aksam' KILINMAMIŞ iken bildirim olusmali.
         //     Bu kıyas olmadan, kılınmış filtresinin etkisi "sadece-gecmis-eleme"
@@ -282,7 +295,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler,
+            matris,
         });
         const aksamOnce = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.filter(
             (c) => c[0].identifier?.includes('_vakit_aksam')
@@ -299,7 +312,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler,
+            matris,
         });
         const aksamSonra = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.filter(
             (c) => c[0].identifier?.includes('_vakit_aksam')
@@ -309,19 +322,16 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
 });
 
 // ============================================================
-// Esikler: tek planlanabilir vakit (aksam) icin standart 4 seviye.
-// Cogu icerik/zamanlama testi bu sabiti paylasir.
+// Matris: tek planlanabilir vakit (aksam) icin standart 4 seviye.
+// Cogu icerik/zamanlama testi bu sabiti paylasir. Tum vakitlerde ayni satir
+// oldugu icin eski global-esik testleriyle birebir ayni dakikalari uretir.
 // ============================================================
-const STANDART_ESIKLER = {
-    seviye1: 25,
-    seviye1Siklik: 15,
-    seviye2: 20,
-    seviye2Siklik: 10,
-    seviye3: 15,
-    seviye3Siklik: 5,
-    seviye4: 10,
-    seviye4Siklik: 2,
-};
+const STANDART_MATRIS = tekDuzeMatris([
+    { esikDk: 25, siklikDk: 15 },
+    { esikDk: 20, siklikDk: 10 },
+    { esikDk: 15, siklikDk: 5 },
+    { esikDk: 10, siklikDk: 2 },
+]);
 
 describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () => {
     let servis: ArkaplanMuhafizServisi;
@@ -343,7 +353,7 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
@@ -372,7 +382,7 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
@@ -399,7 +409,7 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
@@ -447,7 +457,7 @@ describe('ArkaplanMuhafizServisi - Aktif/pasif ve siklik savunmasi', () => {
         await servis.yapilandirVePlanla({
             aktif: false,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         // Hicbir yeni bildirim planlanmamali.
@@ -468,20 +478,218 @@ describe('ArkaplanMuhafizServisi - Aktif/pasif ve siklik savunmasi', () => {
             servis.yapilandirVePlanla({
                 aktif: true,
                 koordinatlar: { lat: 41.0, lng: 29.0 },
-                esikler: {
-                    seviye1: 25,
-                    seviye1Siklik: 0,
-                    seviye2: 20,
-                    seviye2Siklik: 0,
-                    seviye3: 15,
-                    seviye3Siklik: 0,
-                    seviye4: 10,
-                    seviye4Siklik: 0,
-                },
+                matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 0 }, { esikDk: 20, siklikDk: 0 }, { esikDk: 15, siklikDk: 0 }, { esikDk: 10, siklikDk: 0 }]),
             })
         ).resolves.toBeUndefined();
 
         expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+    });
+});
+
+// ============================================================
+// FAZ 3 — MATRIS MOTORU
+// Ekranda kurulan vakit x seviye matrisi artik gercekten uygulanmali:
+// sessiz seviye atlanir, esik/siklik VAKIT BAZLI okunur, hucrenin sesi
+// kanal secimine ve veriye yansir.
+// ============================================================
+describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        varsayilanVakitleriKur();
+    });
+
+    const planlananDakikalar = (vakit: string): number[] =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes(`_vakit_${vakit}_`))
+            .map((b) => dkSonEkiniAl(b.identifier))
+            .sort((a, b) => b - a);
+
+    test('mod=sessiz seviye HIC planlanmaz (pencere de saglamaz -> ust seviye devralir)', async () => {
+        // acil (10dk/2dk) SESSIZ. Eski motorda 10..2 arasi seviye-4 bildirimleri olurdu.
+        // Yeni motorda o pencereyi bir ust seviye (sert 15/5) devralmali:
+        //   k=25 -> nazik(1), k=20 -> uyari(2), k=15 -> sert(3), k=10,5 -> sert(3)
+        // ve HICBIR seviye-4 bildirimi olmamali.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: tekDuzeMatris([
+                { esikDk: 25, siklikDk: 15 },
+                { esikDk: 20, siklikDk: 10 },
+                { esikDk: 15, siklikDk: 5 },
+                { esikDk: 10, siklikDk: 2, mod: 'sessiz' },
+            ]),
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+        const seviyeler = bildirimler.map((b) => b.content.data.seviye);
+
+        // Sessiz seviye hicbir bildirim uretmemeli
+        expect(seviyeler).not.toContain(4);
+        // Ama pencere bosa dusmemeli: sert (3) devralmali
+        expect(planlananDakikalar('aksam')).toEqual([25, 20, 15, 10, 5]);
+        const dkToSeviye = new Map(bildirimler.map((b) => [dkSonEkiniAl(b.identifier), b.content.data.seviye]));
+        expect(dkToSeviye.get(10)).toBe(3);
+        expect(dkToSeviye.get(5)).toBe(3);
+    });
+
+    test('TUM seviyeleri sessiz olan vakit icin hic bildirim planlanmaz', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: tekDuzeMatris([
+                { esikDk: 25, siklikDk: 15, mod: 'sessiz' },
+                { esikDk: 20, siklikDk: 10, mod: 'sessiz' },
+                { esikDk: 15, siklikDk: 5, mod: 'sessiz' },
+                { esikDk: 10, siklikDk: 2, mod: 'sessiz' },
+            ]),
+        });
+
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+    });
+
+    test('esik/siklik VAKIT BAZLI okunur: aksam kendi satirini kullanir, baska vaktin satiri onu etkilemez', async () => {
+        // 'aksam' satiri: yalniz nazik aktif, 15 dk kala baslar, 5 dk'da bir.
+        // Diger vakitler cok farkli (60/1) — aksam'in plani ONLARDAN etkilenmemeli.
+        // Global-esik regresyonu olursa (or. 60 dk okunursa) dakika seti degisir.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris(
+                [
+                    { esikDk: 60, siklikDk: 1 },
+                    { esikDk: 40, siklikDk: 1 },
+                    { esikDk: 30, siklikDk: 1 },
+                    { esikDk: 20, siklikDk: 1 },
+                ],
+                {
+                    aksam: [
+                        { esikDk: 15, siklikDk: 5 },
+                        { esikDk: 8, siklikDk: 4, mod: 'sessiz' },
+                        { esikDk: 6, siklikDk: 4, mod: 'sessiz' },
+                        { esikDk: 4, siklikDk: 4, mod: 'sessiz' },
+                    ],
+                }
+            ),
+        });
+
+        // aksam: 15,10,5 (kendi satiri) — diger vakitlerin 60/40/30/20 esikleri sizmamali
+        expect(planlananDakikalar('aksam')).toEqual([15, 10, 5]);
+        const seviyeler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0].content.data.seviye);
+        // Tamami nazik (1): aksam satirinda digerleri sessiz
+        expect(new Set(seviyeler)).toEqual(new Set([1]));
+    });
+
+    test("siklik='birkez' yalniz tam esik aninda tetiklenir", async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
+                aksam: [
+                    { esikDk: 20, siklikDk: 1 },
+                    { esikDk: 12, siklikDk: 1 },
+                    { esikDk: 8, siklikDk: 1 },
+                    { esikDk: 4, siklikDk: 1 },
+                ],
+            }),
+        });
+        const tekrarli = planlananDakikalar('aksam');
+
+        // Ayni esiklerle hepsi 'birkez' olursa yalniz 4 esik dakikasi kalmali
+        jest.clearAllMocks();
+        (ArkaplanMuhafizServisi as any).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+        const birkezMatris = vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
+            aksam: [
+                { esikDk: 20, siklikDk: 1 },
+                { esikDk: 12, siklikDk: 1 },
+                { esikDk: 8, siklikDk: 1 },
+                { esikDk: 4, siklikDk: 1 },
+            ],
+        });
+        for (const seviye of birkezMatris.aksam.seviyeler) seviye.siklik = 'birkez';
+
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: birkezMatris,
+        });
+
+        // Tekrarli (herDk:1) her dakikayi uretir; 'birkez' YALNIZ esik dakikalarini
+        expect(tekrarli.length).toBeGreaterThan(4);
+        expect(planlananDakikalar('aksam')).toEqual([20, 12, 8, 4]);
+    });
+
+    test("hucrenin bildirimSesi kanal secimine yansir ('alarm' -> acil kanal) ve mod/anons veriye yazilir", async () => {
+        // nazik (seviye 1) normalde 'muhafiz' kanalina duser; 'alarm' sesi secilirse
+        // acil kanala baglanmali (kanal enflasyonu yok, mevcut palet kullanilir).
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
+                aksam: [
+                    { esikDk: 20, siklikDk: 30, ses: 'alarm', mod: 'ikisi', anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
+                    { esikDk: 12, siklikDk: 30, ses: 'melodi' },
+                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                ],
+            }),
+        });
+
+        const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+        const nazik = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        expect(nazik).toBeDefined();
+        // 'alarm' sesi -> seviye 1 olmasina ragmen acil kanal
+        expect(nazik.trigger.channelId).toBe('muhafiz_acil');
+        // Faz 4 kancasi: mod/ses/TTS bayragi/anons metni veriye tasinmali
+        expect(nazik.content.data.mod).toBe('ikisi');
+        expect(nazik.content.data.bildirimSesi).toBe('alarm');
+        expect(nazik.content.data.sesliAnons).toBe(true);
+        expect(nazik.content.data.anonsMetni).toBe('{vakit} vakti çıkıyor, son {süre} dakika.');
+
+        // 'melodi' sesli seviye 2 -> normal muhafiz kanali, TTS bayragi kapali
+        const uyari = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 12)!;
+        expect(uyari).toBeDefined();
+        expect(uyari.trigger.channelId).toBe('muhafiz');
+        expect(uyari.content.data.bildirimSesi).toBe('melodi');
+        expect(uyari.content.data.sesliAnons).toBe(false);
+    });
+
+    test("mod='sesli' Faz 4'e kadar bildirim gibi davranir ama TTS bayragini tasir", async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
+                aksam: [
+                    { esikDk: 20, siklikDk: 30, mod: 'sesli', anons: '{vakit} namazını kaçırma.' },
+                    { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                ],
+            }),
+        });
+
+        const aksam = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+        // Bildirim YINE planlanir (Faz 4'te TTS eklenecek), bayrak veride
+        expect(aksam.length).toBe(1);
+        expect(aksam[0].content.data.mod).toBe('sesli');
+        expect(aksam[0].content.data.sesliAnons).toBe(true);
     });
 });
 
@@ -522,7 +730,7 @@ describe('ArkaplanMuhafizServisi - Gece yarisi: dun-yatsi gecisi', () => {
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             // fajr'a 30 dk var; bu pencerede en az birkac bildirim dussun diye genis esik.
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         const bildirimler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
@@ -572,7 +780,7 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         // Planlanmis 2 aksam + 1 alakasiz bildirim simule et.
@@ -614,7 +822,7 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            esikler: STANDART_ESIKLER,
+            matris: STANDART_MATRIS,
         });
 
         const bugun = bugunuAl();

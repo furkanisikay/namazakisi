@@ -4,34 +4,28 @@ import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import type { VakitAdi } from '../../core/types';
+import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
+import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
+import { kademeSeviyeNo, seviyeTetiklenirMi } from '../../core/muhafiz/motorAdaptoru';
+import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 
-export interface MuhafizYapilandirmasi {
-    seviye1BaslangicDk: number; // Örn: 45
-    seviye1SiklikDk: number;    // Örn: 15
-    seviye2BaslangicDk: number; // Örn: 30
-    seviye2SiklikDk: number;    // Örn: 10
-    seviye3BaslangicDk: number; // Örn: 15 (Şeytanla Mücadele)
-    seviye3SiklikDk: number;    // Örn: 5
-    seviye4BaslangicDk: number; // Örn: 5 (Alarm)
-    seviye4SiklikDk: number;    // Örn: 1
-}
+/**
+ * Faz 3: on plan banner'i da vakit x seviye MATRISINDEN okur.
+ * Cagiran taraf matrisi `muhafizMatrisiniCoz(state.muhafiz)` ile uretir.
+ */
+export type MuhafizYapilandirmasi = MuhafizMatrisi;
 
-const VARSAYILAN_YAPILANDIRMA: MuhafizYapilandirmasi = {
-    seviye1BaslangicDk: 45,
-    seviye1SiklikDk: 15,
-    seviye2BaslangicDk: 30,
-    seviye2SiklikDk: 10,
-    seviye3BaslangicDk: 15,
-    seviye3SiklikDk: 5,
-    seviye4BaslangicDk: 5,
-    seviye4SiklikDk: 1,
-};
+/** Eski global varsayilanlarin matris karsiligi (yapilandirilmadan once/`sifirla` sonrasi). */
+const VARSAYILAN_MATRIS: MuhafizMatrisi = eskidenMatriseGoc({
+    esikler: { seviye1: 45, seviye2: 30, seviye3: 15, seviye4: 5 },
+    sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+});
 
 type BildirimCallback = (mesaj: string, seviye: 0 | 1 | 2 | 3 | 4) => void;
 
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
-    private config: MuhafizYapilandirmasi = VARSAYILAN_YAPILANDIRMA;
+    private matris: MuhafizMatrisi = VARSAYILAN_MATRIS;
     private intervalId: NodeJS.Timeout | null = null;
     private hesaplayici: NamazVaktiHesaplayiciServisi;
     private onBildirim: BildirimCallback | null = null;
@@ -77,12 +71,12 @@ export class NamazMuhafiziServisi {
         this.durdur();
         this.kilinanVakitler = {};
         this.temizlenenVakitler = {};
-        this.config = VARSAYILAN_YAPILANDIRMA;
+        this.matris = VARSAYILAN_MATRIS;
         this.onBildirim = null;
     }
 
-    public yapilandir(yeniAyarlar: Partial<MuhafizYapilandirmasi>) {
-        this.config = { ...this.config, ...yeniAyarlar };
+    public yapilandir(matris: MuhafizYapilandirmasi) {
+        this.matris = matris;
     }
 
     public namazKilindiIsaretle(vakit: string) {
@@ -164,48 +158,37 @@ export class NamazMuhafiziServisi {
             return;
         }
 
-        // Seviye Kontrolü
-        let aktifSeviye: 1 | 2 | 3 | 4 | 0 = 0;
-        let mesaj = "";
+        // Seviye kontrolü — o VAKTİN kendi matris satırından (Faz 3).
+        // 'gunes' muhafızda planlanmaz -> matriste satırı yoktur.
+        const vakitAyari = this.matris[vakit as MuhafizVakti];
+        if (!vakitAyari) return;
 
-        if (kalanDk <= this.config.seviye4BaslangicDk) {
-            aktifSeviye = 4;
-            mesaj = `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
-        } else if (kalanDk <= this.config.seviye3BaslangicDk) {
-            aktifSeviye = 3;
-            mesaj = this.getRandomIcerik(vakit, 3);
-        } else if (kalanDk <= this.config.seviye2BaslangicDk) {
-            aktifSeviye = 2;
-            mesaj = `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
-        } else if (kalanDk <= this.config.seviye1BaslangicDk) {
-            aktifSeviye = 1;
-            mesaj = `Namaz vaktinin bitmesine ${kalanDk} dakika kaldı.`;
-        }
+        // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
+        // (daha nazik) seviye aktifse onun sıklığı işler.
+        const kazanan = aktifSeviyeyiBul(vakitAyari, kalanDk);
+        if (!kazanan) return;
 
-        if (aktifSeviye > 0 && this.onBildirim) {
-            // Sıklık kontrolü (basit modülo ile)
-            // Gerçekte son bildirim zamanını tutup karşılaştırmak daha sağlıklı olur
-            // Ama dakika başı çağırdığımız için modülo iş görür
-            const siklik = this.getSiklik(aktifSeviye);
+        // Sıklık kontrolü: seviyenin KENDİ eşiğine göreceli ((eşik - kalan) % herDk),
+        // arka plan planlamasıyla birebir aynı kural -> banner ve bildirim aynı
+        // dakikalarda konuşur. 'birkez' yalnız tam eşik anında tetiklenir.
+        if (!seviyeTetiklenirMi(kazanan, kalanDk)) return;
 
-            // Seviye 4, her dakika çalar
-            // Diğerleri modüloya bakar
-            // Not: Bu basit mantık, tam dk denk gelmezse atlayabilir, ama setInterval 60sn olduğu için genelde çalışır.
-            // İyileştirme: LastNotificationTime kontrolü eklenebilir.
-
-            if (kalanDk % siklik === 0 || aktifSeviye === 4) {
-                this.onBildirim(mesaj, aktifSeviye as 1 | 2 | 3 | 4);
-            }
+        const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
+        if (this.onBildirim) {
+            this.onBildirim(this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk), aktifSeviye);
         }
     }
 
-    private getSiklik(seviye: number): number {
+    /**
+     * Banner metni. Seviye 3 havuzdan (vakte özgü), diğerleri sabit şablon.
+     * DİL: muhafız "sen" dili istisnası (AGENTS.md) — ibadete çağrı, arayüz değil.
+     */
+    private seviyeMesajiOlustur(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4, kalanDk: number): string {
         switch (seviye) {
-            case 1: return this.config.seviye1SiklikDk;
-            case 2: return this.config.seviye2SiklikDk;
-            case 3: return this.config.seviye3SiklikDk;
-            case 4: return this.config.seviye4SiklikDk;
-            default: return 60;
+            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
+            case 3: return this.getRandomIcerik(vakit, 3);
+            case 2: return `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
+            case 1: return `Namaz vaktinin bitmesine ${kalanDk} dakika kaldı.`;
         }
     }
 

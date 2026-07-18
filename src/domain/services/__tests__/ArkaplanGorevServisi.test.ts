@@ -78,6 +78,8 @@ import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
 } from '../ArkaplanGorevServisi';
+import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
+import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 
 const MUHAFIZ_AYARLARI_ANAHTAR = 'muhafiz_ayarlari';
 const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
@@ -297,16 +299,49 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
         const gecenAyar = mockYapilandirVePlanla.mock.calls[0][0] as unknown as {
             aktif: boolean;
             koordinatlar: { lat: number; lng: number };
-            esikler: Record<string, number>;
+            matris: MuhafizMatrisi;
         };
         // Konum slice'indaki koordinat kullanilmali (muhafiz koordinati degil)
         expect(gecenAyar.koordinatlar).toEqual({ lat: 39.92, lng: 32.85 });
         expect(gecenAyar.aktif).toBe(true);
-        // Esik + siklik haritalama dogru tasinmali
-        expect(gecenAyar.esikler.seviye1).toBe(45);
-        expect(gecenAyar.esikler.seviye1Siklik).toBe(15);
-        expect(gecenAyar.esikler.seviye4).toBe(3);
-        expect(gecenAyar.esikler.seviye4Siklik).toBe(1);
+        // Faz 3: eski global esik/siklik MATRISE cevrilerek tasinmali (5 vakit x 4 seviye)
+        const ogle = gecenAyar.matris.ogle.seviyeler;
+        expect(ogle).toHaveLength(4);
+        expect(ogle[0].esikDk).toBe(45);
+        expect(ogle[0].siklik).toEqual({ herDk: 15 });
+        expect(ogle[3].esikDk).toBe(3);
+        expect(ogle[3].siklik).toEqual({ herDk: 1 });
+    });
+
+    it('diskteki MATRIS varsa o kullanilir (ekranda kurulan ayar bayat global esiklerle EZILMEZ)', async () => {
+        // Faz 2 ekrani yalniz `matris` yazar; `esikler`/`sikliklar` bayat kalir.
+        // Bu gorev bayat globalleri okursa kullanicinin vakit bazli ayari kaybolur.
+        const matris = eskidenMatriseGoc({
+            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+        });
+        matris.ikindi.seviyeler[0].esikDk = 99; // kullanicinin vakte ozel ayari
+        matris.ikindi.seviyeler[0].mod = 'sessiz';
+
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({
+                aktif: true,
+                // BAYAT global alanlar (matristen farkli) — kullanilmamali
+                esikler: { seviye1: 5, seviye2: 4, seviye3: 3, seviye4: 2 },
+                sikliklar: { seviye1: 1, seviye2: 1, seviye3: 1, seviye4: 1 },
+                matris,
+            })
+        );
+        const gorev = gorevGeriCagrisiniAl();
+
+        await gorev();
+
+        const gecenAyar = mockYapilandirVePlanla.mock.calls[0][0] as unknown as { matris: MuhafizMatrisi };
+        expect(gecenAyar.matris.ikindi.seviyeler[0].esikDk).toBe(99);
+        expect(gecenAyar.matris.ikindi.seviyeler[0].mod).toBe('sessiz');
+        // Bayat global esik (5) SIZMAMALI
+        expect(gecenAyar.matris.ogle.seviyeler[0].esikDk).toBe(45);
     });
 
     it('konum ayarlari yoksa ama muhafiz ayarinda koordinat varsa (geriye uyumluluk) onu kullanmali', async () => {
@@ -350,20 +385,17 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
         await gorev();
 
         const gecenAyar = mockYapilandirVePlanla.mock.calls[0][0] as unknown as {
-            esikler: Record<string, number>;
+            matris: MuhafizMatrisi;
         };
         // Uretim varsayilanlari (UygulamaSabitleri degil, gorev icindeki sabitler):
         // esik fallback: 45/25/10/3 ; siklik fallback: 15/10/5/1
-        expect(gecenAyar.esikler).toEqual({
-            seviye1: 45,
-            seviye1Siklik: 15,
-            seviye2: 25,
-            seviye2Siklik: 10,
-            seviye3: 10,
-            seviye3Siklik: 5,
-            seviye4: 3,
-            seviye4Siklik: 1,
-        });
+        // Matris ve esik/siklik YOKKEN bu varsayilanlardan matris turetilmeli.
+        expect(gecenAyar.matris).toEqual(
+            eskidenMatriseGoc({
+                esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+                sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+            })
+        );
     });
 
     it('planlama sirasinda hata olursa Failed donmeli (firlatmamali)', async () => {

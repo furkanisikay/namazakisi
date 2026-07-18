@@ -1,8 +1,55 @@
-import { NamazMuhafiziServisi, MuhafizYapilandirmasi } from '../NamazMuhafiziServisi';
+import { NamazMuhafiziServisi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
 import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import type { MuhafizMatrisi, MuhafizVakti, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+
+/** Bir seviye hucresinin test tanimi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
+interface SeviyeTanimi {
+    esikDk: number;
+    siklikDk: number;
+    mod?: UyariModu;
+}
+
+/** Eski global varsayilan yapilandirmanin matris karsiligi. */
+const VARSAYILAN_TANIM: SeviyeTanimi[] = [
+    { esikDk: 45, siklikDk: 15 },
+    { esikDk: 30, siklikDk: 10 },
+    { esikDk: 15, siklikDk: 5 },
+    { esikDk: 5, siklikDk: 1 },
+];
+
+/** Tum vakitlere ayni satiri veren matris (eski global-ayar testlerinin karsiligi). */
+const tekDuzeMatris = (tanimlar: SeviyeTanimi[]): MuhafizMatrisi => {
+    const matris = {} as MuhafizMatrisi;
+    for (const vakit of MUHAFIZ_VAKITLERI) {
+        matris[vakit] = {
+            seviyeler: tanimlar.map((t, i) => ({
+                kademe: SEVIYE_KADEMELERI[i],
+                mod: t.mod ?? 'bildirim',
+                esikDk: t.esikDk,
+                siklik: { herDk: t.siklikDk } as const,
+                bildirimSesi: VARSAYILAN_SES,
+                anonsMetni: '',
+            })),
+        };
+    }
+    return matris;
+};
+
+/** Vakit bazli matris: belirtilen vakitler kendi satirini alir. */
+const vakitBazliMatris = (
+    varsayilan: SeviyeTanimi[],
+    ozel: Partial<Record<MuhafizVakti, SeviyeTanimi[]>>
+): MuhafizMatrisi => {
+    const matris = tekDuzeMatris(varsayilan);
+    for (const [vakit, tanimlar] of Object.entries(ozel)) {
+        matris[vakit as MuhafizVakti] = tekDuzeMatris(tanimlar!)[vakit as MuhafizVakti];
+    }
+    return matris;
+};
 
 // Mock NamazVaktiHesaplayiciServisi
 jest.mock('../NamazVaktiHesaplayiciServisi', () => {
@@ -39,17 +86,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         muhafiz = NamazMuhafiziServisi.getInstance();
         muhafiz.sifirla(); 
         
-        // Varsayılan yapılandırma
-        muhafiz.yapilandir({
-            seviye1BaslangicDk: 45,
-            seviye1SiklikDk: 15,
-            seviye2BaslangicDk: 30,
-            seviye2SiklikDk: 10,
-            seviye3BaslangicDk: 15,
-            seviye3SiklikDk: 5,
-            seviye4BaslangicDk: 5,
-            seviye4SiklikDk: 1,
-        });
+        // Varsayılan yapılandırma (Faz 3: artık matris)
+        muhafiz.yapilandir(tekDuzeMatris(VARSAYILAN_TANIM));
 
         jest.useFakeTimers();
     });
@@ -233,8 +271,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
     });
 
     test('Yapılandırma değişikliği etkili olmalı', () => {
-        // Seviye 1 başlangıcını 60 dk'ya çekelim
-        muhafiz.yapilandir({ seviye1BaslangicDk: 60 });
+        // Seviye 1 başlangıcını 60 dk'ya çekelim (sıklık 15 kalsın)
+        muhafiz.yapilandir(tekDuzeMatris([{ esikDk: 60, siklikDk: 15 }, ...VARSAYILAN_TANIM.slice(1)]));
 
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
@@ -242,12 +280,13 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         muhafiz.baslat(bildirimSpx);
-        
-        // Artık 55 dk kala bildirim gelmeli (Sıklık 15 dk olduğu için 60, 45, 30... 
-        // Ama modulo kontrolü kalanDk üzerinden yapılıyor: 55 % 15 !== 0)
-        // O yüzden sıklığı da 1 yapalım ki hemen görelim
-        muhafiz.yapilandir({ seviye1SiklikDk: 1 });
-        
+
+        // 55 dk kala pencere içinde ama sıklık kapısı kapalı: (60-55) % 15 !== 0
+        expect(bildirimSpx).not.toHaveBeenCalled();
+
+        // Sıklığı 1 yapınca aynı dakika tetiklenmeli
+        muhafiz.yapilandir(tekDuzeMatris([{ esikDk: 60, siklikDk: 1 }, ...VARSAYILAN_TANIM.slice(1)]));
+
         jest.advanceTimersByTime(60 * 1000);
         expect(bildirimSpx).toHaveBeenCalled();
     });
@@ -272,12 +311,9 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
     ])('Seviye sınır geçişi: %i dk kala', (kalanDk, beklenenSeviye) => {
         test(`seviye ${beklenenSeviye} seçilmeli`, () => {
             // Tüm sıklıkları 1 yap -> modulo kapısı seviye seçimini etkilemesin
-            muhafiz.yapilandir({
-                seviye1SiklikDk: 1,
-                seviye2SiklikDk: 1,
-                seviye3SiklikDk: 1,
-                seviye4SiklikDk: 1,
-            });
+            muhafiz.yapilandir(
+                tekDuzeMatris(VARSAYILAN_TANIM.map((t) => ({ ...t, siklikDk: 1 })))
+            );
 
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
@@ -479,6 +515,126 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
             expect(bildirimSpx).toHaveBeenCalledTimes(1);
             expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+    });
+
+    // ── FAZ 3: matris motoru (sessiz seviye + vakit bazlı eşik) ───────────────
+    describe('Faz 3 — matristen okuma', () => {
+        test('mod=sessiz seviye banner üretmez; pencereyi bir üst seviye devralır', () => {
+            // acil (5 dk) SESSIZ -> 3 dk kala seviye 4 DEĞİL, sert (15 dk) aktif olmalı.
+            muhafiz.yapilandir(
+                tekDuzeMatris([
+                    { esikDk: 45, siklikDk: 15 },
+                    { esikDk: 30, siklikDk: 10 },
+                    { esikDk: 15, siklikDk: 1 },
+                    { esikDk: 5, siklikDk: 1, mod: 'sessiz' },
+                ])
+            );
+
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 3 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            const [, seviye] = bildirimSpx.mock.calls[0];
+            expect(seviye).toBe(3);
+        });
+
+        test('TÜM seviyeleri sessiz olan vakit hiç banner üretmez', () => {
+            muhafiz.yapilandir(
+                tekDuzeMatris(VARSAYILAN_TANIM.map((t) => ({ ...t, siklikDk: 1, mod: 'sessiz' as UyariModu })))
+            );
+
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 3 * 60 * 1000, // normalde seviye 4
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).not.toHaveBeenCalled();
+        });
+
+        test('eşikler VAKİT BAZLI: öğle susarken ikindi aynı dakikada uyarır', () => {
+            // Öğle: yalnız 10 dk ve altı (nazik). İkindi: 40 dk ve altı (nazik).
+            // 20 dk kala -> öğle SESSİZ kalmalı, ikindi uyarmalı. Global eşik
+            // regresyonunda ikisi de aynı davranır ve bu test düşer.
+            muhafiz.yapilandir(
+                vakitBazliMatris(VARSAYILAN_TANIM, {
+                    ogle: [
+                        { esikDk: 10, siklikDk: 1 },
+                        { esikDk: 6, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 2, siklikDk: 1, mod: 'sessiz' },
+                    ],
+                    ikindi: [
+                        { esikDk: 40, siklikDk: 1 },
+                        { esikDk: 6, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 2, siklikDk: 1, mod: 'sessiz' },
+                    ],
+                })
+            );
+
+            // Öğle vakti, 20 dk kala: öğlenin eşiği 10 -> pencere dışı, banner YOK
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 20 * 60 * 1000,
+            });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).not.toHaveBeenCalled();
+
+            // Aynı kalan süre, ikindi vakti: ikindinin eşiği 40 -> uyarı GELMELİ
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ikindi',
+                kalanSureMs: 20 * 60 * 1000,
+            });
+            jest.advanceTimersByTime(60 * 1000);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            const [, seviye] = bildirimSpx.mock.calls[0];
+            expect(seviye).toBe(1);
+        });
+
+        test("siklik='birkez' yalnız tam eşik dakikasında tetiklenir", () => {
+            const matris = tekDuzeMatris([
+                { esikDk: 20, siklikDk: 1 },
+                { esikDk: 12, siklikDk: 1, mod: 'sessiz' },
+                { esikDk: 8, siklikDk: 1, mod: 'sessiz' },
+                { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
+            ]);
+            for (const vakit of MUHAFIZ_VAKITLERI) matris[vakit].seviyeler[0].siklik = 'birkez';
+            muhafiz.yapilandir(matris);
+
+            // 19 dk kala: pencere içinde ama eşik anı değil -> tetiklenmez
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 19 * 60 * 1000,
+            });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).not.toHaveBeenCalled();
+
+            // Tam 20 dk kala -> tetiklenir
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 20 * 60 * 1000,
+            });
+            jest.advanceTimersByTime(60 * 1000);
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        });
+
+        test("'gunes' vakti muhafızda planlanmaz (matriste satırı yok) — banner üretmez", () => {
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'gunes',
+                kalanSureMs: 3 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).not.toHaveBeenCalled();
         });
     });
 

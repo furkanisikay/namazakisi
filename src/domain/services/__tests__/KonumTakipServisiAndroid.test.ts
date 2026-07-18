@@ -67,6 +67,7 @@ import { KonumTakipServisi, KONUM_TAKIP_GOREVI } from '../KonumTakipServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 
 const TAKIP_AYAR_ANAHTARI = '@namaz_akisi/konum_takip_ayarlari';
 const KONUM_ANAHTARI = '@namaz_akisi/konum_ayarlari';
@@ -427,15 +428,55 @@ describe('arka plan gorevi — bildirim yeniden planlama hatasi yutulmali', () =
 
         expect(yapilandirVePlanlaMock).toHaveBeenCalledTimes(1);
         const iletilen = yapilandirVePlanlaMock.mock.calls[0][0];
-        // Varsayilan esik degerleri (45/25/10/3) ve siklik degerleri (15/10/5/1) uygulanmali
-        expect(iletilen.esikler.seviye1).toBe(45);
-        expect(iletilen.esikler.seviye1Siklik).toBe(15);
-        expect(iletilen.esikler.seviye2).toBe(25);
-        expect(iletilen.esikler.seviye3).toBe(10);
-        expect(iletilen.esikler.seviye4).toBe(3);
-        expect(iletilen.esikler.seviye4Siklik).toBe(1);
+        // Faz 3: varsayilan esik (45/25/10/3) + siklik (15/10/5/1) degerlerinden
+        // MATRIS turetilerek iletilmeli (5 vakit x 4 seviye).
+        const ogle = iletilen.matris.ogle.seviyeler;
+        expect(ogle).toHaveLength(4);
+        expect(ogle[0].esikDk).toBe(45);
+        expect(ogle[0].siklik).toEqual({ herDk: 15 });
+        expect(ogle[1].esikDk).toBe(25);
+        expect(ogle[2].esikDk).toBe(10);
+        expect(ogle[3].esikDk).toBe(3);
+        expect(ogle[3].siklik).toEqual({ herDk: 1 });
         // Yeni koordinatlar iletilmeli
         expect(iletilen.koordinatlar.lat).toBeCloseTo(39.9208);
+    });
+
+    it('diskteki MATRIS varsa konum degisiminde de o kullanilir (bayat global esikler EZMEZ)', async () => {
+        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
+        const { ArkaplanMuhafizServisi } = require('../ArkaplanMuhafizServisi');
+        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
+            yapilandirVePlanla: yapilandirVePlanlaMock,
+        });
+
+        mockStore.set(KONUM_ANAHTARI, JSON.stringify({
+            konumModu: 'oto',
+            takipHassasiyeti: 'dengeli',
+            koordinatlar: { lat: 41.0369, lng: 28.9850 },
+        }));
+        // Faz 2 ekrani yalniz matris yazar; global alanlar bayatlar.
+        const matris = eskidenMatriseGoc({
+            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+        });
+        matris.aksam.seviyeler[0].esikDk = 77;
+        mockStore.set('muhafiz_ayarlari', JSON.stringify({
+            aktif: true,
+            esikler: { seviye1: 5, seviye2: 4, seviye3: 3, seviye4: 2 }, // BAYAT
+            matris,
+        }));
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Cankaya', city: 'Ankara' }]);
+
+        const ankara = {
+            coords: { latitude: 39.9208, longitude: 32.8541, altitude: null, accuracy: null, altitudeAccuracy: null, heading: null, speed: null },
+            timestamp: 0,
+        } as Location.LocationObject;
+
+        await arkaPlanGorevi({ data: { locations: [ankara] } });
+
+        const iletilen = yapilandirVePlanlaMock.mock.calls[0][0];
+        expect(iletilen.matris.aksam.seviyeler[0].esikDk).toBe(77);
+        expect(iletilen.matris.ogle.seviyeler[0].esikDk).toBe(45); // bayat 5 sizmamali
     });
 
     it('geocode district/city YOKSA subregion/region alanlarina DUSMELI (alan fallback)', async () => {
