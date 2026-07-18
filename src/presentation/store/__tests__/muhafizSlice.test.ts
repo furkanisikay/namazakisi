@@ -15,6 +15,8 @@ import reducer, {
     muhafizStateSifirla,
     muhafizAyarlariniYukle,
     matrisiGuncelle,
+    ozelMatrisYedegiGuncelle,
+    ozelYogunluguGeriYukle,
     HATIRLATMA_PRESETLERI,
     MuhafizAyarlari,
 } from '../muhafizSlice';
@@ -274,5 +276,101 @@ describe('muhafizAyarlariniYukle matris [M2]', () => {
         await store.dispatch(muhafizAyarlariniYukle());
         const state = store.getState().muhafiz;
         expect(state.matris).toEqual(ozelMatris); // türetilmedi, korundu
+    });
+});
+
+describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
+    test('initialState yedek içermez', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.ozelMatrisYedegi).toBeUndefined();
+    });
+
+    test('ozelMatrisYedegiGuncelle yedeği yazar, matrisi/yoğunluğu değiştirmez', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const yedek = bosMatris();
+        const sonra = reducer(bas, ozelMatrisYedegiGuncelle(yedek));
+
+        expect(sonra.ozelMatrisYedegi).toEqual(yedek);
+        expect(sonra.matris).toEqual(bas.matris); // aktif matrise dokunulmadı
+        expect(sonra.yogunluk).toBe(bas.yogunluk); // yoğunluğa dokunulmadı
+    });
+
+    test('ozelMatrisYedegiGuncelle TAM state AsyncStorage anahtarına yazılır', async () => {
+        const store = yeniStore();
+        const yedek = bosMatris();
+        store.dispatch(ozelMatrisYedegiGuncelle(yedek));
+        await Promise.resolve();
+
+        const yazilan = JSON.parse(mockStore.get(ANAHTAR)!);
+        expect(yazilan.ozelMatrisYedegi).toEqual(yedek);
+    });
+
+    test('ozelMatrisYedegiGuncelle çağrıldıkça en son hâli tutar (üzerine yazar)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const ilkYedek = bosMatris();
+        const sonrakiYedek = { ...bosMatris(), imsak: { seviyeler: [] } };
+        let state = reducer(bas, ozelMatrisYedegiGuncelle(ilkYedek));
+        state = reducer(state, ozelMatrisYedegiGuncelle(sonrakiYedek));
+
+        expect(state.ozelMatrisYedegi).toEqual(sonrakiYedek);
+    });
+
+    test('ozelYogunluguGeriYukle yedek yoksa no-op (state değişmez)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, ozelYogunluguGeriYukle());
+
+        expect(sonra).toEqual(bas);
+        expect(sonra.yogunluk).toBe('normal');
+    });
+
+    test('ozelYogunluguGeriYukle yedek varsa matrisi geri yükler ve yoğunluğu "ozel" yapar', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const yedek = bosMatris();
+        let state = reducer(bas, ozelMatrisYedegiGuncelle(yedek));
+        // Araya bir preset uygulanmış gibi matris/yoğunluk değişsin
+        state = reducer(state, muhafizAyarlariniGuncelle({ yogunluk: 'yogun' }));
+
+        state = reducer(state, ozelYogunluguGeriYukle());
+
+        expect(state.yogunluk).toBe('ozel');
+        expect(state.matris).toEqual(yedek);
+        // Yedek kendisi silinmez — tekrar preset'e geçilirse yine kullanılabilir
+        expect(state.ozelMatrisYedegi).toEqual(yedek);
+    });
+
+    test('ozelYogunluguGeriYukle TAM state AsyncStorage anahtarına yazılır', async () => {
+        const store = yeniStore();
+        const yedek = bosMatris();
+        store.dispatch(ozelMatrisYedegiGuncelle(yedek));
+        await Promise.resolve();
+
+        store.dispatch(ozelYogunluguGeriYukle());
+        await Promise.resolve();
+
+        const yazilan = JSON.parse(mockStore.get(ANAHTAR)!);
+        expect(yazilan.yogunluk).toBe('ozel');
+        expect(yazilan.matris).toEqual(yedek);
+    });
+
+    test('muhafizAyarlariniYukle: diskteki ozelMatrisYedegi state e yüklenir (uygulama yeniden açılınca kaybolmaz)', async () => {
+        const yedek = bosMatris();
+        mockStore.set(
+            ANAHTAR,
+            JSON.stringify({ aktif: true, yogunluk: 'normal', ozelMatrisYedegi: yedek })
+        );
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.ozelMatrisYedegi).toEqual(yedek);
+    });
+
+    test('muhafizAyarlariniYukle: diskte ozelMatrisYedegi yoksa undefined kalır (buton gizli kalır)', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal' }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.ozelMatrisYedegi).toBeUndefined();
     });
 });

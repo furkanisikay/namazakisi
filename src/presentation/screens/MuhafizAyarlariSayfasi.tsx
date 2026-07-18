@@ -20,6 +20,8 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
     muhafizAyarlariniGuncelle,
     matrisiGuncelle,
+    ozelMatrisYedegiGuncelle,
+    ozelYogunluguGeriYukle,
     HATIRLATMA_PRESETLERI,
 } from '../store/muhafizSlice';
 import { useFeedback } from '../../core/feedback';
@@ -73,8 +75,15 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const matrisiYaz = useCallback(
         (yeni: MuhafizMatrisi) => {
             dispatch(matrisiGuncelle(yeni));
-            if (muhafizAyarlari.yogunluk !== 'ozel' && zamanlamaDegistiMi(matris, yeni)) {
+            const zamanlamaDegisti = zamanlamaDegistiMi(matris, yeni);
+            if (muhafizAyarlari.yogunluk !== 'ozel' && zamanlamaDegisti) {
                 dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' }));
+            }
+            // Yogunluk 'ozel' iken YAPILAN her degisiklik (mod/ses/anons dahil) ya da
+            // preset'ten 'ozel'e yeni gecis, en son ozel yapilandirmayi yedekte tutar
+            // — boylece bir preset'e gecilse bile kullanicinin ozel hali kaybolmaz.
+            if (muhafizAyarlari.yogunluk === 'ozel' || zamanlamaDegisti) {
+                dispatch(ozelMatrisYedegiGuncelle(yeni));
             }
         },
         [dispatch, matris, muhafizAyarlari.yogunluk]
@@ -95,6 +104,11 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const presetiUygula = useCallback(
         async (yogunluk: PresetYogunlugu) => {
             await butonTiklandiFeedback();
+            // Özelden çıkılıyorsa mevcut matrisi yedekle — matrisiYaz zaten sürekli
+            // günceller ama eski/göçmüş kayıtlarda yedek eksik olabilir (güvenlik ağı).
+            if (muhafizAyarlari.yogunluk === 'ozel') {
+                dispatch(ozelMatrisYedegiGuncelle(matris));
+            }
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
             // presetUygula YALNIZ eşik/sıklığı ezer; mod/ses/anons korunur (spec 4.1).
             dispatch(
@@ -108,7 +122,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
             );
             dispatch(muhafizAyarlariniGuncelle({ yogunluk }));
         },
-        [butonTiklandiFeedback, dispatch, matris]
+        [butonTiklandiFeedback, dispatch, matris, muhafizAyarlari.yogunluk]
     );
 
     const yogunlukSec = useCallback(
@@ -123,6 +137,13 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
         },
         [muhafizAyarlari.yogunluk, presetiUygula]
     );
+
+    /** "Özel" seçeneğine dönüş: yedeklenen matrisi geri yükler (onay istemez — veri kaybı yok). */
+    const ozelSec = useCallback(() => {
+        if (muhafizAyarlari.yogunluk === 'ozel') return;
+        void butonTiklandiFeedback();
+        dispatch(ozelYogunluguGeriYukle());
+    }, [muhafizAyarlari.yogunluk, butonTiklandiFeedback, dispatch]);
 
     const tumVakitlereUygulaOnayla = useCallback(() => {
         if (!tumuneOnayi) return;
@@ -329,6 +350,36 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                         </TouchableOpacity>
                                     );
                                 })}
+                                {/* "Özel" — yalnızca daha önce yedeklenmiş bir özel yapılandırma
+                                    VARSA görünür (spec: yoksa gizli, boş buton gösterme). */}
+                                {muhafizAyarlari.ozelMatrisYedegi && (
+                                    <TouchableOpacity
+                                        className="flex-1 items-center py-4 px-2 rounded-xl border-2"
+                                        style={{
+                                            backgroundColor: ozelMi ? renkler.birincil : 'transparent',
+                                            borderColor: ozelMi ? renkler.birincil : renkler.sinir,
+                                        }}
+                                        onPress={ozelSec}
+                                        activeOpacity={0.7}
+                                        accessibilityRole="button"
+                                        accessibilityState={{ selected: ozelMi }}
+                                        accessibilityLabel="Özel yoğunluk — kaydedilmiş ayarlarınıza dönün"
+                                    >
+                                        <FontAwesome5 name="sliders-h" size={18} color={ozelMi ? '#FFF' : renkler.metin} />
+                                        <Text
+                                            className="text-sm font-bold mt-1.5"
+                                            style={{ color: ozelMi ? '#FFF' : renkler.metin }}
+                                        >
+                                            Özel
+                                        </Text>
+                                        <Text
+                                            className="text-[10px] mt-0.5 text-center"
+                                            style={{ color: ozelMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
+                                        >
+                                            Kaydedilmiş ayarlarınız
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         </View>
 
@@ -388,12 +439,13 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                 />
             )}
 
-            {/* Preset onayı — elle ayarlanmış zamanlama geri alınacak (spec 4.1) */}
+            {/* Preset onayı — elle ayarlanmış zamanlama bu hazır yoğunluğa döner, ama
+                kaybolmaz: yedeklenir ve "Özel"e dönünce geri gelir. */}
             <BildirimModali
                 gorunur={presetOnayi !== null}
                 tip="bilgi"
-                baslik="Özel zamanlamanız sıfırlanacak"
-                mesaj="Vakitlere özel ayarladığınız süre ve tekrar değerleri bu hazır yoğunluğa dönecek. Uyarı biçimi, bildirim sesi ve anons metinleriniz korunur."
+                baslik="Özel ayarlarınız hazır yoğunluğa dönecek"
+                mesaj="Vakitlere özel ayarladığınız süre ve tekrar değerleri saklanacak; istediğinizde Özel'e dönüp kaldığınız yerden devam edebilirsiniz. Uyarı biçimi, bildirim sesi ve anons metinleriniz zaten korunur."
                 birincilEtiket="Uygula"
                 birincilIkon="check"
                 onBirincil={() => {

@@ -73,6 +73,12 @@ export interface MuhafizAyarlari {
     };
     /** Vakit x seviye matrisi (Faz 1+; eski alanlar Faz 3'e kadar paralel korunur) */
     matris?: MuhafizMatrisi;
+    /**
+     * Yoğunluk 'ozel' iken en son elle ayarlanan matrisin yedeği. Kullanıcı bir
+     * preset'e (hafif/normal/yogun) geçtiğinde özel yapılandırma KAYBOLMASIN diye
+     * burada saklanır; "Özel"e tekrar dönülünce buradan geri yüklenir.
+     */
+    ozelMatrisYedegi?: MuhafizMatrisi;
 }
 
 /**
@@ -112,7 +118,12 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     esikler: { ...initialState.esikler, ...parsed.esikler },
                     sikliklar: { ...initialState.sikliklar, ...parsed.sikliklar },
                 };
-                return { ...temel, matris: parsed.matris ?? eskidenMatriseGoc(temel) };
+                return {
+                    ...temel,
+                    matris: parsed.matris ?? eskidenMatriseGoc(temel),
+                    // Opsiyonel alan: diskte yoksa undefined kalır ("Özel" butonu gizli kalır).
+                    ozelMatrisYedegi: parsed.ozelMatrisYedegi,
+                };
             }
             return null;
         } catch (hata) {
@@ -162,6 +173,32 @@ const muhafizSlice = createSlice({
             AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
             return yeniState;
         },
+
+        /**
+         * 'ozel' yogunluktaki en son matrisi yedekle. Preset'e gecmeden hemen once
+         * cagrilir (guvenlik agi) ve kullanici zaten 'ozel' iken her matris
+         * degisikliginde cagrilir ki yedek her zaman en guncel ozel hali tutsun.
+         */
+        ozelMatrisYedegiGuncelle: (state, action: PayloadAction<MuhafizMatrisi>) => {
+            const yeniState = { ...state, ozelMatrisYedegi: action.payload };
+            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
+            return yeniState;
+        },
+
+        /**
+         * Yedeklenen ozel matrisi geri yukler + yogunlugu 'ozel' yapar. Yedek
+         * yoksa no-op (UI "Ozel" secenegini yedek yokken zaten gostermez).
+         */
+        ozelYogunluguGeriYukle: (state) => {
+            if (!state.ozelMatrisYedegi) return state;
+            const yeniState: MuhafizAyarlari = {
+                ...state,
+                matris: state.ozelMatrisYedegi,
+                yogunluk: 'ozel',
+            };
+            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
+            return yeniState;
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(muhafizAyarlariniYukle.fulfilled, (state, action) => {
@@ -172,5 +209,11 @@ const muhafizSlice = createSlice({
     },
 });
 
-export const { muhafizAyarlariniGuncelle, muhafizStateSifirla, matrisiGuncelle } = muhafizSlice.actions;
+export const {
+    muhafizAyarlariniGuncelle,
+    muhafizStateSifirla,
+    matrisiGuncelle,
+    ozelMatrisYedegiGuncelle,
+    ozelYogunluguGeriYukle,
+} = muhafizSlice.actions;
 export default muhafizSlice.reducer;

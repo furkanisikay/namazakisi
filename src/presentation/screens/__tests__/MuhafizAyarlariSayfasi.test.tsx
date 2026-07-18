@@ -10,7 +10,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
-import { matrisiGuncelle, muhafizAyarlariniGuncelle } from '../../store/muhafizSlice';
+import {
+  matrisiGuncelle,
+  muhafizAyarlariniGuncelle,
+  ozelMatrisYedegiGuncelle,
+  ozelYogunluguGeriYukle,
+} from '../../store/muhafizSlice';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 
@@ -47,6 +52,8 @@ jest.mock('../../store/muhafizSlice', () => {
     HATIRLATMA_PRESETLERI: gercek.HATIRLATMA_PRESETLERI,
     matrisiGuncelle: jest.fn((arg) => ({ type: 'muhafiz/matris', payload: arg })),
     muhafizAyarlariniGuncelle: jest.fn((arg) => ({ type: 'muhafiz/ayar', payload: arg })),
+    ozelMatrisYedegiGuncelle: jest.fn((arg) => ({ type: 'muhafiz/ozelYedek', payload: arg })),
+    ozelYogunluguGeriYukle: jest.fn(() => ({ type: 'muhafiz/ozelGeriYukle' })),
   };
 });
 
@@ -215,6 +222,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     // Diğer vakitler etkilenmez
     expect(yeni.ikindi.seviyeler[0].esikDk).toBe(45);
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
+    // 'ozel'e yeni geçiş: en son özel hâli yedeklenir (preset'e geçilse bile kaybolmasın diye)
+    expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
   });
 
   it('mod değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', async () => {
@@ -227,6 +236,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].mod).toBe('sessiz');
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
+    // Preset'te kalınıyor (zamanlama değişmedi) → özel yedek de güncellenmez
+    expect(ozelMatrisYedegiGuncelle).not.toHaveBeenCalled();
   });
 
   it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
@@ -303,7 +314,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { getByLabelText, getByText } = await kur({ yogunluk: 'ozel' });
     fireEvent.press(getByLabelText(/^Normal yoğunluk/));
 
-    expect(getByText('Özel zamanlamanız sıfırlanacak')).toBeTruthy();
+    expect(getByText('Özel ayarlarınız hazır yoğunluğa dönecek')).toBeTruthy();
+    expect(getByText(/saklanacak/)).toBeTruthy();
     expect(matrisiGuncelle).not.toHaveBeenCalled();
 
     await act(async () => { fireEvent.press(getByLabelText('Uygula')); });
@@ -323,6 +335,52 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('"ozel" yoğunlukta preset çubuğunda hiçbiri seçili değil, "Özel" etiketi görünür', async () => {
     const { getByText } = await kur({ yogunluk: 'ozel' });
     expect(getByText('Özel')).toBeTruthy();
+  });
+
+  // ── Özel yoğunluk yedeği (preset'ten dönünce hatırlama) ────────────────────
+  describe('Özel yoğunluk yedeği', () => {
+    it('yedek yokken "Özel" seçeneği gösterilmez', async () => {
+      const { queryByLabelText } = await kur();
+      expect(queryByLabelText(/^Özel yoğunluk/)).toBeNull();
+    });
+
+    it('yedek varsa "Özel" seçeneği preset çubuğunda tıklanabilir buton olarak görünür', async () => {
+      const { getByLabelText } = await kur({ yogunluk: 'normal', ozelMatrisYedegi: varsayilanMatris() });
+      expect(getByLabelText(/^Özel yoğunluk/)).toBeTruthy();
+    });
+
+    it('preset\'e geçince mevcut özel matris yedeklenir (onaylayınca)', async () => {
+      const matris = varsayilanMatris();
+      matris.ogle.seviyeler[0].esikDk = 77;
+      const { getByLabelText } = await kur({ yogunluk: 'ozel', matris });
+
+      fireEvent.press(getByLabelText(/^Normal yoğunluk/));
+      await act(async () => { fireEvent.press(getByLabelText('Uygula')); });
+
+      expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(matris);
+    });
+
+    it('"Özel" seçeneğine dokununca yedek geri yüklenir; preset UYGULANMAZ, onay istenmez', async () => {
+      const yedek = varsayilanMatris();
+      yedek.ogle.seviyeler[0].esikDk = 77;
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', ozelMatrisYedegi: yedek });
+
+      fireEvent.press(getByLabelText(/^Özel yoğunluk/));
+
+      expect(ozelYogunluguGeriYukle).toHaveBeenCalledTimes(1);
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+      expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
+      // Veri kaybı riski yok → onay modalı çıkmamalı
+      expect(queryByText('Özel ayarlarınız hazır yoğunluğa dönecek')).toBeNull();
+    });
+
+    it('zaten "ozel" iken "Özel" seçeneğine dokunmak hiçbir şey yapmaz (zaten seçili)', async () => {
+      const { getByLabelText } = await kur({ yogunluk: 'ozel', ozelMatrisYedegi: varsayilanMatris() });
+
+      fireEvent.press(getByLabelText(/^Özel yoğunluk/));
+
+      expect(ozelYogunluguGeriYukle).not.toHaveBeenCalled();
+    });
   });
 
   // ── Faz 5: Türkçe TTS uyarısı ─────────────────────────────────────────────
