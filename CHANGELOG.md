@@ -5,6 +5,21 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.24] - 2026-07-18
+
+### Eklendi
+- [muhafiz] bildirim sesini gerçekten seçilebilir yap (sistem ses seçici)
+- [muhafiz] bir kerelik preset göçü — tekrar azaltma mevcut kullanıcılara da ulaşsın
+- [muhafiz] hazır yoğunluklara sesli anons + etkisiz tekrarları kes
+- [muhafiz] önizleme ve "Dinle" akışlarında bildirim sesi de çalsın
+- [muhafiz] ozel yogunluk yapilandirmasini hatirla (preset yedegi)
+
+### Düzeltildi
+- [muhafiz] Gemini incelemesinden gelen üç sertleştirme
+- [muhafiz] aciliyet/ses ayrımını tamamla — kanal, native thread ve ses yaşam döngüsü
+- [muhafiz] göç veri kaybı, sesli anons rızası ve ayar-plan senkronu
+- [muhafiz] ozel sesli kanal onemini taban kanallarla esitle
+
 ## [0.23.23] - 2026-07-18
 
 ### Eklendi
