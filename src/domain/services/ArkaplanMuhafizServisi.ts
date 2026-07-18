@@ -18,6 +18,12 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { basligiOlustur, bildirimGovdesiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, muhafizKanaliSec, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
+import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import {
+    planlaAnons,
+    iptalEtAnons,
+    iptalEtTumAnonslar,
+} from '../../../modules/expo-countdown-notification/src';
 
 /**
  * Namaz vakti bilgisi
@@ -230,7 +236,8 @@ export class ArkaplanMuhafizServisi {
         }
 
         // 'gunes' muhafizda planlanmaz -> matriste satiri yoktur.
-        const vakitAyari = this.ayarlar.matris[vakit.vakit as MuhafizVakti];
+        const muhafizVakti = vakit.vakit as MuhafizVakti;
+        const vakitAyari = this.ayarlar.matris[muhafizVakti];
         if (!vakitAyari) return;
 
         // Vaktin cikmasina kac dakika kaldi? (Su andan itibaren)
@@ -259,6 +266,9 @@ export class ArkaplanMuhafizServisi {
                 vakit.vakit,
                 vakit.tarih
             );
+            // Faz 4: mod 'sesli'/'ikisi' ise ayni ana bir de TTS anonsu planla.
+            // Anons id = bildirim id -> iptal zinciri simetrik kalir.
+            this.anonsPlanla(bildirimId, bildirimZamani, uyari, muhafizVakti);
             planlanan++;
         }
 
@@ -330,6 +340,34 @@ export class ArkaplanMuhafizServisi {
     }
 
     /**
+     * Sesli anons (native TTS) planla — yalniz mod 'sesli' | 'ikisi' iken.
+     *
+     * Native taraf Foreground Service KULLANMAZ: exact alarm -> BroadcastReceiver
+     * -> `goAsync()` penceresinde konusma. Metin BURADA cozulur ({vakit}/{süre}),
+     * native'e hazir cumle gider.
+     *
+     * Anons kimligi bildirim kimligiyle AYNIdir; boylece bildirim iptal edilirken
+     * anons da ayni id ile iptal edilir (bkz. vakitBildirimleriniIptalEt).
+     * Native cagri asla planlamayi durdurmamali -> hata yutulup loglanir.
+     */
+    private anonsPlanla(
+        id: string,
+        zaman: Date,
+        uyari: UyariPlani,
+        vakit: MuhafizVakti
+    ): void {
+        if (!uyari.sesliAnons) return;
+        if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
+
+        try {
+            const metin = anonsMetniniCoz(uyari.anonsMetni, vakit, uyari.kalanDk);
+            planlaAnons(id, zaman.getTime(), metin);
+        } catch (error) {
+            Logger.error('ArkaplanMuhafiz', `Sesli anons planlanamadi: ${id}`, error);
+        }
+    }
+
+    /**
      * Bildirim govdesi.
      * Vakit adi ve kalan sure ALMAZ -> ikisi de baslikta (bkz. basligiOlustur).
      *
@@ -381,6 +419,13 @@ export class ArkaplanMuhafizServisi {
                     } catch (error) {
                         // Bildirim bulunamazsa hata verme
                     }
+                    // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et.
+                    // (Anonsu olmayan id icin native tarafta no-op.)
+                    try {
+                        iptalEtAnons(bildirim.identifier);
+                    } catch {
+                        // Native yoksa/hata verirse bildirim iptali yine de gecerli
+                    }
                 }
             }
         }
@@ -393,8 +438,18 @@ export class ArkaplanMuhafizServisi {
 
     /**
      * Tum muhafiz bildirimlerini temizle
+     *
+     * Sesli anonslar AYRI bir alarm zinciridir (expo-notifications listesinde
+     * gorunmezler) -> native tarafin kendi kayit defterinden topluca iptal edilir.
+     * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
     public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
+        try {
+            iptalEtTumAnonslar();
+        } catch (error) {
+            Logger.error('ArkaplanMuhafiz', 'Sesli anonslar temizlenemedi:', error);
+        }
+
         try {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
 

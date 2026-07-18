@@ -7,6 +7,14 @@ import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 // BildirimServisi modülünü import etmeden önce mock'ları ayarla
 jest.mock('expo-notifications');
 jest.mock('../../../data/local/LocalNamazServisi');
+// ArkaplanMuhafizServisi automock'u bile gercek modulu YUKLER (sekli cikarmak icin)
+// -> native TTS koprusu (`requireNativeModule`) jest'te yok, once o mock'lanmali.
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    iptalEtAnons: jest.fn(),
+    iptalEtTumAnonslar: jest.fn(),
+    trDestekleniyorMu: jest.fn().mockResolvedValue(true),
+}));
 jest.mock('../ArkaplanMuhafizServisi');
 jest.mock('@notifee/react-native', () => ({
     __esModule: true,

@@ -28,6 +28,18 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     setItem: jest.fn().mockResolvedValue(null),
 }));
 
+// Native sesli-anons koprusu (Faz 4). Gercek modul `requireNativeModule` cagirir
+// -> jest ortaminda yoktur; koprunun cagrilip cagrilmadigini burada gozleriz.
+const mockPlanlaAnons = jest.fn();
+const mockIptalEtAnons = jest.fn();
+const mockIptalEtTumAnonslar = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: (...args: unknown[]) => mockPlanlaAnons(...args),
+    iptalEtAnons: (...args: unknown[]) => mockIptalEtAnons(...args),
+    iptalEtTumAnonslar: (...args: unknown[]) => mockIptalEtTumAnonslar(...args),
+    trDestekleniyorMu: jest.fn().mockResolvedValue(true),
+}));
+
 // Mock adhan
 //
 // Vakit zaman cizelgesi (su an = now):
@@ -855,5 +867,159 @@ describe('ArkaplanMuhafizServisi - Kullanici tetikli akislar (kildim/kilmadim)',
             (c) => c[0].identifier?.includes('_vakit_aksam')
         ).length;
         expect(yenidenPlanlanan).toBeGreaterThan(0);
+    });
+});
+
+// ============================================================
+// FAZ 4 — Sesli anons (native TTS) baglantisi
+//
+// Native taraf Foreground Service KULLANMAZ: exact alarm -> BroadcastReceiver
+// -> goAsync() penceresinde konusma. Buradaki testler JS tarafinin sozlesmesini
+// dogrular: dogru modlarda planlanir, metin COZULMUS gider, iptal zinciri
+// bildirimle simetriktir.
+// ============================================================
+describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as unknown as { instance?: ArkaplanMuhafizServisi }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    afterEach(() => {
+        varsayilanVakitleriKur();
+    });
+
+    /** Aksam vaktinde tek tetikli (esik=20, siklik pencereden buyuk) bir seviye kurar. */
+    const aksamTekSeviye = (t: SeviyeTanimi): MuhafizMatrisi =>
+        vakitBazliMatris(
+            [{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }],
+            {
+                aksam: [
+                    t,
+                    { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                ],
+            }
+        );
+
+    test("mod='ikisi' -> anons bildirimle AYNI id ve AYNI zamana planlanir, metin cozulmus gider", async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamTekSeviye({
+                esikDk: 20,
+                siklikDk: 30,
+                mod: 'ikisi',
+                anons: '{vakit} vakti çıkıyor, son {süre} dakika.',
+            }),
+        });
+
+        const aksamBildirimi = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .find((b) => b.identifier.includes('_vakit_aksam_'));
+        expect(aksamBildirimi).toBeDefined();
+
+        // Yalniz aksam icin anons planlanmali (diger vakitler gecmiste).
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        const [anonsId, anonsZamanMs, anonsMetni] = mockPlanlaAnons.mock.calls[0];
+
+        // 1) id bildirim id'siyle AYNI -> iptal zinciri simetrik
+        expect(anonsId).toBe(aksamBildirimi.identifier);
+        // 2) zaman bildirimin tetik zamaniyla AYNI
+        expect(anonsZamanMs).toBe(aksamBildirimi.trigger.date.getTime());
+        // 3) {vakit}/{süre} COZULMUS gitmeli (native'e ham sablon gonderilmez)
+        expect(anonsMetni).toBe('Akşam vakti çıkıyor, son 20 dakika.');
+        expect(anonsMetni).not.toContain('{vakit}');
+        expect(anonsMetni).not.toContain('{süre}');
+    });
+
+    test("mod='sesli' de anons planlar (bildirim ayrica cikmaya devam eder)", async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamTekSeviye({
+                esikDk: 20,
+                siklikDk: 30,
+                mod: 'sesli',
+                anons: '{vakit} namazını kaçırma, {süre} dakika kaldı.',
+            }),
+        });
+
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        expect(mockPlanlaAnons.mock.calls[0][2]).toBe('Akşam namazını kaçırma, 20 dakika kaldı.');
+    });
+
+    test("mod='bildirim' iken HIC anons planlanmaz", async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: STANDART_MATRIS,
+        });
+
+        // Bildirimler planlandi ama TTS'e hic gidilmedi.
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBeGreaterThan(0);
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    test('sesli mod ama anons metni BOS -> anons planlanmaz (bildirim yine cikar)', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '   ' }),
+        });
+
+        const aksamBildirimleri = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes('_vakit_aksam_'));
+        expect(aksamBildirimleri.length).toBe(1);
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    test('yeniden planlama oncesi TUM anonslar iptal edilir (bayat alarm kalmaz)', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '{vakit} vakti.' }),
+        });
+
+        // Temizlik planlamadan ONCE calismali; aksi halde yeni kurulan alarm silinir.
+        expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+        const temizlemeSirasi = mockIptalEtTumAnonslar.mock.invocationCallOrder[0];
+        const planlamaSirasi = mockPlanlaAnons.mock.invocationCallOrder[0];
+        expect(temizlemeSirasi).toBeLessThan(planlamaSirasi);
+    });
+
+    test('aktif:false iken anonslar da temizlenir ve hicbiri planlanmaz', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: false,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '{vakit} vakti.' }),
+        });
+
+        expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    test('vakitBildirimleriniIptalEt: o vaktin anonslari da AYNI id ile iptal edilir', async () => {
+        const bugunTarihi = bugunuAl();
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugunTarihi}_vakit_aksam_seviye_1_dk_20` },
+            { identifier: `muhafiz_${bugunTarihi}_vakit_aksam_seviye_4_dk_10` },
+            { identifier: `muhafiz_${bugunTarihi}_vakit_ogle_seviye_1_dk_25` },
+        ]);
+        mockIptalEtAnons.mockClear();
+
+        await servis.vakitBildirimleriniIptalEt('aksam');
+
+        const iptalEdilenAnonslar = mockIptalEtAnons.mock.calls.map((c) => c[0]);
+        expect(iptalEdilenAnonslar).toContain(`muhafiz_${bugunTarihi}_vakit_aksam_seviye_1_dk_20`);
+        expect(iptalEdilenAnonslar).toContain(`muhafiz_${bugunTarihi}_vakit_aksam_seviye_4_dk_10`);
+        // Baska vaktin anonsu susturulmamali
+        expect(iptalEdilenAnonslar).not.toContain(`muhafiz_${bugunTarihi}_vakit_ogle_seviye_1_dk_25`);
     });
 });
