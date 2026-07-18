@@ -15,6 +15,8 @@ import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 import type { VakitAdi } from '../../core/types';
+import type { MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 
 interface VakitZamani {
@@ -27,14 +29,29 @@ interface VakitZamani {
 interface SayacAyarlari {
   aktif: boolean;
   koordinatlar: { lat: number; lng: number };
-  baslangicEsikDk: number; // Dakika (muhafiz seviye 1 başlangıcı - ilk bildirimle eş zamanlı)
   /**
-   * Namaz muhafızı aktif mi? Aktifse vakit sayacı bildirimi planlanmaz:
-   * sayaç tam olarak muhafız seviye-1 eşiğinde (baslangicEsikDk) başladığından
-   * muhafızın ilk-seviye hatırlatmasıyla EŞ ZAMANLI çakışan gereksiz bir
-   * "çıkmak üzere" bildirimi üretir. Muhafız kapalıyken sayaç normal çalışır.
+   * Vakit BAŞINA sayaç başlangıç eşiği (dk). Faz 3: eşikler artık global değil,
+   * muhafız matrisinden vakit bazlı türetilir (`sayacBaslangicEsikleriHesapla`).
+   * Bir vakit haritada yoksa/0 ise o vakit için sayaç planlanmaz.
+   */
+  baslangicEsikleri: Partial<Record<MuhafizVakti, number>>;
+  /**
+   * Namaz muhafızı aktif mi? Aktifse (ve o vakti muhafız gerçekten kapsıyorsa)
+   * vakit sayacı bildirimi planlanmaz: sayaç tam olarak muhafız başlangıç
+   * eşiğinde başladığından muhafızın ilk-seviye hatırlatmasıyla EŞ ZAMANLI
+   * çakışan gereksiz bir "çıkmak üzere" bildirimi üretir (#90).
+   * Muhafız kapalıyken sayaç normal çalışır.
    */
   muhafizAktif?: boolean;
+  /**
+   * Muhafızın gerçekten uyardığı vakitler (`muhafizUyarilanVakitleriBul`).
+   * `muhafizAktif` iken bastırma YALNIZ bu vakitlere uygulanır: kullanıcı tek bir
+   * vakti matriste tümden susturduysa (tüm seviyeler 'sessiz') orada çakışacak
+   * muhafız bildirimi yoktur → sayaç çalışmalı, aksi halde o vakit için hiçbir
+   * hatırlatma kalmazdı. Verilmezse (undefined) geriye uyumlu davranış: TÜM
+   * vakitler kapsanmış sayılır (eski global bastırma).
+   */
+  muhafizUyarilanVakitler?: MuhafizVakti[];
 }
 
 export class VakitSayacBildirimServisi {
@@ -72,16 +89,13 @@ export class VakitSayacBildirimServisi {
       return;
     }
 
-    // Muhafız aktifse sayaç bildirimi planlama: sayaç muhafız seviye-1 eşiğinde
-    // başladığından muhafızın ilk hatırlatmasıyla eş zamanlı çakışan gereksiz
-    // bir "çıkmak üzere" bildirimi olur. Yalnız temizlik yapıp çık (#90).
-    if (ayarlar.muhafizAktif) {
-      Logger.info('VakitSayac', 'Muhafız aktif, sayaç bildirimi çakışmayı önlemek için atlanıyor');
-      return;
-    }
-
-    // notifee kanalını oluştur (ilk seferinde)
-    await this.kanalOlustur();
+    // Muhafız aktifken, muhafızın UYARDIĞI vakitlerde sayaç planlanmaz: sayaç
+    // muhafız başlangıç eşiğinde başladığından muhafızın ilk hatırlatmasıyla eş
+    // zamanlı çakışan gereksiz bir "çıkmak üzere" bildirimi olur (#90).
+    // Muhafızın tümden susturulduğu vakitler bastırılmaz (bkz. muhafizUyarilanVakitler).
+    const bastirilanVakitler: Set<string> = new Set(
+      ayarlar.muhafizAktif ? (ayarlar.muhafizUyarilanVakitler ?? MUHAFIZ_VAKITLERI) : []
+    );
 
     // Bugünün vakit zamanlarını hesapla
     const vakitler = this.bugunVakitleriniHesapla();
@@ -107,6 +121,17 @@ export class VakitSayacBildirimServisi {
         return false;
       }
 
+      // Muhafız bu vakti zaten kapsıyorsa çakışmayı önlemek için atla (#90)
+      if (bastirilanVakitler.has(v.vakit)) {
+        Logger.info('VakitSayac', `${v.vakit} muhafız kapsamında, çakışmayı önlemek için atlanıyor`);
+        return false;
+      }
+
+      // Eşik yoksa/geçersizse planlanacak bir başlangıç noktası yok
+      if (!this.vakitEsiginiAl(v.vakit)) {
+        return false;
+      }
+
       // Bu vakit kılınmış mı?
       const tarihinKilinanVakitleri = kilinanMap[v.tarih] || [];
       if (tarihinKilinanVakitleri.includes(v.vakit)) {
@@ -122,11 +147,24 @@ export class VakitSayacBildirimServisi {
       return;
     }
 
+    // notifee kanalını oluştur (ilk seferinde) — planlanacak vakit YOKSA
+    // (ör. muhafız hepsini kapsıyor) kanal açmaya da gerek yok.
+    await this.kanalOlustur();
+
     for (const vakit of gelecekVakitler) {
       await this.vakitIcinSayacPlanla(vakit);
     }
 
     Logger.info('VakitSayac', `Toplam ${gelecekVakitler.length} vakit için sayaç planlandı`);
+  }
+
+  /**
+   * O vaktin sayaç başlangıç eşiği (dk). Faz 3: eşik vakit bazlıdır.
+   * Geçersiz/eksik/0 değer -> 0 döner (o vakit planlanmaz).
+   */
+  private vakitEsiginiAl(vakit: VakitAdi): number {
+    const esik = this.ayarlar?.baslangicEsikleri?.[vakit as MuhafizVakti];
+    return typeof esik === 'number' && Number.isFinite(esik) && esik > 0 ? esik : 0;
   }
 
   /**
@@ -249,7 +287,8 @@ export class VakitSayacBildirimServisi {
 
     const simdi = new Date();
     const cikisSuresi = vakit.cikis.getTime();
-    const sayacBaslangic = cikisSuresi - (this.ayarlar.baslangicEsikDk * 60 * 1000);
+    // Eşik VAKİT BAZLI (Faz 3): sayaç, o vaktin muhafız başlangıç eşiğinde başlar.
+    const sayacBaslangic = cikisSuresi - (this.vakitEsiginiAl(vakit.vakit) * 60 * 1000);
 
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${vakit.tarih}_${vakit.vakit}`;
 

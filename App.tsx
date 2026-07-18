@@ -23,7 +23,8 @@ import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildiri
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
-import { sayacBaslangicEsikDkHesapla } from './src/core/utils/vakitSayacYardimcisi';
+import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from './src/core/utils/vakitSayacYardimcisi';
+import { muhafizMatrisiniCoz } from './src/core/muhafiz/motorAdaptoru';
 import { iftarSayacAyarlariniYukle } from './src/presentation/store/iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './src/presentation/store/sahurSayacSlice';
 import { konumAyarlariniYukle, konumAyarlariniGuncelle } from './src/presentation/store/konumSlice';
@@ -169,24 +170,16 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const iftarState = state.iftarSayac;
     const sahurState = state.sahurSayac;
 
-    // Sıklıklar için varsayılan değerler
-    const sikliklar = muhafizAyarlari.sikliklar || { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
+    // Muhafiz matrisi TEK kaynak (Faz 3): ekran matrisi yazar, motor matristen okur.
+    // Matris yoksa/bozuksa eski global esik/sikliklardan turetilir (savunmaci).
+    const muhafizMatrisi = muhafizMatrisiniCoz(muhafizAyarlari);
 
     // 3. Uc servisi paralel yapilandir (hepsi yuklenen konum verisini kullanir, birbirinden bagimsiz)
     await Promise.all([
       ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
         aktif: muhafizAyarlari.aktif,
         koordinatlar: konumState.koordinatlar,
-        esikler: {
-          seviye1: muhafizAyarlari.esikler.seviye1,
-          seviye1Siklik: sikliklar.seviye1 || 15,
-          seviye2: muhafizAyarlari.esikler.seviye2,
-          seviye2Siklik: sikliklar.seviye2 || 10,
-          seviye3: muhafizAyarlari.esikler.seviye3,
-          seviye3Siklik: sikliklar.seviye3 || 5,
-          seviye4: muhafizAyarlari.esikler.seviye4,
-          seviye4Siklik: sikliklar.seviye4 || 1,
-        },
+        matris: muhafizMatrisi,
       }),
       konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0
         ? VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle()
@@ -194,11 +187,12 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
-        baslangicEsikDk: sayacBaslangicEsikDkHesapla(
+        baslangicEsikleri: sayacBaslangicEsikleriHesapla(
           sayacState.ayarlar.sayacBaslangicSeviyesi,
-          muhafizAyarlari
+          muhafizMatrisi
         ),
         muhafizAktif: muhafizAyarlari.aktif,
+        muhafizUyarilanVakitler: muhafizUyarilanVakitleriBul(muhafizMatrisi),
       }),
       IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: iftarState.ayarlar.aktif,

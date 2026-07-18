@@ -1,5 +1,6 @@
 package expo.modules.countdownnotification
 
+import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 import android.content.Intent
@@ -109,6 +110,54 @@ class ExpoCountdownNotificationModule : Module() {
                 }
             }
             Unit
+        }
+
+        // ============================================================
+        // SESLI ANONS (muhafiz TTS) — Foreground Service KULLANILMAZ
+        // ============================================================
+
+        /** Verilen zamanda [metin]'i Turkce TTS ile seslendirecek exact alarm kurar. */
+        Function("planlaAnons") { id: String, tetikZamanMs: Double, metin: String ->
+            val context = appContext.reactContext
+            if (context != null) {
+                AnonsZamanlayici.planla(context.applicationContext, id, tetikZamanMs.toLong(), metin)
+            }
+            Unit
+        }
+
+        /** Tek bir anonsu iptal eder (ilgili bildirim iptal edilirken cagrilir). */
+        Function("iptalEtAnons") { id: String ->
+            val context = appContext.reactContext
+            if (context != null) {
+                AnonsZamanlayici.iptal(context.applicationContext, id)
+            }
+            Unit
+        }
+
+        /** Planli tum anonslari iptal eder (yeniden planlama oncesi temizlik). */
+        Function("iptalEtTumAnonslar") {
+            val context = appContext.reactContext
+            if (context != null) {
+                AnonsZamanlayici.tumunuIptal(context.applicationContext)
+            }
+            Unit
+        }
+
+        /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */
+        AsyncFunction("trDestekleniyorMu") { promise: Promise ->
+            val context = appContext.reactContext
+            if (context == null) {
+                promise.resolve(false)
+            } else {
+                try {
+                    AnonsKonusucu.turkceDestekleniyorMu(context.applicationContext) { destekleniyor ->
+                        promise.resolve(destekleniyor)
+                    }
+                } catch (e: Exception) {
+                    Log.e("CountdownModule", "TTS dil sorgusu basarisiz: ${e.message}")
+                    promise.resolve(false)
+                }
+            }
         }
     }
 }

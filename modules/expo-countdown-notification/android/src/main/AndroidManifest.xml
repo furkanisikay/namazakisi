@@ -1,10 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
   <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+  <!-- Sesli anons: goAsync penceresinde konusma bitene kadar CPU uyanik kalmali.
+       (Uygulama manifestinde zaten tanimli; modul kendi kendine yeterli olsun diye burada da.) -->
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
   <application>
     <receiver
       android:name="expo.modules.countdownnotification.CountdownReceiver"
+      android:exported="false" />
+    <!-- Sesli anons alarmini karsilar; FOREGROUND SERVICE YOK (bkz. AnonsZamanlayici). -->
+    <receiver
+      android:name="expo.modules.countdownnotification.AnonsReceiver"
       android:exported="false" />
   </application>
 </manifest>

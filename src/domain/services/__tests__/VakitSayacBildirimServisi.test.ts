@@ -40,6 +40,20 @@ jest.mock('../../../data/local/LocalNamazServisi', () => ({
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
+import type { MuhafizVakti } from '../../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI } from '../../../core/muhafiz/matrisTipleri';
+
+/**
+ * Faz 3: esikler artik VAKIT BAZLI. Eski global `baslangicEsikDk: 30`in birebir
+ * karsiligi "her vakit 30 dk"dir; mevcut testler bu sabitle ayni davranisi korur.
+ */
+const esikleriKur = (esikler: Partial<Record<MuhafizVakti, number>>, varsayilan = 0): Record<MuhafizVakti, number> => {
+  const sonuc = {} as Record<MuhafizVakti, number>;
+  for (const vakit of MUHAFIZ_VAKITLERI) sonuc[vakit] = esikler[vakit] ?? varsayilan;
+  return sonuc;
+};
+
+const TUM_VAKITLER_30 = esikleriKur({}, 30);
 
 const OriginalDate = global.Date;
 
@@ -90,12 +104,17 @@ describe('VakitSayacBildirimServisi', () => {
   });
 
   it('kanal olusturma: eski kanal silinip yeni DEFAULT importance ile olusturulmali', async () => {
+    // Kanal ARTIK planlanacak en az bir vakit varsa acilir (bos planda kanal
+    // acmak gereksizdi; muhafiz tum vakitleri kapsadiginda da acilmamali).
+    // Bu yuzden saati planlanabilir bir ana sabitle.
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
     const servis = VakitSayacBildirimServisi.getInstance();
 
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     expect(notifee.deleteChannel).toHaveBeenCalledWith('vakit_sayac');
@@ -125,7 +144,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const createCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
@@ -190,7 +209,7 @@ describe('VakitSayacBildirimServisi', () => {
       await servis.yapilandirVePlanla({
         aktif: true,
         koordinatlar: { lat: 41, lng: 29 },
-        baslangicEsikDk: 30,
+        baslangicEsikleri: TUM_VAKITLER_30,
       });
 
       // iOS dalinda yalnizca temizleme calismali; hicbir yeni planlama yapilmamali
@@ -209,7 +228,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: false,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     // Devre disi: temizleme tetiklenir (gosterilen bildirimler taranir) ...
@@ -228,7 +247,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const createCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
@@ -258,7 +277,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
@@ -283,7 +302,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
@@ -307,7 +326,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
@@ -338,7 +357,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
       muhafizAktif: true,
     });
 
@@ -357,7 +376,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
       muhafizAktif: false,
     });
 
@@ -369,6 +388,75 @@ describe('VakitSayacBildirimServisi', () => {
     expect(createIds).toContain(ogleId);
   });
 
+  it('muhafiz aktif ama O VAKIT tumden sessiz: sayac bastirilmamali (#90 boslugu)', async () => {
+    // Faz 2 ile kullanici TEK bir vakti matriste tumden susturabiliyor. O vakitte
+    // muhafiz hicbir bildirim uretmez -> global bastirma uygulanirsa kullanici o
+    // vakit icin HICBIR hatirlatma almaz. Bastirma yalniz muhafizin gercekten
+    // uyardigi vakitlere uygulanmali.
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+      muhafizAktif: true,
+      // 'ogle' listede YOK -> muhafiz orada susuyor -> sayac calismali
+      muhafizUyarilanVakitler: ['imsak', 'ikindi', 'aksam', 'yatsi'],
+    });
+
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const onek = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_`;
+
+    // Muhafizin sustugu 'ogle' icin sayac KURULMALI
+    expect(createIds).toContain(`${onek}ogle`);
+    // Muhafizin uyardigi vakitler icin ise cakismayi onlemek uzere KURULMAMALI
+    expect(createIds).not.toContain(`${onek}ikindi`);
+    expect(createIds).not.toContain(`${onek}aksam`);
+    expect(createIds).not.toContain(`${onek}yatsi`);
+  });
+
+  it('esikler VAKIT BAZLI: her vakit kendi sayac baslangicini kullanmali', async () => {
+    // 10:00. ogle cikisi (asr) 15:00, ikindi cikisi (maghrib) 18:00.
+    // ogle esigi 30 dk -> 14:30; ikindi esigi 45 dk -> 17:15.
+    // Global tek esik regresyonunda ikisi de ayni degeri kullanir ve test duser.
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: esikleriKur({ ogle: 30, ikindi: 45, aksam: 20, yatsi: 20, imsak: 20 }),
+    });
+
+    const createCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
+    const onek = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_`;
+    const tetik = (id: string) => createCalls.find((c: any[]) => c[0].id === id)?.[1].timestamp;
+
+    expect(tetik(`${onek}ogle`)).toBe(mockPrayerTimes.asr.getTime() - 30 * 60 * 1000);
+    expect(tetik(`${onek}ikindi`)).toBe(mockPrayerTimes.maghrib.getTime() - 45 * 60 * 1000);
+  });
+
+  it('esigi olmayan/0 olan vakit icin sayac planlanmaz', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+
+    const servis = VakitSayacBildirimServisi.getInstance();
+    await servis.yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      // 'ogle' esigi 0 -> planlanacak baslangic noktasi yok
+      baslangicEsikleri: esikleriKur({ ikindi: 30, aksam: 30, yatsi: 30, imsak: 30 }),
+    });
+
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    const onek = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_`;
+
+    expect(createIds).not.toContain(`${onek}ogle`);
+    expect(createIds).toContain(`${onek}ikindi`);
+  });
+
   it('muhafizAktif belirtilmemis: geriye uyumlu sekilde sayac normal planlanmali', async () => {
     saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
 
@@ -376,7 +464,7 @@ describe('VakitSayacBildirimServisi', () => {
     await servis.yapilandirVePlanla({
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     });
 
     const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
@@ -392,7 +480,7 @@ describe('VakitSayacBildirimServisi', () => {
     const ayarlar = {
       aktif: true,
       koordinatlar: { lat: 41, lng: 29 },
-      baslangicEsikDk: 30,
+      baslangicEsikleri: TUM_VAKITLER_30,
     };
 
     await servis.yapilandirVePlanla(ayarlar);
@@ -414,7 +502,7 @@ describe('VakitSayacBildirimServisi', () => {
       servis.yapilandirVePlanla({
         aktif: true,
         koordinatlar: { lat: 41, lng: 29 },
-        baslangicEsikDk: 30,
+        baslangicEsikleri: TUM_VAKITLER_30,
       })
     ).resolves.toBeUndefined();
 
@@ -437,7 +525,7 @@ describe('VakitSayacBildirimServisi', () => {
       servis.yapilandirVePlanla({
         aktif: true,
         koordinatlar: { lat: 41, lng: 29 },
-        baslangicEsikDk: 30,
+        baslangicEsikleri: TUM_VAKITLER_30,
       })
     ).resolves.toBeUndefined();
 
@@ -458,7 +546,7 @@ describe('VakitSayacBildirimServisi', () => {
       servis.yapilandirVePlanla({
         aktif: true,
         koordinatlar: { lat: 41, lng: 29 },
-        baslangicEsikDk: 30,
+        baslangicEsikleri: TUM_VAKITLER_30,
       })
     ).resolves.toBeUndefined();
 
@@ -506,7 +594,7 @@ describe('VakitSayacBildirimServisi', () => {
       servis.yapilandirVePlanla({
         aktif: true,
         koordinatlar: { lat: 41, lng: 29 },
-        baslangicEsikDk: 30,
+        baslangicEsikleri: TUM_VAKITLER_30,
       })
     ).resolves.toBeUndefined();
 

@@ -18,7 +18,8 @@ import {
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { sayacBaslangicEsikDkHesapla } from '../../core/utils/vakitSayacYardimcisi';
+import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
+import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -176,12 +177,14 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     const guncelMuhafizState = state.muhafiz;
     const konumState = state.konum;
     const seviye = sayacAyarlari.sayacBaslangicSeviyesi || 1;
+    const matris = muhafizMatrisiniCoz(guncelMuhafizState);
 
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: yeniDeger,
       koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: sayacBaslangicEsikDkHesapla(seviye, guncelMuhafizState),
+      baslangicEsikleri: sayacBaslangicEsikleriHesapla(seviye, matris),
       muhafizAktif: guncelMuhafizState.aktif,
+      muhafizUyarilanVakitler: muhafizUyarilanVakitleriBul(matris),
     });
   };
 
@@ -193,12 +196,14 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     const state = store.getState();
     const guncelMuhafizState = state.muhafiz;
     const konumState = state.konum;
+    const matris = muhafizMatrisiniCoz(guncelMuhafizState);
 
     await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
       aktif: sayacAyarlari.aktif,
       koordinatlar: konumState.koordinatlar,
-      baslangicEsikDk: sayacBaslangicEsikDkHesapla(seviye, guncelMuhafizState),
+      baslangicEsikleri: sayacBaslangicEsikleriHesapla(seviye, matris),
       muhafizAktif: guncelMuhafizState.aktif,
+      muhafizUyarilanVakitler: muhafizUyarilanVakitleriBul(matris),
     });
   };
 

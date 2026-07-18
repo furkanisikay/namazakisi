@@ -1,597 +1,425 @@
 /**
- * Muhafız Ayarları Sayfası
- * Namaz hatırlatma bildirimleri ayarları
- * 
- * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
+ * Muhafız Ayarları Sayfası — vakit-merkezli (Faz 2).
+ *
+ * Üç katmanlı progressive disclosure (spec 2026-07-17-muhafiz-ekrani-ve-sesli-uyari):
+ *   Katman 1 — ana switch + yoğunluk preset'i + 5 vakit satırı (dinamik özet)
+ *   Katman 2 — vakit açılınca o vaktin 4 adımı + "Tüm vakitlere uygula"
+ *   Katman 3 — adıma dokununca detay (mod / eşik / sıklık / ses / anons metni)
+ *
+ * Yazma yolu: matris `matrisiGuncelle` ile yazılır. Eski `esikler`/`sikliklar`
+ * alanlarına DOKUNULMAZ — motor adaptörü (Faz 3) onları matristen devralacak.
  */
 
 import * as React from 'react';
-import { useState, useMemo, useRef, useCallback } from 'react';
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    Switch,
-    Animated,
-} from 'react-native';
+import { useState, useMemo, useCallback } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { muhafizAyarlariniGuncelle, HATIRLATMA_PRESETLERI } from '../store/muhafizSlice';
+import {
+    muhafizAyarlariniGuncelle,
+    matrisiGuncelle,
+    HATIRLATMA_PRESETLERI,
+} from '../store/muhafizSlice';
 import { useFeedback } from '../../core/feedback';
 import { useKonumMetni } from '../hooks/useKonumMetni';
-import { SayisalSecici } from '../components/common/SayisalSecici';
+import { BildirimModali } from '../components/common/BildirimModali';
+import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
+import { tumVakitlereUygula, presetUygula, zamanlamaDegistiMi } from '../../core/muhafiz/matrisIslemleri';
+import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
+import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
+import { SeviyeDetayModal } from './MuhafizAyarlari/SeviyeDetayModal';
+import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
+import { presetiKademeyeCevir, YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
+import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 
-/**
- * Seviye renkleri
- */
-const SEVIYE_RENKLERI = {
-    seviye1: '#4CAF50', // Yeşil - Nazik
-    seviye2: '#FF9800', // Turuncu - Uyarı
-    seviye3: '#F44336', // Kırmızı - Mücadele
-    seviye4: '#D32F2F', // Koyu Kırmızı - Alarm
-};
+type PresetYogunlugu = 'hafif' | 'normal' | 'yogun';
 
-/**
- * Seviye bilgileri
- */
-const SEVIYE_BILGILERI = [
-    { id: 'seviye1', baslik: 'Nazik Hatırlatma', ikonAdi: 'bell', renk: SEVIYE_RENKLERI.seviye1, minEsik: 15, maxEsik: 90 },
-    { id: 'seviye2', baslik: 'Uyarı', ikonAdi: 'exclamation-triangle', renk: SEVIYE_RENKLERI.seviye2, minEsik: 10, maxEsik: 60 },
-    { id: 'seviye3', baslik: 'Şeytanla Mücadele', ikonAdi: 'fire-alt', renk: SEVIYE_RENKLERI.seviye3, minEsik: 5, maxEsik: 30 },
-    { id: 'seviye4', baslik: 'Acil Alarm', ikonAdi: 'exclamation-circle', renk: SEVIYE_RENKLERI.seviye4, minEsik: 1, maxEsik: 15 },
-];
+/** Ayarlar stack'i tiplenmemiş; `any` yerine ihtiyaç duyulan minimum yüzey. */
+type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
-
-// SayisalSecici artik ../components/common/SayisalSecici icinde (paylasilan).
-
-/**
- * Bildirim bilgisi tipi
- */
-interface BildirimBilgisi {
-    dakika: number;
-    seviye: number;
-    renk: string;
-    ikonAdi: string;
-    tekrarMi: boolean;
-}
-
-/**
- * Bildirim Onizleme Props
- */
-interface BildirimOnizlemeProps {
-    esikler: { seviye1: number; seviye2: number; seviye3: number; seviye4: number };
-    sikliklar: { seviye1: number; seviye2: number; seviye3: number; seviye4: number };
-}
-
-/**
- * Bildirim Onizleme Diagrami
- */
-const BildirimOnizleme: React.FC<BildirimOnizlemeProps> = ({ esikler, sikliklar }) => {
-    const renkler = useRenkler();
-    const [acikMi, setAcikMi] = useState(false);
-    const animDeger = useRef(new Animated.Value(0)).current;
-
-    // Tum bildirimleri hesapla
-    const tumBildirimler = useMemo(() => {
-        const bildirimler: BildirimBilgisi[] = [];
-        const seviyeler = [
-            { seviye: 1, esik: esikler.seviye1, siklik: sikliklar.seviye1, renk: SEVIYE_RENKLERI.seviye1, ikonAdi: 'bell' },
-            { seviye: 2, esik: esikler.seviye2, siklik: sikliklar.seviye2, renk: SEVIYE_RENKLERI.seviye2, ikonAdi: 'exclamation-triangle' },
-            { seviye: 3, esik: esikler.seviye3, siklik: sikliklar.seviye3, renk: SEVIYE_RENKLERI.seviye3, ikonAdi: 'fire-alt' },
-            { seviye: 4, esik: esikler.seviye4, siklik: sikliklar.seviye4, renk: SEVIYE_RENKLERI.seviye4, ikonAdi: 'exclamation-circle' },
-        ];
-
-        for (const seviye of seviyeler) {
-            const sonrakiSeviye = seviyeler.find(s => s.seviye === seviye.seviye + 1);
-            const bitisDakikasi = sonrakiSeviye ? sonrakiSeviye.esik : 0;
-            let mevcutDakika = seviye.esik;
-            let ilkMi = true;
-
-            while (mevcutDakika > bitisDakikasi && mevcutDakika > 0) {
-                bildirimler.push({
-                    dakika: mevcutDakika,
-                    seviye: seviye.seviye,
-                    renk: seviye.renk,
-                    ikonAdi: seviye.ikonAdi,
-                    tekrarMi: !ilkMi,
-                });
-                mevcutDakika -= seviye.siklik;
-                ilkMi = false;
-            }
-        }
-        return bildirimler.sort((a, b) => b.dakika - a.dakika);
-    }, [esikler, sikliklar]);
-
-    // Seviye bazli sayilar
-    const seviyeSayilari = useMemo(() => {
-        return [1, 2, 3, 4].map(seviye => ({
-            seviye,
-            sayi: tumBildirimler.filter(b => b.seviye === seviye).length,
-            renk: seviye === 1 ? SEVIYE_RENKLERI.seviye1 :
-                seviye === 2 ? SEVIYE_RENKLERI.seviye2 :
-                    seviye === 3 ? SEVIYE_RENKLERI.seviye3 : SEVIYE_RENKLERI.seviye4,
-            ikonAdi: seviye === 1 ? 'bell' : seviye === 2 ? 'exclamation-triangle' : seviye === 3 ? 'fire-alt' : 'exclamation-circle',
-        }));
-    }, [tumBildirimler]);
-
-    // Ac/kapa animasyonu
-    const toggleAcKapa = useCallback(() => {
-        Animated.timing(animDeger, {
-            toValue: acikMi ? 0 : 1,
-            duration: 250,
-            useNativeDriver: false,
-        }).start();
-        setAcikMi(!acikMi);
-    }, [acikMi, animDeger]);
-
-    return (
-        <View
-            className="rounded-xl border overflow-hidden"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
-        >
-            {/* Baslik - Tiklanabilir */}
-            <TouchableOpacity
-                className="flex-row items-center justify-between p-3.5"
-                onPress={toggleAcKapa}
-                activeOpacity={0.7}
-            >
-                <View className="flex-row items-center">
-                    <FontAwesome5 name="chart-bar" size={14} color={renkler.metin} />
-                    <Text className="text-sm font-bold ml-2" style={{ color: renkler.metin }}>
-                        Bildirim Özeti
-                    </Text>
-                    <View className="ml-2 px-2 py-0.5 rounded-lg" style={{ backgroundColor: renkler.birincil }}>
-                        <Text className="text-xs font-bold text-white">{tumBildirimler.length} Bildirim</Text>
-                    </View>
-                </View>
-                <Animated.View style={{
-                    transform: [{
-                        rotate: animDeger.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ['0deg', '180deg'],
-                        })
-                    }]
-                }}>
-                    <FontAwesome5 name="chevron-down" size={12} color={renkler.metinIkincil} />
-                </Animated.View>
-            </TouchableOpacity>
-
-            {/* Kompakt Özet */}
-            <View className="flex-row px-3.5 pb-3 gap-2">
-                {seviyeSayilari.map((item) => (
-                    <View
-                        key={item.seviye}
-                        className="flex-1 flex-row items-center justify-center py-2 px-2.5 rounded-lg gap-1"
-                        style={{ backgroundColor: `${item.renk}15` }}
-                    >
-                        <FontAwesome5 name={item.ikonAdi} size={12} color={item.renk} solid />
-                        <Text className="text-sm font-bold" style={{ color: item.renk }}>{item.sayi}x</Text>
-                    </View>
-                ))}
-            </View>
-
-            {/* Genişletilmiş Detay */}
-            {acikMi && (
-                <Animated.View
-                    className="border-t px-3.5 py-3"
-                    style={{ opacity: animDeger, borderTopColor: renkler.sinir }}
-                >
-                    <Text
-                        className="text-xs font-semibold mb-2.5 tracking-wider"
-                        style={{ color: renkler.metinIkincil }}
-                    >
-                        ZAMAN ÇİZELGESİ
-                    </Text>
-
-                    <View className="mt-1">
-                        {tumBildirimler.map((bildirim, index) => (
-                            <View key={`${bildirim.seviye}-${bildirim.dakika}`} className="flex-row items-start">
-                                <View className="w-11 items-center">
-                                    <View
-                                        className="w-8 h-8 rounded-full items-center justify-center"
-                                        style={{ backgroundColor: bildirim.renk }}
-                                    >
-                                        <FontAwesome5 name={bildirim.ikonAdi} size={12} color="#FFF" solid />
-                                    </View>
-                                    {index < tumBildirimler.length - 1 && (
-                                        <View className="w-0.5 h-8 my-0.5" style={{ backgroundColor: renkler.sinir }} />
-                                    )}
-                                </View>
-
-                                <View
-                                    className="flex-1 ml-2 mb-1.5 p-2.5 rounded-lg border"
-                                    style={{
-                                        backgroundColor: bildirim.tekrarMi ? 'transparent' : `${bildirim.renk}12`,
-                                        borderColor: bildirim.tekrarMi ? renkler.sinir : bildirim.renk,
-                                        borderWidth: bildirim.tekrarMi ? 1 : 1.5,
-                                    }}
-                                >
-                                    <View className="flex-row items-center justify-between mb-0.5">
-                                        <Text className="text-sm font-bold" style={{ color: bildirim.renk }}>
-                                            {bildirim.dakika} dk kala
-                                        </Text>
-                                        <View className="px-1.5 py-0.5 rounded-md" style={{ backgroundColor: bildirim.renk }}>
-                                            <Text className="text-[9px] font-semibold text-white">Seviye {bildirim.seviye}</Text>
-                                        </View>
-                                    </View>
-                                    <Text className="text-[11px]" style={{ color: renkler.metinIkincil }}>
-                                        {bildirim.seviye === 1 && 'Nazik Hatırlatma'}
-                                        {bildirim.seviye === 2 && 'Uyarı'}
-                                        {bildirim.seviye === 3 && 'Şeytanla mücadele'}
-                                        {bildirim.seviye === 4 && 'Acil alarm'}
-                                        {' bildirimi'}
-                                        {bildirim.tekrarMi && ' (tekrar)'}
-                                    </Text>
-                                </View>
-                            </View>
-                        ))}
-
-                        {/* Vakit Çıkışı */}
-                        <View className="flex-row items-start">
-                            <View className="w-11 items-center">
-                                <View
-                                    className="w-8 h-8 rounded-full items-center justify-center"
-                                    style={{ backgroundColor: renkler.sinir }}
-                                >
-                                    <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} />
-                                </View>
-                            </View>
-                            <View
-                                className="flex-1 ml-2 p-2.5 rounded-lg border"
-                                style={{ backgroundColor: `${renkler.sinir}20`, borderColor: renkler.sinir }}
-                            >
-                                <Text className="text-sm font-bold" style={{ color: renkler.metinIkincil }}>
-                                    Vakit Çıkışı
-                                </Text>
-                                <Text className="text-[11px]" style={{ color: renkler.metinIkincil }}>
-                                    Namaz vaktinin sonu
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
-                </Animated.View>
-            )}
-        </View>
-    );
-};
-
-/**
- * Muhafiz Ayarlari Sayfasi
- */
 export const MuhafizAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation() as unknown as AyarNavigasyonu;
     const { butonTiklandiFeedback } = useFeedback();
     const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
     const konumAyarlari = useAppSelector((state) => state.konum);
     const konumMetni = useKonumMetni(konumAyarlari);
 
+    const [acikVakit, setAcikVakit] = useState<MuhafizVakti | null>(null);
+    const [detay, setDetay] = useState<{ vakit: MuhafizVakti; indeks: number } | null>(null);
+    const [presetOnayi, setPresetOnayi] = useState<PresetYogunlugu | null>(null);
+    const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
+    const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
+
+    // Faz 5: cihazda Türkçe konuşma paketi yoksa sesli modlarda kibar uyarı
+    // gösterilir (engelleme YOK — ayar yine kaydedilir).
+    const ttsDestekli = useTurkceTtsDestegi();
+
+    // Matris Faz 1'de opsiyonel (eski kayıtlarda olmayabilir) → göçle türet.
+    const matris: MuhafizMatrisi = useMemo(
+        () => muhafizAyarlari.matris ?? eskidenMatriseGoc(muhafizAyarlari),
+        [muhafizAyarlari]
+    );
 
     /**
-     * Son GPS guncelleme zamanini kisa formatla
+     * Matrisi yaz + spec 4.1: elle ZAMANLAMA (eşik/sıklık) değişikliği yoğunluğu
+     * 'ozel' yapar. Mod/ses/anons değişikliği yoğunluğu değiştirmez.
      */
+    const matrisiYaz = useCallback(
+        (yeni: MuhafizMatrisi) => {
+            dispatch(matrisiGuncelle(yeni));
+            if (muhafizAyarlari.yogunluk !== 'ozel' && zamanlamaDegistiMi(matris, yeni)) {
+                dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' }));
+            }
+        },
+        [dispatch, matris, muhafizAyarlari.yogunluk]
+    );
+
+    const seviyeGuncelle = useCallback(
+        (vakit: MuhafizVakti, indeks: number, yeniSeviye: SeviyeAyari) => {
+            matrisiYaz({
+                ...matris,
+                [vakit]: {
+                    seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeniSeviye : s)),
+                },
+            });
+        },
+        [matris, matrisiYaz]
+    );
+
+    const presetiUygula = useCallback(
+        async (yogunluk: PresetYogunlugu) => {
+            await butonTiklandiFeedback();
+            const preset = HATIRLATMA_PRESETLERI[yogunluk];
+            // presetUygula YALNIZ eşik/sıklığı ezer; mod/ses/anons korunur (spec 4.1).
+            dispatch(
+                matrisiGuncelle(
+                    presetUygula(
+                        matris,
+                        presetiKademeyeCevir(preset.esikler),
+                        presetiKademeyeCevir(preset.sikliklar)
+                    )
+                )
+            );
+            dispatch(muhafizAyarlariniGuncelle({ yogunluk }));
+        },
+        [butonTiklandiFeedback, dispatch, matris]
+    );
+
+    const yogunlukSec = useCallback(
+        (yogunluk: PresetYogunlugu) => {
+            if (yogunluk === muhafizAyarlari.yogunluk) return;
+            // Elle ayarlanmış zamanlama varsa (yogunluk === 'ozel') önce onay iste.
+            if (muhafizAyarlari.yogunluk === 'ozel') {
+                setPresetOnayi(yogunluk);
+                return;
+            }
+            void presetiUygula(yogunluk);
+        },
+        [muhafizAyarlari.yogunluk, presetiUygula]
+    );
+
+    const tumVakitlereUygulaOnayla = useCallback(() => {
+        if (!tumuneOnayi) return;
+        matrisiYaz(tumVakitlereUygula(matris, tumuneOnayi));
+        setTumuneOnayi(null);
+    }, [tumuneOnayi, matris, matrisiYaz]);
+
+    /** Son GPS güncelleme zamanının kısa metni */
     const sonGuncellemeKisaMetin = (): string | null => {
         if (konumAyarlari.konumModu !== 'oto' || !konumAyarlari.sonGpsGuncellemesi) {
             return null;
         }
-
-        const guncellemeTarihi = new Date(konumAyarlari.sonGpsGuncellemesi);
-        const simdi = new Date();
-        const farkMs = simdi.getTime() - guncellemeTarihi.getTime();
+        const farkMs = Date.now() - new Date(konumAyarlari.sonGpsGuncellemesi).getTime();
         const farkDakika = Math.floor(farkMs / (1000 * 60));
         const farkSaat = Math.floor(farkMs / (1000 * 60 * 60));
         const farkGun = Math.floor(farkMs / (1000 * 60 * 60 * 24));
 
-        if (farkDakika < 1) {
-            return 'Az once';
-        } else if (farkDakika < 60) {
-            return `${farkDakika} dk once`;
-        } else if (farkSaat < 24) {
-            return `${farkSaat} sa once`;
-        } else {
-            return `${farkGun} gun once`;
-        }
+        if (farkDakika < 1) return 'Az önce';
+        if (farkDakika < 60) return `${farkDakika} dk önce`;
+        if (farkSaat < 24) return `${farkSaat} sa önce`;
+        return `${farkGun} gün önce`;
     };
 
-    // Yogunluk secimi
-    const handleYogunlukSec = async (yogunluk: 'hafif' | 'normal' | 'yogun') => {
-        await butonTiklandiFeedback();
-        const preset = HATIRLATMA_PRESETLERI[yogunluk];
-        dispatch(muhafizAyarlariniGuncelle({
-            yogunluk,
-            esikler: preset.esikler,
-            sikliklar: preset.sikliklar,
-        }));
-    };
-
-    // Gelismis ayarlar
-    const esikDegistir = (seviye: keyof typeof muhafizAyarlari.esikler, yeniDeger: number) => {
-        dispatch(muhafizAyarlariniGuncelle({
-            esikler: { ...muhafizAyarlari.esikler, [seviye]: yeniDeger }
-        }));
-    };
-
-    const siklikDegistir = (seviye: keyof typeof muhafizAyarlari.sikliklar, yeniDeger: number) => {
-        dispatch(muhafizAyarlariniGuncelle({
-            sikliklar: { ...muhafizAyarlari.sikliklar, [seviye]: yeniDeger }
-        }));
-    };
+    const ozelMi = muhafizAyarlari.yogunluk === 'ozel';
 
     return (
-        <ScrollView
-            className="flex-1 p-4"
-            style={{ backgroundColor: renkler.arkaplan }}
-        >
-            {/* ANA SWITCH */}
-            <View
-                className="flex-row items-center justify-between p-5 rounded-2xl border-2 mb-4 mt-2"
-                style={{
-                    backgroundColor: muhafizAyarlari.aktif ? renkler.birincil : renkler.kartArkaplan,
-                    borderColor: muhafizAyarlari.aktif ? renkler.birincil : renkler.sinir,
-                }}
-            >
-                <View className="flex-row items-center flex-1">
-                    <View className="w-12 h-12 rounded-full items-center justify-center mr-4" style={{ backgroundColor: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.2)' : renkler.sinir }}>
-                        <FontAwesome5
-                            name={muhafizAyarlari.aktif ? 'shield-alt' : 'moon'}
-                            size={24}
-                            color={muhafizAyarlari.aktif ? '#FFF' : renkler.metinIkincil}
-                            solid
-                        />
-                    </View>
-                    <View className="flex-1">
-                        <Text
-                            className="text-xl font-bold"
-                            style={{ color: muhafizAyarlari.aktif ? '#FFF' : renkler.metin }}
-                        >
-                            Namaz Muhafızı
-                        </Text>
-                        <Text
-                            className="text-sm mt-0.5"
-                            style={{ color: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
-                        >
-                            {muhafizAyarlari.aktif ? 'Hatırlatmalar aktif' : 'Hatırlatmalar kapalı'}
-                        </Text>
-                    </View>
-                </View>
-                <Switch
-                    value={muhafizAyarlari.aktif}
-                    onValueChange={(val) => { dispatch(muhafizAyarlariniGuncelle({ aktif: val })); }}
-                    trackColor={{ false: renkler.sinir, true: 'rgba(255,255,255,0.3)' }}
-                    thumbColor={muhafizAyarlari.aktif ? '#FFF' : '#f4f3f4'}
-                />
-            </View>
-
-            {/* Kapalı ise mesaj göster */}
-            {!muhafizAyarlari.aktif && (
+        <>
+            <ScrollView className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
+                {/* ── ANA SWITCH ── */}
                 <View
-                    className="items-center p-10 rounded-2xl border"
-                    style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+                    className="flex-row items-center justify-between p-5 rounded-2xl border-2 mb-4 mt-2"
+                    style={{
+                        backgroundColor: muhafizAyarlari.aktif ? renkler.birincil : renkler.kartArkaplan,
+                        borderColor: muhafizAyarlari.aktif ? renkler.birincil : renkler.sinir,
+                    }}
                 >
-                    <FontAwesome5 name="bed" size={48} color={renkler.metinIkincil} />
-                    <Text className="text-base text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                        Muhafız kapalı. Namaz vakitleri hatırlatılmayacak.
-                    </Text>
-                </View>
-            )}
-
-            {/* AKTIF ISE AYARLAR */}
-            {muhafizAyarlari.aktif && (
-                <>
-                    {/* KONUM BILGISI - Salt Okunur Badge */}
-                    <TouchableOpacity
-                        className="flex-row items-center justify-between p-3.5 rounded-xl border mb-4"
-                        style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
-                        onPress={() => navigation.navigate('KonumAyarlari')}
-                        activeOpacity={0.7}
-                    >
-                        <View className="flex-row items-center flex-1">
-                            <View className="w-10 h-10 rounded-full items-center justify-center mr-3" style={{ backgroundColor: `${renkler.birincil}15` }}>
-                                <FontAwesome5
-                                    name={konumAyarlari.konumModu === 'oto' ? 'satellite-dish' : 'map-marker-alt'}
-                                    size={16}
-                                    color={renkler.birincil}
-                                    solid
-                                />
-                            </View>
-                            <View className="flex-1">
-                                <Text className="text-[11px] font-medium tracking-wider" style={{ color: renkler.metinIkincil }}>
-                                    KONUM {sonGuncellemeKisaMetin() && `• ${sonGuncellemeKisaMetin()}`}
-                                </Text>
-                                <Text className="text-base font-semibold mt-0.5" style={{ color: renkler.metin }}>
-                                    {konumMetni}
-                                </Text>
-                            </View>
+                    <View className="flex-row items-center flex-1">
+                        <View
+                            className="w-12 h-12 rounded-full items-center justify-center mr-4"
+                            style={{ backgroundColor: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.2)' : renkler.sinir }}
+                        >
+                            <FontAwesome5
+                                name={muhafizAyarlari.aktif ? 'shield-alt' : 'moon'}
+                                size={24}
+                                color={muhafizAyarlari.aktif ? '#FFF' : renkler.metinIkincil}
+                                solid
+                            />
                         </View>
-                        <View className="flex-row items-center">
-                            {konumAyarlari.akilliTakipAktif && konumAyarlari.konumModu === 'oto' && (
-                                <View className="w-7 h-7 rounded-full items-center justify-center mr-1.5" style={{ backgroundColor: '#4CAF5020' }}>
-                                    <FontAwesome5 name="compass" size={12} color="#4CAF50" />
-                                </View>
-                            )}
-                            <View
-                                className="px-2.5 py-1 rounded-lg mr-2"
-                                style={{ backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320' }}
+                        <View className="flex-1">
+                            <Text
+                                className="text-xl font-bold"
+                                style={{ color: muhafizAyarlari.aktif ? '#FFF' : renkler.metin }}
                             >
-                                <Text
-                                    className="text-xs font-bold"
-                                    style={{ color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3' }}
-                                >
-                                    {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
-                                </Text>
-                            </View>
-                            <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
-                        </View>
-                    </TouchableOpacity>
-
-                    {/* YOGUNLUK SECIMI */}
-                    <View
-                        className="rounded-2xl border p-4 mb-4"
-                        style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
-                    >
-                        <View className="flex-row items-center mb-3">
-                            <FontAwesome5 name="bell" size={16} color={renkler.metinIkincil} solid />
-                            <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                                HATIRLATMA SIKLIĞI
+                                Namaz Muhafızı
+                            </Text>
+                            <Text
+                                className="text-sm mt-0.5"
+                                style={{ color: muhafizAyarlari.aktif ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
+                            >
+                                {muhafizAyarlari.aktif ? 'Hatırlatmalar aktif' : 'Hatırlatmalar kapalı'}
                             </Text>
                         </View>
+                    </View>
+                    <Switch
+                        value={muhafizAyarlari.aktif}
+                        onValueChange={(val) => { dispatch(muhafizAyarlariniGuncelle({ aktif: val })); }}
+                        trackColor={{ false: renkler.sinir, true: 'rgba(255,255,255,0.3)' }}
+                        thumbColor={muhafizAyarlari.aktif ? '#FFF' : '#f4f3f4'}
+                        accessibilityLabel="Namaz Muhafızı"
+                    />
+                </View>
 
-                        {/* Preset Butonlari */}
-                        <View className="flex-row gap-2.5">
-                            {(['hafif', 'normal', 'yogun'] as const).map((yog) => {
-                                const preset = HATIRLATMA_PRESETLERI[yog];
-                                const seciliMi = muhafizAyarlari.yogunluk === yog;
-                                const ikonAdi = yog === 'hafif' ? 'feather-alt' : yog === 'normal' ? 'balance-scale' : 'bolt';
-                                return (
-                                    <TouchableOpacity
-                                        key={yog}
-                                        className="flex-1 items-center py-4 px-2 rounded-xl border-2"
-                                        style={{
-                                            backgroundColor: seciliMi ? renkler.birincil : 'transparent',
-                                            borderColor: seciliMi ? renkler.birincil : renkler.sinir,
-                                        }}
-                                        onPress={() => handleYogunlukSec(yog)}
-                                        activeOpacity={0.7}
-                                    >
-                                        <FontAwesome5
-                                            name={ikonAdi}
-                                            size={18}
-                                            color={seciliMi ? '#FFF' : renkler.metin}
-                                        />
-                                        <Text
-                                            className="text-sm font-bold mt-1.5"
-                                            style={{ color: seciliMi ? '#FFF' : renkler.metin }}
-                                        >
-                                            {yog === 'hafif' ? 'Hafif' : yog === 'normal' ? 'Normal' : 'Yoğun'}
-                                        </Text>
-                                        <Text
-                                            className="text-[10px] mt-0.5 text-center"
-                                            style={{ color: seciliMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
-                                        >
-                                            {preset.aciklama}
-                                        </Text>
-                                    </TouchableOpacity>
-                                );
-                            })}
-                        </View>
+                {/* ── KAPALI DURUM ── */}
+                {!muhafizAyarlari.aktif && (
+                    <View
+                        className="items-center p-10 rounded-2xl border"
+                        style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+                    >
+                        <FontAwesome5 name="bed" size={48} color={renkler.metinIkincil} />
+                        <Text className="text-base text-center mt-3" style={{ color: renkler.metinIkincil }}>
+                            Muhafız kapalı. Namaz vakitleri hatırlatılmayacak.
+                        </Text>
+                    </View>
+                )}
 
-                        {/* Özel Seçeneği */}
+                {muhafizAyarlari.aktif && (
+                    <>
+                        {/* ── KONUM ── */}
                         <TouchableOpacity
-                            className="flex-row items-center p-3.5 rounded-xl border-2 mt-2.5"
-                            style={{
-                                backgroundColor: muhafizAyarlari.yogunluk === 'ozel' ? `${renkler.birincil}15` : 'transparent',
-                                borderColor: muhafizAyarlari.yogunluk === 'ozel' ? renkler.birincil : renkler.sinir,
-                            }}
-                            onPress={() => { dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' })); }}
+                            className="flex-row items-center justify-between p-3.5 rounded-xl border mb-4"
+                            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+                            onPress={() => navigation.navigate('KonumAyarlari')}
                             activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Konum: ${konumMetni}. Konum ayarlarını açın.`}
                         >
-                            <View
-                                className="w-5.5 h-5.5 rounded-full border-2 items-center justify-center mr-3"
-                                style={{ borderColor: muhafizAyarlari.yogunluk === 'ozel' ? renkler.birincil : renkler.sinir }}
-                            >
-                                {muhafizAyarlari.yogunluk === 'ozel' && (
-                                    <View className="w-3 h-3 rounded-full" style={{ backgroundColor: renkler.birincil }} />
-                                )}
+                            <View className="flex-row items-center flex-1">
+                                <View
+                                    className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                                    style={{ backgroundColor: `${renkler.birincil}15` }}
+                                >
+                                    <FontAwesome5
+                                        name={konumAyarlari.konumModu === 'oto' ? 'satellite-dish' : 'map-marker-alt'}
+                                        size={16}
+                                        color={renkler.birincil}
+                                        solid
+                                    />
+                                </View>
+                                <View className="flex-1">
+                                    <Text className="text-[11px] font-medium tracking-wider" style={{ color: renkler.metinIkincil }}>
+                                        KONUM {sonGuncellemeKisaMetin() && `• ${sonGuncellemeKisaMetin()}`}
+                                    </Text>
+                                    <Text className="text-base font-semibold mt-0.5" style={{ color: renkler.metin }}>
+                                        {konumMetni}
+                                    </Text>
+                                </View>
                             </View>
-                            <FontAwesome5 name="cog" size={16} color={renkler.metin} />
-                            <View className="flex-1 ml-2.5">
-                                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                    Özel Seçim
-                                </Text>
-                                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    Hatırlatma bildirimlerini kendine göre ayarla
-                                </Text>
+                            <View className="flex-row items-center">
+                                {konumAyarlari.akilliTakipAktif && konumAyarlari.konumModu === 'oto' && (
+                                    <View
+                                        className="w-7 h-7 rounded-full items-center justify-center mr-1.5"
+                                        style={{ backgroundColor: `${renkler.basarili}20` }}
+                                    >
+                                        <FontAwesome5 name="compass" size={12} color={renkler.basarili} />
+                                    </View>
+                                )}
+                                <View
+                                    className="px-2.5 py-1 rounded-lg mr-2"
+                                    style={{
+                                        backgroundColor: konumAyarlari.konumModu === 'oto'
+                                            ? `${renkler.basarili}20`
+                                            : `${renkler.bilgi}20`,
+                                    }}
+                                >
+                                    <Text
+                                        className="text-xs font-bold"
+                                        style={{ color: konumAyarlari.konumModu === 'oto' ? renkler.basarili : renkler.bilgi }}
+                                    >
+                                        {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
+                                    </Text>
+                                </View>
+                                <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
                             </View>
                         </TouchableOpacity>
-                    </View>
 
-                    {/* ÖZEL AYARLAR */}
-                    {muhafizAyarlari.yogunluk === 'ozel' && (
+                        {/* ── YOĞUNLUK PRESET'İ ── */}
                         <View
                             className="rounded-2xl border p-4 mb-4"
                             style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
                         >
                             <View className="flex-row items-center mb-1">
-                                <FontAwesome5 name="cog" size={16} color={renkler.metin} />
-                                <Text className="text-base font-bold ml-2" style={{ color: renkler.metin }}>
-                                    Özel Bildirim Ayarları
+                                <FontAwesome5 name="sliders-h" size={14} color={renkler.metinIkincil} solid />
+                                <Text
+                                    className="text-[11px] font-semibold tracking-wider ml-2 flex-1"
+                                    style={{ color: renkler.metinIkincil }}
+                                >
+                                    HATIRLATMA YOĞUNLUĞU
                                 </Text>
+                                {ozelMi && (
+                                    <View className="px-2 py-0.5 rounded-lg" style={{ backgroundColor: `${renkler.birincil}20` }}>
+                                        <Text className="text-[11px] font-bold" style={{ color: renkler.birincil }}>
+                                            Özel
+                                        </Text>
+                                    </View>
+                                )}
                             </View>
-                            <Text className="text-xs mb-4" style={{ color: renkler.metinIkincil }}>
-                                Her seviyenin zamanını ve tekrar sıklığını ayarlayın.
+                            <Text className="text-xs mb-3" style={{ color: renkler.metinIkincil }}>
+                                {ozelMi
+                                    ? 'Zamanlamayı vakit vakit kendiniz ayarladınız.'
+                                    : 'Tüm vakitlerin zamanlamasını tek dokunuşla ayarlayın.'}
                             </Text>
 
-                            {SEVIYE_BILGILERI.map((seviye, index) => {
-                                const seviyeKey = seviye.id as keyof typeof muhafizAyarlari.esikler;
-                                return (
-                                    <View
-                                        key={seviye.id}
-                                        className="p-4 rounded-xl border mb-3"
-                                        style={{
-                                            backgroundColor: renkler.arkaplan,
-                                            borderColor: renkler.sinir,
-                                            borderLeftWidth: 4,
-                                            borderLeftColor: seviye.renk,
-                                        }}
-                                    >
-                                        <View className="flex-row items-center mb-4">
-                                            <View
-                                                className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                                                style={{ backgroundColor: `${seviye.renk}20` }}
+                            <View className="flex-row gap-2.5">
+                                {YOGUNLUK_BILGILERI.map(({ id, etiket, ikon }) => {
+                                    const preset = HATIRLATMA_PRESETLERI[id];
+                                    const seciliMi = muhafizAyarlari.yogunluk === id;
+                                    return (
+                                        <TouchableOpacity
+                                            key={id}
+                                            className="flex-1 items-center py-4 px-2 rounded-xl border-2"
+                                            style={{
+                                                backgroundColor: seciliMi ? renkler.birincil : 'transparent',
+                                                borderColor: seciliMi ? renkler.birincil : renkler.sinir,
+                                            }}
+                                            onPress={() => yogunlukSec(id)}
+                                            activeOpacity={0.7}
+                                            accessibilityRole="button"
+                                            accessibilityState={{ selected: seciliMi }}
+                                            accessibilityLabel={`${etiket} yoğunluk — ${preset.aciklama}`}
+                                        >
+                                            <FontAwesome5 name={ikon} size={18} color={seciliMi ? '#FFF' : renkler.metin} />
+                                            <Text
+                                                className="text-sm font-bold mt-1.5"
+                                                style={{ color: seciliMi ? '#FFF' : renkler.metin }}
                                             >
-                                                <FontAwesome5 name={seviye.ikonAdi} size={16} color={seviye.renk} solid />
-                                            </View>
-                                            <View className="flex-1">
-                                                <Text className="text-base font-bold" style={{ color: seviye.renk }}>
-                                                    Seviye {index + 1}
-                                                </Text>
-                                                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                                    {seviye.baslik}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                        <View className="flex-row items-center justify-between mb-3">
-                                            <Text className="text-sm font-medium flex-1" style={{ color: renkler.metin }}>Ne zaman:</Text>
-                                            <SayisalSecici
-                                                deger={muhafizAyarlari.esikler[seviyeKey]}
-                                                min={seviye.minEsik}
-                                                max={seviye.maxEsik}
-                                                adim={5}
-                                                birim="dk kala"
-                                                onChange={(val) => esikDegistir(seviyeKey, val)}
-                                                renk={seviye.renk}
-                                            />
-                                        </View>
-                                        <View className="flex-row items-center justify-between">
-                                            <Text className="text-sm font-medium flex-1" style={{ color: renkler.metin }}>Tekrar:</Text>
-                                            <SayisalSecici
-                                                deger={muhafizAyarlari.sikliklar[seviyeKey]}
-                                                min={1}
-                                                max={30}
-                                                adim={1}
-                                                birim="dk'da bir"
-                                                onChange={(val) => siklikDegistir(seviyeKey, val)}
-                                                renk={seviye.renk}
-                                            />
-                                        </View>
-                                    </View>
-                                );
-                            })}
+                                                {etiket}
+                                            </Text>
+                                            <Text
+                                                className="text-[10px] mt-0.5 text-center"
+                                                style={{ color: seciliMi ? 'rgba(255,255,255,0.8)' : renkler.metinIkincil }}
+                                            >
+                                                {preset.aciklama}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    );
+                                })}
+                            </View>
                         </View>
-                    )}
 
-                    {/* BILDIRIM ONIZLEME */}
-                    <View className="mb-4">
-                        <BildirimOnizleme esikler={muhafizAyarlari.esikler} sikliklar={muhafizAyarlari.sikliklar} />
-                    </View>
-                </>
+                        {/* ── VAKİT LİSTESİ (Katman 1) ── */}
+                        <View className="flex-row items-center mb-2 px-1">
+                            <FontAwesome5 name="list-ul" size={13} color={renkler.metinIkincil} solid />
+                            <Text
+                                className="text-[11px] font-semibold tracking-wider ml-2"
+                                style={{ color: renkler.metinIkincil }}
+                            >
+                                VAKİTLER
+                            </Text>
+                        </View>
+                        <Text className="text-xs mb-3 px-1" style={{ color: renkler.metinIkincil }}>
+                            Her vakti ayrı ayrı ayarlayabilirsiniz. Bir vakte dokunarak adımlarını görün.
+                        </Text>
+
+                        {MUHAFIZ_VAKITLERI.map((vakit) => (
+                            <VakitKarti
+                                key={vakit}
+                                vakit={vakit}
+                                vakitAyari={matris[vakit]}
+                                acikMi={acikVakit === vakit}
+                                onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
+                                onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
+                                onTumVakitlereUygula={() => setTumuneOnayi(vakit)}
+                                onAkisiOnizle={() => setOnizleme(vakit)}
+                            />
+                        ))}
+                    </>
+                )}
+
+                <View className="h-10" />
+            </ScrollView>
+
+            {/* ── Katman 3 ── */}
+            {detay && (
+                <SeviyeDetayModal
+                    gorunur
+                    vakit={detay.vakit}
+                    seviyeler={matris[detay.vakit].seviyeler}
+                    indeks={detay.indeks}
+                    ttsDestekli={ttsDestekli}
+                    onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
+                    onKapat={() => setDetay(null)}
+                />
             )}
 
-            <View className="h-10" />
-        </ScrollView>
+            {/* Akışı önizle (spec 3.4) — gerçek bildirim göndermez */}
+            {onizleme && (
+                <AkisOnizlemeModal
+                    gorunur
+                    vakit={onizleme}
+                    vakitAyari={matris[onizleme]}
+                    ttsDestekli={ttsDestekli}
+                    onKapat={() => setOnizleme(null)}
+                />
+            )}
+
+            {/* Preset onayı — elle ayarlanmış zamanlama geri alınacak (spec 4.1) */}
+            <BildirimModali
+                gorunur={presetOnayi !== null}
+                tip="bilgi"
+                baslik="Özel zamanlamanız sıfırlanacak"
+                mesaj="Vakitlere özel ayarladığınız süre ve tekrar değerleri bu hazır yoğunluğa dönecek. Uyarı biçimi, bildirim sesi ve anons metinleriniz korunur."
+                birincilEtiket="Uygula"
+                birincilIkon="check"
+                onBirincil={() => {
+                    if (presetOnayi) void presetiUygula(presetOnayi);
+                    setPresetOnayi(null);
+                }}
+                onKapat={() => setPresetOnayi(null)}
+                kapatEtiketi="Vazgeç"
+            />
+
+            {/* Tüm vakitlere uygula onayı (spec 3.3 {vakit} ipucu) */}
+            <BildirimModali
+                gorunur={tumuneOnayi !== null}
+                tip="bilgi"
+                baslik={tumuneOnayi ? `${VAKIT_ADLARI[tumuneOnayi]} ayarları kopyalansın mı?` : ''}
+                mesaj={
+                    tumuneOnayi
+                        ? `${VAKIT_ADLARI[tumuneOnayi]} vaktinin tüm adım ayarları diğer vakitlere kopyalanır. Anons metinlerinde vakit adını elle yazdıysanız {vakit} yer tutucusunu kullanmanızı öneririz.`
+                        : ''
+                }
+                birincilEtiket="Tümüne uygula"
+                birincilIkon="clone"
+                onBirincil={tumVakitlereUygulaOnayla}
+                onKapat={() => setTumuneOnayi(null)}
+                kapatEtiketi="Vazgeç"
+            />
+        </>
     );
 };

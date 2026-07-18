@@ -18,7 +18,8 @@ import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
-import { sayacBaslangicEsikDkHesapla } from '../../core/utils/vakitSayacYardimcisi';
+import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
+import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { aktifGunuHesapla, gelecekGuneGecisMi } from '../../core/utils/gunNavigasyonYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
@@ -322,16 +323,8 @@ export const AnaSayfa: React.FC = () => {
 
     const muhafiz = NamazMuhafiziServisi.getInstance();
     if (muhafizAyarlari.aktif) {
-      muhafiz.yapilandir({
-        seviye1BaslangicDk: muhafizAyarlari.esikler.seviye1,
-        seviye2BaslangicDk: muhafizAyarlari.esikler.seviye2,
-        seviye3BaslangicDk: muhafizAyarlari.esikler.seviye3,
-        seviye4BaslangicDk: muhafizAyarlari.esikler.seviye4,
-        seviye1SiklikDk: muhafizAyarlari.sikliklar.seviye1,
-        seviye2SiklikDk: muhafizAyarlari.sikliklar.seviye2,
-        seviye3SiklikDk: muhafizAyarlari.sikliklar.seviye3,
-        seviye4SiklikDk: muhafizAyarlari.sikliklar.seviye4,
-      });
+      // Faz 3: banner da vakit x seviye matrisinden okur (matris yoksa eski alanlardan türetilir).
+      muhafiz.yapilandir(muhafizMatrisiniCoz(muhafizAyarlari));
       // ÖNCE diskteki kılınmışlık kaydını yükle, SONRA başlat. Aksi halde açılışta
       // bellek-içi map boş olur ve zaten kılınmış namaza vakte kısa süre kala (seviye >= 3)
       // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
@@ -428,14 +421,16 @@ export const AnaSayfa: React.FC = () => {
           if (state.vakitSayac?.ayarlar?.aktif) {
             const konumState = state.konum;
             const muhafizState = state.muhafiz;
+            const matris = muhafizMatrisiniCoz(muhafizState);
             await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
               aktif: true,
               koordinatlar: konumState.koordinatlar,
-              baslangicEsikDk: sayacBaslangicEsikDkHesapla(
+              baslangicEsikleri: sayacBaslangicEsikleriHesapla(
                 state.vakitSayac?.ayarlar?.sayacBaslangicSeviyesi,
-                muhafizState
+                matris
               ),
               muhafizAktif: muhafizState.aktif,
+              muhafizUyarilanVakitler: muhafizUyarilanVakitleriBul(matris),
             });
           }
         } catch (e) { }
