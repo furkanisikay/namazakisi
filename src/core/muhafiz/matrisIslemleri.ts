@@ -26,15 +26,22 @@ export function tumVakitlereUygula(matris: MuhafizMatrisi, kaynak: MuhafizVakti)
 /**
  * Hazir yogunluk preset'inin TEK bir seviyesi.
  *
- * `bildirimSesi` ZORUNLUdur: opsiyonel birakilip "yoksa mevcut korunur" denseydi,
- * yogun preset'inin 'alarm' sesi normal'e gecildiginde hucrede YAPISIR ve
- * "dengeli" yogunlukta sessizce acil kanala (MUHAFIZ_ACIL) dusulurdu.
+ * `bildirimSesi` ARTIK YOK — preset ACILIYETI (`acilKanal`) yazar, SESI kullanici
+ * secer. Eskiden preset `bildirimSesi: 'alarm'` yazarak hem sesi hem onemi
+ * belirliyordu; ses kullanicinin sectigi bir muzik olabildigi icin bu, preset'e
+ * her dokunuslda kullanicinin secimini SILERDI. Ayirinca preset aciliyeti yazar,
+ * ses secimi bozulmadan kalir.
+ *
+ * `acilKanal` ZORUNLUdur (opsiyonel degil): "yoksa mevcut korunur" denseydi yogun
+ * preset'inin acil bayragi normal'e gecildiginde hucrede YAPISIR ve "dengeli"
+ * yogunlukta sessizce acil kanala dusulurdu.
  */
 export interface PresetSeviyeAyari {
   esikDk: number;
   siklik: Siklik;
   mod: UyariModu;
-  bildirimSesi: string;
+  /** Bu adim MAX onem + bypassDnd ile mi gonderilsin? */
+  acilKanal: boolean;
 }
 
 export type PresetSeviyeleri = Record<SeviyeKademe, PresetSeviyeAyari>;
@@ -54,6 +61,9 @@ export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
  * Kullanicinin kendi yazdigi `anonsMetni` ASLA ezilmez; yalniz BOS kutu sablonla
  * doldurulur (SeviyeDetayModal.modSec ile ayni kural — metinsiz 'sesli' adim
  * sessiz kalirdi).
+ *
+ * Kullanicinin sectigi BILDIRIM SESI de (`bildirimSesi`/`sesAdi`) korunur: preset
+ * zamanlama + mod + ACILIYET yazar, ses kullanicinindir.
  */
 function seviyeyeUygula(
   mevcut: SeviyeAyari,
@@ -67,7 +77,7 @@ function seviyeyeUygula(
     mod,
     esikDk: preset.esikDk,
     siklik: preset.siklik,
-    bildirimSesi: preset.bildirimSesi,
+    acilKanal: preset.acilKanal,
     anonsMetni:
       sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni ? ANONS_SABLONLARI[0] : mevcut.anonsMetni,
   };
@@ -76,11 +86,10 @@ function seviyeyeUygula(
 /**
  * Hazir yogunlugu MEVCUT matrise uygular (tum vakitler, tum seviyeler).
  *
- * SOZLESME (degisti): preset artik yalniz esik/sikligi degil **mod ve bildirim
- * sesini de** yazar — hazir yogunluklar "sesli anons" boyutunu da tanimladigi
- * icin (normal/yogun son adimda 'ikisi'). Korunan tek kullanici verisi
- * `anonsMetni`dir. Elle yapilan zamanlama degisiklikleri zaten `ozelMatrisYedegi`
- * ile saklanir, bu yuzden veri kaybi olusmaz.
+ * SOZLESME: preset esik + siklik + mod + ACILIYET yazar. Korunan kullanici verileri
+ * `anonsMetni` ve BILDIRIM SESI secimidir (`bildirimSesi`/`sesAdi`) — sesi preset'in
+ * yazmasi, kullanicinin sectigi muzigi her preset dokunusunda silerdi. Elle yapilan
+ * zamanlama degisiklikleri zaten `ozelMatrisYedegi` ile saklanir → veri kaybi yok.
  */
 export function presetUygula(
   matris: MuhafizMatrisi,
@@ -117,6 +126,7 @@ export function presetMatrisiOlustur(
           esikDk: seviyeler[kademe].esikDk,
           siklik: 'birkez',
           bildirimSesi: VARSAYILAN_SES,
+          acilKanal: false,
           anonsMetni: '',
         },
         seviyeler[kademe],

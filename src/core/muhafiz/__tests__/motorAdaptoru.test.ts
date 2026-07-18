@@ -5,6 +5,7 @@ import {
   seviyeTetiklenirMi,
   vakitUyariPlaniOlustur,
   muhafizKanaliSec,
+  muhafizAcilKanalMi,
   matrisGecerliMi,
   muhafizMatrisiniCoz,
 } from '../motorAdaptoru';
@@ -169,27 +170,68 @@ describe('vakitUyariPlaniOlustur', () => {
   });
 });
 
-describe('muhafizKanaliSec', () => {
-  test('seviye >= 3 acil kanala düşer (mevcut kural korunur)', () => {
-    expect(muhafizKanaliSec(3, 'can')).toBe('muhafiz_acil');
-    expect(muhafizKanaliSec(4, 'can')).toBe('muhafiz_acil');
+describe('muhafizKanaliSec — ses ile ACİLİYET ayrıdır', () => {
+  const OZEL_SES = 'content://media/internal/audio/media/42';
+  const VARSAYILAN = 'varsayilan';
+
+  test('seviye >= 3 acil kanala düşer (tarihsel taban kural korunur)', () => {
+    expect(muhafizKanaliSec(3, VARSAYILAN)).toBe('muhafiz_acil');
+    expect(muhafizKanaliSec(4, VARSAYILAN)).toBe('muhafiz_acil');
   });
 
   test('seviye < 3 normal muhafız kanalı', () => {
-    expect(muhafizKanaliSec(1, 'can')).toBe('muhafiz');
-    expect(muhafizKanaliSec(2, 'melodi')).toBe('muhafiz');
+    expect(muhafizKanaliSec(1, VARSAYILAN)).toBe('muhafiz');
+    expect(muhafizKanaliSec(2, VARSAYILAN)).toBe('muhafiz');
   });
 
-  test("'alarm' sesi seçilirse seviye ne olursa olsun acil kanal", () => {
+  test('acilKanal=true seviyeden bağımsız olarak acil kanala düşürür', () => {
+    expect(muhafizKanaliSec(1, VARSAYILAN, true)).toBe('muhafiz_acil');
+  });
+
+  test("ESKİ kayıt toleransı: 'alarm' ses id'si hâlâ aciliyet sinyali sayılır", () => {
+    // Eski şemada aciliyet ses id'siyle taşınıyordu; diskteki göç etmemiş
+    // matrisler de aynı davranmalı.
     expect(muhafizKanaliSec(1, 'alarm')).toBe('muhafiz_acil');
   });
 
-  test('kanal paleti SABİT: yalnız iki muhafız kanalı üretilir (kanal enflasyonu yok)', () => {
+  test('ESKİ palet id değerleri TABAN kanala düşer (göç gerekmez, ses zaten aynıydı)', () => {
+    expect(muhafizKanaliSec(1, 'can')).toBe('muhafiz');
+    expect(muhafizKanaliSec(2, 'melodi')).toBe('muhafiz');
+    expect(muhafizKanaliSec(1, 'bilinmeyen')).toBe('muhafiz');
+  });
+
+  test('ÖZEL ses kendi kanalını üretir — ses artık gerçekten değişir', () => {
+    const kanal = muhafizKanaliSec(1, OZEL_SES);
+    expect(kanal).toMatch(/^muhafiz_[0-9a-f]{8}$/);
+    expect(kanal).not.toBe('muhafiz');
+  });
+
+  test('KANAL ENFLASYONU YOK: kanal sayısı BENZERSİZ SES sayısı kadardır', () => {
+    // 4 seviye x 2 ses = 8 hücre ama yalnız (ses x aciliyet) kadar kanal çıkar.
     const kanallar = new Set<string>();
-    for (const ses of ['can', 'melodi', 'alarm', 'bilinmeyen']) {
+    for (const ses of [VARSAYILAN, OZEL_SES]) {
       for (const seviye of [1, 2, 3, 4] as const) kanallar.add(muhafizKanaliSec(seviye, ses));
     }
-    expect(kanallar).toEqual(new Set(['muhafiz', 'muhafiz_acil']));
+    expect(kanallar.size).toBe(4);
+  });
+
+  test('aciliyet SESİ değiştirmez: aynı ses, iki önem = aynı hash farklı taban', () => {
+    const normal = muhafizKanaliSec(1, OZEL_SES, false);
+    const acil = muhafizKanaliSec(1, OZEL_SES, true);
+    expect(acil).toBe(normal.replace('muhafiz_', 'muhafiz_acil_'));
+  });
+});
+
+describe('muhafizAcilKanalMi', () => {
+  test('OR semantiği: acilKanal | eski-alarm | seviye>=3', () => {
+    expect(muhafizAcilKanalMi(1, 'varsayilan')).toBe(false);
+    expect(muhafizAcilKanalMi(1, 'varsayilan', true)).toBe(true);
+    expect(muhafizAcilKanalMi(1, 'alarm')).toBe(true);
+    expect(muhafizAcilKanalMi(3, 'varsayilan')).toBe(true);
+  });
+
+  test('acilKanal=false seviye tabanını DÜŞÜRMEZ (sert/acil hep acil kalır)', () => {
+    expect(muhafizAcilKanalMi(4, 'varsayilan', false)).toBe(true);
   });
 });
 

@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import {
@@ -53,24 +52,29 @@ export interface EskiSeviyeDegerleri {
  * yoksa/sessizse gorsel iz kalmali.
  */
 const HAFIF_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
 };
 
 const NORMAL_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', bildirimSesi: VARSAYILAN_SES },
+    nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
+    sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
+    acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', acilKanal: false },
 };
 
+/**
+ * 'yogun' son adimi ACIL kanaldan gider (MAX onem + bypassDnd). Bu, eskiden
+ * `bildirimSesi: 'alarm'` ile ifade ediliyordu; ses ile onem AYRILDIGI icin artik
+ * dogru alanda duruyor — boylece bu preset kullanicinin sectigi sesi SILMEZ.
+ */
 const YOGUN_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 60, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    uyari: { esikDk: 30, siklik: { herDk: 10 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    sert: { esikDk: 15, siklik: { herDk: 5 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
-    acil: { esikDk: 6, siklik: { herDk: 3 }, mod: 'ikisi', bildirimSesi: 'alarm' },
+    nazik: { esikDk: 60, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    uyari: { esikDk: 30, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
+    sert: { esikDk: 15, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
+    acil: { esikDk: 6, siklik: { herDk: 3 }, mod: 'ikisi', acilKanal: true },
 };
 
 const eskiEsikler = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({

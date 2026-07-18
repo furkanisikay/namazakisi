@@ -66,7 +66,7 @@ export function anonsuOnizle(
 
 export interface AdimOnizlemeGirdisi {
     mod: UyariModu;
-    /** Palet id'si ('can' | 'melodi' | 'alarm') */
+    /** Ses kimligi ('varsayilan' | 'content://...') */
     bildirimSesi: string;
     /** Yer tutuculari COZULMUS anons metni ('sesli'/'ikisi' disinda kullanilmaz) */
     cozulmusMetin: string;

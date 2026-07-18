@@ -24,7 +24,11 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../../components/common/SayisalSecici';
 import type { MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
-import { SES_PALETI } from '../../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { sesSec } from '../../../../modules/expo-countdown-notification/src';
+import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
+import { SesSecimSatiri } from './SesSecimSatiri';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
@@ -125,6 +129,20 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const sablonSec = (sablon: string) => {
         setMetinTaslak(sablon);
         onDegistir({ ...seviye, anonsMetni: sablon });
+    };
+
+    /**
+     * Sistem ses secicisini acar. IZIN ISTEMEZ (RingtoneManager) — bu yuzden
+     * disclosure modali da yoktur; secici kullanicinin kendi ekledigi sesleri de
+     * listeler. Vazgecilirse (`null`) mevcut secim BOZULMADAN kalir.
+     */
+    const sesiSec = async () => {
+        const secilen = await sesSec(
+            ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null,
+            'Bildirim sesi'
+        );
+        if (!secilen) return;
+        onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad });
     };
 
     return (
@@ -328,57 +346,46 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                     </View>
                                 )}
 
-                                {/* ── Bildirim sesi ── */}
+                                {/* ── Bildirim sesi ──
+                                    Tek satir: secili sesin adi + "dinle" + secici.
+                                    (Eski uc cipli palet ucunu de AYNI dosyaya cozuyordu — kaldirildi.) */}
                                 {bildirimliMi && (
                                     <>
-                                        {/* Sag aksiyon: SES secimini dogrudan duymak icin — mod 'ikisi'
-                                            olsa bile burada YALNIZ ses calinir (secimin yanindaki buton
-                                            secimi dinletmelidir, akisi degil; akis icin asagidaki
-                                            "ornek okunus" butonu var). */}
-                                        <BolumBasligi
-                                            metin="BİLDİRİM SESİ"
-                                            sag={
-                                                <DinleButonu
-                                                    mod="bildirim"
-                                                    bildirimSesi={seviye.bildirimSesi}
-                                                    erisimEtiketi="Bildirim sesini dinleyin"
-                                                />
-                                            }
+                                        <BolumBasligi metin="BİLDİRİM SESİ" />
+                                        <SesSecimSatiri
+                                            bildirimSesi={seviye.bildirimSesi}
+                                            sesAdi={seviye.sesAdi}
+                                            onSec={() => { void sesiSec(); }}
+                                            onDinle={() => {
+                                                void OnizlemeSesServisi.bildirimSesiniCal(seviye.bildirimSesi);
+                                            }}
                                         />
-                                        <View className="flex-row gap-2">
-                                            {SES_PALETI.map((ses) => {
-                                                const secili = seviye.bildirimSesi === ses.id;
-                                                return (
-                                                    <TouchableOpacity
-                                                        key={ses.id}
-                                                        className="flex-1 items-center justify-center py-3 rounded-2xl border"
-                                                        style={{
-                                                            backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
-                                                            borderColor: secili ? renkler.birincil : renkler.sinir,
-                                                            borderWidth: secili ? 2 : 1,
-                                                            minHeight: 44,
-                                                        }}
-                                                        onPress={() => onDegistir({ ...seviye, bildirimSesi: ses.id })}
-                                                        activeOpacity={0.7}
-                                                        accessibilityRole="button"
-                                                        accessibilityState={{ selected: secili }}
-                                                        accessibilityLabel={`Bildirim sesi: ${ses.ad}`}
-                                                    >
-                                                        <FontAwesome5
-                                                            name="music"
-                                                            size={13}
-                                                            color={secili ? renkler.birincil : renkler.metinIkincil}
-                                                        />
-                                                        <Text
-                                                            className="text-xs font-semibold mt-1"
-                                                            style={{ color: secili ? renkler.birincil : renkler.metin }}
-                                                        >
-                                                            {ses.ad}
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                );
-                                            })}
-                                        </View>
+                                        {ozelSesMi(seviye.bildirimSesi) && (
+                                            <TouchableOpacity
+                                                className="flex-row items-center justify-center mt-2 px-3 rounded-xl"
+                                                style={{ minHeight: 44 }}
+                                                onPress={() =>
+                                                    onDegistir({
+                                                        ...seviye,
+                                                        bildirimSesi: VARSAYILAN_SES,
+                                                        sesAdi: undefined,
+                                                    })
+                                                }
+                                                activeOpacity={0.7}
+                                                accessibilityRole="button"
+                                                accessibilityLabel="Uygulama sesine dönün"
+                                            >
+                                                <FontAwesome5
+                                                    name="undo"
+                                                    size={11}
+                                                    color={renkler.metinIkincil}
+                                                    style={{ marginRight: 7 }}
+                                                />
+                                                <Text className="text-xs font-medium" style={{ color: renkler.metinIkincil }}>
+                                                    Uygulama sesine dön
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )}
                                     </>
                                 )}
 

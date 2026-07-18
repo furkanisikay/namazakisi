@@ -10,6 +10,12 @@ import android.util.Log
 
 class ExpoCountdownNotificationModule : Module() {
 
+    /**
+     * Acik ses secici ekraninin promise'i. Ayni anda yalniz BIR secici acilabilir
+     * (kullanici tek ekranla etkilesir); `OnActivityResult` bunu cozup temizler.
+     */
+    private var bekleyenSecim: Promise? = null
+
     override fun definition() = ModuleDefinition {
         Name("ExpoCountdownNotification")
 
@@ -141,6 +147,104 @@ class ExpoCountdownNotificationModule : Module() {
                 AnonsZamanlayici.tumunuIptal(context.applicationContext)
             }
             Unit
+        }
+
+        // ============================================================
+        // BILDIRIM SESI SECIMI (sistem ses secici + kanal yonetimi)
+        // ============================================================
+
+        /**
+         * Sistem ses secicisini acar; kullanicinin sectigi sesi
+         * `{ uri, ad }` olarak dondurur. Vazgecilirse `null` doner.
+         *
+         * IZIN GEREKTIRMEZ (RingtoneManager). `RegisterActivityContracts` yerine
+         * `OnActivityResult` kullanilir — Expo dokumani birincisi icin Activity
+         * yasam dongusu uyumsuzlugu notu dusuyor.
+         */
+        AsyncFunction("sesSecAsync") { mevcutUri: String?, baslik: String, promise: Promise ->
+            val aktivite = appContext.currentActivity
+            if (aktivite == null) {
+                promise.resolve(null)
+            } else {
+                try {
+                    bekleyenSecim = promise
+                    aktivite.startActivityForResult(
+                        SesSecici.seciciIntenti(baslik, mevcutUri),
+                        SesSecici.ISTEK_KODU
+                    )
+                } catch (e: Exception) {
+                    Log.e("CountdownModule", "Ses secici acilamadi: ${e.message}")
+                    bekleyenSecim = null
+                    promise.resolve(null)
+                }
+            }
+        }
+
+        /** URI'nin gosterilecek adi; cozulemezse bos string. */
+        AsyncFunction("sesAdiAl") { uri: String?, promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(if (context == null) "" else SesSecici.sesAdi(context, uri))
+        }
+
+        /** Secilen sesi aninda calar (onizleme). */
+        Function("sesiOnizle") { uri: String? ->
+            appContext.reactContext?.let { SesSecici.onizle(it, uri) }
+            Unit
+        }
+
+        /** Calan onizlemeyi durdurur. */
+        Function("onizlemeyiDurdur") {
+            SesSecici.durdur()
+            Unit
+        }
+
+        /**
+         * Ozel sesli muhafiz kanalini YOKSA olusturur (tembel).
+         * Kanal id'si JS tarafinda sesin hash'inden uretilir (bkz. sesKimligi.ts).
+         */
+        Function("muhafizKanaliniGarantile") {
+            kanalId: String,
+            kanalAdi: String,
+            aciklama: String,
+            sesUri: String?,
+            acilMi: Boolean ->
+            appContext.reactContext?.let {
+                MuhafizKanallari.garantile(it, kanalId, kanalAdi, aciklama, sesUri, acilMi)
+            }
+            Unit
+        }
+
+        /** Artik kullanilmayan hash'li muhafiz kanallarini siler (GC). */
+        Function("muhafizKanallariniTemizle") { korunacakIdler: List<String> ->
+            appContext.reactContext?.let { MuhafizKanallari.copleriTopla(it, korunacakIdler) }
+            Unit
+        }
+
+        /**
+         * Ses secici sonucu. `sesSecAsync` promise'i BURADA cozulur; her sonuc
+         * yolunda (secim/iptal/hata) tam olarak BIR kez cozulur ve
+         * `bekleyenSecim` temizlenir — aksi halde ekran ikinci acilista asili kalir.
+         */
+        OnActivityResult { _, payload ->
+            if (payload.requestCode == SesSecici.ISTEK_KODU) {
+                val promise = bekleyenSecim
+                bekleyenSecim = null
+                if (promise != null) {
+                    val uri = SesSecici.sonucuCoz(payload.data)
+                    if (uri == null) {
+                        promise.resolve(null)
+                    } else {
+                        val context = appContext.reactContext
+                        val uriMetni = uri.toString()
+                        promise.resolve(
+                            mapOf(
+                                "uri" to uriMetni,
+                                "ad" to (context?.let { SesSecici.sesAdi(it, uriMetni) } ?: "")
+                            )
+                        )
+                    }
+                }
+            }
         }
 
         /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */

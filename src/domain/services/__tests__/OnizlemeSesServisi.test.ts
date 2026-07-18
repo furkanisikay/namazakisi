@@ -3,6 +3,14 @@
  * `expo-audio` global moduleNameMapper mock'undan gelir (jest.config.js).
  */
 
+// `requireNativeModule` jest'te YOK: servis ozel (`content://`) sesler icin native
+// koprusunu import ediyor → o kopru mock'lanmazsa suite HIC calismaz
+// ("Cannot read properties of undefined (reading 'EventEmitter')").
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+  sesiOnizle: jest.fn(),
+  onizlemeyiDurdur: jest.fn(),
+}));
+
 /**
  * Servis modul-DUZEYINDE durum tutar (aktif calar, ses modu bayragi) → her test
  * taze bir kayit defteri ister.
@@ -32,7 +40,7 @@ describe('OnizlemeSesServisi', () => {
   it('sesi calar ve sessiz modda duyulsun diye ses modunu ayarlar', async () => {
     const { servis, audio, sonCalar } = tazeKur();
 
-    await servis.bildirimSesiniCal('can');
+    await servis.bildirimSesiniCal('varsayilan');
 
     expect(audio.createAudioPlayer).toHaveBeenCalledTimes(1);
     expect(audio.setAudioModeAsync).toHaveBeenCalledWith(
@@ -44,10 +52,10 @@ describe('OnizlemeSesServisi', () => {
   it('ust uste basinca ses UST USTE BINMEZ: tek calar, basa sarilir', async () => {
     const { servis, audio, sonCalar } = tazeKur();
 
-    await servis.bildirimSesiniCal('can');
+    await servis.bildirimSesiniCal('varsayilan');
     const calar = sonCalar();
-    await servis.bildirimSesiniCal('can');
-    await servis.bildirimSesiniCal('can');
+    await servis.bildirimSesiniCal('varsayilan');
+    await servis.bildirimSesiniCal('varsayilan');
 
     // Ayni kaynak → yeni calar YARATILMAZ (sizinti yok), mevcut olan yeniden calar
     expect(audio.createAudioPlayer).toHaveBeenCalledTimes(1);
@@ -62,8 +70,8 @@ describe('OnizlemeSesServisi', () => {
   it('ses modu yalniz BIR KEZ ayarlanir', async () => {
     const { servis, audio } = tazeKur();
 
-    await servis.bildirimSesiniCal('can');
-    await servis.bildirimSesiniCal('melodi');
+    await servis.bildirimSesiniCal('varsayilan');
+    await servis.bildirimSesiniCal('varsayilan');
 
     expect(audio.setAudioModeAsync).toHaveBeenCalledTimes(1);
   });
@@ -71,13 +79,13 @@ describe('OnizlemeSesServisi', () => {
   it('temizle() calari serbest birakir ve sonraki calma yeni calar yaratir', async () => {
     const { servis, audio, sonCalar } = tazeKur();
 
-    await servis.bildirimSesiniCal('can');
+    await servis.bildirimSesiniCal('varsayilan');
     const calar = sonCalar();
     servis.temizle();
 
     expect(calar.release).toHaveBeenCalledTimes(1);
 
-    await servis.bildirimSesiniCal('can');
+    await servis.bildirimSesiniCal('varsayilan');
     expect(audio.createAudioPlayer).toHaveBeenCalledTimes(2);
   });
 
@@ -96,7 +104,7 @@ describe('OnizlemeSesServisi', () => {
       throw new Error('native yok');
     });
 
-    await expect(servis.bildirimSesiniCal('can')).resolves.toBeUndefined();
+    await expect(servis.bildirimSesiniCal('varsayilan')).resolves.toBeUndefined();
   });
 
   it('bilinmeyen ses id patlamaz (varsayilana duser)', async () => {

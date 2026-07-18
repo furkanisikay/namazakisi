@@ -475,9 +475,13 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
         }
     });
 
-    test('yoğun preset acil adımı alarm sesiyle acil kanala düşer', () => {
-        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil.bildirimSesi).toBe('alarm');
-        expect(HATIRLATMA_PRESETLERI.normal.seviyeler.acil.bildirimSesi).not.toBe('alarm');
+    test('yoğun preset acil adımı ACİL KANAL bayrağıyla işaretlenir (ses ile DEĞİL)', () => {
+        // Aciliyet artık `acilKanal` alanında; eskiden `bildirimSesi: 'alarm'` ile
+        // taşınıyordu ve preset her uygulandığında kullanıcının seçtiği sesi silerdi.
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil.acilKanal).toBe(true);
+        expect(HATIRLATMA_PRESETLERI.normal.seviyeler.acil.acilKanal).toBe(false);
+        // Preset ARTIK SES YAZMAZ — kullanıcı seçimi korunsun diye.
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil).not.toHaveProperty('bildirimSesi');
     });
 
     test("eski `sikliklar` alanı 'birkez'i eşiğe eşitleyerek türetilir", () => {

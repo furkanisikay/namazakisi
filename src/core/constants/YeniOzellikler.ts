@@ -41,6 +41,27 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-bildirim-sesi-secimi',
+        surum: '0.24.0',
+        tarih: '2026-07-18',
+        baslik: 'Hatırlatma Sesini Kendiniz Seçin',
+        aciklama:
+            'Her hatırlatma adımı için telefonunuzdaki bildirim seslerinden birini ya da kendi müziğinizi seçebilirsiniz.',
+        detayAciklama:
+            'Muhafız hatırlatmalarının sesi artık gerçekten sizin seçiminiz. Bir adımın ayarlarını açıp bildirim sesi satırına dokunduğunuzda telefonunuzun ses seçicisi açılır; buradan sistem bildirim seslerinden birini seçebilir ya da cihazınıza kendi eklediğiniz bir müziği kullanabilirsiniz. Seçtiğiniz sesi kaydetmeden önce dinleyebilir, dilediğinizde tek dokunuşla uygulama sesine geri dönebilirsiniz. Seçim adım adım yapılır: örneğin nazik hatırlatma için sakin bir ses, son dakikalardaki acil uyarı için daha dikkat çekici bir ses kullanabilirsiniz. Hazır yoğunluklardan birine geçseniz bile seçtiğiniz sesler korunur. Bu özellik hiçbir yeni izin gerektirmez.',
+        ikon: 'music',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Sesinizi seçin',
+        kartGoster: true,
+        detaylar: [
+            'Telefonunuzun bildirim seslerinden seçin ya da kendi müziğinizi kullanın',
+            'Her hatırlatma adımı için ayrı ses seçebilirsiniz',
+            'Seçmeden önce dinleyin; dilediğinizde uygulama sesine geri dönün',
+            'Hazır yoğunluğa geçseniz de seçtiğiniz sesler korunur',
+            'Yeni bir izin istenmez',
+        ],
+    },
+    {
         id: 'muhafiz-vakit-seviye-sesli-anons',
         surum: '0.24.0',
         tarih: '2026-07-18',

@@ -20,7 +20,7 @@ describe('eskidenMatriseGoc', () => {
   test('mod=bildirim, ses varsayılan, anons boş (TTS opt-in)', () => {
     const s = eskidenMatriseGoc(eski).ogle.seviyeler[0];
     expect(s.mod).toBe('bildirim');
-    expect(s.bildirimSesi).toBe('can');
+    expect(s.bildirimSesi).toBe('varsayilan');
     expect(s.anonsMetni).toBe('');
   });
   test('idempotent: iki kez çağırmak aynı sonucu verir', () => {

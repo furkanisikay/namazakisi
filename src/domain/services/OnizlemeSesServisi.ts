@@ -11,8 +11,16 @@
  * `release()` ile birakilir (bellek sizintisi yok).
  */
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
-import { sesDosyasiniCoz, type SesKaynagi } from '../../core/muhafiz/sesDosyasi';
+import {
+    sesDosyasiniCoz,
+    ozelSesOnizlemesiMi,
+    type SesKaynagi,
+} from '../../core/muhafiz/sesDosyasi';
 import { Logger } from '../../core/utils/Logger';
+import {
+    sesiOnizle as nativeSesiOnizle,
+    onizlemeyiDurdur as nativeOnizlemeyiDurdur,
+} from '../../../modules/expo-countdown-notification/src';
 
 /** Onizleme bilincli bir aksiyondur → geri bildirim seslerinden yuksek calinir. */
 export const ONIZLEME_SES_SEVIYESI = 0.9;
@@ -66,10 +74,28 @@ function calariAl(kaynak: SesKaynagi): AudioPlayer | null {
 
 export const OnizlemeSesServisi = {
     /**
-     * Palet id'sine karsilik gelen bildirim sesini bastan calar.
+     * Secili bildirim sesini bastan calar.
      * Ses calinamazsa sessizce vazgecer — onizleme UI'i asla dusurmemeli.
+     *
+     * IKI YOL (bilincli ayrik):
+     *  - `content://...` (kullanicinin sistem seciciden sectigi ses) → NATIVE
+     *    `RingtoneManager`. `expo-audio`'nun bu semayi calabildigi DOGRULANMADI;
+     *    native yol garantilidir.
+     *  - Paketlenmis varsayilan → mevcut `expo-audio` yolu (sessiz modda da calar).
      */
     bildirimSesiniCal: async (sesId: string): Promise<void> => {
+        if (ozelSesOnizlemesiMi(sesId)) {
+            try {
+                // expo-audio calari elde tutmanin anlami yok; native taraf kendi
+                // tekilligini saglar (onceki onizlemeyi durdurur).
+                calariBirak();
+                nativeSesiOnizle(sesId);
+            } catch (error) {
+                Logger.debug('OnizlemeSes', 'Ozel ses calinamadi:', error);
+            }
+            return;
+        }
+
         try {
             sesModunuHazirla();
 
@@ -87,8 +113,13 @@ export const OnizlemeSesServisi = {
         }
     },
 
-    /** Ekran kapanirken cagrilir — calari serbest birakir. */
+    /** Ekran kapanirken cagrilir — her iki yolun da calan sesini birakir. */
     temizle: (): void => {
         calariBirak();
+        try {
+            nativeOnizlemeyiDurdur();
+        } catch (error) {
+            Logger.debug('OnizlemeSes', 'Native onizleme durdurulamadi:', error);
+        }
     },
 };

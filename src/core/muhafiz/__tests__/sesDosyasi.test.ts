@@ -1,25 +1,31 @@
-import { sesDosyasiniCoz } from '../sesDosyasi';
-import { SES_PALETI, VARSAYILAN_SES } from '../matrisTipleri';
+import { sesDosyasiniCoz, ozelSesOnizlemesiMi } from '../sesDosyasi';
+import { VARSAYILAN_SES } from '../matrisTipleri';
 
 describe('sesDosyasiniCoz', () => {
-  it('paletteki her id icin calinabilir bir kaynak dondurur', () => {
-    for (const ses of SES_PALETI) {
-      const kaynak = sesDosyasiniCoz(ses.id);
-      expect(kaynak).toBeDefined();
-      expect(kaynak).not.toBeNull();
-    }
+  it('varsayilan icin calinabilir bir paketlenmis kaynak dondurur', () => {
+    const kaynak = sesDosyasiniCoz(VARSAYILAN_SES);
+    expect(kaynak).toBeDefined();
+    expect(kaynak).not.toBeNull();
   });
 
-  it('bilinmeyen/bos id sessizce varsayilana duser (kullanici hicbir sey duymamamali)', () => {
+  it('bilinmeyen/bos/eski palet id sessizce varsayilana duser (kullanici hicbir sey duymamamali)', () => {
     const varsayilan = sesDosyasiniCoz(VARSAYILAN_SES);
     expect(sesDosyasiniCoz('boyle-bir-ses-yok')).toBe(varsayilan);
     expect(sesDosyasiniCoz('')).toBe(varsayilan);
+    // Eski palet id'leri — ucu de zaten AYNI dosyaya cozuluyordu, goc bedava.
+    expect(sesDosyasiniCoz('can')).toBe(varsayilan);
+    expect(sesDosyasiniCoz('melodi')).toBe(varsayilan);
+    expect(sesDosyasiniCoz('alarm')).toBe(varsayilan);
+  });
+});
+
+describe('ozelSesOnizlemesiMi', () => {
+  it('content:// sesleri NATIVE yola ayirir (expo-audio bu semayi calamayabilir)', () => {
+    expect(ozelSesOnizlemesiMi('content://media/internal/audio/media/42')).toBe(true);
   });
 
-  it('gercek palet dosyalari eklenene kadar tum idler ayni dosyaya coz{ul}ur', () => {
-    // NOT: bu bir SPEC degil, bugunun DURUM tespitidir. Palet dosyalari
-    // eklendiginde bu test guncellenmelidir (sesDosyasi.ts'teki harita degisir).
-    const kaynaklar = SES_PALETI.map((s) => sesDosyasiniCoz(s.id));
-    expect(new Set(kaynaklar).size).toBe(1);
+  it('paketlenmis varsayilan expo-audio yolunda kalir', () => {
+    expect(ozelSesOnizlemesiMi(VARSAYILAN_SES)).toBe(false);
+    expect(ozelSesOnizlemesiMi('')).toBe(false);
   });
 });

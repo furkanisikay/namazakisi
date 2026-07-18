@@ -1,38 +1,33 @@
 /**
- * Muhafiz bildirim sesi id'si -> CALINABILIR ses dosyasi (TEK COZUM NOKTASI).
+ * Muhafiz bildirim sesi kimligi -> UYGULAMA ICI onizlemede calinabilir kaynak.
  *
- * NEDEN AYRI DOSYA: `SES_PALETI` (matrisTipleri.ts) uc isim vaat eder
- * (Çan / Melodi / Alarm) ama bugun uygulamada tek bir ses dosyasi vardir
- * (`assets/sounds/bildirim.mp3`; native tarafta da `res/raw/bildirim.mp3`).
- * Gercek palet dosyalarini eklemek AYRI bir istir. O is bittiginde
- * **yalniz asagidaki `SES_DOSYALARI` haritasi** guncellenir — cagiran hicbir
- * yerin (onizleme servisi, ekranlar) degismesi gerekmez.
+ * IKI AYRI SES YOLU VAR (bilincli):
+ *   1. Paketlenmis VARSAYILAN ses -> metro varligi, `expo-audio` ile calinir.
+ *   2. Kullanicinin sistem seciciden sectigi `content://...` -> `expo-audio`'nun
+ *      bu semayi calabildigi DOGRULANMADI; native `RingtoneManager` ile calinir
+ *      (bkz. `OnizlemeSesServisi`). Bu dosya o ayrimin karar noktasidir.
  *
- * Bilinmeyen/eksik id sessizce varsayilana duser: kullanici "Dinle" dedigi anda
- * hicbir sey duymamaktansa mevcut sesi duymalidir.
- *
- * NOT: bu cozum yalniz UYGULAMA ICI onizleme (expo-audio) icindir. Gercek
- * bildirimlerde ses Android'de KANAL ozelligidir (bkz. `muhafizKanaliSec`) ve
- * res/raw'dan native tarafca calinir — iki yol bilincli olarak ayridir.
+ * NOT: gercek BILDIRIMLERDE ses Android'de KANAL ozelligidir (bkz.
+ * `sesKimligi.muhafizKanalIdOlustur`) — onizleme yolu ile bildirim yolu ayridir.
  */
+import { ozelSesMi } from './sesKimligi';
 
 /** expo-audio `AudioSource` ile uyumlu paketleyici (metro) varlik kimligi. */
 export type SesKaynagi = number;
 
-/** Palet gercek dosyalarina kavusana kadar herkesin dustugu ses. */
+/** Uygulamayla gelen ses; ozel ses secilmemisse her yerde bu calinir. */
 const VARSAYILAN_SES_DOSYASI: SesKaynagi = require('../../../assets/sounds/bildirim.mp3');
 
 /**
- * Palet id -> dosya. Gercek sesler eklendiginde YALNIZ BURASI degisir:
- *   melodi: require('../../../assets/sounds/muhafiz_melodi.mp3'),
+ * Paketlenmis kaynagi dondurur. `content://` kimlikleri BURADAN gecmemelidir —
+ * cagiran once `ozelSesOnizlemesiMi` ile ayirmalidir; yine de savunmaci olarak
+ * varsayilana duser (kullanici "Dinle" dediginde hicbir sey duymamamali).
  */
-const SES_DOSYALARI: Record<string, SesKaynagi> = {
-  can: VARSAYILAN_SES_DOSYASI,
-  melodi: VARSAYILAN_SES_DOSYASI,
-  alarm: VARSAYILAN_SES_DOSYASI,
-};
+export function sesDosyasiniCoz(_sesKimligi: string): SesKaynagi {
+  return VARSAYILAN_SES_DOSYASI;
+}
 
-/** Palet id'sini calinabilir kaynaga cevirir; bilinmeyen id varsayilana duser. */
-export function sesDosyasiniCoz(sesId: string): SesKaynagi {
-  return SES_DOSYALARI[sesId] ?? VARSAYILAN_SES_DOSYASI;
+/** Bu kimlik native onizleme yolundan mi calinmali? */
+export function ozelSesOnizlemesiMi(sesKimligi: string): boolean {
+  return ozelSesMi(sesKimligi);
 }

@@ -50,7 +50,7 @@ export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ deste
 export interface DinleButonuProps {
     /** Onizlenecek adimin modu — hangi seslerin calacagini BU belirler. */
     mod: UyariModu;
-    /** Bildirim sesi palet id'si ('can' | 'melodi' | 'alarm') */
+    /** Ses kimligi ('varsayilan' | kullanicinin sectigi 'content://...') */
     bildirimSesi: string;
     /** Yer tutuculari COZULMUS anons metni; bossa konusma yapilmaz. */
     cozulmusMetin?: string;
