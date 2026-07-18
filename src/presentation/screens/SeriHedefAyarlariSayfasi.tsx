@@ -383,9 +383,9 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           >
             <View
               className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#FFC0CB20' }}
+              style={{ backgroundColor: renkler.vurgu + '20' }}
             >
-              <FontAwesome5 name="magic" size={18} color="#D81B60" solid />
+              <FontAwesome5 name="magic" size={18} color={renkler.vurgu} solid />
             </View>
             <View className="flex-1">
               <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
@@ -398,15 +398,15 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             <Switch
               value={ozelGunAyarlari.ozelGunModuAktif}
               onValueChange={handleOzelGunModuToggle}
-              trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-              thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : '#f4f3f4'}
+              trackColor={{ false: renkler.sinir, true: renkler.vurgu + '80' }}
+              thumbColor={ozelGunAyarlari.ozelGunModuAktif ? renkler.vurgu : '#f4f3f4'}
             />
           </View>
 
           {ozelGunAyarlari.ozelGunModuAktif && !ozelGunAyarlari.aktifOzelGun && (
             <TouchableOpacity
               className="py-3.5 rounded-xl items-center flex-row justify-center gap-2"
-              style={{ backgroundColor: '#D81B60' }}
+              style={{ backgroundColor: renkler.vurgu }}
               onPress={() => setTakvimGorunur(true)}
               activeOpacity={0.8}
               accessibilityRole="button"
@@ -422,15 +422,15 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           {ozelGunAyarlari.aktifOzelGun && (
             <View
               className="p-4 rounded-xl border"
-              style={{ backgroundColor: '#FFF0F5', borderColor: '#FFC0CB' }}
+              style={{ backgroundColor: renkler.vurgu + '10', borderColor: renkler.vurgu + '50' }}
             >
               <View className="flex-row items-center gap-2 mb-2">
-                <FontAwesome5 name="check-circle" size={16} color="#D81B60" solid />
-                <Text className="text-sm font-bold" style={{ color: '#D81B60' }}>
+                <FontAwesome5 name="check-circle" size={16} color={renkler.vurgu} solid />
+                <Text className="text-sm font-bold" style={{ color: renkler.vurgu }}>
                   Aktif Özel Gün
                 </Text>
               </View>
-              <Text className="text-sm" style={{ color: '#AD1457' }}>
+              <Text className="text-sm" style={{ color: renkler.vurgu }}>
                 {new Date(ozelGunAyarlari.aktifOzelGun.baslangicTarihi).toLocaleDateString('tr-TR')}{' '}
                 -{' '}
                 {new Date(ozelGunAyarlari.aktifOzelGun.bitisTarihi).toLocaleDateString('tr-TR')}
@@ -443,38 +443,38 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: '#DC2626' }}
+            style={{ color: renkler.hata }}
           >
             TEHLİKELİ BÖLGE
           </Text>
 
           <TouchableOpacity
             className="flex-row items-center p-4 rounded-xl"
-            style={{ backgroundColor: '#FEE2E2' }}
+            style={{ backgroundColor: renkler.hata + '15' }}
             onPress={handleSeriSifirla}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel="Seri Verilerini Sıfırla"
           >
             <View className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#DC262620' }}
+              style={{ backgroundColor: renkler.hata + '20' }}
             >
-              <FontAwesome5 name="exclamation-triangle" size={18} color="#DC2626" />
+              <FontAwesome5 name="exclamation-triangle" size={18} color={renkler.hata} />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-semibold" style={{ color: '#DC2626' }}>
+              <Text className="text-base font-semibold" style={{ color: renkler.hata }}>
                 Seri Verilerini Sıfırla
               </Text>
-              <Text className="text-xs mt-0.5" style={{ color: '#DC2626', opacity: 0.8 }}>
+              <Text className="text-xs mt-0.5" style={{ color: renkler.hata, opacity: 0.8 }}>
                 Tüm seri, rozet ve puan verilerini siler
               </Text>
             </View>
-            <FontAwesome5 name="chevron-right" size={14} color="#DC2626" />
+            <FontAwesome5 name="chevron-right" size={14} color={renkler.hata} />
           </TouchableOpacity>
 
           <TouchableOpacity
             className="flex-row items-center p-4 rounded-xl mt-2"
-            style={{ backgroundColor: '#FFF7ED' }}
+            style={{ backgroundColor: renkler.uyari + '15' }}
             onPress={handleKurulumSifirla}
             activeOpacity={0.7}
             accessibilityRole="button"
@@ -482,19 +482,19 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
           >
             <View
               className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#EA580C20' }}
+              style={{ backgroundColor: renkler.uyari + '20' }}
             >
-              <FontAwesome5 name="redo-alt" size={18} color="#EA580C" />
+              <FontAwesome5 name="redo-alt" size={18} color={renkler.uyari} />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-semibold" style={{ color: '#EA580C' }}>
+              <Text className="text-base font-semibold" style={{ color: renkler.uyari }}>
                 Kurulum Sihirbazını Yeniden Çalıştır
               </Text>
-              <Text className="text-xs mt-0.5" style={{ color: '#EA580C', opacity: 0.8 }}>
+              <Text className="text-xs mt-0.5" style={{ color: renkler.uyari, opacity: 0.8 }}>
                 Verileriniz silinmez, yalnızca kurulum ekranı açılır
               </Text>
             </View>
-            <FontAwesome5 name="chevron-right" size={14} color="#EA580C" />
+            <FontAwesome5 name="chevron-right" size={14} color={renkler.uyari} />
           </TouchableOpacity>
         </View>
 
