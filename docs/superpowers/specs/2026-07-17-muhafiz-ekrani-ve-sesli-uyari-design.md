@@ -97,8 +97,10 @@ SeviyeAyari {
 
 **Düzeltme:** `modules/expo-countdown-notification` bir foreground service İÇERMEZ. Bugünkü yapı: `CountdownNotificationHelper.kt` (düz `NotificationManager.notify` + chronometer `RemoteViews`), `CountdownReceiver.kt` (AlarmManager broadcast). Manifest'te `<service>` kaydı yok.
 
+> **⚠️ FAZ 4 UYGULAMA KARARI (bu bölümün FGS önerisini GEÇERSİZ KILAR):** Foreground service **yazılmadı**. Android 14+ `foregroundServiceType` zorunluluğu (`mediaPlayback` → Play "kullanıcı-başlatan sürekli medya" ister; `specialUse` → Play review) **uygulama reddi riski** taşıyordu (aşağıdaki risk 2). Uygulanan mimari: `AnonsZamanlayici.planla` → `setExactAndAllowWhileIdle` → `AnonsReceiver` → **`goAsync()`** (~10 sn pencere) → `AnonsKonusucu` TTS → `onDone` → focus bırak + `shutdown` + `finish()`. Kısa anons (1-3 sn) pencereye sığar; **yeni izin/FGS type gerekmedi** (risk 1 ve 2 kapandı). Aşağıdaki ses akışı / audio focus / lifecycle / Türkçe dil maddeleri **aynen geçerli**; yalnız "FGS" yerine "receiver goAsync penceresi" okuyun.
+
 Dolayısıyla TTS için:
-- **Foreground service SIFIRDAN yazılacak** (yeni `Service` + manifest kaydı + type). "Mevcut mimari doğru yer" değildi.
+- ~~**Foreground service SIFIRDAN yazılacak**~~ → **UYGULANMADI** (yukarıdaki karara bakın); tetikleme seçeneği (a) exact alarm → BroadcastReceiver seçildi.
 - **Tetikleme mekanizması (açık soru, Faz 4 araştırması):** Zamanlanmış bir `expo-notifications` bildiriminin *gösterilmesi* uygulama kodu çalıştırmaz → TTS'i tetikleyecek kanca YOK. Seçenekler: (a) AlarmManager exact alarm → BroadcastReceiver → FGS başlat + konuş; (b) mevcut `CountdownReceiver` desenini genişlet. **Android 12+ arkaplandan FGS başlatma kısıtı var** — exact-alarm-tetikli receiver'ın FGS başlatma muafiyeti (ve `setExactAndAllowWhileIdle` vs `setAlarmClock` farkı; `setAlarmClock` durum çubuğunda alarm ikonu gösterir) Faz 4 öncesi **doğrulanmalı**.
 - **Ses akışı / DND:** `USAGE_ALARM` — sessiz modu/DND'yi aşar (namaz uygulaması beklentisi). İlk sürüm varsayılanı; ileride "sessizde çalma" opt-out'u.
 - **Audio focus:** `AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK`; `AudioAttributes` TTS'e `setAudioAttributes`. Konuşma bitince `abandonAudioFocus`.
@@ -143,8 +145,8 @@ Mevcut global muhafız ayarı → vakit×seviye modeli:
 Her faz kendi spec/plan/PR döngüsü. Native fazlar (3 kanal, 4 TTS) cihaz doğrulaması ister.
 
 ## 10. Açık riskler / karara bağlı
-1. **[C1] TTS tetikleme + FGS başlatma** — mevcut FGS yok; Android 12+ arkaplandan-FGS-başlatma kısıtı + exact-alarm muafiyeti Faz 4 öncesi doğrulanmalı.
-2. **Play Store FGS-type** (mediaPlayback vs specialUse) — reddi riski, Faz 4 öncesi.
+1. ~~**[C1] TTS tetikleme + FGS başlatma**~~ — **KAPANDI (Faz 4):** exact alarm → `BroadcastReceiver.goAsync()`; FGS hiç kullanılmadı → Android 12+ arkaplandan-FGS-başlatma kısıtı konu dışı.
+2. ~~**Play Store FGS-type**~~ — **KAPANDI (Faz 4):** FGS yok → `foregroundServiceType` yok, red riski yok. Yeni izin de eklenmedi.
 3. **Cihaz doğrulaması** — TTS + bildirim kanalları yalnız gerçek cihazda doğrulanır.
 4. **DND/alarm akışı** — varsayılan agresif; opt-out gerekebilir.
 5. **Kanal enflasyonu** [I4] — ses paleti sabit tutulmalı, sonsuz kanal üretilmemeli.
