@@ -1,13 +1,16 @@
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
-import { uygunIcerikleriBul, icerikMetniOlustur, MucadeleIcerigi } from '../../core/data/SeytanlaMucadeleIcerigi';
+import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import type { VakitAdi } from '../../core/types';
-import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { kademeSeviyeNo, seviyeTetiklenirMi } from '../../core/muhafiz/motorAdaptoru';
+import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
+import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 
 /**
  * Faz 3: on plan banner'i da vakit x seviye MATRISINDEN okur.
@@ -22,6 +25,12 @@ const VARSAYILAN_MATRIS: MuhafizMatrisi = eskidenMatriseGoc({
 });
 
 type BildirimCallback = (mesaj: string, seviye: 0 | 1 | 2 | 3 | 4) => void;
+
+/**
+ * On plan anonsu banner'la es zamanli duyulsun diye birakilan kucuk pay.
+ * (Native taraf "hemen konus" sunmaz; en yakin zamana alarm kurulur.)
+ */
+const ON_PLAN_ANONS_GECIKMESI_MS = 1000;
 
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
@@ -174,8 +183,62 @@ export class NamazMuhafiziServisi {
         if (!seviyeTetiklenirMi(kazanan, kalanDk)) return;
 
         const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
+
+        // Faz 5: uygulama ACIKKEN de sesli anons konussun.
+        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs);
+
         if (this.onBildirim) {
             this.onBildirim(this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk), aktifSeviye);
+        }
+    }
+
+    /**
+     * ON PLAN SESLI ANONSU (Faz 5) — ve CIFT KONUSMA'nin nasil onlendigi.
+     *
+     * Arka plan (`ArkaplanMuhafizServisi`) ayni dakika icin zaten bir TTS alarmi
+     * planlar; alarmlar uygulama acikken de tetiklendigi icin naif bir ikinci
+     * planlama DOGRUDAN cift konusma demektir. Cozum: ALARMI COGALTMA, DEGISTIR.
+     *
+     * 1) Id PARITESI — anons id'si arka planla birebir ayni uretici ile kurulur
+     *    (`muhafizBildirimIdOlustur`). Native taraf ayni id icin ayni istek kodunu
+     *    ve `FLAG_UPDATE_CURRENT`'i kullanir → ikinci `planlaAnons` mevcut alarmi
+     *    DEGISTIRIR, yenisini eklemez.
+     *
+     * 2) SIRA GARANTISI — on plan her zaman arka plan alarmindan ONCE (veya tam
+     *    ayni anda) calisir, dolayisiyla degistirilecek alarm daima HENUZ
+     *    TETIKLENMEMISTIR:
+     *      kalanDk = floor(kalanSureMs / 60000)  ve  kalanSureMs = cikis - simdi
+     *      => kalanSureMs >= kalanDk * 60000
+     *      => simdi <= cikis - kalanDk * 60000 = alarmin kurulu oldugu an
+     *    Yani banner ciktiginda o dakikanin alarmi 0-60 sn sonrasindadir; anonsu
+     *    banner ile ayni ana cekmek hem tekillestirir hem de sesi ekranda gorulen
+     *    uyariyla es zamanli yapar. `kalanDk` degismedigi icin METIN de aynidir.
+     *
+     * Ayrica arka plan hic planlayamamissa (ornegin muhafiz uygulama acikken yeni
+     * acildi) bu yol anonsu tek basina ayakta tutar.
+     *
+     * Native cagri asla banner'i dusurmemeli -> hata yutulup loglanir.
+     */
+    private onPlanAnonsuPlanla(
+        vakit: MuhafizVakti,
+        seviye: SeviyeAyari,
+        seviyeNo: SeviyeNo,
+        kalanDk: number,
+        kalanSureMs: number
+    ): void {
+        if (!sesliAnonsGerekliMi(seviye.mod)) return;
+        if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
+
+        try {
+            const simdi = new Date();
+            const cikis = new Date(simdi.getTime() + kalanSureMs);
+            const tarih = muhafizVaktiTarihiniSec(vakit, simdi, cikis, bugunuAl(), dunuAl());
+            const id = muhafizBildirimIdOlustur(vakit, seviyeNo, tarih, kalanDk);
+            const metin = anonsMetniniCoz(seviye.anonsMetni, vakit, kalanDk);
+
+            planlaAnons(id, simdi.getTime() + ON_PLAN_ANONS_GECIKMESI_MS, metin);
+        } catch (error) {
+            Logger.error('NamazMuhafiziServisi', 'Ön plan sesli anonsu planlanamadı:', error);
         }
     }
 

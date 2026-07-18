@@ -19,6 +19,7 @@ import { basligiOlustur, bildirimGovdesiOlustur, type MuhafizSeviye } from '../.
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, muhafizKanaliSec, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
 import {
     planlaAnons,
     iptalEtAnons,
@@ -254,8 +255,11 @@ export class ArkaplanMuhafizServisi {
             const baslik = basligiOlustur(vakit.vakit, seviye, uyari.kalanDk);
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
-            // Vakit tarihini kullan (yatsi icin onceki gun olabilir)
-            const bildirimId = this.bildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih) + BILDIRIM_SABITLERI.ONEKLEME.DAKIKA + uyari.kalanDk;
+            // Vakit tarihini kullan (yatsi icin onceki gun olabilir).
+            // ID uretimi PAYLASILAN yardimciya devredildi — on plan (NamazMuhafiziServisi)
+            // ayni anonsu ayni id ile yeniden planlar; format sapmasi cift konusma
+            // uretir (bkz. core/muhafiz/anonsKimligi.ts).
+            const bildirimId = muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk);
 
             await this.tekBildirimPlanla(
                 bildirimId,
@@ -386,16 +390,6 @@ export class ArkaplanMuhafizServisi {
     }
 
     /**
-     * Bildirim ID'si olustur
-     * @param vakit Vakit adi
-     * @param seviye Bildirim seviyesi
-     * @param tarih Vaktin ait oldugu tarih (YYYY-MM-DD)
-     */
-    private bildirimIdOlustur(vakit: VakitAdi, seviye: number, tarih: string): string {
-        return `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}${BILDIRIM_SABITLERI.ONEKLEME.SEVIYE}${seviye}`;
-    }
-
-    /**
      * Belirli bir vakit icin tum bildirimleri iptal et
      * (Namaz kilindigi zaman cagirilir)
      */
@@ -416,7 +410,7 @@ export class ArkaplanMuhafizServisi {
                     try {
                         await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
 
-                    } catch (error) {
+                    } catch {
                         // Bildirim bulunamazsa hata verme
                     }
                     // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et.

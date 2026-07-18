@@ -5,6 +5,7 @@ import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti, UyariModu } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
 
 /** Bir seviye hucresinin test tanimi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
@@ -63,6 +64,16 @@ jest.mock('../NamazVaktiHesaplayiciServisi', () => {
 // Diskteki kalici kilinmislik kaydini mock'la (acilista hydrate kaynagi)
 jest.mock('../../../data/local/LocalNamazServisi', () => ({
     kilinanVakitleriAl: jest.fn().mockResolvedValue([]),
+}));
+
+// Native sesli-anons koprusu (Faz 5 on plan anonsu). Gercek modul
+// `requireNativeModule` cagirir -> jest ortaminda yoktur.
+const mockPlanlaAnons = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: (...args: unknown[]) => mockPlanlaAnons(...args),
+    iptalEtAnons: jest.fn(),
+    iptalEtTumAnonslar: jest.fn(),
+    trDestekleniyorMu: jest.fn().mockResolvedValue(true),
 }));
 
 const mockKilinanVakitleriAl = kilinanVakitleriAl as jest.Mock;
@@ -653,6 +664,136 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         const [mesaj] = bildirimSpx.mock.calls[0];
         expect(mesaj).toContain('namaza dur');
         expect(mesaj).not.toMatch(/secde/i);
+    });
+
+    // ── Faz 5: ön plan sesli anonsu + ÇİFT KONUŞMA önleme ────────────────────
+    //
+    // Arka plan aynı dakikaya zaten bir TTS alarmı kurar. Ön plan bunu ÇOĞALTMAZ,
+    // aynı id ile DEĞİŞTİRİR (native FLAG_UPDATE_CURRENT). Bu blok id paritesini
+    // ve "sadece sesli modda konuş" kuralını korur.
+    describe('ön plan sesli anonsu (Faz 5)', () => {
+        /** Tek vakit için sesli mod + anons metni olan matris. */
+        const sesliMatris = (mod: UyariModu, anonsMetni: string) => {
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[0] = { ...matris.ogle.seviyeler[0], mod, anonsMetni };
+            return matris;
+        };
+
+        it('mod "bildirim" iken anons PLANLANMAZ (sessiz kalmalı)', () => {
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalled();
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('mod "sesli" ama anons metni BOŞ ise planlanmaz', () => {
+            muhafiz.yapilandir(sesliMatris('sesli', ''));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('mod "ikisi" iken hem banner çıkar hem anons planlanır ({vakit}/{süre} çözülür)', () => {
+            muhafiz.yapilandir(sesliMatris('ikisi', '{vakit} vakti çıkıyor, son {süre} dakika.'));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalled();
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+            const [, , metin] = mockPlanlaAnons.mock.calls[0];
+            expect(metin).toBe('Öğle vakti çıkıyor, son 45 dakika.');
+        });
+
+        it('ÇİFT KONUŞMA ÖNLEME: anons id\'si arka planın ürettiğiyle BİREBİR aynı', () => {
+            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} namazını kaçırma.'));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            const [id] = mockPlanlaAnons.mock.calls[0];
+            // ArkaplanMuhafizServisi ile AYNI üretici: seviye 1, bugünün tarihi, 45 dk
+            expect(id).toBe(muhafizBildirimIdOlustur('ogle', 1, bugunuAl(), 45));
+        });
+
+        it('gece yarısı sonrası yatsı: anons id\'si DÜNÜN tarihini kullanır (arka planla parite)', () => {
+            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} vakti çıkıyor.'));
+            // yatsi satırını da sesli yap
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.yatsi.seviyeler[0] = {
+                ...matris.yatsi.seviyeler[0],
+                mod: 'sesli',
+                anonsMetni: '{vakit} vakti çıkıyor.',
+            };
+            muhafiz.yapilandir(matris);
+
+            // Saat 02:30, vaktin çıkışına 45 dk → çıkış 03:15, AYNI takvim günü
+            // → bu yatsı DÜNE aittir.
+            jest.setSystemTime(new Date(2026, 6, 18, 2, 30, 0));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            const [id] = mockPlanlaAnons.mock.calls[0];
+            expect(id).toBe(muhafizBildirimIdOlustur('yatsi', 1, dunuAl(), 45));
+        });
+
+        it('anons her tetiklemede TEK kez planlanır (banner ile 1:1)', () => {
+            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} — {süre} dk.'));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+        });
+
+        it('kılınmış vakitte anons planlanmaz (muhafız dinlenmede)', () => {
+            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} — {süre} dk.'));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+            muhafiz.namazKilindiIsaretle('ogle');
+
+            muhafiz.baslat(bildirimSpx);
+
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('native çağrı patlarsa banner yine de gösterilir (anons UI\'ı düşürmez)', () => {
+            mockPlanlaAnons.mockImplementationOnce(() => { throw new Error('native yok'); });
+            muhafiz.yapilandir(sesliMatris('ikisi', '{vakit} — {süre} dk.'));
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 45 * 60 * 1000,
+            });
+
+            expect(() => muhafiz.baslat(bildirimSpx)).not.toThrow();
+            expect(bildirimSpx).toHaveBeenCalled();
+        });
     });
 });
 
