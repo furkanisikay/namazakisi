@@ -57,9 +57,13 @@ object MuhafizKanallari {
         if (kanalId.isBlank()) return
 
         val yonetici = yonetici(context) ?: return
-        if (yonetici.getNotificationChannel(kanalId) != null) return
 
         try {
+            // `getNotificationChannel` de try ICINDE: kisitli guvenlik profilleri /
+            // ozellestirilmis ROM'larda istisna firlatabiliyor; disarida kalirsa
+            // JS tarafindaki per-kanal korumaya ulasmadan yukari kacar.
+            if (yonetici.getNotificationChannel(kanalId) != null) return
+
             // ONEM TABAN KANALLARLA AYNI OLMALI (BildirimServisi.izinIste):
             // `muhafiz_acil` = MAX(5), `muhafiz` = HIGH(4). Bir kademe dusuk verilirse
             // (HIGH/DEFAULT) kullanici ozel ses sectigi anda hatirlatma SESSIZCE
@@ -103,7 +107,11 @@ object MuhafizKanallari {
 
         try {
             val korunacak = korunacakIdler.toSet()
-            yonetici.notificationChannels
+            // `notificationChannels` platform tipi: bildirimler tumden kapaliysa /
+            // bazi ROM'larda null donebilir -> `.map` NPE atar. Dis catch onu yutar
+            // ama GC sessizce atlanir; acik kontrol niyeti gorunur kilar.
+            val kanallar = yonetici.notificationChannels ?: return
+            kanallar
                 .map { it.id }
                 .filter { muhafizKanaliMi(it) && it !in TABAN_KANALLAR && it !in korunacak }
                 .forEach { id ->

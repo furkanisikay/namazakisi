@@ -96,7 +96,10 @@ export async function adimiOnizle({
     if (mod === 'sessiz') return;
 
     const bildirimVar = bildirimSesiGerekliMi(mod);
-    const anonsVar = sesliAnonsGerekliMi(mod) && cozulmusMetin.trim().length > 0;
+    // `cozulmusMetin` tipte zorunlu ama DISKTEN gelir (matris hucresindeki
+    // `anonsMetni`) — bozuk/eski kayitta undefined olabilir ve `.trim()` coker.
+    // Ayni dosyadaki `anonsuOnizle` zaten ayni savunmayi yapiyor (satir 59).
+    const anonsVar = sesliAnonsGerekliMi(mod) && !!cozulmusMetin?.trim();
 
     if (bildirimVar) {
         // Servis kendi hatalarini yutar, reddetmez.
