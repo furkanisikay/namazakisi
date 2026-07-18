@@ -20,6 +20,8 @@ export interface VakitKartiProps {
     /** Katman 3'u acar */
     onSeviyeSec: (indeks: number) => void;
     onTumVakitlereUygula: () => void;
+    /** "Akisi onizle" (spec 3.4) */
+    onAkisiOnizle: () => void;
 }
 
 export const VakitKarti: React.FC<VakitKartiProps> = ({
@@ -29,6 +31,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     onAcKapa,
     onSeviyeSec,
     onTumVakitlereUygula,
+    onAkisiOnizle,
 }) => {
     const renkler = useRenkler();
 
@@ -144,9 +147,24 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         );
                     })}
 
-                    {/* Tum vakitlere uygula (spec 4.3) */}
+                    {/* Akisi onizle (spec 3.4) — gercek bildirim GONDERMEZ */}
                     <TouchableOpacity
                         className="flex-row items-center justify-center py-3.5 rounded-2xl mt-1"
+                        style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                        onPress={onAkisiOnizle}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${vakitAdi} akışını önizleyin`}
+                    >
+                        <FontAwesome5 name="stream" size={13} color={renkler.birincil} style={{ marginRight: 8 }} />
+                        <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
+                            Akışı önizle
+                        </Text>
+                    </TouchableOpacity>
+
+                    {/* Tum vakitlere uygula (spec 4.3) */}
+                    <TouchableOpacity
+                        className="flex-row items-center justify-center py-3.5 rounded-2xl mt-2"
                         style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                         onPress={onTumVakitlereUygula}
                         activeOpacity={0.7}

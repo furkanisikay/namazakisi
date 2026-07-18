@@ -30,16 +30,23 @@ export interface ModBilgisi {
     id: UyariModu;
     etiket: string;
     ikon: string;
-    /** TTS Faz 4'te gelecek → Faz 2'de secilebilir ama "yakinda" rozetli. */
-    yakinda: boolean;
 }
 
+/**
+ * Faz 5: sesli modlardaki "yakinda" rozeti KALDIRILDI — native anons zinciri
+ * (exact alarm -> AnonsReceiver -> TTS) Faz 4'te devreye girdi, mod artik
+ * gercekten calisiyor. Cihazda Turkce konusma paketi yoksa engelleme YAPILMAZ,
+ * yalniz bilgilendirme bandi gosterilir (bkz. `useTurkceTtsDestegi`).
+ */
 export const MOD_BILGILERI: ModBilgisi[] = [
-    { id: 'sessiz', etiket: 'Sessiz', ikon: 'bell-slash', yakinda: false },
-    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell', yakinda: false },
-    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up', yakinda: true },
-    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn', yakinda: true },
+    { id: 'sessiz', etiket: 'Sessiz', ikon: 'bell-slash' },
+    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell' },
+    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up' },
+    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn' },
 ];
+
+/** "Akisi onizle" tarama siniri — bir vaktin en genis penceresini kapsar (dk). */
+export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
 export const SESLI_MODLAR: UyariModu[] = ['sesli', 'ikisi'];
 export const BILDIRIMLI_MODLAR: UyariModu[] = ['bildirim', 'ikisi'];

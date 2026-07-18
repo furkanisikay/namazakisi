@@ -28,6 +28,7 @@ import { SES_PALETI } from '../../../core/muhafiz/matrisTipleri';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
+import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import {
     SEVIYE_BILGILERI,
     MOD_BILGILERI,
@@ -47,6 +48,8 @@ export interface SeviyeDetayModalProps {
     /** Vaktin TUM seviyeleri — esik sinirlari komsulardan hesaplanir (spec 4.2) */
     seviyeler: SeviyeAyari[];
     indeks: number;
+    /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
+    ttsDestekli: boolean | null;
     onDegistir: (yeniSeviye: SeviyeAyari) => void;
     onKapat: () => void;
 }
@@ -69,6 +72,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     vakit,
     seviyeler,
     indeks,
+    ttsDestekli,
     onDegistir,
     onKapat,
 }) => {
@@ -193,7 +197,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                             activeOpacity={0.7}
                                             accessibilityRole="button"
                                             accessibilityState={{ selected: secili }}
-                                            accessibilityLabel={m.yakinda ? `${m.etiket} (yakında)` : m.etiket}
+                                            accessibilityLabel={m.etiket}
                                         >
                                             <FontAwesome5
                                                 name={m.ikon}
@@ -207,38 +211,15 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                             >
                                                 {m.etiket}
                                             </Text>
-                                            {m.yakinda && (
-                                                <View
-                                                    className="px-1.5 py-0.5 rounded-md mt-1"
-                                                    style={{ backgroundColor: `${renkler.uyari}25` }}
-                                                >
-                                                    <Text className="text-[9px] font-bold" style={{ color: renkler.metinIkincil }}>
-                                                        yakında
-                                                    </Text>
-                                                </View>
-                                            )}
                                         </TouchableOpacity>
                                     </View>
                                 );
                             })}
                         </View>
 
-                        {sesliMi && (
-                            <View
-                                className="flex-row items-start p-3 rounded-xl mt-1"
-                                style={{ backgroundColor: `${renkler.bilgi}12` }}
-                            >
-                                <FontAwesome5
-                                    name="info-circle"
-                                    size={13}
-                                    color={renkler.bilgi}
-                                    style={{ marginRight: 8, marginTop: 1 }}
-                                />
-                                <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metinIkincil }}>
-                                    Sesli anons yakında etkinleşecek. Metninizi şimdiden hazırlayabilirsiniz.
-                                </Text>
-                            </View>
-                        )}
+                        {/* Faz 5: "yakında" bandi kalkti — sesli anons gercekten calisiyor.
+                            Yerine yalniz Turkce paket eksikse kibar bilgilendirme cikar. */}
+                        {sesliMi && <TurkceTtsUyarisi destekli={ttsDestekli} />}
 
                         {sessizMi ? (
                             <View className="items-center py-10">
@@ -454,9 +435,15 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                 >
                                                     ÖRNEK OKUNUŞ
                                                 </Text>
-                                                <Text className="text-sm" style={{ color: renkler.metin }}>
-                                                    {anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
-                                                </Text>
+                                                <View className="flex-row items-center">
+                                                    <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
+                                                        {anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
+                                                    </Text>
+                                                    <DinleButonu
+                                                        cozulmusMetin={anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
+                                                        erisimEtiketi="Örnek okunuşu dinleyin"
+                                                    />
+                                                </View>
                                             </View>
                                         )}
                                     </>

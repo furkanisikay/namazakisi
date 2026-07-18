@@ -32,7 +32,9 @@ import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
 import { SeviyeDetayModal } from './MuhafizAyarlari/SeviyeDetayModal';
+import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
 import { presetiKademeyeCevir, YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
+import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 
 type PresetYogunlugu = 'hafif' | 'normal' | 'yogun';
 
@@ -52,6 +54,11 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
     const [detay, setDetay] = useState<{ vakit: MuhafizVakti; indeks: number } | null>(null);
     const [presetOnayi, setPresetOnayi] = useState<PresetYogunlugu | null>(null);
     const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
+    const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
+
+    // Faz 5: cihazda Türkçe konuşma paketi yoksa sesli modlarda kibar uyarı
+    // gösterilir (engelleme YOK — ayar yine kaydedilir).
+    const ttsDestekli = useTurkceTtsDestegi();
 
     // Matris Faz 1'de opsiyonel (eski kayıtlarda olmayabilir) → göçle türet.
     const matris: MuhafizMatrisi = useMemo(
@@ -348,6 +355,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
                                 onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
                                 onTumVakitlereUygula={() => setTumuneOnayi(vakit)}
+                                onAkisiOnizle={() => setOnizleme(vakit)}
                             />
                         ))}
                     </>
@@ -363,8 +371,20 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                     vakit={detay.vakit}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
+                    ttsDestekli={ttsDestekli}
                     onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
                     onKapat={() => setDetay(null)}
+                />
+            )}
+
+            {/* Akışı önizle (spec 3.4) — gerçek bildirim göndermez */}
+            {onizleme && (
+                <AkisOnizlemeModal
+                    gorunur
+                    vakit={onizleme}
+                    vakitAyari={matris[onizleme]}
+                    ttsDestekli={ttsDestekli}
+                    onKapat={() => setOnizleme(null)}
                 />
             )}
 

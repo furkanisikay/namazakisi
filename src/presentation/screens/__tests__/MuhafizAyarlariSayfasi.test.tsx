@@ -28,6 +28,19 @@ jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
   return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
+// Native sesli-anons köprüsü (Faz 4/5). Gerçek modül `requireNativeModule` çağırır
+// → jest ortamında yoktur. `trDestekleniyorMu` cevabı testten testte değişebilsin
+// diye mutable bir kutu üzerinden okunur.
+const ttsDurumu: { destekli: boolean; hataVer: boolean } = { destekli: true, hataVer: false };
+const mockPlanlaAnons = jest.fn();
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+  planlaAnons: (...args: unknown[]) => mockPlanlaAnons(...args),
+  iptalEtAnons: jest.fn(),
+  iptalEtTumAnonslar: jest.fn(),
+  trDestekleniyorMu: () =>
+    ttsDurumu.hataVer ? Promise.reject(new Error('native yok')) : Promise.resolve(ttsDurumu.destekli),
+}));
+
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
   return {
@@ -72,17 +85,26 @@ describe('MuhafizAyarlariSayfasi', () => {
     konum: { konumModu: 'manuel', sonGpsGuncellemesi: null, akilliTakipAktif: false },
   });
 
-  const kur = (ustyaz: Record<string, unknown> = {}) => {
+  /**
+   * Ekranı kurar ve `useTurkceTtsDestegi`'nin asenkron sorgusunu act içinde
+   * boşaltır — aksi halde promise test bittikten sonra çözülüp "not wrapped in
+   * act(...)" uyarısı üretir (davranış doğru olsa bile gürültü/kırılganlık).
+   */
+  const kur = async (ustyaz: Record<string, unknown> = {}) => {
     (useAppSelector as unknown as jest.Mock).mockImplementation(
       (selector: (state: ReturnType<typeof stateOlustur>) => unknown) => selector(stateOlustur(ustyaz))
     );
     const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
-    return render(<MuhafizAyarlariSayfasi />);
+    const sonuc = render(<MuhafizAyarlariSayfasi />);
+    await act(async () => { await Promise.resolve(); });
+    return sonuc;
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+    ttsDurumu.destekli = true;
+    ttsDurumu.hataVer = false;
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useFeedback as jest.Mock).mockReturnValue({
@@ -96,8 +118,8 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   // ── Katman 1 ──────────────────────────────────────────────────────────────
-  it('5 vakit satırını dinamik özetiyle listeler', () => {
-    const { getByText, getAllByText } = kur();
+  it('5 vakit satırını dinamik özetiyle listeler', async () => {
+    const { getByText, getAllByText } = await kur();
     expect(getByText('Sabah')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('İkindi')).toBeTruthy();
@@ -107,22 +129,22 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getAllByText('Sadece bildirim · 45 dk kala başlar')).toHaveLength(5);
   });
 
-  it('muhafız kapalıyken vakit listesi gösterilmez', () => {
-    const { queryByText, getByText } = kur({ aktif: false });
+  it('muhafız kapalıyken vakit listesi gösterilmez', async () => {
+    const { queryByText, getByText } = await kur({ aktif: false });
     expect(getByText(/Muhafız kapalı/)).toBeTruthy();
     expect(queryByText('İkindi')).toBeNull();
   });
 
-  it('vakit kapalıysa (tüm adımlar sessiz) özet "Kapalı" olur', () => {
+  it('vakit kapalıysa (tüm adımlar sessiz) özet "Kapalı" olur', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler.forEach((s) => { s.mod = 'sessiz'; });
-    const { getByText } = kur({ matris });
+    const { getByText } = await kur({ matris });
     expect(getByText('Kapalı')).toBeTruthy();
   });
 
   // ── Katman 2 ──────────────────────────────────────────────────────────────
-  it('vakte dokununca 4 adım ve "Tüm vakitlere uygula" açılır', () => {
-    const { getByText, queryByText } = kur();
+  it('vakte dokununca 4 adım ve "Tüm vakitlere uygula" açılır', async () => {
+    const { getByText, queryByText } = await kur();
     expect(queryByText('Nazik hatırlatma')).toBeNull();
 
     fireEvent.press(getByText('İkindi'));
@@ -136,10 +158,10 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getByText('45 dk kala · bildirim · Çan')).toBeTruthy();
   });
 
-  it('"Tüm vakitlere uygula" önce onay ister, onaylanınca matrisi kopyalar', () => {
+  it('"Tüm vakitlere uygula" önce onay ister, onaylanınca matrisi kopyalar', async () => {
     const matris = varsayilanMatris();
     matris.ikindi.seviyeler[0].esikDk = 90;
-    const { getByText, getByLabelText } = kur({ matris });
+    const { getByText, getByLabelText } = await kur({ matris });
 
     fireEvent.press(getByText('İkindi'));
     fireEvent.press(getByText('Tüm vakitlere uygula'));
@@ -158,8 +180,8 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   // ── Katman 3 ──────────────────────────────────────────────────────────────
-  it('adıma dokununca detay modalı mod/eşik/sıklık ile açılır', () => {
-    const { getByText, getByLabelText } = kur();
+  it('adıma dokununca detay modalı mod/eşik/sıklık ile açılır', async () => {
+    const { getByText, getByLabelText, queryByText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
 
@@ -167,21 +189,22 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getByText('KAÇ DK KALA')).toBeTruthy();
     expect(getByText('SIKLIK')).toBeTruthy();
     expect(getByText('BİLDİRİM SESİ')).toBeTruthy();
-    // TTS Faz 4 → sesli modlar "yakında" rozetli
-    expect(getByLabelText('Sesli anons (yakında)')).toBeTruthy();
-    expect(getByLabelText('İkisi de (yakında)')).toBeTruthy();
+    // Faz 5: TTS bağlandı → "yakında" rozeti YOK, modlar sade etikette
+    expect(getByLabelText('Sesli anons')).toBeTruthy();
+    expect(getByLabelText('İkisi de')).toBeTruthy();
+    expect(queryByText('yakında')).toBeNull();
   });
 
-  it('eşik stepper sınırları komşu seviyeye göre kısıtlanır (spec 4.2)', () => {
-    const { getByText, getByLabelText } = kur();
+  it('eşik stepper sınırları komşu seviyeye göre kısıtlanır (spec 4.2)', async () => {
+    const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
     // nazik=45, komşusu uyari=25 → min 26, max 120
     expect(getByText('26–120 dk arası seçebilirsiniz')).toBeTruthy();
   });
 
-  it('eşik değişince matris yazılır ve yoğunluk "ozel" olur', () => {
-    const { getByText, getByLabelText } = kur();
+  it('eşik değişince matris yazılır ve yoğunluk "ozel" olur', async () => {
+    const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
     fireEvent.press(getByLabelText('Kaç dk kala artır'));
@@ -194,8 +217,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
   });
 
-  it('mod değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', () => {
-    const { getByText, getByLabelText } = kur();
+  it('mod değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', async () => {
+    const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
     fireEvent.press(getByLabelText('Sessiz'));
@@ -206,21 +229,21 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
   });
 
-  it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', () => {
-    const { getByText, getByLabelText } = kur();
+  it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
+    const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
-    fireEvent.press(getByLabelText('Sesli anons (yakında)'));
+    fireEvent.press(getByLabelText('Sesli anons'));
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].mod).toBe('sesli');
     expect(yeni.ogle.seviyeler[0].anonsMetni).toContain('{vakit}');
   });
 
-  it('sessiz adımda eşik/sıklık alanları gizlenir', () => {
+  it('sessiz adımda eşik/sıklık alanları gizlenir', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].mod = 'sessiz';
-    const { getByText, getByLabelText, queryByText } = kur({ matris });
+    const { getByText, getByLabelText, queryByText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
 
@@ -229,11 +252,11 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(getByText(/Bu adım kapalı/)).toBeTruthy();
   });
 
-  it('sesli modda anons metni düzenlenebilir ve örnek okunuş gösterilir', () => {
+  it('sesli modda anons metni düzenlenebilir ve örnek okunuş gösterilir', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].mod = 'ikisi';
     matris.ogle.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
-    const { getByText, getByLabelText } = kur({ matris });
+    const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
 
@@ -253,7 +276,7 @@ describe('MuhafizAyarlariSayfasi', () => {
 
   // ── Yoğunluk preset'i ─────────────────────────────────────────────────────
   it('yoğunluk preset\'i seçilince presetUygula sonucu yazılır ve yoğunluk güncellenir', async () => {
-    const { getByLabelText } = kur();
+    const { getByLabelText } = await kur();
     // presetiUygula haptik geri bildirimi await eder → mikro görevleri boşalt
     await act(async () => { fireEvent.press(getByLabelText(/^Yoğun yoğunluk/)); });
 
@@ -267,7 +290,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].mod = 'ikisi';
     matris.ogle.seviyeler[0].bildirimSesi = 'alarm';
-    const { getByLabelText } = kur({ matris });
+    const { getByLabelText } = await kur({ matris });
     await act(async () => { fireEvent.press(getByLabelText(/^Hafif yoğunluk/)); });
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
@@ -277,7 +300,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   it('yoğunluk "ozel" iken preset seçimi önce onay ister', async () => {
-    const { getByLabelText, getByText } = kur({ yogunluk: 'ozel' });
+    const { getByLabelText, getByText } = await kur({ yogunluk: 'ozel' });
     fireEvent.press(getByLabelText(/^Normal yoğunluk/));
 
     expect(getByText('Özel zamanlamanız sıfırlanacak')).toBeTruthy();
@@ -288,8 +311,8 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'normal' });
   });
 
-  it('"ozel" iken preset onayından vazgeçilirse hiçbir şey yazılmaz', () => {
-    const { getByLabelText } = kur({ yogunluk: 'ozel' });
+  it('"ozel" iken preset onayından vazgeçilirse hiçbir şey yazılmaz', async () => {
+    const { getByLabelText } = await kur({ yogunluk: 'ozel' });
     fireEvent.press(getByLabelText(/^Normal yoğunluk/));
     fireEvent.press(getByLabelText('Vazgeç'));
 
@@ -297,14 +320,127 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
   });
 
-  it('"ozel" yoğunlukta preset çubuğunda hiçbiri seçili değil, "Özel" etiketi görünür', () => {
-    const { getByText } = kur({ yogunluk: 'ozel' });
+  it('"ozel" yoğunlukta preset çubuğunda hiçbiri seçili değil, "Özel" etiketi görünür', async () => {
+    const { getByText } = await kur({ yogunluk: 'ozel' });
     expect(getByText('Özel')).toBeTruthy();
   });
 
+  // ── Faz 5: Türkçe TTS uyarısı ─────────────────────────────────────────────
+  describe('Türkçe konuşma paketi uyarısı', () => {
+    const sesliMatris = () => {
+      const matris = varsayilanMatris();
+      matris.ogle.seviyeler[0].mod = 'ikisi';
+      matris.ogle.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
+      return matris;
+    };
+
+    const detayiAc = async (ustyaz: Record<string, unknown>) => {
+      const ekran = await kur(ustyaz);
+      fireEvent.press(ekran.getByText('Öğle'));
+      fireEvent.press(ekran.getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      return ekran;
+    };
+
+    it('Türkçe paketi YOKSA sesli adımda kibar uyarı gösterir (engellemez)', async () => {
+      ttsDurumu.destekli = false;
+      const { getByText, getByLabelText } = await detayiAc({ matris: sesliMatris() });
+
+      expect(getByText(/Türkçe konuşma paketi bulunamadı/)).toBeTruthy();
+      // Engelleme YOK: mod butonları hâlâ seçilebilir, ayar kutusu duruyor
+      expect(getByLabelText('Sesli anons')).toBeTruthy();
+      expect(getByLabelText('Sesli anons metni')).toBeTruthy();
+    });
+
+    it('Türkçe paketi VARSA uyarı gösterilmez', async () => {
+      ttsDurumu.destekli = true;
+      const { queryByText } = await detayiAc({ matris: sesliMatris() });
+      expect(queryByText(/Türkçe konuşma paketi bulunamadı/)).toBeNull();
+    });
+
+    it('destek sorgulanamazsa (hata) uyarı gösterilmez — yanlış alarm yok', async () => {
+      ttsDurumu.hataVer = true;
+      const { queryByText } = await detayiAc({ matris: sesliMatris() });
+      expect(queryByText(/Türkçe konuşma paketi bulunamadı/)).toBeNull();
+    });
+
+    it('sesli olmayan (yalnız bildirim) adımda uyarı çıkmaz', async () => {
+      ttsDurumu.destekli = false;
+      const { queryByText } = await detayiAc({});
+      expect(queryByText(/Türkçe konuşma paketi bulunamadı/)).toBeNull();
+    });
+  });
+
+  // ── Faz 5: Akışı önizle (spec 3.4) ────────────────────────────────────────
+  describe('Akışı önizle', () => {
+    it('vakit açılınca "Akışı önizle" butonu görünür ve akış modalını açar', async () => {
+      const { getByText, getByLabelText, queryByText } = await kur();
+      expect(queryByText('Akışı önizle')).toBeNull();
+
+      fireEvent.press(getByText('İkindi'));
+      expect(getByText('Akışı önizle')).toBeTruthy();
+
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+      expect(getByText('İkindi akışı')).toBeTruthy();
+    });
+
+    it('adımları gerçek plan sırasıyla (azalan dakika) ve bildirim başlığıyla listeler', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+
+      // normal preset: nazik 45/20, uyari 25/10, sert 10/5, acil 3/2
+      // → 45, 25, 15, 10, 5, 3, 1 (kazanan seviye en küçük eşikli olan)
+      expect(getByText('Vakit çıkmadan önce 7 hatırlatma alırsınız')).toBeTruthy();
+      // basligiOlustur çıktısı — ilk adım nazik (seviye 1)
+      expect(getByText('⏰ 45 dk · İkindi vakti')).toBeTruthy();
+      // son adım acil (seviye 4) — büyük harf haritası kullanılır
+      expect(getByText('🚨 1 dk · İKİNDİ VAKTİ ÇIKIYOR')).toBeTruthy();
+    });
+
+    it('sesli adımda çözülmüş anons metnini gösterir ve "Dinle" onu okutur', async () => {
+      const matris = varsayilanMatris();
+      matris.ikindi.seviyeler.forEach((s, i) => { s.mod = i === 0 ? 'sesli' : 'sessiz'; });
+      matris.ikindi.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
+      const { getByText, getByLabelText } = await kur({ matris });
+
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+
+      // {vakit}/{süre} gerçek değerle çözülür
+      expect(getByText('İkindi vakti çıkıyor, son 45 dakika.')).toBeTruthy();
+
+      fireEvent.press(getByLabelText('45 dakika kala okunacak anonsu dinleyin'));
+      expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+      const [id, , metin] = mockPlanlaAnons.mock.calls[0];
+      expect(metin).toBe('İkindi vakti çıkıyor, son 45 dakika.');
+      // Önizleme SABİT id kullanır → gerçek muhafız bildirim id'leriyle çakışmaz
+      expect(id).toBe('muhafiz_anons_onizleme');
+    });
+
+    it('tüm adımlar sessizse boş durum gösterilir', async () => {
+      const matris = varsayilanMatris();
+      matris.aksam.seviyeler.forEach((s) => { s.mod = 'sessiz'; });
+      const { getByText, getByLabelText } = await kur({ matris });
+
+      fireEvent.press(getByText('Akşam'));
+      fireEvent.press(getByLabelText('Akşam akışını önizleyin'));
+
+      expect(getByText('Bu vakitte hatırlatma yok')).toBeTruthy();
+      expect(getByText(/tüm adımlar kapalı/)).toBeTruthy();
+    });
+
+    it('önizleme GERÇEK bildirim planlamaz — yalnız açmak hiçbir native çağrı yapmaz', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
+
+      expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+  });
+
   // ── Dayanıklılık ──────────────────────────────────────────────────────────
-  it('matris yoksa (eski kayıt) eski alanlardan türetip render eder', () => {
-    const { getByText } = kur({ matris: undefined });
+  it('matris yoksa (eski kayıt) eski alanlardan türetip render eder', async () => {
+    const { getByText } = await kur({ matris: undefined });
     expect(getByText('Sabah')).toBeTruthy();
     expect(getByText('İkindi')).toBeTruthy();
   });
