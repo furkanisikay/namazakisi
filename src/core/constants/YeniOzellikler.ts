@@ -55,6 +55,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         kartGoster: true,
         detaylar: [
             'Her vakit için dört hatırlatma adımını ayrı ayrı ayarlayın',
+            'Hazır yoğunluklar yenilendi: daha az tekrar, buna karşılık son dakikalarda sesli anons (Hafif seçeneği sessiz kalır)',
             'Sesli anons metnini kendiniz yazın; vakit adı ve kalan süre otomatik okunur',
             'Bir vaktin ayarını tek dokunuşla diğer tüm vakitlere kopyalayın',
             '“Akışı önizle” ile o vakitte alacağınız tüm hatırlatmaları önceden görün ve dinleyin',

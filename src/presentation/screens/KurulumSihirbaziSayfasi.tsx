@@ -30,7 +30,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTema } from '../../core/theme';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { tumVakitBildirimAyarlariniGuncelle } from '../store/vakitBildirimSlice';
-import { muhafizAyarlariniGuncelle, HATIRLATMA_PRESETLERI } from '../store/muhafizSlice';
+import { muhafizAyarlariniGuncelle, presetAyarlariniOlustur } from '../store/muhafizSlice';
 import { konumAyarlariniGuncelle } from '../store/konumSlice';
 import type { AppDispatch } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
@@ -224,21 +224,21 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           aktif: true,
           yogunluk: muhafizYogunluk,
           gelismisMod: false,
-          ...HATIRLATMA_PRESETLERI[muhafizYogunluk],
+          ...presetAyarlariniOlustur(muhafizYogunluk),
         }));
       } else if (muhafizAktif && muhafizYogunluk === 'ozel') {
         await dispatch(muhafizAyarlariniGuncelle({
           aktif: true,
           yogunluk: 'ozel',
           gelismisMod: true,
-          ...HATIRLATMA_PRESETLERI.normal, // Ozel baslangic olarak normal preset
+          ...presetAyarlariniOlustur('normal'), // Ozel baslangic olarak normal preset
         }));
       } else {
         await dispatch(muhafizAyarlariniGuncelle({
           aktif: false,
           yogunluk: 'normal',
           gelismisMod: false,
-          ...HATIRLATMA_PRESETLERI.normal,
+          ...presetAyarlariniOlustur('normal'),
         }));
       }
       await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');

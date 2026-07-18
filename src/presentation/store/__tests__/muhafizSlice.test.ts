@@ -18,13 +18,16 @@ import reducer, {
     ozelMatrisYedegiGuncelle,
     ozelYogunluguGeriYukle,
     HATIRLATMA_PRESETLERI,
+    presetAyarlariniOlustur,
     MuhafizAyarlari,
 } from '../muhafizSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { configureStore } from '@reduxjs/toolkit';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
-import { MUHAFIZ_VAKITLERI } from '../../../core/muhafiz/matrisTipleri';
+import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
+import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../../core/muhafiz/matrisIslemleri';
+import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
 // Global jest.setup mock'unu kasıtlı override ediyoruz ki yazılan ham JSON'u assert edebilelim
@@ -372,5 +375,153 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
         expect(state.ozelMatrisYedegi).toBeUndefined();
+    });
+});
+
+describe('muhafizSlice sesliOnayi (sesli anons tek seferlik onayı)', () => {
+    test('initialState onay içermez — taze kurulumda sesli hücre açılmaz', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.sesliOnayi).toBeUndefined();
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(bas.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+        }
+    });
+
+    test('muhafizAyarlariniGuncelle onayı yazar ve diske kaydeder', async () => {
+        const store = yeniStore();
+        store.dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'normal', sesliOnayi: true }));
+        await Promise.resolve();
+
+        expect((store.getState().muhafiz as MuhafizAyarlari).sesliOnayi).toBe(true);
+        expect(JSON.parse(mockStore.get(ANAHTAR)!).sesliOnayi).toBe(true);
+    });
+
+    test('KALICILIK: onay uygulama yeniden açılınca kaybolmaz', async () => {
+        // Tuzak: thunk'ın `temel` nesnesi opsiyonel alanları taşımazsa diske yazılan
+        // onay sessizce kaybolur ve kullanıcıya modal TEKRAR gösterilirdi.
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'yogun', sesliOnayi: true }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        expect((store.getState().muhafiz as MuhafizAyarlari).sesliOnayi).toBe(true);
+    });
+
+    test('diskte onay yoksa undefined kalır (modal yine sorulur)', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal' }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        expect((store.getState().muhafiz as MuhafizAyarlari).sesliOnayi).toBeUndefined();
+    });
+});
+
+/**
+ * Preset'lerin ÜRETTİĞİ uyari sayilari — motorun kendi plan fonksiyonuyla ölçülür,
+ * yani burada doğrulanan sayı arka planın gerçekten göndereceği sayıdır.
+ * Etkisiz tekrarı kesmenin nöbetçisi: yoğun eskiden 15/vakit üretiyordu.
+ */
+describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
+    const TARAMA_SINIRI_DK = 24 * 60;
+
+    const plan = (yogunluk: 'hafif' | 'normal' | 'yogun') => {
+        const matris = presetMatrisiOlustur(HATIRLATMA_PRESETLERI[yogunluk].seviyeler, true);
+        return vakitUyariPlaniOlustur(matris.ogle, TARAMA_SINIRI_DK);
+    };
+
+    test.each([
+        ['hafif', 4, 0],
+        ['normal', 6, 1],
+        ['yogun', 7, 2],
+    ] as const)('%s: %i bildirim, %i sesli anons (vakit başına)', (yogunluk, toplam, sesli) => {
+        const adimlar = plan(yogunluk);
+        expect(adimlar).toHaveLength(toplam);
+        expect(adimlar.filter((a) => a.sesliAnons)).toHaveLength(sesli);
+    });
+
+    test('yoğun preset vakit başına 8 uyarıyı AŞMAZ (tekrar körleşmesi sınırı)', () => {
+        expect(plan('yogun').length).toBeLessThanOrEqual(8);
+    });
+
+    test('hafif KASTEN sessizdir — sesli anons içermez', () => {
+        expect(presetSesliIceriyorMu(HATIRLATMA_PRESETLERI.hafif.seviyeler)).toBe(false);
+        expect(presetSesliIceriyorMu(HATIRLATMA_PRESETLERI.normal.seviyeler)).toBe(true);
+        expect(presetSesliIceriyorMu(HATIRLATMA_PRESETLERI.yogun.seviyeler)).toBe(true);
+    });
+
+    test("sesli adımlar 'sesli' değil 'ikisi' kullanır (TTS susarsa görsel iz kalsın)", () => {
+        for (const yogunluk of ['normal', 'yogun'] as const) {
+            const seviyeler = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
+            for (const kademe of SEVIYE_KADEMELERI) {
+                expect(seviyeler[kademe].mod).not.toBe('sesli');
+            }
+            expect(seviyeler.acil.mod).toBe('ikisi');
+        }
+    });
+
+    test('eşikler kesin azalan sıradadır (nazik → acil)', () => {
+        for (const yogunluk of ['hafif', 'normal', 'yogun'] as const) {
+            const s = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
+            const esikler = SEVIYE_KADEMELERI.map((k) => s[k].esikDk);
+            for (let i = 1; i < esikler.length; i++) {
+                expect(esikler[i]).toBeLessThan(esikler[i - 1]);
+            }
+        }
+    });
+
+    test('yoğun preset acil adımı alarm sesiyle acil kanala düşer', () => {
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil.bildirimSesi).toBe('alarm');
+        expect(HATIRLATMA_PRESETLERI.normal.seviyeler.acil.bildirimSesi).not.toBe('alarm');
+    });
+
+    test("eski `sikliklar` alanı 'birkez'i eşiğe eşitleyerek türetilir", () => {
+        // Eski şemada 'birkez' yok; esik === siklik eski motorda da tek atış demek.
+        expect(HATIRLATMA_PRESETLERI.hafif.sikliklar).toEqual({
+            seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2,
+        });
+        expect(HATIRLATMA_PRESETLERI.normal.sikliklar).toEqual({
+            seviye1: 45, seviye2: 10, seviye3: 5, seviye4: 3,
+        });
+        expect(HATIRLATMA_PRESETLERI.yogun.sikliklar).toEqual({
+            seviye1: 60, seviye2: 10, seviye3: 5, seviye4: 3,
+        });
+    });
+});
+
+/**
+ * Kurulum sihirbazı yolu — sesli preset'in sihirbazdan geçince ÖLMEDİĞİNİN nöbetçisi.
+ * Eski yol preset'i yalnız `esikler`/`sikliklar` olarak yazıyordu; matris reducer
+ * içinde `eskidenMatriseGoc` ile türetiliyor ve mod DAİMA 'bildirim' oluyordu.
+ */
+describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
+    test('sesli preset matrisi MOD ile birlikte üretir + onayı işaretler', () => {
+        const ayar = presetAyarlariniOlustur('yogun');
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(ayar.matris![v].seviyeler[3].mod).toBe('ikisi');
+            expect(ayar.matris![v].seviyeler[3].anonsMetni).not.toBe('');
+        }
+        expect(ayar.sesliOnayi).toBe(true);
+        expect(ayar.esikler).toEqual(HATIRLATMA_PRESETLERI.yogun.esikler);
+    });
+
+    test('hafif preset sessiz kalır ve onay işaretlemez', () => {
+        const ayar = presetAyarlariniOlustur('hafif');
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(ayar.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+        }
+        expect(ayar.sesliOnayi).toBeUndefined();
+    });
+
+    test('REGRESYON: reducer eski-alan senkronu sihirbazın modunu EZMEZ', () => {
+        // Payload'da matris geldiği için `eskidenMatriseGoc` yeniden türetme yapmamalı.
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const sonra = reducer(bas, muhafizAyarlariniGuncelle({
+            aktif: true,
+            yogunluk: 'normal',
+            ...presetAyarlariniOlustur('normal'),
+        }));
+
+        expect(sonra.matris!.imsak.seviyeler[3].mod).toBe('ikisi');
+        expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(3);
+        expect(sonra.sesliOnayi).toBe(true);
     });
 });

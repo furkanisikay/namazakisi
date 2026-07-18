@@ -59,18 +59,6 @@ export const TEKRAR_MAX_DK = 30;
 /** Esik stepper adimi (SayisalSecici sinira otomatik kenetler). */
 export const ESIK_ADIM_DK = 5;
 
-/** Eski preset sekli (seviye1..4) → yeni kademe anahtarlari. */
-export function presetiKademeyeCevir(
-    deger: { seviye1: number; seviye2: number; seviye3: number; seviye4: number }
-): Record<SeviyeKademe, number> {
-    return {
-        nazik: deger.seviye1,
-        uyari: deger.seviye2,
-        sert: deger.seviye3,
-        acil: deger.seviye4,
-    };
-}
-
 export const YOGUNLUK_BILGILERI: { id: 'hafif' | 'normal' | 'yogun'; etiket: string; ikon: string }[] = [
     { id: 'hafif', etiket: 'Hafif', ikon: 'feather-alt' },
     { id: 'normal', etiket: 'Normal', ikon: 'balance-scale' },

@@ -1,5 +1,15 @@
-import type { MuhafizMatrisi, MuhafizVakti, SeviyeKademe, Siklik } from './matrisTipleri';
-import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
+import type {
+  MuhafizMatrisi,
+  MuhafizVakti,
+  SeviyeAyari,
+  SeviyeKademe,
+  Siklik,
+  UyariModu,
+  VakitMuhafizAyari,
+} from './matrisTipleri';
+import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
+import { sesliAnonsGerekliMi } from './motorAdaptoru';
+import { ANONS_SABLONLARI } from './anonsMetni';
 
 const derinKopya = <T>(o: T): T => JSON.parse(JSON.stringify(o));
 
@@ -13,20 +23,110 @@ export function tumVakitlereUygula(matris: MuhafizMatrisi, kaynak: MuhafizVakti)
   return sonuc;
 }
 
+/**
+ * Hazir yogunluk preset'inin TEK bir seviyesi.
+ *
+ * `bildirimSesi` ZORUNLUdur: opsiyonel birakilip "yoksa mevcut korunur" denseydi,
+ * yogun preset'inin 'alarm' sesi normal'e gecildiginde hucrede YAPISIR ve
+ * "dengeli" yogunlukta sessizce acil kanala (MUHAFIZ_ACIL) dusulurdu.
+ */
+export interface PresetSeviyeAyari {
+  esikDk: number;
+  siklik: Siklik;
+  mod: UyariModu;
+  bildirimSesi: string;
+}
+
+export type PresetSeviyeleri = Record<SeviyeKademe, PresetSeviyeAyari>;
+
+/** Preset'in herhangi bir seviyesi sesli anons (TTS) istiyor mu? */
+export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
+  return SEVIYE_KADEMELERI.some((kademe) => sesliAnonsGerekliMi(seviyeler[kademe].mod));
+}
+
+/**
+ * Preset seviyesini TEK bir hucreye uygular.
+ *
+ * `sesliIzinVar === false` iken sesli/ikisi modlari 'bildirim'e DUSER: sesli anons
+ * `USAGE_ALARM` ile sessiz modu ve Rahatsiz Etmeyin'i deler, bu yuzden kullaniciya
+ * anlatilip onaylanmadan etkinlestirilmez. Preset yine uygulanir (gorsel iz kalir).
+ *
+ * Kullanicinin kendi yazdigi `anonsMetni` ASLA ezilmez; yalniz BOS kutu sablonla
+ * doldurulur (SeviyeDetayModal.modSec ile ayni kural — metinsiz 'sesli' adim
+ * sessiz kalirdi).
+ */
+function seviyeyeUygula(
+  mevcut: SeviyeAyari,
+  preset: PresetSeviyeAyari,
+  sesliIzinVar: boolean
+): SeviyeAyari {
+  const mod: UyariModu =
+    !sesliIzinVar && sesliAnonsGerekliMi(preset.mod) ? 'bildirim' : preset.mod;
+  return {
+    ...mevcut,
+    mod,
+    esikDk: preset.esikDk,
+    siklik: preset.siklik,
+    bildirimSesi: preset.bildirimSesi,
+    anonsMetni:
+      sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni ? ANONS_SABLONLARI[0] : mevcut.anonsMetni,
+  };
+}
+
+/**
+ * Hazir yogunlugu MEVCUT matrise uygular (tum vakitler, tum seviyeler).
+ *
+ * SOZLESME (degisti): preset artik yalniz esik/sikligi degil **mod ve bildirim
+ * sesini de** yazar — hazir yogunluklar "sesli anons" boyutunu da tanimladigi
+ * icin (normal/yogun son adimda 'ikisi'). Korunan tek kullanici verisi
+ * `anonsMetni`dir. Elle yapilan zamanlama degisiklikleri zaten `ozelMatrisYedegi`
+ * ile saklanir, bu yuzden veri kaybi olusmaz.
+ */
 export function presetUygula(
   matris: MuhafizMatrisi,
-  esikler: Record<SeviyeKademe, number>,
-  sikliklar: Record<SeviyeKademe, number>,
+  seviyeler: PresetSeviyeleri,
+  sesliIzinVar: boolean
 ): MuhafizMatrisi {
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
-    sonuc[v].seviyeler.forEach((s, i) => {
-      const kademe = SEVIYE_KADEMELERI[i];
-      s.esikDk = esikler[kademe];
-      s.siklik = { herDk: sikliklar[kademe] };
-    });
+    sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) =>
+      seviyeyeUygula(s, seviyeler[SEVIYE_KADEMELERI[i]], sesliIzinVar)
+    );
   }
   return sonuc;
+}
+
+/**
+ * Preset'ten SIFIRDAN matris uretir (mevcut matris yokken: ilk kurulum sihirbazi,
+ * slice initialState).
+ *
+ * Sihirbaz yolu eskiden preset'i yalniz eski `esikler`/`sikliklar` alanlarina
+ * yaziyordu; matris `eskidenMatriseGoc` ile turetildigi icin mod DAIMA 'bildirim'
+ * oluyordu → sihirbazdan gecen kullanicida sesli preset'ler calismiyordu.
+ */
+export function presetMatrisiOlustur(
+  seviyeler: PresetSeviyeleri,
+  sesliIzinVar: boolean
+): MuhafizMatrisi {
+  const vakitAyari = (): VakitMuhafizAyari => ({
+    seviyeler: SEVIYE_KADEMELERI.map((kademe) =>
+      seviyeyeUygula(
+        {
+          kademe,
+          mod: 'bildirim',
+          esikDk: seviyeler[kademe].esikDk,
+          siklik: 'birkez',
+          bildirimSesi: VARSAYILAN_SES,
+          anonsMetni: '',
+        },
+        seviyeler[kademe],
+        sesliIzinVar
+      )
+    ),
+  });
+  const matris = {} as MuhafizMatrisi;
+  for (const v of MUHAFIZ_VAKITLERI) matris[v] = vakitAyari();
+  return matris;
 }
 
 const siklikDk = (s: Siklik): number => (s === 'birkez' ? -1 : s.herDk);

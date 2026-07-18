@@ -596,7 +596,7 @@ export const MuhafizYogunlukAdimi: React.FC<{
       renk: '#10b981',
       detay: 'Gündelik hayatı az bölen, nazik hatırlatmalar',
       satir1: 'İlk hatırlatma vakitten 30 dk önce',
-      satir2: 'Her 30 dakikada bir tekrar',
+      satir2: 'Vakit başına 4 bildirim · sesli anons yok',
       icin: 'İçin: Zaten düzenli namaz kılanlar',
     },
     {
@@ -606,7 +606,7 @@ export const MuhafizYogunlukAdimi: React.FC<{
       renk: '#3b82f6',
       detay: 'Etkili ve dengeli — çoğu kullanıcı için ideal',
       satir1: 'İlk hatırlatma vakitten 45 dk önce',
-      satir2: 'Her 20 dakikada bir tekrar',
+      satir2: 'Vakit başına 6 bildirim · son 3 dk sesli anons',
       icin: 'İçin: Takibe ihtiyaç duyanlar',
     },
     {
@@ -614,9 +614,9 @@ export const MuhafizYogunlukAdimi: React.FC<{
       ad: 'Yoğun',
       etiket: 'Güçlü',
       renk: '#f97316',
-      detay: 'Sık ve ısrarcı hatırlatmalar — kesinlikle kaçırmamak için',
+      detay: 'Israrcı hatırlatmalar — kesinlikle kaçırmamak için',
       satir1: 'İlk hatırlatma vakitten 60 dk önce',
-      satir2: 'Her 10 dakikada bir tekrar',
+      satir2: 'Vakit başına 7 bildirim · son 6 dk sesli anons',
       icin: 'İçin: Yoğun tempolu hayat yaşayanlar',
     },
     {
@@ -709,6 +709,19 @@ export const MuhafizYogunlukAdimi: React.FC<{
             </TouchableOpacity>
           );
         })}
+      </View>
+
+      {/* Sesli anons bilgilendirmesi — kartı seçmek bu davranışı da kabul etmek
+          demektir (Ayarlar ekranındaki tek seferlik onay burada peşinen verilir). */}
+      <View style={styles.bilgiKutu}>
+        <FontAwesome5 name="bullhorn" size={14} color="#6b7280" />
+        <Text style={styles.bilgiKutuMetin}>
+          <Text style={{ fontWeight: '700' }}>Sesli anons nedir?</Text>{' '}
+          Normal ve Yoğun yoğunluklarda, vaktin son dakikalarında telefonunuz kalan süreyi
+          sesli olarak söyler. Alarm gibi davranır: telefonunuz sessizde veya Rahatsız
+          Etmeyin modundayken de duyulur. Kurulumdan sonra Ayarlar → Namaz Muhafızı'ndan
+          kapatabilirsiniz.
+        </Text>
       </View>
     </ScrollView>
   );

@@ -9,7 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
+import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../core/muhafiz/matrisIslemleri';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -17,33 +20,105 @@ import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
  */
 export type HatirlatmaYogunlugu = 'hafif' | 'normal' | 'yogun' | 'ozel';
 
+/** Eski (global) seviye-bazli deger sekli — geriye uyumluluk icin korunur. */
+export interface EskiSeviyeDegerleri {
+    seviye1: number;
+    seviye2: number;
+    seviye3: number;
+    seviye4: number;
+}
+
+/**
+ * PRESET TASARIMI — neden boyle (kanit temelli):
+ *
+ * - Her EK hatirlatmada kabul olasiligi ~%30 duser (PMC5387195; 112 klinisyen,
+ *   1,26M uyari, 3,5 yil) → tekrar korlestirir. Eski 'yogun' preset vakit basina
+ *   15 bildirim uretiyordu (gunde 75); son 9'u kanitli bicimde etkisizdi.
+ * - Kip (modalite) degisimi tekrardan cok daha etkili: tahliye deneyinde harekete
+ *   gecme suresi yalniz ZIL ile 8 dk 15 sn, KONUSAN anons ile 1 dk 15 sn
+ *   (Proulx & Sime, 1991, IAFSS).
+ * → Cozum: tekrari kes, son adimda MOD degistir (sesli anons).
+ *
+ * Uretilen uyari sayilari (motorla dogrulandi, `matrisIslemleri.test.ts`):
+ *   hafif 4/vakit (0 sesli) · normal 6/vakit (1 sesli) · yogun 7/vakit (2 sesli)
+ *
+ * 'hafif' KASTEN sessizdir: hafifi secen kullanici tam da sesin sorun oldugu
+ * ortamdaki kisidir; sesli eklemek bu preset'in tek ayirt edici ozelligini yok eder.
+ * Sesli adimlarda 'sesli' degil 'ikisi' kullanilir — ses tek kanal olmamali; TTS
+ * yoksa/sessizse gorsel iz kalmali.
+ */
+const HAFIF_SEVIYELERI: PresetSeviyeleri = {
+    nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+};
+
+const NORMAL_SEVIYELERI: PresetSeviyeleri = {
+    nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', bildirimSesi: VARSAYILAN_SES },
+};
+
+const YOGUN_SEVIYELERI: PresetSeviyeleri = {
+    nazik: { esikDk: 60, siklik: 'birkez', mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    uyari: { esikDk: 30, siklik: { herDk: 10 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    sert: { esikDk: 15, siklik: { herDk: 5 }, mod: 'bildirim', bildirimSesi: VARSAYILAN_SES },
+    acil: { esikDk: 6, siklik: { herDk: 3 }, mod: 'ikisi', bildirimSesi: 'alarm' },
+};
+
+const eskiEsikler = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
+    seviye1: s.nazik.esikDk,
+    seviye2: s.uyari.esikDk,
+    seviye3: s.sert.esikDk,
+    seviye4: s.acil.esikDk,
+});
+
+/**
+ * Eski semada 'birkez' YOKTUR (yalniz dakika sayisi). Esik = siklik yazmak eski
+ * motorda da "yalniz esik aninda tetikle" demektir ((esik - kalan) % esik === 0
+ * bir sonraki tetigi kalan=0'a atar, o da pencere disi) → sadik cevrim.
+ */
+const eskiSiklik = (p: PresetSeviyeAyari): number =>
+    p.siklik === 'birkez' ? p.esikDk : p.siklik.herDk;
+
+const eskiSikliklar = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
+    seviye1: eskiSiklik(s.nazik),
+    seviye2: eskiSiklik(s.uyari),
+    seviye3: eskiSiklik(s.sert),
+    seviye4: eskiSiklik(s.acil),
+});
+
+export interface HatirlatmaPreseti {
+    aciklama: string;
+    ikon: string;
+    /** Tek dogru kaynak: esik + siklik + mod + bildirim sesi. */
+    seviyeler: PresetSeviyeleri;
+    /** `seviyeler`den TURETILIR — eski global alanlar icin (geriye uyumluluk). */
+    esikler: EskiSeviyeDegerleri;
+    sikliklar: EskiSeviyeDegerleri;
+}
+
+const presetOlustur = (
+    aciklama: string,
+    ikon: string,
+    seviyeler: PresetSeviyeleri
+): HatirlatmaPreseti => ({
+    aciklama,
+    ikon,
+    seviyeler,
+    esikler: eskiEsikler(seviyeler),
+    sikliklar: eskiSikliklar(seviyeler),
+});
+
 /**
  * Preset ayarlari - kullanici basitce secsin
  */
-export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>, {
-    aciklama: string;
-    ikon: string;
-    esikler: { seviye1: number; seviye2: number; seviye3: number; seviye4: number };
-    sikliklar: { seviye1: number; seviye2: number; seviye3: number; seviye4: number };
-}> = {
-    hafif: {
-        aciklama: 'Az hatırlatma',
-        ikon: '🔔',
-        esikler: { seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2 },
-        sikliklar: { seviye1: 30, seviye2: 10, seviye3: 5, seviye4: 2 },
-    },
-    normal: {
-        aciklama: 'Dengeli',
-        ikon: '🔔🔔',
-        esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
-        sikliklar: { seviye1: 20, seviye2: 10, seviye3: 5, seviye4: 2 },
-    },
-    yogun: {
-        aciklama: 'Çok hatırlatma',
-        ikon: '🔔🔔🔔',
-        esikler: { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 },
-        sikliklar: { seviye1: 10, seviye2: 5, seviye3: 3, seviye4: 1 },
-    },
+export const HATIRLATMA_PRESETLERI: Record<Exclude<HatirlatmaYogunlugu, 'ozel'>, HatirlatmaPreseti> = {
+    hafif: presetOlustur('Yalnız bildirim', '🔔', HAFIF_SEVIYELERI),
+    normal: presetOlustur('Dengeli · sesli', '🔔🔔', NORMAL_SEVIYELERI),
+    yogun: presetOlustur('Israrcı · sesli', '🔔🔔🔔', YOGUN_SEVIYELERI),
 };
 
 /**
@@ -79,10 +154,47 @@ export interface MuhafizAyarlari {
      * burada saklanır; "Özel"e tekrar dönülünce buradan geri yüklenir.
      */
     ozelMatrisYedegi?: MuhafizMatrisi;
+    /**
+     * Sesli anonsun (TTS) sessiz modu ve Rahatsiz Etmeyin'i DELECEGI kullaniciya
+     * anlatildi ve onaylandi mi? Onay verilmeden hazir yogunluklar sesli hucreleri
+     * etkinlestirmez ('bildirim'e duser). Bir kez true olunca bir daha sorulmaz.
+     */
+    sesliOnayi?: boolean;
+}
+
+/**
+ * Hazir yogunlugu store'a yazilabilir TAM ayar parcasina cevirir (kurulum sihirbazi).
+ *
+ * TUZAK (duzeltildi): sihirbaz eskiden preset nesnesini dogrudan spread ediyordu
+ * (`...HATIRLATMA_PRESETLERI[y]`) → store'a yalniz `esikler`/`sikliklar` (+ `aciklama`,
+ * `ikon` cop alanlari) gidiyor, `matris` ise reducer icinde `eskidenMatriseGoc` ile
+ * turetiliyordu; o goc `mod`'u DAIMA 'bildirim' sabitler. Sonuc: sihirbazdan gecen
+ * kullanicida sesli preset'lerin anons adimi hic calismiyordu. Artik `matris`
+ * preset'ten DOGRUDAN uretilir ve payload'da geldigi icin reducer onu yeniden
+ * turetmez (bkz. `muhafizAyarlariniGuncelle`).
+ *
+ * `sesliOnayi`: sihirbazin yogunluk karti sesli anonsu ve sessiz mod/DND davranisini
+ * acikca yazar → karti secmek bilgilendirilmis onaydir; Ayarlar ekrani ayni onayi
+ * bir daha sormaz.
+ */
+export function presetAyarlariniOlustur(
+    yogunluk: Exclude<HatirlatmaYogunlugu, 'ozel'>
+): Partial<MuhafizAyarlari> {
+    const preset = HATIRLATMA_PRESETLERI[yogunluk];
+    const sesliVar = presetSesliIceriyorMu(preset.seviyeler);
+    return {
+        esikler: preset.esikler,
+        sikliklar: preset.sikliklar,
+        matris: presetMatrisiOlustur(preset.seviyeler, sesliVar),
+        ...(sesliVar ? { sesliOnayi: true } : {}),
+    };
 }
 
 /**
  * Varsayilan muhafiz ayarlari
+ *
+ * Matris 'normal' preset'inden uretilir ama `sesliIzinVar: false` ile — taze
+ * kurulumda kullanici sesli anonsa henuz onay vermemistir.
  */
 const initialState: MuhafizAyarlari = {
     aktif: false,
@@ -90,10 +202,7 @@ const initialState: MuhafizAyarlari = {
     gelismisMod: false,
     esikler: HATIRLATMA_PRESETLERI.normal.esikler,
     sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
-    matris: eskidenMatriseGoc({
-        esikler: HATIRLATMA_PRESETLERI.normal.esikler,
-        sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
-    }),
+    matris: presetMatrisiOlustur(HATIRLATMA_PRESETLERI.normal.seviyeler, false),
 };
 
 /**
@@ -121,8 +230,12 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 return {
                     ...temel,
                     matris: parsed.matris ?? eskidenMatriseGoc(temel),
-                    // Opsiyonel alan: diskte yoksa undefined kalır ("Özel" butonu gizli kalır).
+                    // Opsiyonel alanlar AÇIKÇA taşınmalı: `temel`e eklenmezlerse
+                    // diske yazılan değer uygulama yeniden açılınca sessizce kaybolur.
+                    // ozelMatrisYedegi: diskte yoksa undefined ("Özel" butonu gizli kalır).
                     ozelMatrisYedegi: parsed.ozelMatrisYedegi,
+                    // sesliOnayi: undefined = henüz onay yok → sesli hücreler açılmaz.
+                    sesliOnayi: parsed.sesliOnayi,
                 };
             }
             return null;
