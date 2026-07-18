@@ -41,6 +41,26 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-vakit-seviye-sesli-anons',
+        surum: '0.24.0',
+        tarih: '2026-07-18',
+        baslik: 'Vakte Özel Hatırlatma ve Sesli Anons',
+        aciklama:
+            'Her namaz vaktini ayrı ayrı ayarlayabilir, dilerseniz hatırlatmayı sesli anonsla duyabilirsiniz.',
+        detayAciklama:
+            'Muhafız ayarları yenilendi. Sabah, Öğle, İkindi, Akşam ve Yatsı için dört hatırlatma adımını (nazik hatırlatma, uyarı, sert uyarı, acil) vakit vakit ayarlayabilirsiniz. Her adımda kaç dakika kala uyarılacağınızı, ne sıklıkla tekrarlanacağını ve nasıl uyarılacağınızı seçersiniz: sessiz, bildirim, sesli anons ya da ikisi birden. Sesli anons metnini kendiniz yazabilir, {vakit} ve {süre} yer tutucularıyla vakit adının ve kalan sürenin otomatik okunmasını sağlayabilirsiniz.',
+        ikon: 'bullhorn',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Hemen ayarlayın',
+        kartGoster: true,
+        detaylar: [
+            'Her vakit için dört hatırlatma adımını ayrı ayrı ayarlayın',
+            'Sesli anons metnini kendiniz yazın; vakit adı ve kalan süre otomatik okunur',
+            'Bir vaktin ayarını tek dokunuşla diğer tüm vakitlere kopyalayın',
+            '“Akışı önizle” ile o vakitte alacağınız tüm hatırlatmaları önceden görün ve dinleyin',
+        ],
+    },
+    {
         id: 'yerel-yedekleme',
         surum: '0.24.0',
         tarih: '2026-06-14',

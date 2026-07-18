@@ -142,6 +142,8 @@ Mevcut global muhafız ayarı → vakit×seviye modeli:
 - **Faz 4 — TTS native.** FGS sıfırdan + tetikleme + audio focus + Türkçe dil + izinler. **Play Store FGS-type + Android 12+ FGS-başlatma kararı ÖNCE.** Cihazda doğrula (debug APK). En riskli.
 - **Faz 5 — TTS'i ekrana bağla + tüm-akış önizleme.** Sesli mod aktifleşir; `anonsMetni` native köprüye; önizleme animasyonu.
 
+> **✅ FAZ 5 UYGULAMA NOTLARI:** (a) sesli modlardaki **"yakında" rozeti kaldırıldı**; (b) `trDestekleniyorMu()` → `useTurkceTtsDestegi` hook'u, Türkçe paketi yoksa **bilgilendirme bandı** (engelleme YOK; `null`=bilinmiyor → uyarı gösterilmez); (c) **ön plan anonsu** `NamazMuhafiziServisi.kontrolEt` içinde — arka planla **aynı id** (`core/muhafiz/anonsKimligi.ts`) kullanılır, native `FLAG_UPDATE_CURRENT` alarmı çoğaltmak yerine **değiştirir**; ön plan her zaman arka plan alarmından önce çalıştığı için (`kalanDk = floor(kalanSureMs/60000)` ⟹ `şimdi ≤ çıkış − kalanDk·60000`) ezilecek alarm daima henüz tetiklenmemiştir → **çift konuşma yok**; (d) "Akışı önizle" (3.4) motorun saf `vakitUyariPlaniOlustur` planını gösterir — **gerçek bildirim göndermez**, yalnız isteğe bağlı "Dinle" ile sabit id'li tek atış anons okutur. Zaman çizelgesi **animasyonsuz** (statik liste) tutuldu: adım sayısı yoğunluğa göre 7–15 arası değişir, otomatik oynatma bekleme süresi yaratır ve AGENTS.md "abartılı animasyon yok" çıtasına aykırı olurdu.
+
 Her faz kendi spec/plan/PR döngüsü. Native fazlar (3 kanal, 4 TTS) cihaz doğrulaması ister.
 
 ## 10. Açık riskler / karara bağlı
