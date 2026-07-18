@@ -290,6 +290,19 @@ describe('muhafizAyarlariniYukle matris [M2]', () => {
 });
 
 describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
+    /**
+     * Yedek de `matris` gibi DOĞRULANIR (`matrisGecerliMi`) → testlerde yapısal
+     * olarak geçerli bir matris kullanılmalı; `bosMatris()` (seviyeler: []) bilinçli
+     * olarak geçersizdir ve artık yok sayılır.
+     */
+    const gecerliYedek = (esik1 = 45): MuhafizMatrisi => {
+        const m = eskidenMatriseGoc({
+            esikler: { seviye1: esik1, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 20, seviye2: 10, seviye3: 5, seviye4: 2 },
+        });
+        return m;
+    };
+
     test('initialState yedek içermez', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
         expect(bas.ozelMatrisYedegi).toBeUndefined();
@@ -297,7 +310,7 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
     test('ozelMatrisYedegiGuncelle yedeği yazar, matrisi/yoğunluğu değiştirmez', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
-        const yedek = bosMatris();
+        const yedek = gecerliYedek();
         const sonra = reducer(bas, ozelMatrisYedegiGuncelle(yedek));
 
         expect(sonra.ozelMatrisYedegi).toEqual(yedek);
@@ -307,7 +320,7 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
     test('ozelMatrisYedegiGuncelle TAM state AsyncStorage anahtarına yazılır', async () => {
         const store = yeniStore();
-        const yedek = bosMatris();
+        const yedek = gecerliYedek();
         store.dispatch(ozelMatrisYedegiGuncelle(yedek));
         await Promise.resolve();
 
@@ -317,8 +330,8 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
     test('ozelMatrisYedegiGuncelle çağrıldıkça en son hâli tutar (üzerine yazar)', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
-        const ilkYedek = bosMatris();
-        const sonrakiYedek = { ...bosMatris(), imsak: { seviyeler: [] } };
+        const ilkYedek = gecerliYedek(45);
+        const sonrakiYedek = gecerliYedek(77);
         let state = reducer(bas, ozelMatrisYedegiGuncelle(ilkYedek));
         state = reducer(state, ozelMatrisYedegiGuncelle(sonrakiYedek));
 
@@ -335,7 +348,7 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
     test('ozelYogunluguGeriYukle yedek varsa matrisi geri yükler ve yoğunluğu "ozel" yapar', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
-        const yedek = bosMatris();
+        const yedek = gecerliYedek(77);
         let state = reducer(bas, ozelMatrisYedegiGuncelle(yedek));
         // Araya bir preset uygulanmış gibi matris/yoğunluk değişsin
         state = reducer(state, muhafizAyarlariniGuncelle({ yogunluk: 'yogun' }));
@@ -350,7 +363,7 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
     test('ozelYogunluguGeriYukle TAM state AsyncStorage anahtarına yazılır', async () => {
         const store = yeniStore();
-        const yedek = bosMatris();
+        const yedek = gecerliYedek(77);
         store.dispatch(ozelMatrisYedegiGuncelle(yedek));
         await Promise.resolve();
 
@@ -363,7 +376,7 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
     });
 
     test('muhafizAyarlariniYukle: diskteki ozelMatrisYedegi state e yüklenir (uygulama yeniden açılınca kaybolmaz)', async () => {
-        const yedek = bosMatris();
+        const yedek = gecerliYedek(77);
         mockStore.set(
             ANAHTAR,
             JSON.stringify({ aktif: true, yogunluk: 'normal', ozelMatrisYedegi: yedek })
@@ -382,6 +395,38 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
         expect(state.ozelMatrisYedegi).toBeUndefined();
+    });
+
+    /**
+     * DAYANIKLILIK: yedek de `matris` gibi doğrulanmalı. Bozuk/kısmi yedek yok
+     * sayılmazsa ekranda "Özel" butonu görünür, dokunulunca matrise yazılır ve
+     * sayfa `matris[vakit].seviyeler` erişiminde TypeError atarak HER AÇILIŞTA
+     * çöker — kurtarma yolu bırakmadan.
+     */
+    test.each([
+        ['boş matris (seviyeler: [])', bosMatris()],
+        ['eksik vakit', { imsak: { seviyeler: [] } }],
+        ['nesne değil', 'bozuk'],
+        ['null', null],
+    ])('muhafizAyarlariniYukle: bozuk ozelMatrisYedegi (%s) yok sayılır', async (_ad, yedek) => {
+        mockStore.set(
+            ANAHTAR,
+            JSON.stringify({ aktif: true, yogunluk: 'normal', ozelMatrisYedegi: yedek })
+        );
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        expect((store.getState().muhafiz as MuhafizAyarlari).ozelMatrisYedegi).toBeUndefined();
+    });
+
+    test('ozelYogunluguGeriYukle bozuk yedeği matrise YAZMAZ (no-op)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const bozuk = reducer(bas, ozelMatrisYedegiGuncelle(bosMatris()));
+
+        const sonra = reducer(bozuk, ozelYogunluguGeriYukle());
+
+        expect(sonra.matris).toEqual(bas.matris); // sağlam matris korundu
+        expect(sonra.yogunluk).toBe('normal');    // yoğunluk da değişmedi
     });
 });
 
@@ -522,6 +567,22 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
         expect(ayar.sesliOnayi).toBeUndefined();
     });
 
+    /**
+     * RIZA KAPISI: `sesliOnayi` yalnız kullanıcı sesli anons açıklamasını EKRANDA
+     * gördüyse yazılabilir. Sihirbazda muhafızı KAPATAN kullanıcı o bilgi kutusunu
+     * hiç görmez (yalnız `muhafizAktif` dalında render edilir) → onay uydurulamaz;
+     * aksi halde sonradan muhafızı açıp preset seçtiğinde `SesliOnayModal` atlanır.
+     */
+    test('sesli bilgilendirme GÖSTERİLMEDİYSE onay yazılmaz ve sesli hücre açılmaz', () => {
+        const ayar = presetAyarlariniOlustur('normal', false);
+        expect(ayar.sesliOnayi).toBeUndefined();
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(ayar.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+        }
+        // Zamanlama yine preset'ten gelir
+        expect(ayar.esikler).toEqual(HATIRLATMA_PRESETLERI.normal.esikler);
+    });
+
     test('REGRESYON: reducer eski-alan senkronu sihirbazın modunu EZMEZ', () => {
         // Payload'da matris geldiği için `eskidenMatriseGoc` yeniden türetme yapmamalı.
         const bas = reducer(undefined, { type: '@@INIT' });
@@ -587,7 +648,7 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         expect(state.matris!.ogle.seviyeler.map((s) => s.esikDk)).toEqual([60, 30, 15, 6]);
     });
 
-    it('KAPI 2: onay yokken sesli hücreler bildirime düşer — göç rıza yerine geçmez', async () => {
+    it('sesli hücreler göçle AÇILMAZ — göç rıza yerine geçmez', async () => {
         eskiKayitYaz(); // sesliOnayi YOK
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
@@ -601,14 +662,67 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         expect(state.sesliOnayi).toBeUndefined();
     });
 
-    it('onay ZATEN verilmişse göç sesli hücreleri açar', async () => {
+    it('onay VERİLMİŞ olsa bile göç sesliyi açmaz — mod kullanıcınındır', async () => {
         eskiKayitYaz({ sesliOnayi: true });
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
+        // Zamanlama taşındı...
+        expect(state.matris!.ogle.seviyeler[3].esikDk).toBe(6);
+        // ...ama uyarı biçimi diskteki hâlinde kaldı (kullanıcı Ayarlar'dan açar).
+        expect(state.matris!.ogle.seviyeler[3].mod).toBe('bildirim');
+        expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(0);
+    });
+
+    /**
+     * En sinsi veri kaybı: mod değişikliği yoğunluğu 'ozel' YAPMAZ (spec 4.1) →
+     * "Yatsı'yı susturmuş ama yoğunluğu 'normal' kalmış" kullanıcı göç kapısından
+     * GEÇER. Göç mod'u ezseydi bu seçim sessizce geri alınırdı ve göç
+     * `ozelMatrisYedegi` yazmadığı için geri dönüş de olmazdı.
+     */
+    it('elle ayarlanmış mod/ses/aciliyet göçten SAĞ ÇIKAR (yoğunluk preset olsa bile)', async () => {
+        const matris = eskidenMatriseGoc({
+            esikler: ESKI_YOGUN_ESIKLER,
+            sikliklar: ESKI_YOGUN_SIKLIKLAR,
+        });
+        matris.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; });      // vakti susturmuş
+        matris.ogle.seviyeler[3].mod = 'ikisi';                            // sesliyi elle açmış
+        matris.ogle.seviyeler[3].bildirimSesi = 'content://media/42';      // kendi sesi
+        matris.ogle.seviyeler[3].sesAdi = 'Hızır';
+        matris.aksam.seviyeler[3].acilKanal = true;
+        eskiKayitYaz({ yogunluk: 'yogun', matris });
+
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris!.yatsi.seviyeler.every((s) => s.mod === 'sessiz')).toBe(true);
         expect(state.matris!.ogle.seviyeler[3].mod).toBe('ikisi');
-        expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(2);
+        expect(state.matris!.ogle.seviyeler[3].bildirimSesi).toBe('content://media/42');
+        expect(state.matris!.ogle.seviyeler[3].sesAdi).toBe('Hızır');
+        expect(state.matris!.aksam.seviyeler[3].acilKanal).toBe(true);
+        // Kazanç yine de alınır: zamanlama preset'e taşındı
+        expect(state.matris!.ogle.seviyeler.map((s) => s.esikDk)).toEqual([60, 30, 15, 6]);
+    });
+
+    /**
+     * Göç, yükleme yolunu diske YAZICI hâline getirdi. Yazılan nesne yalnız
+     * `MuhafizAyarlari` alanlarını içerseydi, bu anahtarda tarihsel olarak duran
+     * BAŞKA alanlar (ör. eski kayıtlarda `koordinatlar` — `ArkaplanGorevServisi`
+     * hâlâ okuyor) silinirdi → arka plan görevi varsayılan konuma düşer,
+     * bildirimler yanlış vakitlere planlanır.
+     */
+    it('göç diske yazarken bilinmeyen alanları KORUR (ör. eski koordinatlar)', async () => {
+        eskiKayitYaz({ koordinatlar: { lat: 39.92, lng: 32.85 }, baskaEskiAlan: 'x' });
+
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const diskte = JSON.parse(mockStore.get(ANAHTAR)!);
+        expect(diskte.koordinatlar).toEqual({ lat: 39.92, lng: 32.85 });
+        expect(diskte.baskaEskiAlan).toBe('x');
+        expect(diskte.presetGocuYapildi).toBe(true);
     });
 
     it('KAPI 1: ozel yogunluktaki kullanicinin matrisi BIRE BIR korunur', async () => {

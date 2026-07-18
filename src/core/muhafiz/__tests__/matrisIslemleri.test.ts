@@ -3,6 +3,7 @@ import {
   presetUygula,
   presetMatrisiOlustur,
   presetSesliIceriyorMu,
+  presetZamanlamasiniUygula,
   zamanlamaDegistiMi,
   type PresetSeviyeleri,
 } from '../matrisIslemleri';
@@ -206,5 +207,47 @@ describe('zamanlamaDegistiMi (spec 4.1 elle-değişiklik → ozel)', () => {
   });
   test('aynı matris false', () => {
     expect(zamanlamaDegistiMi(matris(), matris())).toBe(false);
+  });
+});
+
+/**
+ * Bir kerelik preset göçü bunu kullanır: göçün amacı ETKİSİZ TEKRARI kesmekti,
+ * kullanıcının uyarı BİÇİMİNİ değiştirmek değil. Mod göçle ezilseydi, "Yatsı'yı
+ * susturmuş ama yoğunluğu 'normal' kalmış" kullanıcının seçimi sessizce geri
+ * alınırdı (mod değişikliği yoğunluğu 'ozel' YAPMAZ — spec 4.1).
+ */
+describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
+  test('eşik ve sıklığı preset değerleriyle yazar', () => {
+    const m = presetZamanlamasiniUygula(matris(), SESLI_PRESET);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(m[v].seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+      expect(m[v].seviyeler[1].siklik).toEqual({ herDk: 10 });
+      expect(m[v].seviyeler[3].siklik).toBe('birkez');
+    }
+  });
+
+  test('mod / aciliyet / ses / anons metnine DOKUNMAZ', () => {
+    const kaynak = matris();
+    kaynak.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; });
+    kaynak.ogle.seviyeler[3].mod = 'ikisi';
+    kaynak.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
+    kaynak.ogle.seviyeler[3].anonsMetni = 'Kalk, {vakit} namazına {süre} dakika.';
+    kaynak.aksam.seviyeler[3].acilKanal = true;
+
+    const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
+
+    expect(m.yatsi.seviyeler.every((s) => s.mod === 'sessiz')).toBe(true);
+    expect(m.ogle.seviyeler[3].mod).toBe('ikisi');
+    expect(m.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
+    expect(m.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
+    expect(m.aksam.seviyeler[3].acilKanal).toBe(true);
+    // presetUygula ile FARK: o mod'u ezerdi
+    expect(presetUygula(kaynak, SESLI_PRESET, true).yatsi.seviyeler[0].mod).toBe('bildirim');
+  });
+
+  test('kaynağı mutasyona uğratmaz (derin kopya)', () => {
+    const kaynak = matris();
+    presetZamanlamasiniUygula(kaynak, SESLI_PRESET).ogle.seviyeler[0].esikDk = 999;
+    expect(kaynak.ogle.seviyeler[0].esikDk).toBe(30);
   });
 });

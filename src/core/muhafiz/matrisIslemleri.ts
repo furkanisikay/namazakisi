@@ -106,6 +106,32 @@ export function presetUygula(
 }
 
 /**
+ * Preset'in YALNIZ ZAMANLAMASINI (esik + siklik) mevcut matrise uygular.
+ *
+ * NEDEN AYRI: bir kerelik preset gocu bunu kullanir. Gocun amaci ETKISIZ TEKRARI
+ * kesmekti; kullanicinin uyari BICIMINI degistirmek degil. `presetUygula` mod +
+ * aciliyeti de yazar — goc yolunda bu, "Yatsi'yi susturmus ama yogunlugu 'normal'
+ * kalmis" kullanicinin secimini sessizce ezerdi (mod degisikligi yogunlugu 'ozel'
+ * YAPMAZ — spec 4.1 — yani boyle kullanici goc kapisindan gecer ve geri donusu de
+ * yoktur: goc `ozelMatrisYedegi` yazmaz).
+ *
+ * Bu yuzden korunan alanlar: `mod`, `acilKanal`, `bildirimSesi`/`sesAdi`, `anonsMetni`.
+ */
+export function presetZamanlamasiniUygula(
+  matris: MuhafizMatrisi,
+  seviyeler: PresetSeviyeleri
+): MuhafizMatrisi {
+  const sonuc = derinKopya(matris);
+  for (const v of MUHAFIZ_VAKITLERI) {
+    sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) => {
+      const preset = seviyeler[SEVIYE_KADEMELERI[i]];
+      return { ...s, esikDk: preset.esikDk, siklik: preset.siklik };
+    });
+  }
+  return sonuc;
+}
+
+/**
  * Preset'ten SIFIRDAN matris uretir (mevcut matris yokken: ilk kurulum sihirbazi,
  * slice initialState).
  *

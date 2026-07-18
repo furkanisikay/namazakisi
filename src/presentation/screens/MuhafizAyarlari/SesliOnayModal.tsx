@@ -6,9 +6,9 @@
  * secmek gibi tek bir dokunusla bu davranisin acilmasi kullaniciyi sasirtir;
  * bu yuzden sesli iceren bir preset ILK kez secildiginde ne olacagi anlatilir.
  *
- * Onaylanmazsa preset YINE UYGULANIR, yalniz sesli hucreler 'bildirim'e duser
- * (bkz. `presetUygula(..., sesliIzinVar)`), yani kullanici hicbir sey kaybetmez.
- * Onay kalicidir (`muhafizSlice.sesliOnayi`) — bir daha sorulmaz.
+ * "Sesli olmadan" denirse preset YINE UYGULANIR, yalniz sesli hucreler 'bildirim'e
+ * duser (bkz. `presetUygula(..., sesliIzinVar)`). Geri tusu/backdrop ise VAZGECMEDIR:
+ * hicbir sey uygulanmaz. Onay kalicidir (`muhafizSlice.sesliOnayi`) — bir daha sorulmaz.
  *
  * Kullanici DUYMADAN karar vermek zorunda kalmasin diye ornek okunusu "Dinle"
  * ile deneyebilir (gercek bildirim gonderilmez; bkz. `AnonsOnizlemeServisi`).
@@ -29,8 +29,16 @@ export interface SesliOnayModalProps {
     /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
     ttsDestekli: boolean | null;
     onOnayla: () => void;
-    /** Vazgecme / geri tusu / backdrop: preset sesli OLMADAN uygulanir. */
+    /** "Sesli olmadan" butonu: preset sesli OLMADAN uygulanir. */
     onSessizUygula: () => void;
+    /**
+     * Geri tusu / backdrop / vazgecme: HICBIR SEY UYGULANMAZ.
+     *
+     * Geri tusunu `onSessizUygula`'ya baglamak yikici bir jestti: fikrini degistirip
+     * geri tusuna basan kullanicinin 20 hucresi (5 vakit x 4 seviye) preset degerleriyle
+     * eziliyor ve yogunlugu degisiyordu. Geri = vazgec.
+     */
+    onIptal: () => void;
 }
 
 const MADDELER: { ikon: string; metin: string }[] = [
@@ -55,9 +63,10 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
     ttsDestekli,
     onOnayla,
     onSessizUygula,
+    onIptal,
 }) => {
     const renkler = useRenkler();
-    useDonanimGeriTusu(gorunur, onSessizUygula);
+    useDonanimGeriTusu(gorunur, onIptal);
 
     return (
         <Modal
@@ -65,11 +74,11 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
             animationType="fade"
             transparent
             statusBarTranslucent
-            onRequestClose={onSessizUygula}
+            onRequestClose={onIptal}
         >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                {/* Backdrop — absolute sibling (içeriği sarmaz) */}
-                <TouchableWithoutFeedback onPress={onSessizUygula}>
+                {/* Backdrop — absolute sibling (içeriği sarmaz); dokunmak VAZGEÇER */}
+                <TouchableWithoutFeedback onPress={onIptal}>
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
                 </TouchableWithoutFeedback>
 

@@ -234,11 +234,15 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           ...presetAyarlariniOlustur('normal'), // Ozel baslangic olarak normal preset
         }));
       } else {
+        // Muhafızı kapatan kullanıcı yoğunluk adımının sesli anons bilgi kutusunu
+        // HİÇ görmez (o kutu yalnız `muhafizAktif` dalında render edilir) →
+        // `sesliOnayi` YAZILMAZ. Aksi halde sonradan muhafızı açıp preset seçtiğinde
+        // `SesliOnayModal` atlanır ve sessiz modu delen TTS bilgilendirmesiz açılır.
         await dispatch(muhafizAyarlariniGuncelle({
           aktif: false,
           yogunluk: 'normal',
           gelismisMod: false,
-          ...presetAyarlariniOlustur('normal'),
+          ...presetAyarlariniOlustur('normal', false),
         }));
       }
       await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');

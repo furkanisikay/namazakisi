@@ -14,7 +14,7 @@ import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/mat
 import {
     presetMatrisiOlustur,
     presetSesliIceriyorMu,
-    presetUygula,
+    presetZamanlamasiniUygula,
 } from '../../core/muhafiz/matrisIslemleri';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 
@@ -183,40 +183,42 @@ const presetliYogunlukMu = (yogunluk: HatirlatmaYogunlugu): yogunluk is Presetli
     Object.prototype.hasOwnProperty.call(HATIRLATMA_PRESETLERI, yogunluk);
 
 /**
- * BIR KERELIK PRESET GOCU — "tekrar azaltma herkese ulassin, ses rizaya bagli kalsin".
+ * BIR KERELIK PRESET GOCU — "tekrar azaltma herkese ulassin, geri kalan her sey
+ * kullanicinin kalsin".
  *
  * NEDEN: preset'lerin asil kazanci etkisiz tekrari kesmekti (yogun 15 → 7 uyari/vakit;
  * her ek hatirlatmada kabul olasiligi ~%30 duser — PMC5387195). Goc olmasaydi bu kazanc
  * mevcut kullanicilarin HICBIRINE ulasmaz, herkes yogunluk butonuna yeniden dokunana
  * kadar gunde 75 bildirim almaya devam ederdi.
  *
- * IKI KAPI (ikisi de zorunlu):
- *   1. Yalniz `yogunluk !== 'ozel'` kayitlara uygulanir. Elle ayar yapmis kullanicinin
- *      matrisi onun kisisel emegidir → BIRE BIR korunur (yalniz bayrak isaretlenir).
- *   2. Sesli hucreler `sesliIzinVar = (sesliOnayi === true)` ile uygulanir. Onay yoksa
- *      'ikisi' → 'bildirim'e duser: goc RIZA YERINE GECMEZ. Kullanici ayarlara girip
- *      yogunluga dokundugunda `SesliOnayModal` normal akisiyla cikar ve sesliyi o an acar.
+ * GOC YALNIZ ZAMANLAMAYI (esik + siklik) TASIR. `mod`, `acilKanal`, `bildirimSesi`,
+ * `anonsMetni` alanlarina DOKUNMAZ:
+ *   - Bu projede mod degisikligi yogunlugu 'ozel' YAPMAZ (`zamanlamaDegistiMi` yalniz
+ *     esik+siklik bakar — spec 4.1). Yani "Yatsi'yi elle susturmus ama yogunlugu hala
+ *     'normal'" bir kullanici `yogunluk !== 'ozel'` kapisindan GECER; mod'u ezseydik
+ *     onun secimini sessizce geri alirdik ve goc `ozelMatrisYedegi` yazmadigi icin
+ *     geri donus de olmazdi.
+ *   - Ayni sebeple sesli hucreler goc yoluyla ACILMAZ: sesli anons `USAGE_ALARM` ile
+ *     sessiz modu/DND'yi deler, riza gerektirir (`sesliOnayi`) ve o riza yalniz ekranda
+ *     `SesliOnayModal` ile alinir. `sesliOnayi` goc tarafindan ne okunur ne yazilir.
  *
- * Yani goc yalniz ZAMANLAMA + TEKRAR AZALTMAYI tasir (tek yonlu, riza gerektirmeyen fayda).
- * `anonsMetni` `presetUygula` tarafindan zaten korunur.
+ * Tek istisna: diskteki matris YAPISAL OLARAK BOZUKSA korunacak bir sey yoktur →
+ * preset'ten sifirdan kurulur (sesli hucreler yine kapali; riza uydurulmaz).
  */
 function presetGocunuUygula(
     yogunluk: HatirlatmaYogunlugu,
-    mevcutMatris: MuhafizMatrisi,
-    sesliOnayi: boolean | undefined
+    mevcutMatris: MuhafizMatrisi
 ): Partial<MuhafizAyarlari> {
-    // Kapı 1 — 'ozel' (veya diskte bozuk/bilinmeyen yoğunluk): DOKUNMA.
+    // 'ozel' (veya diskte bozuk/bilinmeyen yoğunluk): DOKUNMA.
     if (!presetliYogunlukMu(yogunluk)) return {};
 
     const preset = HATIRLATMA_PRESETLERI[yogunluk];
-    // Kapı 2 — sesli yalnız onay varsa açılır.
-    const sesliIzinVar = sesliOnayi === true;
     return {
         esikler: preset.esikler,
         sikliklar: preset.sikliklar,
         matris: matrisGecerliMi(mevcutMatris)
-            ? presetUygula(mevcutMatris, preset.seviyeler, sesliIzinVar)
-            : presetMatrisiOlustur(preset.seviyeler, sesliIzinVar),
+            ? presetZamanlamasiniUygula(mevcutMatris, preset.seviyeler)
+            : presetMatrisiOlustur(preset.seviyeler, false),
     };
 }
 
@@ -231,20 +233,27 @@ function presetGocunuUygula(
  * preset'ten DOGRUDAN uretilir ve payload'da geldigi icin reducer onu yeniden
  * turetmez (bkz. `muhafizAyarlariniGuncelle`).
  *
- * `sesliOnayi`: sihirbazin yogunluk karti sesli anonsu ve sessiz mod/DND davranisini
- * acikca yazar → karti secmek bilgilendirilmis onaydir; Ayarlar ekrani ayni onayi
- * bir daha sormaz.
+ * `sesliOnayi` BIR RIZA KAYDIDIR — UYDURULAMAZ. Yalnizca kullanici sesli anonsun ne
+ * yaptigini (sessiz mod/DND'yi deldigini) EKRANDA OKUDUYSA yazilir. Sihirbazin yogunluk
+ * adimi bu bilgi kutusunu YALNIZ muhafiz aciksa render eder; muhafizi kapatan kullanici
+ * o metni hic gormez → `sesliBilgilendirildi: false` gecilmelidir. Aksi halde kullanici
+ * sonradan muhafizi acip preset sectiginde `SesliOnayModal` ATLANIR ve TTS
+ * bilgilendirmesiz etkinlesir.
+ *
+ * @param sesliBilgilendirildi Sesli anons aciklamasi kullaniciya GOSTERILDI mi?
  */
 export function presetAyarlariniOlustur(
-    yogunluk: Exclude<HatirlatmaYogunlugu, 'ozel'>
+    yogunluk: Exclude<HatirlatmaYogunlugu, 'ozel'>,
+    sesliBilgilendirildi: boolean = true
 ): Partial<MuhafizAyarlari> {
     const preset = HATIRLATMA_PRESETLERI[yogunluk];
     const sesliVar = presetSesliIceriyorMu(preset.seviyeler);
+    const onayVerildi = sesliVar && sesliBilgilendirildi;
     return {
         esikler: preset.esikler,
         sikliklar: preset.sikliklar,
-        matris: presetMatrisiOlustur(preset.seviyeler, sesliVar),
-        ...(sesliVar ? { sesliOnayi: true } : {}),
+        matris: presetMatrisiOlustur(preset.seviyeler, onayVerildi),
+        ...(onayVerildi ? { sesliOnayi: true } : {}),
     };
 }
 
@@ -296,9 +305,7 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // 'ozel' yoğunlukta `presetGocunuUygula` boş döner → matris bire bir korunur,
                 // ama bayrak yine işaretlenir ki her açılışta tekrar denenmesin (idempotent).
                 const gocGerekli = parsed.presetGocuYapildi !== true;
-                const goc = gocGerekli
-                    ? presetGocunuUygula(temel.yogunluk, mevcutMatris, parsed.sesliOnayi)
-                    : {};
+                const goc = gocGerekli ? presetGocunuUygula(temel.yogunluk, mevcutMatris) : {};
 
                 const sonuc: MuhafizAyarlari = {
                     ...temel,
@@ -306,8 +313,12 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     ...goc,
                     // Opsiyonel alanlar AÇIKÇA taşınmalı: `temel`e eklenmezlerse
                     // diske yazılan değer uygulama yeniden açılınca sessizce kaybolur.
-                    // ozelMatrisYedegi: diskte yoksa undefined ("Özel" butonu gizli kalır).
-                    ozelMatrisYedegi: parsed.ozelMatrisYedegi,
+                    // ozelMatrisYedegi: `matris` gibi DOĞRULANIR — bozuk/kısmi yedek
+                    // ekranda "Özel" butonunu gösterir, dokununca matrise yazılır ve
+                    // sayfa `matris[vakit].seviyeler` ile her açılışta çöker.
+                    ozelMatrisYedegi: matrisGecerliMi(parsed.ozelMatrisYedegi)
+                        ? parsed.ozelMatrisYedegi
+                        : undefined,
                     // sesliOnayi: undefined = henüz onay yok → sesli hücreler açılmaz.
                     sesliOnayi: parsed.sesliOnayi,
                     presetGocuYapildi: true,
@@ -317,9 +328,16 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
                     // kullanıcının elle yaptığı mod/ses değişikliklerini sürekli geri alır.
                     // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)
+                    //
+                    // `...parsed` ŞART: bu anahtar tarihsel olarak muhafız dışı alanlar da
+                    // taşıyabiliyor (ör. eski kayıtlarda `koordinatlar` — bkz.
+                    // `ArkaplanGorevServisi`'nin geriye uyumluluk dalı). Yalnız
+                    // `MuhafizAyarlari` alanlarını yazsaydık göç, ilgisiz alanları SİLER;
+                    // konumu yalnız burada olan eski kullanıcıda arka plan görevi
+                    // varsayılan koordinata düşer → bildirimler yanlış vakitlere planlanır.
                     await AsyncStorage.setItem(
                         DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI,
-                        JSON.stringify(sonuc)
+                        JSON.stringify({ ...parsed, ...sonuc })
                     );
                 }
                 return sonuc;
@@ -386,10 +404,12 @@ const muhafizSlice = createSlice({
 
         /**
          * Yedeklenen ozel matrisi geri yukler + yogunlugu 'ozel' yapar. Yedek
-         * yoksa no-op (UI "Ozel" secenegini yedek yokken zaten gostermez).
+         * yoksa VEYA yapisal olarak bozuksa no-op: bozuk yedegi matrise yazmak
+         * ekrani (`matris[vakit].seviyeler`) her acilista coken bir duruma sokar
+         * ve kurtarma yolu birakmaz.
          */
         ozelYogunluguGeriYukle: (state) => {
-            if (!state.ozelMatrisYedegi) return state;
+            if (!matrisGecerliMi(state.ozelMatrisYedegi)) return state;
             const yeniState: MuhafizAyarlari = {
                 ...state,
                 matris: state.ozelMatrisYedegi,

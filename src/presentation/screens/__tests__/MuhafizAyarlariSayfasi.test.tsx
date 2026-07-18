@@ -25,6 +25,8 @@ jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
 jest.mock('../../hooks/useKonumMetni', () => ({ useKonumMetni: () => 'İstanbul' }));
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+// Geri tuşu geri çağrısını testte tetikleyebilmek için mock'a erişim
+const { useDonanimGeriTusu } = require('../../hooks/useDonanimGeriTusu');
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
   return (props: { name: string }) => <Text>{props.name}</Text>;
@@ -58,6 +60,21 @@ jest.mock('../../../domain/services/OnizlemeSesServisi', () => ({
   OnizlemeSesServisi: {
     bildirimSesiniCal: (...args: unknown[]) => mockBildirimSesiniCal(...args),
     temizle: jest.fn(),
+  },
+}));
+
+// Ayar değişikliğinden sonra bildirimler GERÇEKTEN yeniden planlanır (kanal id'si
+// seçilen sesin fonksiyonu). Testte native/notifee yolu yerine çağrı ölçülür.
+const mockMuhafizPlanla = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../domain/services/ArkaplanMuhafizServisi', () => ({
+  ArkaplanMuhafizServisi: {
+    getInstance: () => ({ yapilandirVePlanla: (...args: unknown[]) => mockMuhafizPlanla(...args) }),
+  },
+}));
+const mockSayacPlanla = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../domain/services/VakitSayacBildirimServisi', () => ({
+  VakitSayacBildirimServisi: {
+    getInstance: () => ({ yapilandirVePlanla: (...args: unknown[]) => mockSayacPlanla(...args) }),
   },
 }));
 
@@ -107,7 +124,13 @@ describe('MuhafizAyarlariSayfasi', () => {
       matris: varsayilanMatris(),
       ...ustyaz,
     },
-    konum: { konumModu: 'manuel', sonGpsGuncellemesi: null, akilliTakipAktif: false },
+    konum: {
+      konumModu: 'manuel',
+      sonGpsGuncellemesi: null,
+      akilliTakipAktif: false,
+      koordinatlar: { lat: 41.0082, lng: 28.9784 },
+    },
+    vakitSayac: { ayarlar: { aktif: true, sayacBaslangicSeviyesi: 1 } },
   });
 
   /**
@@ -254,8 +277,10 @@ describe('MuhafizAyarlariSayfasi', () => {
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].mod).toBe('sessiz');
     expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
-    // Preset'te kalınıyor (zamanlama değişmedi) → özel yedek de güncellenmez
-    expect(ozelMatrisYedegiGuncelle).not.toHaveBeenCalled();
+    // ...ama yedeklenir: preset yoğunluğunda yapılan mod/ses değişikliği de kullanıcı
+    // emeğidir; yedeklenmezse sonraki preset dokunuşu onu UYARISIZ siler ve "Özel"
+    // seçeneği görünmediği için geri dönüş kalmaz.
+    expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
   });
 
   it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
@@ -507,6 +532,63 @@ describe('MuhafizAyarlariSayfasi', () => {
 
       await act(async () => { fireEvent.press(getByLabelText('Sesli anonsu açın')); });
       expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
+    });
+
+    /**
+     * Geri tuşu "vazgeç"tir, "uygula" değil. Eskiden `onSessizUygula`'ya bağlıydı:
+     * fikrini değiştirip geri tuşuna basan kullanıcının 20 hücresi (5 vakit x 4
+     * seviye) preset değerleriyle eziliyor ve yoğunluğu değişiyordu.
+     */
+    it('geri tuşu VAZGEÇER — preset uygulanmaz, hiçbir şey yazılmaz', async () => {
+      const { getByLabelText, getByText, queryByText } = await kur({ yogunluk: 'hafif' });
+      await act(async () => { fireEvent.press(getByLabelText(/^Normal yoğunluk/)); });
+      expect(getByText('Sesli anons açılsın mı?')).toBeTruthy();
+
+      // Modal açıkken kurulan donanım geri tuşu geri çağrısını çalıştır
+      const geriCagrilari = (useDonanimGeriTusu as jest.Mock).mock.calls.filter((c) => c[0] === true);
+      expect(geriCagrilari.length).toBeGreaterThan(0);
+      await act(async () => { geriCagrilari[geriCagrilari.length - 1][1](); });
+
+      expect(queryByText('Sesli anons açılsın mı?')).toBeNull();
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+      expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
+    });
+
+    /**
+     * Göçten geçmiş kullanıcı: yoğunluk 'normal', kart altyazısı "Dengeli · sesli"
+     * ama onay olmadığı için sesli hücreler 'bildirim'e düşmüş. Aynı preset'e
+     * dokunmak sessizce return etseydi sesliyi açmanın YOLU KALMAZDI (tek kaçış
+     * başka bir preset'e geçip tüm zamanlamayı ezmekti).
+     */
+    it('ZATEN SEÇİLİ sesli preset + onay yoksa: dokunuş onay modalını açar', async () => {
+      const { getByLabelText, getByText } = await kur({ yogunluk: 'normal' });
+      await act(async () => { fireEvent.press(getByLabelText(/^Normal yoğunluk/)); });
+
+      expect(getByText('Sesli anons açılsın mı?')).toBeTruthy();
+
+      await act(async () => { fireEvent.press(getByLabelText('Sesli anonsu açın')); });
+      const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+      expect(yeni.ogle.seviyeler[3].mod).toBe('ikisi'); // sesli GERÇEKTEN açıldı
+      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({
+        yogunluk: 'normal',
+        sesliOnayi: true,
+      });
+    });
+
+    it('ZATEN SEÇİLİ preset + onay VARSA dokunuş hiçbir şey yapmaz', async () => {
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'normal', sesliOnayi: true });
+      await act(async () => { fireEvent.press(getByLabelText(/^Normal yoğunluk/)); });
+
+      expect(queryByText('Sesli anons açılsın mı?')).toBeNull();
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('ZATEN SEÇİLİ sessiz preset (hafif) dokunuşu onay istemez', async () => {
+      const { getByLabelText, queryByText } = await kur({ yogunluk: 'hafif' });
+      await act(async () => { fireEvent.press(getByLabelText(/^Hafif yoğunluk/)); });
+
+      expect(queryByText('Sesli anons açılsın mı?')).toBeNull();
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
     });
   });
 
@@ -791,10 +873,92 @@ describe('MuhafizAyarlariSayfasi', () => {
     });
   });
 
+  // ── Ayar değişikliğini gerçek plana yansıtma ──────────────────────────────
+  describe('Yeniden planlama', () => {
+    /** Kullanıcının bir adımın eşiğini değiştirmesi (matris yazan en kısa yol). */
+    const esigiDegistir = (getByText: ReturnType<typeof render>['getByText'],
+      getByLabelText: ReturnType<typeof render>['getByLabelText']) => {
+      fireEvent.press(getByText('Öğle'));
+      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(getByLabelText('Kaç dk kala artır'));
+    };
+
+    it('matris değişince bildirimler yeniden planlanır (ekrandaki ses/eşik anında geçerli olsun)', async () => {
+      const { getByText, getByLabelText } = await kur();
+      esigiDegistir(getByText, getByLabelText);
+
+      // Her dokunuşta değil — kısa gecikmeden sonra
+      expect(mockMuhafizPlanla).not.toHaveBeenCalled();
+      await act(async () => { jest.advanceTimersByTime(2000); });
+
+      expect(mockMuhafizPlanla).toHaveBeenCalledTimes(1);
+      expect(mockMuhafizPlanla.mock.calls[0][0]).toMatchObject({
+        aktif: true,
+        koordinatlar: { lat: 41.0082, lng: 28.9784 },
+      });
+    });
+
+    it('vakit sayacı da AYNI bastırma parametreleriyle yeniden kurulur', async () => {
+      const matris = varsayilanMatris();
+      matris.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; }); // yatsı susturulmuş
+      const { getByText, getByLabelText } = await kur({ matris });
+      esigiDegistir(getByText, getByLabelText);
+      await act(async () => { jest.advanceTimersByTime(2000); });
+
+      const ayar = mockSayacPlanla.mock.calls[0][0] as {
+        muhafizAktif: boolean; muhafizUyarilanVakitler: string[];
+      };
+      expect(ayar.muhafizAktif).toBe(true);
+      // Bastırma VAKİT BAZLI: susturulmuş vakit listede olmamalı, yoksa kullanıcı
+      // o vakitte hiçbir hatırlatma almaz.
+      expect(ayar.muhafizUyarilanVakitler).not.toContain('yatsi');
+      expect(ayar.muhafizUyarilanVakitler).toContain('ogle');
+    });
+
+    it('arka arkaya değişiklik TEK planlamaya iner (debounce)', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('Öğle'));
+      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(getByLabelText('Kaç dk kala artır'));
+      fireEvent.press(getByLabelText('Kaç dk kala artır'));
+      fireEvent.press(getByLabelText('Kaç dk kala artır'));
+
+      await act(async () => { jest.advanceTimersByTime(2000); });
+      expect(mockMuhafizPlanla).toHaveBeenCalledTimes(1);
+    });
+
+    it('ekrandan çıkılırsa bekleyen planlama KAYBOLMAZ, hemen uygulanır', async () => {
+      const { getByText, getByLabelText, unmount } = await kur();
+      esigiDegistir(getByText, getByLabelText);
+      expect(mockMuhafizPlanla).not.toHaveBeenCalled();
+
+      await act(async () => { unmount(); });
+
+      expect(mockMuhafizPlanla).toHaveBeenCalledTimes(1);
+    });
+
+    it('hiçbir değişiklik yapılmadıysa planlama tetiklenmez', async () => {
+      const { unmount } = await kur();
+      await act(async () => { jest.advanceTimersByTime(5000); });
+      await act(async () => { unmount(); });
+      expect(mockMuhafizPlanla).not.toHaveBeenCalled();
+    });
+  });
+
   // ── Dayanıklılık ──────────────────────────────────────────────────────────
   it('matris yoksa (eski kayıt) eski alanlardan türetip render eder', async () => {
     const { getByText } = await kur({ matris: undefined });
     expect(getByText('Sabah')).toBeTruthy();
     expect(getByText('İkindi')).toBeTruthy();
+  });
+
+  /**
+   * Bozuk yedek gösterilirse dokunuşta matrise yazılır ve ekran
+   * `matris[vakit].seviyeler` erişiminde HER AÇILIŞTA çöker (kurtarma yolu yok).
+   */
+  it('bozuk "Özel" yedeği gösterilmez (matris gibi doğrulanır)', async () => {
+    const bozukYedek = { imsak: { seviyeler: [] } } as unknown as MuhafizMatrisi;
+    const { queryByLabelText } = await kur({ yogunluk: 'normal', ozelMatrisYedegi: bozukYedek });
+    expect(queryByLabelText(/^Özel yoğunluk/)).toBeNull();
   });
 });
