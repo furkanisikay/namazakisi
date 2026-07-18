@@ -14,10 +14,12 @@
  * ile deneyebilir (gercek bildirim gonderilmez; bkz. `AnonsOnizlemeServisi`).
  */
 import * as React from 'react';
+import { useEffect } from 'react';
 import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
+import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 
 export interface SesliOnayModalProps {
@@ -67,6 +69,14 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
 }) => {
     const renkler = useRenkler();
     useDonanimGeriTusu(gorunur, onIptal);
+
+    // "Dinle" ile baslatilan ses modal kapaninca DEVAM ETMEMELI: native
+    // `RingtoneManager` calmayi surdurur ve `AudioPlayer` serbest birakilmaz.
+    useEffect(() => {
+        if (gorunur) return;
+        OnizlemeSesServisi.temizle();
+    }, [gorunur]);
+    useEffect(() => () => OnizlemeSesServisi.temizle(), []);
 
     return (
         <Modal

@@ -32,7 +32,8 @@ import { BildirimServisi } from '../../domain/services/BildirimServisi';
 import { ArkaplanGorevServisi } from '../../domain/services/ArkaplanGorevServisi';
 import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
-import { SesServisi } from '../../core/feedback/SesServisi';
+import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
+import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
@@ -330,9 +331,16 @@ export const AnaSayfa: React.FC = () => {
       // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
       muhafiz.acilistaKilinanlariYukle().finally(() => {
         if (iptalEdildi) return;
-        muhafiz.baslat((mesaj, seviye) => {
+        muhafiz.baslat((mesaj, seviye, bildirimSesi) => {
           setMuhafizDurumu({ mesaj, seviye });
-          if (seviye >= 3) { HaptikServisi.gucluTitresim(); SesServisi.bildirimSesiCal(); }
+          if (seviye >= 3) {
+            HaptikServisi.gucluTitresim();
+            // ADIMIN KENDİ SESİ çalınır. Eskiden burada `SesServisi.bildirimSesiCal()`
+            // vardı: paketlenmiş `bildirim.mp3`'ü çalıyor, seviyenin `bildirimSesi`
+            // alanını hiç okumuyordu → aynı adım uygulama AÇIKKEN varsayılan çan,
+            // KAPALIYKEN (kanal sesi) kullanıcının seçtiği ses ile duyuluyordu.
+            void OnizlemeSesServisi.bildirimSesiniCal(bildirimSesi ?? VARSAYILAN_SES);
+          }
           else if (seviye > 0) { HaptikServisi.uyariTitresimi(); }
         });
       });

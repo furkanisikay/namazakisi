@@ -86,8 +86,11 @@ export class ArkaplanMuhafizServisi {
         // Once tum eski muhafiz bildirimlerini temizle
         await this.tumMuhafizBildirimleriniTemizle();
 
-        // Ayarlar aktif degilse sadece temizle ve cik
+        // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
+        // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
+        // kanallari aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
         if (!ayarlar.aktif) {
+            await MuhafizKanalServisi.hazirla();
             Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
@@ -96,7 +99,15 @@ export class ArkaplanMuhafizServisi {
         // planlamadan ONCE gerekli kanallar olusturulmali; var olmayan bir kanala
         // gonderilen bildirim Android 8+'ta hic gosterilmez. Ayni cagri oksuz
         // kalmis eski kanallari da toplar.
-        MuhafizKanalServisi.hazirla(ayarlar.matris);
+        //
+        // DONEN MATRIS KULLANILIR: `hazirla` cozulemeyen `content://` seslerini
+        // (baska cihazdan gelen yedek, silinmis dosya) varsayilana dusurur. Planlama
+        // ham matrisle yapilirsa kanal id'si olusturulan kanalla ayrisir ve bildirim
+        // VAR OLMAYAN kanala gider = hic gosterilmez.
+        this.ayarlar = {
+            ...ayarlar,
+            matris: (await MuhafizKanalServisi.hazirla(ayarlar.matris)) ?? ayarlar.matris,
+        };
 
         // Bugunun vakit zamanlarini al
         const vakitler = this.bugunVakitleriniHesapla();

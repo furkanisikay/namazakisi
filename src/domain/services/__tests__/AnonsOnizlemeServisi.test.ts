@@ -10,9 +10,13 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
 }));
 
 const mockBildirimSesiniCal = jest.fn().mockResolvedValue(undefined);
+// `bitisiniBekle` GERCEKTE sesin bitisini yoklar (ust sinirli). Testte aninda
+// coz: olculen sey SIRA (once ses, sonra anons), bekleme suresi degil.
+const mockBitisiniBekle = jest.fn().mockResolvedValue(undefined);
 jest.mock('../OnizlemeSesServisi', () => ({
   OnizlemeSesServisi: {
     bildirimSesiniCal: (...args: unknown[]) => mockBildirimSesiniCal(...args),
+    bitisiniBekle: (...args: unknown[]) => mockBitisiniBekle(...args),
     temizle: jest.fn(),
   },
 }));
@@ -35,22 +39,22 @@ describe('adimiOnizle', () => {
     jest.clearAllMocks();
   });
 
-  it("'sessiz' modda hicbir sey calmaz", () => {
-    adimiOnizle({ mod: 'sessiz', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it("'sessiz' modda hicbir sey calmaz", async () => {
+    await adimiOnizle({ mod: 'sessiz', bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
-  it("'bildirim' modunda YALNIZ bildirim sesi calar (TTS yok)", () => {
-    adimiOnizle({ mod: 'bildirim', bildirimSesi: 'melodi', cozulmusMetin: METIN });
+  it("'bildirim' modunda YALNIZ bildirim sesi calar (TTS yok)", async () => {
+    await adimiOnizle({ mod: 'bildirim', bildirimSesi: 'melodi', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('melodi');
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
-  it("'sesli' modunda YALNIZ TTS calar (bildirim sesi yok)", () => {
-    adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it("'sesli' modunda YALNIZ TTS calar (bildirim sesi yok)", async () => {
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
@@ -59,52 +63,60 @@ describe('adimiOnizle', () => {
     expect(metin).toBe(METIN);
   });
 
-  it("'ikisi' modunda IKISI DE calar; anons bildirim sesinin ARDINDAN gelir", () => {
-    adimiOnizle({ mod: 'ikisi', bildirimSesi: 'alarm', cozulmusMetin: METIN });
+  it("'ikisi' modunda IKISI DE calar; anons bildirim sesinin ARDINDAN gelir", async () => {
+    await adimiOnizle({ mod: 'ikisi', bildirimSesi: 'alarm', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('alarm');
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
-    // Gecikme uzatilir → anons bildirim sesinin uzerine binmez
-    expect(anonsGecikmesi()).toBeGreaterThanOrEqual(ONIZLEME_GECIKMESI_MS);
+    // ANONS SESIN BITISINI BEKLER — sabit pay DEGIL. Sabit 1800 ms'lik eski
+    // gerekce ("palet sesleri kisa") palet kalkinca gecersizlesti: kullanici
+    // 3 dakikalik bir muzik secebilir ve anons ustune binerdi.
+    expect(mockBitisiniBekle).toHaveBeenCalledWith('alarm');
     expect(anonsGecikmesi()).toBeCloseTo(BILDIRIM_SONRASI_ANONS_GECIKMESI_MS, -2);
   });
 
-  it("yalniz-TTS'te gecikme kisa tutulur (gereksiz sessizlik olmasin)", () => {
-    adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it("bekleme yalniz-TTS'te YAPILMAZ (beklenecek bir ses yok)", async () => {
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+
+    expect(mockBitisiniBekle).not.toHaveBeenCalled();
+  });
+
+  it("yalniz-TTS'te gecikme kisa tutulur (gereksiz sessizlik olmasin)", async () => {
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(anonsGecikmesi()).toBeCloseTo(ONIZLEME_GECIKMESI_MS, -2);
   });
 
-  it("'sesli' ama metin bossa konusma yapilmaz", () => {
-    adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: '   ' });
+  it("'sesli' ama metin bossa konusma yapilmaz", async () => {
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: '   ' });
 
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
   });
 
-  it("'ikisi' ama metin bossa yalniz bildirim sesi calar", () => {
-    adimiOnizle({ mod: 'ikisi', bildirimSesi: 'can', cozulmusMetin: '' });
+  it("'ikisi' ama metin bossa yalniz bildirim sesi calar", async () => {
+    await adimiOnizle({ mod: 'ikisi', bildirimSesi: 'can', cozulmusMetin: '' });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('can');
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
-  it('ust uste basmak yeni alarm EKLEMEZ — id SABIT kalir (native ezer)', () => {
-    adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
-    adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it('ust uste basmak yeni alarm EKLEMEZ — id SABIT kalir (native ezer)', async () => {
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(2);
     expect(mockPlanlaAnons.mock.calls.every((c) => c[0] === ONIZLEME_ANONS_ID)).toBe(true);
   });
 
-  it('native planlama patlarsa UI dusmez', () => {
+  it('native planlama patlarsa UI dusmez', async () => {
     mockPlanlaAnons.mockImplementationOnce(() => {
       throw new Error('native yok');
     });
 
-    expect(() =>
+    await expect(
       adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN })
-    ).not.toThrow();
+    ).resolves.toBeUndefined();
   });
 });
 
@@ -113,14 +125,14 @@ describe('anonsuOnizle', () => {
     jest.clearAllMocks();
   });
 
-  it('bos metni sessizce yok sayar', () => {
+  it('bos metni sessizce yok sayar', async () => {
     anonsuOnizle('');
     anonsuOnizle('   ');
 
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
-  it('gecikme verilmezse varsayilani kullanir', () => {
+  it('gecikme verilmezse varsayilani kullanir', async () => {
     anonsuOnizle(METIN);
 
     expect(anonsGecikmesi()).toBeCloseTo(ONIZLEME_GECIKMESI_MS, -2);

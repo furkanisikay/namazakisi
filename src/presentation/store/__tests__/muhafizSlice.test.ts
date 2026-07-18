@@ -201,6 +201,35 @@ describe('muhafizSlice', () => {
             expect(state.yogunluk).toBe('yogun');
         });
 
+        it("eski 'alarm' sesi acilKanal'a GÖÇER ve DİSKE yazılır (görünür/değiştirilebilir olsun)", async () => {
+            // Eski şemada aciliyet ses id'siyle taşınıyordu; ses ile önem ayrıldıktan
+            // sonra bu değer diskte öksüz kaldı: motor onu hâlâ aciliyet sayıyordu
+            // ama ekranda izi yoktu ("Uygulama sesi" gösteriliyordu) → kullanıcı yeni
+            // bir ses seçtiği an aciliyet SESSİZCE kayboluyordu.
+            const matris = eskidenMatriseGoc({
+                esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+                sikliklar: { seviye1: 20, seviye2: 10, seviye3: 5, seviye4: 2 },
+            });
+            matris.yatsi.seviyeler[3].bildirimSesi = 'alarm';
+            mockStore.set(
+                ANAHTAR,
+                JSON.stringify({ aktif: true, matris, presetGocuYapildi: true })
+            );
+
+            const store = yeniStore();
+            await store.dispatch(muhafizAyarlariniYukle());
+
+            const state = store.getState().muhafiz as MuhafizAyarlari;
+            expect(state.matris!.yatsi.seviyeler[3].bildirimSesi).toBe('varsayilan');
+            expect(state.matris!.yatsi.seviyeler[3].acilKanal).toBe(true);
+
+            // DİSKE de yazılmalı; aksi halde her açılışta yeniden göç eder ve
+            // kullanıcı aciliyeti ekrandan değiştiremez.
+            const diskte = JSON.parse(mockStore.get(ANAHTAR)!);
+            expect(diskte.matris.yatsi.seviyeler[3].acilKanal).toBe(true);
+            expect(diskte.matris.yatsi.seviyeler[3].bildirimSesi).toBe('varsayilan');
+        });
+
         it('veri yoksa null döner ve fulfilled state i DEĞİŞTİRMEZ', async () => {
             const store = yeniStore();
             // Önce bilinen bir değişiklik yap, yükleme bunu bozmamalı

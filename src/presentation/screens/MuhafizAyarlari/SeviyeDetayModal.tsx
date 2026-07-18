@@ -33,11 +33,11 @@ import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMe
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
+import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import {
     SEVIYE_BILGILERI,
     MOD_BILGILERI,
     SESLI_MODLAR,
-    BILDIRIMLI_MODLAR,
     VARSAYILAN_TEKRAR_DK,
     TEKRAR_MIN_DK,
     TEKRAR_MAX_DK,
@@ -87,11 +87,21 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const seviye = seviyeler[indeks];
 
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
+    /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
+    const [seciciAcik, setSeciciAcik] = useState(false);
 
     // Modal acilinca / baska adima gecince taslagi tazele
     useEffect(() => {
         if (gorunur) setMetinTaslak(seviye?.anonsMetni ?? '');
     }, [gorunur, vakit, indeks, seviye?.anonsMetni]);
+
+    // "Dinle" ile baslatilan ses modal kapaninca DEVAM ETMEMELI: native
+    // `RingtoneManager` calmayi surdurur ve `AudioPlayer` serbest birakilmaz.
+    useEffect(() => {
+        if (gorunur) return;
+        OnizlemeSesServisi.temizle();
+    }, [gorunur]);
+    useEffect(() => () => OnizlemeSesServisi.temizle(), []);
 
     const metniIsle = useCallback(() => {
         if (!seviye) return;
@@ -114,7 +124,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const sinirlar = esikSinirlariniHesapla(seviyeler, indeks);
     const sessizMi = seviye.mod === 'sessiz';
     const sesliMi = SESLI_MODLAR.includes(seviye.mod);
-    const bildirimliMi = BILDIRIMLI_MODLAR.includes(seviye.mod);
+    const bildirimliMi = bildirimSesiGerekliMi(seviye.mod);
     const tekrarliMi = seviye.siklik !== 'birkez';
     const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
 
@@ -135,14 +145,24 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
      * Sistem ses secicisini acar. IZIN ISTEMEZ (RingtoneManager) — bu yuzden
      * disclosure modali da yoktur; secici kullanicinin kendi ekledigi sesleri de
      * listeler. Vazgecilirse (`null`) mevcut secim BOZULMADAN kalir.
+     *
+     * CIFT DOKUNUS KORUMASI: native taraf tek slotlu bir promise tutar; ikinci
+     * cagri (kullanici satira iki kez dokunursa) reddedilir. Butonu bekleyen sure
+     * boyunca kilitleyerek kullaniciya da "bir sey oluyor" geri bildirimi verilir.
      */
     const sesiSec = async () => {
-        const secilen = await sesSec(
-            ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null,
-            'Bildirim sesi'
-        );
-        if (!secilen) return;
-        onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad });
+        if (seciciAcik) return;
+        setSeciciAcik(true);
+        try {
+            const secilen = await sesSec(
+                ozelSesMi(seviye.bildirimSesi) ? seviye.bildirimSesi : null,
+                'Bildirim sesi'
+            );
+            if (!secilen) return;
+            onDegistir({ ...seviye, bildirimSesi: secilen.uri, sesAdi: secilen.ad });
+        } finally {
+            setSeciciAcik(false);
+        }
     };
 
     return (
@@ -355,6 +375,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                         <SesSecimSatiri
                                             bildirimSesi={seviye.bildirimSesi}
                                             sesAdi={seviye.sesAdi}
+                                            seciliyor={seciciAcik}
                                             onSec={() => { void sesiSec(); }}
                                             onDinle={() => {
                                                 void OnizlemeSesServisi.bildirimSesiniCal(seviye.bildirimSesi);

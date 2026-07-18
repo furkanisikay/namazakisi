@@ -222,16 +222,35 @@ describe('muhafizKanaliSec — ses ile ACİLİYET ayrıdır', () => {
   });
 });
 
-describe('muhafizAcilKanalMi', () => {
-  test('OR semantiği: acilKanal | eski-alarm | seviye>=3', () => {
-    expect(muhafizAcilKanalMi(1, 'varsayilan')).toBe(false);
+describe('muhafizAcilKanalMi (ÜÇ DURUMLU acilKanal)', () => {
+  test('acilKanal=true → seviyeden BAĞIMSIZ olarak acil', () => {
     expect(muhafizAcilKanalMi(1, 'varsayilan', true)).toBe(true);
-    expect(muhafizAcilKanalMi(1, 'alarm')).toBe(true);
-    expect(muhafizAcilKanalMi(3, 'varsayilan')).toBe(true);
+    expect(muhafizAcilKanalMi(4, 'varsayilan', true)).toBe(true);
   });
 
-  test('acilKanal=false seviye tabanını DÜŞÜRMEZ (sert/acil hep acil kalır)', () => {
-    expect(muhafizAcilKanalMi(4, 'varsayilan', false)).toBe(true);
+  test('acilKanal=false → seviyeden BAĞIMSIZ olarak acil DEĞİL', () => {
+    // NÖBETÇİ: eskiden bu alan yalnız YÜKSELTEBİLİYORDU (OR). Sonuç: "Hafif"
+    // yoğunluğu seçen kullanıcının sert/acil adımları (acilKanal:false) yine
+    // `muhafiz_acil` kanalına düşüyor, IMPORTANCE_MAX + setBypassDnd ile
+    // Rahatsız Etmeyin modunu deliyordu. Preset'in yazdığı false ARTIK ETKİLİ.
+    expect(muhafizAcilKanalMi(4, 'varsayilan', false)).toBe(false);
+    expect(muhafizAcilKanalMi(3, 'varsayilan', false)).toBe(false);
+    expect(muhafizKanaliSec(4, 'varsayilan', false)).toBe('muhafiz');
+  });
+
+  test('acilKanal=undefined → ESKİ kayıt: tarihsel taban kural (seviye>=3)', () => {
+    expect(muhafizAcilKanalMi(1, 'varsayilan')).toBe(false);
+    expect(muhafizAcilKanalMi(2, 'varsayilan')).toBe(false);
+    expect(muhafizAcilKanalMi(3, 'varsayilan', undefined)).toBe(true);
+    expect(muhafizAcilKanalMi(4, 'varsayilan')).toBe(true);
+  });
+
+  test("acilKanal=undefined iken eski 'alarm' ses id'si aciliyet sayılır", () => {
+    expect(muhafizAcilKanalMi(1, 'alarm')).toBe(true);
+  });
+
+  test("AÇIK false, eski 'alarm' çıkarımını EZER", () => {
+    expect(muhafizAcilKanalMi(1, 'alarm', false)).toBe(false);
   });
 });
 
@@ -241,6 +260,18 @@ describe('matrisGecerliMi / muhafizMatrisiniCoz', () => {
   test('tam matris geçerlidir ve olduğu gibi kullanılır', () => {
     expect(matrisGecerliMi(gecerli)).toBe(true);
     expect(muhafizMatrisiniCoz({ ...ESKI_AYAR, matris: gecerli })).toBe(gecerli);
+  });
+
+  test("eski 'alarm' ses id'si BURADA da göç eder (ham AsyncStorage okuyan tüketiciler için)", () => {
+    // `ArkaplanGorevServisi` ve `KonumTakipServisi` store'u değil ham diski okur;
+    // slice yükleme göçünden geçmezler. Aciliyet burada da korunmalı.
+    const alarmli = eskidenMatriseGoc(ESKI_AYAR);
+    alarmli.yatsi.seviyeler[0].bildirimSesi = 'alarm';
+
+    const cozulmus = muhafizMatrisiniCoz({ ...ESKI_AYAR, matris: alarmli });
+
+    expect(cozulmus.yatsi.seviyeler[0].bildirimSesi).toBe('varsayilan');
+    expect(cozulmus.yatsi.seviyeler[0].acilKanal).toBe(true);
   });
 
   test('matris yoksa eski global eşik/sıklıklardan türetilir', () => {

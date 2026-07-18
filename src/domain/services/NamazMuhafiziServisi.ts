@@ -24,7 +24,19 @@ const VARSAYILAN_MATRIS: MuhafizMatrisi = eskidenMatriseGoc({
     sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
 });
 
-type BildirimCallback = (mesaj: string, seviye: 0 | 1 | 2 | 3 | 4) => void;
+/**
+ * On plan banner geri cagrisi.
+ *
+ * `bildirimSesi` = TETIKLEYEN ADIMIN secili sesi ('varsayilan' | 'content://...').
+ * Ekran bunu calmali: aksi halde AYNI adim uygulama KAPALIYKEN kullanicinin
+ * sectigi sesle (kanal sesi), ACIKKEN paketlenmis varsayilan canla duyulurdu.
+ * Banner temizleme cagrisinda (seviye 0) verilmez.
+ */
+type BildirimCallback = (
+    mesaj: string,
+    seviye: 0 | 1 | 2 | 3 | 4,
+    bildirimSesi?: string
+) => void;
 
 /**
  * On plan anonsu banner'la es zamanli duyulsun diye birakilan kucuk pay.
@@ -188,7 +200,11 @@ export class NamazMuhafiziServisi {
         this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs);
 
         if (this.onBildirim) {
-            this.onBildirim(this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk), aktifSeviye);
+            this.onBildirim(
+                this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk),
+                aktifSeviye,
+                kazanan.bildirimSesi
+            );
         }
     }
 

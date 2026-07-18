@@ -26,7 +26,7 @@
  */
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Logger } from '../../core/utils/Logger';
-import { sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
+import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
 import type { UyariModu } from '../../core/muhafiz/matrisTipleri';
 import { OnizlemeSesServisi } from './OnizlemeSesServisi';
 
@@ -37,15 +37,16 @@ export const ONIZLEME_ANONS_ID = 'muhafiz_anons_onizleme';
 export const ONIZLEME_GECIKMESI_MS = 900;
 
 /**
- * `ikisi` modunda TTS gecikmesi: bildirim sesi once duyulsun, anons onun
- * uzerine binmesin. Palet sesleri kisa (~1-2 sn) oldugu icin bu pay yeterlidir.
+ * `ikisi` modunda bildirim sesinden SONRA birakilan ek pay.
+ *
+ * DIKKAT — bu ARTIK tek basina "sesin suresi" degildir: eskiden sabit 1800 ms
+ * kullaniliyordu ve gerekcesi "palet sesleri kisa (~1-2 sn)" idi. SABIT PALET
+ * KALDIRILDI; ses artik kullanicinin sistem seciciden sectigi rastgele uzunlukta
+ * bir dosya (3 dakikalik bir muzik olabilir) → sabit pay anonsu sesin USTUNE
+ * bindiriyordu. Simdi once `OnizlemeSesServisi.bitisiniBekle` ile gercek bitis
+ * (ust sinirli) beklenir, bu deger yalnizca aradaki nefes payidir.
  */
-export const BILDIRIM_SONRASI_ANONS_GECIKMESI_MS = 1800;
-
-/** Mod bildirim sesi calmali mi? (`BILDIRIMLI_MODLAR`nin domain ikizi) */
-function bildirimSesiGerekliMi(mod: UyariModu): boolean {
-    return mod === 'bildirim' || mod === 'ikisi';
-}
+export const BILDIRIM_SONRASI_ANONS_GECIKMESI_MS = 400;
 
 /**
  * Verilen (yer tutuculari COZULMUS) metni kisa bir gecikmeyle okutur.
@@ -82,22 +83,33 @@ export interface AdimOnizlemeGirdisi {
  * `sesli`/`ikisi` olsa bile anons metni BOSSA konusma yapilmaz (gercek akisla
  * ayni: bos metin okunmaz) — bu durumda `ikisi` yalniz bildirim sesi calar ve
  * TTS gecikmesi de gereksiz yere uzatilmaz.
+ *
+ * `ikisi` modunda anons, bildirim sesinin BITISINI bekler (ust sinirli) — sabit
+ * bir pay artik yeterli degil, cunku ses kullanicinin sectigi herhangi bir
+ * uzunlukta olabilir. Cagiran taraf beklemez (`void`): dondugu an ses baslamistir.
  */
-export function adimiOnizle({ mod, bildirimSesi, cozulmusMetin }: AdimOnizlemeGirdisi): void {
+export async function adimiOnizle({
+    mod,
+    bildirimSesi,
+    cozulmusMetin,
+}: AdimOnizlemeGirdisi): Promise<void> {
     if (mod === 'sessiz') return;
 
     const bildirimVar = bildirimSesiGerekliMi(mod);
     const anonsVar = sesliAnonsGerekliMi(mod) && cozulmusMetin.trim().length > 0;
 
     if (bildirimVar) {
-        // Yangin-ve-unut: servis kendi hatalarini yutar, reddetmez.
-        void OnizlemeSesServisi.bildirimSesiniCal(bildirimSesi);
+        // Servis kendi hatalarini yutar, reddetmez.
+        await OnizlemeSesServisi.bildirimSesiniCal(bildirimSesi);
     }
 
-    if (anonsVar) {
-        anonsuOnizle(
-            cozulmusMetin,
-            bildirimVar ? BILDIRIM_SONRASI_ANONS_GECIKMESI_MS : ONIZLEME_GECIKMESI_MS
-        );
+    if (!anonsVar) return;
+
+    if (bildirimVar) {
+        await OnizlemeSesServisi.bitisiniBekle(bildirimSesi);
+        anonsuOnizle(cozulmusMetin, BILDIRIM_SONRASI_ANONS_GECIKMESI_MS);
+        return;
     }
+
+    anonsuOnizle(cozulmusMetin, ONIZLEME_GECIKMESI_MS);
 }

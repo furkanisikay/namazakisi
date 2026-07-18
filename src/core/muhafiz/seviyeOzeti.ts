@@ -1,17 +1,9 @@
 import type { SeviyeAyari } from './matrisTipleri';
-import { VARSAYILAN_SES_ADI } from './matrisTipleri';
-import { ozelSesMi } from './sesKimligi';
+import { sesGorunenAdi } from './sesKimligi';
 
-/**
- * Ozetteki ses adi. Kullanici sistem seciciden bir ses sectiyse ADI gosterilir;
- * ad cozulememisse (ses silinmis/erisilemez) URI YAZILMAZ — ham `content://...`
- * kullaniciya hicbir sey anlatmaz, kibar bir yedek metin gosterilir.
- */
-function sesAdi(seviye: SeviyeAyari): string {
-  const ad = seviye.sesAdi?.trim();
-  if (ad) return ad;
-  return ozelSesMi(seviye.bildirimSesi) ? 'Seçtiğiniz ses' : VARSAYILAN_SES_ADI;
-}
+/** Ozetteki ses adi — gosterim kurali `sesGorunenAdi` ile PAYLASILIR (tek kaynak). */
+const sesAdi = (seviye: SeviyeAyari): string =>
+  sesGorunenAdi(seviye.bildirimSesi, seviye.sesAdi);
 
 export function seviyeOzetiOlustur(seviye: SeviyeAyari): string {
   if (seviye.mod === 'sessiz') return 'Sessiz';

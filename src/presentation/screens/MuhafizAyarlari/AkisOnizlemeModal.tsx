@@ -12,7 +12,7 @@
  * BIREBIR aynidir (ayri bir "onizleme mantigi" yok, sapma riski yok).
  */
 import * as React from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
     View,
     Text,
@@ -27,7 +27,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import type { MuhafizVakti, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { bildirimSesiGerekliMi, vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import {
     VAKIT_ADLARI,
@@ -38,7 +39,7 @@ import {
 import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
-import { SEVIYE_BILGILERI, ONIZLEME_TARAMA_SINIRI_DK, BILDIRIMLI_MODLAR } from './sabitler';
+import { SEVIYE_BILGILERI, ONIZLEME_TARAMA_SINIRI_DK } from './sabitler';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -60,6 +61,14 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
 }) => {
     const renkler = useRenkler();
     useDonanimGeriTusu(gorunur, onKapat);
+
+    // "Dinle" ile baslatilan ses ekran kapaninca DEVAM ETMEMELI: native
+    // `RingtoneManager` calmayi surdurur ve `AudioPlayer` serbest birakilmaz.
+    useEffect(() => {
+        if (gorunur) return;
+        OnizlemeSesServisi.temizle();
+    }, [gorunur]);
+    useEffect(() => () => OnizlemeSesServisi.temizle(), []);
 
     const vakitAdi = VAKIT_ADLARI[vakit];
 
@@ -164,7 +173,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                             ? anonsMetniniCoz(adim.anonsMetni, vakit, adim.kalanDk)
                                             : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
-                                    const dinlenebilir = BILDIRIMLI_MODLAR.includes(adim.mod) || !!anonsMetni;
+                                    const dinlenebilir = bildirimSesiGerekliMi(adim.mod) || !!anonsMetni;
 
                                     return (
                                         <View

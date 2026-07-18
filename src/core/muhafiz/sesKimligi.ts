@@ -21,7 +21,7 @@
  * korunur.
  */
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
-import { VARSAYILAN_SES } from './matrisTipleri';
+import { VARSAYILAN_SES, VARSAYILAN_SES_ADI } from './matrisTipleri';
 
 /** Kullanicinin sectigi sistem sesleri bu semayla gelir (RingtoneManager). */
 const OZEL_SES_ONEKI = 'content://';
@@ -42,14 +42,32 @@ export function ozelSesMi(sesKimligi: string | undefined | null): boolean {
  * hepsini varsayilana esitlemek SIFIR algilanabilir regresyondur — ayri bir goc
  * gecisi gerekmez, bu toleransli cozumleyici yeter.
  *
- * DIKKAT: 'alarm' id'si eskiden ACIL KANAL sinyali de tasiyordu; o anlam burada
- * DEGIL, `muhafizAcilKanalMi` icinde korunur (bkz. motorAdaptoru).
+ * DIKKAT: 'alarm' id'si eskiden ACIL KANAL sinyali de tasiyordu. O anlam burada
+ * DEGIL, `muhafizGoc.eskiAlarmSesiniGoc` ile gorunur `acilKanal` alanina TASINIR
+ * (yedek dal: `muhafizAcilKanalMi`, bkz. motorAdaptoru).
  */
 export function sesKimliginiNormalize(ham: string | undefined | null): string {
   if (typeof ham !== 'string') return VARSAYILAN_SES;
   const kirpilmis = ham.trim();
   if (kirpilmis.length === 0) return VARSAYILAN_SES;
   return ozelSesMi(kirpilmis) ? kirpilmis : VARSAYILAN_SES;
+}
+
+/**
+ * Sesin KULLANICIYA gosterilecek adi (TEK KAYNAK).
+ *
+ * Ad cozulememisse ham `content://...` GOSTERILMEZ — kullaniciya hicbir sey
+ * anlatmaz. Ozel ses icin AYIRT EDICI bir yedek metin doner: "Uygulama sesi"
+ * demek yanlis olurdu, cunku o zaman ozel sesli kanal Android bildirim
+ * ayarlarinda TABAN kanalla birebir ayni isimde gorunur ve kullanici hangisinin
+ * hangisi oldugunu ayirt edemez.
+ *
+ * Ekran ozeti, ses secim satiri ve bildirim KANAL ADI ayni yerden beslenir.
+ */
+export function sesGorunenAdi(sesKimligi: string, sesAdi?: string): string {
+  const ad = sesAdi?.trim();
+  if (ad) return ad;
+  return ozelSesMi(sesKimligi) ? 'Seçtiğiniz ses' : VARSAYILAN_SES_ADI;
 }
 
 /**

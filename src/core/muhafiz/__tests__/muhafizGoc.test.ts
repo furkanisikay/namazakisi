@@ -1,4 +1,4 @@
-import { eskidenMatriseGoc } from '../muhafizGoc';
+import { eskiAlarmSesiniGoc, eskidenMatriseGoc } from '../muhafizGoc';
 import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
 
 const eski = {
@@ -25,5 +25,44 @@ describe('eskidenMatriseGoc', () => {
   });
   test('idempotent: iki kez çağırmak aynı sonucu verir', () => {
     expect(eskidenMatriseGoc(eski)).toEqual(eskidenMatriseGoc(eski));
+  });
+});
+
+describe('eskiAlarmSesiniGoc', () => {
+  const alarmliMatris = () => {
+    const m = eskidenMatriseGoc(eski);
+    m.ogle.seviyeler[3].bildirimSesi = 'alarm';
+    m.ogle.seviyeler[3].sesAdi = 'Alarm';
+    return m;
+  };
+
+  test("'alarm' → varsayılan ses + acilKanal:true (aciliyet GÖRÜNÜR alana taşınır)", () => {
+    // Eski şemada aciliyet ses id'siyle taşınıyordu. Göç olmasaydı kullanıcı yeni
+    // bir ses seçtiği an aciliyet SESSİZCE kaybolurdu (UI'da izi de yoktu).
+    const s = eskiAlarmSesiniGoc(alarmliMatris()).ogle.seviyeler[3];
+    expect(s.bildirimSesi).toBe('varsayilan');
+    expect(s.acilKanal).toBe(true);
+    expect(s.sesAdi).toBeUndefined();
+  });
+
+  test('AÇIKÇA yazılmış acilKanal EZİLMEZ (kullanıcı tercihi öncelikli)', () => {
+    const m = alarmliMatris();
+    m.ogle.seviyeler[3].acilKanal = false;
+    expect(eskiAlarmSesiniGoc(m).ogle.seviyeler[3].acilKanal).toBe(false);
+  });
+
+  test("'alarm' yoksa AYNI referans döner (gereksiz kopya/diske yazma yok)", () => {
+    const m = eskidenMatriseGoc(eski);
+    expect(eskiAlarmSesiniGoc(m)).toBe(m);
+  });
+
+  test('idempotent: ikinci çağrı hiçbir şey değiştirmez', () => {
+    const bir = eskiAlarmSesiniGoc(alarmliMatris());
+    expect(eskiAlarmSesiniGoc(bir)).toBe(bir);
+  });
+
+  test('dokunulmayan vakitler AYNI referansı korur', () => {
+    const m = alarmliMatris();
+    expect(eskiAlarmSesiniGoc(m).ikindi).toBe(m.ikindi);
   });
 });

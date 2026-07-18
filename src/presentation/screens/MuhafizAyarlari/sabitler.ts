@@ -49,7 +49,11 @@ export const MOD_BILGILERI: ModBilgisi[] = [
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
 export const SESLI_MODLAR: UyariModu[] = ['sesli', 'ikisi'];
-export const BILDIRIMLI_MODLAR: UyariModu[] = ['bildirim', 'ikisi'];
+
+// NOT: "bu mod bildirim sesi calar mi?" kurali BURADA DEGIL — `motorAdaptoru`
+// icindeki `bildirimSesiGerekliMi`'dedir. Eskiden burada `BILDIRIMLI_MODLAR`
+// olarak ikinci bir kopyasi vardi ve domain tarafinda (`AnonsOnizlemeServisi`)
+// ucuncu bir kopyasi; ikizler ayrisirsa onizleme gercek akistan sapar.
 
 /** Tekrarli sikliga gecilirken kullanilan varsayilan aralik. */
 export const VARSAYILAN_TEKRAR_DK = 5;

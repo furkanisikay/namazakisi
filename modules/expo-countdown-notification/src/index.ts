@@ -171,19 +171,40 @@ export async function sesAdiAl(uri: string): Promise<string> {
     }
 }
 
+// NATIVE TARAFTA HEPSI `AsyncFunction` — `Function` olsalardi JS THREAD'INDE
+// SENKRON calisirlardi ve `RingtoneManager`/`MediaPlayer.prepare` (senkron I/O)
+// ile `NotificationManager` binder cagrilari arayuzu dondururdu (ANR riski).
+// Bu yuzden asagidakiler `Promise` doner; cagiran taraf `await`lemeli.
+
 /**
  * `content://` sesini aninda calar (onizleme).
  * `expo-audio`'nun bu semayi calabildigi dogrulanmadigi icin native yol kullanilir.
  */
-export function sesiOnizle(uri: string): void {
+export async function sesiOnizle(uri: string): Promise<void> {
     if (Platform.OS !== 'android' || !uri) return;
-    ExpoCountdownNotification.sesiOnizle(uri);
+    await ExpoCountdownNotification.sesiOnizle(uri);
 }
 
 /** Calan ses onizlemesini durdurur (idempotent). */
-export function onizlemeyiDurdur(): void {
+export async function onizlemeyiDurdur(): Promise<void> {
     if (Platform.OS !== 'android') return;
-    ExpoCountdownNotification.onizlemeyiDurdur();
+    await ExpoCountdownNotification.onizlemeyiDurdur();
+}
+
+/**
+ * Native ses onizlemesi HALA caliyor mu?
+ *
+ * Kullanicinin sectigi ses rastgele uzunlukta olabilir (3 dakikalik bir muzik
+ * dahil); sesli anonsu sabit bir gecikmeyle ustune bindirmemek icin bitis
+ * yoklanir. Asla firlatmaz — bilinmiyorsa `false` (bekleme uzamasin).
+ */
+export async function onizlemeCaliyorMu(): Promise<boolean> {
+    if (Platform.OS !== 'android') return false;
+    try {
+        return (await ExpoCountdownNotification.onizlemeCaliyorMu()) === true;
+    } catch {
+        return false;
+    }
 }
 
 /**
@@ -193,15 +214,15 @@ export function onizlemeyiDurdur(): void {
  * tombstone'a takilir → kanal id'si sesin hash'inden uretilir (bkz.
  * `core/muhafiz/sesKimligi.ts`) ve boyle bir degisiklik ihtiyaci hic dogmaz.
  */
-export function muhafizKanaliniGarantile(
+export async function muhafizKanaliniGarantile(
     kanalId: string,
     kanalAdi: string,
     aciklama: string,
     sesUri: string | null,
     acilMi: boolean
-): void {
+): Promise<void> {
     if (Platform.OS !== 'android' || !kanalId) return;
-    ExpoCountdownNotification.muhafizKanaliniGarantile(
+    await ExpoCountdownNotification.muhafizKanaliniGarantile(
         kanalId,
         kanalAdi,
         aciklama,
@@ -214,7 +235,7 @@ export function muhafizKanaliniGarantile(
  * Artik referans verilmeyen hash'li muhafiz kanallarini siler.
  * TABAN kanallara (`muhafiz`, `muhafiz_acil`) dokunmaz.
  */
-export function muhafizKanallariniTemizle(korunacakIdler: string[]): void {
+export async function muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void> {
     if (Platform.OS !== 'android') return;
-    ExpoCountdownNotification.muhafizKanallariniTemizle(korunacakIdler);
+    await ExpoCountdownNotification.muhafizKanallariniTemizle(korunacakIdler);
 }

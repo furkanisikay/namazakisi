@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 
 /**
@@ -31,6 +32,13 @@ object SesSecici {
     /** `OnActivityResult` ile eslesen istek kodu. */
     const val ISTEK_KODU = 0x5E51 // "SES1"
 
+    /**
+     * Calan onizleme. `@Volatile`: onizleme cagrilari modul kuyrugundan
+     * (AsyncFunction → arka plan thread'i) gelir, `durdur()` ise ekran kapanisinda
+     * baska bir thread'den cagrilabilir; gorunurluk garantisi olmadan biri
+     * digerinin yazdigini gormeyebilir ve calar SIZAR.
+     */
+    @Volatile
     private var aktifOnizleme: Ringtone? = null
 
     /**
@@ -50,11 +58,33 @@ object SesSecici {
         }
     }
 
-    /** Secici sonucundan URI'yi cikarir; kullanici vazgectiyse null. */
+    /**
+     * Secici sonucundan URI'yi cikarir; kullanici vazgectiyse (veya sonuc
+     * cozulemezse) null.
+     *
+     * NEDEN try/catch: `getParcelableExtra` extras Bundle'ini TUMDEN unmarshall
+     * eder. Bu Intent bize UCUNCU TARAF bir Activity'den (OEM ses secicisi —
+     * Samsung/Xiaomi kendi secicilerini koyar) geliyor ve Bundle icinde bizim
+     * class loader'imizin tanimadigi Parcelable siniflar olabilir →
+     * `BadParcelableException`. Yakalanmazsa ana thread'de yakalanmamis istisna
+     * olur ve uygulama COKER. Sonuc okunamiyorsa "vazgecildi" gibi davranmak
+     * kullanici acisindan dogru davranistir (secim bozulmadan kalir).
+     *
+     * API 33+ tip guvenli asiri yukleme kullanilir; altinda deprecated yol.
+     */
     fun sonucuCoz(veri: Intent?): Uri? {
         if (veri == null) return null
-        @Suppress("DEPRECATION")
-        return veri.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                veri.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                veri.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            }
+        } catch (e: Exception) {
+            Log.w(ETIKET, "Secici sonucu cozulemedi: ${e.message}")
+            null
+        }
     }
 
     /**
@@ -88,13 +118,35 @@ object SesSecici {
         }
     }
 
-    /** Calan onizlemeyi durdurur (idempotent). */
+    /**
+     * Calan onizlemeyi durdurur (idempotent).
+     *
+     * `stop()` KOSULSUZ cagrilir: `isPlaying` kontrolu bir SIZINTIYDI. Ses kendi
+     * kendine bittiyse `isPlaying == false` olur ama Ringtone'un ic MediaPlayer'i
+     * HALA ayaktadir — `Ringtone.stop()` `destroyLocalPlayer()`'i cagiran TEK
+     * yoldur. Kontrolle atlanirsa referans null'lanir ve player/AudioTrack birikir
+     * (alan statik, surec omru boyunca yasar). Bitmis bir Ringtone'da `stop()`
+     * cagirmak guvenlidir.
+     */
     fun durdur() {
         try {
-            aktifOnizleme?.takeIf { it.isPlaying }?.stop()
+            aktifOnizleme?.stop()
         } catch (e: Exception) {
             Log.w(ETIKET, "Ses onizlemesi durdurulamadi: ${e.message}")
         }
         aktifOnizleme = null
     }
+
+    /**
+     * Onizleme HALA caliyor mu? JS tarafi sesin bitisini bekleyebilsin diye
+     * (bkz. `OnizlemeSesServisi.bitisiniBekle`): kullanici uzun bir muzik secmis
+     * olabilir, sesli anonsu sabit bir gecikmeyle ustune bindirmemeliyiz.
+     */
+    fun caliyorMu(): Boolean =
+        try {
+            aktifOnizleme?.isPlaying == true
+        } catch (e: Exception) {
+            Log.w(ETIKET, "Onizleme durumu okunamadi: ${e.message}")
+            false
+        }
 }

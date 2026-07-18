@@ -8,7 +8,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
 import type { UyariModu } from '../../../core/muhafiz/matrisTipleri';
-import { SESLI_MODLAR, BILDIRIMLI_MODLAR } from './sabitler';
+import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 
 /**
  * Cihazda Turkce konusma paketi yoksa gosterilen kibar bilgilendirme.
@@ -80,8 +80,8 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
 }) => {
     const renkler = useRenkler();
 
-    const anonsCalinacak = SESLI_MODLAR.includes(mod) && cozulmusMetin.trim().length > 0;
-    const bildirimCalinacak = BILDIRIMLI_MODLAR.includes(mod);
+    const anonsCalinacak = sesliAnonsGerekliMi(mod) && cozulmusMetin.trim().length > 0;
+    const bildirimCalinacak = bildirimSesiGerekliMi(mod);
     if (!anonsCalinacak && !bildirimCalinacak) return null;
 
     const ikon = anonsCalinacak && bildirimCalinacak ? 'bullhorn' : anonsCalinacak ? 'volume-up' : 'bell';
@@ -94,7 +94,9 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
                 backgroundColor: renkler.arkaplan,
                 borderColor: renkler.sinir,
             }}
-            onPress={() => adimiOnizle({ mod, bildirimSesi, cozulmusMetin })}
+            // Yangin-ve-unut: `adimiOnizle` sesin bitisini bekledigi icin artik
+            // async; servis kendi hatalarini yutar, buton beklemez.
+            onPress={() => { void adimiOnizle({ mod, bildirimSesi, cozulmusMetin }); }}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={erisimEtiketi}

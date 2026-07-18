@@ -16,35 +16,33 @@ import { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import { VARSAYILAN_SES_ADI } from '../../../core/muhafiz/matrisTipleri';
-import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
+import { ozelSesMi, sesGorunenAdi } from '../../../core/muhafiz/sesKimligi';
 
 export interface SesSecimSatiriProps {
     /** `varsayilan` ya da `content://...` */
     bildirimSesi: string;
     /** Kayitli gorunen ad (yoksa kibar yedek metin gosterilir) */
     sesAdi?: string;
+    /**
+     * Secici acilmayi bekliyor mu? Ust uste dokunusa karsi satir kilitlenir —
+     * native taraf ayni anda yalniz TEK secici acabilir, ikinci cagri reddedilir.
+     */
+    seciliyor?: boolean;
     /** Sistem ses secicisini acar */
     onSec: () => void;
     /** Secili sesi calar */
     onDinle: () => void;
 }
 
-/** Ad cozulememisse ham `content://...` GOSTERILMEZ — kullaniciya hicbir sey anlatmaz. */
-function gorunenAd(bildirimSesi: string, sesAdi?: string): string {
-    const ad = sesAdi?.trim();
-    if (ad) return ad;
-    return ozelSesMi(bildirimSesi) ? 'Seçtiğiniz ses' : VARSAYILAN_SES_ADI;
-}
-
 export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
     bildirimSesi,
     sesAdi,
+    seciliyor = false,
     onSec,
     onDinle,
 }) => {
     const renkler = useRenkler();
-    const ad = gorunenAd(bildirimSesi, sesAdi);
+    const ad = sesGorunenAdi(bildirimSesi, sesAdi);
     const ozelMi = ozelSesMi(bildirimSesi);
 
     // Ad degisince yumusak gecis: hafif yukari kayma + fade.
@@ -73,11 +71,17 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
             {/* Secime goturen ana dokunma hedefi (satirin govdesi) */}
             <TouchableOpacity
                 className="flex-row items-center flex-1"
-                style={{ minHeight: 44 }}
+                style={{ minHeight: 44, opacity: seciliyor ? 0.6 : 1 }}
                 onPress={onSec}
+                disabled={seciliyor}
                 activeOpacity={0.7}
                 accessibilityRole="button"
-                accessibilityLabel={`Bildirim sesi: ${ad}. Değiştirmek için dokunun.`}
+                accessibilityState={{ disabled: seciliyor }}
+                accessibilityLabel={
+                    seciliyor
+                        ? 'Ses seçici açılıyor, lütfen bekleyin'
+                        : `Bildirim sesi: ${ad}. Değiştirmek için dokunun.`
+                }
             >
                 <View
                     className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
@@ -110,7 +114,11 @@ export const SesSecimSatiri: React.FC<SesSecimSatiriProps> = ({
                         {gosterilenAd}
                     </Animated.Text>
                     <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                        {ozelMi ? 'Kendi seçtiğiniz ses' : 'Dokunarak değiştirin'}
+                        {seciliyor
+                            ? 'Ses seçici açılıyor…'
+                            : ozelMi
+                                ? 'Kendi seçtiğiniz ses'
+                                : 'Dokunarak değiştirin'}
                     </Text>
                 </View>
             </TouchableOpacity>

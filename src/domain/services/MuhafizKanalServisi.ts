@@ -15,18 +15,26 @@
  */
 import { Platform } from 'react-native';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { VARSAYILAN_SES_ADI } from '../../core/muhafiz/matrisTipleri';
-import { matristenKanallariCikar, type MuhafizKanalTanimi } from '../../core/muhafiz/kanalPlani';
-import { silinebilirMuhafizKanaliMi } from '../../core/muhafiz/sesKimligi';
+import {
+    cozulemeyenSesleriDusur,
+    matristenKanallariCikar,
+    ozelSesleriTopla,
+    type MuhafizKanalTanimi,
+} from '../../core/muhafiz/kanalPlani';
+import { sesGorunenAdi, silinebilirMuhafizKanaliMi } from '../../core/muhafiz/sesKimligi';
 import { Logger } from '../../core/utils/Logger';
 import {
     muhafizKanaliniGarantile,
     muhafizKanallariniTemizle,
+    sesAdiAl,
 } from '../../../modules/expo-countdown-notification/src';
 
 /** Android bildirim ayarlarinda kanal adi — kullanici hangisi oldugunu ayirt edebilmeli. */
 function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
-    const sesAdi = tanim.sesAdi?.trim() || VARSAYILAN_SES_ADI;
+    // `sesGorunenAdi` ozel ses icin AYIRT EDICI yedek doner ("Seçtiğiniz ses").
+    // Duz "Uygulama sesi" yazsaydik, adi cozulemeyen ozel sesli kanal TABAN kanalla
+    // BIREBIR ayni isimle gorunur ve kullanici ikisini ayirt edemezdi.
+    const sesAdi = sesGorunenAdi(tanim.sesKimligi, tanim.sesAdi);
     return tanim.acilMi ? `Acil Hatırlatıcı · ${sesAdi}` : `Namaz Muhafızı · ${sesAdi}`;
 }
 
@@ -36,41 +44,120 @@ function kanalAciklamasiOlustur(tanim: MuhafizKanalTanimi): string {
         : 'Namaz vakti hatırlatmaları';
 }
 
+/**
+ * En son uygulanan GC kume izi. Kanal kumesi degismediyse native cop toplama
+ * ATLANIR: `copleriTopla` cihazdaki TUM kanallari enumerate eder ve bu yol
+ * acilista + ~15 dk'da bir arka plan gorevinde + her konum guncellemesinde
+ * calisiyor. Kume ayni oldugu surece yapacak isi de yoktur.
+ */
+let sonToplananKume: string | null = null;
+
+/** Ozel ses URI'lerini native'de cozerek gecerliligini dogrular. */
+async function cozulemeyenSesleriBul(matris: MuhafizMatrisi): Promise<Set<string>> {
+    const cozulemeyen = new Set<string>();
+    for (const uri of ozelSesleriTopla(matris)) {
+        try {
+            // Bos ad = URI cozulemedi (silinmis dosya, baska cihazdan gelen yedek,
+            // kaybedilmis erisim). `sesAdiAl` asla firlatmaz ama savunmaci kalalim.
+            if (!(await sesAdiAl(uri))) cozulemeyen.add(uri);
+        } catch (error) {
+            Logger.debug('MuhafizKanal', 'Ses URI dogrulanamadi:', error);
+            cozulemeyen.add(uri);
+        }
+    }
+    return cozulemeyen;
+}
+
 export const MuhafizKanalServisi = {
     /**
      * Matrisin ihtiyac duydugu TUM kanallari hazirlar ve oksuz kalanlari siler.
      * Planlamadan HEMEN ONCE cagrilmalidir — var olmayan bir kanala gonderilen
      * bildirim Android 8+'ta hic gosterilmez.
      *
-     * Asla firlatmaz: kanal hazirligi patlarsa bile planlama devam etmeli
-     * (taban kanallar zaten mevcut, kullanici en azindan varsayilan sesi duyar).
+     * DONUS: DOGRULANMIS matris. Cozulemeyen ozel sesler varsayilana dusurulur;
+     * cagiran taraf bildirimleri BU matrisle planlamalidir, aksi halde kanal id'si
+     * ile planlanan id ayrisir ve bildirim var olmayan kanala gider (= hic gosterilmez).
+     *
+     * `matris` verilmezse (muhafiz KAPALI) yalnizca cop toplama yapilir: kapatma
+     * anindaki kanallar aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
+     *
+     * Asla firlatmaz: kanal hazirligi patlarsa bile planlama devam etmeli.
      */
-    hazirla: (matris: MuhafizMatrisi): void => {
-        if (Platform.OS !== 'android') return;
+    hazirla: async (matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> => {
+        if (Platform.OS !== 'android') return matris;
 
+        if (!matris) {
+            await copleriTopla([]);
+            return matris;
+        }
+
+        let dogrulanmisMatris = matris;
         try {
-            const tanimlar = matristenKanallariCikar(matris);
+            const cozulemeyen = await cozulemeyenSesleriBul(matris);
+            if (cozulemeyen.size > 0) {
+                Logger.info(
+                    'MuhafizKanal',
+                    `${cozulemeyen.size} özel ses çözülemedi; varsayılan sese düşürülüyor`
+                );
+                dogrulanmisMatris = cozulemeyenSesleriDusur(matris, cozulemeyen);
+            }
+        } catch (error) {
+            Logger.error('MuhafizKanal', 'Ses dogrulamasi basarisiz', error);
+        }
 
-            // Yalniz HASH'LI (ozel sesli) kanallar burada olusturulur; taban
-            // kanallari (`muhafiz`/`muhafiz_acil`) BildirimServisi.izinIste kuruyor
-            // ve mevcut kurulumlarda kullanicinin tercihleri orada birikmis durumda.
-            for (const tanim of tanimlar) {
-                if (!silinebilirMuhafizKanaliMi(tanim.kanalId)) continue;
-                muhafizKanaliniGarantile(
+        let tanimlar: MuhafizKanalTanimi[];
+        try {
+            tanimlar = matristenKanallariCikar(dogrulanmisMatris);
+        } catch (error) {
+            Logger.error('MuhafizKanal', 'Kanal listesi cikarilamadi', error);
+            return dogrulanmisMatris;
+        }
+
+        // Yalniz HASH'LI (ozel sesli) kanallar burada olusturulur; taban
+        // kanallari (`muhafiz`/`muhafiz_acil`) BildirimServisi.izinIste kuruyor
+        // ve mevcut kurulumlarda kullanicinin tercihleri orada birikmis durumda.
+        //
+        // TRY/CATCH HER KANAL ICIN AYRI: tek bir ortak catch, ilk patlayan kanalda
+        // DONGUYU KESERDI ve kalan kanallar hic olusmazdi. Kanali olusmayan bir
+        // adim Android 8+'ta HIC GOSTERILMEZ (varsayilan sese DUSMEZ — kanal
+        // zorunludur), yani bir kanalin hatasi otekileri de sessizce susturur.
+        for (const tanim of tanimlar) {
+            if (!silinebilirMuhafizKanaliMi(tanim.kanalId)) continue;
+            try {
+                await muhafizKanaliniGarantile(
                     tanim.kanalId,
                     kanalAdiOlustur(tanim),
                     kanalAciklamasiOlustur(tanim),
                     tanim.sesKimligi,
                     tanim.acilMi
                 );
+            } catch (error) {
+                Logger.error('MuhafizKanal', `Kanal olusturulamadi: ${tanim.kanalId}`, error);
             }
-
-            // GC: matriste artik referans verilmeyen hash'li kanallar silinir.
-            // Kullanici sesi her degistirdiginde eskisi oksuz kalir; toplanmazsa
-            // bildirim ayarlarinda olu kanallar birikir.
-            muhafizKanallariniTemizle(tanimlar.map((t) => t.kanalId));
-        } catch (error) {
-            Logger.error('MuhafizKanal', 'Bildirim kanallari hazirlanamadi', error);
         }
+
+        // GC: matriste artik referans verilmeyen hash'li kanallar silinir.
+        // Kullanici sesi her degistirdiginde eskisi oksuz kalir; toplanmazsa
+        // bildirim ayarlarinda olu kanallar birikir.
+        await copleriTopla(tanimlar.map((t) => t.kanalId));
+
+        return dogrulanmisMatris;
+    },
+
+    /** Testler icin: GC onbellegini sifirlar. */
+    onbellegiSifirla: (): void => {
+        sonToplananKume = null;
     },
 };
+
+async function copleriTopla(korunacakIdler: string[]): Promise<void> {
+    const kume = [...korunacakIdler].sort().join('|');
+    if (kume === sonToplananKume) return;
+    try {
+        await muhafizKanallariniTemizle(korunacakIdler);
+        sonToplananKume = kume;
+    } catch (error) {
+        // Onbellegi GUNCELLEME: bir sonraki cagri yeniden denesin.
+        Logger.error('MuhafizKanal', 'Kanal cop toplama basarisiz', error);
+    }
+}

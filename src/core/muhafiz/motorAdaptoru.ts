@@ -22,11 +22,13 @@ import type {
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
 import { aktifSeviyeyiBul } from './aktifSeviye';
-import { eskidenMatriseGoc, type EskiMuhafizAyari } from './muhafizGoc';
+import {
+  ESKI_ALARM_SESI,
+  eskiAlarmSesiniGoc,
+  eskidenMatriseGoc,
+  type EskiMuhafizAyari,
+} from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
-
-/** Eski semada aciliyeti tasiyan ses id'si (bkz. `muhafizAcilKanalMi`). */
-const ESKI_ALARM_SESI = 'alarm';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
 export type SeviyeNo = 1 | 2 | 3 | 4;
@@ -44,6 +46,17 @@ export function siklikDakikasi(siklik: Siklik): number | null {
 /** mod sesli anons (Faz 4 TTS) istiyor mu? */
 export function sesliAnonsGerekliMi(mod: UyariModu): boolean {
   return mod === 'sesli' || mod === 'ikisi';
+}
+
+/**
+ * mod BILDIRIM SESI calmali mi?
+ *
+ * TEK KAYNAK: ekran (`BILDIRIMLI_MODLAR` idi) ve domain (`AnonsOnizlemeServisi`)
+ * ayni kurali AYRI AYRI yaziyordu; ikizler ayrisirsa onizleme gercek akistan
+ * sapar. `sesliAnonsGerekliMi` gibi burada paylasilir.
+ */
+export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
+  return mod === 'bildirim' || mod === 'ikisi';
 }
 
 /**
@@ -124,20 +137,31 @@ export function vakitUyariPlaniOlustur(
  * Bu adim ACIL kanaldan mi gonderilmeli? (MAX onem + bypassDnd)
  *
  * SES ILE ONEM AYRILDI: aciliyet artik `acilKanal` alanindan gelir; ses
- * kullanicinin secimidir ve onem tasimaz. Kural OR'lanir:
- *   - `acilKanal === true`            -> preset/kullanici acil dedi
- *   - `bildirimSesi === 'alarm'`      -> ESKI kayit toleransi: eski semada
- *     aciliyet ses id'siyle tasiniyordu; diskteki eski matrisler goc etmeden de
- *     ayni davransin (ses degeri `sesKimliginiNormalize` ile varsayilana duser,
- *     ama aciliyet sinyali burada korunur).
- *   - `seviye >= 3`                   -> tarihsel taban kural (sert/acil).
+ * kullanicinin secimidir ve onem tasimaz.
+ *
+ * `acilKanal` UC DURUMLUdur — bu SART, cunku alan yalnizca yukseltebilseydi
+ * (OR) preset'lerin yazdigi `false` OLU BAYRAK olurdu:
+ *   - `true`      -> ACIL (seviye ne olursa olsun)
+ *   - `false`     -> ACIL DEGIL (seviye ne olursa olsun). "Hafif" yogunlugu
+ *     secen kullanicinin sert/acil adimlari `acilKanal: false` tasir; OR
+ *     semantiginde bunlar yine `muhafiz_acil` kanalina (IMPORTANCE_MAX +
+ *     setBypassDnd) dusuyor ve kullanicinin Rahatsiz Etmeyin modu deliniyordu.
+ *     Preset yazarinin niyeti zaten aciktir: "'dengeli' yogunlukta sessizce
+ *     acil kanala dusulmesin" (bkz. `matrisIslemleri.PresetSeviyeAyari`).
+ *   - `undefined` -> alan hic yazilmamis (ESKI kayit) -> tarihsel taban kural.
+ *
+ * Eski kayit yedegi (`acilKanal` yokken): `bildirimSesi === 'alarm'` aciliyet
+ * sayilir — eski semada aciliyet ses id'siyle tasiniyordu. Bu deger normalde
+ * `eskiAlarmSesiniGoc` ile `acilKanal: true`'ya TASINIR; buradaki dal, goc
+ * yolundan gecmemis ham bir kayit dogrudan motora ulasirsa aciliyeti kaybetmesin
+ * diye duruyor.
  */
 export function muhafizAcilKanalMi(
   seviye: SeviyeNo,
   bildirimSesi: string,
   acilKanal?: boolean
 ): boolean {
-  if (acilKanal === true) return true;
+  if (typeof acilKanal === 'boolean') return acilKanal;
   if (bildirimSesi === ESKI_ALARM_SESI) return true;
   return seviye >= 3;
 }
@@ -187,7 +211,14 @@ export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
  * matris yoksa VEYA yapisal olarak bozuksa eski global esik/sikliklardan
  * (`eskidenMatriseGoc`) turetilir. Boylece bozuk tek bir kayit muhafizi
  * tamamen susturamaz.
+ *
+ * Eski 'alarm' ses id'si BURADA da goc ettirilir (`eskiAlarmSesiniGoc`): bes
+ * tuketicinin ikisi (`ArkaplanGorevServisi`, `KonumTakipServisi`) store'u degil
+ * HAM AsyncStorage'i okur, yani slice'in yukleme gocunden gecmez. Goc gerekmiyorsa
+ * AYNI referans doner (kimlik korunur).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
-  return matrisGecerliMi(kaynak.matris) ? kaynak.matris : eskidenMatriseGoc(kaynak);
+  return matrisGecerliMi(kaynak.matris)
+    ? eskiAlarmSesiniGoc(kaynak.matris)
+    : eskidenMatriseGoc(kaynak);
 }

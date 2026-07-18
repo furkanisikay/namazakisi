@@ -6,9 +6,11 @@
 // `requireNativeModule` jest'te YOK: servis ozel (`content://`) sesler icin native
 // koprusunu import ediyor → o kopru mock'lanmazsa suite HIC calismaz
 // ("Cannot read properties of undefined (reading 'EventEmitter')").
+const mockOnizlemeCaliyorMu = jest.fn().mockResolvedValue(false);
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
-  sesiOnizle: jest.fn(),
-  onizlemeyiDurdur: jest.fn(),
+  sesiOnizle: jest.fn().mockResolvedValue(undefined),
+  onizlemeyiDurdur: jest.fn().mockResolvedValue(undefined),
+  onizlemeCaliyorMu: (...args: unknown[]) => mockOnizlemeCaliyorMu(...args),
 }));
 
 /**
@@ -112,5 +114,48 @@ describe('OnizlemeSesServisi', () => {
 
     await expect(servis.bildirimSesiniCal('boyle-bir-ses-yok')).resolves.toBeUndefined();
     expect(sonCalar().play).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('OnizlemeSesServisi.bitisiniBekle', () => {
+  const OZEL_SES = 'content://media/internal/audio/media/42';
+
+  beforeEach(() => {
+    mockOnizlemeCaliyorMu.mockReset();
+  });
+
+  it('OZEL ses: native calma bitene kadar bekler', async () => {
+    const { servis } = tazeKur();
+    // Iki tur "caliyor", sonra bitti.
+    mockOnizlemeCaliyorMu
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(true)
+      .mockResolvedValue(false);
+
+    await servis.bitisiniBekle(OZEL_SES);
+
+    expect(mockOnizlemeCaliyorMu).toHaveBeenCalledTimes(3);
+  });
+
+  it('UST SINIR: ses hic bitmezse sonsuza kadar beklemez', async () => {
+    const { servis } = tazeKur();
+    mockOnizlemeCaliyorMu.mockResolvedValue(true); // hic bitmiyor (uzun muzik)
+
+    const basla = Date.now();
+    await servis.bitisiniBekle(OZEL_SES);
+
+    // BEKLEME_UST_SINIRI_MS (8 sn) civarinda kesilmeli; testin kendisi
+    // testTimeout (30 sn) altinda kalir.
+    expect(Date.now() - basla).toBeLessThan(12000);
+  });
+
+  it('VARSAYILAN ses: expo-audio calarinin durumu yoklanir, native cagrilmaz', async () => {
+    const { servis } = tazeKur();
+
+    await servis.bildirimSesiniCal('varsayilan');
+    await servis.bitisiniBekle('varsayilan');
+
+    // Sahte calar `playing` false doner -> ilk turda cikilir.
+    expect(mockOnizlemeCaliyorMu).not.toHaveBeenCalled();
   });
 });

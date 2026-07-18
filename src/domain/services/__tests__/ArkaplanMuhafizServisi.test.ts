@@ -1119,13 +1119,16 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
         expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, true));
     });
 
-    test('muhafız kapalıyken kanal hazırlığı YAPILMAZ (gereksiz native iş yok)', async () => {
+    test('muhafız kapalıyken kanal OLUŞTURULMAZ ama ÖKSÜZ kanallar toplanır', async () => {
+        // Kanal GC yalnız `hazirla(matris)` yolunda çalışsaydı, muhafızı kapatan
+        // kullanıcının özel sesli kanalları bildirim ayarlarında SONSUZA KADAR
+        // öksüz kalırdı. Matrissiz çağrı = "hiçbir kanal gerekmiyor" → hepsi toplanır.
         await servis.yapilandirVePlanla({
             aktif: false,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }], {}),
         });
 
-        expect(mockKanallariHazirla).not.toHaveBeenCalled();
+        expect(mockKanallariHazirla).toHaveBeenCalledWith();
     });
 });

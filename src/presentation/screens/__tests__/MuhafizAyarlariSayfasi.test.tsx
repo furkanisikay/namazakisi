@@ -59,6 +59,9 @@ const mockBildirimSesiniCal = jest.fn().mockResolvedValue(undefined);
 jest.mock('../../../domain/services/OnizlemeSesServisi', () => ({
   OnizlemeSesServisi: {
     bildirimSesiniCal: (...args: unknown[]) => mockBildirimSesiniCal(...args),
+    // Gercekte sesin bitisini yoklar (ust sinirli); testte aninda cozulur —
+    // olculen sey SIRA, bekleme suresi degil.
+    bitisiniBekle: jest.fn().mockResolvedValue(undefined),
     temizle: jest.fn(),
   },
 }));
@@ -730,12 +733,11 @@ describe('MuhafizAyarlariSayfasi', () => {
       const { getByLabelText } = await detayiAc(matris);
 
       fireEvent.press(getByLabelText('Bildirim sesini ve örnek okunuşu dinleyin'));
+      // Anons artık sesin BİTİŞİNİ bekler → zincir async; mikro görevleri boşalt.
+      await act(async () => { await Promise.resolve(); });
 
       expect(mockBildirimSesiniCal).toHaveBeenCalledWith(OZEL_SES);
       expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
-      const [, zaman] = mockPlanlaAnons.mock.calls[0];
-      // Anons bildirim sesinin ARDINDAN gelir (üstüne binmez)
-      expect(zaman - Date.now()).toBeGreaterThan(1000);
     });
 
     it("'ikisi' modunda ses bölümündeki Dinle yalnız SESİ çalar (seçimi dinletir)", async () => {
@@ -846,6 +848,7 @@ describe('MuhafizAyarlariSayfasi', () => {
       fireEvent.press(getByText('İkindi'));
       fireEvent.press(getByLabelText('İkindi akışını önizleyin'));
       fireEvent.press(getByLabelText('45 dakika kala çalacak uyarıyı dinleyin'));
+      await act(async () => { await Promise.resolve(); });
 
       expect(mockBildirimSesiniCal).toHaveBeenCalledWith(OZEL_SES);
       expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);

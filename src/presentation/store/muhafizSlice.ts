@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import { eskiAlarmSesiniGoc, eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import {
     presetMatrisiOlustur,
@@ -299,7 +299,13 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     esikler: { ...initialState.esikler, ...parsed.esikler },
                     sikliklar: { ...initialState.sikliklar, ...parsed.sikliklar },
                 };
-                const mevcutMatris: MuhafizMatrisi = parsed.matris ?? eskidenMatriseGoc(temel);
+                const hamMatris: MuhafizMatrisi = parsed.matris ?? eskidenMatriseGoc(temel);
+                // Eski 'alarm' ses id'si → görünür `acilKanal` alanına taşınır. Burada
+                // yapılırsa sonuç DİSKE de yazılır (aşağıdaki `gocGerekli` dalı veya
+                // sonraki herhangi bir reducer yazımı) → aciliyet ekranda görünür ve
+                // değiştirilebilir olur. Değişiklik yoksa aynı referans döner.
+                const mevcutMatris = eskiAlarmSesiniGoc(hamMatris);
+                const sesGocuGerekli = mevcutMatris !== hamMatris;
 
                 // Bir kerelik preset göçü: yalnız bayrağı OLMAYAN eski kayıtlarda.
                 // 'ozel' yoğunlukta `presetGocunuUygula` boş döner → matris bire bir korunur,
@@ -324,7 +330,7 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     presetGocuYapildi: true,
                 };
 
-                if (gocGerekli) {
+                if (gocGerekli || sesGocuGerekli) {
                     // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
                     // kullanıcının elle yaptığı mod/ses değişikliklerini sürekli geri alır.
                     // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)

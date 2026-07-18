@@ -1,5 +1,12 @@
 /**
- * Muhafiz "Dinle" / akis onizlemesi icin BILDIRIM SESI calar (uygulama ici).
+ * UYGULAMA ICI bildirim sesi calar — secili sesin TEK calma noktasi.
+ *
+ * IKI CAGIRAN:
+ *  1. Muhafiz "Dinle" / akis onizlemesi (ekran).
+ *  2. ON PLAN MUHAFIZ BANNER'I (`AnaSayfa`) — uygulama acikken de kullanicinin
+ *     SECTIGI ses duyulmali. Once burada paketlenmis `bildirim.mp3` calan
+ *     `SesServisi.bildirimSesiCal()` vardi: ayni adim uygulama acikken varsayilan
+ *     can, kapaliyken (kanal sesi) secilen ses ile duyuluyordu.
  *
  * NEDEN GERCEK BILDIRIM GONDERILMIYOR: onizleme aninda duyulmali, bildirim
  * golgeligini kirletmemeli ve cihaz sessiz moddayken bile calismalidir. Bu
@@ -20,10 +27,22 @@ import { Logger } from '../../core/utils/Logger';
 import {
     sesiOnizle as nativeSesiOnizle,
     onizlemeyiDurdur as nativeOnizlemeyiDurdur,
+    onizlemeCaliyorMu as nativeOnizlemeCaliyorMu,
 } from '../../../modules/expo-countdown-notification/src';
 
 /** Onizleme bilincli bir aksiyondur → geri bildirim seslerinden yuksek calinir. */
 export const ONIZLEME_SES_SEVIYESI = 0.9;
+
+/**
+ * Ses bitisini beklerken asilmamak icin UST SINIR. Kullanici bir albüm parcasi
+ * secmis olabilir; anonsu dakikalarca bekletmek kabul edilemez.
+ */
+export const BEKLEME_UST_SINIRI_MS = 8000;
+
+/** Bitis yoklama araligi (calma baslamasi da bu kadar beklenir). */
+const YOKLAMA_ARALIGI_MS = 200;
+
+const bekle = (ms: number): Promise<void> => new Promise((coz) => setTimeout(coz, ms));
 
 let aktifCalar: AudioPlayer | null = null;
 let aktifKaynak: SesKaynagi | null = null;
@@ -89,7 +108,7 @@ export const OnizlemeSesServisi = {
                 // expo-audio calari elde tutmanin anlami yok; native taraf kendi
                 // tekilligini saglar (onceki onizlemeyi durdurur).
                 calariBirak();
-                nativeSesiOnizle(sesId);
+                await nativeSesiOnizle(sesId);
             } catch (error) {
                 Logger.debug('OnizlemeSes', 'Ozel ses calinamadi:', error);
             }
@@ -113,11 +132,46 @@ export const OnizlemeSesServisi = {
         }
     },
 
+    /**
+     * Calan onizlemenin BITMESINI bekler (ust sinirli).
+     *
+     * NEDEN: `ikisi` modunda once bildirim sesi calinir, sonra TTS konusur. Eskiden
+     * araya SABIT bir pay (1,8 sn) konuyordu ve gerekcesi "palet sesleri kisa
+     * (~1-2 sn)" idi — ama SABIT PALET KALDIRILDI; artik ses kullanicinin sistem
+     * seciciden sectigi RASTGELE UZUNLUKTA bir dosyadir. 3 dakikalik bir muzik
+     * secildiginde anons sesin ustune biniyordu.
+     *
+     * Bitis her iki yolda da YOKLANIR (native `Ringtone.isPlaying` / expo-audio
+     * `playing`), ama bekleme `BEKLEME_UST_SINIRI_MS` ile tavanlanir: uzun ses
+     * secen kullanici anonsu kaybetmez, yalnizca ustune binmemis olur.
+     */
+    bitisiniBekle: async (sesId: string): Promise<void> => {
+        const bitis = Date.now() + BEKLEME_UST_SINIRI_MS;
+        const ozel = ozelSesOnizlemesiMi(sesId);
+
+        // Calmanin baslamasi icin bir tur bekle; aksi halde henuz baslamamis sesi
+        // "bitmis" sanip aninda donebiliriz.
+        await bekle(YOKLAMA_ARALIGI_MS);
+
+        while (Date.now() < bitis) {
+            try {
+                const caliyor = ozel ? await nativeOnizlemeCaliyorMu() : !!aktifCalar?.playing;
+                if (!caliyor) return;
+            } catch (error) {
+                Logger.debug('OnizlemeSes', 'Ses durumu okunamadi:', error);
+                return;
+            }
+            await bekle(YOKLAMA_ARALIGI_MS);
+        }
+    },
+
     /** Ekran kapanirken cagrilir — her iki yolun da calan sesini birakir. */
     temizle: (): void => {
         calariBirak();
         try {
-            nativeOnizlemeyiDurdur();
+            // Native tarafta artik `AsyncFunction` → promise doner. Temizlik
+            // yangin-ve-unut'tur; reddi yutulur ki unmount yolu hic dusmesin.
+            void nativeOnizlemeyiDurdur();
         } catch (error) {
             Logger.debug('OnizlemeSes', 'Native onizleme durdurulamadi:', error);
         }
