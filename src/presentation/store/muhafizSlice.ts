@@ -12,7 +12,12 @@ import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
-import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../core/muhafiz/matrisIslemleri';
+import {
+    presetMatrisiOlustur,
+    presetSesliIceriyorMu,
+    presetUygula,
+} from '../../core/muhafiz/matrisIslemleri';
+import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -160,6 +165,55 @@ export interface MuhafizAyarlari {
      * etkinlestirmez ('bildirim'e duser). Bir kez true olunca bir daha sorulmaz.
      */
     sesliOnayi?: boolean;
+    /**
+     * Bir kerelik preset gocu (tekrar azaltma) bu kayda uygulandi mi?
+     * `initialState`'te TRUE — taze kurulum zaten guncel preset'le baslar; yalnizca
+     * diskteki ESKI kayitlar (bu alan yok) goce girer. Bkz. `presetGocunuUygula`.
+     */
+    presetGocuYapildi?: boolean;
+}
+
+type PresetliYogunluk = Exclude<HatirlatmaYogunlugu, 'ozel'>;
+
+const presetliYogunlukMu = (yogunluk: HatirlatmaYogunlugu): yogunluk is PresetliYogunluk =>
+    Object.prototype.hasOwnProperty.call(HATIRLATMA_PRESETLERI, yogunluk);
+
+/**
+ * BIR KERELIK PRESET GOCU — "tekrar azaltma herkese ulassin, ses rizaya bagli kalsin".
+ *
+ * NEDEN: preset'lerin asil kazanci etkisiz tekrari kesmekti (yogun 15 → 7 uyari/vakit;
+ * her ek hatirlatmada kabul olasiligi ~%30 duser — PMC5387195). Goc olmasaydi bu kazanc
+ * mevcut kullanicilarin HICBIRINE ulasmaz, herkes yogunluk butonuna yeniden dokunana
+ * kadar gunde 75 bildirim almaya devam ederdi.
+ *
+ * IKI KAPI (ikisi de zorunlu):
+ *   1. Yalniz `yogunluk !== 'ozel'` kayitlara uygulanir. Elle ayar yapmis kullanicinin
+ *      matrisi onun kisisel emegidir → BIRE BIR korunur (yalniz bayrak isaretlenir).
+ *   2. Sesli hucreler `sesliIzinVar = (sesliOnayi === true)` ile uygulanir. Onay yoksa
+ *      'ikisi' → 'bildirim'e duser: goc RIZA YERINE GECMEZ. Kullanici ayarlara girip
+ *      yogunluga dokundugunda `SesliOnayModal` normal akisiyla cikar ve sesliyi o an acar.
+ *
+ * Yani goc yalniz ZAMANLAMA + TEKRAR AZALTMAYI tasir (tek yonlu, riza gerektirmeyen fayda).
+ * `anonsMetni` `presetUygula` tarafindan zaten korunur.
+ */
+function presetGocunuUygula(
+    yogunluk: HatirlatmaYogunlugu,
+    mevcutMatris: MuhafizMatrisi,
+    sesliOnayi: boolean | undefined
+): Partial<MuhafizAyarlari> {
+    // Kapı 1 — 'ozel' (veya diskte bozuk/bilinmeyen yoğunluk): DOKUNMA.
+    if (!presetliYogunlukMu(yogunluk)) return {};
+
+    const preset = HATIRLATMA_PRESETLERI[yogunluk];
+    // Kapı 2 — sesli yalnız onay varsa açılır.
+    const sesliIzinVar = sesliOnayi === true;
+    return {
+        esikler: preset.esikler,
+        sikliklar: preset.sikliklar,
+        matris: matrisGecerliMi(mevcutMatris)
+            ? presetUygula(mevcutMatris, preset.seviyeler, sesliIzinVar)
+            : presetMatrisiOlustur(preset.seviyeler, sesliIzinVar),
+    };
 }
 
 /**
@@ -195,6 +249,10 @@ export function presetAyarlariniOlustur(
  *
  * Matris 'normal' preset'inden uretilir ama `sesliIzinVar: false` ile — taze
  * kurulumda kullanici sesli anonsa henuz onay vermemistir.
+ *
+ * `presetGocuYapildi: true` — taze kurulum ZATEN guncel preset'le basladigi icin goc
+ * gereksizdir. Bayrak initialState'te oldugundan, bu state'ten uretilen her disk kaydi
+ * (sihirbaz dahil) bayragi tasir → goc yalnizca bayragi olmayan ESKI kayitlarda calisir.
  */
 const initialState: MuhafizAyarlari = {
     aktif: false,
@@ -203,6 +261,7 @@ const initialState: MuhafizAyarlari = {
     esikler: HATIRLATMA_PRESETLERI.normal.esikler,
     sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
     matris: presetMatrisiOlustur(HATIRLATMA_PRESETLERI.normal.seviyeler, false),
+    presetGocuYapildi: true,
 };
 
 /**
@@ -227,16 +286,39 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     esikler: { ...initialState.esikler, ...parsed.esikler },
                     sikliklar: { ...initialState.sikliklar, ...parsed.sikliklar },
                 };
-                return {
+                const mevcutMatris: MuhafizMatrisi = parsed.matris ?? eskidenMatriseGoc(temel);
+
+                // Bir kerelik preset göçü: yalnız bayrağı OLMAYAN eski kayıtlarda.
+                // 'ozel' yoğunlukta `presetGocunuUygula` boş döner → matris bire bir korunur,
+                // ama bayrak yine işaretlenir ki her açılışta tekrar denenmesin (idempotent).
+                const gocGerekli = parsed.presetGocuYapildi !== true;
+                const goc = gocGerekli
+                    ? presetGocunuUygula(temel.yogunluk, mevcutMatris, parsed.sesliOnayi)
+                    : {};
+
+                const sonuc: MuhafizAyarlari = {
                     ...temel,
-                    matris: parsed.matris ?? eskidenMatriseGoc(temel),
+                    matris: mevcutMatris,
+                    ...goc,
                     // Opsiyonel alanlar AÇIKÇA taşınmalı: `temel`e eklenmezlerse
                     // diske yazılan değer uygulama yeniden açılınca sessizce kaybolur.
                     // ozelMatrisYedegi: diskte yoksa undefined ("Özel" butonu gizli kalır).
                     ozelMatrisYedegi: parsed.ozelMatrisYedegi,
                     // sesliOnayi: undefined = henüz onay yok → sesli hücreler açılmaz.
                     sesliOnayi: parsed.sesliOnayi,
+                    presetGocuYapildi: true,
                 };
+
+                if (gocGerekli) {
+                    // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
+                    // kullanıcının elle yaptığı mod/ses değişikliklerini sürekli geri alır.
+                    // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)
+                    await AsyncStorage.setItem(
+                        DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI,
+                        JSON.stringify(sonuc)
+                    );
+                }
+                return sonuc;
             }
             return null;
         } catch (hata) {

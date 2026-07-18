@@ -48,14 +48,15 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Her namaz vaktini ayrı ayrı ayarlayabilir, dilerseniz hatırlatmayı sesli anonsla duyabilirsiniz.',
         detayAciklama:
-            'Muhafız ayarları yenilendi. Sabah, Öğle, İkindi, Akşam ve Yatsı için dört hatırlatma adımını (nazik hatırlatma, uyarı, sert uyarı, acil) vakit vakit ayarlayabilirsiniz. Her adımda kaç dakika kala uyarılacağınızı, ne sıklıkla tekrarlanacağını ve nasıl uyarılacağınızı seçersiniz: sessiz, bildirim, sesli anons ya da ikisi birden. Sesli anons metnini kendiniz yazabilir, {vakit} ve {süre} yer tutucularıyla vakit adının ve kalan sürenin otomatik okunmasını sağlayabilirsiniz.',
+            'Muhafız ayarları yenilendi. Sabah, Öğle, İkindi, Akşam ve Yatsı için dört hatırlatma adımını (nazik hatırlatma, uyarı, sert uyarı, acil) vakit vakit ayarlayabilirsiniz. Her adımda kaç dakika kala uyarılacağınızı, ne sıklıkla tekrarlanacağını ve nasıl uyarılacağınızı seçersiniz: sessiz, bildirim, sesli anons ya da ikisi birden. Sesli anons metnini kendiniz yazabilir, {vakit} ve {süre} yer tutucularıyla vakit adının ve kalan sürenin otomatik okunmasını sağlayabilirsiniz. Hazır yoğunluklar da elden geçirildi: art arda gelen ve bir süre sonra fark edilmez hâle gelen tekrarlar azaltıldı, bunun yerine vaktin son dakikalarında sesli anons devreye giriyor. Bu sayede daha az bildirim alırsınız ama aldıklarınızı daha zor kaçırırsınız. Yeni zamanlama hesabınıza kendiliğinden uygulandı; sesli anons ise siz onaylamadan açılmaz. Vakitlere özel ayar yaptıysanız ayarlarınıza dokunulmadı.',
         ikon: 'bullhorn',
         hedefSayfa: 'MuhafizAyarlari',
         ctaEtiketi: 'Hemen ayarlayın',
         kartGoster: true,
         detaylar: [
             'Her vakit için dört hatırlatma adımını ayrı ayrı ayarlayın',
-            'Hazır yoğunluklar yenilendi: daha az tekrar, buna karşılık son dakikalarda sesli anons (Hafif seçeneği sessiz kalır)',
+            'Hatırlatma sayısı azaldı, etkisi arttı: gereksiz tekrarlar yerine son dakikalarda sesli anons (Hafif seçeneği sessiz kalır)',
+            'Yeni zamanlama hesabınıza kendiliğinden uygulandı; sesli anons siz onaylamadan açılmaz',
             'Sesli anons metnini kendiniz yazın; vakit adı ve kalan süre otomatik okunur',
             'Bir vaktin ayarını tek dokunuşla diğer tüm vakitlere kopyalayın',
             '“Akışı önizle” ile o vakitte alacağınız tüm hatırlatmaları önceden görün ve dinleyin',

@@ -149,12 +149,15 @@ describe('muhafizSlice', () => {
 
     describe('muhafizAyarlariniYukle (thunk)', () => {
         it('fulfilled: diskteki tam ayarlar state e merge edilir', async () => {
+            // `presetGocuYapildi` VAR → bir kerelik preset göçü devreye girmez, bu test
+            // saf merge davranışını ölçer (göçün kendisi ayrı describe'ta test edilir).
             const kayitli: MuhafizAyarlari = {
                 aktif: true,
                 yogunluk: 'hafif',
                 gelismisMod: true,
                 esikler: { seviye1: 11, seviye2: 9, seviye3: 4, seviye4: 1 },
                 sikliklar: { seviye1: 12, seviye2: 6, seviye3: 3, seviye4: 1 },
+                presetGocuYapildi: true,
             };
             mockStore.set(ANAHTAR, JSON.stringify(kayitli));
 
@@ -274,7 +277,11 @@ describe('muhafizSlice matris', () => {
 describe('muhafizAyarlariniYukle matris [M2]', () => {
     test('diskte matris VARSA migrasyon çalışmaz, mevcut matris korunur', async () => {
         const ozelMatris = bosMatris();
-        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, matris: ozelMatris }));
+        // Bayrak VAR → preset göçü karışmaz; test yalnız M2 (matris türetme) davranışını ölçer.
+        mockStore.set(
+            ANAHTAR,
+            JSON.stringify({ aktif: true, matris: ozelMatris, presetGocuYapildi: true })
+        );
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
         const state = store.getState().muhafiz;
@@ -523,5 +530,192 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
         expect(sonra.matris!.imsak.seviyeler[3].mod).toBe('ikisi');
         expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(3);
         expect(sonra.sesliOnayi).toBe(true);
+    });
+});
+
+/**
+ * Bir kerelik preset göçü — "tekrar azaltma herkese ulaşır, ses rızaya bağlı kalır".
+ *
+ * Göç olmasaydı yeni preset'lerin ASIL kazancı (yoğun 15 → 7 uyarı/vakit) mevcut
+ * kullanıcıların hiçbirine ulaşmaz, herkes yoğunluk butonuna yeniden dokunana kadar
+ * günde 75 bildirim almaya devam ederdi.
+ */
+describe('preset göçü (bir kerelik, iki kapılı)', () => {
+    const TARAMA_SINIRI_DK = 24 * 60;
+
+    /** Eski (göç öncesi) yoğun preset'iyle yazılmış bir disk kaydı. */
+    const ESKI_YOGUN_ESIKLER = { seviye1: 60, seviye2: 30, seviye3: 15, seviye4: 5 };
+    const ESKI_YOGUN_SIKLIKLAR = { seviye1: 10, seviye2: 5, seviye3: 3, seviye4: 1 };
+
+    const eskiKayitYaz = (ustyaz: Record<string, unknown> = {}) => {
+        const eski = {
+            aktif: true,
+            yogunluk: 'yogun',
+            gelismisMod: false,
+            esikler: ESKI_YOGUN_ESIKLER,
+            sikliklar: ESKI_YOGUN_SIKLIKLAR,
+            matris: eskidenMatriseGoc({ esikler: ESKI_YOGUN_ESIKLER, sikliklar: ESKI_YOGUN_SIKLIKLAR }),
+            // presetGocuYapildi YOK — göçe girecek eski kayıt
+            ...ustyaz,
+        };
+        mockStore.set(ANAHTAR, JSON.stringify(eski));
+        return eski;
+    };
+
+    const uyariSayisi = (matris: MuhafizMatrisi) =>
+        vakitUyariPlaniOlustur(matris.ogle, TARAMA_SINIRI_DK);
+
+    it('göç ÖNCESİ eski yoğun kayıt gerçekten 15 uyarı/vakit üretiyordu (kontrol)', () => {
+        const eskiMatris = eskidenMatriseGoc({
+            esikler: ESKI_YOGUN_ESIKLER,
+            sikliklar: ESKI_YOGUN_SIKLIKLAR,
+        });
+        expect(uyariSayisi(eskiMatris)).toHaveLength(15);
+    });
+
+    it('KAZANÇ: göç sonrası yoğun kullanıcı 7 uyarı/vakit alır', async () => {
+        eskiKayitYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(uyariSayisi(state.matris!)).toHaveLength(7);
+        expect(state.matris!.ogle.seviyeler.map((s) => s.esikDk)).toEqual([60, 30, 15, 6]);
+    });
+
+    it('KAPI 2: onay yokken sesli hücreler bildirime düşer — göç rıza yerine geçmez', async () => {
+        eskiKayitYaz(); // sesliOnayi YOK
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(state.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+        }
+        expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(0);
+        // Onay uydurulmaz
+        expect(state.sesliOnayi).toBeUndefined();
+    });
+
+    it('onay ZATEN verilmişse göç sesli hücreleri açar', async () => {
+        eskiKayitYaz({ sesliOnayi: true });
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris!.ogle.seviyeler[3].mod).toBe('ikisi');
+        expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(2);
+    });
+
+    it('KAPI 1: ozel yogunluktaki kullanicinin matrisi BIRE BIR korunur', async () => {
+        const ozelMatris = eskidenMatriseGoc({
+            esikler: { seviye1: 77, seviye2: 33, seviye3: 12, seviye4: 4 },
+            sikliklar: { seviye1: 11, seviye2: 6, seviye3: 2, seviye4: 1 },
+        });
+        ozelMatris.ikindi.seviyeler[0].mod = 'sessiz';
+        ozelMatris.aksam.seviyeler[2].bildirimSesi = 'melodi';
+        eskiKayitYaz({ yogunluk: 'ozel', matris: ozelMatris });
+
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris).toEqual(ozelMatris); // tek bir hücre bile değişmedi
+        expect(state.yogunluk).toBe('ozel');
+        // Bayrak yine de işaretlenir → her açılışta yeniden denenmez
+        expect(state.presetGocuYapildi).toBe(true);
+    });
+
+    it('kullanıcının anons metni göçte korunur', async () => {
+        const matris = eskidenMatriseGoc({
+            esikler: ESKI_YOGUN_ESIKLER,
+            sikliklar: ESKI_YOGUN_SIKLIKLAR,
+        });
+        for (const v of MUHAFIZ_VAKITLERI) {
+            matris[v].seviyeler[3].anonsMetni = 'Kalk, {vakit} namazına {süre} dakika.';
+        }
+        eskiKayitYaz({ sesliOnayi: true, matris });
+
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris!.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
+    });
+
+    it('göç BİR KEZ çalışır: ikinci yüklemede elle değişiklik geri alınmaz', async () => {
+        eskiKayitYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        // Kullanıcı bir adımı elle susturur (mod zamanlama ekseni değil → yoğunluk 'yogun' kalır)
+        const elle = JSON.parse(JSON.stringify(store.getState().muhafiz.matris)) as MuhafizMatrisi;
+        elle.ogle.seviyeler[0].mod = 'sessiz';
+        store.dispatch(matrisiGuncelle(elle));
+        await Promise.resolve();
+
+        // Uygulama yeniden açılır
+        const store2 = yeniStore();
+        await store2.dispatch(muhafizAyarlariniYukle());
+
+        expect((store2.getState().muhafiz as MuhafizAyarlari).matris!.ogle.seviyeler[0].mod).toBe('sessiz');
+    });
+
+    it('KALICILIK: bayrak diske yazılır ve yeniden açılışta korunur', async () => {
+        eskiKayitYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        // Göç, ek bir dispatch beklemeden bayrağı ANINDA diske yazmalı
+        expect(JSON.parse(mockStore.get(ANAHTAR)!).presetGocuYapildi).toBe(true);
+
+        const store2 = yeniStore();
+        await store2.dispatch(muhafizAyarlariniYukle());
+        expect((store2.getState().muhafiz as MuhafizAyarlari).presetGocuYapildi).toBe(true);
+    });
+
+    it('bayrağı OLAN kayıt göçe girmez ve diske gereksiz yazma yapılmaz', async () => {
+        const kayitli = eskiKayitYaz({ presetGocuYapildi: true });
+        const oncekiJson = mockStore.get(ANAHTAR);
+
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        // Eski (15 uyarılık) matris olduğu gibi kalır — göç çalışmadı
+        expect(store.getState().muhafiz.matris).toEqual(kayitli.matris);
+        expect(mockStore.get(ANAHTAR)).toBe(oncekiJson);
+    });
+
+    it('diskteki yoğunluk bozuksa DOKUNMAZ (bilinmeyen preset adı)', async () => {
+        const kayitli = eskiKayitYaz({ yogunluk: 'bilinmeyen' });
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        expect(store.getState().muhafiz.matris).toEqual(kayitli.matris);
+        expect((store.getState().muhafiz as MuhafizAyarlari).presetGocuYapildi).toBe(true);
+    });
+
+    it('matris bozuksa presetten sıfırdan kurulur (göç kilitlenmez)', async () => {
+        eskiKayitYaz({ matris: { imsak: { seviyeler: [] } } });
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(uyariSayisi(state.matris!)).toHaveLength(7);
+    });
+
+    it('göç eski global esik/siklik alanlarını da preset ile hizalar', async () => {
+        eskiKayitYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.esikler).toEqual(HATIRLATMA_PRESETLERI.yogun.esikler);
+        expect(state.sikliklar).toEqual(HATIRLATMA_PRESETLERI.yogun.sikliklar);
+    });
+
+    it('taze kurulum bayrakla başlar — göç hiç tetiklenmez', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.presetGocuYapildi).toBe(true);
     });
 });
