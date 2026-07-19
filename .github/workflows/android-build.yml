@@ -72,7 +72,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📦 Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -127,7 +127,7 @@ jobs:
       - name: 🏷️ Semantic Versiyon Hesapla (Release)
         if: inputs.build_type == 'release'
         id: version
-        uses: paulhatch/semantic-version@9f72830310d5ed81233b641ee59253644cd8a8fc # v6.0.2
+        uses: paulhatch/semantic-version@502226b17e3e242e4befd0a45690fcbb27dd1373 # v6.0.3
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
@@ -506,7 +506,7 @@ jobs:
 
       - name: 🚀 GitHub Release (Release)
         if: inputs.build_type == 'release' && success()
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           tag_name: ${{ steps.version.outputs.version_tag }}
           name: "🕌 Namaz Akışı v${{ steps.version.outputs.version }}"
