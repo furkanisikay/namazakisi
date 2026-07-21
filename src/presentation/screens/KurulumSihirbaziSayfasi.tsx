@@ -322,6 +322,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity
           style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
           onPress={ilerle}
+          accessibilityRole="button"
+          accessibilityLabel="Kuruluma Başla"
         >
           <Text style={styles.butonMetin}>Kuruluma Başla</Text>
           <FontAwesome5 name="arrow-right" size={16} color="#fff" />
@@ -335,6 +337,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity
             style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
             onPress={ilerle}
+            accessibilityRole="button"
+            accessibilityLabel="Şimdilik Geç"
           >
             <FontAwesome5 name="arrow-right" size={16} color="#fff" />
             <Text style={styles.butonMetin}>Şimdilik Geç</Text>
@@ -346,11 +350,18 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           <TouchableOpacity
             style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
             onPress={bildirimIzniIste}
+            accessibilityRole="button"
+            accessibilityLabel="Bildirimlere İzin Ver"
           >
             <FontAwesome5 name="bell" size={16} color="#fff" />
             <Text style={styles.butonMetin}>Bildirimlere İzin Ver</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.atlaButon} onPress={ilerle}>
+          <TouchableOpacity
+            style={styles.atlaButon}
+            onPress={ilerle}
+            accessibilityRole="button"
+            accessibilityLabel="Şimdilik geç"
+          >
             <Text style={styles.atlaButonMetin}>Şimdilik geç</Text>
           </TouchableOpacity>
         </>
@@ -363,11 +374,18 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             <TouchableOpacity
               style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
               onPress={konumIzniIste}
+              accessibilityRole="button"
+              accessibilityLabel="Konum İznini Ver"
             >
               <FontAwesome5 name="map-marker-alt" size={16} color="#fff" />
               <Text style={styles.butonMetin}>Konum İznini Ver</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.atlaButon} onPress={() => setKonumDurumu('gpsReddedildi')}>
+            <TouchableOpacity
+              style={styles.atlaButon}
+              onPress={() => setKonumDurumu('gpsReddedildi')}
+              accessibilityRole="button"
+              accessibilityLabel="Manuel seçeceğim"
+            >
               <Text style={styles.atlaButonMetin}>Manuel seçeceğim</Text>
             </TouchableOpacity>
           </>
@@ -379,6 +397,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             style={[styles.buton, styles.butonBirincil, { backgroundColor: manuelIl ? palet.birincil : '#9ca3af' }]}
             onPress={manuelKonumKaydet}
             disabled={!manuelIl}
+            accessibilityRole="button"
+            accessibilityLabel={manuelIl ? `${manuelIl.ad} ile Devam Et` : 'Şehir Seçin'}
           >
             <FontAwesome5 name="check" size={16} color="#fff" />
             <Text style={styles.butonMetin}>
@@ -397,6 +417,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           style={[styles.buton, styles.butonYesil]}
           onPress={kurulumTamamla}
           disabled={yukleniyor}
+          accessibilityRole="button"
+          accessibilityLabel="Uygulamayı Kullanmaya Başla"
         >
           {yukleniyor
             ? <ActivityIndicator color="#fff" />
@@ -409,6 +431,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       <TouchableOpacity
         style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
         onPress={ilerle}
+        accessibilityRole="button"
+        accessibilityLabel="Devam Et"
       >
         <Text style={styles.butonMetin}>Devam Et</Text>
         <FontAwesome5 name="arrow-right" size={16} color="#fff" />
@@ -459,7 +483,12 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
       <View style={styles.ustBar}>
         {geriGoster
-          ? <TouchableOpacity onPress={geriDon} style={styles.geriButon}>
+          ? <TouchableOpacity
+              onPress={geriDon}
+              style={styles.geriButon}
+              accessibilityRole="button"
+              accessibilityLabel="Geri Dön"
+            >
               <FontAwesome5 name="arrow-left" size={16} color="#6b7280" />
             </TouchableOpacity>
           : <View style={styles.geriButon} />}
