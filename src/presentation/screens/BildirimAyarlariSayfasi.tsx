@@ -78,11 +78,13 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
         style={{ backgroundColor: deger <= min ? renkler.sinir : renkler.birincil }}
         onPress={handleAzalt}
         disabled={deger <= min}
+        accessibilityRole="button"
+        accessibilityLabel="Değeri azalt"
       >
         <FontAwesome5
           name="minus"
           size={14}
-          color={deger <= min ? renkler.metinIkincil : '#FFFFFF'}
+          color={deger <= min ? renkler.metinIkincil : renkler.birincilMetin}
         />
       </TouchableOpacity>
       <View
@@ -98,11 +100,13 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
         style={{ backgroundColor: deger >= max ? renkler.sinir : renkler.birincil }}
         onPress={handleArtir}
         disabled={deger >= max}
+        accessibilityRole="button"
+        accessibilityLabel="Değeri artır"
       >
         <FontAwesome5
           name="plus"
           size={14}
-          color={deger >= max ? renkler.metinIkincil : '#FFFFFF'}
+          color={deger >= max ? renkler.metinIkincil : renkler.birincilMetin}
         />
       </TouchableOpacity>
     </View>
@@ -352,20 +356,22 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                           borderColor: isSelected ? renkler.birincil : renkler.sinir,
                         }}
                         onPress={() => handleSayacBaslangicSeviyesiChange(secenek.seviye)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Seviye ${secenek.seviye} ${isSelected ? 'seçili' : 'seçili değil'}`}
                       >
                         <View
                           className="w-5 h-5 rounded-full border-2 items-center justify-center mr-3"
                           style={{
-                            borderColor: isSelected ? '#FFFFFF' : renkler.metinIkincil,
+                            borderColor: isSelected ? renkler.birincilMetin : renkler.metinIkincil,
                           }}
                         >
                           {isSelected && (
-                            <View className="w-2.5 h-2.5 rounded-full bg-white" />
+                            <View className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: renkler.birincilMetin }} />
                           )}
                         </View>
                         <Text
                           className="text-sm font-semibold flex-1"
-                          style={{ color: isSelected ? '#FFFFFF' : renkler.metin }}
+                          style={{ color: isSelected ? renkler.birincilMetin : renkler.metin }}
                         >
                           {secenek.metin} (Seviye {secenek.seviye})
                         </Text>
@@ -447,16 +453,18 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                         : renkler.sinir,
                     }}
                     onPress={() => handleBildirimModuSecimi('otomatik')}
+                    accessibilityRole="button"
+                    accessibilityLabel={`İmsak Öncesi bildirim modu ${seriAyarlari.gunSonuBildirimModu === 'otomatik' ? 'seçili' : 'seçili değil'}`}
                   >
                     <FontAwesome5
                       name="sync-alt"
                       size={14}
-                      color={seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin}
+                      color={seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincilMetin : renkler.metin}
                     />
                     <Text
                       className="text-sm font-semibold mt-1"
                       style={{
-                        color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? '#FFF' : renkler.metin,
+                        color: seriAyarlari.gunSonuBildirimModu === 'otomatik' ? renkler.birincilMetin : renkler.metin,
                       }}
                     >
                       İmsak Öncesi
@@ -473,16 +481,18 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                         : renkler.sinir,
                     }}
                     onPress={() => handleBildirimModuSecimi('sabit')}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Sabit Zamanlı bildirim modu ${seriAyarlari.gunSonuBildirimModu === 'sabit' ? 'seçili' : 'seçili değil'}`}
                   >
                     <FontAwesome5
                       name="clock"
                       size={14}
-                      color={seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin}
+                      color={seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincilMetin : renkler.metin}
                     />
                     <Text
                       className="text-sm font-semibold mt-1"
                       style={{
-                        color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? '#FFF' : renkler.metin,
+                        color: seriAyarlari.gunSonuBildirimModu === 'sabit' ? renkler.birincilMetin : renkler.metin,
                       }}
                     >
                       Sabit Zamanlı
@@ -542,11 +552,13 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                             : renkler.sinir,
                         }}
                         onPress={() => handleBildirimGunSecimi('ayniGun')}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Aynı Gün bildirim ${seriAyarlari.bildirimGunSecimi === 'ayniGun' ? 'seçili' : 'seçili değil'}`}
                       >
                         <Text
                           className="text-sm font-semibold"
                           style={{
-                            color: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? '#FFF' : renkler.metin,
+                            color: seriAyarlari.bildirimGunSecimi === 'ayniGun' ? renkler.birincilMetin : renkler.metin,
                           }}
                         >
                           Aynı Gün
@@ -563,11 +575,13 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                             : renkler.sinir,
                         }}
                         onPress={() => handleBildirimGunSecimi('ertesiGun')}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Ertesi Gün bildirim ${seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? 'seçili' : 'seçili değil'}`}
                       >
                         <Text
                           className="text-sm font-semibold"
                           style={{
-                            color: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? '#FFF' : renkler.metin,
+                            color: seriAyarlari.bildirimGunSecimi === 'ertesiGun' ? renkler.birincilMetin : renkler.metin,
                           }}
                         >
                           Ertesi Gün
@@ -600,16 +614,16 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
 
                     {seriAyarlari.bildirimGunSecimi === 'ertesiGun' && (
                       <View className="flex-row items-center justify-center mt-3 gap-1">
-                        <FontAwesome5 name="exclamation-triangle" size={12} color="#FF9800" />
-                        <Text className="text-xs font-medium" style={{ color: '#FF9800' }}>
+                        <FontAwesome5 name="exclamation-triangle" size={12} color={renkler.durum.uyari} />
+                        <Text className="text-xs font-medium" style={{ color: renkler.durum.uyari }}>
                           İmsak{imsakVakti ? `: ${String(imsakVakti.getHours()).padStart(2, '0')}:${String(imsakVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden sonrası seçilemez
                         </Text>
                       </View>
                     )}
                     {seriAyarlari.bildirimGunSecimi === 'ayniGun' && (
                       <View className="flex-row items-center justify-center mt-3 gap-1">
-                        <FontAwesome5 name="exclamation-triangle" size={12} color="#FF9800" />
-                        <Text className="text-xs font-medium" style={{ color: '#FF9800' }}>
+                        <FontAwesome5 name="exclamation-triangle" size={12} color={renkler.durum.uyari} />
+                        <Text className="text-xs font-medium" style={{ color: renkler.durum.uyari }}>
                           Yatsı{yatsiVakti ? `: ${String(yatsiVakti.getHours()).padStart(2, '0')}:${String(yatsiVakti.getMinutes()).padStart(2, '0')}` : ''} vaktinden öncesi seçilemez
                         </Text>
                       </View>
