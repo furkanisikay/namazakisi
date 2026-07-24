@@ -83,10 +83,10 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
     }
   };
 
-  const iftarRenk = '#E65100';
-  const iftarRenkAcik = '#FFF3E0';
-  const sahurRenk = '#3F51B5'; // İftar turuncu, Sahur lacivert/mavi
-  const sahurRenkAcik = '#E8EAF6';
+  const iftarRenk = renkler.durum.uyari;
+  const iftarRenkAcik = `${renkler.durum.uyari}15`;
+  const sahurRenk = renkler.durum.bilgi; // İftar turuncu, Sahur lacivert/mavi
+  const sahurRenkAcik = `${renkler.durum.bilgi}15`;
 
   return (
     <ScrollView
@@ -296,12 +296,12 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
         >
           <View
             className="w-8 h-8 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: '#FF980015' }}
+            style={{ backgroundColor: `${renkler.durum.uyari}15` }}
           >
             <FontAwesome5
               name="exclamation-triangle"
               size={14}
-              color="#FF9800"
+              color={renkler.durum.uyari}
             />
           </View>
           <Text
