@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.25] - 2026-07-27
+
+### Eklendi
+- [ui] improve accessibility and theming in bildirim ayarlari (#188)
+
+### Düzeltildi
+- [a11y] KurulumSihirbaziSayfasi.tsx içindeki butonlara accessibilityRole ekle (#190)
+- [ui] ErrorBoundary bileşeninde erişilebilirlik eksikliği giderildi (#191)
+
+### Değiştirildi
+- [ux] replace hardcoded white colors with theme token (#171)
+
 ## [0.23.24] - 2026-07-18
 
 ### Eklendi
