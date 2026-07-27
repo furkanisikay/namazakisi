@@ -28,6 +28,8 @@ export const YeniRozet: React.FC<YeniRozetProps> = ({ etiket = 'Yeni' }) => {
 
     return (
         <Animated.View
+            accessibilityRole="text"
+            accessibilityLabel={etiket}
             style={{
                 backgroundColor: renkler.birincil,
                 borderRadius: 999,

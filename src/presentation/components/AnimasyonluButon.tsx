@@ -86,7 +86,7 @@ export const AnimasyonluButon: React.FC<AnimasyonluButonProps> = ({
       case 'birincil':
         return {
           arkaplan: renkler.birincil,
-          metin: '#FFFFFF',
+          metin: renkler.birincilMetin,
         };
       case 'ikincil':
         return {
@@ -96,12 +96,12 @@ export const AnimasyonluButon: React.FC<AnimasyonluButonProps> = ({
       case 'tehlike':
         return {
           arkaplan: renkler.hata,
-          metin: '#FFFFFF',
+          metin: renkler.birincilMetin,
         };
       default:
         return {
           arkaplan: renkler.birincil,
-          metin: '#FFFFFF',
+          metin: renkler.birincilMetin,
         };
     }
   };
@@ -114,6 +114,8 @@ export const AnimasyonluButon: React.FC<AnimasyonluButonProps> = ({
       onPressOut={handlePressOut}
       onPress={handlePress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={metin}
     >
       <Animated.View
         style={[
