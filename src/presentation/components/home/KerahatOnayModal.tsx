@@ -121,8 +121,8 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                             onPress={onOnayla}
                             activeOpacity={0.85}
                         >
-                            <FontAwesome5 name="check" size={14} color="#FFF" style={{ marginRight: 8 }} />
-                            <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
+                            <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                            <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
                                 Yine de İşaretle
                             </Text>
                         </TouchableOpacity>

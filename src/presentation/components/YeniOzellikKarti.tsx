@@ -50,7 +50,7 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                         className="px-2 py-0.5 rounded-full mr-2"
                         style={{ backgroundColor: renkler.birincil }}
                     >
-                        <Text style={{ color: '#FFF', fontSize: 10, fontWeight: '700', letterSpacing: 0.3 }}>
+                        <Text style={{ color: renkler.birincilMetin, fontSize: 10, fontWeight: '700', letterSpacing: 0.3 }}>
                             YENİ
                         </Text>
                     </View>
@@ -89,8 +89,8 @@ export const YeniOzellikKarti: React.FC<YeniOzellikKartiProps> = ({ ozellik, onA
                     onPress={onAc}
                     activeOpacity={0.85}
                 >
-                    <FontAwesome5 name="arrow-right" size={13} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text className="text-sm font-semibold" style={{ color: '#FFF' }}>
+                    <FontAwesome5 name="arrow-right" size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                    <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
                         {ozellik.ctaEtiketi ?? 'İncele'}
                     </Text>
                 </TouchableOpacity>

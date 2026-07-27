@@ -36,7 +36,7 @@ export const YeniRozet: React.FC<YeniRozetProps> = ({ etiket = 'Yeni' }) => {
                 transform: [{ scale: nabiz }],
             }}
         >
-            <Text style={{ color: '#FFF', fontSize: 10, fontWeight: '700', letterSpacing: 0.3 }}>
+            <Text style={{ color: renkler.birincilMetin, fontSize: 10, fontWeight: '700', letterSpacing: 0.3 }}>
                 {etiket}
             </Text>
         </Animated.View>

@@ -149,9 +149,9 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
                                 accessibilityLabel={birincilEtiket}
                             >
                                 {!!birincilIkon && (
-                                    <FontAwesome5 name={birincilIkon} size={13} color="#FFF" style={{ marginRight: 8 }} />
+                                    <FontAwesome5 name={birincilIkon} size={13} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                                 )}
-                                <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
+                                <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
                                     {birincilEtiket}
                                 </Text>
                             </TouchableOpacity>

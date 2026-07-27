@@ -210,7 +210,7 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                             alignItems: 'center', justifyContent: 'center',
                         }}
                     >
-                        <FontAwesome5 name="check" size={24} color="#FFF" />
+                        <FontAwesome5 name="check" size={24} color={renkler.birincilMetin} />
                     </View>
                 </Animated.View>
             </View>
@@ -262,8 +262,8 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                     onPress={onTakvimiAc}
                     activeOpacity={0.85}
                 >
-                    <FontAwesome5 name="external-link-alt" size={14} color="#FFF" style={{ marginRight: 8 }} />
-                    <Text className="text-base font-semibold" style={{ color: '#FFF' }}>
+                    <FontAwesome5 name="external-link-alt" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                    <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                         Takvim Uygulamasını Aç
                     </Text>
                 </TouchableOpacity>
