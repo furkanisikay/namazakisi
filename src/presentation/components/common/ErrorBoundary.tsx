@@ -83,7 +83,12 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                             </View>
                         )}
 
-                        <TouchableOpacity style={styles.retryButton} onPress={this.handleRetry}>
+                        <TouchableOpacity
+                            style={styles.retryButton}
+                            onPress={this.handleRetry}
+                            accessibilityRole="button"
+                            accessibilityLabel="Tekrar Dene"
+                        >
                             <Text style={styles.retryText}>Tekrar Dene</Text>
                         </TouchableOpacity>
                     </ScrollView>
