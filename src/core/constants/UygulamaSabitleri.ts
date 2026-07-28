@@ -264,15 +264,26 @@ export type TakipHassasiyeti = 'pil_dostu' | 'dengeli' | 'hassas';
 
 /**
  * Takip profili konfigurasyonu
+ *
+ * DİKKAT — konum takibi OLAY TABANLIDIR (geofence): alanların yalnız ikisi
+ * motoru besler. Bir geofence yalnızca merkez + yarıçap alır; periyodik uyanma
+ * diye bir şey yoktur.
+ *  - `mesafe`   → izlenen bölgenin YARIÇAPI (aktif olarak kullanılır)
+ *  - `dogruluk` → çıkış olayında/onarımda alınan tek seferlik sabitlemenin
+ *                 hassasiyeti (aktif olarak kullanılır)
+ *  - `zaman`, `duraklatma` → ESKİ periyodik yolun kalıntısı; motora İLETİLMEZ.
+ *    Silinmediler çünkü diskteki profil şeması ve testler bu şekli bekliyor;
+ *    yeni koddan okumayın, "ne sıklıkla kontrol edilir" sorusunun cevabı
+ *    değiller.
  */
 export interface TakipProfilKonfigurasyonu {
-  /** Minimum mesafe degisikligi (metre) */
+  /** İzlenen bölgenin yaricapi (metre) */
   mesafe: number;
-  /** Minimum zaman araligi (saniye) */
+  /** ESKİ periyodik yolun zaman araligi (saniye) — geofence yolunda KULLANILMAZ */
   zaman: number;
   /** Konum dogruluk seviyesi (expo-location Accuracy enum degeri) */
   dogruluk: number; // Location.Accuracy degerine karsilik gelir
-  /** iOS: Hareketsizken guncellemeleri duraklat */
+  /** ESKİ periyodik yolun iOS duraklatma bayragi — geofence yolunda KULLANILMAZ */
   duraklatma: boolean;
 }
 

@@ -7,6 +7,10 @@ module.exports = {
   getLastKnownPositionAsync: jest.fn(),
   startLocationUpdatesAsync: jest.fn(),
   stopLocationUpdatesAsync: jest.fn(),
+  // Bolge (geofence) izleme: konum takibinin BIRINCIL yolu
+  startGeofencingAsync: jest.fn(),
+  stopGeofencingAsync: jest.fn(),
+  hasStartedGeofencingAsync: jest.fn(),
   reverseGeocodeAsync: jest.fn(),
   Accuracy: {
     Lowest: 1,
@@ -27,5 +31,16 @@ module.exports = {
     GRANTED: 'granted',
     DENIED: 'denied',
     UNDETERMINED: 'undetermined',
+  },
+  // Gercek expo degerleriyle AYNI olmali: uretim `eventType !== Exit` ile eler,
+  // sapan bir deger tum cikis olaylarini sessizce yok sayardi.
+  LocationGeofencingEventType: {
+    Enter: 1,
+    Exit: 2,
+  },
+  LocationGeofencingRegionState: {
+    Unknown: 0,
+    Inside: 1,
+    Outside: 2,
   },
 };
