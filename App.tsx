@@ -175,6 +175,13 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
     const muhafizMatrisi = muhafizMatrisiniCoz(muhafizAyarlari);
 
     // 3. Uc servisi paralel yapilandir (hepsi yuklenen konum verisini kullanir, birbirinden bagimsiz)
+    //
+    // ⚠️ SENKRON TUTULMASI GEREKEN IKINCI LISTE: Konum DEGISTIGINDE ayni tuketiciler
+    // `KonumDegisikligiServisi.konumDegistiUygula` uzerinden beslenir (arka planda
+    // Redux olmadigi icin o taraf ham AsyncStorage okur). Buraya yeni bir konuma-bagli
+    // tuketici eklersen ORAYA DA ekle — yoksa kullanici sehir degistirdiginde o tuketici
+    // eski sehirde kalir (tam olarak bu yuzden geri sayim/iftar/sahur/widget bayatliyordu).
+    // Nobetci test: `KonumDegisikligiServisi.test.ts > konuma bagli TUM tuketiciler cagrilmali`.
     await Promise.all([
       ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
         aktif: muhafizAyarlari.aktif,

@@ -15,7 +15,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
+import { konumDegistiUygula } from '../KonumDegisikligiServisi';
 
 // AsyncStorage mock
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -57,13 +57,12 @@ jest.mock('expo-task-manager', () => ({
     isTaskRegisteredAsync: jest.fn(),
 }));
 
-// ArkaplanMuhafizServisi mock
-jest.mock('../ArkaplanMuhafizServisi', () => ({
-    ArkaplanMuhafizServisi: {
-        getInstance: jest.fn(() => ({
-            yapilandirVePlanla: jest.fn(),
-        })),
-    },
+// Konuma bagli tuketicilere yayma TEK noktadan yapilir; bu dosya "konum
+// degisimi ALGILANDI mi" ile ilgilenir, yaymanin ICERIGI ile degil (onun kendi
+// nobetci testi var: KonumDegisikligiServisi.test.ts). Fabrikali jest.mock
+// gercek modulu YUKLEMEZ — notifee/native koprulerini de bu sayede cekmiyoruz.
+jest.mock('../KonumDegisikligiServisi', () => ({
+    konumDegistiUygula: jest.fn(() => Promise.resolve()),
 }));
 
 /** Test icin sahte bir LocationObject uretir (varsayilan: TAZE sabitleme) */
@@ -585,7 +584,6 @@ describe('Profil Sistemi', () => {
  * o anda (clearAllMocks'tan ONCE) yakaliyoruz.
  */
 const KONUM_ANAHTARI = '@namaz_akisi/konum_ayarlari';
-const MUHAFIZ_ANAHTARI = 'muhafiz_ayarlari';
 
 const ilkDefineTaskCagrisi = (TaskManager.defineTask as jest.Mock).mock.calls[0];
 const kayitliGorevAdi: string = ilkDefineTaskCagrisi[0];
@@ -879,25 +877,13 @@ describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
         expect(JSON.parse(sonYazma![1]).koordinatlar.lat).toBeCloseTo(39.9208);
     });
 
-    it('sehir degisince muhafiz bildirimleri YENI koordinatla yeniden planlanmali', async () => {
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
+    it('sehir degisince konuma bagli TUM tuketiciler YENI koordinatla tazelenmeli', async () => {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
                     konumModu: 'oto',
                     takipHassasiyeti: 'dengeli',
                     koordinatlar: { lat: 41.0369, lng: 28.9850 }, // Istanbul
-                }));
-            }
-            if (key === MUHAFIZ_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({
-                    aktif: true,
-                    sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
-                    esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
                 }));
             }
             return Promise.resolve(null);
@@ -908,41 +894,44 @@ describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
 
         await bolgeGorevi(cikisOlayi());
 
-        expect(yapilandirVePlanlaMock).toHaveBeenCalledTimes(1);
-        const iletilenAyar = yapilandirVePlanlaMock.mock.calls[0][0];
-        expect(iletilenAyar.aktif).toBe(true);
-        expect(iletilenAyar.koordinatlar.lat).toBeCloseTo(39.9208);
-        expect(iletilenAyar.koordinatlar.lng).toBeCloseTo(32.8541);
-        expect(iletilenAyar.koordinatlar.lat).not.toBeCloseTo(41.0369);
+        // Yayma TEK noktadan gecmeli ve YENI (Ankara) koordinati tasimali
+        expect(konumDegistiUygula).toHaveBeenCalledTimes(1);
+        const iletilen = (konumDegistiUygula as jest.Mock).mock.calls[0][0];
+        expect(iletilen.lat).toBeCloseTo(39.9208);
+        expect(iletilen.lng).toBeCloseTo(32.8541);
+        // Eski Istanbul koordinati KESINLIKLE iletilmemeli
+        expect(iletilen.lat).not.toBeCloseTo(41.0369);
     });
 
-    it('muhafiz ayarlari aktif:false ise yeniden planlama YAPILMAMALI', async () => {
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
+    it('mesafe esik ALTINDA kalinca yayma YAPILMAMALI (gereksiz yeniden planlama yok)', async () => {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
                     konumModu: 'oto',
                     takipHassasiyeti: 'dengeli',
-                    koordinatlar: { lat: 41.0369, lng: 28.9850 },
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
                 }));
-            }
-            if (key === MUHAFIZ_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({ aktif: false }));
             }
             return Promise.resolve(null);
         });
-        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([]);
+        // ~3km: 5km esigin altinda
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(41.0, 29.0358),
+        );
 
         await bolgeGorevi(cikisOlayi());
 
-        expect(yapilandirVePlanlaMock).not.toHaveBeenCalled();
-        const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
-            (c: [string, string]) => c[0] === KONUM_ANAHTARI
-        );
-        expect(sonYazma).toBeDefined();
+        expect(konumDegistiUygula).not.toHaveBeenCalled();
+    });
+
+    it('manuel moda gecilmisse yayma YAPILMAMALI (kullanici secimi ezilmemeli)', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+            konumModu: 'manuel',
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+        }));
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).not.toHaveBeenCalled();
     });
 });

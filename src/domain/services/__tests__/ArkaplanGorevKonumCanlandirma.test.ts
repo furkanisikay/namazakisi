@@ -49,11 +49,19 @@ jest.mock('expo-task-manager', () => ({
     isTaskRegisteredAsync: jest.fn(() => Promise.resolve(false)),
 }));
 
-// ArkaplanMuhafizServisi mock
+// Konuma bagli tuketicilere yayma TEK noktadan gecer (kendi nobetci testi var).
+// Fabrikali jest.mock gercek modulu YUKLEMEZ — notifee koprusunu de cekmiyoruz.
+jest.mock('../KonumDegisikligiServisi', () => ({
+    konumDegistiUygula: jest.fn(() => Promise.resolve()),
+}));
+
+// ArkaplanGorevServisi kendi 15dk'lik bildirim gorevi icin bunu YUKLER; gercek
+// modul native TTS koprusunu (expo-countdown-notification) cektigi icin suite
+// hic calismadan patlar. Fabrikali mock sart (AGENTS.md: requireNativeModule tuzagi).
 jest.mock('../ArkaplanMuhafizServisi', () => ({
     ArkaplanMuhafizServisi: {
         getInstance: jest.fn(() => ({
-            yapilandirVePlanla: jest.fn(),
+            yapilandirVePlanla: jest.fn(() => Promise.resolve()),
         })),
     },
 }));
@@ -69,6 +77,7 @@ jest.mock('expo-background-fetch', () => ({
 
 import { arkaplandanKonumTakibiniYenidenBaslat } from '../ArkaplanGorevServisi';
 import { KONUM_TAKIP_GOREVI, KONUM_GEOFENCE_GOREVI, AKTIF_BOLGE_KIMLIGI } from '../KonumTakipServisi';
+import { konumDegistiUygula } from '../KonumDegisikligiServisi';
 
 const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
 const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
@@ -116,6 +125,7 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
         (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(41.0082, 28.9784));
         (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
         (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (konumDegistiUygula as jest.Mock).mockResolvedValue(undefined);
         gorevKayitDurumu({ eski: false, bolge: false });
     });
 
@@ -373,6 +383,72 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
             expect(cagri).toBeDefined();
             expect(cagri![1][0].radius).toBe(5000);
             expect(cagri![1][0].radius).not.toBeUndefined();
+        });
+    });
+
+    // ==========================================
+    // SENARYO 6b: SESSIZ KONUM KAYMASI
+    // Onarim bolgeyi TAZE konuma kurunca cihaz cemberin ICINDE olur -> hicbir
+    // cikis olayi DOGMAZ. Kullanici baska sehirde reboot ettiyse diskteki
+    // koordinat orada bayat kalir ve TUM bildirimler eski sehre gore surer.
+    // Onarim bu yuzden mesafeyi acikca karsilastirip yaymayi tetiklemeli.
+    // ==========================================
+    describe('sessiz konum kaymasi (baska sehirde reboot)', () => {
+        it('KRITIK: onarim TAZE konumla yapilip esik asildiysa yayma TETIKLENMELI', async () => {
+            // Diskte Istanbul kayitli, cihaz Ankara'da yeniden basladi.
+            aktifTakipKur({ koordinatlar: { lat: 41.0369, lng: 28.9850 } });
+            (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(39.9208, 32.8541));
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(konumDegistiUygula).toHaveBeenCalledTimes(1);
+            const iletilen = (konumDegistiUygula as jest.Mock).mock.calls[0][0];
+            expect(iletilen.lat).toBeCloseTo(39.9208);
+            expect(iletilen.lng).toBeCloseTo(32.8541);
+        });
+
+        it('esik ALTINDA kalindiysa yayma yapilmamali (gereksiz yeniden planlama yok)', async () => {
+            aktifTakipKur({ koordinatlar: { lat: 41.0, lng: 29.0 } });
+            // ~3km: dengeli profilin 5km esiginin altinda
+            (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(41.0, 29.0358));
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(konumDegistiUygula).not.toHaveBeenCalled();
+        });
+
+        it('BAYAT sabitleme uzerine yayma YAPILMAMALI (yalniz bolge merkezi olarak kullanilir)', async () => {
+            aktifTakipKur({ koordinatlar: { lat: 41.0369, lng: 28.9850 } });
+            // 10 dakika onceki onbellek sabitlemesi -> guvenilmez
+            (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
+                coords: { latitude: 39.9208, longitude: 32.8541, altitude: null, accuracy: null, altitudeAccuracy: null, heading: null, speed: null },
+                timestamp: Date.now() - 10 * 60 * 1000,
+            });
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            // Bolge yine kurulur (merkez olarak kullanilabilir) ama konum YAYILMAZ
+            expect(Location.startGeofencingAsync).toHaveBeenCalled();
+            expect(konumDegistiUygula).not.toHaveBeenCalled();
+        });
+
+        it('kayitli koordinata dusuldugunde yayma yapilmamali (yeni bilgi yok)', async () => {
+            aktifTakipKur({ koordinatlar: { lat: 41.0369, lng: 28.9850 } });
+            (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('GPS kapali'));
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(Location.startGeofencingAsync).toHaveBeenCalled();
+            expect(konumDegistiUygula).not.toHaveBeenCalled();
+        });
+
+        it('bolge SAGLIKLIYKEN (nabiz yolu) yayma yapilmamali', async () => {
+            aktifTakipKur({ koordinatlar: { lat: 41.0, lng: 29.0 } });
+            gorevKayitDurumu({ eski: false, bolge: true });
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            expect(konumDegistiUygula).not.toHaveBeenCalled();
         });
     });
 

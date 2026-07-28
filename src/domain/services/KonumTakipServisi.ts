@@ -33,10 +33,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
 import { Logger } from '../../core/utils/Logger';
 import { konumTazeMi, olayIslenebilirMi } from '../../core/utils/geofenceKararYardimcisi';
-import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
-import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { konumDegistiUygula } from './KonumDegisikligiServisi';
 import {
-    DEPOLAMA_ANAHTARLARI,
     TAKIP_PROFILLERI,
     VARSAYILAN_TAKIP_HASSASIYETI,
     TakipHassasiyeti,
@@ -222,104 +220,113 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
             Logger.error('KonumTakip', 'Bolge yeniden kurulamadi:', kayitHatasi);
         }
 
-        // Son kaydedilen koordinatla karşılaştır: eşik altındaysa yalnız nabız yaz.
-        // (Gerçek bir çıkışta mesafe eşiği zaten aşılmıştır; bu dal, bölge merkezi
-        // ile kayıtlı koordinatın ayrıştığı kenar durumları güvenli karşılar.)
-        const sonLat = konumAyarlari.koordinatlar?.lat;
-        const sonLng = konumAyarlari.koordinatlar?.lng;
-
-        if (sonLat && sonLng) {
-            const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
-            Logger.info('KonumTakip', `Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(profil.mesafe / 1000).toFixed(0)} km)`);
-
-            if (mesafe < profil.mesafe) {
-                Logger.info('KonumTakip', 'Mesafe esigi asilmadi, konum guncelleme atlanıyor');
-                await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
-                    ...konumAyarlari,
-                    sonGpsGuncellemesi: new Date(simdi).toISOString(),
-                    sonGeofenceOlayi: new Date(simdi).toISOString(),
-                }));
-                return;
-            }
-        }
-
-        // Reverse geocoding ile adres al
-        let gpsAdres = null;
-        try {
-            const adresler = await Location.reverseGeocodeAsync({
-                latitude: yeniLat,
-                longitude: yeniLng,
-            });
-            if (adresler && adresler.length > 0) {
-                const adres = adresler[0];
-                gpsAdres = {
-                    semt: '',
-                    ilce: adres.district || adres.subregion || '',
-                    il: adres.city || adres.region || '',
-                };
-            }
-        } catch (geoError) {
-            Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
-        }
-
-        // Konum ayarlarini guncelle
-        const guncelAyarlar = {
-            ...konumAyarlari,
-            koordinatlar: { lat: yeniLat, lng: yeniLng },
-            gpsAdres: gpsAdres,
-            sonGpsGuncellemesi: new Date(simdi).toISOString(),
+        await yeniKonumuUygula(yeniLat, yeniLng, profil.mesafe, {
             sonGeofenceOlayi: new Date(simdi).toISOString(),
-        };
-
-        await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlar));
-        Logger.info('KonumTakip', 'Konum guncellendi');
-
-        // =====================================================
-        // ONEMLI: Bildirimleri yeni konuma gore yeniden planla
-        // =====================================================
-        try {
-            const muhafizAyarlariJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
-            if (muhafizAyarlariJson) {
-                const muhafizAyarlari = JSON.parse(muhafizAyarlariJson);
-
-                if (muhafizAyarlari.aktif) {
-                    const varsayilanSikliklar = { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
-                    const sikliklar = muhafizAyarlari.sikliklar || varsayilanSikliklar;
-
-                    // Faz 3: matris varsa motor onu okur; yoksa/bozuksa eski global
-                    // esik/sikliklardan turetilir (ekranda kurulan matris EZILMESIN).
-                    const arkaplanAyarlari: ArkaplanMuhafizAyarlari = {
-                        aktif: muhafizAyarlari.aktif,
-                        koordinatlar: { lat: yeniLat, lng: yeniLng }, // Yeni koordinatlar!
-                        matris: muhafizMatrisiniCoz({
-                            matris: muhafizAyarlari.matris,
-                            esikler: {
-                                seviye1: muhafizAyarlari.esikler?.seviye1 || 45,
-                                seviye2: muhafizAyarlari.esikler?.seviye2 || 25,
-                                seviye3: muhafizAyarlari.esikler?.seviye3 || 10,
-                                seviye4: muhafizAyarlari.esikler?.seviye4 || 3,
-                            },
-                            sikliklar: {
-                                seviye1: sikliklar.seviye1 || 15,
-                                seviye2: sikliklar.seviye2 || 10,
-                                seviye3: sikliklar.seviye3 || 5,
-                                seviye4: sikliklar.seviye4 || 1,
-                            },
-                        }),
-                    };
-
-                    await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(arkaplanAyarlari);
-                    Logger.info('KonumTakip', 'Bildirimler yeni konuma gore yeniden planlandi');
-                }
-            }
-        } catch (bildirimHatasi) {
-            Logger.error('KonumTakip', 'Bildirim guncelleme hatasi:', bildirimHatasi);
-        }
+        });
 
     } catch (e) {
         Logger.error('KonumTakip', 'Islem hatasi:', e);
     }
 });
+
+/**
+ * Taze bir konum sabitlemesini diske işler ve gerekiyorsa tüm tüketicilere yayar.
+ *
+ * İKİ ÇAĞIRAN VAR ve ikisi de bu fonksiyondan geçmek ZORUNDA:
+ *  1. Bölge çıkış olayı (`KONUM_GEOFENCE_GOREVI`)
+ *  2. Arka plan ONARIM yolu (`ArkaplanGorevServisi`)
+ *
+ * (2) neden şart: onarım bölgeyi TAZE konuma kurar → cihaz çemberin İÇİNDE olur
+ * → hiçbir çıkış olayı **doğmaz**. Kullanıcı başka bir şehirde yeniden başlattıysa
+ * (reboot) diskteki koordinat orada bayat kalır ve tüm bildirimler eski şehre göre
+ * planlanmış olarak sürer — kullanıcı uygulamayı açana kadar. Bu yüzden onarım da
+ * mesafeyi AÇIKÇA karşılaştırıp buradan geçmeli.
+ *
+ * @param esikMesafe Güncellemenin tetikleneceği asgari mesafe (profil yarıçapı)
+ * @param ekAlanlar Her iki yazma dalına da eklenecek alanlar (ör. `sonGeofenceOlayi`)
+ * @returns Konum güncellenip yayıldıysa true; eşik altında kalındıysa false
+ */
+export async function yeniKonumuUygula(
+    yeniLat: number,
+    yeniLng: number,
+    esikMesafe: number,
+    ekAlanlar: Record<string, unknown> = {},
+): Promise<boolean> {
+    const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+    if (!konumAyarlariJson) {
+        Logger.info('KonumTakip', 'Konum ayarlari bulunamadi');
+        return false;
+    }
+
+    const konumAyarlari = JSON.parse(konumAyarlariJson);
+
+    // GPS modu degilse kullanicinin manuel secimini EZME
+    if (konumAyarlari.konumModu !== 'oto') {
+        Logger.info('KonumTakip', 'GPS modu aktif degil');
+        return false;
+    }
+
+    const simdi = new Date().toISOString();
+
+    // Son kaydedilen koordinatla karşılaştır: eşik altındaysa yalnız nabız yaz.
+    const sonLat = konumAyarlari.koordinatlar?.lat;
+    const sonLng = konumAyarlari.koordinatlar?.lng;
+
+    if (sonLat && sonLng) {
+        const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
+        Logger.info('KonumTakip', `Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(esikMesafe / 1000).toFixed(0)} km)`);
+
+        if (mesafe < esikMesafe) {
+            Logger.info('KonumTakip', 'Mesafe esigi asilmadi, konum guncelleme atlanıyor');
+            await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+                ...konumAyarlari,
+                sonGpsGuncellemesi: simdi,
+                ...ekAlanlar,
+            }));
+            return false;
+        }
+    }
+
+    // Reverse geocoding ile adres al
+    let gpsAdres = null;
+    try {
+        const adresler = await Location.reverseGeocodeAsync({
+            latitude: yeniLat,
+            longitude: yeniLng,
+        });
+        if (adresler && adresler.length > 0) {
+            const adres = adresler[0];
+            gpsAdres = {
+                semt: '',
+                ilce: adres.district || adres.subregion || '',
+                il: adres.city || adres.region || '',
+            };
+        }
+    } catch (geoError) {
+        Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
+    }
+
+    // Konum ayarlarini guncelle (bilinmeyen alanlar korunur)
+    await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+        ...konumAyarlari,
+        koordinatlar: { lat: yeniLat, lng: yeniLng },
+        gpsAdres: gpsAdres,
+        sonGpsGuncellemesi: simdi,
+        ...ekAlanlar,
+    }));
+    Logger.info('KonumTakip', 'Konum guncellendi');
+
+    // =====================================================
+    // ONEMLI: Konuma bagli TUM tuketicileri yeni konuma gore tazele
+    // (muhafiz bildirimleri + TTS alarmlari + vakit bildirimleri + vakit/iftar/sahur
+    // sayaclari + widget + hesaplayici). Hangi tuketicilerin var oldugu
+    // `KonumDegisikligiServisi`'nin sorumlulugudur — burada TEK cagri durur ki
+    // liste iki yerde yasayip ayrismasin.
+    // =====================================================
+    await konumDegistiUygula({ lat: yeniLat, lng: yeniLng });
+
+    return true;
+}
 
 /**
  * Konum Takip Servisi

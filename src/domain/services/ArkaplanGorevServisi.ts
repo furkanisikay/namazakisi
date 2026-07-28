@@ -24,7 +24,9 @@ import {
     KONUM_GEOFENCE_GOREVI,
     bolgeyiKaydet,
     eskiTakipGoreviniTemizle,
+    yeniKonumuUygula,
 } from './KonumTakipServisi';
+import { konumTazeMi } from '../../core/utils/geofenceKararYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 
 // Görev adı sabiti
@@ -127,11 +129,17 @@ async function nabziGuncelle(): Promise<void> {
  */
 async function onarimMerkeziniBelirle(
     dogruluk: number,
-): Promise<{ lat: number; lng: number } | null> {
+): Promise<{ lat: number; lng: number; tazeMi: boolean } | null> {
     try {
         const konum = await Location.getCurrentPositionAsync({ accuracy: dogruluk });
         if (konum?.coords) {
-            return { lat: konum.coords.latitude, lng: konum.coords.longitude };
+            return {
+                lat: konum.coords.latitude,
+                lng: konum.coords.longitude,
+                // Onbellekten gelen bayat bir sabitleme uzerine konum GUNCELLEMESI
+                // yapilmamali (yalnizca bolge merkezi olarak kullanilabilir).
+                tazeMi: konumTazeMi(konum.timestamp, Date.now()),
+            };
         }
     } catch (e) {
         Logger.warn('ArkaplanGorev', 'Taze konum alinamadi, kayitli koordinata dusuluyor:', e);
@@ -144,7 +152,7 @@ async function onarimMerkeziniBelirle(
             const lat = konumAyarlari.koordinatlar?.lat;
             const lng = konumAyarlari.koordinatlar?.lng;
             if (typeof lat === 'number' && typeof lng === 'number') {
-                return { lat, lng };
+                return { lat, lng, tazeMi: false };
             }
         }
     } catch (e) {
@@ -233,6 +241,16 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
         await bolgeyiKaydet(merkez.lat, merkez.lng, profil.mesafe);
 
         Logger.info('ArkaplanGorev', 'Bolge izleme yeniden kuruldu');
+
+        // KRITIK — SESSIZ KONUM KAYMASI: bolge TAZE konuma kuruldugunda cihaz
+        // cemberin ICINDE olur, dolayisiyla hicbir cikis olayi DOGMAZ. Kullanici
+        // baska bir sehirde yeniden baslatmissa (reboot) diskteki koordinat orada
+        // bayat kalir ve tum bildirimler eski sehre gore planlanmis olarak surer.
+        // Bu yuzden onarim mesafeyi ACIKCA karsilastirip ortak uygulama yolundan
+        // gecmeli (o yol esik altinda ise yalnizca nabiz yazar).
+        if (merkez.tazeMi) {
+            await yeniKonumuUygula(merkez.lat, merkez.lng, profil.mesafe);
+        }
     } catch (error) {
         Logger.error('ArkaplanGorev', 'Konum takip onarim hatasi:', error);
     }

@@ -74,6 +74,12 @@ jest.mock('../ArkaplanMuhafizServisi', () => ({
     },
 }));
 
+// Konuma bagli yayma noktasi; gercek modul notifee/native koprulerini cektigi
+// icin fabrikali mock SART (AGENTS.md: requireNativeModule jest'te yoktur).
+jest.mock('../KonumDegisikligiServisi', () => ({
+    konumDegistiUygula: jest.fn(() => Promise.resolve()),
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,

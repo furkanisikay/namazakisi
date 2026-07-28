@@ -30,10 +30,10 @@ jest.mock('expo-task-manager', () => ({
     isTaskRegisteredAsync: jest.fn(),
 }));
 
-jest.mock('../ArkaplanMuhafizServisi', () => ({
-    ArkaplanMuhafizServisi: {
-        getInstance: jest.fn(() => ({ yapilandirVePlanla: jest.fn() })),
-    },
+// Yayma TEK noktadan gecer; icerigi bu dosyanin konusu degil (kendi nobetci
+// testi var). Fabrikali jest.mock gercek modulu YUKLEMEZ.
+jest.mock('../KonumDegisikligiServisi', () => ({
+    konumDegistiUygula: jest.fn(() => Promise.resolve()),
 }));
 
 // Logger'i sustur (yan etki testi kirletmesin)
@@ -45,7 +45,6 @@ import { KonumTakipServisi, KONUM_GEOFENCE_GOREVI } from '../KonumTakipServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 
 const TAKIP_AYAR_ANAHTARI = '@namaz_akisi/konum_takip_ayarlari';
 const KONUM_ANAHTARI = '@namaz_akisi/konum_ayarlari';
@@ -87,6 +86,8 @@ function mutluYolKur(): void {
     (Location.stopGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
     (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(41.0082, 28.9784));
+    const { konumDegistiUygula } = require('../KonumDegisikligiServisi');
+    (konumDegistiUygula as jest.Mock).mockResolvedValue(undefined);
 }
 
 beforeEach(() => {
@@ -233,20 +234,16 @@ describe('aktifProfilGetir (durumBilgisiGetir uzerinden) — bozuk JSON varsayil
 });
 
 describe('arka plan bolge gorevi — kalicilik ve hata yutma', () => {
-    it('muhafiz yapilandirVePlanla HATA atsa bile koordinat guncellemesi kalici olmali', async () => {
-        const { ArkaplanMuhafizServisi } = require('../ArkaplanMuhafizServisi');
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: jest.fn().mockRejectedValue(new Error('planlama coktu')),
-        });
+    it('yayma HATA atsa bile koordinat guncellemesi KALICI olmali', async () => {
+        // Konum diske yayma cagrisindan ONCE yazilir; yayma coktugunde gorev
+        // reject etmemeli ve yazilan koordinat korunmali.
+        const { konumDegistiUygula } = require('../KonumDegisikligiServisi');
+        (konumDegistiUygula as jest.Mock).mockRejectedValue(new Error('yayma coktu'));
 
         mockStore.set(KONUM_ANAHTARI, JSON.stringify({
             konumModu: 'oto',
             takipHassasiyeti: 'dengeli',
             koordinatlar: { lat: 41.0369, lng: 28.9850 }, // Istanbul
-        }));
-        mockStore.set('muhafiz_ayarlari', JSON.stringify({
-            aktif: true,
-            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
         }));
         (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(39.9208, 32.8541));
         (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Cankaya', city: 'Ankara' }]);
@@ -256,69 +253,6 @@ describe('arka plan bolge gorevi — kalicilik ve hata yutma', () => {
         const yazilan = JSON.parse(mockStore.get(KONUM_ANAHTARI)!);
         expect(yazilan.koordinatlar.lat).toBeCloseTo(39.9208);
         expect(yazilan.koordinatlar.lng).toBeCloseTo(32.8541);
-    });
-
-    it('muhafiz aktif ama esikler/sikliklar YOKSA varsayilan esik+sikliklarla yeniden planlamali', async () => {
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        const { ArkaplanMuhafizServisi } = require('../ArkaplanMuhafizServisi');
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
-        mockStore.set(KONUM_ANAHTARI, JSON.stringify({
-            konumModu: 'oto',
-            takipHassasiyeti: 'dengeli',
-            koordinatlar: { lat: 41.0369, lng: 28.9850 },
-        }));
-        mockStore.set('muhafiz_ayarlari', JSON.stringify({ aktif: true }));
-        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(39.9208, 32.8541));
-        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Cankaya', city: 'Ankara' }]);
-
-        await bolgeGorevi(cikisOlayi());
-
-        expect(yapilandirVePlanlaMock).toHaveBeenCalledTimes(1);
-        const iletilen = yapilandirVePlanlaMock.mock.calls[0][0];
-        // Faz 3: varsayilan esik (45/25/10/3) + siklik (15/10/5/1) degerlerinden
-        // MATRIS turetilerek iletilmeli (5 vakit x 4 seviye).
-        const ogle = iletilen.matris.ogle.seviyeler;
-        expect(ogle).toHaveLength(4);
-        expect(ogle[0].esikDk).toBe(45);
-        expect(ogle[0].siklik).toEqual({ herDk: 15 });
-        expect(ogle[3].esikDk).toBe(3);
-        expect(ogle[3].siklik).toEqual({ herDk: 1 });
-        expect(iletilen.koordinatlar.lat).toBeCloseTo(39.9208);
-    });
-
-    it('diskteki MATRIS varsa konum degisiminde de o kullanilir (bayat global esikler EZMEZ)', async () => {
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        const { ArkaplanMuhafizServisi } = require('../ArkaplanMuhafizServisi');
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
-        mockStore.set(KONUM_ANAHTARI, JSON.stringify({
-            konumModu: 'oto',
-            takipHassasiyeti: 'dengeli',
-            koordinatlar: { lat: 41.0369, lng: 28.9850 },
-        }));
-        const matris = eskidenMatriseGoc({
-            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
-            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
-        });
-        matris.aksam.seviyeler[0].esikDk = 77;
-        mockStore.set('muhafiz_ayarlari', JSON.stringify({
-            aktif: true,
-            esikler: { seviye1: 5, seviye2: 4, seviye3: 3, seviye4: 2 }, // BAYAT
-            matris,
-        }));
-        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(39.9208, 32.8541));
-        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([{ district: 'Cankaya', city: 'Ankara' }]);
-
-        await bolgeGorevi(cikisOlayi());
-
-        const iletilen = yapilandirVePlanlaMock.mock.calls[0][0];
-        expect(iletilen.matris.aksam.seviyeler[0].esikDk).toBe(77);
-        expect(iletilen.matris.ogle.seviyeler[0].esikDk).toBe(45); // bayat 5 sizmamali
     });
 
     it('geocode district/city YOKSA subregion/region alanlarina DUSMELI (alan fallback)', async () => {
