@@ -46,6 +46,11 @@ on:
         required: false
         default: true
         type: boolean
+      sadece_submit:
+        description: 'Yeni build YAPMA — EAS’teki son başarılı build’i internal track’e gönder'
+        required: false
+        default: false
+        type: boolean
 
   # android-build.yml tarafindan master merge sonrasi otomatik cagrilir
   workflow_call:
@@ -175,7 +180,7 @@ jobs:
       # AAB Build (production — Play Store)
       # ==========================================
       - name: 🤖 AAB Build (production profili)
-        if: inputs.build_aab == true
+        if: inputs.build_aab == true && inputs.sadece_submit != true
         id: aab_build
         run: |
           echo "📦 AAB build başlatılıyor (production, versionCode ${{ steps.vc.outputs.code }})..."
@@ -209,7 +214,10 @@ jobs:
       # Play Store Internal Track Submit
       # ==========================================
       - name: 🔑 Google Service Account hazırla
-        if: inputs.build_aab == true && inputs.internal_a_gonder == true && steps.aab_build.outcome == 'success'
+        if: |
+          inputs.internal_a_gonder == true &&
+          (inputs.sadece_submit == true ||
+           (inputs.build_aab == true && steps.aab_build.outcome == 'success'))
         id: gsa
         env:
           GSA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -226,10 +234,10 @@ jobs:
 
       - name: 🚀 Internal Track'e Gönder
         if: |
-          inputs.build_aab == true &&
           inputs.internal_a_gonder == true &&
-          steps.aab_build.outcome == 'success' &&
-          steps.gsa.outputs.available == 'true'
+          steps.gsa.outputs.available == 'true' &&
+          (inputs.sadece_submit == true ||
+           (inputs.build_aab == true && steps.aab_build.outcome == 'success'))
         run: |
           echo "📤 Play Store internal track'e gönderiliyor..."
           eas submit \
