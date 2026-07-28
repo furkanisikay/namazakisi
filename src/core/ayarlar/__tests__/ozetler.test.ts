@@ -64,8 +64,8 @@ describe('muhafizOzeti', () => {
     expect(muhafizOzeti({ aktif: true, yogunluk: 'normal' })).toBe('Açık · normal yoğunluk'));
   it('açık + hafif', () =>
     expect(muhafizOzeti({ aktif: true, yogunluk: 'hafif' })).toBe('Açık · hafif yoğunluk'));
-  it('açık + yogun', () =>
-    expect(muhafizOzeti({ aktif: true, yogunluk: 'yogun' })).toBe('Açık · yogun yoğunluk'));
+  it('açık + yogun → görünen ad diakritikli ("yoğun")', () =>
+    expect(muhafizOzeti({ aktif: true, yogunluk: 'yogun' })).toBe('Açık · yoğun yoğunluk'));
   it('açık + ozel → "özel ayarlar"', () =>
     expect(muhafizOzeti({ aktif: true, yogunluk: 'ozel' })).toBe('Açık · özel ayarlar'));
 });

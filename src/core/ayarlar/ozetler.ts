@@ -39,11 +39,21 @@ export interface MuhafizOzetiGirdisi {
   yogunluk: 'hafif' | 'normal' | 'yogun' | 'ozel';
 }
 
+/**
+ * Ham `yogunluk` enum değeri doğrudan ekrana basılmaz (ör. 'yogun' diakritiksiz
+ * görünür) — görünen ad haritası kullanılır.
+ */
+const YOGUNLUK_GORUNEN_ADLARI: Record<'hafif' | 'normal' | 'yogun', string> = {
+  hafif: 'hafif',
+  normal: 'normal',
+  yogun: 'yoğun',
+};
+
 /** Muhafız satırının özeti. */
 export function muhafizOzeti(g: MuhafizOzetiGirdisi): string {
   if (!g.aktif) return 'Kapalı';
   if (g.yogunluk === 'ozel') return 'Açık · özel ayarlar';
-  return `Açık · ${g.yogunluk} yoğunluk`;
+  return `Açık · ${YOGUNLUK_GORUNEN_ADLARI[g.yogunluk]} yoğunluk`;
 }
 
 /**

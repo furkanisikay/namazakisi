@@ -86,7 +86,7 @@ describe('kurulumSagligi', () => {
   });
 
   describe('konumBayat', () => {
-    it('akıllı takip açık + tam 7 gün eski → tetiklenmez (sınır: >= kullanılır, 7 gün TAM eşiktir)', () => {
+    it('akıllı takip açık + tam 7 gün eski → tetiklenir (sınır: >= kullanılır, 7 gün TAM eşiktir)', () => {
       const simdi = new Date('2026-07-29T10:00:00.000Z');
       const tamYediGunOnce = new Date(simdi.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
       const sonuc = kurulumSagligi({
@@ -152,7 +152,6 @@ describe('kurulumSagligi', () => {
   describe('sıralama', () => {
     it('kritik önce, sonra uyarı, sonra bilgi gelir', () => {
       const simdi = new Date('2026-07-29T10:00:00.000Z');
-      const cokEski = new Date(simdi.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
       const sonuc = kurulumSagligi({
         izinDurumu: 'reddedildi',
         konumModu: 'oto',
@@ -177,7 +176,7 @@ describe('kurulumSagligi', () => {
       expect(sonuc[1].id).toBe('konumAlinamadi');
     });
 
-    it('dört sorun birden döndüğünde tam sıralama: kritik, kritik, uyari, bilgi', () => {
+    it('üç sorun birden döndüğünde tam sıralama: kritik, uyari, bilgi', () => {
       const simdi = new Date('2026-07-29T10:00:00.000Z');
       const cokEski = new Date(simdi.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
       const sonuc = kurulumSagligi({
