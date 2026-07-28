@@ -39,20 +39,33 @@ etmemeli: store, React, AsyncStorage, native modül.
 ```ts
 // Tipleri DOSYA İÇİNDE yerelleştir (AGENTS.md: core/domain store'a bağımlı olamaz).
 // Yapısal uyum yeterlidir — slice tiplerini import ETME.
-
-export interface KonumOzetGirdisi {
-  konumModu: 'oto' | 'manuel';
-  seciliIlAdi: string;
-  gpsAdres: { il?: string; ilce?: string } | null;
-}
-konumOzeti(g: KonumOzetGirdisi): string
 ```
 
-**Konum kuralı (nöbetçi test şart):**
-- `konumModu === 'oto'`: `gpsAdres.ilce && gpsAdres.il` → `"Kadıköy, İstanbul · otomatik"`;
-  yalnız `il` → `"İstanbul · otomatik"`; `gpsAdres` yok/boş → `"Konumunuz · otomatik"`.
-- `konumModu === 'manuel'`: `"<seciliIlAdi> · manuel"`.
-- **`seciliIlAdi` oto modda ASLA kullanılmaz** — GPS akışı ona dokunmadığı için bayattır.
+### Konum: MEVCUT tek kaynak yeniden kullanılır — ikiz YAZMA
+
+`konumMetniHesapla` **zaten var** (`src/presentation/hooks/useKonumMetni.ts:8`),
+kendini "KonumAyarlari ve MuhafizAyarlari ekranları için tek kaynak" ilan ediyor
+ve bayat-şehir kuralını (oto modda `gpsAdres`, manuel modda `seciliIlceAdi, seciliIlAdi`)
+**zaten doğru** uyguluyor. İkinci bir kopyasını yazmak AGENTS.md'nin "ikizler
+ayrışırsa" dersinin tam ihlalidir.
+
+Yapılacak:
+1. `konumMetniHesapla`'yı **`src/core/ayarlar/konumMetni.ts`**'ye taşı. Girdi tipini
+   dosya içinde yerelleştir (store'dan `KonumAyarlari` import ETME; yapısal uyum
+   yeter: `{ konumModu, gpsAdres, seciliIlAdi, seciliIlceAdi }`). Davranışı
+   **birebir koru** — dize çıktıları değişmemeli.
+2. `useKonumMetni.ts` onu yeniden dışa aktarsın (`export { konumMetniHesapla } from …`)
+   ki mevcut tüketiciler değişmesin.
+3. `ozetler.ts`:
+
+```ts
+konumOzeti(konum: KonumMetniGirdisi): string
+// `${konumMetniHesapla(konum)} · ${konum.konumModu === 'oto' ? 'otomatik' : 'manuel'}`
+// örn. "Kadıköy, İstanbul · otomatik"  |  "Konum takip ediliyor · otomatik"
+```
+
+**Nöbetçi test şart:** `seciliIlAdi: 'İstanbul'` + `gpsAdres: { il: 'Erzurum' }` +
+`konumModu: 'oto'` → çıktı **Erzurum** içerir, **İstanbul içermez**.
 
 ```ts
 takvimOzeti(aktif: boolean): string
@@ -77,11 +90,17 @@ ramazanOzeti(iftarAktif: boolean, sahurAktif: boolean): string
 
 gorunumOzeti(temaModu: 'acik'|'koyu', paletAdi: string): string
 // "Koyu tema · Zümrüt"
+// DİKKAT: girdi ÇÖZÜLMÜŞ mod olan `useTema().tema.mod`'dur ('acik'|'koyu').
+// `useTema().mod` AYRI bir değerdir ve 'sistem' de olabilir (TemaContext) —
+// onu geçmek tip hatası verir. Bkz. Task 4.
 
-yedeklemeOzeti(sonDisaAktarmaISO: string | null): string
+yedeklemeOzeti(sonDisaAktarmaISO: string | null, simdi: Date): string
 // null -> "Henüz dışa aktarılmadı"
-// dolu -> "Son dışa aktarma: 12 Temmuz"  (gün + Türkçe ay adı; YIL YAZILMAZ
-//          eğer aynı yıldaysa, farklı yılsa "12 Temmuz 2025")
+// dolu -> "Son dışa aktarma: 12 Temmuz"  (gün + Türkçe ay adı; aynı yıldaysa yıl
+//          YAZILMAZ, farklı yılsa "12 Temmuz 2025")
+// `simdi` ZORUNLU parametredir: "aynı yıl" kuralı bugünün yılına bağlı ve
+// fonksiyon içinde `new Date()` çağırmak testi yılbaşında kırardı
+// (AGENTS.md "testlerde sabit tarih yazma" dersinin ikizi).
 
 hakkindaOzeti(surum: string, guncellemeVar: boolean): string
 // "Sürüm 0.23.28 · güncel" | "Sürüm 0.23.28 · güncelleme var"
@@ -92,11 +111,13 @@ Ay adları için dosya içinde sabit dizi kullan (`['Ocak', … ,'Aralık']`).
 
 ### Test kapsamı
 - Her fonksiyonun her dalı.
-- **Nöbetçi:** oto modda `gpsAdres` okunur, `seciliIlAdi` okunmaz
-  (`seciliIlAdi: 'İstanbul'`, `gpsAdres: { il: 'Erzurum' }` → çıktı Erzurum içerir,
-  İstanbul İÇERMEZ).
+- **Nöbetçi:** oto modda `gpsAdres` okunur, `seciliIlAdi` okunmaz (yukarıdaki
+  Erzurum/İstanbul senaryosu).
+- `konumMetni.ts` taşımasının davranışı değiştirmediği: taşınan fonksiyonun
+  mevcut dört dalı (oto+ilçe+il, oto+yalnız il, oto+gpsAdres yok, manuel).
 - Boş/eksik girdide çökmeme (`gpsAdres: null`, boş `vakitler` nesnesi).
-- Yıl geçişi: geçen yıla ait damga yıl içerir, bu yıla ait içermez.
+- Yıl geçişi: `simdi` **enjekte edilerek** — geçen yıla ait damga yıl içerir,
+  aynı yıla ait içermez.
 
 ---
 
@@ -136,7 +157,7 @@ seviyede aşağıdaki tablo sırası).
 
 | id | Koşul | Seviye | Başlık | Açıklama | Eylem → sayfa |
 |---|---|---|---|---|---|
-| `bildirimIzni` | `izinDurumu === 'reddedildi'` | kritik | "Bildirim izni kapalı" | "Namaz muhafızı çalışıyor ama uyarılar size ulaşmıyor." | "İzni açın" → `BildirimAyarlari` |
+| `bildirimIzni` | `izinDurumu === 'reddedildi'` | kritik | "Bildirim izni kapalı" | "Uygulama bildirimleri size ulaşamıyor." | "İzni açın" → **sistem ayarları** |
 | `konumAlinamadi` | `konumModu === 'oto' && !sonGpsGuncellemesi` | kritik | "Konumunuz alınamadı" | "Vakitler varsayılan konuma göre hesaplanıyor." | "Konumu ayarlayın" → `KonumAyarlari` |
 | `hatirlatmaYok` | `!muhafizAktif && acikVakitBildirimSayisi === 0` | uyari | "Vakit hatırlatmaları kapalı" | "Ne muhafız ne de vakit bildirimleri açık." | "Hatırlatmaları açın" → `MuhafizAyarlari` |
 | `konumBayat` | `akilliTakipAktif && sonGpsGuncellemesi` 7+ gün eski | bilgi | "Konumunuz 7 günden eski" | "Şehir değiştiyseniz vakitler kaymış olabilir." | "Konumu yenileyin" → `KonumAyarlari` |
@@ -149,26 +170,40 @@ arka plan servisleri içindir.
 `konumBayat`, `konumAlinamadi` ile **aynı anda dönmez** (ikincisi zaten
 `sonGpsGuncellemesi` yokluğunu kapsar; `konumBayat` damganın VAR olmasını ister).
 
+**`bildirimIzni` açıklaması muhafız durumundan BAĞIMSIZ olmalı.** "Namaz muhafızı
+çalışıyor ama uyarılar ulaşmıyor" gibi bir metin, muhafızı kapalı olan kullanıcıya
+yalan söyler — koşul yalnız izin durumuna bakıyor. Nötr metin kullan.
+
+**`bildirimIzni` eylemi `BildirimAyarlari`'na GİTMEZ — çıkmaz sokaktır.** O sayfada
+izin isteme veya sistem ayarını açma akışı yok; ayrıca kalıcı reddedilmiş izinde
+`requestPermissionsAsync` diyalog bile açmaz. Butona basınca `Linking.openSettings()`
+çağrılır. `Sorun` tipine bunun için `hedefSayfa` yerine ayrımı taşıyan bir alan
+gerekir: `eylem?: { tip: 'sayfa'; sayfa: string } | { tip: 'sistemAyarlari' }`.
+
 ### Test kapsamı
 - Her kontrolün tetiklendiği ve tetiklenmediği durum.
 - Sorunsuz girdide **boş dizi**.
 - Sıralama: birden çok sorun varken kritik önce.
 - Sınır: tam 7 gün / 7 gün 1 dk (`simdi` enjekte edilerek — `new Date()` yok).
 - `konumModu === 'manuel'` iken `konumAlinamadi` **dönmez**.
+- **Nöbetçi:** `izinDurumu === 'belirsiz'` iken `bildirimIzni` **dönmez**
+  (yalnız `'reddedildi'` tetikler — yanlış alarm, uyarıyı hiç vermemekten kötüdür;
+  AGENTS.md'deki TTS `null` kuralının ikizi).
 
 ---
 
 ## Task 3 — Altyapı: izin okuma + dışa aktarma damgası
 
-### 3a. `BildirimServisi.izinDurumunuOku`
+### 3a. `izinDurumunuOku` — AYRI dosyada
 
-**Değişen:** `src/domain/services/BildirimServisi.ts`
+**Yeni dosya:** `src/domain/services/BildirimIzinOkuyucu.ts`
+**Yeni test:** `src/domain/services/__tests__/BildirimIzinOkuyucu.test.ts`
 
 ```ts
 /**
- * SALT OKUR — izin İSTEMEZ. `izinIste()` izin yoksa requestPermissionsAsync ile
- * DİYALOG AÇAR; Ayarlar sayfası onu çağırırsa ekrana her girişte izin penceresi
- * fırlar. Bu yüzden ayrı, yan etkisiz bir okuma yolu gerekir.
+ * SALT OKUR — izin İSTEMEZ. `BildirimServisi.izinIste()` izin yoksa
+ * requestPermissionsAsync ile DİYALOG AÇAR; Ayarlar sayfası onu çağırırsa
+ * ekrana her girişte izin penceresi fırlar.
  */
 export const izinDurumunuOku = async (): Promise<'verildi' | 'reddedildi' | 'belirsiz'>
 ```
@@ -176,6 +211,17 @@ export const izinDurumunuOku = async (): Promise<'verildi' | 'reddedildi' | 'bel
 `Notifications.getPermissionsAsync()` → `status === 'granted'` → `'verildi'`;
 `'denied'` → `'reddedildi'`; diğer/hata → `'belirsiz'`. **Hata fırlatmaz**
 (`catch { return 'belirsiz'; }`).
+
+**Neden `BildirimServisi.ts` içine DEĞİL — bu tasarımın önemli bir parçası:**
+`BildirimServisi` `ArkaplanMuhafizServisi`'ni import ediyor, o da
+`modules/expo-countdown-notification/src` **native köprüsünü** çekiyor. Fonksiyonu
+oraya koymak, `useAyarOzetleri` üzerinden `AyarlarSayfasi.test.tsx`'e o ağır
+grafiği taşır ve test dosyası köprüyü mock'lamazsa suite **hiç çalışmaz**
+(AGENTS.md `requireNativeModule` tuzağı). Ayrı dosya yalnız `expo-notifications`
+import eder — o da zaten global mock'ludur (`jest.config.js` → `__mocks__/expo-notifications.js`).
+
+Testte global mock `getPermissionsAsync`'i `'granted'` sabitli döndürür; üç durum
+`mockResolvedValueOnce` ile ezilir.
 
 ### 3b. Son dışa aktarma damgası
 
@@ -190,9 +236,15 @@ SON_DISA_AKTARMA: '@namaz_akisi/son_disa_aktarma',
 çakışmasın (AGENTS.md).
 
 **Değişen:** `src/domain/services/YedeklemeServisi.ts` — `yedeginiPaylas`
-içinde, `Sharing.shareAsync` çağrısı **başarıyla döndükten SONRA** damgayı yaz
-(`Depolama` üzerinden). `Sharing.isAvailableAsync()` false dönüp paylaşım hiç
-açılmadıysa **yazma**.
+içinde, `Sharing.shareAsync` çağrısı **başarıyla döndükten SONRA** damgayı yaz.
+`Sharing.isAvailableAsync()` false dönüp paylaşım hiç açılmadıysa **yazma**.
+
+- **API:** `Depolama.yaz(anahtar, degerISO)` ile yaz, `Depolama.oku` ile oku
+  (JSON çifti). `hamYaz` + `oku` karışımı yapma: `oku` JSON.parse ettiği için ham
+  ISO dizesi parse hatası verir → damga sessizce hep "yok" görünür.
+- **Kendi `try/catch`'inde olmalı** (`catch { }` + `Logger`). Paylaşım başarılıyken
+  `Depolama.yaz` reddederse `yedeginiPaylas` reddolur ve UI, aslında başarılı olan
+  paylaşımı hata gibi gösterir.
 
 Damganın anlamı: *"yedek dosyası oluşturuldu ve paylaşım açıldı"* — Android
 kullanıcının dosyayı gerçekten kaydettiğini bildirmez, bu yüzden kullanıcıya
@@ -203,9 +255,17 @@ girseydi içe aktarma başka cihazın damgasını taşırdı.
 
 ### Test kapsamı
 - `izinDurumunuOku`: üç durum + `getPermissionsAsync` reddederse `'belirsiz'`.
-- Damga: paylaşım başarılıysa yazılır; `isAvailableAsync` false ise yazılmaz.
-- **Nöbetçi:** `SON_DISA_AKTARMA` anahtarı `YedekBirlestirmeServisi.AYAR_ANAHTARLARI`
-  içinde **DEĞİLDİR**.
+- Damga: paylaşım başarılıysa yazılır; `isAvailableAsync` false ise yazılmaz;
+  `Depolama.yaz` reddederse `yedeginiPaylas` **yine de başarılı döner**.
+- **Nöbetçi — DAVRANIŞSAL yazılmalı.** `YedekBirlestirmeServisi.AYAR_ANAHTARLARI`
+  **export edilmiyor** (düz `const`), doğrudan içeriğini sınayan test yazılamaz;
+  sırf test için export etmek API'yi gereksiz genişletir. Bunun yerine iki yönü de
+  davranışla doğrula: (a) `ayarlariTopla` / zarf oluşturma yolunda `Depolama.oku`
+  **`SON_DISA_AKTARMA` ile hiç çağrılmaz**; (b) içe aktarma planında bu anahtar
+  **bulunmaz**.
+- **Mevcut testleri kırma uyarısı:** `YedeklemeServisi.test.ts`'teki `Depolama`
+  mock nesnesinde `yaz` **yok**. Task 3 eklenirken mock'a `yaz: jest.fn()`
+  eklenmezse mevcut paylaşım testleri "Depolama.yaz is not a function" ile kırılır.
 
 ---
 
@@ -244,27 +304,64 @@ Props: `{ sorunlar: Sorun[]; onEylem: (sorun: Sorun) => void; ozetSatiri: string
   Eylem butonu dolu `renkler.birincil` + beyaz metin.
   `sorunlar.length > 1` → "N sorun daha" dokunulabilir metni; dokununca kalan
   sorunlar aynı kartın içinde listelenir (yerel `useState`).
-- **Sol şerit kullanılıyorsa** `borderRadius` ile birlikte dikkat: tek kenarlı
-  border + yuvarlak köşe kırık görünür → şerit için ayrı `View` kullan.
+- **Sol şerit:** iki geçerli yol var. (a) **Tercih edilen** — `MuhafizAyarlari/VakitKarti.tsx:122-128`
+  deseni: tam çerçeve (`borderWidth` hairline) + `borderLeftWidth: 4` +
+  `borderLeftColor`; köşeler düzgün çizilir ve mevcut görsel dile sadıktır.
+  (b) Şerit için ayrı `View`. **Kaçınılacak olan** yalnızca *tek kenarlı* border
+  (diğer kenarlar 0) + `borderRadius` birleşimidir — o kırık görünür.
 
 ### `useAyarOzetleri()`
 Redux'tan sync özetleri, `useFocusEffect` ile async olanları okur.
 
+**Dönüş sözleşmesi — Task 5 bunu birebir tüketir, anahtarlar tiplenmiş olmalı:**
+
 ```ts
+export interface AyarOzetleri {
+  konum: string; takvim: string; muhafiz: string; bildirim: string;
+  seri: string; ramazan: string; gorunum: string; yedekleme: string;
+  hakkinda: string;
+}
+
 export function useAyarOzetleri(): {
-  ozetler: Record<string, string>;   // satır id -> özet
+  ozetler: AyarOzetleri;
   sorunlar: Sorun[];
   saglikOzetSatiri: string;
 }
 ```
 
-- Sync kaynaklar: `useAppSelector` ile ilgili slice'lar + `useTema()`.
+`Record<string, string>` **kullanma** — Task 4 ile Task 5 farklı ellerde yazılırsa
+anahtarlar sessizce ayrışır. Tiplenmiş arayüz bunu derleme zamanında yakalar.
+(*Tanı ve geri bildirim* ve *Neler yeni* satırlarının dinamik özeti yoktur; statik
+metin kullanırlar.)
+
+**`saglikOzetSatiri` biçimi** (sorun yokken kartta gösterilen tek satır):
+`"Kurulumunuz eksiksiz · <konumMetni> · muhafız açık|kapalı"`
+— konum kısmı `konumMetniHesapla` çıktısıdır (mod eki olmadan).
+
+**Selector yolları (birebir; store anahtarları doğrulandı):**
+
+```
+state.konum                          -> konumModu, seciliIlAdi, seciliIlceAdi,
+                                        gpsAdres, sonGpsGuncellemesi, akilliTakipAktif
+state.muhafiz.aktif / .yogunluk
+state.vakitBildirim.ayarlar          -> { imsak, ogle, ikindi, aksam, yatsi }
+state.cumaHatirlatma.ayarlar.aktif
+state.seri.ayarlar                   -> tamGunEsigi, gunSonuBildirimAktif
+state.iftarSayac.ayarlar.aktif
+state.sahurSayac.ayarlar.aktif
+state.takvim.ayarlar.aktif
+state.guncelleme.guncellemeMevcut
+```
+
+**Tema:** `const { tema, palet } = useTema();` → `gorunumOzeti(tema.mod, palet.ad)`.
+`useTema().mod` **kullanma** — o kullanıcı tercihidir ve `'sistem'` olabilir.
+
 - Async kaynaklar (`useFocusEffect` + `useCallback`): `izinDurumunuOku()` ve
-  `SON_DISA_AKTARMA` okuması. İkisi de `Promise.all` ile tek turda.
+  `SON_DISA_AKTARMA` okuması, `Promise.all` ile tek turda.
 - **Unmount güvenliği:** effect temizliğinde `iptal` bayrağı — çözülen promise
   unmount sonrası `setState` çağırmasın.
-- `kurulumSagligi({..., simdi: new Date()})` burada çağrılır (saf fonksiyona
-  zamanı enjekte eden yer burasıdır).
+- `kurulumSagligi({..., simdi: new Date()})` ve `yedeklemeOzeti(iso, new Date())`
+  burada çağrılır — saf fonksiyonlara zamanı enjekte eden tek yer burasıdır.
 
 ---
 
@@ -315,10 +412,42 @@ devam eder; içeriğin başına **statik** bir "Ayarlar" başlığı konur
 - Sağlık kartı: sorun varken uyarı, sorunsuzken özet satırı.
 - Toggle satırları `useFeedback` durumunu değiştirir.
 
+### Test mock reçetesi — DİKKAT, bu repoda yeni bir durum
+
+**`useFocusEffect` bu repoda İLK KEZ kullanılıyor** (`src/` içinde şu an sıfır
+kullanım var). Mevcut tüm ekran testleri navigasyonu şöyle mock'luyor:
+
+```ts
+jest.mock('@react-navigation/native', () => ({ useNavigation: jest.fn() }));
+```
+
+Bu desen aynen kopyalanırsa `useFocusEffect` **undefined** olur ve sayfa render'da
+çöker. Doğrusu:
+
+```ts
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    const React = require('react');
+    React.useEffect(cb, [cb]);
+  },
+}));
+```
+
+Bu mock ile async okuma **gerçek zamanda** `waitFor` ile beklenir; sahte
+zamanlayıcıya gerek kalmaz → AGENTS.md'nin "fake timers + tam sayfa render =
+CI'da asılma" tuzağına girilmez. `useFocusEffect`'e verilen geri çağrı
+`useCallback` ile sarılmalı (aksi halde bu mock'ta her render'da yeniden koşar).
+
+**Native köprü mock'u:** `expo-notifications` **zaten global mock'lu**
+(`jest.config.js` → `__mocks__/expo-notifications.js`), ek mock gerekmez.
+Gerçek risk `modules/expo-countdown-notification/src` köprüsüdür. Task 3'te
+`izinDurumunuOku` ayrı dosyaya alındığı için `useAyarOzetleri` o grafiği
+**çekmemeli**; yine de import zinciri ağır bir servise uzanırsa repodaki mevcut
+deseni uygula (örnek: `MuhafizAyarlariSayfasi.test.tsx:46`).
+
 **Test performansı (AGENTS.md):** mock bileşenlere **çocuk render ettirme**;
 sahte zamanlayıcı kullanma; `waitFor` gerçek zamanda.
-**Mock notu:** `useAyarOzetleri` `expo-notifications`'a dokunur → bu testte
-köprü mock'lanmalı, yoksa suite hiç çalışmaz (`requireNativeModule` tuzağı).
 
 ---
 
