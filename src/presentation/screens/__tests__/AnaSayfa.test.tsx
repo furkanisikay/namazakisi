@@ -232,11 +232,31 @@ const mockRenkler = {
   sinir: '#cccccc',
 };
 
-/** Bugünün belirli bir saatini üretir (sabit takvim tarihi YAZILMAZ). */
-const bugunSaatinde = (saat: number, dakika = 0): Date => {
-  const d = new Date();
-  d.setHours(saat, dakika, 0, 0);
-  return d;
+/**
+ * Senaryo kurulumu SİSTEM SAATİNE DEĞİL, imsak (fajr) mock'una dayanır.
+ *
+ * Ölçülen şey saatin kendisi değil, `şu an < imsak` koşuludur — ve o koşul adhan
+ * mock'undan gelir. `jest.setSystemTime` ile sahte bir "şimdi" kurmak testleri CI
+ * runner'ında KARARSIZ hâle getiriyordu: sahte zamanlayıcı + React `act`
+ * etkileşimi yüzünden yerelde 0.1 sn süren üç test CI'da 30 sn'lik testTimeout'a
+ * takılıyordu (hep aynı üçü de değil — flaky). İmsağı gerçek "şimdi"nin iki yanına
+ * koymak aynı iki dalı sahte saat olmadan, deterministik biçimde kurar.
+ *
+ * Sayaç hedefi de ileriye kurulur ki her tick'te kalan süre metni DEĞİŞSİN —
+ * yeniden render olmadan prop stabilitesi ölçülemez.
+ */
+const geceYarisiSenaryosu = () => {
+  // İmsak günün SONUNDA → şu an kesinlikle imsaktan önce → aktif gün DÜN
+  mockAdhanAyari.fajrSaat = 23;
+  mockAdhanAyari.fajrDakika = 59;
+  mockVakitBilgisi.sonrakiVakitGiris = new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString();
+};
+
+const gunduzSenaryosu = () => {
+  // İmsak gün BAŞINDA → şu an kesinlikle imsaktan sonra → aktif gün BUGÜN
+  mockAdhanAyari.fajrSaat = 0;
+  mockAdhanAyari.fajrDakika = 0;
+  mockVakitBilgisi.sonrakiVakitGiris = new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString();
 };
 
 describe('AnaSayfa', () => {
@@ -315,10 +335,7 @@ describe('AnaSayfa', () => {
   // ── NÖBETÇİ 1 — tarih seçici geri çağrısı stabil ──────────────────────────
   describe('Tarih seçici prop stabilitesi (dialog yeniden açılma bug\'ı)', () => {
     const tarihSeciciyiAc = async () => {
-      // Gündüz: imsak geçmiş → aktif gün bugün
-      jest.setSystemTime(bugunSaatinde(12, 0));
-      // Sayaç hedefi ileride olsun ki her tick'te kalan süre stringi DEĞİŞSİN
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(16, 0).toISOString();
+      gunduzSenaryosu();
       const ekran = await kur(bugunuAl());
       fireEvent.press(ekran.getByText('tarih-ac'));
       return ekran;
@@ -362,9 +379,8 @@ describe('AnaSayfa', () => {
   // ── NÖBETÇİ 2 — pager açılışta aktif günde doğar ──────────────────────────
   describe('Pager açılış sayfası (initialPage)', () => {
     it('gece yarısından SONRA (şu an < imsak) aktif gün DÜN → initialPage = bugün-1', async () => {
-      // Gece 02:00, imsak 05:30 → yatsı sürüyor, aktif gün dün
-      jest.setSystemTime(bugunSaatinde(2, 0));
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(5, 30).toISOString();
+      // İmsak henüz gelmemiş → yatsı sürüyor, aktif gün dün
+      geceYarisiSenaryosu();
       await kur(bugunuAl());
 
       expect(mockPagerProplari.length).toBeGreaterThan(0);
@@ -372,8 +388,7 @@ describe('AnaSayfa', () => {
     });
 
     it('normal gündüzde (şu an > imsak) initialPage = bugün indeksi', async () => {
-      jest.setSystemTime(bugunSaatinde(12, 0));
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(16, 0).toISOString();
+      gunduzSenaryosu();
       await kur(bugunuAl());
 
       expect(mockPagerProplari.length).toBeGreaterThan(0);
@@ -381,8 +396,7 @@ describe('AnaSayfa', () => {
     });
 
     it('açılış sayfası ilk render\'da DONDURULUR — sonraki render\'larda değişmez', async () => {
-      jest.setSystemTime(bugunSaatinde(2, 0));
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(5, 30).toISOString();
+      geceYarisiSenaryosu();
       await kur(bugunuAl());
 
       await act(async () => { jest.advanceTimersByTime(3000); });
@@ -399,8 +413,7 @@ describe('AnaSayfa', () => {
      * yutulabildiği için uygulama gece yarısından sonra yanlış günde açılıyordu.
      */
     it('gece yarısı senaryosunda hiçbir sayfa komutu BUGÜNÜ hedeflemez', async () => {
-      jest.setSystemTime(bugunSaatinde(2, 0));
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(5, 30).toISOString();
+      geceYarisiSenaryosu();
       await kur(bugunuAl());
 
       const hedefler = [
@@ -420,8 +433,7 @@ describe('AnaSayfa', () => {
      * ve uyarısı o sefer için yutulur.
      */
     it('açılışta pager zaten aktif gündeyse sayfa komutu HİÇ gönderilmez', async () => {
-      jest.setSystemTime(bugunSaatinde(2, 0));
-      mockVakitBilgisi.sonrakiVakitGiris = bugunSaatinde(5, 30).toISOString();
+      geceYarisiSenaryosu();
       await kur(bugunuAl());
 
       expect(mockPagerSetPage).not.toHaveBeenCalled();
