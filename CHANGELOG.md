@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.26] - 2026-07-28
+
+### Eklendi
+- [konum] konuma bağlı tüm tüketiciler için tek yayma noktası
+- [konum] konum takibini olay tabanlı geofence'e taşı
+
 ## [0.23.25] - 2026-07-27
 
 ### Eklendi
