@@ -37,6 +37,7 @@ import {
 } from '../../core/muhafiz/matrisIslemleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
+import { seviyeyiAc, seviyeyiKapat } from '../../core/muhafiz/seviyeAcKapa';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import {
@@ -202,6 +203,26 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
             });
         },
         [matris, matrisiYaz]
+    );
+
+    /**
+     * Bir adımı tek dokunuşla açar/kapatır.
+     *
+     * Kapatma modu 'sessiz' yapar (motorun tek doğruluk kaynağı), ama kapatma
+     * anındaki modu `oncekiMod`'da saklar; açınca kullanıcının kurduğu mod geri
+     * gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel yedek ve plan
+     * tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır — aksi halde
+     * kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine çalardı.
+     * Mod değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e düşmez.
+     */
+    const seviyeAcKapa = useCallback(
+        (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
+            const mevcut = matris[vakit].seviyeler[indeks];
+            const yeni = acik ? seviyeyiAc(mevcut) : seviyeyiKapat(mevcut);
+            if (yeni === mevcut) return; // Zaten istenen durumda — gereksiz yazma yok.
+            seviyeGuncelle(vakit, indeks, yeni);
+        },
+        [matris, seviyeGuncelle]
     );
 
     /**
@@ -559,6 +580,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
                                 onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
+                                onSeviyeAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
                                 onTumVakitlereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
                             />

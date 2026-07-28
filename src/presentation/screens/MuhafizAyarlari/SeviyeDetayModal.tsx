@@ -34,6 +34,7 @@ import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
+import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
     SEVIYE_BILGILERI,
     MOD_BILGILERI,
@@ -129,11 +130,22 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
 
     const modSec = (mod: UyariModu) => {
+        // "Sessiz" secmek, VakitKarti'ndaki anahtari kapatmakla AYNI eylemdir →
+        // ayni yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
+        // kullanicinin modu `oncekiMod`'a yazilmaz, anahtarla geri actiginda
+        // kurdugu 'ikisi' yerine 'bildirim'e duserdi.
+        if (mod === 'sessiz') {
+            onDegistir(seviyeyiKapat(seviye));
+            return;
+        }
+
         // Sesli moda gecerken bos anons kutusu birakma (spec 7): sablonla on-doldur.
         const sesliyeGecis = SESLI_MODLAR.includes(mod) && !seviye.anonsMetni;
         const anonsMetni = sesliyeGecis ? ANONS_SABLONLARI[0] : seviye.anonsMetni;
         if (sesliyeGecis) setMetinTaslak(anonsMetni);
-        onDegistir({ ...seviye, mod, anonsMetni });
+        // Sessizden CIKISTA mod hafizasi bayat kalmamali ("oncekiMod var ⟺ hucre
+        // kapali" invarianti; `matrisIslemleri.seviyeyeUygula` de ayni temizligi yapar).
+        onDegistir({ ...seviye, mod, anonsMetni, oncekiMod: undefined });
     };
 
     const sablonSec = (sablon: string) => {

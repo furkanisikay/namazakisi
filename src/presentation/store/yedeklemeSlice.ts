@@ -23,6 +23,8 @@ import { vakitSayacAyarlariniYukle } from './vakitSayacSlice';
 import { iftarSayacAyarlariniYukle } from './iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './sahurSayacSlice';
 import { vakitBildirimAyarlariniYukle } from './vakitBildirimSlice';
+import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
+import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -74,6 +76,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(iftarSayacAyarlariniYukle()),
       dispatch(sahurSayacAyarlariniYukle()),
       dispatch(vakitBildirimAyarlariniYukle()),
+      dispatch(cumaHatirlatmaAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
     ]);
     await dispatch(namazlariYukle({ tarih: bugunuAl() }));
@@ -89,6 +92,17 @@ export const iceAktarmayiUygula = createAsyncThunk(
 
     await dispatch(kazaVerileriniYukle());
     await dispatch(ozellikleriYukle());
+
+    // Cuma hatırlatmasını GERÇEKTEN yeniden planla: ayarı yüklemek yalnız ekranı
+    // günceller, bildirimleri kurmaz. Yedeğinde cuma açık olan kullanıcıda ayar
+    // "açık" görünüp bildirimler bir sonraki soğuk açılışa kadar kurulmazdı —
+    // penceresi 4 hafta ve olay haftada bir olduğu için kaçırma riski yüksek.
+    try {
+      const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
+      await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+    } catch {
+      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+    }
 
     return { yazilanAnahtarSayisi: Object.keys(plan).length };
   }

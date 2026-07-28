@@ -16,6 +16,12 @@ interface VakitKartiProps {
     kilitli?: boolean;
     konumModu?: 'oto' | 'manuel';
     konumMetni?: string; // "Nilüfer, Bursa"
+    /**
+     * Basligta gosterilecek ad. Verilmezse `suankiVakitAdi` kullanilir.
+     * Cuma gunu ogle icin "Cuma" olur — SALT GORUNUM; ikon ve tum kimlik
+     * karsilastirmalari `suankiVakitAdi` uzerinden surer.
+     */
+    gorunenVakitAdi?: string;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -40,10 +46,12 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     onTamamla,
     kilitli = false,
     konumModu,
-    konumMetni
+    konumMetni,
+    gorunenVakitAdi
 }) => {
     const renkler = useRenkler();
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
+    const baslikAdi = gorunenVakitAdi ?? suankiVakitAdi;
 
     return (
         <View className="mb-6 relative overflow-hidden rounded-3xl shadow-lg border"
@@ -100,7 +108,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         <FontAwesome5 name={ikonAdi} size={36} color={renkler.birincil} />
                     </View>
                     <Text className="text-4xl font-black tracking-tight" style={{ color: renkler.metin }}>
-                        {suankiVakitAdi}
+                        {baslikAdi}
                     </Text>
                     <Text className="font-medium text-sm mt-1" style={{ color: renkler.metinIkincil }}>
                         {vakitAraligi}

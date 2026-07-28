@@ -40,6 +40,7 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   iftarSayac: DEPOLAMA_ANAHTARLARI.IFTAR_SAYAC_AYARLARI,
   seriAyarlari: DEPOLAMA_ANAHTARLARI.SERI_AYARLARI,
   ozelGun: DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+  cumaHatirlatma: DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI,
 };
 
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */

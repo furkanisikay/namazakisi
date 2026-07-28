@@ -3,7 +3,7 @@ import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
 import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, AppState, AppStateStatus, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 import { useNavigation } from '@react-navigation/native';
 import type { RootNavigationProp } from '../../navigation/AppNavigator';
@@ -21,6 +21,7 @@ import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { aktifGunuHesapla, gelecekGuneGecisMi } from '../../core/utils/gunNavigasyonYardimcisi';
+import { namazGorunenAdi } from '../../core/utils/cumaYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
@@ -85,6 +86,9 @@ export const AnaSayfa: React.FC = () => {
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const konumAyarlari = useAppSelector((state) => state.konum);
+  // Cuma etiketi yalniz kullanici cuma hatirlatmasini actiysa gosterilir —
+  // cuma herkese farz-i ayn degildir, etiketi herkese dayatmayiz.
+  const cumaEtiketi = useAppSelector((state) => state.cumaHatirlatma.ayarlar.aktif);
   // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
   // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
   const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
@@ -108,6 +112,17 @@ export const AnaSayfa: React.FC = () => {
   // onPageSelected'ın yanlışlıkla "gelecek gün" toast'ı + geri-snap yapmasını önleyen bayrak.
   // Yalnızca kullanıcı ELLE gelecek bir güne kaydırınca toast çıkmalı (#13 + gece yarısı bug).
   const programatikGecisRef = useRef(false);
+  // Pager'ın GERÇEKTEN gösterdiği sayfa indeksi. `mevcutSayfaIndeksi` state'ini
+  // izleyen bir effect ile senkronlanmaz — o effect bu dosyada daha ÖNCE tanımlı
+  // olduğu için mount turunda açılış effect'inden önce çalışır ve ref'i "bugün"e
+  // geri yazardı; açılış effect'i de pager zaten aktif gündeyken gereksiz bir
+  // sayfa komutu gönderip programatik bayrağı ASILI bırakırdı (bayrak ancak bir
+  // onPageSelected ile tüketilir; komut sayfayı değiştirmediği için o olay hiç
+  // gelmez) → kullanıcının bir sonraki elle kaydırmasındaki "gelecek gün" uyarısı
+  // yutulurdu. Bu yüzden ref, sayfanın değiştiği ÜÇ yerde elle yazılır.
+  const mevcutSayfaIndeksiRef = useRef(BASLANGIC_SAYFA_INDEKSI);
+  /** İlk render mı? Açılış sayfası state'ini bir kez hizalamak için. */
+  const ilkKareRef = useRef(true);
 
   // Servis vaktini NamazAdi enum'ına çeviren map
   const servisToNamazAdi: Record<string, NamazAdi> = useMemo(() => ({
@@ -187,6 +202,79 @@ export const AnaSayfa: React.FC = () => {
     return aktifGunuHesapla(bugun, now, imsakZamani, gunEkle(bugun, -1));
   }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
+  // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).
+  // Önceden `initialPage` sabit "bugün" idi ve doğru sayfaya mount effect'indeki
+  // setPageWithoutAnimation ile geçilmeye çalışılıyordu; PagerView'a mount anında
+  // gönderilen bu imperatif komut native tarafta layout'tan önce geldiği için
+  // yutulabiliyor ve uygulama gece yarısından sonra BUGÜN'de açılıyordu. Doğru
+  // sayfada DOĞMAK, sonradan düzeltmeye çalışmaktan sağlamdır. İlk render'da
+  // dondurulur — sonraki gün geçişleri pager'ı kendiliğinden kaydırmamalı.
+  const ilkSayfaIndeksiRef = useRef<number | null>(null);
+  if (ilkSayfaIndeksiRef.current === null) {
+    ilkSayfaIndeksiRef.current = tarihiSayfaIndeksineCevir(aktifGun);
+    // Pager bu sayfada DOĞACAK; ref'i baştan doğru değere kur, yoksa mount
+    // effect'i "sayfa değişmeli" sanıp gereksiz komut gönderir ve programatik
+    // bayrağı asılı bırakır.
+    mevcutSayfaIndeksiRef.current = ilkSayfaIndeksiRef.current;
+  }
+  const ilkSayfaIndeksi = ilkSayfaIndeksiRef.current;
+
+  // Pager açılış sayfasında DOĞDUĞU için sayfa indeksi state'i de ilk render'da
+  // oraya çekilir. Yoksa gece yarısı senaryosunda (pager 89, state 90) mount
+  // effect'i state'i düzeltene kadar sayfa `mevcutSayfaMi` kapısına takılıp BOŞ
+  // çizilirdi — kullanıcı kısa bir boş kare görürdü.
+  if (ilkKareRef.current) {
+    ilkKareRef.current = false;
+    if (mevcutSayfaIndeksi !== ilkSayfaIndeksi) setMevcutSayfaIndeksi(ilkSayfaIndeksi);
+  }
+
+  // ---- Tarih seçici (DateTimePicker) ----
+  // DİKKAT — bu üç değer ve geri çağrı STABİL olmak ZORUNDA. RNDateTimePickerAndroid
+  // dialog'u `[onChange, value.getTime(), mode]` bağımlılıklı bir effect içinde açar
+  // (node_modules/@react-native-community/datetimepicker/src/datetimepicker.android.js).
+  // Ana ekran geri sayım sayacı yüzünden SANİYEDE BİR re-render olduğundan, inline bir
+  // ok fonksiyonu her saniye yeni referans üretiyor → dialog yeniden açılıyor ve
+  // kullanıcının seçtiği gün `value`ya (= bugün) geri dönüyordu. Kullanıcı bunu
+  // "seçiyorum, 1-2 sn sonra kendiliğinden bugüne dönüyor" diye yaşadı.
+  const tarihSeciciDegeri = useMemo(() => ISOTarihiDateNesnesiNeCevir(mevcutTarih), [mevcutTarih]);
+  const tarihSeciciEnEski = useMemo(
+    () => ISOTarihiDateNesnesiNeCevir(gunEkle(bugunuAl(), -GECMIS_GUN_SAYISI)),
+    []
+  );
+  const tarihSeciciEnYeni = useMemo(() => {
+    const sinir = ISOTarihiDateNesnesiNeCevir(aktifGun);
+    sinir.setHours(23, 59, 59, 999);
+    return sinir;
+  }, [aktifGun]);
+
+  const handleTarihSecildi = useCallback((event: DateTimePickerEvent, date?: Date) => {
+    setTarihSeciciGorunur(Platform.OS === 'ios');
+    if (event.type === 'dismissed' || !date) {
+      return;
+    }
+
+    const tarih = tarihiISOFormatinaCevir(date);
+
+    // Gelecek tarih secilmisse engelle
+    if (gelecekGuneGecisMi(tarih, aktifGun)) {
+      return;
+    }
+
+    // Programatik geçiş: setPage'in tetikleyeceği onPageSelected'ın seçilen günü
+    // "gelecek gün" sanıp aktif güne geri-snap etmesini önle (#13 kök neden).
+    // Bayrak yalnız GERÇEKTEN farklı sayfaya geçişte set edilir; aynı sayfaya
+    // setPage event üretmez ve bayrak asılı kalıp sonraki kaydırmayı bozardı.
+    const indeks = tarihiSayfaIndeksineCevir(tarih);
+    dispatch(tarihiDegistir(tarih));
+    namazlariGetir(tarih);
+    if (indeks !== mevcutSayfaIndeksiRef.current) {
+      programatikGecisRef.current = true;
+      pagerRef.current?.setPage(indeks);
+      setMevcutSayfaIndeksi(indeks);
+      mevcutSayfaIndeksiRef.current = indeks;
+    }
+  }, [aktifGun, dispatch, namazlariGetir, tarihiSayfaIndeksineCevir]);
+
   // Initial Load - Aktif güne git
   useEffect(() => {
     namazlariGetir(aktifGun);
@@ -196,10 +284,16 @@ export const AnaSayfa: React.FC = () => {
     // (pager initialPage=bugün iken aktif gün dün olunca yanlış toast çıkıyordu).
     if (aktifGun !== mevcutTarih) {
       const yeniIndeks = tarihiSayfaIndeksineCevir(aktifGun);
-      programatikGecisRef.current = true;
       dispatch(tarihiDegistir(aktifGun));
       setMevcutSayfaIndeksi(yeniIndeks);
-      pagerRef.current?.setPageWithoutAnimation(yeniIndeks);
+      // Pager zaten hedef sayfadaysa (açılış: initialPage = aktif gün) komut GÖNDERME:
+      // setPage event üretmeyeceği için programatik bayrak asılı kalır ve kullanıcının
+      // bir sonraki elle kaydırmasındaki uyarıyı yutardı.
+      if (yeniIndeks !== mevcutSayfaIndeksiRef.current) {
+        programatikGecisRef.current = true;
+        pagerRef.current?.setPageWithoutAnimation(yeniIndeks);
+      }
+      mevcutSayfaIndeksiRef.current = yeniIndeks;
     }
 
     dispatch(seriVerileriniYukle());
@@ -499,6 +593,9 @@ export const AnaSayfa: React.FC = () => {
     const tamamlanan = gunlukNamazlar.namazlar.filter(n => n.tamamlandi).length;
     const toplam = gunlukNamazlar.namazlar.length;
     const aktifGunKontrol = sayfaTarihi === aktifGun;
+    // Gosterilen gunun tarihi (Date) — cuma etiketi BU gune gore hesaplanir;
+    // `new Date()` kullanilsaydi gecmis gune bakarken yanlis etiket cikardi.
+    const sayfaTarihiDate = ISOTarihiDateNesnesiNeCevir(sayfaTarihi);
 
     // Şu anki vakit bilgisi (sadece aktif gün için geçerli)
     let suankiVakitAdi = "Vakit";
@@ -582,6 +679,7 @@ export const AnaSayfa: React.FC = () => {
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
             konumMetni={konumMetni}
+            gorunenVakitAdi={namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi)}
           />
         ) : (
           <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
@@ -604,6 +702,8 @@ export const AnaSayfa: React.FC = () => {
           onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
+          gunTarihi={sayfaTarihiDate}
+          cumaEtiketi={cumaEtiketi}
         />
         {/* ScrollView sonu için boşluk */}
         <View className="h-10" />
@@ -664,7 +764,7 @@ export const AnaSayfa: React.FC = () => {
       <PagerView
         ref={pagerRef}
         style={{ flex: 1 }}
-        initialPage={BASLANGIC_SAYFA_INDEKSI}
+        initialPage={ilkSayfaIndeksi}
         onPageSelected={(e) => {
           const yeniIndeks = e.nativeEvent.position;
           const yeniTarih = sayfaIndeksiniTariheCevir(yeniIndeks);
@@ -689,6 +789,7 @@ export const AnaSayfa: React.FC = () => {
           }
 
           setMevcutSayfaIndeksi(yeniIndeks);
+          mevcutSayfaIndeksiRef.current = yeniIndeks;
           dispatch(tarihiDegistir(yeniTarih));
           namazlariGetir(yeniTarih);
           oncekiTamamlananRef.current = 0;
@@ -704,38 +805,12 @@ export const AnaSayfa: React.FC = () => {
       {/* Modals */}
       {tarihSeciciGorunur && (
         <DateTimePicker
-          value={new Date(mevcutTarih)}
+          value={tarihSeciciDegeri}
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          minimumDate={new Date(gunEkle(bugunuAl(), -GECMIS_GUN_SAYISI) + 'T00:00:00')}
-          maximumDate={new Date(aktifGun + 'T23:59:59')}
-          onChange={(event, date) => {
-            setTarihSeciciGorunur(Platform.OS === 'ios');
-            if (event.type === 'dismissed') {
-              return;
-            }
-            if (date) {
-              const tarih = tarihiISOFormatinaCevir(date);
-
-              // Gelecek tarih secilmisse engelle
-              if (gelecekGuneGecisMi(tarih, aktifGun)) {
-                return;
-              }
-
-              // Programatik geçiş: setPage'in tetikleyeceği onPageSelected'ın seçilen günü
-              // "gelecek gün" sanıp aktif güne geri-snap etmesini önle (#13 kök neden).
-              // Bayrak yalnız GERÇEKTEN farklı sayfaya geçişte set edilir; aynı sayfaya
-              // setPage event üretmez ve bayrak asılı kalıp sonraki kaydırmayı bozardı.
-              const indeks = tarihiSayfaIndeksineCevir(tarih);
-              dispatch(tarihiDegistir(tarih));
-              namazlariGetir(tarih);
-              if (indeks !== mevcutSayfaIndeksi) {
-                programatikGecisRef.current = true;
-                pagerRef.current?.setPage(indeks);
-                setMevcutSayfaIndeksi(indeks);
-              }
-            }
-          }}
+          minimumDate={tarihSeciciEnEski}
+          maximumDate={tarihSeciciEnYeni}
+          onChange={handleTarihSecildi}
         />
       )}
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />

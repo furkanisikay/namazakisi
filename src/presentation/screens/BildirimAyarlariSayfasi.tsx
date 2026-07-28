@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -26,6 +26,14 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
 import { vakitBildirimAyariniGuncelle, vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
 import { vakitSayacAyariniGuncelle, vakitSayacAyarlariniYukle } from '../store/vakitSayacSlice';
+import { cumaHatirlatmaAyariniGuncelle, cumaHatirlatmaAyarlariniYukle } from '../store/cumaHatirlatmaSlice';
+import {
+  CUMA_ONCEDEN_MIN_DK,
+  CUMA_ONCEDEN_MAX_DK,
+  CUMA_ONCEDEN_ADIM_DK,
+} from '../../data/local/LocalCumaHatirlatmaServisi';
+import { sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
+import { SayisalSecici } from '../components/common/SayisalSecici';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
@@ -116,6 +124,12 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
 /**
  * Bildirim Ayarlari Sayfasi
  */
+/**
+ * Cuma "ne kadar önce" değerinin diske yazılmadan önce beklediği süre.
+ * Stepper'a arka arkaya basmak tek yazmaya/planlamaya insin diye.
+ */
+const CUMA_YAZMA_GECIKMESI_MS = 1200;
+
 export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
@@ -124,6 +138,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
   const muhafizState = useAppSelector((state) => state.muhafiz);
+  const { ayarlar: cumaAyarlari } = useAppSelector((state) => state.cumaHatirlatma);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -131,6 +146,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
     dispatch(vakitBildirimAyarlariniYukle());
     dispatch(vakitSayacAyarlariniYukle());
+    dispatch(cumaHatirlatmaAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -144,6 +160,62 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     await butonTiklandiFeedback();
     dispatch(vakitBildirimAyariniGuncelle({ vakit: vakit as any, aktif: yeniDeger }));
   };
+
+  const handleCumaToggle = async (yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: yeniDeger }));
+  };
+
+  /**
+   * Stepper'a arka arkaya basmak TEK yazmaya inmeli.
+   *
+   * Her dokunuşta dispatch etmek iki sorun üretiyordu: (1) gösterilen değer
+   * store'dan geldiği ve store ancak thunk `fulfilled` olunca güncellendiği için
+   * hızlı basışta ikinci tıklama bayat değeri okuyup artışı YUTUYORDU;
+   * (2) her dispatch diske yazıp dört bildirimi yeniden planladığı için eşzamanlı
+   * turlar birbirini ezip ayar ile kurulu saatin ayrışmasına yol açabiliyordu.
+   * Bu yüzden UI yerel taslaktan çizilir, yazma debounce'lanır ve ekrandan
+   * çıkarken bekleyen yazma HEMEN uygulanır (aynı desen: MuhafizAyarlariSayfasi).
+   */
+  const [cumaOncedenTaslak, setCumaOncedenTaslak] = useState<number | null>(null);
+  const cumaYazmaZamanlayiciRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cumaBekleyenDegerRef = useRef<number | null>(null);
+
+  const cumaOncedenYaz = useCallback((deger: number) => {
+    cumaBekleyenDegerRef.current = null;
+    dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: deger }));
+  }, [dispatch]);
+
+  const handleCumaOncedenDegistir = useCallback((yeniDeger: number) => {
+    setCumaOncedenTaslak(yeniDeger);
+    cumaBekleyenDegerRef.current = yeniDeger;
+    if (cumaYazmaZamanlayiciRef.current) clearTimeout(cumaYazmaZamanlayiciRef.current);
+    cumaYazmaZamanlayiciRef.current = setTimeout(() => {
+      cumaYazmaZamanlayiciRef.current = null;
+      cumaOncedenYaz(yeniDeger);
+    }, CUMA_YAZMA_GECIKMESI_MS);
+  }, [cumaOncedenYaz]);
+
+  // Ekrandan çıkışta bekleyen yazma varsa hemen uygula — kullanıcı değeri
+  // değiştirip geri tuşuna basabilir; bekleyen iş sessizce kaybolmamalı.
+  useEffect(
+    () => () => {
+      if (cumaYazmaZamanlayiciRef.current) clearTimeout(cumaYazmaZamanlayiciRef.current);
+      const bekleyen = cumaBekleyenDegerRef.current;
+      if (bekleyen !== null) cumaOncedenYaz(bekleyen);
+    },
+    [cumaOncedenYaz]
+  );
+
+  // Yazma tamamlanınca (store taslakla eşitlenince) taslağı bırak — normalize
+  // edilmiş değer varsa o gösterilsin.
+  useEffect(() => {
+    if (cumaOncedenTaslak !== null && cumaAyarlari.oncedenDk === cumaOncedenTaslak) {
+      setCumaOncedenTaslak(null);
+    }
+  }, [cumaAyarlari.oncedenDk, cumaOncedenTaslak]);
+
+  const cumaOncedenGosterilen = cumaOncedenTaslak ?? cumaAyarlari.oncedenDk;
 
   const handleGunSonuBildirimToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -386,6 +458,81 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                     Vakit çıkmak üzereyken bildirim panelinde gerçek zamanlı geri sayım gösterilir.
                     Kıldım işaretleyince otomatik kaybolur. {'\n'}
                     <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Cuma Namazi Bolumu (issue #173) */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            CUMA NAMAZI
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            <View className="flex-row items-center p-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${renkler.birincil}15` }}
+              >
+                <FontAwesome5 name="mosque" size={18} color={renkler.birincil} solid />
+              </View>
+              <View className="flex-1">
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                  Cuma hatırlatması
+                </Text>
+                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  Her cuma, öğle vaktinden önce hatırlatalım
+                </Text>
+              </View>
+              <Switch
+                value={cumaAyarlari.aktif}
+                onValueChange={handleCumaToggle}
+                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                thumbColor={cumaAyarlari.aktif ? renkler.birincil : '#f4f3f4'}
+                accessibilityLabel="Cuma hatırlatması"
+              />
+            </View>
+
+            {cumaAyarlari.aktif && (
+              <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
+                <Text
+                  className="text-xs font-semibold mt-4 mb-3"
+                  style={{ color: renkler.metinIkincil }}
+                >
+                  Ne kadar önce hatırlatalım?
+                </Text>
+
+                <SayisalSecici
+                  deger={cumaOncedenGosterilen}
+                  min={CUMA_ONCEDEN_MIN_DK}
+                  max={CUMA_ONCEDEN_MAX_DK}
+                  adim={CUMA_ONCEDEN_ADIM_DK}
+                  onChange={handleCumaOncedenDegistir}
+                  renk={renkler.birincil}
+                  degerGenisligi={110}
+                  aciklama="Ne kadar önce"
+                />
+
+                <View className="flex-row items-start mt-4 gap-2">
+                  <FontAwesome5
+                    name="info-circle"
+                    size={12}
+                    color={renkler.metinIkincil}
+                    style={{ marginTop: 2 }}
+                  />
+                  <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                    Öğle vaktinden {sureMetniOlustur(cumaOncedenGosterilen)} önce hatırlatılırsınız —
+                    camiye yetişecek zamanı siz belirleyin. Cuma, öğle namazının yerine geçtiği için
+                    ayrı bir kayıt tutulmaz; işaretlemeyi öğle namazından yaparsınız.
                   </Text>
                 </View>
               </View>
