@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.23.27] - 2026-07-28
+
+### Eklendi
+- [cuma] cuma namazı hatırlatması (#173)
+- [muhafiz] her vaktin adımları tek dokunuşla açılıp kapatılabilsin
+
+### Düzeltildi
+- kod incelemesinden gelen beş sertleştirme
+- [anasayfa] tarih seçici resetlenmesi ve gece yarısı açılış günü
+
+### Değiştirildi
+- [cuma] konum değişimini tek yayma noktasından dinle
+
 ## [0.23.26] - 2026-07-28
 
 ### Eklendi
