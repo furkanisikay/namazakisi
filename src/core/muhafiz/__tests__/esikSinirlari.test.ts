@@ -55,4 +55,21 @@ describe('esikSinirlariniHesapla (spec 4.2 kesin azalan sıra)', () => {
   test('tek elemanlı listede mutlak sınırlar geçerli', () => {
     expect(esikSinirlariniHesapla([sv(30)], 0)).toEqual({ min: ESIK_MUTLAK_MIN, max: ESIK_MUTLAK_MAX });
   });
+
+  /**
+   * KAPALI (sessiz) adım komşularını KİLİTLEMEYE DEVAM EDER — bilinçli.
+   *
+   * Kapalı adım atlanırsa kullanıcı komşuyu onun eşiğine eşit/aşan bir değere
+   * çekebilir; adım yeniden açıldığında kesin azalan sıra bozulur
+   * (`esikSiralamasiGecerliMi` false) ve motor eşit-eşik tie-break'ine düşer.
+   * Bedeli küçük: sınır metni görünmeyen bir komşudan gelebilir.
+   */
+  test('kapalı (sessiz) adım komşu sınırlarını etkilemeye DEVAM eder', () => {
+    const s = seviyeler();
+    s[1] = { ...s[1], mod: 'sessiz', oncekiMod: 'bildirim' };
+
+    // Kapalı olan 25'lik adım hâlâ üsttekinin alt sınırını ve alttakinin üst sınırını belirler
+    expect(esikSinirlariniHesapla(s, 0).min).toBe(26);
+    expect(esikSinirlariniHesapla(s, 2).max).toBe(24);
+  });
 });

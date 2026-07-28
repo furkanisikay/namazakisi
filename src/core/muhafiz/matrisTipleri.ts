@@ -29,6 +29,16 @@ export interface SeviyeAyari {
    * muzik silinirdi. Simdi preset ACILIYETI yazar, sesi kullanici secer.
    */
   acilKanal?: boolean;
+  /**
+   * Adim KAPATILDIGINDA (mod='sessiz') o anki mod burada saklanir; adim yeniden
+   * acilinca geri konur. Boylece "ikisi + ozel ses + anons metni" ile kurulmus bir
+   * adimi kapatip acmak kullanicinin kurdugu seyi YOK ETMEZ.
+   *
+   * MOTOR BU ALANI OKUMAZ — sessizligin tek dogruluk kaynagi `mod`'dur ve oyle
+   * kalir (`UyariPlani` bu alani tasimaz). Salt bir UI geri-alma hafizasidir.
+   * Deger UYRETILEMEZ: yalniz `seviyeAcKapa.seviyeyiKapat` yazar.
+   */
+  oncekiMod?: Exclude<UyariModu, 'sessiz'>;
   anonsMetni: string;
 }
 

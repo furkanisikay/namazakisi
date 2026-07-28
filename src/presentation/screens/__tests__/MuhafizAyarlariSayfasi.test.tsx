@@ -286,6 +286,69 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
   });
 
+  // ── Adım aç/kapa anahtarı (Katman 2) ──────────────────────────────────────
+  it('adım anahtarını kapatınca o adım sessize alınır', async () => {
+    const { getByText, getByLabelText } = await kur();
+    fireEvent.press(getByText('Öğle'));
+
+    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].mod).toBe('sessiz');
+    // Diğer vakitler ve adımlar etkilenmez
+    expect(yeni.ogle.seviyeler[1].mod).toBe('bildirim');
+    expect(yeni.ikindi.seviyeler[0].mod).toBe('bildirim');
+  });
+
+  /**
+   * Özelliğin varlık sebebi: "ikisi + özel ses + anons metni" ile kurulmuş bir
+   * adımı kapatıp açmak kullanıcının kurduğunu YOK ETMEMELİ. Kapatma modu
+   * `oncekiMod`'a alır, açma geri koyar.
+   */
+  it('kapatılıp açılan adım eski moduna geri döner', async () => {
+    const matris = varsayilanMatris();
+    matris.ogle.seviyeler[0].mod = 'ikisi';
+    matris.ogle.seviyeler[0].anonsMetni = 'Kendi metnim';
+    const { getByText, getByLabelText } = await kur({ matris });
+    fireEvent.press(getByText('Öğle'));
+
+    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+    const kapali: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(kapali.ogle.seviyeler[0].mod).toBe('sessiz');
+    expect(kapali.ogle.seviyeler[0].oncekiMod).toBe('ikisi');
+
+    // Kapalı matrisle yeniden kur (store güncellenmiş gibi) ve anahtarı geri aç
+    (matrisiGuncelle as unknown as jest.Mock).mockClear();
+    const ikinci = await kur({ matris: kapali });
+    fireEvent.press(ikinci.getByText('Öğle'));
+    fireEvent(
+      ikinci.getByLabelText('Nazik hatırlatma adımını açın veya kapatın'),
+      'valueChange',
+      true
+    );
+
+    const acik: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(acik.ogle.seviyeler[0].mod).toBe('ikisi');
+    expect(acik.ogle.seviyeler[0].oncekiMod).toBeUndefined();
+    expect(acik.ogle.seviyeler[0].anonsMetni).toBe('Kendi metnim');
+  });
+
+  it('adım anahtarı yoğunluğu "ozel" YAPMAZ ama yedeklenir ve plan tazelenir', async () => {
+    const { getByText, getByLabelText } = await kur();
+    fireEvent.press(getByText('Öğle'));
+
+    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    // Mod zamanlama ekseni değil (spec 4.1)
+    expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
+    // Ama kullanıcı emeğidir → yedeklenir
+    expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
+    // ...ve O GÜN İÇİN ÖNCEDEN planlanmış bildirim iptal edilsin diye plan tazelenir
+    act(() => { jest.advanceTimersByTime(2000); });
+    expect(mockMuhafizPlanla).toHaveBeenCalled();
+  });
+
   it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));

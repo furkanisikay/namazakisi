@@ -3,13 +3,14 @@
  * (spec 3: "Vakit listesi" / "Vakit acik → adimlar")
  */
 import * as React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizVakti, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { vakitOzetiOlustur, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
+import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
 import { SEVIYE_BILGILERI } from './sabitler';
 
 export interface VakitKartiProps {
@@ -19,6 +20,8 @@ export interface VakitKartiProps {
     onAcKapa: () => void;
     /** Katman 3'u acar */
     onSeviyeSec: (indeks: number) => void;
+    /** Adimi tek dokunusla ac/kapa (mod hafizasi korunur — bkz. seviyeAcKapa) */
+    onSeviyeAcKapa: (indeks: number, acik: boolean) => void;
     onTumVakitlereUygula: () => void;
     /** "Akisi onizle" (spec 3.4) */
     onAkisiOnizle: () => void;
@@ -30,6 +33,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     acikMi,
     onAcKapa,
     onSeviyeSec,
+    onSeviyeAcKapa,
     onTumVakitlereUygula,
     onAkisiOnizle,
 }) => {
@@ -106,44 +110,70 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
 
                     {vakitAyari.seviyeler.map((seviye, indeks) => {
                         const bilgi = SEVIYE_BILGILERI[seviye.kademe];
-                        const sessiz = seviye.mod === 'sessiz';
+                        const acik = seviyeAcikMi(seviye);
                         return (
-                            <TouchableOpacity
+                            // Switch, satırı saran Touchable'ın İÇİNDE değil KARDEŞİDİR:
+                            // Touchable varsayılan `accessible` ile çocuklarını tek bir
+                            // erişilebilirlik düğümüne düzleştirir → içine konan switch
+                            // TalkBack'te ayrıca odaklanamaz, dokunma hedefleri de çakışır.
+                            // (Ekranın ana switch satırı da bu desende — MuhafizAyarlariSayfasi.)
+                            <View
                                 key={seviye.kademe}
-                                className="flex-row items-center p-3 rounded-xl border mb-2"
+                                className="flex-row items-center pr-3 rounded-xl border mb-2"
                                 style={{
                                     backgroundColor: renkler.arkaplan,
                                     borderColor: renkler.sinir,
                                     borderLeftWidth: 4,
-                                    borderLeftColor: sessiz ? renkler.sinir : bilgi.renk,
-                                    opacity: sessiz ? 0.65 : 1,
+                                    borderLeftColor: acik ? bilgi.renk : renkler.sinir,
                                 }}
-                                onPress={() => onSeviyeSec(indeks)}
-                                activeOpacity={0.7}
-                                accessibilityRole="button"
-                                accessibilityLabel={`${bilgi.baslik} adımını düzenleyin. ${seviyeOzetiOlustur(seviye)}`}
                             >
-                                <View
-                                    className="w-9 h-9 rounded-xl items-center justify-center mr-3"
-                                    style={{ backgroundColor: sessiz ? renkler.sinir : `${bilgi.renk}20` }}
+                                <TouchableOpacity
+                                    className="flex-row items-center flex-1 p-3"
+                                    // Soluklaştırma YALNIZ bilgi bölümüne uygulanır; kapalı
+                                    // adımı yeniden açacak kontrol tam opak kalmalı.
+                                    style={{ opacity: acik ? 1 : 0.65 }}
+                                    onPress={() => onSeviyeSec(indeks)}
+                                    activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`${bilgi.baslik} adımını düzenleyin. ${seviyeOzetiOlustur(seviye)}`}
                                 >
+                                    <View
+                                        className="w-9 h-9 rounded-xl items-center justify-center mr-3"
+                                        style={{ backgroundColor: acik ? `${bilgi.renk}20` : renkler.sinir }}
+                                    >
+                                        <FontAwesome5
+                                            name={acik ? bilgi.ikon : 'bell-slash'}
+                                            size={14}
+                                            color={acik ? bilgi.renk : renkler.metinIkincil}
+                                            solid
+                                        />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                            {bilgi.baslik}
+                                        </Text>
+                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            {seviyeOzetiOlustur(seviye)}
+                                        </Text>
+                                    </View>
                                     <FontAwesome5
-                                        name={sessiz ? 'bell-slash' : bilgi.ikon}
-                                        size={14}
-                                        color={sessiz ? renkler.metinIkincil : bilgi.renk}
-                                        solid
+                                        name="chevron-right"
+                                        size={12}
+                                        color={renkler.metinIkincil}
+                                        style={{ marginRight: 4 }}
                                     />
-                                </View>
-                                <View className="flex-1">
-                                    <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                        {bilgi.baslik}
-                                    </Text>
-                                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                        {seviyeOzetiOlustur(seviye)}
-                                    </Text>
-                                </View>
-                                <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+
+                                <Switch
+                                    value={acik}
+                                    onValueChange={(deger) => onSeviyeAcKapa(indeks, deger)}
+                                    trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
+                                    thumbColor={acik ? bilgi.renk : '#f4f3f4'}
+                                    accessibilityRole="switch"
+                                    accessibilityState={{ checked: acik }}
+                                    accessibilityLabel={`${bilgi.baslik} adımını açın veya kapatın`}
+                                />
+                            </View>
                         );
                     })}
 

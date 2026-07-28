@@ -78,6 +78,11 @@ function seviyeyeUygula(
     esikDk: preset.esikDk,
     siklik: preset.siklik,
     acilKanal: preset.acilKanal,
+    // Preset MOD yazdigi icin hucre kesin aciliyor → "kapatildiginda hatirlanan mod"
+    // hafizasi (`oncekiMod`) anlamini yitirir. Birakilsaydi "`oncekiMod` var ⟺ hucre
+    // kapali" invariantı kirilir, ileride sessiz adim iceren bir preset eklendiginde
+    // bayat deger gercekten yanlis moda dondururdu.
+    oncekiMod: undefined,
     anonsMetni:
       sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni ? ANONS_SABLONLARI[0] : mevcut.anonsMetni,
   };

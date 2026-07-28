@@ -808,6 +808,31 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         expect((store2.getState().muhafiz as MuhafizAyarlari).matris!.ogle.seviyeler[0].mod).toBe('sessiz');
     });
 
+    /**
+     * Adım aç/kapa anahtarının mod hafızası (`oncekiMod`) matrisin İÇİNDE bir
+     * alandır ve yükleme yolu matrisi bütün olarak taşır. Yine de nöbetçi:
+     * yükleme zincirindeki bir dönüşüm (göç / doğrulama / derin kopya) bu alanı
+     * düşürürse, kullanıcı kapattığı adımı açtığında kurduğu mod yerine
+     * 'bildirim'e düşer ve bunu hiçbir tip hatası yakalamaz.
+     */
+    it('KALICILIK: kapalı adımın mod hafızası (oncekiMod) yeniden açılışta korunur', async () => {
+        eskiKayitYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const elle = JSON.parse(JSON.stringify(store.getState().muhafiz.matris)) as MuhafizMatrisi;
+        elle.yatsi.seviyeler[2] = { ...elle.yatsi.seviyeler[2], mod: 'sessiz', oncekiMod: 'ikisi' };
+        store.dispatch(matrisiGuncelle(elle));
+        await Promise.resolve();
+
+        const store2 = yeniStore();
+        await store2.dispatch(muhafizAyarlariniYukle());
+
+        const geri = (store2.getState().muhafiz as MuhafizAyarlari).matris!.yatsi.seviyeler[2];
+        expect(geri.mod).toBe('sessiz');
+        expect(geri.oncekiMod).toBe('ikisi');
+    });
+
     it('KALICILIK: bayrak diske yazılır ve yeniden açılışta korunur', async () => {
         eskiKayitYaz();
         const store = yeniStore();

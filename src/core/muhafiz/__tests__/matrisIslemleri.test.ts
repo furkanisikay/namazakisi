@@ -250,4 +250,37 @@ describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
     presetZamanlamasiniUygula(kaynak, SESLI_PRESET).ogle.seviyeler[0].esikDk = 999;
     expect(kaynak.ogle.seviyeler[0].esikDk).toBe(30);
   });
+
+  /**
+   * Göç yalnız zamanlama taşır: kapalı bir adımın "açılınca hangi moda dönerim"
+   * hafızası da bir kullanıcı seçimidir, göç onu SİLMEMELİ — aksi halde göçten
+   * geçen kullanıcı kapattığı adımı açtığında kurduğu mod yerine 'bildirim'e düşer.
+   */
+  test('kapalı adımın mod hafızasını (oncekiMod) KORUR', () => {
+    const kaynak = matris();
+    kaynak.yatsi.seviyeler[3] = { ...kaynak.yatsi.seviyeler[3], mod: 'sessiz', oncekiMod: 'ikisi' };
+
+    const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
+
+    expect(m.yatsi.seviyeler[3].mod).toBe('sessiz');
+    expect(m.yatsi.seviyeler[3].oncekiMod).toBe('ikisi');
+  });
+});
+
+describe('presetUygula — mod hafızası (oncekiMod) hijyeni', () => {
+  /**
+   * Preset MOD yazar, yani hücreyi kesin açar. "Kapatıldığında hatırlanan mod"
+   * hafızası bu noktada anlamsızlaşır; bırakılırsa "oncekiMod var ⟺ hücre kapalı"
+   * invariantı kırılır (bugün görünür bir bug üretmez çünkü preset'lerin hiçbiri
+   * 'sessiz' yazmaz — ama sessiz adım içeren bir preset eklendiği gün üretir).
+   */
+  test('preset uygulanınca bayat mod hafızası temizlenir', () => {
+    const kaynak = matris();
+    kaynak.ogle.seviyeler[0] = { ...kaynak.ogle.seviyeler[0], mod: 'sessiz', oncekiMod: 'sesli' };
+
+    const m = presetUygula(kaynak, SESLI_PRESET, true);
+
+    expect(m.ogle.seviyeler[0].mod).toBe('bildirim');
+    expect(m.ogle.seviyeler[0].oncekiMod).toBeUndefined();
+  });
 });
