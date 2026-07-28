@@ -1,24 +1,14 @@
 import { useMemo } from 'react';
 import type { KonumAyarlari } from '../store/konumSlice';
+import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
 
 /**
  * Konum ayarlarından kullanıcıya gösterilecek konum metnini üretir (saf fonksiyon).
  * KonumAyarlari ve MuhafizAyarlari ekranları için tek kaynak.
+ * Gerçek uygulaması `src/core/ayarlar/konumMetni.ts`'ye taşındı — mevcut
+ * tüketicilerin kırılmaması için burada yeniden dışa aktarılır.
  */
-export function konumMetniHesapla(konumAyarlari: KonumAyarlari): string {
-  if (konumAyarlari.konumModu === 'oto') {
-    if (konumAyarlari.gpsAdres) {
-      const { ilce, il } = konumAyarlari.gpsAdres;
-      if (ilce && il) return `${ilce}, ${il}`;
-      return ilce || il || 'GPS konumu alındı';
-    }
-    return 'Konum takip ediliyor';
-  }
-  if (konumAyarlari.seciliIlceAdi && konumAyarlari.seciliIlAdi) {
-    return `${konumAyarlari.seciliIlceAdi}, ${konumAyarlari.seciliIlAdi}`;
-  }
-  return konumAyarlari.seciliIlAdi || 'Konum seçilmedi';
-}
+export { konumMetniHesapla };
 
 /**
  * konumMetniHesapla'nın memoize edilmiş hook sarmalayıcısı.
