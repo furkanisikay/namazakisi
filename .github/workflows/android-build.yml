@@ -131,7 +131,14 @@ jobs:
         with:
           tag_prefix: "v"
           major_pattern: "BREAKING CHANGE:"
-          minor_pattern: "feat:"
+          # DUZ METIN DEGIL REGEX: paulhatch/semantic-version pattern'i egik cizgiyle
+          # sarilmadikca SUBSTRING arar. "feat:" yazilinca bu repodaki KAPSAMLI
+          # commit'ler (feat(cuma):, feat(muhafiz):) eslesmiyordu -> 0.23.0'dan beri
+          # 42 ozellik commit'ine ragmen minor bump HIC tetiklenmedi, surum hep
+          # patch olarak arti (0.23.0 -> 0.23.27). "^" ile satir basina sabitli
+          # oldugu icin search_commit_body: true acikken govdedeki "feat" kelimesi
+          # yanlislikla minor bump tetiklemez.
+          minor_pattern: '/^feat(\(.+\))?!?:/'
           version_format: "${major}.${minor}.${patch}"
           search_commit_body: true
           user_format_type: "csv"

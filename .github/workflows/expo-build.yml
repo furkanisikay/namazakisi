@@ -85,7 +85,10 @@ jobs:
   build:
     name: 🚀 EAS Build (${{ inputs.build_aab && 'AAB' || '' }}${{ inputs.build_aab && inputs.build_apk && '+' || '' }}${{ inputs.build_apk && 'APK' || '' }})
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # EAS kuyrugu 2 saati asabiliyor (v0.23.27'de 114 dk beklendi). Job'un
+    # timeout'u build adiminin timeout'undan BUYUK olmali, yoksa asagidaki
+    # 'continue-on-error' devreye girmeden job komple oldurulur.
+    timeout-minutes: 240
     permissions:
       contents: read
       actions: write   # APK build dispatch (createWorkflowDispatch) icin gerekli
@@ -182,12 +185,51 @@ jobs:
       - name: 🤖 AAB Build (production profili)
         if: inputs.build_aab == true && inputs.sadece_submit != true
         id: aab_build
+        # JOB'U DUSURME. EAS kuyrugu uzayinca bu adim zaman asimina ugrayabilir ama
+        # build EAS SUNUCULARINDA calismaya devam eder ve cogu zaman BASARIYLA BITER.
+        # v0.23.27'de tam bu oldu: kuyruk 114 dk surdu, 90 dk'lik job timeout'u doldu,
+        # adim 'cancelled' sayildi ve submit kosulu tutmadigi icin BITMIS bir build
+        # Play'e hic gonderilemedi. Gercek durumu bir sonraki adim EAS'e sorar.
+        continue-on-error: true
+        timeout-minutes: 200
         run: |
           echo "📦 AAB build başlatılıyor (production, versionCode ${{ steps.vc.outputs.code }})..."
           eas build \
             --platform android \
             --profile production \
             --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ==========================================
+      # Gercek build durumu — EAS kaynakli (adim timeout'undan BAGIMSIZ)
+      # ==========================================
+      - name: 🔎 EAS build durumunu doğrula
+        if: inputs.build_aab == true && inputs.sadece_submit != true
+        id: build_durum
+        run: |
+          echo "🔎 EAS'teki son Android build sorgulanıyor (beklenen versionCode: ${{ steps.vc.outputs.code }})..."
+          eas build:list --platform android --limit 1 --json --non-interactive > /tmp/son-build.json 2>/dev/null || true
+
+          DURUM=$(node -e "
+            const fs = require('fs');
+            try {
+              const ham = fs.readFileSync('/tmp/son-build.json', 'utf8');
+              const j = JSON.parse(ham.slice(ham.indexOf('[')));
+              const b = j[0];
+              // Beklenen versionCode ile eslesmiyorsa BASKA bir build'dir; submit etme.
+              if (!b) { console.log('YOK'); }
+              else if (String(b.appBuildVersion) !== '${{ steps.vc.outputs.code }}') { console.log('ESLESMEDI'); }
+              else { console.log(b.status); }
+            } catch { console.log('OKUNAMADI'); }
+          ")
+
+          echo "📊 Son build durumu: $DURUM"
+          echo "durum=$DURUM" >> $GITHUB_OUTPUT
+
+          if [ "$DURUM" != "FINISHED" ]; then
+            echo "⚠️ Build tamamlanmadı ($DURUM) — internal submit atlanacak."
+          fi
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
@@ -217,7 +259,7 @@ jobs:
         if: |
           inputs.internal_a_gonder == true &&
           (inputs.sadece_submit == true ||
-           (inputs.build_aab == true && steps.aab_build.outcome == 'success'))
+           (inputs.build_aab == true && steps.build_durum.outputs.durum == 'FINISHED'))
         id: gsa
         env:
           GSA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -237,7 +279,7 @@ jobs:
           inputs.internal_a_gonder == true &&
           steps.gsa.outputs.available == 'true' &&
           (inputs.sadece_submit == true ||
-           (inputs.build_aab == true && steps.aab_build.outcome == 'success'))
+           (inputs.build_aab == true && steps.build_durum.outputs.durum == 'FINISHED'))
         run: |
           echo "📤 Play Store internal track'e gönderiliyor..."
           eas submit \
@@ -252,7 +294,7 @@ jobs:
         if: |
           inputs.build_aab == true &&
           inputs.internal_a_gonder == true &&
-          steps.aab_build.outcome == 'success' &&
+          steps.build_durum.outputs.durum == 'FINISHED' &&
           steps.gsa.outputs.available == 'false'
         run: |
           echo "⚠️ Internal submit atlandı — GOOGLE_SERVICE_ACCOUNT eksik"
@@ -270,7 +312,9 @@ jobs:
           MINUTES=$((DURATION / 60))
           SECONDS=$((DURATION % 60))
 
-          AAB_DURUM="${{ inputs.build_aab == true && (steps.aab_build.outcome == 'success' && '✅ Başarılı' || (steps.aab_build.outcome == 'skipped' && '⏭️ Atlandı' || '❌ Başarısız')) || '⏭️ Seçilmedi' }}"
+          # Adimin outcome'u DEGIL, EAS'ten okunan gercek durum (adim timeout olsa da
+          # build bitmis olabilir — v0.23.27 dersi).
+          AAB_DURUM="${{ inputs.sadece_submit == true && '⏭️ Sadece gönder' || (inputs.build_aab == true && (steps.build_durum.outputs.durum == 'FINISHED' && '✅ Başarılı' || format('❌ {0}', steps.build_durum.outputs.durum)) || '⏭️ Seçilmedi') }}"
           APK_DURUM="${{ inputs.build_apk == true && (steps.apk_build.outcome == 'success' && '✅ Başarılı' || (steps.apk_build.outcome == 'skipped' && '⏭️ Atlandı' || '❌ Başarısız')) || '⏭️ Seçilmedi' }}"
 
           if [ "${{ steps.gsa.outputs.available }}" == "true" ]; then
