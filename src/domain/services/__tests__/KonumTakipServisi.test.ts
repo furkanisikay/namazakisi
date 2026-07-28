@@ -1,13 +1,21 @@
 /**
  * Konum Takip Servisi Testleri
- * Arka plan konum takibi icin birim testleri
+ *
+ * Takip OLAY TABANLIDIR: bulunulan noktaya bir bölge (geofence) kaydedilir ve
+ * yalnızca o çemberden çıkınca uyanılır. Testler hem servis API'sini hem de
+ * arka plan bölge görevinin gövdesini davranışsal olarak doğrular.
  */
 
-import { KonumTakipServisi, KONUM_TAKIP_GOREVI } from '../KonumTakipServisi';
+import {
+    KonumTakipServisi,
+    KONUM_TAKIP_GOREVI,
+    KONUM_GEOFENCE_GOREVI,
+    AKTIF_BOLGE_KIMLIGI,
+} from '../KonumTakipServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
-import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
+import { konumDegistiUygula } from '../KonumDegisikligiServisi';
 
 // AsyncStorage mock
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -22,8 +30,10 @@ jest.mock('expo-location', () => ({
     getForegroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'undetermined' })),
     requestBackgroundPermissionsAsync: jest.fn(),
     getBackgroundPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'undetermined', canAskAgain: true })),
-    startLocationUpdatesAsync: jest.fn(),
-    stopLocationUpdatesAsync: jest.fn(),
+    startGeofencingAsync: jest.fn(() => Promise.resolve()),
+    stopGeofencingAsync: jest.fn(() => Promise.resolve()),
+    getCurrentPositionAsync: jest.fn(),
+    stopLocationUpdatesAsync: jest.fn(() => Promise.resolve()),
     reverseGeocodeAsync: jest.fn(),
     Accuracy: {
         Lowest: 1,
@@ -35,6 +45,10 @@ jest.mock('expo-location', () => ({
     ActivityType: {
         Other: 1,
     },
+    LocationGeofencingEventType: {
+        Enter: 1,
+        Exit: 2,
+    },
 }));
 
 // TaskManager mock
@@ -43,14 +57,29 @@ jest.mock('expo-task-manager', () => ({
     isTaskRegisteredAsync: jest.fn(),
 }));
 
-// ArkaplanMuhafizServisi mock
-jest.mock('../ArkaplanMuhafizServisi', () => ({
-    ArkaplanMuhafizServisi: {
-        getInstance: jest.fn(() => ({
-            yapilandirVePlanla: jest.fn(),
-        })),
-    },
+// Konuma bagli tuketicilere yayma TEK noktadan yapilir; bu dosya "konum
+// degisimi ALGILANDI mi" ile ilgilenir, yaymanin ICERIGI ile degil (onun kendi
+// nobetci testi var: KonumDegisikligiServisi.test.ts). Fabrikali jest.mock
+// gercek modulu YUKLEMEZ — notifee/native koprulerini de bu sayede cekmiyoruz.
+jest.mock('../KonumDegisikligiServisi', () => ({
+    konumDegistiUygula: jest.fn(() => Promise.resolve()),
 }));
+
+/** Test icin sahte bir LocationObject uretir (varsayilan: TAZE sabitleme) */
+function konumNesnesiUret(lat: number, lng: number, zamanDamgasi: number = Date.now()): Location.LocationObject {
+    return {
+        coords: {
+            latitude: lat,
+            longitude: lng,
+            altitude: null,
+            accuracy: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+        },
+        timestamp: zamanDamgasi,
+    } as Location.LocationObject;
+}
 
 describe('KonumTakipServisi', () => {
     let servis: KonumTakipServisi;
@@ -58,8 +87,17 @@ describe('KonumTakipServisi', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         // Singleton'i sifirla
-        (KonumTakipServisi as any).instance = undefined;
+        (KonumTakipServisi as unknown as { instance?: KonumTakipServisi }).instance = undefined;
         servis = KonumTakipServisi.getInstance();
+        // clearAllMocks cagri kaydini siler ama IMPLEMENTASYONU silmez:
+        // bir testteki mockRejectedValue sonrakine sizar. Acikca sifirla.
+        (Location.startGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
+        (Location.stopGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
+        (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+        // Bolge merkezi icin varsayilan taze konum
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(41.0082, 28.9784),
+        );
     });
 
     describe('Singleton Pattern', () => {
@@ -81,6 +119,7 @@ describe('KonumTakipServisi', () => {
 
             expect(sonuc).toBe(false);
             expect(Location.requestBackgroundPermissionsAsync).not.toHaveBeenCalled();
+            expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
         });
 
         it('arka plan izni reddedilirse false donmeli', async () => {
@@ -94,65 +133,88 @@ describe('KonumTakipServisi', () => {
             const sonuc = await servis.baslat();
 
             expect(sonuc).toBe(false);
+            expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
         });
 
-        it('gorev zaten kayitliysa once durdurup yeniden baslatmali', async () => {
-            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
-            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
-            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
-            (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-
-            const sonuc = await servis.baslat();
-
-            expect(sonuc).toBe(true);
-            // Once mevcut gorevi durdurmali
-            expect(Location.stopLocationUpdatesAsync).toHaveBeenCalledWith(KONUM_TAKIP_GOREVI);
-            // Sonra yeniden baslatmali (varsayilan dengeli profil: dogruluk=2 Low)
-            expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-                KONUM_TAKIP_GOREVI,
-                expect.objectContaining({
-                    accuracy: 2, // Accuracy.Low (dengeli profil)
-                })
-            );
-        });
-
-        it('tum izinler varsa konum takibini baslatmali', async () => {
-            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
-            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
+        it('tum izinler varsa bolgeyi TAZE konum merkezli ve profil yaricapiyla kurmali', async () => {
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+            (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+                konumNesnesiUret(39.9208, 32.8541),
+            );
 
             const sonuc = await servis.baslat();
 
             expect(sonuc).toBe(true);
-            expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-                KONUM_TAKIP_GOREVI,
-                expect.objectContaining({
-                    accuracy: 2, // Accuracy.Low (varsayilan dengeli profil)
-                    distanceInterval: 5000, // 5km
-                    timeInterval: 900000, // 15 dakika
-                })
+            expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+                KONUM_GEOFENCE_GOREVI,
+                [
+                    expect.objectContaining({
+                        identifier: AKTIF_BOLGE_KIMLIGI,
+                        latitude: 39.9208,
+                        longitude: 32.8541,
+                        radius: 5000, // dengeli profil
+                        notifyOnEnter: false,
+                        notifyOnExit: true,
+                    }),
+                ],
             );
+        });
+
+        it('KALICI BILDIRIM: eski foreground service li gorev kayitliysa DURDURULMALI (surum gecisi)', async () => {
+            // Yukseltme yapan kullanicida eski gorev diskte kayitli kalir ve kalici
+            // bildirimi ekranda tutar. baslat() onu acikca durdurmali.
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
+
+            await servis.baslat();
+
+            expect(Location.stopLocationUpdatesAsync).toHaveBeenCalledWith(KONUM_TAKIP_GOREVI);
+        });
+
+        it('taze konum alinamazsa KAYITLI koordinata dusup bolgeyi yine kurmali', async () => {
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+            (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('GPS kapali'));
+            (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+                if (key === '@namaz_akisi/konum_ayarlari') {
+                    return Promise.resolve(JSON.stringify({
+                        konumModu: 'oto',
+                        koordinatlar: { lat: 41.0369, lng: 28.9850 },
+                    }));
+                }
+                return Promise.resolve(null);
+            });
+
+            const sonuc = await servis.baslat();
+
+            expect(sonuc).toBe(true);
+            expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+                KONUM_GEOFENCE_GOREVI,
+                [expect.objectContaining({ latitude: 41.0369, longitude: 28.9850 })],
+            );
+        });
+
+        it('ne taze konum ne kayitli koordinat varsa false donmeli (bolge kurulamaz)', async () => {
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+            (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('GPS kapali'));
+            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+            const sonuc = await servis.baslat();
+
+            expect(sonuc).toBe(false);
+            expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
         });
 
         it('basarili baslatmada ayarlari kaydetmeli', async () => {
-            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
-            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
 
             await servis.baslat();
 
@@ -161,29 +223,46 @@ describe('KonumTakipServisi', () => {
                 expect.stringContaining('"aktif":true')
             );
         });
+
+        it('bolge kurulumu patlarsa false donmeli (cokmemeli)', async () => {
+            (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+            (Location.startGeofencingAsync as jest.Mock).mockRejectedValue(new Error('geofence reddedildi'));
+
+            const sonuc = await servis.baslat();
+
+            expect(sonuc).toBe(false);
+        });
     });
 
     describe('durdur', () => {
-        it('gorev kayitliysa durdurmali', async () => {
+        it('bolge kayitliysa izlemeyi durdurmali', async () => {
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
-            (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+
+            await servis.durdur();
+
+            expect(Location.stopGeofencingAsync).toHaveBeenCalledWith(KONUM_GEOFENCE_GOREVI);
+        });
+
+        it('bolge kayitli degilse stopGeofencingAsync cagirmamali', async () => {
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
+
+            await servis.durdur();
+
+            expect(Location.stopGeofencingAsync).not.toHaveBeenCalled();
+        });
+
+        it('eski gorev de temizlenmeli (surum gecisi)', async () => {
+            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
 
             await servis.durdur();
 
             expect(Location.stopLocationUpdatesAsync).toHaveBeenCalledWith(KONUM_TAKIP_GOREVI);
         });
 
-        it('gorev kayitli degilse stopLocationUpdatesAsync cagirmamali', async () => {
-            (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-
-            await servis.durdur();
-
-            expect(Location.stopLocationUpdatesAsync).not.toHaveBeenCalled();
-        });
-
         it('ayarlari aktif:false olarak guncellemeli', async () => {
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
-            (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
             (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
                 aktif: true,
                 sonKoordinatlar: null,
@@ -200,12 +279,13 @@ describe('KonumTakipServisi', () => {
     });
 
     describe('aktifMi', () => {
-        it('gorev kayitliysa true donmeli', async () => {
+        it('bolge gorevi kayitliysa true donmeli', async () => {
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
 
             const sonuc = await servis.aktifMi();
 
             expect(sonuc).toBe(true);
+            expect(TaskManager.isTaskRegisteredAsync).toHaveBeenCalledWith(KONUM_GEOFENCE_GOREVI);
         });
 
         it('gorev kayitli degilse false donmeli', async () => {
@@ -307,7 +387,7 @@ describe('KonumTakipServisi', () => {
             const sonuc = await servis.yenidenBaslat();
 
             expect(sonuc).toBe(false);
-            expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
+            expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
         });
 
         it('arka plan izni iptal edilmisse false donmeli ve takibi devre disi birakmali', async () => {
@@ -323,7 +403,6 @@ describe('KonumTakipServisi', () => {
             const sonuc = await servis.yenidenBaslat();
 
             expect(sonuc).toBe(false);
-            // Ayarlari aktif: false olarak guncellemeli (graceful deactivation)
             expect(AsyncStorage.setItem).toHaveBeenCalledWith(
                 '@namaz_akisi/konum_takip_ayarlari',
                 expect.stringContaining('"aktif":false')
@@ -352,25 +431,25 @@ describe('KonumTakipServisi', () => {
             );
         });
 
-        it('takip aktif ve izin varsa baslat cagirmali', async () => {
-            (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
-                aktif: true,
-                sonKoordinatlar: null,
-                sonGuncellemeTarihi: null,
-            }));
-            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
+        it('takip aktif ve izin varsa bolgeyi yeniden kurmali', async () => {
+            (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+                if (key === '@namaz_akisi/konum_takip_ayarlari') {
+                    return Promise.resolve(JSON.stringify({
+                        aktif: true,
+                        sonKoordinatlar: null,
+                        sonGuncellemeTarihi: null,
+                    }));
+                }
+                return Promise.resolve(null);
             });
-            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
-                status: 'granted',
-            });
+            (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+            (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
             (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-            (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
 
             const sonuc = await servis.yenidenBaslat();
 
             expect(sonuc).toBe(true);
-            expect(Location.startLocationUpdatesAsync).toHaveBeenCalled();
+            expect(Location.startGeofencingAsync).toHaveBeenCalled();
         });
     });
 
@@ -415,65 +494,11 @@ describe('KonumTakipServisi', () => {
     });
 });
 
-describe('Konum Takip Ayarlari ve Sabitler', () => {
-    it('KONUM_TAKIP_GOREVI dogru tanimlanmali', () => {
+describe('Konum Takip Sabitleri', () => {
+    it('gorev adlari dogru tanimlanmali', () => {
+        expect(KONUM_GEOFENCE_GOREVI).toBe('KONUM_GEOFENCE_GOREVI');
+        // Eski gorev adi surum gecisi temizligi icin KORUNMALI
         expect(KONUM_TAKIP_GOREVI).toBe('KONUM_TAKIP_GOREVI');
-    });
-
-    it('konum takibi dogru mesafe esigi ile baslatilmali (5km)', async () => {
-        const servis = KonumTakipServisi.getInstance();
-
-        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-
-        await servis.baslat();
-
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                distanceInterval: 5000, // 5km minimum mesafe
-            })
-        );
-    });
-
-    it('konum takibi pausesUpdatesAutomatically false ile baslatilmali', async () => {
-        (KonumTakipServisi as any).instance = undefined;
-        const servis = KonumTakipServisi.getInstance();
-
-        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-
-        await servis.baslat();
-
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                pausesUpdatesAutomatically: false,
-            })
-        );
-    });
-
-    it('konum takibi dogru zaman araligi ile baslatilmali (15dk)', async () => {
-        (KonumTakipServisi as any).instance = undefined;
-        const servis = KonumTakipServisi.getInstance();
-
-        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-
-        await servis.baslat();
-
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                timeInterval: 900000, // 15 dakika (saniye * 1000)
-            })
-        );
     });
 });
 
@@ -482,107 +507,67 @@ describe('Profil Sistemi', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (KonumTakipServisi as any).instance = undefined;
+        (KonumTakipServisi as unknown as { instance?: KonumTakipServisi }).instance = undefined;
         servis = KonumTakipServisi.getInstance();
+        // Implementasyon sizintisini onle (bkz. ustteki not)
+        (Location.startGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(41.0082, 28.9784),
+        );
+        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
+        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
     });
 
-    it('hassas profil secildiginde dogru ayarlarla baslatmali', async () => {
-        // Hassas profili AsyncStorage'da ayarla
+    /** Verilen hassasiyeti diske koyan getItem mock'u kurar */
+    function hassasiyetKur(hassasiyet: string | null): void {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
-            if (key === '@namaz_akisi/konum_ayarlari') {
-                return Promise.resolve(JSON.stringify({
-                    takipHassasiyeti: 'hassas',
-                    konumModu: 'oto',
-                }));
-            }
-            if (key === '@namaz_akisi/konum_takip_ayarlari') {
-                return Promise.resolve(null);
+            if (key === '@namaz_akisi/konum_ayarlari' && hassasiyet !== null) {
+                return Promise.resolve(JSON.stringify({ takipHassasiyeti: hassasiyet, konumModu: 'oto' }));
             }
             return Promise.resolve(null);
         });
-        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+    }
+
+    it('hassas profil secildiginde 2km yaricap ve Balanced dogruluk kullanmali', async () => {
+        hassasiyetKur('hassas');
 
         await servis.baslat();
 
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                accuracy: 3, // Accuracy.Balanced (hassas profil)
-                distanceInterval: 2000, // 2km
-                timeInterval: 300000, // 5 dakika
-                pausesUpdatesAutomatically: false,
-            })
+        expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+            KONUM_GEOFENCE_GOREVI,
+            [expect.objectContaining({ radius: 2000 })],
         );
+        // Tek seferlik sabitleme profil dogrulugunu kullanmali
+        expect(Location.getCurrentPositionAsync).toHaveBeenCalledWith({ accuracy: 3 });
     });
 
-    it('pil_dostu profil secildiginde dogru ayarlarla baslatmali', async () => {
-        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
-            if (key === '@namaz_akisi/konum_ayarlari') {
-                return Promise.resolve(JSON.stringify({
-                    takipHassasiyeti: 'pil_dostu',
-                    konumModu: 'oto',
-                }));
-            }
-            if (key === '@namaz_akisi/konum_takip_ayarlari') {
-                return Promise.resolve(null);
-            }
-            return Promise.resolve(null);
-        });
-        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+    it('pil_dostu profil secildiginde 10km yaricap kullanmali', async () => {
+        hassasiyetKur('pil_dostu');
 
         await servis.baslat();
 
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                accuracy: 2, // Accuracy.Low (pil_dostu profil)
-                distanceInterval: 10000, // 10km
-                timeInterval: 1800000, // 30 dakika
-                pausesUpdatesAutomatically: true,
-            })
+        expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+            KONUM_GEOFENCE_GOREVI,
+            [expect.objectContaining({ radius: 10000 })],
         );
+        expect(Location.getCurrentPositionAsync).toHaveBeenCalledWith({ accuracy: 2 });
     });
 
-    it('profil ayari yoksa varsayilan dengeli profil kullanmali', async () => {
-        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
-        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted', canAskAgain: true });
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
+    it('profil ayari yoksa varsayilan dengeli profil (5km) kullanmali', async () => {
+        hassasiyetKur(null);
 
         await servis.baslat();
 
-        expect(Location.startLocationUpdatesAsync).toHaveBeenCalledWith(
-            KONUM_TAKIP_GOREVI,
-            expect.objectContaining({
-                accuracy: 2, // Accuracy.Low (dengeli profil)
-                distanceInterval: 5000, // 5km
-                timeInterval: 900000, // 15 dakika
-                pausesUpdatesAutomatically: false,
-            })
+        expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+            KONUM_GEOFENCE_GOREVI,
+            [expect.objectContaining({ radius: 5000 })],
         );
     });
 
     it('durumBilgisiGetir profil mesafesini donmeli', async () => {
-        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
-            if (key === '@namaz_akisi/konum_ayarlari') {
-                return Promise.resolve(JSON.stringify({
-                    takipHassasiyeti: 'hassas',
-                }));
-            }
-            if (key === '@namaz_akisi/konum_takip_ayarlari') {
-                return Promise.resolve(null);
-            }
-            return Promise.resolve(null);
-        });
+        hassasiyetKur('hassas');
         (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
 
         const durum = await servis.durumBilgisiGetir();
 
@@ -590,136 +575,178 @@ describe('Profil Sistemi', () => {
     });
 });
 
-describe('Konum Takip Entegrasyon Senaryolari', () => {
-    let servis: KonumTakipServisi;
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        (KonumTakipServisi as any).instance = undefined;
-        servis = KonumTakipServisi.getInstance();
-    });
-
-    it('tam yasam dongusu: baslat -> durum kontrol -> durdur', async () => {
-        // Izinleri ver
-        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.startLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-        (Location.stopLocationUpdatesAsync as jest.Mock).mockResolvedValue(undefined);
-
-        // Baslat
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        const baslatSonuc = await servis.baslat();
-        expect(baslatSonuc).toBe(true);
-
-        // Durum kontrol (artik aktif)
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(true);
-        const durum = await servis.durumBilgisiGetir();
-        expect(durum.takipAktif).toBe(true);
-
-        // Durdur
-        await servis.durdur();
-        expect(Location.stopLocationUpdatesAsync).toHaveBeenCalled();
-    });
-
-    it('izin reddedildiginde kullanici bilgilendirilmeli', async () => {
-        // On plan izni ver, arka plan izni reddet
-        (TaskManager.isTaskRegisteredAsync as jest.Mock).mockResolvedValue(false);
-        (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'undetermined' });
-        (Location.getBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'undetermined' });
-        (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-        (Location.requestBackgroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
-
-        const sonuc = await servis.baslat();
-
-        expect(sonuc).toBe(false);
-        // Konum takibi baslatilmamali
-        expect(Location.startLocationUpdatesAsync).not.toHaveBeenCalled();
-    });
-});
-
 /**
- * Arka plan gorevinin (TaskManager.defineTask govdesi) cekirdek mantigi.
+ * Arka plan bolge gorevinin (TaskManager.defineTask govdesi) cekirdek mantigi.
  *
- * Bu, servisin GERCEK FIZIKSEL davranisidir: kullanici esik mesafeden fazla
- * hareket edince vakitler/koordinatlar guncellenir, az hareket edince ATLANIR.
+ * Bu, servisin GERCEK FIZIKSEL davranisidir: kullanici bolgeden cikinca taze
+ * konum alinir, bolge yeni konuma tasinir ve esik asildiysa vakitler guncellenir.
  * Uretim kodu modul yuklenirken defineTask(...) cagrir; geri cagirma fonksiyonunu
  * o anda (clearAllMocks'tan ONCE) yakaliyoruz.
  */
 const KONUM_ANAHTARI = '@namaz_akisi/konum_ayarlari';
-const MUHAFIZ_ANAHTARI = 'muhafiz_ayarlari';
 
-// Modul yuklenirken kaydedilen gorev adini ve geri-cagirimini yakala (ilk defineTask cagrisi).
-// clearAllMocks mock.calls'u sildigi icin bunlari modul-kapsaminda, ilk beforeEach'ten ONCE yakaliyoruz.
 const ilkDefineTaskCagrisi = (TaskManager.defineTask as jest.Mock).mock.calls[0];
 const kayitliGorevAdi: string = ilkDefineTaskCagrisi[0];
-const arkaPlanGorevi: (body: {
-    data?: { locations?: Location.LocationObject[] };
+const bolgeGorevi: (body: {
+    data?: { eventType?: number; region?: unknown };
     error?: unknown;
 }) => Promise<void> = ilkDefineTaskCagrisi[1];
 
-/** Test icin sahte bir LocationObject uretir */
-function konumNesnesiUret(lat: number, lng: number): Location.LocationObject {
+/** Bolge cikis olayi yuku uretir */
+function cikisOlayi() {
     return {
-        coords: {
-            latitude: lat,
-            longitude: lng,
-            altitude: null,
-            accuracy: null,
-            altitudeAccuracy: null,
-            heading: null,
-            speed: null,
+        data: {
+            eventType: 2, // LocationGeofencingEventType.Exit
+            region: { identifier: AKTIF_BOLGE_KIMLIGI, latitude: 41.0, longitude: 29.0, radius: 5000 },
         },
-        timestamp: 0,
-    } as Location.LocationObject;
+    };
 }
 
-describe('Arka Plan Gorevi (defineTask callback)', () => {
+describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        // Implementasyon sizintisini onle (bkz. ustteki not)
+        (Location.startGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(39.9208, 32.8541),
+        );
     });
 
-    it('gorev gercekten kaydedilmis ve dogru ad ile tanimlanmali', () => {
-        expect(typeof arkaPlanGorevi).toBe('function');
-        expect(kayitliGorevAdi).toBe(KONUM_TAKIP_GOREVI);
+    it('gorev gercekten kaydedilmis ve BOLGE gorev adi ile tanimlanmali', () => {
+        expect(typeof bolgeGorevi).toBe('function');
+        expect(kayitliGorevAdi).toBe(KONUM_GEOFENCE_GOREVI);
     });
 
     it('error gelince hicbir yazma yapmamali', async () => {
-        await arkaPlanGorevi({ error: new Error('GPS hatasi') });
+        await bolgeGorevi({ error: new Error('Bolge hatasi') });
         expect(AsyncStorage.setItem).not.toHaveBeenCalled();
     });
 
-    it('konum verisi bos ise hicbir yazma yapmamali', async () => {
-        await arkaPlanGorevi({ data: { locations: [] } });
+    it('GIRIS olayi yok sayilmali (yalniz cikis islenir)', async () => {
+        await bolgeGorevi({ data: { eventType: 1 } }); // Enter
         expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+        expect(Location.getCurrentPositionAsync).not.toHaveBeenCalled();
     });
 
     it('manuel modda erken cikmali ve AsyncStorage YAZMAMALI (kullanici secimi ezilmemeli)', async () => {
-        // konumModu manuel: GPS guncellemesi kullanicinin manuel secimini ezmemeli
         (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
             konumModu: 'manuel',
             koordinatlar: { lat: 41.0, lng: 29.0 },
         }));
 
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(39.92, 32.85)] } });
+        await bolgeGorevi(cikisOlayi());
 
-        // Manuel modda hicbir sey yazilmamali
         expect(AsyncStorage.setItem).not.toHaveBeenCalled();
-        // Adres cozumlemesi de denenmemeli
         expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
+        expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
     });
 
     it('konum ayarlari hic kayitli degilse erken cikmali (yazma yok)', async () => {
         (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
 
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(41.0, 29.0)] } });
+        await bolgeGorevi(cikisOlayi());
 
         expect(AsyncStorage.setItem).not.toHaveBeenCalled();
         expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
     });
 
-    it('mesafe esik ALTINDA (oto, ~3km < 5km): koordinat GUNCELLENMEMELI, sadece zaman damgasi yazilmali', async () => {
-        // dengeli varsayilan profil: 5000m esik. ~3km hareket -> esik asilmadi.
+    it('KRITIK (dongu korumasi): taze konum ALINAMAZSA bolge YENIDEN KURULMAMALI', async () => {
+        // expo INITIAL_TRIGGER_EXIT'i sabit kodlar: bayat/eski merkeze yeniden kayit
+        // aninda yeni bir cikis olayi dogurur -> sonsuz dongu. Uretim bu durumda
+        // bolgeye DOKUNMAMALI; onarimi 15dk'lik arka plan gorevi ustlenir.
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(new Error('GPS yok'));
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
+        expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
+        // Olay damgasi yine de yazilmali (arka arkaya gelen olaylar hizla tekrarlamasin)
+        const yazilan = JSON.parse((AsyncStorage.setItem as jest.Mock).mock.calls[0][1]);
+        expect(typeof yazilan.sonGeofenceOlayi).toBe('string');
+        // Koordinat DEGISMEMELI
+        expect(yazilan.koordinatlar).toEqual({ lat: 41.0, lng: 29.0 });
+    });
+
+    it('KRITIK (dongu korumasi): BAYAT zaman damgali konumla da bolge yeniden kurulmamali', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        // 10 dakika onceki onbellek sabitlemesi -> bayat
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(39.9208, 32.8541, Date.now() - 10 * 60 * 1000),
+        );
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
+        expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
+    });
+
+    it('PATLAMA korumasi: bekleme penceresi icindeki olay tamamen ATLANMALI', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                    sonGeofenceOlayi: new Date(Date.now() - 5_000).toISOString(),
+                }));
+            }
+            return Promise.resolve(null);
+        });
+
+        await bolgeGorevi(cikisOlayi());
+
+        // Pahali islerin HICBIRI yapilmamali
+        expect(Location.getCurrentPositionAsync).not.toHaveBeenCalled();
+        expect(Location.startGeofencingAsync).not.toHaveBeenCalled();
+        expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+    });
+
+    it('taze konumda bolge YENI merkeze tasinmali (profil yaricapiyla)', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0369, lng: 28.9850 },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([]);
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(Location.startGeofencingAsync).toHaveBeenCalledWith(
+            KONUM_GEOFENCE_GOREVI,
+            [expect.objectContaining({
+                latitude: 39.9208,
+                longitude: 32.8541,
+                radius: 5000,
+                notifyOnExit: true,
+            })],
+        );
+    });
+
+    it('mesafe esik ALTINDA: koordinat GUNCELLENMEMELI, sadece zaman damgalari yazilmali', async () => {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
@@ -731,27 +758,25 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
             }
             return Promise.resolve(null);
         });
-
         // 41.0,29.0 -> 41.0,29.0358 ~ 3km (5km esigin altinda)
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(41.0, 29.0358)] } });
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(41.0, 29.0358),
+        );
 
-        // Esik asilmadigi icin adres cozumlemesi YAPILMAMALI
+        await bolgeGorevi(cikisOlayi());
+
         expect(Location.reverseGeocodeAsync).not.toHaveBeenCalled();
 
-        // Sadece tek bir yazma olmali ve koordinatlar ESKI deger olarak korunmali
-        expect(AsyncStorage.setItem).toHaveBeenCalledTimes(1);
-        const [yazilanAnahtar, yazilanJson] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
-        expect(yazilanAnahtar).toBe(KONUM_ANAHTARI);
-        const yazilan = JSON.parse(yazilanJson);
-        // Koordinat ESKI deger (39.92/32.85 degil, 41.0/29.0)
+        const yazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
+            (c: [string, string]) => c[0] === KONUM_ANAHTARI
+        );
+        const yazilan = JSON.parse(yazma![1]);
         expect(yazilan.koordinatlar).toEqual({ lat: 41.0, lng: 29.0 });
-        // Yeni koordinat KESINLIKLE yazilmamali
-        expect(yazilan.koordinatlar.lng).not.toBeCloseTo(29.0358);
-        // Yine de takibin canli oldugunu gostermek icin zaman damgasi yazilmis olmali
         expect(typeof yazilan.sonGpsGuncellemesi).toBe('string');
+        expect(typeof yazilan.sonGeofenceOlayi).toBe('string');
     });
 
-    it('mesafe esik USTUNDE (oto, Istanbul->Ankara ~350km): koordinat ve adres GUNCELLENMELI', async () => {
+    it('mesafe esik USTUNDE (Istanbul->Ankara): koordinat ve adres GUNCELLENMELI', async () => {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
@@ -761,26 +786,22 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
                     gpsAdres: { semt: '', ilce: 'Beyoglu', il: 'Istanbul' },
                 }));
             }
-            return Promise.resolve(null); // muhafiz ayarlari yok -> yeniden planlama atlanir
+            return Promise.resolve(null);
         });
         (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([
             { district: 'Cankaya', subregion: '', city: 'Ankara', region: '' },
         ]);
 
-        // Ankara Kizilay (~350km, 5km esigin cok ustunde)
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(39.9208, 32.8541)] } });
+        await bolgeGorevi(cikisOlayi());
 
-        // Adres cozumlemesi YENI koordinatla yapilmali
         expect(Location.reverseGeocodeAsync).toHaveBeenCalledWith({
             latitude: 39.9208,
             longitude: 32.8541,
         });
 
-        // Yeni koordinatlar ve cozulen adres yazilmali
         const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
             (c: [string, string]) => c[0] === KONUM_ANAHTARI
         );
-        expect(sonYazma).toBeDefined();
         const yazilan = JSON.parse(sonYazma![1]);
         expect(yazilan.koordinatlar.lat).toBeCloseTo(39.9208);
         expect(yazilan.koordinatlar.lng).toBeCloseTo(32.8541);
@@ -788,34 +809,7 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
         expect(yazilan.gpsAdres.il).toBe('Ankara');
     });
 
-    it('mesafe TAM esikte degil ama hemen ALTINDA degil: ~6km > 5km esik -> guncellenir (sinir davranisi)', async () => {
-        // Uretim `mesafe < profil.mesafe` kullanir: 6km esigi asar, guncelleme yapilmali.
-        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
-            if (key === KONUM_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({
-                    konumModu: 'oto',
-                    takipHassasiyeti: 'dengeli', // 5km esik
-                    koordinatlar: { lat: 41.0, lng: 29.0 },
-                }));
-            }
-            return Promise.resolve(null);
-        });
-        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([]);
-
-        // 41.0,29.0 -> 41.0,29.0716 ~ 6km (5km esigin ustunde)
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(41.0, 29.0716)] } });
-
-        // Esik asildigi icin adres cozumlemesi denenmeli (guncelleme dali)
-        expect(Location.reverseGeocodeAsync).toHaveBeenCalled();
-        const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
-            (c: [string, string]) => c[0] === KONUM_ANAHTARI
-        );
-        const yazilan = JSON.parse(sonYazma![1]);
-        expect(yazilan.koordinatlar.lng).toBeCloseTo(29.0716);
-    });
-
     it('onceki koordinat yoksa (ilk olcum) dogrudan guncelleme dalina girmeli', async () => {
-        // sonLat/sonLng yoksa mesafe karsilastirmasi atlanir, koordinat yazilir.
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
@@ -828,14 +822,14 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
         });
         (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([]);
 
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(41.0082, 28.9784)] } });
+        await bolgeGorevi(cikisOlayi());
 
         const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
             (c: [string, string]) => c[0] === KONUM_ANAHTARI
         );
         const yazilan = JSON.parse(sonYazma![1]);
-        expect(yazilan.koordinatlar.lat).toBeCloseTo(41.0082);
-        expect(yazilan.koordinatlar.lng).toBeCloseTo(28.9784);
+        expect(yazilan.koordinatlar.lat).toBeCloseTo(39.9208);
+        expect(yazilan.koordinatlar.lng).toBeCloseTo(32.8541);
     });
 
     it('reverseGeocodeAsync HATA firlatirsa cokmemeli: gpsAdres=null ile koordinat YINE de kaydedilmeli', async () => {
@@ -851,67 +845,17 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
         });
         (Location.reverseGeocodeAsync as jest.Mock).mockRejectedValue(new Error('Ag hatasi'));
 
-        // Istanbul -> Ankara, esik asili. Geocode patlasa bile koordinat kaydedilmeli.
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(39.9208, 32.8541)] } });
+        await bolgeGorevi(cikisOlayi());
 
         const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
             (c: [string, string]) => c[0] === KONUM_ANAHTARI
         );
-        expect(sonYazma).toBeDefined();
         const yazilan = JSON.parse(sonYazma![1]);
-        // Adres cozulemedi -> null, ama koordinat graceful sekilde kaydedildi
         expect(yazilan.gpsAdres).toBeNull();
         expect(yazilan.koordinatlar.lat).toBeCloseTo(39.9208);
-        expect(yazilan.koordinatlar.lng).toBeCloseTo(32.8541);
     });
 
-    it('sehir degisince muhafiz bildirimleri YENI koordinatla yeniden planlanmali', async () => {
-        // Stabil bir muhafiz instance'i ver (mock her cagride yeni nesne dondurur)
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
-        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
-            if (key === KONUM_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({
-                    konumModu: 'oto',
-                    takipHassasiyeti: 'dengeli',
-                    koordinatlar: { lat: 41.0369, lng: 28.9850 }, // Istanbul
-                }));
-            }
-            if (key === MUHAFIZ_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({
-                    aktif: true,
-                    sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
-                    esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
-                }));
-            }
-            return Promise.resolve(null);
-        });
-        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([
-            { district: 'Cankaya', city: 'Ankara' },
-        ]);
-
-        // Ankara'ya tasin (~350km)
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(39.9208, 32.8541)] } });
-
-        // Yeniden planlama cagrilmali ve YENI (Ankara) koordinatlari iletilmeli (eski Istanbul DEGIL)
-        expect(yapilandirVePlanlaMock).toHaveBeenCalledTimes(1);
-        const iletilenAyar = yapilandirVePlanlaMock.mock.calls[0][0];
-        expect(iletilenAyar.aktif).toBe(true);
-        expect(iletilenAyar.koordinatlar.lat).toBeCloseTo(39.9208);
-        expect(iletilenAyar.koordinatlar.lng).toBeCloseTo(32.8541);
-        // Eski Istanbul koordinati KESINLIKLE iletilmemeli
-        expect(iletilenAyar.koordinatlar.lat).not.toBeCloseTo(41.0369);
-    });
-
-    it('muhafiz ayarlari aktif:false ise yeniden planlama YAPILMAMALI', async () => {
-        const yapilandirVePlanlaMock = jest.fn().mockResolvedValue(undefined);
-        (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
-            yapilandirVePlanla: yapilandirVePlanlaMock,
-        });
-
+    it('bolge yeniden kurulumu PATLASA bile konum guncellemesi devam etmeli', async () => {
         (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
             if (key === KONUM_ANAHTARI) {
                 return Promise.resolve(JSON.stringify({
@@ -920,20 +864,74 @@ describe('Arka Plan Gorevi (defineTask callback)', () => {
                     koordinatlar: { lat: 41.0369, lng: 28.9850 },
                 }));
             }
-            if (key === MUHAFIZ_ANAHTARI) {
-                return Promise.resolve(JSON.stringify({ aktif: false }));
-            }
             return Promise.resolve(null);
         });
+        (Location.startGeofencingAsync as jest.Mock).mockRejectedValue(new Error('kurulum reddedildi'));
         (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([]);
 
-        await arkaPlanGorevi({ data: { locations: [konumNesnesiUret(39.9208, 32.8541)] } });
+        await expect(bolgeGorevi(cikisOlayi())).resolves.toBeUndefined();
 
-        // Muhafiz pasifken bildirim planlanmamali (ama koordinat yine guncellenmis olmali)
-        expect(yapilandirVePlanlaMock).not.toHaveBeenCalled();
         const sonYazma = (AsyncStorage.setItem as jest.Mock).mock.calls.find(
             (c: [string, string]) => c[0] === KONUM_ANAHTARI
         );
-        expect(sonYazma).toBeDefined();
+        expect(JSON.parse(sonYazma![1]).koordinatlar.lat).toBeCloseTo(39.9208);
+    });
+
+    it('sehir degisince konuma bagli TUM tuketiciler YENI koordinatla tazelenmeli', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0369, lng: 28.9850 }, // Istanbul
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([
+            { district: 'Cankaya', city: 'Ankara' },
+        ]);
+
+        await bolgeGorevi(cikisOlayi());
+
+        // Yayma TEK noktadan gecmeli ve YENI (Ankara) koordinati tasimali
+        expect(konumDegistiUygula).toHaveBeenCalledTimes(1);
+        const iletilen = (konumDegistiUygula as jest.Mock).mock.calls[0][0];
+        expect(iletilen.lat).toBeCloseTo(39.9208);
+        expect(iletilen.lng).toBeCloseTo(32.8541);
+        // Eski Istanbul koordinati KESINLIKLE iletilmemeli
+        expect(iletilen.lat).not.toBeCloseTo(41.0369);
+    });
+
+    it('mesafe esik ALTINDA kalinca yayma YAPILMAMALI (gereksiz yeniden planlama yok)', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+            if (key === KONUM_ANAHTARI) {
+                return Promise.resolve(JSON.stringify({
+                    konumModu: 'oto',
+                    takipHassasiyeti: 'dengeli',
+                    koordinatlar: { lat: 41.0, lng: 29.0 },
+                }));
+            }
+            return Promise.resolve(null);
+        });
+        // ~3km: 5km esigin altinda
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(
+            konumNesnesiUret(41.0, 29.0358),
+        );
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).not.toHaveBeenCalled();
+    });
+
+    it('manuel moda gecilmisse yayma YAPILMAMALI (kullanici secimi ezilmemeli)', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValue(JSON.stringify({
+            konumModu: 'manuel',
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+        }));
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).not.toHaveBeenCalled();
     });
 });

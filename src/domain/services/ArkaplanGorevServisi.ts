@@ -20,7 +20,13 @@ import {
     VARSAYILAN_TAKIP_HASSASIYETI,
     TakipHassasiyeti,
 } from '../../core/constants/UygulamaSabitleri';
-import { KONUM_TAKIP_GOREVI } from './KonumTakipServisi';
+import {
+    KONUM_GEOFENCE_GOREVI,
+    bolgeyiKaydet,
+    eskiTakipGoreviniTemizle,
+    yeniKonumuUygula,
+} from './KonumTakipServisi';
+import { konumTazeMi } from '../../core/utils/geofenceKararYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 
 // Görev adı sabiti
@@ -82,20 +88,108 @@ async function izinIptalKontrolEt(takipAyarlari: { aktif: boolean }): Promise<bo
 }
 
 /**
- * Arka plandan konum takibini yeniden baslat
- * Bu fonksiyon arka plan gorevinden (background fetch) cagrilir
- * Uygulama kapaliyken veya telefon yeniden basladiginda konum takibini canlandirir
+ * Konum takibinin "canlı" olduğunu gösteren nabzı günceller.
+ *
+ * NEDEN GEREKLİ: Takip artık olay tabanlıdır (geofence) — kullanıcı hareketsizken
+ * HİÇ olay üretilmez. Eski periyodik yol, eşik aşılmasa bile her turda
+ * `sonGpsGuncellemesi`'ni tazeliyordu ve Konum Ayarları ekranı bunu "5 dakika önce
+ * güncellendi" diye gösteriyor. Nabız atmazsa ekran günlerce "3 gün önce
+ * güncellendi" der → kullanıcı takibi bozuk sanır. Bu yazım, eski yolun eşik-altı
+ * dalıyla birebir aynı anlamı taşır: "takip yaşıyor, son kontrol bu an".
+ *
+ * Koordinatlara DOKUNMAZ; yalnız zaman damgası yazar (konum sabitlemesi almaz,
+ * dolayısıyla pil maliyeti yoktur).
+ */
+async function nabziGuncelle(): Promise<void> {
+    try {
+        const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (!konumAyarlariJson) {
+            return;
+        }
+
+        const konumAyarlari = JSON.parse(konumAyarlariJson);
+
+        // Bilinmeyen alanlar korunmali (bu blob tiplenmis alanlardan fazlasini tasiyabilir)
+        await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+            ...konumAyarlari,
+            sonGpsGuncellemesi: new Date().toISOString(),
+        }));
+    } catch (e) {
+        Logger.warn('ArkaplanGorev', 'Nabiz guncellenemedi:', e);
+    }
+}
+
+/**
+ * İzlenen bölge onarılırken kullanılacak merkezi belirler.
+ *
+ * Taze sabitleme tercih edilir; alınamazsa diskteki son koordinata düşülür.
+ * Kayıtlı koordinatla kurulan bölge kullanıcı uzaktaysa anında bir çıkış olayı
+ * üretir — bu İSTENEN kurtarma davranışıdır: olay yolu taze konumu alıp merkezi
+ * düzeltir ve vakitleri günceller.
+ */
+async function onarimMerkeziniBelirle(
+    dogruluk: number,
+): Promise<{ lat: number; lng: number; tazeMi: boolean } | null> {
+    try {
+        const konum = await Location.getCurrentPositionAsync({ accuracy: dogruluk });
+        if (konum?.coords) {
+            return {
+                lat: konum.coords.latitude,
+                lng: konum.coords.longitude,
+                // Onbellekten gelen bayat bir sabitleme uzerine konum GUNCELLEMESI
+                // yapilmamali (yalnizca bolge merkezi olarak kullanilabilir).
+                tazeMi: konumTazeMi(konum.timestamp, Date.now()),
+            };
+        }
+    } catch (e) {
+        Logger.warn('ArkaplanGorev', 'Taze konum alinamadi, kayitli koordinata dusuluyor:', e);
+    }
+
+    try {
+        const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumAyarlariJson) {
+            const konumAyarlari = JSON.parse(konumAyarlariJson);
+            const lat = konumAyarlari.koordinatlar?.lat;
+            const lng = konumAyarlari.koordinatlar?.lng;
+            if (typeof lat === 'number' && typeof lng === 'number') {
+                return { lat, lng, tazeMi: false };
+            }
+        }
+    } catch (e) {
+        Logger.warn('ArkaplanGorev', 'Kayitli koordinat okunamadi:', e);
+    }
+
+    return null;
+}
+
+/**
+ * Arka plandan konum takibini onar / nabzını at
+ *
+ * Bu fonksiyon arka plan gorevinden (background fetch) cagrilir ve HİBRİT
+ * tasarımın güvenlik ağı ayağıdır. Birincil yol olay tabanlıdır (geofence,
+ * `KonumTakipServisi`); burada onun iki bilinen boşluğu kapatılır:
+ *
+ *  (a) SESSİZ KURULUM HATASI — expo tarafında `startGeofencing()` konum
+ *      sağlayıcı yoksa sessizce döner, `addGeofences` hatası yalnız loglanır.
+ *      Bölge hiç kurulamamış olabilir; burada tespit edilip yeniden kurulur.
+ *  (b) NABIZ — hareketsiz kullanıcıda hiç olay olmaz, ekrandaki "en son
+ *      güncellendi" bilgisi bayatlar (bkz. `nabziGuncelle`).
  *
  * Senaryo akisi:
- * 1. Kullanici daha once akilli takibi actiysa → aktif: true AsyncStorage'da kalir
- * 2. Telefon reboot / app kill / OS tarafindan olduruldu → konum gorevi olur
- * 3. Background fetch 15dk'da bir tetiklenir (startOnBoot + stopOnTerminate:false)
- * 4. Bu fonksiyon konum gorevinin olup olmedigini kontrol eder
- * 5. Olmemisse → dokunmaz. Olmüsse → yeniden baslatir.
- * 6. Izin iptal edildiyse → graceful deactivation yapar
+ * 1. Surum gecisi temizligi: eski foreground service'li gorev varsa durdurulur
+ * 2. Kullanici daha once akilli takibi actiysa → aktif: true AsyncStorage'da kalir
+ * 3. Izin iptal edildiyse → graceful deactivation
+ * 4. Bolge kayitliysa → dokunma, yalniz nabzi at
+ * 5. Bolge olmusse (reboot / app kill / sessiz hata) → yeniden kur
  */
 export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
     try {
+        // 0. SURUM GECISI: eski (foreground service'li) gorev `MY_PACKAGE_REPLACED`
+        // yayininda kendiliginden dirilir → kalici bildirim geri gelir. Kullanici
+        // uygulamayi hic acmasa bile burada temizlenmeli, bu yuzden en basta ve
+        // ayar kontrollerinden BAGIMSIZ calisir.
+        await eskiTakipGoreviniTemizle();
+
         // 1. Konum takip ayarlarini kontrol et - kullanici daha once aktif etmis mi?
         const takipAyarlariJson = await AsyncStorage.getItem(KONUM_TAKIP_AYARLARI_ANAHTAR);
         if (!takipAyarlariJson) {
@@ -122,41 +216,43 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
             return;
         }
 
-        // 5. Gorev hala kayitli mi kontrol et
-        // NOT: baslat() her zaman stop+start yapar (kullanici tetikler, profil degismis olabilir)
-        // Burada ise sadece olmus gorevi canlandiriyoruz - zaten calisan goreve dokunmuyoruz
-        const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
+        // 4. Bolge hala kayitli mi kontrol et
+        const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_GEOFENCE_GOREVI);
         if (kayitliMi) {
-            Logger.info('ArkaplanGorev', 'Konum takip gorevi zaten kayitli ve calisiyor');
-            return; // Gorev hala calisiyor, dokunma
+            Logger.info('ArkaplanGorev', 'Bolge izleme zaten kayitli ve calisiyor');
+            // Saglikli: yalniz nabzi at (konum sabitlemesi ALINMAZ, pil maliyeti yok)
+            await nabziGuncelle();
+            return;
         }
 
-        // 6. KRITIK: Gorev kayitli degil ama aktif olmasi gerekiyor - yeniden baslat!
+        // 5. KRITIK: Bolge kayitli degil ama aktif olmasi gerekiyor - yeniden kur!
         // Bu durum genellikle su senaryolarda olusur:
-        // - Telefon yeniden basladi
+        // - Telefon yeniden basladi (GMS geofence'leri reboot'ta silinir)
         // - OS uygulamayi pil icin oldurdu
-        // - Kullanici uygulamayi swipe ile kapatti
-        Logger.info('ArkaplanGorev', 'Konum takip gorevi ölmüş, yeniden başlatılıyor...');
+        // - Kurulum sessizce basarisiz oldu (konum servisi kapaliydi)
+        Logger.info('ArkaplanGorev', 'Bolge izleme ölmüş, yeniden kuruluyor...');
         const profil = await aktifProfilGetir();
-        await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
-            accuracy: profil.dogruluk,
-            timeInterval: profil.zaman * 1000,
-            distanceInterval: profil.mesafe,
-            deferredUpdatesInterval: profil.zaman * 1000,
-            deferredUpdatesDistance: profil.mesafe,
-            showsBackgroundLocationIndicator: true,
-            foregroundService: {
-                notificationTitle: 'Seyahatte otomatik güncelleme',
-                notificationBody: 'Şehir değiştiğinde namaz vakitleri konumunuza göre güncellenir.',
-                notificationColor: '#4A90D9',
-            },
-            pausesUpdatesAutomatically: profil.duraklatma,
-            activityType: Location.ActivityType.Other,
-        });
+        const merkez = await onarimMerkeziniBelirle(profil.dogruluk);
+        if (!merkez) {
+            Logger.warn('ArkaplanGorev', 'Bolge merkezi belirlenemedi, onarim ertelendi');
+            return;
+        }
 
-        Logger.info('ArkaplanGorev', 'Konum takip gorevi yeniden baslatildi');
+        await bolgeyiKaydet(merkez.lat, merkez.lng, profil.mesafe);
+
+        Logger.info('ArkaplanGorev', 'Bolge izleme yeniden kuruldu');
+
+        // KRITIK — SESSIZ KONUM KAYMASI: bolge TAZE konuma kuruldugunda cihaz
+        // cemberin ICINDE olur, dolayisiyla hicbir cikis olayi DOGMAZ. Kullanici
+        // baska bir sehirde yeniden baslatmissa (reboot) diskteki koordinat orada
+        // bayat kalir ve tum bildirimler eski sehre gore planlanmis olarak surer.
+        // Bu yuzden onarim mesafeyi ACIKCA karsilastirip ortak uygulama yolundan
+        // gecmeli (o yol esik altinda ise yalnizca nabiz yazar).
+        if (merkez.tazeMi) {
+            await yeniKonumuUygula(merkez.lat, merkez.lng, profil.mesafe);
+        }
     } catch (error) {
-        Logger.error('ArkaplanGorev', 'Konum takip yeniden baslatma hatasi:', error);
+        Logger.error('ArkaplanGorev', 'Konum takip onarim hatasi:', error);
     }
 }
 

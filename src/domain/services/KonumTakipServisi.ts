@@ -1,33 +1,61 @@
 /**
  * Konum Takip Servisi
- * Onemli konum degisikliklerini takip eder ve gunceller
- * Pil dostu: Sadece belirli mesafe degisikliklerinde tetiklenir
  *
- * NOT: Bu servis domain katmaninda olmasina ragmen React Native API'lerine (AppState, Platform)
- * dogrudan bagli calisir. Bu, Clean Architecture'in Dependency Rule'unu teknik olarak ihlal eder,
- * ancak React Native projeleri icin pragmatik bir trade-off'tur. Alternatif olarak bu bagimliliklar
- * dependency injection ile soyutlanabilir, fakat bu projede mevcut pattern ile tutarlilik icin
- * dogrudan kullanim tercih edilmistir.
+ * Şehir değişimini OLAY TABANLI izler: OS'u periyodik uyandırıp mesafe ölçmek
+ * yerine, bulunduğunuz noktaya bir bölge (geofence) kaydeder ve yalnızca o
+ * çemberden ÇIKINCA uyanır. Çıkışta taze konumu alır, vakitleri günceller ve
+ * bölgeyi yeni konuma taşır.
+ *
+ * NEDEN GEOFENCE (eski `startLocationUpdatesAsync` yerine):
+ * expo-location'da arka plan konum GÜNCELLEMELERİ Android'de zorunlu olarak bir
+ * foreground service üzerinden akar (`LocationTaskService`,
+ * `foregroundServiceType="location"`) → kullanıcı kalıcı bir bildirim görür.
+ * Geofencing yolu ise `GeofencingClient` + `PendingIntent` + JobScheduler
+ * kullanır (`GeofencingTaskConsumer`), foreground service'e HİÇ dokunmaz →
+ * kalıcı bildirim yok, periyodik uyanma yok.
+ *
+ * HİBRİT: Geofencing'in bedeli, hatalarının sessiz olmasıdır — expo tarafında
+ * `startGeofencing()` konum sağlayıcı yoksa sessizce döner ve `addGeofences`
+ * hatası yalnız loglanır. Ayrıca kullanıcı hareketsizken hiç olay üretilmez, bu
+ * da ekrandaki "en son ne zaman güncellendi" nabzını durdururdu. Bu iki boşluğu
+ * `ArkaplanGorevServisi`'ndeki MEVCUT 15 dakikalık görev kapatır (bkz.
+ * `arkaplandanKonumTakibiniYenidenBaslat`): ölü/hiç kurulamamış bölgeyi onarır
+ * ve nabzı atar. Yani bu servis "her şeyi yakalamak" zorunda değildir.
+ *
+ * NOT: Bu servis domain katmaninda olmasina ragmen React Native / native API'lere
+ * dogrudan bagli calisir. Bu, Clean Architecture'in Dependency Rule'unu teknik
+ * olarak ihlal eder, ancak React Native projeleri icin pragmatik bir trade-off'tur.
  */
 
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, Platform } from 'react-native';
 import { mesafeHesapla } from '../../core/utils/MesafeHesaplayici';
 import { Logger } from '../../core/utils/Logger';
-import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
-import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { konumTazeMi, olayIslenebilirMi } from '../../core/utils/geofenceKararYardimcisi';
+import { konumDegistiUygula } from './KonumDegisikligiServisi';
 import {
-    DEPOLAMA_ANAHTARLARI,
     TAKIP_PROFILLERI,
     VARSAYILAN_TAKIP_HASSASIYETI,
     TakipHassasiyeti,
     TakipProfilKonfigurasyonu,
 } from '../../core/constants/UygulamaSabitleri';
 
-/** Arka plan konum gorevi adi */
+/**
+ * ESKİ arka plan konum görevi adı.
+ *
+ * Artık HİÇ kaydedilmez; yalnızca GEÇİŞ TEMİZLİĞİ için durur. Sürüm yükselten
+ * kullanıcıda bu görev diskte kayıtlı kalmıştır ve foreground service'iyle
+ * birlikte çalışmaya devam eder → kalıcı bildirim asla kaybolmazdı. `baslat` ve
+ * `durdur` bu görevi açıkça durdurur.
+ */
 export const KONUM_TAKIP_GOREVI = 'KONUM_TAKIP_GOREVI';
+
+/** Arka plan bölge (geofence) görevi adı */
+export const KONUM_GEOFENCE_GOREVI = 'KONUM_GEOFENCE_GOREVI';
+
+/** İzlenen tek bölgenin kimliği (her zaman kullanıcının son bilinen konumu) */
+export const AKTIF_BOLGE_KIMLIGI = 'aktif_konum_bolgesi';
 
 /** Depolama anahtari */
 const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
@@ -52,6 +80,53 @@ async function aktifProfilGetir(): Promise<TakipProfilKonfigurasyonu> {
 }
 
 /**
+ * Verilen merkez ve yarıçapla izlenen bölgeyi (yeniden) kurar.
+ *
+ * `startGeofencingAsync` zaten kayıtlı bir görevde çağrılırsa expo `setOptions`
+ * üzerinden durdurup yeniden kurar; ayrıca `stopGeofencingAsync` gerekmez.
+ *
+ * DİKKAT: Yalnızca cihazın İÇİNDE olduğu bilinen bir merkezle çağırın (taze
+ * konum sabitlemesi). Dışında olduğumuz bir merkezle kurmak, expo'nun sabit
+ * kodladığı `INITIAL_TRIGGER_EXIT` yüzünden anında yeni bir çıkış olayı üretir.
+ * Bu bilinçli olarak ONARIM yolunda kullanılır (bkz. ArkaplanGorevServisi),
+ * olay yolunda ise `konumTazeMi` ile engellenir.
+ */
+export async function bolgeyiKaydet(lat: number, lng: number, yaricap: number): Promise<void> {
+    await Location.startGeofencingAsync(KONUM_GEOFENCE_GOREVI, [
+        {
+            identifier: AKTIF_BOLGE_KIMLIGI,
+            latitude: lat,
+            longitude: lng,
+            radius: yaricap,
+            // Yalnız çıkış ilgilendiriyor: girişte yapacak iş yok.
+            notifyOnEnter: false,
+            notifyOnExit: true,
+        },
+    ]);
+}
+
+/**
+ * Eski (foreground service'li) konum güncelleme görevini varsa durdurur.
+ *
+ * Sürüm geçişinde kritik: durdurulmazsa kullanıcı hem geofence'ten hem de eski
+ * görevden hizmet alır ve kalıcı bildirim ekranda kalır. Üstelik `MY_PACKAGE_REPLACED`
+ * yayınında expo-task-manager kayıtlı görevleri geri yükler → güncelleme sonrası
+ * eski görev KENDİLİĞİNDEN dirilir. Bu yüzden temizlik yalnız `baslat`/`durdur`
+ * ile değil, arka plan görevinden de (uygulama hiç açılmasa bile) çağrılır.
+ */
+export async function eskiTakipGoreviniTemizle(): Promise<void> {
+    try {
+        const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
+        if (kayitliMi) {
+            await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
+            Logger.info('KonumTakip', 'Eski konum guncelleme gorevi durduruldu (gecis temizligi)');
+        }
+    } catch (e) {
+        Logger.warn('KonumTakip', 'Eski gorev temizlenemedi:', e);
+    }
+}
+
+/**
  * Konum takip ayarlari
  */
 export interface KonumTakipAyarlari {
@@ -64,25 +139,23 @@ export interface KonumTakipAyarlari {
 }
 
 /**
- * Arka plan konum gorevini tanimla
+ * Arka plan bölge görevini tanımla
+ *
+ * Yalnızca ÇIKIŞ olaylarında iş yapar. Olay yükü tetikleyen konumu TAŞIMAZ
+ * (expo yalnız kayıtlı bölgeyi geri verir) → taze sabitleme burada alınır.
  */
-TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.TaskManagerTaskBody<{ locations: Location.LocationObject[] }>) => {
+TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManager.TaskManagerTaskBody<{
+    eventType: Location.LocationGeofencingEventType;
+    region: Location.LocationRegion;
+}>) => {
     if (error) {
-        Logger.error('KonumTakip', 'Gorev hatasi:', error);
+        Logger.error('KonumTakip', 'Bolge gorevi hatasi:', error);
         return;
     }
 
-    if (!data || !data.locations || data.locations.length === 0) {
-        Logger.info('KonumTakip', 'Konum verisi yok');
+    if (!data || data.eventType !== Location.LocationGeofencingEventType.Exit) {
+        // Giriş olayı beklenmiyor (notifyOnEnter:false) — gelirse yok say.
         return;
-    }
-
-    const yeniKonum = data.locations[0];
-    const yeniLat = yeniKonum.coords.latitude;
-    const yeniLng = yeniKonum.coords.longitude;
-
-    if (__DEV__) {
-        Logger.info('KonumTakip', `Yeni konum alindi: ${yeniLat.toFixed(1)}, ${yeniLng.toFixed(1)}`);
     }
 
     try {
@@ -101,101 +174,55 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
             return;
         }
 
-        // Aktif profil ayarlarini al
+        const simdi = Date.now();
+
+        // Patlama (burst) koruması: art arda gelen olaylar pahalı işi tekrarlamasın.
+        if (!olayIslenebilirMi(konumAyarlari.sonGeofenceOlayi, simdi)) {
+            Logger.info('KonumTakip', 'Bolge olayi bekleme penceresinde, atlanıyor');
+            return;
+        }
+
         const profil = await aktifProfilGetir();
 
-        // Son konum ile karsilastir
-        const sonLat = konumAyarlari.koordinatlar?.lat;
-        const sonLng = konumAyarlari.koordinatlar?.lng;
-
-        if (sonLat && sonLng) {
-            const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
-            Logger.info('KonumTakip', `Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(profil.mesafe / 1000).toFixed(0)} km)`);
-
-            // Mesafe yeterli degilse konum guncelleme yapma ama son kontrol zamanini guncelle
-            if (mesafe < profil.mesafe) {
-                Logger.info('KonumTakip', 'Mesafe esigi asilmadi, konum guncelleme atlanıyor');
-                // Son kontrol zamanini guncelle (takibin aktif oldugunu gostermek icin)
-                const guncelAyarlarZaman = {
-                    ...konumAyarlari,
-                    sonGpsGuncellemesi: new Date().toISOString(),
-                };
-                await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlarZaman));
-                return;
-            }
-        }
-
-        // Reverse geocoding ile adres al
-        let gpsAdres = null;
+        // Taze sabitleme al (olay yükü konum taşımaz).
+        let yeniKonum: Location.LocationObject | null = null;
         try {
-            const adresler = await Location.reverseGeocodeAsync({
-                latitude: yeniLat,
-                longitude: yeniLng,
-            });
-            if (adresler && adresler.length > 0) {
-                const adres = adresler[0];
-                gpsAdres = {
-                    semt: '',
-                    ilce: adres.district || adres.subregion || '',
-                    il: adres.city || adres.region || '',
-                };
-            }
-        } catch (geoError) {
-            Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
+            yeniKonum = await Location.getCurrentPositionAsync({ accuracy: profil.dogruluk });
+        } catch (konumHatasi) {
+            Logger.warn('KonumTakip', 'Taze konum alinamadi:', konumHatasi);
         }
 
-        // Konum ayarlarini guncelle
-        const guncelAyarlar = {
-            ...konumAyarlari,
-            koordinatlar: { lat: yeniLat, lng: yeniLng },
-            gpsAdres: gpsAdres,
-            sonGpsGuncellemesi: new Date().toISOString(),
-        };
+        // KRİTİK: Taze konum yoksa bölgeyi YENİDEN KURMA. Bayat/eski bir merkeze
+        // kurmak, expo'nun sabit `INITIAL_TRIGGER_EXIT`'i yüzünden anında yeni bir
+        // çıkış olayı doğurur ve sıkı döngüye girilir. Mevcut bölge kayıtlı kalır;
+        // onarımı 15 dakikalık arka plan görevi üstlenir.
+        if (!yeniKonum || !konumTazeMi(yeniKonum.timestamp, simdi)) {
+            Logger.warn('KonumTakip', 'Taze konum yok, bolge yeniden kurulmuyor (dongu korumasi)');
+            await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+                ...konumAyarlari,
+                sonGeofenceOlayi: new Date(simdi).toISOString(),
+            }));
+            return;
+        }
 
-        await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify(guncelAyarlar));
-        Logger.info('KonumTakip', 'Konum guncellendi');
+        const yeniLat = yeniKonum.coords.latitude;
+        const yeniLng = yeniKonum.coords.longitude;
 
-        // =====================================================
-        // ONEMLI: Bildirimleri yeni konuma gore yeniden planla
-        // =====================================================
+        if (__DEV__) {
+            Logger.info('KonumTakip', `Bolge cikisi, yeni konum: ${yeniLat.toFixed(1)}, ${yeniLng.toFixed(1)}`);
+        }
+
+        // Bölgeyi TAZE konuma taşı. Merkez = bulunduğumuz nokta olduğu için
+        // çemberin içindeyiz → anında çıkış tetiklenemez.
         try {
-            const muhafizAyarlariJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
-            if (muhafizAyarlariJson) {
-                const muhafizAyarlari = JSON.parse(muhafizAyarlariJson);
-
-                if (muhafizAyarlari.aktif) {
-                    const varsayilanSikliklar = { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 };
-                    const sikliklar = muhafizAyarlari.sikliklar || varsayilanSikliklar;
-
-                    // Faz 3: matris varsa motor onu okur; yoksa/bozuksa eski global
-                    // esik/sikliklardan turetilir (ekranda kurulan matris EZILMESIN).
-                    const arkaplanAyarlari: ArkaplanMuhafizAyarlari = {
-                        aktif: muhafizAyarlari.aktif,
-                        koordinatlar: { lat: yeniLat, lng: yeniLng }, // Yeni koordinatlar!
-                        matris: muhafizMatrisiniCoz({
-                            matris: muhafizAyarlari.matris,
-                            esikler: {
-                                seviye1: muhafizAyarlari.esikler?.seviye1 || 45,
-                                seviye2: muhafizAyarlari.esikler?.seviye2 || 25,
-                                seviye3: muhafizAyarlari.esikler?.seviye3 || 10,
-                                seviye4: muhafizAyarlari.esikler?.seviye4 || 3,
-                            },
-                            sikliklar: {
-                                seviye1: sikliklar.seviye1 || 15,
-                                seviye2: sikliklar.seviye2 || 10,
-                                seviye3: sikliklar.seviye3 || 5,
-                                seviye4: sikliklar.seviye4 || 1,
-                            },
-                        }),
-                    };
-
-                    await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla(arkaplanAyarlari);
-                    Logger.info('KonumTakip', 'Bildirimler yeni konuma gore yeniden planlandi');
-                }
-            }
-        } catch (bildirimHatasi) {
-            Logger.error('KonumTakip', 'Bildirim guncelleme hatasi:', bildirimHatasi);
+            await bolgeyiKaydet(yeniLat, yeniLng, profil.mesafe);
+        } catch (kayitHatasi) {
+            Logger.error('KonumTakip', 'Bolge yeniden kurulamadi:', kayitHatasi);
         }
+
+        await yeniKonumuUygula(yeniLat, yeniLng, profil.mesafe, {
+            sonGeofenceOlayi: new Date(simdi).toISOString(),
+        });
 
     } catch (e) {
         Logger.error('KonumTakip', 'Islem hatasi:', e);
@@ -203,13 +230,109 @@ TaskManager.defineTask(KONUM_TAKIP_GOREVI, async ({ data, error }: TaskManager.T
 });
 
 /**
+ * Taze bir konum sabitlemesini diske işler ve gerekiyorsa tüm tüketicilere yayar.
+ *
+ * İKİ ÇAĞIRAN VAR ve ikisi de bu fonksiyondan geçmek ZORUNDA:
+ *  1. Bölge çıkış olayı (`KONUM_GEOFENCE_GOREVI`)
+ *  2. Arka plan ONARIM yolu (`ArkaplanGorevServisi`)
+ *
+ * (2) neden şart: onarım bölgeyi TAZE konuma kurar → cihaz çemberin İÇİNDE olur
+ * → hiçbir çıkış olayı **doğmaz**. Kullanıcı başka bir şehirde yeniden başlattıysa
+ * (reboot) diskteki koordinat orada bayat kalır ve tüm bildirimler eski şehre göre
+ * planlanmış olarak sürer — kullanıcı uygulamayı açana kadar. Bu yüzden onarım da
+ * mesafeyi AÇIKÇA karşılaştırıp buradan geçmeli.
+ *
+ * @param esikMesafe Güncellemenin tetikleneceği asgari mesafe (profil yarıçapı)
+ * @param ekAlanlar Her iki yazma dalına da eklenecek alanlar (ör. `sonGeofenceOlayi`)
+ * @returns Konum güncellenip yayıldıysa true; eşik altında kalındıysa false
+ */
+export async function yeniKonumuUygula(
+    yeniLat: number,
+    yeniLng: number,
+    esikMesafe: number,
+    ekAlanlar: Record<string, unknown> = {},
+): Promise<boolean> {
+    const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+    if (!konumAyarlariJson) {
+        Logger.info('KonumTakip', 'Konum ayarlari bulunamadi');
+        return false;
+    }
+
+    const konumAyarlari = JSON.parse(konumAyarlariJson);
+
+    // GPS modu degilse kullanicinin manuel secimini EZME
+    if (konumAyarlari.konumModu !== 'oto') {
+        Logger.info('KonumTakip', 'GPS modu aktif degil');
+        return false;
+    }
+
+    const simdi = new Date().toISOString();
+
+    // Son kaydedilen koordinatla karşılaştır: eşik altındaysa yalnız nabız yaz.
+    const sonLat = konumAyarlari.koordinatlar?.lat;
+    const sonLng = konumAyarlari.koordinatlar?.lng;
+
+    if (sonLat && sonLng) {
+        const mesafe = mesafeHesapla(sonLat, sonLng, yeniLat, yeniLng);
+        Logger.info('KonumTakip', `Mesafe degisimi: ${(mesafe / 1000).toFixed(2)} km (esik: ${(esikMesafe / 1000).toFixed(0)} km)`);
+
+        if (mesafe < esikMesafe) {
+            Logger.info('KonumTakip', 'Mesafe esigi asilmadi, konum guncelleme atlanıyor');
+            await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+                ...konumAyarlari,
+                sonGpsGuncellemesi: simdi,
+                ...ekAlanlar,
+            }));
+            return false;
+        }
+    }
+
+    // Reverse geocoding ile adres al
+    let gpsAdres = null;
+    try {
+        const adresler = await Location.reverseGeocodeAsync({
+            latitude: yeniLat,
+            longitude: yeniLng,
+        });
+        if (adresler && adresler.length > 0) {
+            const adres = adresler[0];
+            gpsAdres = {
+                semt: '',
+                ilce: adres.district || adres.subregion || '',
+                il: adres.city || adres.region || '',
+            };
+        }
+    } catch (geoError) {
+        Logger.warn('KonumTakip', 'Reverse geocoding hatasi:', geoError);
+    }
+
+    // Konum ayarlarini guncelle (bilinmeyen alanlar korunur)
+    await AsyncStorage.setItem(KONUM_DEPOLAMA_ANAHTARI, JSON.stringify({
+        ...konumAyarlari,
+        koordinatlar: { lat: yeniLat, lng: yeniLng },
+        gpsAdres: gpsAdres,
+        sonGpsGuncellemesi: simdi,
+        ...ekAlanlar,
+    }));
+    Logger.info('KonumTakip', 'Konum guncellendi');
+
+    // =====================================================
+    // ONEMLI: Konuma bagli TUM tuketicileri yeni konuma gore tazele
+    // (muhafiz bildirimleri + TTS alarmlari + vakit bildirimleri + vakit/iftar/sahur
+    // sayaclari + widget + hesaplayici). Hangi tuketicilerin var oldugu
+    // `KonumDegisikligiServisi`'nin sorumlulugudur — burada TEK cagri durur ki
+    // liste iki yerde yasayip ayrismasin.
+    // =====================================================
+    await konumDegistiUygula({ lat: yeniLat, lng: yeniLng });
+
+    return true;
+}
+
+/**
  * Konum Takip Servisi
  */
 export class KonumTakipServisi {
     private static instance: KonumTakipServisi;
-    private baslatmaDenemeSayisi = 0;
-    private readonly MAX_BASLATMA_DENEME = 3;
-    private pendingAppStateSubscription: ReturnType<typeof AppState.addEventListener> | null = null;
 
     private constructor() { }
 
@@ -225,18 +348,18 @@ export class KonumTakipServisi {
 
     /**
      * Konum takibini baslat
+     *
+     * Geofencing foreground service kullanmadığı için uygulamanın ön planda
+     * olması GEREKMEZ (eski `startLocationUpdatesAsync` yolunda gerekiyordu);
+     * bu yüzden AppState kapısı ve "ön plana gelince tekrar dene" mekanizması
+     * kaldırılmıştır. İzin İSTEME adımları sistem arayüzü açtığı için yine de
+     * kullanıcı tetikli akışlardan çağrılmalıdır; arka plandan onarım
+     * `ArkaplanGorevServisi` üzerinden yapılır (izin ister değil, kontrol eder).
+     *
      * @returns true ise basarili, false ise izin reddedildi veya hata olustu
      */
     public async baslat(): Promise<boolean> {
         try {
-            // 0. Android'de uygulama arka plandaysa foreground service baslatilamaz
-            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
-                Logger.info('KonumTakip', 'Uygulama arka planda, baslatma erteleniyor...');
-                // On plana gelince tekrar dene
-                this.onPlanaGelinceDene();
-                return false;
-            }
-
             // 1. Once foreground izni kontrol et ve iste
             const { status: mevcutOnPlanIzni } = await Location.getForegroundPermissionsAsync();
             Logger.info('KonumTakip', 'Mevcut on plan izni:', mevcutOnPlanIzni);
@@ -255,7 +378,6 @@ export class KonumTakipServisi {
 
             if (mevcutArkaPlanIzni !== 'granted') {
                 // Android 11+ icin requestBackgroundPermissionsAsync() sistem ayarlarini acar
-                // Bu noktada kullanici ayarlar sayfasina yonlendirilir
                 Logger.info('KonumTakip', 'Arka plan izni isteniyor (Android 11+ icin ayarlar sayfasi acilacak)...');
                 const { status: arkaPlanIzni } = await Location.requestBackgroundPermissionsAsync();
                 Logger.info('KonumTakip', 'Arka plan izni sonucu:', arkaPlanIzni);
@@ -266,89 +388,67 @@ export class KonumTakipServisi {
                 }
             }
 
-            // 3. Gorev zaten kayitli ise durdur ve yeniden baslat
-            // OS arka plan gorevini durdurmus olabilir, bu yuzden her zaman yeniden baslatiyoruz
-            const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
-            if (kayitliMi) {
-                Logger.info('KonumTakip', 'Gorev zaten kayitli, yeniden baslatiliyor');
-                try {
-                    await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
-                } catch (stopError) {
-                    Logger.warn('KonumTakip', 'Mevcut gorev durdurulamadi:', stopError);
-                }
-            }
+            // 3. Surum gecisi: eski foreground service'li gorev varsa durdur.
+            await eskiTakipGoreviniTemizle();
 
-            // 4. Aktif profili oku ve konum takibini baslat
+            // 4. Aktif profili oku
             const profil = await aktifProfilGetir();
-            Logger.info('KonumTakip', `Profil: mesafe=${profil.mesafe}m, zaman=${profil.zaman}s, dogruluk=${profil.dogruluk}`);
+            Logger.info('KonumTakip', `Profil: yaricap=${profil.mesafe}m, dogruluk=${profil.dogruluk}`);
 
-            await Location.startLocationUpdatesAsync(KONUM_TAKIP_GOREVI, {
-                accuracy: profil.dogruluk,
-                timeInterval: profil.zaman * 1000,
-                distanceInterval: profil.mesafe,
-                deferredUpdatesInterval: profil.zaman * 1000,
-                deferredUpdatesDistance: profil.mesafe,
-                showsBackgroundLocationIndicator: true,
-                foregroundService: {
-                    // Android, arka planda konum okumak için kalıcı bildirim zorunlu kılar.
-                    // Metin, kullanıcıya neden bildirim gördüğünü açık ve sade biçimde anlatır.
-                    notificationTitle: 'Seyahatte otomatik güncelleme',
-                    notificationBody: 'Şehir değiştiğinde namaz vakitleri konumunuza göre güncellenir.',
-                    notificationColor: '#4A90D9',
-                },
-                pausesUpdatesAutomatically: profil.duraklatma,
-                activityType: Location.ActivityType.Other,
-            });
-
-            // 5. Ayarlari kaydet
-            await this.ayarlariKaydet({ aktif: true, sonKoordinatlar: null, sonGuncellemeTarihi: null });
-
-            // Basarili baslatma - deneme sayacini sifirla
-            this.baslatmaDenemeSayisi = 0;
-
-            Logger.info('KonumTakip', 'Konum takibi baslatildi');
-            return true;
-        } catch (e: any) {
-            // Android foreground service hatasi - uygulama arka plana gecmis olabilir
-            if (Platform.OS === 'android' && e?.message?.includes('foreground service')) {
-                Logger.warn('KonumTakip', 'Foreground service baslatilamadi, on plana gelince tekrar denenecek');
-                this.onPlanaGelinceDene();
+            // 5. Bolge merkezi icin taze konum al; alinamazsa kayitli koordinata dus.
+            const merkez = await this.bolgeMerkeziniBelirle(profil);
+            if (!merkez) {
+                Logger.error('KonumTakip', 'Bolge merkezi belirlenemedi, takip baslatilamadi');
                 return false;
             }
+
+            await bolgeyiKaydet(merkez.lat, merkez.lng, profil.mesafe);
+
+            // 6. Ayarlari kaydet
+            await this.ayarlariKaydet({ aktif: true, sonKoordinatlar: null, sonGuncellemeTarihi: null });
+
+            Logger.info('KonumTakip', 'Konum takibi (bolge izleme) baslatildi');
+            return true;
+        } catch (e) {
             Logger.error('KonumTakip', 'Baslama hatasi:', e);
             return false;
         }
     }
 
     /**
-     * Uygulama on plana geldiginde konum takibini baslatmayi dener
-     * Android'de foreground service kisitlamasi nedeniyle gereklidir
+     * İzlenecek bölgenin merkezini belirler.
+     *
+     * Öncelik taze sabitlemededir; alınamazsa diskteki son koordinat kullanılır.
+     * Kayıtlı koordinatla kurulan bölge, cihaz uzaktaysa anında bir çıkış olayı
+     * üretir — bu İSTENEN davranıştır (olay yolu taze konumla merkezi düzeltir).
      */
-    private onPlanaGelinceDene(): void {
-        // Maksimum deneme sayisina ulasilmissa ek deneme yapma
-        if (this.baslatmaDenemeSayisi >= this.MAX_BASLATMA_DENEME) {
-            Logger.warn('KonumTakip', 'Maksimum deneme sayisina ulasildi, on plana gelince deneme durduruldu');
-            return;
+    private async bolgeMerkeziniBelirle(
+        profil: TakipProfilKonfigurasyonu,
+    ): Promise<{ lat: number; lng: number } | null> {
+        try {
+            const konum = await Location.getCurrentPositionAsync({ accuracy: profil.dogruluk });
+            if (konum?.coords) {
+                return { lat: konum.coords.latitude, lng: konum.coords.longitude };
+            }
+        } catch (e) {
+            Logger.warn('KonumTakip', 'Taze konum alinamadi, kayitli koordinata dusuluyor:', e);
         }
 
-        // Mevcut bekleme varsa tekrar ekleme (memory leak onleme)
-        if (this.pendingAppStateSubscription) {
-            return;
-        }
-
-        this.baslatmaDenemeSayisi++;
-        this.pendingAppStateSubscription = AppState.addEventListener('change', async (nextState) => {
-            if (nextState === 'active') {
-                this.pendingAppStateSubscription?.remove();
-                this.pendingAppStateSubscription = null;
-                Logger.info('KonumTakip', 'Uygulama on plana geldi, konum takibi baslatiliyor...');
-                const basarili = await this.baslat();
-                // Basarili olduysa deneme sayacini sifirla
-                if (basarili) {
-                    this.baslatmaDenemeSayisi = 0;
+        try {
+            const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+            if (konumAyarlariJson) {
+                const konumAyarlari = JSON.parse(konumAyarlariJson);
+                const lat = konumAyarlari.koordinatlar?.lat;
+                const lng = konumAyarlari.koordinatlar?.lng;
+                if (typeof lat === 'number' && typeof lng === 'number') {
+                    return { lat, lng };
                 }
             }
-        });
+        } catch (e) {
+            Logger.warn('KonumTakip', 'Kayitli koordinat okunamadi:', e);
+        }
+
+        return null;
     }
 
     /**
@@ -356,16 +456,14 @@ export class KonumTakipServisi {
      */
     public async durdur(): Promise<void> {
         try {
-            const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
+            const kayitliMi = await TaskManager.isTaskRegisteredAsync(KONUM_GEOFENCE_GOREVI);
             if (kayitliMi) {
-                await Location.stopLocationUpdatesAsync(KONUM_TAKIP_GOREVI);
-                Logger.info('KonumTakip', 'Konum takibi durduruldu');
+                await Location.stopGeofencingAsync(KONUM_GEOFENCE_GOREVI);
+                Logger.info('KonumTakip', 'Bolge izleme durduruldu');
             }
 
-            // Bekleyen AppState subscription varsa temizle
-            this.pendingAppStateSubscription?.remove();
-            this.pendingAppStateSubscription = null;
-            this.baslatmaDenemeSayisi = 0;
+            // Surum gecisi: eski gorev de kalmis olabilir.
+            await eskiTakipGoreviniTemizle();
 
             // Ayarlari guncelle
             const mevcutAyarlar = await this.ayarlariGetir();
@@ -377,10 +475,14 @@ export class KonumTakipServisi {
 
     /**
      * Takip durumunu kontrol et
+     *
+     * `hasStartedGeofencingAsync` yerine `isTaskRegisteredAsync` kullanılır:
+     * expo'nun geofencing sorgusu arka plan izni yoksa İSTİSNA FIRLATIR, görev
+     * kaydı sorgusu ise sessizce cevap verir.
      */
     public async aktifMi(): Promise<boolean> {
         try {
-            return await TaskManager.isTaskRegisteredAsync(KONUM_TAKIP_GOREVI);
+            return await TaskManager.isTaskRegisteredAsync(KONUM_GEOFENCE_GOREVI);
         } catch (e) {
             Logger.warn('KonumTakip', 'aktifMi kontrol hatasi:', e);
             return false;
@@ -425,7 +527,6 @@ export class KonumTakipServisi {
     /**
      * Konum takibini yeniden baslat
      * Uygulama on plana geldiginde cagrilmali
-     * OS tarafindan durdurulan gorevi yeniden canlandirir
      *
      * Izin iptal senaryosu:
      * Kullanici sistem ayarlarindan izni iptal ettiyse, takibi graceful
@@ -433,13 +534,6 @@ export class KonumTakipServisi {
      */
     public async yenidenBaslat(): Promise<boolean> {
         try {
-            // Android'de arka plandaysa erken cik
-            if (Platform.OS === 'android' && AppState.currentState !== 'active') {
-                Logger.info('KonumTakip', 'Uygulama arka planda, yeniden baslatma erteleniyor...');
-                this.onPlanaGelinceDene();
-                return false;
-            }
-
             const ayarlar = await this.ayarlariGetir();
             if (!ayarlar.aktif) {
                 Logger.info('KonumTakip', 'Takip aktif degil, yeniden baslatma atlanıyor');
@@ -450,7 +544,6 @@ export class KonumTakipServisi {
             const arkaPlanIzniVar = await this.arkaPlanIzniVarMi();
             if (!arkaPlanIzniVar) {
                 Logger.info('KonumTakip', 'Arka plan izni iptal edilmis, takip devre disi birakiliyor');
-                // Izin iptal edilmis - ayarlari guncelle ve durdur
                 await this.ayarlariKaydet({ ...ayarlar, aktif: false });
                 return false;
             }
