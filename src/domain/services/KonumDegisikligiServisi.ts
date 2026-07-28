@@ -39,6 +39,7 @@ import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './SahurSayacBildirimServisi';
 import { WidgetServisi } from './WidgetServisi';
+import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -194,6 +195,14 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
 
         guvenliCalistir('Widget', () =>
             WidgetServisi.getInstance().vakitleriyaz(koordinatlar),
+        ),
+
+        // Cuma hatırlatması da konuma bağlıdır: öğle vakti kayınca hatırlatma anı
+        // da kayar. Penceresi DÖRT HAFTA olduğu için bayatlığı diğer tüketicilerden
+        // (bugün+yarın) çok daha uzun sürer — yayma noktasından düşerse kullanıcı
+        // yeni şehrinde bir ay boyunca eski şehrin saatiyle hatırlatılır.
+        guvenliCalistir('Cuma hatirlatmasi', () =>
+            CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
     ]);
 
