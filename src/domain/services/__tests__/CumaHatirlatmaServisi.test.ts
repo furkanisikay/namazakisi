@@ -147,6 +147,22 @@ describe('CumaHatirlatmaServisi', () => {
         expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     });
 
+    /**
+     * Konum gecici olarak okunamazsa (bozuk kayit, headless yol) KURULU plan
+     * SILINMEMELI: silinip yerine bir sey konmazsa kullanici bir sonraki
+     * basarili calismaya kadar hic hatirlatma almaz — sessiz kayip.
+     */
+    it('koordinat okunamazsa MEVCUT plani SILMEZ', async () => {
+        ayarlariKur(true);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: 'cuma_hatirlatma_2026-08-07' },
+        ]);
+
+        await servis.hatirlatmalariGuncelle(null);
+
+        expect(Notifications.cancelScheduledNotificationAsync).not.toHaveBeenCalled();
+    });
+
     it('bildirimi vakit bildirim kanalina ve dogru icerikle gonderir', async () => {
         ayarlariKur(true, 60);
 
@@ -157,6 +173,38 @@ describe('CumaHatirlatmaServisi', () => {
         expect(ilk.content.body).toContain('1 saat');
         expect(ilk.content.data.tip).toBe('cuma_hatirlatma');
         expect(ilk.trigger.channelId).toBe('vakit_bildirim');
+    });
+
+    /**
+     * Uc cagiran ayni anda tetikleyebilir (acilis zinciri / ayar ekrani / arka plan).
+     * Islem cok adimli oldugu icin ic ice girerse A'nin temizligi B'nin
+     * planlamasindan sonra kosabilir → ayar ile kurulu saat AYRISIR.
+     */
+    it('es zamanli cagrilar SIRAYLA kosar (temizlik baskasinin planini yemez)', async () => {
+        ayarlariKur(true);
+        const olaylar: string[] = [];
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockImplementation(
+            async () => {
+                olaylar.push('temizlik');
+                await Promise.resolve();
+                return [];
+            }
+        );
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockImplementation(async () => {
+            olaylar.push('planla');
+            return 'id';
+        });
+
+        await Promise.all([
+            servis.hatirlatmalariGuncelle(KOORDINAT),
+            servis.hatirlatmalariGuncelle(KOORDINAT),
+        ]);
+
+        // Beklenen: temizlik, 4 planla, temizlik, 4 planla — turlar ic ice GECMEZ.
+        expect(olaylar).toEqual([
+            'temizlik', 'planla', 'planla', 'planla', 'planla',
+            'temizlik', 'planla', 'planla', 'planla', 'planla',
+        ]);
     });
 
     it('tek bir planlama hatasi kalan cumalari DUSURMEZ', async () => {

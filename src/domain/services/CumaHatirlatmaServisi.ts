@@ -43,6 +43,16 @@ export interface CumaKoordinat {
 export class CumaHatirlatmaServisi {
     private static instance: CumaHatirlatmaServisi;
 
+    /**
+     * Suren planlama. UC cagiran ayni anda tetikleyebilir (acilis zinciri, ayar
+     * ekrani, arka plan gorevi) ve islem "temizle → 4 planla" seklinde COK ADIMLI:
+     * ic ice girerse A'nin temizligi B'nin planlamasindan SONRA kosabilir ya da
+     * eski ayarla planlayan cagri sonuncu olabilir → diskteki ayar ile gercekten
+     * kurulu saat AYRISIR (bir sonraki acilisa kadar sessizce yanlis saat).
+     * Bekleyen cagri ayni promise'i paylasir; ust uste planlama olmaz.
+     */
+    private surenPlanlama: Promise<void> | null = null;
+
     private constructor() { }
 
     public static getInstance(): CumaHatirlatmaServisi {
@@ -57,18 +67,44 @@ export class CumaHatirlatmaServisi {
      * ayar kapaliysa temizlikten sonra doner.
      */
     public async hatirlatmalariGuncelle(koordinatlar: CumaKoordinat | null): Promise<void> {
+        // Suren bir planlama varsa onu BEKLE, sonra kendi turunu calistir —
+        // boylece son cagri daima en guncel ayarla ve bozulmamis sirayla koşar.
+        const onceki = this.surenPlanlama ?? Promise.resolve();
+        const bu = onceki
+            .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
+            .then(() => this.planlamayiCalistir(koordinatlar));
+
+        this.surenPlanlama = bu;
+        try {
+            await bu;
+        } finally {
+            // Yalnizca EN SON tur bayragi temizler (arada yeni cagri geldiyse o devralir).
+            if (this.surenPlanlama === bu) this.surenPlanlama = null;
+        }
+    }
+
+    private async planlamayiCalistir(koordinatlar: CumaKoordinat | null): Promise<void> {
         const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-        await this.mevcutlariTemizle();
-
-        if (!ayarlar.aktif) return;
+        if (!ayarlar.aktif) {
+            await this.mevcutlariTemizle();
+            return;
+        }
 
         // (0,0) = konum henuz yuklenmemis; Gine Korfezi'ne gore vakit planlamak
         // sessizce yanlis saatte bildirim demek olurdu.
+        //
+        // TEMIZLIKTEN ONCE kontrol edilir: koordinat gecici olarak okunamazsa
+        // (bozuk/eksik konum kaydi, headless yol) once temizleyip sonra vazgecmek,
+        // KURULU dort haftalik plani silip yerine hicbir sey koymamak demekti —
+        // kullanici bir sonraki basarili calismaya kadar hatirlatma almazdi.
+        // Bayat plan, plansizliktan iyidir.
         if (!koordinatlar || (koordinatlar.lat === 0 && koordinatlar.lng === 0)) {
-            Logger.warn('CumaHatirlatma', 'Konum yok, hatirlatma planlanamiyor');
+            Logger.warn('CumaHatirlatma', 'Konum yok, mevcut plan korunuyor');
             return;
         }
+
+        await this.mevcutlariTemizle();
 
         const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
         const params = CalculationMethod.Turkey();

@@ -121,6 +121,8 @@ export const AnaSayfa: React.FC = () => {
   // gelmez) → kullanıcının bir sonraki elle kaydırmasındaki "gelecek gün" uyarısı
   // yutulurdu. Bu yüzden ref, sayfanın değiştiği ÜÇ yerde elle yazılır.
   const mevcutSayfaIndeksiRef = useRef(BASLANGIC_SAYFA_INDEKSI);
+  /** İlk render mı? Açılış sayfası state'ini bir kez hizalamak için. */
+  const ilkKareRef = useRef(true);
 
   // Servis vaktini NamazAdi enum'ına çeviren map
   const servisToNamazAdi: Record<string, NamazAdi> = useMemo(() => ({
@@ -216,6 +218,15 @@ export const AnaSayfa: React.FC = () => {
     mevcutSayfaIndeksiRef.current = ilkSayfaIndeksiRef.current;
   }
   const ilkSayfaIndeksi = ilkSayfaIndeksiRef.current;
+
+  // Pager açılış sayfasında DOĞDUĞU için sayfa indeksi state'i de ilk render'da
+  // oraya çekilir. Yoksa gece yarısı senaryosunda (pager 89, state 90) mount
+  // effect'i state'i düzeltene kadar sayfa `mevcutSayfaMi` kapısına takılıp BOŞ
+  // çizilirdi — kullanıcı kısa bir boş kare görürdü.
+  if (ilkKareRef.current) {
+    ilkKareRef.current = false;
+    if (mevcutSayfaIndeksi !== ilkSayfaIndeksi) setMevcutSayfaIndeksi(ilkSayfaIndeksi);
+  }
 
   // ---- Tarih seçici (DateTimePicker) ----
   // DİKKAT — bu üç değer ve geri çağrı STABİL olmak ZORUNDA. RNDateTimePickerAndroid

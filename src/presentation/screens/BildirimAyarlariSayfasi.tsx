@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -124,6 +124,12 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
 /**
  * Bildirim Ayarlari Sayfasi
  */
+/**
+ * Cuma "ne kadar önce" değerinin diske yazılmadan önce beklediği süre.
+ * Stepper'a arka arkaya basmak tek yazmaya/planlamaya insin diye.
+ */
+const CUMA_YAZMA_GECIKMESI_MS = 1200;
+
 export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
@@ -160,9 +166,56 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: yeniDeger }));
   };
 
-  const handleCumaOncedenDegistir = (yeniDeger: number) => {
-    dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: yeniDeger }));
-  };
+  /**
+   * Stepper'a arka arkaya basmak TEK yazmaya inmeli.
+   *
+   * Her dokunuşta dispatch etmek iki sorun üretiyordu: (1) gösterilen değer
+   * store'dan geldiği ve store ancak thunk `fulfilled` olunca güncellendiği için
+   * hızlı basışta ikinci tıklama bayat değeri okuyup artışı YUTUYORDU;
+   * (2) her dispatch diske yazıp dört bildirimi yeniden planladığı için eşzamanlı
+   * turlar birbirini ezip ayar ile kurulu saatin ayrışmasına yol açabiliyordu.
+   * Bu yüzden UI yerel taslaktan çizilir, yazma debounce'lanır ve ekrandan
+   * çıkarken bekleyen yazma HEMEN uygulanır (aynı desen: MuhafizAyarlariSayfasi).
+   */
+  const [cumaOncedenTaslak, setCumaOncedenTaslak] = useState<number | null>(null);
+  const cumaYazmaZamanlayiciRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cumaBekleyenDegerRef = useRef<number | null>(null);
+
+  const cumaOncedenYaz = useCallback((deger: number) => {
+    cumaBekleyenDegerRef.current = null;
+    dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: deger }));
+  }, [dispatch]);
+
+  const handleCumaOncedenDegistir = useCallback((yeniDeger: number) => {
+    setCumaOncedenTaslak(yeniDeger);
+    cumaBekleyenDegerRef.current = yeniDeger;
+    if (cumaYazmaZamanlayiciRef.current) clearTimeout(cumaYazmaZamanlayiciRef.current);
+    cumaYazmaZamanlayiciRef.current = setTimeout(() => {
+      cumaYazmaZamanlayiciRef.current = null;
+      cumaOncedenYaz(yeniDeger);
+    }, CUMA_YAZMA_GECIKMESI_MS);
+  }, [cumaOncedenYaz]);
+
+  // Ekrandan çıkışta bekleyen yazma varsa hemen uygula — kullanıcı değeri
+  // değiştirip geri tuşuna basabilir; bekleyen iş sessizce kaybolmamalı.
+  useEffect(
+    () => () => {
+      if (cumaYazmaZamanlayiciRef.current) clearTimeout(cumaYazmaZamanlayiciRef.current);
+      const bekleyen = cumaBekleyenDegerRef.current;
+      if (bekleyen !== null) cumaOncedenYaz(bekleyen);
+    },
+    [cumaOncedenYaz]
+  );
+
+  // Yazma tamamlanınca (store taslakla eşitlenince) taslağı bırak — normalize
+  // edilmiş değer varsa o gösterilsin.
+  useEffect(() => {
+    if (cumaOncedenTaslak !== null && cumaAyarlari.oncedenDk === cumaOncedenTaslak) {
+      setCumaOncedenTaslak(null);
+    }
+  }, [cumaAyarlari.oncedenDk, cumaOncedenTaslak]);
+
+  const cumaOncedenGosterilen = cumaOncedenTaslak ?? cumaAyarlari.oncedenDk;
 
   const handleGunSonuBildirimToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -459,7 +512,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                 </Text>
 
                 <SayisalSecici
-                  deger={cumaAyarlari.oncedenDk}
+                  deger={cumaOncedenGosterilen}
                   min={CUMA_ONCEDEN_MIN_DK}
                   max={CUMA_ONCEDEN_MAX_DK}
                   adim={CUMA_ONCEDEN_ADIM_DK}
@@ -477,7 +530,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                     style={{ marginTop: 2 }}
                   />
                   <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                    Öğle vaktinden {sureMetniOlustur(cumaAyarlari.oncedenDk)} önce hatırlatılırsınız —
+                    Öğle vaktinden {sureMetniOlustur(cumaOncedenGosterilen)} önce hatırlatılırsınız —
                     camiye yetişecek zamanı siz belirleyin. Cuma, öğle namazının yerine geçtiği için
                     ayrı bir kayıt tutulmaz; işaretlemeyi öğle namazından yaparsınız.
                   </Text>
