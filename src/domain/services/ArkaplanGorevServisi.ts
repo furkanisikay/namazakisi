@@ -13,6 +13,7 @@ import * as TaskManager from 'expo-task-manager';
 import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
+import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -37,6 +38,40 @@ const MINIMUM_ARALIK_DAKIKA = 15;
 
 /** Konum ayarlari depolama anahtari */
 const KONUM_DEPOLAMA_ANAHTARI = '@namaz_akisi/konum_ayarlari';
+
+/**
+ * Arka planda (headless) koordinat okur.
+ *
+ * `NamazVaktiHesaplayiciServisi.getKonfig()` KULLANILAMAZ — o bellek içidir ve
+ * App.tsx kurar; arka plan görevi süreç ölüyken tetiklendiğinde boştur.
+ * Konum slice anahtarı birincil kaynaktır; ESKİ kayıtlarda koordinat yalnızca
+ * muhafız blob'unda bulunabildiği için o da yedek olarak denenir.
+ * Hiçbiri yoksa `null` döner — varsayılan bir şehre DÜŞMEK, kullanıcıya yanlış
+ * saatte bildirim göndermek demek olurdu.
+ */
+const arkaplandaKoordinatOku = async (): Promise<CumaKoordinat | null> => {
+    const gecerliMi = (k: unknown): k is CumaKoordinat =>
+        !!k &&
+        typeof (k as CumaKoordinat).lat === 'number' &&
+        typeof (k as CumaKoordinat).lng === 'number';
+
+    try {
+        const konumJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
+        if (konumJson) {
+            const konum = JSON.parse(konumJson);
+            if (gecerliMi(konum?.koordinatlar)) return konum.koordinatlar;
+        }
+
+        const muhafizJson = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
+        if (muhafizJson) {
+            const muhafiz = JSON.parse(muhafizJson);
+            if (gecerliMi(muhafiz?.koordinatlar)) return muhafiz.koordinatlar;
+        }
+    } catch (e) {
+        Logger.error('ArkaplanGorev', 'Koordinat okunamadı', e);
+    }
+    return null;
+};
 
 /** Konum takip ayarlari depolama anahtari */
 const KONUM_TAKIP_AYARLARI_ANAHTAR = '@namaz_akisi/konum_takip_ayarlari';
@@ -273,6 +308,23 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // Telefon reboot, app kill, OS kill senaryolarini ele al
         // =====================================================
         await arkaplandanKonumTakibiniYenidenBaslat();
+
+        // =====================================================
+        // ADIM 1.5: CUMA HATIRLATMASINI TAZELE
+        //
+        // MUHAFIZ KONTROLLERINDEN ÖNCE: aşağıdaki bloklar muhafız ayarı yoksa
+        // veya kapalıysa NoData ile ERKEN DÖNER. Cuma hatırlatması muhafızdan
+        // bağımsız bir ayardır; buradan sonraya konsaydı muhafızı kapatan
+        // kullanıcıda dört haftalık pencere hiç tazelenmez ve hatırlatma
+        // sessizce biterdi. Hatası da muhafız planlamasını düşürmemeli.
+        // =====================================================
+        try {
+            await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku()
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
+        }
 
         // =====================================================
         // ADIM 2: BILDIRIMLERI YENIDEN PLANLA

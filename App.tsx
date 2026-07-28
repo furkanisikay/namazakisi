@@ -20,6 +20,8 @@ import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildi
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
+import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
+import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
@@ -161,6 +163,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(vakitSayacAyarlariniYukle()),
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
+      store.dispatch(cumaHatirlatmaAyarlariniYukle()),
       kurulumTamamlandi ? BildirimServisi.getInstance().izinIste() : Promise.resolve(),
     ]);
 
@@ -191,6 +194,10 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       konumState.koordinatlar.lat !== 0 && konumState.koordinatlar.lng !== 0
         ? VakitBildirimYoneticiServisi.getInstance().bildirimleriGuncelle()
         : Promise.resolve(),
+      // Cuma hatirlatmasi (issue #173) — dort haftalik pencere her acilista tazelenir.
+      // Koordinat PARAMETRE gecilir: servis bellek-ici hesaplayici konfigine bagli
+      // olsaydi arka plan/headless yollarinda sessizce hicbir sey planlamazdi.
+      CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,

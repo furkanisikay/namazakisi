@@ -26,6 +26,14 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
 import { vakitBildirimAyariniGuncelle, vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
 import { vakitSayacAyariniGuncelle, vakitSayacAyarlariniYukle } from '../store/vakitSayacSlice';
+import { cumaHatirlatmaAyariniGuncelle, cumaHatirlatmaAyarlariniYukle } from '../store/cumaHatirlatmaSlice';
+import {
+  CUMA_ONCEDEN_MIN_DK,
+  CUMA_ONCEDEN_MAX_DK,
+  CUMA_ONCEDEN_ADIM_DK,
+} from '../../data/local/LocalCumaHatirlatmaServisi';
+import { sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
+import { SayisalSecici } from '../components/common/SayisalSecici';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
@@ -124,6 +132,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const { ayarlar: vakitAyarlari } = useAppSelector((state) => state.vakitBildirim);
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
   const muhafizState = useAppSelector((state) => state.muhafiz);
+  const { ayarlar: cumaAyarlari } = useAppSelector((state) => state.cumaHatirlatma);
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -131,6 +140,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   useEffect(() => {
     dispatch(vakitBildirimAyarlariniYukle());
     dispatch(vakitSayacAyarlariniYukle());
+    dispatch(cumaHatirlatmaAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -143,6 +153,15 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
   const handleVakitBildirimToggle = async (vakit: string, yeniDeger: boolean) => {
     await butonTiklandiFeedback();
     dispatch(vakitBildirimAyariniGuncelle({ vakit: vakit as any, aktif: yeniDeger }));
+  };
+
+  const handleCumaToggle = async (yeniDeger: boolean) => {
+    await butonTiklandiFeedback();
+    dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: yeniDeger }));
+  };
+
+  const handleCumaOncedenDegistir = (yeniDeger: number) => {
+    dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: yeniDeger }));
   };
 
   const handleGunSonuBildirimToggle = async (yeniDeger: boolean) => {
@@ -386,6 +405,81 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
                     Vakit çıkmak üzereyken bildirim panelinde gerçek zamanlı geri sayım gösterilir.
                     Kıldım işaretleyince otomatik kaybolur. {'\n'}
                     <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
+        </View>
+
+        {/* Cuma Namazi Bolumu (issue #173) */}
+        <View className="mb-6">
+          <Text
+            className="text-xs font-bold tracking-wider mb-3"
+            style={{ color: renkler.metinIkincil }}
+          >
+            CUMA NAMAZI
+          </Text>
+
+          <View
+            className="rounded-xl overflow-hidden shadow-sm"
+            style={{ backgroundColor: renkler.kartArkaplan }}
+          >
+            <View className="flex-row items-center p-4">
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: `${renkler.birincil}15` }}
+              >
+                <FontAwesome5 name="mosque" size={18} color={renkler.birincil} solid />
+              </View>
+              <View className="flex-1">
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                  Cuma hatırlatması
+                </Text>
+                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  Her cuma, öğle vaktinden önce hatırlatalım
+                </Text>
+              </View>
+              <Switch
+                value={cumaAyarlari.aktif}
+                onValueChange={handleCumaToggle}
+                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                thumbColor={cumaAyarlari.aktif ? renkler.birincil : '#f4f3f4'}
+                accessibilityLabel="Cuma hatırlatması"
+              />
+            </View>
+
+            {cumaAyarlari.aktif && (
+              <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
+                <Text
+                  className="text-xs font-semibold mt-4 mb-3"
+                  style={{ color: renkler.metinIkincil }}
+                >
+                  Ne kadar önce hatırlatalım?
+                </Text>
+
+                <SayisalSecici
+                  deger={cumaAyarlari.oncedenDk}
+                  min={CUMA_ONCEDEN_MIN_DK}
+                  max={CUMA_ONCEDEN_MAX_DK}
+                  adim={CUMA_ONCEDEN_ADIM_DK}
+                  onChange={handleCumaOncedenDegistir}
+                  renk={renkler.birincil}
+                  degerGenisligi={110}
+                  aciklama="Ne kadar önce"
+                />
+
+                <View className="flex-row items-start mt-4 gap-2">
+                  <FontAwesome5
+                    name="info-circle"
+                    size={12}
+                    color={renkler.metinIkincil}
+                    style={{ marginTop: 2 }}
+                  />
+                  <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                    Öğle vaktinden {sureMetniOlustur(cumaAyarlari.oncedenDk)} önce hatırlatılırsınız —
+                    camiye yetişecek zamanı siz belirleyin. Cuma, öğle namazının yerine geçtiği için
+                    ayrı bir kayıt tutulmaz; işaretlemeyi öğle namazından yaparsınız.
                   </Text>
                 </View>
               </View>

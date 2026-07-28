@@ -21,6 +21,7 @@ import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { aktifGunuHesapla, gelecekGuneGecisMi } from '../../core/utils/gunNavigasyonYardimcisi';
+import { namazGorunenAdi } from '../../core/utils/cumaYardimcisi';
 import { useRenkler, useTema } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { NamazMuhafiziServisi } from '../../domain/services/NamazMuhafiziServisi';
@@ -85,6 +86,9 @@ export const AnaSayfa: React.FC = () => {
   const ilkKutlama = useAppSelector(ilkKutlamaSelector);
   const muhafizAyarlari = useAppSelector((state) => state.muhafiz);
   const konumAyarlari = useAppSelector((state) => state.konum);
+  // Cuma etiketi yalniz kullanici cuma hatirlatmasini actiysa gosterilir —
+  // cuma herkese farz-i ayn degildir, etiketi herkese dayatmayiz.
+  const cumaEtiketi = useAppSelector((state) => state.cumaHatirlatma.ayarlar.aktif);
   // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
   // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
   const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
@@ -578,6 +582,9 @@ export const AnaSayfa: React.FC = () => {
     const tamamlanan = gunlukNamazlar.namazlar.filter(n => n.tamamlandi).length;
     const toplam = gunlukNamazlar.namazlar.length;
     const aktifGunKontrol = sayfaTarihi === aktifGun;
+    // Gosterilen gunun tarihi (Date) — cuma etiketi BU gune gore hesaplanir;
+    // `new Date()` kullanilsaydi gecmis gune bakarken yanlis etiket cikardi.
+    const sayfaTarihiDate = ISOTarihiDateNesnesiNeCevir(sayfaTarihi);
 
     // Şu anki vakit bilgisi (sadece aktif gün için geçerli)
     let suankiVakitAdi = "Vakit";
@@ -661,6 +668,7 @@ export const AnaSayfa: React.FC = () => {
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
             konumMetni={konumMetni}
+            gorunenVakitAdi={namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi)}
           />
         ) : (
           <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
@@ -683,6 +691,8 @@ export const AnaSayfa: React.FC = () => {
           onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
+          gunTarihi={sayfaTarihiDate}
+          cumaEtiketi={cumaEtiketi}
         />
         {/* ScrollView sonu için boşluk */}
         <View className="h-10" />

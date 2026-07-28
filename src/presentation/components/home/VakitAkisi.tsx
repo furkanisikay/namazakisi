@@ -5,6 +5,7 @@ import { useRenkler } from '../../../core/theme';
 import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
+import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -15,6 +16,10 @@ interface VakitAkisiProps {
     aktifGunMu?: boolean;
     /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
     kilitli?: boolean;
+    /** GOSTERILEN gunun tarihi — cuma etiketi buna gore hesaplanir (`new Date()` DEGIL). */
+    gunTarihi?: Date;
+    /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
+    cumaEtiketi?: boolean;
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -36,7 +41,9 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     toplamSayi,
     onVakitTikla,
     aktifGunMu = false,
-    kilitli = false
+    kilitli = false,
+    gunTarihi,
+    cumaEtiketi = false
 }) => {
     const renkler = useRenkler();
 
@@ -98,6 +105,12 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     // Arka plan rengi belirleme
                     const arkaplanRengi = renkler.kartArkaplan;
 
+                    // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
+                    // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
+                    const gorunenAd = gunTarihi
+                        ? namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi)
+                        : namaz.namazAdi;
+
                     return (
                         <TouchableOpacity
                             key={namaz.namazAdi}
@@ -114,7 +127,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                             onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
                             disabled={pasifMi}
                             accessibilityRole="button"
-                            accessibilityLabel={`${namaz.namazAdi} vakti${tamamlandi ? ', kılındı' : (aktifMi ? ', vakti geldi' : (pasifMi ? ', vakit girmedi' : ', vakti bekleniyor'))}`}
+                            accessibilityLabel={`${gorunenAd} vakti${tamamlandi ? ', kılındı' : (aktifMi ? ', vakti geldi' : (pasifMi ? ', vakit girmedi' : ', vakti bekleniyor'))}`}
                         >
                             {aktifMi && (
                                 <View className="absolute right-0 top-0 bottom-0 w-24 opacity-5 pointer-events-none z-0"
@@ -145,7 +158,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                                         textDecorationLine: tamamlandi ? 'line-through' : 'none',
                                         textDecorationColor: renkler.metinIkincil
                                     }}>
-                                    {namaz.namazAdi}
+                                    {gorunenAd}
                                 </Text>
                                 <Text className="text-xs font-medium"
                                     style={{

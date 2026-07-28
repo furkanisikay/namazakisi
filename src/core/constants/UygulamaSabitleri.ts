@@ -153,6 +153,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
   // Vakit Bildirim Ayarları
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
+  // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
+  CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
   // Vakit Sayacı Ayarları
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // İftar Sayacı Ayarları

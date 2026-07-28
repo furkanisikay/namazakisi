@@ -23,6 +23,7 @@ import { vakitSayacAyarlariniYukle } from './vakitSayacSlice';
 import { iftarSayacAyarlariniYukle } from './iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './sahurSayacSlice';
 import { vakitBildirimAyarlariniYukle } from './vakitBildirimSlice';
+import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -74,6 +75,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(iftarSayacAyarlariniYukle()),
       dispatch(sahurSayacAyarlariniYukle()),
       dispatch(vakitBildirimAyarlariniYukle()),
+      dispatch(cumaHatirlatmaAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
     ]);
     await dispatch(namazlariYukle({ tarih: bugunuAl() }));

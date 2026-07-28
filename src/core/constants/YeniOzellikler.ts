@@ -41,6 +41,47 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'cuma-namazi-hatirlatmasi',
+        surum: '0.24.0',
+        tarih: '2026-07-28',
+        baslik: 'Cuma Namazı Hatırlatması',
+        aciklama:
+            'Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin.',
+        detayAciklama:
+            'Cuma namazı için ayrı bir hatırlatma ekledik. Diğer vakit hatırlatmalarından farklı olarak bu hatırlatma vakit çıkarken değil, vakit girmeden önce gelir: çünkü cuma günü camiye gitmek için yola çıkacak zamana ihtiyacınız var. Ne kadar önce hatırlatılmak istediğinizi 15 dakika ile 3 saat arasında kendiniz belirlersiniz. Hatırlatma açıkken ana ekranda cuma günü öğle namazı "Cuma" olarak görünür. Cuma öğle namazının yerine geçtiği için ayrı bir kayıt tutulmaz; namazı kıldığınızda öğle namazından işaretlersiniz. Özellik varsayılan olarak kapalıdır, Bildirim Ayarları\'ndan açabilirsiniz.',
+        ikon: 'mosque',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Hatırlatmayı açın',
+        kartGoster: true,
+        detaylar: [
+            'Her cuma, öğle vaktinden önce tek bir hatırlatma',
+            'Ne kadar önce hatırlatılacağını siz seçersiniz (15 dk – 3 saat)',
+            'Açıkken ana ekranda cuma günü öğle namazı "Cuma" olarak görünür',
+            'Namaz kaydınız değişmez; işaretlemeyi öğle namazından yaparsınız',
+            'Varsayılan olarak kapalıdır',
+        ],
+    },
+    {
+        id: 'muhafiz-adim-ac-kapa',
+        surum: '0.24.0',
+        tarih: '2026-07-28',
+        baslik: 'Hatırlatma Adımlarını Tek Dokunuşla Kapatın',
+        aciklama:
+            'Her vaktin dört hatırlatma adımını ayrı ayrı açıp kapatabilirsiniz — kapattığınız adım ayarlarını unutmaz.',
+        detayAciklama:
+            'Muhafız ayarlarında bir vakti açtığınızda, dört hatırlatma adımının her birinin yanında artık bir anahtar var. İstemediğiniz adımı tek dokunuşla kapatabilir, dilediğinizde geri açabilirsiniz. En güzeli: kapattığınız adım ayarlarını hatırlar. Sesli anons seçtiğiniz, kendi müziğinizi ve anons metninizi kurduğunuz bir adımı kapatıp açtığınızda her şey aynen geri gelir — baştan kurmanız gerekmez. Örneğin yatsı vaktinde yalnızca ilk nazik hatırlatmayı bırakıp sert uyarıları kapatabilir, sabah için hepsini açık tutabilirsiniz.',
+        ikon: 'toggle-on',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Adımlarınızı ayarlayın',
+        kartGoster: false,
+        detaylar: [
+            'Her vakit için dört adımı ayrı ayrı açıp kapatın',
+            'Kapatılan adım sesini, anons metnini ve zamanlamasını korur',
+            'Geri açtığınızda kurduğunuz ayarlar aynen döner',
+            'Vakit satırındaki rozet kaç adımın açık olduğunu gösterir',
+        ],
+    },
+    {
         id: 'muhafiz-bildirim-sesi-secimi',
         surum: '0.24.0',
         tarih: '2026-07-18',

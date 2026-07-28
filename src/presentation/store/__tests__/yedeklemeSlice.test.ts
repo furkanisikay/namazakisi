@@ -57,6 +57,9 @@ jest.mock('../sahurSayacSlice', () => ({
 jest.mock('../vakitBildirimSlice', () => ({
   vakitBildirimAyarlariniYukle: jest.fn(() => ({ type: 'vakitBildirim/yukle' })),
 }));
+jest.mock('../cumaHatirlatmaSlice', () => ({
+  cumaHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'cumaHatirlatma/yukle' })),
+}));
 jest.mock('../takvimSlice', () => ({
   takvimAyarlariniYukle: jest.fn(() => ({ type: 'takvim/yukle' })),
 }));

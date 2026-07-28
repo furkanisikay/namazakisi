@@ -271,6 +271,7 @@ describe('AnaSayfa', () => {
         seciliIlceAdi: 'Fatih',
       },
       vakitSayac: { ayarlar: { aktif: false } },
+      cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
     });
 
   /**
