@@ -128,6 +128,8 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                             onPress={() => setPaylasimModalGorunur(true)}
                             className="bg-white/20 py-3 rounded-xl flex-row items-center justify-center space-x-2 border border-white/30"
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Başarımı paylaş"
                         >
                             <FontAwesome5 name="share-alt" size={16} color="white" style={{ marginRight: 8 }} />
                             <Text className="text-white font-bold text-sm">BAŞARIMI PAYLAŞ</Text>
