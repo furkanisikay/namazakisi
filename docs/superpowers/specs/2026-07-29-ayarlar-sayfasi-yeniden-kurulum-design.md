@@ -2,7 +2,11 @@
 
 **Tarih:** 2026-07-29
 **Ekranlar:** `AyarlarSayfasi.tsx` (yeniden kurulur), `HakkindaSayfasi.tsx` (sadeleşir),
-tüm ayar alt sayfaları (yalnız arama çapası eklenir).
+ayar alt sayfaları (arama çapası + vurgu entegrasyonu).
+**Revizyon:** 2026-07-29 — bağımsız incelemeden sonra 7 madde düzeltildi
+(sağlık kontrolü #2, konum özeti girdisi, yedek damgası semantiği, navigatör
+tipleme kapsamı, alt sayfa değişiklik kapsamı, yeni-özellik rozetlerinin
+korunumu, nöbetçi testlerin sabit-tabanlı kurgusu).
 
 ## Problem
 
@@ -24,20 +28,15 @@ Bugünkü Ayarlar sayfası 10 satırlık düz bir liste + 2 toggle. Üç somut k
 ## Hedef
 
 Samsung One UI Ayarlar'ının işe yarayan yanlarını, **uygulamanın mevcut görsel
-diline sadık kalarak** getirmek: her satır mevcut değerini gösterir, ayarlar
-amaca göre gruplanır, arama alt ayarları da bulur ve bulduğu kontrolü vurgular,
-üstte kurulum sağlığı kartı durur.
-
-Yeni bir görsel kimlik icat edilmez: `useRenkler` tokenları, `FontAwesome5`,
-mevcut kart yarıçapları ve buton desenleri korunur (AGENTS.md "Ekran / UI
-tasarım standardı").
+diline sadık kalarak** getirmek. Yeni bir görsel kimlik icat edilmez:
+`useRenkler` tokenları, `FontAwesome5`, mevcut kart yarıçapları ve buton
+desenleri korunur (AGENTS.md "Ekran / UI tasarım standardı").
 
 ---
 
 ## 1. Bilgi mimarisi
 
-Dört grup. Grup adları kullanıcının **niçin geldiğine** göre seçildi, sistem
-mimarisine göre değil.
+Dört grup. Grup adları kullanıcının **niçin geldiğine** göre seçildi.
 
 | Grup | Satırlar |
 |---|---|
@@ -61,6 +60,20 @@ bildirimleridir.
 - `Hakkında` geriye şunları tutar: logo/başlık kartı, uygulama bilgileri,
   güncelleme kontrolü, telif satırı.
 
+### KORUNACAK davranışlar (yeniden kurulumda düşmemeli)
+
+Sayfa sıfırdan yazıldığı için bunlar açıkça sayılır — sessizce düşerlerse
+uygulama genelinde bir sistem körleşir:
+
+- **Yeni özellik duyurusu** (`useYeniOzellikler`): tanıtım kartı (`YeniOzellikKarti`),
+  satır başına `sayfaOkunmamisMi(sayfa)` → `YeniRozet`, "Neler yeni" satırında
+  `okunmamisVarMi`, ve satıra dokunulunca `sayfayiGorulduIsaretle(sayfa)`.
+  AGENTS.md "Reçete — Yeni özellik duyurusu" bu mekanizmanın otomatik
+  beslenmesine dayanır.
+- **Dokunma geri bildirimi** (`useFeedback.butonTiklandiFeedback`) her satırda ve
+  her toggle'da.
+- Giriş animasyonu (fade + slide).
+
 ---
 
 ## 2. Dinamik özetler
@@ -69,63 +82,90 @@ Her satırın ikinci satırı, o ayarın **mevcut değeridir**.
 
 ### Mimari
 
-Yeni saf modül: **`src/core/ayarlar/ozetler.ts`**. Her özet bir saf fonksiyondur;
+Yeni saf modül: **`src/core/ayarlar/ozetler.ts`**. Her özet saf fonksiyondur;
 girdisi ilgili state parçasıdır, store'a veya React'a bağımlı değildir.
 
 ```
-konumOzeti({ konumModu, seciliIlAdi })         -> "İstanbul · otomatik"
-takvimOzeti(takvimAyarlari)                    -> "Kapalı"
-muhafizOzeti({ aktif, yogunluk })              -> "Açık · normal yoğunluk"
-bildirimOzeti(vakitAyarlari, cumaAktif)        -> "5 vakit · cuma hatırlatması açık"
-seriOzeti(seriAyarlari)                        -> "Tam gün: 5 namaz · gün sonu açık"
-ramazanOzeti(iftarAktif, sahurAktif)           -> "İftar sayacı kapalı"
-gorunumOzeti(temaModu, paletAdi)               -> "Koyu tema · Zümrüt"
-yedeklemeOzeti(sonYedekTarihi)                 -> "Son yedek: 12 Temmuz" | "Henüz yedek alınmadı"
-hakkindaOzeti(surum, guncellemeVar)            -> "Sürüm 0.23.28 · güncel"
+konumOzeti({ konumModu, seciliIlAdi, gpsAdres })  -> "Kadıköy, İstanbul · otomatik"
+takvimOzeti(takvimAyarlari)                       -> "Kapalı"
+muhafizOzeti({ aktif, yogunluk })                 -> "Açık · normal yoğunluk"
+bildirimOzeti(vakitAyarlari, cumaAktif)           -> "5 vakit · cuma hatırlatması açık"
+seriOzeti(seriAyarlari)                           -> "Tam gün: 5 namaz · gün sonu açık"
+ramazanOzeti(iftarAktif, sahurAktif)              -> "İftar sayacı kapalı"
+gorunumOzeti(temaModu, paletAdi)                  -> "Koyu tema · Zümrüt"
+yedeklemeOzeti(sonDisaAktarma)                    -> "Son dışa aktarma: 12 Temmuz"
+hakkindaOzeti(surum, guncellemeVar)               -> "Sürüm 0.23.28 · güncel"
 ```
 
 Palet adları temada gerçekten `ad` alanıyla tanımlıdır (`Zümrüt`, `Okyanus`,
 `Lavanta`, `Güneş`, `Mercan`, `Gece`) — özet bu adları kullanır, renk sıfatı
 uydurmaz.
 
-### Veri kaynakları (doğrulandı)
+### `konumOzeti` — bayat şehir tuzağı
+
+`seciliIlAdi` **tek başına kullanılamaz.** GPS akışı (`KonumAyarlariSayfasi:237`)
+`konumModu: 'oto'` + `gpsAdres` yazar ama `seciliIlAdi`'ye **dokunmaz**; o alan
+son manuel seçimde (veya varsayılan `'Istanbul'`da) bayat kalır. Erzurum'da GPS
+ile konumlanan kullanıcıya özet "İstanbul" derdi.
+
+Kural: **oto** modda `gpsAdres` (`AnaSayfa.tsx:99` ile aynı desen:
+`ilce, il` → yoksa `il` → yoksa kibar yedek "Konumunuz"), **manuel** modda
+`seciliIlAdi`. Nöbetçi test yazılır.
+
+### Veri kaynakları (dosya bazında doğrulandı)
 
 | Özet | Kaynak |
 |---|---|
-| Konum | `konumSlice` (`konumModu`, `seciliIlAdi`) |
-| Muhafız | `muhafizSlice` (`aktif`, `yogunluk`) |
-| Bildirimler | `vakitBildirimSlice.ayarlar` + `cumaHatirlatmaSlice` |
-| Seri | `seriSlice.ayarlar` |
-| Ramazan | `iftarSayacSlice` + `sahurSayacSlice` |
-| Takvim | `takvimSlice.ayarlar` |
+| Konum | `konumSlice`: `konumModu`, `seciliIlAdi`, `gpsAdres` |
+| Muhafız | `muhafizSlice`: `aktif`, `yogunluk` |
+| Bildirimler | `vakitBildirimSlice.ayarlar` (5 boolean) + `cumaHatirlatmaSlice.ayarlar.aktif` |
+| Seri | `seriSlice.ayarlar`: `tamGunEsigi`, `gunSonuBildirimAktif` |
+| Ramazan | `iftarSayacSlice.ayarlar.aktif` + `sahurSayacSlice.ayarlar.aktif` |
+| Takvim | `takvimSlice.ayarlar.aktif` |
 | Görünüm | `useTema()` → `tema.mod`, `palet.ad` |
-| Hakkında | `UYGULAMA.VERSIYON` + `guncellemeSlice` |
-| Yedekleme | **yeni** `DEPOLAMA_ANAHTARLARI.SON_YEDEK_TARIHI` (aşağıda) |
+| Hakkında | `UYGULAMA.VERSIYON` + `guncellemeSlice.guncellemeMevcut` |
+| Yedekleme | **yeni** anahtar (aşağıda) |
+| Bildirim izni | **yeni** salt-okur sarmalayıcı (aşağıda) |
 
-### Yeni kalıcı veri: son yedekleme zamanı
+### Yeni kalıcı veri: son dışa aktarma zamanı
 
-Repo genelinde son yedekleme tarihi **hiçbir yerde saklanmıyor** (arandı,
-bulunamadı). `YedeklemeServisi` başarılı bir dışa aktarımdan sonra
-`SON_YEDEK_TARIHI` anahtarına ISO zaman damgası yazar.
+Repo genelinde böyle bir damga **yok** (arandı, `SON_YEDEK` hiç geçmiyor).
 
-**Bilinçli karar — bu bir sağlık kontrolü DEĞİLDİR.** "Hiç yedek almamışsınız"
-uyarısı verilmez: damga ileriye dönük yazıldığı için, daha önce yedek almış
-mevcut kullanıcılarda uygulama bunu bilemez ve **yanlış** uyarır. Damga yalnız
-satır özetini besler; yokken satır dürüstçe "Henüz yedek alınmadı" der.
+- **Anahtar:** `DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA = '@namaz_akisi/son_disa_aktarma'`.
+  `@namaz_akisi/` öneki zorunlu — `onEkiOlanAnahtarlar(önek)` tarayan kodlarla
+  çakışmasın (AGENTS.md; `NAMAZ_GUN_MIGRASYON` aynı deseni izler).
+- **Semantik — dürüstlük gereği "yedek" değil "dışa aktarma".** `Sharing.shareAsync`
+  Android'de kullanıcının dosyayı gerçekten kaydettiğini mi iptal ettiğini mi
+  **bildirmez** (`YedeklemeServisi:214`). Damga bu yüzden "yedek alındı" değil,
+  **"yedek dosyası oluşturuldu ve paylaşım açıldı"** anlamına gelir; kullanıcıya
+  gösterilen metin de buna uyar: *"Son dışa aktarma: 12 Temmuz"*. Damga
+  `shareAsync` çağrısından **sonra** yazılır; `Sharing.isAvailableAsync()` false
+  dönüp paylaşım hiç açılmadıysa **yazılmaz**.
+- **Yedekleme beyaz listesine EKLENMEZ** (bilinçli). `YedekBirlestirmeServisi.AYAR_ANAHTARLARI`
+  bir beyaz listedir ve AGENTS.md yeni anahtarların açıkça eklenmesini ister —
+  ama bu damga **cihaza özgü eylem geçmişidir**, bir tercih değil. Yedeğe girseydi
+  içe aktarma başka cihazın damgasını taşır ve "son dışa aktarma" yalan söylerdi.
+
+### Bildirim izni okuması
+
+**`BildirimServisi.izinIste()` ÇAĞRILMAZ** — o fonksiyon izin yoksa
+`requestPermissionsAsync` ile **diyalog açar** (`BildirimServisi:389-393`);
+Ayarlar'a her girişte izin penceresi fırlardı.
+
+`BildirimServisi`'ne salt-okur sarmalayıcı eklenir:
+`izinDurumunuOku(): Promise<'verildi' | 'reddedildi' | 'belirsiz'>` →
+yalnızca `Notifications.getPermissionsAsync()` okur, yan etkisizdir. Tek boğaz
+noktası olur ve testte mock'lanabilir.
 
 ### Tazeleme — kritik
 
 Özetler **`useFocusEffect` ile sayfaya her dönüşte yeniden okunur.**
 
 Yoksa şu yaşanır: kullanıcı Konum'a girer, şehri değiştirir, geri döner ve
-satırda hâlâ eski şehri görür → "kaydedilmedi" hisseder ve işlemi tekrarlar.
-Redux'tan gelen özetler zaten reaktiftir; asıl gerekçe **Redux dışı** okumalardır:
-
-- bildirim izni durumu (`Notifications.getPermissionsAsync`)
-- son yedekleme damgası (AsyncStorage)
-
-Bunlar `useAyarOzetleri()` hook'unda tek seferlik async okumayla alınır ve aynı
-focus tetikleyicisine bağlanır.
+satırda hâlâ eski şehri görür → "kaydedilmedi" hisseder. Redux'tan gelen
+özetler zaten reaktiftir; asıl gerekçe **Redux dışı** okumalardır:
+bildirim izni durumu ve dışa aktarma damgası. İkisi de `useAyarOzetleri()`
+hook'unda tek seferlik async okumayla alınır, aynı focus tetikleyicisine bağlanır.
 
 ---
 
@@ -134,32 +174,42 @@ focus tetikleyicisine bağlanır.
 Sayfanın tek cesur öğesi budur; gerisi sakin kalır (AGENTS.md: "cesareti tek bir
 imza öğesinde harca").
 
-### Neden Ana Sayfa'nın tekrarı değil
-
-Ana Sayfa vakitleri ve seriyi gösterir. Bu kart **ayarların sağlığını** gösterir —
-yalnızca Ayarlar sayfasında anlamı olan, başka hiçbir yerde söylenmeyen bilgi.
+**Neden Ana Sayfa'nın tekrarı değil:** Ana Sayfa vakitleri ve seriyi gösterir.
+Bu kart **ayarların sağlığını** gösterir — yalnızca Ayarlar sayfasında anlamı
+olan bilgi.
 
 ### Mantık
 
 Saf fonksiyon: **`src/core/ayarlar/kurulumSagligi.ts`** →
-`kurulumSagligi(girdi): Sorun[]` (öncelik sırasına göre sıralı döner).
+`kurulumSagligi(girdi): Sorun[]` (öncelik sırasına göre sıralı).
 
-| # | Kontrol | Seviye | Neden |
-|---|---|---|---|
-| 1 | Bildirim izni verilmemiş | kritik | Muhafız çalışır ama **hiçbir** uyarı ulaşmaz |
-| 2 | Koordinat yok veya `(0,0)` | kritik | Vakitler yanlış hesaplanır (`(0,0)` bu projede "yapılandırılmadı" nöbetçisidir) |
-| 3 | Muhafız kapalı **ve** hiç vakit bildirimi açık değil | uyarı | Kullanıcı hiç hatırlatma almıyor, farkında olmayabilir |
-| 4 | Konum takibi açık ama `sonGpsGuncellemesi` 7+ gün eski | bilgi | Şehir değiştiyse vakitler kayar |
+| # | Kontrol | Girdi | Seviye | Neden |
+|---|---|---|---|---|
+| 1 | Bildirim izni verilmemiş | `izinDurumu === 'reddedildi'` | kritik | Muhafız çalışır ama **hiçbir** uyarı ulaşmaz |
+| 2 | Otomatik konum hiç alınamamış | `konumModu === 'oto' && !sonGpsGuncellemesi` | kritik | Vakitler varsayılan İstanbul'a göre hesaplanır, kullanıcı bunu bilmez |
+| 3 | Muhafız kapalı **ve** hiç vakit bildirimi açık değil | `!muhafizAktif && vakitler.every(kapalı)` | uyarı | Kullanıcı hiç vakit hatırlatması almıyor olabilir |
+| 4 | Konum takibi açık ama `sonGpsGuncellemesi` 7+ gün eski | `akilliTakipAktif` | bilgi | Şehir değiştiyse vakitler kayar |
 
 `Sorun` tipi: `{ id, seviye, baslik, aciklama, eylemEtiketi?, hedefSayfa? }`.
+
+**Kontrol #2 neden `(0,0)` DEĞİL:** `(0,0)` bu projede *ham AsyncStorage okuyan
+arka plan servisleri* için bir nöbetçidir. `konumSlice` hiçbir yolda `(0,0)`
+üretmez — `VARSAYILAN_KONUM_AYARLARI` İstanbul koordinatlarıyla başlar
+(`LocalKonumServisi:77`). Store'dan beslenen bir `(0,0)` kontrolü **ölü kod**
+olurdu. Anlamlı sinyal, oto modda hiç GPS sabitlemesi alınmamış olmasıdır.
+
+**Kontrol #3 kapsamı bilinçli olarak dardır:** cuma hatırlatması, gün sonu
+bildirimi ve vakit sayacı sayılmaz. Bunlar açıkken de "vakit hatırlatması yok"
+denebilir; metin bu yüzden "hiç hatırlatma almıyorsunuz" değil, **"vakit
+hatırlatmaları kapalı"** der.
 
 ### Görünüm
 
 - **Sorun varsa:** en öncelikli sorun tam kart olarak çizilir — ikon çipi, başlık,
-  bir cümlelik açıklama, birincil eylem butonu ve (varsa) "N sorun daha" metni.
-  "N sorun daha"ya dokunmak kalan sorunları listeye açar (aynı kart genişler).
+  bir cümlelik açıklama, birincil eylem butonu, (varsa) "N sorun daha".
+  "N sorun daha"ya dokunmak kalan sorunları aynı kartın içinde açar.
 - **Sorun yoksa:** kart **tek satıra daralır** — yeşil onay ikonu +
-  "Kurulumunuz eksiksiz · İstanbul · muhafız açık".
+  "Kurulumunuz eksiksiz · Kadıköy, İstanbul · muhafız açık".
 
 Kartın duruma göre rol ve boyut değiştirmesi bilinçlidir: kurulum sağlığı yalnız
 bozukken ilgi çekicidir; her zaman büyük bir kart göstermek ölü alan üretirdi.
@@ -169,69 +219,84 @@ bozukken ilgi çekicidir; her zaman büyük bir kart göstermek ölü alan üret
 `durum.*` renkleri **yalnız dekoratiftir**: ikon rengi, sol şerit, tint arkaplan.
 Gövde metni **daima** `renkler.metin` / `renkler.metinIkincil`.
 
-Gerekçe ölçüldü: `durum.uyari` açık temada `#FFC107`; beyaz üzerinde kontrast
-**~1.63:1** — normal metin için WCAG AA (4.5:1) açık farkla kırılır.
-`durum.hata` = `#F44336` de beyaz üzerinde ~3.7:1, küçük metin için yetersiz.
-Eylem butonu `renkler.birincil` dolgu + beyaz metindir (mevcut birincil buton
-deseni), dolayısıyla güvenlidir.
+Ölçüldü: `durum.uyari` açık temada `#FFC107`, beyaz üzerinde **~1.63:1** —
+normal metin için WCAG AA (4.5:1) açık farkla kırılır. `durum.hata` = `#F44336`
+beyaz üzerinde ~3.7:1, küçük metin için yetersiz. Eylem butonu
+`renkler.birincil` dolgu + beyaz metindir (mevcut birincil buton deseni) —
+güvenlidir.
 
 ---
 
 ## 4. Arama ve vurgulama
 
-### 4.1 İndeks
+### 4.1 Tek kaynaklı sabitler (bayatlama koruması)
 
-Yeni: **`src/core/ayarlar/aramaIndeksi.ts`**
+Arama indeksi elle bakım gerektirir; bayatlarsa var olmayan sayfaya götürür.
+Koruma **kaynak-metin grep'i ile değil, tek kaynak sabitleriyle** kurulur —
+grep tabanlı nöbetçi, id'ler değişkenle verilince sessizce körleşirdi.
+
+- **`src/navigation/ayarlarEkranlari.ts`** → `AYARLAR_EKRANLARI` sabiti ve
+  ondan türeyen `AyarlarStackParamList`. Hem `AppNavigator` hem arama indeksi
+  **bunu** kullanır. Ekran adlarının birebir yazımı burada tek yerde durur —
+  mevcut adlardan biri `GorünumAyarlari` (Türkçe `ü` içerir); elle tekrar
+  yazıldığında sessizce ıskalanabilecek bir tuzaktır.
+- **`src/core/ayarlar/capalar.ts`** → `CAPALAR` sabiti. Sayfalar
+  `<AyarCapasi id={CAPALAR.kerahat}>` yazar, indeks `capa: CAPALAR.kerahat`
+  verir. Böylece nöbetçi test saf eşitlik kontrolüne iner.
+
+### 4.2 İndeks
+
+**`src/core/ayarlar/aramaIndeksi.ts`**
 
 ```ts
 interface AyarIndeksKaydi {
-  id: string;              // benzersiz
-  baslik: string;          // "Kerahat uyarısı"
-  anahtarKelimeler: string[]; // ["mekruh", "güneş", "kerahat"]
-  sayfa: string;           // AyarlarStack ekran adı
-  grup: string;            // "Hatırlatmalar" — sonuçta bağlam olarak gösterilir
-  capa?: string;           // alt sayfadaki kontrolün çapa id'si
+  id: string;
+  baslik: string;                        // "Kerahat uyarısı"
+  anahtarKelimeler: string[];            // ["mekruh", "güneş"]
+  sayfa: keyof AyarlarStackParamList;    // derleme zamanında doğrulanır
+  grup: string;                          // "Hatırlatmalar" — sonuçta bağlam
+  capa?: (typeof CAPALAR)[keyof typeof CAPALAR];
 }
 ```
 
 Üst seviye satırların **ve** alt sayfa ayarlarının kayıtları burada durur.
-`capa` yoksa sonuç yalnız sayfaya götürür.
 
-### 4.2 Eşleştirme — Türkçe katlama tuzağı
+**Çapa kapsam kuralı:** çapa YALNIZ sayfa düzeyindeki `ScrollView` içinde
+yaşayan kontrollere verilir. Modal/bottom-sheet içindeki ayarlar
+(`TakvimAyarlari > VakitEditorModali`, `Muhafiz > SeviyeDetayModal`)
+**ölçülemez** — `measureLayout` kapalı modaldaki öğeyi bulamaz. Bunlar en yakın
+sayfa düzeyi öğeye (o modalı açan satıra) çapalanır. `capa` verilmeyen kayıt
+yalnız sayfaya götürür.
+
+### 4.3 Eşleştirme — Türkçe katlama tuzağı
 
 Saf fonksiyon `ayarAra(indeks, sorgu): AyarIndeksKaydi[]`.
 
 **`toLowerCase()` KULLANILMAZ.** AGENTS.md'deki `toUpperCase()` tuzağının
-ikizidir ve aramayı sessizce bozar:
+ikizidir:
 
-- `'İstanbul'.toLowerCase()` → `'i̇stanbul'` — noktalı i, **birleşen nokta**
-  (U+0307) bırakır; kullanıcının yazdığı `'istanbul'` ile eşleşmez.
+- `'İstanbul'.toLowerCase()` → `'i̇stanbul'` — **birleşen nokta** (U+0307)
+  bırakır; kullanıcının yazdığı `'istanbul'` ile eşleşmez.
 - `'I'.toLowerCase()` → `'i'` — Türkçede `'ı'` olmalıdır.
 
-Çözüm: **sabit katlama haritası** (`İ→i`, `I→ı`, `Ş→ş`, `Ğ→ğ`, `Ü→ü`, `Ö→ö`,
-`Ç→ç` + ASCII) ve ek olarak aksan-duyarsız eşleşme (`s↔ş`, `g↔ğ`, `i↔ı`,
-`u↔ü`, `o↔ö`, `c↔ç`) — klavyesinde Türkçe karakter kullanmayan kullanıcı da
-"muhafiz" yazarak "Muhafız"ı bulabilsin. `Intl`/`localeCompare` kullanılmaz
-(Hermes'te ICU varlığı garanti değil — AGENTS.md).
+Çözüm: **sabit katlama haritası** (`src/core/ayarlar/metinKatlama.ts`) +
+aksan-duyarsız eşleşme (`s↔ş`, `g↔ğ`, `i↔ı`, `u↔ü`, `o↔ö`, `c↔ç`), böylece
+Türkçe klavyesi olmayan kullanıcı "muhafiz" yazarak "Muhafız"ı bulur.
+`Intl`/`localeCompare` kullanılmaz (Hermes'te ICU garanti değil — AGENTS.md).
 
-Skorlama basit tutulur: başlık başlangıcı > başlık içi > anahtar kelime.
+Skorlama basit: başlık başlangıcı > başlık içi > anahtar kelime.
 
-### 4.3 Vurgulama
+### 4.4 Vurgulama
 
-- `AyarSayfasiKabugu` bir React bağlamı sağlar: ScrollView ref + aktif çapa id.
-- Aranabilir kontrol `<AyarCapasi id="kerahat">…</AyarCapasi>` ile sarılır.
-- Rota parametresi `vurgula` çapayla eşleşirse: `measureLayout` → `scrollTo`,
-  ardından `birincil + '20'` tinti **2 kez ~600 ms** nabızlatılır (opacity,
-  native driver).
-- **Reduced motion açıksa** nabız yok: sabit tint, 2 sn sonra söner.
-  (`AccessibilityInfo.isReduceMotionEnabled`)
+- `VurguBaglami` bir React bağlamı sağlar: sayfanın `ScrollView` ref'i + aktif
+  çapa id'si. Sayfa kabuğu (`AyarSayfasiKabugu`) bunu kurar ve
+  `route.params.vurgula` değerini okur.
+- Aranabilir kontrol `<AyarCapasi id={CAPALAR.x}>…</AyarCapasi>` ile sarılır;
+  eşleşirse `measureLayout` → `scrollTo`, ardından `birincil + '20'` tinti
+  **2 kez ~600 ms** nabızlatılır (opacity, native driver).
+- **Reduced motion açıksa** nabız yok: sabit tint, 2 sn sonra söner
+  (`AccessibilityInfo.isReduceMotionEnabled`).
 - Çapa bulunamazsa **sessizce hiçbir şey yapılmaz** — sayfa yine açılır.
-
-### 4.4 Bayatlama koruması
-
-İndeks elle bakım gerektirir; bayatlarsa arama var olmayan sayfaya götürür.
-Nöbetçi test: **indeksteki her `sayfa` değeri `AyarlarStack`'te tanımlı bir ekran
-adı olmalıdır** ve her `capa` değeri kaynakta bir `AyarCapasi id` olarak geçmelidir.
 
 ---
 
@@ -239,55 +304,73 @@ adı olmalıdır** ve her `capa` değeri kaynakta bir `AyarCapasi id` olarak ge�
 
 - Büyük "Ayarlar" başlığı içerik akışının başındadır. Yukarı kaydırınca üstte
   kompakt başlık **opacity + translateY** ile belirir. `fontSize` animasyonu
-  native driver'da çalışmadığı için boyut animasyonu yerine **çapraz geçiş**
-  kullanılır.
-- Arama hapı yapışkandır (başlığın altında kalır).
-- **Bölüm başlıkları:** `renkler.birincil` renginde, normal yazım
-  ("Namaz vakitleri"). Mevcut `GRİ · BÜYÜK HARF` biçimi bırakılır; One UI deseni
-  ve AGENTS.md'nin sentence-case kuralıyla uyumludur. Uygulamanın diğer
-  ekranlarındaki büyük-harf başlıklarla geçici bir tutarsızlık oluşur — bilinçli
-  kabul edilir, bu spec onları dönüştürmez.
+  native driver'da çalışmadığı için boyut animasyonu yerine **çapraz geçiş**.
+- Arama hapı yapışkandır. `stickyHeaderIndices` kullanılacaksa yapışkan öğe
+  `ScrollView`'ün **doğrudan** çocuğu olmalıdır — kabuk yapısı buna göre kurulur.
+- **Bölüm başlıkları:** `renkler.birincil` renginde, **normal yazım**
+  ("Namaz vakitleri"). Mevcut `GRİ · BÜYÜK HARF` biçimi bu ekranda **terk
+  edilir**. One UI deseni ve AGENTS.md'nin sentence-case kuralıyla uyumludur.
+  Diğer ekranlardaki büyük-harf başlıklarla geçici tutarsızlık **bilinçli kabul
+  edilir**; bu spec onları dönüştürmez.
 - Satır grupları tek kart içinde, aralarında hairline ayraç. Kart yarıçapı ve
   gölge mevcut desenle aynı.
-- Giriş animasyonu mevcut fade+slide olarak korunur; yeni animasyon eklenmez.
+- Yeni animasyon eklenmez; mevcut giriş animasyonu korunur.
 
 ---
 
 ## 6. Erişilebilirlik
 
-- Tüm satırlar `accessibilityRole="button"`, etiket = `"<başlık>. <özet>"`.
+- Satırlar `accessibilityRole="button"`, etiket = `"<başlık>. <özet>"`.
 - Toggle satırlarında Switch, satırı saran Touchable'ın **kardeşidir**, içinde
   değil (AGENTS.md: Touchable `accessible` ile çocukları tek düğüme düzleştirir).
 - Dokunma hedefleri ≥44dp.
-- Arama alanı `accessibilityLabel="Ayarlarda arayın"`; sonuç sayısı canlı bölge
-  olarak duyurulur.
-- Durum kartındaki eylem butonu ayrı odaklanabilir bir düğümdür.
+- Arama alanı `accessibilityLabel="Ayarlarda arayın"`; sonuç sayısı duyurulur.
+- Durum kartındaki eylem butonu ayrı odaklanabilir düğümdür.
 
 ---
 
-## 7. Dosya planı
+## 7. Uygulama iki plana bölünür
 
-**Yeni (saf çekirdek):**
-- `src/core/ayarlar/ozetler.ts`
-- `src/core/ayarlar/kurulumSagligi.ts`
-- `src/core/ayarlar/aramaIndeksi.ts`
-- `src/core/ayarlar/metinKatlama.ts` (Türkçe katlama + aksan-duyarsız eşleşme)
+Tasarım tek bütündür ama uygulama iki plan / iki PR olarak yürür. Gerekçe:
+ikinci parça 9 alt sayfaya dokunur ve en kesişimsel iştir; birinci parça onsuz
+da tek başına değer üretir ve gemiye binebilir.
 
-**Yeni (sunum):**
-- `src/presentation/screens/Ayarlar/AyarGrubu.tsx`
-- `src/presentation/screens/Ayarlar/AyarSatiri.tsx` (navigasyon + toggle varyantı)
-- `src/presentation/screens/Ayarlar/KurulumSagligiKarti.tsx`
-- `src/presentation/screens/Ayarlar/AramaAlani.tsx`
-- `src/presentation/screens/Ayarlar/AramaSonuclari.tsx`
-- `src/presentation/components/ayar/AyarCapasi.tsx` + `VurguBaglami.tsx`
-- `src/presentation/hooks/useAyarOzetleri.ts`
+### Plan 1 — Bilgi mimarisi, özetler, sağlık kartı
 
-**Değişen:**
-- `AyarlarSayfasi.tsx` (yeniden kurulur)
-- `HakkindaSayfasi.tsx` (DESTEK ve GELİŞTİRİCİ bölümleri kaldırılır)
-- `AppNavigator.tsx` (yalnız `TaniGeriBildirim` rota parametresi tipi + `vurgula`)
-- `YedeklemeServisi` (son yedek damgası yazımı)
-- Ayar alt sayfaları (yalnız `AyarCapasi` sarmalayıcıları)
+**Yeni (saf çekirdek):** `src/core/ayarlar/ozetler.ts` ·
+`src/core/ayarlar/kurulumSagligi.ts`
+
+**Yeni (sunum):** `screens/Ayarlar/AyarGrubu.tsx` · `AyarSatiri.tsx`
+(navigasyon + toggle varyantı) · `KurulumSagligiKarti.tsx` ·
+`hooks/useAyarOzetleri.ts`
+
+**Değişen:** `AyarlarSayfasi.tsx` (yeniden kurulur; §1'deki KORUNACAK
+davranışlar dahil) · `HakkindaSayfasi.tsx` (DESTEK + GELİŞTİRİCİ bölümleri
+kaldırılır) · `BildirimServisi.ts` (`izinDurumunuOku` eklenir) ·
+`YedeklemeServisi.ts` (dışa aktarma damgası) · `UygulamaSabitleri.ts`
+(`SON_DISA_AKTARMA` anahtarı)
+
+### Plan 2 — Arama, çapa, vurgulama, büyük başlık
+
+**Yeni:** `src/navigation/ayarlarEkranlari.ts` (`AYARLAR_EKRANLARI` +
+`AyarlarStackParamList`) · `src/core/ayarlar/capalar.ts` ·
+`aramaIndeksi.ts` · `metinKatlama.ts` ·
+`components/ayar/AyarCapasi.tsx` + `VurguBaglami.tsx` +
+`AyarSayfasiKabugu.tsx` · `screens/Ayarlar/AramaAlani.tsx` +
+`AramaSonuclari.tsx`
+
+**Değişen:** `AppNavigator.tsx` — `AyarlarStack` **tiplenir**
+(`createNativeStackNavigator<AyarlarStackParamList>()`); bugün tamamen tipsiz
+(`AppNavigator:61`) ve ekranlar `navigate('X' as never)` ile geziyor.
+`vurgula` parametresi tek bir ekrana değil, **çapası olan her hedef sayfaya**
+gider — bu yüzden tek ekranlık tip yaması yeterli değildir.
+
+**Değişen (alt sayfalar) — "yalnız sarmalayıcı" DEĞİL.** Her hedef sayfa üç şey
+yapar: (a) kendi `ScrollView`'ünü kabuğa/ref sağlayıcıya bağlar, (b)
+`route.params.vurgula` okur, (c) aranabilir kontrolleri `AyarCapasi` ile sarar.
+Tüm ayar alt sayfaları sayfa düzeyinde `ScrollView` kullanıyor (doğrulandı;
+`FlatList` tabanlı ayar sayfası yok) — yapısal uyum var, ama iş "sarmalayıcı
+eklemek"ten fazladır.
 
 ---
 
@@ -295,26 +378,32 @@ adı olmalıdır** ve her `capa` değeri kaynakta bir `AyarCapasi id` olarak ge�
 
 | Dosya | Neyi korur |
 |---|---|
-| `ozetler.test.ts` | Her özet fonksiyonu; boş/eksik state'te çökmeme |
-| `kurulumSagligi.test.ts` | Öncelik sırası; sorunsuz durumda boş dizi; `(0,0)` nöbetçisi |
-| `metinKatlama.test.ts` | `İstanbul`/`I`/`ı` katlaması; `toLowerCase` regresyonu |
+| `ozetler.test.ts` | Her özet; boş/eksik state'te çökmeme; **oto modda `gpsAdres`, manuel modda `seciliIlAdi`** nöbetçisi |
+| `kurulumSagligi.test.ts` | Öncelik sırası; sorunsuz durumda boş dizi; kontrol #2'nin oto-mod koşulu |
+| `metinKatlama.test.ts` | `İstanbul`/`I`/`ı` katlaması; `toLowerCase` regresyon nöbetçisi |
 | `ayarAra.test.ts` | Türkçesiz yazımla eşleşme ("muhafiz"→"Muhafız"); boş sorgu; skor sırası |
-| `aramaIndeksi.test.ts` | **Nöbetçi:** her `sayfa` navigatörde var; her `capa` kaynakta var |
-| `AyarlarSayfasi.test.tsx` | Gruplar render; özet gösterimi; arama filtreleme; focus'ta tazeleme |
-| `HakkindaSayfasi.test.tsx` | Debug logları satırı **yok**; Tanı satırı **yok** |
+| `aramaIndeksi.test.ts` | Her `sayfa` `AYARLAR_EKRANLARI` içinde; her `capa` `CAPALAR` içinde (saf eşitlik) |
+| `AyarlarSayfasi.test.tsx` | Gruplar render; özet gösterimi; **yeni-özellik rozeti ve tanıtım kartı hâlâ var**; arama filtreleme; focus'ta tazeleme |
+| `HakkindaSayfasi.test.tsx` | Debug logları satırı **yok**; Tanı satırı **yok**; güncelleme kontrolü **var** |
 
-Test performansı: `AyarlarSayfasi.test.tsx` tam sayfa render'dır. AGENTS.md
-dersleri geçerli — mock bileşenlere **çocuk render ettirilmez**, sahte
-zamanlayıcıdan kaçınılır, `waitFor` gerçek zamanda kullanılır.
+**Mock notu (AGENTS.md `requireNativeModule` tuzağı):** `useAyarOzetleri`
+`expo-notifications`'a dokunur; bu hook'u **doğrudan veya dolaylı** yükleyen her
+test dosyası köprüyü mock'lamalıdır — automock bile gerçek modülü yükler ve
+suite hiç çalışmaz.
+
+**Performans:** `AyarlarSayfasi.test.tsx` tam sayfa render'dır. Mock bileşenlere
+**çocuk render ettirilmez**, sahte zamanlayıcıdan kaçınılır, `waitFor` gerçek
+zamanda kullanılır (AGENTS.md test dersleri).
 
 ---
 
 ## 9. Kapsam dışı (bilinçli)
 
 - Diğer ekranlardaki büyük-harf bölüm başlıklarının dönüştürülmesi.
-- Arama sonucundan **kontrolün kendisini değiştirme** (yalnız götürür ve vurgular).
-- Ayar sayfalarının kendi içlerinin yeniden tasarımı.
-- Yedekleme sağlık kontrolü (yukarıda gerekçelendirildi).
+- Arama sonucundan kontrolün **kendisini değiştirme** (yalnız götürür ve vurgular).
+- Ayar alt sayfalarının kendi içlerinin yeniden tasarımı.
+- Yedekleme sağlık kontrolü — damga ileriye dönük yazıldığı için daha önce yedek
+  almış kullanıcıda **yanlış** uyarırdı.
 - Ana Sayfa ve diğer sekmeler.
 
 ## 10. Doğrulama
