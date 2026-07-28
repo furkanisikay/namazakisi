@@ -67,3 +67,4 @@ android_crash.txt
 
 # Expo Module Build Outputs
 modules/expo-countdown-notification/android/build/
+android/.kotlin/
