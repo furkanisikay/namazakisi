@@ -13,12 +13,15 @@
  *    `initialPage` "bugün indeksi − 1" olmalı. Sabit bugün indeksiyle doğup
  *    sonradan imperatif komutla düzeltmek native tarafta yutulabiliyordu.
  *
- * Not: sabit takvim tarihi YAZILMAZ (AGENTS.md) — sistem saati sahte
- * zamanlayıcıyla BUGÜNÜN belirli bir saatine sabitlenir, indeksler
- * `bugunuAl()`e göreceli doğrulanır.
+ * Not: sabit takvim tarihi YAZILMAZ (AGENTS.md) — indeksler `bugunuAl()`e
+ * göreceli doğrulanır. SAHTE ZAMANLAYICI DA KULLANILMAZ: `jest.useFakeTimers` +
+ * `setSystemTime` bu tam-sayfa render testlerini CI runner'ında asıyordu
+ * (yerelde 0.1 sn, CI'da 30 sn'lik testTimeout — üstelik hep aynı testler
+ * değil). Senaryolar imsak mock'undan kurulur, sayaç tick'i `waitFor` ile
+ * gerçek zamanda beklenir.
  */
 import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react-native';
+import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
@@ -320,16 +323,11 @@ describe('AnaSayfa', () => {
     mockTarihSeciciProplari.length = 0;
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
-    jest.useFakeTimers();
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useTema as jest.Mock).mockReturnValue({ koyuMu: false });
     (useFeedback as jest.Mock).mockReturnValue(feedbackMock);
     (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
-  });
-
-  afterEach(() => {
-    jest.useRealTimers();
   });
 
   // ── NÖBETÇİ 1 — tarih seçici geri çağrısı stabil ──────────────────────────
@@ -348,11 +346,11 @@ describe('AnaSayfa', () => {
       const ilk = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       const renderSayisi = mockTarihSeciciProplari.length;
 
-      // Geri sayım sayacı: 3 saniye ilerlet → en az bir kez yeniden render olmalı
-      await act(async () => { jest.advanceTimersByTime(3000); });
-
-      // Test vakum olmasın: gerçekten yeniden render olduğunu KANITLA
-      expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi);
+      // Geri sayım sayacı GERÇEK zamanlayıcıdır (1 sn); en az bir tick bekle.
+      // Test vakum olmasın: yeniden render olduğu bekleyişin kendisiyle KANITLANIR.
+      await waitFor(() =>
+        expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi)
+      );
 
       const son = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       expect(son.onChange).toBe(ilk.onChange);
@@ -364,8 +362,9 @@ describe('AnaSayfa', () => {
       const ilk = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       const renderSayisi = mockTarihSeciciProplari.length;
 
-      await act(async () => { jest.advanceTimersByTime(3000); });
-      expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi);
+      await waitFor(() =>
+        expect(mockTarihSeciciProplari.length).toBeGreaterThan(renderSayisi)
+      );
 
       const son = mockTarihSeciciProplari[mockTarihSeciciProplari.length - 1];
       // datetimepicker effect'i `value.getTime()`e bakar → timestamp sabit kalmalı
@@ -399,7 +398,9 @@ describe('AnaSayfa', () => {
       geceYarisiSenaryosu();
       await kur(bugunuAl());
 
-      await act(async () => { jest.advanceTimersByTime(3000); });
+      // Sayaç tick'i yeniden render tetikler; açılış sayfası yine de değişmemeli
+      const renderSayisi = mockPagerProplari.length;
+      await waitFor(() => expect(mockPagerProplari.length).toBeGreaterThan(renderSayisi));
 
       const tumIndeksler = mockPagerProplari.map((p) => p.initialPage);
       expect(new Set(tumIndeksler).size).toBe(1);
