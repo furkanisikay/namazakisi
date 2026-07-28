@@ -58,7 +58,11 @@ jest.mock('react-native-pager-view', () => {
       setPage: mockPagerSetPage,
       setPageWithoutAnimation: mockPagerSetPageWithoutAnimation,
     }));
-    return <View>{props.children}</View>;
+    // Cocuklari RENDER ETME: gercek pager 92 gun sayfasi (3 ay geri + bugun + yarin)
+    // alir ve bu testlerin olctugu sey yalnizca Pager'a giden PROP'lar. Coverage
+    // enstrumantasyonu altinda 92 sayfayi cizmek suiti CI runner'inda 30 sn'lik
+    // testTimeout'u asacak kadar yavaslatiyordu (yerelde ~3 sn, CI'da timeout).
+    return <View />;
   });
   return { __esModule: true, default: Pager };
 });
