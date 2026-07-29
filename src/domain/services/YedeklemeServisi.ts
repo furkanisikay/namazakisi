@@ -30,6 +30,7 @@ import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSab
 import { Depolama } from '../../data/local/Depolama';
 import { sifrele, coz, kontrolHesapla } from '../../core/utils/yedekSifreleme';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
+import { Logger } from '../../core/utils/Logger';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -224,6 +225,14 @@ export const yedeginiPaylas = async (): Promise<void> => {
       mimeType: 'application/json',
       dialogTitle: 'Yedeğinizi paylaşın',
     });
+
+    // Damga: "yedek dosyası oluşturuldu ve paylaşım açıldı" — kendi try/catch'inde,
+    // paylaşım başarılıyken damga yazımı patlarsa yedeginiPaylas REDDOLMAMALI.
+    try {
+      await Depolama.yaz(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA, new Date().toISOString());
+    } catch (hata) {
+      Logger.warn('YedeklemeServisi', 'Son dışa aktarma damgası yazılamadı', hata);
+    }
   }
 };
 

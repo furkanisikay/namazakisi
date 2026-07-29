@@ -177,6 +177,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   BONUS_PUAN: '@namaz_akisi/bonus_puan',
   // Tanı/sorun bildir sistemi
   TANI_HATIRLATMA_ACIK: '@namaz_akisi/tani_hatirlatma_acik',
+  /** Son dışa aktarma zamanı (ISO). Cihaza özgü eylem geçmişi — YEDEĞE GİRMEZ. */
+  SON_DISA_AKTARMA: '@namaz_akisi/son_disa_aktarma',
 } as const;
 
 // Tarih formatlari

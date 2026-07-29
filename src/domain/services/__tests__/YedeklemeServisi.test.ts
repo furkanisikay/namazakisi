@@ -43,6 +43,7 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
 jest.mock('../../../data/local/Depolama', () => ({
   Depolama: {
     oku: jest.fn(),
+    yaz: jest.fn().mockResolvedValue(undefined),
     onEkiOlanAnahtarlar: jest.fn(),
     cogunuOku: jest.fn(),
   },
@@ -65,6 +66,7 @@ jest.mock('../../../core/utils/yedekSifreleme', () => ({
 }));
 
 const okuMock = Depolama.oku as jest.Mock;
+const yazMock = Depolama.yaz as jest.Mock;
 const onEkiMock = Depolama.onEkiOlanAnahtarlar as jest.Mock;
 const cogunuOkuMock = Depolama.cogunuOku as jest.Mock;
 const sifreleMock = sifreleGercek as jest.Mock;
@@ -171,6 +173,12 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.kazaTempo).toEqual({ '2026-06-14': 2 });
     expect(payload.ayarlar.muhafiz).toEqual({ aktif: true });
     expect(payload.ayarlar.konum).toEqual({ sehir: 'İstanbul' });
+  });
+
+  it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {
+    await yedekZarfiOlustur();
+    const cagrilanAnahtarlar = okuMock.mock.calls.map((cagri: unknown[]) => cagri[0]);
+    expect(cagrilanAnahtarlar).not.toContain(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA);
   });
 
   it('eksik anahtarlar için güvenli varsayılanlar kullanır (null/0/[])', async () => {
@@ -281,5 +289,26 @@ describe('YedeklemeServisi — yedeginiPaylas', () => {
     expect(mockShareAsync).not.toHaveBeenCalled();
     // Dosya yine de yazılmış olmalı.
     expect(mockDosyaYaz).toHaveBeenCalledTimes(1);
+  });
+
+  it('paylaşım başarılıysa Depolama.yaz SON_DISA_AKTARMA anahtarıyla ISO zaman damgasıyla çağrılır', async () => {
+    await yedeginiPaylas();
+    expect(yazMock).toHaveBeenCalledTimes(1);
+    const [anahtar, deger] = yazMock.mock.calls[0] as [string, string];
+    expect(anahtar).toBe(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA);
+    expect(() => new Date(deger).toISOString()).not.toThrow();
+    expect(new Date(deger).toISOString()).toBe(deger);
+  });
+
+  it('paylaşım desteklenmiyorsa (isAvailableAsync false) damga da yazılmaz', async () => {
+    mockIsAvailable.mockResolvedValue(false);
+    await yedeginiPaylas();
+    expect(yazMock).not.toHaveBeenCalled();
+  });
+
+  it('Depolama.yaz reddederse yedeginiPaylas yine de başarılı döner (paylaşım zaten tamamlandı)', async () => {
+    yazMock.mockRejectedValueOnce(new Error('disk dolu'));
+    await expect(yedeginiPaylas()).resolves.toBeUndefined();
+    expect(mockShareAsync).toHaveBeenCalledTimes(1);
   });
 });
