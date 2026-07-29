@@ -6,6 +6,13 @@
  * sözleşme) BİREBİR aynı, birbirini dışlayan üç kategoriyi sayar: yalnız
  * eşiği tutturan günler ("hedef tutuldu"), tam beş vakti tamamlayan günler
  * ("beş vakit tamamlandı") ve dondurulmuş günler.
+ *
+ * KOMŞU AY GÜNLERİ (`digerAy: true`) DE SAYIMA KATILIR — bilinçli. Gök paneli
+ * komşu ayın günlerini soluk ama GERÇEK olarak gösterir (bkz. tasarım spec
+ * §1 "Ay sınırı tanımaz") ve zincir onlardan geçer; ekran okuyucu kullanıcısı
+ * panelde görünen her hücreyi duymalı, yalnızca "kendi ayı" olanları değil —
+ * aksi halde sayılar görsel panelle tutarsız olur (ör. panelde 35 hücre
+ * görünürken özet yalnızca 31'ini sayar).
  */
 import { IzgaraGunu } from './aylikIzgara';
 import { gunTamMi } from './gunTamMi';

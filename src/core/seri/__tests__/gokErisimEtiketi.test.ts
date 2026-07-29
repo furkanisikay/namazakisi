@@ -59,4 +59,28 @@ describe('gokErisimEtiketi', () => {
     const etiket = gokErisimEtiketi([], 'Eylül 2026', 42, 5);
     expect(etiket).toContain('Mevcut seri 42 gün.');
   });
+
+  test('komsu ay gunleri (digerAy:true) de sayima katilir - panelle tutarli olsun diye', () => {
+    // Gok paneli komsu ayin gunlerini soluk ama GERCEK gosterir (spec "Ay siniri
+    // tanimaz"); ozet de onlari saymazsa ekran okuyucu kullanicisi panelde gorunen
+    // hucre sayisiyla duydugu sayinin tutmadigini fark eder.
+    const komsuAyGunu = (tarih: string, sayi: number): IzgaraGunu => ({
+      tarih,
+      gunNo: Number(tarih.slice(-2)),
+      digerAy: true,
+      durum: { tip: 'kilindi', vakitler: Array.from({ length: 5 }, (_, i) => i < sayi) },
+    });
+
+    const izgara: IzgaraGunu[] = [
+      komsuAyGunu('2026-06-29', 5), // onceki aydan, bes vakit tamamlandi
+      komsuAyGunu('2026-06-30', 3), // onceki aydan, hedef tutuldu (esik=3)
+      kilinanSayi('2026-07-01', 5),
+    ];
+
+    const etiket = gokErisimEtiketi(izgara, 'Temmuz 2026', 3, 3);
+
+    expect(etiket).toBe(
+      'Temmuz 2026. 1 gün hedef tutuldu, 2 günde beş vakit tamamlandı, 0 gün dondurulmuş. Mevcut seri 3 gün.'
+    );
+  });
 });

@@ -13,7 +13,7 @@ import {
 } from '../utils/TarihYardimcisi';
 
 export type GunDurumu =
-  | { tip: 'kilindi'; vakitler: boolean[] } // uzunluk 5, NAMAZ_ISIMLERI sirasi
+  | { tip: 'kilindi'; vakitler: readonly boolean[] } // uzunluk 5, NAMAZ_ISIMLERI sirasi
   | { tip: 'dondurulmus' }
   | { tip: 'gelecek' };
 
@@ -32,7 +32,11 @@ export interface AylikIzgaraGirdisi {
   bugun: string; // ENJEKTE — core new Date() cagirmaz
 }
 
-const BOS_VAKITLER: boolean[] = [false, false, false, false, false];
+// readonly: bu tek dizi tum kayitsiz gunler arasinda PAYLASILIR (bkz. asagidaki
+// kullanim) — sunum katmani bunu mutasyona ugratirsa tum bos gunler birden
+// bozulur. Tip sistemi bu riski engeller (kopyalamaya gerek yok, cunku hicbir
+// tuketici mevcut olarak mutasyon yapmiyor; bkz. zincir.ts, gokErisimEtiketi.ts).
+const BOS_VAKITLER: readonly boolean[] = [false, false, false, false, false];
 
 const ikiHaneliAyStr = (ay: number): string => String(ay + 1).padStart(2, '0');
 
