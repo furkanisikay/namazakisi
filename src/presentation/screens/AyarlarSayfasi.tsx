@@ -1,228 +1,43 @@
 /**
- * Ayarlar Sayfasi
- * Temiz ve minimal ayarlar listesi
- * Her kategori ayri sayfaya yonlendirir
- * 
- * NativeWind + Expo Vector Icons ile guncellenmis versiyon
+ * Ayarlar Sayfası (One UI esinli yeniden kurulum — Plan 1)
+ *
+ * Dört grup: Namaz vakitleri · Hatırlatmalar · Uygulama · Veri ve destek.
+ * Her satırın ikinci satırı `useAyarOzetleri` ile o ayarın MEVCUT değeridir;
+ * en üstteki `KurulumSagligiKarti` ekranın tek imza öğesidir.
+ *
+ * Büyük başlık animasyonu ve arama Plan 2'nin işidir — burada yalnız statik
+ * bir "Ayarlar" başlığı var.
+ *
+ * (Task 5 — spec: docs/superpowers/specs/2026-07-29-ayarlar-sayfasi-yeniden-kurulum-design.md)
  */
-
 import * as React from 'react';
 import { useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Switch,
-  Animated,
-  Easing,
-} from 'react-native';
+import { Text, ScrollView, Animated, Easing, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
-import { YeniRozet } from '../components/YeniRozet';
+import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
+import { AyarGrubu } from './Ayarlar/AyarGrubu';
+import { AyarSatiri } from './Ayarlar/AyarSatiri';
+import { KurulumSagligiKarti } from './Ayarlar/KurulumSagligiKarti';
+import type { Sorun } from '../../core/ayarlar/kurulumSagligi';
 
-// Ikon tipleri
-type IkonTipi = {
-  name: string;
-  family: 'fa5' | 'material';
-  solid?: boolean;
-};
+/** Ayarlar stack'i tiplenmemiş (Plan 2'de tiplenecek); `any` yerine ihtiyaç duyulan minimum yüzey. */
+type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
-// Menu ogesi ikon eslesmesi
-const MENU_IKONLARI: Record<string, IkonTipi> = {
-  konum: { name: 'map-marker-alt', family: 'fa5', solid: true },
-  muhafiz: { name: 'shield-alt', family: 'fa5', solid: true },
-  goruntu: { name: 'palette', family: 'fa5', solid: true },
-  bildirim: { name: 'bell', family: 'fa5', solid: true },
-  hedef: { name: 'bullseye', family: 'fa5', solid: true },
-  ramazan: { name: 'moon', family: 'fa5', solid: true },
-  hakkinda: { name: 'info-circle', family: 'fa5', solid: true },
-  takvim: { name: 'calendar-alt', family: 'fa5', solid: true },
-  yedekleme: { name: 'cloud-download-alt', family: 'fa5', solid: true },
-  nelerYeni: { name: 'gift', family: 'fa5', solid: true },
-  taniGeriBildirim: { name: 'comment-dots', family: 'fa5', solid: true },
-  titresim: { name: 'vibration', family: 'material' },
-  ses: { name: 'volume-up', family: 'fa5', solid: true },
-};
-
-/**
- * Ayar menu satiri props arayuzu
- */
-interface AyarMenuSatiriProps {
-  baslik: string;
-  aciklama: string;
-  ikonAdi: string;
-  onPress: () => void;
-  yeni?: boolean;
-}
-
-/**
- * Navigasyon ayar satiri bileseni
- */
-const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
-  baslik,
-  aciklama,
-  ikonAdi,
-  onPress,
-  yeni,
-}) => {
+export const AyarlarSayfasi: React.FC = () => {
   const renkler = useRenkler();
-  const { butonTiklandiFeedback } = useFeedback();
-  const ikonBilgi = MENU_IKONLARI[ikonAdi];
-
-  const handlePress = async () => {
-    await butonTiklandiFeedback();
-    onPress();
-  };
-
-  return (
-    <TouchableOpacity
-      className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl shadow-sm"
-      style={{ backgroundColor: renkler.kartArkaplan }}
-      onPress={handlePress}
-      activeOpacity={0.7}
-    >
-      <View
-        className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
-        style={{ backgroundColor: `${renkler.birincil}15` }}
-      >
-        {ikonBilgi?.family === 'material' ? (
-          <MaterialIcons
-            name={ikonBilgi.name as any}
-            size={22}
-            color={renkler.birincil}
-          />
-        ) : (
-          <FontAwesome5
-            name={ikonBilgi?.name || 'cog'}
-            size={20}
-            color={renkler.birincil}
-            solid={ikonBilgi?.solid}
-          />
-        )}
-      </View>
-      <View className="flex-1">
-        <View className="flex-row items-center">
-          <Text
-            className="text-base font-semibold"
-            style={{ color: renkler.metin }}
-          >
-            {baslik}
-          </Text>
-          {yeni && (
-            <View className="ml-2">
-              <YeniRozet />
-            </View>
-          )}
-        </View>
-        <Text
-          className="text-xs mt-0.5"
-          style={{ color: renkler.metinIkincil }}
-        >
-          {aciklama}
-        </Text>
-      </View>
-      <FontAwesome5
-        name="chevron-right"
-        size={14}
-        color={renkler.metinIkincil}
-      />
-    </TouchableOpacity>
-  );
-};
-
-/**
- * Toggle ayar satiri props arayuzu
- */
-interface ToggleAyarSatiriProps {
-  baslik: string;
-  aciklama: string;
-  ikonAdi: string;
-  deger: boolean;
-  onDegistir: (yeniDeger: boolean) => void;
-}
-
-/**
- * Toggle ayar satiri bileseni
- */
-const ToggleAyarSatiri: React.FC<ToggleAyarSatiriProps> = ({
-  baslik,
-  aciklama,
-  ikonAdi,
-  deger,
-  onDegistir,
-}) => {
-  const renkler = useRenkler();
-  const { butonTiklandiFeedback } = useFeedback();
-  const ikonBilgi = MENU_IKONLARI[ikonAdi];
-
-  const handleToggle = async (yeniDeger: boolean) => {
-    await butonTiklandiFeedback();
-    onDegistir(yeniDeger);
-  };
-
-  return (
-    <View
-      className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl shadow-sm"
-      style={{ backgroundColor: renkler.kartArkaplan }}
-    >
-      <View
-        className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
-        style={{ backgroundColor: `${renkler.birincil}15` }}
-      >
-        {ikonBilgi?.family === 'material' ? (
-          <MaterialIcons
-            name={ikonBilgi.name as any}
-            size={22}
-            color={renkler.birincil}
-          />
-        ) : (
-          <FontAwesome5
-            name={ikonBilgi?.name || 'cog'}
-            size={20}
-            color={renkler.birincil}
-            solid={ikonBilgi?.solid}
-          />
-        )}
-      </View>
-      <View className="flex-1">
-        <Text
-          className="text-base font-semibold"
-          style={{ color: renkler.metin }}
-        >
-          {baslik}
-        </Text>
-        <Text
-          className="text-xs mt-0.5"
-          style={{ color: renkler.metinIkincil }}
-        >
-          {aciklama}
-        </Text>
-      </View>
-      <Switch
-        value={deger}
-        onValueChange={handleToggle}
-        trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-        thumbColor={deger ? renkler.birincil : '#f4f3f4'}
-      />
-    </View>
-  );
-};
-
-/**
- * Ayarlar Sayfasi
- */
-export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
-  const renkler = useRenkler();
+  const navigation = useNavigation() as unknown as AyarNavigasyonu;
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
+  const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri();
 
-  // Giris animasyonu
+  // Giriş animasyonu (KORUNUR — spec §1 "KORUNACAK davranışlar")
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
 
@@ -240,143 +55,172 @@ export const AyarlarSayfasi: React.FC<any> = ({ navigation }) => {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
-  // Menu ogelerini tanimla
-  const menuOgeleri = [
-    {
-      baslik: 'Konum',
-      aciklama: 'Namaz vakitleri için konum ayarları',
-      ikonAdi: 'konum',
-      sayfa: 'KonumAyarlari',
-    },
-    {
-      baslik: 'Namaz Muhafızı',
-      aciklama: 'Hatırlatma bildirimleri ve sıklık ayarları',
-      ikonAdi: 'muhafiz',
-      sayfa: 'MuhafizAyarlari',
-    },
-    {
-      baslik: 'Görüntü',
-      aciklama: 'Tema ve renk paleti ayarları',
-      ikonAdi: 'goruntu',
-      sayfa: 'GorünumAyarlari',
-    },
-    {
-      baslik: 'Bildirimler',
-      aciklama: 'Hatırlatıcı ve bildirim tercihleri',
-      ikonAdi: 'bildirim',
-      sayfa: 'BildirimAyarlari',
-    },
-    {
-      baslik: 'Seri ve Hedefler',
-      aciklama: 'Seri eşikleri ve özel gün modu',
-      ikonAdi: 'hedef',
-      sayfa: 'SeriHedefAyarlari',
-    },
-    {
-      baslik: 'Ramazan Özel',
-      aciklama: 'İftar sayacı ve Ramazan ayarları',
-      ikonAdi: 'ramazan',
-      sayfa: 'RamazanAyarlari',
-    },
-    {
-      baslik: 'Takvim Entegrasyonu',
-      aciklama: 'Namaz vakitlerini cihaz takviminize ekle',
-      ikonAdi: 'takvim',
-      sayfa: 'TakvimAyarlari',
-    },
-    {
-      baslik: 'Yedekleme & Aktarım',
-      aciklama: 'Verilerinizi yedekleyin ve başka cihaza aktarın',
-      ikonAdi: 'yedekleme',
-      sayfa: 'YedeklemeAktarim',
-    },
-    {
-      baslik: 'Neler Yeni',
-      aciklama: 'Uygulamaya eklenen yeni özellikler',
-      ikonAdi: 'nelerYeni',
-      sayfa: 'NelerYeni',
-    },
-    {
-      baslik: 'Hakkında',
-      aciklama: 'Uygulama bilgileri, sürüm ve geri bildirim',
-      ikonAdi: 'hakkinda',
-      sayfa: 'Hakkinda',
-    },
-  ];
-
-  // Bir menü öğesi açılınca ilgili özelliği (varsa) görüldü işaretle, sonra geç
+  // Bir satıra dokununca ilgili özelliği (varsa) görüldü işaretle, sonra geç.
+  // "Neler yeni" hariç — o sayfanın kendi rozet semantiği var (okunmamisVarMi).
   const menuyeGit = (sayfa: string) => {
     if (sayfa !== 'NelerYeni') sayfayiGorulduIsaretle(sayfa);
     navigation.navigate(sayfa);
   };
 
+  const saglikEylemi = (sorun: Sorun) => {
+    if (sorun.eylem?.tip === 'sistemAyarlari') {
+      Linking.openSettings();
+    } else if (sorun.eylem?.tip === 'sayfa') {
+      menuyeGit(sorun.eylem.sayfa);
+    }
+  };
+
+  const ikonRengi = renkler.birincil;
+
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
-    <ScrollView
-      className="flex-1"
-      contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
-      showsVerticalScrollIndicator={false}
-    >
-      <Animated.View
-        style={{
-          opacity: fadeAnim,
-          transform: [{ translateY: slideAnim }],
-        }}
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
       >
-        {/* Yeni Özellik Tanıtım Kartı (yalnızca Ayarlar'da; anasayfaya dokunmaz) */}
-        {kart && (
-          <YeniOzellikKarti
-            ozellik={kart}
-            onAc={() => {
-              if (kart.hedefSayfa) menuyeGit(kart.hedefSayfa);
-            }}
-            onKapat={() => kartiKapat(kart.id)}
-          />
-        )}
-
-        {/* Ana Menu Bolumu */}
-        <View className="mb-6">
-          {menuOgeleri.map((oge) => (
-            <AyarMenuSatiri
-              key={oge.sayfa}
-              baslik={oge.baslik}
-              aciklama={oge.aciklama}
-              ikonAdi={oge.ikonAdi}
-              yeni={oge.sayfa === 'NelerYeni' ? okunmamisVarMi : sayfaOkunmamisMi(oge.sayfa)}
-              onPress={() => menuyeGit(oge.sayfa)}
-            />
-          ))}
-        </View>
-
-        {/* Hizli Ayarlar Bolumu */}
-        <View className="mb-6">
-          <Text
-            className="text-xs font-bold tracking-wider mx-4 mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            HIZLI AYARLAR
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }}
+        >
+          <Text className="text-2xl font-bold mx-4 mb-4" style={{ color: renkler.metin }}>
+            Ayarlar
           </Text>
 
-          <ToggleAyarSatiri
-            baslik="Titresim"
-            aciklama="Etkilesimlerde telefon titrer."
-            ikonAdi="titresim"
-            deger={ayarlar.titresimAktif}
-            onDegistir={titresimDurumunuDegistir}
-          />
+          {/* Yeni Özellik Tanıtım Kartı (yalnızca Ayarlar'da; anasayfaya dokunmaz) — KORUNUR */}
+          {kart && (
+            <YeniOzellikKarti
+              ozellik={kart}
+              onAc={() => {
+                if (kart.hedefSayfa) menuyeGit(kart.hedefSayfa);
+              }}
+              onKapat={() => kartiKapat(kart.id)}
+            />
+          )}
 
-          <ToggleAyarSatiri
-            baslik="Ses Efektleri"
-            aciklama="Etkilesimlerde ses efektleri verir."
-            ikonAdi="ses"
-            deger={ayarlar.sesAktif}
-            onDegistir={sesDurumunuDegistir}
-          />
-        </View>
-      </Animated.View>
-    </ScrollView>
+          <KurulumSagligiKarti sorunlar={sorunlar} onEylem={saglikEylemi} ozetSatiri={saglikOzetSatiri} />
+
+          <AyarGrubu baslik="Namaz vakitleri">
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="map-marker-alt" size={20} color={ikonRengi} solid />}
+              baslik="Konum"
+              ozet={ozetler.konum}
+              yeniRozetGoster={sayfaOkunmamisMi('KonumAyarlari')}
+              onPress={() => menuyeGit('KonumAyarlari')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="calendar-alt" size={20} color={ikonRengi} solid />}
+              baslik="Takvim entegrasyonu"
+              ozet={ozetler.takvim}
+              yeniRozetGoster={sayfaOkunmamisMi('TakvimAyarlari')}
+              onPress={() => menuyeGit('TakvimAyarlari')}
+            />
+          </AyarGrubu>
+
+          <AyarGrubu baslik="Hatırlatmalar">
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="shield-alt" size={20} color={ikonRengi} solid />}
+              baslik="Namaz muhafızı"
+              ozet={ozetler.muhafiz}
+              yeniRozetGoster={sayfaOkunmamisMi('MuhafizAyarlari')}
+              onPress={() => menuyeGit('MuhafizAyarlari')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="bell" size={20} color={ikonRengi} solid />}
+              baslik="Bildirimler"
+              ozet={ozetler.bildirim}
+              yeniRozetGoster={sayfaOkunmamisMi('BildirimAyarlari')}
+              onPress={() => menuyeGit('BildirimAyarlari')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="bullseye" size={20} color={ikonRengi} solid />}
+              baslik="Seri ve hedefler"
+              ozet={ozetler.seri}
+              yeniRozetGoster={sayfaOkunmamisMi('SeriHedefAyarlari')}
+              onPress={() => menuyeGit('SeriHedefAyarlari')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="moon" size={20} color={ikonRengi} solid />}
+              baslik="Ramazan özel"
+              ozet={ozetler.ramazan}
+              yeniRozetGoster={sayfaOkunmamisMi('RamazanAyarlari')}
+              onPress={() => menuyeGit('RamazanAyarlari')}
+            />
+          </AyarGrubu>
+
+          <AyarGrubu baslik="Uygulama">
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="palette" size={20} color={ikonRengi} solid />}
+              baslik="Görünüm"
+              ozet={ozetler.gorunum}
+              yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
+              onPress={() => menuyeGit('GorünumAyarlari')}
+            />
+            <AyarSatiri
+              varyant="toggle"
+              ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
+              baslik="Titreşim"
+              ozet="Etkileşimlerde telefon titrer."
+              deger={ayarlar.titresimAktif}
+              onDegistir={titresimDurumunuDegistir}
+            />
+            <AyarSatiri
+              varyant="toggle"
+              ikon={<FontAwesome5 name="volume-up" size={20} color={ikonRengi} solid />}
+              baslik="Ses efektleri"
+              ozet="Etkileşimlerde ses efektleri verir."
+              deger={ayarlar.sesAktif}
+              onDegistir={sesDurumunuDegistir}
+            />
+          </AyarGrubu>
+
+          <AyarGrubu baslik="Veri ve destek">
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="cloud-download-alt" size={20} color={ikonRengi} solid />}
+              baslik="Yedekleme ve aktarım"
+              ozet={ozetler.yedekleme}
+              yeniRozetGoster={sayfaOkunmamisMi('YedeklemeAktarim')}
+              onPress={() => menuyeGit('YedeklemeAktarim')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="comment-dots" size={20} color={ikonRengi} solid />}
+              baslik="Tanı ve geri bildirim"
+              ozet="Sorun bildirin, tanı raporu gönderin"
+              yeniRozetGoster={sayfaOkunmamisMi('TaniGeriBildirim')}
+              onPress={() => menuyeGit('TaniGeriBildirim')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="gift" size={20} color={ikonRengi} solid />}
+              baslik="Neler yeni"
+              ozet="Uygulamaya eklenen yeni özellikler"
+              yeniRozetGoster={okunmamisVarMi}
+              onPress={() => menuyeGit('NelerYeni')}
+            />
+            <AyarSatiri
+              varyant="navigasyon"
+              ikon={<FontAwesome5 name="info-circle" size={20} color={ikonRengi} solid />}
+              baslik="Hakkında"
+              ozet={ozetler.hakkinda}
+              yeniRozetGoster={sayfaOkunmamisMi('Hakkinda')}
+              onPress={() => menuyeGit('Hakkinda')}
+            />
+          </AyarGrubu>
+        </Animated.View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
