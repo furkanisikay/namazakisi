@@ -41,6 +41,29 @@ const BOS_VAKITLER: readonly boolean[] = [false, false, false, false, false];
 const ikiHaneliAyStr = (ay: number): string => String(ay + 1).padStart(2, '0');
 
 /**
+ * Verilen yil/ay icin ekrana cizilecek izgaranin tarih araligini hesaplar
+ * (ayin 1'inden once gelen/ayni gune denk gelen pazartesiden, ayin son
+ * gununden sonra gelen/ayni gune denk gelen pazara kadar).
+ *
+ * TEK KAYNAK: bu aralik hem `aylikIzgaraOlustur` (asagida) hem de
+ * `useSeriAyi` tarafindan `localTarihAraligindakiNamazlariGetir` cagrisinda
+ * KULLANILMALI — once ikisi ayni 5 satiri ayri ayri hesapliyordu (inceleme
+ * bulgusu). Bugun eslesiyorlardi ama tesadufe baglıydı: bu fonksiyonun
+ * bitis kurali degisirse hook'un okuma araligi sessizce dar kalabilir ve
+ * son hucreler bos gorunurdu.
+ */
+export function izgaraAraligi(yil: number, ay: number): { baslangic: string; bitis: string } {
+  const ayinIlkGunuIso = `${yil}-${ikiHaneliAyStr(ay)}-01`;
+  const ayinSonGunuIso = ayinSonGunuAl(ayinIlkGunuIso);
+
+  const baslangic = haftaninBaslangiciniAl(ayinIlkGunuIso);
+  const sonHaftaBaslangici = haftaninBaslangiciniAl(ayinSonGunuIso);
+  const bitis = gunEkle(sonHaftaBaslangici, 6);
+
+  return { baslangic, bitis };
+}
+
+/**
  * Verilen yil/ay icin aylik izgarayi olusturur.
  *
  * Izgara, ayin 1'inden once gelen (veya ayni gune denk gelen) pazartesiden,
@@ -49,12 +72,7 @@ const ikiHaneliAyStr = (ay: number): string => String(ay + 1).padStart(2, '0');
  * varsayimi YANLIS (ör. pazartesi baslayan 28 gunluk Subat).
  */
 export function aylikIzgaraOlustur(g: AylikIzgaraGirdisi): IzgaraGunu[] {
-  const ayinIlkGunuIso = `${g.yil}-${ikiHaneliAyStr(g.ay)}-01`;
-  const ayinSonGunuIso = ayinSonGunuAl(ayinIlkGunuIso);
-
-  const izgaraBaslangici = haftaninBaslangiciniAl(ayinIlkGunuIso);
-  const sonHaftaBaslangici = haftaninBaslangiciniAl(ayinSonGunuIso);
-  const izgaraBitisi = gunEkle(sonHaftaBaslangici, 6);
+  const { baslangic: izgaraBaslangici, bitis: izgaraBitisi } = izgaraAraligi(g.yil, g.ay);
 
   const izgara: IzgaraGunu[] = [];
   let mevcutTarih = izgaraBaslangici;

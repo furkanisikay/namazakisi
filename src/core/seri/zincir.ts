@@ -5,6 +5,7 @@
  */
 import { IzgaraGunu } from './aylikIzgara';
 import { gunTamMi } from './gunTamMi';
+import { SUTUN_SAYISI } from './gokGeometrisi';
 
 export interface ZincirBagi {
   indeks: number; // sol gunun izgara indeksi (bag i <-> i+1 arasindadir)
@@ -55,7 +56,7 @@ export function zincirBaglari(izgara: IzgaraGunu[], tamGunEsigi: number): Zincir
       baglar.push({
         indeks: i,
         ikisiTam: besTeBesMi(sol) && besTeBesMi(sag),
-        satirSarmasi: i % 7 === 6,
+        satirSarmasi: i % SUTUN_SAYISI === SUTUN_SAYISI - 1,
       });
     }
   }

@@ -131,8 +131,21 @@ export const Tesbih: React.FC<TesbihProps> = ({ mevcutSeri, hedefGun, hedefAdi }
       ? 'Tüm rozetleri tamamladınız: tesbih tamamen dolu.'
       : `${gosterilenHedefAdi} rozeti: ${hedefGun} günün ${tamamlananSayisi}'${turkceIyelikEki(tamamlananSayisi)} tamamlandı.`;
 
+  // TalkBack progressbar rolü için min/max/now bekler (accessibilityLabel
+  // tek başına yeterli değil — inceleme bulgusu). hedefGun null iken (tüm
+  // rozetler kazanılmış) tesbih tamamen dolu görünür: max/now boncukSayisi'na
+  // eşitlenir; aksi halde erişim etiketiyle AYNI sayılar kullanılır
+  // (max=hedefGun, now=tamamlananSayisi).
+  const accessibilityMax = hedefGun === null ? boncukSayisi : hedefGun;
+  const accessibilityNow = hedefGun === null ? boncukSayisi : tamamlananSayisi;
+
   return (
-    <View accessible accessibilityRole="progressbar" accessibilityLabel={erisimEtiketi}>
+    <View
+      accessible
+      accessibilityRole="progressbar"
+      accessibilityLabel={erisimEtiketi}
+      accessibilityValue={{ min: 0, max: accessibilityMax, now: accessibilityNow }}
+    >
       <Svg width="100%" height={YUKSEKLIK} viewBox={`0 0 ${genislik} ${YUKSEKLIK}`}>
         {/* İp — boncukların İÇİNDEN geçen TEK sürekli hat */}
         <Line

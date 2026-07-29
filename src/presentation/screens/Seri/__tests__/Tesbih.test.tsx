@@ -151,6 +151,19 @@ describe('Tesbih', () => {
     expect(metniBul(tree, 'gün kaldı')).toBe('Sıradaki hedef rozetine 6 gün kaldı');
   });
 
+  test('KRITIK (inceleme bulgusu — erişilebilirlik): accessibilityValue min/max/now taşır', () => {
+    // hedefGun=21 -> max=21 (hedef), now=min(mevcutSeri,hedefGun)=15 (tamamlananSayisi).
+    const tree = render(<Tesbih mevcutSeri={15} hedefGun={21} hedefAdi="Alışkanlık ustası" />);
+    const progressbar = tree.root.findByProps({ accessibilityRole: 'progressbar' });
+    expect(progressbar.props.accessibilityValue).toEqual({ min: 0, max: 21, now: 15 });
+  });
+
+  test('hedefGun null iken accessibilityValue tesbihi tamamen dolu gösterir (max=now=boncukSayisi)', () => {
+    const tree = render(<Tesbih mevcutSeri={120} hedefGun={null} />);
+    const progressbar = tree.root.findByProps({ accessibilityRole: 'progressbar' });
+    expect(progressbar.props.accessibilityValue).toEqual({ min: 0, max: 33, now: 33 });
+  });
+
   test('hedefAdi boş/yalnız-boşluk string olduğunda da varsayılan ada düşer', () => {
     const bosString = render(<Tesbih mevcutSeri={15} hedefGun={21} hedefAdi="" />);
     expect(erisimEtiketiniAl(bosString)).toBe("Sıradaki hedef rozeti: 21 günün 15'i tamamlandı.");

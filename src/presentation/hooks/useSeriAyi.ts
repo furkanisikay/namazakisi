@@ -30,17 +30,10 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { localTarihAraligindakiNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { Logger } from '../../core/utils/Logger';
-import {
-  gunEkle,
-  ayinSonGunuAl,
-  haftaninBaslangiciniAl,
-  ISOTarihiDateNesnesiNeCevir,
-  ayAdiniAl,
-} from '../../core/utils/TarihYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir, ayAdiniAl } from '../../core/utils/TarihYardimcisi';
 import { namazGunuHesapla } from '../../domain/services/SeriHesaplayiciServisi';
-import { aylikIzgaraOlustur, IzgaraGunu } from '../../core/seri/aylikIzgara';
+import { aylikIzgaraOlustur, izgaraAraligi, IzgaraGunu } from '../../core/seri/aylikIzgara';
 import { zincirBaglari, ZincirBagi } from '../../core/seri/zincir';
-import { gokErisimEtiketi } from '../../core/seri/gokErisimEtiketi';
 import { ozelGunKumesi } from '../../core/seri/ozelGunKumesi';
 
 export interface SeriAyiSonucu {
@@ -60,8 +53,6 @@ export interface SeriAyiSonucu {
   tamGunEsigi: number;
   /** `seriSlice.seriDurumu.mevcutSeri`. */
   mevcutSeri: number;
-  /** Gök panelinin erişilebilirlik özet etiketi. */
-  erisimEtiketi: string;
   /** Hata durumunda kullanıcının "Yeniden deneyin" ile tetikleyeceği fonksiyon. */
   yenidenDene: () => void;
 }
@@ -90,6 +81,12 @@ export function useSeriAyi(): SeriAyiSonucu {
   const ayarlar = useAppSelector((s) => s.seri.ayarlar);
   const ozelGunAyarlari = useAppSelector((s) => s.seri.ozelGunAyarlari);
   const mevcutSeri = useAppSelector((s) => s.seri.seriDurumu?.mevcutSeri ?? 0);
+  // Seri slice'ı henüz hidrate edilmediyse (`seriVerileriniYukle` daha
+  // tamamlanmadı — bkz. yukarıdaki nöbetçi) `sonYukleme` `null` kalır.
+  // İnceleme bulgusu: `yukleniyor` önceden yalnız namaz okumasını temsil
+  // ediyordu; seri slice'ı geç hidrat olursa panel bir-iki kare
+  // `tamGunEsigi` varsayılanıyla (yanlış eşik) çizilip düzeliyordu.
+  const seriHidrateEdildi = useAppSelector((s) => s.seri.sonYukleme !== null);
 
   // Hidrasyon nöbetçisi — bkz. dosya başı JSDoc'u. İdempotent (yalnız local okuma).
   useEffect(() => {
@@ -109,11 +106,10 @@ export function useSeriAyi(): SeriAyiSonucu {
     setOkuma((onceki) => ({ ...onceki, yukleniyor: true, hata: null }));
 
     (async () => {
-      const ayinIlkGunuIso = `${yil}-${String(ay + 1).padStart(2, '0')}-01`;
-      const ayinSonGunuIso = ayinSonGunuAl(ayinIlkGunuIso);
-      const izgaraBaslangici = haftaninBaslangiciniAl(ayinIlkGunuIso);
-      const sonHaftaBaslangici = haftaninBaslangiciniAl(ayinSonGunuIso);
-      const izgaraBitisi = gunEkle(sonHaftaBaslangici, 6);
+      // TEK KAYNAK: `aylikIzgaraOlustur`'un çizdiği aralıkla BİREBİR aynı
+      // fonksiyon (`izgaraAraligi`, `core/seri/aylikIzgara.ts`) — önceden bu
+      // 5 satır burada AYRICA hesaplanıyordu (ikiz kod, inceleme bulgusu).
+      const { baslangic: izgaraBaslangici, bitis: izgaraBitisi } = izgaraAraligi(yil, ay);
 
       const yanit = await localTarihAraligindakiNamazlariGetir(izgaraBaslangici, izgaraBitisi);
       if (iptal) {
@@ -162,15 +158,12 @@ export function useSeriAyi(): SeriAyiSonucu {
 
   const ayAdi = `${ayAdiniAl(ay)} ${yil}`;
 
-  const erisimEtiketi = useMemo(
-    () => gokErisimEtiketi(izgara, ayAdi, mevcutSeri, ayarlar.tamGunEsigi),
-    [izgara, ayAdi, mevcutSeri, ayarlar.tamGunEsigi]
-  );
-
   const yenidenDene = useCallback(() => setYenidenDeneSayaci((n) => n + 1), []);
 
   return {
-    yukleniyor: okuma.yukleniyor,
+    // Namaz okuması bitse bile seri slice'ı henüz hidrate değilse `yukleniyor`
+    // true kalır (yukarıdaki `seriHidrateEdildi` yorumu).
+    yukleniyor: okuma.yukleniyor || !seriHidrateEdildi,
     hata: okuma.hata,
     izgara,
     zincirler,
@@ -178,7 +171,6 @@ export function useSeriAyi(): SeriAyiSonucu {
     bugun,
     tamGunEsigi: ayarlar.tamGunEsigi,
     mevcutSeri,
-    erisimEtiketi,
     yenidenDene,
   };
 }

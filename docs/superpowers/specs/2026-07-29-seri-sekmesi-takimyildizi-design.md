@@ -87,17 +87,36 @@ yerde** toplanır (tam liste; yeni ton eklemek spec değişikliğidir):
 |---|---|
 | `#080B16` `#111830` `#1B2440` `#17203C` | gök zemini katmanları |
 | `#F2F6FF` | yıldız ışığı (ışın + çekirdek) |
-| `#FFFFFF` | 5/5 çekirdeği ve boncuk ışık noktası |
+| `#FFFFFF` | 5/5 çekirdeği |
 | `#4E5A7C` | sönük (kılınmamış) ışın |
 | `#6B77A0` | kılınmamış gün çekirdeği |
 | `#4A5470` | gelecek gün noktası |
 | `#9AA6C4` | dondurulmuş gün halkası ve çekirdeği |
-| `#63709A` | gün numaraları |
-| `#6E7897` | gün adları (P S Ç…) |
+| `#828EB0` | gün numaraları |
+| `#8994AF` | gün adları (P S Ç…) |
 | `#E8EDF8` | ay adı başlığı |
 | `#8892AC` | ay gezinme okları |
 
 **Gövde metni ve etiketler bu listeye girmez** — onlar daima tema token'ıdır.
+Tesbih boncuğunun ışık noktası da bu listeye GİRMEZ — `Tesbih.tsx` kendi tema
+token'ı `renkler.birincilMetin`'i kullanır, gök sahnesinin sabit tonu DEĞİL.
+
+**Kontrast düzeltmesi (son inceleme):** gün numaraları/gün adları eski
+tonları (`#63709A` / `#6E7897`) gök panelinin en açık zemin noktasına
+(`ZEMIN_VURGU_SOL_UST` = `#1B2440`; `GokPaneli`'ndeki `zeminSolUst` radial
+vurgunun cx %22/cy %8 merkezinde tam opaklıkla çıkan nokta — tam olarak gün
+harflerinin ve ilk satır gün numaralarının durduğu bölge) karşı sırasıyla
+yalnız **3.14:1** ve **3.49:1** veriyordu; AA eşiği (4.5:1, 18.66px altı
+metin) altında (AGENTS.md'de kayıtlı kontrast tuzağının aynısı — PR
+#139/#166). Yeni tonlar, **en açık zemin noktasına karşı ölçülerek**
+seçildi (`kontrastOrani`, `src/core/utils/kontrastOrani.ts`):
+- `#828EB0` (gün numaraları) → `#1B2440`'a karşı **4.69:1**, `#080B16`'ya
+  (en koyu zemin ucu) karşı **6.02:1**.
+- `#8994AF` (gün adları) → `#1B2440`'a karşı **5.04:1**, `#080B16`'ya karşı
+  **6.47:1**.
+
+Aynı mavi-gri ailede kalındı ve orijinal hiyerarşi (gün adları, gün
+numaralarına göre biraz daha açık) korundu.
 
 ### Tesbih (rozet ilerlemesi)
 

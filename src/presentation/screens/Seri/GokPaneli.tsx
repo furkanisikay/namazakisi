@@ -54,7 +54,7 @@ import Svg, {
 } from 'react-native-svg';
 import { useRenkler } from '../../../core/theme';
 import { GOK_TONLARI } from './sabitler';
-import { gokYerlesimi, bagYolu, GokOlculeri, Nokta } from '../../../core/seri/gokGeometrisi';
+import { gokYerlesimi, bagYolu, GokOlculeri, Nokta, SUTUN_SAYISI } from '../../../core/seri/gokGeometrisi';
 import { IzgaraGunu, GunDurumu } from '../../../core/seri/aylikIzgara';
 import { ZincirBagi } from '../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../core/seri/gokErisimEtiketi';
@@ -77,7 +77,9 @@ export interface GokPaneliProps {
 }
 
 // ── Geometri sabitleri ───────────────────────────────────────────────────
-const SUTUN_SAYISI = 7;
+// SUTUN_SAYISI artık `core/seri/gokGeometrisi.ts`'den import edilir (tek
+// kaynak — önceden burada, zincir.ts'te ve gokGeometrisi.ts'te ayrı ayrı
+// tanımlıydı, inceleme bulgusu).
 const PANEL_UST_PAY = 14;
 const PANEL_YATAY_PAY = 10;
 const SATIR_ARALIGI = 16;

@@ -54,7 +54,6 @@ const VARSAYILAN_HOOK_SONUCU = {
   bugun: '2026-07-10',
   tamGunEsigi: 5,
   mevcutSeri: 15,
-  erisimEtiketi: 'Temmuz 2026. 0 gün hedef tutuldu, 0 günde beş vakit tamamlandı, 0 gün dondurulmuş. Mevcut seri 15 gün.',
   yenidenDene: jest.fn(),
 };
 

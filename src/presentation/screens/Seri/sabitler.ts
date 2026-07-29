@@ -26,10 +26,13 @@ export const GOK_TONLARI = {
   /** Sağ-alt radial vurgu katmanı (ikinci, daha soluk derinlik noktası). */
   ZEMIN_VURGU_SAG_ALT: '#17203C',
 
-  /** Yıldız ışığı: ışın çizgileri + çekirdek + tesbih boncuğunun küre ışık noktası. */
+  /** Yıldız ışığı: ışın çizgileri + çekirdek. NOT: `Tesbih.tsx`'teki boncuk
+   * ışık noktası bu tonu KULLANMAZ — o, tema token'ı `renkler.birincilMetin`
+   * ile çizilir (gök paneliyle aynı sahne değil, kendi tema kuralına tabidir;
+   * inceleme bulgusu — önceden bu yorum ikisinin de aynı tonu paylaştığını
+   * yanlış iddia ediyordu). */
   ISIK: '#F2F6FF',
-  /** 5/5 (beş vakit tamam) çekirdeğinin beyaz-sıcak rengi; ayrıca tesbih
-   * boncuğunun üst-sol ışık noktası bu tonu kullanır (küre hissi). */
+  /** 5/5 (beş vakit tamam) çekirdeğinin beyaz-sıcak rengi. */
   BEYAZ_CEKIRDEK: '#FFFFFF',
 
   /** Sönük (henüz kılınmamış) ışın rengi. */
@@ -41,10 +44,21 @@ export const GOK_TONLARI = {
   /** Dondurulmuş (özel) günün kesikli halkası ve çekirdeği. */
   DONDURULMUS: '#9AA6C4',
 
-  /** Izgaradaki gün numaraları (1, 2, 3…). */
-  GUN_NUMARASI: '#63709A',
-  /** Haftanın gün adları başlığı (P S Ç P C C P). */
-  GUN_ADI: '#6E7897',
+  /** Izgaradaki gün numaraları (1, 2, 3…). İnceleme bulgusu (son inceleme):
+   * eski `#63709A` en açık gök zemini noktasına (`ZEMIN_VURGU_SOL_UST`
+   * `#1B2440`, `GokPaneli`'ndeki `zeminSolUst` radial vurgunun cx %22/cy %8
+   * merkezinde tam opaklıkla) karşı yalnız **3.14:1** veriyordu — AA eşiği
+   * 4.5:1'in (18.66px altı metin) ALTINDA. Ölçülen (`kontrastOrani`,
+   * `src/core/utils/kontrastOrani.ts`): `#828EB0` vs `#1B2440` (en açık
+   * zemin) → **4.69:1**; vs `#080B16` (en koyu zemin) → **6.02:1**. */
+  GUN_NUMARASI: '#828EB0',
+  /** Haftanın gün adları başlığı (P S Ç P C C P). İnceleme bulgusu: eski
+   * `#6E7897` en açık zemine karşı **3.49:1** veriyordu (AA altı). Ölçülen:
+   * `#8994AF` vs `#1B2440` (en açık zemin) → **5.04:1**; vs `#080B16` (en
+   * koyu zemin) → **6.47:1**. GUN_NUMARASI'na göre bilerek biraz daha AÇIK
+   * (kontrastı yüksek) bırakıldı — orijinal hiyerarşiyle aynı yön (gün
+   * adları > gün numaraları), yalnız ikisi de artık eşiği geçiyor. */
+  GUN_ADI: '#8994AF',
   /** Ay adı başlığı ("Temmuz 2026"). */
   AY_ADI: '#E8EDF8',
   /** Ay gezinme okları (bu fazda kullanılmıyor — spec §7 kapsam dışı, ok gizli). */

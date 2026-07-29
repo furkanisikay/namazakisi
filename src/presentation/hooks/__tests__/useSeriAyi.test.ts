@@ -45,6 +45,10 @@ function stateOlustur(ustyaz: Record<string, unknown> = {}) {
       ayarlar: VARSAYILAN_AYARLAR,
       ozelGunAyarlari: VARSAYILAN_OZEL_GUN_AYARLARI,
       seriDurumu: { mevcutSeri: 7 },
+      // Hidrate edilmiş (`seriVerileriniYukle` tamamlanmış) durumu temsil
+      // eder — testlerin çoğu bu "normal" durumu varsayar. Hidrasyon-yarışı
+      // senaryosu bunu açıkça `sonYukleme: null` ile ezer (aşağıda).
+      sonYukleme: '2026-01-01T00:00:00.000Z',
       ...ustyaz,
     },
   };
@@ -143,6 +147,34 @@ describe('useSeriAyi', () => {
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     expect(result.current.izgara.length).toBeGreaterThan(0);
     expect(result.current.hata).toBeNull();
+  });
+
+  it('BAĞLAYICI (inceleme bulgusu — ikiz kod): localTarihAraligindakiNamazlariGetir, izgaranın ilk ve son gününün tarihiyle çağrılır', async () => {
+    const { result } = renderHook(() => useSeriAyi());
+
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+
+    const izgara = result.current.izgara;
+    expect(izgara.length).toBeGreaterThan(0);
+    expect(localTarihAraligindakiNamazlariGetir).toHaveBeenCalledWith(
+      izgara[0].tarih,
+      izgara[izgara.length - 1].tarih
+    );
+  });
+
+  it('KRITIK (hidrasyon yarışı — inceleme bulgusu): seri slice henüz hidrate edilmediyse (sonYukleme null) namaz okuması bitse de yukleniyor true kalır', async () => {
+    selectorlaKur({ sonYukleme: null });
+
+    const { result } = renderHook(() => useSeriAyi());
+    await waitFor(() => expect(localTarihAraligindakiNamazlariGetir).toHaveBeenCalled());
+    // Namaz okuması bitmesi için mikro görevleri boşalt.
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(result.current.hata).toBeNull();
+    expect(result.current.yukleniyor).toBe(true);
   });
 
   it('bugun namazGunuHesapla ile üretilir — gece yarısı sonrası TAKVİM GÜNÜNE DEĞİL, dünküne düşer', async () => {

@@ -26,7 +26,11 @@ export interface GokYerlesimi {
   merkez(indeks: number): Nokta;
 }
 
-const SUTUN_SAYISI = 7;
+/** Izgara sütun sayısı — `GokPaneli`'nin yerleşimi ve `zincir.ts`'in
+ * satır-sarması işaretlemesi (`i % SUTUN_SAYISI === SUTUN_SAYISI - 1`) bu
+ * değerle SENKRON olmak zorundadır; önceden üç yerde ayrı ayrı tanımlıydı
+ * (inceleme bulgusu) — tek kaynak burası. */
+export const SUTUN_SAYISI = 7;
 
 /**
  * Panel ölçülerinden (genişlik, satır sayısı, boşluklar) hücre merkezlerini
