@@ -2,26 +2,41 @@
 
 **Spec:** `docs/superpowers/specs/2026-07-29-ayarlar-sayfasi-yeniden-kurulum-design.md` (§4, §5)
 **Dal:** `fix/muhafiz-kapali-adim-etiketi`
-**Önkoşul:** Plan 1 tamamlandı (dört grup, dinamik özetler, sağlık kartı yerinde).
+**Önkoşul:** Plan 1 tamamlandı.
+**Revizyon:** 2026-07-29 — bağımsız incelemeden sonra revize edildi (2 kritik,
+6 önemli madde). Değişenler: ölçüm reçetesi `measureLayout`'a taşındı, kabuk
+ScrollView'ü **devralmıyor**, çapa→sayfa tablosu eklendi, kırılacak test
+envanteri eklendi, Task 6 ikiye bölündü, "kerahat" kriteri kaldırıldı.
 
 ## Global Constraints
 
 - **`npm run verify` (typecheck + lint + test) GEÇMELİDİR.**
-- Kibar **"siz"** dili, sentence case, aktif fiil. İbadet-çağrı "sen" istisnası
-  bu ekranlarda **geçerli değildir**.
+- Kibar **"siz"** dili, sentence case, aktif fiil.
 - **ASLA hardcoded renk** — `useRenkler()`. `durum.*` yalnız dekoratif.
-- **`Alert.alert` KULLANILMAZ.**
-- Dokunma hedefleri **≥44dp**, `accessibilityRole` + `accessibilityLabel`.
-- `src/core/` **saf** kalmalı (React/Redux/AsyncStorage/native import YOK).
+- **`Alert.alert` KULLANILMAZ.** Dokunma hedefleri **≥44dp**;
+  `accessibilityRole` + `accessibilityLabel` zorunlu.
+- `src/core/` **saf** kalmalı: React/Redux/AsyncStorage/native import YOK.
+  Navigasyon tipine ihtiyaç olursa **yalnız `import type`** (runtime bağ kurma).
 - Yeni bağımlılık **eklenmez**. `android/`, CI, sürüm **değiştirilmez**.
-- Dokunulan dosyaya **yeni lint warning eklenmez**; kullanılmayan catch için
-  `catch { }` yaz.
-- **Alt sayfaların mevcut davranışı DEĞİŞMEZ.** Bu plan onlara yalnız çapa ve
-  vurgu yeteneği ekler; hiçbir ayarın mantığına, düzenine veya metnine dokunmaz.
-- **`useFocusEffect` test mock'u:** ekran testlerinde
-  `jest.mock('@react-navigation/native', ...)` yazarken `useFocusEffect` ve
-  `useRoute` de mock'lanmalı — eksik bırakılırsa sayfa render'da çöker
-  (AGENTS.md'de kayıtlı).
+- Dokunulan dosyaya **yeni lint warning eklenmez** (`catch { }` kullan).
+- **Alt sayfaların mevcut davranışı DEĞİŞMEZ** — bu plan onlara yalnız çapa ve
+  vurgu yeteneği ekler; hiçbir ayarın mantığına, düzenine, metnine dokunmaz.
+
+### Test mock reçetesi (bu repoda zorunlu)
+
+Ekran testlerinde `@react-navigation/native` mock'lanırken **`useRoute` de**
+verilmelidir; eksikse sayfa render'da çöker:
+
+```ts
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+  useRoute: () => ({ params: undefined }),
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    const React = require('react');
+    React.useEffect(cb, [cb]);
+  },
+}));
+```
 
 ---
 
@@ -29,15 +44,8 @@
 
 **Yeni:** `src/navigation/ayarlarEkranlari.ts`
 **Değişen:** `src/navigation/AppNavigator.tsx`
-**Yeni test:** `src/navigation/__tests__/ayarlarEkranlari.test.ts`
-
-Bugün `AyarlarStack` **tamamen tipsiz** (`createNativeStackNavigator()`,
-`AppNavigator.tsx:61`) ve ekranlar `navigate('X' as never)` ile geziyor. `vurgula`
-parametresi tek bir ekrana değil, **çapası olan her hedef sayfaya** gideceği için
-tek ekranlık tip yaması yetmez.
 
 ```ts
-/** AyarlarStack ekran adlarının TEK kaynağı. Navigatör de arama indeksi de burayı okur. */
 export const AYARLAR_EKRANLARI = [
   'AyarlarAna', 'KonumAyarlari', 'GorünumAyarlari', 'BildirimAyarlari',
   'SeriHedefAyarlari', 'MuhafizAyarlari', 'Hakkinda', 'RamazanAyarlari',
@@ -47,47 +55,65 @@ export const AYARLAR_EKRANLARI = [
 
 export type AyarlarEkranAdi = (typeof AYARLAR_EKRANLARI)[number];
 
-/** Cape (vurgu) parametresi çapası olan HER hedef sayfaya gidebilir. */
+/** `vurgula` çapası olan HER hedef sayfaya gidebilir. */
 export type AyarlarStackParamList = Record<AyarlarEkranAdi, { vurgula?: string } | undefined>;
 ```
 
-**`GorünumAyarlari` Türkçe `ü` içerir** — mevcut ad budur, düzeltilmez
-(değiştirmek navigasyonu ve rozet eşleşmesini bozar).
+`GorünumAyarlari` Türkçe `ü` içerir — **mevcut ad budur, düzeltilmez.**
 
 `AppNavigator.tsx`: `createNativeStackNavigator<AyarlarStackParamList>()`.
-Mevcut `as never` cast'leri artık gereksizse temizlenir; **davranış değişmez**.
+`const Stack` yalnız AyarlarStack'te kullanılıyor (doğrulandı) — başka navigatör
+etkilenmez. Mevcut çağrılar **kırılmaz**: `as never` yalnız
+`YedeklemeSayfasi.tsx:147` ve `TaniGeriBildirimSayfasi.tsx:175,220`'de ve `never`
+her tipe atanabilir.
+
+### Senkron garantisi — nöbetçi test DEĞİL, DERLEME ZAMANI
+
+Ekran adı listesi ile navigatörün ayrışmaması **test yerine tiple** garanti edilir
+(navigatörü testte render etmek `NavigationContainer` gerektirir ve
+`AyarlarStack` export edilmiyor — kaynak-metin grep'i ise kırılgandır):
+
+`AppNavigator.tsx` içinde ekran tanımlarını bir haritadan üret:
+
+```ts
+const AYARLAR_EKRAN_TANIMLARI: Record<
+  AyarlarEkranAdi,
+  { component: React.ComponentType<any>; options?: NativeStackNavigationOptions }
+> = { AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false } }, ... };
+```
+
+`Record<AyarlarEkranAdi, …>` **tüm adları zorunlu kılar** — biri eksikse veya
+fazlaysa `npm run typecheck` düşer. Sonra `Object.entries(...)` üzerinden
+`<Stack.Screen>` map'lenir. Mevcut ekran başlıkları ve `headerShown` değerleri
+**birebir korunur** (`AppNavigator.tsx:84-153`'ten kopyala).
 
 ### Test
-- `AYARLAR_EKRANLARI` içindeki her ad benzersiz.
-- **Nöbetçi:** `AppNavigator.tsx` kaynağındaki her `<Stack.Screen name="X">`
-  değeri `AYARLAR_EKRANLARI` içinde var ve tersi de doğru. (Navigatörü render
-  etmeden: `AyarlarStack` bileşenini oluşturup React elemanlarının `props.name`
-  değerlerini toplamak yeterli — kaynak-metin grep'i kullanma.)
+- `AYARLAR_EKRANLARI` içindeki adlar benzersiz.
+- Ek nöbetçi test **gerekmez** — garanti tip sisteminde.
 
 ---
 
 ## Task 2 — Türkçe metin katlama
 
-**Yeni:** `src/core/ayarlar/metinKatlama.ts`
-**Yeni test:** `src/core/ayarlar/__tests__/metinKatlama.test.ts`
+**Yeni:** `src/core/ayarlar/metinKatlama.ts` + `__tests__`
 
 ```ts
 /** Arama karşılaştırması için metni katlar. `toLowerCase()` KULLANMAZ. */
 export function aramaIcinKatla(metin: string): string
 ```
 
-**`toLowerCase()` YASAK** — AGENTS.md'deki `toUpperCase()` tuzağının ikizi:
+**`toLowerCase()` YASAK** — AGENTS.md `toUpperCase()` tuzağının ikizi:
 - `'İstanbul'.toLowerCase()` → `'i̇stanbul'` (U+0307 **birleşen nokta** kalır);
   kullanıcının yazdığı `'istanbul'` ile eşleşmez.
 - `'I'.toLowerCase()` → `'i'`; Türkçede `'ı'` olmalıdır.
 
-Sabit katlama haritası + **aksan-duyarsız** indirgeme (Türkçe klavyesi olmayan
-kullanıcı "muhafiz" yazıp "Muhafız"ı bulabilsin):
+Sabit harita + **aksan-duyarsız** indirgeme (Türkçe klavyesi olmayan kullanıcı
+"muhafiz" yazıp "Muhafız"ı bulsun):
 
 ```
-İ,I,ı,i → i     Ş,ş,S,s → s     Ğ,ğ,G,g → g
-Ü,ü,U,u → u     Ö,ö,O,o → o     Ç,ç,C,c → c
-diğer A-Z → a-z (ASCII), diğer karakterler olduğu gibi
+İ,I,ı,i → i    Ş,ş,S,s → s    Ğ,ğ,G,g → g
+Ü,ü,U,u → u    Ö,ö,O,o → o    Ç,ç,C,c → c
+diğer A-Z → a-z (ASCII); kalan karakterler olduğu gibi
 ```
 
 `Intl` / `localeCompare` **kullanılmaz** (Hermes'te ICU garanti değil).
@@ -95,45 +121,44 @@ diğer A-Z → a-z (ASCII), diğer karakterler olduğu gibi
 ### Test
 - `aramaIcinKatla('İstanbul') === aramaIcinKatla('istanbul') === aramaIcinKatla('ISTANBUL')`
 - `aramaIcinKatla('Muhafız') === aramaIcinKatla('muhafiz')`
-- **Regresyon nöbetçisi:** çıktı **birleşen nokta (U+0307) İÇERMEZ**
+- **Regresyon nöbetçisi:** çıktı **U+0307 birleşen nokta İÇERMEZ**
   (`expect(sonuc).not.toContain('̇')`) — `toLowerCase`'e dönülürse kırılır.
 - Boş dize, sayı, noktalama.
 
 ---
 
-## Task 3 — Çapa sabitleri, arama indeksi ve eşleştirme
+## Task 3 — Çapa sabitleri, arama indeksi, eşleştirme
 
-**Yeni:** `src/core/ayarlar/capalar.ts` · `aramaIndeksi.ts` · `ayarAra.ts`
-**Yeni test:** üçü için `__tests__`
+**Yeni:** `src/core/ayarlar/capalar.ts` · `aramaIndeksi.ts` · `ayarAra.ts` + testler
 
 ### `capalar.ts`
-```ts
-/** Alt sayfalardaki aranabilir kontrollerin çapa id'leri — TEK kaynak. */
-export const CAPALAR = {
-  konumModu: 'konumModu',
-  akilliTakip: 'akilliTakip',
-  tema: 'tema',
-  palet: 'palet',
-  vakitBildirimleri: 'vakitBildirimleri',
-  cumaHatirlatmasi: 'cumaHatirlatmasi',
-  vakitSayaci: 'vakitSayaci',
-  tamGunEsigi: 'tamGunEsigi',
-  gunSonuBildirimi: 'gunSonuBildirimi',
-  ozelGunModu: 'ozelGunModu',
-  iftarSayaci: 'iftarSayaci',
-  sahurSayaci: 'sahurSayaci',
-  takvimSenkron: 'takvimSenkron',
-  muhafizAnaSwitch: 'muhafizAnaSwitch',
-  muhafizYogunluk: 'muhafizYogunluk',
-  disaAktar: 'disaAktar',
-  iceAktar: 'iceAktar',
-} as const;
-export type CapaId = (typeof CAPALAR)[keyof typeof CAPALAR];
-```
+17 çapa id'si (aşağıdaki tabloda). Sabit nesne + `CapaId` tipi.
 
-**Bu liste BİLİNÇLİ OLARAK SINIRLIDIR** — her ayarı indekslemiyoruz, en çok
-aranacak olanları indeksliyoruz. Sınırın kendisi `aramaIndeksi.ts` başındaki
-yorumda **açıkça yazılır** ki sonraki okuyucu "kapsamlı" sanmasın.
+### Çapa → sayfa tablosu (DOĞRULANDI — birebir uy)
+
+| Çapa | Sayfa | Kontrol (referans) |
+|---|---|---|
+| `konumModu` | `KonumAyarlari` | konum modu seçimi (~:343) |
+| `akilliTakip` | `KonumAyarlari` | akıllı takip (~:125) |
+| `tema` | `GorünumAyarlari` | tema seçimi (~:32) |
+| `palet` | `GorünumAyarlari` | palet seçimi (~:95) |
+| `vakitBildirimleri` | `BildirimAyarlari` | vakit switch'leri (~:354) |
+| `cumaHatirlatmasi` | `BildirimAyarlari` | cuma bölümü (~:164) |
+| `vakitSayaci` | `BildirimAyarlari` | vakit sayacı |
+| **`gunSonuBildirimi`** | **`BildirimAyarlari`** | **gün sonu switch'i (~:574) — SeriHedef DEĞİL** |
+| `tamGunEsigi` | `SeriHedefAyarlari` | tam gün eşiği (~:365) |
+| `ozelGunModu` | `SeriHedefAyarlari` | özel gün modu (~:399) |
+| `iftarSayaci` | `RamazanAyarlari` | iftar sayacı |
+| `sahurSayaci` | `RamazanAyarlari` | sahur sayacı |
+| `takvimSenkron` | `TakvimAyarlari` | senkron switch'i (~:114) |
+| `muhafizAnaSwitch` | `MuhafizAyarlari` | ana switch (~:346) |
+| `muhafizYogunluk` | `MuhafizAyarlari` | yoğunluk seçimi |
+| `disaAktar` | `YedeklemeAktarim` | dışa aktar (~:236) |
+| `iceAktar` | `YedeklemeAktarim` | içe aktar (~:244) |
+
+`gunSonuBildirimi`'nin sayfası sezgiye aykırıdır (ad "seri"yi çağrıştırır ama
+kontrol Bildirimler'dedir) — **yanlış sayfaya çapalanırsa arama var olmayan bir
+kontrole götürür.** Satır numaraları YAKLAŞIKTIR; dosyayı aç, doğru kontrolü bul.
 
 ### `aramaIndeksi.ts`
 ```ts
@@ -141,35 +166,42 @@ export interface AyarIndeksKaydi {
   id: string;
   baslik: string;
   anahtarKelimeler: string[];
-  sayfa: AyarlarEkranAdi;   // derleme zamanında doğrulanır
+  sayfa: AyarlarEkranAdi;   // import type ile — runtime bağ kurma
   grup: string;             // sonuçta bağlam olarak gösterilir
   capa?: CapaId;
 }
 export const AYAR_INDEKSI: AyarIndeksKaydi[]
 ```
 
-İçerik: **(a)** Plan 1'deki 12 üst seviye satırın her biri (çapasız, yalnız
-sayfaya götürür) + **(b)** yukarıdaki `CAPALAR` karşılıkları.
+İçerik: **(a)** Ayarlar ana sayfasındaki **11 navigasyon satırı** (çapasız,
+yalnız sayfaya götürür) + **(b)** yukarıdaki 17 çapa kaydı.
 
-Anahtar kelimeler kullanıcının gerçekten yazacağı sözcükler olmalı — ör.
-`vakitBildirimleri` için `['ezan', 'vakit bildirimi', 'namaz vakti bildirimi']`,
-`ozelGunModu` için `['mazeret', 'özel gün', 'adet', 'seri dondurma']`,
-`muhafizYogunluk` için `['hafif', 'normal', 'yoğun', 'sıklık', 'ısrarcı']`.
+**Titreşim ve Ses efektleri toggle'ları indekslenmez** (bilinçli): onlar
+`AyarlarAna`'da yaşar, "dokununca nereye gider?" sorusunun anlamlı cevabı yok.
+
+**İndeks BİLİNÇLİ OLARAK SINIRLIDIR** — her ayar değil, en çok aranacaklar.
+Bu sınır `aramaIndeksi.ts` başındaki yorumda **açıkça yazılır** ki sonraki
+okuyucu listeyi "kapsamlı" sanmasın.
+
+Anahtar kelimeler kullanıcının gerçekten yazacağı sözcükler olmalı:
+`vakitBildirimleri` → `['ezan', 'vakit bildirimi', 'namaz vakti']`;
+`ozelGunModu` → `['mazeret', 'özel gün', 'seri dondurma']`;
+`muhafizYogunluk` → `['hafif', 'normal', 'yoğun', 'sıklık', 'ısrarcı']`.
 
 ### `ayarAra.ts`
 ```ts
 export function ayarAra(indeks: AyarIndeksKaydi[], sorgu: string): AyarIndeksKaydi[]
 ```
-- Boş/boşluk sorgu → **boş dizi** (sonuç listesi hiç gösterilmez).
+- Boş/yalnız-boşluk sorgu → **boş dizi**.
 - Karşılaştırma `aramaIcinKatla` ile.
-- Skor: başlık **başlangıcı** (3) > başlık **içi** (2) > anahtar kelime (1).
-  Eşit skorda indeks sırası korunur (stabil).
-- Sonuç sayısı sınırlanmaz.
+- Skor: başlık **başlangıcı** (3) > başlık **içi** (2) > anahtar kelime (1);
+  eşit skorda indeks sırası korunur (stabil sıralama).
 
 ### Test
-- `ayarAra`: Türkçesiz yazımla eşleşme; boş sorgu → boş dizi; skor sıralaması;
-  hiç eşleşmeyen sorgu → boş dizi.
-- **Nöbetçi 1:** `AYAR_INDEKSI`'ndeki her `sayfa` `AYARLAR_EKRANLARI` içinde.
+- Türkçesiz yazımla eşleşme; boş sorgu → boş dizi; skor sıralaması; eşleşmeyen
+  sorgu → boş dizi.
+- **Nöbetçi 1:** her `sayfa` `AYARLAR_EKRANLARI` içinde (testte iki modülü de
+  runtime import et).
 - **Nöbetçi 2:** her `capa` `CAPALAR` değerleri içinde.
 - **Nöbetçi 3:** `id` alanları benzersiz.
 
@@ -177,121 +209,176 @@ export function ayarAra(indeks: AyarIndeksKaydi[], sorgu: string): AyarIndeksKay
 
 ## Task 4 — Vurgu altyapısı
 
-**Yeni:** `src/presentation/components/ayar/VurguBaglami.tsx` ·
-`AyarCapasi.tsx` · `AyarSayfasiKabugu.tsx`
-**Yeni test:** üçü için `__tests__`
+**Yeni:** `src/presentation/components/ayar/VurguSaglayici.tsx` ·
+`AyarCapasi.tsx` · `useVurguKurulumu.ts` + testler
 
-### `VurguBaglami`
-React context: `{ aktifCapa: string | null; kayitOl: (capa, olcumFn) => void }`.
-Kabuk sağlar, çapa tüketir.
+### Tasarım kararı: kabuk ScrollView'ü DEVRALMAZ
 
-### `AyarSayfasiKabugu`
-Props: `{ children }`. Yaptıkları:
-1. `useRoute()` ile `params.vurgula` okur.
-2. Kendi `ScrollView`'ünü ref'ler ve bağlama koyar.
-3. Alt sayfa bunu mevcut `ScrollView`'ünün **yerine** kullanır (kabuk
-   `ScrollView`'ü kendi render eder, `contentContainerStyle` prop'unu geçirir).
+İlk taslak `AyarSayfasiKabugu`'nun sayfaların `ScrollView`'ünü değiştirmesini
+öngörüyordu. **Bu yaklaşım terk edildi:** 9 sayfanın `className` /
+`contentContainerStyle` / kardeş `<Modal>` yapılarını taşımak en olası regresyon
+kaynağıdır ve bu planın "alt sayfaların davranışı değişmez" kısıtıyla çelişir.
 
-**Yapışkan öğe uyarısı:** `stickyHeaderIndices` kullanılacaksa yapışkan öğe
-`ScrollView`'ün **doğrudan** çocuğu olmalıdır.
+Yerine: **sayfa kendi `ScrollView`'ünü tutar**, yalnız ref'i sağlayıcıya verir.
+
+```tsx
+// Sayfa kökü:
+<VurguSaglayici>
+  <ScrollView ref={useVurguKurulumu()} ...mevcut proplar>
+```
+
+`useVurguKurulumu()` ScrollView ref'ini döndürür ve `useRoute().params.vurgula`
+değerini sağlayıcıya yazar. **Savunmalı okuma zorunlu:**
+`(useRoute().params as { vurgula?: string } | undefined)?.vurgula` — automock'lu
+testlerde ve parametresiz açılışta güvenli olur.
 
 ### `AyarCapasi`
-Props: `{ id: CapaId; children }`. Yaptıkları:
-- Kendini `onLayout` ile ölçer, bağlama kaydeder.
-- `aktifCapa === id` olduğunda: `scrollTo` ile görünüre kaydırır, sonra
-  `renkler.birincil + '20'` tintini **2 kez ~600 ms** nabızlatır
-  (`Animated`, opacity, `useNativeDriver: true`).
-- **Reduced motion açıksa** (`AccessibilityInfo.isReduceMotionEnabled()`):
-  nabız yok, sabit tint 2 sn sonra söner.
-- Çapa bulunamazsa / ölçüm başarısızsa **sessizce hiçbir şey yapmaz**.
-- Vurgu **bir kez** çalışır (aynı `vurgula` parametresiyle tekrar tetiklenmez).
+
+Props: `{ id: CapaId; children }`.
+
+**Ölçüm `onLayout` ile YAPILMAZ.** `onLayout`'un verdiği `y` **ebeveyne** görelidir,
+ScrollView içeriğine değil; çapalanacak kontroller kart/`View` katmanlarının
+içinde olduğu için vurgu rastgele bir noktaya kayar. Doğru reçete:
+
+```tsx
+// Vurgu ANINDA ölç (kayıt anında değil):
+capaRef.current?.measureLayout(
+  scrollRef.current?.getInnerViewRef?.(),
+  (_x, y) => scrollRef.current?.scrollTo({ y: Math.max(0, y - 16), animated: !hareketAzalt }),
+  () => { /* ölçüm başarısız — sessizce geç */ },
+);
+```
+
+Üç zorunlu ayrıntı:
+1. **`findNodeHandle` KULLANMA** (Fabric'te deprecated) — ref'i doğrudan geçir,
+   hedef olarak `scrollRef.current?.getInnerViewRef?.()`.
+2. Çapa `View`'üne **`collapsable={false}`** ver — Android view-flattening
+   ölçümü boşa düşürür.
+3. Zamanlama: `useFocusEffect` + `InteractionManager.runAfterInteractions`
+   içinde çalıştır — native-stack giriş animasyonu sürerken `scrollTo` erken
+   tetiklenirse hedefi ıskalar.
+
+Vurgu efekti: `renkler.birincil + '20'` tinti **2 kez ~600 ms** nabızlar
+(`Animated`, opacity, `useNativeDriver: true`).
+**Reduced motion açıksa** (`AccessibilityInfo.isReduceMotionEnabled()`): nabız
+yok, `animated: false` scroll + sabit tint, 2 sn sonra söner.
+Vurgu **bir kez** çalışır; ölçüm/eşleşme başarısızsa **sessizce hiçbir şey olmaz**.
+
+`AccessibilityInfo` jest'te RN preset mock'uyla `false` döner — ek altyapı
+gerekmez; `true` senaryosu `jest.spyOn` ile yazılır.
 
 ### Test
-- `AyarCapasi` eşleşen id ile mount olunca `scrollTo` çağrılır.
-- Eşleşmeyen id → `scrollTo` çağrılmaz.
-- Reduced motion açıkken animasyon **başlatılmaz** (mock'la).
+- Eşleşen id ile `scrollTo` çağrılır; eşleşmeyen id ile çağrılmaz.
 - `vurgula` parametresi yokken hiçbir şey olmaz.
+- Reduced motion açıkken nabız animasyonu **başlatılmaz**.
+- `measureLayout` hata geri çağrısı tetiklendiğinde çökme olmaz.
 
 ---
 
 ## Task 5 — Arama arayüzü + büyük başlık
 
-**Yeni:** `src/presentation/screens/Ayarlar/AramaAlani.tsx` · `AramaSonuclari.tsx`
-**Değişen:** `src/presentation/screens/AyarlarSayfasi.tsx`
-**Değişen test:** `AyarlarSayfasi.test.tsx`
+**Yeni:** `screens/Ayarlar/AramaAlani.tsx` · `AramaSonuclari.tsx`
+**Değişen:** `AyarlarSayfasi.tsx` ve testi
 
 ### `AramaAlani`
-Hap biçimli giriş: sol `search` ikonu, `placeholder="Ayarlarda arayın"`, dolu
-iken sağda temizle (`times`) butonu (≥44dp). `accessibilityLabel="Ayarlarda arayın"`.
+Hap biçimli giriş: sol `search` ikonu, `placeholder="Ayarlarda arayın"`, doluyken
+sağda temizle butonu (≥44dp). `accessibilityLabel="Ayarlarda arayın"`.
 
 ### `AramaSonuclari`
-`ayarAra` sonuçlarını listeler. Her satır: başlık + `grup` bağlamı
-(ör. "Hatırlatmalar › Bildirimler"). Dokununca:
+Her satır: başlık + `grup` bağlamı ("Hatırlatmalar › Bildirimler"). Dokununca:
 `navigation.navigate(kayit.sayfa, kayit.capa ? { vurgula: kayit.capa } : undefined)`.
+
+**Navigasyon tipi açıkça belirtilmeli** — tipsiz `useNavigation()`
+`navigate(string, params)` kabul etmez:
+`useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>()`.
+
 Sonuç yoksa kibar boş durum: **"Eşleşen ayar bulunamadı"** + "Farklı bir sözcük
-deneyin." (özür/muğlaklık yok, yön gösterir).
-Sonuç sayısı erişilebilirlik için duyurulur.
+deneyin." (özür yok, yön gösterir). Sonuç sayısı erişilebilirlik için duyurulur.
 
 ### `AyarlarSayfasi` entegrasyonu
 - Sorgu **boş değilken**: gruplar ve sağlık kartı gizlenir, yalnız sonuçlar görünür.
-- Sorgu boşken: mevcut Plan 1 düzeni aynen.
+- Sorgu boşken: Plan 1 düzeni aynen.
+- **`keyboardShouldPersistTaps="handled"` ZORUNLU** — yoksa sonuç listesine ilk
+  dokunuş yalnız klavyeyi kapatır ve kullanıcı iki kez dokunmak zorunda kalır.
 - **Büyük başlık:** "Ayarlar" içerik akışının başında (`text-3xl font-bold`).
   Yukarı kaydırınca üstte kompakt başlık **opacity + translateY** ile belirir
-  (`Animated.ScrollView` + `onScroll` `useNativeDriver: true`).
+  (`Animated.ScrollView` + `onScroll`, `useNativeDriver: true`).
   **`fontSize` animasyonu YAPMA** — native driver'da çalışmaz; çapraz geçiş kullan.
-- Arama hapı yapışkan kalır.
+
+### Yapışkanlık ↔ giriş animasyonu çatışması — DİKKAT
+Bugün `AyarlarSayfasi.tsx`'te **tüm içerik tek bir `Animated.View` içinde**
+(Plan 1'in fade+slide giriş animasyonu). `stickyHeaderIndices` yalnız
+`ScrollView`'ün **doğrudan** çocuğuna işler. Arama hapı yapışkan olacaksa hap
+(ve büyük başlık) animasyon sarmalayıcısının **dışına**, ScrollView'ün doğrudan
+çocuğu olacak şekilde çıkarılmalıdır. Giriş animasyonu geri kalan içerikte korunur.
 
 ### Test
-- Sorgu yazılınca gruplar gizlenir, sonuçlar görünür.
+- Sorgu yazılınca gruplar gizlenir, sonuçlar görünür; temizlenince geri gelir.
 - Sonuca dokununca doğru `navigate(sayfa, { vurgula })` çağrılır.
 - Çapasız kayıtta ikinci argüman `undefined` gider.
-- Sorgu temizlenince gruplar geri gelir.
 - Eşleşme yoksa boş durum metni görünür.
-- **Test performansı:** mock bileşenlere çocuk render ettirme; sahte zamanlayıcı
+- **Performans:** mock bileşenlere çocuk render ettirme; sahte zamanlayıcı
   kullanma; `waitFor` gerçek zamanda (AGENTS.md CI dersleri).
 
 ---
 
-## Task 6 — Alt sayfa entegrasyonu
+## Task 6a — Basit alt sayfalar (4 sayfa)
 
-**Değişen (9 sayfa):** `KonumAyarlariSayfasi` · `GorünumAyarlariSayfasi` ·
-`BildirimAyarlariSayfasi` · `SeriHedefAyarlariSayfasi` · `RamazanAyarlariSayfasi` ·
-`TakvimAyarlariSayfasi` · `MuhafizAyarlariSayfasi` · `YedeklemeSayfasi`
+**Değişen:** `KonumAyarlariSayfasi` · `GorünumAyarlariSayfasi` ·
+`RamazanAyarlariSayfasi` · `SeriHedefAyarlariSayfasi`
 
-Her sayfa için **üç adım** (brief'in "yalnız sarmalayıcı" DEĞİL demesinin sebebi):
-1. Sayfa düzeyindeki `ScrollView`'ü `AyarSayfasiKabugu` ile değiştir
-   (mevcut `contentContainerStyle` ve `refreshControl` gibi proplar korunur).
-2. Kabuk `useRoute().params.vurgula`'yı zaten okur — sayfada ek kod gerekmez.
-3. `CAPALAR`'daki ilgili kontrolleri `<AyarCapasi id={CAPALAR.x}>` ile sar.
+Her sayfa için: kökü `VurguSaglayici` ile sar, `ScrollView`'e
+`useVurguKurulumu()` ref'ini ver, tablodaki kontrolleri `AyarCapasi` ile sar.
+**Sayfanın mevcut proplarına, düzenine, metnine dokunma.**
 
-### Çapa kapsam kuralı — KRİTİK
-Çapa **YALNIZ** sayfa düzeyindeki `ScrollView` içinde yaşayan kontrollere verilir.
-Modal / bottom-sheet içindeki ayarlar (`TakvimAyarlari > VakitEditorModali`,
-`MuhafizAyarlari > SeviyeDetayModal`) **ölçülemez** — `measureLayout` kapalı
-modaldaki öğeyi bulamaz. Bunlar en yakın sayfa düzeyi öğeye (o modalı açan
-satıra) çapalanır.
+### Kırılacak test — güncellenmeli
+- `__tests__/SeriHedefAyarlariSayfasi.test.tsx:11-14` — mock factory yalnız
+  `useNavigation` + `CommonActions`; `useRoute` eklenmeli.
+- `__tests__/KonumAyarlariSayfasi.test.tsx` — navigasyon **hiç mock'lanmamış**;
+  gerçek `useRoute` "Couldn't find a route object" fırlatır → mock eklenmeli.
 
-### Davranış korunumu — her sayfa için doğrula
-Bu sayfaların **hiçbir mevcut davranışı değişmez**: scroll konumu, bottom-sheet
-davranışı, `refreshControl`, klavye davranışı. `TakvimAyarlariSayfasi`'ndaki
-bottom-sheet backdrop'unun `StyleSheet.absoluteFill` ile **kardeş** kalması
-kritiktir (AGENTS.md: içerik saran `TouchableWithoutFeedback` scroll'u takar).
+### Temsilci test
+`KonumAyarlariSayfasi`: `vurgula` parametresiyle açılınca `scrollTo` çağrılır;
+parametresiz açılınca sayfa normal render edilir.
 
-### Test
-Her sayfa için tam test yazma — **iki temsilci** yeterli:
-- `KonumAyarlariSayfasi` (basit) ve `BildirimAyarlariSayfasi` (karmaşık):
-  `vurgula` parametresiyle açılınca `scrollTo` çağrılıyor mu; parametresiz
-  açılınca sayfa normal render ediliyor mu.
-- Diğer 7 sayfa için **mevcut testleri kırmama** yeterli doğrulamadır
-  (`npm run verify`).
+---
+
+## Task 6b — Karmaşık alt sayfalar (4 sayfa)
+
+**Değişen:** `BildirimAyarlariSayfasi` · `TakvimAyarlariSayfasi` ·
+`MuhafizAyarlariSayfasi` · `Yedekleme/YedeklemeSayfasi`
+
+Aynı üç adım. Ek dikkat:
+- `TakvimAyarlariSayfasi`'ndaki bottom-sheet backdrop'u `StyleSheet.absoluteFill`
+  ile **kardeş** kalmalı (AGENTS.md: içeriği saran `TouchableWithoutFeedback`
+  scroll'u takar). Bu sayfalardaki `<Modal>`'lar `ScrollView`'ün **dışında**
+  kardeştir — `VurguSaglayici` onları kapsayabilir ama `ScrollView` yapısına
+  dokunulmaz.
+- **Modal içindeki kontrollere çapa VERİLMEZ** — `measureLayout` kapalı
+  modaldaki öğeyi bulamaz. Tablodaki 17 çapanın hepsi sayfa düzeyindedir
+  (doğrulandı); yeni çapa eklerken bu kurala uy.
+
+### Kırılacak test — güncellenmeli
+- `__tests__/MuhafizAyarlariSayfasi.test.tsx:22` — factory yalnız
+  `useNavigation`; `useRoute` eklenmeli.
+- `Yedekleme/__tests__/YedeklemeSayfasi.test.tsx:10` —
+  `jest.mock('@react-navigation/native')` **automock**; `useRoute()` `undefined`
+  döner → savunmalı okuma bunu kurtarır ama mock'u yine de açık yaz.
+- `BildirimAyarlariSayfasi`'nin **testi YOK** — bu görevde sıfırdan tam-sayfa
+  test yazma (809 satır, 5 slice; AGENTS.md CI-timeout yüzeyi). `npm run verify`
+  yeterli doğrulamadır.
+
+### Temsilci test
+`MuhafizAyarlariSayfasi` (mevcut testi var): `vurgula` ile `scrollTo` çağrılır.
 
 ---
 
 ## Kabul kriterleri
 
 1. `npm run verify` geçer.
-2. Ayarlar'da "kerahat" / "iftar" / "muhafiz" / "yedek" arandığında ilgili alt
-   ayar bulunur ve dokununca o sayfaya gidip kontrolü vurgular.
+2. "iftar", "muhafiz", "yedek", "mazeret" arandığında ilgili ayar bulunur;
+   dokununca o sayfaya gidip kontrolü vurgular.
+   *(Not: "kerahat" bir AYAR DEĞİLDİR — yalnız ana ekranda yaşar, indekste yoktur.)*
 3. Türkçe karakter kullanmadan arama çalışır ("muhafiz" → "Muhafız").
 4. Arama boşken sayfa Plan 1'deki gibi görünür.
 5. Alt sayfaların mevcut davranışı değişmemiştir.

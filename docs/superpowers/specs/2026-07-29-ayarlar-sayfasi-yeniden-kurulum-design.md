@@ -261,6 +261,13 @@ interface AyarIndeksKaydi {
 
 Üst seviye satırların **ve** alt sayfa ayarlarının kayıtları burada durur.
 
+**Düzeltme (uygulama incelemesi):** yukarıdaki `"Kerahat uyarısı"` örneği
+yanlıştır — **kerahat bir AYAR DEĞİLDİR.** Repoda yalnız ana ekranda yaşar
+(`AnaSayfa`, `VakitAkisi`, `KerahatOnayModal`); hiçbir ayar sayfasında kerahat
+kontrolü yoktur, dolayısıyla indekse girmez. Gerçek örnekler: "iftar sayacı"
+(`RamazanAyarlari`), "özel gün modu" (`SeriHedefAyarlari`), "gün sonu bildirimi"
+(**`BildirimAyarlari`** — adı "seri"yi çağrıştırsa da kontrol oradadır).
+
 **Çapa kapsam kuralı:** çapa YALNIZ sayfa düzeyindeki `ScrollView` içinde
 yaşayan kontrollere verilir. Modal/bottom-sheet içindeki ayarlar
 (`TakvimAyarlari > VakitEditorModali`, `Muhafiz > SeviyeDetayModal`)
