@@ -22,12 +22,16 @@ import {
   haftalikIstatistikleriYukle,
   aylikIstatistikleriYukle
 } from '../store/namazSlice';
-import { YuklemeGostergesi } from '../components';
+// Barrel (`../components`) yerine doğrudan dosyadan import edilir: barrel
+// `KutlamaModal`/`PaylasimModal` gibi ilgisiz, ağır native bağımlılıklı (ör.
+// react-native-view-shot, expo-haptics) bileşenleri de sürüklüyor.
+import { YuklemeGostergesi } from '../components/YuklemeGostergesi';
 import { NAMAZ_ISIMLERI } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { useRenkler } from '../../core/theme';
+import { SeriSekmesi } from './Seri/SeriSekmesi';
 
-type TabTipi = 'gunluk' | 'haftalik' | 'aylik';
+type TabTipi = 'gunluk' | 'haftalik' | 'aylik' | 'seri';
 
 export const IstatistikSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -52,6 +56,10 @@ export const IstatistikSayfasi: React.FC = () => {
         break;
       case 'aylik':
         dispatch(aylikIstatistikleriYukle());
+        break;
+      case 'seri':
+        // Seri sekmesi kendi verisini `useSeriAyi` ile yönetir (mount'ta
+        // `seriVerileriniYukle` dispatch eder) — burada yapılacak bir şey yok.
         break;
     }
   }, [aktifTab, dispatch, kullanici]);
@@ -127,40 +135,72 @@ export const IstatistikSayfasi: React.FC = () => {
             Aylık
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          className="flex-1 py-3 items-center border-b-2"
+          style={{ borderBottomColor: aktifTab === 'seri' ? renkler.birincil : 'transparent', minHeight: 44 }}
+          onPress={() => setAktifTab('seri')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'seri' }}
+          accessibilityLabel="Seri sekmesi"
+        >
+          <MaterialCommunityIcons
+            name="star-four-points"
+            size={16}
+            color={aktifTab === 'seri' ? renkler.birincil : renkler.metinIkincil}
+          />
+          <Text
+            className="text-xs mt-1"
+            style={{
+              color: aktifTab === 'seri' ? renkler.birincil : renkler.metinIkincil,
+              fontWeight: aktifTab === 'seri' ? '700' : '500'
+            }}
+          >
+            Seri
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <ScrollView
-        className="flex-1"
-        refreshControl={
-          <RefreshControl
-            refreshing={yukleniyor}
-            onRefresh={verileriYukle}
-            colors={[renkler.birincil]}
-          />
-        }
-      >
-        {aktifTab === 'gunluk' && (
-          <GunlukIcerik
-            namazlar={gunlukNamazlar}
-            yukleniyor={yukleniyor}
-            renkler={renkler}
-          />
-        )}
-        {aktifTab === 'haftalik' && (
-          <HaftalikIcerik
-            istatistik={haftalikIstatistik}
-            yukleniyor={yukleniyor}
-            renkler={renkler}
-          />
-        )}
-        {aktifTab === 'aylik' && (
-          <AylikIcerik
-            istatistik={aylikIstatistik}
-            yukleniyor={yukleniyor}
-            renkler={renkler}
-          />
-        )}
-      </ScrollView>
+      {aktifTab === 'seri' ? (
+        // SeriSekmesi kendi ScrollView'ını taşır — iç içe ScrollView (gesture
+        // çakışması) olmasın diye dıştaki RefreshControl'lü ScrollView'ın
+        // DIŞINDA, ayrı bir dalda render edilir. Sekmeye her girişte yeniden
+        // mount olur (yerel `useState` ile koşullu render — Faz 2'nin açılış
+        // animasyonu buna dayanacak, bkz. tasarım spec §3.6).
+        <SeriSekmesi />
+      ) : (
+        <ScrollView
+          className="flex-1"
+          refreshControl={
+            <RefreshControl
+              refreshing={yukleniyor}
+              onRefresh={verileriYukle}
+              colors={[renkler.birincil]}
+            />
+          }
+        >
+          {aktifTab === 'gunluk' && (
+            <GunlukIcerik
+              namazlar={gunlukNamazlar}
+              yukleniyor={yukleniyor}
+              renkler={renkler}
+            />
+          )}
+          {aktifTab === 'haftalik' && (
+            <HaftalikIcerik
+              istatistik={haftalikIstatistik}
+              yukleniyor={yukleniyor}
+              renkler={renkler}
+            />
+          )}
+          {aktifTab === 'aylik' && (
+            <AylikIcerik
+              istatistik={aylikIstatistik}
+              yukleniyor={yukleniyor}
+              renkler={renkler}
+            />
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
