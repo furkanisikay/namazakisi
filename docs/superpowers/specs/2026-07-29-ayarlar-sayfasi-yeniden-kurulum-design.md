@@ -307,9 +307,14 @@ Skorlama basit: başlık başlangıcı > başlık içi > anahtar kelime.
   native driver'da çalışmadığı için boyut animasyonu yerine **çapraz geçiş**.
 - Arama hapı yapışkandır. `stickyHeaderIndices` kullanılacaksa yapışkan öğe
   `ScrollView`'ün **doğrudan** çocuğu olmalıdır — kabuk yapısı buna göre kurulur.
-- **Bölüm başlıkları:** `renkler.birincil` renginde, **normal yazım**
-  ("Namaz vakitleri"). Mevcut `GRİ · BÜYÜK HARF` biçimi bu ekranda **terk
-  edilir**. One UI deseni ve AGENTS.md'nin sentence-case kuralıyla uyumludur.
+- **Bölüm başlıkları:** **normal yazım** ("Namaz vakitleri"), renk
+  **`renkler.metinIkincil`**. Mevcut `BÜYÜK HARF` biçimi bu ekranda **terk
+  edilir** (AGENTS.md sentence-case kuralı), ama renk **`birincil` DEĞİLDİR.**
+  İlk tasarımda One UI aksanı için `birincil` seçilmişti; kontrast sonradan
+  ölçüldü ve eşiği geçmiyor: açık temada Zümrüt **~2.7:1**, Güneş **~2.1:1**;
+  koyu temada Gece **~2.0:1** — 12px semibold "normal metin" sayılır, eşik
+  4.5:1'dir. Bu başlıklar dekoratif değil, sayfanın bilgi mimarisini taşır.
+  `metinIkincil` ~4.5:1 verir. Grupları renk değil, kart sınırları ayırır.
   Diğer ekranlardaki büyük-harf başlıklarla geçici tutarsızlık **bilinçli kabul
   edilir**; bu spec onları dönüştürmez.
 - Satır grupları tek kart içinde, aralarında hairline ayraç. Kart yarıçapı ve

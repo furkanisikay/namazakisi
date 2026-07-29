@@ -20,9 +20,16 @@ export const AyarGrubu: React.FC<AyarGrubuProps> = ({ baslik, children }) => {
 
   return (
     <View className="mb-6">
+      {/*
+        Renk `metinIkincil`, `birincil` DEGIL. Bolum baslıkları bu sayfanın bilgi
+        mimarisini tasır (dekoratif degil), dolayısıyla WCAG AA normal-metin
+        esigine (4.5:1) uymalı. Olculdu: `birincil` acık temada Zumrut ~2.7:1,
+        Gunes ~2.1:1; koyu temada Gece ~2.0:1 — hepsi esigin altında.
+        `metinIkincil` ~4.5:1 verir ve eski bolum baslıklarıyla da tutarlıdır.
+      */}
       <Text
         className="text-xs font-semibold mx-4 mb-2"
-        style={{ color: renkler.birincil }}
+        style={{ color: renkler.metinIkincil }}
         accessibilityRole="header"
       >
         {baslik}
