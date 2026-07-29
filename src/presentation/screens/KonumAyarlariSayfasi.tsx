@@ -35,6 +35,9 @@ import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { useKonumMetni } from '../hooks/useKonumMetni';
 import { IlIlceSecici } from '../components/IlIlceSecici';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 /**
  * Bildirim modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir.
@@ -57,7 +60,20 @@ interface KonumBildirimi {
  * Konum Ayarlari Sayfasi
  */
 export const KonumAyarlariSayfasi: React.FC = () => {
+    return (
+        <VurguSaglayici>
+            <KonumAyarlariIcerik />
+        </VurguSaglayici>
+    );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir (bkz. task-4 entegrasyon örneği).
+ */
+const KonumAyarlariIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const konumAyarlari = useAppSelector((state) => state.konum);
@@ -308,7 +324,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
 
     return (
         <>
-        <ScrollView className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
+        <ScrollView ref={scrollRef} className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
             {/* Baslik Karti */}
             <View
                 className="items-center p-6 rounded-2xl border mb-4 mt-2"
@@ -378,6 +394,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
             </View>
 
             {/* Konum Secim Secenekleri */}
+            <AyarCapasi id="konumModu">
             <View
                 className="rounded-2xl border p-4 mb-4"
                 style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
@@ -470,9 +487,11 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                     </View>
                 )}
             </View>
+            </AyarCapasi>
 
             {/* Seyahatte Otomatik Güncelleme - Sadece GPS modunda */}
             {konumAyarlari.konumModu === 'oto' && (
+                <AyarCapasi id="akilliTakip">
                 <View
                     className="p-4 rounded-2xl border mb-4"
                     style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
@@ -616,6 +635,7 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                         </>
                     )}
                 </View>
+                </AyarCapasi>
             )}
 
             {/* Koordinat Bilgisi */}

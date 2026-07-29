@@ -32,6 +32,9 @@ import { OzelGunTakvimi } from '../components';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 /**
  * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile
@@ -232,7 +235,20 @@ const AyarKarti: React.FC<AyarKartiProps> = ({
  * Seri ve Hedef Ayarlari Sayfasi
  */
 export const SeriHedefAyarlariSayfasi: React.FC = () => {
+  return (
+    <VurguSaglayici>
+      <SeriHedefAyarlariIcerik />
+    </VurguSaglayici>
+  );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir.
+ */
+const SeriHedefAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const scrollRef = useVurguKurulumu();
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const { butonTiklandiFeedback } = useFeedback();
@@ -340,6 +356,7 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       style={{ backgroundColor: renkler.arkaplan }}
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
@@ -355,17 +372,19 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             HEDEF AYARLARI
           </Text>
 
-          <AyarKarti
-            baslik="Tam Gün Eşiği"
-            aciklama="O günün serisini tamamlandı saymak için günde kılmanız gereken minimum namaz sayısını belirler"
-            ikonAdi="chart-bar"
-          >
-            <SecimGrubu
-              secenekler={tamGunEsikleri}
-              seciliDeger={seriAyarlari.tamGunEsigi}
-              onSecim={handleEsikSecimi}
-            />
-          </AyarKarti>
+          <AyarCapasi id="tamGunEsigi">
+            <AyarKarti
+              baslik="Tam Gün Eşiği"
+              aciklama="O günün serisini tamamlandı saymak için günde kılmanız gereken minimum namaz sayısını belirler"
+              ikonAdi="chart-bar"
+            >
+              <SecimGrubu
+                secenekler={tamGunEsikleri}
+                seciliDeger={seriAyarlari.tamGunEsigi}
+                onSecim={handleEsikSecimi}
+              />
+            </AyarKarti>
+          </AyarCapasi>
         </View>
 
         {/* Ozel Gun Modu Bolumu */}
@@ -377,31 +396,33 @@ export const SeriHedefAyarlariSayfasi: React.FC = () => {
             ÖZEL GÜN MODU
           </Text>
 
-          <View
-            className="flex-row items-center p-4 rounded-xl mb-2"
-            style={{ backgroundColor: renkler.kartArkaplan }}
-          >
+          <AyarCapasi id="ozelGunModu">
             <View
-              className="w-10 h-10 rounded-full items-center justify-center mr-3"
-              style={{ backgroundColor: '#FFC0CB20' }}
+              className="flex-row items-center p-4 rounded-xl mb-2"
+              style={{ backgroundColor: renkler.kartArkaplan }}
             >
-              <FontAwesome5 name="magic" size={18} color="#D81B60" solid />
+              <View
+                className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                style={{ backgroundColor: '#FFC0CB20' }}
+              >
+                <FontAwesome5 name="magic" size={18} color="#D81B60" solid />
+              </View>
+              <View className="flex-1">
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                  Özel Gün Modu
+                </Text>
+                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                  Özel günlerde seriyi dondurma imkanı sağlar
+                </Text>
+              </View>
+              <Switch
+                value={ozelGunAyarlari.ozelGunModuAktif}
+                onValueChange={handleOzelGunModuToggle}
+                trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
+                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : '#f4f3f4'}
+              />
             </View>
-            <View className="flex-1">
-              <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                Özel Gün Modu
-              </Text>
-              <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                Özel günlerde seriyi dondurma imkanı sağlar
-              </Text>
-            </View>
-            <Switch
-              value={ozelGunAyarlari.ozelGunModuAktif}
-              onValueChange={handleOzelGunModuToggle}
-              trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-              thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : '#f4f3f4'}
-            />
-          </View>
+          </AyarCapasi>
 
           {ozelGunAyarlari.ozelGunModuAktif && !ozelGunAyarlari.aktifOzelGun && (
             <TouchableOpacity

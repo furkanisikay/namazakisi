@@ -18,6 +18,9 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler, useTema, TemaModu } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 // Tema modu ikon eslesmesi
 const TEMA_MODU_IKONLARI: Record<TemaModu, string> = {
@@ -144,7 +147,20 @@ const RenkPaletiSecici: React.FC = () => {
  * Gorunum Ayarlari Sayfasi
  */
 export const GorünumAyarlariSayfasi: React.FC = () => {
+  return (
+    <VurguSaglayici>
+      <GorünumAyarlariIcerik />
+    </VurguSaglayici>
+  );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir (bkz. task-4 entegrasyon örneği).
+ */
+const GorünumAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const scrollRef = useVurguKurulumu();
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -160,6 +176,7 @@ export const GorünumAyarlariSayfasi: React.FC = () => {
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       style={{ backgroundColor: renkler.arkaplan }}
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
@@ -174,7 +191,9 @@ export const GorünumAyarlariSayfasi: React.FC = () => {
           >
             TEMA MODU
           </Text>
-          <TemaModuSecici />
+          <AyarCapasi id="tema">
+            <TemaModuSecici />
+          </AyarCapasi>
         </View>
 
         {/* Renk Paleti Bolumu */}
@@ -185,7 +204,9 @@ export const GorünumAyarlariSayfasi: React.FC = () => {
           >
             RENK PALETI
           </Text>
-          <RenkPaletiSecici />
+          <AyarCapasi id="palet">
+            <RenkPaletiSecici />
+          </AyarCapasi>
         </View>
       </Animated.View>
     </ScrollView>

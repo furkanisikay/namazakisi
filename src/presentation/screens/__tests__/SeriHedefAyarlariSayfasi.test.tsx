@@ -8,8 +8,16 @@ import { useFeedback } from '../../../core/feedback';
 import { seriStateSifirla } from '../../store/seriSlice';
 
 // Mocklar
+// `useRoute` + `useFocusEffect` ZORUNLU: sayfa artık arama vurgusu için
+// `useVurguKurulumu`/`AyarCapasi` kullanıyor. Eksik bırakılırsa ikisi de
+// undefined olur ve sayfa render'da çöker (AGENTS.md'de kayıtlı tuzak).
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
+  useRoute: () => ({ params: undefined }),
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    const ReactModulu = require('react');
+    ReactModulu.useEffect(cb, [cb]);
+  },
   CommonActions: { reset: jest.fn((arg) => ({ type: 'RESET', payload: arg })) },
 }));
 jest.mock('@react-native-async-storage/async-storage', () => ({
