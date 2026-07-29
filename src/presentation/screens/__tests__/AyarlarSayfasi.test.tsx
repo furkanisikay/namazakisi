@@ -267,4 +267,54 @@ describe('AyarlarSayfasi', () => {
       expect(sesDurumunuDegistirMock).toHaveBeenCalledWith(true);
     });
   });
+
+  describe('arama', () => {
+    it('sorgu yazılınca gruplar ve sağlık kartı gizlenir, sonuçlar görünür; temizlenince geri gelir', async () => {
+      const { getByLabelText, getByText, queryByRole, queryByText } = render(<AyarlarSayfasi />);
+
+      await waitFor(() => {
+        expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeTruthy();
+      });
+
+      fireEvent.changeText(getByLabelText('Ayarlarda arayın'), 'muhafız');
+
+      // Grup başlıkları (accessibilityRole="header") kaybolur — bağlam
+      // metni ("Hatırlatmalar") sonuç kartında geçebilir, o AYRI bir Text'tir.
+      expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeNull();
+      expect(queryByRole('header', { name: 'Hatırlatmalar' })).toBeNull();
+      expect(queryByText(/Kurulumunuz eksiksiz/)).toBeNull();
+      expect(getByText('Namaz muhafızı')).toBeTruthy();
+
+      fireEvent.press(getByLabelText('Aramayı temizle'));
+
+      await waitFor(() => {
+        expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeTruthy();
+      });
+    });
+
+    it('eşleşme yoksa kibar boş durum metni görünür', async () => {
+      const { getByLabelText, getByText } = render(<AyarlarSayfasi />);
+
+      fireEvent.changeText(getByLabelText('Ayarlarda arayın'), 'zzzzz-eslesmeyen-sorgu');
+
+      await waitFor(() => {
+        expect(getByText('Eşleşen ayar bulunamadı')).toBeTruthy();
+      });
+    });
+
+    it('bir sonuca dokununca ilgili sayfaya çapasıyla navigate edilir', async () => {
+      const { getByLabelText, getByText } = render(<AyarlarSayfasi />);
+
+      fireEvent.changeText(getByLabelText('Ayarlarda arayın'), 'cuma');
+
+      await waitFor(() => {
+        expect(getByText('Cuma hatırlatması')).toBeTruthy();
+      });
+      fireEvent.press(getByText('Cuma hatırlatması'));
+
+      await waitFor(() => {
+        expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari', { vurgula: 'cumaHatirlatmasi' });
+      });
+    });
+  });
 });
