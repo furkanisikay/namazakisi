@@ -9,8 +9,8 @@ import { useVurguBaglami } from './VurguSaglayici';
  * yazar ve sayfanın kendi `ScrollView`'üne bağlanacak ref'i döndürür.
  *
  * Savunmalı okuma ZORUNLU: automock'lu testlerde ve parametresiz açılışta
- * `route.params` tanımsız olabilir (`useRoute()` her zaman bir route nesnesi
- * döndürür — @react-navigation/native sözleşmesi — yalnız `.params` opsiyoneldir).
+ * `route.params` tanımsız olabilir. `useRoute()`'un kendisi de (çıplak bir
+ * automock'ta) `undefined` dönebilir — `?.` ile ucuza kapatılır, TypeError yok.
  *
  * Kullanım (sayfa kökü):
  * ```tsx
@@ -24,7 +24,7 @@ import { useVurguBaglami } from './VurguSaglayici';
 export function useVurguKurulumu(): RefObject<ScrollView | null> {
   const { scrollRef, hedefiAyarla } = useVurguBaglami();
   const route = useRoute();
-  const vurgula = (route.params as { vurgula?: string } | undefined)?.vurgula;
+  const vurgula = (route?.params as { vurgula?: string } | undefined)?.vurgula;
 
   useEffect(() => {
     hedefiAyarla(vurgula);

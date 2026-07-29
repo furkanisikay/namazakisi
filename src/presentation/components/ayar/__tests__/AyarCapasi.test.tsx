@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ForwardedRef, PropsWithChildren } from 'react';
 import { act, render, waitFor } from '@testing-library/react-native';
-import { AccessibilityInfo, Animated, InteractionManager } from 'react-native';
+import { AccessibilityInfo, Animated, InteractionManager, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { AyarCapasi } from '../AyarCapasi';
 import { VurguSaglayici } from '../VurguSaglayici';
@@ -81,6 +81,50 @@ function kur(children: React.ReactNode) {
       <Sayfa>{children}</Sayfa>
     </VurguSaglayici>,
   );
+}
+
+// --- Render ağacı yardımcıları (kritik render regresyonunu doğrulamak için) ---
+// `toJSON()` yalnız HOST düğümleri verir (composite sarmalayıcılar düzleşir),
+// bu yüzden `ReactTestInstance.parent/children` (composite/host karışımı) yerine
+// bunu kullanmak sarmalama/kardeşlik iddialarını basit ve güvenilir tutar.
+interface JsonDugum {
+  type: string;
+  props: Record<string, unknown>;
+  children: JsonAgacElemani[] | null;
+}
+type JsonAgacElemani = JsonDugum | string;
+type JsonAgac = JsonAgacElemani | JsonAgacElemani[] | null;
+
+function agactaTestIdVarMi(dugum: JsonAgac, testId: string): boolean {
+  if (!dugum || typeof dugum === 'string') return false;
+  if (Array.isArray(dugum)) return dugum.some((d) => agactaTestIdVarMi(d, testId));
+  if (dugum.props?.testID === testId) return true;
+  return agactaTestIdVarMi(dugum.children, testId);
+}
+
+/** `pointerEvents="none"` taşıyan tint overlay düğümünü bulur (AyarCapasi'nde tek böyle düğüm var). */
+function overlayDugumunuBul(dugum: JsonAgac): JsonDugum | null {
+  if (!dugum || typeof dugum === 'string') return null;
+  if (Array.isArray(dugum)) {
+    for (const alt of dugum) {
+      const bulunan = overlayDugumunuBul(alt);
+      if (bulunan) return bulunan;
+    }
+    return null;
+  }
+  if (dugum.props?.pointerEvents === 'none') return dugum;
+  return overlayDugumunuBul(dugum.children);
+}
+
+/** Bir düğümün DOĞRUDAN çocukları arasında hem `testId`'li eleman hem de overlay AYNI ANDA var mı (gerçek kardeşlik). */
+function ortakEbeveyndeKardesMi(dugum: JsonAgac, testId: string): boolean {
+  if (!dugum || typeof dugum === 'string') return false;
+  if (Array.isArray(dugum)) return dugum.some((d) => ortakEbeveyndeKardesMi(d, testId));
+  const cocuklar = dugum.children ?? [];
+  const testIdVar = cocuklar.some((c) => typeof c !== 'string' && c.props?.testID === testId);
+  const overlayVar = cocuklar.some((c) => typeof c !== 'string' && c.props?.pointerEvents === 'none');
+  if (testIdVar && overlayVar) return true;
+  return cocuklar.some((c) => ortakEbeveyndeKardesMi(c, testId));
 }
 
 describe('AyarCapasi', () => {
@@ -248,5 +292,41 @@ describe('AyarCapasi', () => {
     );
 
     expect(mockMeasureLayout).not.toHaveBeenCalled();
+  });
+
+  it('vurgu yokken (dinlenme halinde) çocuk, opacity=tint taşıyan overlay İÇİNDE render edilmez (kritik regresyon)', () => {
+    // Eskiden AyarCapasi çocukları `<Animated.View style={{opacity: tint}}>` ile
+    // SARMALIYORDU — dinlenme halinde tint=Animated.Value(0) olduğu için sarılan
+    // her kontrol tamamen saydam (görünmez) oluyordu. Bu test, çocuğun render
+    // ağacında overlay'in ALT AĞACINDA değil, ondan BAĞIMSIZ bulunabildiğini
+    // doğrular — regresyon geri gelirse bu test kırılır.
+    const { toJSON } = kur(
+      <AyarCapasi id="konumModu">
+        <Text testID="vurgu-cocuk-icerik">İçerik</Text>
+      </AyarCapasi>,
+    );
+
+    const agac = toJSON();
+    expect(agactaTestIdVarMi(agac, 'vurgu-cocuk-icerik')).toBe(true);
+
+    const overlay = overlayDugumunuBul(agac);
+    expect(overlay).toBeTruthy();
+    expect(agactaTestIdVarMi(overlay, 'vurgu-cocuk-icerik')).toBe(false);
+  });
+
+  it('tint overlay çocukların KARDEŞİDİR (sarmalamaz) ve pointerEvents="none" taşır', () => {
+    const { toJSON } = kur(
+      <AyarCapasi id="konumModu">
+        <Text testID="vurgu-cocuk-icerik">İçerik</Text>
+      </AyarCapasi>,
+    );
+
+    const agac = toJSON();
+    // Çocuk ve overlay AYNI ebeveynin doğrudan çocukları olmalı (backdrop-kardeş deseni).
+    expect(ortakEbeveyndeKardesMi(agac, 'vurgu-cocuk-icerik')).toBe(true);
+
+    const overlay = overlayDugumunuBul(agac);
+    // pointerEvents="none" ZORUNLU — yoksa overlay dokunmayı yutar.
+    expect(overlay?.props.pointerEvents).toBe('none');
   });
 });

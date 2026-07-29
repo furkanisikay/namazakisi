@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { AccessibilityInfo, Animated, InteractionManager, View } from 'react-native';
+import { AccessibilityInfo, Animated, InteractionManager, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import type { CapaId } from '../../../core/ayarlar/capalar';
@@ -108,15 +108,18 @@ export const AyarCapasi: React.FC<AyarCapasiProps> = ({ id, children }) => {
 
   return (
     <View ref={capaRef} collapsable={false}>
+      {children}
+      {/* Tint, çocukların KARDEŞİ olan absolute-fill overlay'dir (repodaki
+          backdrop-kardeş deseninin aynısı) — çocukları SARMALASAYDI opacity
+          çocuklara da uygulanır, dinlenme halinde (tint=0) tüm kontrol
+          görünmez olurdu. pointerEvents="none" dokunmayı yutmasın diye şart. */}
       <Animated.View
-        style={{
-          borderRadius: 16,
-          opacity: tint,
-          backgroundColor: renkler.birincil + '20',
-        }}
-      >
-        {children}
-      </Animated.View>
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          { borderRadius: 16, backgroundColor: renkler.birincil + '20', opacity: tint },
+        ]}
+      />
     </View>
   );
 };

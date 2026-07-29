@@ -47,10 +47,10 @@ describe('VurguSaglayici / useVurguBaglami', () => {
   });
 
   it('scrollRef referansı yeniden render sonrasında da aynı kalır (stabil ref)', () => {
-    let dısScrollRef: unknown;
+    let dışScrollRef: unknown;
     const Cocuk: React.FC = () => {
       const baglam = useVurguBaglami();
-      dısScrollRef = baglam.scrollRef;
+      dışScrollRef = baglam.scrollRef;
       return null;
     };
 
@@ -59,7 +59,7 @@ describe('VurguSaglayici / useVurguBaglami', () => {
         <Cocuk />
       </VurguSaglayici>,
     );
-    const ilkRef = dısScrollRef;
+    const ilkRef = dışScrollRef;
 
     rerender(
       <VurguSaglayici>
@@ -67,6 +67,6 @@ describe('VurguSaglayici / useVurguBaglami', () => {
       </VurguSaglayici>,
     );
 
-    expect(dısScrollRef).toBe(ilkRef);
+    expect(dışScrollRef).toBe(ilkRef);
   });
 });
