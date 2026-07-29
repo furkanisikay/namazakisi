@@ -86,7 +86,17 @@ export function useSeriAyi(): SeriAyiSonucu {
   // İnceleme bulgusu: `yukleniyor` önceden yalnız namaz okumasını temsil
   // ediyordu; seri slice'ı geç hidrat olursa panel bir-iki kare
   // `tamGunEsigi` varsayılanıyla (yanlış eşik) çizilip düzeliyordu.
-  const seriHidrateEdildi = useAppSelector((s) => s.seri.sonYukleme !== null);
+  //
+  // KRITIK (ikinci inceleme turu bulgusu — AGENTS.md'nin kaza-defteri dersi):
+  // `seriVerileriniYukle` REDDEDİLEBİLİR (`seriSlice.ts` rejected'ta `hata`
+  // dolar ama `sonYukleme` HİÇ yazılmaz). Yalnız `sonYukleme !== null` ile
+  // beklemek, ret durumunda `yukleniyor`'u SONSUZA DEK true, `hata`'yı null
+  // bırakırdı — hatasız sonsuz spinner (tam da o dersin tarif ettiği tuzak).
+  // `hata !== null` de bekleme kapısını kapatır: panel bu durumda
+  // `ayarlar`/`seriDurumu` için initialState VARSAYILANLARIYLA (VARSAYILAN_SERI_AYARLARI,
+  // mevcutSeri 0) çizilir — düzeltme ÖNCESİ davranışla aynı (spinner'da
+  // asılı kalmak yerine "varsayılan eşikle çiz").
+  const seriHidrateEdildi = useAppSelector((s) => s.seri.sonYukleme !== null || s.seri.hata !== null);
 
   // Hidrasyon nöbetçisi — bkz. dosya başı JSDoc'u. İdempotent (yalnız local okuma).
   useEffect(() => {

@@ -49,6 +49,10 @@ function stateOlustur(ustyaz: Record<string, unknown> = {}) {
       // eder — testlerin çoğu bu "normal" durumu varsayar. Hidrasyon-yarışı
       // senaryosu bunu açıkça `sonYukleme: null` ile ezer (aşağıda).
       sonYukleme: '2026-01-01T00:00:00.000Z',
+      // `seriVerileriniYukle` reddedilmediyse `hata` `null`dur (bkz.
+      // seriSlice.ts pending/fulfilled case'leri) — ret senaryosu bunu açıkça
+      // dolu bir metinle ezer.
+      hata: null,
       ...ustyaz,
     },
   };
@@ -175,6 +179,17 @@ describe('useSeriAyi', () => {
 
     expect(result.current.hata).toBeNull();
     expect(result.current.yukleniyor).toBe(true);
+  });
+
+  it('KRITIK (2. inceleme turu — AGENTS.md kaza-defteri dersi): seri yüklemesi REDDEDİLDİĞİNDE (sonYukleme null, hata dolu) yukleniyor false olur, ekran sonsuz spinner\'da kalmaz', async () => {
+    // seriVerileriniYukle rejected -> seriSlice'ta sonYukleme HİÇ yazılmaz,
+    // yalnız hata dolar (bkz. seriSlice.ts rejected case). sonYukleme'yi TEK
+    // BAŞINA bekleyen bir kapı burada sonsuza dek yukleniyor=true kalırdı.
+    selectorlaKur({ sonYukleme: null, hata: 'Seri verileri yuklenemedi' });
+
+    const { result } = renderHook(() => useSeriAyi());
+
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
   });
 
   it('bugun namazGunuHesapla ile üretilir — gece yarısı sonrası TAKVİM GÜNÜNE DEĞİL, dünküne düşer', async () => {
