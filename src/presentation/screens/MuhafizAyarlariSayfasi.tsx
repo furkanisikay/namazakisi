@@ -53,6 +53,9 @@ import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 type PresetYogunlugu = 'hafif' | 'normal' | 'yogun';
 
@@ -67,7 +70,20 @@ const YENIDEN_PLANLAMA_GECIKMESI_MS = 1200;
 type AyarNavigasyonu = { navigate: (ekran: string) => void };
 
 export const MuhafizAyarlariSayfasi: React.FC = () => {
+    return (
+        <VurguSaglayici>
+            <MuhafizAyarlariIcerik />
+        </VurguSaglayici>
+    );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir.
+ */
+const MuhafizAyarlariIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const navigation = useNavigation() as unknown as AyarNavigasyonu;
     const { butonTiklandiFeedback } = useFeedback();
@@ -341,8 +357,9 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
 
     return (
         <>
-            <ScrollView className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
+            <ScrollView ref={scrollRef} className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
                 {/* ── ANA SWITCH ── */}
+                <AyarCapasi id="muhafizAnaSwitch">
                 <View
                     className="flex-row items-center justify-between p-5 rounded-2xl border-2 mb-4 mt-2"
                     style={{
@@ -388,6 +405,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                         accessibilityLabel="Namaz Muhafızı"
                     />
                 </View>
+                </AyarCapasi>
 
                 {/* ── KAPALI DURUM ── */}
                 {!muhafizAyarlari.aktif && (
@@ -463,6 +481,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                         </TouchableOpacity>
 
                         {/* ── YOĞUNLUK PRESET'İ ── */}
+                        <AyarCapasi id="muhafizYogunluk">
                         <View
                             className="rounded-2xl border p-4 mb-4"
                             style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
@@ -557,6 +576,7 @@ export const MuhafizAyarlariSayfasi: React.FC = () => {
                                 )}
                             </View>
                         </View>
+                        </AyarCapasi>
 
                         {/* ── VAKİT LİSTESİ (Katman 1) ── */}
                         <View className="flex-row items-center mb-2 px-1">

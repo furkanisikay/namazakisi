@@ -19,7 +19,17 @@ import {
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 
-jest.mock('@react-navigation/native', () => ({ useNavigation: jest.fn() }));
+// `useRoute` + `useFocusEffect` ZORUNLU: sayfa arama vurgusu için
+// `useVurguKurulumu`/`AyarCapasi` kullanıyor. Eksik bırakılırsa ikisi de
+// undefined olur ve sayfa render'da çöker (AGENTS.md'de kayıtlı tuzak).
+jest.mock('@react-navigation/native', () => ({
+    useNavigation: jest.fn(),
+    useRoute: jest.fn(() => ({ params: undefined })),
+    useFocusEffect: (cb: () => void | (() => void)) => {
+        const ReactModulu = require('react');
+        ReactModulu.useEffect(cb, [cb]);
+    },
+}));
 jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
