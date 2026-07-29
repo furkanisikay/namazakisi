@@ -106,6 +106,7 @@ export function gorunumOzeti(temaModu: 'acik' | 'koyu', paletAdi: string): strin
 export function yedeklemeOzeti(sonDisaAktarmaISO: string | null, simdi: Date): string {
   if (!sonDisaAktarmaISO) return 'Henüz dışa aktarılmadı';
   const tarih = new Date(sonDisaAktarmaISO);
+  if (Number.isNaN(tarih.getTime())) return 'Henüz dışa aktarılmadı';
   const gun = tarih.getDate();
   const ay = AY_ADLARI[tarih.getMonth()];
   const ayniYilMi = tarih.getFullYear() === simdi.getFullYear();

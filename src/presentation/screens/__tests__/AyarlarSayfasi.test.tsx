@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { Depolama } from '../../../data/local/Depolama';
+import { YENI_OZELLIKLER } from '../../../core/constants/YeniOzellikler';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
 
 jest.mock('@react-navigation/native', () => ({
@@ -155,11 +156,16 @@ describe('AyarlarSayfasi', () => {
   });
 
   it('NÖBETÇİ: yeni özellik tanıtım kartı hâlâ render edilir', async () => {
+    // Sabit dize DEĞİL — `YENI_OZELLIKLER[0]`den türetilir: AGENTS.md'nin
+    // duyuru reçetesi diziye EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık
+    // bir sonraki özellik duyurusunda bu testi sebepsiz kırardı. Nöbetçi
+    // değer (kartın gerçekten render edildiği) korunur, yalnız veriye bağ kopar.
+    expect(YENI_OZELLIKLER[0].kartGoster).toBe(true);
+
     const { getByText } = render(<AyarlarSayfasi />);
 
-    // Repodaki gerçek YENI_OZELLIKLER[0] kartGoster:true, hedefSayfa:'BildirimAyarlari'.
     expect(getByText('Uygulamaya eklendi')).toBeTruthy();
-    expect(getByText('Cuma Namazı Hatırlatması')).toBeTruthy();
+    expect(getByText(YENI_OZELLIKLER[0].baslik)).toBeTruthy();
 
     await act(async () => {
       await Promise.resolve();
@@ -186,6 +192,18 @@ describe('AyarlarSayfasi', () => {
       expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari');
     });
     expect(dispatchMock).toHaveBeenCalled();
+  });
+
+  it('NÖBETÇİ: "Neler yeni" satırına dokununca navigate edilir ama görüldü-işaretleme dispatch EDİLMEZ', async () => {
+    const { getByText } = render(<AyarlarSayfasi />);
+
+    dispatchMock.mockClear();
+    fireEvent.press(getByText('Neler yeni'));
+
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith('NelerYeni');
+    });
+    expect(dispatchMock).not.toHaveBeenCalled();
   });
 
   it('sağlık kartı: sorun varken kartın başlığı görünür (muhafiz kapalı + tüm vakit bildirimleri kapalı)', async () => {

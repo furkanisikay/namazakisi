@@ -12,11 +12,13 @@
  */
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { useAppSelector } from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { useTema } from '../../core/theme';
 import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { izinDurumunuOku, type BildirimIzinDurumu } from '../../domain/services/BildirimIzinOkuyucu';
+import { vakitBildirimAyarlariniYukle } from '../store/vakitBildirimSlice';
+import { takvimAyarlariniYukle } from '../store/takvimSlice';
 import {
   konumOzeti,
   takvimOzeti,
@@ -59,6 +61,7 @@ export function useAyarOzetleri(): {
   saglikOzetSatiri: string;
 } {
   const { tema, palet } = useTema();
+  const dispatch = useAppDispatch();
 
   const konum = useAppSelector((s) => s.konum);
   const muhafizAktif = useAppSelector((s) => s.muhafiz.aktif);
@@ -85,6 +88,15 @@ export function useAyarOzetleri(): {
       // gelen sonucu sessizce yok sayar.
       let iptal = false;
 
+      // `vakitBildirim`/`takvim` slice'ları App.tsx açılış zincirinde
+      // YÜKLENMİYOR (yalnız kendi ayar sayfaları dispatch eder) — soğuk
+      // açılışta doğrudan Ayarlar'a girilirse özet initialState'ten (hepsi
+      // kapalı) okunur ve `kurulumSagligi.hatirlatmaYok` yanlış alarm verir.
+      // İkisi de yan etkisiz AsyncStorage okuması (izin İSTEMEZ) — her
+      // focus'ta idempotent şekilde tazelenir.
+      dispatch(vakitBildirimAyarlariniYukle());
+      dispatch(takvimAyarlariniYukle());
+
       (async () => {
         const [izinDurumu, sonDisaAktarmaISO] = await Promise.all([
           izinDurumunuOku(),
@@ -98,7 +110,7 @@ export function useAyarOzetleri(): {
       return () => {
         iptal = true;
       };
-    }, [])
+    }, [dispatch])
   );
 
   const konumGirdisi = {

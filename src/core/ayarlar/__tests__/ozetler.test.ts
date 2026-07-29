@@ -143,6 +143,12 @@ describe('yedeklemeOzeti', () => {
       'Son dışa aktarma: 1 Ocak'
     );
   });
+
+  it('geçersiz tarih dizesi (bozuk kayıt) → "Henüz dışa aktarılmadı" (NaN/undefined basılmaz)', () => {
+    expect(yedeklemeOzeti('abc', new Date('2026-07-29T00:00:00.000Z'))).toBe(
+      'Henüz dışa aktarılmadı'
+    );
+  });
 });
 
 describe('hakkindaOzeti', () => {

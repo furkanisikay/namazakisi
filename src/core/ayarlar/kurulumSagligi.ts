@@ -83,8 +83,8 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
       sorunlar.push({
         id: 'konumBayat',
         seviye: 'bilgi',
-        baslik: 'Konumunuz 7 günden eski',
-        aciklama: 'Şehir değiştiyseniz vakitler kaymış olabilir.',
+        baslik: 'Arka plan güncellemesi durmuş görünüyor',
+        aciklama: 'Konumunuz 7 gündür yenilenmedi; pil ayarları uygulamayı kısıtlıyor olabilir.',
         eylemEtiketi: 'Konumu yenileyin',
         eylem: { tip: 'sayfa', sayfa: 'KonumAyarlari' },
       });
