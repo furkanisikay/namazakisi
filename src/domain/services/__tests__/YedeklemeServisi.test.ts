@@ -177,6 +177,9 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
 
   it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {
     await yedekZarfiOlustur();
+    // Önce Depolama.oku'nun GERÇEKTEN çağrıldığını doğrula — yoksa payload yolu ileride
+    // cogunuOku/başka bir okuma yoluna taşınırsa bu test hiçbir şey ölçmeden yeşil kalır.
+    expect(okuMock).toHaveBeenCalled();
     const cagrilanAnahtarlar = okuMock.mock.calls.map((cagri: unknown[]) => cagri[0]);
     expect(cagrilanAnahtarlar).not.toContain(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA);
   });

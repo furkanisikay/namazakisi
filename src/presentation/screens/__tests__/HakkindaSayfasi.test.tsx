@@ -15,11 +15,11 @@ jest.mock('../../../domain/services/GuncellemeServisi', () => ({
 }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
-  return (props: any) => <Text>{props.name}</Text>;
+  return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 jest.mock('@expo/vector-icons/MaterialIcons', () => {
   const { Text } = require('react-native');
-  return (props: any) => <Text>{`mi:${props.name}`}</Text>;
+  return (props: { name: string }) => <Text>{`mi:${props.name}`}</Text>;
 });
 
 const mockRenkler = {
