@@ -130,4 +130,32 @@ describe('Tesbih', () => {
     const tree = render(<Tesbih mevcutSeri={15} hedefGun={21} hedefAdi="Alışkanlık ustası" />);
     expect(metniBul(tree, 'gün kaldı')).toBe('Alışkanlık ustası rozetine 6 gün kaldı');
   });
+
+  test('erişim etiketindeki iyelik eki ünlü uyumuna göre seçilir (3 -> ü, 40 -> ı, 20 -> si)', () => {
+    // hedefGun=7 -> boncukSayisi=7, gunPerBoncuk=1, dolu=min(7,3)=3 -> "3'ü".
+    const uc = render(<Tesbih mevcutSeri={3} hedefGun={7} hedefAdi="İlk hafta" />);
+    expect(erisimEtiketiniAl(uc)).toBe("İlk hafta rozeti: 7 günün 3'ü tamamlandı.");
+
+    // hedefGun=60 -> tamamlanan=min(40,60)=40 -> "40'ı".
+    const kirk = render(<Tesbih mevcutSeri={40} hedefGun={60} hedefAdi="Kararlılık" />);
+    expect(erisimEtiketiniAl(kirk)).toBe("Kararlılık rozeti: 60 günün 40'ı tamamlandı.");
+
+    // hedefGun=90 -> tamamlanan=min(20,90)=20 -> "20'si" (ünlüyle biten okunuş, "s" tamponu).
+    const yirmi = render(<Tesbih mevcutSeri={20} hedefGun={90} hedefAdi="Efsane" />);
+    expect(erisimEtiketiniAl(yirmi)).toBe("Efsane rozeti: 90 günün 20'si tamamlandı.");
+  });
+
+  test('hedefAdi eksik (undefined) olduğunda bozuk etiket YERİNE varsayılan ada düşer', () => {
+    const tree = render(<Tesbih mevcutSeri={15} hedefGun={21} />);
+    expect(erisimEtiketiniAl(tree)).toBe("Sıradaki hedef rozeti: 21 günün 15'i tamamlandı.");
+    expect(metniBul(tree, 'gün kaldı')).toBe('Sıradaki hedef rozetine 6 gün kaldı');
+  });
+
+  test('hedefAdi boş/yalnız-boşluk string olduğunda da varsayılan ada düşer', () => {
+    const bosString = render(<Tesbih mevcutSeri={15} hedefGun={21} hedefAdi="" />);
+    expect(erisimEtiketiniAl(bosString)).toBe("Sıradaki hedef rozeti: 21 günün 15'i tamamlandı.");
+
+    const bosluk = render(<Tesbih mevcutSeri={15} hedefGun={21} hedefAdi="   " />);
+    expect(erisimEtiketiniAl(bosluk)).toBe("Sıradaki hedef rozeti: 21 günün 15'i tamamlandı.");
+  });
 });

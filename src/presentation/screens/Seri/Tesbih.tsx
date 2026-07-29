@@ -22,6 +22,11 @@ import React, { useMemo } from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Line, Ellipse, Circle, Rect } from 'react-native-svg';
 import { useRenkler } from '../../../core/theme';
+import { turkceIyelikEki } from '../../../core/utils/turkceSayiEki';
+
+/** `hedefAdi` boş/eksik geldiğinde kullanılan yedek etiket (bkz. Task 4 incelemesi:
+ * boş string " rozeti: ..." gibi bozuk bir etiket üretiyordu). */
+const VARSAYILAN_HEDEF_ADI = 'Sıradaki hedef';
 
 export interface TesbihProps {
   /** Mevcut kesintisiz seri (gün sayısı). */
@@ -107,17 +112,24 @@ export const Tesbih: React.FC<TesbihProps> = ({ mevcutSeri, hedefGun, hedefAdi }
 
   const genislik = imameX + VIEWBOX_SAG_PAY;
 
-  const gosterilenHedefAdi = hedefAdi ?? '';
+  // Boş/yalnız-boşluk hedefAdi de VARSAYILAN'a düşer — aksi halde " rozeti: ..."
+  // gibi bozuk bir etiket üretilir (Task 4 incelemesinde yakalandı).
+  const gosterilenHedefAdi = hedefAdi?.trim() ? hedefAdi.trim() : VARSAYILAN_HEDEF_ADI;
+
+  const tamamlananSayisi = hedefGun === null ? 0 : Math.min(mevcutSeri, hedefGun);
 
   const altYazi =
     hedefGun === null
       ? 'Tüm rozetleri tamamladınız'
       : `${gosterilenHedefAdi} rozetine ${Math.max(0, hedefGun - mevcutSeri)} gün kaldı`;
 
+  // Ek Türkçe ünlü uyumuna göre seçilir (turkceIyelikEki) — sabit "'i" eki
+  // yalnızca "on beş" gibi okunuşlarda doğruydu; "3'ü", "40'ı", "20'si" gibi
+  // durumlarda yanlış sonuç üretiyordu (Task 4 incelemesi).
   const erisimEtiketi =
     hedefGun === null
       ? 'Tüm rozetleri tamamladınız: tesbih tamamen dolu.'
-      : `${gosterilenHedefAdi} rozeti: ${hedefGun} günün ${Math.min(mevcutSeri, hedefGun)}'i tamamlandı.`;
+      : `${gosterilenHedefAdi} rozeti: ${hedefGun} günün ${tamamlananSayisi}'${turkceIyelikEki(tamamlananSayisi)} tamamlandı.`;
 
   return (
     <View accessible accessibilityRole="progressbar" accessibilityLabel={erisimEtiketi}>
