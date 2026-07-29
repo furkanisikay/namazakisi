@@ -54,21 +54,41 @@ export function gokYerlesimi(o: GokOlculeri): GokYerlesimi {
 /**
  * Bir zincir bağının SVG yol dizesi.
  *
+ * `bosluk` HER İKİ uçta da uygulanır — yol `a`/`b` merkezlerinden değil,
+ * merkezlerden `bosluk` kadar İÇERİ ÇEKİLMİŞ noktalardan başlar/biter.
+ * Bunsuz (bosluk=0 çağrılırsa) yol tam merkez-merkez çizilir ve kalın/parlak
+ * (`ikisiTam`) bağlar yıldızın halka+bloom bölgesinin İÇİNDEN geçer — bu,
+ * incelemede yakalanan bir görsel hataydı (referans `M x1+bosluk … L
+ * x2-bosluk` çiziyor, uçlar hep yıldızın dışında kalıyor).
+ *
  * Satır sarmasında (haftanın son günü -> ertesi haftanın ilk günü) satırlar
  * arası şeritten geçen TEK bir kübik yay çizilir; kenarlara gidip geri dönen
- * KUTU biçimi (referansta denenip) REDDEDİLDİ. Kontrol noktaları şeridin
- * y-konumuna (`seritY`) ve uçlardan yatay uzaklığa (`bosluk`) göre kurulur —
- * yay hiçbir yıldızın üstünden geçmez.
+ * KUTU biçimi (referansta denenip) REDDEDİLDİ. Uçlar burada da `bosluk`
+ * kadar içeri çekilir (yatayda; `y` değişmez), kontrol noktaları o içeri
+ * çekilmiş uçlardan şeridin y-konumuna (`seritY`) doğru bükülür — yay
+ * hiçbir yıldızın üstünden geçmez.
  */
 export function bagYolu(a: Nokta, b: Nokta, satirSarmasi: boolean, seritY: number, bosluk: number): string {
   if (!satirSarmasi) {
-    return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const uzunluk = Math.hypot(dx, dy);
+    if (uzunluk === 0 || bosluk <= 0) {
+      return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+    }
+    const birimX = dx / uzunluk;
+    const birimY = dy / uzunluk;
+    const baslangic: Nokta = { x: a.x + birimX * bosluk, y: a.y + birimY * bosluk };
+    const bitis: Nokta = { x: b.x - birimX * bosluk, y: b.y - birimY * bosluk };
+    return `M ${baslangic.x} ${baslangic.y} L ${bitis.x} ${bitis.y}`;
   }
 
-  const kontrol1: Nokta = { x: a.x + bosluk, y: seritY };
-  const kontrol2: Nokta = { x: b.x - bosluk, y: seritY };
+  const baslangic: Nokta = { x: a.x + bosluk, y: a.y };
+  const bitis: Nokta = { x: b.x - bosluk, y: b.y };
+  const kontrol1: Nokta = { x: baslangic.x, y: seritY };
+  const kontrol2: Nokta = { x: bitis.x, y: seritY };
 
-  return `M ${a.x} ${a.y} C ${kontrol1.x} ${kontrol1.y} ${kontrol2.x} ${kontrol2.y} ${b.x} ${b.y}`;
+  return `M ${baslangic.x} ${baslangic.y} C ${kontrol1.x} ${kontrol1.y} ${kontrol2.x} ${kontrol2.y} ${bitis.x} ${bitis.y}`;
 }
 
 /** `bagYolu` tarafından üretilen bir yol dizesinden sayıları sırayla çıkarır. */

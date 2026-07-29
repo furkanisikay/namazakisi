@@ -61,19 +61,39 @@ describe('gokYerlesimi', () => {
 });
 
 describe('bagYolu', () => {
-  test('duz bag (satirSarmasi false) tek bir L komutu uretir', () => {
+  test('bosluk=0 (veya negatif) iken duz bag tam merkez-merkez L komutu uretir (eski davranis)', () => {
     const a: Nokta = { x: 10, y: 20 };
     const b: Nokta = { x: 60, y: 20 };
-    expect(bagYolu(a, b, false, 999, 5)).toBe('M 10 20 L 60 20');
+    expect(bagYolu(a, b, false, 999, 0)).toBe('M 10 20 L 60 20');
   });
 
-  test('satir sarmali bag tek bir kubik C komutu uretir (kutu bicimi degil)', () => {
+  test('KRITIK (inceleme bulgusu): duz bagda bosluk>0 iken uclar merkezden ICERI cekilir, yildizin ustunden gecmez', () => {
+    // Yatay satir (ayni y): bosluk saf x-ofseti olarak uygulanmali.
+    const a: Nokta = { x: 10, y: 20 };
+    const b: Nokta = { x: 60, y: 20 };
+    expect(bagYolu(a, b, false, 999, 5)).toBe('M 15 20 L 55 20');
+  });
+
+  test('duz bagda bosluk, birim vektor boyunca uygulanir (yatay olmayan uclar da dogru icerilir)', () => {
+    const a: Nokta = { x: 0, y: 0 };
+    const b: Nokta = { x: 3, y: 4 }; // 3-4-5 ucgeni, uzunluk 5
+    const yol = bagYolu(a, b, false, 999, 1); // bosluk=1 -> uzunlugun 1/5'i kadar icer
+    expect(yol).toBe('M 0.6 0.8 L 2.4 3.2');
+  });
+
+  test('satir sarmali bag tek bir kubik C komutu uretir (kutu bicimi degil), uclar da bosluk kadar icerilir', () => {
     const a: Nokta = { x: 300, y: 50 };
     const b: Nokta = { x: 20, y: 120 };
     const yol = bagYolu(a, b, true, 85, 12);
-    expect(yol).toBe('M 300 50 C 312 85 8 85 20 120');
+    expect(yol).toBe('M 312 50 C 312 85 8 85 8 120');
     // Tek bir "C" komutu olmali (kenara gidip geri donen kutu degil).
     expect(yol.match(/C/g)).toHaveLength(1);
+  });
+
+  test('satir sarmali bagda bosluk=0 iken uclar eski (icerilmemis) davranisa duser', () => {
+    const a: Nokta = { x: 300, y: 50 };
+    const b: Nokta = { x: 20, y: 120 };
+    expect(bagYolu(a, b, true, 85, 0)).toBe('M 300 50 C 300 85 20 85 20 120');
   });
 });
 

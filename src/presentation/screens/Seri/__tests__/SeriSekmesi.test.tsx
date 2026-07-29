@@ -87,12 +87,12 @@ describe('SeriSekmesi', () => {
     ).toBe(true);
   });
 
-  test('NÖBETÇİ: okuma reddedilince sonsuz spinner YOK — kibar hata + "Yeniden deneyin" gösterilir', () => {
+  test('NÖBETÇİ: okuma reddedilince sonsuz spinner YOK — kibar hata + "Yeniden deneyin" gösterilir, TEK mesaj (yinelenmez)', () => {
     const yenidenDene = jest.fn();
     useSeriAyiMock.mockReturnValue({
       ...VARSAYILAN_HOOK_SONUCU,
       yukleniyor: false,
-      hata: 'Diskten okunamadı',
+      hata: 'Geçmiş kayıtlarınız şu anda okunamadı.',
       yenidenDene,
     });
     const tree = render(<SeriSekmesi />);
@@ -100,6 +100,14 @@ describe('SeriSekmesi', () => {
     expect(tree.root.findAllByType('GokPaneli' as never)).toHaveLength(0);
     const buton = tree.root.findByProps({ accessibilityLabel: 'Seri verilerini yeniden deneyin' });
     expect(buton).toBeTruthy();
+
+    // KRITIK (inceleme bulgusu): hata metni ekranda YALNIZ BİR KEZ görünür —
+    // önceden ayrı bir sabit başlık + hook'un hata metni aynı cümleyi
+    // taşıyordu, ekranda iki kez görünüyordu.
+    const hataMetniGecenler = tree.root
+      .findAllByType(require('react-native').Text)
+      .filter((d) => String(d.props.children).includes('Geçmiş kayıtlarınız şu anda okunamadı'));
+    expect(hataMetniGecenler).toHaveLength(1);
 
     act(() => {
       buton.props.onPress();

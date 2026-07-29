@@ -11,7 +11,8 @@
 import { renderHook, waitFor, act } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
-import { useSeriAyi } from '../useSeriAyi';
+import { Logger } from '../../../core/utils/Logger';
+import { useSeriAyi, KIBAR_HATA_METNI } from '../useSeriAyi';
 
 jest.mock('../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
 
@@ -26,6 +27,10 @@ jest.mock('../../store/seriSlice', () => ({
 jest.mock('../../../data/local/LocalNamazServisi', () => ({
   localTarihAraligindakiNamazlariGetir: jest.fn(),
 }));
+
+// Ham teknik hata metni UI'a DEĞİL, yalnız Logger'a gitmeli (inceleme
+// bulgusu) — bu yüzden Logger.error çağrısını doğrulanabilir kılmak için mock'lanır.
+jest.mock('../../../core/utils/Logger', () => ({ Logger: { error: jest.fn() } }));
 
 const VARSAYILAN_AYARLAR = { tamGunEsigi: 5, gunBitisSaati: '05:00' };
 const VARSAYILAN_OZEL_GUN_AYARLARI = {
@@ -78,22 +83,40 @@ describe('useSeriAyi', () => {
   it('okuma başarısız (basarili:false) olduğunda sonsuz spinner YOK — hata dolar, yukleniyor false olur', async () => {
     (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValue({
       basarili: false,
-      hata: 'Diskten okunamadı',
+      hata: 'SyntaxError: Unexpected token in JSON at position 0 (teknik, ham hata)',
     });
 
     const { result } = renderHook(() => useSeriAyi());
 
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
-    expect(result.current.hata).toBe('Diskten okunamadı');
+    // KRITIK (inceleme bulgusu): UI'a giden hata DAİMA sabit/kibar metindir —
+    // LocalNamazServisi'nin ham error.message'ı asla ekrana sızmaz.
+    expect(result.current.hata).toBe(KIBAR_HATA_METNI);
   });
 
-  it('hata mesajı gelmeden basarili:false dönerse kibar bir varsayılan hata gösterilir', async () => {
+  it('KRITIK (inceleme bulgusu): ham teknik hata metni Logger.error\'a gider, UI\'a sızmaz', async () => {
+    (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValue({
+      basarili: false,
+      hata: 'SyntaxError: Unexpected token in JSON at position 0 (teknik, ham hata)',
+    });
+
+    const { result } = renderHook(() => useSeriAyi());
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+
+    expect(Logger.error).toHaveBeenCalledWith(
+      'useSeriAyi',
+      expect.any(String),
+      expect.objectContaining({ hata: 'SyntaxError: Unexpected token in JSON at position 0 (teknik, ham hata)' })
+    );
+  });
+
+  it('hata mesajı gelmeden basarili:false dönerse kibar sabit hata gösterilir', async () => {
     (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValue({ basarili: false });
 
     const { result } = renderHook(() => useSeriAyi());
 
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
-    expect(result.current.hata).toBeTruthy();
+    expect(result.current.hata).toBe(KIBAR_HATA_METNI);
   });
 
   it('yenidenDene çağrıldığında okuma tekrar denenir ve önceki hata temizlenir', async () => {
@@ -103,7 +126,7 @@ describe('useSeriAyi', () => {
     });
 
     const { result } = renderHook(() => useSeriAyi());
-    await waitFor(() => expect(result.current.hata).toBe('ilk deneme başarısız'));
+    await waitFor(() => expect(result.current.hata).toBe(KIBAR_HATA_METNI));
 
     (localTarihAraligindakiNamazlariGetir as jest.Mock).mockResolvedValueOnce({ basarili: true, veri: [] });
     act(() => {

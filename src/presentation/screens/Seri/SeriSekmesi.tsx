@@ -57,13 +57,15 @@ export const SeriSekmesi: React.FC = () => {
   const { yukleniyor, hata, izgara, zincirler, ayAdi, bugun, tamGunEsigi, mevcutSeri, yenidenDene } = useSeriAyi();
 
   if (hata) {
+    // TEK mesaj gösterilir — `useSeriAyi` her zaman aynı sabit, kibar metni
+    // döndürür (ham teknik hata Logger'a gider). Önceden burada AYRICA sabit
+    // bir başlık da vardı ("Geçmiş kayıtlarınız okunamadı") — `hata` zaten bu
+    // cümleyi taşıdığı için ekranda aynı mesaj iki kez görünüyordu (inceleme
+    // bulgusu); tek mesaja indirildi.
     return (
       <View className="flex-1 items-center justify-center p-8">
         <FontAwesome5 name="exclamation-triangle" size={28} color={renkler.durum.hata} />
         <Text className="text-base font-semibold mt-4 text-center" style={{ color: renkler.metin }}>
-          Geçmiş kayıtlarınız okunamadı
-        </Text>
-        <Text className="text-sm mt-1.5 text-center" style={{ color: renkler.metinIkincil }}>
           {hata}
         </Text>
         <TouchableOpacity

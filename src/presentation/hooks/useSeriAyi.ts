@@ -13,7 +13,10 @@
  *
  * HATA YOLU ZORUNLU: `basarili:false` geldiğinde `hata` doldurulur, ekran
  * sonsuz spinner'da KALMAZ (AGENTS.md'nin yaşanmış "sessiz sonsuz spinner"
- * dersi — `LocalKazaServisi` ikizi).
+ * dersi — `LocalKazaServisi` ikizi). `hata` DAİMA sabit, kibar bir metindir
+ * — `LocalNamazServisi`'nin ham `error.message`'ı (teknik, kullanıcıya
+ * anlamsız) doğrudan UI'a sızdırılmaz; ham mesaj yalnız `Logger`'a gider
+ * (inceleme bulgusu — ilk sürüm ham mesajı UI'da gösteriyordu).
  *
  * HİDRASYON NÖBETÇİSİ: `seri` slice'ını yalnız `AnaSayfa` yükler
  * (`AnaSayfa.tsx:299`). Soğuk açılışta (doğrudan İstatistikler -> Seri
@@ -26,6 +29,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriVerileriniYukle } from '../store/seriSlice';
 import { localTarihAraligindakiNamazlariGetir } from '../../data/local/LocalNamazServisi';
+import { Logger } from '../../core/utils/Logger';
 import {
   gunEkle,
   ayinSonGunuAl,
@@ -74,7 +78,12 @@ const BASLANGIC_OKUMA_DURUMU: OkumaDurumu = {
   kayitlar: {},
 };
 
-const VARSAYILAN_HATA_METNI = 'Geçmiş kayıtlarınız okunamadı.';
+// UI'a giden TEK ve DAİMA SABİT hata metni — LocalNamazServisi'nin ham
+// error.message'ı (teknik, kullanıcıya anlamsız) burada asla kullanılmaz;
+// ham içerik yalnız Logger.error'a gider (bkz. dosya başı JSDoc'u). Testte de
+// tüketilebilsin diye export edilir (iki yerde aynı sabit metin tekrar
+// yazılmasın).
+export const KIBAR_HATA_METNI = 'Geçmiş kayıtlarınız şu anda okunamadı.';
 
 export function useSeriAyi(): SeriAyiSonucu {
   const dispatch = useAppDispatch();
@@ -112,7 +121,14 @@ export function useSeriAyi(): SeriAyiSonucu {
       }
 
       if (!yanit.basarili || !yanit.veri) {
-        setOkuma({ yukleniyor: false, hata: yanit.hata || VARSAYILAN_HATA_METNI, kayitlar: {} });
+        // Teknik ayrıntı (ham error.message) yalnız log'a gider — kullanıcı
+        // daima aynı kibar, sabit metni görür (bkz. KIBAR_HATA_METNI JSDoc'u).
+        Logger.error('useSeriAyi', 'Namaz kayıtları okunamadı (aralık okuma)', {
+          hata: yanit.hata,
+          izgaraBaslangici,
+          izgaraBitisi,
+        });
+        setOkuma({ yukleniyor: false, hata: KIBAR_HATA_METNI, kayitlar: {} });
         return;
       }
 

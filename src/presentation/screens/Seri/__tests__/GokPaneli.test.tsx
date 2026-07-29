@@ -35,8 +35,9 @@ import { GokPaneli } from '../GokPaneli';
 import { aylikIzgaraOlustur } from '../../../../core/seri/aylikIzgara';
 import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
+import { GOK_TONLARI } from '../sabitler';
 
-const { G, Path } = require('react-native-svg');
+const { G, Path, Text: SvgTextMock } = require('react-native-svg');
 
 const TAM_GUN_ESIGI = 5;
 
@@ -110,7 +111,14 @@ describe('GokPaneli', () => {
 
     genislikSimuleEt(tree, 350);
 
-    expect(tree.root.findAllByType(G)).toHaveLength(izgara.length);
+    // Her yıldız kendi `<G transform="translate(...) scale(...)">` içinde
+    // konumlanır; ızgara katmanının tamamını (0, HEADER_YUKSEKLIK) kadar
+    // kaydıran TEK bir sarmalayıcı `<G>` da vardır (scale içermez) — o yüzden
+    // `scale(` içeren transform'a göre süzülür, ham G sayısı izgara.length+1'dir.
+    const yildizGruplari = tree.root
+      .findAllByType(G)
+      .filter((d) => typeof d.props.transform === 'string' && d.props.transform.includes('scale('));
+    expect(yildizGruplari).toHaveLength(izgara.length);
   });
 
   test('zincir yolu (Path) sayısı zincirBaglari çıktısıyla birebir uyumludur', () => {
@@ -151,6 +159,72 @@ describe('GokPaneli', () => {
     expect(govde.props.accessibilityLabel).toBe(
       gokErisimEtiketi(izgara, 'Temmuz 2026', 3, TAM_GUN_ESIGI)
     );
+  });
+
+  test('KRITIK (inceleme bulgusu #1 — kontrast): ay adı ve gün harfleri koyu panelin İÇİNDE (SVG Text), tema token DEĞİL sabit sahne tonuyla çizilir', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const metinler = tree.root.findAllByType(SvgTextMock);
+    const ayAdiMetni = metinler.find((d) => d.props.children === 'Temmuz 2026');
+    expect(ayAdiMetni).toBeDefined();
+    // Sabit gök sahnesi tonu (AGENTS.md'nin tek istisnası) — tema `renkler.*`
+    // DEĞİL; panelin dışına taşınsaydı bu değer açık temada okunmaz olurdu.
+    expect(ayAdiMetni!.props.fill).toBe(GOK_TONLARI.AY_ADI);
+
+    const gunHarfi = metinler.find((d) => d.props.children === 'P' && d.props.fill === GOK_TONLARI.GUN_ADI);
+    expect(gunHarfi).toBeDefined();
+  });
+
+  test('KRITIK (inceleme bulgusu #2 — zincir): ikisiTam düz bağ, yıldız merkezlerinden İÇERİ ÇEKİLMİŞ uçlarla çizilir (halka/bloom bölgesinin İÇİNDEN geçmez)', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    // 2026-07-01 ve 2026-07-02 ardışık, ornekIzgaraKur'da ikisi de 5/5 ve aynı
+    // satırda (satır sarması değil) -> aralarındaki bağ ikisiTam + düz olmalı.
+    const idx = izgara.findIndex((g) => g.tarih === '2026-07-01');
+    const bagSirasi = zincirler.findIndex((b) => b.indeks === idx);
+    expect(bagSirasi).toBeGreaterThanOrEqual(0);
+    expect(zincirler[bagSirasi].ikisiTam).toBe(true);
+    expect(zincirler[bagSirasi].satirSarmasi).toBe(false);
+
+    // Gün numaraları izgara sırasıyla render edilir ve `x=merkez.x` taşır —
+    // yıldızın GERÇEK merkezini (GokPaneli'nin özel geometri sabitlerini
+    // tekrarlamadan) buradan okuyoruz.
+    const gunNumaralari = tree.root.findAllByType(SvgTextMock).slice(0, izgara.length);
+    const merkezXBaslangic = gunNumaralari[idx].props.x as number;
+    const merkezXBitis = gunNumaralari[idx + 1].props.x as number;
+
+    const yol = tree.root.findAllByType(Path)[bagSirasi].props.d as string;
+    const sayilar = yol.match(/-?\d+(\.\d+)?/g)!.map(Number);
+    const yolBaslangicX = sayilar[0];
+
+    // Inceleme öncesi: yolBaslangicX === merkezXBaslangic (merkez-merkez, bosluk
+    // yok sayılıyordu) -> bağ yıldızın halka/bloom bölgesinin içinden geçiyordu.
+    // Düzeltme sonrası: baslangic, iki merkez arasında, ilk merkezin KESİNLİKLE
+    // içinde (merkeze eşit değil) olmalı.
+    expect(yolBaslangicX).toBeGreaterThan(merkezXBaslangic);
+    expect(yolBaslangicX).toBeLessThan(merkezXBitis);
   });
 
   test('boş izgarada (hiç zincir bağı yokken) çökmez', () => {

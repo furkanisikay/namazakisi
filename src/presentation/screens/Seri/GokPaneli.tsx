@@ -15,10 +15,18 @@
  * referanstaki 48-birim viewBox'ı responsive hücre genişliğine ölçekler.
  *
  * Katman sırası (alttan üste, spec §1 "Gök paneli" + brief):
- *   1. gök zemini (Defs + RadialGradient×2 + LinearGradient)
+ *   1. gök zemini (Defs + RadialGradient×2 + LinearGradient) — HEADER dahil
+ *      panelin TÜM yüksekliğini kaplar
  *   2. zincir bağları (Path, `bagYolu`'ndan)
  *   3. yıldızlar (durum tablosuna göre, spec §1)
  *   4. gün numaraları (aynı tuvalde Text, dy ile elle hizalanmış)
+ *   5. ay adı + gün harfleri (aynı tuvalde Text, header payında)
+ *
+ * Ay adı/gün harfleri (5. katman) BİLİNÇLİ olarak aynı Svg'nin İÇİNDE, koyu
+ * zeminin üstünde çizilir — panelin DIŞINDA (RN View/Text ile) ayrı bir
+ * header denenmişti ve açık temada okunamıyordu (kontrast tuzağı: `#E8EDF8`
+ * neredeyse beyaz zeminde ~1:1 kontrast). Referansta da `.gok-ust`/
+ * `.gun-adlari` `.gok`'un koyu zemininin İÇİNDEDİR.
  *
  * PARLAMA: `filter`/`FeGaussianBlur` KULLANILMAZ (Android'de yaklaşık ve
  * sınırlı — deprecated RenderScript, yarıçap 25'e sabit). Hâle `RadialGradient`
@@ -31,7 +39,7 @@
  * yok eder (spec §1).
  */
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text as RnText, LayoutChangeEvent } from 'react-native';
+import { View, LayoutChangeEvent } from 'react-native';
 import Svg, {
   Defs,
   RadialGradient,
@@ -74,6 +82,14 @@ const PANEL_UST_PAY = 14;
 const PANEL_YATAY_PAY = 10;
 const SATIR_ARALIGI = 16;
 const PANEL_KOSE_YARICAPI = 16;
+
+// Ay adı + gün harfleri satırları için ayrılan pay — KOYU PANELİN İÇİNDE
+// (aynı Svg'de) çizilir. İnceleme bulgusu: bu iki satır önceden panelin
+// DIŞINDA, tema arkaplanı üzerindeydi — açık temada #E8EDF8/#6E7897 neredeyse
+// beyaz zeminde okunamıyordu (AGENTS.md'de kayıtlı kontrast tuzağı; referansta
+// `.gok-ust`/`.gun-adlari` `.gok`'un koyu zemininin İÇİNDEDİR). Izgara
+// katmanı (zincir/yıldız/gün-no) bu kadar aşağı kaydırılır.
+const HEADER_YUKSEKLIK = 46;
 
 // Yıldızın referanstaki 48 birimlik (-24..24) viewBox'ı hücrenin bu oranını
 // kaplar (referansta 34px'lik yıldız kutusu ~47px'lik hücre içinde, ~%72
@@ -200,6 +216,10 @@ const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi, birin
         );
       })}
 
+      {/* Kısmi (0<kılınan<5) çekirdeğin ince ışıması — referans "drop-shadow(0 0 2px VURGU)"
+          kullanıyordu; filter YOK (spec §3.2), yerine küçük düşük-opaklıklı bir glow dairesi
+          çekirdeğin ALTINA konur (inceleme bulgusu: bu karşılıksız kalmıştı). */}
+      {!tam && kilinanSayisi > 0 && <Circle cx={0} cy={0} r={4.5} fill={birincil} opacity={0.35} />}
       <Circle
         cx={0}
         cy={0}
@@ -263,73 +283,71 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   );
 
   const olcek = (yerlesim.hucreGenislik * YILDIZ_OLCEK_PAYI) / 48;
+  const govdeYukseklik = HEADER_YUKSEKLIK + yerlesim.toplamYukseklik;
+  const bugunInset = yerlesim.hucreGenislik * BUGUN_CERCEVE_INSET_ORANI;
+  const bugunKenar = yerlesim.hucreGenislik - 2 * bugunInset;
 
   return (
-    <View>
-      <View className="flex-row items-center justify-between px-1.5 pb-2">
-        <RnText style={{ fontSize: 13, fontWeight: '600', color: GOK_TONLARI.AY_ADI }}>{ayAdi}</RnText>
-      </View>
-      <View className="flex-row px-1.5 mb-0.5">
-        {GUN_HARFLERI.map((harf, i) => (
-          <RnText
-            key={`gun-adi-${i}`}
-            className="flex-1 text-center"
-            style={{ fontSize: 9.5, color: GOK_TONLARI.GUN_ADI, letterSpacing: 0.5 }}
-          >
-            {harf}
-          </RnText>
-        ))}
-      </View>
+    <View
+      testID="gok-paneli-govde"
+      onLayout={onLayout}
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={erisimEtiketi}
+      style={
+        panelGenislik > 0
+          ? { height: govdeYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+          : { borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
+      }
+    >
+      {panelGenislik > 0 && (
+        <Svg width={panelGenislik} height={govdeYukseklik}>
+          <Defs>
+            {/* Gök zemini — CSS radial-gradient'in RN karşılığı (spec §3.3). */}
+            <LinearGradient id="zeminTaban" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_ORTA} />
+              <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_KOYU} />
+            </LinearGradient>
+            <RadialGradient id="zeminSolUst" cx="22%" cy="8%" r="85%">
+              <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SOL_UST} stopOpacity={1} />
+              <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SOL_UST} stopOpacity={0} />
+            </RadialGradient>
+            <RadialGradient id="zeminSagAlt" cx="88%" cy="95%" r="75%">
+              <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={1} />
+              <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={0} />
+            </RadialGradient>
+            {/* Yıldız hâlesi — merkezde renk, kenarda şeffaf (blur DEĞİL, spec §3.2). */}
+            <RadialGradient id="disBloom">
+              <Stop offset="0" stopColor={renkler.birincil} stopOpacity={0.5} />
+              <Stop offset="1" stopColor={renkler.birincil} stopOpacity={0} />
+            </RadialGradient>
+            <RadialGradient id="icBloom">
+              <Stop offset="0" stopColor={GOK_TONLARI.ISIK} stopOpacity={0.6} />
+              <Stop offset="1" stopColor={GOK_TONLARI.ISIK} stopOpacity={0} />
+            </RadialGradient>
+          </Defs>
 
-      <View
-        testID="gok-paneli-govde"
-        onLayout={onLayout}
-        accessible
-        accessibilityRole="image"
-        accessibilityLabel={erisimEtiketi}
-        style={
-          panelGenislik > 0
-            ? { height: yerlesim.toplamYukseklik, borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
-            : { borderRadius: PANEL_KOSE_YARICAPI, overflow: 'hidden' }
-        }
-      >
-        {panelGenislik > 0 && (
-          <Svg width={panelGenislik} height={yerlesim.toplamYukseklik}>
-            <Defs>
-              {/* Gök zemini — CSS radial-gradient'in RN karşılığı (spec §3.3). */}
-              <LinearGradient id="zeminTaban" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_ORTA} />
-                <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_KOYU} />
-              </LinearGradient>
-              <RadialGradient id="zeminSolUst" cx="22%" cy="8%" r="85%">
-                <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SOL_UST} stopOpacity={1} />
-                <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SOL_UST} stopOpacity={0} />
-              </RadialGradient>
-              <RadialGradient id="zeminSagAlt" cx="88%" cy="95%" r="75%">
-                <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={1} />
-                <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={0} />
-              </RadialGradient>
-              {/* Yıldız hâlesi — merkezde renk, kenarda şeffaf (blur DEĞİL, spec §3.2). */}
-              <RadialGradient id="disBloom">
-                <Stop offset="0" stopColor={renkler.birincil} stopOpacity={0.5} />
-                <Stop offset="1" stopColor={renkler.birincil} stopOpacity={0} />
-              </RadialGradient>
-              <RadialGradient id="icBloom">
-                <Stop offset="0" stopColor={GOK_TONLARI.ISIK} stopOpacity={0.6} />
-                <Stop offset="1" stopColor={GOK_TONLARI.ISIK} stopOpacity={0} />
-              </RadialGradient>
-            </Defs>
+          {/* 1) Gök zemini — HEADER dahil TÜM panel yüksekliğini kaplar. İnceleme
+              bulgusu: ay adı/gün harfleri önceden bu zeminin DIŞINDAYDI (tema
+              arkaplanı üzerinde), açık temada okunamıyordu. Artık aynı koyu
+              zeminin üstüne çiziliyorlar (aşağıda, 5. katman). */}
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminTaban)" />
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSolUst)" />
+          <Rect x={0} y={0} width={panelGenislik} height={govdeYukseklik} fill="url(#zeminSagAlt)" />
 
-            {/* 1) Gök zemini */}
-            <Rect x={0} y={0} width={panelGenislik} height={yerlesim.toplamYukseklik} fill="url(#zeminTaban)" />
-            <Rect x={0} y={0} width={panelGenislik} height={yerlesim.toplamYukseklik} fill="url(#zeminSolUst)" />
-            <Rect x={0} y={0} width={panelGenislik} height={yerlesim.toplamYukseklik} fill="url(#zeminSagAlt)" />
-
+          {/* Izgara katmanları (zincir/yıldız/gün-no) HEADER_YUKSEKLIK kadar aşağı
+              kaydırılır — header için ayrılan payın altına düşerler. */}
+          <G transform={`translate(0 ${HEADER_YUKSEKLIK})`}>
             {/* 2) Zincir bağları — stil (brief'ten birebir): ikisiTam kalın (1.9) ve
-                parlak (0.62); normal ince (0.9/0.3); satır sarması ince (0.9/0.16). */}
+                parlak (0.62); normal ince (0.9/0.3); satır sarması ince (0.9/0.16).
+                `bosluk` HER İKİ dalda da geçiliyor: uçlar yıldızın halka/bloom
+                bölgesinin dışında kalacak şekilde merkezden içeri çekilir
+                (inceleme bulgusu: düz bağda önceden 0 geçiliyordu, bağ 5/5
+                yıldızının içinden geçiyordu). */}
             {zincirler.map((bag) => {
               const a: Nokta = yerlesim.merkez(bag.indeks);
               const b: Nokta = yerlesim.merkez(bag.indeks + 1);
+              const bosluk = yerlesim.hucreGenislik * (bag.ikisiTam ? BOSLUK_TAM_ORANI : BOSLUK_NORMAL_ORANI);
 
               let yol: string;
               let kalinlik: number;
@@ -341,12 +359,11 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                   olculer.ustPay + (yerlesim.hucreGenislik + olculer.satirAraligi) * satirA + yerlesim.hucreGenislik;
                 const ustB = olculer.ustPay + (yerlesim.hucreGenislik + olculer.satirAraligi) * satirB;
                 const seritY = (altA + ustB) / 2;
-                const bosluk = yerlesim.hucreGenislik * (bag.ikisiTam ? BOSLUK_TAM_ORANI : BOSLUK_NORMAL_ORANI);
                 yol = bagYolu(a, b, true, seritY, bosluk);
                 kalinlik = 0.9;
                 opaklik = 0.16;
               } else {
-                yol = bagYolu(a, b, false, 0, 0);
+                yol = bagYolu(a, b, false, 0, bosluk);
                 kalinlik = bag.ikisiTam ? 1.9 : 0.9;
                 opaklik = bag.ikisiTam ? 0.62 : 0.3;
               }
@@ -364,30 +381,32 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               );
             })}
 
-            {/* 3) Yıldızlar */}
+            {/* 3) Yıldızlar. Bugünün karesi BİLEREK yıldızın kendi ölçekli `<G>`'sinin
+                DIŞINDA, hücrenin gerçek (ölçeklenmemiş) boyutuna göre çizilir —
+                önceden yıldızın `scale(olcek)` (%80) uygulanan iç koordinat
+                sisteminde çizildiği için referanstaki hücre-inset kareden ~%20
+                küçük kalıyordu (inceleme bulgusu). */}
             {izgara.map((gun, i) => {
               const merkez = yerlesim.merkez(i);
               return (
-                <G
-                  key={gun.tarih}
-                  transform={`translate(${merkez.x} ${merkez.y}) scale(${olcek})`}
-                  opacity={gun.digerAy ? 0.42 : 1}
-                >
+                <React.Fragment key={gun.tarih}>
                   {gun.tarih === bugun && (
                     <Rect
-                      x={-24 + BUGUN_CERCEVE_INSET_ORANI * 48}
-                      y={-24 + BUGUN_CERCEVE_INSET_ORANI * 48}
-                      width={48 - 2 * BUGUN_CERCEVE_INSET_ORANI * 48}
-                      height={48 - 2 * BUGUN_CERCEVE_INSET_ORANI * 48}
-                      rx={48 * BUGUN_CERCEVE_KOSE_ORANI}
+                      x={merkez.x - bugunKenar / 2}
+                      y={merkez.y - bugunKenar / 2}
+                      width={bugunKenar}
+                      height={bugunKenar}
+                      rx={bugunKenar * BUGUN_CERCEVE_KOSE_ORANI}
                       fill="none"
                       stroke={renkler.birincil}
                       strokeWidth={1.4}
                       opacity={0.4}
                     />
                   )}
-                  <YildizIcerigi durum={gun.durum} tamGunEsigi={tamGunEsigi} birincil={renkler.birincil} />
-                </G>
+                  <G transform={`translate(${merkez.x} ${merkez.y}) scale(${olcek})`} opacity={gun.digerAy ? 0.42 : 1}>
+                    <YildizIcerigi durum={gun.durum} tamGunEsigi={tamGunEsigi} birincil={renkler.birincil} />
+                  </G>
+                </React.Fragment>
               );
             })}
 
@@ -415,9 +434,34 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                 </SvgText>
               );
             })}
-          </Svg>
-        )}
-      </View>
+          </G>
+
+          {/* 5) Ay adı + gün harfleri — koyu zeminin İÇİNDE (aynı tuval, üstteki
+              header payında). Gün harfleri ızgaranın sütun merkezleriyle (satır 0)
+              birebir hizalanır (`yerlesim.merkez(i).x`, i=0..6). */}
+          <SvgText
+            x={PANEL_YATAY_PAY}
+            y={20}
+            fontSize={13}
+            fontWeight="600"
+            fill={GOK_TONLARI.AY_ADI}
+          >
+            {ayAdi}
+          </SvgText>
+          {GUN_HARFLERI.map((harf, i) => (
+            <SvgText
+              key={`gun-adi-${i}`}
+              x={yerlesim.merkez(i).x}
+              y={40}
+              fontSize={9.5}
+              fill={GOK_TONLARI.GUN_ADI}
+              textAnchor="middle"
+            >
+              {harf}
+            </SvgText>
+          ))}
+        </Svg>
+      )}
     </View>
   );
 };
