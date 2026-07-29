@@ -72,27 +72,19 @@ describe('muhafizOzeti', () => {
 
 describe('bildirimOzeti', () => {
   it('0 açık, cuma kapalı → "Kapalı"', () => {
-    expect(bildirimOzeti({}, false)).toBe('Kapalı');
+    expect(bildirimOzeti(0, false)).toBe('Kapalı');
   });
 
   it('0 açık, cuma açık → "Yalnız cuma hatırlatması"', () => {
-    expect(bildirimOzeti({ sabah: false, ogle: false }, true)).toBe('Yalnız cuma hatırlatması');
+    expect(bildirimOzeti(0, true)).toBe('Yalnız cuma hatırlatması');
   });
 
   it('n>0, cuma kapalı → "3 vakit"', () => {
-    expect(
-      bildirimOzeti({ sabah: true, ogle: true, ikindi: true, aksam: false, yatsi: false }, false)
-    ).toBe('3 vakit');
+    expect(bildirimOzeti(3, false)).toBe('3 vakit');
   });
 
   it('n>0, cuma açık → "3 vakit · cuma hatırlatması açık"', () => {
-    expect(
-      bildirimOzeti({ sabah: true, ogle: true, ikindi: true, aksam: false, yatsi: false }, true)
-    ).toBe('3 vakit · cuma hatırlatması açık');
-  });
-
-  it('boş vakitler nesnesinde çökmez', () => {
-    expect(bildirimOzeti({}, false)).toBe('Kapalı');
+    expect(bildirimOzeti(3, true)).toBe('3 vakit · cuma hatırlatması açık');
   });
 });
 

@@ -98,6 +98,27 @@ describe('useAyarOzetleri', () => {
     });
   });
 
+  it('Depolama.oku dolu bir ISO döndürürse yedekleme özeti o damgayı yansıtır (async yol gerçekten çalışıyor)', async () => {
+    selectorlaKur();
+    // Test ortamının gerçek yılıyla aynı yıl seçilir — `yedeklemeOzeti` "aynı
+    // yıl" kuralında yıl basmaz; hook `simdi`yi gerçek `new Date()`den aldığı
+    // için (brief: hook'a `simdi` enjekte edilmez, bu tek gerçek-zaman
+    // istisnasıdır) test de gerçek yılı kullanır.
+    const buYil = new Date().getFullYear();
+    (Depolama.oku as jest.Mock).mockResolvedValue(`${buYil}-07-01T10:00:00.000Z`);
+
+    const { result } = renderHook(() => useAyarOzetleri());
+
+    // Effect çözülmeden önce varsayılan (null → "Henüz dışa aktarılmadı") görülür —
+    // async yolun GERÇEKTEN state'i güncellediğini kanıtlamak için başlangıç
+    // değerinin bu olduğunu da doğruluyoruz.
+    expect(result.current.ozetler.yedekleme).toBe('Henüz dışa aktarılmadı');
+
+    await waitFor(() => {
+      expect(result.current.ozetler.yedekleme).toBe('Son dışa aktarma: 1 Temmuz');
+    });
+  });
+
   it('saglikOzetSatiri "Kurulumunuz eksiksiz · <konum> · muhafız açık|kapalı" biçimindedir (mod eki YOK)', async () => {
     selectorlaKur();
     const { result } = renderHook(() => useAyarOzetleri());
@@ -150,28 +171,6 @@ describe('useAyarOzetleri', () => {
     await waitFor(() => {
       expect(Notifications.getPermissionsAsync).toHaveBeenCalledTimes(1);
       expect(Depolama.oku).toHaveBeenCalledWith(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA);
-    });
-  });
-
-  it('unmount sonrası async çözülen veri setState çağırmaya çalışmaz (hata fırlatmaz)', async () => {
-    selectorlaKur();
-    let cozAsyncOkuma: (() => void) | undefined;
-    (Depolama.oku as jest.Mock).mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          cozAsyncOkuma = () => resolve(null);
-        })
-    );
-
-    const { unmount } = renderHook(() => useAyarOzetleri());
-    unmount();
-
-    expect(() => {
-      cozAsyncOkuma?.();
-    }).not.toThrow();
-
-    await act(async () => {
-      await Promise.resolve();
     });
   });
 });

@@ -75,6 +75,14 @@ export function useAyarOzetleri(): {
 
   useFocusEffect(
     useCallback(() => {
+      // `iptal` bayrağı: kullanıcı sayfadan async okuma (izin/damga) devam
+      // ederken çıkarsa (ör. hızlı geri-git) promise ekran unmount olduktan
+      // SONRA çözülür. Bayraksız `setAsyncVeri` çağrısı bu durumda unmount
+      // olmuş bir bileşende state güncellemeye çalışır — React 18'de artık
+      // hata/uyarı fırlatmıyor ama gereksiz bir render'a ve (teorik olarak)
+      // yeniden odaklanmış farklı bir focus döngüsünün state'ini bayat bir
+      // sonuçla ezmeye yol açabilir. `iptal`, cleanup'ta true'lanarak bu geç
+      // gelen sonucu sessizce yok sayar.
       let iptal = false;
 
       (async () => {
@@ -117,12 +125,7 @@ export function useAyarOzetleri(): {
     konum: konumOzeti(konumGirdisi),
     takvim: takvimOzeti(takvimAktif),
     muhafiz: muhafizOzeti({ aktif: muhafizAktif, yogunluk: muhafizYogunluk }),
-    // `VakitBildirimAyarlari` sabit alanlı bir arayüz (index signature yok) —
-    // `bildirimOzeti` ise `core/ayarlar/ozetler.ts`'de saf kalmak için genel
-    // bir `Record<string, boolean>` bekliyor. Yapısal olarak uyumlu (her
-    // değer boolean), TS'in isimli arayüzlerde aradığı index signature'ı
-    // eklemeden geçmek için açık dönüşüm gerekiyor.
-    bildirim: bildirimOzeti(vakitBildirimAyarlari as unknown as Record<string, boolean>, cumaAktif),
+    bildirim: bildirimOzeti(acikVakitBildirimSayisi, cumaAktif),
     seri: seriOzeti(seriAyarlari),
     ramazan: ramazanOzeti(iftarAktif, sahurAktif),
     gorunum: gorunumOzeti(tema.mod, palet.ad),

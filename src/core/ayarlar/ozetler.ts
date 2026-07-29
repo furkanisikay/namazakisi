@@ -58,10 +58,10 @@ export function muhafizOzeti(g: MuhafizOzetiGirdisi): string {
 
 /**
  * Vakit bildirimleri satırının özeti.
- * `vakitler`: vakit adı -> bildirim açık mı.
+ * `acikSayisi`: açık vakit bildirimi sayısı — çağıran hesaplar (bu dosya
+ * hangi alanların "vakit" sayıldığına karar vermez, yalnız sayıyı biçimler).
  */
-export function bildirimOzeti(vakitler: Record<string, boolean>, cumaAktif: boolean): string {
-  const acikSayisi = Object.values(vakitler).filter(Boolean).length;
+export function bildirimOzeti(acikSayisi: number, cumaAktif: boolean): string {
   if (acikSayisi === 0) {
     return cumaAktif ? 'Yalnız cuma hatırlatması' : 'Kapalı';
   }
