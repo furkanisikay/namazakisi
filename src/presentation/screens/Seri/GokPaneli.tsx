@@ -33,8 +33,20 @@
  * dolgulu daire ile kurulur (merkezde renk -> kenarda şeffaf); ışın parlaması
  * parlak ince çizginin ALTINA kalın + düşük opaklıklı ikinci çizgi ile.
  *
+ * CİHAZ DOĞRULAMASI (2026-07-29) — yıldız anatomisi referanstan sapmıştı,
+ * dört düzeltme uygulandı (bkz. `.superpowers/sdd/2026-07-29-seri-faz1/
+ * cihaz-fix-report.md`): (1) halka çemberleri artık EN ALTTA (bloom/hüzme/
+ * ışından ÖNCE) ve tek katman — dış aksan halkası kaldırıldı, kalan halka
+ * düşük opaklıkta; önceden EN ÜSTTE çizilip ışınları/hüzmeleri kesen bir
+ * "jeton konturu" gibi okunuyordu. (2) ışının altındaki sahte-parlama çizgisi
+ * artık MERKEZDEN DEĞİL, ışının dış yarısından (`ISIN_PARLAMA_IC_YARICAP`)
+ * başlıyor — merkezden başlarsa beş ışın orada üst üste binip opak bir kütle
+ * oluşturuyordu. (3) `RadialGradient` durakları merkeze yoğunlaşıp kenara
+ * doğru ERKEN sönümlenecek şekilde üç-duraklı yapıldı (doğrusal iki-durak
+ * geniş bir alanı görünür opaklıkta bırakıp doygun bir disk gibi okunuyordu).
+ *
  * 5/5 (`tam`) ile hedef-tuttu arasındaki fark CİNS farkıdır — 5/5'te
- * hüzmeler + çift halka + beyaz-sıcak çekirdek + güçlü hâle; hedef-tuttu'da
+ * hüzmeler + yumuşak halka + beyaz-sıcak çekirdek + hâle; hedef-tuttu'da
  * yalnız halka VAR, IŞIMA YOK. İkisini yaklaştırmak tasarımın ana fikrini
  * yok eder (spec §1).
  */
@@ -115,6 +127,12 @@ const GUN_NUMARASI_ALT_PAY_ORANI = 0.08;
 /** Beş ışın, sabah tepede saat yönünde (spec §1). */
 const ISIN_ACILARI = [-90, -18, 54, 126, 198];
 
+// Işının altına konan sahte-parlama çizgisinin başladığı iç yarıçap (cihaz
+// doğrulaması). Merkezden (0) başlarsa beş ışın merkezde üst üste binip opak
+// bir kütle oluşturuyordu — referansta bu bir `drop-shadow` filtresiydi,
+// merkeze hiç yığılmıyordu. Işının dış yarısına kaydırarak taklit ediliyor.
+const ISIN_PARLAMA_IC_YARICAP = 6;
+
 /** Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor). */
 const GUN_HARFLERI = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
 
@@ -159,11 +177,27 @@ const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi, birin
 
   return (
     <>
+      {/* Hâle halkaları EN ALTTA (bloom/hüzme/ışından ÖNCE) — böylece üstlerine
+          boyanan katmanların kenarı gibi okunur, KONTUR gibi değil (cihaz
+          doğrulaması: önceden EN ÜSTTE çizilip ışınları/hüzmeleri kesen bir
+          jeton konturu gibi duruyordu). Dış aksan halkası (birincil renkli,
+          eski r19) KALDIRILDI — disBloom zaten aynı bölgeyi kaplıyordu, ikisi
+          üst üste "çift kontur" hissi veriyordu; kalan tek halka da opaklığı
+          düşürülerek yumuşatıldı. */}
+      {tam && <Circle cx={0} cy={0} r={16} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.22} />}
+      {!tam && hedefTuttu && (
+        <Circle cx={0} cy={0} r={15} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.22} />
+      )}
+
       {tam && (
         <>
-          {/* Hâle: RadialGradient dolgulu daireler — filter/blur DEĞİL (spec §3.2). */}
-          <Circle cx={0} cy={0} r={17} fill="url(#disBloom)" />
-          <Circle cx={0} cy={0} r={9} fill="url(#icBloom)" />
+          {/* Hâle: RadialGradient dolgulu daireler — filter/blur DEĞİL (spec §3.2).
+              Yarıçap genişletildi (17->21 / 9->11) ve Defs'teki duraklar merkeze
+              yoğunlaşıp kenara doğru ERKEN sönümlenecek şekilde üç-duraklı
+              yapıldı (cihaz doğrulaması: iki-duraklı doğrusal geçiş geniş bir
+              alanı görünür opaklıkta bırakıp doygun bir disk gibi okunuyordu). */}
+          <Circle cx={0} cy={0} r={21} fill="url(#disBloom)" />
+          <Circle cx={0} cy={0} r={11} fill="url(#icBloom)" />
           {ISIN_ACILARI.map((aci, i) => {
             const rad = derece(aci);
             return (
@@ -191,17 +225,21 @@ const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi, birin
         const y2 = Math.sin(rad) * uzunluk;
         return (
           <React.Fragment key={`isin-${i}`}>
-            {/* Işın parlaması: parlak çizginin ALTINA kalın + düşük opaklıklı ikinci çizgi. */}
+            {/* Işın parlaması: parlak çizginin ALTINA kalın + düşük opaklıklı ikinci
+                çizgi — ama MERKEZDEN DEĞİL, ışının dış yarısından başlar
+                (`ISIN_PARLAMA_IC_YARICAP`). Merkezden başlasaydı beş ışının
+                parlaması orada üst üste binip opak bir kütle oluşturuyordu
+                (cihaz doğrulaması). */}
             {acik && (
               <Line
-                x1={0}
-                y1={0}
+                x1={Math.cos(rad) * ISIN_PARLAMA_IC_YARICAP}
+                y1={Math.sin(rad) * ISIN_PARLAMA_IC_YARICAP}
                 x2={x2}
                 y2={y2}
                 stroke={birincil}
-                strokeWidth={tam ? 4.4 : 3}
+                strokeWidth={tam ? 3.2 : 2.2}
                 strokeLinecap="round"
-                opacity={tam ? 0.25 : 0.15}
+                opacity={tam ? 0.22 : 0.14}
               />
             )}
             <Line
@@ -234,16 +272,6 @@ const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi, birin
               : GOK_TONLARI.ISIK
         }
       />
-
-      {tam && (
-        <>
-          <Circle cx={0} cy={0} r={16} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.45} />
-          <Circle cx={0} cy={0} r={19} fill="none" stroke={birincil} strokeWidth={0.6} opacity={0.3} />
-        </>
-      )}
-      {!tam && hedefTuttu && (
-        <Circle cx={0} cy={0} r={15} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.3} />
-      )}
     </>
   );
 };
@@ -318,13 +346,19 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               <Stop offset="0" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={1} />
               <Stop offset="1" stopColor={GOK_TONLARI.ZEMIN_VURGU_SAG_ALT} stopOpacity={0} />
             </RadialGradient>
-            {/* Yıldız hâlesi — merkezde renk, kenarda şeffaf (blur DEĞİL, spec §3.2). */}
+            {/* Yıldız hâlesi — merkezde renk, kenarda şeffaf (blur DEĞİL, spec §3.2).
+                Üç duraklı: merkeze yoğunlaşıp kenara doğru ERKEN sönümlenir —
+                iki-duraklı doğrusal geçiş (0.5 -> 0) geniş bir alanı görünür
+                opaklıkta bırakıp doygun bir disk gibi okunuyordu (cihaz
+                doğrulaması: özellikle `disBloom`'un yeşil/palet rengi). */}
             <RadialGradient id="disBloom">
-              <Stop offset="0" stopColor={renkler.birincil} stopOpacity={0.5} />
+              <Stop offset="0" stopColor={renkler.birincil} stopOpacity={0.35} />
+              <Stop offset="0.55" stopColor={renkler.birincil} stopOpacity={0.1} />
               <Stop offset="1" stopColor={renkler.birincil} stopOpacity={0} />
             </RadialGradient>
             <RadialGradient id="icBloom">
-              <Stop offset="0" stopColor={GOK_TONLARI.ISIK} stopOpacity={0.6} />
+              <Stop offset="0" stopColor={GOK_TONLARI.ISIK} stopOpacity={0.5} />
+              <Stop offset="0.55" stopColor={GOK_TONLARI.ISIK} stopOpacity={0.14} />
               <Stop offset="1" stopColor={GOK_TONLARI.ISIK} stopOpacity={0} />
             </RadialGradient>
           </Defs>
