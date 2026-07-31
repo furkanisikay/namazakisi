@@ -61,6 +61,23 @@ describe('acilisCizelgesi', () => {
     }
   });
 
+  test('NOBETCI (ic tutarlilik — Task 1 incelemesi): her bag CIZGI_ONCE ile yildizdan baslar, sonraki yildiz TAM da bagin bittigi anda yanar', () => {
+    // Sabit adimli (>=160ms) bir stagger'a donulurse yukaridaki "sifir
+    // cakisma" testi hala gecebilir (adim yeterince genisse cakismaz) ama bu
+    // test DUSER: birikimli modelin iki temel esitligi (gecikme = t + cizgiOnce
+    // VE yildizGecikme[i+1] = gecikme + sure) burada TAM olarak dogrulanir.
+    const izgara = Array.from({ length: 8 }, (_, i) => tam5(`2026-07-${String(i + 1).padStart(2, '0')}`));
+    const baglar = zincirBaglari(izgara, 5);
+    const cizelge = acilisCizelgesi(izgara, baglar, SABITLER);
+
+    for (let i = 0; i < izgara.length - 1; i++) {
+      const bag = cizelge.bagZamani.get(i);
+      expect(bag).toBeDefined();
+      expect(bag!.gecikme).toBe(cizelge.yildizGecikme[i] + SABITLER.cizgiOnce);
+      expect(cizelge.yildizGecikme[i + 1]).toBe(bag!.gecikme + bag!.sure);
+    }
+  });
+
   test('kopuk zincirde es verilir, yildiz yine de belirir', () => {
     // Orta gun zinciri koparir (0/5) -> 0-1 ve 1-2 araliklari bagsiz (kopuk).
     const izgara = [tam5('2026-07-01'), kilinanSayi('2026-07-02', 0), tam5('2026-07-03')];
@@ -171,8 +188,14 @@ describe('acilisCizelgesi', () => {
 
     const cizelge = acilisCizelgesi(izgara, baglar, SABITLER);
 
-    expect(cizelge.toplam).toBeLessThan(5000);
-    expect(cizelge.toplam).toBeGreaterThan(0);
+    // PINLENMIS deger (Task 1 incelemesi): < 5000 gibi gevsek bir sinir yerine
+    // tam deger — regresyon (ornegin bag/kopuk sayisi degisirse) burada hemen
+    // gorunur olsun. Hesap: 22 bagli segment × 30 (cizgiOnce) + (13 vurgulu ×
+    // 130 + 9 normal × 85) (seg sureleri) + 12 kopuk × 32 = 3499 ms
+    // (bkz. task-1-report.md).
+    const vurguluBagSayisi = [...cizelge.bagZamani.values()].filter((z) => z.vurgulu).length;
+    expect(vurguluBagSayisi).toBe(13);
+    expect(cizelge.toplam).toBe(3499);
 
     // Cakisma yok garantisi burada da gecerli.
     const siraliZamanlar = [...cizelge.bagZamani.entries()]

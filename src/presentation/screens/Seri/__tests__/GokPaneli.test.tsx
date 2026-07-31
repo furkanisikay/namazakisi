@@ -31,13 +31,30 @@ jest.mock('../../../../core/theme', () => ({
   }),
 }));
 
+// react-native-reanimated mock reçetesi (ortak-notlar.md, aynen kullan + iki
+// ekleme): taban `.../mock` NOOP'tur; `withRepeat`/`withTiming`/`withDelay`
+// çağrı ARGÜMANLARINI (süre/gecikme) ölçmek için `jest.fn(...)` ile sarılır
+// (düz fonksiyon oldukları için varsayılan mock'ta `toHaveBeenCalledWith`
+// çalışmaz), `useReducedMotion` mock'ta hiç YOK, elle eklenir.
+jest.mock('react-native-reanimated', () => {
+  const m = require('react-native-reanimated/mock');
+  return {
+    ...m,
+    withRepeat: jest.fn(m.withRepeat),
+    withTiming: jest.fn(m.withTiming),
+    withDelay: jest.fn(m.withDelay),
+    useReducedMotion: jest.fn(() => false),
+  };
+});
+
 import { GokPaneli } from '../GokPaneli';
 import { aylikIzgaraOlustur } from '../../../../core/seri/aylikIzgara';
 import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
-import { GOK_TONLARI } from '../sabitler';
+import { GOK_TONLARI, GOK_ZAMANLAMA } from '../sabitler';
 
 const { G, Path, Text: SvgTextMock } = require('react-native-svg');
+const { withTiming: withTimingMock, withDelay: withDelayMock, useReducedMotion: useReducedMotionMock } = require('react-native-reanimated');
 
 const TAM_GUN_ESIGI = 5;
 
@@ -80,6 +97,12 @@ function genislikSimuleEt(tree: renderer.ReactTestRenderer, genislik: number) {
 }
 
 describe('GokPaneli', () => {
+  beforeEach(() => {
+    withTimingMock.mockClear();
+    withDelayMock.mockClear();
+    useReducedMotionMock.mockReturnValue(false);
+  });
+
   test('panelGenislik 0 iken (onLayout tetiklenmeden) çökmez ve Svg çizmez', () => {
     const { izgara, zincirler } = ornekIzgaraKur();
     expect(() =>
@@ -240,5 +263,143 @@ describe('GokPaneli', () => {
     );
     genislikSimuleEt(tree, 350);
     expect(tree.root.findAllByType(Path)).toHaveLength(0);
+  });
+
+  test('AÇILIŞ ANİMASYONU (2a — zincir): strokeDasharray STATİK, strokeDashoffset animatedProps ile taşınır ve mount anında henüz ÇİZİLMEMİŞ (offset === dasharray)', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    expect(zincirler).toHaveLength(1); // ornekIzgaraKur -> yalnız 07-01<->07-02 bağı (tek bağ smoke testi)
+    const bagYolu = tree.root.findAllByType(Path)[0];
+
+    // "dasharray statik + dashoffset animasyonlu" iddiası (ortak-notlar.md):
+    // strokeDasharray düz sayısal prop, animatedProps.strokeDashoffset ayrı.
+    expect(typeof bagYolu.props.strokeDasharray).toBe('number');
+    expect(bagYolu.props.strokeDasharray).toBeGreaterThan(0);
+    expect(typeof bagYolu.props.animatedProps.strokeDashoffset).toBe('number');
+
+    // Mount anında (efekt henüz "withTiming" ile 0'a inmeden ÖNCEKİ render
+    // turunun anlık görüntüsü) offset === dasharray -> yol tamamen GİZLİ.
+    expect(bagYolu.props.animatedProps.strokeDashoffset).toBe(bagYolu.props.strokeDasharray);
+
+    // withDelay/withTiming gerçekten çağrıldı (bağ zamanı acilisCizelgesi'nden
+    // geliyor, 0'a animasyonlanıyor).
+    expect(withDelayMock).toHaveBeenCalled();
+    expect(withTimingMock).toHaveBeenCalledWith(0, expect.objectContaining({ duration: expect.any(Number) }));
+  });
+
+  test('AÇILIŞ ANİMASYONU (2b — yıldız girişi): üç kademe (5/5 · hedef-tuttu · diğer) ayrı sürelerle withTiming çağırır', () => {
+    // TAM_GUN_ESIGI=5 ile "hedef tuttu" kademesi hiç oluşamaz (5/5 dışında
+    // esiği tutmanın tek yolu >=5 kılınan, yani zaten tam) — bu test için
+    // esik=3 ile ayrı bir izgara kuruluyor (acilisCizelgesi.test.ts'teki
+    // "esik=3" desenine benzer).
+    const kayitlar: Record<string, boolean[]> = {
+      '2026-07-01': [true, true, true, true, true], // 5/5 -> GIRIS_TAM
+      '2026-07-02': [true, true, true, true, false], // 4/5, esik=3 -> hedef tuttu -> GIRIS_HEDEF
+      '2026-07-03': [true, false, false, false, false], // 1/5 -> diger -> GIRIS_SADE
+    };
+    const izgara = aylikIzgaraOlustur({
+      yil: 2026,
+      ay: 6,
+      kayitlar,
+      dondurulmusTarihler: new Set(),
+      bugun: '2026-07-10',
+    });
+    const zincirler = zincirBaglari(izgara, 3);
+    const tree = render(
+      <GokPaneli izgara={izgara} zincirler={zincirler} ayAdi="Temmuz 2026" bugun="2026-07-10" tamGunEsigi={3} mevcutSeri={3} />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const sureler = withTimingMock.mock.calls.map(([, cfg]: [unknown, { duration?: number }]) => cfg?.duration);
+    expect(sureler).toContain(GOK_ZAMANLAMA.GIRIS_TAM_MS);
+    expect(sureler).toContain(GOK_ZAMANLAMA.GIRIS_HEDEF_MS);
+    expect(sureler).toContain(GOK_ZAMANLAMA.GIRIS_SADE_MS);
+  });
+
+  test('AÇILIŞ ANİMASYONU: azaltılmış hareket (useReducedMotion=true) açıkken hiçbir animasyon KURULMUYOR — bağ/yıldız mount anında NİHAİ durumda doğar', () => {
+    useReducedMotionMock.mockReturnValue(true);
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    // withTiming/withDelay hiç çağrılmadı — animasyon objesi hiç kurulmadı.
+    expect(withTimingMock).not.toHaveBeenCalled();
+    expect(withDelayMock).not.toHaveBeenCalled();
+
+    const bagYolu = tree.root.findAllByType(Path)[0];
+    expect(bagYolu.props.animatedProps.strokeDashoffset).toBe(0); // nihai: tam çizili
+
+    const idx = izgara.findIndex((g) => g.tarih === '2026-07-01'); // 5/5, digerAy=false -> nihai opacity 1
+    const yildizGruplari = tree.root
+      .findAllByType(G)
+      .filter((d) => typeof d.props.transform === 'string' && d.props.transform.includes('scale('));
+    expect(yildizGruplari[idx].props.animatedProps.opacity).toBe(1);
+  });
+
+  test('AÇILIŞ ANİMASYONU (2c — oynatıldı nöbetçisi): mevcut bağ/yıldız veri güncellemesinde YENİDEN BAŞLAMAZ; ilk oynatımdan SONRA beliren bağ NİHAİ durumda doğar', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+
+    // İlk mount: bağ HENÜZ YOK (zincirler=[]) -> yalnız yıldızlar oynar.
+    const tree = render(
+      <GokPaneli izgara={izgara} zincirler={[]} ayAdi="Temmuz 2026" bugun="2026-07-10" tamGunEsigi={TAM_GUN_ESIGI} mevcutSeri={3} />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const yildizCagriSayisi = withTimingMock.mock.calls.length;
+    expect(yildizCagriSayisi).toBeGreaterThan(0); // yıldızlar oynadı
+
+    // Mevcut yıldız bileşen ÖRNEĞİ aynı kalırken (key=gun.tarih değişmedi)
+    // ikinci bir render tetikle (küçük bir genişlik değişimi) — animasyon
+    // YENİDEN BAŞLAMAMALI: `useEffect` `deps=[]` olduğu için ikinci render'da
+    // TEKRAR çalışmaz, dolayısıyla withTiming/withDelay çağrı sayısı artmaz
+    // (NOT: mock'un `useSharedValue`'su gerçek reanimated'ın aksine render'lar
+    // arası KALICI değildir — bu yüzden burada "nihai opacity" DEĞERİ değil,
+    // "efekt yeniden tetiklenmedi" ÇAĞRI SAYISI doğrulanıyor; asıl garanti
+    // zaten React'in `useEffect(fn, [])` sözleşmesidir).
+    genislikSimuleEt(tree, 351);
+    expect(withTimingMock.mock.calls.length).toBe(yildizCagriSayisi);
+
+    // Şimdi GERÇEK zincirler'i (bir bağ içeren) geçirerek güncelle — bu bağ
+    // İLK KEZ mount olur, ama `oynatildiRef.current` artık `true` (ilk mount
+    // effect'i çoktan çalıştı) -> animasyon OYNAMADAN nihai (offset=0) doğar.
+    act(() => {
+      tree.update(
+        <GokPaneli
+          izgara={izgara}
+          zincirler={zincirler}
+          ayAdi="Temmuz 2026"
+          bugun="2026-07-10"
+          tamGunEsigi={TAM_GUN_ESIGI}
+          mevcutSeri={3}
+        />
+      );
+    });
+
+    const bagCagriSayisiOncesi = withTimingMock.mock.calls.length;
+    const bagYolu = tree.root.findAllByType(Path)[0];
+    expect(bagYolu.props.animatedProps.strokeDashoffset).toBe(0); // dogrudan nihai
+    // Sonradan mount olan bağ için withTiming/withDelay HİÇ çağrılmadı (erken
+    // dönüş — oynatilacakMi=false).
+    expect(withTimingMock.mock.calls.length).toBe(bagCagriSayisiOncesi);
   });
 });

@@ -97,4 +97,14 @@ export const GOK_ZAMANLAMA = {
 
   /** Bugünün karesinin nabız animasyonu süresi (ms) — 3.2 sn, sabit. */
   NABIZ_SURE_MS: 3200,
+
+  /** Yıldız girişi — 5/5 (en vurgulu, en uzun): opacity 0→1 (task-2-brief.md
+   * §2b). Ölçek taşması KULLANILMAZ (bkz. AnimasyonluYildiz.tsx doc-block,
+   * "(b) Ölçekten vazgeç" seçildi) — kademe farkı süre + içeriğin zenginliğiyle
+   * (hüzmeler/hâle/beyaz çekirdek) korunur. */
+  GIRIS_TAM_MS: 380,
+  /** Yıldız girişi — hedef tuttu (halka var, taşma/parıltı YOK): opacity 0→1. */
+  GIRIS_HEDEF_MS: 300,
+  /** Yıldız girişi — diğerleri (yalnız soluklaşma): opacity 0→1. */
+  GIRIS_SADE_MS: 240,
 } as const;

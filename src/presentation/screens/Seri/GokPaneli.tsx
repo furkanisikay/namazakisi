@@ -1,5 +1,13 @@
 /**
- * GokPaneli — ayın takımyıldızı (Faz 1: STATİK, animasyon yok).
+ * GokPaneli — ayın takımyıldızı.
+ *
+ * Faz 2: açılış animasyonu eklendi — zincir bağları sırayla örülür
+ * (`AnimasyonluBag`, `strokeDashoffset`), yıldızlar kademeli girer
+ * (`AnimasyonluYildiz`, opacity). Zamanlama `acilisCizelgesi` (SAF, core) ile
+ * hesaplanır; `GokPaneli` yalnız `oynatildiRef`'i (bir kez oynatma sentinel'i,
+ * spec 2c) yönetir ve çocuklara geçirir. `useAnimatedProps`/`useSharedValue`
+ * `.map()` içinde çağrılamadığı için (React Hooks kuralı) her bağ/yıldız
+ * kendi child bileşenine çıkarıldı — bkz. o dosyaların doc-block'ları.
  *
  * Ayın tamamı TEK bir `<Svg>` içinde çizilir (35 ayrı bileşen DEĞİL) — hücre
  * merkezleri `gokYerlesimi` ile panel genişliğinden HESAPLANIR, ölçülmez.
@@ -50,27 +58,18 @@
  * yalnız halka VAR, IŞIMA YOK. İkisini yaklaştırmak tasarımın ana fikrini
  * yok eder (spec §1).
  */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
-import Svg, {
-  Defs,
-  RadialGradient,
-  LinearGradient,
-  Stop,
-  Rect,
-  Path,
-  Circle,
-  Line,
-  G,
-  Text as SvgText,
-} from 'react-native-svg';
+import Svg, { Defs, RadialGradient, LinearGradient, Stop, Rect, G, Text as SvgText } from 'react-native-svg';
 import { useRenkler } from '../../../core/theme';
-import { GOK_TONLARI } from './sabitler';
+import { GOK_TONLARI, GOK_ZAMANLAMA } from './sabitler';
 import { gokYerlesimi, bagYolu, GokOlculeri, Nokta, SUTUN_SAYISI } from '../../../core/seri/gokGeometrisi';
-import { IzgaraGunu, GunDurumu } from '../../../core/seri/aylikIzgara';
+import { IzgaraGunu } from '../../../core/seri/aylikIzgara';
 import { ZincirBagi } from '../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../core/seri/gokErisimEtiketi';
-import { gunTamMi } from '../../../core/seri/gunTamMi';
+import { acilisCizelgesi } from '../../../core/seri/acilisCizelgesi';
+import { AnimasyonluBag } from './AnimasyonluBag';
+import { AnimasyonluYildiz } from './AnimasyonluYildiz';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -124,157 +123,8 @@ const BUGUN_CERCEVE_KOSE_ORANI = 0.2;
 const GUN_NUMARASI_FONT_ORANI = 0.18;
 const GUN_NUMARASI_ALT_PAY_ORANI = 0.08;
 
-/** Beş ışın, sabah tepede saat yönünde (spec §1). */
-const ISIN_ACILARI = [-90, -18, 54, 126, 198];
-
-// Işının altına konan sahte-parlama çizgisinin başladığı iç yarıçap (cihaz
-// doğrulaması). Merkezden (0) başlarsa beş ışın merkezde üst üste binip opak
-// bir kütle oluşturuyordu — referansta bu bir `drop-shadow` filtresiydi,
-// merkeze hiç yığılmıyordu. Işının dış yarısına kaydırarak taklit ediliyor.
-const ISIN_PARLAMA_IC_YARICAP = 6;
-
 /** Haftanın günleri, pazartesiden başlar (ızgara pazartesi başlıyor). */
 const GUN_HARFLERI = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
-
-function derece(a: number): number {
-  return (a * Math.PI) / 180;
-}
-
-interface YildizIcerigiProps {
-  durum: GunDurumu;
-  tamGunEsigi: number;
-  birincil: string;
-}
-
-/** Tek bir günün yıldız görselini üretir — koordinatlar (0,0) merkezli,
- * konumlama/ölçek dış `<G transform>` tarafından uygulanır. */
-const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi, birincil }) => {
-  if (durum.tip === 'gelecek') {
-    return <Circle cx={0} cy={0} r={1.4} fill={GOK_TONLARI.NOKTA_GELECEK} />;
-  }
-
-  if (durum.tip === 'dondurulmus') {
-    return (
-      <>
-        <Circle
-          cx={0}
-          cy={0}
-          r={8.5}
-          fill="none"
-          stroke={GOK_TONLARI.DONDURULMUS}
-          strokeWidth={1.5}
-          strokeDasharray="2 3.2"
-          opacity={0.85}
-        />
-        <Circle cx={0} cy={0} r={2.4} fill={GOK_TONLARI.DONDURULMUS} opacity={0.9} />
-      </>
-    );
-  }
-
-  const kilinanSayisi = durum.vakitler.filter(Boolean).length;
-  const tam = kilinanSayisi === 5;
-  const hedefTuttu = gunTamMi(kilinanSayisi, tamGunEsigi);
-
-  return (
-    <>
-      {/* Hâle halkaları EN ALTTA (bloom/hüzme/ışından ÖNCE) — böylece üstlerine
-          boyanan katmanların kenarı gibi okunur, KONTUR gibi değil (cihaz
-          doğrulaması: önceden EN ÜSTTE çizilip ışınları/hüzmeleri kesen bir
-          jeton konturu gibi duruyordu). Dış aksan halkası (birincil renkli,
-          eski r19) KALDIRILDI — disBloom zaten aynı bölgeyi kaplıyordu, ikisi
-          üst üste "çift kontur" hissi veriyordu; kalan tek halka da opaklığı
-          düşürülerek yumuşatıldı. */}
-      {tam && <Circle cx={0} cy={0} r={16} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.22} />}
-      {!tam && hedefTuttu && (
-        <Circle cx={0} cy={0} r={15} fill="none" stroke={GOK_TONLARI.ISIK} strokeWidth={0.7} opacity={0.22} />
-      )}
-
-      {tam && (
-        <>
-          {/* Hâle: RadialGradient dolgulu daireler — filter/blur DEĞİL (spec §3.2).
-              Yarıçap genişletildi (17->21 / 9->11) ve Defs'teki duraklar merkeze
-              yoğunlaşıp kenara doğru ERKEN sönümlenecek şekilde üç-duraklı
-              yapıldı (cihaz doğrulaması: iki-duraklı doğrusal geçiş geniş bir
-              alanı görünür opaklıkta bırakıp doygun bir disk gibi okunuyordu). */}
-          <Circle cx={0} cy={0} r={21} fill="url(#disBloom)" />
-          <Circle cx={0} cy={0} r={11} fill="url(#icBloom)" />
-          {ISIN_ACILARI.map((aci, i) => {
-            const rad = derece(aci);
-            return (
-              <Line
-                key={`huzme-${i}`}
-                x1={Math.cos(rad) * 4}
-                y1={Math.sin(rad) * 4}
-                x2={Math.cos(rad) * 19}
-                y2={Math.sin(rad) * 19}
-                stroke={GOK_TONLARI.ISIK}
-                strokeWidth={0.7}
-                strokeLinecap="round"
-                opacity={0.55}
-              />
-            );
-          })}
-        </>
-      )}
-
-      {ISIN_ACILARI.map((aci, i) => {
-        const rad = derece(aci);
-        const acik = durum.vakitler[i];
-        const uzunluk = acik ? (tam ? 14 : 11) : 7;
-        const x2 = Math.cos(rad) * uzunluk;
-        const y2 = Math.sin(rad) * uzunluk;
-        return (
-          <React.Fragment key={`isin-${i}`}>
-            {/* Işın parlaması: parlak çizginin ALTINA kalın + düşük opaklıklı ikinci
-                çizgi — ama MERKEZDEN DEĞİL, ışının dış yarısından başlar
-                (`ISIN_PARLAMA_IC_YARICAP`). Merkezden başlasaydı beş ışının
-                parlaması orada üst üste binip opak bir kütle oluşturuyordu
-                (cihaz doğrulaması). */}
-            {acik && (
-              <Line
-                x1={Math.cos(rad) * ISIN_PARLAMA_IC_YARICAP}
-                y1={Math.sin(rad) * ISIN_PARLAMA_IC_YARICAP}
-                x2={x2}
-                y2={y2}
-                stroke={birincil}
-                strokeWidth={tam ? 3.2 : 2.2}
-                strokeLinecap="round"
-                opacity={tam ? 0.22 : 0.14}
-              />
-            )}
-            <Line
-              x1={0}
-              y1={0}
-              x2={x2}
-              y2={y2}
-              stroke={acik ? GOK_TONLARI.ISIK : GOK_TONLARI.ISIN_SONUK}
-              strokeWidth={acik ? (tam ? 2.2 : 1.5) : 1.1}
-              strokeLinecap="round"
-              opacity={acik ? (tam ? 1 : 0.72) : 0.85}
-            />
-          </React.Fragment>
-        );
-      })}
-
-      {/* Kısmi (0<kılınan<5) çekirdeğin ince ışıması — referans "drop-shadow(0 0 2px VURGU)"
-          kullanıyordu; filter YOK (spec §3.2), yerine küçük düşük-opaklıklı bir glow dairesi
-          çekirdeğin ALTINA konur (inceleme bulgusu: bu karşılıksız kalmıştı). */}
-      {!tam && kilinanSayisi > 0 && <Circle cx={0} cy={0} r={4.5} fill={birincil} opacity={0.35} />}
-      <Circle
-        cx={0}
-        cy={0}
-        r={kilinanSayisi === 0 ? 2.1 : tam ? 4.2 : 2.2}
-        fill={
-          kilinanSayisi === 0
-            ? GOK_TONLARI.CEKIRDEK_KILINMAMIS
-            : tam
-              ? GOK_TONLARI.BEYAZ_CEKIRDEK
-              : GOK_TONLARI.ISIK
-        }
-      />
-    </>
-  );
-};
 
 export const GokPaneli: React.FC<GokPaneliProps> = ({
   izgara,
@@ -286,6 +136,29 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
 }) => {
   const renkler = useRenkler();
   const [panelGenislik, setPanelGenislik] = useState(0);
+
+  // Açılış animasyonu bir kez oynatma sentinel'i (spec 2c). `AnimasyonluBag`/
+  // `AnimasyonluYildiz` kendi mount anında bu ref'i okur (lazy state
+  // initializer, RENDER sırasında). DİKKAT: bu ref `GokPaneli`'nin KENDİ
+  // mount'unda (`useEffect(..., [])`) DEĞİL, `panelGenislik` ilk kez pozitif
+  // olduğu commit'te işaretlenir — `Svg` (ve dolayısıyla tüm bağ/yıldız
+  // çocukları) yalnız `panelGenislik > 0` iken doğar (`onLayout` asenkron
+  // gelir), GokPaneli'nin kendisi ise `panelGenislik` HÂLÂ 0'ken zaten mount
+  // olmuş olur. Ref'i erken (GokPaneli'nin kendi mount'unda) işaretlemek,
+  // gerçek çocuklar doğduğunda ref'i ÇOKTAN `true` bulmalarına ve HİÇBİRİNİN
+  // animasyon oynatmamasına yol açıyordu (jest'te yakalandı — GokPaneli.test.tsx
+  // "oynatıldı nöbetçisi"). React aynı commit'te ÖNCE çocukların, SONRA
+  // ebeveynin effect'ini çalıştırır — bu yüzden `panelGenislik` bağımlılığı
+  // bu ref'in `true`ya dönüşünü, çocukların o commit'teki RENDER'ından (ki ref
+  // hâlâ `false` görürler) ve kendi effect'lerinden (withTiming/withDelay
+  // kurulumu) SONRAYA erteler; sonraki bir commit'te (veri değişimiyle) yeni
+  // doğan bir çocuk ise ref'i çoktan `true` bulup nihai durumda doğar.
+  const oynatildiRef = useRef(false);
+  useEffect(() => {
+    if (panelGenislik > 0) {
+      oynatildiRef.current = true;
+    }
+  }, [panelGenislik]);
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     const genislik = e.nativeEvent.layout.width;
@@ -310,6 +183,19 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
   const erisimEtiketi = useMemo(
     () => gokErisimEtiketi(izgara, ayAdi, mevcutSeri, tamGunEsigi),
     [izgara, ayAdi, mevcutSeri, tamGunEsigi]
+  );
+
+  // Açılış zaman çizelgesi — SAF (core/seri/acilisCizelgesi), zamanlama
+  // sabitleri burada (sunum katmanı) enjekte edilir (bkz. dosya doc-block'u).
+  const cizelge = useMemo(
+    () =>
+      acilisCizelgesi(izgara, zincirler, {
+        cizgiOnce: GOK_ZAMANLAMA.CIZGI_ONCE_MS,
+        segNormal: GOK_ZAMANLAMA.SEG_NORMAL_MS,
+        segVurgu: GOK_ZAMANLAMA.SEG_VURGU_MS,
+        kopukBosluk: GOK_ZAMANLAMA.KOPUK_BOSLUK_MS,
+      }),
+    [izgara, zincirler]
   );
 
   const olcek = (yerlesim.hucreGenislik * YILDIZ_OLCEK_PAYI) / 48;
@@ -405,14 +291,13 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               }
 
               return (
-                <Path
+                <AnimasyonluBag
                   key={`bag-${bag.indeks}`}
-                  d={yol}
-                  fill="none"
-                  stroke={GOK_TONLARI.ISIK}
-                  strokeWidth={kalinlik}
-                  strokeOpacity={opaklik}
-                  strokeLinecap="round"
+                  yol={yol}
+                  kalinlik={kalinlik}
+                  opaklik={opaklik}
+                  zaman={cizelge.bagZamani.get(bag.indeks)}
+                  oynatildiRef={oynatildiRef}
                 />
               );
             })}
@@ -439,9 +324,14 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
                       opacity={0.4}
                     />
                   )}
-                  <G transform={`translate(${merkez.x} ${merkez.y}) scale(${olcek})`} opacity={gun.digerAy ? 0.42 : 1}>
-                    <YildizIcerigi durum={gun.durum} tamGunEsigi={tamGunEsigi} birincil={renkler.birincil} />
-                  </G>
+                  <AnimasyonluYildiz
+                    gun={gun}
+                    transform={`translate(${merkez.x} ${merkez.y}) scale(${olcek})`}
+                    tamGunEsigi={tamGunEsigi}
+                    birincil={renkler.birincil}
+                    gecikme={cizelge.yildizGecikme[i]}
+                    oynatildiRef={oynatildiRef}
+                  />
                 </React.Fragment>
               );
             })}
