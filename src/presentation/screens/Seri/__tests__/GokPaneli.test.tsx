@@ -50,6 +50,8 @@ jest.mock('react-native-reanimated', () => {
 });
 
 import { GokPaneli } from '../GokPaneli';
+import { Parilti } from '../Parilti';
+import { BugununNabzi } from '../BugununNabzi';
 import { aylikIzgaraOlustur } from '../../../../core/seri/aylikIzgara';
 import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
@@ -470,6 +472,76 @@ describe('GokPaneli', () => {
       .filter((g: number) => g > cizelge.toplam);
     expect(pariltiGecikmeleri).toHaveLength(tamGunSayisi);
     expect(new Set(pariltiGecikmeleri).size).toBe(tamGunSayisi);
+  });
+
+  test('SÜREKLİ HAREKET (3a — parıltı dip nöbetçisi): gecikme dolmadan (mount anında) opaklık 0dır — Faz 1de bu katman hiç yoktu', () => {
+    // İNCELEME BULGUSU (düzeltildi): paylaşılan değer ÖNCEDEN 0.25 ile
+    // doğuyordu; `withDelay` yalnız ANİMASYONU geciktirir, GÖRÜNÜRLÜĞÜ değil
+    // — açılış zinciri bitmeden 5/5 hücrelerinde sabit bir hâle lekesi
+    // duruyordu. Şimdi dip HER ZAMAN 0.
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const pariltiKatmanlari = tree.root
+      .findAllByProps({ testID: 'seri-parilti' })
+      .filter((d) => typeof d.type === 'string');
+    expect(pariltiKatmanlari.length).toBeGreaterThan(0);
+    for (const katman of pariltiKatmanlari) {
+      const stilDizisi = katman.props.style as Array<{ opacity?: number }>;
+      const animatedStil = stilDizisi[stilDizisi.length - 1];
+      expect(animatedStil.opacity).toBe(0);
+    }
+  });
+
+  test('SÜREKLİ HAREKET (3a — parıltı konumu): "ust" hesabına HEADER_YUKSEKLIK dahildir (silinse hiçbir test yakalamazdı — nöbetçi)', () => {
+    // Aynı gün HEM "bugün" (BugununNabzi, Svg İÇİNDE header'sız koordinat)
+    // HEM 5/5 (Parilti, Svg DIŞINDA header'lı koordinat) olsun diye tek-günlük
+    // özel bir ızgara kuruldu — ikisinin merkezi AYNI hücreye karşılık gelir,
+    // fark TAM OLARAK HEADER_YUKSEKLIK olmalı.
+    const kayitlar: Record<string, boolean[]> = {
+      '2026-07-05': [true, true, true, true, true],
+    };
+    const izgara = aylikIzgaraOlustur({
+      yil: 2026,
+      ay: 6,
+      kayitlar,
+      dondurulmusTarihler: new Set(),
+      bugun: '2026-07-05',
+    });
+    const zincirler = zincirBaglari(izgara, TAM_GUN_ESIGI);
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-05"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={1}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const nabiz = tree.root.findByType(BugununNabzi);
+    const parilti = tree.root.findByType(Parilti);
+    // HEADER_YUKSEKLIK = 46 (GokPaneli.tsx'teki dokümante, stabil sabit).
+    // `+ HEADER_YUKSEKLIK` terimi silinse bu fark 0 çıkar ve test DÜŞER.
+    const HEADER_YUKSEKLIK_BEKLENEN = 46;
+    const ustFarki = parilti.props.ust + parilti.props.boyut / 2 - nabiz.props.merkezY;
+    expect(ustFarki).toBeCloseTo(HEADER_YUKSEKLIK_BEKLENEN, 6);
+
+    // Yatayda header ofseti YOK — sol, merkez.x'ten dolaysız türetilir.
+    const solFarki = parilti.props.sol + parilti.props.boyut / 2 - nabiz.props.merkezX;
+    expect(solFarki).toBeCloseTo(0, 6);
   });
 
   test('SÜREKLİ HAREKET (3b — nabız): yalnız bugünün hücresinde kurulur', () => {

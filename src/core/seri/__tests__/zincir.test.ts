@@ -1,4 +1,4 @@
-import { zincirBaglari } from '../zincir';
+import { zincirBaglari, besTeBesMi } from '../zincir';
 import { GunDurumu, IzgaraGunu } from '../aylikIzgara';
 
 const gun = (tarih: string, durum: GunDurumu, digerAy = false): IzgaraGunu => ({
@@ -78,5 +78,23 @@ describe('zincirBaglari', () => {
 
     const baglarYuksekEsik = zincirBaglari(izgara, 5);
     expect(baglarYuksekEsik).toHaveLength(0);
+  });
+});
+
+describe('besTeBesMi', () => {
+  // Task 3 incelemesinde EXPORT edildi — `screens/Seri` sunum katmanı
+  // (`AnimasyonluYildiz.tsx`, `GokPaneli.tsx`) AYNI 5/5 kuralını ayrı ayrı
+  // kopyalamıştı (inceleme bulgusu); tek kaynak burası.
+  test('5/5 kılınmış günde true döner', () => {
+    expect(besTeBesMi({ tip: 'kilindi', vakitler: [true, true, true, true, true] })).toBe(true);
+  });
+
+  test('4/5 kılınmış günde false döner (eşikten BAĞIMSIZ — harfiyen 5/5 ister)', () => {
+    expect(besTeBesMi({ tip: 'kilindi', vakitler: [true, true, true, true, false] })).toBe(false);
+  });
+
+  test('dondurulmuş/gelecek günlerde false döner', () => {
+    expect(besTeBesMi({ tip: 'dondurulmus' })).toBe(false);
+    expect(besTeBesMi({ tip: 'gelecek' })).toBe(false);
   });
 });

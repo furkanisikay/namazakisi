@@ -3,7 +3,7 @@
  *
  * SAF: hicbir React/Redux/native import yok.
  */
-import { IzgaraGunu } from './aylikIzgara';
+import { IzgaraGunu, GunDurumu } from './aylikIzgara';
 import { gunTamMi } from './gunTamMi';
 import { SUTUN_SAYISI } from './gokGeometrisi';
 
@@ -30,14 +30,19 @@ function zincirKorur(gun: IzgaraGunu, tamGunEsigi: number): boolean {
   return false; // 'gelecek'
 }
 
-/** Bir gun harfiyen 5/5 mi (esikten BAGIMSIZ) — yalnizca "ikisiTam" vurgusu
- * icin kullanilir; zincirin kurulup kurulmayacagina karismaz. */
-function besTeBesMi(gun: IzgaraGunu): boolean {
-  return (
-    gun.durum.tip === 'kilindi' &&
-    gun.durum.vakitler.length === VAKIT_SAYISI &&
-    gun.durum.vakitler.every(Boolean)
-  );
+/**
+ * Bir gun harfiyen 5/5 mi (esikten BAGIMSIZ) — burada "ikisiTam" vurgusu
+ * icin kullanilir; zincirin kurulup kurulmayacagina karismaz.
+ *
+ * PAYLASILAN: `screens/Seri` sunum katmani (`AnimasyonluYildiz.tsx`,
+ * `GokPaneli.tsx`) AYNI 5/5 kuralini ihtiyac duyuyordu ve ayri ayri kopyalanmisti
+ * (inceleme bulgusu) — tek kaynak burasi, EXPORT edilir. `GunDurumu` alir
+ * (tum `IzgaraGunu` DEGIL) — cagiran taraflarin cogu zaten `durum`'u elinde
+ * tutuyor (`gun.durum`), boylece hem `zincirBaglari` (`sol.durum`/`sag.durum`)
+ * hem sunum katmani ayni imzayi kullanabiliyor.
+ */
+export function besTeBesMi(durum: GunDurumu): boolean {
+  return durum.tip === 'kilindi' && durum.vakitler.length === VAKIT_SAYISI && durum.vakitler.every(Boolean);
 }
 
 /**
@@ -55,7 +60,7 @@ export function zincirBaglari(izgara: IzgaraGunu[], tamGunEsigi: number): Zincir
     if (zincirKorur(sol, tamGunEsigi) && zincirKorur(sag, tamGunEsigi)) {
       baglar.push({
         indeks: i,
-        ikisiTam: besTeBesMi(sol) && besTeBesMi(sag),
+        ikisiTam: besTeBesMi(sol.durum) && besTeBesMi(sag.durum),
         satirSarmasi: i % SUTUN_SAYISI === SUTUN_SAYISI - 1,
       });
     }

@@ -35,13 +35,23 @@ import { GOK_ZAMANLAMA } from './sabitler';
 
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-/** En büyük halde kenar büyüme oranı — dekoratif ayar, zamanlama sabiti DEĞİL. */
-const NABIZ_BUYUME_ORANI = 1.14;
-/** Faz 1'deki STATİK "bugün" karesiyle BİREBİR aynı taban opaklık (bkz. eski
- * `GokPaneli.tsx`'teki statik `<Rect opacity={0.4}>`) — bu değer değişirse
- * reduced-motion/animasyon-öncesi görünüm Faz 1'den SAPAR. */
+/**
+ * Büyüme/opaklık oranları — referans bağlayıcı (`@keyframes nabiz`,
+ * `docs/tasarim/2026-07-29-seri-sekmesi-takimyildizi-referans.html`):
+ * `scale(1) → scale(1.07)`, `opacity .34 → .72` (inceleme bulgusu — önceki
+ * değer 1.14 referansın İKİ KATIYDI, düzeltildi).
+ *
+ * `NABIZ_TABAN_OPAKLIK` istisna: referans 0.34 kullanıyor, burada BİLİNÇLİ
+ * olarak 0.4'te bırakıldı — Faz 1'deki STATİK "bugün" karesiyle (eski
+ * `GokPaneli.tsx`'teki statik `<Rect opacity={0.4}>`) BİREBİR aynı olmalı
+ * (global-constraints.md "Faz 1'in görsel sonucu DEĞİŞMEZ"); bu değer
+ * değişirse reduced-motion/animasyon-öncesi görünüm Faz 1'den SAPAR. Tepe
+ * değeri (0.72) referansa uyar, çünkü tepe için Faz 1'de karşılaştırılacak
+ * bir statik değer yok — referansı olduğu gibi taşımak serbest.
+ */
+const NABIZ_BUYUME_ORANI = 1.07;
 const NABIZ_TABAN_OPAKLIK = 0.4;
-const NABIZ_TEPE_OPAKLIK = 0.75;
+const NABIZ_TEPE_OPAKLIK = 0.72;
 
 export interface BugununNabziProps {
   merkezX: number;

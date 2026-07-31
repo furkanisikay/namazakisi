@@ -27,6 +27,7 @@ import Animated, {
 import { Circle, G, Line } from 'react-native-svg';
 import { GunDurumu, IzgaraGunu } from '../../../core/seri/aylikIzgara';
 import { gunTamMi } from '../../../core/seri/gunTamMi';
+import { besTeBesMi } from '../../../core/seri/zincir';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from './sabitler';
 
 const AnimatedG = Animated.createAnimatedComponent(G);
@@ -77,7 +78,9 @@ export const YildizIcerigi: React.FC<YildizIcerigiProps> = ({ durum, tamGunEsigi
   }
 
   const kilinanSayisi = durum.vakitler.filter(Boolean).length;
-  const tam = kilinanSayisi === 5;
+  // 5/5 kuralı `core/seri/zincir.ts > besTeBesMi`'de PAYLAŞILAN — burada
+  // KOPYALANMAZ (inceleme bulgusu, önceden üç yerde ayrı ayrı tanımlıydı).
+  const tam = besTeBesMi(durum);
   const hedefTuttu = gunTamMi(kilinanSayisi, tamGunEsigi);
 
   return (
@@ -208,7 +211,7 @@ export const AnimasyonluYildiz: React.FC<AnimasyonluYildizProps> = ({
 
   const baseOpacity = gun.digerAy ? 0.42 : 1;
   const kilinanSayisi = gun.durum.tip === 'kilindi' ? gun.durum.vakitler.filter(Boolean).length : 0;
-  const tam = gun.durum.tip === 'kilindi' && kilinanSayisi === 5;
+  const tam = besTeBesMi(gun.durum);
   const hedefTuttu = !tam && gun.durum.tip === 'kilindi' && gunTamMi(kilinanSayisi, tamGunEsigi);
   const sure = tam ? GOK_ZAMANLAMA.GIRIS_TAM_MS : hedefTuttu ? GOK_ZAMANLAMA.GIRIS_HEDEF_MS : GOK_ZAMANLAMA.GIRIS_SADE_MS;
 

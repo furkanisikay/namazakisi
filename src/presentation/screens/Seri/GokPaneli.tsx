@@ -74,7 +74,7 @@ import { useRenkler } from '../../../core/theme';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from './sabitler';
 import { gokYerlesimi, bagYolu, GokOlculeri, Nokta, SUTUN_SAYISI } from '../../../core/seri/gokGeometrisi';
 import { IzgaraGunu } from '../../../core/seri/aylikIzgara';
-import { ZincirBagi } from '../../../core/seri/zincir';
+import { ZincirBagi, besTeBesMi } from '../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../core/seri/gokErisimEtiketi';
 import { acilisCizelgesi } from '../../../core/seri/acilisCizelgesi';
 import { AnimasyonluBag } from './AnimasyonluBag';
@@ -406,9 +406,8 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
             kaydırılmıştır (panel `overflow: hidden` olduğu için taşma
             sorunu yok). */}
         {izgara.map((gun, i) => {
-          const kilinanSayisi = gun.durum.tip === 'kilindi' ? gun.durum.vakitler.filter(Boolean).length : 0;
-          const tam = gun.durum.tip === 'kilindi' && kilinanSayisi === 5;
-          if (!tam) {
+          // 5/5 kuralı `core/seri/zincir.ts > besTeBesMi`'de PAYLAŞILAN.
+          if (!besTeBesMi(gun.durum)) {
             return null;
           }
           const merkez = yerlesim.merkez(i);

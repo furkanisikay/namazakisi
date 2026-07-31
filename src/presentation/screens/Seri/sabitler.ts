@@ -81,8 +81,9 @@ export const GOK_ZAMANLAMA = {
   KOPUK_BOSLUK_MS: 32,
 
   /** 5/5 günlerin sürekli parıltısının taban süresi (ms); her yıldız buna
-   * `PARILTI_SURE_FAZ_ARALIGI_MS` içinde rastgele bir pay ekler (faz farkı —
-   * senkron yanıp sönme yapay durur). Aralık: 4600–7200 ms. */
+   * `PARILTI_SURE_FAZ_ARALIGI_MS` içinde DETERMİNİSTİK (yıldız indeksinden
+   * türetilen, `Math.random` DEĞİL) bir pay ekler (faz farkı — senkron
+   * yanıp sönme yapay durur). Aralık: 4600–7200 ms. */
   PARILTI_SURE_TABAN_MS: 4600,
   /** Parıltı süresi faz-farkı aralığı (ms) — bkz. yukarı. */
   PARILTI_SURE_FAZ_ARALIGI_MS: 2600,
