@@ -20,23 +20,33 @@ altında çalışıyor, gök paneli ve tesbih doğru çiziliyor.
   nihai hâliyle birebir aynı görünmelidir. Animasyon yalnız oraya *nasıl*
   varıldığını değiştirir.
 
-### Zamanlama sabitleri — referanstan, birebir
+### Zamanlama sabitleri — ÇOĞU ZATEN VAR, ikiz EKLEME
 
-| Sabit | Değer | Anlam |
+`sabitler.ts > GOK_ZAMANLAMA` şu anda **on bir sabit** içeriyor. Aşağıdaki
+adlar **dosyadaki gerçek adlardır** — plan taslağındaki kısa adlar (`SEG_NORMAL`,
+`PARILTI_MIN`, `NABIZ`…) YANLIŞTI, onları kullanma, ikiz sabit üretme:
+
+| Mevcut sabit | Değer | Anlam |
 |---|---|---|
-| `CIZGI_ONCE` | 30 ms | yıldız yandıktan sonra çizginin başlaması |
-| `SEG_NORMAL` | 85 ms | normal bağın çizilme süresi |
-| `SEG_VURGU` | 130 ms | 5/5 ↔ 5/5 bağı (daha ağır çizilir) |
-| `KOPUK_BOSLUK` | 32 ms | zincir kopuk — kısa es |
-| `GIRIS_TAM` | 380 ms | 5/5 yıldız girişi (taşmalı + parlamalı) |
-| `GIRIS_HEDEF` | 300 ms | hedef-tuttu girişi (taşma/parlama YOK) |
-| `GIRIS_SADE` | 240 ms | diğerleri (yalnız soluklaşma) |
-| `PARILTI_MIN`/`MAX` | 4600 / 7200 ms | 5/5 parıltı süresi aralığı |
-| `PARILTI_BASLANGIC` | +700 ms | açılış dizisi bittikten sonra |
-| `NABIZ` | 3200 ms | bugünün karesi |
+| `CIZGI_ONCE_MS` | 30 | yıldız yandıktan sonra çizginin başlaması |
+| `SEG_NORMAL_MS` | 85 | normal bağın çizilme süresi |
+| `SEG_VURGU_MS` | 130 | 5/5 ↔ 5/5 bağı |
+| `KOPUK_BOSLUK_MS` | 32 | zincir kopuk — kısa es |
+| `PARILTI_SURE_TABAN_MS` | 4600 | parıltı taban süresi |
+| `PARILTI_SURE_FAZ_ARALIGI_MS` | 2600 | süre faz-farkı aralığı |
+| `PARILTI_GECIKME_SONRASI_MS` | 700 | açılış bittikten sonra parıltı gecikmesi |
+| `PARILTI_GECIKME_FAZ_ARALIGI_MS` | 1800 | gecikme faz-farkı aralığı |
+| `PARILTI_FAZ_CARPANI_SURE` | 617 | faz üretimi (asal) |
+| `PARILTI_FAZ_CARPANI_GECIKME` | 431 | faz üretimi (asal) |
+| `NABIZ_SURE_MS` | 3200 | bugünün karesi |
 
-İlk dördü `GOK_ZAMANLAMA`'da **zaten var** (Faz 1, Task 4). Giriş süreleri ve
-parıltı/nabız değerleri bu fazda eklenir.
+**Bu fazda EKLENECEK tek grup — giriş süreleri** (referans HTML satır 119-121):
+
+| Yeni sabit | Değer |
+|---|---|
+| `GIRIS_TAM_MS` | 380 |
+| `GIRIS_HEDEF_MS` | 300 |
+| `GIRIS_SADE_MS` | 240 |
 
 ---
 
@@ -108,6 +118,18 @@ zincir 3,21 sn'de tamamlanıyor.
 - **`strokeDasharray` STATİK prop olarak verilir** (yol uzunluğu), yalnız
   `strokeDashoffset` animasyonlanır. Bilinen tuzak: ikisini birden animasyonlamak.
 - Her bağ kendi `bagZamani`'ndan gecikme/süre alır → `withDelay(gecikme, withTiming(0, {duration: sure}))`.
+- **`strokeDasharray`'e küçük bir PAY ver (×1.05).** `yolUzunlugu` kübik yolu 16
+  adımlı çokgenle **alttan** tahmin eder (`gokGeometrisi.ts`, hata <%1). Dasharray
+  tam bu değere eşitlenirse satır-sarması yaylarının ucunda **çizilmemiş minik bir
+  kuyruk** kalır. Pay sıfır maliyetli sigortadır.
+- Bilgi (sorun değil): `extractStroke.ts` offset 0'ı `null`'a çevirir — görsel
+  eşdeğer.
+
+**İLK İŞ — tek bağla cihaz smoke testi.** 20 bağı kurup sonra denemeyin: önce
+TEK bir bağı animasyonlayıp emülatörde çizildiğini görün. `useAnimatedProps` +
+`strokeDashoffset` + react-native-svg üçlüsü bu projede hiç denenmedi; mekanizma
+kodda mevcut (`Shape.tsx`'te `getNativeScrollRef` hack'i + `setNativeProps`,
+reanimated `fabricUtils` bunu kullanıyor) ama Fabric'te uçtan uca **doğrulanmadı**.
 
 ### 2b. Yıldız girişi — kademeli vurgu
 
@@ -123,9 +145,42 @@ Her yıldız `yildizGecikme[i]` ile başlar; **durumuna göre farklı** giriş:
 "parlayarak girme" hissi **scale taşması + hâle opaklığının aşırı-atışı** ile
 verilir (hâle katmanı girişte kısa süre daha opak olur, sonra oturur).
 
-Ölçek animasyonu için yıldız grubu bir `<G>` içinde; Reanimated ile
-`useAnimatedProps` üzerinden `transform` verilir. **`transform-origin` yok** —
-yıldız zaten kendi merkezinde çizildiği için `scale` merkeze göre çalışır.
+#### Ölçek animasyonu — `<G transform>` ÇALIŞMAZ, iki güvenli yol var
+
+Taslakta "`<G>`'ye `useAnimatedProps` ile `transform`" yazıyordu; **bu büyük
+olasılıkla çalışmaz** (incelemede `node_modules`'tan doğrulandı):
+`RNSVGGroup`'un native dönüşüm prop'u **`matrix: Float[]`**'tir, `transform`
+değil. JS'teki `transform` yalnız **render sırasında** `extractTransform` ile
+matrise çevrilir (`G.tsx`); `useAnimatedProps`'un UI-thread yazımı bu JS
+dönüşümünden **geçmez**. Reanimated'in kendi SVG CSS konfiginde de transform
+satırları `// TODO - add preprocessor` durumunda.
+
+İki seçenek — uygulayıcı birini seçer ve gerekçesini rapora yazar:
+
+**(a) Matris animasyonu.** Worklet içinde 2D matrisi elle kur ve **`matrix`**
+prop'unu animasyonla: ölçek `s` için `[s, 0, 0, s, 0, 0]`. Merkezin kayMAMASI
+için bunu **iç içe ikinci bir `<G>`**'de yap — dıştaki `<G>` mevcut
+`translate(merkezX merkezY)`'yi tutar, içteki yalnız ölçeği uygular. Böylece
+ölçek yıldızın kendi merkezine göre çalışır.
+
+**(b) Ölçekten vazgeç.** 5/5'in "parlayarak girme" hissini yalnız
+**opacity + hâle opaklığının aşırı-atışı** ile ver (hâle girişte kısa süre daha
+opak olur, sonra oturur). Daha az gösterişli ama sıfır riskli.
+
+Hangisi seçilirse seçilsin **kademe farkı korunmalı**: 5/5 belirgin daha
+vurgulu, hedef-tuttu sade, diğerleri yalnız soluklaşma.
+
+#### Hook döngüde çağrılamaz — YENİDEN YAPILANDIRMA gerekiyor
+
+Mevcut `GokPaneli` zincirleri ve yıldızları **aynı bileşenin gövdesinde `map`
+ile** çiziyor. `useAnimatedProps`/`useSharedValue` **döngü içinde çağrılamaz** →
+her bağ ve her yıldız **kendi child bileşenine** çıkarılmalı
+(ör. `AnimasyonluBag`, `AnimasyonluYildiz`).
+
+**Bu, Task 2'nin asıl işi ve "Faz 1 ile birebir aynı" kısıtının ana riskidir**:
+JSX taşınırken katman sırası veya prop kayması görsel sapma üretebilir. Taşımadan
+önce ve sonra `GokPaneli.test.tsx`'in geçtiğinden emin ol; katman sırasını
+(zemin → bağlar → yıldızlar → gün numaraları) **koru**.
 
 ### 2c. Bir kez oynatma — `useFocusEffect` DEĞİL
 
@@ -136,6 +191,11 @@ yıldız zaten kendi merkezinde çizildiği için `scale` merkeze göre çalış
 Kural: **mount'ta bir kez oynat, mount süresince veri değişiminde TEKRAR
 OYNATMA** (`oynatildi` ref). Aksi halde kullanıcı bir günü işaretlediğinde tüm ay
 yeniden örülür — sinir bozucu ve yanıltıcı.
+
+**Kritik ek kural:** `oynatildi` true iken **sonradan mount olan öğe NİHAİ
+durumda doğmalı** (opacity 1, dashoffset 0). Mount sırasında `tamGunEsigi`
+değişirse (slice geç hidrasyonu) yeni bağlar/yıldızlar doğar; başlangıç değeri
+"animasyon başı" olan bir shared value ile doğarlarsa **görünmez kalırlar**.
 
 ### Test
 - Zincir yollarına `strokeDasharray` **statik** verilmiş, `strokeDashoffset`
@@ -157,18 +217,38 @@ Naif çözüm (yıldızın Svg prop'unu sonsuz animasyonlamak) 19-20 sonsuz
 animasyonun her karede ~875-995 düğümlük tuvali geçersiz kılmasına yol açar —
 cihazda ölçüldü, düşük-uç Android'de jank/pil riski.
 
-**Doğrusu:** parıltı, yıldızın **üstüne konan küçük bir `Animated.View`'in
-`opacity`'si** ile yapılır (yıldız merkezinde, hâle rengiyle dolu, yuvarlak,
-`pointerEvents="none"`). Kompozitör katmanında animasyonlanır, **Svg ağacı hiç
-yeniden çizilmez**.
+Gerekçe mimari bir gerçek, spekülasyon değil (incelemede doğrulandı):
+`VirtualView.java`'da herhangi bir sanal düğümün `invalidate()`'i
+`clearParentCache()` zinciriyle `SvgView`'a taşınır ve `SvgView.onDraw` **tüm
+ağacı** yeniden çizer.
+
+**Doğrusu:** parıltı, yıldızın üstüne konan, `opacity`'si animasyonlanan bir
+**`Animated.View` sarmalayıcı** ile yapılır — ama içi **düz renkli daire
+OLMAZ**.
+
+⚠️ **Faz 1'in kendi dersi:** "düz düşük-opaklık daire **sert kenarlı** görünür;
+CSS blur'ün yumuşaklığı böyle taşınmaz" (AGENTS.md'de ve `GokPaneli.tsx` başlık
+yorumunda kayıtlı — hâle bu yüzden `RadialGradient` ile kuruldu). Düz bir
+`Animated.View` dairesi tam da reddedilen artefaktı geri getirir.
+
+Doğru yapı: `Animated.View` (opacity animasyonlu, `pointerEvents="none"`)
+**içinde statik mini bir `<Svg>`** — tek `RadialGradient` dolgulu daire.
+Animasyon sarmalayıcının alpha'sında kalır → kompozitör katmanı, ana Svg ağacı
+**yeniden çizilmez**, kenar da yumuşak kalır.
 
 - `withRepeat(withTiming(...), -1, true)` + `withDelay`.
-- **FAZ FARKI ZORUNLU:** her yıldız farklı süre (`PARILTI_MIN`–`PARILTI_MAX`
-  arası, indeksten türetilmiş) ve farklı gecikme. Senkron yanıp sönme **yapay**
-  durur; gökyüzü dağınık olmalı.
-- Başlangıç: `cizelge.toplam + PARILTI_BASLANGIC`.
-- Katman konumlandırma: gök paneli `position: relative`, parıltı katmanları
-  `position: absolute` + hesaplanmış merkez koordinatları (`gokYerlesimi`).
+- **FAZ FARKI ZORUNLU:** süre `PARILTI_SURE_TABAN_MS + (i*PARILTI_FAZ_CARPANI_SURE)
+  % PARILTI_SURE_FAZ_ARALIGI_MS`, gecikme benzer şekilde
+  `PARILTI_GECIKME_FAZ_ARALIGI_MS` ve `PARILTI_FAZ_CARPANI_GECIKME` ile.
+  Sabitler **zaten var**, formül referansla birebir. Senkron yanıp sönme **yapay**
+  durur; `Math.random` KULLANMA (deterministik olmalı).
+- Başlangıç: `cizelge.toplam + PARILTI_GECIKME_SONRASI_MS`.
+- **Konumlandırma — `HEADER_YUKSEKLIK` ofsetini UNUTMA.** Izgara katmanı
+  `<G transform="translate(0 HEADER_YUKSEKLIK)">` içinde çiziliyor, ama
+  `gokYerlesimi().merkez(i)` **header'sız** koordinat verir. Overlay'in `top`
+  hesabına `HEADER_YUKSEKLIK` eklenmezse tüm parıltılar 46 px yukarı kayar.
+  Panel `overflow: hidden` — Svg de aynı sınırda kırptığı için görsel fark
+  üretmez, sorun değil.
 
 ### 3b. Bugünün nabzı
 
@@ -182,12 +262,20 @@ gerekçesini rapora yazar.
 `AccessibilityInfo.isReduceMotionEnabled()` **true** ise: **hiçbir animasyon
 kurulmaz**, ekran doğrudan nihai hâlinde görünür. Eksik değil, **hareketsiz**.
 
-- Değer **async** gelir → AGENTS.md'nin "asenkron hook'lu sayfa testinde `act`
-  uyarısı" tuzağı geçerli. Mevcut örnek: `AyarCapasi.test.tsx`
-  (`jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(...)`).
-- Değer gelene kadar animasyon **başlatılmaz** (yanlış başlayıp durdurmaktansa
-  bekle); gelince tek seferde karar verilir.
-- Unmount güvenliği: geç çözülen promise unmount sonrası state yazmasın.
+**`AccessibilityInfo.isReduceMotionEnabled()` KULLANMA — senkron hook var.**
+O API **async**tir ve giriş animasyonu opacity 0'dan başladığı için iki kötü
+seçenek doğurur: ya yıldızlar 0 opaklıkla doğup değer gelene dek **boş gök**
+görünür, ya nihai hâlde doğup değer gelince 0'a çekilerek **flaş** yapar.
+
+Reanimated'in **senkron** `useReducedMotion()` hook'u kurulu sürümde mevcut
+(`react-native-reanimated/src/hook/useReducedMotion.ts`) — karar **ilk render'da**
+verilir, ikilem kökten kalkar.
+
+⚠️ Hook `react-native-reanimated/mock` içinde **YOK** (`// useReducedMotion: ADD
+ME IF NEEDED`) — per-file mock'a eklenmeli (aşağıdaki test reçetesi).
+
+Taban durum **daima nihai durumdur** (referansın kendi deseni): reduced motion
+açıkken hiçbir animasyon kurulmaz, ekran doğrudan son hâlinde görünür.
 
 ### Test
 - Reduced motion **açıkken**: `withRepeat`/`withTiming` **çağrılmaz**, ekran
@@ -205,8 +293,28 @@ kurulmaz**, ekran doğrudan nihai hâlinde görünür. Eksik değil, **hareketsi
   **`jest.mock` fabrikasında `React.createElement` ÇAĞIRMA** — nativewind'in
   `jsxImportSource` transformu `_ReactNativeCSSInterop` kapsam-dışı değişken
   hatası verir (AGENTS.md'de kayıtlı).
-- **`react-native-reanimated`**: `require('react-native-reanimated/mock')`
-  (mevcut reçete: `KibleSayfasi.test.tsx:41-45`).
+- **`react-native-reanimated`**: taban `require('react-native-reanimated/mock')`
+  (mevcut reçete: `KibleSayfasi.test.tsx:41-45`). AMA iki ekleme gerekir:
+
+  1. **`withRepeat` çağrı sayısı ölçülemez** — mock'takiler `jest.fn` değil, düz
+     fonksiyon (`withRepeat: ID`). "Reduced motion açıkken `withRepeat`
+     çağrılmadı" gibi bir iddia için sarmalamak şart:
+     ```js
+     jest.mock('react-native-reanimated', () => {
+       const m = require('react-native-reanimated/mock');
+       return { ...m, withRepeat: jest.fn(m.withRepeat),
+                useReducedMotion: jest.fn(() => false) };
+     });
+     ```
+     (Fabrikada `React.createElement` YOK → nativewind kısıtına takılmaz.)
+  2. **`useReducedMotion` mock'ta yok**, yukarıdaki gibi eklenmeli.
+
+- **Animasyonlu prop'ları testte nasıl göreceksin:** mock'ta `useAnimatedProps`
+  callback'i anında çağrılıp **düz nesne** döndürür ve `createAnimatedComponent`
+  kimliktir. Yani değerler string-mock elemanın üstünde `animatedProps` prop'u
+  olarak görünür. "dasharray statik + dashoffset animasyonlu" iddiası şöyle
+  doğrulanır: `props.strokeDasharray` (statik) **var**, `props.animatedProps
+  .strokeDashoffset` (animasyonlu) **var**.
 - Sahte zamanlayıcı **KULLANMA** (tam-sayfa render, CI'da asılır).
 - Mock bileşenlere **çocuk render ettirme**.
 
