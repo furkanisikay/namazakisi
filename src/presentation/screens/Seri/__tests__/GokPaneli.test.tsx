@@ -35,7 +35,9 @@ jest.mock('../../../../core/theme', () => ({
 // ekleme): taban `.../mock` NOOP'tur; `withRepeat`/`withTiming`/`withDelay`
 // çağrı ARGÜMANLARINI (süre/gecikme) ölçmek için `jest.fn(...)` ile sarılır
 // (düz fonksiyon oldukları için varsayılan mock'ta `toHaveBeenCalledWith`
-// çalışmaz), `useReducedMotion` mock'ta hiç YOK, elle eklenir.
+// çalışmaz), `useReducedMotion` mock'ta hiç YOK, elle eklenir. Task 3:
+// `withRepeat` de aynı şekilde sarıldı — parıltı/nabız sonsuz döngüsünü
+// kurar, "reduced motion açıkken HİÇ çağrılmadı" iddiası bunsuz ölçülemez.
 jest.mock('react-native-reanimated', () => {
   const m = require('react-native-reanimated/mock');
   return {
@@ -51,10 +53,16 @@ import { GokPaneli } from '../GokPaneli';
 import { aylikIzgaraOlustur } from '../../../../core/seri/aylikIzgara';
 import { zincirBaglari } from '../../../../core/seri/zincir';
 import { gokErisimEtiketi } from '../../../../core/seri/gokErisimEtiketi';
+import { acilisCizelgesi } from '../../../../core/seri/acilisCizelgesi';
 import { GOK_TONLARI, GOK_ZAMANLAMA } from '../sabitler';
 
-const { G, Path, Text: SvgTextMock } = require('react-native-svg');
-const { withTiming: withTimingMock, withDelay: withDelayMock, useReducedMotion: useReducedMotionMock } = require('react-native-reanimated');
+const { G, Path, Rect, Text: SvgTextMock } = require('react-native-svg');
+const {
+  withTiming: withTimingMock,
+  withDelay: withDelayMock,
+  withRepeat: withRepeatMock,
+  useReducedMotion: useReducedMotionMock,
+} = require('react-native-reanimated');
 
 const TAM_GUN_ESIGI = 5;
 
@@ -100,6 +108,7 @@ describe('GokPaneli', () => {
   beforeEach(() => {
     withTimingMock.mockClear();
     withDelayMock.mockClear();
+    withRepeatMock.mockClear();
     useReducedMotionMock.mockReturnValue(false);
   });
 
@@ -401,5 +410,121 @@ describe('GokPaneli', () => {
     // Sonradan mount olan bağ için withTiming/withDelay HİÇ çağrılmadı (erken
     // dönüş — oynatilacakMi=false).
     expect(withTimingMock.mock.calls.length).toBe(bagCagriSayisiOncesi);
+  });
+
+  test('SÜREKLİ HAREKET (3a — parıltı): yalnız 5/5 (tam) günlerde kurulur, süreler yıldızdan yıldıza FARKLIDIR (faz farkı nöbetçisi)', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+    // ornekIzgaraKur -> 2026-07-01 ve 2026-07-02 iki AYRI 5/5 gün içerir.
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    const tamGunSayisi = izgara.filter(
+      (g) => g.durum.tip === 'kilindi' && g.durum.vakitler.filter(Boolean).length === 5
+    ).length;
+    expect(tamGunSayisi).toBe(2);
+
+    // Parıltı yalnız 5/5 günlerde: overlay sayısı tam gün sayısıyla birebir.
+    // `Animated.View` mock'ta GERÇEK RN `View`'dur (forwardRef) — bu yüzden
+    // `testID` hem composite (forwardRef) hem HOST düğümde görünür; yalnız
+    // HOST eşleşmeleri (`typeof type === 'string'`) sayılır, aksi halde
+    // sayım ikiye katlanır.
+    const pariltiKatmanlari = tree.root
+      .findAllByProps({ testID: 'seri-parilti' })
+      .filter((d) => typeof d.type === 'string');
+    expect(pariltiKatmanlari).toHaveLength(tamGunSayisi);
+
+    // withRepeat gerçekten kuruldu (sonsuz döngü).
+    expect(withRepeatMock).toHaveBeenCalled();
+
+    // Faz farkı nöbetçisi: parıltıya özgü süreler (>= PARILTI_SURE_TABAN_MS;
+    // giriş süreleri en fazla GIRIS_TAM_MS=380, nabız NABIZ_SURE_MS=3200 —
+    // ikisi de bu eşiğin altında, filtre yalnız parıltıyı yakalar) YILDIZDAN
+    // YILDIZA FARKLI olmalı — hepsi aynıysa senkron yanıp söner (yapay durur).
+    const pariltiSureleri = withTimingMock.mock.calls
+      .map(([, cfg]: [unknown, { duration?: number }]) => cfg?.duration)
+      .filter((d: number | undefined): d is number => typeof d === 'number' && d >= GOK_ZAMANLAMA.PARILTI_SURE_TABAN_MS);
+    expect(pariltiSureleri).toHaveLength(tamGunSayisi);
+    expect(new Set(pariltiSureleri).size).toBe(tamGunSayisi); // hepsi BİRBİRİNDEN farklı
+
+    // Faz farkı gecikmede de var: parıltı gecikmesi her zaman cizelge.toplam'dan
+    // BÜYÜKTÜR (açılış zinciri bitmeden başlamaz — GokPaneli'nin kendi
+    // hesapladığıyla AYNI algoritma burada da çalıştırılır, bkz. acilisCizelgesi
+    // import'u) — bu eşikle giriş gecikmelerinden ayrıştırılır.
+    const cizelge = acilisCizelgesi(izgara, zincirler, {
+      cizgiOnce: GOK_ZAMANLAMA.CIZGI_ONCE_MS,
+      segNormal: GOK_ZAMANLAMA.SEG_NORMAL_MS,
+      segVurgu: GOK_ZAMANLAMA.SEG_VURGU_MS,
+      kopukBosluk: GOK_ZAMANLAMA.KOPUK_BOSLUK_MS,
+    });
+    const pariltiGecikmeleri = withDelayMock.mock.calls
+      .map(([gecikme]: [number]) => gecikme)
+      .filter((g: number) => g > cizelge.toplam);
+    expect(pariltiGecikmeleri).toHaveLength(tamGunSayisi);
+    expect(new Set(pariltiGecikmeleri).size).toBe(tamGunSayisi);
+  });
+
+  test('SÜREKLİ HAREKET (3b — nabız): yalnız bugünün hücresinde kurulur', () => {
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    // BugununNabzi tek bir AnimatedRect'tir — `animatedProps` prop'u taşıyan
+    // TEK Rect bu olmalı (zemin gradyan dikdörtgenlerinde animatedProps yok).
+    const animatedRectler = tree.root
+      .findAllByType(Rect)
+      .filter((d) => d.props.animatedProps !== undefined);
+    expect(animatedRectler).toHaveLength(1);
+
+    // withRepeat NABIZ_SURE_MS ile çağrıldı.
+    const nabizSureleri = withTimingMock.mock.calls
+      .map(([, cfg]: [unknown, { duration?: number }]) => cfg?.duration)
+      .filter((d: number | undefined) => d === GOK_ZAMANLAMA.NABIZ_SURE_MS);
+    expect(nabizSureleri.length).toBeGreaterThan(0);
+  });
+
+  test('SÜREKLİ HAREKET (3c — azaltılmış hareket): parıltı/nabız HİÇ kurulmaz — parıltı hiç RENDER edilmez, nabız Faz 1 statik değerleriyle doğar', () => {
+    useReducedMotionMock.mockReturnValue(true);
+    const { izgara, zincirler } = ornekIzgaraKur();
+    const tree = render(
+      <GokPaneli
+        izgara={izgara}
+        zincirler={zincirler}
+        ayAdi="Temmuz 2026"
+        bugun="2026-07-10"
+        tamGunEsigi={TAM_GUN_ESIGI}
+        mevcutSeri={3}
+      />
+    );
+    genislikSimuleEt(tree, 350);
+
+    expect(withRepeatMock).not.toHaveBeenCalled();
+    expect(withTimingMock).not.toHaveBeenCalled();
+    expect(withDelayMock).not.toHaveBeenCalled();
+
+    // Parıltı — Faz 1'de bu katman hiç yoktu, azaltılmış hareket açıkken de
+    // HİÇ render edilmemeli (global-constraints.md "Faz 1 nihai görünüm DEĞİŞMEZ").
+    expect(tree.root.findAllByProps({ testID: 'seri-parilti' })).toHaveLength(0);
+
+    // Nabız — Faz 1'deki STATİK "bugün" karesiyle BİREBİR aynı değerlerle doğar.
+    const bugunKaresi = tree.root.findAllByType(Rect).find((d) => d.props.animatedProps !== undefined)!;
+    expect(bugunKaresi.props.animatedProps.opacity).toBe(0.4);
   });
 });

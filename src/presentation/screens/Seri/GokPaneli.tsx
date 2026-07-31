@@ -1,13 +1,22 @@
 /**
  * GokPaneli — ayın takımyıldızı.
  *
- * Faz 2: açılış animasyonu eklendi — zincir bağları sırayla örülür
+ * Faz 2 / Task 2: açılış animasyonu eklendi — zincir bağları sırayla örülür
  * (`AnimasyonluBag`, `strokeDashoffset`), yıldızlar kademeli girer
  * (`AnimasyonluYildiz`, opacity). Zamanlama `acilisCizelgesi` (SAF, core) ile
  * hesaplanır; `GokPaneli` yalnız `oynatildiRef`'i (bir kez oynatma sentinel'i,
  * spec 2c) yönetir ve çocuklara geçirir. `useAnimatedProps`/`useSharedValue`
  * `.map()` içinde çağrılamadığı için (React Hooks kuralı) her bağ/yıldız
  * kendi child bileşenine çıkarıldı — bkz. o dosyaların doc-block'ları.
+ *
+ * Faz 2 / Task 3: SÜREKLİ hareket eklendi. (1) 5/5 günlerin parıltısı
+ * (`Parilti`) — Svg'nin DIŞINDA, ayrı bir Animated.View overlay katmanı
+ * (bkz. `Parilti.tsx` doc-block, mimari gerekçe). (2) Bugünün nabzı
+ * (`BugununNabzi`) — TEK öğe olduğu için Svg PROP animasyonu, Faz 1'deki
+ * statik "bugün" karesinin YERİNE geçti. (3) Azaltılmış hareket
+ * (`useReducedMotion`, senkron) her üç animasyon türünde de (giriş + parıltı
+ * + nabız) aynı kuralla uygulanır: hiçbiri kurulmaz, ekran doğrudan Faz 1'in
+ * nihai görünümünde render olur.
  *
  * Ayın tamamı TEK bir `<Svg>` içinde çizilir (35 ayrı bileşen DEĞİL) — hücre
  * merkezleri `gokYerlesimi` ile panel genişliğinden HESAPLANIR, ölçülmez.
@@ -70,6 +79,8 @@ import { gokErisimEtiketi } from '../../../core/seri/gokErisimEtiketi';
 import { acilisCizelgesi } from '../../../core/seri/acilisCizelgesi';
 import { AnimasyonluBag } from './AnimasyonluBag';
 import { AnimasyonluYildiz } from './AnimasyonluYildiz';
+import { Parilti } from './Parilti';
+import { BugununNabzi } from './BugununNabzi';
 
 export interface GokPaneliProps {
   /** `aylikIzgaraOlustur` çıktısı — 28/35/42 hücre. */
@@ -118,6 +129,9 @@ const BOSLUK_NORMAL_ORANI = 0.24;
 // Bugünün karesi.
 const BUGUN_CERCEVE_INSET_ORANI = 0.06;
 const BUGUN_CERCEVE_KOSE_ORANI = 0.2;
+
+// 5/5 parıltı overlay'inin çapı, hücre genişliğine oranla (Parilti.tsx).
+const PARILTI_CAP_ORANI = 1.3;
 
 // Gün numarası.
 const GUN_NUMARASI_FONT_ORANI = 0.18;
@@ -217,6 +231,7 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
       }
     >
       {panelGenislik > 0 && (
+        <>
         <Svg width={panelGenislik} height={govdeYukseklik}>
           <Defs>
             {/* Gök zemini — CSS radial-gradient'in RN karşılığı (spec §3.3). */}
@@ -312,16 +327,12 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
               return (
                 <React.Fragment key={gun.tarih}>
                   {gun.tarih === bugun && (
-                    <Rect
-                      x={merkez.x - bugunKenar / 2}
-                      y={merkez.y - bugunKenar / 2}
-                      width={bugunKenar}
-                      height={bugunKenar}
-                      rx={bugunKenar * BUGUN_CERCEVE_KOSE_ORANI}
-                      fill="none"
-                      stroke={renkler.birincil}
-                      strokeWidth={1.4}
-                      opacity={0.4}
+                    <BugununNabzi
+                      merkezX={merkez.x}
+                      merkezY={merkez.y}
+                      kenar={bugunKenar}
+                      koseOrani={BUGUN_CERCEVE_KOSE_ORANI}
+                      renk={renkler.birincil}
                     />
                   )}
                   <AnimasyonluYildiz
@@ -387,6 +398,34 @@ export const GokPaneli: React.FC<GokPaneliProps> = ({
             </SvgText>
           ))}
         </Svg>
+
+        {/* 5/5 parıltısı — Svg'nin DIŞINDA, ayrı bir overlay katmanı (bkz.
+            `Parilti.tsx` doc-block, mimari gerekçe). `ust` hesabına
+            `HEADER_YUKSEKLIK` eklenir — `yerlesim.merkez(i)` header'sız
+            koordinat verir, ızgara katmanı Svg içinde o kadar aşağı
+            kaydırılmıştır (panel `overflow: hidden` olduğu için taşma
+            sorunu yok). */}
+        {izgara.map((gun, i) => {
+          const kilinanSayisi = gun.durum.tip === 'kilindi' ? gun.durum.vakitler.filter(Boolean).length : 0;
+          const tam = gun.durum.tip === 'kilindi' && kilinanSayisi === 5;
+          if (!tam) {
+            return null;
+          }
+          const merkez = yerlesim.merkez(i);
+          const pariltiBoyut = yerlesim.hucreGenislik * PARILTI_CAP_ORANI;
+          return (
+            <Parilti
+              key={`parilti-${gun.tarih}`}
+              sol={merkez.x - pariltiBoyut / 2}
+              ust={merkez.y + HEADER_YUKSEKLIK - pariltiBoyut / 2}
+              boyut={pariltiBoyut}
+              renk={renkler.birincil}
+              indeks={i}
+              cizelgeToplam={cizelge.toplam}
+            />
+          );
+        })}
+        </>
       )}
     </View>
   );
