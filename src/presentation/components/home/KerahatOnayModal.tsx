@@ -109,6 +109,8 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                             style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                             onPress={onVazgec}
                             activeOpacity={0.7}
+                            accessibilityRole="button"
+                            accessibilityLabel="Vazgeç"
                         >
                             <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
                                 Vazgeç
@@ -120,6 +122,8 @@ export const KerahatOnayModal: React.FC<KerahatOnayModalProps> = ({
                             style={{ backgroundColor: renkler.birincil }}
                             onPress={onOnayla}
                             activeOpacity={0.85}
+                            accessibilityRole="button"
+                            accessibilityLabel="Yine de İşaretle"
                         >
                             <FontAwesome5 name="check" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
