@@ -14,7 +14,7 @@ import {
   Easing,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRenkler } from '../../core/theme';
+import { useTema, useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -33,6 +33,7 @@ import { store } from '../store/store';
  * Ramazan Ayarlari Sayfasi
  */
 export const RamazanAyarlariSayfasi: React.FC<any> = () => {
+  const { koyuMu } = useTema();
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
@@ -296,12 +297,12 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
         >
           <View
             className="w-8 h-8 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: '#FF980015' }}
+            style={{ backgroundColor: koyuMu ? 'rgba(255, 202, 40, 0.15)' : 'rgba(255, 193, 7, 0.15)' }}
           >
             <FontAwesome5
               name="exclamation-triangle"
               size={14}
-              color="#FF9800"
+              color={renkler.durum.uyari}
             />
           </View>
           <Text

@@ -125,16 +125,20 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
 
                     <View style={styles.butonlar}>
                         <TouchableOpacity
-                            style={[styles.buton, styles.iptalButon]}
+                            style={[styles.buton, { backgroundColor: renkler.sinir }]}
                             onPress={onKapat}
+                            accessibilityRole="button"
+                            accessibilityLabel="İptal"
                         >
-                            <Text style={[styles.butonMetin, { color: '#666' }]}>İptal</Text>
+                            <Text style={[styles.butonMetin, { color: renkler.metin }]}>İptal</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[styles.buton, { backgroundColor: '#FF4081' }]}
+                            style={[styles.buton, { backgroundColor: renkler.birincil }]}
                             onPress={() => onBaslat(baslangicTarihi, bitisTarihi)}
+                            accessibilityRole="button"
+                            accessibilityLabel="Modu Başlat"
                         >
-                            <Text style={styles.butonMetin}>Modu Başlat</Text>
+                            <Text style={[styles.butonMetin, { color: renkler.birincilMetin }]}>Modu Başlat</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -229,12 +233,8 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
     },
-    iptalButon: {
-        backgroundColor: '#f5f5f5',
-    },
     butonMetin: {
         fontWeight: 'bold',
         fontSize: BOYUTLAR.FONT_ORTA,
-        color: '#fff',
     },
 });
