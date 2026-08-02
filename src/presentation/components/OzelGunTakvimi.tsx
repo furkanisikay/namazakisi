@@ -69,7 +69,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                     onPress={onKapat}
                 />
                 <View style={[styles.kart, { backgroundColor: renkler.arkaplan }]}>
-                    <View style={styles.suruklemeBar} />
+                    <View style={[styles.suruklemeBar, { backgroundColor: renkler.sinir }]} />
 
                     <Text style={[styles.baslik, { color: renkler.metin }]}>
                         Özel Gün Başlat
@@ -125,16 +125,18 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
 
                     <View style={styles.butonlar}>
                         <TouchableOpacity
-                            style={[styles.buton, styles.iptalButon]}
+                            style={[styles.buton, styles.iptalButon, { backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }]}
                             onPress={onKapat}
+                            accessibilityRole="button"
                         >
-                            <Text style={[styles.butonMetin, { color: '#666' }]}>İptal</Text>
+                            <Text style={[styles.butonMetin, { color: renkler.metinIkincil }]}>İptal</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[styles.buton, { backgroundColor: '#FF4081' }]}
+                            style={[styles.buton, { backgroundColor: renkler.birincil }]}
                             onPress={() => onBaslat(baslangicTarihi, bitisTarihi)}
+                            accessibilityRole="button"
                         >
-                            <Text style={styles.butonMetin}>Modu Başlat</Text>
+                            <Text style={[styles.butonMetin, { color: renkler.birincilMetin }]}>Modu Başlat</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -166,7 +168,6 @@ const styles = StyleSheet.create({
     suruklemeBar: {
         width: 40,
         height: 5,
-        backgroundColor: '#ddd',
         borderRadius: 3,
         alignSelf: 'center',
         marginBottom: BOYUTLAR.MARGIN_BUYUK,
@@ -230,11 +231,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     iptalButon: {
-        backgroundColor: '#f5f5f5',
+        borderWidth: 1,
     },
     butonMetin: {
         fontWeight: 'bold',
         fontSize: BOYUTLAR.FONT_ORTA,
-        color: '#fff',
     },
 });
