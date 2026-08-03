@@ -76,7 +76,7 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <TouchableOpacity onPress={onPress} activeOpacity={0.7} accessibilityRole="button" accessibilityLabel={etiket}>
         {icerik}
       </TouchableOpacity>
     );
@@ -254,6 +254,8 @@ export const HakkindaSayfasi: React.FC = () => {
             activeOpacity={0.7}
             className="flex-row items-center py-3.5 px-4 rounded-xl"
             style={{ backgroundColor: renkler.kartArkaplan }}
+            accessibilityRole="button"
+            accessibilityLabel="Güncelleme kontrolü yap"
           >
             <View
               className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
@@ -289,6 +291,8 @@ export const HakkindaSayfasi: React.FC = () => {
                 className="px-3 py-1.5 rounded-lg"
                 style={{ backgroundColor: renkler.bilgi }}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Güncellemeyi indir"
               >
                 <Text className="text-xs font-bold" style={{ color: '#FFFFFF' }}>
                   İndir
@@ -368,6 +372,8 @@ export const HakkindaSayfasi: React.FC = () => {
             activeOpacity={0.7}
             className="flex-row items-center py-3.5 px-4 rounded-xl"
             style={{ backgroundColor: renkler.kartArkaplan }}
+            accessibilityRole="button"
+            accessibilityLabel="Debug loglarını görüntüle"
           >
             <View
               className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
