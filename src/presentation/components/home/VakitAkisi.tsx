@@ -3,9 +3,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { Namaz } from '../../../core/types';
+import { useMemo } from 'react';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -16,8 +18,8 @@ interface VakitAkisiProps {
     aktifGunMu?: boolean;
     /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
     kilitli?: boolean;
-    /** GOSTERILEN gunun tarihi — cuma etiketi buna gore hesaplanir (`new Date()` DEGIL). */
-    gunTarihi?: Date;
+    /** GOSTERILEN gunun tarihi (string formatında). `React.memo` için stabil prop olarak kullanılır. */
+    gunTarihiStr?: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -42,10 +44,14 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     onVakitTikla,
     aktifGunMu = false,
     kilitli = false,
-    gunTarihi,
+    gunTarihiStr,
     cumaEtiketi = false
 }) => {
     const renkler = useRenkler();
+
+    const gunTarihi = useMemo(() => {
+        return gunTarihiStr ? ISOTarihiDateNesnesiNeCevir(gunTarihiStr) : undefined;
+    }, [gunTarihiStr]);
 
     // Vaktin gecip gecmedigini kontrol eder
     const vakitGectiMi = (vakitSaati: string): boolean => {
