@@ -6,6 +6,7 @@ import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -17,7 +18,7 @@ interface VakitAkisiProps {
     /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
     kilitli?: boolean;
     /** GOSTERILEN gunun tarihi — cuma etiketi buna gore hesaplanir (`new Date()` DEGIL). */
-    gunTarihi?: Date;
+    gunTarihi?: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -46,6 +47,11 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     cumaEtiketi = false
 }) => {
     const renkler = useRenkler();
+
+    // Memoize the Date object parsing to avoid breaking React.memo when a primitive is passed
+    const gunTarihiDate = React.useMemo(() =>
+        gunTarihi ? ISOTarihiDateNesnesiNeCevir(gunTarihi) : undefined
+    , [gunTarihi]);
 
     // Vaktin gecip gecmedigini kontrol eder
     const vakitGectiMi = (vakitSaati: string): boolean => {
@@ -107,8 +113,8 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
 
                     // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
                     // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
-                    const gorunenAd = gunTarihi
-                        ? namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi)
+                    const gorunenAd = gunTarihiDate
+                        ? namazGorunenAdi(namaz.namazAdi, gunTarihiDate, cumaEtiketi)
                         : namaz.namazAdi;
 
                     return (
