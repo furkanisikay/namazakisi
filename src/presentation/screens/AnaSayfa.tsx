@@ -155,9 +155,11 @@ export const AnaSayfa: React.FC = () => {
     dispatch(namazlariYukle({ tarih }));
   }, [dispatch]);
 
-  // Günlük namazları saat bilgisi ile zenginleştir
-  const uiNamazlar = useMemo(() => {
-    if (!gunlukNamazlar || !konumAyarlari.koordinatlar) return [];
+  // Namaz vakit saatlerini ayri bir memo'da hesaplayalim
+  // Boylece gunlukNamazlar (namazlarin tamamlama durumu) degistiginde
+  // pahali PrayerTimes hesaplamasi tekrar yapilmaz
+  const vakitSaatleri = useMemo(() => {
+    if (!konumAyarlari.koordinatlar) return null;
 
     const date = new Date(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
@@ -168,20 +170,25 @@ export const AnaSayfa: React.FC = () => {
       return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
     };
 
-    const vakitSaatleri: Record<NamazAdi, string> = {
+    return {
       [NamazAdi.Sabah]: zamanFormatla(prayerTimes.fajr),
       [NamazAdi.Gunes]: zamanFormatla(prayerTimes.sunrise),
       [NamazAdi.Ogle]: zamanFormatla(prayerTimes.dhuhr),
       [NamazAdi.Ikindi]: zamanFormatla(prayerTimes.asr),
       [NamazAdi.Aksam]: zamanFormatla(prayerTimes.maghrib),
       [NamazAdi.Yatsi]: zamanFormatla(prayerTimes.isha),
-    };
+    } as Record<NamazAdi, string>;
+  }, [konumAyarlari.koordinatlar, mevcutTarih]);
+
+  // Günlük namazları saat bilgisi ile zenginleştir
+  const uiNamazlar = useMemo(() => {
+    if (!gunlukNamazlar) return [];
 
     return gunlukNamazlar.namazlar.map(namaz => ({
       ...namaz,
-      saat: vakitSaatleri[namaz.namazAdi] || ''
+      saat: vakitSaatleri ? (vakitSaatleri[namaz.namazAdi] || '') : ''
     }));
-  }, [gunlukNamazlar, konumAyarlari.koordinatlar, mevcutTarih]);
+  }, [gunlukNamazlar, vakitSaatleri]);
 
 
   // Aktif Gün Hesaplama (İmsak öncesi ise önceki gün — yatsı süreci devam ediyor).
@@ -467,7 +474,12 @@ export const AnaSayfa: React.FC = () => {
       const { lat, lng } = konumAyarlari.koordinatlar || {};
       if (lat && lng) {
         const sonuc = mekruhVakitKontrolEt(lat, lng, 'farz');
-        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama });
+        setMekruhBilgi(prev => {
+          if (prev.mekruhMu === sonuc.mekruhMu && prev.aciklama === sonuc.aciklama) {
+            return prev;
+          }
+          return { mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama };
+        });
       }
     };
     kontrol();
@@ -702,7 +714,7 @@ export const AnaSayfa: React.FC = () => {
           onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
-          gunTarihi={sayfaTarihiDate}
+          gunTarihi={sayfaTarihi}
           cumaEtiketi={cumaEtiketi}
         />
         {/* ScrollView sonu için boşluk */}
