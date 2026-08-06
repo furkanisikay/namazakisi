@@ -7,6 +7,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Logger } from '../../../core/utils/Logger';
+import { TemaContext } from '../../../core/theme/TemaContext';
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -67,32 +68,43 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             }
 
             return (
-                <View style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.scroll}>
-                        <Text style={styles.title}>Bir hata olustu</Text>
-                        <Text style={styles.errorMessage}>
-                            {this.state.error?.message}
-                        </Text>
+                <TemaContext.Consumer>
+                    {(temaContext) => {
+                        const { tema } = temaContext;
+                        const renkler = tema.renkler;
 
-                        {this.state.errorInfo?.componentStack && (
-                            <View style={styles.stackContainer}>
-                                <Text style={styles.stackTitle}>Component Stack:</Text>
-                                <Text style={styles.stackText}>
-                                    {this.state.errorInfo.componentStack}
-                                </Text>
+                        return (
+                            <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
+                                <ScrollView contentContainerStyle={styles.scroll}>
+                                    <Text style={[styles.title, { color: renkler.durum.hata }]}>Bir hata olustu</Text>
+                                    <Text style={[styles.errorMessage, { color: renkler.metin }]}>
+                                        {this.state.error?.message}
+                                    </Text>
+
+                                    {this.state.errorInfo?.componentStack && (
+                                        <View style={[styles.stackContainer, { backgroundColor: renkler.kartArkaplan }]}>
+                                            <Text style={[styles.stackTitle, { color: renkler.durum.hata }]}>Component Stack:</Text>
+                                            <Text style={[styles.stackText, { color: renkler.metinIkincil }]}>
+                                                {this.state.errorInfo.componentStack}
+                                            </Text>
+                                        </View>
+                                    )}
+
+                                    <TouchableOpacity
+                                        style={[styles.retryButton, { backgroundColor: renkler.durum.hata }]}
+                                        onPress={this.handleRetry}
+                                        accessibilityRole="button"
+                                        accessibilityLabel="Tekrar Dene"
+                                    >
+                                        {/* Hata butonu zemin rengi üzerinde açık temada kartArkaplan (beyaz)
+                                            koyu temada ise arkaplan kullanarak okunaklılık sağlanır */}
+                                        <Text style={[styles.retryText, { color: tema.mod === 'acik' ? renkler.kartArkaplan : renkler.arkaplan }]}>Tekrar Dene</Text>
+                                    </TouchableOpacity>
+                                </ScrollView>
                             </View>
-                        )}
-
-                        <TouchableOpacity
-                            style={styles.retryButton}
-                            onPress={this.handleRetry}
-                            accessibilityRole="button"
-                            accessibilityLabel="Tekrar Dene"
-                        >
-                            <Text style={styles.retryText}>Tekrar Dene</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
-                </View>
+                        );
+                    }}
+                </TemaContext.Consumer>
             );
         }
 
@@ -103,7 +115,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a1a2e',
         padding: 20,
     },
     scroll: {
@@ -111,45 +122,38 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        color: '#e94560',
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 12,
     },
     errorMessage: {
-        color: '#ffffff',
         fontSize: 14,
         textAlign: 'center',
         marginBottom: 20,
         lineHeight: 20,
     },
     stackContainer: {
-        backgroundColor: '#16213e',
         borderRadius: 8,
         padding: 12,
         marginBottom: 20,
     },
     stackTitle: {
-        color: '#e94560',
         fontSize: 13,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     stackText: {
-        color: '#a0a0a0',
         fontSize: 11,
         fontFamily: 'monospace',
         lineHeight: 16,
     },
     retryButton: {
-        backgroundColor: '#e94560',
         borderRadius: 8,
         padding: 14,
         alignItems: 'center',
     },
     retryText: {
-        color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',
     },
