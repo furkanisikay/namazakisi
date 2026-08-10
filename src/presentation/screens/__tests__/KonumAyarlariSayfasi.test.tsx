@@ -8,7 +8,10 @@ import { KonumTakipServisi } from '../../../domain/services/KonumTakipServisi';
 
 // Mocklar
 jest.mock('../../store/hooks');
-jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
+jest.mock('../../../core/theme', () => ({
+    useRenkler: jest.fn(),
+    useTema: jest.fn(() => ({ koyuMu: false }))
+}));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
 jest.mock('../../store/konumSlice', () => ({
   konumAyarlariniGuncelle: jest.fn((arg) => ({ type: 'konum/guncelle', payload: arg })),

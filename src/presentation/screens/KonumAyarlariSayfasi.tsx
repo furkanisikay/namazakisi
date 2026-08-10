@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import * as Location from 'expo-location';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRenkler } from '../../core/theme';
+import { useRenkler, useTema } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumAyarlariniGuncelle, GpsAdres } from '../store/konumSlice';
 import type { TakipHassasiyeti } from '../store/konumSlice';
@@ -57,6 +57,7 @@ interface KonumBildirimi {
  * Konum Ayarlari Sayfasi
  */
 export const KonumAyarlariSayfasi: React.FC = () => {
+    const { koyuMu } = useTema();
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
@@ -509,10 +510,10 @@ export const KonumAyarlariSayfasi: React.FC = () => {
                         <>
                             <View
                                 className="flex-row items-center mt-3 p-2.5 rounded-lg border"
-                                style={{ backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }}
+                                style={{ backgroundColor: koyuMu ? `${renkler.durum.basarili}20` : `${renkler.durum.basarili}15`, borderColor: renkler.durum.basarili }}
                             >
-                                <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
-                                <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
+                                <FontAwesome5 name="check-circle" size={14} color={renkler.durum.basarili} solid />
+                                <Text className="text-sm font-medium ml-2" style={{ color: renkler.durum.basarili }}>
                                     Seyahatte otomatik güncelleme etkin
                                 </Text>
                             </View>
