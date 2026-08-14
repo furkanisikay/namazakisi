@@ -6,6 +6,7 @@ import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
+import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -16,8 +17,13 @@ interface VakitAkisiProps {
     aktifGunMu?: boolean;
     /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
     kilitli?: boolean;
-    /** GOSTERILEN gunun tarihi — cuma etiketi buna gore hesaplanir (`new Date()` DEGIL). */
-    gunTarihi?: Date;
+    /**
+     * GOSTERILEN gunun YEREL tarihi. ZORUNLU: hem cuma etiketi hem de "vakit
+     * girdi mi" hesabi buna gore yapilir (`new Date()` DEGIL). Gece yarisindan
+     * sonra yatsi surerken aktif gun DUNDUR — bu prop atlanirsa dunun vakitleri
+     * "gelecek" sanilir ve isaretleme kilitlenir (yasanmis bug).
+     */
+    gunTarihi: Date;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -47,16 +53,6 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
 }) => {
     const renkler = useRenkler();
 
-    // Vaktin gecip gecmedigini kontrol eder
-    const vakitGectiMi = (vakitSaati: string): boolean => {
-        if (!vakitSaati) return false;
-        const [saat, dakika] = vakitSaati.split(':').map(Number);
-        const simdi = new Date();
-        const vakitZamani = new Date();
-        vakitZamani.setHours(saat, dakika, 0, 0);
-        return simdi >= vakitZamani;
-    };
-
     return (
         <View className="flex-1">
             {/* Başlık ve İlerleme */}
@@ -84,8 +80,9 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     const tamamlandi = namaz.tamamlandi === true; // undefined veya false durumunda false
                     const vakitIkonu = getVakitIkonu(namaz.namazAdi);
 
-                    // Vakit gecti mi kontrolu (sadece aktif gun icin)
-                    const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat) : true;
+                    // Vakit gecti mi kontrolu (sadece aktif gun icin) — saat GOSTERILEN
+                    // gunun takvim gunune kurulur, `new Date()`in gunune DEGIL.
+                    const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat, gunTarihi, new Date()) : true;
                     const gelecekMi = aktifGunMu && !gecmisMi && !aktifMi;
                     // Aktif vakit kilitliyse (orn: gunes/kerahat vaktinde ogle) de pasif olarak isaretle
                     const pasifMi = gelecekMi || namaz.namazAdi === NamazAdi.Gunes || (aktifMi && kilitli);
@@ -107,9 +104,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
 
                     // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
                     // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
-                    const gorunenAd = gunTarihi
-                        ? namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi)
-                        : namaz.namazAdi;
+                    const gorunenAd = namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi);
 
                     return (
                         <TouchableOpacity
