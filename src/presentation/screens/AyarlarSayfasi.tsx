@@ -86,6 +86,8 @@ const AyarMenuSatiri: React.FC<AyarMenuSatiriProps> = ({
       style={{ backgroundColor: renkler.kartArkaplan }}
       onPress={handlePress}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={`${baslik} ayarları`}
     >
       <View
         className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
