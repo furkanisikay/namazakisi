@@ -5,6 +5,46 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.24.0] - 2026-08-17
+
+### Eklendi
+- [seri] sürekli hareket — parıltı, nabız ve azaltılmış hareket
+- [seri] açılış animasyonu — yıldız girişi ve zincirin örülmesi
+- [seri] açılış zaman çizelgesi (zincir sırayla örülür)
+- [seri] istatistiklere seri sekmesi eklendi
+- [seri] gök paneli — ayın takımyıldızı (statik)
+- [seri] tesbih bileşeni ve gök sahnesi sabitleri
+- [seri] aylık ızgara, zincir bağları ve gök geometrisi
+- [ayarlar] karmaşık ayar sayfalarına arama çapaları eklendi
+- [ayarlar] basit ayar sayfalarına arama çapaları eklendi
+- [ayarlar] ayarlarda arama ve büyük başlık
+- [ayarlar] arama sonucundan gelen kontrolü vurgulama altyapısı
+- [ayarlar] arama indeksi, Türkçe metin katlama ve eşleştirme
+- [ayarlar] ayarlar sayfası dört gruplu ve dinamik özetli olarak yeniden kuruldu
+- [ayarlar] ayar satırı, grup ve kurulum sağlığı bileşenleri
+- [ayarlar] bildirim izni salt-okur yolu ve son dışa aktarma damgası
+- [ayarlar] ayar özetleri ve kurulum sağlığı saf fonksiyonları
+
+### Düzeltildi
+- [ana ekran] gece yarısından sonra dünün vakitleri işaretlenebilsin
+- [seri] parıltı dip=0 ve nabız oranı referansa uyumlu (inceleme)
+- [seri] yıldız anatomisi referansa hizalandı (cihaz doğrulaması)
+- [seri] seri yüklemesi reddedilirse yukleniyor sonsuza kalmasın
+- [seri] son inceleme — kontrast, aralık ikizi ve erişilebilirlik
+- [seri] gök paneli kontrast + zincir/glow düzeltmeleri (inceleme)
+- [ayarlar] AyarCapasi tint overlay'i çocukları sarmalamasın
+- [ayarlar] bölüm başlığı rengi metinIkincil — kontrast eşiği
+- [ayarlar] son inceleme bulguları — slice hidrasyonu ve metin düzeltmeleri
+- [ayarlar] bildirimOzeti imzasını sayı alacak şekilde düzelt, zayıf testi güçlendir
+- [test] icon mock any tipini daraltır, dışa aktarma nöbetçisini sertleştirir
+- [ayarlar] inceleme bulgularını düzelt (yogunluk görünen adı, testler)
+- [muhafiz] kapalı adımın etiketi "Sessiz" yerine "Kapalı"
+
+### Değiştirildi
+- [seri] gunTamMi core'a taşındı, özel gün kümesi eklendi
+- [navigasyon] ayarlar stack'i tiplendi, ekran adları tek kaynağa alındı
+- [hakkinda] tanı ve debug bölümleri kaldırıldı
+
 ## [0.23.29] - 2026-07-28
 
 ## [0.23.28] - 2026-07-28
