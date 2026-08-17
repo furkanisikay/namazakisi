@@ -7,6 +7,7 @@ import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -23,7 +24,7 @@ interface VakitAkisiProps {
      * sonra yatsi surerken aktif gun DUNDUR — bu prop atlanirsa dunun vakitleri
      * "gelecek" sanilir ve isaretleme kilitlenir (yasanmis bug).
      */
-    gunTarihi: Date;
+    gunTarihiIso: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -48,10 +49,11 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     onVakitTikla,
     aktifGunMu = false,
     kilitli = false,
-    gunTarihi,
+    gunTarihiIso,
     cumaEtiketi = false
 }) => {
     const renkler = useRenkler();
+    const gunTarihi = React.useMemo(() => ISOTarihiDateNesnesiNeCevir(gunTarihiIso), [gunTarihiIso]);
 
     return (
         <View className="flex-1">
