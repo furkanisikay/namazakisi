@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -36,6 +36,7 @@ import {
   IceAktarmaSihirbaziSayfasi,
   TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
+import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
 import { useAppDispatch } from '../presentation/store/hooks';
@@ -58,8 +59,37 @@ export type RootStackParamList = {
 export type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AyarlarStackParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+
+/**
+ * Ayarlar stack'indeki ekran tanımları — `Record<AyarlarEkranAdi, …>` her
+ * adı ZORUNLU kılar: `ayarlarEkranlari.ts`'teki liste ile burası ayrışırsa
+ * (biri eksik/fazlaysa) `npm run typecheck` düşer. Nöbetçi test yerine
+ * derleme zamanı garantisi (task-1-brief.md).
+ *
+ * Başlıklar ve `headerShown` değerleri eski satır-satır tanımlardan BİREBİR
+ * korunmuştur — davranış değişmez.
+ */
+const AYARLAR_EKRAN_TANIMLARI: Record<
+  AyarlarEkranAdi,
+  { component: React.ComponentType; options?: NativeStackNavigationOptions }
+> = {
+  AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false } },
+  KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum Ayarları' } },
+  GorünumAyarlari: { component: GorünumAyarlariSayfasi, options: { title: 'Görünüm' } },
+  BildirimAyarlari: { component: BildirimAyarlariSayfasi, options: { title: 'Bildirimler' } },
+  SeriHedefAyarlari: { component: SeriHedefAyarlariSayfasi, options: { title: 'Seri ve Hedefler' } },
+  MuhafizAyarlari: { component: MuhafizAyarlariSayfasi, options: { title: 'Namaz Muhafızı' } },
+  Hakkinda: { component: HakkindaSayfasi, options: { title: 'Hakkında' } },
+  RamazanAyarlari: { component: RamazanAyarlariSayfasi, options: { title: 'Ramazan Özel' } },
+  DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Debug Logları' } },
+  TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Takvim Entegrasyonu' } },
+  NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
+  YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedekleme & Aktarım' } },
+  IceAktarmaSihirbazi: { component: IceAktarmaSihirbaziSayfasi, options: { headerShown: false } },
+  TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { headerShown: false } },
+};
 
 /**
  * Ayarlar Alt Navigasyonu
@@ -81,76 +111,11 @@ const AyarlarStack: React.FC = () => {
         headerBackTitle: '',
       }}
     >
-      <Stack.Screen
-        name="AyarlarAna"
-        component={AyarlarSayfasi}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="KonumAyarlari"
-        component={KonumAyarlariSayfasi}
-        options={{ title: 'Konum Ayarları' }}
-      />
-      <Stack.Screen
-        name="GorünumAyarlari"
-        component={GorünumAyarlariSayfasi}
-        options={{ title: 'Görünüm' }}
-      />
-      <Stack.Screen
-        name="BildirimAyarlari"
-        component={BildirimAyarlariSayfasi}
-        options={{ title: 'Bildirimler' }}
-      />
-      <Stack.Screen
-        name="SeriHedefAyarlari"
-        component={SeriHedefAyarlariSayfasi}
-        options={{ title: 'Seri ve Hedefler' }}
-      />
-      <Stack.Screen
-        name="MuhafizAyarlari"
-        component={MuhafizAyarlariSayfasi}
-        options={{ title: 'Namaz Muhafızı' }}
-      />
-      <Stack.Screen
-        name="Hakkinda"
-        component={HakkindaSayfasi}
-        options={{ title: 'Hakkında' }}
-      />
-      <Stack.Screen
-        name="RamazanAyarlari"
-        component={RamazanAyarlariSayfasi}
-        options={{ title: 'Ramazan Özel' }}
-      />
-      <Stack.Screen
-        name="DebugLogs"
-        component={DebugLogsSayfasi}
-        options={{ title: 'Debug Logları' }}
-      />
-      <Stack.Screen
-        name="TakvimAyarlari"
-        component={TakvimAyarlariSayfasi}
-        options={{ title: 'Takvim Entegrasyonu' }}
-      />
-      <Stack.Screen
-        name="NelerYeni"
-        component={NelerYeniSayfasi}
-        options={{ title: 'Neler Yeni' }}
-      />
-      <Stack.Screen
-        name="YedeklemeAktarim"
-        component={YedeklemeSayfasi}
-        options={{ title: 'Yedekleme & Aktarım' }}
-      />
-      <Stack.Screen
-        name="IceAktarmaSihirbazi"
-        component={IceAktarmaSihirbaziSayfasi}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="TaniGeriBildirim"
-        component={TaniGeriBildirimSayfasi}
-        options={{ headerShown: false }}
-      />
+      {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<
+        [AyarlarEkranAdi, (typeof AYARLAR_EKRAN_TANIMLARI)[AyarlarEkranAdi]]
+      >).map(([ad, tanim]) => (
+        <Stack.Screen key={ad} name={ad} component={tanim.component} options={tanim.options} />
+      ))}
     </Stack.Navigator>
   );
 };

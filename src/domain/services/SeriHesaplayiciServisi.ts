@@ -22,6 +22,7 @@ import {
 } from '../../core/types/SeriTipleri';
 import { GunlukNamazlar } from '../../core/types';
 import { tarihiISOFormatinaCevir, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
+import { gunTamMi as gunTamMiSaf } from '../../core/seri/gunTamMi';
 
 /**
  * Seri hesaplama sonucu
@@ -101,7 +102,11 @@ export const gunFarkiniHesapla = (tarih1: string, tarih2: string): number => {
 
 /**
  * Bir gunun tam kilinip kilinmadigini kontrol eder
- * 
+ *
+ * Esik kurali `src/core/seri/gunTamMi.ts`'de SAF olarak tutulur (seri motoru
+ * ve gok takimyildizi haritasi ayni kurali kullanir, kopyalanmaz); burada
+ * yalnizca gunluk kayittan kilinan sayi cikarilip oraya delege edilir.
+ *
  * @param gunlukNamazlar - O gune ait namaz verileri
  * @param tamGunEsigi - Tam gun icin gereken minimum namaz sayisi
  * @returns Tam kilinip kilinmadigi
@@ -118,7 +123,7 @@ export const gunTamMi = (
     (n) => n.tamamlandi
   ).length;
 
-  return kilinanNamazSayisi >= tamGunEsigi;
+  return gunTamMiSaf(kilinanNamazSayisi, tamGunEsigi);
 };
 
 /**

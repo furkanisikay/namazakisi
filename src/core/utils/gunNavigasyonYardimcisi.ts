@@ -52,3 +52,29 @@ export const aktifGunuHesapla = (
 export const gelecekGuneGecisMi = (hedefTarih: string, aktifGun: string): boolean => {
   return hedefTarih > aktifGun;
 };
+
+/**
+ * GÖSTERİLEN günün bir vaktinin girip girmediğini söyler.
+ *
+ * `gunTarihi` **zorunludur** ve şu anki takvim gününden farklı olabilir: gece
+ * yarısından sonra yatsı sürerken aktif gün DÜNDÜR ve ekranda dünün vakit
+ * saatleri listelenir. Saati her zaman `new Date()`'in takvim gününe kurmak
+ * (yaşanmış bug) dünün sabah/öğle/ikindi/akşam vakitlerini "gelecek" gösterip
+ * işaretleme butonlarını kilitliyordu — kullanıcı yalnız yatsıyı işaretleyebiliyordu.
+ *
+ * @param vakitSaati 'HH:mm' (boş/bozuk ise `false` — vakit hesaplanamamıştır)
+ * @param gunTarihi  Gösterilen günün YEREL tarihi (`ISOTarihiDateNesnesiNeCevir`)
+ * @param simdi      Şu anki zaman
+ */
+export const vakitGectiMi = (vakitSaati: string, gunTarihi: Date, simdi: Date): boolean => {
+  if (!vakitSaati) return false;
+
+  const [saat, dakika] = vakitSaati.split(':').map(Number);
+  if (!Number.isFinite(saat) || !Number.isFinite(dakika)) return false;
+
+  // Kopya üzerinde çalış — çağıranın Date nesnesi mutasyona uğramamalı.
+  const vakitZamani = new Date(gunTarihi.getTime());
+  vakitZamani.setHours(saat, dakika, 0, 0);
+
+  return simdi >= vakitZamani;
+};

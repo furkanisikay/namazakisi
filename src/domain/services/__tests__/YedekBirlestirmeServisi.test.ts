@@ -259,6 +259,22 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
   });
 });
 
+describe('YedekBirlestirmeServisi — SON_DISA_AKTARMA yedeğe girmez (bilinçli)', () => {
+  it('uzerineYaz stratejisinde bile SON_DISA_AKTARMA anahtarı plana eklenmez', () => {
+    const mevcut = payloadKur({});
+    const gelen = payloadKur({
+      ayarlar: {
+        ...bosAyarlar,
+        // Cihaza özgü eylem geçmişi; AYAR_ANAHTARLARI eşlemesinde karşılığı YOK —
+        // yedekte bulunsa bile plana yazılmamalı (başka cihazın damgasını taşımaz).
+        sonDisaAktarma: '2026-01-01T00:00:00.000Z',
+      },
+    });
+    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('uzerineYaz'));
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.SON_DISA_AKTARMA);
+  });
+});
+
 describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (eksikleriEkle)', () => {
   const mevcut = payloadKur({
     namazGunleri: { g1: { Sabah: true } },

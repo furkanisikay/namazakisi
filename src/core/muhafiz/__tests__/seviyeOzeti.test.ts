@@ -10,8 +10,8 @@ const temel = (o: Partial<SeviyeAyari>): SeviyeAyari => ({
 });
 
 describe('seviyeOzetiOlustur', () => {
-  test('sessiz mod: yalnız "Sessiz"', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'sessiz' }))).toBe('Sessiz');
+  test('kapalı adım: "Kapalı — uyarı almazsınız"', () => {
+    expect(seviyeOzetiOlustur(temel({ mod: 'sessiz' }))).toBe('Kapalı — uyarı almazsınız');
   });
   test('bildirim: eşik + bildirim + ses adı', () => {
     expect(seviyeOzetiOlustur(temel({ mod: 'bildirim', esikDk: 30 })))

@@ -40,6 +40,9 @@ import { SayisalSecici } from '../components/common/SayisalSecici';
 import { OzetSatir, takvimUygulamasiniAc, BildirimBanneri, OzellikBilgi, BasariIcerigi } from './TakvimAyarlari/bilesenler';
 import { VAKIT_GORUNTU_ADLARI, VAKIT_SIRASI, VAKIT_TEMIZLE_BASLIK, saatFormatla } from './TakvimAyarlari/sabitler';
 import { TemizleModali } from './TakvimAyarlari/TemizleModali';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
@@ -392,7 +395,20 @@ interface Bildirim {
 }
 
 export const TakvimAyarlariSayfasi: React.FC<any> = () => {
+    return (
+        <VurguSaglayici>
+            <TakvimAyarlariIcerik />
+        </VurguSaglayici>
+    );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir.
+ */
+const TakvimAyarlariIcerik: React.FC = () => {
     const renkler = useRenkler();
+    const scrollRef = useVurguKurulumu();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
 
@@ -507,6 +523,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
     return (
         <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
             <ScrollView
+                ref={scrollRef}
                 className="flex-1"
                 contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
                 showsVerticalScrollIndicator={false}
@@ -514,6 +531,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                 <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
 
                     {/* Master Toggle */}
+                    <AyarCapasi id="takvimSenkron">
                     <TouchableOpacity
                         className="flex-row items-center p-4 rounded-2xl mb-4"
                         style={{ backgroundColor: ayarlar.aktif ? renkler.birincil : renkler.kartArkaplan }}
@@ -546,6 +564,7 @@ export const TakvimAyarlariSayfasi: React.FC<any> = () => {
                             thumbColor="#FFF"
                         />
                     </TouchableOpacity>
+                    </AyarCapasi>
 
                     {/* ── Pasif ── */}
                     {!ayarlar.aktif && <OzellikBilgi />}

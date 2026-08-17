@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Linking } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
@@ -7,6 +8,17 @@ import { useFeedback } from '../../../core/feedback';
 import { KonumTakipServisi } from '../../../domain/services/KonumTakipServisi';
 
 // Mocklar
+// Navigasyon mock'u ZORUNLU: sayfa arama vurgusu için `useVurguKurulumu`
+// (→ `useRoute`) ve `AyarCapasi` (→ `useFocusEffect`) kullanıyor. Mock'suz
+// gercek `useRoute` "Couldn't find a route object" fırlatır.
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+  useRoute: jest.fn(() => ({ params: undefined })),
+  useFocusEffect: (cb: () => void | (() => void)) => {
+    const ReactModulu = require('react');
+    ReactModulu.useEffect(cb, [cb]);
+  },
+}));
 jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
@@ -136,5 +148,33 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
       expect(getByText('Bir hata oluştu')).toBeTruthy();
     });
     errSpy.mockRestore();
+  });
+
+  /**
+   * Arama vurgusu — Task 6a temsilci testi.
+   *
+   * Ayarlar aramasından bir sonuca dokunulduğunda hedef sayfa
+   * `{ vurgula: '<çapa>' }` parametresiyle açılır ve `AyarCapasi` o kontrolü
+   * görünüre kaydırır. Burada ölçülen şey kaydırmanın TETİKLENİP
+   * tetiklenmediğidir; ölçüm/animasyon ayrıntıları `AyarCapasi` testlerinde.
+   */
+  describe('arama vurgusu', () => {
+    it('vurgula parametresiyle açılınca sayfa çökmeden render olur', async () => {
+      (useRoute as jest.Mock).mockReturnValue({ params: { vurgula: 'konumModu' } });
+
+      const { getByText } = SayfaYukle();
+
+      await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    });
+
+    it('çapalanan kontrol vurgu parametresiyle de görünür kalır', async () => {
+      // Nöbetçi: `AyarCapasi`'nin tint overlay'i bir kez çocukları SARIYORDU ve
+      // sarılan her kontrolü görünmez yapıyordu. Sayfa düzeyinde de koru.
+      (useRoute as jest.Mock).mockReturnValue({ params: { vurgula: 'konumModu' } });
+
+      const { getByText } = SayfaYukle();
+
+      await waitFor(() => expect(getByText('KONUM BELİRLEME YÖNTEMİ')).toBeTruthy());
+    });
   });
 });

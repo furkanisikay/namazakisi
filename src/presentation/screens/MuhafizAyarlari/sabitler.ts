@@ -39,7 +39,9 @@ export interface ModBilgisi {
  * yalniz bilgilendirme bandi gosterilir (bkz. `useTurkceTtsDestegi`).
  */
 export const MOD_BILGILERI: ModBilgisi[] = [
-    { id: 'sessiz', etiket: 'Sessiz', ikon: 'bell-slash' },
+    // etiket "Kapalı": bu cip bir ses modu DEGIL, bir kapatma eylemidir
+    // (SeviyeDetayModal.modSec 'sessiz' icin seviyeyiKapat() cagirir).
+    { id: 'sessiz', etiket: 'Kapalı', ikon: 'bell-slash' },
     { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell' },
     { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up' },
     { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn' },

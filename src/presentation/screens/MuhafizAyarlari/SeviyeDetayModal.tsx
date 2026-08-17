@@ -130,7 +130,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
 
     const modSec = (mod: UyariModu) => {
-        // "Sessiz" secmek, VakitKarti'ndaki anahtari kapatmakla AYNI eylemdir →
+        // "Kapalı" secmek, VakitKarti'ndaki anahtari kapatmakla AYNI eylemdir →
         // ayni yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
         // kullanicinin modu `oncekiMod`'a yazilmaz, anahtarla geri actiginda
         // kurdugu 'ikisi' yerine 'bildirim'e duserdi.

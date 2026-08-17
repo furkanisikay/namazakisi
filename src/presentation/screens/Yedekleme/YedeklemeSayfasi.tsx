@@ -28,6 +28,9 @@ import { useFeedback } from '../../../core/feedback';
 import { yedeginiPaylas } from '../../../domain/services/YedeklemeServisi';
 import { Logger } from '../../../core/utils/Logger';
 import { BildirimModali } from '../../components/common/BildirimModali';
+import { VurguSaglayici } from '../../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../../components/ayar/AyarCapasi';
 
 /**
  * Büyük aksiyon kartı — birincil eylem (yedek oluştur) ve ikincil eylem
@@ -100,7 +103,20 @@ const AksiyonKarti: React.FC<AksiyonKartiProps> = ({
  * Yedekleme & Aktarım Sayfası
  */
 export const YedeklemeSayfasi: React.FC = () => {
+  return (
+    <VurguSaglayici>
+      <YedeklemeIcerik />
+    </VurguSaglayici>
+  );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir.
+ */
+const YedeklemeIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const scrollRef = useVurguKurulumu();
   const navigation = useNavigation();
   const { butonTiklandiFeedback, hataFeedback } = useFeedback();
 
@@ -154,6 +170,7 @@ export const YedeklemeSayfasi: React.FC = () => {
       edges={['left', 'right']}
     >
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
@@ -230,22 +247,26 @@ export const YedeklemeSayfasi: React.FC = () => {
           </Text>
 
           {/* Yedek oluştur */}
-          <AksiyonKarti
-            ikon="cloud-upload-alt"
-            baslik="Yedek oluştur"
-            aciklama="Verilerinizi şifreli bir dosyaya aktarıp paylaşın."
-            onPress={handleYedekOlustur}
-            yukleniyor={yedekleniyor}
-          />
+          <AyarCapasi id="disaAktar">
+            <AksiyonKarti
+              ikon="cloud-upload-alt"
+              baslik="Yedek oluştur"
+              aciklama="Verilerinizi şifreli bir dosyaya aktarıp paylaşın."
+              onPress={handleYedekOlustur}
+              yukleniyor={yedekleniyor}
+            />
+          </AyarCapasi>
 
           {/* İçe aktar / Geri yükle */}
-          <AksiyonKarti
-            ikon="cloud-download-alt"
-            baslik="İçe aktar / Geri yükle"
-            aciklama="Bir yedek dosyasından verilerinizi geri yükleyin."
-            onPress={handleIceAktar}
-            pasif={yedekleniyor}
-          />
+          <AyarCapasi id="iceAktar">
+            <AksiyonKarti
+              ikon="cloud-download-alt"
+              baslik="İçe aktar / Geri yükle"
+              aciklama="Bir yedek dosyasından verilerinizi geri yükleyin."
+              onPress={handleIceAktar}
+              pasif={yedekleniyor}
+            />
+          </AyarCapasi>
         </Animated.View>
       </ScrollView>
 

@@ -19,7 +19,17 @@ import {
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 
-jest.mock('@react-navigation/native', () => ({ useNavigation: jest.fn() }));
+// `useRoute` + `useFocusEffect` ZORUNLU: sayfa arama vurgusu için
+// `useVurguKurulumu`/`AyarCapasi` kullanıyor. Eksik bırakılırsa ikisi de
+// undefined olur ve sayfa render'da çöker (AGENTS.md'de kayıtlı tuzak).
+jest.mock('@react-navigation/native', () => ({
+    useNavigation: jest.fn(),
+    useRoute: jest.fn(() => ({ params: undefined })),
+    useFocusEffect: (cb: () => void | (() => void)) => {
+        const ReactModulu = require('react');
+        ReactModulu.useEffect(cb, [cb]);
+    },
+}));
 jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
@@ -274,7 +284,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
-    fireEvent.press(getByLabelText('Sessiz'));
+    fireEvent.press(getByLabelText('Kapalı'));
 
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
@@ -334,19 +344,19 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   /**
-   * Modaldan "Sessiz" seçmek, anahtarı kapatmakla AYNI eylemdir. Ayrışırsa
+   * Modaldan "Kapalı" seçmek, anahtarı kapatmakla AYNI eylemdir. Ayrışırsa
    * modaldan susturan kullanıcının mod hafızası yazılmaz ve adımı anahtarla geri
    * açtığında kurduğu mod yerine 'bildirim'e düşer — aynı görünür eylem iki
    * yoldan farklı sonuç verir.
    */
-  it('modaldan "Sessiz" seçmek de mod hafızasını yazar (anahtarla aynı davranır)', async () => {
+  it('modaldan "Kapalı" seçmek de mod hafızasını yazar (anahtarla aynı davranır)', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].mod = 'ikisi';
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
 
-    fireEvent.press(getByLabelText('Sessiz'));
+    fireEvent.press(getByLabelText('Kapalı'));
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].mod).toBe('sessiz');

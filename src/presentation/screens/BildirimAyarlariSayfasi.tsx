@@ -39,6 +39,9 @@ import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/Se
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { store } from '../store/store';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -130,7 +133,20 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
  */
 const CUMA_YAZMA_GECIKMESI_MS = 1200;
 
-export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
+export const BildirimAyarlariSayfasi: React.FC<Record<string, unknown>> = (props) => {
+  return (
+    <VurguSaglayici>
+      <BildirimAyarlariIcerik {...props} />
+    </VurguSaglayici>
+  );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir.
+ */
+const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
+  const scrollRef = useVurguKurulumu();
   const renkler = useRenkler();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
@@ -294,6 +310,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       style={{ backgroundColor: renkler.arkaplan }}
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
@@ -301,6 +318,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
     >
       <Animated.View style={{ opacity: fadeAnim }}>
         {/* Vakit Bildirimleri Bölümü */}
+        <AyarCapasi id="vakitBildirimleri">
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
@@ -361,8 +379,10 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             </View>
           </View>
         </View>
+        </AyarCapasi>
 
         {/* Vakit Sayaci Bolumu */}
+        <AyarCapasi id="vakitSayaci">
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
@@ -464,8 +484,10 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             )}
           </View>
         </View>
+        </AyarCapasi>
 
         {/* Cuma Namazi Bolumu (issue #173) */}
+        <AyarCapasi id="cumaHatirlatmasi">
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
@@ -539,8 +561,10 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             )}
           </View>
         </View>
+        </AyarCapasi>
 
         {/* Seri Bildirimleri Bolumu */}
+        <AyarCapasi id="gunSonuBildirimi">
         <View className="mb-6">
           <Text
             className="text-xs font-bold tracking-wider mb-3"
@@ -781,6 +805,7 @@ export const BildirimAyarlariSayfasi: React.FC<any> = ({ navigation }) => {
             )}
           </View>
         </View>
+        </AyarCapasi>
 
 
 

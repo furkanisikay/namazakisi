@@ -28,12 +28,28 @@ import {
 import { IftarSayacBildirimServisi } from '../../domain/services/IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from '../../domain/services/SahurSayacBildirimServisi';
 import { store } from '../store/store';
+import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
+import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
+import { AyarCapasi } from '../components/ayar/AyarCapasi';
 
 /**
  * Ramazan Ayarlari Sayfasi
  */
 export const RamazanAyarlariSayfasi: React.FC<any> = () => {
+  return (
+    <VurguSaglayici>
+      <RamazanAyarlariIcerik />
+    </VurguSaglayici>
+  );
+};
+
+/**
+ * İçerik bileşeni `VurguSaglayici` altında yaşar — `useVurguKurulumu()`
+ * yalnızca sağlayıcı içinde çağrılabilir (bkz. task-4 entegrasyon örneği).
+ */
+const RamazanAyarlariIcerik: React.FC = () => {
   const renkler = useRenkler();
+  const scrollRef = useVurguKurulumu();
   const dispatch = useAppDispatch();
   const { butonTiklandiFeedback } = useFeedback();
   const iftarSayac = useAppSelector((state) => state.iftarSayac);
@@ -90,6 +106,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       style={{ backgroundColor: renkler.arkaplan }}
       contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
@@ -142,6 +159,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
             İFTAR SAYACI
           </Text>
 
+          <AyarCapasi id="iftarSayaci">
           <View
             className="rounded-xl overflow-hidden shadow-sm"
             style={{ backgroundColor: renkler.kartArkaplan }}
@@ -209,6 +227,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
               </View>
             )}
           </View>
+          </AyarCapasi>
         </View>
 
         {/* Sahur Sayacı Ayarı */}
@@ -220,6 +239,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
             SAHUR SAYACI
           </Text>
 
+          <AyarCapasi id="sahurSayaci">
           <View
             className="rounded-xl overflow-hidden shadow-sm"
             style={{ backgroundColor: renkler.kartArkaplan }}
@@ -287,6 +307,7 @@ export const RamazanAyarlariSayfasi: React.FC<any> = () => {
               </View>
             )}
           </View>
+          </AyarCapasi>
         </View>
 
         {/* Bilgi Notu */}
