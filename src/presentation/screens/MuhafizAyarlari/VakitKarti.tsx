@@ -168,7 +168,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                     value={acik}
                                     onValueChange={(deger) => onSeviyeAcKapa(indeks, deger)}
                                     trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
-                                    thumbColor={acik ? bilgi.renk : '#f4f3f4'}
+                                    thumbColor={acik ? bilgi.renk : renkler.arkaplan}
                                     accessibilityRole="switch"
                                     accessibilityState={{ checked: acik }}
                                     accessibilityLabel={`${bilgi.baslik} adımını açın veya kapatın`}

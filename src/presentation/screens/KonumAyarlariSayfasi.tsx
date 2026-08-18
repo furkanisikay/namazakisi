@@ -519,7 +519,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                                 value={takipAktif}
                                 onValueChange={handleAkilliTakipDegistir}
                                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                                thumbColor={takipAktif ? renkler.birincil : '#f4f3f4'}
+                                thumbColor={takipAktif ? renkler.birincil : renkler.arkaplan}
                             />
                         )}
                     </View>

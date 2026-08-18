@@ -419,7 +419,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                 value={ozelGunAyarlari.ozelGunModuAktif}
                 onValueChange={handleOzelGunModuToggle}
                 trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : '#f4f3f4'}
+                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : renkler.arkaplan}
               />
             </View>
           </AyarCapasi>
