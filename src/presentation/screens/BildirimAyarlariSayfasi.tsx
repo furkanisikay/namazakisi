@@ -372,7 +372,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                     value={(vakitAyarlari as any)[item.key]}
                     onValueChange={(val) => handleVakitBildirimToggle(item.key, val)}
                     trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                    thumbColor={(vakitAyarlari as any)[item.key] ? renkler.birincil : '#f4f3f4'}
+                    thumbColor={(vakitAyarlari as any)[item.key] ? renkler.birincil : renkler.arkaplan}
                   />
                 </View>
               ))}
@@ -415,7 +415,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                 value={sayacAyarlari.aktif}
                 onValueChange={handleSayacToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                thumbColor={sayacAyarlari.aktif ? renkler.birincil : '#f4f3f4'}
+                thumbColor={sayacAyarlari.aktif ? renkler.birincil : renkler.arkaplan}
               />
             </View>
 
@@ -519,7 +519,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                 value={cumaAyarlari.aktif}
                 onValueChange={handleCumaToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                thumbColor={cumaAyarlari.aktif ? renkler.birincil : '#f4f3f4'}
+                thumbColor={cumaAyarlari.aktif ? renkler.birincil : renkler.arkaplan}
                 accessibilityLabel="Cuma hatırlatması"
               />
             </View>
@@ -598,7 +598,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                 value={seriAyarlari.gunSonuBildirimAktif}
                 onValueChange={handleGunSonuBildirimToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                thumbColor={seriAyarlari.gunSonuBildirimAktif ? renkler.birincil : '#f4f3f4'}
+                thumbColor={seriAyarlari.gunSonuBildirimAktif ? renkler.birincil : renkler.arkaplan}
               />
             </View>
 

@@ -118,7 +118,7 @@ const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onT
                 value={ayar.aktif}
                 onValueChange={onToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                thumbColor={ayar.aktif ? renkler.birincil : '#f4f3f4'}
+                thumbColor={ayar.aktif ? renkler.birincil : renkler.arkaplan}
             />
         </TouchableOpacity>
     );
@@ -263,7 +263,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                     value={aktifAyar.aktif}
                                     onValueChange={v => onChange({ aktif: v })}
                                     trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                                    thumbColor={aktifAyar.aktif ? renkler.birincil : '#f4f3f4'}
+                                    thumbColor={aktifAyar.aktif ? renkler.birincil : renkler.arkaplan}
                                 />
                             </View>
 

@@ -118,7 +118,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
               value={hatirlatmaAcik}
               onValueChange={(v) => { dispatch(hatirlatmayiGuncelle(v)); }}
               trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-              thumbColor={hatirlatmaAcik ? renkler.birincil : '#f4f3f4'}
+              thumbColor={hatirlatmaAcik ? renkler.birincil : renkler.arkaplan}
             />
           </View>
         </View>

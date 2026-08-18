@@ -401,7 +401,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             planlamayiKuyrugaAl();
                         }}
                         trackColor={{ false: renkler.sinir, true: 'rgba(255,255,255,0.3)' }}
-                        thumbColor={muhafizAyarlari.aktif ? '#FFF' : '#f4f3f4'}
+                        thumbColor={muhafizAyarlari.aktif ? '#FFF' : renkler.arkaplan}
                         accessibilityLabel="Namaz Muhafızı"
                     />
                 </View>

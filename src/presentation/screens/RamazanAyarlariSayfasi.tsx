@@ -198,7 +198,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   false: renkler.sinir,
                   true: `${iftarRenk}60`,
                 }}
-                thumbColor={ayarlar.aktif ? iftarRenk : '#f4f3f4'}
+                thumbColor={ayarlar.aktif ? iftarRenk : renkler.arkaplan}
               />
             </View>
 
@@ -278,7 +278,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   false: renkler.sinir,
                   true: `${sahurRenk}60`,
                 }}
-                thumbColor={sahurAyarlar.aktif ? sahurRenk : '#f4f3f4'}
+                thumbColor={sahurAyarlar.aktif ? sahurRenk : renkler.arkaplan}
               />
             </View>
 
