@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -65,11 +65,12 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
             visible={gorunur}
             onRequestClose={onKapat}
         >
-            <TouchableOpacity
-                activeOpacity={1}
-                onPress={onKapat}
-                className="flex-1 justify-center items-center bg-black/60 p-4"
-            >
+            <View className="flex-1 justify-center items-center p-4">
+                {/* Backdrop — absolute sibling (içeriği sarmaz) */}
+                <TouchableWithoutFeedback onPress={onKapat}>
+                    <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.6)' }]} />
+                </TouchableWithoutFeedback>
+
                 <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} className="w-full">
                     {/* Main Gradient Card */}
                     <LinearGradient
@@ -135,7 +136,7 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
 
                     </LinearGradient>
                 </TouchableOpacity>
-            </TouchableOpacity>
+            </View>
 
             {/* Paylasim Modali */}
             <PaylasimModal
