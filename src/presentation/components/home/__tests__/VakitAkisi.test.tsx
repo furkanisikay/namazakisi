@@ -64,13 +64,13 @@ describe('VakitAkisi Bileşeni', () => {
         {...varsayilanProps}
         namazlar={namazUret(dun, SAATLER)}
         suankiVakitAdi={NamazAdi.Yatsi}
-        gunTarihi={dunDate}
+        gunTarihi={dun}
       />
     );
 
     expect(casus).toHaveBeenCalled();
     for (const [, gecenGun] of casus.mock.calls) {
-      expect(gecenGun).toBe(dunDate);
+      expect(gecenGun).toEqual(dunDate);
     }
   });
 
@@ -92,7 +92,7 @@ describe('VakitAkisi Bileşeni', () => {
         namazlar={namazUret(dun, SAATLER)}
         // Aktif vakit yatsı (gece yarısından sonra motorun döndürdüğü vakit)
         suankiVakitAdi={NamazAdi.Yatsi}
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(dun)}
+        gunTarihi={dun}
       />
     );
 
@@ -118,7 +118,7 @@ describe('VakitAkisi Bileşeni', () => {
         onVakitTikla={onVakitTikla}
         namazlar={namazUret(bugun, { ...SAATLER, [NamazAdi.Yatsi]: '23:59' })}
         suankiVakitAdi={NamazAdi.Sabah}
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(bugun)}
+        gunTarihi={bugun}
       />
     );
 
@@ -138,7 +138,7 @@ describe('VakitAkisi Bileşeni', () => {
         onVakitTikla={onVakitTikla}
         namazlar={namazUret(dun, { ...SAATLER, [NamazAdi.Yatsi]: '23:59' })}
         suankiVakitAdi=""
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(dun)}
+        gunTarihi={dun}
       />
     );
 

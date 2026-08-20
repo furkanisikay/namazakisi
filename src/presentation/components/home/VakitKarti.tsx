@@ -37,7 +37,7 @@ const getVakitIkonu = (vakit: string): string => {
     }
 };
 
-export const VakitKarti: React.FC<VakitKartiProps> = ({
+export const VakitKarti = React.memo<VakitKartiProps>(({
     vakitBilgisi,
     kalanSureStr,
     suankiVakitAdi,
@@ -164,4 +164,6 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
             </View>
         </View>
     );
-};
+});
+
+VakitKarti.displayName = "VakitKarti";

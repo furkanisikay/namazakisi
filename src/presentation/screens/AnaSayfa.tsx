@@ -702,7 +702,7 @@ export const AnaSayfa: React.FC = () => {
           onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
-          gunTarihi={sayfaTarihiDate}
+          gunTarihi={sayfaTarihi}
           cumaEtiketi={cumaEtiketi}
         />
         {/* ScrollView sonu için boşluk */}
