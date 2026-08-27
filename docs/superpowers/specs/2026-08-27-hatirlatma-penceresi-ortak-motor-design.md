@@ -144,7 +144,9 @@ Ekranların hiçbiri kendi adım/mod/ses arayüzünü yeniden çizmez. Yeni bir 
 
 ## 7. Seri hatırlatması: büyük sayaçlı bildirim (istek 4)
 
-Altyapı hazır: `startCountdown` foreground service + `CountDownTimer` ile canlı sayıyor, `themeType` layout seçiyor (`CountdownNotificationHelper.kt:97`).
+Altyapı hazır: `startCountdown` canlı sayan bir bildirim kuruyor, `themeType` layout seçiyor (`CountdownNotificationHelper.kt:97`).
+
+> **Mekanizma düzeltmesi:** `expo-countdown-notification/src/index.ts`'in doc-yorumu "Foreground Service + CountDownTimer" diyor; **bu bayat bir yorum**. Modülde Service sınıfı da `startForeground` da yok. Gerçek yol `NotificationManager.notify` + `RemoteViews.setChronometerCountDown` (`CountdownNotificationHelper.kt:113,158`): sayacı **sistem** çizer, uygulama süreci tik atmaz. İki sonucu var: (a) "pil maliyeti" gerekçesi geçersiz — geriye yalnız *kalıcı bildirim* UX gerekçesi kalır; (b) chronometer hedefte **kendiliğinden durmaz**, sıfırı geçince saymaya devam eder → hedef anında sayacı durduran ayrı bir tetik gerekir.
 
 **Ama önce düzeltilmesi gereken bir tutarsızlık var** — kullanıcının "bu da zaten sabah namazına denk geliyordu sanırım?" sorusunun cevabı **hayır**:
 
@@ -158,12 +160,12 @@ Altyapı hazır: `startCountdown` foreground service + `CountDownTimer` ile canl
 Sayaç hedefi bu belirsizliğin üstüne kurulamaz — canlı bir geri sayım yanlış ana sayarsa hata **saniye saniye görünür** hâle gelir. O yüzden:
 
 **Faz 5 iki adımdır:**
-1. **Gün sınırını tek kaynağa bağla.** Seri gününün bittiği an = ertesi imsak (konum yoksa 05:00'e düş). `namazGunuHesapla` bu kaynaktan beslenir; `gunBitisSaati` gerçekten emekliye ayrılır. Bu bir **davranış değişikliğidir** (kimi kullanıcıda gün sınırı 05:00'ten imsağa kayar) → nöbetçi test + duyuru gerekir.
+1. **Gün sınırını tek kaynağa bağla.** Seri gününün bittiği an = ertesi imsak (konum yoksa 05:00'e düş). `namazGunuHesapla` bu kaynaktan beslenir; `gunBitisSaati` gerçekten emekliye ayrılır. Bu bir davranış değişikliğidir (gün sınırı 05:00'ten imsağa kayar; yazın geriye, **kışın ileri** — TR kış imsağı ~06:40 > 05:00). Mevcut hâl zaten tutarsız olduğu için **kullanıcıya duyurulmaz**, ama nöbetçi test zorunludur (iki mevsim de).
 2. **Sayacı kur.** `startCountdown({ id: 'seri_gun_sonu', targetTimeMs: <ertesi imsak>, themeType: 'seri' })`, başlangıç anı kullanıcının seçtiği zaman.
 
 `themeType: 'seri'` yeni bir layout XML'i demek (native değişiklik, ayrı doğrulama turu). Ucuz yol olarak ilk sürümde `'vakit'` layout'u yeniden kullanılabilir; ama iftar/sahur'un kendi kimliği varken serinin de kendi rengi olmalı — kararı ürün tarafı versin.
 
-**Pil/algı notu:** sayaç foreground service'tir; saatlerce açık kalan kalıcı bir bildirim üretir. Bu yüzden başlangıç eşiği kullanıcı tarafından seçilmeli ve varsayılan **dar** olmalı (öneri: 2 saat). "Gün boyu sayan" bir bildirim istenmiyor.
+**Algı notu:** sayaç saatlerce ekranda kalan bir bildirim üretir (pil değil, dikkat maliyeti). Bu yüzden başlangıç eşiği kullanıcı tarafından seçilmeli ve varsayılan **dar** olmalı (öneri: 2 saat). "Gün boyu sayan" bir bildirim istenmiyor.
 
 ## 8. Fazlar
 
@@ -196,9 +198,11 @@ Faz 0 ve 5 diğerlerinden bağımsız; istenirse hemen çıkabilir.
 - **"`olcuDk` yeniden adlandırması gürültü."** Doğru, ama yönü desteklemenin daha ucuz yolu yok; alternatif (iki ayrı plan üreticisi) AGENTS.md'nin "iki motor aynı kuraldan beslenmeli" ilkesini kırar — bu projede zaten iki kez bug ürettiği yer.
 - **Ortak bileşen tek ekranı şişirebilir.** Cuma bölümü tam bir muhafız kartına ihtiyaç duymuyor; `maksAdim: 1` ile sadeleşiyor ama yine de tek bir "önceden kaç dk" stepper'ından ağır. Ölçüt: cuma ekranı bugünkünden **daha karmaşık görünüyorsa** ortak bileşen o ekran için yanlıştır.
 
-## 11. Açık sorular (onay gerekiyor)
+## 11. Kararlar (kullanıcı onayı alındı)
 
-1. Faz sırası: Faz 0 (dinamik eşik) hemen çıksın mı, yoksa hepsi tek dalda mı?
-2. Seri gün sınırının imsağa kayması kabul mü? (Kimi kullanıcıda gün 05:00 yerine imsakta biter.)
-3. Seri sayacı için yeni native layout (`themeType: 'seri'`) mı, ilk sürümde `'vakit'` layout'u mu?
-4. Faz 3 (ortak bileşen) Faz 4'ten önce mi, birlikte mi?
+1. **Hepsi yapılacak**, tek dalda; Faz 0 ve 5 paralel kulvarda.
+2. Seri gün sınırının imsağa kayması **kabul, duyurusuz** — mevcut davranış zaten bozuk.
+3. Seri sayacı **kendi native layout'unu** alır (`themeType: 'seri'`).
+4. Faz 3 ile 4 **birlikte** (tek tüketiciyle genelleştirme riski, §10).
+
+Uygulama adımları: [plan](../plans/2026-08-27-hatirlatma-penceresi.md).
