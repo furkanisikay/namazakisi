@@ -15,6 +15,7 @@ import {
 import { ApiYanit } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { bosSeriDurumuOlustur } from '../../domain/services/SeriHesaplayiciServisi';
+import { toparlanmaHedefiniNormalize } from '../../core/seri/toparlanmaHedefi';
 import {
   bosKullaniciRozetleriOlustur,
   bosSeviyeDurumuOlustur,
@@ -42,6 +43,13 @@ export const localSeriDurumunuGetir = async (): Promise<
       if (parsed.dondurulmaTarihi === undefined) {
         parsed.dondurulmaTarihi = null;
       }
+
+      // Toparlanma hedefi kullanici ayari degil, uygulama kuralidir: eski kurulumlarda
+      // diske yazilmis bayat hedefi (5/3 gun) guncel kurala cek.
+      parsed.toparlanmaDurumu = toparlanmaHedefiniNormalize(
+        parsed.toparlanmaDurumu,
+        VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi
+      );
 
       return { basarili: true, veri: parsed };
     }
@@ -190,7 +198,19 @@ export const localSeriAyarlariniGetir = async (): Promise<
     const veri = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SERI_AYARLARI);
 
     if (veri) {
-      return { basarili: true, veri: JSON.parse(veri) };
+      const parsed = JSON.parse(veri) as Partial<SeriAyarlari>;
+
+      return {
+        basarili: true,
+        veri: {
+          // Eksik alanlar (yeni eklenen ayarlar) varsayilandan tamamlanir
+          ...VARSAYILAN_SERI_AYARLARI,
+          ...parsed,
+          // Toparlanma gun sayisi kullanici ayari DEGIL (ekranda secilemez): diskteki
+          // bayat deger degil, guncel kural gecerlidir.
+          toparlanmaGunSayisi: VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi,
+        },
+      };
     }
 
     // Veri yoksa varsayilan ayarlari dondur

@@ -137,7 +137,7 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     expect(sonuc.seriBozuldu).toBe(true);
   });
 
-  test('7+ gunluk seri bir gun kacirilinca toparlanma modu uretimden gelen hedefle (3) baslamali', () => {
+  test('7+ gunluk seri bir gun kacirilinca toparlanma modu uretimden gelen hedefle baslamali', () => {
     // Toparlanmayi elle kurmak yerine GERCEK uretim akisiyla tetikliyoruz:
     // 10 gunluk seri + 1 gun bosluk + bugun tam => toparlanma modu acilir.
     const evvelsiGun = '2025-12-19';
@@ -153,29 +153,30 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
 
     const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), eksikNamazlar(dun), varsayilanAyarlar);
 
-    // Hedef, ayardan turetilir (uretim satir 392) — elle 5 yazilmaz, varsayilan 3'tur
+    // Hedef, ayardan turetilir (uretim satir 392) — testte sabit sayi yazilmaz
     expect(sonuc.seriDurumu.toparlanmaDurumu?.hedefGunSayisi).toBe(
       varsayilanAyarlar.toparlanmaGunSayisi,
     );
-    expect(varsayilanAyarlar.toparlanmaGunSayisi).toBe(3); // dokuman/hedef tutarliligi
+    // Dokuman/hedef tutarliligi: kural 2 gundur (AGENTS.md + SeriTipleri varsayilani)
+    expect(VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi).toBe(2);
     expect(sonuc.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1); // bugun ilk gun
     expect(sonuc.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(10);
     expect(sonuc.seriBozuldu).toBe(true);
   });
 
-  test('Toparlanmada 3 tam gun (hedef) kilindiginda eski seri kurtarilmali', () => {
+  test('Toparlanmada hedef gun sayisi kadar tam gun kilindiginda eski seri kurtarilmali', () => {
     const bugun = '2025-12-25';
     jest.setSystemTime(new Date(bugun + 'T12:00:00'));
 
-    // State'i uretimle uyumlu kur: hedef = ayardan (3), tamamlananGun = 2 => bugun 3. gun
+    // State'i uretimle uyumlu kur: hedefin son gunu bugun olsun (tamamlanan = hedef - 1)
     const mevcutDurum: SeriDurumu = {
       ...bosSeriDurumuOlustur(),
       mevcutSeri: 0, // Toparlanma modunda mevcutSeri 0 olur (ozet haric)
       sonTamGun: '2025-12-24',
       toparlanmaDurumu: {
-        tamamlananGun: 2, // 3 gunluk hedefin 2'si bitti; bugun 3. gun
+        tamamlananGun: varsayilanAyarlar.toparlanmaGunSayisi - 1, // bugun son gun
         baslangicTarihi: '2025-12-23',
-        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3, kaynaktan turetilir
+        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // kaynaktan turetilir
         oncekiSeri: 10,
       },
     };
@@ -191,6 +192,9 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     const bugun = '2025-12-24';
     jest.setSystemTime(new Date(bugun + 'T12:00:00'));
 
+    // Hedef ayardan gelir; "ortada bir gun" olabilmesi icin bu senaryo 3 gunluk hedef kurar
+    const ucGunlukAyarlar: SeriAyarlari = { ...varsayilanAyarlar, toparlanmaGunSayisi: 3 };
+
     // hedef = 3, tamamlananGun = 1 => bugun 2. gun. Esik henuz dolmadi.
     const mevcutDurum: SeriDurumu = {
       ...bosSeriDurumuOlustur(),
@@ -199,12 +203,12 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
       toparlanmaDurumu: {
         tamamlananGun: 1,
         baslangicTarihi: '2025-12-23',
-        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3
+        hedefGunSayisi: ucGunlukAyarlar.toparlanmaGunSayisi, // = 3
         oncekiSeri: 10,
       },
     };
 
-    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
+    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, ucGunlukAyarlar);
 
     // 2. gun tamamlandi ama hedef 3 oldugu icin toparlanma HENUZ bitmemeli
     expect(sonuc.toparlanmaBasarili).toBe(false);
@@ -427,12 +431,15 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
   });
 
   // ==================== GAP 5: Toparlanmanin orta gunu (devam) ====================
-  // Mevcut testler hedef-tamam (3/3) ve hedef-on-1-gun (durum kurarak) durumuna bakar,
+  // Mevcut testler hedef-tamam ve hedef-on-1-gun (durum kurarak) durumuna bakar,
   // ama 'devam' dalinin (satir 322-335) sonTamGun guncellemesi ve 10 puani assert edilmiyor.
   test('Toparlanmanin orta gununde tamamlananGun artmali, sonTamGun bugune kaymali, 10 puan verilmeli', () => {
     const dun = '2026-06-14';
     const bugun = '2026-06-15';
     jest.setSystemTime(new Date(2026, 5, 15, 12, 0, 0));
+
+    // "Orta gun" ancak hedef 2'den buyukken vardir -> bu senaryo 3 gunluk hedef kurar
+    const ucGunlukAyarlar: SeriAyarlari = { ...varsayilanAyarlar, toparlanmaGunSayisi: 3 };
 
     // hedef = 3, tamamlananGun = 1 => bugun 2. gun (henuz hedefe ulasilmadi)
     const mevcutDurum: SeriDurumu = {
@@ -442,12 +449,12 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
       toparlanmaDurumu: {
         tamamlananGun: 1,
         baslangicTarihi: '2026-06-13',
-        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3
+        hedefGunSayisi: ucGunlukAyarlar.toparlanmaGunSayisi, // = 3
         oncekiSeri: 10,
       },
     };
 
-    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
+    const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, ucGunlukAyarlar);
 
     // Devam dali: hedefe ulasilmadi, ama ilerleme kaydedilmeli
     expect(sonuc.toparlanmaBasarili).toBe(false);
@@ -680,3 +687,109 @@ describe('SeriHesaplayiciServisi - Bug #4: ayni gun tam-alti dusurulunce geri sa
   });
 });
 
+
+describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snapshot regresyonu)', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  const gun = (tarih: string, kilinan: number): GunlukNamazlar => ({
+    tarih,
+    namazlar: [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, NamazAdi.Yatsi]
+      .map((namazAdi, i) => ({ namazAdi, tamamlandi: i < kilinan, tarih })),
+  });
+
+  /**
+   * 22 gunluk seri -> 06-12 kacirildi -> toparlanmanin 1. gunu (06-13) tamamlandi.
+   * Donen durum, kullanicinin ertesi gune (06-14) TASIDIGI gercek state'tir; icinde
+   * 06-13'e ait "bugun oncesi" snapshot'i vardir (bayat snapshot kaynagi).
+   */
+  const toparlanmaninIkinciGunu = (ayarlar: SeriAyarlari): SeriDurumu => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-06-13T12:00:00'));
+    const bozukSeri: SeriDurumu = {
+      mevcutSeri: 22,
+      enUzunSeri: 22,
+      sonTamGun: '2026-06-11', // 06-12 kacirildi
+      seriBaslangici: '2026-05-21',
+      toparlanmaDurumu: null,
+      dondurulduMu: false,
+      dondurulmaTarihi: null,
+      sonGuncelleme: new Date().toISOString(),
+    };
+    const ilkGun = seriHesapla(bozukSeri, gun('2026-06-13', 3), gun('2026-06-12', 0), ayarlar);
+    expect(ilkGun.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
+
+    // Ertesi gun
+    jest.setSystemTime(new Date('2026-06-14T12:00:00'));
+    return ilkGun.seriDurumu;
+  };
+
+  describe('hedef 2 gun (guncel kural): 2. gun toparlanmayi bitirir', () => {
+    const ayarlar: SeriAyarlari = { ...VARSAYILAN_SERI_AYARLARI, tamGunEsigi: 3 };
+
+    test('2. gun tam -> seri kurtarilir; ayni gun geri alininca toparlanmaya DONULUR', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      expect(tam.toparlanmaBasarili).toBe(true);
+      expect(tam.seriDurumu.mevcutSeri).toBe(23);
+
+      // Ayni gun bir namaz geri alinir -> 1/2'lik toparlanmaya geri sarilmali
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+      expect(geriAl.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
+      expect(geriAl.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(22);
+      expect(geriAl.seriDurumu.sonTamGun).toBe('2026-06-13');
+    });
+
+    test('geri alip tekrar isaretleyince seri YINE kurtarilir (yeni toparlanma baslamaz)', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+      const tekrar = seriHesapla(geriAl.seriDurumu, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+
+      expect(tekrar.toparlanmaBasarili).toBe(true);
+      expect(tekrar.seriDurumu.toparlanmaDurumu).toBeNull();
+      expect(tekrar.seriDurumu.mevcutSeri).toBe(23);
+      expect(tekrar.seriDurumu.sonTamGun).toBe('2026-06-14');
+    });
+  });
+
+  describe('hedef 3 gun: toparlanmanin ORTA gunu geri alinip tekrar isaretlenir', () => {
+    // Asil regresyon: onceki gunden kalan snapshot uygulanip toparlanma 2/N -> 1/N'e
+    // dusuyor, hatta hedef gun sayisi guncel ayara gore YENIDEN kuruluyordu.
+    const ayarlar: SeriAyarlari = {
+      ...VARSAYILAN_SERI_AYARLARI,
+      tamGunEsigi: 3,
+      toparlanmaGunSayisi: 3,
+    };
+
+    test('2. gun geri alininca 1. gune donulur, toparlanma MODU korunur', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      expect(tam.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(2);
+
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+      expect(geriAl.seriDurumu.toparlanmaDurumu).not.toBeNull();
+      expect(geriAl.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
+      expect(geriAl.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(22);
+      expect(geriAl.seriDurumu.sonTamGun).toBe('2026-06-13');
+    });
+
+    test('geri alip tekrar isaretleyince toparlanma 2. gunde kalir, 1. gune SIFIRLANMAZ', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+      const tekrar = seriHesapla(geriAl.seriDurumu, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+
+      expect(tekrar.seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(2);
+      expect(tekrar.seriDurumu.toparlanmaDurumu?.hedefGunSayisi).toBe(3);
+      expect(tekrar.seriDurumu.toparlanmaDurumu?.baslangicTarihi).toBe('2026-06-13');
+      expect(tekrar.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(22);
+      expect(tekrar.seriDurumu.sonTamGun).toBe('2026-06-14');
+    });
+  });
+});

@@ -41,6 +41,23 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'toparlanma-iki-gun',
+        surum: '0.24.1',
+        tarih: '2026-08-27',
+        baslik: 'Serinizi Artık 2 Günde Kurtarabilirsiniz',
+        aciklama:
+            'Toparlanma modu kısaldı: bir gün kaçırdığınızda serinizi geri almak için 2 gün tam kılmanız yeterli.',
+        detayAciklama:
+            'Uzun bir seriyi bir gün kaçırdığınızda toparlanma modu devreye girer ve tam kıldığınız günlerle eski serinizi geri kazanırsınız. Bu süreyi kısalttık: artık 2 gün yeterli. Toparlanması hâlihazırda devam edenlerin ilerlemesi korunur, hedefleri de yeni kurala çekilir. Ayrıca aynı gün içinde bir namazı yanlışlıkla geri alıp tekrar işaretlediğinizde toparlanma ilerlemenizin başa dönmesine yol açan hatayı giderdik; ilerlemeniz olduğu gibi kalır.',
+        ikon: 'heartbeat',
+        kartGoster: false,
+        detaylar: [
+            'Toparlanma için gereken tam gün sayısı 2 oldu',
+            'Devam eden toparlanmalarda tamamladığınız günler korunur',
+            'İşareti geri alıp tekrar koyunca ilerleme sıfırlanmıyor',
+        ],
+    },
+    {
         id: 'cuma-namazi-hatirlatmasi',
         surum: '0.24.0',
         tarih: '2026-07-28',

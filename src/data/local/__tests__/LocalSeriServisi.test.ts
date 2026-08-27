@@ -220,6 +220,37 @@ describe('LocalSeriServisi - Veri Migrasyonu', () => {
   });
 
   describe('localSeriDurumunuGetir migrasyonu', () => {
+    test('devam eden toparlanmanin BAYAT hedefi guncel kurala cekilir', async () => {
+      // Eski kuralla (5 gun) diske yazilmis, 1 gunu tamamlanmis bir toparlanma
+      await AsyncStorage.setItem(
+        DEPOLAMA_ANAHTARLARI.SERI_DURUMU,
+        JSON.stringify({
+          mevcutSeri: 22,
+          enUzunSeri: 22,
+          sonTamGun: '2026-06-13',
+          seriBaslangici: '2026-05-21',
+          toparlanmaDurumu: {
+            tamamlananGun: 1,
+            baslangicTarihi: '2026-06-13',
+            hedefGunSayisi: 5,
+            oncekiSeri: 22,
+          },
+          dondurulduMu: false,
+          dondurulmaTarihi: null,
+          sonGuncelleme: new Date().toISOString(),
+        })
+      );
+
+      const sonuc = await localSeriDurumunuGetir();
+
+      expect(sonuc.veri!.toparlanmaDurumu?.hedefGunSayisi).toBe(
+        VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi
+      );
+      // Ilerleme ve kurtarilacak seri korunur
+      expect(sonuc.veri!.toparlanmaDurumu?.tamamlananGun).toBe(1);
+      expect(sonuc.veri!.toparlanmaDurumu?.oncekiSeri).toBe(22);
+    });
+
     test('dondurulduMu ve dondurulmaTarihi eksik olan eski veriyi migrate etmeli', async () => {
       // Eski versiyondan kalan veri
       const eskiVeri = {
@@ -562,6 +593,33 @@ describe('LocalSeriServisi - Kaydetme (round-trip) ve hata yollari', () => {
       } finally {
         geriYukle();
       }
+    });
+
+    test('eksik alanlar varsayilandan tamamlanir (eski kayit)', async () => {
+      await AsyncStorage.setItem(
+        DEPOLAMA_ANAHTARLARI.SERI_AYARLARI,
+        JSON.stringify({ tamGunEsigi: 3 })
+      );
+
+      const sonuc = await localSeriAyarlariniGetir();
+      expect(sonuc.veri!.tamGunEsigi).toBe(3);
+      expect(sonuc.veri!.gunSonuBildirimModu).toBe(
+        VARSAYILAN_SERI_AYARLARI.gunSonuBildirimModu
+      );
+      expect(sonuc.veri!.bildirimSaati).toBe(VARSAYILAN_SERI_AYARLARI.bildirimSaati);
+    });
+
+    test('diskteki BAYAT toparlanmaGunSayisi yok sayilir, guncel kural gecerlidir', async () => {
+      // Toparlanma gun sayisi kullanici ayari degil, uygulama kuralidir.
+      await AsyncStorage.setItem(
+        DEPOLAMA_ANAHTARLARI.SERI_AYARLARI,
+        JSON.stringify({ ...VARSAYILAN_SERI_AYARLARI, toparlanmaGunSayisi: 5 })
+      );
+
+      const sonuc = await localSeriAyarlariniGetir();
+      expect(sonuc.veri!.toparlanmaGunSayisi).toBe(
+        VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi
+      );
     });
   });
 

@@ -6,7 +6,7 @@
  * - Kullanicinin belirlediği esik kadar namaz kilindiysa gun "tam" sayilir
  * - Gun bitis saati ayarlanabilir (varsayilan 05:00)
  * - Seri bozuldugunda toparlanma modu baslar
- * - Toparlanmada 5 gun tam kilinirsa onceki seri kurtarilir
+ * - Toparlanmada `toparlanmaGunSayisi` (varsayilan 2) gun tam kilinirsa onceki seri kurtarilir
  * - Toparlanmada bir gun bile kacirilirsa sifirlanir
  */
 
@@ -220,6 +220,34 @@ export const tamamlananHedefiBul = (
 };
 
 /**
+ * Bugun YENI tam sayildiysa ayni-gun geri-alimi icin snapshot'i ve bugun verilen bonusu
+ * sonuca yazar.
+ *
+ * HEM toparlanma HEM normal mod yolunda cagrilmali: yalnizca birinde cagrilirsa otekinde
+ * ONCEKI GUNDEN kalan snapshot state'te yasamaya devam eder ve ayni-gun geri-alimi yanlis
+ * gune sarar (yasanmis bug: toparlanmanin 2. gunu geri alinip tekrar isaretlenince
+ * ilerleme 2/N -> 1/N'e dusuyordu).
+ */
+const bugunSnapshotunuYaz = (
+  sonuc: SeriHesaplamaSonucu,
+  bugun: string,
+  snapshot: BugunOncesiSnapshot
+): SeriHesaplamaSonucu => {
+  if (!sonuc.seriDegisti || sonuc.seriDurumu.sonTamGun !== bugun) {
+    return sonuc;
+  }
+
+  return {
+    ...sonuc,
+    seriDurumu: {
+      ...sonuc.seriDurumu,
+      bugunOncesi: snapshot,
+      bugunKazanilanPuan: sonuc.kazanilanPuan,
+    },
+  };
+};
+
+/**
  * Ana seri hesaplama fonksiyonu
  * Gun sonunda veya namaz durumu degistiginde cagirilir
  * 
@@ -247,7 +275,7 @@ export const seriHesapla = (
   const bugunOzelGun = ozelGunAyarlari ? ozelGunAktifMi(bugun, ozelGunAyarlari) : false;
 
   // Baslangic sonucu
-  let sonuc: SeriHesaplamaSonucu = {
+  const sonuc: SeriHesaplamaSonucu = {
     seriDurumu: { ...durum },
     seriDegisti: false,
     yeniHedefTamamlandi: null,
@@ -291,6 +319,7 @@ export const seriHesapla = (
 
   // Bugun "tam" sayilmadan ONCEki durum (Bug #4: ayni-gun geri-alimi icin saklanir)
   const bugunOncesiSnapshot: BugunOncesiSnapshot = {
+    tarih: bugun,
     mevcutSeri: durum.mevcutSeri,
     enUzunSeri: durum.enUzunSeri,
     sonTamGun: durum.sonTamGun,
@@ -307,7 +336,10 @@ export const seriHesapla = (
       return sonuc;
     }
     // Bug #4: bugun artik tam DEGIL -> bugunu geri al (snapshot'tan once-bugun durumuna don)
-    if (durum.bugunOncesi) {
+    // KRITIK: snapshot yalnizca BUGUNE aitse uygulanir. Baska bir gunun snapshot'i
+    // (ornegin toparlanmanin 1. gununden kalan) uygulanirsa toparlanma ilerlemesi
+    // sifirlanir ve tekrar isaretleyince yepyeni bir toparlanma baslar (1/N).
+    if (durum.bugunOncesi && durum.bugunOncesi.tarih === bugun) {
       sonuc.seriDurumu = {
         ...durum.bugunOncesi,
         bugunOncesi: null,
@@ -377,7 +409,8 @@ export const seriHesapla = (
       }
     }
 
-    return sonuc;
+    // Toparlanma yolunda da snapshot tazelenmeli (aksi halde onceki gunun snapshot'i kalir)
+    return bugunSnapshotunuYaz(sonuc, bugun, bugunOncesiSnapshot);
   }
 
   // ==================== NORMAL MOD ====================
@@ -457,15 +490,7 @@ export const seriHesapla = (
 
   // Bug #4 + Faz 1b: Bugun YENI tam sayildiysa onceki-durum snapshot'ini ve bugun verilen
   // bonusu sakla (ayni-gun geri-alimi hem seriyi hem bonusu geri alabilsin).
-  if (sonuc.seriDegisti && sonuc.seriDurumu.sonTamGun === bugun) {
-    sonuc.seriDurumu = {
-      ...sonuc.seriDurumu,
-      bugunOncesi: bugunOncesiSnapshot,
-      bugunKazanilanPuan: sonuc.kazanilanPuan,
-    };
-  }
-
-  return sonuc;
+  return bugunSnapshotunuYaz(sonuc, bugun, bugunOncesiSnapshot);
 };
 
 /**

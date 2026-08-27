@@ -7,14 +7,15 @@
 
 /**
  * Toparlanma (Recovery) Durumu - Seri bozuldugunda aktif olur
- * Kullanici 5 gun tam kilarak onceki serisini kurtarabilir
+ * Kullanici ard arda `toparlanmaGunSayisi` (varsayilan 2) gun tam kilarak onceki serisini
+ * kurtarabilir
  */
 export interface ToparlanmaDurumu {
   /** Tamamlanan toparlanma gun sayisi */
   tamamlananGun: number;
   /** Toparlanma baslangic tarihi (ISO format) */
   baslangicTarihi: string;
-  /** Hedef gun sayisi (varsayilan 5) */
+  /** Hedef gun sayisi (varsayilan 2) */
   hedefGunSayisi: number;
   /** Kurtarilacak onceki seri degeri */
   oncekiSeri: number;
@@ -44,7 +45,8 @@ export interface SeriDurumu {
   /**
    * Bugun "tam" sayilmadan ONCEki streak durumu. Ayni-gun geri-alimi (5/5 -> 4/5) icin:
    * bugun tam sayildiginda doldurulur, ayni gun tam-altina dusurulurse bu duruma donulur.
-   * Eski verilerde olmayabilir (opsiyonel).
+   * Eski verilerde olmayabilir (opsiyonel). `tarih` alani hangi gune ait oldugunu soyler;
+   * baska bir gune ait snapshot ASLA uygulanmaz (bkz. SeriHesaplayiciServisi).
    */
   bugunOncesi?: BugunOncesiSnapshot | null;
   /**
@@ -56,6 +58,11 @@ export interface SeriDurumu {
 
 /** seriHesapla'nin ayni-gun geri-alimi icin sakladigi minimal onceki-durum snapshot'i. */
 export interface BugunOncesiSnapshot {
+  /**
+   * Snapshot'in ait oldugu namaz gunu (ISO). Yalnizca "bugun" ile eslesen snapshot geri
+   * alinabilir; eski kayitlarda olmayabilir (o zaman bayat sayilir ve uygulanmaz).
+   */
+  tarih?: string;
   mevcutSeri: number;
   enUzunSeri: number;
   sonTamGun: string | null;
@@ -207,7 +214,11 @@ export interface SeriAyarlari {
   gunBitisSaati: string;
   /** Seri hatirlaticilari aktif mi */
   bildirimlerAktif: boolean;
-  /** Toparlanma icin gereken gun sayisi (varsayilan 5) */
+  /**
+   * Toparlanma icin gereken gun sayisi (varsayilan 2).
+   * Kullanici ayari DEGIL, uygulama kuralidir: diskten okunurken guncel kurala cekilir
+   * (`localSeriAyarlariniGetir`).
+   */
   toparlanmaGunSayisi: number;
   /** Gun sonu bildirimi aktif mi */
   gunSonuBildirimAktif: boolean;
@@ -234,7 +245,7 @@ export const VARSAYILAN_SERI_AYARLARI: SeriAyarlari = {
   tamGunEsigi: 5,
   gunBitisSaati: '05:00', // DEPRECATED - artık otomatik hesaplanıyor
   bildirimlerAktif: true,
-  toparlanmaGunSayisi: 3,
+  toparlanmaGunSayisi: 2,
   gunSonuBildirimAktif: true,
   gunSonuBildirimDk: 60, // DEPRECATED
   // Yeni gün sonu bildirim ayarları

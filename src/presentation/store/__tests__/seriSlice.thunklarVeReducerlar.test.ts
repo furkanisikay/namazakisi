@@ -30,6 +30,7 @@ import seriReducer, {
 } from '../seriSlice';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
+import { VARSAYILAN_SERI_AYARLARI } from '../../../core/types/SeriTipleri';
 
 // ==================== MOCKLAR ====================
 
@@ -328,7 +329,7 @@ describe('seriAyarlariniGuncelle bildirim planlama dallari', () => {
     const ayarlar = store.getState().seri.ayarlar;
     expect(ayarlar.tamGunEsigi).toBe(3);
     // Birlesim: dokunulmayan alan varsayilan degerini korur
-    expect(ayarlar.toparlanmaGunSayisi).toBe(3); // VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi
+    expect(ayarlar.toparlanmaGunSayisi).toBe(VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi);
     expect(ayarlar.gunSonuBildirimModu).toBe('otomatik');
     // Diske yazilan deger de birlesik olmali
     const kaydedilen = mockLocalSeriAyarlariniKaydet.mock.calls[0][0];
