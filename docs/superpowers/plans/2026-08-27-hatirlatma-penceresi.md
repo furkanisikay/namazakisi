@@ -240,6 +240,7 @@ Dört hafta ileri planlama · her cuma ayrı `PrayerTimes` · `NamazAdi.Ogle` ki
 
 ### 5b — Sayaç bildirimi
 - **Hedef (B4):** `sonrakiGunImsakVaktiGetir` **koşulsuz yarının** fajr'ını döndürür → saat 02:00'de seri gününün gerçek sonu **bugünün** imsağıdır (~1,5 saat), yarınınki değil (~27 saat). Hedef = **"şu andan sonraki İLK fajr"**. Gece-yarısı nöbetçi testi zorunlu.
+- **YENİ-5 (5a'da ölçüldü) — imsak kaynağı ÖLÜ: `KonumYoneticiServisi` üretimde HİÇ doldurulmuyor.** Grep ile doğrulandı: `koordinatlarAyarla`/`manuelKonumAyarla`/`gpsKonumuAl`/`durumYukle` üretim kodunda **hiçbir yerden** çağrılmıyor (yalnız kendi testlerinden). Sonuç: `seriSlice.ts:157`'deki `sonrakiGunImsakVaktiGetir()` bugün **daima null** dönüyor olmalı → gün sonu bildirimi pratikte hep 04:00 fallback'inde. 5a bu yüzden imsağı `NamazVaktiHesaplayiciServisi` (App.tsx'te gerçekten yapılandırılan singleton) üzerinden enjekte edilebilir bir sağlayıcıyla okur (`uygulamaImsakSaglayici`). **5b'de `seriSlice.ts:157` hattı da o kaynağa taşınmalı**; `KonumYoneticiServisi`'ye yeni bağımlılık EKLEME — sessizce ölü doğar.
 - **Durdurma (B14):** chronometer hedefte kendiliğinden durmaz, sıfırı geçince saymaya devam eder → hedef anında `stopCountdown` tetiği.
 - **Seri zaten tamamsa sayaç HİÇ çıkmaz** (bugünkü düz bildirimde bu kapı yok).
 - Başlangıç eşiği kullanıcı ayarı; varsayılan **2 saat** (gerekçe: pil değil, kalıcı bildirim dikkat maliyeti — B14).
