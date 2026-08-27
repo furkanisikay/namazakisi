@@ -31,6 +31,13 @@ export interface AyarSatiriNavigasyonProps extends AyarSatiriOrtakProps {
   onPress: () => void;
   /** "Yeni" rozetini göster (varsayılan: gösterme). */
   yeniRozetGoster?: boolean;
+  /**
+   * Satırın en sağına, gezinmeden BAĞIMSIZ bir eylem düğmesi (ör. "konumu yenile").
+   * Verilirse satır artık tek bir Touchable DEĞİLDİR: gezinme alanı ile eylem
+   * düğmesi KARDEŞ olur — iç içe Touchable, TalkBack'te satırı tek düğüme
+   * düzleştirip eylemi erişilemez kılardı (Switch ile aynı kural).
+   */
+  ekEylem?: React.ReactNode;
 }
 
 export interface AyarSatiriToggleProps extends AyarSatiriOrtakProps {
@@ -75,15 +82,15 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
   );
 
   if (props.varyant === 'navigasyon') {
-    const { onPress } = props;
+    const { onPress, ekEylem } = props;
     const handlePress = async () => {
       await butonTiklandiFeedback();
       onPress();
     };
 
-    return (
+    const gezinmeAlani = (
       <TouchableOpacity
-        className="flex-row items-center py-3.5 px-4"
+        className={ekEylem ? 'flex-1 flex-row items-center py-3.5 pl-4' : 'flex-row items-center py-3.5 px-4'}
         onPress={handlePress}
         activeOpacity={0.7}
         accessibilityRole="button"
@@ -93,6 +100,17 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
         {metinBlogu}
         <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} style={{ marginLeft: 8 }} />
       </TouchableOpacity>
+    );
+
+    if (!ekEylem) {
+      return gezinmeAlani;
+    }
+
+    return (
+      <View className="flex-row items-center">
+        {gezinmeAlani}
+        <View className="pl-1 pr-4">{ekEylem}</View>
+      </View>
     );
   }
 

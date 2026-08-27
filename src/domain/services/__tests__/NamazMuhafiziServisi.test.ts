@@ -367,11 +367,11 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
     });
 
-    test('Vakit DOLDUĞUNDA (kalanSureMs negatif) hâlâ Seviye 4 tetiklenir ve mesajda negatif dk gösterilir', () => {
+    test('Vakit DOLDUĞUNDA (kalanSureMs negatif) muhafız SUSAR (negatif dk mesaja sızmaz)', () => {
         // Gerçek getSuankiVakitBilgisi vakit çıkışında kalanSureMs'i NEGATİF döndürür.
-        // Math.floor(-120000/60000) = -2 -> -2 <= 5 -> L4 dalı, modulo bypass (aktifSeviye===4).
-        // Bu, mevcut fiziksel sınır davranışını sabitler: vakit dolmuşken muhafız susmaz,
-        // negatif dakika mesaja sızar. Üretim bu sınırı clamp'lemeye başlarsa test düşer (amaç bu).
+        // Eskiden bu "-2 dk kaldı" gibi bir banner üretiyordu; alt sınır (kalanDk >= 1)
+        // `seviyeTetiklenirMi`ye taşındığından artık uyarı yok — arka plan planı da
+        // bu dakikaları hiç içermiyordu.
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
             kalanSureMs: -2 * 60 * 1000, // vakit 2 dk önce çıktı
@@ -379,15 +379,10 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         muhafiz.baslat(bildirimSpx);
 
-        expect(bildirimSpx).toHaveBeenCalledTimes(1);
-        const [mesaj, seviye] = bildirimSpx.mock.calls[0];
-        expect(seviye).toBe(4);
-        expect(mesaj).toContain('VAKİT ÇIKIYOR');
-        expect(mesaj).toContain('-2 dk kaldı');
+        expect(bildirimSpx).not.toHaveBeenCalled();
     });
 
-    test('Vakit TAM DOLDUĞUNDA (kalanSureMs===0) Seviye 4 tetiklenir', () => {
-        // Sınır: 0 dk -> 0 <= 5 -> L4, mesaj "(0 dk kaldı)".
+    test('Vakit TAM DOLDUĞUNDA (kalanSureMs===0) muhafız SUSAR', () => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',
             kalanSureMs: 0,
@@ -395,10 +390,19 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         muhafiz.baslat(bildirimSpx);
 
+        expect(bildirimSpx).not.toHaveBeenCalled();
+    });
+
+    test('Vaktin SON dakikasında (59 sn > kalan > 0 değil, tam 1 dk) hâlâ uyarı gelir', () => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 60 * 1000, // kalanDk = 1
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
         expect(bildirimSpx).toHaveBeenCalledTimes(1);
-        const [mesaj, seviye] = bildirimSpx.mock.calls[0];
-        expect(seviye).toBe(4);
-        expect(mesaj).toContain('0 dk kaldı');
+        expect(bildirimSpx.mock.calls[0][1]).toBe(4);
     });
 
     test('Sıklık modulo kapısı: Seviye 1 boyunca (45->31 dk) yalnızca 45 ve 30\'da tetiklenir, aradaki dakikalar ATLANIR', () => {
@@ -804,6 +808,44 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             muhafiz.baslat(bildirimSpx);
 
             expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('REGRESYON: vakit çıkarken (kalan < 1 dk) ne banner ne de anons gelir', () => {
+            // Kullanıcı raporu: 4. seviye "2 dk kala, her 2 dk" kurulu iken anons hem
+            // 2 dk kala hem de 0 dk kala duyuluyordu. Arka plan planı (vakitUyariPlaniOlustur)
+            // 0. dakikayı HİÇ planlamaz; ön plan da planlamamalı — yoksa uygulama açıkken
+            // arka planda karşılığı olmayan FAZLADAN bir konuşma çıkar.
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[3] = {
+                ...matris.ogle.seviyeler[3],
+                mod: 'ikisi',
+                esikDk: 2,
+                siklik: { herDk: 2 },
+                anonsMetni: '{vakit} vakti çıkıyor.',
+            };
+            muhafiz.yapilandir(matris);
+
+            // Önce eşik anı: uyarı GELMELİ (nöbetçinin ayarı susturmadığının kanıtı)
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 2 * 60 * 1000,
+            });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenCalled();
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+
+            // Vakit çıkmak üzere: 40 sn kaldı -> kalanDk = 0
+            bildirimSpx.mockClear();
+            mockPlanlaAnons.mockClear();
+            muhafiz.durdur();
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                kalanSureMs: 40 * 1000,
+            });
+            muhafiz.baslat(bildirimSpx);
+
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+            expect(bildirimSpx).not.toHaveBeenCalled();
         });
 
         it('native çağrı patlarsa banner yine de gösterilir (anons UI\'ı düşürmez)', () => {

@@ -86,9 +86,15 @@ describe('seviyeTetiklenirMi', () => {
     expect(seviyeTetiklenirMi(sv('nazik', 30, -5), 30)).toBe(false);
   });
 
-  test('vakit dolduğunda (kalan <= 0) pencere hâlâ kapsar', () => {
-    expect(seviyeTetiklenirMi(sv('acil', 5, 1), 0)).toBe(true);
-    expect(seviyeTetiklenirMi(sv('acil', 5, 1), -2)).toBe(true);
+  test('vakit çıkarken/çıktıktan sonra (kalan < 1) TETİKLENMEZ', () => {
+    // Alt sınır burada tek kaynaktır: `vakitUyariPlaniOlustur` zaten `k > 0` tarar,
+    // yani arka plan 0. dakikayı hiç planlamaz. Ön plan (NamazMuhafiziServisi) ham
+    // `kalanDk` verdiği için 0 dakika sıklık kuralından geçiyor ve "2 dk kala"
+    // kurulu adım bir de vakit çıkarken konuşuyordu (kullanıcı raporu).
+    expect(seviyeTetiklenirMi(sv('acil', 5, 1), 0)).toBe(false);
+    expect(seviyeTetiklenirMi(sv('acil', 5, 1), -2)).toBe(false);
+    // Son "gerçek" dakika hâlâ tetikler
+    expect(seviyeTetiklenirMi(sv('acil', 5, 1), 1)).toBe(true);
   });
 });
 

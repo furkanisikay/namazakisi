@@ -379,10 +379,11 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(sonuc.type).toContain('fulfilled');
 
       const s = store.getState().seri;
-      // Toparlanma basarili: kurtarilan seri = oncekiSeri(15) + 1 (bugun) = 16
-      expect(s.seriDurumu!.mevcutSeri).toBe(16);
-      // Rekor guncellendi: max(15, 16) = 16
-      expect(s.seriDurumu!.enUzunSeri).toBe(16);
+      // Toparlanma basarili: kurtarilan seri = oncekiSeri(15) + toparlanmada kilinan
+      // TUM gunler (hedef 5) = 20
+      expect(s.seriDurumu!.mevcutSeri).toBe(20);
+      // Rekor guncellendi: max(15, 20) = 20
+      expect(s.seriDurumu!.enUzunSeri).toBe(20);
       // Toparlanma bitti
       expect(s.seriDurumu!.toparlanmaDurumu).toBeNull();
       expect(s.seriDurumu!.sonTamGun).toBe(bugun);

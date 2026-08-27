@@ -42,6 +42,7 @@ describe('konumSlice', () => {
             lng: 28.9784,
         },
         yukleniyor: false,
+        yenileniyor: false,
         sonGpsGuncellemesi: null,
         akilliTakipAktif: false,
         takipHassasiyeti: 'dengeli',
@@ -534,6 +535,61 @@ describe('konumSlice', () => {
             expect(kaydedilen.gpsAdres).toBeNull();
             // null payload -> sonGpsGuncellemesi DEGISMEMELI (uretim: falsy ise koru)
             expect(kaydedilen.sonGpsGuncellemesi).toBe('2026-01-17T12:00:00.000Z');
+        });
+    });
+
+    describe('konumuYenileAsync (kullanici tetikli yenileme)', () => {
+        const servisYolu = '../../../domain/services/KonumYenilemeServisi';
+
+        beforeEach(() => {
+            jest.resetModules();
+        });
+
+        /**
+         * Thunk servisi TEMBEL yukler (native kopru grafigi store'u yukleyen ekran
+         * testlerine sizmasin diye) -> mock, dinamik import cozulmeden ONCE kurulmali.
+         */
+        const yenilemeyiCalistir = async (sonuc: unknown) => {
+            jest.doMock(servisYolu, () => ({ konumuYenile: jest.fn().mockResolvedValue(sonuc) }));
+            const slice = require('../konumSlice');
+            const store = configureStore({ reducer: { konum: slice.default } });
+
+            const cikti = (await store.dispatch(slice.konumuYenileAsync())) as {
+                type: string;
+                payload?: { durum: string };
+            };
+            const konumState = () => (store.getState() as { konum: KonumState }).konum;
+            return { konumState, cikti };
+        };
+
+        it('basarili sonucta yenileniyor bayragi kapanir ve sonuc payload olarak doner', async () => {
+            const { konumState, cikti } = await yenilemeyiCalistir({
+                durum: 'basarili',
+                koordinatlar: { lat: 40.21, lng: 28.86 },
+            });
+
+            expect(cikti.payload?.durum).toBe('basarili');
+            expect(konumState().yenileniyor).toBe(false);
+        });
+
+        it('izin yoksa da bayrak kapanir (dugme asili kalmaz)', async () => {
+            const { konumState, cikti } = await yenilemeyiCalistir({ durum: 'izinYok' });
+
+            expect(cikti.payload?.durum).toBe('izinYok');
+            expect(konumState().yenileniyor).toBe(false);
+        });
+
+        it('gecici UI bayraklari DISKE yazilmaz (yukleniyor/yenileniyor)', async () => {
+            (AsyncStorage.setItem as jest.Mock).mockClear();
+            const store = configureStore({ reducer: { konum: konumReducer } });
+
+            store.dispatch(konumAyarlariniGuncelle({ seciliIlAdi: 'Bursa' }));
+
+            const [, json] = (AsyncStorage.setItem as jest.Mock).mock.calls[0];
+            const kaydedilen = JSON.parse(json);
+            expect(kaydedilen).not.toHaveProperty('yukleniyor');
+            expect(kaydedilen).not.toHaveProperty('yenileniyor');
+            expect(store.getState().konum.seciliIlAdi).toBe('Bursa');
         });
     });
 });

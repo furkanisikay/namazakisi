@@ -208,4 +208,66 @@ describe('VakitKarti Bileşeni', () => {
     expect(ikonlar).not.toContain('satellite-dish');
     expect(ikonlar).not.toContain('map-marker-alt');
   });
+
+  describe('konum çipi — yenileme düğmesi', () => {
+    it('otomatik modda yenile simgesi çıkar ve dokununca geri çağrı çalışır', () => {
+      const onKonumYenile = jest.fn();
+      const { getByLabelText, root } = render(
+        <VakitKarti
+          {...varsayilanProps}
+          konumModu="oto"
+          konumMetni="Görükle, Bursa"
+          onKonumYenile={onKonumYenile}
+        />
+      );
+
+      expect(ikonAdlariniTopla(root)).toContain('sync-alt');
+
+      fireEvent.press(getByLabelText('Konumu yenile'));
+      expect(onKonumYenile).toHaveBeenCalledTimes(1);
+    });
+
+    it('MANUEL modda yenileme YOK (konum kullanıcının seçimi, tazelenecek bir şey yok)', () => {
+      const onKonumYenile = jest.fn();
+      const { queryByLabelText, root } = render(
+        <VakitKarti
+          {...varsayilanProps}
+          konumModu="manuel"
+          konumMetni="Nilüfer, Bursa"
+          onKonumYenile={onKonumYenile}
+        />
+      );
+
+      expect(ikonAdlariniTopla(root)).not.toContain('sync-alt');
+      expect(queryByLabelText('Konumu yenile')).toBeNull();
+    });
+
+    it('yenileme sürerken metin "Güncelleniyor…" olur ve ikinci dokunuş geçmez', () => {
+      const onKonumYenile = jest.fn();
+      const { getByText, queryByText, getByLabelText } = render(
+        <VakitKarti
+          {...varsayilanProps}
+          konumModu="oto"
+          konumMetni="Görükle, Bursa"
+          onKonumYenile={onKonumYenile}
+          konumYenileniyor
+        />
+      );
+
+      expect(getByText('Güncelleniyor…')).toBeTruthy();
+      expect(queryByText('Görükle, Bursa')).toBeNull();
+
+      fireEvent.press(getByLabelText('Konumu yenile'));
+      expect(onKonumYenile).not.toHaveBeenCalled();
+    });
+
+    it('geri çağrı verilmezse çip düz metin kalır (eski davranış)', () => {
+      const { queryByLabelText, getByText } = render(
+        <VakitKarti {...varsayilanProps} konumModu="oto" konumMetni="Görükle, Bursa" />
+      );
+
+      expect(getByText('Görükle, Bursa')).toBeTruthy();
+      expect(queryByLabelText('Konumu yenile')).toBeNull();
+    });
+  });
 });

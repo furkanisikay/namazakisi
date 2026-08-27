@@ -41,6 +41,26 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'konumu-tek-dokunusla-yenile',
+        surum: '0.24.1',
+        tarih: '2026-08-27',
+        baslik: 'Konumunuzu Tek Dokunuşla Yenileyin',
+        aciklama:
+            'Otomatik konum kullanıyorsanız ana ekrandaki konum rozetine dokunarak vakitleri anında güncel konumunuza göre hesaplatabilirsiniz.',
+        detayAciklama:
+            'Otomatik konum modunda uygulama, şehir değiştirdiğinizi kendiliğinden fark eder; ancak bazı cihazlarda bu algılama gecikebilir ve vakitler bir süre eski konumunuza göre hesaplanmaya devam edebilir. Artık beklemek ya da konum modunu değiştirip geri almak zorunda değilsiniz: ana ekranda vaktin üstündeki konum rozetine dokunmanız yeterli. Yenileme simgesine dokunduğunuzda güncel konumunuz alınır; namaz vakitleri, hatırlatmalar, iftar/sahur sayaçları ve widget aynı anda yeni konumunuza göre tazelenir. Aynı düğme Ayarlar\'daki "Konum" satırında da bulunur. Manuel konum seçtiyseniz düğme görünmez — o zaman konum sizin seçiminizdir.',
+        ikon: 'sync-alt',
+        hedefSayfa: 'KonumAyarlari',
+        ctaEtiketi: 'Konumunuzu kontrol edin',
+        kartGoster: true,
+        detaylar: [
+            'Ana ekrandaki konum rozetine dokunun, konum anında yenilensin',
+            'Aynı düğme Ayarlar > Konum satırında da var',
+            'Vakitler, hatırlatmalar, sayaçlar ve widget birlikte güncellenir',
+            'Yalnızca otomatik konum modunda görünür',
+        ],
+    },
+    {
         id: 'toparlanma-iki-gun',
         surum: '0.24.1',
         tarih: '2026-08-27',
@@ -48,11 +68,12 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Toparlanma modu kısaldı: bir gün kaçırdığınızda serinizi geri almak için 2 gün tam kılmanız yeterli.',
         detayAciklama:
-            'Uzun bir seriyi bir gün kaçırdığınızda toparlanma modu devreye girer ve tam kıldığınız günlerle eski serinizi geri kazanırsınız. Bu süreyi kısalttık: artık 2 gün yeterli. Toparlanması hâlihazırda devam edenlerin ilerlemesi korunur, hedefleri de yeni kurala çekilir. Ayrıca aynı gün içinde bir namazı yanlışlıkla geri alıp tekrar işaretlediğinizde toparlanma ilerlemenizin başa dönmesine yol açan hatayı giderdik; ilerlemeniz olduğu gibi kalır.',
+            'Uzun bir seriyi bir gün kaçırdığınızda toparlanma modu devreye girer ve tam kıldığınız günlerle eski serinizi geri kazanırsınız. Bu süreyi kısalttık: artık 2 gün yeterli. Üstelik toparlanmada kıldığınız günler de serinize eklenir — 22 günlük seriniz varsa toparlanma bittiğinde 24 günle devam edersiniz. Toparlanması hâlihazırda devam edenlerin ilerlemesi korunur, hedefleri de yeni kurala çekilir. Ayrıca aynı gün içinde bir namazı yanlışlıkla geri alıp tekrar işaretlediğinizde toparlanma ilerlemenizin başa dönmesine yol açan hatayı giderdik; ilerlemeniz olduğu gibi kalır.',
         ikon: 'heartbeat',
         kartGoster: false,
         detaylar: [
             'Toparlanma için gereken tam gün sayısı 2 oldu',
+            'Toparlanmada kıldığınız günler serinize eklenir',
             'Devam eden toparlanmalarda tamamladığınız günler korunur',
             'İşareti geri alıp tekrar koyunca ilerleme sıfırlanmıyor',
         ],

@@ -31,20 +31,16 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
   const [onizleme, setOnizleme] = useState(false);
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
+    // Baslik navigasyon header'indan gelir (AppNavigator) -> ust kenar guvenli alani
+    // header'in kendisinde; burada yalniz alt/yan kenarlar.
+    <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['bottom', 'left', 'right']}>
       <ScrollView
         className="flex-1"
         contentContainerStyle={{ paddingVertical: 16, paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Başlık */}
+        {/* Sayfa özeti — başlık navigasyon header'ında */}
         <View className="px-4 mb-6">
-          <Text
-            className="text-2xl font-bold mb-2"
-            style={{ color: renkler.metin }}
-          >
-            Tanı ve Geri Bildirim
-          </Text>
           <Text
             className="text-sm leading-5"
             style={{ color: renkler.metinIkincil }}

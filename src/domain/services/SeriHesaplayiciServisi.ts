@@ -360,12 +360,15 @@ export const seriHesapla = (
       const yeniTamamlanan = durum.toparlanmaDurumu.tamamlananGun + 1;
 
       if (yeniTamamlanan >= durum.toparlanmaDurumu.hedefGunSayisi) {
-        // Toparlanma basarili! Onceki seriyi kurtar
+        // Toparlanma basarili! Onceki seriyi kurtar.
+        // Toparlanmada kilinan TUM gunler serinin uzerine eklenir (yalniz bugun degil):
+        // kullanici o gunleri de gercekten tam kildi, seri kesintisiz devam etmis sayilir.
         const kurtarilanSeri = durum.toparlanmaDurumu.oncekiSeri;
+        const yeniSeri = kurtarilanSeri + yeniTamamlanan;
 
         sonuc.seriDurumu = {
-          mevcutSeri: kurtarilanSeri + 1, // +1 cunku bugun de tam
-          enUzunSeri: Math.max(durum.enUzunSeri, kurtarilanSeri + 1),
+          mevcutSeri: yeniSeri,
+          enUzunSeri: Math.max(durum.enUzunSeri, yeniSeri),
           sonTamGun: bugun,
           seriBaslangici: durum.seriBaslangici,
           toparlanmaDurumu: null, // Toparlanma bitti

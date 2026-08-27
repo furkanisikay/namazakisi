@@ -17,6 +17,14 @@ interface VakitKartiProps {
     konumModu?: 'oto' | 'manuel';
     konumMetni?: string; // "Nilüfer, Bursa"
     /**
+     * Verilirse (ve mod 'oto' ise) konum çipi basılabilir olur ve sonuna yenileme
+     * simgesi eklenir. Manuel modda konum kullanıcının seçimidir — yenilenecek bir
+     * şey yoktur, çip düz metin kalır.
+     */
+    onKonumYenile?: () => void;
+    /** Yenileme sürerken çip beklemeye geçer (metin "Güncelleniyor…", tekrar basılamaz) */
+    konumYenileniyor?: boolean;
+    /**
      * Basligta gosterilecek ad. Verilmezse `suankiVakitAdi` kullanilir.
      * Cuma gunu ogle icin "Cuma" olur — SALT GORUNUM; ikon ve tum kimlik
      * karsilastirmalari `suankiVakitAdi` uzerinden surer.
@@ -47,11 +55,14 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     kilitli = false,
     konumModu,
     konumMetni,
+    onKonumYenile,
+    konumYenileniyor = false,
     gorunenVakitAdi
 }) => {
     const renkler = useRenkler();
     const ikonAdi = getVakitIkonu(suankiVakitAdi);
     const baslikAdi = gorunenVakitAdi ?? suankiVakitAdi;
+    const konumYenilenebilir = konumModu === 'oto' && !!onKonumYenile;
 
     return (
         <View className="mb-6 relative overflow-hidden rounded-3xl shadow-lg border"
@@ -86,19 +97,54 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                         </Text>
                     </View>
 
-                    {konumMetni && (
-                        <View className="flex-row items-center gap-1 px-3 py-1 rounded-full"
-                            style={{ backgroundColor: renkler.metinIkincil + '15' }}>
-                            <FontAwesome5
-                                name={konumModu === 'oto' ? 'satellite-dish' : 'map-marker-alt'}
-                                size={10}
-                                color={renkler.metinIkincil}
-                            />
-                            <Text className="text-xs font-semibold" style={{ color: renkler.metinIkincil }}>
-                                {konumMetni}
-                            </Text>
-                        </View>
-                    )}
+                    {konumMetni && (() => {
+                        const cipIcerigi = (
+                            <>
+                                <FontAwesome5
+                                    name={konumModu === 'oto' ? 'satellite-dish' : 'map-marker-alt'}
+                                    size={10}
+                                    color={renkler.metinIkincil}
+                                />
+                                <Text className="text-xs font-semibold" style={{ color: renkler.metinIkincil }}>
+                                    {konumYenileniyor ? 'Güncelleniyor…' : konumMetni}
+                                </Text>
+                                {konumYenilenebilir && (
+                                    <FontAwesome5
+                                        name="sync-alt"
+                                        size={9}
+                                        color={renkler.birincil}
+                                        style={{ opacity: konumYenileniyor ? 0.5 : 1 }}
+                                    />
+                                )}
+                            </>
+                        );
+
+                        const cipStili = 'flex-row items-center gap-1 px-3 py-1 rounded-full';
+                        const cipRengi = { backgroundColor: renkler.metinIkincil + '15' };
+
+                        if (!konumYenilenebilir) {
+                            return <View className={cipStili} style={cipRengi}>{cipIcerigi}</View>;
+                        }
+
+                        return (
+                            // Çip küçük kalmalı (ana kartın baş köşesi) ama dokunma hedefi
+                            // 44dp'ye ulaşmalı -> hitSlop. Böylece görsel yer kaplamadan
+                            // erişilebilirlik tabanı korunur.
+                            <TouchableOpacity
+                                className={cipStili}
+                                style={cipRengi}
+                                onPress={onKonumYenile}
+                                disabled={konumYenileniyor}
+                                hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+                                accessibilityRole="button"
+                                accessibilityLabel="Konumu yenile"
+                                accessibilityHint="Şu anki konumunuzu alır ve namaz vakitlerini ona göre günceller"
+                                accessibilityState={{ disabled: konumYenileniyor, busy: konumYenileniyor }}
+                            >
+                                {cipIcerigi}
+                            </TouchableOpacity>
+                        );
+                    })()}
                 </View>
 
                 {/* İkon ve Başlık */}

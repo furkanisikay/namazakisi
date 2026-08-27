@@ -190,11 +190,9 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+                    {/* Başlık navigasyon header'ında — burada yalnız özet metin */}
                     <View className="px-4 mb-4">
-                        <Text className="text-2xl font-bold" style={{ color: renkler.metin }}>
-                            Neler Yeni
-                        </Text>
-                        <Text className="text-sm mt-1 leading-5" style={{ color: renkler.metinIkincil }}>
+                        <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
                             Namaz Akışı'na eklenen yeni özellikleri burada bulabilirsiniz. Detay için bir başlığa dokunun.
                         </Text>
                     </View>

@@ -67,9 +67,17 @@ export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
  * boylece seviye gecis noktasinda (kalan == esik) her zaman bir tetik olur ve
  * arka plan (zamanlanmis) ile on plan (banner) ayni dakikalarda konusur.
  * `herDk <= 0` savunmasi: mod/NaN yerine sessizce hic tetiklenmez.
+ *
+ * ALT SINIR `kalanDk >= 1` — TEK KAYNAK BURASI (yasanmis bug): `vakitUyariPlaniOlustur`
+ * dongusu zaten `k > 0` ile taradigi icin arka plan 0. dakikayi HIC planlamaz; on plan
+ * (`NamazMuhafiziServisi.kontrolEt`) ise `kalanDk`yi ham veriyordu ve `kalanDk = 0`
+ * (vaktin son 60 saniyesi) siklik kuralindan gecebiliyordu -> "2 dk kala" kurulu bir
+ * adim hem 2. dakikada hem de vakit cikarken konusuyordu. Kurali dongu sinirina degil
+ * bu fonksiyona koymak iki motoru da ayni yerden besler.
  */
 export function seviyeTetiklenirMi(seviye: SeviyeAyari, kalanDk: number): boolean {
   if (seviye.mod === 'sessiz') return false;
+  if (kalanDk < 1) return false;
   if (kalanDk > seviye.esikDk) return false;
 
   const herDk = siklikDakikasi(seviye.siklik);

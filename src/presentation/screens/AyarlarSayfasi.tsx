@@ -31,6 +31,8 @@ import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
 import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
+import { useKonumYenile } from '../hooks/useKonumYenile';
+import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
 import { AyarSatiri } from './Ayarlar/AyarSatiri';
@@ -51,6 +53,7 @@ export const AyarlarSayfasi: React.FC = () => {
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri();
+  const konumYenile = useKonumYenile();
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
@@ -178,6 +181,16 @@ export const AyarlarSayfasi: React.FC = () => {
                   ozet={ozetler.konum}
                   yeniRozetGoster={sayfaOkunmamisMi('KonumAyarlari')}
                   onPress={() => menuyeGit('KonumAyarlari')}
+                  // Otomatik modda konum bayat kalabilir (bölge olayı düşmemişse);
+                  // sayfaya girmeden tek dokunuşla tazelenebilsin.
+                  ekEylem={
+                    konumYenile.yenilenebilir ? (
+                      <KonumYenileButonu
+                        onPress={konumYenile.yenile}
+                        yenileniyor={konumYenile.yenileniyor}
+                      />
+                    ) : undefined
+                  }
                 />
                 <AyarSatiri
                   varyant="navigasyon"

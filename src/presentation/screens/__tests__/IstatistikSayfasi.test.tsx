@@ -127,16 +127,23 @@ describe('IstatistikSayfasi', () => {
     }).not.toThrow();
   });
 
-  test('"Seri" sekmesine geçildiğinde SeriSekmesi (mock) render edilir', () => {
+  test('NÖBETÇİ: sayfa "Seri" sekmesiyle AÇILIR (açılış sekmesi)', () => {
+    const tree = render();
+    expect(tree.root.findAllByType('SeriSekmesi' as never)).toHaveLength(1);
+  });
+
+  test('"Seri" sekmesinden çıkıp geri dönülünce SeriSekmesi yine render edilir', () => {
     const tree = render();
     const butonlar = tree.root.findAllByType(require('react-native').TouchableOpacity);
 
+    act(() => {
+      butonlar[0].props.onPress(); // Günlük
+    });
     expect(tree.root.findAllByType('SeriSekmesi' as never)).toHaveLength(0);
 
     act(() => {
       butonlar[3].props.onPress(); // Seri
     });
-
     expect(tree.root.findAllByType('SeriSekmesi' as never)).toHaveLength(1);
   });
 });

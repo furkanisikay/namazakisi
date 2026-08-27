@@ -169,7 +169,8 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
 
     // 5. Toparlanma basarili olmali
     expect(seriDurumu.toparlanmaDurumu).toBeNull();
-    expect(seriDurumu.mevcutSeri).toBe(16); // 15 (kurtarilan) + 1 (son toparlanma gunu)
+    // Kurtarilan seri (15) + toparlanmada kilinan TUM gunler (hedef kadar)
+    expect(seriDurumu.mevcutSeri).toBe(15 + ayarlar.toparlanmaGunSayisi);
     expect(toparlanmaSayisi).toBe(1);
   });
 
@@ -369,7 +370,7 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
 
   // ==================== enUzunSeri REKORU + TOPARLANMA KUTLAMASI ====================
   // tamGuncellemeyiYap'in urettigi kutlamalar/seviye hic incelenmiyordu.
-  // Toparlanma sonrasi mevcutSeri=16 -> enUzunSeri de 16 olmali (rekor) ve
+  // Toparlanma sonrasi mevcutSeri = kurtarilan + toparlanma gunleri -> enUzunSeri de ayni (rekor) ve
   // toparlanma_tamamlandi kutlamasi uretilmeli.
   test('Toparlanma sonrasi enUzunSeri rekoru guncellenir ve kutlama uretilir', () => {
     let tarih = '2025-10-01';
@@ -392,9 +393,10 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
       sonGun = gunSimuleEt(tarih, tamNamazlar(tarih));
     }
 
-    // Seri 16'ya cikti (15 kurtarilan + 1) ve REKOR da 16 olmali.
-    expect(seriDurumu.mevcutSeri).toBe(16);
-    expect(seriDurumu.enUzunSeri).toBe(16);
+    // Seri 15 (kurtarilan) + toparlanma gunleri kadar cikti; REKOR da ayni olmali.
+    const beklenenSeri = 15 + ayarlar.toparlanmaGunSayisi;
+    expect(seriDurumu.mevcutSeri).toBe(beklenenSeri);
+    expect(seriDurumu.enUzunSeri).toBe(beklenenSeri);
 
     // Toparlanma basarili kutlamasi uretildi mi?
     expect(sonGun!.hesapSonucu.toparlanmaBasarili).toBe(true);

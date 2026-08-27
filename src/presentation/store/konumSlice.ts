@@ -18,7 +18,10 @@ import {
     VARSAYILAN_KONUM_AYARLARI,
 } from '../../data/local/LocalKonumServisi';
 import type { TakipHassasiyeti } from '../../core/constants/UygulamaSabitleri';
+import type { KonumYenilemeSonucu } from '../../domain/services/KonumYenilemeServisi';
 import { Logger } from '../../core/utils/Logger';
+
+export type { KonumYenilemeSonucu };
 
 // Tipleri re-export et (geriye uyumluluk icin)
 export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari, TakipHassasiyeti };
@@ -30,6 +33,11 @@ export type { GpsAdres, Koordinatlar, KonumModu, KonumAyarlari, TakipHassasiyeti
 export interface KonumState extends KonumAyarlari {
     /** Konum yuklenme durumu */
     yukleniyor: boolean;
+    /**
+     * Kullanici tetikli "konumu yenile" islemi surerken true.
+     * `yukleniyor`dan AYRI: sayfayi bloklamaz, yalnizca yenile dugmesi beklemeye gecer.
+     */
+    yenileniyor: boolean;
 }
 
 /**
@@ -38,7 +46,20 @@ export interface KonumState extends KonumAyarlari {
 const varsayilanKonum: KonumState = {
     ...VARSAYILAN_KONUM_AYARLARI,
     yukleniyor: false,
+    yenileniyor: false,
 };
+
+/**
+ * State'ten DISKE yazilacak ayarlari ayiklar.
+ *
+ * `yukleniyor`/`yenileniyor` gecici UI bayraklaridir; diske sizarlarsa bir sonraki
+ * acilista "yukleniyor: true" olarak geri okunurlar. Bu ayiklama tek yerde durur ki
+ * yeni bir UI bayragi eklendiginde dort ayri destructure guncellemek gerekmesin.
+ */
+function diskeYazilacakAyarlar(state: KonumState): KonumAyarlari {
+    const { yukleniyor: _yukleniyor, yenileniyor: _yenileniyor, ...konumAyarlari } = state;
+    return konumAyarlari;
+}
 
 // ==================== ASYNC THUNKS ====================
 
@@ -65,12 +86,15 @@ export const konumAyarlariniKaydetAsync = createAsyncThunk(
         const state = getState() as { konum: KonumState };
         const mevcutAyarlar = state.konum;
 
-        // yukleniyor state'te tutulur, storage'a kaydedilmez
-        const { yukleniyor: _yukleniyor, ...mevcutKonumAyarlari } = mevcutAyarlar;
-        const { yukleniyor: _yeniYukleniyor, ...yeniAyarlar } = ayarlar as Partial<KonumState>;
+        // Gecici UI bayraklari (yukleniyor/yenileniyor) storage'a kaydedilmez
+        const {
+            yukleniyor: _yeniYukleniyor,
+            yenileniyor: _yeniYenileniyor,
+            ...yeniAyarlar
+        } = ayarlar as Partial<KonumState>;
 
         const guncelAyarlar: KonumAyarlari = {
-            ...mevcutKonumAyarlari,
+            ...diskeYazilacakAyarlar(mevcutAyarlar),
             ...yeniAyarlar,
         };
 
@@ -80,6 +104,38 @@ export const konumAyarlariniKaydetAsync = createAsyncThunk(
         }
 
         return guncelAyarlar;
+    }
+);
+
+/**
+ * Kullanici tetikli konum yenileme.
+ *
+ * Yazma isini `KonumYenilemeServisi` yapar (disk + konuma bagli tum tuketicilere
+ * yayma); burada yalnizca sonuc store'a tasinir. Basarili olursa state DISKTEN
+ * tazelenir — tek yazici disk kalsin, ayni degeri iki yerden hesaplamayalim.
+ */
+export const konumuYenileAsync = createAsyncThunk(
+    'konum/yenile',
+    async (_: void, { dispatch }) => {
+        // TEMBEL YUKLEME (bilincli): `KonumYenilemeServisi` -> `KonumTakipServisi` ->
+        // `KonumDegisikligiServisi` zinciri expo-task-manager ve notifee gibi NATIVE
+        // koprulere baglidir. Statik import edilseydi bu grafik store'u yukleyen HER
+        // ekran testine sizar ve jest'te `requireNativeModule` olmadigi icin suite'ler
+        // hic calismadan patlardi (AGENTS.md native koprusu tuzagi). Thunk zaten async;
+        // servis yalnizca kullanici dugmeye bastiginda yuklenir.
+        //
+        // `import()` DEGIL `require()`: jest (CJS) dinamik import'u
+        // `--experimental-vm-modules` olmadan calistiramiyor ve thunk sessizce
+        // REDDEDILIYOR — yani testte "yenileme hep basarisiz" olurdu.
+        const { konumuYenile } = require('../../domain/services/KonumYenilemeServisi') as
+            typeof import('../../domain/services/KonumYenilemeServisi');
+        const sonuc = await konumuYenile();
+
+        if (sonuc.durum === 'basarili') {
+            await dispatch(konumAyarlariniYukle());
+        }
+
+        return sonuc;
     }
 );
 
@@ -117,8 +173,7 @@ const konumSlice = createSlice({
 
             // Arka planda kaydet (fire-and-forget)
             // Not: Bu sync reducer icinde async islem - ideal degil ama geriye uyumluluk icin
-            const { yukleniyor: _yukleniyor, ...konumAyarlari } = yeniState;
-            localKonumAyarlariniKaydet(konumAyarlari)
+            localKonumAyarlariniKaydet(diskeYazilacakAyarlar(yeniState))
                 .then(() => Logger.debug('KonumSlice', 'Arka plan kayit basarili'))
                 .catch((err) => Logger.error('KonumSlice', 'Arka plan kayit hatasi', err));
 
@@ -132,8 +187,7 @@ const konumSlice = createSlice({
             state.koordinatlar = action.payload;
 
             // Arka planda kaydet
-            const { yukleniyor: _yukleniyor, ...konumAyarlari } = state;
-            localKonumAyarlariniKaydet(konumAyarlari);
+            localKonumAyarlariniKaydet(diskeYazilacakAyarlar(state));
         },
 
         /**
@@ -146,8 +200,7 @@ const konumSlice = createSlice({
             }
 
             // Arka planda kaydet
-            const { yukleniyor: _yukleniyor, ...konumAyarlari } = state;
-            localKonumAyarlariniKaydet(konumAyarlari);
+            localKonumAyarlariniKaydet(diskeYazilacakAyarlar(state));
         },
 
         /**
@@ -194,6 +247,21 @@ const konumSlice = createSlice({
             })
             .addCase(konumAyarlariniKaydetAsync.rejected, (_state, action) => {
                 Logger.error('KonumSlice', 'Async kayit hatasi', action.error.message);
+            });
+
+        // Kullanici tetikli yenileme
+        builder
+            .addCase(konumuYenileAsync.pending, (state) => {
+                state.yenileniyor = true;
+            })
+            .addCase(konumuYenileAsync.fulfilled, (state) => {
+                // State'i `konumAyarlariniYukle` zaten diskten tazeledi; burada
+                // yalnizca dugmeyi bekleme durumundan cikariyoruz.
+                state.yenileniyor = false;
+            })
+            .addCase(konumuYenileAsync.rejected, (state, action) => {
+                Logger.error('KonumSlice', 'Konum yenilenemedi', action.error.message);
+                state.yenileniyor = false;
             });
 
         // Konum verilerini temizle

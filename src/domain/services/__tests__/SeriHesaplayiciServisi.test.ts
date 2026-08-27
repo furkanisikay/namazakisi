@@ -184,7 +184,8 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
 
     expect(sonuc.toparlanmaBasarili).toBe(true);
-    expect(sonuc.seriDurumu.mevcutSeri).toBe(11); // oncekiSeri (10) + 1 (bugun)
+    // Toparlanmada kilinan TUM gunler serinin uzerine eklenir: oncekiSeri (10) + hedef
+    expect(sonuc.seriDurumu.mevcutSeri).toBe(10 + varsayilanAyarlar.toparlanmaGunSayisi);
     expect(sonuc.seriDurumu.toparlanmaDurumu).toBeNull();
   });
 
@@ -519,15 +520,15 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     const bugun = '2026-06-15';
     jest.setSystemTime(new Date(2026, 5, 15, 12, 0, 0));
 
-    // hedef = 3, tamamlananGun = 2 => bugun 3. (son) gun -> toparlanma tamamlanir
+    // bugun hedefin SON gunu olsun (tamamlanan = hedef - 1) -> toparlanma tamamlanir
     const mevcutDurum: SeriDurumu = {
       ...bosSeriDurumuOlustur(),
       mevcutSeri: 0,
       sonTamGun: dun,
       toparlanmaDurumu: {
-        tamamlananGun: 2,
+        tamamlananGun: varsayilanAyarlar.toparlanmaGunSayisi - 1,
         baslangicTarihi: '2026-06-13',
-        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi, // = 3
+        hedefGunSayisi: varsayilanAyarlar.toparlanmaGunSayisi,
         oncekiSeri: 10,
       },
     };
@@ -535,7 +536,7 @@ describe('SeriHesaplayiciServisi Unit Testleri', () => {
     const sonuc = seriHesapla(mevcutDurum, tamNamazlar(bugun), null, varsayilanAyarlar);
 
     expect(sonuc.toparlanmaBasarili).toBe(true);
-    expect(sonuc.seriDurumu.mevcutSeri).toBe(11); // oncekiSeri + bugun
+    expect(sonuc.seriDurumu.mevcutSeri).toBe(10 + varsayilanAyarlar.toparlanmaGunSayisi);
     expect(sonuc.kazanilanPuan).toBe(25); // toparlanma bonusu
   });
 
@@ -733,7 +734,7 @@ describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snaps
 
       const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
       expect(tam.toparlanmaBasarili).toBe(true);
-      expect(tam.seriDurumu.mevcutSeri).toBe(23);
+      expect(tam.seriDurumu.mevcutSeri).toBe(24); // 22 + toparlanmada kilinan 2 gun
 
       // Ayni gun bir namaz geri alinir -> 1/2'lik toparlanmaya geri sarilmali
       const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
@@ -751,7 +752,7 @@ describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snaps
 
       expect(tekrar.toparlanmaBasarili).toBe(true);
       expect(tekrar.seriDurumu.toparlanmaDurumu).toBeNull();
-      expect(tekrar.seriDurumu.mevcutSeri).toBe(23);
+      expect(tekrar.seriDurumu.mevcutSeri).toBe(24);
       expect(tekrar.seriDurumu.sonTamGun).toBe('2026-06-14');
     });
   });
