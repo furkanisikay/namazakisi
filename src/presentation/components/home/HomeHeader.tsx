@@ -72,6 +72,8 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                 className="flex-row items-center gap-3"
                 onPress={onTarihTikla}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Tarih seç"
             >
                 <View
                     className="p-2 rounded-lg items-center min-w-[3.5rem] border"
