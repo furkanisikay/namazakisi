@@ -1,6 +1,6 @@
 # Uygulama Planı: Hatırlatma Penceresi — ortak hatırlatma motoru
 
-> Tarih: 2026-08-27 · Sürüm: **v3** (ikinci tur inceleme sonrası; 14 bulgunun 11'i kapandı, 3'ü + 4 yeni bulgu işlendi) · Tasarım: [spec](../specs/2026-08-27-hatirlatma-penceresi-ortak-motor-design.md) · Dal: `claude/toparlanma-calculation-bug-47ojw1` (PR #233)
+> Tarih: 2026-08-27 · Sürüm: **v4** (üçüncü tur; bütçe formülü giriş yönüne genişletildi, arka plan sözleşmesi ve kabul kriteri düzeltildi) · **Durum: Faz 0 ve Faz 5a uygulanabilir onay aldı** · Tasarım: [spec](../specs/2026-08-27-hatirlatma-penceresi-ortak-motor-design.md) · Dal: `claude/toparlanma-calculation-bug-47ojw1` (PR #233)
 
 ## Kapatılan açık sorular (kullanıcı kararı)
 
@@ -56,11 +56,15 @@ AGENTS.md'de yaşanmış bug olarak kayıtlı; hiçbir faz gevşetemez:
   - **B5 (b):** `pencereUzunluguDk` **verilmezse tavan `ESIK_MUTLAK_MIN_TAVAN = 120`** (gerçek geriye uyumluluk). v1'de "verilmezse 720" yazıyordu, testi ise "eski davranış" bekliyordu — çelişkiliydi.
   - Tavan = `min(pencereUzunluguDk - 1, ESIK_GUVENLIK_TAVANI)`, sonra komşu kısıtı.
 - **Yeni:** `src/core/muhafiz/pencereUzunlugu.ts` — `pencereUzunluguDkHesapla(giris, cikis)`, `adimPencereyeSigarMi(esikDk, pencereUzunluguDk)`
-- **Yeni:** `src/core/muhafiz/planButcesi.ts` — `etkinSiklikHesapla(esikDk, siklik): Siklik` = `max(herDk, ceil(esikDk / PLAN_ADIM_UST_SINIRI))`, `PLAN_ADIM_UST_SINIRI = 60` (vakit başına).
+- **Yeni:** `src/core/muhafiz/planButcesi.ts` — `etkinSiklikHesapla(span, siklik): Siklik` = `max(herDk, ceil(span / PLAN_ADIM_UST_SINIRI))`, `PLAN_ADIM_UST_SINIRI = 60` (vakit başına).
+  - **ÜÇÜNCÜ TUR — girdi eşik DEĞİL, `span` (tetik açıklığı).** Eşikten türetmek yalnız çıkış yönünde doğru: orada eşiği E olan seviye en çok E kez tetiklenir. Giriş yönünde en büyük eşikli seviye `olcuDk >= E`'den **pencere sonuna kadar** kazanır → açıklık `pencereUzunluguDk − E`'dir. Yatsı 700 dk, acil eşik 45, `herDk` 3 iken eşik tabanlı formül `ceil(45/60)=1` verir, seyreltme hiç devreye girmez ve tek vakitte **~218 bildirim + 218 exact alarm** üretilir — bütçe tam da engellemesi gereken yerde delinir.
+    - `cikisaDogru` → `span = esikDk`
+    - `girisindenItibaren` → `span = pencereUzunluguDk − esikDk`
+  - `'birkez'` sıklığa **hiç dokunulmaz** — formül yalnız `{herDk}` koluna uygulanır.
   - **YENİ-2 — bütçe `seviyeTetiklenirMi` İÇİNDE uygulanır**, plan üreticisinde değil. Üreticiye koymak AGENTS.md'nin yazılı dersini ihlal ederdi: arka plan seyreltilir ama ön plan `kontrolEt` ham sıklıkla çağırdığı için banner her dakika sürer ve `AkisOnizlemeModal` (üreticiden beslenir) gerçek davranışı göstermez. Tek kapıdan geçince üretici, ön plan ve önizleme kendiliğinden aynı kalır.
   - Fonksiyon **saf ve deterministik** (bool değil `Siklik` döner — "seyrelt" davranışı bool imzaya sığmaz).
   - **`Logger` çekirdeğe girmez** (`motorAdaptoru` saf: store/native bağımsız). Seyreltme logu `ArkaplanMuhafizServisi`'nde atılır.
-- `src/core/muhafiz/motorAdaptoru.ts` — `seviyeTetiklenirMi` etkin sıklığı kullanır.
+- `src/core/muhafiz/motorAdaptoru.ts` — `seviyeTetiklenirMi` etkin sıklığı kullanır. Giriş yönünde `span` hesabı için `pencereUzunluguDk` parametresi gerekir: arka plan pencereyi zaten kuruyor, ön plan `VakitBilgisi.giris` geldiği için `cikis − giris` hesaplayabilir (Faz 1'de bağlanır; Faz 0'da yalnız çıkış yönü vardır, parametre opsiyoneldir).
 - Seyreltme uygulanan adımda ekranda bilgi satırı (`SeviyeDetayModal`/`VakitKarti`) — Faz 0'ın kendi ilkesi gereği sessiz sapma bırakılmaz.
 - `src/presentation/screens/MuhafizAyarlariSayfasi.tsx` — o günün vakit aralıklarını `NamazVaktiHesaplayiciServisi`'nden alıp aşağı geçirir.
 - `src/presentation/screens/MuhafizAyarlari/VakitKarti.tsx` + `SeviyeDetayModal.tsx` — stepper sınırı yeni imzadan; sığmayan adımda uyarı satırı.
@@ -71,7 +75,8 @@ Sığmayan adım satırı: **"Bu adım bugün çalışmayacak — yatsı bugün 
 ### Testler
 - `esikSinirlari.test.ts`: pencere 400 → tavan 399 · pencere 900 → 720 (güvenlik) · **pencere verilmezse 120 (eski davranış)** · komşu kısıtı tavanın önüne geçer.
 - `pencereUzunlugu.test.ts`: gece yarısını aşan pencere (yatsı → imsak).
-- `planButcesi.test.ts`: 720 dk eşik + 1 dk sıklık → etkin sıklık 12 dk'ya yükselir, plan `PLAN_ADIM_UST_SINIRI`'nı aşmaz.
+- `planButcesi.test.ts`: **çıkış yönü** 720 dk eşik + 1 dk sıklık → etkin sıklık 12 dk, plan `PLAN_ADIM_UST_SINIRI`'nı aşmaz · normal ayar (45 dk eşik + 15 dk sıklık) **değişmez** (`ceil(45/60)=1`) · `'birkez'` dokunulmaz.
+- **Nöbetçi (ÜÇÜNCÜ TUR, Faz 1'de eklenir):** **giriş yönü** fikstürü — 700 dk pencere + acil eşik 45 + `herDk` 1 → vakit başına plan ≤ 60. Bu test çıkış-yönü fikstürüyle yazılırsa deliği yakalamaz.
 - **Nöbetçi (YENİ-2):** aynı ayar için `vakitUyariPlaniOlustur` (arka plan) ile `seviyeTetiklenirMi` (ön plan) **aynı dakikalarda** tetiklenir — iki motor ayrışmaz.
 - `MuhafizAyarlariSayfasi.test.tsx`: sığmayan adımda uyarı render edilir, sığanda edilmez.
 
@@ -100,7 +105,7 @@ Eşit eşikte tie-break: her iki yönde de **daha sert kademe** kazanır (mevcut
 | `seviyeTetiklenirMi` pencere kapısı (`motorAdaptoru.ts:81`) | `olcuDk > esikDk → false` | `olcuDk < esikDk → false` |
 | Sıklık çapası | `(esikDk − olcuDk) % herDk === 0` | `(olcuDk − esikDk) % herDk === 0` |
 | `birkez` | `olcuDk === esikDk` | aynı (değişmez) |
-| `vakitUyariPlaniOlustur` tarama sınırı (satır 124) | `min(sınır, enBuyukEsik)` → 1'e kadar azalan | `1 … min(pencereUzunluğu, tavan)` artan — **`enBuyukEsik` DEĞİL** |
+| `vakitUyariPlaniOlustur` tarama sınırı (satır 124) | `min(sınır, enBuyukEsik)` → 1'e kadar azalan | `1 … min(pencereUzunluguDk, ESIK_GUVENLIK_TAVANI)` artan — **`enBuyukEsik` DEĞİL** |
 
 Tarama sınırı kritik: `enBuyukEsik`'te durulursa acil adım eşiğinden sonra pencere sonuna kadar sürmez → isteğin "çıkana kadar devam et" maddesi karşılanmaz ve ön plan (`kontrolEt` sürer) ile arka plan **ayrışır**.
 
@@ -125,6 +130,8 @@ Kapsama girenler:
 - `anonsMetni.ts` — yön-uygun şablon havuzu; `anonsMetniniCoz` `{süre}` çözümü yöne göre ("kaldı"/"geçti").
 - `matrisIslemleri.seviyeyeUygula` + `seviyeAcKapa.seviyeyiAc` — boş kutuyu **yön-uygun** şablonla doldurur; **kullanıcının yazdığı metni ezmez** (modSec sözleşmesinin ikizi).
 - **B11 açık kalan kısmı — YÖN DEĞİŞİM anı.** Doldurma anını çözmek yetmez: bugün otomatik doldurulmuş çıkış-dilli metin ("…vakti çıkıyor, son {süre} dakika") hücrede kalıcı durur; kullanıcı yönü girişe çevirince "son 42 dakika" diye seslendirilir. "Kullanıcı metnini ezme" kuralı otomatik-doldurulmuş şablonu kullanıcının yazdığından ayırt edemez. **Kural:** yön değişiminde hücre metni şablon havuzundaki bir şablonla **birebir eşleşiyorsa** karşı-yön şablonuyla değiştirilir; eşleşmiyorsa **dokunulmaz** + ekranda ipucu ("anons metniniz çıkış diliyle yazılmış olabilir"). Nöbetçi test: elle yazılmış metin yön değişiminde **korunur**, şablon metni **çevrilir**.
+
+Dönüşüm **`matrisIslemleri.yonDegisimindeMetniCevir`**'de yaşar (Faz 1 / A3b yazar, Faz 3 / A6 çağırır) — sahipsiz kalmasın.
 - `seviyeOzeti.ts` ("45 dk kala"), `vakitOzeti.ts` ("45 dk kala başlar"), `NamazMuhafiziServisi.seviyeMesajiOlustur` ("… dk kaldı") — yöne göre.
 - Seviye-3 içerik havuzu (`SEYTANLA_MUCADELE_ICERIGI`, "vakit çıkıyor" nassları) → giriş yönünde bu havuz **kullanılmaz**, nötr havuz seçilir.
 
@@ -236,7 +243,13 @@ Dört hafta ileri planlama · her cuma ayrı `PrayerTimes` · `NamazAdi.Ogle` ki
 - **Konum tüketicisi İKİ yere eklenir (B7):** `KonumDegisikligiServisi.konumDegistiUygula` **ve** `App.tsx` açılış zinciri. Aksi halde açılışta sayaç eski hedefte kalır.
 - **YENİ-3 — başlatma tetiği (özelliğin yaşayıp yaşamayacağını belirler).** `startCountdown` yalnız JS'ten çağrılır; zamanlanmış native başlatma yolu yoktur (notifee `TimestampTrigger` yalnız statik bildirim atar). `ArkaplanGorevServisi` bugün **hiçbir sayaç servisini tazelemez** — yalnız `CumaHatirlatmaServisi` ve `ArkaplanMuhafizServisi` (doğrulandı). İftar bu boşluğu göstermez çünkü penceresi gündüz ve kullanıcı akşam uygulamayı zaten açar; **seri eşiği imsak−2s ≈ 01:30–04:30'a düşer** → kullanıcı o pencerede uygulamayı açmazsa sayaç hiç görünmez ve özellik "uygulama zaten açıkken çalışan bildirim"e iner.
 
-  **Karar: `ArkaplanGorevServisi`'ne SeriSayaç tazelemesi eklenir.** 15 dk granülerlik → eşik anına ±15 dk sapma kabul edilir (sayaç 2 saat sürdüğü için oransal olarak önemsiz). Dosya listesine `ArkaplanGorevServisi.ts` girer; AGENTS.md'ye "arka plan görevi hangi servisleri tazeler" maddesi güncellenir. Nöbetçi test: görev koştuğunda seri sayacı hedefiyle birlikte kurulur/tazelenir.
+  **Karar: `ArkaplanGorevServisi`'ne SeriSayaç tazelemesi eklenir.** 15 dk granülerlik → eşik anına ±15 dk sapma kabul edilir (sayaç 2 saat sürdüğü için oransal olarak önemsiz). Dosya listesine `ArkaplanGorevServisi.ts` girer; AGENTS.md'ye "arka plan görevi hangi servisleri tazeler" maddesi güncellenir.
+
+  **İKİ SÖZLEŞME ŞARTI (ÜÇÜNCÜ TUR) — atlanırsa YENİ-3 başka biçimde geri gelir:**
+  1. **Çağrı sırası:** görev, muhafız ayarı yoksa/kapalıysa **erken döner** (`NoData`). Cuma çağrısı tam bu yüzden erken dönüşlerden ÖNCE duruyor (AGENTS: "muhafızı kapatan kullanıcıda 4 haftalık pencere hiç tazelenmez"). Seri sayacı da muhafızdan bağımsızdır → çağrı **muhafız erken dönüşlerinden ÖNCE**, kendi `try/catch`'inde olmalı.
+  2. **Store'suz okuma:** görevde Redux yoktur. "Seri zaten tamamsa sayaç çıkmaz" kapısı ve hedef imsak hesabı arka plan yolunda **ham AsyncStorage**'dan türetilmeli (`namaz_gun_<tarih>`, seri ayarları, `arkaplandaKoordinatOku`). `SeriSayacBildirimServisi` store'a bağımlı tasarlanırsa arka plan yolu **sessizce** çalışmaz — cuma servisinin "koordinat parametredir" dersinin ikizi.
+
+  Nöbetçi testler: görev koştuğunda seri sayacı hedefiyle kurulur/tazelenir · **muhafız kapalıyken de tazelenir** (cuma nöbetçisinin ikizi).
 
 ### Doğrulama
 Native değişiklik → `npm run verify` YETMEZ. Dala push + `gh workflow run android-build.yml --ref <dal> -f build_type=debug` yeşil olmalı.
@@ -290,7 +303,7 @@ Her agent: **kırmızı test önce** (davranışı üreten nöbetçi) → düzel
 
 1. `npm run verify` yeşil; lint uyarısı ≤ 372.
 2. Mevcut 2135 testin tamamı geçer (davranış değişen yerlerde test **güncellenir**, silinmez).
-3. Yön/kanal alanı olmayan eski kayıt **birebir eski davranışı** üretir (nöbetçi testler).
+3. Yön/kanal alanı olmayan eski kayıt **birebir eski davranışı** üretir (nöbetçi testler). **Tek bilinçli istisna — Faz 0 plan bütçesi:** `esikDk > 60 × herDk` olan kombinasyonlarda sıklık seyreltilir (bugün kurulabilir bir uç ayar: eşik 120 + `herDk` 1 → 120 tetik, bütçeyle 60). Seyreltme ekranda gösterilir; bu kriteri harfiyen test eden bir faz Faz 0'da kırmızıya takılmamalı.
 4. Native dokunuşu olan fazlarda (5b, 6) debug APK build'i yeşil.
 5. AGENTS.md her fazda güncellenir.
 6. `YeniOzellikler.ts`: dinamik eşik, giriş yönü, cuma periyodik, seri sayacı, titreşim duyurulur. **Seri gün sınırı duyurulmaz.**
