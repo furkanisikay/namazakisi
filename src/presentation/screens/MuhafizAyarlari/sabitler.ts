@@ -10,7 +10,22 @@
  * daima `renkler.metin` / `renkler.metinIkincil` ile cizilir → kontrast tabani tema
  * token'larindan gelir.
  */
-import type { SeviyeKademe, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type { MuhafizVakti, SeviyeKademe, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+
+/**
+ * CUMLE ICINDE gecen kucuk harfli vakit adlari ("… yatsı bugün 6 sa 40 dk").
+ *
+ * SABIT HARITA — `VAKIT_ADLARI[...].toLowerCase()` YAZMA: 'İkindi'.toLowerCase()
+ * JS'te 'i̇kindi' (i + birlesik nokta) uretir. AGENTS.md'deki toUpperCase tuzaginin
+ * ikizidir; yalniz `i`/`İ` iceren sozcukleri bozdugu icin testlerden kolayca kacar.
+ */
+export const VAKIT_ADLARI_KUCUK: Record<MuhafizVakti, string> = {
+    imsak: 'sabah',
+    ogle: 'öğle',
+    ikindi: 'ikindi',
+    aksam: 'akşam',
+    yatsi: 'yatsı',
+};
 
 export interface SeviyeBilgisi {
     baslik: string;

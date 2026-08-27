@@ -29,6 +29,7 @@ import {
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
+import { cikisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
 export type SeviyeNo = 1 | 2 | 3 | 4;
@@ -74,13 +75,29 @@ export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
  * (vaktin son 60 saniyesi) siklik kuralindan gecebiliyordu -> "2 dk kala" kurulu bir
  * adim hem 2. dakikada hem de vakit cikarken konusuyordu. Kurali dongu sinirina degil
  * bu fonksiyona koymak iki motoru da ayni yerden besler.
+ *
+ * PLAN BUTCESI (Faz 0) DA BURADA: esik tavani artik vaktin gercek penceresinden
+ * geldigi icin (720 dk'ya kadar) 1 dk'lik siklik tek vakitte yuzlerce alarm
+ * uretebilirdi. Seyreltme `planButcesi.etkinSiklikHesapla` ile YALNIZ bu kapida
+ * uygulanir; boylece arka plan plani, on plan banner'i ve onizleme kendiliginden
+ * ayni dakikalarda konusur.
+ *
+ * `kardesler` = o vaktin TUM seviyeleri. Verilirse butce, seviyenin gercekten
+ * kazandigi segmentten hesaplanir (varsayilan matris hic seyrelmez); verilmezse
+ * esigin tamami segment sayilir — daha temkinli, ama iki motorun da AYNI degeri
+ * gecmesi sarttir (ayrisirlarsa banner ile bildirim ayri dakikalara duser).
  */
-export function seviyeTetiklenirMi(seviye: SeviyeAyari, kalanDk: number): boolean {
+export function seviyeTetiklenirMi(
+  seviye: SeviyeAyari,
+  kalanDk: number,
+  kardesler?: SeviyeAyari[]
+): boolean {
   if (seviye.mod === 'sessiz') return false;
   if (kalanDk < 1) return false;
   if (kalanDk > seviye.esikDk) return false;
 
-  const herDk = siklikDakikasi(seviye.siklik);
+  const span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
+  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik));
   if (herDk === null) return kalanDk === seviye.esikDk; // birkez: yalniz esik aninda
   if (herDk <= 0) return false;
   return (seviye.esikDk - kalanDk) % herDk === 0;
@@ -125,7 +142,7 @@ export function vakitUyariPlaniOlustur(
   for (let k = Math.min(kalanDkSiniri, enBuyukEsik); k > 0; k--) {
     const kazanan = aktifSeviyeyiBul(vakitAyari, k);
     if (!kazanan) continue;
-    if (!seviyeTetiklenirMi(kazanan, k)) continue;
+    if (!seviyeTetiklenirMi(kazanan, k, vakitAyari.seviyeler)) continue;
 
     plan.push({
       kalanDk: k,

@@ -318,8 +318,11 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         // 55 dk kala pencere içinde ama sıklık kapısı kapalı: (60-55) % 15 !== 0
         expect(bildirimSpx).not.toHaveBeenCalled();
 
-        // Sıklığı 1 yapınca aynı dakika tetiklenmeli
-        muhafiz.yapilandir(tekDuzeMatris([{ esikDk: 60, siklikDk: 1 }, ...VARSAYILAN_TANIM.slice(1)]));
+        // Sıklığı 5 yapınca aynı dakika tetiklenmeli ((60-55) % 5 === 0).
+        // NOT (Faz 0 plan bütçesi): burada 1 dk seçilemez — nazik adımın kazandığı
+        // segment 30 dk (60→30) ve seviye başına en fazla 15 uyarı verildiği için
+        // etkin sıklık 2 dk'ya seyrelir; test o zaman sıklığı değil bütçeyi ölçerdi.
+        muhafiz.yapilandir(tekDuzeMatris([{ esikDk: 60, siklikDk: 5 }, ...VARSAYILAN_TANIM.slice(1)]));
 
         jest.advanceTimersByTime(60 * 1000);
         expect(bildirimSpx).toHaveBeenCalled();
@@ -609,7 +612,10 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
                         { esikDk: 2, siklikDk: 1, mod: 'sessiz' },
                     ],
                     ikindi: [
-                        { esikDk: 40, siklikDk: 1 },
+                        // Sıklık 5: 40 dk'lık tek açık segmentte 1 dk'lık sıklık plan
+                        // bütçesiyle 3 dk'ya seyrelirdi (Faz 0) — ölçülen şey vakit
+                        // bazlı eşik olduğu için seyreltmeye girmeyen bir değer seçildi.
+                        { esikDk: 40, siklikDk: 5 },
                         { esikDk: 6, siklikDk: 1, mod: 'sessiz' },
                         { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
                         { esikDk: 2, siklikDk: 1, mod: 'sessiz' },

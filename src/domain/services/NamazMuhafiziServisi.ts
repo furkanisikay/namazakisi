@@ -192,7 +192,10 @@ export class NamazMuhafiziServisi {
         // Sıklık kontrolü: seviyenin KENDİ eşiğine göreceli ((eşik - kalan) % herDk),
         // arka plan planlamasıyla birebir aynı kural -> banner ve bildirim aynı
         // dakikalarda konuşur. 'birkez' yalnız tam eşik anında tetiklenir.
-        if (!seviyeTetiklenirMi(kazanan, kalanDk)) return;
+        // Kardeş seviyeler ZORUNLU geçilir (Faz 0 plan bütçesi): arka plan planı
+        // da aynı listeyi geçer; eksik bırakılırsa segment hesabı ayrışır ve
+        // banner ile bildirim farklı dakikalara düşer.
+        if (!seviyeTetiklenirMi(kazanan, kalanDk, vakitAyari.seviyeler)) return;
 
         const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
 

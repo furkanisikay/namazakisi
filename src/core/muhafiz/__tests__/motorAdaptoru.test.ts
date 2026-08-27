@@ -11,6 +11,8 @@ import {
 } from '../motorAdaptoru';
 import type { MuhafizMatrisi, SeviyeAyari, SeviyeKademe, UyariModu, VakitMuhafizAyari } from '../matrisTipleri';
 import { eskidenMatriseGoc } from '../muhafizGoc';
+import { aktifSeviyeyiBul } from '../aktifSeviye';
+import { PLAN_ADIM_UST_SINIRI } from '../planButcesi';
 
 const sv = (
   kademe: SeviyeKademe,
@@ -173,6 +175,112 @@ describe('vakitUyariPlaniOlustur', () => {
 
     expect(plan).toHaveLength(1);
     expect(plan[0].seviye).toBe(4);
+  });
+});
+
+/**
+ * Faz 0 — plan butcesi `seviyeTetiklenirMi` ICINDE uygulanir, plan ureticisinde
+ * DEGIL. Ureticiye konsaydi arka plan seyrelir ama on plan (`kontrolEt`) ham
+ * siklikla calisip her dakika banner gosterirdi; onizleme de gercek akistan
+ * saparadi (AGENTS.md'de kayitli cift-anons dersi).
+ */
+describe('plan bütçesi (Faz 0) — tek kapı `seviyeTetiklenirMi`', () => {
+  test('tek açık seviye: 720 dk açıklık + 1 dk sıklık → etkin sıklık 48 dk', () => {
+    const seviye = sv('nazik', 720, 1);
+    expect(seviyeTetiklenirMi(seviye, 720)).toBe(true);
+    expect(seviyeTetiklenirMi(seviye, 672)).toBe(true);
+    // Ham sıklıkta tetiklenirdi; bütçe seyreltti
+    expect(seviyeTetiklenirMi(seviye, 719)).toBe(false);
+    expect(seviyeTetiklenirMi(seviye, 700)).toBe(false);
+  });
+
+  test('VARSAYILAN matris plani SEYRELMEZ (bugünkü davranış birebir)', () => {
+    // Bütçe segmentten türer: nazik 45→25 arası 20 dk, ceil(20/15)=2 < 15 → dokunulmaz.
+    const varsayilan = eskidenMatriseGoc(ESKI_AYAR).ogle;
+    expect(vakitUyariPlaniOlustur(varsayilan, 45).map((u) => u.kalanDk)).toEqual([
+      45, 30, 25, 15, 10, 5, 3, 2, 1,
+    ]);
+  });
+
+  test('normal ayar (45 dk eşik + 15 dk sıklık) ETKİLENMEZ', () => {
+    const seviye = sv('nazik', 45, 15);
+    expect(seviyeTetiklenirMi(seviye, 45)).toBe(true);
+    expect(seviyeTetiklenirMi(seviye, 30)).toBe(true);
+    expect(seviyeTetiklenirMi(seviye, 44)).toBe(false);
+  });
+
+  test("'birkez' bütçeden ETKİLENMEZ (yalnız eşik anı)", () => {
+    const seviye = sv('nazik', 720, 'birkez');
+    expect(seviyeTetiklenirMi(seviye, 720)).toBe(true);
+    expect(seviyeTetiklenirMi(seviye, 719)).toBe(false);
+  });
+
+  test('KAPALI komşunun segmentini üstteki devralır (kardeşler verilince)', () => {
+    const kardesler = [
+      sv('nazik', 120, 1),
+      sv('uyari', 60, 1, 'sessiz'),
+      sv('sert', 30, 1),
+      sv('acil', 10, 1, 'sessiz'),
+    ];
+    // nazik segmenti 120-30=90 → ceil(90/15)=6
+    expect(seviyeTetiklenirMi(kardesler[0], 114, kardesler)).toBe(true);
+    expect(seviyeTetiklenirMi(kardesler[0], 116, kardesler)).toBe(false);
+  });
+
+  test('SEVİYE başına tetik sayısı üst sınırı aşmaz (vakit toplamı 4 × sınır)', () => {
+    const genis: VakitMuhafizAyari = {
+      seviyeler: [sv('nazik', 720, 1), sv('uyari', 300, 1), sv('sert', 120, 1), sv('acil', 30, 1)],
+    };
+    const plan = vakitUyariPlaniOlustur(genis, 720);
+    for (const seviyeNo of [1, 2, 3, 4]) {
+      expect(plan.filter((u) => u.seviye === seviyeNo).length).toBeLessThanOrEqual(
+        PLAN_ADIM_UST_SINIRI
+      );
+    }
+    expect(plan.length).toBeLessThanOrEqual(PLAN_ADIM_UST_SINIRI * genis.seviyeler.length);
+  });
+
+  /**
+   * NOBETCI: arka plan (plan ureticisi) ile on plan (`seviyeTetiklenirMi`)
+   * AYNI dakikalarda konusur. Butce yanlis katmana konursa bu test kirmizi olur.
+   */
+  test('NÖBETÇİ: arka plan planı ile ön plan tetikleri AYNI dakikalardır', () => {
+    const genis: VakitMuhafizAyari = {
+      seviyeler: [sv('nazik', 720, 1), sv('uyari', 300, 3), sv('sert', 120, 2), sv('acil', 30, 1)],
+    };
+    const sinir = 720;
+
+    const onPlanDakikalari: number[] = [];
+    for (let k = sinir; k > 0; k--) {
+      const kazanan = aktifSeviyeyiBul(genis, k);
+      // Ön plan (NamazMuhafiziServisi.kontrolEt) da kardeşleri geçer — segment
+      // hesabı iki motorda AYNI olmalı.
+      if (kazanan && seviyeTetiklenirMi(kazanan, k, genis.seviyeler)) onPlanDakikalari.push(k);
+    }
+
+    expect(vakitUyariPlaniOlustur(genis, sinir).map((u) => u.kalanDk)).toEqual(onPlanDakikalari);
+    // Gerçekten seyreltilmiş olmalı (aksi halde test boş bir eşitlik olurdu)
+    expect(onPlanDakikalari.length).toBeLessThan(sinir);
+  });
+
+  /**
+   * TABAN CIZGISI (plan YENI-4): Faz 1'in "cikis yonu plani birebir ayni"
+   * nobetcisi FAZ 0 SONRASI bu ciktiyi taban alir.
+   */
+  test('TABAN ÇİZGİSİ: bütçeli çıkış yönü planı (Faz 1 regresyonu bunu referans alır)', () => {
+    const genis: VakitMuhafizAyari = {
+      seviyeler: [sv('nazik', 240, 1), sv('uyari', 120, 5), sv('sert', 60, 5), sv('acil', 20, 4)],
+    };
+    expect(vakitUyariPlaniOlustur(genis, 240).map((u) => u.kalanDk)).toEqual([
+      // nazik (segment 120, etkin 8 dk)
+      240, 232, 224, 216, 208, 200, 192, 184, 176, 168, 160, 152, 144, 136, 128,
+      // uyarı (segment 60, sıklık 5 dk — seyrelmez)
+      120, 115, 110, 105, 100, 95, 90, 85, 80, 75, 70, 65,
+      // sert (segment 40, sıklık 5 dk — seyrelmez)
+      60, 55, 50, 45, 40, 35, 30, 25,
+      // acil (segment 20, sıklık 4 dk — seyrelmez)
+      20, 16, 12, 8, 4,
+    ]);
   });
 });
 

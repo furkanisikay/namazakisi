@@ -33,6 +33,7 @@ import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMe
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
+import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
@@ -53,6 +54,11 @@ export interface SeviyeDetayModalProps {
     /** Vaktin TUM seviyeleri — esik sinirlari komsulardan hesaplanir (spec 4.2) */
     seviyeler: SeviyeAyari[];
     indeks: number;
+    /**
+     * Vaktin BUGUNKU pencere uzunlugu (dk) — esik tavani buradan gelir (Faz 0).
+     * Verilmezse eski davranis: tavan `ESIK_MUTLAK_MAX` (120) ve uyari yok.
+     */
+    pencereUzunluguDk?: number;
     /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
     ttsDestekli: boolean | null;
     onDegistir: (yeniSeviye: SeviyeAyari) => void;
@@ -80,6 +86,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     vakit,
     seviyeler,
     indeks,
+    pencereUzunluguDk,
     ttsDestekli,
     onDegistir,
     onKapat,
@@ -122,7 +129,8 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
 
     const bilgi = SEVIYE_BILGILERI[seviye.kademe];
     const vakitAdi = VAKIT_ADLARI[vakit];
-    const sinirlar = esikSinirlariniHesapla(seviyeler, indeks);
+    const sinirlar = esikSinirlariniHesapla(seviyeler, indeks, { pencereUzunluguDk });
+    const notlar = adimNotlariniOlustur(seviye, seviyeler, vakit, pencereUzunluguDk);
     const sessizMi = seviye.mod === 'sessiz';
     const sesliMi = SESLI_MODLAR.includes(seviye.mod);
     const bildirimliMi = bildirimSesiGerekliMi(seviye.mod);
@@ -309,6 +317,9 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                         aciklama="Kaç dk kala"
                                     />
                                 </View>
+
+                                {/* Faz 0: pencereye sigmayan / seyreltilen adim uyarisi */}
+                                <AdimNotlari notlar={notlar} />
 
                                 {/* ── Siklik ── */}
                                 <BolumBasligi metin="SIKLIK" />

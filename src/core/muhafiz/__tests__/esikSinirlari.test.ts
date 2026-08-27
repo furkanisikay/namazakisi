@@ -1,4 +1,9 @@
-import { esikSinirlariniHesapla, ESIK_MUTLAK_MIN, ESIK_MUTLAK_MAX } from '../esikSinirlari';
+import {
+  esikSinirlariniHesapla,
+  ESIK_MUTLAK_MIN,
+  ESIK_MUTLAK_MAX,
+  ESIK_GUVENLIK_TAVANI,
+} from '../esikSinirlari';
 import { esikSiralamasiGecerliMi } from '../aktifSeviye';
 import type { SeviyeAyari } from '../matrisTipleri';
 
@@ -71,5 +76,49 @@ describe('esikSinirlariniHesapla (spec 4.2 kesin azalan sıra)', () => {
     // Kapalı olan 25'lik adım hâlâ üsttekinin alt sınırını ve alttakinin üst sınırını belirler
     expect(esikSinirlariniHesapla(s, 0).min).toBe(26);
     expect(esikSinirlariniHesapla(s, 2).max).toBe(24);
+  });
+});
+
+/**
+ * Faz 0 — tavan artık sabit 120 degil, VAKTIN O GUNKU PENCERESINDEN gelir.
+ * Pencere bilinmiyorsa (ekran konumu/vakitleri hesaplayamadiysa) eski davranis
+ * birebir korunur: gercek geriye uyumluluk.
+ */
+describe('esikSinirlariniHesapla — dinamik pencere tavani (Faz 0)', () => {
+  test('pencere 400 dk → tavan 399 (vaktin son dakikasi kapsanmaz)', () => {
+    expect(esikSinirlariniHesapla(seviyeler(), 0, { pencereUzunluguDk: 400 })).toEqual({
+      min: 26,
+      max: 399,
+    });
+  });
+
+  test('pencere 900 dk → GUVENLIK TAVANI 720 (Android alarm siniri)', () => {
+    expect(esikSinirlariniHesapla(seviyeler(), 0, { pencereUzunluguDk: 900 })).toEqual({
+      min: 26,
+      max: ESIK_GUVENLIK_TAVANI,
+    });
+    expect(ESIK_GUVENLIK_TAVANI).toBe(720);
+  });
+
+  test('pencere VERILMEZSE tavan 120 (eski davranis)', () => {
+    expect(esikSinirlariniHesapla(seviyeler(), 0)).toEqual({ min: 26, max: ESIK_MUTLAK_MAX });
+    expect(esikSinirlariniHesapla(seviyeler(), 0, {})).toEqual({ min: 26, max: ESIK_MUTLAK_MAX });
+  });
+
+  test('KOMSU kisiti tavanin onune gecer', () => {
+    // 1. seviye: ust komsusu 45 → max 44, pencere 400 olsa bile
+    expect(esikSinirlariniHesapla(seviyeler(), 1, { pencereUzunluguDk: 400 }).max).toBe(44);
+  });
+
+  test('cok kisa pencerede min > max uretilmez (stepper kilitlenmez)', () => {
+    const sinir = esikSinirlariniHesapla(seviyeler(), 0, { pencereUzunluguDk: 10 });
+    expect(sinir.max).toBeGreaterThanOrEqual(sinir.min);
+  });
+
+  test('gecersiz indekste de tavan pencereden gelir', () => {
+    expect(esikSinirlariniHesapla(seviyeler(), -1, { pencereUzunluguDk: 400 })).toEqual({
+      min: ESIK_MUTLAK_MIN,
+      max: 399,
+    });
   });
 });

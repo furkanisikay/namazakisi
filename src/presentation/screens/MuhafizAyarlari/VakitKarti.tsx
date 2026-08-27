@@ -11,11 +11,17 @@ import type { MuhafizVakti, VakitMuhafizAyari } from '../../../core/muhafiz/matr
 import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { vakitOzetiOlustur, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
+import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import { SEVIYE_BILGILERI } from './sabitler';
 
 export interface VakitKartiProps {
     vakit: MuhafizVakti;
     vakitAyari: VakitMuhafizAyari;
+    /**
+     * Vaktin BUGUNKU pencere uzunlugu (dk). Verilmezse (konum/vakit hesabi yok)
+     * "bu adim bugun calismayacak" uyarisi gosterilmez — yanlis alarm vermeyiz.
+     */
+    pencereUzunluguDk?: number;
     acikMi: boolean;
     onAcKapa: () => void;
     /** Katman 3'u acar */
@@ -30,6 +36,7 @@ export interface VakitKartiProps {
 export const VakitKarti: React.FC<VakitKartiProps> = ({
     vakit,
     vakitAyari,
+    pencereUzunluguDk,
     acikMi,
     onAcKapa,
     onSeviyeSec,
@@ -111,6 +118,13 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     {vakitAyari.seviyeler.map((seviye, indeks) => {
                         const bilgi = SEVIYE_BILGILERI[seviye.kademe];
                         const acik = seviyeAcikMi(seviye);
+                        const notlar = adimNotlariniOlustur(
+                            seviye,
+                            vakitAyari.seviyeler,
+                            vakit,
+                            pencereUzunluguDk
+                        );
+                        const notMetni = notlar.map((n) => n.metin).join(' ');
                         return (
                             // Switch, satırı saran Touchable'ın İÇİNDE değil KARDEŞİDİR:
                             // Touchable varsayılan `accessible` ile çocuklarını tek bir
@@ -119,7 +133,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                             // (Ekranın ana switch satırı da bu desende — MuhafizAyarlariSayfasi.)
                             <View
                                 key={seviye.kademe}
-                                className="flex-row items-center pr-3 rounded-xl border mb-2"
+                                className="rounded-xl border mb-2"
                                 style={{
                                     backgroundColor: renkler.arkaplan,
                                     borderColor: renkler.sinir,
@@ -127,6 +141,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                     borderLeftColor: acik ? bilgi.renk : renkler.sinir,
                                 }}
                             >
+                                <View className="flex-row items-center pr-3">
                                 <TouchableOpacity
                                     className="flex-row items-center flex-1 p-3"
                                     // Soluklaştırma YALNIZ bilgi bölümüne uygulanır; kapalı
@@ -135,7 +150,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                     onPress={() => onSeviyeSec(indeks)}
                                     activeOpacity={0.7}
                                     accessibilityRole="button"
-                                    accessibilityLabel={`${bilgi.baslik} adımını düzenleyin. ${seviyeOzetiOlustur(seviye)}`}
+                                    accessibilityLabel={`${bilgi.baslik} adımını düzenleyin. ${seviyeOzetiOlustur(seviye)}${notMetni ? `. ${notMetni}` : ''}`}
                                 >
                                     <View
                                         className="w-9 h-9 rounded-xl items-center justify-center mr-3"
@@ -173,6 +188,15 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                                     accessibilityState={{ checked: acik }}
                                     accessibilityLabel={`${bilgi.baslik} adımını açın veya kapatın`}
                                 />
+                                </View>
+
+                                {/* Sessiz sapma birakma (Faz 0): pencereye sigmayan adim
+                                    ve butce ile seyreltilen siklik burada gorunur olur. */}
+                                {notlar.length > 0 && (
+                                    <View className="px-3 pb-2.5">
+                                        <AdimNotlari notlar={notlar} />
+                                    </View>
+                                )}
                             </View>
                         );
                     })}

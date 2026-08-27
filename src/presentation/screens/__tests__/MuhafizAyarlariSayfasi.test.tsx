@@ -90,6 +90,15 @@ jest.mock('../../../domain/services/VakitSayacBildirimServisi', () => ({
     getInstance: () => ({ yapilandirVePlanla: (...args: unknown[]) => mockSayacPlanla(...args) }),
   },
 }));
+// Faz 0: eşik tavanı o günün GERÇEK vakit penceresinden gelir. Testte konum/vakit
+// hesabı yoktur → varsayılan `null` (yapılandırılmamış servis) ile eski davranış
+// (tavan 120, uyarı yok) korunur; pencere gereken testler kutuyu doldurur.
+const vakitKutusu: { vakitler: Record<string, Date> | null } = { vakitler: null };
+jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
+  NamazVaktiHesaplayiciServisi: {
+    getInstance: () => ({ getGunlukVakitler: () => vakitKutusu.vakitler }),
+  },
+}));
 
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
@@ -166,6 +175,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     jest.useFakeTimers();
     ttsDurumu.destekli = true;
     ttsDurumu.hataVer = false;
+    vakitKutusu.vakitler = null;
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useFeedback as jest.Mock).mockReturnValue({
@@ -1056,6 +1066,80 @@ describe('MuhafizAyarlariSayfasi', () => {
       await act(async () => { jest.advanceTimersByTime(5000); });
       await act(async () => { unmount(); });
       expect(mockMuhafizPlanla).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Faz 0: pencereye sığmayan adım ────────────────────────────────────────
+  describe('Vaktin gerçek penceresi (Faz 0)', () => {
+    /** Öğle penceresi bilinçli olarak KISA (40 dk): 45 dk'lık nazik adım sığmaz. */
+    const kisaOgleVakitleri = () => {
+      const g = (saat: number, dakika: number) => new Date(2026, 7, 27, saat, dakika, 0, 0);
+      return {
+        imsak: g(5, 0),
+        gunes: g(6, 30),
+        ogle: g(13, 0),
+        ikindi: g(13, 40),
+        aksam: g(20, 0),
+        yatsi: g(21, 30),
+      };
+    };
+
+    it('pencereye SIĞMAYAN adımda uyarı gösterilir', async () => {
+      vakitKutusu.vakitler = kisaOgleVakitleri();
+      const { getByText } = await kur();
+
+      fireEvent.press(getByText('Öğle'));
+
+      expect(getByText('Bu adım bugün çalışmayacak — öğle bugün 40 dk')).toBeTruthy();
+    });
+
+    it('pencereye SIĞAN adımda uyarı gösterilmez', async () => {
+      vakitKutusu.vakitler = kisaOgleVakitleri();
+      const { getByText, queryByText } = await kur();
+
+      // İkindi penceresi 13:40 → 20:00 = 380 dk; 45 dk'lık adım rahat sığar.
+      fireEvent.press(getByText('İkindi'));
+
+      expect(queryByText(/Bu adım bugün çalışmayacak/)).toBeNull();
+    });
+
+    it('vakit penceresi bilinmiyorsa (konum yok) uyarı gösterilmez', async () => {
+      const { getByText, queryByText } = await kur();
+      fireEvent.press(getByText('Öğle'));
+      expect(queryByText(/Bu adım bugün çalışmayacak/)).toBeNull();
+    });
+
+    it('eşik stepper üst sınırı vaktin penceresinden gelir', async () => {
+      vakitKutusu.vakitler = kisaOgleVakitleri();
+      const { getByText, getByLabelText } = await kur();
+
+      fireEvent.press(getByText('Öğle'));
+      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+
+      // Pencere 40 dk → tavan 39; alt sınır komşudan (25) gelir
+      expect(getByText('26–39 dk arası seçebilirsiniz')).toBeTruthy();
+    });
+
+    it('seyreltme uygulanan adımda bilgi satırı gösterilir', async () => {
+      // nazik 120 dk eşik + 1 dk sıklık; alt komşu 25 → segment 95 dk →
+      // ceil(95/15) = 7 dk'lık etkin sıklık.
+      const matris = varsayilanMatris();
+      matris.aksam.seviyeler[0] = {
+        ...matris.aksam.seviyeler[0],
+        esikDk: 120,
+        siklik: { herDk: 1 },
+      };
+      const { getByText } = await kur({ matris });
+
+      fireEvent.press(getByText('Akşam'));
+
+      expect(getByText(/7 dakikada bir hatırlatılır/)).toBeTruthy();
+    });
+
+    it('VARSAYILAN ayarda seyreltme bilgi satırı YANMAZ', async () => {
+      const { getByText, queryByText } = await kur();
+      fireEvent.press(getByText('Akşam'));
+      expect(queryByText(/dakikada bir hatırlatılır/)).toBeNull();
     });
   });
 

@@ -44,7 +44,9 @@ import {
     sayacBaslangicEsikleriHesapla,
     muhafizUyarilanVakitleriBul,
 } from '../../core/utils/vakitSayacYardimcisi';
+import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
+import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { Logger } from '../../core/utils/Logger';
 import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
@@ -108,6 +110,42 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         () => muhafizAyarlari.matris ?? eskidenMatriseGoc(muhafizAyarlari),
         [muhafizAyarlari]
     );
+
+    /**
+     * Vakitlerin BUGÜNKÜ pencere uzunlukları (dk) — eşik tavanı buradan gelir (Faz 0).
+     *
+     * Sabit 120 dk tavan vakitlerin gerçek süresini yok sayıyordu: yatsı kışın
+     * ~11 saat sürer (kullanıcı 3 saat önceden hatırlatılamıyordu), sabah vakti
+     * ise çoğu gün 1,5 saati bulmaz (kurulabilen 120 dk'lık adım hiç çalışmazdı).
+     *
+     * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
+     * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
+     */
+    const vakitPencereleri = useMemo<Partial<Record<MuhafizVakti, number>>>(() => {
+        try {
+            const hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
+            const bugun = new Date();
+            const vakitler = hesaplayici.getGunlukVakitler(bugun);
+            if (!vakitler) return {};
+
+            // Yatsı penceresi YARININ imsağına kadar sürer (gece yarısını aşar).
+            const yarin = new Date(bugun);
+            yarin.setDate(yarin.getDate() + 1);
+            const yarinVakitleri = hesaplayici.getGunlukVakitler(yarin);
+
+            return {
+                imsak: pencereUzunluguDkHesapla(vakitler.imsak, vakitler.gunes),
+                ogle: pencereUzunluguDkHesapla(vakitler.ogle, vakitler.ikindi),
+                ikindi: pencereUzunluguDkHesapla(vakitler.ikindi, vakitler.aksam),
+                aksam: pencereUzunluguDkHesapla(vakitler.aksam, vakitler.yatsi),
+                // Yarının imsağı alınamazsa bugünkü değerle sarma hesabı devreye girer.
+                yatsi: pencereUzunluguDkHesapla(vakitler.yatsi, yarinVakitleri?.imsak ?? vakitler.imsak),
+            };
+        } catch (hata) {
+            Logger.warn('MuhafizAyarlari', 'Vakit pencereleri hesaplanamadi', hata);
+            return {};
+        }
+    }, []);
 
     /**
      * Planlamada kullanılan güncel değerler. Debounce edilen geri çağrı kapanış
@@ -597,6 +635,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 key={vakit}
                                 vakit={vakit}
                                 vakitAyari={matris[vakit]}
+                                pencereUzunluguDk={vakitPencereleri[vakit]}
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
                                 onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
@@ -618,6 +657,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     vakit={detay.vakit}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
+                    pencereUzunluguDk={vakitPencereleri[detay.vakit]}
                     ttsDestekli={ttsDestekli}
                     onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
                     onKapat={() => setDetay(null)}
