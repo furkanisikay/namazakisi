@@ -36,6 +36,16 @@ export interface SeriHesaplamaSonucu {
   yeniHedefTamamlandi: SeriHedefi | null;
   /** Toparlanma basarili oldu mu */
   toparlanmaBasarili: boolean;
+  /**
+   * Ayni-gun geri-alimi BUGUN tamamlanmis bir toparlanmayi geri sardi mi.
+   *
+   * `toparlanmaSayisi` olay-tetiklemeli KALICI bir sayactir (rozet kosulu: 3 kez
+   * toparlanma) ve `toparlanmaBasarili` her tetiklendiginde artar. Geri-alim
+   * toparlanmayi yeniden tamamlanabilir hale getirdigi icin, geri sarma da
+   * bildirilmezse kullanici son namazi isaretle/geri-al yaparak sayaci sinirsizca
+   * sisirebilir (AGENTS.md: "olay-tetiklemeli sayac artirma" tuzagi).
+   */
+  toparlanmaGeriAlindi: boolean;
   /** Seri bozuldu mu */
   seriBozuldu: boolean;
   /** Kazanilan puan */
@@ -280,6 +290,7 @@ export const seriHesapla = (
     seriDegisti: false,
     yeniHedefTamamlandi: null,
     toparlanmaBasarili: false,
+    toparlanmaGeriAlindi: false,
     seriBozuldu: false,
     kazanilanPuan: 0,
   };
@@ -349,6 +360,11 @@ export const seriHesapla = (
       sonuc.seriDegisti = true;
       // Faz 1b: bugun verilen seri/gun bonusunu da geri al (negatif kazanilanPuan).
       sonuc.kazanilanPuan = -(durum.bugunKazanilanPuan ?? 0);
+      // Bugun BITEN bir toparlanma geri sariliyorsa (snapshot toparlanmadaydi, guncel
+      // durum toparlanmayi bitirmisti) `toparlanmaSayisi` da geri alinmali; aksi halde
+      // isaretle/geri-al dongusu sayaci ve `toparlanma_ustasi` rozetini sisirir.
+      sonuc.toparlanmaGeriAlindi =
+        durum.toparlanmaDurumu === null && durum.bugunOncesi.toparlanmaDurumu !== null;
     }
     return sonuc;
   }

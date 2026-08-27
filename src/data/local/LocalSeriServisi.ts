@@ -403,6 +403,34 @@ export const localToparlanmaSayisiniArttir = async (): Promise<
 };
 
 /**
+ * Toparlanma sayisini azaltir (0'in altina inmez).
+ *
+ * Ayni-gun geri-alimi BUGUN tamamlanmis bir toparlanmayi geri sardiginda cagrilir:
+ * sayac olay-tetiklemeli ve KALICI oldugu icin geri alinmazsa kullanici son namazi
+ * isaretleyip geri alarak `toparlanma_ustasi` rozetini (3 kez toparlanma) tek gunde
+ * kazanabilirdi.
+ */
+export const localToparlanmaSayisiniAzalt = async (): Promise<
+  ApiYanit<number>
+> => {
+  try {
+    const mevcutYanit = await localToparlanmaSayisiniGetir();
+    const mevcut = mevcutYanit.veri || 0;
+    const yeni = Math.max(0, mevcut - 1);
+    await AsyncStorage.setItem(
+      DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI,
+      yeni.toString()
+    );
+    return { basarili: true, veri: yeni };
+  } catch (error) {
+    return {
+      basarili: false,
+      hata: error instanceof Error ? error.message : 'Bilinmeyen hata',
+    };
+  }
+};
+
+/**
  * Mukemmel gun sayisini (5/5) getirir
  */
 export const localMukemmelGunSayisiniGetir = async (): Promise<

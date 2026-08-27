@@ -755,6 +755,22 @@ describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snaps
       expect(tekrar.seriDurumu.mevcutSeri).toBe(24);
       expect(tekrar.seriDurumu.sonTamGun).toBe('2026-06-14');
     });
+
+    // NOBETCI: `toparlanmaSayisi` olay-tetiklemeli ve KALICI bir sayactir (rozet
+    // kosulu: 3 kez toparlanma). Geri-alim toparlanmayi yeniden tamamlanabilir
+    // yaptigi icin, geri sarma bildirilmezse isaretle/geri-al dongusu sayaci
+    // sinirsizca sisirir ve rozet tek gunde farm edilebilir.
+    test('BITEN toparlanma geri alininca `toparlanmaGeriAlindi` bildirilir', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      expect(tam.toparlanmaBasarili).toBe(true);
+      expect(tam.toparlanmaGeriAlindi).toBe(false);
+
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+      expect(geriAl.toparlanmaGeriAlindi).toBe(true);
+      expect(geriAl.toparlanmaBasarili).toBe(false);
+    });
   });
 
   describe('hedef 3 gun: toparlanmanin ORTA gunu geri alinip tekrar isaretlenir', () => {
@@ -791,6 +807,16 @@ describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snaps
       expect(tekrar.seriDurumu.toparlanmaDurumu?.baslangicTarihi).toBe('2026-06-13');
       expect(tekrar.seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(22);
       expect(tekrar.seriDurumu.sonTamGun).toBe('2026-06-14');
+    });
+
+    // Toparlanma HENUZ bitmemisken geri-alim sayaci ilgilendirmez (hic artmamisti).
+    test('SUREN toparlanmanin gunu geri alininca `toparlanmaGeriAlindi` false kalir', () => {
+      const dunkuDurum = toparlanmaninIkinciGunu(ayarlar);
+
+      const tam = seriHesapla(dunkuDurum, gun('2026-06-14', 3), gun('2026-06-13', 3), ayarlar);
+      const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
+
+      expect(geriAl.toparlanmaGeriAlindi).toBe(false);
     });
   });
 });

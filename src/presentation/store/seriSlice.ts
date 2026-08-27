@@ -229,6 +229,12 @@ export const seriKontrolet = createAsyncThunk(
     if (hesapSonucu.toparlanmaBasarili) {
       toparlanmaSayisi += 1;
       await LocalSeriServisi.localToparlanmaSayisiniArttir();
+    } else if (hesapSonucu.toparlanmaGeriAlindi) {
+      // Ayni-gun geri-alimi bugun BITEN toparlanmayi geri sardi -> sayaci da geri al.
+      // Sayac kalici ve olay-tetiklemeli oldugu icin geri alinmazsa isaretle/geri-al
+      // dongusu onu sinirsizca sisirir (rozet kosulu: 3 kez toparlanma).
+      toparlanmaSayisi = Math.max(0, toparlanmaSayisi - 1);
+      await LocalSeriServisi.localToparlanmaSayisiniAzalt();
     }
 
     // NOT: mukemmel gun artik kayittan TUREVdir (puanlamayiYenidenHesapla); burada artirilmaz.

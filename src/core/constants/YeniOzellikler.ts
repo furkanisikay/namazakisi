@@ -42,7 +42,7 @@ export interface YeniOzellik {
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'konumu-tek-dokunusla-yenile',
-        surum: '0.24.1',
+        surum: '0.25.0',
         tarih: '2026-08-27',
         baslik: 'Konumunuzu Tek Dokunuşla Yenileyin',
         aciklama:
@@ -62,7 +62,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'toparlanma-iki-gun',
-        surum: '0.24.1',
+        surum: '0.25.0',
         tarih: '2026-08-27',
         baslik: 'Serinizi Artık 2 Günde Kurtarabilirsiniz',
         aciklama:
