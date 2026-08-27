@@ -1,6 +1,6 @@
 # Uygulama Planı: Hatırlatma Penceresi — ortak hatırlatma motoru
 
-> Tarih: 2026-08-27 · Sürüm: **v4** (üçüncü tur; bütçe formülü giriş yönüne genişletildi, arka plan sözleşmesi ve kabul kriteri düzeltildi) · **Durum: Faz 0 ve Faz 5a uygulanabilir onay aldı** · Tasarım: [spec](../specs/2026-08-27-hatirlatma-penceresi-ortak-motor-design.md) · Dal: `claude/toparlanma-calculation-bug-47ojw1` (PR #233)
+> Tarih: 2026-08-27 · Sürüm: **v5** (dördüncü tur; bütçe span'ı gerçek segmente bağlandı, sabit seviye-başına olarak yeniden tanımlandı) · **Durum: Faz 0 ve Faz 5a uygulanabilir onay aldı** · Tasarım: [spec](../specs/2026-08-27-hatirlatma-penceresi-ortak-motor-design.md) · Dal: `claude/toparlanma-calculation-bug-47ojw1` (PR #233)
 
 ## Kapatılan açık sorular (kullanıcı kararı)
 
@@ -56,11 +56,16 @@ AGENTS.md'de yaşanmış bug olarak kayıtlı; hiçbir faz gevşetemez:
   - **B5 (b):** `pencereUzunluguDk` **verilmezse tavan `ESIK_MUTLAK_MIN_TAVAN = 120`** (gerçek geriye uyumluluk). v1'de "verilmezse 720" yazıyordu, testi ise "eski davranış" bekliyordu — çelişkiliydi.
   - Tavan = `min(pencereUzunluguDk - 1, ESIK_GUVENLIK_TAVANI)`, sonra komşu kısıtı.
 - **Yeni:** `src/core/muhafiz/pencereUzunlugu.ts` — `pencereUzunluguDkHesapla(giris, cikis)`, `adimPencereyeSigarMi(esikDk, pencereUzunluguDk)`
-- **Yeni:** `src/core/muhafiz/planButcesi.ts` — `etkinSiklikHesapla(span, siklik): Siklik` = `max(herDk, ceil(span / PLAN_ADIM_UST_SINIRI))`, `PLAN_ADIM_UST_SINIRI = 60` (vakit başına).
-  - **ÜÇÜNCÜ TUR — girdi eşik DEĞİL, `span` (tetik açıklığı).** Eşikten türetmek yalnız çıkış yönünde doğru: orada eşiği E olan seviye en çok E kez tetiklenir. Giriş yönünde en büyük eşikli seviye `olcuDk >= E`'den **pencere sonuna kadar** kazanır → açıklık `pencereUzunluguDk − E`'dir. Yatsı 700 dk, acil eşik 45, `herDk` 3 iken eşik tabanlı formül `ceil(45/60)=1` verir, seyreltme hiç devreye girmez ve tek vakitte **~218 bildirim + 218 exact alarm** üretilir — bütçe tam da engellemesi gereken yerde delinir.
-    - `cikisaDogru` → `span = esikDk`
-    - `girisindenItibaren` → `span = pencereUzunluguDk − esikDk`
+- **Yeni:** `src/core/muhafiz/planButcesi.ts` — `etkinSiklikHesapla(span, siklik): Siklik` = `max(herDk, ceil(span / PLAN_ADIM_UST_SINIRI))`, **`PLAN_ADIM_UST_SINIRI = 15` (SEVİYE başına)** → dört adımlı bir vakitte toplam ~60, beş vakitte ~300 (Android exact alarm sınırı ~500'ün altında).
+  - **DÖRDÜNCÜ TUR — sabit "vakit başına" diye belgelenmişti ama formül SEVİYE başına sınır koyuyor.** v4'ün kendi nöbetçisi ("vakit başına plan ≤ 60") bu yüzden kendi formülüne karşı kırmızı kalırdı: 700 dk pencerede 1+2+2+60 = ~65. Sabit artık açıkça seviye başınadır ve değeri vakit bütçesinden türetilir (4 × 15 = 60).
+  - **`span` = seviyenin GERÇEKTEN kazandığı segment**, eşik değil. Eşikten türetmek giriş yönünde deliniyordu (bütçe hiç devreye girmiyordu); pencere sonuna bağlamak ise orta seviyeleri gereksiz seyreltip "seyreltildi" bilgi satırını neredeyse her adımda yakıyordu (yanlış pozitif).
+    - `cikisaDogru` → `span = esikDk − (bir sonraki daha SERT açık komşunun eşiği ?? 0)`
+    - `girisindenItibaren` → `span = (bir sonraki daha SERT açık komşunun eşiği ?? pencereUzunluguDk) − esikDk`
+    - "Açık komşu" filtresi `aktifSeviyeyiBul`'un sessiz-atlama kuralıyla **aynı** olmalı (kapalı adım pencere sağlamaz → segmenti üstteki devralır).
   - `'birkez'` sıklığa **hiç dokunulmaz** — formül yalnız `{herDk}` koluna uygulanır.
+
+  **Doğrulama (mevcut varsayılan matris, çıkış yönü):** nazik 45/15 → segment 15 → etkin 15 → 1 tetik · uyarı 30/10 → segment 15 → etkin 10 → 2 · sert 15/5 → segment 10 → etkin 5 → 2 · acil 5/1 → segment 5 → etkin 1 → 5. Toplam 10 — **bugünkü davranışın birebir aynısı**, seyreltme yok.
+  **Giriş yönü (700 dk yatsı, nazik 5 / uyarı 15 / sert 30 / acil 45, herDk 1):** 10 + 15 + 15 + ~15 = ~55 ≤ 60; orta seviyelerde seyreltme yok → bilgi satırı yanlış pozitif vermez.
   - **YENİ-2 — bütçe `seviyeTetiklenirMi` İÇİNDE uygulanır**, plan üreticisinde değil. Üreticiye koymak AGENTS.md'nin yazılı dersini ihlal ederdi: arka plan seyreltilir ama ön plan `kontrolEt` ham sıklıkla çağırdığı için banner her dakika sürer ve `AkisOnizlemeModal` (üreticiden beslenir) gerçek davranışı göstermez. Tek kapıdan geçince üretici, ön plan ve önizleme kendiliğinden aynı kalır.
   - Fonksiyon **saf ve deterministik** (bool değil `Siklik` döner — "seyrelt" davranışı bool imzaya sığmaz).
   - **`Logger` çekirdeğe girmez** (`motorAdaptoru` saf: store/native bağımsız). Seyreltme logu `ArkaplanMuhafizServisi`'nde atılır.
@@ -75,8 +80,8 @@ Sığmayan adım satırı: **"Bu adım bugün çalışmayacak — yatsı bugün 
 ### Testler
 - `esikSinirlari.test.ts`: pencere 400 → tavan 399 · pencere 900 → 720 (güvenlik) · **pencere verilmezse 120 (eski davranış)** · komşu kısıtı tavanın önüne geçer.
 - `pencereUzunlugu.test.ts`: gece yarısını aşan pencere (yatsı → imsak).
-- `planButcesi.test.ts`: **çıkış yönü** 720 dk eşik + 1 dk sıklık → etkin sıklık 12 dk, plan `PLAN_ADIM_UST_SINIRI`'nı aşmaz · normal ayar (45 dk eşik + 15 dk sıklık) **değişmez** (`ceil(45/60)=1`) · `'birkez'` dokunulmaz.
-- **Nöbetçi (ÜÇÜNCÜ TUR, Faz 1'de eklenir):** **giriş yönü** fikstürü — 700 dk pencere + acil eşik 45 + `herDk` 1 → vakit başına plan ≤ 60. Bu test çıkış-yönü fikstürüyle yazılırsa deliği yakalamaz.
+- `planButcesi.test.ts`: tek açık seviye 720 dk eşik + 1 dk sıklık → etkin sıklık `ceil(720/15)=48` · **mevcut varsayılan matris hiç seyreltilmez** (yukarıdaki doğrulama tablosu birebir) · `'birkez'` dokunulmaz · kapalı komşu segmenti üstteki devralır.
+- **Nöbetçi (Faz 1'de eklenir):** **giriş yönü** fikstürü — 700 dk pencere, dört adım, `herDk` 1 → **her seviye ≤ `PLAN_ADIM_UST_SINIRI`** ve vakit toplamı ≤ 60. Çıkış-yönü fikstürüyle yazılırsa deliği yakalamaz.
 - **Nöbetçi (YENİ-2):** aynı ayar için `vakitUyariPlaniOlustur` (arka plan) ile `seviyeTetiklenirMi` (ön plan) **aynı dakikalarda** tetiklenir — iki motor ayrışmaz.
 - `MuhafizAyarlariSayfasi.test.tsx`: sığmayan adımda uyarı render edilir, sığanda edilmez.
 
@@ -284,7 +289,7 @@ Faz 5a ─→ 5b (paralel kulvar)
 | A3a | 1 (çekirdek) | `pencereTipleri`, `aktifSeviye`, `esikSinirlari`, `motorAdaptoru` + nöbetçiler | A1 |
 | A3b | 1 (metin/özet) | `anonsMetni`, `seviyeOzeti`, `vakitOzeti`, `matrisIslemleri`, `seviyeAcKapa` | A3a |
 | A3c | 1 (servisler) | `NamazVaktiHesaplayiciServisi`, `ArkaplanMuhafizServisi`, `NamazMuhafiziServisi`, `vakitSayacYardimcisi` | A3b |
-| A4 | 5b | native countdown (`.kt` + layout XML + `index.ts`), `SeriSayacBildirimServisi`, **`KonumDegisikligiServisi`**, `App.tsx`, **`ArkaplanGorevServisi`** (YENİ-3) | A2 |
+| A4 | 5b | native countdown (`.kt` + layout XML + `index.ts`), **`SayacBildirimTemeli`** (`SayacKonfig.themeType` birliği `'seri'`yi kabul etmeli — yoksa typecheck kırılır), `SeriSayacBildirimServisi`, **`KonumDegisikligiServisi`**, `App.tsx`, **`ArkaplanGorevServisi`** | A2 |
 | A5 | 2 | `matrisTipleri`, `kanalKumesi`, `muhafizGoc`, `kanalPlani`, `muhafizSlice`, preset'ler, ekran sabitleri, beş tüketici — **`KonumDegisikligiServisi` ve `ArkaplanGorevServisi`'ne DOKUNMAZ** (A4'e rezerve) | A3c |
 | A6 | 3+4 | `components/hatirlatma/`, `MuhafizAyarlariSayfasi`, `BildirimAyarlariSayfasi`, cuma servisi + yardımcısı | A5 |
 | A7 | 6 | `sesKimligi`, `MuhafizKanalServisi`, `kanalPlani`, `MuhafizKanallari.kt`, bildirim yolları, kanal çipi | A5 |
@@ -296,6 +301,8 @@ Faz 5a ─→ 5b (paralel kulvar)
 **YENİ-4 — regresyon taban çizgisi.** Faz 1'in "çıkış yönü planı birebir aynı" nöbetçisi **Faz 0 SONRASI (plan bütçeli) çıktıyı** taban alır. Faz 0 öncesi çıktıyla birebirlik zaten mümkün değil: plan bütçesi devreye girdiği an büyük eşik + sık tekrar kombinasyonlarında dakika kümesi meşru biçimde seyrelir. A1 bu tabanı kendi commit'inde snapshot testi olarak sabitler.
 
 **A1 → A3a imza zinciri.** A3a, A1'in yeni `esikSinirlariniHesapla(seviyeler, indeks, secenekler)` imzası ve `seviyeTetiklenirMi` içindeki bütçe uygulaması **üzerine** çalışır; sıralı oldukları için dosya çakışması yok.
+
+**A3a uygulama şartı (dördüncü tur):** A3a'nın eklediği her yeni parametre **opsiyonel + varsayılan `'cikisaDogru'`** olmalı. Sebep: `seviyeTetiklenirMi`/`aktifSeviyeyiBul` çağıranları (`NamazMuhafiziServisi:189,195`, `ArkaplanMuhafizServisi`) **A3c'nin alanında** ve A3a kendi `npm run verify`'ını onlara dokunmadan geçirmek zorunda. `aktifSeviyeyiBul` için imza değişikliği gerekmeyebilir — yön zaten aldığı `vakitAyari.yon`'dan okunur; `seviyeTetiklenirMi` yönü ayrı almalı çünkü `SeviyeAyari` yön taşımaz.
 
 Her agent: **kırmızı test önce** (davranışı üreten nöbetçi) → düzeltme → `npm run verify` → tek commit.
 
