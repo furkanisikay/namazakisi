@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { localTarihAraligindakiNamazlariGetir } from '../../../data/local/LocalNamazServisi';
 import { Logger } from '../../../core/utils/Logger';
 import { useSeriAyi, KIBAR_HATA_METNI } from '../useSeriAyi';
+import { NamazVaktiHesaplayiciServisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 
 jest.mock('../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
 
@@ -39,8 +40,15 @@ const VARSAYILAN_OZEL_GUN_AYARLARI = {
   gecmisKayitlar: [],
 };
 
+// Gün sınırı imsağa bağlandığından (Faz 5a) hook artık `konum.koordinatlar`'ı da
+// okur — sınırın yeniden çözülmesi için tek reaktif tetikleyici odur. Testlerin
+// çoğu imsak kaynağını hiç kurmaz; koordinat dolu olsa da `NamazVaktiHesaplayiciServisi`
+// yapılandırılmadığı için 05:00 fallback'i uygulanır (eski davranış).
+const VARSAYILAN_KOORDINAT = { lat: 41.0082, lng: 28.9784 };
+
 function stateOlustur(ustyaz: Record<string, unknown> = {}) {
   return {
+    konum: { koordinatlar: VARSAYILAN_KOORDINAT },
     seri: {
       ayarlar: VARSAYILAN_AYARLAR,
       ozelGunAyarlari: VARSAYILAN_OZEL_GUN_AYARLARI,
@@ -76,6 +84,10 @@ describe('useSeriAyi', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+    // Gün sınırı testleri `NamazVaktiHesaplayiciServisi.getInstance`'ı spy'lar;
+    // restore edilmezse sonraki testlere sızar (AGENTS.md: clearAllMocks
+    // implementasyonu SİLMEZ).
+    jest.restoreAllMocks();
   });
 
   it('NÖBETÇİ: mount olduğunda seriVerileriniYukle dispatch edilir (hidrasyon garantisi)', async () => {
@@ -204,5 +216,84 @@ describe('useSeriAyi', () => {
 
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     expect(result.current.bugun).toBe('2026-07-01');
+  });
+
+  // ==================== FAZ 5a: GÜN SINIRI = ERTESİ İMSAK ====================
+
+  /** Sahte zamanı, timer fonksiyonlarına dokunmadan kurar (dosya başı gerekçesi). */
+  const zamaniKur = (tarih: Date) => {
+    jest.useFakeTimers({
+      doNotFake: ['nextTick', 'setImmediate', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'queueMicrotask'],
+    });
+    jest.setSystemTime(tarih);
+  };
+
+  it('KRİTİK (hidrasyon zıplaması): imsak kaynağı hazır DEĞİLKEN bugun 05:00 fallback\'inde SABİT kalır', async () => {
+    // 04:00 — yaz imsağından (03:30) SONRA ama 05:00'ten ÖNCE. Kaynak hazır
+    // olmadığı için değer fallback'te kalmalı ve tekrar render'larda DEĞİŞMEMELİ
+    // (ilk render'da bir değer, hemen sonra başkası = AnaSayfa snap-back tuzağı).
+    zamaniKur(new Date(2026, 6, 2, 4, 0, 0));
+
+    const { result, rerender } = renderHook(() => useSeriAyi());
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+
+    expect(result.current.bugun).toBe('2026-07-01');
+    rerender(undefined);
+    expect(result.current.bugun).toBe('2026-07-01');
+  });
+
+  it('imsak kaynağı hazır olduğunda gün sınırı imsağa kayar (imsak 03:30 → 04:00 BUGÜNE)', async () => {
+    zamaniKur(new Date(2026, 6, 2, 4, 0, 0));
+    jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+      getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+      getGunlukVakitler: (tarih: Date) => ({
+        imsak: new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), 3, 30, 0, 0),
+      }),
+    } as unknown as NamazVaktiHesaplayiciServisi);
+
+    const { result } = renderHook(() => useSeriAyi());
+
+    await waitFor(() => expect(result.current.bugun).toBe('2026-07-02'));
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+  });
+
+  it('koordinat {0,0} nöbetçisi: imsak kaynağı cevap verse bile 05:00 fallback korunur', async () => {
+    // `{lat:0,lng:0}` "konum henüz yok" demektir; o koordinatla hesaplanan bir
+    // imsak Gine Körfezi'ne aittir ve gün sınırını saatlerce kaydırırdı.
+    zamaniKur(new Date(2026, 6, 2, 4, 0, 0));
+    selectorlaKur();
+    (useAppSelector as unknown as jest.Mock).mockImplementation(
+      (selector: (state: { konum: { koordinatlar: { lat: number; lng: number } } }) => unknown) =>
+        selector({
+          ...(stateOlustur() as unknown as { konum: { koordinatlar: { lat: number; lng: number } } }),
+          konum: { koordinatlar: { lat: 0, lng: 0 } },
+        })
+    );
+    jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+      getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+      getGunlukVakitler: (tarih: Date) => ({
+        imsak: new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), 3, 30, 0, 0),
+      }),
+    } as unknown as NamazVaktiHesaplayiciServisi);
+
+    const { result } = renderHook(() => useSeriAyi());
+
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    expect(result.current.bugun).toBe('2026-07-01');
+  });
+
+  it('KIŞ (imsak 06:40): 05:30 DÜNE sayılır — sınır İLERİ kayar', async () => {
+    zamaniKur(new Date(2026, 0, 15, 5, 30, 0));
+    jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+      getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+      getGunlukVakitler: (tarih: Date) => ({
+        imsak: new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), 6, 40, 0, 0),
+      }),
+    } as unknown as NamazVaktiHesaplayiciServisi);
+
+    const { result } = renderHook(() => useSeriAyi());
+
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    expect(result.current.bugun).toBe('2026-01-14');
   });
 });

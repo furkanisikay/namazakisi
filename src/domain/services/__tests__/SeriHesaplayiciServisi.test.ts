@@ -5,6 +5,7 @@ import {
   gunTamMi,
   oncekiGunuAl,
 } from '../SeriHesaplayiciServisi';
+import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import {
   SeriDurumu,
   SeriAyarlari,
@@ -817,6 +818,176 @@ describe('SeriHesaplayiciServisi - Toparlanmada ayni-gun geri-alimi (bayat snaps
       const geriAl = seriHesapla(tam.seriDurumu, gun('2026-06-14', 2), gun('2026-06-13', 3), ayarlar);
 
       expect(geriAl.toparlanmaGeriAlindi).toBe(false);
+    });
+  });
+});
+
+// ==================== FAZ 5a: GUN SINIRI = ERTESI IMSAK ====================
+/**
+ * Seri gunu artik sabit 05:00'te degil, ERTESI IMSAK'ta biter. Kayma CIFT YONLUDUR:
+ * yazin imsak (~03:30) 05:00'ten ONCE oldugu icin sinir GERIYE, kisin (~06:40)
+ * SONRA oldugu icin ILERI kayar. Imsak kaynagi (konum) hazir degilse eski 05:00
+ * davranisi birebir korunur.
+ */
+describe('SeriHesaplayiciServisi - Gun siniri imsaga baglidir (Faz 5a)', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    jest.restoreAllMocks();
+  });
+
+  /** Verilen gunun imsakini sabit bir saat:dakikaya kilitleyen saglayici. */
+  const imsakta = (saat: number, dakika: number) => (tarih: Date) =>
+    new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), saat, dakika, 0, 0);
+
+  /** Imsak kaynagi hazir degil (konum yok). */
+  const imsakYok = () => null;
+
+  const tamGun = (tarih: string): GunlukNamazlar => ({
+    tarih,
+    namazlar: [
+      NamazAdi.Sabah,
+      NamazAdi.Ogle,
+      NamazAdi.Ikindi,
+      NamazAdi.Aksam,
+      NamazAdi.Yatsi,
+    ].map((namazAdi) => ({ namazAdi, tamamlandi: true, tarih })),
+  });
+
+  describe('YAZ — imsak 03:30 (sinir GERIYE kayar)', () => {
+    test('04:00 BUGUNE sayilir (eski 05:00 kurali duneye sayiyordu)', () => {
+      const an = new Date(2026, 6, 2, 4, 0, 0);
+      expect(namazGunuHesapla(an, '05:00', imsakta(3, 30))).toBe('2026-07-02');
+    });
+
+    test('03:00 hala DUNE sayilir (imsak henuz girmedi)', () => {
+      const an = new Date(2026, 6, 2, 3, 0, 0);
+      expect(namazGunuHesapla(an, '05:00', imsakta(3, 30))).toBe('2026-07-01');
+    });
+
+    test('tam imsak dakikasinda (03:30) BUGUNE sayilir', () => {
+      const an = new Date(2026, 6, 2, 3, 30, 0);
+      expect(namazGunuHesapla(an, '05:00', imsakta(3, 30))).toBe('2026-07-02');
+    });
+  });
+
+  describe('KIS — imsak 06:40 (sinir ILERI kayar)', () => {
+    test('05:30 DUNE sayilir (eski 05:00 kurali buguneye sayiyordu)', () => {
+      const an = new Date(2026, 0, 15, 5, 30, 0);
+      expect(namazGunuHesapla(an, '05:00', imsakta(6, 40))).toBe('2026-01-14');
+    });
+
+    test('06:45 BUGUNE sayilir', () => {
+      const an = new Date(2026, 0, 15, 6, 45, 0);
+      expect(namazGunuHesapla(an, '05:00', imsakta(6, 40))).toBe('2026-01-15');
+    });
+  });
+
+  describe('Imsak kaynagi yok -> 05:00 fallback (eski davranis birebir)', () => {
+    test('04:00 DUNE, 05:00 BUGUNE', () => {
+      expect(namazGunuHesapla(new Date(2026, 6, 2, 4, 0, 0), '05:00', imsakYok)).toBe('2026-07-01');
+      expect(namazGunuHesapla(new Date(2026, 6, 2, 5, 0, 0), '05:00', imsakYok)).toBe('2026-07-02');
+    });
+
+    test('saglayici patlarsa da 05:00 fallback uygulanir (sessiz cokme yok)', () => {
+      const patlayan = () => {
+        throw new Error('konum kaynagi hazir degil');
+      };
+      expect(namazGunuHesapla(new Date(2026, 6, 2, 4, 0, 0), '05:00', patlayan)).toBe('2026-07-01');
+    });
+
+    test('gecersiz Date donen saglayici yok sayilir', () => {
+      const gecersiz = () => new Date(NaN);
+      expect(namazGunuHesapla(new Date(2026, 6, 2, 4, 0, 0), '05:00', gecersiz)).toBe('2026-07-01');
+    });
+
+    test('BASKA takvim gunune dusen imsak degeri yok sayilir (uc enlem korumasi)', () => {
+      const baskaGun = () => new Date(2026, 6, 5, 3, 30, 0);
+      expect(namazGunuHesapla(new Date(2026, 6, 2, 4, 0, 0), '05:00', baskaGun)).toBe('2026-07-01');
+    });
+  });
+
+  describe('KABLOLAMA — seriHesapla gercek imsak kaynagini kullanir', () => {
+    const ayarlar: SeriAyarlari = { ...VARSAYILAN_SERI_AYARLARI, tamGunEsigi: 5 };
+
+    const imsakKaynaginiKur = (saat: number, dakika: number) => {
+      jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+        getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+        getGunlukVakitler: (tarih: Date) => ({
+          imsak: new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), saat, dakika, 0, 0),
+        }),
+      } as unknown as NamazVaktiHesaplayiciServisi);
+    };
+
+    test('imsak 03:30 iken 04:00te isaretlenen namazlar BUGUNE (2 Temmuz) yazilir', () => {
+      jest.setSystemTime(new Date(2026, 6, 2, 4, 0, 0));
+      imsakKaynaginiKur(3, 30);
+
+      const sonuc = seriHesapla(null, tamGun('2026-07-02'), null, ayarlar);
+
+      expect(sonuc.seriDurumu.sonTamGun).toBe('2026-07-02');
+    });
+
+    test('konum yapilandirilmamissa (0,0 nobetcisi) 05:00 davranisina duser', () => {
+      jest.setSystemTime(new Date(2026, 6, 2, 4, 0, 0));
+      jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+        getKonfig: () => ({ latitude: 0, longitude: 0 }),
+        getGunlukVakitler: () => ({ imsak: new Date(2026, 6, 2, 3, 30, 0) }),
+      } as unknown as NamazVaktiHesaplayiciServisi);
+
+      const sonuc = seriHesapla(null, tamGun('2026-07-01'), null, ayarlar);
+
+      expect(sonuc.seriDurumu.sonTamGun).toBe('2026-07-01');
+    });
+  });
+
+  describe('KALICI VERI — sinir kaydiktan sonra diskteki kayitlar bozulmaz', () => {
+    const ayarlar: SeriAyarlari = { ...VARSAYILAN_SERI_AYARLARI, tamGunEsigi: 5 };
+
+    test('BAYAT bugunOncesi snapshot (eski 05:00 kuraliyla yazilmis) UYGULANMAZ', () => {
+      // Kullanici 1 Temmuz 04:00'te (eski kural: hala 30 Haziran gunu) bir snapshot
+      // biriktirmis; yeni kuralda 04:00 artik 2 Temmuz'a ait. sonTamGun bugune esit
+      // olsa bile snapshot'in tarihi tutmadigi icin geri-alma UYGULANMAMALI.
+      jest.setSystemTime(new Date(2026, 6, 2, 4, 0, 0));
+      jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+        getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+        getGunlukVakitler: (tarih: Date) => ({
+          imsak: new Date(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), 3, 30, 0, 0),
+        }),
+      } as unknown as NamazVaktiHesaplayiciServisi);
+
+      const durum: SeriDurumu = {
+        ...bosSeriDurumuOlustur(),
+        mevcutSeri: 9,
+        enUzunSeri: 9,
+        sonTamGun: '2026-07-02',
+        seriBaslangici: '2026-06-24',
+        bugunOncesi: {
+          tarih: '2026-07-01', // eski sinirla yazilmis -> bayat
+          mevcutSeri: 8,
+          enUzunSeri: 9,
+          sonTamGun: '2026-07-01',
+          seriBaslangici: '2026-06-24',
+          toparlanmaDurumu: null,
+          dondurulduMu: false,
+          dondurulmaTarihi: null,
+        },
+        bugunKazanilanPuan: 19,
+      };
+
+      const eksik: GunlukNamazlar = {
+        ...tamGun('2026-07-02'),
+        namazlar: tamGun('2026-07-02').namazlar.map((n, i) => ({ ...n, tamamlandi: i < 4 })),
+      };
+
+      const sonuc = seriHesapla(durum, eksik, null, ayarlar);
+
+      expect(sonuc.seriDegisti).toBe(false);
+      expect(sonuc.seriDurumu.mevcutSeri).toBe(9);
+      expect(sonuc.kazanilanPuan).toBe(0);
     });
   });
 });

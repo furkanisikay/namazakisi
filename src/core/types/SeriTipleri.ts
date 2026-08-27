@@ -210,7 +210,12 @@ export type BildirimGunSecimi = 'ayniGun' | 'ertesiGun';
 export interface SeriAyarlari {
   /** Tam gun esigi - kac namaz kilinirsa gun tam sayilir (3, 4 veya 5) */
   tamGunEsigi: number;
-  /** Gun bitis saati - DEPRECATED: Artık otomatik hesaplanıyor (imsak vaktine göre) */
+  /**
+   * Gun siniri FALLBACK'i (HH:mm). Seri gunu artik ERTESI IMSAK'ta biter
+   * (`SeriHesaplayiciServisi.namazGunuHesapla`); bu alan yalnizca imsak kaynagi
+   * (konum) hazir DEGILKEN kullanilir. "DEPRECATED" DEGIL — motor onu hala
+   * okuyor; kaldirmak konumsuz cihazda gun sinirini belirsiz birakir.
+   */
   gunBitisSaati: string;
   /** Seri hatirlaticilari aktif mi */
   bildirimlerAktif: boolean;
@@ -243,7 +248,7 @@ export interface SeriAyarlari {
  */
 export const VARSAYILAN_SERI_AYARLARI: SeriAyarlari = {
   tamGunEsigi: 5,
-  gunBitisSaati: '05:00', // DEPRECATED - artık otomatik hesaplanıyor
+  gunBitisSaati: '05:00', // Yalnizca imsak kaynagi yokken kullanilan fallback sinir
   bildirimlerAktif: true,
   toparlanmaGunSayisi: 2,
   gunSonuBildirimAktif: true,
