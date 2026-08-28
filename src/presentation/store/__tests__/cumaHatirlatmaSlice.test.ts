@@ -25,7 +25,8 @@ import { configureStore } from '@reduxjs/toolkit';
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
 jest.mock('../../../domain/services/CumaHatirlatmaServisi');
 
-const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60 };
+// `siklik` Faz 4'te eklendi; varsayilani `'birkez'` = ESKI davranis (tek atis).
+const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60, siklik: 'birkez' };
 
 // Store'daki konum: thunk koordinatı buradan okuyup servise PARAMETRE geçmeli.
 let konumKoordinatlari: { lat: number; lng: number } | null = null;
@@ -55,7 +56,7 @@ describe('cumaHatirlatmaSlice — başlangıç durumu', () => {
         const state = store.getState().cumaHatirlatma;
 
         // Cuma herkese farz-ı ayn değil → özellik ayardan açılır, kendiliğinden açılmaz.
-        expect(state.ayarlar).toEqual({ aktif: false, oncedenDk: 60 });
+        expect(state.ayarlar).toEqual({ aktif: false, oncedenDk: 60, siklik: 'birkez' });
         expect(state.yukleniyor).toBe(false);
         expect(state.hata).toBeNull();
     });
@@ -63,7 +64,7 @@ describe('cumaHatirlatmaSlice — başlangıç durumu', () => {
 
 describe('cumaHatirlatmaAyarlariniYukle', () => {
     test('diskteki ayarları state\'e alır ve yukleniyor kapanır', async () => {
-        const kayitli: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 90 };
+        const kayitli: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 90, siklik: 'birkez' };
         (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue(kayitli);
 
         await store.dispatch(cumaHatirlatmaAyarlariniYukle());
@@ -233,6 +234,7 @@ describe('cumaHatirlatmaAyariniGuncelle', () => {
         expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith({
             aktif: true,
             oncedenDk: 999,
+            siklik: 'birkez',
         });
         // ...ama state'e diskten okunan DÜZELTİLMİŞ değer yazılır.
         expect(store.getState().cumaHatirlatma.ayarlar).toEqual({ aktif: true, oncedenDk: 180 });

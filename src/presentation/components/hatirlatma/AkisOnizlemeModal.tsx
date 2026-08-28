@@ -1,6 +1,7 @@
 /**
- * "Akisi onizle" (spec 3.4) — bir vaktin TUM hatirlatma akisini zaman
+ * "Akisi onizle" (spec 3.4) — bir pencerenin TUM hatirlatma akisini zaman
  * cizelgesinde sirayla gosterir: 45 dk kala nazik ... 3 dk kala acil.
+ * (Faz 3'te ortak bilesen katmanina tasindi; muhafiz ve cuma ayni modali acar.)
  *
  * ONEMLI: Burasi bir ONIZLEMEdir — GERCEK BILDIRIM GONDERMEZ, hicbir sey
  * planlamaz. Yalniz kullanicinin istegiyle ("Dinle") tek bir adim oldugu gibi
@@ -26,27 +27,30 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
-import type { MuhafizVakti, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
+import type { VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import { bildirimSesiGerekliMi, vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import {
-    VAKIT_ADLARI,
     basligiOlustur,
     bildirimGovdesiOlustur,
     type MuhafizSeviye,
 } from '../../../core/utils/muhafizMetinYardimcisi';
-import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
+import { seviyeOzetiOlustur, esikIfadesi } from '../../../core/muhafiz/seviyeOzeti';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
-import { SEVIYE_BILGILERI, ONIZLEME_TARAMA_SINIRI_DK } from './sabitler';
+import {
+    ONIZLEME_TARAMA_SINIRI_DK,
+    GIRIS_SESLI_GECIKME_NOTU,
+    type PencereTanimi,
+} from './pencereTanimi';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
 export interface AkisOnizlemeModalProps {
     gorunur: boolean;
-    vakit: MuhafizVakti;
-    vakitAyari: VakitMuhafizAyari;
+    tanim: PencereTanimi;
+    ayar: VakitMuhafizAyari;
     /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
     ttsDestekli: boolean | null;
     onKapat: () => void;
@@ -54,8 +58,8 @@ export interface AkisOnizlemeModalProps {
 
 export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
     gorunur,
-    vakit,
-    vakitAyari,
+    tanim,
+    ayar,
     ttsDestekli,
     onKapat,
 }) => {
@@ -70,12 +74,21 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
     }, [gorunur]);
     useEffect(() => () => OnizlemeSesServisi.temizle(), []);
 
-    const vakitAdi = VAKIT_ADLARI[vakit];
+    const girisYonu = tanim.yon === 'girisindenItibaren';
 
-    // Gercek motor plani — arka planin planlayacagi dakikalarla birebir ayni.
+    /**
+     * Gercek motor plani — arka planin planlayacagi dakikalarla birebir ayni.
+     *
+     * Giris yonunde pencere uzunlugu ZORUNLUdur (motor onsuz plan uretmez);
+     * `pencereUzunluguDk` yoksa liste bos doner ve bos durum metni cikar —
+     * bu, motorun gercek davranisidir, gizlenmez.
+     */
     const adimlar = useMemo(
-        () => vakitUyariPlaniOlustur(vakitAyari, ONIZLEME_TARAMA_SINIRI_DK),
-        [vakitAyari]
+        () =>
+            vakitUyariPlaniOlustur(ayar, ONIZLEME_TARAMA_SINIRI_DK, {
+                pencereUzunluguDk: tanim.pencereUzunluguDk,
+            }),
+        [ayar, tanim.pencereUzunluguDk]
     );
 
     const sesliAdimVar = adimlar.some((a) => a.sesliAnons && a.anonsMetni.trim().length > 0);
@@ -117,11 +130,13 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                    {vakitAdi} akışı
+                                    {tanim.baslik} akışı
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {adimlar.length > 0
-                                        ? `Vakit çıkmadan önce ${adimlar.length} hatırlatma alırsınız`
+                                        ? girisYonu
+                                            ? `Vakit girdikten sonra ${adimlar.length} hatırlatma alırsınız`
+                                            : `Vakit çıkmadan önce ${adimlar.length} hatırlatma alırsınız`
                                         : 'Bu vakitte hatırlatma yok'}
                                 </Text>
                             </View>
@@ -149,6 +164,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metinIkincil }}>
                                 Bu bir önizlemedir; bildirim gönderilmez. Bir adımın nasıl duyulacağını
                                 denemek için “Dinle” düğmesine dokunun.
+                                {girisYonu && sesliAdimVar ? ` ${GIRIS_SESLI_GECIKME_NOTU}` : ''}
                             </Text>
                         </View>
 
@@ -158,7 +174,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             <View className="items-center py-12">
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                                    {vakitAdi} vaktinde tüm adımlar kapalı. Bir adımı açarak akışı
+                                    {tanim.baslik} vaktinde tüm adımlar kapalı. Bir adımı açarak akışı
                                     oluşturabilirsiniz.
                                 </Text>
                             </View>
@@ -166,18 +182,18 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             <View className="mt-3">
                                 {adimlar.map((adim) => {
                                     const kademe = SEVIYE_KADEMELERI[adim.seviye - 1];
-                                    const bilgi = SEVIYE_BILGILERI[kademe];
+                                    const bilgi = tanim.adimBilgileri[adim.seviye - 1] ?? tanim.adimBilgileri[0];
                                     const seviye = adim.seviye as MuhafizSeviye;
                                     const anonsMetni =
                                         adim.sesliAnons && adim.anonsMetni.trim().length > 0
-                                            ? anonsMetniniCoz(adim.anonsMetni, vakit, adim.kalanDk)
+                                            ? anonsMetniniCoz(adim.anonsMetni, tanim.vakit, adim.olcuDk, tanim.yon)
                                             : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
                                     const dinlenebilir = bildirimSesiGerekliMi(adim.kanallar) || !!anonsMetni;
 
                                     return (
                                         <View
-                                            key={`${adim.kalanDk}-${adim.seviye}`}
+                                            key={`${adim.olcuDk}-${adim.seviye}`}
                                             className="rounded-2xl border p-3.5 mb-2.5"
                                             style={{
                                                 backgroundColor: renkler.arkaplan,
@@ -186,16 +202,16 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 borderLeftColor: bilgi.renk,
                                             }}
                                             accessible
-                                            accessibilityLabel={`${adim.kalanDk} dakika kala, ${bilgi.baslik}`}
+                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${bilgi.baslik}`}
                                         >
-                                            {/* Adim basligi: kalan sure rozeti + kademe */}
+                                            {/* Adim basligi: olcu rozeti + kademe */}
                                             <View className="flex-row items-center mb-2">
                                                 <View
                                                     className="px-2 py-0.5 rounded-lg mr-2.5"
                                                     style={{ backgroundColor: `${bilgi.renk}20` }}
                                                 >
                                                     <Text className="text-[11px] font-bold" style={{ color: renkler.metin }}>
-                                                        {adim.kalanDk} dk
+                                                        {adim.olcuDk} dk
                                                     </Text>
                                                 </View>
                                                 <FontAwesome5
@@ -215,22 +231,25 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
 
                                             {/* Bildirim onizlemesi (adim kapali olamaz — plan kapalilari elemistir) */}
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                                {basligiOlustur(vakit, seviye, adim.kalanDk)}
+                                                {basligiOlustur(tanim.vakit, seviye, adim.olcuDk, tanim.yon)}
                                             </Text>
                                             <Text className="text-xs mt-1 leading-4" style={{ color: renkler.metinIkincil }}>
-                                                {bildirimGovdesiOlustur(seviye)}
+                                                {bildirimGovdesiOlustur(seviye, tanim.yon)}
                                             </Text>
 
-                                            {/* Ayar ozeti (mod · ses) */}
+                                            {/* Ayar ozeti (kanallar · ses) */}
                                             <Text className="text-[11px] mt-2" style={{ color: renkler.metinIkincil }}>
-                                                {seviyeOzetiOlustur({
-                                                    kademe,
-                                                    kanallar: adim.kanallar,
-                                                    esikDk: adim.kalanDk,
-                                                    siklik: 'birkez',
-                                                    bildirimSesi: adim.bildirimSesi,
-                                                    anonsMetni: adim.anonsMetni,
-                                                })}
+                                                {seviyeOzetiOlustur(
+                                                    {
+                                                        kademe,
+                                                        kanallar: adim.kanallar,
+                                                        esikDk: adim.olcuDk,
+                                                        siklik: 'birkez',
+                                                        bildirimSesi: adim.bildirimSesi,
+                                                        anonsMetni: adim.anonsMetni,
+                                                    },
+                                                    tanim.yon
+                                                )}
                                             </Text>
 
                                             {/* Sesli anons — cozulmus metin */}
@@ -253,16 +272,15 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                             )}
 
                                             {/* Adimi OLDUGU GIBI dinle — sadece-bildirim adimlarinda da ses
-                                                cikar (eskiden yalniz sesli adimlarda buton vardi, bildirimli
-                                                adimlar sessiz kaliyordu). Iki kanal da acikken sira gercek
-                                                akisla ayni: once bildirim sesi, sonra anons. */}
+                                                cikar. Iki kanal da acikken sira gercek akisla ayni: once
+                                                bildirim sesi, sonra anons. */}
                                             {dinlenebilir && (
                                                 <View className="flex-row justify-end mt-2.5">
                                                     <DinleButonu
                                                         kanallar={adim.kanallar}
                                                         bildirimSesi={adim.bildirimSesi}
                                                         cozulmusMetin={anonsMetni ?? ''}
-                                                        erisimEtiketi={`${adim.kalanDk} dakika kala çalacak uyarıyı dinleyin`}
+                                                        erisimEtiketi={`${adim.olcuDk} dakika ${girisYonu ? 'sonra' : 'kala'} çalacak uyarıyı dinleyin`}
                                                     />
                                                 </View>
                                             )}

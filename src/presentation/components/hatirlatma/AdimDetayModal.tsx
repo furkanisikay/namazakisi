@@ -1,6 +1,9 @@
 /**
- * Katman 3 — bir vaktin bir adiminin (seviyesinin) detayi.
- * (spec 3: kanallar / kac dk kala / siklik / bildirim sesi / sesli anons metni)
+ * ORTAK ADIM DETAY MODALI (Faz 3) — eski `MuhafizAyarlari/SeviyeDetayModal`.
+ *
+ * Katman 3: bir hatirlatma penceresinin bir adiminin detayi (kanallar / esik /
+ * siklik / bildirim sesi / sesli anons metni). Hangi bolumlerin gorunecegini
+ * `PencereTanimi` belirler → cuma yalnizca esik + siklik gorur, muhafiz hepsini.
  *
  * Degisiklikler ANINDA uygulanir (uygulamanin genel ayar davranisi); serbest metin
  * alani yalniz duzenleme bitince yazilir — her tusa basista tum matrisi diske
@@ -22,43 +25,37 @@ import {
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
-import { SayisalSecici } from '../../components/common/SayisalSecici';
-import type { MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
+import { SayisalSecici } from '../common/SayisalSecici';
+import type { SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { adimKapaliMi, kanalAcikMi, kanallarEsitMi } from '../../../core/muhafiz/kanalKumesi';
 import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { SesSecimSatiri } from './SesSecimSatiri';
-import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
+import { anonsSablonlari, anonsMetniniCoz, varsayilanAnonsMetni } from '../../../core/muhafiz/anonsMetni';
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
-import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
-    SEVIYE_BILGILERI,
     KANAL_CIPLERI,
-    VARSAYILAN_TEKRAR_DK,
-    TEKRAR_MIN_DK,
-    TEKRAR_MAX_DK,
-    ESIK_ADIM_DK,
-} from './sabitler';
+    esikBasligiOlustur,
+    esikAciklamasiOlustur,
+    esikErisimAdiOlustur,
+    esikBirimiOlustur,
+    type PencereTanimi,
+} from './pencereTanimi';
 
 const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 
-export interface SeviyeDetayModalProps {
+export interface AdimDetayModalProps {
     gorunur: boolean;
-    vakit: MuhafizVakti;
-    /** Vaktin TUM seviyeleri — esik sinirlari komsulardan hesaplanir (spec 4.2) */
+    tanim: PencereTanimi;
+    /** Pencerenin TUM adimlari — esik sinirlari komsulardan hesaplanir (spec 4.2) */
     seviyeler: SeviyeAyari[];
     indeks: number;
-    /**
-     * Vaktin BUGUNKU pencere uzunlugu (dk) — esik tavani buradan gelir (Faz 0).
-     * Verilmezse eski davranis: tavan `ESIK_MUTLAK_MAX` (120) ve uyari yok.
-     */
-    pencereUzunluguDk?: number;
     /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
     ttsDestekli: boolean | null;
     onDegistir: (yeniSeviye: SeviyeAyari) => void;
@@ -81,12 +78,11 @@ const BolumBasligi: React.FC<{ metin: string; sag?: React.ReactNode }> = ({ meti
     );
 };
 
-export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
+export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     gorunur,
-    vakit,
+    tanim,
     seviyeler,
     indeks,
-    pencereUzunluguDk,
     ttsDestekli,
     onDegistir,
     onKapat,
@@ -101,7 +97,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     // Modal acilinca / baska adima gecince taslagi tazele
     useEffect(() => {
         if (gorunur) setMetinTaslak(seviye?.anonsMetni ?? '');
-    }, [gorunur, vakit, indeks, seviye?.anonsMetni]);
+    }, [gorunur, tanim.kaynak, indeks, seviye?.anonsMetni]);
 
     // "Dinle" ile baslatilan ses modal kapaninca DEVAM ETMEMELI: native
     // `RingtoneManager` calmayi surdurur ve `AudioPlayer` serbest birakilmaz.
@@ -127,19 +123,28 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
 
     if (!seviye) return null;
 
-    const bilgi = SEVIYE_BILGILERI[seviye.kademe];
-    const vakitAdi = VAKIT_ADLARI[vakit];
-    const sinirlar = esikSinirlariniHesapla(seviyeler, indeks, { pencereUzunluguDk });
-    const notlar = adimNotlariniOlustur(seviye, seviyeler, vakit, pencereUzunluguDk);
+    const bilgi = tanim.adimBilgileri[indeks] ?? tanim.adimBilgileri[0];
+    const sinirlar =
+        tanim.esikSinirlari ??
+        esikSinirlariniHesapla(seviyeler, indeks, {
+            pencereUzunluguDk: tanim.pencereUzunluguDk,
+            yon: tanim.yon,
+        });
+    const notlar = adimNotlariniOlustur(seviye, seviyeler, {
+        pencereAdi: tanim.baslikKucuk,
+        pencereUzunluguDk: tanim.pencereUzunluguDk,
+        yon: tanim.yon,
+    });
     const kapaliMi = adimKapaliMi(seviye.kanallar);
     const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
-    const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar);
+    const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar) && tanim.sesSecimiVar;
     const tekrarliMi = seviye.siklik !== 'birkez';
-    const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
+    const tekrarDk = seviye.siklik === 'birkez' ? tanim.varsayilanTekrarDk : seviye.siklik.herDk;
+    const sablonlar = anonsSablonlari(tanim.yon);
 
     const kanallariSec = (kanallar: UyariKanallari) => {
-        // "Kapalı" secmek, VakitKarti'ndaki anahtari kapatmakla AYNI eylemdir →
-        // ayni yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
+        // "Kapalı" secmek, karttaki anahtari kapatmakla AYNI eylemdir → ayni
+        // yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
         // kullanicinin kanallari `oncekiKanallar`a yazilmaz, anahtarla geri
         // actiginda kurdugu kume yerine yalniz bildirime duserdi.
         if (adimKapaliMi(kanallar)) {
@@ -147,9 +152,10 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
             return;
         }
 
-        // Sesli kanal acilirken bos anons kutusu birakma (spec 7): sablonla on-doldur.
+        // Sesli kanal acilirken bos anons kutusu birakma (spec 7): YON-UYGUN
+        // sablonla on-doldur (giris yonune cikis dilli metin yazilmasin).
         const sesliyeGecis = sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni;
-        const anonsMetni = sesliyeGecis ? ANONS_SABLONLARI[0] : seviye.anonsMetni;
+        const anonsMetni = sesliyeGecis ? varsayilanAnonsMetni(tanim.yon) : seviye.anonsMetni;
         if (sesliyeGecis) setMetinTaslak(anonsMetni);
         // Kapaliliktan CIKISTA kanal hafizasi bayat kalmamali ("oncekiKanallar var
         // ⟺ hucre kapali" invarianti; `matrisIslemleri.seviyeyeUygula` de ayni
@@ -226,7 +232,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                     {bilgi.baslik}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    {vakitAdi} vakti
+                                    {tanim.kanalSecimiVar ? `${tanim.baslik} vakti` : tanim.baslik}
                                 </Text>
                             </View>
                             <TouchableOpacity
@@ -240,44 +246,48 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                             </TouchableOpacity>
                         </View>
 
-                        {/* ── Nasil uyarsin (mod) ── */}
-                        <BolumBasligi metin="NASIL UYARSIN" />
-                        <View className="flex-row flex-wrap" style={{ marginHorizontal: -4 }}>
-                            {KANAL_CIPLERI.map((m) => {
-                                const secili = kanallarEsitMi(seviye.kanallar, m.kanallar);
-                                return (
-                                    <View key={m.id} style={{ width: '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
-                                        <TouchableOpacity
-                                            className="items-center justify-center py-3 px-2 rounded-2xl border"
-                                            style={{
-                                                minHeight: 76,
-                                                backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
-                                                borderColor: secili ? renkler.birincil : renkler.sinir,
-                                                borderWidth: secili ? 2 : 1,
-                                            }}
-                                            onPress={() => kanallariSec(m.kanallar)}
-                                            activeOpacity={0.7}
-                                            accessibilityRole="button"
-                                            accessibilityState={{ selected: secili }}
-                                            accessibilityLabel={m.etiket}
-                                        >
-                                            <FontAwesome5
-                                                name={m.ikon}
-                                                size={16}
-                                                color={secili ? renkler.birincil : renkler.metinIkincil}
-                                                solid
-                                            />
-                                            <Text
-                                                className="text-xs font-semibold mt-1.5"
-                                                style={{ color: secili ? renkler.birincil : renkler.metin }}
-                                            >
-                                                {m.etiket}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                );
-                            })}
-                        </View>
+                        {/* ── Nasil uyarsin (kanallar) ── */}
+                        {tanim.kanalSecimiVar && (
+                            <>
+                                <BolumBasligi metin="NASIL UYARSIN" />
+                                <View className="flex-row flex-wrap" style={{ marginHorizontal: -4 }}>
+                                    {KANAL_CIPLERI.map((m) => {
+                                        const secili = kanallarEsitMi(seviye.kanallar, m.kanallar);
+                                        return (
+                                            <View key={m.id} style={{ width: '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
+                                                <TouchableOpacity
+                                                    className="items-center justify-center py-3 px-2 rounded-2xl border"
+                                                    style={{
+                                                        minHeight: 76,
+                                                        backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
+                                                        borderColor: secili ? renkler.birincil : renkler.sinir,
+                                                        borderWidth: secili ? 2 : 1,
+                                                    }}
+                                                    onPress={() => kanallariSec(m.kanallar)}
+                                                    activeOpacity={0.7}
+                                                    accessibilityRole="button"
+                                                    accessibilityState={{ selected: secili }}
+                                                    accessibilityLabel={m.etiket}
+                                                >
+                                                    <FontAwesome5
+                                                        name={m.ikon}
+                                                        size={16}
+                                                        color={secili ? renkler.birincil : renkler.metinIkincil}
+                                                        solid
+                                                    />
+                                                    <Text
+                                                        className="text-xs font-semibold mt-1.5"
+                                                        style={{ color: secili ? renkler.birincil : renkler.metin }}
+                                                    >
+                                                        {m.etiket}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        );
+                                    })}
+                                </View>
+                            </>
+                        )}
 
                         {/* Faz 5: "yakında" bandi kalkti — sesli anons gercekten calisiyor.
                             Yerine yalniz Turkce paket eksikse kibar bilgilendirme cikar. */}
@@ -287,20 +297,20 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                             <View className="items-center py-10">
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
-                                    Bu adım kapalı. {vakitAdi} vaktinde bu aşamada uyarı almazsınız.
+                                    Bu adım kapalı. {tanim.baslik} vaktinde bu aşamada uyarı almazsınız.
                                 </Text>
                             </View>
                         ) : (
                             <>
-                                {/* ── Kac dk kala ── */}
-                                <BolumBasligi metin="KAÇ DK KALA" />
+                                {/* ── Esik ── */}
+                                <BolumBasligi metin={tanim.esikBasligi ?? esikBasligiOlustur(tanim.yon)} />
                                 <View
                                     className="flex-row items-center justify-between p-3.5 rounded-2xl border"
                                     style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
                                 >
                                     <View className="flex-1 pr-3">
                                         <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
-                                            Vaktin çıkmasına
+                                            {tanim.esikAciklamasi ?? esikAciklamasiOlustur(tanim.yon)}
                                         </Text>
                                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                             {sinirlar.min}–{sinirlar.max} dk arası seçebilirsiniz
@@ -310,12 +320,12 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                         deger={seviye.esikDk}
                                         min={sinirlar.min}
                                         max={sinirlar.max}
-                                        adim={ESIK_ADIM_DK}
-                                        birim="dk kala"
+                                        adim={tanim.esikAdimDk}
+                                        birim={tanim.esikBirimi ?? esikBirimiOlustur(tanim.yon)}
                                         onChange={(val) => onDegistir({ ...seviye, esikDk: val })}
                                         renk={bilgi.renk}
                                         degerGenisligi={92}
-                                        aciklama="Kaç dk kala"
+                                        aciklama={tanim.esikErisimAdi ?? esikErisimAdiOlustur(tanim.yon)}
                                     />
                                 </View>
 
@@ -378,8 +388,8 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                         </Text>
                                         <SayisalSecici
                                             deger={tekrarDk}
-                                            min={TEKRAR_MIN_DK}
-                                            max={TEKRAR_MAX_DK}
+                                            min={tanim.tekrarMinDk}
+                                            max={tanim.tekrarMaxDk}
                                             adim={1}
                                             birim="dk'da bir"
                                             onChange={(val) => onDegistir({ ...seviye, siklik: { herDk: val } })}
@@ -439,12 +449,13 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                     <>
                                         <BolumBasligi metin="SESLİ ANONS METNİ" />
                                         <Text className="text-xs mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
-                                            {'{vakit}'} ve {'{süre}'} yer tutucularını kullanın; okunurken vakit adı ve
-                                            kalan dakika ile değiştirilir.
+                                            {'{vakit}'}, {'{süre}'} ve {'{yön}'} yer tutucularını kullanın; okunurken
+                                            vakit adı, dakika ve “kaldı/geçti” ile değiştirilir. {'{yön}'} kullanan bir
+                                            metin, hatırlatma yönünü değiştirseniz de doğru okunur.
                                         </Text>
 
                                         <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
-                                            {ANONS_SABLONLARI.map((sablon) => {
+                                            {sablonlar.map((sablon) => {
                                                 const secili = metinTaslak === sablon;
                                                 return (
                                                     <View key={sablon} style={{ paddingHorizontal: 3, paddingBottom: 6 }}>
@@ -479,7 +490,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                             onEndEditing={metniIsle}
                                             onBlur={metniIsle}
                                             multiline
-                                            placeholder="{vakit} vakti çıkıyor, son {süre} dakika."
+                                            placeholder={sablonlar[0]}
                                             placeholderTextColor={renkler.metinIkincil}
                                             accessibilityLabel="Sesli anons metni"
                                             className="text-sm p-3.5 rounded-2xl border mt-1"
@@ -505,14 +516,19 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                 </Text>
                                                 <View className="flex-row items-center">
                                                     <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
-                                                        {anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
+                                                        {anonsMetniniCoz(metinTaslak, tanim.vakit, seviye.esikDk, tanim.yon)}
                                                     </Text>
-                                                    {/* Mod 'ikisi' ise gercek akisla ayni sirayla calar:
+                                                    {/* Iki kanal da acikken gercek akisla ayni sirayla calar:
                                                         once bildirim sesi, ardindan anons. */}
                                                     <DinleButonu
                                                         kanallar={seviye.kanallar}
                                                         bildirimSesi={seviye.bildirimSesi}
-                                                        cozulmusMetin={anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
+                                                        cozulmusMetin={anonsMetniniCoz(
+                                                            metinTaslak,
+                                                            tanim.vakit,
+                                                            seviye.esikDk,
+                                                            tanim.yon
+                                                        )}
                                                         erisimEtiketi={
                                                             kanalAcikMi(seviye.kanallar, 'bildirim')
                                                                 ? 'Bildirim sesini ve örnek okunuşu dinleyin'

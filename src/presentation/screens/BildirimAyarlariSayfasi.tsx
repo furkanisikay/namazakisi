@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -31,9 +31,15 @@ import {
   CUMA_ONCEDEN_MIN_DK,
   CUMA_ONCEDEN_MAX_DK,
   CUMA_ONCEDEN_ADIM_DK,
+  CUMA_TEKRAR_MIN_DK,
+  CUMA_TEKRAR_MAX_DK,
 } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
-import { SayisalSecici } from '../components/common/SayisalSecici';
+import { PencereKarti } from '../components/hatirlatma/PencereKarti';
+import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
+import { cumaPencereTanimi } from '../components/hatirlatma/pencereTanimi';
+import type { SeviyeAyari, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../../core/types/SeriTipleri';
 import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
@@ -232,6 +238,60 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
   }, [cumaAyarlari.oncedenDk, cumaOncedenTaslak]);
 
   const cumaOncedenGosterilen = cumaOncedenTaslak ?? cumaAyarlari.oncedenDk;
+
+  /**
+   * Cuma ayarını ORTAK bileşenin beklediği tek adımlı pencereye çevirir.
+   *
+   * Kullanıcının isteği gereği kart/modal muhafızla AYNI bileşendir; cuma yalnız
+   * `maksAdim: 1` ve yön/kanal/ses seçimi kapalı bir pencere tanımıdır. Böylece
+   * cuma için ayrı bir ekran tasarlanmaz.
+   *
+   * Adım daima AÇIKtır: bölümün kendi ana anahtarı (`aktif`) zaten kapatmayı
+   * sağlıyor; ikinci bir kapatma yolu iki doğruluk kaynağı üretirdi.
+   */
+  const cumaPenceresi: VakitMuhafizAyari = useMemo(
+    () => ({
+      yon: 'cikisaDogru',
+      seviyeler: [
+        {
+          kademe: 'nazik',
+          kanallar: { bildirim: true },
+          esikDk: cumaOncedenGosterilen,
+          siklik: cumaAyarlari.siklik,
+          bildirimSesi: VARSAYILAN_SES,
+          anonsMetni: '',
+        },
+      ],
+    }),
+    [cumaOncedenGosterilen, cumaAyarlari.siklik]
+  );
+
+  const cumaTanimi = useMemo(
+    () =>
+      cumaPencereTanimi({
+        esikSinirlari: { min: CUMA_ONCEDEN_MIN_DK, max: CUMA_ONCEDEN_MAX_DK },
+        esikAdimDk: CUMA_ONCEDEN_ADIM_DK,
+        tekrarMinDk: CUMA_TEKRAR_MIN_DK,
+        tekrarMaxDk: CUMA_TEKRAR_MAX_DK,
+        varsayilanTekrarDk: CUMA_TEKRAR_MIN_DK,
+      }),
+    []
+  );
+
+  const [cumaDetayAcik, setCumaDetayAcik] = useState(false);
+
+  /** Modaldan dönen adım → cuma ayarı (eşik = "ne kadar önce", sıklık = tekrar). */
+  const cumaAdimiDegisti = useCallback(
+    (yeniSeviye: SeviyeAyari) => {
+      if (yeniSeviye.esikDk !== cumaOncedenGosterilen) {
+        handleCumaOncedenDegistir(yeniSeviye.esikDk);
+      }
+      if (JSON.stringify(yeniSeviye.siklik) !== JSON.stringify(cumaAyarlari.siklik)) {
+        dispatch(cumaHatirlatmaAyariniGuncelle({ siklik: yeniSeviye.siklik }));
+      }
+    },
+    [cumaOncedenGosterilen, cumaAyarlari.siklik, handleCumaOncedenDegistir, dispatch]
+  );
 
   const handleGunSonuBildirimToggle = async (yeniDeger: boolean) => {
     await butonTiklandiFeedback();
@@ -526,23 +586,28 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
 
             {cumaAyarlari.aktif && (
               <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
-                <Text
-                  className="text-xs font-semibold mt-4 mb-3"
-                  style={{ color: renkler.metinIkincil }}
-                >
-                  Ne kadar önce hatırlatalım?
-                </Text>
-
-                <SayisalSecici
-                  deger={cumaOncedenGosterilen}
-                  min={CUMA_ONCEDEN_MIN_DK}
-                  max={CUMA_ONCEDEN_MAX_DK}
-                  adim={CUMA_ONCEDEN_ADIM_DK}
-                  onChange={handleCumaOncedenDegistir}
-                  renk={renkler.birincil}
-                  degerGenisligi={110}
-                  aciklama="Ne kadar önce"
+                {/* MUHAFIZLA AYNI BİLEŞEN — cuma yalnız tek adımlı, yön/kanal/ses
+                    seçimi kapalı bir pencere tanımıdır. Kullanıcının isteği:
+                    "arayüz bileşeni her yerde ortak olsun ki hepsi için ayrı ayrı
+                    ekranlar tasarlamayalım". */}
+                <PencereKarti
+                  tanim={cumaTanimi}
+                  ayar={cumaPenceresi}
+                  onAdimSec={() => setCumaDetayAcik(true)}
+                  stil="gomulu"
                 />
+
+                {cumaDetayAcik && (
+                  <AdimDetayModal
+                    gorunur
+                    tanim={cumaTanimi}
+                    seviyeler={cumaPenceresi.seviyeler}
+                    indeks={0}
+                    ttsDestekli={null}
+                    onDegistir={cumaAdimiDegisti}
+                    onKapat={() => setCumaDetayAcik(false)}
+                  />
+                )}
 
                 <View className="flex-row items-start mt-4 gap-2">
                   <FontAwesome5

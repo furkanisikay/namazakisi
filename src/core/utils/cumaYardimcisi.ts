@@ -12,6 +12,8 @@
  */
 
 import { NamazAdi } from '../constants/UygulamaSabitleri';
+import type { Siklik, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
+import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
 
 /** JavaScript `Date.getDay()` degeri: 0 Pazar … 5 Cuma. */
 const CUMA_GUN_INDEKSI = 5;
@@ -75,6 +77,40 @@ export const namazGorunenAdi = (
   tarih: Date,
   cumaGosterilsin: boolean
 ): string => (cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? 'Cuma' : namazAdi);
+
+/**
+ * Cuma ayarini ORTAK HATIRLATMA PENCERESI'ne cevirir (Faz 4).
+ *
+ * Pencere: `baslangic = ogleVakti − oncedenDk`, `bitis = ogleVakti`,
+ * `yon: 'cikisaDogru'`, TEK adim. Boylece hem planlama (`vakitUyariPlaniOlustur`)
+ * hem de ayar ekrani (`PencereKarti`) muhafizla AYNI motoru/bileseni kullanir;
+ * cumaya ozel bir zamanlama mantigi ya da ikinci bir kart tasarimi YOKTUR.
+ *
+ * Kanal kumesi sabittir (`{ bildirim: true }`): cuma mevcut `vakit_bildirim`
+ * kanalindan gonderilir (yeni kanal ACILMAZ) ve sesli anons (TTS) kullanmaz —
+ * bu yuzden ekranda kanal/ses secimi de gosterilmez.
+ */
+export const cumaPenceresiOlustur = (oncedenDk: number, siklik: Siklik): VakitMuhafizAyari => ({
+  yon: 'cikisaDogru',
+  seviyeler: [
+    {
+      kademe: 'nazik',
+      kanallar: { bildirim: true },
+      esikDk: oncedenDk,
+      siklik,
+      bildirimSesi: VARSAYILAN_SES,
+      anonsMetni: '',
+    },
+  ],
+});
+
+/** Pencerenin duzenlenmis halinden ayara geri donus (ekran yazma yolu). */
+export const cumaPencereAyariCoz = (
+  pencere: VakitMuhafizAyari
+): { oncedenDk: number; siklik: Siklik } => {
+  const adim = pencere.seviyeler[0];
+  return { oncedenDk: adim.esikDk, siklik: adim.siklik };
+};
 
 export const sureMetniOlustur = (dakika: number): string => {
   const saat = Math.floor(dakika / 60);

@@ -1,6 +1,7 @@
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { LocalCumaHatirlatmaServisi } from '../../../data/local/LocalCumaHatirlatmaServisi';
 import * as Notifications from 'expo-notifications';
+import type { Siklik } from '../../../core/muhafiz/matrisTipleri';
 
 jest.mock('expo-notifications');
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
@@ -21,8 +22,12 @@ const KOORDINAT = { lat: 41.0, lng: 29.0 };
 /** 5 Agustos 2026 = Carsamba (o haftanin cumasi 7 Agustos). */
 const CARSAMBA_SABAH = new Date(2026, 7, 5, 9, 0, 0);
 
-const ayarlariKur = (aktif: boolean, oncedenDk = 60) => {
-    (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue({ aktif, oncedenDk });
+const ayarlariKur = (aktif: boolean, oncedenDk = 60, siklik: Siklik = 'birkez') => {
+    (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue({
+        aktif,
+        oncedenDk,
+        siklik,
+    });
 };
 
 const planlananlar = () =>
@@ -216,5 +221,104 @@ describe('CumaHatirlatmaServisi', () => {
         await servis.hatirlatmalariGuncelle(KOORDINAT);
 
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(4);
+    });
+
+    // ── Faz 4: periyodik cuma hatirlatmasi ────────────────────────────────
+    describe('periyodik hatirlatma (siklik)', () => {
+        /** Bir cumaya ait planlanan bildirimlerin tetik dakikalarini dondurur. */
+        const cumaninDakikalari = (iso: string) =>
+            planlananlar()
+                .filter((i) => i.identifier.startsWith(`cuma_hatirlatma_${iso}`))
+                .map((i) => {
+                    const t: Date = i.trigger.date;
+                    // 13:00 ogle vaktine kalan dakika
+                    return (13 * 60) - (t.getHours() * 60 + t.getMinutes());
+                });
+
+        /**
+         * NOBETCI: `siklik` alani olmayan (ya da 'birkez' olan) kayit BIREBIR eski
+         * davranisi uretmeli — cuma basina TEK bildirim, ESKI identifier ile.
+         */
+        it("'birkez' eski davranisi BIREBIR uretir (cuma basina tek bildirim)", async () => {
+            ayarlariKur(true, 60, 'birkez');
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            expect(planlananlar()).toHaveLength(4);
+            expect(planlananlar().map((i) => i.identifier)).toEqual([
+                'cuma_hatirlatma_2026-08-07',
+                'cuma_hatirlatma_2026-08-14',
+                'cuma_hatirlatma_2026-08-21',
+                'cuma_hatirlatma_2026-08-28',
+            ]);
+        });
+
+        it('tekrarli siklikta vaktin girisine kadar araliklarla hatirlatir', async () => {
+            ayarlariKur(true, 60, { herDk: 15 });
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            // 60, 45, 30, 15 dk kala (0 = vaktin kendisi planlanmaz)
+            expect(cumaninDakikalari('2026-08-07')).toEqual([60, 45, 30, 15]);
+            // Dort cuma da periyodik planlanir
+            expect(planlananlar()).toHaveLength(16);
+        });
+
+        it('ILK hatirlatma eski identifier\'i korur, tekrarlar dakikayla ayrisir', async () => {
+            ayarlariKur(true, 60, { herDk: 20 });
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            const idler = planlananlar()
+                .filter((i) => i.identifier.startsWith('cuma_hatirlatma_2026-08-07'))
+                .map((i) => i.identifier);
+            expect(idler).toEqual([
+                'cuma_hatirlatma_2026-08-07',
+                'cuma_hatirlatma_2026-08-07_40',
+                'cuma_hatirlatma_2026-08-07_20',
+            ]);
+        });
+
+        /**
+         * Cumaya OZGU nass (Cuma 62/9) tekrar tekrar okunmaz: ilk hatirlatmada
+         * verilir, sonrakiler kisa kalir. Genel havuza da karismaz.
+         */
+        it('nass yalniz ILK hatirlatmada gecer, tekrarlar kisa metin kullanir', async () => {
+            ayarlariKur(true, 60, { herDk: 20 });
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            const ilkCuma = planlananlar().filter((i) =>
+                i.identifier.startsWith('cuma_hatirlatma_2026-08-07')
+            );
+            expect(ilkCuma[0].content.body).toContain('Cuma, 62/9');
+            expect(ilkCuma[1].content.body).not.toContain('Cuma, 62/9');
+            expect(ilkCuma[1].content.body).toContain('40 dakika');
+        });
+
+        /**
+         * Plan butcesi (`etkinSiklikHesapla`) motorun icindedir: 180 dk pencerede
+         * 5 dk'lik tekrar 36 bildirim demek olurdu; butce seviye basina 15 adimla
+         * sinirlar → dort cumada bildirim sayisi patlamaz.
+         */
+        it('uzun pencere + sik tekrar PLAN BUTCESI ile seyreltilir', async () => {
+            ayarlariKur(true, 180, { herDk: 5 });
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            const dakikalar = cumaninDakikalari('2026-08-07');
+            expect(dakikalar.length).toBeLessThanOrEqual(15);
+            expect(dakikalar[0]).toBe(180);
+        });
+
+        it('gecmis zamanli tekrarlari ATLAR, kalanlari planlar', async () => {
+            // Cuma 12:29 — 60/45 dk kala gecti, 30/15 dk kala kaldi
+            jest.setSystemTime(new Date(2026, 7, 7, 12, 29, 0));
+            ayarlariKur(true, 60, { herDk: 15 });
+
+            await servis.hatirlatmalariGuncelle(KOORDINAT);
+
+            expect(cumaninDakikalari('2026-08-07')).toEqual([30, 15]);
+        });
     });
 });

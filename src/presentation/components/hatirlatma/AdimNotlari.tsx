@@ -1,8 +1,8 @@
 /**
- * Adim (seviye) notlari — Faz 0.
+ * Adim notlari — Faz 0 (Faz 3'te ortak bilesen katmanina tasindi).
  *
  * Iki sessiz sapmayi gorunur kilar:
- *   1. Adimin esigi vaktin BUGUNKU penceresine sigmiyor -> o adim bugun hic
+ *   1. Adimin esigi pencerenin BUGUNKU uzunluguna sigmiyor -> o adim bugun hic
  *      calismaz (yazin yatsi ~6 saat, kisin ~11 saat; sabit tavan bunu gizliyordu).
  *   2. Plan butcesi sikligi seyreltti -> kullanicinin sectigi "her 1 dk" yerine
  *      daha genis araliklarla uyarilir.
@@ -13,11 +13,16 @@ import * as React from 'react';
 import { View, Text } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-import type { MuhafizVakti, SeviyeAyari } from '../../../core/muhafiz/matrisTipleri';
+import type { SeviyeAyari } from '../../../core/muhafiz/matrisTipleri';
+import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
+import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
 import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
-import { cikisSegmentiHesapla, etkinSiklikHesapla } from '../../../core/muhafiz/planButcesi';
-import { VAKIT_ADLARI_KUCUK } from './sabitler';
+import {
+    cikisSegmentiHesapla,
+    girisSegmentiHesapla,
+    etkinSiklikHesapla,
+} from '../../../core/muhafiz/planButcesi';
 
 export interface AdimNotu {
     tip: 'uyari' | 'bilgi';
@@ -29,25 +34,38 @@ export interface AdimNotlariProps {
     notlar: AdimNotu[];
 }
 
+export interface AdimNotuSecenekleri {
+    /** Cumle icinde gecen kucuk harfli pencere adi ("yatsı"). */
+    pencereAdi: string;
+    pencereUzunluguDk?: number;
+    yon?: PencereYonu;
+}
+
 /**
  * Gosterilecek notlari uretir (SAF — test edilebilir).
  *
  * Kapali adimda not YOK: kapali adim zaten hic calismaz, "bugun calismayacak"
  * demek gurultu olurdu.
+ *
+ * SEGMENT HESABI YONE GORE: butce, seviyenin GERCEKTEN kazandigi araliktan
+ * turer ve bu aralik iki yonde farkli hesaplanir (`planButcesi`). Yon
+ * gecilmezse cikis segmenti kullanilir — motorla ayni varsayilan.
  */
 export function adimNotlariniOlustur(
     seviye: SeviyeAyari,
     seviyeler: SeviyeAyari[],
-    vakit: MuhafizVakti,
-    pencereUzunluguDk?: number
+    secenekler: AdimNotuSecenekleri
 ): AdimNotu[] {
     if (!seviyeAcikMi(seviye)) return [];
+
+    const { pencereAdi, pencereUzunluguDk } = secenekler;
+    const yon = secenekler.yon ?? VARSAYILAN_PENCERE_YONU;
 
     if (!adimPencereyeSigarMi(seviye.esikDk, pencereUzunluguDk)) {
         return [
             {
                 tip: 'uyari',
-                metin: `Bu adım bugün çalışmayacak — ${VAKIT_ADLARI_KUCUK[vakit]} bugün ${pencereSuresiMetni(
+                metin: `Bu adım bugün çalışmayacak — ${pencereAdi} bugün ${pencereSuresiMetni(
                     pencereUzunluguDk as number
                 )}`,
             },
@@ -55,7 +73,11 @@ export function adimNotlariniOlustur(
     }
 
     const siklik = seviye.siklik;
-    const etkin = etkinSiklikHesapla(cikisSegmentiHesapla(seviyeler, seviye), siklik);
+    const segment =
+        yon === 'girisindenItibaren'
+            ? girisSegmentiHesapla(seviyeler, seviye, pencereUzunluguDk)
+            : cikisSegmentiHesapla(seviyeler, seviye);
+    const etkin = etkinSiklikHesapla(segment, siklik);
     if (etkin !== siklik && etkin !== 'birkez') {
         return [
             {

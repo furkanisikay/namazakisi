@@ -49,9 +49,12 @@ import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizSer
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { Logger } from '../../core/utils/Logger';
-import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
-import { SeviyeDetayModal } from './MuhafizAyarlari/SeviyeDetayModal';
-import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
+import { PencereKarti } from '../components/hatirlatma/PencereKarti';
+import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
+import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
+import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
+import { yonDegisimindeMetniCevir } from '../../core/muhafiz/matrisIslemleri';
+import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
@@ -252,6 +255,10 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             matrisiYaz({
                 ...matris,
                 [vakit]: {
+                    // `...matris[vakit]` ŞART: vaktin `yon` alanı burada yazılmıyor ama
+                    // taşınıyor. Yalnız `seviyeler` yazılsaydı bir adımı düzenlemek
+                    // yönü SESSİZCE varsayılana (çıkışa doğru) döndürürdü.
+                    ...matris[vakit],
                     seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeniSeviye : s)),
                 },
             });
@@ -270,10 +277,30 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * çalardı. Kanal değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e
      * düşmez.
      */
+    /**
+     * Pencere yönünü değiştirir.
+     *
+     * `yonDegisimindeMetniCevir` ZORUNLU: hücrede duran otomatik doldurulmuş
+     * çıkış dilli şablon ("… vakti çıkıyor, son {süre} dakika") yön girişe
+     * çevrilince "son 42 dakika" diye seslendirilir. Fonksiyon yalnız havuzdaki
+     * bir şablonla BİREBİR eşleşen metni çevirir; kullanıcının kendi yazdığına
+     * dokunmaz — ve `yon` alanını da atomik yazar, bu yüzden burada AYRICA
+     * `yon` yazılmaz.
+     */
+    const yonDegistir = useCallback(
+        (vakit: MuhafizVakti, yon: PencereYonu) => {
+            const yeniVakit = yonDegisimindeMetniCevir(matris[vakit], yon);
+            if (yeniVakit === matris[vakit]) return; // değişen bir şey yok
+            matrisiYaz({ ...matris, [vakit]: yeniVakit });
+        },
+        [matris, matrisiYaz]
+    );
+
     const seviyeAcKapa = useCallback(
         (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
             const mevcut = matris[vakit].seviyeler[indeks];
-            const yeni = acik ? seviyeyiAc(mevcut) : seviyeyiKapat(mevcut);
+            // Geri açılan adımın BOŞ anons kutusu yön-uygun şablonla dolar.
+            const yeni = acik ? seviyeyiAc(mevcut, matris[vakit].yon) : seviyeyiKapat(mevcut);
             if (yeni === mevcut) return; // Zaten istenen durumda — gereksiz yazma yok.
             seviyeGuncelle(vakit, indeks, yeni);
         },
@@ -632,17 +659,21 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         </Text>
 
                         {MUHAFIZ_VAKITLERI.map((vakit) => (
-                            <VakitKarti
+                            <PencereKarti
                                 key={vakit}
-                                vakit={vakit}
-                                vakitAyari={matris[vakit]}
-                                pencereUzunluguDk={vakitPencereleri[vakit]}
+                                tanim={vakitPencereTanimi(
+                                    vakit,
+                                    matris[vakit].yon,
+                                    vakitPencereleri[vakit]
+                                )}
+                                ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
-                                onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
-                                onSeviyeAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
-                                onTumVakitlereUygula={() => setTumuneOnayi(vakit)}
+                                onAdimSec={(indeks) => setDetay({ vakit, indeks })}
+                                onAdimAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
+                                onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
+                                onYonDegistir={(yon) => yonDegistir(vakit, yon)}
                             />
                         ))}
                     </>
@@ -653,12 +684,15 @@ const MuhafizAyarlariIcerik: React.FC = () => {
 
             {/* ── Katman 3 ── */}
             {detay && (
-                <SeviyeDetayModal
+                <AdimDetayModal
                     gorunur
-                    vakit={detay.vakit}
+                    tanim={vakitPencereTanimi(
+                        detay.vakit,
+                        matris[detay.vakit].yon,
+                        vakitPencereleri[detay.vakit]
+                    )}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
-                    pencereUzunluguDk={vakitPencereleri[detay.vakit]}
                     ttsDestekli={ttsDestekli}
                     onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
                     onKapat={() => setDetay(null)}
@@ -669,8 +703,12 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             {onizleme && (
                 <AkisOnizlemeModal
                     gorunur
-                    vakit={onizleme}
-                    vakitAyari={matris[onizleme]}
+                    tanim={vakitPencereTanimi(
+                        onizleme,
+                        matris[onizleme].yon,
+                        vakitPencereleri[onizleme]
+                    )}
+                    ayar={matris[onizleme]}
                     ttsDestekli={ttsDestekli}
                     onKapat={() => setOnizleme(null)}
                 />

@@ -46,7 +46,7 @@ jest.mock('../../../core/utils/Logger', () => ({
 const KEY = DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI;
 
 // Cuma herkese farz-ı ayn değil → varsayılan KAPALI.
-const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60 };
+const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60, siklik: 'birkez' };
 
 beforeEach(() => {
   mockStore.clear();
@@ -67,7 +67,7 @@ describe('LocalCumaHatirlatmaServisi.getAyarlar', () => {
 
     const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 90 });
+    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 90, siklik: 'birkez' });
   });
 
   test('aktif alanı yalnız gerçek true iken açıktır (truthy string açmaz)', async () => {
@@ -140,13 +140,13 @@ describe('LocalCumaHatirlatmaServisi — oncedenDk normalizasyonu (okuma)', () =
 
     const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 60 });
+    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 60, siklik: 'birkez' });
   });
 });
 
 describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   test('ayarı doğru anahtara JSON olarak yazar ve true döner', async () => {
-    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 45 };
+    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 45, siklik: 'birkez' };
 
     const sonuc = await LocalCumaHatirlatmaServisi.saveAyarlar(ayarlar);
 
@@ -156,22 +156,23 @@ describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   });
 
   test('yazarken de normalize eder (sınır dışı değer diske sızmaz)', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: 999 });
+    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: 999, siklik: 'birkez' });
 
     expect(JSON.parse(mockStore.get(KEY)!)).toEqual({
       aktif: true,
       oncedenDk: CUMA_ONCEDEN_MAX_DK,
+      siklik: 'birkez',
     });
   });
 
   test('NaN gibi geçersiz süre diske varsayılan olarak yazılır', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: NaN });
+    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: NaN, siklik: 'birkez' });
 
-    expect(JSON.parse(mockStore.get(KEY)!)).toEqual({ aktif: true, oncedenDk: 60 });
+    expect(JSON.parse(mockStore.get(KEY)!)).toEqual({ aktif: true, oncedenDk: 60, siklik: 'birkez' });
   });
 
   test('yazılan değer getAyarlar ile aynen geri okunur (round-trip)', async () => {
-    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 30 };
+    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 30, siklik: { herDk: 15 } };
 
     await LocalCumaHatirlatmaServisi.saveAyarlar(ayarlar);
     const okunan = await LocalCumaHatirlatmaServisi.getAyarlar();
@@ -180,11 +181,11 @@ describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   });
 
   test('sınır dışı yazım sonrası okuma da düzeltilmiş değeri verir (round-trip)', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: false, oncedenDk: 0 });
+    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: false, oncedenDk: 0, siklik: 'birkez' });
 
     const okunan = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(okunan).toEqual({ aktif: false, oncedenDk: CUMA_ONCEDEN_MIN_DK });
+    expect(okunan).toEqual({ aktif: false, oncedenDk: CUMA_ONCEDEN_MIN_DK, siklik: 'birkez' });
   });
 
   test('setItem fırlatırsa false döner (fırlatmaz)', async () => {
@@ -195,5 +196,66 @@ describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
     const sonuc = await LocalCumaHatirlatmaServisi.saveAyarlar(VARSAYILAN);
 
     expect(sonuc).toBe(false);
+  });
+});
+
+/**
+ * PERIYODIK CUMA (Faz 4) — `siklik` alani.
+ *
+ * Alan YOKSA `'birkez'` okunur: eski kayit BIREBIR eski davranisi uretir
+ * (tek hatirlatma). Bozuk deger de sessizce `'birkez'`e duser — periyodik
+ * planlama bozuk bir sayidan dolayi yuzlerce bildirim kurmamali.
+ */
+describe('LocalCumaHatirlatmaServisi — siklik (periyodik hatirlatma)', () => {
+  test('ESKI KAYIT (siklik alani yok) → birkez (geriye uyumluluk)', async () => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 60 }));
+
+    const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
+
+    expect(ayarlar.siklik).toBe('birkez');
+  });
+
+  test('kayitli tekrar araligi okunur', async () => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 60, siklik: { herDk: 15 } }));
+
+    const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
+
+    expect(ayarlar.siklik).toEqual({ herDk: 15 });
+  });
+
+  const bozukSiklikler: Array<[string, unknown]> = [
+    ['null', null],
+    ['sayi', 5],
+    ['bos nesne', {}],
+    ['herDk sayi degil', { herDk: 'on' }],
+    ['herDk sifir', { herDk: 0 }],
+    ['herDk negatif', { herDk: -5 }],
+    ['bilinmeyen dize', 'hersaat'],
+  ];
+
+  test.each(bozukSiklikler)('bozuk siklik (%s) → birkez', async (_ad, ham) => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 60, siklik: ham }));
+
+    const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
+
+    expect(ayarlar.siklik).toBe('birkez');
+  });
+
+  test('cok kucuk tekrar araligi ust sinira cekilir (alt sinir 5 dk)', async () => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 60, siklik: { herDk: 1 } }));
+
+    const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
+
+    expect(ayarlar.siklik).toEqual({ herDk: 5 });
+  });
+
+  test('yazarken de normalize edilir', async () => {
+    await LocalCumaHatirlatmaServisi.saveAyarlar({
+      aktif: true,
+      oncedenDk: 60,
+      siklik: { herDk: 999 },
+    });
+
+    expect(JSON.parse(mockStore.get(KEY)!).siklik).toEqual({ herDk: 60 });
   });
 });
