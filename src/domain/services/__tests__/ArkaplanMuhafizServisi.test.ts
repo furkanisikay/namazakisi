@@ -87,7 +87,7 @@ jest.mock('adhan', () => {
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 import { PrayerTimes } from 'adhan';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
-import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
 
@@ -95,7 +95,7 @@ import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
 interface SeviyeTanimi {
     esikDk: number;
     siklikDk: number;
-    mod?: UyariModu;
+    kanallar?: UyariKanallari;
     ses?: string;
     anons?: string;
     /** Aciliyet — sesten BAGIMSIZ eksen (bkz. muhafizAcilKanalMi) */
@@ -104,7 +104,7 @@ interface SeviyeTanimi {
 
 const seviyeKur = (indeks: number, t: SeviyeTanimi): SeviyeAyari => ({
     kademe: SEVIYE_KADEMELERI[indeks],
-    mod: t.mod ?? 'bildirim',
+    kanallar: t.kanallar ?? { bildirim: true },
     esikDk: t.esikDk,
     siklik: { herDk: t.siklikDk },
     bildirimSesi: t.ses ?? VARSAYILAN_SES,
@@ -541,7 +541,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             .map((b) => dkSonEkiniAl(b.identifier))
             .sort((a, b) => b - a);
 
-    test('mod=sessiz seviye HIC planlanmaz (pencere de saglamaz -> ust seviye devralir)', async () => {
+    test('KAPALI adim HIC planlanmaz (pencere de saglamaz -> ust seviye devralir)', async () => {
         // acil (10dk/2dk) SESSIZ. Eski motorda 10..2 arasi seviye-4 bildirimleri olurdu.
         // Yeni motorda o pencereyi bir ust seviye (sert 15/5) devralmali:
         //   k=25 -> nazik(1), k=20 -> uyari(2), k=15 -> sert(3), k=10,5 -> sert(3)
@@ -553,7 +553,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
                 { esikDk: 25, siklikDk: 15 },
                 { esikDk: 20, siklikDk: 10 },
                 { esikDk: 15, siklikDk: 5 },
-                { esikDk: 10, siklikDk: 2, mod: 'sessiz' },
+                { esikDk: 10, siklikDk: 2, kanallar: {} },
             ]),
         });
 
@@ -574,10 +574,10 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: tekDuzeMatris([
-                { esikDk: 25, siklikDk: 15, mod: 'sessiz' },
-                { esikDk: 20, siklikDk: 10, mod: 'sessiz' },
-                { esikDk: 15, siklikDk: 5, mod: 'sessiz' },
-                { esikDk: 10, siklikDk: 2, mod: 'sessiz' },
+                { esikDk: 25, siklikDk: 15, kanallar: {} },
+                { esikDk: 20, siklikDk: 10, kanallar: {} },
+                { esikDk: 15, siklikDk: 5, kanallar: {} },
+                { esikDk: 10, siklikDk: 2, kanallar: {} },
             ]),
         });
 
@@ -601,9 +601,9 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
                 {
                     aksam: [
                         { esikDk: 15, siklikDk: 5 },
-                        { esikDk: 8, siklikDk: 4, mod: 'sessiz' },
-                        { esikDk: 6, siklikDk: 4, mod: 'sessiz' },
-                        { esikDk: 4, siklikDk: 4, mod: 'sessiz' },
+                        { esikDk: 8, siklikDk: 4, kanallar: {} },
+                        { esikDk: 6, siklikDk: 4, kanallar: {} },
+                        { esikDk: 4, siklikDk: 4, kanallar: {} },
                     ],
                 }
             ),
@@ -657,7 +657,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
         expect(planlananDakikalar('aksam')).toEqual([20, 12, 8, 4]);
     });
 
-    test("hucrenin bildirimSesi kanal secimine yansir ('alarm' -> acil kanal) ve mod/anons veriye yazilir", async () => {
+    test("hucrenin bildirimSesi kanal secimine yansir ('alarm' -> acil kanal) ve kanallar/anons veriye yazilir", async () => {
         // nazik (seviye 1) normalde 'muhafiz' kanalina duser; 'alarm' sesi secilirse
         // acil kanala baglanmali (kanal enflasyonu yok, mevcut palet kullanilir).
         await servis.yapilandirVePlanla({
@@ -665,10 +665,10 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
                 aksam: [
-                    { esikDk: 20, siklikDk: 30, ses: 'alarm', mod: 'ikisi', anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
+                    { esikDk: 20, siklikDk: 30, ses: 'alarm', kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
                     { esikDk: 12, siklikDk: 30, ses: 'melodi' },
-                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 8, siklikDk: 30, kanallar: {} },
+                    { esikDk: 4, siklikDk: 30, kanallar: {} },
                 ],
             }),
         });
@@ -681,8 +681,8 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
         expect(nazik).toBeDefined();
         // 'alarm' sesi -> seviye 1 olmasina ragmen acil kanal
         expect(nazik.trigger.channelId).toBe('muhafiz_acil');
-        // Faz 4 kancasi: mod/ses/TTS bayragi/anons metni veriye tasinmali
-        expect(nazik.content.data.mod).toBe('ikisi');
+        // Faz 4 kancasi: kanallar/ses/TTS bayragi/anons metni veriye tasinmali
+        expect(nazik.content.data.kanallar).toEqual({ bildirim: true, sesli: true });
         expect(nazik.content.data.bildirimSesi).toBe('alarm');
         expect(nazik.content.data.sesliAnons).toBe(true);
         expect(nazik.content.data.anonsMetni).toBe('{vakit} vakti çıkıyor, son {süre} dakika.');
@@ -695,16 +695,16 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
         expect(uyari.content.data.sesliAnons).toBe(false);
     });
 
-    test("mod='sesli' Faz 4'e kadar bildirim gibi davranir ama TTS bayragini tasir", async () => {
+    test("yalniz SESLI kanal Faz 4'e kadar bildirim gibi davranir ama TTS bayragini tasir", async () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
                 aksam: [
-                    { esikDk: 20, siklikDk: 30, mod: 'sesli', anons: '{vakit} namazını kaçırma.' },
-                    { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 20, siklikDk: 30, kanallar: { sesli: true }, anons: '{vakit} namazını kaçırma.' },
+                    { esikDk: 12, siklikDk: 30, kanallar: {} },
+                    { esikDk: 8, siklikDk: 30, kanallar: {} },
+                    { esikDk: 4, siklikDk: 30, kanallar: {} },
                 ],
             }),
         });
@@ -715,7 +715,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
 
         // Bildirim YINE planlanir (Faz 4'te TTS eklenecek), bayrak veride
         expect(aksam.length).toBe(1);
-        expect(aksam[0].content.data.mod).toBe('sesli');
+        expect(aksam[0].content.data.kanallar).toEqual({ sesli: true });
         expect(aksam[0].content.data.sesliAnons).toBe(true);
     });
 });
@@ -915,21 +915,21 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
             {
                 aksam: [
                     t,
-                    { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 12, siklikDk: 30, kanallar: {} },
+                    { esikDk: 8, siklikDk: 30, kanallar: {} },
+                    { esikDk: 4, siklikDk: 30, kanallar: {} },
                 ],
             }
         );
 
-    test("mod='ikisi' -> anons bildirimle AYNI id ve AYNI zamana planlanir, metin cozulmus gider", async () => {
+    test("bildirim+sesli -> anons bildirimle AYNI id ve AYNI zamana planlanir, metin cozulmus gider", async () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: aksamTekSeviye({
                 esikDk: 20,
                 siklikDk: 30,
-                mod: 'ikisi',
+                kanallar: { bildirim: true, sesli: true },
                 anons: '{vakit} vakti çıkıyor, son {süre} dakika.',
             }),
         });
@@ -953,14 +953,14 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         expect(anonsMetni).not.toContain('{süre}');
     });
 
-    test("mod='sesli' de anons planlar (bildirim ayrica cikmaya devam eder)", async () => {
+    test('yalniz SESLI kanal da anons planlar (bildirim ayrica cikmaya devam eder)', async () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: aksamTekSeviye({
                 esikDk: 20,
                 siklikDk: 30,
-                mod: 'sesli',
+                kanallar: { sesli: true },
                 anons: '{vakit} namazını kaçırma, {süre} dakika kaldı.',
             }),
         });
@@ -969,7 +969,7 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         expect(mockPlanlaAnons.mock.calls[0][2]).toBe('Akşam namazını kaçırma, 20 dakika kaldı.');
     });
 
-    test("mod='bildirim' iken HIC anons planlanmaz", async () => {
+    test('yalniz BILDIRIM kanali acikken HIC anons planlanmaz', async () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
@@ -981,11 +981,11 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         expect(mockPlanlaAnons).not.toHaveBeenCalled();
     });
 
-    test('sesli mod ama anons metni BOS -> anons planlanmaz (bildirim yine cikar)', async () => {
+    test('sesli kanal acik ama anons metni BOS -> anons planlanmaz (bildirim yine cikar)', async () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '   ' }),
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, kanallar: { bildirim: true, sesli: true }, anons: '   ' }),
         });
 
         const aksamBildirimleri = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
@@ -999,7 +999,7 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '{vakit} vakti.' }),
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti.' }),
         });
 
         // Temizlik planlamadan ONCE calismali; aksi halde yeni kurulan alarm silinir.
@@ -1013,7 +1013,7 @@ describe('ArkaplanMuhafizServisi - Faz 4 sesli anons kancasi', () => {
         await servis.yapilandirVePlanla({
             aktif: false,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, mod: 'ikisi', anons: '{vakit} vakti.' }),
+            matris: aksamTekSeviye({ esikDk: 20, siklikDk: 30, kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti.' }),
         });
 
         expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
@@ -1071,9 +1071,9 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
                 {
                     aksam: [
                         { esikDk: 20, siklikDk: 30, ses, acilKanal },
-                        { esikDk: 12, siklikDk: 30, mod: 'sessiz' },
-                        { esikDk: 8, siklikDk: 30, mod: 'sessiz' },
-                        { esikDk: 4, siklikDk: 30, mod: 'sessiz' },
+                        { esikDk: 12, siklikDk: 30, kanallar: {} },
+                        { esikDk: 8, siklikDk: 30, kanallar: {} },
+                        { esikDk: 4, siklikDk: 30, kanallar: {} },
                     ],
                 }
             ),
@@ -1165,9 +1165,9 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
             {
                 aksam: [
                     { esikDk: 5, siklikDk: 10, ...t },
-                    { esikDk: 10, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 15, siklikDk: 30, mod: 'sessiz' },
-                    { esikDk: 20, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 10, siklikDk: 30, kanallar: {} },
+                    { esikDk: 15, siklikDk: 30, kanallar: {} },
+                    { esikDk: 20, siklikDk: 30, kanallar: {} },
                 ],
             }
         );
@@ -1236,7 +1236,7 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
             // kaçar (5/15/25 kümesi kendi aynasıdır).
             matris: aksamGirisMatrisi({
                 siklikDk: 30,
-                mod: 'ikisi',
+                kanallar: { bildirim: true, sesli: true },
                 anons: '{vakit} vakti girdi, {süre} dakika geçti.',
             }),
         });
@@ -1254,8 +1254,8 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
             kademe: SEVIYE_KADEMELERI[i],
         }));
         // Yalnız nazik (eşik 20) açık; siklik 30 > pencere → tek tetik.
-        matris.aksam.seviyeler[0] = { ...matris.aksam.seviyeler[0], mod: 'bildirim', siklik: { herDk: 30 } };
-        for (let i = 1; i < 4; i++) matris.aksam.seviyeler[i] = { ...matris.aksam.seviyeler[i], mod: 'sessiz' };
+        matris.aksam.seviyeler[0] = { ...matris.aksam.seviyeler[0], kanallar: { bildirim: true }, siklik: { herDk: 30 } };
+        for (let i = 1; i < 4; i++) matris.aksam.seviyeler[i] = { ...matris.aksam.seviyeler[i], kanallar: {} };
 
         await servis.yapilandirVePlanla({
             aktif: true,

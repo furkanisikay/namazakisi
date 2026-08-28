@@ -4,7 +4,7 @@
  * Üç katmanlı progressive disclosure (spec 2026-07-17-muhafiz-ekrani-ve-sesli-uyari):
  *   Katman 1 — ana switch + yoğunluk preset'i + 5 vakit satırı (dinamik özet)
  *   Katman 2 — vakit açılınca o vaktin 4 adımı + "Tüm vakitlere uygula"
- *   Katman 3 — adıma dokununca detay (mod / eşik / sıklık / ses / anons metni)
+ *   Katman 3 — adıma dokununca detay (kanallar / eşik / sıklık / ses / anons metni)
  *
  * Yazma yolu: matris `matrisiGuncelle` ile yazılır. Eski `esikler`/`sikliklar`
  * alanlarına DOKUNULMAZ — motor adaptörü (Faz 3) onları matristen devralacak.
@@ -237,8 +237,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' }));
             }
             // Elle yapılan HER değişiklik yedeklenir — zamanlama olsun (yoğunluk
-            // 'ozel'e döner) olmasın (mod/ses/anons; yoğunluk preset kalır, spec 4.1).
-            // Mod/ses değişikliğini yedeklemezsek sonraki preset dokunuşu onu UYARISIZ
+            // 'ozel'e döner) olmasın (kanal/ses/anons; yoğunluk preset kalır, spec 4.1).
+            // Kanal/ses değişikliğini yedeklemezsek sonraki preset dokunuşu onu UYARISIZ
             // siler ve "Özel" seçeneği de görünmediği için geri dönüş kalmaz.
             // (Preset uygulaması `matrisiYaz`'dan GEÇMEZ → yedeği ezmez.)
             dispatch(ozelMatrisYedegiGuncelle(yeni));
@@ -262,12 +262,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /**
      * Bir adımı tek dokunuşla açar/kapatır.
      *
-     * Kapatma modu 'sessiz' yapar (motorun tek doğruluk kaynağı), ama kapatma
-     * anındaki modu `oncekiMod`'da saklar; açınca kullanıcının kurduğu mod geri
-     * gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel yedek ve plan
-     * tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır — aksi halde
-     * kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine çalardı.
-     * Mod değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e düşmez.
+     * Kapatma tüm kanalları kapatır (motorun tek doğruluk kaynağı `kanallar`), ama
+     * kapatma anındaki kümeyi `oncekiKanallar`'da saklar; açınca kullanıcının
+     * kurduğu küme geri gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel
+     * yedek ve plan tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır
+     * — aksi halde kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine
+     * çalardı. Kanal değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e
+     * düşmez.
      */
     const seviyeAcKapa = useCallback(
         (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
@@ -280,8 +281,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     );
 
     /**
-     * Preset'i yazar. `sesliIzinVar` false ise sesli hücreler 'bildirim'e düşer —
-     * preset yine tümüyle uygulanır (kullanıcı hiçbir adımı kaybetmez).
+     * Preset'i yazar. `sesliIzinVar` false ise SESLİ kanal kapanır (bildirim kanalı
+     * açık kalır) — preset yine tümüyle uygulanır (kullanıcı hiçbir adımı kaybetmez).
      */
     const presetiUygula = useCallback(
         async (yogunluk: PresetYogunlugu, sesliIzinVar: boolean) => {
@@ -292,7 +293,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 dispatch(ozelMatrisYedegiGuncelle(matris));
             }
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
-            // Preset artık zamanlamanın YANI SIRA mod + bildirim sesini de yazar;
+            // Preset artık zamanlamanın YANI SIRA kanalları + aciliyeti de yazar;
             // korunan tek kullanıcı verisi anons metnidir.
             dispatch(matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar)));
             dispatch(

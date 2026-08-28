@@ -1,6 +1,6 @@
 import { matristenKanallariCikar } from '../kanalPlani';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
-import type { MuhafizMatrisi, SeviyeAyari, UyariModu } from '../matrisTipleri';
+import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
 import { muhafizKanalIdOlustur } from '../sesKimligi';
 
 const SES_A = 'content://media/internal/audio/media/42';
@@ -8,7 +8,7 @@ const SES_B = 'content://media/external/audio/media/1337';
 
 const sv = (o: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
   kademe: 'nazik',
-  mod: 'bildirim' as UyariModu,
+  kanallar: { bildirim: true },
   esikDk: 30,
   siklik: 'birkez',
   bildirimSesi: VARSAYILAN_SES,
@@ -51,9 +51,9 @@ describe('matristenKanallariCikar', () => {
     expect(idler).toContain(muhafizKanalIdOlustur(SES_B, false));
   });
 
-  it("'sessiz' hücreler kanal ÜRETMEZ (kullanmadığı ses için kanal birikmemeli)", () => {
-    const seviyeler = dortSeviye({ mod: 'sessiz' });
-    seviyeler[0].mod = 'bildirim';
+  it('KAPALI hücreler kanal ÜRETMEZ (kullanmadığı ses için kanal birikmemeli)', () => {
+    const seviyeler = dortSeviye({ kanallar: {} });
+    seviyeler[0].kanallar = { bildirim: true };
     seviyeler[0].bildirimSesi = SES_A;
 
     const kanallar = matristenKanallariCikar(matris(seviyeler));

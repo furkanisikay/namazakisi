@@ -19,6 +19,7 @@
  * `ArkaplanMuhafizServisi`'nde atilir.
  */
 import type { SeviyeAyari, Siklik } from './matrisTipleri';
+import { hicKanalAcikMi } from './kanalKumesi';
 
 /** Bir SEVIYENIN tek vakitte uretebilecegi en fazla uyari sayisi. */
 export const PLAN_ADIM_UST_SINIRI = 15;
@@ -40,7 +41,7 @@ export const PLAN_ADIM_UST_SINIRI = 15;
 export function cikisSegmentiHesapla(seviyeler: SeviyeAyari[], seviye: SeviyeAyari): number {
   const altKomsuEsigi = seviyeler.reduce(
     (enBuyuk, s) =>
-      s !== seviye && s.mod !== 'sessiz' && s.esikDk < seviye.esikDk && s.esikDk > enBuyuk
+      s !== seviye && !hicKanalAcikMi(s.kanallar) && s.esikDk < seviye.esikDk && s.esikDk > enBuyuk
         ? s.esikDk
         : enBuyuk,
     0
@@ -70,7 +71,7 @@ export function girisSegmentiHesapla(
   const ustKomsuEsigi = seviyeler.reduce<number | null>(
     (enKucuk, s) =>
       s !== seviye &&
-      s.mod !== 'sessiz' &&
+      !hicKanalAcikMi(s.kanallar) &&
       s.esikDk > seviye.esikDk &&
       (enKucuk === null || s.esikDk < enKucuk)
         ? s.esikDk

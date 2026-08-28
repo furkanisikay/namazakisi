@@ -4,16 +4,21 @@ import {
   girisSegmentiHesapla,
   PLAN_ADIM_UST_SINIRI,
 } from '../planButcesi';
-import type { SeviyeAyari, SeviyeKademe, Siklik, UyariModu } from '../matrisTipleri';
+import type { SeviyeAyari, SeviyeKademe, Siklik, UyariKanallari } from '../matrisTipleri';
+
+/** Kanal kümesi kısayolları (Faz 2: `mod` enum'unun yerini aldı). */
+const KAPALI = {};
+const BILDIRIM = { bildirim: true };
+
 
 const sv = (
   kademe: SeviyeKademe,
   esikDk: number,
   siklikDk: number | 'birkez' = 'birkez',
-  mod: UyariModu = 'bildirim'
+  kanallar: UyariKanallari = BILDIRIM
 ): SeviyeAyari => ({
   kademe,
-  mod,
+  kanallar,
   esikDk,
   siklik: siklikDk === 'birkez' ? 'birkez' : { herDk: siklikDk },
   bildirimSesi: 'varsayilan',
@@ -38,7 +43,7 @@ describe('cikisSegmentiHesapla — seviyenin GERÇEKTEN kazandığı açıklık'
   });
 
   test('KAPALI komşunun segmentini üstteki devralır (aktifSeviyeyiBul ile aynı kural)', () => {
-    const s = [sv('nazik', 120, 1), sv('uyari', 60, 1, 'sessiz'), sv('sert', 30, 1), sv('acil', 10, 1, 'sessiz')];
+    const s = [sv('nazik', 120, 1), sv('uyari', 60, 1, KAPALI), sv('sert', 30, 1), sv('acil', 10, 1, KAPALI)];
     // uyarı kapalı → nazik 30'a kadar kazanır (60'a kadar değil)
     expect(cikisSegmentiHesapla(s, s[0])).toBe(90);
     // acil kapalı → sert tabana kadar kazanır
@@ -46,7 +51,7 @@ describe('cikisSegmentiHesapla — seviyenin GERÇEKTEN kazandığı açıklık'
   });
 
   test('tek açık seviye tüm pencereyi kazanır', () => {
-    const s = [sv('nazik', 720, 1), sv('uyari', 60, 1, 'sessiz'), sv('sert', 30, 1, 'sessiz'), sv('acil', 10, 1, 'sessiz')];
+    const s = [sv('nazik', 720, 1), sv('uyari', 60, 1, KAPALI), sv('sert', 30, 1, KAPALI), sv('acil', 10, 1, KAPALI)];
     expect(cikisSegmentiHesapla(s, s[0])).toBe(720);
   });
 });
@@ -78,9 +83,9 @@ describe('girisSegmentiHesapla — giriş yönünde kazanılan açıklık', () =
   test('KAPALI komşu atlanır (aktifSeviyeyiBul ile aynı kural)', () => {
     const s = [
       sv('nazik', 5, 10),
-      sv('uyari', 60, 15, 'sessiz'),
+      sv('uyari', 60, 15, KAPALI),
       sv('sert', 120, 20),
-      sv('acil', 180, 30, 'sessiz'),
+      sv('acil', 180, 30, KAPALI),
     ];
     expect(girisSegmentiHesapla(s, s[0], 240)).toBe(115); // 120 - 5
     expect(girisSegmentiHesapla(s, s[2], 240)).toBe(120); // 240 - 120

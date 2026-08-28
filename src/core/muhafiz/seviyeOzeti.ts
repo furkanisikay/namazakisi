@@ -2,6 +2,7 @@ import type { SeviyeAyari } from './matrisTipleri';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesGorunenAdi } from './sesKimligi';
+import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
 
 /** Ozetteki ses adi — gosterim kurali `sesGorunenAdi` ile PAYLASILIR (tek kaynak). */
 const sesAdi = (seviye: SeviyeAyari): string =>
@@ -19,14 +20,18 @@ export function seviyeOzetiOlustur(
   seviye: SeviyeAyari,
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): string {
-  // Motorun ic dili 'sessiz'dir; kullaniciya "Kapali" denir. "Sessiz" demek,
-  // bildirimin gelip ses cikarmadigi (kanal sesi / cihazin sessiz modu) durumla
-  // karisiyordu. Ayrac ' — ': digerlerindeki ' · ' AYAR YUZLERINI ayirir, bu ise
-  // tek bir aciklamadir. "bildirim" degil "uyari": adim 'sesli' modda da olabilir.
-  if (seviye.mod === 'sessiz') return 'Kapalı — uyarı almazsınız';
+  // Motorun ic dili "hicbir kanal acik degil"dir; kullaniciya "Kapali" denir.
+  // "Sessiz" demek, bildirimin gelip ses cikarmadigi (kanal sesi / cihazin sessiz
+  // modu) durumla karisiyordu. Ayrac ' — ': digerlerindeki ' · ' AYAR YUZLERINI
+  // ayirir, bu ise tek bir aciklamadir. "bildirim" degil "uyari": adim yalnizca
+  // sesli anonsla da kurulmus olabilir.
+  if (hicKanalAcikMi(seviye.kanallar)) return 'Kapalı — uyarı almazsınız';
+
+  const bildirim = kanalAcikMi(seviye.kanallar, 'bildirim');
+  const sesli = kanalAcikMi(seviye.kanallar, 'sesli');
   const parcalar = [esikIfadesi(seviye.esikDk, yon)];
-  if (seviye.mod === 'bildirim') { parcalar.push('bildirim', sesAdi(seviye)); }
-  else if (seviye.mod === 'ikisi') { parcalar.push('bildirim + sesli anons', sesAdi(seviye)); }
-  else { parcalar.push('sesli anons'); } // 'sesli'
+  if (bildirim && sesli) parcalar.push('bildirim + sesli anons', sesAdi(seviye));
+  else if (bildirim) parcalar.push('bildirim', sesAdi(seviye));
+  else if (sesli) parcalar.push('sesli anons');
   return parcalar.join(' · ');
 }

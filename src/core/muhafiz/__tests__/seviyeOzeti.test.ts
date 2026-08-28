@@ -5,16 +5,16 @@ import { VARSAYILAN_SES } from '../matrisTipleri';
 const OZEL_SES = 'content://media/internal/audio/media/42';
 
 const temel = (o: Partial<SeviyeAyari>): SeviyeAyari => ({
-  kademe: 'nazik', mod: 'bildirim', esikDk: 30, siklik: 'birkez',
+  kademe: 'nazik', kanallar: { bildirim: true }, esikDk: 30, siklik: 'birkez',
   bildirimSesi: VARSAYILAN_SES, anonsMetni: '', ...o,
 });
 
 describe('seviyeOzetiOlustur', () => {
   test('kapalı adım: "Kapalı — uyarı almazsınız"', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'sessiz' }))).toBe('Kapalı — uyarı almazsınız');
+    expect(seviyeOzetiOlustur(temel({ kanallar: {} }))).toBe('Kapalı — uyarı almazsınız');
   });
   test('bildirim: eşik + bildirim + ses adı', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'bildirim', esikDk: 30 })))
+    expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true }, esikDk: 30 })))
       .toBe('30 dk kala · bildirim · Uygulama sesi');
   });
   test('kullanıcının seçtiği sesin ADI gösterilir', () => {
@@ -30,21 +30,21 @@ describe('seviyeOzetiOlustur', () => {
     expect(seviyeOzetiOlustur(temel({ bildirimSesi: 'melodi' })))
       .toBe('30 dk kala · bildirim · Uygulama sesi');
   });
-  test('ikisi: bildirim + sesli anons + ses adı', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'ikisi', esikDk: 15, bildirimSesi: OZEL_SES, sesAdi: 'Melodi 3' })))
+  test('bildirim + sesli: "bildirim + sesli anons" + ses adı', () => {
+    expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true, sesli: true }, esikDk: 15, bildirimSesi: OZEL_SES, sesAdi: 'Melodi 3' })))
       .toBe('15 dk kala · bildirim + sesli anons · Melodi 3');
   });
   test('sesli: yalnız sesli anons (ses adı yok)', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'sesli', esikDk: 8 })))
+    expect(seviyeOzetiOlustur(temel({ kanallar: { sesli: true }, esikDk: 8 })))
       .toBe('8 dk kala · sesli anons');
   });
 
   test('giriş yönünde eşik "girişten N dk sonra" olur', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'bildirim', esikDk: 45 }), 'girisindenItibaren'))
+    expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true }, esikDk: 45 }), 'girisindenItibaren'))
       .toBe('girişten 45 dk sonra · bildirim · Uygulama sesi');
   });
   test('giriş yönünde de kapalı adım aynı cümledir', () => {
-    expect(seviyeOzetiOlustur(temel({ mod: 'sessiz' }), 'girisindenItibaren'))
+    expect(seviyeOzetiOlustur(temel({ kanallar: {} }), 'girisindenItibaren'))
       .toBe('Kapalı — uyarı almazsınız');
   });
 });

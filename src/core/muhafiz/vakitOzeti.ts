@@ -6,6 +6,7 @@
 import type { VakitMuhafizAyari } from './matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { esikIfadesi } from './seviyeOzeti';
+import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
 
 /**
  * Ornek ciktilar:
@@ -20,13 +21,13 @@ import { esikIfadesi } from './seviyeOzeti';
  * 5. dakikada konusur — ekran ile motor ayrisirdi.
  */
 export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
-  const aktifler = vakitAyari.seviyeler.filter((s) => s.mod !== 'sessiz');
+  const aktifler = vakitAyari.seviyeler.filter((s) => !hicKanalAcikMi(s.kanallar));
   if (aktifler.length === 0) return 'Kapalı';
 
-  const bildirimVar = aktifler.some((s) => s.mod === 'bildirim' || s.mod === 'ikisi');
-  const sesliVar = aktifler.some((s) => s.mod === 'sesli' || s.mod === 'ikisi');
+  const bildirimVar = aktifler.some((s) => kanalAcikMi(s.kanallar, 'bildirim'));
+  const sesliVar = aktifler.some((s) => kanalAcikMi(s.kanallar, 'sesli'));
 
-  const modOzeti = bildirimVar && sesliVar
+  const kanalOzeti = bildirimVar && sesliVar
     ? 'Sesli + bildirim'
     : sesliVar
       ? 'Sadece sesli anons'
@@ -35,10 +36,10 @@ export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
   const yon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
   const esikler = aktifler.map((s) => s.esikDk);
   const ilkEsik = yon === 'girisindenItibaren' ? Math.min(...esikler) : Math.max(...esikler);
-  return `${modOzeti} · ${esikIfadesi(ilkEsik, yon)} başlar`;
+  return `${kanalOzeti} · ${esikIfadesi(ilkEsik, yon)} başlar`;
 }
 
-/** Vakitte kac adim aktif (sessiz olmayan)? Rozet icin. */
+/** Vakitte kac adim aktif (en az bir kanali acik)? Rozet icin. */
 export function aktifSeviyeSayisi(vakitAyari: VakitMuhafizAyari): number {
-  return vakitAyari.seviyeler.filter((s) => s.mod !== 'sessiz').length;
+  return vakitAyari.seviyeler.filter((s) => !hicKanalAcikMi(s.kanallar)).length;
 }

@@ -5,27 +5,28 @@
  *
  * SAF: store'a, native'e ve tarihe bagimli DEGIL -> tam test edilebilir.
  *
- * Mod semantigi (spec 3/9):
- *   sessiz   -> hicbir sey (pencere bile saglamaz, bkz. `aktifSeviyeyiBul`)
- *   bildirim -> bildirim
- *   sesli    -> Faz 4'te TTS; SIMDILIK bildirim gibi davranir, `sesliAnons`
- *               bayragi + `anonsMetni` veriye tasinir (Faz 4 kancasi)
- *   ikisi    -> bildirim (+ Faz 4'te TTS)
+ * KANAL semantigi (Faz 2 — eski `mod` enum'unun yerini aldi):
+ *   hicbiri  -> adim KAPALI (pencere bile saglamaz, bkz. `aktifSeviyeyiBul`)
+ *   bildirim -> Android bildirimi (+ on planda bildirim sesi)
+ *   sesli    -> native TTS anonsu; `sesliAnons` bayragi + `anonsMetni` veriye tasinir
+ *   titresim -> Faz 6'da baglanacak (bugun yalniz "adim acik mi" kuralina girer)
  */
 import type {
   MuhafizMatrisi,
   SeviyeAyari,
   SeviyeKademe,
   Siklik,
-  UyariModu,
+  UyariKanallari,
   VakitMuhafizAyari,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
+import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
 import { aktifSeviyeyiBul } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
   eskiAlarmSesiniGoc,
   eskidenMatriseGoc,
+  modlariKanallaraGoc,
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
@@ -45,20 +46,20 @@ export function siklikDakikasi(siklik: Siklik): number | null {
   return siklik === 'birkez' ? null : siklik.herDk;
 }
 
-/** mod sesli anons (Faz 4 TTS) istiyor mu? */
-export function sesliAnonsGerekliMi(mod: UyariModu): boolean {
-  return mod === 'sesli' || mod === 'ikisi';
+/** Kanal kumesi sesli anons (TTS) istiyor mu? */
+export function sesliAnonsGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'sesli');
 }
 
 /**
- * mod BILDIRIM SESI calmali mi?
+ * Kanal kumesi BILDIRIM SESI calmali mi?
  *
  * TEK KAYNAK: ekran (`BILDIRIMLI_MODLAR` idi) ve domain (`AnonsOnizlemeServisi`)
  * ayni kurali AYRI AYRI yaziyordu; ikizler ayrisirsa onizleme gercek akistan
  * sapar. `sesliAnonsGerekliMi` gibi burada paylasilir.
  */
-export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
-  return mod === 'bildirim' || mod === 'ikisi';
+export function bildirimSesiGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'bildirim');
 }
 
 /**
@@ -110,7 +111,7 @@ export function seviyeTetiklenirMi(
   kardesler?: SeviyeAyari[],
   secenekler?: TetikSecenekleri
 ): boolean {
-  if (seviye.mod === 'sessiz') return false;
+  if (hicKanalAcikMi(seviye.kanallar)) return false;
   if (olcuDk < 1) return false;
 
   const girisYonu = (secenekler?.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren';
@@ -152,7 +153,8 @@ export interface UyariPlani {
    */
   olcuDk: number;
   seviye: SeviyeNo;
-  mod: UyariModu;
+  /** Kazanan adimin KANAL KUMESI (Faz 2'de `mod: UyariModu` yerini aldi). */
+  kanallar: UyariKanallari;
   /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
   bildirimSesi: string;
   /** Secilen sesin adi — kanal ADInda gosterilir (Android ayarlarinda ayirt edilsin) */
@@ -160,7 +162,7 @@ export interface UyariPlani {
   /** Hucrenin acil kanal tercihi (ham); cozulmus hali icin `muhafizAcilKanalMi` */
   acilKanal?: boolean;
   anonsMetni: string;
-  /** Faz 4 TTS bayragi (mod 'sesli' | 'ikisi') */
+  /** TTS bayragi ('sesli' kanali acik mi) */
   sesliAnons: boolean;
 }
 
@@ -202,7 +204,7 @@ export function vakitUyariPlaniOlustur(
   }
 
   const enBuyukEsik = vakitAyari.seviyeler.reduce(
-    (enBuyuk, s) => (s.mod !== 'sessiz' && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
+    (enBuyuk, s) => (!hicKanalAcikMi(s.kanallar) && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
     0
   );
 
@@ -221,12 +223,12 @@ export function vakitUyariPlaniOlustur(
       kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
       olcuDk: o,
       seviye: kademeSeviyeNo(kazanan.kademe),
-      mod: kazanan.mod,
+      kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,
       sesAdi: kazanan.sesAdi,
       acilKanal: kazanan.acilKanal,
       anonsMetni: kazanan.anonsMetni,
-      sesliAnons: sesliAnonsGerekliMi(kazanan.mod),
+      sesliAnons: sesliAnonsGerekliMi(kazanan.kanallar),
     });
   }
   return plan;
@@ -311,13 +313,14 @@ export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
  * (`eskidenMatriseGoc`) turetilir. Boylece bozuk tek bir kayit muhafizi
  * tamamen susturamaz.
  *
- * Eski 'alarm' ses id'si BURADA da goc ettirilir (`eskiAlarmSesiniGoc`): bes
- * tuketicinin ikisi (`ArkaplanGorevServisi`, `KonumTakipServisi`) store'u degil
- * HAM AsyncStorage'i okur, yani slice'in yukleme gocunden gecmez. Goc gerekmiyorsa
- * AYNI referans doner (kimlik korunur).
+ * Eski semalar BURADA da goc ettirilir (`eskiAlarmSesiniGoc` + Faz 2'nin
+ * `modlariKanallaraGoc`'u): bes tuketicinin ikisi (`ArkaplanGorevServisi`,
+ * `KonumTakipServisi`) store'u degil HAM AsyncStorage'i okur, yani slice'in
+ * yukleme gocunden gecmez. Goc gerekmiyorsa her ikisi de AYNI referansi dondurur
+ * (kimlik korunur, gereksiz kopya yok).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
   return matrisGecerliMi(kaynak.matris)
-    ? eskiAlarmSesiniGoc(kaynak.matris)
+    ? modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))
     : eskidenMatriseGoc(kaynak);
 }

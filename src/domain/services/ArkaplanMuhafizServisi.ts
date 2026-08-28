@@ -358,7 +358,7 @@ export class ArkaplanMuhafizServisi {
                         tarih: tarih,
                         // Faz 4 kancasi: TTS bayragi + anons metni + secilen ses veriye tasinir.
                         // (Sesli anonsu native FGS Faz 4'te bu alanlardan okuyacak.)
-                        mod: uyari.mod,
+                        kanallar: uyari.kanallar,
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,

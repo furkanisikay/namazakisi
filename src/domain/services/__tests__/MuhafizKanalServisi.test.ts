@@ -27,7 +27,7 @@ const OZEL_SES = 'content://media/internal/audio/media/42';
 
 const sv = (o: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
     kademe: 'nazik',
-    mod: 'bildirim',
+    kanallar: { bildirim: true },
     esikDk: 30,
     siklik: 'birkez',
     bildirimSesi: VARSAYILAN_SES,

@@ -1,6 +1,6 @@
 /**
  * Katman 3 — bir vaktin bir adiminin (seviyesinin) detayi.
- * (spec 3: mod / kac dk kala / siklik / bildirim sesi / sesli anons metni)
+ * (spec 3: kanallar / kac dk kala / siklik / bildirim sesi / sesli anons metni)
  *
  * Degisiklikler ANINDA uygulanir (uygulamanin genel ayar davranisi); serbest metin
  * alani yalniz duzenleme bitince yazilir — her tusa basista tum matrisi diske
@@ -23,8 +23,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../../components/common/SayisalSecici';
-import type { MuhafizVakti, SeviyeAyari, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type { MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { hicKanalAcikMi, kanalAcikMi, kanallarEsitMi } from '../../../core/muhafiz/kanalKumesi';
 import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
@@ -34,12 +35,11 @@ import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
-import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
+import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
     SEVIYE_BILGILERI,
-    MOD_BILGILERI,
-    SESLI_MODLAR,
+    KANAL_CIPLERI,
     VARSAYILAN_TEKRAR_DK,
     TEKRAR_MIN_DK,
     TEKRAR_MAX_DK,
@@ -131,29 +131,30 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const vakitAdi = VAKIT_ADLARI[vakit];
     const sinirlar = esikSinirlariniHesapla(seviyeler, indeks, { pencereUzunluguDk });
     const notlar = adimNotlariniOlustur(seviye, seviyeler, vakit, pencereUzunluguDk);
-    const sessizMi = seviye.mod === 'sessiz';
-    const sesliMi = SESLI_MODLAR.includes(seviye.mod);
-    const bildirimliMi = bildirimSesiGerekliMi(seviye.mod);
+    const kapaliMi = hicKanalAcikMi(seviye.kanallar);
+    const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
+    const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar);
     const tekrarliMi = seviye.siklik !== 'birkez';
     const tekrarDk = seviye.siklik === 'birkez' ? VARSAYILAN_TEKRAR_DK : seviye.siklik.herDk;
 
-    const modSec = (mod: UyariModu) => {
+    const kanallariSec = (kanallar: UyariKanallari) => {
         // "Kapalı" secmek, VakitKarti'ndaki anahtari kapatmakla AYNI eylemdir →
         // ayni yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
-        // kullanicinin modu `oncekiMod`'a yazilmaz, anahtarla geri actiginda
-        // kurdugu 'ikisi' yerine 'bildirim'e duserdi.
-        if (mod === 'sessiz') {
+        // kullanicinin kanallari `oncekiKanallar`a yazilmaz, anahtarla geri
+        // actiginda kurdugu kume yerine yalniz bildirime duserdi.
+        if (hicKanalAcikMi(kanallar)) {
             onDegistir(seviyeyiKapat(seviye));
             return;
         }
 
-        // Sesli moda gecerken bos anons kutusu birakma (spec 7): sablonla on-doldur.
-        const sesliyeGecis = SESLI_MODLAR.includes(mod) && !seviye.anonsMetni;
+        // Sesli kanal acilirken bos anons kutusu birakma (spec 7): sablonla on-doldur.
+        const sesliyeGecis = sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni;
         const anonsMetni = sesliyeGecis ? ANONS_SABLONLARI[0] : seviye.anonsMetni;
         if (sesliyeGecis) setMetinTaslak(anonsMetni);
-        // Sessizden CIKISTA mod hafizasi bayat kalmamali ("oncekiMod var ⟺ hucre
-        // kapali" invarianti; `matrisIslemleri.seviyeyeUygula` de ayni temizligi yapar).
-        onDegistir({ ...seviye, mod, anonsMetni, oncekiMod: undefined });
+        // Kapaliliktan CIKISTA kanal hafizasi bayat kalmamali ("oncekiKanallar var
+        // ⟺ hucre kapali" invarianti; `matrisIslemleri.seviyeyeUygula` de ayni
+        // temizligi yapar).
+        onDegistir({ ...seviye, kanallar, anonsMetni, oncekiKanallar: undefined });
     };
 
     const sablonSec = (sablon: string) => {
@@ -242,8 +243,8 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                         {/* ── Nasil uyarsin (mod) ── */}
                         <BolumBasligi metin="NASIL UYARSIN" />
                         <View className="flex-row flex-wrap" style={{ marginHorizontal: -4 }}>
-                            {MOD_BILGILERI.map((m) => {
-                                const secili = seviye.mod === m.id;
+                            {KANAL_CIPLERI.map((m) => {
+                                const secili = kanallarEsitMi(seviye.kanallar, m.kanallar);
                                 return (
                                     <View key={m.id} style={{ width: '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
                                         <TouchableOpacity
@@ -254,7 +255,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                 borderColor: secili ? renkler.birincil : renkler.sinir,
                                                 borderWidth: secili ? 2 : 1,
                                             }}
-                                            onPress={() => modSec(m.id)}
+                                            onPress={() => kanallariSec(m.kanallar)}
                                             activeOpacity={0.7}
                                             accessibilityRole="button"
                                             accessibilityState={{ selected: secili }}
@@ -282,7 +283,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                             Yerine yalniz Turkce paket eksikse kibar bilgilendirme cikar. */}
                         {sesliMi && <TurkceTtsUyarisi destekli={ttsDestekli} />}
 
-                        {sessizMi ? (
+                        {kapaliMi ? (
                             <View className="items-center py-10">
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
@@ -509,11 +510,11 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
                                                     {/* Mod 'ikisi' ise gercek akisla ayni sirayla calar:
                                                         once bildirim sesi, ardindan anons. */}
                                                     <DinleButonu
-                                                        mod={seviye.mod}
+                                                        kanallar={seviye.kanallar}
                                                         bildirimSesi={seviye.bildirimSesi}
                                                         cozulmusMetin={anonsMetniniCoz(metinTaslak, vakit, seviye.esikDk)}
                                                         erisimEtiketi={
-                                                            seviye.mod === 'ikisi'
+                                                            kanalAcikMi(seviye.kanallar, 'bildirim')
                                                                 ? 'Bildirim sesini ve örnek okunuşu dinleyin'
                                                                 : 'Örnek okunuşu dinleyin'
                                                         }

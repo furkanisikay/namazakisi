@@ -10,7 +10,12 @@
  * daima `renkler.metin` / `renkler.metinIkincil` ile cizilir → kontrast tabani tema
  * token'larindan gelir.
  */
-import type { MuhafizVakti, SeviyeKademe, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type {
+    MuhafizVakti,
+    SeviyeKademe,
+    UyariKanallari,
+} from '../../../core/muhafiz/matrisTipleri';
+import { modKanallaraCevir } from '../../../core/muhafiz/kanalKumesi';
 
 /**
  * CUMLE ICINDE gecen kucuk harfli vakit adlari ("… yatsı bugün 6 sa 40 dk").
@@ -41,36 +46,43 @@ export const SEVIYE_BILGILERI: Record<SeviyeKademe, SeviyeBilgisi> = {
     acil: { baslik: 'Acil', ikon: 'exclamation-circle', renk: '#D32F2F' },
 };
 
-export interface ModBilgisi {
-    id: UyariModu;
+export interface KanalCipi {
+    id: 'kapali' | 'bildirim' | 'sesli' | 'ikisi';
     etiket: string;
     ikon: string;
+    /** Cipe dokunuldugunda hucreye yazilacak KANAL KUMESI. */
+    kanallar: UyariKanallari;
 }
 
 /**
- * Faz 5: sesli modlardaki "yakinda" rozeti KALDIRILDI — native anons zinciri
- * (exact alarm -> AnonsReceiver -> TTS) Faz 4'te devreye girdi, mod artik
+ * "Nasil uyarsin" cipleri (Faz 2: kanal kumesi).
+ *
+ * Cipler kumenin bugun kullanilan DORT bilesimini sunar; `titresim` kanali
+ * SEMADA ACIK ama ekranda GOSTERILMEZ (Faz 6 / A7 baglayacak) — bu yuzden hicbir
+ * cip onu yazmaz ve mevcut secim kontrolu de yalniz bildirim/sesli eksenine bakar.
+ *
+ * Faz 5: sesli ciplerdeki "yakinda" rozeti KALDIRILDI — native anons zinciri
+ * (exact alarm -> AnonsReceiver -> TTS) Faz 4'te devreye girdi, sesli kanal artik
  * gercekten calisiyor. Cihazda Turkce konusma paketi yoksa engelleme YAPILMAZ,
  * yalniz bilgilendirme bandi gosterilir (bkz. `useTurkceTtsDestegi`).
  */
-export const MOD_BILGILERI: ModBilgisi[] = [
-    // etiket "Kapalı": bu cip bir ses modu DEGIL, bir kapatma eylemidir
-    // (SeviyeDetayModal.modSec 'sessiz' icin seviyeyiKapat() cagirir).
-    { id: 'sessiz', etiket: 'Kapalı', ikon: 'bell-slash' },
-    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell' },
-    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up' },
-    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn' },
+export const KANAL_CIPLERI: KanalCipi[] = [
+    // etiket "Kapalı": bu cip bir ses secimi DEGIL, bir kapatma eylemidir
+    // (SeviyeDetayModal 'kapali' icin seviyeyiKapat() cagirir).
+    { id: 'kapali', etiket: 'Kapalı', ikon: 'bell-slash', kanallar: modKanallaraCevir('sessiz') },
+    { id: 'bildirim', etiket: 'Bildirim', ikon: 'bell', kanallar: modKanallaraCevir('bildirim') },
+    { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up', kanallar: modKanallaraCevir('sesli') },
+    { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn', kanallar: modKanallaraCevir('ikisi') },
 ];
 
 /** "Akisi onizle" tarama siniri — bir vaktin en genis penceresini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
-export const SESLI_MODLAR: UyariModu[] = ['sesli', 'ikisi'];
-
-// NOT: "bu mod bildirim sesi calar mi?" kurali BURADA DEGIL — `motorAdaptoru`
-// icindeki `bildirimSesiGerekliMi`'dedir. Eskiden burada `BILDIRIMLI_MODLAR`
-// olarak ikinci bir kopyasi vardi ve domain tarafinda (`AnonsOnizlemeServisi`)
-// ucuncu bir kopyasi; ikizler ayrisirsa onizleme gercek akistan sapar.
+// NOT: "bu adim sesli anons/bildirim sesi calar mi?" kurali BURADA DEGIL —
+// `motorAdaptoru` icindeki `sesliAnonsGerekliMi`/`bildirimSesiGerekliMi`'dedir.
+// Eskiden burada `SESLI_MODLAR`/`BILDIRIMLI_MODLAR` olarak ikinci bir kopyasi
+// vardi ve domain tarafinda (`AnonsOnizlemeServisi`) ucuncu bir kopyasi; ikizler
+// ayrisirsa onizleme gercek akistan sapar.
 
 /** Tekrarli sikliga gecilirken kullanilan varsayilan aralik. */
 export const VARSAYILAN_TEKRAR_DK = 5;

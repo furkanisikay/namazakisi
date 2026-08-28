@@ -4,10 +4,11 @@ import type {
   SeviyeAyari,
   SeviyeKademe,
   Siklik,
-  UyariModu,
+  UyariKanallari,
   VakitMuhafizAyari,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
+import { VARSAYILAN_ACIK_KANALLAR, kanalAc, kanalKapat } from './kanalKumesi';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
@@ -41,7 +42,8 @@ export function tumVakitlereUygula(matris: MuhafizMatrisi, kaynak: MuhafizVakti)
 export interface PresetSeviyeAyari {
   esikDk: number;
   siklik: Siklik;
-  mod: UyariModu;
+  /** Bu adim hangi kanallardan uyarir? (Faz 2'de `mod: UyariModu` yerini aldi.) */
+  kanallar: UyariKanallari;
   /** Bu adim MAX onem + bypassDnd ile mi gonderilsin? */
   acilKanal: boolean;
 }
@@ -50,7 +52,7 @@ export type PresetSeviyeleri = Record<SeviyeKademe, PresetSeviyeAyari>;
 
 /** Preset'in herhangi bir seviyesi sesli anons (TTS) istiyor mu? */
 export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
-  return SEVIYE_KADEMELERI.some((kademe) => sesliAnonsGerekliMi(seviyeler[kademe].mod));
+  return SEVIYE_KADEMELERI.some((kademe) => sesliAnonsGerekliMi(seviyeler[kademe].kanallar));
 }
 
 /**
@@ -65,7 +67,7 @@ export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
  * sessiz kalirdi).
  *
  * Kullanicinin sectigi BILDIRIM SESI de (`bildirimSesi`/`sesAdi`) korunur: preset
- * zamanlama + mod + ACILIYET yazar, ses kullanicinindir.
+ * zamanlama + KANALLAR + ACILIYET yazar, ses kullanicinindir.
  *
  * Doldurma YON-UYGUNdur: giris yonundeki bir vakte cikis dilli sablon yazmak
  * ("...vakti cikiyor, son {sure} dakika") vakit YENI GIRMISKEN okunurdu.
@@ -76,21 +78,26 @@ function seviyeyeUygula(
   sesliIzinVar: boolean,
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): SeviyeAyari {
-  const mod: UyariModu =
-    !sesliIzinVar && sesliAnonsGerekliMi(preset.mod) ? 'bildirim' : preset.mod;
+  // Sesli izni yoksa SESLI kanali kapanir ama adim SUSTURULMAZ: bildirim kanali
+  // acilir. (Eski `mod` semasinda bu "'sesli'/'ikisi' → 'bildirim'" idi; yalniz
+  // sesli kanali kapatsaydik sadece-sesli bir preset hucresi tumden kapanirdi.)
+  const kanallar: UyariKanallari =
+    !sesliIzinVar && sesliAnonsGerekliMi(preset.kanallar)
+      ? kanalAc(kanalKapat(preset.kanallar, 'sesli'), 'bildirim')
+      : preset.kanallar;
   return {
     ...mevcut,
-    mod,
+    kanallar,
     esikDk: preset.esikDk,
     siklik: preset.siklik,
     acilKanal: preset.acilKanal,
-    // Preset MOD yazdigi icin hucre kesin aciliyor → "kapatildiginda hatirlanan mod"
-    // hafizasi (`oncekiMod`) anlamini yitirir. Birakilsaydi "`oncekiMod` var ⟺ hucre
-    // kapali" invariantı kirilir, ileride sessiz adim iceren bir preset eklendiginde
-    // bayat deger gercekten yanlis moda dondururdu.
-    oncekiMod: undefined,
+    // Preset KANALLARI yazdigi icin hucre kesin aciliyor → "kapatildiginda
+    // hatirlanan kume" hafizasi (`oncekiKanallar`) anlamini yitirir. Birakilsaydi
+    // "`oncekiKanallar` var ⟺ hucre kapali" invariantı kirilir, ileride kapali adim
+    // iceren bir preset eklendiginde bayat deger gercekten yanlis kanallari acardi.
+    oncekiKanallar: undefined,
     anonsMetni:
-      sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni
+      sesliAnonsGerekliMi(kanallar) && !mevcut.anonsMetni
         ? varsayilanAnonsMetni(yon)
         : mevcut.anonsMetni,
   };
@@ -99,7 +106,7 @@ function seviyeyeUygula(
 /**
  * Hazir yogunlugu MEVCUT matrise uygular (tum vakitler, tum seviyeler).
  *
- * SOZLESME: preset esik + siklik + mod + ACILIYET yazar. Korunan kullanici verileri
+ * SOZLESME: preset esik + siklik + KANALLAR + ACILIYET yazar. Korunan kullanici verileri
  * `anonsMetni` ve BILDIRIM SESI secimidir (`bildirimSesi`/`sesAdi`) — sesi preset'in
  * yazmasi, kullanicinin sectigi muzigi her preset dokunusunda silerdi. Elle yapilan
  * zamanlama degisiklikleri zaten `ozelMatrisYedegi` ile saklanir → veri kaybi yok.
@@ -122,13 +129,13 @@ export function presetUygula(
  * Preset'in YALNIZ ZAMANLAMASINI (esik + siklik) mevcut matrise uygular.
  *
  * NEDEN AYRI: bir kerelik preset gocu bunu kullanir. Gocun amaci ETKISIZ TEKRARI
- * kesmekti; kullanicinin uyari BICIMINI degistirmek degil. `presetUygula` mod +
+ * kesmekti; kullanicinin uyari BICIMINI degistirmek degil. `presetUygula` kanallari +
  * aciliyeti de yazar — goc yolunda bu, "Yatsi'yi susturmus ama yogunlugu 'normal'
- * kalmis" kullanicinin secimini sessizce ezerdi (mod degisikligi yogunlugu 'ozel'
+ * kalmis" kullanicinin secimini sessizce ezerdi (kanal degisikligi yogunlugu 'ozel'
  * YAPMAZ — spec 4.1 — yani boyle kullanici goc kapisindan gecer ve geri donusu de
  * yoktur: goc `ozelMatrisYedegi` yazmaz).
  *
- * Bu yuzden korunan alanlar: `mod`, `acilKanal`, `bildirimSesi`/`sesAdi`, `anonsMetni`.
+ * Bu yuzden korunan alanlar: `kanallar`, `acilKanal`, `bildirimSesi`/`sesAdi`, `anonsMetni`.
  */
 export function presetZamanlamasiniUygula(
   matris: MuhafizMatrisi,
@@ -149,8 +156,9 @@ export function presetZamanlamasiniUygula(
  * slice initialState).
  *
  * Sihirbaz yolu eskiden preset'i yalniz eski `esikler`/`sikliklar` alanlarina
- * yaziyordu; matris `eskidenMatriseGoc` ile turetildigi icin mod DAIMA 'bildirim'
- * oluyordu → sihirbazdan gecen kullanicida sesli preset'ler calismiyordu.
+ * yaziyordu; matris `eskidenMatriseGoc` ile turetildigi icin YALNIZ
+ * bildirim kanali aciliyordu → sihirbazdan gecen kullanicida sesli preset'ler
+ * calismiyordu.
  */
 export function presetMatrisiOlustur(
   seviyeler: PresetSeviyeleri,
@@ -161,7 +169,7 @@ export function presetMatrisiOlustur(
       seviyeyeUygula(
         {
           kademe,
-          mod: 'bildirim',
+          kanallar: VARSAYILAN_ACIK_KANALLAR,
           esikDk: seviyeler[kademe].esikDk,
           siklik: 'birkez',
           bildirimSesi: VARSAYILAN_SES,
@@ -223,7 +231,7 @@ export function yonDegisimindeMetniCevir(
 const siklikDk = (s: Siklik): number => (s === 'birkez' ? -1 : s.herDk);
 
 export function zamanlamaDegistiMi(a: MuhafizMatrisi, b: MuhafizMatrisi): boolean {
-  // Yalnız esikDk + siklik karşılaştırılır (mod/ses/anons zamanlama ekseni değil).
+  // Yalnız esikDk + siklik karşılaştırılır (kanal/ses/anons zamanlama ekseni değil).
   for (const v of MUHAFIZ_VAKITLERI) {
     const as = a[v].seviyeler, bs = b[v].seviyeler;
     for (let i = 0; i < as.length; i++) {

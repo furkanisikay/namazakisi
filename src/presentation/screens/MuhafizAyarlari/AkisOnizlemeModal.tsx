@@ -5,7 +5,7 @@
  * ONEMLI: Burasi bir ONIZLEMEdir — GERCEK BILDIRIM GONDERMEZ, hicbir sey
  * planlamaz. Yalniz kullanicinin istegiyle ("Dinle") tek bir adim oldugu gibi
  * calinir: bildirimli adimda BILDIRIM SESI (uygulama ici, expo-audio), sesli
- * adimda TTS, 'ikisi'nde once ses sonra anons (bkz. `AnonsOnizlemeServisi`).
+ * adimda TTS, ikisi de acikken once ses sonra anons (bkz. `AnonsOnizlemeServisi`).
  *
  * Adimlar motor adaptorunun SAF `vakitUyariPlaniOlustur` fonksiyonundan gelir —
  * yani ekranda gorulen sira, arka planin gercekten planlayacagi sirayla
@@ -173,7 +173,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                             ? anonsMetniniCoz(adim.anonsMetni, vakit, adim.kalanDk)
                                             : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
-                                    const dinlenebilir = bildirimSesiGerekliMi(adim.mod) || !!anonsMetni;
+                                    const dinlenebilir = bildirimSesiGerekliMi(adim.kanallar) || !!anonsMetni;
 
                                     return (
                                         <View
@@ -213,7 +213,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 </Text>
                                             </View>
 
-                                            {/* Bildirim onizlemesi (mod sessiz olamaz — plan sessizi elemistir) */}
+                                            {/* Bildirim onizlemesi (adim kapali olamaz — plan kapalilari elemistir) */}
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
                                                 {basligiOlustur(vakit, seviye, adim.kalanDk)}
                                             </Text>
@@ -225,7 +225,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                             <Text className="text-[11px] mt-2" style={{ color: renkler.metinIkincil }}>
                                                 {seviyeOzetiOlustur({
                                                     kademe,
-                                                    mod: adim.mod,
+                                                    kanallar: adim.kanallar,
                                                     esikDk: adim.kalanDk,
                                                     siklik: 'birkez',
                                                     bildirimSesi: adim.bildirimSesi,
@@ -254,12 +254,12 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
 
                                             {/* Adimi OLDUGU GIBI dinle — sadece-bildirim adimlarinda da ses
                                                 cikar (eskiden yalniz sesli adimlarda buton vardi, bildirimli
-                                                adimlar sessiz kaliyordu). 'ikisi'de sira gercek akisla ayni:
-                                                once bildirim sesi, sonra anons. */}
+                                                adimlar sessiz kaliyordu). Iki kanal da acikken sira gercek
+                                                akisla ayni: once bildirim sesi, sonra anons. */}
                                             {dinlenebilir && (
                                                 <View className="flex-row justify-end mt-2.5">
                                                     <DinleButonu
-                                                        mod={adim.mod}
+                                                        kanallar={adim.kanallar}
                                                         bildirimSesi={adim.bildirimSesi}
                                                         cozulmusMetin={anonsMetni ?? ''}
                                                         erisimEtiketi={`${adim.kalanDk} dakika kala çalacak uyarıyı dinleyin`}

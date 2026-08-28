@@ -3,12 +3,45 @@ import type { PencereYonu } from './pencereTipleri';
 
 export type MuhafizVakti = Exclude<VakitAdi, 'gunes'>;
 export type SeviyeKademe = 'nazik' | 'uyari' | 'sert' | 'acil';
-export type UyariModu = 'sessiz' | 'bildirim' | 'sesli' | 'ikisi';
 export type Siklik = 'birkez' | { herDk: number };
+
+/**
+ * ESKI DISK SEMASI (Faz 2 oncesi) — yalniz GOC okur, motor DEGIL.
+ *
+ * Dort durum ('sessiz'|'bildirim'|'sesli'|'ikisi') bagimsiz iki kanali tek eksene
+ * sikistiriyordu; ucuncu bir kanal (titresim) eklemek kombinasyon sayisini
+ * ikiye katlardi ("sesli+titresim", "bildirim+titresim", "ucu birden"...).
+ * Yerine `UyariKanallari` KUMESI geldi. Bkz. `muhafizGoc.modlariKanallaraGoc`.
+ */
+export type EskiUyariModu = 'sessiz' | 'bildirim' | 'sesli' | 'ikisi';
+
+/**
+ * Bir adimin HANGI KANALLARDAN uyaracagi. Kanallar BAGIMSIZ acilir/kapanir;
+ * hicbiri acik degilse adim KAPALIdir (motorun tek kapisi: `hicKanalAcikMi`).
+ *
+ * Eksik alan ile `false` AYNI anlamdadir (kapali) — diskteki kismi kayitlar da
+ * boylece dogru okunur.
+ */
+export interface UyariKanallari {
+  /** Android bildirimi gonderilsin mi (ve on planda bildirim sesi calsin mi)? */
+  bildirim?: boolean;
+  /** Sesli anons (TTS) okunsun mu? */
+  sesli?: boolean;
+  /**
+   * Titresim — ALAN ACIK, HENUZ BAGLI DEGIL (Faz 6 / A7 baglayacak).
+   * Bugun hicbir motor, servis veya ekran bu alani yazmaz; okuyan tek yer
+   * `hicKanalAcikMi`dir (adim "acik mi" kurali simdiden dogru olsun diye).
+   */
+  titresim?: boolean;
+}
 
 export interface SeviyeAyari {
   kademe: SeviyeKademe;
-  mod: UyariModu;
+  /**
+   * Bu adim hangi kanallardan uyarir? (Faz 2'de `mod: UyariModu` yerini aldi.)
+   * Bos kume = adim KAPALI.
+   */
+  kanallar: UyariKanallari;
   esikDk: number;
   siklik: Siklik;
   /**
@@ -31,15 +64,16 @@ export interface SeviyeAyari {
    */
   acilKanal?: boolean;
   /**
-   * Adim KAPATILDIGINDA (mod='sessiz') o anki mod burada saklanir; adim yeniden
-   * acilinca geri konur. Boylece "ikisi + ozel ses + anons metni" ile kurulmus bir
-   * adimi kapatip acmak kullanicinin kurdugu seyi YOK ETMEZ.
+   * Adim KAPATILDIGINDA (tum kanallar kapanirken) o anki KANAL KUMESI burada
+   * saklanir; adim yeniden acilinca geri konur. Boylece "bildirim + sesli + ozel
+   * ses + anons metni" ile kurulmus bir adimi kapatip acmak kullanicinin kurdugu
+   * seyi YOK ETMEZ.
    *
-   * MOTOR BU ALANI OKUMAZ — sessizligin tek dogruluk kaynagi `mod`'dur ve oyle
-   * kalir (`UyariPlani` bu alani tasimaz). Salt bir UI geri-alma hafizasidir.
-   * Deger UYRETILEMEZ: yalniz `seviyeAcKapa.seviyeyiKapat` yazar.
+   * MOTOR BU ALANI OKUMAZ — kapaliligin tek dogruluk kaynagi `kanallar`dir ve
+   * oyle kalir (`UyariPlani` bu alani tasimaz). Salt bir UI geri-alma hafizasidir.
+   * Deger UYDURULAMAZ: yalniz `seviyeAcKapa.seviyeyiKapat` yazar.
    */
-  oncekiMod?: Exclude<UyariModu, 'sessiz'>;
+  oncekiKanallar?: UyariKanallari;
   anonsMetni: string;
 }
 

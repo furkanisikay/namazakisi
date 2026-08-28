@@ -3,7 +3,7 @@ import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
 import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
 import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
-import type { MuhafizMatrisi, MuhafizVakti, UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, MuhafizVakti, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
 import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
@@ -13,7 +13,7 @@ import { GIRIS_ICERIK_HAVUZU } from '../../../core/utils/muhafizMetinYardimcisi'
 interface SeviyeTanimi {
     esikDk: number;
     siklikDk: number;
-    mod?: UyariModu;
+    kanallar?: UyariKanallari;
 }
 
 /** Eski global varsayilan yapilandirmanin matris karsiligi. */
@@ -31,7 +31,7 @@ const tekDuzeMatris = (tanimlar: SeviyeTanimi[]): MuhafizMatrisi => {
         matris[vakit] = {
             seviyeler: tanimlar.map((t, i) => ({
                 kademe: SEVIYE_KADEMELERI[i],
-                mod: t.mod ?? 'bildirim',
+                kanallar: t.kanallar ?? { bildirim: true },
                 esikDk: t.esikDk,
                 siklik: { herDk: t.siklikDk } as const,
                 bildirimSesi: VARSAYILAN_SES,
@@ -570,7 +570,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
                     { esikDk: 45, siklikDk: 15 },
                     { esikDk: 30, siklikDk: 10 },
                     { esikDk: 15, siklikDk: 1 },
-                    { esikDk: 5, siklikDk: 1, mod: 'sessiz' },
+                    { esikDk: 5, siklikDk: 1, kanallar: {} },
                 ])
             );
 
@@ -588,7 +588,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         test('TÜM seviyeleri sessiz olan vakit hiç banner üretmez', () => {
             muhafiz.yapilandir(
-                tekDuzeMatris(VARSAYILAN_TANIM.map((t) => ({ ...t, siklikDk: 1, mod: 'sessiz' as UyariModu })))
+                tekDuzeMatris(VARSAYILAN_TANIM.map((t) => ({ ...t, siklikDk: 1, kanallar: {} as UyariKanallari })))
             );
 
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
@@ -609,18 +609,18 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
                 vakitBazliMatris(VARSAYILAN_TANIM, {
                     ogle: [
                         { esikDk: 10, siklikDk: 1 },
-                        { esikDk: 6, siklikDk: 1, mod: 'sessiz' },
-                        { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
-                        { esikDk: 2, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 6, siklikDk: 1, kanallar: {} },
+                        { esikDk: 4, siklikDk: 1, kanallar: {} },
+                        { esikDk: 2, siklikDk: 1, kanallar: {} },
                     ],
                     ikindi: [
                         // Sıklık 5: 40 dk'lık tek açık segmentte 1 dk'lık sıklık plan
                         // bütçesiyle 3 dk'ya seyrelirdi (Faz 0) — ölçülen şey vakit
                         // bazlı eşik olduğu için seyreltmeye girmeyen bir değer seçildi.
                         { esikDk: 40, siklikDk: 5 },
-                        { esikDk: 6, siklikDk: 1, mod: 'sessiz' },
-                        { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
-                        { esikDk: 2, siklikDk: 1, mod: 'sessiz' },
+                        { esikDk: 6, siklikDk: 1, kanallar: {} },
+                        { esikDk: 4, siklikDk: 1, kanallar: {} },
+                        { esikDk: 2, siklikDk: 1, kanallar: {} },
                     ],
                 })
             );
@@ -648,9 +648,9 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         test("siklik='birkez' yalnız tam eşik dakikasında tetiklenir", () => {
             const matris = tekDuzeMatris([
                 { esikDk: 20, siklikDk: 1 },
-                { esikDk: 12, siklikDk: 1, mod: 'sessiz' },
-                { esikDk: 8, siklikDk: 1, mod: 'sessiz' },
-                { esikDk: 4, siklikDk: 1, mod: 'sessiz' },
+                { esikDk: 12, siklikDk: 1, kanallar: {} },
+                { esikDk: 8, siklikDk: 1, kanallar: {} },
+                { esikDk: 4, siklikDk: 1, kanallar: {} },
             ]);
             for (const vakit of MUHAFIZ_VAKITLERI) matris[vakit].seviyeler[0].siklik = 'birkez';
             muhafiz.yapilandir(matris);
@@ -708,13 +708,13 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
     // ve "sadece sesli modda konuş" kuralını korur.
     describe('ön plan sesli anonsu (Faz 5)', () => {
         /** Tek vakit için sesli mod + anons metni olan matris. */
-        const sesliMatris = (mod: UyariModu, anonsMetni: string) => {
+        const sesliMatris = (kanallar: UyariKanallari, anonsMetni: string) => {
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
-            matris.ogle.seviyeler[0] = { ...matris.ogle.seviyeler[0], mod, anonsMetni };
+            matris.ogle.seviyeler[0] = { ...matris.ogle.seviyeler[0], kanallar, anonsMetni };
             return matris;
         };
 
-        it('mod "bildirim" iken anons PLANLANMAZ (sessiz kalmalı)', () => {
+        it('yalnız BİLDİRİM kanalı açıkken anons PLANLANMAZ (sessiz kalmalı)', () => {
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -726,8 +726,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(mockPlanlaAnons).not.toHaveBeenCalled();
         });
 
-        it('mod "sesli" ama anons metni BOŞ ise planlanmaz', () => {
-            muhafiz.yapilandir(sesliMatris('sesli', ''));
+        it('SESLİ kanal açık ama anons metni BOŞ ise planlanmaz', () => {
+            muhafiz.yapilandir(sesliMatris({ sesli: true }, ''));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -738,8 +738,8 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(mockPlanlaAnons).not.toHaveBeenCalled();
         });
 
-        it('mod "ikisi" iken hem banner çıkar hem anons planlanır ({vakit}/{süre} çözülür)', () => {
-            muhafiz.yapilandir(sesliMatris('ikisi', '{vakit} vakti çıkıyor, son {süre} dakika.'));
+        it('iki kanal da açıkken hem banner çıkar hem anons planlanır ({vakit}/{süre} çözülür)', () => {
+            muhafiz.yapilandir(sesliMatris({ bildirim: true, sesli: true }, '{vakit} vakti çıkıyor, son {süre} dakika.'));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -754,7 +754,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         it('ÇİFT KONUŞMA ÖNLEME: anons id\'si arka planın ürettiğiyle BİREBİR aynı', () => {
-            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} namazını kaçırma.'));
+            muhafiz.yapilandir(sesliMatris({ sesli: true }, '{vakit} namazını kaçırma.'));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -768,12 +768,12 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         it('gece yarısı sonrası yatsı: anons id\'si DÜNÜN tarihini kullanır (arka planla parite)', () => {
-            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} vakti çıkıyor.'));
+            muhafiz.yapilandir(sesliMatris({ sesli: true }, '{vakit} vakti çıkıyor.'));
             // yatsi satırını da sesli yap
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
             matris.yatsi.seviyeler[0] = {
                 ...matris.yatsi.seviyeler[0],
-                mod: 'sesli',
+                kanallar: { sesli: true },
                 anonsMetni: '{vakit} vakti çıkıyor.',
             };
             muhafiz.yapilandir(matris);
@@ -793,7 +793,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         it('anons her tetiklemede TEK kez planlanır (banner ile 1:1)', () => {
-            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} — {süre} dk.'));
+            muhafiz.yapilandir(sesliMatris({ sesli: true }, '{vakit} — {süre} dk.'));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -806,7 +806,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         });
 
         it('kılınmış vakitte anons planlanmaz (muhafız dinlenmede)', () => {
-            muhafiz.yapilandir(sesliMatris('sesli', '{vakit} — {süre} dk.'));
+            muhafiz.yapilandir(sesliMatris({ sesli: true }, '{vakit} — {süre} dk.'));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -826,7 +826,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
             matris.ogle.seviyeler[3] = {
                 ...matris.ogle.seviyeler[3],
-                mod: 'ikisi',
+                kanallar: { bildirim: true, sesli: true },
                 esikDk: 2,
                 siklik: { herDk: 2 },
                 anonsMetni: '{vakit} vakti çıkıyor.',
@@ -858,7 +858,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         it('native çağrı patlarsa banner yine de gösterilir (anons UI\'ı düşürmez)', () => {
             mockPlanlaAnons.mockImplementationOnce(() => { throw new Error('native yok'); });
-            muhafiz.yapilandir(sesliMatris('ikisi', '{vakit} — {süre} dk.'));
+            muhafiz.yapilandir(sesliMatris({ bildirim: true, sesli: true }, '{vakit} — {süre} dk.'));
             mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
                 vakit: 'ogle',
                 kalanSureMs: 45 * 60 * 1000,
@@ -880,15 +880,15 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
             const taban: SeviyeTanimi[] = [
                 { esikDk: 5, siklikDk: 10 },
-                { esikDk: 10, siklikDk: 30, mod: 'sessiz' },
-                { esikDk: 15, siklikDk: 30, mod: 'sessiz' },
-                { esikDk: 20, siklikDk: 30, mod: 'sessiz' },
+                { esikDk: 10, siklikDk: 30, kanallar: {} },
+                { esikDk: 15, siklikDk: 30, kanallar: {} },
+                { esikDk: 20, siklikDk: 30, kanallar: {} },
             ];
             matris.ogle = {
                 yon: 'girisindenItibaren',
                 seviyeler: taban.map((t, i) => ({
                     kademe: SEVIYE_KADEMELERI[i],
-                    mod: (ozel[i]?.mod ?? t.mod ?? 'bildirim'),
+                    kanallar: (ozel[i]?.kanallar ?? t.kanallar ?? { bildirim: true }),
                     esikDk: ozel[i]?.esikDk ?? t.esikDk,
                     siklik: { herDk: ozel[i]?.siklikDk ?? t.siklikDk } as const,
                     bildirimSesi: VARSAYILAN_SES,
@@ -958,7 +958,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         it('seviye 3 GİRİŞ havuzundan gelir (mücadele havuzu "vakit çıkıyor" diliyle kuruludur)', () => {
             // sert (eşik 15) açık: 15. dakikada kapsayan en BÜYÜK eşik odur.
             muhafiz.yapilandir(
-                girisMatrisi([{}, {}, { esikDk: 15, siklikDk: 5, mod: 'bildirim' }, {}])
+                girisMatrisi([{}, {}, { esikDk: 15, siklikDk: 5, kanallar: { bildirim: true } }, {}])
             );
             const randomSpx = jest.spyOn(Math, 'random').mockReturnValue(0);
             try {
@@ -987,7 +987,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             const matris = girisMatrisi();
             matris.ogle.seviyeler[0] = {
                 ...matris.ogle.seviyeler[0],
-                mod: 'ikisi',
+                kanallar: { bildirim: true, sesli: true },
                 anonsMetni: '{vakit} vakti girdi, {süre} dakika geçti.',
             };
             muhafiz.yapilandir(matris);
@@ -1005,7 +1005,7 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
             matris.ogle.seviyeler[0] = {
                 ...matris.ogle.seviyeler[0],
-                mod: 'ikisi',
+                kanallar: { bildirim: true, sesli: true },
                 anonsMetni: '{vakit} — {süre} dk.',
             };
             muhafiz.yapilandir(matris);

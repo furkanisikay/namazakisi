@@ -9,7 +9,19 @@ import {
   matrisGecerliMi,
   muhafizMatrisiniCoz,
 } from '../motorAdaptoru';
-import type { MuhafizMatrisi, SeviyeAyari, SeviyeKademe, UyariModu, VakitMuhafizAyari } from '../matrisTipleri';
+import type {
+  MuhafizMatrisi,
+  SeviyeAyari,
+  SeviyeKademe,
+  UyariKanallari,
+  VakitMuhafizAyari,
+} from '../matrisTipleri';
+
+/** Kanal kümesi kısayolları (Faz 2: `mod` enum'unun yerini aldı). */
+const KAPALI = {};
+const BILDIRIM = { bildirim: true };
+const SESLI = { sesli: true };
+const IKISI = { bildirim: true, sesli: true };
 import { eskidenMatriseGoc } from '../muhafizGoc';
 import { aktifSeviyeyiBul } from '../aktifSeviye';
 import { PLAN_ADIM_UST_SINIRI } from '../planButcesi';
@@ -18,11 +30,11 @@ const sv = (
   kademe: SeviyeKademe,
   esikDk: number,
   siklikDk: number | 'birkez' = 'birkez',
-  mod: UyariModu = 'bildirim',
+  kanallar: UyariKanallari = BILDIRIM,
   bildirimSesi = 'can'
 ): SeviyeAyari => ({
   kademe,
-  mod,
+  kanallar,
   esikDk,
   siklik: siklikDk === 'birkez' ? 'birkez' : { herDk: siklikDk },
   bildirimSesi,
@@ -49,17 +61,17 @@ describe('siklikDakikasi / sesliAnonsGerekliMi', () => {
     expect(siklikDakikasi({ herDk: 7 })).toBe(7);
   });
 
-  test('TTS yalnız sesli/ikisi modlarında gerekir', () => {
-    expect(sesliAnonsGerekliMi('sessiz')).toBe(false);
-    expect(sesliAnonsGerekliMi('bildirim')).toBe(false);
-    expect(sesliAnonsGerekliMi('sesli')).toBe(true);
-    expect(sesliAnonsGerekliMi('ikisi')).toBe(true);
+  test('TTS yalnız SESLİ kanal açıkken gerekir', () => {
+    expect(sesliAnonsGerekliMi(KAPALI)).toBe(false);
+    expect(sesliAnonsGerekliMi(BILDIRIM)).toBe(false);
+    expect(sesliAnonsGerekliMi(SESLI)).toBe(true);
+    expect(sesliAnonsGerekliMi(IKISI)).toBe(true);
   });
 });
 
 describe('seviyeTetiklenirMi', () => {
   test('sessiz mod asla tetiklenmez (eşik anında bile)', () => {
-    expect(seviyeTetiklenirMi(sv('nazik', 30, 5, 'sessiz'), 30)).toBe(false);
+    expect(seviyeTetiklenirMi(sv('nazik', 30, 5, KAPALI), 30)).toBe(false);
   });
 
   test('pencere dışında (kalan > eşik) tetiklenmez', () => {
@@ -119,7 +131,7 @@ describe('vakitUyariPlaniOlustur', () => {
 
   test('sessiz seviye planlanmaz; penceresini bir üst seviye devralır', () => {
     const acilSessiz: VakitMuhafizAyari = {
-      seviyeler: [sv('nazik', 25, 15), sv('uyari', 20, 10), sv('sert', 15, 5), sv('acil', 10, 2, 'sessiz')],
+      seviyeler: [sv('nazik', 25, 15), sv('uyari', 20, 10), sv('sert', 15, 5), sv('acil', 10, 2, KAPALI)],
     };
     const plan = vakitUyariPlaniOlustur(acilSessiz, 30);
 
@@ -129,29 +141,29 @@ describe('vakitUyariPlaniOlustur', () => {
     expect(plan.filter((u) => u.kalanDk <= 15).every((u) => u.seviye === 3)).toBe(true);
   });
 
-  test('tüm seviyeler sessizse plan boştur', () => {
-    const hepsiSessiz: VakitMuhafizAyari = {
-      seviyeler: standart.seviyeler.map((s) => ({ ...s, mod: 'sessiz' as UyariModu })),
+  test('tüm adımlar kapalıysa plan boştur', () => {
+    const hepsiKapali: VakitMuhafizAyari = {
+      seviyeler: standart.seviyeler.map((s) => ({ ...s, kanallar: KAPALI })),
     };
-    expect(vakitUyariPlaniOlustur(hepsiSessiz, 60)).toEqual([]);
+    expect(vakitUyariPlaniOlustur(hepsiKapali, 60)).toEqual([]);
   });
 
-  test('sessiz seviyenin eşiği tarama üst sınırını genişletmez', () => {
-    // nazik(60) SESSİZ; en geniş AKTİF pencere uyari(20) -> tarama 20den başlamalı
+  test('kapalı adımın eşiği tarama üst sınırını genişletmez', () => {
+    // nazik(60) KAPALI; en geniş AÇIK pencere uyari(20) -> tarama 20den başlamalı
     const naziksessiz: VakitMuhafizAyari = {
-      seviyeler: [sv('nazik', 60, 10, 'sessiz'), sv('uyari', 20, 10), sv('sert', 15, 5), sv('acil', 10, 5)],
+      seviyeler: [sv('nazik', 60, 10, KAPALI), sv('uyari', 20, 10), sv('sert', 15, 5), sv('acil', 10, 5)],
     };
     const plan = vakitUyariPlaniOlustur(naziksessiz, 120);
     expect(Math.max(...plan.map((u) => u.kalanDk))).toBe(20);
   });
 
-  test('mod/ses/anons hücreden plana taşınır (Faz 4 TTS kancası)', () => {
+  test('kanallar/ses/anons hücreden plana taşınır (Faz 4 TTS kancası)', () => {
     const vakitAyari: VakitMuhafizAyari = {
       seviyeler: [
-        { ...sv('nazik', 20, 30, 'ikisi', 'alarm'), anonsMetni: '{vakit} vakti, {süre} dk.' },
-        sv('uyari', 12, 30, 'sessiz'),
-        sv('sert', 8, 30, 'sessiz'),
-        sv('acil', 4, 30, 'sessiz'),
+        { ...sv('nazik', 20, 30, IKISI, 'alarm'), anonsMetni: '{vakit} vakti, {süre} dk.' },
+        sv('uyari', 12, 30, KAPALI),
+        sv('sert', 8, 30, KAPALI),
+        sv('acil', 4, 30, KAPALI),
       ],
     };
     const plan = vakitUyariPlaniOlustur(vakitAyari, 30);
@@ -160,7 +172,7 @@ describe('vakitUyariPlaniOlustur', () => {
     expect(plan[0]).toMatchObject({
       kalanDk: 20,
       seviye: 1,
-      mod: 'ikisi',
+      kanallar: IKISI,
       bildirimSesi: 'alarm',
       sesliAnons: true,
       anonsMetni: '{vakit} vakti, {süre} dk.',
@@ -218,9 +230,9 @@ describe('plan bütçesi (Faz 0) — tek kapı `seviyeTetiklenirMi`', () => {
   test('KAPALI komşunun segmentini üstteki devralır (kardeşler verilince)', () => {
     const kardesler = [
       sv('nazik', 120, 1),
-      sv('uyari', 60, 1, 'sessiz'),
+      sv('uyari', 60, 1, KAPALI),
       sv('sert', 30, 1),
-      sv('acil', 10, 1, 'sessiz'),
+      sv('acil', 10, 1, KAPALI),
     ];
     // nazik segmenti 120-30=90 → ceil(90/15)=6
     expect(seviyeTetiklenirMi(kardesler[0], 114, kardesler)).toBe(true);
@@ -339,7 +351,7 @@ describe('giriş yönü (YENİ-1) — seviyeTetiklenirMi', () => {
   });
 
   test('sessiz adım giriş yönünde de tetiklenmez', () => {
-    expect(seviyeTetiklenirMi(sv('nazik', 5, 10, 'sessiz'), 15, undefined, giris)).toBe(false);
+    expect(seviyeTetiklenirMi(sv('nazik', 5, 10, KAPALI), 15, undefined, giris)).toBe(false);
   });
 });
 
@@ -534,6 +546,25 @@ describe('matrisGecerliMi / muhafizMatrisiniCoz', () => {
 
     expect(cozulmus.yatsi.seviyeler[0].bildirimSesi).toBe('varsayilan');
     expect(cozulmus.yatsi.seviyeler[0].acilKanal).toBe(true);
+  });
+
+  /**
+   * FAZ 2 — `mod` → `kanallar` göçü de BURADAN geçmeli. `ArkaplanGorevServisi` ve
+   * `KonumTakipServisi` ham AsyncStorage okur; göçmeseydi hücrelerde `kanallar`
+   * bulunmaz ve motor HEPSİNİ kapalı sayardı → arka plan yolunda muhafız
+   * SESSİZCE tümden susardı.
+   */
+  test("eski `mod` şeması BURADA da kanallara göç eder", () => {
+    const eskiSemali = eskidenMatriseGoc(ESKI_AYAR);
+    eskiSemali.yatsi.seviyeler = eskiSemali.yatsi.seviyeler.map((s) => {
+      const { kanallar: _k, ...kalan } = s;
+      return { ...kalan, mod: 'ikisi' } as unknown as SeviyeAyari;
+    });
+
+    const cozulmus = muhafizMatrisiniCoz({ ...ESKI_AYAR, matris: eskiSemali });
+
+    expect(cozulmus.yatsi.seviyeler[0].kanallar).toEqual(IKISI);
+    expect(vakitUyariPlaniOlustur(cozulmus.yatsi, 60).length).toBeGreaterThan(0);
   });
 
   test('matris yoksa eski global eşik/sıklıklardan türetilir', () => {

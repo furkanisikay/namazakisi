@@ -327,7 +327,7 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
             sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
         });
         matris.ikindi.seviyeler[0].esikDk = 99; // kullanicinin vakte ozel ayari
-        matris.ikindi.seviyeler[0].mod = 'sessiz';
+        matris.ikindi.seviyeler[0].kanallar = {};
 
         mockDepo.set(
             MUHAFIZ_AYARLARI_ANAHTAR,
@@ -345,7 +345,7 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
 
         const gecenAyar = mockYapilandirVePlanla.mock.calls[0][0] as unknown as { matris: MuhafizMatrisi };
         expect(gecenAyar.matris.ikindi.seviyeler[0].esikDk).toBe(99);
-        expect(gecenAyar.matris.ikindi.seviyeler[0].mod).toBe('sessiz');
+        expect(gecenAyar.matris.ikindi.seviyeler[0].kanallar).toEqual({});
         // Bayat global esik (5) SIZMAMALI
         expect(gecenAyar.matris.ogle.seviyeler[0].esikDk).toBe(45);
     });

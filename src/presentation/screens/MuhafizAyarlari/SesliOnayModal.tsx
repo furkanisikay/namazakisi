@@ -152,7 +152,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                                 {ornekMetin}
                             </Text>
                             <DinleButonu
-                                mod="sesli"
+                                kanallar={{ sesli: true }}
                                 bildirimSesi=""
                                 cozulmusMetin={ornekMetin}
                                 erisimEtiketi="Sesli anonsu dinleyin"

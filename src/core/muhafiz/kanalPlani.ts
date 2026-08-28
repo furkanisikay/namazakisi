@@ -6,13 +6,14 @@
  * baglidir. Planlama oncesi bu liste ile kanallar TEMBEL olusturulur; listede
  * OLMAYAN eski muhafiz kanallari da cop toplanir (GC).
  *
- * Bildirim uretmeyen hucreler ('sessiz') listeye GIRMEZ — kullanmadigi bir ses
- * icin kullanicinin bildirim ayarlarinda kanal birikmemeli.
+ * KAPALI hucreler (hicbir kanali acik degil) listeye GIRMEZ — kullanmadigi bir
+ * ses icin kullanicinin bildirim ayarlarinda kanal birikmemeli.
  */
 import type { MuhafizMatrisi } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
 import { kademeSeviyeNo, muhafizAcilKanalMi, muhafizKanaliSec } from './motorAdaptoru';
 import { ozelSesMi, sesKimliginiNormalize } from './sesKimligi';
+import { hicKanalAcikMi } from './kanalKumesi';
 
 export interface MuhafizKanalTanimi {
   kanalId: string;
@@ -35,7 +36,7 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
     if (!vakitAyari?.seviyeler) continue;
 
     for (const seviye of vakitAyari.seviyeler) {
-      if (!seviye || seviye.mod === 'sessiz') continue;
+      if (!seviye || hicKanalAcikMi(seviye.kanallar)) continue;
 
       const seviyeNo = kademeSeviyeNo(seviye.kademe);
       const kanalId = muhafizKanaliSec(seviyeNo, seviye.bildirimSesi, seviye.acilKanal);

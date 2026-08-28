@@ -9,7 +9,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { eskiAlarmSesiniGoc, eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import {
+    eskiAlarmSesiniGoc,
+    eskidenMatriseGoc,
+    modlariKanallaraGoc,
+} from '../../core/muhafiz/muhafizGoc';
 import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import {
     presetMatrisiOlustur,
@@ -41,28 +45,28 @@ export interface EskiSeviyeDegerleri {
  * - Kip (modalite) degisimi tekrardan cok daha etkili: tahliye deneyinde harekete
  *   gecme suresi yalniz ZIL ile 8 dk 15 sn, KONUSAN anons ile 1 dk 15 sn
  *   (Proulx & Sime, 1991, IAFSS).
- * → Cozum: tekrari kes, son adimda MOD degistir (sesli anons).
+ * → Cozum: tekrari kes, son adimda KANAL degistir (sesli anons ekle).
  *
  * Uretilen uyari sayilari (motorla dogrulandi, `matrisIslemleri.test.ts`):
  *   hafif 4/vakit (0 sesli) · normal 6/vakit (1 sesli) · yogun 7/vakit (2 sesli)
  *
  * 'hafif' KASTEN sessizdir: hafifi secen kullanici tam da sesin sorun oldugu
  * ortamdaki kisidir; sesli eklemek bu preset'in tek ayirt edici ozelligini yok eder.
- * Sesli adimlarda 'sesli' degil 'ikisi' kullanilir — ses tek kanal olmamali; TTS
+ * Sesli adimlarda BILDIRIM kanali da acik birakilir — ses tek kanal olmamali; TTS
  * yoksa/sessizse gorsel iz kalmali.
  */
 const HAFIF_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-    uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-    sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-    acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+    nazik: { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    uyari: { esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    sert: { esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    acil: { esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
 };
 
 const NORMAL_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-    uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
-    sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
-    acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', acilKanal: false },
+    nazik: { esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    uyari: { esikDk: 25, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+    sert: { esikDk: 10, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+    acil: { esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true }, acilKanal: false },
 };
 
 /**
@@ -71,10 +75,10 @@ const NORMAL_SEVIYELERI: PresetSeviyeleri = {
  * dogru alanda duruyor — boylece bu preset kullanicinin sectigi sesi SILMEZ.
  */
 const YOGUN_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 60, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-    uyari: { esikDk: 30, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
-    sert: { esikDk: 15, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
-    acil: { esikDk: 6, siklik: { herDk: 3 }, mod: 'ikisi', acilKanal: true },
+    nazik: { esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    uyari: { esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+    sert: { esikDk: 15, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+    acil: { esikDk: 6, siklik: { herDk: 3 }, kanallar: { bildirim: true, sesli: true }, acilKanal: true },
 };
 
 const eskiEsikler = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
@@ -102,7 +106,7 @@ const eskiSikliklar = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
 export interface HatirlatmaPreseti {
     aciklama: string;
     ikon: string;
-    /** Tek dogru kaynak: esik + siklik + mod + bildirim sesi. */
+    /** Tek dogru kaynak: esik + siklik + kanallar + aciliyet. */
     seviyeler: PresetSeviyeleri;
     /** `seviyeler`den TURETILIR — eski global alanlar icin (geriye uyumluluk). */
     esikler: EskiSeviyeDegerleri;
@@ -191,11 +195,11 @@ const presetliYogunlukMu = (yogunluk: HatirlatmaYogunlugu): yogunluk is Presetli
  * mevcut kullanicilarin HICBIRINE ulasmaz, herkes yogunluk butonuna yeniden dokunana
  * kadar gunde 75 bildirim almaya devam ederdi.
  *
- * GOC YALNIZ ZAMANLAMAYI (esik + siklik) TASIR. `mod`, `acilKanal`, `bildirimSesi`,
- * `anonsMetni` alanlarina DOKUNMAZ:
- *   - Bu projede mod degisikligi yogunlugu 'ozel' YAPMAZ (`zamanlamaDegistiMi` yalniz
+ * GOC YALNIZ ZAMANLAMAYI (esik + siklik) TASIR. `kanallar`, `acilKanal`,
+ * `bildirimSesi`, `anonsMetni` alanlarina DOKUNMAZ:
+ *   - Bu projede kanal degisikligi yogunlugu 'ozel' YAPMAZ (`zamanlamaDegistiMi` yalniz
  *     esik+siklik bakar — spec 4.1). Yani "Yatsi'yi elle susturmus ama yogunlugu hala
- *     'normal'" bir kullanici `yogunluk !== 'ozel'` kapisindan GECER; mod'u ezseydik
+ *     'normal'" bir kullanici `yogunluk !== 'ozel'` kapisindan GECER; kanallari ezseydik
  *     onun secimini sessizce geri alirdik ve goc `ozelMatrisYedegi` yazmadigi icin
  *     geri donus de olmazdi.
  *   - Ayni sebeple sesli hucreler goc yoluyla ACILMAZ: sesli anons `USAGE_ALARM` ile
@@ -228,7 +232,7 @@ function presetGocunuUygula(
  * TUZAK (duzeltildi): sihirbaz eskiden preset nesnesini dogrudan spread ediyordu
  * (`...HATIRLATMA_PRESETLERI[y]`) → store'a yalniz `esikler`/`sikliklar` (+ `aciklama`,
  * `ikon` cop alanlari) gidiyor, `matris` ise reducer icinde `eskidenMatriseGoc` ile
- * turetiliyordu; o goc `mod`'u DAIMA 'bildirim' sabitler. Sonuc: sihirbazdan gecen
+ * turetiliyordu; o goc YALNIZ bildirim kanalini acar. Sonuc: sihirbazdan gecen
  * kullanicida sesli preset'lerin anons adimi hic calismiyordu. Artik `matris`
  * preset'ten DOGRUDAN uretilir ve payload'da geldigi icin reducer onu yeniden
  * turetmez (bkz. `muhafizAyarlariniGuncelle`).
@@ -304,7 +308,12 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // yapılırsa sonuç DİSKE de yazılır (aşağıdaki `gocGerekli` dalı veya
                 // sonraki herhangi bir reducer yazımı) → aciliyet ekranda görünür ve
                 // değiştirilebilir olur. Değişiklik yoksa aynı referans döner.
-                const mevcutMatris = eskiAlarmSesiniGoc(hamMatris);
+                // FAZ 2: `mod` → `kanallar` göçü de BURADA yapılır. İkisi de
+                // değişiklik yoksa AYNI referansı döndürür → gereksiz disk yazımı yok.
+                // (`muhafizMatrisiniCoz` ham AsyncStorage okuyan arka plan
+                // tüketicileri için aynı göçü ayrıca uygular; bu yol ise sonucu
+                // DİSKE yazar → kanallar görünür/değiştirilebilir olur.)
+                const mevcutMatris = modlariKanallaraGoc(eskiAlarmSesiniGoc(hamMatris));
                 const sesGocuGerekli = mevcutMatris !== hamMatris;
 
                 // Bir kerelik preset göçü: yalnız bayrağı OLMAYAN eski kayıtlarda.
@@ -312,6 +321,16 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // ama bayrak yine işaretlenir ki her açılışta tekrar denenmesin (idempotent).
                 const gocGerekli = parsed.presetGocuYapildi !== true;
                 const goc = gocGerekli ? presetGocunuUygula(temel.yogunluk, mevcutMatris) : {};
+
+                // ÖZEL YEDEK DE GÖÇMELİ: "Özel"e dönmek bu matrisi doğrudan
+                // `matris`e yazar. Eski şemada kalsaydı hücrelerde `kanallar`
+                // bulunmaz, motor hepsini KAPALI sayar → kullanıcı tek dokunuşla
+                // muhafızı sessizce tümden susturmuş olurdu.
+                const hamYedek: MuhafizMatrisi | undefined = matrisGecerliMi(parsed.ozelMatrisYedegi)
+                    ? parsed.ozelMatrisYedegi
+                    : undefined;
+                const yedek = hamYedek ? modlariKanallaraGoc(hamYedek) : undefined;
+                const yedekGocuGerekli = !!hamYedek && yedek !== hamYedek;
 
                 const sonuc: MuhafizAyarlari = {
                     ...temel,
@@ -322,17 +341,15 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     // ozelMatrisYedegi: `matris` gibi DOĞRULANIR — bozuk/kısmi yedek
                     // ekranda "Özel" butonunu gösterir, dokununca matrise yazılır ve
                     // sayfa `matris[vakit].seviyeler` ile her açılışta çöker.
-                    ozelMatrisYedegi: matrisGecerliMi(parsed.ozelMatrisYedegi)
-                        ? parsed.ozelMatrisYedegi
-                        : undefined,
+                    ozelMatrisYedegi: yedek,
                     // sesliOnayi: undefined = henüz onay yok → sesli hücreler açılmaz.
                     sesliOnayi: parsed.sesliOnayi,
                     presetGocuYapildi: true,
                 };
 
-                if (gocGerekli || sesGocuGerekli) {
+                if (gocGerekli || sesGocuGerekli || yedekGocuGerekli) {
                     // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
-                    // kullanıcının elle yaptığı mod/ses değişikliklerini sürekli geri alır.
+                    // kullanıcının elle yaptığı kanal/ses değişikliklerini sürekli geri alır.
                     // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)
                     //
                     // `...parsed` ŞART: bu anahtar tarihsel olarak muhafız dışı alanlar da

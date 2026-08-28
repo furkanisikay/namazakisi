@@ -1,6 +1,7 @@
 import type { SeviyeAyari, VakitMuhafizAyari } from './matrisTipleri';
 import { SEVIYE_KADEMELERI } from './matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
+import { hicKanalAcikMi } from './kanalKumesi';
 
 /**
  * `olcuDk` anında hangi adım konuşur?
@@ -22,7 +23,8 @@ import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
  * kalır. Sertin kazanması eskalasyonun geri gitmemesini ve iki yön arasındaki
  * simetriyi korur (eski global ayardan göç eden matriste eşit eşik olabilir).
  *
- * Sessiz adım İKİ YÖNDE DE pencere sağlamaz — segmentini bir üst adım devralır.
+ * KAPALI adım (hiçbir kanalı açık değil) İKİ YÖNDE DE pencere sağlamaz —
+ * segmentini bir üst adım devralır.
  */
 export function aktifSeviyeyiBul(
   vakitAyari: VakitMuhafizAyari,
@@ -32,7 +34,7 @@ export function aktifSeviyeyiBul(
   const girisYonu = yon === 'girisindenItibaren';
 
   const kapsayan = vakitAyari.seviyeler
-    .filter((s) => s.mod !== 'sessiz' && (girisYonu ? olcuDk >= s.esikDk : olcuDk <= s.esikDk))
+    .filter((s) => !hicKanalAcikMi(s.kanallar) && (girisYonu ? olcuDk >= s.esikDk : olcuDk <= s.esikDk))
     .sort((a, b) =>
       a.esikDk !== b.esikDk
         ? girisYonu

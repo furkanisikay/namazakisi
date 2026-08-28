@@ -275,7 +275,7 @@ export class NamazMuhafiziServisi {
         yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): void {
         if (yon === 'girisindenItibaren') return;
-        if (!sesliAnonsGerekliMi(seviye.mod)) return;
+        if (!sesliAnonsGerekliMi(seviye.kanallar)) return;
         if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
 
         try {

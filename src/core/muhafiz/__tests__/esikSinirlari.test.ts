@@ -8,7 +8,7 @@ import { esikSiralamasiGecerliMi } from '../aktifSeviye';
 import type { SeviyeAyari } from '../matrisTipleri';
 
 const sv = (esikDk: number): SeviyeAyari => ({
-  kademe: 'nazik', mod: 'bildirim', esikDk, siklik: 'birkez', bildirimSesi: 'can', anonsMetni: '',
+  kademe: 'nazik', kanallar: { bildirim: true }, esikDk, siklik: 'birkez', bildirimSesi: 'can', anonsMetni: '',
 });
 
 // normal preset: 45 / 25 / 10 / 3
@@ -62,16 +62,16 @@ describe('esikSinirlariniHesapla (spec 4.2 kesin azalan sıra)', () => {
   });
 
   /**
-   * KAPALI (sessiz) adım komşularını KİLİTLEMEYE DEVAM EDER — bilinçli.
+   * KAPALI adım komşularını KİLİTLEMEYE DEVAM EDER — bilinçli.
    *
    * Kapalı adım atlanırsa kullanıcı komşuyu onun eşiğine eşit/aşan bir değere
    * çekebilir; adım yeniden açıldığında kesin azalan sıra bozulur
    * (`esikSiralamasiGecerliMi` false) ve motor eşit-eşik tie-break'ine düşer.
    * Bedeli küçük: sınır metni görünmeyen bir komşudan gelebilir.
    */
-  test('kapalı (sessiz) adım komşu sınırlarını etkilemeye DEVAM eder', () => {
+  test('kapalı adım komşu sınırlarını etkilemeye DEVAM eder', () => {
     const s = seviyeler();
-    s[1] = { ...s[1], mod: 'sessiz', oncekiMod: 'bildirim' };
+    s[1] = { ...s[1], kanallar: {}, oncekiKanallar: { bildirim: true } };
 
     // Kapalı olan 25'lik adım hâlâ üsttekinin alt sınırını ve alttakinin üst sınırını belirler
     expect(esikSinirlariniHesapla(s, 0).min).toBe(26);

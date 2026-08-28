@@ -14,6 +14,7 @@
  */
 import type { MuhafizMatrisi, MuhafizVakti } from '../muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../muhafiz/matrisTipleri';
+import { hicKanalAcikMi } from '../muhafiz/kanalKumesi';
 
 /**
  * Seviye no (1-4) -> matris seviye indeksi (0-3).
@@ -41,16 +42,20 @@ export const sayacBaslangicEsikleriHesapla = (
   const indeks = seviyeIndeksi(seviye);
   const sonuc = {} as Record<MuhafizVakti, number>;
   for (const vakit of MUHAFIZ_VAKITLERI) {
-    // Eşik yalnız bir ZAMAN referansıdır; seviyenin modu (sessiz olsa bile)
-    // sayacın ne zaman başlayacağını değiştirmez.
+    // Eşik yalnız bir ZAMAN referansıdır; adımın kanalları (hepsi kapalı olsa
+    // bile) sayacın ne zaman başlayacağını değiştirmez.
     sonuc[vakit] = matris[vakit]?.seviyeler?.[indeks]?.esikDk ?? 0;
   }
   return sonuc;
 };
 
 /**
- * Muhafizin GERCEKTEN uyari urettigi vakitler: en az bir seviyesi sessiz olmayan
- * vakitler. #90 bastirmasi yalniz bu vakitlerde uygulanir.
+ * Muhafizin GERCEKTEN uyari urettigi vakitler: en az bir adimi ACIK (bir kanali
+ * acik) olan vakitler. #90 bastirmasi yalniz bu vakitlerde uygulanir.
+ *
+ * DIKKAT: bu listeyi `esikDk` ile DARALTMA — giris yonlu vakitte esik "cikisa
+ * kala" degil "giristen itibaren" demektir ve daraltma giris yonunu SESSIZCE
+ * bozar (Faz 1 / A3c'de olculdu).
  *
  * Neden: matris oncesi muhafiz ya tamamen acikti ya tamamen kapali; artik
  * kullanici TEK bir vakti (or. Ogle) tumden susturabilir. Global bastirma o
@@ -72,7 +77,7 @@ export const muhafizUyarilanVakitleriBul = (matris: MuhafizMatrisi): MuhafizVakt
   MUHAFIZ_VAKITLERI.filter((vakit) => {
     const seviyeler = matris[vakit]?.seviyeler ?? [];
     // Hic acik adim yoksa muhafiz o vakitte KONUSMAZ -> bastirma da olmaz.
-    if (!seviyeler.some((s) => s.mod !== 'sessiz')) return false;
+    if (!seviyeler.some((s) => !hicKanalAcikMi(s.kanallar))) return false;
     // Kalan iki dal (giris/cikis) da kapsama uretir — yukaridaki nota bak.
     return true;
   });

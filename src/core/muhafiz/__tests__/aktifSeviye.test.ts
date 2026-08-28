@@ -1,8 +1,20 @@
 import { aktifSeviyeyiBul, esikSiralamasiGecerliMi } from '../aktifSeviye';
-import type { SeviyeAyari, VakitMuhafizAyari, SeviyeKademe, UyariModu } from '../matrisTipleri';
+import type {
+  SeviyeAyari,
+  VakitMuhafizAyari,
+  SeviyeKademe,
+  UyariKanallari,
+} from '../matrisTipleri';
 
-const sv = (kademe: SeviyeKademe, esikDk: number, mod: UyariModu = 'bildirim'): SeviyeAyari =>
-  ({ kademe, mod, esikDk, siklik: 'birkez', bildirimSesi: 'can', anonsMetni: '' });
+/** Kanal kümesi kısayolları (Faz 2: `mod` enum'unun yerini aldı). */
+const KAPALI = {};
+const BILDIRIM = { bildirim: true };
+
+const sv = (
+  kademe: SeviyeKademe,
+  esikDk: number,
+  kanallar: UyariKanallari = BILDIRIM
+): SeviyeAyari => ({ kademe, kanallar, esikDk, siklik: 'birkez', bildirimSesi: 'can', anonsMetni: '' });
 
 const vakitAyari: VakitMuhafizAyari = {
   seviyeler: [sv('nazik', 30), sv('uyari', 15), sv('sert', 8), sv('acil', 3)],
@@ -21,8 +33,8 @@ describe('aktifSeviyeyiBul', () => {
   test('2 dk kala: hepsi kapsar → acil(3)', () => {
     expect(aktifSeviyeyiBul(vakitAyari, 2)?.kademe).toBe('acil');
   });
-  test('sessiz seviye pencere sağlamaz: acil sessizse 2 dk kala sert kazanır', () => {
-    const v: VakitMuhafizAyari = { seviyeler: [sv('nazik', 30), sv('uyari', 15), sv('sert', 8), sv('acil', 3, 'sessiz')] };
+  test('kapalı adım pencere sağlamaz: acil kapalıysa 2 dk kala sert kazanır', () => {
+    const v: VakitMuhafizAyari = { seviyeler: [sv('nazik', 30), sv('uyari', 15), sv('sert', 8), sv('acil', 3, KAPALI)] };
     expect(aktifSeviyeyiBul(v, 2)?.kademe).toBe('sert');
   });
   test('sınır: kalanDk == esikDk dahildir (8 dk kala sert kapsar)', () => {
@@ -72,10 +84,10 @@ describe('aktifSeviyeyiBul — girisindenItibaren yönü (B1)', () => {
     expect(aktifSeviyeyiBul(girisAyari, 0)).toBeNull();
   });
 
-  test('sessiz adım giriş yönünde de pencere sağlamaz', () => {
+  test('kapalı adım giriş yönünde de pencere sağlamaz', () => {
     const acilSessiz: VakitMuhafizAyari = {
       yon: 'girisindenItibaren',
-      seviyeler: [sv('nazik', 1), sv('uyari', 15), sv('sert', 30), sv('acil', 45, 'sessiz')],
+      seviyeler: [sv('nazik', 1), sv('uyari', 15), sv('sert', 30), sv('acil', 45, KAPALI)],
     };
     expect(aktifSeviyeyiBul(acilSessiz, 60)?.kademe).toBe('sert');
   });
