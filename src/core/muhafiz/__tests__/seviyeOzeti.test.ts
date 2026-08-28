@@ -38,4 +38,13 @@ describe('seviyeOzetiOlustur', () => {
     expect(seviyeOzetiOlustur(temel({ mod: 'sesli', esikDk: 8 })))
       .toBe('8 dk kala · sesli anons');
   });
+
+  test('giriş yönünde eşik "girişten N dk sonra" olur', () => {
+    expect(seviyeOzetiOlustur(temel({ mod: 'bildirim', esikDk: 45 }), 'girisindenItibaren'))
+      .toBe('girişten 45 dk sonra · bildirim · Uygulama sesi');
+  });
+  test('giriş yönünde de kapalı adım aynı cümledir', () => {
+    expect(seviyeOzetiOlustur(temel({ mod: 'sessiz' }), 'girisindenItibaren'))
+      .toBe('Kapalı — uyarı almazsınız');
+  });
 });

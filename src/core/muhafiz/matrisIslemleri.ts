@@ -8,8 +8,10 @@ import type {
   VakitMuhafizAyari,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
+import type { PencereYonu } from './pencereTipleri';
+import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
-import { ANONS_SABLONLARI } from './anonsMetni';
+import { anonsSablonlari, varsayilanAnonsMetni } from './anonsMetni';
 
 const derinKopya = <T>(o: T): T => JSON.parse(JSON.stringify(o));
 
@@ -64,11 +66,15 @@ export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
  *
  * Kullanicinin sectigi BILDIRIM SESI de (`bildirimSesi`/`sesAdi`) korunur: preset
  * zamanlama + mod + ACILIYET yazar, ses kullanicinindir.
+ *
+ * Doldurma YON-UYGUNdur: giris yonundeki bir vakte cikis dilli sablon yazmak
+ * ("...vakti cikiyor, son {sure} dakika") vakit YENI GIRMISKEN okunurdu.
  */
 function seviyeyeUygula(
   mevcut: SeviyeAyari,
   preset: PresetSeviyeAyari,
-  sesliIzinVar: boolean
+  sesliIzinVar: boolean,
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): SeviyeAyari {
   const mod: UyariModu =
     !sesliIzinVar && sesliAnonsGerekliMi(preset.mod) ? 'bildirim' : preset.mod;
@@ -84,7 +90,9 @@ function seviyeyeUygula(
     // bayat deger gercekten yanlis moda dondururdu.
     oncekiMod: undefined,
     anonsMetni:
-      sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni ? ANONS_SABLONLARI[0] : mevcut.anonsMetni,
+      sesliAnonsGerekliMi(mod) && !mevcut.anonsMetni
+        ? varsayilanAnonsMetni(yon)
+        : mevcut.anonsMetni,
   };
 }
 
@@ -104,7 +112,7 @@ export function presetUygula(
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
     sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) =>
-      seviyeyeUygula(s, seviyeler[SEVIYE_KADEMELERI[i]], sesliIzinVar)
+      seviyeyeUygula(s, seviyeler[SEVIYE_KADEMELERI[i]], sesliIzinVar, sonuc[v].yon)
     );
   }
   return sonuc;
@@ -168,6 +176,48 @@ export function presetMatrisiOlustur(
   const matris = {} as MuhafizMatrisi;
   for (const v of MUHAFIZ_VAKITLERI) matris[v] = vakitAyari();
   return matris;
+}
+
+/**
+ * Bir vaktin YONUNU degistirir ve hucrelerdeki OTOMATIK DOLDURULMUS anons
+ * metinlerini karsi yonun sablonuna cevirir.
+ *
+ * NEDEN GEREKLI (B11'in acik kalan kismi): doldurma anini yone bagladigimizda is
+ * bitmiyor — hucrede zaten duran cikis dilli sablon ("...vakti cikiyor, son
+ * {sure} dakika") yon girise cevrilince "son 42 dakika" diye SESLENDIRILIR.
+ * "Kullanicinin metnini ezme" kurali burada ise yaramaz: otomatik doldurulmus
+ * sablonu kullanicinin yazdigindan AYIRT EDEMEZ.
+ *
+ * AYIRT EDICI OLCUT = BIREBIR ESLESME. Metin havuzdaki bir sablonla tam olarak
+ * ayniysa (kirpma/normalize YOK — sonuna bosluk eklenmisse bile artik kullanici
+ * metnidir) karsi yonun ayni INDEKSTEKI sablonuyla degistirilir; degilse
+ * DOKUNULMAZ. Boylece elle yazilan metin asla kaybolmaz; bedeli, cevrilemeyen
+ * metin icin ekranin ipucu gostermesidir (Faz 3 / A6).
+ *
+ * `{yon}` yer tutucusuyla yazilmis metinler zaten iki yonde de dogru okunur ve
+ * havuzda olmadiklari icin buradan gecerken degismezler.
+ *
+ * Degisecek bir sey yoksa AYNI REFERANSI dondurur (gereksiz disk yazimi +
+ * yeniden planlama olmasin — `seviyeyiAc`/`seviyeyiKapat` ile ayni sozlesme).
+ */
+export function yonDegisimindeMetniCevir(
+  vakitAyari: VakitMuhafizAyari,
+  hedefYon: PencereYonu
+): VakitMuhafizAyari {
+  const mevcutYon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+  const kaynakHavuz = anonsSablonlari(mevcutYon);
+  const hedefHavuz = anonsSablonlari(hedefYon);
+
+  let degisti = mevcutYon !== hedefYon;
+  const seviyeler = vakitAyari.seviyeler.map((s) => {
+    const i = s.anonsMetni ? kaynakHavuz.indexOf(s.anonsMetni) : -1;
+    if (i < 0 || hedefHavuz[i] === undefined || hedefHavuz[i] === s.anonsMetni) return s;
+    degisti = true;
+    return { ...s, anonsMetni: hedefHavuz[i] };
+  });
+
+  if (!degisti) return vakitAyari;
+  return { ...vakitAyari, yon: hedefYon, seviyeler };
 }
 
 const siklikDk = (s: Siklik): number => (s === 'birkez' ? -1 : s.herDk);

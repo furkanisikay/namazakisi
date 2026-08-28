@@ -11,8 +11,10 @@
  * okumaz. Yalnizca bir geri-alma hafizasidir.
  */
 import type { SeviyeAyari, UyariModu } from './matrisTipleri';
+import type { PencereYonu } from './pencereTipleri';
+import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
-import { ANONS_SABLONLARI } from './anonsMetni';
+import { varsayilanAnonsMetni } from './anonsMetni';
 
 /** Kapali olmayan modlar — `oncekiMod` yalniz bunlardan biri olabilir. */
 type AcikMod = Exclude<UyariModu, 'sessiz'>;
@@ -45,8 +47,14 @@ export const seviyeyiKapat = (seviye: SeviyeAyari): SeviyeAyari => {
  * ve matrisIslemleri.seviyeyeUygula ile ayni sozlesme): metinsiz 'sesli' adim
  * sessiz kalir, kullanici actigi adimin calismadigini sanirdi. Kullanicinin kendi
  * yazdigi metin ASLA ezilmez.
+ *
+ * `yon` VAKTIN penceresinin yonudur (`VakitMuhafizAyari.yon`): giris yonunde
+ * cikis dilli sablonla doldurmak, vakit YENI GIRMISKEN "son 42 dakika" dedirtir.
  */
-export const seviyeyiAc = (seviye: SeviyeAyari): SeviyeAyari => {
+export const seviyeyiAc = (
+  seviye: SeviyeAyari,
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+): SeviyeAyari => {
   if (seviyeAcikMi(seviye)) return seviye;
 
   // Hatirlanan mod 'sessiz' ise (bozuk/eski kayit) oldugu gibi geri koymak
@@ -61,6 +69,8 @@ export const seviyeyiAc = (seviye: SeviyeAyari): SeviyeAyari => {
     ...kalan,
     mod,
     anonsMetni:
-      sesliAnonsGerekliMi(mod) && !seviye.anonsMetni ? ANONS_SABLONLARI[0] : seviye.anonsMetni,
+      sesliAnonsGerekliMi(mod) && !seviye.anonsMetni
+        ? varsayilanAnonsMetni(yon)
+        : seviye.anonsMetni,
   };
 };

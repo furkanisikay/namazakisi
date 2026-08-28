@@ -5,6 +5,8 @@ const sv = (esikDk: number, mod: UyariModu): SeviyeAyari => ({
   kademe: 'nazik', mod, esikDk, siklik: 'birkez', bildirimSesi: 'can', anonsMetni: '',
 });
 const vakit = (...seviyeler: SeviyeAyari[]): VakitMuhafizAyari => ({ seviyeler });
+const girisVakti = (...seviyeler: SeviyeAyari[]): VakitMuhafizAyari =>
+  ({ seviyeler, yon: 'girisindenItibaren' });
 
 describe('vakitOzetiOlustur', () => {
   test('tüm seviyeler sessizse "Kapalı"', () => {
@@ -43,5 +45,26 @@ describe('aktifSeviyeSayisi', () => {
   });
   test('hepsi sessizse 0', () => {
     expect(aktifSeviyeSayisi(vakit(sv(45, 'sessiz')))).toBe(0);
+  });
+});
+
+describe('vakitOzetiOlustur — giriş yönü', () => {
+  /**
+   * Giriş yönünde eskalasyon TERSİNE döner: ilk uyarı en KÜÇÜK eşikte çalar
+   * (vakit girdikten 5 dk sonra), çıkışta ise en BÜYÜK eşikte. Math.max'i olduğu
+   * gibi bırakmak "45 dk sonra başlar" der ama motor 5. dakikada konuşur.
+   */
+  test('ilk uyarı EN KÜÇÜK eşiktir ve "girişten N dk sonra başlar" denir', () => {
+    expect(vakitOzetiOlustur(girisVakti(sv(5, 'bildirim'), sv(45, 'bildirim'))))
+      .toBe('Sadece bildirim · girişten 5 dk sonra başlar');
+  });
+
+  test('kapalı adımlar giriş yönünde de sayılmaz', () => {
+    expect(vakitOzetiOlustur(girisVakti(sv(5, 'sessiz'), sv(20, 'ikisi'))))
+      .toBe('Sesli + bildirim · girişten 20 dk sonra başlar');
+  });
+
+  test('tüm adımlar kapalıysa yine "Kapalı"', () => {
+    expect(vakitOzetiOlustur(girisVakti(sv(5, 'sessiz')))).toBe('Kapalı');
   });
 });

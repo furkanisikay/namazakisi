@@ -5,11 +5,12 @@ import {
   presetSesliIceriyorMu,
   presetZamanlamasiniUygula,
   zamanlamaDegistiMi,
+  yonDegisimindeMetniCevir,
   type PresetSeviyeleri,
 } from '../matrisIslemleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari, UyariModu, VakitMuhafizAyari } from '../matrisTipleri';
-import { ANONS_SABLONLARI } from '../anonsMetni';
+import { ANONS_SABLONLARI, ANONS_SABLONLARI_GIRIS } from '../anonsMetni';
 
 const OZEL_SES = 'content://media/internal/audio/media/42';
 
@@ -282,5 +283,81 @@ describe('presetUygula — mod hafızası (oncekiMod) hijyeni', () => {
 
     expect(m.ogle.seviyeler[0].mod).toBe('bildirim');
     expect(m.ogle.seviyeler[0].oncekiMod).toBeUndefined();
+  });
+});
+
+describe('presetUygula — yön-uygun şablon', () => {
+  test('giriş yönündeki vakitte boş kutu GİRİŞ şablonuyla dolar', () => {
+    const m = matris();
+    m.ogle.yon = 'girisindenItibaren';
+
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+
+    expect(sonuc.ogle.seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[0]);
+    // Yön alanı olmayan vakitler çıkış şablonunda kalır (sıfır göç).
+    expect(sonuc.ikindi.seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI[0]);
+  });
+});
+
+describe('yonDegisimindeMetniCevir', () => {
+  const vakitAyari = (anonsMetni: string, yon?: VakitMuhafizAyari['yon']): VakitMuhafizAyari => ({
+    yon,
+    seviyeler: [{ ...sv(45, 'ikisi'), anonsMetni }],
+  });
+
+  test('otomatik doldurulmuş ÇIKIŞ şablonu giriş karşılığına çevrilir', () => {
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(ANONS_SABLONLARI[1]), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[1]);
+    expect(sonuc.yon).toBe('girisindenItibaren');
+  });
+
+  test('geri dönüşte GİRİŞ şablonu çıkış karşılığına çevrilir', () => {
+    const sonuc = yonDegisimindeMetniCevir(
+      vakitAyari(ANONS_SABLONLARI_GIRIS[2], 'girisindenItibaren'),
+      'cikisaDogru'
+    );
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(ANONS_SABLONLARI[2]);
+    expect(sonuc.yon).toBe('cikisaDogru');
+  });
+
+  /**
+   * B11'in can alıcı noktası: "kullanıcı metnini ezme" kuralı otomatik doldurulan
+   * şablonu kullanıcının yazdığından ayırt edemez → ayırt edici ölçüt BİREBİR
+   * EŞLEŞMEdir. Havuzda olmayan metne DOKUNULMAZ.
+   */
+  test('elle yazılmış metin KORUNUR (havuzla birebir eşleşmiyor)', () => {
+    const elle = 'Kalk, {vakit} namazına {süre} dakika kaldı.';
+
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(elle), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(elle);
+    expect(sonuc.yon).toBe('girisindenItibaren');
+  });
+
+  test('şablonun ucuna tek boşluk eklenmişse bile DOKUNULMAZ', () => {
+    const neredeyse = `${ANONS_SABLONLARI[0]} `;
+
+    expect(yonDegisimindeMetniCevir(vakitAyari(neredeyse), 'girisindenItibaren')
+      .seviyeler[0].anonsMetni).toBe(neredeyse);
+  });
+
+  test('boş kutu boş kalır (doldurma burada YAPILMAZ)', () => {
+    expect(yonDegisimindeMetniCevir(vakitAyari(''), 'girisindenItibaren')
+      .seviyeler[0].anonsMetni).toBe('');
+  });
+
+  test('yön zaten hedefse ve çevrilecek metin yoksa AYNI REFERANS döner', () => {
+    const ayar = vakitAyari('Kendi metnim');
+
+    expect(yonDegisimindeMetniCevir(ayar, 'cikisaDogru')).toBe(ayar);
+  });
+
+  test('metin dışındaki alanlara dokunmaz', () => {
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(ANONS_SABLONLARI[0]), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].mod).toBe('ikisi');
+    expect(sonuc.seviyeler[0].esikDk).toBe(45);
   });
 });

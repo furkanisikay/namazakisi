@@ -1,5 +1,5 @@
 import { seviyeAcikMi, seviyeyiAc, seviyeyiKapat } from '../seviyeAcKapa';
-import { ANONS_SABLONLARI } from '../anonsMetni';
+import { ANONS_SABLONLARI, ANONS_SABLONLARI_GIRIS } from '../anonsMetni';
 import { VARSAYILAN_SES } from '../matrisTipleri';
 import type { SeviyeAyari } from '../matrisTipleri';
 
@@ -92,6 +92,12 @@ describe('seviyeAcKapa', () => {
       const acik = seviyeyiAc(kapali);
 
       expect(acik.anonsMetni).toBe(ANONS_SABLONLARI[0]);
+    });
+
+    it('giris yonunde bos kutu GIRIS sablonuyla dolar', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ mod: 'ikisi', anonsMetni: '' }));
+
+      expect(seviyeyiAc(kapali, 'girisindenItibaren').anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[0]);
     });
 
     it('kullanicinin yazdigi anons metnini EZMEZ', () => {
