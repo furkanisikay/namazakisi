@@ -289,5 +289,35 @@ describe('NamazVaktiHesaplayiciServisi', () => {
             const bilgi = servis.getSuankiVakitBilgisi()!;
             expect(bilgi.vakit).toBe('yatsi');
         });
+
+        // ── Faz 1 / B8: pencere GIRISI ────────────────────────────────────────
+        // Motor iki yonlu oldugundan (`girisindenItibaren`) "vaktin girisinden
+        // gecen dakika" hesaplanabilmeli. Yalniz `saat` (cikis) + `kalanSureMs`
+        // ile bu imkansizdi; `giris` olmadan giris yonu SESSIZCE hic tetiklenmez.
+        it('giris alani icinde bulunulan vaktin BASLANGIC saatini tasir', () => {
+            mockKancalar.current = 'dhuhr';
+            mockKancalar.next = 'asr';
+
+            const bilgi = servis.getSuankiVakitBilgisi()!;
+            const bugun = new Date();
+            expect(bilgi.giris).toEqual(vakitTreti(bugun, 13, 0));
+            // Pencere = cikis - giris (ogle 13:00 -> ikindi 16:00 = 180 dk)
+            expect(bilgi.saat.getTime() - bilgi.giris.getTime()).toBe(180 * 60 * 1000);
+        });
+
+        it('gece yarisi sonrasi (current=none) giris DUNUN yatsisidir', () => {
+            // Imsak oncesinde adhan `currentPrayer()` 'none' doner ve
+            // `timeForPrayer('none')` null verir; giris bugunden turetilemez.
+            // Aktif vakit dunun yatsisi oldugu icin giris de ona ait olmali —
+            // aksi halde pencere uzunlugu negatif/absurt cikar ve giris yonu
+            // yanlis dakikalarda konusur.
+            mockKancalar.current = 'none';
+            mockKancalar.next = 'fajr';
+
+            const bilgi = servis.getSuankiVakitBilgisi()!;
+            const dun = new Date();
+            dun.setDate(dun.getDate() - 1);
+            expect(bilgi.giris).toEqual(vakitTreti(dun, 20, 30));
+        });
     });
 });

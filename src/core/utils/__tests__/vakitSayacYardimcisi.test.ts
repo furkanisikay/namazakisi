@@ -71,3 +71,39 @@ describe('muhafizUyarilanVakitleriBul', () => {
     expect(muhafizUyarilanVakitleriBul(matris)).toContain('ogle');
   });
 });
+
+// ── Faz 1 / B12: pencere yönü ────────────────────────────────────────────────
+//
+// Giriş yönüne çevrilmiş vakitte `esikDk` "girişten itibaren"dir; sayaç onu
+// "çıkışa kala" sanıp yanlış anda başlar. Karar: dönüştürme DEĞİL bastırma —
+// giriş-yönlü vakit "tümüyle kapsanmış" sayılır ve sayaç orada planlanmaz.
+// Kullanıcı hatırlatmasız kalmaz: bastırma yalnız `muhafizAktif` iken uygulanır
+// ve giriş yönünde muhafız pencere boyunca zaten uyarır.
+describe('muhafizUyarilanVakitleriBul — pencere yönü (B12)', () => {
+  const yonluMatris = (yon: 'cikisaDogru' | 'girisindenItibaren'): MuhafizMatrisi => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    matris.yatsi.yon = yon;
+    return matris;
+  };
+
+  it('giriş-yönlü vakit bastırma listesinde KALIR (sayaç orada planlanmaz)', () => {
+    expect(muhafizUyarilanVakitleriBul(yonluMatris('girisindenItibaren'))).toContain('yatsi');
+  });
+
+  it('yön alanı olmayan matris birebir eski sonucu verir (sıfır göç)', () => {
+    expect(muhafizUyarilanVakitleriBul(tekDuzeMatris).sort()).toEqual(
+      muhafizUyarilanVakitleriBul(yonluMatris('cikisaDogru')).sort()
+    );
+  });
+
+  it('EK ŞART: giriş-yönlü ama TÜM adımları kapalı vakit bastırılmaz', () => {
+    // Aksi halde o vakitte ne muhafız ne de sayaç uyarısı kalırdı — yön kontrolü
+    // aktif-adım filtresiyle AND'lenmeli, onun yerine geçmemeli.
+    const matris = yonluMatris('girisindenItibaren');
+    for (const seviye of matris.yatsi.seviyeler) seviye.mod = 'sessiz';
+
+    const uyarilan = muhafizUyarilanVakitleriBul(matris);
+    expect(uyarilan).not.toContain('yatsi');
+    expect(uyarilan).toContain('ogle');
+  });
+});

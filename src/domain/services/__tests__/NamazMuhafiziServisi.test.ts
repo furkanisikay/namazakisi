@@ -6,6 +6,8 @@ import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti, UyariModu } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
+import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { GIRIS_ICERIK_HAVUZU } from '../../../core/utils/muhafizMetinYardimcisi';
 
 /** Bir seviye hucresinin test tanimi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
@@ -866,5 +868,173 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             expect(bildirimSpx).toHaveBeenCalled();
         });
     });
-});
+    // ── Faz 1: GİRİŞ yönü (olcuDk + B3 çift konuşma) ─────────────────────────
+    //
+    // Yatsı gibi 6-11 saat süren vakitlerde kullanıcı "vakit girer girmez
+    // hatırlat, çıkana kadar sürdür" diyebilsin diye motor iki yönlüdür. Ön plan
+    // ölçüyü `VakitBilgisi.giris`ten türetir; pencere uzunluğu geçilmezse motor
+    // hiç tetiklenmez (sessizce yanlış dakikada konuşmaktansa hiç konuşmamak).
+    describe('giriş yönü (Faz 1)', () => {
+        /** ogle satırı giriş yönlü: eşik sırası ARTAN (nazik en küçük). */
+        const girisMatrisi = (ozel: Partial<SeviyeTanimi>[] = []): MuhafizMatrisi => {
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            const taban: SeviyeTanimi[] = [
+                { esikDk: 5, siklikDk: 10 },
+                { esikDk: 10, siklikDk: 30, mod: 'sessiz' },
+                { esikDk: 15, siklikDk: 30, mod: 'sessiz' },
+                { esikDk: 20, siklikDk: 30, mod: 'sessiz' },
+            ];
+            matris.ogle = {
+                yon: 'girisindenItibaren',
+                seviyeler: taban.map((t, i) => ({
+                    kademe: SEVIYE_KADEMELERI[i],
+                    mod: (ozel[i]?.mod ?? t.mod ?? 'bildirim'),
+                    esikDk: ozel[i]?.esikDk ?? t.esikDk,
+                    siklik: { herDk: ozel[i]?.siklikDk ?? t.siklikDk } as const,
+                    bildirimSesi: VARSAYILAN_SES,
+                    anonsMetni: '',
+                })),
+            };
+            return matris;
+        };
 
+        /** Pencere 30 dk; girişin üzerinden `gecenDk` geçmiş. */
+        const vakitBilgisiKur = (gecenDk: number) => {
+            const simdi = Date.now();
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                giris: new Date(simdi - gecenDk * 60 * 1000),
+                saat: new Date(simdi + (30 - gecenDk) * 60 * 1000),
+                kalanSureMs: (30 - gecenDk) * 60 * 1000,
+            });
+        };
+
+        it('ölçü GİRİŞTEN sayılır: 5. dakikada uyarır, 6. dakikada susar', () => {
+            muhafiz.yapilandir(girisMatrisi());
+
+            vakitBilgisiKur(5);
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx.mock.calls[0][1]).toBe(1);
+
+            bildirimSpx.mockClear();
+            vakitBilgisiKur(6);
+            jest.advanceTimersByTime(60 * 1000);
+            expect(bildirimSpx).not.toHaveBeenCalled();
+        });
+
+        it('ARKA PLANLA PARİTE: tetiklenen dakikalar plan üreticisiyle birebir aynı', () => {
+            // İki motor da aynı `pencereUzunluguDk` + yönü geçmezse banner ile
+            // bildirim ayrı dakikalara düşer (AGENTS.md'de kayıtlı ders).
+            const matris = girisMatrisi();
+            const plan = vakitUyariPlaniOlustur(matris.ogle, 0, { pencereUzunluguDk: 30 });
+            const beklenen = plan.map((u) => u.olcuDk);
+            expect(beklenen).toEqual([5, 15, 25]);
+
+            muhafiz.yapilandir(matris);
+            const tetiklenen: number[] = [];
+            for (let gecen = 1; gecen < 30; gecen++) {
+                bildirimSpx.mockClear();
+                muhafiz.durdur();
+                vakitBilgisiKur(gecen);
+                muhafiz.baslat(bildirimSpx);
+                if (bildirimSpx.mock.calls.length > 0) tetiklenen.push(gecen);
+            }
+            expect(tetiklenen).toEqual(beklenen);
+        });
+
+        it('banner metni GİRİŞ dilindedir ve GEÇEN dakikayı gösterir', () => {
+            muhafiz.yapilandir(girisMatrisi());
+            vakitBilgisiKur(5);
+            muhafiz.baslat(bildirimSpx);
+
+            const [mesaj] = bildirimSpx.mock.calls[0];
+            expect(mesaj).toContain('5');
+            // Kalan (25) sızmamalı; "kaldı/çıkıyor" dili kullanılmamalı.
+            expect(mesaj).not.toContain('25');
+            expect(mesaj).not.toMatch(/kaldı|ÇIKIYOR/u);
+        });
+
+        it('seviye 3 GİRİŞ havuzundan gelir (mücadele havuzu "vakit çıkıyor" diliyle kuruludur)', () => {
+            // sert (eşik 15) açık: 15. dakikada kapsayan en BÜYÜK eşik odur.
+            muhafiz.yapilandir(
+                girisMatrisi([{}, {}, { esikDk: 15, siklikDk: 5, mod: 'bildirim' }, {}])
+            );
+            const randomSpx = jest.spyOn(Math, 'random').mockReturnValue(0);
+            try {
+                vakitBilgisiKur(15);
+                muhafiz.baslat(bildirimSpx);
+
+                const [mesaj, seviye] = bildirimSpx.mock.calls[0];
+                expect(seviye).toBe(3);
+                expect(GIRIS_ICERIK_HAVUZU[3]).toContain(mesaj);
+                // Çıkış havuzunun ilk seviye-3 metni SEÇİLMEMELİ (Math.random=0
+                // ikisinde de ilk elemanı seçer → ayrım net görünür).
+                const cikisIlk = SEYTANLA_MUCADELE_ICERIGI.find((i) => i.siddetSeviyesi === 3)!.metin;
+                expect(mesaj).not.toBe(cikisIlk);
+            } finally {
+                randomSpx.mockRestore();
+            }
+        });
+
+        it('B3 — ÇİFT KONUŞMA: giriş yönünde ön plan anons PLANLAMAZ', () => {
+            // Tekilleştirmenin dayanağı çıkış yönünde "ön plan alarmdan ÖNCE
+            // çalışır" idi: kalanDk = floor(kalanMs/60000) ⟹ şimdi ≤ alarm anı.
+            // Giriş yönünde eşitsizlik TERS döner (olcuDk = floor((şimdi−giriş)/60000)
+            // ⟹ şimdi ≥ alarm anı) → alarm ZATEN tetiklenmiştir ve ön planın
+            // `planlaAnons(id, şimdi+1sn)` çağrısı onu yeniden kurup İKİNCİ kez
+            // konuşturur. Ses arka plan alarmına bırakılır; banner çıkmaya devam eder.
+            const matris = girisMatrisi();
+            matris.ogle.seviyeler[0] = {
+                ...matris.ogle.seviyeler[0],
+                mod: 'ikisi',
+                anonsMetni: '{vakit} vakti girdi, {süre} dakika geçti.',
+            };
+            muhafiz.yapilandir(matris);
+
+            vakitBilgisiKur(5);
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        });
+
+        it('REGRESYON: çıkış yönünde ön plan anonsu ÇALIŞMAYA DEVAM eder', () => {
+            // B3 kapısı yalnız giriş yönünü kapatmalı; çıkış yönünü de susturursa
+            // uygulama açıkken sesli anons tümden kaybolur.
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[0] = {
+                ...matris.ogle.seviyeler[0],
+                mod: 'ikisi',
+                anonsMetni: '{vakit} — {süre} dk.',
+            };
+            muhafiz.yapilandir(matris);
+
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'ogle',
+                giris: new Date(Date.now() - 60 * 60 * 1000),
+                saat: new Date(Date.now() + 45 * 60 * 1000),
+                kalanSureMs: 45 * 60 * 1000,
+            });
+            muhafiz.baslat(bildirimSpx);
+
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        });
+
+        it('giriş yönünde vakit ÇIKARKEN (ölçü pencereyi doldurunca) susar', () => {
+            muhafiz.yapilandir(girisMatrisi());
+            vakitBilgisiKur(30); // pencere doldu
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).not.toHaveBeenCalled();
+        });
+
+        it('kılınmış vakitte giriş yönünde de yalnız banner temizleme gelir (#92)', () => {
+            muhafiz.yapilandir(girisMatrisi());
+            muhafiz.namazKilindiIsaretle('ogle');
+            vakitBilgisiKur(5);
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+    });
+});

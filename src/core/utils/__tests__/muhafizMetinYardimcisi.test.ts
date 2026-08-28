@@ -2,6 +2,7 @@ import {
   basligiOlustur,
   bildirimGovdesiOlustur,
   VAKIT_ADLARI_BUYUK,
+  GIRIS_ICERIK_HAVUZU,
 } from '../muhafizMetinYardimcisi';
 
 describe('basligiOlustur', () => {
@@ -72,5 +73,63 @@ describe('bildirimGovdesiOlustur', () => {
     const govde = bildirimGovdesiOlustur(4);
     expect(govde).toContain('namaza dur');
     expect(govde).not.toMatch(/secde/i);
+  });
+});
+
+// ── Faz 1 / B11: GİRİŞ yönü metinleri ────────────────────────────────────────
+//
+// Motor iki yönlü olunca çıkış dili giriş yönünde yalnız garip değil YANLIŞ olur:
+// yatsı 700 dk sürerken "acil" adım girişten 45 dk sonra tetiklenir ve çıkışa
+// hâlâ 655 dk vardır → çıkış başlığı "🚨 655 dk · YATSI VAKTİ ÇIKIYOR" derdi.
+describe('giriş yönü metinleri', () => {
+  test('yön verilmezse çıkış dili BİREBİR korunur (sıfır göç)', () => {
+    expect(basligiOlustur('yatsi', 4, 3)).toBe(basligiOlustur('yatsi', 4, 3, 'cikisaDogru'));
+    expect(bildirimGovdesiOlustur(2)).toBe(bildirimGovdesiOlustur(2, 'cikisaDogru'));
+  });
+
+  test('giriş başlığı "geçen süre" der, "çıkıyor/kaldı" DEMEZ', () => {
+    for (const s of [1, 2, 3, 4] as const) {
+      const baslik = basligiOlustur('yatsi', s, 45, 'girisindenItibaren');
+      expect(baslik).toContain('45');
+      expect(baslik).not.toMatch(/ÇIKIYOR|kaçıyor|daralıyor|kaldı/u);
+    }
+  });
+
+  test('giriş başlığında süre yine ikondan sonraki ilk sözcük (Android kırpması)', () => {
+    for (const s of [1, 2, 3, 4] as const) {
+      const baslik = basligiOlustur('ogle', s, 12, 'girisindenItibaren');
+      expect(baslik.split(' ')[1]).toBe('12');
+    }
+  });
+
+  test('giriş başlığı seviye 4: noktalı İKİNDİ (toUpperCase tuzağı burada da)', () => {
+    const baslik = basligiOlustur('ikindi', 4, 20, 'girisindenItibaren');
+    expect(baslik).toContain('İKİNDİ');
+    expect(baslik).not.toContain('İKINDI');
+  });
+
+  test('giriş gövdesi çıkış diline sızmaz ve "secde" demez', () => {
+    for (const s of [1, 2, 3, 4] as const) {
+      const govde = bildirimGovdesiOlustur(s, 'girisindenItibaren');
+      // Çıkış yönünün gövdesi ASLA aynen dönmemeli (yön parametresi yutulursa
+      // seviye 1 "Vakit daralmaya başladı" der — vakit yeni girmişken yanlış).
+      expect(govde).not.toBe(bildirimGovdesiOlustur(s, 'cikisaDogru'));
+      expect(govde).not.toMatch(/daralmaya|son dakika|çıkıyor|kaldı/iu);
+      expect(govde).not.toMatch(/secde/i);
+    }
+    expect(bildirimGovdesiOlustur(4, 'girisindenItibaren')).toContain('namaza dur');
+  });
+
+  test('GİRİŞ içerik havuzu doludur ve terk-etme suçlaması taşımaz', () => {
+    // Fıkıh kuralı (AGENTS.md): terk etme ≠ geciktirme. Bildirimi alan kişi
+    // namazı terk etmiş değil, geciktirmiştir; "terk edenin küfrü" türü nasslar
+    // bu kişiye YANLIŞ hedeftir. Havuz vakte özgü nass da taşımaz.
+    for (const s of [1, 2, 3, 4] as const) {
+      expect(GIRIS_ICERIK_HAVUZU[s].length).toBeGreaterThan(0);
+      for (const metin of GIRIS_ICERIK_HAVUZU[s]) {
+        expect(metin).not.toMatch(/terk|küfr|kâfir|secde/iu);
+        expect(metin).not.toMatch(/çıkıyor|son dakika/iu);
+      }
+    }
   });
 });

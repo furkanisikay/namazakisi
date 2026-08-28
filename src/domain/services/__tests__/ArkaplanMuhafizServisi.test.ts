@@ -1132,3 +1132,139 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
         expect(mockKanallariHazirla).toHaveBeenCalledWith();
     });
 });
+
+// ── Faz 1: GİRİŞ yönü (pencere uzunluğu + olcuDk) ────────────────────────────
+//
+// Varsayılan takvim mock'unda akşam vakti TAM ŞU AN girer (maghrib = now) ve
+// 30 dk sonra çıkar (isha = now + 30 dk) → pencere uzunluğu 30 dk, ölçü ise
+// "girişten geçen dakika"dır. Bu fikstür giriş yönünü deterministik yapar:
+// tarama 1'den başlar (olcuDk = 0 → max(0,1)), duvar saati kayması etkilemez.
+describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
+    let servis: ArkaplanMuhafizServisi;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as unknown as { instance?: ArkaplanMuhafizServisi }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+        mockKanallariHazirla.mockImplementation((m?: MuhafizMatrisi) => m);
+    });
+
+    afterEach(() => {
+        varsayilanVakitleriKur();
+    });
+
+    /**
+     * Akşam giriş yönlü: tek açık adım (nazik, girişten 5 dk sonra, her 10 dk).
+     * Giriş yönünde eşik sırası ARTAN olmalı → kapalı adımlar 5'in üstünde.
+     */
+    const aksamGirisMatrisi = (t: Partial<SeviyeTanimi> = {}): MuhafizMatrisi => {
+        const matris = vakitBazliMatris(
+            [{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }],
+            {
+                aksam: [
+                    { esikDk: 5, siklikDk: 10, ...t },
+                    { esikDk: 10, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 15, siklikDk: 30, mod: 'sessiz' },
+                    { esikDk: 20, siklikDk: 30, mod: 'sessiz' },
+                ],
+            }
+        );
+        matris.aksam.yon = 'girisindenItibaren';
+        return matris;
+    };
+
+    const aksamBildirimleri = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
+            .map((c) => c[0])
+            .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+    test('uyarılar GİRİŞTEN itibaren ölçülür: 5/15/25. dakikalarda planlanır', async () => {
+        // Çıkış yönünde AYNI ayar (eşik 5, her 10 dk) yalnız "5 dk kala" tek bir
+        // uyarı üretirdi. Giriş yönünde pencere sonuna kadar sürer.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamGirisMatrisi(),
+        });
+
+        // kalanDk = pencere - olcuDk → 25, 15, 5
+        const dakikalar = aksamBildirimleri().map((b) => dkSonEkiniAl(b.identifier)).sort((a, b) => b - a);
+        expect(dakikalar).toEqual([25, 15, 5]);
+    });
+
+    test('pencere uzunluğu GEÇİLMEZSE giriş yönü hiç planlanmaz (sessizce yanlış dakika yerine hiç)', async () => {
+        // Nöbetçi: servis `pencereUzunluguDkHesapla(giris, cikis)` sonucunu plan
+        // üreticisine geçirmeyi bırakırsa motor boş plan döndürür ve bu test,
+        // "5/15/25" testiyle birlikte regresyonu iki yönden kıstırır.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamGirisMatrisi(),
+        });
+        expect(aksamBildirimleri().length).toBeGreaterThan(0);
+    });
+
+    test('başlık ve gövde GİRİŞ dilindedir ("çıkıyor" demez)', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: aksamGirisMatrisi(),
+        });
+
+        for (const bildirim of aksamBildirimleri()) {
+            expect(bildirim.content.title).toMatch(/dk oldu/u);
+            expect(bildirim.content.title).not.toMatch(/ÇIKIYOR|kaçıyor|daralıyor/u);
+        }
+        // İlk uyarı girişin 5. dakikasında → başlık "5 dk oldu" demeli,
+        // "25 dk" (kalan) DEĞİL.
+        const ilk = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 25);
+        expect(ilk.content.title).toContain('5 dk oldu');
+    });
+
+    test('DEVİR NOTU: anons metnindeki {süre} olcuDk ile çözülür (kalanDk DEĞİL)', async () => {
+        // Bug: `anonsMetniniCoz(uyari.anonsMetni, vakit, uyari.kalanDk)` çağrısı
+        // çıkış yönünde zararsızdı (olcuDk === kalanDk) ama giriş yönünde vakit
+        // yeni girmişken "üzerinden 25 dakika geçti" okunurdu. Parametre
+        // opsiyonel varsayılanlı olduğu için typecheck bunu YAKALAMAZ.
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            // TEK tetik (sıklık pencereden büyük) → ölçü kümesi {5}, kalan
+            // kümesi {25}: ikisi ASİMETRİK olmalı, yoksa yanlış argüman testten
+            // kaçar (5/15/25 kümesi kendi aynasıdır).
+            matris: aksamGirisMatrisi({
+                siklikDk: 30,
+                mod: 'ikisi',
+                anons: '{vakit} vakti girdi, {süre} dakika geçti.',
+            }),
+        });
+
+        const metinler = mockPlanlaAnons.mock.calls.map((c) => c[2]);
+        expect(metinler).toEqual(['Akşam vakti girdi, 5 dakika geçti.']);
+    });
+
+    test('REGRESYON: yön alanı olmayan matris çıkış yönünde birebir aynı kalır', async () => {
+        const matris = aksamGirisMatrisi();
+        delete matris.aksam.yon;
+        // Çıkış yönünde eşik sırası AZALAN olmalı → giriş fikstürünü ters çevir.
+        matris.aksam.seviyeler = [...matris.aksam.seviyeler].reverse().map((s, i) => ({
+            ...s,
+            kademe: SEVIYE_KADEMELERI[i],
+        }));
+        // Yalnız nazik (eşik 20) açık; siklik 30 > pencere → tek tetik.
+        matris.aksam.seviyeler[0] = { ...matris.aksam.seviyeler[0], mod: 'bildirim', siklik: { herDk: 30 } };
+        for (let i = 1; i < 4; i++) matris.aksam.seviyeler[i] = { ...matris.aksam.seviyeler[i], mod: 'sessiz' };
+
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris,
+        });
+
+        const bildirimler = aksamBildirimleri();
+        expect(bildirimler.map((b) => dkSonEkiniAl(b.identifier))).toEqual([20]);
+        expect(bildirimler[0].content.title).toContain('20 dk · Akşam vakti');
+    });
+});

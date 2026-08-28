@@ -10,6 +10,9 @@ import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, type SeviyeNo 
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
+import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
+import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 
 /**
@@ -164,7 +167,7 @@ export class NamazMuhafiziServisi {
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
-        const { vakit, kalanSureMs } = vakitBilgisi;
+        const { vakit, kalanSureMs, giris } = vakitBilgisi;
         const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
 
         // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
@@ -184,9 +187,23 @@ export class NamazMuhafiziServisi {
         const vakitAyari = this.matris[vakit as MuhafizVakti];
         if (!vakitAyari) return;
 
+        // FAZ 1 — YÖN. Ölçü artık "çıkışa kalan" olmak zorunda değil: giriş
+        // yönünde "girişten geçen dakika"dır. Pencere uzunluğu ARKA PLANLA AYNI
+        // kaynaktan (giriş↔çıkış) hesaplanmalı — ayrışırsa banner ile bildirim
+        // farklı dakikalara düşer (AGENTS.md'de kayıtlı ders). `giris` yoksa
+        // (yapılandırılmamış/eski kayıt) pencere bilinmez ve motor giriş yönünde
+        // hiç tetiklenmez; çıkış yönü etkilenmez.
+        const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+        const cikis = vakitBilgisi.saat ?? new Date(Date.now() + kalanSureMs);
+        const pencereUzunluguDk = giris ? pencereUzunluguDkHesapla(giris, cikis) : undefined;
+        const olcuDk =
+            yon === 'girisindenItibaren' && giris
+                ? olcuDkHesapla({ kaynak: `vakit:${vakit}`, baslangic: giris, bitis: cikis, yon }, new Date())
+                : kalanDk;
+
         // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
         // (daha nazik) seviye aktifse onun sıklığı işler.
-        const kazanan = aktifSeviyeyiBul(vakitAyari, kalanDk);
+        const kazanan = aktifSeviyeyiBul(vakitAyari, olcuDk);
         if (!kazanan) return;
 
         // Sıklık kontrolü: seviyenin KENDİ eşiğine göreceli ((eşik - kalan) % herDk),
@@ -195,16 +212,16 @@ export class NamazMuhafiziServisi {
         // Kardeş seviyeler ZORUNLU geçilir (Faz 0 plan bütçesi): arka plan planı
         // da aynı listeyi geçer; eksik bırakılırsa segment hesabı ayrışır ve
         // banner ile bildirim farklı dakikalara düşer.
-        if (!seviyeTetiklenirMi(kazanan, kalanDk, vakitAyari.seviyeler)) return;
+        if (!seviyeTetiklenirMi(kazanan, olcuDk, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) return;
 
         const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
 
         // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs);
+        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
 
         if (this.onBildirim) {
             this.onBildirim(
-                this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk),
+                this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon),
                 aktifSeviye,
                 kazanan.bildirimSesi
             );
@@ -236,6 +253,17 @@ export class NamazMuhafiziServisi {
      * Ayrica arka plan hic planlayamamissa (ornegin muhafiz uygulama acikken yeni
      * acildi) bu yol anonsu tek basina ayakta tutar.
      *
+     * FAZ 1 / B3 — GIRIS YONUNDE ON PLAN ANONS PLANLAMAZ. Yukaridaki (2) sira
+     * garantisi giris yonunde TERS doner:
+     *      olcuDk = floor((simdi - giris) / 60000)
+     *      => simdi >= giris + olcuDk * 60000 = alarmin kurulu oldugu an
+     * yani ezilecek alarm ZATEN TETIKLENMISTIR; `planlaAnons(id, simdi + 1sn)`
+     * onu gecmise degil 1 sn sonrasina YENIDEN kurar → arka plan dakika basinda,
+     * on plan ayni dakika icinde IKINCI kez konusur. Ses arka plan alarmina
+     * birakilir (banner cikmaya devam eder): alarm acilis zincirinden (App.tsx),
+     * ekran debounce'undan ve `ArkaplanGorevServisi` 15-dk yolundan kurulur ve
+     * alarmlar uygulama ACIKKEN de tetiklenir.
+     *
      * Native cagri asla banner'i dusurmemeli -> hata yutulup loglanir.
      */
     private onPlanAnonsuPlanla(
@@ -243,8 +271,10 @@ export class NamazMuhafiziServisi {
         seviye: SeviyeAyari,
         seviyeNo: SeviyeNo,
         kalanDk: number,
-        kalanSureMs: number
+        kalanSureMs: number,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): void {
+        if (yon === 'girisindenItibaren') return;
         if (!sesliAnonsGerekliMi(seviye.mod)) return;
         if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
 
@@ -264,14 +294,39 @@ export class NamazMuhafiziServisi {
     /**
      * Banner metni. Seviye 3 havuzdan (vakte özgü), diğerleri sabit şablon.
      * DİL: muhafız "sen" dili istisnası (AGENTS.md) — ibadete çağrı, arayüz değil.
+     *
+     * `olcuDk` SEVİYEYİ KAZANDIRAN ölçüdür; giriş yönünde "girişten geçen dakika"
+     * demektir ve çıkış dili ("kaldı", "VAKİT ÇIKIYOR") oraya UYMAZ: vakit yeni
+     * girmişken 655 dk varken "vakit çıkıyor" denirdi. Giriş yönünde seviye 3
+     * MÜCADELE havuzunu da kullanmaz — o havuz vaktin sonuna kuruludur ve vakte
+     * özgü nass taşır (AGENTS.md: terk etme ≠ geciktirme).
      */
-    private seviyeMesajiOlustur(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4, kalanDk: number): string {
-        switch (seviye) {
-            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
-            case 3: return this.getRandomIcerik(vakit, 3);
-            case 2: return `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
-            case 1: return `Namaz vaktinin bitmesine ${kalanDk} dakika kaldı.`;
+    private seviyeMesajiOlustur(
+        vakit: VakitAdi,
+        seviye: 1 | 2 | 3 | 4,
+        olcuDk: number,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+    ): string {
+        if (yon === 'girisindenItibaren') {
+            switch (seviye) {
+                case 4: return `NAMAZI GECİKTİRME! Hemen namaza dur! (${olcuDk} dk geçti)`;
+                case 3: return this.girisIcerigiSec(3);
+                case 2: return `Vakit ilerliyor, namazı sona bırakma. (${olcuDk} dk geçti)`;
+                case 1: return `Namaz vakti gireli ${olcuDk} dakika oldu.`;
+            }
         }
+        switch (seviye) {
+            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${olcuDk} dk kaldı)`;
+            case 3: return this.getRandomIcerik(vakit, 3);
+            case 2: return `Vakit daralıyor, namazı sona bırakma. (${olcuDk} dk kaldı)`;
+            case 1: return `Namaz vaktinin bitmesine ${olcuDk} dakika kaldı.`;
+        }
+    }
+
+    /** Giriş yönünün NÖTR içerik havuzundan rastgele metin (vakte özgü nass YOK). */
+    private girisIcerigiSec(seviye: 1 | 2 | 3 | 4): string {
+        const havuz = GIRIS_ICERIK_HAVUZU[seviye];
+        return havuz[Math.floor(Math.random() * havuz.length)];
     }
 
     /**
