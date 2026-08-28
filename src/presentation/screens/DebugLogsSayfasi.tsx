@@ -19,6 +19,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { Logger, LogLevel, LogEntry } from '../../core/utils/Logger';
+import { loglariMaskele } from '../../domain/services/TaniRaporuServisi';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
 
 /**
@@ -243,7 +244,7 @@ export const DebugLogsSayfasi: React.FC = () => {
     }
 
     try {
-      const content = Logger.exportLogs();
+      const content = loglariMaskele(Logger.exportLogs(), { konumDahil: false });
       const fileName = `namazakisi_logs_${Date.now()}.txt`;
       const file = new File(Paths.cache, fileName);
 
