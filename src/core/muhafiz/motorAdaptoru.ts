@@ -29,7 +29,8 @@ import {
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
-import { cikisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
+import { cikisSegmentiHesapla, girisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
+import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
 export type SeviyeNo = 1 | 2 | 3 | 4;
@@ -86,27 +87,70 @@ export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
  * kazandigi segmentten hesaplanir (varsayilan matris hic seyrelmez); verilmezse
  * esigin tamami segment sayilir — daha temkinli, ama iki motorun da AYNI degeri
  * gecmesi sarttir (ayrisirlarsa banner ile bildirim ayri dakikalara duser).
+ *
+ * FAZ 1 — YON: `aktifSeviyeyiBul` kazanani secer ama TETIKLEME buradadir; yon
+ * yalniz orada uygulansaydi kazanan secilir ama HIC konusmazdi. Bu kapida DORT
+ * sey yone gore doner (YENI-1): pencere kapisi, siklik capasi, `birkez` ve
+ * (`vakitUyariPlaniOlustur` icinde) tarama siniri.
+ *
+ * Giris yonunde `pencereUzunluguDk` ZORUNLUdur: ust sinir (`kalanDk >= 1`)
+ * ancak pencereden turetilebilir. Verilmezse hic tetiklenmez — sessizce yanlis
+ * dakikalarda konusmaktansa hic konusmamak yeglenir ve iki motor ayrismaz.
  */
+export interface TetikSecenekleri {
+  /** Pencere yonu. Verilmezse `cikisaDogru` — eski cagiranlar birebir korunur. */
+  yon?: PencereYonu;
+  /** Vaktin bugunku pencere uzunlugu (dk). Giris yonunde ZORUNLU. */
+  pencereUzunluguDk?: number;
+}
+
 export function seviyeTetiklenirMi(
   seviye: SeviyeAyari,
-  kalanDk: number,
-  kardesler?: SeviyeAyari[]
+  olcuDk: number,
+  kardesler?: SeviyeAyari[],
+  secenekler?: TetikSecenekleri
 ): boolean {
   if (seviye.mod === 'sessiz') return false;
-  if (kalanDk < 1) return false;
-  if (kalanDk > seviye.esikDk) return false;
+  if (olcuDk < 1) return false;
 
-  const span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
+  const girisYonu = (secenekler?.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren';
+
+  let span: number;
+  if (girisYonu) {
+    const pencere = secenekler?.pencereUzunluguDk;
+    if (!Number.isFinite(pencere) || (pencere as number) <= 0) return false;
+    // Vakit cikarken/ciktiktan sonra uyari yok — `kalanDk >= 1` kuralinin aynasi.
+    if (olcuDk >= (pencere as number)) return false;
+    if (olcuDk < seviye.esikDk) return false;
+    span = kardesler
+      ? girisSegmentiHesapla(kardesler, seviye, pencere as number)
+      : seviye.esikDk;
+  } else {
+    if (olcuDk > seviye.esikDk) return false;
+    span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
+  }
+
   const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik));
-  if (herDk === null) return kalanDk === seviye.esikDk; // birkez: yalniz esik aninda
+  if (herDk === null) return olcuDk === seviye.esikDk; // birkez: iki yonde de yalniz esik aninda
   if (herDk <= 0) return false;
-  return (seviye.esikDk - kalanDk) % herDk === 0;
+  // Capa daima seviyenin KENDI esigidir; yalniz isaret doner.
+  return (girisYonu ? olcuDk - seviye.esikDk : seviye.esikDk - olcuDk) % herDk === 0;
 }
 
 /** Bir vakit icin planlanmis tek bir uyari. */
 export interface UyariPlani {
-  /** Vaktin cikmasina kalan dakika */
+  /**
+   * Vaktin cikmasina kalan dakika — ZAMANLAMA alani. Tuketiciler bildirimi
+   * `cikis - kalanDk` anina kurar, yon ne olursa olsun.
+   */
   kalanDk: number;
+  /**
+   * Seviyeyi kazandiran OLCU. Cikis yonunde `kalanDk` ile AYNIdir; giris
+   * yonunde vaktin girisinden gecen dakikadir. Metin uretimi (anons/banner)
+   * bunu kullanir — `kalanDk` ile karistirilirsa giris yonunde "son 42 dakika"
+   * gibi ters cumleler dogar (Faz 1 / B11).
+   */
+  olcuDk: number;
   seviye: SeviyeNo;
   mod: UyariModu;
   /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
@@ -120,32 +164,62 @@ export interface UyariPlani {
   sesliAnons: boolean;
 }
 
+export interface PlanSecenekleri {
+  /** Vaktin bugunku pencere uzunlugu (dk). Giris yonunde ZORUNLU. */
+  pencereUzunluguDk?: number;
+}
+
 /**
- * Bir vaktin tum uyari dakikalarini hesaplar (kalan dakika AZALAN sirada).
+ * Bir vaktin tum uyari dakikalarini hesaplar.
  *
- * `kalanDkSiniri` su an vaktin cikmasina kalan dakikadir; tarama
- * min(kalanDkSiniri, en buyuk SESSIZ OLMAYAN esik) noktasindan baslar.
- * Her dakika icin kazanan seviye `aktifSeviyeyiBul` ile bulunur (sessiz seviye
- * pencere saglamaz; en kucuk esikli = en acil kazanir) -> ayni dakikaya birden
- * cok seviye dusemez, cakisma dogal olarak tekillesir.
+ * `olcuDkSiniri` su ANKI olcudur (cikis yonunde kalan, giris yonunde gecen
+ * dakika); tarama oradan baslar, boylece gecmis dakikalar planlanmaz.
+ *
+ * Her dakika icin kazanan seviye `aktifSeviyeyiBul` ile bulunur → ayni dakikaya
+ * birden cok seviye dusemez, cakisma dogal olarak tekillesir.
+ *
+ * TARAMA SINIRI YONE GORE (Faz 1 / YENI-1, dorduncu yer):
+ * - `cikisaDogru`: en buyuk SESSIZ OLMAYAN esikten 1'e AZALAN.
+ * - `girisindenItibaren`: 1'den PENCERE SONUNA ARTAN — `enBuyukEsik`te DEGIL.
+ *   En sert adim kendi esiginden sonra pencere bitene kadar surer; `enBuyukEsik`te
+ *   durulsaydi "cikana kadar devam et" hic gerceklesmez ve on plan (`kontrolEt`
+ *   surer) ile arka plan AYRISIRDI.
+ *
+ * Pencere uzunlugu bilinmeden giris plani uretilmez (bos doner): tetik kapisiyla
+ * ayni sozlesme.
  */
 export function vakitUyariPlaniOlustur(
   vakitAyari: VakitMuhafizAyari,
-  kalanDkSiniri: number
+  olcuDkSiniri: number,
+  secenekler?: PlanSecenekleri
 ): UyariPlani[] {
+  const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+  const girisYonu = yon === 'girisindenItibaren';
+  const pencereUzunluguDk = secenekler?.pencereUzunluguDk;
+
+  if (girisYonu && (!Number.isFinite(pencereUzunluguDk) || (pencereUzunluguDk as number) <= 0)) {
+    return [];
+  }
+
   const enBuyukEsik = vakitAyari.seviyeler.reduce(
     (enBuyuk, s) => (s.mod !== 'sessiz' && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
     0
   );
 
+  const baslangic = girisYonu ? Math.max(olcuDkSiniri, 1) : Math.min(olcuDkSiniri, enBuyukEsik);
+  const bitis = girisYonu ? (pencereUzunluguDk as number) - 1 : 1;
+  const adim = girisYonu ? 1 : -1;
+
   const plan: UyariPlani[] = [];
-  for (let k = Math.min(kalanDkSiniri, enBuyukEsik); k > 0; k--) {
-    const kazanan = aktifSeviyeyiBul(vakitAyari, k);
+  for (let o = baslangic; girisYonu ? o <= bitis : o >= bitis; o += adim) {
+    const kazanan = aktifSeviyeyiBul(vakitAyari, o);
     if (!kazanan) continue;
-    if (!seviyeTetiklenirMi(kazanan, k, vakitAyari.seviyeler)) continue;
+    if (!seviyeTetiklenirMi(kazanan, o, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) continue;
 
     plan.push({
-      kalanDk: k,
+      // Zamanlama daima cikistan sayilir; giris yonunde pencereden turetilir.
+      kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
+      olcuDk: o,
       seviye: kademeSeviyeNo(kazanan.kademe),
       mod: kazanan.mod,
       bildirimSesi: kazanan.bildirimSesi,

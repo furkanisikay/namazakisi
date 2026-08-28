@@ -284,6 +284,154 @@ describe('plan bütçesi (Faz 0) — tek kapı `seviyeTetiklenirMi`', () => {
   });
 });
 
+/**
+ * YENİ-1 (Faz 1) — yön-farkında kazanan seçimi TEK BAŞINA yetmez. Denklemin
+ * öbür yarısı `motorAdaptoru`dadır ve DÖRT yerin hepsi yön almalı:
+ *   1. pencere kapısı  (çıkış: olcuDk > esik → false · giriş: olcuDk < esik → false)
+ *   2. sıklık çapası   (çıkış: (esik − olcu) % herDk · giriş: (olcu − esik) % herDk)
+ *   3. `birkez`        (iki yönde de olcuDk === esikDk)
+ *   4. tarama sınırı   (çıkış: enBuyukEsik'ten aşağı · giriş: pencere sonuna kadar)
+ *
+ * Biri atlanırsa kazanan seçilir ama TETİKLENMEZ: `herDk` tekrarı ölü doğar,
+ * her adım yalnız tam eşik dakikasında bir kez konuşur ve tarama `enBuyukEsik`te
+ * durduğu için "çıkana kadar devam et" hiç gerçekleşmez.
+ */
+describe('giriş yönü (YENİ-1) — seviyeTetiklenirMi', () => {
+  const nazik = sv('nazik', 5, 10);
+  const acil = sv('acil', 180, 30);
+  const giris = { yon: 'girisindenItibaren' as const, pencereUzunluguDk: 240 };
+
+  test('PENCERE KAPISI ters döner: eşiğin ALTINDA tetiklenmez, ÜSTÜNDE tetiklenir', () => {
+    expect(seviyeTetiklenirMi(nazik, 4, undefined, giris)).toBe(false);
+    expect(seviyeTetiklenirMi(nazik, 5, undefined, giris)).toBe(true);
+  });
+
+  test("herDk TEKRARI GERÇEKTEN ÇALIŞIR (yalnız tam eşik dakikası değil)", () => {
+    // Sıklık çapası yönsüz kalsaydı `(5 − 15) % 10` ile yalnız 5. dakika tutardı.
+    expect(seviyeTetiklenirMi(nazik, 15, undefined, giris)).toBe(true);
+    expect(seviyeTetiklenirMi(nazik, 25, undefined, giris)).toBe(true);
+    expect(seviyeTetiklenirMi(nazik, 26, undefined, giris)).toBe(false);
+  });
+
+  test('ACİL adımın sıklığı pencere SONUNA KADAR sürer (eşikte durmaz)', () => {
+    expect(seviyeTetiklenirMi(acil, 180, undefined, giris)).toBe(true);
+    expect(seviyeTetiklenirMi(acil, 210, undefined, giris)).toBe(true);
+  });
+
+  test('ALT SINIR korunur: girişin 0. dakikasında uyarı YOK', () => {
+    expect(seviyeTetiklenirMi(sv('nazik', 0, 10), 0, undefined, giris)).toBe(false);
+  });
+
+  test('ÜST SINIR: vakit çıkarken/çıktıktan sonra uyarı YOK (kalanDk >= 1 aynası)', () => {
+    expect(seviyeTetiklenirMi(acil, 240, undefined, giris)).toBe(false);
+    expect(seviyeTetiklenirMi(acil, 270, undefined, giris)).toBe(false);
+  });
+
+  test('pencere uzunluğu VERİLMEZSE giriş yönü hiç tetiklenmez (iki motor ayrışmasın)', () => {
+    expect(seviyeTetiklenirMi(nazik, 15, undefined, { yon: 'girisindenItibaren' })).toBe(false);
+  });
+
+  test("'birkez' iki yönde de YALNIZ tam eşik dakikasıdır", () => {
+    const birkez = sv('uyari', 60, 'birkez');
+    expect(seviyeTetiklenirMi(birkez, 60, undefined, giris)).toBe(true);
+    expect(seviyeTetiklenirMi(birkez, 61, undefined, giris)).toBe(false);
+    expect(seviyeTetiklenirMi(birkez, 59, undefined, giris)).toBe(false);
+  });
+
+  test('sessiz adım giriş yönünde de tetiklenmez', () => {
+    expect(seviyeTetiklenirMi(sv('nazik', 5, 10, 'sessiz'), 15, undefined, giris)).toBe(false);
+  });
+});
+
+describe('giriş yönü (YENİ-1) — vakitUyariPlaniOlustur', () => {
+  const girisAyari: VakitMuhafizAyari = {
+    yon: 'girisindenItibaren',
+    seviyeler: [sv('nazik', 5, 10), sv('uyari', 60, 15), sv('sert', 120, 20), sv('acil', 180, 30)],
+  };
+
+  test('plan ARTAN ölçüyle üretilir ve pencere sonuna kadar sürer', () => {
+    const plan = vakitUyariPlaniOlustur(girisAyari, 1, { pencereUzunluguDk: 240 });
+    expect(plan.map((u) => u.olcuDk)).toEqual([
+      // nazik (5 dk'da başlar, her 10 dk — bir sonraki eşik 60'a kadar)
+      5, 15, 25, 35, 45, 55,
+      // uyarı (60'ta devralır, her 15 dk)
+      60, 75, 90, 105,
+      // sert (120, her 20 dk)
+      120, 140, 160,
+      // acil (180, her 30 dk) — TARAMA `enBuyukEsik`te DURMAZ
+      180, 210,
+    ]);
+    expect(plan.map((u) => u.seviye)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4]);
+  });
+
+  test('kalanDk pencereden TÜRETİLİR (tüketiciler çıkıştan zamanlamayı sürdürebilir)', () => {
+    const plan = vakitUyariPlaniOlustur(girisAyari, 1, { pencereUzunluguDk: 240 });
+    expect(plan.every((u) => u.kalanDk === 240 - u.olcuDk)).toBe(true);
+    expect(plan.every((u) => u.kalanDk >= 1)).toBe(true);
+  });
+
+  test('şu anki ölçü GEÇMİŞ dakikaları eler (çıkış yönündeki sınırın aynası)', () => {
+    const plan = vakitUyariPlaniOlustur(girisAyari, 100, { pencereUzunluguDk: 240 });
+    expect(plan.map((u) => u.olcuDk)).toEqual([105, 120, 140, 160, 180, 210]);
+  });
+
+  test('pencere uzunluğu YOKSA giriş planı BOŞtur (ön planla ayrışmaz)', () => {
+    expect(vakitUyariPlaniOlustur(girisAyari, 1)).toEqual([]);
+  });
+
+  test('NÖBETÇİ: giriş yönünde de arka plan planı ile ön plan tetikleri AYNI dakikalardır', () => {
+    const pencereUzunluguDk = 240;
+    const onPlan: number[] = [];
+    for (let m = 1; m <= pencereUzunluguDk; m++) {
+      const kazanan = aktifSeviyeyiBul(girisAyari, m);
+      if (
+        kazanan &&
+        seviyeTetiklenirMi(kazanan, m, girisAyari.seviyeler, {
+          yon: 'girisindenItibaren',
+          pencereUzunluguDk,
+        })
+      ) {
+        onPlan.push(m);
+      }
+    }
+    expect(vakitUyariPlaniOlustur(girisAyari, 1, { pencereUzunluguDk }).map((u) => u.olcuDk)).toEqual(
+      onPlan
+    );
+  });
+});
+
+describe('REGRESYON (Faz 1): çıkış yönü planı Faz 0 SONRASI çıktıyla BİREBİR aynı', () => {
+  const genis = (yon?: VakitMuhafizAyari['yon']): VakitMuhafizAyari => ({
+    yon,
+    seviyeler: [sv('nazik', 240, 1), sv('uyari', 120, 5), sv('sert', 60, 5), sv('acil', 20, 4)],
+  });
+
+  /** `esikSinirlari.test.ts`teki TABAN ÇİZGİSİ ile aynı fikstür ve aynı çıktı. */
+  const TABAN = [
+    240, 232, 224, 216, 208, 200, 192, 184, 176, 168, 160, 152, 144, 136, 128, 120, 115, 110, 105,
+    100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 25, 20, 16, 12, 8, 4,
+  ];
+
+  test('yön alanı YOKSA taban çizgisi korunur', () => {
+    expect(vakitUyariPlaniOlustur(genis(), 240).map((u) => u.kalanDk)).toEqual(TABAN);
+  });
+
+  test("yön AÇIKÇA 'cikisaDogru' iken de taban çizgisi korunur", () => {
+    expect(vakitUyariPlaniOlustur(genis('cikisaDogru'), 240).map((u) => u.kalanDk)).toEqual(TABAN);
+  });
+
+  test('çıkış yönünde olcuDk ile kalanDk AYNIdır (eski tüketiciler bozulmaz)', () => {
+    const plan = vakitUyariPlaniOlustur(genis(), 240);
+    expect(plan.every((u) => u.olcuDk === u.kalanDk)).toBe(true);
+  });
+
+  test('pencere uzunluğu verilmesi çıkış planını DEĞİŞTİRMEZ', () => {
+    expect(
+      vakitUyariPlaniOlustur(genis(), 240, { pencereUzunluguDk: 600 }).map((u) => u.kalanDk)
+    ).toEqual(TABAN);
+  });
+});
+
 describe('muhafizKanaliSec — ses ile ACİLİYET ayrıdır', () => {
   const OZEL_SES = 'content://media/internal/audio/media/42';
   const VARSAYILAN = 'varsayilan';

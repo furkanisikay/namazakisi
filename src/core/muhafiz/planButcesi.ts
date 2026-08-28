@@ -35,8 +35,7 @@ export const PLAN_ADIM_UST_SINIRI = 15;
  * KAPALI komsu ATLANIR — `aktifSeviyeyiBul`'un sessiz-atlama kuraliyla ayni:
  * kapali adim pencere saglamaz, segmentini ustteki devralir.
  *
- * FAZ 1 (giris yonu) icin ikizi: `span = (bir sonraki daha sert ACIK komsunun
- * esigi ?? pencereUzunluguDk) - esikDk`.
+ * FAZ 1 (giris yonu) icin ikizi: `girisSegmentiHesapla`.
  */
 export function cikisSegmentiHesapla(seviyeler: SeviyeAyari[], seviye: SeviyeAyari): number {
   const altKomsuEsigi = seviyeler.reduce(
@@ -47,6 +46,43 @@ export function cikisSegmentiHesapla(seviyeler: SeviyeAyari[], seviye: SeviyeAya
     0
   );
   return seviye.esikDk - altKomsuEsigi;
+}
+
+/**
+ * `cikisSegmentiHesapla`nin GIRIS yonundeki ikizi.
+ *
+ * Giris yonunde sira ARTANdir ve "kapsayan icinden en BUYUK esik kazanir": bir
+ * adim kendi esiginden, bir SONRAKI daha sert ACIK komsunun esigine kadar
+ * konusur. En sert adimin komsusu yoktur → PENCERE SONUNA kadar kazanir; bu
+ * yuzden segment icin pencere uzunlugu sarttir.
+ *
+ * Pencere bilinmiyorsa guvenli taban seviyenin KENDI esigidir (cikis yonundeki
+ * `kardesler` verilmemis dali ile ayni temkin): butce daha siki hesaplanir,
+ * ayrisma degil yalnizca fazladan seyreltme riski dogar.
+ *
+ * KAPALI komsu ATLANIR — `aktifSeviyeyiBul`un sessiz-atlama kuraliyla ayni.
+ */
+export function girisSegmentiHesapla(
+  seviyeler: SeviyeAyari[],
+  seviye: SeviyeAyari,
+  pencereUzunluguDk?: number
+): number {
+  const ustKomsuEsigi = seviyeler.reduce<number | null>(
+    (enKucuk, s) =>
+      s !== seviye &&
+      s.mod !== 'sessiz' &&
+      s.esikDk > seviye.esikDk &&
+      (enKucuk === null || s.esikDk < enKucuk)
+        ? s.esikDk
+        : enKucuk,
+    null
+  );
+
+  if (ustKomsuEsigi !== null) return ustKomsuEsigi - seviye.esikDk;
+
+  const pencereGecerli =
+    Number.isFinite(pencereUzunluguDk) && (pencereUzunluguDk as number) > seviye.esikDk;
+  return pencereGecerli ? (pencereUzunluguDk as number) - seviye.esikDk : seviye.esikDk;
 }
 
 /**

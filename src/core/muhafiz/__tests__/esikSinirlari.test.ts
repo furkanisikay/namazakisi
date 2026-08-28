@@ -122,3 +122,54 @@ describe('esikSinirlariniHesapla — dinamik pencere tavani (Faz 0)', () => {
     });
   });
 });
+
+/**
+ * Faz 1 — `girisindenItibaren` yönünde sıra kesin ARTANdır (nazik 1 → acil 45),
+ * dolayısıyla komşu kısıtı TERS çevrilir: bir üst komşudan (daha nazik) BÜYÜK,
+ * bir alt komşudan (daha sert) KÜÇÜK olmalı.
+ */
+describe('esikSinirlariniHesapla — girisindenItibaren yönü (Faz 1)', () => {
+  // giriş yönü preset: 5 / 15 / 30 / 45 (ARTAN)
+  const artan = () => [sv(5), sv(15), sv(30), sv(45)];
+  const giris = { yon: 'girisindenItibaren' as const };
+
+  test('ilk (en nazik) seviyenin alt sınırı mutlak min, üst sınırı komşusundan 1 eksik', () => {
+    expect(esikSinirlariniHesapla(artan(), 0, giris)).toEqual({ min: ESIK_MUTLAK_MIN, max: 14 });
+  });
+
+  test('son (en sert) seviyenin alt sınırı komşusundan 1 fazla, üstü tavan', () => {
+    expect(esikSinirlariniHesapla(artan(), 3, giris)).toEqual({ min: 31, max: ESIK_MUTLAK_MAX });
+  });
+
+  test('ortadaki seviye iki komşuya birden kısıtlanır (ters yönde)', () => {
+    expect(esikSinirlariniHesapla(artan(), 1, giris)).toEqual({ min: 6, max: 29 });
+    expect(esikSinirlariniHesapla(artan(), 2, giris)).toEqual({ min: 16, max: 44 });
+  });
+
+  test('sınırlar içindeki her değer ARTAN sıralamayı bozmaz', () => {
+    const s = artan();
+    const { min, max } = esikSinirlariniHesapla(s, 1, giris);
+    for (const deger of [min, max, Math.floor((min + max) / 2)]) {
+      const yeni = s.map((x, i) => (i === 1 ? sv(deger) : x));
+      expect(esikSiralamasiGecerliMi(yeni, 'girisindenItibaren')).toBe(true);
+    }
+  });
+
+  test('pencere tavanı giriş yönünde de uygulanır', () => {
+    expect(
+      esikSinirlariniHesapla(artan(), 3, { ...giris, pencereUzunluguDk: 400 }).max
+    ).toBe(399);
+  });
+
+  test('yön verilmezse ÇIKIŞ yönü davranışı birebir korunur', () => {
+    expect(esikSinirlariniHesapla(seviyeler(), 1)).toEqual(
+      esikSinirlariniHesapla(seviyeler(), 1, { yon: 'cikisaDogru' })
+    );
+  });
+
+  test('bozuk (ters) veride giriş yönünde de min > max üretilmez', () => {
+    const bozuk = [sv(5), sv(40), sv(20), sv(45)];
+    const sinir = esikSinirlariniHesapla(bozuk, 1, giris);
+    expect(sinir.max).toBeGreaterThanOrEqual(sinir.min);
+  });
+});

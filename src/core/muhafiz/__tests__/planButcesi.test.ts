@@ -1,6 +1,7 @@
 import {
   etkinSiklikHesapla,
   cikisSegmentiHesapla,
+  girisSegmentiHesapla,
   PLAN_ADIM_UST_SINIRI,
 } from '../planButcesi';
 import type { SeviyeAyari, SeviyeKademe, Siklik, UyariModu } from '../matrisTipleri';
@@ -47,6 +48,57 @@ describe('cikisSegmentiHesapla — seviyenin GERÇEKTEN kazandığı açıklık'
   test('tek açık seviye tüm pencereyi kazanır', () => {
     const s = [sv('nazik', 720, 1), sv('uyari', 60, 1, 'sessiz'), sv('sert', 30, 1, 'sessiz'), sv('acil', 10, 1, 'sessiz')];
     expect(cikisSegmentiHesapla(s, s[0])).toBe(720);
+  });
+});
+
+/**
+ * Faz 1 ikizi — `girisindenItibaren` yönünde seviye, KENDİ eşiğinden bir SONRAKİ
+ * daha sert AÇIK komşunun eşiğine kadar kazanır; en sert adım pencere sonuna kadar.
+ */
+describe('girisSegmentiHesapla — giriş yönünde kazanılan açıklık', () => {
+  const artan = () => [
+    sv('nazik', 5, 10),
+    sv('uyari', 60, 15),
+    sv('sert', 120, 20),
+    sv('acil', 180, 30),
+  ];
+
+  test('segment, bir SONRAKİ açık komşunun eşiğine kadardır', () => {
+    const s = artan();
+    expect(girisSegmentiHesapla(s, s[0], 240)).toBe(55); // 60 - 5
+    expect(girisSegmentiHesapla(s, s[1], 240)).toBe(60); // 120 - 60
+    expect(girisSegmentiHesapla(s, s[2], 240)).toBe(60); // 180 - 120
+  });
+
+  test('en sert adım PENCERE SONUNA kadar kazanır', () => {
+    const s = artan();
+    expect(girisSegmentiHesapla(s, s[3], 240)).toBe(60); // 240 - 180
+  });
+
+  test('KAPALI komşu atlanır (aktifSeviyeyiBul ile aynı kural)', () => {
+    const s = [
+      sv('nazik', 5, 10),
+      sv('uyari', 60, 15, 'sessiz'),
+      sv('sert', 120, 20),
+      sv('acil', 180, 30, 'sessiz'),
+    ];
+    expect(girisSegmentiHesapla(s, s[0], 240)).toBe(115); // 120 - 5
+    expect(girisSegmentiHesapla(s, s[2], 240)).toBe(120); // 240 - 120
+  });
+
+  test('pencere bilinmiyorsa GÜVENLİ taban: seviyenin kendi eşiği', () => {
+    const s = artan();
+    expect(girisSegmentiHesapla(s, s[3])).toBe(s[3].esikDk);
+  });
+
+  test('700 dk pencerede dört adımın hiçbiri üst sınırı aşmaz', () => {
+    const s = [sv('nazik', 5, 1), sv('uyari', 15, 1), sv('sert', 30, 1), sv('acil', 45, 1)];
+    for (const seviye of s) {
+      const span = girisSegmentiHesapla(s, seviye, 700);
+      const etkin = etkinSiklikHesapla(span, seviye.siklik);
+      const herDk = etkin === 'birkez' ? span : etkin.herDk;
+      expect(Math.floor(span / herDk)).toBeLessThanOrEqual(PLAN_ADIM_UST_SINIRI);
+    }
   });
 });
 

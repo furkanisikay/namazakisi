@@ -1,4 +1,5 @@
 import type { VakitAdi } from '../types';
+import type { PencereYonu } from './pencereTipleri';
 
 export type MuhafizVakti = Exclude<VakitAdi, 'gunes'>;
 export type SeviyeKademe = 'nazik' | 'uyari' | 'sert' | 'acil';
@@ -44,6 +45,14 @@ export interface SeviyeAyari {
 
 export interface VakitMuhafizAyari {
   seviyeler: SeviyeAyari[]; // her zaman 4, SEVIYE_KADEMELERI sırası
+  /**
+   * Uyarıların hangi uçtan ölçüleceği (Faz 1). Alan YOKSA `'cikisaDogru'` —
+   * eski kayıtlar birebir eski davranışı üretir, göç gerekmez.
+   *
+   * `'girisindenItibaren'` seçildiğinde eşikler kesin ARTAN sıradadır
+   * (nazik 5 → acil 45) ve motor pencere sonuna kadar sürer.
+   */
+  yon?: PencereYonu;
 }
 
 export type MuhafizMatrisi = Record<MuhafizVakti, VakitMuhafizAyari>;
