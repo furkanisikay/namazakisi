@@ -41,6 +41,86 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-giris-yonu',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Vakit Girer Girmez Hatırlatma',
+        aciklama:
+            'Artık her vakit için "vakit çıkmadan önce" yerine "vakit girer girmez başla, çıkana kadar sürdür" diyebilirsiniz.',
+        detayAciklama:
+            'Namaz Muhafızı bugüne kadar yalnızca vaktin çıkışına doğru hatırlatıyordu; yatsı gibi altı-yedi saat süren vakitlerde bu, gecenin çok geç bir saatine kadar hiç ses çıkmaması demekti. Artık her vakit için yön seçebilirsiniz. "Girişinden itibaren" seçtiğinizde hatırlatmalar vakit girer girmez başlar, adım adım sertleşerek vakit çıkana kadar sürer. Yön değiştirdiğinizde hazır anons metinleriniz de otomatik olarak yeni yöne uygun hâle getirilir; kendi yazdığınız metinlere dokunulmaz. Yön seçmediğiniz vakitler tam olarak eskisi gibi çalışmaya devam eder.',
+        ikon: 'exchange-alt',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Vakitlerinizi ayarlayın',
+        kartGoster: true,
+        detaylar: [
+            'Her vakit için ayrı yön seçimi',
+            'Girişten itibaren başlayıp çıkana kadar süren hatırlatma',
+            'Anons metinleri yeni yöne göre kendiliğinden uyarlanır',
+            'Yön seçmediğiniz vakitler aynen kalır',
+        ],
+    },
+    {
+        id: 'muhafiz-dinamik-esik',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Uzun Vakitlerde Daha Geniş Aralık',
+        aciklama:
+            'Hatırlatma adımlarını artık vaktin gerçek uzunluğu kadar erkene alabilirsiniz; 120 dakikalık sabit sınır kalktı.',
+        detayAciklama:
+            'Önceden bir adımı en fazla "120 dakika kala" olarak ayarlayabiliyordunuz. Bu sınır, öğle gibi kısa vakitler düşünülerek konmuştu ve yatsı gibi uzun vakitlerde gereksiz yere kısıtlıyordu. Artık üst sınır, o vaktin bugünkü gerçek uzunluğundan hesaplanır — yatsıda saatler öncesinden hatırlatma kurabilirsiniz. Çok uzun aralıklarda bildirim yağmuru olmaması için tekrar sıklığı gerektiğinde otomatik seyreltilir ve bu durum ilgili adımın altında size gösterilir. Mevcut ayarlarınız hiç değişmez.',
+        ikon: 'arrows-alt-h',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Adımlarınızı ayarlayın',
+        kartGoster: false,
+        detaylar: [
+            'Üst sınır vaktin gerçek uzunluğundan hesaplanır',
+            'Yatsı gibi uzun vakitlerde saatler öncesinden hatırlatma',
+            'Aşırı sıklıkta bildirim olmaması için otomatik seyreltme',
+            'Mevcut ayarlarınız aynen korunur',
+        ],
+    },
+    {
+        id: 'cuma-periyodik-hatirlatma',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Cuma Hatırlatması Tekrarlayabilir',
+        aciklama:
+            'Cuma hatırlatmasını tek seferlik bırakabilir ya da camiye çıkana kadar belirli aralıklarla tekrarlatabilirsiniz.',
+        detayAciklama:
+            'Cuma hatırlatması bugüne kadar tek bir bildirim gönderiyordu; yoğun bir işin ortasındaysanız kaçırmanız kolaydı. Artık Bildirim Ayarları\'ndaki cuma bölümünde hatırlatmaya dokunarak tekrar aralığı belirleyebilirsiniz. Ayarı değiştirmediyseniz hatırlatma tam olarak eskisi gibi tek seferlik kalır. Bu bölüm artık Namaz Muhafızı ile aynı arayüzü kullanıyor, böylece iki yerde de aynı şekilde ayar yaparsınız.',
+        ikon: 'mosque',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Cuma ayarlarınıza bakın',
+        kartGoster: false,
+        detaylar: [
+            'İsteğe bağlı tekrar aralığı (5–60 dakika)',
+            'Dokunmazsanız eskisi gibi tek seferlik kalır',
+            'Namaz Muhafızı ile aynı ayar arayüzü',
+            'Cuma yine öğle namazı olarak işaretlenir',
+        ],
+    },
+    {
+        id: 'seri-gun-sonu-sayaci',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Serinizi Kurtaracak Geri Sayım',
+        aciklama:
+            'Gün bitmeden namazlarınız eksikse, kalan süreyi bildirim gölgeliğinde büyük bir geri sayımla görürsünüz.',
+        detayAciklama:
+            'Seri gününüz ertesi imsakta biter. O ana iki saat kala bugünkü namazlarınız hâlâ eksikse, iftar ve sahur sayaçlarındaki gibi büyük bir geri sayım bildirimi çıkar ve serinizi kurtarmak için ne kadar vaktiniz kaldığını gösterir. Gününüzü zaten tamamladıysanız bu bildirim hiç görünmez. Gün sonu hatırlatmasını kapattıysanız geri sayım da çıkmaz.',
+        ikon: 'hourglass-half',
+        hedefSayfa: 'SeriHedefAyarlari',
+        ctaEtiketi: 'Seri ayarlarınıza bakın',
+        kartGoster: false,
+        detaylar: [
+            'Seri gününün bitimine iki saat kala görünür',
+            'Gününüz tamsa hiç çıkmaz',
+            'Kalan süre bildirimde canlı olarak akar',
+            'Gün sonu hatırlatması kapalıysa çıkmaz',
+        ],
+    },
+    {
         id: 'muhafiz-titresim-kanali',
         surum: '0.25.0',
         tarih: '2026-08-28',
