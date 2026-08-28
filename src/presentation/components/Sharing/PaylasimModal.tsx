@@ -161,6 +161,7 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               style={{ backgroundColor: renkler.kartArkaplan, borderWidth: 1, borderColor: renkler.sinir }}
               onPress={onKapat}
               disabled={paylasiliyor}
+              accessibilityRole="button"
             >
               <Text className="font-semibold" style={{ color: renkler.metin }}>Kapat</Text>
             </TouchableOpacity>
@@ -170,13 +171,14 @@ export const PaylasimModal: React.FC<PaylasimModalProps> = ({
               style={{ backgroundColor: renkler.birincil }}
               onPress={paylas}
               disabled={paylasiliyor}
+              accessibilityRole="button"
             >
               {paylasiliyor ? (
-                <ActivityIndicator color="white" />
+                <ActivityIndicator color={renkler.birincilMetin} />
               ) : (
                 <>
-                  <FontAwesome5 name="share-alt" size={18} color="white" style={{ marginRight: 8 }} />
-                  <Text className="font-bold text-white">Hikayene Ekle</Text>
+                  <FontAwesome5 name="share-alt" size={18} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+                  <Text className="font-bold" style={{ color: renkler.birincilMetin }}>Hikayene Ekle</Text>
                 </>
               )}
             </TouchableOpacity>
