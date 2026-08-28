@@ -7,7 +7,7 @@
  */
 import {
   KANAL_ADLARI,
-  hicKanalAcikMi,
+  adimKapaliMi,
   kanalAc,
   kanalAcikMi,
   kanalKapat,
@@ -17,7 +17,7 @@ import {
 
 describe('modKanallaraCevir — dort eski modun eslemesi', () => {
   test("'sessiz' → hicbir kanal acik degil", () => {
-    expect(hicKanalAcikMi(modKanallaraCevir('sessiz'))).toBe(true);
+    expect(adimKapaliMi(modKanallaraCevir('sessiz'))).toBe(true);
   });
   test("'bildirim' → yalniz bildirim", () => {
     const k = modKanallaraCevir('bildirim');
@@ -35,8 +35,8 @@ describe('modKanallaraCevir — dort eski modun eslemesi', () => {
     expect(kanalAcikMi(k, 'sesli')).toBe(true);
   });
   test('bilinmeyen/eksik deger → kapali (sessizce yanlis kanal acmaktansa hic acma)', () => {
-    expect(hicKanalAcikMi(modKanallaraCevir(undefined))).toBe(true);
-    expect(hicKanalAcikMi(modKanallaraCevir('zirva' as never))).toBe(true);
+    expect(adimKapaliMi(modKanallaraCevir(undefined))).toBe(true);
+    expect(adimKapaliMi(modKanallaraCevir('zirva' as never))).toBe(true);
   });
   test('HICBIR eslemede titresim acilmaz (Faz 6 baglayacak)', () => {
     for (const mod of ['sessiz', 'bildirim', 'sesli', 'ikisi'] as const) {
@@ -45,18 +45,18 @@ describe('modKanallaraCevir — dort eski modun eslemesi', () => {
   });
 });
 
-describe('hicKanalAcikMi — motorun "kapali" kapisi', () => {
+describe('adimKapaliMi — motorun "kapali" kapisi', () => {
   test('bos nesne / undefined kapalidir', () => {
-    expect(hicKanalAcikMi({})).toBe(true);
-    expect(hicKanalAcikMi(undefined)).toBe(true);
+    expect(adimKapaliMi({})).toBe(true);
+    expect(adimKapaliMi(undefined)).toBe(true);
   });
   test('acikca false yazilmis kanallar da kapalidir', () => {
-    expect(hicKanalAcikMi({ bildirim: false, sesli: false })).toBe(true);
+    expect(adimKapaliMi({ bildirim: false, sesli: false })).toBe(true);
   });
   test('TITRESIM tek basina da adimi ACIK sayar (Faz 6 sozlesmesi)', () => {
     // Bugun hicbir yol titresim yazmaz; kural simdiden dogru olsun ki Faz 6
     // "titresim actim ama adim kapali gorunuyor" sapmasi dogmasin.
-    expect(hicKanalAcikMi({ titresim: true })).toBe(false);
+    expect(adimKapaliMi({ titresim: true })).toBe(false);
   });
   test('KANAL_ADLARI kumeyi tam kapsar', () => {
     expect([...KANAL_ADLARI].sort()).toEqual(['bildirim', 'sesli', 'titresim']);

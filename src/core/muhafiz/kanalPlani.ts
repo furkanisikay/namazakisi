@@ -13,7 +13,7 @@ import type { MuhafizMatrisi } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
 import { kademeSeviyeNo, muhafizAcilKanalMi, muhafizKanaliSec } from './motorAdaptoru';
 import { ozelSesMi, sesKimliginiNormalize } from './sesKimligi';
-import { hicKanalAcikMi } from './kanalKumesi';
+import { adimKapaliMi } from './kanalKumesi';
 
 export interface MuhafizKanalTanimi {
   kanalId: string;
@@ -36,7 +36,7 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
     if (!vakitAyari?.seviyeler) continue;
 
     for (const seviye of vakitAyari.seviyeler) {
-      if (!seviye || hicKanalAcikMi(seviye.kanallar)) continue;
+      if (!seviye || adimKapaliMi(seviye.kanallar)) continue;
 
       const seviyeNo = kademeSeviyeNo(seviye.kademe);
       const kanalId = muhafizKanaliSec(seviyeNo, seviye.bildirimSesi, seviye.acilKanal);

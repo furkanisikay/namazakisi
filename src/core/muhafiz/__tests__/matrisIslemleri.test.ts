@@ -22,7 +22,7 @@ const BILDIRIM = { bildirim: true };
 const SESLI = { sesli: true };
 const IKISI = { bildirim: true, sesli: true };
 import { ANONS_SABLONLARI, ANONS_SABLONLARI_GIRIS } from '../anonsMetni';
-import { hicKanalAcikMi } from '../kanalKumesi';
+import { adimKapaliMi } from '../kanalKumesi';
 
 const OZEL_SES = 'content://media/internal/audio/media/42';
 
@@ -255,7 +255,7 @@ describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
 
     const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
 
-    expect(m.yatsi.seviyeler.every((s) => hicKanalAcikMi(s.kanallar))).toBe(true);
+    expect(m.yatsi.seviyeler.every((s) => adimKapaliMi(s.kanallar))).toBe(true);
     expect(m.ogle.seviyeler[3].kanallar).toEqual(IKISI);
     expect(m.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
     expect(m.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');

@@ -25,7 +25,7 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../../components/common/SayisalSecici';
 import type { MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
-import { hicKanalAcikMi, kanalAcikMi, kanallarEsitMi } from '../../../core/muhafiz/kanalKumesi';
+import { adimKapaliMi, kanalAcikMi, kanallarEsitMi } from '../../../core/muhafiz/kanalKumesi';
 import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
@@ -131,7 +131,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
     const vakitAdi = VAKIT_ADLARI[vakit];
     const sinirlar = esikSinirlariniHesapla(seviyeler, indeks, { pencereUzunluguDk });
     const notlar = adimNotlariniOlustur(seviye, seviyeler, vakit, pencereUzunluguDk);
-    const kapaliMi = hicKanalAcikMi(seviye.kanallar);
+    const kapaliMi = adimKapaliMi(seviye.kanallar);
     const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
     const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar);
     const tekrarliMi = seviye.siklik !== 'birkez';
@@ -142,7 +142,7 @@ export const SeviyeDetayModal: React.FC<SeviyeDetayModalProps> = ({
         // ayni yardimciyi kullanir. Yoksa iki yol ayrisirdi: modaldan susturan
         // kullanicinin kanallari `oncekiKanallar`a yazilmaz, anahtarla geri
         // actiginda kurdugu kume yerine yalniz bildirime duserdi.
-        if (hicKanalAcikMi(kanallar)) {
+        if (adimKapaliMi(kanallar)) {
             onDegistir(seviyeyiKapat(seviye));
             return;
         }

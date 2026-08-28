@@ -185,7 +185,7 @@ Giriş yönünde uyarı pencere boyunca sürekli tetiklenir → **kılınmışl�
 
 ### Dosyalar (B6 ile genişletildi)
 - `matrisTipleri.ts` — `UyariKanallari`; `SeviyeAyari.mod` → `kanallar`; `oncekiMod` → `oncekiKanallar`
-- **Yeni:** `src/core/muhafiz/kanalKumesi.ts` — `hicKanalAcikMi`, `kanalAc/Kapat`, `modKanallaraCevir`
+- **Yeni:** `src/core/muhafiz/kanalKumesi.ts` — `adimKapaliMi`, `kanalAc/Kapat`, `modKanallaraCevir`
 - `muhafizGoc.ts` — `modlariKanallaraGoc`; **`eskidenMatriseGoc` de `mod:'bildirim'` üretiyor** → kanal yazacak
 - `motorAdaptoru.ts`, `aktifSeviye.ts`, `seviyeAcKapa.ts`, `matrisIslemleri.ts`, `seviyeOzeti.ts`, `vakitOzeti.ts`
 - **`kanalPlani.ts:38`** (`mod === 'sessiz'` okur) — v1'de atlanmıştı
@@ -209,10 +209,10 @@ Kapalı adım bugün `mod:'sessiz' + oncekiMod:'ikisi'` taşır. Yalnız `mod` �
 - Nöbetçi: `sesliOnayi` rıza kaydı göçle **uydurulmaz**.
 
 ### A6/A7'ye devir notları (Faz 2'de uygulandı) — Faz 2 KAPANDI
-- **`hicKanalAcikMi` TEK KAPI oldu.** Eski `mod !== 'sessiz'` ikizi **yedi** yerdeydi (plan altısını sayıyordu; `planButcesi.ts` iki ayrı yerde okuyordu: `cikisSegmentiHesapla` + `girisSegmentiHesapla`). Yeni bir "adım açık mı?" kontrolü yazma, oradan geç.
+- **`adimKapaliMi` TEK KAPI oldu.** Eski `mod !== 'sessiz'` ikizi **yedi** yerdeydi (plan altısını sayıyordu; `planButcesi.ts` iki ayrı yerde okuyordu: `cikisSegmentiHesapla` + `girisSegmentiHesapla`). Yeni bir "adım açık mı?" kontrolü yazma, oradan geç.
 - **`sesliIzinVar=false` sözleşmesi netleşti:** sesli hücre **susturulmaz** — `sesli` kanalı kapatılıp `bildirim` kanalı **açılır** (`kanalAc(kanalKapat(...,'sesli'),'bildirim')`). Naif "yalnız sesli kanalı kapat" yazımı sadece-sesli bir preset hücresini tümden kapatırdı; eski `mod` şemasında bu dal `'sesli' → 'bildirim'` idi.
 - **PLAN BOŞLUĞU — `ozelMatrisYedegi` göç listesinde yoktu.** `matrisGecerliMi` yalnız `esikDk` bakar, yani eski `mod` şemalı bir yedek "geçerli" görünür; "Özel"e dönmek onu doğrudan `matris`e yazar ve motor tüm hücreleri kapalı sayardı → **tek dokunuşla muhafız sessizce susardı**. Yükleme thunk'ı yedeği de `modlariKanallaraGoc`'tan geçirir ve göç gerekiyorsa diske yazar.
-- **A7 (titreşim) için:** `UyariKanallari.titresim` alanı **açıldı ama hiçbir yere bağlanmadı**; `hicKanalAcikMi` onu **sayar** (yalnız titreşimle kurulmuş adım "açık"tır). Bağlarken üç yer gerekir: `KANAL_CIPLERI` (`MuhafizAyarlari/sabitler.ts` — bugün hiçbir çip titreşim yazmaz ve seçim kontrolü `kanallarEsitMi` ile TAM küme karşılaştırır → yeni çip düzeni gerekir), `sesKimligi.muhafizKanalIdOlustur` hash girdisi, bildirim yolları.
+- **A7 (titreşim) için:** `UyariKanallari.titresim` alanı **açıldı ama hiçbir yere bağlanmadı**; `adimKapaliMi` onu **sayar** (yalnız titreşimle kurulmuş adım "açık"tır). Bağlarken üç yer gerekir: `KANAL_CIPLERI` (`MuhafizAyarlari/sabitler.ts` — bugün hiçbir çip titreşim yazmaz ve seçim kontrolü `kanallarEsitMi` ile TAM küme karşılaştırır → yeni çip düzeni gerekir), `sesKimligi.muhafizKanalIdOlustur` hash girdisi, bildirim yolları.
 - **A6 için:** `MuhafizAyarlari/VakitKarti.tsx` Faz 2'de **hiç değişmedi** (yalnız `seviyeAcikMi`/özet yardımcılarını çağırıyor) — ortak bileşene taşırken kanal kümesi tipini de taşımak yeterli. `SeviyeDetayModal`'daki `MOD_BILGILERI` → **`KANAL_CIPLERI`** oldu (`id: 'kapali'|'bildirim'|'sesli'|'ikisi'` + `kanallar` yükü); erişilebilirlik etiketleri (`Kapalı`/`Bildirim`/`Sesli anons`/`İkisi de`) **değişmedi**, mevcut ekran testleri onlara dayanıyor.
 - **Kapsam notu:** A4'e rezerve dosyalara üretim değişikliği YAPILMADI; yalnız `ArkaplanGorevServisi.test.ts` fikstüründe iki satır (`seviyeler[0].mod = 'sessiz'` → `kanallar = {}`) typecheck için güncellendi.
 

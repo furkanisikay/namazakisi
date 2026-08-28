@@ -28,7 +28,7 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matr
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../../core/muhafiz/matrisIslemleri';
 import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
-import { hicKanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
+import { adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
 // Global jest.setup mock'unu kasıtlı override ediyoruz ki yazılan ham JSON'u assert edebilelim
@@ -813,7 +813,7 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         await store.dispatch(muhafizAyarlariniYukle());
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
-        expect(state.matris!.yatsi.seviyeler.every((s) => hicKanalAcikMi(s.kanallar))).toBe(true);
+        expect(state.matris!.yatsi.seviyeler.every((s) => adimKapaliMi(s.kanallar))).toBe(true);
         expect(state.matris!.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
         expect(state.matris!.ogle.seviyeler[3].bildirimSesi).toBe('content://media/42');
         expect(state.matris!.ogle.seviyeler[3].sesAdi).toBe('Hızır');

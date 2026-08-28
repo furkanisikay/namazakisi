@@ -20,7 +20,7 @@ import type {
   VakitMuhafizAyari,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
-import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
+import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
 import { aktifSeviyeyiBul } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
@@ -111,7 +111,7 @@ export function seviyeTetiklenirMi(
   kardesler?: SeviyeAyari[],
   secenekler?: TetikSecenekleri
 ): boolean {
-  if (hicKanalAcikMi(seviye.kanallar)) return false;
+  if (adimKapaliMi(seviye.kanallar)) return false;
   if (olcuDk < 1) return false;
 
   const girisYonu = (secenekler?.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren';
@@ -204,7 +204,7 @@ export function vakitUyariPlaniOlustur(
   }
 
   const enBuyukEsik = vakitAyari.seviyeler.reduce(
-    (enBuyuk, s) => (!hicKanalAcikMi(s.kanallar) && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
+    (enBuyuk, s) => (!adimKapaliMi(s.kanallar) && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
     0
   );
 

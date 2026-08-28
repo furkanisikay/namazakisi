@@ -1,7 +1,7 @@
 import { eskiAlarmSesiniGoc, eskidenMatriseGoc, modlariKanallaraGoc } from '../muhafizGoc';
 import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
-import { hicKanalAcikMi, kanalAcikMi } from '../kanalKumesi';
+import { adimKapaliMi, kanalAcikMi } from '../kanalKumesi';
 import { seviyeyiAc } from '../seviyeAcKapa';
 import { vakitUyariPlaniOlustur } from '../motorAdaptoru';
 
@@ -94,7 +94,7 @@ describe('modlariKanallaraGoc', () => {
   test('dört mod da doğru kanal kümesine çevrilir', () => {
     const m = modlariKanallaraGoc(eskiKayit(['sessiz', 'bildirim', 'sesli', 'ikisi']));
     const s = m.ogle.seviyeler;
-    expect(hicKanalAcikMi(s[0].kanallar)).toBe(true);
+    expect(adimKapaliMi(s[0].kanallar)).toBe(true);
     expect(s[1].kanallar).toEqual({ bildirim: true });
     expect(s[2].kanallar).toEqual({ sesli: true });
     expect(s[3].kanallar).toEqual({ bildirim: true, sesli: true });
@@ -119,7 +119,7 @@ describe('modlariKanallaraGoc', () => {
     } as unknown as SeviyeAyari;
 
     const goc = modlariKanallaraGoc(m).yatsi.seviyeler[2];
-    expect(hicKanalAcikMi(goc.kanallar)).toBe(true);
+    expect(adimKapaliMi(goc.kanallar)).toBe(true);
     expect(goc.oncekiKanallar).toEqual({ bildirim: true, sesli: true });
     expect((goc as unknown as { oncekiMod?: string }).oncekiMod).toBeUndefined();
   });

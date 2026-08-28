@@ -14,7 +14,7 @@
  */
 import type { MuhafizMatrisi, MuhafizVakti } from '../muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../muhafiz/matrisTipleri';
-import { hicKanalAcikMi } from '../muhafiz/kanalKumesi';
+import { adimKapaliMi } from '../muhafiz/kanalKumesi';
 
 /**
  * Seviye no (1-4) -> matris seviye indeksi (0-3).
@@ -77,7 +77,7 @@ export const muhafizUyarilanVakitleriBul = (matris: MuhafizMatrisi): MuhafizVakt
   MUHAFIZ_VAKITLERI.filter((vakit) => {
     const seviyeler = matris[vakit]?.seviyeler ?? [];
     // Hic acik adim yoksa muhafiz o vakitte KONUSMAZ -> bastirma da olmaz.
-    if (!seviyeler.some((s) => !hicKanalAcikMi(s.kanallar))) return false;
+    if (!seviyeler.some((s) => !adimKapaliMi(s.kanallar))) return false;
     // Kalan iki dal (giris/cikis) da kapsama uretir — yukaridaki nota bak.
     return true;
   });

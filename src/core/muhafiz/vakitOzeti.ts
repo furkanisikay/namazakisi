@@ -6,7 +6,7 @@
 import type { VakitMuhafizAyari } from './matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { esikIfadesi } from './seviyeOzeti';
-import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
+import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
 
 /**
  * Ornek ciktilar:
@@ -21,7 +21,7 @@ import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
  * 5. dakikada konusur — ekran ile motor ayrisirdi.
  */
 export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
-  const aktifler = vakitAyari.seviyeler.filter((s) => !hicKanalAcikMi(s.kanallar));
+  const aktifler = vakitAyari.seviyeler.filter((s) => !adimKapaliMi(s.kanallar));
   if (aktifler.length === 0) return 'Kapalı';
 
   const bildirimVar = aktifler.some((s) => kanalAcikMi(s.kanallar, 'bildirim'));
@@ -41,5 +41,5 @@ export function vakitOzetiOlustur(vakitAyari: VakitMuhafizAyari): string {
 
 /** Vakitte kac adim aktif (en az bir kanali acik)? Rozet icin. */
 export function aktifSeviyeSayisi(vakitAyari: VakitMuhafizAyari): number {
-  return vakitAyari.seviyeler.filter((s) => !hicKanalAcikMi(s.kanallar)).length;
+  return vakitAyari.seviyeler.filter((s) => !adimKapaliMi(s.kanallar)).length;
 }

@@ -1,7 +1,7 @@
 import type { SeviyeAyari, VakitMuhafizAyari } from './matrisTipleri';
 import { SEVIYE_KADEMELERI } from './matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
-import { hicKanalAcikMi } from './kanalKumesi';
+import { adimKapaliMi } from './kanalKumesi';
 
 /**
  * `olcuDk` anında hangi adım konuşur?
@@ -34,7 +34,7 @@ export function aktifSeviyeyiBul(
   const girisYonu = yon === 'girisindenItibaren';
 
   const kapsayan = vakitAyari.seviyeler
-    .filter((s) => !hicKanalAcikMi(s.kanallar) && (girisYonu ? olcuDk >= s.esikDk : olcuDk <= s.esikDk))
+    .filter((s) => !adimKapaliMi(s.kanallar) && (girisYonu ? olcuDk >= s.esikDk : olcuDk <= s.esikDk))
     .sort((a, b) =>
       a.esikDk !== b.esikDk
         ? girisYonu

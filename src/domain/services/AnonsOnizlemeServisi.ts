@@ -28,7 +28,7 @@ import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Logger } from '../../core/utils/Logger';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
 import type { UyariKanallari } from '../../core/muhafiz/matrisTipleri';
-import { hicKanalAcikMi } from '../../core/muhafiz/kanalKumesi';
+import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { OnizlemeSesServisi } from './OnizlemeSesServisi';
 
 /** Onizleme anonslarinin sabit kimligi (gercek muhafiz id'leriyle carpismaz). */
@@ -95,7 +95,7 @@ export async function adimiOnizle({
     bildirimSesi,
     cozulmusMetin,
 }: AdimOnizlemeGirdisi): Promise<void> {
-    if (hicKanalAcikMi(kanallar)) return;
+    if (adimKapaliMi(kanallar)) return;
 
     const bildirimVar = bildirimSesiGerekliMi(kanallar);
     // `cozulmusMetin` tipte zorunlu ama DISKTEN gelir (matris hucresindeki

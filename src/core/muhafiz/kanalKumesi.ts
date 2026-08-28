@@ -6,7 +6,7 @@
  * (titresim) eklemek durum sayisini ikiye katlar; kumede ise tek bir bayrak eklenir.
  *
  * TEK KAPI: "bu adim uyari uretir mi?" sorusunun cevabi HER YERDE
- * `hicKanalAcikMi`dir. Eskiden bu kural `mod !== 'sessiz'` olarak yedi ayri
+ * `adimKapaliMi`dir. Eskiden bu kural `mod !== 'sessiz'` olarak yedi ayri
  * dosyada tekrarlaniyordu; ikizler ayrisirsa motor ile ekran farkli sey soyler.
  */
 import type { EskiUyariModu, UyariKanallari } from './matrisTipleri';
@@ -27,13 +27,19 @@ export const kanalAcikMi = (kanallar: UyariKanallari | undefined, ad: KanalAdi):
   kanallar?.[ad] === true;
 
 /**
- * Adim KAPALI mi? Motorun (ve ekranin) tek kapisi.
+ * Adim KAPALI mi? (hicbir kanali acik degil) — motorun ve ekranin tek kapisi.
+ *
+ * AD, ANLAMIYLA AYNI OLMAK ZORUNDA: ilk hali `hicKanalAcikMi` idi ve "hic kanal
+ * acik mi?" diye okunup adim ACIKKEN true donuyormus gibi anlasiliyordu; oysa
+ * KAPALIYKEN doner. On alti dosyada tek kapi olan bir yuklemde ters okuma, ilk
+ * dikkatsiz `!` ile motoru tumden susturur ve testlerden kacar (kapali adim zaten
+ * uyari uretmez). Olumlu ifade gereken yerde `!adimKapaliMi(...)` yazilir.
  *
  * `titresim` de sayilir: bugun hicbir yol onu yazmaz, ama Faz 6'da yalniz
  * titresimle kurulmus bir adim mesru bir hatirlatmadir ve "actim ama kapali
  * gorunuyor" sapmasi dogmamalidir.
  */
-export const hicKanalAcikMi = (kanallar: UyariKanallari | undefined): boolean =>
+export const adimKapaliMi = (kanallar: UyariKanallari | undefined): boolean =>
   !KANAL_ADLARI.some((ad) => kanalAcikMi(kanallar, ad));
 
 /** Kanali acar. Zaten aciksa AYNI referans doner (gereksiz disk yazimi yok). */

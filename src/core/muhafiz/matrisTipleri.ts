@@ -17,7 +17,7 @@ export type EskiUyariModu = 'sessiz' | 'bildirim' | 'sesli' | 'ikisi';
 
 /**
  * Bir adimin HANGI KANALLARDAN uyaracagi. Kanallar BAGIMSIZ acilir/kapanir;
- * hicbiri acik degilse adim KAPALIdir (motorun tek kapisi: `hicKanalAcikMi`).
+ * hicbiri acik degilse adim KAPALIdir (motorun tek kapisi: `adimKapaliMi`).
  *
  * Eksik alan ile `false` AYNI anlamdadir (kapali) — diskteki kismi kayitlar da
  * boylece dogru okunur.
@@ -30,7 +30,7 @@ export interface UyariKanallari {
   /**
    * Titresim — ALAN ACIK, HENUZ BAGLI DEGIL (Faz 6 / A7 baglayacak).
    * Bugun hicbir motor, servis veya ekran bu alani yazmaz; okuyan tek yer
-   * `hicKanalAcikMi`dir (adim "acik mi" kurali simdiden dogru olsun diye).
+   * `adimKapaliMi`dir (adim "acik mi" kurali simdiden dogru olsun diye).
    */
   titresim?: boolean;
 }

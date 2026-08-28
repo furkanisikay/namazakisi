@@ -2,7 +2,7 @@ import type { SeviyeAyari } from './matrisTipleri';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesGorunenAdi } from './sesKimligi';
-import { hicKanalAcikMi, kanalAcikMi } from './kanalKumesi';
+import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
 
 /** Ozetteki ses adi — gosterim kurali `sesGorunenAdi` ile PAYLASILIR (tek kaynak). */
 const sesAdi = (seviye: SeviyeAyari): string =>
@@ -25,7 +25,7 @@ export function seviyeOzetiOlustur(
   // modu) durumla karisiyordu. Ayrac ' — ': digerlerindeki ' · ' AYAR YUZLERINI
   // ayirir, bu ise tek bir aciklamadir. "bildirim" degil "uyari": adim yalnizca
   // sesli anonsla da kurulmus olabilir.
-  if (hicKanalAcikMi(seviye.kanallar)) return 'Kapalı — uyarı almazsınız';
+  if (adimKapaliMi(seviye.kanallar)) return 'Kapalı — uyarı almazsınız';
 
   const bildirim = kanalAcikMi(seviye.kanallar, 'bildirim');
   const sesli = kanalAcikMi(seviye.kanallar, 'sesli');

@@ -14,14 +14,14 @@
 import type { SeviyeAyari, UyariKanallari } from './matrisTipleri';
 import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
-import { KAPALI_KANALLAR, VARSAYILAN_ACIK_KANALLAR, hicKanalAcikMi } from './kanalKumesi';
+import { KAPALI_KANALLAR, VARSAYILAN_ACIK_KANALLAR, adimKapaliMi } from './kanalKumesi';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
 import { varsayilanAnonsMetni } from './anonsMetni';
 
 /**
  * Adim hatirlatma yapiyor mu? (Motorla ayni kural: hicbir kanal acik degilse hayir.)
  */
-export const seviyeAcikMi = (seviye: SeviyeAyari): boolean => !hicKanalAcikMi(seviye.kanallar);
+export const seviyeAcikMi = (seviye: SeviyeAyari): boolean => !adimKapaliMi(seviye.kanallar);
 
 /**
  * Adimi kapatir; kapatma anindaki kanal kumesini geri donus icin saklar.
@@ -53,7 +53,7 @@ export const seviyeyiAc = (
   // Hatirlanan kume de BOSSA (bozuk/eski kayit) oldugu gibi geri koymak "actim
   // ama yine kapali" kilidi yaratirdi → guvenli yedege dusulur.
   const hatirlanan = seviye.oncekiKanallar;
-  const kanallar: UyariKanallari = hicKanalAcikMi(hatirlanan)
+  const kanallar: UyariKanallari = adimKapaliMi(hatirlanan)
     ? VARSAYILAN_ACIK_KANALLAR
     : (hatirlanan as UyariKanallari);
 
