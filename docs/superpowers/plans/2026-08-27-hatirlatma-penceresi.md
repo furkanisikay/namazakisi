@@ -145,6 +145,12 @@ Dönüşüm **`matrisIslemleri.yonDegisimindeMetniCevir`**'de yaşar (Faz 1 / A3
 
 **Ek şart:** yön kontrolü `muhafizUyarilanVakitleriBul` **içine** konur — böylece "giriş-yönlü ama tüm adımları kapalı" vakit yanlışlıkla bastırılmaz (helper'ın mevcut aktif-adım filtresiyle otomatik AND'lenir). Nöbetçi test.
 
+### A3c'ye devir notları (A3b'de ölçüldü)
+- **`anonsMetniniCoz`'un ÜÇÜNCÜ argümanı artık `olcuDk`** (seviyeyi kazandıran ölçü), `kalanDk` değil. Bugün iki çağıran da yanlış değeri geçiyor: `ArkaplanMuhafizServisi.ts:386` → `uyari.kalanDk` (doğrusu `uyari.olcuDk`), `NamazMuhafiziServisi.ts:256` → ham `kalanDk` (doğrusu `aktifSeviyeyiBul`'a giden ölçü). Çıkış yönünde ikisi eşit olduğu için bugün zararsız; giriş yönü etkinleşince ikisi de "son 42 dakika" üretir. **Parametre opsiyonel varsayılanlı olduğu için `npm run typecheck` bunu YAKALAMAZ** — elle düzelt.
+- `seviyeOzetiOlustur(seviye, yon?)` opsiyonel 2. parametre aldı (`SeviyeAyari` yön taşımaz). Çağıranlar (`VakitKarti`, `AkisOnizlemeModal`) vaktin `yon`'unu geçirmeli — **A6'nın işi**, geçilmezse ekran sessizce çıkış dilinde kalır. `vakitOzetiOlustur` parametre almadı (`VakitMuhafizAyari` zaten `yon` taşıyor).
+- `NamazMuhafiziServisi.seviyeMesajiOlustur` ve seviye-3 içerik havuzu (`SEYTANLA_MUCADELE_ICERIGI`, "vakit çıkıyor" nassları) **hâlâ yönsüz** — A3c'nin alanı.
+- **A6 için:** `SeviyeDetayModal` yardım satırı hâlâ "{vakit} ve {süre} yer tutucularını kullanın" diyor; A3b `{yön}` yer tutucusunu ekledi (yön-nötr metin yazmayı mümkün kılar, yön değişiminde çevrilmesi gerekmez) ama kullanıcıya görünmüyor.
+
 ### Dosyalar
 - **Yeni:** `src/core/muhafiz/pencereTipleri.ts` — `PencereYonu`, `HatirlatmaPenceresi`, `olcuDkHesapla`
 - `matrisTipleri.ts` — `VakitMuhafizAyari.yon?: PencereYonu` (yoksa `'cikisaDogru'`)
