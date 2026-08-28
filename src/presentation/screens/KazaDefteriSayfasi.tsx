@@ -15,6 +15,7 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -620,6 +621,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
           style={styles.modalArkaPlan}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
+          <TouchableWithoutFeedback onPress={() => setAktifModal(null)}>
+            <View style={StyleSheet.absoluteFill} />
+          </TouchableWithoutFeedback>
           <View style={[styles.sihirbazKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
             <View style={styles.sihirbazBaslikSatir}>
               <FontAwesome5 name="magic" size={18} color={renkler.birincil} />
