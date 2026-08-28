@@ -25,7 +25,7 @@ import type {
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
-import { modKanallaraCevir, kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
+import { modKanallaraCevir, kanalAcikMi, adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 import { anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
 
@@ -77,9 +77,12 @@ export interface KanalCipi {
 /**
  * "Nasil uyarsin" cipleri (Faz 2: kanal kumesi).
  *
- * Cipler kumenin bugun kullanilan DORT bilesimini sunar; `titresim` kanali
- * SEMADA ACIK ama ekranda GOSTERILMEZ (Faz 6 / A7 baglayacak) — bu yuzden hicbir
- * cip onu yazmaz ve mevcut secim kontrolu de yalniz bildirim/sesli eksenine bakar.
+ * Cipler BILDIRIM/SESLI eksenini sunar (birbirinin yerine gecen dort bilesim).
+ * `titresim` bu eksende DEGILDIR: Faz 6'da bagimsiz bir ANAHTAR olarak eklendi,
+ * cip olsaydi her bilesimin titresimli/titresimsiz ikizi gerekir ve cip sayisi
+ * ikiye katlanirdi — bu tam olarak `UyariModu` enum'unu kumeye cevirmemizin
+ * gerekcesiydi (spec 6). Bu yuzden cip yuklerinde `titresim` HIC yazmaz ve secim
+ * kontrolu `kanalCipiSeciliMi` ile yalniz iki eksene bakar.
  */
 export const KANAL_CIPLERI: KanalCipi[] = [
     // etiket "Kapalı": bu cip bir ses secimi DEGIL, bir kapatma eylemidir
@@ -89,6 +92,49 @@ export const KANAL_CIPLERI: KanalCipi[] = [
     { id: 'sesli', etiket: 'Sesli anons', ikon: 'volume-up', kanallar: modKanallaraCevir('sesli') },
     { id: 'ikisi', etiket: 'İkisi de', ikon: 'bullhorn', kanallar: modKanallaraCevir('ikisi') },
 ];
+
+/**
+ * Cip SECILI mi? (Faz 6)
+ *
+ * `kanallarEsitMi` TAM kume karsilastirir; titresim bagimsiz eksen oldugu icin
+ * onu da sayarsa titresimi acan kullanicinin secili cipi "kaybolur" (hicbir cip
+ * secili gorunmez). Bu yuzden karsilastirma cip ekseniyle SINIRLIDIR.
+ *
+ * 'kapali' cipi istisna DEGIL: adim gercekten kapaliysa (titresim dahil hicbir
+ * kanal acik degil) secili gorunur — `adimKapaliMi` tek kapisindan gecer.
+ */
+export function kanalCipiSeciliMi(
+    secili: UyariKanallari | undefined,
+    cip: KanalCipi
+): boolean {
+    if (cip.id === 'kapali') return adimKapaliMi(secili);
+    return (
+        kanalAcikMi(secili, 'bildirim') === kanalAcikMi(cip.kanallar, 'bildirim') &&
+        kanalAcikMi(secili, 'sesli') === kanalAcikMi(cip.kanallar, 'sesli') &&
+        !adimKapaliMi(secili)
+    );
+}
+
+/**
+ * Cipe dokununca yazilacak kume — ACIK titresim KORUNUR (bagimsiz eksen).
+ *
+ * 'kapali' cipi ISTISNADIR: orada titresim de dusurulur, yoksa "kapattim ama
+ * hala titriyor" olurdu (ve adim `adimKapaliMi` kapisindan gecmedigi icin
+ * `seviyeyiKapat` yolu hic calismaz, kanal hafizasi da yazilmazdi).
+ */
+export function cipKanallariniBirlestir(
+    mevcut: UyariKanallari | undefined,
+    cip: KanalCipi
+): UyariKanallari {
+    if (cip.id === 'kapali') return { ...cip.kanallar };
+    return kanalAcikMi(mevcut, 'titresim')
+        ? { ...cip.kanallar, titresim: true }
+        : { ...cip.kanallar };
+}
+
+/** Titresim anahtarinin ekran metinleri (kibar "siz"). */
+export const TITRESIM_ETIKETI = 'Titreşim';
+export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
 
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;

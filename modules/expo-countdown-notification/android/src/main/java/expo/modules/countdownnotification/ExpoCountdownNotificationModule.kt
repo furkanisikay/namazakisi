@@ -234,8 +234,9 @@ class ExpoCountdownNotificationModule : Module() {
         }
 
         /**
-         * Ozel sesli muhafiz kanalini YOKSA olusturur (tembel).
-         * Kanal id'si JS tarafinda sesin hash'inden uretilir (bkz. sesKimligi.ts).
+         * Hash'li muhafiz kanalini YOKSA olusturur (tembel).
+         * Kanal id'si JS tarafinda (ses + titresim) hash'inden uretilir
+         * (bkz. sesKimligi.ts); `sesUri` null ise paketlenmis varsayilan ses kurulur.
          */
         AsyncFunction("muhafizKanaliniGarantile") {
             kanalId: String,
@@ -243,9 +244,12 @@ class ExpoCountdownNotificationModule : Module() {
             aciklama: String,
             sesUri: String?,
             acilMi: Boolean,
+            titresim: Boolean,
             promise: Promise ->
             appContext.reactContext?.let {
-                MuhafizKanallari.garantile(it, kanalId, kanalAdi, aciklama, sesUri, acilMi)
+                MuhafizKanallari.garantile(
+                    it, kanalId, kanalAdi, aciklama, sesUri, acilMi, titresim
+                )
             }
             promise.resolve(null)
         }

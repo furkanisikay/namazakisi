@@ -1,3 +1,4 @@
+import { Vibration } from 'react-native';
 import { NamazMuhafiziServisi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
@@ -8,6 +9,10 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../c
 import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
 import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
 import { GIRIS_ICERIK_HAVUZU } from '../../../core/utils/muhafizMetinYardimcisi';
+import { TITRESIM_DESENI } from '../../../core/muhafiz/titresimDeseni';
+
+// Titresim cagrisi olculur (jest-expo'da gercek RN modulu yuklenir).
+jest.spyOn(Vibration, 'vibrate').mockImplementation(() => undefined);
 
 /** Bir seviye hucresinin test tanimi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
@@ -150,6 +155,39 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         muhafiz.baslat(bildirimSpx);
 
         expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 4, OZEL_SES);
+    });
+
+    /**
+     * FAZ 6 — ÖN PLAN TİTREŞİMİ. Uygulama açıkken bildirim gölgeliğine bir şey
+     * düşmez (banner ekranda çizilir), dolayısıyla kanal titreşimi de işlemez;
+     * titreşimi ön planda servisin kendisi çalıştırmak zorundadır.
+     */
+    test('titreşim kanalı AÇIK adımda ön planda cihaz titreşir', () => {
+        const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[0].kanallar = { bildirim: true, titresim: true };
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 45 * 60 * 1000,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(Vibration.vibrate).toHaveBeenCalledWith(TITRESIM_DESENI);
+    });
+
+    test('titreşim KAPALIYKEN cihaz titreşmez (mevcut davranış birebir)', () => {
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 45 * 60 * 1000,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalled();
+        expect(Vibration.vibrate).not.toHaveBeenCalled();
     });
 
     test('Seviye 2 bildirimi (30 dk kala)', () => {

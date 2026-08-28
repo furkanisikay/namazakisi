@@ -90,6 +90,7 @@ import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
+import { TITRESIM_DESENI } from '../../../core/muhafiz/titresimDeseni';
 
 /** Tek bir seviye hucresi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
@@ -1109,6 +1110,45 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
 
         const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
         expect(bildirim.trigger.channelId).toBe('muhafiz');
+    });
+
+    /**
+     * FAZ 6 — titreşim kanalı açık bir adım TABAN kanalda KALAMAZ: taban kanalın
+     * titreşimi mevcut cihazlarda zaten kurulu ve sonradan değiştirilemez.
+     */
+    test('TİTREŞİM açıkken kanal id değişir (varsayılan ses bile taban kanaldan çıkar)', async () => {
+        await servis.yapilandirVePlanla({
+            aktif: true,
+            koordinatlar: { lat: 41.0, lng: 29.0 },
+            matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }], {
+                aksam: [
+                    {
+                        esikDk: 20,
+                        siklikDk: 30,
+                        kanallar: { bildirim: true, titresim: true },
+                    },
+                    { esikDk: 12, siklikDk: 30, kanallar: {} },
+                    { esikDk: 8, siklikDk: 30, kanallar: {} },
+                    { esikDk: 4, siklikDk: 30, kanallar: {} },
+                ],
+            }),
+        });
+
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        expect(bildirim).toBeDefined();
+        expect(bildirim.trigger.channelId).toBe(
+            muhafizKanalIdOlustur(VARSAYILAN_SES, false, true)
+        );
+        expect(bildirim.trigger.channelId).not.toBe('muhafiz');
+        // Android 8 ONCESI icin bildirimin kendi deseni de tasinir (8+'ta kanal kazanir).
+        expect(bildirim.content.vibrate).toEqual(TITRESIM_DESENI);
+    });
+
+    test('titreşim KAPALIYKEN bildirim kendi desenini TAŞIMAZ (davranış birebir eski)', async () => {
+        await planla(VARSAYILAN_SES);
+
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        expect(bildirim.content.vibrate).toBeUndefined();
     });
 
     test('acilKanal bayrağı SESİ değiştirmeden aciliyeti yükseltir', async () => {

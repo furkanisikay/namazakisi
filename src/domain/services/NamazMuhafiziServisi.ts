@@ -6,7 +6,8 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
@@ -14,6 +15,7 @@ import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
+import { Vibration } from 'react-native';
 
 /**
  * Faz 3: on plan banner'i da vakit x seviye MATRISINDEN okur.
@@ -219,12 +221,38 @@ export class NamazMuhafiziServisi {
         // Faz 5: uygulama ACIKKEN de sesli anons konussun.
         this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
 
+        // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
+        // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
+        // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
+        // kapaliyken titrer, acikken titremezdi.
+        this.titresimVer(kazanan);
+
         if (this.onBildirim) {
             this.onBildirim(
                 this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon),
                 aktifSeviye,
                 kazanan.bildirimSesi
             );
+        }
+    }
+
+    /**
+     * ON PLAN TITRESIMI (Faz 6).
+     *
+     * Desen bildirim kanalindakiyle AYNI kaynaktan gelmez — gelemez de: kanal
+     * deseni native tarafta yasar (kanal olusturulduktan sonra degistirilemez).
+     * Buradaki desen `core/muhafiz/titresimDeseni` tek kaynagindan okunur ve
+     * ikisi bilincli olarak ayni ritmi tasir.
+     *
+     * Titresim ASLA banner'i dusurmemeli: cihazin titresim motoru yoksa/izin
+     * kisitliysa `vibrate` firlatabilir → hata yutulur.
+     */
+    private titresimVer(seviye: SeviyeAyari): void {
+        if (!titresimGerekliMi(seviye.kanallar)) return;
+        try {
+            Vibration.vibrate(titresimDeseniAl());
+        } catch (error) {
+            Logger.debug('Muhafiz', 'On plan titresimi verilemedi:', error);
         }
     }
 

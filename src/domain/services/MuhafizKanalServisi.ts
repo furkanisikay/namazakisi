@@ -21,7 +21,11 @@ import {
     ozelSesleriTopla,
     type MuhafizKanalTanimi,
 } from '../../core/muhafiz/kanalPlani';
-import { sesGorunenAdi, silinebilirMuhafizKanaliMi } from '../../core/muhafiz/sesKimligi';
+import {
+    ozelSesMi,
+    sesGorunenAdi,
+    silinebilirMuhafizKanaliMi,
+} from '../../core/muhafiz/sesKimligi';
 import { Logger } from '../../core/utils/Logger';
 import {
     muhafizKanaliniGarantile,
@@ -35,7 +39,10 @@ function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
     // Duz "Uygulama sesi" yazsaydik, adi cozulemeyen ozel sesli kanal TABAN kanalla
     // BIREBIR ayni isimle gorunur ve kullanici ikisini ayirt edemezdi.
     const sesAdi = sesGorunenAdi(tanim.sesKimligi, tanim.sesAdi);
-    return tanim.acilMi ? `Acil Hatırlatıcı · ${sesAdi}` : `Namaz Muhafızı · ${sesAdi}`;
+    const taban = tanim.acilMi ? `Acil Hatırlatıcı · ${sesAdi}` : `Namaz Muhafızı · ${sesAdi}`;
+    // Faz 6: ayni ses iki ayri kanalda (titresimli/titresimsiz) yasayabilir —
+    // Android bildirim ayarlarinda ikisi ayni isimde gorunmemeli.
+    return tanim.titresim ? `${taban} · Titreşimli` : taban;
 }
 
 function kanalAciklamasiOlustur(tanim: MuhafizKanalTanimi): string {
@@ -128,8 +135,14 @@ export const MuhafizKanalServisi = {
                     tanim.kanalId,
                     kanalAdiOlustur(tanim),
                     kanalAciklamasiOlustur(tanim),
-                    tanim.sesKimligi,
-                    tanim.acilMi
+                    // VARSAYILAN ses `null` gider: `sesKimligi` burada 'varsayilan'
+                    // DIZESIDIR ve native'e gecseydi `Uri.parse("varsayilan")` ile
+                    // OLU bir ses kurulurdu. Faz 6'dan once bu dal hic olusmuyordu
+                    // (hash'li kanal ancak ozel sesle dogardi); titresim ekseni
+                    // "varsayilan ses + hash'li kanal" bilesimini mumkun kildi.
+                    ozelSesMi(tanim.sesKimligi) ? tanim.sesKimligi : null,
+                    tanim.acilMi,
+                    tanim.titresim
                 );
             } catch (error) {
                 Logger.error('MuhafizKanal', `Kanal olusturulamadi: ${tanim.kanalId}`, error);

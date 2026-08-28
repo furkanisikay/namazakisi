@@ -102,6 +102,73 @@ describe('muhafizKanalIdOlustur', () => {
   });
 });
 
+/**
+ * FAZ 6 — TITRESIM DE KANAL OZELLIGIDIR.
+ *
+ * Android'de titresim de (ses gibi) kanal olusturulduktan SONRA degistirilemez →
+ * kanal id artik (ses + titresim) fonksiyonudur. Ama TABAN kanal istisnasi (B9)
+ * korunur: varsayilan ses + varsayilan titresim hala `muhafiz`/`muhafiz_acil`
+ * kanallarina duser, cunku o kanallar mevcut cihazlarda ZATEN kurulu ve
+ * kullanicinin tercihleri (titresim/onem/DND) orada birikmis durumda.
+ */
+describe('muhafizKanalIdOlustur — titresim ekseni (Faz 6)', () => {
+  it('UC DURUM: varsayilan+varsayilan taban · varsayilan+titresim hash · ayni ses farkli titresim FARKLI id', () => {
+    // 1) varsayilan ses + varsayilan titresim -> TABAN kanal
+    expect(muhafizKanalIdOlustur(VARSAYILAN_SES, false, false)).toBe('muhafiz');
+    expect(muhafizKanalIdOlustur(VARSAYILAN_SES, true, false)).toBe('muhafiz_acil');
+
+    // 2) varsayilan ses + OZEL titresim -> taban esleme BOZULUR, hash'li kanal
+    expect(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true)).toMatch(/^muhafiz_[0-9a-f]{8}$/);
+    expect(muhafizKanalIdOlustur(VARSAYILAN_SES, true, true)).toMatch(
+      /^muhafiz_acil_[0-9a-f]{8}$/
+    );
+
+    // 3) AYNI ses + FARKLI titresim -> FARKLI id (yoksa ayni sesi paylasan iki
+    //    hucreden biri sessizce yanlis titresim davranisi alirdi)
+    expect(muhafizKanalIdOlustur(SES_A, false, true)).not.toBe(
+      muhafizKanalIdOlustur(SES_A, false, false)
+    );
+  });
+
+  /**
+   * GERIYE UYUMLULUK NOBETCISI — bu testin kirilmasi, sahadaki her kullanicinin
+   * kanal id'sinin degismesi demektir: eski kanal oksuz kalir (GC siler), yenisi
+   * sifir tercihle kurulur ve kullanicinin o kanalda biriktirdigi ayarlar gider.
+   */
+  it('MEVCUT KULLANICININ KANAL IDsi DEGISMEZ: titresim kapaliyken hash girdisi SADECE sestir', () => {
+    expect(muhafizKanalIdOlustur(SES_A, false, false)).toBe(`muhafiz_${sesHashi(SES_A)}`);
+    expect(muhafizKanalIdOlustur(SES_A, true, false)).toBe(`muhafiz_acil_${sesHashi(SES_A)}`);
+    // Parametre HIC verilmemis eski cagiranlar da ayni id'yi almali.
+    expect(muhafizKanalIdOlustur(SES_A, false)).toBe(muhafizKanalIdOlustur(SES_A, false, false));
+    expect(muhafizKanalIdOlustur(VARSAYILAN_SES, false)).toBe('muhafiz');
+  });
+
+  it('KANAL ENFLASYONU: kanal sayisi = benzersiz (ses, titresim, aciliyet) kombinasyonu', () => {
+    const hepsi = new Set([
+      muhafizKanalIdOlustur(VARSAYILAN_SES, false, false),
+      muhafizKanalIdOlustur(VARSAYILAN_SES, false, true),
+      muhafizKanalIdOlustur(VARSAYILAN_SES, true, false),
+      muhafizKanalIdOlustur(VARSAYILAN_SES, true, true),
+      muhafizKanalIdOlustur(SES_A, false, false),
+      muhafizKanalIdOlustur(SES_A, false, true),
+      // tekrarlar yeni kanal ACMAZ
+      muhafizKanalIdOlustur(SES_A, false, true),
+      muhafizKanalIdOlustur(VARSAYILAN_SES, false, true),
+    ]);
+    expect(hepsi.size).toBe(6);
+  });
+
+  it('titresimli kanallar da GC uzayindadir (taban kanallar korunur)', () => {
+    expect(muhafizKanaliMi(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true))).toBe(true);
+    expect(silinebilirMuhafizKanaliMi(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true))).toBe(
+      true
+    );
+    expect(silinebilirMuhafizKanaliMi(muhafizKanalIdOlustur(VARSAYILAN_SES, false, false))).toBe(
+      false
+    );
+  });
+});
+
 describe('muhafizKanaliMi / silinebilirMuhafizKanaliMi', () => {
   it('muhafiz kanal uzayini tanir', () => {
     expect(muhafizKanaliMi('muhafiz')).toBe(true);

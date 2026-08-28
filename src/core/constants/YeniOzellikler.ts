@@ -41,6 +41,26 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-titresim-kanali',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Hatırlatmalar Artık Titreşebilir',
+        aciklama:
+            'Her hatırlatma adımı için titreşimi ayrı ayrı açabilirsiniz; sessize aldığınız ortamlarda bile uyarıyı fark edersiniz.',
+        detayAciklama:
+            'Namaz Muhafızı ayarlarında bir adıma dokunduğunuzda "Nasıl uyarsın" bölümünün altında yeni bir "Titreşim" anahtarı görürsünüz. Bu anahtar bildirim ve sesli anonstan bağımsızdır: dilerseniz yalnızca bildirimle, dilerseniz bildirim + titreşimle uyarılabilirsiniz. Titreşimi açtığınız adım için belirgin bir titreşim deseni kullanılır ve uygulama açıkken de aynı desenle titrer. Titreşimi açmadığınız adımların davranışı hiç değişmez.',
+        ikon: 'mobile-alt',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Adımlarınızı gözden geçirin',
+        kartGoster: false,
+        detaylar: [
+            'Her adım için ayrı titreşim anahtarı',
+            'Bildirim ve sesli anonstan bağımsız çalışır',
+            'Uygulama açıkken de aynı desenle titrer',
+            'Titreşimi açmadığınız adımlar aynen kalır',
+        ],
+    },
+    {
         id: 'konumu-tek-dokunusla-yenile',
         surum: '0.25.0',
         tarih: '2026-08-27',

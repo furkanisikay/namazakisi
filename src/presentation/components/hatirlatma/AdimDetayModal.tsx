@@ -21,6 +21,7 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
+    Switch,
 } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
@@ -28,7 +29,7 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../common/SayisalSecici';
 import type { SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
-import { adimKapaliMi, kanalAcikMi, kanallarEsitMi } from '../../../core/muhafiz/kanalKumesi';
+import { adimKapaliMi, kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
 import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
@@ -41,6 +42,10 @@ import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafi
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
     KANAL_CIPLERI,
+    TITRESIM_ACIKLAMASI,
+    TITRESIM_ETIKETI,
+    cipKanallariniBirlestir,
+    kanalCipiSeciliMi,
     esikBasligiOlustur,
     esikAciklamasiOlustur,
     esikErisimAdiOlustur,
@@ -136,6 +141,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         yon: tanim.yon,
     });
     const kapaliMi = adimKapaliMi(seviye.kanallar);
+    const titresimliMi = kanalAcikMi(seviye.kanallar, 'titresim');
     const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
     const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar) && tanim.sesSecimiVar;
     const tekrarliMi = seviye.siklik !== 'birkez';
@@ -161,6 +167,20 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         // ⟺ hucre kapali" invarianti; `matrisIslemleri.seviyeyeUygula` de ayni
         // temizligi yapar).
         onDegistir({ ...seviye, kanallar, anonsMetni, oncekiKanallar: undefined });
+    };
+
+    /**
+     * Titresimi ac/kapat. Cip kumesine DOKUNMAZ (bagimsiz eksen) ve `kanallariSec`
+     * yolundan GECMEZ: o yol sesli-anons on-doldurmasi + kanal hafizasi temizligi
+     * yapar; titresim ikisini de ilgilendirmez.
+     */
+    const titresimiAyarla = (acik: boolean) => {
+        onDegistir({
+            ...seviye,
+            kanallar: acik
+                ? { ...seviye.kanallar, titresim: true }
+                : { ...seviye.kanallar, titresim: false },
+        });
     };
 
     const sablonSec = (sablon: string) => {
@@ -252,7 +272,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 <BolumBasligi metin="NASIL UYARSIN" />
                                 <View className="flex-row flex-wrap" style={{ marginHorizontal: -4 }}>
                                     {KANAL_CIPLERI.map((m) => {
-                                        const secili = kanallarEsitMi(seviye.kanallar, m.kanallar);
+                                        const secili = kanalCipiSeciliMi(seviye.kanallar, m);
                                         return (
                                             <View key={m.id} style={{ width: '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
                                                 <TouchableOpacity
@@ -263,7 +283,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                         borderColor: secili ? renkler.birincil : renkler.sinir,
                                                         borderWidth: secili ? 2 : 1,
                                                     }}
-                                                    onPress={() => kanallariSec(m.kanallar)}
+                                                    onPress={() =>
+                                                        kanallariSec(
+                                                            cipKanallariniBirlestir(seviye.kanallar, m)
+                                                        )
+                                                    }
                                                     activeOpacity={0.7}
                                                     accessibilityRole="button"
                                                     accessibilityState={{ selected: secili }}
@@ -286,6 +310,56 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         );
                                     })}
                                 </View>
+
+                                {/* TITRESIM — ciplerle AYNI eksende degil (bkz.
+                                    `pencereTanimi.KANAL_CIPLERI`): bagimsiz bir
+                                    kanal oldugu icin bagimsiz bir anahtar. Adim
+                                    kapaliyken gosterilmez; kapali adimda tek
+                                    anlamli eylem onu geri acmaktir. */}
+                                {!kapaliMi && (
+                                    <View
+                                        className="flex-row items-center p-3.5 rounded-2xl border mt-1"
+                                        style={{
+                                            backgroundColor: renkler.arkaplan,
+                                            borderColor: renkler.sinir,
+                                        }}
+                                    >
+                                        <View
+                                            className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                                            style={{ backgroundColor: `${bilgi.renk}20` }}
+                                        >
+                                            <FontAwesome5
+                                                name="mobile-alt"
+                                                size={16}
+                                                color={bilgi.renk}
+                                                solid
+                                            />
+                                        </View>
+                                        <View className="flex-1 pr-3">
+                                            <Text
+                                                className="text-sm font-semibold"
+                                                style={{ color: renkler.metin }}
+                                            >
+                                                {TITRESIM_ETIKETI}
+                                            </Text>
+                                            <Text
+                                                className="text-xs mt-0.5"
+                                                style={{ color: renkler.metinIkincil }}
+                                            >
+                                                {TITRESIM_ACIKLAMASI}
+                                            </Text>
+                                        </View>
+                                        <Switch
+                                            value={titresimliMi}
+                                            onValueChange={titresimiAyarla}
+                                            trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
+                                            thumbColor={titresimliMi ? bilgi.renk : '#f4f3f4'}
+                                            accessibilityRole="switch"
+                                            accessibilityState={{ checked: titresimliMi }}
+                                            accessibilityLabel={TITRESIM_ETIKETI}
+                                        />
+                                    </View>
+                                )}
                             </>
                         )}
 

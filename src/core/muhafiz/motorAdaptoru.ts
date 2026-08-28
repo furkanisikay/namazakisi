@@ -9,7 +9,8 @@
  *   hicbiri  -> adim KAPALI (pencere bile saglamaz, bkz. `aktifSeviyeyiBul`)
  *   bildirim -> Android bildirimi (+ on planda bildirim sesi)
  *   sesli    -> native TTS anonsu; `sesliAnons` bayragi + `anonsMetni` veriye tasinir
- *   titresim -> Faz 6'da baglanacak (bugun yalniz "adim acik mi" kuralina girer)
+ *   titresim -> kanal titresimi + on planda `Vibration.vibrate` (Faz 6); kanal
+ *               id'sinin de girdisidir (bkz. `muhafizKanaliSec`)
  */
 import type {
   MuhafizMatrisi,
@@ -60,6 +61,17 @@ export function sesliAnonsGerekliMi(kanallar: UyariKanallari | undefined): boole
  */
 export function bildirimSesiGerekliMi(kanallar: UyariKanallari | undefined): boolean {
   return kanalAcikMi(kanallar, 'bildirim');
+}
+
+/**
+ * Kanal kumesi TITRESIM istiyor mu? (Faz 6)
+ *
+ * `bildirimSesiGerekliMi`/`sesliAnonsGerekliMi` ile ayni gerekce: kural tek
+ * yerde dursun. Burasi hem kanal id'sini (`muhafizKanaliSec`) hem on plan
+ * titresimini besler; ikizlenirse kanal ile davranis ayrisir.
+ */
+export function titresimGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'titresim');
 }
 
 /**
@@ -268,24 +280,27 @@ export function muhafizAcilKanalMi(
 }
 
 /**
- * Hucrenin (ses, aciliyet) secimi -> bildirim kanal id'si.
+ * Hucrenin (ses, aciliyet, titresim) secimi -> bildirim kanal id'si.
  *
- * Kanal id SESIN FONKSIYONUDUR (bkz. `sesKimligi.ts`): Android'de kanal sesi
- * olusturulduktan sonra degistirilemez, silip yeniden olusturmak da tombstone'a
- * takilir. Id'yi sese baglayinca bu tuzaklarin ikisi de dogar dogmaz olur.
+ * Kanal id SES ILE TITRESIMIN FONKSIYONUDUR (bkz. `sesKimligi.ts`): Android'de
+ * kanal sesi de titresimi de olusturulduktan sonra degistirilemez, silip yeniden
+ * olusturmak da tombstone'a takilir. Id'yi bu iki girdiye baglayinca tuzaklarin
+ * hepsi dogar dogmaz olur.
  *
  * TUM TUKETICILER BU FONKSIYONDAN GECMELI — kanal id artik DINAMIK oldugu icin
  * elle yazilan bir id (ozellikle ham AsyncStorage okuyan arka plan yollarinda)
- * bayat kalir ve kullanici SESSIZCE yanlis sesi duyar.
+ * bayat kalir ve kullanici SESSIZCE yanlis sesi/titresimi alir.
  */
 export function muhafizKanaliSec(
   seviye: SeviyeNo,
   bildirimSesi: string,
-  acilKanal?: boolean
+  acilKanal?: boolean,
+  titresimAcik: boolean = false
 ): string {
   return muhafizKanalIdOlustur(
     bildirimSesi,
-    muhafizAcilKanalMi(seviye, bildirimSesi, acilKanal)
+    muhafizAcilKanalMi(seviye, bildirimSesi, acilKanal),
+    titresimAcik
   );
 }
 

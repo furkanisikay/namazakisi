@@ -17,7 +17,8 @@ import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur, muhafizKanaliSec, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
+import { vakitUyariPlaniOlustur, muhafizKanaliSec, titresimGerekliMi, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
+import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
@@ -341,12 +342,19 @@ export class ArkaplanMuhafizServisi {
                 return;
             }
 
+            const titresimli = titresimGerekliMi(uyari.kanallar);
+
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
                 content: {
                     title: baslik,
                     body: mesaj,
                     sound: true,
+                    // Android 8+ ta TITRESIM KANAL ozelligidir ve bu alan yok sayilir
+                    // (desen `MuhafizKanallari.kt` icinde, kanal id'sine baglidir).
+                    // Alan yalniz Android 8 ONCESI cihazlar icin tasinir; titresim
+                    // kapaliyken HIC yazilmaz → mevcut davranis birebir korunur.
+                    ...(titresimli ? { vibrate: titresimDeseniAl() } : {}),
                     priority: uyari.seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
@@ -367,10 +375,16 @@ export class ArkaplanMuhafizServisi {
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
-                    // Android: ses KANAL ozelligidir → kanal id hucrenin sectigi
-                    // sesten TURETILIR (`muhafizKanaliSec`). Aciliyet ayri alandan
-                    // (`acilKanal`) gelir; ses artik onem tasimaz.
-                    channelId: muhafizKanaliSec(uyari.seviye, uyari.bildirimSesi, uyari.acilKanal),
+                    // Android: ses de TITRESIM de KANAL ozelligidir → kanal id
+                    // hucrenin (ses + titresim) seciminden TURETILIR
+                    // (`muhafizKanaliSec`). Aciliyet ayri alandan (`acilKanal`)
+                    // gelir; ses artik onem tasimaz.
+                    channelId: muhafizKanaliSec(
+                        uyari.seviye,
+                        uyari.bildirimSesi,
+                        uyari.acilKanal,
+                        titresimli
+                    ),
                 },
             });
 

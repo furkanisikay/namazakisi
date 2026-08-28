@@ -39,6 +39,17 @@ describe('seviyeOzetiOlustur', () => {
       .toBe('8 dk kala · sesli anons');
   });
 
+  // FAZ 6 — titreşim kanalı özette görünür; yoksa kullanıcı ayarı yaptığını
+  // kart satırından doğrulayamaz (sessiz sapma).
+  test('titreşim kanalı özetin SONUNA eklenir', () => {
+    expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true, titresim: true }, esikDk: 30 })))
+      .toBe('30 dk kala · bildirim · Uygulama sesi · titreşim');
+  });
+  test('YALNIZ titreşimle kurulmuş adım kapalı DEĞİLDİR', () => {
+    expect(seviyeOzetiOlustur(temel({ kanallar: { titresim: true }, esikDk: 12 })))
+      .toBe('12 dk kala · titreşim');
+  });
+
   test('giriş yönünde eşik "girişten N dk sonra" olur', () => {
     expect(seviyeOzetiOlustur(temel({ kanallar: { bildirim: true }, esikDk: 45 }), 'girisindenItibaren'))
       .toBe('girişten 45 dk sonra · bildirim · Uygulama sesi');

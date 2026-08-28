@@ -229,18 +229,24 @@ export async function onizlemeCaliyorMu(): Promise<boolean> {
 }
 
 /**
- * Ozel sesli muhafiz kanalini YOKSA olusturur.
+ * Hash'li muhafiz kanalini YOKSA olusturur.
  *
- * Kanal sesi olusturulduktan sonra DEGISTIRILEMEZ, silip yeniden olusturmak da
- * tombstone'a takilir → kanal id'si sesin hash'inden uretilir (bkz.
- * `core/muhafiz/sesKimligi.ts`) ve boyle bir degisiklik ihtiyaci hic dogmaz.
+ * Kanal sesi de TITRESIMI de olusturulduktan sonra DEGISTIRILEMEZ, silip yeniden
+ * olusturmak da tombstone'a takilir → kanal id'si (ses + titresim) hash'inden
+ * uretilir (bkz. `core/muhafiz/sesKimligi.ts`) ve boyle bir degisiklik ihtiyaci
+ * hic dogmaz.
+ *
+ * `sesUri` NULL ise kanal paketlenmis varsayilan sesle (res/raw/bildirim) kurulur —
+ * taban kanallarla ayni ses. 'varsayilan' DIZESINI buraya gecirme: native taraf
+ * `Uri.parse` ile olu bir ses kurar.
  */
 export async function muhafizKanaliniGarantile(
     kanalId: string,
     kanalAdi: string,
     aciklama: string,
     sesUri: string | null,
-    acilMi: boolean
+    acilMi: boolean,
+    titresim: boolean = false
 ): Promise<void> {
     if (Platform.OS !== 'android' || !kanalId) return;
     await ExpoCountdownNotification.muhafizKanaliniGarantile(
@@ -248,7 +254,8 @@ export async function muhafizKanaliniGarantile(
         kanalAdi,
         aciklama,
         sesUri ?? null,
-        acilMi
+        acilMi,
+        titresim
     );
 }
 

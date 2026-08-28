@@ -93,6 +93,37 @@ describe('matristenKanallariCikar', () => {
     expect(idler).toContain(muhafizKanalIdOlustur(SES_A, true));
   });
 
+  /**
+   * FAZ 6 — titreşim de kanal eksenidir: aynı sesi paylaşan iki hücre farklı
+   * titreşim istiyorsa AYRI kanal gerekir (kanal titreşimi sonradan değişmez).
+   */
+  it('AYNI ses + FARKLI titreşim İKİ AYRI kanal üretir', () => {
+    const seviyeler = dortSeviye({ bildirimSesi: SES_A });
+    seviyeler[0].kanallar = { bildirim: true };
+    seviyeler[1].kanallar = { bildirim: true, titresim: true };
+
+    const kanallar = matristenKanallariCikar(matris(seviyeler));
+    const idler = kanallar.map((k) => k.kanalId);
+
+    expect(idler).toContain(muhafizKanalIdOlustur(SES_A, false, false));
+    expect(idler).toContain(muhafizKanalIdOlustur(SES_A, false, true));
+    expect(kanallar.find((k) => k.kanalId === muhafizKanalIdOlustur(SES_A, false, true))?.titresim)
+      .toBe(true);
+    expect(kanallar.find((k) => k.kanalId === muhafizKanalIdOlustur(SES_A, false, false))?.titresim)
+      .toBe(false);
+  });
+
+  it('VARSAYILAN ses + titreşim TABAN kanaldan ÇIKAR (taban kanalın titreşimi değiştirilemez)', () => {
+    const seviyeler = dortSeviye();
+    seviyeler[0].kanallar = { bildirim: true, titresim: true };
+
+    const idler = matristenKanallariCikar(matris(seviyeler)).map((k) => k.kanalId);
+
+    expect(idler).toContain(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true));
+    // Taban kanal hâlâ var — titreşimsiz seviye 2 onu kullanıyor (ayrışma, enflasyon değil).
+    expect(idler).toContain('muhafiz');
+  });
+
   it('bozuk/eksik vakit girdisinde ÇÖKMEZ (savunmacı)', () => {
     const bozuk = matris(dortSeviye());
     // @ts-expect-error — diskten gelen bozuk kayıt simülasyonu

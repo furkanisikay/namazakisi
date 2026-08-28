@@ -293,6 +293,16 @@ Native değişiklik → `npm run verify` YETMEZ. Dala push + `gh workflow run an
 - **Testler (üç durum):** varsayılan ses + varsayılan titreşim → **taban kanal** · varsayılan ses + özel titreşim → **hash'li kanal** · aynı ses + farklı titreşim → **farklı id**.
 - Native değişiklik → debug APK build doğrulaması.
 
+### Faz 6 uygulandı — kapanış notları (A7)
+
+- **Ekran kararı: titreşim ÇİP DEĞİL, bağımsız ANAHTAR oldu.** Plan "kanal çipine titreşim" diyordu; `KANAL_CIPLERI` birbirinin yerine geçen dört bileşimdir ve titreşim ortogonal olduğu için çip yapmak bileşim sayısını ikiye katlardı (kümeye geçme gerekçesinin aynısı). Çip seçili-liği artık `kanalCipiSeciliMi` (yalnız bildirim/sesli ekseni) ile ölçülür — `kanallarEsitMi` bırakılsaydı titreşimi açan kullanıcının seçili çipi kaybolurdu. Erişilebilirlik etiketleri (`Kapalı`/`Bildirim`/`Sesli anons`/`İkisi de`) DEĞİŞMEDİ.
+- **PLAN BOŞLUĞU — hash'li kanal artık VARSAYILAN sesle de doğabiliyor.** Faz 6 öncesi hash'li kanal ancak özel sesle doğardı, bu yüzden `MuhafizKanalServisi` native'e `tanim.sesKimligi`'ni ham geçiyordu. "Varsayılan ses + titreşim" bileşimi o varsayımı kırdı: `'varsayilan'` dizesi native'e gitseydi `Uri.parse("varsayilan")` ile **ölü ses** kurulurdu (kanal sesi sonradan değiştirilemez → kalıcı sessizlik). Çözüm iki taraflı: JS `ozelSesMi(...) ? uri : null` geçer, Kotlin `null` gelince `res/raw/bildirim`i çözer (`paketSesi`) — yoksa taban kanal `bildirim.mp3` çalarken titreşimli kanal sistem varsayılan sesine kayardı.
+- **Ön plan titreşimi planın "(b)" maddesinden daha kritik çıktı:** uygulama açıkken bildirim gölgeliğine bir şey düşmediği için kanal titreşimi HİÇ işlemez → `NamazMuhafiziServisi.titresimVer` olmadan aynı adım kapalıyken titrer, açıkken titremezdi.
+- **`content.vibrate` yalnız Android 8 ÖNCESİ içindir** (8+'ta kanal kazanır) ve titreşim kapalıyken hiç yazılmaz → mevcut davranış birebir korunur.
+- **Geriye uyumluluk kanıtı:** `sesKimligi.test.ts > MEVCUT KULLANICININ KANAL IDsi DEĞİŞMEZ` — titreşim izi yalnız kanal AÇIKKEN eklendiği için sahadaki her kanal id'si aynı kalır.
+- **Kapsam dışı bırakıldı:** "Dinle" önizlemesi titretmez (duyulacak şey yok, `DinleButonu` sözleşmesi değişmedi); preset'ler `kanallar` yazdığı için titreşimi sıfırlar (mevcut `presetUygula` sözleşmesi, bilinçli).
+- **Duyuru:** `YeniOzellikler.ts`'e yalnız **titreşim** eklendi. Kabul kriteri 6'daki diğer dördü (dinamik eşik, giriş yönü, cuma periyodik, seri sayacı) ilgili fazların sahiplerine/kapanış turuna kalıyor.
+
 ---
 
 ## Subagent görev dağılımı

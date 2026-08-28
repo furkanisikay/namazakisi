@@ -373,6 +373,57 @@ describe('MuhafizAyarlariSayfasi', () => {
     expect(yeni.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true, sesli: true });
   });
 
+  // ── Titreşim kanalı (Faz 6) ───────────────────────────────────────────────
+  /**
+   * Titreşim, bildirim/sesli ile AYNI EKSENDE DEĞİLDİR: dördü birbirinin yerine
+   * geçen çipler, titreşim ise bağımsız bir anahtardır. Çip yapılsaydı "bildirim
+   * + titreşim" gibi bileşimler için çip sayısı ikiye katlanırdı (spec'in
+   * `UyariModu` enum'unu kümeye çevirme gerekçesinin aynısı).
+   */
+  it('titreşim anahtarı kanalı açar, seçili çipi BOZMAZ', async () => {
+    const { getByText, getByLabelText } = await kur();
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+
+    fireEvent(getByLabelText('Titreşim'), 'valueChange', true);
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, titresim: true });
+    // Zamanlama ekseni değişmedi → yoğunluk 'ozel' olmaz (spec 4.1).
+    expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
+  });
+
+  it('çip değiştirmek AÇIK titreşimi korur (bağımsız eksen)', async () => {
+    const matris = varsayilanMatris();
+    matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
+    const { getByText, getByLabelText } = await kur({ matris });
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+
+    fireEvent.press(getByLabelText('İkisi de'));
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({
+      bildirim: true,
+      sesli: true,
+      titresim: true,
+    });
+  });
+
+  it('"Kapalı" çipi titreşimi de kapatır (adım gerçekten kapanmalı)', async () => {
+    const matris = varsayilanMatris();
+    matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
+    const { getByText, getByLabelText } = await kur({ matris });
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+
+    fireEvent.press(getByLabelText('Kapalı'));
+
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
+    expect(yeni.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true, titresim: true });
+  });
+
   it('modaldan kapalılıktan çıkınca bayat kanal hafızası temizlenir', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0] = {
