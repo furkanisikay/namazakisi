@@ -151,6 +151,13 @@ Dönüşüm **`matrisIslemleri.yonDegisimindeMetniCevir`**'de yaşar (Faz 1 / A3
 - `NamazMuhafiziServisi.seviyeMesajiOlustur` ve seviye-3 içerik havuzu (`SEYTANLA_MUCADELE_ICERIGI`, "vakit çıkıyor" nassları) **hâlâ yönsüz** — A3c'nin alanı.
 - **A6 için:** `SeviyeDetayModal` yardım satırı hâlâ "{vakit} ve {süre} yer tutucularını kullanın" diyor; A3b `{yön}` yer tutucusunu ekledi (yön-nötr metin yazmayı mümkün kılar, yön değişiminde çevrilmesi gerekmez) ama kullanıcıya görünmüyor.
 
+### A5/A6'ya devir notları (A3c'de ölçüldü) — Faz 1 KAPANDI
+- **DÜZELTME — 1e (B12) üretim değişikliği aslında NO-OP'tu.** Plan "yön kontrolü `muhafizUyarilanVakitleriBul` içine konur" diyor; ölçüldü ki mevcut filtre (`en az bir açık adım`) giriş-yönlü vakitleri **zaten** listeye koyuyor → davranış değişmiyor ve kırmızı test yazılamıyor. Ölü `if` dalı yazmak yerine kapsama kuralı yorumla sabitlendi + nöbetçi eklendi. **A5 bu dosyaya dokunurken listeyi `esikDk` ile daraltmasın** — giriş yönünü sessizce bozar.
+- **PLAN BOŞLUĞU — `src/core/utils/muhafizMetinYardimcisi.ts` hiçbir turun dosya listesinde yoktu, gerçek bir bug taşıyordu.** `basligiOlustur` giriş yönünde `kalanDk` ile çağrılınca yatsıda **"🚨 655 dk · YATSI VAKTİ ÇIKIYOR"** üretiyordu (acil adım girişin 45. dk'sında tetiklenir, çıkışa 655 dk vardır); arka plan gövdesi de mücadele havuzundan "Son dakikalar" diyordu. A3c opsiyonel `yon` parametresi (varsayılan çıkış → sıfır davranış değişimi) + nötr `GIRIS_ICERIK_HAVUZU` ile düzeltti. **A6:** `AkisOnizlemeModal` başlık önizlemesi yaparsa aynı `yon`'u geçmeli.
+- **A6 — B3'ün kullanıcıya görünen bedeli hiçbir yerde yazmıyor:** giriş yönlü vakitte banner ile sesli anons **0–60 sn ayrışabilir** (çıkış yönünde eş zamanlıydı). Ekranda "sesli" adım kurulurken ima edilmeli ya da en azından `AkisOnizlemeModal` gerçeği göstermeli.
+- **A4 — `VakitBilgisi.giris` artık ZORUNLU alan.** Üretimde savunma var (`giris` yoksa çıkış yönü davranışı), ama `getSuankiVakitBilgisi` mock'layan **yeni testler `giris` vermezse giriş yönü sessizce ölür**.
+- Plandaki "mevcut 2135 test" sayısı bayat — depoda **2283** test var.
+
 ### Dosyalar
 - **Yeni:** `src/core/muhafiz/pencereTipleri.ts` — `PencereYonu`, `HatirlatmaPenceresi`, `olcuDkHesapla`
 - `matrisTipleri.ts` — `VakitMuhafizAyari.yon?: PencereYonu` (yoksa `'cikisaDogru'`)
