@@ -7,6 +7,8 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Logger } from '../../../core/utils/Logger';
+import { TemaContext } from '../../../core/theme/TemaContext';
+import { Tema } from '../../../core/theme/temalar';
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -67,32 +69,39 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             }
 
             return (
-                <View style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.scroll}>
-                        <Text style={styles.title}>Bir hata olustu</Text>
-                        <Text style={styles.errorMessage}>
-                            {this.state.error?.message}
-                        </Text>
+                <TemaContext.Consumer>
+                    {({ tema }) => {
+                        const styles = getStyles(tema);
+                        return (
+                            <View style={styles.container}>
+                                <ScrollView contentContainerStyle={styles.scroll}>
+                                    <Text style={styles.title}>Bir hata olustu</Text>
+                                    <Text style={styles.errorMessage}>
+                                        {this.state.error?.message}
+                                    </Text>
 
-                        {this.state.errorInfo?.componentStack && (
-                            <View style={styles.stackContainer}>
-                                <Text style={styles.stackTitle}>Component Stack:</Text>
-                                <Text style={styles.stackText}>
-                                    {this.state.errorInfo.componentStack}
-                                </Text>
+                                    {this.state.errorInfo?.componentStack && (
+                                        <View style={styles.stackContainer}>
+                                            <Text style={styles.stackTitle}>Component Stack:</Text>
+                                            <Text style={styles.stackText}>
+                                                {this.state.errorInfo.componentStack}
+                                            </Text>
+                                        </View>
+                                    )}
+
+                                    <TouchableOpacity
+                                        style={styles.retryButton}
+                                        onPress={this.handleRetry}
+                                        accessibilityRole="button"
+                                        accessibilityLabel="Tekrar Dene"
+                                    >
+                                        <Text style={styles.retryText}>Tekrar Dene</Text>
+                                    </TouchableOpacity>
+                                </ScrollView>
                             </View>
-                        )}
-
-                        <TouchableOpacity
-                            style={styles.retryButton}
-                            onPress={this.handleRetry}
-                            accessibilityRole="button"
-                            accessibilityLabel="Tekrar Dene"
-                        >
-                            <Text style={styles.retryText}>Tekrar Dene</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
-                </View>
+                        );
+                    }}
+                </TemaContext.Consumer>
             );
         }
 
@@ -100,10 +109,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     }
 }
 
-const styles = StyleSheet.create({
+const getStyles = (tema: Tema) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a1a2e',
+        backgroundColor: tema.renkler.arkaplan,
         padding: 20,
     },
     scroll: {
@@ -111,45 +120,45 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        color: '#e94560',
+        color: tema.renkler.durum.hata,
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 12,
     },
     errorMessage: {
-        color: '#ffffff',
+        color: tema.renkler.metin,
         fontSize: 14,
         textAlign: 'center',
         marginBottom: 20,
         lineHeight: 20,
     },
     stackContainer: {
-        backgroundColor: '#16213e',
+        backgroundColor: tema.renkler.kartArkaplan,
         borderRadius: 8,
         padding: 12,
         marginBottom: 20,
     },
     stackTitle: {
-        color: '#e94560',
+        color: tema.renkler.durum.hata,
         fontSize: 13,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     stackText: {
-        color: '#a0a0a0',
+        color: tema.renkler.metinIkincil,
         fontSize: 11,
         fontFamily: 'monospace',
         lineHeight: 16,
     },
     retryButton: {
-        backgroundColor: '#e94560',
+        backgroundColor: tema.renkler.durum.hata,
         borderRadius: 8,
         padding: 14,
         alignItems: 'center',
     },
     retryText: {
-        color: '#ffffff',
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: 'bold',
     },
