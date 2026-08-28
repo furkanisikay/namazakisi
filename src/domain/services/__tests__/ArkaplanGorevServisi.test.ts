@@ -80,6 +80,22 @@ jest.mock('../KonumDegisikligiServisi', () => ({
     konumDegistiUygula: jest.fn(() => Promise.resolve()),
 }));
 
+// Seri sayaci: gercek modul notifee + native countdown koprusunu ceker -> fabrikali
+// mock SART. Ayarlarin ham depolamadan hazirlandigi yol da ayri mock'lanir ki
+// gorevin SIRASI (muhafiz erken donuslerinden ONCE) test edilebilsin.
+const mockSeriSayacPlanla = jest.fn<Promise<void>, [unknown]>(() => Promise.resolve());
+jest.mock('../SeriSayacBildirimServisi', () => ({
+    SeriSayacBildirimServisi: {
+        getInstance: jest.fn(() => ({ yapilandirVePlanla: mockSeriSayacPlanla })),
+    },
+}));
+const mockSeriSayacHazirla = jest.fn(() =>
+    Promise.resolve({ aktif: true, hedef: new Date(), seriBugunTamMi: false })
+);
+jest.mock('../SeriSayacHazirlayici', () => ({
+    seriSayacAyarlariniHazirla: (...args: unknown[]) => mockSeriSayacHazirla(...(args as [])),
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
@@ -422,5 +438,59 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
 
         expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.Failed);
         expect(mockYapilandirVePlanla).not.toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// SERI SAYACI (Faz 5b / YENI-3) — ozelligin yasayip yasamayacagi bu cagriya bagli
+// =====================================================================
+describe('gorev govdesi > seri sayaci tazelemesi', () => {
+    it('gorev kostugunda seri sayaci hedefiyle kurulur', async () => {
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockSeriSayacHazirla).toHaveBeenCalledTimes(1);
+        expect(mockSeriSayacPlanla).toHaveBeenCalledWith(
+            expect.objectContaining({ aktif: true, seriBugunTamMi: false })
+        );
+    });
+
+    /**
+     * CUMA NOBETCISININ IKIZI. Gorev, muhafiz ayari yoksa/kapaliysa NoData ile
+     * ERKEN DONER; seri sayaci muhafizdan bagimsiz bir ozelliktir. Cagri o
+     * donuslerden SONRAYA konsaydi muhafizi kapatan kullanicida sayac hic
+     * tazelenmez ve sessizce olurdu.
+     */
+    it('MUHAFIZ AYARI YOKKEN de tazelenir (erken donusten ONCE cagrilir)', async () => {
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockYapilandirVePlanla).not.toHaveBeenCalled();
+        expect(mockSeriSayacPlanla).toHaveBeenCalledTimes(1);
+    });
+
+    it('MUHAFIZ KAPALIYKEN de tazelenir', async () => {
+        mockDepo.set(MUHAFIZ_AYARLARI_ANAHTAR, JSON.stringify({ aktif: false }));
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockSeriSayacPlanla).toHaveBeenCalledTimes(1);
+    });
+
+    it('seri sayaci patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockSeriSayacHazirla.mockRejectedValueOnce(new Error('depolama patladi'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
     });
 });

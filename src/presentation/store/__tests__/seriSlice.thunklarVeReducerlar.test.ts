@@ -77,12 +77,17 @@ jest.mock('../../../domain/services/BildirimServisi', () => ({
   },
 }));
 
-// KonumYoneticiServisi mock — imsak vaktini test bazinda degistirebilmek icin degisken
+// Imsak kaynagi mock'u — test bazinda degistirilebilir.
+//
+// KAYNAK DEGISTI: uretim kodu artik `KonumYoneticiServisi` yerine
+// `NamazVaktiHesaplayiciServisi` okuyor; eskisi uretimde HIC doldurulmadigi icin
+// daima null donuyordu (bildirim hep 04:00 fallback'inde kaliyordu).
 let mockImsakVakti: Date | null = null;
-jest.mock('../../../domain/services/KonumYoneticiServisi', () => ({
-  KonumYoneticiServisi: {
+jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
+  NamazVaktiHesaplayiciServisi: {
     getInstance: jest.fn(() => ({
-      sonrakiGunImsakVaktiGetir: jest.fn(() => mockImsakVakti),
+      getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+      getGunlukVakitler: () => (mockImsakVakti ? { imsak: mockImsakVakti } : null),
     })),
   },
 }));

@@ -39,6 +39,17 @@ jest.mock('../SahurSayacBildirimServisi', () => ({
         getInstance: jest.fn(() => ({ yapilandirVePlanla: jest.fn(() => Promise.resolve()) })),
     },
 }));
+// Seri sayaci: notifee + native countdown koprusunu ceker -> fabrikali mock SART.
+jest.mock('../SeriSayacBildirimServisi', () => ({
+    SeriSayacBildirimServisi: {
+        getInstance: jest.fn(() => ({ yapilandirVePlanla: jest.fn(() => Promise.resolve()) })),
+    },
+}));
+jest.mock('../SeriSayacHazirlayici', () => ({
+    seriSayacAyarlariniHazirla: jest.fn(() =>
+        Promise.resolve({ aktif: true, hedef: new Date(), seriBugunTamMi: false })
+    ),
+}));
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: {
         getInstance: jest.fn(() => ({ vakitleriyaz: jest.fn(() => Promise.resolve()) })),
@@ -66,6 +77,7 @@ import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from '../SahurSayacBildirimServisi';
+import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
@@ -98,6 +110,7 @@ const sahte = {
     vakitSayac: jest.fn((..._a: unknown[]) => Promise.resolve()),
     iftar: jest.fn((..._a: unknown[]) => Promise.resolve()),
     sahur: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    seriSayac: jest.fn((..._a: unknown[]) => Promise.resolve()),
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
@@ -115,6 +128,7 @@ beforeEach(() => {
     (VakitSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.vakitSayac });
     (IftarSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.iftar });
     (SahurSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.sahur });
+    (SeriSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.seriSayac });
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
 });
 
@@ -131,6 +145,10 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         expect(sahte.vakitSayac).toHaveBeenCalledTimes(1);
         expect(sahte.iftar).toHaveBeenCalledTimes(1);
         expect(sahte.sahur).toHaveBeenCalledTimes(1);
+        // Seri sayaci da konuma baglidir: hedefi SONRAKI IMSAK'tir ve sehir
+        // degisince kayar. Bu listeden duserse kullanici yeni sehrinde eski
+        // sehrin imsagina gore geri sayim gorur.
+        expect(sahte.seriSayac).toHaveBeenCalledTimes(1);
         expect(sahte.widget).toHaveBeenCalledTimes(1);
     });
 
@@ -186,6 +204,10 @@ describe('konumDegistiUygula — hata yalitimi', () => {
         expect(sahte.vakitSayac).toHaveBeenCalledTimes(1);
         expect(sahte.iftar).toHaveBeenCalledTimes(1);
         expect(sahte.sahur).toHaveBeenCalledTimes(1);
+        // Seri sayaci da konuma baglidir: hedefi SONRAKI IMSAK'tir ve sehir
+        // degisince kayar. Bu listeden duserse kullanici yeni sehrinde eski
+        // sehrin imsagina gore geri sayim gorur.
+        expect(sahte.seriSayac).toHaveBeenCalledTimes(1);
         expect(sahte.widget).toHaveBeenCalledTimes(1);
     });
 

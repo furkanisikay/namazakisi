@@ -67,6 +67,20 @@ jest.mock('../ArkaplanMuhafizServisi', () => ({
 }));
 
 // expo-background-fetch mock
+// Seri sayaci gorev govdesinden cagriliyor ve notifee + native countdown
+// koprusunu ceker -> fabrikali mock SART (AGENTS.md: requireNativeModule jest'te
+// yoktur; automock bile gercek modulu yukler).
+jest.mock('../SeriSayacBildirimServisi', () => ({
+    SeriSayacBildirimServisi: {
+        getInstance: jest.fn(() => ({ yapilandirVePlanla: jest.fn(() => Promise.resolve()) })),
+    },
+}));
+jest.mock('../SeriSayacHazirlayici', () => ({
+    seriSayacAyarlariniHazirla: jest.fn(() =>
+        Promise.resolve({ aktif: false, hedef: null, seriBugunTamMi: true })
+    ),
+}));
+
 jest.mock('expo-background-fetch', () => ({
     registerTaskAsync: jest.fn(),
     unregisterTaskAsync: jest.fn(),

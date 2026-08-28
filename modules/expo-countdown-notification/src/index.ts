@@ -18,14 +18,34 @@ export interface CountdownConfig {
     /** Small icon resource name (optional, defaults to app icon) */
     smallIcon?: string;
     /** Theme type for the custom notification (optional, defaults to vakit) */
-    themeType?: 'iftar' | 'vakit' | 'sahur';
+    themeType?: 'iftar' | 'vakit' | 'sahur' | 'seri';
+    /**
+     * Hedef aninda bildirim SISTEM tarafindan kaldirilsin mi? (`setTimeoutAfter`)
+     *
+     * Chronometer hedefte durmaz, sifiri gecince YUKARI sayar; JS'ten hedef anina
+     * bir `stopCountdown` planlamanin yolu da yoktur (uygulama kapaliyken JS
+     * kosmaz). Varsayilan `false` — mevcut sayaclarin (iftar/sahur/vakit)
+     * davranisi birebir korunur.
+     */
+    autoDismissAtTarget?: boolean;
 }
 
 const ExpoCountdownNotification = requireNativeModule('ExpoCountdownNotification');
 
 /**
- * Starts a countdown notification that displays remaining time in the notification body.
- * Uses native Android Foreground Service + CountDownTimer for battery-efficient updates.
+ * Geri sayan bir bildirim gosterir.
+ *
+ * MEKANIZMA (eski doc-yorumu "Foreground Service + CountDownTimer" diyordu, YANLIS
+ * — modulde Service sinifi YOK): `NotificationManager.notify` ile ozel bir
+ * `RemoteViews` gonderilir ve icindeki `Chronometer`
+ * `setChronometerCountDown(true)` ile kurulur → sayaci SISTEM cizer, uygulama
+ * saniye basi is yapmaz.
+ *
+ * BUNUN IKI SONUCU VAR:
+ *  1. Pil gerekcesi yok — surec calismasa da sayac akmaya devam eder.
+ *  2. Chronometer HEDEFTE DURMAZ: sifiri gecince yukari saymaya baslar. Hedefte
+ *     kaybolmasi icin `autoDismissAtTarget: true` gecin — JS'ten hedef anina
+ *     `stopCountdown` planlanamaz (uygulama kapaliyken JS kosmaz).
  *
  * @param config - Countdown configuration
  * @throws Error if platform is not Android
@@ -43,7 +63,8 @@ export function startCountdown(config: CountdownConfig): void {
         config.bodyTemplate,
         config.channelId,
         config.smallIcon ?? '',
-        config.themeType ?? 'vakit'
+        config.themeType ?? 'vakit',
+        config.autoDismissAtTarget ?? false
     );
 }
 

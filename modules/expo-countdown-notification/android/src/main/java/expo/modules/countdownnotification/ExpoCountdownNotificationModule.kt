@@ -32,13 +32,15 @@ class ExpoCountdownNotificationModule : Module() {
             bodyTemplate: String,
             channelId: String,
             smallIcon: String,
-            themeType: String ->
+            themeType: String,
+            autoDismissAtTarget: Boolean ->
 
             val context = appContext.reactContext
             if (context != null) {
                 // Bildirimi doğrudan göster (Chronometer ile saymaya başlar)
                 CountdownNotificationHelper.showCountdownNotification(
-                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon, themeType
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon,
+                    themeType, autoDismissAtTarget
                 )
 
                 // Süre dolduğunda tetiklenecek AlarmManager

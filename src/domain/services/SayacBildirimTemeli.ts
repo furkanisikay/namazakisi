@@ -27,7 +27,14 @@ export interface SayacKonfig {
   countdownBaslik: string;
   countdownBodyTemplate: string;
   /** Native modul tema anahtari */
-  themeType: 'vakit' | 'iftar' | 'sahur';
+  themeType: 'vakit' | 'iftar' | 'sahur' | 'seri';
+  /**
+   * Hedef aninda bildirim sistem tarafindan kaldirilsin mi?
+   *
+   * Chronometer hedefte DURMAZ, sifiri gecince yukari sayar. Varsayilan `false`
+   * — mevcut sayaclarin (iftar/sahur/vakit) davranisi birebir korunur.
+   */
+  hedefteKaybol?: boolean;
 }
 
 export abstract class SayacBildirimTemeli {
@@ -46,7 +53,10 @@ export abstract class SayacBildirimTemeli {
   protected async kanalOlustur(): Promise<void> {
     if (this.kanalOlusturuldu) return;
     try {
-      try { await notifee.deleteChannel(this.konfig.eskiKanalId); } catch (_) { /* yok sayilabilir */ }
+      // Bos `eskiKanalId` = silinecek eski kanal yok (yeni servisler).
+      if (this.konfig.eskiKanalId) {
+        try { await notifee.deleteChannel(this.konfig.eskiKanalId); } catch { /* yok sayilabilir */ }
+      }
       await notifee.createChannel({
         id: this.konfig.kanalId,
         name: this.konfig.kanalAdi,
@@ -69,6 +79,7 @@ export abstract class SayacBildirimTemeli {
         bodyTemplate: this.konfig.countdownBodyTemplate,
         channelId: this.konfig.kanalId,
         themeType: this.konfig.themeType,
+        autoDismissAtTarget: this.konfig.hedefteKaybol ?? false,
       });
     } catch (error) {
       Logger.error(`${this.konfig.themeType}Sayac`, 'Native countdown baslatilamadi', error);

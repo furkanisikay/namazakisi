@@ -38,6 +38,8 @@ import { VakitBildirimYoneticiServisi } from './VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './SahurSayacBildirimServisi';
+import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
+import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 
@@ -191,6 +193,14 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
                 aktif: sahurAyarlari?.aktif === true,
                 koordinatlar,
             }),
+        ),
+
+        // Seri sayaci da konuma baglidir: hedefi SONRAKI IMSAK'tir ve imsak
+        // sehir degisince kayar. Girdileri ham depolamadan hazirlanir (store yok).
+        guvenliCalistir('Seri sayaci', async () =>
+            SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(
+                await seriSayacAyarlariniHazirla(koordinatlar),
+            ),
         ),
 
         guvenliCalistir('Widget', () =>

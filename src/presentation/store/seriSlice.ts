@@ -21,7 +21,8 @@ import * as LocalSeriServisi from '../../data/local/LocalSeriServisi';
 import { localVerileriSenkronizasyonIcinAl } from '../../data/local/LocalNamazServisi';
 import { puanlamayiYenidenDegerlendir } from '../../domain/services/PuanlamaServisi';
 import { BildirimServisi } from '../../domain/services/BildirimServisi';
-import { KonumYoneticiServisi } from '../../domain/services/KonumYoneticiServisi';
+import { uygulamaImsakSaglayici } from '../../domain/services/SeriHesaplayiciServisi';
+import { sonrakiImsakVaktiBul } from '../../core/seri/seriGunSonu';
 import {
   seriHesapla,
   seriOzetiniOlustur,
@@ -152,9 +153,18 @@ export const seriAyarlariniGuncelle = createAsyncThunk(
         planlanmisSaat = yeniAyarlar.bildirimSaati;
         planlanmisDakika = yeniAyarlar.bildirimDakikasi;
       } else {
-        // OTOMATIK MOD: Imsak vaktinden X dakika once
-        const konumServisi = KonumYoneticiServisi.getInstance();
-        const imsakVakti = konumServisi.sonrakiGunImsakVaktiGetir();
+        // OTOMATIK MOD: Imsak vaktinden X dakika once.
+        //
+        // KAYNAK DEGISTI (iki ayri bug birden): eskiden
+        // `KonumYoneticiServisi.sonrakiGunImsakVaktiGetir()` cagriliyordu ve
+        //   (a) o servis URETIMDE HIC DOLDURULMUYOR (`koordinatlarAyarla` yalniz
+        //       testlerden cagriliyor) -> daima `null` donuyor, yani bildirim
+        //       pratikte HEP 04:00 fallback'ine dusuyordu;
+        //   (b) KOSULSUZ YARININ fajr'ini donduruyordu -> saat 02:00'de seri
+        //       gununun gercek sonu BUGUNUN imsagidir, yarininki degil.
+        // Ikisi de `sonrakiImsakVaktiBul` + gercekten hidrate edilen
+        // `NamazVaktiHesaplayiciServisi` saglayicisi ile duzeldi.
+        const imsakVakti = sonrakiImsakVaktiBul(new Date(), uygulamaImsakSaglayici);
 
         if (imsakVakti) {
           const imsakDakikaTarih = new Date(imsakVakti);
