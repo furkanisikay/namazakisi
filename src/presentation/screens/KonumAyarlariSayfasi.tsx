@@ -373,11 +373,11 @@ const KonumAyarlariIcerik: React.FC = () => {
                     </View>
                     <View
                         className="px-3 py-1.5 rounded-full"
-                        style={{ backgroundColor: konumAyarlari.konumModu === 'oto' ? '#4CAF5020' : '#2196F320' }}
+                        style={{ backgroundColor: konumAyarlari.konumModu === 'oto' ? `${renkler.durum.basarili}20` : `${renkler.durum.bilgi}20` }}
                     >
                         <Text
                             className="text-xs font-bold"
-                            style={{ color: konumAyarlari.konumModu === 'oto' ? '#4CAF50' : '#2196F3' }}
+                            style={{ color: konumAyarlari.konumModu === 'oto' ? renkler.durum.basarili : renkler.durum.bilgi }}
                         >
                             {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
                         </Text>
@@ -528,10 +528,10 @@ const KonumAyarlariIcerik: React.FC = () => {
                         <>
                             <View
                                 className="flex-row items-center mt-3 p-2.5 rounded-lg border"
-                                style={{ backgroundColor: '#4CAF5015', borderColor: '#4CAF50' }}
+                                style={{ backgroundColor: `${renkler.durum.basarili}15`, borderColor: renkler.durum.basarili }}
                             >
-                                <FontAwesome5 name="check-circle" size={14} color="#4CAF50" solid />
-                                <Text className="text-sm font-medium ml-2" style={{ color: '#4CAF50' }}>
+                                <FontAwesome5 name="check-circle" size={14} color={renkler.durum.basarili} solid />
+                                <Text className="text-sm font-medium ml-2" style={{ color: renkler.durum.basarili }}>
                                     Seyahatte otomatik güncelleme etkin
                                 </Text>
                             </View>
