@@ -65,6 +65,8 @@ const AksiyonKarti: React.FC<AksiyonKartiProps> = ({
       onPress={onPress}
       disabled={pasif || yukleniyor}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={baslik}
     >
       <View
         className="w-14 h-14 rounded-2xl items-center justify-center mr-4"

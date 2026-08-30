@@ -263,6 +263,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
             onPress={() => dispatch(gizlemeToggle())}
             style={styles.ikonButon}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel={kazaDurumu.toplamGizleMi ? 'Toplamı göster' : 'Toplamı gizle'}
           >
             <FontAwesome5
               name={kazaDurumu.toplamGizleMi ? 'eye-slash' : 'eye'}
@@ -386,6 +388,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                       borderColor: renkler.birincil,
                     },
                   ]}
+                  accessibilityRole="button"
                 >
                   <Text
                     style={[
@@ -425,6 +428,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
                 setAktifModal({ tip: 'gunlukHedef' });
               }}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              accessibilityRole="button"
+              accessibilityLabel="Günlük hedefi düzenle"
             >
               <FontAwesome5 name="edit" size={14} color={renkler.metinIkincil} />
             </TouchableOpacity>
@@ -509,6 +514,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   setAktifModal({ tip: 'borcEkle', namazAdi: namaz.namazAdi });
                 }}
                 style={[styles.namazButon, { borderColor: renkler.sinir }]}
+                accessibilityRole="button"
+                accessibilityLabel={`${namaz.namazAdi} borcu ekle`}
               >
                 <FontAwesome5 name="plus" size={12} color={renkler.metinIkincil} />
               </TouchableOpacity>
@@ -558,6 +565,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
             styles.sihirbazButon,
             { borderColor: renkler.birincil, backgroundColor: renkler.kartArkaplan },
           ]}
+          accessibilityRole="button"
         >
           <FontAwesome5 name="magic" size={16} color={renkler.birincil} />
           <Text style={[styles.sihirbazButonMetin, { color: renkler.birincil }]}>
@@ -655,6 +663,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   <TouchableOpacity
                     onPress={() => setAktifModal(null)}
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
+                    accessibilityRole="button"
                   >
                     <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>İptal</Text>
                   </TouchableOpacity>
@@ -668,6 +677,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                       setAktifModal({ tip: 'sihirbaz', adim: 2 });
                     }}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
+                    accessibilityRole="button"
                   >
                     <Text style={styles.modalOnayMetin}>İleri →</Text>
                   </TouchableOpacity>
@@ -697,6 +707,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                           borderColor: renkler.birincil,
                         },
                       ]}
+                      accessibilityRole="button"
                     >
                       <Text
                         style={[
@@ -713,12 +724,14 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 1 })}
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
+                    accessibilityRole="button"
                   >
                     <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>← Geri</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 3 })}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
+                    accessibilityRole="button"
                   >
                     <Text style={styles.modalOnayMetin}>İleri →</Text>
                   </TouchableOpacity>
@@ -745,6 +758,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                           borderColor: renkler.birincil,
                         },
                       ]}
+                      accessibilityRole="button"
                     >
                       <Text
                         style={[
@@ -767,12 +781,14 @@ export const KazaDefteriSayfasi: React.FC = () => {
                   <TouchableOpacity
                     onPress={() => setAktifModal({ tip: 'sihirbaz', adim: 2 })}
                     style={[styles.modalIptalButon, { borderColor: renkler.sinir }]}
+                    accessibilityRole="button"
                   >
                     <Text style={[styles.modalIptalMetin, { color: renkler.metinIkincil }]}>← Geri</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleSihirbazTamamla}
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
+                    accessibilityRole="button"
                   >
                     <Text style={styles.modalOnayMetin}>Hesapla</Text>
                   </TouchableOpacity>
