@@ -39,22 +39,22 @@ describe('adimiOnizle', () => {
     jest.clearAllMocks();
   });
 
-  it("'sessiz' modda hicbir sey calmaz", async () => {
-    await adimiOnizle({ mod: 'sessiz', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it("hicbir kanal acik degilse hicbir sey calmaz", async () => {
+    await adimiOnizle({ kanallar: {}, bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
   it("'bildirim' modunda YALNIZ bildirim sesi calar (TTS yok)", async () => {
-    await adimiOnizle({ mod: 'bildirim', bildirimSesi: 'melodi', cozulmusMetin: METIN });
+    await adimiOnizle({ kanallar: { bildirim: true }, bildirimSesi: 'melodi', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('melodi');
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
-  it("'sesli' modunda YALNIZ TTS calar (bildirim sesi yok)", async () => {
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+  it("yalniz SESLI kanal acikken YALNIZ TTS calar (bildirim sesi yok)", async () => {
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
@@ -63,8 +63,8 @@ describe('adimiOnizle', () => {
     expect(metin).toBe(METIN);
   });
 
-  it("'ikisi' modunda IKISI DE calar; anons bildirim sesinin ARDINDAN gelir", async () => {
-    await adimiOnizle({ mod: 'ikisi', bildirimSesi: 'alarm', cozulmusMetin: METIN });
+  it("iki kanal da acikken IKISI DE calar; anons bildirim sesinin ARDINDAN gelir", async () => {
+    await adimiOnizle({ kanallar: { bildirim: true, sesli: true }, bildirimSesi: 'alarm', cozulmusMetin: METIN });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('alarm');
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
@@ -76,34 +76,34 @@ describe('adimiOnizle', () => {
   });
 
   it("bekleme yalniz-TTS'te YAPILMAZ (beklenecek bir ses yok)", async () => {
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockBitisiniBekle).not.toHaveBeenCalled();
   });
 
   it("yalniz-TTS'te gecikme kisa tutulur (gereksiz sessizlik olmasin)", async () => {
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(anonsGecikmesi()).toBeCloseTo(ONIZLEME_GECIKMESI_MS, -2);
   });
 
-  it("'sesli' ama metin bossa konusma yapilmaz", async () => {
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: '   ' });
+  it("SESLI kanal acik ama metin bossa konusma yapilmaz", async () => {
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: '   ' });
 
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
     expect(mockBildirimSesiniCal).not.toHaveBeenCalled();
   });
 
-  it("'ikisi' ama metin bossa yalniz bildirim sesi calar", async () => {
-    await adimiOnizle({ mod: 'ikisi', bildirimSesi: 'can', cozulmusMetin: '' });
+  it("iki kanal acik ama metin bossa yalniz bildirim sesi calar", async () => {
+    await adimiOnizle({ kanallar: { bildirim: true, sesli: true }, bildirimSesi: 'can', cozulmusMetin: '' });
 
     expect(mockBildirimSesiniCal).toHaveBeenCalledWith('can');
     expect(mockPlanlaAnons).not.toHaveBeenCalled();
   });
 
   it('ust uste basmak yeni alarm EKLEMEZ — id SABIT kalir (native ezer)', async () => {
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
-    await adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN });
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN });
+    await adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN });
 
     expect(mockPlanlaAnons).toHaveBeenCalledTimes(2);
     expect(mockPlanlaAnons.mock.calls.every((c) => c[0] === ONIZLEME_ANONS_ID)).toBe(true);
@@ -115,7 +115,7 @@ describe('adimiOnizle', () => {
     });
 
     await expect(
-      adimiOnizle({ mod: 'sesli', bildirimSesi: 'can', cozulmusMetin: METIN })
+      adimiOnizle({ kanallar: { sesli: true }, bildirimSesi: 'can', cozulmusMetin: METIN })
     ).resolves.toBeUndefined();
   });
 });

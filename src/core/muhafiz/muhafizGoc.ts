@@ -1,5 +1,6 @@
-import type { MuhafizMatrisi, SeviyeAyari } from './matrisTipleri';
+import type { EskiUyariModu, MuhafizMatrisi, SeviyeAyari } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
+import { modKanallaraCevir } from './kanalKumesi';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
 export const ESKI_ALARM_SESI = 'alarm';
@@ -15,7 +16,9 @@ export function eskidenMatriseGoc(eski: EskiMuhafizAyari): MuhafizMatrisi {
   const vakitAyari = () => ({
     seviyeler: SEVIYE_KADEMELERI.map((kademe, i): SeviyeAyari => ({
       kademe,
-      mod: 'bildirim',
+      // Faz 2: eski global ayarda kanal kavrami YOKTU; tarihsel karsiligi
+      // "yalniz bildirim"dir (sesli anons her zaman opt-in oldu).
+      kanallar: { bildirim: true },
       esikDk: esikDizi[i],
       siklik: { herDk: siklikDizi[i] },
       bildirimSesi: VARSAYILAN_SES,
@@ -66,6 +69,57 @@ export function eskiAlarmSesiniGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
         sesAdi: undefined,
         acilKanal: seviye.acilKanal ?? true,
       };
+    });
+
+    if (vakitDegisti) degisti = true;
+    sonuc[vakit] = vakitDegisti ? { ...vakitAyari, seviyeler } : vakitAyari;
+  }
+
+  return degisti ? sonuc : matris;
+}
+
+/** Faz 2 oncesi disk semasindaki hucre: `mod` + `oncekiMod` tasir. */
+type EskiSemaSeviyesi = SeviyeAyari & {
+  mod?: EskiUyariModu;
+  oncekiMod?: EskiUyariModu;
+};
+
+/**
+ * `mod: UyariModu` → `kanallar: UyariKanallari` GOCU (bir kerelik, idempotent).
+ *
+ * `oncekiMod` DA CEVRILIR — atlanirsa yasanmis bir bug geri gelir: kapali adim
+ * diskte `mod:'sessiz' + oncekiMod:'ikisi'` tasir; yalniz `mod` cevrilseydi
+ * `oncekiMod` OKSUZ kalir, `seviyeyiAc` `{bildirim:true}` yedegine duser ve
+ * "bildirim + sesli + ozel ses + anons metni" ile kurup kapatmis kullanici adimi
+ * geri actiginda kurdugunu KAYBEDERDI (`seviyeAcKapa`'nin varlik sebebi olan bug).
+ *
+ * Eskiyen alanlar (`mod`/`oncekiMod`) kayittan SILINIR — iki dogruluk kaynagi
+ * kalmasin. `kanallar` zaten varsa hucreye DOKUNULMAZ (goc tekrar calisamaz).
+ *
+ * DEGISIKLIK YOKSA AYNI REFERANS doner (`eskiAlarmSesiniGoc` ile ayni sozlesme):
+ * `muhafizMatrisiniCoz` kimligi korur, gereksiz diske yazma tetiklenmez.
+ */
+export function modlariKanallaraGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
+  let degisti = false;
+  const sonuc = {} as MuhafizMatrisi;
+
+  for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    if (!vakitAyari?.seviyeler) {
+      sonuc[vakit] = vakitAyari;
+      continue;
+    }
+
+    let vakitDegisti = false;
+    const seviyeler = vakitAyari.seviyeler.map((ham) => {
+      const seviye = ham as EskiSemaSeviyesi;
+      if (!seviye || seviye.kanallar) return ham;
+      vakitDegisti = true;
+
+      const { mod, oncekiMod, ...kalan } = seviye;
+      const yeni: SeviyeAyari = { ...kalan, kanallar: modKanallaraCevir(mod) };
+      if (oncekiMod) yeni.oncekiKanallar = modKanallaraCevir(oncekiMod);
+      return yeni;
     });
 
     if (vakitDegisti) degisti = true;

@@ -4,7 +4,7 @@
  * Üç katmanlı progressive disclosure (spec 2026-07-17-muhafiz-ekrani-ve-sesli-uyari):
  *   Katman 1 — ana switch + yoğunluk preset'i + 5 vakit satırı (dinamik özet)
  *   Katman 2 — vakit açılınca o vaktin 4 adımı + "Tüm vakitlere uygula"
- *   Katman 3 — adıma dokununca detay (mod / eşik / sıklık / ses / anons metni)
+ *   Katman 3 — adıma dokununca detay (kanallar / eşik / sıklık / ses / anons metni)
  *
  * Yazma yolu: matris `matrisiGuncelle` ile yazılır. Eski `esikler`/`sikliklar`
  * alanlarına DOKUNULMAZ — motor adaptörü (Faz 3) onları matristen devralacak.
@@ -44,12 +44,17 @@ import {
     sayacBaslangicEsikleriHesapla,
     muhafizUyarilanVakitleriBul,
 } from '../../core/utils/vakitSayacYardimcisi';
+import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizServisi';
+import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { Logger } from '../../core/utils/Logger';
-import { VakitKarti } from './MuhafizAyarlari/VakitKarti';
-import { SeviyeDetayModal } from './MuhafizAyarlari/SeviyeDetayModal';
-import { AkisOnizlemeModal } from './MuhafizAyarlari/AkisOnizlemeModal';
+import { PencereKarti } from '../components/hatirlatma/PencereKarti';
+import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
+import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
+import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
+import { yonDegisimindeMetniCevir } from '../../core/muhafiz/matrisIslemleri';
+import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
@@ -108,6 +113,42 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         () => muhafizAyarlari.matris ?? eskidenMatriseGoc(muhafizAyarlari),
         [muhafizAyarlari]
     );
+
+    /**
+     * Vakitlerin BUGÜNKÜ pencere uzunlukları (dk) — eşik tavanı buradan gelir (Faz 0).
+     *
+     * Sabit 120 dk tavan vakitlerin gerçek süresini yok sayıyordu: yatsı kışın
+     * ~11 saat sürer (kullanıcı 3 saat önceden hatırlatılamıyordu), sabah vakti
+     * ise çoğu gün 1,5 saati bulmaz (kurulabilen 120 dk'lık adım hiç çalışmazdı).
+     *
+     * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
+     * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
+     */
+    const vakitPencereleri = useMemo<Partial<Record<MuhafizVakti, number>>>(() => {
+        try {
+            const hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
+            const bugun = new Date();
+            const vakitler = hesaplayici.getGunlukVakitler(bugun);
+            if (!vakitler) return {};
+
+            // Yatsı penceresi YARININ imsağına kadar sürer (gece yarısını aşar).
+            const yarin = new Date(bugun);
+            yarin.setDate(yarin.getDate() + 1);
+            const yarinVakitleri = hesaplayici.getGunlukVakitler(yarin);
+
+            return {
+                imsak: pencereUzunluguDkHesapla(vakitler.imsak, vakitler.gunes),
+                ogle: pencereUzunluguDkHesapla(vakitler.ogle, vakitler.ikindi),
+                ikindi: pencereUzunluguDkHesapla(vakitler.ikindi, vakitler.aksam),
+                aksam: pencereUzunluguDkHesapla(vakitler.aksam, vakitler.yatsi),
+                // Yarının imsağı alınamazsa bugünkü değerle sarma hesabı devreye girer.
+                yatsi: pencereUzunluguDkHesapla(vakitler.yatsi, yarinVakitleri?.imsak ?? vakitler.imsak),
+            };
+        } catch (hata) {
+            Logger.warn('MuhafizAyarlari', 'Vakit pencereleri hesaplanamadi', hata);
+            return {};
+        }
+    }, []);
 
     /**
      * Planlamada kullanılan güncel değerler. Debounce edilen geri çağrı kapanış
@@ -199,8 +240,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 dispatch(muhafizAyarlariniGuncelle({ yogunluk: 'ozel' }));
             }
             // Elle yapılan HER değişiklik yedeklenir — zamanlama olsun (yoğunluk
-            // 'ozel'e döner) olmasın (mod/ses/anons; yoğunluk preset kalır, spec 4.1).
-            // Mod/ses değişikliğini yedeklemezsek sonraki preset dokunuşu onu UYARISIZ
+            // 'ozel'e döner) olmasın (kanal/ses/anons; yoğunluk preset kalır, spec 4.1).
+            // Kanal/ses değişikliğini yedeklemezsek sonraki preset dokunuşu onu UYARISIZ
             // siler ve "Özel" seçeneği de görünmediği için geri dönüş kalmaz.
             // (Preset uygulaması `matrisiYaz`'dan GEÇMEZ → yedeği ezmez.)
             dispatch(ozelMatrisYedegiGuncelle(yeni));
@@ -214,6 +255,10 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             matrisiYaz({
                 ...matris,
                 [vakit]: {
+                    // `...matris[vakit]` ŞART: vaktin `yon` alanı burada yazılmıyor ama
+                    // taşınıyor. Yalnız `seviyeler` yazılsaydı bir adımı düzenlemek
+                    // yönü SESSİZCE varsayılana (çıkışa doğru) döndürürdü.
+                    ...matris[vakit],
                     seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeniSeviye : s)),
                 },
             });
@@ -224,17 +269,38 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /**
      * Bir adımı tek dokunuşla açar/kapatır.
      *
-     * Kapatma modu 'sessiz' yapar (motorun tek doğruluk kaynağı), ama kapatma
-     * anındaki modu `oncekiMod`'da saklar; açınca kullanıcının kurduğu mod geri
-     * gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel yedek ve plan
-     * tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır — aksi halde
-     * kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine çalardı.
-     * Mod değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e düşmez.
+     * Kapatma tüm kanalları kapatır (motorun tek doğruluk kaynağı `kanallar`), ama
+     * kapatma anındaki kümeyi `oncekiKanallar`'da saklar; açınca kullanıcının
+     * kurduğu küme geri gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel
+     * yedek ve plan tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır
+     * — aksi halde kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine
+     * çalardı. Kanal değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e
+     * düşmez.
      */
+    /**
+     * Pencere yönünü değiştirir.
+     *
+     * `yonDegisimindeMetniCevir` ZORUNLU: hücrede duran otomatik doldurulmuş
+     * çıkış dilli şablon ("… vakti çıkıyor, son {süre} dakika") yön girişe
+     * çevrilince "son 42 dakika" diye seslendirilir. Fonksiyon yalnız havuzdaki
+     * bir şablonla BİREBİR eşleşen metni çevirir; kullanıcının kendi yazdığına
+     * dokunmaz — ve `yon` alanını da atomik yazar, bu yüzden burada AYRICA
+     * `yon` yazılmaz.
+     */
+    const yonDegistir = useCallback(
+        (vakit: MuhafizVakti, yon: PencereYonu) => {
+            const yeniVakit = yonDegisimindeMetniCevir(matris[vakit], yon);
+            if (yeniVakit === matris[vakit]) return; // değişen bir şey yok
+            matrisiYaz({ ...matris, [vakit]: yeniVakit });
+        },
+        [matris, matrisiYaz]
+    );
+
     const seviyeAcKapa = useCallback(
         (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
             const mevcut = matris[vakit].seviyeler[indeks];
-            const yeni = acik ? seviyeyiAc(mevcut) : seviyeyiKapat(mevcut);
+            // Geri açılan adımın BOŞ anons kutusu yön-uygun şablonla dolar.
+            const yeni = acik ? seviyeyiAc(mevcut, matris[vakit].yon) : seviyeyiKapat(mevcut);
             if (yeni === mevcut) return; // Zaten istenen durumda — gereksiz yazma yok.
             seviyeGuncelle(vakit, indeks, yeni);
         },
@@ -242,8 +308,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     );
 
     /**
-     * Preset'i yazar. `sesliIzinVar` false ise sesli hücreler 'bildirim'e düşer —
-     * preset yine tümüyle uygulanır (kullanıcı hiçbir adımı kaybetmez).
+     * Preset'i yazar. `sesliIzinVar` false ise SESLİ kanal kapanır (bildirim kanalı
+     * açık kalır) — preset yine tümüyle uygulanır (kullanıcı hiçbir adımı kaybetmez).
      */
     const presetiUygula = useCallback(
         async (yogunluk: PresetYogunlugu, sesliIzinVar: boolean) => {
@@ -254,7 +320,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                 dispatch(ozelMatrisYedegiGuncelle(matris));
             }
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
-            // Preset artık zamanlamanın YANI SIRA mod + bildirim sesini de yazar;
+            // Preset artık zamanlamanın YANI SIRA kanalları + aciliyeti de yazar;
             // korunan tek kullanıcı verisi anons metnidir.
             dispatch(matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar)));
             dispatch(
@@ -593,16 +659,21 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         </Text>
 
                         {MUHAFIZ_VAKITLERI.map((vakit) => (
-                            <VakitKarti
+                            <PencereKarti
                                 key={vakit}
-                                vakit={vakit}
-                                vakitAyari={matris[vakit]}
+                                tanim={vakitPencereTanimi(
+                                    vakit,
+                                    matris[vakit].yon,
+                                    vakitPencereleri[vakit]
+                                )}
+                                ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
-                                onSeviyeSec={(indeks) => setDetay({ vakit, indeks })}
-                                onSeviyeAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
-                                onTumVakitlereUygula={() => setTumuneOnayi(vakit)}
+                                onAdimSec={(indeks) => setDetay({ vakit, indeks })}
+                                onAdimAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
+                                onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
+                                onYonDegistir={(yon) => yonDegistir(vakit, yon)}
                             />
                         ))}
                     </>
@@ -613,9 +684,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
 
             {/* ── Katman 3 ── */}
             {detay && (
-                <SeviyeDetayModal
+                <AdimDetayModal
                     gorunur
-                    vakit={detay.vakit}
+                    tanim={vakitPencereTanimi(
+                        detay.vakit,
+                        matris[detay.vakit].yon,
+                        vakitPencereleri[detay.vakit]
+                    )}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
                     ttsDestekli={ttsDestekli}
@@ -628,8 +703,12 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             {onizleme && (
                 <AkisOnizlemeModal
                     gorunur
-                    vakit={onizleme}
-                    vakitAyari={matris[onizleme]}
+                    tanim={vakitPencereTanimi(
+                        onizleme,
+                        matris[onizleme].yon,
+                        vakitPencereleri[onizleme]
+                    )}
+                    ayar={matris[onizleme]}
                     ttsDestekli={ttsDestekli}
                     onKapat={() => setOnizleme(null)}
                 />

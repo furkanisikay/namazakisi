@@ -14,6 +14,8 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
+import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
+import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -324,6 +326,31 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.6: SERI SAYACINI TAZELE
+        //
+        // BU CAGRI OZELLIGIN YASAYIP YASAMAYACAGINI BELIRLER. `startCountdown`
+        // yalnizca JS'ten cagrilabilir; zamanlanmis bir native baslatma yolu
+        // yoktur. Sayacin gorunmesi gereken pencere imsak−2sa ≈ 01:30–04:30'a
+        // duser — yani kullanicinin uygulamayi ACMADIGI pencere. Buradan
+        // tazelenmezse ozellik "uygulama zaten acikken calisan bildirim"e iner.
+        //
+        // CUMA ILE AYNI IKI SEBEPLE BURADA (muhafiz erken donuslerinden ONCE):
+        // seri sayaci muhafizdan bagimsizdir ve hatasi muhafiz planlamasini
+        // dusurmemelidir. Girdiler ham depolamadan gelir — burada REDUX YOKTUR.
+        //
+        // 15 dk granulerlik: esik anina ±15 dk sapma kabul edilir (sayac iki
+        // saat surdugu icin oransal olarak onemsiz).
+        // =====================================================
+        try {
+            const koordinat = await arkaplandaKoordinatOku();
+            await SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(
+                await seriSayacAyarlariniHazirla(koordinat ?? { lat: 0, lng: 0 })
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Seri sayacı tazelenemedi', e);
         }
 
         // =====================================================

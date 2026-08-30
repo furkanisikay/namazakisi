@@ -28,6 +28,7 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matr
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../../core/muhafiz/matrisIslemleri';
 import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
 // Global jest.setup mock'unu kasıtlı override ediyoruz ki yazılan ham JSON'u assert edebilelim
@@ -464,7 +465,7 @@ describe('muhafizSlice sesliOnayi (sesli anons tek seferlik onayı)', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
         expect(bas.sesliOnayi).toBeUndefined();
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(bas.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+            expect(bas.matris![v].seviyeler.every((s) => s.kanallar.bildirim === true && !s.kanallar.sesli)).toBe(true);
         }
     });
 
@@ -529,13 +530,15 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
         expect(presetSesliIceriyorMu(HATIRLATMA_PRESETLERI.yogun.seviyeler)).toBe(true);
     });
 
-    test("sesli adımlar 'sesli' değil 'ikisi' kullanır (TTS susarsa görsel iz kalsın)", () => {
+    test('sesli adımlarda BİLDİRİM kanalı da açık kalır (TTS susarsa görsel iz kalsın)', () => {
         for (const yogunluk of ['normal', 'yogun'] as const) {
             const seviyeler = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
             for (const kademe of SEVIYE_KADEMELERI) {
-                expect(seviyeler[kademe].mod).not.toBe('sesli');
+                // Hiçbir hücre YALNIZ sesli değildir
+                expect(seviyeler[kademe].kanallar.sesli === true && !seviyeler[kademe].kanallar.bildirim)
+                    .toBe(false);
             }
-            expect(seviyeler.acil.mod).toBe('ikisi');
+            expect(seviyeler.acil.kanallar).toEqual({ bildirim: true, sesli: true });
         }
     });
 
@@ -575,13 +578,13 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
 /**
  * Kurulum sihirbazı yolu — sesli preset'in sihirbazdan geçince ÖLMEDİĞİNİN nöbetçisi.
  * Eski yol preset'i yalnız `esikler`/`sikliklar` olarak yazıyordu; matris reducer
- * içinde `eskidenMatriseGoc` ile türetiliyor ve mod DAİMA 'bildirim' oluyordu.
+ * içinde `eskidenMatriseGoc` ile türetiliyor ve YALNIZ bildirim kanalı açılıyordu.
  */
 describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
-    test('sesli preset matrisi MOD ile birlikte üretir + onayı işaretler', () => {
+    test('sesli preset matrisi KANALLARIYLA birlikte üretir + onayı işaretler', () => {
         const ayar = presetAyarlariniOlustur('yogun');
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(ayar.matris![v].seviyeler[3].mod).toBe('ikisi');
+            expect(ayar.matris![v].seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
             expect(ayar.matris![v].seviyeler[3].anonsMetni).not.toBe('');
         }
         expect(ayar.sesliOnayi).toBe(true);
@@ -591,7 +594,7 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
     test('hafif preset sessiz kalır ve onay işaretlemez', () => {
         const ayar = presetAyarlariniOlustur('hafif');
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(ayar.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+            expect(ayar.matris![v].seviyeler.every((s) => s.kanallar.bildirim === true && !s.kanallar.sesli)).toBe(true);
         }
         expect(ayar.sesliOnayi).toBeUndefined();
     });
@@ -606,13 +609,13 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
         const ayar = presetAyarlariniOlustur('normal', false);
         expect(ayar.sesliOnayi).toBeUndefined();
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(ayar.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+            expect(ayar.matris![v].seviyeler.every((s) => s.kanallar.bildirim === true && !s.kanallar.sesli)).toBe(true);
         }
         // Zamanlama yine preset'ten gelir
         expect(ayar.esikler).toEqual(HATIRLATMA_PRESETLERI.normal.esikler);
     });
 
-    test('REGRESYON: reducer eski-alan senkronu sihirbazın modunu EZMEZ', () => {
+    test('REGRESYON: reducer eski-alan senkronu sihirbazın KANALLARINI EZMEZ', () => {
         // Payload'da matris geldiği için `eskidenMatriseGoc` yeniden türetme yapmamalı.
         const bas = reducer(undefined, { type: '@@INIT' });
         const sonra = reducer(bas, muhafizAyarlariniGuncelle({
@@ -621,9 +624,93 @@ describe('presetAyarlariniOlustur (sihirbaz yolu)', () => {
             ...presetAyarlariniOlustur('normal'),
         }));
 
-        expect(sonra.matris!.imsak.seviyeler[3].mod).toBe('ikisi');
+        expect(sonra.matris!.imsak.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
         expect(sonra.matris!.imsak.seviyeler[3].esikDk).toBe(3);
         expect(sonra.sesliOnayi).toBe(true);
+    });
+});
+
+/**
+ * FAZ 2 — `mod: UyariModu` → `kanallar: UyariKanallari` göçü (yükleme yolu).
+ *
+ * Bu yol göçü DİSKE yazar; ham AsyncStorage okuyan arka plan tüketicileri için
+ * aynı göç `muhafizMatrisiniCoz` içinde ayrıca uygulanır.
+ */
+describe('mod → kanallar göçü (yükleme yolu)', () => {
+    /** Faz 2 öncesi disk kaydı: hücreler `mod`/`oncekiMod` taşır, `kanallar` YOK. */
+    const eskiSemaliMatris = (): MuhafizMatrisi => {
+        const m = eskidenMatriseGoc({
+            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+        });
+        for (const v of MUHAFIZ_VAKITLERI) {
+            m[v].seviyeler = m[v].seviyeler.map((sv, i) => {
+                const { kanallar: _k, ...kalan } = sv;
+                return { ...kalan, mod: i === 3 ? 'ikisi' : 'bildirim' } as unknown as typeof sv;
+            });
+        }
+        return m;
+    };
+
+    const eskiSemaYaz = (ustyaz: Record<string, unknown> = {}) => {
+        mockStore.set(ANAHTAR, JSON.stringify({
+            aktif: true,
+            yogunluk: 'normal',
+            gelismisMod: false,
+            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+            matris: eskiSemaliMatris(),
+            presetGocuYapildi: true, // preset göçü kapalı: yalnız kanal göçünü ölçüyoruz
+            koordinatlar: { lat: 41.01, lng: 28.97 }, // tipte OLMAYAN tarihsel alan
+            ...ustyaz,
+        }));
+    };
+
+    it('hücreler kanal kümesine çevrilir ve motor yeniden konuşur', async () => {
+        eskiSemaYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris!.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true });
+        expect(state.matris!.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+        // Göç olmasaydı hücrelerde `kanallar` bulunmaz ve motor HEPSİNİ kapalı sayardı.
+        expect(vakitUyariPlaniOlustur(state.matris!.ogle, 24 * 60).length).toBeGreaterThan(0);
+    });
+
+    it('göç DİSKE yazılır ve tipte OLMAYAN alanları KORUR', async () => {
+        eskiSemaYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const diskte = JSON.parse(mockStore.get(ANAHTAR) as string);
+        expect(diskte.matris.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
+        expect(diskte.matris.ogle.seviyeler[3].mod).toBeUndefined();
+        // `{...parsed, ...sonuc}` şartı: konumu yalnız bu blob'da olan kullanıcı kaybolmamalı
+        expect(diskte.koordinatlar).toEqual({ lat: 41.01, lng: 28.97 });
+    });
+
+    /** RIZA KAYDI UYDURULAMAZ: göç `sesliOnayi` yazmaz. */
+    it('göç `sesliOnayi` rıza kaydını UYDURMAZ', async () => {
+        eskiSemaYaz();
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        expect((store.getState().muhafiz as MuhafizAyarlari).sesliOnayi).toBeUndefined();
+    });
+
+    /**
+     * "Özel" yedeği de göçmeli: "Özel"e dönmek onu doğrudan `matris`e yazar.
+     * Eski şemada kalsaydı motor tüm hücreleri kapalı sayar ve kullanıcı tek
+     * dokunuşla muhafızı SESSİZCE tümden susturmuş olurdu.
+     */
+    it('ozelMatrisYedegi de göçer', async () => {
+        eskiSemaYaz({ ozelMatrisYedegi: eskiSemaliMatris() });
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+
+        const yedek = (store.getState().muhafiz as MuhafizAyarlari).ozelMatrisYedegi!;
+        expect(yedek.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
     });
 });
 
@@ -684,14 +771,14 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
         for (const v of MUHAFIZ_VAKITLERI) {
-            expect(state.matris![v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+            expect(state.matris![v].seviyeler.every((s) => s.kanallar.bildirim === true && !s.kanallar.sesli)).toBe(true);
         }
         expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(0);
         // Onay uydurulmaz
         expect(state.sesliOnayi).toBeUndefined();
     });
 
-    it('onay VERİLMİŞ olsa bile göç sesliyi açmaz — mod kullanıcınındır', async () => {
+    it('onay VERİLMİŞ olsa bile göç sesliyi açmaz — kanallar kullanıcınındır', async () => {
         eskiKayitYaz({ sesliOnayi: true });
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
@@ -700,23 +787,23 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         // Zamanlama taşındı...
         expect(state.matris!.ogle.seviyeler[3].esikDk).toBe(6);
         // ...ama uyarı biçimi diskteki hâlinde kaldı (kullanıcı Ayarlar'dan açar).
-        expect(state.matris!.ogle.seviyeler[3].mod).toBe('bildirim');
+        expect(state.matris!.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true });
         expect(uyariSayisi(state.matris!).filter((a) => a.sesliAnons)).toHaveLength(0);
     });
 
     /**
-     * En sinsi veri kaybı: mod değişikliği yoğunluğu 'ozel' YAPMAZ (spec 4.1) →
+     * En sinsi veri kaybı: kanal değişikliği yoğunluğu 'ozel' YAPMAZ (spec 4.1) →
      * "Yatsı'yı susturmuş ama yoğunluğu 'normal' kalmış" kullanıcı göç kapısından
-     * GEÇER. Göç mod'u ezseydi bu seçim sessizce geri alınırdı ve göç
+     * GEÇER. Göç kanalları ezseydi bu seçim sessizce geri alınırdı ve göç
      * `ozelMatrisYedegi` yazmadığı için geri dönüş de olmazdı.
      */
-    it('elle ayarlanmış mod/ses/aciliyet göçten SAĞ ÇIKAR (yoğunluk preset olsa bile)', async () => {
+    it('elle ayarlanmış kanal/ses/aciliyet göçten SAĞ ÇIKAR (yoğunluk preset olsa bile)', async () => {
         const matris = eskidenMatriseGoc({
             esikler: ESKI_YOGUN_ESIKLER,
             sikliklar: ESKI_YOGUN_SIKLIKLAR,
         });
-        matris.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; });      // vakti susturmuş
-        matris.ogle.seviyeler[3].mod = 'ikisi';                            // sesliyi elle açmış
+        matris.yatsi.seviyeler.forEach((s) => { s.kanallar = {}; });        // vakti susturmuş
+        matris.ogle.seviyeler[3].kanallar = { bildirim: true, sesli: true }; // sesliyi elle açmış
         matris.ogle.seviyeler[3].bildirimSesi = 'content://media/42';      // kendi sesi
         matris.ogle.seviyeler[3].sesAdi = 'Hızır';
         matris.aksam.seviyeler[3].acilKanal = true;
@@ -726,8 +813,8 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         await store.dispatch(muhafizAyarlariniYukle());
 
         const state = store.getState().muhafiz as MuhafizAyarlari;
-        expect(state.matris!.yatsi.seviyeler.every((s) => s.mod === 'sessiz')).toBe(true);
-        expect(state.matris!.ogle.seviyeler[3].mod).toBe('ikisi');
+        expect(state.matris!.yatsi.seviyeler.every((s) => adimKapaliMi(s.kanallar))).toBe(true);
+        expect(state.matris!.ogle.seviyeler[3].kanallar).toEqual({ bildirim: true, sesli: true });
         expect(state.matris!.ogle.seviyeler[3].bildirimSesi).toBe('content://media/42');
         expect(state.matris!.ogle.seviyeler[3].sesAdi).toBe('Hızır');
         expect(state.matris!.aksam.seviyeler[3].acilKanal).toBe(true);
@@ -759,7 +846,7 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
             esikler: { seviye1: 77, seviye2: 33, seviye3: 12, seviye4: 4 },
             sikliklar: { seviye1: 11, seviye2: 6, seviye3: 2, seviye4: 1 },
         });
-        ozelMatris.ikindi.seviyeler[0].mod = 'sessiz';
+        ozelMatris.ikindi.seviyeler[0].kanallar = {};
         ozelMatris.aksam.seviyeler[2].bildirimSesi = 'melodi';
         eskiKayitYaz({ yogunluk: 'ozel', matris: ozelMatris });
 
@@ -795,9 +882,9 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
 
-        // Kullanıcı bir adımı elle susturur (mod zamanlama ekseni değil → yoğunluk 'yogun' kalır)
+        // Kullanıcı bir adımı elle susturur (kanal zamanlama ekseni değil → yoğunluk 'yogun' kalır)
         const elle = JSON.parse(JSON.stringify(store.getState().muhafiz.matris)) as MuhafizMatrisi;
-        elle.ogle.seviyeler[0].mod = 'sessiz';
+        elle.ogle.seviyeler[0].kanallar = {};
         store.dispatch(matrisiGuncelle(elle));
         await Promise.resolve();
 
@@ -805,23 +892,27 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         const store2 = yeniStore();
         await store2.dispatch(muhafizAyarlariniYukle());
 
-        expect((store2.getState().muhafiz as MuhafizAyarlari).matris!.ogle.seviyeler[0].mod).toBe('sessiz');
+        expect((store2.getState().muhafiz as MuhafizAyarlari).matris!.ogle.seviyeler[0].kanallar).toEqual({});
     });
 
     /**
-     * Adım aç/kapa anahtarının mod hafızası (`oncekiMod`) matrisin İÇİNDE bir
-     * alandır ve yükleme yolu matrisi bütün olarak taşır. Yine de nöbetçi:
+     * Adım aç/kapa anahtarının kanal hafızası (`oncekiKanallar`) matrisin İÇİNDE
+     * bir alandır ve yükleme yolu matrisi bütün olarak taşır. Yine de nöbetçi:
      * yükleme zincirindeki bir dönüşüm (göç / doğrulama / derin kopya) bu alanı
-     * düşürürse, kullanıcı kapattığı adımı açtığında kurduğu mod yerine
-     * 'bildirim'e düşer ve bunu hiçbir tip hatası yakalamaz.
+     * düşürürse, kullanıcı kapattığı adımı açtığında kurduğu küme yerine yalnız
+     * bildirime düşer ve bunu hiçbir tip hatası yakalamaz.
      */
-    it('KALICILIK: kapalı adımın mod hafızası (oncekiMod) yeniden açılışta korunur', async () => {
+    it('KALICILIK: kapalı adımın kanal hafızası (oncekiKanallar) yeniden açılışta korunur', async () => {
         eskiKayitYaz();
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
 
         const elle = JSON.parse(JSON.stringify(store.getState().muhafiz.matris)) as MuhafizMatrisi;
-        elle.yatsi.seviyeler[2] = { ...elle.yatsi.seviyeler[2], mod: 'sessiz', oncekiMod: 'ikisi' };
+        elle.yatsi.seviyeler[2] = {
+            ...elle.yatsi.seviyeler[2],
+            kanallar: {},
+            oncekiKanallar: { bildirim: true, sesli: true },
+        };
         store.dispatch(matrisiGuncelle(elle));
         await Promise.resolve();
 
@@ -829,8 +920,8 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         await store2.dispatch(muhafizAyarlariniYukle());
 
         const geri = (store2.getState().muhafiz as MuhafizAyarlari).matris!.yatsi.seviyeler[2];
-        expect(geri.mod).toBe('sessiz');
-        expect(geri.oncekiMod).toBe('ikisi');
+        expect(geri.kanallar).toEqual({});
+        expect(geri.oncekiKanallar).toEqual({ bildirim: true, sesli: true });
     });
 
     it('KALICILIK: bayrak diske yazılır ve yeniden açılışta korunur', async () => {

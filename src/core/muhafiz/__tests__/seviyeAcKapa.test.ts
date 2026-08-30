@@ -1,11 +1,17 @@
 import { seviyeAcikMi, seviyeyiAc, seviyeyiKapat } from '../seviyeAcKapa';
-import { ANONS_SABLONLARI } from '../anonsMetni';
+import { ANONS_SABLONLARI, ANONS_SABLONLARI_GIRIS } from '../anonsMetni';
 import { VARSAYILAN_SES } from '../matrisTipleri';
 import type { SeviyeAyari } from '../matrisTipleri';
 
+/** Kanal kümesi kısayolları (Faz 2: `mod` enum'unun yerini aldı). */
+const KAPALI = {};
+const BILDIRIM = { bildirim: true };
+const SESLI = { sesli: true };
+const IKISI = { bildirim: true, sesli: true };
+
 const seviyeKur = (fark: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
   kademe: 'uyari',
-  mod: 'bildirim',
+  kanallar: BILDIRIM,
   esikDk: 30,
   siklik: 'birkez',
   bildirimSesi: VARSAYILAN_SES,
@@ -16,27 +22,27 @@ const seviyeKur = (fark: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
 
 describe('seviyeAcKapa', () => {
   describe('seviyeAcikMi', () => {
-    it('sessiz olmayan adimi acik sayar', () => {
-      expect(seviyeAcikMi(seviyeKur({ mod: 'bildirim' }))).toBe(true);
-      expect(seviyeAcikMi(seviyeKur({ mod: 'ikisi' }))).toBe(true);
+    it('en az bir kanali acik adimi acik sayar', () => {
+      expect(seviyeAcikMi(seviyeKur({ kanallar: BILDIRIM }))).toBe(true);
+      expect(seviyeAcikMi(seviyeKur({ kanallar: IKISI }))).toBe(true);
     });
 
-    it('sessiz adimi kapali sayar', () => {
-      expect(seviyeAcikMi(seviyeKur({ mod: 'sessiz' }))).toBe(false);
+    it('hicbir kanali acik olmayan adimi kapali sayar', () => {
+      expect(seviyeAcikMi(seviyeKur({ kanallar: KAPALI }))).toBe(false);
     });
   });
 
   describe('seviyeyiKapat', () => {
-    it('modu sessize alir ve eski modu hatirlar', () => {
-      const kapali = seviyeyiKapat(seviyeKur({ mod: 'ikisi' }));
+    it('tum kanallari kapatir ve eski kumeyi hatirlar', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: IKISI }));
 
-      expect(kapali.mod).toBe('sessiz');
-      expect(kapali.oncekiMod).toBe('ikisi');
+      expect(kapali.kanallar).toEqual(KAPALI);
+      expect(kapali.oncekiKanallar).toEqual(IKISI);
     });
 
     it('kullanicinin ses/anons/zamanlama secimlerine DOKUNMAZ', () => {
       const seviye = seviyeKur({
-        mod: 'sesli',
+        kanallar: SESLI,
         bildirimSesi: 'content://media/1',
         sesAdi: 'Sabah Ezanı',
         anonsMetni: 'Öğle vaktin çıkmak üzere',
@@ -56,75 +62,77 @@ describe('seviyeAcKapa', () => {
     });
 
     it('zaten kapali adimda AYNI REFERANSI dondurur (gereksiz disk yazimi yok)', () => {
-      const seviye = seviyeKur({ mod: 'sessiz', oncekiMod: 'bildirim' });
+      const seviye = seviyeKur({ kanallar: KAPALI, oncekiKanallar: BILDIRIM });
 
       expect(seviyeyiKapat(seviye)).toBe(seviye);
     });
   });
 
   describe('seviyeyiAc', () => {
-    it('hatirlanan moda geri doner ve hafizayi temizler', () => {
-      const kapali = seviyeyiKapat(seviyeKur({ mod: 'ikisi', anonsMetni: 'Metin' }));
+    it('hatirlanan kanallara geri doner ve hafizayi temizler', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: IKISI, anonsMetni: 'Metin' }));
 
       const acik = seviyeyiAc(kapali);
 
-      expect(acik.mod).toBe('ikisi');
-      expect(acik.oncekiMod).toBeUndefined();
+      expect(acik.kanallar).toEqual(IKISI);
+      expect(acik.oncekiKanallar).toBeUndefined();
     });
 
-    it('kapat/ac turu modu KORUR (ozelligin varlik sebebi)', () => {
-      const baslangic = seviyeKur({ mod: 'sesli', anonsMetni: 'Metin' });
+    it('kapat/ac turu KANALLARI KORUR (ozelligin varlik sebebi)', () => {
+      const baslangic = seviyeKur({ kanallar: SESLI, anonsMetni: 'Metin' });
 
       const sonuc = seviyeyiAc(seviyeyiKapat(baslangic));
 
-      expect(sonuc.mod).toBe(baslangic.mod);
+      expect(sonuc.kanallar).toEqual(baslangic.kanallar);
     });
 
-    it('hatirlanan mod yoksa bildirime duser', () => {
-      const acik = seviyeyiAc(seviyeKur({ mod: 'sessiz' }));
+    it('hatirlanan kume yoksa bildirime duser', () => {
+      const acik = seviyeyiAc(seviyeKur({ kanallar: KAPALI }));
 
-      expect(acik.mod).toBe('bildirim');
+      expect(acik.kanallar).toEqual(BILDIRIM);
     });
 
-    it('sesli mod geri gelirken bos anons metnini sablonla doldurur', () => {
-      const kapali = seviyeyiKapat(seviyeKur({ mod: 'ikisi', anonsMetni: '' }));
+    it('sesli kanal geri gelirken bos anons metnini sablonla doldurur', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: IKISI, anonsMetni: '' }));
 
       const acik = seviyeyiAc(kapali);
 
       expect(acik.anonsMetni).toBe(ANONS_SABLONLARI[0]);
     });
 
+    it('giris yonunde bos kutu GIRIS sablonuyla dolar', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: IKISI, anonsMetni: '' }));
+
+      expect(seviyeyiAc(kapali, 'girisindenItibaren').anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[0]);
+    });
+
     it('kullanicinin yazdigi anons metnini EZMEZ', () => {
-      const kapali = seviyeyiKapat(seviyeKur({ mod: 'sesli', anonsMetni: 'Kendi metnim' }));
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: SESLI, anonsMetni: 'Kendi metnim' }));
 
       expect(seviyeyiAc(kapali).anonsMetni).toBe('Kendi metnim');
     });
 
-    it('sessiz olmayan moda gecerken anons metnine dokunmaz', () => {
-      const kapali = seviyeyiKapat(seviyeKur({ mod: 'bildirim', anonsMetni: '' }));
+    it('sesli kanal yokken anons metnine dokunmaz', () => {
+      const kapali = seviyeyiKapat(seviyeKur({ kanallar: BILDIRIM, anonsMetni: '' }));
 
       expect(seviyeyiAc(kapali).anonsMetni).toBe('');
     });
 
     it('zaten acik adimda AYNI REFERANSI dondurur', () => {
-      const seviye = seviyeKur({ mod: 'bildirim' });
+      const seviye = seviyeKur({ kanallar: BILDIRIM });
 
       expect(seviyeyiAc(seviye)).toBe(seviye);
     });
 
     /**
-     * Bozuk/eski kayitta `oncekiMod` 'sessiz' olabilir. Oldugu gibi geri
-     * yuklenirse kullanici switch'i acar ama adim sessiz kalir — geri donusu
+     * Bozuk/eski kayitta `oncekiKanallar` BOS olabilir. Oldugu gibi geri
+     * yuklenirse kullanici switch'i acar ama adim kapali kalir — geri donusu
      * olmayan bir kilit. Bildirime dusmek dogru kurtarma.
      */
-    it('hatirlanan mod sessiz ise bildirime duser (kilit olusmaz)', () => {
-      // Tip bunu yasaklar; disk verisi tipe uymak zorunda degil → bilerek zorlanir.
-      const bozuk = {
-        ...seviyeKur({ mod: 'sessiz' }),
-        oncekiMod: 'sessiz',
-      } as unknown as SeviyeAyari;
+    it('hatirlanan kume BOS ise bildirime duser (kilit olusmaz)', () => {
+      const bozuk = seviyeKur({ kanallar: KAPALI, oncekiKanallar: {} });
 
-      expect(seviyeyiAc(bozuk).mod).toBe('bildirim');
+      expect(seviyeyiAc(bozuk).kanallar).toEqual(BILDIRIM);
     });
   });
 });

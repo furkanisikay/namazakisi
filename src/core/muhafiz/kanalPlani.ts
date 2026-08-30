@@ -1,18 +1,24 @@
 /**
  * Matristen "hangi bildirim kanallari gerekli" listesini cikarir (SAF).
  *
- * NEDEN: kanal id artik sesin fonksiyonu (bkz. `sesKimligi.ts`) → hangi
+ * NEDEN: kanal id artik (ses + titresim) fonksiyonu (bkz. `sesKimligi.ts`) → hangi
  * kanallarin var olmasi gerektigi ARTIK SABIT DEGIL, kullanicinin secimlerine
  * baglidir. Planlama oncesi bu liste ile kanallar TEMBEL olusturulur; listede
  * OLMAYAN eski muhafiz kanallari da cop toplanir (GC).
  *
- * Bildirim uretmeyen hucreler ('sessiz') listeye GIRMEZ — kullanmadigi bir ses
- * icin kullanicinin bildirim ayarlarinda kanal birikmemeli.
+ * KAPALI hucreler (hicbir kanali acik degil) listeye GIRMEZ — kullanmadigi bir
+ * ses icin kullanicinin bildirim ayarlarinda kanal birikmemeli.
  */
 import type { MuhafizMatrisi } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
-import { kademeSeviyeNo, muhafizAcilKanalMi, muhafizKanaliSec } from './motorAdaptoru';
+import {
+  kademeSeviyeNo,
+  muhafizAcilKanalMi,
+  muhafizKanaliSec,
+  titresimGerekliMi,
+} from './motorAdaptoru';
 import { ozelSesMi, sesKimliginiNormalize } from './sesKimligi';
+import { adimKapaliMi } from './kanalKumesi';
 
 export interface MuhafizKanalTanimi {
   kanalId: string;
@@ -21,11 +27,14 @@ export interface MuhafizKanalTanimi {
   /** Kanal adinda gosterilecek ses adi (varsa) */
   sesAdi?: string;
   acilMi: boolean;
+  /** Kanal BELIRGIN titresimle mi kurulacak? (Faz 6 — kanal id'sinin girdisi) */
+  titresim: boolean;
 }
 
 /**
- * Matristeki tum (ses, aciliyet) kombinasyonlarini BENZERSIZ kanal listesine
- * cevirir. 20 hucre ayni sesi kullaniyorsa tek kanal doner (kanal enflasyonu yok).
+ * Matristeki tum (ses, aciliyet, titresim) kombinasyonlarini BENZERSIZ kanal
+ * listesine cevirir. 20 hucre ayni sesi ve titresimi kullaniyorsa tek kanal doner
+ * (kanal enflasyonu yok).
  */
 export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTanimi[] {
   const kanallar = new Map<string, MuhafizKanalTanimi>();
@@ -35,10 +44,16 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
     if (!vakitAyari?.seviyeler) continue;
 
     for (const seviye of vakitAyari.seviyeler) {
-      if (!seviye || seviye.mod === 'sessiz') continue;
+      if (!seviye || adimKapaliMi(seviye.kanallar)) continue;
 
       const seviyeNo = kademeSeviyeNo(seviye.kademe);
-      const kanalId = muhafizKanaliSec(seviyeNo, seviye.bildirimSesi, seviye.acilKanal);
+      const titresim = titresimGerekliMi(seviye.kanallar);
+      const kanalId = muhafizKanaliSec(
+        seviyeNo,
+        seviye.bildirimSesi,
+        seviye.acilKanal,
+        titresim
+      );
       if (kanallar.has(kanalId)) continue;
 
       kanallar.set(kanalId, {
@@ -46,6 +61,7 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
         sesKimligi: sesKimliginiNormalize(seviye.bildirimSesi),
         sesAdi: seviye.sesAdi,
         acilMi: muhafizAcilKanalMi(seviyeNo, seviye.bildirimSesi, seviye.acilKanal),
+        titresim,
       });
     }
   }

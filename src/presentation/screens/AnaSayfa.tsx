@@ -10,6 +10,7 @@ import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
 import { seriVerileriniYukle, seriKontrolet, puanlamayiYenidenHesapla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
+import { useKonumYenile } from '../hooks/useKonumYenile';
 import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
@@ -105,6 +106,15 @@ export const AnaSayfa: React.FC = () => {
     }
     return konumAyarlari.seciliIlAdi || undefined;
   })();
+
+  /**
+   * Konum çipindeki yenile düğmesi (yalnız otomatik modda görünür).
+   *
+   * Neden var: otomatik modda konum yalnız bölge (geofence) çıkışında tazelenir;
+   * bölge kurulamadıysa uygulama başka şehirde bile eski konuma göre hesap yapar.
+   * Kullanıcının tek çaresi konum modunu manuele alıp otomatiğe döndürmekti.
+   */
+  const konumYenile = useKonumYenile();
 
   const oncekiTamamlananRef = useRef<number>(0);
   const arkaplanMuhafizTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -679,6 +689,8 @@ export const AnaSayfa: React.FC = () => {
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
             konumMetni={konumMetni}
+            onKonumYenile={konumYenile.yenile}
+            konumYenileniyor={konumYenile.yenileniyor}
             gorunenVakitAdi={namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi)}
           />
         ) : (

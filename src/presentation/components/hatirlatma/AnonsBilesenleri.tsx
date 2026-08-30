@@ -7,7 +7,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { adimiOnizle } from '../../../domain/services/AnonsOnizlemeServisi';
-import type { UyariModu } from '../../../core/muhafiz/matrisTipleri';
+import type { UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 
 /**
@@ -48,8 +48,8 @@ export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ deste
 };
 
 export interface DinleButonuProps {
-    /** Onizlenecek adimin modu — hangi seslerin calacagini BU belirler. */
-    mod: UyariModu;
+    /** Onizlenecek adimin KANAL KUMESI — hangi seslerin calacagini BU belirler. */
+    kanallar: UyariKanallari;
     /** Ses kimligi ('varsayilan' | kullanicinin sectigi 'content://...') */
     bildirimSesi: string;
     /** Yer tutuculari COZULMUS anons metni; bossa konusma yapilmaz. */
@@ -68,20 +68,20 @@ export interface DinleButonuProps {
  * Gercek bildirim GONDERMEZ: bildirim sesi uygulama icinden (expo-audio), sesli
  * anons ise kisa gecikmeli tek atislik TTS ile calinir (bkz. `adimiOnizle`).
  *
- * Duyulacak bir sey yoksa (mod 'sessiz', ya da metinsiz 'sesli') HIC CIZILMEZ —
+ * Duyulacak bir sey yoksa (adim kapali, ya da metinsiz sesli adim) HIC CIZILMEZ —
  * basildiginda sessiz kalan bir buton kullaniciyi "bozuk" hissine surukler.
  * Ikon duyulacagi ima eder: yalniz ses → zil, yalniz anons → hoparlor, ikisi → megafon.
  */
 export const DinleButonu: React.FC<DinleButonuProps> = ({
-    mod,
+    kanallar,
     bildirimSesi,
     cozulmusMetin = '',
     erisimEtiketi,
 }) => {
     const renkler = useRenkler();
 
-    const anonsCalinacak = sesliAnonsGerekliMi(mod) && cozulmusMetin.trim().length > 0;
-    const bildirimCalinacak = bildirimSesiGerekliMi(mod);
+    const anonsCalinacak = sesliAnonsGerekliMi(kanallar) && cozulmusMetin.trim().length > 0;
+    const bildirimCalinacak = bildirimSesiGerekliMi(kanallar);
     if (!anonsCalinacak && !bildirimCalinacak) return null;
 
     const ikon = anonsCalinacak && bildirimCalinacak ? 'bullhorn' : anonsCalinacak ? 'volume-up' : 'bell';
@@ -96,7 +96,7 @@ export const DinleButonu: React.FC<DinleButonuProps> = ({
             }}
             // Yangin-ve-unut: `adimiOnizle` sesin bitisini bekledigi icin artik
             // async; servis kendi hatalarini yutar, buton beklemez.
-            onPress={() => { void adimiOnizle({ mod, bildirimSesi, cozulmusMetin }); }}
+            onPress={() => { void adimiOnizle({ kanallar, bildirimSesi, cozulmusMetin }); }}
             activeOpacity={0.7}
             accessibilityRole="button"
             accessibilityLabel={erisimEtiketi}

@@ -30,6 +30,7 @@ import seriReducer, {
 } from '../seriSlice';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
+import { VARSAYILAN_SERI_AYARLARI } from '../../../core/types/SeriTipleri';
 
 // ==================== MOCKLAR ====================
 
@@ -76,12 +77,17 @@ jest.mock('../../../domain/services/BildirimServisi', () => ({
   },
 }));
 
-// KonumYoneticiServisi mock — imsak vaktini test bazinda degistirebilmek icin degisken
+// Imsak kaynagi mock'u — test bazinda degistirilebilir.
+//
+// KAYNAK DEGISTI: uretim kodu artik `KonumYoneticiServisi` yerine
+// `NamazVaktiHesaplayiciServisi` okuyor; eskisi uretimde HIC doldurulmadigi icin
+// daima null donuyordu (bildirim hep 04:00 fallback'inde kaliyordu).
 let mockImsakVakti: Date | null = null;
-jest.mock('../../../domain/services/KonumYoneticiServisi', () => ({
-  KonumYoneticiServisi: {
+jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
+  NamazVaktiHesaplayiciServisi: {
     getInstance: jest.fn(() => ({
-      sonrakiGunImsakVaktiGetir: jest.fn(() => mockImsakVakti),
+      getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+      getGunlukVakitler: () => (mockImsakVakti ? { imsak: mockImsakVakti } : null),
     })),
   },
 }));
@@ -328,7 +334,7 @@ describe('seriAyarlariniGuncelle bildirim planlama dallari', () => {
     const ayarlar = store.getState().seri.ayarlar;
     expect(ayarlar.tamGunEsigi).toBe(3);
     // Birlesim: dokunulmayan alan varsayilan degerini korur
-    expect(ayarlar.toparlanmaGunSayisi).toBe(3); // VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi
+    expect(ayarlar.toparlanmaGunSayisi).toBe(VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi);
     expect(ayarlar.gunSonuBildirimModu).toBe('otomatik');
     // Diske yazilan deger de birlesik olmali
     const kaydedilen = mockLocalSeriAyarlariniKaydet.mock.calls[0][0];

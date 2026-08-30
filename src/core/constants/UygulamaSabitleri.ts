@@ -347,6 +347,7 @@ export const BILDIRIM_SABITLERI = {
     SAYAC: 'sayac_',
     IFTAR_SAYAC: 'iftar_sayac_',
     SAHUR_SAYAC: 'sahur_sayac_',
+    SERI_SAYAC: 'seri_sayac_',
   },
   // Bildirim Kanallari
   KANALLAR: {
@@ -357,6 +358,7 @@ export const BILDIRIM_SABITLERI = {
     VAKIT_SAYAC: 'vakit_sayac_v2',
     IFTAR_SAYAC: 'iftar_sayac_v2',
     SAHUR_SAYAC: 'sahur_sayac_v2',
+    SERI_SAYAC: 'seri_sayac',
   },
 } as const;
 

@@ -6,11 +6,16 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
+import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
+import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
+import { Vibration } from 'react-native';
 
 /**
  * Faz 3: on plan banner'i da vakit x seviye MATRISINDEN okur.
@@ -164,7 +169,7 @@ export class NamazMuhafiziServisi {
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
-        const { vakit, kalanSureMs } = vakitBilgisi;
+        const { vakit, kalanSureMs, giris } = vakitBilgisi;
         const kalanDk = Math.floor(kalanSureMs / (1000 * 60));
 
         // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
@@ -184,27 +189,70 @@ export class NamazMuhafiziServisi {
         const vakitAyari = this.matris[vakit as MuhafizVakti];
         if (!vakitAyari) return;
 
+        // FAZ 1 — YÖN. Ölçü artık "çıkışa kalan" olmak zorunda değil: giriş
+        // yönünde "girişten geçen dakika"dır. Pencere uzunluğu ARKA PLANLA AYNI
+        // kaynaktan (giriş↔çıkış) hesaplanmalı — ayrışırsa banner ile bildirim
+        // farklı dakikalara düşer (AGENTS.md'de kayıtlı ders). `giris` yoksa
+        // (yapılandırılmamış/eski kayıt) pencere bilinmez ve motor giriş yönünde
+        // hiç tetiklenmez; çıkış yönü etkilenmez.
+        const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+        const cikis = vakitBilgisi.saat ?? new Date(Date.now() + kalanSureMs);
+        const pencereUzunluguDk = giris ? pencereUzunluguDkHesapla(giris, cikis) : undefined;
+        const olcuDk =
+            yon === 'girisindenItibaren' && giris
+                ? olcuDkHesapla({ kaynak: `vakit:${vakit}`, baslangic: giris, bitis: cikis, yon }, new Date())
+                : kalanDk;
+
         // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
         // (daha nazik) seviye aktifse onun sıklığı işler.
-        const kazanan = aktifSeviyeyiBul(vakitAyari, kalanDk);
+        const kazanan = aktifSeviyeyiBul(vakitAyari, olcuDk);
         if (!kazanan) return;
 
         // Sıklık kontrolü: seviyenin KENDİ eşiğine göreceli ((eşik - kalan) % herDk),
         // arka plan planlamasıyla birebir aynı kural -> banner ve bildirim aynı
         // dakikalarda konuşur. 'birkez' yalnız tam eşik anında tetiklenir.
-        if (!seviyeTetiklenirMi(kazanan, kalanDk)) return;
+        // Kardeş seviyeler ZORUNLU geçilir (Faz 0 plan bütçesi): arka plan planı
+        // da aynı listeyi geçer; eksik bırakılırsa segment hesabı ayrışır ve
+        // banner ile bildirim farklı dakikalara düşer.
+        if (!seviyeTetiklenirMi(kazanan, olcuDk, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) return;
 
         const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
 
         // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs);
+        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+
+        // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
+        // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
+        // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
+        // kapaliyken titrer, acikken titremezdi.
+        this.titresimVer(kazanan);
 
         if (this.onBildirim) {
             this.onBildirim(
-                this.seviyeMesajiOlustur(vakit, aktifSeviye, kalanDk),
+                this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon),
                 aktifSeviye,
                 kazanan.bildirimSesi
             );
+        }
+    }
+
+    /**
+     * ON PLAN TITRESIMI (Faz 6).
+     *
+     * Desen bildirim kanalindakiyle AYNI kaynaktan gelmez — gelemez de: kanal
+     * deseni native tarafta yasar (kanal olusturulduktan sonra degistirilemez).
+     * Buradaki desen `core/muhafiz/titresimDeseni` tek kaynagindan okunur ve
+     * ikisi bilincli olarak ayni ritmi tasir.
+     *
+     * Titresim ASLA banner'i dusurmemeli: cihazin titresim motoru yoksa/izin
+     * kisitliysa `vibrate` firlatabilir → hata yutulur.
+     */
+    private titresimVer(seviye: SeviyeAyari): void {
+        if (!titresimGerekliMi(seviye.kanallar)) return;
+        try {
+            Vibration.vibrate(titresimDeseniAl());
+        } catch (error) {
+            Logger.debug('Muhafiz', 'On plan titresimi verilemedi:', error);
         }
     }
 
@@ -233,6 +281,17 @@ export class NamazMuhafiziServisi {
      * Ayrica arka plan hic planlayamamissa (ornegin muhafiz uygulama acikken yeni
      * acildi) bu yol anonsu tek basina ayakta tutar.
      *
+     * FAZ 1 / B3 — GIRIS YONUNDE ON PLAN ANONS PLANLAMAZ. Yukaridaki (2) sira
+     * garantisi giris yonunde TERS doner:
+     *      olcuDk = floor((simdi - giris) / 60000)
+     *      => simdi >= giris + olcuDk * 60000 = alarmin kurulu oldugu an
+     * yani ezilecek alarm ZATEN TETIKLENMISTIR; `planlaAnons(id, simdi + 1sn)`
+     * onu gecmise degil 1 sn sonrasina YENIDEN kurar → arka plan dakika basinda,
+     * on plan ayni dakika icinde IKINCI kez konusur. Ses arka plan alarmina
+     * birakilir (banner cikmaya devam eder): alarm acilis zincirinden (App.tsx),
+     * ekran debounce'undan ve `ArkaplanGorevServisi` 15-dk yolundan kurulur ve
+     * alarmlar uygulama ACIKKEN de tetiklenir.
+     *
      * Native cagri asla banner'i dusurmemeli -> hata yutulup loglanir.
      */
     private onPlanAnonsuPlanla(
@@ -240,9 +299,11 @@ export class NamazMuhafiziServisi {
         seviye: SeviyeAyari,
         seviyeNo: SeviyeNo,
         kalanDk: number,
-        kalanSureMs: number
+        kalanSureMs: number,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): void {
-        if (!sesliAnonsGerekliMi(seviye.mod)) return;
+        if (yon === 'girisindenItibaren') return;
+        if (!sesliAnonsGerekliMi(seviye.kanallar)) return;
         if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
 
         try {
@@ -261,14 +322,39 @@ export class NamazMuhafiziServisi {
     /**
      * Banner metni. Seviye 3 havuzdan (vakte özgü), diğerleri sabit şablon.
      * DİL: muhafız "sen" dili istisnası (AGENTS.md) — ibadete çağrı, arayüz değil.
+     *
+     * `olcuDk` SEVİYEYİ KAZANDIRAN ölçüdür; giriş yönünde "girişten geçen dakika"
+     * demektir ve çıkış dili ("kaldı", "VAKİT ÇIKIYOR") oraya UYMAZ: vakit yeni
+     * girmişken 655 dk varken "vakit çıkıyor" denirdi. Giriş yönünde seviye 3
+     * MÜCADELE havuzunu da kullanmaz — o havuz vaktin sonuna kuruludur ve vakte
+     * özgü nass taşır (AGENTS.md: terk etme ≠ geciktirme).
      */
-    private seviyeMesajiOlustur(vakit: VakitAdi, seviye: 1 | 2 | 3 | 4, kalanDk: number): string {
-        switch (seviye) {
-            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${kalanDk} dk kaldı)`;
-            case 3: return this.getRandomIcerik(vakit, 3);
-            case 2: return `Vakit daralıyor, namazı sona bırakma. (${kalanDk} dk kaldı)`;
-            case 1: return `Namaz vaktinin bitmesine ${kalanDk} dakika kaldı.`;
+    private seviyeMesajiOlustur(
+        vakit: VakitAdi,
+        seviye: 1 | 2 | 3 | 4,
+        olcuDk: number,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+    ): string {
+        if (yon === 'girisindenItibaren') {
+            switch (seviye) {
+                case 4: return `NAMAZI GECİKTİRME! Hemen namaza dur! (${olcuDk} dk geçti)`;
+                case 3: return this.girisIcerigiSec(3);
+                case 2: return `Vakit ilerliyor, namazı sona bırakma. (${olcuDk} dk geçti)`;
+                case 1: return `Namaz vakti gireli ${olcuDk} dakika oldu.`;
+            }
         }
+        switch (seviye) {
+            case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${olcuDk} dk kaldı)`;
+            case 3: return this.getRandomIcerik(vakit, 3);
+            case 2: return `Vakit daralıyor, namazı sona bırakma. (${olcuDk} dk kaldı)`;
+            case 1: return `Namaz vaktinin bitmesine ${olcuDk} dakika kaldı.`;
+        }
+    }
+
+    /** Giriş yönünün NÖTR içerik havuzundan rastgele metin (vakte özgü nass YOK). */
+    private girisIcerigiSec(seviye: 1 | 2 | 3 | 4): string {
+        const havuz = GIRIS_ICERIK_HAVUZU[seviye];
+        return havuz[Math.floor(Math.random() * havuz.length)];
     }
 
     /**

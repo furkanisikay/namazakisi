@@ -156,16 +156,17 @@ describe('AyarlarSayfasi', () => {
   });
 
   it('NÖBETÇİ: yeni özellik tanıtım kartı hâlâ render edilir', async () => {
-    // Sabit dize DEĞİL — `YENI_OZELLIKLER[0]`den türetilir: AGENTS.md'nin
-    // duyuru reçetesi diziye EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık
-    // bir sonraki özellik duyurusunda bu testi sebepsiz kırardı. Nöbetçi
-    // değer (kartın gerçekten render edildiği) korunur, yalnız veriye bağ kopar.
-    expect(YENI_OZELLIKLER[0].kartGoster).toBe(true);
+    // Sabit dize DEĞİL — katalogdan türetilir: AGENTS.md'nin duyuru reçetesi diziye
+    // EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık bir sonraki özellik duyurusunda
+    // bu testi sebepsiz kırardı. Kart, `useYeniOzellikler` ile aynı kuraldan seçilir:
+    // okunmamışlar arasında kartGoster'i olan İLK kayıt (her kayıt kart göstermez).
+    const kartOzelligi = YENI_OZELLIKLER.find(o => o.kartGoster);
+    expect(kartOzelligi).toBeDefined();
 
     const { getByText } = render(<AyarlarSayfasi />);
 
     expect(getByText('Uygulamaya eklendi')).toBeTruthy();
-    expect(getByText(YENI_OZELLIKLER[0].baslik)).toBeTruthy();
+    expect(getByText(kartOzelligi!.baslik)).toBeTruthy();
 
     await act(async () => {
       await Promise.resolve();

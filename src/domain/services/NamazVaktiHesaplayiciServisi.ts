@@ -5,7 +5,18 @@ import { TURKIYE_ILLERI_OFFLINE } from './TurkiyeKonumServisi';
 
 export interface VakitBilgisi {
     vakit: 'imsak' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
+    /** Vaktin CIKACAGI saat (bir sonraki vaktin girdigi an). */
     saat: Date;
+    /**
+     * Vaktin GIRDIGI saat (Faz 1 / B8).
+     *
+     * NEDEN: hatirlatma motoru artik iki yonlu — olcu "cikisa kalan" ya da
+     * "girisinden gecen" dakika olabilir (`PencereYonu`). Ikinci yon icin hem
+     * olcu (`simdi - giris`) hem de pencere uzunlugu (`cikis - giris`) gerekir;
+     * yalniz `saat` + `kalanSureMs` ile ikisi de hesaplanamaz ve giris yonu
+     * SESSIZCE hic tetiklenmezdi.
+     */
+    giris: Date;
     kalanSureMs: number;
     sonrakiVakitAdi: string;
     sonrakiVakitGiris: string;
@@ -191,9 +202,21 @@ export class NamazVaktiHesaplayiciServisi {
         // Adhan currentPrayer fonksiyonu "previous" prayerı döner. Yani saat 14:00 ise ve öğle 13:00 ise current 'dhuhr' dur.
         const icindeBulunulanVakitRaw = prayerTimes.currentPrayer();
 
+        // Vaktin GIRISI (Faz 1 / B8). Imsak oncesinde adhan `currentPrayer()`
+        // 'none' doner ve `timeForPrayer('none')` null verir -> aktif vakit
+        // DUNUN yatsisidir, girisi de dunden okunur. Aksi halde pencere uzunlugu
+        // (cikis - giris) absurt cikar ve giris yonu yanlis dakikalarda konusur.
+        let girisZamani = prayerTimes.timeForPrayer(icindeBulunulanVakitRaw);
+        if (!girisZamani) {
+            const dun = new Date(date);
+            dun.setDate(dun.getDate() - 1);
+            girisZamani = this.prayerTimesAl(dun).isha;
+        }
+
         return {
             vakit: vakitMapping[icindeBulunulanVakitRaw] || 'yatsi',
             saat: nextTime, // Vaktin ÇIKACAĞI saat (bir sonraki vaktin girdiği saat)
+            giris: girisZamani,
             kalanSureMs: kalanMs,
             // Ek alanlar - UI için
             sonrakiVakitAdi: vakitMapping[next] || 'imsak',

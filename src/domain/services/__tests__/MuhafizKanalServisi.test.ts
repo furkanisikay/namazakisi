@@ -27,7 +27,7 @@ const OZEL_SES = 'content://media/internal/audio/media/42';
 
 const sv = (o: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
     kademe: 'nazik',
-    mod: 'bildirim',
+    kanallar: { bildirim: true },
     esikDk: 30,
     siklik: 'birkez',
     bildirimSesi: VARSAYILAN_SES,
@@ -82,8 +82,53 @@ describe('MuhafizKanalServisi.hazirla', () => {
             expect.stringContaining('Hızır'),
             expect.any(String),
             OZEL_SES,
+            false,
             false
         );
+    });
+
+    /**
+     * FAZ 6 — VARSAYILAN ses + titreşim: hücre taban eşlemesinden çıkar, hash'li
+     * kanal gerekir. Ses URI'si `null` gitmeli: `sesKimligi` burada 'varsayilan'
+     * dizesidir ve native tarafa geçseydi `Uri.parse("varsayilan")` ile ÖLÜ bir
+     * ses kurulurdu (kanal sesi sonradan değiştirilemez → kalıcı sessizlik).
+     */
+    it('VARSAYILAN ses + titreşim: hash li kanal kurulur, ses URI si null gider', async () => {
+        const seviyeler = dortSeviye();
+        seviyeler[0].kanallar = { bildirim: true, titresim: true };
+
+        await MuhafizKanalServisi.hazirla(matrisOlustur(seviyeler));
+
+        expect(mockGarantile).toHaveBeenCalledWith(
+            muhafizKanalIdOlustur(VARSAYILAN_SES, false, true),
+            expect.any(String),
+            expect.any(String),
+            null,
+            false,
+            true
+        );
+    });
+
+    it('titreşimli kanalın ADI titreşimsizinden AYIRT EDİLEBİLİR', async () => {
+        const seviyeler = dortSeviye();
+        seviyeler[0].kanallar = { bildirim: true, titresim: true };
+
+        await MuhafizKanalServisi.hazirla(matrisOlustur(seviyeler));
+
+        const [, kanalAdi] = mockGarantile.mock.calls[0];
+        expect(kanalAdi).toContain('Titreşimli');
+    });
+
+    it('AYNI ses + FARKLI titreşim İKİ kanal kurar (kanal titreşimi sonradan değişmez)', async () => {
+        const seviyeler = dortSeviye({ bildirimSesi: OZEL_SES });
+        seviyeler[0].kanallar = { bildirim: true };
+        seviyeler[1].kanallar = { bildirim: true, titresim: true };
+
+        await MuhafizKanalServisi.hazirla(matrisOlustur(seviyeler));
+
+        const olusturulanIdler = new Set(mockGarantile.mock.calls.map((c) => c[0]));
+        expect(olusturulanIdler).toContain(muhafizKanalIdOlustur(OZEL_SES, false, false));
+        expect(olusturulanIdler).toContain(muhafizKanalIdOlustur(OZEL_SES, false, true));
     });
 
     it('ses ADI yoksa kanal adı TABAN kanaldan AYIRT EDİLEBİLİR olmalı', async () => {

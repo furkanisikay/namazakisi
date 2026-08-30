@@ -16,6 +16,7 @@ import seriReducer, {
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
 import { namazGunuHesapla, oncekiGunuAl } from '../../../domain/services/SeriHesaplayiciServisi';
+import type { ToparlanmaDurumu } from '../../../core/types/SeriTipleri';
 
 // ==================== MOCKLAR ====================
 
@@ -26,6 +27,7 @@ const mockLocalRozetleriKaydet = jest.fn();
 const mockLocalSeviyeDurumunuKaydet = jest.fn();
 const mockLocalToplamKilinanNamaziKaydet = jest.fn();
 const mockLocalToparlanmaSayisiniArttir = jest.fn();
+const mockLocalToparlanmaSayisiniAzalt = jest.fn();
 const mockLocalMukemmelGunSayisiniArttir = jest.fn();
 const mockLocalBonusPuaniKaydet = jest.fn();
 const mockLocalBonusPuaniGetir = jest.fn(async () => ({ basarili: true, veri: 0 as number | null }));
@@ -37,6 +39,7 @@ jest.mock('../../../data/local/LocalSeriServisi', () => ({
   localSeviyeDurumunuKaydet: (...args: any[]) => mockLocalSeviyeDurumunuKaydet(...args),
   localToplamKilinanNamaziKaydet: (...args: any[]) => mockLocalToplamKilinanNamaziKaydet(...args),
   localToparlanmaSayisiniArttir: (...args: any[]) => mockLocalToparlanmaSayisiniArttir(...args),
+  localToparlanmaSayisiniAzalt: (...args: unknown[]) => mockLocalToparlanmaSayisiniAzalt(...args),
   localMukemmelGunSayisiniArttir: (...args: any[]) => mockLocalMukemmelGunSayisiniArttir(...args),
   localBonusPuaniKaydet: (...args: any[]) => mockLocalBonusPuaniKaydet(...args),
   localBonusPuaniGetir: () => mockLocalBonusPuaniGetir(),
@@ -379,10 +382,11 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(sonuc.type).toContain('fulfilled');
 
       const s = store.getState().seri;
-      // Toparlanma basarili: kurtarilan seri = oncekiSeri(15) + 1 (bugun) = 16
-      expect(s.seriDurumu!.mevcutSeri).toBe(16);
-      // Rekor guncellendi: max(15, 16) = 16
-      expect(s.seriDurumu!.enUzunSeri).toBe(16);
+      // Toparlanma basarili: kurtarilan seri = oncekiSeri(15) + toparlanmada kilinan
+      // TUM gunler (hedef 5) = 20
+      expect(s.seriDurumu!.mevcutSeri).toBe(20);
+      // Rekor guncellendi: max(15, 20) = 20
+      expect(s.seriDurumu!.enUzunSeri).toBe(20);
       // Toparlanma bitti
       expect(s.seriDurumu!.toparlanmaDurumu).toBeNull();
       expect(s.seriDurumu!.sonTamGun).toBe(bugun);
@@ -395,6 +399,57 @@ describe('seriSlice - Race Condition Korumasi', () => {
       expect(mockLocalMukemmelGunSayisiniArttir).not.toHaveBeenCalled();
 
       expect(mockLocalSeriDurumunuKaydet).toHaveBeenCalled();
+    });
+
+    // NOBETCI: `toparlanmaSayisi` KALICI ve olay-tetiklemeli bir sayactir; ayni-gun
+    // geri-alimi biten toparlanmayi yeniden tamamlanabilir yaptigi icin geri sarilmazsa
+    // isaretle/geri-al dongusu sayaci sisirir (rozet kosulu: 3 kez toparlanma).
+    test('biten toparlanma AYNI GUN geri alininca toparlanma sayaci da geri alinir', async () => {
+      const bugun = namazGunuHesapla(new Date(), '05:00');
+      const dun = oncekiGunuAl(bugun);
+
+      const veriler = mockSeriVerileri();
+      veriler.veri.seriDurumu.mevcutSeri = 0;
+      veriler.veri.seriDurumu.enUzunSeri = 15;
+      veriler.veri.seriDurumu.sonTamGun = dun;
+      veriler.veri.seriDurumu.seriBaslangici = '2026-01-01';
+      (veriler.veri.seriDurumu as { toparlanmaDurumu: ToparlanmaDurumu | null }).toparlanmaDurumu = {
+        tamamlananGun: 4,
+        baslangicTarihi: '2026-02-10',
+        hedefGunSayisi: 5,
+        oncekiSeri: 15,
+      };
+      veriler.veri.toparlanmaSayisi = 2;
+
+      mockLocalTumSeriVerileriniGetir.mockResolvedValueOnce(veriler);
+      mockLocalSeriDurumunuKaydet.mockResolvedValue({ basarili: true });
+      mockLocalRozetleriKaydet.mockResolvedValue({ basarili: true });
+      mockLocalSeviyeDurumunuKaydet.mockResolvedValue({ basarili: true });
+
+      await store.dispatch(seriVerileriniYukle());
+
+      // 1) Bugun tam -> toparlanma biter, sayac 2 -> 3
+      await store.dispatch(
+        seriKontrolet({ bugunNamazlar: tamNamazlar(bugun), dunNamazlar: null })
+      );
+      expect(store.getState().seri.toparlanmaSayisi).toBe(3);
+      expect(mockLocalToparlanmaSayisiniArttir).toHaveBeenCalledTimes(1);
+
+      // 2) Ayni gun bir namaz geri alinir -> toparlanmaya donulur, sayac 3 -> 2
+      const eksik: GunlukNamazlar = {
+        tarih: bugun,
+        namazlar: tamNamazlar(bugun).namazlar.map((n, i) =>
+          i === 4 ? { ...n, tamamlandi: false } : n
+        ),
+      };
+      await store.dispatch(seriKontrolet({ bugunNamazlar: eksik, dunNamazlar: null }));
+
+      const s = store.getState().seri;
+      expect(s.seriDurumu!.toparlanmaDurumu).not.toBeNull();
+      expect(s.toparlanmaSayisi).toBe(2);
+      expect(mockLocalToparlanmaSayisiniAzalt).toHaveBeenCalledTimes(1);
+      // Sayac YALNIZ bir kez artmis olmali (geri-alim onu tekrar artirmaz)
+      expect(mockLocalToparlanmaSayisiniArttir).toHaveBeenCalledTimes(1);
     });
   });
 

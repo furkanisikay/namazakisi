@@ -20,7 +20,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
-import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
+import { TurkceTtsUyarisi, DinleButonu } from '../../components/hatirlatma/AnonsBilesenleri';
 
 export interface SesliOnayModalProps {
     gorunur: boolean;
@@ -152,7 +152,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                                 {ornekMetin}
                             </Text>
                             <DinleButonu
-                                mod="sesli"
+                                kanallar={{ sesli: true }}
                                 bildirimSesi=""
                                 cozulmusMetin={ornekMetin}
                                 erisimEtiketi="Sesli anonsu dinleyin"

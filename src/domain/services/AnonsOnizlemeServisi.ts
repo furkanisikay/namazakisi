@@ -2,7 +2,7 @@
  * Muhafiz adimi ONIZLEMESI (Faz 5) — kullanici "Dinle" dedigi anda o adim
  * GERCEKTE nasil duyulacaksa oyle calinir.
  *
- * Iki ayri ses yolu vardir ve mod hangilerini kullanacagini belirler:
+ * Iki ayri ses yolu vardir ve ADIMIN KANALLARI hangilerini kullanacagini belirler:
  *   - BILDIRIM SESI -> `OnizlemeSesServisi` (uygulama ici, expo-audio; gercek
  *     bildirim GONDERILMEZ — aninda duyulur, bildirim golgeligi kirlenmez,
  *     sessiz modda bile calisir).
@@ -11,7 +11,7 @@
  *     yok. Bu yuzden onizleme, kisa bir sure sonrasina planlanan tek atislik bir
  *     alarmdir.
  *
- * `ikisi` modunda sira GERCEK AKISLA AYNIDIR: once bildirim sesi, ardindan
+ * Iki kanal da acikken sira GERCEK AKISLA AYNIDIR: once bildirim sesi, ardindan
  * anons. TTS gecikmesi bu durumda bilincli olarak uzatilir ki bildirim sesi
  * anonsun altinda kalmasin.
  *
@@ -27,7 +27,8 @@
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Logger } from '../../core/utils/Logger';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
-import type { UyariModu } from '../../core/muhafiz/matrisTipleri';
+import type { UyariKanallari } from '../../core/muhafiz/matrisTipleri';
+import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { OnizlemeSesServisi } from './OnizlemeSesServisi';
 
 /** Onizleme anonslarinin sabit kimligi (gercek muhafiz id'leriyle carpismaz). */
@@ -37,7 +38,7 @@ export const ONIZLEME_ANONS_ID = 'muhafiz_anons_onizleme';
 export const ONIZLEME_GECIKMESI_MS = 900;
 
 /**
- * `ikisi` modunda bildirim sesinden SONRA birakilan ek pay.
+ * Iki kanal da acikken bildirim sesinden SONRA birakilan ek pay.
  *
  * DIKKAT — bu ARTIK tek basina "sesin suresi" degildir: eskiden sabit 1800 ms
  * kullaniliyordu ve gerekcesi "palet sesleri kisa (~1-2 sn)" idi. SABIT PALET
@@ -66,40 +67,41 @@ export function anonsuOnizle(
 }
 
 export interface AdimOnizlemeGirdisi {
-    mod: UyariModu;
+    /** Adimin KANAL KUMESI — hangi seslerin calacagini bu belirler. */
+    kanallar: UyariKanallari;
     /** Ses kimligi ('varsayilan' | 'content://...') */
     bildirimSesi: string;
-    /** Yer tutuculari COZULMUS anons metni ('sesli'/'ikisi' disinda kullanilmaz) */
+    /** Yer tutuculari COZULMUS anons metni (sesli kanal kapaliyken kullanilmaz) */
     cozulmusMetin: string;
 }
 
 /**
- * Bir adimi moduna gore onizler:
- *   sessiz   -> hicbir sey
- *   bildirim -> yalniz bildirim sesi
- *   sesli    -> yalniz TTS
- *   ikisi    -> once bildirim sesi, sonra TTS
+ * Bir adimi ACIK KANALLARINA gore onizler:
+ *   hicbiri           -> hicbir sey
+ *   bildirim          -> yalniz bildirim sesi
+ *   sesli             -> yalniz TTS
+ *   bildirim + sesli  -> once bildirim sesi, sonra TTS
  *
- * `sesli`/`ikisi` olsa bile anons metni BOSSA konusma yapilmaz (gercek akisla
- * ayni: bos metin okunmaz) — bu durumda `ikisi` yalniz bildirim sesi calar ve
- * TTS gecikmesi de gereksiz yere uzatilmaz.
+ * Sesli kanal acik olsa bile anons metni BOSSA konusma yapilmaz (gercek akisla
+ * ayni: bos metin okunmaz) — bu durumda yalniz bildirim sesi calar ve TTS
+ * gecikmesi de gereksiz yere uzatilmaz.
  *
- * `ikisi` modunda anons, bildirim sesinin BITISINI bekler (ust sinirli) — sabit
+ * Iki kanal birden acikken anons, bildirim sesinin BITISINI bekler (ust sinirli) — sabit
  * bir pay artik yeterli degil, cunku ses kullanicinin sectigi herhangi bir
  * uzunlukta olabilir. Cagiran taraf beklemez (`void`): dondugu an ses baslamistir.
  */
 export async function adimiOnizle({
-    mod,
+    kanallar,
     bildirimSesi,
     cozulmusMetin,
 }: AdimOnizlemeGirdisi): Promise<void> {
-    if (mod === 'sessiz') return;
+    if (adimKapaliMi(kanallar)) return;
 
-    const bildirimVar = bildirimSesiGerekliMi(mod);
+    const bildirimVar = bildirimSesiGerekliMi(kanallar);
     // `cozulmusMetin` tipte zorunlu ama DISKTEN gelir (matris hucresindeki
     // `anonsMetni`) — bozuk/eski kayitta undefined olabilir ve `.trim()` coker.
     // Ayni dosyadaki `anonsuOnizle` zaten ayni savunmayi yapiyor (satir 59).
-    const anonsVar = sesliAnonsGerekliMi(mod) && !!cozulmusMetin?.trim();
+    const anonsVar = sesliAnonsGerekliMi(kanallar) && !!cozulmusMetin?.trim();
 
     if (bildirimVar) {
         // Servis kendi hatalarini yutar, reddetmez.

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Seri sayaci zemini — Seri sekmesinin gok paneliyle AYNI tonlar
+  (`src/presentation/screens/Seri/sabitler.ts`: ZEMIN_KOYU -> ZEMIN_VURGU_SOL_UST).
+  Metin renkleri o dosyada olculen kontrast degerlerine gore secildi.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#080B16"
+        android:centerColor="#111830"
+        android:endColor="#1B2440"
+        android:angle="0" />
+    <corners android:radius="16dp" />
+</shape>

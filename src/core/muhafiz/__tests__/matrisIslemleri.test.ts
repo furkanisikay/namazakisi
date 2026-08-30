@@ -5,34 +5,51 @@ import {
   presetSesliIceriyorMu,
   presetZamanlamasiniUygula,
   zamanlamaDegistiMi,
+  yonDegisimindeMetniCevir,
   type PresetSeviyeleri,
 } from '../matrisIslemleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
-import type { MuhafizMatrisi, SeviyeAyari, UyariModu, VakitMuhafizAyari } from '../matrisTipleri';
-import { ANONS_SABLONLARI } from '../anonsMetni';
+import type {
+  MuhafizMatrisi,
+  SeviyeAyari,
+  UyariKanallari,
+  VakitMuhafizAyari,
+} from '../matrisTipleri';
+
+/** Kanal kümesi kısayolları (Faz 2: `mod` enum'unun yerini aldı). */
+const KAPALI = {};
+const BILDIRIM = { bildirim: true };
+const SESLI = { sesli: true };
+const IKISI = { bildirim: true, sesli: true };
+import { ANONS_SABLONLARI, ANONS_SABLONLARI_GIRIS } from '../anonsMetni';
+import { adimKapaliMi } from '../kanalKumesi';
 
 const OZEL_SES = 'content://media/internal/audio/media/42';
 
-const sv = (esikDk: number, mod: UyariModu = 'bildirim', ses = VARSAYILAN_SES): SeviyeAyari =>
-  ({ kademe: 'nazik', mod, esikDk, siklik: 'birkez', bildirimSesi: ses, anonsMetni: '' });
+const sv = (
+  esikDk: number,
+  kanallar: UyariKanallari = BILDIRIM,
+  ses = VARSAYILAN_SES
+): SeviyeAyari =>
+  ({ kademe: 'nazik', kanallar, esikDk, siklik: 'birkez', bildirimSesi: ses, anonsMetni: '' });
 const vakit = (esik: number): VakitMuhafizAyari => ({ seviyeler: [sv(esik), sv(esik - 5), sv(esik - 10), sv(esik - 15)] });
 const matris = (): MuhafizMatrisi =>
   Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit(30)])) as MuhafizMatrisi;
 
-/** "normal" preset'e denk örnek: son adım sesli ('ikisi'). */
+/** "normal" preset'e denk örnek: son adımda bildirim + sesli kanal açık. */
 const SESLI_PRESET: PresetSeviyeleri = {
-  nazik: { esikDk: 45, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-  uyari: { esikDk: 25, siklik: { herDk: 10 }, mod: 'bildirim', acilKanal: false },
-  sert: { esikDk: 10, siklik: { herDk: 5 }, mod: 'bildirim', acilKanal: false },
-  acil: { esikDk: 3, siklik: 'birkez', mod: 'ikisi', acilKanal: true },
+  nazik: { esikDk: 45, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  uyari: { esikDk: 25, siklik: { herDk: 10 }, kanallar: BILDIRIM, acilKanal: false },
+  sert: { esikDk: 10, siklik: { herDk: 5 }, kanallar: BILDIRIM, acilKanal: false },
+  acil: { esikDk: 3, siklik: 'birkez', kanallar: IKISI, acilKanal: true },
 };
 
 /** "hafif" preset'e denk örnek: hiçbir adımda ses yok. */
 const SESSIZ_PRESET: PresetSeviyeleri = {
-  nazik: { esikDk: 30, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-  uyari: { esikDk: 10, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-  sert: { esikDk: 5, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
-  acil: { esikDk: 2, siklik: 'birkez', mod: 'bildirim', acilKanal: false },
+  nazik: { esikDk: 30, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  uyari: { esikDk: 10, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  sert: { esikDk: 5, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  acil: { esikDk: 2, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
 };
 
 describe('tumVakitlereUygula', () => {
@@ -71,11 +88,11 @@ describe('presetUygula', () => {
     }
   });
 
-  test('SÖZLEŞME: mod ve ACİLİYET yazılır', () => {
+  test('SÖZLEŞME: KANALLAR ve ACİLİYET yazılır', () => {
     const m = matris();
-    m.ogle.seviyeler[3].mod = 'sessiz';
+    m.ogle.seviyeler[3].kanallar = KAPALI;
     const sonuc = presetUygula(m, SESLI_PRESET, true);
-    expect(sonuc.ogle.seviyeler[3].mod).toBe('ikisi');
+    expect(sonuc.ogle.seviyeler[3].kanallar).toEqual(IKISI);
     expect(sonuc.ogle.seviyeler[3].acilKanal).toBe(true);
   });
 
@@ -103,13 +120,14 @@ describe('presetUygula', () => {
     expect(hafifSonrasi.ogle.seviyeler[3].acilKanal).toBe(false);
   });
 
-  test('sesliIzinVar false ise sesli hücreler bildirime düşer, preset yine uygulanır', () => {
+  test('sesliIzinVar false ise SESLİ kanal kapanır ama adım susturulmaz', () => {
     const sonuc = presetUygula(matris(), SESLI_PRESET, false);
-    expect(sonuc.ogle.seviyeler[3].mod).toBe('bildirim');
+    // Sesli kanal kapandı, BİLDİRİM kanalı açık kaldı — adım kaybolmadı
+    expect(sonuc.ogle.seviyeler[3].kanallar).toMatchObject({ bildirim: true, sesli: false });
     // Zamanlama yine de yazıldı — kullanıcı adım kaybetmez
     expect(sonuc.ogle.seviyeler[3].esikDk).toBe(3);
     // Sesli olmayan adımlar etkilenmez
-    expect(sonuc.ogle.seviyeler[0].mod).toBe('bildirim');
+    expect(sonuc.ogle.seviyeler[0].kanallar).toEqual(BILDIRIM);
   });
 
   test('sesliIzinVar false iken anons metni de doldurulmaz', () => {
@@ -153,13 +171,13 @@ describe('presetMatrisiOlustur (sıfırdan matris — sihirbaz / initialState)',
     }
   });
 
-  test('preset MODUNU taşır — sihirbaz yolunda sesli anons ölmez', () => {
+  test('preset KANALLARINI taşır — sihirbaz yolunda sesli anons ölmez', () => {
     // Regresyon: eski yol preset'i eskidenMatriseGoc ile türetiyordu, o da
-    // mod'u DAİMA 'bildirim' sabitliyordu → sihirbazdan geçen kullanıcıda
+    // YALNIZ bildirim kanalını açıyordu → sihirbazdan geçen kullanıcıda
     // sesli preset'ler hiç çalışmıyordu.
     const m = presetMatrisiOlustur(SESLI_PRESET, true);
     for (const v of MUHAFIZ_VAKITLERI) {
-      expect(m[v].seviyeler[3].mod).toBe('ikisi');
+      expect(m[v].seviyeler[3].kanallar).toEqual(IKISI);
       expect(m[v].seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI[0]);
       expect(m[v].seviyeler[3].acilKanal).toBe(true);
     }
@@ -168,7 +186,8 @@ describe('presetMatrisiOlustur (sıfırdan matris — sihirbaz / initialState)',
   test('sesliIzinVar false ise hiçbir hücre sesli açılmaz', () => {
     const m = presetMatrisiOlustur(SESLI_PRESET, false);
     for (const v of MUHAFIZ_VAKITLERI) {
-      expect(m[v].seviyeler.every((s) => s.mod === 'bildirim')).toBe(true);
+      expect(m[v].seviyeler.every((s) => s.kanallar.bildirim === true)).toBe(true);
+      expect(m[v].seviyeler.every((s) => s.kanallar.sesli !== true)).toBe(true);
       expect(m[v].seviyeler.every((s) => s.anonsMetni === '')).toBe(true);
     }
   });
@@ -200,9 +219,9 @@ describe('zamanlamaDegistiMi (spec 4.1 elle-değişiklik → ozel)', () => {
     const a = matris(); const b = matris(); b.ikindi.seviyeler[1].siklik = { herDk: 7 };
     expect(zamanlamaDegistiMi(a, b)).toBe(true);
   });
-  test('yalnız mod/ses değişince false (zamanlama ekseni değil)', () => {
+  test('yalnız kanal/ses değişince false (zamanlama ekseni değil)', () => {
     const a = matris(); const b = matris();
-    b.aksam.seviyeler[0].mod = 'sesli'; b.aksam.seviyeler[0].bildirimSesi = OZEL_SES;
+    b.aksam.seviyeler[0].kanallar = SESLI; b.aksam.seviyeler[0].bildirimSesi = OZEL_SES;
     expect(zamanlamaDegistiMi(a, b)).toBe(false);
   });
   test('aynı matris false', () => {
@@ -212,9 +231,9 @@ describe('zamanlamaDegistiMi (spec 4.1 elle-değişiklik → ozel)', () => {
 
 /**
  * Bir kerelik preset göçü bunu kullanır: göçün amacı ETKİSİZ TEKRARI kesmekti,
- * kullanıcının uyarı BİÇİMİNİ değiştirmek değil. Mod göçle ezilseydi, "Yatsı'yı
+ * kullanıcının uyarı BİÇİMİNİ değiştirmek değil. Kanallar göçle ezilseydi, "Yatsı'yı
  * susturmuş ama yoğunluğu 'normal' kalmış" kullanıcının seçimi sessizce geri
- * alınırdı (mod değişikliği yoğunluğu 'ozel' YAPMAZ — spec 4.1).
+ * alınırdı (kanal değişikliği yoğunluğu 'ozel' YAPMAZ — spec 4.1).
  */
 describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
   test('eşik ve sıklığı preset değerleriyle yazar', () => {
@@ -226,23 +245,23 @@ describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
     }
   });
 
-  test('mod / aciliyet / ses / anons metnine DOKUNMAZ', () => {
+  test('kanallar / aciliyet / ses / anons metnine DOKUNMAZ', () => {
     const kaynak = matris();
-    kaynak.yatsi.seviyeler.forEach((s) => { s.mod = 'sessiz'; });
-    kaynak.ogle.seviyeler[3].mod = 'ikisi';
+    kaynak.yatsi.seviyeler.forEach((s) => { s.kanallar = KAPALI; });
+    kaynak.ogle.seviyeler[3].kanallar = IKISI;
     kaynak.ogle.seviyeler[3].bildirimSesi = OZEL_SES;
     kaynak.ogle.seviyeler[3].anonsMetni = 'Kalk, {vakit} namazına {süre} dakika.';
     kaynak.aksam.seviyeler[3].acilKanal = true;
 
     const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
 
-    expect(m.yatsi.seviyeler.every((s) => s.mod === 'sessiz')).toBe(true);
-    expect(m.ogle.seviyeler[3].mod).toBe('ikisi');
+    expect(m.yatsi.seviyeler.every((s) => adimKapaliMi(s.kanallar))).toBe(true);
+    expect(m.ogle.seviyeler[3].kanallar).toEqual(IKISI);
     expect(m.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
     expect(m.ogle.seviyeler[3].anonsMetni).toBe('Kalk, {vakit} namazına {süre} dakika.');
     expect(m.aksam.seviyeler[3].acilKanal).toBe(true);
-    // presetUygula ile FARK: o mod'u ezerdi
-    expect(presetUygula(kaynak, SESLI_PRESET, true).yatsi.seviyeler[0].mod).toBe('bildirim');
+    // presetUygula ile FARK: o kanalları ezerdi
+    expect(presetUygula(kaynak, SESLI_PRESET, true).yatsi.seviyeler[0].kanallar).toEqual(BILDIRIM);
   });
 
   test('kaynağı mutasyona uğratmaz (derin kopya)', () => {
@@ -252,35 +271,119 @@ describe('presetZamanlamasiniUygula (göç yolu — yalnız zamanlama)', () => {
   });
 
   /**
-   * Göç yalnız zamanlama taşır: kapalı bir adımın "açılınca hangi moda dönerim"
-   * hafızası da bir kullanıcı seçimidir, göç onu SİLMEMELİ — aksi halde göçten
-   * geçen kullanıcı kapattığı adımı açtığında kurduğu mod yerine 'bildirim'e düşer.
+   * Göç yalnız zamanlama taşır: kapalı bir adımın "açılınca hangi kanallara
+   * dönerim" hafızası da bir kullanıcı seçimidir, göç onu SİLMEMELİ — aksi halde
+   * göçten geçen kullanıcı kapattığı adımı açtığında kurduğu kümeyi kaybeder.
    */
-  test('kapalı adımın mod hafızasını (oncekiMod) KORUR', () => {
+  test('kapalı adımın kanal hafızasını (oncekiKanallar) KORUR', () => {
     const kaynak = matris();
-    kaynak.yatsi.seviyeler[3] = { ...kaynak.yatsi.seviyeler[3], mod: 'sessiz', oncekiMod: 'ikisi' };
+    kaynak.yatsi.seviyeler[3] = {
+      ...kaynak.yatsi.seviyeler[3],
+      kanallar: KAPALI,
+      oncekiKanallar: IKISI,
+    };
 
     const m = presetZamanlamasiniUygula(kaynak, SESLI_PRESET);
 
-    expect(m.yatsi.seviyeler[3].mod).toBe('sessiz');
-    expect(m.yatsi.seviyeler[3].oncekiMod).toBe('ikisi');
+    expect(m.yatsi.seviyeler[3].kanallar).toEqual(KAPALI);
+    expect(m.yatsi.seviyeler[3].oncekiKanallar).toEqual(IKISI);
   });
 });
 
-describe('presetUygula — mod hafızası (oncekiMod) hijyeni', () => {
+describe('presetUygula — kanal hafızası (oncekiKanallar) hijyeni', () => {
   /**
-   * Preset MOD yazar, yani hücreyi kesin açar. "Kapatıldığında hatırlanan mod"
-   * hafızası bu noktada anlamsızlaşır; bırakılırsa "oncekiMod var ⟺ hücre kapalı"
-   * invariantı kırılır (bugün görünür bir bug üretmez çünkü preset'lerin hiçbiri
-   * 'sessiz' yazmaz — ama sessiz adım içeren bir preset eklendiği gün üretir).
+   * Preset KANALLARI yazar, yani hücreyi kesin açar. "Kapatıldığında hatırlanan
+   * küme" hafızası bu noktada anlamsızlaşır; bırakılırsa "oncekiKanallar var ⟺
+   * hücre kapalı" invariantı kırılır (bugün görünür bir bug üretmez çünkü
+   * preset'lerin hiçbiri kapalı adım yazmaz — ama yazan bir preset eklendiği gün üretir).
    */
-  test('preset uygulanınca bayat mod hafızası temizlenir', () => {
+  test('preset uygulanınca bayat kanal hafızası temizlenir', () => {
     const kaynak = matris();
-    kaynak.ogle.seviyeler[0] = { ...kaynak.ogle.seviyeler[0], mod: 'sessiz', oncekiMod: 'sesli' };
+    kaynak.ogle.seviyeler[0] = {
+      ...kaynak.ogle.seviyeler[0],
+      kanallar: KAPALI,
+      oncekiKanallar: SESLI,
+    };
 
     const m = presetUygula(kaynak, SESLI_PRESET, true);
 
-    expect(m.ogle.seviyeler[0].mod).toBe('bildirim');
-    expect(m.ogle.seviyeler[0].oncekiMod).toBeUndefined();
+    expect(m.ogle.seviyeler[0].kanallar).toEqual(BILDIRIM);
+    expect(m.ogle.seviyeler[0].oncekiKanallar).toBeUndefined();
+  });
+});
+
+describe('presetUygula — yön-uygun şablon', () => {
+  test('giriş yönündeki vakitte boş kutu GİRİŞ şablonuyla dolar', () => {
+    const m = matris();
+    m.ogle.yon = 'girisindenItibaren';
+
+    const sonuc = presetUygula(m, SESLI_PRESET, true);
+
+    expect(sonuc.ogle.seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[0]);
+    // Yön alanı olmayan vakitler çıkış şablonunda kalır (sıfır göç).
+    expect(sonuc.ikindi.seviyeler[3].anonsMetni).toBe(ANONS_SABLONLARI[0]);
+  });
+});
+
+describe('yonDegisimindeMetniCevir', () => {
+  const vakitAyari = (anonsMetni: string, yon?: VakitMuhafizAyari['yon']): VakitMuhafizAyari => ({
+    yon,
+    seviyeler: [{ ...sv(45, IKISI), anonsMetni }],
+  });
+
+  test('otomatik doldurulmuş ÇIKIŞ şablonu giriş karşılığına çevrilir', () => {
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(ANONS_SABLONLARI[1]), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(ANONS_SABLONLARI_GIRIS[1]);
+    expect(sonuc.yon).toBe('girisindenItibaren');
+  });
+
+  test('geri dönüşte GİRİŞ şablonu çıkış karşılığına çevrilir', () => {
+    const sonuc = yonDegisimindeMetniCevir(
+      vakitAyari(ANONS_SABLONLARI_GIRIS[2], 'girisindenItibaren'),
+      'cikisaDogru'
+    );
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(ANONS_SABLONLARI[2]);
+    expect(sonuc.yon).toBe('cikisaDogru');
+  });
+
+  /**
+   * B11'in can alıcı noktası: "kullanıcı metnini ezme" kuralı otomatik doldurulan
+   * şablonu kullanıcının yazdığından ayırt edemez → ayırt edici ölçüt BİREBİR
+   * EŞLEŞMEdir. Havuzda olmayan metne DOKUNULMAZ.
+   */
+  test('elle yazılmış metin KORUNUR (havuzla birebir eşleşmiyor)', () => {
+    const elle = 'Kalk, {vakit} namazına {süre} dakika kaldı.';
+
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(elle), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].anonsMetni).toBe(elle);
+    expect(sonuc.yon).toBe('girisindenItibaren');
+  });
+
+  test('şablonun ucuna tek boşluk eklenmişse bile DOKUNULMAZ', () => {
+    const neredeyse = `${ANONS_SABLONLARI[0]} `;
+
+    expect(yonDegisimindeMetniCevir(vakitAyari(neredeyse), 'girisindenItibaren')
+      .seviyeler[0].anonsMetni).toBe(neredeyse);
+  });
+
+  test('boş kutu boş kalır (doldurma burada YAPILMAZ)', () => {
+    expect(yonDegisimindeMetniCevir(vakitAyari(''), 'girisindenItibaren')
+      .seviyeler[0].anonsMetni).toBe('');
+  });
+
+  test('yön zaten hedefse ve çevrilecek metin yoksa AYNI REFERANS döner', () => {
+    const ayar = vakitAyari('Kendi metnim');
+
+    expect(yonDegisimindeMetniCevir(ayar, 'cikisaDogru')).toBe(ayar);
+  });
+
+  test('metin dışındaki alanlara dokunmaz', () => {
+    const sonuc = yonDegisimindeMetniCevir(vakitAyari(ANONS_SABLONLARI[0]), 'girisindenItibaren');
+
+    expect(sonuc.seviyeler[0].kanallar).toEqual(IKISI);
+    expect(sonuc.seviyeler[0].esikDk).toBe(45);
   });
 });

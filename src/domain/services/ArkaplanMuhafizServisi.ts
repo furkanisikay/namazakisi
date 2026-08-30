@@ -15,9 +15,12 @@ import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/U
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
-import { basligiOlustur, bildirimGovdesiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
+import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur, muhafizKanaliSec, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
+import { vakitUyariPlaniOlustur, muhafizKanaliSec, titresimGerekliMi, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
+import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
+import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
 import {
@@ -259,9 +262,22 @@ export class ArkaplanMuhafizServisi {
         const vakitAyari = this.ayarlar.matris[muhafizVakti];
         if (!vakitAyari) return;
 
-        // Vaktin cikmasina kac dakika kaldi? (Su andan itibaren)
-        const suankiKalanDakika = Math.floor((cikisSuresi - simdi.getTime()) / (60 * 1000));
-        const plan = vakitUyariPlaniOlustur(vakitAyari, suankiKalanDakika);
+        // FAZ 1 — YON. Giris yonunde motor `pencereUzunluguDk` OLMADAN hic
+        // tetiklenmez (plan bos doner): olcunun ust siniri ancak pencereden
+        // turetilebilir. Ayni degeri on plan (`NamazMuhafiziServisi`) da hesaplar;
+        // ayrisirlarsa banner ile bildirim ayri dakikalara duser (AGENTS.md'de
+        // kayitli ders).
+        const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+        const pencereUzunluguDk = pencereUzunluguDkHesapla(vakit.giris, vakit.cikis);
+
+        // Tarama SU ANKI olcuden baslar: cikis yonunde kalan, giris yonunde
+        // girisin uzerinden gecen dakika (vakit henuz girmediyse negatif → motor
+        // 1'den tarar ve pencerenin tamamini planlar).
+        const suankiOlcu = olcuDkHesapla(
+            { kaynak: `vakit:${vakit.vakit}`, baslangic: vakit.giris, bitis: vakit.cikis, yon },
+            simdi
+        );
+        const plan = vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk });
 
         let planlanan = 0;
         for (const uyari of plan) {
@@ -270,8 +286,11 @@ export class ArkaplanMuhafizServisi {
             if (bildirimZamani.getTime() <= simdi.getTime()) continue;
 
             const seviye = uyari.seviye as MuhafizSeviye;
-            const baslik = basligiOlustur(vakit.vakit, seviye, uyari.kalanDk);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye);
+            // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
+            // yonunde ikisi farklidir ve kalanDk verilirse basligi "655 dk ·
+            // YATSI VAKTİ ÇIKIYOR" gibi ters bir cumle olur.
+            const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
+            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir).
             // ID uretimi PAYLASILAN yardimciya devredildi — on plan (NamazMuhafiziServisi)
@@ -290,7 +309,7 @@ export class ArkaplanMuhafizServisi {
             );
             // Faz 4: mod 'sesli'/'ikisi' ise ayni ana bir de TTS anonsu planla.
             // Anons id = bildirim id -> iptal zinciri simetrik kalir.
-            this.anonsPlanla(bildirimId, bildirimZamani, uyari, muhafizVakti);
+            this.anonsPlanla(bildirimId, bildirimZamani, uyari, muhafizVakti, yon);
             planlanan++;
         }
 
@@ -323,12 +342,19 @@ export class ArkaplanMuhafizServisi {
                 return;
             }
 
+            const titresimli = titresimGerekliMi(uyari.kanallar);
+
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
                 content: {
                     title: baslik,
                     body: mesaj,
                     sound: true,
+                    // Android 8+ ta TITRESIM KANAL ozelligidir ve bu alan yok sayilir
+                    // (desen `MuhafizKanallari.kt` icinde, kanal id'sine baglidir).
+                    // Alan yalniz Android 8 ONCESI cihazlar icin tasinir; titresim
+                    // kapaliyken HIC yazilmaz → mevcut davranis birebir korunur.
+                    ...(titresimli ? { vibrate: titresimDeseniAl() } : {}),
                     priority: uyari.seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
@@ -340,7 +366,7 @@ export class ArkaplanMuhafizServisi {
                         tarih: tarih,
                         // Faz 4 kancasi: TTS bayragi + anons metni + secilen ses veriye tasinir.
                         // (Sesli anonsu native FGS Faz 4'te bu alanlardan okuyacak.)
-                        mod: uyari.mod,
+                        kanallar: uyari.kanallar,
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,
@@ -349,10 +375,16 @@ export class ArkaplanMuhafizServisi {
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
                     date: zaman,
-                    // Android: ses KANAL ozelligidir → kanal id hucrenin sectigi
-                    // sesten TURETILIR (`muhafizKanaliSec`). Aciliyet ayri alandan
-                    // (`acilKanal`) gelir; ses artik onem tasimaz.
-                    channelId: muhafizKanaliSec(uyari.seviye, uyari.bildirimSesi, uyari.acilKanal),
+                    // Android: ses de TITRESIM de KANAL ozelligidir → kanal id
+                    // hucrenin (ses + titresim) seciminden TURETILIR
+                    // (`muhafizKanaliSec`). Aciliyet ayri alandan (`acilKanal`)
+                    // gelir; ses artik onem tasimaz.
+                    channelId: muhafizKanaliSec(
+                        uyari.seviye,
+                        uyari.bildirimSesi,
+                        uyari.acilKanal,
+                        titresimli
+                    ),
                 },
             });
 
@@ -377,13 +409,18 @@ export class ArkaplanMuhafizServisi {
         id: string,
         zaman: Date,
         uyari: UyariPlani,
-        vakit: MuhafizVakti
+        vakit: MuhafizVakti,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): void {
         if (!uyari.sesliAnons) return;
         if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
 
         try {
-            const metin = anonsMetniniCoz(uyari.anonsMetni, vakit, uyari.kalanDk);
+            // UCUNCU ARGUMAN `olcuDk` — `kalanDk` DEGIL. Cikis yonunde ikisi
+            // esittir (bugune kadar zararsizdi); giris yonunde `kalanDk` "son 25
+            // dakika" gibi ters bir cumle okutur. Parametre opsiyonel
+            // varsayilanli oldugu icin typecheck bunu YAKALAMAZ.
+            const metin = anonsMetniniCoz(uyari.anonsMetni, vakit, uyari.olcuDk, yon);
             planlaAnons(id, zaman.getTime(), metin);
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', `Sesli anons planlanamadi: ${id}`, error);
@@ -398,14 +435,29 @@ export class ArkaplanMuhafizServisi {
      * nass yanlis vakitte cikmasin). Havuzda o (vakit, seviye) icin hicbir sey
      * yoksa yedek metne duser -> govde asla bos kalmaz.
      * Nass ise kunye de eklenir (icerikMetniOlustur).
+     *
+     * GIRIS YONUNDE MUCADELE HAVUZU KULLANILMAZ: o havuz vaktin SONUNA kuruludur
+     * ("Vakit daralmaya basladi", "Son dakikalar") ve vakte ozgu nass tasir —
+     * vakit yeni girmisken yanlis hedeftir (AGENTS.md: terk etme ≠ geciktirme).
+     * Yerine notr `GIRIS_ICERIK_HAVUZU` kullanilir.
      */
-    private bildirimMesajiOlustur(vakit: VakitAdi, seviye: MuhafizSeviye): string {
-        const icerikler = uygunIcerikleriBul(vakit, seviye);
-        if (icerikler.length > 0) {
-            const rastgele = Math.floor(Math.random() * icerikler.length);
-            return icerikMetniOlustur(icerikler[rastgele]);
+    private bildirimMesajiOlustur(
+        vakit: VakitAdi,
+        seviye: MuhafizSeviye,
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+    ): string {
+        const icerikler =
+            yon === 'girisindenItibaren' ? GIRIS_ICERIK_HAVUZU[seviye] : null;
+        if (icerikler) {
+            return icerikler[Math.floor(Math.random() * icerikler.length)];
         }
-        return bildirimGovdesiOlustur(seviye);
+
+        const mucadeleIcerikleri = uygunIcerikleriBul(vakit, seviye);
+        if (mucadeleIcerikleri.length > 0) {
+            const rastgele = Math.floor(Math.random() * mucadeleIcerikleri.length);
+            return icerikMetniOlustur(mucadeleIcerikleri[rastgele]);
+        }
+        return bildirimGovdesiOlustur(seviye, yon);
     }
 
     /**

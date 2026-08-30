@@ -88,7 +88,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
   YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedekleme & Aktarım' } },
   IceAktarmaSihirbazi: { component: IceAktarmaSihirbaziSayfasi, options: { headerShown: false } },
-  TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { headerShown: false } },
+  TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { title: 'Tanı ve Geri Bildirim' } },
 };
 
 /**

@@ -41,6 +41,144 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'muhafiz-giris-yonu',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Vakit Girer Girmez Hatırlatma',
+        aciklama:
+            'Artık her vakit için "vakit çıkmadan önce" yerine "vakit girer girmez başla, çıkana kadar sürdür" diyebilirsiniz.',
+        detayAciklama:
+            'Namaz Muhafızı bugüne kadar yalnızca vaktin çıkışına doğru hatırlatıyordu; yatsı gibi altı-yedi saat süren vakitlerde bu, gecenin çok geç bir saatine kadar hiç ses çıkmaması demekti. Artık her vakit için yön seçebilirsiniz. "Girişinden itibaren" seçtiğinizde hatırlatmalar vakit girer girmez başlar, adım adım sertleşerek vakit çıkana kadar sürer. Yön değiştirdiğinizde hazır anons metinleriniz de otomatik olarak yeni yöne uygun hâle getirilir; kendi yazdığınız metinlere dokunulmaz. Yön seçmediğiniz vakitler tam olarak eskisi gibi çalışmaya devam eder.',
+        ikon: 'exchange-alt',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Vakitlerinizi ayarlayın',
+        kartGoster: true,
+        detaylar: [
+            'Her vakit için ayrı yön seçimi',
+            'Girişten itibaren başlayıp çıkana kadar süren hatırlatma',
+            'Anons metinleri yeni yöne göre kendiliğinden uyarlanır',
+            'Yön seçmediğiniz vakitler aynen kalır',
+        ],
+    },
+    {
+        id: 'muhafiz-dinamik-esik',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Uzun Vakitlerde Daha Geniş Aralık',
+        aciklama:
+            'Hatırlatma adımlarını artık vaktin gerçek uzunluğu kadar erkene alabilirsiniz; 120 dakikalık sabit sınır kalktı.',
+        detayAciklama:
+            'Önceden bir adımı en fazla "120 dakika kala" olarak ayarlayabiliyordunuz. Bu sınır, öğle gibi kısa vakitler düşünülerek konmuştu ve yatsı gibi uzun vakitlerde gereksiz yere kısıtlıyordu. Artık üst sınır, o vaktin bugünkü gerçek uzunluğundan hesaplanır — yatsıda saatler öncesinden hatırlatma kurabilirsiniz. Çok uzun aralıklarda bildirim yağmuru olmaması için tekrar sıklığı gerektiğinde otomatik seyreltilir ve bu durum ilgili adımın altında size gösterilir. Mevcut ayarlarınız hiç değişmez.',
+        ikon: 'arrows-alt-h',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Adımlarınızı ayarlayın',
+        kartGoster: false,
+        detaylar: [
+            'Üst sınır vaktin gerçek uzunluğundan hesaplanır',
+            'Yatsı gibi uzun vakitlerde saatler öncesinden hatırlatma',
+            'Aşırı sıklıkta bildirim olmaması için otomatik seyreltme',
+            'Mevcut ayarlarınız aynen korunur',
+        ],
+    },
+    {
+        id: 'cuma-periyodik-hatirlatma',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Cuma Hatırlatması Tekrarlayabilir',
+        aciklama:
+            'Cuma hatırlatmasını tek seferlik bırakabilir ya da camiye çıkana kadar belirli aralıklarla tekrarlatabilirsiniz.',
+        detayAciklama:
+            'Cuma hatırlatması bugüne kadar tek bir bildirim gönderiyordu; yoğun bir işin ortasındaysanız kaçırmanız kolaydı. Artık Bildirim Ayarları\'ndaki cuma bölümünde hatırlatmaya dokunarak tekrar aralığı belirleyebilirsiniz. Ayarı değiştirmediyseniz hatırlatma tam olarak eskisi gibi tek seferlik kalır. Bu bölüm artık Namaz Muhafızı ile aynı arayüzü kullanıyor, böylece iki yerde de aynı şekilde ayar yaparsınız.',
+        ikon: 'mosque',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Cuma ayarlarınıza bakın',
+        kartGoster: false,
+        detaylar: [
+            'İsteğe bağlı tekrar aralığı (5–60 dakika)',
+            'Dokunmazsanız eskisi gibi tek seferlik kalır',
+            'Namaz Muhafızı ile aynı ayar arayüzü',
+            'Cuma yine öğle namazı olarak işaretlenir',
+        ],
+    },
+    {
+        id: 'seri-gun-sonu-sayaci',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Serinizi Kurtaracak Geri Sayım',
+        aciklama:
+            'Gün bitmeden namazlarınız eksikse, kalan süreyi bildirim gölgeliğinde büyük bir geri sayımla görürsünüz.',
+        detayAciklama:
+            'Seri gününüz ertesi imsakta biter. O ana iki saat kala bugünkü namazlarınız hâlâ eksikse, iftar ve sahur sayaçlarındaki gibi büyük bir geri sayım bildirimi çıkar ve serinizi kurtarmak için ne kadar vaktiniz kaldığını gösterir. Gününüzü zaten tamamladıysanız bu bildirim hiç görünmez. Gün sonu hatırlatmasını kapattıysanız geri sayım da çıkmaz.',
+        ikon: 'hourglass-half',
+        hedefSayfa: 'SeriHedefAyarlari',
+        ctaEtiketi: 'Seri ayarlarınıza bakın',
+        kartGoster: false,
+        detaylar: [
+            'Seri gününün bitimine iki saat kala görünür',
+            'Gününüz tamsa hiç çıkmaz',
+            'Kalan süre bildirimde canlı olarak akar',
+            'Gün sonu hatırlatması kapalıysa çıkmaz',
+        ],
+    },
+    {
+        id: 'muhafiz-titresim-kanali',
+        surum: '0.25.0',
+        tarih: '2026-08-28',
+        baslik: 'Hatırlatmalar Artık Titreşebilir',
+        aciklama:
+            'Her hatırlatma adımı için titreşimi ayrı ayrı açabilirsiniz; sessize aldığınız ortamlarda bile uyarıyı fark edersiniz.',
+        detayAciklama:
+            'Namaz Muhafızı ayarlarında bir adıma dokunduğunuzda "Nasıl uyarsın" bölümünün altında yeni bir "Titreşim" anahtarı görürsünüz. Bu anahtar bildirim ve sesli anonstan bağımsızdır: dilerseniz yalnızca bildirimle, dilerseniz bildirim + titreşimle uyarılabilirsiniz. Titreşimi açtığınız adım için belirgin bir titreşim deseni kullanılır ve uygulama açıkken de aynı desenle titrer. Titreşimi açmadığınız adımların davranışı hiç değişmez.',
+        ikon: 'mobile-alt',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Adımlarınızı gözden geçirin',
+        kartGoster: false,
+        detaylar: [
+            'Her adım için ayrı titreşim anahtarı',
+            'Bildirim ve sesli anonstan bağımsız çalışır',
+            'Uygulama açıkken de aynı desenle titrer',
+            'Titreşimi açmadığınız adımlar aynen kalır',
+        ],
+    },
+    {
+        id: 'konumu-tek-dokunusla-yenile',
+        surum: '0.25.0',
+        tarih: '2026-08-27',
+        baslik: 'Konumunuzu Tek Dokunuşla Yenileyin',
+        aciklama:
+            'Otomatik konum kullanıyorsanız ana ekrandaki konum rozetine dokunarak vakitleri anında güncel konumunuza göre hesaplatabilirsiniz.',
+        detayAciklama:
+            'Otomatik konum modunda uygulama, şehir değiştirdiğinizi kendiliğinden fark eder; ancak bazı cihazlarda bu algılama gecikebilir ve vakitler bir süre eski konumunuza göre hesaplanmaya devam edebilir. Artık beklemek ya da konum modunu değiştirip geri almak zorunda değilsiniz: ana ekranda vaktin üstündeki konum rozetine dokunmanız yeterli. Yenileme simgesine dokunduğunuzda güncel konumunuz alınır; namaz vakitleri, hatırlatmalar, iftar/sahur sayaçları ve widget aynı anda yeni konumunuza göre tazelenir. Aynı düğme Ayarlar\'daki "Konum" satırında da bulunur. Manuel konum seçtiyseniz düğme görünmez — o zaman konum sizin seçiminizdir.',
+        ikon: 'sync-alt',
+        hedefSayfa: 'KonumAyarlari',
+        ctaEtiketi: 'Konumunuzu kontrol edin',
+        kartGoster: true,
+        detaylar: [
+            'Ana ekrandaki konum rozetine dokunun, konum anında yenilensin',
+            'Aynı düğme Ayarlar > Konum satırında da var',
+            'Vakitler, hatırlatmalar, sayaçlar ve widget birlikte güncellenir',
+            'Yalnızca otomatik konum modunda görünür',
+        ],
+    },
+    {
+        id: 'toparlanma-iki-gun',
+        surum: '0.25.0',
+        tarih: '2026-08-27',
+        baslik: 'Serinizi Artık 2 Günde Kurtarabilirsiniz',
+        aciklama:
+            'Toparlanma modu kısaldı: bir gün kaçırdığınızda serinizi geri almak için 2 gün tam kılmanız yeterli.',
+        detayAciklama:
+            'Uzun bir seriyi bir gün kaçırdığınızda toparlanma modu devreye girer ve tam kıldığınız günlerle eski serinizi geri kazanırsınız. Bu süreyi kısalttık: artık 2 gün yeterli. Üstelik toparlanmada kıldığınız günler de serinize eklenir — 22 günlük seriniz varsa toparlanma bittiğinde 24 günle devam edersiniz. Toparlanması hâlihazırda devam edenlerin ilerlemesi korunur, hedefleri de yeni kurala çekilir. Ayrıca aynı gün içinde bir namazı yanlışlıkla geri alıp tekrar işaretlediğinizde toparlanma ilerlemenizin başa dönmesine yol açan hatayı giderdik; ilerlemeniz olduğu gibi kalır.',
+        ikon: 'heartbeat',
+        kartGoster: false,
+        detaylar: [
+            'Toparlanma için gereken tam gün sayısı 2 oldu',
+            'Toparlanmada kıldığınız günler serinize eklenir',
+            'Devam eden toparlanmalarda tamamladığınız günler korunur',
+            'İşareti geri alıp tekrar koyunca ilerleme sıfırlanmıyor',
+        ],
+    },
+    {
         id: 'cuma-namazi-hatirlatmasi',
         surum: '0.24.0',
         tarih: '2026-07-28',

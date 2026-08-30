@@ -5,30 +5,34 @@
  *
  * SAF: store'a, native'e ve tarihe bagimli DEGIL -> tam test edilebilir.
  *
- * Mod semantigi (spec 3/9):
- *   sessiz   -> hicbir sey (pencere bile saglamaz, bkz. `aktifSeviyeyiBul`)
- *   bildirim -> bildirim
- *   sesli    -> Faz 4'te TTS; SIMDILIK bildirim gibi davranir, `sesliAnons`
- *               bayragi + `anonsMetni` veriye tasinir (Faz 4 kancasi)
- *   ikisi    -> bildirim (+ Faz 4'te TTS)
+ * KANAL semantigi (Faz 2 — eski `mod` enum'unun yerini aldi):
+ *   hicbiri  -> adim KAPALI (pencere bile saglamaz, bkz. `aktifSeviyeyiBul`)
+ *   bildirim -> Android bildirimi (+ on planda bildirim sesi)
+ *   sesli    -> native TTS anonsu; `sesliAnons` bayragi + `anonsMetni` veriye tasinir
+ *   titresim -> kanal titresimi + on planda `Vibration.vibrate` (Faz 6); kanal
+ *               id'sinin de girdisidir (bkz. `muhafizKanaliSec`)
  */
 import type {
   MuhafizMatrisi,
   SeviyeAyari,
   SeviyeKademe,
   Siklik,
-  UyariModu,
+  UyariKanallari,
   VakitMuhafizAyari,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
+import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
 import { aktifSeviyeyiBul } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
   eskiAlarmSesiniGoc,
   eskidenMatriseGoc,
+  modlariKanallaraGoc,
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
+import { cikisSegmentiHesapla, girisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
+import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
 export type SeviyeNo = 1 | 2 | 3 | 4;
@@ -43,20 +47,31 @@ export function siklikDakikasi(siklik: Siklik): number | null {
   return siklik === 'birkez' ? null : siklik.herDk;
 }
 
-/** mod sesli anons (Faz 4 TTS) istiyor mu? */
-export function sesliAnonsGerekliMi(mod: UyariModu): boolean {
-  return mod === 'sesli' || mod === 'ikisi';
+/** Kanal kumesi sesli anons (TTS) istiyor mu? */
+export function sesliAnonsGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'sesli');
 }
 
 /**
- * mod BILDIRIM SESI calmali mi?
+ * Kanal kumesi BILDIRIM SESI calmali mi?
  *
  * TEK KAYNAK: ekran (`BILDIRIMLI_MODLAR` idi) ve domain (`AnonsOnizlemeServisi`)
  * ayni kurali AYRI AYRI yaziyordu; ikizler ayrisirsa onizleme gercek akistan
  * sapar. `sesliAnonsGerekliMi` gibi burada paylasilir.
  */
-export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
-  return mod === 'bildirim' || mod === 'ikisi';
+export function bildirimSesiGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'bildirim');
+}
+
+/**
+ * Kanal kumesi TITRESIM istiyor mu? (Faz 6)
+ *
+ * `bildirimSesiGerekliMi`/`sesliAnonsGerekliMi` ile ayni gerekce: kural tek
+ * yerde dursun. Burasi hem kanal id'sini (`muhafizKanaliSec`) hem on plan
+ * titresimini besler; ikizlenirse kanal ile davranis ayrisir.
+ */
+export function titresimGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'titresim');
 }
 
 /**
@@ -67,23 +82,91 @@ export function bildirimSesiGerekliMi(mod: UyariModu): boolean {
  * boylece seviye gecis noktasinda (kalan == esik) her zaman bir tetik olur ve
  * arka plan (zamanlanmis) ile on plan (banner) ayni dakikalarda konusur.
  * `herDk <= 0` savunmasi: mod/NaN yerine sessizce hic tetiklenmez.
+ *
+ * ALT SINIR `kalanDk >= 1` — TEK KAYNAK BURASI (yasanmis bug): `vakitUyariPlaniOlustur`
+ * dongusu zaten `k > 0` ile taradigi icin arka plan 0. dakikayi HIC planlamaz; on plan
+ * (`NamazMuhafiziServisi.kontrolEt`) ise `kalanDk`yi ham veriyordu ve `kalanDk = 0`
+ * (vaktin son 60 saniyesi) siklik kuralindan gecebiliyordu -> "2 dk kala" kurulu bir
+ * adim hem 2. dakikada hem de vakit cikarken konusuyordu. Kurali dongu sinirina degil
+ * bu fonksiyona koymak iki motoru da ayni yerden besler.
+ *
+ * PLAN BUTCESI (Faz 0) DA BURADA: esik tavani artik vaktin gercek penceresinden
+ * geldigi icin (720 dk'ya kadar) 1 dk'lik siklik tek vakitte yuzlerce alarm
+ * uretebilirdi. Seyreltme `planButcesi.etkinSiklikHesapla` ile YALNIZ bu kapida
+ * uygulanir; boylece arka plan plani, on plan banner'i ve onizleme kendiliginden
+ * ayni dakikalarda konusur.
+ *
+ * `kardesler` = o vaktin TUM seviyeleri. Verilirse butce, seviyenin gercekten
+ * kazandigi segmentten hesaplanir (varsayilan matris hic seyrelmez); verilmezse
+ * esigin tamami segment sayilir — daha temkinli, ama iki motorun da AYNI degeri
+ * gecmesi sarttir (ayrisirlarsa banner ile bildirim ayri dakikalara duser).
+ *
+ * FAZ 1 — YON: `aktifSeviyeyiBul` kazanani secer ama TETIKLEME buradadir; yon
+ * yalniz orada uygulansaydi kazanan secilir ama HIC konusmazdi. Bu kapida DORT
+ * sey yone gore doner (YENI-1): pencere kapisi, siklik capasi, `birkez` ve
+ * (`vakitUyariPlaniOlustur` icinde) tarama siniri.
+ *
+ * Giris yonunde `pencereUzunluguDk` ZORUNLUdur: ust sinir (`kalanDk >= 1`)
+ * ancak pencereden turetilebilir. Verilmezse hic tetiklenmez — sessizce yanlis
+ * dakikalarda konusmaktansa hic konusmamak yeglenir ve iki motor ayrismaz.
  */
-export function seviyeTetiklenirMi(seviye: SeviyeAyari, kalanDk: number): boolean {
-  if (seviye.mod === 'sessiz') return false;
-  if (kalanDk > seviye.esikDk) return false;
+export interface TetikSecenekleri {
+  /** Pencere yonu. Verilmezse `cikisaDogru` — eski cagiranlar birebir korunur. */
+  yon?: PencereYonu;
+  /** Vaktin bugunku pencere uzunlugu (dk). Giris yonunde ZORUNLU. */
+  pencereUzunluguDk?: number;
+}
 
-  const herDk = siklikDakikasi(seviye.siklik);
-  if (herDk === null) return kalanDk === seviye.esikDk; // birkez: yalniz esik aninda
+export function seviyeTetiklenirMi(
+  seviye: SeviyeAyari,
+  olcuDk: number,
+  kardesler?: SeviyeAyari[],
+  secenekler?: TetikSecenekleri
+): boolean {
+  if (adimKapaliMi(seviye.kanallar)) return false;
+  if (olcuDk < 1) return false;
+
+  const girisYonu = (secenekler?.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren';
+
+  let span: number;
+  if (girisYonu) {
+    const pencere = secenekler?.pencereUzunluguDk;
+    if (!Number.isFinite(pencere) || (pencere as number) <= 0) return false;
+    // Vakit cikarken/ciktiktan sonra uyari yok — `kalanDk >= 1` kuralinin aynasi.
+    if (olcuDk >= (pencere as number)) return false;
+    if (olcuDk < seviye.esikDk) return false;
+    span = kardesler
+      ? girisSegmentiHesapla(kardesler, seviye, pencere as number)
+      : seviye.esikDk;
+  } else {
+    if (olcuDk > seviye.esikDk) return false;
+    span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
+  }
+
+  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik));
+  if (herDk === null) return olcuDk === seviye.esikDk; // birkez: iki yonde de yalniz esik aninda
   if (herDk <= 0) return false;
-  return (seviye.esikDk - kalanDk) % herDk === 0;
+  // Capa daima seviyenin KENDI esigidir; yalniz isaret doner.
+  return (girisYonu ? olcuDk - seviye.esikDk : seviye.esikDk - olcuDk) % herDk === 0;
 }
 
 /** Bir vakit icin planlanmis tek bir uyari. */
 export interface UyariPlani {
-  /** Vaktin cikmasina kalan dakika */
+  /**
+   * Vaktin cikmasina kalan dakika — ZAMANLAMA alani. Tuketiciler bildirimi
+   * `cikis - kalanDk` anina kurar, yon ne olursa olsun.
+   */
   kalanDk: number;
+  /**
+   * Seviyeyi kazandiran OLCU. Cikis yonunde `kalanDk` ile AYNIdir; giris
+   * yonunde vaktin girisinden gecen dakikadir. Metin uretimi (anons/banner)
+   * bunu kullanir — `kalanDk` ile karistirilirsa giris yonunde "son 42 dakika"
+   * gibi ters cumleler dogar (Faz 1 / B11).
+   */
+  olcuDk: number;
   seviye: SeviyeNo;
-  mod: UyariModu;
+  /** Kazanan adimin KANAL KUMESI (Faz 2'de `mod: UyariModu` yerini aldi). */
+  kanallar: UyariKanallari;
   /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
   bildirimSesi: string;
   /** Secilen sesin adi — kanal ADInda gosterilir (Android ayarlarinda ayirt edilsin) */
@@ -91,43 +174,73 @@ export interface UyariPlani {
   /** Hucrenin acil kanal tercihi (ham); cozulmus hali icin `muhafizAcilKanalMi` */
   acilKanal?: boolean;
   anonsMetni: string;
-  /** Faz 4 TTS bayragi (mod 'sesli' | 'ikisi') */
+  /** TTS bayragi ('sesli' kanali acik mi) */
   sesliAnons: boolean;
 }
 
+export interface PlanSecenekleri {
+  /** Vaktin bugunku pencere uzunlugu (dk). Giris yonunde ZORUNLU. */
+  pencereUzunluguDk?: number;
+}
+
 /**
- * Bir vaktin tum uyari dakikalarini hesaplar (kalan dakika AZALAN sirada).
+ * Bir vaktin tum uyari dakikalarini hesaplar.
  *
- * `kalanDkSiniri` su an vaktin cikmasina kalan dakikadir; tarama
- * min(kalanDkSiniri, en buyuk SESSIZ OLMAYAN esik) noktasindan baslar.
- * Her dakika icin kazanan seviye `aktifSeviyeyiBul` ile bulunur (sessiz seviye
- * pencere saglamaz; en kucuk esikli = en acil kazanir) -> ayni dakikaya birden
- * cok seviye dusemez, cakisma dogal olarak tekillesir.
+ * `olcuDkSiniri` su ANKI olcudur (cikis yonunde kalan, giris yonunde gecen
+ * dakika); tarama oradan baslar, boylece gecmis dakikalar planlanmaz.
+ *
+ * Her dakika icin kazanan seviye `aktifSeviyeyiBul` ile bulunur → ayni dakikaya
+ * birden cok seviye dusemez, cakisma dogal olarak tekillesir.
+ *
+ * TARAMA SINIRI YONE GORE (Faz 1 / YENI-1, dorduncu yer):
+ * - `cikisaDogru`: en buyuk SESSIZ OLMAYAN esikten 1'e AZALAN.
+ * - `girisindenItibaren`: 1'den PENCERE SONUNA ARTAN — `enBuyukEsik`te DEGIL.
+ *   En sert adim kendi esiginden sonra pencere bitene kadar surer; `enBuyukEsik`te
+ *   durulsaydi "cikana kadar devam et" hic gerceklesmez ve on plan (`kontrolEt`
+ *   surer) ile arka plan AYRISIRDI.
+ *
+ * Pencere uzunlugu bilinmeden giris plani uretilmez (bos doner): tetik kapisiyla
+ * ayni sozlesme.
  */
 export function vakitUyariPlaniOlustur(
   vakitAyari: VakitMuhafizAyari,
-  kalanDkSiniri: number
+  olcuDkSiniri: number,
+  secenekler?: PlanSecenekleri
 ): UyariPlani[] {
+  const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+  const girisYonu = yon === 'girisindenItibaren';
+  const pencereUzunluguDk = secenekler?.pencereUzunluguDk;
+
+  if (girisYonu && (!Number.isFinite(pencereUzunluguDk) || (pencereUzunluguDk as number) <= 0)) {
+    return [];
+  }
+
   const enBuyukEsik = vakitAyari.seviyeler.reduce(
-    (enBuyuk, s) => (s.mod !== 'sessiz' && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
+    (enBuyuk, s) => (!adimKapaliMi(s.kanallar) && s.esikDk > enBuyuk ? s.esikDk : enBuyuk),
     0
   );
 
+  const baslangic = girisYonu ? Math.max(olcuDkSiniri, 1) : Math.min(olcuDkSiniri, enBuyukEsik);
+  const bitis = girisYonu ? (pencereUzunluguDk as number) - 1 : 1;
+  const adim = girisYonu ? 1 : -1;
+
   const plan: UyariPlani[] = [];
-  for (let k = Math.min(kalanDkSiniri, enBuyukEsik); k > 0; k--) {
-    const kazanan = aktifSeviyeyiBul(vakitAyari, k);
+  for (let o = baslangic; girisYonu ? o <= bitis : o >= bitis; o += adim) {
+    const kazanan = aktifSeviyeyiBul(vakitAyari, o);
     if (!kazanan) continue;
-    if (!seviyeTetiklenirMi(kazanan, k)) continue;
+    if (!seviyeTetiklenirMi(kazanan, o, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) continue;
 
     plan.push({
-      kalanDk: k,
+      // Zamanlama daima cikistan sayilir; giris yonunde pencereden turetilir.
+      kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
+      olcuDk: o,
       seviye: kademeSeviyeNo(kazanan.kademe),
-      mod: kazanan.mod,
+      kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,
       sesAdi: kazanan.sesAdi,
       acilKanal: kazanan.acilKanal,
       anonsMetni: kazanan.anonsMetni,
-      sesliAnons: sesliAnonsGerekliMi(kazanan.mod),
+      sesliAnons: sesliAnonsGerekliMi(kazanan.kanallar),
     });
   }
   return plan;
@@ -167,24 +280,27 @@ export function muhafizAcilKanalMi(
 }
 
 /**
- * Hucrenin (ses, aciliyet) secimi -> bildirim kanal id'si.
+ * Hucrenin (ses, aciliyet, titresim) secimi -> bildirim kanal id'si.
  *
- * Kanal id SESIN FONKSIYONUDUR (bkz. `sesKimligi.ts`): Android'de kanal sesi
- * olusturulduktan sonra degistirilemez, silip yeniden olusturmak da tombstone'a
- * takilir. Id'yi sese baglayinca bu tuzaklarin ikisi de dogar dogmaz olur.
+ * Kanal id SES ILE TITRESIMIN FONKSIYONUDUR (bkz. `sesKimligi.ts`): Android'de
+ * kanal sesi de titresimi de olusturulduktan sonra degistirilemez, silip yeniden
+ * olusturmak da tombstone'a takilir. Id'yi bu iki girdiye baglayinca tuzaklarin
+ * hepsi dogar dogmaz olur.
  *
  * TUM TUKETICILER BU FONKSIYONDAN GECMELI — kanal id artik DINAMIK oldugu icin
  * elle yazilan bir id (ozellikle ham AsyncStorage okuyan arka plan yollarinda)
- * bayat kalir ve kullanici SESSIZCE yanlis sesi duyar.
+ * bayat kalir ve kullanici SESSIZCE yanlis sesi/titresimi alir.
  */
 export function muhafizKanaliSec(
   seviye: SeviyeNo,
   bildirimSesi: string,
-  acilKanal?: boolean
+  acilKanal?: boolean,
+  titresimAcik: boolean = false
 ): string {
   return muhafizKanalIdOlustur(
     bildirimSesi,
-    muhafizAcilKanalMi(seviye, bildirimSesi, acilKanal)
+    muhafizAcilKanalMi(seviye, bildirimSesi, acilKanal),
+    titresimAcik
   );
 }
 
@@ -212,13 +328,14 @@ export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
  * (`eskidenMatriseGoc`) turetilir. Boylece bozuk tek bir kayit muhafizi
  * tamamen susturamaz.
  *
- * Eski 'alarm' ses id'si BURADA da goc ettirilir (`eskiAlarmSesiniGoc`): bes
- * tuketicinin ikisi (`ArkaplanGorevServisi`, `KonumTakipServisi`) store'u degil
- * HAM AsyncStorage'i okur, yani slice'in yukleme gocunden gecmez. Goc gerekmiyorsa
- * AYNI referans doner (kimlik korunur).
+ * Eski semalar BURADA da goc ettirilir (`eskiAlarmSesiniGoc` + Faz 2'nin
+ * `modlariKanallaraGoc`'u): bes tuketicinin ikisi (`ArkaplanGorevServisi`,
+ * `KonumTakipServisi`) store'u degil HAM AsyncStorage'i okur, yani slice'in
+ * yukleme gocunden gecmez. Goc gerekmiyorsa her ikisi de AYNI referansi dondurur
+ * (kimlik korunur, gereksiz kopya yok).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
   return matrisGecerliMi(kaynak.matris)
-    ? eskiAlarmSesiniGoc(kaynak.matris)
+    ? modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))
     : eskidenMatriseGoc(kaynak);
 }

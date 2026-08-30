@@ -4,9 +4,10 @@
  * 
  * Temel Kurallar:
  * - Kullanicinin belirlediği esik kadar namaz kilindiysa gun "tam" sayilir
- * - Gun bitis saati ayarlanabilir (varsayilan 05:00)
+ * - Seri gunu ERTESI IMSAK'ta biter; imsak kaynagi yoksa 05:00'e duser
+ *   (bkz. `namazGunuHesapla`)
  * - Seri bozuldugunda toparlanma modu baslar
- * - Toparlanmada 5 gun tam kilinirsa onceki seri kurtarilir
+ * - Toparlanmada `toparlanmaGunSayisi` (varsayilan 2) gun tam kilinirsa onceki seri kurtarilir
  * - Toparlanmada bir gun bile kacirilirsa sifirlanir
  */
 
@@ -23,6 +24,7 @@ import {
 import { GunlukNamazlar } from '../../core/types';
 import { tarihiISOFormatinaCevir, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { gunTamMi as gunTamMiSaf } from '../../core/seri/gunTamMi';
+import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 
 /**
  * Seri hesaplama sonucu
@@ -36,6 +38,16 @@ export interface SeriHesaplamaSonucu {
   yeniHedefTamamlandi: SeriHedefi | null;
   /** Toparlanma basarili oldu mu */
   toparlanmaBasarili: boolean;
+  /**
+   * Ayni-gun geri-alimi BUGUN tamamlanmis bir toparlanmayi geri sardi mi.
+   *
+   * `toparlanmaSayisi` olay-tetiklemeli KALICI bir sayactir (rozet kosulu: 3 kez
+   * toparlanma) ve `toparlanmaBasarili` her tetiklendiginde artar. Geri-alim
+   * toparlanmayi yeniden tamamlanabilir hale getirdigi icin, geri sarma da
+   * bildirilmezse kullanici son namazi isaretle/geri-al yaparak sayaci sinirsizca
+   * sisirebilir (AGENTS.md: "olay-tetiklemeli sayac artirma" tuzagi).
+   */
+  toparlanmaGeriAlindi: boolean;
   /** Seri bozuldu mu */
   seriBozuldu: boolean;
   /** Kazanilan puan */
@@ -50,24 +62,118 @@ export const bugunuAl = (): string => {
 };
 
 /**
- * Gun bitis saatine gore namaz gununu hesaplar
- * Ornegin saat 04:00'te islem yapilirsa ve gun bitis saati 05:00 ise,
- * bu islem onceki gune sayilir
- * 
+ * Imsak kaynagi hazir olmadiginda (konum yok / hesaplayici yapilandirilmamis)
+ * kullanilan SABIT gun siniri. Eski (imsak oncesi) davranisin birebir aynisi.
+ */
+export const VARSAYILAN_GUN_SINIRI_SAATI = '05:00';
+
+/**
+ * Verilen TAKVIM GUNUNUN imsak (fajr) vaktini dondurur; kaynak hazir degilse `null`.
+ * Enjekte edilebilir olmasi testleri deterministik kilar (gercek konum/mevsim gerekmez).
+ */
+export type ImsakSaglayici = (tarih: Date) => Date | null;
+
+/**
+ * Uretim saglayicisi: `NamazVaktiHesaplayiciServisi`.
+ *
+ * NEDEN BU SERVIS (`KonumYoneticiServisi` DEGIL): `KonumYoneticiServisi.durum.koordinatlar`
+ * uretimde HIC doldurulmuyor (`koordinatlarAyarla`/`durumYukle` yalnizca testlerden
+ * cagriliyor) -> ona baglansaydik gun siniri sahada DAIMA 05:00 fallback'inde kalir,
+ * duzeltme sessizce olu dogardi. Gercekten hidrate edilen kaynak `NamazVaktiHesaplayiciServisi`
+ * (`App.tsx` acilis zinciri, `AnaSayfa`, `KonumDegisikligiServisi.konumDegistiUygula`).
+ *
+ * `{lat:0,lng:0}` bu projede "henuz yapilandirilmadi" nobetcisidir (AGENTS.md) -> imsak
+ * hesaplanmaz; aksi halde Gine Korfezi'ne gore ~08:00'lik bir gun siniri olusurdu.
+ */
+export const uygulamaImsakSaglayici: ImsakSaglayici = (tarih) => {
+  const servis = NamazVaktiHesaplayiciServisi.getInstance();
+  const konfig = servis.getKonfig();
+  if (!konfig || (konfig.latitude === 0 && konfig.longitude === 0)) {
+    return null;
+  }
+  return servis.getGunlukVakitler(tarih)?.imsak ?? null;
+};
+
+/** 'HH:mm' -> gun ici dakika. Bozuk girdide varsayilan sinira duser. */
+const saatMetniniDakikayaCevir = (saatMetni: string): number => {
+  const [saat, dakika] = saatMetni.split(':').map(Number);
+  if (!Number.isFinite(saat) || !Number.isFinite(dakika)) {
+    const [vSaat, vDakika] = VARSAYILAN_GUN_SINIRI_SAATI.split(':').map(Number);
+    return vSaat * 60 + vDakika;
+  }
+  return saat * 60 + dakika;
+};
+
+/**
+ * Saglayicidan gelen imsak degerini DOGRULAR; guvenilmezse `null` doner (-> sabit sinir).
+ * Saglayici uc bir konumda baska bir takvim gunune dusen bir deger dondurebilir; o zaman
+ * saat:dakika okumasi anlamsizlasir.
+ */
+const guvenliImsakAl = (tarihSaat: Date, imsakSaglayici: ImsakSaglayici): Date | null => {
+  let imsak: Date | null;
+  try {
+    imsak = imsakSaglayici(tarihSaat);
+  } catch {
+    return null;
+  }
+
+  if (!imsak || Number.isNaN(imsak.getTime())) {
+    return null;
+  }
+  if (
+    imsak.getFullYear() !== tarihSaat.getFullYear() ||
+    imsak.getMonth() !== tarihSaat.getMonth() ||
+    imsak.getDate() !== tarihSaat.getDate()
+  ) {
+    return null;
+  }
+  return imsak;
+};
+
+/**
+ * O anki gun sinirini (gun ici dakika cinsinden) dondurur.
+ * TEK KAYNAK: seri gunu ertesi imsakta biter; imsak yoksa `gunBitisSaati`.
+ */
+export const gunSiniriDakikasiniHesapla = (
+  tarihSaat: Date,
+  gunBitisSaati: string = VARSAYILAN_GUN_SINIRI_SAATI,
+  imsakSaglayici: ImsakSaglayici = uygulamaImsakSaglayici
+): number => {
+  const imsak = guvenliImsakAl(tarihSaat, imsakSaglayici);
+  if (imsak) {
+    return imsak.getHours() * 60 + imsak.getMinutes();
+  }
+  return saatMetniniDakikayaCevir(gunBitisSaati);
+};
+
+/**
+ * Gun sinirina gore namaz gununu hesaplar.
+ *
+ * Seri gunu ERTESI IMSAK'ta biter: imsaktan onceki her islem ONCEKI gune sayilir.
+ * Kayma CIFT YONLUDUR — yazin imsak (~03:30) 05:00'ten once oldugu icin sinir GERIYE
+ * (04:00 artik BUGUNE sayilir), kisin (~06:40) sonra oldugu icin ILERI kayar
+ * (05:30 artik DUNE sayilir). Imsak kaynagi hazir degilse `gunBitisSaati` (05:00)
+ * fallback'i uygulanir ve eski davranis birebir korunur.
+ *
+ * Kalici veri BOZULMAZ: `sonTamGun`/`bugunOncesi.tarih` duz ISO tarih dizeleridir;
+ * sinir kaydiginda eski bir snapshot en fazla "bayat" sayilir ve `bugunOncesi.tarih === bugun`
+ * kapisinda dusurulur (uygulanmaz).
+ *
  * @param tarihSaat - Islem tarihi ve saati
- * @param gunBitisSaati - Gun bitis saati (HH:mm formatinda)
+ * @param gunBitisSaati - Imsak kaynagi yokken kullanilan sabit sinir (HH:mm)
+ * @param imsakSaglayici - Imsak kaynagi (testte enjekte edilir)
  * @returns ISO formatinda tarih
  */
 export const namazGunuHesapla = (
   tarihSaat: Date,
-  gunBitisSaati: string
+  gunBitisSaati: string = VARSAYILAN_GUN_SINIRI_SAATI,
+  imsakSaglayici: ImsakSaglayici = uygulamaImsakSaglayici
 ): string => {
-  const [saat, dakika] = gunBitisSaati.split(':').map(Number);
-  const bitisSaatiDakika = saat * 60 + dakika;
+  const sinirDakika = gunSiniriDakikasiniHesapla(tarihSaat, gunBitisSaati, imsakSaglayici);
   const mevcutDakika = tarihSaat.getHours() * 60 + tarihSaat.getMinutes();
 
-  // Eger mevcut saat, gun bitis saatinden onceyse, onceki gune ait
-  if (mevcutDakika < bitisSaatiDakika) {
+  // Sinirdan onceyse (imsak henuz girmedi) onceki gune ait
+  if (mevcutDakika < sinirDakika) {
     const oncekiGun = new Date(tarihSaat);
     oncekiGun.setDate(oncekiGun.getDate() - 1);
     return tarihiISOFormatinaCevir(oncekiGun);
@@ -220,6 +326,34 @@ export const tamamlananHedefiBul = (
 };
 
 /**
+ * Bugun YENI tam sayildiysa ayni-gun geri-alimi icin snapshot'i ve bugun verilen bonusu
+ * sonuca yazar.
+ *
+ * HEM toparlanma HEM normal mod yolunda cagrilmali: yalnizca birinde cagrilirsa otekinde
+ * ONCEKI GUNDEN kalan snapshot state'te yasamaya devam eder ve ayni-gun geri-alimi yanlis
+ * gune sarar (yasanmis bug: toparlanmanin 2. gunu geri alinip tekrar isaretlenince
+ * ilerleme 2/N -> 1/N'e dusuyordu).
+ */
+const bugunSnapshotunuYaz = (
+  sonuc: SeriHesaplamaSonucu,
+  bugun: string,
+  snapshot: BugunOncesiSnapshot
+): SeriHesaplamaSonucu => {
+  if (!sonuc.seriDegisti || sonuc.seriDurumu.sonTamGun !== bugun) {
+    return sonuc;
+  }
+
+  return {
+    ...sonuc,
+    seriDurumu: {
+      ...sonuc.seriDurumu,
+      bugunOncesi: snapshot,
+      bugunKazanilanPuan: sonuc.kazanilanPuan,
+    },
+  };
+};
+
+/**
  * Ana seri hesaplama fonksiyonu
  * Gun sonunda veya namaz durumu degistiginde cagirilir
  * 
@@ -247,11 +381,12 @@ export const seriHesapla = (
   const bugunOzelGun = ozelGunAyarlari ? ozelGunAktifMi(bugun, ozelGunAyarlari) : false;
 
   // Baslangic sonucu
-  let sonuc: SeriHesaplamaSonucu = {
+  const sonuc: SeriHesaplamaSonucu = {
     seriDurumu: { ...durum },
     seriDegisti: false,
     yeniHedefTamamlandi: null,
     toparlanmaBasarili: false,
+    toparlanmaGeriAlindi: false,
     seriBozuldu: false,
     kazanilanPuan: 0,
   };
@@ -291,6 +426,7 @@ export const seriHesapla = (
 
   // Bugun "tam" sayilmadan ONCEki durum (Bug #4: ayni-gun geri-alimi icin saklanir)
   const bugunOncesiSnapshot: BugunOncesiSnapshot = {
+    tarih: bugun,
     mevcutSeri: durum.mevcutSeri,
     enUzunSeri: durum.enUzunSeri,
     sonTamGun: durum.sonTamGun,
@@ -307,7 +443,10 @@ export const seriHesapla = (
       return sonuc;
     }
     // Bug #4: bugun artik tam DEGIL -> bugunu geri al (snapshot'tan once-bugun durumuna don)
-    if (durum.bugunOncesi) {
+    // KRITIK: snapshot yalnizca BUGUNE aitse uygulanir. Baska bir gunun snapshot'i
+    // (ornegin toparlanmanin 1. gununden kalan) uygulanirsa toparlanma ilerlemesi
+    // sifirlanir ve tekrar isaretleyince yepyeni bir toparlanma baslar (1/N).
+    if (durum.bugunOncesi && durum.bugunOncesi.tarih === bugun) {
       sonuc.seriDurumu = {
         ...durum.bugunOncesi,
         bugunOncesi: null,
@@ -317,6 +456,11 @@ export const seriHesapla = (
       sonuc.seriDegisti = true;
       // Faz 1b: bugun verilen seri/gun bonusunu da geri al (negatif kazanilanPuan).
       sonuc.kazanilanPuan = -(durum.bugunKazanilanPuan ?? 0);
+      // Bugun BITEN bir toparlanma geri sariliyorsa (snapshot toparlanmadaydi, guncel
+      // durum toparlanmayi bitirmisti) `toparlanmaSayisi` da geri alinmali; aksi halde
+      // isaretle/geri-al dongusu sayaci ve `toparlanma_ustasi` rozetini sisirir.
+      sonuc.toparlanmaGeriAlindi =
+        durum.toparlanmaDurumu === null && durum.bugunOncesi.toparlanmaDurumu !== null;
     }
     return sonuc;
   }
@@ -328,12 +472,15 @@ export const seriHesapla = (
       const yeniTamamlanan = durum.toparlanmaDurumu.tamamlananGun + 1;
 
       if (yeniTamamlanan >= durum.toparlanmaDurumu.hedefGunSayisi) {
-        // Toparlanma basarili! Onceki seriyi kurtar
+        // Toparlanma basarili! Onceki seriyi kurtar.
+        // Toparlanmada kilinan TUM gunler serinin uzerine eklenir (yalniz bugun degil):
+        // kullanici o gunleri de gercekten tam kildi, seri kesintisiz devam etmis sayilir.
         const kurtarilanSeri = durum.toparlanmaDurumu.oncekiSeri;
+        const yeniSeri = kurtarilanSeri + yeniTamamlanan;
 
         sonuc.seriDurumu = {
-          mevcutSeri: kurtarilanSeri + 1, // +1 cunku bugun de tam
-          enUzunSeri: Math.max(durum.enUzunSeri, kurtarilanSeri + 1),
+          mevcutSeri: yeniSeri,
+          enUzunSeri: Math.max(durum.enUzunSeri, yeniSeri),
           sonTamGun: bugun,
           seriBaslangici: durum.seriBaslangici,
           toparlanmaDurumu: null, // Toparlanma bitti
@@ -377,7 +524,8 @@ export const seriHesapla = (
       }
     }
 
-    return sonuc;
+    // Toparlanma yolunda da snapshot tazelenmeli (aksi halde onceki gunun snapshot'i kalir)
+    return bugunSnapshotunuYaz(sonuc, bugun, bugunOncesiSnapshot);
   }
 
   // ==================== NORMAL MOD ====================
@@ -457,15 +605,7 @@ export const seriHesapla = (
 
   // Bug #4 + Faz 1b: Bugun YENI tam sayildiysa onceki-durum snapshot'ini ve bugun verilen
   // bonusu sakla (ayni-gun geri-alimi hem seriyi hem bonusu geri alabilsin).
-  if (sonuc.seriDegisti && sonuc.seriDurumu.sonTamGun === bugun) {
-    sonuc.seriDurumu = {
-      ...sonuc.seriDurumu,
-      bugunOncesi: bugunOncesiSnapshot,
-      bugunKazanilanPuan: sonuc.kazanilanPuan,
-    };
-  }
-
-  return sonuc;
+  return bugunSnapshotunuYaz(sonuc, bugun, bugunOncesiSnapshot);
 };
 
 /**

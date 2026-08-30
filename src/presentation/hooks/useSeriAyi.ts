@@ -7,9 +7,18 @@
  * `Record<tarih, boolean[5]>`'e çevirir — adaptör SUNUMDA yaşar, core'da değil
  * (core `ApiYanit`/`GunlukNamazlar` tiplerini tanımaz).
  *
- * `bugun` TAKVİM GÜNÜ DEĞİLDİR: `namazGunuHesapla(new Date(), gunBitisSaati)`
- * ile üretilir (gece yarısı-05:00 arası düne sayılır) — yoksa gece 02:00'de
- * açan kullanıcıya bugünü "gelecek" gösteririz.
+ * `bugun` TAKVİM GÜNÜ DEĞİLDİR: `namazGunuHesapla(new Date(), ...)` ile
+ * üretilir — seri günü ERTESİ İMSAK'ta biter (imsak kaynağı yoksa 05:00
+ * fallback'i). Yoksa gece 02:00'de açan kullanıcıya bugünü "gelecek"
+ * gösteririz.
+ *
+ * GÜN SINIRI HİDRASYONU (Faz 5a): imsak kaynağı (`NamazVaktiHesaplayiciServisi`)
+ * açılış zincirinde GEÇ dolar. `bugun` render'da doğrudan hesaplansaydı, alakasız
+ * bir re-render'da değer sessizce zıplayabilirdi (AnaSayfa snap-back tuzağının
+ * ikizi). Bu yüzden değer STATE'te tutulur: ilk render deterministik biçimde
+ * 05:00 fallback'ini gösterir, kaynak hazır olduğunda tek bir kontrollü
+ * güncelleme yapılır. Kaynak hiç gelmezse fallback'te SABİT kalır (aynı değer
+ * yeniden yazılmaz → ekstra render yok).
  *
  * HATA YOLU ZORUNLU: `basarili:false` geldiğinde `hata` doldurulur, ekran
  * sonsuz spinner'da KALMAZ (AGENTS.md'nin yaşanmış "sessiz sonsuz spinner"
@@ -81,6 +90,10 @@ export function useSeriAyi(): SeriAyiSonucu {
   const ayarlar = useAppSelector((s) => s.seri.ayarlar);
   const ozelGunAyarlari = useAppSelector((s) => s.seri.ozelGunAyarlari);
   const mevcutSeri = useAppSelector((s) => s.seri.seriDurumu?.mevcutSeri ?? 0);
+  // Gün sınırı imsağa bağlıdır; imsak kaynağı da konumdan yapılandırılır →
+  // koordinat, sınırın yeniden çözülmesi için TEK reaktif tetikleyicidir
+  // (bkz. dosya başı "GÜN SINIRI HİDRASYONU").
+  const konumKoordinatlari = useAppSelector((s) => s.konum.koordinatlar);
   // Seri slice'ı henüz hidrate edilmediyse (`seriVerileriniYukle` daha
   // tamamlanmadı — bkz. yukarıdaki nöbetçi) `sonYukleme` `null` kalır.
   // İnceleme bulgusu: `yukleniyor` önceden yalnız namaz okumasını temsil
@@ -103,7 +116,28 @@ export function useSeriAyi(): SeriAyiSonucu {
     dispatch(seriVerileriniYukle());
   }, [dispatch]);
 
-  const bugun = namazGunuHesapla(new Date(), ayarlar.gunBitisSaati);
+  // Gün sınırı state'te tutulur (bkz. dosya başı "GÜN SINIRI HİDRASYONU").
+  // Başlangıç değeri imsak kaynağına HİÇ bakmaz (`() => null` sağlayıcı) — böylece
+  // ilk render her koşulda deterministiktir.
+  const [bugun, setBugun] = useState(() =>
+    namazGunuHesapla(new Date(), ayarlar.gunBitisSaati, () => null)
+  );
+
+  // TETİKLEYİCİ = KOORDİNAT. İmsak kaynağı (`NamazVaktiHesaplayiciServisi`)
+  // tam da bu koordinattan yapılandırılır (`App.tsx` açılış zinciri, `AnaSayfa`,
+  // `KonumDegisikligiServisi`) — yani koordinatın değiştiği an, kaynağın
+  // yeniden yapılandırıldığı andır. `setBugun` yalnız değer GERÇEKTEN
+  // değiştiğinde yazılır → en fazla bir ek render, döngü yok.
+  useEffect(() => {
+    // `{lat:0,lng:0}` bu projede "konum henüz yok" nöbetçisidir: imsak
+    // hesaplanamaz, fallback'te SABİT kal (zıplama yok).
+    if (konumKoordinatlari.lat === 0 && konumKoordinatlari.lng === 0) {
+      return;
+    }
+    const cozulmus = namazGunuHesapla(new Date(), ayarlar.gunBitisSaati);
+    setBugun((onceki) => (onceki === cozulmus ? onceki : cozulmus));
+  }, [ayarlar.gunBitisSaati, konumKoordinatlari]);
+
   const bugunTarihi = ISOTarihiDateNesnesiNeCevir(bugun);
   const yil = bugunTarihi.getFullYear();
   const ay = bugunTarihi.getMonth();

@@ -36,7 +36,9 @@ type TabTipi = 'gunluk' | 'haftalik' | 'aylik' | 'seri';
 export const IstatistikSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const renkler = useRenkler();
-  const [aktifTab, setAktifTab] = useState<TabTipi>('gunluk');
+  // Acilis sekmesi: Seri. Sayfanin "bir bakista motivasyon" yuzu burasi; gunluk/haftalik
+  // dokumler ise arandiginda bakilan detaydir.
+  const [aktifTab, setAktifTab] = useState<TabTipi>('seri');
   const { kullanici } = useAppSelector(state => state.auth);
   const {
     gunlukNamazlar,

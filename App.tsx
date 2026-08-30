@@ -19,6 +19,8 @@ import { BildirimServisi } from './src/domain/services/BildirimServisi';
 import { VakitSayacBildirimServisi } from './src/domain/services/VakitSayacBildirimServisi';
 import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
+import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
+import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazirlayici';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
@@ -216,6 +218,12 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
         aktif: sahurState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
       }),
+      // Seri sayaci: girdileri ham depolamadan gelir (arka plan goreviyle AYNI
+      // yol) — bu liste ile `KonumDegisikligiServisi` ikizdir, biri guncellenirse
+      // digeri de guncellenmeli (AGENTS.md).
+      seriSayacAyarlariniHazirla(konumState.koordinatlar).then((seriSayacAyarlari) =>
+        SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(seriSayacAyarlari)
+      ),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');

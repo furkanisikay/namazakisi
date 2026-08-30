@@ -14,7 +14,9 @@ interface CumaHatirlatmaState {
 
 const initialState: CumaHatirlatmaState = {
     // Cuma herkese farz-i ayn degil → varsayilan KAPALI, ayardan acilir.
-    ayarlar: { aktif: false, oncedenDk: 60 },
+    // `siklik: 'birkez'` = tarihsel davranis (tek hatirlatma); periyodik
+    // hatirlatma ekrandan acilir.
+    ayarlar: { aktif: false, oncedenDk: 60, siklik: 'birkez' },
     yukleniyor: false,
     hata: null,
 };

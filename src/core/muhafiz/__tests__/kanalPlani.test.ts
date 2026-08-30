@@ -1,6 +1,6 @@
 import { matristenKanallariCikar } from '../kanalPlani';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
-import type { MuhafizMatrisi, SeviyeAyari, UyariModu } from '../matrisTipleri';
+import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
 import { muhafizKanalIdOlustur } from '../sesKimligi';
 
 const SES_A = 'content://media/internal/audio/media/42';
@@ -8,7 +8,7 @@ const SES_B = 'content://media/external/audio/media/1337';
 
 const sv = (o: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
   kademe: 'nazik',
-  mod: 'bildirim' as UyariModu,
+  kanallar: { bildirim: true },
   esikDk: 30,
   siklik: 'birkez',
   bildirimSesi: VARSAYILAN_SES,
@@ -51,9 +51,9 @@ describe('matristenKanallariCikar', () => {
     expect(idler).toContain(muhafizKanalIdOlustur(SES_B, false));
   });
 
-  it("'sessiz' hücreler kanal ÜRETMEZ (kullanmadığı ses için kanal birikmemeli)", () => {
-    const seviyeler = dortSeviye({ mod: 'sessiz' });
-    seviyeler[0].mod = 'bildirim';
+  it('KAPALI hücreler kanal ÜRETMEZ (kullanmadığı ses için kanal birikmemeli)', () => {
+    const seviyeler = dortSeviye({ kanallar: {} });
+    seviyeler[0].kanallar = { bildirim: true };
     seviyeler[0].bildirimSesi = SES_A;
 
     const kanallar = matristenKanallariCikar(matris(seviyeler));
@@ -91,6 +91,37 @@ describe('matristenKanallariCikar', () => {
     const idler = matristenKanallariCikar(matris(seviyeler)).map((k) => k.kanalId);
 
     expect(idler).toContain(muhafizKanalIdOlustur(SES_A, true));
+  });
+
+  /**
+   * FAZ 6 — titreşim de kanal eksenidir: aynı sesi paylaşan iki hücre farklı
+   * titreşim istiyorsa AYRI kanal gerekir (kanal titreşimi sonradan değişmez).
+   */
+  it('AYNI ses + FARKLI titreşim İKİ AYRI kanal üretir', () => {
+    const seviyeler = dortSeviye({ bildirimSesi: SES_A });
+    seviyeler[0].kanallar = { bildirim: true };
+    seviyeler[1].kanallar = { bildirim: true, titresim: true };
+
+    const kanallar = matristenKanallariCikar(matris(seviyeler));
+    const idler = kanallar.map((k) => k.kanalId);
+
+    expect(idler).toContain(muhafizKanalIdOlustur(SES_A, false, false));
+    expect(idler).toContain(muhafizKanalIdOlustur(SES_A, false, true));
+    expect(kanallar.find((k) => k.kanalId === muhafizKanalIdOlustur(SES_A, false, true))?.titresim)
+      .toBe(true);
+    expect(kanallar.find((k) => k.kanalId === muhafizKanalIdOlustur(SES_A, false, false))?.titresim)
+      .toBe(false);
+  });
+
+  it('VARSAYILAN ses + titreşim TABAN kanaldan ÇIKAR (taban kanalın titreşimi değiştirilemez)', () => {
+    const seviyeler = dortSeviye();
+    seviyeler[0].kanallar = { bildirim: true, titresim: true };
+
+    const idler = matristenKanallariCikar(matris(seviyeler)).map((k) => k.kanalId);
+
+    expect(idler).toContain(muhafizKanalIdOlustur(VARSAYILAN_SES, false, true));
+    // Taban kanal hâlâ var — titreşimsiz seviye 2 onu kullanıyor (ayrışma, enflasyon değil).
+    expect(idler).toContain('muhafiz');
   });
 
   it('bozuk/eksik vakit girdisinde ÇÖKMEZ (savunmacı)', () => {

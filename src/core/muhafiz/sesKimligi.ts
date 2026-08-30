@@ -11,9 +11,12 @@
  * ayni id'nin sesini degistirmeye hic kalkismayiz; tombstone da ZARARSIZLASIR
  * (dirilen ayarlar zaten o ses icin istenen ayarlardir).
  *
- * KANAL ENFLASYONU YOK: id sesin hash'i oldugu icin kanal sayisi = kullanicinin
- * sectigi BENZERSIZ ses sayisi, hucre sayisi degil. 20 hucre ayni sesi
- * kullaniyorsa tek kanal olusur.
+ * KANAL ENFLASYONU YOK: id girdinin hash'i oldugu icin kanal sayisi = kullanicinin
+ * sectigi BENZERSIZ (ses, titresim) kombinasyonu sayisi, hucre sayisi degil.
+ * 20 hucre ayni sesi kullaniyorsa tek kanal olusur.
+ *
+ * FAZ 6: girdi artik yalniz ses degil, (ses + titresim). Gerekce ayni: titresim
+ * de kanal ozelligidir ve kanal kurulduktan sonra degistirilemez.
  *
  * Varsayilan ses TABAN kanallara (`muhafiz` / `muhafiz_acil`) esitlenir: bu iki
  * kanal mevcut kurulumlarda ZATEN vardir ve sesi zaten `bildirim.mp3`'tur →
@@ -87,15 +90,44 @@ export function sesHashi(sesKimligi: string): string {
 }
 
 /**
- * (ses, aciliyet) -> kanal id.
+ * Titresim kanali ACIKKEN hash girdisine eklenen iz (Faz 6).
  *
- * Varsayilan ses TABAN kanal id'sini dondurur (mevcut kurulumlarla birebir uyum);
- * ozel ses `<taban>_<hash8>` uretir.
+ * Iz KAPALIYKEN EKLENMEZ — bu bir uslup tercihi degil, GERIYE UYUMLULUK sartidir:
+ * girdi degisseydi sahadaki her ozel sesli kanalin id'si degisir, eski kanal oksuz
+ * kalip GC ile silinir ve kullanicinin o kanalda biriktirdigi tercihler giderdi.
  */
-export function muhafizKanalIdOlustur(sesKimligi: string, acilMi: boolean): string {
+const TITRESIM_IZI = '|titresim';
+
+/**
+ * (ses, titresim) -> hash girdisi. Titresim kapaliyken girdi SADECE sestir.
+ */
+export function kanalHashGirdisi(sesKimligi: string, titresimAcik: boolean): string {
+  return titresimAcik ? `${sesKimligi}${TITRESIM_IZI}` : sesKimligi;
+}
+
+/**
+ * (ses, aciliyet, titresim) -> kanal id.
+ *
+ * TITRESIM DE KANAL OZELLIGIDIR (Faz 6): `NotificationChannel.setVibrationPattern`
+ * de tipki ses gibi kanal olusturulduktan SONRA degistirilemez ve silip yeniden
+ * olusturmak tombstone'a takilir. Bu yuzden titresim de id'nin girdisidir; yoksa
+ * ayni sesi paylasan iki hucreden biri SESSIZCE otekinin titresim davranisini alir.
+ *
+ * TABAN KANAL ISTISNASI (B9) KORUNUR: varsayilan ses + VARSAYILAN titresim hala
+ * `muhafiz`/`muhafiz_acil` kanallarina duser. O iki kanal mevcut cihazlarda ZATEN
+ * kurulu ve kullanicinin tercihleri (titresim/onem/DND) orada birikmis → gecis
+ * maliyeti sifir. VARSAYILAN OLMAYAN titresim secilen hucre bu eslemeden CIKAR ve
+ * hash'li kanala gecer (taban kanalin titresimini degistirmek zaten mumkun degil).
+ */
+export function muhafizKanalIdOlustur(
+  sesKimligi: string,
+  acilMi: boolean,
+  titresimAcik: boolean = false
+): string {
   const taban = acilMi ? TABAN_ACIL : TABAN_NORMAL;
   const kimlik = sesKimliginiNormalize(sesKimligi);
-  return kimlik === VARSAYILAN_SES ? taban : `${taban}_${sesHashi(kimlik)}`;
+  if (kimlik === VARSAYILAN_SES && !titresimAcik) return taban;
+  return `${taban}_${sesHashi(kanalHashGirdisi(kimlik, titresimAcik))}`;
 }
 
 /** Bu id muhafiz kanal uzayina ait mi? (taban VEYA hash'li tureviler) */

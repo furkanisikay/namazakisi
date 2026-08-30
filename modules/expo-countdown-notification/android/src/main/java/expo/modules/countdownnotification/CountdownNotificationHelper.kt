@@ -80,7 +80,8 @@ object CountdownNotificationHelper {
         bodyTemplate: String,
         channelId: String,
         smallIcon: String,
-        themeType: String
+        themeType: String,
+        autoDismissAtTarget: Boolean = false
     ) {
         createChannel(context)
         registerActiveId(id)
@@ -97,11 +98,13 @@ object CountdownNotificationHelper {
         val collapsedLayoutRes = when (themeType) {
             "iftar" -> R.layout.custom_iftar_notification_collapsed
             "sahur" -> R.layout.custom_sahur_notification_collapsed
+            "seri" -> R.layout.custom_seri_notification_collapsed
             else -> R.layout.custom_vakit_notification_collapsed
         }
         val expandedLayoutRes = when (themeType) {
             "iftar" -> R.layout.custom_iftar_notification
             "sahur" -> R.layout.custom_sahur_notification
+            "seri" -> R.layout.custom_seri_notification
             else -> R.layout.custom_vakit_notification
         }
 
@@ -123,6 +126,7 @@ object CountdownNotificationHelper {
         val descFinal = descriptionText.takeIf { it.isNotEmpty() } ?: when (themeType) {
             "iftar" -> "Zaman daralıyor!"
             "sahur" -> "Yemeye içmeye devam, imsak yaklaşıyor!"
+            "seri" -> "Bugünkü namazların eksik, serini kaybetme!"
             else -> "Acele et, vaktin çıkmasına az kaldı!"
         }
         remoteViewsExpanded.setTextViewText(R.id.tv_description, descFinal)
@@ -136,6 +140,10 @@ object CountdownNotificationHelper {
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setOngoing(true)
             .setOnlyAlertOnce(true)
+            // CHRONOMETER HEDEFTE DURMAZ: sifiri gecince YUKARI saymaya baslar
+            // (`setChronometerCountDown` yalnizca yonu belirler). Cagiran isterse
+            // bildirim hedef aninda sistem tarafindan otomatik kaldirilir.
+            .apply { if (autoDismissAtTarget) setTimeoutAfter(millisRemaining) }
             .setShowWhen(false)
             .setContentIntent(getLaunchPendingIntent(context))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)

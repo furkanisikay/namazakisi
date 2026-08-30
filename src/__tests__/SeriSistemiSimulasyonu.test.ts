@@ -113,7 +113,7 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     };
   };
 
-  test('15 gunluk tam seri, 1 gun bosluk, 3 gun toparlanma senaryosu', () => {
+  test('15 gunluk tam seri, 1 gun bosluk, hedef kadar gun toparlanma senaryosu', () => {
     let mevcutTarih = '2025-01-01';
 
     // 1. Ilk 15 gun tam kiliniyor
@@ -161,15 +161,16 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     expect(seriDurumu.toparlanmaDurumu?.oncekiSeri).toBe(15);
     expect(seriDurumu.toparlanmaDurumu?.tamamlananGun).toBe(1);
 
-    // 4. Toparlanma devam ediyor (2 gun daha tam — 3 gunluk toparlanma)
-    for (let i = 0; i < 2; i++) {
+    // 4. Toparlanma devam ediyor: hedefe kadar (ilk gun yukarida sayildi) her gun tam
+    for (let i = 0; i < ayarlar.toparlanmaGunSayisi - 1; i++) {
       mevcutTarih = gunEkle(mevcutTarih, 1);
       gunSimuleEt(mevcutTarih, tamNamazlar(mevcutTarih));
     }
 
     // 5. Toparlanma basarili olmali
     expect(seriDurumu.toparlanmaDurumu).toBeNull();
-    expect(seriDurumu.mevcutSeri).toBe(16); // 15 (kurtarilan) + 1 (son toparlanma gunu)
+    // Kurtarilan seri (15) + toparlanmada kilinan TUM gunler (hedef kadar)
+    expect(seriDurumu.mevcutSeri).toBe(15 + ayarlar.toparlanmaGunSayisi);
     expect(toparlanmaSayisi).toBe(1);
   });
 
@@ -369,7 +370,7 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
 
   // ==================== enUzunSeri REKORU + TOPARLANMA KUTLAMASI ====================
   // tamGuncellemeyiYap'in urettigi kutlamalar/seviye hic incelenmiyordu.
-  // Toparlanma sonrasi mevcutSeri=16 -> enUzunSeri de 16 olmali (rekor) ve
+  // Toparlanma sonrasi mevcutSeri = kurtarilan + toparlanma gunleri -> enUzunSeri de ayni (rekor) ve
   // toparlanma_tamamlandi kutlamasi uretilmeli.
   test('Toparlanma sonrasi enUzunSeri rekoru guncellenir ve kutlama uretilir', () => {
     let tarih = '2025-10-01';
@@ -385,16 +386,17 @@ describe('Seri Sistemi Entegrasyon Simulasyonu', () => {
     tarih = gunEkle(tarih, 1); // atlanan gun
     gunSimuleEt(tarih, tamNamazlar(tarih)); // toparlanma 1. gun
 
-    // 2 gun daha tam -> 3 gunluk toparlanma tamamlanir (VARSAYILAN_SERI_AYARLARI.toparlanmaGunSayisi=3)
+    // Hedefe kadar her gun tam -> toparlanma tamamlanir (hedef ayardan gelir)
     let sonGun;
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < ayarlar.toparlanmaGunSayisi - 1; i++) {
       tarih = gunEkle(tarih, 1);
       sonGun = gunSimuleEt(tarih, tamNamazlar(tarih));
     }
 
-    // Seri 16'ya cikti (15 kurtarilan + 1) ve REKOR da 16 olmali.
-    expect(seriDurumu.mevcutSeri).toBe(16);
-    expect(seriDurumu.enUzunSeri).toBe(16);
+    // Seri 15 (kurtarilan) + toparlanma gunleri kadar cikti; REKOR da ayni olmali.
+    const beklenenSeri = 15 + ayarlar.toparlanmaGunSayisi;
+    expect(seriDurumu.mevcutSeri).toBe(beklenenSeri);
+    expect(seriDurumu.enUzunSeri).toBe(beklenenSeri);
 
     // Toparlanma basarili kutlamasi uretildi mi?
     expect(sonGun!.hesapSonucu.toparlanmaBasarili).toBe(true);

@@ -1,66 +1,69 @@
 /**
  * Bir vaktin TEK bir hatirlatma adimini (seviyesini) acip kapatma — saf mantik.
  *
- * NEDEN AYRI BIR KAVRAM: motor icin "kapali" zaten `mod === 'sessiz'`tir ve oyle
- * kalir (tek dogruluk kaynagi). Ama kullanici bir adimi kapatip sonra actiginda
- * KURDUGU seyi geri istiyor: 'ikisi' modu, sectigi ses, yazdigi anons metni.
- * `mod`'u dogrudan 'sessiz' yapmak eski modu yok ediyordu; bu yuzden kapatma
- * aninda mod `oncekiMod`'a alinir ve acilista geri konur.
+ * NEDEN AYRI BIR KAVRAM: motor icin "kapali" zaten "hicbir kanali acik degil"dir
+ * ve oyle kalir (tek dogruluk kaynagi `kanallar`). Ama kullanici bir adimi kapatip
+ * sonra actiginda KURDUGU seyi geri istiyor: acik kanallarini, sectigi sesi,
+ * yazdigi anons metnini. `kanallar`i dogrudan bosaltmak kanal secimini yok
+ * ediyordu; bu yuzden kapatma aninda kume `oncekiKanallar`a alinir ve acilista
+ * geri konur.
  *
- * `oncekiMod` MOTORA ULASMAZ — `UyariPlani` onu tasimaz, bes tuketicinin hicbiri
- * okumaz. Yalnizca bir geri-alma hafizasidir.
+ * `oncekiKanallar` MOTORA ULASMAZ — `UyariPlani` onu tasimaz, bes tuketicinin
+ * hicbiri okumaz. Yalnizca bir geri-alma hafizasidir.
  */
-import type { SeviyeAyari, UyariModu } from './matrisTipleri';
+import type { SeviyeAyari, UyariKanallari } from './matrisTipleri';
+import type { PencereYonu } from './pencereTipleri';
+import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
+import { KAPALI_KANALLAR, VARSAYILAN_ACIK_KANALLAR, adimKapaliMi } from './kanalKumesi';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
-import { ANONS_SABLONLARI } from './anonsMetni';
-
-/** Kapali olmayan modlar — `oncekiMod` yalniz bunlardan biri olabilir. */
-type AcikMod = Exclude<UyariModu, 'sessiz'>;
-
-/** Acilirken hatirlanan mod yoksa (veya bozuksa) dusulen guvenli mod. */
-const YEDEK_MOD: AcikMod = 'bildirim';
+import { varsayilanAnonsMetni } from './anonsMetni';
 
 /**
- * Adim hatirlatma yapiyor mu? (Motorla ayni kural: sessiz = pencere yok.)
- * Tip daraltir: dogruysa `mod` kesinlikle bir `AcikMod`'dur.
+ * Adim hatirlatma yapiyor mu? (Motorla ayni kural: hicbir kanal acik degilse hayir.)
  */
-export const seviyeAcikMi = (
-  seviye: SeviyeAyari
-): seviye is SeviyeAyari & { mod: AcikMod } => seviye.mod !== 'sessiz';
+export const seviyeAcikMi = (seviye: SeviyeAyari): boolean => !adimKapaliMi(seviye.kanallar);
 
 /**
- * Adimi kapatir; kapatma anindaki modu geri donus icin saklar.
+ * Adimi kapatir; kapatma anindaki kanal kumesini geri donus icin saklar.
  * Zaten kapaliysa AYNI referansi dondurur — gereksiz matris yazimi (ve dolayisiyla
  * disk yazimi + yeniden planlama) tetiklenmesin.
  */
 export const seviyeyiKapat = (seviye: SeviyeAyari): SeviyeAyari => {
   if (!seviyeAcikMi(seviye)) return seviye;
-  return { ...seviye, mod: 'sessiz', oncekiMod: seviye.mod };
+  return { ...seviye, kanallar: KAPALI_KANALLAR, oncekiKanallar: seviye.kanallar };
 };
 
 /**
- * Adimi hatirlanan moduyla geri acar.
+ * Adimi hatirlanan kanallariyla geri acar.
  *
- * Sesli bir mod geri gelirken BOS anons kutusu birakilmaz (SeviyeDetayModal.modSec
- * ve matrisIslemleri.seviyeyeUygula ile ayni sozlesme): metinsiz 'sesli' adim
- * sessiz kalir, kullanici actigi adimin calismadigini sanirdi. Kullanicinin kendi
- * yazdigi metin ASLA ezilmez.
+ * Sesli bir kanal geri gelirken BOS anons kutusu birakilmaz (SeviyeDetayModal ve
+ * matrisIslemleri.seviyeyeUygula ile ayni sozlesme): metinsiz sesli adim sessiz
+ * kalir, kullanici actigi adimin calismadigini sanirdi. Kullanicinin kendi yazdigi
+ * metin ASLA ezilmez.
+ *
+ * `yon` VAKTIN penceresinin yonudur (`VakitMuhafizAyari.yon`): giris yonunde
+ * cikis dilli sablonla doldurmak, vakit YENI GIRMISKEN "son 42 dakika" dedirtir.
  */
-export const seviyeyiAc = (seviye: SeviyeAyari): SeviyeAyari => {
+export const seviyeyiAc = (
+  seviye: SeviyeAyari,
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+): SeviyeAyari => {
   if (seviyeAcikMi(seviye)) return seviye;
 
-  // Hatirlanan mod 'sessiz' ise (bozuk/eski kayit) oldugu gibi geri koymak
-  // "actim ama yine sessiz" kilidi yaratirdi. Tip bunu yasaklar ama DISKTEN gelen
-  // veri tipe uymak zorunda degil — bu yuzden genis tiple okunup dogrulanir.
-  const hatirlanan = seviye.oncekiMod as UyariModu | undefined;
-  const mod: AcikMod =
-    !hatirlanan || hatirlanan === 'sessiz' ? YEDEK_MOD : (hatirlanan as AcikMod);
+  // Hatirlanan kume de BOSSA (bozuk/eski kayit) oldugu gibi geri koymak "actim
+  // ama yine kapali" kilidi yaratirdi → guvenli yedege dusulur.
+  const hatirlanan = seviye.oncekiKanallar;
+  const kanallar: UyariKanallari = adimKapaliMi(hatirlanan)
+    ? VARSAYILAN_ACIK_KANALLAR
+    : (hatirlanan as UyariKanallari);
 
-  const { oncekiMod: _unutulan, ...kalan } = seviye;
+  const { oncekiKanallar: _unutulan, ...kalan } = seviye;
   return {
     ...kalan,
-    mod,
+    kanallar,
     anonsMetni:
-      sesliAnonsGerekliMi(mod) && !seviye.anonsMetni ? ANONS_SABLONLARI[0] : seviye.anonsMetni,
+      sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni
+        ? varsayilanAnonsMetni(yon)
+        : seviye.anonsMetni,
   };
 };

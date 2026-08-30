@@ -17,16 +17,16 @@ import android.util.Log
  * uzerinde dogrudan `setSound(uri, attrs)` cagirmaktir.
  *
  * ANDROID TUZAKLARI (mimarinin sebebi):
- *  - Kanal sesi olusturulduktan SONRA degistirilemez.
+ *  - Kanal sesi de TITRESIMI de olusturulduktan SONRA degistirilemez.
  *  - `deleteNotificationChannel` + ayni id ile yeniden olusturma tombstone'a takilir:
  *    Android eski ayarlari diriltir.
- *  → Bu yuzden kanal id'si JS tarafinda sesin hash'inden uretilir; ses degisince id
- *    de degisir, ayni id'nin sesini degistirme ihtiyaci HIC DOGMAZ.
+ *  → Bu yuzden kanal id'si JS tarafinda (ses + titresim) hash'inden uretilir; girdi
+ *    degisince id de degisir, ayni id'nin ayarini degistirme ihtiyaci HIC DOGMAZ.
  *
  * TABAN kanallar (`muhafiz`, `muhafiz_acil`) BURADA olusturulmaz — onlari mevcut
  * JS akisi (BildirimServisi.izinIste) zaten kuruyor ve mevcut kurulumlarda kullanicinin
  * kendi tercihleri (titresim/onem/DND) o kanallarda birikmis durumda. Burasi yalniz
- * hash'li (ozel sesli) kanallarla ilgilenir.
+ * hash'li kanallarla ilgilenir (ozel ses VE/VEYA belirgin titresim).
  */
 object MuhafizKanallari {
     private const val ETIKET = "MuhafizKanallari"
@@ -34,8 +34,41 @@ object MuhafizKanallari {
     /** Taban kanallar: bu modul tarafindan ne olusturulur ne de silinir. */
     private val TABAN_KANALLAR = setOf("muhafiz", "muhafiz_acil")
 
+    /** Paketlenmis varsayilan bildirim sesi (res/raw) — taban kanallarla ayni dosya. */
+    private const val VARSAYILAN_SES_ADI = "bildirim"
+
+    // TITRESIM DESENLERI. Ilk ikisi TABAN kanallarin desenleriyle BIREBIR AYNI
+    // (BildirimServisi.izinIste): hash'li bir kanal, kullanici titresim istemedigi
+    // surece taban kanaldan yalnizca SESIYLE ayrilmali.
+    private val DESEN_NORMAL = longArrayOf(0, 500, 200, 500)
+    private val DESEN_ACIL = longArrayOf(0, 1000, 500, 1000, 500, 1000)
+
+    // Kullanici TITRESIM kanalini acikca actiginda kullanilan BELIRGIN desenler:
+    // ust uste kisa darbeler + kapanista uzun bir darbe — cepteyken fark edilir.
+    private val DESEN_BELIRGIN_NORMAL = longArrayOf(0, 400, 150, 400, 150, 400, 150, 700)
+    private val DESEN_BELIRGIN_ACIL = longArrayOf(0, 600, 200, 600, 200, 600, 200, 1200)
+
     private fun yonetici(context: Context): NotificationManager? =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+
+    /**
+     * Paketlenmis varsayilan bildirim sesi (res/raw/bildirim.mp3).
+     *
+     * NEDEN GEREKLI (Faz 6): titresim ekseni "varsayilan ses + hash'li kanal"
+     * bilesimini mumkun kildi. Ses hic kurulmasaydi kanal SISTEM varsayilan
+     * bildirim sesini calardi; taban kanallar ise `bildirim.mp3` caliyor →
+     * kullanici yalnizca titresimi actigi icin sesin degistigini duyardi.
+     * Kaynak bulunamazsa (null) kanal sistem varsayilanina duser — sessiz kalmaz.
+     */
+    private fun paketSesi(context: Context): Uri? = try {
+        val kaynakId = context.resources.getIdentifier(
+            VARSAYILAN_SES_ADI, "raw", context.packageName
+        )
+        if (kaynakId != 0) Uri.parse("android.resource://${context.packageName}/$kaynakId") else null
+    } catch (e: Exception) {
+        Log.w(ETIKET, "Paket sesi cozulemedi: ${e.message}")
+        null
+    }
 
     private fun muhafizKanaliMi(id: String): Boolean =
         id == "muhafiz" || id == "muhafiz_acil" ||
@@ -51,7 +84,8 @@ object MuhafizKanallari {
         kanalAdi: String,
         aciklama: String,
         sesUri: String?,
-        acilMi: Boolean
+        acilMi: Boolean,
+        titresim: Boolean = false
     ) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         if (kanalId.isBlank()) return
@@ -73,19 +107,28 @@ object MuhafizKanallari {
             val kanal = NotificationChannel(kanalId, kanalAdi, onem).apply {
                 description = aciklama
                 enableVibration(true)
-                vibrationPattern =
-                    if (acilMi) longArrayOf(0, 1000, 500, 1000, 500, 1000)
-                    else longArrayOf(0, 500, 200, 500)
+                // TITRESIM DE KANAL OZELLIGIDIR ve kanal kurulduktan sonra
+                // DEGISTIRILEMEZ → desen kanal id'sinin girdisidir (JS tarafinda
+                // `sesKimligi.muhafizKanalIdOlustur`). Titresim kapaliyken desen
+                // taban kanallarinkiyle BIREBIR ayni kalir.
+                vibrationPattern = when {
+                    titresim && acilMi -> DESEN_BELIRGIN_ACIL
+                    titresim -> DESEN_BELIRGIN_NORMAL
+                    acilMi -> DESEN_ACIL
+                    else -> DESEN_NORMAL
+                }
                 if (acilMi) setBypassDnd(true)
 
-                if (!sesUri.isNullOrBlank()) {
-                    // USAGE_NOTIFICATION: bu bir bildirim sesidir (alarm degil) —
-                    // kullanicinin bildirim ses seviyesi ve sessiz mod tercihine uyar.
+                // USAGE_NOTIFICATION: bu bir bildirim sesidir (alarm degil) —
+                // kullanicinin bildirim ses seviyesi ve sessiz mod tercihine uyar.
+                val cozulmusSes =
+                    if (!sesUri.isNullOrBlank()) Uri.parse(sesUri) else paketSesi(context)
+                if (cozulmusSes != null) {
                     val nitelikler = AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                         .build()
-                    setSound(Uri.parse(sesUri), nitelikler)
+                    setSound(cozulmusSes, nitelikler)
                 }
             }
             yonetici.createNotificationChannel(kanal)

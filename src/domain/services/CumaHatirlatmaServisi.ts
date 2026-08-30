@@ -8,7 +8,9 @@ import {
     sonrakiCumalar,
     hatirlatmaZamaniHesapla,
     sureMetniOlustur,
+    cumaPenceresiOlustur,
 } from '../../core/utils/cumaYardimcisi';
+import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
 
 /** Bildirim id oneki — temizlik bu onekle SUZER, baska sistemlere dokunmaz. */
 const ID_ONEKI = 'cuma_hatirlatma_';
@@ -110,33 +112,56 @@ export class CumaHatirlatmaServisi {
         const params = CalculationMethod.Turkey();
         const simdi = new Date();
 
+        // Adim dakikalari ORTAK PLAN URETICISINDEN gelir (cuma icin ayri bir
+        // zamanlama mantigi yazilmaz): `oncedenDk` esikli tek adimli bir pencere
+        // → 'birkez' tek dakika, tekrarli siklik ise seyrekleseren bir dizi verir.
+        // Plan butcesi (`etkinSiklikHesapla`) de motorun icinde oldugu icin
+        // "180 dk once basla, 5 dk'da bir" gibi bir ayar bildirim patlamasi
+        // uretemez — muhafizla ayni tavan gecerlidir.
+        const pencere = cumaPenceresiOlustur(ayarlar.oncedenDk, ayarlar.siklik);
+        const adimlar = vakitUyariPlaniOlustur(pencere, ayarlar.oncedenDk).map((a) => a.kalanDk);
+
         for (const cuma of sonrakiCumalar(simdi, PLANLANACAK_CUMA_SAYISI)) {
             // Vakit hesabi GUN BAZINDA: her cuma icin ayri PrayerTimes.
             const ogleVakti = new PrayerTimes(coordinates, cuma, params).dhuhr;
-            await this.tekHatirlatmaPlanla(cuma, ogleVakti, ayarlar.oncedenDk, simdi);
+            for (const [sira, kalanDk] of adimlar.entries()) {
+                await this.tekHatirlatmaPlanla(cuma, ogleVakti, kalanDk, simdi, sira === 0);
+            }
         }
     }
 
+    /**
+     * @param ilkMi Bu, o cumanin ILK (en erken) hatirlatmasi mi?
+     *   - identifier: ilk hatirlatma TARIHSEL id'yi (`cuma_hatirlatma_<ISO>`)
+     *     korur; tekrarlar dakikayla ayrisir. Boylece `'birkez'` ayari eski
+     *     kurulumlarla birebir ayni id kumesini uretir.
+     *   - metin: cuma'ya OZGU nass (Cuma 62/9) yalnizca ilk hatirlatmada gecer;
+     *     her tekrarda okunmasi hem gurultu hem de nassin degerini asindirir.
+     */
     private async tekHatirlatmaPlanla(
         cuma: Date,
         ogleVakti: Date,
         oncedenDk: number,
-        simdi: Date
+        simdi: Date,
+        ilkMi: boolean
     ): Promise<void> {
         const zaman = hatirlatmaZamaniHesapla(ogleVakti, oncedenDk);
         if (zaman.getTime() <= simdi.getTime()) return;
 
         const sure = sureMetniOlustur(oncedenDk);
+        const iso = tarihiISOFormatinaCevir(cuma);
 
         try {
             await Notifications.scheduleNotificationAsync({
-                identifier: `${ID_ONEKI}${tarihiISOFormatinaCevir(cuma)}`,
+                identifier: ilkMi ? `${ID_ONEKI}${iso}` : `${ID_ONEKI}${iso}_${oncedenDk}`,
                 content: {
                     title: 'Cuma namazı yaklaşıyor',
                     // İbadete cagri kaydi ("sen" + emir kipi) — arayuz dili DEGIL.
                     // Cuma'ya OZGU nass (Cuma 62:9) burada dogru yerde: yalniz bu
                     // bildirime ait, genel havuza karismaz.
-                    body: `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`,
+                    body: ilkMi
+                        ? `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`
+                        : `Öğle vaktine ${sure} kaldı. Camiye yola çık.`,
                     sound: true,
                     data: { tip: 'cuma_hatirlatma' },
                 },

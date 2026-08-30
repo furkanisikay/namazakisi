@@ -2,7 +2,7 @@
  * AyarSatiri — navigasyon ve toggle varyantlarının davranış testleri.
  */
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { AyarSatiri } from '../AyarSatiri';
 
@@ -94,6 +94,56 @@ describe('AyarSatiri — navigasyon varyantı', () => {
     );
 
     expect(queryByText('Yeni')).toBeNull();
+  });
+});
+
+describe('AyarSatiri — navigasyon varyantı + ek eylem', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('ek eylem düğmesi AYRI dokunulabilir kalır: satıra basmak onu tetiklemez', async () => {
+    const onPress = jest.fn();
+    const ekEylemPress = jest.fn();
+    const { getByLabelText } = render(
+      <AyarSatiri
+        varyant="navigasyon"
+        ikon={<Text>ikon</Text>}
+        baslik="Konum"
+        ozet="Görükle, Bursa · otomatik"
+        onPress={onPress}
+        ekEylem={
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Konumu yenile" onPress={ekEylemPress}>
+            <Text>yenile</Text>
+          </TouchableOpacity>
+        }
+      />
+    );
+
+    // Gezinme alanı ile eylem düğmesi KARDEŞ olmalı; iç içe olsaydı TalkBack satırı
+    // tek düğüme düzleştirir ve düğme erişilemez olurdu (Switch ile aynı kural).
+    fireEvent.press(getByLabelText('Konum. Görükle, Bursa · otomatik'));
+    await waitFor(() => expect(onPress).toHaveBeenCalledTimes(1));
+    expect(ekEylemPress).not.toHaveBeenCalled();
+
+    fireEvent.press(getByLabelText('Konumu yenile'));
+    expect(ekEylemPress).toHaveBeenCalledTimes(1);
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it('ek eylem verilmezse satır tek bir gezinme düğmesi olarak kalır', () => {
+    const { queryByLabelText, getByLabelText } = render(
+      <AyarSatiri
+        varyant="navigasyon"
+        ikon={<Text>ikon</Text>}
+        baslik="Konum"
+        ozet="Nilüfer, Bursa · manuel"
+        onPress={jest.fn()}
+      />
+    );
+
+    expect(getByLabelText('Konum. Nilüfer, Bursa · manuel')).toBeTruthy();
+    expect(queryByLabelText('Konumu yenile')).toBeNull();
   });
 });
 

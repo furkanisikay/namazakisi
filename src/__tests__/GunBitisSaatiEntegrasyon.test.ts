@@ -65,6 +65,25 @@ afterAll(() => {
 });
 
 import { KonumYoneticiServisi } from '../domain/services/KonumYoneticiServisi';
+import { NamazVaktiHesaplayiciServisi } from '../domain/services/NamazVaktiHesaplayiciServisi';
+
+/**
+ * Uretim kodu artik imsagi `NamazVaktiHesaplayiciServisi` uzerinden okuyor.
+ *
+ * NEDEN DEGISTI: `KonumYoneticiServisi.durum.koordinatlar` uretimde HIC
+ * doldurulmuyor (setter'lari yalniz testlerden cagriliyor) -> eski kaynak sahada
+ * DAIMA null donuyordu ve bildirim hep 04:00 fallback'ine dusuyordu. Ayrica eski
+ * fonksiyon KOSULSUZ YARININ fajr'ini donduruyordu.
+ *
+ * Saglayici tarihten bagimsiz sabit bir imsak dondurur; `sonrakiImsakVaktiBul`
+ * bugun/yarin hangi dala girerse girsin ayni degeri alir -> test deterministik.
+ */
+const imsagiSabitle = (imsak: Date | null) => {
+    jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
+        getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
+        getGunlukVakitler: () => (imsak ? { imsak } : null),
+    } as unknown as NamazVaktiHesaplayiciServisi);
+};
 import seriReducer, { seriAyarlariniGuncelle } from '../presentation/store/seriSlice';
 import type { GunSonuBildirimModu, BildirimGunSecimi } from '../core/types/SeriTipleri';
 import { VARSAYILAN_SERI_AYARLARI } from '../core/types/SeriTipleri';
@@ -243,9 +262,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             // setMinutes ile geri çeker ve getHours/getMinutes ile planlar. Burada imsak'ı
             // BİLİNEN sabit bir Date'e kilitleyip aynı bağımsız yöntemle beklenen değeri hesaplıyoruz.
             const imsak = new Date(2026, 1, 1, 6, 15, 0, 0); // 1 Şubat 2026, 06:15 yerel
-            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
-                sonrakiGunImsakVaktiGetir: () => imsak,
-            } as unknown as KonumYoneticiServisi);
+            imsagiSabitle(imsak);
 
             const { saat, dakika } = await planlananSaatiAl({
                 gunSonuBildirimAktif: true,
@@ -268,9 +285,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
             // 30dk geri çekme bir önceki güne taşmalı; getHours NEGATİF değil 23 dönmeli.
             // setMinutes'ın tarih devrini doğru yaptığını (saat 23, dakika 40) garanti eder.
             const imsak = new Date(2026, 1, 1, 0, 10, 0, 0); // 00:10 yerel
-            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
-                sonrakiGunImsakVaktiGetir: () => imsak,
-            } as unknown as KonumYoneticiServisi);
+            imsagiSabitle(imsak);
 
             const { saat, dakika } = await planlananSaatiAl({
                 gunSonuBildirimAktif: true,
@@ -289,9 +304,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
 
         it('otomatik mod: konum (imsak) yoksa varsayılan 04:00 planlanır', async () => {
             // seriSlice.ts 131-135: imsak null ise fallback 04:00.
-            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
-                sonrakiGunImsakVaktiGetir: () => null,
-            } as unknown as KonumYoneticiServisi);
+            imsagiSabitle(null);
 
             const { saat, dakika } = await planlananSaatiAl({
                 gunSonuBildirimAktif: true,
@@ -358,9 +371,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
         it('sabit -> otomatik geçişinde bildirim imsak-temelli yeni saate yeniden planlanır', async () => {
             // GÖZLEMLENEBİLİR etki: mod değişince bildirimPlanla yeni (saat,dakika) ile çağrılır.
             const imsak = new Date(2026, 1, 1, 5, 30, 0, 0); // 05:30
-            jest.spyOn(KonumYoneticiServisi, 'getInstance').mockReturnValue({
-                sonrakiGunImsakVaktiGetir: () => imsak,
-            } as unknown as KonumYoneticiServisi);
+            imsagiSabitle(imsak);
 
             const store = storeOlustur();
 
