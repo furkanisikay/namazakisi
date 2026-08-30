@@ -5,6 +5,29 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.25.0] - 2026-08-30
+
+### Eklendi
+- [duyuru] Faz 0/1/4/5b özelliklerini Neler Yeni'ye ekle
+- [muhafiz] titreşim kanalını uçtan uca bağla (Faz 6)
+- [hatirlatma] ortak pencere bileşeni + cuma periyodik hatırlatma (Faz 3+4)
+- [seri] seri gününün bitimine büyük sayaçlı bildirim (Faz 5b)
+- [muhafiz] UyariModu enum'unu UyariKanallari kümesine göçür (Faz 2)
+- [muhafiz] servisleri pencere yönüne bağla (Faz 1 servis turu)
+- [muhafiz] anons ve özet metinlerini pencere yönüne bağla
+- [muhafiz] hatırlatma penceresine yön kavramı (Faz 1 çekirdek)
+- [muhafiz] eşik tavanı vaktin gerçek penceresinden türesin
+- fix(seri): aynı-gün geri-alımı toparlanma sayacını da geri alsın
+- [seri,muhafiz,konum] toparlanma ödülü, açılış sekmesi, sayfa başlıkları, çift anons ve konum yenileme
+
+### Düzeltildi
+- [seri] gün sınırı imsağa bağlansın
+- [seri] aynı-gün geri-alımı toparlanma sayacını da geri alsın
+- [seri] toparlanma ilerlemesi aynı-gün geri-almada sıfırlanmasın
+
+### Değiştirildi
+- [muhafiz] adım-kapalı yüklemini anlamıyla aynı ada taşı
+
 ## [0.24.0] - 2026-08-17
 
 ### Eklendi
