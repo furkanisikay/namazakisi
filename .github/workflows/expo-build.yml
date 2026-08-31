@@ -79,7 +79,14 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: '20'
+  # DIKKAT — burasi bilerek 22, diger workflow'lar (ci.yml / android-build.yml) 20.
+  # eas-cli'nin engines alani hala ">=20" der ama transitif bagimliligi
+  # @oclif/plugin-autocomplete 3.3.0'dan itibaren ">=22" istiyor; expo-github-action
+  # eas-cli'yi "yarn add" ile kurar ve yarn engine uyusmazliginda KURULUMU REDDEDER
+  # ("Found incompatible module") -> v0.25.0 release'inde AAB build'i 52 sn'de patladi.
+  # Bu is sadece EAS CLI'yi calistirir (npm ci + eas build); Node 22 npm 10 ile uyumlu
+  # ve package.json engines ">= 20.19.4" sartini saglar.
+  NODE_VERSION: '22'
 
 jobs:
   build:
@@ -125,7 +132,10 @@ jobs:
         uses: actions/cache@v6
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          # Node surumu ANAHTARA dahil: bu is Node 22, ci.yml/android-build.yml Node 20.
+          # Ortak anahtar kalsaydi Node 22'de uretilen node_modules'u Node 20 isleri
+          # geri yukleyebilirdi (native/binary artifact uyusmazligi).
+          key: ${{ runner.os }}-node${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
 
       - name: 📚 Install dependencies
         if: steps.cache-modules.outputs.cache-hit != 'true'
