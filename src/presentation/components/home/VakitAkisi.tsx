@@ -7,6 +7,7 @@ import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir } from "../../../core/utils/TarihYardimcisi";
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -23,7 +24,7 @@ interface VakitAkisiProps {
      * sonra yatsi surerken aktif gun DUNDUR — bu prop atlanirsa dunun vakitleri
      * "gelecek" sanilir ve isaretleme kilitlenir (yasanmis bug).
      */
-    gunTarihi: Date;
+    gunTarihi: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -82,7 +83,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
 
                     // Vakit gecti mi kontrolu (sadece aktif gun icin) — saat GOSTERILEN
                     // gunun takvim gunune kurulur, `new Date()`in gunune DEGIL.
-                    const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat, gunTarihi, new Date()) : true;
+                    const gecmisMi = aktifGunMu ? vakitGectiMi(namaz.saat, ISOTarihiDateNesnesiNeCevir(gunTarihi), new Date()) : true;
                     const gelecekMi = aktifGunMu && !gecmisMi && !aktifMi;
                     // Aktif vakit kilitliyse (orn: gunes/kerahat vaktinde ogle) de pasif olarak isaretle
                     const pasifMi = gelecekMi || namaz.namazAdi === NamazAdi.Gunes || (aktifMi && kilitli);
@@ -104,7 +105,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
 
                     // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
                     // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
-                    const gorunenAd = namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi);
+                    const gorunenAd = namazGorunenAdi(namaz.namazAdi, ISOTarihiDateNesnesiNeCevir(gunTarihi), cumaEtiketi);
 
                     return (
                         <TouchableOpacity
