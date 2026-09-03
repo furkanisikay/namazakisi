@@ -1,12 +1,86 @@
 BİSMİLLAHİRRAHMANİRRAHİM
 
-BU PROJE BİR SADAKA-İ CARİYE NİYETİYLE GELİŞTİRİLMİŞTİR.
-HİÇBİR ŞEKİLDE TİCARİ AMAÇLA SATILAMAZ, KAPALI KAYNAK ÜRÜNE DÖNÜŞTÜRÜLEMEZ.
-DAİMA ÜCRETSİZ VE AÇIK KAYNAK KALACAKTIR.
+═══════════════════════════════════════════════════════════════════════════════
+NİYET BEYANI / STATEMENT OF INTENT
+═══════════════════════════════════════════════════════════════════════════════
 
-THIS PROJECT IS DEVELOPED AS A CHARITY (SADAQAH JARIYAH).
-IT CANNOT BE SOLD FOR COMMERCIAL PURPOSES OR CONVERTED INTO A CLOSED-SOURCE PRODUCT.
-IT WILL REMAIN FOREVER FREE AND OPEN SOURCE.
+Bu proje bir sadaka-i cariye niyetiyle geliştirilmiştir. Amacı, namaz ibadetini
+kolaylaştıran bir aracı herkesin erişimine ücretsiz ve açık kaynak olarak
+sunmaktır. Proje daima açık kaynak kalacaktır.
+
+Bu bölüm bir NİYET beyanıdır, ek bir lisans şartı değildir. Projenin hukuki
+şartlarının tamamı aşağıdaki GNU Genel Kamu Lisansı sürüm 3 (GPLv3) metninde
+yer alır. GPLv3, projenin kapalı kaynağa dönüştürülmesini kalıcı olarak
+engeller: yazılımı dağıtan herkes, dağıttığı sürümün kaynak kodunu da aynı
+özgürlüklerle sunmak zorundadır.
+
+This project is developed as a charity (sadaqah jariyah). Its purpose is to
+offer a tool that helps with the prayer (salah) freely and openly to everyone.
+The project will remain open source.
+
+This section is a statement of INTENT, not an additional licence condition.
+The complete legal terms are set out in the GNU General Public License version
+3 below. The GPL permanently prevents this work from being turned into
+closed-source software: anyone who distributes it must also make the
+corresponding source code available under the same freedoms.
+
+═══════════════════════════════════════════════════════════════════════════════
+GNU GPL SÜRÜM 3 BÖLÜM 7 UYARINCA EK İZİN
+ADDITIONAL PERMISSION UNDER GNU GPL VERSION 3, SECTION 7
+═══════════════════════════════════════════════════════════════════════════════
+
+Bu programın telif hakkı sahibi olarak, GNU Genel Kamu Lisansı sürüm 3'ün 7.
+bölümü uyarınca aşağıdaki ek izni veriyorum: Programı veya Programa dayalı bir
+çalışmayı, üçüncü tarafların işlettiği uygulama dağıtım platformları (Apple App
+Store ve Google Play dahil, bunlarla sınırlı olmamak üzere) aracılığıyla
+dağıtabilir ve bu platformların hizmet şartlarını kabul edip bunlara
+uyabilirsiniz; bu şartlar kopyalama, yeniden dağıtım, sınırlı sayıda cihaza
+kurulum veya dijital haklar yönetimi (DRM) teknolojileri bakımından, aksi
+hâlde söz konusu Lisansın 10. bölümünce yasaklanmış olacak sınırlamalar
+içerse dahi.
+
+The copyright holder of this Program grants you the following additional
+permission under section 7 of the GNU General Public License version 3:
+
+  You may convey the Program, or a work based on the Program, through an
+  application distribution platform operated by a third party (including but
+  not limited to the Apple App Store and Google Play), and you may accept and
+  comply with that platform's terms of service, notwithstanding that those
+  terms may impose limitations on copying, redistribution, installation on a
+  limited number of devices, or the use of digital rights management
+  technologies that would otherwise be prohibited by section 10 of that
+  License.
+
+This additional permission is limited to conveying through such platforms. It
+does not waive any other requirement of the License. Everyone who receives the
+Program remains free to obtain the complete corresponding source code under the
+terms of the GNU General Public License version 3 from the project's public
+repository.
+
+As provided by section 7 of the GNU General Public License version 3, you may
+remove this additional permission from any copy of the Program, or from any
+part of it, that you convey.
+
+Bu ek izin yalnızca söz konusu platformlar üzerinden dağıtımı kapsar. Lisansın
+diğer hiçbir şartını ortadan kaldırmaz. Programı edinen herkes, kaynak kodunun
+tamamını projenin genel deposundan GPLv3 şartlarıyla edinmekte serbesttir.
+Lisansın 7. bölümü uyarınca, dağıttığınız herhangi bir kopyadan bu ek izni
+kaldırabilirsiniz.
+
+═══════════════════════════════════════════════════════════════════════════════
+KATKILAR / CONTRIBUTIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+Bu projeye katkı gönderdiğinizde, katkınızın GNU Genel Kamu Lisansı sürüm 3
+veya sonrası ile lisanslandığını ve yukarıdaki ek iznin katkınız için de
+geçerli olduğunu kabul etmiş olursunuz. Bu, projenin uygulama mağazaları
+üzerinden dağıtılmaya devam edebilmesi için gereklidir.
+
+By submitting a contribution to this project, you agree that your contribution
+is licensed under the GNU General Public License version 3 or later, and that
+the additional permission set out above applies to your contribution as well.
+This is required so that the project can continue to be distributed through
+application distribution platforms.
 
 --------------------------------------------------------------------------------
 

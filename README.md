@@ -117,10 +117,12 @@ Bu proje topluluk katkılarına açıktır! Bir hata bulduysanız veya özellik 
 *   **Proje kuralları & mimari:** Tüm konvansiyonlar, mimari kararlar ve tuzaklar **[AGENTS.md](./AGENTS.md)**'de toplanmıştır — hem insan hem yapay zekâ katkıcılar için tek doğru kaynak.
 *   Kod isimleri Türkçe; kullanıcıya görünen tüm metin kibar "siz" dilindedir.
 
-*Not: Gönderdiğiniz kodların da GPLv3 lisansı kapsamında açık kaynak olacağını kabul etmiş olursunuz.*
+*Not: Gönderdiğiniz kodların GNU GPLv3 (veya sonrası) kapsamında açık kaynak olacağını ve [LICENSE](LICENSE) dosyasındaki **uygulama mağazası ek izninin** katkınız için de geçerli olduğunu kabul etmiş olursunuz. Bu ek izin, projenin App Store ve Google Play üzerinden dağıtılabilmesi için gereklidir.*
 
 ## 📄 Lisans
 
 Copyright (c) 2026 Furkan Işıkay.
 
 Bu proje **GNU General Public License v3.0** (GPLv3) ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakabilirsiniz.
+
+LICENSE dosyası ayrıca GPLv3'ün 7. bölümü uyarınca bir **ek izin** içerir: uygulama, App Store ve Google Play gibi üçüncü taraf dağıtım platformları üzerinden yayınlanabilir. Bu izin yalnızca mağaza dağıtımını kapsar; kaynak kodun açık kalma yükümlülüğü aynen sürer ve kaynak koda bu depodan GPLv3 şartlarıyla erişilebilir.

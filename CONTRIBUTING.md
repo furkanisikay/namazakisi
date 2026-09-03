@@ -36,6 +36,15 @@ Namaz Akışı React Native projesine katkı yaptığınız için teşekkürler!
    ```
 5. Pull Request açın.
 
+## ⚖️ Katkı Lisansı
+
+Bu projeye katkı gönderdiğinizde şunları kabul etmiş olursunuz:
+
+- Katkınız **GNU GPL sürüm 3 veya sonrası** ile lisanslanır.
+- [LICENSE](LICENSE) dosyasındaki **GPLv3 §7 ek izni** katkınız için de geçerlidir — yani katkınızı içeren uygulama, App Store ve Google Play gibi dağıtım platformları üzerinden yayınlanabilir.
+
+İkinci madde teknik bir zorunluluktur: Apple ve Google'ın hizmet şartları GPLv3'ün 10. bölümüyle çelişir; ek izin olmadan projenin tamamı mağazalarda dağıtılamaz hâle gelir. Katkınızın telif hakkı **size aittir**, devretmiş olmazsınız.
+
 ## 📝 Kod Standartları
 
 ### TypeScript
