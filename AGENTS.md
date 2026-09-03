@@ -244,6 +244,13 @@ Provider: Play Store kurulumu → `PlayStoreGuncellemeKaynagi` (Play Core), aksi
 **⚠️ Önce sor / dikkatli ol:** yeni bağımlılık ekleme · `android/` native değişikliği · CI workflow (`.github/workflows`) düzenleme · public API/şema/store şekli değişimi · release/sürüm mantığı.
 **🚫 Asla:** secret/token/anahtar/kişisel veri commit'leme · `node_modules` / `android/app/build` / `coverage` düzenleme · `npm run verify` kırıkken teslim etme · kullanıcıya görünen metinde "sen" dili · sürüm numarasını elle değiştirme (CI yönetir).
 
+### Lisans sınırı (mağaza dağıtımı buna bağlı)
+Proje **GPL-3.0** + LICENSE'taki **GPLv3 §7 ek izni** (App Store/Google Play dağıtımı; Apple/Google hizmet şartları GPLv3 §10 ile çelişir — GNU Go 2010, VLC 2011 emsalleri). Ek izni **tek telif hakkı sahibi** olduğu için verebiliyor; bu yüzden:
+- **Başka projeden kod KOPYALAMA.** GPL-uyumsuz (AGPL-3.0 dahil) kod repoya girerse ek izin o kod için **verilemez** (başkasının telifi) ve uygulama mağazalarda dağıtılamaz hâle gelir — geri dönüşü kodu çıkarıp yeniden yazmaktır. Referans olarak **okumak** serbest, teknik fikir telif konusu değildir; satır kopyalamak değil. Örnek: `Hassan-PS/Mihrab` **AGPL-3.0** (yalnız ≤2.7.43 Apache-2.0, o grant geri alınamaz) → oku, kopyalama; `TheAbubakrAbu/Al-Adhan-Prayer-Times` **MIT** → kullanılabilir (atıfla).
+- Yeni bağımlılık eklerken lisansına bak: **AGPL/SSPL/ticari-kısıtlı olan ALMA**; MIT/Apache-2.0/BSD/ISC güvenli, LGPL dikkatli.
+- Katkı lisans maddesi **üç dosyada** aynı olmalı (`LICENSE`, `README.md`, `CONTRIBUTING.md`): katkıcı GPLv3+ **ve** ek izni kabul eder, telif devri YOKTUR. Birini güncellerken üçünü hizala.
+- **AGPL'e geçme.** §13 yalnız ağ üzerinden hizmet veren yazılımda tetiklenir; cihazda çalışan uygulamada ölü maddedir, App Store çelişkisini de çözmez (AGPL de GPLv3 tabanlı).
+
 ## Jules / agent ortam kurulumu
 Jules kısa ömürlü bir Ubuntu VM açar. **Jules proje ayarlarında** şunları MUTLAKA tanımla (yoksa kendini doğrulamaz, bozuk PR açar — Jules'un en yaygın hata sebebi budur):
 - **Setup script:** `npm ci` (lockfile ile paritede; CI de her yerde `npm ci` kullanır → "Jules'ta geçti, CI'da patladı" sapmasını önler). **İstisna:** Jules görev içinde `package.json`'a yeni bağımlılık eklerse `npm ci` o paketi kuramaz → o görevde `npm install` ile `package-lock.json`'u yeniden üretmelidir.
