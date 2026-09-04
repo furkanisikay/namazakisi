@@ -122,6 +122,10 @@ export const HakkindaSayfasi: React.FC = () => {
 
   // Web sitesini ac (yalnizca guvenilir HTTPS domainleri)
   const handleWebSitesiAc = (url: string) => {
+    if (!guvenilirBaglantiMi(url)) {
+      Logger.warn('HakkindaSayfasi', 'Guvenilmez domain iceren baglanti reddedildi', url);
+      return;
+    }
     Linking.openURL(url).catch((hata) => {
       Logger.warn('HakkindaSayfasi', 'Baglanti acilamadi', hata);
     });
