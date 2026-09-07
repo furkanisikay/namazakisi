@@ -79,8 +79,11 @@ export const IstatistikSayfasi: React.FC = () => {
       >
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'gunluk' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'gunluk' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('gunluk')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'gunluk' }}
+          accessibilityLabel="Günlük sekmesi"
         >
           <FontAwesome5
             name="chart-bar"
@@ -99,8 +102,11 @@ export const IstatistikSayfasi: React.FC = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'haftalik' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'haftalik' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('haftalik')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'haftalik' }}
+          accessibilityLabel="Haftalık sekmesi"
         >
           <FontAwesome5
             name="calendar-week"
@@ -119,8 +125,11 @@ export const IstatistikSayfasi: React.FC = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'aylik' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'aylik' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('aylik')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'aylik' }}
+          accessibilityLabel="Aylık sekmesi"
         >
           <FontAwesome5
             name="calendar-alt"
