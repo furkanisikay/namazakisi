@@ -92,6 +92,26 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../c
 import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
 import { TITRESIM_DESENI } from '../../../core/muhafiz/titresimDeseni';
 
+
+// TESLIMCIYI ACIKCA ANDROID YAP.
+//
+// Bu repoda jest'in VARSAYILAN `Platform.OS` degeri **'ios'**
+// (`preset: "react-native"` → `haste.defaultPlatform: 'ios'`). Teslimci secimi
+// platformdan turetildigi icin, acikca soylenmezse bu suite SESSIZCE iOS
+// teslimcisine duser ve Android davranis sozlesmesini olcmeyi birakir —
+// YESIL KALARAK. `MuhafizTeslimcisi` bu yuzden enjekte edilebilir.
+import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
+import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
+
+beforeEach(() => {
+    muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
+});
+
+afterAll(() => {
+    // Modul duzeyi durumu diger suite'lere sizdirma.
+    muhafizTeslimcisiniAyarla(null);
+});
+
 /** Tek bir seviye hucresi (kademe SEVIYE_KADEMELERI sirasindan gelir). */
 interface SeviyeTanimi {
     esikDk: number;
