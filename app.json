@@ -15,7 +15,15 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.furkanisikay.namazakisi"
+      "bundleIdentifier": "com.furkanisikay.namazakisi",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "fetch"
+        ]
+      },
+      "entitlements": {
+        "com.apple.developer.usernotifications.time-sensitive": true
+      }
     },
     "android": {
       "package": "com.furkanisikay.namazakisi",
@@ -52,7 +60,8 @@
         "expo-notifications",
         {
           "sounds": [
-            "./assets/sounds/bildirim.mp3"
+            "./assets/sounds/bildirim.mp3",
+            "./assets/sounds/bildirim.wav"
           ]
         }
       ],

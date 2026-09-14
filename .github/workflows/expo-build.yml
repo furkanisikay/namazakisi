@@ -51,6 +51,16 @@ on:
         required: false
         default: false
         type: boolean
+      build_ios:
+        description: '🍎 iOS build oluştur — App Store (production profili)'
+        required: false
+        default: false
+        type: boolean
+      testflight_a_gonder:
+        description: "TestFlight'a gönder (build_ios=true gerektirir)"
+        required: false
+        default: false
+        type: boolean
 
   # android-build.yml tarafindan master merge sonrasi otomatik cagrilir
   workflow_call:
@@ -64,10 +74,25 @@ on:
       internal_a_gonder:
         type: boolean
         default: true
+      # iOS RELEASE ZINCIRINE DAHIL DEGIL (bilincli): master'a her merge bir
+      # release kesiyor; her birinde iOS build'i harcamak hem kuyrugu hem
+      # kotayi tuketir. iOS build'i MANUEL dispatch ile alinir.
+      build_ios:
+        type: boolean
+        default: false
+      testflight_a_gonder:
+        type: boolean
+        default: false
     secrets:
       EXPO_TOKEN:
         required: true
       GOOGLE_SERVICE_ACCOUNT:
+        required: false
+      ASC_API_KEY:
+        required: false
+      ASC_KEY_ID:
+        required: false
+      ASC_KEY_ISSUER_ID:
         required: false
 
 concurrency:
@@ -90,7 +115,7 @@ env:
 
 jobs:
   build:
-    name: 🚀 EAS Build (${{ inputs.build_aab && 'AAB' || '' }}${{ inputs.build_aab && inputs.build_apk && '+' || '' }}${{ inputs.build_apk && 'APK' || '' }})
+    name: 🚀 EAS Build (${{ inputs.build_aab && 'AAB' || '' }}${{ inputs.build_aab && inputs.build_apk && '+' || '' }}${{ inputs.build_apk && 'APK' || '' }}${{ (inputs.build_aab || inputs.build_apk) && inputs.build_ios && '+' || '' }}${{ inputs.build_ios && 'iOS' || '' }})
     runs-on: ubuntu-latest
     # EAS kuyrugu 2 saati asabiliyor (v0.23.27'de 114 dk beklendi). Job'un
     # timeout'u build adiminin timeout'undan BUYUK olmali, yoksa asagidaki
@@ -244,6 +269,88 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       # ==========================================
+      # iOS Build (production — App Store / TestFlight)
+      # ==========================================
+      #
+      # AAB adimiyla AYNI DESEN: job'u DUSURME, gercek durumu EAS'e sor.
+      # Gerekce AGENTS.md'de kayitli (v0.23.27 dersi): EAS kuyrugu uzayinca adim
+      # zaman asimina ugrar ama build EAS SUNUCULARINDA BITER; adimin outcome'una
+      # guvenen submit kosulu tutmaz ve BITMIS bir build magazaya hic gitmez.
+      - name: 🍎 iOS Build (production profili)
+        if: inputs.build_ios == true && inputs.sadece_submit != true
+        id: ios_build
+        continue-on-error: true
+        timeout-minutes: 200
+        run: |
+          echo "🍎 iOS build başlatılıyor (production)..."
+          eas build             --platform ios             --profile production             --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 🔎 iOS build durumunu doğrula
+        if: inputs.build_ios == true && inputs.sadece_submit != true
+        id: ios_durum
+        run: |
+          echo "🔎 EAS'teki son iOS build sorgulanıyor..."
+          eas build:list --platform ios --limit 1 --json --non-interactive > /tmp/son-ios.json 2>/dev/null || true
+
+          DURUM=$(node -e "
+            const fs = require('fs');
+            try {
+              const ham = fs.readFileSync('/tmp/son-ios.json', 'utf8');
+              const j = JSON.parse(ham.slice(ham.indexOf('[')));
+              console.log(j[0] ? j[0].status : 'YOK');
+            } catch { console.log('OKUNAMADI'); }
+          ")
+
+          echo "📊 iOS build durumu: $DURUM"
+          echo "durum=$DURUM" >> $GITHUB_OUTPUT
+
+          if [ "$DURUM" != "FINISHED" ]; then
+            echo "⚠️ iOS build tamamlanmadı ($DURUM) — TestFlight gönderimi atlanacak."
+          fi
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      # ==========================================
+      # TestFlight gonderimi
+      # ==========================================
+      - name: 🔑 App Store Connect API anahtarı hazırla
+        if: |
+          inputs.build_ios == true &&
+          inputs.testflight_a_gonder == true &&
+          steps.ios_durum.outputs.durum == 'FINISHED'
+        id: asc
+        env:
+          ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
+        run: |
+          # API ANAHTARI, parola/2FA DEGIL: Apple ID parolasi CI'da kullanilamaz
+          # (2FA'yi otomatiklestirilemez). .p8 anahtari App Store Connect'ten
+          # BIR KEZ indirilir; kaybolursa yenisi uretilir.
+          if [ -z "$ASC_API_KEY" ]; then
+            echo "⚠️ ASC_API_KEY secret bulunamadı — TestFlight gönderimi atlanacak."
+            echo "available=false" >> $GITHUB_OUTPUT
+          else
+            printf '%s' "$ASC_API_KEY" > /tmp/asc-api-key.p8
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "✅ App Store Connect API anahtarı mevcut"
+          fi
+
+      - name: 🚀 TestFlight'e Gönder
+        if: |
+          inputs.build_ios == true &&
+          inputs.testflight_a_gonder == true &&
+          steps.ios_durum.outputs.durum == 'FINISHED' &&
+          steps.asc.outputs.available == 'true'
+        run: |
+          echo "📤 TestFlight'e gönderiliyor..."
+          eas submit             --platform ios             --profile testflight             --latest             --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
+
+      # ==========================================
       # APK Build — Gradle (android-build.yml)
       # ==========================================
       - name: 📱 APK Build Tetikle (Gradle)
@@ -326,6 +433,15 @@ jobs:
           # build bitmis olabilir — v0.23.27 dersi).
           AAB_DURUM="${{ inputs.sadece_submit == true && '⏭️ Sadece gönder' || (inputs.build_aab == true && (steps.build_durum.outputs.durum == 'FINISHED' && '✅ Başarılı' || format('❌ {0}', steps.build_durum.outputs.durum)) || '⏭️ Seçilmedi') }}"
           APK_DURUM="${{ inputs.build_apk == true && (steps.apk_build.outcome == 'success' && '✅ Başarılı' || (steps.apk_build.outcome == 'skipped' && '⏭️ Atlandı' || '❌ Başarısız')) || '⏭️ Seçilmedi' }}"
+          # iOS de AAB gibi: adimin outcome'u DEGIL, EAS'ten okunan gercek durum.
+          IOS_DURUM="${{ inputs.build_ios == true && (steps.ios_durum.outputs.durum == 'FINISHED' && '✅ Başarılı' || format('❌ {0}', steps.ios_durum.outputs.durum)) || '⏭️ Seçilmedi' }}"
+          if [ "${{ inputs.build_ios }}" != "true" ] || [ "${{ inputs.testflight_a_gonder }}" != "true" ]; then
+            TESTFLIGHT_DURUM="⏭️ Seçilmedi"
+          elif [ "${{ steps.asc.outputs.available }}" == "true" ]; then
+            TESTFLIGHT_DURUM="✅ Gönderildi"
+          else
+            TESTFLIGHT_DURUM="⚠️ ASC_API_KEY eksik"
+          fi
 
           if [ "${{ steps.gsa.outputs.available }}" == "true" ]; then
             SUBMIT_DURUM="✅ Gönderildi"
@@ -350,6 +466,8 @@ jobs:
             echo "| 🤖 AAB (Play Store) | ${AAB_DURUM} |"
             echo "| 📱 APK (Gradle) | ${APK_DURUM} |"
             echo "| 🏪 Internal Submit | ${SUBMIT_DURUM} |"
+            echo "| 🍎 iOS (App Store) | ${IOS_DURUM} |"
+            echo "| ✈️ TestFlight | ${TESTFLIGHT_DURUM} |"
             echo ""
             echo "---"
             echo "[📱 Expo Dashboard — Builds](https://expo.dev/accounts/furkanisikay/projects/namazakisi/builds)"
