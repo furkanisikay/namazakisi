@@ -42,8 +42,18 @@ export type KesintiSeviyesi = 'active' | 'timeSensitive';
  * `.wav` — Apple'in resmi olarak destekledigi kaplar aiff/wav/caf'tir; `.mp3`
  * bildirim sesi olarak GARANTI DEGILDIR (Android tarafi `res/raw/bildirim.mp3`
  * kullanmaya devam eder, o dosyaya dokunulmaz).
+ *
+ * DOSYA ADI NEDEN `bildirim_ios`, `bildirim` DEGIL:
+ * `app.json > expo-notifications.sounds` dizisi PLATFORM ORTAKTIR ve
+ * `withNotificationsAndroid > setNotificationSounds` dizideki her dosyayi
+ * basename'iyle `android/app/src/main/res/raw/` altina KOPYALAR. Android kaynak
+ * adlari uzantisiz turetildigi icin `bildirim.mp3` ve `bildirim.wav` ikisi de
+ * `R.raw.bildirim` olur → AAPT2 "Duplicate resources" ile Android derlemesini
+ * DURDURUR (`android-build.yml` prebuild calistirir). Farkli govde adi bu
+ * cakismayi yapisal olarak imkansiz kilar. Alt cizgi zorunlu: Android kaynak
+ * adlarinda tire (`-`) GECERSIZDIR.
  */
-export const IOS_BILDIRIM_SESI = 'bildirim.wav';
+export const IOS_BILDIRIM_SESI = 'bildirim_ios.wav';
 
 /** Bu seviyeden itibaren Odak delinir. */
 export const TIME_SENSITIVE_ESIK_SEVIYESI = 2;

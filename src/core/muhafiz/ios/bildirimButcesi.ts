@@ -36,13 +36,24 @@ export const IOS_BEKLEYEN_TAVANI = 64;
 export const IOS_GUVENLIK_PAYI = 4;
 
 /**
- * iOS'ta kac gun ileri planlanir?
+ * iOS'ta kac gun ileri planlanmali? — ⚠️ HENUZ BAGLI DEGIL (Faz 1 kapsam disi).
  *
- * Android 1 gun planlar cunku arka plan gorevi (15 dk) ve exact alarm zinciri
- * plani guvenilir sekilde tazeler. iOS'ta ikisi de yok: `BGTaskScheduler`
- * firsatcidir, hic kosmayabilir. Tek guvenilir tazeleme ani uygulamanin ON
- * PLANA GELISIDIR → kullanici uygulamayi bir gun hic acmazsa plan tukenmesin
- * diye pencere 2 gune cikarilir.
+ * HEDEF: Android 1 gun planlar cunku arka plan gorevi (15 dk) ve exact alarm
+ * zinciri plani guvenilir sekilde tazeler. iOS'ta ikisi de yok:
+ * `BGTaskScheduler` firsatcidir, hic kosmayabilir. Tek guvenilir tazeleme ani
+ * uygulamanin ON PLANA GELISIDIR → kullanici uygulamayi bir gun hic acmazsa
+ * plan tukenmesin diye pencerenin 2 gune cikmasi gerekir.
+ *
+ * BUGUNKU DURUM: `ArkaplanMuhafizServisi.bugunVakitleriniHesapla()` gun sayisi
+ * parametresi ALMIYOR; iOS'ta plan da Android gibi YALNIZ BUGUNU kapsiyor.
+ * Yani bu sabit su an hicbir yerden okunmuyor. Bilinen bedel: kullanici
+ * uygulamayi bir gun hic acmazsa ertesi gun muhafiz bildirimi gelmez.
+ *
+ * BAGLARKEN DIKKAT: gun sayisi 1'den buyuk olunca (a) yarinin vakitleri icin
+ * `kilinan` listesi bos kabul edilmeli, (b) bildirim id'leri vakit TARIHINI
+ * tasidigi icin cakisma olmaz ama iptal zinciri iki gunu de taramali,
+ * (c) teslim sirasi gun-gun uretilirse artik kronolojik OLMAZ → butce
+ * `butceyeSigdir` ile toplu uygulanmali (bkz. `IosMuhafizTeslimcisi` on kosulu).
  */
 export const IOS_PLAN_GUN_SAYISI = 2;
 

@@ -269,6 +269,38 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       # ==========================================
+      # iOS buildNumber = timestamp (versionCode'un ikizi)
+      # ==========================================
+      #
+      # App Store Connect AYNI buildNumber ile IKINCI yuklemeyi REDDEDER
+      # ("The bundle version must be higher than the previously uploaded
+      # version"). app.json'da `ios.buildNumber` TANIMLI DEGIL ve iOS-only
+      # dispatch'te `versionCode ata` adimi calismaz → deger sabit kalir ve ilk
+      # yuklemeden sonraki her gonderim patlardi. Android'deki timestamp
+      # deseninin birebir ikizi: runner'da local commit, push YOK.
+      - name: 🔢 iOS buildNumber ata (timestamp)
+        if: inputs.build_ios == true && inputs.sadece_submit != true
+        id: ios_bn
+        run: |
+          BN=$(date +%s)
+          node -e "
+            const fs = require('fs');
+            const a = JSON.parse(fs.readFileSync('./app.json', 'utf8'));
+            a.expo.ios = a.expo.ios || {};
+            a.expo.ios.buildNumber = '$BN';
+            fs.writeFileSync('./app.json', JSON.stringify(a, null, 2) + '\n');
+          "
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app.json
+          # AAB adimi da app.json'a dokunmus olabilir; degisiklik yoksa
+          # commit hata vermemeli.
+          git diff --cached --quiet || git commit -m "ci: ephemeral iOS buildNumber $BN [skip ci]" --no-verify
+
+          echo "numara=$BN" >> $GITHUB_OUTPUT
+          echo "✅ iOS buildNumber $BN olarak ayarlandı (sadece bu build için)"
+
+      # ==========================================
       # iOS Build (production — App Store / TestFlight)
       # ==========================================
       #
@@ -299,7 +331,17 @@ jobs:
             try {
               const ham = fs.readFileSync('/tmp/son-ios.json', 'utf8');
               const j = JSON.parse(ham.slice(ham.indexOf('[')));
-              console.log(j[0] ? j[0].status : 'YOK');
+              const b = j[0];
+              if (!b) { console.log('YOK'); }
+              // BU kosuda baslatilan build mi? AAB tarafindaki versionCode
+              // eslemesinin ikizi: 'eas build' build'i EAS'te OLUSTURMADAN
+              // hata verirse (kimlik/kota/ag) continue-on-error adimi yesile
+              // cevirir ve liste bir ONCEKI, gunler once bitmis build'i doner
+              // → esleme olmadan TestFlight'a BAYAT surum gonderilirdi.
+              else if (String(b.appBuildVersion) !== '${{ steps.ios_bn.outputs.numara }}') {
+                console.log('ESLESMEDI');
+              }
+              else { console.log(b.status); }
             } catch { console.log('OKUNAMADI'); }
           ")
 

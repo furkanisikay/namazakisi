@@ -61,7 +61,7 @@
         {
           "sounds": [
             "./assets/sounds/bildirim.mp3",
-            "./assets/sounds/bildirim.wav"
+            "./assets/sounds/bildirim_ios.wav"
           ]
         }
       ],

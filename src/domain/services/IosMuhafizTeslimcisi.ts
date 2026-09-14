@@ -20,6 +20,20 @@
  *    yerine gorunur kayip).
  *
  * Motor ve plan uretimi DEGISMEZ — bu dosya yalnizca "nasil duyulur"u bilir.
+ *
+ * ---------------------------------------------------------------------------
+ * ON KOSUL — `uyariPlanla` CAGRILARI KRONOLOJIK GELMELIDIR.
+ *
+ * Butce basit bir sayacla uygulanir: slot tukendiginde SONRA gelen cagrilar
+ * kesilir. Bu ancak cagrilar zaman sirasinda geliyorsa dogru sonucu verir ve
+ * bugun oyledir — `ArkaplanMuhafizServisi.bugunVakitleriniHesapla` vakitleri
+ * kronolojik uretir (gece yarisi sonrasi DUNUN yatsisi listeye BASA eklenir) ve
+ * `vakitUyariPlaniOlustur` her vakit icinde en uzak uyaridan baslar.
+ *
+ * Sira bozulursa butce YANLIS UCU keser: yakin tarihli uyarilar atilir,
+ * uzaktakiler tutulur. O gun geldiginde teslimler once toplanip
+ * `bildirimButcesi.butceyeSigdir` ile kronolojik elenmeli, sonra planlanmalidir
+ * — saf fonksiyon ve testleri tam bu senaryo icin hazir duruyor.
  */
 import * as Notifications from 'expo-notifications';
 
@@ -96,7 +110,11 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 }
                 return;
             }
-            this.kalanSlot--;
+            // NOT: slot burada TUKETILMEZ — planlama basarili olursa asagida
+            // dusulur. Once dusulseydi `scheduleNotificationAsync` hata verdigi
+            // her uyari icin de slot harcanir ve gercekte 64 sinirinin cok
+            // altindayken sonraki mesru uyarilar "slot doldu" diye sessizce
+            // planlanmazdi.
         }
 
         // Faz 1: AlarmKit yok → `sessizligiDelebilir: false`. Acil adim da
@@ -130,6 +148,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     // channelId YOK — Android'e ozgu alan.
                 },
             });
+
+            // Slot YALNIZ cihazda gercekten kurulan bildirim icin dusulur.
+            if (this.kalanSlot !== null) this.kalanSlot--;
         } catch (error) {
             Logger.error('IosMuhafizTeslimcisi', `Bildirim planlanamadi: ${id}`, error);
         }
