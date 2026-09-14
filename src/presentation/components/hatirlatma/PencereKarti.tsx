@@ -89,6 +89,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     pencereAdi: tanim.baslikKucuk,
                     pencereUzunluguDk: tanim.pencereUzunluguDk,
                     yon: tanim.yon,
+                    yetenekler: tanim.yetenekler,
                 });
                 const notMetni = notlar.map((n) => n.metin).join(' ');
                 const ozetMetni = seviyeOzetiOlustur(seviye, tanim.yon);

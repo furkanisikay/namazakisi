@@ -53,6 +53,21 @@ const mockPlanlaAnons = jest.fn();
 // Sistem ses secicisi: testte gercek Activity yok → secim sonucu kutudan okunur.
 const sesSecimi: { sonuc: { uri: string; ad: string } | null } = { sonuc: null };
 const mockSesSec = jest.fn(() => Promise.resolve(sesSecimi.sonuc));
+// PLATFORM YETENEKLERI — bu suite ANDROID davranışını ölçer.
+//
+// Jest'in varsayılan `Platform.OS` değeri bu repoda **'ios'**
+// (`preset: "react-native"` → `haste.defaultPlatform: 'ios'`) → hook
+// mock'lanmazsa ekran iOS yetenekleriyle çizilir (titreşim anahtarı ve ses
+// seçimi gizli, anons metni salt okunur) ve aşağıdaki Android testleri ölçmek
+// istedikleri şeyi ölçemez. iOS tarafının kendi nöbetçisi:
+// `MuhafizAyarlariSayfasi.ios.test.tsx`.
+jest.mock('../../hooks/usePlatformYetenekleri', () => {
+  const { ANDROID_YETENEKLERI } = jest.requireActual(
+    '../../../core/muhafiz/ios/platformYetenekleri'
+  );
+  return { usePlatformYetenekleri: () => ANDROID_YETENEKLERI };
+});
+
 // TTS DESTEK HOOK'U — ekran testi "TTS durumu X iken ne çizilir"i ölçer.
 //
 // Hook'un kendisi ANDROID'e özgüdür: iOS'ta sesli anons TTS ile değil ön-kayıtlı

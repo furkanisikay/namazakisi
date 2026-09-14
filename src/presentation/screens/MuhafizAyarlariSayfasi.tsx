@@ -53,6 +53,7 @@ import { PencereKarti } from '../components/hatirlatma/PencereKarti';
 import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
 import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
+import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 import { yonDegisimindeMetniCevir } from '../../core/muhafiz/matrisIslemleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
@@ -107,6 +108,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     // Faz 5: cihazda Türkçe konuşma paketi yoksa sesli modlarda kibar uyarı
     // gösterilir (engelleme YOK — ayar yine kaydedilir).
     const ttsDestekli = useTurkceTtsDestegi();
+    // Platform bilgisi ekrana BURADAN girer ve `PencereTanimi` uzerinden
+    // bilesenlere tasinir; hicbir hatirlatma bileseni `Platform.OS` okumaz.
+    const yetenekler = usePlatformYetenekleri();
 
     // Matris Faz 1'de opsiyonel (eski kayıtlarda olmayabilir) → göçle türet.
     const matris: MuhafizMatrisi = useMemo(
@@ -664,7 +668,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 tanim={vakitPencereTanimi(
                                     vakit,
                                     matris[vakit].yon,
-                                    vakitPencereleri[vakit]
+                                    vakitPencereleri[vakit],
+                                    yetenekler
                                 )}
                                 ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
@@ -689,7 +694,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     tanim={vakitPencereTanimi(
                         detay.vakit,
                         matris[detay.vakit].yon,
-                        vakitPencereleri[detay.vakit]
+                        vakitPencereleri[detay.vakit],
+                        yetenekler
                     )}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
@@ -706,7 +712,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     tanim={vakitPencereTanimi(
                         onizleme,
                         matris[onizleme].yon,
-                        vakitPencereleri[onizleme]
+                        vakitPencereleri[onizleme],
+                        yetenekler
                     )}
                     ayar={matris[onizleme]}
                     ttsDestekli={ttsDestekli}

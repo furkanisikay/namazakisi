@@ -28,6 +28,10 @@ import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { modKanallaraCevir, kanalAcikMi, adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 import { anonsSablonlari } from '../../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
+import {
+    ANDROID_YETENEKLERI,
+    type PlatformYetenekleri,
+} from '../../../core/muhafiz/ios/platformYetenekleri';
 
 /**
  * CUMLE ICINDE gecen kucuk harfli pencere adlari ("… yatsı bugün 6 sa 40 dk").
@@ -180,6 +184,31 @@ export interface PencereTanimi {
     kanalSecimiVar: boolean;
     /** Bildirim sesi satiri gosterilsin mi? (cuma kanalin kendi sesini kullanir) */
     sesSecimiVar: boolean;
+    /**
+     * Anons metni SERBESTCE yazilabilir mi?
+     *
+     * iOS'ta HAYIR: metin calisma aninda seslendirilemez (arka planda kod
+     * calistirilamaz), anons on-kayitli sabit bir klip olur → kutu salt okunur
+     * gosterilir. Matristeki `anonsMetni` SILINMEZ, yalnizca duzenlenemez;
+     * kullanici yedegini Android'e tasirsa metni geri kazanir.
+     */
+    anonsMetniDuzenlenebilir: boolean;
+    /**
+     * Titresim anahtari gosterilsin mi?
+     *
+     * iOS'ta HAYIR: bildirim haptigi sistem ayarina baglidir, uygulama adim
+     * basina kontrol edemez → hicbir seyi degistirmeyen bir anahtar gostermek
+     * kullaniciyi yanlis yonlendirir.
+     */
+    titresimSecilebilir: boolean;
+    /**
+     * Platformun ham yetenekleri.
+     *
+     * Yukaridaki iki bayrak bunlardan TURETILIR; nesnenin kendisi de tasinir
+     * cunku bazi kararlar (ornegin "bu adim sessiz modda duyulur mu") tek bir
+     * bayraga indirgenemez ve `AdimNotlari` bunlari okur.
+     */
+    yetenekler: PlatformYetenekleri;
     esikAdimDk: number;
     /**
      * Tekrar araligi sinirlari + varsayilani.
@@ -249,11 +278,19 @@ export const esikErisimAdiOlustur = (yon: PencereYonu): string =>
 export const esikBirimiOlustur = (yon: PencereYonu): string =>
     yon === 'girisindenItibaren' ? 'dk sonra' : 'dk kala';
 
-/** Muhafizin bir vakti icin pencere tanimi. */
+/**
+ * Muhafizin bir vakti icin pencere tanimi.
+ *
+ * `yetenekler` VARSAYILAN OLARAK ANDROID'dir → mevcut cagiranlar (ve testler)
+ * icin cikti BIREBIR aynidir; nobetci test bunu dogrular. iOS ekrani yetenek
+ * nesnesini `usePlatformYetenekleri` ile gecer, boylece `Platform.OS`
+ * BILESENLERE HIC SIZMAZ.
+ */
 export function vakitPencereTanimi(
     vakit: MuhafizVakti,
     yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
-    pencereUzunluguDk?: number
+    pencereUzunluguDk?: number,
+    yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI
 ): PencereTanimi {
     return {
         kaynak: `vakit:${vakit}`,
@@ -267,7 +304,10 @@ export function vakitPencereTanimi(
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
         kanalSecimiVar: true,
-        sesSecimiVar: true,
+        sesSecimiVar: yetenekler.sesSecici,
+        anonsMetniDuzenlenebilir: yetenekler.serbestAnonsMetni,
+        titresimSecilebilir: yetenekler.titresimSecimi,
+        yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: TEKRAR_MIN_DK,
         tekrarMaxDk: TEKRAR_MAX_DK,
@@ -303,6 +343,10 @@ export function cumaPencereTanimi(secenekler: {
         adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'mosque', renk: SEVIYE_BILGILERI.nazik.renk }],
         kanalSecimiVar: false,
         sesSecimiVar: false,
+        // Cuma tek kanaldan gonderilir; metin/titresim duzenlemesi zaten yok.
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
+        yetenekler: ANDROID_YETENEKLERI,
         esikAdimDk: secenekler.esikAdimDk,
         tekrarMinDk: secenekler.tekrarMinDk,
         tekrarMaxDk: secenekler.tekrarMaxDk,
