@@ -1,3 +1,21 @@
+// PLATFORM: bu suite ANDROID on plan davranisini olcer.
+//
+// Jest'in varsayilan `Platform.OS` degeri bu repoda **'ios'**
+// (`preset: "react-native"` → `haste.defaultPlatform: 'ios'`). `NamazMuhafiziServisi`
+// iOS'ta on planda anons PLANLAMAZ (cift ses kurali: iOS'ta zamanlanmis bildirim
+// on planda da teslim edilip kendi sesini calar) → platform acikca
+// sabitlenmezse asagidaki anons testleri olcmek istediklerini olcemez.
+//
+// `requireActual` uzerine yayma DENENDI ve OLMUYOR: react-native'in modul
+// nesnesini yaymak lazy getter'lari hepten degerlendirir ve
+// `TurboModuleRegistry.getEnforcing('DevMenu')` ile suite hic calismadan
+// patlar. Bu yuzden ASGARI acik mock: bu servisin react-native'den kullandigi
+// tek sey `Platform` ve `Vibration`. (`Vibration.vibrate` asagida spy'lanir.)
+jest.mock('react-native', () => ({
+  Platform: { OS: 'android' },
+  Vibration: { vibrate: () => undefined, cancel: () => undefined },
+}));
+
 import { Vibration } from 'react-native';
 import { NamazMuhafiziServisi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';

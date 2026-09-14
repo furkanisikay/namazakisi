@@ -105,8 +105,12 @@ export class GitHubGuncellemeKaynagi implements GuncellemeKaynagi {
   }
 
   destekleniyor(): boolean {
-    // GitHub releases tum platformlarda calisir
-    return true;
+    // iOS'TA KAPALI — App Store reddi sebebi (yaşanmadan önce kapatıldı).
+    // Bu kaynak release varliklarindan APK baglantisi ya da GitHub release
+    // sayfasi sunar; iOS'ta uygulamanin kendi disinda bir dagitim kanalina
+    // yonlendirmek App Review'da reddedilir ve zaten calismaz (iOS APK
+    // kuramaz). iOS'ta guncelleme App Store'un isidir; yerine bir sey KONMAZ.
+    return Platform.OS === 'android';
   }
 
   async enSonSurumuKontrolEt(): Promise<GuncellemeKontrolSonucu> {

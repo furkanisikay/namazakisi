@@ -390,7 +390,21 @@ export class BildirimServisi {
     let finalDurum = mevcutDurum;
 
     if (mevcutDurum !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
+      // iOS'ta izin SECENEKLERI acikca istenir; Android'de bu alanlar yok sayilir.
+      //
+      // `allowBadge: false` BILINCLIDIR: muhafiz bir gorev listesi degil, anlik
+      // bir uyaridir — uygulama ikonunda kalici bir sayi birakmak kullaniciyi
+      // "temizlemesi gereken" bir borc hissine sokar, hatirlatmanin amaci bu
+      // degil. `provideAppNotificationSettings` iOS'un bildirim ayarlarindan
+      // uygulamaya donmesini saglar.
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowSound: true,
+          allowBadge: false,
+          provideAppNotificationSettings: true,
+        },
+      });
       finalDurum = status;
     }
 

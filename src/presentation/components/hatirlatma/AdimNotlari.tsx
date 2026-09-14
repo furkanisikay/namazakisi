@@ -17,12 +17,17 @@ import type { SeviyeAyari } from '../../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
+import { sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
 import {
     cikisSegmentiHesapla,
     girisSegmentiHesapla,
     etkinSiklikHesapla,
 } from '../../../core/muhafiz/planButcesi';
+import {
+    ANDROID_YETENEKLERI,
+    type PlatformYetenekleri,
+} from '../../../core/muhafiz/ios/platformYetenekleri';
 
 export interface AdimNotu {
     tip: 'uyari' | 'bilgi';
@@ -39,6 +44,15 @@ export interface AdimNotuSecenekleri {
     pencereAdi: string;
     pencereUzunluguDk?: number;
     yon?: PencereYonu;
+    /**
+     * Platform yetenekleri — SESSIZ SAPMA BIRAKMA kurali.
+     *
+     * iOS'ta bazi hucreler kullanicinin kurdugu gibi calismaz (sesli anons
+     * on-kayitli klibe duser, acil adim cihazin sessizligini DELEMEZ). Bu
+     * ekranda SOYLENMEZSE kullanici "kurdum ama calismiyor" yasar. Verilmezse
+     * Android varsayilir → mevcut ciktilar birebir korunur.
+     */
+    yetenekler?: PlatformYetenekleri;
 }
 
 /**
@@ -72,6 +86,24 @@ export function adimNotlariniOlustur(
         ];
     }
 
+    const notlar: AdimNotu[] = [];
+    const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+
+    // PLATFORM NOTLARI — kullanicinin kurdugu sey ile cihazda olacak sey
+    // ayrisiyorsa BURADA soylenir (sessiz sapma birakma).
+    if (!yetenekler.serbestAnonsMetni && sesliAnonsGerekliMi(seviye.kanallar)) {
+        notlar.push({
+            tip: 'bilgi',
+            metin: 'Sesli anons iPhone’da hazır bir ses kaydı olarak çalınır',
+        });
+    }
+    if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {
+        notlar.push({
+            tip: 'uyari',
+            metin: 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
+        });
+    }
+
     const siklik = seviye.siklik;
     const segment =
         yon === 'girisindenItibaren'
@@ -79,15 +111,13 @@ export function adimNotlariniOlustur(
             : cikisSegmentiHesapla(seviyeler, seviye);
     const etkin = etkinSiklikHesapla(segment, siklik);
     if (etkin !== siklik && etkin !== 'birkez') {
-        return [
-            {
-                tip: 'bilgi',
-                metin: `Çok sık uyarmamak için ${etkin.herDk} dakikada bir hatırlatılır`,
-            },
-        ];
+        notlar.push({
+            tip: 'bilgi',
+            metin: `Çok sık uyarmamak için ${etkin.herDk} dakikada bir hatırlatılır`,
+        });
     }
 
-    return [];
+    return notlar;
 }
 
 /**

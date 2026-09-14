@@ -1,4 +1,4 @@
-import { NativeModulesProxy, requireNativeModule } from 'expo-modules-core';
+import { requireOptionalNativeModule } from 'expo-modules-core';
 import { Platform } from 'react-native';
 
 /**
@@ -30,7 +30,65 @@ export interface CountdownConfig {
     autoDismissAtTarget?: boolean;
 }
 
-const ExpoCountdownNotification = requireNativeModule('ExpoCountdownNotification');
+/**
+ * Native kopru yuzeyi — `requireOptionalNativeModule` icin tip.
+ *
+ * Sadece bu dosyadan cagrilan fonksiyonlari listeler; genis tutmanin faydasi
+ * yok, `any` ise tip guvenligini (ve lint butcesini) bozar.
+ */
+interface CountdownNativeModule {
+    startCountdown(
+        id: string,
+        targetTimeMs: number,
+        title: string,
+        bodyTemplate: string,
+        channelId: string,
+        smallIcon: string,
+        themeType: string,
+        autoDismissAtTarget: boolean
+    ): void;
+    stopCountdown(id: string): void;
+    stopAll(): void;
+    planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
+    iptalEtAnons(id: string): void;
+    iptalEtTumAnonslar(): void;
+    trDestekleniyorMu(): Promise<boolean>;
+    sesSecAsync(
+        mevcutUri: string | null,
+        baslik: string
+    ): Promise<{ uri?: unknown; ad?: unknown } | null>;
+    sesAdiAl(uri: string): Promise<unknown>;
+    sesiOnizle(uri: string): Promise<void>;
+    onizlemeyiDurdur(): Promise<void>;
+    onizlemeCaliyorMu(): Promise<boolean>;
+    muhafizKanaliniGarantile(
+        kanalId: string,
+        kanalAdi: string,
+        aciklama: string,
+        sesUri: string | null,
+        acilMi: boolean,
+        titresim: boolean
+    ): Promise<void>;
+    muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void>;
+}
+
+/**
+ * KOPRU OPSIYONEL YUKLENIR — iOS ACILIS COKMESININ SEBEBI BUYDU.
+ *
+ * `requireNativeModule` MODUL YUKLENIRKEN (import aninda) calisir ve native
+ * taraf bulunamazsa FIRLATIR. `expo-module.config.json` yalniz `android`
+ * platformunu tanimlar → iOS'ta native modul YOKTUR → bu dosyayi import eden
+ * herhangi bir modul (App.tsx zinciri `ArkaplanMuhafizServisi` uzerinden buraya
+ * baglanir) iOS'ta uygulamayi ACILISTA COKERTIRDI. Asagidaki `Platform.OS`
+ * kapilarinin hicbiri ise yaramaz, cunku cokme kapilar CALISMADAN once olur.
+ *
+ * `requireOptionalNativeModule` bulunamayinca `null` doner. Her fonksiyon artik
+ * platform kapisina EK OLARAK null'a karsi da korunur (iki savunma birlikte:
+ * kapi mantigi ileride degisse bile cokme geri gelmez).
+ */
+const ExpoCountdownNotification =
+    requireOptionalNativeModule<CountdownNativeModule>('ExpoCountdownNotification');
+
 
 /**
  * Geri sayan bir bildirim gosterir.
@@ -51,7 +109,7 @@ const ExpoCountdownNotification = requireNativeModule('ExpoCountdownNotification
  * @throws Error if platform is not Android
  */
 export function startCountdown(config: CountdownConfig): void {
-    if (Platform.OS !== 'android') {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) {
         console.warn('[CountdownNotification] Only supported on Android');
         return;
     }
@@ -74,7 +132,7 @@ export function startCountdown(config: CountdownConfig): void {
  * @param id - The countdown identifier to stop
  */
 export function stopCountdown(id: string): void {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.stopCountdown(id);
 }
 
@@ -82,7 +140,7 @@ export function stopCountdown(id: string): void {
  * Stops all active countdown notifications and the foreground service.
  */
 export function stopAll(): void {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.stopAll();
 }
 
@@ -106,7 +164,7 @@ export function stopAll(): void {
  * @param metin Seslendirilecek metin — yer tutuculari COZULMUS olmali ({vakit}/{süre})
  */
 export function planlaAnons(id: string, tetikZamanMs: number, metin: string): void {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     // Bos metin native tarafta da elenir; gereksiz kopru gecisini burada kes.
     if (!id || !metin || metin.trim().length === 0) return;
     ExpoCountdownNotification.planlaAnons(id, tetikZamanMs, metin);
@@ -116,7 +174,7 @@ export function planlaAnons(id: string, tetikZamanMs: number, metin: string): vo
  * Tek bir planli anonsu iptal eder. Kayitli olmayan id zararsizdir (no-op).
  */
 export function iptalEtAnons(id: string): void {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     if (!id) return;
     ExpoCountdownNotification.iptalEtAnons(id);
 }
@@ -125,7 +183,7 @@ export function iptalEtAnons(id: string): void {
  * Planlanmis TUM anonslari iptal eder (yeniden planlama oncesi temizlik).
  */
 export function iptalEtTumAnonslar(): void {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.iptalEtTumAnonslar();
 }
 
@@ -134,7 +192,7 @@ export function iptalEtTumAnonslar(): void {
  * Android disinda ve hata durumunda `false` doner (asla firlatmaz).
  */
 export async function trDestekleniyorMu(): Promise<boolean> {
-    if (Platform.OS !== 'android') return false;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return false;
     try {
         return (await ExpoCountdownNotification.trDestekleniyorMu()) === true;
     } catch {
@@ -168,7 +226,7 @@ export async function sesSec(
     mevcutUri: string | null,
     baslik: string
 ): Promise<SecilenSes | null> {
-    if (Platform.OS !== 'android') return null;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return null;
     try {
         const sonuc = await ExpoCountdownNotification.sesSecAsync(mevcutUri ?? null, baslik);
         if (!sonuc || typeof sonuc.uri !== 'string' || sonuc.uri.length === 0) return null;
@@ -183,7 +241,7 @@ export async function sesSec(
  * Kayitli bir secimin adi diskte yoksa bunu kullanin.
  */
 export async function sesAdiAl(uri: string): Promise<string> {
-    if (Platform.OS !== 'android' || !uri) return '';
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification || !uri) return '';
     try {
         const ad = await ExpoCountdownNotification.sesAdiAl(uri);
         return typeof ad === 'string' ? ad : '';
@@ -202,13 +260,13 @@ export async function sesAdiAl(uri: string): Promise<string> {
  * `expo-audio`'nun bu semayi calabildigi dogrulanmadigi icin native yol kullanilir.
  */
 export async function sesiOnizle(uri: string): Promise<void> {
-    if (Platform.OS !== 'android' || !uri) return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification || !uri) return;
     await ExpoCountdownNotification.sesiOnizle(uri);
 }
 
 /** Calan ses onizlemesini durdurur (idempotent). */
 export async function onizlemeyiDurdur(): Promise<void> {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     await ExpoCountdownNotification.onizlemeyiDurdur();
 }
 
@@ -220,7 +278,7 @@ export async function onizlemeyiDurdur(): Promise<void> {
  * yoklanir. Asla firlatmaz — bilinmiyorsa `false` (bekleme uzamasin).
  */
 export async function onizlemeCaliyorMu(): Promise<boolean> {
-    if (Platform.OS !== 'android') return false;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return false;
     try {
         return (await ExpoCountdownNotification.onizlemeCaliyorMu()) === true;
     } catch {
@@ -248,7 +306,7 @@ export async function muhafizKanaliniGarantile(
     acilMi: boolean,
     titresim: boolean = false
 ): Promise<void> {
-    if (Platform.OS !== 'android' || !kanalId) return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification || !kanalId) return;
     await ExpoCountdownNotification.muhafizKanaliniGarantile(
         kanalId,
         kanalAdi,
@@ -264,6 +322,6 @@ export async function muhafizKanaliniGarantile(
  * TABAN kanallara (`muhafiz`, `muhafiz_acil`) dokunmaz.
  */
 export async function muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void> {
-    if (Platform.OS !== 'android') return;
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     await ExpoCountdownNotification.muhafizKanallariniTemizle(korunacakIdler);
 }

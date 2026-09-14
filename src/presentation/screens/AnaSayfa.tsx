@@ -443,7 +443,15 @@ export const AnaSayfa: React.FC = () => {
             // vardı: paketlenmiş `bildirim.mp3`'ü çalıyor, seviyenin `bildirimSesi`
             // alanını hiç okumuyordu → aynı adım uygulama AÇIKKEN varsayılan çan,
             // KAPALIYKEN (kanal sesi) kullanıcının seçtiği ses ile duyuluyordu.
-            void OnizlemeSesServisi.bildirimSesiniCal(bildirimSesi ?? VARSAYILAN_SES);
+            //
+            // iOS'TA ÇALINMAZ — ÇİFT SES KURALI. iOS'ta zamanlanmış bildirim
+            // uygulama ÖN PLANDAYKEN DE teslim edilir ve kendi sesini çalar;
+            // burada bir ses daha çalsaydı aynı uyarı iki kez duyulurdu.
+            // Banner yine çizilir, titreşim yine olur. Kuralın diğer yarısı
+            // `NamazMuhafiziServisi.onPlanAnonsuPlanla` içinde.
+            if (Platform.OS !== 'ios') {
+              void OnizlemeSesServisi.bildirimSesiniCal(bildirimSesi ?? VARSAYILAN_SES);
+            }
           }
           else if (seviye > 0) { HaptikServisi.uyariTitresimi(); }
         });

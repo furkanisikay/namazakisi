@@ -11,8 +11,7 @@ const mockIptalEtTumAnonslar = jest.fn();
 const mockTrDestekleniyorMu = jest.fn();
 
 jest.mock('expo-modules-core', () => ({
-  NativeModulesProxy: {},
-  requireNativeModule: () => ({
+  requireOptionalNativeModule: () => ({
     startCountdown: jest.fn(),
     stopCountdown: jest.fn(),
     stopAll: jest.fn(),

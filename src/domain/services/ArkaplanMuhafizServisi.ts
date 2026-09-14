@@ -17,28 +17,11 @@ import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur, muhafizKanaliSec, titresimGerekliMi, type UyariPlani } from '../../core/muhafiz/motorAdaptoru';
-import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
+import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
-import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
-import {
-    planlaAnons,
-    iptalEtAnons,
-    iptalEtTumAnonslar,
-} from '../../../modules/expo-countdown-notification/src';
-import { MuhafizKanalServisi } from './MuhafizKanalServisi';
-
-/**
- * Namaz vakti bilgisi
- */
-interface VakitZamani {
-    vakit: VakitAdi;
-    giris: Date;
-    cikis: Date;
-    tarih: string; // YYYY-MM-DD formatinda vakit gunu (yatsi icin onceki gun olabilir)
-}
+import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -93,7 +76,7 @@ export class ArkaplanMuhafizServisi {
         // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
         // kanallari aksi halde bildirim ayarlarinda sonsuza kadar oksuz kalirdi.
         if (!ayarlar.aktif) {
-            await MuhafizKanalServisi.hazirla();
+            await muhafizTeslimcisiniAl().hazirla();
             Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
@@ -109,7 +92,8 @@ export class ArkaplanMuhafizServisi {
         // VAR OLMAYAN kanala gider = hic gosterilmez.
         this.ayarlar = {
             ...ayarlar,
-            matris: (await MuhafizKanalServisi.hazirla(ayarlar.matris)) ?? ayarlar.matris,
+            matris:
+                (await muhafizTeslimcisiniAl().hazirla(ayarlar.matris)) ?? ayarlar.matris,
         };
 
         // Bugunun vakit zamanlarini al
@@ -298,133 +282,23 @@ export class ArkaplanMuhafizServisi {
             // uretir (bkz. core/muhafiz/anonsKimligi.ts).
             const bildirimId = muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk);
 
-            await this.tekBildirimPlanla(
-                bildirimId,
+            // TESLIM platforma gore ayrisir (Android: kanal + TTS alarmi,
+            // iOS: kesinti seviyesi + paket sesi). Plan uretimi ayni kalir.
+            await muhafizTeslimcisiniAl().uyariPlanla({
+                id: bildirimId,
                 baslik,
                 mesaj,
-                bildirimZamani,
+                zaman: bildirimZamani,
                 uyari,
-                vakit.vakit,
-                vakit.tarih
-            );
-            // Faz 4: mod 'sesli'/'ikisi' ise ayni ana bir de TTS anonsu planla.
-            // Anons id = bildirim id -> iptal zinciri simetrik kalir.
-            this.anonsPlanla(bildirimId, bildirimZamani, uyari, muhafizVakti, yon);
+                vakit: vakit.vakit,
+                muhafizVakti,
+                tarih: vakit.tarih,
+                yon,
+            });
             planlanan++;
         }
 
         Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${planlanan} bildirim planlandi`);
-    }
-
-    /**
-     * Tek bir bildirim planla
-     * @param id Bildirim ID'si
-     * @param baslik Bildirim basligi
-     * @param mesaj Bildirim mesaji
-     * @param zaman Bildirim zamani
-     * @param uyari Matristen turetilen uyari (seviye/mod/ses/anons)
-     * @param vakit Vakit adi (imsak, ogle, ikindi, aksam, yatsi)
-     * @param tarih Vakit tarihi (YYYY-MM-DD)
-     */
-    private async tekBildirimPlanla(
-        id: string,
-        baslik: string,
-        mesaj: string,
-        zaman: Date,
-        uyari: UyariPlani,
-        vakit: VakitAdi,
-        tarih: string
-    ): Promise<void> {
-        try {
-            // Zamanin gecerli oldugundan emin ol
-            const simdi = new Date();
-            if (zaman.getTime() <= simdi.getTime()) {
-                return;
-            }
-
-            const titresimli = titresimGerekliMi(uyari.kanallar);
-
-            await Notifications.scheduleNotificationAsync({
-                identifier: id,
-                content: {
-                    title: baslik,
-                    body: mesaj,
-                    sound: true,
-                    // Android 8+ ta TITRESIM KANAL ozelligidir ve bu alan yok sayilir
-                    // (desen `MuhafizKanallari.kt` icinde, kanal id'sine baglidir).
-                    // Alan yalniz Android 8 ONCESI cihazlar icin tasinir; titresim
-                    // kapaliyken HIC yazilmaz → mevcut davranis birebir korunur.
-                    ...(titresimli ? { vibrate: titresimDeseniAl() } : {}),
-                    priority: uyari.seviye >= 3
-                        ? Notifications.AndroidNotificationPriority.MAX
-                        : Notifications.AndroidNotificationPriority.HIGH,
-                    categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
-                    data: {
-                        tip: 'muhafiz',
-                        seviye: uyari.seviye,
-                        vakit: vakit,
-                        tarih: tarih,
-                        // Faz 4 kancasi: TTS bayragi + anons metni + secilen ses veriye tasinir.
-                        // (Sesli anonsu native FGS Faz 4'te bu alanlardan okuyacak.)
-                        kanallar: uyari.kanallar,
-                        bildirimSesi: uyari.bildirimSesi,
-                        sesliAnons: uyari.sesliAnons,
-                        anonsMetni: uyari.anonsMetni,
-                    },
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: zaman,
-                    // Android: ses de TITRESIM de KANAL ozelligidir → kanal id
-                    // hucrenin (ses + titresim) seciminden TURETILIR
-                    // (`muhafizKanaliSec`). Aciliyet ayri alandan (`acilKanal`)
-                    // gelir; ses artik onem tasimaz.
-                    channelId: muhafizKanaliSec(
-                        uyari.seviye,
-                        uyari.bildirimSesi,
-                        uyari.acilKanal,
-                        titresimli
-                    ),
-                },
-            });
-
-
-        } catch (error) {
-            Logger.error('ArkaplanMuhafiz', `Bildirim planlanamadi: ${id}`, error);
-        }
-    }
-
-    /**
-     * Sesli anons (native TTS) planla — yalniz mod 'sesli' | 'ikisi' iken.
-     *
-     * Native taraf Foreground Service KULLANMAZ: exact alarm -> BroadcastReceiver
-     * -> `goAsync()` penceresinde konusma. Metin BURADA cozulur ({vakit}/{süre}),
-     * native'e hazir cumle gider.
-     *
-     * Anons kimligi bildirim kimligiyle AYNIdir; boylece bildirim iptal edilirken
-     * anons da ayni id ile iptal edilir (bkz. vakitBildirimleriniIptalEt).
-     * Native cagri asla planlamayi durdurmamali -> hata yutulup loglanir.
-     */
-    private anonsPlanla(
-        id: string,
-        zaman: Date,
-        uyari: UyariPlani,
-        vakit: MuhafizVakti,
-        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
-    ): void {
-        if (!uyari.sesliAnons) return;
-        if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
-
-        try {
-            // UCUNCU ARGUMAN `olcuDk` — `kalanDk` DEGIL. Cikis yonunde ikisi
-            // esittir (bugune kadar zararsizdi); giris yonunde `kalanDk` "son 25
-            // dakika" gibi ters bir cumle okutur. Parametre opsiyonel
-            // varsayilanli oldugu icin typecheck bunu YAKALAMAZ.
-            const metin = anonsMetniniCoz(uyari.anonsMetni, vakit, uyari.olcuDk, yon);
-            planlaAnons(id, zaman.getTime(), metin);
-        } catch (error) {
-            Logger.error('ArkaplanMuhafiz', `Sesli anons planlanamadi: ${id}`, error);
-        }
     }
 
     /**
@@ -486,11 +360,7 @@ export class ArkaplanMuhafizServisi {
                     }
                     // Bildirimle AYNI id ile planlanan sesli anonsu da iptal et.
                     // (Anonsu olmayan id icin native tarafta no-op.)
-                    try {
-                        iptalEtAnons(bildirim.identifier);
-                    } catch {
-                        // Native yoksa/hata verirse bildirim iptali yine de gecerli
-                    }
+                    muhafizTeslimcisiniAl().yanKanaliIptalEt(bildirim.identifier);
                 }
             }
         }
@@ -509,11 +379,7 @@ export class ArkaplanMuhafizServisi {
      * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
     public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
-        try {
-            iptalEtTumAnonslar();
-        } catch (error) {
-            Logger.error('ArkaplanMuhafiz', 'Sesli anonslar temizlenemedi:', error);
-        }
+        muhafizTeslimcisiniAl().tumYanKanallariIptalEt();
 
         try {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();

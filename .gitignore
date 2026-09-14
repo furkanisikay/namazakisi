@@ -68,3 +68,9 @@ android_crash.txt
 # Expo Module Build Outputs
 modules/expo-countdown-notification/android/build/
 android/.kotlin/
+
+# iOS native dizini git'te TUTULMAZ (Android'in aksine — hibrit CNG).
+# Sebep: gelistirici Windows'ta calisiyor, CocoaPods kurulumu yok, dolayisiyla
+# ios/ elle bakilamaz. EAS Build ios/ yokken prebuild ile uretir.
+# android/ git'te KALMAYA devam eder (native Kotlin modulleri ve widget orada).
+ios/

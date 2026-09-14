@@ -6,7 +6,10 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
     },
     "preview": {
       "distribution": "internal",
@@ -20,6 +23,9 @@
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "distribution": "store"
       }
     }
   },
@@ -41,6 +47,13 @@
         "track": "internal",
         "releaseStatus": "completed",
         "serviceAccountKeyPath": "/tmp/google-service-account.json"
+      }
+    },
+    "testflight": {
+      "ios": {
+        "ascApiKeyPath": "/tmp/asc-api-key.p8",
+        "ascApiKeyIssuerId": "$ASC_KEY_ISSUER_ID",
+        "ascApiKeyId": "$ASC_KEY_ID"
       }
     }
   }

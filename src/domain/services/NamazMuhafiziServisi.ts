@@ -15,7 +15,7 @@ import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
-import { Vibration } from 'react-native';
+import { Platform, Vibration } from 'react-native';
 
 /**
  * Faz 3: on plan banner'i da vakit x seviye MATRISINDEN okur.
@@ -303,6 +303,14 @@ export class NamazMuhafiziServisi {
         yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): void {
         if (yon === 'girisindenItibaren') return;
+        // iOS: ON PLANDA ANONS PLANLANMAZ — CIFT SES KURALI.
+        //
+        // iOS'ta zamanlanmis bildirim uygulama ON PLANDAYKEN DE teslim edilir ve
+        // kendi sesini calar. Ayrica burada bir ses daha calsaydi ayni uyari iki
+        // kez duyulurdu. Ayrica native TTS koprusu iOS'ta zaten yok (no-op);
+        // kapiyi burada acikca kurmak, davranisin NEDEN boyle oldugunu koda
+        // yaziyor — sessiz bir no-op'a guvenmiyoruz.
+        if (Platform.OS === 'ios') return;
         if (!sesliAnonsGerekliMi(seviye.kanallar)) return;
         if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
 

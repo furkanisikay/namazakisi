@@ -139,6 +139,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
         pencereAdi: tanim.baslikKucuk,
         pencereUzunluguDk: tanim.pencereUzunluguDk,
         yon: tanim.yon,
+        yetenekler: tanim.yetenekler,
     });
     const kapaliMi = adimKapaliMi(seviye.kanallar);
     const titresimliMi = kanalAcikMi(seviye.kanallar, 'titresim');
@@ -315,8 +316,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     `pencereTanimi.KANAL_CIPLERI`): bagimsiz bir
                                     kanal oldugu icin bagimsiz bir anahtar. Adim
                                     kapaliyken gosterilmez; kapali adimda tek
-                                    anlamli eylem onu geri acmaktir. */}
-                                {!kapaliMi && (
+                                    anlamli eylem onu geri acmaktir.
+
+                                    PLATFORM KAPISI: iOS'ta bildirim haptigi
+                                    sistem ayarina baglidir, uygulama adim basina
+                                    kontrol EDEMEZ → hicbir seyi degistirmeyen
+                                    bir anahtar gostermek yaniltici olur. */}
+                                {!kapaliMi && tanim.titresimSecilebilir && (
                                     <View
                                         className="flex-row items-center p-3.5 rounded-2xl border mt-1"
                                         style={{
@@ -364,8 +370,15 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                         )}
 
                         {/* Faz 5: "yakında" bandi kalkti — sesli anons gercekten calisiyor.
-                            Yerine yalniz Turkce paket eksikse kibar bilgilendirme cikar. */}
-                        {sesliMi && <TurkceTtsUyarisi destekli={ttsDestekli} />}
+                            Yerine yalniz Turkce paket eksikse kibar bilgilendirme cikar.
+
+                            iOS'ta GOSTERILMEZ: anons TTS ile degil on-kayitli
+                            klip ile calisir, dolayisiyla "Turkce konusma paketi"
+                            diye bir kavram yoktur (`useTurkceTtsDestegi` orada
+                            zaten `null` doner, bu kapi ikinci savunmadir). */}
+                        {sesliMi && tanim.anonsMetniDuzenlenebilir && (
+                            <TurkceTtsUyarisi destekli={ttsDestekli} />
+                        )}
 
                         {kapaliMi ? (
                             <View className="items-center py-10">
@@ -522,13 +535,30 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 {sesliMi && (
                                     <>
                                         <BolumBasligi metin="SESLİ ANONS METNİ" />
-                                        <Text className="text-xs mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
-                                            {'{vakit}'}, {'{süre}'} ve {'{yön}'} yer tutucularını kullanın; okunurken
-                                            vakit adı, dakika ve “kaldı/geçti” ile değiştirilir. {'{yön}'} kullanan bir
-                                            metin, hatırlatma yönünü değiştirseniz de doğru okunur.
-                                        </Text>
+                                        {tanim.anonsMetniDuzenlenebilir ? (
+                                            <Text className="text-xs mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
+                                                {'{vakit}'}, {'{süre}'} ve {'{yön}'} yer tutucularını kullanın; okunurken
+                                                vakit adı, dakika ve “kaldı/geçti” ile değiştirilir. {'{yön}'} kullanan bir
+                                                metin, hatırlatma yönünü değiştirseniz de doğru okunur.
+                                            </Text>
+                                        ) : (
+                                            /* iOS: metin calisma aninda seslendirilemez (arka planda kod
+                                               calistirilamaz) → anons hazir bir ses klibidir ve metni sabittir.
+                                               Kutu GIZLENMEZ, salt okunur gosterilir; kullanicinin Android'de
+                                               yazdigi metin matriste DURUR, yalnizca burada duzenlenemez. */
+                                            <Text className="text-xs mb-2 leading-4" style={{ color: renkler.metinIkincil }}>
+                                                Bu adımda hazır bir ses kaydı çalınır; metni iPhone’da
+                                                değiştirilemez.
+                                            </Text>
+                                        )}
 
-                                        <View className="flex-row flex-wrap" style={{ marginHorizontal: -3 }}>
+                                        <View
+                                            className="flex-row flex-wrap"
+                                            style={{
+                                                marginHorizontal: -3,
+                                                display: tanim.anonsMetniDuzenlenebilir ? 'flex' : 'none',
+                                            }}
+                                        >
                                             {sablonlar.map((sablon) => {
                                                 const secili = metinTaslak === sablon;
                                                 return (
@@ -563,6 +593,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             onChangeText={setMetinTaslak}
                                             onEndEditing={metniIsle}
                                             onBlur={metniIsle}
+                                            editable={tanim.anonsMetniDuzenlenebilir}
                                             multiline
                                             placeholder={sablonlar[0]}
                                             placeholderTextColor={renkler.metinIkincil}
