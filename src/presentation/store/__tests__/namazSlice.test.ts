@@ -21,7 +21,7 @@ import namazReducer, {
 } from '../namazSlice';
 import { NamazAdi, NAMAZ_ISIMLERI } from '../../../core/constants/UygulamaSabitleri';
 import { GunlukNamazlar } from '../../../core/types';
-import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 
 // ==================== MOCKLAR ====================
 
@@ -337,11 +337,19 @@ describe('namazSlice', () => {
       const bugun = bugunuAl();
       // Iki gun: birinde Sabah tamamli, digerinde Sabah+Ogle tamamli
       const gun1 = gunOlustur(bugun, { [NamazAdi.Sabah]: true });
-      // Aydaki ikinci bir tarih uret (bugun ayinin 1'i degilse onceki gun, degilse sonraki):
-      const tarihObj = new Date(bugun);
-      const ikinciTarih = new Date(tarihObj.getFullYear(), tarihObj.getMonth(), 15)
-        .toISOString()
-        .split('T')[0];
+      // AYNI AYDA, bugunden FARKLI ikinci bir tarih uret.
+      //
+      // ESKI HALI SADECE AYIN 14'UNDE PATLIYORDU (AGENTS.md UTC tuzagi):
+      // `new Date(yil, ay, 15).toISOString()` yerel 15'ini UTC'ye cevirir; UTC+3'te
+      // bu bir gun GERIYE kayar ("2026-09-15" yerel → "2026-09-14" UTC) ve tarih
+      // bugune esitlenir → iki "ayri" gun tek gune duser, `aktifGunSayisi` 2 yerine
+      // 1 cikar. Tarihi string'den uret: hem UTC kaymasi olmaz hem de bugune
+      // esitlenmeyecegi garanti edilir.
+      const tarihObj = ISOTarihiDateNesnesiNeCevir(bugun);
+      const bugunGunu = tarihObj.getDate();
+      const ikinciGun = bugunGunu === 15 ? 16 : 15;
+      const ikinciTarih = `${bugun.slice(0, 8)}${String(ikinciGun).padStart(2, '0')}`;
+      expect(ikinciTarih).not.toBe(bugun);
       const gun2 = gunOlustur(ikinciTarih, { [NamazAdi.Sabah]: true, [NamazAdi.Ogle]: true });
 
       mockLocalTarihAraligindakiNamazlariGetir.mockResolvedValueOnce({
