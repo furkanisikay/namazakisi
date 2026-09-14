@@ -73,4 +73,12 @@ android/.kotlin/
 # Sebep: gelistirici Windows'ta calisiyor, CocoaPods kurulumu yok, dolayisiyla
 # ios/ elle bakilamaz. EAS Build ios/ yokken prebuild ile uretir.
 # android/ git'te KALMAYA devam eder (native Kotlin modulleri ve widget orada).
-ios/
+#
+# BASTAKI EGIK CIZGI ZORUNLU — "ios/" YAZMA (yasandi, v0.26.0 build'i patladi):
+# basinda / olmayan kalip HER DERINLIKTEKI ios dizinini eslestirir ve
+# `src/core/muhafiz/ios/` (saf iOS teslim katmani) da yutulur. Sonuc: EAS Build
+# proje arsivini .gitignore'a gore olusturdugu icin o dizin arsive HIC GIRMEZ ve
+# build "Unable to resolve module ../../core/muhafiz/ios/platformYetenekleri"
+# ile EAGER_BUNDLE fazinda duser. Ayrica o dizine sonradan eklenen dosyalar
+# `git add -A` ile SESSIZCE atlanir.
+/ios/
