@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.26.0] - 2026-09-14
+
+### Eklendi
+- [ios] ekran yetenek kapilari + on plan cift ses kurali (Faz 1)
+
+### Düzeltildi
+- [ios] kod incelemesi bulgulari — res/raw cakismasi, buildNumber, butce
+- [ios] on plandaki banner sesini sustur (cift ses kuralinin ikinci yarisi)
+- [ios] acilis cokmesi + yanlis TTS uyarisi + App Store reddi riskini kapat
+
+### Değiştirildi
+- [muhafiz] teslim katmanini platforma gore ayir (iOS Faz 1 mimari)
+
 ## [0.25.1] - 2026-08-31
 
 ## [0.25.0] - 2026-08-30
