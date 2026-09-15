@@ -13,6 +13,7 @@ import {
     eskiAlarmSesiniGoc,
     eskidenMatriseGoc,
     modlariKanallaraGoc,
+    yonEsiklerineGoc,
 } from '../../core/muhafiz/muhafizGoc';
 import type { PresetSeviyeAyari, PresetSeviyeleri } from '../../core/muhafiz/matrisIslemleri';
 import {
@@ -220,8 +221,10 @@ function presetGocunuUygula(
     return {
         esikler: preset.esikler,
         sikliklar: preset.sikliklar,
+        // `yogunluk` GECILIR: giris yonlu vakitler cikis tablosunu (45/25/10/3)
+        // DEGIL kendi yon tablosunu almali, yoksa goc eskalasyonu tersine cevirir.
         matris: matrisGecerliMi(mevcutMatris)
-            ? presetZamanlamasiniUygula(mevcutMatris, preset.seviyeler)
+            ? presetZamanlamasiniUygula(mevcutMatris, preset.seviyeler, yogunluk)
             : presetMatrisiOlustur(preset.seviyeler, false),
     };
 }
@@ -313,14 +316,22 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // (`muhafizMatrisiniCoz` ham AsyncStorage okuyan arka plan
                 // tüketicileri için aynı göçü ayrıca uygular; bu yol ise sonucu
                 // DİSKE yazar → kanallar görünür/değiştirilebilir olur.)
-                const mevcutMatris = modlariKanallaraGoc(eskiAlarmSesiniGoc(hamMatris));
-                const sesGocuGerekli = mevcutMatris !== hamMatris;
+                const semaGoclu = modlariKanallaraGoc(eskiAlarmSesiniGoc(hamMatris));
+                const sesGocuGerekli = semaGoclu !== hamMatris;
 
                 // Bir kerelik preset göçü: yalnız bayrağı OLMAYAN eski kayıtlarda.
                 // 'ozel' yoğunlukta `presetGocunuUygula` boş döner → matris bire bir korunur,
                 // ama bayrak yine işaretlenir ki her açılışta tekrar denenmesin (idempotent).
                 const gocGerekli = parsed.presetGocuYapildi !== true;
-                const goc = gocGerekli ? presetGocunuUygula(temel.yogunluk, mevcutMatris) : {};
+                const goc = gocGerekli ? presetGocunuUygula(temel.yogunluk, semaGoclu) : {};
+
+                // YÖN GÖÇÜ EN SONA: preset göçü de matrisi yazabilir, dolayısıyla
+                // sıralama denetimi NİHAİ matris üzerinde yapılmalı. Sahadaki giriş
+                // yönlü kayıtlar çıkış sırasındaki (azalan) eşiklerle duruyor →
+                // eskalasyon tersine dönmüş durumda; bu göç onları düzeltir.
+                const preGocMatris = goc.matris ?? semaGoclu;
+                const mevcutMatris = yonEsiklerineGoc(preGocMatris, temel.yogunluk);
+                const yonGocuGerekli = mevcutMatris !== preGocMatris;
 
                 // ÖZEL YEDEK DE GÖÇMELİ: "Özel"e dönmek bu matrisi doğrudan
                 // `matris`e yazar. Eski şemada kalsaydı hücrelerde `kanallar`
@@ -329,13 +340,18 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 const hamYedek: MuhafizMatrisi | undefined = matrisGecerliMi(parsed.ozelMatrisYedegi)
                     ? parsed.ozelMatrisYedegi
                     : undefined;
-                const yedek = hamYedek ? modlariKanallaraGoc(hamYedek) : undefined;
+                // Yön göçü YEDEĞE DE uygulanmalı: "Özel"e dönmek bu matrisi doğrudan
+                // `matris`e yazar → atlanırsa ters eskalasyon tek dokunuşla geri gelir.
+                const yedek = hamYedek
+                    ? yonEsiklerineGoc(modlariKanallaraGoc(hamYedek), temel.yogunluk)
+                    : undefined;
                 const yedekGocuGerekli = !!hamYedek && yedek !== hamYedek;
 
                 const sonuc: MuhafizAyarlari = {
                     ...temel,
-                    matris: mevcutMatris,
                     ...goc,
+                    // `...goc`tan SONRA: yön göçü nihai matris üzerinde yapıldı.
+                    matris: mevcutMatris,
                     // Opsiyonel alanlar AÇIKÇA taşınmalı: `temel`e eklenmezlerse
                     // diske yazılan değer uygulama yeniden açılınca sessizce kaybolur.
                     // ozelMatrisYedegi: `matris` gibi DOĞRULANIR — bozuk/kısmi yedek
@@ -347,7 +363,7 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     presetGocuYapildi: true,
                 };
 
-                if (gocGerekli || sesGocuGerekli || yedekGocuGerekli) {
+                if (gocGerekli || sesGocuGerekli || yedekGocuGerekli || yonGocuGerekli) {
                     // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
                     // kullanıcının elle yaptığı kanal/ses değişikliklerini sürekli geri alır.
                     // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)

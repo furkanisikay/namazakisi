@@ -136,6 +136,8 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
     const eskiSikliklar = (muhafizAyarlari?.sikliklar ?? {}) as Record<string, number | undefined>;
     const muhafizMatrisi = muhafizMatrisiniCoz({
         matris: muhafizAyarlari?.matris as MuhafizMatrisi | undefined,
+        // Yon gocunun giris tablosunu secmesi icin ZORUNLU (bkz. `MatrisKaynagi`).
+        yogunluk: muhafizAyarlari?.yogunluk,
         esikler: {
             seviye1: eskiEsikler.seviye1 || 45,
             seviye2: eskiEsikler.seviye2 || 25,

@@ -60,7 +60,14 @@ describe('SAFLIK NOBETCISI — ios/ altinda react-native/expo import edilmez', (
             for (const satir of icerik.split('\n')) {
                 const kirpik = satir.trim();
                 if (!kirpik.startsWith('import ') && !kirpik.startsWith('} from ')) continue;
-                if (/from '(react-native|expo-[^']*|@react-native[^']*)'/.test(kirpik)) {
+                // `modules/` DE YAKALANMALI (delik kapatildi): saf bir dosya
+                // `../../../../modules/expo-muhafiz-anons/src` import ederse
+                // test yesil kalir ama dosya artik saf DEGILDIR ve
+                // `expo-modules-core` uzerinden jest'i patlatir.
+                if (
+                    /from '(react-native|expo-[^']*|@react-native[^']*)'/.test(kirpik) ||
+                    /from '[^']*modules\/[^']*'/.test(kirpik)
+                ) {
                     ihlaller.push(`${dosya}: ${kirpik}`);
                 }
             }

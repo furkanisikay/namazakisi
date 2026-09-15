@@ -6,8 +6,11 @@ import {
   presetZamanlamasiniUygula,
   zamanlamaDegistiMi,
   yonDegisimindeMetniCevir,
+  vaktinYonunuDegistir,
   type PresetSeviyeleri,
 } from '../matrisIslemleri';
+import { esikSiralamasiGecerliMi } from '../aktifSeviye';
+import { GIRIS_ZAMANLAMA_TABLOSU } from '../girisZamanlamasi';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../matrisTipleri';
 import type {
   MuhafizMatrisi,
@@ -385,5 +388,155 @@ describe('yonDegisimindeMetniCevir', () => {
 
     expect(sonuc.seviyeler[0].kanallar).toEqual(IKISI);
     expect(sonuc.seviyeler[0].esikDk).toBe(45);
+  });
+});
+
+describe('yonuDegistir — zamanlama yone gore YENIDEN KURULUR', () => {
+  const CIKIS_TABLOSU = {
+    nazik: { esikDk: 45, siklik: 'birkez' as const },
+    uyari: { esikDk: 25, siklik: { herDk: 10 } },
+    sert: { esikDk: 10, siklik: { herDk: 5 } },
+    acil: { esikDk: 3, siklik: 'birkez' as const },
+  };
+
+  /** Cikis yonlu, kullanicinin emegini tasiyan gercekci bir vakit. */
+  const cikisVakti = (): VakitMuhafizAyari => ({
+    yon: 'cikisaDogru',
+    seviyeler: SEVIYE_KADEMELERI.map((kademe, i) => ({
+      kademe,
+      kanallar: i === 3 ? IKISI : BILDIRIM,
+      esikDk: [45, 25, 10, 3][i],
+      siklik: 'birkez' as const,
+      bildirimSesi: OZEL_SES,
+      sesAdi: 'Secilen muzik',
+      acilKanal: i === 3,
+      anonsMetni: 'Kendi yazdigim metin',
+    })),
+  });
+
+  test('ASIL DUZELTME: girise gecince esikler ARTAN olur (eskalasyon ters donmez)', () => {
+    const sonuc = vaktinYonunuDegistir(cikisVakti(), 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'normal');
+
+    expect(sonuc.yon).toBe('girisindenItibaren');
+    expect(esikSiralamasiGecerliMi(sonuc.seviyeler, 'girisindenItibaren')).toBe(true);
+    expect(sonuc.seviyeler.map((s) => s.esikDk)).toEqual(
+      SEVIYE_KADEMELERI.map((k) => GIRIS_ZAMANLAMA_TABLOSU.uzun.normal[k].esikDk)
+    );
+  });
+
+  test('vaktin PENCERE SINIFINA gore tablo secilir (aksam != yatsi)', () => {
+    const aksam = vaktinYonunuDegistir(cikisVakti(), 'aksam', 'girisindenItibaren', CIKIS_TABLOSU, 'normal');
+    const yatsi = vaktinYonunuDegistir(cikisVakti(), 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'normal');
+
+    expect(aksam.seviyeler.map((s) => s.esikDk)).not.toEqual(yatsi.seviyeler.map((s) => s.esikDk));
+    // Kisa pencerede en buyuk esik 87 dk'lik aksama sigmali.
+    expect(Math.max(...aksam.seviyeler.map((s) => s.esikDk))).toBeLessThan(87);
+  });
+
+  test('YALNIZ zamanlama tasir: kanal/aciliyet/ses/metin korunur', () => {
+    const once = cikisVakti();
+    const sonra = vaktinYonunuDegistir(once, 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'normal');
+
+    sonra.seviyeler.forEach((s, i) => {
+      expect(s.kanallar).toEqual(once.seviyeler[i].kanallar);
+      expect(s.acilKanal).toBe(once.seviyeler[i].acilKanal);
+      expect(s.bildirimSesi).toBe(OZEL_SES);
+      expect(s.sesAdi).toBe('Secilen muzik');
+      expect(s.anonsMetni).toBe('Kendi yazdigim metin'); // havuzda degil → dokunulmaz
+    });
+  });
+
+  test('ayrilan yonun zamanlamasi YEDEKLENIR ve geri donunce AYNEN geri gelir', () => {
+    const once = cikisVakti();
+    const girise = vaktinYonunuDegistir(once, 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'normal');
+
+    expect(girise.yonYedegi?.cikisaDogru?.map((y) => y.esikDk)).toEqual([45, 25, 10, 3]);
+
+    const geriDonus = vaktinYonunuDegistir(girise, 'yatsi', 'cikisaDogru', CIKIS_TABLOSU, 'normal');
+
+    expect(geriDonus.seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+    // Hedef yonun yedegi TUKETILDI; ayrilan (giris) yonunki yazildi.
+    expect(geriDonus.yonYedegi?.cikisaDogru).toBeUndefined();
+    expect(geriDonus.yonYedegi?.girisindenItibaren).toHaveLength(4);
+  });
+
+  test('BOZUK yedek geri yuklenmez — tabana duser', () => {
+    const bozuk: VakitMuhafizAyari = {
+      ...cikisVakti(),
+      yon: 'girisindenItibaren',
+      // Giris yonunde AZALAN = gecersiz (duzeltilen hatanin ta kendisi).
+      yonYedegi: { cikisaDogru: [{ esikDk: 5, siklik: 'birkez' }] },
+    };
+    const sonuc = vaktinYonunuDegistir(bozuk, 'yatsi', 'cikisaDogru', CIKIS_TABLOSU, 'normal');
+
+    expect(sonuc.seviyeler.map((s) => s.esikDk)).toEqual([45, 25, 10, 3]);
+  });
+
+  test('yon zaten hedefse AYNI REFERANS doner', () => {
+    const ayar = cikisVakti();
+
+    expect(vaktinYonunuDegistir(ayar, 'yatsi', 'cikisaDogru', CIKIS_TABLOSU, 'normal')).toBe(ayar);
+  });
+
+  test("'ozel' yogunlukta normal giris tablosu kullanilir", () => {
+    const sonuc = vaktinYonunuDegistir(cikisVakti(), 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'ozel');
+
+    expect(sonuc.seviyeler.map((s) => s.esikDk)).toEqual(
+      SEVIYE_KADEMELERI.map((k) => GIRIS_ZAMANLAMA_TABLOSU.uzun.normal[k].esikDk)
+    );
+  });
+});
+
+describe('REGRESYON: preset yolu giris yonunu BOZMAZ', () => {
+  const girisMatrisi = (): MuhafizMatrisi =>
+    Object.fromEntries(
+      MUHAFIZ_VAKITLERI.map((v) => [
+        v,
+        {
+          yon: 'girisindenItibaren' as const,
+          seviyeler: SEVIYE_KADEMELERI.map((kademe, i) => ({
+            kademe,
+            kanallar: BILDIRIM,
+            esikDk: [15, 45, 90, 180][i],
+            siklik: 'birkez' as const,
+            bildirimSesi: VARSAYILAN_SES,
+            anonsMetni: '',
+          })),
+          yonYedegi: { cikisaDogru: [{ esikDk: 45, siklik: 'birkez' as const }] },
+        },
+      ])
+    ) as MuhafizMatrisi;
+
+  /**
+   * ASIL TUZAK: preset'ler CIKIS tablosudur (45/25/10/3). Yon degisimi
+   * duzeltilse bile preset karti giris yonlu bir vakte o tabloyu yazsaydi
+   * eskalasyon tersine doner ve hata BASKA BIR KAPIDAN geri gelirdi.
+   */
+  test.each([
+    ['presetUygula', (m: MuhafizMatrisi) => presetUygula(m, SESLI_PRESET, true, 'normal')],
+    ['presetZamanlamasiniUygula', (m: MuhafizMatrisi) => presetZamanlamasiniUygula(m, SESLI_PRESET, 'normal')],
+  ])('%s sonrasi giris siralamasi GECERLI kalir', (_ad, uygula) => {
+    const sonuc = uygula(girisMatrisi());
+
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(esikSiralamasiGecerliMi(sonuc[v].seviyeler, 'girisindenItibaren')).toBe(true);
+    }
+  });
+
+  test('preset BAYAT yon yedegini temizler', () => {
+    const sonuc = presetUygula(girisMatrisi(), SESLI_PRESET, true, 'normal');
+
+    for (const v of MUHAFIZ_VAKITLERI) expect(sonuc[v].yonYedegi).toBeUndefined();
+  });
+
+  test('CIKIS yonlu matriste preset davranisi DEGISMEZ (cikis tablosu yazilir)', () => {
+    const cikisMatris = matris();
+    const sonuc = presetUygula(cikisMatris, SESLI_PRESET, true, 'normal');
+
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(sonuc[v].seviyeler.map((s) => s.esikDk)).toEqual(
+        SEVIYE_KADEMELERI.map((k) => SESLI_PRESET[k].esikDk)
+      );
+    }
   });
 });

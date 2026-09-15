@@ -54,7 +54,7 @@ import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
 import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
-import { yonDegisimindeMetniCevir } from '../../core/muhafiz/matrisIslemleri';
+import { vaktinYonunuDegistir } from '../../core/muhafiz/matrisIslemleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
@@ -284,20 +284,50 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /**
      * Pencere yönünü değiştirir.
      *
-     * `yonDegisimindeMetniCevir` ZORUNLU: hücrede duran otomatik doldurulmuş
-     * çıkış dilli şablon ("… vakti çıkıyor, son {süre} dakika") yön girişe
-     * çevrilince "son 42 dakika" diye seslendirilir. Fonksiyon yalnız havuzdaki
-     * bir şablonla BİREBİR eşleşen metni çevirir; kullanıcının kendi yazdığına
-     * dokunmaz — ve `yon` alanını da atomik yazar, bu yüzden burada AYRICA
-     * `yon` yazılmaz.
+     * `vaktinYonunuDegistir` ÜÇ İŞİ ATOMİK yapar — üçü de zorunlu:
+     *  1. **Metin çevirisi.** Hücrede duran otomatik doldurulmuş çıkış dilli şablon
+     *     ("… vakti çıkıyor, son {süre} dakika") yön girişe çevrilince "son 42
+     *     dakika" diye seslendirilir. Yalnız havuzdaki bir şablonla BİREBİR eşleşen
+     *     metin çevrilir; kullanıcının kendi yazdığına dokunulmaz.
+     *  2. **Zamanlamayı hedef yöne göre yeniden kurma.** Eskiden yapılmıyordu ve
+     *     yaşanmış hata buydu: çıkış eşikleri (45/25/10/3) giriş yönünde kalınca
+     *     eskalasyon TERSİNE dönüyor, en büyük eşikten sonra motor tümden susuyordu.
+     *  3. **Ayrılan yönün zamanlamasını yedekleme** — geri dönülünce kaybolmasın.
+     *
+     * `yon` alanını da fonksiyon yazar; burada AYRICA yazılmaz.
+     *
+     * `matrisiYaz`'DAN GEÇMEZ (bilinçli): o yol zamanlama değişikliğini görüp
+     * yoğunluğu 'ozel' yapardı. Oysa yön değişimi preset'in KENDİ giriş varyantını
+     * yazıyor — matris hâlâ o preset'tir. 'ozel'e düşseydi preset çipi söner ve
+     * preset'e dönüş "özel ayarlarınız kaybolacak" onayı isterdi (kaybolacak bir
+     * şey yokken). Yedek + planlama yine yazılır.
      */
     const yonDegistir = useCallback(
         (vakit: MuhafizVakti, yon: PencereYonu) => {
-            const yeniVakit = yonDegisimindeMetniCevir(matris[vakit], yon);
+            const yogunluk = muhafizAyarlari.yogunluk;
+            // Çıkışa dönerken taban tablo: kullanıcının preset'i; 'ozel'/bilinmeyen
+            // ise 'normal'. (Giriş tarafını `vaktinYonunuDegistir` kendi seçer.)
+            const cikisZamanlamasi = (
+                yogunluk in HATIRLATMA_PRESETLERI
+                    ? HATIRLATMA_PRESETLERI[yogunluk as PresetYogunlugu]
+                    : HATIRLATMA_PRESETLERI.normal
+            ).seviyeler;
+
+            const yeniVakit = vaktinYonunuDegistir(
+                matris[vakit],
+                vakit,
+                yon,
+                cikisZamanlamasi,
+                yogunluk
+            );
             if (yeniVakit === matris[vakit]) return; // değişen bir şey yok
-            matrisiYaz({ ...matris, [vakit]: yeniVakit });
+
+            const yeniMatris = { ...matris, [vakit]: yeniVakit };
+            dispatch(matrisiGuncelle(yeniMatris));
+            dispatch(ozelMatrisYedegiGuncelle(yeniMatris));
+            planlamayiKuyrugaAl();
         },
-        [matris, matrisiYaz]
+        [dispatch, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]
     );
 
     const seviyeAcKapa = useCallback(
@@ -326,7 +356,11 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
             // Preset artık zamanlamanın YANI SIRA kanalları + aciliyeti de yazar;
             // korunan tek kullanıcı verisi anons metnidir.
-            dispatch(matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar)));
+            // `yogunluk` GEÇİLİR: giriş yönlü vakitler çıkış tablosunu değil kendi
+            // yön tablosunu almalı, yoksa preset kartı ters eskalasyonu geri getirir.
+            dispatch(
+                matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar, yogunluk))
+            );
             dispatch(
                 muhafizAyarlariniGuncelle(
                     // Onay yalnız VERİLDİĞİNDE kalıcılaşır; "sesli olmadan uygula"

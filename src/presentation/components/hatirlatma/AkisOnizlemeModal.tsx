@@ -41,6 +41,7 @@ import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import {
     ONIZLEME_TARAMA_SINIRI_DK,
+    ONIZLEME_GIRIS_BASLANGIC_DK,
     GIRIS_SESLI_GECIKME_NOTU,
     type PencereTanimi,
 } from './pencereTanimi';
@@ -82,13 +83,23 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
      * Giris yonunde pencere uzunlugu ZORUNLUdur (motor onsuz plan uretmez);
      * `pencereUzunluguDk` yoksa liste bos doner ve bos durum metni cikar —
      * bu, motorun gercek davranisidir, gizlenmez.
+     *
+     * TARAMA BASLANGICI YONE GORE (yasanmis bug): ikinci arguman motorda
+     * "cagiranin SU ANKI olcusu" demektir ve tarama oradan cikisa dogru AZALIR,
+     * girise dogru ARTAR. Onizleme tum pencereyi gormek istedigi icin cikista
+     * buyuk bir sayi (`ONIZLEME_TARAMA_SINIRI_DK`) verilir; ayni sayi giriste
+     * `baslangic = max(1440, 1)` yapip `bitis = pencere - 1`'i ASAR → dongu HIC
+     * calismaz ve kullaniciya "tum adimlar kapali" gosterilirdi. Girisin
+     * karsiligi pencerenin BASIDIR.
      */
     const adimlar = useMemo(
         () =>
-            vakitUyariPlaniOlustur(ayar, ONIZLEME_TARAMA_SINIRI_DK, {
-                pencereUzunluguDk: tanim.pencereUzunluguDk,
-            }),
-        [ayar, tanim.pencereUzunluguDk]
+            vakitUyariPlaniOlustur(
+                ayar,
+                girisYonu ? ONIZLEME_GIRIS_BASLANGIC_DK : ONIZLEME_TARAMA_SINIRI_DK,
+                { pencereUzunluguDk: tanim.pencereUzunluguDk }
+            ),
+        [ayar, girisYonu, tanim.pencereUzunluguDk]
     );
 
     const sesliAdimVar = adimlar.some((a) => a.sesliAnons && a.anonsMetni.trim().length > 0);

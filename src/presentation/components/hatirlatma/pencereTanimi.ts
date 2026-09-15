@@ -143,6 +143,16 @@ export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
+/**
+ * "Akisi onizle" GIRIS yonu tarama baslangici (dk).
+ *
+ * Motorda tarama, verilen olcuden cikisa dogru AZALIR ama girise dogru ARTAR →
+ * giris yonunde buyuk bir sayi vermek dongunun hic calismamasina yol acar
+ * (`baslangic > bitis`). Girisin karsiligi pencerenin BASIDIR; alt sinir
+ * `olcuDk >= 1` zaten `seviyeTetiklenirMi`de.
+ */
+export const ONIZLEME_GIRIS_BASLANGIC_DK = 1;
+
 // NOT: "bu adim sesli anons/bildirim sesi calar mi?" kurali BURADA DEGIL —
 // `motorAdaptoru` icindeki `sesliAnonsGerekliMi`/`bildirimSesiGerekliMi`'dedir.
 
@@ -247,7 +257,10 @@ export const YON_SECENEKLERI: {
         {
             yon: 'girisindenItibaren',
             etiket: 'Vakit girer girmez',
-            aciklama: 'Vakit girdiği andan itibaren, çıkana kadar hatırlatılırsınız.',
+            // "cikana kadar hatirlatilirsiniz" DENMEZ: 'hafif' yogunlukta dort adim
+            // da tek atistir, yani vaktin sonuna kadar suren bir tekrar YOKTUR.
+            // Metin her yogunlukta dogru olmali.
+            aciklama: 'Vakit girdikten sonra, kılana kadar aralıklarla hatırlatılırsınız.',
             ikon: 'hourglass-start',
         },
     ];

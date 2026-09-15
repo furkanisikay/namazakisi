@@ -6,6 +6,7 @@ import type {
   Siklik,
   UyariKanallari,
   VakitMuhafizAyari,
+  YonZamanlamaYedegi,
 } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
 import { VARSAYILAN_ACIK_KANALLAR, kanalAc, kanalKapat } from './kanalKumesi';
@@ -13,6 +14,9 @@ import type { PencereYonu } from './pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from './pencereTipleri';
 import { sesliAnonsGerekliMi } from './motorAdaptoru';
 import { anonsSablonlari, varsayilanAnonsMetni } from './anonsMetni';
+import type { ZamanlamaAyari, ZamanlamaSeviyeleri } from './girisZamanlamasi';
+import { girisZamanlamasiniSec } from './girisZamanlamasi';
+import { esikSiralamasiGecerliMi } from './aktifSeviye';
 
 const derinKopya = <T>(o: T): T => JSON.parse(JSON.stringify(o));
 
@@ -76,7 +80,8 @@ function seviyeyeUygula(
   mevcut: SeviyeAyari,
   preset: PresetSeviyeAyari,
   sesliIzinVar: boolean,
-  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+  zamanlama?: ZamanlamaAyari
 ): SeviyeAyari {
   // Sesli izni yoksa SESLI kanali kapanir ama adim SUSTURULMAZ: bildirim kanali
   // acilir. (Eski `mod` semasinda bu "'sesli'/'ikisi' → 'bildirim'" idi; yalniz
@@ -88,8 +93,11 @@ function seviyeyeUygula(
   return {
     ...mevcut,
     kanallar,
-    esikDk: preset.esikDk,
-    siklik: preset.siklik,
+    // Zamanlama YONE gore gelir: giris yonlu bir vakte cikis tablosunu
+    // (45/25/10/3) yazmak eskalasyonu TERSINE cevirir — yon degisimi
+    // duzeltilse bile preset karti hatayi geri getirirdi.
+    esikDk: zamanlama ? zamanlama.esikDk : preset.esikDk,
+    siklik: zamanlama ? zamanlama.siklik : preset.siklik,
     acilKanal: preset.acilKanal,
     // Preset KANALLARI yazdigi icin hucre kesin aciliyor → "kapatildiginda
     // hatirlanan kume" hafizasi (`oncekiKanallar`) anlamini yitirir. Birakilsaydi
@@ -110,19 +118,46 @@ function seviyeyeUygula(
  * `anonsMetni` ve BILDIRIM SESI secimidir (`bildirimSesi`/`sesAdi`) — sesi preset'in
  * yazmasi, kullanicinin sectigi muzigi her preset dokunusunda silerdi. Elle yapilan
  * zamanlama degisiklikleri zaten `ozelMatrisYedegi` ile saklanir → veri kaybi yok.
+ *
+ * ZAMANLAMA YONE GORE SECILIR: `seviyeler` CIKIS tablosudur; giris yonlu vakitler
+ * `girisZamanlamasiniSec(vakit, yogunluk)` tablosunu alir. `yogunluk` verilmezse
+ * (ya da 'ozel'/bozuksa) giris tarafi `GIRIS_VARSAYILAN_YOGUNLUK`'a duser.
  */
 export function presetUygula(
   matris: MuhafizMatrisi,
   seviyeler: PresetSeviyeleri,
-  sesliIzinVar: boolean
+  sesliIzinVar: boolean,
+  yogunluk?: unknown
 ): MuhafizMatrisi {
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
+    const giris = girisZamanlamasiVarsa(sonuc[v], v, yogunluk);
     sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) =>
-      seviyeyeUygula(s, seviyeler[SEVIYE_KADEMELERI[i]], sesliIzinVar, sonuc[v].yon)
+      seviyeyeUygula(
+        s,
+        seviyeler[SEVIYE_KADEMELERI[i]],
+        sesliIzinVar,
+        sonuc[v].yon,
+        giris?.[SEVIYE_KADEMELERI[i]]
+      )
     );
+    // Preset zamanlamayi ezdi → ayrilan yonun yedegi BAYAT. Birakilsaydi
+    // "ozel cikis → girise gec → preset → cikisa don" zincirinde kullaniciya
+    // silinmis olmasi gereken eski ozel ayari geri verirdik.
+    sonuc[v].yonYedegi = undefined;
   }
   return sonuc;
+}
+
+/** Vakit giris yonlu ise o vaktin giris tablosu, degilse `undefined`. */
+function girisZamanlamasiVarsa(
+  vakitAyari: VakitMuhafizAyari,
+  vakit: MuhafizVakti,
+  yogunluk?: unknown
+): ZamanlamaSeviyeleri | undefined {
+  return (vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren'
+    ? girisZamanlamasiniSec(vakit, yogunluk)
+    : undefined;
 }
 
 /**
@@ -139,14 +174,17 @@ export function presetUygula(
  */
 export function presetZamanlamasiniUygula(
   matris: MuhafizMatrisi,
-  seviyeler: PresetSeviyeleri
+  seviyeler: PresetSeviyeleri,
+  yogunluk?: unknown
 ): MuhafizMatrisi {
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
+    const giris = girisZamanlamasiVarsa(sonuc[v], v, yogunluk);
     sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) => {
-      const preset = seviyeler[SEVIYE_KADEMELERI[i]];
-      return { ...s, esikDk: preset.esikDk, siklik: preset.siklik };
+      const kaynak = giris?.[SEVIYE_KADEMELERI[i]] ?? seviyeler[SEVIYE_KADEMELERI[i]];
+      return { ...s, esikDk: kaynak.esikDk, siklik: kaynak.siklik };
     });
+    sonuc[v].yonYedegi = undefined; // `presetUygula` ile ayni gerekce (bayat yedek).
   }
   return sonuc;
 }
@@ -226,6 +264,89 @@ export function yonDegisimindeMetniCevir(
 
   if (!degisti) return vakitAyari;
   return { ...vakitAyari, yon: hedefYon, seviyeler };
+}
+
+/**
+ * Yedekteki zamanlama HEDEF YONDE kullanilabilir mi?
+ *
+ * Diskten gelen yedek bozuk/kismi olabilir; dogrulanmadan geri yuklenirse tam
+ * duzeltmek istedigimiz hatayi (yone aykiri siralama) geri getirir.
+ */
+function yonYedegiGecerliMi(
+  yedek: YonZamanlamaYedegi[] | undefined,
+  yon: PencereYonu
+): yedek is YonZamanlamaYedegi[] {
+  if (!Array.isArray(yedek) || yedek.length !== SEVIYE_KADEMELERI.length) return false;
+  if (!yedek.every((y) => !!y && Number.isFinite(y.esikDk) && y.esikDk >= 1)) return false;
+  return esikSiralamasiGecerliMi(yedek, yon);
+}
+
+/**
+ * Bir vaktin YONUNU degistirir: metni cevirir, ZAMANLAMAYI hedef yone uygun
+ * yeniden kurar ve ayrilan yonun zamanlamasini yedekler.
+ *
+ * NEDEN ZAMANLAMA DA DEGISMELI (yasanmis hata): eski yol yalniz metni cevirip
+ * `yon`'u yaziyordu. Cikis esikleri (45/25/10/3) giris yonunde kaldiginda
+ * kapsama `olcuDk >= esikDk` + "en BUYUK esik kazanir" kurali eskalasyonu
+ * TERSINE cevirir — kullanici vakit girer girmez en sert tonu duyar, sure
+ * gectikce naziklesir, en buyuk esikten sonra motor tumden susar. Ustelik
+ * `esikSinirlariniHesapla` komsu kisitini girişte ters cevirdigi icin stepper da
+ * tek degere kilitlenir ve kullanici elle de duzeltemez.
+ *
+ * VERI KAYBI YOK: ayrilan yonun esik+siklik'i `yonYedegi`'ne yazilir; geri
+ * donuldugunde (dogrulanirsa) aynen geri gelir. Kanal, aciliyet, ses ve anons
+ * metni HER IKI YONDE DE korunur — bu fonksiyon yalniz zamanlama tasir.
+ *
+ * Degisecek bir sey yoksa AYNI REFERANSI dondurur.
+ *
+ * @param hedefZamanlama Hedef yon icin TABAN tablo (yedek yoksa/bozuksa kullanilir).
+ */
+export function yonuDegistir(
+  vakitAyari: VakitMuhafizAyari,
+  hedefYon: PencereYonu,
+  hedefZamanlama: ZamanlamaSeviyeleri
+): VakitMuhafizAyari {
+  const mevcutYon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
+  if (mevcutYon === hedefYon) return vakitAyari;
+
+  // Metin cevirisi + `yon` alani tek yerden yazilir (mevcut sozlesme).
+  const cevrilmis = yonDegisimindeMetniCevir(vakitAyari, hedefYon);
+
+  const ayrilanYedek: YonZamanlamaYedegi[] = vakitAyari.seviyeler.map((s) => ({
+    esikDk: s.esikDk,
+    siklik: s.siklik,
+  }));
+
+  const mevcutYedek = vakitAyari.yonYedegi?.[hedefYon];
+  const geriYuklenen = yonYedegiGecerliMi(mevcutYedek, hedefYon) ? mevcutYedek : null;
+
+  const seviyeler = cevrilmis.seviyeler.map((s, i) => {
+    const kaynak = geriYuklenen ? geriYuklenen[i] : hedefZamanlama[SEVIYE_KADEMELERI[i]];
+    return { ...s, esikDk: kaynak.esikDk, siklik: kaynak.siklik };
+  });
+
+  return {
+    ...cevrilmis,
+    yon: hedefYon,
+    seviyeler,
+    // Hedef yonun yedegi TUKETILDI → silinir; ayrilan yonunki yazilir.
+    yonYedegi: { ...vakitAyari.yonYedegi, [hedefYon]: undefined, [mevcutYon]: ayrilanYedek },
+  };
+}
+
+/** Bir vaktin yonunu degistirir; giris tablosu yogunluktan secilir. */
+export function vaktinYonunuDegistir(
+  vakitAyari: VakitMuhafizAyari,
+  vakit: MuhafizVakti,
+  hedefYon: PencereYonu,
+  cikisZamanlamasi: ZamanlamaSeviyeleri,
+  yogunluk?: unknown
+): VakitMuhafizAyari {
+  const hedefZamanlama =
+    hedefYon === 'girisindenItibaren'
+      ? girisZamanlamasiniSec(vakit, yogunluk)
+      : cikisZamanlamasi;
+  return yonuDegistir(vakitAyari, hedefYon, hedefZamanlama);
 }
 
 const siklikDk = (s: Siklik): number => (s === 'birkez' ? -1 : s.herDk);
