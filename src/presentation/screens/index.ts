@@ -16,7 +16,7 @@ export { KazaDefteriSayfasi } from './KazaDefteriSayfasi';
 // Ayarlar sayfalari
 export { AyarlarSayfasi } from './AyarlarSayfasi';
 export { KonumAyarlariSayfasi } from './KonumAyarlariSayfasi';
-export { GorünumAyarlariSayfasi } from './GorünumAyarlariSayfasi';
+export { GorunumAyarlariSayfasi } from './GorunumAyarlariSayfasi';
 export { BildirimAyarlariSayfasi } from './BildirimAyarlariSayfasi';
 export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';
 export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';

@@ -20,7 +20,7 @@ import {
   AyarlarSayfasi,
   RozetlerSayfasi,
   MuhafizAyarlariSayfasi,
-  GorünumAyarlariSayfasi,
+  GorunumAyarlariSayfasi,
   BildirimAyarlariSayfasi,
   SeriHedefAyarlariSayfasi,
   HakkindaSayfasi,
@@ -77,7 +77,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
 > = {
   AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false } },
   KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum Ayarları' } },
-  GorünumAyarlari: { component: GorünumAyarlariSayfasi, options: { title: 'Görünüm' } },
+  GorünumAyarlari: { component: GorunumAyarlariSayfasi, options: { title: 'Görünüm' } },
   BildirimAyarlari: { component: BildirimAyarlariSayfasi, options: { title: 'Bildirimler' } },
   SeriHedefAyarlari: { component: SeriHedefAyarlariSayfasi, options: { title: 'Seri ve Hedefler' } },
   MuhafizAyarlari: { component: MuhafizAyarlariSayfasi, options: { title: 'Namaz Muhafızı' } },

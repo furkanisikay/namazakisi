@@ -146,7 +146,7 @@ const RenkPaletiSecici: React.FC = () => {
 /**
  * Gorunum Ayarlari Sayfasi
  */
-export const GorünumAyarlariSayfasi: React.FC = () => {
+export const GorunumAyarlariSayfasi: React.FC = () => {
   return (
     <VurguSaglayici>
       <GorünumAyarlariIcerik />
