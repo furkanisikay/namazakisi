@@ -17,6 +17,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
+        "UIDesignRequiresCompatibility": true,
         "UIBackgroundModes": [
           "fetch"
         ]
