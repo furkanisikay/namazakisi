@@ -28,7 +28,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import type { VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
-import { bildirimSesiGerekliMi, vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { bildirimSesiGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { OnizlemeSesServisi } from '../../../domain/services/OnizlemeSesServisi';
 import { anonsMetniniCoz } from '../../../core/muhafiz/anonsMetni';
 import {
@@ -39,9 +39,16 @@ import {
 import { seviyeOzetiOlustur, esikIfadesi } from '../../../core/muhafiz/seviyeOzeti';
 import { SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
+import { ZamanSeridi } from './ZamanSeridi';
 import {
-    ONIZLEME_TARAMA_SINIRI_DK,
-    ONIZLEME_GIRIS_BASLANGIC_DK,
+    kalanDkAni,
+    saatMetni,
+    seritCumlesiOlustur,
+    seritDuzeniHesapla,
+    seritErisimEtiketi,
+} from '../../../core/muhafiz/zamanSeridi';
+import {
+    pencerePlaniOlustur,
     GIRIS_SESLI_GECIKME_NOTU,
     type PencereTanimi,
 } from './pencereTanimi';
@@ -92,14 +99,10 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
      * calismaz ve kullaniciya "tum adimlar kapali" gosterilirdi. Girisin
      * karsiligi pencerenin BASIDIR.
      */
+    const { yon, pencereUzunluguDk } = tanim;
     const adimlar = useMemo(
-        () =>
-            vakitUyariPlaniOlustur(
-                ayar,
-                girisYonu ? ONIZLEME_GIRIS_BASLANGIC_DK : ONIZLEME_TARAMA_SINIRI_DK,
-                { pencereUzunluguDk: tanim.pencereUzunluguDk }
-            ),
-        [ayar, girisYonu, tanim.pencereUzunluguDk]
+        () => pencerePlaniOlustur(ayar, { yon, pencereUzunluguDk }),
+        [ayar, yon, pencereUzunluguDk]
     );
 
     const sesliAdimVar = adimlar.some((a) => a.sesliAnons && a.anonsMetni.trim().length > 0);
@@ -162,6 +165,30 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             </TouchableOpacity>
                         </View>
 
+                        {/* Karttaki seridin statik kopyasi — ayni plan, ayni resim. */}
+                        {tanim.pencere && pencereUzunluguDk !== undefined && pencereUzunluguDk > 0 && adimlar.length > 0 && (
+                            <ZamanSeridi
+                                plan={adimlar}
+                                pencereUzunluguDk={pencereUzunluguDk}
+                                baslangic={tanim.pencere.baslangic}
+                                bitis={tanim.pencere.bitis}
+                                yon={yon}
+                                adimBilgileri={tanim.adimBilgileri}
+                                animasyonlu={false}
+                                erisimEtiketi={seritErisimEtiketi(
+                                    tanim.baslik,
+                                    tanim.pencere.baslangic,
+                                    tanim.pencere.bitis,
+                                    seritCumlesiOlustur({
+                                        duzen: seritDuzeniHesapla(adimlar, pencereUzunluguDk),
+                                        yon,
+                                        bitis: tanim.pencere.bitis,
+                                        tumAdimlarKapali: false,
+                                    })
+                                )}
+                            />
+                        )}
+
                         <View
                             className="flex-row items-start p-3 rounded-xl mt-2 mb-1"
                             style={{ backgroundColor: `${renkler.bilgi}12` }}
@@ -222,7 +249,12 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                     style={{ backgroundColor: `${bilgi.renk}20` }}
                                                 >
                                                     <Text className="text-[11px] font-bold" style={{ color: renkler.metin }}>
-                                                        {adim.olcuDk} dk
+                                                        {/* Saat + yonlu ifade: "45 dk" tek basina giris
+                                                            yonunde belirsizdi (kala mi, sonra mi?). */}
+                                                        {tanim.pencere
+                                                            ? `${saatMetni(kalanDkAni(tanim.pencere.bitis, adim.kalanDk))} · `
+                                                            : ''}
+                                                        {esikIfadesi(adim.olcuDk, tanim.yon)}
                                                     </Text>
                                                 </View>
                                                 <FontAwesome5

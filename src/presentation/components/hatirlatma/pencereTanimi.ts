@@ -21,7 +21,9 @@ import type {
     SeviyeAyari,
     SeviyeKademe,
     UyariKanallari,
+    VakitMuhafizAyari,
 } from '../../../core/muhafiz/matrisTipleri';
+import { vakitUyariPlaniOlustur, type UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
@@ -153,6 +155,26 @@ export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
  */
 export const ONIZLEME_GIRIS_BASLANGIC_DK = 1;
 
+/**
+ * Bir pencerenin BUGUNKU tam plani — "Akisi onizle" ve zaman seridinin TEK kaynagi.
+ *
+ * Iki yuzey ayni diziyi okur; biri ayri bir cagri kursaydi (or. tarama
+ * baslangicini yone gore secmeyi unutsaydi) ekrandaki serit ile onizleme
+ * AYRISIRDI — onizlemenin giris yonunde bos gelmesi tam olarak boyle bir
+ * ayrismaydi.
+ */
+export function pencerePlaniOlustur(
+    ayar: VakitMuhafizAyari,
+    tanim: Pick<PencereTanimi, 'yon' | 'pencereUzunluguDk'>
+): UyariPlani[] {
+    const girisYonu = tanim.yon === 'girisindenItibaren';
+    return vakitUyariPlaniOlustur(
+        ayar,
+        girisYonu ? ONIZLEME_GIRIS_BASLANGIC_DK : ONIZLEME_TARAMA_SINIRI_DK,
+        { pencereUzunluguDk: tanim.pencereUzunluguDk }
+    );
+}
+
 // NOT: "bu adim sesli anons/bildirim sesi calar mi?" kurali BURADA DEGIL —
 // `motorAdaptoru` icindeki `sesliAnonsGerekliMi`/`bildirimSesiGerekliMi`'dedir.
 
@@ -239,20 +261,43 @@ export interface PencereTanimi {
     esikErisimAdi?: string;
     /** Esik degerinin birimi ("dk kala"); verilmezse yonden turetilir. */
     esikBirimi?: string;
+    /**
+     * Pencerenin BUGUNKU giris ve cikis ANLARI.
+     *
+     * Zaman seridi saat etiketlerini ve "simdi" imlecini buradan cizer. Yalniz
+     * uzunluk (`pencereUzunluguDk`) yetmez: "girisinden 180 dk sonra" ifadesi,
+     * kullanici yatsinin 20:30'da girdigini gormeden bir sey anlatmaz.
+     * Konum/vakit hesabi yoksa verilmez → serit hic cizilmez (yanlis resim
+     * cizmektense cizmemek).
+     */
+    pencere?: { baslangic: Date; bitis: Date };
 }
 
 /** Yon secicideki iki secenek — kullaniciya donuk kibar "siz" dili. */
 export const YON_SECENEKLERI: {
     yon: PencereYonu;
     etiket: string;
+    /**
+     * Cipin ikinci satiri (<= 3 sozcuk). IKI secenekte de gorunur — kullanici
+     * secmeden once farki karsilastirabilsin; eskiden aciklama yalniz SECILI
+     * secenek icin ciziliyordu ve diger yonu gormek icin gecis yapmak gerekiyordu.
+     */
+    kisaAciklama: string;
     aciklama: string;
+    /** "?" bilgi modalindaki uzun anlatim. */
+    uzunAciklama: string;
     ikon: string;
 }[] = [
         {
             yon: 'cikisaDogru',
             etiket: 'Vakit çıkarken',
+            kisaAciklama: 'Sona doğru sıklaşır',
             aciklama: 'Vaktin sonuna yaklaştıkça hatırlatılırsınız.',
-            ikon: 'hourglass-end',
+            uzunAciklama:
+                'Vakit boyunca sessiz kalır, sona yaklaşınca hatırlatır. Namazı genelde kılan ama bazen sona bırakanlar için.',
+            // Kapi metaforu: cikis kapisi. Kum saati ikonu iki yonde de "zaman
+            // geciyor" diyordu, yonu anlatmiyordu.
+            ikon: 'sign-out-alt',
         },
         {
             yon: 'girisindenItibaren',
@@ -260,8 +305,11 @@ export const YON_SECENEKLERI: {
             // "cikana kadar hatirlatilirsiniz" DENMEZ: 'hafif' yogunlukta dort adim
             // da tek atistir, yani vaktin sonuna kadar suren bir tekrar YOKTUR.
             // Metin her yogunlukta dogru olmali.
+            kisaAciklama: 'Baştan, kılana kadar',
             aciklama: 'Vakit girdikten sonra, kılana kadar aralıklarla hatırlatılırsınız.',
-            ikon: 'hourglass-start',
+            uzunAciklama:
+                'Vakit girince hemen hatırlatır, kılana kadar peşinizi bırakmaz. Namazı ilk fırsatta kılmak isteyenler için.',
+            ikon: 'sign-in-alt',
         },
     ];
 
@@ -273,7 +321,7 @@ export const YON_SECENEKLERI: {
  * acikken banner ile ses bir dakikaya kadar ayrisabilir. Bu sessiz birakilamaz.
  */
 export const GIRIS_SESLI_GECIKME_NOTU =
-    'Uygulama açıkken sesli anons, ekrandaki uyarıdan bir dakikaya kadar sonra duyulabilir.';
+    'Uygulama açıkken sesli anons, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
 
 /** Esik bolumu basligi (yon varsayilani). */
 export const esikBasligiOlustur = (yon: PencereYonu): string =>
@@ -303,7 +351,8 @@ export function vakitPencereTanimi(
     vakit: MuhafizVakti,
     yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
     pencereUzunluguDk?: number,
-    yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI
+    yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI,
+    pencere?: { baslangic: Date; bitis: Date }
 ): PencereTanimi {
     return {
         kaynak: `vakit:${vakit}`,
@@ -325,6 +374,7 @@ export function vakitPencereTanimi(
         tekrarMinDk: TEKRAR_MIN_DK,
         tekrarMaxDk: TEKRAR_MAX_DK,
         varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
+        pencere,
     };
 }
 

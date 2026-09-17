@@ -128,29 +128,46 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
      * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
      */
-    const vakitPencereleri = useMemo<Partial<Record<MuhafizVakti, number>>>(() => {
+    const { vakitPencereleri, vakitPencereAnlari } = useMemo(() => {
+        const bos = {
+            vakitPencereleri: {} as Partial<Record<MuhafizVakti, number>>,
+            vakitPencereAnlari: {} as Partial<Record<MuhafizVakti, { baslangic: Date; bitis: Date }>>,
+        };
         try {
             const hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
             const bugun = new Date();
             const vakitler = hesaplayici.getGunlukVakitler(bugun);
-            if (!vakitler) return {};
+            if (!vakitler) return bos;
 
             // Yatsı penceresi YARININ imsağına kadar sürer (gece yarısını aşar).
             const yarin = new Date(bugun);
             yarin.setDate(yarin.getDate() + 1);
             const yarinVakitleri = hesaplayici.getGunlukVakitler(yarin);
 
-            return {
-                imsak: pencereUzunluguDkHesapla(vakitler.imsak, vakitler.gunes),
-                ogle: pencereUzunluguDkHesapla(vakitler.ogle, vakitler.ikindi),
-                ikindi: pencereUzunluguDkHesapla(vakitler.ikindi, vakitler.aksam),
-                aksam: pencereUzunluguDkHesapla(vakitler.aksam, vakitler.yatsi),
-                // Yarının imsağı alınamazsa bugünkü değerle sarma hesabı devreye girer.
-                yatsi: pencereUzunluguDkHesapla(vakitler.yatsi, yarinVakitleri?.imsak ?? vakitler.imsak),
+            // Giriş/çıkış ANLARI zaman şeridinin saat etiketleri içindir. Yarının
+            // imsağı alınamazsa yatsının bitişi sarma kuralıyla (uzunluktan) türetilir.
+            const anlar: Record<MuhafizVakti, { baslangic: Date; bitis: Date }> = {
+                imsak: { baslangic: vakitler.imsak, bitis: vakitler.gunes },
+                ogle: { baslangic: vakitler.ogle, bitis: vakitler.ikindi },
+                ikindi: { baslangic: vakitler.ikindi, bitis: vakitler.aksam },
+                aksam: { baslangic: vakitler.aksam, bitis: vakitler.yatsi },
+                yatsi: { baslangic: vakitler.yatsi, bitis: yarinVakitleri?.imsak ?? vakitler.imsak },
             };
+            const uzunluklar = {} as Record<MuhafizVakti, number>;
+            for (const vakit of MUHAFIZ_VAKITLERI) {
+                uzunluklar[vakit] = pencereUzunluguDkHesapla(anlar[vakit].baslangic, anlar[vakit].bitis);
+                // Bitiş başlangıçtan önceyse (sarma) şerit için gerçek anı kur.
+                if (anlar[vakit].bitis.getTime() <= anlar[vakit].baslangic.getTime()) {
+                    anlar[vakit] = {
+                        baslangic: anlar[vakit].baslangic,
+                        bitis: new Date(anlar[vakit].baslangic.getTime() + uzunluklar[vakit] * 60000),
+                    };
+                }
+            }
+            return { vakitPencereleri: uzunluklar, vakitPencereAnlari: anlar };
         } catch (hata) {
             Logger.warn('MuhafizAyarlari', 'Vakit pencereleri hesaplanamadi', hata);
-            return {};
+            return bos;
         }
     }, []);
 
@@ -282,6 +299,26 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * düşmez.
      */
     /**
+     * Yön değişiminin SONUCU (saf — dispatch yok). Hem gerçek değişim hem de "?"
+     * modalının diğer yönü önizlemesi AYNI hesaptan geçer; ayrışırlarsa modal,
+     * kullanıcı dokununca gerçekte olacak olandan farklı bir resim gösterirdi.
+     */
+    const yonDegisiminiHesapla = useCallback(
+        (vakit: MuhafizVakti, yon: PencereYonu) => {
+            const yogunluk = muhafizAyarlari.yogunluk;
+            // Çıkışa dönerken taban tablo: kullanıcının preset'i; 'ozel'/bilinmeyen
+            // ise 'normal'. (Giriş tarafını `vaktinYonunuDegistir` kendi seçer.)
+            const cikisZamanlamasi = (
+                yogunluk in HATIRLATMA_PRESETLERI
+                    ? HATIRLATMA_PRESETLERI[yogunluk as PresetYogunlugu]
+                    : HATIRLATMA_PRESETLERI.normal
+            ).seviyeler;
+            return vaktinYonunuDegistir(matris[vakit], vakit, yon, cikisZamanlamasi, yogunluk);
+        },
+        [matris, muhafizAyarlari.yogunluk]
+    );
+
+    /**
      * Pencere yönünü değiştirir.
      *
      * `vaktinYonunuDegistir` ÜÇ İŞİ ATOMİK yapar — üçü de zorunlu:
@@ -304,22 +341,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      */
     const yonDegistir = useCallback(
         (vakit: MuhafizVakti, yon: PencereYonu) => {
-            const yogunluk = muhafizAyarlari.yogunluk;
-            // Çıkışa dönerken taban tablo: kullanıcının preset'i; 'ozel'/bilinmeyen
-            // ise 'normal'. (Giriş tarafını `vaktinYonunuDegistir` kendi seçer.)
-            const cikisZamanlamasi = (
-                yogunluk in HATIRLATMA_PRESETLERI
-                    ? HATIRLATMA_PRESETLERI[yogunluk as PresetYogunlugu]
-                    : HATIRLATMA_PRESETLERI.normal
-            ).seviyeler;
-
-            const yeniVakit = vaktinYonunuDegistir(
-                matris[vakit],
-                vakit,
-                yon,
-                cikisZamanlamasi,
-                yogunluk
-            );
+            const yeniVakit = yonDegisiminiHesapla(vakit, yon);
             if (yeniVakit === matris[vakit]) return; // değişen bir şey yok
 
             const yeniMatris = { ...matris, [vakit]: yeniVakit };
@@ -327,7 +349,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             dispatch(ozelMatrisYedegiGuncelle(yeniMatris));
             planlamayiKuyrugaAl();
         },
-        [dispatch, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]
+        [dispatch, matris, yonDegisiminiHesapla, planlamayiKuyrugaAl]
     );
 
     const seviyeAcKapa = useCallback(
@@ -703,7 +725,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                     vakit,
                                     matris[vakit].yon,
                                     vakitPencereleri[vakit],
-                                    yetenekler
+                                    yetenekler,
+                                    vakitPencereAnlari[vakit]
                                 )}
                                 ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
@@ -713,6 +736,17 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
                                 onYonDegistir={(yon) => yonDegistir(vakit, yon)}
+                                // Yalnız AÇIK kart için hesaplanır (tek kart açık olabilir).
+                                karsiYonAyari={
+                                    acikVakit === vakit
+                                        ? yonDegisiminiHesapla(
+                                            vakit,
+                                            matris[vakit].yon === 'girisindenItibaren'
+                                                ? 'cikisaDogru'
+                                                : 'girisindenItibaren'
+                                        )
+                                        : undefined
+                                }
                             />
                         ))}
                     </>
@@ -729,7 +763,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         detay.vakit,
                         matris[detay.vakit].yon,
                         vakitPencereleri[detay.vakit],
-                        yetenekler
+                        yetenekler,
+                        vakitPencereAnlari[detay.vakit]
                     )}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
@@ -747,7 +782,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         onizleme,
                         matris[onizleme].yon,
                         vakitPencereleri[onizleme],
-                        yetenekler
+                        yetenekler,
+                        vakitPencereAnlari[onizleme]
                     )}
                     ayar={matris[onizleme]}
                     ttsDestekli={ttsDestekli}
