@@ -9,10 +9,10 @@ import {
   View,
   Text,
   ScrollView,
-  Switch,
   Animated,
   Easing,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
@@ -191,7 +191,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   Bildirim menüsünde iftar vaktine geri sayım göster
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={ayarlar.aktif}
                 onValueChange={handleSayacToggle}
                 trackColor={{
@@ -271,7 +271,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   Bildirim menüsünde gece boyu sahur vaktine geri sayım göster
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={sahurAyarlar.aktif}
                 onValueChange={handleSahurSayacToggle}
                 trackColor={{

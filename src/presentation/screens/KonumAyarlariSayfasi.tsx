@@ -15,9 +15,9 @@ import {
     ActivityIndicator,
     Modal,
     TextInput,
-    Switch,
     Linking,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import * as Location from 'expo-location';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
@@ -515,7 +515,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                         {takipDurumuYukleniyor ? (
                             <ActivityIndicator size="small" color={renkler.birincil} />
                         ) : (
-                            <Switch
+                            <Anahtar
                                 value={takipAktif}
                                 onValueChange={handleAkilliTakipDegistir}
                                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}

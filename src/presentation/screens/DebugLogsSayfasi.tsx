@@ -10,9 +10,9 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Switch,
   ActivityIndicator,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import * as Sharing from 'expo-sharing';
 import { File, Paths } from 'expo-file-system/next';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -320,7 +320,7 @@ export const DebugLogsSayfasi: React.FC = () => {
                 : 'Loglar kaydedilmiyor'}
             </Text>
           </View>
-          <Switch
+          <Anahtar
             value={debugEnabled}
             onValueChange={handleToggleDebug}
             trackColor={{ false: renkler.sinir, true: `${renkler.birincil}80` }}

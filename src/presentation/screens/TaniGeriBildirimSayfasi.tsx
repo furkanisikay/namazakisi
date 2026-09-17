@@ -10,8 +10,8 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Switch,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -110,7 +110,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 Hata tespit edilince bildirim gösterir
               </Text>
             </View>
-            <Switch
+            <Anahtar
               value={hatirlatmaAcik}
               onValueChange={(v) => { dispatch(hatirlatmayiGuncelle(v)); }}
               trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}

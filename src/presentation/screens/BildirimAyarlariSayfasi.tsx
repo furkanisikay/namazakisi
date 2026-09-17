@@ -12,10 +12,10 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Switch,
   Animated,
   Easing,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
@@ -428,7 +428,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                   <Text className="text-sm font-medium" style={{ color: renkler.metin }}>
                     {item.label} Vakti
                   </Text>
-                  <Switch
+                  <Anahtar
                     value={(vakitAyarlari as any)[item.key]}
                     onValueChange={(val) => handleVakitBildirimToggle(item.key, val)}
                     trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
@@ -471,7 +471,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                   Vakit çıkmadan önce bildirimde dk:sn geri sayım göster
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={sayacAyarlari.aktif}
                 onValueChange={handleSayacToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
@@ -575,7 +575,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                   Her cuma, öğle vaktinden önce hatırlatalım
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={cumaAyarlari.aktif}
                 onValueChange={handleCumaToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
@@ -659,7 +659,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                   Gün bitmeden serinizi kurtarmanız için bildirim al
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={seriAyarlari.gunSonuBildirimAktif}
                 onValueChange={handleGunSonuBildirimToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}

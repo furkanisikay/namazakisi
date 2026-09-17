@@ -54,7 +54,10 @@ export function aktifSeviyeyiBul(
  * kalır (bkz. `aktifSeviyeyiBul` tie-break notu).
  */
 export function esikSiralamasiGecerliMi(
-  seviyeler: SeviyeAyari[],
+  // `SeviyeAyari[]` DEGIL: yon degisimi ve goc yollari yalniz zamanlama tasiyan
+  // ({esikDk, siklik}) yedekleri de bu TEK kapidan dogrulamali — ikinci bir
+  // siralama yuklemi yazmak `adimKapaliMi` ikizlerinin tuzagini tekrarlardi.
+  seviyeler: readonly { esikDk: number }[],
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): boolean {
   const girisYonu = yon === 'girisindenItibaren';

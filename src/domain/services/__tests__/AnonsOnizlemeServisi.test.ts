@@ -138,3 +138,46 @@ describe('anonsuOnizle', () => {
     expect(anonsGecikmesi()).toBeCloseTo(ONIZLEME_GECIKMESI_MS, -2);
   });
 });
+
+/**
+ * iOS (Faz 2): cihaz-ici anons modulu VARSA onizleme dogrudan konusur —
+ * bildirim klibini ureten AYNI ses. Karar platforma degil YETENEGE bagli:
+ * jest'in varsayilan Platform.OS'u 'ios' olsa da mock modul yoktur, yukaridaki
+ * Android testleri bu dala kaymaz.
+ */
+describe('anonsuOnizle — cihaz-ici anons modulu (iOS)', () => {
+  const kopru = require('../../../../modules/expo-muhafiz-anons/src') as {
+    anonsModuluVarMi: jest.Mock;
+    anonsuKonus: jest.Mock;
+    anonsuSustur: jest.Mock;
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+    kopru.anonsModuluVarMi.mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    kopru.anonsModuluVarMi.mockReturnValue(false);
+  });
+
+  it('Android alarm koprusu kullanilmaz; gecikme sonunda dogrudan konusulur', () => {
+    anonsuOnizle(`  ${METIN}  `, 500);
+
+    expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    expect(kopru.anonsuSustur).toHaveBeenCalledTimes(1);
+    expect(kopru.anonsuKonus).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(500);
+    expect(kopru.anonsuKonus).toHaveBeenCalledWith(METIN);
+  });
+
+  it('bos metinde hicbir sey yapilmaz', () => {
+    anonsuOnizle('   ');
+    jest.runAllTimers();
+    expect(kopru.anonsuKonus).not.toHaveBeenCalled();
+    expect(kopru.anonsuSustur).not.toHaveBeenCalled();
+  });
+});

@@ -31,6 +31,11 @@ module.exports = {
     // patlar (AGENTS.md requireNativeModule tuzağı). Global mock ile ses çalan
     // servisi DOLAYLI yükleyen testler de ayakta kalır.
     "^expo-audio$": "<rootDir>/__mocks__/expo-audio.js",
+    // Muhafiz anons koprusu de native tarafa dokunur (AVSpeechSynthesizer).
+    // Global mock, `IosMuhafizTeslimcisi`'ni DOLAYLI yukleyen suite'leri ayakta
+    // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden
+    // sentez yoluna girmez.
+    "expo-muhafiz-anons/src$": "<rootDir>/__mocks__/expo-muhafiz-anons.js",
     // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı
     // bıraktığı için ham mp3 require'ı SyntaxError verir.
     "\\.(mp3|wav|m4a|ogg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",

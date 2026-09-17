@@ -107,3 +107,49 @@ describe('muhafizUyarilanVakitleriBul — pencere yönü (B12)', () => {
     expect(uyarilan).toContain('ogle');
   });
 });
+
+/**
+ * MUHAFIZ KAPALIYKEN bastirma uygulanmaz ve esik ham okunur. Giris yonlu vaktin
+ * `esikDk`'si "giristen itibaren" demektir; "cikisa kala" diye yorumlanirsa
+ * sayac yanlis anda baslar (or. acil 180 dk, 87 dk'lik aksamda sayaci vakit
+ * girer girmez baslatirdi).
+ */
+describe('sayacBaslangicEsikleriHesapla — giris yonlu vakit', () => {
+  const girisVakti = (yonYedegi?: MuhafizMatrisi['yatsi']['yonYedegi']) => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    matris.yatsi.yon = 'girisindenItibaren';
+    matris.yatsi.seviyeler.forEach((s, i) => {
+      s.esikDk = [15, 45, 90, 180][i]; // giris tablosu (uzun/normal)
+    });
+    if (yonYedegi) matris.yatsi.yonYedegi = yonYedegi;
+    return matris;
+  };
+
+  it('CIKIS yedegi varsa esik ORADAN okunur', () => {
+    const matris = girisVakti({
+      cikisaDogru: [
+        { esikDk: 60, siklik: 'birkez' },
+        { esikDk: 30, siklik: 'birkez' },
+        { esikDk: 15, siklik: 'birkez' },
+        { esikDk: 5, siklik: 'birkez' },
+      ],
+    });
+
+    expect(sayacBaslangicEsikleriHesapla(1, matris).yatsi).toBe(60);
+    expect(sayacBaslangicEsikleriHesapla(4, matris).yatsi).toBe(5);
+  });
+
+  it('yedek yoksa tarihsel CIKIS varsayilanina duser (giris degeri SIZMAZ)', () => {
+    const matris = girisVakti();
+
+    expect(sayacBaslangicEsikleriHesapla(1, matris).yatsi).toBe(45);
+    expect(sayacBaslangicEsikleriHesapla(4, matris).yatsi).toBe(3);
+  });
+
+  it('CIKIS yonlu vakitler etkilenmez (sifir davranis degisikligi)', () => {
+    const matris = girisVakti();
+
+    expect(sayacBaslangicEsikleriHesapla(1, matris).ogle).toBe(45);
+    expect(sayacBaslangicEsikleriHesapla(3, matris).ikindi).toBe(10);
+  });
+});

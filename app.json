@@ -14,9 +14,10 @@
       "backgroundColor": "#4CAF50"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
       "infoPlist": {
+        "UIDesignRequiresCompatibility": true,
         "UIBackgroundModes": [
           "fetch"
         ]
@@ -55,7 +56,13 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
       [
         "expo-notifications",
         {
@@ -68,9 +75,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin dogru hesaplanmasi icin konum bilginize ihtiyac var.",
-          "locationAlwaysPermission": "Hareket halindeyken namaz vakitlerini otomatik guncellemek icin arka plan konum iznine ihtiyac var.",
-          "locationWhenInUsePermission": "Namaz vakitlerinin dogru hesaplanmasi icin konum bilginize ihtiyac var.",
+          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "isAndroidBackgroundLocationEnabled": true,
           "isAndroidForegroundServiceEnabled": true
         }

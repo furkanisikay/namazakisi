@@ -75,7 +75,9 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   AyarlarEkranAdi,
   { component: React.ComponentType; options?: NativeStackNavigationOptions }
 > = {
-  AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false } },
+  // `title` baslik icin degil (header gizli): iOS geri dugmesinin erisilebilirlik
+  // etiketi ve uzun basista acilan gecmis menusu onceki ekranin basligini okur.
+  AyarlarAna: { component: AyarlarSayfasi, options: { headerShown: false, title: 'Ayarlar' } },
   KonumAyarlari: { component: KonumAyarlariSayfasi, options: { title: 'Konum Ayarları' } },
   GorünumAyarlari: { component: GorunumAyarlariSayfasi, options: { title: 'Görünüm' } },
   BildirimAyarlari: { component: BildirimAyarlariSayfasi, options: { title: 'Bildirimler' } },
@@ -108,7 +110,10 @@ const AyarlarStack: React.FC = () => {
         headerTitleStyle: {
           fontWeight: 'bold',
         },
-        headerBackTitle: '',
+        // iOS: bos `headerBackTitle` YOK SAYILIR ve geri dugmesine onceki ekranin
+        // basligi yazilir — Ayarlar kokunun basligi olmadigi icin ROTA ADI
+        // ("AyarlarAna") gorunuyordu. Yalniz ok gosterilir.
+        headerBackButtonDisplayMode: 'minimal',
       }}
     >
       {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<

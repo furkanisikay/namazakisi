@@ -12,10 +12,10 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Switch,
   Animated,
   Easing,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -415,7 +415,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                   Özel günlerde seriyi dondurma imkanı sağlar
                 </Text>
               </View>
-              <Switch
+              <Anahtar
                 value={ozelGunAyarlari.ozelGunModuAktif}
                 onValueChange={handleOzelGunModuToggle}
                 trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}

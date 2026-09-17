@@ -11,7 +11,9 @@
  * KARMASIK gorunurdu (spec 10'daki olcut).
  */
 import * as React from 'react';
-import { View, Text, TouchableOpacity, Switch } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
@@ -23,9 +25,21 @@ import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import {
     cevrilemeyenAnonsVarMi,
     GIRIS_SESLI_GECIKME_NOTU,
+    pencerePlaniOlustur,
     YON_SECENEKLERI,
     type PencereTanimi,
 } from './pencereTanimi';
+import { ZamanSeridi } from './ZamanSeridi';
+import { BildirimModali } from '../common/BildirimModali';
+import {
+    saatMetni,
+    seritCumlesiOlustur,
+    seritDuzeniHesapla,
+    seritErisimEtiketi,
+} from '../../../core/muhafiz/zamanSeridi';
+
+/** "Simdi" imleci icin tazeleme araligi — kart acikken dakikada bir. */
+const SIMDI_TAZELEME_MS = 60_000;
 
 export interface PencereKartiProps {
     tanim: PencereTanimi;
@@ -50,6 +64,12 @@ export interface PencereKartiProps {
      * `yon` alanini da atomik yazar, ayrica yon yazilmaz.
      */
     onYonDegistir?: (yon: PencereYonu) => void;
+    /**
+     * Ayni vaktin DIGER yondeki hali (varsayimsal — diske yazilmaz). "?" bilgi
+     * modalinda iki yonun seridini bugunun saatleriyle yan yana gostermek icin.
+     * Cagiran `vaktinYonunuDegistir` ile uretir; verilmezse modal yalniz metin gosterir.
+     */
+    karsiYonAyari?: VakitMuhafizAyari;
     /** Cerceve: `'kart'` kendi kartini cizer, `'gomulu'` ev sahibinin kartina yerlesir. */
     stil?: 'kart' | 'gomulu';
 }
@@ -64,9 +84,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     onTumPencerelereUygula,
     onAkisiOnizle,
     onYonDegistir,
+    karsiYonAyari,
     stil = 'kart',
 }) => {
     const renkler = useRenkler();
+    const [bilgiAcik, setBilgiAcik] = useState(false);
 
     const tekAdimli = tanim.maksAdim === 1;
     const ozet = vakitOzetiOlustur(ayar);
@@ -79,6 +101,111 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     const girisYonu = tanim.yon === 'girisindenItibaren';
     const cevrilemeyenVar = yonSecilir && cevrilemeyenAnonsVarMi(ayar.seviyeler, tanim.yon);
     const sesliAdimVar = ayar.seviyeler.some((s) => s.kanallar?.sesli === true);
+
+    // ── Zaman seridi ──
+    const { yon, pencereUzunluguDk, pencere } = tanim;
+    const seritCizilir =
+        yonSecilir && !!pencere && Number.isFinite(pencereUzunluguDk) && (pencereUzunluguDk as number) > 0;
+
+    // "Simdi" imleci: kart acikken dakikada bir tazelenir, kapaninca durur.
+    const [simdi, setSimdi] = useState(() => new Date());
+    useEffect(() => {
+        if (!seritCizilir || !govdeGorunur) return;
+        setSimdi(new Date());
+        const zamanlayici = setInterval(() => setSimdi(new Date()), SIMDI_TAZELEME_MS);
+        return () => clearInterval(zamanlayici);
+    }, [seritCizilir, govdeGorunur]);
+
+    const plan = useMemo(
+        () => (seritCizilir ? pencerePlaniOlustur(ayar, { yon, pencereUzunluguDk }) : []),
+        [seritCizilir, ayar, yon, pencereUzunluguDk]
+    );
+
+    const seritCumlesi = useMemo(() => {
+        if (!seritCizilir || !pencere) return '';
+        return seritCumlesiOlustur({
+            duzen: seritDuzeniHesapla(plan, pencereUzunluguDk as number),
+            yon,
+            bitis: pencere.bitis,
+            baslangic: pencere.baslangic,
+            simdi,
+            tumAdimlarKapali: tamamenKapali,
+        });
+    }, [seritCizilir, pencere, plan, pencereUzunluguDk, yon, simdi, tamamenKapali]);
+
+    /** "?" modalindaki iki blok: once secili yon, sonra digeri. */
+    const bilgiBloklari = () => {
+        if (!pencere || !Number.isFinite(pencereUzunluguDk)) return null;
+        const karsiYon: PencereYonu = girisYonu ? 'cikisaDogru' : 'girisindenItibaren';
+        const bloklar: { yon: PencereYonu; ayar?: VakitMuhafizAyari }[] = [
+            { yon, ayar },
+            { yon: karsiYon, ayar: karsiYonAyari },
+        ];
+        return bloklar.map((blok) => {
+            const secenek = YON_SECENEKLERI.find((x) => x.yon === blok.yon);
+            if (!secenek) return null;
+            const secili = blok.yon === yon;
+            const blokPlan = blok.ayar
+                ? pencerePlaniOlustur(blok.ayar, { yon: blok.yon, pencereUzunluguDk })
+                : null;
+            const cumle = blokPlan
+                ? seritCumlesiOlustur({
+                    duzen: seritDuzeniHesapla(blokPlan, pencereUzunluguDk as number),
+                    yon: blok.yon,
+                    bitis: pencere.bitis,
+                    tumAdimlarKapali: tamamenKapali,
+                })
+                : '';
+            return (
+                <View
+                    key={blok.yon}
+                    className="rounded-2xl p-3 mb-2.5"
+                    style={{
+                        backgroundColor: renkler.arkaplan,
+                        borderWidth: secili ? 1.5 : 1,
+                        borderColor: secili ? renkler.birincil : renkler.sinir,
+                    }}
+                >
+                    <View className="flex-row items-center">
+                        <FontAwesome5
+                            name={secenek.ikon}
+                            size={12}
+                            color={secili ? renkler.birincil : renkler.metinIkincil}
+                            style={{ marginRight: 6 }}
+                        />
+                        <Text className="text-sm font-semibold flex-1" style={{ color: renkler.metin }}>
+                            {secenek.etiket}
+                        </Text>
+                        {secili && (
+                            <Text className="text-[11px] font-semibold" style={{ color: renkler.birincil }}>
+                                Seçili
+                            </Text>
+                        )}
+                    </View>
+                    <Text className="text-xs leading-4 mt-1" style={{ color: renkler.metinIkincil }}>
+                        {secenek.uzunAciklama}
+                    </Text>
+                    {blokPlan && (
+                        <>
+                            <ZamanSeridi
+                                plan={blokPlan}
+                                pencereUzunluguDk={pencereUzunluguDk as number}
+                                baslangic={pencere.baslangic}
+                                bitis={pencere.bitis}
+                                yon={blok.yon}
+                                adimBilgileri={tanim.adimBilgileri}
+                                animasyonlu={false}
+                                erisimEtiketi={seritErisimEtiketi(tanim.baslik, pencere.baslangic, pencere.bitis, cumle)}
+                            />
+                            <Text className="text-xs leading-4" style={{ color: renkler.metinIkincil }}>
+                                {cumle}
+                            </Text>
+                        </>
+                    )}
+                </View>
+            );
+        });
+    };
 
     const adimlar = (
         <>
@@ -147,7 +274,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             </TouchableOpacity>
 
                             {onAdimAcKapa && (
-                                <Switch
+                                <Anahtar
                                     value={acik}
                                     onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
                                     trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
@@ -243,12 +370,23 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                 >
                     {yonSecilir && (
                         <>
-                            <Text
-                                className="text-[11px] font-semibold tracking-wider mb-2.5"
-                                style={{ color: renkler.metinIkincil }}
-                            >
-                                NE ZAMAN HATIRLATILSIN
-                            </Text>
+                            <View className="flex-row items-center justify-between mb-1">
+                                <Text
+                                    className="text-[11px] font-semibold tracking-wider"
+                                    style={{ color: renkler.metinIkincil }}
+                                >
+                                    NE ZAMAN HATIRLATILSIN
+                                </Text>
+                                <TouchableOpacity
+                                    className="w-11 h-11 items-center justify-center -mr-3"
+                                    onPress={() => setBilgiAcik(true)}
+                                    activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Bu seçenek ne anlama geliyor?"
+                                >
+                                    <FontAwesome5 name="question-circle" size={15} color={renkler.metinIkincil} />
+                                </TouchableOpacity>
+                            </View>
                             <View className="flex-row gap-2 mb-2">
                                 {YON_SECENEKLERI.map((secenek) => {
                                     const secili = tanim.yon === secenek.yon;
@@ -280,13 +418,49 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                             >
                                                 {secenek.etiket}
                                             </Text>
+                                            <Text
+                                                className="text-[11px] mt-0.5 text-center"
+                                                style={{ color: renkler.metinIkincil }}
+                                            >
+                                                {secenek.kisaAciklama}
+                                            </Text>
                                         </TouchableOpacity>
                                     );
                                 })}
                             </View>
-                            <Text className="text-xs mb-2.5 leading-4" style={{ color: renkler.metinIkincil }}>
-                                {YON_SECENEKLERI.find((s) => s.yon === tanim.yon)?.aciklama}
-                            </Text>
+                            {seritCizilir && pencere ? (
+                                <>
+                                    <ZamanSeridi
+                                        testID="zaman-seridi"
+                                        plan={plan}
+                                        pencereUzunluguDk={pencereUzunluguDk as number}
+                                        baslangic={pencere.baslangic}
+                                        bitis={pencere.bitis}
+                                        yon={yon}
+                                        adimBilgileri={tanim.adimBilgileri}
+                                        simdi={simdi}
+                                        erisimEtiketi={seritErisimEtiketi(
+                                            tanim.baslik,
+                                            pencere.baslangic,
+                                            pencere.bitis,
+                                            seritCumlesi
+                                        )}
+                                    />
+                                    <Text
+                                        testID="zaman-seridi-cumle"
+                                        className="text-xs mb-2.5 leading-4"
+                                        style={{ color: renkler.metinIkincil }}
+                                    >
+                                        {seritCumlesi}
+                                    </Text>
+                                </>
+                            ) : (
+                                // Pencere bilinmiyor (konum yok): yanlis resim cizmektense
+                                // yalniz metin. Konum gelince serit kendiliginden cizilir.
+                                <Text className="text-xs mb-2.5 leading-4" style={{ color: renkler.metinIkincil }}>
+                                    {YON_SECENEKLERI.find((x) => x.yon === tanim.yon)?.aciklama}
+                                </Text>
+                            )}
 
                             {/* Cevrilemeyen metin ipucu — kullanicinin elle yazdigi anons
                                 metnine DOKUNULMAZ, ama yeni yonde ters okunabilir. */}
@@ -296,7 +470,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         {
                                             tip: 'uyari',
                                             metin:
-                                                'Anons metniniz diğer yönün diliyle yazılmış olabilir; adım detayından güncelleyebilirsiniz.',
+                                                'Kendi yazdığınız anons metni bu seçenekte ters okunabilir; adımın detayından güncelleyebilirsiniz.',
                                         },
                                     ]}
                                 />
@@ -355,6 +529,40 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         </TouchableOpacity>
                     )}
                 </View>
+            )}
+
+            {yonSecilir && (
+                <BildirimModali
+                    gorunur={bilgiAcik}
+                    tip="bilgi"
+                    baslik="Hatırlatmalar ne zaman gelsin?"
+                    mesaj={
+                        (pencere
+                            ? `${tanim.baslik} vakti bugün ${saatMetni(pencere.baslangic)}–${saatMetni(pencere.bitis)}. `
+                            : '') +
+                        'İki seçenek de aynı dört adımı kullanır; fark, hatırlatmaların vaktin neresinde geldiğidir.'
+                    }
+                    icerik={
+                        <>
+                            {seritCizilir
+                                ? bilgiBloklari()
+                                : YON_SECENEKLERI.map((secenek) => (
+                                    <Text
+                                        key={secenek.yon}
+                                        className="text-xs leading-4 mb-2"
+                                        style={{ color: renkler.metinIkincil }}
+                                    >
+                                        {secenek.etiket}: {secenek.uzunAciklama}
+                                    </Text>
+                                ))}
+                            <Text className="text-[11px] leading-4" style={{ color: renkler.metinIkincil }}>
+                                İstediğiniz zaman değiştirebilirsiniz; her seçeneğin zamanlaması ayrı saklanır.
+                            </Text>
+                        </>
+                    }
+                    onKapat={() => setBilgiAcik(false)}
+                    kapatEtiketi="Anladım"
+                />
             )}
         </View>
     );
