@@ -40,7 +40,7 @@ export const TurkceTtsUyarisi: React.FC<{ destekli: boolean | null }> = ({ deste
             />
             <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metin }}>
                 Cihazınızda Türkçe konuşma paketi bulunamadı; sesli anons çalışmayabilir.
-                Telefonunuzun ayarlarından Türkçe metin okuma (TTS) paketini kurabilirsiniz.
+                Telefonunuzun ayarlarından Türkçe konuşma sesini indirebilirsiniz.
                 Ayarlarınız yine de kaydedilir.
             </Text>
         </View>

@@ -22,8 +22,11 @@ const klipSentezle = jest.fn().mockResolvedValue(false);
 const kullanilmayanKlipleriSil = jest.fn().mockResolvedValue(0);
 const anonsuKonus = jest.fn().mockResolvedValue(false);
 const anonsuSustur = jest.fn().mockResolvedValue(undefined);
+// Varsayilan: modul YOK → onizleme ve TTS uyarisi Android yolunda kalir.
+const anonsModuluVarMi = jest.fn().mockReturnValue(false);
 
 module.exports = {
+  anonsModuluVarMi,
   trSesTanimlayici,
   klipVarMi,
   klipSentezle,

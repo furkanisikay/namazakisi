@@ -76,7 +76,9 @@ export interface IosTeslim {
 export function iosSesiCoz(bildirimSesi: string | undefined): string {
     if (!bildirimSesi) return IOS_BILDIRIM_SESI;
     if (bildirimSesi.startsWith('content://')) return IOS_BILDIRIM_SESI;
-    // Faz 2'de on-kayitli anons klipleri buraya baglanir.
+    // Sesli adimin anons klibi BURADA secilmez: klip adi cozulmus metne ve cihazdaki
+    // Turkce sese baglidir, dosyanin var olup olmadigi da diske sorulmalidir →
+    // `IosMuhafizTeslimcisi.anonsSesiniCoz` bu sonucun USTUNE yazar.
     return IOS_BILDIRIM_SESI;
 }
 

@@ -25,9 +25,14 @@ import AVFoundation
  *    ornegi ARC tarafindan erken birakilirsa callback HIC gelmez ve promise
  *    sonsuza kadar asili kalir. Ornek alanda tutulur.
  *
- * 3. TEK SERI KUYRUK. Ekran debounce'u, acilis zinciri ve arka plan gorevi ayni
- *    anda sentez isteyebilir; iki yazici ayni dosyaya yazarsa BOZUK dosya olusur
- *    ve iOS onu calmayip SISTEM varsayilan sesine duser (sessiz sapma).
+ * 3. TEK SERI KUYRUK — VE KUYRUK SENTEZIN BITISINI BEKLER. Ekran debounce'u,
+ *    acilis zinciri ve arka plan gorevi ayni anda sentez isteyebilir; iki yazici
+ *    ayni dosyaya yazarsa BOZUK dosya olusur ve iOS onu calmayip SISTEM varsayilan
+ *    sesine duser (sessiz sapma). `write` ANINDA doner ve sonucu callback'le
+ *    verir; kuyruk beklemeseydi ikinci is birincinin `sentezleyici` alanini
+ *    ezer, birinci sentezleyici ARC ile birakilir, callback'i HIC gelmez ve JS
+ *    tarafindaki planlama SONSUZA KADAR asili kalirdi (kural 2'nin ikizi). Bu
+ *    yuzden kuyruk bir semaforla bitisi bekler; ust sinir asilirsa `false`.
  *
  * 4. ATOMIK YAZIM. Once `.tmp` dosyaya yazilir, bitince `moveItem` ile yerine
  *    alinir. Yarim dosya asla `varMi = true` dondurmemeli.
@@ -51,6 +56,10 @@ public class ExpoMuhafizAnonsModule: Module {
 
     /// Kural 3: butun sentez isleri tek sirada.
     private let kuyruk = DispatchQueue(label: "muhafiz.anons.sentez")
+
+    /// Tek klibin sentez ust siniri. 300 karakterlik metin ~20-25 sn konusmadir;
+    /// dosyaya yazim gercek zamandan cok hizlidir, 20 sn cok comert bir tavandir.
+    private static let sentezZamanAsimi: TimeInterval = 20
 
     public func definition() -> ModuleDefinition {
         Name("ExpoMuhafizAnons")
@@ -80,8 +89,27 @@ public class ExpoMuhafizAnonsModule: Module {
          */
         AsyncFunction("sentezle") { (metin: String, dosyaAdi: String, promise: Promise) in
             self.kuyruk.async {
-                self.sentezleVeYaz(metin: metin, dosyaAdi: dosyaAdi) { basarili in
+                let bitti = DispatchSemaphore(value: 0)
+                let kilit = NSLock()
+                var cozuldu = false
+                // Promise TAM BIR KEZ cozulur: callback ya da zaman asimi.
+                let coz: (Bool) -> Void = { basarili in
+                    kilit.lock()
+                    defer { kilit.unlock() }
+                    if cozuldu { return }
+                    cozuldu = true
                     promise.resolve(basarili)
+                    bitti.signal()
+                }
+
+                self.sentezleVeYaz(metin: metin, dosyaAdi: dosyaAdi, bitince: coz)
+
+                // Callback'ler `AVSpeechSynthesizer`in kendi thread'inden gelir, bu
+                // kuyruktan DEGIL → burada beklemek kilitlenme yaratmaz.
+                if bitti.wait(timeout: .now() + Self.sentezZamanAsimi) == .timedOut {
+                    self.sentezleyici?.stopSpeaking(at: .immediate)
+                    self.sentezleyici = nil
+                    coz(false)
                 }
             }
         }
@@ -184,7 +212,17 @@ public class ExpoMuhafizAnonsModule: Module {
                         AVLinearPCMIsFloatKey: false,
                         AVLinearPCMIsBigEndianKey: false
                     ]
-                    dosya = try AVAudioFile(forWriting: gecici, settings: ayarlar)
+                    // ISLEME bicimi buffer'inkiyle AYNI olmali: `write(from:)`
+                    // bicim uyusmazliginda hata verir. Varsayilan kurucu Float32
+                    // isleme bicimi kurar; bazi Turkce sesler Int16 buffer uretir.
+                    // Dosyanin DISK bicimi yine `ayarlar` (Int16 LinearPCM) olur,
+                    // donusumu AVAudioFile yapar.
+                    dosya = try AVAudioFile(
+                        forWriting: gecici,
+                        settings: ayarlar,
+                        commonFormat: pcm.format.commonFormat,
+                        interleaved: pcm.format.isInterleaved
+                    )
                 }
                 try dosya?.write(from: pcm)
                 toplamFrame += AVAudioFramePosition(pcm.frameLength)

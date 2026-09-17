@@ -88,11 +88,15 @@ describe('platformYetenekleri', () => {
         });
     });
 
-    test('iOS Faz 1/2: ses secici, serbest anons metni, titresim secimi ve sessizligi delme KAPALI', () => {
+    /**
+     * Faz 2: anons metni iOS'ta da SERBEST — metin planlamada cihazda ses
+     * dosyasina cevrilir (calisma aninda TTS gerekmez).
+     */
+    test('iOS Faz 2: anons metni serbest; ses secici, titresim secimi ve sessizligi delme KAPALI', () => {
         expect(iosYetenekleri(false)).toEqual({
             platform: 'ios',
             sesSecici: false,
-            serbestAnonsMetni: false,
+            serbestAnonsMetni: true,
             titresimSecimi: false,
             sessizligiDelebilir: false,
         });
@@ -103,7 +107,7 @@ describe('platformYetenekleri', () => {
         expect(yetenek.sessizligiDelebilir).toBe(true);
         // Digerleri AlarmKit'ten bagimsizdir — acilmamali.
         expect(yetenek.sesSecici).toBe(false);
-        expect(yetenek.serbestAnonsMetni).toBe(false);
+        expect(yetenek.serbestAnonsMetni).toBe(true);
         expect(yetenek.titresimSecimi).toBe(false);
     });
 

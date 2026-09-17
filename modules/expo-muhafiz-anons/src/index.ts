@@ -37,6 +37,22 @@ function kullanilabilirMi(): boolean {
 }
 
 /**
+ * Cihaz-ici anons modulu bu build'de VAR mi? (senkron)
+ *
+ * YETENEK SORUSUDUR, platform sorusu degil: `trSesTanimlayici()` hem "Turkce ses
+ * yok" hem "modul hic yok" durumunda `null` doner. Ikisini ayirt etmeden
+ * "Turkce ses bulunamadi" uyarisi gostermek, modulun olmadigi bir build'de
+ * (eski iOS surumu, Expo Go) YANLIS alarm olurdu.
+ *
+ * Onizleme de bunu kullanir: Android'de modul yoktur → Android TTS yolu;
+ * iOS'ta vardir → `anonsuKonus`. Jest'te mock `false` doner → Android yolu
+ * (varsayilan `Platform.OS` 'ios' olsa bile testler sessizce iOS'a kaymaz).
+ */
+export function anonsModuluVarMi(): boolean {
+    return kullanilabilirMi();
+}
+
+/**
  * Cihazdaki Turkce sesin tanimlayicisi; yoksa `null`.
  *
  * IKI YERDE KULLANILIR:

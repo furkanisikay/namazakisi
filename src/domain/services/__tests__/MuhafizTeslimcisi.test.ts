@@ -10,12 +10,27 @@
  *      seviyeye gore secilir, 64 bekleyen siniri uygulanir ve yan kanal
  *      (TTS alarmi) HIC cagrilmaz.
  */
-const mockPlatformDurumu = { OS: 'ios' };
+const mockPlatformDurumu = { OS: 'ios', uygulamaDurumu: 'active' };
 jest.mock('react-native', () => ({
     Platform: {
         get OS() {
             return mockPlatformDurumu.OS;
         },
+    },
+    AppState: {
+        get currentState() {
+            return mockPlatformDurumu.uygulamaDurumu;
+        },
+    },
+}));
+
+const mockDepolama: Record<string, unknown> = {};
+jest.mock('../../../data/local/Depolama', () => ({
+    Depolama: {
+        oku: jest.fn(async (anahtar: string) => mockDepolama[anahtar] ?? null),
+        yaz: jest.fn(async (anahtar: string, deger: unknown) => {
+            mockDepolama[anahtar] = deger;
+        }),
     },
 }));
 
@@ -53,6 +68,19 @@ import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 import type { UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import { IOS_BILDIRIM_SESI } from '../../../core/muhafiz/ios/teslimPlani';
+import * as anonsKoprusu from '../../../../modules/expo-muhafiz-anons/src';
+import { ANONS_KLIP_ONEKI, anonsKlipAdi } from '../../../core/muhafiz/ios/anonsKlibi';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { gunAnahtari } from '../../../core/muhafiz/ios/klipKullanimi';
+
+const kopru = anonsKoprusu as unknown as {
+    trSesTanimlayici: jest.Mock;
+    klipVarMi: jest.Mock;
+    klipSentezle: jest.Mock;
+    kullanilmayanKlipleriSil: jest.Mock;
+};
+const TR_SES = 'com.apple.voice.compact.tr-TR.Yelda';
+const BOS_MATRIS = {} as never;
 
 function teslimKur(kismi: Partial<UyariPlani> = {}, zamanMs?: number): UyariTeslimi {
     const uyari = {
@@ -222,5 +250,178 @@ describe('IosMuhafizTeslimcisi', () => {
             await yeni.uyariPlanla(teslimKur({ kalanDk: i + 1 }));
         }
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(80);
+    });
+});
+
+
+/**
+ * FAZ 2 — iOS SESLI ANONS: metin planlamada cihazda ses dosyasina cevrilir ve
+ * bildirimin SESI olur. Olculen sozlesmeler:
+ *   - klip varsa bildirim onu calar; yoksa ON PLANDA sentezlenir, ARKA PLANDA
+ *     paket sesine dusulur (arka plan gorevinin sure butcesi)
+ *   - metin `olcuDk` ile cozulur (kalanDk degil)
+ *   - Turkce ses yoksa kopruye hic gidilmez
+ *   - ayni klip icin diske bir kez gidilir
+ *   - tur sonu GC yasa dayalidir ve yalniz kendi onekimize dokunur
+ */
+describe('IosMuhafizTeslimcisi — anons klibi (Faz 2)', () => {
+    const sesliTeslim = (kismi: Partial<UyariPlani> = {}) =>
+        teslimKur({
+            seviye: 3,
+            kanallar: { bildirim: true, sesli: true },
+            sesliAnons: true,
+            anonsMetni: '{vakit} vakti çıkıyor, son {süre} dakika.',
+            ...kismi,
+        });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockPlatformDurumu.uygulamaDurumu = 'active';
+        for (const k of Object.keys(mockDepolama)) delete mockDepolama[k];
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        kopru.trSesTanimlayici.mockResolvedValue(TR_SES);
+        kopru.klipVarMi.mockResolvedValue(false);
+        kopru.klipSentezle.mockResolvedValue(true);
+        kopru.kullanilmayanKlipleriSil.mockResolvedValue(0);
+    });
+
+    const planlananSes = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0][0].content.sound;
+
+    test('klip VARSA bildirim klibi calar, sentez yapilmaz', async () => {
+        kopru.klipVarMi.mockResolvedValue(true);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        const beklenen = anonsKlipAdi({
+            cozulmusMetin: 'Akşam vakti çıkıyor, son 10 dakika.',
+            sesTanimlayici: TR_SES,
+        });
+        expect(planlananSes()).toBe(beklenen);
+        expect(kopru.klipSentezle).not.toHaveBeenCalled();
+    });
+
+    test('klip YOK + ON PLAN → sentezlenir ve kullanilir', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        expect(kopru.klipSentezle).toHaveBeenCalledWith(
+            'Akşam vakti çıkıyor, son 10 dakika.',
+            expect.stringMatching(/^muhafiz_anons_[0-9a-f]+\.caf$/)
+        );
+        expect(planlananSes()).toBe(kopru.klipSentezle.mock.calls[0][1]);
+    });
+
+    /** Arka plan gorevinin sure butcesi: sentez YOK, var olan klip ya da paket sesi. */
+    test('klip YOK + ARKA PLAN → sentez YAPILMAZ, paket sesine duser', async () => {
+        mockPlatformDurumu.uygulamaDurumu = 'background';
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        expect(kopru.klipSentezle).not.toHaveBeenCalled();
+        expect(planlananSes()).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('sentez BASARISIZ → paket sesi (bildirim yine gelir)', async () => {
+        kopru.klipSentezle.mockResolvedValue(false);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        expect(planlananSes()).toBe(IOS_BILDIRIM_SESI);
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+    });
+
+    test('Turkce ses YOKSA kopruye hic gidilmez, paket sesi', async () => {
+        kopru.trSesTanimlayici.mockResolvedValue(null);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        expect(kopru.klipVarMi).not.toHaveBeenCalled();
+        expect(planlananSes()).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('sesli OLMAYAN adimda klip aranmaz', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur());
+
+        expect(kopru.klipVarMi).not.toHaveBeenCalled();
+        expect(planlananSes()).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    /**
+     * Asimetrik fikstur: giris yonunde kalanDk=500, olcuDk=12. Yanlis alan
+     * verilseydi anons "…500 dakika" okurdu (AGENTS.md: olcuDk ≠ kalanDk).
+     */
+    test('metin OLCU dakikasiyla cozulur, kalan dakikayla degil', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla({
+            ...sesliTeslim({ kalanDk: 500, olcuDk: 12, anonsMetni: '{süre} dakika {yön}.' }),
+            yon: 'girisindenItibaren',
+        });
+
+        expect(kopru.klipSentezle.mock.calls[0][0]).toBe('12 dakika geçti.');
+    });
+
+    test('ayni metin icin diske ve sentezlere BIR KEZ gidilir', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+        await t.uyariPlanla({ ...sesliTeslim(), id: 'baska_id' });
+
+        expect(kopru.klipVarMi).toHaveBeenCalledTimes(1);
+        expect(kopru.klipSentezle).toHaveBeenCalledTimes(1);
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(2);
+    });
+
+    test('slot DOLUYSA sentez yapilmaz (planlanmayacak uyari icin is yok)', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+            Array.from({ length: 60 }, (_, i) => ({ identifier: `vakit_${i}` }))
+        );
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+
+        expect(kopru.klipSentezle).not.toHaveBeenCalled();
+    });
+
+    test('tamamla: kullanilan klipler kayda islenir, GC yalniz kendi onekimizle calisir', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(sesliTeslim());
+        await t.tamamla();
+
+        const ad = kopru.klipSentezle.mock.calls[0][1];
+        const kayit = mockDepolama[DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI] as Record<string, string>;
+        expect(kayit).toEqual({ [ad]: gunAnahtari(new Date()) });
+        expect(kopru.kullanilmayanKlipleriSil).toHaveBeenCalledWith([ad], ANONS_KLIP_ONEKI);
+    });
+
+    /**
+     * Kilinmis vaktin klipleri o turda planlanmaz; "bu turda kullanilmayani sil"
+     * olsaydi silinir ve ertesi gun arka planda yeniden uretilemezdi.
+     */
+    test('tamamla: bu turda kullanilmayan ama YAKIN zamanda kullanilan klip KORUNUR', async () => {
+        mockDepolama[DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI] = {
+            'muhafiz_anons_dun.caf': gunAnahtari(new Date(Date.now() - 24 * 60 * 60 * 1000)),
+            'muhafiz_anons_eski.caf': '2000-01-01',
+        };
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla();
+        await t.tamamla();
+
+        expect(kopru.kullanilmayanKlipleriSil).toHaveBeenCalledWith(['muhafiz_anons_dun.caf'], ANONS_KLIP_ONEKI);
+    });
+
+    test('muhafiz KAPALIYKEN (matrissiz hazirla) ses sorgulanmaz', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla();
+        expect(kopru.trSesTanimlayici).not.toHaveBeenCalled();
     });
 });
