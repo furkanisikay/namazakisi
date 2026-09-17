@@ -11,9 +11,9 @@ import {
     ScrollView,
     ActivityIndicator,
     Animated,
-    Switch,
     FlatList,
 } from 'react-native';
+import { Anahtar } from '../../components/common/Anahtar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { styles } from './stiller';
 import { BildirimAyarlari, MuhafizYogunluk, KonumDurumu } from './tipler';
@@ -442,7 +442,7 @@ export const VakitBildirimAdimi: React.FC<{
               <Text style={styles.vakitAdi}>{v.ad}</Text>
               <Text style={styles.vakitAciklama}>{v.saat}</Text>
             </View>
-            <Switch
+            <Anahtar
               value={bildirimler[v.anahtar]}
               onValueChange={() => onToggle(v.anahtar)}
               trackColor={{ false: '#e5e7eb', true: v.renk + '70' }}
@@ -566,7 +566,7 @@ export const MuhafizTanitimAdimi: React.FC<{
             </Text>
           </View>
         </View>
-        <Switch
+        <Anahtar
           value={muhafizAktif}
           onValueChange={setMuhafizAktif}
           trackColor={{ false: '#e5e7eb', true: '#10b98160' }}

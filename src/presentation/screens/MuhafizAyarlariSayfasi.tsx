@@ -12,7 +12,8 @@
 
 import * as React from 'react';
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
@@ -520,7 +521,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             </Text>
                         </View>
                     </View>
-                    <Switch
+                    <Anahtar
                         value={muhafizAyarlari.aktif}
                         onValueChange={(val) => {
                             dispatch(muhafizAyarlariniGuncelle({ aktif: val }));

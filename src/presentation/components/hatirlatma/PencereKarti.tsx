@@ -12,7 +12,8 @@
  */
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { View, Text, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import type { VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
@@ -273,7 +274,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             </TouchableOpacity>
 
                             {onAdimAcKapa && (
-                                <Switch
+                                <Anahtar
                                     value={acik}
                                     onValueChange={(deger) => onAdimAcKapa(indeks, deger)}
                                     trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}

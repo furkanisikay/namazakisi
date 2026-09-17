@@ -7,8 +7,8 @@ import {
     TouchableWithoutFeedback,
     Modal,
     StyleSheet,
-    Switch,
 } from 'react-native';
+import { Anahtar } from '../common/Anahtar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
@@ -182,7 +182,7 @@ export const TaniOnizleme: React.FC<TaniOnizlemeProps> = ({
                             <Text className="text-sm flex-1 mr-3" style={{ color: renkler.metin }}>
                                 Yaklaşık konumu ekle
                             </Text>
-                            <Switch
+                            <Anahtar
                                 value={konumDahil}
                                 onValueChange={setKonumDahil}
                                 trackColor={{ true: renkler.birincil, false: renkler.sinir }}

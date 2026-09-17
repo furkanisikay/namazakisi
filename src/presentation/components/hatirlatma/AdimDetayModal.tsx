@@ -21,8 +21,8 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
-    Switch,
 } from 'react-native';
+import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
@@ -356,7 +356,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 {TITRESIM_ACIKLAMASI}
                                             </Text>
                                         </View>
-                                        <Switch
+                                        <Anahtar
                                             value={titresimliMi}
                                             onValueChange={titresimiAyarla}
                                             trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
