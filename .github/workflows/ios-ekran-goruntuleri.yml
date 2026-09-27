@@ -1,0 +1,173 @@
+name: 📸 iOS Ekran Görüntüleri
+
+# App Store icin gerekli iPhone 6.9" ekran goruntulerini FIZIKSEL CIHAZ OLMADAN uretir:
+# macOS runner'inda iOS Simulator var ve iPhone 16 Pro Max simulatoru tam olarak
+# App Store'un istedigi 1320x2868 cozunurlukte kare verir (Apple simulator
+# goruntulerini kabul eder; fastlane snapshot yillardir bunu yapar).
+#
+# Kareler once ARTIFACT olarak yuklenir (gozden gecirilebilsin); App Store Connect'e
+# gonderim yalnizca `asc_yukle: true` ile yapilir.
+
+on:
+  workflow_dispatch:
+    inputs:
+      cihaz:
+        description: 'Simülatör cihazı (boş = otomatik en yeni Pro Max)'
+        required: false
+        default: ''
+      asc_yukle:
+        description: "Kareleri App Store Connect kaydına yükle"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  kareler:
+    name: 📸 Simülatörde kare çek
+    runs-on: macos-15
+    timeout-minutes: 90
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri
+        run: |
+          xcodebuild -version
+          xcrun simctl list runtimes | grep -i ios || true
+
+      - name: 📱 Simülatörü başlat
+        id: sim
+        run: |
+          set -eo pipefail
+          ISTENEN="${{ inputs.cihaz }}"
+          if [ -z "$ISTENEN" ]; then
+            ISTENEN=$(xcrun simctl list devicetypes | grep -oE 'iPhone 1[6-9] Pro Max' | tail -1)
+          fi
+          [ -z "$ISTENEN" ] && ISTENEN="iPhone 16 Pro Max"
+          echo "İstenen cihaz: $ISTENEN"
+
+          UDID=$(xcrun simctl list devices available -j | node -e '
+            let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{
+              const j=JSON.parse(d), ad=process.argv[1];
+              for (const k of Object.keys(j.devices).sort().reverse())
+                for (const c of (j.devices[k]||[])) if (c.name===ad) { console.log(c.udid); process.exit(0); }
+            });' "$ISTENEN")
+
+          if [ -z "$UDID" ]; then
+            RT=$(xcrun simctl list runtimes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const r=JSON.parse(d).runtimes.filter(x=>x.platform==="iOS"&&x.isAvailable);console.log(r[r.length-1].identifier)})')
+            DT=$(xcrun simctl list devicetypes -j | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const t=JSON.parse(d).devicetypes.find(x=>x.name===process.argv[1]);console.log(t?t.identifier:"")});' "$ISTENEN")
+            [ -z "$DT" ] && { echo "Cihaz tipi bulunamadı: $ISTENEN"; xcrun simctl list devicetypes | grep iPhone; exit 1; }
+            UDID=$(xcrun simctl create "magaza-kare" "$DT" "$RT")
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          echo "cihaz=$ISTENEN" >> "$GITHUB_OUTPUT"
+
+          # Turkce arayuz: uygulama metinleri ve sistem diyaloglari Turkce cikar.
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl spawn "$UDID" defaults write -g AppleLanguages -array tr-TR
+          xcrun simctl spawn "$UDID" defaults write -g AppleLocale -string tr_TR
+          xcrun simctl shutdown "$UDID"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          # Magaza karelerinde temiz durum cubugu (Apple'in kendi kullandigi 09:41).
+          xcrun simctl status_bar "$UDID" override --time "09:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl list devices | grep "$UDID"
+
+      - name: 🏗️ Expo prebuild (iOS)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+
+      - name: 🧩 CocoaPods
+        working-directory: ios
+        run: pod install --repo-update
+
+      - name: 🔨 Simülatör için Release derle
+        id: derleme
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          WS=$(ls -d *.xcworkspace | head -1)
+          SCHEME=$(xcodebuild -workspace "$WS" -list -json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).workspace.schemes[0]))')
+          echo "workspace=$WS scheme=$SCHEME"
+          # Release: JS paketi uygulamanin icine gomulur (Metro sunucusu gerekmez).
+          # CODE_SIGNING_ALLOWED=NO: simulator build'i imza istemez.
+          xcodebuild \
+            -workspace "$WS" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -derivedDataPath build \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+          find build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' -print
+
+      - name: 🧰 idb kur (erişilebilirlik tabanlı dokunma)
+        run: |
+          set -eo pipefail
+          brew tap facebook/fb
+          brew install idb-companion
+          pipx install fb-idb || python3 -m pip install --break-system-packages fb-idb
+          idb --help >/dev/null 2>&1 && echo "idb hazır"
+
+      - name: 🚀 Uygulamayı kur ve depolamayı tohumla
+        id: kurulum
+        run: |
+          set -eo pipefail
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP=$(find ios/build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          [ -z "$APP" ] && { echo ".app bulunamadı"; exit 1; }
+          echo "app: $APP"
+          xcrun simctl install "$UDID" "$APP"
+          BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
+          echo "bundle: $BUNDLE"
+          echo "bundle=$BUNDLE" >> "$GITHUB_OUTPUT"
+          # Veri kabi ancak uygulama bir kez calistiktan sonra olusur.
+          xcrun simctl launch "$UDID" "$BUNDLE"
+          sleep 10
+          xcrun simctl terminate "$UDID" "$BUNDLE" || true
+          KAP=$(xcrun simctl get_app_container "$UDID" "$BUNDLE" data)
+          node scripts/simulator-tohumla.js "$KAP"
+          xcrun simctl launch "$UDID" "$BUNDLE"
+
+      - name: 📸 Kareleri çek
+        run: |
+          set -eo pipefail
+          idb connect "${{ steps.sim.outputs.udid }}" || true
+          mkdir -p kareler
+          node scripts/simulator-ekranlari-cek.js kareler --udid "${{ steps.sim.outputs.udid }}"
+          for f in kareler/*.png; do
+            echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"
+          done
+
+      - name: ⬆️ Kareleri ve erişilebilirlik ağaçlarını yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ekran-goruntuleri
+          path: kareler/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: 🏪 App Store Connect'e yükle
+        if: ${{ inputs.asc_yukle }}
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
+          ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
+        run: node scripts/app-store-ekran-goruntuleri.js kareler
