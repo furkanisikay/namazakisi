@@ -156,6 +156,10 @@ jobs:
           echo "bundle: $BUNDLE"
           echo "bundle=$BUNDLE" >> "$GITHUB_OUTPUT"
           # Veri kabi ancak uygulama bir kez calistiktan sonra olusur.
+          # Kible ekrani konum izni istiyor; bastan vermek diyalogu tumuyle onler.
+          xcrun simctl privacy "$UDID" grant location "$BUNDLE" || true
+          xcrun simctl privacy "$UDID" grant location-always "$BUNDLE" || true
+          xcrun simctl location "$UDID" set 41.0082,28.9784 || true
           xcrun simctl launch "$UDID" "$BUNDLE"
           sleep 10
           xcrun simctl terminate "$UDID" "$BUNDLE" || true
@@ -170,7 +174,7 @@ jobs:
           set -eo pipefail
           idb connect "${{ steps.sim.outputs.udid }}" || true
           mkdir -p kareler
-          node scripts/simulator-ekranlari-cek.js kareler --udid "${{ steps.sim.outputs.udid }}"
+          node scripts/simulator-ekranlari-cek.js kareler --udid "${{ steps.sim.outputs.udid }}" --bundle "${{ steps.kurulum.outputs.bundle }}"
           for f in kareler/*.png; do
             echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"
           done

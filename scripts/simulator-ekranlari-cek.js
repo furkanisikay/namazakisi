@@ -29,8 +29,12 @@ if (!cikis) {
     console.error('Cikis klasorunu verin.');
     process.exit(1);
 }
-const udidArg = process.argv.indexOf('--udid');
-const UDID = udidArg >= 0 ? process.argv[udidArg + 1] : null;
+const arg = (ad) => {
+    const i = process.argv.indexOf(`--${ad}`);
+    return i >= 0 ? process.argv[i + 1] : null;
+};
+const UDID = arg('udid');
+const BUNDLE = arg('bundle');
 
 const agacDizin = path.join(cikis, 'agac');
 fs.mkdirSync(agacDizin, { recursive: true });
@@ -148,6 +152,25 @@ async function dokun(ogeler, kalip, aciklama, secenek = {}) {
     return true;
 }
 
+/**
+ * Uygulamayi yeniden baslatir.
+ * Acik bir bottom-sheet'i kapatmaya calismaktan daha guvenilir: sheet ekrani
+ * kapladigi icin sekme cubugu erisilemez hale geliyor ve "kapat" dugmesinin
+ * etiketi ekrana gore degisiyor.
+ */
+async function yenidenBaslat() {
+    if (!BUNDLE) return false;
+    try {
+        simctl('terminate', UDID || 'booted', BUNDLE);
+    } catch {
+        /* zaten kapali olabilir */
+    }
+    await bekle(1500);
+    simctl('launch', UDID || 'booted', BUNDLE);
+    await bekle(6000);
+    return true;
+}
+
 function cek(ad) {
     const hedef = path.join(cikis, `${ad}.png`);
     simctl('io', UDID || 'booted', 'screenshot', hedef);
@@ -160,7 +183,10 @@ function cek(ad) {
     // Acilista UST USTE katman cikabilir: bildirim izni uyarisi ve rozet/duyuru
     // modali. Tek dongude kapatilir — izin uyarisini yalnizca "modal" kalibiyla
     // aramak onu ekranda birakir ve sonraki TUM adimlari bloklar (yasandi).
-    const KAPATILACAK = /^(İzin Ver|Allow|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+    // Konum izni dugmeleri de burada: Kible ekrani acilirken sistem konum
+    // uyarisi cikariyor ve kapatilmazsa sayfayi bloklar (yasandi).
+    const KAPATILACAK =
+        /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
     for (let tur = 0; tur < 5; tur++) {
         const katman = await agac(`acilis-${tur}`);
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
@@ -168,19 +194,6 @@ function cek(ad) {
 
     await agac('ana-ekran');
     cek('01-ana-ekran');
-
-    // --- Kible ---
-    let a = await agac('kible-oncesi');
-    if (await dokun(a, /kıble yönünü bul/i, 'kible dugmesi', { bekle: 3000 })) {
-        await agac('kible');
-        cek('05-kible');
-        a = await agac('kible-geri');
-        if (!(await dokun(a, /^(geri|back|kapat|close|Namaz Akışı)$/i, 'kibleden geri', { bekle: 2500 }))) {
-            // Geri dugmesi bulunamazsa kenar kaydirma jesti ile don.
-            idb('ui', 'swipe', '5', '500', '400', '500');
-            await bekle(2500);
-        }
-    }
 
     // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
     a = await agac('seri-oncesi');
@@ -214,6 +227,26 @@ function cek(ad) {
                 cek('03-adim-detay');
             }
         }
+    }
+
+    // --- Kible EN SONDA ---
+    // Kible tam ekran bir yigin sayfasi; oradan geri donmek yerine uygulamayi
+    // yeniden baslatmak daha guvenilir. Bu yuzden en sona alindi: bir aksaklik
+    // olursa yalnizca bu kare kaybedilir, muhafiz kareleri degil.
+    await yenidenBaslat();
+    for (let tur = 0; tur < 3; tur++) {
+        const katman = await agac(`kible-katman-${tur}`);
+        if (!(await dokun(katman, KAPATILACAK, `kible oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
+    }
+    a = await agac('kible-oncesi');
+    if (await dokun(a, /kıble yönünü bul/i, 'kible dugmesi', { bekle: 3500 })) {
+        // Konum izni is akista verilmis olmali; yine de guvenlik agi.
+        for (let tur = 0; tur < 2; tur++) {
+            const katman = await agac(`kible-izin-${tur}`);
+            if (!(await dokun(katman, KAPATILACAK, `kible izin ${tur + 1}`, { bekle: 2500 }))) break;
+        }
+        await agac('kible');
+        cek('05-kible');
     }
 
     const kareler = fs.readdirSync(cikis).filter((f) => /\.png$/i.test(f)).sort();
