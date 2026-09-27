@@ -3,8 +3,13 @@
  * iOS Simulator'deki uygulama kabina AsyncStorage verisi tohumlar.
  *
  * Kullanim:
- *   node scripts/simulator-tohumla.js "<uygulama veri kabi yolu>"
+ *   node scripts/simulator-tohumla.js "<uygulama veri kabi yolu>" <bundleId>
  *   (yol: xcrun simctl get_app_container booted <bundleId> data)
+ *
+ * DIKKAT — depolama yolu `Documents/` DEGILDIR. @react-native-async-storage iOS'ta
+ * `Library/Application Support/<bundleId>/RCTAsyncLocalStorage_V1/manifest.json`
+ * kullanir (RNCAsyncStorage.mm > RCTCreateStorageDirectoryPath). Documents'a yazmak
+ * SESSIZCE etkisiz kalir: uygulama kurulum sihirbazinda acilir ve kareler bos cikar.
  *
  * Neden: magaza ekran goruntuleri icin uygulamanin kurulum sihirbazini gecmis,
  * konumu ayarlanmis ve gecmisi dolu olmasi gerekir. Sihirbazi dokunarak gecmek
@@ -16,8 +21,9 @@ const fs = require('fs');
 const path = require('path');
 
 const kap = process.argv[2];
-if (!kap) {
-    console.error('Uygulama veri kabi yolunu verin.');
+const bundleId = process.argv[3];
+if (!kap || !bundleId) {
+    console.error('Kullanim: simulator-tohumla.js <veri kabi yolu> <bundleId>');
     process.exit(1);
 }
 
@@ -58,7 +64,17 @@ delete depo['namaz_gun_'];
 depo[`namaz_gun_${gun(0)}`] = JSON.stringify(BUGUN);
 for (let i = 1; i <= 25; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_GUN);
 
-const dizin = path.join(kap, 'Documents', 'RCTAsyncLocalStorage_V1');
+// Once var olan depolama dizinini ara (surum farklari icin); yoksa kanonik yolu kur.
+function depoDizininiBul() {
+    const adaylar = [
+        path.join(kap, 'Library', 'Application Support', bundleId, 'RCTAsyncLocalStorage_V1'),
+        path.join(kap, 'Documents', 'RCTAsyncLocalStorage_V1'),
+    ];
+    for (const d of adaylar) if (fs.existsSync(d)) return d;
+    return adaylar[0];
+}
+
+const dizin = depoDizininiBul();
 fs.mkdirSync(dizin, { recursive: true });
 fs.writeFileSync(path.join(dizin, 'manifest.json'), JSON.stringify(depo), 'utf8');
 

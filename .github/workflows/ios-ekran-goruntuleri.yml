@@ -160,7 +160,9 @@ jobs:
           sleep 10
           xcrun simctl terminate "$UDID" "$BUNDLE" || true
           KAP=$(xcrun simctl get_app_container "$UDID" "$BUNDLE" data)
-          node scripts/simulator-tohumla.js "$KAP"
+          node scripts/simulator-tohumla.js "$KAP" "$BUNDLE"
+          # Tohumlama SESSIZCE etkisiz kalabilir (yanlis yol) — dosyayi dogrula.
+          find "$KAP" -name manifest.json -print -exec sh -c 'echo "  anahtar sayisi: $(node -e "console.log(Object.keys(require(process.argv[1])).length)" "$1")"' _ {} \;
           xcrun simctl launch "$UDID" "$BUNDLE"
 
       - name: 📸 Kareleri çek
