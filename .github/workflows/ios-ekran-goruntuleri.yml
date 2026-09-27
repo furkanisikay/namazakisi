@@ -27,7 +27,11 @@ permissions:
 jobs:
   kareler:
     name: 📸 Simülatörde kare çek
-    runs-on: macos-15
+    # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
+    # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
+    # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
+    # derleniyor, yani kareler kullanicinin gercekte gordugu gorunumu yansitir.
+    runs-on: macos-26
     timeout-minutes: 90
 
     steps:
