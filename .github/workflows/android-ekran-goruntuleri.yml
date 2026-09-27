@@ -1,0 +1,133 @@
+name: 📸 Android Ekran Görüntüleri
+
+# Google Play icin telefon karelerini emulatorde uretir.
+# iOS hattinin (ios-ekran-goruntuleri.yml) ikizi; ayni tohum verisini kullanir.
+#
+# Play telefon karesi en-boy orani en fazla 2:1 olabilir -> 1080x1920 (16:9)
+# profili secilir; yayindaki mevcut kareler de bu boyutta.
+
+on:
+  workflow_dispatch:
+    inputs:
+      api:
+        description: 'Android API seviyesi'
+        required: false
+        default: '34'
+
+permissions:
+  contents: read
+
+jobs:
+  kareler:
+    name: 📸 Emülatörde kare çek
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Node 22
+        uses: actions/setup-node@v4
+        with:
+          # node:sqlite (RKStorage tohumlamasi) Node 22+ ister.
+          node-version: '22'
+          cache: 'npm'
+
+      - name: ☕ JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🔓 KVM'i etkinleştir
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: 🔨 Debug APK derle
+        working-directory: android
+        run: |
+          set -eo pipefail
+          # DEBUG bilincli: `run-as` yalnizca debuggable build'lerde calisir ve
+          # AsyncStorage'i (RKStorage) tohumlamanin tek yolu o.
+          ./gradlew assembleDebug --no-daemon
+          find . -name '*.apk' -path '*debug*' -print
+
+      - name: 🚇 Metro'yu başlat
+        run: |
+          # Debug APK JS paketini Metro'dan alir (release'te gomulu gelir ama
+          # release debuggable olmadigi icin run-as calismaz).
+          npx expo start --port 8081 > /tmp/metro.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf "http://127.0.0.1:8081/status" >/dev/null 2>&1 && break
+            sleep 2
+          done
+          echo "Metro hazır"
+
+      - name: 📱 Emülatörde kareleri çek
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            set -eo pipefail
+            PAKET=$(node -e "console.log(require('./app.json').expo.android.package)")
+            echo "paket: $PAKET"
+            adb wait-for-device
+            adb reverse tcp:8081 tcp:8081
+
+            APK=$(find android -name '*.apk' -path '*debug*' | head -1)
+            adb install -r "$APK"
+
+            # Izinler bastan verilsin: diyaloglar kareleri kirletmesin.
+            for izin in POST_NOTIFICATIONS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION; do
+              adb shell pm grant "$PAKET" "android.permission.$izin" || true
+            done
+            adb emu geo fix 28.9784 41.0082 || true
+
+            # Veritabani ancak uygulama bir kez calistiktan sonra olusur.
+            adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
+            sleep 25
+            adb shell am force-stop "$PAKET"
+            sleep 2
+
+            adb exec-out run-as "$PAKET" cat databases/RKStorage > /tmp/RKStorage
+            ls -la /tmp/RKStorage
+            node scripts/android-tohumla.js /tmp/RKStorage
+            adb push /tmp/RKStorage /data/local/tmp/RKStorage
+            adb shell run-as "$PAKET" cp /data/local/tmp/RKStorage databases/RKStorage
+            adb shell run-as "$PAKET" rm -f databases/RKStorage-journal || true
+
+            adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
+            mkdir -p kareler
+            node scripts/android-ekranlari-cek.js kareler --paket "$PAKET"
+
+      - name: 🧾 Kare boyutları
+        if: always()
+        run: |
+          for f in kareler/*.png; do
+            node -e 'const b=require("fs").readFileSync(process.argv[1]);console.log(process.argv[1], b.readUInt32BE(16)+"x"+b.readUInt32BE(20))' "$f"
+          done || true
+
+      - name: ⬆️ Kareleri yükle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-ekran-goruntuleri
+          path: kareler/
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: 🪵 Metro günlüğü (hata ayıklama)
+        if: failure()
+        run: tail -60 /tmp/metro.log || true

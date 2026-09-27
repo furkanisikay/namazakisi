@@ -11,14 +11,12 @@
  * kullanir (RNCAsyncStorage.mm > RCTCreateStorageDirectoryPath). Documents'a yazmak
  * SESSIZCE etkisiz kalir: uygulama kurulum sihirbazinda acilir ve kareler bos cikar.
  *
- * Neden: magaza ekran goruntuleri icin uygulamanin kurulum sihirbazini gecmis,
- * konumu ayarlanmis ve gecmisi dolu olmasi gerekir. Sihirbazi dokunarak gecmek
- * kirilgan; AsyncStorage dosyasini dogrudan yazmak deterministik.
- *
- * Konum MANUEL moda alinir — boylece simulatorde konum izni diyalogu cikmaz.
+ * Veri `magaza-tohum-verisi.js`'ten gelir — Android hatti da AYNI kaynagi kullanir,
+ * yoksa iki magazanin kareleri farkli seri/vakit gosterir.
  */
 const fs = require('fs');
 const path = require('path');
+const { tohumVerisi } = require('./magaza-tohum-verisi');
 
 const kap = process.argv[2];
 const bundleId = process.argv[3];
@@ -26,67 +24,6 @@ if (!kap || !bundleId) {
     console.error('Kullanim: simulator-tohumla.js <veri kabi yolu> <bundleId>');
     process.exit(1);
 }
-
-const gun = (geriDk) => {
-    const d = new Date();
-    d.setDate(d.getDate() - geriDk);
-    const p = (n) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
-};
-
-const TAM_GUN = { Sabah: true, 'Öğle': true, 'İkindi': true, 'Akşam': true, 'Yatsı': true };
-// Bugun kismen kilinmis olsun: ana ekranda hem isaretli hem bekleyen vakit gorunsun.
-const BUGUN = { Sabah: true, 'Öğle': true, 'İkindi': true };
-
-const KONUM = {
-    konumModu: 'manuel',
-    seciliSehirId: '34',
-    seciliIlId: 34,
-    seciliIlceId: null,
-    seciliIlAdi: 'İstanbul',
-    seciliIlceAdi: '',
-    gpsAdres: null,
-    koordinatlar: { lat: 41.0082, lng: 28.9784 },
-    sonGpsGuncellemesi: null,
-    akilliTakipAktif: false,
-    takipHassasiyeti: 'dengeli',
-};
-
-const depo = {
-    '@namaz_akisi/ilk_kurulum_tamamlandi': 'true',
-    '@namaz_akisi/konum_ayarlari': JSON.stringify(KONUM),
-    // Gun-bazli kayitlar dogrudan yazildigi icin eski blob gocunu ATLA.
-    '@namaz_akisi/namaz_gun_migrasyon_tamam': '1',
-    namaz_gun_: undefined, // yer tutucu; asagida silinir
-};
-delete depo['namaz_gun_'];
-
-depo[`namaz_gun_${gun(0)}`] = JSON.stringify(BUGUN);
-for (let i = 1; i <= 25; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_GUN);
-
-// Seri YOL-BAGIMLIDIR: kayitlardan turetilmez, diskte tutulur. Tohumlanmazsa
-// kayitlar dolu olsa bile basliktaki cip "0 Gün" gosterir.
-// Muhafiz varsayilan olarak KAPALI gelir. Anahtari `idb ui tap` ile acmak
-// ISLEMIYOR (dokunus tam ustune dusuyor ama UISwitch toggle olmuyor) — bu yuzden
-// ayar diskten acilir. `matris` bilincli olarak YAZILMAZ: yukleme thunk'i eksik
-// matrisi `eskidenMatriseGoc` ile varsayilan preset'ten turetir.
-depo['muhafiz_ayarlari'] = JSON.stringify({
-    aktif: true,
-    yogunluk: 'normal',
-    gelismisMod: false,
-    presetGocuYapildi: true,
-});
-
-depo['seri_durumu'] = JSON.stringify({
-    mevcutSeri: 25,
-    enUzunSeri: 25,
-    sonTamGun: gun(1),
-    seriBaslangici: gun(25),
-    toparlanmaDurumu: null,
-    dondurulduMu: false,
-    dondurulmaTarihi: null,
-    sonGuncelleme: new Date().toISOString(),
-});
 
 // Once var olan depolama dizinini ara (surum farklari icin); yoksa kanonik yolu kur.
 function depoDizininiBul() {
@@ -98,9 +35,9 @@ function depoDizininiBul() {
     return adaylar[0];
 }
 
+const depo = tohumVerisi();
 const dizin = depoDizininiBul();
 fs.mkdirSync(dizin, { recursive: true });
 fs.writeFileSync(path.join(dizin, 'manifest.json'), JSON.stringify(depo), 'utf8');
 
 console.log(`Tohumlandi: ${Object.keys(depo).length} anahtar -> ${dizin}`);
-console.log(`  bugun: ${gun(0)} (kismi), gecmis 25 tam gun`);
