@@ -221,8 +221,24 @@ function playMetinleri() {
         if (commit.kod >= 300) throw new Error('commit basarisiz: ' + commit.kod + ' ' + JSON.stringify(commit.j).slice(0, 300));
         console.log('YAYINLANDI (edit commit edildi).');
         return;
+    } catch (e) {
+        // Commit edilmemis edit'i birak: magazada hicbir sey degismez ama
+        // bekleyen edit sonraki denemeleri karistirabilir.
+        await api('DELETE', '/edits/' + editId).catch(() => {});
+        if (String(e.message).includes('PERMISSION_DENIED') || String(e.message).includes('403')) {
+            console.error(
+                [
+                    '',
+                    'Servis hesabinin MAGAZA VARLIGI yetkisi yok.',
+                    'Play Console > Kullanicilar ve izinler > ' + SA.client_email + ' >',
+                    'uygulama izinleri > "Magaza varligini yonet" (Store presence) isaretlenmeli.',
+                    'Surum yukleme yetkisi (eas submit) bunun icin YETMEZ.',
+                ].join('\n')
+            );
+        }
+        throw e;
     } finally {
-        if (mod === 'oku') await api('DELETE', '/edits/' + editId);
+        if (mod === 'oku') await api('DELETE', '/edits/' + editId).catch(() => {});
     }
 })().catch((e) => {
     console.error('HATA', e.message);
