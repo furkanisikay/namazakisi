@@ -225,6 +225,12 @@ function cek(ad) {
             if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) {
                 await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 });
             }
+            // Kart acildiktan SONRA kaydir: genisleyen icerik (zaman seridi + 4 adim)
+            // ekranin alt kenarinda kaliyor. Adim satiri sekme cubugunun ALTINA
+            // dustugu icin dokunus bosa gidiyordu ve 03 karesi 02 ile birebir ayni
+            // cikiyordu (yasandi). Kaydirma hem kareyi doldurur hem satiri erisilir yapar.
+            idb('ui', 'swipe', '220', '800', '220', '330');
+            await bekle(2000);
             await agac('muhafiz-kart-acik');
             cek('02-muhafiz-zaman-seridi');
 
