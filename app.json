@@ -2,7 +2,7 @@
   "expo": {
     "name": "Namaz Akışı",
     "slug": "namazakisi",
-    "version": "0.27.1",
+    "version": "0.27.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -49,7 +49,7 @@
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.WAKE_LOCK"
       ],
-      "versionCode": 84
+      "versionCode": 85
     },
     "web": {
       "favicon": "./assets/favicon.png"
