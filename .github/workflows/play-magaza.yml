@@ -1,0 +1,65 @@
+name: 🏪 Play Mağaza Metinleri
+
+# Google Play magaza kaydini okur veya gunceller.
+# Metinlerin tek dogru kaynagi docs/app-store/magaza-metinleri.md.
+#
+# `oku` varsayilandir ve HICBIR SEY DEGISTIRMEZ (edit acilir, okunur, silinir).
+# `yaz` modu edit'i commit eder — degisiklik magazada yayina girer.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mod:
+        description: 'Ne yapılsın?'
+        type: choice
+        options:
+          - oku
+          - yaz
+        default: oku
+      gorsel_calistir:
+        description: "Ekran görüntülerini de yükle (yalnız 'yaz' modunda; kareler artifact'tan gelir)"
+        type: boolean
+        default: false
+      kare_run_id:
+        description: 'Ekran görüntülerinin alınacağı ios-ekran-goruntuleri çalışma kimliği'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  magaza:
+    name: 🏪 Play kaydı
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🖼️ Kareleri indir
+        if: ${{ inputs.gorsel_calistir && inputs.kare_run_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: magaza-mockuplari
+          path: mockup
+          run-id: ${{ inputs.kare_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏪 Play kaydını ${{ inputs.mod }}
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          set -eo pipefail
+          if [ "${{ inputs.mod }}" = "yaz" ] && [ "${{ inputs.gorsel_calistir }}" = "true" ]; then
+            node scripts/play-magaza.js yaz --gorseller mockup
+          else
+            node scripts/play-magaza.js "${{ inputs.mod }}"
+          fi
