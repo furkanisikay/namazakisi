@@ -104,7 +104,16 @@ jobs:
         run: |
           set -eo pipefail
           WS=$(ls -d *.xcworkspace | head -1)
-          SCHEME=$(xcodebuild -workspace "$WS" -list -json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).workspace.schemes[0]))')
+          # Sema ADINI PROJE DOSYASINDAN al. `-list` ciktisindaki schemes[0] ALFABETIKTIR
+          # ve Pods semalarini da icerir: "EXApplication" secilip bir pod derlendi,
+          # xcodebuild BASARILI dondu ama .app hic uretilmedi (yasandi).
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          SCHEME="${PROJ%.xcodeproj}"
+          if ! xcodebuild -workspace "$WS" -list -json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const s=JSON.parse(d).workspace.schemes;process.exit(s.includes(process.argv[1])?0:1)})' "$SCHEME"; then
+            echo "Sema listesinde '$SCHEME' yok:"
+            xcodebuild -workspace "$WS" -list
+            exit 1
+          fi
           echo "workspace=$WS scheme=$SCHEME"
           # Release: JS paketi uygulamanin icine gomulur (Metro sunucusu gerekmez).
           # CODE_SIGNING_ALLOWED=NO: simulator build'i imza istemez.
@@ -117,7 +126,11 @@ jobs:
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
             CODE_SIGNING_ALLOWED=NO \
             -quiet
-          find build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' -print
+          # .app'i BURADA dogrula: eksikligini bir sonraki adimda fark etmek,
+          # hatayi urettigi adimdan koparir.
+          APP=$(find build -name '*.app' -maxdepth 5 -not -path '*.dSYM*' | head -1)
+          [ -z "$APP" ] && { echo "Derleme .app uretmedi"; find build -maxdepth 4 -name '*.app*' -print; exit 1; }
+          echo "uretilen: $APP"
 
       - name: 🧰 idb kur (erişilebilirlik tabanlı dokunma)
         run: |
