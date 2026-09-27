@@ -119,6 +119,9 @@ jobs:
         run: |
           set -eo pipefail
           brew tap facebook/fb
+          # Homebrew artik ucuncu taraf tap'lerini acikca guvenilir istiyor;
+          # `brew trust` olmadan kurulum "untrusted tap" ile reddediliyor.
+          brew trust facebook/fb 2>/dev/null || brew trust --formula facebook/fb/idb-companion 2>/dev/null || true
           brew install idb-companion
           pipx install fb-idb || python3 -m pip install --break-system-packages fb-idb
           idb --help >/dev/null 2>&1 && echo "idb hazır"
