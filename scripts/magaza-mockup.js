@@ -61,6 +61,25 @@ const KARELER = [
         alt: 'Kâbe yönünü internet olmadan, derece olarak görürsünüz.',
         zemin: 'acik',
     },
+    // 06-08 yalniz Play'de (8 kare sinirini doldurmak icin); iOS seti 5 karedir.
+    {
+        dosya: '06-akis-onizleme.png',
+        baslik: 'Bugünkü uyarıları\nönceden görün',
+        alt: 'Akış önizlemesi, muhafızın sizi bugün hangi saatte nasıl uyaracağını listeler.',
+        zemin: 'acik',
+    },
+    {
+        dosya: '07-kaza.png',
+        baslik: 'Kaza borcunuzu\ntakip edin',
+        alt: 'Kıldığınız her kazayı tek dokunuşla düşer, kalanı her an görürsünüz.',
+        zemin: 'acik',
+    },
+    {
+        dosya: '08-istatistik.png',
+        baslik: 'Haftanızı\ngrafikte izleyin',
+        alt: 'Hangi gün kaç vakit kıldığınızı günlük, haftalık ve aylık dökümde görürsünüz.',
+        zemin: 'acik',
+    },
 ];
 
 /**

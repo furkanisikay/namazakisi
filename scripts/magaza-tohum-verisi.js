@@ -95,6 +95,27 @@ function tohumVerisi() {
     depo[`namaz_gun_${gun(0)}`] = JSON.stringify(BUGUN);
     for (let i = 1; i <= GECMIS_GUN; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_GUN);
 
+    // Kaza defteri: bos gelirse ekran "kaza borcunuz yok" der ve ozelligi
+    // anlatmaz. Gercekci bir ara durum: borc eklenmis, bir kismi kilinmis.
+    const KAZA = [
+        ['Sabah', 64],
+        ['Öğle', 71],
+        ['İkindi', 58],
+        ['Akşam', 83],
+        ['Yatsı', 60],
+        ['Vitir', 47],
+    ].map(([namazAdi, tamamlanan]) => ({ namazAdi, toplamBorc: 180, kalanBorc: 180 - tamamlanan, tamamlanan }));
+    depo['@namaz_akisi/kaza_durumu'] = JSON.stringify({
+        namazlar: KAZA,
+        toplamKalan: KAZA.reduce((t, k) => t + k.kalanBorc, 0),
+        toplamTamamlanan: KAZA.reduce((t, k) => t + k.tamamlanan, 0),
+        gunlukHedef: 5,
+        gunlukTamamlanan: 3,
+        gunlukHedefTarihi: gun(0),
+        toplamGizleMi: false,
+        guncellemeTarihi: new Date().toISOString(),
+    });
+
     // Seviye de tohumlanmali: disk bossa uygulama 1. seviyeden basladigini sanar,
     // acilistaki puan hesabi 4. seviyeyi bulunca "Seviye Atladın!" kutlamasi acar.
     // O modaldeki surekli animasyon Android'de `uiautomator dump`'i "could not

@@ -43,3 +43,16 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/03-adim-detay
+
+# Akis onizlemesi: muhafizin bugun hangi saatte nasil uyaracagini listeler.
+# Sheet donanim geri tusuyla kapanir (her modal useDonanimGeriTusu kullanir).
+- back
+- scrollUntilVisible:
+    element:
+      text: "Sabah akışını önizleyin"
+    direction: DOWN
+    timeout: 20000
+- tapOn: "Sabah akışını önizleyin"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: kareler/06-akis-onizleme
