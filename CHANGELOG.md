@@ -5,6 +5,20 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.27.0] - 2026-09-27
+
+### Eklendi
+- [ios] sesli anons cihazda sentezlenip bildirimin sesi olsun (Faz 2)
+- [muhafiz] yon secici zaman seridiyle kendini anlatsin
+
+### Düzeltildi
+- [ios] iOS 26 cam gorunumunden gecici olarak cik
+- [ios] anahtarlar yerel gorunsun, geri dugmesinde rota adi cikmasin
+- [ios] App Review oncesi izin metinleri ve iPad destegi
+- [sihirbaz] muhafiz tanitimi kurdugu ayari anlatsin
+- [muhafiz] yon degisiminde esikler yone uygun yeniden kurulsun
+- [ios] Turkce karakterli dosya adi macOS'ta build'i kiriyordu
+
 ## [0.26.1] - 2026-09-14
 
 ### Düzeltildi
