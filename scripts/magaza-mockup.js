@@ -22,8 +22,13 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 
 const BOYUT = {
-    ios: { gen: 1320, yuk: 2868, olcek: 1 },
-    android: { gen: 1080, yuk: 1920, olcek: 1080 / 1320 },
+    // cihazGen/icYaricap iOS olcegindedir (olcek ile kucultulur).
+    // Android'de cihaz DARALTILIR: 16:9 kare iPhone'dan kisa oldugu icin ayni
+    // genislikte cihaz tuvalin altindan tasip sekme etiketlerini kirpiyordu.
+    // Ic yaricap da KUCUK: Android durum cubugu kenara dayali, buyuk yaricap
+    // "9:41"in ilk rakamini kesiyordu.
+    ios: { gen: 1320, yuk: 2868, olcek: 1, cihazGen: 1012, icYaricap: 92 },
+    android: { gen: 1080, yuk: 1920, olcek: 1080 / 1320, cihazGen: 890, icYaricap: 40 },
 };
 
 // Marka renkleri temadan (src/core/theme/temalar.ts)
@@ -145,7 +150,7 @@ function sayfa(kare, gorselYolu, b) {
         ? 'radial-gradient(60% 45% at 78% 12%, rgba(76,175,80,0.28) 0%, rgba(76,175,80,0) 70%)'
         : 'radial-gradient(58% 42% at 80% 10%, rgba(76,175,80,0.22) 0%, rgba(76,175,80,0) 70%)';
 
-    const cihazGen = 1012;
+    const cihazGen = b.cihazGen;
 
     return `<!doctype html><html><head><meta charset="utf-8">${FONT_BAGLANTISI}<style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -157,9 +162,9 @@ function sayfa(kare, gorselYolu, b) {
        color:${baslikRenk}; text-align:center; white-space:pre-line; }
   p { margin-top:${px(38)}; max-width:${px(1040)}; font-size:${px(46)}; line-height:1.45; color:${altRenk}; text-align:center; }
   .serit { margin-top:${px(48)}; width:${px(132)}; height:${px(10)}; border-radius:99px; background:linear-gradient(90deg, ${YESIL}, ${YESIL_KOYU}); }
-  .cihaz { margin-top:${px(80)}; width:${px(cihazGen)}; padding:${px(14)}; background:#0E0E11; border-radius:${px(104)};
+  .cihaz { margin-top:${px(80)}; width:${px(cihazGen)}; padding:${px(14)}; background:#0E0E11; border-radius:${px(b.icYaricap + 12)};
            box-shadow:0 ${px(60)} ${px(120)} rgba(11,25,14,${koyu ? '0.55' : '0.22'}), 0 ${px(8)} ${px(24)} rgba(11,25,14,${koyu ? '0.4' : '0.12'}); }
-  .pencere { border-radius:${px(92)}; overflow:hidden; }
+  .pencere { border-radius:${px(b.icYaricap)}; overflow:hidden; }
   .pencere img { display:block; width:100%; }
 </style></head><body>
   <div class="hale"></div>
