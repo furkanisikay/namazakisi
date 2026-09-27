@@ -205,6 +205,10 @@ function cek(ad) {
     // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
     a = await agac('seri-oncesi');
     if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3500 })) {
+        // Gok panelindeki yildizlar SIRAYLA animasyonla belirir; erken cekilen kare
+        // haritayi yarim gosterir: baslik "25 günlük seri" derken harita 18'den
+        // sonrasini bos birakiyordu (yasandi).
+        await bekle(6000);
         await agac('seri');
         cek('04-seri');
     }
