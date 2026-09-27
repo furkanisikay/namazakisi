@@ -13,6 +13,10 @@ on:
         description: 'Android API seviyesi'
         required: false
         default: '34'
+      apk_run_id:
+        description: 'Önceki koşunun debug APK artifact''ını kullan (boş = yeniden derle). JS Metro''dan geldiği için APK yalnız native kod değişince yenilenmeli.'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -39,6 +43,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: 📦 Bağımlılıkları kur
         run: npm ci
@@ -49,7 +54,17 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: 📦 Önceki APK'yı indir
+        if: ${{ inputs.apk_run_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: debug-apk
+          path: android/app/build/outputs/apk/debug
+          run-id: ${{ inputs.apk_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 🔨 Debug APK derle
+        if: ${{ inputs.apk_run_id == '' }}
         working-directory: android
         run: |
           set -eo pipefail
@@ -60,6 +75,19 @@ jobs:
           # AsyncStorage'i (RKStorage) tohumlamanin tek yolu o.
           ./gradlew assembleDebug --no-daemon
           find . -name '*.apk' -path '*debug*' -print
+
+      - name: ⬆️ APK'yı sakla (sonraki koşular yeniden kullansın)
+        if: ${{ inputs.apk_run_id == '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          retention-days: 7
+
+      - name: 🧰 Maestro kur
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          "$HOME/.maestro/bin/maestro" --version
 
       - name: 🚇 Metro'yu başlat
         run: |
@@ -98,7 +126,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-ekran-goruntuleri
-          path: kareler/
+          path: |
+            kareler/
+            ~/.maestro/tests/
           retention-days: 14
           if-no-files-found: warn
 

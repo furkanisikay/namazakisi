@@ -1,0 +1,18 @@
+# Magaza kareleri (Android): kible. Ayri akis: onceki akis yarida kalsa bile
+# bu kare uygulama yeniden baslatilarak cekilir.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- extendedWaitUntil:
+    visible: "Kıble yönünü bul"
+    timeout: 90000
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
+- tapOn: "Kıble yönünü bul"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: kareler/05-kible

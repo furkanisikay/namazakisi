@@ -88,4 +88,14 @@ adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
 # Uretim paketi (minify) ilk istekte derlendigi icin JS'in yuklenmesi uzun surer.
 sleep 30
 mkdir -p kareler
-node scripts/android-ekranlari-cek.js kareler --paket "$PAKET"
+# Dolasma Maestro ile: `uiautomator dump` arayuzun TAM 1 sn sessiz kalmasini
+# bekler ve bulamayinca "could not get idle state" ile hic agac vermez. Ana
+# ekrandaki geri sayim saniyede bir guncellendigi icin bu kosul hic olusmuyordu.
+# Maestro'nun surucusu (androidx UiAutomator) zaman asimini hata saymaz.
+export PATH="$HOME/.maestro/bin:$PATH"
+for akis in scripts/maestro/*.yaml; do
+  echo "=== $akis ==="
+  # Bir akis dusse de digerleri cekilsin (her biri uygulamayi kendisi baslatir).
+  maestro test "$akis" || echo "UYARI: $akis tamamlanamadi"
+done
+ls -la kareler
