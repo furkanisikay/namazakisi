@@ -30,66 +30,45 @@ zaten ad ve alt başlıktaki kelimeleri indeksler.)
 ### Promosyon metni (170 karakter — yayındayken güncellenebilir)
 
 ```
-Namaz vakitlerini internetsiz hesaplar, vakit çıkmadan önce giderek artan
-hatırlatmalarla sizi namaza çağırır. Reklam yok, takip yok, tüm veriler
-telefonunuzda kalır.
+Vakitleri internetsiz hesaplar ve vakit daraldıkça sertleşen hatırlatmalarla sizi namaza çağırır. Reklam içermez, verileriniz telefonunuzda kalır.
 ```
 
 ### Açıklama (4000 karakter)
 
 ```
-Namaz Akışı, namaz vakitlerinizi takip etmenizi ve vakti kaçırmamanızı sağlayan,
-tamamen çevrimdışı çalışan bir ibadet asistanıdır.
+Namaz Akışı namaz vakitlerini takip etmenize ve vakti kaçırmamanıza yardım eden bir ibadet asistanıdır. İnternet bağlantısı olmadan çalışır.
 
-İnternet bağlantısı gerektirmez. Vakitler, bulunduğunuz konumun koordinatlarından
-astronomik olarak hesaplanır (Diyanet ile uyumlu yöntem). Hiçbir veriniz sunucuya
-gönderilmez; namaz kayıtlarınız, ayarlarınız ve konumunuz yalnızca telefonunuzda
-kalır.
+Vakitleri bulunduğunuz yerin koordinatlarından astronomik olarak hesaplar (Diyanet ile uyumlu yöntem). Namaz kayıtlarınız, ayarlarınız ve konumunuz telefonunuzda kalır; uygulama hiçbir veriyi sunucuya göndermez.
 
 NAMAZ MUHAFIZI
-Sıradan bir alarm değil. Vakit ilerledikçe tonu sertleşen dört kademeli bir
-hatırlatma sistemi: nazik hatırlatma, uyarı, sert uyarı ve acil. Her vakit için
-ayrı ayrı ayarlanır.
+Muhafız sizi dört kademede uyarır: nazik hatırlatma, uyarı, sert uyarı ve acil. Vakit daraldıkça ton sertleşir. Her vaktin ayarını ayrı tutarsınız.
 
-• Hatırlatmaların vaktin sonuna doğru mu yoksa vakit girer girmez mi başlayacağını
-  seçebilirsiniz.
-• Her adımın zamanını ve tekrar sıklığını kendiniz belirleyebilir, dilediğiniz adımı
-  kapatabilirsiniz.
-• Hazır yoğunluklar (Hafif, Dengeli, Israrcı) tek dokunuşla hepsini ayarlar.
-• Sesli anons: hatırlatma, telefonunuzun Türkçe sesiyle konuşarak gelir. Metni
-  kendiniz yazabilirsiniz. İnternet gerekmez.
-• Zaman şeridi, seçtiğiniz ayarın o gün hangi saatlerde sizi uyaracağını gösterir.
+• Hatırlatmaların vaktin sonuna doğru mu, vakit girer girmez mi başlayacağını seçersiniz.
+• Her adımın kaç dakika kala başlayacağını ve ne sıklıkla tekrarlanacağını belirler, istemediğiniz adımı kapatırsınız.
+• Hafif, Normal ve Yoğun hazır ayarlarından biri tek dokunuşla bütün vakitleri düzenler.
+• Sesli anonsu telefonunuzun Türkçe sesi okur. Metni kendiniz yazabilirsiniz ve anons için internet gerekmez.
+• Zaman şeridi, seçtiğiniz ayarın o gün sizi hangi saatlerde uyaracağını gösterir.
 
 VAKİT TAKİBİ
-• Bir sonraki vakte kalan süre canlı geri sayımla.
-• Konumunuz değiştiğinde vakitler kendiliğinden güncellenir.
-• Kerahat vakitleri ana ekranda belirtilir.
+• Ana ekran bir sonraki vakte kalan süreyi saniye saniye sayar.
+• Konumu GPS ile alabilir ya da şehrinizi elle seçebilirsiniz.
+• Kerahat vakitlerinde ana ekran sizi uyarır.
 • Namaz vakitlerini telefonunuzun takvimine etkinlik olarak ekleyebilirsiniz.
 
 KIBLE PUSULASI
-Cihazınızın sensörleriyle Kâbe yönünü anlık gösterir.
+Pusula, cihazınızın sensörleriyle Kâbe yönünü gösterir.
 
 KAZA DEFTERİ
-Kılınmayan namazlar otomatik tespit edilir ve kaza çetelesi tutulur. Geçmişe dönük
-kayıt girebilir, kıldıkça düşebilirsiniz.
+Uygulama kılınmayan namazları tespit edip kaza çetelesine ekler. Geçmişe dönük kayıt girebilir, kıldığınız kazayı çeteleden düşebilirsiniz.
 
-İSTİKRAR VE MOTİVASYON
-• Seri sistemi ibadet devamlılığınızı görselleştirir.
-• Bir günü kaçırdığınızda seriyi kurtarma imkânı.
-• Rozetler, seviyeler ve haftalık istatistikler.
-
-RAMAZAN
-İftar ve sahura kalan süre ana ekranda; sahur için ayrı tema.
+SERİ VE İSTATİSTİK
+Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir seriniz koparsa, ardından 2 gün tam kılarak seriyi kurtarabilirsiniz. Kıldıkça puan toplar, seviye atlar ve rozet kazanırsınız. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
 
 GİZLİLİK
-• Hesap açmanız gerekmez.
-• Reklam yok, izleme yok, analitik yok.
-• Konumunuz yalnızca vakit hesabı için kullanılır ve telefonunuzdan çıkmaz.
-• Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
 
 AÇIK KAYNAK
-Namaz Akışı bir sadaka-i cariye niyetiyle geliştirilmiştir ve daima ücretsizdir.
-Kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
+Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
 https://github.com/furkanisikay/namazakisi
 ```
 
@@ -98,11 +77,10 @@ https://github.com/furkanisikay/namazakisi
 ```
 Namaz Akışı'nın iPhone'daki ilk sürümü.
 
-• Çevrimdışı namaz vakti hesabı ve canlı geri sayım
-• Dört kademeli Namaz Muhafızı; sesli anons telefonunuzun Türkçe sesiyle konuşur
-• Kıble pusulası, kaza defteri, seri takibi ve rozetler
-• Ramazan için iftar ve sahur sayacı
-• Reklamsız, hesapsız, tamamen cihazınızda
+• Vakitleri internetsiz hesaplar, bir sonraki vakte kalan süreyi canlı sayar.
+• Namaz Muhafızı dört kademede uyarır; sesli anonsu telefonunuzun Türkçe sesi okur.
+• Kıble pusulası, kaza defteri, seri takibi ve rozetler.
+• Hesap istemez, reklam göstermez.
 ```
 
 ## Zorunlu adresler
@@ -168,55 +146,50 @@ Namaz Akışı
 #### Play — kısa açıklama
 
 ```
-Vakit çıkmadan uyaran namaz muhafızı, kıble ve kaza defteri. Çevrimdışı.
+İnternetsiz namaz vakti, kıble ve kaza defteri. Muhafız vakitten önce uyarır.
 ```
 
 #### Play — tam açıklama
 
 ```
-Namaz Akışı, namaz vakitlerinizi takip etmenizi ve vakti kaçırmamanızı sağlayan, tamamen çevrimdışı çalışan bir ibadet asistanıdır.
+Namaz Akışı namaz vakitlerini takip etmenize ve vakti kaçırmamanıza yardım eden bir ibadet asistanıdır. İnternet bağlantısı olmadan çalışır.
 
-İnternet bağlantısı gerektirmez. Vakitler, bulunduğunuz konumun koordinatlarından astronomik olarak hesaplanır. Hiçbir veriniz sunucuya gönderilmez; namaz kayıtlarınız, ayarlarınız ve konumunuz yalnızca telefonunuzda kalır.
+Vakitleri bulunduğunuz yerin koordinatlarından astronomik olarak hesaplar (Diyanet ile uyumlu yöntem). Namaz kayıtlarınız, ayarlarınız ve konumunuz telefonunuzda kalır; uygulama hiçbir veriyi sunucuya göndermez.
 
-★ NAMAZ MUHAFIZI
-Sıradan bir alarm değil. Vakit ilerledikçe tonu sertleşen dört kademeli bir hatırlatma sistemi: nazik hatırlatma, uyarı, sert uyarı ve acil. Her vakit için ayrı ayrı ayarlanır.
+NAMAZ MUHAFIZI
+Muhafız sizi dört kademede uyarır: nazik hatırlatma, uyarı, sert uyarı ve acil. Vakit daraldıkça ton sertleşir. Her vaktin ayarını ayrı tutarsınız.
 
-• Hatırlatmaların vaktin sonuna doğru mu yoksa vakit girer girmez mi başlayacağını seçebilirsiniz.
-• Her adımın zamanını ve tekrar sıklığını kendiniz belirleyebilir, dilediğiniz adımı kapatabilirsiniz.
-• Hazır yoğunluklar (Hafif, Dengeli, Israrcı) tek dokunuşla hepsini ayarlar.
-• Sesli anons: hatırlatma, telefonunuzun Türkçe sesiyle konuşarak gelir. Metni kendiniz yazabilirsiniz. İnternet gerekmez.
-• Bildirim sesini kendi müziğinizden seçebilirsiniz.
-• Zaman şeridi, seçtiğiniz ayarın o gün hangi saatlerde sizi uyaracağını gösterir.
+• Hatırlatmaların vaktin sonuna doğru mu, vakit girer girmez mi başlayacağını seçersiniz.
+• Her adımın kaç dakika kala başlayacağını ve ne sıklıkla tekrarlanacağını belirler, istemediğiniz adımı kapatırsınız.
+• Hafif, Normal ve Yoğun hazır ayarlarından biri tek dokunuşla bütün vakitleri düzenler.
+• Sesli anonsu telefonunuzun Türkçe sesi okur. Metni kendiniz yazabilirsiniz ve anons için internet gerekmez.
+• Bildirim sesini telefonunuzdaki seslerden seçebilirsiniz.
+• Zaman şeridi, seçtiğiniz ayarın o gün sizi hangi saatlerde uyaracağını gösterir.
 
-★ VAKİT TAKİBİ
-• Bir sonraki vakte kalan süre canlı geri sayımla.
-• Ana ekran widget'ı ile vakitler kilit ekranınızda.
-• Akıllı konum takibi: şehir değiştirdiğinizde vakitler kendiliğinden güncellenir, pil tüketmez.
-• Kerahat vakitleri ana ekranda belirtilir.
+VAKİT TAKİBİ
+• Ana ekran bir sonraki vakte kalan süreyi saniye saniye sayar.
+• Ana ekran widget'ı vakitleri uygulamayı açmadan gösterir.
+• Şehir değiştirdiğinizde uygulama vakitleri yeni konuma göre günceller. Konum takibi sürekli GPS yerine bölge sınırlarını izlediği için pili az harcar.
+• Kerahat vakitlerinde ana ekran sizi uyarır.
+• Cuma günleri, öğle vakti girmeden önce camiye yetişmeniz için ayrı bir hatırlatma kurabilirsiniz.
 • Namaz vakitlerini telefonunuzun takvimine etkinlik olarak ekleyebilirsiniz.
-• Cuma namazı için, öğle vakti girmeden önce ayrı hatırlatma.
 
-★ KIBLE PUSULASI
-Cihazınızın sensörleriyle Kâbe yönünü anlık gösterir.
+KIBLE PUSULASI
+Pusula, cihazınızın sensörleriyle Kâbe yönünü gösterir.
 
-★ KAZA DEFTERİ
-Kılınmayan namazlar otomatik tespit edilir ve kaza çetelesi tutulur. Geçmişe dönük kayıt girebilir, kıldıkça düşebilirsiniz.
+KAZA DEFTERİ
+Uygulama kılınmayan namazları tespit edip kaza çetelesine ekler. Geçmişe dönük kayıt girebilir, kıldığınız kazayı çeteleden düşebilirsiniz.
 
-★ İSTİKRAR VE MOTİVASYON
-• Seri sistemi ibadet devamlılığınızı görselleştirir.
-• Bir günü kaçırdığınızda seriyi kurtarma imkânı.
-• Rozetler, seviyeler ve haftalık istatistikler.
+SERİ VE İSTATİSTİK
+Tam kıldığınız her gün serinizi bir gün uzatır. 7 günü aşan bir seriniz koparsa, ardından 2 gün tam kılarak seriyi kurtarabilirsiniz. Kıldıkça puan toplar, seviye atlar ve rozet kazanırsınız. İstatistik ekranı günlük, haftalık ve aylık dökümü gösterir.
 
-★ RAMAZAN
-İftar ve sahura kalan süre ana ekranda; sahur için ayrı tema.
+RAMAZAN
+İftar ve sahura kalan süreyi bildirimde geri sayımla gösterir.
 
-★ GİZLİLİK
-• Hesap açmanız gerekmez.
-• Reklam yok, izleme yok, analitik yok.
-• Konumunuz yalnızca vakit hesabı için kullanılır ve telefonunuzdan çıkmaz.
-• Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+GİZLİLİK
+Hesap açmanız gerekmez. Uygulamada reklam, izleme ya da analitik bulunmaz. Konumunuzu yalnızca vakit hesabı için kullanır ve telefonunuzdan dışarı çıkarmaz. Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
 
-★ AÇIK KAYNAK
-Namaz Akışı bir sadaka-i cariye niyetiyle geliştirilmiştir ve daima ücretsizdir. Kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
+AÇIK KAYNAK
+Namaz Akışı'nı sadaka-i cariye niyetiyle geliştiriyorum. Uygulama ücretsizdir ve kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
 https://github.com/furkanisikay/namazakisi
 ```
