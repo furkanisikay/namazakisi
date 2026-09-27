@@ -20,37 +20,35 @@ Gizlilik politikası: <https://furkanisikay.github.io/namazakisi/app-store/gizli
 | İhracat uyumluluğu | Muaf olmayan şifreleme kullanılmıyor |
 | Fiyat | **Ücretsiz** |
 | Sürüme bağlı build | En son TestFlight build'i |
+| Ekran görüntüleri | 5 kare, iPhone 6.9" (1320×2868), simülatörde üretildi |
 | İnceleme iletişim bilgisi | Ad, e-posta, telefon + inceleme notları |
 
 ## Kalanlar
 
-### 1. Veri Gizliliği beyanı — yalnızca web arayüzünden
-App Store Connect'in `appDataUsages` uç noktaları kamuya açık değil (404), bu adım
-API ile yapılamaz.
+Yalnızca **gönderim kararı** kaldı: App Store Connect'te *Add for Review* →
+*Submit to App Review*. Bu adım bilinçli olarak otomatikleştirilmedi — uygulamayı
+Apple incelemesine göndermek geri alınması zor bir adımdır.
 
-**Yol:** App Store Connect → Namaz Akışı → **App Privacy** → *Get Started* →
-soruya **"No, we do not collect data from this app"** (Veri toplanmıyor) yanıtını
-verin → *Publish*.
+## Ekran görüntüleri nasıl üretiliyor
 
-Gerekçe kayıtlı: uygulama hiçbir veriyi toplamaz, sunucuya göndermez, reklam ve
-analitik içermez (bkz. gizlilik politikası). Tek ağ isteği şehir listesi
-(`turkiyeapi.dev`) olup kullanıcıya ait bilgi taşımaz.
+Fiziksel cihaz gerekmez: `.github/workflows/ios-ekran-goruntuleri.yml` macOS
+runner'ında iPhone Pro Max simülatörünü kullanır ve App Store'un istediği
+1320×2868 kareyi verir. Yeniden üretmek için:
 
-### 2. Ekran görüntüleri
-`supportsTablet: false` olduğu için **iPad görüntüsü istenmiyor**. Gereken tek
-boyut kümesi iPhone 6.9":
+```bash
+gh workflow run ios-ekran-goruntuleri.yml --ref master -f asc_yukle=true
+```
 
-- **1320 × 2868** veya **1290 × 2796** piksel, dikey (portrait)
-- 3–10 görüntü (5 önerilir), durum çubuğu görünür olabilir
-- Cihazdan doğrudan ekran görüntüsü yeterlidir; çerçeve/pazarlama grafiği şart değil
+`asc_yukle=false` ile kareler yalnızca artifact olarak gelir (önce gözden
+geçirmek için). Tuzaklar ve gerekçeler AGENTS.md'de.
 
-Önerilen 5 kare (özellikleri sırayla anlatır):
+### Seçilen kareler
 
-1. **Ana ekran** — sıradaki vakit + geri sayım, günün vakit akışı
-2. **Muhafız ayarları** — vakit kartı açık, **zaman şeridi** görünür
-3. **Adım detayı** — kanallar, sesli anons metni, "Dinle" düğmesi
-4. **Seri sekmesi** — gök paneli ve gün haritası
-5. **Kıble pusulası**
+1. **Ana ekran** — sıradaki vakit, geri sayım, günlük akış
+2. **Muhafız + zaman şeridi** — yoğunluk, yön seçici, eskalasyon adımları
+3. **Adım detayı** — kanallar, eşik, sıklık
+4. **Seri** — gök paneli ve gün haritası
+5. **Kıble** — pusula
 
-> iOS'ta bulunmayan Android özellikleri (widget, arka plan konum takibi,
-> uygulama içi güncelleme) görüntülerde **yer almamalı**.
+**Rozetler elendi:** rozetler olay-tetiklemeli verildiği için tohumlanmış
+geçmişle açılmıyor; kare "0/8 Rozet" ve tümü kilitli görünüyordu.
