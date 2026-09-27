@@ -249,6 +249,11 @@ function cek(ad) {
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
             a = await agac('adim-oncesi');
             if (await dokun(a, /adımını düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
+                // "İkisi de" kanalini sec: sheet sesli anons metni ve "Dinle"
+                // dugmesiyle dolar. Yalniz bildirim seciliyken sheet'in alt yarisi
+                // BOS kaliyordu ve kare zayif gorunuyordu.
+                const sheet = await agac('adim-kanal-oncesi');
+                await dokun(sheet, /^İkisi de$/i, 'ikisi de kanali', { bekle: 2500 });
                 await agac('adim-detay');
                 cek('03-adim-detay');
             }
