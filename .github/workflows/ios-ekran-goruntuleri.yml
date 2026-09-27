@@ -179,12 +179,20 @@ jobs:
             echo "$f -> $(sips -g pixelWidth -g pixelHeight "$f" | tail -2 | tr '\n' ' ')"
           done
 
-      - name: ⬆️ Kareleri ve erişilebilirlik ağaçlarını yükle
+      - name: 🎨 Mockup üret
+        run: |
+          # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
+          # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.
+          node scripts/magaza-mockup.js kareler mockup --platform ios
+
+      - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ios-ekran-goruntuleri
-          path: kareler/
+          path: |
+            kareler/
+            mockup/
           retention-days: 14
           if-no-files-found: warn
 
@@ -194,4 +202,5 @@ jobs:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
-        run: node scripts/app-store-ekran-goruntuleri.js kareler
+        # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
+        run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir

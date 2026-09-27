@@ -3,7 +3,7 @@
  * App Store Connect'e iPhone ekran goruntulerini yukler.
  *
  * Kullanim:
- *   node scripts/app-store-ekran-goruntuleri.js <klasor> [--tip APP_IPHONE_67] [--dil tr]
+ *   node scripts/app-store-ekran-goruntuleri.js <klasor> [--tip APP_IPHONE_67] [--dil tr] [--degistir]
  *   node scripts/app-store-ekran-goruntuleri.js --durum
  *
  * Klasordeki .png dosyalari ADA GORE SIRALANIR ve o sirayla yuklenir
@@ -165,6 +165,17 @@ function hata(etiket, r) {
         if (y.kod >= 300) hata('set olusturulamadi', y);
         set = y.j.data;
         console.log('Set olusturuldu: ' + TIP);
+    }
+
+    // --degistir: settekileri once sil. Yukleme ARKAYA ekler; eskiler kalirsa
+    // magazada eski ve yeni kareler karisik sirayla gorunur.
+    if (argv.includes('--degistir')) {
+        const eski = await api('GET', '/v1/appScreenshotSets/' + set.id + '/appScreenshots');
+        for (const x of eski.j.data || []) {
+            const sil = await api('DELETE', '/v1/appScreenshots/' + x.id);
+            if (sil.kod >= 300) hata(x.attributes.fileName + ' silinemedi', sil);
+            console.log('  silindi: ' + x.attributes.fileName);
+        }
     }
 
     const dosyalar = fs
