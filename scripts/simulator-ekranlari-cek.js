@@ -35,8 +35,10 @@ const UDID = udidArg >= 0 ? process.argv[udidArg + 1] : null;
 const agacDizin = path.join(cikis, 'agac');
 fs.mkdirSync(agacDizin, { recursive: true });
 
+// DIKKAT: idb'de `--udid` GLOBAL DEGIL, ALT KOMUT duzeyinde bir secenektir.
+// Basa konursa `invalid choice: '<UDID>'` ile patlar ve agac BOS gelir.
 const idb = (...args) => {
-    const tum = UDID ? ['--udid', UDID, ...args] : args;
+    const tum = UDID ? [...args, '--udid', UDID] : args;
     return execFileSync('idb', tum, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
 };
 const simctl = (...args) =>
@@ -147,6 +149,14 @@ function cek(ad) {
         console.log('  (izin diyalogu yok ya da zaten kapatilmis)');
     }
     await bekle(3000);
+
+    // Acilista "Neler Yeni" / rozet kutlamasi modali cikabilir; kapatilmazsa
+    // ana ekran karesini tumuyle ortar.
+    for (let tur = 0; tur < 3; tur++) {
+        const m = agac(`modal-${tur}`);
+        if (!(await dokun(m, /^(Devam Et|Kapat|Tamam|Anladım)$/i, 'acilis modali'))) break;
+        await bekle(1200);
+    }
 
     agac('ana-ekran');
     cek('01-ana-ekran');

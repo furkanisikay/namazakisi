@@ -64,6 +64,19 @@ delete depo['namaz_gun_'];
 depo[`namaz_gun_${gun(0)}`] = JSON.stringify(BUGUN);
 for (let i = 1; i <= 25; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_GUN);
 
+// Seri YOL-BAGIMLIDIR: kayitlardan turetilmez, diskte tutulur. Tohumlanmazsa
+// kayitlar dolu olsa bile basliktaki cip "0 Gün" gosterir.
+depo['seri_durumu'] = JSON.stringify({
+    mevcutSeri: 25,
+    enUzunSeri: 25,
+    sonTamGun: gun(1),
+    seriBaslangici: gun(25),
+    toparlanmaDurumu: null,
+    dondurulduMu: false,
+    dondurulmaTarihi: null,
+    sonGuncelleme: new Date().toISOString(),
+});
+
 // Once var olan depolama dizinini ara (surum farklari icin); yoksa kanonik yolu kur.
 function depoDizininiBul() {
     const adaylar = [
