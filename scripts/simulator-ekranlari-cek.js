@@ -10,12 +10,12 @@
  * yanlis yere basar, etiket tabanli betik ise acikca "bulunamadi" der.
  *
  * Etiketler kodda dogrulandi:
- *   - Kible dugmesi        "Kıble yönünü bul"        (HomeHeader)
- *   - Seri ekrani          "İstatistik" sekmesi      (IstatistikSayfasi acilista Seri alt sekmesinde)
- *   - Muhafiz satiri       "Namaz muhafızı"          (AyarlarSayfasi)
- *   - Ana anahtar          "Namaz Muhafızı" (Switch) (MuhafizAyarlariSayfasi)
- *   - Vakit karti          "… vakti hatırlatma ayarları" (PencereKarti)
- *   - Adim satiri          "… adımını düzenleyin"    (PencereKarti)
+ *   - Kible dugmesi   "Kıble yönünü bul"            (HomeHeader)
+ *   - Seri ekrani     "İstatistik" sekmesi          (IstatistikSayfasi acilista Seri alt sekmesinde)
+ *   - Muhafiz satiri  "Namaz muhafızı"              (AyarlarSayfasi)
+ *   - Ana anahtar     "Namaz Muhafızı" (Switch)     (MuhafizAyarlariSayfasi)
+ *   - Vakit karti     "… vakti hatırlatma ayarları" (PencereKarti)
+ *   - Adim satiri     "… adımını düzenleyin"        (PencereKarti)
  *
  * Her adimda erisilebilirlik agaci `<cikis>/agac/NN-<ad>.json` icine yazilir —
  * bir adim tutmazsa hangi ogelerin ekranda oldugu oradan gorulur.
@@ -48,38 +48,53 @@ const bekle = (ms) => new Promise((c) => setTimeout(c, ms));
 
 let adimNo = 0;
 
-/** Erisilebilirlik agacini duz bir listeye cevirir ve artifacta yazar. */
-function agac(ad) {
-    adimNo += 1;
+/** Erisilebilirlik agacini bir kez okur (ham JSON -> duz liste). */
+function agacOku() {
     let ham = '[]';
     try {
         ham = idb('ui', 'describe-all', '--json');
     } catch (e) {
-        console.error(`  agac alinamadi (${ad}): ${String(e.message).split('\n')[0]}`);
+        return { ogeler: [], hata: String(e.message).split(/\r?\n/)[0] };
     }
     const ogeler = [];
+    const ekle = (j) => (Array.isArray(j) ? ogeler.push(...j) : ogeler.push(j));
     try {
-        const j = JSON.parse(ham);
-        if (Array.isArray(j)) ogeler.push(...j);
-        else ogeler.push(j);
+        ekle(JSON.parse(ham));
     } catch {
         // idb bazi surumlerde satir satir JSON verir.
-        for (const s of ham.split('\n').map((x) => x.trim()).filter(Boolean)) {
+        for (const satir of ham.split(/\r?\n/).map((x) => x.trim()).filter(Boolean)) {
             try {
-                const j = JSON.parse(s);
-                if (Array.isArray(j)) ogeler.push(...j);
-                else ogeler.push(j);
+                ekle(JSON.parse(satir));
             } catch {
                 /* JSON olmayan satirlari yok say */
             }
         }
     }
+    return { ogeler, hata: null };
+}
+
+/**
+ * Agaci DOLANA KADAR bekler ve artifacta yazar.
+ * Ilk `describe-all` cagrisi companion isinirken BOS doner; bunu "ekranda hicbir
+ * oge yok" sanmak, bildirim izni uyarisini kapatmayi atlayip sonraki TUM adimlari
+ * bloklar (yasandi).
+ */
+async function agac(ad, { enAz = 2, denemeSayisi = 10 } = {}) {
+    adimNo += 1;
+    let sonuc = { ogeler: [], hata: 'deneme yok' };
+    for (let i = 0; i < denemeSayisi; i++) {
+        sonuc = agacOku();
+        if (sonuc.ogeler.length >= enAz) break;
+        await bekle(1500);
+    }
+    if (sonuc.hata) console.error(`  agac alinamadi (${ad}): ${sonuc.hata}`);
+    else if (sonuc.ogeler.length < enAz) console.error(`  agac ZAYIF (${ad}): ${sonuc.ogeler.length} oge`);
     fs.writeFileSync(
         path.join(agacDizin, `${String(adimNo).padStart(2, '0')}-${ad}.json`),
-        JSON.stringify(ogeler, null, 1),
+        JSON.stringify(sonuc.ogeler, null, 1),
         'utf8'
     );
-    return ogeler;
+    return sonuc.ogeler;
 }
 
 const metin = (o) =>
@@ -109,7 +124,7 @@ const alan = (o) => {
 function bul(ogeler, kalip, { tur } = {}) {
     let aday = ogeler.filter((o) => (o.frame || o.AXFrame) && alan(o) > 0 && kalip.test(metin(o)));
     if (tur) {
-        const turlu = aday.filter((o) => new RegExp(tur, 'i').test(String(o.type || o.AXType || '')));
+        const turlu = aday.filter((o) => new RegExp(tur, 'i').test(String(o.type || o.role || '')));
         if (turlu.length) aday = turlu;
     }
     // Kucuk cerceveli oge gercekten tiklanabilir olandir; tum ekrani kaplayan
@@ -142,67 +157,60 @@ function cek(ad) {
 (async () => {
     await bekle(7000);
 
-    // Bildirim izni diyalogu acilis zincirinde cikar; kapatilmazsa tum kareleri kirletir.
-    // "İzin Verme" ile karismamasi icin kalip TAM eslesmedir.
-    let a = agac('acilis');
-    if (!(await dokun(a, /^(İzin Ver|Allow|Tamam|OK)$/i, 'bildirim izni'))) {
-        console.log('  (izin diyalogu yok ya da zaten kapatilmis)');
-    }
-    await bekle(3000);
-
-    // Acilista "Neler Yeni" / rozet kutlamasi modali cikabilir; kapatilmazsa
-    // ana ekran karesini tumuyle ortar.
-    for (let tur = 0; tur < 3; tur++) {
-        const m = agac(`modal-${tur}`);
-        if (!(await dokun(m, /^(Devam Et|Kapat|Tamam|Anladım)$/i, 'acilis modali'))) break;
-        await bekle(1200);
+    // Acilista UST USTE katman cikabilir: bildirim izni uyarisi ve rozet/duyuru
+    // modali. Tek dongude kapatilir — izin uyarisini yalnizca "modal" kalibiyla
+    // aramak onu ekranda birakir ve sonraki TUM adimlari bloklar (yasandi).
+    const KAPATILACAK = /^(İzin Ver|Allow|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+    for (let tur = 0; tur < 5; tur++) {
+        const katman = await agac(`acilis-${tur}`);
+        if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
     }
 
-    agac('ana-ekran');
+    await agac('ana-ekran');
     cek('01-ana-ekran');
 
     // --- Kible ---
-    a = agac('kible-oncesi');
+    let a = await agac('kible-oncesi');
     if (await dokun(a, /kıble yönünü bul/i, 'kible dugmesi', { bekle: 3000 })) {
-        agac('kible');
+        await agac('kible');
         cek('05-kible');
-        a = agac('kible-geri');
-        if (!(await dokun(a, /^(geri|back|kapat|close|Namaz Akışı)$/i, 'kibleden geri'))) {
+        a = await agac('kible-geri');
+        if (!(await dokun(a, /^(geri|back|kapat|close|Namaz Akışı)$/i, 'kibleden geri', { bekle: 2500 }))) {
             // Geri dugmesi bulunamazsa kenar kaydirma jesti ile don.
             idb('ui', 'swipe', '5', '500', '400', '500');
-            await bekle(2000);
+            await bekle(2500);
         }
     }
 
     // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
-    a = agac('seri-oncesi');
+    a = await agac('seri-oncesi');
     if (await dokun(a, /^İstatistik$/i, 'istatistik sekmesi', { bekle: 3500 })) {
-        agac('seri');
+        await agac('seri');
         cek('04-seri');
     }
 
     // --- Ayarlar -> Muhafiz ---
-    a = agac('ayarlar-oncesi');
+    a = await agac('ayarlar-oncesi');
     if (await dokun(a, /^Ayarlar$/i, 'ayarlar sekmesi', { bekle: 2500 })) {
-        a = agac('ayarlar');
+        a = await agac('ayarlar');
         if (await dokun(a, /namaz muhafızı/i, 'muhafiz satiri', { bekle: 3000 })) {
             // Muhafiz varsayilan olarak KAPALI gelir; ana anahtari ac.
-            a = agac('muhafiz');
+            a = await agac('muhafiz');
             await dokun(a, /namaz muhafızı/i, 'muhafiz ana anahtari', { tur: 'switch', bekle: 2500 });
 
             // Zaman seridi ancak vakit karti acikken gorunur.
-            a = agac('muhafiz-acik');
+            a = await agac('muhafiz-acik');
             if (!(await dokun(a, /yatsı vakti hatırlatma/i, 'yatsi vakit karti', { bekle: 2500 }))) {
                 await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 });
             }
-            agac('muhafiz-kart-acik');
+            await agac('muhafiz-kart-acik');
             cek('02-muhafiz-zaman-seridi');
 
             // Adim detayi (bottom sheet). "adımını açın veya kapatın" ANAHTARDIR,
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
-            a = agac('adim-oncesi');
+            a = await agac('adim-oncesi');
             if (await dokun(a, /adımını düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
-                agac('adim-detay');
+                await agac('adim-detay');
                 cek('03-adim-detay');
             }
         }
