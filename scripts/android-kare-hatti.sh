@@ -80,8 +80,11 @@ DEMO="adb shell am broadcast -a com.android.systemui.demo -e command"
 $DEMO enter
 $DEMO clock -e hhmm 0941
 $DEMO battery -e level 100 -e plugged false
-$DEMO network -e wifi show -e level 4
-$DEMO network -e mobile show -e datatype none -e level 4
+# `fully true` olmadan emulatorde internet dogrulanmadigi icin Wi-Fi ikonunun
+# yaninda "!" gorunuyor.
+$DEMO network -e fully true
+$DEMO network -e wifi show -e level 4 -e fully true
+$DEMO network -e mobile show -e datatype none -e level 4 -e fully true
 $DEMO notifications -e visible false
 
 adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
