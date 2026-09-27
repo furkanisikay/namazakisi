@@ -219,7 +219,10 @@ function cek(ad) {
             // gelen anahtara dokunmak onu KAPATIR.
             // Zaman seridi ancak vakit karti acikken gorunur.
             a = await agac('muhafiz-acik');
-            if (!(await dokun(a, /yatsı vakti hatırlatma/i, 'yatsi vakit karti', { bekle: 2500 }))) {
+            // SABAH secilir, Yatsi DEGIL: Yatsi listenin en altinda ve genisleyen
+            // icerigi ekranin disinda kaliyor — zaman seridi gorunmuyor, adim
+            // satirlari erisilebilirlik agacina hic girmiyor (yasandi).
+            if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) {
                 await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 });
             }
             await agac('muhafiz-kart-acik');
