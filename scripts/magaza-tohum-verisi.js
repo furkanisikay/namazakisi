@@ -36,6 +36,28 @@ const KONUM = {
     takipHassasiyeti: 'dengeli',
 };
 
+/**
+ * src/core/types/SeriTipleri.ts > SEVIYE_TANIMLARI'nin kopyasi (betik TS'yi
+ * dogrudan yukleyemez). Ayrisirsa zarar sessiz DEGILDIR: yanlis seviye tohumlanir,
+ * uygulama kutlama modali acar ve kareler bozuk cikar.
+ */
+const SEVIYELER = [
+    { seviye: 1, minPuan: 0, rank: 'Mübtedi', ikon: '🌙' },
+    { seviye: 2, minPuan: 100, rank: 'Tâlip', ikon: '⭐' },
+    { seviye: 3, minPuan: 300, rank: 'Sâlik', ikon: '🌟' },
+    { seviye: 4, minPuan: 600, rank: 'Mürid', ikon: '💫' },
+    { seviye: 5, minPuan: 1000, rank: 'Ârif', ikon: '✨' },
+    { seviye: 6, minPuan: 1500, rank: 'Hâfız', ikon: '🏆' },
+    { seviye: 7, minPuan: 2500, rank: 'Kâmil', ikon: '👑' },
+];
+
+function seviyeBul(puan) {
+    let i = 0;
+    while (i + 1 < SEVIYELER.length && SEVIYELER[i + 1].minPuan <= puan) i++;
+    const sonraki = SEVIYELER[i + 1];
+    return { ...SEVIYELER[i], sonrakiMin: sonraki ? sonraki.minPuan : null };
+}
+
 /** AsyncStorage anahtar -> ham string deger. */
 function tohumVerisi() {
     const depo = {
@@ -67,7 +89,24 @@ function tohumVerisi() {
 
     depo[`namaz_gun_${gun(0)}`] = JSON.stringify(BUGUN);
     for (let i = 1; i <= GECMIS_GUN; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_GUN);
+
+    // Seviye de tohumlanmali: disk bossa uygulama 1. seviyeden basladigini sanar,
+    // acilistaki puan hesabi 4. seviyeyi bulunca "Seviye Atladın!" kutlamasi acar.
+    // O modaldeki surekli animasyon Android'de `uiautomator dump`'i "could not
+    // get idle state" ile dusurur ve erisilebilirlik agaci BOS gelir (yasandi).
+    // Puan kayitlardan turetilir: kilinan namaz x 5 (puanlamayiYenidenHesapla).
+    const kilinan = GECMIS_GUN * Object.keys(TAM_GUN).length + Object.keys(BUGUN).length;
+    const puan = kilinan * 5;
+    const seviye = seviyeBul(puan);
+    depo.seviye_durumu = JSON.stringify({
+        mevcutSeviye: seviye.seviye,
+        toplamPuan: puan,
+        mevcutSeviyePuani: puan - seviye.minPuan,
+        sonrakiSeviyeKalanPuan: seviye.sonrakiMin === null ? 0 : seviye.sonrakiMin - puan,
+        rank: seviye.rank,
+        rankIkonu: seviye.ikon,
+    });
     return depo;
 }
 
-module.exports = { tohumVerisi, gun, GECMIS_GUN };
+module.exports = { tohumVerisi, gun, GECMIS_GUN, SEVIYELER };

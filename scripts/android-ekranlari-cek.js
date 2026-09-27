@@ -138,7 +138,8 @@ async function yenidenBaslat() {
 }
 
 /** iOS'taki ayni ders: sekme etiketi ek metin tasiyabilir, tam-dize capasi kirilgan. */
-const SEKME = (ad) => new RegExp(`^${ad}(,|$|\s)`, 'i');
+// DIKKAT: sablon dizesinde `\s` yazilirsa `s`ye doner (bilinmeyen kacis); `\\s` sart.
+const SEKME = (ad) => new RegExp(`^${ad}(,|$|\\s)`, 'i');
 
 /** Ekran boyutu (piksel). `wm size` "Physical size: 1080x1920" doner. */
 const BOYUT = (() => {
