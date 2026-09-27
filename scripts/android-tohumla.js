@@ -30,6 +30,12 @@ if (!tablo) {
     process.exit(1);
 }
 
+// Tabloyu BOSALT: iOS tohumu manifest.json'u bastan yazar ve ilk acilistan
+// kalan anahtarlari siler. Burada yalniz INSERT OR REPLACE yapilsaydi o
+// anahtarlar (ör. `toplam_kililan_namaz = 0`) kalir, puan gocu iki platformda
+// FARKLI sonuc verir ve Android'de kutlama modali acilirdi (yasandi).
+db.exec('DELETE FROM catalystLocalStorage');
+
 const veri = tohumVerisi();
 const yaz = db.prepare('INSERT OR REPLACE INTO catalystLocalStorage (key, value) VALUES (?, ?)');
 let n = 0;

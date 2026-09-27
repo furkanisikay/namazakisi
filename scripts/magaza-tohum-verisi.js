@@ -73,6 +73,11 @@ function tohumVerisi() {
             gelismisMod: false,
             presetGocuYapildi: true,
         }),
+        // Bonus ACIKCA 0: anahtar yoksa uygulama bir kerelik goc yapar
+        // (bonus = eski toplamPuan - eski taban). Android'de ilk acilistan kalan
+        // `toplam_kililan_namaz = 0` ile bu 640 - 0 = 640 bonus uretti, toplam
+        // 1280 puana cikti ve "Seviye Atladın! Yeni rank: Ârif" modali acildi.
+        '@namaz_akisi/bonus_puan': '0',
         // Seri YOL-BAGIMLIDIR: kayitlardan turetilmez, diskte tutulur.
         // Tohumlanmazsa kayitlar dolu olsa bile baslik cipi "0 Gün" gosterir.
         seri_durumu: JSON.stringify({
