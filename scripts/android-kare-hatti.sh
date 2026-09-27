@@ -98,4 +98,8 @@ for akis in scripts/maestro/*.yaml; do
   # Bir akis dusse de digerleri cekilsin (her biri uygulamayi kendisi baslatir).
   maestro test "$akis" || echo "UYARI: $akis tamamlanamadi"
 done
+# Maestro `takeScreenshot` yolunu calisma dizinine degil kendi test ciktisina
+# gore yazar: ~/.maestro/tests/<zaman>/<akis>/takeScreenshot/kareler/*.png
+# (yasandi: tum adimlar COMPLETED, ama kareler/ BOS kaldi).
+find "$HOME/.maestro/tests" -path '*takeScreenshot*' -name '[0-9][0-9]-*.png' -exec cp {} kareler/ \;
 ls -la kareler
