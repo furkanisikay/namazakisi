@@ -171,6 +171,13 @@ async function yenidenBaslat() {
     return true;
 }
 
+/**
+ * Sekme etiketi kalibi.
+ * iOS sekme dugmesinin erisilebilirlik etiketine ", tab, N of 5" ekler
+ * ("Ayarlar, tab, 5 of 5") — tam-dize capasi (`/^Ayarlar$/`) TUTMAZ.
+ */
+const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
+
 function cek(ad) {
     const hedef = path.join(cikis, `${ad}.png`);
     simctl('io', UDID || 'booted', 'screenshot', hedef);
@@ -197,14 +204,14 @@ function cek(ad) {
 
     // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
     a = await agac('seri-oncesi');
-    if (await dokun(a, /^İstatistik$/i, 'istatistik sekmesi', { bekle: 3500 })) {
+    if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3500 })) {
         await agac('seri');
         cek('04-seri');
     }
 
     // --- Ayarlar -> Muhafiz ---
     a = await agac('ayarlar-oncesi');
-    if (await dokun(a, /^Ayarlar$/i, 'ayarlar sekmesi', { bekle: 2500 })) {
+    if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
         a = await agac('ayarlar');
         if (await dokun(a, /namaz muhafızı/i, 'muhafiz satiri', { bekle: 3000 })) {
             // Muhafiz varsayilan olarak KAPALI gelir; ana anahtari ac.
