@@ -1,4 +1,4 @@
-# App Store kayıt metinleri (iOS ilk yayın)
+# Mağaza kayıt metinleri (App Store + Google Play)
 
 > Bu dosya App Store Connect'e girilecek metinlerin **tek doğru kaynağıdır**. Değişiklik
 > yaparken karakter sınırlarına dikkat edin — Apple sınırı aşan metni kaydetmez.
@@ -150,3 +150,73 @@ Apple iki boyut istiyor: **6.9"** (iPhone 17 Pro Max vb.) ve **6.5"**.
 - Bildirim sesi olarak kendi müziğini seçme (iOS'ta sistem seçici yok)
 - Uygulama içi güncelleme teklifi (Play Core'a özgü)
 - Sessiz moddayken duyulan acil uyarı (iOS'ta AlarmKit ile gelecek — Faz 3)
+
+---
+
+# Google Play kayıt metinleri
+
+> Play **Android**'dir: App Store metninde bilinçli olarak geçmeyen widget, akıllı
+> konum takibi ve uygulama içi güncelleme burada **geçer**. `scripts/play-magaza.js`
+> aşağıdaki üç bloğu birebir okur — başlıkları değiştirmeyin.
+
+#### Play — uygulama adı
+
+```
+Namaz Akışı
+```
+
+#### Play — kısa açıklama
+
+```
+Vakit çıkmadan uyaran namaz muhafızı, kıble ve kaza defteri. Çevrimdışı.
+```
+
+#### Play — tam açıklama
+
+```
+Namaz Akışı, namaz vakitlerinizi takip etmenizi ve vakti kaçırmamanızı sağlayan, tamamen çevrimdışı çalışan bir ibadet asistanıdır.
+
+İnternet bağlantısı gerektirmez. Vakitler, bulunduğunuz konumun koordinatlarından astronomik olarak hesaplanır. Hiçbir veriniz sunucuya gönderilmez; namaz kayıtlarınız, ayarlarınız ve konumunuz yalnızca telefonunuzda kalır.
+
+★ NAMAZ MUHAFIZI
+Sıradan bir alarm değil. Vakit ilerledikçe tonu sertleşen dört kademeli bir hatırlatma sistemi: nazik hatırlatma, uyarı, sert uyarı ve acil. Her vakit için ayrı ayrı ayarlanır.
+
+• Hatırlatmaların vaktin sonuna doğru mu yoksa vakit girer girmez mi başlayacağını seçebilirsiniz.
+• Her adımın zamanını ve tekrar sıklığını kendiniz belirleyebilir, dilediğiniz adımı kapatabilirsiniz.
+• Hazır yoğunluklar (Hafif, Dengeli, Israrcı) tek dokunuşla hepsini ayarlar.
+• Sesli anons: hatırlatma, telefonunuzun Türkçe sesiyle konuşarak gelir. Metni kendiniz yazabilirsiniz. İnternet gerekmez.
+• Bildirim sesini kendi müziğinizden seçebilirsiniz.
+• Zaman şeridi, seçtiğiniz ayarın o gün hangi saatlerde sizi uyaracağını gösterir.
+
+★ VAKİT TAKİBİ
+• Bir sonraki vakte kalan süre canlı geri sayımla.
+• Ana ekran widget'ı ile vakitler kilit ekranınızda.
+• Akıllı konum takibi: şehir değiştirdiğinizde vakitler kendiliğinden güncellenir, pil tüketmez.
+• Kerahat vakitleri ana ekranda belirtilir.
+• Namaz vakitlerini telefonunuzun takvimine etkinlik olarak ekleyebilirsiniz.
+• Cuma namazı için, öğle vakti girmeden önce ayrı hatırlatma.
+
+★ KIBLE PUSULASI
+Cihazınızın sensörleriyle Kâbe yönünü anlık gösterir.
+
+★ KAZA DEFTERİ
+Kılınmayan namazlar otomatik tespit edilir ve kaza çetelesi tutulur. Geçmişe dönük kayıt girebilir, kıldıkça düşebilirsiniz.
+
+★ İSTİKRAR VE MOTİVASYON
+• Seri sistemi ibadet devamlılığınızı görselleştirir.
+• Bir günü kaçırdığınızda seriyi kurtarma imkânı.
+• Rozetler, seviyeler ve haftalık istatistikler.
+
+★ RAMAZAN
+İftar ve sahura kalan süre ana ekranda; sahur için ayrı tema.
+
+★ GİZLİLİK
+• Hesap açmanız gerekmez.
+• Reklam yok, izleme yok, analitik yok.
+• Konumunuz yalnızca vakit hesabı için kullanılır ve telefonunuzdan çıkmaz.
+• Verilerinizi şifreli bir dosyaya yedekleyip başka bir cihaza taşıyabilirsiniz.
+
+★ AÇIK KAYNAK
+Namaz Akışı bir sadaka-i cariye niyetiyle geliştirilmiştir ve daima ücretsizdir. Kaynak kodları GNU GPLv3 lisansıyla herkese açıktır:
+https://github.com/furkanisikay/namazakisi
+```

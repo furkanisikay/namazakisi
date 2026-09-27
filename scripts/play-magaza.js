@@ -175,7 +175,9 @@ function playMetinleri() {
             }
             for (const tur of ['phoneScreenshots', 'featureGraphic', 'icon']) {
                 const g = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
-                console.log('GORSEL ' + tur + ': ' + (((g.j && g.j.images) || []).length || 0) + ' adet');
+                const im = (g.j && g.j.images) || [];
+                console.log('GORSEL ' + tur + ': ' + im.length + ' adet');
+                im.forEach((x) => console.log('  ' + x.url));
             }
             return;
         }
