@@ -46,7 +46,9 @@ export interface SesliOnayModalProps {
 const MADDELER: { ikon: string; metin: string }[] = [
     {
         ikon: 'volume-up',
-        metin: 'Yalnızca vaktin son dakikalarında, kalan süreyi sesli olarak söyler.',
+        // Yon-bagimsiz: "son dakikalarinda" giris yonunde YANLISTI (orada vakit
+        // girdikten sonra, gecen sureyi soyler).
+        metin: 'Yalnızca ayarladığınız adımlarda, kalan ya da geçen süreyi sesli olarak söyler.',
     },
     {
         ikon: 'bell-slash',

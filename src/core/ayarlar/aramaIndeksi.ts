@@ -44,7 +44,14 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
   {
     id: 'sayfa-muhafiz',
     baslik: 'Namaz muhafızı',
-    anahtarKelimeler: ['muhafız', 'hatırlatma', 'uyarı'],
+    anahtarKelimeler: [
+      'muhafız',
+      'hatırlatma',
+      'uyarı',
+      'vakit girer girmez',
+      'vakit çıkarken',
+      'ne zaman hatırlatılsın',
+    ],
     sayfa: 'MuhafizAyarlari',
     grup: 'Hatırlatmalar',
   },

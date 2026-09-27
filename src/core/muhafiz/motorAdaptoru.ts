@@ -26,6 +26,7 @@ import { aktifSeviyeyiBul } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
   eskiAlarmSesiniGoc,
+  yonEsiklerineGoc,
   eskidenMatriseGoc,
   modlariKanallaraGoc,
   type EskiMuhafizAyari,
@@ -318,7 +319,16 @@ export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is M
   });
 }
 
-export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
+/**
+ * `yogunluk` GEREKLI: yon gocu (`yonEsiklerineGoc`) giris tablosunu ona gore secer.
+ * Ham AsyncStorage okuyan iki tuketici (`ArkaplanGorevServisi`, `KonumTakipServisi`)
+ * bunu gecmezse slice "yogun", arka plan "normal" tablosu yazar ve iki plan
+ * kullanici uygulamayi acana kadar AYRISIR.
+ */
+export type MatrisKaynagi = EskiMuhafizAyari & {
+  matris?: MuhafizMatrisi;
+  yogunluk?: unknown;
+};
 
 /**
  * Tuketicilerin TEK matris kaynagi.
@@ -335,7 +345,9 @@ export type MatrisKaynagi = EskiMuhafizAyari & { matris?: MuhafizMatrisi };
  * (kimlik korunur, gereksiz kopya yok).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
-  return matrisGecerliMi(kaynak.matris)
-    ? modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))
-    : eskidenMatriseGoc(kaynak);
+  if (!matrisGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
+  return yonEsiklerineGoc(
+    modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris)),
+    kaynak.yogunluk
+  );
 }

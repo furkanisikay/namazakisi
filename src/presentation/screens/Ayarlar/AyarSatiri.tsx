@@ -13,7 +13,8 @@
  * (Task 4 brief — Ayarlar ekranı yeniden kurulumu)
  */
 import * as React from 'react';
-import { View, Text, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Anahtar } from '../../components/common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
@@ -124,7 +125,7 @@ export const AyarSatiri: React.FC<AyarSatiriProps> = (props) => {
     <View className="flex-row items-center py-3.5 px-4">
       {ikonCipi}
       {metinBlogu}
-      <Switch
+      <Anahtar
         value={deger}
         onValueChange={handleToggle}
         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}

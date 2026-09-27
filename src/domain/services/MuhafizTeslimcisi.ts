@@ -9,8 +9,10 @@
  *
  * Android: bildirim kanali (ses + titresim kanal ozelligidir) + exact alarm ile
  * native TTS anonsu.
- * iOS: kanal yok (ses bildirim basina), arka planda kod calistirilamadigi icin
- * TTS yok; aciliyet `interruptionLevel` ve (Faz 3) AlarmKit ile tasinir.
+ * iOS: kanal yok (ses bildirim basina); arka planda kod calistirilamadigi icin
+ * anons calisma aninda degil PLANLAMADA cihazda ses dosyasina cevrilir ve
+ * bildirimin sesi olur (Faz 2); aciliyet `interruptionLevel` ve (Faz 3)
+ * AlarmKit ile tasinir.
  *
  * ---------------------------------------------------------------------------
  * SECIM NEDEN ENJEKTE EDILEBILIR? (jest tuzagi — olculdu, AGENTS.md'de kayitli)
@@ -82,6 +84,15 @@ export interface MuhafizTeslimcisi {
 
     /** Tum yan kanallari iptal et (yeniden planlama oncesi temizlik). */
     tumYanKanallariIptalEt(): void;
+
+    /**
+     * Planlama turu BITTIKTEN sonra calisir (muhafiz kapaliyken de). iOS'ta
+     * kullanilmayan anons kliplerini toplar; Android'de is yoktur.
+     *
+     * Opsiyonel: testlerdeki el yapimi teslimciler bunu yazmak zorunda kalmasin.
+     * Asla firlatmaz.
+     */
+    tamamla?(): Promise<void>;
 }
 
 let _teslimci: MuhafizTeslimcisi | null = null;

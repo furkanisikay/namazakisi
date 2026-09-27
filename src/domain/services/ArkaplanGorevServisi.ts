@@ -400,6 +400,10 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             koordinatlar: koordinatlar,
             matris: muhafizMatrisiniCoz({
                 matris: ayarlar.matris,
+                // Yon gocunun giris tablosunu secmesi icin ZORUNLU: gecilmezse bu
+                // gorev varsayilan tabloyu, slice ise kullanicinin yogunlugunu
+                // yazar ve iki plan uygulama acilana kadar ayrisir.
+                yogunluk: ayarlar.yogunluk,
                 esikler: {
                     seviye1: ayarlar.esikler?.seviye1 || 45,
                     seviye2: ayarlar.esikler?.seviye2 || 25,

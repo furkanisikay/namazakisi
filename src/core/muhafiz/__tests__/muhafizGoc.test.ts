@@ -1,4 +1,10 @@
-import { eskiAlarmSesiniGoc, eskidenMatriseGoc, modlariKanallaraGoc } from '../muhafizGoc';
+import {
+  eskiAlarmSesiniGoc,
+  eskidenMatriseGoc,
+  modlariKanallaraGoc,
+  yonEsiklerineGoc,
+} from '../muhafizGoc';
+import { esikSiralamasiGecerliMi } from '../aktifSeviye';
 import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from '../kanalKumesi';
@@ -169,5 +175,125 @@ describe('modlariKanallaraGoc', () => {
     expect(plan.map((p) => p.sesliAnons)).toEqual([
       false, false, false, false, false, true, true,
     ]);
+  });
+});
+
+describe('yonEsiklerineGoc', () => {
+  const VARSAYILAN_SES_ID = 'varsayilan';
+
+  const sev = (kademe: SeviyeAyari['kademe'], esikDk: number): SeviyeAyari => ({
+    kademe,
+    kanallar: { bildirim: true, sesli: true },
+    esikDk,
+    siklik: { herDk: 7 },
+    bildirimSesi: 'content://media/42',
+    sesAdi: 'Secilen muzik',
+    acilKanal: true,
+    anonsMetni: 'Kendi metnim',
+  });
+
+  const KADEMELER: SeviyeAyari['kademe'][] = ['nazik', 'uyari', 'sert', 'acil'];
+
+  const vakitAyari = (
+    yon: 'cikisaDogru' | 'girisindenItibaren',
+    esikler: number[]
+  ) => ({ yon, seviyeler: KADEMELER.map((k, i) => sev(k, esikler[i])) });
+
+  const matrisKur = (
+    yon: 'cikisaDogru' | 'girisindenItibaren',
+    esikler: number[]
+  ): MuhafizMatrisi =>
+    Object.fromEntries(
+      MUHAFIZ_VAKITLERI.map((v) => [v, vakitAyari(yon, esikler)])
+    ) as MuhafizMatrisi;
+
+  /**
+   * SAHADAKI BOZUK KAYIT: yon degistirme yolu eskiden esiklere dokunmuyordu →
+   * giris yonlu her kullanicinin esikleri CIKIS sirasinda (azalan) kaldi ve
+   * eskalasyon tersine dondu.
+   */
+  test('giris yonlu AZALAN esikleri ARTAN hale getirir', () => {
+    const sonuc = yonEsiklerineGoc(matrisKur('girisindenItibaren', [45, 25, 10, 3]), 'normal');
+
+    for (const v of MUHAFIZ_VAKITLERI) {
+      expect(esikSiralamasiGecerliMi(sonuc[v].seviyeler, 'girisindenItibaren')).toBe(true);
+    }
+  });
+
+  test('vaktin pencere sinifina gore tablo secer', () => {
+    const sonuc = yonEsiklerineGoc(matrisKur('girisindenItibaren', [45, 25, 10, 3]), 'normal');
+
+    expect(sonuc.yatsi.seviyeler.map((s) => s.esikDk)).not.toEqual(
+      sonuc.aksam.seviyeler.map((s) => s.esikDk)
+    );
+  });
+
+  test('YALNIZ zamanlama tasir — kanal/aciliyet/ses/metin korunur', () => {
+    const once = matrisKur('girisindenItibaren', [45, 25, 10, 3]);
+    const sonra = yonEsiklerineGoc(once, 'normal');
+
+    sonra.yatsi.seviyeler.forEach((s, i) => {
+      expect(s.kanallar).toEqual(once.yatsi.seviyeler[i].kanallar);
+      expect(s.acilKanal).toBe(true);
+      expect(s.bildirimSesi).toBe('content://media/42');
+      expect(s.sesAdi).toBe('Secilen muzik');
+      expect(s.anonsMetni).toBe('Kendi metnim');
+    });
+    expect(VARSAYILAN_SES_ID).toBe('varsayilan'); // ses id'si degismedi
+  });
+
+  test('CIKIS yonlu vakitlere HIC dokunmaz (ayni referans)', () => {
+    const matris = matrisKur('cikisaDogru', [45, 25, 10, 3]);
+
+    expect(yonEsiklerineGoc(matris, 'normal')).toBe(matris);
+  });
+
+  test('yon alani HIC yoksa (eski kayit) dokunmaz', () => {
+    const matris = Object.fromEntries(
+      MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler: KADEMELER.map((k, i) => sev(k, [45, 25, 10, 3][i])) }])
+    ) as MuhafizMatrisi;
+
+    expect(yonEsiklerineGoc(matris, 'normal')).toBe(matris);
+  });
+
+  /** BILINCLI kullanici: zaten gecerli ARTAN giris yapilandirmasi ezilmemeli. */
+  test('gecerli ARTAN giris yapilandirmasina DOKUNMAZ (ayni referans)', () => {
+    const matris = matrisKur('girisindenItibaren', [12, 34, 56, 78]);
+
+    expect(yonEsiklerineGoc(matris, 'normal')).toBe(matris);
+  });
+
+  test('IDEMPOTENT: ikinci calisma ayni referansi dondurur', () => {
+    const birinci = yonEsiklerineGoc(matrisKur('girisindenItibaren', [45, 25, 10, 3]), 'normal');
+
+    expect(yonEsiklerineGoc(birinci, 'normal')).toBe(birinci);
+  });
+
+  test("bilinmeyen yogunlukta ('ozel') yine duzeltir", () => {
+    const sonuc = yonEsiklerineGoc(matrisKur('girisindenItibaren', [45, 25, 10, 3]), 'ozel');
+
+    expect(esikSiralamasiGecerliMi(sonuc.yatsi.seviyeler, 'girisindenItibaren')).toBe(true);
+  });
+
+  /**
+   * ESIT esik de gecersizdir ("kesin" artan): iki adim ayni dakikalari kapsar,
+   * biri kalici golgede kalir.
+   */
+  test('esit esikleri de duzeltir', () => {
+    const sonuc = yonEsiklerineGoc(matrisKur('girisindenItibaren', [10, 10, 10, 10]), 'normal');
+
+    expect(esikSiralamasiGecerliMi(sonuc.yatsi.seviyeler, 'girisindenItibaren')).toBe(true);
+  });
+
+  test('duzeltilen matris GERCEKTEN artan tonda plan uretir', () => {
+    const sonuc = yonEsiklerineGoc(matrisKur('girisindenItibaren', [45, 25, 10, 3]), 'normal');
+    const plan = vakitUyariPlaniOlustur(sonuc.yatsi, 1, { pencereUzunluguDk: 525 });
+
+    expect(plan.length).toBeGreaterThan(0);
+    // Seviye numarasi zaman icinde ASLA geri gitmez (eskalasyon tek yonlu).
+    const seviyeler = plan.map((p) => p.seviye);
+    expect([...seviyeler].sort((a, b) => a - b)).toEqual(seviyeler);
+    expect(seviyeler[0]).toBe(1);
+    expect(seviyeler[seviyeler.length - 1]).toBe(4);
   });
 });

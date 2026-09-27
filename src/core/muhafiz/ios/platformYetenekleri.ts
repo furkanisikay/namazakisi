@@ -32,9 +32,11 @@ export interface PlatformYetenekleri {
      * Anons metni SERBESTCE yazilabilir mi?
      *
      * Android: evet — metin calisma aninda TTS ile seslendirilir.
-     * iOS: HAYIR. iOS'ta belirli bir saatte arka planda kod calistirilamaz,
-     * dolayisiyla metin calisma aninda seslendirilemez; anons on-kayitli bir
-     * ses klibidir ve klip seti sabittir (Faz 2).
+     * iOS: EVET (Faz 2). Belirli bir saatte arka planda kod calistirilamaz, ama
+     * metin planlama sirasinda cihazda (`AVSpeechSynthesizer`, cevrimdisi) ses
+     * dosyasina cevrilir ve bildirim o dosyayi calar. Metin 300 karakterle
+     * sinirlidir (`ANONS_METIN_UST_SINIRI`): iOS 30 sn'yi asan bildirim sesini
+     * kirpmaz, HIC calmaz.
      */
     serbestAnonsMetni: boolean;
 
@@ -77,7 +79,7 @@ export function iosYetenekleri(alarmKitVar: boolean = false): PlatformYetenekler
     return {
         platform: 'ios',
         sesSecici: false,
-        serbestAnonsMetni: false,
+        serbestAnonsMetni: true,
         titresimSecimi: false,
         sessizligiDelebilir: alarmKitVar,
     };

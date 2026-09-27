@@ -151,6 +151,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   OZEL_GUN_AYARLARI: 'ozel_gun_ayarlari',
   // Muhafiz sistemi
   MUHAFIZ_AYARLARI: 'muhafiz_ayarlari',
+  // iOS anons kliplerinin son kullanim gunleri (GC icin). CIHAZA OZGUDUR — dosyalar
+  // bu cihazin Library/Sounds'unda yasar; yedekleme beyaz listesine GIRMEZ.
+  IOS_ANONS_KLIP_KULLANIMI: '@namaz_akisi/ios_anons_klip_kullanimi',
   // Vakit Bildirim Ayarları
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI

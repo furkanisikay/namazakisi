@@ -13,25 +13,39 @@
  * `trDestekleniyorMu` kopruye gore asla firlatmaz; yine de savunmaci `catch`
  * birakilir (native modul hic yuklenmemis olabilir).
  *
- * iOS'TA SORU ANLAMSIZ → `null` (sorulmaz bile). Kopru Android disinda `false`
- * doner ("sorgulanamadi" anlaminda) ve bu deger uyari bandini YAKARDI: iOS'ta
- * sesli anons TTS ile degil on-kayitli ses klibiyle calisir, dolayisiyla
- * "cihazinizda Turkce dil paketi yok" uyarisi hem YANLIS olur hem de
- * kullanicinin yapabilecegi bir sey yoktur. Yukaridaki sozlesme aynen gecerli:
- * `null` = bilinmiyor = uyari YOK.
+ * iOS'TA SORU FARKLI KOPRUYE SORULUR (Faz 2). Android koprusu iOS'ta `false`
+ * doner ("sorgulanamadi" anlaminda) ve bu deger uyari bandini YANLISLIKLA
+ * yakardi. iOS'ta anons cihaz-ici `AVSpeechSynthesizer` ile uretilir; Turkce ses
+ * yoksa klip URETILMEZ ve anons duyulmaz → soru anlamli, ama cevabi
+ * `expo-muhafiz-anons` verir. Modul bu build'de yoksa (eski surum) soru
+ * sorulmaz: `null` = bilinmiyor = uyari YOK.
  */
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { trDestekleniyorMu } from '../../../modules/expo-countdown-notification/src';
+import { anonsModuluVarMi, trSesTanimlayici } from '../../../modules/expo-muhafiz-anons/src';
 
 export function useTurkceTtsDestegi(): boolean | null {
     const [destekli, setDestekli] = useState<boolean | null>(null);
 
     useEffect(() => {
-        // Android disinda hic sorma: kopru `false` dondurur ve bu YANLIS uyari olur.
-        if (Platform.OS !== 'android') return;
-
         let iptalEdildi = false;
+
+        if (Platform.OS !== 'android') {
+            // iOS: yalniz cihaz-ici anons modulu VARSA sor. Yoksa Android koprusu
+            // `false` dondururdu ve bu YANLIS uyari olurdu.
+            if (!anonsModuluVarMi()) return;
+            trSesTanimlayici()
+                .then((sesId) => {
+                    if (!iptalEdildi) setDestekli(sesId !== null);
+                })
+                .catch(() => {
+                    if (!iptalEdildi) setDestekli(null);
+                });
+            return () => {
+                iptalEdildi = true;
+            };
+        }
 
         trDestekleniyorMu()
             .then((sonuc) => {

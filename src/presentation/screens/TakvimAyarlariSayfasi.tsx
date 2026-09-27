@@ -11,7 +11,6 @@ import {
     ScrollView,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Switch,
     ActivityIndicator,
     Modal,
     Animated,
@@ -19,6 +18,7 @@ import {
     Dimensions,
     StyleSheet,
 } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
@@ -114,7 +114,7 @@ const VakitSatiri: React.FC<VakitSatiriProps> = ({ gorununumAdi, ayar, onAc, onT
                 color={renkler.metinIkincil}
                 style={{ marginRight: 12, opacity: 0.55 }}
             />
-            <Switch
+            <Anahtar
                 value={ayar.aktif}
                 onValueChange={onToggle}
                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
@@ -259,7 +259,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                         {aktifAyar.aktif ? 'Bu vakit takvime eklenecek' : 'Bu vakit şu an kapalı'}
                                     </Text>
                                 </View>
-                                <Switch
+                                <Anahtar
                                     value={aktifAyar.aktif}
                                     onValueChange={v => onChange({ aktif: v })}
                                     trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
@@ -557,7 +557,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 {ayarlar.aktif ? 'Aktif — etkinlikler oluşturulabilir' : 'Namaz vakitlerini takvime ekle'}
                             </Text>
                         </View>
-                        <Switch
+                        <Anahtar
                             value={ayarlar.aktif}
                             onValueChange={v => { dispatch(takvimAyarlariniGuncelle({ aktif: v })); }}
                             trackColor={{ false: renkler.sinir, true: 'rgba(255,255,255,0.4)' }}

@@ -7,9 +7,10 @@
  * dahil), bu yuzden sabit bir grid'in anlami kalmadi: gosterilecek tek sey
  * "su an hangi ses secili"dir.
  *
- * ANIMASYON BUTCESI BURAYA HARCANDI (AGENTS.md: "cesareti tek imza ogesinde
- * harca"): secici kapandiginda yeni ad satira yumusak bir gecisle yerlesir —
- * ekranin geri kalani sakin kalir.
+ * MIKRO GECIS: secici kapandiginda yeni ad satira yumusak bir gecisle yerlesir.
+ * Ekranin IMZA OGESI artik bu satir degil `ZamanSeridi`dir (AGENTS.md: "cesareti
+ * tek imza ogesinde harca"); bu gecis olay-tetiklemeli ve modal icinde oldugu
+ * icin seritle ayni anda hic gorunmez.
  */
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';

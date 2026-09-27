@@ -27,13 +27,32 @@ const seviyeIndeksi = (seviye: number | undefined): number => {
 };
 
 /**
+ * Giris-yonlu vakitte sayac esigi icin CIKIS tabani (dk, nazik → acil).
+ *
+ * Tarihsel varsayilan matris; `ArkaplanGorevServisi` ve `KonumDegisikligiServisi`
+ * de ham okumada ayni sayilara duser. Yalniz `yonYedegi` yokken kullanilir.
+ */
+export const VARSAYILAN_CIKIS_ESIKLERI = [45, 25, 10, 3];
+
+/**
  * DIKKAT (Faz 1 / B12): dondurulen esik "vaktin CIKMASINA kala" anlamindadir.
  * Giris yonune (`yon: 'girisindenItibaren'`) cevrilmis bir vakitte hucrenin
- * `esikDk`'si "girisin uzerinden gecen dakika" demektir; ikisi ayni sayi degildir
+ * `esikDk`'si "girisin uzerinden gecen dakika" demektir; ikisi AYNI SAYI DEGILDIR
  * ve donusum icin pencere uzunlugu gerekir — bu yardimci SAF oldugu icin onu
- * bilemez. Bu yuzden cozum donusum DEGIL BASTIRMADIR: giris-yonlu vakit
- * `muhafizUyarilanVakitleriBul` uzerinden "tumuyle kapsanmis" sayilir ve sayac o
- * vakitte planlanmaz (bkz. asagi). Esigi burada "cevirmeye" calisma.
+ * bilemez.
+ *
+ * MUHAFIZ ACIKKEN sorun yok: giris-yonlu vakit `muhafizUyarilanVakitleriBul`
+ * uzerinden "tumuyle kapsanmis" sayilir ve sayac orada hic planlanmaz.
+ * MUHAFIZ KAPALIYKEN bastirma uygulanmaz ve esik ham okunur → giris degeri
+ * "cikisa kala" diye yorumlanir. Eskiden bu tesaduffen zararsizdi (giris-yonlu
+ * kayitlar cikis sirasindaki esikleri tasiyordu — duzeltilen hatanin ta kendisi);
+ * esikler yone uygun kurulunca gorunur olur: or. acil 180 dk, 87 dk'lik aksam
+ * penceresinde sayaci vakit girer girmez baslatirdi.
+ *
+ * COZUM YINE DONUSUM DEGIL: giris-yonlu vakitte esik, o vaktin CIKIS
+ * zamanlamasindan okunur — `yonYedegi.cikisaDogru` (kullanicinin ayrildigi cikis
+ * ayari) varsa ondan, yoksa tarihsel varsayilandan. Esigi pencereyle "cevirmeye"
+ * calisma.
  */
 export const sayacBaslangicEsikleriHesapla = (
   seviye: number | undefined,
@@ -42,9 +61,17 @@ export const sayacBaslangicEsikleriHesapla = (
   const indeks = seviyeIndeksi(seviye);
   const sonuc = {} as Record<MuhafizVakti, number>;
   for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    if (vakitAyari?.yon === 'girisindenItibaren') {
+      const cikisYedegi = vakitAyari.yonYedegi?.cikisaDogru?.[indeks]?.esikDk;
+      sonuc[vakit] = Number.isFinite(cikisYedegi)
+        ? (cikisYedegi as number)
+        : VARSAYILAN_CIKIS_ESIKLERI[indeks];
+      continue;
+    }
     // Eşik yalnız bir ZAMAN referansıdır; adımın kanalları (hepsi kapalı olsa
     // bile) sayacın ne zaman başlayacağını değiştirmez.
-    sonuc[vakit] = matris[vakit]?.seviyeler?.[indeks]?.esikDk ?? 0;
+    sonuc[vakit] = vakitAyari?.seviyeler?.[indeks]?.esikDk ?? 0;
   }
   return sonuc;
 };

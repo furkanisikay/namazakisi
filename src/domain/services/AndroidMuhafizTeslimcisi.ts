@@ -35,6 +35,11 @@ import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'android' as const;
 
+    /** Android'de tur sonu isi yok: anons calisma aninda TTS ile uretilir, dosya birakmaz. */
+    async tamamla(): Promise<void> {
+        // Bilincli bos.
+    }
+
     /**
      * Kanal id'leri SESIN (ve titresimin) fonksiyonu → planlamadan ONCE gerekli
      * kanallar olusturulmali. Ayni cagri oksuz kalmis hash'li kanallari da GC

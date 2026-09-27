@@ -52,6 +52,7 @@
     },
     "testflight": {
       "ios": {
+        "ascAppId": "6813061360",
         "ascApiKeyPath": "/tmp/asc-api-key.p8",
         "ascApiKeyIssuerId": "$ASC_KEY_ISSUER_ID",
         "ascApiKeyId": "$ASC_KEY_ID"

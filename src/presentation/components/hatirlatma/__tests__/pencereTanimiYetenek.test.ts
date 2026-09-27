@@ -54,8 +54,8 @@ describe('iOS kapilari', () => {
         expect(iosTanim().sesSecimiVar).toBe(false);
     });
 
-    test('anons metni DUZENLENEMEZ — calisma aninda seslendirme yok', () => {
-        expect(iosTanim().anonsMetniDuzenlenebilir).toBe(false);
+    test('anons metni DUZENLENEBILIR — metin planlamada ses dosyasina cevrilir (Faz 2)', () => {
+        expect(iosTanim().anonsMetniDuzenlenebilir).toBe(true);
     });
 
     test('titresim secilemez — haptik sistem ayarina bagli', () => {
@@ -77,7 +77,7 @@ describe('iOS kapilari', () => {
         expect(tanim.yetenekler.sessizligiDelebilir).toBe(true);
         // Diger kapilar AlarmKit'ten bagimsiz — acilmamali.
         expect(tanim.sesSecimiVar).toBe(false);
-        expect(tanim.anonsMetniDuzenlenebilir).toBe(false);
+        expect(tanim.anonsMetniDuzenlenebilir).toBe(true);
     });
 });
 

@@ -25,6 +25,11 @@
  * Native cagri asla UI'i dusurmemeli -> hata yutulup loglanir.
  */
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
+import {
+    anonsModuluVarMi,
+    anonsuKonus,
+    anonsuSustur,
+} from '../../../modules/expo-muhafiz-anons/src';
 import { Logger } from '../../core/utils/Logger';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../core/muhafiz/motorAdaptoru';
 import type { UyariKanallari } from '../../core/muhafiz/matrisTipleri';
@@ -58,6 +63,19 @@ export function anonsuOnizle(
     gecikmeMs: number = ONIZLEME_GECIKMESI_MS
 ): void {
     if (!cozulmusMetin || cozulmusMetin.trim().length === 0) return;
+
+    // iOS (cihaz-ici anons modulu var): uygulama on plandayken dogrudan konusulur.
+    // Ayni `AVSpeechSynthesizer` sesi bildirim klibini de uretir → kullanici
+    // "Dinle"de duydugu sesi bildirimde de duyar. Karar PLATFORMA degil
+    // YETENEGE bagli: jest'te varsayilan `Platform.OS` 'ios'tur ama mock modul
+    // yoktur, Android testleri sessizce bu dala kaymaz.
+    if (anonsModuluVarMi()) {
+        void anonsuSustur();
+        setTimeout(() => {
+            void anonsuKonus(cozulmusMetin.trim());
+        }, gecikmeMs);
+        return;
+    }
 
     try {
         planlaAnons(ONIZLEME_ANONS_ID, Date.now() + gecikmeMs, cozulmusMetin);

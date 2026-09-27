@@ -125,6 +125,9 @@ Her faz kendi başına `npm run verify` yeşil + Android nöbetçileri yeşil + 
 
 ### Faz 2 — Sesli kanal: ön-kayıtlı anons klipleri
 
+> **GERÇEKLEŞEN (2026-09-17) — plan DEĞİŞTİ, aşağıdaki özgün metin tarihsel kayıttır.**
+> Paketlenmiş sabit klip seti **uygulanmadı**. Kullanıcı kararı: bulut TTS yok (uygulama çevrimdışı çalışır), Piper tr modelleri CC BY-NC-SA (ticari dağıtıma uygun değil). Yerine **cihaz-içi sentez**: `modules/expo-muhafiz-anons` (`AVSpeechSynthesizer.write` → `Library/Sounds/muhafiz_anons_<hash>.caf`). Sonuçları: `{süre}` DÜŞMEZ (anons dakikayı söyler), anons metni iOS'ta da **düzenlenebilir** (≤300 karakter — 30 sn sınırı), ek varlık yok. Bağlantı `IosMuhafizTeslimcisi.anonsSesiniCoz`: sentez yalnız ön planda, arka planda var olan klip ya da paket sesi; GC yaşa dayalı (`ios/klipKullanimi.ts`, 7 gün). Önizleme `anonsuKonus` ile aynı sesi kullanır. Türkçe ses yoksa klip üretilmez, ekran uyarır. **Cihazda doğrulanacak:** klibin bildirimle çaldığı, `.caf` Int16 çıktısının kabulü, gelişmiş Türkçe ses indirilince adların yenilenmesi.
+
 **Amaç:** iOS'ta `sesli` hücre, Android TTS anonsunun **dakikasız** ikizi olan ≤30 sn'lik klibi bildirim sesi olarak çalar; ön plan/önizleme aynı klibi kullanır.
 
 **Ne değişir:**

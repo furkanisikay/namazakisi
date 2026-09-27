@@ -1,6 +1,8 @@
 import type { EskiUyariModu, MuhafizMatrisi, SeviyeAyari } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
 import { modKanallaraCevir } from './kanalKumesi';
+import { esikSiralamasiGecerliMi } from './aktifSeviye';
+import { girisZamanlamasiniSec } from './girisZamanlamasi';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
 export const ESKI_ALARM_SESI = 'alarm';
@@ -73,6 +75,60 @@ export function eskiAlarmSesiniGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
 
     if (vakitDegisti) degisti = true;
     sonuc[vakit] = vakitDegisti ? { ...vakitAyari, seviyeler } : vakitAyari;
+  }
+
+  return degisti ? sonuc : matris;
+}
+
+/**
+ * GIRIS YONLU VAKITLERIN ESIKLERINI YONE UYGUN HALE GETIRIR (idempotent).
+ *
+ * SAHADAKI BOZUK KAYIT: yon degistirme yolu eskiden yalniz anons metnini cevirip
+ * `yon` alanini yaziyordu, `esikDk`'ye HIC dokunmuyordu → giris yonunu secmis her
+ * kullanicinin esikleri CIKIS sirasinda (45/25/10/3, AZALAN) kaldi. Giris yonunde
+ * kapsama `olcuDk >= esikDk` ve EN BUYUK esik kazandigi icin eskalasyon tersine
+ * doner: vakit girer girmez en sert ton, sure gectikce naziklesme, en buyuk
+ * esikten sonra TAM SESSIZLIK (yatsida 8 saat). Kullanici elle de duzeltemez:
+ * `esikSinirlariniHesapla` komsu kisitini girişte ters cevirir ve azalan degerlerle
+ * min > max cikarak stepper'i tek degere kilitler.
+ *
+ * KOSUL = `esikSiralamasiGecerliMi` (TEK siralama kapisi). Duzeltme sonrasi kosul
+ * false doner → goc bir daha calismaz; kesin ARTAN kurmus BILINCLI kullaniciya hic
+ * dokunmaz. Kapali adimlar da sayilir (yuklem kanallara bakmaz) — UI kapali adimi
+ * yine de esik sinirlarinda kilitlemeye devam ettigi icin tutarli.
+ *
+ * YALNIZ ZAMANLAMA TASIR (`esikDk` + `siklik`): kanal, aciliyet, ses ve anons metni
+ * kullanicinindir (`presetZamanlamasiniUygula` goc sozlesmesinin ikizi).
+ *
+ * BILINEN KENAR: esikleri elle KISMEN duzeltmis kullanici (or. 45/25/10/200) tumden
+ * tabloya ceker — dort hucre tek bir zamanlama tablosu oldugu icin kismi kurtarma
+ * anlamsiz olurdu.
+ *
+ * DEGISIKLIK YOKSA AYNI REFERANS doner (`eskiAlarmSesiniGoc` ile ayni sozlesme).
+ *
+ * @param yogunluk Hazir yogunluk; 'ozel'/bilinmeyen ise giris tablosu varsayilana duser.
+ */
+export function yonEsiklerineGoc(matris: MuhafizMatrisi, yogunluk?: unknown): MuhafizMatrisi {
+  let degisti = false;
+  const sonuc = {} as MuhafizMatrisi;
+
+  for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    sonuc[vakit] = vakitAyari;
+
+    if (!vakitAyari?.seviyeler || vakitAyari.seviyeler.length !== SEVIYE_KADEMELERI.length) continue;
+    if (vakitAyari.yon !== 'girisindenItibaren') continue;
+    if (esikSiralamasiGecerliMi(vakitAyari.seviyeler, 'girisindenItibaren')) continue;
+
+    const tablo = girisZamanlamasiniSec(vakit, yogunluk);
+    degisti = true;
+    sonuc[vakit] = {
+      ...vakitAyari,
+      seviyeler: vakitAyari.seviyeler.map((seviye, i) => {
+        const hedef = tablo[SEVIYE_KADEMELERI[i]];
+        return { ...seviye, esikDk: hedef.esikDk, siklik: hedef.siklik };
+      }),
+    };
   }
 
   return degisti ? sonuc : matris;

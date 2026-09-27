@@ -11,9 +11,9 @@ import {
     ScrollView,
     ActivityIndicator,
     Animated,
-    Switch,
     FlatList,
 } from 'react-native';
+import { Anahtar } from '../../components/common/Anahtar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { styles } from './stiller';
 import { BildirimAyarlari, MuhafizYogunluk, KonumDurumu } from './tipler';
@@ -160,7 +160,7 @@ export const BildirimIzniAdimi: React.FC<{
         ikon="shield-alt"
         renk="#10b981"
         baslik="Namaz Muhafızı"
-        aciklama="Namaz kılana kadar artan hatırlatmalar göndeririz — vakti kaçırmanız imkansız olur."
+        aciklama="Vakit çıkmadan önce giderek artan hatırlatmalar göndeririz — vakti kaçırmazsınız."
       />
       <InfoKutu
         ikon="fire"
@@ -442,7 +442,7 @@ export const VakitBildirimAdimi: React.FC<{
               <Text style={styles.vakitAdi}>{v.ad}</Text>
               <Text style={styles.vakitAciklama}>{v.saat}</Text>
             </View>
-            <Switch
+            <Anahtar
               value={bildirimler[v.anahtar]}
               onValueChange={() => onToggle(v.anahtar)}
               trackColor={{ false: '#e5e7eb', true: v.renk + '70' }}
@@ -475,7 +475,10 @@ export const MuhafizTanitimAdimi: React.FC<{
     { saat: '45 dk önce', baslik: '1. Hatırlatma', aciklama: 'Vakit yaklaşıyor, hazırlanmaya başlayın', renk: '#10b981', yogunluk: 1 },
     { saat: '25 dk önce', baslik: '2. Hatırlatma', aciklama: 'Biraz daha yakın, namazı kılmanın vakti geldi', renk: '#3b82f6', yogunluk: 2 },
     { saat: '10 dk önce', baslik: '3. Hatırlatma', aciklama: 'Son dakikalar! Namaz vakti çok yakın', renk: '#f59e0b', yogunluk: 3 },
-    { saat: 'Vakit!', baslik: 'Son Çağrı', aciklama: 'Namazı kıldıysanız Muhafız susacak', renk: '#ef4444', yogunluk: 4 },
+    // '3 dk önce' — varsayilan "Dengeli" yogunlugun acil adimi (45/25/10/3).
+    // Eskiden 'Vakit!' yaziyordu: muhafiz vakit CIKMADAN once uyarir, vaktin
+    // kendisinde degil. Tanitim gercek zamanlamayi gostermeli.
+    { saat: '3 dk önce', baslik: 'Son Çağrı', aciklama: 'Vakit çıkmak üzere, hemen namaza durun', renk: '#ef4444', yogunluk: 4 },
   ];
 
   useEffect(() => {
@@ -498,7 +501,10 @@ export const MuhafizTanitimAdimi: React.FC<{
       </View>
       <Text style={styles.adimBaslik}>Namaz Muhafızı</Text>
       <Text style={styles.adimAltBaslik}>
-        Namazı kılana kadar artan sıklıkta hatırlatan özel koruma sistemi
+        {/* "Namazı kılana kadar" DENMEZ: o, yön seçeneklerinden "Vakit girer
+            girmez"in tarifidir; varsayılan ise "Vakit çıkarken"dir. Sihirbaz
+            kurduğu şeyi anlatmalı — yoksa vaat ile kurulan ayar ayrışır. */}
+        Vakit çıkmadan önce artan sıklıkta hatırlatan özel koruma sistemi
       </Text>
 
       {/* Canlı animatik gösterim */}
@@ -560,7 +566,7 @@ export const MuhafizTanitimAdimi: React.FC<{
             </Text>
           </View>
         </View>
-        <Switch
+        <Anahtar
           value={muhafizAktif}
           onValueChange={setMuhafizAktif}
           trackColor={{ false: '#e5e7eb', true: '#10b98160' }}

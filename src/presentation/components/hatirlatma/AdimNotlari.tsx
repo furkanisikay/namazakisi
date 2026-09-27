@@ -91,10 +91,16 @@ export function adimNotlariniOlustur(
 
     // PLATFORM NOTLARI — kullanicinin kurdugu sey ile cihazda olacak sey
     // ayrisiyorsa BURADA soylenir (sessiz sapma birakma).
-    if (!yetenekler.serbestAnonsMetni && sesliAnonsGerekliMi(seviye.kanallar)) {
+    // iPhone'da anons BILDIRIM SESIDIR (Android'deki gibi alarm sesi degil) →
+    // sessiz anahtari acikken duyulmaz. Kullanici bunu kurarken bilmeli.
+    if (
+        yetenekler.platform === 'ios' &&
+        !yetenekler.sessizligiDelebilir &&
+        sesliAnonsGerekliMi(seviye.kanallar)
+    ) {
         notlar.push({
             tip: 'bilgi',
-            metin: 'Sesli anons iPhone’da hazır bir ses kaydı olarak çalınır',
+            metin: 'iPhone’da sesli anons bildirim sesi olarak çalar; sessiz moddayken duyulmaz',
         });
     }
     if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {

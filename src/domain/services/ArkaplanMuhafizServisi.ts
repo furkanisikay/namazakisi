@@ -65,6 +65,21 @@ export class ArkaplanMuhafizServisi {
      * @param ayarlar Muhafiz ayarlari
      */
     public async yapilandirVePlanla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
+        try {
+            await this.planla(ayarlar);
+        } finally {
+            // Tur sonu isi (iOS: anons klibi GC). HER cikis yolunda calismali —
+            // muhafiz kapaliyken ya da hic vakit kalmamisken de; aksi halde
+            // kapatilan muhafizin klipleri cihazda sonsuza kadar kalirdi.
+            try {
+                await muhafizTeslimcisiniAl().tamamla?.();
+            } catch (error) {
+                Logger.error('ArkaplanMuhafiz', 'Teslimci tur sonu isi basarisiz', error);
+            }
+        }
+    }
+
+    private async planla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
         this.ayarlar = ayarlar;
 
         Logger.info('ArkaplanMuhafiz', `Muhafiz yapilandiriliyor (aktif: ${ayarlar.aktif})`);

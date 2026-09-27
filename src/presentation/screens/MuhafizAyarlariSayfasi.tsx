@@ -12,7 +12,8 @@
 
 import * as React from 'react';
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Anahtar } from '../components/common/Anahtar';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
@@ -54,7 +55,7 @@ import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
 import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
 import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
-import { yonDegisimindeMetniCevir } from '../../core/muhafiz/matrisIslemleri';
+import { vaktinYonunuDegistir } from '../../core/muhafiz/matrisIslemleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import { YOGUNLUK_BILGILERI } from './MuhafizAyarlari/sabitler';
@@ -128,29 +129,46 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * Konum/vakit hesabı yoksa (`getGunlukVakitler` null) harita BOŞ kalır ve
      * ekran eski davranışa döner — yanlış alarm vermektense sessiz kalırız.
      */
-    const vakitPencereleri = useMemo<Partial<Record<MuhafizVakti, number>>>(() => {
+    const { vakitPencereleri, vakitPencereAnlari } = useMemo(() => {
+        const bos = {
+            vakitPencereleri: {} as Partial<Record<MuhafizVakti, number>>,
+            vakitPencereAnlari: {} as Partial<Record<MuhafizVakti, { baslangic: Date; bitis: Date }>>,
+        };
         try {
             const hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
             const bugun = new Date();
             const vakitler = hesaplayici.getGunlukVakitler(bugun);
-            if (!vakitler) return {};
+            if (!vakitler) return bos;
 
             // Yatsı penceresi YARININ imsağına kadar sürer (gece yarısını aşar).
             const yarin = new Date(bugun);
             yarin.setDate(yarin.getDate() + 1);
             const yarinVakitleri = hesaplayici.getGunlukVakitler(yarin);
 
-            return {
-                imsak: pencereUzunluguDkHesapla(vakitler.imsak, vakitler.gunes),
-                ogle: pencereUzunluguDkHesapla(vakitler.ogle, vakitler.ikindi),
-                ikindi: pencereUzunluguDkHesapla(vakitler.ikindi, vakitler.aksam),
-                aksam: pencereUzunluguDkHesapla(vakitler.aksam, vakitler.yatsi),
-                // Yarının imsağı alınamazsa bugünkü değerle sarma hesabı devreye girer.
-                yatsi: pencereUzunluguDkHesapla(vakitler.yatsi, yarinVakitleri?.imsak ?? vakitler.imsak),
+            // Giriş/çıkış ANLARI zaman şeridinin saat etiketleri içindir. Yarının
+            // imsağı alınamazsa yatsının bitişi sarma kuralıyla (uzunluktan) türetilir.
+            const anlar: Record<MuhafizVakti, { baslangic: Date; bitis: Date }> = {
+                imsak: { baslangic: vakitler.imsak, bitis: vakitler.gunes },
+                ogle: { baslangic: vakitler.ogle, bitis: vakitler.ikindi },
+                ikindi: { baslangic: vakitler.ikindi, bitis: vakitler.aksam },
+                aksam: { baslangic: vakitler.aksam, bitis: vakitler.yatsi },
+                yatsi: { baslangic: vakitler.yatsi, bitis: yarinVakitleri?.imsak ?? vakitler.imsak },
             };
+            const uzunluklar = {} as Record<MuhafizVakti, number>;
+            for (const vakit of MUHAFIZ_VAKITLERI) {
+                uzunluklar[vakit] = pencereUzunluguDkHesapla(anlar[vakit].baslangic, anlar[vakit].bitis);
+                // Bitiş başlangıçtan önceyse (sarma) şerit için gerçek anı kur.
+                if (anlar[vakit].bitis.getTime() <= anlar[vakit].baslangic.getTime()) {
+                    anlar[vakit] = {
+                        baslangic: anlar[vakit].baslangic,
+                        bitis: new Date(anlar[vakit].baslangic.getTime() + uzunluklar[vakit] * 60000),
+                    };
+                }
+            }
+            return { vakitPencereleri: uzunluklar, vakitPencereAnlari: anlar };
         } catch (hata) {
             Logger.warn('MuhafizAyarlari', 'Vakit pencereleri hesaplanamadi', hata);
-            return {};
+            return bos;
         }
     }, []);
 
@@ -282,22 +300,57 @@ const MuhafizAyarlariIcerik: React.FC = () => {
      * düşmez.
      */
     /**
+     * Yön değişiminin SONUCU (saf — dispatch yok). Hem gerçek değişim hem de "?"
+     * modalının diğer yönü önizlemesi AYNI hesaptan geçer; ayrışırlarsa modal,
+     * kullanıcı dokununca gerçekte olacak olandan farklı bir resim gösterirdi.
+     */
+    const yonDegisiminiHesapla = useCallback(
+        (vakit: MuhafizVakti, yon: PencereYonu) => {
+            const yogunluk = muhafizAyarlari.yogunluk;
+            // Çıkışa dönerken taban tablo: kullanıcının preset'i; 'ozel'/bilinmeyen
+            // ise 'normal'. (Giriş tarafını `vaktinYonunuDegistir` kendi seçer.)
+            const cikisZamanlamasi = (
+                yogunluk in HATIRLATMA_PRESETLERI
+                    ? HATIRLATMA_PRESETLERI[yogunluk as PresetYogunlugu]
+                    : HATIRLATMA_PRESETLERI.normal
+            ).seviyeler;
+            return vaktinYonunuDegistir(matris[vakit], vakit, yon, cikisZamanlamasi, yogunluk);
+        },
+        [matris, muhafizAyarlari.yogunluk]
+    );
+
+    /**
      * Pencere yönünü değiştirir.
      *
-     * `yonDegisimindeMetniCevir` ZORUNLU: hücrede duran otomatik doldurulmuş
-     * çıkış dilli şablon ("… vakti çıkıyor, son {süre} dakika") yön girişe
-     * çevrilince "son 42 dakika" diye seslendirilir. Fonksiyon yalnız havuzdaki
-     * bir şablonla BİREBİR eşleşen metni çevirir; kullanıcının kendi yazdığına
-     * dokunmaz — ve `yon` alanını da atomik yazar, bu yüzden burada AYRICA
-     * `yon` yazılmaz.
+     * `vaktinYonunuDegistir` ÜÇ İŞİ ATOMİK yapar — üçü de zorunlu:
+     *  1. **Metin çevirisi.** Hücrede duran otomatik doldurulmuş çıkış dilli şablon
+     *     ("… vakti çıkıyor, son {süre} dakika") yön girişe çevrilince "son 42
+     *     dakika" diye seslendirilir. Yalnız havuzdaki bir şablonla BİREBİR eşleşen
+     *     metin çevrilir; kullanıcının kendi yazdığına dokunulmaz.
+     *  2. **Zamanlamayı hedef yöne göre yeniden kurma.** Eskiden yapılmıyordu ve
+     *     yaşanmış hata buydu: çıkış eşikleri (45/25/10/3) giriş yönünde kalınca
+     *     eskalasyon TERSİNE dönüyor, en büyük eşikten sonra motor tümden susuyordu.
+     *  3. **Ayrılan yönün zamanlamasını yedekleme** — geri dönülünce kaybolmasın.
+     *
+     * `yon` alanını da fonksiyon yazar; burada AYRICA yazılmaz.
+     *
+     * `matrisiYaz`'DAN GEÇMEZ (bilinçli): o yol zamanlama değişikliğini görüp
+     * yoğunluğu 'ozel' yapardı. Oysa yön değişimi preset'in KENDİ giriş varyantını
+     * yazıyor — matris hâlâ o preset'tir. 'ozel'e düşseydi preset çipi söner ve
+     * preset'e dönüş "özel ayarlarınız kaybolacak" onayı isterdi (kaybolacak bir
+     * şey yokken). Yedek + planlama yine yazılır.
      */
     const yonDegistir = useCallback(
         (vakit: MuhafizVakti, yon: PencereYonu) => {
-            const yeniVakit = yonDegisimindeMetniCevir(matris[vakit], yon);
+            const yeniVakit = yonDegisiminiHesapla(vakit, yon);
             if (yeniVakit === matris[vakit]) return; // değişen bir şey yok
-            matrisiYaz({ ...matris, [vakit]: yeniVakit });
+
+            const yeniMatris = { ...matris, [vakit]: yeniVakit };
+            dispatch(matrisiGuncelle(yeniMatris));
+            dispatch(ozelMatrisYedegiGuncelle(yeniMatris));
+            planlamayiKuyrugaAl();
         },
-        [matris, matrisiYaz]
+        [dispatch, matris, yonDegisiminiHesapla, planlamayiKuyrugaAl]
     );
 
     const seviyeAcKapa = useCallback(
@@ -326,7 +379,11 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             const preset = HATIRLATMA_PRESETLERI[yogunluk];
             // Preset artık zamanlamanın YANI SIRA kanalları + aciliyeti de yazar;
             // korunan tek kullanıcı verisi anons metnidir.
-            dispatch(matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar)));
+            // `yogunluk` GEÇİLİR: giriş yönlü vakitler çıkış tablosunu değil kendi
+            // yön tablosunu almalı, yoksa preset kartı ters eskalasyonu geri getirir.
+            dispatch(
+                matrisiGuncelle(presetUygula(matris, preset.seviyeler, sesliIzinVar, yogunluk))
+            );
             dispatch(
                 muhafizAyarlariniGuncelle(
                     // Onay yalnız VERİLDİĞİNDE kalıcılaşır; "sesli olmadan uygula"
@@ -464,7 +521,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             </Text>
                         </View>
                     </View>
-                    <Switch
+                    <Anahtar
                         value={muhafizAyarlari.aktif}
                         onValueChange={(val) => {
                             dispatch(muhafizAyarlariniGuncelle({ aktif: val }));
@@ -669,7 +726,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                     vakit,
                                     matris[vakit].yon,
                                     vakitPencereleri[vakit],
-                                    yetenekler
+                                    yetenekler,
+                                    vakitPencereAnlari[vakit]
                                 )}
                                 ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
@@ -679,6 +737,17 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
                                 onYonDegistir={(yon) => yonDegistir(vakit, yon)}
+                                // Yalnız AÇIK kart için hesaplanır (tek kart açık olabilir).
+                                karsiYonAyari={
+                                    acikVakit === vakit
+                                        ? yonDegisiminiHesapla(
+                                            vakit,
+                                            matris[vakit].yon === 'girisindenItibaren'
+                                                ? 'cikisaDogru'
+                                                : 'girisindenItibaren'
+                                        )
+                                        : undefined
+                                }
                             />
                         ))}
                     </>
@@ -695,7 +764,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         detay.vakit,
                         matris[detay.vakit].yon,
                         vakitPencereleri[detay.vakit],
-                        yetenekler
+                        yetenekler,
+                        vakitPencereAnlari[detay.vakit]
                     )}
                     seviyeler={matris[detay.vakit].seviyeler}
                     indeks={detay.indeks}
@@ -713,7 +783,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         onizleme,
                         matris[onizleme].yon,
                         vakitPencereleri[onizleme],
-                        yetenekler
+                        yetenekler,
+                        vakitPencereAnlari[onizleme]
                     )}
                     ayar={matris[onizleme]}
                     ttsDestekli={ttsDestekli}

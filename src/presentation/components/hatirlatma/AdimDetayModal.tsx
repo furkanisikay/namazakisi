@@ -21,8 +21,8 @@ import {
     TextInput,
     StyleSheet,
     Dimensions,
-    Switch,
 } from 'react-native';
+import { Anahtar } from '../common/Anahtar';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
@@ -38,6 +38,7 @@ import { anonsSablonlari, anonsMetniniCoz, varsayilanAnonsMetni } from '../../..
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
+import { ANONS_METIN_UST_SINIRI } from '../../../core/muhafiz/ios/anonsKlibi';
 import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
@@ -355,7 +356,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 {TITRESIM_ACIKLAMASI}
                                             </Text>
                                         </View>
-                                        <Switch
+                                        <Anahtar
                                             value={titresimliMi}
                                             onValueChange={titresimiAyarla}
                                             trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
@@ -594,6 +595,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             onEndEditing={metniIsle}
                                             onBlur={metniIsle}
                                             editable={tanim.anonsMetniDuzenlenebilir}
+                                            // iOS bildirim sesi 30 sn'yi asarsa HIC calmaz; sinir
+                                            // iki platformda ayni tutulur (yedek tasininca kirilmasin).
+                                            maxLength={ANONS_METIN_UST_SINIRI}
                                             multiline
                                             placeholder={sablonlar[0]}
                                             placeholderTextColor={renkler.metinIkincil}

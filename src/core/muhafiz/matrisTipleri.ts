@@ -87,6 +87,27 @@ export interface VakitMuhafizAyari {
    * (nazik 5 → acil 45) ve motor pencere sonuna kadar sürer.
    */
   yon?: PencereYonu;
+  /**
+   * AYRILAN yönün zamanlaması (yalnızca `esikDk` + `siklik`, 4 adım,
+   * SEVIYE_KADEMELERI sırasında).
+   *
+   * Yön değişimi eşikleri hedef yöne uygun yeniden kurar (çıkış eşikleri
+   * AZALAN, giriş eşikleri ARTAN olmak zorunda). Yedek olmasaydı kullanıcı
+   * yönü deneyip geri döndüğünde elle kurduğu zamanlama sessizce kaybolurdu.
+   *
+   * MOTOR BU ALANI OKUMAZ — `oncekiKanallar` gibi salt bir UI geri-alma
+   * hafızasıdır ve yalnız `matrisIslemleri.yonuDegistir` yazar. Preset
+   * uygulaması onu TEMİZLER: preset zamanlamayı ezdiği için yedek bayatlar
+   * ("özel çıkış → girişe geç → preset → çıkışa dön" zincirinde kullanıcıya
+   * eski özel ayarını geri verirdi).
+   */
+  yonYedegi?: Partial<Record<PencereYonu, YonZamanlamaYedegi[]>>;
+}
+
+/** `VakitMuhafizAyari.yonYedegi` içindeki tek adım. */
+export interface YonZamanlamaYedegi {
+  esikDk: number;
+  siklik: Siklik;
 }
 
 export type MuhafizMatrisi = Record<MuhafizVakti, VakitMuhafizAyari>;

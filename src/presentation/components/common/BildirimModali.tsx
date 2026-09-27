@@ -35,6 +35,11 @@ export interface BildirimModaliProps {
     onKapat: () => void;
     /** Kapat butonu etiketi (varsayılan "Kapat") */
     kapatEtiketi?: string;
+    /**
+     * Mesaj ile butonlar arasına çizilen serbest içerik (ör. görsel açıklama).
+     * Bilgi diyaloğu sözleşmesi korunur: içerik EYLEM almamalı, yalnız anlatmalı.
+     */
+    icerik?: React.ReactNode;
 }
 
 /**
@@ -58,6 +63,7 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
     tehlikeli = false,
     onKapat,
     kapatEtiketi = 'Kapat',
+    icerik,
 }) => {
     const renkler = useRenkler();
 
@@ -123,6 +129,8 @@ export const BildirimModali: React.FC<BildirimModaliProps> = ({
                     <Text className="text-sm leading-5 mb-5" style={{ color: renkler.metinIkincil }}>
                         {sonMesaj}
                     </Text>
+
+                    {icerik ? <View className="mb-5">{icerik}</View> : null}
 
                     {/* Butonlar */}
                     <View className="flex-row gap-3">
