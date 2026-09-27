@@ -75,13 +75,11 @@ jobs:
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
           echo "cihaz=$ISTENEN" >> "$GITHUB_OUTPUT"
 
-          # Turkce arayuz: uygulama metinleri ve sistem diyaloglari Turkce cikar.
+          # NOT: sistem dilini `simctl spawn ... defaults write` ile degistirmeye
+          # KALKISMA — cfprefsd'yi bekleyip adimi suresiz kilitliyor (yasandi).
+          # Uygulamanin kendi metinleri zaten Turkce; sistem dili yalnizca izin
+          # diyalogunun dugme metnini etkiler ve betik iki dili de taniyor.
           xcrun simctl boot "$UDID" || true
-          xcrun simctl bootstatus "$UDID" -b
-          xcrun simctl spawn "$UDID" defaults write -g AppleLanguages -array tr-TR
-          xcrun simctl spawn "$UDID" defaults write -g AppleLocale -string tr_TR
-          xcrun simctl shutdown "$UDID"
-          xcrun simctl boot "$UDID"
           xcrun simctl bootstatus "$UDID" -b
           # Magaza karelerinde temiz durum cubugu (Apple'in kendi kullandigi 09:41).
           xcrun simctl status_bar "$UDID" override --time "09:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
