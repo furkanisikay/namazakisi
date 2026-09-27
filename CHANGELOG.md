@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.28.0] - 2026-09-27
+
+### Eklendi
+- [magaza] mockup ureticisi repoda; adim karesinde sesli anons gorunsun
+
 ## [0.27.9] - 2026-09-27
 
 ## [0.27.8] - 2026-09-27
