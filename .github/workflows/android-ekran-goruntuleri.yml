@@ -53,6 +53,9 @@ jobs:
         working-directory: android
         run: |
           set -eo pipefail
+          # gradlew Windows'ta commit edildigi icin exec biti YOK -> "Permission
+          # denied" (android-build.yml de ayni chmod'u yapiyor).
+          chmod +x gradlew
           # DEBUG bilincli: `run-as` yalnizca debuggable build'lerde calisir ve
           # AsyncStorage'i (RKStorage) tohumlamanin tek yolu o.
           ./gradlew assembleDebug --no-daemon
