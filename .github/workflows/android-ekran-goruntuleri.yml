@@ -126,11 +126,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-ekran-goruntuleri
-          path: |
-            kareler/
-            ~/.maestro/tests/
+          # YALNIZ kareler: disaridan bir yol (~/.maestro) eklenince ortak kok
+          # degisiyor ve kareler artifact icinde alt klasore iniyordu.
+          path: kareler/
           retention-days: 14
           if-no-files-found: warn
+
+      - name: 🪵 Maestro çıktısını yükle (hata ayıklama)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-maestro-ciktisi
+          path: ~/.maestro/tests/
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: 🪵 Metro günlüğü (hata ayıklama)
         if: failure()

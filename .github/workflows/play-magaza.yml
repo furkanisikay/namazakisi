@@ -49,7 +49,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: android-ekran-goruntuleri
-          path: kareler
+          path: indirilen
           run-id: ${{ inputs.kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -57,6 +57,11 @@ jobs:
         if: ${{ inputs.kare_run_id != '' }}
         run: |
           set -eo pipefail
+          # Artifact duzeni kosuya gore degisebiliyor (disaridaki bir yol eklenince
+          # upload-artifact ortak koku degistirip kareleri alt klasore itti).
+          # Duz bir kareler/ klasoru kur; Maestro'nun ara kopyalarini alma.
+          mkdir -p kareler
+          find indirilen -name '[0-9][0-9]-*.png' -not -path '*takeScreenshot*' -exec cp {} kareler/ \;
           ls kareler/*.png
           node scripts/magaza-mockup.js kareler mockup --platform android --one-cikan
           ls -la mockup
