@@ -214,10 +214,9 @@ function cek(ad) {
     if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
         a = await agac('ayarlar');
         if (await dokun(a, /namaz muhafızı/i, 'muhafiz satiri', { bekle: 3000 })) {
-            // Muhafiz varsayilan olarak KAPALI gelir; ana anahtari ac.
-            a = await agac('muhafiz');
-            await dokun(a, /namaz muhafızı/i, 'muhafiz ana anahtari', { tur: 'switch', bekle: 2500 });
-
+            // Muhafiz DISKTEN acik tohumlanir (simulator-tohumla.js). Anahtara
+            // DOKUNMA: `idb ui tap` UISwitch'i toggle etmiyor, ustelik acik
+            // gelen anahtara dokunmak onu KAPATIR.
             // Zaman seridi ancak vakit karti acikken gorunur.
             a = await agac('muhafiz-acik');
             if (!(await dokun(a, /yatsı vakti hatırlatma/i, 'yatsi vakit karti', { bekle: 2500 }))) {

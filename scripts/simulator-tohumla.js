@@ -66,6 +66,17 @@ for (let i = 1; i <= 25; i++) depo[`namaz_gun_${gun(i)}`] = JSON.stringify(TAM_G
 
 // Seri YOL-BAGIMLIDIR: kayitlardan turetilmez, diskte tutulur. Tohumlanmazsa
 // kayitlar dolu olsa bile basliktaki cip "0 Gün" gosterir.
+// Muhafiz varsayilan olarak KAPALI gelir. Anahtari `idb ui tap` ile acmak
+// ISLEMIYOR (dokunus tam ustune dusuyor ama UISwitch toggle olmuyor) — bu yuzden
+// ayar diskten acilir. `matris` bilincli olarak YAZILMAZ: yukleme thunk'i eksik
+// matrisi `eskidenMatriseGoc` ile varsayilan preset'ten turetir.
+depo['muhafiz_ayarlari'] = JSON.stringify({
+    aktif: true,
+    yogunluk: 'normal',
+    gelismisMod: false,
+    presetGocuYapildi: true,
+});
+
 depo['seri_durumu'] = JSON.stringify({
     mevcutSeri: 25,
     enUzunSeri: 25,
