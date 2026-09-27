@@ -179,6 +179,29 @@ async function kaydirarakDokun(kalip, aciklama, secenek = {}) {
     return false;
 }
 
+/**
+ * Zaman seridini ekranin orta bandina getirir (GERI BESLEMELI). Sabit mesafeli
+ * kaydirma momentumla her kosuda farkli kayiyor (iOS'ta yasandi: serit karenin
+ * disinda kaldi). `input swipe` suresi uzun tutulur ki firlatma (fling) olmasin.
+ */
+async function seridiHizala() {
+    const hedef = BOYUT.yuk * 0.42;
+    for (let i = 0; i < 5; i++) {
+        const a = await agac(`serit-hizala-${i}`);
+        const o = bul(a, /ilk hatırlatma/i);
+        const fark = o ? o.y + o.h / 2 - hedef : BOYUT.yuk * 0.3;
+        if (o && Math.abs(fark) < BOYUT.yuk * 0.06) return true;
+        const sinir = (v) => Math.max(BOYUT.yuk * 0.12, Math.min(BOYUT.yuk * 0.88, v));
+        const bas = sinir(fark > 0 ? BOYUT.yuk * 0.78 : BOYUT.yuk * 0.3);
+        const son = sinir(bas - fark);
+        const x = String(Math.round(BOYUT.gen / 2));
+        adb('shell', 'input', 'swipe', x, String(Math.round(bas)), x, String(Math.round(son)), '1200');
+        await bekle(1500);
+    }
+    console.error('  UYARI: zaman seridi orta banda getirilemedi');
+    return false;
+}
+
 (async () => {
     await bekle(8000);
 
@@ -211,9 +234,8 @@ async function kaydirarakDokun(kalip, aciklama, secenek = {}) {
             if (!(await kaydirarakDokun(/sabah vakti hatırlatma/i, 'sabah vakit karti', { ad: 'muhafiz', bekle: 2500 }))) {
                 await kaydirarakDokun(/vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { ad: 'muhafiz2', bekle: 2500 });
             }
-            // Kart acildiktan SONRA kaydir: zaman seridi ve adimlar kareye girsin.
-            yukariKaydir(0.42);
-            await bekle(2000);
+            // Kart acildiktan SONRA seridi orta banda getir (geri beslemeli).
+            await seridiHizala();
             await agac('muhafiz-kart-acik');
             cek('02-muhafiz-zaman-seridi');
 

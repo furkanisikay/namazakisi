@@ -178,6 +178,33 @@ async function yenidenBaslat() {
  */
 const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
 
+/**
+ * Zaman seridini ekranin orta bandina getirir (GERI BESLEMELI).
+ * Sabit mesafeli kaydirma momentumla her kosuda farkli kayiyor: bir kosuda
+ * serit gorunuyor, digerinde ekranin disina tasiyordu ve 02 karesi seridin
+ * kendisini gostermiyordu (yasandi, App Store'a o haliyle yuklendi).
+ * Surukleme yavas (`--duration`) yapilir ki fırlatma (fling) olmasin.
+ */
+async function seridiHizala() {
+    for (let i = 0; i < 5; i++) {
+        const a = await agac(`serit-hizala-${i}`);
+        const kok = a.find((o) => String(o.type || '') === 'Application');
+        const yuk = kok ? cerceve(kok).h : 956;
+        const hedef = yuk * 0.42;
+        const o = bul(a, /ilk hatırlatma/i);
+        // Gorunmuyorsa icerik asagida: yukari surukle.
+        const fark = o ? cerceve(o).y + cerceve(o).h / 2 - hedef : yuk * 0.3;
+        if (o && Math.abs(fark) < yuk * 0.06) return true;
+        const sinir = (v) => Math.max(yuk * 0.12, Math.min(yuk * 0.88, v));
+        const bas = sinir(fark > 0 ? yuk * 0.78 : yuk * 0.3);
+        const son = sinir(bas - fark);
+        idb('ui', 'swipe', '220', String(Math.round(bas)), '220', String(Math.round(son)), '--duration', '1.2');
+        await bekle(1500);
+    }
+    console.error('  UYARI: zaman seridi orta banda getirilemedi');
+    return false;
+}
+
 function cek(ad) {
     const hedef = path.join(cikis, `${ad}.png`);
     simctl('io', UDID || 'booted', 'screenshot', hedef);
@@ -240,8 +267,7 @@ function cek(ad) {
             // ekranin alt kenarinda kaliyor. Adim satiri sekme cubugunun ALTINA
             // dustugu icin dokunus bosa gidiyordu ve 03 karesi 02 ile birebir ayni
             // cikiyordu (yasandi). Kaydirma hem kareyi doldurur hem satiri erisilir yapar.
-            idb('ui', 'swipe', '220', '800', '220', '330');
-            await bekle(2000);
+            await seridiHizala();
             await agac('muhafiz-kart-acik');
             cek('02-muhafiz-zaman-seridi');
 

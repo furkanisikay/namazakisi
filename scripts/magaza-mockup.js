@@ -63,6 +63,56 @@ const KARELER = [
     },
 ];
 
+/**
+ * Yazi tipi HER ortamda ayni olmali: mockup'lar Windows'ta (Edge) ve CI'da
+ * (Linux Chrome) uretiliyor. Sistem fontuna birakilsaydi Windows'ta Segoe UI,
+ * Linux'ta baska bir font cikar ve iki magazanin gorselleri farkli gorunurdu.
+ * Inter Turkce karakterleri tam destekler.
+ */
+const FONT_BAGLANTISI =
+    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=block" rel="stylesheet">';
+const FONT_AILESI = '"Inter","Segoe UI",system-ui,sans-serif';
+
+const dosyaUrl = (p) => 'file:///' + p.replace(/\\/g, '/');
+
+/**
+ * Play "one cikan gorsel" (1024x500). Listenin en ustunde, magaza tanitimlarinda
+ * ve paylasimlarda gorunur; eskisi yalnizca kirpilmis bir ekran goruntusuydu,
+ * uygulama adi bile yoktu.
+ */
+function oneCikanSayfa(ikonYolu, kareYolu) {
+    return `<!doctype html><html><head><meta charset="utf-8">${FONT_BAGLANTISI}<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1024px; height:500px; overflow:hidden; }
+  body { font-family:${FONT_AILESI}; position:relative;
+         background:linear-gradient(120deg, #F2F9F3 0%, #FFFFFF 55%, #E8F5E9 100%); }
+  .hale { position:absolute; inset:0;
+          background:radial-gradient(45% 70% at 78% 40%, rgba(76,175,80,0.20) 0%, rgba(76,175,80,0) 70%); }
+  .sol { position:absolute; left:72px; top:0; bottom:0; width:520px; display:flex; flex-direction:column; justify-content:center; }
+  /* Ikon dosyasi beyaz zemin + golge iceriyor; yalniz yesil kare kirpilir. */
+  .ikon { width:112px; height:112px; border-radius:26px; overflow:hidden; position:relative;
+          box-shadow:0 14px 30px rgba(22,48,26,0.18); }
+  .ikon img { position:absolute; width:${Math.round((112 * 1024) / 685)}px; left:-${Math.round((170 * 112) / 685)}px; top:-${Math.round((172 * 112) / 685)}px; }
+  h1 { margin-top:28px; font-size:64px; line-height:1.05; font-weight:800; letter-spacing:-1.5px; color:#16301A; }
+  p { margin-top:14px; font-size:28px; line-height:1.35; color:#56655A; }
+  .serit { margin-top:22px; width:72px; height:7px; border-radius:99px; background:linear-gradient(90deg, ${YESIL}, ${YESIL_KOYU}); }
+  .cihaz { position:absolute; right:84px; top:46px; width:300px; padding:8px; background:#0E0E11; border-radius:44px;
+           box-shadow:0 30px 60px rgba(11,25,14,0.25); }
+  .pencere { border-radius:37px; overflow:hidden; }
+  .pencere img { display:block; width:100%; }
+</style></head><body>
+  <div class="hale"></div>
+  <div class="sol">
+    <div class="ikon"><img src="${dosyaUrl(ikonYolu)}"></div>
+    <h1>Namaz Akışı</h1>
+    <p>Vakit çıkmadan sizi uyarır.</p>
+    <div class="serit"></div>
+  </div>
+  <div class="cihaz"><div class="pencere"><img src="${dosyaUrl(kareYolu)}"></div></div>
+</body></html>`;
+}
+
 function sayfa(kare, gorselYolu, b) {
     const k = b.olcek;
     const px = (v) => Math.round(v * k) + 'px';
@@ -78,10 +128,10 @@ function sayfa(kare, gorselYolu, b) {
 
     const cihazGen = 1012;
 
-    return `<!doctype html><html><head><meta charset="utf-8"><style>
+    return `<!doctype html><html><head><meta charset="utf-8">${FONT_BAGLANTISI}<style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { width:${b.gen}px; height:${b.yuk}px; overflow:hidden; }
-  body { background:${zeminArka}; font-family:"Segoe UI Variable Display","Segoe UI","Inter",system-ui,sans-serif; position:relative; }
+  body { background:${zeminArka}; font-family:${FONT_AILESI}; position:relative; }
   .hale { position:absolute; inset:0; background:${hale}; }
   .icerik { position:relative; height:100%; display:flex; flex-direction:column; align-items:center; }
   h1 { margin-top:${px(150)}; font-size:${px(104)}; line-height:1.14; font-weight:700; letter-spacing:${px(-2.5)};
@@ -122,16 +172,14 @@ if (!kaynak || !cikis || !BOYUT[platform]) {
 fs.mkdirSync(cikis, { recursive: true });
 const TARAYICI = tarayiciBul();
 
-for (const kare of KARELER) {
-    const gorsel = path.resolve(kaynak, kare.dosya);
-    if (!fs.existsSync(gorsel)) {
-        console.error(`  atlandi (yok): ${kare.dosya}`);
-        continue;
-    }
-    const b = BOYUT[platform];
-    const html = path.resolve(cikis, kare.dosya.replace('.png', '.html'));
-    fs.writeFileSync(html, sayfa(kare, gorsel, b), 'utf8');
-    const hedef = path.resolve(cikis, kare.dosya);
+/**
+ * HTML'i PNG'ye cizer. `--virtual-time-budget`: ekran goruntusu `load`
+ * olayinda alinir ama web fontu o anda henuz inmemis olabilir; butce, fontun
+ * yuklenmesini bekletir. Yoksa kare yedek fontla cikar (sessiz hata).
+ */
+function ciz(html, hedef, gen, yuk) {
+    const dosya = path.resolve(cikis, path.basename(hedef, '.png') + '.html');
+    fs.writeFileSync(dosya, html, 'utf8');
     execFileSync(
         TARAYICI,
         [
@@ -139,12 +187,34 @@ for (const kare of KARELER) {
             '--disable-gpu',
             '--hide-scrollbars',
             '--force-device-scale-factor=1',
-            `--window-size=${b.gen},${b.yuk}`,
+            '--virtual-time-budget=8000',
+            `--window-size=${gen},${yuk}`,
             `--screenshot=${hedef}`,
-            `file:///${html.replace(/\\/g, '/')}`,
+            dosyaUrl(dosya),
         ],
         { stdio: 'pipe' }
     );
-    fs.unlinkSync(html);
-    console.log(`  ${kare.dosya} -> ${(fs.statSync(hedef).size / 1024).toFixed(0)} KB`);
+    fs.unlinkSync(dosya);
+    console.log(`  ${path.basename(hedef)} -> ${(fs.statSync(hedef).size / 1024).toFixed(0)} KB`);
+}
+
+for (const kare of KARELER) {
+    const gorsel = path.resolve(kaynak, kare.dosya);
+    if (!fs.existsSync(gorsel)) {
+        console.error(`  atlandi (yok): ${kare.dosya}`);
+        continue;
+    }
+    const b = BOYUT[platform];
+    ciz(sayfa(kare, gorsel, b), path.resolve(cikis, kare.dosya), b.gen, b.yuk);
+}
+
+// --one-cikan: Play icin 1024x500 one cikan gorseli de uret (muhafiz karesinden).
+if (argv.includes('--one-cikan')) {
+    const kare = path.resolve(kaynak, '02-muhafiz-zaman-seridi.png');
+    const ikon = path.resolve(__dirname, '..', 'assets', 'icon.png');
+    if (!fs.existsSync(kare)) {
+        console.error('  one cikan atlandi: 02-muhafiz-zaman-seridi.png yok');
+    } else {
+        ciz(oneCikanSayfa(ikon, kare), path.resolve(cikis, 'one-cikan.png'), 1024, 500);
+    }
 }
