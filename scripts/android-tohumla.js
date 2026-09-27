@@ -37,5 +37,10 @@ for (const [k, v] of Object.entries(veri)) {
     yaz.run(k, v);
     n += 1;
 }
+// Veriyi ana dosyaya indir: cihaza yalniz ana dosya geri gonderiliyor. WAL'da
+// kalan yazim o dosyayla birlikte KAYBOLURDU.
+db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
+db.exec('PRAGMA journal_mode=DELETE');
+const kontrol = db.prepare('SELECT COUNT(*) AS n FROM catalystLocalStorage').get();
 db.close();
-console.log(`Tohumlandi: ${n} anahtar -> ${yol}`);
+console.log(`Tohumlandi: ${n} anahtar -> ${yol} (tabloda toplam ${kontrol.n})`);

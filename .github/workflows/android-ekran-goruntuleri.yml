@@ -82,38 +82,9 @@ jobs:
           ram-size: 4096M
           disable-animations: true
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: |
-            set -eo pipefail
-            PAKET=$(node -e "console.log(require('./app.json').expo.android.package)")
-            echo "paket: $PAKET"
-            adb wait-for-device
-            adb reverse tcp:8081 tcp:8081
-
-            APK=$(find android -name '*.apk' -path '*debug*' | head -1)
-            adb install -r "$APK"
-
-            # Izinler bastan verilsin: diyaloglar kareleri kirletmesin.
-            for izin in POST_NOTIFICATIONS ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION; do
-              adb shell pm grant "$PAKET" "android.permission.$izin" || true
-            done
-            adb emu geo fix 28.9784 41.0082 || true
-
-            # Veritabani ancak uygulama bir kez calistiktan sonra olusur.
-            adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
-            sleep 25
-            adb shell am force-stop "$PAKET"
-            sleep 2
-
-            adb exec-out run-as "$PAKET" cat databases/RKStorage > /tmp/RKStorage
-            ls -la /tmp/RKStorage
-            node scripts/android-tohumla.js /tmp/RKStorage
-            adb push /tmp/RKStorage /data/local/tmp/RKStorage
-            adb shell run-as "$PAKET" cp /data/local/tmp/RKStorage databases/RKStorage
-            adb shell run-as "$PAKET" rm -f databases/RKStorage-journal || true
-
-            adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
-            mkdir -p kareler
-            node scripts/android-ekranlari-cek.js kareler --paket "$PAKET"
+          # Adimlar TEK bash betiginde: action her satiri ayri `sh` (dash) ile
+          # calistirir; pipefail patlar ve degiskenler satirlar arasinda kaybolur.
+          script: bash scripts/android-kare-hatti.sh
 
       - name: 🧾 Kare boyutları
         if: always()
