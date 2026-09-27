@@ -59,6 +59,33 @@ adb push /tmp/RKStorage /data/local/tmp/RKStorage
 adb shell run-as "$PAKET" cp /data/local/tmp/RKStorage databases/RKStorage
 adb shell run-as "$PAKET" rm -f databases/RKStorage-journal databases/RKStorage-wal databases/RKStorage-shm || true
 
+# JS "dev mode"u kapat: __DEV__ false olunca altta cikan "Open debugger to view
+# warnings." balonu (sekme ikonlarini ortuyordu) ve diger gelistirici arayuzu
+# hic olusmaz. RN bu ayari varsayilan SharedPreferences'ta tutar
+# (DevInternalSettings.kt > PREFS_JS_DEV_MODE_DEBUG_KEY, varsayilan true).
+cat > /tmp/tercihler.xml <<XML
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <boolean name="js_dev_mode_debug" value="false" />
+    <boolean name="js_minify_debug" value="true" />
+</map>
+XML
+adb push /tmp/tercihler.xml /data/local/tmp/tercihler.xml
+adb shell run-as "$PAKET" mkdir -p shared_prefs
+adb shell run-as "$PAKET" cp /data/local/tmp/tercihler.xml "shared_prefs/${PAKET}_preferences.xml"
+
+# Temiz durum cubugu: Android'in sistem demo modu (iOS'taki 09:41 karsiligi).
+adb shell settings put global sysui_demo_allowed 1
+DEMO="adb shell am broadcast -a com.android.systemui.demo -e command"
+$DEMO enter
+$DEMO clock -e hhmm 0941
+$DEMO battery -e level 100 -e plugged false
+$DEMO network -e wifi show -e level 4
+$DEMO network -e mobile show -e datatype none -e level 4
+$DEMO notifications -e visible false
+
 adb shell monkey -p "$PAKET" -c android.intent.category.LAUNCHER 1
+# Uretim paketi (minify) ilk istekte derlendigi icin JS'in yuklenmesi uzun surer.
+sleep 30
 mkdir -p kareler
 node scripts/android-ekranlari-cek.js kareler --paket "$PAKET"

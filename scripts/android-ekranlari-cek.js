@@ -138,14 +138,53 @@ async function yenidenBaslat() {
 }
 
 /** iOS'taki ayni ders: sekme etiketi ek metin tasiyabilir, tam-dize capasi kirilgan. */
-const SEKME = (ad) => new RegExp(`^${ad}(,|$|\\s)`, 'i');
+const SEKME = (ad) => new RegExp(`^${ad}(,|$|\s)`, 'i');
+
+/** Ekran boyutu (piksel). `wm size` "Physical size: 1080x1920" doner. */
+const BOYUT = (() => {
+    const m = /(\d+)x(\d+)/.exec(adb('shell', 'wm', 'size')) || [null, '1080', '1920'];
+    return { gen: +m[1], yuk: +m[2] };
+})();
+
+function yukariKaydir(oran = 0.4) {
+    const x = String(Math.round(BOYUT.gen / 2));
+    const y1 = Math.round(BOYUT.yuk * 0.72);
+    const y2 = Math.round(y1 - BOYUT.yuk * oran);
+    adb('shell', 'input', 'swipe', x, String(y1), x, String(y2), '450');
+}
+
+/**
+ * Oge gorunene kadar kaydirir, sonra dokunur.
+ * 1080x1920 ekranda (iPhone 6.9"'dan kisa) Ayarlar listesindeki muhafiz satiri
+ * ve acilan kartin adimlari alt kenarin altinda kaliyor: agaca girmiyor ya da
+ * sekme cubugunun arkasinda duruyor (yasandi: "BULUNAMADI: muhafiz satiri").
+ * Oge bulunsa bile merkezi guvenli bandin disindaysa bir kez daha kaydirilir,
+ * yoksa dokunus sekme cubuguna gider.
+ */
+async function kaydirarakDokun(kalip, aciklama, secenek = {}) {
+    const ust = BOYUT.yuk * 0.12;
+    const alt = BOYUT.yuk * 0.82;
+    for (let i = 0; i <= (secenek.enFazlaKaydirma ?? 6); i++) {
+        const a = await agac(`${secenek.ad || 'kaydir'}-${i}`);
+        const o = bul(a, kalip);
+        if (o) {
+            const y = o.y + o.h / 2;
+            if (y >= ust && y <= alt) return dokun(a, kalip, aciklama, secenek);
+        }
+        yukariKaydir(0.35);
+        await bekle(1300);
+    }
+    console.error(`  BULUNAMADI (kaydirarak): ${aciklama}  (${kalip})`);
+    return false;
+}
 
 (async () => {
     await bekle(8000);
 
-    // Acilistaki katmanlar: bildirim/konum izni ve rozet/duyuru modali.
+    // Acilistaki katmanlar: bildirim/konum izni ve rozet/duyuru modali. "Neler Yeni"
+    // modali birden cok sayfa olabildigi icin tur siniri genis tutuldu.
     const KAPATILACAK = /^(İzin Ver|İZİN VER|Allow|ALLOW|While using the app|Uygulamayı kullanırken|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
-    for (let tur = 0; tur < 5; tur++) {
+    for (let tur = 0; tur < 8; tur++) {
         const katman = await agac(`acilis-${tur}`);
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
     }
@@ -166,25 +205,18 @@ const SEKME = (ad) => new RegExp(`^${ad}(,|$|\\s)`, 'i');
     // --- Ayarlar -> Muhafiz ---
     a = await agac('ayarlar-oncesi');
     if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
-        a = await agac('ayarlar');
-        if (await dokun(a, /namaz muhafızı/i, 'muhafiz satiri', { bekle: 3000 })) {
+        if (await kaydirarakDokun(/namaz muhafızı/i, 'muhafiz satiri', { ad: 'ayarlar', bekle: 3000 })) {
             // SABAH secilir: listenin son karti acilinca icerik ekran disinda kalir.
-            a = await agac('muhafiz');
-            if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) {
-                await dokun(a, /vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { bekle: 2500 });
+            if (!(await kaydirarakDokun(/sabah vakti hatırlatma/i, 'sabah vakit karti', { ad: 'muhafiz', bekle: 2500 }))) {
+                await kaydirarakDokun(/vakti hatırlatma ayarları/i, 'herhangi bir vakit karti', { ad: 'muhafiz2', bekle: 2500 });
             }
-            // Kart acildiktan SONRA kaydir: adim satiri alt kenarin altinda kalir.
-            const b = adb('shell', 'wm', 'size');
-            const boyut = /(\d+)x(\d+)/.exec(b) || [, '1080', '1920'];
-            const gen = +boyut[1];
-            const yuk = +boyut[2];
-            adb('shell', 'input', 'swipe', String(gen / 2), String(Math.round(yuk * 0.8)), String(gen / 2), String(Math.round(yuk * 0.33)), '400');
+            // Kart acildiktan SONRA kaydir: zaman seridi ve adimlar kareye girsin.
+            yukariKaydir(0.42);
             await bekle(2000);
             await agac('muhafiz-kart-acik');
             cek('02-muhafiz-zaman-seridi');
 
-            a = await agac('adim-oncesi');
-            if (await dokun(a, /adımını düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
+            if (await kaydirarakDokun(/adımını düzenleyin/i, 'adim satiri', { ad: 'adim', bekle: 3000 })) {
                 // "İkisi de" kanalini sec: sheet sesli anons metni ve "Dinle"
                 // dugmesiyle dolar. Yalniz bildirim seciliyken sheet'in alt yarisi
                 // BOS kaliyordu ve kare zayif gorunuyordu.
