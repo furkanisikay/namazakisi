@@ -209,6 +209,13 @@ function cek(ad) {
         cek('04-seri');
     }
 
+    // --- Rozetler ---
+    a = await agac('rozetler-oncesi');
+    if (await dokun(a, SEKME('Rozetler'), 'rozetler sekmesi', { bekle: 3000 })) {
+        await agac('rozetler');
+        cek('06-rozetler');
+    }
+
     // --- Ayarlar -> Muhafiz ---
     a = await agac('ayarlar-oncesi');
     if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
