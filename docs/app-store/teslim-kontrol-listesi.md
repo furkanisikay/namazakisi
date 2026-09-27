@@ -20,6 +20,7 @@ Gizlilik politikası: <https://furkanisikay.github.io/namazakisi/app-store/gizli
 | İhracat uyumluluğu | Muaf olmayan şifreleme kullanılmıyor |
 | Fiyat | **Ücretsiz** |
 | Sürüme bağlı build | En son TestFlight build'i |
+| İnceleme iletişim bilgisi | Ad, e-posta, telefon + inceleme notları |
 
 ## Kalanlar
 
@@ -35,13 +36,7 @@ Gerekçe kayıtlı: uygulama hiçbir veriyi toplamaz, sunucuya göndermez, rekla
 analitik içermez (bkz. gizlilik politikası). Tek ağ isteği şehir listesi
 (`turkiyeapi.dev`) olup kullanıcıya ait bilgi taşımaz.
 
-### 2. İnceleme iletişim telefonu
-`appStoreReviewDetails` kaydı `contactPhone` alanını zorunlu kılıyor ve
-`+90…` biçimi istiyor. Numara verildiğinde inceleme notlarıyla birlikte tek
-seferde yazılır (notlar hazır: hesap gerekmez, vakitler cihazda hesaplanır,
-konum izni isteğe bağlı, veri toplanmaz).
-
-### 3. Ekran görüntüleri
+### 2. Ekran görüntüleri
 `supportsTablet: false` olduğu için **iPad görüntüsü istenmiyor**. Gereken tek
 boyut kümesi iPhone 6.9":
 
