@@ -1,3 +1,7 @@
+---
+title: Gizlilik Politikası — Namaz Akışı
+---
+
 # Gizlilik Politikası — Namaz Akışı
 
 **Son güncelleme:** 27 Eylül 2026

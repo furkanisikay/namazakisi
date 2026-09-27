@@ -1,0 +1,10 @@
+# GitHub Pages — yalnizca yayimlanmasi GEREKEN sayfalar icin.
+# Repo dokumanlarinin cogu ic kullanimdir; asagidaki `exclude` onlari siteye almaz.
+title: Namaz Akışı
+description: Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı
+theme: jekyll-theme-minimal
+exclude:
+  - superpowers/
+  - tasarim/
+  - repo-denetim-2026-06-06.md
+  - app-store/magaza-metinleri.md
