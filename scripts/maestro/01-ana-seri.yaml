@@ -15,13 +15,6 @@ appId: com.furkanisikay.namazakisi
     commands:
       - tapOn: "Devam Et"
 - takeScreenshot: kareler/01-ana-ekran
-# GECICI (zincir onizlemesi): Gunluk Akis'i tam goster
-- scrollUntilVisible:
-    element:
-      text: "Yatsı vakti.*"
-    direction: DOWN
-    centerElement: true
-- takeScreenshot: kareler/09-gunluk-akis
 
 # Istatistik sekmesi acilista Seri alt sekmesinde durur.
 - tapOn: "İstatistik"
