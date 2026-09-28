@@ -31,6 +31,7 @@ import {
 import { OzelGunTakvimi } from '../components';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { OZEL_GUN_RENGI } from '../../core/constants/OzelGunRengi';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
@@ -405,7 +406,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                 className="w-10 h-10 rounded-full items-center justify-center mr-3"
                 style={{ backgroundColor: '#FFC0CB20' }}
               >
-                <FontAwesome5 name="magic" size={18} color="#D81B60" solid />
+                <FontAwesome5 name="magic" size={18} color={OZEL_GUN_RENGI} solid />
               </View>
               <View className="flex-1">
                 <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
@@ -419,7 +420,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                 value={ozelGunAyarlari.ozelGunModuAktif}
                 onValueChange={handleOzelGunModuToggle}
                 trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? '#D81B60' : '#f4f3f4'}
+                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? OZEL_GUN_RENGI : '#f4f3f4'}
               />
             </View>
           </AyarCapasi>
@@ -427,7 +428,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
           {ozelGunAyarlari.ozelGunModuAktif && !ozelGunAyarlari.aktifOzelGun && (
             <TouchableOpacity
               className="py-3.5 rounded-xl items-center flex-row justify-center gap-2"
-              style={{ backgroundColor: '#D81B60' }}
+              style={{ backgroundColor: OZEL_GUN_RENGI }}
               onPress={() => setTakvimGorunur(true)}
               activeOpacity={0.8}
               accessibilityRole="button"
@@ -446,8 +447,8 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
               style={{ backgroundColor: '#FFF0F5', borderColor: '#FFC0CB' }}
             >
               <View className="flex-row items-center gap-2 mb-2">
-                <FontAwesome5 name="check-circle" size={16} color="#D81B60" solid />
-                <Text className="text-sm font-bold" style={{ color: '#D81B60' }}>
+                <FontAwesome5 name="check-circle" size={16} color={OZEL_GUN_RENGI} solid />
+                <Text className="text-sm font-bold" style={{ color: OZEL_GUN_RENGI }}>
                   Aktif Özel Gün
                 </Text>
               </View>
