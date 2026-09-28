@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
+import type { ReactTestInstance } from 'react-test-renderer';
 import { NamazAdi } from '../../../../core/constants/UygulamaSabitleri';
 import { bugunuAl, dunuAl, ISOTarihiDateNesnesiNeCevir } from '../../../../core/utils/TarihYardimcisi';
 import * as gunNavigasyon from '../../../../core/utils/gunNavigasyonYardimcisi';
@@ -100,7 +101,7 @@ describe('VakitAkisi Bileşeni', () => {
 
     // Yatsı DIŞINDAKİ dört vakit de tıklanabilmeli (bug'da hepsi disabled'dı).
     for (const ad of [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam]) {
-      const satir = getByLabelText(`${ad} vakti, vakti bekleniyor`);
+      const satir = getByLabelText(`${ad} vakti, ${SAATLER[ad]}, vakti bekleniyor`);
       fireEvent.press(satir);
     }
     expect(onVakitTikla).toHaveBeenCalledTimes(4);
@@ -124,7 +125,7 @@ describe('VakitAkisi Bileşeni', () => {
       />
     );
 
-    const yatsi = getByLabelText(`${NamazAdi.Yatsi} vakti, vakit girmedi`);
+    const yatsi = getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakit girmedi`);
     fireEvent.press(yatsi);
     expect(onVakitTikla).not.toHaveBeenCalled();
   });
@@ -144,7 +145,87 @@ describe('VakitAkisi Bileşeni', () => {
       />
     );
 
-    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, vakti bekleniyor`));
+    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakti bekleniyor`));
     expect(onVakitTikla).toHaveBeenCalledWith(NamazAdi.Yatsi, true);
+  });
+
+  describe('zincir görünümü', () => {
+    const YESIL = '#4CAF50';
+    const GRI = '#E0E0E0';
+    const renk = (el: ReactTestInstance) => (el.props.style as { backgroundColor: string }).backgroundColor;
+
+    it('her satırda vaktin giriş saati yazar ve ekran okuyucu saati okur', () => {
+      const dun = dunuAl();
+      const { getByText, getByLabelText } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazUret(dun, SAATLER)}
+          suankiVakitAdi="" gunTarihiIso={dun} />
+      );
+      for (const saat of Object.values(SAATLER)) {
+        expect(getByText(saat)).toBeTruthy();
+      }
+      expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, vakti bekleniyor`)).toBeTruthy();
+    });
+
+    it('saat bilinmiyorsa etikette boş virgül kalmaz', () => {
+      const dun = dunuAl();
+      const namazlar = namazUret(dun, { ...SAATLER, [NamazAdi.Sabah]: '' });
+      const { getByLabelText } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
+          suankiVakitAdi="" gunTarihiIso={dun} />
+      );
+      expect(getByLabelText(`${NamazAdi.Sabah} vakti, vakti bekleniyor`)).toBeTruthy();
+    });
+
+    it('bağlantı yalnız kılınan vakitten ulaşılan vakte kadar dolar, iki yarısı aynı renktir', () => {
+      const dun = dunuAl();
+      // Sabah + Öğle kılındı, İkindi şu anki vakit, Akşam/Yatsı henüz gelmedi.
+      const namazlar = namazUret(dun, SAATLER).map((n) => ({
+        ...n,
+        tamamlandi: n.namazAdi === NamazAdi.Sabah || n.namazAdi === NamazAdi.Ogle,
+      }));
+      const { getByTestId, queryByTestId } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
+          suankiVakitAdi={NamazAdi.Ikindi} gunTarihiIso={dun} />
+      );
+
+      // Zincirin uçlarında dışarı taşan çizgi yok
+      expect(queryByTestId(`baglanti-ust-${NamazAdi.Sabah}`)).toBeNull();
+      expect(queryByTestId(`baglanti-alt-${NamazAdi.Yatsi}`)).toBeNull();
+
+      // Sabah→Öğle ve Öğle→İkindi dolu (her iki yarı da)
+      expect(renk(getByTestId(`baglanti-alt-${NamazAdi.Sabah}`))).toBe(YESIL);
+      expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Ogle}`))).toBe(YESIL);
+      expect(renk(getByTestId(`baglanti-alt-${NamazAdi.Ogle}`))).toBe(YESIL);
+      expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Ikindi}`))).toBe(YESIL);
+      // İkindi kılınmadı → sonrası gri
+      expect(renk(getByTestId(`baglanti-alt-${NamazAdi.Ikindi}`))).toBe(GRI);
+      expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Aksam}`))).toBe(GRI);
+    });
+
+    it('arada kılınmamış vakit varsa zincir orada kopar', () => {
+      const dun = dunuAl();
+      // Sabah kılınmadı, Öğle kılındı: Sabah→Öğle bağlantısı dolmaz.
+      const namazlar = namazUret(dun, SAATLER).map((n) => ({ ...n, tamamlandi: n.namazAdi === NamazAdi.Ogle }));
+      const { getByTestId } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
+          suankiVakitAdi="" gunTarihiIso={dun} />
+      );
+      expect(renk(getByTestId(`baglanti-alt-${NamazAdi.Sabah}`))).toBe(GRI);
+      expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Ogle}`))).toBe(GRI);
+    });
+
+    it('Güneş listede gösterilmez ve zinciri bölmez', () => {
+      const dun = dunuAl();
+      const namazlar = namazUret(dun, SAATLER).map((n) => ({ ...n, tamamlandi: true }));
+      // Güneş'i Sabah ile Öğle arasına sok
+      namazlar.splice(1, 0, { namazAdi: NamazAdi.Gunes as never, tamamlandi: false, tarih: dun, saat: '06:00' });
+      const { queryByText, getByTestId } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
+          suankiVakitAdi="" gunTarihiIso={dun} />
+      );
+      expect(queryByText('06:00')).toBeNull();
+      expect(renk(getByTestId(`baglanti-alt-${NamazAdi.Sabah}`))).toBe(YESIL);
+      expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Ogle}`))).toBe(YESIL);
+    });
   });
 });
