@@ -66,7 +66,7 @@ const KARELER = [
         alt: 'Kâbe yönünü internet olmadan, derece olarak görürsünüz.',
         zemin: 'acik',
     },
-    // 06-08 yalniz Play'de (8 kare sinirini doldurmak icin); iOS seti 5 karedir.
+    // 06-08: iki magazada da (Play 8, App Store 10 kareye izin veriyor).
     {
         dosya: '06-akis-onizleme.png',
         baslik: 'Bugünkü uyarıları\nönceden görün',
@@ -81,7 +81,7 @@ const KARELER = [
     },
     {
         dosya: '08-istatistik.png',
-        baslik: 'Haftanızı\ngrafikte izleyin',
+        baslik: 'Ayınızı\ngrafikte izleyin',
         alt: 'Hangi gün kaç vakit kıldığınızı günlük, haftalık ve aylık dökümde görürsünüz.',
         zemin: 'acik',
     },

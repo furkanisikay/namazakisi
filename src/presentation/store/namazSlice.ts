@@ -15,7 +15,7 @@ import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import {
   bugunuAl,
   gunEkle,
-  gunAdiniAl,
+  gunKisaAdiniAl,
   haftaninBaslangiciniAl,
   ayinIlkGunuAl,
   ayinSonGunuAl,
@@ -144,7 +144,7 @@ export const haftalikIstatistikleriYukle = createAsyncThunk(
       const stats = istatistikHesapla(gun);
       return {
         tarih: gun.tarih,
-        gunAdi: gunAdiniAl(gun.tarih).substring(0, 3),
+        gunAdi: gunKisaAdiniAl(gun.tarih),
         toplamNamaz: stats.toplam,
         tamamlananNamaz: stats.tamamlanan,
         tamamlanmaYuzdesi: stats.yuzde,

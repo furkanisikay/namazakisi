@@ -2,10 +2,13 @@
  * Tarih islemleri icin yardimci fonksiyonlar
  */
 
-const GUN_ISIMLERI = ['Pazar', 'Pazartesi', 'Sali', 'Carsamba', 'Persembe', 'Cuma', 'Cumartesi'];
+// Kullaniciya GORUNEN metinlerdir (gok paneli basligi, istatistik ay basligi,
+// ekran okuyucu etiketi): Turkce karakterlerle yazilmali. ASCII yaziliydilar ve
+// "Eylul 2026" magaza ekran goruntulerine kadar gitti.
+const GUN_ISIMLERI = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
 const AY_ISIMLERI = [
-  'Ocak', 'Subat', 'Mart', 'Nisan', 'Mayis', 'Haziran',
-  'Temmuz', 'Agustos', 'Eylul', 'Ekim', 'Kasim', 'Aralik'
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
 ];
 
 /**
@@ -55,6 +58,18 @@ export const gunEkle = (isoTarih: string, gunSayisi: number): string => {
 export const gunAdiniAl = (isoTarih: string): string => {
   const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
   return GUN_ISIMLERI[tarih.getDay()];
+};
+
+/**
+ * Standart Turkce gun kisaltmasini dondurur (Pzt, Sal, Çar, Per, Cum, Cmt, Paz).
+ * Tam adin ilk uc harfi KULLANILAMAZ: Pazar/Pazartesi ikisi de "Paz",
+ * Cuma/Cumartesi ikisi de "Cum" olur (haftalik grafikte gorundu).
+ */
+const GUN_KISALTMALARI = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+
+export const gunKisaAdiniAl = (isoTarih: string): string => {
+  const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
+  return GUN_KISALTMALARI[tarih.getDay()];
 };
 
 /**

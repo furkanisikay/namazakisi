@@ -19,7 +19,9 @@ appId: com.furkanisikay.namazakisi
 - takeScreenshot: kareler/07-kaza
 
 - tapOn: "İstatistik"
-- tapOn: "Haftalık"
+# AYLIK: haftalik gorunum icinde bulunulan haftayi gosterir ve hafta basinda
+# yalnizca bugun dolu kaliyor.
+- tapOn: "Aylık"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: kareler/08-istatistik
