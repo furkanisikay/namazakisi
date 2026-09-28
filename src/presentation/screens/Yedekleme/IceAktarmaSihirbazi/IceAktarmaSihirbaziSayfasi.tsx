@@ -357,6 +357,8 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       style={[styles.buton, styles.butonGolge, { backgroundColor: renk, shadowColor: renk }]}
       onPress={onPress}
       activeOpacity={0.85}
+      accessibilityRole="button"
+      accessibilityLabel={etiket}
     >
       {!ikonSonda && ikon && <FontAwesome5 name={ikon} size={16} color="#fff" />}
       <Text style={styles.butonMetin}>{etiket}</Text>
@@ -369,6 +371,8 @@ export const IceAktarmaSihirbaziSayfasi: React.FC = () => {
       style={[styles.butonIkincil, { borderColor: `${renkler.sinir}`, backgroundColor: renkler.kartArkaplan }]}
       onPress={onPress}
       activeOpacity={0.85}
+      accessibilityRole="button"
+      accessibilityLabel={etiket}
     >
       {ikon && <FontAwesome5 name={ikon} size={15} color={renkler.metinIkincil} />}
       <Text style={[styles.butonIkincilMetin, { color: renkler.metin }]}>{etiket}</Text>

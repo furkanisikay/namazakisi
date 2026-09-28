@@ -74,7 +74,7 @@ describe('PaylasimModal', () => {
       </PaylasimModal>
     );
 
-    fireEvent.press(getByText('Hikayene Ekle'));
+    fireEvent.press(getByText('Hikâyenize ekleyin'));
 
     await waitFor(() => {
       expect(getByText('Görsel oluşturulamadı')).toBeTruthy();
@@ -93,7 +93,7 @@ describe('PaylasimModal', () => {
       </PaylasimModal>
     );
 
-    fireEvent.press(getByText('Hikayene Ekle'));
+    fireEvent.press(getByText('Hikâyenize ekleyin'));
 
     await waitFor(() => {
       expect(getByText('Paylaşım kullanılamıyor')).toBeTruthy();
@@ -110,7 +110,7 @@ describe('PaylasimModal', () => {
       </PaylasimModal>
     );
 
-    fireEvent.press(getByText('Hikayene Ekle'));
+    fireEvent.press(getByText('Hikâyenize ekleyin'));
     await waitFor(() => expect(getByText('Görsel oluşturulamadı')).toBeTruthy());
 
     // Bildirim modalı (ikinci Modal) görünür olmalı

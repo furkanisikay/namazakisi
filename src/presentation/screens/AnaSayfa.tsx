@@ -713,7 +713,11 @@ export const AnaSayfa: React.FC = () => {
           </View>
         )}
 
-        {/* Akış Listesi */}
+        {/* Akış Listesi — memo'lu: gün ISO dizesiyle geçer ki saniyelik geri sayım
+            render'ı memo'yu kırmasın. "Vakit geçti mi" içeride `new Date()` okur ama
+            satır yalnız prop değişince yeniden çizilir; doğruluk, satır saatlerinin
+            (`uiNamazlar`) servisle aynı adhan parametrelerinden gelmesine ve vakit
+            girince `suankiVakitAdi`'nin değişip yeniden çizimi tetiklemesine bağlıdır. */}
         <VakitAkisi
           namazlar={uiNamazlar}
           suankiVakitAdi={aktifGunKontrol ? suankiVakitAdi : ''}
@@ -722,7 +726,7 @@ export const AnaSayfa: React.FC = () => {
           onVakitTikla={handleVakitTikla}
           aktifGunMu={aktifGunKontrol}
           kilitli={kilitli}
-          gunTarihi={sayfaTarihiDate}
+          gunTarihiIso={sayfaTarihi}
           cumaEtiketi={cumaEtiketi}
         />
         {/* ScrollView sonu için boşluk */}

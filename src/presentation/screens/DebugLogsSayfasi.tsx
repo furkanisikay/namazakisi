@@ -19,6 +19,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';
 import { Logger, LogLevel, LogEntry } from '../../core/utils/Logger';
+import { loglariMaskele } from '../../domain/services/TaniRaporuServisi';
 import { BildirimModali, BildirimTipi } from '../components/common/BildirimModali';
 
 /**
@@ -95,6 +96,8 @@ const LogItem: React.FC<LogItemProps> = ({ log }) => {
     <TouchableOpacity
       onPress={() => setExpanded(!expanded)}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
       className="mb-2 rounded-lg p-3"
       style={{ backgroundColor: renkler.kartArkaplan }}
     >
@@ -243,7 +246,9 @@ export const DebugLogsSayfasi: React.FC = () => {
     }
 
     try {
-      const content = Logger.exportLogs();
+      // Paylaşılan dosya cihazdan çıkar → tanı e-postasıyla AYNI maskeleyiciden geçer
+      // (koordinat, şehir/ilçe alanları ve token benzeri gizli değerler gizlenir).
+      const content = loglariMaskele(Logger.exportLogs(), { konumDahil: false });
       const fileName = `namazakisi_logs_${Date.now()}.txt`;
       const file = new File(Paths.cache, fileName);
 
@@ -283,6 +288,8 @@ export const DebugLogsSayfasi: React.FC = () => {
     return (
       <TouchableOpacity
         onPress={() => setSelectedLevel(level)}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
         className="px-3 py-1.5 rounded-full mr-2"
         style={{
           backgroundColor: isSelected ? renkler.birincil : renkler.arkaplan,
@@ -335,6 +342,7 @@ export const DebugLogsSayfasi: React.FC = () => {
             className="flex-1 flex-row items-center justify-center py-2.5 rounded-lg"
             style={{ backgroundColor: renkler.birincil }}
             activeOpacity={0.7}
+            accessibilityRole="button"
           >
             <MaterialIcons name="refresh" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>
@@ -350,6 +358,7 @@ export const DebugLogsSayfasi: React.FC = () => {
               backgroundColor: logs.length > 0 ? renkler.bilgi : renkler.sinir,
             }}
             activeOpacity={0.7}
+            accessibilityRole="button"
           >
             <MaterialIcons name="share" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>
@@ -365,6 +374,7 @@ export const DebugLogsSayfasi: React.FC = () => {
               backgroundColor: logs.length > 0 ? renkler.hata : renkler.sinir,
             }}
             activeOpacity={0.7}
+            accessibilityRole="button"
           >
             <MaterialIcons name="delete" size={18} color="#FFFFFF" />
             <Text className="text-sm font-semibold ml-2" style={{ color: '#FFFFFF' }}>

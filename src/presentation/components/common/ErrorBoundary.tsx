@@ -7,6 +7,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { Logger } from '../../../core/utils/Logger';
+import { TemaContext } from '../../../core/theme/TemaContext';
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -44,7 +45,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             errorMessage: error.message,
         });
 
-        // Full JS call stack — 2000 karakter ile sinirlandir (AsyncStorage boyut limitini asmasin)
+        // Full JS call stack — 2000 karakter ile sınırlandır (AsyncStorage boyut limitini aşmasın)
         if (error.stack) {
             Logger.error(boundaryName, `JS STACK TRACE:\n${error.stack.slice(0, 2000)}`);
         }
@@ -66,33 +67,50 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
                 return this.props.fallback;
             }
 
+            // Sınıf bileşeni hook kullanamaz → renkler Consumer ile tema token'larından
+            // gelir. Provider yoksa (ör. sınırın kendisi Provider'ın dışında kalırsa)
+            // TemaContext'in varsayılan değeri (açık tema) devreye girer.
             return (
-                <View style={styles.container}>
-                    <ScrollView contentContainerStyle={styles.scroll}>
-                        <Text style={styles.title}>Bir hata olustu</Text>
-                        <Text style={styles.errorMessage}>
-                            {this.state.error?.message}
-                        </Text>
-
-                        {this.state.errorInfo?.componentStack && (
-                            <View style={styles.stackContainer}>
-                                <Text style={styles.stackTitle}>Component Stack:</Text>
-                                <Text style={styles.stackText}>
-                                    {this.state.errorInfo.componentStack}
+                <TemaContext.Consumer>
+                    {({ tema }) => (
+                        <View style={[styles.container, { backgroundColor: tema.renkler.arkaplan }]}>
+                            <ScrollView contentContainerStyle={styles.scroll}>
+                                <Text style={[styles.title, { color: tema.renkler.durum.hata }]}>Bir hata oluştu</Text>
+                                <Text style={[styles.errorMessage, { color: tema.renkler.metin }]}>
+                                    {this.state.error?.message}
                                 </Text>
-                            </View>
-                        )}
 
-                        <TouchableOpacity
-                            style={styles.retryButton}
-                            onPress={this.handleRetry}
-                            accessibilityRole="button"
-                            accessibilityLabel="Tekrar Dene"
-                        >
-                            <Text style={styles.retryText}>Tekrar Dene</Text>
-                        </TouchableOpacity>
-                    </ScrollView>
-                </View>
+                                {this.state.errorInfo?.componentStack && (
+                                    <View
+                                        style={[
+                                            styles.stackContainer,
+                                            {
+                                                backgroundColor: tema.renkler.kartArkaplan,
+                                                // Açık temada #FFFFFF kutu #FAFAFA zeminden ayırt edilemiyordu.
+                                                borderColor: tema.renkler.sinir,
+                                            },
+                                        ]}
+                                    >
+                                        {/* 13 dp metin: hata kırmızısı açık zeminde 3,68:1 kalıyordu (AA 4,5 altı) */}
+                                        <Text style={[styles.stackTitle, { color: tema.renkler.metin }]}>Component Stack:</Text>
+                                        <Text style={[styles.stackText, { color: tema.renkler.metinIkincil }]}>
+                                            {this.state.errorInfo.componentStack}
+                                        </Text>
+                                    </View>
+                                )}
+
+                                <TouchableOpacity
+                                    style={[styles.retryButton, { backgroundColor: tema.renkler.durum.hata }]}
+                                    onPress={this.handleRetry}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Tekrar Dene"
+                                >
+                                    <Text style={styles.retryText}>Tekrar Dene</Text>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </View>
+                    )}
+                </TemaContext.Consumer>
             );
         }
 
@@ -103,7 +121,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a1a2e',
         padding: 20,
     },
     scroll: {
@@ -111,46 +128,43 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     title: {
-        color: '#e94560',
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 12,
     },
     errorMessage: {
-        color: '#ffffff',
         fontSize: 14,
         textAlign: 'center',
         marginBottom: 20,
         lineHeight: 20,
     },
     stackContainer: {
-        backgroundColor: '#16213e',
         borderRadius: 8,
+        borderWidth: 1,
         padding: 12,
         marginBottom: 20,
     },
     stackTitle: {
-        color: '#e94560',
         fontSize: 13,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     stackText: {
-        color: '#a0a0a0',
         fontSize: 11,
         fontFamily: 'monospace',
         lineHeight: 16,
     },
     retryButton: {
-        backgroundColor: '#e94560',
         borderRadius: 8,
         padding: 14,
         alignItems: 'center',
     },
     retryText: {
-        color: '#ffffff',
-        fontSize: 16,
+        // Dolu butonda beyaz metin (uygulamanın birincil buton deseni).
+        // Kalın ≥18,66 dp "büyük metin" sayılır → 3:1 yeter; beyaz #F44336 üstünde 3,68:1.
+        color: '#FFFFFF',
+        fontSize: 19,
         fontWeight: 'bold',
     },
 });

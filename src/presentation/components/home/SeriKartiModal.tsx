@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback, Modal, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
@@ -64,13 +64,19 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
             transparent={true}
             visible={gorunur}
             onRequestClose={onKapat}
+            statusBarTranslucent
         >
-            <TouchableOpacity
-                activeOpacity={1}
-                onPress={onKapat}
-                className="flex-1 justify-center items-center bg-black/60 p-4"
-            >
-                <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} className="w-full">
+            <View className="flex-1 justify-center items-center p-4">
+                {/* Backdrop: içeriği sarmaz, absoluteFill ile kardeş durur (AGENTS.md) */}
+                <TouchableWithoutFeedback
+                    onPress={onKapat}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
+                >
+                    <View style={StyleSheet.absoluteFill} className="bg-black/60" />
+                </TouchableWithoutFeedback>
+
+                <View className="w-full">
                     {/* Main Gradient Card */}
                     <LinearGradient
                         colors={['#fb923c', '#ea580c']} // orange-400 to orange-600
@@ -128,14 +134,17 @@ export const SeriKartiModal: React.FC<SeriKartiModalProps> = ({
                             onPress={() => setPaylasimModalGorunur(true)}
                             className="bg-white/20 py-3 rounded-xl flex-row items-center justify-center space-x-2 border border-white/30"
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Başarınızı paylaşın"
                         >
                             <FontAwesome5 name="share-alt" size={16} color="white" style={{ marginRight: 8 }} />
-                            <Text className="text-white font-bold text-sm">BAŞARIMI PAYLAŞ</Text>
+                            {/* Sabit büyük harf: toUpperCase() Türkçe İ/ı'yı bozar (AGENTS.md) */}
+                            <Text className="text-white font-bold text-sm">BAŞARINIZI PAYLAŞIN</Text>
                         </TouchableOpacity>
 
                     </LinearGradient>
-                </TouchableOpacity>
-            </TouchableOpacity>
+                </View>
+            </View>
 
             {/* Paylasim Modali */}
             <PaylasimModal
