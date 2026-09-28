@@ -78,6 +78,17 @@ function tohumVerisi() {
         // `toplam_kililan_namaz = 0` ile bu 640 - 0 = 640 bonus uretti, toplam
         // 1280 puana cikti ve "Seviye Atladın! Yeni rank: Ârif" modali acildi.
         '@namaz_akisi/bonus_puan': '0',
+        // Taze 'guncelleme yok' onbellegi: debug APK hatta yeniden kullanildigi icin
+        // surumu cogu zaman en son release'ten eskidir. Onbellek yoksa GitHub kontrolu
+        // acilistan birkac saniye sonra 'Yeni Surum Mevcut' penceresini acar, kareyi
+        // orter ve sonraki akislarin dokunuslarini yutar (v0.28.3 yayimlaninca yasandi).
+        // GuncellemeServisi 6 saatlik onbellek gecerliyken aga hic cikmaz.
+        '@namaz_akisi/guncelleme_durumu': JSON.stringify({
+            sonKontrolZamani: Date.now(),
+            sonSonuc: { guncellemeMevcut: false, bilgi: null },
+            ertelenenVersiyon: null,
+            ertelemeZamani: null,
+        }),
         // Seri YOL-BAGIMLIDIR: kayitlardan turetilmez, diskte tutulur.
         // Tohumlanmazsa kayitlar dolu olsa bile baslik cipi "0 Gün" gosterir.
         seri_durumu: JSON.stringify({
