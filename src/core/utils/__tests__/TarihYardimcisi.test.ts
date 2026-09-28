@@ -1,5 +1,6 @@
 import {
   ISOTarihiDateNesnesiNeCevir,
+  ayAdiniAl,
   ayinIlkGunuAl,
   ayinSonGunuAl,
   ayniGunMu,
@@ -136,8 +137,24 @@ describe('TarihYardimcisi — gunAdiniAl', () => {
     expect(gunAdiniAl('2026-06-07')).toBe('Pazar'); // getDay()===0
     expect(gunAdiniAl('2026-06-08')).toBe('Pazartesi');
     expect(gunAdiniAl('2026-06-12')).toBe('Cuma');
-    expect(gunAdiniAl('2025-12-31')).toBe('Carsamba');
-    expect(gunAdiniAl('2024-02-29')).toBe('Persembe'); // artik yil sinir gunu
+    expect(gunAdiniAl('2025-12-31')).toBe('Çarşamba');
+    expect(gunAdiniAl('2024-02-29')).toBe('Perşembe'); // artik yil sinir gunu
+    expect(gunAdiniAl('2026-06-09')).toBe('Salı');
+  });
+});
+
+// Gorunen metin: Turkce karakterle yazilmali. ASCII yazim ("Eylul 2026") gok
+// panelinde ve magaza ekran goruntulerinde gorundu.
+describe('TarihYardimcisi — ayAdiniAl', () => {
+  it('ay adlarini Turkce karakterlerle dondurur', () => {
+    expect([1, 4, 7, 8, 10, 11].map(ayAdiniAl)).toEqual([
+      'Şubat',
+      'Mayıs',
+      'Ağustos',
+      'Eylül',
+      'Kasım',
+      'Aralık',
+    ]);
   });
 });
 

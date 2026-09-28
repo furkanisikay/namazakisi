@@ -325,7 +325,8 @@ function cek(ad) {
     a = await agac('istatistik-oncesi');
     if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3000 })) {
         a = await agac('istatistik-sekmeleri');
-        if (await dokun(a, /^Haftalık/, 'haftalik sekmesi', { bekle: 4000 })) {
+        // Etiket ", Haftalık": ikonun bos etiketi metne virgulle ekleniyor.
+        if (await dokun(a, /(^|, )Haftalık$/, 'haftalik sekmesi', { bekle: 4000 })) {
             await agac('haftalik');
             cek('08-istatistik');
         }

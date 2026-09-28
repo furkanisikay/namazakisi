@@ -2,10 +2,13 @@
  * Tarih islemleri icin yardimci fonksiyonlar
  */
 
-const GUN_ISIMLERI = ['Pazar', 'Pazartesi', 'Sali', 'Carsamba', 'Persembe', 'Cuma', 'Cumartesi'];
+// Kullaniciya GORUNEN metinlerdir (gok paneli basligi, istatistik ay basligi,
+// ekran okuyucu etiketi): Turkce karakterlerle yazilmali. ASCII yaziliydilar ve
+// "Eylul 2026" magaza ekran goruntulerine kadar gitti.
+const GUN_ISIMLERI = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
 const AY_ISIMLERI = [
-  'Ocak', 'Subat', 'Mart', 'Nisan', 'Mayis', 'Haziran',
-  'Temmuz', 'Agustos', 'Eylul', 'Ekim', 'Kasim', 'Aralik'
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
 ];
 
 /**
