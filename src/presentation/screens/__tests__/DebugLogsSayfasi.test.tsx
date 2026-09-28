@@ -23,9 +23,10 @@ jest.mock('expo-sharing', () => ({
   isAvailableAsync: jest.fn().mockResolvedValue(true),
   shareAsync: jest.fn().mockResolvedValue(undefined),
 }));
+const mockDosyaYaz = jest.fn().mockResolvedValue(undefined);
 jest.mock('expo-file-system/next', () => ({
   File: jest.fn().mockImplementation(() => ({
-    write: jest.fn().mockResolvedValue(undefined),
+    write: mockDosyaYaz,
     uri: 'file://tmp/logs.txt',
   })),
   Paths: { cache: 'file://cache' },
@@ -113,6 +114,25 @@ describe('DebugLogsSayfasi — onay/bildirim modalı', () => {
 
     fireEvent.press(getByLabelText('İptal'));
     expect(Logger.clearLogs).not.toHaveBeenCalled();
+  });
+
+  it('paylaşılan log dosyası MASKELENMİŞ olarak yazılır (konum sızmaz)', async () => {
+    (Logger.exportLogs as jest.Mock).mockReturnValue(
+      ['{', '  "il": "İstanbul",', '  "konum": "41.0082, 28.9784"', '}'].join('\n'),
+    );
+    const Sharing = require('expo-sharing');
+    const { getByText } = SayfaYukle();
+    await waitFor(() => expect(getByText('Paylaş')).toBeTruthy());
+
+    fireEvent.press(getByText('Paylaş'));
+
+    await waitFor(() => expect(Sharing.shareAsync).toHaveBeenCalled());
+    expect(mockDosyaYaz).toHaveBeenCalledTimes(1);
+    const yazilan = mockDosyaYaz.mock.calls[0][0] as string;
+    expect(yazilan).not.toContain('İstanbul');
+    expect(yazilan).not.toContain('41.0082');
+    expect(yazilan).not.toContain('28.9784');
+    expect(yazilan).toContain('[konum gizlendi]');
   });
 
   it('debug ayarı kaydedilemezse hata bildirim modalı gösterilir', async () => {
