@@ -72,6 +72,10 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
                 className="flex-row items-center gap-3"
                 onPress={onTarihTikla}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                // Kısaltılmış ay ("Oca") yerine tam tarih okunur.
+                accessibilityLabel={`${aktifGunMu ? 'Aktif gün' : bugunMu ? 'Bugün' : 'Seçili tarih'}: ${formatliTarih}, ${gunAdi}`}
+                accessibilityHint="Tarih seçiciyi açar"
             >
                 <View
                     className="p-2 rounded-lg items-center min-w-[3.5rem] border"

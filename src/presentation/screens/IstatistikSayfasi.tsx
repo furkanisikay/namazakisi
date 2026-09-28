@@ -72,15 +72,21 @@ export const IstatistikSayfasi: React.FC = () => {
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: renkler.arkaplan }} edges={['top', 'left', 'right']}>
-      {/* Tab Bar - 3 Tab */}
+      {/* Sekme çubuğu. Etiketler ekrandaki metinle BİREBİR aynı ("… sekmesi" YOK):
+          tab rolü "sekme"yi zaten okur; mağaza ekran görüntüsü betikleri ve
+          Maestro akışları da tam "Aylık" etiketini arar. */}
       <View
+        accessibilityRole="tablist"
         className="flex-row border-b"
         style={{ backgroundColor: renkler.kartArkaplan, borderBottomColor: renkler.sinir }}
       >
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'gunluk' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'gunluk' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('gunluk')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'gunluk' }}
+          accessibilityLabel="Günlük"
         >
           <FontAwesome5
             name="chart-bar"
@@ -99,8 +105,11 @@ export const IstatistikSayfasi: React.FC = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'haftalik' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'haftalik' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('haftalik')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'haftalik' }}
+          accessibilityLabel="Haftalık"
         >
           <FontAwesome5
             name="calendar-week"
@@ -119,8 +128,11 @@ export const IstatistikSayfasi: React.FC = () => {
         </TouchableOpacity>
         <TouchableOpacity
           className="flex-1 py-3 items-center border-b-2"
-          style={{ borderBottomColor: aktifTab === 'aylik' ? renkler.birincil : 'transparent' }}
+          style={{ borderBottomColor: aktifTab === 'aylik' ? renkler.birincil : 'transparent', minHeight: 44 }}
           onPress={() => setAktifTab('aylik')}
+          accessibilityRole="tab"
+          accessibilityState={{ selected: aktifTab === 'aylik' }}
+          accessibilityLabel="Aylık"
         >
           <FontAwesome5
             name="calendar-alt"
@@ -143,7 +155,7 @@ export const IstatistikSayfasi: React.FC = () => {
           onPress={() => setAktifTab('seri')}
           accessibilityRole="tab"
           accessibilityState={{ selected: aktifTab === 'seri' }}
-          accessibilityLabel="Seri sekmesi"
+          accessibilityLabel="Seri"
         >
           <MaterialCommunityIcons
             name="star-four-points"

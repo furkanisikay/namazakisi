@@ -75,7 +75,13 @@ const BilgiSatiri: React.FC<BilgiSatiriProps> = ({ etiket, deger, ikonAdi, onPre
 
   if (onPress) {
     return (
-      <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={0.7}
+        accessibilityRole="link"
+        accessibilityLabel={`${etiket}: ${deger}`}
+        accessibilityHint="Tarayıcıda açılır"
+      >
         {icerik}
       </TouchableOpacity>
     );
@@ -120,7 +126,9 @@ export const HakkindaSayfasi: React.FC = () => {
     ]).start();
   }, []);
 
-  // Web sitesini ac (yalnizca guvenilir HTTPS domainleri)
+  // Bağlantıyı sistem tarayıcısında açar. Kendisi DOĞRULAMA YAPMAZ: bu sayfadaki
+  // bağlantılar koda gömülü sabitlerdir; dış kaynaktan gelen URL'ler (güncelleme
+  // bağlantısı) çağırandan önce guvenilirBaglantiMi ile doğrulanır (handleIndirBasildi).
   const handleWebSitesiAc = (url: string) => {
     Linking.openURL(url).catch((hata) => {
       Logger.warn('HakkindaSayfasi', 'Baglanti acilamadi', hata);
@@ -210,7 +218,7 @@ export const HakkindaSayfasi: React.FC = () => {
             className="text-xs font-bold tracking-wider mb-3"
             style={{ color: renkler.metinIkincil }}
           >
-            UYGULAMA BILGILERI
+            UYGULAMA BİLGİLERİ
           </Text>
 
           <View
@@ -223,13 +231,13 @@ export const HakkindaSayfasi: React.FC = () => {
               ikonAdi="code-branch"
             />
             <BilgiSatiri
-              etiket="Gelistirici"
+              etiket="Geliştirici"
               deger="Furkan ISIKAY"
               ikonAdi="user"
               onPress={() => handleWebSitesiAc('https://furkanisikay.com.tr')}
             />
             <BilgiSatiri
-              etiket="Github"
+              etiket="GitHub"
               deger="namazakisi"
               ikonAdi="github"
               onPress={() => handleWebSitesiAc('https://github.com/furkanisikay/namazakisi')}
@@ -246,60 +254,74 @@ export const HakkindaSayfasi: React.FC = () => {
             GÜNCELLEME
           </Text>
 
-          <TouchableOpacity
-            onPress={handleGuncellemeKontrol}
-            disabled={kontrolEdiliyor}
-            activeOpacity={0.7}
-            className="flex-row items-center py-3.5 px-4 rounded-xl"
+          {/* "İndir" butonu kontrol butonunun İÇİNDE değil KARDEŞİNDE durur: Touchable
+              çocuklarını tek erişilebilirlik düğümüne düzleştirir, iç içe buton TalkBack'e
+              görünmez ve dokunma hedefleri çakışır (AGENTS.md). */}
+          <View
+            className="flex-row items-center rounded-xl"
             style={{ backgroundColor: renkler.kartArkaplan }}
           >
-            <View
-              className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
-              style={{ backgroundColor: `${guncellemeDurumRengi}26` }}
+            <TouchableOpacity
+              onPress={handleGuncellemeKontrol}
+              disabled={kontrolEdiliyor}
+              activeOpacity={0.7}
+              className="flex-1 flex-row items-center py-3.5 px-4"
+              // Etiket VERİLMEZ: başlık + durum metni ("Güncel", "… mevcut") birlikte okunsun.
+              accessibilityRole="button"
+              accessibilityState={{ disabled: kontrolEdiliyor, busy: kontrolEdiliyor }}
             >
-              {kontrolEdiliyor ? (
-                <ActivityIndicator size="small" color={renkler.bilgi} />
-              ) : (
+              <View
+                className="w-11 h-11 rounded-xl items-center justify-center mr-3.5"
+                style={{ backgroundColor: `${guncellemeDurumRengi}26` }}
+              >
+                {kontrolEdiliyor ? (
+                  <ActivityIndicator size="small" color={renkler.bilgi} />
+                ) : (
+                  <MaterialIcons
+                    name="system-update"
+                    size={22}
+                    color={guncellemeDurumRengi}
+                  />
+                )}
+              </View>
+              <View className="flex-1">
+                <Text
+                  className="text-base font-semibold"
+                  style={{ color: renkler.metin }}
+                >
+                  Güncelleme Kontrolü
+                </Text>
+                <Text
+                  className="text-xs mt-0.5"
+                  style={{ color: guncellemeDurumRengi }}
+                >
+                  {guncellemeDurumMetni}
+                </Text>
+              </View>
+              {!(guncellemeMevcut && bilgi) && (
                 <MaterialIcons
-                  name="system-update"
-                  size={22}
-                  color={guncellemeDurumRengi}
+                  name="refresh"
+                  size={20}
+                  color={renkler.metinIkincil}
                 />
               )}
-            </View>
-            <View className="flex-1">
-              <Text
-                className="text-base font-semibold"
-                style={{ color: renkler.metin }}
-              >
-                Güncelleme Kontrolü
-              </Text>
-              <Text
-                className="text-xs mt-0.5"
-                style={{ color: guncellemeDurumRengi }}
-              >
-                {guncellemeDurumMetni}
-              </Text>
-            </View>
-            {guncellemeMevcut && bilgi ? (
+            </TouchableOpacity>
+            {guncellemeMevcut && bilgi && (
               <TouchableOpacity
                 onPress={() => handleIndirBasildi(bilgi.indirmeBaglantisi)}
-                className="px-3 py-1.5 rounded-lg"
+                className="px-3 py-1.5 rounded-lg mr-4"
                 style={{ backgroundColor: renkler.bilgi }}
                 activeOpacity={0.7}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                accessibilityRole="button"
+                accessibilityLabel="Güncellemeyi indirin"
               >
                 <Text className="text-xs font-bold" style={{ color: '#FFFFFF' }}>
                   İndir
                 </Text>
               </TouchableOpacity>
-            ) : (
-              <MaterialIcons
-                name="refresh"
-                size={20}
-                color={renkler.metinIkincil}
-              />
             )}
-          </TouchableOpacity>
+          </View>
         </View>
 
         {/* Telif Hakki */}
