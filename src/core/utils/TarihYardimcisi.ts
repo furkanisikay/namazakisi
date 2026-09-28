@@ -61,6 +61,18 @@ export const gunAdiniAl = (isoTarih: string): string => {
 };
 
 /**
+ * Standart Turkce gun kisaltmasini dondurur (Pzt, Sal, Çar, Per, Cum, Cmt, Paz).
+ * Tam adin ilk uc harfi KULLANILAMAZ: Pazar/Pazartesi ikisi de "Paz",
+ * Cuma/Cumartesi ikisi de "Cum" olur (haftalik grafikte gorundu).
+ */
+const GUN_KISALTMALARI = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+
+export const gunKisaAdiniAl = (isoTarih: string): string => {
+  const tarih = ISOTarihiDateNesnesiNeCevir(isoTarih);
+  return GUN_KISALTMALARI[tarih.getDay()];
+};
+
+/**
  * Ay adini dondurur
  */
 export const ayAdiniAl = (ay: number): string => {

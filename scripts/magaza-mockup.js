@@ -81,7 +81,7 @@ const KARELER = [
     },
     {
         dosya: '08-istatistik.png',
-        baslik: 'Haftanızı\ngrafikte izleyin',
+        baslik: 'Ayınızı\ngrafikte izleyin',
         alt: 'Hangi gün kaç vakit kıldığınızı günlük, haftalık ve aylık dökümde görürsünüz.',
         zemin: 'acik',
     },

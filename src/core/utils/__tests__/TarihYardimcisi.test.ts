@@ -10,6 +10,7 @@ import {
   gecmisTarihMi,
   gunAdiniAl,
   gunEkle,
+  gunKisaAdiniAl,
   haftaninBaslangiciniAl,
   sonNGunuAl,
   tarihAraliginiAl,
@@ -140,6 +141,17 @@ describe('TarihYardimcisi — gunAdiniAl', () => {
     expect(gunAdiniAl('2025-12-31')).toBe('Çarşamba');
     expect(gunAdiniAl('2024-02-29')).toBe('Perşembe'); // artik yil sinir gunu
     expect(gunAdiniAl('2026-06-09')).toBe('Salı');
+  });
+});
+
+// Haftalik grafik etiketi: ilk uc harf kesilirse Pazar/Pazartesi ve
+// Cuma/Cumartesi ayni kisaltmaya duser ("Paz ... Cum Cum Paz").
+describe('TarihYardimcisi — gunKisaAdiniAl', () => {
+  it('bir haftanin yedi kisaltmasi birbirinden farklidir', () => {
+    const hafta = ['2026-06-07', '2026-06-08', '2026-06-09', '2026-06-10', '2026-06-11', '2026-06-12', '2026-06-13'];
+    const kisa = hafta.map(gunKisaAdiniAl);
+    expect(kisa).toEqual(['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']);
+    expect(new Set(kisa).size).toBe(7);
   });
 });
 

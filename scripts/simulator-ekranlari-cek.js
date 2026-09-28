@@ -325,9 +325,11 @@ function cek(ad) {
     a = await agac('istatistik-oncesi');
     if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3000 })) {
         a = await agac('istatistik-sekmeleri');
-        // Etiket ", Haftalık": ikonun bos etiketi metne virgulle ekleniyor.
-        if (await dokun(a, /(^|, )Haftalık$/, 'haftalik sekmesi', { bekle: 4000 })) {
-            await agac('haftalik');
+        // AYLIK, haftalik degil: haftalik gorunum icinde bulunulan haftayi
+        // gosterir ve hafta basinda (pazartesi) yalnizca bugun dolu, "%9 basari"
+        // gorunuyordu. Etiket ", Aylık": ikonun bos etiketi virgulle ekleniyor.
+        if (await dokun(a, /(^|, )Aylık$/, 'aylik sekmesi', { bekle: 4000 })) {
+            await agac('aylik');
             cek('08-istatistik');
         }
     }
