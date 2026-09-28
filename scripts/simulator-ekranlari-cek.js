@@ -205,6 +205,28 @@ async function seridiHizala() {
     return false;
 }
 
+/**
+ * Oge ekranin guvenli bandina gelene kadar yavas kaydirir, sonra dokunur.
+ * Alt kenardaki oge sekme cubugunun arkasinda kalabildigi icin yalnizca
+ * bulunmasi yetmez (Android hattinda da ayni ders).
+ */
+async function kaydirarakDokun(kalip, aciklama, ad, secenek = {}) {
+    for (let i = 0; i < 6; i++) {
+        const a = await agac(`${ad}-${i}`);
+        const kok = a.find((o) => String(o.type || '') === 'Application');
+        const yuk = kok ? cerceve(kok).h : 956;
+        const o = bul(a, kalip);
+        if (o) {
+            const y = cerceve(o).y + cerceve(o).h / 2;
+            if (y > yuk * 0.12 && y < yuk * 0.8) return dokun(a, kalip, aciklama, secenek);
+        }
+        idb('ui', 'swipe', '220', String(Math.round(yuk * 0.72)), '220', String(Math.round(yuk * 0.4)), '--duration', '1.0');
+        await bekle(1500);
+    }
+    console.error(`  BULUNAMADI (kaydirarak): ${aciklama}  (${kalip})`);
+    return false;
+}
+
 function cek(ad) {
     const hedef = path.join(cikis, `${ad}.png`);
     simctl('io', UDID || 'booted', 'screenshot', hedef);
@@ -228,6 +250,7 @@ function cek(ad) {
 
     await agac('ana-ekran');
     cek('01-ana-ekran');
+    let a;
 
     // --- Seri (Istatistik sekmesi acilista Seri alt sekmesinde durur) ---
     a = await agac('seri-oncesi');
@@ -238,13 +261,6 @@ function cek(ad) {
         await bekle(6000);
         await agac('seri');
         cek('04-seri');
-    }
-
-    // --- Rozetler ---
-    a = await agac('rozetler-oncesi');
-    if (await dokun(a, SEKME('Rozetler'), 'rozetler sekmesi', { bekle: 3000 })) {
-        await agac('rozetler');
-        cek('06-rozetler');
     }
 
     // --- Ayarlar -> Muhafiz ---
@@ -282,7 +298,36 @@ function cek(ad) {
                 await dokun(sheet, /^İkisi de$/i, 'ikisi de kanali', { bekle: 2500 });
                 await agac('adim-detay');
                 cek('03-adim-detay');
+
+                // --- Akis onizleme (06): sheet'i kapat, "… akışını önizleyin" ---
+                a = await agac('adim-kapat');
+                await dokun(a, /^Kapat$/, 'adim detayini kapat', { bekle: 2000 });
+                if (await kaydirarakDokun(/sabah akışını önizleyin/i, 'akis onizleme', 'onizle', { bekle: 3000 })) {
+                    await agac('akis-onizleme');
+                    cek('06-akis-onizleme');
+                }
             }
+        }
+    }
+
+    // --- Kaza (07) + haftalik istatistik (08) ---
+    // Acik bir modal sekme cubugunu ortebildigi icin temiz baslangic.
+    await yenidenBaslat();
+    for (let tur = 0; tur < 3; tur++) {
+        const katman = await agac(`kaza-katman-${tur}`);
+        if (!(await dokun(katman, KAPATILACAK, `kaza oncesi katman ${tur + 1}`, { bekle: 2000 }))) break;
+    }
+    a = await agac('kaza-oncesi');
+    if (await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 })) {
+        await agac('kaza');
+        cek('07-kaza');
+    }
+    a = await agac('istatistik-oncesi');
+    if (await dokun(a, SEKME('İstatistik'), 'istatistik sekmesi', { bekle: 3000 })) {
+        a = await agac('istatistik-sekmeleri');
+        if (await dokun(a, /^Haftalık/, 'haftalik sekmesi', { bekle: 4000 })) {
+            await agac('haftalik');
+            cek('08-istatistik');
         }
     }
 
