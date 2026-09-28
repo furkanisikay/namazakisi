@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.28.3] - 2026-09-28
+
+### Düzeltildi
+- [a11y] ekran okuyucu rolleri, etiketleri ve durumları
+- [ozel-gun] takvim modalını tema desenine taşı, ana buton kontrastını koru
+- [konum] konum ayarları sabit renklerini tema token'larına bağla
+- [ana-sayfa] VakitAkisi memo'sunu gün ISO dizesiyle koru
+- [debug-log] paylaşılan log dosyasını maskele
+- [seri] seri kartı modalında kardeş arka plan ve erişilebilir paylaş butonu
+- [kaza] sihirbaz modalına kardeş arka plan ekle
+- [ErrorBoundary] yedek ekran renklerini tema token'larına bağla
+
 ## [0.28.2] - 2026-09-28
 
 ### Düzeltildi
