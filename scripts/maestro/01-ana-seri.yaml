@@ -22,8 +22,6 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     centerElement: true
 - takeScreenshot: kareler/09-gunluk-akis
-- scroll:
-    direction: UP
 
 # Istatistik sekmesi acilista Seri alt sekmesinde durur.
 - tapOn: "İstatistik"
