@@ -19,7 +19,17 @@ on:
         options:
           - oku
           - yaz
+          - surumler
+          - uretime-al
         default: oku
+      surum:
+        description: "uretime-al için sürüm (ör. 0.28.2); not docs/app-store/surum-notlari.md'den okunur"
+        required: false
+        default: ''
+      oran:
+        description: 'uretime-al için kademeli yayın oranı (ör. 0.2 = %20). Boş = herkese.'
+        required: false
+        default: ''
       kare_run_id:
         description: 'Görseller için android-ekran-goruntuleri çalışma kimliği (boş = yalnız metin)'
         required: false
@@ -81,6 +91,10 @@ jobs:
           set -eo pipefail
           if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
             node scripts/play-magaza.js yaz --gorseller mockup
+          elif [ "${{ inputs.mod }}" = "uretime-al" ]; then
+            EK=""
+            [ -n "${{ inputs.oran }}" ] && EK="--oran ${{ inputs.oran }}"
+            node scripts/play-magaza.js uretime-al --surum "${{ inputs.surum }}" $EK
           else
             node scripts/play-magaza.js "${{ inputs.mod }}"
           fi

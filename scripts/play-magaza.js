@@ -133,6 +133,21 @@ function gorselYukle(editId, tur, dosya) {
     );
 }
 
+/**
+ * docs/app-store/surum-notlari.md icinden `#### <surum>` basligindaki kod
+ * blogunu okur. Notlarin tek dogru kaynagi o dosya: magazaya elle yazilan not
+ * repoda iz birakmaz ve bir sonraki surumde uslup kayar.
+ */
+function surumNotunuOku(surum) {
+    const md = fs.readFileSync(path.resolve(__dirname, '..', 'docs/app-store/surum-notlari.md'), 'utf8');
+    const baslik = '#### ' + surum;
+    const i = md.indexOf(baslik);
+    if (i < 0) throw new Error('surum-notlari.md icinde "' + baslik + '" yok');
+    const bas = md.indexOf('```', i) + 3;
+    const son = md.indexOf('```', bas);
+    return md.slice(bas, son).replace(/^[a-z]*\n/, '').trim();
+}
+
 /** magaza-metinleri.md icindeki Play bolumunden metinleri okur. */
 function playMetinleri() {
     const md = fs.readFileSync(path.resolve(__dirname, '..', 'docs/app-store/magaza-metinleri.md'), 'utf8');
@@ -152,10 +167,16 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    if (mod !== 'oku' && mod !== 'yaz') {
-        console.error('Kullanim: play-magaza.js <oku|yaz> [--gorseller <klasor>]');
+    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al'];
+    if (!MODLAR.includes(mod)) {
+        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2]');
         process.exit(1);
     }
+    const arg = (ad) => {
+        const i = process.argv.indexOf('--' + ad);
+        return i >= 0 ? process.argv[i + 1] : null;
+    };
+    const saltOkur = mod === 'oku' || mod === 'surumler';
     api.jeton = await jeton();
 
     const ekle = await api('POST', '/edits');
@@ -179,6 +200,54 @@ function playMetinleri() {
                 console.log('GORSEL ' + tur + ': ' + im.length + ' adet');
                 im.forEach((x) => console.log('  ' + x.url));
             }
+            return;
+        }
+
+        if (mod === 'surumler') {
+            const t = await api('GET', '/edits/' + editId + '/tracks');
+            for (const kanal of (t.j && t.j.tracks) || []) {
+                console.log('=== KANAL: ' + kanal.track + ' ===');
+                for (const r of kanal.releases || []) {
+                    const oran = r.userFraction ? ' | oran ' + r.userFraction : '';
+                    console.log('  ' + (r.name || '-') + ' | kod ' + (r.versionCodes || []).join(',') + ' | ' + r.status + oran);
+                    for (const n of r.releaseNotes || []) {
+                        console.log('    [' + n.language + '] (' + n.text.length + '/500)');
+                        n.text.split(/\r?\n/).forEach((satir) => console.log('      ' + satir));
+                    }
+                }
+            }
+            return;
+        }
+
+        if (mod === 'uretime-al') {
+            const surum = arg('surum');
+            if (!surum) throw new Error('--surum gerekli (ör. 0.28.2)');
+            const notlar = surumNotunuOku(surum);
+            if (notlar.length > 500) throw new Error('surum notu ' + notlar.length + ' karakter; Play siniri 500');
+            // Surum kodu ic test kanalindan bulunur: EAS o kanala yukluyor.
+            const ic = await api('GET', '/edits/' + editId + '/tracks/internal');
+            const kaynak = ((ic.j && ic.j.releases) || []).find((r) => (r.name || '').includes(surum));
+            if (!kaynak) throw new Error(surum + ' ic test kanalinda bulunamadi');
+            const oran = arg('oran');
+            const surumKaydi = {
+                name: surum,
+                versionCodes: kaynak.versionCodes,
+                // Oran verilirse kademeli yayin (inProgress), verilmezse herkese.
+                status: oran ? 'inProgress' : 'completed',
+                ...(oran ? { userFraction: Number(oran) } : {}),
+                releaseNotes: [{ language: DIL, text: notlar }],
+            };
+            const u = await api('PUT', '/edits/' + editId + '/tracks/production', {
+                track: 'production',
+                releases: [surumKaydi],
+            });
+            if (u.kod >= 300) throw new Error('uretim kanali yazilamadi: ' + u.kod + ' ' + JSON.stringify(u.j).slice(0, 300));
+            console.log('URETIM: ' + surum + ' | kod ' + kaynak.versionCodes.join(',') + ' | ' + surumKaydi.status + (oran ? ' ' + oran : ''));
+            console.log('NOT (' + notlar.length + '/500):');
+            notlar.split(/\r?\n/).forEach((satir) => console.log('  ' + satir));
+            const c = await api('POST', '/edits/' + editId + ':commit');
+            if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
+            console.log('YAYINLANDI (uretim kanali commit edildi).');
             return;
         }
 
@@ -238,7 +307,7 @@ function playMetinleri() {
         }
         throw e;
     } finally {
-        if (mod === 'oku') await api('DELETE', '/edits/' + editId).catch(() => {});
+        if (saltOkur) await api('DELETE', '/edits/' + editId).catch(() => {});
     }
 })().catch((e) => {
     console.error('HATA', e.message);
