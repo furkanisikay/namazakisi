@@ -1,0 +1,25 @@
+# Magaza kareleri (Android): kaza defteri + haftalik istatistik.
+# Play 8 telefon karesine izin veriyor; bu ikisi 07 ve 08.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- extendedWaitUntil:
+    visible: "Kıble yönünü bul"
+    timeout: 90000
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
+
+- tapOn: "Kaza"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: kareler/07-kaza
+
+- tapOn: "İstatistik"
+- tapOn: "Haftalık"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: kareler/08-istatistik

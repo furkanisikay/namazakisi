@@ -1,0 +1,26 @@
+# Magaza kareleri (Android): ana ekran + seri.
+# Etiketler RN accessibilityLabel'dir (Android'de content-desc); Maestro `text`
+# secicisi onlari da eslestirir ve DUZENLI IFADE olarak TAM eslesme arar.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: "Kıble yönünü bul"
+    timeout: 90000
+# Acilista kutlama/duyuru modali cikarsa kapat (tohum bunu onlemeli; guvenlik agi).
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
+- takeScreenshot: kareler/01-ana-ekran
+
+# Istatistik sekmesi acilista Seri alt sekmesinde durur.
+- tapOn: "İstatistik"
+# Gok panelindeki yildizlar sirayla belirir; erken cekilen kare haritayi yarim
+# gosterir (iOS'ta yasandi). Parilti animasyonu surekli oldugu icin bu adim
+# zaman asimiyla biter; amac beklemek.
+- waitForAnimationToEnd:
+    timeout: 8000
+- takeScreenshot: kareler/04-seri

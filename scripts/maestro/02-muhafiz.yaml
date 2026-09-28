@@ -1,0 +1,58 @@
+# Magaza kareleri (Android): muhafiz ekrani + zaman seridi + adim detayi.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- extendedWaitUntil:
+    visible: "Kıble yönünü bul"
+    timeout: 90000
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
+
+- tapOn: "Ayarlar"
+# 1080x1920'de muhafiz satiri listenin altinda kaliyor.
+- scrollUntilVisible:
+    element:
+      text: "Namaz muhafızı\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Namaz muhafızı\\..*"
+
+# SABAH: listenin son karti acilinca icerik ekran disinda kalir.
+- tapOn:
+    text: "Sabah vakti hatırlatma ayarları.*"
+# Seridi ORTALA: sabit mesafeli kaydirma momentumla her kosuda farkli kayiyor
+# ve serit karenin disinda kalabiliyordu (iOS'ta yasandi, App Store'a gitti).
+- scrollUntilVisible:
+    element:
+      text: ".*ilk hatırlatma.*"
+    direction: DOWN
+    centerElement: true
+    timeout: 20000
+- takeScreenshot: kareler/02-muhafiz-zaman-seridi
+
+# "İkisi de" secilince sheet sesli anons metniyle dolar; yalniz bildirimde alt
+# yarisi bos kaliyordu.
+- tapOn:
+    text: "Uyarı adımını düzenleyin.*"
+- tapOn: "İkisi de"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: kareler/03-adim-detay
+
+# Akis onizlemesi: muhafizin bugun hangi saatte nasil uyaracagini listeler.
+# Sheet donanim geri tusuyla kapanir (her modal useDonanimGeriTusu kullanir).
+- back
+- scrollUntilVisible:
+    element:
+      text: "Sabah akışını önizleyin"
+    direction: DOWN
+    timeout: 20000
+- tapOn: "Sabah akışını önizleyin"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: kareler/06-akis-onizleme

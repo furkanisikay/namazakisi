@@ -1,10 +1,14 @@
-name: 🏪 Play Mağaza Metinleri
+name: 🏪 Play Mağaza Kaydı
 
 # Google Play magaza kaydini okur veya gunceller.
 # Metinlerin tek dogru kaynagi docs/app-store/magaza-metinleri.md.
 #
 # `oku` varsayilandir ve HICBIR SEY DEGISTIRMEZ (edit acilir, okunur, silinir).
-# `yaz` modu edit'i commit eder — degisiklik magazada yayina girer.
+# `yaz` modu edit'i commit eder: degisiklik magazada yayina girer.
+#
+# Gorseller: `kare_run_id` verilirse o android-ekran-goruntuleri kosusunun ham
+# kareleri indirilir, mockup'lar + one cikan gorsel BURADA uretilir ve artifact
+# olarak birakilir. `oku` + `kare_run_id` = yalniz onizleme (yukleme yok).
 
 on:
   workflow_dispatch:
@@ -16,12 +20,8 @@ on:
           - oku
           - yaz
         default: oku
-      gorsel_calistir:
-        description: "Ekran görüntülerini de yükle (yalnız 'yaz' modunda; kareler artifact'tan gelir)"
-        type: boolean
-        default: false
       kare_run_id:
-        description: 'Ekran görüntülerinin alınacağı ios-ekran-goruntuleri çalışma kimliği'
+        description: 'Görseller için android-ekran-goruntuleri çalışma kimliği (boş = yalnız metin)'
         required: false
         default: ''
 
@@ -44,21 +44,42 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 🖼️ Kareleri indir
-        if: ${{ inputs.gorsel_calistir && inputs.kare_run_id != '' }}
+      - name: 🖼️ Android karelerini indir
+        if: ${{ inputs.kare_run_id != '' }}
         uses: actions/download-artifact@v4
         with:
-          name: magaza-mockuplari
-          path: mockup
+          name: android-ekran-goruntuleri
+          path: indirilen
           run-id: ${{ inputs.kare_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🎨 Mockup ve öne çıkan görsel üret
+        if: ${{ inputs.kare_run_id != '' }}
+        run: |
+          set -eo pipefail
+          # Artifact duzeni kosuya gore degisebiliyor (disaridaki bir yol eklenince
+          # upload-artifact ortak koku degistirip kareleri alt klasore itti).
+          # Duz bir kareler/ klasoru kur; Maestro'nun ara kopyalarini alma.
+          mkdir -p kareler
+          find indirilen -name '[0-9][0-9]-*.png' -not -path '*takeScreenshot*' -exec cp {} kareler/ \;
+          ls kareler/*.png
+          node scripts/magaza-mockup.js kareler mockup --platform android --one-cikan
+          ls -la mockup
+
+      - name: ⬆️ Mockup'ları yükle (önizleme)
+        if: ${{ inputs.kare_run_id != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: play-mockuplari
+          path: mockup/
+          retention-days: 14
 
       - name: 🏪 Play kaydını ${{ inputs.mod }}
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
           set -eo pipefail
-          if [ "${{ inputs.mod }}" = "yaz" ] && [ "${{ inputs.gorsel_calistir }}" = "true" ]; then
+          if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
             node scripts/play-magaza.js yaz --gorseller mockup
           else
             node scripts/play-magaza.js "${{ inputs.mod }}"

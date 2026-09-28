@@ -67,7 +67,7 @@ export const borcuVakitlerePaylaştır = (toplamBorc: number): Record<string, nu
 // ==================== MOTİVASYON ÖNERİLERİ ====================
 
 /**
- * "Her vakitten sonra X kaza kılsan Y günde biter" önerilerini üretir
+ * "Her vakitten sonra X kaza kılarsanız Y günde biter" önerilerini üretir
  */
 export const motivasyonOnerileriHesapla = (toplamKalan: number): MotivasyonOnerisi[] => {
   if (toplamKalan <= 0) return [];
@@ -81,12 +81,12 @@ export const motivasyonOnerileriHesapla = (toplamKalan: number): MotivasyonOneri
 
     let aciklama: string;
     if (tamamlanmaGunSayisi <= 30) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılsan ${tamamlanmaGunSayisi} günde biter`;
+      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ${tamamlanmaGunSayisi} günde biter`;
     } else if (tamamlanmaAySayisi <= 12) {
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılsan ~${Math.ceil(tamamlanmaAySayisi)} ayda biter`;
+      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${Math.ceil(tamamlanmaAySayisi)} ayda biter`;
     } else {
       const yil = parseFloat((tamamlanmaAySayisi / 12).toFixed(1));
-      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılsan ~${yil} yılda biter`;
+      aciklama = `Her vakitten sonra ${kazaAdediPerVakit} kaza kılarsanız ~${yil} yılda biter`;
     }
 
     return {

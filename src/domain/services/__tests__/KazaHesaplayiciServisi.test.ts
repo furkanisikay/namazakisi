@@ -205,6 +205,18 @@ describe('motivasyonOnerileriHesapla', () => {
     expect(oneri.aciklama).toContain('yılda biter');
     expect(oneri.aciklama).not.toContain('ayda biter');
   });
+
+  // Oneri metni ARAYUZ metnidir (kaza defteri ekrani), ibadete cagri degil:
+  // AGENTS.md'ye gore kibar "siz" dili. "kılsan" magaza ekran goruntusune
+  // kadar gitmisti.
+  it('uc bicimde de "siz" dilini kullanir', () => {
+    for (const kalan of [600, 100000]) {
+      for (const oneri of motivasyonOnerileriHesapla(kalan)) {
+        expect(oneri.aciklama).toContain('kılarsanız');
+        expect(oneri.aciklama).not.toMatch(/kılsan\b/);
+      }
+    }
+  });
 });
 
 // ════════════════════════════════════════════════════════════════════════════════
