@@ -5,6 +5,12 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.28.2] - 2026-09-28
+
+### Düzeltildi
+- [istatistik] haftalik grafikte gun kisaltmalari cakismasin
+- [tarih] gun ve ay adlarini Turkce karakterle yaz
+
 ## [0.28.1] - 2026-09-28
 
 ### Düzeltildi
