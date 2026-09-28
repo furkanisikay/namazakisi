@@ -62,6 +62,12 @@ const mockRenkler = {
   hata: '#F44336',
   bilgi: '#2196F3',
   basarili: '#10b981',
+  durum: {
+    basarili: '#4CAF50',
+    bilgi: '#2196F3',
+    uyari: '#FFC107',
+    hata: '#F44336',
+  },
 };
 
 const konumState = {
