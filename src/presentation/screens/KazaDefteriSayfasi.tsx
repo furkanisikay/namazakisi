@@ -9,6 +9,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Modal,
   TextInput,
   StyleSheet,
@@ -620,6 +621,14 @@ export const KazaDefteriSayfasi: React.FC = () => {
           style={styles.modalArkaPlan}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
+          {/* Backdrop: içeriği saran değil, absoluteFill ile kardeş → scroll/etkileşim bozulmaz */}
+          <TouchableWithoutFeedback
+            onPress={() => setAktifModal(null)}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            <View style={StyleSheet.absoluteFill} />
+          </TouchableWithoutFeedback>
           <View style={[styles.sihirbazKonteyner, { backgroundColor: renkler.kartArkaplan }]}>
             <View style={styles.sihirbazBaslikSatir}>
               <FontAwesome5 name="magic" size={18} color={renkler.birincil} />
