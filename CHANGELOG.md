@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.28.1] - 2026-09-28
+
+### Düzeltildi
+- [kaza] motivasyon onerisini kibar "siz" diline cevir
+
 ## [0.28.0] - 2026-09-27
 
 ### Eklendi
