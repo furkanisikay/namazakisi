@@ -7,6 +7,7 @@ import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
+import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -18,12 +19,17 @@ interface VakitAkisiProps {
     /** Aktif vakit kilitli mi (orn: gunes/kerahat vaktinde ogle kilitleniyor) */
     kilitli?: boolean;
     /**
-     * GOSTERILEN gunun YEREL tarihi. ZORUNLU: hem cuma etiketi hem de "vakit
-     * girdi mi" hesabi buna gore yapilir (`new Date()` DEGIL). Gece yarisindan
-     * sonra yatsi surerken aktif gun DUNDUR — bu prop atlanirsa dunun vakitleri
-     * "gelecek" sanilir ve isaretleme kilitlenir (yasanmis bug).
+     * GOSTERILEN gunun YEREL tarihi, ISO dizesi (`YYYY-MM-DD`). ZORUNLU: hem cuma
+     * etiketi hem de "vakit girdi mi" hesabi buna gore yapilir (`new Date()` DEGIL).
+     * Gece yarisindan sonra yatsi surerken aktif gun DUNDUR — bu prop atlanirsa
+     * dunun vakitleri "gelecek" sanilir ve isaretleme kilitlenir (yasanmis bug).
+     *
+     * Neden `Date` degil dize: ana ekran geri sayim yuzunden SANIYEDE BIR cizilir;
+     * her render'da yeni bir `Date` nesnesi gecmek React.memo'nun sig karsilastirmasini
+     * her seferinde kiriyordu. Dize degerce karsilastirilir, Date'e donusum icerde
+     * `useMemo` ile yapilir.
      */
-    gunTarihi: Date;
+    gunTarihiIso: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
 }
@@ -48,10 +54,12 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     onVakitTikla,
     aktifGunMu = false,
     kilitli = false,
-    gunTarihi,
+    gunTarihiIso,
     cumaEtiketi = false
 }) => {
     const renkler = useRenkler();
+    // Yerel tarih (UTC degil) — `new Date('YYYY-MM-DD')` kullanma (AGENTS.md).
+    const gunTarihi = React.useMemo(() => ISOTarihiDateNesnesiNeCevir(gunTarihiIso), [gunTarihiIso]);
 
     return (
         <View className="flex-1">

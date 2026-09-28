@@ -54,7 +54,7 @@ describe('VakitAkisi Bileşeni', () => {
     // Aşağıdaki davranış testleri saatin ilerlemesiyle eski kodda da geçebilir
     // (bugünün 04:30'u öğleden sonra zaten geçmiştir). Bu test saatten BAĞIMSIZ:
     // hesabın `new Date()`in takvim gününe değil, gösterilen güne kurulduğunu
-    // doğrudan kanıtlar. Eski kod `gunTarihi`'ni hiç kullanmıyordu.
+    // doğrudan kanıtlar. Eski kod gösterilen günü hiç kullanmıyordu.
     const dun = dunuAl();
     const dunDate = ISOTarihiDateNesnesiNeCevir(dun);
     const casus = jest.spyOn(gunNavigasyon, 'vakitGectiMi');
@@ -64,13 +64,15 @@ describe('VakitAkisi Bileşeni', () => {
         {...varsayilanProps}
         namazlar={namazUret(dun, SAATLER)}
         suankiVakitAdi={NamazAdi.Yatsi}
-        gunTarihi={dunDate}
+        gunTarihiIso={dun}
       />
     );
 
     expect(casus).toHaveBeenCalled();
     for (const [, gecenGun] of casus.mock.calls) {
-      expect(gecenGun).toBe(dunDate);
+      // Prop ISO dizesi; içeride Date'e çevrilir → kimlik değil DEĞER eşitliği.
+      // Değer eşitliği yine de doğru GÜNÜN geçtiğini kanıtlar (bugün ≠ dün).
+      expect(gecenGun).toEqual(dunDate);
     }
   });
 
@@ -92,7 +94,7 @@ describe('VakitAkisi Bileşeni', () => {
         namazlar={namazUret(dun, SAATLER)}
         // Aktif vakit yatsı (gece yarısından sonra motorun döndürdüğü vakit)
         suankiVakitAdi={NamazAdi.Yatsi}
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(dun)}
+        gunTarihiIso={dun}
       />
     );
 
@@ -118,7 +120,7 @@ describe('VakitAkisi Bileşeni', () => {
         onVakitTikla={onVakitTikla}
         namazlar={namazUret(bugun, { ...SAATLER, [NamazAdi.Yatsi]: '23:59' })}
         suankiVakitAdi={NamazAdi.Sabah}
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(bugun)}
+        gunTarihiIso={bugun}
       />
     );
 
@@ -138,7 +140,7 @@ describe('VakitAkisi Bileşeni', () => {
         onVakitTikla={onVakitTikla}
         namazlar={namazUret(dun, { ...SAATLER, [NamazAdi.Yatsi]: '23:59' })}
         suankiVakitAdi=""
-        gunTarihi={ISOTarihiDateNesnesiNeCevir(dun)}
+        gunTarihiIso={dun}
       />
     );
 
