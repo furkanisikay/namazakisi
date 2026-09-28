@@ -53,14 +53,14 @@ export interface HesaplamaSihirbazGirdisi {
 }
 
 /**
- * Motivasyon önerisi — "Her vakitten sonra X kaza kılsan Y günde biter"
+ * Motivasyon önerisi — "Her vakitten sonra X kaza kılarsanız Y günde biter"
  */
 export interface MotivasyonOnerisi {
   kazaAdediPerVakit: number;       // Örn: 3
   toplamGunlukKaza: number;        // kazaAdediPerVakit × 6 vakit
   tamamlanmaGunSayisi: number;     // toplamKalan / toplamGunlukKaza
   tamamlanmaAySayisi: number;      // tamamlanmaGunSayisi / 30
-  aciklama: string;                // "Her vakitten sonra 3 kaza kılsan 47 günde biter"
+  aciklama: string;                // "Her vakitten sonra 3 kaza kılarsanız 47 günde biter"
 }
 
 /**
