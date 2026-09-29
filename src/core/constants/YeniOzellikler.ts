@@ -41,6 +41,44 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'konum-degisim-bildirimi',
+        surum: '0.30.0',
+        tarih: '2026-09-29',
+        baslik: 'Konumunuz Değişince Haber Veriyoruz',
+        aciklama:
+            'Başka bir ilçeye ya da şehre geçtiğinizde uygulama vakitleri kendiliğinden günceller ve bunu sessiz bir bildirimle size söyler.',
+        detayAciklama:
+            'Seyahatte otomatik güncelleme açıksa uygulama yer değiştirdiğinizi arka planda fark eder ve namaz vakitlerini yeni konumunuza göre ayarlar. Artık bunu sessizce yapmıyor: ilçeniz ya da şehriniz değiştiğinde "Konumunuz güncellendi" bildirimini görürsünüz. Bildirim ses ve titreşim çıkarmaz, yalnızca bildirim listesinde durur. Aynı ilçe içinde dolaşırken bildirim gelmez. İsterseniz Konum Ayarları\'ndan kapatabilirsiniz.',
+        ikon: 'map-marker-alt',
+        hedefSayfa: 'KonumAyarlari',
+        ctaEtiketi: 'Konum ayarlarını açın',
+        kartGoster: true,
+        detaylar: [
+            'Yalnızca ilçe ya da şehir değişince bildirim gelir',
+            'Ses ve titreşim çıkarmaz',
+            'Konumu elle yenilediğinizde ekranda kısa bir mesaj görürsünüz',
+            'Konum Ayarları\'ndan kapatabilirsiniz',
+        ],
+    },
+    {
+        id: 'gunluk-akis-zinciri',
+        surum: '0.29.0',
+        tarih: '2026-09-29',
+        baslik: 'Vakit Saatleri Ana Ekranda',
+        aciklama:
+            'Günlük Akış artık her vaktin giriş saatini gösteriyor ve kıldığınız namazları yeşil bir zincirle birbirine bağlıyor.',
+        detayAciklama:
+            'Ana ekrandaki Günlük Akış listesinde her vaktin solunda o vaktin giriş saati yazıyor; günün planını tek bakışta görebilirsiniz. Vakitler bir zincirle birbirine bağlı: kıldığınız namazlardan şu anki vakte kadar olan bağlantılar yeşile döner, arada kılınmamış bir vakit varsa zincir orada kopar. Şu anki vakit ayrıca çerçeveyle öne çıkar.',
+        ikon: 'link',
+        kartGoster: false,
+        detaylar: [
+            'Her vaktin giriş saati listede',
+            'Kılınan vakitler yeşil zincirle bağlanır',
+            'Şu anki vakit çerçeveyle öne çıkar',
+            'Ekran okuyucu saati de okur',
+        ],
+    },
+    {
         id: 'muhafiz-giris-yonu',
         surum: '0.25.0',
         tarih: '2026-08-28',
