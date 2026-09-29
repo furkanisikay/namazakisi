@@ -286,7 +286,7 @@ export async function arkaplandanKonumTakibiniYenidenBaslat(): Promise<void> {
         // Bu yuzden onarim mesafeyi ACIKCA karsilastirip ortak uygulama yolundan
         // gecmeli (o yol esik altinda ise yalnizca nabiz yazar).
         if (merkez.tazeMi) {
-            await yeniKonumuUygula(merkez.lat, merkez.lng, profil.mesafe);
+            await yeniKonumuUygula(merkez.lat, merkez.lng, profil.mesafe, {}, { degisimiBildir: true });
         }
     } catch (error) {
         Logger.error('ArkaplanGorev', 'Konum takip onarim hatasi:', error);

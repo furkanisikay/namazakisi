@@ -16,6 +16,7 @@ import {
     Modal,
     TextInput,
     Linking,
+    Platform,
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
 import * as Location from 'expo-location';
@@ -632,6 +633,31 @@ const KonumAyarlariIcerik: React.FC = () => {
                                     )}
                                 </TouchableOpacity>
                             </View>
+
+                            {/* Konum değişince bildir — yalnız Android: arka plan takibi (ve
+                                dolayısıyla otomatik algılama) iOS'ta yok. */}
+                            {Platform.OS === 'android' && (
+                                <View
+                                    className="flex-row items-center justify-between mt-4 pt-4 border-t"
+                                    style={{ borderTopColor: renkler.sinir }}
+                                >
+                                    <View className="flex-1 mr-3">
+                                        <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                                            Konum değişince bildir
+                                        </Text>
+                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            İlçe ya da şehir değişince sessiz bir bildirimle haber verilir
+                                        </Text>
+                                    </View>
+                                    <Anahtar
+                                        value={konumAyarlari.konumDegisimBildirimi !== false}
+                                        onValueChange={(acik) => { dispatch(konumAyarlariniGuncelle({ konumDegisimBildirimi: acik })); }}
+                                        trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                                        thumbColor={konumAyarlari.konumDegisimBildirimi !== false ? renkler.birincil : '#f4f3f4'}
+                                        accessibilityLabel="Konum değişince bildir"
+                                    />
+                                </View>
+                            )}
                         </>
                     )}
                 </View>

@@ -7,7 +7,7 @@
  */
 
 import { useCallback } from 'react';
-import { ToastAndroid } from 'react-native';
+import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumuYenileAsync } from '../store/konumSlice';
 
@@ -32,18 +32,18 @@ export function useKonumYenile(): KonumYenileDurumu {
       const sonuc = await dispatch(konumuYenileAsync()).unwrap().catch(() => null);
 
       if (sonuc?.durum === 'basarili') {
-        ToastAndroid.show('Konumunuz güncellendi', ToastAndroid.SHORT);
+        kisaBildirimGoster('Konumunuz güncellendi');
         return;
       }
 
       if (sonuc?.durum === 'izinYok') {
         // İzin diyaloğu, Play "Prominent Disclosure" metniyle birlikte Konum
         // Ayarları'nda açılır; buradan sessizce izin istemek o bağlamı atlardı.
-        ToastAndroid.show('Konum izni gerekiyor: Ayarlar > Konum', ToastAndroid.LONG);
+        kisaBildirimGoster('Konum izni gerekiyor: Ayarlar > Konum', true);
         return;
       }
 
-      ToastAndroid.show('Konum güncellenemedi, lütfen tekrar deneyin', ToastAndroid.SHORT);
+      kisaBildirimGoster('Konum güncellenemedi, lütfen tekrar deneyin');
     })();
   }, [dispatch, yenileniyor]);
 

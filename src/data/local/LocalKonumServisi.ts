@@ -61,6 +61,12 @@ export interface KonumAyarlari {
     akilliTakipAktif: boolean;
     /** Takip hassasiyet profili */
     takipHassasiyeti: TakipHassasiyeti;
+    /**
+     * Otomatik konum degisince (ilce/il adi degisirse) sessiz bildirim gonderilsin mi.
+     * Opsiyonel: eski kayitlarda yoktur ve YOKLUGU "acik" demektir
+     * (konumDegisimBildirimiGerekliMi yalniz acik false degerini kapali sayar).
+     */
+    konumDegisimBildirimi?: boolean;
 }
 
 // ==================== SABITLER ====================
@@ -89,6 +95,7 @@ export const VARSAYILAN_KONUM_AYARLARI: KonumAyarlari = {
     sonGpsGuncellemesi: null,
     akilliTakipAktif: false,
     takipHassasiyeti: VARSAYILAN_TAKIP_HASSASIYETI,
+    konumDegisimBildirimi: true,
 };
 
 // ==================== SERVIS FONKSIYONLARI ====================

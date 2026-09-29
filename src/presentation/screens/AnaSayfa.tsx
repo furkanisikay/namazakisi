@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, AppState, AppStateStatus, StyleSheet } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, AppState, AppStateStatus, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -14,6 +14,7 @@ import { useKonumYenile } from '../hooks/useKonumYenile';
 import { YuklemeGostergesi, KutlamaAnimasyonu, KutlamaModal, AnimasyonluButon, ToparlanmaModal } from '../components';
 import { HomeHeader } from '../components/home/HomeHeader';
 import { VakitKarti } from '../components/home/VakitKarti';
+import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
@@ -803,9 +804,7 @@ export const AnaSayfa: React.FC = () => {
           // yanlışlıkla "gelecek gün" sayılıp toast tetiklemesin (#13 + gece yarısı bug).
           if (!programatik && gelecekGuneGecisMi(yeniTarih, aktifGun)) {
             HaptikServisi.uyariTitresimi();
-            if (Platform.OS === 'android') {
-              ToastAndroid.show('Gelecek gunlere gidemezsiniz', ToastAndroid.SHORT);
-            }
+            kisaBildirimGoster('Gelecek günlere gidemezsiniz');
             // Aktif gune geri don
             programatikGecisRef.current = true;
             pagerRef.current?.setPage(tarihiSayfaIndeksineCevir(aktifGun));

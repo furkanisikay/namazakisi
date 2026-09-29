@@ -51,6 +51,10 @@ jest.mock('expo-task-manager', () => ({
 
 // Konuma bagli tuketicilere yayma TEK noktadan gecer (kendi nobetci testi var).
 // Fabrikali jest.mock gercek modulu YUKLEMEZ — notifee koprusunu de cekmiyoruz.
+jest.mock('../KonumBildirimServisi', () => ({
+    konumDegisimBildirimiGonder: jest.fn(() => Promise.resolve()),
+}));
+
 jest.mock('../KonumDegisikligiServisi', () => ({
     konumDegistiUygula: jest.fn(() => Promise.resolve()),
 }));
@@ -419,6 +423,25 @@ describe('arkaplandanKonumTakibiniYenidenBaslat', () => {
             const iletilen = (konumDegistiUygula as jest.Mock).mock.calls[0][0];
             expect(iletilen.lat).toBeCloseTo(39.9208);
             expect(iletilen.lng).toBeCloseTo(32.8541);
+        });
+
+        it('onarim OTOMATIK bir yoldur: sehir degistiyse kullaniciya bildirim gider', async () => {
+            // Kullanici uygulamayi acmadan baska sehirde: vakitlerin neden degistigini bilmeli.
+            aktifTakipKur({
+                koordinatlar: { lat: 41.0369, lng: 28.9850 },
+                gpsAdres: { semt: '', ilce: 'Beyoglu', il: 'Istanbul' },
+            });
+            (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(tazeKonum(39.9208, 32.8541));
+            (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([
+                { district: 'Cankaya', subregion: '', city: 'Ankara', region: '' },
+            ]);
+
+            await arkaplandanKonumTakibiniYenidenBaslat();
+
+            const { konumDegisimBildirimiGonder } = jest.requireMock('../KonumBildirimServisi');
+            expect(konumDegisimBildirimiGonder).toHaveBeenCalledWith(
+                expect.objectContaining({ ilce: 'Cankaya', il: 'Ankara' }),
+            );
         });
 
         it('esik ALTINDA kalindiysa yayma yapilmamali (gereksiz yeniden planlama yok)', async () => {

@@ -11,11 +11,17 @@ import {
     KONUM_TAKIP_GOREVI,
     KONUM_GEOFENCE_GOREVI,
     AKTIF_BOLGE_KIMLIGI,
+    yeniKonumuUygula,
 } from '../KonumTakipServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import { konumDegistiUygula } from '../KonumDegisikligiServisi';
+import { konumDegisimBildirimiGonder } from '../KonumBildirimServisi';
+
+jest.mock('../KonumBildirimServisi', () => ({
+    konumDegisimBildirimiGonder: jest.fn(() => Promise.resolve()),
+}));
 
 // AsyncStorage mock
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -933,5 +939,77 @@ describe('Arka Plan Bolge Gorevi (defineTask callback)', () => {
         await bolgeGorevi(cikisOlayi());
 
         expect(konumDegistiUygula).not.toHaveBeenCalled();
+    });
+});
+
+describe('Otomatik konum degisikligi bildirimi', () => {
+    const istanbulKaydi = (ek: Record<string, unknown> = {}) => JSON.stringify({
+        konumModu: 'oto',
+        takipHassasiyeti: 'dengeli',
+        koordinatlar: { lat: 41.0369, lng: 28.9850 },
+        gpsAdres: { semt: '', ilce: 'Beyoglu', il: 'Istanbul' },
+        ...ek,
+    });
+
+    const diskiKur = (kayit: string) => {
+        (AsyncStorage.getItem as jest.Mock).mockImplementation((key: string) =>
+            Promise.resolve(key === KONUM_ANAHTARI ? kayit : null));
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (Location.startGeofencingAsync as jest.Mock).mockResolvedValue(undefined);
+        (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(konumNesnesiUret(39.9208, 32.8541));
+        (Location.reverseGeocodeAsync as jest.Mock).mockResolvedValue([
+            { district: 'Cankaya', subregion: '', city: 'Ankara', region: '' },
+        ]);
+    });
+
+    it('bolge cikisinda sehir degistiyse YENI adla bildirim gider, yaymadan SONRA', async () => {
+        diskiKur(istanbulKaydi());
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegisimBildirimiGonder).toHaveBeenCalledWith({ semt: '', ilce: 'Cankaya', il: 'Ankara' });
+        // Metin "vakitler ayarlandi" der: bildirim tuketiciler tazelendikten sonra gitmeli.
+        const yaymaSirasi = (konumDegistiUygula as jest.Mock).mock.invocationCallOrder[0];
+        const bildirimSirasi = (konumDegisimBildirimiGonder as jest.Mock).mock.invocationCallOrder[0];
+        expect(yaymaSirasi).toBeLessThan(bildirimSirasi);
+    });
+
+    it('kullanici ayari kapattiysa bildirim GITMEZ ama konum yine guncellenir', async () => {
+        diskiKur(istanbulKaydi({ konumDegisimBildirimi: false }));
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).toHaveBeenCalled();
+        expect(konumDegisimBildirimiGonder).not.toHaveBeenCalled();
+    });
+
+    it('ad ayni kaldiysa (esik asildi ama ayni ilce) bildirim GITMEZ', async () => {
+        diskiKur(istanbulKaydi({ gpsAdres: { semt: '', ilce: 'Cankaya', il: 'Ankara' } }));
+
+        await bolgeGorevi(cikisOlayi());
+
+        expect(konumDegistiUygula).toHaveBeenCalled();
+        expect(konumDegisimBildirimiGonder).not.toHaveBeenCalled();
+    });
+
+    it('ELLE yenileme yolu (bildir secenegi yok) bildirim GONDERMEZ: kullanici zaten ekranda', async () => {
+        diskiKur(istanbulKaydi());
+
+        const uygulandi = await yeniKonumuUygula(39.9208, 32.8541, 0);
+
+        expect(uygulandi).toBe(true);
+        expect(konumDegisimBildirimiGonder).not.toHaveBeenCalled();
+    });
+
+    it('esik asilmadiysa (yalniz nabiz) bildirim GITMEZ', async () => {
+        diskiKur(istanbulKaydi());
+
+        const uygulandi = await yeniKonumuUygula(41.0370, 28.9851, 5000, {}, { degisimiBildir: true });
+
+        expect(uygulandi).toBe(false);
+        expect(konumDegisimBildirimiGonder).not.toHaveBeenCalled();
     });
 });
