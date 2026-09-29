@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.30.0] - 2026-09-29
+
+### Eklendi
+- [konum] otomatik konum değişince sessiz bildirim; iOS'ta da görünen kısa mesaj
+
 ## [0.29.0] - 2026-09-29
 
 ### Eklendi
