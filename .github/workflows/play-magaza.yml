@@ -47,16 +47,16 @@ jobs:
 
     steps:
       - name: 📥 Kodu çek
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⚙️ Node 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
 
       - name: 🖼️ Android karelerini indir
         if: ${{ inputs.kare_run_id != '' }}
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-ekran-goruntuleri
           path: indirilen
@@ -78,7 +78,7 @@ jobs:
 
       - name: ⬆️ Mockup'ları yükle (önizleme)
         if: ${{ inputs.kare_run_id != '' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: play-mockuplari
           path: mockup/
