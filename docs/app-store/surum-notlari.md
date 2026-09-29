@@ -17,6 +17,19 @@ sonraki sürümde üslup kayar.
 
 ## Google Play
 
+#### 0.30.1
+
+Üretimdeki önceki sürüm 0.28.2; not 0.28.3 ile 0.30.1 arasını kapsar.
+
+```
+- Ana ekranda her vaktin giriş saati yazıyor; kıldığınız vakitler bir zincirle birbirine bağlanıyor.
+- Seyahatte ilçeniz ya da şehriniz değişince sessiz bir bildirim gelir. Konum Ayarları'ndan kapatabilirsiniz.
+- Ekran okuyucu düğmelerin adını ve durumunu okuyor.
+- Hata ekranı ve bazı düğmeler daha okunaklı.
+- Paylaştığınız hata kayıtlarında konumunuz gizleniyor.
+- Yazım ve metin hataları giderildi.
+```
+
 #### 0.28.2
 
 Üretimdeki önceki sürüm 0.24.0; not 0.25.0 ile 0.28.2 arasını kapsar.
