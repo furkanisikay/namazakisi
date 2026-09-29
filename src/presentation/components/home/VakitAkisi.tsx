@@ -239,7 +239,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     style={{ backgroundColor: renkler.birincil + '08' }}>
                     <FontAwesome5 name="trophy" size={12} color={renkler.metinIkincil} />
                     <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                        Tüm namazları kıl, +{PUAN_DEGERLERI.tam_gun} bonus puan kazan!
+                        Tüm namazları kılın, +{PUAN_DEGERLERI.tam_gun} bonus puan kazanın!
                     </Text>
                 </View>
             ) : null}
