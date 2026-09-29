@@ -4,10 +4,14 @@
  * Ana ekran çipi ve Ayarlar satırı bu hook'u paylaşır; sonuç metinleri ve izin
  * yönlendirmesi burada sabitlenir ki iki ekran zamanla ayrışmasın.
  */
-import { ToastAndroid } from 'react-native';
 import { renderHook, act } from '@testing-library/react-native';
 import { useKonumYenile } from '../useKonumYenile';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { kisaBildirimGoster } from '../../components/common/KisaBildirim';
+
+// Mesaj platforma göre farklı çizilir (Android sistem toastı, iOS uygulama katmanı);
+// hook yalnız NE söyleneceğine karar verir, onu ölçeriz.
+jest.mock('../../components/common/KisaBildirim', () => ({ kisaBildirimGoster: jest.fn() }));
 
 jest.mock('../../store/hooks', () => ({
   useAppDispatch: jest.fn(),
@@ -27,7 +31,7 @@ interface KonumParcasi {
 }
 
 describe('useKonumYenile', () => {
-  let toastSpy: jest.SpyInstance;
+  const toastSpy = kisaBildirimGoster as jest.Mock;
   let unwrapSonucu: unknown;
   let unwrapReddeder: boolean;
   let dispatchMock: jest.Mock;
@@ -49,11 +53,6 @@ describe('useKonumYenile', () => {
         unwrapReddeder ? Promise.reject(new Error('thunk patladı')) : Promise.resolve(unwrapSonucu),
     }));
     useAppDispatchMock.mockReturnValue(dispatchMock);
-    toastSpy = jest.spyOn(ToastAndroid, 'show').mockImplementation(() => undefined);
-  });
-
-  afterEach(() => {
-    toastSpy.mockRestore();
   });
 
   test('otomatik modda yenilenebilir, manuel modda DEĞİL', () => {
@@ -69,7 +68,7 @@ describe('useKonumYenile', () => {
     });
 
     expect(dispatchMock).toHaveBeenCalledTimes(1);
-    expect(toastSpy).toHaveBeenCalledWith('Konumunuz güncellendi', ToastAndroid.SHORT);
+    expect(toastSpy).toHaveBeenCalledWith('Konumunuz güncellendi');
   });
 
   test('izin yoksa kullanıcı Konum Ayarları\'na yönlendirilir (sessizce izin İSTENMEZ)', async () => {
@@ -80,7 +79,7 @@ describe('useKonumYenile', () => {
       result.current.yenile();
     });
 
-    expect(toastSpy).toHaveBeenCalledWith('Konum izni gerekiyor: Ayarlar > Konum', ToastAndroid.LONG);
+    expect(toastSpy).toHaveBeenCalledWith('Konum izni gerekiyor: Ayarlar > Konum', true);
   });
 
   test('konum alınamazsa tekrar denemeye çağıran mesaj gösterilir', async () => {
@@ -92,8 +91,7 @@ describe('useKonumYenile', () => {
     });
 
     expect(toastSpy).toHaveBeenCalledWith(
-      'Konum güncellenemedi, lütfen tekrar deneyin',
-      ToastAndroid.SHORT
+      'Konum güncellenemedi, lütfen tekrar deneyin'
     );
   });
 
@@ -106,8 +104,7 @@ describe('useKonumYenile', () => {
     });
 
     expect(toastSpy).toHaveBeenCalledWith(
-      'Konum güncellenemedi, lütfen tekrar deneyin',
-      ToastAndroid.SHORT
+      'Konum güncellenemedi, lütfen tekrar deneyin'
     );
   });
 

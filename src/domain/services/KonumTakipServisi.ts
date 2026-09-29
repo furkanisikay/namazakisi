@@ -27,6 +27,8 @@
  * olarak ihlal eder, ancak React Native projeleri icin pragmatik bir trade-off'tur.
  */
 
+import { konumDegisimBildirimiGerekliMi } from '../../core/konum/konumDegisimBildirimi';
+import { konumDegisimBildirimiGonder } from './KonumBildirimServisi';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -222,7 +224,7 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
 
         await yeniKonumuUygula(yeniLat, yeniLng, profil.mesafe, {
             sonGeofenceOlayi: new Date(simdi).toISOString(),
-        });
+        }, { degisimiBildir: true });
 
     } catch (e) {
         Logger.error('KonumTakip', 'Islem hatasi:', e);
@@ -244,6 +246,9 @@ TaskManager.defineTask(KONUM_GEOFENCE_GOREVI, async ({ data, error }: TaskManage
  *
  * @param esikMesafe Güncellemenin tetikleneceği asgari mesafe (profil yarıçapı)
  * @param ekAlanlar Her iki yazma dalına da eklenecek alanlar (ör. `sonGeofenceOlayi`)
+ * @param secenekler.degisimiBildir Yer adı (ilçe/il) değiştiyse kullanıcıya sessiz
+ *   bildirim gönder. YALNIZ otomatik yollar (bölge çıkışı, arka plan onarımı) true
+ *   geçer: elle yenilemede kullanıcı zaten ekrandadır ve kısa mesajı görür.
  * @returns Konum güncellenip yayıldıysa true; eşik altında kalındıysa false
  */
 export async function yeniKonumuUygula(
@@ -251,6 +256,7 @@ export async function yeniKonumuUygula(
     yeniLng: number,
     esikMesafe: number,
     ekAlanlar: Record<string, unknown> = {},
+    secenekler: { degisimiBildir?: boolean } = {},
 ): Promise<boolean> {
     const konumAyarlariJson = await AsyncStorage.getItem(KONUM_DEPOLAMA_ANAHTARI);
     if (!konumAyarlariJson) {
@@ -288,7 +294,7 @@ export async function yeniKonumuUygula(
     }
 
     // Reverse geocoding ile adres al
-    let gpsAdres = null;
+    let gpsAdres: { semt: string; ilce: string; il: string } | null = null;
     try {
         const adresler = await Location.reverseGeocodeAsync({
             latitude: yeniLat,
@@ -324,6 +330,15 @@ export async function yeniKonumuUygula(
     // liste iki yerde yasayip ayrismasin.
     // =====================================================
     await konumDegistiUygula({ lat: yeniLat, lng: yeniLng });
+
+    // Bildirim yaymadan SONRA: metin "vakitler ayarlandı" der, gerçekten ayarlanmış olmalı.
+    // Karşılaştırma diske yazmadan ÖNCEKİ adla yapılır (`konumAyarlari.gpsAdres`).
+    if (
+        secenekler.degisimiBildir &&
+        konumDegisimBildirimiGerekliMi(konumAyarlari.gpsAdres, gpsAdres, konumAyarlari.konumDegisimBildirimi)
+    ) {
+        await konumDegisimBildirimiGonder(gpsAdres!);
+    }
 
     return true;
 }

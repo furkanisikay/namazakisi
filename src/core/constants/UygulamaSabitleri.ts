@@ -362,6 +362,8 @@ export const BILDIRIM_SABITLERI = {
     IFTAR_SAYAC: 'iftar_sayac_v2',
     SAHUR_SAYAC: 'sahur_sayac_v2',
     SERI_SAYAC: 'seri_sayac',
+    // Otomatik konum degisikligi bilgisi: SESSIZ (LOW). Genel kanal MAX + sesli, bilgi mesaji icin fazla.
+    KONUM: 'konum',
   },
 } as const;
 

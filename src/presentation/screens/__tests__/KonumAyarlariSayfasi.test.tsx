@@ -1,11 +1,12 @@
 import React from 'react';
-import { Switch, Linking } from 'react-native';
+import { Switch, Linking, Platform } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { KonumTakipServisi } from '../../../domain/services/KonumTakipServisi';
+import { konumAyarlariniGuncelle } from '../../store/konumSlice';
 
 // Mocklar
 // Navigasyon mock'u ZORUNLU: sayfa arama vurgusu için `useVurguKurulumu`
@@ -182,5 +183,65 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
 
       await waitFor(() => expect(getByText('KONUM BELİRLEME YÖNTEMİ')).toBeTruthy());
     });
+  });
+});
+
+describe('KonumAyarlariSayfasi — konum değişince bildir anahtarı', () => {
+  const dispatchMock = jest.fn();
+  const servisMock = {
+    aktifMi: jest.fn().mockResolvedValue(true),
+    arkaPlanIzniVarMi: jest.fn().mockResolvedValue(true),
+    baslat: jest.fn(),
+    durdur: jest.fn().mockResolvedValue(undefined),
+  };
+
+  // getByLabelText Switch'in iç host öğesini döndürür (`value` orada yok); bileşeni tipiyle bul.
+  const anahtariBul = (ekran: ReturnType<typeof render>) =>
+    ekran.UNSAFE_getAllByType(Switch).find((sw) => sw.props.accessibilityLabel === 'Konum değişince bildir');
+
+  const kur = (ek: Record<string, unknown> = {}) => {
+    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: (durum: { konum: unknown }) => unknown) =>
+      selector({ konum: { ...konumState, akilliTakipAktif: true, ...ek } })
+    );
+    const { KonumAyarlariSayfasi } = require('../KonumAyarlariSayfasi');
+    return render(<KonumAyarlariSayfasi />);
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useFeedback as jest.Mock).mockReturnValue({
+      butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined),
+    });
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
+    (KonumTakipServisi.getInstance as jest.Mock).mockReturnValue(servisMock);
+    servisMock.aktifMi.mockResolvedValue(true);
+  });
+
+  it('Android: takip açıkken görünür, varsayılan AÇIK (alan yoksa) ve kapatma ayarı kaydeder', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    const ekran = kur();
+
+    const anahtar = await waitFor(() => { const a = anahtariBul(ekran); expect(a).toBeTruthy(); return a!; });
+    expect(anahtar.props.value).toBe(true);
+
+    fireEvent(anahtar, 'valueChange', false);
+    expect(konumAyarlariniGuncelle).toHaveBeenCalledWith({ konumDegisimBildirimi: false });
+  });
+
+  it('Android: kullanıcı kapattıysa anahtar kapalı görünür', async () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    const ekran = kur({ konumDegisimBildirimi: false });
+
+    const anahtar = await waitFor(() => { const a = anahtariBul(ekran); expect(a).toBeTruthy(); return a!; });
+    expect(anahtar.props.value).toBe(false);
+  });
+
+  it('iOS: anahtar çizilmez (arka plan konum takibi yok, bildirim hiç gitmez)', async () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const { queryByLabelText, getByText } = kur();
+
+    await waitFor(() => expect(getByText('Konum Ayarları')).toBeTruthy());
+    expect(queryByLabelText('Konum değişince bildir')).toBeNull();
   });
 });

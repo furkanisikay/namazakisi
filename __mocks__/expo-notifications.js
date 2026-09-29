@@ -11,10 +11,12 @@ module.exports = {
   requestPermissionsAsync: jest.fn().mockResolvedValue({ status: 'granted' }),
   setNotificationCategoryAsync: jest.fn(),
   setNotificationChannelAsync: jest.fn(),
+  getNotificationChannelAsync: jest.fn().mockResolvedValue(null),
   setNotificationHandler: jest.fn(),
   addNotificationResponseReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
   removeNotificationSubscription: jest.fn(),
   AndroidImportance: {
+    LOW: 2,
     DEFAULT: 3,
     HIGH: 4,
     MAX: 5,
