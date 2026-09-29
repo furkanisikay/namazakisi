@@ -170,7 +170,9 @@ export const AnaSayfa: React.FC = () => {
   const uiNamazlar = useMemo(() => {
     if (!gunlukNamazlar || !konumAyarlari.koordinatlar) return [];
 
-    const date = new Date(mevcutTarih);
+    // YEREL takvim günü: `new Date('YYYY-MM-DD')` UTC gece yarısı olarak okunur ve UTC'nin
+    // gerisindeki saat dilimlerinde adhan ÖNCEKİ günün vakitlerini hesaplar (AGENTS.md).
+    const date = ISOTarihiDateNesnesiNeCevir(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
     const params = CalculationMethod.Turkey();
     const prayerTimes = new PrayerTimes(coordinates, date, params);

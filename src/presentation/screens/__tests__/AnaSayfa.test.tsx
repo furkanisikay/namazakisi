@@ -330,6 +330,20 @@ describe('AnaSayfa', () => {
     (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
   });
 
+  // ── NÖBETÇİ 0 — vakit listesi YEREL takvim gününe göre hesaplanır ─────────
+  it('vakit listesi gösterilen günün YEREL gece yarısıyla hesaplanır (UTC ile değil)', async () => {
+    // new Date('YYYY-MM-DD') UTC gece yarısıdır: TR'de (UTC+3) 03:00, UTC'nin gerisindeki
+    // bölgelerde ise ÖNCEKİ GÜN olur ve liste bir önceki günün vakitlerini gösterirdi.
+    // Not: CI UTC'de koştuğu için eski kod orada tesadüfen geçer; yerel (TR) koşum yakalar.
+    const bugun = bugunuAl();
+    const [y, a, g] = bugun.split('-').map(Number);
+    await kur(bugun);
+
+    const { PrayerTimes } = jest.requireMock('adhan');
+    const tarihler: Date[] = (PrayerTimes as jest.Mock).mock.calls.map((c: unknown[]) => c[1] as Date);
+    expect(tarihler).toContainEqual(new Date(y, a - 1, g));
+  });
+
   // ── NÖBETÇİ 1 — tarih seçici geri çağrısı stabil ──────────────────────────
   describe('Tarih seçici prop stabilitesi (dialog yeniden açılma bug\'ı)', () => {
     const tarihSeciciyiAc = async () => {
