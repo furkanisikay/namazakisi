@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.29.0] - 2026-09-29
+
+### Eklendi
+- [anasayfa] Günlük Akış'ı zincir görünümüne al, vakit giriş saatlerini göster
+
+### Düzeltildi
+- [anasayfa] bonus ipucunu kibar 'siz' diline çevir
+
 ## [0.28.3] - 2026-09-28
 
 ### Düzeltildi
