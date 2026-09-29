@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.30.1] - 2026-09-29
+
+### Düzeltildi
+- [anasayfa] vakit listesini yerel takvim gunune gore hesapla
+
 ## [0.30.0] - 2026-09-29
 
 ### Eklendi
