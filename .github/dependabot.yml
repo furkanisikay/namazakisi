@@ -28,3 +28,68 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+      # ── Expo SDK 54'ün yönettiği paketler (node_modules/expo/bundledNativeModules.json) ──
+      # Sürümlerini SDK belirler; SDK dışına çıkan güncelleme native build'i kırabilir
+      # (#201/#202/#204/#205 bu yüzden kapatıldı). Bunlar SDK yükseltmesiyle, `npx expo install --fix`
+      # ile birlikte güncellenir. Listeyi yeniden üretmek: bundledNativeModules ∩ package.json.
+      # Expo TAM sürüme sabitliyor: hiçbir güncelleme gelmesin.
+      - dependency-name: "@react-native-async-storage/async-storage"
+      - dependency-name: "@react-native-community/datetimepicker"
+      - dependency-name: "@react-native-community/netinfo"
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+      - dependency-name: "react-native"
+      - dependency-name: "react-native-pager-view"
+      - dependency-name: "react-native-svg"
+      - dependency-name: "react-native-view-shot"
+      - dependency-name: "react-native-webview"
+      - dependency-name: "react-native-worklets"
+      # Expo '~'/'^' ile sabitliyor: yalnız yama sürümleri gelebilir.
+      - dependency-name: "@expo/vector-icons"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-audio"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-background-fetch"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-blur"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-calendar"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-crypto"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-document-picker"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-file-system"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-haptics"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-intent-launcher"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-linear-gradient"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-location"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-mail-composer"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-notifications"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-sensors"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-sharing"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-task-manager"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "jest-expo"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "lottie-react-native"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-native-reanimated"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-native-safe-area-context"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-native-screens"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "react-native-web"
+        update-types: ["version-update:semver-minor"]
