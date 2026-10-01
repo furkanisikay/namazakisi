@@ -69,7 +69,7 @@ Yayındaki önceki sürüm 0.28.2 (ilk App Store sürümü). Konum değişikliğ
 
 ```
 - Ana ekranda her vaktin giriş saati yazıyor; kıldığınız vakitler bir zincirle birbirine bağlanıyor.
-- "Konumunuz güncellendi" gibi kısa mesajlar artık iPhone'da da görünüyor.
+- "Konumunuz güncellendi" gibi kısa mesajlar iPhone'da da görünüyor.
 - VoiceOver düğmelerin adını ve durumunu okuyor.
 - Hata ekranı ve bazı düğmeler daha okunaklı.
 - Paylaştığınız hata kayıtlarında konumunuz gizleniyor.
