@@ -60,3 +60,18 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 - Kullanılmayan izinler kaldırıldı.
 - Puan ve bildirim hataları giderildi.
 ```
+
+## App Store
+
+#### 0.30.1
+
+Yayındaki önceki sürüm 0.28.2 (ilk App Store sürümü). Konum değişikliği bildirimi Android'e özgü olduğu için yok.
+
+```
+- Ana ekranda her vaktin giriş saati yazıyor; kıldığınız vakitler bir zincirle birbirine bağlanıyor.
+- "Konumunuz güncellendi" gibi kısa mesajlar artık iPhone'da da görünüyor.
+- VoiceOver düğmelerin adını ve durumunu okuyor.
+- Hata ekranı ve bazı düğmeler daha okunaklı.
+- Paylaştığınız hata kayıtlarında konumunuz gizleniyor.
+- Yazım ve metin hataları giderildi.
+```
