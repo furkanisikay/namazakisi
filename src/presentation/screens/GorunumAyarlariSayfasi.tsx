@@ -55,6 +55,9 @@ const TemaModuSecici: React.FC = () => {
         return (
           <TouchableOpacity
             key={modItem.id}
+            accessibilityRole="button"
+            accessibilityState={{ selected: seciliMi }}
+            accessibilityLabel={`${modItem.etiket} teması`}
             className="flex-row items-center p-4 rounded-xl border-2"
             style={{
               backgroundColor: seciliMi ? renkler.birincil : renkler.kartArkaplan,
@@ -112,6 +115,9 @@ const RenkPaletiSecici: React.FC = () => {
         return (
           <TouchableOpacity
             key={paletItem.id}
+            accessibilityRole="button"
+            accessibilityState={{ selected: seciliMi }}
+            accessibilityLabel={`${paletItem.ad} paleti`}
             className="items-center p-3 rounded-xl"
             style={{
               width: '30%',
