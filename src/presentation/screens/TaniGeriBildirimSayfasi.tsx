@@ -52,6 +52,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
         {/* Birincil eylem: Sorun Bildir */}
         <View className="px-4 mb-6">
           <TouchableOpacity
+            accessibilityRole="button"
             onPress={() => setOnizleme(true)}
             activeOpacity={0.8}
             className="flex-row items-center justify-center py-4 rounded-xl"
@@ -130,6 +131,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
 
           {/* Gönderilecek bilgiyi önizle */}
           <TouchableOpacity
+            accessibilityRole="button"
             onPress={() => setOnizleme(true)}
             activeOpacity={0.7}
             className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl"
@@ -168,6 +170,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
 
           {/* Tanı kayıtlarını görüntüle */}
           <TouchableOpacity
+            accessibilityRole="button"
             onPress={() => navigation.navigate('DebugLogs' as never)}
             activeOpacity={0.7}
             className="flex-row items-center py-3.5 px-4 mx-4 mb-2 rounded-xl"
