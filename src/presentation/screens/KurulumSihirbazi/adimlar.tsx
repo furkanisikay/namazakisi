@@ -17,7 +17,7 @@ import { Anahtar } from '../../components/common/Anahtar';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { styles } from './stiller';
 import { BildirimAyarlari, MuhafizYogunluk, KonumDurumu } from './tipler';
-import { useTema } from '../../../core/theme';
+import { useTema, useRenkler } from '../../../core/theme';
 import { RENK_PALETLERI } from '../../../core/theme/temalar';
 import type { TemaModu } from '../../../core/theme/temalar';
 import { TURKIYE_ILLERI_OFFLINE, Il } from '../../../domain/services/TurkiyeKonumServisi';
@@ -397,6 +397,7 @@ export const VakitBildirimAdimi: React.FC<{
   bildirimler: BildirimAyarlari;
   onToggle: (v: keyof BildirimAyarlari) => void;
 }> = ({ bildirimler, onToggle }) => {
+  const renkler = useRenkler();
   const vakitler: { anahtar: keyof BildirimAyarlari; ad: string; ikon: string; renk: string; saat: string }[] = [
     { anahtar: 'imsak', ad: 'İmsak', ikon: 'star', renk: '#6366f1', saat: 'Sabah erkenden' },
     { anahtar: 'ogle', ad: 'Öğle', ikon: 'sun', renk: '#f59e0b', saat: 'Öğleden sonra' },
@@ -445,8 +446,8 @@ export const VakitBildirimAdimi: React.FC<{
             <Anahtar
               value={bildirimler[v.anahtar]}
               onValueChange={() => onToggle(v.anahtar)}
-              trackColor={{ false: '#e5e7eb', true: v.renk + '70' }}
-              thumbColor={bildirimler[v.anahtar] ? v.renk : '#d1d5db'}
+              trackColor={{ false: renkler.sinir, true: v.renk + '70' }}
+              thumbColor={bildirimler[v.anahtar] ? v.renk : renkler.arkaplan}
             />
           </TouchableOpacity>
         ))}
@@ -468,6 +469,7 @@ export const MuhafizTanitimAdimi: React.FC<{
   muhafizAktif: boolean;
   setMuhafizAktif: (aktif: boolean) => void;
 }> = ({ muhafizAktif, setMuhafizAktif }) => {
+  const renkler = useRenkler();
   const [aktifSeviye, setAktifSeviye] = useState(0);
   const seviyeAnim = useRef(new Animated.Value(0)).current;
 
@@ -569,8 +571,8 @@ export const MuhafizTanitimAdimi: React.FC<{
         <Anahtar
           value={muhafizAktif}
           onValueChange={setMuhafizAktif}
-          trackColor={{ false: '#e5e7eb', true: '#10b98160' }}
-          thumbColor={muhafizAktif ? '#10b981' : '#d1d5db'}
+          trackColor={{ false: renkler.sinir, true: '#10b98160' }}
+          thumbColor={muhafizAktif ? '#10b981' : renkler.arkaplan}
         />
       </View>
     </ScrollView>
