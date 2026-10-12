@@ -288,6 +288,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                                             borderColor: secili ? renkler.birincil : renkler.sinir,
                                                         }}
                                                         activeOpacity={0.7}
+                                                        accessibilityRole="button"
                                                     >
                                                         <Text
                                                             className="text-xs font-bold text-center"
@@ -374,6 +375,7 @@ const VakitEditorModali: React.FC<VakitEditorModaliProps> = ({
                                 style={{ backgroundColor: renkler.birincil }}
                                 onPress={onKapat}
                                 activeOpacity={0.85}
+                                accessibilityRole="button"
                             >
                                 <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
                                     Tamam
@@ -537,6 +539,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         style={{ backgroundColor: ayarlar.aktif ? renkler.birincil : renkler.kartArkaplan }}
                         onPress={() => dispatch(takvimAyarlariniGuncelle({ aktif: !ayarlar.aktif }))}
                         activeOpacity={0.8}
+                        accessibilityRole="button"
                     >
                         <View
                             className="w-11 h-11 rounded-xl items-center justify-center mr-3"
@@ -594,6 +597,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                         onPress={takvimleriniYenile}
                                         className="flex-row items-center gap-1 px-2 py-1 rounded-lg"
                                         style={{ backgroundColor: `${renkler.birincil}15` }}
+                                        accessibilityRole="button"
                                     >
                                         {takvimYukleniyor
                                             ? <ActivityIndicator size="small" color={renkler.birincil} />
@@ -627,6 +631,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                                 }}
                                                 onPress={() => dispatch(takvimAyarlariniGuncelle({ takvimId: takvim.id, takvimAdi: takvim.title }))}
                                                 activeOpacity={0.7}
+                                                accessibilityRole="button"
                                             >
                                                 <View className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: takvim.color }} />
                                                 <Text
@@ -687,6 +692,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                                 }}
                                                 onPress={() => { dispatch(takvimAyarlariniGuncelle({ kaciGunIlerisi: gun })); setOzelGunAktif(false); }}
                                                 activeOpacity={0.7}
+                                                accessibilityRole="button"
                                             >
                                                 <Text className="text-sm font-semibold" style={{ color: secili ? '#FFF' : renkler.metinIkincil }}>
                                                     {gun} Gün
@@ -710,6 +716,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                             setOzelGunAktif(true);
                                         }}
                                         activeOpacity={0.7}
+                                        accessibilityRole="button"
                                     >
                                         <Text className="text-sm font-semibold" style={{ color: ozelGunAktif ? '#FFF' : renkler.metinIkincil }}>
                                             Özel
@@ -768,6 +775,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 onPress={handleOlaylariOlustur}
                                 disabled={olayOlusturuluyor}
                                 activeOpacity={0.8}
+                                accessibilityRole="button"
                             >
                                 {olayOlusturuluyor ? (
                                     <ActivityIndicator color={renkler.birincilMetin} />
@@ -797,6 +805,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                 onPress={async () => { await butonTiklandiFeedback(); setTemizleModaliGorunur(true); }}
                                 disabled={olayOlusturuluyor}
                                 activeOpacity={0.8}
+                                accessibilityRole="button"
                             >
                                 <FontAwesome5 name="broom" size={14} color="#EF4444" style={{ marginRight: 8 }} />
                                 <Text className="text-sm font-semibold" style={{ color: '#EF4444' }}>
