@@ -37,6 +37,11 @@
       tools:node="remove"/>
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
       tools:node="remove"/>
+  <!-- expo-audio: kilit ekranı medya kontrolleri (mediaPlayback FGS) ve ses kaydı
+       (microphone FGS) için. Uygulama yalnız kısa önizleme sesi çalar
+       (setActiveForLockScreen ve kayıt KULLANILMAZ) → izin + iki servis atılır. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      tools:node="remove"/>
 
   <queries>
     <intent>
@@ -107,5 +112,7 @@
          startLocationUpdatesAsync yok, geofence onu kullanmaz. Bildirimi kalsaydı Play
          FGS beyanı isterdi. Bkz. üstteki FOREGROUND_SERVICE_LOCATION notu. -->
     <service android:name="expo.modules.location.services.LocationTaskService" tools:node="remove"/>
+    <service android:name="expo.modules.audio.service.AudioControlsService" tools:node="remove"/>
+    <service android:name="expo.modules.audio.service.AudioRecordingService" tools:node="remove"/>
   </application>
 </manifest>
