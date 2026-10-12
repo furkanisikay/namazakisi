@@ -269,6 +269,7 @@ export const RozetlerSayfasi: React.FC = () => {
 
         {/* Tab Bar */}
         <View
+          accessibilityRole="tablist"
           className="flex-row rounded-xl mb-4 overflow-hidden"
           style={{ backgroundColor: renkler.kartArkaplan }}
         >
@@ -283,6 +284,9 @@ export const RozetlerSayfasi: React.FC = () => {
             return (
               <TouchableOpacity
                 key={tab.id}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: aktifMi }}
+                accessibilityLabel={tab.etiket}
                 className="flex-1 py-3 items-center border-b-2"
                 style={{
                   borderBottomColor: aktifMi ? renkler.birincil : 'transparent',
