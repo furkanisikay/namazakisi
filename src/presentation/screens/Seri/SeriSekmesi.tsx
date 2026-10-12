@@ -21,6 +21,7 @@ import { useAppSelector } from '../../store/hooks';
 import { sonrakiHedefiBul } from '../../../domain/services/SeriHesaplayiciServisi';
 import type { SeriHedefi } from '../../../core/types/SeriTipleri';
 import { useSeriAyi } from '../../hooks/useSeriAyi';
+import { SERI_SOZU } from '../../../core/data/SeriSozu';
 // Barrel (`../../components`) yerine doğrudan dosyadan import edilir: barrel
 // `AnimasyonluButon` üzerinden `expo-haptics`'i de sürükler, bu da testte
 // gereksiz bir native-köprü mock zinciri gerektirirdi.
@@ -122,6 +123,25 @@ export const SeriSekmesi: React.FC = () => {
           tamGunEsigi={tamGunEsigi}
           mevcutSeri={mevcutSeri}
         />
+
+        {/* Serinin dayandığı söz (issue #72) — sakin bir alıntı; imza öğesi gök paneli kalır. */}
+        <View
+          testID="seri-sozu"
+          accessible
+          accessibilityLabel={`${SERI_SOZU.metin} Kaynak: ${SERI_SOZU.kaynak}`}
+          className="flex-row mt-5 p-4 rounded-2xl"
+          style={{ backgroundColor: renkler.birincil + '12' }}
+        >
+          <FontAwesome5 name="quote-left" size={14} color={renkler.birincil} style={{ marginTop: 2 }} />
+          <View className="flex-1 ml-3">
+            <Text className="text-sm" style={{ color: renkler.metin, lineHeight: 20, fontStyle: 'italic' }}>
+              {SERI_SOZU.metin}
+            </Text>
+            <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+              {SERI_SOZU.kaynak}
+            </Text>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );

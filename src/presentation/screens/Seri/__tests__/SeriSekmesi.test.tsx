@@ -152,4 +152,20 @@ describe('SeriSekmesi', () => {
     expect(tesbih.props.hedefGun).toBeNull();
     expect(tesbih.props.hedefAdi).toBeUndefined();
   });
+
+  test('serinin dayandığı söz (issue #72) kaynağıyla gösterilir ve ekran okuyucuya tek düğüm olarak okunur', () => {
+    useSeriAyiMock.mockReturnValue({ ...VARSAYILAN_HOOK_SONUCU });
+    const tree = render(<SeriSekmesi />);
+
+    const kart = tree.root.findByProps({ testID: 'seri-sozu' });
+    expect(kart.props.accessibilityLabel).toContain('az da olsa devamlı olanıdır');
+    expect(kart.props.accessibilityLabel).toContain('Buhârî');
+  });
+
+  test('hata durumunda söz kartı gösterilmez (tek mesaj kuralı)', () => {
+    useSeriAyiMock.mockReturnValue({ ...VARSAYILAN_HOOK_SONUCU, hata: 'Seri verileriniz okunamadı.' });
+    const tree = render(<SeriSekmesi />);
+
+    expect(tree.root.findAllByProps({ testID: 'seri-sozu' })).toHaveLength(0);
+  });
 });
