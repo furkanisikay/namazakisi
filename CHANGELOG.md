@@ -5,6 +5,14 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.30.2] - 2026-10-12
+
+### Düzeltildi
+- [a11y] tema secici etiketini dilbilgisine uygun hale getir
+- [ui] Rozetler sayfasındaki sekme çubuğu erişilebilir hale getirildi
+- TaniGeriBildirimSayfasi içindeki butonlara accessibilityRole eklendi
+- [a11y] add accessibilityRole to GorunumAyarlari theme selectors
+
 ## [0.30.1] - 2026-09-29
 
 ### Düzeltildi
