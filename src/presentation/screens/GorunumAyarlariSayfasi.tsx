@@ -57,7 +57,7 @@ const TemaModuSecici: React.FC = () => {
             key={modItem.id}
             accessibilityRole="button"
             accessibilityState={{ selected: seciliMi }}
-            accessibilityLabel={`${modItem.etiket} teması`}
+            accessibilityLabel={`${modItem.etiket}: ${modItem.aciklama}`}
             className="flex-row items-center p-4 rounded-xl border-2"
             style={{
               backgroundColor: seciliMi ? renkler.birincil : renkler.kartArkaplan,
