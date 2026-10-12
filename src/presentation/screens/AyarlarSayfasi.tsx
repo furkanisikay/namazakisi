@@ -235,6 +235,14 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('RamazanAyarlari')}
                   onPress={() => menuyeGit('RamazanAyarlari')}
                 />
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="star-and-crescent" size={20} color={ikonRengi} solid />}
+                  baslik="Nafile namazlar"
+                  ozet={ozetler.nafile}
+                  yeniRozetGoster={sayfaOkunmamisMi('NafileAyarlari')}
+                  onPress={() => menuyeGit('NafileAyarlari')}
+                />
               </AyarGrubu>
 
               <AyarGrubu baslik="Uygulama">

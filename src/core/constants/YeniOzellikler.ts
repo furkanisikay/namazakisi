@@ -41,6 +41,27 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'nafile-namaz-vakitleri',
+        surum: '0.31.0',
+        tarih: '2026-10-12',
+        baslik: 'Nafile Namaz Vakitleri',
+        aciklama:
+            'Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, girdiklerinde hatırlatılabilirsiniz.',
+        detayAciklama:
+            'Nafile namazların vakitleri artık uygulamada. Ana ekranda vakit kartının altında içinde bulunduğunuz ya da sıradaki nafile vaktini görürsünüz; dokununca vaktin ne zaman başlayıp bittiğini ve en faziletli zamanını okursunuz. Kuşluk ve evvâbîn için vakit girdikten kaç dakika sonra hatırlatılacağınızı seçebilirsiniz. Teheccüd için gecenin son üçte birini ya da imsaktan önceki bir zamanı seçebilir, isterseniz sessiz modda da çalan uyandırmayı açabilirsiniz. Vakitler Diyanet\'in açıklamalarına göre hesaplanır.',
+        ikon: 'star-and-crescent',
+        hedefSayfa: 'NafileAyarlari',
+        ctaEtiketi: 'Nafile ayarlarını açın',
+        kartGoster: true,
+        detaylar: [
+            'Kuşluk: güneş doğduktan yaklaşık 45 dk sonra başlar, öğleye 10 dk kalana kadar sürer',
+            'Evvâbîn: akşam namazından sonra, yatsıya kadar',
+            'Teheccüd: gecenin son üçte biri ya da imsaktan önce seçtiğiniz zaman',
+            'Teheccüd uyandırması sessiz modda da çalar',
+            'Hepsi varsayılan olarak kapalıdır; istediğinizi açarsınız',
+        ],
+    },
+    {
         id: 'konum-degisim-bildirimi',
         surum: '0.30.0',
         tarih: '2026-09-29',

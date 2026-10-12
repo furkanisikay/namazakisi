@@ -24,6 +24,8 @@ import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazir
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
+import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
+import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
@@ -167,6 +169,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
       store.dispatch(cumaHatirlatmaAyarlariniYukle()),
+      // Ana ekran nafile şeridi bu slice'ı okur → açılışta HİDRATE edilmeli
+      // (AGENTS.md: "HER slice açılışta yüklenmez").
+      store.dispatch(nafileAyarlariniYukle()),
       kurulumTamamlandi ? BildirimServisi.getInstance().izinIste() : Promise.resolve(),
     ]);
 
@@ -201,6 +206,8 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Koordinat PARAMETRE gecilir: servis bellek-ici hesaplayici konfigine bagli
       // olsaydi arka plan/headless yollarinda sessizce hicbir sey planlamazdi.
       CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // Nafile hatırlatmaları (issue #77) — 3 gün / 7 gece pencere her açılışta tazelenir.
+      NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,

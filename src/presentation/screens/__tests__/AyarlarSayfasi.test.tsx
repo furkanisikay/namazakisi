@@ -17,6 +17,7 @@ import { useFeedback } from '../../../core/feedback';
 import { Depolama } from '../../../data/local/Depolama';
 import { YENI_OZELLIKLER } from '../../../core/constants/YeniOzellikler';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
+import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
@@ -74,6 +75,7 @@ const stateOlustur = (ustyaz: Record<string, unknown> = {}) => ({
     ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: true, yatsi: false },
   },
   cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+  nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
   seri: { ayarlar: { tamGunEsigi: 4, gunSonuBildirimAktif: true } },
   iftarSayac: { ayarlar: { aktif: false } },
   sahurSayac: { ayarlar: { aktif: false } },
@@ -214,6 +216,7 @@ describe('AyarlarSayfasi', () => {
         ayarlar: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false },
       },
       cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+      nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
     });
     const { getByText } = render(<AyarlarSayfasi />);
 

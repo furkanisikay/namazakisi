@@ -25,6 +25,8 @@ import { sahurSayacAyarlariniYukle } from './sahurSayacSlice';
 import { vakitBildirimAyarlariniYukle } from './vakitBildirimSlice';
 import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
+import { nafileAyarlariniYukle } from './nafileSlice';
+import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -77,6 +79,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(sahurSayacAyarlariniYukle()),
       dispatch(vakitBildirimAyarlariniYukle()),
       dispatch(cumaHatirlatmaAyarlariniYukle()),
+      dispatch(nafileAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
     ]);
     await dispatch(namazlariYukle({ tarih: bugunuAl() }));
@@ -100,6 +103,13 @@ export const iceAktarmayiUygula = createAsyncThunk(
     try {
       const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
       await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+    } catch {
+      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+    }
+    // Nafile hatırlatmaları da (issue #77): aynı gerekçe — ayarı yüklemek bildirim kurmaz.
+    try {
+      const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
+      await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
     } catch {
       // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
     }

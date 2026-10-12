@@ -1,6 +1,6 @@
 # Nafile namaz vakitleri (issue #77) — tasarım
 
-Durum: TASLAK (Fable incelemesi bekleniyor)
+Durum: ONAYLANDI (Fable — koşullu onay; zorunlu değişiklikler aşağıdaki "Nihai kararlar" bölümünde uygulandı)
 
 > Issue: "Nafile namazlar için alarm ve bildirim desteği eklenebilmeli. Gün içindeki nafileler için hem gösterge olmalı hem de bildirim kurulabilmeli, aynı şekilde gece kılınan teheccüd için mesela alarm kurulabilmeli."
 
@@ -67,3 +67,24 @@ Ayarlar > Bildirimler bölümüne yeni satır "Nafile namazlar". Sayfa: üstte a
 - `NafileHatirlatmaServisi.test.ts`: kapalıyken hiçbir şey planlanmaz; (0,0) reddi; iptal → planla sırası; id formatı (tarih `bugunuAl()` ile, sabit tarih YOK).
 - `KonumDegisikligiServisi.test.ts` nöbetçisi yeni tüketiciyi kapsar.
 - Ekran testi: anahtar → slice dispatch; `SayisalSecici` etiketleri benzersiz.
+
+
+---
+
+## Nihai kararlar (Fable incelemesi sonrası — yukarıdaki taslağın ÜZERİNDE geçerlidir)
+
+1. **İşrak ayrı pencere DEĞİL** — kuşluğun ilk vaktidir (Diyanet). Pencereler: kuşluk, evvâbîn, teheccüd. Ayar `hatirlatmalar: Record<'kusluk' | 'evvabin', …>`.
+2. **Kuşluk sonu = öğle − 10 dk** (Diyanet fetvası: "öğle vaktine yaklaşık 10 dakika kalana kadar"); başı güneş + 45 dk (40–50'nin ihtiyatlı ucu). Faziletli an `max(başı, güneş + (akşam − güneş)/4)`.
+3. **Evvâbîn başı = akşam**, ofset kullanıcı ayarı (varsayılan 15 dk). Bildirimde **nass yok** (akşam sonrası rivayeti zayıf).
+4. **Teheccüd başı = yatsı**; "+30 dk uyuyup kalkma" sabiti kaldırıldı. Gösterge teheccüdü yalnız **hedef an** girince "aktif" sayar, öncesinde "sıradaki" gösterir.
+5. **İsrâ 17/79 kullanılmaz** (muhatabı Hz. Peygamber). Kuşluk: Müslim, Müsâfirîn 84; teheccüd: Müslim, Sıyâm 202-203.
+6. Ton: davet; emir kipi ("Kalk") yalnız uyandırmada. Saate hal eki eklenmez.
+7. Pencereler **aktif gün** tabanlı (gece yarısından sonra dün).
+8. `nafileSlice` `App.tsx` açılışında hidrate edilir.
+9. Tetikleme: App açılışı, `KonumDegisikligiServisi` (+ nöbetçi test), `ArkaplanGorevServisi` (muhafız erken dönüşlerinden önce), thunk, içe aktarma sonu.
+10. Uyandırma kanalı `nafile_uyandirma`: MAX önem, `USAGE_ALARM`, `bypassDnd`, planlamadan önce **yoksa** oluşturulur. Emülatörde ölçülmesi gereken varsayım: alarm kullanım türünün sessiz modda çaldığı.
+11. Gündüz 3 gün, teheccüd **7 gece**; uyandırmada 3 dk sonra ikinci bildirim.
+12. Ayar okuma asla reddetmez; sayılar kenetlenir.
+13. Kuşluk/evvâbîn kartları ortak `PencereKarti` + `nafilePencereTanimi` (`siklikSecimiVar: false` eklendi); teheccüd kartı özel.
+14. Şerit `React.memo`, prop'lar dize.
+15. `YeniOzellikler` kaydı, Ayarlar özeti, arama indeksi, AGENTS.md bölümü.

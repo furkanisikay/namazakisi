@@ -5,6 +5,7 @@ import {
   bildirimOzeti,
   seriOzeti,
   ramazanOzeti,
+  nafileOzeti,
   gorunumOzeti,
   yedeklemeOzeti,
   hakkindaOzeti,
@@ -155,4 +156,18 @@ describe('hakkindaOzeti', () => {
   it('güncel', () => expect(hakkindaOzeti('0.23.28', false)).toBe('Sürüm 0.23.28 · güncel'));
   it('güncelleme var', () =>
     expect(hakkindaOzeti('0.23.28', true)).toBe('Sürüm 0.23.28 · güncelleme var'));
+});
+
+describe('nafileOzeti (issue #77)', () => {
+  it('hepsi kapalı', () => {
+    expect(nafileOzeti({ kusluk: false, evvabin: false, teheccud: false, gosterge: false })).toBe('Kapalı');
+  });
+  it('yalnız gösterge', () => {
+    expect(nafileOzeti({ kusluk: false, evvabin: false, teheccud: false, gosterge: true })).toBe('Ana ekranda gösteriliyor');
+  });
+  it('ilk ad büyük, diğerleri küçük harf (sabit harita)', () => {
+    expect(nafileOzeti({ kusluk: false, evvabin: true, teheccud: true, gosterge: false })).toBe(
+      'Evvâbîn, teheccüd hatırlatması açık'
+    );
+  });
 });

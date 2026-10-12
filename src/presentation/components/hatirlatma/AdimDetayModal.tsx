@@ -420,7 +420,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 {/* Faz 0: pencereye sigmayan / seyreltilen adim uyarisi */}
                                 <AdimNotlari notlar={notlar} />
 
-                                {/* ── Siklik ── */}
+                                {/* ── Siklik ── (tek atışlık hatırlatmalarda — nafile — gizlenir) */}
+                                {tanim.siklikSecimiVar !== false && (<>
                                 <BolumBasligi metin="SIKLIK" />
                                 <View className="flex-row gap-2">
                                     {[
@@ -487,6 +488,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                         />
                                     </View>
                                 )}
+                                </>)}
 
                                 {/* ── Bildirim sesi ──
                                     Tek satir: secili sesin adi + "dinle" + secici.

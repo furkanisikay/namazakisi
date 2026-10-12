@@ -14,6 +14,7 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
+import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
@@ -326,6 +327,21 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.55: NAFILE HATIRLATMALARINI TAZELE (issue #77)
+        //
+        // Cuma ile AYNI gerekçe: muhafızdan bağımsız bir ayardır, muhafız erken
+        // dönüşlerinden ÖNCE durmalı; aksi halde muhafızı kapatan kullanıcıda
+        // 3 gün / 7 gecelik pencere tazelenmez ve hatırlatma sessizce biterdi.
+        // =====================================================
+        try {
+            await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku()
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Nafile hatırlatması tazelenemedi', e);
         }
 
         // =====================================================

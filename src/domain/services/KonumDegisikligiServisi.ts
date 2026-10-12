@@ -42,6 +42,7 @@ import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
+import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -215,6 +216,12 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // yeni şehrinde bir ay boyunca eski şehrin saatiyle hatırlatılır.
         guvenliCalistir('Cuma hatirlatmasi', () =>
             CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları güneş,
+        // öğle, akşam, yatsı ve imsaktan türer — şehir değişince hepsi kayar.
+        guvenliCalistir('Nafile hatirlatmasi', () =>
+            NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
     ]);
 

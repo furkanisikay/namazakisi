@@ -80,6 +80,27 @@ export function seriOzeti(g: SeriOzetiGirdisi): string {
   return `Tam gün: ${g.tamGunEsigi} namaz · ${gunSonu}`;
 }
 
+/** Nafile namazlar satırının özeti (issue #77). */
+export function nafileOzeti(g: {
+  kusluk: boolean;
+  evvabin: boolean;
+  teheccud: boolean;
+  gosterge: boolean;
+}): string {
+  // [açık mı, cümle başı, cümle içi] — sabit adlar: Türkçe büyük/küçük harf
+  // dönüşümü YAPILMAZ (AGENTS.md toUpperCase/toLowerCase tuzağı).
+  const acik = (
+    [
+      [g.kusluk, 'Kuşluk', 'kuşluk'],
+      [g.evvabin, 'Evvâbîn', 'evvâbîn'],
+      [g.teheccud, 'Teheccüd', 'teheccüd'],
+    ] as const
+  ).filter(([a]) => a);
+  if (acik.length === 0) return g.gosterge ? 'Ana ekranda gösteriliyor' : 'Kapalı';
+  const adlar = acik.map(([, bas, ic], i) => (i === 0 ? bas : ic));
+  return `${adlar.join(', ')} hatırlatması açık`;
+}
+
 /** Ramazan (iftar/sahur sayacı) satırının özeti. */
 export function ramazanOzeti(iftarAktif: boolean, sahurAktif: boolean): string {
   if (iftarAktif && sahurAktif) return 'İftar ve sahur sayacı açık';

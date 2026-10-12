@@ -217,6 +217,12 @@ export interface PencereTanimi {
     /** Bildirim sesi satiri gosterilsin mi? (cuma kanalin kendi sesini kullanir) */
     sesSecimiVar: boolean;
     /**
+     * Siklik (bir kez / tekrarli) secimi gosterilsin mi? Verilmezse EVET.
+     * Nafile hatirlatmalari tek atisliktir: gonullu bir ibadeti tekrar tekrar
+     * hatirlatmak davet degil israr olur → secim gizlenir.
+     */
+    siklikSecimiVar?: boolean;
+    /**
      * Anons metni SERBESTCE yazilabilir mi?
      *
      * iOS'ta HAYIR: metin calisma aninda seslendirilemez (arka planda kod
@@ -441,4 +447,56 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
         if (metin.includes('{yön}')) return false;
         return !havuz.includes(metin);
     });
+}
+
+/**
+ * Nafile (kuşluk / evvâbîn) hatırlatması için pencere tanımı (issue #77).
+ *
+ * TEK ADIM, GİRİŞ YÖNLÜ, TEK ATIŞ: ölçü pencere başından geçen dakikadır
+ * ("girişten 5 dk sonra"). Yön/kanal/ses/sıklık seçimi kapalı — bildirim
+ * mevcut `vakit_bildirim` kanalından gider. `pencere` verilirse zaman şeridi
+ * bugünün penceresini çizer (ortak bileşenin bedava getirdiği şey).
+ */
+export function nafilePencereTanimi(secenekler: {
+    kaynak: string;
+    baslik: string;
+    baslikKucuk: string;
+    ikon: string;
+    esikSinirlari: EsikSinirlari;
+    esikAdimDk: number;
+    pencere?: { baslangic: Date; bitis: Date };
+}): PencereTanimi {
+    const pencereUzunluguDk = secenekler.pencere
+        ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
+        : undefined;
+    return {
+        kaynak: secenekler.kaynak,
+        baslik: secenekler.baslik,
+        baslikKucuk: secenekler.baslikKucuk,
+        ikon: secenekler.ikon,
+        // Metin cozumu icin bir vakit kimligi gerekir; nafile anons kullanmaz,
+        // deger yalniz tip sozlesmesini doldurur.
+        vakit: 'ogle',
+        yon: 'girisindenItibaren',
+        yonSecilebilir: false,
+        maksAdim: 1,
+        pencereUzunluguDk,
+        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bell', renk: SEVIYE_BILGILERI.nazik.renk }],
+        kanalSecimiVar: false,
+        sesSecimiVar: false,
+        siklikSecimiVar: false,
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
+        yetenekler: ANDROID_YETENEKLERI,
+        esikAdimDk: secenekler.esikAdimDk,
+        tekrarMinDk: TEKRAR_MIN_DK,
+        tekrarMaxDk: TEKRAR_MAX_DK,
+        varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
+        esikSinirlari: secenekler.esikSinirlari,
+        esikBasligi: 'NE ZAMAN',
+        esikAciklamasi: 'Vakit girdikten sonra',
+        esikErisimAdi: `${secenekler.baslik} kaç dk sonra`,
+        esikBirimi: 'dk sonra',
+        pencere: secenekler.pencere,
+    };
 }

@@ -50,6 +50,11 @@ jest.mock('../SeriSayacHazirlayici', () => ({
         Promise.resolve({ aktif: true, hedef: new Date(), seriBugunTamMi: false })
     ),
 }));
+jest.mock('../NafileHatirlatmaServisi', () => ({
+    NafileHatirlatmaServisi: {
+        getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
+    },
+}));
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: {
         getInstance: jest.fn(() => ({ vakitleriyaz: jest.fn(() => Promise.resolve()) })),
@@ -79,6 +84,7 @@ import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from '../SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
+import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -112,6 +118,7 @@ const sahte = {
     sahur: jest.fn((..._a: unknown[]) => Promise.resolve()),
     seriSayac: jest.fn((..._a: unknown[]) => Promise.resolve()),
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
 beforeEach(() => {
@@ -130,6 +137,7 @@ beforeEach(() => {
     (SahurSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.sahur });
     (SeriSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.seriSayac });
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
+    (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
 });
 
 describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
@@ -150,6 +158,10 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // sehrin imsagina gore geri sayim gorur.
         expect(sahte.seriSayac).toHaveBeenCalledTimes(1);
         expect(sahte.widget).toHaveBeenCalledTimes(1);
+        // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları
+        // güneş/öğle/akşam/yatsı/imsaktan türer — şehirle birlikte kayar.
+        expect(sahte.nafile).toHaveBeenCalledTimes(1);
+        expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

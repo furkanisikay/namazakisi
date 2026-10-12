@@ -77,6 +77,13 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Hatırlatmalar',
   },
   {
+    id: 'sayfa-nafile',
+    baslik: 'Nafile namazlar',
+    anahtarKelimeler: ['nafile', 'kuşluk', 'duha', 'işrak', 'evvabin', 'teheccüd', 'gece namazı'],
+    sayfa: 'NafileAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
     id: 'sayfa-gorunum',
     baslik: 'Görünüm',
     anahtarKelimeler: ['tema', 'renk', 'görünüm', 'karanlık mod'],

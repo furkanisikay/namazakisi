@@ -27,6 +27,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
 // AnaSayfa sabitleri: GECMIS_GUN_SAYISI = 90 → bugünün sayfa indeksi 90.
 const BUGUN_INDEKSI = 90;
@@ -299,6 +300,7 @@ describe('AnaSayfa', () => {
       },
       vakitSayac: { ayarlar: { aktif: false } },
       cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+      nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
     });
 
   /**

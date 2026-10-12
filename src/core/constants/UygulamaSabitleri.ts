@@ -158,6 +158,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
+  // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
+  NAFILE_AYARLARI: 'nafile_ayarlari',
   // Vakit Sayacı Ayarları
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // İftar Sayacı Ayarları
@@ -364,6 +366,9 @@ export const BILDIRIM_SABITLERI = {
     SERI_SAYAC: 'seri_sayac',
     // Otomatik konum degisikligi bilgisi: SESSIZ (LOW). Genel kanal MAX + sesli, bilgi mesaji icin fazla.
     KONUM: 'konum',
+    // Teheccüd uyandırması: alarm ses kullanımı (sessiz modu deler). Servis kanalı
+    // YOKSA oluşturur; mevcut kanala ses yazmaya kalkışmaz (AGENTS.md).
+    NAFILE_UYANDIRMA: 'nafile_uyandirma',
   },
 } as const;
 

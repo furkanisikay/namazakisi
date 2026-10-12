@@ -60,6 +60,14 @@ jest.mock('../vakitBildirimSlice', () => ({
 jest.mock('../cumaHatirlatmaSlice', () => ({
   cumaHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'cumaHatirlatma/yukle' })),
 }));
+jest.mock('../nafileSlice', () => ({
+  nafileAyarlariniYukle: jest.fn(() => ({ type: 'nafile/yukle' })),
+}));
+jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
+  NafileHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) }),
+  },
+}));
 jest.mock('../takvimSlice', () => ({
   takvimAyarlariniYukle: jest.fn(() => ({ type: 'takvim/yukle' })),
 }));
@@ -199,6 +207,8 @@ describe('yedeklemeSlice', () => {
       // namaz, tüm ayar loader'larından SONRA.
       expect(i('namaz/yukle')).toBeGreaterThan(i('muhafiz/yukle'));
       expect(i('namaz/yukle')).toBeGreaterThan(i('takvim/yukle'));
+      // Nafile ayarı da içe aktarmada store'a geri yüklenir (issue #77).
+      expect(i('nafile/yukle')).toBeGreaterThan(i('konum/yukle'));
 
       // seriVerileriniYukle, reconcile zincirinden ÖNCE.
       expect(i('seri/yukle')).toBeGreaterThan(i('namaz/yukle'));

@@ -22,6 +22,7 @@ export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';
 export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
 export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
+export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';
 export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
 export { NelerYeniSayfasi } from './NelerYeniSayfasi';
