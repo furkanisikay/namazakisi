@@ -23,7 +23,7 @@ class YukDeposu(context: Context) {
     val guncellemeGerekli: Boolean get() = prefs.getBoolean(GUNCELLEME_GEREKLI, false)
 
     /** @return yük kabul edildi mi */
-    fun kaydet(json: String): Boolean =
+    fun kaydet(json: String): Boolean = synchronized(KILIT) {
         when (val s = YukCozucu.coz(json)) {
             is CozumSonucu.Basarili -> {
                 val bekleyen = VakitHesabi.bekleyeniAyikla(s.yuk, bekleyenler())
@@ -40,10 +40,11 @@ class YukDeposu(context: Context) {
             }
             CozumSonucu.Gecersiz -> false
         }
+    }
 
     fun bekleyenler(): Set<String> = prefs.getStringSet(BEKLEYEN, emptySet())?.toSet() ?: emptySet()
 
-    fun bekleyenEkle(kimlik: String) {
+    fun bekleyenEkle(kimlik: String) = synchronized(KILIT) {
         prefs.edit().putStringSet(BEKLEYEN, bekleyenler() + kimlik).apply()
     }
 
@@ -54,6 +55,12 @@ class YukDeposu(context: Context) {
         prefs.unregisterOnSharedPreferenceChangeListener(dinleyici)
 
     companion object {
+        /**
+         * `bekleyen` kümesi UI (saatte işaret) ve binder thread'i (telefondan yük)
+         * tarafından oku-değiştir-yaz yapılır; iki yol AYRI `YukDeposu` örneği
+         * oluşturduğu için kilit sınıf düzeyindedir — yoksa iyimser tik kaybolurdu.
+         */
+        private val KILIT = Any()
         private const val PREFS = "saat_veri"
         private const val YUK = "yuk"
         private const val BEKLEYEN = "bekleyen"

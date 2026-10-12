@@ -17,15 +17,22 @@ object ZamanCizelgesi {
         val onceki: VakitHesabi.VakitAni?,
     )
 
-    /** `simdi`den başlayıp en fazla [ufukMs] ileriye uzanan aralıklar. */
-    fun araliklar(yuk: Yuk, simdi: Long, ufukMs: Long = 48L * 3_600_000L): List<Aralik> {
+    /**
+     * `simdi`den başlayıp en fazla [ufukMs] ileriye uzanan aralıklar.
+     *
+     * Varsayılan ufuk YÜKÜN TAMAMIDIR (8 gün ≈ 48 girdi): telefonun arka plan
+     * görevi OEM tarafından öldürülürse ya da uygulama günlerce açılmazsa saatte
+     * veri durur ama çizelge kısa bir ufukta biterse tile boşalır, komplikasyon
+     * geçmiş bir geri sayımda "0 dk"da donar (Fable incelemesi).
+     */
+    fun araliklar(yuk: Yuk, simdi: Long, ufukMs: Long = Long.MAX_VALUE): List<Aralik> {
         val tum = VakitHesabi.tumVakitler(yuk)
         val sonuc = mutableListOf<Aralik>()
         var onceki: VakitHesabi.VakitAni? = tum.lastOrNull { it.ms <= simdi }
         var bas = simdi
         for (v in tum) {
             if (v.ms <= simdi) continue
-            if (v.ms - simdi > ufukMs) break
+            if (ufukMs != Long.MAX_VALUE && v.ms - simdi > ufukMs) break
             sonuc += Aralik(bas, v.ms, v, onceki)
             onceki = v
             bas = v.ms

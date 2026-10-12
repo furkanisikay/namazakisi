@@ -67,6 +67,14 @@ export class WearSenkronServisi {
     private static instance: WearSenkronServisi;
     /** Son gönderilen yük — içerik aynıysa Data Layer'a yazılmaz. */
     private sonGonderilen: string | null = null;
+    /**
+     * Cihazda Wear API yok (native `WEAR_YOK`): süreç boyunca bir daha denenmez.
+     * Aksi halde GMS'siz cihazda her işaretleme tanı loguna uyarı yazar ve 500
+     * satırlık tamponu gerçek hatalardan boşaltırdı.
+     */
+    private kullanilamaz = false;
+    /** Gönderimler SIRALI: hızlı aç/kapa'da eski yük yenisinin üstüne yazılmasın. */
+    private gonderimZinciri: Promise<void> = Promise.resolve();
     private surenIsleme: Promise<void> | null = null;
 
     private constructor() { }
@@ -86,9 +94,15 @@ export class WearSenkronServisi {
         });
     }
 
-    public async gonder(): Promise<void> {
+    public gonder(): Promise<void> {
+        const tur = this.gonderimZinciri.then(() => this.gonderTuru());
+        this.gonderimZinciri = tur.catch(() => undefined);
+        return tur;
+    }
+
+    private async gonderTuru(): Promise<void> {
         const m = modul();
-        if (!m) return;
+        if (!m || this.kullanilamaz) return;
         try {
             const konum = await this.konumuOku();
             if (!konum) return;
@@ -113,6 +127,11 @@ export class WearSenkronServisi {
             await m.durumGonder(json);
             this.sonGonderilen = json;
         } catch (e) {
+            if ((e as { code?: string } | null)?.code === 'WEAR_YOK') {
+                this.kullanilamaz = true;
+                Logger.info('WearSenkron', 'Bu cihazda Wear OS baglantisi yok; saat senkronu kapali');
+                return;
+            }
             Logger.warn('WearSenkron', 'Saate durum gonderilemedi', e);
         }
     }
@@ -180,5 +199,7 @@ export class WearSenkronServisi {
     public __testIcinSifirla(): void {
         this.sonGonderilen = null;
         this.surenIsleme = null;
+        this.kullanilamaz = false;
+        this.gonderimZinciri = Promise.resolve();
     }
 }

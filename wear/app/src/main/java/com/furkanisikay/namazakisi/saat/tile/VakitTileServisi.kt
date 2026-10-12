@@ -46,15 +46,17 @@ class VakitTileServisi : TileService() {
 
     private fun tileOlustur(yuk: Yuk?, simdi: Long): TileBuilders.Tile {
         val cizelge = TimelineBuilders.Timeline.Builder()
-        if (yuk == null) {
-            cizelge.addTimelineEntry(
-                TimelineBuilders.TimelineEntry.Builder()
-                    .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(
-                        duzen("Namaz Akışı", "Telefonunuzda uygulamayı açın", null)
-                    ))
-                    .build()
-            )
-        } else {
+        // GEÇERLİLİK SÜRESİZ YEDEK GİRDİ: yük yoksa ya da zaman çizelgesindeki tüm
+        // girdiler geçmişte kaldıysa (telefon günlerce veri göndermedi) tile boş
+        // kalmaz, kullanıcıyı telefona yönlendirir.
+        cizelge.addTimelineEntry(
+            TimelineBuilders.TimelineEntry.Builder()
+                .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(
+                    duzen("Namaz Akışı", "Telefonunuzda uygulamayı açın", null)
+                ))
+                .build()
+        )
+        if (yuk != null) {
             for (a in ZamanCizelgesi.araliklar(yuk, simdi)) {
                 cizelge.addTimelineEntry(
                     TimelineBuilders.TimelineEntry.Builder()
@@ -74,8 +76,9 @@ class VakitTileServisi : TileService() {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(KAYNAK_SURUMU)
             .setTileTimeline(cizelge.build())
-            // Yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); periyodik uyandırma yok.
-            .setFreshnessIntervalMillis(0)
+            // Asıl yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); 12 saatlik
+            // tazelik yalnız güvenlik ağıdır (çizelge yeniden kurulur, pil maliyeti ihmal edilebilir).
+            .setFreshnessIntervalMillis(TAZELIK_MS)
             .build()
     }
 
@@ -132,6 +135,7 @@ class VakitTileServisi : TileService() {
 
     companion object {
         private const val KAYNAK_SURUMU = "1"
+        private const val TAZELIK_MS = 12L * 60 * 60 * 1000
         // Telefon temasının birincil yeşili (#4CAF50) — saat siyah zemininde.
         private const val BIRINCIL = 0xFF4CAF50.toInt()
         private const val METIN = 0xFFFFFFFF.toInt()

@@ -5,6 +5,10 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
 
@@ -24,13 +28,30 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
     companion object {
         const val MODULE_NAME = "WearSenkron"
         const val DURUM_YOLU = "/namazakisi/durum"
+        /**
+         * Cihazda Play Hizmetleri / Wearable API yok (Huawei, de-Googled cihazlar —
+         * GitHub APK kitlesi). JS bu kodu görünce süreç boyunca bir daha denemez;
+         * yoksa her işaretleme/açılış/15 dk tanı loguna uyarı yazar ve 500 satırlık
+         * tamponu gerçek hatalardan boşaltırdı.
+         */
+        const val KOD_WEAR_YOK = "WEAR_YOK"
         private const val TAG = "WearSenkron"
+        private val WEAR_YOK_DURUMLARI = setOf(
+            CommonStatusCodes.API_NOT_CONNECTED,
+            ConnectionResult.API_UNAVAILABLE,
+            ConnectionResult.SERVICE_MISSING,
+            ConnectionResult.SERVICE_INVALID,
+        )
     }
 
     override fun getName(): String = MODULE_NAME
 
     @ReactMethod
     fun durumGonder(json: String, promise: Promise) {
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(reactApplicationContext) != ConnectionResult.SUCCESS) {
+            promise.reject(KOD_WEAR_YOK, "Play Hizmetleri yok")
+            return
+        }
         try {
             val istek = PutDataMapRequest.create(DURUM_YOLU).apply {
                 dataMap.putString("yuk", json)
@@ -38,8 +59,12 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
             Wearable.getDataClient(reactApplicationContext).putDataItem(istek)
                 .addOnSuccessListener { promise.resolve(null) }
                 .addOnFailureListener { e ->
-                    Log.w(TAG, "Saate durum yazilamadi", e)
-                    promise.reject("WEAR_GONDERIM", e.message, e)
+                    if (e is ApiException && e.statusCode in WEAR_YOK_DURUMLARI) {
+                        promise.reject(KOD_WEAR_YOK, e.message, e)
+                    } else {
+                        Log.w(TAG, "Saate durum yazilamadi", e)
+                        promise.reject("WEAR_GONDERIM", e.message, e)
+                    }
                 }
         } catch (e: Throwable) {
             promise.reject("WEAR_GONDERIM", e.message, e)

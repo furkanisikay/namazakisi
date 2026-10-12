@@ -89,6 +89,44 @@ describe('gonder', () => {
         expect(mockDinleyiciAyarla).not.toHaveBeenCalled();
     });
 
+    it('Wear API yoksa (WEAR_YOK) bir kez bilgi yazar, sonra HİÇ denemez (tanı logu dolmasın)', async () => {
+        konumKur();
+        const { Logger } = jest.requireMock('../../../core/utils/Logger');
+        modul.durumGonder.mockRejectedValueOnce(Object.assign(new Error('yok'), { code: 'WEAR_YOK' }));
+        await servis.gonder();
+        await servis.gonder();
+        await servis.gonder();
+        expect(modul.durumGonder).toHaveBeenCalledTimes(1);
+        expect(Logger.warn).not.toHaveBeenCalled();
+        expect(Logger.info).toHaveBeenCalledTimes(1);
+    });
+
+    it('diğer hatalar uyarı yazar ve sonraki gönderim yeniden dener', async () => {
+        konumKur();
+        modul.durumGonder.mockRejectedValueOnce(new Error('gecici'));
+        await servis.gonder();
+        await servis.gonder();
+        expect(modul.durumGonder).toHaveBeenCalledTimes(2);
+    });
+
+    it('gönderimler sıralıdır (eşzamanlı çağrılar üst üste binmez)', async () => {
+        konumKur();
+        let acik = 0;
+        let enCok = 0;
+        modul.durumGonder.mockImplementation(async () => {
+            acik++;
+            enCok = Math.max(enCok, acik);
+            await Promise.resolve();
+            acik--;
+        });
+        mockAralik
+            .mockResolvedValueOnce({ basarili: true, veri: [{ tarih: bugunuAl(), namazlar: [] }] })
+            .mockResolvedValueOnce({ basarili: true, veri: [{ tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Ogle, tamamlandi: true }] }] });
+        await Promise.all([servis.gonder(), servis.gonder()]);
+        expect(enCok).toBe(1);
+        modul.durumGonder.mockImplementation(() => Promise.resolve());
+    });
+
     it('baslat kılınmışlık dinleyicisini kaydeder', () => {
         servis.baslat();
         expect(mockDinleyiciAyarla).toHaveBeenCalledWith(expect.any(Function));

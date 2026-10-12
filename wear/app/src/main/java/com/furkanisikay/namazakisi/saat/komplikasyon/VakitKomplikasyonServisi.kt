@@ -39,16 +39,16 @@ class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService
         val yuk = YukDeposu(this).yuk()
         val simdi = System.currentTimeMillis()
         val araliklar = if (yuk == null) emptyList() else ZamanCizelgesi.araliklar(yuk, simdi)
-        val ilk = araliklar.firstOrNull()
-            ?: return ComplicationDataTimeline(NoDataComplicationData(), emptyList())
-
-        val girdiler = araliklar.drop(1).map { a ->
+        // Her aralık AÇIK geçerlilikli bir girdidir; varsayılan "veri yok"tur. Böylece
+        // çizelge tükenirse (telefon günlerce veri göndermedi) komplikasyon geçmiş
+        // bir geri sayımda donup "0 dk" göstermez, boşalır.
+        val girdiler = araliklar.map { a ->
             TimelineEntry(
                 TimeInterval(Instant.ofEpochMilli(a.baslangic), Instant.ofEpochMilli(a.bitis)),
                 veri(request.complicationType, a, a.baslangic) ?: NoDataComplicationData(),
             )
         }
-        return ComplicationDataTimeline(veri(request.complicationType, ilk, simdi) ?: NoDataComplicationData(), girdiler)
+        return ComplicationDataTimeline(NoDataComplicationData(), girdiler)
     }
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
