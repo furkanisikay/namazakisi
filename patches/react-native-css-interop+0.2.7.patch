@@ -14,10 +14,10 @@ diff --git a/node_modules/react-native-css-interop/.cache/windows.js b/node_modu
 new file mode 100644
 index 0000000..e69de29
 diff --git a/node_modules/react-native-css-interop/dist/runtime/native/render-component.js b/node_modules/react-native-css-interop/dist/runtime/native/render-component.js
-index eba25ec..7cf3c51 100644
+index 88d2ec1..2d43e2e 100644
 --- a/node_modules/react-native-css-interop/dist/runtime/native/render-component.js
 +++ b/node_modules/react-native-css-interop/dist/runtime/native/render-component.js
-@@ -132,7 +132,11 @@ function stringify(object) {
+@@ -133,7 +133,11 @@ function stringify(object) {
          seen.add(value);
          const newValue = Array.isArray(value) ? [] : {};
          for (const entry of Object.entries(value)) {
