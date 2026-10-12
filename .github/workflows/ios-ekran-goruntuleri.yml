@@ -36,10 +36,10 @@ jobs:
 
     steps:
       - name: 📥 Kodu çek
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⚙️ Node 20
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: 'npm'
@@ -187,7 +187,7 @@ jobs:
 
       - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-ekran-goruntuleri
           path: |
