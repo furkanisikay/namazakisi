@@ -192,4 +192,56 @@ describe('kurulumSagligi', () => {
       expect(sonuc.map((s) => s.seviye)).toEqual(['kritik', 'uyari', 'bilgi']);
     });
   });
+
+  describe('pilKisiti (Samsung uyku / pil optimizasyonu)', () => {
+    const TAZE = { ...TEMEL, sonGpsGuncellemesi: '2026-07-29T09:00:00.000Z' };
+
+    it('Samsung + muaf değil → "Uyutulmasın" uyarısı, eylem pilAyarlari', () => {
+      const [s] = kurulumSagligi({ ...TAZE, pil: { muaf: false, samsung: true } });
+      expect(s).toMatchObject({ id: 'pilKisiti', seviye: 'uyari', eylemEtiketi: 'Uyutulmasın', eylem: { tip: 'pilAyarlari' } });
+    });
+
+    it('diğer Android → "Pil ayarlarını açın"', () => {
+      const [s] = kurulumSagligi({ ...TAZE, pil: { muaf: false, samsung: false } });
+      expect(s.eylemEtiketi).toBe('Pil ayarlarını açın');
+    });
+
+    it('NÖBETÇİ: durum okunamadıysa (null) uyarı YOK — yanlış alarm vermez', () => {
+      expect(kurulumSagligi({ ...TAZE, pil: { muaf: null, samsung: true } })).toEqual([]);
+    });
+
+    it('muafsa uyarı yok', () => {
+      expect(kurulumSagligi({ ...TAZE, pil: { muaf: true, samsung: true } })).toEqual([]);
+    });
+
+    it('hiç hatırlatma açık değilse pil uyarısı gürültüdür → gösterilmez', () => {
+      const ids = kurulumSagligi({ ...TAZE, muhafizAktif: false, acikVakitBildirimSayisi: 0, pil: { muaf: false, samsung: true } }).map((s) => s.id);
+      expect(ids).toEqual(['hatirlatmaYok']);
+    });
+
+    it('konumBayat pil kısıtıyla birlikte TEKRARLANMAZ (aynı sebep)', () => {
+      const BAYAT = { ...TEMEL, sonGpsGuncellemesi: '2026-07-20T10:00:00.000Z' };
+      expect(kurulumSagligi(BAYAT).map((s) => s.id)).toEqual(['konumBayat']);
+      const ids = kurulumSagligi({ ...BAYAT, pil: { muaf: false, samsung: true } }).map((s) => s.id);
+      expect(ids).toEqual(['pilKisiti']);
+    });
+
+    it('konumBayat tek başına pil ayarlarına götürür ("Konumu yenileyin" semptomu gizlerdi)', () => {
+      const [s] = kurulumSagligi({ ...TEMEL, sonGpsGuncellemesi: '2026-07-20T10:00:00.000Z', pil: { muaf: true, samsung: false } });
+      expect(s).toMatchObject({ id: 'konumBayat', eylem: { tip: 'pilAyarlari' } });
+    });
+  });
+
+  describe('tamAlarm', () => {
+    const TAZE = { ...TEMEL, sonGpsGuncellemesi: '2026-07-29T09:00:00.000Z' };
+    it('reddedildi → kritik, en üstte, eylem alarmIzni', () => {
+      const s = kurulumSagligi({ ...TAZE, tamAlarm: 'reddedildi', pil: { muaf: false, samsung: true } });
+      expect(s.map((x) => x.id)).toEqual(['tamAlarm', 'pilKisiti']);
+      expect(s[0]).toMatchObject({ seviye: 'kritik', eylem: { tip: 'alarmIzni' } });
+    });
+    it('belirsiz/verildi → uyarı yok', () => {
+      expect(kurulumSagligi({ ...TAZE, tamAlarm: 'belirsiz' })).toEqual([]);
+      expect(kurulumSagligi({ ...TAZE, tamAlarm: 'verildi' })).toEqual([]);
+    });
+  });
 });

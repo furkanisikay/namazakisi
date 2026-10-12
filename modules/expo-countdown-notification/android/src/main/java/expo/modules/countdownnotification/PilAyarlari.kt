@@ -17,24 +17,25 @@ import android.util.Log
  * "derin uyuyan" listesine alir; job/alarm/bildirim kisitlanir. Bu uygulamanin
  * asil kullanicisi uygulamayi ACMADAN yalniz bildirimle yasayan kisidir — tam da
  * bu esiklere en cok maruz kalan. Gelistiricinin yapabilecegi tek sey kullaniciyi
- * dogru listeye ("Asla uyumayan uygulamalar") goturmektir.
+ * dogru ayara goturmektir.
  *
  * IZIN ISTENMEZ: `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` Play'in kabul edilen
  * kullanim listesinde degil; yalniz ayar EKRANI acilir (izin gerektirmez).
  *
- * ZINCIR (her adim ActivityNotFoundException'a karsi korunur — One UI surumune
- * gore Samsung ekrani degisebilir, cagri ASLA cokmemeli):
- *   1. Samsung: com.samsung.android.lool / ACTION_OPEN_CHECKABLE_LISTACTIVITY,
- *      activity_type=2 ("Asla uyumayan") — Samsung'un resmi belgesi
- *      (developer.samsung.com/mobile/app-management.html).
+ * HEDEF "Kisitlanmamis" (Unrestricted) pil ayaridir, Samsung'un "Asla uyumayan
+ * uygulamalar" listesi DEGIL: o liste Android'in pil muafiyetinden AYRI bir
+ * Samsung durumudur ve okunamaz (listeye eklenen uygulama "Optimize edilmis"
+ * gorunmeye devam eder → uyari karti hic kaybolmazdi). "Kisitlanmamis" ise
+ * `isIgnoringBatteryOptimizations` ile dogrulanir ve One UI'da bu uygulamalar
+ * uyutma listelerine hic dusmez. Ayar Android 12+ uygulama bilgisindeki "Pil"
+ * sayfasinda — Samsung dahil her cihazda ayni yol.
+ *
+ * ZINCIR (her adim ActivityNotFoundException'a karsi korunur, cagri ASLA cokmez):
+ *   1. Uygulama ayrintilari (Pil satiri buradan acilir).
  *   2. ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS (tum uygulamalar listesi).
- *   3. Uygulama ayrintilari (pil satiri buradan da acilir).
  */
 object PilAyarlari {
     private const val ETIKET = "PilAyarlari"
-    private const val SAMSUNG_PAKET = "com.samsung.android.lool"
-    private const val SAMSUNG_EYLEM = "com.samsung.android.sm.ACTION_OPEN_CHECKABLE_LISTACTIVITY"
-    private const val SAMSUNG_ASLA_UYUMAYAN = 2
 
     fun samsungMu(): Boolean = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
 
@@ -46,15 +47,11 @@ object PilAyarlari {
         null
     }
 
-    /** @return acilan ekran: "samsung" | "pil" | "uygulama" | null (hicbiri acilamadi) */
+    /** @return acilan ekran: "uygulama" | "pil" | null (hicbiri acilamadi) */
     fun ac(aktivite: Activity): String? {
-        if (samsungMu() && dene(aktivite, Intent(SAMSUNG_EYLEM).apply {
-                setPackage(SAMSUNG_PAKET)
-                putExtra("activity_type", SAMSUNG_ASLA_UYUMAYAN)
-            })) return "samsung"
-        if (dene(aktivite, Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))) return "pil"
         if (dene(aktivite, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                 Uri.fromParts("package", aktivite.packageName, null)))) return "uygulama"
+        if (dene(aktivite, Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))) return "pil"
         return null
     }
 

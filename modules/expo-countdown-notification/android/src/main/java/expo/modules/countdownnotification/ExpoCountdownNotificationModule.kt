@@ -307,7 +307,7 @@ class ExpoCountdownNotificationModule : Module() {
             promise.resolve(appContext.reactContext?.let { PilAyarlari.muafMi(it) })
         }
 
-        /** Samsung'da "Asla uyumayan uygulamalar", digerlerinde pil optimizasyonu ayari. */
+        /** Uygulama bilgisi (Pil → Kisitlanmamis); olmazsa pil optimizasyonu listesi. Izin istemez. */
         AsyncFunction("pilAyarlariniAc") { promise: Promise ->
             val aktivite = appContext.currentActivity
             promise.resolve(if (aktivite == null) null else PilAyarlari.ac(aktivite))

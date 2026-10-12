@@ -209,18 +209,19 @@ export async function pilOptimizasyonuMuafMi(): Promise<boolean | null> {
     }
 }
 
-export type AcilanPilEkrani = 'samsung' | 'pil' | 'uygulama';
+export type AcilanPilEkrani = 'uygulama' | 'pil';
 
 /**
- * Samsung'da "Asla uyumayan uygulamalar" listesini, diger cihazlarda pil
- * optimizasyonu ayarini acar (izin ISTEMEZ). Acilan ekrani dondurur; hicbiri
- * acilamazsa `null`. Asla firlatmaz.
+ * Uygulama bilgisi ekranini acar (Pil → Kisitlanmamis); olmazsa pil
+ * optimizasyonu listesini. Izin ISTEMEZ. Acilan ekrani dondurur; hicbiri
+ * acilamazsa `null`. Asla firlatmaz. Samsung'un "Asla uyumayan" listesi BILINCLI
+ * hedef degil: okunamayan ayri bir durumdur (PilAyarlari.kt).
  */
 export async function pilAyarlariniAc(): Promise<AcilanPilEkrani | null> {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification?.pilAyarlariniAc) return null;
     try {
         const sonuc = await ExpoCountdownNotification.pilAyarlariniAc();
-        return sonuc === 'samsung' || sonuc === 'pil' || sonuc === 'uygulama' ? sonuc : null;
+        return sonuc === 'pil' || sonuc === 'uygulama' ? sonuc : null;
     } catch {
         return null;
     }

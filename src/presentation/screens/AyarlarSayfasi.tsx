@@ -31,6 +31,10 @@ import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
 import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
+import { useSistemDurumu } from '../hooks/useSistemDurumu';
+import { usePilRehberi } from '../hooks/usePilRehberi';
+import { PilRehberModal } from '../components/pil/PilRehberi';
+import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
 import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
@@ -52,7 +56,10 @@ export const AyarlarSayfasi: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
-  const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri();
+  // Pil muafiyeti + tam alarm: uygulamaya dönüşte de tazelenir (ayar ekranından geri gelince).
+  const sistem = useSistemDurumu();
+  const pilRehberi = usePilRehberi(sistem);
+  const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
 
   const [sorgu, setSorgu] = useState('');
@@ -111,6 +118,10 @@ export const AyarlarSayfasi: React.FC = () => {
       Linking.openSettings();
     } else if (sorun.eylem?.tip === 'sayfa') {
       menuyeGit(sorun.eylem.sayfa as AyarlarEkranAdi);
+    } else if (sorun.eylem?.tip === 'pilAyarlari') {
+      pilRehberi.rehberiAc();
+    } else if (sorun.eylem?.tip === 'alarmIzni') {
+      void alarmIzniAyariniAc();
     }
   };
 
@@ -310,6 +321,12 @@ export const AyarlarSayfasi: React.FC = () => {
           )}
         </Animated.View>
       </Animated.ScrollView>
+      <PilRehberModal
+        gorunur={pilRehberi.rehberGorunur}
+        samsung={pilRehberi.samsung}
+        onAc={pilRehberi.ayarlariAc}
+        onKapat={pilRehberi.rehberiKapat}
+      />
     </SafeAreaView>
   );
 };

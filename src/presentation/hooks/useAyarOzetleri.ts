@@ -33,6 +33,7 @@ import {
 } from '../../core/ayarlar/ozetler';
 import { kurulumSagligi, type Sorun } from '../../core/ayarlar/kurulumSagligi';
 import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
+import type { SistemDurumu } from './useSistemDurumu';
 
 export interface AyarOzetleri {
   konum: string;
@@ -57,7 +58,10 @@ const ASYNC_VARSAYILAN: AsyncOzetVerisi = {
   sonDisaAktarmaISO: null,
 };
 
-export function useAyarOzetleri(): {
+/**
+ * @param sistem Pil/tam alarm durumu (`useSistemDurumu`); verilmezse o kontroller yapılmaz.
+ */
+export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>): {
   ozetler: AyarOzetleri;
   sorunlar: Sorun[];
   saglikOzetSatiri: string;
@@ -133,6 +137,8 @@ export function useAyarOzetleri(): {
     akilliTakipAktif: konum.akilliTakipAktif,
     muhafizAktif,
     acikVakitBildirimSayisi,
+    pil: sistem?.pil,
+    tamAlarm: sistem?.tamAlarm,
     simdi,
   });
 

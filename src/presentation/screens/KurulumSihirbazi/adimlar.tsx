@@ -1,5 +1,5 @@
 /**
- * KurulumSihirbazi adım bileşenleri (9 adım + InfoKutu yardımcı).
+ * KurulumSihirbazi adım bileşenleri (9 adım + koşullu pil adımı + InfoKutu yardımcı).
  * (Ana ekran dosyasını küçültmek için ayrıldı.)
  */
 import * as React from 'react';
@@ -21,6 +21,7 @@ import { useTema } from '../../../core/theme';
 import { RENK_PALETLERI } from '../../../core/theme/temalar';
 import type { TemaModu } from '../../../core/theme/temalar';
 import { TURKIYE_ILLERI_OFFLINE, Il } from '../../../domain/services/TurkiyeKonumServisi';
+import { PilAdimlari, PilMinyatur } from '../../components/pil/PilRehberi';
 
 // ─── Adım 0: Hoş Geldiniz ────────────────────────────────────────────────────
 
@@ -791,6 +792,47 @@ export const OzelGunAdimi: React.FC = () => (
     </View>
   </ScrollView>
 );
+
+// ─── Adım (koşullu): Pil / Samsung uyutma ───────────────────────────────────
+// Yalnız Samsung'da ve uygulama henüz "Kısıtlanmamış" değilse gösterilir
+// (sayfa `pilAdimiGerekli` ile atlar). Hedef her cihazda aynı ayardır:
+// uygulama bilgisi → Pil → Kısıtlanmamış (bkz. PilAyarlari.kt).
+
+export const PilAdimi: React.FC<{ tamam: boolean }> = ({ tamam }) => {
+  if (tamam) {
+    return (
+      <View style={styles.merkezliIcerik}>
+        <View style={[styles.buyukIkonCember, { backgroundColor: '#10b98120' }]}>
+          <FontAwesome5 name="check-circle" size={52} color="#10b981" />
+        </View>
+        <Text style={styles.adimBaslik}>Hatırlatmalar zamanında gelecek</Text>
+        <Text style={styles.adimAltBaslik}>Namaz Akışı artık arka planda uyutulmayacak.</Text>
+      </View>
+    );
+  }
+  return (
+    <ScrollView style={styles.scrollAdim} contentContainerStyle={styles.scrollIcerik} showsVerticalScrollIndicator={false}>
+      <View style={[styles.buyukIkonCember, { backgroundColor: '#10b98120', alignSelf: 'center' }]}>
+        <FontAwesome5 name="moon" size={44} color="#10b981" solid />
+      </View>
+      <Text style={styles.adimBaslik}>Hatırlatmalar kaçmasın</Text>
+      <Text style={styles.adimAltBaslik}>
+        Samsung telefonlar birkaç gün açılmayan uygulamaları uyutur. Namaz Akışı'nın pil ayarını
+        Kısıtlanmamış yaparsanız hatırlatmalar uygulamayı hiç açmasanız da zamanında gelir.
+      </Text>
+      <PilMinyatur />
+      <View style={{ marginTop: 16 }}>
+        <PilAdimlari />
+      </View>
+      <View style={[styles.bilgiKutu, { marginTop: 16 }]}>
+        <FontAwesome5 name="lock" size={14} color="#3b82f6" />
+        <Text style={styles.bilgiKutuMetin}>
+          Uygulama sizden izin istemez; yalnızca telefonunuzun ayar ekranını açar.
+        </Text>
+      </View>
+    </ScrollView>
+  );
+};
 
 // ─── Adım 8: Hazır ──────────────────────────────────────────────────────────
 
