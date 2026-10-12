@@ -10,7 +10,8 @@
  * taban yardimcilarini kullanir.
  */
 
-import notifee, { TriggerType, AndroidImportance, TimestampTrigger } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
+import { zamanTetigiOlustur } from './notifeeTetik';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 import { Logger } from '../../core/utils/Logger';
 
@@ -89,7 +90,7 @@ export abstract class SayacBildirimTemeli {
   /** "Vakit girdi" bildirimini ilerideki bir zamanda (trigger) planla. */
   protected async vakitGirdiBildirimiPlanla(bildirimId: string, vakitMs: number): Promise<void> {
     try {
-      const trigger: TimestampTrigger = { type: TriggerType.TIMESTAMP, timestamp: vakitMs };
+      const trigger = await zamanTetigiOlustur(vakitMs);
       await notifee.createTriggerNotification(this.vakitGirdiBildirimIcerigi(bildirimId, vakitMs), trigger);
     } catch (_) { /* planlanamadiysa sessizce devam */ }
   }
@@ -104,7 +105,7 @@ export abstract class SayacBildirimTemeli {
   /** Belirli bir zamanda bildirimi temizle (bos icerikli, otomatik kapanan trigger). */
   protected async temizlemePlanla(bildirimId: string, temizlemeZamani: number): Promise<void> {
     try {
-      const trigger: TimestampTrigger = { type: TriggerType.TIMESTAMP, timestamp: temizlemeZamani };
+      const trigger = await zamanTetigiOlustur(temizlemeZamani);
       await notifee.createTriggerNotification(
         {
           id: bildirimId,

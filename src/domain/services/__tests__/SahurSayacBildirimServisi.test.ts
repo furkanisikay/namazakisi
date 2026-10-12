@@ -3,6 +3,7 @@ import notifee from '@notifee/react-native';
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn().mockResolvedValue('channel-id'),
     deleteChannel: jest.fn().mockResolvedValue(undefined),
     displayNotification: jest.fn().mockResolvedValue('notif-id'),
@@ -13,6 +14,8 @@ jest.mock('@notifee/react-native', () => ({
     createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
   },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   AndroidStyle: { BIGTEXT: 0 },
 }));

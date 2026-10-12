@@ -4,6 +4,8 @@
   <!-- Sesli anons: goAsync penceresinde konusma bitene kadar CPU uyanik kalmali.
        (Uygulama manifestinde zaten tanimli; modul kendi kendine yeterli olsun diye burada da.) -->
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <!-- Yeniden baslatmada anons alarmlarini geri kurmak icin (AnonsYenidenKurucu). -->
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
   <application>
     <receiver
@@ -13,5 +15,14 @@
     <receiver
       android:name="expo.modules.countdownnotification.AnonsReceiver"
       android:exported="false" />
+    <!-- Cihaz yeniden baslayinca / guncellemede sesli anonslari geri kurar. -->
+    <receiver
+      android:name="expo.modules.countdownnotification.AnonsYenidenKurucu"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+      </intent-filter>
+    </receiver>
   </application>
 </manifest>

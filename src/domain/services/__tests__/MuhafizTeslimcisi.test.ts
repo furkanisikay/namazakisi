@@ -65,7 +65,7 @@ import {
     type UyariTeslimi,
 } from '../MuhafizTeslimcisi';
 import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
-import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
+import { AndroidMuhafizTeslimcisi, ANDROID_MUHAFIZ_ALARM_BUTCESI } from '../AndroidMuhafizTeslimcisi';
 import type { UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import { IOS_BILDIRIM_SESI } from '../../../core/muhafiz/ios/teslimPlani';
 import * as anonsKoprusu from '../../../../modules/expo-muhafiz-anons/src';
@@ -423,5 +423,37 @@ describe('IosMuhafizTeslimcisi — anons klibi (Faz 2)', () => {
         const t = new IosMuhafizTeslimcisi();
         await t.hazirla();
         expect(kopru.trSesTanimlayici).not.toHaveBeenCalled();
+    });
+});
+
+describe('AndroidMuhafizTeslimcisi — alarm butcesi (500 alarm tavani)', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    test('bir turda butceden fazla alarm kurulmaz; kesme kronolojik (en uzaktakiler duser)', async () => {
+        const t = new AndroidMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        const taban = Date.now() + 60_000;
+        // Her teslim sesli: bildirim + TTS = 2 alarm.
+        for (let i = 0; i < ANDROID_MUHAFIZ_ALARM_BUTCESI; i++) {
+            await t.uyariPlanla(teslimKur({ sesliAnons: true, anonsMetni: 'kalk', kanallar: { bildirim: true, sesli: true } }, taban + i * 60_000));
+        }
+        const bildirim = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length;
+        expect(bildirim + mockPlanlaAnons.mock.calls.length).toBe(ANDROID_MUHAFIZ_ALARM_BUTCESI);
+        // Ilk yarı kuruldu (kronolojik), son yarı düştü.
+        expect(bildirim).toBe(ANDROID_MUHAFIZ_ALARM_BUTCESI / 2);
+    });
+
+    test('yeni tur (hazirla) butceyi sifirlar', async () => {
+        const t = new AndroidMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        for (let i = 0; i < ANDROID_MUHAFIZ_ALARM_BUTCESI + 5; i++) await t.uyariPlanla(teslimKur({}, Date.now() + 60_000 + i));
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockClear();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur());
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+    });
+
+    test('NÖBETÇİ: butce tavanin altinda kalir (diger bildirimlere pay)', () => {
+        expect(ANDROID_MUHAFIZ_ALARM_BUTCESI).toBeLessThanOrEqual(400);
     });
 });

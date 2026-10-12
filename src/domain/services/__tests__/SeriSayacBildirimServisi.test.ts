@@ -17,6 +17,7 @@ jest.mock('react-native', () => ({ Platform: { OS: 'android' } }));
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn(() => Promise.resolve()),
     deleteChannel: jest.fn(() => Promise.resolve()),
     displayNotification: jest.fn(() => Promise.resolve()),
@@ -29,6 +30,8 @@ jest.mock('@notifee/react-native', () => ({
   AndroidImportance: { DEFAULT: 3 },
   AndroidStyle: { BIGTEXT: 0 },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
 }));
 
 import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';

@@ -7,7 +7,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
 import com.furkanisikay.namazakisi.R
@@ -19,7 +18,7 @@ import java.util.Calendar
  * 1x1 Namaz Widget'ı — bir sonraki namaz vaktine kalan süreyi gösterir.
  *
  * Veri akışı: RN (adhan.js) → WidgetVeriModulu → SharedPreferences → NamazWidget
- * Güncelleme: 1 dakikada bir AlarmManager (NamazWidgetAlarmAlici üzerinden)
+ * Güncelleme: ekran açıkken dakikada bir, uyandırmayan AlarmManager (NamazWidgetAlarmAlici)
  */
 class NamazWidget : AppWidgetProvider() {
 
@@ -126,8 +125,16 @@ class NamazWidget : AppWidgetProvider() {
         }
 
         /**
-         * Bir sonraki tam dakika başına AlarmManager ayarlar.
-         * Alarm tetiklenince NamazWidgetAlarmAlici widget'ları günceller.
+         * Bir sonraki tam dakika başına UYANDIRMAYAN bir alarm kurar.
+         *
+         * Eskiden her dakika `setExactAndAllowWhileIdle(RTC)` kuruluyordu: günde ~1440
+         * tam alarm, Doze'un "allow while idle" kotasını muhafız alarmlarıyla paylaşıyor
+         * ve ekran kapalıyken kimsenin görmediği bir widget için cihazı uyandırıyordu.
+         * Widget yalnız ekran açıkken görünür → `RTC` (uyandırmaz) + `setWindow`:
+         *  - ekran açıkken dakika başında (birkaç sn pay ile) tetiklenir,
+         *  - cihaz uyurken HİÇ tetiklenmez; uyanınca bekleyen alarm hemen teslim
+         *    edilir ve widget kullanıcı bakmadan tazelenir.
+         * Tam alarm izni de gerekmez.
          */
         fun sonrakiGuncellemeIcinAlarmAyarla(context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -144,24 +151,14 @@ class NamazWidget : AppWidgetProvider() {
             }
 
             try {
-                when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && alarmManager.canScheduleExactAlarms() ->
-                        alarmManager.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC, cal.timeInMillis, pendingIntent
-                        )
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ->
-                        alarmManager.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC, cal.timeInMillis, pendingIntent
-                        )
-                    else ->
-                        alarmManager.setExact(AlarmManager.RTC, cal.timeInMillis, pendingIntent)
-                }
-            } catch (e: SecurityException) {
-                // Exact alarm izni yoksa (Android 12+) yaklaşık zamanlama kullan
-                Log.w(TAG, "Exact alarm izni yok, yaklaşık zamanlama kullanılıyor", e)
-                alarmManager.set(AlarmManager.RTC, cal.timeInMillis, pendingIntent)
+                alarmManager.setWindow(AlarmManager.RTC, cal.timeInMillis, PENCERE_MS, pendingIntent)
+            } catch (e: Exception) {
+                Log.w(TAG, "Widget alarmı kurulamadı", e)
             }
         }
+
+        /** Dakika başından sonra teslim payı: sistem alarmları toplayabilsin, gecikme fark edilmesin. */
+        private const val PENCERE_MS = 5_000L
 
         fun alarmIptalEt(context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager

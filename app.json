@@ -39,10 +39,8 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
-        "android.permission.FOREGROUND_SERVICE_LOCATION",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.USE_EXACT_ALARM",
@@ -79,7 +77,7 @@
           "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "locationWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "isAndroidBackgroundLocationEnabled": true,
-          "isAndroidForegroundServiceEnabled": true
+          "isAndroidForegroundServiceEnabled": false
         }
       ],
       "expo-task-manager",

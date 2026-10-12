@@ -160,6 +160,11 @@ export const DEPOLAMA_ANAHTARLARI = {
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
+  // Bildirim "Kıldım" yanıtının son işlenen kimliği. Yanıt hem arka plan görevine
+  // (Android, uygulama kapalıyken) hem açılışta getLastNotificationResponseAsync'e
+  // düşer; bellek-içi koruma headless süreçte sıfırlandığı için tekilleştirme diskte.
+  // Cihaza özgü → yedeklemeye GİRMEZ.
+  ISLENMIS_BILDIRIM_YANITI: '@namaz_akisi/islenmis_bildirim_yaniti',
   // Vakit Sayacı Ayarları
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // İftar Sayacı Ayarları

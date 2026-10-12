@@ -6,7 +6,8 @@
  * Foreground Service + CountDownTimer ile batarya verimli calisir.
  */
 
-import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
+import { zamanTetigiOlustur } from './notifeeTetik';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
@@ -325,10 +326,7 @@ export class VakitSayacBildirimServisi {
       // Gelecekte tetiklenecek - trigger ile placeholder bildirim gonder,
       // arkaplan gorevi (muhafiz) tetiklenince native countdown baslatilacak
       try {
-        const trigger: TimestampTrigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: tetikZamani,
-        };
+        const trigger = await zamanTetigiOlustur(tetikZamani);
         const bildirimIcerigi = {
           id: bildirimId,
           title: vakitBasligi,
@@ -357,10 +355,7 @@ export class VakitSayacBildirimServisi {
     // B) Vakit sonu temizleme (farkli ID - trigger cakismasini onler)
     const temizlemeId = `${bildirimId}_bitis`;
     try {
-      const temizlemeTrigger: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: cikisSuresi,
-      };
+      const temizlemeTrigger = await zamanTetigiOlustur(cikisSuresi);
 
       await notifee.createTriggerNotification(
         {

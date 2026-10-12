@@ -3,6 +3,8 @@ import { registerRootComponent } from 'expo';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import notifee, { EventType } from '@notifee/react-native';
 import { Platform, AppRegistry } from 'react-native';
+import * as TaskManager from 'expo-task-manager';
+import * as Notifications from 'expo-notifications';
 
 // Reanimated strict mode uyarilarini kapat (3. parti kutuphaneler nedeniyle)
 configureReanimatedLogger({
@@ -63,6 +65,30 @@ if (Platform.OS === 'android') {
         });
     } catch {
         // Kayıt başarısızsa headless yol yok sayılır; diğer iki boşaltma yolu kalır.
+    }
+}
+
+// Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
+// Aksiyon `opensAppToForeground: false` olduğu için telefon açılmaz (saate köprülenen
+// bildirimde saatten basılınca cepteki telefon öne çıkmasın); expo-notifications
+// yanıtı bu göreve verir. `defineTask` modül üst seviyesinde SENKRON olmalı (Wear
+// headless dersi). Aynı yanıt açılışta getLastNotificationResponseAsync'e de düşer;
+// tekilleştirme diskte (`BildirimServisi.yanitiIsle`).
+const MUHAFIZ_YANIT_GOREVI = 'MUHAFIZ_BILDIRIM_YANITI';
+if (Platform.OS === 'android') {
+    try {
+        TaskManager.defineTask(MUHAFIZ_YANIT_GOREVI, async ({ data, error }) => {
+            if (error || !data) return;
+            try {
+                const { BildirimServisi } = await import('./src/domain/services/BildirimServisi');
+                await BildirimServisi.getInstance().arkaplanYanitiniIsle(data);
+            } catch {
+                // Açılıştaki getLastNotificationResponseAsync yolu yanıtı yine işler.
+            }
+        });
+        Notifications.registerTaskAsync(MUHAFIZ_YANIT_GOREVI).catch(() => undefined);
+    } catch {
+        // Görev kurulamazsa yanıt açılışta işlenir (eski davranış).
     }
 }
 

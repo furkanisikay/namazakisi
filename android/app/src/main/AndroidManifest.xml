@@ -6,13 +6,16 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
   <uses-permission android:name="android.permission.READ_CALENDAR"/>
   <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+  <!-- Android 13+ USE_EXACT_ALARM kurulumda verilir; SCHEDULE_EXACT_ALARM yalnız 12/12L
+       için gerekir (Google'ın önerdiği ikili). notifee kütüphanesi izni niteliksiz
+       bildirdiği için maxSdkVersion birleştirmede ezilmesin diye tools:replace. -->
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+      android:maxSdkVersion="32"
+      tools:replace="android:maxSdkVersion"/>
   <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -25,6 +28,14 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
       tools:node="remove"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+      tools:node="remove"/>
+  <!-- Foreground service KULLANILMIYOR (AGENTS.md: konum = geofence, anons = exact
+       alarm + goAsync). Kullanılmayan FGS türü Play Console'da beyan ve inceleme
+       yükü getirir. expo-location'ın konum servisi yalnız startLocationUpdatesAsync
+       ile başlar; o API kodda yok — çağrılırsa bu satırlar geri alınmalı. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"
+      tools:node="remove"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
       tools:node="remove"/>
 
   <queries>
@@ -92,5 +103,9 @@
       </intent-filter>
     </service>
     <service android:name=".wear.WearKildimGorevServisi" android:exported="false"/>
+    <!-- expo-location konum güncelleme servisi (foregroundServiceType=location): kodda
+         startLocationUpdatesAsync yok, geofence onu kullanmaz. Bildirimi kalsaydı Play
+         FGS beyanı isterdi. Bkz. üstteki FOREGROUND_SERVICE_LOCATION notu. -->
+    <service android:name="expo.modules.location.services.LocationTaskService" tools:node="remove"/>
   </application>
 </manifest>

@@ -298,6 +298,26 @@ class ExpoCountdownNotificationModule : Module() {
             }
         }
 
+        /**
+         * Uygulama pil optimizasyonundan muaf mi? (Doze ve OEM uyku kisitlari.)
+         * Salt okur — REQUEST_IGNORE_BATTERY_OPTIMIZATIONS izni ISTENMEZ (Play riski).
+         * `null` = bilinmiyor (eski API / hata): ekran yanlis alarm vermesin.
+         */
+        AsyncFunction("pilOptimizasyonuMuafMi") { promise: Promise ->
+            promise.resolve(appContext.reactContext?.let { PilAyarlari.muafMi(it) })
+        }
+
+        /** Samsung'da "Asla uyumayan uygulamalar", digerlerinde pil optimizasyonu ayari. */
+        AsyncFunction("pilAyarlariniAc") { promise: Promise ->
+            val aktivite = appContext.currentActivity
+            promise.resolve(if (aktivite == null) null else PilAyarlari.ac(aktivite))
+        }
+
+        /** Cihaz Samsung mu? (Kurulum adimi/metinleri icin.) */
+        Function("samsungMu") {
+            PilAyarlari.samsungMu()
+        }
+
         /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */
         AsyncFunction("trDestekleniyorMu") { promise: Promise ->
             val context = appContext.reactContext

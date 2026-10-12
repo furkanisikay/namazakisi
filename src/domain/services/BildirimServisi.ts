@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NamazAdi, BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from './ArkaplanMuhafizServisi';
 import type { VakitAdi } from '../../core/types';
@@ -97,6 +98,13 @@ try {
  */
 let responseListenerSubscription: Notifications.EventSubscription | null = null;
 
+interface MuhafizYanitVerisi {
+  tip?: string;
+  vakit?: string;
+  tarih?: string;
+  seviye?: number;
+}
+
 /**
  * Kildim aksiyonu callback tipi
  * Domain katmanindan presentation katmanina olay bildirimi icin kullanilir
@@ -174,7 +182,12 @@ export class BildirimServisi {
           identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
           buttonTitle: '✅ Kıldım',
           options: {
-            opensAppToForeground: true, // Uygulama oldurulmus olsa bile aksiyonun calismasi icin true
+            // ANDROID: false → "Kıldım" telefonu açmaz. Bu, saate köprülenen
+            // bildirimde özellikle önemli: saatten basınca cepteki telefonda uygulama
+            // öne çıkıyordu. Uygulama kapalıyken yanıt arka plan görevine
+            // (`index.ts > MUHAFIZ_YANIT_GOREVI` → `arkaplanYanitiniIsle`) düşer.
+            // iOS: bildirim yanıtı için arka plan görevi YOKTUR → açık kalır.
+            opensAppToForeground: Platform.OS === 'ios',
           },
         },
       ]);
@@ -195,19 +208,52 @@ export class BildirimServisi {
   ): Promise<void> {
     const { actionIdentifier, notification } = response;
 
-    // Ayni yaniti tekrar isleme (cold-start + listener cift tetikleme korumasi)
-    const yanitId = notification.request.identifier + '_' + actionIdentifier;
-    if (this.islenmisYanitId === yanitId) {
+    await this.yanitiIsle(
+      notification.request.identifier,
+      actionIdentifier,
+      notification.request.content.data as MuhafizYanitVerisi
+    );
+  }
+
+  /**
+   * Android arka plan görevi (uygulama kapalı/arka plandayken basılan aksiyon).
+   * Yük expo-notifications'ın native serileştirmesidir; şekli sürüme göre küçük
+   * farklar gösterebildiği için savunmalı okunur: veri nesne ya da `dataString`
+   * (JSON) olabilir. Tanınmayan yük sessizce yok sayılır.
+   */
+  public async arkaplanYanitiniIsle(yuk: unknown): Promise<void> {
+    const y = (yuk ?? {}) as {
+      actionIdentifier?: string;
+      notification?: { request?: { identifier?: string; content?: { data?: unknown; dataString?: string } } };
+    };
+    const aksiyon = y.actionIdentifier;
+    const istek = y.notification?.request;
+    if (!aksiyon || !istek?.identifier) return;
+    let veri: unknown = istek.content?.data;
+    if ((!veri || typeof veri !== 'object') && typeof istek.content?.dataString === 'string') {
+      try {
+        veri = JSON.parse(istek.content.dataString);
+      } catch {
+        veri = null;
+      }
+    }
+    if (!veri || typeof veri !== 'object') return;
+    await this.yanitiIsle(istek.identifier, aksiyon, veri as MuhafizYanitVerisi);
+  }
+
+  private async yanitiIsle(
+    bildirimId: string,
+    actionIdentifier: string,
+    data: MuhafizYanitVerisi
+  ): Promise<void> {
+    // Ayni yaniti tekrar isleme: listener + cold-start + (Android) arka plan gorevi
+    // ayni yaniti uc kez teslim edebilir. Bellek-ici koruma headless surecte
+    // sifirlandigi icin son islenen kimlik DISKTE de tutulur.
+    const yanitId = bildirimId + '_' + actionIdentifier;
+    if (this.islenmisYanitId === yanitId || (await this.diskteIslenmisMi(yanitId))) {
       Logger.info('BildirimServisi', 'Yanit zaten islendi, atlaniyor:', yanitId);
       return;
     }
-
-    const data = notification.request.content.data as {
-      tip?: string;
-      vakit?: string;
-      tarih?: string;
-      seviye?: number;
-    };
 
     Logger.info('BildirimServisi', 'Bildirim yaniti alindi:', {
       actionIdentifier,
@@ -225,10 +271,19 @@ export class BildirimServisi {
         await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
         // Basariyla islendikten sonra tekrar islemeyi engelle
         this.islenmisYanitId = yanitId;
+        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI, yanitId).catch(() => undefined);
       } catch (error) {
         // Basarisiz oldu - yanitId set edilmez, boylece retry mumkun
         Logger.error('BildirimServisi', 'Kildim isleme basarisiz, tekrar denenebilir:', error);
       }
+    }
+  }
+
+  private async diskteIslenmisMi(yanitId: string): Promise<boolean> {
+    try {
+      return (await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI)) === yanitId;
+    } catch {
+      return false;
     }
   }
 

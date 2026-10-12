@@ -32,8 +32,40 @@ import {
 import { MuhafizKanalServisi } from './MuhafizKanalServisi';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
+/**
+ * Bir planlama turunda muhafızın kurabileceği en fazla alarm (bildirim + sesli anons).
+ *
+ * Android uygulama başına eşzamanlı ~500 alarm tutar; aşılınca `setExact...`
+ * SecurityException atar ya da kayıt sessizce düşer. Özel ayarda 5 vakit × 4 adım ×
+ * 15 tetik = 300 bildirim, sesli adımlar AYNI dakikaya ayrı bir TTS alarmı daha
+ * kurar → 600'e çıkabiliyordu. Kalan pay vakit/cuma/nafile bildirimleri, notifee
+ * sayaçları ve widget içindir. Hazır yoğunluklar (vakit başına 4/6/7 uyarı) bu
+ * sınıra hiç yaklaşmaz.
+ *
+ * Kesme KRONOLOJİKTİR (çağrılar zaman sırasıyla gelir): en uzaktaki tetikler düşer
+ * ve bir sonraki tur (15 dk görevi / açılış) onları yeniden kurar. iOS'taki
+ * 64 bildirim bütçesinin (`ios/bildirimButcesi.ts`) Android ikizi.
+ */
+export const ANDROID_MUHAFIZ_ALARM_BUTCESI = 360;
+
 export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'android' as const;
+
+    /** Bu turda kurulan alarm sayısı — `hazirla` (her turun başı) sıfırlar. */
+    private kurulanAlarm = 0;
+    private butceUyarisiYazildi = false;
+
+    private alarmPayiAl(): boolean {
+        if (this.kurulanAlarm >= ANDROID_MUHAFIZ_ALARM_BUTCESI) {
+            if (!this.butceUyarisiYazildi) {
+                this.butceUyarisiYazildi = true;
+                Logger.warn('ArkaplanMuhafiz', `Alarm butcesi doldu (${ANDROID_MUHAFIZ_ALARM_BUTCESI}); kalan tetikler sonraki turda kurulacak`);
+            }
+            return false;
+        }
+        this.kurulanAlarm++;
+        return true;
+    }
 
     /** Android'de tur sonu isi yok: anons calisma aninda TTS ile uretilir, dosya birakmaz. */
     async tamamla(): Promise<void> {
@@ -48,6 +80,8 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
      * oksuz kalirdi.
      */
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
+        this.kurulanAlarm = 0;
+        this.butceUyarisiYazildi = false;
         if (matris === undefined) {
             await MuhafizKanalServisi.hazirla();
             return undefined;
@@ -91,6 +125,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
             if (zaman.getTime() <= simdi.getTime()) {
                 return;
             }
+            if (!this.alarmPayiAl()) return;
 
             const titresimli = titresimGerekliMi(uyari.kanallar);
 
@@ -156,6 +191,8 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         const { id, zaman, uyari, muhafizVakti, yon } = teslim;
         if (!uyari.sesliAnons) return;
         if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
+        if (zaman.getTime() <= Date.now()) return;
+        if (!this.alarmPayiAl()) return;
 
         try {
             // UCUNCU ARGUMAN `olcuDk` — `kalanDk` DEGIL. Cikis yonunde ikisi

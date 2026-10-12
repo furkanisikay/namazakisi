@@ -4,6 +4,7 @@ import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn().mockResolvedValue('channel-id'),
     deleteChannel: jest.fn().mockResolvedValue(undefined),
     displayNotification: jest.fn().mockResolvedValue('notif-id'),
@@ -14,6 +15,8 @@ jest.mock('@notifee/react-native', () => ({
     createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
   },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   AndroidStyle: { BIGTEXT: 0 },
 }));
@@ -184,6 +187,9 @@ describe('VakitSayacBildirimServisi', () => {
     // Sayac, cikis - esikDk*60000 (14:30) tetiklenmeli; simdi+5sn (10:00:05) alt siniri burada baskin degil
     expect(ogleSayac![1].timestamp).toBe(cikis - 30 * 60 * 1000);
     expect(ogleSayac![1].type).toBe(TriggerType.TIMESTAMP);
+    // Samsung uyku modunda gecikmesin: WorkManager değil AlarmManager (tam alarm).
+    expect(ogleSayac![1].alarmManager).toEqual({ type: 3 });
+    expect(ogleBitis![1].alarmManager).toEqual({ type: 3 });
     // Sayac, temizlemeden ONCE tetiklenmeli (mantiksal sira: once say, sonra temizle)
     expect(ogleSayac![1].timestamp).toBeLessThan(ogleBitis![1].timestamp);
   });

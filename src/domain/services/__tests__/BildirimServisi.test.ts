@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
@@ -19,6 +20,7 @@ jest.mock('../ArkaplanMuhafizServisi');
 jest.mock('@notifee/react-native', () => ({
     __esModule: true,
     default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
         createChannel: jest.fn(),
         displayNotification: jest.fn(),
         cancelNotification: jest.fn(),
@@ -30,6 +32,8 @@ jest.mock('@notifee/react-native', () => ({
         onBackgroundEvent: jest.fn(),
     },
     TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
     AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
     EventType: { ACTION_PRESS: 1, DISMISSED: 2 },
 }));
@@ -121,11 +125,64 @@ function sunulanBildirimOlustur(id: string) {
 describe('BildirimServisi', () => {
   let servis: BildirimServisi;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    // Islenmis yanit kimligi DISKTE tutulur; testler birbirine sizmasin.
+    await AsyncStorage.clear();
     // Singleton'u sifirla
     (BildirimServisi as any).instance = undefined;
     servis = BildirimServisi.getInstance();
+  });
+
+  // ==================== ARKA PLAN YANITI (Android, uygulama kapali) ====================
+
+  describe('arkaplanYanitiniIsle (saatten / kapali uygulamadan "Kıldım")', () => {
+    it('arka plan gorevi yukunu isler: namaz isaretlenir', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      await servis.arkaplanYanitiniIsle(muhafizYanitiOlustur('ogle', '2026-02-13'));
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-02-13', NamazAdi.Ogle, true);
+    });
+
+    it('veri JSON dizesi (dataString) olarak gelirse de cozulur', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      const yanit = muhafizYanitiOlustur('ikindi', '2026-02-13');
+      const { data } = yanit.notification.request.content;
+      const yuk = {
+        actionIdentifier: yanit.actionIdentifier,
+        notification: { request: { identifier: yanit.notification.request.identifier, content: { dataString: JSON.stringify(data) } } },
+      };
+      await servis.arkaplanYanitiniIsle(yuk);
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-02-13', NamazAdi.Ikindi, true);
+    });
+
+    it('NÖBETÇİ: arka planda islenen yanit acilista (yeni surec) TEKRAR islenmez — tekillestirme diskte', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      const yanit = muhafizYanitiOlustur('aksam', '2026-02-13');
+      await servis.arkaplanYanitiniIsle(yanit);
+      // Headless surec bitti, uygulama acildi: bellek-ici koruma sifirlanir.
+      (BildirimServisi as any).instance = undefined;
+      const yeni = BildirimServisi.getInstance();
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(yanit);
+      (Notifications.addNotificationResponseReceivedListener as jest.Mock).mockReturnValue({ remove: jest.fn() });
+      await yeni.baslatBildirimDinleyicisi();
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledTimes(1);
+    });
+
+    it('NÖBETÇİ: Android\'de "Kıldım" telefonu ÖNE ACMAZ (saatten basınca cepteki telefon acilmasin)', async () => {
+      const { Platform } = require('react-native');
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+      jest.replaceProperty(Platform, 'OS', 'android');
+      await servis.baslatBildirimDinleyicisi();
+      const secenek = (Notifications.setNotificationCategoryAsync as jest.Mock).mock.calls[0][1][0].options;
+      expect(secenek.opensAppToForeground).toBe(false);
+      jest.restoreAllMocks();
+    });
+
+    it('tanınmayan yuk sessizce yok sayilir', async () => {
+      await servis.arkaplanYanitiniIsle({ notification: null });
+      await servis.arkaplanYanitiniIsle(undefined);
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
   });
 
   // ==================== COLD-START TESTLERI ====================
