@@ -16,11 +16,12 @@ appId: com.furkanisikay.namazakisi
 - tapOn: "Ayarlar"
 - scrollUntilVisible:
     element:
-      text: "Nafile namazlar.*"
+      text: "Nafile namazlar"
     direction: DOWN
+    centerElement: true
+    visibilityPercentage: 50
     timeout: 20000
-- tapOn:
-    text: "Nafile namazlar.*"
+- tapOn: "Nafile namazlar"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/90-nafile-acilis
@@ -39,11 +40,16 @@ appId: com.furkanisikay.namazakisi
 - tapOn: "Teheccüd hatırlatması"
 - waitForAnimationToEnd:
     timeout: 3000
-- scroll
+- scrollUntilVisible:
+    element:
+      text: "Uyandırma"
+    direction: DOWN
+    centerElement: true
+    timeout: 10000
 - takeScreenshot: kareler/92-nafile-teheccud-acik
 
 - back
-- tapOn: "Namaz Akışı.*"
+- tapOn: "Ana Sayfa"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/93-ana-ekran-nafile
