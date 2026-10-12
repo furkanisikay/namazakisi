@@ -168,7 +168,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 {kartBasligi(
                     'eye',
                     'Ana ekranda göster',
-                    'Vakit kartının altında içinde bulunduğunuz ya da sıradaki nafile vakti',
+                    'Günlük akışta, vakitlerin arasında',
                     ayarlar.gostergeAktif,
                     (v) => guncelle({ gostergeAktif: v })
                 )}

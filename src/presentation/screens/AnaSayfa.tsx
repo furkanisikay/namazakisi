@@ -18,10 +18,8 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
-import { NafileSeridi } from '../components/home/NafileSeridi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
-import { nafileDurumunuBul } from '../../core/nafile/nafileVakitleri';
-import { nafileSeritMetniOlustur } from '../../core/nafile/nafileSeritMetni';
+import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
@@ -220,19 +218,23 @@ export const AnaSayfa: React.FC = () => {
     return aktifGunuHesapla(bugun, now, imsakZamani, gunEkle(bugun, -1));
   }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
 
-  // Nafile şeridi (issue #77): pencereler AKTİF GÜN tabanlı (gece yarısı sonrası = dün)
-  // ve yalnız aktif gün değişince yeniden hesaplanır; seçim her render'da ucuz bir
-  // karşılaştırmadır ve çıktı yalnız dizedir → saniyelik render memo'yu kırmaz.
+  // Nafile satırları (issue #77): "Günlük Akış" zincirinde kendi farzlarının ardına
+  // girer. Pencereler AKTİF GÜN tabanlı (gece yarısı sonrası = dün). Ekran saniyede
+  // bir çizildiği için dizi DAKİKA anahtarıyla memo'lanır: VakitAkisi memo'su yalnız
+  // dakika dönünce (aktif/geçti durumu değişebilir) kırılır.
   const { pencereler: nafilePencereleri } = useNafilePencereleri(aktifGun);
-  const nafileSerit = nafileAyarlari.gostergeAktif
-    ? nafileSeritMetniOlustur(
-        nafileDurumunuBul(nafilePencereleri, new Date(), {
-          hedef: nafileAyarlari.teheccud.hedef,
-          imsaktanOnceDk: nafileAyarlari.teheccud.imsaktanOnceDk,
-        }),
-        nafilePencereleri
-      )
-    : null;
+  const nafileDakikasi = Math.floor(Date.now() / 60000);
+  const { gostergeAktif: nafileGostergesi, teheccud: nafileTeheccud } = nafileAyarlari;
+  const nafileSatirlari = useMemo(
+    () =>
+      nafileGostergesi
+        ? nafileZincirSatirlariOlustur(nafilePencereleri, new Date(nafileDakikasi * 60000), {
+            hedef: nafileTeheccud.hedef,
+            imsaktanOnceDk: nafileTeheccud.imsaktanOnceDk,
+          })
+        : undefined,
+    [nafileGostergesi, nafilePencereleri, nafileDakikasi, nafileTeheccud.hedef, nafileTeheccud.imsaktanOnceDk]
+  );
 
   // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).
   // Önceden `initialPage` sabit "bugün" idi ve doğru sayfaya mount effect'indeki
@@ -735,17 +737,6 @@ export const AnaSayfa: React.FC = () => {
           </View>
         )}
 
-        {/* Nafile şeridi — yalnız aktif günde (geçmiş günde "şimdi" anlamsız) */}
-        {aktifGunKontrol && nafileSerit && (
-          <NafileSeridi
-            ikon={nafileSerit.ikon}
-            metin={nafileSerit.metin}
-            bilgiBaslik={nafileSerit.bilgiBaslik}
-            bilgiMetni={nafileSerit.bilgiMetni}
-            aktif={nafileSerit.aktif}
-          />
-        )}
-
         {/* Akış Listesi — memo'lu: gün ISO dizesiyle geçer ki saniyelik geri sayım
             render'ı memo'yu kırmasın. "Vakit geçti mi" içeride `new Date()` okur ama
             satır yalnız prop değişince yeniden çizilir; doğruluk, satır saatlerinin
@@ -761,6 +752,8 @@ export const AnaSayfa: React.FC = () => {
           kilitli={kilitli}
           gunTarihiIso={sayfaTarihi}
           cumaEtiketi={cumaEtiketi}
+          // Nafile yalnız aktif günde: geçmiş günde "şu an vakti girdi" anlamsız.
+          nafileSatirlari={aktifGunKontrol ? nafileSatirlari : undefined}
         />
         {/* ScrollView sonu için boşluk */}
         <View className="h-10" />

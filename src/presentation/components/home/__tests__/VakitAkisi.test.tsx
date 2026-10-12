@@ -228,4 +228,66 @@ describe('VakitAkisi Bileşeni', () => {
       expect(renk(getByTestId(`baglanti-ust-${NamazAdi.Ogle}`))).toBe(YESIL);
     });
   });
+
+  describe('Nafile satırları (issue #77)', () => {
+    const nafile = (tur: 'kusluk' | 'evvabin' | 'teheccud', ardindan: NamazAdi, durum: 'sirada' | 'aktif' | 'gecti') => ({
+      tur,
+      ad: { kusluk: 'Kuşluk', evvabin: 'Evvâbîn', teheccud: 'Teheccüd' }[tur],
+      ikon: 'sun',
+      ardindan,
+      saat: { kusluk: '05:20', evvabin: '20:10', teheccud: '02:00' }[tur],
+      durum,
+      durumMetni: durum === 'aktif' ? 'Vakti girdi · bitiş 13:05' : 'Nafile · 05:20–13:05',
+      bilgiBaslik: 'Bilgi',
+      bilgiMetni: 'Açıklama',
+    });
+    const SATIRLAR = [
+      nafile('kusluk', NamazAdi.Sabah, 'aktif'),
+      nafile('evvabin', NamazAdi.Aksam, 'sirada'),
+      nafile('teheccud', NamazAdi.Yatsi, 'sirada'),
+    ];
+
+    it('her nafile kendi farzının ARDINA girer (kronolojik sıra)', () => {
+      const dun = dunuAl();
+      const { UNSAFE_root } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazUret(dun, SAATLER)}
+          suankiVakitAdi="" gunTarihiIso={dun} nafileSatirlari={SATIRLAR} />
+      );
+      const sira = UNSAFE_root.findAll(
+        (n: ReactTestInstance) => typeof n.props.accessibilityLabel === 'string' && n.props.accessibilityRole === 'button' && typeof n.type !== 'string'
+      ).map((n: ReactTestInstance) => (n.props.accessibilityLabel as string).split(/ vakti|, nafile/)[0]);
+      const tekil = sira.filter((x: string, i: number) => sira.indexOf(x) === i);
+      expect(tekil).toEqual([
+        NamazAdi.Sabah, 'Kuşluk', NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam, 'Evvâbîn', NamazAdi.Yatsi, 'Teheccüd',
+      ]);
+    });
+
+    it('nafile satırı farz kaydını tetiklemez; dokununca ayrıntı açılır', () => {
+      const dun = dunuAl();
+      const onVakitTikla = jest.fn();
+      const { getByTestId, getByText } = render(
+        <VakitAkisi {...varsayilanProps} onVakitTikla={onVakitTikla} aktifGunMu={false}
+          namazlar={namazUret(dun, SAATLER)} suankiVakitAdi="" gunTarihiIso={dun} nafileSatirlari={SATIRLAR} />
+      );
+      fireEvent.press(getByTestId('nafile-satir-kusluk'));
+      expect(onVakitTikla).not.toHaveBeenCalled();
+      expect(getByText('Açıklama')).toBeTruthy();
+      expect(getByText('Vakti girdi · bitiş 13:05')).toBeTruthy();
+    });
+
+    it('teheccüd yatsının ardına girince yatsının alt çizgisi çizilir; nafile yoksa çizilmez', () => {
+      const dun = dunuAl();
+      const { getByTestId, rerender, queryByTestId } = render(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazUret(dun, SAATLER)}
+          suankiVakitAdi="" gunTarihiIso={dun} nafileSatirlari={SATIRLAR} />
+      );
+      expect(getByTestId(`baglanti-alt-${NamazAdi.Yatsi}`)).toBeTruthy();
+      rerender(
+        <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazUret(dun, SAATLER)}
+          suankiVakitAdi="" gunTarihiIso={dun} />
+      );
+      expect(queryByTestId(`baglanti-alt-${NamazAdi.Yatsi}`)).toBeNull();
+      expect(queryByTestId('nafile-satir-kusluk')).toBeNull();
+    });
+  });
 });
