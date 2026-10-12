@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
+import { WearSenkronServisi } from './WearSenkronServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
@@ -342,6 +343,22 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Nafile hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.57: WEAR OS SAATİ (issue #269)
+        //
+        // (a) Saatten gelip işlenememiş "Kıldım"ları boşalt — headless görev
+        //     OEM kısıtıyla başlatılamadıysa güvenlik ağı budur (JobScheduler
+        //     tabanlı bu görev arka plan servis kısıtından muaftır).
+        // (b) 8 günlük pencereyi tazele (gün döndükçe kayar).
+        // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            await WearSenkronServisi.getInstance().bekleyenleriIsle();
+            await WearSenkronServisi.getInstance().gonder();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
         }
 
         // =====================================================

@@ -31,6 +31,30 @@ import { Depolama } from './Depolama';
 /** Tek bir gunun verisi: namazAdi -> kilindi mi. */
 type GunVerisi = Record<string, boolean>;
 
+/**
+ * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS senkronu — issue #269).
+ *
+ * Kılınmışlık ÜÇ yazıcıdan geçer (`localNamazDurumunuGuncelle`,
+ * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin bayat ✓
+ * göstermemesi için üçü de başarılı yolda haber verir. Data katmanı domain
+ * import EDEMEZ → dinleyici dışarıdan kaydedilir (`WearSenkronServisi.baslat`).
+ * İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol gönderimi kendisi yapar.
+ * Dinleyici hatası yazımı ASLA düşürmez.
+ */
+let kayitDegistiDinleyicisi: (() => void) | null = null;
+
+export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void => {
+  kayitDegistiDinleyicisi = fn;
+};
+
+const kayitDegistiBildir = (): void => {
+  try {
+    kayitDegistiDinleyicisi?.();
+  } catch (e) {
+    Logger.warn('LocalNamazServisi', 'Kayit degisti dinleyicisi hata verdi', e);
+  }
+};
+
 const gunAnahtari = (tarih: string): string =>
   `${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}${tarih}`;
 
@@ -142,6 +166,7 @@ export const localNamazDurumunuGuncelle = async (
       ...(mevcut ?? {}),
       [namazAdi]: tamamlandi,
     }));
+    kayitDegistiBildir();
     return { basarili: true };
   } catch (error) {
     return {
@@ -165,6 +190,7 @@ export const localTumNamazlariGuncelle = async (
       gun[namazAdi] = tamamlandi;
     });
     await Depolama.yaz(gunAnahtari(tarih), gun);
+    kayitDegistiBildir();
     return { basarili: true };
   } catch (error) {
     return {
@@ -244,6 +270,7 @@ export const localVerileriTemizle = async (): Promise<void> => {
   );
   await Depolama.cogunuSil(anahtarlar);
   await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
+  kayitDegistiBildir();
 };
 
 /**

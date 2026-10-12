@@ -43,6 +43,7 @@ import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
+import { WearSenkronServisi } from './WearSenkronServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -223,6 +224,10 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         guvenliCalistir('Nafile hatirlatmasi', () =>
             NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
+
+        // Wear OS saati (issue #269): vakitler telefonda hesaplanıp saate gönderilir;
+        // şehir değişince saat de yeni vakitleri ve konum adını almalı.
+        guvenliCalistir('Wear senkronu', () => WearSenkronServisi.getInstance().gonder()),
     ]);
 
     Logger.info('KonumDegisikligi', 'Konuma bagli tum tuketiciler guncellendi');

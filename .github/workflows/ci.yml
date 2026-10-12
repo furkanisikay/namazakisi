@@ -22,6 +22,10 @@ on:
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
+      # Wear OS saat uygulaması kendi hattında (wear-build.yml) derlenir; telefon
+      # release'i (EAS AAB + Play + GitHub Release) KESMEZ.
+      - 'wear/**'
+      - '.github/workflows/wear-build.yml'
   pull_request:
     branches: [master, develop]
     paths-ignore:
@@ -29,6 +33,10 @@ on:
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
+      # Wear OS saat uygulaması kendi hattında (wear-build.yml) derlenir; telefon
+      # release'i (EAS AAB + Play + GitHub Release) KESMEZ.
+      - 'wear/**'
+      - '.github/workflows/wear-build.yml'
 
 concurrency:
   group: ci-${{ github.ref }}

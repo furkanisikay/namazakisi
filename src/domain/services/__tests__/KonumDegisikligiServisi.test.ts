@@ -55,6 +55,11 @@ jest.mock('../NafileHatirlatmaServisi', () => ({
         getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
     },
 }));
+jest.mock('../WearSenkronServisi', () => ({
+    WearSenkronServisi: {
+        getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve()) })),
+    },
+}));
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: {
         getInstance: jest.fn(() => ({ vakitleriyaz: jest.fn(() => Promise.resolve()) })),
@@ -85,6 +90,7 @@ import { SahurSayacBildirimServisi } from '../SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
 import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
+import { WearSenkronServisi } from '../WearSenkronServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -119,6 +125,7 @@ const sahte = {
     seriSayac: jest.fn((..._a: unknown[]) => Promise.resolve()),
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
     nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    wear: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
 beforeEach(() => {
@@ -138,6 +145,7 @@ beforeEach(() => {
     (SeriSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.seriSayac });
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
     (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
+    (WearSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.wear });
 });
 
 describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
@@ -162,6 +170,8 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // güneş/öğle/akşam/yatsı/imsaktan türer — şehirle birlikte kayar.
         expect(sahte.nafile).toHaveBeenCalledTimes(1);
         expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
+        // Wear OS saati (issue #269): vakitler telefonda hesaplanıp gönderilir.
+        expect(sahte.wear).toHaveBeenCalledTimes(1);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

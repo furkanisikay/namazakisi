@@ -68,6 +68,9 @@ jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
     getInstance: () => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) }),
   },
 }));
+jest.mock('../../../domain/services/WearSenkronServisi', () => ({
+  WearSenkronServisi: { getInstance: () => ({ gonder: jest.fn(() => Promise.resolve()) }) },
+}));
 jest.mock('../takvimSlice', () => ({
   takvimAyarlariniYukle: jest.fn(() => ({ type: 'takvim/yukle' })),
 }));

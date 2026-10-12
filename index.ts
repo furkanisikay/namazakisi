@@ -2,7 +2,7 @@ import './global.css';
 import { registerRootComponent } from 'expo';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import notifee, { EventType } from '@notifee/react-native';
-import { Platform } from 'react-native';
+import { Platform, AppRegistry } from 'react-native';
 
 // Reanimated strict mode uyarilarini kapat (3. parti kutuphaneler nedeniyle)
 configureReanimatedLogger({
@@ -44,6 +44,26 @@ if (Platform.OS === 'android') {
             }
         }
     }); } catch (_) {}
+}
+
+// Wear OS saatinden "Kıldım" (issue #269) — headless görev.
+// `registerHeadlessTask` MODÜL ÜST SEVİYESİNDE ve SENKRON çağrılmalı (promise
+// içinde kaydedilirse native görev geldiğinde JS tarafı henüz hazır olmaz).
+// Görev adı `WearKildimGorevServisi.kt` ile AYNI. Doğruluk bu göreve bağlı
+// değildir: kuyruk ön plana gelişte ve 15 dk'lık arka plan görevinde de boşalır.
+if (Platform.OS === 'android') {
+    try {
+        AppRegistry.registerHeadlessTask('WearKildim', () => async () => {
+            try {
+                const { WearSenkronServisi } = await import('./src/domain/services/WearSenkronServisi');
+                await WearSenkronServisi.getInstance().bekleyenleriIsle();
+            } catch {
+                // Kuyruk native tarafta korunur; ön plan / 15 dk görevi yeniden dener.
+            }
+        });
+    } catch {
+        // Kayıt başarısızsa headless yol yok sayılır; diğer iki boşaltma yolu kalır.
+    }
 }
 
 // Bildirim dinleyicisini global olarak baslat (dinamik import — eager yük azaltma)

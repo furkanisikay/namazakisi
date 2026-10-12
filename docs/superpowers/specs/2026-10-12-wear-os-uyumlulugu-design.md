@@ -1,6 +1,6 @@
 # Wear OS uyumluluğu — tasarım
 
-Durum: TASLAK (Fable incelemesi bekleniyor)
+Durum: ONAYLANDI (Fable — koşullu onay; zorunlu değişiklikler "Nihai kararlar" bölümünde uygulandı)
 Kapsam: telefondaki Namaz Akışı'nın Wear OS saatlerde tam karşılığı.
 
 ## 1. Hedef ve kapsam
@@ -91,3 +91,24 @@ Kerahat: telefonda kerahat **uyar, engelleme** kuralı var (#82). Saatte onay ek
 
 ## 5. Doğrulama
 `npm run verify` + `wear/` için `./gradlew test assembleDebug` (yerelde SDK ile) + telefon app'i için CI debug APK build'i (`android-build.yml`, `build_type=debug`). Cihaz/emülatör testi bu oturumda yapılamaz → PR'da açıkça belirtilir.
+
+
+---
+
+## Nihai kararlar (Fable incelemesi sonrası — yukarıdaki taslağın ÜZERİNDE geçerlidir)
+
+1. **K5/4 düzeltmesi — kılınmışlık TEK noktadan yazılmıyor.** Üç yazıcı var (`localNamazDurumunuGuncelle`, `localTumNamazlariGuncelle`, `localVerileriTemizle`); `LocalNamazServisi` içinde **gözlemci** (`kayitDegistiDinleyicisiniAyarla`) eklendi, üçü de başarılı yolda haber verir. Data katmanı domain import etmez; `WearSenkronServisi.baslat()` açılışta kaydolur. İçe aktarma `Depolama.yaz` ile doğrudan yazdığı için `yedeklemeSlice` sonunda **açıkça** `gonder()` çağrılır.
+2. **K4 anahtar uzayı tek: `VakitAdi`.** `kilinan` kaynağı `namaz_gun_` kayıtları (`localTarihAraligindakiNamazlariGetir`), muhafız kaydı değil. Konum adı `konumMetniHesapla`. `olusturmaMs` yükten ÇIKARILDI (her gönderim yeni içerik sayılırdı); JS son gönderilen JSON'u tutup aynısını yazmaz. Kerahat dakikaları yükle gönderilir (saatte ikinci kopya yok).
+3. **K6 headless:** `HeadlessJsTaskConfig(..., allowedInForeground = true)`; ReactContext `RESUMED` ise headless yerine `WearKildimGeldi` olayı. `startService` başarısızlığı hata değil — kuyruk SharedPreferences'ta, **üç** boşaltma yolu: headless görev, `App.tsx` AppState `active` (debounce'suz) + canlı olay, `ArkaplanGorevServisi` 15 dk görevi (muhafız erken dönüşlerinden önce). `registerHeadlessTask` `index.ts` üst seviyesinde, senkron.
+4. **Zehirli öğe:** her öğe ayrı try/catch; hata → `basarisiz` (deneme sayacı), 5 denemede düşer.
+5. **K8 versionCode:** Play'deki telefon kodu `expo-build.yml`'in `date +%s` zaman damgasıdır, `build.gradle`'daki 100 değil. Saat AAB'si kendi hattında `-PwearVersionCode=$(date +%s)`; yerelde 1. `versionName` `app.json > expo.version`'dan.
+6. **`ci.yml` `wear/**` ve `wear-build.yml`'i yok sayar** → saat commit'leri telefon release'i kesmez. `wear-build.yml` PR kontrolüdür (JS sözleşme testi + Kotlin test + lint + debug APK).
+7. **K7 Tile canlı saymaz** → tile vakit adı + saat; canlı geri sayım komplikasyonda (`TimeDifferenceComplicationText`). İkisi de zaman çizelgesiyle vakit sınırlarında kendiliğinden ilerler; telefon verisi gelince `requestUpdate`/`requestUpdateAll`.
+8. **Play gerçekleri:** `standalone=false` 2026'da kabul, bedeli telefonsuz saatlerde listelenmemek. `uses-feature watch` (required=false yok), ayrı Wear form faktörü + Wear track, tile önizleme görseli (meta-data), 48dp dokunma hedefi, targetSdk 36. Wear AAB telefonla **aynı upload key** ile imzalanmalı (anahtar EAS'te → `eas credentials -p android` ile alınıp CI secret'ı) — **Faz 2**.
+9. `.gitignore` köke sabitli `/wear/...` kalıpları; `.easignore` eklenmez; Kotlin dosya adları ASCII.
+
+### Emülatör çifti ile doğrulama reçetesi (cihaz testi bu PR'da yapılamadı)
+1. Telefon AVD (Play Store imajı) + Wear OS AVD oluştur; Android Studio "Wear OS emülatörünü eşle" ya da `adb -s <telefon> forward tcp:5601 tcp:5601` + telefona "Wear OS" uygulaması.
+2. Telefon: `android-build.yml` debug APK; saat: `wear-build.yml` debug APK (ikisi de `android/app/debug.keystore` ile imzalı → Data Layer eşleşir).
+3. Telefonda uygulamayı açın → saatte vakitler görünmeli. Saatte bir vakti işaretleyin → telefonda kılınmış görünmeli, o vaktin muhafız bildirimleri iptal edilmeli (`dumpsys alarm`).
+4. Uygulama kapalıyken tekrarlayın: logcat `WearDinleyici` — headless başlatılamadıysa uygulamayı açınca işlenmeli.

@@ -254,6 +254,18 @@ export class BildirimServisi {
   }
 
   /**
+   * Wear OS saatinden gelen "Kildim" (issue #269).
+   *
+   * Bildirimdeki "Kildim" dugmesiyle BIREBIR ayni govdeyi calistirir (kayit +
+   * o vaktin muhafiz/sayac bildirimlerinin iptali) — iki yol ayrisamaz. Headless
+   * baglamda (Redux yok) guvenlidir: `onKildimCallback` yoksa atlanir. Hata
+   * YUKARI iletilir; kuyruk ogeyi birakip deneme sayacini artirir.
+   */
+  public async saattenKildimIsle(vakit: string, tarih: string): Promise<void> {
+    await this.kildimAksiyonunuIsle(vakit, tarih);
+  }
+
+  /**
    * "Kildim" aksiyonunu isle
    * Namaz durumunu guncelle ve kalan bildirimleri iptal et
    */

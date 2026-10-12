@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Namaz Akışı</string>
+    <string name="tile_adi">Sıradaki vakit</string>
+    <string name="tile_aciklama">Sıradaki namaz vakti ve saati</string>
+    <string name="komplikasyon_adi">Sıradaki vakit</string>
+</resources>

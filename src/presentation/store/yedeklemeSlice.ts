@@ -27,6 +27,7 @@ import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
+import { WearSenkronServisi } from '../../domain/services/WearSenkronServisi';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -113,6 +114,9 @@ export const iceAktarmayiUygula = createAsyncThunk(
     } catch {
       // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
     }
+    // Wear OS saati (issue #269): içe aktarma kayıtları `Depolama.yaz` ile DOĞRUDAN
+    // yazar (LocalNamazServisi gözlemcisinden geçmez) → saati açıkça tazele.
+    await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
 
     return { yazilanAnahtarSayisi: Object.keys(plan).length };
   }
