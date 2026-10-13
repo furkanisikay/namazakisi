@@ -70,3 +70,20 @@ export async function bildirimKategorileriniKaydet(): Promise<void> {
     },
   ]);
 }
+
+let kayitli = false;
+
+/**
+ * Süreç başına bir kez, idempotent kayıt — planlama yapan servisler bildirimi
+ * kurmadan ÖNCE çağırır (kategori kayıtsızsa bildirim düğmesiz çıkar). Hata
+ * yutulur ve bir sonraki çağrıda yeniden denenir.
+ */
+export async function bildirimKategorileriniGarantile(): Promise<void> {
+  if (kayitli) return;
+  try {
+    await bildirimKategorileriniKaydet();
+    kayitli = true;
+  } catch {
+    // Bir sonraki planlamada yeniden denenir.
+  }
+}
