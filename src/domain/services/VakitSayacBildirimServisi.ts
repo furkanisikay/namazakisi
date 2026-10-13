@@ -10,14 +10,14 @@ import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native'
 import { zamanTetigiOlustur } from './notifeeTetik';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Platform } from 'react-native';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
+import { muhafizVakitleriniHesapla } from '../../core/muhafiz/muhafizTeslimPlani';
+import { sayacEsigiAl, sayacVakitleriniSec } from '../../core/bildirim/sayacPlani';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
@@ -91,65 +91,29 @@ export class VakitSayacBildirimServisi {
       return;
     }
 
-    // Muhafız aktifken, muhafızın UYARDIĞI vakitlerde sayaç planlanmaz: sayaç
-    // muhafız başlangıç eşiğinde başladığından muhafızın ilk hatırlatmasıyla eş
-    // zamanlı çakışan gereksiz bir "çıkmak üzere" bildirimi olur (#90).
-    // Muhafızın tümden susturulduğu vakitler bastırılmaz (bkz. muhafizUyarilanVakitler).
-    const bastirilanVakitler: Set<string> = new Set(
-      ayarlar.muhafizAktif ? (ayarlar.muhafizUyarilanVakitler ?? MUHAFIZ_VAKITLERI) : []
-    );
-
-    // Bugünün vakit zamanlarını hesapla
-    const vakitler = this.bugunVakitleriniHesapla();
+    // Eleme kuralı SAF üreticide (`core/bildirim/sayacPlani.ts`): bildirim
+    // defteri (issue #298) aynı listeyi sayar.
+    //  - Muhafız aktifken, muhafızın UYARDIĞI vakitlerde sayaç planlanmaz (#90):
+    //    sayaç muhafız başlangıç eşiğinde başladığından ilk hatırlatmayla
+    //    çakışırdı. Tümden susturulan vakit bastırılmaz.
+    //  - Özel gün (issue #272): kapı vaktin GÜNÜNE bakar.
+    //  - Kılınmış, geçmiş, eşiksiz vakit ve güneş planlanmaz.
     const simdi = new Date();
-
-    // Kılınan vakitleri al (bugün ve dün için - gece yarısı geçişleri)
-    const kilinanBugun = await kilinanVakitleriAl(bugunuAl());
-    const kilinanDun = await kilinanVakitleriAl(dunuAl());
+    const vakitler = muhafizVakitleriniHesapla(ayarlar.koordinatlar, simdi);
     const kilinanMap: Record<string, VakitAdi[]> = {
-      [bugunuAl()]: kilinanBugun,
-      [dunuAl()]: kilinanDun,
+      [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
+      [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
     };
-
-    // Özel gün (issue #272): aralıktaki günün vakitleri için sayaç kurulmaz.
-    // Eski sayaçlar yukarıda zaten temizlendi; kapı vaktin GÜNÜNE bakar.
     const ozelGundeMi = await ozelGunSuzgeciniOku();
 
-    // Çıkış süresi henüz geçmemiş VE kılınmamış vakitler için planlama yap
-    const gelecekVakitler = vakitler.filter(v => {
-      // Vakit zamanı geçmiş mi?
-      if (v.cikis.getTime() <= simdi.getTime()) {
-        return false;
-      }
-
-      if (ozelGundeMi(v.tarih)) {
-        return false;
-      }
-
-      // Güneş vakti değil (namaz olarak kılınmaz)
-      if (v.vakit === 'gunes') {
-        return false;
-      }
-
-      // Muhafız bu vakti zaten kapsıyorsa çakışmayı önlemek için atla (#90)
-      if (bastirilanVakitler.has(v.vakit)) {
-        Logger.info('VakitSayac', `${v.vakit} muhafız kapsamında, çakışmayı önlemek için atlanıyor`);
-        return false;
-      }
-
-      // Eşik yoksa/geçersizse planlanacak bir başlangıç noktası yok
-      if (!this.vakitEsiginiAl(v.vakit)) {
-        return false;
-      }
-
-      // Bu vakit kılınmış mı?
-      const tarihinKilinanVakitleri = kilinanMap[v.tarih] || [];
-      if (tarihinKilinanVakitleri.includes(v.vakit)) {
-        Logger.info('VakitSayac', `${v.vakit} (${v.tarih}) zaten kılınmış, atlanıyor`);
-        return false;
-      }
-
-      return true;
+    const gelecekVakitler = sayacVakitleriniSec({
+      vakitler,
+      simdi,
+      baslangicEsikleri: ayarlar.baslangicEsikleri,
+      muhafizAktif: ayarlar.muhafizAktif,
+      muhafizUyarilanVakitler: ayarlar.muhafizUyarilanVakitler,
+      kilindiMi: (tarih, vakit) => (kilinanMap[tarih] || []).includes(vakit),
+      ozelGundeMi,
     });
 
     if (gelecekVakitler.length === 0) {
@@ -173,8 +137,7 @@ export class VakitSayacBildirimServisi {
    * Geçersiz/eksik/0 değer -> 0 döner (o vakit planlanmaz).
    */
   private vakitEsiginiAl(vakit: VakitAdi): number {
-    const esik = this.ayarlar?.baslangicEsikleri?.[vakit as MuhafizVakti];
-    return typeof esik === 'number' && Number.isFinite(esik) && esik > 0 ? esik : 0;
+    return sayacEsigiAl(this.ayarlar?.baslangicEsikleri, vakit);
   }
 
   /**
@@ -203,87 +166,6 @@ export class VakitSayacBildirimServisi {
     } catch (error) {
       Logger.error('VakitSayac', 'Kanal oluşturulamadı:', error);
     }
-  }
-
-  /**
-   * Bugün için tüm namaz vakitlerini hesapla
-   * ArkaplanMuhafizServisi ile aynı mantık
-   */
-  private bugunVakitleriniHesapla(): VakitZamani[] {
-    if (!this.ayarlar) return [];
-
-    const { lat, lng } = this.ayarlar.koordinatlar;
-    const coordinates = new Coordinates(lat, lng);
-    const params = CalculationMethod.Turkey();
-    const simdi = new Date();
-
-    const bugunTarih = new Date(simdi);
-    const dunTarih = new Date(simdi);
-    dunTarih.setDate(dunTarih.getDate() - 1);
-    const yarinTarih = new Date(simdi);
-    yarinTarih.setDate(yarinTarih.getDate() + 1);
-
-    const bugunPrayerTimes = new PrayerTimes(coordinates, bugunTarih, params);
-    const dunPrayerTimes = new PrayerTimes(coordinates, dunTarih, params);
-    const yarinPrayerTimes = new PrayerTimes(coordinates, yarinTarih, params);
-
-    const formatDate = (d: Date) => {
-      const yil = d.getFullYear();
-      const ay = String(d.getMonth() + 1).padStart(2, '0');
-      const gun = String(d.getDate()).padStart(2, '0');
-      return `${yil}-${ay}-${gun}`;
-    };
-
-    const bugunStr = formatDate(bugunTarih);
-    const dunStr = formatDate(dunTarih);
-
-    const vakitler: VakitZamani[] = [];
-
-    // Eğer şu an imsak vaktinden önceyse, dünün yatsı vakti hala aktiftir
-    if (simdi < bugunPrayerTimes.fajr) {
-      vakitler.push({
-        vakit: 'yatsi',
-        giris: dunPrayerTimes.isha,
-        cikis: bugunPrayerTimes.fajr,
-        tarih: dunStr, // Düne ait!
-      });
-    }
-
-    // Bugünün vakitleri
-    vakitler.push(
-      {
-        vakit: 'imsak',
-        giris: bugunPrayerTimes.fajr,
-        cikis: bugunPrayerTimes.sunrise,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'ogle',
-        giris: bugunPrayerTimes.dhuhr,
-        cikis: bugunPrayerTimes.asr,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'ikindi',
-        giris: bugunPrayerTimes.asr,
-        cikis: bugunPrayerTimes.maghrib,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'aksam',
-        giris: bugunPrayerTimes.maghrib,
-        cikis: bugunPrayerTimes.isha,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'yatsi',
-        giris: bugunPrayerTimes.isha,
-        cikis: yarinPrayerTimes.fajr,
-        tarih: bugunStr,
-      }
-    );
-
-    return vakitler;
   }
 
   /**

@@ -40,6 +40,12 @@ export interface NafileAyarlari {
     gostergeAktif: boolean;
     hatirlatmalar: Record<GunduzNafile, GunduzHatirlatmaAyari>;
     teheccud: TeheccudAyari;
+    /**
+     * Hatırlatmalar yalnız BUGÜN (ve sürmekte olan gece) için kurulsun mu?
+     * (issue #298 — iOS 64 bildirim sınırı rehberinin önerisi.) Alan YOKSA
+     * `false`: gündüz 3 gün, teheccüd 7 gece ileri kurulur.
+     */
+    gunuGununeKur?: boolean;
 }
 
 export const NAFILE_OFSET_MIN_DK = 5;

@@ -72,6 +72,8 @@ export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
             evvabin: gunduzNormalize(hatirlatmalar.evvabin, VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.evvabin),
         },
         teheccud: teheccudNormalize(ham.teheccud),
+        // Yalnız AÇIKKEN yazılır: eski kayıt / varsayılan birebir aynı nesneyi üretir.
+        ...(ham.gunuGununeKur === true ? { gunuGununeKur: true } : {}),
     };
 };
 
