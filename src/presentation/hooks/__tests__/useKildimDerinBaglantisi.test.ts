@@ -27,7 +27,12 @@ jest.mock('../../components/common/KisaBildirim', () => ({ kisaBildirimGoster: j
 import { Linking } from 'react-native';
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { kisaBildirimGoster } from '../../components/common/KisaBildirim';
-import { kildimOnayBasligi, kildimSonucMetni, useKildimDerinBaglantisi } from '../useKildimDerinBaglantisi';
+import {
+    acilisBaglantisiBayraginiSifirla,
+    kildimOnayBasligi,
+    kildimSonucMetni,
+    useKildimDerinBaglantisi,
+} from '../useKildimDerinBaglantisi';
 
 const ADAY = { tur: 'aday' as const, vakitAdi: 'Öğle', kayitVakti: 'ogle', tarih: '2026-10-13' };
 const KIMLIKSIZ = { eylem: 'sor', paket: null, ad: '', herZaman: false, engel: false };
@@ -37,6 +42,7 @@ const RUTIN_SORU = { eylem: 'sor', paket: RUTIN, ad: 'Modlar ve Rutinler', herZa
 describe('useKildimDerinBaglantisi — dışarıdan gelen bağlantı SESSİZCE işaretlemez', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        acilisBaglantisiBayraginiSifirla();
         jest.spyOn(Linking, 'getInitialURL').mockResolvedValue('namazakisi://kildim');
         jest.spyOn(Linking, 'addEventListener').mockReturnValue({ remove: jest.fn() } as never);
         mockDegerlendir.mockResolvedValue(ADAY);
@@ -116,6 +122,7 @@ describe('kildimSonucMetni', () => {
 describe('useKildimDerinBaglantisi — güven listesi (issue #299)', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        acilisBaglantisiBayraginiSifirla();
         jest.spyOn(Linking, 'getInitialURL').mockResolvedValue('namazakisi://kildim');
         jest.spyOn(Linking, 'addEventListener').mockReturnValue({ remove: jest.fn() } as never);
         mockDegerlendir.mockResolvedValue(ADAY);
@@ -189,6 +196,18 @@ describe('useKildimDerinBaglantisi — güven listesi (issue #299)', () => {
         mockBaglantiKarari.mockResolvedValue(RUTIN_SORU);
         renderHook(() => useKildimDerinBaglantisi(true));
         await waitFor(() => expect(mockDegerlendir).toHaveBeenCalled());
+        expect(mockBaglantiKarari).toHaveBeenCalledTimes(1);
+    });
+
+    it('açılış bağlantısı kanca yeniden bağlansa da İKİNCİ KEZ işlenmez', async () => {
+        mockBaglantiKarari.mockResolvedValue(RUTIN_SORU);
+        const ilk = renderHook(() => useKildimDerinBaglantisi(true));
+        await waitFor(() => expect(mockDegerlendir).toHaveBeenCalled());
+        ilk.unmount();
+        renderHook(() => useKildimDerinBaglantisi(true));
+        await act(async () => {
+            await Promise.resolve();
+        });
         expect(mockBaglantiKarari).toHaveBeenCalledTimes(1);
     });
 });

@@ -4,7 +4,7 @@ import {
     kullaniciYeriKimligi,
     yerDurumunuAyarla,
 } from '../camideyimAyarlari';
-import { olaySatiriOlustur, zamanCizelgesiOlustur } from '../olayMetinleri';
+import { ilkHarfiBuyut, olaySatiriOlustur, zamanCizelgesiOlustur } from '../olayMetinleri';
 import { cumaMi, gunGirisleriniHesapla } from '../vakitGirisleri';
 import { kapiPencereleriniHesapla } from '../camiKarar';
 
@@ -84,5 +84,56 @@ describe('vakit girişleri (adhan)', () => {
         const p = kapiPencereleriniHesapla(g);
         expect(p).toHaveLength(45);
         expect(p.filter((x) => x.cuma)).toHaveLength(2);
+    });
+});
+
+describe('Faz 2 ayarları ve güven olayları', () => {
+    it('izleme kapsamı ve açılış biçimi: varsayılan yakındakiler + akıllı; bozuk değer varsayılana düşer', () => {
+        expect(VARSAYILAN_CAMIDEYIM_AYARLARI).toMatchObject({ izlemeKapsami: 'yakindakiler', acilisBicimi: 'akilli' });
+        expect(camideyimAyarlariniNormalize({ izlemeKapsami: 'secilenler', acilisBicimi: 'sorarak' })).toMatchObject({
+            izlemeKapsami: 'secilenler',
+            acilisBicimi: 'sorarak',
+        });
+        expect(camideyimAyarlariniNormalize({ izlemeKapsami: 'hepsi', acilisBicimi: 'zorla' })).toMatchObject({
+            izlemeKapsami: 'yakindakiler',
+            acilisBicimi: 'akilli',
+        });
+    });
+
+    it('güven olayı: neden sorulduğunu sınıflarla anlatır', () => {
+        const s = olaySatiriOlustur({
+            zamanMs: 1,
+            tur: 'guven',
+            yer: 'Kare Camii',
+            eylem: 'sor',
+            guvenKarari: 'sor',
+            zaman: 'ezanYakin',
+            yerSinifi: 'tampon',
+            hareket: 'durgun',
+            tavan: null,
+        });
+        expect(s?.baslik).toBe('Emin olunamadı, size sorulacak: Kare Camii');
+        expect(s?.aciklama).toBe('Ezan vaktine yakın · binanın hemen dışında · duruyordunuz.');
+    });
+
+    it('güven olayı: önünden geçme tavanı ve "Sorarak aç" notu', () => {
+        expect(
+            olaySatiriOlustur({ zamanMs: 1, tur: 'guven', yer: 'A', eylem: 'hicbir', guvenKarari: 'hicbir', hareket: 'hareketli', tavan: 'gecipGidiyor' })
+                ?.aciklama
+        ).toContain('Önünden geçiyor gibiydiniz');
+        expect(
+            olaySatiriOlustur({ zamanMs: 1, tur: 'guven', yer: 'A', eylem: 'sor', guvenKarari: 'otomatik', bicim: 'sorarak' })?.aciklama
+        ).toContain('"Sorarak aç" seçili');
+    });
+
+    it('soru cevapları zaman çizelgesinde görünür', () => {
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'soruRet', yer: 'A' })?.aciklama).toBe('Bu vakit için burada bir daha sorulmayacak.');
+        expect(olaySatiriOlustur({ zamanMs: 1, tur: 'soruKabul', yer: 'A' })?.baslik).toBe('Camide olduğunuzu onayladınız · A');
+    });
+
+    it('cümle başı büyütme Türkçe: i → İ (toUpperCase tuzağı yok)', () => {
+        expect(ilkHarfiBuyut('içinde')).toBe('İçinde');
+        expect(ilkHarfiBuyut('ışık')).toBe('Işık');
+        expect(ilkHarfiBuyut('')).toBe('');
     });
 });

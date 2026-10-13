@@ -57,6 +57,24 @@ export const KAPI_CUMA_SONRA_DK = 90;
 export const CAMIDE_AZAMI_DK = 90;
 export const CAMIDE_CUMA_AZAMI_DK = 150;
 
+/**
+ * GÜVEN PUANI (Faz 2) — "camide" kararından SONRA, modun otomatik mi açılacağını,
+ * sorulacağını mı yoksa hiçbir şey yapılmayacağını mı belirler (`guvenPuani.ts`).
+ * Kotlin ikizi `CamiSabitleri.kt`; ortak fikstür `guven-puani-tablosu.json`.
+ */
+/** Ezan girişine yakınlık penceresi (dk): girişten 10 dk önce → 40 dk sonra "yüksek". */
+export const GUVEN_EZAN_ONCE_DK = 10;
+export const GUVEN_EZAN_SONRA_DK = 40;
+/** Ölçülen hız (m/s): üstü araç/yürüyüş → otomatik açma YOK. */
+export const HIZ_HAREKETLI_MPS = 1.5;
+/** Altı "duruyor" sayılır (küçük artı puan). */
+export const HIZ_DURGUN_MPS = 0.5;
+/** Karar eşikleri: puan ≥ OTOMATIK → aç, ≥ SOR → sor, altı → hiçbir şey. */
+export const GUVEN_OTOMATIK_ESIK = 75;
+export const GUVEN_SOR_ESIK = 50;
+/** "Camide misiniz?" sorusunun en uzun geçerliliği (dk) — vakit penceresi daha erken biterse o. */
+export const SORU_AZAMI_DK = 30;
+
 /** Yenileme çemberinin taze konum sınırı ve patlama koruması (şehir takibiyle AYNI değerler). */
 export const KONUM_TAZELIK_MS = 2 * 60 * 1000;
 export const YENILEME_BEKLEMESI_MS = 60 * 1000;

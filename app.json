@@ -83,6 +83,7 @@
       ],
       "expo-task-manager",
       "expo-background-fetch",
+      "@maplibre/maplibre-react-native",
       [
         "expo-calendar",
         {

@@ -26,6 +26,17 @@ export interface CamideHali {
     modAcildi: boolean;
 }
 
+/** Güven puanı sınırdayken bekleyen "Camide misiniz?" sorusu (Faz 2). */
+export interface BekleyenSoru {
+    yer: { id: string; ad: string; lat: number; lng: number };
+    vakit: string | null;
+    tarih: string | null;
+    cuma: boolean;
+    tur: string;
+    zamanMs: number;
+    bitisMs: number;
+}
+
 export interface NamazModuNativeAyarlari {
     etkin: boolean;
     cuma: boolean;
@@ -50,6 +61,8 @@ export interface CamiNativeDurumu {
     izin: CamiIzinDurumu;
     izlenenSayisi: number;
     camide: CamideHali | null;
+    /** Faz 2; eski native sürümde alan yoktur (undefined). */
+    soru?: BekleyenSoru | null;
     sessizBitisMs: number;
     namazModu: NamazModuDurumu;
 }
@@ -62,6 +75,8 @@ export interface YakinCami {
     yaricapM: number;
     poligonVar: boolean;
     mesafeM: number;
+    /** Bina sınırı [[enlem, boylam], …] — harita çizer (Faz 2; eski native'de yok). */
+    poligon?: [number, number][] | null;
 }
 
 export interface CamiGunlukOlayi {
@@ -90,6 +105,7 @@ interface CamiNativeModulu {
     izlemeyiTazele(lat: number, lng: number): Promise<string>;
     suresiGecenleriTemizle?(): Promise<void>;
     yakinCamiler(lat: number, lng: number, k: number): Promise<string>;
+    soruyuCevapla?(evet: boolean): Promise<void>;
     gunlukAl(): Promise<string>;
     gunluguTemizle(): Promise<void>;
     camidenCik(): Promise<void>;
@@ -173,6 +189,12 @@ export const suresiGecenleriTemizle = (): Promise<void> =>
 
 export const yakinCamiler = (lat: number, lng: number, k: number): Promise<YakinCami[]> =>
     guvenli(async (m) => jsonCoz<YakinCami[]>(await m.yakinCamiler(lat, lng, k), []), []);
+
+/** "Camide misiniz?" sorusunu uygulama içinden cevaplar (true = Namaz modunu aç). */
+export const soruyuCevapla = (evet: boolean): Promise<void> =>
+    guvenli(async (m) => {
+        await m.soruyuCevapla?.(evet);
+    }, undefined);
 
 export const gunlukAl = (): Promise<CamiGunlukOlayi[]> =>
     guvenli(async (m) => jsonCoz<CamiGunlukOlayi[]>(await m.gunlukAl(), []), []);

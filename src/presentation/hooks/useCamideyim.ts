@@ -41,6 +41,10 @@ export interface CamideyimDurumu {
     yerSil: (id: string) => Promise<void>;
     /** Bulunduğunuz noktayı kullanıcı yeri olarak ekler. @returns eklendi mi */
     bulundugumYeriEkle: () => Promise<boolean>;
+    /** Verilen noktayı (haritadaki iğne) kullanıcı yeri olarak ekler; ad boşsa sıralı ad verilir. @returns yeni kimlik */
+    yerEkle: (yer: { lat: number; lng: number; ad?: string }) => Promise<string>;
+    /** Bekleyen "Camide misiniz?" sorusunu cevaplar (true = Namaz modunu aç). */
+    soruyuCevapla: (evet: boolean) => Promise<void>;
     gunluguTemizle: () => Promise<void>;
 }
 
@@ -115,6 +119,24 @@ export function useCamideyim(): CamideyimDurumu {
         [yaz]
     );
 
+    const yerEkle = useCallback(
+        async (yer: { lat: number; lng: number; ad?: string }): Promise<string> => {
+            const a = ayarlarRef.current;
+            const sayi = Object.values(a.yerler).filter((y) => y.kendi).length + 1;
+            const id = kullaniciYeriKimligi(Date.now());
+            const ad = yer.ad?.trim() || (sayi === 1 ? 'Eklediğim yer' : `Eklediğim yer ${sayi}`);
+            await yaz({
+                ...a,
+                yerler: {
+                    ...a.yerler,
+                    [id]: { durum: 'normal', kendi: true, ad, lat: yer.lat, lng: yer.lng, alanM: KULLANICI_YERI_ALAN_M },
+                },
+            });
+            return id;
+        },
+        [yaz]
+    );
+
     const bulundugumYeriEkle = useCallback(async (): Promise<boolean> => {
         try {
             const izin = await Location.getForegroundPermissionsAsync();
@@ -124,28 +146,20 @@ export function useCamideyim(): CamideyimDurumu {
             }
             const konum = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
             if (!konum?.coords) return false;
-            const a = ayarlarRef.current;
-            const sayi = Object.values(a.yerler).filter((y) => y.kendi).length + 1;
-            const id = kullaniciYeriKimligi(Date.now());
-            await yaz({
-                ...a,
-                yerler: {
-                    ...a.yerler,
-                    [id]: {
-                        durum: 'normal',
-                        kendi: true,
-                        ad: sayi === 1 ? 'Eklediğim yer' : `Eklediğim yer ${sayi}`,
-                        lat: konum.coords.latitude,
-                        lng: konum.coords.longitude,
-                        alanM: KULLANICI_YERI_ALAN_M,
-                    },
-                },
-            });
+            await yerEkle({ lat: konum.coords.latitude, lng: konum.coords.longitude });
             return true;
         } catch {
             return false;
         }
-    }, [yaz]);
+    }, [yerEkle]);
+
+    const soruyuCevapla = useCallback(
+        async (evet: boolean) => {
+            await kopru.soruyuCevapla(evet);
+            await yenile();
+        },
+        [yenile]
+    );
 
     const gunluguTemizle = useCallback(async () => {
         await kopru.gunluguTemizle();
@@ -165,6 +179,8 @@ export function useCamideyim(): CamideyimDurumu {
         yerGuncelle,
         yerSil,
         bulundugumYeriEkle,
+        yerEkle,
+        soruyuCevapla,
         gunluguTemizle,
     };
 }

@@ -7,7 +7,8 @@ import android.util.Log
 import org.json.JSONObject
 
 /**
- * Camideyim bildirim düğmeleri: "Modu kapat", "Burası cami değil", "Kıldım".
+ * Camideyim bildirim düğmeleri: "Modu kapat", "Burası cami değil", "Kıldım" ve
+ * (Faz 2) "Camide misiniz?" sorusunun "Namaz modunu aç" / "Hayır" cevapları.
  * Hepsi JS'siz çalışır; yalnız "Kıldım" kaydı JS'e kuyrukla devredilir.
  */
 class CamiEylemAlicisi : BroadcastReceiver() {
@@ -15,6 +16,8 @@ class CamiEylemAlicisi : BroadcastReceiver() {
         const val MODU_KAPAT = "expo.modules.camigeofence.MODU_KAPAT"
         const val CAMI_DEGIL = "expo.modules.camigeofence.CAMI_DEGIL"
         const val KILDIM = "expo.modules.camigeofence.KILDIM"
+        const val SORU_EVET = "expo.modules.camigeofence.SORU_EVET"
+        const val SORU_HAYIR = "expo.modules.camigeofence.SORU_HAYIR"
         const val EK_YER = "yerId"
         const val EK_AD = "ad"
         const val EK_VAKIT = "vakit"
@@ -44,12 +47,18 @@ class CamiEylemAlicisi : BroadcastReceiver() {
                         JSONObject(mevcut.toString()).put("durum", "haric").apply { if (ad != null && !has("ad")) put("ad", ad) }
                     }
                     CamiGunluk.ekle(ctx, "haricTutuldu", mapOf("yer" to ad))
+                    // Aynı yer için bekleyen "Camide misiniz?" sorusu da düşer.
+                    if (CamiDepo.soru(ctx)?.yer?.id == yerId) CamiDurumu.soruyuKapat(ctx)
                     CamiDurumu.bitir(ctx, "haric")
                     val sonuc = goAsync()
                     CamiIzleyici.sonMerkezeGoreKur(ctx) {
                         try { sonuc.finish() } catch (_: Exception) { /* yok */ }
                     }
                 }
+                SORU_EVET -> {
+                    if (!CamiDurumu.soruyuKabulEt(ctx)) CamiGunluk.ekle(ctx, "soruGecersiz")
+                }
+                SORU_HAYIR -> CamiDurumu.soruyuReddet(ctx)
                 KILDIM -> {
                     val tarih = intent.getStringExtra(EK_TARIH)
                     val vakit = intent.getStringExtra(EK_VAKIT)

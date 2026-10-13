@@ -3,6 +3,7 @@ package expo.modules.camigeofence
 import android.content.Context
 import expo.modules.camigeofence.cekirdek.CamiKarar
 import expo.modules.camigeofence.cekirdek.CamiKarari
+import expo.modules.camigeofence.cekirdek.CamiSabitleri
 import expo.modules.camigeofence.cekirdek.IzlemeKarari
 import expo.modules.camigeofence.cekirdek.IzlenenYer
 import java.text.SimpleDateFormat
@@ -33,7 +34,9 @@ object CamiDurumu {
         val simdi = System.currentTimeMillis()
         val cuma = karar.cuma == true
         val bitisMs = CamiKarar.camideBitisMs(simdi, cuma)
-        val tur = IzlemeKarari.camiTuru(karar.tarih, karar.vakit, takvimGunu(simdi), yer.id)
+        val tur = tur(karar.tarih, karar.vakit, yer.id, simdi)
+        // Bekleyen "Camide misiniz?" sorusu artık cevaplanmış sayılır.
+        soruyuKapat(ctx)
         // Mod kaynağı üst süreyle AYNI anda geçersizleşir (alarm silinse bile).
         val modSonucu = if (ayarlar.namazModu) NamazModu.ac(ctx, KAYNAK, tur, bitisMs) else "kapali"
         val c = CamiDepo.Camide(
@@ -87,6 +90,58 @@ object CamiDurumu {
             if (c.bitisMs <= System.currentTimeMillis()) bitir(ctx, "sure") else PlanliAlarm.kur(ctx, c.bitisMs, ustSureIntent(ctx))
         }
         NamazModu.suresiGecenleriTemizle(ctx)
+    }
+
+    /** Namaz modu / "Hayır" hafızası tur kimliği (vakit kapısı kapalıyken takvim günü + yer). */
+    fun tur(tarih: String?, vakit: String?, yerId: String, simdiMs: Long): String =
+        IzlemeKarari.camiTuru(tarih, vakit, takvimGunu(simdiMs), yerId)
+
+    /**
+     * Güven puanı SOR dedi (Faz 2): mod AÇILMAZ, muhafız sessizleşmez; yalnız sessiz
+     * bir "Camide misiniz?" bildirimi çıkar. Cevap `CamiEylemAlicisi`'nde işlenir.
+     * Soru en geç [CamiSabitleri.SORU_AZAMI_DK] (ya da vakit penceresinin sonu) sonra düşer.
+     */
+    @Synchronized
+    fun sor(ctx: Context, yer: IzlenenYer, karar: CamiKarari, pencereSonMs: Long?) {
+        val simdi = System.currentTimeMillis()
+        val ust = simdi + CamiSabitleri.SORU_AZAMI_DK * CamiSabitleri.DAKIKA_MS
+        val bitis = if (pencereSonMs != null && pencereSonMs > simdi) minOf(ust, pencereSonMs) else ust
+        val soru = CamiDepo.Soru(yer, karar.vakit, karar.tarih, karar.cuma == true, tur(karar.tarih, karar.vakit, yer.id, simdi), simdi, bitis)
+        CamiDepo.soruYaz(ctx, soru)
+        CamiGunluk.ekle(ctx, "soruldu", mapOf("yer" to yer.ad, "vakit" to karar.vakit))
+        CamiBildirimleri.camideMisiniz(ctx, soru, CamiDepo.ayarlar(ctx).namazModu)
+        CamiOlaylari.yay("soru")
+    }
+
+    /** "Namaz modunu aç": bekleyen soruyu kabul eder. @return soru hâlâ geçerli miydi */
+    @Synchronized
+    fun soruyuKabulEt(ctx: Context): Boolean {
+        val s = CamiDepo.soru(ctx)
+        if (s == null) {
+            CamiBildirimleri.kapat(ctx, CamiBildirimleri.ID_CAMI_SORU)
+            return false
+        }
+        CamiGunluk.ekle(ctx, "soruKabul", mapOf("yer" to s.yer.ad))
+        giris(ctx, s.yer, CamiKarari("camide", s.yer.id, s.vakit, s.tarih, s.cuma))
+        return true
+    }
+
+    /** "Hayır": bu turda bu yer için bir daha sorulmaz (ve açılmaz). */
+    @Synchronized
+    fun soruyuReddet(ctx: Context) {
+        val s = CamiDepo.soru(ctx)
+        if (s != null) {
+            CamiDepo.reddedilenEkle(ctx, s.tur, s.yer.id)
+            CamiGunluk.ekle(ctx, "soruRet", mapOf("yer" to s.yer.ad))
+        }
+        soruyuKapat(ctx)
+        CamiOlaylari.yay("soru")
+    }
+
+    /** Soruyu sessizce kaldırır (cevaplandı, yerden çıkıldı, "cami değil"). */
+    fun soruyuKapat(ctx: Context) {
+        CamiDepo.soruYaz(ctx, null)
+        CamiBildirimleri.kapat(ctx, CamiBildirimleri.ID_CAMI_SORU)
     }
 
     /** Cihaz saat dilimindeki takvim günü (`yyyy-MM-dd`) — vakit kapısı kapalıyken tur kimliği için. */

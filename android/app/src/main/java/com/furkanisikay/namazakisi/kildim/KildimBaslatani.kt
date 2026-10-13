@@ -47,7 +47,7 @@ data class KildimBaslatani(val paket: String?, val sinif: KaynakSinifi, val ad: 
                 paket = paket,
                 referrerEkiVar = ekVar,
                 kendiPaketi = activity.packageName,
-                anaEkranMi = paket != null && cozuluyorMu(pm, Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), paket),
+                anaEkranMi = paket != null && varsayilanAnaEkranPaketi(pm) == paket,
                 tarayiciMi = paket != null && cozuluyorMu(
                     pm,
                     Intent(Intent.ACTION_VIEW, Uri.parse("https://www.example.com/")).addCategory(Intent.CATEGORY_BROWSABLE),
@@ -55,6 +55,26 @@ data class KildimBaslatani(val paket: String?, val sinif: KaynakSinifi, val ad: 
                 ),
             )
             return KildimBaslatani(paket, sinif, paket?.let { uygulamaAdi(pm, it) } ?: "")
+        }
+
+        /**
+         * YALNIZ şu an seçili VARSAYILAN başlatıcı ana ekran sayılır. "HOME intent'ini
+         * çözüyor mu" sorusu yetmez: herhangi bir uygulama manifestine HOME kategorili boş
+         * bir etkinlik koyup sormadan "kıldım" yazdırabilirdi. Varsayılan seçilmemişse
+         * sistem seçicisi (`android`) döner → ana ekran SAYILMAZ (sorulur; güvenli yön).
+         * `<queries>`'te HOME intent'i bildirildiği için Android 11+'da başlatıcı görünür.
+         */
+        private fun varsayilanAnaEkranPaketi(pm: PackageManager): String? = try {
+            val sorgu = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
+            val bilgi = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pm.resolveActivity(sorgu, PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.resolveActivity(sorgu, PackageManager.MATCH_DEFAULT_ONLY)
+            }
+            bilgi?.activityInfo?.packageName
+        } catch (_: Exception) {
+            null
         }
 
         /**

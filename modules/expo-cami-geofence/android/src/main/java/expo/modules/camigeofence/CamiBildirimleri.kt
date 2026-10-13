@@ -24,6 +24,8 @@ object CamiBildirimleri {
     const val KANAL_SORU = "cami_soru"
     const val ID_CAMIDE = 7401
     const val ID_SORU = 7402
+    /** Faz 2: güven puanı sınırdayken "Camide misiniz?" (sessiz). */
+    const val ID_CAMI_SORU = 7403
 
     private val NAMAZ_ADLARI = mapOf(
         "imsak" to "Sabah namazını",
@@ -94,6 +96,35 @@ object CamiBildirimleri {
         if (c.modAcildi) b.addAction(0, "Modu kapat", eylem(ctx, CamiEylemAlicisi.MODU_KAPAT, 7410))
         b.addAction(0, "Burası cami değil", eylem(ctx, CamiEylemAlicisi.CAMI_DEGIL, 7411, mapOf(CamiEylemAlicisi.EK_YER to c.yerId, CamiEylemAlicisi.EK_AD to c.ad)))
         gonder(ctx, ID_CAMIDE, b)
+    }
+
+    /**
+     * Güven puanı sınırda (Faz 2): mod AÇILMADI, kullanıcıya sorulur. Sessiz kanal —
+     * namazdaki kişiyi rahatsız etmez; soru süresi dolunca kendiliğinden kalkar.
+     */
+    fun camideMisiniz(ctx: Context, soru: CamiDepo.Soru, namazModu: Boolean) {
+        kanallariGarantile(ctx)
+        val ad = soru.yer.ad.ifBlank { "Cami" }
+        val b = NotificationCompat.Builder(ctx, KANAL_DURUM)
+            .setSmallIcon(R.drawable.ic_namaz_modu)
+            .setContentTitle("Camide misiniz?")
+            .setContentText("$ad yakınındasınız. Emin olamadığımız için size soruyoruz.")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
+            .setAutoCancel(true)
+            .setContentIntent(acilis(ctx))
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
+            .addAction(0, if (namazModu) "Namaz modunu aç" else "Evet, camideyim", eylem(ctx, CamiEylemAlicisi.SORU_EVET, 7413))
+            .addAction(0, "Hayır", eylem(ctx, CamiEylemAlicisi.SORU_HAYIR, 7414))
+            .addAction(
+                0,
+                "Burası cami değil",
+                eylem(ctx, CamiEylemAlicisi.CAMI_DEGIL, 7415, mapOf(CamiEylemAlicisi.EK_YER to soru.yer.id, CamiEylemAlicisi.EK_AD to soru.yer.ad)),
+            )
+        val kalan = soru.bitisMs - System.currentTimeMillis()
+        if (kalan > 0) b.setTimeoutAfter(kalan)
+        gonder(ctx, ID_CAMI_SORU, b)
     }
 
     fun kildinizMi(ctx: Context, vakit: String, tarih: String, cuma: Boolean) {
