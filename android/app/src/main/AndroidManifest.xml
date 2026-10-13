@@ -105,6 +105,23 @@
           android:resource="@xml/widget_namaz_genis_bilgisi" />
     </receiver>
 
+    <!-- Samsung Flex Window (Z Flip kapak ekranı) widget'ı (issue #283): AYRI sağlayıcı,
+         mevcut iki widget'a dokunulmaz. Samsung meta-data'sı display="sub_screen". -->
+    <receiver
+        android:name=".widget.NamazKapakWidget"
+        android:label="@string/widget_kapak_adi"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/widget_namaz_kapak_bilgisi" />
+      <meta-data
+          android:name="com.samsung.android.appwidget.provider"
+          android:resource="@xml/samsung_meta_info_kapak_widget" />
+    </receiver>
+
     <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
          YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->
     <receiver

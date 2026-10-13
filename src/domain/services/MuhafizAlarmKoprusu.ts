@@ -17,6 +17,8 @@ interface MuhafizAlarmModulu {
     planla(kimlik: string, tetikMs: number, yuk: string): Promise<boolean>;
     iptalEt(kimlik: string): Promise<void>;
     onekliIptalEt(onek: string): Promise<number>;
+    /** Eski ikili bu yöntemi taşımayabilir → çağıran `onekliIptalEt`'e düşer. */
+    vakitAlarmlariniSustur?(onek: string): Promise<number>;
     bekleyenSayisi(): Promise<number>;
     kanallariTemizle(korunacak: string[]): Promise<void>;
     tamEkranIzniVarMi(): Promise<boolean>;
@@ -53,7 +55,7 @@ export function alarmIptalEt(kimlik: string): void {
 }
 
 /**
- * Öneki taşıyan TÜM alarmları iptal eder (yeniden planlama öncesi, uygulama içi "Kıldım").
+ * Öneki taşıyan TÜM BEKLEYEN alarmları iptal eder (yeniden planlama öncesi; çalanı susturmaz).
  * Yeniden planlamada BEKLENMELİ: geç kalan bir iptal aynı turda kurulan alarmları silerdi.
  */
 export async function onekliAlarmlariIptalEt(onek: string): Promise<void> {
@@ -63,6 +65,24 @@ export async function onekliAlarmlariIptalEt(onek: string): Promise<void> {
         await m.onekliIptalEt(onek);
     } catch (e) {
         Logger.debug('MuhafizAlarm', 'Alarmlar iptal edilemedi', e);
+    }
+}
+
+/**
+ * Uygulama içi "Kıldım": vaktin BEKLEYEN alarmları + ÇALAN alarm (insistent ses, tam ekran,
+ * 2 dk'lık susturma alarmı). `onekliAlarmlariIptalEt` çalanı GÖRMEZ — tetiklenen alarm
+ * native kayıt defterinden düşmüştür; yalnız o çağrılsaydı ekranda "Kılındı" yazarken
+ * telefon çalmaya devam ederdi (#74 Fable H1). Yeniden planlama BUNU ÇAĞIRMAZ (çalan
+ * alarmı planlama turu susturmamalı). Native yöntem yoksa (eski ikili) eski yola düşer.
+ */
+export async function vakitAlarmlariniSustur(onek: string): Promise<void> {
+    const m = modul();
+    if (!m || !onek) return;
+    try {
+        if (typeof m.vakitAlarmlariniSustur === 'function') await m.vakitAlarmlariniSustur(onek);
+        else await m.onekliIptalEt(onek);
+    } catch (e) {
+        Logger.debug('MuhafizAlarm', 'Vaktin alarmlari susturulamadi', e);
     }
 }
 

@@ -21,6 +21,7 @@ import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import {
     muhafizVakitleriniHesapla,
+    yarininImsagiPlanlanirMi,
     planlanacakMuhafizVakitleri,
     vakitTeslimAdaylari,
 } from '../../core/muhafiz/muhafizTeslimPlani';
@@ -157,7 +158,11 @@ export class ArkaplanMuhafizServisi {
         // AYNI fonksiyonu kuru calistirir; burada ayri bir mantik YAZILMAZ,
         // yoksa rehber ekrani ile cihazdaki plan ayrisir.
         const simdi = new Date();
-        const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi);
+        // Yarının imsağı da (issue #74 M2, yalnız Android): akşam kurulan plan sabahı da
+        // kapsasın — OEM 15 dk görevini öldürse de sabah alarmı kurulu olsun.
+        const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi, {
+            yarininImsagi: yarininImsagiPlanlanirMi(muhafizTeslimcisiniAl().ad),
+        });
 
         // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
         const kilinanVakitlerMap: Record<string, VakitAdi[]> = {

@@ -41,7 +41,7 @@ object MuhafizAlarmBildirimi {
     private const val TAG = "MuhafizAlarm"
 
     /** Alarm bildiriminin numarası; etiket = muhafız kimliği ("Kıldım" önek iptali bulsun). */
-    const val BILDIRIM_NUMARASI = 74_074
+    const val BILDIRIM_NUMARASI = MuhafizAlarmKurallari.BILDIRIM_NUMARASI
 
     private val DESEN = longArrayOf(0, 800, 400, 800, 400, 800)
 
@@ -115,14 +115,62 @@ object MuhafizAlarmBildirimi {
         }
     }
 
-    /** Eylem düğmesinin yayını (açık bileşen → dışa kapalı alıcı). */
-    fun eylemIntenti(context: Context, eylem: String, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String): PendingIntent {
-        val intent = Intent(context, MuhafizAlarmAlici::class.java)
+    /**
+     * Eylemin yayın niyeti (açık bileşen → dışa kapalı alıcı). Tam ekran etkinliği de
+     * düğmelerini BU niyetle alıcıya gönderir: ağır iş alıcının `goAsync` iş parçacığında
+     * yapılır, ana thread'de değil (M3).
+     */
+    fun eylemNiyeti(context: Context, eylem: String, kimlik: String, hamYuk: String): Intent =
+        Intent(context, MuhafizAlarmAlici::class.java)
             .setAction(eylem)
-            .setData(Uri.Builder().scheme("namazakisi-alarm").authority(eylem.substringAfterLast('.')).appendPath(yuk.kimlik).build())
+            .setData(Uri.Builder().scheme("namazakisi-alarm").authority(eylem.substringAfterLast('.')).appendPath(kimlik).build())
             .putExtra(MuhafizAlarmAlici.EK_YUK, hamYuk)
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-    }
+
+    /** Eylem düğmesinin yayını (açık bileşen → dışa kapalı alıcı). */
+    fun eylemIntenti(context: Context, eylem: String, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String): PendingIntent =
+        PendingIntent.getBroadcast(
+            context,
+            0,
+            eylemNiyeti(context, eylem, yuk.kimlik, hamYuk),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+
+    /**
+     * "Kıldım" düğmesi KİLİT AÇTIRIR (M4 — #295 `KilitEkraniKarari` ikizi): kilit ekranına
+     * bakan herkes ya da cepte yanlış bir dokunuş ibadet kaydı yazmasın. API 31+'da sistem
+     * yayını göndermeden önce kilidi açtırır (`setAuthenticationRequired`); daha eskide
+     * bayrak yok sayılır, kilit ekranı sürümü ([herkeseAcikSurum]) düğmeyi hiç taşımaz.
+     */
+    private fun kildimEylemi(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String): NotificationCompat.Action =
+        NotificationCompat.Action.Builder(0, context.getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
+            .setAuthenticationRequired(true)
+            .build()
+
+    /**
+     * Kilit ekranında gösterilen sürüm: başlık + metin + (varsa) "Ertele" ve "Kapat",
+     * "Kıldım" YOK. Kapat ve ertele kayıt değildir; alarmı kilit açmadan susturmak olağandır.
+     */
+    private fun herkeseAcikSurum(
+        context: Context,
+        kanal: String,
+        yuk: MuhafizAlarmKurallari.Yuk,
+        hamYuk: String,
+        simdiMs: Long,
+        kapatVar: Boolean,
+    ): Notification =
+        NotificationCompat.Builder(context, kanal)
+            .setSmallIcon(R.drawable.ic_alarm_muhafiz)
+            .setContentTitle(yuk.baslik)
+            .setContentText(yuk.metin)
+            .apply {
+                if (MuhafizAlarmKurallari.ertelemeDugmesiVarMi(simdiMs, yuk.erteleSinirMs)) {
+                    addAction(0, context.getString(R.string.alarm_ertele), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_ERTELE, yuk, hamYuk))
+                }
+                if (kapatVar) {
+                    addAction(0, context.getString(R.string.alarm_kapat), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KAPAT, yuk, hamYuk))
+                }
+            }
+            .build()
 
     private fun ekranIntenti(context: Context, hamYuk: String, kimlik: String, baslangicMs: Long): PendingIntent {
         val intent = Intent(context, MuhafizAlarmActivity::class.java)
@@ -141,7 +189,9 @@ object MuhafizAlarmBildirimi {
             .setStyle(NotificationCompat.BigTextStyle().bigText(yuk.metin))
             // Saat kendi planını kurar (issue #280) — alarm bileğe köprülenmesin.
             .setLocalOnly(true)
-            .addAction(0, context.getString(R.string.alarm_kildim), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_KILDIM, yuk, hamYuk))
+            // Kilit ekranında içerik "özel": sistem [herkeseAcikSurum]'u (Kıldım'sız) gösterir.
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .addAction(kildimEylemi(context, yuk, hamYuk))
             .apply {
                 if (MuhafizAlarmKurallari.ertelemeDugmesiVarMi(simdiMs, yuk.erteleSinirMs)) {
                     addAction(0, context.getString(R.string.alarm_ertele), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_ERTELE, yuk, hamYuk))
@@ -155,7 +205,7 @@ object MuhafizAlarmBildirimi {
         val bildirim = temelOlustur(context, yuk.alarmKanalId, yuk, hamYuk, baslangicMs)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPublicVersion(herkeseAcikSurum(context, yuk.alarmKanalId, yuk, hamYuk, baslangicMs, kapatVar = true))
             .setOngoing(true)
             .setAutoCancel(false)
             .setContentIntent(ekran)
@@ -183,8 +233,10 @@ object MuhafizAlarmBildirimi {
      */
     fun normalGoster(context: Context, yuk: MuhafizAlarmKurallari.Yuk, hamYuk: String, sessiz: Boolean) {
         val kanal = mevcutKanal(context, yuk.kanalId)
-        val bildirim = temelOlustur(context, kanal, yuk, hamYuk, System.currentTimeMillis())
+        val simdi = System.currentTimeMillis()
+        val bildirim = temelOlustur(context, kanal, yuk, hamYuk, simdi)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setPublicVersion(herkeseAcikSurum(context, kanal, yuk, hamYuk, simdi, kapatVar = false))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setSilent(sessiz)
@@ -199,6 +251,20 @@ object MuhafizAlarmBildirimi {
         } catch (_: Exception) {
             // Bildirim zaten yoksa sorun değil.
         }
+    }
+
+    /**
+     * Eşleşen kimlikli, şu an gösterilen ALARM bildirimleri (çalan ya da sessize düşmüş).
+     * Karar saf [MuhafizAlarmKurallari.alarmBildirimiMi]'de (numara + etiket).
+     */
+    fun gosterilenKimlikler(context: Context, esles: (String) -> Boolean): List<String> = try {
+        yonetici(context)?.activeNotifications
+            ?.filter { MuhafizAlarmKurallari.alarmBildirimiMi(it.tag, it.id, esles) }
+            ?.mapNotNull { it.tag }
+            ?.distinct()
+            ?: emptyList()
+    } catch (_: Exception) {
+        emptyList()
     }
 
     /** Alarm bildirimi hâlâ gösteriliyor mu? (Tam ekran etkinliği başka yoldan kapanışı böyle anlar.) */

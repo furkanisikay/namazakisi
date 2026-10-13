@@ -6,6 +6,8 @@ import android.util.Log
 import com.facebook.react.ReactApplication
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.LifecycleState
+import com.furkanisikay.namazakisi.alarm.MuhafizAlarmTemizligi
+import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.cekirdek.KuyrukOgesi
 import org.json.JSONArray
@@ -35,9 +37,26 @@ object KildimKuyrugu {
     /** Uygulama AÇIKKEN (ReactContext RESUMED) yayılan olay — JS `KILDIM_KUYRUGU_OLAYI`. */
     const val OLAY_ADI = "KildimKuyruguGeldi"
 
-    /** @return öğe geçerliyse (yeni ya da zaten kuyrukta) true. */
-    @Synchronized
+    /**
+     * @return öğe geçerliyse (yeni ya da zaten kuyrukta) true.
+     *
+     * Başarılı eklemede o vaktin GERÇEK ALARMLARI (issue #74) da hemen susturulur — bekleyenler
+     * iptal, çalan alarm kapatılır. JS'in kuyruğu işlemesi Samsung uyku kısıtında dakikalar
+     * sürebilir; bu arada saatten "Kıldım" diyen kişiye DND delen alarm çalmamalı (Fable M1).
+     * Kaynaktan bağımsızdır: yeni bir kuyruk kaynağı eklendiğinde de kendiliğinden geçerli.
+     */
     fun ekle(context: Context, tarih: String?, vakit: String?, kaynak: String): Boolean {
+        if (!kayitEkle(context, tarih, vakit, kaynak)) return false
+        try {
+            MuhafizAlarmTemizligi.vaktiSustur(context, BildirimKildimKurallari.Vakit(tarih!!, vakit!!))
+        } catch (e: Exception) {
+            Log.w(TAG, "Vaktin alarmlari susturulamadi; JS kuyrugu tamamlayacak", e)
+        }
+        return true
+    }
+
+    @Synchronized
+    private fun kayitEkle(context: Context, tarih: String?, vakit: String?, kaynak: String): Boolean {
         val mevcut = oku(context)
         val yeni = KildimKuyruguKurallari.ekle(mevcut, tarih, vakit, kaynak) ?: return false
         if (yeni !== mevcut) yaz(context, yeni)

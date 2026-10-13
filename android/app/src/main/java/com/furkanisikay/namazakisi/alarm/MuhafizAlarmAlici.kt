@@ -10,6 +10,10 @@ import android.os.Build
 import android.util.Log
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.Karar
+import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
+import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Gerçek alarmın (issue #74) TEK alıcısı — dışa KAPALI (`exported=false`), açık bileşenle
@@ -19,10 +23,50 @@ import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.Karar
  *  - SUSTUR  : çalma süresi doldu → bildirim hâlâ duruyorsa sessiz NORMAL bildirime çevrilir.
  *  - KILDIM / ERTELE / KAPAT : bildirim düğmeleri (tam ekran etkinliği aynı gövdeyi çağırır).
  *  - BOOT_COMPLETED / MY_PACKAGE_REPLACED : kayıtlı alarmlar yeniden kurulur.
+ *
+ * İŞ ANA THREAD'DE YAPILMAZ (M3): "Kıldım" expo mağazasını okuyup yazar, widget'ı tazeler,
+ * kuyruğu yazar — disk ve binder çağrıları ana thread'de ANR riskidir. `goAsync()` + tek
+ * iş parçacıklı yürütücü (AnonsReceiver deseni):
+ * pencere açıkken süreç ve alarm wakelock'u yaşar, `finish()` HER yolda çağrılır. Tek
+ * iş parçacığı olayları sıraya koyar (TETIK ile hemen ardından gelen KILDIM yarışmaz).
  */
 class MuhafizAlarmAlici : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val uygulama = context.applicationContext ?: context
+        val sonuc = try {
+            goAsync()
+        } catch (_: Exception) {
+            null
+        }
+        try {
+            YURUTUCU.execute {
+                try {
+                    isle(uygulama, intent)
+                } finally {
+                    try {
+                        sonuc?.finish()
+                    } catch (_: Exception) {
+                        // Pencere zaten kapanmışsa sorun değil.
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            // Yürütücü reddettiyse (olmamalı) aynı thread'de işle; yine finish et.
+            Log.w(TAG, "Yurutucu reddetti, olay ana thread'de isleniyor", e)
+            try {
+                isle(uygulama, intent)
+            } finally {
+                try {
+                    sonuc?.finish()
+                } catch (_: Exception) {
+                    // Yok sayılır.
+                }
+            }
+        }
+    }
+
+    private fun isle(context: Context, intent: Intent) {
         try {
             when (intent.action) {
                 MuhafizAlarmZamanlayici.EYLEM_TETIK -> tetik(context, intent)
@@ -48,7 +92,16 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         MuhafizAlarmZamanlayici.kayittanCikar(context, kimlik)
         val yuk = MuhafizAlarmKurallari.yukCoz(ham) ?: return
         val simdi = System.currentTimeMillis()
-        when (MuhafizAlarmKurallari.tetikKarari(yuk.tetikMs, simdi, yuk.cikisMs, camiSessizBitisMs(context))) {
+        // M1: saat/widget/kutu/kısayol/otomasyon "Kıldım"ı kuyrukta bekliyor ama JS henüz
+        // uyanmadıysa (Samsung uyku kısıtı) diskteki kılınmışlık kaydı YOKTUR — native
+        // AsyncStorage'ı okumaz, kuyruk yeterli kanıttır.
+        val kuyruktaKilindi = try {
+            MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, KildimKuyrugu.bekleyenKimlikler(context))
+        } catch (_: Exception) {
+            false
+        }
+        val karar = MuhafizAlarmKurallari.tetikKarari(yuk.tetikMs, simdi, yuk.cikisMs, camiSessizBitisMs(context), kuyruktaKilindi)
+        when (karar) {
             Karar.CAL -> {
                 MuhafizAlarmBildirimi.calanGoster(context, yuk, ham, simdi)
                 susturmayiKur(context, yuk.kimlik, ham, simdi + MuhafizAlarmKurallari.CALMA_SURESI_MS)
@@ -57,6 +110,11 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
             Karar.SESSIZ_BILDIRIM -> MuhafizAlarmBildirimi.normalGoster(context, yuk, ham, sessiz = true)
             Karar.ATLA -> Unit
         }
+        // L4: alarm o tetiğin muhafız bildiriminin YERİNE geçtiği için "vakit çıkıyor"
+        // otomasyon olayı (#278, normalde `KopruEtiketliBildirimServisi`'nde muhafız
+        // bildirimi gösterilirken yayılır) burada yayılmalı — yoksa alarmlı adımda olay
+        // hiç doğmaz. Kural (çıkışa ≤45 dk, vakit başına ilk) olayın kendi çekirdeğinde.
+        if (karar != Karar.ATLA) OtomasyonOlaylari.muhafizUyarisi(context, yuk.kimlik)
     }
 
     private fun sustur(context: Context, intent: Intent) {
@@ -78,6 +136,11 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         const val EYLEM_ERTELE = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_ERTELE"
         const val EYLEM_KAPAT = "com.furkanisikay.namazakisi.MUHAFIZ_ALARM_KAPAT"
         const val EK_YUK = "yuk"
+
+        /** Bütün alarm olaylarının tek sırası (süreç ömrü boyunca; iş yokken boşta bekler). */
+        private val YURUTUCU: ExecutorService = Executors.newSingleThreadExecutor { r ->
+            Thread(r, "MuhafizAlarm").apply { isDaemon = true }
+        }
 
         /** Ad/anahtar `expo-cami-geofence` CamiDepo ile AYNI (modüller birbirini import etmez). */
         fun camiSessizBitisMs(context: Context): Long = try {

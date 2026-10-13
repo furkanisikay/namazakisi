@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.alarm
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -19,6 +21,7 @@ import android.widget.TextClock
 import android.widget.TextView
 import com.furkanisikay.namazakisi.R
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
+import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.KildimYolu
 
 /**
  * Gerçek alarmın TAM EKRANI (issue #74) — kilit ekranının üstünde açılır, ekranı yakar.
@@ -27,6 +30,16 @@ import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
  * ([MuhafizAlarmBildirimi]); ekran açıkken tam ekran yerine heads-up çıksa da ses aynı
  * kalır. Bu etkinlik yalnız büyük, tek bakışta anlaşılır düğmeler sunar ve düğmeler
  * bildirimdekilerle AYNI gövdeyi çağırır ([MuhafizAlarmEylemleri]).
+ *
+ * DÜĞMELER ANA THREAD'DE AĞIR İŞ YAPMAZ (M3): ses hemen kesilir (bildirim kaldırılır,
+ * susturma alarmı iptal), asıl iş açık bileşenli yayınla [MuhafizAlarmAlici]'ya devredilir
+ * (`goAsync` + arka plan iş parçacığı) ve etkinlik kapanır.
+ *
+ * KİLİT EKRANINDA "KILDIM" KAYIT YAZMAZ (M4 — #295 `KilitEkraniKarari`): kilitliyken önce
+ * kilit açtırılır (API 26+ `requestDismissKeyguard`), yalnız başarıda işaretlenir; daha
+ * eski sürümde kilitliyken düğme gizlenir. "Kapat" ve "Ertele" kayıt değildir, kilitliyken
+ * de çalışır. Kilit açma iptal edilirse alarm yine susar ve aynı içerik sessiz bildirim
+ * olarak kalır (oradaki "Kıldım" da kilit açtırır) — kişi işaretlemeyi kaybetmez.
  *
  * Kendini kapatır: alarm başka bir yoldan kalktıysa (bildirimden "Kıldım", saatten
  * "Kıldım", süre doldu) saniyede bir yoklanır — ayrı bir yayın kanalı kurulmaz.
@@ -41,8 +54,12 @@ class MuhafizAlarmActivity : Activity() {
     private var kimlik: String = ""
     private var baslangicMs: Long = 0L
 
+    /** Kilit açma ekranı açıkken alarm bildirimi bilerek kaldırılmıştır → yoklama kapatmasın. */
+    private var kilitBekleniyor = false
+
     private val denetle = object : Runnable {
         override fun run() {
+            if (kilitBekleniyor) return
             val bitti = !MuhafizAlarmBildirimi.gosteriliyorMu(this@MuhafizAlarmActivity, kimlik) ||
                 MuhafizAlarmKurallari.calmaBittiMi(baslangicMs, System.currentTimeMillis())
             if (bitti) finish() else zamanlayici.postDelayed(this, 1_000L)
@@ -67,7 +84,7 @@ class MuhafizAlarmActivity : Activity() {
     override fun onResume() {
         super.onResume()
         zamanlayici.removeCallbacks(denetle)
-        zamanlayici.postDelayed(denetle, 1_000L)
+        if (!kilitBekleniyor) zamanlayici.postDelayed(denetle, 1_000L)
     }
 
     override fun onPause() {
@@ -125,9 +142,81 @@ class MuhafizAlarmActivity : Activity() {
         setOnClickListener { eylemUygula(eylem) }
     }
 
+    private fun kilitliMi(): Boolean = try {
+        (getSystemService(KEYGUARD_SERVICE) as? KeyguardManager)?.isKeyguardLocked == true
+    } catch (_: Exception) {
+        // Bilinmiyorsa güvenli taraf: kilitli say (kayıt kilit açtırılarak yazılır).
+        true
+    }
+
+    private fun kildimYolu(): KildimYolu =
+        MuhafizAlarmKurallari.kildimYolu(kilitliMi(), Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+
     private fun eylemUygula(eylem: String) {
         val ham = hamYuk ?: return finish()
-        MuhafizAlarmEylemleri.uygula(this, eylem, ham)
+        if (kilitBekleniyor) return
+        if (eylem == MuhafizAlarmAlici.EYLEM_KILDIM) {
+            when (kildimYolu()) {
+                KildimYolu.DOGRUDAN -> Unit
+                KildimYolu.KILIDI_AC -> {
+                    kilidiAcipIsaretle(ham)
+                    return
+                }
+                // Düğme zaten çizilmez; yine de dokunuş gelirse kayıt yazılmaz.
+                KildimYolu.GIZLE -> return
+            }
+        }
+        sesiKes()
+        yayinla(eylem, ham)
+        finish()
+    }
+
+    /** Ses ANINDA kesilir: insistent ses ancak bildirim kalkınca durur. */
+    private fun sesiKes() {
+        MuhafizAlarmBildirimi.kaldir(this, kimlik)
+        MuhafizAlarmAlici.susturmayiIptalEt(this, kimlik)
+    }
+
+    /** Asıl iş alıcıda (`goAsync` + arka plan): bildirim düğmeleriyle AYNI gövde. */
+    private fun yayinla(eylem: String, ham: String) {
+        try {
+            sendBroadcast(MuhafizAlarmBildirimi.eylemNiyeti(this, eylem, kimlik, ham))
+        } catch (e: Exception) {
+            Log.w("MuhafizAlarm", "Alarm eylemi gonderilemedi: $eylem", e)
+        }
+    }
+
+    private fun kilidiAcipIsaretle(ham: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val km = getSystemService(KEYGUARD_SERVICE) as? KeyguardManager ?: return
+        // Kişi PIN girerken alarm bağırmaya devam etmesin.
+        sesiKes()
+        kilitBekleniyor = true
+        zamanlayici.removeCallbacks(denetle)
+        try {
+            km.requestDismissKeyguard(
+                this,
+                object : KeyguardManager.KeyguardDismissCallback() {
+                    override fun onDismissSucceeded() {
+                        yayinla(MuhafizAlarmAlici.EYLEM_KILDIM, ham)
+                        finish()
+                    }
+
+                    override fun onDismissCancelled() = kilitAcilmadi(ham)
+
+                    override fun onDismissError() = kilitAcilmadi(ham)
+                },
+            )
+        } catch (e: Exception) {
+            Log.w("MuhafizAlarm", "Kilit acma istenemedi", e)
+            kilitAcilmadi(ham)
+        }
+    }
+
+    /** Kayıt YAZILMADI; alarm sustu → aynı içerik sessiz bildirim olarak kalsın. */
+    private fun kilitAcilmadi(ham: String) {
+        kilitBekleniyor = false
+        MuhafizAlarmKurallari.yukCoz(ham)?.let { MuhafizAlarmBildirimi.normalGoster(this, it, ham, sessiz = true) }
         finish()
     }
 
@@ -181,10 +270,13 @@ class MuhafizAlarmActivity : Activity() {
         // Boşluk: düğmeler başparmağın eriştiği alta.
         kok.addView(View(this), LinearLayout.LayoutParams(1, 0, 1f))
 
-        kok.addView(
-            dugme(getString(R.string.alarm_kildim), dolu = true, eylem = MuhafizAlarmAlici.EYLEM_KILDIM),
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT),
-        )
+        val kildimVar = kildimYolu() != KildimYolu.GIZLE
+        if (kildimVar) {
+            kok.addView(
+                dugme(getString(R.string.alarm_kildim), dolu = true, eylem = MuhafizAlarmAlici.EYLEM_KILDIM),
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT),
+            )
+        }
         val satir = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         val ertelenir = MuhafizAlarmKurallari.ertelemeDugmesiVarMi(System.currentTimeMillis(), yuk.erteleSinirMs)
         if (ertelenir) {
@@ -199,7 +291,9 @@ class MuhafizAlarmActivity : Activity() {
         )
         kok.addView(
             satir,
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(12) },
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                if (kildimVar) topMargin = dp(12)
+            },
         )
         return kok
     }

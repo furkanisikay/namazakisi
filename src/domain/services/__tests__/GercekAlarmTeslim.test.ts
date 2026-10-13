@@ -33,6 +33,7 @@ const mockKopru = {
     var: true,
     planla: jest.fn(async (_yuk: unknown) => true),
     onekliIptal: jest.fn(async (_onek: string) => undefined),
+    sustur: jest.fn(async (_onek: string) => undefined),
     kanalTemizle: jest.fn(async (_k: string[]) => undefined),
     sira: [] as string[],
 };
@@ -47,6 +48,7 @@ jest.mock('../MuhafizAlarmKoprusu', () => ({
         return mockKopru.onekliIptal(onek);
     },
     alarmKanallariniTemizle: (k: string[]) => mockKopru.kanalTemizle(k),
+    vakitAlarmlariniSustur: (onek: string) => mockKopru.sustur(onek),
 }));
 
 import * as Notifications from 'expo-notifications';
@@ -203,11 +205,14 @@ describe('hazırlık ve temizlik', () => {
         await t.hazirla(alarmliMatris());
         t.vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_ikindi');
         expect(mockKopru.onekliIptal).not.toHaveBeenCalled();
+        expect(mockKopru.sustur).not.toHaveBeenCalled();
         expect(mockKopru.kanalTemizle).not.toHaveBeenCalled();
     });
 
-    test('uygulama içi "Kıldım": vaktin alarmları önekle iptal edilir', () => {
+    test('uygulama içi "Kıldım": vaktin alarmları önekle SUSTURULUR (bekleyen + ÇALAN — H1)', () => {
         new AndroidMuhafizTeslimcisi().vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_ikindi');
-        expect(mockKopru.onekliIptal).toHaveBeenCalledWith('muhafiz_2026-01-01_vakit_ikindi');
+        // Yalnız bekleyenleri silen yol çalan alarmı görmez → "Kıldım" susturma yolunu kullanır.
+        expect(mockKopru.sustur).toHaveBeenCalledWith('muhafiz_2026-01-01_vakit_ikindi');
+        expect(mockKopru.onekliIptal).not.toHaveBeenCalled();
     });
 });

@@ -72,6 +72,7 @@ import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/y
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { bildirimDefteriOlustur, defterOzeti, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
+import { muhafizVakitleriniHesapla } from '../../../core/muhafiz/muhafizTeslimPlani';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
 import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
@@ -149,6 +150,26 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         expect(say(g, 'muhafiz')).toBeGreaterThan(0);
         expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
         expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+    });
+
+    it('Android AKŞAM (issue #74 M2): yarının imsağı da kurulur, defter onu da sayar', async () => {
+        const aksam = new Date(2026, 9, 13, 21, 0, 0);
+        zamanDegilYalnizTarih(aksam);
+        muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris });
+
+        const yarinImsak = onekliSay('muhafiz_2026-10-14_vakit_imsak_');
+        expect(yarinImsak).toBeGreaterThan(0);
+        const g = temelGirdi('android', { simdi: aksam, muhafiz: { aktif: true, matris } });
+        expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+
+        // iOS'ta ufuk bugünle sınırlı (64 bütçesi) — defter de saymaz.
+        const ios = bildirimDefteriOlustur(temelGirdi('ios', { simdi: aksam, muhafiz: { aktif: true, matris } }));
+        // Bugünün yatsısı gece yarısını aşar; sınır yarının imsak GİRİŞİ (= yatsının çıkışı).
+        const vakitler = muhafizVakitleriniHesapla(ISTANBUL, aksam);
+        const yarinImsakGirisi = vakitler[vakitler.length - 1].cikis.getTime();
+        expect(ios.filter((k) => k.kaynak === 'muhafiz' && k.zamanMs >= yarinImsakGirisi)).toEqual([]);
     });
 
     it('Android GERÇEK ALARM (issue #74): alarm + bildirim + anons ayrı ayrı birebir', async () => {

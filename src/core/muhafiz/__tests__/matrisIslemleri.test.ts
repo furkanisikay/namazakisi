@@ -115,6 +115,28 @@ describe('presetUygula', () => {
     expect(sonuc.ogle.seviyeler[3].sesAdi).toBe('Hızır');
   });
 
+  /**
+   * GERÇEK ALARM (issue #74, Fable L1): alarm ayrı rızayla açılan bir seçimdir;
+   * preset'e dokunmak onu sessizce silseydi kişi sabah alarmını "hafif"i denediği
+   * için kaybederdi. Preset alarm AÇMAZ (rızasız), yalnız mevcut olanı taşır.
+   */
+  test('kullanıcının açtığı GERÇEK ALARM preset uygulamasında KORUNUR, preset alarm açmaz', () => {
+    const m = matris();
+    m.imsak.seviyeler[2].kanallar = { bildirim: true, alarm: true };
+
+    const hafif = presetUygula(m, SESSIZ_PRESET, true);
+    expect(hafif.imsak.seviyeler[2].kanallar).toEqual({ bildirim: true, alarm: true });
+    const normal = presetUygula(hafif, SESLI_PRESET, false);
+    expect(normal.imsak.seviyeler[2].kanallar.alarm).toBe(true);
+
+    // Alarmsız hücrelere preset alarm yazmaz.
+    for (const v of MUHAFIZ_VAKITLERI) {
+      normal[v].seviyeler.forEach((s, i) => {
+        if (!(v === 'imsak' && i === 2)) expect(s.kanallar.alarm).toBeUndefined();
+      });
+    }
+  });
+
   test('ACİLİYET YAPIŞMAZ: yoğun→hafif geçişinde acil bayrağı geri düşer', () => {
     const yogunSonrasi = presetUygula(matris(), SESLI_PRESET, true);
     expect(yogunSonrasi.ogle.seviyeler[3].acilKanal).toBe(true);

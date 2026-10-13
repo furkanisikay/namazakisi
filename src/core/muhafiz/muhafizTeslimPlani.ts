@@ -49,13 +49,51 @@ export interface MuhafizKoordinat {
 const isoGun = (d: Date): string =>
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
+export interface MuhafizVakitSecenegi {
+    /**
+     * YARININ İMSAK vakti de listeye (SONA) eklensin mi? Yalnız muhafız teslim planı
+     * (`ArkaplanMuhafizServisi` + bildirim defterinin muhafız kaynağı) açar.
+     *
+     * NEDEN (issue #74, Fable M2): ufuk "bugün" iken akşam uygulamayı açan kişinin
+     * yarınki sabah hatırlatması (gerçek alarm dahil) ancak gece yarısından sonraki ilk
+     * turda (15 dk görevi) kurulur — OEM görevi öldürürse HİÇ kurulmaz ve kişi sabah
+     * namazına uyandırılmaz. Yarının imsağı TÜM adımlarıyla eklenir (yalnız alarmlı
+     * adımla sınırlamak, ekranın gösterdiği akıştan sapan yarım bir plan üretirdi).
+     * Liste kronolojik kalır; Android 360 bütçesi kronolojik kestiği için sığmazsa ilk
+     * düşen o olur (bugünün uyarılarından önce).
+     *
+     * Hangi platformda açık olduğu TEK yerden: [yarininImsagiPlanlanirMi].
+     * Vakit sayacı (`VakitSayacBildirimServisi`) bunu AÇMAZ: kendi ufku ayrıdır.
+     */
+    yarininImsagi?: boolean;
+}
+
+/**
+ * Yarının imsağı bu platformda planlanır mı? Servis (`teslimci.ad`) ve bildirim defteri
+ * (`g.platform`) AYNI cevabı buradan alır — ayrışırsa rehber cihazdan farklı sayar.
+ *
+ * YALNIZ ANDROID: gerçek alarm (`setAlarmClock`) ve 360'lık pay oradadır. iOS'ta 64
+ * bekleyen bildirim sınırı bütün gün için paylaşılır; yarının imsağı (varsayılan matriste
+ * ~10–20 bildirim) yoğun kurulumu sınırın üstüne iter ve bildirim sınırı rehberinin
+ * HİÇBİR önerisi bunu geri alamaz (öneriler bugünün adımlarını seyreltir, yarın sabah
+ * yine sığmaz) — "aşım" uyarısı kalıcı olurdu. iOS 26'da gerçek alarm AlarmKit ile
+ * kurulur (64 sınırına sayılmaz) ama yarının imsağını yalnız alarm tetiğiyle eklemek
+ * ekranın akışından sapan yarım bir plan olurdu → bilinçli olarak iOS'ta kapalı (açık konu).
+ */
+export const yarininImsagiPlanlanirMi = (platform: 'android' | 'ios'): boolean => platform === 'android';
+
 /**
  * Bugünün (ve gerekiyorsa dünün sürmekte olan yatsısının) vakit pencereleri.
  *
  * Gece yarısını aşan yatsı: şu an imsaktan önceyse dünün yatsısı hâlâ aktiftir
  * ve listeye BAŞA eklenir → liste KRONOLOJİKTİR (iOS bütçesi buna dayanır).
+ * `yarininImsagi` açıkken yarının imsağı SONA eklenir.
  */
-export function muhafizVakitleriniHesapla(koordinat: MuhafizKoordinat, simdi: Date): MuhafizVakitZamani[] {
+export function muhafizVakitleriniHesapla(
+    koordinat: MuhafizKoordinat,
+    simdi: Date,
+    secenek: MuhafizVakitSecenegi = {}
+): MuhafizVakitZamani[] {
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
     const params = CalculationMethod.Turkey();
 
@@ -83,6 +121,9 @@ export function muhafizVakitleriniHesapla(koordinat: MuhafizKoordinat, simdi: Da
         { vakit: 'aksam', giris: bugun.maghrib, cikis: bugun.isha, tarih: bugunStr },
         { vakit: 'yatsi', giris: bugun.isha, cikis: yarin.fajr, tarih: bugunStr }
     );
+    if (secenek.yarininImsagi) {
+        vakitler.push({ vakit: 'imsak', giris: yarin.fajr, cikis: yarin.sunrise, tarih: isoGun(yarinTarih) });
+    }
     return vakitler;
 }
 

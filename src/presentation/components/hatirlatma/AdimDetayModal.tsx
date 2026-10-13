@@ -440,6 +440,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             accessibilityRole="switch"
                                             accessibilityState={{ checked: titresimliMi }}
                                             accessibilityLabel={TITRESIM_ETIKETI}
+                                            testID="adim-titresim-anahtari"
                                         />
                                     </View>
                                 )}
@@ -477,6 +478,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                 accessibilityRole="switch"
                                                 accessibilityState={{ checked: alarmliMi }}
                                                 accessibilityLabel={ALARM_ETIKETI}
+                                                testID="adim-alarm-anahtari"
                                             />
                                         </View>
                                         {alarmliMi && (
