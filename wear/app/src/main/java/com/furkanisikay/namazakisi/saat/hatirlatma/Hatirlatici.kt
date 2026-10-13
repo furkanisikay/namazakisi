@@ -12,6 +12,7 @@ import androidx.wear.phone.interactions.notifications.BridgingConfig
 import androidx.wear.phone.interactions.notifications.BridgingManager
 import com.furkanisikay.namazakisi.saat.cekirdek.AlarmKurucu
 import com.furkanisikay.namazakisi.saat.cekirdek.AlarmZinciri
+import com.furkanisikay.namazakisi.saat.cekirdek.CanliGosterim
 import com.furkanisikay.namazakisi.saat.cekirdek.KopruKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.ZincirYoneticisi
 import com.furkanisikay.namazakisi.saat.veri.Senkron
@@ -35,7 +36,7 @@ object Hatirlatici {
             val yuk = depo.yuk()
             val bekleyen = depo.bekleyenler()
             val simdi = System.currentTimeMillis()
-            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, simdi)
+            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, simdi, CanliGosterim.sonrakiSinir(yuk, simdi))
             // Son dakikalar sayacı (issue #281): kılındıysa/pencere dışındaysa kalkar.
             SonDakikalarBildirimi.guncelle(app, yuk, bekleyen, simdi)
             if (yuk != null) {
@@ -61,7 +62,9 @@ object Hatirlatici {
                     depo.sonGosterilenMs = it.ms
                 }
             } finally {
-                ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki)
+                // Canlı sayaç sınırı (issue #282) plan kaydından önceyse zincir oraya kurulur.
+                val simdi = System.currentTimeMillis()
+                ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki, CanliGosterim.sonrakiSinir(depo.yuk(), simdi))
                 // Son dakikalar penceresi daima bir plan kaydının anında açılır (bkz.
                 // `SonDakikalar`) → sayaç tam bu tetikte kadrana çıkar.
                 try {

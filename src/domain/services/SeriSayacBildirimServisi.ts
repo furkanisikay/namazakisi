@@ -99,7 +99,12 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
         hedefMs - NOW_BAR_SON_DK_MAX * 60 * 1000
       ),
     ]);
-    if (karar.devralir) return;
+    // Kanal planlayıcı devralsa da gerekir: planlayıcı bildirimi BU kanalda gösterir
+    // (Android 8+ var olmayan kanala gideni hiç göstermez).
+    if (karar.devralir) {
+      await this.kanalOlustur();
+      return;
+    }
     if (!sayacBaslamaliMi(simdi, ayarlar.hedef, esik)) return;
 
     await this.kanalOlustur();
