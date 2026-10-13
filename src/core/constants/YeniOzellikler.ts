@@ -509,6 +509,24 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Telefon ekranında düzen aynı kalır',
         ],
     },
+    // Masaüstü postürü + Flex Window widget'ı (issue #283, ikinci aşama).
+    {
+        id: 'katlanabilir-masaustu-posturu',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Yarı Açık Katlanabilirde Büyük Geri Sayım',
+        aciklama:
+            'Galaxy Z Fold veya Z Flip\'inizi yarı açıp masaya koyduğunuzda üst yarıda büyük geri sayım ve şu anki vakit, alt yarıda günlük akış görünür.',
+        detayAciklama:
+            'Telefonu dizüstü bilgisayar gibi yarı açık bıraktığınızda dik duran üst yarıda vaktin çıkmasına kalan süreyi uzaktan okuyabileceğiniz büyüklükte görürsünüz. Namazınızı kıldığınızda masadaki alt yarıdan, günlük akıştaki vakte dokunarak işaretleyebilirsiniz. Telefonu tamamen açtığınızda düzen kendiliğinden eski hâline döner. Galaxy Z Flip kapak ekranına (Flex Window) ekleyebileceğiniz yeni bir widget da var.',
+        ikon: 'laptop',
+        detaylar: [
+            'Yarı açık ve yatay menteşede üstte geri sayım, altta günlük akış',
+            'İşaretlemeyi masadaki alt yarıdan yaparsınız',
+            'Galaxy Z Flip kapak ekranı için widget; orada durum görünür, işaretleme uygulamadan yapılır',
+            'Yalnız Android katlanabilir telefonlarda',
+        ],
+    },
     {
         id: 'widget-2-hizli-ayarlar',
         surum: '0.31.0',

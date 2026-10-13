@@ -23,9 +23,11 @@ import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
 import { SeferilikBilgiKarti } from '../components/home/SeferilikBilgiKarti';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
-import { ikiBolmeliMi } from '../../core/utils/ekranSinifi';
+import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
+import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
@@ -66,9 +68,11 @@ export const AnaSayfa: React.FC = () => {
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
   const { koyuMu } = useTema();
-  // Katlanabilir/tablet (issue #283): pencere ≥600 dp ise gün sayfası iki bölmeli.
-  // Telefonda (kompakt) düzen birebir eskisi gibi tek sütundur.
-  const ikiBolmeli = ikiBolmeliMi(useEkranSinifi());
+  // Katlanabilir/tablet (issue #283): pencere ≥600 dp ise gün sayfası iki bölmeli;
+  // yarı açık + yatay menteşede (masaüstü postürü) üstte büyük geri sayım, altta akış.
+  // Telefonda (kompakt, düz) düzen birebir eskisi gibi tek sütundur.
+  const katlanmaPosturu = useKatlanmaPosturu();
+  const gunDuzeni = gunDuzeniSec(useEkranSinifi(), katlanmaPosturu);
   const { tumNamazlarTamamlandiFeedback } = useFeedback();
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
@@ -735,7 +739,9 @@ export const AnaSayfa: React.FC = () => {
     // Üst bölüm (uyarı bantları + şu anki vakit kartı) ile akış AYRI düğümlerdir:
     // telefonda tek sütunda alt alta, katlanabilir/tablette iki bölmede yan yana
     // çizilir (issue #283). Bileşenler ve prop'ları iki düzende AYNIDIR.
-    const ustBolum = (
+    // Uyarı bantları: telefonda/iki bölmede vakit kartının ÜSTÜNDE, masaüstü
+    // postüründe alt yarıda akışın üstünde (dik yarı yalnız geri sayımı taşır).
+    const bantlar = (
       <>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
@@ -765,6 +771,25 @@ export const AnaSayfa: React.FC = () => {
             </Text>
           </View>
         )}
+      </>
+    );
+
+    const gecmisGunKarti = (
+      <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
+        style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
+        <Text className="text-xl font-bold" style={{ color: renkler.metin }}>
+          {tarihiGorunumFormatinaCevir(sayfaTarihi)}
+        </Text>
+        <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
+          Geçmiş gün görüntüleniyor
+        </Text>
+      </View>
+    );
+    const gorunenVakitAdi = namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi);
+
+    const ustBolum = (
+      <>
+        {bantlar}
 
         {/* Ana Vakit Kartı (Hero) - Sadece aktif gün gösterilir */}
         {aktifGunKontrol ? (
@@ -780,18 +805,10 @@ export const AnaSayfa: React.FC = () => {
             konumMetni={konumMetni}
             onKonumYenile={konumYenile.yenile}
             konumYenileniyor={konumYenile.yenileniyor}
-            gorunenVakitAdi={namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi)}
+            gorunenVakitAdi={gorunenVakitAdi}
           />
         ) : (
-          <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
-            <Text className="text-xl font-bold" style={{ color: renkler.metin }}>
-              {tarihiGorunumFormatinaCevir(sayfaTarihi)}
-            </Text>
-            <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
-              Geçmiş gün görüntüleniyor
-            </Text>
-          </View>
+          gecmisGunKarti
         )}
 
         {/* Seferîlik bilgi kartı (issue #296): ≈90 km'den uzakta, hüküm değil bilgi */}
@@ -822,7 +839,39 @@ export const AnaSayfa: React.FC = () => {
       </>
     );
 
-    return <GunSayfasiDuzeni key={sayfaIndeksi} ikiBolmeli={ikiBolmeli} ustBolum={ustBolum} akis={akis} />;
+    if (gunDuzeni === 'masaustu') {
+      // Masaüstü postürü: dik duran üst yarı salt gösterimdir (büyük geri sayım);
+      // "Kıldım" masadaki alt yarıdan, akış satırından işaretlenir.
+      const masaustuUst = aktifGunKontrol ? (
+        <MasaustuGeriSayim
+          vakitAdi={gorunenVakitAdi}
+          kalanSureStr={kalanSureStr}
+          vakitAraligi={vakitAraligi}
+          tamamlandi={suankiVakitTamamlandi}
+          kilitli={kilitli}
+        />
+      ) : (
+        <View className="flex-1 justify-center px-5">{gecmisGunKarti}</View>
+      );
+      return (
+        <GunSayfasiDuzeni
+          key={sayfaIndeksi}
+          duzen="masaustu"
+          ustBolum={ustBolum}
+          akis={akis}
+          masaustuUst={masaustuUst}
+          masaustuBantlar={
+            <>
+              {bantlar}
+              {aktifGunKontrol && <SeferilikBilgiKarti />}
+            </>
+          }
+          mentese={katlanmaPosturu.mentese}
+        />
+      );
+    }
+
+    return <GunSayfasiDuzeni key={sayfaIndeksi} duzen={gunDuzeni} ustBolum={ustBolum} akis={akis} />;
   };
 
   // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp

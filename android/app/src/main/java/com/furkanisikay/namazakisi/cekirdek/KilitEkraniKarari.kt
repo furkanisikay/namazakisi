@@ -25,6 +25,16 @@ object KilitEkraniKarari {
     fun kilitEkraniMi(hostKategorisi: Int): Boolean =
         hostKategorisi > 0 && (hostKategorisi and KATEGORI_KILIT_EKRANI) != 0
 
+    /**
+     * Widget salt okunur mu çizilmeli? Kilit ekranı kategorisi YA DA Samsung Flex
+     * Window (Z Flip kapak ekranı, issue #283) sağlayıcısı. Kapak ekranı kapalı
+     * telefonda kilit açılmadan kullanılır; Samsung'un ana bilgisayarının host
+     * kategorisini `KEYGUARD` olarak verdiği doğrulanmadığı için kapak sağlayıcısı
+     * kategoriden bağımsız salt okunurdur (yanlış dokunuş ibadet kaydı yazmasın).
+     */
+    fun saltOkunurMu(hostKategorisi: Int, kapakEkraniSaglayicisi: Boolean): Boolean =
+        kapakEkraniSaglayicisi || kilitEkraniMi(hostKategorisi)
+
     /** İşaretleme (yayın) niyeti yalnız kılınabilir durumda VE kilit ekranı DIŞINDA verilir. */
     fun kildimNiyetiVerilsinMi(kildim: KildimDurumu, kilitEkrani: Boolean): Boolean =
         kildim == KildimDurumu.KILINABILIR && !kilitEkrani

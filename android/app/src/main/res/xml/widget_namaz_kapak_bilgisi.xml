@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Samsung Flex Window (Galaxy Z Flip kapak ekranı) widget'ı (issue #283).
+  Samsung'un belgelediği dört zorunlu nitelik: minWidth 352dp, minHeight 339dp,
+  resizeMode horizontal|vertical, widgetCategory keyguard
+  (developer.samsung.com/galaxy-z/flex_window.html + "Develop a widget for Flex
+  Window" codelab'ı). Kapak ekranına yerleştirmeyi manifestteki
+  `com.samsung.android.appwidget.provider` meta-data'sı (display="sub_screen") açar.
+  configure YOK: kapak ekranında yapılandırma etkinliği açmak anlamsız; varsayılan
+  ayarla (Material zemin) çizilir. Salt okunur: `KilitEkraniKarari.saltOkunurMu`.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/widget_kapak_aciklama"
+    android:initialLayout="@layout/widget_genis"
+    android:minHeight="339dp"
+    android:minWidth="352dp"
+    android:previewLayout="@layout/widget_genis"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="0"
+    android:widgetCategory="keyguard" />
