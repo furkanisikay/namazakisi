@@ -21,10 +21,17 @@ import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { seviyeOzetiOlustur } from '../../../core/muhafiz/seviyeOzeti';
 import { vakitOzetiOlustur, aktifSeviyeSayisi } from '../../../core/muhafiz/vakitOzeti';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
+import { tonGeriGidenAdim } from '../../../core/muhafiz/adimDuzenleme';
+import { etkinKademe } from '../../../core/muhafiz/motorAdaptoru';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import {
+    ADIM_SINIRI_NOTU,
+    adimBasligiOlustur,
+    adimBilgisiAl,
     cevrilemeyenAnonsVarMi,
     GIRIS_SESLI_GECIKME_NOTU,
+    TON_ETIKETLERI,
+    tonGeriNotuOlustur,
     pencerePlaniOlustur,
     YON_SECENEKLERI,
     type PencereTanimi,
@@ -54,6 +61,11 @@ export interface PencereKartiProps {
      * Verilmezse anahtar CIZILMEZ (tek adimli pencerede bolumun kendi anahtari var).
      */
     onAdimAcKapa?: (indeks: number, acik: boolean) => void;
+    /**
+     * "+ Hatırlatma ekleyin" (issue #274). Verilmezse düğme ÇİZİLMEZ (cuma,
+     * nafile). `tanim.maksAdim`'a ulaşılınca düğmenin yerine sınır notu çıkar.
+     */
+    onAdimEkle?: () => void;
     /** Verilmezse buton cizilmez. */
     onTumPencerelereUygula?: () => void;
     /** "Akisi onizle" — verilmezse buton cizilmez. */
@@ -81,6 +93,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     onAcKapa,
     onAdimSec,
     onAdimAcKapa,
+    onAdimEkle,
     onTumPencerelereUygula,
     onAkisiOnizle,
     onYonDegistir,
@@ -101,6 +114,10 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     const girisYonu = tanim.yon === 'girisindenItibaren';
     const cevrilemeyenVar = yonSecilir && cevrilemeyenAnonsVarMi(ayar.seviyeler, tanim.yon);
     const sesliAdimVar = ayar.seviyeler.some((s) => s.kanallar?.sesli === true);
+    // Ton geri gidiyorsa (sert bir hatırlatmadan sonra nazik) motor bir şey
+    // yapmaz; kullanıcı yalnızca kısa bir notla bilgilendirilir (issue #274).
+    const tonGeriNumara = tanim.tonSecilebilir ? tonGeriGidenAdim(ayar.seviyeler, tanim.yon) : 0;
+    const eklenebilir = !!onAdimEkle && ayar.seviyeler.length < tanim.maksAdim;
 
     // ── Zaman seridi ──
     const { yon, pencereUzunluguDk, pencere } = tanim;
@@ -210,7 +227,11 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     const adimlar = (
         <>
             {ayar.seviyeler.slice(0, tanim.maksAdim).map((seviye, indeks) => {
-                const bilgi = tanim.adimBilgileri[indeks] ?? tanim.adimBilgileri[0];
+                const bilgi = adimBilgisiAl(tanim, seviye, indeks);
+                const adimBasligi = adimBasligiOlustur(tanim, seviye, indeks);
+                const tonEtiketi = tanim.tonSecilebilir
+                    ? TON_ETIKETLERI[etkinKademe(seviye, tanim.yon)]
+                    : null;
                 const acik = seviyeAcikMi(seviye);
                 const notlar = adimNotlariniOlustur(seviye, ayar.seviyeler, {
                     pencereAdi: tanim.baslikKucuk,
@@ -244,7 +265,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 onPress={() => onAdimSec(indeks)}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel={`${bilgi.baslik} adımını düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
+                                accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi} ton` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
                             >
                                 <View
                                     className="w-9 h-9 rounded-xl items-center justify-center mr-3"
@@ -259,7 +280,12 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 </View>
                                 <View className="flex-1">
                                     <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                        {bilgi.baslik}
+                                        {adimBasligi}
+                                        {tonEtiketi && (
+                                            <Text className="text-xs font-normal" style={{ color: renkler.metinIkincil }}>
+                                                {` · ${tonEtiketi}`}
+                                            </Text>
+                                        )}
                                     </Text>
                                     <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                         {ozetMetni}
@@ -281,7 +307,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                     thumbColor={acik ? bilgi.renk : '#f4f3f4'}
                                     accessibilityRole="switch"
                                     accessibilityState={{ checked: acik }}
-                                    accessibilityLabel={`${bilgi.baslik} adımını açın veya kapatın`}
+                                    accessibilityLabel={`${adimBasligi} — açın veya kapatın`}
                                 />
                             )}
                         </View>
@@ -296,6 +322,39 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     </View>
                 );
             })}
+
+            {/* Ton geri gidiyor notu — engel değil, bilgi (issue #274) */}
+            {tonGeriNumara > 0 && (
+                <AdimNotlari notlar={[{ tip: 'bilgi', metin: tonGeriNotuOlustur(tonGeriNumara) }]} />
+            )}
+
+            {/* + Hatırlatma ekleyin — en fazla `maksAdim` */}
+            {onAdimEkle &&
+                (eklenebilir ? (
+                    <TouchableOpacity
+                        className="flex-row items-center justify-center rounded-xl mb-2"
+                        style={{
+                            minHeight: 48,
+                            borderWidth: 1,
+                            borderStyle: 'dashed',
+                            borderColor: renkler.birincil,
+                            backgroundColor: renkler.arkaplan,
+                        }}
+                        onPress={onAdimEkle}
+                        activeOpacity={0.7}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${tanim.baslik} vaktine hatırlatma ekleyin`}
+                    >
+                        <FontAwesome5 name="plus" size={12} color={renkler.birincil} style={{ marginRight: 8 }} />
+                        <Text className="text-sm font-semibold" style={{ color: renkler.birincil }}>
+                            Hatırlatma ekleyin
+                        </Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text className="text-xs text-center mb-2" style={{ color: renkler.metinIkincil }}>
+                        {ADIM_SINIRI_NOTU}
+                    </Text>
+                ))}
         </>
     );
 
@@ -489,7 +548,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             className="text-[11px] font-semibold tracking-wider mb-2.5"
                             style={{ color: renkler.metinIkincil }}
                         >
-                            HATIRLATMA ADIMLARI
+                            {tanim.tonSecilebilir ? 'HATIRLATMALAR' : 'HATIRLATMA ADIMLARI'}
                         </Text>
                     )}
 
@@ -540,7 +599,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                         (pencere
                             ? `${tanim.baslik} vakti bugün ${saatMetni(pencere.baslangic)}–${saatMetni(pencere.bitis)}. `
                             : '') +
-                        'İki seçenek de aynı dört adımı kullanır; fark, hatırlatmaların vaktin neresinde geldiğidir.'
+                        'İki seçenek de aynı hatırlatmaları kullanır; fark, hatırlatmaların vaktin neresinde geldiğidir.'
                     }
                     icerik={
                         <>

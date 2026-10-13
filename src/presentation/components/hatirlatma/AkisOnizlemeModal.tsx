@@ -50,6 +50,7 @@ import {
 import {
     pencerePlaniOlustur,
     GIRIS_SESLI_GECIKME_NOTU,
+    TON_ETIKETLERI,
     type PencereTanimi,
 } from './pencereTanimi';
 
@@ -221,6 +222,10 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                 {adimlar.map((adim) => {
                                     const kademe = SEVIYE_KADEMELERI[adim.seviye - 1];
                                     const bilgi = tanim.adimBilgileri[adim.seviye - 1] ?? tanim.adimBilgileri[0];
+                                    // Issue #274: ton sırayı ima etmez → "N. hatırlatma · Ton".
+                                    const adimEtiketi = tanim.tonSecilebilir
+                                        ? `${adim.adimIndeks + 1}. hatırlatma · ${TON_ETIKETLERI[kademe]}`
+                                        : bilgi.baslik;
                                     const seviye = adim.seviye as MuhafizSeviye;
                                     const anonsMetni =
                                         adim.sesliAnons && adim.anonsMetni.trim().length > 0
@@ -240,7 +245,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 borderLeftColor: bilgi.renk,
                                             }}
                                             accessible
-                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${bilgi.baslik}`}
+                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}`}
                                         >
                                             {/* Adim basligi: olcu rozeti + kademe */}
                                             <View className="flex-row items-center mb-2">
@@ -268,7 +273,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                     className="text-xs font-semibold flex-1"
                                                     style={{ color: renkler.metinIkincil }}
                                                 >
-                                                    {bilgi.baslik}
+                                                    {adimEtiketi}
                                                 </Text>
                                             </View>
 
@@ -277,7 +282,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 {basligiOlustur(tanim.vakit, seviye, adim.olcuDk, tanim.yon)}
                                             </Text>
                                             <Text className="text-xs mt-1 leading-4" style={{ color: renkler.metinIkincil }}>
-                                                {bildirimGovdesiOlustur(seviye, tanim.yon)}
+                                                {bildirimGovdesiOlustur(seviye, tanim.yon, adim.olcuDk)}
                                             </Text>
 
                                             {/* Ayar ozeti (kanallar · ses) */}

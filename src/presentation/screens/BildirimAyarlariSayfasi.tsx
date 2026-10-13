@@ -509,7 +509,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                         }}
                         onPress={() => handleSayacBaslangicSeviyesiChange(secenek.seviye)}
                         accessibilityRole="button"
-                        accessibilityLabel={`Seviye ${secenek.seviye} ${isSelected ? 'seçili' : 'seçili değil'}`}
+                        accessibilityLabel={`${secenek.seviye}. hatırlatmayla başlasın, ${isSelected ? 'seçili' : 'seçili değil'}`}
                       >
                         <View
                           className="w-5 h-5 rounded-full border-2 items-center justify-center mr-3"
@@ -525,7 +525,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                           className="text-sm font-semibold flex-1"
                           style={{ color: isSelected ? renkler.birincilMetin : renkler.metin }}
                         >
-                          {secenek.metin} (Seviye {secenek.seviye})
+                          {secenek.metin} ({secenek.seviye}. hatırlatma)
                         </Text>
                       </TouchableOpacity>
                     );

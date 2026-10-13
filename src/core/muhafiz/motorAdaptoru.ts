@@ -87,6 +87,25 @@ export function etkinKademe(
   return SEVIYE_KADEMELERI.includes(seviye.kademe) ? seviye.kademe : 'nazik';
 }
 
+/**
+ * Adimin GERCEKTE kullanilan aciliyet tercihi (`acilKanal`).
+ *
+ * Acil kisitina takilip SERT konusan bir acil adim DND'yi de DELMEMELI: "erken
+ * DND delme yok" (issue #274). Ekranda acil tonu secmek `acilKanal: true` yazar;
+ * kullanici esigi sonradan 15 dk'nin ustune cekerse ya da yonu girise cevirirse
+ * bayrak burada yok sayilir (kayit degismez, geri cekince geri gelir). Diger
+ * butun durumlarda alan AYNEN doner (uc durumlu sozlesme korunur).
+ */
+export function etkinAcilKanal(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk' | 'acilKanal'>,
+  yon?: PencereYonu
+): boolean | undefined {
+  if (seviye.acilKanal === true && seviye.kademe === 'acil' && etkinKademe(seviye, yon) !== 'acil') {
+    return false;
+  }
+  return seviye.acilKanal;
+}
+
 /** `etkinKademe`nin sayisal karsiligi (1..4) — plan ve banner bunu kullanir. */
 export function etkinSeviyeNo(
   seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk'>,
@@ -310,7 +329,7 @@ export function vakitUyariPlaniOlustur(
       kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,
       sesAdi: kazanan.sesAdi,
-      acilKanal: kazanan.acilKanal,
+      acilKanal: etkinAcilKanal(kazanan, yon),
       anonsMetni: kazanan.anonsMetni,
       sesliAnons: sesliAnonsGerekliMi(kazanan.kanallar),
     });

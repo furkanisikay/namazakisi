@@ -3,7 +3,7 @@
  *
  * Üç katmanlı progressive disclosure (spec 2026-07-17-muhafiz-ekrani-ve-sesli-uyari):
  *   Katman 1 — ana switch + yoğunluk preset'i + 5 vakit satırı (dinamik özet)
- *   Katman 2 — vakit açılınca o vaktin 4 adımı + "Tüm vakitlere uygula"
+ *   Katman 2 — vakit açılınca o vaktin 1..6 hatırlatması (ekle/sil) + "Tüm vakitlere uygula"
  *   Katman 3 — adıma dokununca detay (kanallar / eşik / sıklık / ses / anons metni)
  *
  * Yazma yolu: matris `matrisiGuncelle` ile yazılır. Eski `esikler`/`sikliklar`
@@ -39,6 +39,7 @@ import {
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 import { seviyeyiAc, seviyeyiKapat } from '../../core/muhafiz/seviyeAcKapa';
+import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import {
@@ -351,6 +352,30 @@ const MuhafizAyarlariIcerik: React.FC = () => {
             planlamayiKuyrugaAl();
         },
         [dispatch, matris, yonDegisiminiHesapla, planlamayiKuyrugaAl]
+    );
+
+    /**
+     * Hatırlatma ekle / sil (issue #274). İkisi de `matrisiYaz`'dan geçer:
+     * adım sayısı değişimi ZAMANLAMA değişikliğidir (`zamanlamaDegistiMi`) →
+     * yoğunluk 'ozel' olur, özel yedek yazılır, plan debounce'la tazelenir.
+     */
+    const adimEkleVakte = useCallback(
+        (vakit: MuhafizVakti) => {
+            const yeni = adimEkle(matris[vakit], vakitPencereleri[vakit]);
+            if (yeni === matris[vakit]) return; // sınırda — eklenecek yer yok
+            matrisiYaz({ ...matris, [vakit]: yeni });
+        },
+        [matris, matrisiYaz, vakitPencereleri]
+    );
+
+    const adimSilVakitten = useCallback(
+        (vakit: MuhafizVakti, indeks: number) => {
+            const yeni = adimSil(matris[vakit], indeks);
+            setDetay(null);
+            if (yeni === matris[vakit]) return; // son hatırlatma silinmez
+            matrisiYaz({ ...matris, [vakit]: yeni });
+        },
+        [matris, matrisiYaz]
     );
 
     const seviyeAcKapa = useCallback(
@@ -736,6 +761,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
                                 onAdimSec={(indeks) => setDetay({ vakit, indeks })}
                                 onAdimAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
+                                onAdimEkle={() => adimEkleVakte(vakit)}
                                 onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
                                 onYonDegistir={(yon) => yonDegistir(vakit, yon)}
@@ -774,6 +800,11 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     ttsDestekli={ttsDestekli}
                     onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
                     onKapat={() => setDetay(null)}
+                    onSil={
+                        adimSilinebilirMi(matris[detay.vakit])
+                            ? () => adimSilVakitten(detay.vakit, detay.indeks)
+                            : undefined
+                    }
                 />
             )}
 

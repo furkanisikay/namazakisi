@@ -12,6 +12,7 @@
 import type { MuhafizMatrisi } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
 import {
+  etkinAcilKanal,
   etkinSeviyeNo,
   muhafizAcilKanalMi,
   muhafizKanaliSec,
@@ -49,19 +50,15 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
       // Planla AYNI ton (acil kisiti dahil) — kanal id'si ayrismasin.
       const seviyeNo = etkinSeviyeNo(seviye, vakitAyari.yon);
       const titresim = titresimGerekliMi(seviye.kanallar);
-      const kanalId = muhafizKanaliSec(
-        seviyeNo,
-        seviye.bildirimSesi,
-        seviye.acilKanal,
-        titresim
-      );
+      const acilKanal = etkinAcilKanal(seviye, vakitAyari.yon);
+      const kanalId = muhafizKanaliSec(seviyeNo, seviye.bildirimSesi, acilKanal, titresim);
       if (kanallar.has(kanalId)) continue;
 
       kanallar.set(kanalId, {
         kanalId,
         sesKimligi: sesKimliginiNormalize(seviye.bildirimSesi),
         sesAdi: seviye.sesAdi,
-        acilMi: muhafizAcilKanalMi(seviyeNo, seviye.bildirimSesi, seviye.acilKanal),
+        acilMi: muhafizAcilKanalMi(seviyeNo, seviye.bildirimSesi, acilKanal),
         titresim,
       });
     }

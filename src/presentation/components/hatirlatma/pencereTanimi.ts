@@ -23,7 +23,13 @@ import type {
     UyariKanallari,
     VakitMuhafizAyari,
 } from '../../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur, type UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
+import {
+    ACIL_TON_UST_DK,
+    etkinKademe,
+    vakitUyariPlaniOlustur,
+    type UyariPlani,
+} from '../../../core/muhafiz/motorAdaptoru';
+import { MUHAFIZ_MAKS_ADIM } from '../../../core/muhafiz/matrisTipleri';
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
@@ -64,7 +70,18 @@ export const SEVIYE_BILGILERI: Record<SeviyeKademe, AdimBilgisi> = {
     acil: { baslik: 'Acil', ikon: 'exclamation-circle', renk: '#D32F2F' },
 };
 
-/** Muhafizin dort kademesi — `PencereTanimi.adimBilgileri` varsayilani. */
+/**
+ * TON secicinin kisa etiketleri (issue #274). Kademe artik bir SIRA degil,
+ * hatirlatmanin TONUdur; liste "N. hatirlatma · Ton" der.
+ */
+export const TON_ETIKETLERI: Record<SeviyeKademe, string> = {
+    nazik: 'Nazik',
+    uyari: 'Uyarı',
+    sert: 'Sert',
+    acil: 'Acil',
+};
+
+/** Muhafizin dort TONU (renk/ikon) — seviye no 1..4 sirasinda; serit ve onizleme renkleri. */
 export const MUHAFIZ_ADIM_BILGILERI: AdimBilgisi[] = [
     SEVIYE_BILGILERI.nazik,
     SEVIYE_BILGILERI.uyari,
@@ -207,8 +224,16 @@ export interface PencereTanimi {
     yon: PencereYonu;
     /** Yon degistirilebilir mi? (muhafiz: evet, cuma/seri: hayir) */
     yonSecilebilir: boolean;
-    /** Kac adim (kademe) var? (muhafiz 4, cuma 1) */
+    /** En fazla kac adim kurulabilir? (muhafiz 6, cuma/nafile 1) */
     maksAdim: number;
+    /**
+     * Adimlar TON tasir mi? (issue #274 — muhafiz: evet)
+     *
+     * Evet ise satirin rengi/ikonu adimin TONUNDAN (`SEVIYE_BILGILERI[kademe]`),
+     * basligi kronolojik numaradan ("2. hatırlatma") gelir ve detayda ton
+     * secici cizilir. Hayir ise (cuma, nafile) `adimBilgileri[indeks]`.
+     */
+    tonSecilebilir?: boolean;
     /** Pencerenin BUGUNKU uzunlugu (dk) — esik tavani ve giris yonu plani buradan. */
     pencereUzunluguDk?: number;
     adimBilgileri: AdimBilgisi[];
@@ -329,6 +354,42 @@ export const YON_SECENEKLERI: {
 export const GIRIS_SESLI_GECIKME_NOTU =
     'Uygulama açıkken sesli anons, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
 
+/**
+ * Bir adimin gorunumu (renk/ikon) — ton secilebilen pencerede adimin ETKIN
+ * tonundan (acil kisitina takilan adim sert gorunur, motorla ayni), aksi halde
+ * indeksten.
+ */
+export function adimBilgisiAl(
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'adimBilgileri' | 'yon'>,
+    seviye: SeviyeAyari,
+    indeks: number
+): AdimBilgisi {
+    if (tanim.tonSecilebilir) return SEVIYE_BILGILERI[etkinKademe(seviye, tanim.yon)];
+    return tanim.adimBilgileri[indeks] ?? tanim.adimBilgileri[0];
+}
+
+/** Adim basligi: ton secilebilen pencerede "2. hatırlatma", degilse adim adi. */
+export function adimBasligiOlustur(
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'adimBilgileri' | 'yon'>,
+    seviye: SeviyeAyari,
+    indeks: number
+): string {
+    return tanim.tonSecilebilir ? `${indeks + 1}. hatırlatma` : adimBilgisiAl(tanim, seviye, indeks).baslik;
+}
+
+/** Ton notu (issue #274): hatirlatma bir oncekinden YUMUSAKSA ekranda kisa bilgi. */
+export const tonGeriNotuOlustur = (numara: number): string =>
+    `${numara}. hatırlatma bir öncekinden daha yumuşak. Bilerek seçtiyseniz sorun yok.`;
+
+/** Acil ton cipi devre disiyken altindaki aciklama. */
+export const acilTonKisitNotu = (yon: PencereYonu): string =>
+    yon === 'girisindenItibaren'
+        ? '“Vakit girer girmez” seçeneğinde acil ton kullanılmaz.'
+        : `Acil ton yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
+
+/** Ekleme sinirina ulasildiginda dugmenin yerine cikan metin. */
+export const ADIM_SINIRI_NOTU = `Bir vakit için en fazla ${MUHAFIZ_MAKS_ADIM} hatırlatma kurabilirsiniz.`;
+
 /** Esik bolumu basligi (yon varsayilani). */
 export const esikBasligiOlustur = (yon: PencereYonu): string =>
     yon === 'girisindenItibaren' ? 'GİRİŞTEN NE KADAR SONRA' : 'KAÇ DK KALA';
@@ -368,7 +429,8 @@ export function vakitPencereTanimi(
         vakit,
         yon,
         yonSecilebilir: true,
-        maksAdim: 4,
+        maksAdim: MUHAFIZ_MAKS_ADIM,
+        tonSecilebilir: true,
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
         kanalSecimiVar: true,

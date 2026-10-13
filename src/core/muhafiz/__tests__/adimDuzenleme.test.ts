@@ -14,6 +14,7 @@ import {
 import {
   ACIL_TON_UST_DK,
   acilTonSecilebilirMi,
+  etkinAcilKanal,
   etkinKademe,
   matrisGecerliMi,
   vakitUyariPlaniOlustur,
@@ -130,6 +131,15 @@ describe('acil ton kısıtı — yalnız çıkış yönünde son 15 dk', () => {
     const matris = Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit])) as MuhafizMatrisi;
     // Sert de (tarihsel taban kural seviye >= 3) acil kanala düşer → kanal id değişmez.
     expect(matristenKanallariCikar(matris).map((k) => k.acilMi)).toEqual([true]);
+  });
+
+  test('erken DND delme yok: kısıta takılan acil adımın acilKanal bayrağı yok sayılır', () => {
+    const erken = { ...sv('acil', 40), acilKanal: true };
+    expect(etkinAcilKanal(erken, 'cikisaDogru')).toBe(false);
+    expect(vakitUyariPlaniOlustur({ seviyeler: [erken] }, 100)[0].acilKanal).toBe(false);
+    // Geçerli acil ve üç durumlu sözleşme (undefined/false) aynen kalır.
+    expect(etkinAcilKanal({ ...sv('acil', 5), acilKanal: true }, 'cikisaDogru')).toBe(true);
+    expect(etkinAcilKanal(sv('sert', 40), 'cikisaDogru')).toBeUndefined();
   });
 
   test('geçerli acil (çıkış, ≤15 dk) acil kalır', () => {
