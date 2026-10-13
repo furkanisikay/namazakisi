@@ -149,9 +149,15 @@ jest.mock('../../components/home/HomeHeader', () => {
     ),
   };
 });
+const mockVakitKartiProplari: { vakitAraligi?: string }[] = [];
 jest.mock('../../components/home/VakitKarti', () => {
   const { View } = require('react-native');
-  return { VakitKarti: () => <View testID="vakit-karti" /> };
+  return {
+    VakitKarti: (props: { vakitAraligi?: string }) => {
+      mockVakitKartiProplari.push(props);
+      return <View testID="vakit-karti" />;
+    },
+  };
 });
 const mockVakitAkisiProplari: { onVakitTikla?: (ad: string, val: boolean) => void }[] = [];
 jest.mock('../../components/home/VakitAkisi', () => {
@@ -164,6 +170,9 @@ jest.mock('../../components/home/VakitAkisi', () => {
   };
 });
 jest.mock('../../hooks/useEkranSinifi', () => ({ useEkranSinifi: jest.fn(() => 'kompakt') }));
+// Masaüstü postürü (issue #283): varsayılan DÜZ; düzen testleri değeri değiştirir.
+const mockPostur: { deger: { tur: string; mentese: unknown } } = { deger: { tur: 'duz', mentese: null } };
+jest.mock('../../hooks/useKatlanmaPosturu', () => ({ useKatlanmaPosturu: () => mockPostur.deger }));
 jest.mock('../../components/home/SeriKartiModal', () => {
   const { View } = require('react-native');
   return { SeriKartiModal: () => <View /> };
@@ -228,8 +237,14 @@ jest.mock('@expo/vector-icons', () => {
 });
 
 // ── Domain servisleri (native köprü / yan etki yok) ──────────────────────────
-const mockVakitBilgisi = {
-  vakit: 'ogle' as const,
+const mockVakitBilgisi: {
+  vakit: 'ogle' | 'yatsi';
+  saat: Date;
+  kalanSureMs: number;
+  sonrakiVakitAdi: string;
+  sonrakiVakitGiris: string;
+} = {
+  vakit: 'ogle',
   saat: new Date(),
   kalanSureMs: 3600000,
   sonrakiVakitAdi: 'İkindi',
@@ -292,6 +307,7 @@ const mockRenkler = {
   metin: '#333333',
   metinIkincil: '#666666',
   sinir: '#cccccc',
+  durum: { basarili: '#4CAF50' },
 };
 
 /**
@@ -388,6 +404,7 @@ describe('AnaSayfa', () => {
     mockSadeProplari.length = 0;
     mockSadeDurumu.deger = undefined;
     (useEkranSinifi as jest.Mock).mockReturnValue('kompakt');
+    mockPostur.deger = { tur: 'duz', mentese: null };
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
@@ -552,6 +569,36 @@ describe('AnaSayfa', () => {
       }
     );
 
+    it.each(['kompakt', 'genis'] as const)(
+      'masaüstü postüründe (%s) üstte büyük geri sayım, altta akış; Kıldım kartı çizilmez',
+      async (sinif) => {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        (useEkranSinifi as jest.Mock).mockReturnValue(sinif);
+        mockPostur.deger = { tur: 'masaustu', mentese: { sol: 0, ust: 440, sag: 800, alt: 440 } };
+        const ekran = await kur(bugunuAl());
+
+        const ust = ekran.getByTestId('anasayfa-masaustu-ust');
+        const alt = ekran.getByTestId('anasayfa-masaustu-alt');
+        expect(within(ust).getByTestId('masaustu-geri-sayim')).toBeTruthy();
+        expect(within(alt).getByTestId('vakit-akisi')).toBeTruthy();
+        expect(within(ust).queryByTestId('vakit-akisi')).toBeNull();
+        // Dik duran yarı salt gösterimdir: Kıldım düğmeli vakit kartı yok, işaretleme akıştan.
+        expect(ekran.queryByTestId('vakit-karti')).toBeNull();
+        expect(ekran.queryByTestId('anasayfa-iki-bolme')).toBeNull();
+      }
+    );
+
+    it('kitap postürü (dikey menteşe) masaüstü düzeni AÇMAZ', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      (useEkranSinifi as jest.Mock).mockReturnValue('orta');
+      mockPostur.deger = { tur: 'kitap', mentese: { sol: 400, ust: 0, sag: 400, alt: 800 } };
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('anasayfa-masaustu')).toBeNull();
+      expect(ekran.getByTestId('anasayfa-iki-bolme')).toBeTruthy();
+    });
+
     it('iki bölmeli düzen pager açılış sayfasını ETKİLEMEZ (gece yarısı = dün)', async () => {
       geceYarisiSenaryosu();
       (useEkranSinifi as jest.Mock).mockReturnValue('genis');
@@ -562,6 +609,28 @@ describe('AnaSayfa', () => {
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
     });
   });
+  describe('Vakit kartı aralığı', () => {
+    afterEach(() => {
+      mockVakitBilgisi.vakit = 'ogle';
+      mockVakitBilgisi.saat = new Date();
+    });
+
+    it('yatsıda bitiş "..." DEĞİL, servisin verdiği çıkış (ertesi imsak) saatidir', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const cikis = new Date();
+      cikis.setHours(5, 7, 0, 0);
+      mockVakitBilgisi.vakit = 'yatsi';
+      mockVakitBilgisi.saat = cikis;
+      mockVakitKartiProplari.length = 0;
+
+      await kur(bugunuAl());
+
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1];
+      expect(son.vakitAraligi).toBe('20:30 - 05:07');
+    });
+  });
+
   // ── "Her farzla bir kaza" (issue #294) ────────────────────────────────────
   describe('Kaza önerisi tetiklemesi', () => {
     const vakitTikla = (ad: string, val: boolean) =>

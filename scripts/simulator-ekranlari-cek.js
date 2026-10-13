@@ -15,7 +15,7 @@
  *   - Muhafiz satiri  "Namaz muhafızı"              (AyarlarSayfasi)
  *   - Ana anahtar     "Namaz Muhafızı" (Switch)     (MuhafizAyarlariSayfasi)
  *   - Vakit karti     "… vakti hatırlatma ayarları" (PencereKarti)
- *   - Adim satiri     "… adımını düzenleyin"        (PencereKarti)
+ *   - Adim satiri     "1. hatırlatma, … — düzenleyin" (PencereKarti)
  *
  * Her adimda erisilebilirlik agaci `<cikis>/agac/NN-<ad>.json` icine yazilir —
  * bir adim tutmazsa hangi ogelerin ekranda oldugu oradan gorulur.
@@ -290,7 +290,7 @@ function cek(ad) {
             // Adim detayi (bottom sheet). "adımını açın veya kapatın" ANAHTARDIR,
             // ona basmak adimi kapatir — bu yuzden kalip "düzenleyin" ile kesinlestirildi.
             a = await agac('adim-oncesi');
-            if (await dokun(a, /adımını düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
+            if (await dokun(a, /hatırlatma.* — düzenleyin/i, 'adim satiri', { bekle: 3000 })) {
                 // "İkisi de" kanalini sec: sheet sesli anons metni ve "Dinle"
                 // dugmesiyle dolar. Yalniz bildirim seciliyken sheet'in alt yarisi
                 // BOS kaliyordu ve kare zayif gorunuyordu.

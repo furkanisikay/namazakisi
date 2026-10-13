@@ -7,6 +7,14 @@ name: 📸 iOS Ekran Görüntüleri
 #
 # Kareler once ARTIFACT olarak yuklenir (gozden gecirilebilsin); App Store Connect'e
 # gonderim yalnizca `asc_yukle: true` ile yapilir.
+#
+# `tur` girdisi:
+#   magaza  (varsayilan) — magaza kareleri + mockup; ozellik turu eklenmeden
+#           oncekiyle BIREBIR ayni.
+#   ozellik — yeni ekranlarin kareleri (`kareler-ozellik/iphone-<tema>/`, artifact
+#           `ios-ozellik-kareleri`; scripts/simulator-ozellik-cek.js). ASC'ye
+#           GONDERILMEZ.
+#   ikisi   — ikisi de, ayni derlemeyle.
 
 on:
   workflow_dispatch:
@@ -16,7 +24,21 @@ on:
         required: false
         default: ''
       asc_yukle:
-        description: "Kareleri App Store Connect kaydına yükle"
+        description: "Kareleri App Store Connect kaydına yükle (yalnız mağaza turu)"
+        type: boolean
+        required: false
+        default: false
+      tur:
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi'
+        type: choice
+        required: false
+        default: 'magaza'
+        options:
+          - magaza
+          - ozellik
+          - ikisi
+      ozellik_koyu:
+        description: 'Özellik turunu koyu temada da çek'
         type: boolean
         required: false
         default: false
@@ -32,7 +54,8 @@ jobs:
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
     # derleniyor, yani kareler kullanicinin gercekte gordugu gorunumu yansitir.
     runs-on: macos-26
-    timeout-minutes: 90
+    # Ozellik turu (her bolum temiz acilis + yeniden tohum) ayni iste kosar.
+    timeout-minutes: 150
 
     steps:
       - name: 📥 Kodu çek
@@ -170,6 +193,7 @@ jobs:
           xcrun simctl launch "$UDID" "$BUNDLE"
 
       - name: 📸 Kareleri çek
+        if: ${{ inputs.tur != 'ozellik' }}
         run: |
           set -eo pipefail
           idb connect "${{ steps.sim.outputs.udid }}" || true
@@ -180,13 +204,14 @@ jobs:
           done
 
       - name: 🎨 Mockup üret
+        if: ${{ inputs.tur != 'ozellik' }}
         run: |
           # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
           # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.
           node scripts/magaza-mockup.js kareler mockup --platform ios
 
       - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
           name: ios-ekran-goruntuleri
@@ -196,8 +221,39 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
+      # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur bagimsiz.
+      - name: 🧭 Özellik turu
+        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        run: |
+          set -eo pipefail
+          idb connect "${{ steps.sim.outputs.udid }}" || true
+          TEMALAR="acik"
+          [ "${{ inputs.ozellik_koyu }}" = "true" ] && TEMALAR="acik koyu"
+          for tema in $TEMALAR; do
+            # Bir tema dusse de digeri cekilsin.
+            node scripts/simulator-ozellik-cek.js "kareler-ozellik/iphone-$tema" \
+              --udid "${{ steps.sim.outputs.udid }}" --bundle "${{ steps.kurulum.outputs.bundle }}" --tema "$tema" \
+              || echo "UYARI: özellik turu ($tema) hatayla bitti"
+          done
+
+      - name: 🧾 Özellik kareleri özeti
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        run: node scripts/ozellik-kare-ozeti.js kareler-ozellik ios | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Özellik karelerini yükle
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ozellik-kareleri
+          # Kareler + her adimin erisilebilirlik agaci (agac/*.json): bir adim
+          # tutmazsa ekranda hangi ogelerin oldugu oradan gorulur.
+          path: kareler-ozellik/
+          retention-days: 14
+          if-no-files-found: warn
+
       - name: 🏪 App Store Connect'e yükle
-        if: ${{ inputs.asc_yukle }}
+        if: ${{ inputs.asc_yukle && inputs.tur != 'ozellik' }}
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}

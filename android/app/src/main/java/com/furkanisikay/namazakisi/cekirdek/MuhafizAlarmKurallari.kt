@@ -21,6 +21,12 @@ object MuhafizAlarmKurallari {
      */
     const val GEC_KALMA_TOLERANSI_MS = 10 * 60_000L
 
+    /**
+     * Alarm bildiriminin numarası; ETİKET = muhafız kimliği. Çalan/düşmüş alarm bildirimi
+     * `(etiket, numara)` çiftiyle bulunur ("Kıldım" iptali — H1).
+     */
+    const val BILDIRIM_NUMARASI = 74_074
+
     /** Yük biçim sürümü — JS `ALARM_YUK_SURUMU`. */
     const val YUK_SURUMU = 1
 
@@ -42,12 +48,68 @@ object MuhafizAlarmKurallari {
         ATLA,
     }
 
-    /** Alarm tetiklendiği AN ne yapılacak? */
-    fun tetikKarari(tetikMs: Long, simdiMs: Long, cikisMs: Long, camiSessizBitisMs: Long): Karar = when {
+    /**
+     * Alarm tetiklendiği AN ne yapılacak?
+     *
+     * @param kuyruktaKilindi o vakit ortak "Kıldım" kuyruğunda bekliyor mu (saat, widget,
+     *   kutu, kısayol, otomasyon — JS henüz uyanıp kaydı işlememiş olabilir; Samsung uyku
+     *   kısıtında dakikalar sürer). Bekliyorsa alarm ÇALMAZ: kişi namazı kıldığını zaten
+     *   söylemiştir ([kuyruktaKilindiMi]).
+     */
+    fun tetikKarari(
+        tetikMs: Long,
+        simdiMs: Long,
+        cikisMs: Long,
+        camiSessizBitisMs: Long,
+        kuyruktaKilindi: Boolean = false,
+    ): Karar = when {
         cikisMs in 1..simdiMs -> Karar.ATLA
+        kuyruktaKilindi -> Karar.ATLA
         camiSessizBitisMs > simdiMs -> Karar.SESSIZ_BILDIRIM
         simdiMs - tetikMs > GEC_KALMA_TOLERANSI_MS -> Karar.BILDIRIM
         else -> Karar.CAL
+    }
+
+    /**
+     * Vakit "Kıldım" kuyruğunda bekliyor mu? Kuyruk kimliği `<tarih>_<vakit>`
+     * ([kildimKimligi]) ve kuyruk KAYIT kodunu taşır (`imsak`, widget'ın `sabah`'ı DEĞİL —
+     * kuyruk `sabah`'ı reddeder); muhafız kimliği de aynı kodu ve aynı NAMAZ gününü taşır
+     * (gece yarısını aşan yatsı = dün) → doğrudan eşleşir.
+     */
+    fun kuyruktaKilindiMi(tarih: String, vakit: String, bekleyenler: Set<String>): Boolean =
+        tarih.isNotEmpty() && vakit.isNotEmpty() && kildimKimligi(tarih, vakit) in bekleyenler
+
+    /**
+     * Gösterilen bildirim bu eşleşmenin ALARM bildirimi mi? (H1 — uygulama içi / saatten
+     * "Kıldım" çalan alarmı da susturmalı: tetiklenen alarm kayıt defterinden düştüğü için
+     * yalnız bekleyenleri silen iptal onu GÖRMEZ.) Numara şart: aynı etiketli expo
+     * bildirimleri (numara 0) expo'nun kendi kapatma yolundan geçer.
+     */
+    fun alarmBildirimiMi(etiket: String?, numara: Int, esles: (String) -> Boolean): Boolean =
+        numara == BILDIRIM_NUMARASI && !etiket.isNullOrEmpty() && esles(etiket)
+
+    /** Önek eşleştiricisi — boş önek HİÇBİR şeyle eşleşmez ("hepsini sil" kazası olmasın). */
+    fun onekEslestirici(onek: String): (String) -> Boolean =
+        { kimlik -> onek.isNotEmpty() && kimlik.startsWith(onek) }
+
+    /** Tam ekran alarmdaki "Kıldım" nasıl işlenir? (M4 — #295 kilit ekranı kararının ikizi.) */
+    enum class KildimYolu {
+        /** Kilit yok: hemen işaretle. */
+        DOGRUDAN,
+        /** Kilitli: önce kilit açtırılır (API 26+ `requestDismissKeyguard`), başarıda işaretlenir. */
+        KILIDI_AC,
+        /** Kilitli ve kilit açtırılamıyor (API < 26): düğme GİZLENİR — kayıt kilit ekranından yazılmaz. */
+        GIZLE,
+    }
+
+    /**
+     * Kilit ekranına bakan herkes, cepte yanlış bir dokunuş ibadet kaydı yazmamalı
+     * (`KilitEkraniKarari`). "Kapat" ve "Ertele" kayıt değildir → kilitliyken de çalışır.
+     */
+    fun kildimYolu(kilitli: Boolean, kilitAcmaDestegi: Boolean): KildimYolu = when {
+        !kilitli -> KildimYolu.DOGRUDAN
+        kilitAcmaDestegi -> KildimYolu.KILIDI_AC
+        else -> KildimYolu.GIZLE
     }
 
     /** "10 dk ertele" düğmesi gösterilsin mi? Bildirim ertelemesiyle AYNI kural. */

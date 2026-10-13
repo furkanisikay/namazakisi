@@ -2,6 +2,9 @@
   <string name="app_name">Namaz Akışı</string>
   <string name="widget_aciklama">İçinde bulunduğunuz vakit, çıkış saati ve tek dokunuşla Kıldım</string>
   <string name="widget_genis_aciklama">Günün beş vakti, geri sayım ve tek dokunuşla Kıldım</string>
+  <!-- Samsung Flex Window (Z Flip kapak ekranı) widget'ı (issue #283) -->
+  <string name="widget_kapak_adi">Kapak ekranı vakitleri</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip kapak ekranı için günün vakitleri ve geri sayım</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 

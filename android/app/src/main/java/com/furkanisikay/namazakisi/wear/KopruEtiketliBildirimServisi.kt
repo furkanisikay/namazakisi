@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
 import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
+import com.furkanisikay.namazakisi.kildim.NafileKildimIsleyici
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
@@ -77,6 +78,8 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
             // "Ertele" (issue #289) da AYNI gerekçeyle native işlenir: erteleme JS'i
             // beklemeden kurulmalı, aradaki uyarılar susmalı.
             BildirimKildimIsleyici.isle(context, intent, zamanlama) ||
+                // Nafile "Kıldım" (issue #273): ayrı kuyruk — farz kaydı ASLA yazılmaz.
+                NafileKildimIsleyici.isle(context, intent, zamanlama) ||
                 BildirimErteleIsleyici.isle(context, intent, zamanlama)
         } catch (_: Exception) {
             false

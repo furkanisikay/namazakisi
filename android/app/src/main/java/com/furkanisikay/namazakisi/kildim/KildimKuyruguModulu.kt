@@ -39,6 +39,24 @@ class KildimKuyruguModulu(reactContext: ReactApplicationContext) : ReactContextB
         promise.resolve(null)
     }
 
+    /** Nafile "Kıldım" kuyruğu (issue #273, `NafileKildimKuyrugu`) — farz kuyruğundan AYRI. */
+    @ReactMethod
+    fun nafileBekleyenleriAl(promise: Promise) {
+        promise.resolve(NafileKildimKuyrugu.tumu(reactApplicationContext))
+    }
+
+    @ReactMethod
+    fun nafileTamamlandi(id: String, promise: Promise) {
+        NafileKildimKuyrugu.tamamlandi(reactApplicationContext, id)
+        promise.resolve(null)
+    }
+
+    @ReactMethod
+    fun nafileBasarisiz(id: String, promise: Promise) {
+        NafileKildimKuyrugu.basarisiz(reactApplicationContext, id)
+        promise.resolve(null)
+    }
+
     companion object {
         const val MODULE_NAME = "KildimKuyrugu"
     }

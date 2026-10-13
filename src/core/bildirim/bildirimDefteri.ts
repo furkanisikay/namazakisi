@@ -7,7 +7,7 @@
  * beslenir. Tahmin fonksiyonu yazılsaydı ikiz ayrışır, ekran "sığıyor" derken
  * cihaz sessizce keserdi.
  *
- *   muhafız         → `muhafizTeslimPlaniOlustur` (bugünün kalan vakitleri)
+ *   muhafız         → `muhafizTeslimPlaniOlustur` (bugünün kalan vakitleri; Android'de + yarının imsağı)
  *   sesli anons     → aynı adaylar, `anonsAlarmiKurarMi` (yalnız Android)
  *   gerçek alarm    → aynı adaylar, `alarmKurarMi` (yalnız Android; o tetiğin
  *                     bildirimi + anonsunun YERİNE tek `setAlarmClock` — issue #74)
@@ -35,6 +35,7 @@ import {
     anonsAlarmiKurarMi,
     muhafizTeslimPlaniOlustur,
     muhafizVakitleriniHesapla,
+    yarininImsagiPlanlanirMi,
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
 import { kullanilabilirSlotHesapla } from '../muhafiz/ios/bildirimButcesi';
@@ -150,7 +151,18 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     if (koordinat && g.muhafiz?.aktif) {
         const matris = g.muhafiz.matris;
         guvenli(() => {
-            for (const aday of muhafizTeslimPlaniOlustur({ matris, vakitler, simdi: g.simdi, kilindiMi, ozelGundeMi })) {
+            // Servisle AYNI ufuk: Android'de yarının imsağı dahil (issue #74 M2). Sayaç planı aşağıda
+            // yarınsız `vakitler`'i kullanır — onun ufku ayrıdır.
+            const muhafizVakitleri = muhafizVakitleriniHesapla(koordinat, g.simdi, {
+                yarininImsagi: yarininImsagiPlanlanirMi(g.platform),
+            });
+            for (const aday of muhafizTeslimPlaniOlustur({
+                matris,
+                vakitler: muhafizVakitleri,
+                simdi: g.simdi,
+                kilindiMi,
+                ozelGundeMi,
+            })) {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
                 // YERİNE geçer → tek alarm sayılır. iOS'ta bildirim olarak kalır.
                 if (android && alarmKurarMi(aday)) {

@@ -37,7 +37,7 @@ open class NamazWidgetSaglayicisi : AppWidgetProvider() {
 
     override fun onDisabled(context: Context) {
         val yonetici = AppWidgetManager.getInstance(context)
-        val kalan = listOf(NamazWidget::class.java, NamazGenisBoyutWidget::class.java)
+        val kalan = WidgetGuncelleyici.SAGLAYICILAR
             .sumOf { yonetici.getAppWidgetIds(ComponentName(context, it)).size }
         if (kalan == 0) WidgetGuncelleyici.sinirAlarminiIptalEt(context)
     }

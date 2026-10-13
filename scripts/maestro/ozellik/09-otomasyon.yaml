@@ -1,0 +1,17 @@
+# tohum: ozellik
+# Otomasyon rehberi (yalniz Android).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Otomasyonlarla kullanın\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Otomasyonlarla kullanın\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/22-otomasyon-rehberi
+- scroll
+- takeScreenshot: ozk/23-otomasyon-rehberi-alt

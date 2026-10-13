@@ -5,6 +5,15 @@ name: 📸 Android Ekran Görüntüleri
 #
 # Play telefon karesi en-boy orani en fazla 2:1 olabilir -> 1080x1920 (16:9)
 # profili secilir; yayindaki mevcut kareler de bu boyutta.
+#
+# `tur` girdisi:
+#   magaza  (varsayilan) — yalniz magaza kareleri (`kareler/`, artifact
+#           `android-ekran-goruntuleri`); davranisi ozellik turu eklenmeden
+#           oncekiyle BIREBIR ayni.
+#   ozellik — yeni ekranlarin kareleri (`kareler-ozellik/<profil>-<tema>/`,
+#           artifact `android-ozellik-kareleri`): telefon acik + koyu tema,
+#           istenirse tablet (acik). Akislar `scripts/maestro/ozellik/`.
+#   ikisi   — ikisi de, AYNI APK ile (Gradle bir kez).
 
 on:
   workflow_dispatch:
@@ -17,6 +26,24 @@ on:
         description: 'Önceki koşunun debug APK artifact''ını kullan (boş = yeniden derle). JS Metro''dan geldiği için APK yalnız native kod değişince yenilenmeli.'
         required: false
         default: ''
+      tur:
+        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi'
+        type: choice
+        required: false
+        default: 'magaza'
+        options:
+          - magaza
+          - ozellik
+          - ikisi
+      ozellik_profili:
+        description: 'Özellik turu telefon profili (avdmanager cihaz kimliği)'
+        required: false
+        default: 'pixel_6'
+      tablet:
+        description: 'Özellik turunu tablette de çek (pixel_tablet, açık tema; ~+20 dk)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -25,7 +52,9 @@ jobs:
   kareler:
     name: 📸 Emülatörde kare çek
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # 90 dk magaza turu icin yetiyordu; ozellik turu (iki tema + istege bagli
+    # tablet, her akistan once yeniden tohumlama) ayni isin icinde kosar.
+    timeout-minutes: 180
 
     steps:
       - name: 📥 Kodu çek
@@ -101,6 +130,7 @@ jobs:
           echo "Metro hazır"
 
       - name: 📱 Emülatörde kareleri çek
+        if: ${{ inputs.tur != 'ozellik' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -115,20 +145,61 @@ jobs:
           script: bash scripts/android-kare-hatti.sh
 
       - name: 🧾 Kare boyutları
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         run: |
           for f in kareler/*.png; do
             node -e 'const b=require("fs").readFileSync(process.argv[1]);console.log(process.argv[1], b.readUInt32BE(16)+"x"+b.readUInt32BE(20))' "$f"
           done || true
 
       - name: ⬆️ Kareleri yükle
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
           name: android-ekran-goruntuleri
           # YALNIZ kareler: disaridan bir yol (~/.maestro) eklenince ortak kok
           # degisiyor ve kareler artifact icinde alt klasore iniyordu.
           path: kareler/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
+      # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur birbirinden bagimsiz.
+      - name: 🧭 Özellik turu — telefon (açık + koyu)
+        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: ${{ inputs.ozellik_profili }}
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
+
+      - name: 🧭 Özellik turu — tablet (açık)
+        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tablet }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_tablet
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash scripts/android-ozellik-hatti.sh tablet acik
+
+      - name: 🧾 Özellik kareleri özeti
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        run: node scripts/ozellik-kare-ozeti.js kareler-ozellik android | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Özellik karelerini yükle
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-ozellik-kareleri
+          path: kareler-ozellik/
           retention-days: 14
           if-no-files-found: warn
 

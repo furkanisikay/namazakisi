@@ -9,6 +9,7 @@ import {
     onekliAlarmlariIptalEt,
     tamEkranIzniVarMi,
     bekleyenAlarmSayisi,
+    vakitAlarmlariniSustur,
 } from '../MuhafizAlarmKoprusu';
 import type { AlarmYuku } from '../../../core/muhafiz/alarmYuku';
 
@@ -51,5 +52,26 @@ describe('MuhafizAlarmKoprusu', () => {
         expect(await tamEkranIzniVarMi()).toBe(false);
         modulKur({ tamEkranIzniVarMi: jest.fn().mockResolvedValue('x') });
         expect(await tamEkranIzniVarMi()).toBeNull();
+    });
+
+    test('Android: "Kıldım" çalan alarmı da susturan yöntemi kullanır; eski ikilide önekli iptale düşer', async () => {
+        jest.replaceProperty(Platform, 'OS', 'android');
+        const sustur = jest.fn().mockResolvedValue(1);
+        const onekliIptalEt = jest.fn().mockResolvedValue(0);
+        modulKur({ vakitAlarmlariniSustur: sustur, onekliIptalEt });
+        await vakitAlarmlariniSustur('muhafiz_2026-01-01_vakit_ogle');
+        expect(sustur).toHaveBeenCalledWith('muhafiz_2026-01-01_vakit_ogle');
+        expect(onekliIptalEt).not.toHaveBeenCalled();
+
+        modulKur({ onekliIptalEt });
+        await vakitAlarmlariniSustur('muhafiz_2026-01-01_vakit_ogle');
+        expect(onekliIptalEt).toHaveBeenCalledWith('muhafiz_2026-01-01_vakit_ogle');
+
+        // Boş önek hiçbir şeyi susturmaz; hata fırlatmaz.
+        sustur.mockClear();
+        modulKur({ vakitAlarmlariniSustur: sustur.mockRejectedValue(new Error('x')) });
+        await expect(vakitAlarmlariniSustur('')).resolves.toBeUndefined();
+        expect(sustur).not.toHaveBeenCalled();
+        await expect(vakitAlarmlariniSustur('muhafiz_')).resolves.toBeUndefined();
     });
 });

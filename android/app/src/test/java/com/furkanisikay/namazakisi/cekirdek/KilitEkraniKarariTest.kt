@@ -59,4 +59,14 @@ class KilitEkraniKarariTest {
             KilitEkraniKarari.erisimMetni("İkindi", KildimDurumu.KILINDI, kilitEkrani = true),
         )
     }
+
+    /** NÖBETÇİ (issue #283): Flex Window sağlayıcısı host kategorisinden bağımsız salt okunur. */
+    @Test
+    fun kapakEkraniSaglayicisiDaimaSaltOkunur() {
+        assertTrue(KilitEkraniKarari.saltOkunurMu(anaEkran, kapakEkraniSaglayicisi = true))
+        assertTrue(KilitEkraniKarari.saltOkunurMu(0, kapakEkraniSaglayicisi = true))
+        assertTrue(KilitEkraniKarari.saltOkunurMu(kilit, kapakEkraniSaglayicisi = false))
+        assertFalse(KilitEkraniKarari.saltOkunurMu(anaEkran, kapakEkraniSaglayicisi = false))
+        assertFalse(KilitEkraniKarari.saltOkunurMu(0, kapakEkraniSaglayicisi = false))
+    }
 }

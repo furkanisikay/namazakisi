@@ -1,0 +1,26 @@
+# tohum: butce
+# Bildirim siniri karti + rehber sheet'i. Android'de kart YALNIZ 400+ bekleyen
+# bildirimde gorunur; yogun tohum bunu gunun cogunda saglar ama sayi gunun
+# saatine baglidir (gecen vakitler sayilmaz). Kart cikmazsa akis burada duser
+# (UYARI satiri); kartsiz muhafiz ekrani zaten 04 akisinda cekiliyor.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Namaz muhafızı\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Namaz muhafızı\\..*"
+# Defter diskten okunup hesaplanana kadar kart cizilmez.
+- extendedWaitUntil:
+    visible:
+      id: "bildirim-butce-karti"
+    timeout: 20000
+- takeScreenshot: ozk/11-muhafiz-butce-karti
+- tapOn:
+    id: "bildirim-butce-karti"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/12-bildirim-siniri-rehberi
