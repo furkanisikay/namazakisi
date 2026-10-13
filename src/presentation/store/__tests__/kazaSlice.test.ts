@@ -229,6 +229,33 @@ describe('kazaTamamla', () => {
     expect(st.tempoGecmis[bugun()]).toBe(3);
   });
 
+  it('REGRESYON: store dışından diske eklenen borç (bildirimden "Kazaya ekle") SİLİNMEZ', async () => {
+    const store = await borcluStoreHazirla();
+    // Bildirim aksiyonu store'u atlayıp diske yazar (#290); bellekteki durum bayat kalır.
+    const disk = diskDurumOku()!;
+    mockStore.set(
+      DURUM_KEY,
+      JSON.stringify({
+        ...disk,
+        namazlar: disk.namazlar.map((n) =>
+          n.namazAdi === 'Akşam' ? { ...n, toplamBorc: 1, kalanBorc: 1 } : n
+        ),
+        toplamKalan: disk.toplamKalan + 1,
+      })
+    );
+    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
+    expect(kalan(diskDurumOku()!, 'Akşam')).toBe(1);
+    expect(kalan(store.getState().kaza.kazaDurumu!, 'Akşam')).toBe(1);
+    expect(kalan(diskDurumOku()!, 'Sabah')).toBe(9);
+  });
+
+  it('disk kaydı BOZUKSA bellekteki durumla devam edilir (bozuk kaydın üstüne boş durum yazılmaz)', async () => {
+    const store = await borcluStoreHazirla();
+    mockStore.set(DURUM_KEY, 'null');
+    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
+    expect(kalan(store.getState().kaza.kazaDurumu!, 'Öğle')).toBe(4);
+  });
+
   it('kalandan fazla istense bile 0\'ın altına inmez (clamp); fazlalık tamamlanana sayılmaz', async () => {
     const store = await borcluStoreHazirla();
     await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 100 }));

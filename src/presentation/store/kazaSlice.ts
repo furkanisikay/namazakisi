@@ -71,6 +71,18 @@ const gunlukSayaciKontrolEt = (durumu: KazaDurumu): KazaDurumu => {
 // ==================== ASYNC THUNKS ====================
 
 /**
+ * Yazma thunk'larının TABANI: bellek değil DİSK. Bildirimden "Kazaya ekle"
+ * (issue #290) ve "her farzla bir kaza" store'u atlayıp diske yazabilir; sayfa
+ * bellekteki eski durumla yazsaydı o değişiklik silinirdi. Disk okunamaz/bozuksa
+ * eski davranış (bellek, o da yoksa boş durum).
+ */
+const yazimTabani = async (bellek: KazaDurumu | null): Promise<KazaDurumu> => {
+  const disk = await LocalKazaServisi.localKazaDurumunuYazimIcinGetir();
+  if (disk) return gunlukSayaciKontrolEt(disk);
+  return bellek || LocalKazaServisi.bosKazaDurumuOlustur();
+};
+
+/**
  * Kaza verilerini yükler (başlangıçta çağrılır)
  */
 export const kazaVerileriniYukle = createAsyncThunk('kaza/yukle', async () => {
@@ -106,7 +118,7 @@ export const borcEkle = createAsyncThunk(
     const state = getState() as { kaza: KazaState };
     // Tek ekleme yolu: bildirimdeki "Kazaya ekle" (issue #290) de bundan geçer.
     const durumu = LocalKazaServisi.borcEklenmisDurum(
-      state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur(),
+      await yazimTabani(state.kaza.kazaDurumu),
       namazAdi,
       sayi
     );
@@ -133,7 +145,7 @@ export const kazaTamamla = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { kaza: KazaState };
-    let durumu = state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur();
+    let durumu = await yazimTabani(state.kaza.kazaDurumu);
 
     let yeniNamazlar = [...durumu.namazlar];
 
@@ -207,7 +219,7 @@ export const sihirbazIleBaslat = createAsyncThunk(
   'kaza/sihirbazIleBaslat',
   async (girdi: HesaplamaSihirbazGirdisi, { getState }) => {
     const state = getState() as { kaza: KazaState };
-    let durumu = state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur();
+    let durumu = await yazimTabani(state.kaza.kazaDurumu);
 
     const toplamBorc = hesaplaTahminiBorcMiktari(girdi);
     const dagılım = borcuVakitlerePaylaştır(toplamBorc);
@@ -247,7 +259,7 @@ export const gunlukHedefiGuncelle = createAsyncThunk(
   async ({ hedef }: { hedef: number }, { getState }) => {
     const state = getState() as { kaza: KazaState };
     const durumu = {
-      ...(state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur()),
+      ...(await yazimTabani(state.kaza.kazaDurumu)),
       gunlukHedef: Math.max(0, hedef),
       guncellemeTarihi: new Date().toISOString(),
     };
@@ -264,9 +276,10 @@ export const gizlemeToggle = createAsyncThunk(
   'kaza/gizlemeToggle',
   async (_, { getState }) => {
     const state = getState() as { kaza: KazaState };
+    const taban = await yazimTabani(state.kaza.kazaDurumu);
     const durumu = {
-      ...(state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur()),
-      toplamGizleMi: !state.kaza.kazaDurumu?.toplamGizleMi,
+      ...taban,
+      toplamGizleMi: !taban.toplamGizleMi,
       guncellemeTarihi: new Date().toISOString(),
     };
 
