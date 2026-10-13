@@ -8,6 +8,7 @@ jest.mock('expo-notifications', () => ({
     scheduleNotificationAsync: jest.fn(),
     cancelScheduledNotificationAsync: jest.fn(),
     getAllScheduledNotificationsAsync: jest.fn().mockResolvedValue([]),
+    setNotificationCategoryAsync: jest.fn().mockResolvedValue(null),
     AndroidNotificationPriority: {
         MAX: 'max',
         HIGH: 'high',
@@ -1126,6 +1127,23 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
         (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+    test('L7: bildirim KATEGORİLERİ ("Ertele" düğmeleri) planlamadan ÖNCE kaydedilir, süreçte BİR kez', async () => {
+        (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+        await planla(OZEL_SES);
+
+        const kategoriCagrilari = Notifications.setNotificationCategoryAsync as jest.Mock;
+        expect(kategoriCagrilari.mock.calls.map((c) => c[0])).toEqual(
+            expect.arrayContaining(['muhafiz_category', 'muhafiz_ertele1_category', 'muhafiz_ertele2_category'])
+        );
+        const ilkPlanlama = (Notifications.scheduleNotificationAsync as jest.Mock).mock.invocationCallOrder[0];
+        expect(Math.max(...kategoriCagrilari.mock.invocationCallOrder)).toBeLessThan(ilkPlanlama);
+
+        kategoriCagrilari.mockClear();
+        await planla(OZEL_SES);
+        expect(kategoriCagrilari).not.toHaveBeenCalled();
+    });
 
     test('kanallar planlamadan ÖNCE hazırlanır (var olmayan kanala bildirim gitmez)', async () => {
         await planla(OZEL_SES);

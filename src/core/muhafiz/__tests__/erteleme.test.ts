@@ -15,6 +15,8 @@ import {
     ertelemeBasligiSablonu,
     ertelemedeSusturulurMu,
     ertelemeHedefiHesapla,
+    ertelemeleriBirlestir,
+    ertelemeSusturuyorMu,
     ertelemeKategorisi,
     ertelemeKimligi,
     ertelemeKimligiMi,
@@ -144,5 +146,40 @@ describe('etkinErtelemeler', () => {
                 { identifier: 'cuma_hatirlatma_2026-10-16' },
             ])
         ).toEqual({ '2026-10-13_ikindi': 123 });
+    });
+});
+
+describe('ertelemeSusturuyorMu — üç tüketicinin (arka plan, ön plan, saat) TEK kuralı', () => {
+    const ertelemeler = { '2026-10-13_ogle': 10 * DK };
+
+    it('hedef + çakışma payı öncesindeki uyarı susar, sonrası susmaz', () => {
+        expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-13', 'ogle', 5 * DK)).toBe(true);
+        expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-13', 'ogle', 10 * DK)).toBe(true);
+        expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-13', 'ogle', 11 * DK)).toBe(false);
+        // Kuralın kendisiyle birebir (ayrışma imkânsız).
+        for (const t of [0, 10 * DK + 59_999, 11 * DK]) {
+            expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-13', 'ogle', t)).toBe(ertelemedeSusturulurMu(t, 10 * DK));
+        }
+    });
+
+    it('başka vakit / başka gün / erteleme yok → susmaz', () => {
+        expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-13', 'ikindi', 5 * DK)).toBe(false);
+        expect(ertelemeSusturuyorMu(ertelemeler, '2026-10-12', 'ogle', 5 * DK)).toBe(false);
+        expect(ertelemeSusturuyorMu(undefined, '2026-10-13', 'ogle', 5 * DK)).toBe(false);
+    });
+});
+
+describe('ertelemeleriBirlestir', () => {
+    it('bekleyenlerden düşen ama payı süren ertelemeyi korur, payı bitmişi atar; yeni değer kazanır', () => {
+        const eski = { '2026-10-13_ogle': 10 * DK, '2026-10-13_imsak': 1 * DK, '2026-10-13_ikindi': 50 * DK };
+        const yeni = { '2026-10-13_ikindi': 70 * DK };
+        expect(ertelemeleriBirlestir(eski, yeni, 10 * DK + 30_000)).toEqual({
+            '2026-10-13_ogle': 10 * DK,
+            '2026-10-13_ikindi': 70 * DK,
+        });
+    });
+
+    it('etkinErtelemeler dizi olmayan girdide boş döner (mock/eski köprü)', () => {
+        expect(etkinErtelemeler(undefined as unknown as [])).toEqual({});
     });
 });

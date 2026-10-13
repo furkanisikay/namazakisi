@@ -650,6 +650,18 @@ describe('IosMuhafizTeslimcisi — Odak filtresi (issue #279)', () => {
         expect(planlanan()[0].sound).toBe(IOS_BILDIRIM_SESI);
     });
 
+    test('ERTELE kopyası sessizliği KAYBETMEZ: data `odakSessiz` + TABAN seviye taşır (basışta yeniden değerlendirilir)', async () => {
+        odakKur(true, Date.now() - 60_000);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        const zaman = Date.now() + 2 * 60 * 1000;
+        await t.uyariPlanla({ ...teslimKur({ seviye: 3 }, zaman), cikis: new Date(zaman + 60 * 60 * 1000) });
+        const c = planlanan()[0];
+        expect(c.interruptionLevel).toBe('passive');
+        expect(c.data.odakSessiz).toBe(true);
+        expect(c.data.kesintiSeviyesi).toBe('timeSensitive');
+    });
+
     test('bozuk filtre kaydı hatırlatmaları susturmaz', async () => {
         siriKoprusu.siriOdakDurumuAl.mockResolvedValue('{bozuk');
         const t = new IosMuhafizTeslimcisi();

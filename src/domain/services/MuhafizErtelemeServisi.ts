@@ -27,6 +27,9 @@ import {
     kimliktenKalanDk,
 } from '../../core/muhafiz/erteleme';
 import { muhafizTeslimcisiniAl } from './MuhafizTeslimcisi';
+import { ertelemeDegistiBildir } from './muhafizErtelemeDurumu';
+import { odakDurumunuCoz, odakSessizlestirirMi } from '../../core/muhafiz/ios/odakFiltresi';
+import { siriOdakDurumuAl } from '../../../modules/expo-siri-kisayollari/src';
 
 const VAKIT_DESENI = /^muhafiz_(\d{4}-\d{2}-\d{2})_vakit_([a-z]+)(?:_|$)/;
 
@@ -79,7 +82,7 @@ export async function muhafizErtelemesiniIsle(yanit: ErtelemeYaniti, simdiMs: nu
         ) ?? yanit.baslik ?? '';
         const kanalId = typeof yanit.data.kanalId === 'string' ? yanit.data.kanalId : undefined;
         const iosSesi = typeof yanit.data.ertelemeSesi === 'string' ? yanit.data.ertelemeSesi : undefined;
-        const kesinti = typeof yanit.data.kesintiSeviyesi === 'string' ? yanit.data.kesintiSeviyesi : undefined;
+        const kesinti = Platform.OS === 'ios' ? await iosKesintiSeviyesi(yanit.data, hedefMs) : undefined;
 
         await Notifications.scheduleNotificationAsync({
             identifier: ertelemeKimligi(tarih, vakit),
@@ -102,10 +105,27 @@ export async function muhafizErtelemesiniIsle(yanit: ErtelemeYaniti, simdiMs: nu
 
         await araliktakiUyarilariSustur(tarih, vakit, cikisMs, hedefMs);
         Logger.info('MuhafizErteleme', `${vakit} (${tarih}) ${sureDk} dk ertelendi`);
+        // Ön plan muhafızı (banner/ses) ve saatin planı ertelemeyi öğrensin.
+        ertelemeDegistiBildir();
     } catch (error) {
         Logger.error('MuhafizErteleme', 'Erteleme kurulamadi', error);
     }
     return true;
+}
+
+/**
+ * iOS: ertelenen kopyanın kesinti seviyesi — Odak filtresi BASIŞ ANINDA yeniden
+ * değerlendirilir (issue #279). Planlama anındaki seviye `data.kesintiSeviyesi`'dir
+ * (Odaksız taban seviye); planlamada Odak sessizdiyse `data.odakSessiz`. Ertelenen
+ * kopya hedef anında gelir: o an Odak sessizliği sürüyorsa `passive` (ses yok,
+ * Odağı delmez), bitmişse taban seviye. Odak durumu okunamazsa planlama anının
+ * kararı korunur (sessizlik sessizce kaybolmasın).
+ */
+async function iosKesintiSeviyesi(data: Record<string, unknown>, hedefMs: number): Promise<string | undefined> {
+    const taban = typeof data.kesintiSeviyesi === 'string' ? data.kesintiSeviyesi : undefined;
+    const odak = odakDurumunuCoz(await siriOdakDurumuAl());
+    const sessiz = odak ? odakSessizlestirirMi(odak, hedefMs) : data.odakSessiz === true;
+    return sessiz ? 'passive' : taban;
 }
 
 /**

@@ -31,6 +31,7 @@ import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muhafizPlaniGozlemcisi';
 import { canliSaatDinleyicisiniAyarla } from './canliSaatGozlemcisi';
+import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtelemeDurumu';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
@@ -90,6 +91,10 @@ export class WearSenkronServisi {
         });
         // Now Bar seçimi / canlı sayaç planı değişince (issue #282) saatin canlı sayacı da.
         canliSaatDinleyicisiniAyarla(() => {
+            this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
+        });
+        // Muhafız "Ertele" (issue #289): ertelenen aralık bilekte de sussun.
+        ertelemeDinleyicisiEkle('wear', () => {
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
     }
@@ -173,7 +178,10 @@ export class WearSenkronServisi {
         }
         // Özel gün (issue #272): telefon o günün muhafızını planlamaz → saat de planlamaz.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
-        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi };
+        // Ertele (issue #289): kaynak bekleyen bildirimlerdeki kopya — telefonun arka
+        // planı ve ön planıyla AYNI. Okunamazsa boş (plan süzülmeden gider).
+        const ertelemeler = durum.aktif ? await bekleyenErtelemeleriOku() : {};
+        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi, ertelemeler };
     }
 
     /**

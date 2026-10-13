@@ -16,6 +16,8 @@ import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/mu
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { GIRIS_ICERIK_HAVUZU, sonDakikaDiliMi } from '../../core/utils/muhafizMetinYardimcisi';
+import { ertelemeAnahtari, ertelemeleriBirlestir, ertelemeSusturuyorMu } from '../../core/muhafiz/erteleme';
+import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtelemeDurumu';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Platform, Vibration } from 'react-native';
 
@@ -51,6 +53,11 @@ type BildirimCallback = (
  */
 const ON_PLAN_ANONS_GECIKMESI_MS = 1000;
 
+const DK_MS = 60 * 1000;
+
+/** `muhafizErtelemeDurumu` gözlemcisindeki yuva adı. */
+const ERTELEME_YUVASI = 'onPlanMuhafiz';
+
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
     private matris: MuhafizMatrisi = VARSAYILAN_MATRIS;
@@ -72,6 +79,18 @@ export class NamazMuhafiziServisi {
      */
     private ozelGun: OzelGunKapisiGirdisi | null = null;
 
+    /**
+     * Etkin ERTELEMELER (issue #289): `<namaz günü>_<vakit>` → hedef ms. BELLEK-İÇİ
+     * önbellek (`kontrolEt` senkron koşar). Kaynak bekleyen bildirimlerdeki ertelenen
+     * kopyadır; doldurulan yollar: açılış hidrasyonu, her tick başında arka planda
+     * tazeleme ve "ertelendi" gözlemcisi (Android native olayı / iOS JS işleyicisi).
+     * Bilinmeseydi uygulama açıkken banner + ses + titreşim sürer ve ön plan, native'in
+     * az önce iptal ettiği TTS anonsunu AYNI kimlikle yeniden kurardı.
+     */
+    private ertelemeler: Record<string, number> = {};
+    private ertelemeTazelemesi: Promise<void> | null = null;
+    private ertelemeAboneligi: (() => void) | null = null;
+
     private constructor() {
         this.hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
     }
@@ -87,6 +106,12 @@ export class NamazMuhafiziServisi {
         this.onBildirim = callback;
         if (this.intervalId) return;
 
+        // Erteleme kurulunca banner HEMEN kalksın (bir sonraki tick'i beklemesin).
+        this.ertelemeAboneligi?.();
+        this.ertelemeAboneligi = ertelemeDinleyicisiEkle(ERTELEME_YUVASI, () => {
+            void this.ertelemeDurumunuYukle();
+        });
+
         // Her dakika kontrol et
         this.intervalId = setInterval(() => this.kontrolEt(), 60 * 1000);
         this.kontrolEt(); // İlk başlatmada hemen kontrol et
@@ -98,6 +123,8 @@ export class NamazMuhafiziServisi {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+        this.ertelemeAboneligi?.();
+        this.ertelemeAboneligi = null;
     }
 
     /**
@@ -108,6 +135,8 @@ export class NamazMuhafiziServisi {
         this.kilinanVakitler = {};
         this.temizlenenVakitler = {};
         this.ozelGun = null;
+        this.ertelemeler = {};
+        this.ertelemeTazelemesi = null;
         this.matris = VARSAYILAN_MATRIS;
         this.onBildirim = null;
     }
@@ -153,6 +182,9 @@ export class NamazMuhafiziServisi {
         // açılışta banner/ses/anons çıkardı (kılınmışlık #92 dersinin ikizi).
         // Okuyucu asla fırlatmaz.
         this.ozelGun = await ozelGunKapisiniOku();
+        // Ertelemeler de (issue #289): ertelendikten sonra uygulama açılınca ilk
+        // `kontrolEt` banner/ses/anons çıkarmasın. Okuyucu asla fırlatmaz.
+        await this.ertelemeleriTazele(true);
         try {
             const bugunTarih = new Date();
             const dunTarih = new Date();
@@ -191,7 +223,40 @@ export class NamazMuhafiziServisi {
         if (this.intervalId) this.kontrolEt();
     }
 
+    /**
+     * Ertelemeleri bekleyen bildirimlerden yeniden okur ve kapıyı HEMEN uygular
+     * (açık banner kalksın). "Ertelendi" gözlemcisi çağırır. Asla fırlatmaz.
+     */
+    public async ertelemeDurumunuYukle(): Promise<void> {
+        await this.ertelemeleriTazele(true);
+        if (this.intervalId) this.kontrolEt();
+    }
+
+    /**
+     * Tick tazelemeleri süren okumayı paylaşır. `taze` = okuma BU ANDAN SONRA
+     * başlamalı (açılış, "ertelendi" olayı): süren okuma native kopyayı yazmadan
+     * önce başlamış olabilir, onu paylaşmak ertelemeyi bir dakika kaçırırdı.
+     */
+    private ertelemeleriTazele(taze = false): Promise<void> {
+        if (this.ertelemeTazelemesi && !taze) return this.ertelemeTazelemesi;
+        const onceki = this.ertelemeTazelemesi ?? Promise.resolve();
+        const bu: Promise<void> = onceki
+            .then(() => bekleyenErtelemeleriOku())
+            .then((yeni) => {
+                this.ertelemeler = ertelemeleriBirlestir(this.ertelemeler, yeni, Date.now());
+            })
+            .finally(() => {
+                if (this.ertelemeTazelemesi === bu) this.ertelemeTazelemesi = null;
+            });
+        this.ertelemeTazelemesi = bu;
+        return bu;
+    }
+
     private kontrolEt() {
+        // Ertelemeler bir sonraki tick için arka planda tazelenir (ateşle-unut):
+        // native erteleme olayı kaçtıysa (yarış, olay yayılamadı) en geç bir dakika.
+        void this.ertelemeleriTazele();
+
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
@@ -243,6 +308,23 @@ export class NamazMuhafiziServisi {
             yon === 'girisindenItibaren' && giris
                 ? olcuDkHesapla({ kaynak: `vakit:${vakit}`, baslangic: giris, bitis: cikis, yon }, new Date())
                 : kalanDk;
+
+        // ERTELEME (issue #289): hedef ana (+ çakışma payı) kadar banner, ses, titreşim
+        // ve sesli anons YOK. Kural arka planla AYNI (`ertelemeSusturuyorMu`) ve aynı
+        // tetik anına uygulanır: çıkışta `çıkış − kalanDk`, girişte `giriş + olcuDk`
+        // (planın bu dakikaya kurduğu uyarının anı). Gün = vaktin NAMAZ GÜNÜ.
+        const tetikMs =
+            yon === 'girisindenItibaren' && giris
+                ? giris.getTime() + olcuDk * DK_MS
+                : cikis.getTime() - kalanDk * DK_MS;
+        if (ertelemeSusturuyorMu(this.ertelemeler, vakitGunu, vakit, tetikMs)) {
+            const erteleAnahtari = `ertele_${ertelemeAnahtari(vakitGunu, vakit)}_${this.ertelemeler[ertelemeAnahtari(vakitGunu, vakit)]}`;
+            if (!this.temizlenenVakitler[erteleAnahtari] && this.onBildirim) {
+                this.onBildirim('', 0);
+                this.temizlenenVakitler[erteleAnahtari] = true;
+            }
+            return;
+        }
 
         // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
         // (daha nazik) seviye aktifse onun sıklığı işler.

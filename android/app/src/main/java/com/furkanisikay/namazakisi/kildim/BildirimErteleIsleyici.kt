@@ -4,6 +4,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.facebook.react.ReactApplication
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.common.LifecycleState
 import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
 import com.furkanisikay.namazakisi.wear.KopruEtiketliBildirimServisi
@@ -36,10 +39,17 @@ import org.json.JSONObject
  *
  * İşlenemeyen yanıtta (eski içerik, eksik veri) `false` döner → üst sınıf JS
  * yoluna devreder (`MuhafizErtelemeServisi`).
+ *
+ *  5. JS'e HABER verilir ([jsBildir]): ön plan muhafızı (banner/ses/anons) ve saatin
+ *     hazır planı ertelemeyi ancak böyle öğrenir. Yoksa uygulama açıkken ön plan
+ *     native'in az önce iptal ettiği anonsu AYNI kimlikle yeniden kurardı.
  */
 object BildirimErteleIsleyici {
     private const val TAG = "BildirimErtele"
     private const val VARSAYILAN_KANAL = "muhafiz"
+
+    /** Uygulama AÇIKKEN yayılan olay — JS `MUHAFIZ_ERTELENDI_OLAYI` ile AYNI. */
+    const val OLAY_ADI = "MuhafizErtelendi"
 
     /** @return yanıt burada işlendiyse true (expo'nun olağan yanıt yolu ÇAĞRILMAMALI). */
     fun isle(context: Context, intent: Intent, zamanlama: SchedulingDelegate): Boolean {
@@ -95,6 +105,7 @@ object BildirimErteleIsleyici {
             zamanlama.scheduleNotification(NotificationRequest(ertelemeKimligi, yeniIcerik, DateTrigger(kanal, hedef)))
             araliktakileriSustur(context, zamanlama, vakit, cikisMs, hedef)
             Log.i(TAG, "${vakit.vakit} (${vakit.tarih}) $sureDk dk ertelendi")
+            jsBildir(context)
         } catch (e: Exception) {
             // Bildirim kapandı ama erteleme kurulamadı: planlı uyarılar sürer (sessiz
             // kayıp değil). JS yoluna düşmek aynı veriyle aynı hatayı tekrarlardı.
@@ -132,6 +143,39 @@ object BildirimErteleIsleyici {
             AnonsZamanlayici.eslesenleriIptalEt(context, susturulur)
         } catch (e: Exception) {
             Log.w(TAG, "Anons alarmlari susturulamadi", e)
+        }
+    }
+
+    /**
+     * JS'e "erteleme kuruldu" der ([KildimKuyrugu.jsUyandir] ikizi): ön plandaysa olay
+     * yayar (ön plan muhafızı önbelleğini tazeler, saat yükü süzülür); değilse headless
+     * `KildimKuyrugu` görevini `neden=ertele` ile başlatmaya ÇALIŞIR — yalnız saatin
+     * planı tazelensin diye (ön plan muhafızı zaten açılışta bekleyenlerden hidrate
+     * olur). `startService` arka plan kısıtına takılırsa HATA DEĞİL: saat bir sonraki
+     * gönderimde (15 dk görevi, açılış) süzülmüş planı alır.
+     */
+    private fun jsBildir(context: Context) {
+        val uygulama = context.applicationContext
+        val baglam: ReactContext? = try {
+            (uygulama as? ReactApplication)?.reactHost?.currentReactContext
+        } catch (_: Throwable) {
+            null
+        }
+        if (baglam != null && baglam.lifecycleState == LifecycleState.RESUMED) {
+            try {
+                baglam.emitDeviceEvent(OLAY_ADI, null)
+                return
+            } catch (e: Throwable) {
+                Log.w(TAG, "On plan olayi yayilamadi", e)
+            }
+        }
+        try {
+            uygulama.startService(
+                Intent(uygulama, KildimGorevServisi::class.java)
+                    .putExtra(KildimGorevServisi.EK_NEDEN, KildimGorevServisi.NEDEN_ERTELE)
+            )
+        } catch (e: Exception) {
+            Log.i(TAG, "Headless gorev baslatilamadi; saat sonraki gonderimde suzulur", e)
         }
     }
 
