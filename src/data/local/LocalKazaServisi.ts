@@ -122,6 +122,33 @@ export const localKazaDurumunuKaydet = async (
   }
 };
 
+/**
+ * Yazmadan ÖNCE okunacak güncel kaza durumu — kayıt yoksa boş durum; okunamaz
+ * ya da BOZUKSA `null` (çağıran bellekteki duruma döner, bozuk ham değerin ya da
+ * geçici bir okuma hatasının üstüne boş durum yazılmaz).
+ *
+ * Neden: bildirimdeki "Kazaya ekle" (issue #290) store'u atlayıp diske yazar;
+ * Kaza Defteri bellekteki eski durumla yazsaydı o borç sessizce SİLİNİRDİ.
+ */
+export const localKazaDurumunuYazimIcinGetir = async (): Promise<KazaDurumu | null> => {
+  try {
+    const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
+    if (ham) {
+      let cozulen: unknown = null;
+      try {
+        cozulen = JSON.parse(ham);
+      } catch {
+        cozulen = null;
+      }
+      if (cozulen === null || typeof cozulen !== 'object' || Array.isArray(cozulen)) return null;
+    }
+    const okunan = await localKazaDurumunuGetir();
+    return okunan.basarili && okunan.veri ? okunan.veri : null;
+  } catch {
+    return null;
+  }
+};
+
 // ==================== BORÇ EKLEME (tek yol) ====================
 
 /**

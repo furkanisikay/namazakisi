@@ -42,7 +42,7 @@ import {
   seriKontrolet,
   puanlamayiYenidenHesapla,
 } from './seriSlice';
-import { kazaVerileriniYukle } from './kazaSlice';
+import { kazaVerileriniYukle, kazaOneriAyarlariniYukle } from './kazaSlice';
 import { ozellikleriYukle } from './ozelliklerSlice';
 
 export interface YedeklemeState {
@@ -105,6 +105,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
     await dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
 
     await dispatch(kazaVerileriniYukle());
+    await dispatch(kazaOneriAyarlariniYukle());
     await dispatch(ozellikleriYukle());
 
     // Özel gün / seri ayarı geri yüklendiyse TÜM hatırlatmaları yeniden kur

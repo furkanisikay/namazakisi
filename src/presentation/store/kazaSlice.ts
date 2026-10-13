@@ -12,6 +12,11 @@ import {
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { KazaIstatistik } from '../../core/types/KazaTipleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { LocalKazaOneriServisi } from '../../data/local/LocalKazaOneriServisi';
+import {
+  VARSAYILAN_KAZA_ONERI_AYARLARI,
+  type KazaOneriAyarlari,
+} from '../../core/kaza/farzSonrasiKazaOnerisi';
 
 // ==================== STATE TİPİ ====================
 
@@ -21,6 +26,10 @@ interface KazaState {
   tempoGecmis: Record<string, number>;
   yukleniyor: boolean;
   hata: string | null;
+  /** "Her farzdan sonra kaza önerin" ayarı (issue #294). */
+  oneriAyarlari: KazaOneriAyarlari;
+  /** Diskten okundu mu? Anahtar initialState'i gerçek veri sanmasın. */
+  oneriAyarlariYuklendi: boolean;
 }
 
 const baslangicDurumu: KazaState = {
@@ -29,6 +38,8 @@ const baslangicDurumu: KazaState = {
   tempoGecmis: {},
   yukleniyor: false,
   hata: null,
+  oneriAyarlari: { ...VARSAYILAN_KAZA_ONERI_AYARLARI },
+  oneriAyarlariYuklendi: false,
 };
 
 // ==================== YARDIMCI FONKSİYONLAR ====================
@@ -58,6 +69,18 @@ const gunlukSayaciKontrolEt = (durumu: KazaDurumu): KazaDurumu => {
 };
 
 // ==================== ASYNC THUNKS ====================
+
+/**
+ * Yazma thunk'larının TABANI: bellek değil DİSK. Bildirimden "Kazaya ekle"
+ * (issue #290) ve "her farzla bir kaza" store'u atlayıp diske yazabilir; sayfa
+ * bellekteki eski durumla yazsaydı o değişiklik silinirdi. Disk okunamaz/bozuksa
+ * eski davranış (bellek, o da yoksa boş durum).
+ */
+const yazimTabani = async (bellek: KazaDurumu | null): Promise<KazaDurumu> => {
+  const disk = await LocalKazaServisi.localKazaDurumunuYazimIcinGetir();
+  if (disk) return gunlukSayaciKontrolEt(disk);
+  return bellek || LocalKazaServisi.bosKazaDurumuOlustur();
+};
 
 /**
  * Kaza verilerini yükler (başlangıçta çağrılır)
@@ -95,7 +118,7 @@ export const borcEkle = createAsyncThunk(
     const state = getState() as { kaza: KazaState };
     // Tek ekleme yolu: bildirimdeki "Kazaya ekle" (issue #290) de bundan geçer.
     const durumu = LocalKazaServisi.borcEklenmisDurum(
-      state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur(),
+      await yazimTabani(state.kaza.kazaDurumu),
       namazAdi,
       sayi
     );
@@ -122,7 +145,7 @@ export const kazaTamamla = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { kaza: KazaState };
-    let durumu = state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur();
+    let durumu = await yazimTabani(state.kaza.kazaDurumu);
 
     let yeniNamazlar = [...durumu.namazlar];
 
@@ -196,7 +219,7 @@ export const sihirbazIleBaslat = createAsyncThunk(
   'kaza/sihirbazIleBaslat',
   async (girdi: HesaplamaSihirbazGirdisi, { getState }) => {
     const state = getState() as { kaza: KazaState };
-    let durumu = state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur();
+    let durumu = await yazimTabani(state.kaza.kazaDurumu);
 
     const toplamBorc = hesaplaTahminiBorcMiktari(girdi);
     const dagılım = borcuVakitlerePaylaştır(toplamBorc);
@@ -236,7 +259,7 @@ export const gunlukHedefiGuncelle = createAsyncThunk(
   async ({ hedef }: { hedef: number }, { getState }) => {
     const state = getState() as { kaza: KazaState };
     const durumu = {
-      ...(state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur()),
+      ...(await yazimTabani(state.kaza.kazaDurumu)),
       gunlukHedef: Math.max(0, hedef),
       guncellemeTarihi: new Date().toISOString(),
     };
@@ -253,14 +276,32 @@ export const gizlemeToggle = createAsyncThunk(
   'kaza/gizlemeToggle',
   async (_, { getState }) => {
     const state = getState() as { kaza: KazaState };
+    const taban = await yazimTabani(state.kaza.kazaDurumu);
     const durumu = {
-      ...(state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur()),
-      toplamGizleMi: !state.kaza.kazaDurumu?.toplamGizleMi,
+      ...taban,
+      toplamGizleMi: !taban.toplamGizleMi,
       guncellemeTarihi: new Date().toISOString(),
     };
 
     await LocalKazaServisi.localKazaDurumunuKaydet(durumu);
     return durumu;
+  }
+);
+
+/**
+ * "Her farzla bir kaza" önerisi ayarı (issue #294). Salt `AsyncStorage` okuması,
+ * ASLA reddetmez (bozuk kayıt → varsayılan açık).
+ */
+export const kazaOneriAyarlariniYukle = createAsyncThunk('kaza/oneriAyarlariniYukle', async () =>
+  LocalKazaOneriServisi.ayarlariGetir()
+);
+
+export const kazaOneriAyarlariniGuncelle = createAsyncThunk(
+  'kaza/oneriAyarlariniGuncelle',
+  async (ayarlar: KazaOneriAyarlari) => {
+    const kaydedildi = await LocalKazaOneriServisi.ayarlariKaydet(ayarlar);
+    if (!kaydedildi) throw new Error('Kaza önerisi ayarı kaydedilemedi');
+    return ayarlar;
   }
 );
 
@@ -313,6 +354,22 @@ const kazaSlice = createSlice({
 
       .addCase(gizlemeToggle.fulfilled, (state, action) => {
         state.kazaDurumu = action.payload;
+      })
+
+      .addCase(kazaOneriAyarlariniYukle.fulfilled, (state, action) => {
+        state.oneriAyarlari = action.payload;
+        state.oneriAyarlariYuklendi = true;
+      })
+      // İyimser: anahtar beklemeden dönsün; yazım başarısızsa geri alınır.
+      .addCase(kazaOneriAyarlariniGuncelle.pending, (state, action) => {
+        state.oneriAyarlari = action.meta.arg;
+      })
+      .addCase(kazaOneriAyarlariniGuncelle.fulfilled, (state, action) => {
+        state.oneriAyarlari = action.payload;
+        state.oneriAyarlariYuklendi = true;
+      })
+      .addCase(kazaOneriAyarlariniGuncelle.rejected, (state, action) => {
+        state.oneriAyarlari = { farzSonrasiOner: !action.meta.arg.farzSonrasiOner };
       });
   },
 });

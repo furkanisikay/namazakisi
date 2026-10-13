@@ -18,6 +18,8 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
+import { KazaOneriModal } from '../components/home/KazaOneriModal';
+import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { ikiBolmeliMi } from '../../core/utils/ekranSinifi';
@@ -81,6 +83,8 @@ export const AnaSayfa: React.FC = () => {
   // Kerahat vaktinde işaretleme öncesi kibar onay modalı için bekleyen namaz (issue #82).
   // null değilse modal görünür; onaylanırsa bu namaz "kılındı" işaretlenir.
   const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
+  // "Her farzla bir kaza" önerisi (issue #294): karar saf çekirdekte, burada yalnız tetiklenir.
+  const kazaOnerisi = useFarzSonrasiKazaOnerisi();
 
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
@@ -540,6 +544,16 @@ export const AnaSayfa: React.FC = () => {
   // Namaz İşlemleri — gerçek işaretleme (kerahat onayından geçtikten sonra çağrılır)
   const namazIsaretle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    // Kaza önerisi (issue #294): yalnız aktif günün o anki vaktinde, kerahat dışında,
+    // borç varsa sorar. Geri almada (tamamlandi=false) bekleyen değerlendirmeyi iptal eder.
+    void kazaOnerisi.degerlendir({
+      kilinanNamaz: namazAdi,
+      tamamlandi,
+      gosterilenGun: mevcutTarih,
+      aktifGun,
+      suankiVakitNamazi: vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] ?? null : null,
+      koordinat: konumAyarlari.koordinatlar,
+    });
     // Puanlama + seri: gunlukNamazlar degisince yukaridaki useEffect (seriKontrolet -> reconcile)
     // SIRALI ve TEK-YAZICI olarak otomatik kosar; burada ayrica dispatch GEREKMEZ (yaris onlenir).
 
@@ -878,6 +892,17 @@ export const AnaSayfa: React.FC = () => {
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
       {/* Kerahat (mekruh) vaktinde işaretleme öncesi kibar onay (issue #82) */}
+      {/* Kutlama modalı açıkken beklesin; kapanınca görünür (iki modal üst üste binmesin). */}
+      <KazaOneriModal
+        gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+        kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
+        kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
+        isleniyor={kazaOnerisi.isleniyor}
+        onKildim={kazaOnerisi.kildim}
+        onSimdiDegil={kazaOnerisi.simdiDegil}
+        onBirDahaSorma={kazaOnerisi.birDahaSorma}
+      />
+
       <KerahatOnayModal
         gorunur={kerahatOnayBekleyen !== null}
         aciklama={mekruhBilgi.aciklama}

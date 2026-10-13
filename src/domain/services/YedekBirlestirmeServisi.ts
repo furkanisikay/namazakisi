@@ -45,6 +45,7 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   yatisHatirlatma: DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI,
   nowBar: DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI,
   camiyeGit: DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI,
+  kazaOneri: DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI,
 };
 
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */

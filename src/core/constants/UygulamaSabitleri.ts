@@ -194,6 +194,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Kaza Defteri
   KAZA_DURUMU: '@namaz_akisi/kaza_durumu',
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
+  // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
+  // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
+  KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',
+  KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu

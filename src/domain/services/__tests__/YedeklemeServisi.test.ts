@@ -128,6 +128,8 @@ const depolamayiAyarla = (): void => {
         return { sehir: 'İstanbul' };
       case DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI:
         return { aktif: true, yurumeDk: 12 };
+      case DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI:
+        return { farzSonrasiOner: false };
       default:
         return null;
     }
@@ -177,6 +179,8 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.ayarlar.konum).toEqual({ sehir: 'İstanbul' });
     // "Camide kılacağım" (issue #292): beyaz listeye eklenmeseydi cihaz değişiminde kaybolurdu.
     expect(payload.ayarlar.camiyeGit).toEqual({ aktif: true, yurumeDk: 12 });
+    // "Her farzla bir kaza" (issue #294): kapatılmış öneri cihaz değişiminde geri açılmasın.
+    expect(payload.ayarlar.kazaOneri).toEqual({ farzSonrasiOner: false });
   });
 
   it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {
