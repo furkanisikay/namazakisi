@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Now Bar öğe seçimi + saat (issue #282 ikinci aşama) — yalnız Android; kart kapalı.
+    {
+        id: 'now-bar-secimi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: "Now Bar'da Ne Görüneceğini Siz Seçin",
+        aciklama:
+            "Her vakti, iftarı, sahuru, cumayı, nafileleri ve seriyi tek tek açabilir; geri sayımın ne zaman başlayacağını belirleyebilirsiniz.",
+        detayAciklama:
+            "Android 16 ve üstünde geri sayım durum çubuğunda ve Samsung Now Bar'da görünür. Ayarlar'daki \"Now Bar ve canlı sayaçlar\" sayfasında her öğe için \"vakit girince\" ya da \"son dakikalar\" seçebilirsiniz. Aynı anda yalnız bir sayaç öne çıkar; Wear OS saatiniz de aynı seçimi kullanır. Google sürekli açık kartları önermediği için telefonunuz öne çıkarmayı geri çekebilir.",
+        ikon: 'stopwatch',
+        hedefSayfa: 'NowBarAyarlari',
+        ctaEtiketi: 'Seçimlerinizi yapın',
+        kartGoster: false,
+        detaylar: [
+            'Beş vakit ayrı ayrı açılır; varsayılan önceki davranıştır',
+            'Cuma, kuşluk, evvâbîn ve teheccüd için de sayaç açabilirsiniz',
+            'Seri sayacı yalnız siz açarsanız öne çıkar',
+            'Sayaç tam zamanında başlar; uygulamanın açık olması gerekmez',
+        ],
+    },
     // Bildirim sınırı rehberi (issue #298).
     {
         id: 'bildirim-siniri-rehberi',

@@ -202,7 +202,8 @@ export interface NowBarOgeBilgisi {
 }
 
 const VAKIT_ETIKETLERI = { sayacla: 'Sayaçla', girince: 'Vakit girince', sonDk: 'Son dakikalar' } as const;
-const VAKIT_GEREKSINIMI = '"Sayaçla" seçeneği vakit sayacı açıkken çalışır.';
+const VAKIT_GEREKSINIMI =
+  '"Sayaçla" vakit sayacına bağlıdır (Bildirimler > Vakit sayacı); muhafızın uyardığı vakitte sayaç çıkmaz. Her zaman görmek için "Vakit girince" ya da "Son dakikalar"ı seçin.';
 
 export const NOW_BAR_OGE_BILGILERI: Record<NowBarOgesi, NowBarOgeBilgisi> = {
   imsak: {

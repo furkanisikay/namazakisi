@@ -23,6 +23,7 @@ export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
 export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
 export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
+export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
 export { CamideyimAyarlariSayfasi } from './CamideyimAyarlariSayfasi';
 export { NamazModuAyarlariSayfasi } from './NamazModuAyarlariSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';

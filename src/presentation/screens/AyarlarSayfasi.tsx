@@ -34,6 +34,7 @@ import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
 import { useSistemDurumu } from '../hooks/useSistemDurumu';
 import { usePilRehberi } from '../hooks/usePilRehberi';
 import { useCamideyimOzeti } from '../hooks/useCamideyimOzeti';
+import { useNowBarOzeti } from '../hooks/useNowBarOzeti';
 import { PilRehberModal } from '../components/pil/PilRehberi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
@@ -62,6 +63,8 @@ export const AyarlarSayfasi: React.FC = () => {
   const sistem = useSistemDurumu();
   // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
   const camideyim = useCamideyimOzeti();
+  // Now Bar ve canlı sayaçlar (#282): yalnız Android.
+  const nowBar = useNowBarOzeti();
   const kildimGuvenVar = KildimGuvenServisi.kullanilabilirMi();
   const pilRehberi = usePilRehberi(sistem);
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
@@ -259,6 +262,18 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('NafileAyarlari')}
                   onPress={() => menuyeGit('NafileAyarlari')}
                 />
+                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
+                {nowBar.kullanilabilir && [
+                  <AyarSatiri
+                    key="now-bar"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="stopwatch" size={20} color={ikonRengi} solid />}
+                    baslik="Now Bar ve canlı sayaçlar"
+                    ozet={nowBar.ozet ?? ''}
+                    yeniRozetGoster={sayfaOkunmamisMi('NowBarAyarlari')}
+                    onPress={() => menuyeGit('NowBarAyarlari')}
+                  />,
+                ]}
                 {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
                 {camideyim.kullanilabilir && [
                   <AyarSatiri

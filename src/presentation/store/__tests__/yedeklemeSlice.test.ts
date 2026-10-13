@@ -63,6 +63,9 @@ jest.mock('../cumaHatirlatmaSlice', () => ({
 jest.mock('../nafileSlice', () => ({
   nafileAyarlariniYukle: jest.fn(() => ({ type: 'nafile/yukle' })),
 }));
+jest.mock('../nowBarSlice', () => ({
+  nowBarAyarlariniYukle: jest.fn(() => ({ type: 'nowBar/yukle' })),
+}));
 const mockNafileGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
   NafileHatirlatmaServisi: {

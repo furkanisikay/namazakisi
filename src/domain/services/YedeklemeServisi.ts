@@ -104,6 +104,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     ozelGun,
     cumaHatirlatma,
     nafile,
+    nowBar,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -116,6 +117,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI),
   ]);
   return {
     muhafiz,
@@ -129,6 +131,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     ozelGun,
     cumaHatirlatma,
     nafile,
+    nowBar,
   };
 };
 
