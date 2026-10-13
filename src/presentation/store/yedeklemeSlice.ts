@@ -28,6 +28,7 @@ import { yatisHatirlatmaAyarlariniYukle } from './yatisHatirlatmaSlice';
 import { YatisHatirlatmaServisi } from '../../domain/services/YatisHatirlatmaServisi';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
+import { nowBarAyarlariniYukle } from './nowBarSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
 import { WearSenkronServisi } from '../../domain/services/WearSenkronServisi';
@@ -86,6 +87,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(cumaHatirlatmaAyarlariniYukle()),
       dispatch(yatisHatirlatmaAyarlariniYukle()),
       dispatch(nafileAyarlariniYukle()),
+      dispatch(nowBarAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
     ]);
     await dispatch(namazlariYukle({ tarih: bugunuAl() }));
@@ -112,8 +114,12 @@ export const iceAktarmayiUygula = createAsyncThunk(
     // Gün sonu hatırlatması seri AYARLARINA da bağlı olduğu için o anahtar da
     // aynı yoldan geçer. TEMBEL `require`: zincir native köprüleri çeker
     // (`ozelGunListener` ile aynı gerekçe).
+    // Now Bar seçimi (issue #282) de sayaçların kendi bildirimini kurup kurmayacağını
+    // belirler → geri yüklenince aynı tek yayma listesi koşar.
     const yayilmaGerekli =
-      DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI in plan || DEPOLAMA_ANAHTARLARI.SERI_AYARLARI in plan;
+      DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI in plan ||
+      DEPOLAMA_ANAHTARLARI.SERI_AYARLARI in plan ||
+      DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI in plan;
     let yayildi = false;
     if (yayilmaGerekli) {
       try {

@@ -16,12 +16,13 @@ object CanliGuncellemeKurallari {
     const val DAKIKA_MS = 60_000L
 
     /**
-     * Öne çıkarılabilecek sayaçlar. SERİ BİLİNÇLİ OLARAK YOK: seri sayacı bir
-     * "tehlike/kayıp" baskısı taşır; onu durum çubuğuna ve Now Bar'a taşımak
-     * istenmeyen bir baskı hissi doğurur (issue #282 kararı). Sürekli "sonraki vakit"
-     * kartı da YOK (politika) — yalnız kılınmamış vaktin son dakikaları, iftar ve sahur.
+     * Öne çıkarılabilecek sayaç temaları (native kapı). POLİTİKA KAPISI JS'TEDİR:
+     * seri, cuma ve nafile yalnız kullanıcı Now Bar ayarında o öğeyi AÇTIYSA
+     * planlayıcıdan (`CanliPlan`) gelir — seri varsayılan kapalıdır (baskı hissi),
+     * eski sayaç yolu seriyi hâlâ öne çıkarmaz (`canliGuncellemeyeUygunMu`).
+     * Sürekli "sonraki vakit" kartı YOK (politika).
      */
-    val ONE_CIKARILABILIR_TEMALAR: Set<String> = setOf("vakit", "iftar", "sahur")
+    val ONE_CIKARILABILIR_TEMALAR: Set<String> = setOf("vakit", "iftar", "sahur", "seri", "cuma", "nafile")
 
     /** ProgressStyle bölüm sayısı üst sınırı (sistem fazlasını kırpar; biz baştan reddederiz). */
     const val MAKS_BOLUM = 10

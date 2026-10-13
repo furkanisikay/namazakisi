@@ -17,6 +17,10 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
     trDestekleniyorMu: jest.fn().mockResolvedValue(true),
 }));
 jest.mock('../ArkaplanMuhafizServisi');
+const mockNafileKildimIsle = jest.fn();
+jest.mock('../NafileHatirlatmaServisi', () => ({
+  NafileHatirlatmaServisi: { getInstance: () => ({ kildimIsle: (...a: unknown[]) => mockNafileKildimIsle(...a) }) },
+}));
 jest.mock('@notifee/react-native', () => ({
     __esModule: true,
     default: {
@@ -559,6 +563,38 @@ describe('BildirimServisi', () => {
   });
 
   // ==================== MUHAFIZ BILDIRIMI FILTRELEME TESTLERI ====================
+
+  describe('Nafile "Kıldım" (issue #273)', () => {
+    const nafileYaniti = (tur: string, tarih: string, aksiyon: string = BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) => ({
+      actionIdentifier: aksiyon,
+      notification: {
+        request: {
+          identifier: `nafile_${tarih}_${tur}_120`,
+          content: { data: { tip: 'nafile', tur, tarih } },
+        },
+      },
+    });
+
+    it('yalnız o nafilenin kalan hatırlatmalarını iptal eder; FARZ kaydı YAZILMAZ', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('kusluk', '2026-02-13'));
+      expect(mockNafileKildimIsle).toHaveBeenCalledWith('2026-02-13', 'kusluk');
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('Kıldım dışı eylem ve geçersiz tür yok sayılır', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('kusluk', '2026-02-13', 'expo.modules.notifications.actions.DEFAULT'));
+      await servis.arkaplanYanitiniIsle(nafileYaniti('ogle', '2026-02-13'));
+      expect(mockNafileKildimIsle).not.toHaveBeenCalled();
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('aynı yanıt iki kez işlenmez (tekilleştirme diskte)', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('teheccud', '2026-02-12'));
+      (BildirimServisi as unknown as { instance?: BildirimServisi }).instance = undefined;
+      await BildirimServisi.getInstance().arkaplanYanitiniIsle(nafileYaniti('teheccud', '2026-02-12'));
+      expect(mockNafileKildimIsle).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('Muhafiz olmayan bildirim yanitlari', () => {
     it('tip muhafiz degilse hicbir islem yapmamali', async () => {

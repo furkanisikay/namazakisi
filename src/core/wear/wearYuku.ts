@@ -61,6 +61,33 @@ export interface WearGun {
     kilinan: VakitAdi[];
 }
 
+/**
+ * Now Bar seçimi (issue #282 ikinci aşama) — saatin canlı sayaç (Ongoing Activity)
+ * yüzeyi telefondaki AYNI kullanıcı seçimine uyar. EKLEMELİ OPSİYONEL alan:
+ * eski saat yok sayar, sürüm ARTIRILMAZ (AGENTS.md); alan yoksa saat eski
+ * davranışında kalır (her vakit "son dakikalar" muhafız planından).
+ */
+export interface WearCanliPenceresi {
+    oge: string;
+    baslik: string;
+    /** Kısa durum metni ("İftar") */
+    ad: string;
+    bas: number;
+    bitis: number;
+    /** Küçük sayı kazanır (vakit 1 … seri 6) */
+    oncelik: number;
+    /** Yalnız vakit öğelerinde (kılınmışlık + "Kıldım") */
+    tarih?: string;
+    vakit?: string;
+}
+
+export interface WearCanli {
+    /** Vakit başına: saat kendi "son dakikalar" sayacını göstersin mi? */
+    vakitler: Record<'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi', boolean>;
+    /** Telefonun zaman çizelgesinden öne çıkan dilimler (kronolojik). */
+    pencereler: WearCanliPenceresi[];
+}
+
 export interface WearYuku {
     surum: number;
     konumAdi: string;
@@ -68,6 +95,8 @@ export interface WearYuku {
     gunler: WearGun[];
     /** Kronolojik hazır muhafız planı; muhafız kapalıysa boş. */
     muhafiz: WearMuhafizKaydi[];
+    /** Now Bar seçimi (opsiyonel, issue #282). */
+    canli?: WearCanli;
 }
 
 export interface WearMuhafizYukGirdisi {
@@ -93,6 +122,8 @@ export interface WearYukGirdisi {
     muhafiz?: WearMuhafizYukGirdisi;
     /** Testte küçük sınır denemek için. */
     baytSiniri?: number;
+    /** Now Bar seçimi ve öne çıkan dilimler (`CanliSayacPlanlayici` saat payı). */
+    canli?: WearCanli;
 }
 
 export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
@@ -122,6 +153,7 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
         kerahatDk: { ...WEAR_KERAHAT_DK },
         gunler,
         muhafiz: [],
+        ...(g.canli ? { canli: g.canli } : {}),
     };
     if (!g.muhafiz) return taban;
 
@@ -163,7 +195,33 @@ export function wearYukuGecerliMi(y: unknown): y is WearYuku {
             Array.isArray(g.kilinan) &&
             g.kilinan.every((a) => typeof a === 'string' && a !== 'gunes' && WEAR_VAKITLER.includes(a as VakitAdi))
         );
-    }) && muhafizPlaniGecerliMi(o.surum, o.muhafiz);
+    }) && muhafizPlaniGecerliMi(o.surum, o.muhafiz) && canliGecerliMi(o.canli);
+}
+
+const CANLI_VAKITLERI = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const;
+
+/** Opsiyonel; varsa tam doğrulanır (Kotlin `YukCozucu` ile aynı katılık). */
+export function canliGecerliMi(c: unknown): boolean {
+    if (c === undefined) return true;
+    if (!c || typeof c !== 'object') return false;
+    const o = c as Record<string, unknown>;
+    const v = o.vakitler as Record<string, unknown> | undefined;
+    if (!v || !CANLI_VAKITLERI.every((a) => typeof v[a] === 'boolean')) return false;
+    if (!Array.isArray(o.pencereler)) return false;
+    return o.pencereler.every((p) => {
+        const r = p as Record<string, unknown>;
+        return (
+            typeof r.oge === 'string' &&
+            typeof r.baslik === 'string' &&
+            typeof r.ad === 'string' &&
+            typeof r.bas === 'number' &&
+            typeof r.bitis === 'number' &&
+            (r.bitis as number) > (r.bas as number) &&
+            Number.isInteger(r.oncelik) &&
+            (r.tarih === undefined || (typeof r.tarih === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.tarih))) &&
+            (r.vakit === undefined || (CANLI_VAKITLERI as readonly unknown[]).includes(r.vakit))
+        );
+    });
 }
 
 /** v1'de alan yoktur (boş plan); v2+'da kayıt dizisi zorunludur. */

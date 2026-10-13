@@ -31,6 +31,10 @@ jest.mock('../../../data/local/Depolama', () => ({
         yaz: jest.fn(async (anahtar: string, deger: unknown) => {
             mockDepolama[anahtar] = deger;
         }),
+        guncelle: jest.fn(async (anahtar: string, donustur: (m: unknown) => unknown) => {
+            mockDepolama[anahtar] = donustur(mockDepolama[anahtar] ?? null);
+            return mockDepolama[anahtar];
+        }),
     },
 }));
 
@@ -45,10 +49,12 @@ jest.mock('expo-notifications', () => ({
 const mockPlanlaAnons = jest.fn();
 const mockIptalEtAnons = jest.fn();
 const mockIptalEtTumAnonslar = jest.fn();
+const mockIptalEtOnekliAnonslar = jest.fn(() => true);
 jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
     planlaAnons: (...args: unknown[]) => mockPlanlaAnons(...args),
     iptalEtAnons: (...args: unknown[]) => mockIptalEtAnons(...args),
     iptalEtTumAnonslar: (...args: unknown[]) => mockIptalEtTumAnonslar(...args),
+    iptalEtOnekliAnonslar: (...args: unknown[]) => (mockIptalEtOnekliAnonslar as jest.Mock)(...args),
 }));
 
 const mockKanallariHazirla = jest.fn();
@@ -64,7 +70,7 @@ import {
     muhafizTeslimcisiniAyarla,
     type UyariTeslimi,
 } from '../MuhafizTeslimcisi';
-import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
+import { IosMuhafizTeslimcisi, ucustakiKlipleriSifirla } from '../IosMuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi, ANDROID_MUHAFIZ_ALARM_BUTCESI } from '../AndroidMuhafizTeslimcisi';
 import type { UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import { IOS_BILDIRIM_SESI } from '../../../core/muhafiz/ios/teslimPlani';
@@ -290,6 +296,7 @@ describe('IosMuhafizTeslimcisi — anons klibi (Faz 2)', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        ucustakiKlipleriSifirla();
         mockPlatformDurumu.uygulamaDurumu = 'active';
         for (const k of Object.keys(mockDepolama)) delete mockDepolama[k];
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
@@ -314,6 +321,23 @@ describe('IosMuhafizTeslimcisi — anons klibi (Faz 2)', () => {
         });
         expect(planlananSes()).toBe(beklenen);
         expect(kopru.klipSentezle).not.toHaveBeenCalled();
+    });
+
+    // Issue #273: nafile teslimcisi aynı klip dizinini paylaşır. Turunu henüz
+    // bitirmemiş örneğin sentezlediği klip, ötekinin GC'sinde SİLİNMEZ.
+    test('PAYLAŞIMLI GC: başka örneğin UÇUŞTAKİ klibi korunur, tur bitince kayda geçer', async () => {
+        const nafile = new IosMuhafizTeslimcisi({ kendiOneki: 'nafile_', matrissizAnons: true });
+        await nafile.hazirla();
+        await nafile.uyariPlanla(sesliTeslim());
+        const klip = kopru.klipSentezle.mock.calls[0][1];
+
+        const muhafiz = new IosMuhafizTeslimcisi();
+        await muhafiz.hazirla(BOS_MATRIS);
+        await muhafiz.tamamla();
+        expect(kopru.kullanilmayanKlipleriSil.mock.calls[0][0]).toContain(klip);
+
+        await nafile.tamamla();
+        expect(Object.keys(mockDepolama[DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI] as object)).toContain(klip);
     });
 
     test('klip YOK + ON PLAN → sentezlenir ve kullanilir', async () => {
@@ -503,3 +527,59 @@ describe('AndroidMuhafizTeslimcisi — camideyken (Camideyim #297)', () => {
         expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('Muhafız DIŞI tüketici (nafile, issue #273) — teslimci seçenekleri', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIptalEtOnekliAnonslar.mockReturnValue(true);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+    });
+
+    test('ANDROID: anons temizliği ÖNEKLİDİR — muhafız turu nafile anonslarını silmez', () => {
+        new AndroidMuhafizTeslimcisi().tumYanKanallariIptalEt();
+        expect(mockIptalEtOnekliAnonslar).toHaveBeenCalledWith('muhafiz_');
+        expect(mockIptalEtTumAnonslar).not.toHaveBeenCalled();
+        new AndroidMuhafizTeslimcisi({ anonsOneki: 'nafile_' }).tumYanKanallariIptalEt();
+        expect(mockIptalEtOnekliAnonslar).toHaveBeenLastCalledWith('nafile_');
+    });
+
+    test('ANDROID: native önekli iptal yoksa (eski köprü) eski "tümünü sil" yoluna düşer', () => {
+        mockIptalEtOnekliAnonslar.mockReturnValue(false);
+        new AndroidMuhafizTeslimcisi().tumYanKanallariIptalEt();
+        expect(mockIptalEtTumAnonslar).toHaveBeenCalledTimes(1);
+    });
+
+    test('ANDROID: ozel yük + kanal zorlaması; kanal hazırlığı enjekte edilir (muhafız GC çağrılmaz)', async () => {
+        const kanalHazirligi = jest.fn(async () => undefined);
+        const t = new AndroidMuhafizTeslimcisi({ kanalHazirligi, alarmButcesi: 1 });
+        await t.hazirla();
+        expect(kanalHazirligi).toHaveBeenCalledTimes(1);
+        expect(mockKanallariHazirla).not.toHaveBeenCalled();
+        const veri = { tip: 'nafile', tur: 'kusluk', tarih: '2026-10-13' };
+        await t.uyariPlanla({ ...teslimKur(), id: 'nafile_x_1', ozel: { veri, kanalId: 'nafile_uyandirma' } });
+        await t.uyariPlanla({ ...teslimKur({}, Date.now() + 120_000), id: 'nafile_x_2', ozel: { veri } });
+        const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
+        expect(cagrilar).toHaveLength(1); // bütçe 1
+        expect(cagrilar[0][0].content.data).toEqual(veri);
+        expect(cagrilar[0][0].trigger.channelId).toBe('nafile_uyandirma');
+    });
+
+    test('iOS: bütçe "kendimiz dışındaki" bekleyenleri sayar; zamana duyarlılık zorlanabilir', async () => {
+        // 30 muhafız + 25 nafile bekliyor; nafile teslimcisi muhafızları SAYAR.
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            ...Array.from({ length: 30 }, (_, i) => ({ identifier: `muhafiz_${i}` })),
+            ...Array.from({ length: 25 }, (_, i) => ({ identifier: `nafile_${i}` })),
+        ]);
+        const t = new IosMuhafizTeslimcisi({ kendiOneki: 'nafile_' });
+        await t.hazirla();
+        const veri = { tip: 'nafile', tur: 'teheccud', tarih: '2026-10-13' };
+        for (let i = 0; i < 40; i++) {
+            await t.uyariPlanla({ ...teslimKur({ seviye: 1 }, Date.now() + 60_000 * (i + 1)), id: `nafile_${i}`, ozel: { veri, zamanaDuyarli: true } });
+        }
+        const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
+        expect(cagrilar).toHaveLength(64 - 30 - 4);
+        expect(cagrilar[0][0].content.interruptionLevel).toBe('timeSensitive');
+        expect(cagrilar[0][0].content.data).toEqual(veri);
+    });
+});
+

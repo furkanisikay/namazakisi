@@ -11,4 +11,7 @@
     <string name="kerahat_komplikasyon_adi">Kerahat</string>
     <string name="son_dakikalar_kanal_adi">Son dakikalar</string>
     <string name="son_dakikalar_kanal_aciklama">Kılınmamış vaktin son dakikalarında kadrandaki sayaç</string>
+    <string name="tesbihat_adi">Tesbihat</string>
+    <string name="tesbihat_kanal_adi">Tesbihat</string>
+    <string name="tesbihat_kanal_aciklama">Yarım kalan tesbihata kadrandan dönmek için sessiz simge</string>
 </resources>

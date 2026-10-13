@@ -89,8 +89,47 @@ class ExpoCountdownNotificationModule : Module() {
                 CountdownNotificationHelper.cancelNotification(context, id)
                 // Varsa iptal et (AlarmManager)
                 CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
+                // Now Bar planındaki ileriki dilimleri de düşür ("Kıldım", yeniden planlama).
+                CanliPlan.kimligiDusur(context, id)
             }
             Unit
+        }
+
+        // ============================================================
+        // NOW BAR / CANLI SAYAÇ PLANI (issue #282 ikinci aşama)
+        // ============================================================
+
+        /**
+         * Öne çıkarma durumu: "desteklenmiyor" (API < 36), "kapali" (kullanıcı
+         * sistemde "Canlı güncellemeler"i kapattı) ya da "acik". Binder çağrısı →
+         * AsyncFunction.
+         */
+        AsyncFunction("canliDurumu") { promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(
+                when {
+                    context == null || Build.VERSION.SDK_INT < 36 -> "desteklenmiyor"
+                    CanliGuncelleme.destekleniyorMu(context) -> "acik"
+                    else -> "kapali"
+                }
+            )
+        }
+
+        /** JS'in hesapladığı olay listesini saklar, şu anki hâli uygular, zinciri kurar. */
+        AsyncFunction("canliPlaniKur") { json: String, promise: Promise ->
+            val context = appContext.reactContext
+            if (context != null) CanliPlan.kur(context, json)
+            promise.resolve(null)
+        }
+
+        /**
+         * Sistemdeki öne çıkarma ayarını açar (Android 16: uygulamanın "Canlı
+         * güncellemeler" sayfası). Yoksa uygulamanın bildirim ayarları, o da yoksa
+         * uygulama ayrıntıları. @return açılan ekran ya da null.
+         */
+        AsyncFunction("canliAyarlariniAc") { promise: Promise ->
+            val context: Context? = appContext.currentActivity ?: appContext.reactContext
+            promise.resolve(if (context == null) null else canliAyarEkraniniAc(context))
         }
 
         Function("stopAll") {
@@ -136,6 +175,20 @@ class ExpoCountdownNotificationModule : Module() {
                 AnonsZamanlayici.tumunuIptal(context.applicationContext)
             }
             Unit
+        }
+
+        /**
+         * Kimligi [onek] ile baslayan planli anonslari iptal eder (issue #273).
+         * Muhafiz ve nafile anonslari ayni kayitta yasar; biri yeniden
+         * planlanirken digerinin anonslari silinmemeli. Iptal edilen sayiyi dondurur.
+         */
+        Function("iptalEtOnekliAnonslar") { onek: String ->
+            val context = appContext.reactContext
+            if (context == null || onek.isEmpty()) {
+                0
+            } else {
+                AnonsZamanlayici.eslesenleriIptalEt(context.applicationContext) { it.startsWith(onek) }.size
+            }
         }
 
         /**
@@ -325,5 +378,32 @@ class ExpoCountdownNotificationModule : Module() {
                 }
             }
         }
+    }
+
+    /** `canliAyarlariniAc` gövdesi (sıralı yedekler; `resolveActivity` KULLANILMAZ — AGENTS.md). */
+    private fun canliAyarEkraniniAc(context: Context): String? {
+        val paket = context.packageName
+        val adaylar = mutableListOf<Pair<String, Intent>>()
+        if (Build.VERSION.SDK_INT >= 36) {
+            // API 36 `Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS` (eski SDK ile de derlensin diye dize).
+            adaylar += "canli" to Intent("android.settings.APP_NOTIFICATION_PROMOTION_SETTINGS")
+                .putExtra("android.provider.extra.APP_PACKAGE", paket)
+        }
+        adaylar += "bildirim" to Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+            .putExtra("android.provider.extra.APP_PACKAGE", paket)
+        adaylar += "uygulama" to Intent(
+            "android.settings.APPLICATION_DETAILS_SETTINGS",
+            android.net.Uri.fromParts("package", paket, null)
+        )
+        for ((ad, intent) in adaylar) {
+            try {
+                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                return ad
+            } catch (_: android.content.ActivityNotFoundException) {
+            } catch (e: Exception) {
+                Log.w("ExpoCountdown", "Ayar ekrani acilamadi: $ad", e)
+            }
+        }
+        return null
     }
 }

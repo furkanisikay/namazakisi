@@ -61,6 +61,24 @@ export interface UyariTeslimi {
      * (tarihsel davranis; eski el yapimi teslimler/testler).
      */
     cikis?: Date;
+    /**
+     * Muhafız DIŞI bir tüketicinin (nafile, issue #273) teslim ayrıntıları.
+     * Verilmezse muhafız davranışı BİREBİR korunur (kayıt-oynat nöbetçisi).
+     *
+     * `veri` ZORUNLUDUR: muhafız yükü (`tip: 'muhafiz', vakit, tarih`) "Kıldım"da
+     * FARZ namazı kılındı diye işaretler — nafile bildirimi o yükü taşırsa nafile
+     * için basılan Kıldım öğleyi kaydederdi.
+     */
+    ozel?: OzelTeslim;
+}
+
+export interface OzelTeslim {
+    /** Bildirimin `data` yükü (muhafız yükünün YERİNE). */
+    veri: Record<string, unknown>;
+    /** Android: kanal id'si zorlanır (ör. teheccüd uyandırması `nafile_uyandirma`). */
+    kanalId?: string;
+    /** iOS: Odak'ı delen `timeSensitive` kesinti seviyesi zorlanır. */
+    zamanaDuyarli?: boolean;
 }
 
 export interface MuhafizTeslimcisi {

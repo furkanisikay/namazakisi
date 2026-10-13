@@ -308,10 +308,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                             <>
                                 <BolumBasligi metin="NASIL UYARSIN" />
                                 <View className="flex-row flex-wrap" style={{ marginHorizontal: -4 }}>
-                                    {KANAL_CIPLERI.map((m) => {
+                                    {KANAL_CIPLERI.filter((m) => tanim.kapaliCipiVar !== false || m.id !== 'kapali').map((m) => {
                                         const secili = kanalCipiSeciliMi(seviye.kanallar, m);
                                         return (
-                                            <View key={m.id} style={{ width: '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
+                                            <View key={m.id} style={{ width: tanim.kapaliCipiVar === false ? '33.33%' : '50%', paddingHorizontal: 4, paddingBottom: 8 }}>
                                                 <TouchableOpacity
                                                     className="items-center justify-center py-3 px-2 rounded-2xl border"
                                                     style={{
@@ -412,7 +412,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                             klip ile calisir, dolayisiyla "Turkce konusma paketi"
                             diye bir kavram yoktur (`useTurkceTtsDestegi` orada
                             zaten `null` doner, bu kapi ikinci savunmadir). */}
-                        {sesliMi && tanim.anonsMetniDuzenlenebilir && (
+                        {sesliMi && (tanim.anonsMetniDuzenlenebilir || !!tanim.anonsOrnegiOlustur) && (
                             <TurkceTtsUyarisi destekli={ttsDestekli} />
                         )}
 
@@ -643,8 +643,39 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     </>
                                 )}
 
+                                {/* ── Sesli anons ÖRNEĞİ (nafile, #273) — metin bağlamdan
+                                    üretilir, yazılmaz; kullanıcı ne duyacağını görür/dinler. */}
+                                {sesliMi && tanim.anonsOrnegiOlustur && (
+                                    <View
+                                        testID="anons-ornegi"
+                                        className="p-3 rounded-2xl mt-4"
+                                        style={{ backgroundColor: `${renkler.birincil}10` }}
+                                    >
+                                        <Text
+                                            className="text-[10px] font-semibold tracking-wider mb-1"
+                                            style={{ color: renkler.metinIkincil }}
+                                        >
+                                            TELEFONUNUZ ŞÖYLE OKUR
+                                        </Text>
+                                        <View className="flex-row items-center">
+                                            <Text className="flex-1 text-sm pr-3" style={{ color: renkler.metin }}>
+                                                {tanim.anonsOrnegiOlustur(seviye)}
+                                            </Text>
+                                            <DinleButonu
+                                                kanallar={seviye.kanallar}
+                                                bildirimSesi={seviye.bildirimSesi}
+                                                cozulmusMetin={tanim.anonsOrnegiOlustur(seviye)}
+                                                erisimEtiketi="Örnek okunuşu dinleyin"
+                                            />
+                                        </View>
+                                        <Text className="text-xs mt-1.5 leading-4" style={{ color: renkler.metinIkincil }}>
+                                            Sesli anons sessiz modda da duyulur.
+                                        </Text>
+                                    </View>
+                                )}
+
                                 {/* ── Sesli anons metni ── */}
-                                {sesliMi && (
+                                {sesliMi && !tanim.anonsOrnegiOlustur && (
                                     <>
                                         <BolumBasligi metin="SESLİ ANONS METNİ" />
                                         {tanim.anonsMetniDuzenlenebilir ? (

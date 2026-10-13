@@ -14,6 +14,7 @@ import vakitBildirimReducer from './vakitBildirimSlice';
 import cumaHatirlatmaReducer from './cumaHatirlatmaSlice';
 import yatisHatirlatmaReducer from './yatisHatirlatmaSlice';
 import nafileReducer from './nafileSlice';
+import nowBarReducer from './nowBarSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
@@ -35,6 +36,7 @@ export const store = configureStore({
     cumaHatirlatma: cumaHatirlatmaReducer,
     yatisHatirlatma: yatisHatirlatmaReducer,
     nafile: nafileReducer,
+    nowBar: nowBarReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,
     sahurSayac: sahurSayacReducer,

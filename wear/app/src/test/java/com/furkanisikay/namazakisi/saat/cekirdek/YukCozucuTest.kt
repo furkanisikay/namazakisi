@@ -37,6 +37,22 @@ class YukCozucuTest {
     }
 
     @Test
+    fun canliAlaniOpsiyonelVeKatiDogrulanir() {
+        // Eklemeli opsiyonel alan (issue #282): yoksa null, sürüm değişmez.
+        val o = org.json.JSONObject(ornek())
+        o.remove("canli")
+        assertEquals(null, (YukCozucu.coz(o.toString()) as CozumSonucu.Basarili).yuk.canli)
+        // Varsa tam doğrulanır: tek bozuk dilim tüm yükü reddeder (JS ile aynı).
+        val bozuk = org.json.JSONObject(ornek())
+        bozuk.getJSONObject("canli").getJSONArray("pencereler").getJSONObject(1).put("vakit", "gunes")
+        assertEquals(CozumSonucu.Gecersiz, YukCozucu.coz(bozuk.toString()))
+        val tersSure = org.json.JSONObject(ornek())
+        val p0 = tersSure.getJSONObject("canli").getJSONArray("pencereler").getJSONObject(0)
+        p0.put("bitis", p0.getLong("bas"))
+        assertEquals(CozumSonucu.Gecersiz, YukCozucu.coz(tersSure.toString()))
+    }
+
+    @Test
     fun adimSirasiOpsiyonelVeDogrulanir() {
         val eski = org.json.JSONObject(ornek())
         val dizi = eski.getJSONArray("muhafiz")

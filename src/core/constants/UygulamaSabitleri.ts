@@ -163,6 +163,18 @@ export const DEPOLAMA_ANAHTARLARI = {
   YATIS_HATIRLATMA_AYARLARI: 'yatis_hatirlatma_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
+  // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir
+  NOW_BAR_AYARLARI: 'now_bar_ayarlari',
+  // Sayaç servislerinin Now Bar planlayıcısına bildirdiği pencereler. Mutlak zaman
+  // taşır, cihaza özgüdür → yedeklemeye GİRMEZ.
+  CANLI_SAYAC_KAYNAKLARI: '@namaz_akisi/canli_sayac_kaynaklari',
+  // Planlayıcının saate (Wear OS) giden çıktısı; WearSenkronServisi okur. Yedeklenmez.
+  CANLI_SAAT_VERISI: '@namaz_akisi/canli_saat_verisi',
+  // Nafile "Kıldım" (issue #273): o günün o nafilesinin kalan hatırlatmaları
+  // yeniden planlanmasın diye { 'YYYY-MM-DD': NafileTuru[] }. Kayıt/puan/seri
+  // DEĞİLDİR, yalnız susturma hafızası; birkaç günde budanır. Cihaza özgü →
+  // yedeklemeye GİRMEZ.
+  NAFILE_KILINAN: '@namaz_akisi/nafile_kilinan',
   // Bildirim "Kıldım" yanıtının son işlenen kimliği. Yanıt hem arka plan görevine
   // (Android, uygulama kapalıyken) hem açılışta getLastNotificationResponseAsync'e
   // düşer; bellek-içi koruma headless süreçte sıfırlandığı için tekilleştirme diskte.

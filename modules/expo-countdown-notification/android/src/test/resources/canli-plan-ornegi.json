@@ -1,0 +1,69 @@
+[
+  {
+    "anMs": 0,
+    "id": "iftar_sayac_2026-10-16",
+    "eylem": "oneCikar",
+    "kaynak": "sayac",
+    "hedefMs": 33600000,
+    "baslik": "iftar",
+    "govde": "{time}",
+    "kanalId": "iftar_kanal",
+    "tema": "iftar",
+    "ek": {
+      "baslangicMs": -12600000,
+      "bolumler": [
+        {
+          "uzunlukDk": 770,
+          "vurgulu": false
+        }
+      ],
+      "hedefteKaybol": false
+    }
+  },
+  {
+    "anMs": 30900000,
+    "id": "sayac_2026-10-16_ikindi",
+    "eylem": "oneCikar",
+    "kaynak": "sayac",
+    "hedefMs": 33600000,
+    "baslik": "ikindi",
+    "govde": "{time}",
+    "kanalId": "ikindi_kanal",
+    "tema": "vakit",
+    "ek": {
+      "baslangicMs": 30900000,
+      "bolumler": [],
+      "kildim": {
+        "tarih": "2026-10-16",
+        "vakit": "ikindi"
+      },
+      "hedefteKaybol": false
+    }
+  },
+  {
+    "anMs": 30900000,
+    "id": "iftar_sayac_2026-10-16",
+    "eylem": "normal",
+    "kaynak": "sayac",
+    "hedefMs": 33600000,
+    "baslik": "iftar",
+    "govde": "{time}",
+    "kanalId": "iftar_kanal",
+    "tema": "iftar",
+    "ek": {
+      "baslangicMs": -12600000,
+      "bolumler": [
+        {
+          "uzunlukDk": 770,
+          "vurgulu": false
+        }
+      ],
+      "hedefteKaybol": false
+    }
+  },
+  {
+    "anMs": 3600000,
+    "id": "canli_sayac_kusluk_2026-10-16",
+    "eylem": "gizle"
+  }
+]

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tesbihat (issue #293): halka biçiminde tespih taneleri + imame. Ongoing simgesi ve kısayollar. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M8.56,17.74a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM5.20,15.80a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM3.26,12.44a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM3.26,8.56a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM5.20,5.20a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM8.56,3.26a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM12.44,3.26a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM15.80,5.20a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM17.74,8.56a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM17.74,12.44a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM15.80,15.80a1.50,1.50 0 1,0 3.00,0a1.50,1.50 0 1,0 -3.00,0ZM10.10,18.60a1.90,1.90 0 1,0 3.80,0a1.90,1.90 0 1,0 -3.80,0ZM11.3,20.2h1.4v3.3h-1.4Z" />
+</vector>

@@ -10,6 +10,7 @@ import {
     WEAR_KERAHAT_DK,
     WEAR_YUK_BAYT_SINIRI,
     WEAR_YUK_SURUMU,
+    canliGecerliMi,
     wearYukuGecerliMi,
     wearYukuOlustur,
 } from '../wearYuku';
@@ -98,8 +99,16 @@ describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
 
     it('JS doğrulayıcısı örneği kabul eder ve üretilen yük AYNI anahtar kümesini taşır', () => {
         expect(wearYukuGecerliMi(ornek)).toBe(true);
-        const uretilen = wearYukuOlustur({ koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} });
+        const uretilen = wearYukuOlustur({
+            koordinat: ISTANBUL,
+            bugunIso: BUGUN,
+            konumAdi: 'x',
+            kilinanlar: {},
+            canli: ornek.canli,
+        });
         expect(Object.keys(uretilen).sort()).toEqual(Object.keys(ornek).sort());
+        // `canli` EKLEMELİ OPSİYONEL alandır: verilmezse yükte hiç yer almaz (eski saat birebir).
+        expect('canli' in wearYukuOlustur({ koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} })).toBe(false);
         expect(Object.keys(uretilen.gunler[0]).sort()).toEqual(Object.keys(ornek.gunler[0]).sort());
         expect(Object.keys(uretilen.gunler[0].vakitler).sort()).toEqual(Object.keys(ornek.gunler[0].vakitler).sort());
         expect(ornek.surum).toBe(WEAR_YUK_SURUMU);
@@ -200,5 +209,21 @@ describe('muhafız planı + BOYUT SINIRI (DataItem ≤100 KB)', () => {
         const yuk = wearYukuOlustur(girdi(matris(), 100));
         expect(yuk.muhafiz).toEqual([]);
         expect(yuk.gunler).toHaveLength(WEAR_GUN_SAYISI);
+    });
+});
+
+describe('canli (Now Bar seçimi, issue #282) — eklemeli opsiyonel alan', () => {
+    const ornek = JSON.parse(fs.readFileSync(ORNEK, 'utf8'));
+    test('örnekteki pay geçerli; bozuk pay TÜM yükü reddeder (Kotlin ile aynı katılık)', () => {
+        expect(canliGecerliMi(ornek.canli)).toBe(true);
+        expect(canliGecerliMi(undefined)).toBe(true);
+        expect(wearYukuGecerliMi({ ...ornek, canli: { ...ornek.canli, vakitler: { imsak: true } } })).toBe(false);
+        const bozukPencere = { ...ornek.canli.pencereler[0], bitis: ornek.canli.pencereler[0].bas };
+        expect(canliGecerliMi({ ...ornek.canli, pencereler: [bozukPencere] })).toBe(false);
+        expect(canliGecerliMi({ ...ornek.canli, pencereler: [{ ...ornek.canli.pencereler[1], vakit: 'gunes' }] })).toBe(false);
+    });
+
+    test("sürüm ARTIRILMADI (eski saat SurumYeni'ye düşmesin)", () => {
+        expect(WEAR_YUK_SURUMU).toBe(2);
     });
 });

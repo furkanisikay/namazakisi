@@ -16,16 +16,18 @@ import { TEKRAR_MAX_DK } from '../../../presentation/components/hatirlatma/pence
 import { MUHAFIZ_VAKITLERI, type MuhafizMatrisi } from '../../muhafiz/matrisTipleri';
 import { adimKapaliMi } from '../../muhafiz/kanalKumesi';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../nafile/nafileTipleri';
+import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
 import { adimEkle } from '../../muhafiz/adimDuzenleme';
 import { adim, ISTANBUL, matrisKur } from './defterFikstur';
 
 const SIMDI = new Date(2026, 9, 13, 9, 0, 0);
 
-const NAFILE: NafileAyarlari = {
+// Eski (#273 öncesi) kayıt biçimi: göç yolu da kapsamda kalsın.
+const NAFILE: NafileAyarlari = nafileAyarlariniNormalize({
     ...VARSAYILAN_NAFILE_AYARLARI,
     hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
     teheccud: { aktif: true, hedef: 'sonUcteBir', imsaktanOnceDk: 60, uyandirma: true },
-};
+});
 
 const girdi = (ek: Partial<DefterGirdisi> = {}): DefterGirdisi => ({
     platform: 'ios',

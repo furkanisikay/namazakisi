@@ -68,19 +68,33 @@ interface AlarmKurucu {
 
 /** Zincirin TEK kurma noktası: yeni yük, kılınma, açılış, BOOT/TIME_SET hepsi buradan geçer. */
 class ZincirYoneticisi(private val kurucu: AlarmKurucu) {
-    /** @return kurulan kayıt (yoksa null — alarm iptal edildi) */
-    fun yenidenKur(yuk: Yuk?, bekleyen: Set<String>, simdi: Long): PlanKaydi? {
+    /**
+     * @param ekSinir canlı sayacın (issue #282) değişeceği bir sonraki an — plan
+     *   kaydından ÖNCEYSE zincir o ana kurulur (aynı anda yine TEK alarm).
+     * @return kurulan kayıt (yoksa null — alarm iptal edildi ya da ek sınıra kuruldu)
+     */
+    fun yenidenKur(yuk: Yuk?, bekleyen: Set<String>, simdi: Long, ekSinir: Long? = null): PlanKaydi? {
         val siradaki = AlarmZinciri.siradaki(yuk, bekleyen, simdi)
-        kur(siradaki)
+        kur(siradaki, ekSinir)
         return siradaki
     }
 
-    fun kur(kayit: PlanKaydi?) {
-        when {
-            kayit == null -> kurucu.iptal()
-            kurucu.kesinKurulabilirMi() -> kurucu.kesinKur(kayit.ms, kayit.id)
-            else -> kurucu.yaklasikKur(kayit.ms, kayit.id)
+    fun kur(kayit: PlanKaydi?, ekSinir: Long? = null) {
+        val (ms, kimlik) = when {
+            ekSinir != null && (kayit == null || ekSinir < kayit.ms) -> ekSinir to CANLI_KIMLIK
+            kayit != null -> kayit.ms to kayit.id
+            else -> null to ""
         }
+        when {
+            ms == null -> kurucu.iptal()
+            kurucu.kesinKurulabilirMi() -> kurucu.kesinKur(ms, kimlik)
+            else -> kurucu.yaklasikKur(ms, kimlik)
+        }
+    }
+
+    companion object {
+        /** Canlı sayaç sınırına kurulan alarmın kimliği (plan kaydı değil). */
+        const val CANLI_KIMLIK = "canli_sinir"
     }
 }
 

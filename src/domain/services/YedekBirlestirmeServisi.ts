@@ -43,6 +43,7 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   cumaHatirlatma: DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI,
   nafile: DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI,
   yatisHatirlatma: DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI,
+  nowBar: DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI,
 };
 
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */

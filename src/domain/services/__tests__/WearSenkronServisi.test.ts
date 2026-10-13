@@ -28,6 +28,7 @@ jest.mock('../KildimKuyruguServisi', () => ({
 import { WearSenkronServisi } from '../WearSenkronServisi';
 import { muhafizPlaniDegistiBildir, muhafizPlaniDinleyicisiniAyarla } from '../muhafizPlaniGozlemcisi';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
+import { canliSaatPayiDegisti } from '../canliSaatGozlemcisi';
 
 const modul = {
     durumGonder: jest.fn(() => Promise.resolve()),
@@ -195,6 +196,39 @@ describe('gonder', () => {
         await servis.gonder(); // zincirdeki turu bekle
         expect(modul.durumGonder).toHaveBeenCalled();
         expect(gonderilenYuk().muhafiz.length).toBeGreaterThan(0);
+    });
+
+    it('Now Bar saat payı (issue #282) yüke "canli" olarak girer; yoksa/bozuksa alan HİÇ yoktur', async () => {
+        const pay = {
+            vakitler: { imsak: true, ogle: false, ikindi: true, aksam: true, yatsi: true },
+            pencereler: [{ oge: 'iftar', baslik: 'İftar', ad: 'İftar', bas: 1, bitis: 2, oncelik: 2 }],
+        };
+        konumKur();
+        await servis.gonder();
+        expect('canli' in gonderilenYuk(0)).toBe(false);
+
+        servis.__testIcinSifirla();
+        const konumOku = (AsyncStorage.getItem as jest.Mock).getMockImplementation()!;
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) =>
+            k === DEPOLAMA_ANAHTARLARI.CANLI_SAAT_VERISI ? JSON.stringify(pay) : konumOku(k)
+        );
+        await servis.gonder();
+        expect(gonderilenYuk(1).canli).toEqual(pay);
+
+        servis.__testIcinSifirla();
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) =>
+            k === DEPOLAMA_ANAHTARLARI.CANLI_SAAT_VERISI ? '{"vakitler":1}' : konumOku(k)
+        );
+        await servis.gonder();
+        expect('canli' in gonderilenYuk(2)).toBe(false);
+    });
+
+    it('canlı sayaç payı değişince (planlayıcı gözlemcisi) saat tazelenir', async () => {
+        konumKur();
+        servis.baslat();
+        canliSaatPayiDegisti();
+        await servis.gonder();
+        expect(modul.durumGonder).toHaveBeenCalled();
     });
 
     it('baslat kılınmışlık dinleyicisini kaydeder', () => {

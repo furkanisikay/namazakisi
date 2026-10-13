@@ -74,6 +74,48 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         ctaEtiketi: 'Muhafızı inceleyin',
         kartGoster: false,
     },
+    // Nafile hatırlatmalarında kanal seçimi ve çok adımlı plan (issue #273).
+    {
+        id: 'nafile-kanal-ve-adimlar',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Nafile Hatırlatmaları Yenilendi',
+        aciklama:
+            'Kuşluk, evvâbîn ve teheccüd için artık namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilir, nasıl uyarılacağınızı seçebilirsiniz.',
+        detayAciklama:
+            'Her nafileye en fazla üç hatırlatma kurabilirsiniz. Hatırlatmanın vakit girince mi yoksa vakit çıkmadan mı geleceğini seçersiniz; zaman şeridi bugünkü planı gösterir. Her hatırlatma bir kez ya da 10–60 dakikada bir tekrarlı olabilir ve bildirim, sesli anons ya da ikisiyle gelir; titreşimi ayrıca açabilirsiniz. Sesli anonsu ilk seçtiğinizde ne yaptığı anlatılır. Bildirimdeki Kıldım düğmesi o günün kalan hatırlatmalarını durdurur; puana ve seriye karışmaz. Mevcut ayarlarınız aynen taşındı.',
+        ikon: 'star-and-crescent',
+        hedefSayfa: 'NafileAyarlari',
+        ctaEtiketi: 'Nafile ayarlarını açın',
+        kartGoster: false,
+        detaylar: [
+            'Nafile başına en fazla üç hatırlatma, her biri bir kez ya da tekrarlı',
+            'Bildirim, sesli anons ya da ikisi; titreşim ayrı bir anahtar',
+            'Teheccüdde pencere: gecenin son üçte biri ya da yatsıdan itibaren',
+            'Kıldım dediğinizde o günün kalan hatırlatmaları durur',
+        ],
+    },
+    // Now Bar öğe seçimi + saat (issue #282 ikinci aşama) — yalnız Android; kart kapalı.
+    {
+        id: 'now-bar-secimi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: "Now Bar'da Ne Görüneceğini Siz Seçin",
+        aciklama:
+            "Her vakti, iftarı, sahuru, cumayı, nafileleri ve seriyi tek tek açabilir; geri sayımın ne zaman başlayacağını belirleyebilirsiniz.",
+        detayAciklama:
+            "Android 16 ve üstünde geri sayım durum çubuğunda ve Samsung Now Bar'da görünür. Ayarlar'daki \"Now Bar ve canlı sayaçlar\" sayfasında her öğe için \"vakit girince\" ya da \"son dakikalar\" seçebilirsiniz. Aynı anda yalnız bir sayaç öne çıkar; Wear OS saatiniz de aynı seçimi kullanır. Google sürekli açık kartları önermediği için telefonunuz öne çıkarmayı geri çekebilir.",
+        ikon: 'stopwatch',
+        hedefSayfa: 'NowBarAyarlari',
+        ctaEtiketi: 'Seçimlerinizi yapın',
+        kartGoster: false,
+        detaylar: [
+            'Beş vakit ayrı ayrı açılır; varsayılan önceki davranıştır',
+            'Cuma, kuşluk, evvâbîn ve teheccüd için de sayaç açabilirsiniz',
+            'Seri sayacı yalnız siz açarsanız öne çıkar',
+            'Sayaç tam zamanında başlar; uygulamanın açık olması gerekmez',
+        ],
+    },
     // Bildirim sınırı rehberi (issue #298).
     {
         id: 'bildirim-siniri-rehberi',
@@ -159,6 +201,25 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Vaktin bitmesine çok varken sert ton bile "vakit çıkıyor" demez',
             'Ton geri giderse ekranda kısa bir not görürsünüz',
             'Vaktin son 15 dakikası dışındaki acil hatırlatmalar sert tonda çalışır, Rahatsız Etmeyin\'i delmez; ekranda bu adımların altında not görürsünüz',
+        ],
+    },
+    // Saatte tesbihat sayacı (issue #293) — yalnız saat sahipleri; kart kapalı.
+    {
+        id: 'wear-tesbihat',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Saatinizde Tesbihat Sayacı',
+        aciklama:
+            'Namazdan sonra tesbihatı Wear OS saatinizde sayabilirsiniz: ekrana dokunun ya da tacı çevirin, her 33\'te saat belirgin şekilde titrer.',
+        detayAciklama:
+            'Sübhânallah, Elhamdülillâh ve Allâhü ekber otuz üçer kez sayılır, yüzüncüsü "Lâ ilâhe illallâhü vahdehû…" ile tamamlanır (Müslim, Mesâcid 146). Ekranın tamamı dokunma alanıdır; saatin tacı ya da çerçevesiyle de sayabilirsiniz. Her sayımda kısa bir tık, her 33\'te belirgin bir titreşim, sonunda ayrı bir bitiş titreşimi hissedersiniz; ekrana bakmanız gerekmez. Yanlış dokunuşu "Geri al" ile silebilir, uzun basarak baştan başlayabilirsiniz. Ekran kapanırsa sayım kaybolmaz: kadrandaki tesbihat simgesine dokunarak kaldığınız yerden sürdürürsünüz. Saat uygulamasının ana ekranından ve "Bugün" kutucuğundan açılır.',
+        ikon: 'circle-notch',
+        kartGoster: false,
+        detaylar: [
+            '33 · 33 · 33 + 1, her 33\'te belirgin titreşim',
+            'Dokunarak ya da tacı çevirerek sayım',
+            'Son sayımı geri alma, uzun basarak baştan başlama',
+            'Ekran kapansa da kaldığınız yerden devam',
         ],
     },
     // Wear OS yüzeyleri (issue #281) — yalnız saat sahiplerini ilgilendirdiği için
@@ -312,7 +373,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, girdiklerinde hatırlatılabilirsiniz.',
         detayAciklama:
-            'Nafile namazların vakitleri artık uygulamada. Ana ekrandaki günlük akışta kuşluk sabahın, evvâbîn akşamın, teheccüd yatsının ardında yer alır; vakti girince satır yeşile döner. Satıra dokununca vaktin ne zaman başlayıp bittiğini ve en faziletli zamanını okursunuz. Kuşluk ve evvâbîn için vakit girdikten kaç dakika sonra hatırlatılacağınızı seçebilirsiniz. Teheccüd için gecenin son üçte birini ya da imsaktan önceki bir zamanı seçebilir, isterseniz sessiz modda da çalan uyandırmayı açabilirsiniz. Vakitler Diyanet\'in açıklamalarına göre hesaplanır.',
+            'Nafile namazların vakitleri artık uygulamada. Ana ekrandaki günlük akışta kuşluk sabahın, evvâbîn akşamın, teheccüd yatsının ardında yer alır; vakti girince satır yeşile döner. Satıra dokununca vaktin ne zaman başlayıp bittiğini ve en faziletli zamanını okursunuz. Kuşluk ve evvâbîn için vakit girdikten kaç dakika sonra hatırlatılacağınızı seçebilirsiniz. Teheccüd için gecenin son üçte birini ya da yatsıdan itibaren bir zamanı seçebilir, isterseniz sessiz modda da çalan uyandırmayı açabilirsiniz. Vakitler Diyanet\'in açıklamalarına göre hesaplanır.',
         ikon: 'star-and-crescent',
         hedefSayfa: 'NafileAyarlari',
         ctaEtiketi: 'Nafile ayarlarını açın',
@@ -320,7 +381,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detaylar: [
             'Kuşluk: güneş doğduktan yaklaşık 45 dk sonra başlar, öğleye 10 dk kalana kadar sürer',
             'Evvâbîn: akşam namazından sonra, yatsıya kadar',
-            'Teheccüd: gecenin son üçte biri ya da imsaktan önce seçtiğiniz zaman',
+            'Teheccüd: gecenin son üçte biri ya da yatsıdan itibaren seçtiğiniz zaman',
             'Teheccüd uyandırması sessiz modda da çalar',
             'Hepsi varsayılan olarak kapalıdır; istediğinizi açarsınız',
         ],

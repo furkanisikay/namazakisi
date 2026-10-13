@@ -55,6 +55,31 @@ data class PlanKaydi(
     val adim: Int? = null,
 )
 
+/** Telefonun Now Bar zaman çizelgesinden öne çıkan bir dilim (issue #282 ikinci aşama). */
+data class CanliPencere(
+    val oge: String,
+    val baslik: String,
+    /** Kısa durum metni ("İftar") */
+    val ad: String,
+    val bas: Long,
+    val bitis: Long,
+    /** Küçük sayı kazanır (vakit 1 … seri 6) */
+    val oncelik: Int,
+    /** Yalnız vakit öğelerinde (kılınmışlık + "Kıldım") */
+    val tarih: String? = null,
+    val vakit: String? = null,
+)
+
+/**
+ * Now Bar kullanıcı seçimi (issue #282): saat AYNI seçime uyar. EKLEMELİ opsiyonel
+ * alan — yoksa (eski telefon) `null` ve saat eski davranışında kalır.
+ */
+data class CanliSecim(
+    /** Vakit başına: saat kendi "son dakikalar" sayacını göstersin mi? */
+    val vakitler: Map<String, Boolean>,
+    val pencereler: List<CanliPencere>,
+)
+
 data class Yuk(
     val surum: Int,
     val konumAdi: String,
@@ -62,6 +87,8 @@ data class Yuk(
     val gunler: List<Gun>,
     /** Kronolojik muhafız planı; v1 yükünde ve muhafız kapalıyken boş. */
     val plan: List<PlanKaydi> = emptyList(),
+    /** Now Bar seçimi (opsiyonel, issue #282). */
+    val canli: CanliSecim? = null,
 )
 
 sealed class CozumSonucu {
@@ -96,10 +123,40 @@ object YukCozucu {
                 Gun(tarih, vakitler, kilinan)
             }.sortedBy { it.tarih }
             val plan = if (surum >= 2) planiCoz(o.getJSONArray("muhafiz")) else emptyList()
-            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan))
+            val canli = if (o.has("canli")) canliCoz(o.getJSONObject("canli")) else null
+            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli))
         } catch (_: Exception) {
             CozumSonucu.Gecersiz
         }
+    }
+
+    private val CANLI_VAKITLERI = listOf("imsak", "ogle", "ikindi", "aksam", "yatsi")
+
+    /** Opsiyonel `canli`: varsa tam doğrulanır (JS `canliGecerliMi` ile aynı katılık). */
+    private fun canliCoz(o: JSONObject): CanliSecim {
+        val v = o.getJSONObject("vakitler")
+        val vakitler = CANLI_VAKITLERI.associateWith { a -> v.get(a).let { require(it is Boolean); it } }
+        val dizi = o.getJSONArray("pencereler")
+        val pencereler = (0 until dizi.length()).map { i ->
+            val p = dizi.getJSONObject(i)
+            val bas = p.getLong("bas")
+            val bitis = p.getLong("bitis")
+            require(bitis > bas)
+            val oncelik = p.get("oncelik").let { require(it is Int); it }
+            val tarih = if (p.has("tarih")) p.getString("tarih").also { require(TARIH.matches(it)) } else null
+            val vakit = if (p.has("vakit")) p.getString("vakit").also { require(it in CANLI_VAKITLERI) } else null
+            CanliPencere(
+                oge = p.getString("oge"),
+                baslik = p.getString("baslik"),
+                ad = p.getString("ad"),
+                bas = bas,
+                bitis = bitis,
+                oncelik = oncelik,
+                tarih = tarih,
+                vakit = vakit,
+            )
+        }.sortedBy { it.bas }
+        return CanliSecim(vakitler, pencereler)
     }
 
     /** Tek bozuk kayıt tüm yükü reddeder (JS `wearYukuGecerliMi` ile aynı katılık). */

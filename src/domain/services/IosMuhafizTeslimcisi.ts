@@ -92,8 +92,49 @@ function onPlandaMi(): boolean {
     }
 }
 
+/**
+ * BU SÜREÇTE henüz `tamamla`'ya ulaşmamış turların klip adları (issue #273).
+ *
+ * İki teslimci (muhafız + nafile) aynı `Library/Sounds` dizinini ve aynı yaş
+ * kaydını paylaşır. Nafile turu bir klip SENTEZLEYİP henüz kaydetmemişken
+ * muhafızın `tamamla`'sı koşarsa o klip kayıtta yoktur ve SİLİNİRDİ — bildirim
+ * de olmayan bir ses dosyasına bağlı kalırdı. Uçuştaki adlar GC'den korunur.
+ */
+const ucustakiKlipler = new Map<string, number>();
+
+/** Klip çöp toplaması tek sıra: iki `tamamla` aynı kaydı aynı anda yazmasın. */
+let klipGcZinciri: Promise<void> = Promise.resolve();
+
+/** Testler için: süreç düzeyi uçuştaki klip kaydını sıfırlar (turunu bitirmeyen örnekler sızmasın). */
+export function ucustakiKlipleriSifirla(): void {
+    ucustakiKlipler.clear();
+}
+
+export interface IosTeslimciSecenekleri {
+    /**
+     * Bu teslimcinin bildirim kimlik öneki. Bütçe ölçümü "kendimiz dışındaki"
+     * bekleyenleri sayar; nafile teslimcisi muhafız bildirimlerini de SAYMALIDIR
+     * (aynı 64 sınırını paylaşırlar).
+     */
+    kendiOneki?: string;
+    /**
+     * Anons sesi matris verilmeden de hazırlansın mı? Muhafız matrissiz `hazirla`
+     * = "muhafız kapalı" demektir (anons yok); nafile teslimcisi ise kendi
+     * planını matrissiz kurar ve anonsu her turda ister (issue #273).
+     */
+    matrissizAnons?: boolean;
+}
+
 export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'ios' as const;
+
+    private readonly kendiOneki: string;
+    private readonly matrissizAnons: boolean;
+
+    constructor(secenekler: IosTeslimciSecenekleri = {}) {
+        this.kendiOneki = secenekler.kendiOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.matrissizAnons = secenekler.matrissizAnons === true;
+    }
 
     /**
      * Bu planlama turunda kalan slot. `hazirla` ile olculur, `uyariPlanla` ile
@@ -122,18 +163,24 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kesilenSayisi = 0;
+        this.ucustanBirak();
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
         this.sentezIzni = onPlandaMi();
         // Ses tanimlayicisi klip adinin PARCASIDIR (gelismis ses indirilince adlar
         // degismeli). Kopru asla firlatmaz; ses yoksa `null` → anons yok.
-        this.sesTanimlayici = matris ? await trSesTanimlayici() : null;
+        this.sesTanimlayici = matris || this.matrissizAnons ? await trSesTanimlayici() : null;
 
         try {
             const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
-            // Yalnız muhafız PLANI kendimizdir; aynı `muhafiz_` uzayındaki erteleme
-            // (#289) ve yatış/muhasebe (#290) bildirimleri başka sahiplerin slotudur.
-            const muhafizDisi = bekleyenler.filter((b) => !muhafizPlanKimligiMi(b.identifier)).length;
+            // Muhafız teslimcisinde yalnız PLAN kendimizdir: aynı `muhafiz_` uzayındaki
+            // erteleme (#289) ve yatış/muhasebe (#290) başka sahiplerin slotudur.
+            // Başka önekli teslimci (nafile #273) kendi önekini sayar.
+            const kendimizMi =
+                this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
+                    ? muhafizPlanKimligiMi
+                    : (kimlik: string) => kimlik.startsWith(this.kendiOneki);
+            const muhafizDisi = bekleyenler.filter((b) => !kendimizMi(b.identifier)).length;
 
             this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
 
@@ -152,7 +199,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     }
 
     async uyariPlanla(teslim: UyariTeslimi): Promise<void> {
-        const { id, baslik, mesaj, zaman, uyari, vakit, tarih } = teslim;
+        const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel } = teslim;
 
         const simdi = new Date();
         if (zaman.getTime() <= simdi.getTime()) return;
@@ -184,7 +231,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         const ses = (await this.anonsSesiniCoz(teslim)) ?? plan.ses;
 
         // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden (Android ile aynı kural).
-        const ertele = teslim.cikis
+        // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.
+        const ertele = teslim.cikis && !teslim.ozel
             ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
             : null;
 
@@ -196,9 +244,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     body: mesaj,
                     // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali.
                     sound: ses,
-                    interruptionLevel: plan.kesintiSeviyesi,
+                    interruptionLevel: ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
                     categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
-                    data: {
+                    data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
                         vakit: vakit,
@@ -247,6 +295,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Dosya henuz olmasa da AD kaydedilir: arka plan turunda uretilemeyen bir
         // klibin adi korunursa, bir sonraki on plan turunda uretilen dosya ilk GC'de
         // silinmez. Var olmayan dosya icin kayit zararsizdir.
+        if (!this.kullanilanKlipler.has(ad)) ucustakiKlipler.set(ad, (ucustakiKlipler.get(ad) ?? 0) + 1);
         this.kullanilanKlipler.add(ad);
 
         const bilinen = this.klipDurumu.get(ad);
@@ -270,18 +319,35 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      * Asla firlatmaz.
      */
     async tamamla(): Promise<void> {
-        try {
-            const bugun = gunAnahtari(new Date());
-            const mevcut = await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI);
-            const kayit = klipKaydiniGuncelle(mevcut, this.kullanilanKlipler, bugun);
-
-            await Depolama.yaz(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI, kayit);
-            const silinen = await kullanilmayanKlipleriSil(Object.keys(kayit), ANONS_KLIP_ONEKI);
-            if (silinen > 0) {
-                Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+        const kullanilan = this.kullanilanKlipler;
+        const is = klipGcZinciri.then(async () => {
+            try {
+                const bugun = gunAnahtari(new Date());
+                // Atomik okuma-değiştirme-yazma: öteki teslimcinin kaydı ezilmesin.
+                const kayit = await Depolama.guncelle<Record<string, string>>(
+                    DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI,
+                    (mevcut) => klipKaydiniGuncelle(mevcut, kullanilan, bugun)
+                );
+                this.ucustanBirak();
+                const korunan = [...Object.keys(kayit), ...ucustakiKlipler.keys()];
+                const silinen = await kullanilmayanKlipleriSil(korunan, ANONS_KLIP_ONEKI);
+                if (silinen > 0) {
+                    Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+                }
+            } catch (error) {
+                Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
             }
-        } catch (error) {
-            Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
+        });
+        klipGcZinciri = is;
+        await is;
+    }
+
+    /** Bu turun klip adlarını "uçuşta" listesinden düşer (kayda yazıldılar ya da tur yenilendi). */
+    private ucustanBirak(): void {
+        for (const ad of this.kullanilanKlipler) {
+            const kalan = (ucustakiKlipler.get(ad) ?? 1) - 1;
+            if (kalan > 0) ucustakiKlipler.set(ad, kalan);
+            else ucustakiKlipler.delete(ad);
         }
     }
 

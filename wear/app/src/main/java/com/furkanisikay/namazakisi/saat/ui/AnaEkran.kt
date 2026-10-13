@@ -44,6 +44,7 @@ fun AnaEkran(
     simdi: Long,
     bugun: String,
     onKildim: (tarih: String, vakit: String) -> Unit,
+    onTesbihat: () -> Unit,
 ) {
     val liste = rememberScalingLazyListState()
     var onayBekleyen by remember { mutableStateOf<VakitHesabi.Satir?>(null) }
@@ -64,6 +65,8 @@ fun AnaEkran(
                                 else "Vakitleri görmek için telefonunuzda Namaz Akışı'nı açın."
                             )
                         }
+                        // Tesbihat telefon verisine bağlı değildir: yük yokken de açılır.
+                        item { TesbihatDugmesi(onTesbihat) }
                         return@ScalingLazyColumn
                     }
 
@@ -93,6 +96,7 @@ fun AnaEkran(
                     items(VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen)) { satir ->
                         VakitSatiri(satir, onSec = { onayBekleyen = satir })
                     }
+                    item { TesbihatDugmesi(onTesbihat) }
                 }
             }
 
@@ -144,6 +148,20 @@ private fun VakitSatiri(satir: VakitHesabi.Satir, onSec: () -> Unit) {
         colors = if (satir.kilindi) ButtonDefaults.filledTonalButtonColors() else ButtonDefaults.buttonColors(),
         label = { Text(if (satir.kilindi) "✓ ${satir.ad}" else satir.ad) },
         secondaryLabel = { Text("${VakitHesabi.saat(satir.ms)} · $durum") },
+    )
+}
+
+/** Namaz sonrası tesbihat sayacına giriş (issue #293). */
+@Composable
+private fun TesbihatDugmesi(onTesbihat: () -> Unit) {
+    Button(
+        onClick = onTesbihat,
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = "Tesbihat sayacını açın" },
+        colors = ButtonDefaults.filledTonalButtonColors(),
+        label = { Text("Tesbihat") },
+        secondaryLabel = { Text("33 · 33 · 33 + 1") },
     )
 }
 

@@ -9,7 +9,7 @@ import {
     gecininSonUcteBiri,
     nafileDurumunuBul,
     nafilePencereleriHesapla,
-    teheccudHedefZamani,
+    teheccudPenceresiniUygula,
 } from '../nafileVakitleri';
 import { gununNafilePencereleri, gunVakitleriniHesapla, koordinatGecerliMi } from '../gunVakitleri';
 
@@ -58,22 +58,28 @@ describe.each([
     });
 });
 
-describe('teheccudHedefZamani', () => {
+describe('teheccudPenceresiniUygula (issue #273)', () => {
     const p = {
         tur: 'teheccud' as const,
         baslangic: new Date(2026, 5, 21, 22, 0),
         bitis: new Date(2026, 5, 22, 3, 30),
-        faziletli: new Date(2026, 5, 22, 1, 10),
+        faziletli: new Date(2026, 5, 22, 1, 10, 40),
     };
-    it('sonUcteBir → faziletli an', () => {
-        expect(teheccudHedefZamani(p, 'sonUcteBir', 60)).toEqual(p.faziletli);
+    it('sonUcteBir → pencere faziletli andan (dakikaya aşağı) başlar, sonu imsak', () => {
+        const u = teheccudPenceresiniUygula(p, 'sonUcteBir');
+        expect(u.baslangic).toEqual(new Date(2026, 5, 22, 1, 10));
+        expect(u.bitis).toEqual(p.bitis);
     });
-    it('imsaktanOnce → imsak − N dk', () => {
-        expect(teheccudHedefZamani(p, 'imsaktanOnce', 60)).toEqual(new Date(2026, 5, 22, 2, 30));
+    it('yatsi → pencere aynen (yatsı → imsak)', () => {
+        expect(teheccudPenceresiniUygula(p, 'yatsi')).toBe(p);
     });
-    it('kısa gecede yatsıdan önceye taşmaz (yatsıya kenetlenir)', () => {
-        const kisa = { ...p, bitis: new Date(2026, 5, 21, 23, 0) };
-        expect(teheccudHedefZamani(kisa, 'imsaktanOnce', 120)).toEqual(kisa.baslangic);
+    it('aşırı enlemde son üçte bir yatsıdan önceyse yatsıdan başlar', () => {
+        const ters = { ...p, faziletli: new Date(2026, 5, 21, 21, 0) };
+        expect(teheccudPenceresiniUygula(ters, 'sonUcteBir').baslangic).toEqual(p.baslangic);
+    });
+    it('teheccüd dışı pencereye dokunmaz', () => {
+        const k = { ...p, tur: 'kusluk' as const };
+        expect(teheccudPenceresiniUygula(k, 'sonUcteBir')).toBe(k);
     });
 });
 
@@ -89,7 +95,8 @@ describe('nafileDurumunuBul', () => {
     const pencereler = gununNafilePencereleri(ISTANBUL, '2026-06-21');
     const kusluk = pencereler[0];
     const teheccud = pencereler[2];
-    const hedef = { hedef: 'sonUcteBir' as const, imsaktanOnceDk: 60 };
+    const hedef = 'sonUcteBir' as const;
+    const dakikaya = (d: Date) => new Date(Math.floor(d.getTime() / DK) * DK);
 
     it('kuşluk başlamadan → sıradaki kuşluk, an = başlangıç', () => {
         const d = nafileDurumunuBul(pencereler, new Date(kusluk.baslangic.getTime() - DK), hedef);
@@ -101,12 +108,12 @@ describe('nafileDurumunuBul', () => {
         expect(d).toEqual({ tur: 'kusluk', durum: 'aktif', an: kusluk.bitis });
     });
 
-    it('teheccüd yatsı girince DEĞİL, hedef an girince aktif olur (uyuyup kalkma şartı)', () => {
+    it('teheccüd yatsı girince DEĞİL, seçilen pencere (son üçte bir) girince aktif olur (uyuyup kalkma şartı)', () => {
         const yatsidanSonra = new Date(teheccud.baslangic.getTime() + 5 * DK);
         expect(nafileDurumunuBul(pencereler, yatsidanSonra, hedef)).toEqual({
             tur: 'teheccud',
             durum: 'sirada',
-            an: teheccud.faziletli,
+            an: dakikaya(teheccud.faziletli),
         });
         const hedeftenSonra = new Date(teheccud.faziletli.getTime() + DK);
         expect(nafileDurumunuBul(pencereler, hedeftenSonra, hedef)?.durum).toBe('aktif');
@@ -117,7 +124,7 @@ describe('nafileDurumunuBul', () => {
         const dun = gununNafilePencereleri(ISTANBUL, '2026-06-21');
         const t = dun[2];
         const geceOrtasi = new Date((t.baslangic.getTime() + t.bitis.getTime()) / 2);
-        expect(nafileDurumunuBul(dun, geceOrtasi, hedef)).toEqual({ tur: 'teheccud', durum: 'sirada', an: t.faziletli });
+        expect(nafileDurumunuBul(dun, geceOrtasi, hedef)).toEqual({ tur: 'teheccud', durum: 'sirada', an: dakikaya(t.faziletli) });
         // Aynı anda BUGÜNÜN pencereleriyle bakmak teheccüdü kaçırırdı (bugünün kuşluğunu gösterirdi).
         const bugun = gununNafilePencereleri(ISTANBUL, '2026-06-22');
         expect(nafileDurumunuBul(bugun, geceOrtasi, hedef)?.tur).toBe('kusluk');

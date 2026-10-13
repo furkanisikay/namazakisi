@@ -18,6 +18,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Live Update (issue #282): Wear OS 6+ (API 36) canlı sayacı öne çıkarma isteği. NORMAL izin;
+         eski sistem bilinmeyen izni yok sayar. -->
+    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
 
     <!-- Play: saat uygulaması olduğunu bildirir (required=false VERİLMEZ). -->
     <uses-feature android:name="android.hardware.type.watch" />
@@ -47,6 +50,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          Tesbihat sayacı (issue #293). exported: "Bugün" tile'ının LaunchAction'ı ve
+          Ongoing simgesinin dokunuşu sistem (SysUI) tarafından başlatılır. Filtre yok.
+        -->
+        <activity
+            android:name=".ui.TesbihatAktivite"
+            android:exported="true"
+            android:label="@string/tesbihat_adi"
+            android:launchMode="singleTop"
+            android:taskAffinity="" />
 
         <service
             android:name=".veri.TelefonDinleyiciServisi"

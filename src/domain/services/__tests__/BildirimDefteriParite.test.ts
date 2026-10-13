@@ -60,7 +60,8 @@ import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
 import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
-import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
+import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
+import { ANDROID_NAFILE_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
@@ -72,6 +73,7 @@ import { bildirimDefteriOlustur, type DefterGirdisi, type DefterKaynagi } from '
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
+import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../../core/utils/vakitSayacYardimcisi';
 import { ISTANBUL, matrisKur } from '../../../core/bildirim/__tests__/defterFikstur';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -189,11 +191,12 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
 });
 
 describe('nafile: defter = servisin kurduğu', () => {
-    const nafile: NafileAyarlari = {
+    // Eski (#273 öncesi) kayıt biçimi: göç yolu da kapsamda kalsın.
+    const nafile: NafileAyarlari = nafileAyarlariniNormalize({
         ...VARSAYILAN_NAFILE_AYARLARI,
         hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
         teheccud: { aktif: true, hedef: 'sonUcteBir', imsaktanOnceDk: 60, uyandirma: true },
-    };
+    });
 
     it.each([false, true])('günü gününe = %s', async (gunuGunune) => {
         const ayar = { ...nafile, gunuGununeKur: gunuGunune };
@@ -202,6 +205,26 @@ describe('nafile: defter = servisin kurduğu', () => {
         const g = temelGirdi('ios', { nafile: ayar });
         expect(say(g, 'nafile')).toBeGreaterThan(0);
         expect(onekliSay('nafile_')).toBe(say(g, 'nafile'));
+    });
+
+    // Issue #273: sesli + tekrarlı adım Android'de nafile alarm payını (60) aşar;
+    // kesme ÜRETİCİDE olduğu için defter ile servis yine birebir aynı sayar.
+    it('Android: sesli tekrarlı nafile — bildirim + anons alarmı birebir, pay içinde', async () => {
+        nafileTeslimcisiniAyarla(null);
+        const sesli = { kanallar: { bildirim: true, sesli: true }, siklik: { herDk: 10 } };
+        const ayar = nafileAyarlariniNormalize({
+            hatirlatmalar: { kusluk: { aktif: true, yon: 'girisindenItibaren', adimlar: [{ esikDk: 5, ...sesli }] } },
+            teheccud: { aktif: true, yon: 'girisindenItibaren', pencere: 'yatsi', adimlar: [{ esikDk: 5, ...sesli }] },
+        });
+        disk.set(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI, JSON.stringify(ayar));
+        await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+        nafileTeslimcisiniAyarla(null);
+
+        const g = temelGirdi('android', { nafile: ayar });
+        expect(onekliSay('nafile_')).toBe(say(g, 'nafile'));
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+        expect(say(g, 'nafile') + say(g, 'anons')).toBeLessThanOrEqual(ANDROID_NAFILE_PAYI);
+        expect(say(g, 'nafile') + say(g, 'anons')).toBeGreaterThan(ANDROID_NAFILE_PAYI - 2);
     });
 
     it('günü gününe kurmak sayıyı GERÇEKTEN düşürür', () => {
