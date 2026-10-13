@@ -21,7 +21,9 @@ import { NamazMuhafiziServisi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
 import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import type { MuhafizMatrisi, MuhafizVakti, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
@@ -1091,6 +1093,89 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             muhafiz.baslat(bildirimSpx);
             expect(bildirimSpx).toHaveBeenCalledTimes(1);
             expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+    });
+
+    // ── ÖZEL GÜN (issue #272) ───────────────────────────────────────────────
+    // Aralık aktifken ön planda banner, ses, titreşim ve sesli anons YOKTUR;
+    // açık bir banner varsa bir kez temizlenir.
+    describe('özel gün kapısı', () => {
+        const ozelGunYaz = (bas: string, bit: string) =>
+            AsyncStorage.setItem(
+                DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+                JSON.stringify({
+                    ozelGunModuAktif: true,
+                    aktifOzelGun: { id: 'x', baslangicTarihi: bas, bitisTarihi: bit, olusturulmaTarihi: '' },
+                    gecmisKayitlar: [],
+                })
+            );
+        const sesliTitresimliMatris = () => {
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[0] = {
+                ...matris.ogle.seviyeler[0],
+                kanallar: { bildirim: true, sesli: true, titresim: true },
+                anonsMetni: '{vakit} vakti çıkıyor.',
+            };
+            return matris;
+        };
+
+        afterEach(async () => {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI);
+        });
+
+        it('açılışta diskten hydrate edilir: banner/anons/titreşim YOK, yalnız temizleme', async () => {
+            await ozelGunYaz(gunEkle(bugunuAl(), -1), gunEkle(bugunuAl(), 2));
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+            jest.advanceTimersByTime(60 * 1000);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+            expect(Vibration.vibrate).not.toHaveBeenCalled();
+        });
+
+        it('özel gün SONRADAN başlatılınca açık banner HEMEN kalkar', async () => {
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
+
+            await ozelGunYaz(bugunuAl(), bugunuAl());
+            await muhafiz.ozelGunDurumunuYukle();
+
+            expect(bildirimSpx).toHaveBeenLastCalledWith('', 0);
+        });
+
+        it('aralık DÜN bittiyse bile gece yarısından sonraki yatsı DÜNE aittir → susar', async () => {
+            const gece = new Date();
+            gece.setHours(1, 0, 0, 0);
+            jest.setSystemTime(gece);
+            await ozelGunYaz(gunEkle(bugunuAl(), -3), dunuAl());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                kalanSureMs: 5 * 60 * 1000,
+                saat: new Date(gece.getTime() + 5 * 60 * 1000),
+            });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+
+        it('aralık bitince (yarından itibaren) uyarılar aynen geri gelir', async () => {
+            await ozelGunYaz(gunEkle(bugunuAl(), -5), dunuAl());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
         });
     });
 });

@@ -787,7 +787,7 @@ export const OzelGunAdimi: React.FC = () => (
       </View>
       <View style={styles.adimAdimSatir}>
         <View style={styles.adimNumara}><Text style={styles.adimNumaraMetin}>3</Text></View>
-        <Text style={styles.adimAdimMetin}>O gün seri sayımına dahil edilmez</Text>
+        <Text style={styles.adimAdimMetin}>O gün seri sayımına dahil edilmez, namaz hatırlatmaları da durur</Text>
       </View>
     </View>
   </ScrollView>

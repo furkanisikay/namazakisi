@@ -3,6 +3,8 @@ import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/Seytanla
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
@@ -62,6 +64,14 @@ export class NamazMuhafiziServisi {
     // Temizleme bildirimi gönderilen vakitler (gereksiz tekrar çağrıları önlemek için)
     private temizlenenVakitler: Record<string, boolean> = {};
 
+    /**
+     * Özel gün kapısının girdisi (issue #272). BELLEK-İÇİ önbellek: `kontrolEt`
+     * dakikada bir SENKRON koşar, her turda diski okuyamaz. Doldurulan iki yol:
+     * açılış hidrasyonu (`acilistaKilinanlariYukle`) ve özel gün değişince
+     * `ozelGunDurumunuYukle` (bkz. `OzelGunDegisikligiServisi`).
+     */
+    private ozelGun: OzelGunKapisiGirdisi | null = null;
+
     private constructor() {
         this.hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
     }
@@ -97,6 +107,7 @@ export class NamazMuhafiziServisi {
         this.durdur();
         this.kilinanVakitler = {};
         this.temizlenenVakitler = {};
+        this.ozelGun = null;
         this.matris = VARSAYILAN_MATRIS;
         this.onBildirim = null;
     }
@@ -137,6 +148,11 @@ export class NamazMuhafiziServisi {
      * `${Date.toDateString()}_${vakit}`.
      */
     public async acilistaKilinanlariYukle(): Promise<void> {
+        // Özel gün kapısı da açılışta diskten hydrate edilmeli — aksi halde ilk
+        // `kontrolEt` boş önbellekle koşar ve özel gündeki kullanıcıya tam
+        // açılışta banner/ses/anons çıkardı (kılınmışlık #92 dersinin ikizi).
+        // Okuyucu asla fırlatmaz.
+        this.ozelGun = await ozelGunKapisiniOku();
         try {
             const bugunTarih = new Date();
             const dunTarih = new Date();
@@ -165,6 +181,16 @@ export class NamazMuhafiziServisi {
         }
     }
 
+    /**
+     * Özel gün ayarlarını diskten yeniden okur ve kapıyı HEMEN uygular
+     * (özel gün başlatılınca açık bir banner bir dakika daha beklemesin).
+     * Asla fırlatmaz.
+     */
+    public async ozelGunDurumunuYukle(): Promise<void> {
+        this.ozelGun = await ozelGunKapisiniOku();
+        if (this.intervalId) this.kontrolEt();
+    }
+
     private kontrolEt() {
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
@@ -175,6 +201,21 @@ export class NamazMuhafiziServisi {
         // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
         const bugun = new Date().toDateString();
         const vakitAnahtari = `${bugun}_${vakit}`;
+
+        // ÖZEL GÜN (issue #272): banner, ses, titreşim ve sesli anons YOK.
+        // Kapı vaktin GÜNÜNE bakar — gece yarısından sonraki yatsı DÜNE aittir
+        // (arka planla aynı tarih kuralı: `muhafizVaktiTarihiniSec`).
+        const simdi = new Date();
+        const cikisAni = vakitBilgisi.saat ?? new Date(simdi.getTime() + kalanSureMs);
+        const vakitGunu = muhafizVaktiTarihiniSec(vakit, simdi, cikisAni, bugunuAl(), dunuAl());
+        if (ozelGunAktifMi(vakitGunu, this.ozelGun)) {
+            const ozelAnahtar = `ozel_${vakitAnahtari}`;
+            if (!this.temizlenenVakitler[ozelAnahtar] && this.onBildirim) {
+                this.onBildirim('', 0);
+                this.temizlenenVakitler[ozelAnahtar] = true;
+            }
+            return;
+        }
         if (this.kilinanVakitler[vakitAnahtari]) {
             // Temizleme bildirimi henüz gönderilmediyse gönder
             if (!this.temizlenenVakitler[vakitAnahtari] && this.onBildirim) {

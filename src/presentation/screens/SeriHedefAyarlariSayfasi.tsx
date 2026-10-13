@@ -312,7 +312,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
     setTakvimGorunur(false);
     basariBildiriminiGoster(
       'Başarılı',
-      'Özel gün modu başlatıldı. Seriniz seçilen tarihler arasında dondurulacaktır.'
+      'Özel gün modu başlatıldı. Seriniz seçilen tarihler arasında dondurulacak, namaz hatırlatmaları da duracaktır.'
     );
   };
 
@@ -413,7 +413,7 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
                   Özel Gün Modu
                 </Text>
                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                  Özel günlerde seriyi dondurma imkanı sağlar
+                  Özel günlerde seriyi dondurma imkanı sağlar. Bu günlerde namaz hatırlatmaları da durur.
                 </Text>
               </View>
               <Anahtar

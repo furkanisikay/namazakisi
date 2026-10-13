@@ -15,6 +15,7 @@ import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/U
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
@@ -125,10 +126,22 @@ export class ArkaplanMuhafizServisi {
             [dunuAl()]: kilinanVakitlerDun,
         };
 
+        // OZEL GUN (issue #272): aralik aktifken o gunun vakitleri icin ne
+        // bildirim ne TTS anons alarmi kurulur. Eski plan yukarida zaten
+        // temizlendi; aralik bitince ilk tur (acilis / 15 dk gorevi) planlamayi
+        // kendiliginden geri getirir. Kapi VAKTIN GUNUNE bakar (gece yarisindan
+        // sonraki yatsi DUNE aittir). Bes tuketici de bu fonksiyondan gectigi
+        // icin kapi burada TEK yerde durur.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+
         // Cikis suresi henuz gecmemis (gelecekte olan) VE kilinmamis vakitler icin planlama yap
         const gelecekVakitler = vakitler.filter(v => {
             // Vakit zamani gecmis mi?
             if (v.cikis.getTime() <= simdi.getTime()) {
+                return false;
+            }
+
+            if (ozelGundeMi(v.tarih)) {
                 return false;
             }
 

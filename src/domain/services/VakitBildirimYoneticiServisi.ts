@@ -3,6 +3,8 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 import { LocalVakitBildirimServisi, VakitBildirimAyarlari } from '../../data/local/LocalVakitBildirimServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
 import { BILDIRIM_SABITLERI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
 
@@ -51,9 +53,18 @@ export class VakitBildirimYoneticiServisi {
         const vakitlerBugun = new PrayerTimes(coordinates, bugun, params);
         const vakitlerYarin = new PrayerTimes(coordinates, yarin, params);
 
-        // 5. Her bir vakit için planlama yap
-        await this.gunlukPlanlamaYap(vakitlerBugun, ayarlar, bugun);
-        await this.gunlukPlanlamaYap(vakitlerYarin, ayarlar, yarin);
+        // 5. Her bir vakit için planlama yap.
+        // Özel gün (issue #272): aralıktaki GÜN hiç planlanmaz. Eski plan 2. adımda
+        // temizlendi; pencere bugün+yarın olduğu için aralığın son günü açılan
+        // uygulama ertesi günün bildirimlerini zaten kurar.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+        for (const [vakitler, gun] of [[vakitlerBugun, bugun], [vakitlerYarin, yarin]] as const) {
+            if (ozelGundeMi(tarihiISOFormatinaCevir(gun))) {
+                Logger.info('VakitBildirim', 'Özel gün: bu günün vakit bildirimleri planlanmadı.');
+                continue;
+            }
+            await this.gunlukPlanlamaYap(vakitler, ayarlar, gun);
+        }
 
         Logger.info('VakitBildirim', 'Bildirim planlama tamamlandı.');
     }
