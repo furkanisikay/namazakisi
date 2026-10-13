@@ -3,6 +3,7 @@
  * satırı, öğe anahtarları ve başlangıç seçimi; planlar debounce'lu kurulur.
  */
 import React from 'react';
+import { Linking, Platform } from 'react-native';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
@@ -59,6 +60,8 @@ const kur = async (ayarlar: NowBarAyarlari = VARSAYILAN_NOW_BAR_AYARLARI) => {
 describe('NowBarAyarlariSayfasi', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Jest varsayılanı 'ios'tur; ekran platforma göre dallanır (AGENTS.md test kuralı).
+    jest.replaceProperty(Platform, 'OS', 'android');
     mockCanliDurumu.mockResolvedValue('acik');
     mockCanliAyarlariniAc.mockResolvedValue('canli');
     mockNowBarDegistiUygula.mockResolvedValue(undefined);
@@ -114,5 +117,58 @@ describe('NowBarAyarlariSayfasi', () => {
     ekran.unmount();
     expect(mockNowBarDegistiUygula).toHaveBeenCalledTimes(2);
   });
+});
 
+describe('NowBarAyarlariSayfasi — iOS canlı etkinlik (#295)', () => {
+  // moduleNameMapper mock'u: aynı örneğe `require` ile ulaşılır (AGENTS.md).
+  const siri = require('../../../../modules/expo-siri-kisayollari/src') as { canliEtkinlikIzniAcik: jest.Mock };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(true);
+    mockNowBarDegistiUygula.mockResolvedValue(undefined);
+  });
+  afterEach(() => {
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(null);
+  });
+
+  it('iPhone metinleri: sınır notu dürüstçe söylenir, Android durumu sorulmaz', async () => {
+    const ekran = await kur();
+    expect(ekran.getByText('Canlı etkinlikler açık')).toBeTruthy();
+    expect(ekran.getByTestId('now-bar-politika').props.children).toContain(
+      'Canlı etkinlik yalnız uygulama açıkken başlatılabilir'
+    );
+    expect(ekran.getByTestId('now-bar-politika').props.children).toContain('en fazla 8 saat');
+    expect(mockCanliDurumu).not.toHaveBeenCalled();
+  });
+
+  it('iftar, sahur ve seri listelenmez; vakitte "Sayaçla" seçeneği yoktur', async () => {
+    const ekran = await kur();
+    expect(ekran.queryByTestId('now-bar-oge-iftar')).toBeNull();
+    expect(ekran.queryByTestId('now-bar-oge-sahur')).toBeNull();
+    expect(ekran.queryByTestId('now-bar-oge-seri')).toBeNull();
+    expect(ekran.getByTestId('now-bar-oge-cuma')).toBeTruthy();
+    expect(ekran.queryByLabelText('Öğle: Sayaçla')).toBeNull();
+    // Kayıttaki "sayaçla" iPhone'da son dakikalar olarak SEÇİLİ görünür (sessiz sapma yok).
+    expect(ekran.getByLabelText('Öğle: Son dakikalar').props.accessibilityState).toEqual({ selected: true });
+    expect(ekran.getByLabelText('Öğle son dakika artır')).toBeTruthy();
+  });
+
+  it('izin kapalıyken uygulamanın iPhone ayarları açılır', async () => {
+    siri.canliEtkinlikIzniAcik.mockResolvedValue(false);
+    const ac = jest.spyOn(Linking, 'openSettings').mockResolvedValue(undefined);
+    const ekran = await kur();
+    expect(ekran.getByText('Canlı etkinlikler kapalı')).toBeTruthy();
+    fireEvent.press(ekran.getByLabelText('Sistem ayarlarını açın'));
+    await waitFor(() => expect(ac).toHaveBeenCalled());
+    expect(mockCanliAyarlariniAc).not.toHaveBeenCalled();
+    ac.mockRestore();
+  });
+
+  it('öğe anahtarı canlı etkinlik diliyle etiketlenir', async () => {
+    const ekran = await kur();
+    fireEvent(ekran.getByLabelText('İkindi canlı etkinlikte'), 'valueChange', false);
+    expect(nowBarOgesiniGuncelle).toHaveBeenCalledWith({ oge: 'ikindi', degisiklik: { acik: false } });
+  });
 });

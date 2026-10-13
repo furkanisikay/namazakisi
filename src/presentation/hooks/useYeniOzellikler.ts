@@ -5,6 +5,7 @@ import {
     ozellikKartiKapat,
 } from '../store/ozelliklerSlice';
 import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { yeniOzellikGorunurMu } from './yeniOzellikYetenegi';
 
 /**
  * Yeni özellik duyurularının ortak erişim noktası.
@@ -15,7 +16,7 @@ export function useYeniOzellikler() {
     const { gorulenIdler, kapatilanKartIdler } = useAppSelector(s => s.ozellikler);
 
     const okunmamis = useMemo(
-        () => YENI_OZELLIKLER.filter(o => !gorulenIdler.includes(o.id)),
+        () => YENI_OZELLIKLER.filter(o => yeniOzellikGorunurMu(o) && !gorulenIdler.includes(o.id)),
         [gorulenIdler]
     );
 

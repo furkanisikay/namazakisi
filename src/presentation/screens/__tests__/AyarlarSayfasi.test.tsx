@@ -16,6 +16,7 @@ import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { Depolama } from '../../../data/local/Depolama';
 import { YENI_OZELLIKLER } from '../../../core/constants/YeniOzellikler';
+import { yeniOzellikGorunurMu } from '../../hooks/yeniOzellikYetenegi';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
@@ -170,7 +171,8 @@ describe('AyarlarSayfasi', () => {
     // EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık bir sonraki özellik duyurusunda
     // bu testi sebepsiz kırardı. Kart, `useYeniOzellikler` ile aynı kuraldan seçilir:
     // okunmamışlar arasında kartGoster'i olan İLK kayıt (her kayıt kart göstermez).
-    const kartOzelligi = YENI_OZELLIKLER.find(o => o.kartGoster);
+    // Yetenek isteyen duyuru (ör. iPhone widget'ı) bu cihazda yoksa atlanır.
+    const kartOzelligi = YENI_OZELLIKLER.find(o => o.kartGoster && yeniOzellikGorunurMu(o));
     expect(kartOzelligi).toBeDefined();
 
     const { getByText } = render(<AyarlarSayfasi />);
