@@ -1,10 +1,11 @@
 /**
- * Camideyim ayar sayfası (issue #297, Faz 1 — haritasız).
- *
- * Harita (MapLibre) bu fazda YOK (yeni bağımlılık; sahibin onayı bekleniyor).
- * Yerine: mesafe sıralı yakın camiler listesi + "bulunduğum yeri ekleyin" +
- * "cami değil" + "favori" + alan (m) ayarı, ve "Son algılamalar" zaman çizelgesi
- * (neden algılandı / neden algılanmadı).
+ * Camideyim ayar sayfası (issue #297). Üç sekme:
+ *  - Ayarlar: aç/kapa, kalma süresi, vakit kapısı, AÇILIŞ BİÇİMİ (akıllı/otomatik/
+ *    sorarak — güven puanı), İZLEME KAPSAMI (yakındakiler/yalnız seçtiklerim),
+ *    camideyken davranışı ve erişilebilir yakın cami listesi.
+ *  - Harita (Faz 2, MapLibre + OpenFreeMap): alanlar, uyandırma çemberi, yer ekleme.
+ *  - Nasıl algılanır: iki aşamalı tespit, güven örnekleri (JS ikiziyle canlı) ve
+ *    "Son algılamalar" zaman çizelgesi (neden algılandı / neden algılanmadı).
  *
  * Karar native'de verilir; ekran yalnız ayarı yazar ve olay günlüğünü okur.
  * Başlık navigasyon header'ındadır (AGENTS.md: sayfa başlığı TEK yerde).
@@ -24,6 +25,7 @@ import { AyarKutusu } from '../components/ayar/AyarKutusu';
 import { KonumIzniDisclosureModali } from '../components/KonumIzniDisclosureModali';
 import { useCamideyim } from '../hooks/useCamideyim';
 import {
+    IZLENEN_CAMI_SAYISI,
     ALAN_ADIM_M,
     ALAN_MAX_M,
     ALAN_MIN_M,
@@ -39,6 +41,10 @@ import {
 import { mesafeM } from '../../core/cami/geometri';
 import type { OlaySatiri } from '../../core/cami/olayMetinleri';
 import { camidenCik } from '../../../modules/expo-cami-geofence/src';
+import { SecenekCipleri, type Secenek } from '../components/cami/SecenekCipleri';
+import { CamiHaritasi } from '../components/cami/CamiHaritasi';
+import { EYLEM_METNI, guvenOrnekleriOlustur } from '../../core/cami/guvenOrnekleri';
+import type { AcilisBicimi, IzlemeKapsami } from '../../core/cami/guvenPuani';
 import type { AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
 
 interface ListeYeri {
@@ -64,6 +70,32 @@ const saatMetni = (ms: number): string => {
     return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')} ${saat}`;
 };
 
+type Sekme = 'ayarlar' | 'harita' | 'nasil';
+
+const SEKMELER: readonly Secenek<Sekme>[] = [
+    { deger: 'ayarlar', etiket: 'Ayarlar', ikon: 'sliders-h' },
+    { deger: 'harita', etiket: 'Harita', ikon: 'map-marked-alt' },
+    { deger: 'nasil', etiket: 'Nasıl algılanır', ikon: 'question-circle' },
+];
+
+const ACILIS_SECENEKLERI: readonly Secenek<AcilisBicimi>[] = [
+    { deger: 'akilli', etiket: 'Akıllı (önerilen)', ikon: 'magic' },
+    { deger: 'otomatik', etiket: 'Otomatik', ikon: 'bolt' },
+    { deger: 'sorarak', etiket: 'Sorarak', ikon: 'question' },
+];
+
+const ACILIS_ACIKLAMASI: Readonly<Record<AcilisBicimi, string>> = {
+    akilli:
+        'Ezan vaktinde ve caminin içindeyken kendiliğinden açılır. Emin olunamazsa (yolda bekleme, binanın hemen dışı) sessiz bir bildirimle size sorulur; önünden geçerken hiçbir şey olmaz.',
+    otomatik: 'Camide sayıldığınız her seferinde sormadan açılır. Önünden geçerken ya da araçtayken yine açılmaz.',
+    sorarak: 'Her seferinde önce sessiz bir bildirimle "Camide misiniz?" diye sorulur; siz onaylarsanız açılır.',
+};
+
+const KAPSAM_SECENEKLERI: readonly Secenek<IzlemeKapsami>[] = [
+    { deger: 'yakindakiler', etiket: 'Yakınımdaki tüm camiler', ikon: 'mosque' },
+    { deger: 'secilenler', etiket: 'Yalnız seçtiklerim', ikon: 'star' },
+];
+
 export const CamideyimAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
@@ -73,6 +105,7 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
     const [izinUyarisi, setIzinUyarisi] = useState(false);
     const [acikYer, setAcikYer] = useState<string | null>(null);
     const [ekleniyor, setEkleniyor] = useState(false);
+    const [sekme, setSekme] = useState<Sekme>('ayarlar');
 
     const aktiflestir = useCallback(async () => {
         const sonuc = await c.guncelle({ aktif: true });
@@ -147,6 +180,11 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
         }
         return sonuc.sort((a, b) => (a.mesafe ?? Infinity) - (b.mesafe ?? Infinity));
     }, [c.yakinlar, c.merkez, ayarlar.yerler]);
+
+    const secilenSayisi = Object.values(ayarlar.yerler).filter((y) => y.kendi || y.durum === 'favori').length;
+    const yerSay = (kosul: (y: YerKaydi) => boolean) => Object.values(ayarlar.yerler).filter(kosul).length;
+    const haritaOzeti = `${yerSay((y) => y.durum === 'favori')} favori · ${yerSay((y) => y.durum === 'haric')} cami değil · ${yerSay((y) => y.kendi === true)} sizin yeriniz`;
+    const ornekler = guvenOrnekleriOlustur(ayarlar);
 
     const bolum = (metin: string) => (
         <Text className="text-xs font-bold tracking-wider mt-6 mb-2" style={{ color: renkler.metinIkincil }}>
@@ -349,12 +387,20 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
     };
 
     return (
-        <ScrollView
-            className="flex-1"
-            style={{ backgroundColor: renkler.arkaplan }}
-            contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
-            showsVerticalScrollIndicator={false}
-        >
+        <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
+            <View className="px-4 pt-3 pb-2">
+                <SecenekCipleri secenekler={SEKMELER} secili={sekme} onSec={setSekme} grupEtiketi="Camideyim bölümleri" rol="tab" testIDOnEki="sekme" />
+            </View>
+            {sekme === 'harita' ? (
+                <CamiHaritasi c={c} />
+            ) : (
+                <ScrollView
+                    className="flex-1"
+                    contentContainerStyle={{ padding: 16, paddingTop: 8, paddingBottom: 40 }}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {sekme === 'ayarlar' ? (
+                        <>
             <Text className="text-sm mb-4" style={{ color: renkler.metinIkincil }}>
                 Bir camide namaz için durduğunuzda telefonunuz bunu kendiliğinden anlar. Konumunuz telefonunuzdan çıkmaz.
             </Text>
@@ -407,6 +453,40 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                         </TouchableOpacity>
                     </View>
                 )}
+                {durum?.soru && !durum.camide && (
+                    <View className="p-3.5 rounded-2xl mb-2" style={{ backgroundColor: `${renkler.durum.bilgi}15` }} testID="camideyim-soru">
+                        <View className="flex-row items-center mb-2">
+                            <FontAwesome5 name="question-circle" size={16} color={renkler.durum.bilgi} solid style={{ marginRight: 10 }} />
+                            <Text className="text-sm flex-1 font-semibold" style={{ color: renkler.metin }}>
+                                Camide misiniz? · {durum.soru.yer.ad || 'Cami'}
+                            </Text>
+                        </View>
+                        <View className="flex-row gap-2">
+                            <TouchableOpacity
+                                className="flex-1 items-center justify-center rounded-xl"
+                                style={{ minHeight: 44, borderWidth: 1, borderColor: renkler.sinir, backgroundColor: renkler.kartArkaplan }}
+                                onPress={() => c.soruyuCevapla(false)}
+                                accessibilityRole="button"
+                                accessibilityLabel="Hayır, camide değilim"
+                            >
+                                <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                    Hayır
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                className="flex-row items-center justify-center rounded-xl"
+                                style={{ flex: 1.4, minHeight: 44, backgroundColor: renkler.birincil }}
+                                onPress={() => c.soruyuCevapla(true)}
+                                accessibilityRole="button"
+                                accessibilityLabel={ayarlar.namazModu ? 'Namaz modunu açın' : 'Evet, camideyim'}
+                            >
+                                <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>
+                                    {ayarlar.namazModu ? 'Namaz modunu açın' : 'Evet, camideyim'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
             </View>
 
             {ayarlar.aktif && (
@@ -436,6 +516,21 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                             deger={ayarlar.vakitKapisi}
                             onDegis={(v) => c.guncelle({ vakitKapisi: v })}
                         />
+                        <View className="px-1 pt-2 pb-1" testID="acilis-bicimi">
+                            <Text className="text-sm font-semibold mb-2" style={{ color: renkler.metin }}>
+                                Nasıl açılsın?
+                            </Text>
+                            <SecenekCipleri
+                                secenekler={ACILIS_SECENEKLERI}
+                                secili={ayarlar.acilisBicimi}
+                                onSec={(v) => c.guncelle({ acilisBicimi: v })}
+                                grupEtiketi="Açılış biçimi"
+                                testIDOnEki="acilis"
+                            />
+                            <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+                                {ACILIS_ACIKLAMASI[ayarlar.acilisBicimi]}
+                            </Text>
+                        </View>
                     </View>
 
                     {bolum('CAMİDEYKEN')}
@@ -478,8 +573,59 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                         />
                     </View>
 
+                    {bolum('HANGİ CAMİLER İZLENSİN')}
+                    <View className="p-3" style={kartStili} testID="izleme-kapsami">
+                        <SecenekCipleri
+                            secenekler={KAPSAM_SECENEKLERI}
+                            secili={ayarlar.izlemeKapsami}
+                            onSec={(v) => c.guncelle({ izlemeKapsami: v })}
+                            grupEtiketi="İzleme kapsamı"
+                            testIDOnEki="kapsam"
+                        />
+                        <Text className="text-xs mt-2" style={{ color: renkler.metinIkincil }}>
+                            {ayarlar.izlemeKapsami === 'secilenler'
+                                ? 'Yalnız favorileriniz ve eklediğiniz yerler izlenir; başka bir camide algılanmazsınız.'
+                                : `Telefonun konum servisi size en yakın ${IZLENEN_CAMI_SAYISI} camiyi izler; uzaklaştıkça liste kendiliğinden yenilenir. Favorileriniz uzakta da olsa izlenir.`}
+                        </Text>
+                        {ayarlar.izlemeKapsami === 'secilenler' && secilenSayisi === 0 && (
+                            <View className="flex-row items-center p-3 rounded-2xl mt-2" style={{ backgroundColor: `${renkler.durum.uyari}20` }}>
+                                <FontAwesome5 name="exclamation-circle" size={14} color={renkler.metin} style={{ marginRight: 8 }} />
+                                <Text className="text-xs flex-1" style={{ color: renkler.metin }}>
+                                    Henüz favori ya da eklediğiniz bir yer yok; şu an hiçbir yer izlenmiyor.
+                                </Text>
+                            </View>
+                        )}
+                        <View className="flex-row items-start mt-3">
+                            <FontAwesome5 name="battery-three-quarters" size={12} color={renkler.metinIkincil} style={{ marginRight: 8, marginTop: 2 }} />
+                            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                                {`Pil: Bölgeleri telefonun kendi konum servisi aynı düşük güçlü akışla izler; ${IZLENEN_CAMI_SAYISI} bölge ile 1 bölgenin pil maliyeti hemen hemen aynıdır. Seçim yine de sizde.`}
+                            </Text>
+                        </View>
+                    </View>
+
                     {bolum('CAMİLER')}
                     <View className="p-3" style={kartStili}>
+                        <TouchableOpacity
+                            testID="haritaya-git"
+                            className="flex-row items-center p-3 rounded-2xl mb-3"
+                            style={{ borderWidth: 1, borderColor: renkler.sinir, backgroundColor: renkler.arkaplan, minHeight: 56 }}
+                            onPress={() => setSekme('harita')}
+                            accessibilityRole="button"
+                            accessibilityLabel="Haritada görün ve düzenleyin"
+                        >
+                            <View className="w-9 h-9 rounded-full items-center justify-center mr-3" style={{ backgroundColor: `${renkler.birincil}20` }}>
+                                <FontAwesome5 name="map-marked-alt" size={14} color={renkler.birincil} />
+                            </View>
+                            <View className="flex-1">
+                                <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                    Haritada görün ve düzenleyin
+                                </Text>
+                                <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
+                                    {haritaOzeti}
+                                </Text>
+                            </View>
+                            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+                        </TouchableOpacity>
                         <TouchableOpacity
                             testID="yer-ekle"
                             className="flex-row items-center justify-center rounded-2xl mb-3"
@@ -516,6 +662,71 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                 </>
             )}
 
+                        </>
+                    ) : (
+                        <>
+            <View className="p-4" style={kartStili} testID="nasil-algilanir">
+                {[
+                    {
+                        ikon: 'satellite-dish',
+                        baslik: 'Tek konum değil, bütün camiler',
+                        metin: 'Telefon yakınınızdaki camilerin çevresini kendi konum servisiyle izler; uygulama yalnız bir olay olunca uyanır.',
+                    },
+                    {
+                        ikon: 'hourglass-half',
+                        baslik: 'Önce bekleme',
+                        metin: `Bir caminin ~100 m çevresinde en az ${ayarlar.beklemeDk} dakika kalırsanız telefon haber verir. Önünden geçmek sayılmaz.`,
+                    },
+                    {
+                        ikon: 'crosshairs',
+                        baslik: 'Sonra tek hassas ölçüm',
+                        metin: 'Konum bir kez hassas ölçülür ve caminin bina sınırıyla ya da seçtiğiniz alanla karşılaştırılır. Ölçüm kaba gelirse hiçbir şey yapılmaz.',
+                    },
+                    {
+                        ikon: 'balance-scale',
+                        baslik: 'Son olarak güven',
+                        metin: 'Ezan vaktine yakınlık, cuma namazı, binanın içinde olmanız, hızınız ve bekleme süresi birlikte değerlendirilir: güven yüksekse açılır, sınırdaysa size sorulur.',
+                    },
+                ].map((m) => (
+                    <View key={m.ikon} className="flex-row mb-3">
+                        <View className="w-8 h-8 rounded-full items-center justify-center mr-3" style={{ backgroundColor: `${renkler.birincil}20` }}>
+                            <FontAwesome5 name={m.ikon} size={12} color={renkler.birincil} />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                {m.baslik}
+                            </Text>
+                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                {m.metin}
+                            </Text>
+                        </View>
+                    </View>
+                ))}
+            </View>
+
+            {bolum('ÖRNEKLER · SİZİN AYARLARINIZLA')}
+            <View className="p-3" style={kartStili} testID="guven-ornekleri">
+                {ornekler.map((o) => (
+                    <View key={o.id} className="flex-row items-center py-2" accessible accessibilityLabel={`${o.baslik}: ${o.olculmez ? 'konum bile ölçülmez' : EYLEM_METNI[o.eylem]}`}>
+                        <FontAwesome5 name={o.ikon} size={13} color={renkler.metinIkincil} style={{ width: 22, textAlign: 'center', marginRight: 8 }} />
+                        <Text className="text-sm flex-1" style={{ color: renkler.metin }}>
+                            {o.baslik}
+                        </Text>
+                        <View
+                            className="px-2.5 py-1 rounded-full"
+                            style={{
+                                backgroundColor:
+                                    o.eylem === 'otomatik' ? `${renkler.birincil}20` : o.eylem === 'sor' ? `${renkler.durum.bilgi}20` : `${renkler.metinIkincil}20`,
+                            }}
+                        >
+                            <Text className="text-xs font-semibold" style={{ color: renkler.metin }}>
+                                {o.olculmez ? 'Ölçülmez bile' : EYLEM_METNI[o.eylem]}
+                            </Text>
+                        </View>
+                    </View>
+                ))}
+            </View>
+
             {bolum('SON ALGILAMALAR')}
             <View className="p-4" style={kartStili} testID="son-algilamalar">
                 {c.olaylar.length === 0 ? (
@@ -541,6 +752,10 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                 )}
             </View>
 
+                        </>
+                    )}
+                </ScrollView>
+            )}
             <KonumIzniDisclosureModali
                 gorunur={disclosure}
                 tip="camideyim"
@@ -562,7 +777,7 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                 }}
                 onKapat={() => setIzinUyarisi(false)}
             />
-        </ScrollView>
+        </View>
     );
 };
 

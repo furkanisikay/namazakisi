@@ -13,7 +13,7 @@ import { useRenkler } from '../../../core/theme';
 import * as kopru from '../../../../modules/expo-cami-geofence/src';
 
 jest.mock('../../store/hooks');
-jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
+jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn(), useTema: () => ({ koyuMu: false }) }));
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: jest.fn() }) }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
@@ -128,10 +128,83 @@ describe('CamideyimAyarlariSayfasi', () => {
         expect((k.ayarlariYaz.mock.calls[0][0] as { yerler: unknown }).yerler).toEqual({ 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } });
     });
 
-    it('son algılamalar: neden algılanmadığını yazar', async () => {
+    it('son algılamalar ("Nasıl algılanır" sekmesi): neden algılanmadığını yazar', async () => {
         k.gunlukAl.mockResolvedValue([{ zamanMs: Date.now(), tur: 'olcum', sonuc: 'supheli', dogrulukM: 48 }]);
         const e = render(<CamideyimAyarlariSayfasi />);
+        await bosalt();
+        fireEvent.press(e.getByTestId('sekme-nasil'));
         await waitFor(() => expect(e.getByText('Ölçüm yeterince hassas değildi')).toBeTruthy());
+        // Güven örnekleri JS ikiziyle canlı: varsayılan "akıllı"da önünden geçmek hiçbir şey yapmaz.
+        expect(e.getByLabelText('Önünden yürüyerek geçmek: Hiçbir şey olmaz')).toBeTruthy();
+        expect(e.getByLabelText('Trafikte caminin önünde beklemek: Size sorulur')).toBeTruthy();
+    });
+
+    it('açılış biçimi ve izleme kapsamı native\'e yazılır', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await waitFor(() => expect(e.getByTestId('acilis-sorarak')).toBeTruthy());
+        fireEvent.press(e.getByTestId('acilis-sorarak'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalledWith(expect.objectContaining({ acilisBicimi: 'sorarak' }), expect.anything()));
+        fireEvent.press(e.getByTestId('kapsam-secilenler'));
+        await waitFor(() =>
+            expect(k.ayarlariYaz).toHaveBeenLastCalledWith(expect.objectContaining({ izlemeKapsami: 'secilenler' }), expect.anything())
+        );
+    });
+
+    it('yalnız seçtiklerim + hiç seçili yer yoksa uyarır', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, izlemeKapsami: 'secilenler' });
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await waitFor(() => expect(e.getByText(/şu an hiçbir yer izlenmiyor/)).toBeTruthy());
+    });
+
+    it('bekleyen "Camide misiniz?" sorusu sayfada cevaplanabilir', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        k.durumAl.mockResolvedValue({
+            ...NATIVE_DURUM,
+            soru: { yer: { id: 'osm:w1', ad: 'Kare Camii', lat: 41, lng: 29 }, vakit: 'ogle', tarih: '2026-10-13', cuma: false, tur: 't', zamanMs: 0, bitisMs: 1 },
+        });
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await waitFor(() => expect(e.getByText('Camide misiniz? · Kare Camii')).toBeTruthy());
+        fireEvent.press(e.getByLabelText('Namaz modunu açın'));
+        await waitFor(() => expect(k.soruyuCevapla).toHaveBeenCalledWith(true));
+    });
+
+    it('harita sekmesi: camiye dokununca panel açılır, "Cami değil" yazılır', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        k.yakinCamiler.mockResolvedValue([
+            { id: 'osm:w1', ad: 'Kare Camii', lat: 41.011, lng: 28.972, yaricapM: 29, poligonVar: true, mesafeM: 137, poligon: null },
+        ]);
+        L.getForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await bosalt();
+        fireEvent.press(e.getByTestId('sekme-harita'));
+        await waitFor(() => expect(e.getByTestId('cami-haritasi')).toBeTruthy());
+        expect(e.getByText(/© OpenStreetMap katkıcıları/)).toBeTruthy();
+        const kaynak = e.UNSAFE_root.findAll((n) => (n.type as unknown) === 'GeoJSONSource' && n.props.id === 'cami-noktalari')[0];
+        await waitFor(() => expect(kaynak.props.data.features).toHaveLength(1));
+        act(() => kaynak.props.onPress({ nativeEvent: { features: [{ properties: { id: 'osm:w1' } }] } }));
+        await waitFor(() => expect(e.getByTestId('harita-yer-paneli')).toBeTruthy());
+        fireEvent.press(e.getByLabelText('Kare Camii: cami değil'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        expect((k.ayarlariYaz.mock.calls[0][0] as { yerler: unknown }).yerler).toEqual({ 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } });
+    });
+
+    it('harita: "Yer ekleyin" haritanın ortasındaki noktayı adıyla ekler', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        L.getForegroundPermissionsAsync.mockResolvedValue({ status: 'denied' } as never);
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await bosalt();
+        fireEvent.press(e.getByTestId('sekme-harita'));
+        await waitFor(() => expect(e.getByTestId('cami-haritasi')).toBeTruthy());
+        act(() => e.getByTestId('cami-haritasi').props.onRegionDidChange({ nativeEvent: { center: [29.5, 40.5] } }));
+        fireEvent.press(e.getByTestId('harita-yer-ekle'));
+        fireEvent.changeText(e.getByLabelText('Yerin adı'), 'İş yeri mescidi');
+        fireEvent.press(e.getByTestId('harita-yeri-ekle-onay'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        const yerler = (k.ayarlariYaz.mock.calls[0][0] as { yerler: Record<string, unknown> }).yerler;
+        expect(Object.values(yerler)).toEqual([
+            { durum: 'normal', kendi: true, ad: 'İş yeri mescidi', lat: 40.5, lng: 29.5, alanM: 20 },
+        ]);
     });
 
     it('cami verisi yokken kendi yerlerin yine çalıştığı söylenir', async () => {
