@@ -41,6 +41,24 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'katlanabilir-tablet-duzeni',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Katlanabilir ve Tablet Ekranlara Uygun Düzen',
+        aciklama:
+            'Galaxy Z Fold gibi katlanabilir telefonların iç ekranında ve tabletlerde ana ekran iki sütunda açılır.',
+        detayAciklama:
+            'Geniş ekranlarda ana ekran artık boşluklu tek bir sütun değil: solda şu anki vakit kartını ve geri sayımı, sağda günlük akışı aynı anda görürsünüz. Ayar ekranları ortada okunaklı bir genişlikte durur. Tablette ve katlanabilir telefonun iç ekranında uygulamayı yatay da kullanabilirsiniz; telefonu katlayıp açtığınızda geri sayım ve baktığınız gün olduğu gibi kalır. Telefon ekranında hiçbir şey değişmez.',
+        ikon: 'tablet-alt',
+        detaylar: [
+            'Geniş ekranda solda vakit kartı, sağda günlük akış',
+            'Ayar ekranları ortada okunaklı genişlikte',
+            'Tablette ve katlanabilir iç ekranda yatay kullanım',
+            'Katlayıp açınca baktığınız gün ve geri sayım korunur',
+            'Telefon ekranında düzen aynı kalır',
+        ],
+    },
+    {
         id: 'nafile-namaz-vakitleri',
         surum: '0.31.0',
         tarih: '2026-10-12',

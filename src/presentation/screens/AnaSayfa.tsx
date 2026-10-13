@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, AppState, AppStateStatus, StyleSheet } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, AppState, AppStateStatus, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -18,6 +18,9 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
+import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { useEkranSinifi } from '../hooks/useEkranSinifi';
+import { ikiBolmeliMi } from '../../core/utils/ekranSinifi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
@@ -58,6 +61,9 @@ export const AnaSayfa: React.FC = () => {
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
   const { koyuMu } = useTema();
+  // Katlanabilir/tablet (issue #283): pencere ≥600 dp ise gün sayfası iki bölmeli.
+  // Telefonda (kompakt) düzen birebir eskisi gibi tek sütundur.
+  const ikiBolmeli = ikiBolmeliMi(useEkranSinifi());
   const { tumNamazlarTamamlandiFeedback } = useFeedback();
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
@@ -678,8 +684,11 @@ export const AnaSayfa: React.FC = () => {
       }
     }
 
-    return (
-      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+    // Üst bölüm (uyarı bantları + şu anki vakit kartı) ile akış AYRI düğümlerdir:
+    // telefonda tek sütunda alt alta, katlanabilir/tablette iki bölmede yan yana
+    // çizilir (issue #283). Bileşenler ve prop'ları iki düzende AYNIDIR.
+    const ustBolum = (
+      <>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
@@ -736,7 +745,11 @@ export const AnaSayfa: React.FC = () => {
             </Text>
           </View>
         )}
+      </>
+    );
 
+    const akis = (
+      <>
         {/* Akış Listesi — memo'lu: gün ISO dizesiyle geçer ki saniyelik geri sayım
             render'ı memo'yu kırmasın. "Vakit geçti mi" içeride `new Date()` okur ama
             satır yalnız prop değişince yeniden çizilir; doğruluk, satır saatlerinin
@@ -755,10 +768,10 @@ export const AnaSayfa: React.FC = () => {
           // Nafile yalnız aktif günde: geçmiş günde "şu an vakti girdi" anlamsız.
           nafileSatirlari={aktifGunKontrol ? nafileSatirlari : undefined}
         />
-        {/* ScrollView sonu için boşluk */}
-        <View className="h-10" />
-      </ScrollView>
+      </>
     );
+
+    return <GunSayfasiDuzeni key={sayfaIndeksi} ikiBolmeli={ikiBolmeli} ustBolum={ustBolum} akis={akis} />;
   };
 
   if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;

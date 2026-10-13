@@ -45,6 +45,12 @@ import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
 import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
+import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
+
+/** Ayarlar yığınındaki her ekranın sarmalayıcısı (modül düzeyi: referansı sabit). */
+const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => (
+  <OkunabilirGenislik>{children}</OkunabilirGenislik>
+);
 
 /**
  * Root stack navigation parameter list.
@@ -117,6 +123,9 @@ const AyarlarStack: React.FC = () => {
         // ("AyarlarAna") gorunuyordu. Yalniz ok gosterilir.
         headerBackButtonDisplayMode: 'minimal',
       }}
+      // Katlanabilir/tablet (issue #283): geniş pencerede ayar ekranlarının
+      // içeriği okunabilir genişlikte (≈640 dp) ortalanır; telefonda etkisizdir.
+      screenLayout={ayarEkraniYerlesimi}
     >
       {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<
         [AyarlarEkranAdi, (typeof AYARLAR_EKRAN_TANIMLARI)[AyarlarEkranAdi]]
