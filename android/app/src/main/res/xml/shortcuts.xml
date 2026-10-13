@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Statik uygulama kısayolları (issue #276). Samsung Rutinler ve otomasyon
+  uygulamaları bunları "uygulama eylemi" olarak da sunar.
+  targetPackage applicationId ile AYNI olmalı (build.gradle'da applicationIdSuffix yok).
+  Kıble / Kaza: derin bağlantı → MainActivity → React Navigation linking
+  (src/navigation/derinBaglantilar.ts). Kıldım: uygulamayı açmadan işaretleyen
+  KildimKisayolActivity (açık bileşen; MainActivity'nin genel namazakisi:// filtresiyle
+  çakışıp seçim penceresi açmasın diye intent-filter'ı yoktur).
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_kisayol_kildim"
+        android:shortcutId="simdiki_vakti_kildim"
+        android:shortcutLongLabel="@string/kisayol_kildim_uzun"
+        android:shortcutShortLabel="@string/kisayol_kildim_kisa">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="namazakisi://kildim"
+            android:targetClass="com.furkanisikay.namazakisi.kildim.KildimKisayolActivity"
+            android:targetPackage="com.furkanisikay.namazakisi" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_kisayol_kible"
+        android:shortcutId="kible"
+        android:shortcutLongLabel="@string/kisayol_kible_uzun"
+        android:shortcutShortLabel="@string/kisayol_kible_kisa">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="namazakisi://kible"
+            android:targetClass="com.furkanisikay.namazakisi.MainActivity"
+            android:targetPackage="com.furkanisikay.namazakisi" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_kisayol_kaza"
+        android:shortcutId="kaza_defteri"
+        android:shortcutLongLabel="@string/kisayol_kaza_uzun"
+        android:shortcutShortLabel="@string/kisayol_kaza_kisa">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="namazakisi://kaza"
+            android:targetClass="com.furkanisikay.namazakisi.MainActivity"
+            android:targetPackage="com.furkanisikay.namazakisi" />
+    </shortcut>
+</shortcuts>

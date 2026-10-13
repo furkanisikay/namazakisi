@@ -6,7 +6,8 @@
 
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
-import { WearSenkronServisi, WEAR_KILDIM_OLAYI } from './src/domain/services/WearSenkronServisi';
+import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
+import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
@@ -273,14 +274,18 @@ const AppIcerik: React.FC = () => {
         // Wear OS (issue #269): kılınmışlık her değiştiğinde saati tazele ve
         // uygulama kapalıyken saatten gelmiş "Kıldım"ları işle.
         WearSenkronServisi.getInstance().baslat();
-        WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // Widget + hızlı ayarlar (issue #275/#276): kılınmışlık değişince tazelenir;
+        // uygulama kapalıyken saatten/widget'tan/kutudan gelmiş "Kıldım"lar işlenir.
+        WidgetServisi.getInstance().baslat();
+        WidgetServisi.getInstance().kilinanlariYaz().catch(() => {});
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
-    // Saatten "Kıldım" uygulama AÇIKKEN gelirse native taraf headless görev
-    // başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
-    const wearAbonelik = DeviceEventEmitter.addListener(WEAR_KILDIM_OLAYI, () => {
-      WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+    // Saatten/widget'tan/kutudan "Kıldım" uygulama AÇIKKEN gelirse native taraf headless
+    // görev başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
+    const wearAbonelik = DeviceEventEmitter.addListener(KILDIM_KUYRUGU_OLAYI, () => {
+      KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
     });
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
@@ -300,9 +305,9 @@ const AppIcerik: React.FC = () => {
     const FOREGROUND_DEBOUNCE_MS = 5 * 60 * 1000;
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
-        // Saat kuyruğu DEBOUNCE'SUZ boşaltılır: ucuzdur ve headless görev OEM
-        // kısıtıyla başlatılamamışsa tek güvenlik ağı budur (issue #269).
-        WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // "Kıldım" kuyruğu (saat/widget/kutu/kısayol) DEBOUNCE'SUZ boşaltılır: ucuzdur ve
+        // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
         const simdiMs = Date.now();
         if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
           return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez

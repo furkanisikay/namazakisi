@@ -1,0 +1,7 @@
+<resources>
+  <color name="widget_my_zemin">@android:color/system_neutral1_900</color>
+  <color name="widget_my_metin">@android:color/system_neutral1_50</color>
+  <color name="widget_my_ikincil">@android:color/system_neutral2_200</color>
+  <color name="widget_my_vurgu">@android:color/system_accent1_200</color>
+  <color name="widget_my_vurgu_ustu">@android:color/system_accent1_800</color>
+</resources>

@@ -321,6 +321,16 @@ export class BildirimServisi {
   }
 
   /**
+   * Ortak "Kıldım" kuyruğundan gelen istek (issue #275/#276): Wear saati, ana ekran
+   * widget'ı, hızlı ayarlar kutusu, kısayol, `namazakisi://kildim` derin bağlantısı.
+   * Bildirimdeki "Kıldım" ile BİREBİR aynı gövde; hata YUKARI iletilir (kuyruk
+   * öğeyi bırakıp deneme sayacını artırır).
+   */
+  public async kuyruktanKildimIsle(vakit: string, tarih: string): Promise<void> {
+    await this.kildimAksiyonunuIsle(vakit, tarih);
+  }
+
+  /**
    * "Kildim" aksiyonunu isle
    * Namaz durumunu guncelle ve kalan bildirimleri iptal et
    */

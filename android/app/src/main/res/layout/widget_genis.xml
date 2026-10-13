@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 4×2: ortak blok + günün beş vakti; kılınanlar işaretli, içinde bulunulan vurgulu (issue #275). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_kok"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_zemin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_zemin" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <include
+            layout="@layout/widget_ana_blok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="12dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/widget_liste"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/widget_satir_sabah"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/widget_satir_sabah_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/widget_satir_sabah_saat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/widget_satir_sabah_isaret"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_kildim"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_satir_ogle"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/widget_satir_ogle_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/widget_satir_ogle_saat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/widget_satir_ogle_isaret"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_kildim"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_satir_ikindi"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/widget_satir_ikindi_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/widget_satir_ikindi_saat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/widget_satir_ikindi_isaret"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_kildim"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_satir_aksam"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/widget_satir_aksam_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/widget_satir_aksam_saat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/widget_satir_aksam_isaret"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_kildim"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_satir_yatsi"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/widget_satir_yatsi_ad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/widget_satir_yatsi_saat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp" />
+
+            <ImageView
+                android:id="@+id/widget_satir_yatsi_isaret"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="6dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_kildim"
+                android:visibility="invisible" />
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

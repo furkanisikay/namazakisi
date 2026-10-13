@@ -28,6 +28,7 @@ import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServi
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { WearSenkronServisi } from '../../domain/services/WearSenkronServisi';
+import { WidgetServisi } from '../../domain/services/WidgetServisi';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -117,6 +118,8 @@ export const iceAktarmayiUygula = createAsyncThunk(
     // Wear OS saati (issue #269): içe aktarma kayıtları `Depolama.yaz` ile DOĞRUDAN
     // yazar (LocalNamazServisi gözlemcisinden geçmez) → saati açıkça tazele.
     await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+    // Ana ekran widget'ı + hızlı ayarlar kutusu (issue #275): aynı gerekçe.
+    await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
 
     return { yazilanAnahtarSayisi: Object.keys(plan).length };
   }

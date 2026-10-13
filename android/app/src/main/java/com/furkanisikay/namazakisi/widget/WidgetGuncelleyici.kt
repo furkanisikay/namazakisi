@@ -1,0 +1,408 @@
+package com.furkanisikay.namazakisi.widget
+
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.SystemClock
+import android.service.quicksettings.TileService
+import android.util.Log
+import android.util.SizeF
+import android.view.View
+import android.widget.RemoteViews
+import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
+import com.furkanisikay.namazakisi.cekirdek.SureGosterimi
+import com.furkanisikay.namazakisi.cekirdek.VakitCizelgesi
+import com.furkanisikay.namazakisi.cekirdek.VakitKodlari
+import com.furkanisikay.namazakisi.cekirdek.WidgetAyari
+import com.furkanisikay.namazakisi.cekirdek.WidgetDuzenSecici
+import com.furkanisikay.namazakisi.cekirdek.WidgetDuzeni
+import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
+import com.furkanisikay.namazakisi.cekirdek.kildimIstekKodu
+import com.furkanisikay.namazakisi.cekirdek.saatMetni
+import com.furkanisikay.namazakisi.kildim.KildimKutusuServisi
+
+/**
+ * Widget 2.0 çizicisi ve zamanlayıcısı (issue #275) — TEK kapı.
+ *
+ * ESKİMEYEN SÜRE: kalan süre `Chronometer` countDown ile SİSTEM tarafından çizilir;
+ * widget dakikada bir güncellenmez. Tek alarm bir sonraki VAKİT SINIRINDA kurulur
+ * (`RTC` uyandırmaz + `setWindow`): ekran kapalıyken bekler, cihaz uyanınca hemen
+ * teslim edilir. Gecikme olsa bile sayaç negatife düşer ("−0:03") ve bitiş saati her
+ * boyutta yazılıdır → widget asla "süre var" demez. Günde ≤ 12 alarm
+ * (`VakitCizelgesi.alarmZinciri` JVM testi; gerçekte 6).
+ *
+ * Tazeleme tetikleri: vakit sınırı alarmı, saat/saat dilimi/tarih değişimi, açılış
+ * ve paket güncellemesi (`NamazWidgetAlarmAlici`), JS'ten vakit ya da kılınmışlık
+ * yazımı (`WidgetVeriModulu`), widget/kutu dokunuşu.
+ */
+object WidgetGuncelleyici {
+    private const val TAG = "WidgetGuncelleyici"
+    const val SINIR_EYLEMI = "com.furkanisikay.namazakisi.widget.VAKIT_SINIRI"
+
+    /** Sınır anından sonra teslim payı: sistem alarmları toplayabilsin. */
+    private const val PENCERE_MS = 5_000L
+
+    private val SAGLAYICILAR = listOf(NamazWidget::class.java, NamazGenisBoyutWidget::class.java)
+
+    private data class Palet(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int, val vurguUstu: Int)
+
+    private val PALETLER = mapOf(
+        WidgetZemini.MATERIAL to Palet(
+            R.color.widget_my_zemin, R.color.widget_my_metin, R.color.widget_my_ikincil,
+            R.color.widget_my_vurgu, R.color.widget_my_vurgu_ustu,
+        ),
+        WidgetZemini.ACIK to Palet(
+            R.color.widget_acik_zemin, R.color.widget_acik_metin, R.color.widget_acik_ikincil,
+            R.color.widget_acik_vurgu, R.color.widget_acik_vurgu_ustu,
+        ),
+        WidgetZemini.KOYU to Palet(
+            R.color.widget_koyu_zemin, R.color.widget_koyu_metin, R.color.widget_koyu_ikincil,
+            R.color.widget_koyu_vurgu, R.color.widget_koyu_vurgu_ustu,
+        ),
+        // Şeffaf: zemin görünmez, duvar kağıdı üstünde açık metin okunur.
+        WidgetZemini.SEFFAF to Palet(
+            R.color.widget_koyu_zemin, R.color.widget_koyu_metin, R.color.widget_koyu_ikincil,
+            R.color.widget_koyu_vurgu, R.color.widget_koyu_vurgu_ustu,
+        ),
+    )
+
+    private val SATIRLAR = mapOf(
+        VakitKodlari.SABAH to intArrayOf(R.id.widget_satir_sabah, R.id.widget_satir_sabah_ad, R.id.widget_satir_sabah_saat, R.id.widget_satir_sabah_isaret),
+        VakitKodlari.OGLE to intArrayOf(R.id.widget_satir_ogle, R.id.widget_satir_ogle_ad, R.id.widget_satir_ogle_saat, R.id.widget_satir_ogle_isaret),
+        VakitKodlari.IKINDI to intArrayOf(R.id.widget_satir_ikindi, R.id.widget_satir_ikindi_ad, R.id.widget_satir_ikindi_saat, R.id.widget_satir_ikindi_isaret),
+        VakitKodlari.AKSAM to intArrayOf(R.id.widget_satir_aksam, R.id.widget_satir_aksam_ad, R.id.widget_satir_aksam_saat, R.id.widget_satir_aksam_isaret),
+        VakitKodlari.YATSI to intArrayOf(R.id.widget_satir_yatsi, R.id.widget_satir_yatsi_ad, R.id.widget_satir_yatsi_saat, R.id.widget_satir_yatsi_isaret),
+    )
+
+    /** Tüm widget örneklerini çizer, sınır alarmını kurar ve hızlı ayarlar kutusunu tazeler. */
+    fun tumunuGuncelle(context: Context) {
+        val uygulama = context.applicationContext
+        try {
+            val yonetici = AppWidgetManager.getInstance(uygulama)
+            val anlik = WidgetVeriDeposu.anlik(uygulama)
+            var widgetVar = false
+            for (sinif in SAGLAYICILAR) {
+                for (id in yonetici.getAppWidgetIds(ComponentName(uygulama, sinif))) {
+                    widgetVar = true
+                    guncelle(uygulama, yonetici, id, anlik)
+                }
+            }
+            if (widgetVar) sinirAlarminiKur(uygulama, anlik) else sinirAlarminiIptalEt(uygulama)
+        } catch (e: Throwable) {
+            Log.e(TAG, "Widgetlar guncellenemedi", e)
+        }
+        kutuyuTazele(uygulama)
+    }
+
+    fun guncelle(
+        context: Context,
+        yonetici: AppWidgetManager,
+        appWidgetId: Int,
+        anlik: WidgetVeriDeposu.Anlik = WidgetVeriDeposu.anlik(context),
+    ) {
+        try {
+            yonetici.updateAppWidget(appWidgetId, gorunum(context, yonetici, appWidgetId, anlik))
+        } catch (e: Throwable) {
+            Log.e(TAG, "Widget cizilemedi: id=$appWidgetId", e)
+        }
+    }
+
+    /**
+     * API 31+: boyut haritası — başlatıcı yeniden boyutlandırmada uygulamayı
+     * uyandırmadan doğru düzeni seçer. Öncesi: seçenekteki boyuttan tek düzen
+     * (`onAppWidgetOptionsChanged` yeniden çağırır). Eşikler tek yerde: `WidgetDuzenSecici`.
+     */
+    private fun gorunum(
+        context: Context,
+        yonetici: AppWidgetManager,
+        id: Int,
+        anlik: WidgetVeriDeposu.Anlik,
+    ): RemoteViews {
+        val ayar = WidgetVeriDeposu.ayar(context, id)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return RemoteViews(
+                mapOf(
+                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik),
+                    SizeF(WidgetDuzenSecici.ORTA_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
+                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik),
+                    SizeF(WidgetDuzenSecici.GENIS_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
+                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik),
+                )
+            )
+        }
+        val secenek = yonetici.getAppWidgetOptions(id)
+        val genislik = secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0).toFloat()
+        val yukseklik = secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0).toFloat()
+        val duzen = if (genislik > 0f && yukseklik > 0f) {
+            WidgetDuzenSecici.sec(genislik, yukseklik)
+        } else if (yonetici.getAppWidgetInfo(id)?.provider?.className == NamazGenisBoyutWidget::class.java.name) {
+            WidgetDuzeni.GENIS
+        } else {
+            WidgetDuzeni.KUCUK
+        }
+        return ciz(context, duzen, ayar, anlik)
+    }
+
+    private fun ciz(context: Context, duzen: WidgetDuzeni, ayar: WidgetAyari, a: WidgetVeriDeposu.Anlik): RemoteViews {
+        val v = RemoteViews(
+            context.packageName,
+            when (duzen) {
+                WidgetDuzeni.KUCUK -> R.layout.widget_kucuk
+                WidgetDuzeni.ORTA -> R.layout.widget_orta
+                WidgetDuzeni.GENIS -> R.layout.widget_genis
+            },
+        )
+        val p = PALETLER.getValue(ayar.zemin)
+        gorselRengi(context, v, R.id.widget_zemin, p.zemin)
+        v.setInt(R.id.widget_zemin, "setImageAlpha", ayar.zeminAlfasi())
+        val uygulamaAc = uygulamayiAcan(context)
+        if (uygulamaAc != null) v.setOnClickPendingIntent(R.id.widget_kok, uygulamaAc)
+
+        val durum = a.durum
+        val aktif = durum.aktif
+        val bitis = durum.bitisMs
+        val sonraki = durum.sonraki
+        // Hedef: aktif vaktin ÇIKIŞI; güneş→öğle arasında sıradaki vaktin GİRİŞİ.
+        val (ad, hedefMs, sinirEtiketi) = when {
+            aktif != null && bitis != null -> Triple(VakitKodlari.gorunenAd(aktif.kod), bitis, "Çıkış")
+            sonraki != null -> Triple(VakitKodlari.gorunenAd(sonraki.kod), sonraki.ms, "Giriş")
+            else -> Triple("Namaz vakti", null, null)
+        }
+        val kildimNiyeti = if (a.kildim == KildimDurumu.KILINABILIR && aktif != null) {
+            kildimNiyeti(context, aktif.tarih, aktif.kod)
+        } else null
+
+        v.setTextViewText(R.id.widget_vakit_adi, ad)
+        metinRengi(context, v, R.id.widget_vakit_adi, p.metin)
+        val bitisMetni = if (hedefMs != null) "$sinirEtiketi ${saatMetni(hedefMs)}" else "Uygulamayı açın"
+
+        if (duzen == WidgetDuzeni.KUCUK) {
+            v.setTextViewText(R.id.widget_bitis, bitisMetni)
+            metinRengi(context, v, R.id.widget_bitis, p.ikincil)
+            gorselRengi(context, v, R.id.widget_kildim, if (a.kildim == KildimDurumu.YOK) p.ikincil else p.vurgu)
+            isaretiCiz(context, v, R.id.widget_kildim_ikon, a.kildim, p)
+            v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
+            v.setContentDescription(R.id.widget_kildim, erisimMetni(ad, a.kildim))
+            return v
+        }
+
+        // --- 2×2 / 4×2 ortak blok ---
+        val sayacVar = hedefMs != null
+        val buyukKalan = sayacVar && ayar.gosterim == SureGosterimi.KALAN
+        if (sayacVar) {
+            val taban = SystemClock.elapsedRealtime() + (hedefMs!! - a.simdiMs)
+            val sayacId = if (buyukKalan) R.id.widget_kalan else R.id.widget_kalan_kucuk
+            v.setChronometer(sayacId, taban, null, true)
+            v.setChronometerCountDown(sayacId, true)
+        }
+        v.setViewVisibility(R.id.widget_kalan, if (buyukKalan) View.VISIBLE else View.GONE)
+        v.setViewVisibility(R.id.widget_buyuk_saat, if (buyukKalan) View.GONE else View.VISIBLE)
+        v.setViewVisibility(R.id.widget_kalan_kucuk, if (sayacVar && !buyukKalan) View.VISIBLE else View.GONE)
+        v.setViewVisibility(R.id.widget_bitis, if (buyukKalan || !sayacVar) View.VISIBLE else View.GONE)
+        v.setTextViewText(R.id.widget_bitis, bitisMetni)
+        v.setTextViewText(R.id.widget_buyuk_saat, if (sayacVar) bitisMetni else "--:--")
+        metinRengi(context, v, R.id.widget_kalan, p.metin)
+        metinRengi(context, v, R.id.widget_buyuk_saat, p.metin)
+        metinRengi(context, v, R.id.widget_kalan_kucuk, p.ikincil)
+        metinRengi(context, v, R.id.widget_bitis, p.ikincil)
+
+        val sonrakiMetni = when {
+            !ayar.sonrakiGoster || sonraki == null -> null
+            aktif != null -> "Sıradaki ${VakitKodlari.gorunenAd(sonraki.kod)} · ${saatMetni(sonraki.ms)}"
+            else -> "Şu an kılınacak vakit yok"
+        }
+        v.setViewVisibility(R.id.widget_sonraki, if (sonrakiMetni == null) View.GONE else View.VISIBLE)
+        v.setTextViewText(R.id.widget_sonraki, sonrakiMetni ?: "")
+        metinRengi(context, v, R.id.widget_sonraki, p.ikincil)
+
+        dugmeyiCiz(context, v, a.kildim, sayacVar, p)
+        v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
+        v.setContentDescription(R.id.widget_kildim, erisimMetni(ad, a.kildim))
+
+        if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p)
+        return v
+    }
+
+    private fun dugmeyiCiz(context: Context, v: RemoteViews, kildim: KildimDurumu, veriVar: Boolean, p: Palet) {
+        if (!veriVar) {
+            v.setViewVisibility(R.id.widget_kildim_dugme, View.GONE)
+            return
+        }
+        v.setViewVisibility(R.id.widget_kildim_dugme, View.VISIBLE)
+        val etkin = kildim == KildimDurumu.KILINABILIR
+        gorselRengi(context, v, R.id.widget_kildim, p.vurgu)
+        // Etkin değilken soluk zemin: "basılabilir" sanılmasın.
+        v.setInt(R.id.widget_kildim, "setImageAlpha", if (etkin) 255 else 56)
+        v.setTextViewText(
+            R.id.widget_kildim_metin,
+            when (kildim) {
+                KildimDurumu.KILINABILIR -> "Kıldım"
+                KildimDurumu.BEKLIYOR -> "İşaretleniyor"
+                KildimDurumu.KILINDI -> "Kılındı"
+                KildimDurumu.YOK -> "Vakit girmedi"
+            },
+        )
+        metinRengi(context, v, R.id.widget_kildim_metin, if (etkin) p.vurguUstu else p.metin)
+        when (kildim) {
+            KildimDurumu.KILINABILIR -> {
+                v.setViewVisibility(R.id.widget_kildim_ikon, View.VISIBLE)
+                v.setImageViewResource(R.id.widget_kildim_ikon, R.drawable.ic_widget_kildim)
+                gorselRengi(context, v, R.id.widget_kildim_ikon, p.vurguUstu)
+            }
+            else -> isaretiCiz(context, v, R.id.widget_kildim_ikon, kildim, p)
+        }
+    }
+
+    private fun isaretiCiz(context: Context, v: RemoteViews, id: Int, kildim: KildimDurumu, p: Palet) {
+        when (kildim) {
+            KildimDurumu.KILINDI -> {
+                v.setViewVisibility(id, View.VISIBLE)
+                v.setImageViewResource(id, R.drawable.ic_widget_kildim)
+                gorselRengi(context, v, id, p.vurgu)
+            }
+            KildimDurumu.BEKLIYOR -> {
+                v.setViewVisibility(id, View.VISIBLE)
+                v.setImageViewResource(id, R.drawable.ic_widget_bekliyor)
+                gorselRengi(context, v, id, p.ikincil)
+            }
+            else -> v.setViewVisibility(id, View.GONE)
+        }
+    }
+
+    private fun listeyiCiz(context: Context, v: RemoteViews, a: WidgetVeriDeposu.Anlik, p: Palet) {
+        val gun = VakitCizelgesi.gosterilecekGun(a.durum)
+        val vakitler = if (gun == null) emptyList() else VakitCizelgesi.gunVakitleri(a.vakitler, gun)
+        val kilinan = if (gun == null) emptySet() else a.kilinanlar[gun].orEmpty()
+        val aktif = a.durum.aktif
+        for ((kod, idler) in SATIRLAR) {
+            val (satir, adId, saatId, isaretId) = idler.toList()
+            val giris = vakitler.firstOrNull { it.kod == kod }
+            val buSatirAktif = aktif != null && aktif.kod == kod && aktif.tarih == gun
+            v.setTextViewText(adId, VakitKodlari.gorunenAd(kod))
+            v.setTextViewText(saatId, if (giris != null) saatMetni(giris.ms) else "--:--")
+            metinRengi(context, v, adId, if (buSatirAktif) p.metin else p.ikincil)
+            metinRengi(context, v, saatId, if (buSatirAktif) p.metin else p.ikincil)
+            v.setInt(satir, "setBackgroundResource", if (buSatirAktif) R.drawable.widget_satir_aktif else 0)
+            val satirDurumu = when {
+                kod in kilinan -> KildimDurumu.KILINDI
+                buSatirAktif && a.kildim == KildimDurumu.BEKLIYOR -> KildimDurumu.BEKLIYOR
+                else -> KildimDurumu.YOK
+            }
+            if (satirDurumu == KildimDurumu.YOK) {
+                v.setViewVisibility(isaretId, View.INVISIBLE)
+            } else {
+                isaretiCiz(context, v, isaretId, satirDurumu, p)
+            }
+        }
+    }
+
+    private fun erisimMetni(ad: String, kildim: KildimDurumu): String = when (kildim) {
+        KildimDurumu.KILINABILIR -> "$ad namazını kılındı olarak işaretleyin"
+        KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
+        KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"
+        KildimDurumu.YOK -> "Uygulamayı açın"
+    }
+
+    // --- Niyetler (PendingIntent) ------------------------------------------------------
+
+    private fun uygulamayiAcan(context: Context): PendingIntent? {
+        val baslat = context.packageManager.getLaunchIntentForPackage(context.packageName) ?: return null
+        return PendingIntent.getActivity(
+            context, 0, baslat, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    /** Fable kararı: requestCode = `"<tarih>_<vakit>".hashCode()` — vakit değişince eski dokunuş geçersizleşir. */
+    private fun kildimNiyeti(context: Context, tarih: String, widgetKodu: String): PendingIntent? {
+        val vakitAdi = VakitKodlari.kuyrukVakti(widgetKodu) ?: return null
+        val niyet = Intent(context, WidgetKildimAlici::class.java)
+            .setAction(WidgetKildimAlici.EYLEM)
+            .putExtra(WidgetKildimAlici.EK_TARIH, tarih)
+            .putExtra(WidgetKildimAlici.EK_VAKIT, widgetKodu)
+        return PendingIntent.getBroadcast(
+            context, kildimIstekKodu(tarih, vakitAdi), niyet,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    // --- Renk -------------------------------------------------------------------------
+
+    /**
+     * API 31+: renk KAYNAK olarak verilir ve başlatıcının yapılandırmasında çözülür →
+     * Material You / gece modu değişince widget'ı yeniden çizmeye gerek kalmaz.
+     */
+    private fun metinRengi(context: Context, v: RemoteViews, id: Int, renk: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            v.setColorStateList(id, "setTextColor", renk)
+        } else {
+            v.setTextColor(id, context.getColor(renk))
+        }
+    }
+
+    private fun gorselRengi(context: Context, v: RemoteViews, id: Int, renk: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            v.setColorStateList(id, "setImageTintList", renk)
+        } else {
+            v.setInt(id, "setColorFilter", context.getColor(renk))
+        }
+    }
+
+    // --- Sınır alarmı -------------------------------------------------------------------
+
+    private fun sinirNiyeti(context: Context): PendingIntent = PendingIntent.getBroadcast(
+        context, 0,
+        Intent(context, NamazWidgetAlarmAlici::class.java).setAction(SINIR_EYLEMI),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+
+    /**
+     * Bir sonraki vakit sınırına TEK alarm. Aynı PendingIntent → önceki alarm ezilir;
+     * tazeleme ne kadar sık olursa olsun bekleyen alarm sayısı 1 kalır.
+     */
+    private fun sinirAlarminiKur(context: Context, a: WidgetVeriDeposu.Anlik) {
+        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        eskiDakikaAlarminiIptalEt(context, alarm)
+        val sinir = VakitCizelgesi.sonrakiSinirMs(a.vakitler, a.simdiMs)
+        if (sinir == null) {
+            alarm.cancel(sinirNiyeti(context))
+            return
+        }
+        try {
+            alarm.setWindow(AlarmManager.RTC, sinir, PENCERE_MS, sinirNiyeti(context))
+        } catch (e: Exception) {
+            Log.w(TAG, "Widget sinir alarmi kurulamadi", e)
+        }
+    }
+
+    fun sinirAlarminiIptalEt(context: Context) {
+        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.cancel(sinirNiyeti(context))
+        eskiDakikaAlarminiIptalEt(context, alarm)
+    }
+
+    /**
+     * Widget 1.0'ın dakikalık alarmı (eylemsiz niyet) güncellemeden sonra bir kez daha
+     * tetiklenebilir; açıkça iptal edilir ki dakika döngüsü geri gelmesin.
+     */
+    private fun eskiDakikaAlarminiIptalEt(context: Context, alarm: AlarmManager) {
+        val eski = PendingIntent.getBroadcast(
+            context, 0, Intent(context, NamazWidgetAlarmAlici::class.java),
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+        ) ?: return
+        alarm.cancel(eski)
+        eski.cancel()
+    }
+
+    private fun kutuyuTazele(context: Context) {
+        try {
+            TileService.requestListeningState(context, ComponentName(context, KildimKutusuServisi::class.java))
+        } catch (e: Throwable) {
+            Log.i(TAG, "Hizli ayarlar kutusu tazelenemedi", e)
+        }
+    }
+}

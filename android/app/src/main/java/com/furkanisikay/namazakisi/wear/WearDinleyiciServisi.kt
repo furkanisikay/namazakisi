@@ -1,10 +1,9 @@
 package com.furkanisikay.namazakisi.wear
 
-import android.content.Intent
 import android.util.Log
-import com.facebook.react.ReactApplication
-import com.facebook.react.bridge.ReactContext
-import com.facebook.react.common.LifecycleState
+import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
+import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
+import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -15,9 +14,10 @@ import com.google.android.gms.wearable.WearableListenerService
  * Saat → telefon "Kıldım" alıcısı (issue #269).
  *
  * Saat `/namazakisi/kildim/<tarih>_<vakit>` DataItem'ı yazar; burada:
- * 1. öğe doğrulanıp KALICI kuyruğa alınır ([WearKildimKuyrugu]) ve DataItem silinir,
- * 2. JS uyandırılır: uygulama ÖN PLANDAYSA `WearKildimGeldi` olayı yayılır (headless
- *    görev ön planda çökerdi), DEĞİLSE headless görev başlatılmaya ÇALIŞILIR.
+ * 1. öğe doğrulanıp KALICI kuyruğa alınır ([KildimKuyrugu], kaynak `wear` — widget,
+ *    hızlı ayarlar ve kısayolla ORTAK kuyruk, issue #275/#276) ve DataItem silinir,
+ * 2. widget "işaretleniyor" çizilir, JS uyandırılır ([KildimKuyrugu.jsUyandir]:
+ *    ön plandaysa olay, değilse headless görev).
  *
  * `startService` API 26+'da arka plan kısıtına takılabilir ("Not allowed to start
  * service"). Bu bir HATA DEĞİLDİR: öğe kuyrukta kalır, uygulama ön plana gelince
@@ -29,7 +29,6 @@ class WearDinleyiciServisi : WearableListenerService() {
     companion object {
         private const val TAG = "WearDinleyici"
         const val KILDIM_YOLU_ONEKI = "/namazakisi/kildim/"
-        const val OLAY_ADI = "WearKildimGeldi"
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {
@@ -41,7 +40,13 @@ class WearDinleyiciServisi : WearableListenerService() {
             if (!yol.startsWith(KILDIM_YOLU_ONEKI)) continue
             try {
                 val harita = DataMapItem.fromDataItem(oge).dataMap
-                if (WearKildimKuyrugu.ekle(this, harita.getString("tarih") ?: "", harita.getString("vakit") ?: "")) {
+                if (KildimKuyrugu.ekle(
+                        this,
+                        harita.getString("tarih"),
+                        harita.getString("vakit"),
+                        KildimKuyruguKurallari.KAYNAK_WEAR,
+                    )
+                ) {
                     yeniOge = true
                 } else {
                     Log.w(TAG, "Gecersiz kildim istegi atlandi: $yol")
@@ -53,28 +58,9 @@ class WearDinleyiciServisi : WearableListenerService() {
                 Wearable.getDataClient(this).deleteDataItems(oge.uri)
             }
         }
-        if (yeniOge) jsUyandir()
-    }
-
-    private fun jsUyandir() {
-        val baglam: ReactContext? = try {
-            (application as? ReactApplication)?.reactHost?.currentReactContext
-        } catch (_: Throwable) {
-            null
-        }
-        if (baglam != null && baglam.lifecycleState == LifecycleState.RESUMED) {
-            try {
-                baglam.emitDeviceEvent(OLAY_ADI, null)
-                return
-            } catch (e: Throwable) {
-                Log.w(TAG, "On plan olayi yayilamadi", e)
-            }
-        }
-        try {
-            startService(Intent(this, WearKildimGorevServisi::class.java))
-        } catch (e: Exception) {
-            // Kuyruk korunur; ön plan / 15 dk görevi boşaltır.
-            Log.i(TAG, "Headless gorev baslatilamadi, kuyrukta bekleyecek", e)
+        if (yeniOge) {
+            WidgetGuncelleyici.tumunuGuncelle(this)
+            KildimKuyrugu.jsUyandir(this)
         }
     }
 }

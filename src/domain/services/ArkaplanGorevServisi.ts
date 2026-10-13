@@ -16,6 +16,8 @@ import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhaf
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
+import { KildimKuyruguServisi } from './KildimKuyruguServisi';
+import { WidgetServisi } from './WidgetServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
@@ -355,10 +357,26 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
         // =====================================================
         try {
-            await WearSenkronServisi.getInstance().bekleyenleriIsle();
+            // Ortak "Kıldım" kuyruğu: saat + widget + hızlı ayarlar + kısayol (#275/#276).
+            await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             await WearSenkronServisi.getInstance().gonder();
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.58: ANA EKRAN WIDGET'I (issue #275)
+        //
+        // Dün + 8 günlük çizelge gün döndükçe kayar; uygulama günlerce açılmasa da
+        // widget ve hızlı ayarlar kutusu doğru vakti göstersin. Muhafızdan
+        // bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            const koordinat = await arkaplandaKoordinatOku();
+            if (koordinat) await WidgetServisi.getInstance().vakitleriyaz(koordinat);
+            await WidgetServisi.getInstance().kilinanlariYaz();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Widget tazelenemedi', e);
         }
 
         // =====================================================

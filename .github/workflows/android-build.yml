@@ -417,16 +417,19 @@ jobs:
       # ==========================================
       # Gradle Build
       # ==========================================
+      # :app JVM birim testleri (android/app/src/test — widget/hızlı ayarlar saf
+      # çekirdeği, issue #275/#276) AYNI Gradle çağrısında koşar: derleme
+      # yapılandırması paylaşılır, test düşerse APK üretilmez.
       - name: 🏗️ Build APK
         working-directory: android
         run: |
           chmod +x gradlew
           if [ "${{ inputs.build_type }}" == "release" ]; then
             echo "🚀 Release APK build ediliyor..."
-            ./gradlew assembleRelease --no-daemon
+            ./gradlew :app:testReleaseUnitTest assembleRelease --no-daemon
           else
             echo "🔧 Debug APK build ediliyor..."
-            ./gradlew assembleDebug --no-daemon
+            ./gradlew :app:testDebugUnitTest assembleDebug --no-daemon
           fi
 
       - name: ↩️ Imza yamasini geri al (Release)

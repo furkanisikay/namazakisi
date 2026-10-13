@@ -41,6 +41,24 @@ export interface YeniOzellik {
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
+        id: 'widget-2-hizli-ayarlar',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Yeni Widget ve Tek Dokunuşla "Kıldım"',
+        aciklama:
+            'Android\'de ana ekran widget\'ından, hızlı ayarlar kutusundan ya da uygulama kısayolundan, uygulamayı açmadan "Kıldım" diyebilirsiniz.',
+        detayAciklama:
+            'Widget yenilendi: küçük başlar, büyüttükçe daha çok şey gösterir. 1×1 boyutta içinde bulunduğunuz vakti ve çıkış saatini, 2×2 boyutta kalan süreyi ve "Kıldım" düğmesini, 4×2 boyutta günün beş vaktini görürsünüz. Kalan süre artık hiçbir zaman eskimez: vakit çıktığında widget bunu hemen gösterir, çıkış saati her boyutta yazılıdır. Widget\'a uzun basıp "Düzenle" ile zemini, opaklığı ve büyük yazılacak bilgiyi seçebilirsiniz. Bildirim panelinin hızlı ayarlarına "Kıldım" kutusunu ekleyebilir, uygulama simgesine uzun basarak Kıble, Kaza defteri ve "Şu anki vakti kıldım" kısayollarını kullanabilirsiniz. Bu kısayollar Samsung Rutinler gibi otomasyon uygulamalarında da eylem olarak görünür.',
+        ikon: 'th-large',
+        kartGoster: true,
+        detaylar: [
+            'Widget\'tan, kutudan ya da kısayoldan yaptığınız işaretleme uygulamaya, bildirimlere ve saatinize anında yansır',
+            'Güneş doğduktan öğleye kadar işaretleme kapalıdır; sıradaki vakit gösterilir',
+            'Bu yollar yalnızca işaretler; geri almak için uygulamayı kullanabilirsiniz',
+            'Widget dakikada bir uyanmaz, pilinizi korur',
+        ],
+    },
+    {
         id: 'nafile-namaz-vakitleri',
         surum: '0.31.0',
         tarih: '2026-10-12',

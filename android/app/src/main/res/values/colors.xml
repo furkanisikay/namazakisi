@@ -3,4 +3,21 @@
   <color name="iconBackground">#4CAF50</color>
   <color name="colorPrimary">#023c69</color>
   <color name="colorPrimaryDark">#4CAF50</color>
+  <!-- Widget paletleri (issue #275). Açık/koyu sabit; "my" = Material You, v31'de
+       sistem renklerine bağlanır, öncesinde gece/gündüze göre açık/koyuya düşer. -->
+  <color name="widget_acik_zemin">#FFFFFF</color>
+  <color name="widget_acik_metin">#1B1F1C</color>
+  <color name="widget_acik_ikincil">#55605A</color>
+  <color name="widget_acik_vurgu">#2E7D32</color>
+  <color name="widget_acik_vurgu_ustu">#FFFFFF</color>
+  <color name="widget_koyu_zemin">#1E2420</color>
+  <color name="widget_koyu_metin">#F1F5F1</color>
+  <color name="widget_koyu_ikincil">#B3BDB5</color>
+  <color name="widget_koyu_vurgu">#81C784</color>
+  <color name="widget_koyu_vurgu_ustu">#0B1F0D</color>
+  <color name="widget_my_zemin">@color/widget_acik_zemin</color>
+  <color name="widget_my_metin">@color/widget_acik_metin</color>
+  <color name="widget_my_ikincil">@color/widget_acik_ikincil</color>
+  <color name="widget_my_vurgu">@color/widget_acik_vurgu</color>
+  <color name="widget_my_vurgu_ustu">@color/widget_acik_vurgu_ustu</color>
 </resources>

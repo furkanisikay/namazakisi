@@ -11,6 +11,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
 
 /**
  * JS ↔ Wear OS köprüsü (issue #269). JS adı: `NativeModules.WearSenkron`.
@@ -18,7 +19,8 @@ import com.google.android.gms.wearable.Wearable
  * - `durumGonder(json)`: telefon → saat yükü `/namazakisi/durum` DataItem'ına
  *   yazılır. DataItem'lar bağlantı yokken kuyrukta bekler, bağlanınca senkronlanır
  *   (MessageClient bağlantı yoksa DÜŞER — bu yüzden kullanılmaz).
- * - `bekleyenleriAl` / `tamamlandi` / `basarisiz`: saatten gelen "Kıldım" kuyruğu.
+ * - `bekleyenleriAl` / `tamamlandi` / `basarisiz`: ESKİ arayüz — kuyruk artık ortak
+ *   ([KildimKuyrugu], JS `KildimKuyruguServisi` boşaltır); geriye uyumluluk için durur.
  *
  * Saat eşleşmemişse ya da Play Hizmetleri'nde Wearable API yoksa çağrı hata ile
  * döner; JS bunu yutar (saat yoksa telefonda hiçbir şey bozulmamalı).
@@ -73,18 +75,18 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
 
     @ReactMethod
     fun bekleyenleriAl(promise: Promise) {
-        promise.resolve(WearKildimKuyrugu.tumu(reactApplicationContext))
+        promise.resolve(KildimKuyrugu.tumu(reactApplicationContext))
     }
 
     @ReactMethod
     fun tamamlandi(id: String, promise: Promise) {
-        WearKildimKuyrugu.tamamlandi(reactApplicationContext, id)
+        KildimKuyrugu.tamamlandi(reactApplicationContext, id)
         promise.resolve(null)
     }
 
     @ReactMethod
     fun basarisiz(id: String, promise: Promise) {
-        WearKildimKuyrugu.basarisiz(reactApplicationContext, id)
+        KildimKuyrugu.basarisiz(reactApplicationContext, id)
         promise.resolve(null)
     }
 }

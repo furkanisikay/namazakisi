@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  2×2 ve 4×2 düzenlerin ortak bloğu (issue #275): vakit, sayaç, bitiş saati, sıradaki,
+  Kıldım düğmesi. Sayaç `Chronometer` countDown'dur: SİSTEM çizer, widget dakikada bir
+  güncellenmez; vakit çıkınca negatife düşer ("−0:03"), asla "süre var" demez.
+  Bitiş saati DAİMA yazılıdır (gösterim tercihi yalnız hangisinin büyük olduğunu seçer).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/widget_vakit_adi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_bitis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="11sp" />
+
+        <Chronometer
+            android:id="@+id/widget_kalan_kucuk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Chronometer
+            android:id="@+id/widget_kalan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autoSizeMaxTextSize="30sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_buyuk_saat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autoSizeMaxTextSize="30sp"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeTextType="uniform"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/widget_sonraki"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="10sp" />
+
+    <FrameLayout
+        android:id="@+id/widget_kildim_dugme"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginTop="4dp">
+
+        <ImageView
+            android:id="@+id/widget_kildim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/widget_dugme_zemin" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:importantForAccessibility="noHideDescendants"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/widget_kildim_ikon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/ic_widget_kildim" />
+
+            <TextView
+                android:id="@+id/widget_kildim_metin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

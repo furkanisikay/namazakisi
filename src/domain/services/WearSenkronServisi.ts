@@ -31,23 +31,8 @@ import {
     localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 
-/** Native taraf uygulama AÇIKKEN kuyruğa öğe düşünce bu olayı yayar. */
-export const WEAR_KILDIM_OLAYI = 'WearKildimGeldi';
-
-/** Headless görev adı — `WearKildimGorevServisi.kt` ile AYNI olmalı. */
-export const WEAR_KILDIM_GOREVI = 'WearKildim';
-
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
-    bekleyenleriAl(): Promise<string>;
-    tamamlandi(id: string): Promise<void>;
-    basarisiz(id: string): Promise<void>;
-}
-
-interface KuyrukOgesi {
-    id: string;
-    tarih: string;
-    vakit: string;
 }
 
 const NAMAZ_VAKIT: Partial<Record<string, VakitAdi>> = {
@@ -75,7 +60,6 @@ export class WearSenkronServisi {
     private kullanilamaz = false;
     /** Gönderimler SIRALI: hızlı aç/kapa'da eski yük yenisinin üstüne yazılmasın. */
     private gonderimZinciri: Promise<void> = Promise.resolve();
-    private surenIsleme: Promise<void> | null = null;
 
     private constructor() { }
 
@@ -137,46 +121,13 @@ export class WearSenkronServisi {
     }
 
     /**
-     * Saatten gelen "Kıldım" kuyruğunu boşaltır. Eşzamanlı çağrılar aynı turu
-     * paylaşır (headless + ön plan olayı aynı anda gelebilir → çift işleme yok).
+     * Saatten gelen "Kıldım"lar artık ORTAK kuyruktadır (widget, hızlı ayarlar,
+     * kısayol ile birlikte — issue #275/#276); boşaltan tek yer
+     * `KildimKuyruguServisi`. Bu metot geriye uyumluluk için oraya devreder.
      */
     public bekleyenleriIsle(): Promise<void> {
-        if (!modul()) return Promise.resolve();
-        if (!this.surenIsleme) {
-            this.surenIsleme = this.isle().finally(() => {
-                this.surenIsleme = null;
-            });
-        }
-        return this.surenIsleme;
-    }
-
-    private async isle(): Promise<void> {
-        const m = modul();
-        if (!m) return;
-        let ogeler: KuyrukOgesi[] = [];
-        try {
-            const ham = JSON.parse(await m.bekleyenleriAl());
-            ogeler = Array.isArray(ham) ? ham : [];
-        } catch (e) {
-            Logger.warn('WearSenkron', 'Saat kuyrugu okunamadi', e);
-            return;
-        }
-        if (ogeler.length === 0) return;
-
-        // Tembel yükleme: BildirimServisi native köprü grafiğini çeker; bu servisi
-        // tüketen her test onu mock'lamak zorunda kalmasın (konumSlice deseni).
-        const { BildirimServisi } = require('./BildirimServisi') as typeof import('./BildirimServisi');
-        for (const oge of ogeler) {
-            try {
-                await BildirimServisi.getInstance().saattenKildimIsle(oge.vakit, oge.tarih);
-                await m.tamamlandi(oge.id);
-            } catch (e) {
-                // Öğe kuyrukta KALIR; native deneme sayacı zehirli öğeyi (5 deneme) düşürür.
-                Logger.warn('WearSenkron', `Saat kildim islenemedi: ${oge.id}`, e);
-                await m.basarisiz(oge.id).catch(() => undefined);
-            }
-        }
-        await this.gonder();
+        const { KildimKuyruguServisi } = require('./KildimKuyruguServisi') as typeof import('./KildimKuyruguServisi');
+        return KildimKuyruguServisi.getInstance().bekleyenleriIsle();
     }
 
     private async konumuOku(): Promise<{ koordinat: { lat: number; lng: number }; ad: string } | null> {
@@ -198,7 +149,6 @@ export class WearSenkronServisi {
     /** Yalnız testler için: modül düzeyi durumu sıfırlar. */
     public __testIcinSifirla(): void {
         this.sonGonderilen = null;
-        this.surenIsleme = null;
         this.kullanilamaz = false;
         this.gonderimZinciri = Promise.resolve();
     }

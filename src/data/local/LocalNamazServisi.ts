@@ -32,27 +32,44 @@ import { Depolama } from './Depolama';
 type GunVerisi = Record<string, boolean>;
 
 /**
- * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS senkronu — issue #269).
+ * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS #269, widget/hızlı ayarlar #275/#276).
  *
  * Kılınmışlık ÜÇ yazıcıdan geçer (`localNamazDurumunuGuncelle`,
- * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin bayat ✓
+ * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin/widget'ın bayat ✓
  * göstermemesi için üçü de başarılı yolda haber verir. Data katmanı domain
- * import EDEMEZ → dinleyici dışarıdan kaydedilir (`WearSenkronServisi.baslat`).
- * İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol gönderimi kendisi yapar.
- * Dinleyici hatası yazımı ASLA düşürmez.
+ * import EDEMEZ → dinleyiciler dışarıdan kaydedilir (`WearSenkronServisi.baslat`,
+ * `WidgetServisi.baslat`). İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol
+ * tazelemeyi kendisi yapar.
+ *
+ * ÇOKLU DİNLEYİCİ: her dinleyici ADLI bir yuvadadır; aynı adla yeniden kayıt
+ * öncekinin YERİNE geçer (açılış zinciri `baslat`'ı birden çok kez çağırabilir,
+ * dinleyici çoğalmamalı). Her dinleyici kendi try/catch'inde çalışır: biri
+ * patlarsa diğerleri yine haber alır, yazım ASLA düşmez.
  */
-let kayitDegistiDinleyicisi: (() => void) | null = null;
+const kayitDegistiDinleyicileri = new Map<string, () => void>();
 
+/** Adlı yuvaya dinleyici kaydeder (`null` yuvayı boşaltır). */
+export const kayitDegistiDinleyicisiEkle = (ad: string, fn: (() => void) | null): void => {
+  if (fn) kayitDegistiDinleyicileri.set(ad, fn);
+  else kayitDegistiDinleyicileri.delete(ad);
+};
+
+/**
+ * Geriye uyumlu tek-dinleyici arayüzü (Wear senkronu). `wear` yuvasına yazar;
+ * diğer dinleyicileri (widget) ETKİLEMEZ.
+ */
 export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void => {
-  kayitDegistiDinleyicisi = fn;
+  kayitDegistiDinleyicisiEkle('wear', fn);
 };
 
 const kayitDegistiBildir = (): void => {
-  try {
-    kayitDegistiDinleyicisi?.();
-  } catch (e) {
-    Logger.warn('LocalNamazServisi', 'Kayit degisti dinleyicisi hata verdi', e);
-  }
+  kayitDegistiDinleyicileri.forEach((fn, ad) => {
+    try {
+      fn();
+    } catch (e) {
+      Logger.warn('LocalNamazServisi', `Kayit degisti dinleyicisi hata verdi: ${ad}`, e);
+    }
+  });
 };
 
 const gunAnahtari = (tarih: string): string =>

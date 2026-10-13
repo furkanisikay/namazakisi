@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Geniş düzende içinde bulunulan vaktin satırı: her zeminde okunur nötr vurgu. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#2E808080" />
+    <corners android:radius="8dp" />
+</shape>

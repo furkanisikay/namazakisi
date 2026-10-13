@@ -48,17 +48,18 @@ if (Platform.OS === 'android') {
     }); } catch (_) {}
 }
 
-// Wear OS saatinden "Kıldım" (issue #269) — headless görev.
+// Uygulama DIŞINDAN "Kıldım" (Wear OS saati #269, widget #275, hızlı ayarlar ve
+// kısayol #276) — ortak kuyruğun headless görevi.
 // `registerHeadlessTask` MODÜL ÜST SEVİYESİNDE ve SENKRON çağrılmalı (promise
 // içinde kaydedilirse native görev geldiğinde JS tarafı henüz hazır olmaz).
-// Görev adı `WearKildimGorevServisi.kt` ile AYNI. Doğruluk bu göreve bağlı
+// Görev adı `KildimGorevServisi.kt` ile AYNI. Doğruluk bu göreve bağlı
 // değildir: kuyruk ön plana gelişte ve 15 dk'lık arka plan görevinde de boşalır.
 if (Platform.OS === 'android') {
     try {
-        AppRegistry.registerHeadlessTask('WearKildim', () => async () => {
+        AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async () => {
             try {
-                const { WearSenkronServisi } = await import('./src/domain/services/WearSenkronServisi');
-                await WearSenkronServisi.getInstance().bekleyenleriIsle();
+                const { KildimKuyruguServisi } = await import('./src/domain/services/KildimKuyruguServisi');
+                await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             } catch {
                 // Kuyruk native tarafta korunur; ön plan / 15 dk görevi yeniden dener.
             }
@@ -66,6 +67,12 @@ if (Platform.OS === 'android') {
     } catch {
         // Kayıt başarısızsa headless yol yok sayılır; diğer iki boşaltma yolu kalır.
     }
+    // Widget kılınmışlık tazelemesi HER JS bağlamında (headless dahil) kurulsun:
+    // bildirimdeki "Kıldım" uygulama kapalıyken işlenince widget da ≤1 sn'de
+    // güncellenmeli; App.tsx o bağlamda hiç yüklenmez (issue #275).
+    import('./src/domain/services/WidgetServisi')
+        .then(({ WidgetServisi }) => WidgetServisi.getInstance().baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
