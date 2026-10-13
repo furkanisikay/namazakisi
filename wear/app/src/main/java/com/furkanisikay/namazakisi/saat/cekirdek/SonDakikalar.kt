@@ -8,9 +8,14 @@ package com.furkanisikay.namazakisi.saat.cekirdek
  * politikası sürekli bir "sonraki vakit" kartına izin vermez → pencere telefonun
  * muhafız planından türetilir (saatte ikinci motor YOK, AGENTS.md):
  *
- *  - Vaktin en sert adımı (plan kayıtlarındaki en yüksek seviye) ilk tetiklendiği an
- *    pencereyi açar. Giriş yönlü vakitte en sert adım saatlerce sürebilir, bu yüzden
- *    açılış en erken `çıkış − TAVAN_MS`'dir ("son dakikalar" adı gereği).
+ *  - Vaktin zamanca SON adımı ilk tetiklendiği an pencereyi açar (issue #274).
+ *    "En sert adım" (en yüksek seviye) DEĞİL: ton artık sırayı ima etmez ve geri
+ *    gidebilir (sert → nazik); en sert adım vaktin başına düşerse pencere saatler
+ *    önce açılırdı. Son adım yükteki `adim` alanından (kronolojik sıra) bulunur;
+ *    eski telefon yükünde alan yoksa kayıtlar zamana göre dizilir ve SONDAN geriye
+ *    aynı tonu taşıyan ardışık kayıtlar tek adım sayılır (yaklaşık). Giriş yönlü
+ *    vakitte son adım saatlerce sürebilir, bu yüzden açılış en erken
+ *    `çıkış − TAVAN_MS`'dir ("son dakikalar" adı gereği).
  *  - Açılış her zaman BİR PLAN KAYDININ anına düşer: saat zinciri yalnız plan
  *    kayıtlarında uyanır (aynı anda tek alarm); kaydı olmayan bir anda başlayan
  *    pencere ancak bir sonraki kayıtta görünürdü. Tavandan sonra hiç kayıt yoksa
@@ -51,13 +56,26 @@ object SonDakikalar {
         yuk.plan.groupBy { it.tarih to it.vakit }.mapNotNull { (anahtar, kayitlar) ->
             val (tarih, vakit) = anahtar
             val bitis = cikis(yuk, tarih, vakit) ?: return@mapNotNull null
-            val enSert = kayitlar.maxOf { it.seviye }
-            val ilkSert = kayitlar.filter { it.seviye == enSert }.minOf { it.ms }
-            val enErken = maxOf(ilkSert, bitis - TAVAN_MS)
+            val enErken = maxOf(sonAdiminIlkTetigi(kayitlar), bitis - TAVAN_MS)
             val bas = kayitlar.filter { it.ms in enErken until bitis }.minOfOrNull { it.ms }
                 ?: return@mapNotNull null
             Pencere(tarih, vakit, bas, bitis)
         }.sortedBy { it.bas }
+
+    /** Bir vaktin kayıtlarında zamanca SON adımın ilk tetik anı. */
+    internal fun sonAdiminIlkTetigi(kayitlar: List<PlanKaydi>): Long {
+        val sirali = kayitlar.sortedBy { it.ms }
+        val son = sirali.last()
+        if (sirali.all { it.adim != null }) {
+            // Kronolojik sıra = zaman sırası → en büyük `adim` son adımdır.
+            val sonAdim = sirali.maxOf { it.adim!! }
+            return sirali.first { it.adim == sonAdim }.ms
+        }
+        // Eski yük: sondan geriye aynı tonlu ardışık kayıtlar tek adım.
+        var i = sirali.lastIndex
+        while (i > 0 && sirali[i - 1].seviye == son.seviye) i--
+        return sirali[i].ms
+    }
 
     /** Şu an açık olan pencere (kılınmışsa yok). */
     fun aktif(yuk: Yuk?, bekleyen: Set<String>, simdi: Long): Pencere? {

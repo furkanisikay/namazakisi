@@ -23,6 +23,7 @@ import { KAZA_SABITLERI } from '../constants/UygulamaSabitleri';
 import { gunEkle } from '../utils/TarihYardimcisi';
 import { gunVakitleriniHesapla, type NafileKoordinat } from '../nafile/gunVakitleri';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
+import { MUHAFIZ_MAKS_ADIM } from '../muhafiz/matrisTipleri';
 import {
     utf8BaytUzunlugu,
     wearMuhafizPlaniOlustur,
@@ -183,7 +184,10 @@ function muhafizPlaniGecerliMi(surum: number, plan: unknown): boolean {
             typeof r.baslik === 'string' &&
             typeof r.govde === 'string' &&
             typeof r.titresim === 'boolean' &&
-            typeof r.acil === 'boolean'
+            typeof r.acil === 'boolean' &&
+            // Eklemeli opsiyonel alan (issue #274): yoksa eski telefon yükü.
+            (r.adim === undefined ||
+                (Number.isInteger(r.adim) && (r.adim as number) >= 0 && (r.adim as number) < MUHAFIZ_MAKS_ADIM))
         );
     });
 }

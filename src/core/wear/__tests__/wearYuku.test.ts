@@ -118,6 +118,14 @@ describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
         expect(wearYukuGecerliMi(uretilen)).toBe(true);
     });
 
+    it('adım sırası (issue #274) EKLEMELİ opsiyonel alan: yoksa yük yine geçerli', () => {
+        const kopya = JSON.parse(JSON.stringify(ornek));
+        for (const k of kopya.muhafiz) delete k.adim;
+        expect(wearYukuGecerliMi(kopya)).toBe(true);
+        // Sürüm artırılmadı: eski saat (DESTEKLENEN=2) yükü reddetmesin.
+        expect(WEAR_YUK_SURUMU).toBe(2);
+    });
+
     it('v1 örneği (plan alanı yok) hâlâ geçerli sayılır — eski telefon / yeni saat', () => {
         const v1 = JSON.parse(fs.readFileSync(ORNEK_V1, 'utf8'));
         expect(v1.surum).toBe(1);
@@ -138,6 +146,8 @@ describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
         ['plan kaydında güneş', (o) => { o.muhafiz![0].vakit = 'gunes'; }],
         ['plan kaydında bilinmeyen seviye', (o) => { o.muhafiz![0].seviye = 5; }],
         ['plan kaydında titreşim eksik', (o) => { delete o.muhafiz![0].titresim; }],
+        ['plan kaydında adım sırası aralık dışı', (o) => { o.muhafiz![0].adim = 6; }],
+        ['plan kaydında adım sırası tam sayı değil', (o) => { o.muhafiz![0].adim = 1.5; }],
     ])('bozuk yük reddedilir: %s', (_ad, boz) => {
         const kopya = JSON.parse(JSON.stringify(ornek));
         boz(kopya);

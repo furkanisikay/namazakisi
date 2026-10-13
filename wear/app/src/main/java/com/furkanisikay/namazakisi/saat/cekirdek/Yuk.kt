@@ -14,6 +14,9 @@ import org.json.JSONObject
  */
 const val DESTEKLENEN_YUK_SURUMU = 2
 
+/** Vakit başına en fazla hatırlatma (telefonda `MUHAFIZ_MAKS_ADIM`, issue #274). */
+const val MAKS_ADIM = 6
+
 /** Sözleşme sırası; `gunes` görüntülenir ama asla "kılınmış" olmaz. */
 val VAKITLER = listOf("imsak", "gunes", "ogle", "ikindi", "aksam", "yatsi")
 
@@ -42,6 +45,14 @@ data class PlanKaydi(
     val titresim: Boolean,
     /** Acil ton → acil kanal + CATEGORY_ALARM */
     val acil: Boolean,
+    /**
+     * Adımın vaktin içindeki KRONOLOJİK sırası (0'dan; telefonda
+     * `UyariPlani.adimIndeks`) — issue #274. Ton artık sırayı ima etmez (geri
+     * gidebilir), "vaktin son adımı" ancak bununla bulunur. Eski telefon yükünde
+     * yoktur (null) → `SonDakikalar` ardışık-ton gruplamasına düşer.
+     * EKLEMELİ opsiyonel alan: eski saat yok sayar, sürüm ARTIRILMAZ.
+     */
+    val adim: Int? = null,
 )
 
 data class Yuk(
@@ -101,6 +112,9 @@ object YukCozucu {
             require(TARIH.matches(tarih))
             require(vakit in VAKITLER && vakit != "gunes")
             require(seviye in 1..4)
+            // Katı tam sayı (JS `Number.isInteger` ile aynı): `getInt` 1.5'i 1'e yuvarlardı.
+            val adim = if (k.has("adim")) k.get("adim").let { require(it is Int); it } else null
+            require(adim == null || adim in 0 until MAKS_ADIM)
             PlanKaydi(
                 id = k.getString("id"),
                 ms = k.getLong("ms"),
@@ -111,6 +125,7 @@ object YukCozucu {
                 govde = k.getString("govde"),
                 titresim = k.getBoolean("titresim"),
                 acil = k.getBoolean("acil"),
+                adim = adim,
             )
         }.sortedBy { it.ms }
 }

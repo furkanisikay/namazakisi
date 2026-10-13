@@ -62,7 +62,8 @@
       "baslik": "⏰ 45 dk · İkindi vakti",
       "govde": "Vakit daralmaya başladı, fırsat varken kıl.",
       "titresim": false,
-      "acil": false
+      "acil": false,
+      "adim": 0
     },
     {
       "id": "muhafiz_2026-10-12_vakit_ikindi_seviye_4_dk_3",
@@ -73,7 +74,8 @@
       "baslik": "🚨 3 dk · İKİNDİ VAKTİ ÇIKIYOR",
       "govde": "Hemen namaza dur — sonra kaza etmek zorunda kalırsın.",
       "titresim": true,
-      "acil": true
+      "acil": true,
+      "adim": 3
     }
   ]
 }

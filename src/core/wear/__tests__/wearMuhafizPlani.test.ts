@@ -58,6 +58,9 @@ describe('pencereninKayitlari — TELEFONLA PARİTE', () => {
             expect(kayitlar[i].ms).toBe(bugunOgle.cikis.getTime() - u.kalanDk * 60_000);
             expect(kayitlar[i].baslik).toBe(basligiOlustur('ogle', u.seviye, u.olcuDk));
         });
+        // Adım sırası (issue #274): saatin "son adım" kararı bununla verilir.
+        expect(kayitlar.map((k) => k.adim)).toEqual(plan.map((u) => u.adimIndeks));
+        expect(kayitlar.map((k) => k.adim)).toEqual([0, 0, 1, 1, 2, 2, 3, 3, 3]);
         // Varsayılan matris: 45,30,25,15,10,5,3,2,1 (birebir eski plan)
         expect(kayitlar.map((k) => k.id.split('_dk_')[1])).toEqual(['45', '30', '25', '15', '10', '5', '3', '2', '1']);
     });

@@ -32,6 +32,24 @@ class YukCozucuTest {
         assertEquals("🚨 3 dk · İKİNDİ VAKTİ ÇIKIYOR", acil.baslik)
         assertTrue(acil.acil && acil.titresim)
         assertTrue(yuk.plan[0].ms < acil.ms)
+        // Adım sırası (issue #274) — eklemeli opsiyonel alan.
+        assertEquals(listOf(0, 3), yuk.plan.map { it.adim })
+    }
+
+    @Test
+    fun adimSirasiOpsiyonelVeDogrulanir() {
+        val eski = org.json.JSONObject(ornek())
+        val dizi = eski.getJSONArray("muhafiz")
+        for (i in 0 until dizi.length()) dizi.getJSONObject(i).remove("adim")
+        val s = YukCozucu.coz(eski.toString())
+        assertTrue("eski telefon yükü (adim yok) okunur", s is CozumSonucu.Basarili)
+        assertEquals(listOf<Int?>(null, null), (s as CozumSonucu.Basarili).yuk.plan.map { it.adim })
+
+        for (bozuk in listOf<Any>(6, -1, 1.5, "1")) {
+            val o = org.json.JSONObject(ornek())
+            o.getJSONArray("muhafiz").getJSONObject(0).put("adim", bozuk)
+            assertEquals("adim=$bozuk", CozumSonucu.Gecersiz, YukCozucu.coz(o.toString()))
+        }
     }
 
     @Test

@@ -51,6 +51,13 @@ export interface WearMuhafizKaydi {
     titresim: boolean;
     /** Acil ton (`muhafizAcilKanalMi`) — saatte acil kanal + `CATEGORY_ALARM`. */
     acil: boolean;
+    /**
+     * Adımın KRONOLOJİK sırası (0'dan, `UyariPlani.adimIndeks`) — issue #274.
+     * Ton sırayı ima etmediği için saat "vaktin son adımını" (kadrandaki son
+     * dakikalar sayacı) bununla bulur. Eklemeli opsiyonel alan: sürüm artmaz,
+     * eski saat yok sayar.
+     */
+    adim: number;
 }
 
 export interface VakitPenceresi {
@@ -131,6 +138,7 @@ export function pencereninKayitlari(
             govde: muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
             titresim: titresimGerekliMi(u.kanallar),
             acil: muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal),
+            adim: u.adimIndeks,
         };
     });
 }

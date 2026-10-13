@@ -97,11 +97,49 @@ class SaatYuzeyleriTest {
 
     // --- Son dakikalar ----------------------------------------------------------
 
-    private fun kayit(tarih: String, vakit: String, ms: Long, seviye: Int) = PlanKaydi(
+    private fun kayit(tarih: String, vakit: String, ms: Long, seviye: Int, adim: Int? = null) = PlanKaydi(
         id = "muhafiz_${tarih}_vakit_${vakit}_seviye_${seviye}_$ms",
         ms = ms, tarih = tarih, vakit = vakit, seviye = seviye,
-        baslik = "b", govde = "g", titresim = false, acil = seviye >= 3,
+        baslik = "b", govde = "g", titresim = false, acil = seviye >= 3, adim = adim,
     )
+
+    @Test
+    fun tonGeriGidinceSonPencereEnSertDegilSonAdimlaAcilir() {
+        // Issue #274: ton sırayı ima etmez. 50 dk kala SERT, sonra 20 ve 10 dk kala
+        // NAZİK (son adım). "En sert" kuralı pencereyi 50 dk önce açardı.
+        val cikis = v(bugun, "aksam")
+        val y = planli(
+            kayit(bugun.tarih, "ikindi", cikis - 50 * dk, 3, adim = 0),
+            kayit(bugun.tarih, "ikindi", cikis - 20 * dk, 1, adim = 1),
+            kayit(bugun.tarih, "ikindi", cikis - 10 * dk, 1, adim = 1),
+        )
+        assertEquals(cikis - 20 * dk, SonDakikalar.pencereler(y).single().bas)
+    }
+
+    @Test
+    fun ayniTonluArdisikAdimlarAdimSirasiylaAyrilir() {
+        // İki NAZİK adım art arda: yükteki adım sırası olmadan ayırt edilemezdi.
+        val cikis = v(bugun, "aksam")
+        val y = planli(
+            kayit(bugun.tarih, "ikindi", cikis - 40 * dk, 1, adim = 0),
+            kayit(bugun.tarih, "ikindi", cikis - 30 * dk, 1, adim = 0),
+            kayit(bugun.tarih, "ikindi", cikis - 15 * dk, 1, adim = 1),
+            kayit(bugun.tarih, "ikindi", cikis - 5 * dk, 1, adim = 1),
+        )
+        assertEquals(cikis - 15 * dk, SonDakikalar.pencereler(y).single().bas)
+    }
+
+    @Test
+    fun eskiTelefonYukundeSondanAyniTonluGrupKullanilir() {
+        // adim alanı YOK (eski telefon): zamana göre sondan geriye aynı ton = son adım.
+        val cikis = v(bugun, "aksam")
+        val y = planli(
+            kayit(bugun.tarih, "ikindi", cikis - 50 * dk, 3),
+            kayit(bugun.tarih, "ikindi", cikis - 20 * dk, 1),
+            kayit(bugun.tarih, "ikindi", cikis - 10 * dk, 1),
+        )
+        assertEquals(cikis - 20 * dk, SonDakikalar.pencereler(y).single().bas)
+    }
 
     private fun planli(vararg kayitlar: PlanKaydi) = yuk.copy(plan = kayitlar.sortedBy { it.ms })
 
