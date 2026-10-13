@@ -20,6 +20,7 @@ import { KildimKuyruguServisi } from './KildimKuyruguServisi';
 import { WidgetServisi } from './WidgetServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -402,6 +403,20 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Seri sayacı tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.65: GUN SONU SERI HATIRLATMASINI TAZELE (issue #272 devami)
+        //
+        // Hatirlatma artik DAILY degil, TARIHLI tetiklerdir (ozel gun kapisi
+        // tarih ister) → penceresi sonludur ve tazelenmezse biter. Cuma/seri
+        // sayaci ile ayni gerekce: muhafizdan bagimsizdir, muhafiz erken
+        // donuslerinden ONCE durmali. Ayarlar ham depolamadan okunur.
+        // =====================================================
+        try {
+            await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Gün sonu hatırlatması tazelenemedi', e);
         }
 
         // =====================================================

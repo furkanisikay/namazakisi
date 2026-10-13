@@ -13,7 +13,7 @@
  *   1) on plan muhafizinin bellek-ici kapisini tazeler (acik banner hemen kalkar);
  *   2) konuma bagli tuketicilerin TEK yayma noktasini (`konumDegistiUygula`)
  *      mevcut koordinatla cagirir — muhafiz + TTS, vakit bildirimi, vakit
- *      sayaci, nafile, seri sayaci ayni listeden yeniden kurulur. Liste ikinci
+ *      sayaci, nafile, seri sayaci, gun sonu hatirlatmasi, iftar/sahur, cuma ayni listeden yeniden kurulur. Liste ikinci
  *      kez yazilmaz (AGENTS.md "ikiz liste" dersi).
  *
  * STORE'A BAGLI DEGILDIR: koordinat ham depolamadan okunur. Asla firlatmaz.
@@ -39,7 +39,12 @@ async function koordinatiOku(): Promise<Koordinatlar | null> {
   }
 }
 
-export async function ozelGunDegistiUygula(): Promise<void> {
+/**
+ * @returns Yayma (`konumDegistiUygula`) GERCEKTEN kostu mu? Konum yoksa `false` —
+ *   cagiran (ör. yedekten geri yukleme) konumsuz calisabilen tuketicileri
+ *   kendisi tazelemeli.
+ */
+export async function ozelGunDegistiUygula(): Promise<boolean> {
   try {
     await NamazMuhafiziServisi.getInstance().ozelGunDurumunuYukle();
   } catch (error) {
@@ -50,13 +55,15 @@ export async function ozelGunDegistiUygula(): Promise<void> {
   if (!koordinatlar) {
     // Konum yoksa planlanmis bir sey de yoktur; ilk konum yaymasi kapiyi zaten uygular.
     Logger.info('OzelGunDegisikligi', 'Konum yok, yeniden planlama atlandi');
-    return;
+    return false;
   }
 
   try {
     await konumDegistiUygula(koordinatlar);
     Logger.info('OzelGunDegisikligi', 'Ozel gun degisti, hatirlatmalar yeniden planlandi');
+    return true;
   } catch (error) {
     Logger.error('OzelGunDegisikligi', 'Hatirlatmalar yeniden planlanamadi', error);
+    return false;
   }
 }

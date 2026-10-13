@@ -4,12 +4,14 @@
  * entegrasyonunu test eder.
  *
  * Bu testler ÜRETİM YOLUNU egzersiz eder: gerçek bir Redux store kurulur,
- * seriAyarlariniGuncelle thunk'ı dispatch edilir ve BildirimServisi.bildirimPlanla'ya
- * geçen planlanmış saat/dakika argümanları (saat=4. arg, dakika=5. arg) doğrulanır.
- * Beklenen değerler üretimle AYNI yöntemle ama BAĞIMSIZ olarak hesaplanır.
+ * seriAyarlariniGuncelle thunk'ı dispatch edilir ve `GunSonuHatirlaticiServisi`nin
+ * expo-notifications'a kurduğu İLK tarihli tetiğin saat/dakikası doğrulanır.
+ * (Hatırlatma artık DAILY değil, seri günü başına tarihli tetiktir — issue #272:
+ * özel gün kapısı tarih ister.) Beklenen değerler BAĞIMSIZ hesaplanır.
  */
 
 import { configureStore } from '@reduxjs/toolkit';
+import * as Notifications from 'expo-notifications';
 
 // ==================== MOCKLAR ====================
 
@@ -28,19 +30,6 @@ jest.mock('expo-notifications', () => ({
     getAllScheduledNotificationsAsync: jest.fn().mockResolvedValue([]),
     AndroidNotificationPriority: { MAX: 'max', HIGH: 'high' },
     SchedulableTriggerInputTypes: { DATE: 'date' },
-}));
-
-// BildirimServisi mock - bildirimPlanla/bildirimIptalEt cagrilarini yakalamak icin
-// SABIT bir mock instance dondur (her getInstance cagrisinda ayni jest.fn'ler gelsin).
-const mockBildirimPlanla = jest.fn();
-const mockBildirimIptalEt = jest.fn();
-jest.mock('../domain/services/BildirimServisi', () => ({
-    BildirimServisi: {
-        getInstance: jest.fn(() => ({
-            bildirimPlanla: mockBildirimPlanla,
-            bildirimIptalEt: mockBildirimIptalEt,
-        })),
-    },
 }));
 
 // LocalSeriServisi mock - thunk icindeki kalicilik AsyncStorage'a gitmesin
@@ -81,7 +70,20 @@ import { NamazVaktiHesaplayiciServisi } from '../domain/services/NamazVaktiHesap
 const imsagiSabitle = (imsak: Date | null) => {
     jest.spyOn(NamazVaktiHesaplayiciServisi, 'getInstance').mockReturnValue({
         getKonfig: () => ({ latitude: 41.0082, longitude: 28.9784 }),
-        getGunlukVakitler: () => (imsak ? { imsak } : null),
+        // Plan HER seri günü için o günün imsağını sorar → istenen günün aynı
+        // saat:dakikası döndürülür (sabit geçmiş bir tarih tüm tetikleri geçmişe atardı).
+        getGunlukVakitler: (tarih: Date) =>
+            imsak
+                ? {
+                    imsak: new Date(
+                        tarih.getFullYear(),
+                        tarih.getMonth(),
+                        tarih.getDate(),
+                        imsak.getHours(),
+                        imsak.getMinutes()
+                    ),
+                }
+                : null,
     } as unknown as NamazVaktiHesaplayiciServisi);
 };
 import seriReducer, { seriAyarlariniGuncelle } from '../presentation/store/seriSlice';
@@ -99,21 +101,55 @@ function storeOlustur() {
     });
 }
 
+type BildirimMock = jest.Mock & { mock: { calls: unknown[][] } };
+const zamanlaMock = () => Notifications.scheduleNotificationAsync as unknown as BildirimMock;
+const iptalMock = () => Notifications.cancelScheduledNotificationAsync as unknown as BildirimMock;
+
+/** Kurulan tetiklerin (kimlik, an) listesi. */
+function kurulanTetikler(): { kimlik: string; an: Date; baslik: string; govde: string }[] {
+    return zamanlaMock().mock.calls.map((c) => {
+        const istek = c[0] as {
+            identifier: string;
+            content: { title: string; body: string };
+            trigger: { date: Date };
+        };
+        return {
+            kimlik: istek.identifier,
+            an: istek.trigger.date,
+            baslik: istek.content.title,
+            govde: istek.content.body,
+        };
+    });
+}
+
+function bildirimMocklariniKur() {
+    zamanlaMock().mockReset();
+    zamanlaMock().mockResolvedValue('ok');
+    iptalMock().mockReset();
+    iptalMock().mockResolvedValue(undefined);
+    (Notifications.getAllScheduledNotificationsAsync as unknown as jest.Mock).mockResolvedValue([]);
+}
+
 /**
- * seriAyarlariniGuncelle dispatch edip bildirimPlanla'ya gecen
- * (saat, dakika) ciftini (4. ve 5. pozisyonel argumanlar) dondurur.
+ * seriAyarlariniGuncelle dispatch edip kurulan İLK (en yakın) tetiğin
+ * (saat, dakika) çiftini döndürür. Her tetik aynı saatte olmalı (gün başına
+ * bir tane) — ayrıca doğrulanır.
  */
 async function planlananSaatiAl(
     ayarlar: Partial<typeof VARSAYILAN_SERI_AYARLARI>
 ): Promise<{ saat: number; dakika: number }> {
-    mockBildirimPlanla.mockClear();
+    bildirimMocklariniKur();
     const store = storeOlustur();
     await store.dispatch(seriAyarlariniGuncelle({ ayarlar }) as never);
 
-    expect(mockBildirimPlanla).toHaveBeenCalledTimes(1);
-    const cagri = mockBildirimPlanla.mock.calls[0];
-    // bildirimPlanla(id, baslik, mesaj, saat, dakika, tekrarla)
-    return { saat: cagri[3] as number, dakika: cagri[4] as number };
+    const tetikler = kurulanTetikler();
+    expect(tetikler.length).toBeGreaterThan(0);
+    const ilk = tetikler[0];
+    for (const t of tetikler) {
+        expect(t.kimlik.startsWith('gun_sonu_hatirlatici_')).toBe(true);
+        expect([t.an.getHours(), t.an.getMinutes()]).toEqual([ilk.an.getHours(), ilk.an.getMinutes()]);
+    }
+    return { saat: ilk.an.getHours(), dakika: ilk.an.getMinutes() };
 }
 
 describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
@@ -258,9 +294,9 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
         });
 
         it('otomatik mod: bildirim, imsaktan bildirimImsakOncesiDk kadar önceye planlanır', async () => {
-            // Üretim kodu (seriSlice.ts 121-130) imsak vaktini KonumYoneticiServisi'nden alıp
-            // setMinutes ile geri çeker ve getHours/getMinutes ile planlar. Burada imsak'ı
-            // BİLİNEN sabit bir Date'e kilitleyip aynı bağımsız yöntemle beklenen değeri hesaplıyoruz.
+            // Üretim kodu (core/seri/gunSonuPlani) her seri günü için ERTESİ günün imsağını
+            // hesaplayıcıdan alıp X dk geri çeker. Burada imsak saatini BİLİNEN bir değere
+            // kilitleyip aynı bağımsız yöntemle beklenen değeri hesaplıyoruz.
             const imsak = new Date(2026, 1, 1, 6, 15, 0, 0); // 1 Şubat 2026, 06:15 yerel
             imsagiSabitle(imsak);
 
@@ -303,7 +339,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
         });
 
         it('otomatik mod: konum (imsak) yoksa varsayılan 04:00 planlanır', async () => {
-            // seriSlice.ts 131-135: imsak null ise fallback 04:00.
+            // gunSonuPlani: imsak null ise fallback 04:00.
             imsagiSabitle(null);
 
             const { saat, dakika } = await planlananSaatiAl({
@@ -319,7 +355,7 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
 
     describe('Sabit Mod - Validasyon', () => {
         it('ertesi gün: kullanıcının seçtiği sabit saat/dakika doğrudan planlanır', async () => {
-            // Üretim kodu (seriSlice.ts 116-119) SABIT modda bildirimGunSecimi'ni saat
+            // Üretim kodu (gunSonuPlani) SABIT modda bildirimGunSecimi'ni saat
             // hesabında KULLANMAZ; doğrudan bildirimSaati/bildirimDakikasi'nı planlar.
             // bildirimGunSecimi sadece UI picker aralığı ipucudur.
             const { saat, dakika } = await planlananSaatiAl({
@@ -369,14 +405,14 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
 
     describe('Mod Geçişleri', () => {
         it('sabit -> otomatik geçişinde bildirim imsak-temelli yeni saate yeniden planlanır', async () => {
-            // GÖZLEMLENEBİLİR etki: mod değişince bildirimPlanla yeni (saat,dakika) ile çağrılır.
+            // GÖZLEMLENEBİLİR etki: mod değişince tetikler yeni (saat,dakika) ile yeniden kurulur.
             const imsak = new Date(2026, 1, 1, 5, 30, 0, 0); // 05:30
             imsagiSabitle(imsak);
 
             const store = storeOlustur();
 
             // 1) Sabit mod -> kullanıcının seçtiği 22:15
-            mockBildirimPlanla.mockClear();
+            bildirimMocklariniKur();
             await store.dispatch(
                 seriAyarlariniGuncelle({
                     ayarlar: {
@@ -387,16 +423,11 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
                     },
                 }) as never
             );
-            expect(mockBildirimPlanla).toHaveBeenLastCalledWith(
-                'gun_sonu_hatirlatici',
-                expect.any(String),
-                expect.any(String),
-                22,
-                15
-            );
+            const sabit = kurulanTetikler()[0].an;
+            expect([sabit.getHours(), sabit.getMinutes()]).toEqual([22, 15]);
 
             // 2) Otomatik moda geçiş -> imsak(05:30) - 30dk = 05:00'e YENİDEN planlanır
-            mockBildirimPlanla.mockClear();
+            bildirimMocklariniKur();
             await store.dispatch(
                 seriAyarlariniGuncelle({
                     ayarlar: {
@@ -405,20 +436,14 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
                     },
                 }) as never
             );
-            expect(mockBildirimPlanla).toHaveBeenLastCalledWith(
-                'gun_sonu_hatirlatici',
-                expect.any(String),
-                expect.any(String),
-                5,
-                0
-            );
+            const otomatik = kurulanTetikler()[0].an;
+            expect([otomatik.getHours(), otomatik.getMinutes()]).toEqual([5, 0]);
         });
 
         it('bildirim kapatıldığında planlama yapılmaz, iptal çağrılır', async () => {
-            // gunSonuBildirimAktif:false -> bildirimPlanla DEĞİL bildirimIptalEt çağrılmalı.
+            // gunSonuBildirimAktif:false -> hiçbir tetik kurulmaz, iptal çağrılır.
             const store = storeOlustur();
-            mockBildirimPlanla.mockClear();
-            mockBildirimIptalEt.mockClear();
+            bildirimMocklariniKur();
 
             await store.dispatch(
                 seriAyarlariniGuncelle({
@@ -426,8 +451,9 @@ describe('Gün Sonu Bildirimi Entegrasyon Testleri', () => {
                 }) as never
             );
 
-            expect(mockBildirimPlanla).not.toHaveBeenCalled();
-            expect(mockBildirimIptalEt).toHaveBeenCalledWith('gun_sonu_hatirlatici');
+            expect(zamanlaMock()).not.toHaveBeenCalled();
+            // Eski DAILY kimliği de (göç) iptal edilir.
+            expect(iptalMock()).toHaveBeenCalledWith('gun_sonu_hatirlatici');
         });
     });
 });

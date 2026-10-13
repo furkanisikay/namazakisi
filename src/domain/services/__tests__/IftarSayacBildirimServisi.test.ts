@@ -34,6 +34,12 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   stopAll: (...args: any[]) => mockStopAll(...args),
 }));
 
+// Ozel gun kapisi (issue #272): deterministik suzgec; sorulan tarihler kaydedilir.
+const mockOzelGundeMi = jest.fn((_t: string) => false);
+jest.mock('../../../data/local/LocalOzelGunOkuyucu', () => ({
+  ozelGunSuzgeciniOku: jest.fn(async () => (t: string) => mockOzelGundeMi(t)),
+}));
+
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
@@ -327,5 +333,48 @@ describe('IftarSayacBildirimServisi', () => {
 
     // kanalOlusturuldu onbellegi sayesinde createChannel sadece ilk seferde cagrilmali
     expect(notifee.createChannel).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('IftarSayacBildirimServisi — ozel gun kapisi (issue #272)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (IftarSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    (Platform as { OS: string }).OS = 'android';
+  });
+
+  afterEach(() => {
+    mockOzelGundeMi.mockImplementation(() => false);
+    global.Date = OriginalDate;
+  });
+
+  it('ozel gunde (hayiz/nifas → oruc yok) iftar sayaci KURULMAZ ama eski plan temizlenir', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-19');
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockOzelGundeMi).toHaveBeenCalledWith('2026-02-19');
+    expect(notifee.getTriggerNotificationIds).toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+  });
+
+  it('ozel gun DISINDA birebir eski akis (countdown + trigger)', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-20');
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockStartCountdown).toHaveBeenCalledTimes(1);
+    expect(notifee.createTriggerNotification).toHaveBeenCalled();
   });
 });

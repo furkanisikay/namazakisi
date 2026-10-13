@@ -32,14 +32,16 @@ describe('ozelGunDegistiUygula', () => {
       JSON.stringify({ koordinatlar: { lat: 39.9, lng: 41.27 } })
     );
 
-    await ozelGunDegistiUygula();
+    // `true`: yayma koştu — çağıran (yedekten geri yükleme) konumsuz
+    // tüketicileri ayrıca tazelemez.
+    await expect(ozelGunDegistiUygula()).resolves.toBe(true);
 
     expect(mockOzelGunDurumunuYukle).toHaveBeenCalledTimes(1);
     expect(mockKonumDegistiUygula).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
   });
 
   test('konum yoksa yeniden planlama atlanır ama ön plan kapısı yine tazelenir', async () => {
-    await ozelGunDegistiUygula();
+    await expect(ozelGunDegistiUygula()).resolves.toBe(false);
 
     expect(mockOzelGunDurumunuYukle).toHaveBeenCalledTimes(1);
     expect(mockKonumDegistiUygula).not.toHaveBeenCalled();
@@ -53,7 +55,7 @@ describe('ozelGunDegistiUygula', () => {
     mockOzelGunDurumunuYukle.mockRejectedValue(new Error('x'));
     mockKonumDegistiUygula.mockRejectedValue(new Error('y'));
 
-    await expect(ozelGunDegistiUygula()).resolves.toBeUndefined();
+    await expect(ozelGunDegistiUygula()).resolves.toBe(false);
     // Ön planın hatası yaymayı ENGELLEMEMELİ.
     expect(mockKonumDegistiUygula).toHaveBeenCalled();
   });

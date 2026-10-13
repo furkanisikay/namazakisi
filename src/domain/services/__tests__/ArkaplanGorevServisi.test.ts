@@ -96,6 +96,12 @@ jest.mock('../SeriSayacHazirlayici', () => ({
     seriSayacAyarlariniHazirla: (...args: unknown[]) => mockSeriSayacHazirla(...(args as [])),
 }));
 
+// Gun sonu seri hatirlatmasi (issue #272): tarihli tetikler → 15 dk gorevi tazeler.
+const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../GunSonuHatirlaticiServisi', () => ({
+    gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
@@ -483,6 +489,42 @@ describe('gorev govdesi > seri sayaci tazelemesi', () => {
 
     it('seri sayaci patlarsa muhafiz planlamasi DUSMEZ', async () => {
         mockSeriSayacHazirla.mockRejectedValueOnce(new Error('depolama patladi'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// GUN SONU SERI HATIRLATMASI (issue #272) — DAILY degil TARIHLI tetik → tazelenmeli
+// =====================================================================
+describe('gorev govdesi > gun sonu hatirlatmasi tazelemesi', () => {
+    it('MUHAFIZ AYARI YOKKEN de tazelenir (erken donusten ONCE cagrilir)', async () => {
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+    });
+
+    it('diskteki konumla cagrilir', async () => {
+        mockDepo.set(
+            KONUM_DEPOLAMA_ANAHTARI,
+            JSON.stringify({ koordinatlar: { lat: 39.9, lng: 41.27 } })
+        );
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockGunSonuGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+    });
+
+    it('gun sonu patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockGunSonuGuncelle.mockRejectedValueOnce(new Error('x'));
         mockDepo.set(
             MUHAFIZ_AYARLARI_ANAHTAR,
             JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
