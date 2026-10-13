@@ -19,6 +19,7 @@ import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SERI_SAYAC_VARSAYILAN_ESIK_DK, sayacBaslamaliMi } from '../../core/seri/seriGunSonu';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
+import { SERI_SOZU } from '../../core/data/SeriSozu';
 
 export interface SeriSayacAyarlari {
   /** Kullanici gun sonu hatirlatmasini acti mi? */
@@ -53,7 +54,9 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
       kanalAciklamasi: 'Seri gününün bitmesine geri sayım',
       // IBADETE CAGRI kaydi: "sen" + emir kipi (AGENTS.md bilincli istisnasi).
       countdownBaslik: '🔥 Serin Tehlikede',
-      countdownBodyTemplate: 'Bugünkü namazların eksik, serini kaybetme.\n⏱️ {time}',
+      // Serinin dayandığı hadis (issue #72) genişletilmiş görünümde ikinci satırdır;
+      // native taraf {time}/⏱️'i ayıklayıp kalanı açıklama alanına yazar.
+      countdownBodyTemplate: `Bugünkü namazların eksik, serini kaybetme.\n«${SERI_SOZU.metin}» (Buhârî)\n⏱️ {time}`,
       themeType: 'seri',
       // Hedefte kaybolmali: chronometer sifiri gecince YUKARI sayar ve kullanici
       // "gun bitti" yerine artan bir sayac gorur.

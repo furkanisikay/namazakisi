@@ -182,7 +182,7 @@ export const seriAyarlariniGuncelle = createAsyncThunk(
       await bildirim.bildirimPlanla(
         'gun_sonu_hatirlatici',
         '🚨 Seri Hatırlatıcı',
-        'Gün bitmek üzere! Serinizi bozmamak için bugünkü namazlarınızı girmeyi unutmayın.',
+        `Gün bitmek üzere! Serinizi bozmamak için bugünkü namazlarınızı girmeyi unutmayın.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`,
         planlanmisSaat,
         planlanmisDakika
       );
@@ -600,6 +600,7 @@ export default seriSlice.reducer;
 // ==================== SELECTOR'LAR ====================
 
 import { createSelector } from '@reduxjs/toolkit';
+import { SERI_SOZU } from '../../core/data/SeriSozu';
 
 export const seriOzetiSelector = createSelector(
   [(state: { seri: SeriState }) => state.seri.seriDurumu, (state: { seri: SeriState }) => state.seri.ayarlar],
