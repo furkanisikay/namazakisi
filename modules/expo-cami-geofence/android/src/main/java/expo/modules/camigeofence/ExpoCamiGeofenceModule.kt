@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import expo.modules.camigeofence.cekirdek.CamiSabitleri
+import expo.modules.camigeofence.cekirdek.IzlemeKipi
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -43,6 +44,16 @@ class ExpoCamiGeofenceModule : Module() {
         }
     }
 
+    /** Süresi geçmiş camide hâli / mod kaynakları + plan zinciri. Asla fırlatmaz. */
+    private fun tutarlilikDenetle(c: Context) {
+        try {
+            CamiDurumu.yenidenKur(c)
+            NamazModuZamanlayici.uygula(c)
+        } catch (e: Exception) {
+            Log.w("CamiGeofence", "Tutarlilik denetimi yapilamadi: ${e.message}")
+        }
+    }
+
     override fun definition() = ModuleDefinition {
         Name("ExpoCamiGeofence")
 
@@ -50,6 +61,11 @@ class ExpoCamiGeofenceModule : Module() {
 
         OnCreate {
             CamiOlaylari.dinleyici = { tur -> sendEvent("onCamiOlayi", mapOf("tur" to tur)) }
+            // Force-stop / OEM uyku kısıtı üst süre alarmını silmiş olabilir: uygulama
+            // açılır açılmaz süresi geçmiş camide hâli ve Namaz modu kaynakları
+            // düşsün (Rahatsız Etmeyin üst süreden uzun açık kalmasın). Disk + binder
+            // işi → JS thread'inde değil.
+            ctx()?.let { c -> Thread { tutarlilikDenetle(c) }.start() }
         }
 
         OnDestroy {
@@ -63,6 +79,7 @@ class ExpoCamiGeofenceModule : Module() {
                 promise.resolve("{}")
                 return@AsyncFunction
             }
+            CamiDurumu.yenidenKur(c)
             val veri = CamiVeriKaynagi.al(c)
             promise.resolve(
                 JSONObject()
@@ -110,8 +127,18 @@ class ExpoCamiGeofenceModule : Module() {
                 return@AsyncFunction
             }
             val bitti: (String) -> Unit = { promise.resolve(it) }
-            if (lat != null && lng != null) CamiIzleyici.kur(c, lat, lng, tazeMerkez = false, bitti = bitti)
+            if (lat != null && lng != null) CamiIzleyici.kur(c, lat, lng, IzlemeKipi.KURULUM, bitti)
             else CamiIzleyici.sonMerkezeGoreKur(c, bitti)
+        }
+
+        /**
+         * Süresi geçmiş camide hâlini ve Namaz modu kaynaklarını düşürür (15 dk'lık
+         * görev her turda çağırır — üst süre alarmı OEM kısıtıyla silinse bile
+         * Rahatsız Etmeyin üst süreden uzun açık kalmasın).
+         */
+        AsyncFunction("suresiGecenleriTemizle") { promise: Promise ->
+            ctx()?.let { tutarlilikDenetle(it) }
+            promise.resolve(null)
         }
 
         /** Vakit kapısı pencereleri (JS hesaplar: giriş −20/+60, cuma −90/+90). */
@@ -120,14 +147,18 @@ class ExpoCamiGeofenceModule : Module() {
             promise.resolve(null)
         }
 
-        /** İzlemeyi yeni bir merkeze göre tazele (konum değişimi, 15 dk görevi). */
+        /**
+         * İzlemeyi yeni bir merkeze göre tazele (konum değişimi, 15 dk görevi). Merkez
+         * BAYAT sayılır: canlı taze merkezi ezmez, değişiklik yoksa "degismedi".
+         */
         AsyncFunction("izlemeyiTazele") { lat: Double, lng: Double, promise: Promise ->
             val c = ctx()
+            if (c != null) CamiDurumu.yenidenKur(c)
             if (c == null || !CamiDepo.ayarlar(c).aktif) {
                 promise.resolve("kapali")
                 return@AsyncFunction
             }
-            CamiIzleyici.kur(c, lat, lng, tazeMerkez = false) { promise.resolve(it) }
+            CamiIzleyici.kur(c, lat, lng, IzlemeKipi.PERIYODIK) { promise.resolve(it) }
         }
 
         /** Yakındaki camiler (ayar ekranı listesi) — en yakın [k], mesafe sıralı. */

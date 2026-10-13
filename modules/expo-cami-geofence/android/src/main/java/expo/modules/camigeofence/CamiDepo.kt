@@ -26,6 +26,7 @@ object CamiDepo {
     private const val IZLENENLER = "izlenenler"
     private const val YENILEME = "yenileme"
     private const val CAMIDE = "camide"
+    private const val KAYIT_BASARILI = "kayit_basarili"
 
     /**
      * Başka modülün (`expo-countdown-notification` → `AnonsReceiver`) okuduğu
@@ -147,24 +148,43 @@ object CamiDepo {
     }
 
     // ---------------------------------------------------------- yenileme çemberi
-    data class Yenileme(val lat: Double, val lng: Double, val yaricapM: Double, val sonMs: Long)
+    /**
+     * @param taze merkez bir TAZE GPS sabitlemesi mi (yalnız OLAY yolu yazar). Kayıt
+     *   canlı kaldıkça bayat bir koordinatla ezilmez (`IzlemeKarari.merkezSec`);
+     *   çemberden çıkılıp taze konum alınamazsa [yenilemeBayatla] düşürür.
+     */
+    data class Yenileme(val lat: Double, val lng: Double, val yaricapM: Double, val sonMs: Long, val taze: Boolean = false)
 
     fun yenilemeYaz(ctx: Context, y: Yenileme?) {
         val e = prefs(ctx).edit()
         if (y == null) e.remove(YENILEME) else e.putString(
             YENILEME,
-            JSONObject().put("lat", y.lat).put("lng", y.lng).put("yaricapM", y.yaricapM).put("sonMs", y.sonMs).toString(),
+            JSONObject().put("lat", y.lat).put("lng", y.lng).put("yaricapM", y.yaricapM).put("sonMs", y.sonMs)
+                .put("taze", y.taze).toString(),
         )
         e.apply()
     }
 
     fun yenileme(ctx: Context): Yenileme? = jsonOku(ctx, YENILEME)?.let {
         try {
-            Yenileme(it.getDouble("lat"), it.getDouble("lng"), it.getDouble("yaricapM"), it.getLong("sonMs"))
+            Yenileme(it.getDouble("lat"), it.getDouble("lng"), it.getDouble("yaricapM"), it.getLong("sonMs"), it.optBoolean("taze", false))
         } catch (_: Exception) {
             null
         }
     }
+
+    /** Çemberden çıkıldı ama taze konum alınamadı: merkez artık "hâlâ içerdesiniz" demez. */
+    fun yenilemeBayatla(ctx: Context) {
+        yenileme(ctx)?.takeIf { it.taze }?.let { yenilemeYaz(ctx, it.copy(taze = false)) }
+    }
+
+    // ---------------------------------------------------------- kayıt canlılığı
+    /** Son geofence kaydı BAŞARIYLA tamamlandı mı (hata / kaldırmada false). */
+    fun kayitBasariliYaz(ctx: Context, basarili: Boolean) {
+        prefs(ctx).edit().putBoolean(KAYIT_BASARILI, basarili).apply()
+    }
+
+    fun kayitBasarili(ctx: Context): Boolean = prefs(ctx).getBoolean(KAYIT_BASARILI, false)
 
     // ---------------------------------------------------------- camide hâli
     data class Camide(

@@ -58,6 +58,9 @@ describe('turdanNamaz', () => {
         ['vakit:2026-10-15_ikindi', { tarih: '2026-10-15', vakit: 'ikindi' }],
         ['cami:2026-10-15_yatsi', { tarih: '2026-10-15', vakit: 'yatsi' }],
         ['cami:?_serbest', null],
+        // Vakit kapısı kapalıyken native `IzlemeKarari.camiTuru` biçimi: vakit
+        // bilinmediği için namaza ÇÖZÜLMEZ (yanlış namazın "kıldım"ı modu kapatmasın).
+        ['cami:2026-10-15_serbest_osm:n123', null],
         ['vakit:2026-10-15_gunes', null],
         ['bozuk', null],
     ])('%s', (tur, beklenen) => {

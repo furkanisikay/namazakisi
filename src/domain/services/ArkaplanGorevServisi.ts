@@ -390,6 +390,9 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
         // =====================================================
         try {
+            // Konumdan bağımsız İLK iş: üst süresi geçmiş Rahatsız Etmeyin kaynağı
+            // (alarmı OEM kısıtıyla silinmiş olabilir) her turda düşsün.
+            await CamideyimServisi.getInstance().suresiGecenleriTemizle();
             await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
             await CamideyimServisi.getInstance().konumaBagliTazele(await arkaplandaKoordinatOku());
         } catch (e) {

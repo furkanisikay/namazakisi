@@ -73,6 +73,21 @@ export class CamideyimServisi {
         }
     }
 
+    /**
+     * Süresi geçmiş camide hâlini ve Namaz modu kaynaklarını native'de düşürür.
+     * 15 dk'lık arka plan görevi her turda, KONUMDAN BAĞIMSIZ çağırır: üst süre
+     * alarmı OEM uyku kısıtıyla silinmiş olsa bile Rahatsız Etmeyin üst süreden
+     * uzun açık kalmasın (kullanıcı arama kaçırır). Asla fırlatmaz.
+     */
+    public async suresiGecenleriTemizle(): Promise<void> {
+        if (!this.kullanilabilirMi()) return;
+        try {
+            await kopru.suresiGecenleriTemizle();
+        } catch (e) {
+            Logger.warn('Camideyim', 'Suresi gecenler temizlenemedi', e);
+        }
+    }
+
     /** Vakit kapısı + Namaz modu pencerelerini native'e yazar. */
     public async planlariGonder(koordinat: NafileKoordinat | null | undefined): Promise<void> {
         if (!this.kullanilabilirMi() || !koordinatGecerliMi(koordinat)) return;
@@ -88,8 +103,10 @@ export class CamideyimServisi {
     }
 
     /**
-     * Uygulama açılışında bir kez: kılınmışlık değişince ("Kıldım" uygulamadan,
-     * bildirimden ya da saatten) etkin Namaz modu turu kılındıysa modu kapat.
+     * HER JS bağlamında bir kez (idempotent): kılınmışlık değişince ("Kıldım"
+     * uygulamadan, bildirimden ya da saatten) etkin Namaz modu turu kılındıysa modu
+     * kapat. `App.tsx` VE `index.ts` (headless bağlam — uygulama kapalıyken
+     * bildirimden "Kıldım"; App.tsx orada hiç yüklenmez) çağırır; ikinci çağrı no-op.
      */
     public baslat(): void {
         if (this.baslatildi || !this.kullanilabilirMi()) return;

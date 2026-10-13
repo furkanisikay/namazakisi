@@ -95,6 +95,22 @@ describe('CamideyimServisi.bekleyenKildimleriIsle', () => {
     });
 });
 
+describe('CamideyimServisi.suresiGecenleriTemizle (Rahatsız Etmeyin takılı kalmaz)', () => {
+    it('native temizliği konumdan bağımsız çağırır', async () => {
+        await servis.suresiGecenleriTemizle();
+        expect(k.suresiGecenleriTemizle).toHaveBeenCalledTimes(1);
+    });
+
+    it('köprü yoksa no-op, hata fırlatmaz', async () => {
+        k.camiModuluVarMi.mockReturnValue(false);
+        await servis.suresiGecenleriTemizle();
+        expect(k.suresiGecenleriTemizle).not.toHaveBeenCalled();
+        k.camiModuluVarMi.mockReturnValue(true);
+        k.suresiGecenleriTemizle.mockRejectedValueOnce(new Error('x'));
+        await expect(servis.suresiGecenleriTemizle()).resolves.toBeUndefined();
+    });
+});
+
 describe('Namaz modu: "Kıldım" deyince kapanır', () => {
     it('baslat bir kez dinleyici kaydeder', () => {
         servis.baslat();

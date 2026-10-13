@@ -536,3 +536,31 @@ describe('gorev govdesi > gun sonu hatirlatmasi tazelemesi', () => {
         expect(mockYapilandirVePlanla).toHaveBeenCalled();
     });
 });
+
+// =====================================================================
+// CAMIDEYIM / NAMAZ MODU — Rahatsiz Etmeyin ust sureden uzun ACIK KALMAZ
+// =====================================================================
+describe('gorev govdesi > Namaz modu suresi gecen kaynaklar', () => {
+    // Global moduleNameMapper mock'u (__mocks__/expo-cami-geofence.js). `require`
+    // ŞART: `jest.requireMock` burada servisin gördüğünden AYRI bir örnek döndürür.
+    const kopru = require('../../../../modules/expo-cami-geofence/src') as {
+        camiModuluVarMi: jest.Mock;
+        suresiGecenleriTemizle: jest.Mock;
+        izlemeyiTazele: jest.Mock;
+    };
+
+    afterEach(() => {
+        kopru.camiModuluVarMi.mockReturnValue(false);
+    });
+
+    it('MUHAFIZ AYARI ve KONUM YOKKEN de her turda temizlik cagrilir', async () => {
+        kopru.camiModuluVarMi.mockReturnValue(true);
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(kopru.suresiGecenleriTemizle).toHaveBeenCalledTimes(1);
+        // Konum yokken izleme tazelenmez ama temizlik yine de yapildi.
+        expect(kopru.izlemeyiTazele).not.toHaveBeenCalled();
+    });
+});
