@@ -20,6 +20,14 @@ class AnonsReceiver : BroadcastReceiver() {
         private const val ETIKET = "AnonsReceiver"
     }
 
+    /** Ad/anahtar `expo-cami-geofence` CamiDepo ile AYNI olmalı (modüller birbirini import etmez). */
+    private fun camidenSessizMi(context: Context): Boolean = try {
+        context.getSharedPreferences("namazakisi_cami_durum", Context.MODE_PRIVATE)
+            .getLong("sessiz_bitis_ms", 0L) > System.currentTimeMillis()
+    } catch (_: Exception) {
+        false
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != ACTION_ANONS) return
 
@@ -32,6 +40,12 @@ class AnonsReceiver : BroadcastReceiver() {
         }
 
         if (metin.isEmpty()) return
+
+        // CAMİDEYKEN KONUŞMA (Camideyim, issue #297): `USAGE_ALARM` sessiz modu ve
+        // Rahatsız Etmeyin'i deler → namazdaki kişinin yanında anons olurdu. Bayrağı
+        // `expo-cami-geofence` (CamiDepo.SESSIZ_DOSYA) yazar; alarm KURULU kalır ama
+        // konuşmaz — çıkışta yeniden planlamaya gerek kalmaz, bildirim yine gelir.
+        if (camidenSessizMi(context)) return
 
         val sonuc = goAsync()
         var kapatildi = false

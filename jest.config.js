@@ -36,6 +36,8 @@ module.exports = {
     // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden
     // sentez yoluna girmez.
     "expo-muhafiz-anons/src$": "<rootDir>/__mocks__/expo-muhafiz-anons.js",
+    // Camideyim + Namaz modu köprüsü (Android native). Varsayılan: modül yok.
+    "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
     // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı
     // bıraktığı için ham mp3 require'ı SyntaxError verir.
     "\\.(mp3|wav|m4a|ogg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",

@@ -1,0 +1,115 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
+
+group = 'expo.modules.camigeofence'
+version = '0.1.0'
+
+buildscript {
+  def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+  if (expoModulesCorePlugin.exists()) {
+    apply from: expoModulesCorePlugin
+    applyKotlinExpoModulesCorePlugin()
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
+  }
+}
+
+afterEvaluate {
+  publishing {
+    publications {
+      release(MavenPublication) {
+        from components.release
+      }
+    }
+    repositories {
+      maven {
+        url = mavenLocal().url
+      }
+    }
+  }
+}
+
+/*
+ * CAMI VERISI (issue #297): `assets/camiler/tr.bin` deponun kokundedir (ODbL,
+ * ayri lisans). Uygulamanin TUM `assets/` dizini APK'ya girmesin diye yalniz bu
+ * dosya derleme dizinine `camiler/tr.bin` olarak kopyalanir ve modulun asset
+ * kaynagina eklenir. Dosya yoksa (veri henuz uretilmediyse) kopyalanacak bir sey
+ * olmaz; native taraf "cami verisi yok" durumuna duser, cokmez.
+ */
+def camiVeriKaynagi = new File(projectDir, "../../../assets/camiler")
+def camiVeriHedefi = new File(buildDir, "generated/cami-assets")
+
+tasks.register("camiVerisiniKopyala", Copy) {
+  from(camiVeriKaynagi) {
+    include "tr.bin"
+    include "LICENSE.ODbL"
+  }
+  into new File(camiVeriHedefi, "camiler")
+}
+
+android {
+  namespace 'expo.modules.camigeofence'
+  compileSdkVersion safeExtGet("compileSdkVersion", 35)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("minSdkVersion", 24)
+    targetSdkVersion safeExtGet("targetSdkVersion", 35)
+  }
+
+  sourceSets {
+    main {
+      assets.srcDirs += [camiVeriHedefi]
+    }
+  }
+
+  publishing {
+    singleVariant("release") {
+      withSourcesJar()
+    }
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_17.majorVersion
+  }
+}
+
+preBuild.dependsOn("camiVerisiniKopyala")
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+dependencies {
+  implementation project(':expo-modules-core')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+  implementation "androidx.core:core-ktx:1.12.0"
+  // expo-location ile AYNI surum (uygulamada zaten var; yeni bagimlilik degil).
+  implementation "com.google.android.gms:play-services-location:21.0.1"
+  // Headless JS gorevi ("Kıldım" kuyrugu) — surumu uygulamanin RN surumune cozulur.
+  implementation "com.facebook.react:react-android"
+
+  testImplementation "junit:junit:4.13.2"
+  // Android'in org.json'u JVM birim testinde stub'dir → gercek uygulama.
+  testImplementation "org.json:json:20240303"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}

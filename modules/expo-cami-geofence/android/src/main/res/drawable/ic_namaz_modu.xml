@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Namaz modu / Camideyim ikonu: kubbe + minare (tek renk; sistem renklendirir). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M19,3.5l1,1.8V8h-0.5v12H21v1H3v-1h1.5v-6.5C4.5,9.9 7.8,7.2 11,6.6V5.5h-0.5L11.5,4l1,1.5H12v1.1c3.2,0.6 6.5,3.3 6.5,6.9V20h0.5V8H18.5V5.3L19,3.5zM9.5,16v4h5v-4c0,-1.4 -1.1,-2.5 -2.5,-2.5S9.5,14.6 9.5,16z" />
+</vector>

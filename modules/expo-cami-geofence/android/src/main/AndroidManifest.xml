@@ -1,0 +1,40 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Namaz modu (issue #277): uygulamaya ait AutomaticZenRule / Rahatsız Etmeyin.
+       Normal izin; kullanıcı ayrıca ayar ekranından erişim verir. -->
+  <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+  <!-- Yeniden başlatmada geofence + mod planı geri kurulur (CamiYenidenKurucu). -->
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <!-- Konum izinleri (FINE + BACKGROUND) uygulama manifestinde zaten var; yeni izin YOK. -->
+
+  <application>
+    <!-- Geofence olayları + camide üst süre alarmı. Karar burada (goAsync). FGS YOK. -->
+    <receiver
+      android:name="expo.modules.camigeofence.CamiGeofenceAlicisi"
+      android:exported="false" />
+    <!-- "Modu kapat" / "Burası cami değil" / "Kıldım" bildirim düğmeleri. -->
+    <receiver
+      android:name="expo.modules.camigeofence.CamiEylemAlicisi"
+      android:exported="false" />
+    <!-- Namaz modu plan alarmı + API 35 kural durum yayını. Yayını sistem gönderir
+         (paket hedefli); sistem uid'i dışa kapalı alıcıya da teslim eder. -->
+    <receiver
+      android:name="expo.modules.camigeofence.NamazModuAlicisi"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="android.app.action.AUTOMATIC_ZEN_RULE_STATUS_CHANGED" />
+      </intent-filter>
+    </receiver>
+    <receiver
+      android:name="expo.modules.camigeofence.CamiYenidenKurucu"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+      </intent-filter>
+    </receiver>
+    <!-- "Kıldım" kuyruğunu JS'te boşaltan headless görev (Wear deseni). -->
+    <service
+      android:name="expo.modules.camigeofence.CamiKildimGorevServisi"
+      android:exported="false" />
+  </application>
+</manifest>

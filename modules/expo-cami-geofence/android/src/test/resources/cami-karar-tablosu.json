@@ -1,0 +1,1169 @@
+{
+  "aciklama": "Camideyim karar tablosu — JS (src/core/cami/__tests__) ve Kotlin (CamiKararTest) AYNI sonuclari vermeli. Konumlar sentetik.",
+  "kararlar": [
+    {
+      "ad": "vakit disi: konum olculmez",
+      "simdiMs": 1792133760000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010045,
+        "lng": 28.97,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "vakitDisi"
+      }
+    },
+    {
+      "ad": "kapi kapaliyken her saat algilanir",
+      "simdiMs": 1792133760000,
+      "vakitKapisiAcik": false,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010045,
+        "lng": 28.97,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:n9000000001"
+      }
+    },
+    {
+      "ad": "dogruluk 31 m: supheli, mod acilmaz",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 31
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "supheli",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "dogruluk tam 30 m kabul",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 30
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:w9100000001",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "olcum alinamadi",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": null,
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "konumYok",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "kafe: noktanin 41 m uzaginda",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0096313,
+        "lng": 28.97,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:n9000000001",
+        "mesafeM": 16,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "poligon icinde",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0111349,
+        "lng": 28.9720596,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:w9100000001",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "poligon tamponunda (kenardan 8 m)",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0112518,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:w9100000001",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "poligon disi (kenardan 15 m)",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0113148,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:w9100000001",
+        "mesafeM": 5,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "haric tutulan yer algilanmaz",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010045,
+        "lng": 28.97,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [
+        "osm:n9000000001"
+      ],
+      "beklenen": {
+        "sonuc": "disarida",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "ozel alan poligonu ezer",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.0111349,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": 10,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "yerId": "osm:w9100000001",
+        "mesafeM": 5,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "kullanicinin ekledigi yer",
+      "simdiMs": 1792144560000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.012,
+        "lng": 28.9691192,
+        "dogrulukM": 8
+      },
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        },
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        },
+        {
+          "id": "kendi:1",
+          "ad": "İş yerimdeki mescit",
+          "lat": 41.012,
+          "lng": 28.969,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": 15,
+          "kaynak": "kendi",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "kendi:1",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "cuma penceresi girisinden 85 dk once acik",
+      "simdiMs": 1792139460000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010027,
+        "lng": 28.9700358,
+        "dogrulukM": 12
+      },
+      "adaylar": [
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:n9000000001",
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      }
+    },
+    {
+      "ad": "normal vakit 25 dk once kapali",
+      "simdiMs": 1792154220000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010027,
+        "lng": 28.9700358,
+        "dogrulukM": 12
+      },
+      "adaylar": [
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "vakitDisi"
+      }
+    },
+    {
+      "ad": "normal vakit 60. dakika acik",
+      "simdiMs": 1792159320000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792139160000,
+          "son": 1792149960000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        },
+        {
+          "bas": 1792154520000,
+          "son": 1792159320000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-16",
+          "cuma": false
+        }
+      ],
+      "konum": {
+        "lat": 41.010027,
+        "lng": 28.9700358,
+        "dogrulukM": 12
+      },
+      "adaylar": [
+        {
+          "id": "osm:n9000000001",
+          "ad": "Test Camii A (fikstür)",
+          "lat": 41.01,
+          "lng": 28.97,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": true
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "yerId": "osm:n9000000001",
+        "vakit": "ikindi",
+        "tarih": "2026-10-16",
+        "cuma": false
+      }
+    }
+  ],
+  "yenileme": [
+    {
+      "ad": "son merkezleme 30 sn once: patlama korumasi",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": 1792144770000,
+      "konumZamaniMs": 1792144799000,
+      "beklenen": "cokSik"
+    },
+    {
+      "ad": "konum 3 dk eski: merkezlenmez",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": 1792144200000,
+      "konumZamaniMs": 1792144620000,
+      "beklenen": "bayatKonum"
+    },
+    {
+      "ad": "konum alinamadi",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": null,
+      "konumZamaniMs": null,
+      "beklenen": "bayatKonum"
+    },
+    {
+      "ad": "gelecek tarihli damga guvenilmez",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": null,
+      "konumZamaniMs": 1792144805000,
+      "beklenen": "bayatKonum"
+    },
+    {
+      "ad": "taze konum: yenile",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": 1792144500000,
+      "konumZamaniMs": 1792144790000,
+      "beklenen": "yenile"
+    },
+    {
+      "ad": "tam 2 dk: hala taze",
+      "simdiMs": 1792144800000,
+      "sonYenilemeMs": null,
+      "konumZamaniMs": 1792144680000,
+      "beklenen": "yenile"
+    }
+  ],
+  "yaricap": [
+    {
+      "kinciMesafeM": null,
+      "beklenen": 5000
+    },
+    {
+      "kinciMesafeM": 300,
+      "beklenen": 500
+    },
+    {
+      "kinciMesafeM": 1000,
+      "beklenen": 850
+    },
+    {
+      "kinciMesafeM": 5149,
+      "beklenen": 4999
+    },
+    {
+      "kinciMesafeM": 90000,
+      "beklenen": 5000
+    }
+  ],
+  "kapi": {
+    "gunler": [
+      {
+        "tarih": "2026-10-15",
+        "cuma": false,
+        "girisler": {
+          "imsak": 1792032240000,
+          "ogle": 1792058160000,
+          "ikindi": 1792069440000,
+          "aksam": 1792078380000,
+          "yatsi": 1792083120000
+        }
+      },
+      {
+        "tarih": "2026-10-16",
+        "cuma": true,
+        "girisler": {
+          "imsak": 1792118700000,
+          "ogle": 1792144560000,
+          "ikindi": 1792155720000,
+          "aksam": 1792164660000,
+          "yatsi": 1792169400000
+        }
+      }
+    ],
+    "beklenen": [
+      {
+        "bas": 1792031040000,
+        "son": 1792035840000,
+        "vakit": "imsak",
+        "tarih": "2026-10-15",
+        "cuma": false
+      },
+      {
+        "bas": 1792056960000,
+        "son": 1792061760000,
+        "vakit": "ogle",
+        "tarih": "2026-10-15",
+        "cuma": false
+      },
+      {
+        "bas": 1792068240000,
+        "son": 1792073040000,
+        "vakit": "ikindi",
+        "tarih": "2026-10-15",
+        "cuma": false
+      },
+      {
+        "bas": 1792077180000,
+        "son": 1792081980000,
+        "vakit": "aksam",
+        "tarih": "2026-10-15",
+        "cuma": false
+      },
+      {
+        "bas": 1792081920000,
+        "son": 1792086720000,
+        "vakit": "yatsi",
+        "tarih": "2026-10-15",
+        "cuma": false
+      },
+      {
+        "bas": 1792117500000,
+        "son": 1792122300000,
+        "vakit": "imsak",
+        "tarih": "2026-10-16",
+        "cuma": false
+      },
+      {
+        "bas": 1792139160000,
+        "son": 1792149960000,
+        "vakit": "ogle",
+        "tarih": "2026-10-16",
+        "cuma": true
+      },
+      {
+        "bas": 1792154520000,
+        "son": 1792159320000,
+        "vakit": "ikindi",
+        "tarih": "2026-10-16",
+        "cuma": false
+      },
+      {
+        "bas": 1792163460000,
+        "son": 1792168260000,
+        "vakit": "aksam",
+        "tarih": "2026-10-16",
+        "cuma": false
+      },
+      {
+        "bas": 1792168200000,
+        "son": 1792173000000,
+        "vakit": "yatsi",
+        "tarih": "2026-10-16",
+        "cuma": false
+      }
+    ]
+  }
+}
