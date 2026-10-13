@@ -40,6 +40,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Gerçek alarm kanalı (issue #74) — hatırlatma adımında telefonun alarmı.
+    {
+        id: 'gercek-alarm',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Hatırlatmalarda Gerçek Alarm',
+        aciklama:
+            'Namaz Muhafızı\'nda istediğiniz adım için "Gerçek alarm"ı açın: o adımın ilk hatırlatmasında telefonunuzun alarmı çalar, kilit ekranında büyük "Kıldım" ve "10 dk ertele" düğmeleri çıkar.',
+        detayAciklama:
+            'Her vaktin adımlarından birine dokunup "Gerçek alarm" anahtarını açabilirsiniz; örneğin sabah için vakit girer girmez, öğle için vaktin çıkmasına 20 dakika kala. Alarm, siz kapatana kadar en fazla 2 dakika çalar; tekrarlar normal bildirimle gelir. Alarm sesi olarak adımda seçtiğiniz ses, seçmediyseniz telefonunuzun alarm sesi kullanılır. Camideyken alarm çalmaz.',
+        ikon: 'clock',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Alarmı kurun',
+        kartGoster: true,
+        detaylar: [
+            'Telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir',
+            'Android 14 ve sonrasında kilit ekranında tam ekran açılması için izin vermeniz gerekebilir; ekran sizi doğru ayara götürür',
+            'iPhone\'da şimdilik zamana duyarlı bildirim ve uzun bir sesle gelir; gerçek alarm iOS 26 AlarmKit desteğiyle gelecek',
+        ],
+    },
     // Bileklik dostu başlıklar (issue #287) — kart kapalı; rehber yalnız Android'de.
     {
         id: 'bileklik-dostu-basliklar',
