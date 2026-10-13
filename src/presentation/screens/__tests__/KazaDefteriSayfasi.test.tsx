@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
-import { gunlukHedefiGuncelle } from '../../store/kazaSlice';
+import { gunlukHedefiGuncelle, kazaOneriAyarlariniGuncelle } from '../../store/kazaSlice';
 
 // Mocklar
 jest.mock('../../store/hooks');
@@ -14,6 +14,8 @@ jest.mock('../../store/kazaSlice', () => ({
   sihirbazIleBaslat: jest.fn((arg) => ({ type: 'kaza/sihirbaz', payload: arg })),
   gunlukHedefiGuncelle: jest.fn((arg) => ({ type: 'kaza/hedef', payload: arg })),
   gizlemeToggle: jest.fn(() => ({ type: 'kaza/gizle' })),
+  kazaOneriAyarlariniYukle: jest.fn(() => ({ type: 'kaza/oneriYukle' })),
+  kazaOneriAyarlariniGuncelle: jest.fn((arg) => ({ type: 'kaza/oneriGuncelle', payload: arg })),
 }));
 jest.mock('../../../domain/services/KazaHesaplayiciServisi', () => ({
   mekruhVakitKontrolEt: jest.fn(() => ({ mekruhMu: false, aciklama: null })),
@@ -142,5 +144,42 @@ describe('KazaDefteriSayfasi — validasyon hata modalı', () => {
 
     expect(gunlukHedefiGuncelle).toHaveBeenCalledWith({ hedef: 5 });
     expect(queryByText('Geçersiz giriş')).toBeNull();
+  });
+});
+
+describe('KazaDefteriSayfasi — "Her farzla bir kaza" anahtarı (issue #294)', () => {
+  const dispatchMock = jest.fn();
+  const durumKur = (toplamKalan: number) =>
+    Object.freeze({
+      kaza: {
+        kazaDurumu: { ...kazaDurumu, toplamKalan },
+        istatistik: null,
+        yukleniyor: false,
+        oneriAyarlari: { farzSonrasiOner: true },
+        oneriAyarlariYuklendi: true,
+      },
+      konum: KAZA_STATE.konum,
+    });
+
+  const kur = (toplamKalan: number) => {
+    const state = durumKur(toplamKalan);
+    (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
+    (useAppDispatch as unknown as jest.Mock).mockReturnValue(dispatchMock);
+    (useAppSelector as unknown as jest.Mock).mockImplementation((selector: (s: typeof state) => unknown) => selector(state));
+    const { KazaDefteriSayfasi } = require('../KazaDefteriSayfasi');
+    return render(<KazaDefteriSayfasi />);
+  };
+
+  beforeEach(() => jest.clearAllMocks());
+
+  it('borç varken görünür ve kapatınca ayarı yazar', () => {
+    const { getByLabelText } = kur(10);
+    fireEvent(getByLabelText('Her farzdan sonra kaza önerin'), 'valueChange', false);
+    expect(kazaOneriAyarlariniGuncelle).toHaveBeenCalledWith({ farzSonrasiOner: false });
+  });
+
+  it('borç yoksa hiç görünmez (soru zaten sorulmaz)', () => {
+    const { queryByLabelText } = kur(0);
+    expect(queryByLabelText('Her farzdan sonra kaza önerin')).toBeNull();
   });
 });

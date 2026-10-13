@@ -12,6 +12,11 @@ import {
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { KazaIstatistik } from '../../core/types/KazaTipleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { LocalKazaOneriServisi } from '../../data/local/LocalKazaOneriServisi';
+import {
+  VARSAYILAN_KAZA_ONERI_AYARLARI,
+  type KazaOneriAyarlari,
+} from '../../core/kaza/farzSonrasiKazaOnerisi';
 
 // ==================== STATE TİPİ ====================
 
@@ -21,6 +26,10 @@ interface KazaState {
   tempoGecmis: Record<string, number>;
   yukleniyor: boolean;
   hata: string | null;
+  /** "Her farzdan sonra kaza önerin" ayarı (issue #294). */
+  oneriAyarlari: KazaOneriAyarlari;
+  /** Diskten okundu mu? Anahtar initialState'i gerçek veri sanmasın. */
+  oneriAyarlariYuklendi: boolean;
 }
 
 const baslangicDurumu: KazaState = {
@@ -29,6 +38,8 @@ const baslangicDurumu: KazaState = {
   tempoGecmis: {},
   yukleniyor: false,
   hata: null,
+  oneriAyarlari: { ...VARSAYILAN_KAZA_ONERI_AYARLARI },
+  oneriAyarlariYuklendi: false,
 };
 
 // ==================== YARDIMCI FONKSİYONLAR ====================
@@ -264,6 +275,23 @@ export const gizlemeToggle = createAsyncThunk(
   }
 );
 
+/**
+ * "Her farzla bir kaza" önerisi ayarı (issue #294). Salt `AsyncStorage` okuması,
+ * ASLA reddetmez (bozuk kayıt → varsayılan açık).
+ */
+export const kazaOneriAyarlariniYukle = createAsyncThunk('kaza/oneriAyarlariniYukle', async () =>
+  LocalKazaOneriServisi.ayarlariGetir()
+);
+
+export const kazaOneriAyarlariniGuncelle = createAsyncThunk(
+  'kaza/oneriAyarlariniGuncelle',
+  async (ayarlar: KazaOneriAyarlari) => {
+    const kaydedildi = await LocalKazaOneriServisi.ayarlariKaydet(ayarlar);
+    if (!kaydedildi) throw new Error('Kaza önerisi ayarı kaydedilemedi');
+    return ayarlar;
+  }
+);
+
 // ==================== SLICE ====================
 
 const kazaSlice = createSlice({
@@ -313,6 +341,22 @@ const kazaSlice = createSlice({
 
       .addCase(gizlemeToggle.fulfilled, (state, action) => {
         state.kazaDurumu = action.payload;
+      })
+
+      .addCase(kazaOneriAyarlariniYukle.fulfilled, (state, action) => {
+        state.oneriAyarlari = action.payload;
+        state.oneriAyarlariYuklendi = true;
+      })
+      // İyimser: anahtar beklemeden dönsün; yazım başarısızsa geri alınır.
+      .addCase(kazaOneriAyarlariniGuncelle.pending, (state, action) => {
+        state.oneriAyarlari = action.meta.arg;
+      })
+      .addCase(kazaOneriAyarlariniGuncelle.fulfilled, (state, action) => {
+        state.oneriAyarlari = action.payload;
+        state.oneriAyarlariYuklendi = true;
+      })
+      .addCase(kazaOneriAyarlariniGuncelle.rejected, (state, action) => {
+        state.oneriAyarlari = { farzSonrasiOner: !action.meta.arg.farzSonrasiOner };
       });
   },
 });

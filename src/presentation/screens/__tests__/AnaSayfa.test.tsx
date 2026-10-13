@@ -153,18 +153,47 @@ jest.mock('../../components/home/VakitKarti', () => {
   const { View } = require('react-native');
   return { VakitKarti: () => <View testID="vakit-karti" /> };
 });
+const mockVakitAkisiProplari: { onVakitTikla?: (ad: string, val: boolean) => void }[] = [];
 jest.mock('../../components/home/VakitAkisi', () => {
   const { View } = require('react-native');
-  return { VakitAkisi: () => <View testID="vakit-akisi" /> };
+  return {
+    VakitAkisi: (props: { onVakitTikla?: (ad: string, val: boolean) => void }) => {
+      mockVakitAkisiProplari.push(props);
+      return <View testID="vakit-akisi" />;
+    },
+  };
 });
 jest.mock('../../hooks/useEkranSinifi', () => ({ useEkranSinifi: jest.fn(() => 'kompakt') }));
 jest.mock('../../components/home/SeriKartiModal', () => {
   const { View } = require('react-native');
   return { SeriKartiModal: () => <View /> };
 });
+const mockKerahatModalProplari: { gorunur: boolean; onOnayla: () => void }[] = [];
 jest.mock('../../components/home/KerahatOnayModal', () => {
   const { View } = require('react-native');
-  return { KerahatOnayModal: () => <View /> };
+  return {
+    KerahatOnayModal: (props: { gorunur: boolean; onOnayla: () => void }) => {
+      mockKerahatModalProplari.push(props);
+      return <View />;
+    },
+  };
+});
+// "Her farzla bir kaza" (issue #294): karar hook'ta (kendi testi var); burada yalnız
+// ana ekranın onu DOĞRU girdiyle çağırdığı ölçülür.
+const mockKazaDegerlendir = jest.fn();
+jest.mock('../../hooks/useFarzSonrasiKazaOnerisi', () => ({
+  useFarzSonrasiKazaOnerisi: () => ({
+    oneri: null,
+    isleniyor: false,
+    degerlendir: mockKazaDegerlendir,
+    kildim: jest.fn(),
+    simdiDegil: jest.fn(),
+    birDahaSorma: jest.fn(),
+  }),
+}));
+jest.mock('../../components/home/KazaOneriModal', () => {
+  const { View } = require('react-native');
+  return { KazaOneriModal: () => <View /> };
 });
 jest.mock('react-native-safe-area-context', () => {
   const { View } = require('react-native');
@@ -330,6 +359,8 @@ describe('AnaSayfa', () => {
     mockPagerProplari.length = 0;
     mockTarihSeciciProplari.length = 0;
     mockPagerCocuklari.ciz = false;
+    mockVakitAkisiProplari.length = 0;
+    mockKerahatModalProplari.length = 0;
     (useEkranSinifi as jest.Mock).mockReturnValue('kompakt');
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
@@ -503,6 +534,55 @@ describe('AnaSayfa', () => {
       expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
       expect(mockPagerSetPage).not.toHaveBeenCalled();
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+  });
+  // ── "Her farzla bir kaza" (issue #294) ────────────────────────────────────
+  describe('Kaza önerisi tetiklemesi', () => {
+    const vakitTikla = (ad: string, val: boolean) =>
+      act(async () => {
+        mockVakitAkisiProplari[mockVakitAkisiProplari.length - 1].onVakitTikla!(ad, val);
+        await Promise.resolve();
+      });
+
+    it('aktif günde o anki vakit "kıldım" işaretlenince öneri doğru girdiyle değerlendirilir', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      await vakitTikla('Öğle', true);
+
+      expect(mockKazaDegerlendir).toHaveBeenCalledWith(
+        expect.objectContaining({
+          kilinanNamaz: 'Öğle',
+          tamamlandi: true,
+          gosterilenGun: bugunuAl(),
+          aktifGun: bugunuAl(),
+          suankiVakitNamazi: 'Öğle',
+          koordinat: { lat: 41.0082, lng: 28.9784 },
+        })
+      );
+    });
+
+    it('geri almada da çağrılır (bekleyen değerlendirme iptal edilsin) — tamamlandi=false', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      await vakitTikla('Öğle', false);
+      expect(mockKazaDegerlendir).toHaveBeenCalledWith(expect.objectContaining({ tamamlandi: false }));
+    });
+
+    it('KERAHAT vaktinde önce kerahat onayı açılır; öneri onay beklenirken değerlendirilmez', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        await kur(bugunuAl());
+        await vakitTikla('Öğle', true);
+        expect(mockKazaDegerlendir).not.toHaveBeenCalled();
+        expect(mockKerahatModalProplari[mockKerahatModalProplari.length - 1].gorunur).toBe(true);
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
     });
   });
 });

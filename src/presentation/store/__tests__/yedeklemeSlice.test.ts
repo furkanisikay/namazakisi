@@ -128,6 +128,7 @@ jest.mock('../seriSlice', () => ({
 }));
 jest.mock('../kazaSlice', () => ({
   kazaVerileriniYukle: jest.fn(() => ({ type: 'kaza/yukle' })),
+  kazaOneriAyarlariniYukle: jest.fn(() => ({ type: 'kaza/oneriYukle' })),
 }));
 jest.mock('../ozelliklerSlice', () => ({
   ozellikleriYukle: jest.fn(() => ({ type: 'ozellikler/yukle' })),

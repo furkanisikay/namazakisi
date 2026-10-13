@@ -270,6 +270,19 @@ describe('YedekBirlestirmeServisi — "camide kılacağım" ayarı geri yükleni
   });
 });
 
+describe('YedekBirlestirmeServisi — kaza önerisi ayarı geri yüklenir (issue #294)', () => {
+  it('uzerineYaz: gelen kazaOneri alt-ayarı KAZA_ONERI_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, kazaOneri: { farzSonrasiOner: false } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI]).toEqual({ farzSonrasiOner: false });
+    // Sorulma hafızası cihaza özgüdür, yedekten asla yazılmaz.
+    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_ONERI_KAYDI]).toBeUndefined();
+  });
+});
+
 describe('YedekBirlestirmeServisi — SON_DISA_AKTARMA yedeğe girmez (bilinçli)', () => {
   it('uzerineYaz stratejisinde bile SON_DISA_AKTARMA anahtarı plana eklenmez', () => {
     const mevcut = payloadKur({});

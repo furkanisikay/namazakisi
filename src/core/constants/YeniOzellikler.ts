@@ -40,6 +40,25 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // "Her farzla bir kaza" önerisi (issue #294).
+    {
+        id: 'her-farzla-bir-kaza',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Her Farzla Bir Kaza',
+        aciklama:
+            'Kaza borcunuz varsa, ana ekranda bir farzı kıldım olarak işaretlediğinizde bir kaza kılmanızı öneririz; tek dokunuşla defterinizden düşebilirsiniz.',
+        detayAciklama:
+            'Yeni bir hatırlatma yerine zaten kıldığınız farza bağlanan küçük bir öneridir: öğleyi işaretlediğinizde bir öğle kazası, o vaktin borcu yoksa en çok borcunuz olan kaza önerilir. "Şimdi değil" derseniz o gün bir daha sorulmaz. Kaza Defteri\'ndeki "Her farzla bir kaza" anahtarıyla kapatabilirsiniz.',
+        ikon: 'book',
+        kartGoster: false,
+        detaylar: [
+            'Yalnız o anki vaktin farzını işaretlediğinizde sorulur',
+            'Kerahat vaktinde sorulmaz',
+            'Kaza defteriniz boşsa hiç sorulmaz',
+            'Aynı vakit için günde en fazla bir kez sorulur',
+        ],
+    },
     // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
     {
         id: 'camide-kilacagim',
