@@ -204,6 +204,23 @@ function fikstürMatrisi(): MuhafizMatrisi {
     return matris;
 }
 
+/**
+ * `data` icindeki MUTLAK zaman alanlari (Ertele, issue #289: `cikisMs`,
+ * `erteleSinirMs`) da "cikisa kalan dakika"ya cevrilir — yoksa snapshot her
+ * kosuda degisirdi.
+ */
+function veriyiNormalize(data: Record<string, unknown> | undefined, cikisMs: number) {
+    if (!data) return data;
+    const cikti: Record<string, unknown> = {};
+    for (const [anahtar, deger] of Object.entries(data)) {
+        cikti[anahtar] =
+            anahtar.endsWith('Ms') && typeof deger === 'number'
+                ? `${Math.round((cikisMs - deger) / 60000)} dk kala`
+                : deger;
+    }
+    return cikti;
+}
+
 /** `scheduleNotificationAsync` cagrilarini zamandan arindirilmis hale getir. */
 function bildirimKayitlari(cikisMs: number) {
     const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -219,7 +236,7 @@ function bildirimKayitlari(cikisMs: number) {
                 titresim: girdi.content.vibrate ?? null,
                 oncelik: girdi.content.priority,
                 kategori: girdi.content.categoryIdentifier,
-                data: girdi.content.data,
+                data: veriyiNormalize(girdi.content.data, cikisMs),
                 tetikTipi: tetik.type,
                 kanalId: tetik.channelId ?? null,
             };

@@ -226,7 +226,7 @@ describe('IosMuhafizTeslimcisi', () => {
 
     test('butce olcumu MUHAFIZ bildirimlerini saymaz (kendi yerimizi isgal etmeyiz)', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
-            ...Array.from({ length: 50 }, (_, i) => ({ identifier: `muhafiz_eski_${i}` })),
+            ...Array.from({ length: 50 }, (_, i) => ({ identifier: `muhafiz_2026-01-01_vakit_ogle_seviye_1_dk_${i}` })),
             { identifier: 'vakit_1' },
         ]);
         const yeni = new IosMuhafizTeslimcisi();
@@ -237,6 +237,20 @@ describe('IosMuhafizTeslimcisi', () => {
             await yeni.uyariPlanla(teslimKur({ kalanDk: i + 1 }));
         }
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(10);
+    });
+
+    test('ayni `muhafiz_` uzayindaki ERTELEME ve YATIS bildirimleri muhafiz disi sayilir (#289/#290)', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-0${(i % 9) + 1}_vakit_yatsi_yatis` })),
+            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-0${(i % 9) + 1}_vakit_ogle_ertele` })),
+        ]);
+        const yeni = new IosMuhafizTeslimcisi();
+        await yeni.hazirla();
+        // 56 muhafiz disi → slot 4 (64 − 56 − 4 guvenlik payi).
+        for (let i = 0; i < 10; i++) {
+            await yeni.uyariPlanla(teslimKur({ kalanDk: i + 1 }));
+        }
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(4);
     });
 
     test('butce OLCULEMEZSE kisitlama uygulanmaz (plani biz kesmeyiz)', async () => {

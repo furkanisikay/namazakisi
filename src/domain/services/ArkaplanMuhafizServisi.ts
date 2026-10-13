@@ -25,6 +25,12 @@ import {
     vakitTeslimAdaylari,
 } from '../../core/muhafiz/muhafizTeslimPlani';
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
+import {
+    ertelemedeSusturulurMu,
+    ertelemeKimligiMi,
+    etkinErtelemeler,
+    muhafizPlanKimligiMi,
+} from '../../core/muhafiz/erteleme';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 
 /**
@@ -51,6 +57,8 @@ export interface ArkaplanMuhafizAyarlari {
 export class ArkaplanMuhafizServisi {
     private static instance: ArkaplanMuhafizServisi;
     private ayarlar: ArkaplanMuhafizAyarlari | null = null;
+    /** Bu turda korunan ertelemeler: `<tarih>_<vakit>` → hedef ms (issue #289). */
+    private ertelemeler: Record<string, number> = {};
 
     private constructor() { }
 
@@ -95,8 +103,10 @@ export class ArkaplanMuhafizServisi {
 
         Logger.info('ArkaplanMuhafiz', `Muhafiz yapilandiriliyor (aktif: ${ayarlar.aktif})`);
 
-        // Once tum eski muhafiz bildirimlerini temizle
-        await this.tumMuhafizBildirimleriniTemizle();
+        // Once tum eski muhafiz bildirimlerini temizle. Kullanicinin ERTELEMESI
+        // (issue #289) muhafiz acikken korunur ve bu turun plani onun susturdugu
+        // araliga uyari kurmaz; muhafiz kapatildiysa erteleme de gider.
+        this.ertelemeler = await this.tumMuhafizBildirimleriniTemizle({ ertelemeyiKoru: ayarlar.aktif });
 
         // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
         // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
@@ -174,7 +184,13 @@ export class ArkaplanMuhafizServisi {
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
 
-        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date());
+        // Ertelenen vakitte (issue #289) hedef ana kadarki uyarilar KURULMAZ —
+        // erteleme "o zamana kadar sus" demektir; 15 dk gorevi / acilis onlari
+        // geri getirmemeli. Ertelenen kopya hedef aninda kendisi gelir.
+        const ertelemeHedefi = this.ertelemeler[`${vakit.tarih}_${vakit.vakit}`];
+        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date()).filter(
+            (a) => ertelemeHedefi === undefined || !ertelemedeSusturulurMu(a.zaman.getTime(), ertelemeHedefi)
+        );
         for (const aday of adaylar) {
             const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;
@@ -198,6 +214,7 @@ export class ArkaplanMuhafizServisi {
                 muhafizVakti: aday.muhafizVakti,
                 tarih: vakit.tarih,
                 yon,
+                cikis: vakit.cikis,
             });
         }
 
@@ -274,21 +291,32 @@ export class ArkaplanMuhafizServisi {
      * gorunmezler) -> native tarafin kendi kayit defterinden topluca iptal edilir.
      * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
-    public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
+    public async tumMuhafizBildirimleriniTemizle(
+        secenek: { ertelemeyiKoru?: boolean } = {}
+    ): Promise<Record<string, number>> {
         muhafizTeslimcisiniAl().tumYanKanallariIptalEt();
 
         try {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
+            const korunan = secenek.ertelemeyiKoru ? etkinErtelemeler(tumBildirimler) : {};
 
             for (const bildirim of tumBildirimler) {
-                if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
-                    await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
+                const id = bildirim.identifier;
+                // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
+                // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir;
+                // erteleme ancak muhafiz kapatilinca gider.
+                const temizlenir =
+                    muhafizPlanKimligiMi(id) || (!secenek.ertelemeyiKoru && ertelemeKimligiMi(id));
+                if (temizlenir) {
+                    await Notifications.cancelScheduledNotificationAsync(id);
                 }
             }
 
             Logger.info('ArkaplanMuhafiz', 'Tum muhafiz bildirimleri temizlendi');
+            return korunan;
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', 'Bildirimler temizlenirken hata:', error);
+            return {};
         }
     }
 

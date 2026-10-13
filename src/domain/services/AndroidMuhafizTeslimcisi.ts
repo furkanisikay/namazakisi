@@ -24,6 +24,7 @@ import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { muhafizKanaliSec, titresimGerekliMi } from '../../core/muhafiz/motorAdaptoru';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { ertelemeTeslimBilgisi } from '../../core/muhafiz/erteleme';
 import {
     planlaAnons,
     iptalEtAnons,
@@ -149,6 +150,18 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
             if (!this.alarmPayiAl()) return;
 
             const titresimli = titresimGerekliMi(uyari.kanallar);
+            const kanalId = muhafizKanaliSec(
+                uyari.seviye,
+                uyari.bildirimSesi,
+                // Camideyken acil kanal (bypassDnd) kullanılmaz: Namaz modu delinmesin.
+                this.camideMi(zaman) ? false : uyari.acilKanal,
+                titresimli
+            );
+            // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden; native basış
+            // yolu (`BildirimErteleIsleyici`) sınırı ve kanalı `data`dan okur.
+            const ertele = teslim.cikis
+                ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
+                : null;
 
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
@@ -164,7 +177,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     priority: uyari.seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
-                    categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
+                    categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
                     data: {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
@@ -175,6 +188,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,
+                        ...(ertele ? { ...ertele.veri, kanalId } : {}),
                     },
                 },
                 trigger: {
@@ -184,13 +198,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     // hucrenin (ses + titresim) seciminden TURETILIR
                     // (`muhafizKanaliSec`). Aciliyet ayri alandan (`acilKanal`)
                     // gelir; ses artik onem tasimaz.
-                    channelId: muhafizKanaliSec(
-                        uyari.seviye,
-                        uyari.bildirimSesi,
-                        // Camideyken acil kanal (bypassDnd) kullanılmaz: Namaz modu delinmesin.
-                        this.camideMi(zaman) ? false : uyari.acilKanal,
-                        titresimli
-                    ),
+                    channelId: kanalId,
                 },
             });
 

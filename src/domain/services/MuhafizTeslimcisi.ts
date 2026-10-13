@@ -55,6 +55,12 @@ export interface UyariTeslimi {
     muhafizVakti: MuhafizVakti;
     tarih: string;
     yon: PencereYonu;
+    /**
+     * Vaktin cikisi — "Ertele" (issue #289) ust siniri ve ertelenen kopyanin
+     * basligi buradan turer. Verilmezse bildirim ertele dugmesi TASIMAZ
+     * (tarihsel davranis; eski el yapimi teslimler/testler).
+     */
+    cikis?: Date;
 }
 
 export interface MuhafizTeslimcisi {
