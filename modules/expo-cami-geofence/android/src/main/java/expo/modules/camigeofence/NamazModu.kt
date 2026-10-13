@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.Condition
 import android.util.Log
+import expo.modules.camigeofence.cekirdek.ModKaynagi
 import org.json.JSONObject
 
 /**
@@ -27,7 +28,10 @@ import org.json.JSONObject
  * hiçbir şey çökmez, "erisimYok" döner ve ekran rehber gösterir.
  *
  * KAYNAKLAR: mod birden çok sebeple açık olabilir (camide + cuma hutbesi). Her
- * kaynak kendi "tur" kimliğiyle kaydolur; hepsi kapanınca mod kapanır.
+ * kaynak kendi "tur" kimliği VE BİTİŞ ANIYLA kaydolur; hepsi kapanınca mod kapanır.
+ * SÜRESİZ KAYNAK YOKTUR: üst süre alarmı silinse bile (force-stop, OEM uyku
+ * kısıtı) süresi geçen kaynak her değerlendirmede düşer ([suresiGecenleriTemizle],
+ * `ModKaynagi`) — mod açık kaldıkça kullanıcı arama kaçırır.
  * KULLANICI ELLE KAPATTIYSA o turda yeniden AÇILMAZ (Fable kararı): API 35+'da
  * `ACTION_AUTOMATIC_ZEN_RULE_STATUS_CHANGED` (DEACTIVATED) ile, daha eskide bir
  * sonraki açma denemesinde "biz açtık ama sistemde kapalı" farkıyla anlaşılır.
@@ -153,26 +157,68 @@ object NamazModu {
         prefs(ctx).edit().putString(KAPATILAN, l.takeLast(AZAMI_KAPATILAN).joinToString("\n")).apply()
     }
 
-    fun aktifMi(ctx: Context): Boolean = kaynaklar(ctx).length() > 0
+    /** Kaynak kaydının tur kimliği (eski biçim: düz dize). */
+    private fun turAl(k: JSONObject, ad: String): String =
+        k.optJSONObject(ad)?.optString("tur", "") ?: k.optString(ad, "")
+
+    /** Kaynak kaydının bitiş anı; eski biçimde (düz dize) YOK → geçersiz sayılır. */
+    private fun bitisAl(k: JSONObject, ad: String): Long? =
+        k.optJSONObject(ad)?.optLong("bitisMs", 0L)?.takeIf { it > 0 }
+
+    private fun turlar(k: JSONObject): List<String> = k.keys().asSequence().map { turAl(k, it) }.toList()
+
+    /**
+     * Süresi geçmiş kaynakları düşürür; kaynak kalmadıysa ve modu biz açtıysak
+     * sistemde de kapatır. Her okuma/açma yolunun başında, modül oluşturulurken ve
+     * 15 dk'lık görevde çağrılır: Rahatsız Etmeyin hiçbir yolda kaynağın üst
+     * süresinden uzun açık kalmaz.
+     */
+    @Synchronized
+    fun suresiGecenleriTemizle(ctx: Context) {
+        val k = kaynaklar(ctx)
+        val simdi = System.currentTimeMillis()
+        val bitisler = k.keys().asSequence().toList().associateWith { bitisAl(k, it) }
+        val dusen = ModKaynagi.suresiGecenler(simdi, bitisler)
+        if (dusen.isNotEmpty()) {
+            dusen.forEach { k.remove(it) }
+            kaynaklariYaz(ctx, k)
+            CamiGunluk.ekle(ctx, "modSuresiDoldu", mapOf("kaynak" to dusen.joinToString(",")))
+        }
+        // Kaynak yok ama sistemde hâlâ bizim açtığımız mod duruyorsa (önceki kapatma
+        // denemesi başarısız olmuş olabilir) yeniden kapatmayı dene.
+        if (k.length() == 0 && prefs(ctx).getBoolean(BIZ_ACTIK, false)) sistemeUygula(ctx, false)
+    }
+
+    @Synchronized
+    fun aktifMi(ctx: Context): Boolean {
+        suresiGecenleriTemizle(ctx)
+        return kaynaklar(ctx).length() > 0
+    }
 
     /** Etkin kaynakların tur kimlikleri (JS "kıldım" kontrolü için). */
+    @Synchronized
     fun aktifTurlar(ctx: Context): List<String> {
-        val k = kaynaklar(ctx)
-        return k.keys().asSequence().map { k.optString(it) }.toList()
+        suresiGecenleriTemizle(ctx)
+        return turlar(kaynaklar(ctx))
     }
 
     /**
-     * [kaynak] ("cami" | "plan") [tur] için modu açar.
+     * [kaynak] ("cami" | "plan") [tur] için modu [bitisMs]'ye kadar açar
+     * (`ModKaynagi.AZAMI_SURE_MS` tavanıyla). Bitişi geçmiş istek modu açmaz.
      * @return "acildi" | "kapali" | "kullaniciKapatti" | "erisimYok" | "hata"
      */
     @Synchronized
-    fun ac(ctx: Context, kaynak: String, tur: String): String {
+    fun ac(ctx: Context, kaynak: String, tur: String, bitisMs: Long): String {
+        suresiGecenleriTemizle(ctx)
         if (!ayarlar(ctx).etkin) return "kapali"
+        val simdi = System.currentTimeMillis()
+        val bitis = ModKaynagi.bitisHesapla(simdi, bitisMs)
+        if (!ModKaynagi.gecerliMi(simdi, bitis)) return "kapali"
         kullaniciKapatmasiniYakala(ctx)
         if (tur in kapatilanlar(ctx)) return "kullaniciKapatti"
         val kural = kuraliGarantile(ctx)
         if (kural != "tamam") return kural
-        val k = kaynaklar(ctx).put(kaynak, tur)
+        val k = kaynaklar(ctx).put(kaynak, JSONObject().put("tur", tur).put("bitisMs", bitis))
         kaynaklariYaz(ctx, k)
         return if (sistemeUygula(ctx, true)) "acildi" else "hata"
     }
@@ -190,7 +236,7 @@ object NamazModu {
     @Synchronized
     fun tumunuKapat(ctx: Context, kullanici: Boolean) {
         val k = kaynaklar(ctx)
-        if (kullanici) kapatilanEkle(ctx, k.keys().asSequence().map { k.optString(it) }.toList())
+        if (kullanici) kapatilanEkle(ctx, turlar(k))
         kaynaklariYaz(ctx, JSONObject())
         if (prefs(ctx).getBoolean(BIZ_ACTIK, false)) sistemeUygula(ctx, false)
     }
@@ -198,8 +244,7 @@ object NamazModu {
     /** Kullanıcı modu sistemden kapattı (API 35+ yayını ya da elle). */
     @Synchronized
     fun kullaniciKapatti(ctx: Context) {
-        val k = kaynaklar(ctx)
-        kapatilanEkle(ctx, k.keys().asSequence().map { k.optString(it) }.toList())
+        kapatilanEkle(ctx, turlar(kaynaklar(ctx)))
         kaynaklariYaz(ctx, JSONObject())
         prefs(ctx).edit().putBoolean(BIZ_ACTIK, false).apply()
         CamiGunluk.ekle(ctx, "modElleKapatildi")

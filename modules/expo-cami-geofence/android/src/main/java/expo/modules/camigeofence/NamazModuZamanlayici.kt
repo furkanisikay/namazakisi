@@ -44,9 +44,12 @@ object NamazModuZamanlayici {
         val p = plan(ctx)
         val aktif = p.filter { simdi >= it.bas && simdi < it.son }.maxByOrNull { it.bas }
         if (aktif != null && NamazModu.ayarlar(ctx).etkin) {
-            NamazModu.ac(ctx, KAYNAK, aktif.tur)
+            // Bitiş = pencerenin sonu: zincir alarmı silinse bile (force-stop, OEM
+            // uyku kısıtı) kaynak `son`'da kendiliğinden geçersizleşir.
+            NamazModu.ac(ctx, KAYNAK, aktif.tur, aktif.son)
         } else {
             NamazModu.kapat(ctx, KAYNAK)
+            NamazModu.suresiGecenleriTemizle(ctx)
         }
         val pi = PlanliAlarm.pendingIntent(ctx, NamazModuAlicisi::class.java, ACTION_PLAN, ISTEK_KODU)
         val sonraki = p.flatMap { listOf(it.bas, it.son) }.filter { it > simdi }.minOrNull()

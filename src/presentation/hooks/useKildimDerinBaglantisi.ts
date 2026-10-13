@@ -3,15 +3,21 @@
  * kılındı olarak işaretler ve kısa bir mesaj gösterir. Yalnız İŞARETLER — geri
  * alma uygulamada. Uygulama soğuk açılışta bağlantıyla geldiyse de çalışır.
  *
- * Android kısayolu bu yolu KULLANMAZ (uygulamayı açmadan native işaretler); bu
- * hook iOS ve elle açılan bağlantı içindir.
+ * ONAY ŞART: bağlantıyı cihazdaki HERHANGİ bir uygulama ya da bir web sayfası
+ * açabilir ve JS kaynağını ayırt edemez → işaretleme sessizce YAPILMAZ; kullanıcı
+ * uygulama içindeki onay penceresinde "Kıldım" demelidir. İşaretlenecek bir şey
+ * yoksa (zaten kılınmış, vakit yok, konum yok) yalnız bilgi verilir.
+ *
+ * Android kısayolu bu yolu KULLANMAZ (uygulamayı açmadan native işaretler, kaynağı
+ * kendisi doğrular — `KildimKisayolActivity`); bu hook iOS ve elle açılan bağlantı içindir.
  */
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Linking } from 'react-native';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { kildimBaglantisiMi } from '../../navigation/derinBaglantilar';
 import {
     KildimKuyruguServisi,
+    type KildimAdayi,
     type SimdikiVakitSonucu,
 } from '../../domain/services/KildimKuyruguServisi';
 import { Logger } from '../../core/utils/Logger';
@@ -37,26 +43,65 @@ export function kildimSonucMetni(sonuc: SimdikiVakitSonucu): string {
                 : 'Şu an kılınacak vakit yok.';
         case 'konumYok':
             return 'Vakitleri hesaplayabilmek için önce konumunuzu ayarlayın.';
+        case 'vakitDegisti':
+            return 'Vakit değişti, işaretleme yapılmadı. Lütfen yeniden deneyin.';
     }
 }
 
-const isle = (url: string | null): void => {
-    if (!kildimBaglantisiMi(url)) return;
-    KildimKuyruguServisi.getInstance()
-        .simdikiVaktiKildim()
-        .then((sonuc) => kisaBildirimGoster(kildimSonucMetni(sonuc)))
-        .catch((e) => {
-            Logger.warn('KildimDerinBaglanti', 'Derin baglantidan isaretleme basarisiz', e);
-            kisaBildirimGoster('İşaretleme yapılamadı. Lütfen uygulamadan işaretleyin.');
-        });
-};
+/** Onay penceresi metni (kibar "siz"). */
+export const kildimOnayBasligi = (aday: KildimAdayi): string =>
+    `${aday.vakitAdi} namazı kılındı olarak işaretlensin mi?`;
+export const KILDIM_ONAY_MESAJI = 'Bu istek bir bağlantı üzerinden geldi. Namazınızı kıldıysanız onaylayın.';
+
+const HATA_METNI = 'İşaretleme yapılamadı. Lütfen uygulamadan işaretleyin.';
+
+export interface KildimDerinBaglantiOnayi {
+    /** Onay bekleyen vakit; yoksa null (pencere kapalı). */
+    onayAdayi: KildimAdayi | null;
+    /** "Kıldım": adayı (yeniden doğrulayarak) işaretler. */
+    onayla: () => void;
+    /** "Vazgeç" / geri tuşu: hiçbir şey yazılmaz. */
+    vazgec: () => void;
+}
 
 /** @param etkin Kurulum sihirbazı sürerken bağlantı yok sayılır. */
-export function useKildimDerinBaglantisi(etkin: boolean): void {
+export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOnayi {
+    const [onayAdayi, setOnayAdayi] = useState<KildimAdayi | null>(null);
+
     useEffect(() => {
         if (!etkin) return;
+        const isle = (url: string | null): void => {
+            if (!kildimBaglantisiMi(url)) return;
+            KildimKuyruguServisi.getInstance()
+                .simdikiVaktiDegerlendir()
+                .then((d) => {
+                    if (d.tur === 'aday') setOnayAdayi(d);
+                    else kisaBildirimGoster(kildimSonucMetni(d));
+                })
+                .catch((e) => {
+                    Logger.warn('KildimDerinBaglanti', 'Derin baglanti degerlendirilemedi', e);
+                    kisaBildirimGoster(HATA_METNI);
+                });
+        };
         Linking.getInitialURL().then(isle).catch(() => undefined);
         const abonelik = Linking.addEventListener('url', ({ url }) => isle(url));
         return () => abonelik.remove();
     }, [etkin]);
+
+    const onayla = useCallback(() => {
+        const aday = onayAdayi;
+        setOnayAdayi(null);
+        if (!aday) return;
+        KildimKuyruguServisi.getInstance()
+            .adayiIsaretle(aday)
+            .then((sonuc) => kisaBildirimGoster(kildimSonucMetni(sonuc)))
+            .catch((e) => {
+                Logger.warn('KildimDerinBaglanti', 'Derin baglantidan isaretleme basarisiz', e);
+                kisaBildirimGoster(HATA_METNI);
+            });
+    }, [onayAdayi]);
+
+    const vazgec = useCallback(() => setOnayAdayi(null), []);
+
+    return { onayAdayi, onayla, vazgec };
 }

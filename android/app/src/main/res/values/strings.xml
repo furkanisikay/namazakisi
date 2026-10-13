@@ -13,6 +13,11 @@
   <string name="kisayol_kible_uzun">Kıble yönünü gösterin</string>
   <string name="kisayol_kaza_kisa">Kaza defteri</string>
   <string name="kisayol_kaza_uzun">Kaza defterini açın</string>
+  <!-- Kısayol ana ekran DIŞINDAN (otomasyon, başka uygulama) çağrıldığında onay. -->
+  <string name="kildim_onay_baslik">%1$s namazı kılındı olarak işaretlensin mi?</string>
+  <string name="kildim_onay_mesaj">Bu istek ana ekran dışından geldi. Namazınızı kıldıysanız onaylayın.</string>
+  <string name="kildim_onay_evet">Kıldım</string>
+  <string name="kildim_onay_vazgec">Vazgeç</string>
 
   <!-- Widget yapılandırma ekranı (issue #275) -->
   <string name="widget_ayar_baslik">Widget\'ı özelleştirin</string>

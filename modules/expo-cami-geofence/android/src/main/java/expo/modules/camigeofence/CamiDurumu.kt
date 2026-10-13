@@ -3,7 +3,11 @@ package expo.modules.camigeofence
 import android.content.Context
 import expo.modules.camigeofence.cekirdek.CamiKarar
 import expo.modules.camigeofence.cekirdek.CamiKarari
+import expo.modules.camigeofence.cekirdek.IzlemeKarari
 import expo.modules.camigeofence.cekirdek.IzlenenYer
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * "Camidesiniz" hâlinin giriş/çıkışı.
@@ -23,12 +27,15 @@ object CamiDurumu {
     private fun ustSureIntent(ctx: Context) =
         PlanliAlarm.pendingIntent(ctx, CamiGeofenceAlicisi::class.java, ACTION_UST_SURE, ISTEK_KODU)
 
+    @Synchronized
     fun giris(ctx: Context, yer: IzlenenYer, karar: CamiKarari) {
         val ayarlar = CamiDepo.ayarlar(ctx)
         val simdi = System.currentTimeMillis()
         val cuma = karar.cuma == true
-        val tur = "cami:${karar.tarih ?: "?"}_${karar.vakit ?: "serbest"}"
-        val modSonucu = if (ayarlar.namazModu) NamazModu.ac(ctx, KAYNAK, tur) else "kapali"
+        val bitisMs = CamiKarar.camideBitisMs(simdi, cuma)
+        val tur = IzlemeKarari.camiTuru(karar.tarih, karar.vakit, takvimGunu(simdi), yer.id)
+        // Mod kaynağı üst süreyle AYNI anda geçersizleşir (alarm silinse bile).
+        val modSonucu = if (ayarlar.namazModu) NamazModu.ac(ctx, KAYNAK, tur, bitisMs) else "kapali"
         val c = CamiDepo.Camide(
             yerId = yer.id,
             ad = yer.ad,
@@ -36,7 +43,7 @@ object CamiDurumu {
             tarih = karar.tarih,
             cuma = cuma,
             girisMs = simdi,
-            bitisMs = CamiKarar.camideBitisMs(simdi, cuma),
+            bitisMs = bitisMs,
             modAcildi = modSonucu == "acildi",
         )
         CamiDepo.camideYaz(ctx, c, ayarlar.sessiz)
@@ -47,6 +54,7 @@ object CamiDurumu {
     }
 
     /** @param sebep "cikis" | "sure" | "haric" | "kapatildi" */
+    @Synchronized
     fun bitir(ctx: Context, sebep: String) {
         val c = CamiDepo.camide(ctx) ?: return
         val ayarlar = CamiDepo.ayarlar(ctx)
@@ -62,9 +70,25 @@ object CamiDurumu {
         CamiOlaylari.yay("cikis")
     }
 
-    /** Yeniden başlatma: üst süre geçtiyse kapat, değilse alarmı geri kur. */
+    /**
+     * Tutarlılık denetimi: üst süre geçtiyse camide hâlini bitir, değilse alarmı
+     * geri kur; ardından süresi geçmiş Namaz modu kaynaklarını düşür.
+     *
+     * Yalnız BOOT/MY_PACKAGE_REPLACED'da çağrılsaydı force-stop ya da OEM uyku
+     * kısıtı üst süre alarmını sildiğinde "cami" kaynağı ve Rahatsız Etmeyin
+     * KALICI açık kalırdı (kullanıcı arama kaçırır). Bu yüzden modül oluşturulurken,
+     * `durumAl` / `izlemeyiTazele` başında ve 15 dk'lık görevde de çağrılır.
+     * İdempotent ve ucuzdur (SharedPreferences + tek alarm).
+     */
+    @Synchronized
     fun yenidenKur(ctx: Context) {
-        val c = CamiDepo.camide(ctx) ?: return
-        if (c.bitisMs <= System.currentTimeMillis()) bitir(ctx, "sure") else PlanliAlarm.kur(ctx, c.bitisMs, ustSureIntent(ctx))
+        val c = CamiDepo.camide(ctx)
+        if (c != null) {
+            if (c.bitisMs <= System.currentTimeMillis()) bitir(ctx, "sure") else PlanliAlarm.kur(ctx, c.bitisMs, ustSureIntent(ctx))
+        }
+        NamazModu.suresiGecenleriTemizle(ctx)
     }
+
+    /** Cihaz saat dilimindeki takvim günü (`yyyy-MM-dd`) — vakit kapısı kapalıyken tur kimliği için. */
+    private fun takvimGunu(ms: Long): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(ms))
 }

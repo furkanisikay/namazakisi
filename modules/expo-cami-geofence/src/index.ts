@@ -88,6 +88,7 @@ interface CamiNativeModulu {
     ayarlariYaz(json: string, lat: number | null, lng: number | null): Promise<string>;
     pencereleriYaz(json: string): Promise<void>;
     izlemeyiTazele(lat: number, lng: number): Promise<string>;
+    suresiGecenleriTemizle?(): Promise<void>;
     yakinCamiler(lat: number, lng: number, k: number): Promise<string>;
     gunlukAl(): Promise<string>;
     gunluguTemizle(): Promise<void>;
@@ -154,8 +155,21 @@ export const ayarlariYaz = (ayarlar: object, merkez: { lat: number; lng: number 
 export const pencereleriYaz = (pencereler: readonly object[]): Promise<void> =>
     guvenli((m) => m.pencereleriYaz(JSON.stringify(pencereler)), undefined);
 
+/**
+ * Merkez native'de BAYAT sayılır: canlı taze merkezi ezmez, değişiklik yoksa kayda dokunmaz.
+ * @returns 'kuruldu' | 'degismedi' | 'kapali' | 'izinYok' | 'hata' | 'yok'
+ */
 export const izlemeyiTazele = (lat: number, lng: number): Promise<string> =>
     guvenli((m) => m.izlemeyiTazele(lat, lng), 'yok');
+
+/**
+ * Süresi geçmiş camide hâlini ve Namaz modu kaynaklarını düşürür (Rahatsız Etmeyin
+ * üst süreden uzun açık kalmasın — üst süre alarmı OEM kısıtıyla silinmiş olabilir).
+ */
+export const suresiGecenleriTemizle = (): Promise<void> =>
+    guvenli(async (m) => {
+        await m.suresiGecenleriTemizle?.();
+    }, undefined);
 
 export const yakinCamiler = (lat: number, lng: number, k: number): Promise<YakinCami[]> =>
     guvenli(async (m) => jsonCoz<YakinCami[]>(await m.yakinCamiler(lat, lng, k), []), []);

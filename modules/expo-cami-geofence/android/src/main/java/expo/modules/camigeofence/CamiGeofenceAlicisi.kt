@@ -9,6 +9,7 @@ import android.util.Log
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import expo.modules.camigeofence.cekirdek.CamiKarar
+import expo.modules.camigeofence.cekirdek.IzlemeKipi
 import expo.modules.camigeofence.cekirdek.OlculenKonum
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -132,9 +133,12 @@ class CamiGeofenceAlicisi : BroadcastReceiver() {
                     val karar = CamiKarar.yenilemeKarari(System.currentTimeMillis(), onceki?.takeIf { it > 0 }, konum?.time)
                     CamiGunluk.ekle(ctx, "yenileme", mapOf("sonuc" to karar))
                     if (karar == "yenile" && konum != null) {
-                        CamiIzleyici.kur(ctx, konum.latitude, konum.longitude, tazeMerkez = true) { kapat() }
+                        CamiIzleyici.kur(ctx, konum.latitude, konum.longitude, IzlemeKipi.OLAY) { kapat() }
                     } else {
                         // Bayat konumla ASLA yeniden kayıt yapılmaz: 15 dk'lık JS görevi onarır.
+                        // Çemberden çıkıldığı BİLİNİYOR → merkez artık "içerdesiniz" demez;
+                        // periyodik yol onu bayat koordinatla taşıyabilsin.
+                        CamiDepo.yenilemeBayatla(ctx)
                         kapat()
                     }
                 } catch (e: Exception) {

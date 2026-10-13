@@ -91,6 +91,12 @@ if (Platform.OS === 'android') {
     } catch {
         // Kayıt başarısızsa diğer boşaltma yolları kalır.
     }
+    // Namaz modu "Kıldım deyince kapansın" dinleyicisi HER JS bağlamında (headless
+    // dahil): uygulama kapalıyken bildirimden "Kıldım" işlenince mod da kapanmalı;
+    // App.tsx o bağlamda hiç yüklenmez. `baslat` idempotenttir (App.tsx de çağırır).
+    import('./src/domain/services/CamideyimServisi')
+        .then(({ CamideyimServisi }) => CamideyimServisi.getInstance().baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).

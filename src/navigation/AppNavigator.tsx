@@ -47,7 +47,12 @@ import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
 import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
-import { useKildimDerinBaglantisi } from '../presentation/hooks/useKildimDerinBaglantisi';
+import {
+  useKildimDerinBaglantisi,
+  kildimOnayBasligi,
+  KILDIM_ONAY_MESAJI,
+} from '../presentation/hooks/useKildimDerinBaglantisi';
+import { BildirimModali } from '../presentation/components/common/BildirimModali';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 
@@ -285,7 +290,8 @@ export const AppNavigator: React.FC = () => {
   }, []);
 
   // Kurulum sihirbazı sürerken derin bağlantı sihirbazı atlatmasın (issue #276).
-  useKildimDerinBaglantisi(ilkKurulum === false);
+  // Bağlantı dışarıdan gelebilir → işaretleme yalnız onay penceresinden.
+  const kildimOnayi = useKildimDerinBaglantisi(ilkKurulum === false);
 
   if (ilkKurulum === null) {
     return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
@@ -306,6 +312,17 @@ export const AppNavigator: React.FC = () => {
       <ErrorBoundary name="GuncellemeBoundary">
         <GuncellemeBildirimi />
       </ErrorBoundary>
+      <BildirimModali
+        gorunur={kildimOnayi.onayAdayi != null}
+        tip="bilgi"
+        baslik={kildimOnayi.onayAdayi ? kildimOnayBasligi(kildimOnayi.onayAdayi) : ''}
+        mesaj={KILDIM_ONAY_MESAJI}
+        birincilEtiket="Kıldım"
+        birincilIkon="check"
+        onBirincil={kildimOnayi.onayla}
+        onKapat={kildimOnayi.vazgec}
+        kapatEtiketi="Vazgeç"
+      />
     </NavigationContainer>
   );
 };

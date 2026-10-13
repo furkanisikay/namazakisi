@@ -14,6 +14,9 @@ import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import expo.modules.camigeofence.cekirdek.CamiKarar
 import expo.modules.camigeofence.cekirdek.CamiSabitleri
+import expo.modules.camigeofence.cekirdek.IzlemeKarari
+import expo.modules.camigeofence.cekirdek.IzlemeKipi
+import expo.modules.camigeofence.cekirdek.YenilemeMerkezi
 
 /**
  * Geofence kaydı — kendi `PendingIntent`/`BroadcastReceiver`'ımızla.
@@ -34,6 +37,10 @@ import expo.modules.camigeofence.cekirdek.CamiSabitleri
  *     taşındıysa hemen fark edilsin. EXIT yolunda yalnız TAZE konuma yeniden
  *     merkezlenir (`CamiKarar.yenilemeKarari`); taze konum yoksa hiç kayıt
  *     yapılmaz → döngü kurulamaz.
+ *
+ * 15 dk'lık görev (PERİYODİK) bayat şehir koordinatı gönderir: kayıt canlıyken
+ * taze merkezi EZMEZ, değişiklik yoksa hiç dokunmaz, kurarsa başlangıç DWELL'i
+ * vermez (`IzlemeKarari`).
  */
 object CamiIzleyici {
     const val ACTION_GEOFENCE = "expo.modules.camigeofence.GEOFENCE"
@@ -64,12 +71,36 @@ object CamiIzleyici {
     }
 
     /**
-     * İzlemeyi [lat],[lng] merkezine göre (yeniden) kurar.
-     * @param tazeMerkez merkez taze bir sabitleme mi (yalnız EXIT yolunda true)
-     * @param bitti "kuruldu" | "kapali" | "izinYok" | "hata" — tam bir kez
+     * Bizim geofence kaydımız hâlâ ayakta mı? Son kayıt başarılıydı VE PendingIntent
+     * yaşıyor (force-stop uygulamanın PendingIntent'lerini ve geofence'lerini siler,
+     * yeniden başlatma da öyle). Emin olunamayan durumda false → yeniden kurulur.
+     */
+    private fun kayitCanliMi(ctx: Context): Boolean {
+        if (!CamiDepo.kayitBasarili(ctx)) return false
+        val bayrak = PendingIntent.FLAG_NO_CREATE or
+            (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0)
+        return try {
+            PendingIntent.getBroadcast(
+                ctx,
+                ISTEK_KODU,
+                Intent(ctx, CamiGeofenceAlicisi::class.java).setAction(ACTION_GEOFENCE).setPackage(ctx.packageName),
+                bayrak,
+            ) != null
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    /**
+     * İzlemeyi [lat],[lng]'ye göre (yeniden) kurar. Merkezi ve "hiç dokunma"
+     * kararını SAF `IzlemeKarari` verir: kayıt canlıyken taze merkez bayat bir
+     * koordinatla ezilmez, PERİYODİK yolda değişiklik yoksa hiçbir şey yapılmaz ve
+     * başlangıç DWELL tetiği verilmez (yanında oturulan camide 15 dk'da bir DWELL).
+     * @param kip OLAY (taze GPS), KURULUM (ayar/boot/"cami değil"), PERIYODIK (15 dk / konum değişimi)
+     * @param bitti "kuruldu" | "degismedi" | "kapali" | "izinYok" | "hata" — tam bir kez
      */
     @SuppressLint("MissingPermission")
-    fun kur(ctx: Context, lat: Double, lng: Double, tazeMerkez: Boolean, bitti: (String) -> Unit = {}) {
+    fun kur(ctx: Context, lat: Double, lng: Double, kip: IzlemeKipi, bitti: (String) -> Unit = {}) {
         val ayarlar = CamiDepo.ayarlar(ctx)
         if (!ayarlar.aktif) {
             kaldir(ctx)
@@ -83,12 +114,27 @@ object CamiIzleyici {
             return
         }
         try {
+            val onceki = CamiDepo.yenileme(ctx)
+            val kayitCanli = kayitCanliMi(ctx)
+            val secim = IzlemeKarari.merkezSec(
+                onceki?.let { YenilemeMerkezi(it.lat, it.lng, it.yaricapM, it.taze) },
+                lat,
+                lng,
+                kip,
+                kayitCanli,
+            )
+            val mLat = secim.lat
+            val mLng = secim.lng
             val haricSayisi = ayarlar.yerler.values.count { it.durum == "haric" }
             val osm = CamiVeriKaynagi.al(ctx)
-                ?.enYakinlar(lat, lng, CamiSabitleri.IZLENEN_CAMI_SAYISI + haricSayisi)
+                ?.enYakinlar(mLat, mLng, CamiSabitleri.IZLENEN_CAMI_SAYISI + haricSayisi)
                 ?.map { it.kayit }
                 ?: emptyList()
-            val (izlenenler, kinci) = CamiKarar.izlenecekleriSec(lat, lng, osm, ayarlar.yerler)
+            val (izlenenler, kinci) = CamiKarar.izlenecekleriSec(mLat, mLng, osm, ayarlar.yerler)
+            if (IzlemeKarari.dokunmaMi(kip, kayitCanli, secim, IzlemeKarari.imza(CamiDepo.izlenenler(ctx)), IzlemeKarari.imza(izlenenler))) {
+                bitti("degismedi")
+                return
+            }
             val yaricap = CamiKarar.yenilemeYaricapiM(kinci)
             val bekleme = (ayarlar.beklemeDk * CamiSabitleri.DAKIKA_MS).toInt()
 
@@ -103,18 +149,19 @@ object CamiIzleyici {
             }
             val yenileme = Geofence.Builder()
                 .setRequestId(YENILEME_ID)
-                .setCircularRegion(lat, lng, yaricap.toFloat())
+                .setCircularRegion(mLat, mLng, yaricap.toFloat())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build()
 
-            val onceki = CamiDepo.yenileme(ctx)
+            val olay = kip == IzlemeKipi.OLAY
+            CamiDepo.kayitBasariliYaz(ctx, false)
             CamiDepo.izlenenleriYaz(ctx, izlenenler)
             CamiDepo.yenilemeYaz(
                 ctx,
                 // `sonMs` yalnız OLAYDAN merkezlemede ilerler: açılışta kurulan bayat
                 // merkezin anında gelen EXIT'i "çok sık" sayılıp yutulmasın.
-                CamiDepo.Yenileme(lat, lng, yaricap, if (tazeMerkez) System.currentTimeMillis() else (onceki?.sonMs ?: 0L)),
+                CamiDepo.Yenileme(mLat, mLng, yaricap, if (olay) System.currentTimeMillis() else (onceki?.sonMs ?: 0L), secim.taze),
             )
 
             val client = LocationServices.getGeofencingClient(ctx)
@@ -122,16 +169,22 @@ object CamiIzleyici {
             client.removeGeofences(pi).addOnCompleteListener {
                 try {
                     val camiIstegi = if (camiler.isEmpty()) null else GeofencingRequest.Builder()
-                        .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_DWELL)
+                        // Periyodik yolda başlangıç DWELL'i YOK: caminin yanında oturan
+                        // kullanıcıda her turda DWELL + hassas ölçüm doğardı.
+                        .setInitialTrigger(if (IzlemeKarari.camiBaslangicDwell(kip)) GeofencingRequest.INITIAL_TRIGGER_DWELL else 0)
                         .addGeofences(camiler)
                         .build()
                     val yenilemeIstegi = GeofencingRequest.Builder()
-                        .setInitialTrigger(if (tazeMerkez) 0 else GeofencingRequest.INITIAL_TRIGGER_EXIT)
+                        // Taze sabitlemede çemberin İÇİNDEYİZ → tetik yok (sıkı döngü
+                        // dersi). Diğer her yolda EXIT: içerideysek sessiz, dışarıdaysak
+                        // hemen fark edilir (korunan taze merkez için de güvenli).
+                        .setInitialTrigger(if (olay) 0 else GeofencingRequest.INITIAL_TRIGGER_EXIT)
                         .addGeofence(yenileme)
                         .build()
                     val sonraki = {
                         client.addGeofences(yenilemeIstegi, pi)
                             .addOnSuccessListener {
+                                CamiDepo.kayitBasariliYaz(ctx, true)
                                 CamiGunluk.ekle(ctx, "izlemeKuruldu", mapOf("sayi" to izlenenler.size, "yaricapM" to yaricap.toInt()))
                                 bitti("kuruldu")
                             }
@@ -157,6 +210,7 @@ object CamiIzleyici {
         // Geofence hataları SESSİZDİR (konum kapalı, GMS yok) → günlüğe yaz ki
         // "neden algılanmadı" ekranı söyleyebilsin.
         Log.w(ETIKET, "Geofence kurulamadi: ${e.message}")
+        CamiDepo.kayitBasariliYaz(ctx, false)
         CamiGunluk.ekle(ctx, "izlemeHatasi", mapOf("mesaj" to (e.message ?: "").take(120)))
         bitti("hata")
     }
@@ -168,6 +222,7 @@ object CamiIzleyici {
         } catch (_: Exception) {
             // GMS yoksa zaten kayıt da yoktur.
         }
+        CamiDepo.kayitBasariliYaz(ctx, false)
         CamiDepo.izlenenleriYaz(ctx, emptyList())
     }
 
@@ -178,6 +233,6 @@ object CamiIzleyici {
             bitti("merkezYok")
             return
         }
-        kur(ctx, y.lat, y.lng, tazeMerkez = false, bitti = bitti)
+        kur(ctx, y.lat, y.lng, IzlemeKipi.KURULUM, bitti)
     }
 }
