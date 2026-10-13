@@ -16,13 +16,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
   ],
   "bildirimler": [
     {
-      "baslik": "⏰ 25 dk · Akşam vakti",
+      "baslik": "Akşam · 25 dk kaldı ⏰",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz",
         "kanallar": {
           "bildirim": true,
@@ -45,13 +45,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "titresim": null,
     },
     {
-      "baslik": "⚠️ 15 dk · Akşam vakti daralıyor",
+      "baslik": "Akşam · 15 dk · vakit daralıyor ⚠️",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
@@ -83,13 +83,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "⚠️ 10 dk · Akşam vakti daralıyor",
+      "baslik": "Akşam · 10 dk · vakit daralıyor ⚠️",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
@@ -121,13 +121,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🔥 8 dk · Akşam vakti kaçıyor",
+      "baslik": "Akşam · 8 dk · vakit kaçıyor 🔥",
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
@@ -150,13 +150,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "titresim": null,
     },
     {
-      "baslik": "🔥 4 dk · Akşam vakti kaçıyor",
+      "baslik": "Akşam · 4 dk · vakit kaçıyor 🔥",
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
@@ -179,13 +179,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "titresim": null,
     },
     {
-      "baslik": "🚨 3 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 3 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
@@ -217,13 +217,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🚨 2 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 2 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
@@ -255,13 +255,13 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🚨 1 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 1 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
         "cikisMs": "0 dk kala",
         "erteleSinirMs": "3 dk kala",
-        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
         "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,

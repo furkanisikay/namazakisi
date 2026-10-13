@@ -1018,9 +1018,9 @@ describe('MuhafizAyarlariSayfasi', () => {
       // → 45, 25, 15, 10, 5, 3, 1 (kazanan seviye en küçük eşikli olan)
       expect(getByText('Vakit çıkmadan önce 7 hatırlatma alırsınız')).toBeTruthy();
       // basligiOlustur çıktısı — ilk adım nazik (seviye 1)
-      expect(getByText('⏰ 45 dk · İkindi vakti')).toBeTruthy();
+      expect(getByText('İkindi · 45 dk kaldı ⏰')).toBeTruthy();
       // son adım acil (seviye 4) — büyük harf haritası kullanılır
-      expect(getByText('🚨 1 dk · İKİNDİ VAKTİ ÇIKIYOR')).toBeTruthy();
+      expect(getByText('İKİNDİ · 1 dk · VAKİT ÇIKIYOR 🚨')).toBeTruthy();
     });
 
     it('sesli adımda çözülmüş anons metnini gösterir ve "Dinle" onu okutur', async () => {

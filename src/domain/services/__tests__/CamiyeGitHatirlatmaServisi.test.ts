@@ -78,7 +78,7 @@ describe('CamiyeGitHatirlatmaServisi', () => {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
             channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
         });
-        expect(p[0].content.title).toBe('Camiye yola çık');
+        expect(p[0].content.title).toBe('Öğle · ezana 10 dk · camiye yola çık');
         expect(p[0].content.body).toBe('Öğle namazına camide yetişmek için yola çık — ezana 10 dk.');
         expect(p[0].content.data).toEqual({ tip: 'camiye_git', vakit: 'ogle', tarih: '2026-10-13' });
     });

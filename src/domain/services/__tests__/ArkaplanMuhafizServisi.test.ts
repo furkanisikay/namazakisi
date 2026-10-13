@@ -235,7 +235,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         // Birlesen tek bildirim, cakisan en yuksek seviyeyi (seviye 4) tasimali
         const tekBildirim = scheduleCalllari[0][0];
         expect(tekBildirim.content.data.seviye).toBe(4);
-        expect(tekBildirim.content.title).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
+        expect(tekBildirim.content.title).toBe('AKŞAM · 10 dk · VAKİT ÇIKIYOR 🚨');
         // Cakisma 10. dakikada oldugu icin ID son-eki _dk_10 olmali
         expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(10);
         // Seviye 4 acil kanala baglanmali (ses/titresim ayarlari icin)
@@ -264,7 +264,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         expect(onDkBildirimleri.length).toBe(1);
         // Ve bu bildirim cakismada kazanan en yuksek seviyeyi (4) tasimali
         expect(onDkBildirimleri[0].content.data.seviye).toBe(4);
-        expect(onDkBildirimleri[0].content.title).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
+        expect(onDkBildirimleri[0].content.title).toBe('AKŞAM · 10 dk · VAKİT ÇIKIYOR 🚨');
     });
 
     test('Farklı dakikalara düşen bildirimler ayrı planlanmalı', async () => {
@@ -303,15 +303,15 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
             dkToBildirim.set(dkSonEkiniAl(b.identifier), b);
         }
         expect(dkToBildirim.get(25)!.content.data.seviye).toBe(1);
-        expect(dkToBildirim.get(25)!.content.title).toBe('⏰ 25 dk · Akşam vakti');
+        expect(dkToBildirim.get(25)!.content.title).toBe('Akşam · 25 dk kaldı ⏰');
         expect(dkToBildirim.get(20)!.content.data.seviye).toBe(2);
-        expect(dkToBildirim.get(20)!.content.title).toBe('⚠️ 20 dk · Akşam vakti daralıyor');
+        expect(dkToBildirim.get(20)!.content.title).toBe('Akşam · 20 dk · vakit daralıyor ⚠️');
         expect(dkToBildirim.get(15)!.content.data.seviye).toBe(3);
-        expect(dkToBildirim.get(15)!.content.title).toBe('🔥 15 dk · Akşam vakti kaçıyor');
+        expect(dkToBildirim.get(15)!.content.title).toBe('Akşam · 15 dk · vakit kaçıyor 🔥');
         // k=10,8,6,4,2 tamamen seviye 4 olmali
         for (const k of [10, 8, 6, 4, 2]) {
             expect(dkToBildirim.get(k)!.content.data.seviye).toBe(4);
-            expect(dkToBildirim.get(k)!.content.title).toBe(`🚨 ${k} dk · AKŞAM VAKTİ ÇIKIYOR`);
+            expect(dkToBildirim.get(k)!.content.title).toBe(`AKŞAM · ${k} dk · VAKİT ÇIKIYOR 🚨`);
         }
 
         // 4) ID'deki dakika son-eki gercek planlanan zamanla TUTARLI olmali.
@@ -1365,7 +1365,7 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
 
         const bildirimler = aksamBildirimleri();
         expect(bildirimler.map((b) => dkSonEkiniAl(b.identifier))).toEqual([20]);
-        expect(bildirimler[0].content.title).toContain('20 dk · Akşam vakti');
+        expect(bildirimler[0].content.title).toContain('Akşam · 20 dk');
     });
 });
 

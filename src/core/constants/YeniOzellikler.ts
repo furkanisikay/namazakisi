@@ -40,6 +40,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Bileklik dostu başlıklar (issue #287) — kart kapalı; rehber yalnız Android'de.
+    {
+        id: 'bileklik-dostu-basliklar',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Bilekliğinizde Tek Bakışta Okunur',
+        aciklama:
+            'Hatırlatma başlıkları artık vakit adı ve kalan süreyle başlıyor: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür.',
+        detayAciklama:
+            'Bileklikler telefon bildiriminin başlığından yalnız ilk birkaç kelimeyi gösterir. Namaz muhafızı, cuma, camiye gidiş, erteleme ve yatmadan önce hatırlatmalarının başlıkları bu yüzden vakit adı ve süreyle başlayacak şekilde düzenlendi. "Öğle vakti girdi" gibi vakit bildirimleri değişmedi; otomasyonlarınız çalışmaya devam eder. Android\'de Bildirimler sayfasındaki rehber, bilekliğinize yalnız namaz hatırlatmalarının gitmesi için neler yapabileceğinizi anlatır.',
+        ikon: 'clock',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Rehberi inceleyin',
+        kartGoster: false,
+        detaylar: [
+            'Acil hatırlatmalarda vakit adı büyük harfle yazılır: "İKİNDİ · 3 dk · VAKİT ÇIKIYOR"',
+            'Bileklik uygulamaları bildirimleri uygulama bazında seçer; rehber dürüstçe neyin mümkün olduğunu anlatır',
+            '"Kıldım" düğmesinin bileklikte görünmesi modele göre değişir',
+        ],
+    },
     // Sade görünüm (issue #295) — yaşlı kullanıcılar için tek ekran.
     {
         id: 'sade-gorunum',

@@ -209,12 +209,18 @@ export function sureMetni(dk: number): string {
 export const ERTELEME_SURE_YER_TUTUCU = '{sure}';
 
 /**
- * Ertelenen kopyanın başlık ŞABLONU. Asıl başlık "45 dk · İkindi vakti" gibi
+ * Ertelenen kopyanın başlık ŞABLONU. Asıl başlık "İkindi · 45 dk kaldı" gibi
  * planlama anının dakikasını taşır; ertelenen kopyada bayatlar → süre basış
  * anında `çıkış − hedef`ten doldurulur. İbadete çağrı kaydı ("sen").
+ *
+ * ÖNDEN OKUNUR (issue #287): vakit adı + süre başta, ikon sonda — bileklikler
+ * başlığın yalnız ilk ~16 karakterini gösterir (`basligiOlustur` ile aynı biçim).
+ * Şablon yalnız JS'te üretilir; Kotlin `ErtelemeKurallari.baslik` yalnız yer
+ * tutucuyu doldurur → biçim değişikliği native kod istemez (fikstür örnekleri
+ * birlikte güncellenir). Eski biçimle planlanmış kopyalar olduğu gibi çalışır.
  */
 export const ertelemeBasligiSablonu = (vakitAdi: string): string =>
-    `⏳ ${ERTELEME_SURE_YER_TUTUCU} kaldı · Ertelediğin ${vakitAdi} namazı`;
+    `${vakitAdi} · ${ERTELEME_SURE_YER_TUTUCU} kaldı · ertelediğin namaz ⏳`;
 
 /** Şablonu doldurur; şablon yoksa `null` (çağıran asıl başlığı korur). */
 export function ertelemeBasligiOlustur(sablon: string | null | undefined, cikisMs: number, hedefMs: number): string | null {

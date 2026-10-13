@@ -216,8 +216,8 @@ export class ArkaplanMuhafizServisi {
             const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;
             // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
-            // yonunde ikisi farklidir ve kalanDk verilirse basligi "655 dk ·
-            // YATSI VAKTİ ÇIKIYOR" gibi ters bir cumle olur.
+            // yonunde ikisi farklidir ve kalanDk verilirse basligi "YATSI ·
+            // 655 dk · VAKİT ÇIKIYOR" gibi ters bir cumle olur.
             const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
 

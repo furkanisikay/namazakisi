@@ -4,8 +4,8 @@
  * Baslik uretimi eskiden ArkaplanMuhafizServisi'nin planlama dongusunde inline
  * sabit atamalardaydi -> test edilemiyordu. Buraya cikarildi.
  *
- * Kalan sure BASLIKTA ve daima ikondan hemen sonra: Android daraltilmis
- * bildirimde basligi + govdenin basini gosterir; sure sonda olursa kirpilir.
+ * Vakit adi + kalan sure BASLIGIN EN BASINDA: Android daraltilmis bildirimi
+ * ve bileklikler (issue #287) basligin sonunu kirpar; sure sonda olursa kaybolur.
  */
 import type { VakitAdi } from '../types';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../muhafiz/pencereTipleri';
@@ -56,15 +56,28 @@ export const sonDakikaDiliMi = (seviye: MuhafizSeviye, olcuDk?: number): boolean
   seviye < 3 || olcuDk === undefined || !Number.isFinite(olcuDk) || olcuDk <= SON_DAKIKA_ESIGI_DK;
 
 /**
- * Bildirim basligi: <ikon> <sure> dk · <vakit adi> vakti <durum>
+ * Bant/saat ekraninda gorunen bas kisim (issue #287): Galaxy Fit, Mi Band,
+ * Huawei Band telefon bildirimini aynalar ve basligin yalniz ilk ~12-16
+ * karakterini gosterir. Vakit adi + sure bu sinirin icinde kalmali.
+ */
+export const BANT_GORUNUR_KARAKTER = 16;
+
+/**
+ * Bildirim basligi: <Vakit> · <sure> dk[ kaldi| oldu] · <durum> <ikon>
+ *
+ * ONDEN OKUNUR (issue #287): bileklikler ve daraltilmis Android bildirimi
+ * basligin SONUNU kirpar → vakit adi ve sure EN BASTA durur, ton ikonu sona
+ * gecer (bantta ikon cogu zaman kutu olarak cizilir; telefonda tonu hala
+ * tasir). Ton/notr-kalip kurallari (#274) AYNEN gecerli; yalniz sira degisti.
+ * Acil tonda vakit adi sabit buyuk harf haritasindan gelir (toUpperCase YASAK).
  *
  * `olcuDk` SEVIYEYI KAZANDIRAN olcudur (`UyariPlani.olcuDk`), zamanlama icin
  * kullanilan `kalanDk` DEGIL: giris yonunde ikisi farklidir.
  *
  * YON (Faz 1 / B11): cikis dili giris yonunde yalniz garip degil YANLIStir —
  * yatsi 700 dk surerken "acil" adim girisin 45. dakikasinda tetiklenir ve cikisa
- * hala 655 dk vardir; cikis basligi "🚨 655 dk · YATSI VAKTİ ÇIKIYOR" derdi.
- * Yon verilmezse cikis dili BIREBIR korunur (sifir goc).
+ * hala 655 dk vardir; cikis basligi "YATSI · 655 dk · VAKİT ÇIKIYOR" derdi.
+ * Yon verilmezse cikis dili kullanilir.
  */
 export function basligiOlustur(
   vakit: VakitAdi,
@@ -73,35 +86,34 @@ export function basligiOlustur(
   yon: PencereYonu = VARSAYILAN_PENCERE_YONU
 ): string {
   const ad = VAKIT_ADLARI[vakit];
+  const buyukAd = VAKIT_ADLARI_BUYUK[vakit];
   if (yon === 'girisindenItibaren') {
-    // Sure yine ikondan hemen sonra: Android daraltilmis bildirimde basligin
-    // sonunu kirpar (cikis yonuyle ayni kural).
     switch (seviye) {
       case 1:
-        return `⏰ ${olcuDk} dk oldu · ${ad} vakti girdi`;
+        return `${ad} · ${olcuDk} dk oldu · vakit girdi ⏰`;
       case 2:
-        return `⚠️ ${olcuDk} dk oldu · ${ad} namazını geciktirme`;
+        return `${ad} · ${olcuDk} dk oldu · namazını geciktirme ⚠️`;
       case 3:
-        return `🔥 ${olcuDk} dk oldu · ${ad} namazı seni bekliyor`;
+        return `${ad} · ${olcuDk} dk oldu · namazı seni bekliyor 🔥`;
       case 4:
-        return `🚨 ${olcuDk} dk oldu · ${VAKIT_ADLARI_BUYUK[vakit]} NAMAZINA DUR`;
+        return `${buyukAd} · ${olcuDk} dk oldu · NAMAZINA DUR 🚨`;
     }
   }
   if (!sonDakikaDiliMi(seviye, olcuDk)) {
     // Erken sert/acil: vakit daralmadi — notr ama yine "sen" kaydinda.
     return seviye === 4
-      ? `🚨 ${olcuDk} dk · ${VAKIT_ADLARI_BUYUK[vakit]} NAMAZINA DUR`
-      : `🔥 ${olcuDk} dk · ${ad} namazı seni bekliyor`;
+      ? `${buyukAd} · ${olcuDk} dk kaldı · NAMAZINA DUR 🚨`
+      : `${ad} · ${olcuDk} dk kaldı · namazı seni bekliyor 🔥`;
   }
   switch (seviye) {
     case 1:
-      return `⏰ ${olcuDk} dk · ${ad} vakti`;
+      return `${ad} · ${olcuDk} dk kaldı ⏰`;
     case 2:
-      return `⚠️ ${olcuDk} dk · ${ad} vakti daralıyor`;
+      return `${ad} · ${olcuDk} dk · vakit daralıyor ⚠️`;
     case 3:
-      return `🔥 ${olcuDk} dk · ${ad} vakti kaçıyor`;
+      return `${ad} · ${olcuDk} dk · vakit kaçıyor 🔥`;
     case 4:
-      return `🚨 ${olcuDk} dk · ${VAKIT_ADLARI_BUYUK[vakit]} VAKTİ ÇIKIYOR`;
+      return `${buyukAd} · ${olcuDk} dk · VAKİT ÇIKIYOR 🚨`;
   }
 }
 

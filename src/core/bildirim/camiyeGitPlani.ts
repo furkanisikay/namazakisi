@@ -110,13 +110,15 @@ export function camiyeGitMetniOlustur(
     const toplam = camiyeGitOncedenDk(ayarlar);
     const ad = VAKIT_ADLARI[vakit];
     if (ayarlar.hazirlikDk > 0) {
+        // Önden okunur (issue #287): vakit + ezana kalan süre başta — bileklikler
+        // başlığın yalnız ilk ~16 karakterini gösterir.
         return {
-            baslik: 'Camiye hazırlan',
+            baslik: `${ad} · ezana ${toplam} dk · camiye hazırlan`,
             govde: `${ad} namazına camide yetişmek için hazırlan, ${ayarlar.hazirlikDk} dk sonra yola çık — ezana ${toplam} dk.`,
         };
     }
     return {
-        baslik: 'Camiye yola çık',
+        baslik: `${ad} · ezana ${toplam} dk · camiye yola çık`,
         govde: `${ad} namazına camide yetişmek için yola çık — ezana ${toplam} dk.`,
     };
 }

@@ -244,7 +244,8 @@ export function yatisIcerigiOlustur(
             tur: 'yatsi',
             kimlik: vakitKimligi(gun, 'yatsi', YATIS_EKI),
             kategori: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
-            baslik: '🌙 Yatmadan önce yatsını kıl',
+            // Önden okunur (issue #287): vakit adı başta, ikon sonda.
+            baslik: 'Yatsı · yatmadan önce kıl 🌙',
             govde: `Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.${satir}`,
             data: { tip: 'yatis', tarih: gun, vakit: 'yatsi', kazayaEklenebilir: [] },
         };

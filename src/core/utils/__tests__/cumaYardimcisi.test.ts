@@ -4,6 +4,7 @@ import {
   hatirlatmaZamaniHesapla,
   sureMetniOlustur,
   namazGorunenAdi,
+  cumaBasligiOlustur,
 } from '../cumaYardimcisi';
 import { NamazAdi } from '../../constants/UygulamaSabitleri';
 
@@ -143,5 +144,16 @@ describe('cumaYardimcisi', () => {
       expect(sureMetniOlustur(90)).toBe('1 saat 30 dakika');
       expect(sureMetniOlustur(150)).toBe('2 saat 30 dakika');
     });
+  });
+});
+
+describe('cumaBasligiOlustur (issue #287 — önden okunur)', () => {
+  test('ilk 16 karakterde "Cuma" ve süre geçer', () => {
+    expect(cumaBasligiOlustur(45)).toBe('Cuma · 45 dk kaldı · namaz yaklaşıyor');
+    expect(cumaBasligiOlustur(60)).toBe('Cuma · 1 sa kaldı · namaz yaklaşıyor');
+    expect(cumaBasligiOlustur(90).slice(0, 16)).toBe('Cuma · 1 sa 30 d');
+    for (const dk of [15, 30, 60, 75, 120, 180]) {
+      expect(cumaBasligiOlustur(dk).slice(0, 16)).toMatch(/^Cuma · \d+ (dk|sa)/u);
+    }
   });
 });

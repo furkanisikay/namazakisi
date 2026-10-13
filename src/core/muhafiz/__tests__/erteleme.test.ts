@@ -75,6 +75,16 @@ describe('ortak fikstür (Kotlin ikiziyle AYNI)', () => {
         }
     });
 
+    it('fikstür şablonu JS üreticisiyle aynı (biçim ayrışmasın)', () => {
+        expect(ornek.baslik[0].sablon).toBe(ertelemeBasligiSablonu('İkindi'));
+        expect(ornek.baslik[1].sablon).toBe(ertelemeBasligiSablonu('Yatsı'));
+    });
+
+    it('önden okunur: ilk 16 karakterde vakit adı + süre (issue #287)', () => {
+        const baslik = ertelemeBasligiOlustur(ertelemeBasligiSablonu('İkindi'), 100 * DK, 65 * DK);
+        expect(baslik?.slice(0, 16).startsWith('İkindi · 35 dk')).toBe(true);
+    });
+
     it('susturma', () => {
         for (const s of ornek.susturma) expect(ertelemedeSusturulurMu(s.tetikMs, s.hedefMs)).toBe(s.beklenen);
     });
