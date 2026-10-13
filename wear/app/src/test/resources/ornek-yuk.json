@@ -77,5 +77,34 @@
       "acil": true,
       "adim": 3
     }
-  ]
+  ],
+  "canli": {
+    "vakitler": {
+      "imsak": true,
+      "ogle": false,
+      "ikindi": true,
+      "aksam": true,
+      "yatsi": true
+    },
+    "pencereler": [
+      {
+        "oge": "iftar",
+        "baslik": "🌙 İftar Sayacı",
+        "ad": "İftar",
+        "bas": 1791772860000,
+        "bitis": 1791819300000,
+        "oncelik": 2
+      },
+      {
+        "oge": "ogle",
+        "baslik": "⏱️ Öğle Namazı",
+        "ad": "Öğle",
+        "bas": 1791798960000,
+        "bitis": 1791810120000,
+        "oncelik": 1,
+        "tarih": "2026-10-12",
+        "vakit": "ogle"
+      }
+    ]
+  }
 }

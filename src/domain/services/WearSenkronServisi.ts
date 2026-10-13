@@ -20,7 +20,7 @@ import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSab
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
 import { konumMetniHesapla, type KonumMetniGirdisi } from '../../core/ayarlar/konumMetni';
-import { wearYukuOlustur, type WearYukGirdisi } from '../../core/wear/wearYuku';
+import { canliGecerliMi, wearYukuOlustur, type WearCanli, type WearYukGirdisi } from '../../core/wear/wearYuku';
 import type { VakitAdi } from '../../core/types';
 import {
     kayitDegistiDinleyicisiniAyarla,
@@ -30,6 +30,7 @@ import {
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muhafizPlaniGozlemcisi';
+import { canliSaatDinleyicisiniAyarla } from './canliSaatGozlemcisi';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
@@ -87,6 +88,10 @@ export class WearSenkronServisi {
             this.sonMuhafiz = durum;
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
+        // Now Bar seçimi / canlı sayaç planı değişince (issue #282) saatin canlı sayacı da.
+        canliSaatDinleyicisiniAyarla(() => {
+            this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
+        });
     }
 
     public gonder(): Promise<void> {
@@ -122,6 +127,7 @@ export class WearSenkronServisi {
                     konumAdi: konum.ad,
                     kilinanlar,
                     muhafiz: await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar),
+                    canli: await this.canliPayiniOku(),
                 })
             );
             if (json === this.sonGonderilen) return;
@@ -206,6 +212,21 @@ export class WearSenkronServisi {
         } catch (e) {
             Logger.warn('WearSenkron', 'Muhafiz ayarlari okunamadi; saat plani bos gidecek', e);
             return null;
+        }
+    }
+
+    /**
+     * Now Bar seçimi (issue #282): `CanliSayacPlanlayici`'nın yazdığı saat payı.
+     * Yoksa/bozuksa alan HİÇ gönderilmez → saat eski davranışında kalır.
+     */
+    private async canliPayiniOku(): Promise<WearCanli | undefined> {
+        try {
+            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.CANLI_SAAT_VERISI);
+            if (!ham) return undefined;
+            const veri = JSON.parse(ham) as unknown;
+            return canliGecerliMi(veri) ? (veri as WearCanli) : undefined;
+        } catch {
+            return undefined;
         }
     }
 
