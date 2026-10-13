@@ -17,12 +17,13 @@ import type { VakitAdi } from '../../core/types';
 import type { DefterGirdisi } from '../../core/bildirim/bildirimDefteri';
 import { LocalVakitBildirimServisi } from '../../data/local/LocalVakitBildirimServisi';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
+import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
-export type DefterDisGirdisi = Pick<DefterGirdisi, 'vakitBildirimi' | 'cuma' | 'gunSonu' | 'kilinan' | 'ozelGundeMi'>;
+export type DefterDisGirdisi = Pick<DefterGirdisi, 'vakitBildirimi' | 'cuma' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi'>;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
     try {
@@ -36,7 +37,7 @@ const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> =
 export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     const bugun = bugunuAl();
     const dun = dunuAl();
-    const [vakitBildirimi, cuma, seri, kilinanBugun, kilinanDun, ozelGundeMi] = await Promise.all([
+    const [vakitBildirimi, cuma, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis] = await Promise.all([
         guvenli('vakit bildirimi', () => LocalVakitBildirimServisi.getAyarlar()),
         guvenli('cuma', () => LocalCumaHatirlatmaServisi.getAyarlar()),
         guvenli('seri', async () => {
@@ -46,6 +47,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         guvenli('kilinan (bugun)', () => kilinanVakitleriAl(bugun)),
         guvenli('kilinan (dun)', () => kilinanVakitleriAl(dun)),
         guvenli('ozel gun', () => ozelGunSuzgeciniOku()),
+        guvenli('yatis', () => LocalYatisHatirlatmaServisi.getAyarlar()),
     ]);
     const kilinan: Record<string, readonly VakitAdi[]> = {
         [bugun]: kilinanBugun ?? [],
@@ -55,6 +57,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         vakitBildirimi,
         cuma,
         gunSonu: seri,
+        yatis,
         kilinan,
         ozelGundeMi: ozelGundeMi ?? undefined,
     };

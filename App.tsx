@@ -30,6 +30,9 @@ import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHa
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
+import { yatisHatirlatmaAyarlariniYukle } from './src/presentation/store/yatisHatirlatmaSlice';
+import { YatisHatirlatmaServisi } from './src/domain/services/YatisHatirlatmaServisi';
+import { kazaVerileriniYukle } from './src/presentation/store/kazaSlice';
 import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
@@ -70,6 +73,11 @@ try {
     } catch {
       // Callback icindeki hatayi sessizce yut
     }
+  });
+  // Gün sonu muhasebesindeki "Kazaya ekle" (issue #290) kaza defterini diskte
+  // günceller; açık bir kaza ekranı varsa store tazelensin.
+  BildirimServisi.getInstance().setOnKazaEklendiCallback(() => {
+    if (store.getState().kaza.kazaDurumu) store.dispatch(kazaVerileriniYukle());
   });
 } catch {
   // BildirimServisi başlatılamazsa uygulama çalışmaya devam etsin
@@ -181,6 +189,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
       store.dispatch(cumaHatirlatmaAyarlariniYukle()),
+      store.dispatch(yatisHatirlatmaAyarlariniYukle()),
       // Ana ekran nafile şeridi bu slice'ı okur → açılışta HİDRATE edilmeli
       // (AGENTS.md: "HER slice açılışta yüklenmez").
       store.dispatch(nafileAyarlariniYukle()),
@@ -247,6 +256,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Gün sonu seri hatırlatması: TARİHLİ tetikler (özel gün atlanır), pencere
       // sonlu olduğu için her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
       gunSonuHatirlatmalariniGuncelle(konumState.koordinatlar),
+      // Yatış hatırlatması + gün sonu muhasebesi (issue #290): sonlu pencere,
+      // her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
@@ -292,6 +304,8 @@ const AppIcerik: React.FC = () => {
         // Camideyim: "Kıldım deyince Namaz modu kapansın" dinleyicisi + çıkış sorusu kuyruğu.
         CamideyimServisi.getInstance().baslat();
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+        // Yatış hatırlatması (issue #290): kılınmışlık değişince muhasebe içeriği tazelenir.
+        YatisHatirlatmaServisi.getInstance().baslat();
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 

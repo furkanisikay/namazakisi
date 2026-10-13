@@ -56,6 +56,12 @@ export interface UyariTeslimi {
     tarih: string;
     yon: PencereYonu;
     /**
+     * Vaktin cikisi — "Ertele" (issue #289) ust siniri ve ertelenen kopyanin
+     * basligi buradan turer. Verilmezse bildirim ertele dugmesi TASIMAZ
+     * (tarihsel davranis; eski el yapimi teslimler/testler).
+     */
+    cikis?: Date;
+    /**
      * Muhafız DIŞI bir tüketicinin (nafile, issue #273) teslim ayrıntıları.
      * Verilmezse muhafız davranışı BİREBİR korunur (kayıt-oynat nöbetçisi).
      *

@@ -13,6 +13,7 @@
  *   cuma            → `cumaPlaniOlustur` (4 cuma)
  *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe)
  *   gün sonu        → `gunSonuPlaniOlustur` (iOS 3, Android 7 gün)
+ *   yatış/muhasebe  → `yatisPlaniOlustur` (iOS 3, Android 7 namaz günü; issue #290)
  *   vakit sayacı    → `sayacPlaniOlustur` (yalnız Android; vakit başına 2)
  *   widget          → dakika alarmı (yalnız Android; 1)
  *
@@ -37,6 +38,7 @@ import { nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } f
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
+import { YATIS_PLAN_GUN_SAYISI, yatisPlaniOlustur, type YatisAyarlari } from '../yatis/yatisPlani';
 import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../utils/vakitSayacYardimcisi';
 import { cumaPlaniOlustur, type CumaPlanAyarlari } from './cumaPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
@@ -57,6 +59,7 @@ export type DefterKaynagi =
     | 'cuma'
     | 'nafile'
     | 'gunSonu'
+    | 'yatis'
     | 'sayac'
     | 'widget';
 
@@ -68,6 +71,7 @@ export const DEFTER_KAYNAK_SIRASI: DefterKaynagi[] = [
     'vakitBildirimi',
     'cuma',
     'gunSonu',
+    'yatis',
     'sayac',
     'widget',
 ];
@@ -98,6 +102,8 @@ export interface DefterGirdisi {
     cuma?: CumaPlanAyarlari | null;
     nafile?: NafileAyarlari | null;
     gunSonu?: (GunSonuPlanAyarlari & { gunSonuBildirimAktif: boolean }) | null;
+    /** Yatış hatırlatması + gün sonu muhasebesi (issue #290). */
+    yatis?: YatisAyarlari | null;
     /** Vakit sayacı ayarı (Android). Eşikler muhafız matrisinden türer. */
     vakitSayaci?: { aktif: boolean; sayacBaslangicSeviyesi?: number } | null;
     /** Android ana ekran widget'ının dakika alarmı sayılsın mı? (varsayılan: Android'de evet) */
@@ -187,6 +193,22 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 gunAtlanirMi: ozelGundeMi,
             });
             for (const t of plan) ekle('gunSonu', t.an.getTime());
+        });
+    }
+
+    // ── Yatış hatırlatması + gün sonu muhasebesi ── (konum yoksa servis kurmaz)
+    if (koordinat && g.yatis?.aktif) {
+        const ayar = g.yatis;
+        guvenli(() => {
+            const plan = yatisPlaniOlustur({
+                koordinat,
+                ayarlar: ayar,
+                simdi: g.simdi,
+                gunSayisi: YATIS_PLAN_GUN_SAYISI[g.platform],
+                kilinanlar: (gun) => g.kilinan?.[gun] ?? [],
+                gunAtlanirMi: ozelGundeMi,
+            });
+            for (const k of plan) ekle('yatis', k.zaman.getTime());
         });
     }
 

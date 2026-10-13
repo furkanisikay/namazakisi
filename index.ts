@@ -99,6 +99,15 @@ if (Platform.OS === 'android') {
         .catch(() => undefined);
 }
 
+// Yatış hatırlatması + gün sonu muhasebesi (issue #290): kılınmışlık değişince
+// yeniden planlanır. HER JS bağlamında (headless dahil): bildirimden "Kıldım"
+// uygulama kapalıyken işlenince muhasebe içeriği bayat kalmasın. İdempotent.
+if (Platform.OS === 'android') {
+    import('./src/domain/services/YatisHatirlatmaServisi')
+        .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
+        .catch(() => undefined);
+}
+
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
 // Aksiyon `opensAppToForeground: false` olduğu için telefon açılmaz (saate köprülenen
 // bildirimde saatten basılınca cepteki telefon öne çıkmasın). Issue #299'dan beri eylem

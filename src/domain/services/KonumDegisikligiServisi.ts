@@ -43,6 +43,7 @@ import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
+import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
@@ -214,6 +215,13 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // (`OzelGunDegisikligiServisi`) aralıktaki günlerin tetikleri burada düşer.
         guvenliCalistir('Gun sonu hatirlatmasi', () =>
             gunSonuHatirlatmalariniGuncelle(koordinatlar),
+        ),
+
+        // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
+        // ve kazaya eklenebilirlik vakitlerden türer; özel gün değişimi de buradan
+        // geçer (aralıktaki namaz günleri düşer).
+        guvenliCalistir('Yatis hatirlatmasi', () =>
+            YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
 
         guvenliCalistir('Widget', () =>

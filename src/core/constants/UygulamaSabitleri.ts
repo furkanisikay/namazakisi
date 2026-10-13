@@ -158,6 +158,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
+  // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
+  // Yedekleme beyaz listesinde (YedeklemeServisi + YedekBirlestirmeServisi).
+  YATIS_HATIRLATMA_AYARLARI: 'yatis_hatirlatma_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
   // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir
@@ -355,6 +358,9 @@ export const BILDIRIM_SABITLERI = {
   // Muhafiz aksiyonlari
   AKSIYONLAR: {
     KILDIM: 'kildim_action',
+    // Gün sonu muhasebesi (issue #290). Erteleme eylemleri: `core/muhafiz/erteleme.ts`.
+    KAZAYA_EKLE: 'kazaya_ekle_action',
+    INCELE: 'incele_action',
   },
   // Kategoriler
   KATEGORI: {

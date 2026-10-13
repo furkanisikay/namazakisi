@@ -54,6 +54,8 @@ import { store } from '../store/store';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { YatisHatirlatmaBolumu } from '../components/ayar/YatisHatirlatmaBolumu';
+import { yatisHatirlatmaAyarlariniYukle } from '../store/yatisHatirlatmaSlice';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -184,6 +186,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
     dispatch(vakitBildirimAyarlariniYukle());
     dispatch(vakitSayacAyarlariniYukle());
     dispatch(cumaHatirlatmaAyarlariniYukle());
+    dispatch(yatisHatirlatmaAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -637,6 +640,11 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
             )}
           </View>
         </View>
+        </AyarCapasi>
+
+        {/* Yatış hatırlatması + gün sonu muhasebesi (issue #290) */}
+        <AyarCapasi id="yatisHatirlatmasi">
+          <YatisHatirlatmaBolumu />
         </AyarCapasi>
 
         {/* Seri Bildirimleri Bolumu */}

@@ -66,6 +66,8 @@ import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
+import { YatisHatirlatmaServisi } from '../YatisHatirlatmaServisi';
+import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/yatisPlani';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { bildirimDefteriOlustur, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
@@ -267,6 +269,18 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         await gunSonuHatirlatmalariniGuncelle(ISTANBUL, ayar, new Date(SABAH));
         const g = temelGirdi(platform, { gunSonu: ayar });
         expect(onekliSay('gun_sonu_hatirlatici_')).toBe(say(g, 'gunSonu'));
+    });
+});
+
+describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = servisin kurduğu', () => {
+    it.each(['ios', 'android'] as const)('%s ufku', async (platform) => {
+        jest.replaceProperty(Platform, 'OS', platform);
+        const ayar = { ...YATIS_VARSAYILAN_AYARLARI, aktif: true };
+        await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL, ayar, new Date(SABAH));
+        const kurulan = planlananlar().filter((p) => yatisKimligiMi(String(p.identifier))).length;
+        const g = temelGirdi(platform, { yatis: ayar });
+        expect(say(g, 'yatis')).toBe(platform === 'ios' ? 3 : 7);
+        expect(kurulan).toBe(say(g, 'yatis'));
     });
 });
 

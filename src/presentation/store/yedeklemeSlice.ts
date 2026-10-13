@@ -24,6 +24,8 @@ import { iftarSayacAyarlariniYukle } from './iftarSayacSlice';
 import { sahurSayacAyarlariniYukle } from './sahurSayacSlice';
 import { vakitBildirimAyarlariniYukle } from './vakitBildirimSlice';
 import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
+import { yatisHatirlatmaAyarlariniYukle } from './yatisHatirlatmaSlice';
+import { YatisHatirlatmaServisi } from '../../domain/services/YatisHatirlatmaServisi';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { nowBarAyarlariniYukle } from './nowBarSlice';
@@ -83,6 +85,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(sahurSayacAyarlariniYukle()),
       dispatch(vakitBildirimAyarlariniYukle()),
       dispatch(cumaHatirlatmaAyarlariniYukle()),
+      dispatch(yatisHatirlatmaAyarlariniYukle()),
       dispatch(nafileAyarlariniYukle()),
       dispatch(nowBarAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
@@ -150,6 +153,16 @@ export const iceAktarmayiUygula = createAsyncThunk(
       if (yayilmaGerekli) {
         await gunSonuHatirlatmalariniGuncelle(sonKonum).catch(() => undefined);
       }
+    }
+    // Yatış hatırlatması + gün sonu muhasebesi (issue #290): içerik namaz
+    // KAYITLARINDAN üretilir ve içe aktarma onları `Depolama.yaz` ile DOĞRUDAN
+    // yazar (kılınmışlık gözlemcisi tetiklenmez) → yayma koşsa da koşmasa da
+    // burada yeniden planlanır. Koordinat yoksa servis kurulu planı korur.
+    try {
+      const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
+      await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+    } catch {
+      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
     }
     // Wear OS saati (issue #269): içe aktarma kayıtları `Depolama.yaz` ile DOĞRUDAN
     // yazar (LocalNamazServisi gözlemcisinden geçmez) → saati açıkça tazele.

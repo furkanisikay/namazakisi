@@ -12,6 +12,7 @@ import {
 } from '../../core/types/KazaTipleri';
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { gurubKerahatiBaslangiciMs } from '../../core/muhafiz/erteleme';
 
 // ==================== SİHİRBAZ HESABI ====================
 
@@ -243,7 +244,9 @@ export const mekruhVakitKontrolEt = (
     // Fıkhi kural: İkindi kılındıktan sonra güneş batana kadar mekruhtur.
     // Ancak İkindi vakti bilgisi olmadan bu sınırı belirlemek mümkün değil;
     // gün batımından 20 dakika geriye bakarak yaklaşık bir uyarı veriliyor.
-    const gurubBasi = new Date(sunset.getTime() - toleransMs);
+    // TEK KAYNAK: muhafız "Ertele" düğmesinin ikindi üst sınırı (issue #289) da
+    // aynı fonksiyonu kullanır (`core/muhafiz/erteleme.ts`).
+    const gurubBasi = new Date(gurubKerahatiBaslangiciMs(sunset.getTime()));
     if (now >= gurubBasi && now <= sunset) {
       return {
         mekruhMu: true,

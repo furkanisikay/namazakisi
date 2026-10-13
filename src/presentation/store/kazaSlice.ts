@@ -93,24 +93,12 @@ export const borcEkle = createAsyncThunk(
     { getState }
   ) => {
     const state = getState() as { kaza: KazaState };
-    let durumu = state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur();
-
-    const yeniNamazlar = durumu.namazlar.map((n) => {
-      if (n.namazAdi === namazAdi) {
-        return {
-          ...n,
-          toplamBorc: n.toplamBorc + sayi,
-          kalanBorc: n.kalanBorc + sayi,
-        };
-      }
-      return n;
-    });
-
-    durumu = toplamlarıYenile({
-      ...durumu,
-      namazlar: yeniNamazlar,
-      guncellemeTarihi: new Date().toISOString(),
-    });
+    // Tek ekleme yolu: bildirimdeki "Kazaya ekle" (issue #290) de bundan geçer.
+    const durumu = LocalKazaServisi.borcEklenmisDurum(
+      state.kaza.kazaDurumu || LocalKazaServisi.bosKazaDurumuOlustur(),
+      namazAdi,
+      sayi
+    );
 
     await LocalKazaServisi.localKazaDurumunuKaydet(durumu);
 

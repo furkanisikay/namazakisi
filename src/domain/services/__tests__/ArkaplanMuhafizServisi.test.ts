@@ -440,7 +440,8 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
 
         const bugun = bugunuAl();
         for (const b of bildirimler) {
-            expect(b.content.categoryIdentifier).toBe('muhafiz_category');
+            // Kategori sınıra kalan süreye göre ertele düğmesi taşır (issue #289).
+            expect(b.content.categoryIdentifier).toMatch(/^muhafiz_(ertele[12]_)?category$/);
             expect(b.content.data.tip).toBe('muhafiz');
             // Tek planlanabilir vakit 'aksam' ve bugune ait.
             expect(b.content.data.vakit).toBe('aksam');
@@ -1347,5 +1348,70 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
         const bildirimler = aksamBildirimleri();
         expect(bildirimler.map((b) => dkSonEkiniAl(b.identifier))).toEqual([20]);
         expect(bildirimler[0].content.title).toContain('20 dk · Akşam vakti');
+    });
+});
+
+describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
+    let servis: ArkaplanMuhafizServisi;
+    const bugun = bugunuAl();
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    const iptaller = () => (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+    const planlananlar = () => (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+
+    test('yeniden planlama ERTELEMEYI ve YATIS bildirimini silmez; yalniz plan kimliklerini temizler', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20` },
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 10 * 60000 } } },
+            { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20`]);
+    });
+
+    test('ertelenen vakitte hedef ana kadarki uyarilar KURULMAZ (15 dk gorevi susturulanlari geri getirmesin)', async () => {
+        const hedef = Date.now() + 12 * 60000; // cikisa ~18 dk kala
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: hedef } } },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        const zamanlar = planlananlar().map((p) => (p.trigger.date as Date).getTime());
+        expect(zamanlar.length).toBeGreaterThan(0);
+        for (const z of zamanlar) expect(z).toBeGreaterThanOrEqual(hedef + 60000);
+    });
+
+    test('muhafiz KAPATILINCA erteleme de iptal edilir, yatis bildirimi KORUNUR', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 60000 } } },
+            { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: false, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
+    });
+
+    test('"Kildim" (vakit iptali) ertelenmis kopyayi DA iptal eder', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele` },
+            { identifier: `muhafiz_${bugun}_vakit_ikindi_ertele` },
+        ]);
+        await servis.vakitBildirimleriniIptalEt('aksam');
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
+    });
+
+    test('bildirim ertele verisi tasir: cikis, fikhi sinir (cikis − 3 dk), kanal', async () => {
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        const p = planlananlar()[0];
+        const cikis = (PrayerTimes as jest.Mock).mock.results[0].value.isha.getTime();
+        expect(p.content.data.cikisMs).toBe(cikis);
+        expect(p.content.data.erteleSinirMs).toBe(cikis - 3 * 60000);
+        expect(p.content.data.kanalId).toBe(p.trigger.channelId);
+        expect(p.content.data.ertelemeBasligi).toContain('Akşam');
     });
 });

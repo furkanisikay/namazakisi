@@ -73,6 +73,7 @@ import {
 } from '../../core/muhafiz/ios/anonsKlibi';
 import { gunAnahtari, klipKaydiniGuncelle } from '../../core/muhafiz/ios/klipKullanimi';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { ertelemeTeslimBilgisi, muhafizPlanKimligiMi } from '../../core/muhafiz/erteleme';
 import { Depolama } from '../../data/local/Depolama';
 import {
     klipSentezle,
@@ -187,9 +188,14 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
         try {
             const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
-            const muhafizDisi = bekleyenler.filter(
-                (b) => !b.identifier.startsWith(this.kendiOneki)
-            ).length;
+            // Muhafız teslimcisinde yalnız PLAN kendimizdir: aynı `muhafiz_` uzayındaki
+            // erteleme (#289) ve yatış/muhasebe (#290) başka sahiplerin slotudur.
+            // Başka önekli teslimci (nafile #273) kendi önekini sayar.
+            const kendimizMi =
+                this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
+                    ? muhafizPlanKimligiMi
+                    : (kimlik: string) => kimlik.startsWith(this.kendiOneki);
+            const muhafizDisi = bekleyenler.filter((b) => !kendimizMi(b.identifier)).length;
 
             this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
 
@@ -243,6 +249,12 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Slot kontrolunden SONRA: planlanmayacak uyari icin sentez yapilmaz.
         const ses = (odakSessiz ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
 
+        // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden (Android ile aynı kural).
+        // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.
+        const ertele = teslim.cikis && !teslim.ozel
+            ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
+            : null;
+
         try {
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
@@ -254,7 +266,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     interruptionLevel: odakSessiz
                         ? 'passive'
                         : ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
-                    categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
+                    categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
                     data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
@@ -264,6 +276,11 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,
+                        // iOS yanıtı sesin ADINI geri vermez → ertelenen kopya aynı
+                        // sesi (anons klibi dahil) ve kesinti seviyesini buradan alır.
+                        ...(ertele
+                            ? { ...ertele.veri, ertelemeSesi: ses, kesintiSeviyesi: plan.kesintiSeviyesi }
+                            : {}),
                     },
                 },
                 trigger: {

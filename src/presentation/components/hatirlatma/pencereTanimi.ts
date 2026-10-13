@@ -516,6 +516,44 @@ export function cumaPencereTanimi(secenekler: {
 }
 
 /**
+ * Yatış hatırlatması (issue #290) için pencere tanımı — cuma deseni.
+ *
+ * TEK ADIM, TEK ATIŞ, yön/kanal/ses/sıklık seçimi kapalı: ölçü daima kullanıcının
+ * yatış saatine kalan süredir ("yatıştan 30 dk önce"). Bildirim yatsı
+ * hatırlatmasıysa muhafızın taban kanalından, muhasebeyse vakit kanalından
+ * gider — yeni kanal ACILMAZ.
+ */
+export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; esikAdimDk: number }): PencereTanimi {
+    return {
+        kaynak: 'yatis',
+        baslik: 'Yatış hatırlatması',
+        baslikKucuk: 'yatış hatırlatması',
+        ikon: 'bed',
+        // Kimlik yatsıdır; anons kullanılmaz, değer tip sözleşmesini doldurur.
+        vakit: 'yatsi',
+        yon: 'cikisaDogru',
+        yonSecilebilir: false,
+        maksAdim: 1,
+        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bed', renk: SEVIYE_BILGILERI.nazik.renk }],
+        kanalSecimiVar: false,
+        sesSecimiVar: false,
+        siklikSecimiVar: false,
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
+        yetenekler: ANDROID_YETENEKLERI,
+        esikAdimDk: secenekler.esikAdimDk,
+        tekrarMinDk: TEKRAR_MIN_DK,
+        tekrarMaxDk: TEKRAR_MAX_DK,
+        varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
+        esikSinirlari: secenekler.esikSinirlari,
+        esikBasligi: 'NE KADAR ÖNCE',
+        esikAciklamasi: 'Yatış saatinize',
+        esikErisimAdi: 'Yatıştan kaç dk önce',
+        esikBirimi: 'dk kala',
+    };
+}
+
+/**
  * Yon degisiminden sonra CEVRILEMEYEN bir anons metni kaldi mi?
  *
  * `matrisIslemleri.yonDegisimindeMetniCevir` yalniz havuzdaki bir sablonla

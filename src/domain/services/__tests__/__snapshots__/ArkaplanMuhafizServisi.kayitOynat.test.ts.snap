@@ -20,6 +20,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz",
         "kanallar": {
           "bildirim": true,
         },
@@ -34,7 +38,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
 — Hûd sûresi 114 (özet)",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_1_dk_25",
       "kanalId": "muhafiz",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele2_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
@@ -45,6 +49,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -59,7 +67,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Namazı sona bırakma; şimdi kılmak için vakit uygun.",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_2_dk_15",
       "kanalId": "muhafiz_aec026e2",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
@@ -79,6 +87,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -93,7 +105,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Namazı sona bırakma; şimdi kılmak için vakit uygun.",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_2_dk_10",
       "kanalId": "muhafiz_aec026e2",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
@@ -113,6 +125,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
           "sesli": true,
@@ -127,7 +143,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Şeytan şu an sana "Sonra kılarsın" diye fısıldıyor. Onu dinleme!",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_3_dk_8",
       "kanalId": "muhafiz_acil",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "max",
       "ses": true,
       "tetikTipi": "date",
@@ -138,6 +154,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
           "sesli": true,
@@ -163,6 +183,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -197,6 +221,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -231,6 +259,10 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "⏳ {sure} kaldı · Ertelediğin Akşam namazı",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,

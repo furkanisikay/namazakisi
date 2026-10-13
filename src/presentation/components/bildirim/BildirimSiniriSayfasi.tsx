@@ -38,6 +38,7 @@ export const KAYNAK_BILGILERI: Record<DefterKaynagi, { ad: string; ikon: string 
     vakitBildirimi: { ad: 'Vakit girdi bildirimleri', ikon: 'bell' },
     cuma: { ad: 'Cuma hatırlatması', ikon: 'mosque' },
     gunSonu: { ad: 'Seri gün sonu hatırlatması', ikon: 'fire' },
+    yatis: { ad: 'Yatış hatırlatması', ikon: 'bed' },
     sayac: { ad: 'Geri sayım bildirimleri', ikon: 'hourglass-half' },
     widget: { ad: 'Ana ekran widget’ı', ikon: 'th-large' },
 };

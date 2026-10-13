@@ -59,6 +59,15 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
   }),
 }));
 
+const mockErtelemeIsle = jest.fn().mockResolvedValue(true);
+jest.mock('../MuhafizErtelemeServisi', () => ({
+  muhafizErtelemesiniIsle: (...a: unknown[]) => mockErtelemeIsle(...a),
+}));
+const mockKazayaBorcEkle = jest.fn().mockResolvedValue({ basarili: true });
+jest.mock('../../../data/local/LocalKazaServisi', () => ({
+  localKazayaBorcEkle: (...a: unknown[]) => mockKazayaBorcEkle(...a),
+}));
+
 // ArkaplanMuhafizServisi mock singleton
 const mockVakitBildirimleriniIptalEt = jest.fn().mockResolvedValue(undefined);
 (ArkaplanMuhafizServisi.getInstance as jest.Mock).mockReturnValue({
@@ -1008,5 +1017,95 @@ describe('BildirimServisi', () => {
         'muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'
       );
     });
+  });
+});
+
+// ==================== ERTELE (#289) + GÜN SONU MUHASEBESİ (#290) ====================
+
+describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
+  let servis: BildirimServisi;
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await AsyncStorage.clear();
+    (BildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    servis = BildirimServisi.getInstance();
+    (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+    mockKazayaBorcEkle.mockResolvedValue({ basarili: true });
+  });
+
+  const yuk = (kimlik: string, eylem: string, data: Record<string, unknown>, date = 1000) => ({
+    actionIdentifier: eylem,
+    notification: { date, request: { identifier: kimlik, content: { title: 'Başlık', body: 'Gövde', data } } },
+  });
+
+  it('ertele eylemi JS yoluna (MuhafizErtelemeServisi) gider, namaz İŞARETLENMEZ', async () => {
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', 'ertele_10', { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' })
+    );
+    expect(mockErtelemeIsle).toHaveBeenCalledWith(
+      expect.objectContaining({ kimlik: 'muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', eylem: 'ertele_10', baslik: 'Başlık', govde: 'Gövde' })
+    );
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+  });
+
+  it('ertelenmiş kopya (SABİT kimlik) yeniden ertelenebilir — tekilleştirme gösterilme anını da katar', async () => {
+    const data = { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' };
+    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 1000));
+    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 2000));
+    expect(mockErtelemeIsle).toHaveBeenCalledTimes(2);
+  });
+
+  it('yatış hatırlatmasındaki "Kıldım" yatsıyı işaretler', async () => {
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_yatsi_yatis', BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM, { tip: 'yatis', vakit: 'yatsi', tarih: '2026-10-13' })
+    );
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-10-13', NamazAdi.Yatsi, true);
+  });
+
+  it('muhasebedeki "Kazaya ekle" eksik vakti kaza defterine ekler ve UI\'ı bilgilendirir', async () => {
+    const cb = jest.fn();
+    servis.setOnKazaEklendiCallback(cb);
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_ogle_muhasebe', BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE, {
+        tip: 'muhasebe',
+        tarih: '2026-10-13',
+        vakit: 'ogle',
+        kazayaEklenebilir: ['ogle'],
+      })
+    );
+    expect(mockKazayaBorcEkle).toHaveBeenCalledWith([{ namazAdi: 'Öğle', sayi: 1 }]);
+    expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith('muhafiz_2026-10-13_vakit_ogle_muhasebe');
+    expect(cb).toHaveBeenCalled();
+    // Kazaya eklemek namazı "kıldım" yapmaz.
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+  });
+
+  it('"Kazaya ekle" aynı yanıt ikinci kez gelirse (açılış) TEKRAR eklemez', async () => {
+    const y = yuk('muhafiz_2026-10-13_vakit_ogle_muhasebe', BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE, {
+      tip: 'muhasebe',
+      tarih: '2026-10-13',
+      kazayaEklenebilir: ['ogle'],
+    });
+    await servis.arkaplanYanitiniIsle(y);
+    await servis.arkaplanYanitiniIsle(y);
+    expect(mockKazayaBorcEkle).toHaveBeenCalledTimes(1);
+  });
+
+  it('kategoriler: ertele (tek/iki) ve muhasebe (tek/çoklu) kaydedilir; ertele uygulamayı AÇMAZ', async () => {
+    (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+    await servis.baslatBildirimDinleyicisi();
+    const kategoriler = Object.fromEntries(
+      (Notifications.setNotificationCategoryAsync as jest.Mock).mock.calls.map((c) => [c[0], c[1]])
+    );
+    expect(kategoriler.muhafiz_ertele2_category.map((a: { identifier: string }) => a.identifier)).toEqual([
+      'kildim_action',
+      'ertele_10',
+      'ertele_20',
+    ]);
+    expect(kategoriler.muhafiz_ertele1_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'ertele_10']);
+    expect(kategoriler.muhafiz_ertele2_category[1].options.opensAppToForeground).toBe(false);
+    expect(kategoriler.muhasebe_tek_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'kazaya_ekle_action']);
+    expect(kategoriler.muhasebe_coklu_category[0].options.opensAppToForeground).toBe(true);
   });
 });

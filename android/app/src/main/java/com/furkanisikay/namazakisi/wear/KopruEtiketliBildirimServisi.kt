@@ -9,6 +9,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
+import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
@@ -35,8 +37,9 @@ import expo.modules.notifications.service.interfaces.PresentationDelegate
  * BOOT/MY_PACKAGE_REPLACED kurulum eylemleri BİLEREK burada dinlenmez — expo'nun
  * kendi alıcısı yapar, iki kez kurulmasın.
  *
- * Etiket yalnız `muhafiz_` önekli kimliklere basılır (`anonsKimligi.ts` ile aynı
- * önek). Saat tarafında dışlama ancak saatin kendi planı VE bildirim izni varken
+ * Etiket yalnız muhafız PLAN kimliklerine (`muhafiz_..._seviye_N_dk_K`,
+ * `anonsKimligi.ts`) basılır; aynı uzaydaki erteleme ve yatış/muhasebe
+ * bildirimleri saatte kurulmadığı için köprülenir. Saat tarafında dışlama ancak saatin kendi planı VE bildirim izni varken
  * açılır; yoksa köprü bildirimi tek uyarı olarak kalır.
  *
  * GÜNCELLEME GEÇİŞİ (Fable incelemesi, YÜKSEK): expo tetik PendingIntent'ini tasarlanan
@@ -69,7 +72,11 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
      */
     override fun onReceiveNotificationResponse(context: Context, intent: Intent) {
         val islendi = try {
-            BildirimKildimIsleyici.isle(context, intent, getSchedulingDelegate(context))
+            val zamanlama = getSchedulingDelegate(context)
+            // "Ertele" (issue #289) da AYNI gerekçeyle native işlenir: erteleme JS'i
+            // beklemeden kurulmalı, aradaki uyarılar susmalı.
+            BildirimKildimIsleyici.isle(context, intent, zamanlama) ||
+                BildirimErteleIsleyici.isle(context, intent, zamanlama)
         } catch (_: Exception) {
             false
         }
@@ -93,7 +100,10 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
         ): android.app.Notification {
             val bildirim = super.createNotification(notification, notificationBehavior)
             val kimlik = notification.notificationRequest?.identifier ?: return bildirim
-            if (kimlik.startsWith(MUHAFIZ_ONEKI)) {
+            // Yalnız muhafız PLANI: saat yalnız planı kendi kurar. Erteleme (#289)
+            // ve yatış/muhasebe (#290) aynı `muhafiz_` uzayında ama saatte YOK →
+            // köprüyle gelmeleri gerekir, etiket basılırsa bilekte hiç görünmezlerdi.
+            if (ErtelemeKurallari.planKimligiMi(kimlik)) {
                 try {
                     koprulemeEtiketiEkle(context, bildirim)
                 } catch (_: Exception) {
@@ -107,7 +117,6 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
     companion object {
         /** Saat tarafı `KopruAyari.MUHAFIZ_KOPRU_ETIKETI` ile AYNI olmalı. */
         const val MUHAFIZ_KOPRU_ETIKETI = "namazakisi_muhafiz"
-        private const val MUHAFIZ_ONEKI = "muhafiz_"
 
         /**
          * Kurulmuş bildirimin ekstralarına `WearableExtender` paketini ekler. Anahtar

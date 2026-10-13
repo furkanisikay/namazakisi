@@ -40,6 +40,40 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
+    {
+        id: 'yatis-hatirlatmasi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Yatmadan Önce Hatırlatma',
+        aciklama:
+            'Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün.',
+        detayAciklama:
+            'Yatsı vakti saatlerce sürer ve muhafızın "vakit çıkıyor" uyarısı sabaha kalır; asıl kayıp çoğu zaman uykuya dalmaktır. Yatış saatinizden belirlediğiniz süre önce tek bir bildirim gelir: yatsıyı işaretlemediyseniz yatsı hatırlatması, işaretlediyseniz günün muhasebesi ("Bugün 4/5 · öğle işaretlenmemiş"). Tek eksik varsa bildirimden "Kıldım" diyebilir ya da kaza defterinize ekleyebilirsiniz. Özel gün aralığında gönderilmez.',
+        ikon: 'bed',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Yatış saatinizi girin',
+        kartGoster: true,
+        detaylar: [
+            'Gece yarısından sonra yatıyorsanız hatırlatma yine o günün namazlarını sayar',
+            'Birden fazla eksik varsa bildirim uygulamayı açıp incelemenizi önerir',
+        ],
+    },
+    // Muhafız bildiriminde "Ertele" (issue #289) — kart kapalı (yalnız "Neler Yeni").
+    {
+        id: 'muhafiz-ertele',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Hatırlatmayı Erteleyin',
+        aciklama:
+            'Muhafız bildiriminden "10 dk ertele" ya da "20 dk ertele" diyerek hatırlatmayı kapatıp unutmak yerine somut bir zamana taşıyabilirsiniz.',
+        detayAciklama:
+            'Ertelediğinizde o vaktin arada kalan uyarıları susar ve hatırlatma seçtiğiniz anda aynı ses ve tonla geri gelir. Erteleme vaktin çıkmasına 3 dakika kalanı asla geçmez; ikindide sınır, güneşin sararmaya başladığı kerahat vaktidir. Vaktin sonuna çok az kaldıysa erteleme düğmesi gösterilmez. Bildirimden "Kıldım" dediğinizde ertelenen hatırlatma da iptal olur.',
+        ikon: 'clock',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Muhafızı inceleyin',
+        kartGoster: false,
+    },
     // Siri, Kısayollar ve Odak filtresi (issue #279) — yalnız iPhone; kart kapalı.
     {
         id: 'ios-siri-kisayollar-odak',
