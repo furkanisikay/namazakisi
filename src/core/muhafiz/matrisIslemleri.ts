@@ -100,6 +100,11 @@ function bosHucre(kademe: SeviyeKademe, esikDk: number): SeviyeAyari {
  * Kullanicinin sectigi BILDIRIM SESI de (`bildirimSesi`/`sesAdi`) korunur: preset
  * zamanlama + KANALLAR + ACILIYET yazar, ses kullanicinindir.
  *
+ * GERCEK ALARM kanali (`kanallar.alarm`, issue #74) da KORUNUR: ayri bir rizayla
+ * (`alarmOnayi`) kullanicinin bilerek actigi bir secimdir; preset'e dokunmak onu
+ * sessizce silseydi kisi sabah alarmini "hafif"i denedigi icin kaybederdi (Fable L1).
+ * Preset alarm ACMAZ (rizasiz acilamaz) — yalniz mevcut olani tasir (indeksle).
+ *
  * Doldurma YON-UYGUNdur: giris yonundeki bir vakte cikis dilli sablon yazmak
  * ("...vakti cikiyor, son {sure} dakika") vakit YENI GIRMISKEN okunurdu.
  */
@@ -113,10 +118,12 @@ function seviyeyeUygula(
   // Sesli izni yoksa SESLI kanali kapanir ama adim SUSTURULMAZ: bildirim kanali
   // acilir. (Eski `mod` semasinda bu "'sesli'/'ikisi' → 'bildirim'" idi; yalniz
   // sesli kanali kapatsaydik sadece-sesli bir preset hucresi tumden kapanirdi.)
-  const kanallar: UyariKanallari =
+  const presetKanallari: UyariKanallari =
     !sesliIzinVar && sesliAnonsGerekliMi(preset.kanallar)
       ? kanalAc(kanalKapat(preset.kanallar, 'sesli'), 'bildirim')
       : preset.kanallar;
+  const kanallar: UyariKanallari =
+    mevcut.kanallar?.alarm === true ? kanalAc(presetKanallari, 'alarm') : presetKanallari;
   return {
     ...mevcut,
     kademe: preset.kademe,
@@ -143,8 +150,9 @@ function seviyeyeUygula(
  * Hazir yogunlugu MEVCUT matrise uygular (tum vakitler, tum seviyeler).
  *
  * SOZLESME: preset esik + siklik + KANALLAR + ACILIYET yazar. Korunan kullanici verileri
- * `anonsMetni` ve BILDIRIM SESI secimidir (`bildirimSesi`/`sesAdi`) — sesi preset'in
- * yazmasi, kullanicinin sectigi muzigi her preset dokunusunda silerdi. Elle yapilan
+ * `anonsMetni`, BILDIRIM SESI secimi (`bildirimSesi`/`sesAdi`) ve GERCEK ALARM kanali
+ * (`kanallar.alarm`, rizali secim) — sesi preset'in yazmasi, kullanicinin sectigi
+ * muzigi her preset dokunusunda silerdi. Elle yapilan
  * zamanlama degisiklikleri zaten `ozelMatrisYedegi` ile saklanir → veri kaybi yok.
  *
  * ZAMANLAMA YONE GORE SECILIR: `seviyeler` CIKIS tablosudur; giris yonlu vakitler
