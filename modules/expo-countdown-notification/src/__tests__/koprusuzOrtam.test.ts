@@ -131,4 +131,8 @@ describe('Kopru — Android ama native modul YOK (ikinci savunma)', () => {
     await expect(kopru.pilAyarlariniAc()).resolves.toBeNull();
     expect(kopru.samsungMu()).toBe(false);
   });
+
+  test('bekleyen anons sayisi "bilinmiyor" doner (issue #298 tani olcumu)', async () => {
+    await expect(kopru.bekleyenAnonsSayisi()).resolves.toBeNull();
+  });
 });

@@ -131,6 +131,19 @@ jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
   },
 }));
 
+
+// BİLDİRİM SINIRI REHBERİ (issue #298). Varsayılan: defter HAZIR DEĞİL (kart
+// çizilmez, simülasyon hiçbir şeyi engellemez) → diğer testler etkilenmez.
+// Rehber testleri kutuya GERÇEK çekirdekten kurulmuş bir bütçe koyar.
+const mockButceKutusu: { deger: unknown } = { deger: null };
+jest.mock('../../hooks/useBildirimButcesi', () => {
+  const gercek = jest.requireActual('../../hooks/useBildirimButcesi');
+  return {
+    ...gercek,
+    useBildirimButcesi: () => mockButceKutusu.deger ?? gercek.butceNesnesiOlustur('ios', null, null),
+  };
+});
+
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
   return {
@@ -1318,6 +1331,121 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(
         getByText('2. hatırlatma bir öncekinden daha yumuşak. Bilerek seçtiyseniz sorun yok.')
       ).toBeTruthy();
+    });
+  });
+
+  // ── Bildirim sınırı rehberi (issue #298) ───────────────────────────────────
+  describe('bildirim sınırı rehberi', () => {
+    const {
+      butceNesnesiOlustur,
+    } = jest.requireActual('../../hooks/useBildirimButcesi');
+    const { matrisKur, ISTANBUL } = jest.requireActual('../../../core/bildirim/__tests__/defterFikstur');
+    const RENKLER_DURUMLU = {
+      ...mockRenkler,
+      birincilMetin: '#FFFFFF',
+      durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
+    };
+    // Sabit an: her koşuda aynı plan (saat değil mock girdisi senaryoyu kurar).
+    const SABAH = new Date(2026, 9, 13, 9, 0, 0);
+    const yogunMatris = (): MuhafizMatrisi => matrisKur();
+
+    const butceKur = (matris: MuhafizMatrisi) => {
+      mockButceKutusu.deger = butceNesnesiOlustur('ios', {
+        platform: 'ios',
+        simdi: SABAH,
+        koordinat: ISTANBUL,
+        muhafiz: { aktif: true, matris },
+      });
+    };
+
+    beforeEach(() => {
+      (useRenkler as jest.Mock).mockReturnValue(RENKLER_DURUMLU);
+    });
+    afterEach(() => {
+      mockButceKutusu.deger = null;
+    });
+
+    it('aşımda kart kırmızıdır ve kaç bildirimin gelmeyeceğini söyler', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      expect(getByText('Bazı hatırlatmalar gelmeyecek')).toBeTruthy();
+      expect(getByTestId('bildirim-butce-sayi').props.children.join('')).toMatch(/^\d+ \/ 64$/);
+      expect(getByText(/en geç kurulan \d+ bildirim gelmeyecek/)).toBeTruthy();
+      expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#F44336');
+    });
+
+    it('sınırın altında kart sakin (birincil renk), iPhone sınırı yazılır', async () => {
+      const hafif = matrisKur(() => ({
+        seviyeler: [{ kademe: 'sert', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' }],
+      }));
+      butceKur(hafif);
+      const { getByText, getByTestId } = await kur({ matris: hafif });
+      expect(getByText('Bekleyen bildirimleriniz')).toBeTruthy();
+      expect(getByText('iPhone sınırı 64. Ayrıntı için dokunun.')).toBeTruthy();
+      expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#4CAF50');
+    });
+
+    it('karta dokununca kaynak dökümü ve ölçülmüş öneriler görünür', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByTestId('bildirim-butce-karti'));
+      expect(getByText('Bildirim sınırı')).toBeTruthy();
+      expect(getByTestId('kaynak-muhafiz')).toBeTruthy();
+      expect(getByText('ÖNERİLERİMİZ')).toBeTruthy();
+      const [once, ok] = getByTestId('oneri-sayi-seyreklestir').props.children;
+      expect(typeof once).toBe('number');
+      expect(ok).toBe(' → ');
+    });
+
+    it('SIĞMAYAN hatırlatma EKLENMEZ; rehber nedenini gösterir, Vazgeç hiçbir şey yazmaz', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByText, getByLabelText, queryByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByText('Yatsı'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      fireEvent.press(getByLabelText('Yatsı vaktine hatırlatma ekleyin'));
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+      expect(getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+      fireEvent.press(getByLabelText('Vazgeç'));
+      expect(queryByText('Bu hatırlatma sığmıyor')).toBeNull();
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('öneri tek dokunuşla uygulanır, GERİ AL eski matrisi ve yoğunluğu geri getirir', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByLabelText, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByTestId('bildirim-butce-karti'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      fireEvent.press(getByLabelText('Nazik hatırlatmalar bir kez çalsın: uygulayın'));
+      const yazilan = (matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0] as MuhafizMatrisi;
+      expect(yazilan.ogle.seviyeler[0].siklik).toBe('birkez');
+      // Sert/acil adımlar AYNEN kalır.
+      expect(yazilan.ogle.seviyeler[2]).toEqual(matris.ogle.seviyeler[2]);
+      expect(getByText(/Nazik hatırlatmalar bir kez çalsın · \d+ bildirim/)).toBeTruthy();
+
+      fireEvent.press(getByText('GERİ AL'));
+      expect((matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0]).toBe(matris);
+      expect(muhafizAyarlariniGuncelle).toHaveBeenLastCalledWith({ yogunluk: 'ozel' });
+    });
+
+    it('ekleme sayfasında öneriler sığdırınca değişiklik öneriyle BİRLİKTE yazılır', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByText, getByLabelText, getAllByLabelText, queryByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByText('Yatsı'));
+      fireEvent.press(getByLabelText('Yatsı vaktine hatırlatma ekleyin'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      // Önerileri sırayla uygula: sığana kadar hiçbir şey yazılmaz.
+      for (let i = 0; i < 6 && queryByText('Bu hatırlatma sığmıyor'); i++) {
+        fireEvent.press(getAllByLabelText(/: uygulayın$/)[0]);
+      }
+      expect(queryByText('Bu hatırlatma sığmıyor')).toBeNull();
+      expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
+      const yazilan = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0] as MuhafizMatrisi;
+      expect(yazilan.yatsi.seviyeler).toHaveLength(matris.yatsi.seviyeler.length + 1);
     });
   });
 });

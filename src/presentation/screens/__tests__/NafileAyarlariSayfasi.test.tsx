@@ -19,16 +19,14 @@ const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 // Bildirim sınırı rehberi (issue #298) ayrı testlerde; burada defter "hazır değil"
 // → kart çizilmez, simülasyon hiçbir değişikliği engellemez.
-jest.mock('../../hooks/useBildirimButcesi', () => ({
-    useBildirimButcesi: () => ({
-        platform: 'ios',
-        ozet: null,
-        girdi: null,
-        girdiyiKur: () => null,
-        onerileriHesapla: () => [],
-        simuleEt: () => null,
-    }),
-}));
+const mockButceKutusu: { deger: unknown } = { deger: null };
+jest.mock('../../hooks/useBildirimButcesi', () => {
+    const gercek = jest.requireActual('../../hooks/useBildirimButcesi');
+    return {
+        ...gercek,
+        useBildirimButcesi: () => mockButceKutusu.deger ?? gercek.butceNesnesiOlustur('ios', null, null),
+    };
+});
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -58,7 +56,8 @@ const RENKLER = {
     metin: '#15161A',
     metinIkincil: '#757575',
     sinir: '#E0E0E0',
-    durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3' },
+    birincilMetin: '#FFFFFF',
+    durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
 };
 
 const dispatch = jest.fn();
@@ -113,5 +112,59 @@ describe('NafileAyarlariSayfasi', () => {
             hatirlatmalar: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar, kusluk: { aktif: true, ofsetDk: 5 } },
         });
         expect(ekran.getAllByText(/girişten 5 dk sonra/).length).toBeGreaterThan(0);
+    });
+});
+
+describe('NafileAyarlariSayfasi — bildirim sınırı rehberi (issue #298)', () => {
+    const { butceNesnesiOlustur } = jest.requireActual('../../hooks/useBildirimButcesi');
+    const { matrisKur, ISTANBUL } = jest.requireActual('../../../core/bildirim/__tests__/defterFikstur');
+    const SABAH = new Date(2026, 9, 13, 9, 0, 0);
+    const GUNDUZ: NafileAyarlari = {
+        ...VARSAYILAN_NAFILE_AYARLARI,
+        hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
+    };
+
+    const butceKur = (nafile: NafileAyarlari) => {
+        mockButceKutusu.deger = butceNesnesiOlustur('ios', {
+            platform: 'ios',
+            simdi: SABAH,
+            koordinat: ISTANBUL,
+            muhafiz: { aktif: true, matris: matrisKur() },
+            nafile,
+        });
+    };
+
+    beforeEach(() => jest.clearAllMocks());
+    afterEach(() => {
+        mockButceKutusu.deger = null;
+    });
+
+    it('iPhone sınırı aşıldığında kart görünür; sayfada YALNIZ nafile önerisi + muhafız yönlendirmesi', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        expect(ekran.getByText('Bazı hatırlatmalar gelmeyecek')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
+        expect(ekran.getByTestId('oneri-nafileGunuGunune')).toBeTruthy();
+        expect(ekran.queryByTestId('oneri-seyreklestir')).toBeNull();
+        fireEvent.press(ekran.getByLabelText('Namaz Muhafızı ayarlarında yer açın'));
+        expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
+    });
+
+    it('sığmayan hatırlatma AÇILMAZ (teheccüd) — rehber açılır, ayar yazılmaz', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent(ekran.getByLabelText('Teheccüd hatırlatması'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
+        expect(ekran.getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+    });
+
+    it('"günü gününe" tek dokunuşla uygulanır ve GERİ AL ile geri gelir', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
+        fireEvent.press(ekran.getByLabelText('Nafile hatırlatmalarını günü gününe kurun: uygulayın'));
+        expect(nafileAyariniGuncelle).toHaveBeenLastCalledWith(expect.objectContaining({ gunuGununeKur: true }));
+        fireEvent.press(ekran.getByText('GERİ AL'));
+        expect(nafileAyariniGuncelle).toHaveBeenLastCalledWith(expect.objectContaining({ gunuGununeKur: false }));
     });
 });

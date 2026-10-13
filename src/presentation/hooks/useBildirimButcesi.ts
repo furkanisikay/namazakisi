@@ -9,7 +9,7 @@
  * içindir: ikisi ayrışırsa loga yazılır (bir plan üreticisi servisinden
  * kopmuş demektir).
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
@@ -52,6 +52,40 @@ export interface BildirimButcesi {
     onerileriHesapla: (g?: DefterGirdisi | null) => ButceOnerisi[];
     /** Değişiklik sığar mı? Girdi hazır değilse `null` (engellenmez). */
     simuleEt: (d: DefterDegisikligi) => DegisiklikSimulasyonu | null;
+}
+
+/**
+ * Hazır bir girdiden rehber nesnesi kurar — SAF (testler de kullanır). Değişiklik
+ * girdisi AYNI `simdi`yi taşır: önce/sonra ayrı anlarla ölçülseydi dakika
+ * sınırında bir tetik iki tarafa farklı düşebilirdi.
+ */
+export function butceNesnesiOlustur(
+    platform: BildirimPlatformu,
+    girdi: DefterGirdisi | null,
+    ozet: DefterOzeti | null = girdi ? defterOzetiHesapla(girdi) : null
+): BildirimButcesi {
+    const girdiyiKur = (d: DefterDegisikligi): DefterGirdisi | null =>
+        girdi
+            ? {
+                ...girdi,
+                muhafiz: d.matris && girdi.muhafiz ? { ...girdi.muhafiz, matris: d.matris } : girdi.muhafiz,
+                nafile: d.nafile ?? girdi.nafile,
+            }
+            : null;
+    return {
+        platform,
+        ozet,
+        girdi,
+        girdiyiKur,
+        onerileriHesapla: (g?: DefterGirdisi | null) => {
+            const hedef = g ?? girdi;
+            return hedef ? butceOnerileriOlustur(hedef) : [];
+        },
+        simuleEt: (d: DefterDegisikligi) => {
+            const sonra = girdiyiKur(d);
+            return girdi && sonra ? degisiklikSimuleEt(girdi, sonra) : null;
+        },
+    };
 }
 
 export const bildirimPlatformu = (): BildirimPlatformu => (Platform.OS === 'ios' ? 'ios' : 'android');
@@ -114,34 +148,5 @@ export function useBildirimButcesi(): BildirimButcesi {
         });
     }, [ozetHazir]);
 
-    const girdiyiKur = useCallback(
-        (d: DefterDegisikligi): DefterGirdisi | null => {
-            if (!girdi) return null;
-            return {
-                ...girdi,
-                simdi: new Date(),
-                muhafiz: d.matris && girdi.muhafiz ? { ...girdi.muhafiz, matris: d.matris } : girdi.muhafiz,
-                nafile: d.nafile ?? girdi.nafile,
-            };
-        },
-        [girdi]
-    );
-
-    const onerileriHesapla = useCallback(
-        (g?: DefterGirdisi | null) => {
-            const hedef = g ?? girdi;
-            return hedef ? butceOnerileriOlustur(hedef) : [];
-        },
-        [girdi]
-    );
-
-    const simuleEt = useCallback(
-        (d: DefterDegisikligi) => {
-            const sonra = girdiyiKur(d);
-            return girdi && sonra ? degisiklikSimuleEt(girdi, sonra) : null;
-        },
-        [girdi, girdiyiKur]
-    );
-
-    return { platform, ozet, girdi, girdiyiKur, onerileriHesapla, simuleEt };
+    return useMemo(() => butceNesnesiOlustur(platform, girdi, ozet), [platform, girdi, ozet]);
 }
