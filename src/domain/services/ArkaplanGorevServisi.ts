@@ -22,6 +22,7 @@ import { WidgetServisi } from './WidgetServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
+import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -436,6 +437,18 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku());
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Gün sonu hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.66: YATIS HATIRLATMASI + GUN SONU MUHASEBESI (issue #290)
+        //
+        // Gun sonu ile ayni gerekce: tarihli tetikler, sonlu pencere, muhafizdan
+        // bagimsiz → muhafiz erken donuslerinden ONCE. Ayarlar ham depolamadan.
+        // =====================================================
+        try {
+            await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Yatış hatırlatması tazelenemedi', e);
         }
 
         // =====================================================

@@ -60,6 +60,17 @@ jest.mock('../vakitBildirimSlice', () => ({
 jest.mock('../cumaHatirlatmaSlice', () => ({
   cumaHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'cumaHatirlatma/yukle' })),
 }));
+jest.mock('../yatisHatirlatmaSlice', () => ({
+  yatisHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'yatisHatirlatma/yukle' })),
+}));
+// Yatış hatırlatması (issue #290): içerik namaz kayıtlarından üretilir; içe
+// aktarma kayıtları doğrudan yazdığı için yayma koşsa da koşmasa da yeniden planlanır.
+const mockYatisGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/YatisHatirlatmaServisi', () => ({
+  YatisHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
+  },
+}));
 jest.mock('../nafileSlice', () => ({
   nafileAyarlariniYukle: jest.fn(() => ({ type: 'nafile/yukle' })),
 }));
@@ -360,6 +371,17 @@ describe('yedeklemeSlice', () => {
         expect(mockOzelGunDegistiUygula).not.toHaveBeenCalled();
         expect(mockGunSonuGuncelle).not.toHaveBeenCalled();
         expect(mockNafileGuncelle).toHaveBeenCalledTimes(1);
+      });
+
+      it('NÖBETÇİ (#290): namaz kayıtları içe aktarılınca yatış/muhasebe yeniden planlanır (kılınmışlık gözlemcisi tetiklenmez)', async () => {
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          '@namaz_akisi/namaz_gun_2026-06-14': { sabah: true },
+        });
+        mockYatisGuncelle.mockClear();
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockYatisGuncelle).toHaveBeenCalledTimes(1);
       });
     });
   });

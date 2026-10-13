@@ -56,6 +56,12 @@ const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../GunSonuHatirlaticiServisi', () => ({
     gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
 }));
+const mockYatisGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../YatisHatirlatmaServisi', () => ({
+    YatisHatirlatmaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
+    },
+}));
 jest.mock('../NafileHatirlatmaServisi', () => ({
     NafileHatirlatmaServisi: {
         getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
@@ -192,6 +198,9 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // önce — şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
         expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
         expect(mockGunSonuGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
+        // ve "vakti çıkmış" kararları vakitlerden türer — şehirle kayar.
+        expect(mockYatisGuncelle).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

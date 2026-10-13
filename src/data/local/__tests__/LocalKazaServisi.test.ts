@@ -8,7 +8,7 @@
  * Okuma ASLA kilitlenmemeli: bozuk veride boş (kullanılabilir) durumla başarılı dönmeli.
  */
 
-import { localKazaDurumunuGetir } from '../LocalKazaServisi';
+import { localKazaDurumunuGetir, localKazayaBorcEkle } from '../LocalKazaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası erişebilsin)
@@ -86,4 +86,29 @@ describe('LocalKazaServisi.localKazaDurumunuGetir — bozuk veri dayanıklılı�
       expect(y.veri?.namazlar.length).toBeGreaterThan(0);
     }
   );
+});
+
+describe('LocalKazaServisi.localKazayaBorcEkle — bildirimden "Kazaya ekle" (issue #290)', () => {
+  beforeEach(() => mockStore.clear());
+
+  test('boş diskte borç ekler ve toplamları günceller', async () => {
+    const y = await localKazayaBorcEkle([{ namazAdi: 'Öğle', sayi: 1 }, { namazAdi: 'İkindi', sayi: 1 }]);
+    expect(y.basarili).toBe(true);
+    const disk = JSON.parse(mockStore.get(KEY)!);
+    expect(disk.toplamKalan).toBe(2);
+    expect(disk.namazlar.find((n: { namazAdi: string }) => n.namazAdi === 'Öğle').kalanBorc).toBe(1);
+  });
+
+  test('mevcut borcun üstüne ekler', async () => {
+    await localKazayaBorcEkle([{ namazAdi: 'Sabah', sayi: 2 }]);
+    await localKazayaBorcEkle([{ namazAdi: 'Sabah', sayi: 1 }]);
+    expect(JSON.parse(mockStore.get(KEY)!).toplamKalan).toBe(3);
+  });
+
+  test('BOZUK kaydın üstüne YAZMAZ (kurtarılabilir ham değer korunur)', async () => {
+    mockStore.set(KEY, '{kesik json');
+    const y = await localKazayaBorcEkle([{ namazAdi: 'Öğle', sayi: 1 }]);
+    expect(y.basarili).toBe(false);
+    expect(mockStore.get(KEY)).toBe('{kesik json');
+  });
 });
