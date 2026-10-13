@@ -72,6 +72,13 @@ export const YATIS_DAKIKA_ADIM = 5;
  */
 export const YATIS_SAATLERI: readonly number[] = [20, 21, 22, 23, 0, 1, 2];
 
+/**
+ * Yatış tetiği yatsı GİRİŞİNDEN önceyse (yazın 20:30 yatış, yatsı ~22:00) yatsı
+ * hatırlatması yatsı girdikten bu kadar sonraya çekilir. Aksi halde tetik anında
+ * yatsı "girmemiş" sayılır: hatırlatma hiç tutmaz, muhasebe de yatsıyı saymaz.
+ */
+export const YATIS_YATSI_GIRIS_PAYI_DK = 5;
+
 /** Kaç namaz günü ileri planlanır — gün sonu seri hatırlatmasıyla AYNI gerekçe (iOS 64 bütçesi). */
 export const YATIS_PLAN_GUN_SAYISI = { android: 7, ios: 3 } as const;
 
@@ -168,6 +175,44 @@ export function namazGunuVakitleri(koordinat: { lat: number; lng: number }, gun:
     };
 }
 
+/**
+ * Yatsı hatırlatmasının ETKİN tetiği: `max(yatış tetiği, yatsı girişi + pay)`,
+ * yatsı çıkışını geçmeden. Yalnız yatsı hatırlatması açıkken ve yatsı kılınmamışken
+ * kayar — yalnız muhasebe açıkken kullanıcının seçtiği saat korunur (ekran bunu
+ * bilgi satırıyla söyler: `yatsiOncesiTetikBilgisi`).
+ */
+export function yatsiHatirlatmaTetigi(
+    tetik: Date,
+    vakitler: Record<FarzVakit, VakitPenceresi>,
+    kilinan: readonly VakitAdi[],
+    ayarlar: Pick<YatisAyarlari, 'yatsiHatirlatmasi'>
+): Date {
+    if (!ayarlar.yatsiHatirlatmasi || kilinan.includes('yatsi')) return tetik;
+    const enErken = vakitler.yatsi.giris.getTime() + YATIS_YATSI_GIRIS_PAYI_DK * 60_000;
+    if (tetik.getTime() >= enErken || enErken >= vakitler.yatsi.cikis.getTime()) return tetik;
+    return new Date(enErken);
+}
+
+/**
+ * Ekran için: bugünün namaz gününde hatırlatma saati yatsı girişinden önce mi?
+ * Öyleyse yatsı girişini döndürür (bilgi satırı "yatsı vaktinden (22:04) önce"
+ * der), değilse/konum yoksa `null`. `simdi` enjekte edilir.
+ */
+export function yatsiOncesiTetikBilgisi(
+    koordinat: { lat: number; lng: number } | null | undefined,
+    ayarlar: Pick<YatisAyarlari, 'saat' | 'dakika' | 'onceDk'>,
+    simdi: Date
+): { yatsiGiris: Date } | null {
+    if (!koordinatGecerli(koordinat) || !gecerliTarih(simdi)) return null;
+    try {
+        const gun = gunKaydir(simdi, 0);
+        const yatsiGiris = namazGunuVakitleri(koordinat, gun).yatsi.giris;
+        return yatisTetikAni(gun, ayarlar).getTime() < yatsiGiris.getTime() ? { yatsiGiris } : null;
+    } catch {
+        return null;
+    }
+}
+
 const adListesi = (vakitler: readonly FarzVakit[]): string => vakitler.map((v) => VAKIT_KUCUK[v]).join(', ');
 
 /**
@@ -244,8 +289,9 @@ export interface YatisPlanGirdisi {
     gunAtlanirMi?: (gun: string) => boolean;
 }
 
-const koordinatGecerli = (k: YatisPlanGirdisi['koordinat']): k is { lat: number; lng: number } =>
-    !!k && Number.isFinite(k.lat) && Number.isFinite(k.lng) && !(k.lat === 0 && k.lng === 0);
+function koordinatGecerli(k: { lat: number; lng: number } | null | undefined): k is { lat: number; lng: number } {
+    return !!k && Number.isFinite(k.lat) && Number.isFinite(k.lng) && !(k.lat === 0 && k.lng === 0);
+}
 
 /**
  * Önümüzdeki `gunSayisi` namaz gününün yatış bildirimleri (kronolojik).
@@ -283,8 +329,11 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         }
         // Namaz günü ertesi imsakta biter: yatış ondan sonraysa o gün atlanır.
         if (a.zaman.getTime() >= vakitler.yatsi.cikis.getTime()) continue;
-        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinanlar(a.gun), a.zaman.getTime(), ayarlar);
-        if (icerik) plan.push({ ...icerik, gun: a.gun, zaman: a.zaman });
+        const kilinan = kilinanlar(a.gun);
+        // Yatış yatsı girişinden önceyse yatsı hatırlatması yatsı girdikten sonraya kayar.
+        const zaman = yatsiHatirlatmaTetigi(a.zaman, vakitler, kilinan, ayarlar);
+        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, zaman.getTime(), ayarlar);
+        if (icerik) plan.push({ ...icerik, gun: a.gun, zaman });
     }
     return plan;
 }
