@@ -32,6 +32,11 @@ export interface NafileAyarDegisikligi {
     teheccud?: Partial<NafileAyarlari['teheccud']>;
     /** Bildirim sınırı rehberinin "günü gününe kurun" önerisi (issue #298). */
     gunuGununeKur?: boolean;
+    /**
+     * Sesli anons rızası (issue #273) — YALNIZ `SesliOnayModal` onayında `true`
+     * yazılır; muhafızın `sesliOnayi`'sinden ayrıdır.
+     */
+    sesliOnayi?: boolean;
 }
 
 export const nafileAyarlariniBirlestir = (
@@ -46,6 +51,7 @@ export const nafileAyarlariniBirlestir = (
         },
         teheccud: { ...mevcut.teheccud, ...d.teheccud },
         gunuGununeKur: d.gunuGununeKur ?? mevcut.gunuGununeKur,
+        sesliOnayi: d.sesliOnayi ?? mevcut.sesliOnayi,
     });
 
 /**

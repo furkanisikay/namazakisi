@@ -5,10 +5,10 @@ const SON = new Date(2026, 5, 22, 3, 30);
 const tumMetinler = () => [
     nafileBildirimMetni({ tur: 'kusluk', son: SON }),
     nafileBildirimMetni({ tur: 'evvabin', son: SON }),
-    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudHedefi: 'sonUcteBir' }),
-    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudHedefi: 'imsaktanOnce', imsaktanOnceDk: 60 }),
-    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudHedefi: 'sonUcteBir', uyandirma: true }),
-    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudHedefi: 'imsaktanOnce', imsaktanOnceDk: 45, uyandirma: true }),
+    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudPenceresi: 'sonUcteBir' }),
+    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudPenceresi: 'yatsi', yon: 'cikisaDogru', kalanDk: 60 }),
+    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudPenceresi: 'sonUcteBir', uyandirma: true }),
+    nafileBildirimMetni({ tur: 'teheccud', son: SON, teheccudPenceresi: 'yatsi', yon: 'cikisaDogru', kalanDk: 45, uyandirma: true }),
 ];
 
 describe('nafileBildirimMetni', () => {

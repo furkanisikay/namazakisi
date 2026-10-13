@@ -52,3 +52,12 @@ export const YAKINLIK_ORANI = 0.85;
 /** Platformun rehberde gösterilen sınırı. */
 export const platformSiniri = (platform: BildirimPlatformu): number =>
     platform === 'ios' ? IOS_BEKLEYEN_TAVANI : ANDROID_TOPLAM_TAVANI;
+
+/**
+ * Nafile hatırlatmalarının (bildirim + sesli anons alarmı) Android'de bir
+ * planlama turunda kurabileceği en fazla alarm (issue #273). `ANDROID_DIGER_PAYI`
+ * İÇİNDEDİR: kalan pay vakit bildirimi, cuma, gün sonu, sayaç ve widget içindir.
+ * Kesme PLAN ÜRETİCİSİNDE (`nafilePlaniOlustur`) ve kronolojiktir — defter ile
+ * servis aynı sayıyı görür; en uzak geceler düşer, sonraki tur kurar.
+ */
+export const ANDROID_NAFILE_PAYI = 60;

@@ -234,12 +234,13 @@ export const AnaSayfa: React.FC = () => {
   const nafileSatirlari = useMemo(
     () =>
       nafileGostergesi
-        ? nafileZincirSatirlariOlustur(nafilePencereleri, new Date(nafileDakikasi * 60000), {
-            hedef: nafileTeheccud.hedef,
-            imsaktanOnceDk: nafileTeheccud.imsaktanOnceDk,
-          })
+        ? nafileZincirSatirlariOlustur(
+            nafilePencereleri,
+            new Date(nafileDakikasi * 60000),
+            nafileTeheccud.pencere
+          )
         : undefined,
-    [nafileGostergesi, nafilePencereleri, nafileDakikasi, nafileTeheccud.hedef, nafileTeheccud.imsaktanOnceDk]
+    [nafileGostergesi, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere]
   );
 
   // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).

@@ -33,7 +33,7 @@ import {
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
 import { kullanilabilirSlotHesapla } from '../muhafiz/ios/bildirimButcesi';
-import { nafilePlaniOlustur } from '../nafile/nafilePlani';
+import { nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -43,6 +43,7 @@ import { sayacPlaniOlustur } from './sayacPlani';
 import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vakitBildirimPlani';
 import {
     ANDROID_MUHAFIZ_PAYI,
+    ANDROID_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
     YAKINLIK_ORANI,
     platformSiniri,
@@ -159,8 +160,15 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     if (koordinat && g.nafile) {
         const ayar = g.nafile;
         guvenli(() => {
-            for (const k of nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi)) {
+            // Servisle AYNI seçenekler: Android'de nafile alarm payı üreticide keser (#273).
+            const secenekler = {
+                ...nafilePlanSecenekleri(ayar),
+                ...(android ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
+            };
+            const plan = nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi, secenekler);
+            for (const k of plan) {
                 ekle('nafile', k.zaman.getTime());
+                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm');
             }
         });
     }

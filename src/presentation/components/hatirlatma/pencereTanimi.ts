@@ -40,6 +40,12 @@ import {
     ANDROID_YETENEKLERI,
     type PlatformYetenekleri,
 } from '../../../core/muhafiz/ios/platformYetenekleri';
+import {
+    NAFILE_MAKS_ADIM,
+    NAFILE_TEKRAR_MAX_DK,
+    NAFILE_TEKRAR_MIN_DK,
+    NAFILE_VARSAYILAN_TEKRAR_DK,
+} from '../../../core/nafile/nafileTipleri';
 
 /**
  * CUMLE ICINDE gecen kucuk harfli pencere adlari ("… yatsı bugün 6 sa 40 dk").
@@ -293,6 +299,23 @@ export interface PencereTanimi {
     /** Esik degerinin birimi ("dk kala"); verilmezse yonden turetilir. */
     esikBirimi?: string;
     /**
+     * "Kapalı" kanal çipi gösterilsin mi? Verilmezse EVET. Nafilede (issue #273)
+     * HAYIR: kartın kendi anahtarı ve "Sil" var; kapalı bir adım anlamsızdır.
+     */
+    kapaliCipiVar?: boolean;
+    /**
+     * Sesli adımda serbest anons metni YERİNE gösterilecek örnek cümle ("Telefonunuz
+     * şöyle okur"). Verilirse anons editörü çizilmez — metin bağlamdan üretilir
+     * (nafile: muhafızın `{vakit}` şablonları farz vaktine kurulu).
+     */
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    /**
+     * Uygulama açıkken ekranda banner çıkıyor mu? Verilmezse EVET (muhafız).
+     * Nafilenin ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra
+     * duyulur" notu yanlış olurdu.
+     */
+    onPlanBanneriVar?: boolean;
+    /**
      * Pencerenin BUGUNKU giris ve cikis ANLARI.
      *
      * Zaman seridi saat etiketlerini ve "simdi" imlecini buradan cizer. Yalniz
@@ -388,7 +411,9 @@ export const acilTonKisitNotu = (yon: PencereYonu): string =>
         : `Acil ton yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
 
 /** Ekleme sinirina ulasildiginda dugmenin yerine cikan metin. */
-export const ADIM_SINIRI_NOTU = `Bir vakit için en fazla ${MUHAFIZ_MAKS_ADIM} hatırlatma kurabilirsiniz.`;
+export const adimSiniriNotu = (maksAdim: number): string =>
+    `Bir vakit için en fazla ${maksAdim} hatırlatma kurabilirsiniz.`;
+export const ADIM_SINIRI_NOTU = adimSiniriNotu(MUHAFIZ_MAKS_ADIM);
 
 /** Esik bolumu basligi (yon varsayilani). */
 export const esikBasligiOlustur = (yon: PencereYonu): string =>
@@ -512,53 +537,68 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
 }
 
 /**
- * Nafile (kuşluk / evvâbîn) hatırlatması için pencere tanımı (issue #77).
+ * Nafile (kuşluk / evvâbîn / teheccüd) hatırlatması için pencere tanımı
+ * (issue #77, #273).
  *
- * TEK ADIM, GİRİŞ YÖNLÜ, TEK ATIŞ: ölçü pencere başından geçen dakikadır
- * ("girişten 5 dk sonra"). Yön/kanal/ses/sıklık seçimi kapalı — bildirim
- * mevcut `vakit_bildirim` kanalından gider. `pencere` verilirse zaman şeridi
- * bugünün penceresini çizer (ortak bileşenin bedava getirdiği şey).
+ * Muhafızla AYNI dil: yön seçilir, en fazla 3 adım, her adımın eşiği/sıklığı
+ * (bir kez ya da 10–60 dk tekrar) ve kanalları (bildirim / sesli anons / ikisi
+ * + titreşim). Farklar: TON YOK (nafile davettir, ısrar değil), ses seçimi yok
+ * (kanal sesi), "Kapalı" çipi yok (kartın anahtarı kapatır), anons metni
+ * yazılmaz (bağlamdan üretilir — `anonsOrnegiOlustur`), ön plan banner'ı yok.
+ * `pencere` verilirse zaman şeridi bugünün penceresini çizer.
  */
 export function nafilePencereTanimi(secenekler: {
     kaynak: string;
     baslik: string;
     baslikKucuk: string;
     ikon: string;
-    esikSinirlari: EsikSinirlari;
-    esikAdimDk: number;
+    yon: PencereYonu;
+    adimSayisi: number;
     pencere?: { baslangic: Date; bitis: Date };
+    yetenekler?: PlatformYetenekleri;
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
 }): PencereTanimi {
     const pencereUzunluguDk = secenekler.pencere
         ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
         : undefined;
+    const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const renk = SEVIYE_BILGILERI.nazik.renk;
+    // Tek adımda "Hatırlatma", birden çokta "N. hatırlatma" (prototip).
+    const adimBilgileri: AdimBilgisi[] =
+        secenekler.adimSayisi > 1
+            ? Array.from({ length: NAFILE_MAKS_ADIM }, (_, i) => ({
+                baslik: `${i + 1}. hatırlatma`,
+                ikon: 'bell',
+                renk,
+            }))
+            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
     return {
         kaynak: secenekler.kaynak,
         baslik: secenekler.baslik,
         baslikKucuk: secenekler.baslikKucuk,
         ikon: secenekler.ikon,
-        // Metin cozumu icin bir vakit kimligi gerekir; nafile anons kullanmaz,
-        // deger yalniz tip sozlesmesini doldurur.
+        // Metin cozumu icin bir vakit kimligi gerekir; nafile anonsu yer tutucu
+        // icermez, deger yalniz tip sozlesmesini doldurur.
         vakit: 'ogle',
-        yon: 'girisindenItibaren',
-        yonSecilebilir: false,
-        maksAdim: 1,
+        yon: secenekler.yon,
+        yonSecilebilir: true,
+        maksAdim: NAFILE_MAKS_ADIM,
+        tonSecilebilir: false,
         pencereUzunluguDk,
-        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bell', renk: SEVIYE_BILGILERI.nazik.renk }],
-        kanalSecimiVar: false,
+        adimBilgileri,
+        kanalSecimiVar: true,
         sesSecimiVar: false,
-        siklikSecimiVar: false,
+        siklikSecimiVar: true,
+        kapaliCipiVar: false,
+        onPlanBanneriVar: false,
         anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
-        yetenekler: ANDROID_YETENEKLERI,
-        esikAdimDk: secenekler.esikAdimDk,
-        tekrarMinDk: TEKRAR_MIN_DK,
-        tekrarMaxDk: TEKRAR_MAX_DK,
-        varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
-        esikSinirlari: secenekler.esikSinirlari,
-        esikBasligi: 'NE ZAMAN',
-        esikAciklamasi: 'Vakit girdikten sonra',
-        esikErisimAdi: `${secenekler.baslik} kaç dk sonra`,
-        esikBirimi: 'dk sonra',
+        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        titresimSecilebilir: yetenekler.titresimSecimi,
+        yetenekler,
+        esikAdimDk: ESIK_ADIM_DK,
+        tekrarMinDk: NAFILE_TEKRAR_MIN_DK,
+        tekrarMaxDk: NAFILE_TEKRAR_MAX_DK,
+        varsayilanTekrarDk: NAFILE_VARSAYILAN_TEKRAR_DK,
         pencere: secenekler.pencere,
     };
 }

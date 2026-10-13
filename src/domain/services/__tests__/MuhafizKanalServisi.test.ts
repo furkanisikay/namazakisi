@@ -241,3 +241,55 @@ describe('MuhafizKanalServisi.hazirla', () => {
         expect(mockTemizle).toHaveBeenCalled();
     });
 });
+
+describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', () => {
+    const oncekiPlatform = Platform.OS;
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    const TITRESIMLI = muhafizKanalIdOlustur(VARSAYILAN_SES, false, true);
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        (Platform as { OS: string }).OS = 'android';
+        mockSesAdiAl.mockResolvedValue('Bir ses');
+        MuhafizKanalServisi.onbellegiSifirla();
+        await AsyncStorage.setItem(
+            'nafile_ayarlari',
+            JSON.stringify({
+                hatirlatmalar: {
+                    kusluk: {
+                        aktif: true,
+                        yon: 'girisindenItibaren',
+                        adimlar: [{ esikDk: 5, kanallar: { bildirim: true, titresim: true }, siklik: 'birkez' }],
+                    },
+                },
+            })
+        );
+    });
+
+    afterEach(async () => {
+        await AsyncStorage.removeItem('nafile_ayarlari');
+    });
+
+    afterAll(() => {
+        (Platform as { OS: string }).OS = oncekiPlatform;
+    });
+
+    it('muhafız turu nafilenin titreşimli kanalını OLUŞTURUR ve çöp toplamada KORUR', async () => {
+        await MuhafizKanalServisi.hazirla(matrisOlustur(dortSeviye()));
+        expect(mockGarantile.mock.calls.map((c) => c[0])).toContain(TITRESIMLI);
+        expect(mockTemizle.mock.calls[0][0]).toEqual(expect.arrayContaining(['muhafiz', TITRESIMLI]));
+    });
+
+    it('muhafız KAPALIYKEN (matrissiz) de nafile kanalı korunur', async () => {
+        await MuhafizKanalServisi.hazirla();
+        expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
+    });
+
+    it('ekKanallariHazirla yalnız oluşturur, çöp TOPLAMAZ', async () => {
+        await MuhafizKanalServisi.ekKanallariHazirla([
+            { yon: 'girisindenItibaren', seviyeler: [sv({ kanallar: { bildirim: true, titresim: true } })] },
+        ]);
+        expect(mockGarantile.mock.calls.map((c) => c[0])).toEqual([TITRESIMLI]);
+        expect(mockTemizle).not.toHaveBeenCalled();
+    });
+});

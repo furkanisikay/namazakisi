@@ -103,7 +103,14 @@ interface MuhafizYanitVerisi {
   vakit?: string;
   tarih?: string;
   seviye?: number;
+  /** Nafile bildirimi (issue #273): 'kusluk' | 'evvabin' | 'teheccud'. */
+  tur?: string;
 }
+
+const NAFILE_TURLERI = ['kusluk', 'evvabin', 'teheccud'] as const;
+type NafileYanitTuru = (typeof NAFILE_TURLERI)[number];
+const nafileTuruMu = (t: unknown): t is NafileYanitTuru =>
+  typeof t === 'string' && (NAFILE_TURLERI as readonly string[]).includes(t);
 
 /**
  * Kildim aksiyonu callback tipi
@@ -259,6 +266,24 @@ export class BildirimServisi {
       actionIdentifier,
       data,
     });
+
+    // Nafile bildirimi (issue #273): "Kıldım" yalnız o günün o nafilesinin kalan
+    // hatırlatmalarını iptal eder; namaz kaydı/puan/seri YAZILMAZ. Muhafız yoluna
+    // (`kildimAksiyonunuIsle`) ASLA düşmemeli — o yol farz vakti kaydeder.
+    if (data?.tip === 'nafile') {
+      if (actionIdentifier !== BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) return;
+      if (!nafileTuruMu(data.tur) || typeof data.tarih !== 'string') return;
+      try {
+        const { NafileHatirlatmaServisi } =
+          require('./NafileHatirlatmaServisi') as typeof import('./NafileHatirlatmaServisi');
+        await NafileHatirlatmaServisi.getInstance().kildimIsle(data.tarih, data.tur);
+        this.islenmisYanitId = yanitId;
+        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI, yanitId).catch(() => undefined);
+      } catch (error) {
+        Logger.error('BildirimServisi', 'Nafile Kildim isleme basarisiz:', error);
+      }
+      return;
+    }
 
     // Muhafiz bildirimi mi?
     if (data?.tip !== 'muhafiz') {
