@@ -126,7 +126,11 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
     const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
     /** Adım detayı açılırken matris + yoğunluk (kapanışta sığma simülasyonu için). */
-    const detayOncesiRef = useRef<{ matris: MuhafizMatrisi; yogunluk: HatirlatmaYogunlugu } | null>(null);
+    const detayOncesiRef = useRef<{
+        matris: MuhafizMatrisi;
+        yogunluk: HatirlatmaYogunlugu;
+        ozelMatrisYedegi?: MuhafizMatrisi;
+    } | null>(null);
     const nafileAyarlari = useAppSelector((state) => state.nafile?.ayarlar) as NafileAyarlari | undefined;
 
     // Faz 5: cihazda Türkçe konuşma paketi yoksa sesli modlarda kibar uyarı
@@ -428,10 +432,14 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /** Adım detayını aç — kapanışta sığma simülasyonu için önceki hâli sakla. */
     const detayiAc = useCallback(
         (vakit: MuhafizVakti, indeks: number) => {
-            detayOncesiRef.current = { matris, yogunluk: muhafizAyarlari.yogunluk };
+            detayOncesiRef.current = {
+                matris,
+                yogunluk: muhafizAyarlari.yogunluk,
+                ozelMatrisYedegi: muhafizAyarlari.ozelMatrisYedegi,
+            };
             setDetay({ vakit, indeks });
         },
-        [matris, muhafizAyarlari.yogunluk]
+        [matris, muhafizAyarlari.yogunluk, muhafizAyarlari.ozelMatrisYedegi]
     );
 
     /**
@@ -450,6 +458,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         );
         if (sigdi) return;
         dispatch(matrisiGuncelle(once.matris));
+        // `matrisiYaz` her dokunuşta özel yedeği de yazdı — reddedilen değişiklik orada kalmasın.
+        if (once.ozelMatrisYedegi) dispatch(ozelMatrisYedegiGuncelle(once.ozelMatrisYedegi));
         if (once.yogunluk !== muhafizAyarlari.yogunluk) {
             dispatch(muhafizAyarlariniGuncelle({ yogunluk: once.yogunluk }));
         }

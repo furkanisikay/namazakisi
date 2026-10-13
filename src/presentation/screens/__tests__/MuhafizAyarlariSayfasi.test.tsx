@@ -1431,6 +1431,30 @@ describe('MuhafizAyarlariSayfasi', () => {
       expect(muhafizAyarlariniGuncelle).toHaveBeenLastCalledWith({ yogunluk: 'ozel' });
     });
 
+    it('adım detayında SIĞMAYAN değişiklik kapanışta geri alınır ve rehber açılır', async () => {
+      const matris = yogunMatris();
+      matris.yatsi.seviyeler[0] = { ...matris.yatsi.seviyeler[0], siklik: { herDk: 10 } };
+      butceKur(matris);
+      const ekran = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(ekran.getByText('Yatsı'));
+      fireEvent.press(ekran.getByLabelText(/^1\. hatırlatma, Nazik ton — düzenleyin/));
+      fireEvent.press(ekran.getByLabelText('Tekrar aralığı azalt'));
+      const sik = (matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0] as MuhafizMatrisi;
+      expect(sik.yatsi.seviyeler[0].siklik).toEqual({ herDk: 9 });
+
+      // Store'un yazılanı yansıttığı an (ekran canlı state'ten okur).
+      (useAppSelector as unknown as jest.Mock).mockImplementation(
+        (selector: (state: ReturnType<typeof stateOlustur>) => unknown) =>
+          selector(stateOlustur({ matris: sik, yogunluk: 'ozel' }))
+      );
+      const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
+      ekran.rerender(<MuhafizAyarlariSayfasi />);
+
+      fireEvent.press(ekran.getByLabelText('Kapat'));
+      expect(ekran.getByText('Bu değişiklik sığmıyor')).toBeTruthy();
+      expect((matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0]).toBe(matris);
+    });
+
     it('ekleme sayfasında öneriler sığdırınca değişiklik öneriyle BİRLİKTE yazılır', async () => {
       const matris = yogunMatris();
       butceKur(matris);
