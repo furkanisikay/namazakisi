@@ -16,6 +16,7 @@ import yatisHatirlatmaReducer from './yatisHatirlatmaSlice';
 import camiyeGitReducer from './camiyeGitSlice';
 import nafileReducer from './nafileSlice';
 import nowBarReducer from './nowBarSlice';
+import sadeGorunumReducer from './sadeGorunumSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
@@ -39,6 +40,7 @@ export const store = configureStore({
     camiyeGit: camiyeGitReducer,
     nafile: nafileReducer,
     nowBar: nowBarReducer,
+    sadeGorunum: sadeGorunumReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,
     sahurSayac: sahurSayacReducer,

@@ -21,6 +21,9 @@ import { useFeedback } from '../../core/feedback';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { Anahtar } from '../components/common/Anahtar';
+import { kisaBildirimGoster } from '../components/common/KisaBildirim';
+import { useSadeGorunum } from '../hooks/useSadeGorunum';
 
 // Tema modu ikon eslesmesi
 const TEMA_MODU_IKONLARI: Record<TemaModu, string> = {
@@ -150,6 +153,52 @@ const RenkPaletiSecici: React.FC = () => {
 };
 
 /**
+ * Sade görünüm anahtarı (issue #295). Açıkken ana ekranın yerine tek ekran çizilir:
+ * şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi.
+ */
+const SadeGorunumSecici: React.FC = () => {
+  const renkler = useRenkler();
+  const sade = useSadeGorunum();
+
+  const degistir = (acik: boolean) => {
+    sade.ayarla(acik);
+    if (acik) kisaBildirimGoster('Ana sayfa artık sade görünümde');
+  };
+
+  return (
+    <View
+      className="p-4 rounded-2xl border"
+      style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+    >
+      <View className="flex-row items-center">
+        <View
+          className="w-11 h-11 rounded-full items-center justify-center mr-3.5"
+          style={{ backgroundColor: `${renkler.birincil}20` }}
+        >
+          <FontAwesome5 name="eye" size={18} color={renkler.birincil} solid />
+        </View>
+        <Text className="text-base font-semibold flex-1" style={{ color: renkler.metin }}>
+          Sade görünüm
+        </Text>
+        <Anahtar
+          value={sade.ayarAcik}
+          disabled={!sade.yuklendi}
+          onValueChange={degistir}
+          trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+          thumbColor={sade.ayarAcik ? renkler.birincil : '#f4f3f4'}
+          accessibilityLabel="Sade görünüm"
+        />
+      </View>
+      <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metinIkincil }}>
+        Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir “Kıldım” düğmesi görünür.
+        Yazılar büyüktür; vakte dokunduğunuzda sesli okunur. Ekranın altındaki “Tüm
+        uygulamayı açın” bağlantısıyla diğer bölümlere geçebilirsiniz.
+      </Text>
+    </View>
+  );
+};
+
+/**
  * Gorunum Ayarlari Sayfasi
  */
 export const GorunumAyarlariSayfasi: React.FC = () => {
@@ -189,6 +238,19 @@ const GorünumAyarlariIcerik: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View style={{ opacity: fadeAnim }}>
+        {/* Sade Görünüm Bölümü (issue #295) */}
+        <View className="mb-8">
+          <Text
+            className="text-xs font-bold tracking-wider mb-4"
+            style={{ color: renkler.metinIkincil }}
+          >
+            SADE GÖRÜNÜM
+          </Text>
+          <AyarCapasi id="sadeGorunum">
+            <SadeGorunumSecici />
+          </AyarCapasi>
+        </View>
+
         {/* Tema Modu Bolumu */}
         <View className="mb-8">
           <Text

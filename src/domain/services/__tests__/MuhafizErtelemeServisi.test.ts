@@ -54,13 +54,13 @@ describe('muhafizErtelemesiniIsle', () => {
         jest.replaceProperty(Platform, 'OS', 'android');
         const kimlik = 'muhafiz_2027-01-15_vakit_ogle_seviye_1_dk_45';
         await muhafizErtelemesiniIsle(
-            { kimlik, eylem: 'ertele_10', baslik: '⏰ 45 dk · Öğle vakti', govde: 'Gövde', data: veri({ kanalId: 'muhafiz_abc' }) },
+            { kimlik, eylem: 'ertele_10', baslik: 'Öğle · 45 dk kaldı ⏰', govde: 'Gövde', data: veri({ kanalId: 'muhafiz_abc' }) },
             SIMDI
         );
         expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith(kimlik);
         const [p] = planlanan();
         expect(p.identifier).toBe('muhafiz_2027-01-15_vakit_ogle_ertele');
-        expect(p.content.title).toBe('⏳ 35 dk kaldı · Ertelediğin Öğle namazı');
+        expect(p.content.title).toBe('Öğle · 35 dk kaldı · ertelediğin namaz ⏳');
         expect(p.content.body).toBe('Gövde');
         expect(p.content.data.ertelemeHedefMs).toBe(SIMDI + 10 * DK);
         expect(p.content.categoryIdentifier).toBe('muhafiz_ertele2_category');

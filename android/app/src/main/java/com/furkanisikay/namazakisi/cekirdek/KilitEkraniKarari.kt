@@ -1,0 +1,49 @@
+package com.furkanisikay.namazakisi.cekirdek
+
+/**
+ * Kilit ekranı / dock (hub) widget'ının SAF kararları (issue #295) — JVM testi:
+ * `KilitEkraniKarariTest`. Android'e dokunmaz.
+ *
+ * Android 16 QPR2 telefon kilit ekranı widget'ları ve tabletlerin "hub" (şarj
+ * istasyonu) modu aynı SystemUI "communal" ana bilgisayarını kullanır ve widget'ı
+ * `OPTION_APPWIDGET_HOST_CATEGORY = WIDGET_CATEGORY_KEYGUARD` (0x2) ile bağlar
+ * (AOSP `CommunalWidgetHost`). Ayrı bir "dock" kategorisi YOKTUR.
+ *
+ * NEDEN "Kıldım" kilit ekranında verilmez: communal ana bilgisayarı ETKİNLİK
+ * niyetlerini kilidi açtırarak başlatır (`startPendingIntentMaybeDismissingKeyguard`)
+ * ama YAYIN niyetlerini (widget "Kıldım" = `PendingIntent.getBroadcast`) kilit
+ * açılmadan işletir. Cepte ya da masada kilitli telefona yanlış bir dokunuş ibadet
+ * kaydı yazardı; kilit ekranına bakan herkes de işaretleyebilirdi. En sade güvenli
+ * çözüm: kilit ekranında widget SALT OKUNUR — durum görünür ("Kılındı" dahil),
+ * dokunuş uygulamayı açar (kilit açılır), işaretleme orada yapılır.
+ */
+object KilitEkraniKarari {
+    /** `AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD` — saf kalmak için sabit kopya. */
+    const val KATEGORI_KILIT_EKRANI = 0x2
+
+    /** `OPTION_APPWIDGET_HOST_CATEGORY` değeri kilit ekranı (ya da hub) mı? */
+    fun kilitEkraniMi(hostKategorisi: Int): Boolean =
+        hostKategorisi > 0 && (hostKategorisi and KATEGORI_KILIT_EKRANI) != 0
+
+    /** İşaretleme (yayın) niyeti yalnız kılınabilir durumda VE kilit ekranı DIŞINDA verilir. */
+    fun kildimNiyetiVerilsinMi(kildim: KildimDurumu, kilitEkrani: Boolean): Boolean =
+        kildim == KildimDurumu.KILINABILIR && !kilitEkrani
+
+    /**
+     * 2×2 / 4×2 düzende "Kıldım" düğmesi görünsün mü? Kilit ekranında kılınabilir
+     * durumdaki düğme GİZLENİR (basılamayan bir "Kıldım" düğmesi bozuk görünür);
+     * "Kılındı" / "İşaretleniyor" bilgi olarak kalır.
+     */
+    fun dugmeGorunurMu(kildim: KildimDurumu, veriVar: Boolean, kilitEkrani: Boolean): Boolean =
+        veriVar && !(kilitEkrani && kildim == KildimDurumu.KILINABILIR)
+
+    /** Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. */
+    fun erisimMetni(ad: String, kildim: KildimDurumu, kilitEkrani: Boolean): String = when (kildim) {
+        KildimDurumu.KILINABILIR ->
+            if (kilitEkrani) "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın"
+            else "$ad namazını kılındı olarak işaretleyin"
+        KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
+        KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"
+        KildimDurumu.YOK -> "Uygulamayı açın"
+    }
+}

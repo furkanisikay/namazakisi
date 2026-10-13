@@ -52,7 +52,7 @@ describe('yatisIcerigiOlustur', () => {
         const i = icerik(['imsak', 'ogle', 'ikindi', 'aksam'])!;
         expect(i.tur).toBe('yatsi');
         expect(i.kimlik).toBe('muhafiz_2026-10-13_vakit_yatsi_yatis');
-        expect(i.baslik).toBe('🌙 Yatmadan önce yatsını kıl');
+        expect(i.baslik).toBe('Yatsı · yatmadan önce kıl 🌙');
         expect(i.govde).toBe('Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.');
         expect(i.kategori).toBe('muhafiz_category');
         expect(i.data).toEqual({ tip: 'yatis', tarih: GUN, vakit: 'yatsi', kazayaEklenebilir: [] });

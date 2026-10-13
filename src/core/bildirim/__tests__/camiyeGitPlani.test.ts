@@ -103,14 +103,14 @@ describe('camiyeGitPlaniOlustur', () => {
 describe('camiyeGitMetniOlustur — ibadete çağrı kaydı', () => {
     it('hazırlık payı varsa ne zaman yola çıkılacağını söyler', () => {
         expect(camiyeGitMetniOlustur('ogle', { yurumeDk: 12, hazirlikDk: 5 })).toEqual({
-            baslik: 'Camiye hazırlan',
+            baslik: 'Öğle · ezana 17 dk · camiye hazırlan',
             govde: 'Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.',
         });
     });
 
     it('hazırlık payı yoksa doğrudan yola çık der', () => {
         expect(camiyeGitMetniOlustur('imsak', { yurumeDk: 12, hazirlikDk: 0 })).toEqual({
-            baslik: 'Camiye yola çık',
+            baslik: 'Sabah · ezana 12 dk · camiye yola çık',
             govde: 'Sabah namazına camide yetişmek için yola çık — ezana 12 dk.',
         });
     });
@@ -123,5 +123,13 @@ describe('camiyeGitMetniOlustur — ibadete çağrı kaydı', () => {
             const metin = `${m.baslik} ${m.govde}`.toLocaleLowerCase('tr-TR');
             expect(metin).not.toMatch(/secde|terk|küfr|kaçır/);
         }
+    });
+
+    it('önden okunur (issue #287): ilk 16 karakterde vakit adı ve dakika', () => {
+        expect(camiyeGitMetniOlustur('ikindi', { yurumeDk: 8, hazirlikDk: 0 }).baslik.slice(0, 16)).toBe(
+            'İkindi · ezana 8'
+        );
+        const { baslik } = camiyeGitMetniOlustur('aksam', { yurumeDk: 30, hazirlikDk: 15 });
+        expect(baslik.slice(0, 16)).toBe('Akşam · ezana 45');
     });
 });

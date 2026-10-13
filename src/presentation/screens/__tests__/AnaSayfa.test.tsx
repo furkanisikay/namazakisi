@@ -195,6 +195,29 @@ jest.mock('../../components/home/KazaOneriModal', () => {
   const { View } = require('react-native');
   return { KazaOneriModal: () => <View /> };
 });
+// Sade görünüm (issue #295): bileşen native TTS köprüsünü çeker (requireNativeModule
+// tuzağı) → hafif taklit; ana ekranın ona DOĞRU girdiyi verdiği ölçülür.
+interface SadeProplari {
+  vakit: string | null;
+  tamamlandi: boolean;
+  kayitHazir: boolean;
+  mekruhMu: boolean;
+  onKildim: () => void;
+  onTumUygulama: () => void;
+}
+const mockSadeProplari: SadeProplari[] = [];
+jest.mock('../../components/sade/SadeGorunum', () => {
+  const { View } = require('react-native');
+  return {
+    SadeGorunum: (props: SadeProplari) => {
+      mockSadeProplari.push(props);
+      return <View testID="sade-gorunum" />;
+    },
+  };
+});
+/** `state.sadeGorunum` — undefined iken dilim YOK (eski davranış birebir). */
+const mockSadeDurumu: { deger: unknown } = { deger: undefined };
+
 jest.mock('react-native-safe-area-context', () => {
   const { View } = require('react-native');
   return { SafeAreaView: (props: { children?: React.ReactNode }) => <View>{props.children}</View> };
@@ -336,6 +359,7 @@ describe('AnaSayfa', () => {
       vakitSayac: { ayarlar: { aktif: false } },
       cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
       nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
+      sadeGorunum: mockSadeDurumu.deger,
     });
 
   /**
@@ -361,6 +385,8 @@ describe('AnaSayfa', () => {
     mockPagerCocuklari.ciz = false;
     mockVakitAkisiProplari.length = 0;
     mockKerahatModalProplari.length = 0;
+    mockSadeProplari.length = 0;
+    mockSadeDurumu.deger = undefined;
     (useEkranSinifi as jest.Mock).mockReturnValue('kompakt');
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
@@ -583,6 +609,90 @@ describe('AnaSayfa', () => {
       } finally {
         (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
       }
+    });
+  });
+
+  // ── Sade görünüm (issue #295) ─────────────────────────────────────────────
+  describe('Sade görünüm seçim dalı', () => {
+    const sadeAcik = (ek: Record<string, unknown> = {}) => {
+      mockSadeDurumu.deger = {
+        ayarlar: { aktif: true },
+        yuklendi: true,
+        yukleniyor: false,
+        geciciCikis: false,
+        hata: null,
+        ...ek,
+      };
+    };
+    const sonSade = () => mockSadeProplari[mockSadeProplari.length - 1];
+
+    it('açıkken ana ekranın YERİNE sade görünüm çizilir (pager yok)', async () => {
+      gunduzSenaryosu();
+      sadeAcik();
+      const ekran = await kur(bugunuAl());
+      expect(ekran.getByTestId('sade-gorunum')).toBeTruthy();
+      expect(mockPagerProplari.length).toBe(0);
+      expect(sonSade().vakit).toBe('ogle');
+      expect(sonSade().kayitHazir).toBe(true);
+      expect(sonSade().tamamlandi).toBe(false);
+    });
+
+    it('"Kıldım" AYNI işaretleme yolundan geçer (aktif gün, şu anki vakit)', async () => {
+      gunduzSenaryosu();
+      sadeAcik();
+      await kur(bugunuAl());
+      await act(async () => {
+        sonSade().onKildim();
+        await Promise.resolve();
+      });
+      const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+      expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: true });
+    });
+
+    it('KERAHAT vaktinde "Kıldım" ENGELLENMEZ ama önce onay modalı açılır', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      try {
+        gunduzSenaryosu();
+        sadeAcik();
+        await kur(bugunuAl());
+        expect(sonSade().mekruhMu).toBe(true);
+        await act(async () => {
+          sonSade().onKildim();
+          await Promise.resolve();
+        });
+        const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+        expect(namazDurumunuDegistir).not.toHaveBeenCalled();
+        expect(mockKerahatModalProplari[mockKerahatModalProplari.length - 1].gorunur).toBe(true);
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+
+    it('ayar diskten okunmadan karar verilmez: yükleniyor gösterilir', async () => {
+      gunduzSenaryosu();
+      sadeAcik({ yuklendi: false, ayarlar: { aktif: false } });
+      const ekran = await kur(bugunuAl());
+      expect(ekran.getByText('yukleniyor')).toBeTruthy();
+      expect(mockPagerProplari.length).toBe(0);
+    });
+
+    it('geçici çıkışta normal ekran + "Sade görünüme dönün" düğmesi', async () => {
+      gunduzSenaryosu();
+      sadeAcik({ geciciCikis: true });
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
+      expect(mockPagerProplari.length).toBeGreaterThan(0);
+      fireEvent.press(ekran.getByLabelText('Sade görünüme dönün'));
+      expect(dispatchMock).toHaveBeenCalledWith({ type: 'sadeGorunum/geciciCikisiBitir', payload: undefined });
+    });
+
+    it('dilim yoksa (eski kayıt/test) ana ekran BİREBİR eskisi gibi', async () => {
+      gunduzSenaryosu();
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
+      expect(ekran.queryByLabelText('Sade görünüme dönün')).toBeNull();
+      expect(mockPagerProplari.length).toBeGreaterThan(0);
     });
   });
 });

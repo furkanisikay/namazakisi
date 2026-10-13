@@ -130,6 +130,8 @@ const depolamayiAyarla = (): void => {
         return { aktif: true, yurumeDk: 12 };
       case DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI:
         return { farzSonrasiOner: false };
+      case DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI:
+        return { aktif: true };
       default:
         return null;
     }
@@ -181,6 +183,8 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.ayarlar.camiyeGit).toEqual({ aktif: true, yurumeDk: 12 });
     // "Her farzla bir kaza" (issue #294): kapatılmış öneri cihaz değişiminde geri açılmasın.
     expect(payload.ayarlar.kazaOneri).toEqual({ farzSonrasiOner: false });
+    // Sade görünüm (issue #295): yaşlı kullanıcının telefonu değişince ayar geri gelsin.
+    expect(payload.ayarlar.sadeGorunum).toEqual({ aktif: true });
   });
 
   it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {

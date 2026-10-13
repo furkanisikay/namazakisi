@@ -5,7 +5,7 @@ import Foundation
  * SIRI / KISAYOLLAR / ODAK — JS koprusu (issue #279).
  *
  * App Intents'in kendisi BU MODULDE DEGIL, ana uygulama hedefindedir
- * (`targets/siri-kisayollari/*.swift`, `plugins/withSiriKisayollari.js` kopyalar).
+ * (`targets/siri-kisayollari/` altindaki Swift dosyalari, `plugins/withSiriKisayollari.js` kopyalar).
  * Sebep: App Intents metadata'si (`Metadata.appintents`) yalnizca intent'i derleyen
  * HEDEF icin cikarilir; bir pod (statik kutuphane) icindeki intent'ler sisteme
  * gorunmez. Intent'ler bu modulun `SiriDeposu`'nu `import ExpoSiriKisayollari` ile

@@ -2,7 +2,7 @@ import * as Notifications from 'expo-notifications';
 import { Logger } from '../../core/utils/Logger';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
+import { cumaBasligiOlustur, sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
 import { CUMA_ID_ONEKI, cumaPlaniOlustur, type CumaPlanKaydi } from '../../core/bildirim/cumaPlani';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
@@ -118,7 +118,9 @@ export class CumaHatirlatmaServisi {
             await Notifications.scheduleNotificationAsync({
                 identifier: kayit.id,
                 content: {
-                    title: 'Cuma namazı yaklaşıyor',
+                    // Önden okunur (issue #287): bileklikler başlığın ilk ~16
+                    // karakterini gösterir → "Cuma · 1 sa kaldı" başta durur.
+                    title: cumaBasligiOlustur(kayit.oncedenDk),
                     // İbadete cagri kaydi ("sen" + emir kipi) — arayuz dili DEGIL.
                     // Cuma'ya OZGU nass (Cuma 62:9) burada dogru yerde: yalniz bu
                     // bildirime ait, genel havuza karismaz.

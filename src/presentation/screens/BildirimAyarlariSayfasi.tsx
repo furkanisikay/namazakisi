@@ -57,6 +57,7 @@ import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { YatisHatirlatmaBolumu } from '../components/ayar/YatisHatirlatmaBolumu';
 import { yatisHatirlatmaAyarlariniYukle } from '../store/yatisHatirlatmaSlice';
 import { CamiyeGitBolumu } from '../components/camiyeGit/CamiyeGitBolumu';
+import { BileklikRehberKarti } from '../components/bildirim/BileklikRehberKarti';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -903,6 +904,9 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
         </AyarCapasi>
 
 
+
+        {/* Bileklik rehberi (issue #287) — yalnız Android, kendisi karar verir */}
+        <BileklikRehberKarti />
 
         {/* Bilgi Notu */}
         <View

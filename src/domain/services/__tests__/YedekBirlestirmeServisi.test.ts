@@ -349,3 +349,14 @@ describe('YedekBirlestirmeServisi — kaza akilli daha-ileri seçimi', () => {
     expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS]).toEqual({ g1: 5, g2: 1, g3: 4 });
   });
 });
+
+describe('YedekBirlestirmeServisi — sade görünüm ayarı geri yüklenir (issue #295)', () => {
+  it('uzerineYaz: gelen sadeGorunum alt-ayarı SADE_GORUNUM_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, sadeGorunum: { aktif: true } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI]).toEqual({ aktif: true });
+  });
+});

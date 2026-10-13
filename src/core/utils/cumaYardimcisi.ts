@@ -120,3 +120,21 @@ export const sureMetniOlustur = (dakika: number): string => {
   if (kalanDk === 0) return `${saat} saat`;
   return `${saat} saat ${kalanDk} dakika`;
 };
+
+/** Başlık için kısa süre: "45 dk" / "1 sa" / "1 sa 30 dk". */
+const kisaSureMetni = (dakika: number): string => {
+  const d = Math.max(0, Math.floor(dakika));
+  const saat = Math.floor(d / 60);
+  const kalanDk = d % 60;
+  if (saat === 0) return `${kalanDk} dk`;
+  return kalanDk === 0 ? `${saat} sa` : `${saat} sa ${kalanDk} dk`;
+};
+
+/**
+ * Cuma hatırlatmasının başlığı — ÖNDEN OKUNUR (issue #287): bileklikler
+ * (Galaxy Fit, Mi Band…) telefon bildiriminin başlığından yalnız ilk ~16
+ * karakteri gösterir → "Cuma · 1 sa kaldı" başta durur. Süre öğle vaktinin
+ * girişine kalan süredir (gövde bunu açıkça söyler).
+ */
+export const cumaBasligiOlustur = (oncedenDk: number): string =>
+  `Cuma · ${kisaSureMetni(oncedenDk)} kaldı · namaz yaklaşıyor`;

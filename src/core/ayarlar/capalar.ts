@@ -11,6 +11,7 @@ export const CAPALAR = [
   'akilliTakip',
   'tema',
   'palet',
+  'sadeGorunum',
   'vakitBildirimleri',
   'cumaHatirlatmasi',
   'yatisHatirlatmasi',

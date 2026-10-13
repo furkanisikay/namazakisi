@@ -194,17 +194,17 @@
   "baslik": [
     {
       "ad": "sure doldurulur",
-      "sablon": "⏳ {sure} kaldı · Ertelediğin İkindi namazı",
+      "sablon": "İkindi · {sure} kaldı · ertelediğin namaz ⏳",
       "cikisMs": 1800002700000,
       "hedefMs": 1800000600000,
-      "beklenen": "⏳ 35 dk kaldı · Ertelediğin İkindi namazı"
+      "beklenen": "İkindi · 35 dk kaldı · ertelediğin namaz ⏳"
     },
     {
       "ad": "saatli sure",
-      "sablon": "⏳ {sure} kaldı · Ertelediğin Yatsı namazı",
+      "sablon": "Yatsı · {sure} kaldı · ertelediğin namaz ⏳",
       "cikisMs": 1800007830000,
       "hedefMs": 1800000600000,
-      "beklenen": "⏳ 2 sa kaldı · Ertelediğin Yatsı namazı"
+      "beklenen": "Yatsı · 2 sa kaldı · ertelediğin namaz ⏳"
     },
     {
       "ad": "sablon yok",

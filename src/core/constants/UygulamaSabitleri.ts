@@ -198,6 +198,8 @@ export const DEPOLAMA_ANAHTARLARI = {
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',
   KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
+  // Sade görünüm (issue #295) — YEDEKLENİR (beyaz listenin ÜÇ yerinde).
+  SADE_GORUNUM_AYARLARI: 'sade_gorunum_ayarlari',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu

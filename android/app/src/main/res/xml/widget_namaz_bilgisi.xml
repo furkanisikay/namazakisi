@@ -4,6 +4,9 @@
   (1×1 halka → 2×2 düğme → 4×2 günün beş vakti). Sınıf adı (NamazWidget) KORUNUR —
   değişseydi kullanıcıların ana ekranındaki mevcut widget'lar düşerdi.
   updatePeriodMillis=0: güncelleme yalnız vakit sınırlarında ve kayıt değişince.
+  keyguard (issue #295): Android 16 QPR2 kilit ekranı ve tablet hub (şarj istasyonu)
+  modu widget'ı bu kategoriyle bağlar; orada widget SALT OKUNURDUR ("Kıldım" yayını
+  kilit açılmadan işlerdi) — karar `cekirdek/KilitEkraniKarari`.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.furkanisikay.namazakisi.widget.WidgetYapilandirmaActivity"
@@ -18,5 +21,5 @@
     android:targetCellHeight="1"
     android:targetCellWidth="1"
     android:updatePeriodMillis="0"
-    android:widgetCategory="home_screen"
+    android:widgetCategory="home_screen|keyguard"
     android:widgetFeatures="reconfigurable|configuration_optional" />
