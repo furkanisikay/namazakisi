@@ -52,6 +52,8 @@ describe('SeriSayacBildirimServisi', () => {
     });
 
     expect(mockStartCountdown).toHaveBeenCalledTimes(1);
+    // Seri sayacı Live Update ile öne ÇIKARILMAZ (#282 — baskı hissi istenmiyor).
+    expect(mockStartCountdown.mock.calls[0][0].canli).toBeUndefined();
   });
 
   test('gün ZATEN TAMSA sayaç HİÇ çıkmaz', async () => {

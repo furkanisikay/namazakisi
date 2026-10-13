@@ -16,6 +16,7 @@ import {
   Easing,
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
+import { CanliGuncellemeBilgisi } from '../components/common/CanliGuncellemeBilgisi';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
@@ -540,6 +541,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                     <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
                   </Text>
                 </View>
+                <CanliGuncellemeBilgisi />
               </View>
             )}
           </View>

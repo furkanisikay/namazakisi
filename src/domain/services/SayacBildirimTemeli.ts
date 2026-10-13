@@ -14,6 +14,7 @@ import notifee, { AndroidImportance } from '@notifee/react-native';
 import { zamanTetigiOlustur } from './notifeeTetik';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 import { Logger } from '../../core/utils/Logger';
+import { canliGuncellemeyeUygunMu, type CanliGuncellemeYuku } from '../../core/sayac/canliGuncelleme';
 
 export interface SayacKonfig {
   /** Bildirim ID oneki, orn. 'iftar_sayac_' */
@@ -70,8 +71,14 @@ export abstract class SayacBildirimTemeli {
     } catch (_) { /* kanal olusturulamazsa sessizce devam */ }
   }
 
-  /** Native modul ile geri sayimi hemen baslat. */
-  protected nativeCountdownBaslat(bildirimId: string, hedefMs: number): void {
+  /**
+   * Native modul ile geri sayimi hemen baslat.
+   *
+   * `canli` (issue #282): Android 16 Live Update verisi. Yalniz izinli temada
+   * (`canliGuncellemeyeUygunMu` — seri YOK) native'e gecer; native taraf API 36+
+   * ve kullanici izni yoksa eski ozel gorunume BIREBIR duser.
+   */
+  protected nativeCountdownBaslat(bildirimId: string, hedefMs: number, canli?: CanliGuncellemeYuku): void {
     try {
       startCountdown({
         id: bildirimId,
@@ -81,6 +88,7 @@ export abstract class SayacBildirimTemeli {
         channelId: this.konfig.kanalId,
         themeType: this.konfig.themeType,
         autoDismissAtTarget: this.konfig.hedefteKaybol ?? false,
+        canli: canli && canliGuncellemeyeUygunMu(this.konfig.themeType) ? canli : undefined,
       });
     } catch (error) {
       Logger.error(`${this.konfig.themeType}Sayac`, 'Native countdown baslatilamadi', error);

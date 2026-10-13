@@ -6,6 +6,10 @@
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
   <!-- Yeniden baslatmada anons alarmlarini geri kurmak icin (AnonsYenidenKurucu). -->
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <!-- Android 16 Live Update (issue #282): sayac bildirimlerini durum cubugu cipine ve
+       One UI 8 Now Bar'a one cikarma istegi. NORMAL izin (kurulumda verilir, diyalog yok);
+       kullanici sistem ayarlarindan kapatabilir. API < 36'da bilinmeyen izin olarak yok sayilir. -->
+  <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS"/>
 
   <application>
     <receiver

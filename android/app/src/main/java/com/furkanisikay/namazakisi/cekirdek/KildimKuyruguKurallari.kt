@@ -27,7 +27,9 @@ object KildimKuyruguKurallari {
     const val KAYNAK_WIDGET = "widget"
     const val KAYNAK_KUTU = "qs"
     const val KAYNAK_KISAYOL = "kisayol"
-    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL)
+    /** Öne çıkarılmış (Android 16 Live Update) vakit sayacındaki "Kıldım" (issue #282). */
+    const val KAYNAK_SAYAC = "sayac"
+    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC)
 
     private val GECERLI_VAKITLER = setOf("imsak", "ogle", "ikindi", "aksam", "yatsi")
     private val TARIH_DESENI = Regex("""^\d{4}-\d{2}-\d{2}$""")

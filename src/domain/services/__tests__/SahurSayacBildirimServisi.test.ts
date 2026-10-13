@@ -222,6 +222,43 @@ describe('SahurSayacBildirimServisi', () => {
     expect(bitisCall![1].timestamp).toBe(fajrYarin.getTime() + 10 * 60 * 1000);
   });
 
+  it('Live Update (#282): imsak oncesi ilerleme DUNUN yatsisindan baslar; son 60 dk vurgulu, Kildim YOK', async () => {
+    const yatsiDun = new OriginalDate('2026-02-18T20:00:00');
+    (PrayerTimes as unknown as jest.Mock).mockImplementation((_coord: any, tarih: Date) => ({
+      ...mockPrayerTimes,
+      isha: tarih.getDate() === 18 ? yatsiDun : mockPrayerTimes.isha,
+    }));
+    tarihiSabitle('2026-02-19T02:00:00');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    expect(mockStartCountdown.mock.calls[0][0].canli).toEqual({
+      baslangicMs: yatsiDun.getTime(),
+      bolumler: [
+        { uzunlukDk: 420, vurgulu: false },
+        { uzunlukDk: 60, vurgulu: true },
+      ],
+    });
+  });
+
+  it('Live Update (#282): yatsi sonrasi ilerleme BUGUNUN yatsisindan yarinin imsagina', async () => {
+    const fajrYarin = new OriginalDate('2026-02-20T03:50:00');
+    (PrayerTimes as unknown as jest.Mock).mockImplementation((_coord: any, tarih: Date) => ({
+      ...mockPrayerTimes,
+      fajr: tarih.getDate() === 20 ? fajrYarin : mockPrayerTimes.fajr,
+    }));
+    tarihiSabitle('2026-02-19T22:00:00');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    const canli = mockStartCountdown.mock.calls[0][0].canli;
+    expect(canli.baslangicMs).toBe(mockPrayerTimes.isha.getTime());
+    expect(canli.bolumler).toEqual([
+      { uzunlukDk: 410, vurgulu: false },
+      { uzunlukDk: 60, vurgulu: true },
+    ]);
+  });
+
   it('yatsi sonrasi / gece penceresi (simdi >= yatsi): countdown YARIN imsakina baslar', async () => {
     const fajrBugun = new OriginalDate('2026-02-19T04:00:00');
     const fajrYarin = new OriginalDate('2026-02-20T03:50:00');

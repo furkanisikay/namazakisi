@@ -1,0 +1,28 @@
+{
+  "_aciklama": "Live Update kisa metni (durum cubugu cipi) ve dakikalik tazeleme ani. Kotlin CanliGuncellemeKurallari ile JS src/core/sayac/canliGuncelleme.ts AYNI ciktiyi uretmek zorunda (issue #282).",
+  "kisaMetin": [
+    { "kalanMs": -5000, "metin": "0 dk" },
+    { "kalanMs": 0, "metin": "0 dk" },
+    { "kalanMs": 1, "metin": "1 dk" },
+    { "kalanMs": 30000, "metin": "1 dk" },
+    { "kalanMs": 60000, "metin": "1 dk" },
+    { "kalanMs": 60001, "metin": "2 dk" },
+    { "kalanMs": 660001, "metin": "12 dk" },
+    { "kalanMs": 720000, "metin": "12 dk" },
+    { "kalanMs": 3540000, "metin": "59 dk" },
+    { "kalanMs": 3540001, "metin": "1 sa" },
+    { "kalanMs": 3600000, "metin": "1 sa" },
+    { "kalanMs": 3600001, "metin": "1 sa 1 dk" },
+    { "kalanMs": 3900000, "metin": "1 sa 5 dk" },
+    { "kalanMs": 43200000, "metin": "12 sa" },
+    { "kalanMs": 45000000, "metin": "12 sa 30 dk" }
+  ],
+  "sonrakiTazeleme": [
+    { "simdiMs": 0, "hedefMs": 0, "anMs": null },
+    { "simdiMs": 0, "hedefMs": 60000, "anMs": null },
+    { "simdiMs": 0, "hedefMs": 90000, "anMs": 30000 },
+    { "simdiMs": 5000, "hedefMs": 725000, "anMs": 65000 },
+    { "simdiMs": 1000000, "hedefMs": 1000000, "anMs": null },
+    { "simdiMs": 0, "hedefMs": 7500000, "anMs": 60000 }
+  ]
+}

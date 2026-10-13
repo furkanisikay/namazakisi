@@ -113,6 +113,13 @@
     </receiver>
     <!-- Widget "Kıldım" dokunuşu (PendingIntent.getBroadcast, açık bileşen) -->
     <receiver android:name=".widget.WidgetKildimAlici" android:exported="false"/>
+    <!-- Öne çıkarılmış (Android 16 Live Update) vakit sayacındaki "Kıldım" (issue #282).
+         Sayaç modülü uygulama sınıflarını göremez → paket-kapsamlı açık yayın gönderir. -->
+    <receiver android:name=".kildim.SayacKildimAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="com.furkanisikay.namazakisi.SAYAC_KILDIM"/>
+      </intent-filter>
+    </receiver>
     <!-- Widget özelleştirme (android:configure) -->
     <activity
         android:name=".widget.WidgetYapilandirmaActivity"

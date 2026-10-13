@@ -20,6 +20,7 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { iftarCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface IftarSayacAyarlari {
   aktif: boolean;
@@ -93,7 +94,17 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
       // Sabah ile aksam arasi: hemen native countdown baslat
-      this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime());
+      // Live Update (issue #282): ilerleme çubuğu gün boyu orucu gösterir.
+      this.nativeCountdownBaslat(
+        bildirimId,
+        aksamVakti.getTime(),
+        iftarCanliYukuOlustur({
+          imsakMs: sabahVakti.getTime(),
+          ogleMs: prayerTimes.dhuhr.getTime(),
+          ikindiMs: prayerTimes.asr.getTime(),
+          aksamMs: aksamVakti.getTime(),
+        })
+      );
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {

@@ -151,6 +151,18 @@ describe('IftarSayacBildirimServisi', () => {
       })
     );
 
+    // Live Update (issue #282): ilerleme gün boyu orucu gösterir — imsak → öğle →
+    // ikindi → akşam (8 sa + 3 sa + 3 sa), son bölüm vurgulu. "Kıldım" YOK.
+    const canli = mockStartCountdown.mock.calls[0][0].canli;
+    expect(canli).toEqual({
+      baslangicMs: mockPrayerTimes.fajr.getTime(),
+      bolumler: [
+        { uzunlukDk: 480, vurgulu: false },
+        { uzunlukDk: 180, vurgulu: false },
+        { uzunlukDk: 180, vurgulu: true },
+      ],
+    });
+
     // vakitGirdi ve temizleme trigger'lari Notifee ile planlanmali
     const triggerCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
     const triggerIds = triggerCalls.map((call: any[]) => call[0].id as string);
