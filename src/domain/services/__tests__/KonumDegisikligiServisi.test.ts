@@ -67,6 +67,11 @@ jest.mock('../NafileHatirlatmaServisi', () => ({
         getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
     },
 }));
+jest.mock('../CamiyeGitHatirlatmaServisi', () => ({
+    CamiyeGitHatirlatmaServisi: {
+        getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
+    },
+}));
 jest.mock('../WearSenkronServisi', () => ({
     WearSenkronServisi: {
         getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve()) })),
@@ -109,6 +114,7 @@ import { WidgetServisi } from '../WidgetServisi';
 import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
 import { WearSenkronServisi } from '../WearSenkronServisi';
 import { CamideyimServisi } from '../CamideyimServisi';
+import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -145,6 +151,7 @@ const sahte = {
     nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
     wear: jest.fn((..._a: unknown[]) => Promise.resolve()),
     cami: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    camiyeGit: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
 beforeEach(() => {
@@ -166,6 +173,7 @@ beforeEach(() => {
     (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
     (WearSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.wear });
     (CamideyimServisi.getInstance as jest.Mock).mockReturnValue({ konumaBagliTazele: sahte.cami });
+    (CamiyeGitHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.camiyeGit });
 });
 
 describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
@@ -194,6 +202,9 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         expect(sahte.wear).toHaveBeenCalledTimes(1);
         // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı ve izlenen camiler.
         expect(sahte.cami).toHaveBeenCalledWith(ANKARA);
+        // "Camide kılacağım" (issue #292): vakit girişinden yürüme süresi kadar önce.
+        expect(sahte.camiyeGit).toHaveBeenCalledTimes(1);
+        expect(sahte.camiyeGit).toHaveBeenCalledWith(ANKARA);
         // Gün sonu seri hatırlatması (issue #272): otomatik modda imsaktan X dk
         // önce — şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
         expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);

@@ -191,6 +191,14 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     capa: 'yatisHatirlatmasi',
   },
   {
+    id: 'camiyeGitHatirlatmasi',
+    baslik: 'Camide kılacağım',
+    anahtarKelimeler: ['cami', 'camiye git', 'yürüme', 'cemaat', 'ezandan önce'],
+    sayfa: 'BildirimAyarlari',
+    grup: 'Bildirimler',
+    capa: 'camiyeGitHatirlatmasi',
+  },
+  {
     id: 'vakitSayaci',
     baslik: 'Vakit sayacı',
     anahtarKelimeler: ['sayaç', 'geri sayım', 'vakit çıkıyor'],

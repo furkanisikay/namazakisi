@@ -259,6 +259,17 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
   });
 });
 
+describe('YedekBirlestirmeServisi — "camide kılacağım" ayarı geri yüklenir (issue #292)', () => {
+  it('uzerineYaz: gelen camiyeGit alt-ayarı CAMIYE_GIT_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, camiyeGit: { aktif: true, yurumeDk: 12 } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI]).toEqual({ aktif: true, yurumeDk: 12 });
+  });
+});
+
 describe('YedekBirlestirmeServisi — SON_DISA_AKTARMA yedeğe girmez (bilinçli)', () => {
   it('uzerineYaz stratejisinde bile SON_DISA_AKTARMA anahtarı plana eklenmez', () => {
     const mevcut = payloadKur({});

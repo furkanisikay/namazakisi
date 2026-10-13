@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
+    {
+        id: 'camide-kilacagim',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Camiye Zamanında Yetişin',
+        aciklama:
+            'Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım.',
+        detayAciklama:
+            'Bildirim ayarlarındaki "Camide kılacağım" bölümünden vakitleri tek tek seçebilir, yürüme süresini ve abdest için hazırlık payını belirleyebilirsiniz. Android\'de Camideyim\'de favori bir caminiz varsa yürüme süresi oradan tahmin edilir; dilediğiniz gibi düzeltebilirsiniz, düzelttiğiniz değer korunur. Cuma hatırlatmanız açıksa cuma günü öğle için ayrıca hatırlatılmazsınız.',
+        ikon: 'walking',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Vakitlerinizi seçin',
+        kartGoster: false,
+        detaylar: [
+            'Beş vakit için ayrı ayrı açılır',
+            'Hatırlatma ezandan yürüme süresi + hazırlık payı kadar önce gelir',
+            'Favori caminiz varsa yürüme süresi kendiliğinden hesaplanır',
+            'Özel gün modunda hatırlatma gönderilmez',
+        ],
+    },
     // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
     {
         id: 'yatis-hatirlatmasi',

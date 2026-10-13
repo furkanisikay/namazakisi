@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
 import { KildimKuyruguServisi } from './KildimKuyruguServisi';
@@ -333,6 +334,17 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
+        }
+
+        // ADIM 1.52: "CAMİDE KILACAĞIM" HATIRLATMASI (issue #292) — cuma ile AYNI
+        // gerekçe: muhafızdan bağımsız, 7/3 günlük pencere; muhafız erken
+        // dönüşlerinden ÖNCE durmalı.
+        try {
+            await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku()
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Camiye gitme hatırlatması tazelenemedi', e);
         }
 
         // =====================================================

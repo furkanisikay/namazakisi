@@ -18,12 +18,16 @@ import type { DefterGirdisi } from '../../core/bildirim/bildirimDefteri';
 import { LocalVakitBildirimServisi } from '../../data/local/LocalVakitBildirimServisi';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
+import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
-export type DefterDisGirdisi = Pick<DefterGirdisi, 'vakitBildirimi' | 'cuma' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi'>;
+export type DefterDisGirdisi = Pick<
+    DefterGirdisi,
+    'vakitBildirimi' | 'cuma' | 'camiyeGit' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi'
+>;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
     try {
@@ -37,9 +41,10 @@ const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> =
 export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     const bugun = bugunuAl();
     const dun = dunuAl();
-    const [vakitBildirimi, cuma, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis] = await Promise.all([
+    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis] = await Promise.all([
         guvenli('vakit bildirimi', () => LocalVakitBildirimServisi.getAyarlar()),
         guvenli('cuma', () => LocalCumaHatirlatmaServisi.getAyarlar()),
+        guvenli('camiye git', () => LocalCamiyeGitServisi.getAyarlar()),
         guvenli('seri', async () => {
             const yanit = await localSeriAyarlariniGetir();
             return yanit.basarili && yanit.veri ? yanit.veri : null;
@@ -56,6 +61,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     return {
         vakitBildirimi,
         cuma,
+        camiyeGit,
         gunSonu: seri,
         yatis,
         kilinan,

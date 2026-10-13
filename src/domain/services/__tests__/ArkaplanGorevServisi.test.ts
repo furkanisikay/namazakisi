@@ -102,6 +102,14 @@ jest.mock('../GunSonuHatirlaticiServisi', () => ({
     gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
 }));
 
+// "Camide kılacağım" (issue #292): tarihli 7/3 günlük pencere → 15 dk görevi tazeler.
+const mockCamiyeGitGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../CamiyeGitHatirlatmaServisi', () => ({
+    CamiyeGitHatirlatmaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockCamiyeGitGuncelle(...a) }),
+    },
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
@@ -525,6 +533,37 @@ describe('gorev govdesi > gun sonu hatirlatmasi tazelemesi', () => {
 
     it('gun sonu patlarsa muhafiz planlamasi DUSMEZ', async () => {
         mockGunSonuGuncelle.mockRejectedValueOnce(new Error('x'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// "CAMIDE KILACAGIM" (issue #292) — tarihli pencere, muhafizdan BAGIMSIZ
+// =====================================================================
+describe('gorev govdesi > camiye gitme hatirlatmasi tazelemesi', () => {
+    it('MUHAFIZ AYARI YOKKEN de diskteki konumla tazelenir (erken donusten ONCE)', async () => {
+        mockDepo.set(
+            KONUM_DEPOLAMA_ANAHTARI,
+            JSON.stringify({ koordinatlar: { lat: 39.9, lng: 41.27 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledTimes(1);
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+    });
+
+    it('patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockCamiyeGitGuncelle.mockRejectedValueOnce(new Error('x'));
         mockDepo.set(
             MUHAFIZ_AYARLARI_ANAHTAR,
             JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })

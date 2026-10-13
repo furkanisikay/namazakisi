@@ -14,6 +14,7 @@ export const CAPALAR = [
   'vakitBildirimleri',
   'cumaHatirlatmasi',
   'yatisHatirlatmasi',
+  'camiyeGitHatirlatmasi',
   'vakitSayaci',
   'gunSonuBildirimi',
   'tamGunEsigi',

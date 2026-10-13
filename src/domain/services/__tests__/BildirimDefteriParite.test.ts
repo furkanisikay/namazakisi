@@ -63,6 +63,7 @@ import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
 import { ANDROID_NAFILE_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
@@ -242,6 +243,28 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         const g = temelGirdi('ios', { cuma });
         expect(say(g, 'cuma')).toBeGreaterThan(4);
         expect(onekliSay('cuma_hatirlatma_')).toBe(say(g, 'cuma'));
+    });
+
+    it.each(['ios', 'android'] as const)('camide kılacağım (%s ufku, cuma öğlesi çakışması)', async (platform) => {
+        jest.replaceProperty(Platform, 'OS', platform);
+        const cuma = { aktif: true, oncedenDk: 60, siklik: 'birkez' as const };
+        const camiyeGit = {
+            aktif: true,
+            vakitler: { imsak: true, ogle: true, ikindi: false, aksam: true, yatsi: true },
+            yurumeDk: 12,
+            hazirlikDk: 5,
+            yurumeKaynagi: 'elle' as const,
+        };
+        disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
+        disk.set(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI, JSON.stringify(camiyeGit));
+        await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+        const g = temelGirdi(platform, { cuma, camiyeGit });
+        expect(say(g, 'camiyeGit')).toBeGreaterThan(0);
+        expect(onekliSay('camiye_git_')).toBe(say(g, 'camiyeGit'));
+        // Android ufku (7 gün) 16 Ekim cumasını kapsar: o gün öğle KURULMAZ.
+        const ids = planlananlar().map((p) => String(p.identifier));
+        expect(ids).not.toContain('camiye_git_2026-10-16_ogle');
+        if (platform === 'android') expect(ids).toContain('camiye_git_2026-10-16_aksam');
     });
 
     it('vakit girdi bildirimleri (bugün + yarın)', async () => {

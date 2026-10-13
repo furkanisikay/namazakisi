@@ -56,6 +56,7 @@ import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { YatisHatirlatmaBolumu } from '../components/ayar/YatisHatirlatmaBolumu';
 import { yatisHatirlatmaAyarlariniYukle } from '../store/yatisHatirlatmaSlice';
+import { CamiyeGitBolumu } from '../components/camiyeGit/CamiyeGitBolumu';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -645,6 +646,16 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
         {/* Yatış hatırlatması + gün sonu muhasebesi (issue #290) */}
         <AyarCapasi id="yatisHatirlatmasi">
           <YatisHatirlatmaBolumu />
+        </AyarCapasi>
+
+        {/* Camide kılacağım — yürüme süresine göre erken hatırlatma (issue #292) */}
+        <AyarCapasi id="camiyeGitHatirlatmasi">
+        <View className="mb-6">
+          <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+            CAMİYE GİTMEK
+          </Text>
+          <CamiyeGitBolumu />
+        </View>
         </AyarCapasi>
 
         {/* Seri Bildirimleri Bolumu */}

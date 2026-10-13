@@ -71,6 +71,15 @@ jest.mock('../../../domain/services/YatisHatirlatmaServisi', () => ({
     getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
   },
 }));
+jest.mock('../camiyeGitSlice', () => ({
+  camiyeGitAyarlariniYukle: jest.fn(() => ({ type: 'camiyeGit/yukle' })),
+}));
+const mockCamiyeGitGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
+  CamiyeGitHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockCamiyeGitGuncelle(...a) }),
+  },
+}));
 jest.mock('../nafileSlice', () => ({
   nafileAyarlariniYukle: jest.fn(() => ({ type: 'nafile/yukle' })),
 }));
@@ -339,6 +348,7 @@ describe('yedeklemeSlice', () => {
         expect(mockOzelGunDegistiUygula).toHaveBeenCalledTimes(1);
         // Yayma listesi (konumDegistiUygula) cuma/nafile/gün sonunu zaten kapsar.
         expect(mockNafileGuncelle).not.toHaveBeenCalled();
+        expect(mockCamiyeGitGuncelle).not.toHaveBeenCalled();
         expect(mockGunSonuGuncelle).not.toHaveBeenCalled();
       });
 
@@ -374,6 +384,8 @@ describe('yedeklemeSlice', () => {
         expect(mockOzelGunDegistiUygula).not.toHaveBeenCalled();
         expect(mockGunSonuGuncelle).not.toHaveBeenCalled();
         expect(mockNafileGuncelle).toHaveBeenCalledTimes(1);
+        // "Camide kılacağım" (issue #292): ayarı yüklemek bildirim KURMAZ → açıkça planlanır.
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledTimes(1);
       });
 
       it('NÖBETÇİ (#290): namaz kayıtları içe aktarılınca yatış/muhasebe yeniden planlanır (kılınmışlık gözlemcisi tetiklenmez)', async () => {

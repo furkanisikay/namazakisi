@@ -161,6 +161,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
   // Yedekleme beyaz listesinde (YedeklemeServisi + YedekBirlestirmeServisi).
   YATIS_HATIRLATMA_AYARLARI: 'yatis_hatirlatma_ayarlari',
+  // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
+  // Varsayılan KAPALI; yedeklenir (beyaz listenin ÜÇ yerinde de).
+  CAMIYE_GIT_AYARLARI: 'camiye_git_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
   // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir

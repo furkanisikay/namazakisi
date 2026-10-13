@@ -27,6 +27,8 @@ import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { yatisHatirlatmaAyarlariniYukle } from './yatisHatirlatmaSlice';
 import { YatisHatirlatmaServisi } from '../../domain/services/YatisHatirlatmaServisi';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
+import { camiyeGitAyarlariniYukle } from './camiyeGitSlice';
+import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { nowBarAyarlariniYukle } from './nowBarSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
@@ -86,6 +88,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(vakitBildirimAyarlariniYukle()),
       dispatch(cumaHatirlatmaAyarlariniYukle()),
       dispatch(yatisHatirlatmaAyarlariniYukle()),
+      dispatch(camiyeGitAyarlariniYukle()),
       dispatch(nafileAyarlariniYukle()),
       dispatch(nowBarAyarlariniYukle()),
       dispatch(takvimAyarlariniYukle()),
@@ -145,6 +148,12 @@ export const iceAktarmayiUygula = createAsyncThunk(
       // Nafile hatırlatmaları da (issue #77): aynı gerekçe — ayarı yüklemek bildirim kurmaz.
       try {
         await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+      } catch {
+        // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+      }
+      // "Camide kılacağım" (issue #292): aynı gerekçe — ayarı yüklemek bildirim kurmaz.
+      try {
+        await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
       } catch {
         // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
       }

@@ -106,6 +106,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     nafile,
     yatisHatirlatma,
     nowBar,
+    camiyeGit,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -121,6 +122,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     // Yatış hatırlatması (issue #290) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI),
   ]);
   return {
     muhafiz,
@@ -136,6 +138,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     nafile,
     yatisHatirlatma,
     nowBar,
+    camiyeGit,
   };
 };
 
