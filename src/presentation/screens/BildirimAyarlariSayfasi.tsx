@@ -54,6 +54,7 @@ import { store } from '../store/store';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { CamiyeGitBolumu } from '../components/camiyeGit/CamiyeGitBolumu';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -636,6 +637,16 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
               </View>
             )}
           </View>
+        </View>
+        </AyarCapasi>
+
+        {/* Camide kılacağım — yürüme süresine göre erken hatırlatma (issue #292) */}
+        <AyarCapasi id="camiyeGitHatirlatmasi">
+        <View className="mb-6">
+          <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+            CAMİYE GİTMEK
+          </Text>
+          <CamiyeGitBolumu />
         </View>
         </AyarCapasi>
 
