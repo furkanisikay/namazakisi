@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.furkanisikay.namazakisi.R
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
+import com.furkanisikay.namazakisi.cekirdek.SinirAlarmi
 import com.furkanisikay.namazakisi.cekirdek.SureGosterimi
 import com.furkanisikay.namazakisi.cekirdek.VakitCizelgesi
 import com.furkanisikay.namazakisi.cekirdek.VakitKodlari
@@ -31,8 +32,9 @@ import com.furkanisikay.namazakisi.kildim.KildimKutusuServisi
  *
  * ESKİMEYEN SÜRE: kalan süre `Chronometer` countDown ile SİSTEM tarafından çizilir;
  * widget dakikada bir güncellenmez. Tek alarm bir sonraki VAKİT SINIRINDA kurulur
- * (`RTC` uyandırmaz + `setWindow`): ekran kapalıyken bekler, cihaz uyanınca hemen
- * teslim edilir. Gecikme olsa bile sayaç negatife düşer ("−0:03") ve bitiş saati her
+ * (`RTC` uyandırmaz; tam alarm izni varsa `setExact`, yoksa `setWindow` — API 31+'da
+ * pencere ≥10 dk'ya genişler, `SinirAlarmi`): ekran kapalıyken bekler, cihaz
+ * uyanınca teslim edilir. Gecikme olsa bile sayaç negatife düşer ("−0:03") ve bitiş saati her
  * boyutta yazılıdır → widget asla "süre var" demez. Günde ≤ 12 alarm
  * (`VakitCizelgesi.alarmZinciri` JVM testi; gerçekte 6).
  *
@@ -44,7 +46,10 @@ object WidgetGuncelleyici {
     private const val TAG = "WidgetGuncelleyici"
     const val SINIR_EYLEMI = "com.furkanisikay.namazakisi.widget.VAKIT_SINIRI"
 
-    /** Sınır anından sonra teslim payı: sistem alarmları toplayabilsin. */
+    /**
+     * Yalnız tam alarm izni YOKKEN kullanılan pencere. API 31+'da sistem bunu en az
+     * 10 dakikaya genişletir (5 sn kalmaz); izin varsa `setExact` kullanılır (`SinirAlarmi`).
+     */
     private const val PENCERE_MS = 5_000L
 
     private val SAGLAYICILAR = listOf(NamazWidget::class.java, NamazGenisBoyutWidget::class.java)
@@ -373,7 +378,17 @@ object WidgetGuncelleyici {
             return
         }
         try {
-            alarm.setWindow(AlarmManager.RTC, sinir, PENCERE_MS, sinirNiyeti(context))
+            // API 31+'da setWindow penceresi en az 10 dk'ya genişler → izin varsa tam
+            // alarm (RTC: yine UYANDIRMAZ, ekran açılınca hemen teslim edilir).
+            val tamIzin = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarm.canScheduleExactAlarms()
+            when (SinirAlarmi.yontem(Build.VERSION.SDK_INT, tamIzin)) {
+                SinirAlarmi.Yontem.TAM -> alarm.setExact(AlarmManager.RTC, sinir, sinirNiyeti(context))
+                SinirAlarmi.Yontem.PENCERE -> alarm.setWindow(AlarmManager.RTC, sinir, PENCERE_MS, sinirNiyeti(context))
+            }
+        } catch (e: SecurityException) {
+            // İzin okunduktan sonra geri alınmış olabilir: yaklaşık yola düş.
+            Log.w(TAG, "Tam alarm izni yok, pencereli kuruluyor", e)
+            try { alarm.setWindow(AlarmManager.RTC, sinir, PENCERE_MS, sinirNiyeti(context)) } catch (_: Exception) { }
         } catch (e: Exception) {
             Log.w(TAG, "Widget sinir alarmi kurulamadi", e)
         }

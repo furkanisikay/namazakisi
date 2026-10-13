@@ -54,7 +54,24 @@ export type SimdikiVakitSonucu =
     | { tur: 'isaretlendi'; vakitAdi: string }
     | { tur: 'zatenKilindi'; vakitAdi: string }
     | { tur: 'vakitYok'; siradakiAdi: string | null; girisMs: number | null }
-    | { tur: 'konumYok' };
+    | { tur: 'konumYok' }
+    /** Onay beklerken vakit değişti: yanlış vakit işaretlenmez. */
+    | { tur: 'vakitDegisti' };
+
+/** İşaretlenebilecek vakit — onay alınmadan HİÇBİR ŞEY yazılmaz. */
+export interface KildimAdayi {
+    tur: 'aday';
+    /** Görünen ad (`NamazAdi`, ör. "Öğle"). */
+    vakitAdi: string;
+    /** Kayıt/kuyruk vakit kodu (`imsak`, `ogle`…). */
+    kayitVakti: string;
+    /** Namaz günü (ISO). */
+    tarih: string;
+}
+
+export type SimdikiVakitDegerlendirmesi =
+    | Exclude<SimdikiVakitSonucu, { tur: 'isaretlendi' } | { tur: 'vakitDegisti' }>
+    | KildimAdayi;
 
 const modul = (): KildimKuyruguModulu | null => {
     if (Platform.OS !== 'android') return null;
@@ -125,10 +142,31 @@ export class KildimKuyruguServisi {
     }
 
     /**
-     * `namazakisi://kildim` — içinde bulunulan vakti kılındı olarak işaretler.
-     * Yalnız İŞARETLER (geri alma uygulamada); güneş→öğle arasında hiçbir şey yapmaz.
+     * İçinde bulunulan vakti kılındı olarak işaretler. Yalnız İŞARETLER (geri alma
+     * uygulamada); güneş→öğle arasında hiçbir şey yapmaz. Onay gerektiren yollar
+     * (`namazakisi://kildim` — dışarıdan gelebilir) bunu DEĞİL
+     * `simdikiVaktiDegerlendir` + `adayiIsaretle` çiftini kullanır.
      */
     public async simdikiVaktiKildim(simdiMs: number = Date.now()): Promise<SimdikiVakitSonucu> {
+        const d = await this.simdikiVaktiDegerlendir(simdiMs);
+        return d.tur === 'aday' ? this.adayiIsaretle(d, simdiMs) : d;
+    }
+
+    /**
+     * Onay alındıktan sonra adayı işaretler — önce YENİDEN değerlendirir: onay
+     * penceresi açıkken vakit değişmiş ya da namaz başka yoldan işaretlenmiş olabilir.
+     */
+    public async adayiIsaretle(aday: KildimAdayi, simdiMs: number = Date.now()): Promise<SimdikiVakitSonucu> {
+        const simdi = await this.simdikiVaktiDegerlendir(simdiMs);
+        if (simdi.tur !== 'aday') return simdi;
+        if (simdi.tarih !== aday.tarih || simdi.kayitVakti !== aday.kayitVakti) return { tur: 'vakitDegisti' };
+        const { BildirimServisi } = require('./BildirimServisi') as typeof import('./BildirimServisi');
+        await BildirimServisi.getInstance().kuyruktanKildimIsle(simdi.kayitVakti, simdi.tarih);
+        return { tur: 'isaretlendi', vakitAdi: simdi.vakitAdi };
+    }
+
+    /** Şu anki vakit işaretlenebilir mi? HİÇBİR ŞEY yazmaz (onay penceresi için). */
+    public async simdikiVaktiDegerlendir(simdiMs: number = Date.now()): Promise<SimdikiVakitDegerlendirmesi> {
         const koordinat = await this.koordinatOku();
         if (!koordinat) return { tur: 'konumYok' };
         const veri = widgetVerisiOlustur(koordinat, bugunuAl());
@@ -148,9 +186,7 @@ export class KildimKuyruguServisi {
         if (gun.basarili && gun.veri?.namazlar.some((n) => n.namazAdi === namazAdi && n.tamamlandi)) {
             return { tur: 'zatenKilindi', vakitAdi: namazAdi };
         }
-        const { BildirimServisi } = require('./BildirimServisi') as typeof import('./BildirimServisi');
-        await BildirimServisi.getInstance().kuyruktanKildimIsle(vakitAdi, aktif.tarih);
-        return { tur: 'isaretlendi', vakitAdi: namazAdi };
+        return { tur: 'aday', vakitAdi: namazAdi, kayitVakti: vakitAdi, tarih: aktif.tarih };
     }
 
     private async koordinatOku(): Promise<{ lat: number; lng: number } | null> {

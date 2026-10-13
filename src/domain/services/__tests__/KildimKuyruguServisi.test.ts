@@ -149,6 +149,26 @@ describe('simdikiVaktiKildim (namazakisi://kildim)', () => {
         expect(mockKuyruktanKildim).not.toHaveBeenCalled();
     });
 
+    it('değerlendirme HİÇBİR ŞEY yazmaz; onaydan sonra aday işaretlenir', async () => {
+        konumKur();
+        const simdi = an('ogle', bugunuAl()) + 60_000;
+        const d = await servis.simdikiVaktiDegerlendir(simdi);
+        expect(d).toEqual({ tur: 'aday', vakitAdi: NamazAdi.Ogle, kayitVakti: 'ogle', tarih: bugunuAl() });
+        expect(mockKuyruktanKildim).not.toHaveBeenCalled();
+        if (d.tur !== 'aday') throw new Error('aday bekleniyordu');
+        expect(await servis.adayiIsaretle(d, simdi)).toEqual({ tur: 'isaretlendi', vakitAdi: NamazAdi.Ogle });
+        expect(mockKuyruktanKildim).toHaveBeenCalledWith('ogle', bugunuAl());
+    });
+
+    it('onay beklerken vakit değiştiyse işaretlemez', async () => {
+        konumKur();
+        const d = await servis.simdikiVaktiDegerlendir(an('ogle', bugunuAl()) + 60_000);
+        if (d.tur !== 'aday') throw new Error('aday bekleniyordu');
+        const sonuc = await servis.adayiIsaretle(d, an('ikindi', bugunuAl()) + 60_000);
+        expect(sonuc).toEqual({ tur: 'vakitDegisti' });
+        expect(mockKuyruktanKildim).not.toHaveBeenCalled();
+    });
+
     it('konum yoksa / (0,0) ise hiçbir şey yazmaz', async () => {
         konumKur({ lat: 0, lng: 0 });
         expect(await servis.simdikiVaktiKildim()).toEqual({ tur: 'konumYok' });

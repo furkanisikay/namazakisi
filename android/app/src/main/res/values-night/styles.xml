@@ -1,0 +1,6 @@
+<resources>
+  <!-- Kısayol "Kıldım" onayı (issue #276) — koyu tema. -->
+  <style name="KildimOnayTemasi" parent="@android:style/Theme.Material.Dialog.Alert">
+    <item name="android:colorAccent">@color/widget_koyu_vurgu</item>
+  </style>
+</resources>
