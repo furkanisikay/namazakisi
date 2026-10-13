@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+// Android AppFunctions (issue #94): `@AppFunction` yöntemlerinden şema + çağırıcı üretir.
+apply plugin: "com.google.devtools.ksp"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -152,6 +154,11 @@ android {
     }
 }
 
+// AppFunctions: uygulama modülündeki tüm fonksiyonlar tek envantere toplanır (şema XML'i assets'e).
+ksp {
+    arg("appfunctions:aggregateAppFunctions", "true")
+}
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
@@ -160,6 +167,12 @@ dependencies {
     implementation("com.google.android.play:app-update-ktx:2.1.0")
     // Wear OS saat senkronu (issue #269) — saat uygulamasi (wear/) ile AYNI surum
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
+    // Android AppFunctions — "cihaz içi MCP" (issue #94, `asistan/NamazAsistanFonksiyonlari`).
+    // Apache-2.0. alpha08'e SABİT: alpha09+ compileSdk 37 + AGP 9.1 ister (AAR metadata),
+    // RN 0.81 hattı compileSdk 36 + AGP 8.11'dir. Yükseltme Expo SDK yükseltmesini bekler.
+    implementation("androidx.appfunctions:appfunctions:1.0.0-alpha08")
+    implementation("androidx.appfunctions:appfunctions-service:1.0.0-alpha08")
+    ksp("androidx.appfunctions:appfunctions-compiler:1.0.0-alpha08")
     // JVM birim testleri (src/test): widget / hızlı ayarlar saf çekirdeği (issue #275/#276).
     // org.json: android.jar'daki taklit (stub) org.json testte "not mocked" fırlatır.
     testImplementation("junit:junit:4.13.2")

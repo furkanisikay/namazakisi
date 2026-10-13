@@ -132,6 +132,8 @@ const depolamayiAyarla = (): void => {
         return { farzSonrasiOner: false };
       case DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI:
         return { aktif: true };
+      case DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI:
+        return { kartAcik: true, mezhep: 'safii', ikamet: null };
       default:
         return null;
     }
@@ -185,6 +187,15 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.ayarlar.kazaOneri).toEqual({ farzSonrasiOner: false });
     // Sade görünüm (issue #295): yaşlı kullanıcının telefonu değişince ayar geri gelsin.
     expect(payload.ayarlar.sadeGorunum).toEqual({ aktif: true });
+    // Seferîlik bilgi kartı (issue #296): mezhep ve ikamet yeri cihaz değişiminde korunsun.
+    expect(payload.ayarlar.seferilik).toEqual({ kartAcik: true, mezhep: 'safii', ikamet: null });
+  });
+
+  it('seferîlik kart hafızası ("bu yolculukta kapattım") cihaza özgüdür — yedeğe girmez', async () => {
+    await yedekZarfiOlustur();
+    const { Depolama } = jest.requireMock('../../../data/local/Depolama');
+    const okunanlar = (Depolama.oku as jest.Mock).mock.calls.map((c: unknown[]) => c[0]);
+    expect(okunanlar).not.toContain(DEPOLAMA_ANAHTARLARI.SEFERILIK_KART_HAFIZASI);
   });
 
   it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {

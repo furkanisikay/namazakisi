@@ -56,6 +56,10 @@ const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../GunSonuHatirlaticiServisi', () => ({
     gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
 }));
+const mockSeferilikIsle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../SeferilikServisi', () => ({
+    SeferilikServisi: { konumIsle: (...a: unknown[]) => mockSeferilikIsle(...a) },
+}));
 const mockYatisGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../YatisHatirlatmaServisi', () => ({
     YatisHatirlatmaServisi: {
@@ -212,6 +216,9 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
         // ve "vakti çıkmış" kararları vakitlerden türer — şehirle kayar.
         expect(mockYatisGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Seferîlik bilgi kartı (issue #296): eve dönünce kapatma hafızası arka
+        // planda da sıfırlanmalı; ilk ikamet yeri de buradan yazılabilir.
+        expect(mockSeferilikIsle).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

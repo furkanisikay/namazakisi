@@ -359,4 +359,13 @@ describe('YedekBirlestirmeServisi — sade görünüm ayarı geri yüklenir (iss
     );
     expect(plan[DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI]).toEqual({ aktif: true });
   });
+
+  it('uzerineYaz: gelen seferilik alt-ayarı SEFERILIK_AYARLARI (issue #296) anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { kartAcik: false, mezhep: 'safii', ikamet: null } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI]).toEqual({ kartAcik: false, mezhep: 'safii', ikamet: null });
+  });
 });
