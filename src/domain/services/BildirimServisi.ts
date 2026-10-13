@@ -303,6 +303,9 @@ export class BildirimServisi {
     // Nafile bildirimi (issue #273): "Kıldım" yalnız o günün o nafilesinin kalan
     // hatırlatmalarını iptal eder; namaz kaydı/puan/seri YAZILMAZ. Muhafız yoluna
     // (`kildimAksiyonunuIsle`) ASLA düşmemeli — o yol farz vakti kaydeder.
+    // Android'de eylem native işlenir (`NafileKildimIsleyici` → nafile kuyruğu →
+    // `KildimKuyruguServisi`); buraya yalnız iOS'ta ya da native yol kuyruğa
+    // yazamadığında gelinir.
     if (data?.tip === 'nafile') {
       if (actionIdentifier !== BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) return;
       if (!nafileTuruMu(data.tur) || typeof data.tarih !== 'string') return;
