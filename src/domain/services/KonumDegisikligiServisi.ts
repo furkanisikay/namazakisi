@@ -48,6 +48,7 @@ import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
+import { SeferilikServisi } from './SeferilikServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -256,6 +257,13 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // Camideyim + Namaz modu (#297/#277): vakit kapısı ve mod pencereleri vakit
         // girişlerinden türer, izlenen camiler yeni konumun en yakınlarıdır.
         guvenliCalistir('Camideyim', () => CamideyimServisi.getInstance().konumaBagliTazele(koordinatlar)),
+
+        // Seferîlik bilgi kartı (issue #296): bildirim GÖNDERMEZ; yalnız ilk ikamet
+        // yerini yazar ve eve dönülünce "bu yolculukta kapattım" hafızasını sıfırlar
+        // (kullanıcı uygulamayı açmadan dönse de sonraki yolculukta kart çıksın).
+        guvenliCalistir('Seferilik', async () => {
+            await SeferilikServisi.konumIsle(koordinatlar);
+        }),
     ]);
 
     Logger.info('KonumDegisikligi', 'Konuma bagli tum tuketiciler guncellendi');
