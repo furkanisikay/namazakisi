@@ -690,3 +690,70 @@ describe('VakitSayacBildirimServisi', () => {
     await expect(servis.tumSayacBildirimleriniTemizle()).resolves.toBeUndefined();
   });
 });
+
+describe('VakitSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikinci aşama)', () => {
+  const { CanliSayacPlanlayici } = require('../CanliSayacPlanlayici') as typeof import('../CanliSayacPlanlayici');
+  let karar: jest.SpyInstance;
+  let bildir: jest.SpyInstance;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (VakitSayacBildirimServisi as any).instance = undefined;
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    mockKilinanVakitleriAl.mockResolvedValue([]);
+    karar = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'ogeKarari');
+    bildir = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'kaynakBildir').mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    karar.mockRestore();
+    bildir.mockRestore();
+    global.Date = OriginalDate;
+  });
+
+  it('devralınan vakitte sayaç başlangıcı (A) kurulmaz, çıkış temizliği (B) kalır; pencere bildirilir', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00')); // öğle sayacı (30 dk) zaten başladı
+    karar.mockImplementation(async (oge: string) => ({ devralir: oge === 'ogle', oneCikar: true }));
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+
+    const ogleId = expect.stringMatching(/_ogle$/);
+    expect(mockStartCountdown).not.toHaveBeenCalledWith(expect.objectContaining({ id: ogleId }));
+    const tetikIdleri = (notifee.createTriggerNotification as jest.Mock).mock.calls.map((c) => c[0].id as string);
+    expect(tetikIdleri.some((id) => id.endsWith('_ogle_bitis'))).toBe(true);
+    const adaylar = bildir.mock.calls[0][1] as { oge: string; baslangicMs: number; hedefMs: number }[];
+    const ogle = adaylar.find((a) => a.oge === 'ogle');
+    expect(ogle).toMatchObject({
+      baslangicMs: mockPrayerTimes.asr.getTime() - 30 * 60_000,
+      hedefMs: mockPrayerTimes.asr.getTime(),
+    });
+  });
+
+  it("Now Bar'da vakit kapalıysa eski yol öne çıkarma istemez", async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    karar.mockResolvedValue({ devralir: false, oneCikar: false });
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+
+    expect(mockStartCountdown).toHaveBeenCalledWith(expect.objectContaining({ canli: undefined }));
+  });
+
+  it('sayaç kapalıyken planlayıcıya "aday yok" bildirilir', async () => {
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: false,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+    expect(bildir).toHaveBeenCalledWith('vakitSayac', []);
+  });
+});

@@ -408,7 +408,9 @@ export function saatPencereleriniOlustur(
         oge: a.oge,
         baslik: a.baslik,
         ad: NOW_BAR_OGE_BILGILERI[a.oge].ad,
-        bas: o.anMs,
+        // Zaten başlamış pencere "şimdi"den değil GERÇEK başından yazılır: yük her
+        // gönderimde aynı kalmalı (zaman damgası yükü her seferinde "yeni" yapardı).
+        bas: o.anMs <= simdiMs ? Math.min(o.anMs, secimliBaslangic(a, ayarlar) ?? o.anMs) : o.anMs,
         bitis: a.hedefMs,
         oncelik: NOW_BAR_ONCELIK[a.oge],
         ...(kildim && nowBarVaktiMi(a.oge) ? { tarih: kildim.tarih, vakit: a.oge } : {}),

@@ -246,8 +246,9 @@ describe('saat (Wear OS)', () => {
     const iftar = sayacAdayi('iftar', 'i', an('2026-10-16', '05:30'), an('2026-10-16', '18:20'));
     const ikindi = sayacAdayi('ikindi', 'sayac_2026-10-16_ikindi', an('2026-10-16', '17:35'), an('2026-10-16', '18:20'));
     const p = saatPencereleriniOlustur([iftar, ikindi, ...adaylar(a, simdi)], a, simdi);
+    // Başlamış pencere gerçek başından yazılır (yük her gönderimde aynı kalsın).
     expect(p.map((x) => [x.oge, x.bas, x.bitis])).toEqual([
-      ['iftar', simdi, an('2026-10-16', '18:20')],
+      ['iftar', an('2026-10-16', '05:30'), an('2026-10-16', '18:20')],
     ]);
     // Cuma (öncelik 4) iftarın (2) altında kalır.
   });
