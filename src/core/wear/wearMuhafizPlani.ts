@@ -68,6 +68,12 @@ export interface WearMuhafizGirdisi {
     matris: MuhafizMatrisi;
     /** tarih → kılınmış vakitler; kılınmış vaktin penceresi planlanmaz. */
     kilinanlar: Record<string, readonly VakitAdi[]>;
+    /**
+     * Özel gün kapısı (issue #272, `ozelGunAktifMi`) — VAKTİN GÜNÜNE uygulanır
+     * (gece yarısından sonraki yatsı dünün). Telefon özel günde muhafız planlamaz;
+     * saat de planlamamalı. Verilmezse kapı kapalı sayılır.
+     */
+    ozelGundeMi?: (tarih: string) => boolean;
     ufukMs?: number;
 }
 
@@ -141,6 +147,7 @@ export function wearMuhafizPlaniOlustur(g: WearMuhafizGirdisi): WearMuhafizKaydi
     return vakitPencereleriniOlustur(g.koordinat, g.bugunIso, gunSayisi)
         .filter((p) => p.cikis.getTime() > g.simdiMs && p.giris.getTime() < ufuk)
         .filter((p) => !(g.kilinanlar[p.tarih] ?? []).includes(p.vakit))
+        .filter((p) => !g.ozelGundeMi?.(p.tarih))
         .map((p) => pencereninKayitlari(p, g.matris))
         .filter((kayitlar) => kayitlar.length > 0);
 }

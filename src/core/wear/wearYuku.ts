@@ -76,6 +76,8 @@ export interface WearMuhafizYukGirdisi {
     simdiMs: number;
     /** tarih → kılınmış vakitler (muhafız kılınmışlığı + namaz kaydı birleşimi). */
     kilinanlar: Record<string, readonly VakitAdi[]>;
+    /** Özel gün kapısı — o günün pencereleri planlanmaz (bkz. `WearMuhafizGirdisi`). */
+    ozelGundeMi?: (tarih: string) => boolean;
     ufukMs?: number;
 }
 

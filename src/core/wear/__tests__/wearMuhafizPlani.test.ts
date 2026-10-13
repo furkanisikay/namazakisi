@@ -144,6 +144,18 @@ describe('wearMuhafizPlaniOlustur', () => {
         expect(anahtarlar).toContain(`${BUGUN}_ikindi`);
     });
 
+    it('özel gün kapısı VAKTİN GÜNÜNE uygulanır: gece yarısı sonrası yatsı dünün günüdür (#272)', () => {
+        const gruplar = wearMuhafizPlaniOlustur({
+            ...temel,
+            simdiMs: IMSAK_ONCESI,
+            ozelGundeMi: (t) => t === gunEkle(BUGUN, -1),
+        });
+        const anahtarlar = gruplar.map((g) => `${g[0].tarih}_${g[0].vakit}`);
+        expect(anahtarlar).not.toContain(`${gunEkle(BUGUN, -1)}_yatsi`);
+        expect(anahtarlar[0]).toBe(`${BUGUN}_imsak`);
+        expect(wearMuhafizPlaniOlustur({ ...temel, simdiMs: IMSAK_ONCESI, ozelGundeMi: () => true })).toEqual([]);
+    });
+
     it('bitmiş vakit planlanmaz; süren vaktin geçmiş dakikaları kalır (içerik vakit bitene dek sabit)', () => {
         const simdi = bugunOgle.cikis.getTime() - 20 * 60_000;
         const gruplar = wearMuhafizPlaniOlustur({ ...temel, simdiMs: simdi });

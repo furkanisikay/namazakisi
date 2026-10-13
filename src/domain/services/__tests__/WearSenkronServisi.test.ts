@@ -6,7 +6,7 @@
 import { NativeModules, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
 jest.mock('../../../core/utils/Logger', () => ({
@@ -37,12 +37,13 @@ const modul = {
 };
 const servis = WearSenkronServisi.getInstance();
 
-const konumKur = (koordinatlar = { lat: 41.0082, lng: 28.9784 }, muhafiz: unknown = null) =>
+const konumKur = (koordinatlar = { lat: 41.0082, lng: 28.9784 }, muhafiz: unknown = null, ozelGun: unknown = null) =>
     (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) => {
         if (k === DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI) {
             return JSON.stringify({ konumModu: 'manuel', seciliIlAdi: 'İstanbul', seciliIlceAdi: 'Fatih', koordinatlar });
         }
         if (k === DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI && muhafiz) return JSON.stringify(muhafiz);
+        if (k === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI && ozelGun) return JSON.stringify(ozelGun);
         return null;
     });
 
@@ -160,6 +161,15 @@ describe('gonder', () => {
         servis.__testIcinSifirla();
         modul.durumGonder.mockClear();
         konumKur(undefined, { aktif: false, ...ESKI_AYAR });
+        await servis.gonder();
+        expect(gonderilenYuk().muhafiz).toEqual([]);
+    });
+
+    it('özel gün aralığında saatin planı da BOŞ (#272 — telefonla aynı kapı)', async () => {
+        konumKur(undefined, { aktif: true, ...ESKI_AYAR }, {
+            ozelGunModuAktif: true,
+            aktifOzelGun: { baslangicTarihi: dunuAl(), bitisTarihi: gunEkle(bugunuAl(), 5) },
+        });
         await servis.gonder();
         expect(gonderilenYuk().muhafiz).toEqual([]);
     });

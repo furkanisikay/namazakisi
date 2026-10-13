@@ -33,6 +33,7 @@ import {
     localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muhafizPlaniGozlemcisi';
 
 /** Native taraf uygulama AÇIKKEN kuyruğa öğe düşünce bu olayı yayar. */
@@ -218,7 +219,9 @@ export class WearSenkronServisi {
             const muhafizKilinan = await kilinanVakitleriAl(tarih).catch(() => [] as VakitAdi[]);
             kilinanlar[tarih] = [...new Set([...(kayitKilinanlari[tarih] ?? []), ...muhafizKilinan])];
         }
-        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar };
+        // Özel gün (issue #272): telefon o günün muhafızını planlamaz → saat de planlamaz.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi };
     }
 
     /**
