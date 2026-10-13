@@ -23,6 +23,7 @@ import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
 import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { SeferilikBilgiKarti } from '../components/home/SeferilikBilgiKarti';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { ikiBolmeliMi } from '../../core/utils/ekranSinifi';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
@@ -789,6 +790,9 @@ export const AnaSayfa: React.FC = () => {
             </Text>
           </View>
         )}
+
+        {/* Seferîlik bilgi kartı (issue #296): ≈90 km'den uzakta, hüküm değil bilgi */}
+        {aktifGunKontrol && <SeferilikBilgiKarti />}
       </>
     );
 

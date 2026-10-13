@@ -26,6 +26,7 @@ export const AYARLAR_EKRANLARI = [
   'OtomasyonRehberi',
   'DebugLogs',
   'TakvimAyarlari',
+  'SeferilikAyarlari',
   'NelerYeni',
   'YedeklemeAktarim',
   'IceAktarmaSihirbazi',

@@ -26,6 +26,7 @@ export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
 export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
 export { CamideyimAyarlariSayfasi } from './CamideyimAyarlariSayfasi';
 export { NamazModuAyarlariSayfasi } from './NamazModuAyarlariSayfasi';
+export { SeferilikAyarlariSayfasi } from './SeferilikAyarlariSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
 export { OtomasyonRehberiSayfasi } from './OtomasyonRehberiSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';

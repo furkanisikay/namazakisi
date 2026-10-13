@@ -42,6 +42,13 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Namaz vakitleri',
   },
   {
+    id: 'sayfa-seferilik',
+    baslik: 'Yolculuk bilgisi',
+    anahtarKelimeler: ['yolculuk', 'seferî', 'seferi', 'misafir', 'kasr', 'cem', 'mezhep', 'ikamet'],
+    sayfa: 'SeferilikAyarlari',
+    grup: 'Namaz vakitleri',
+  },
+  {
     id: 'sayfa-muhafiz',
     baslik: 'Namaz muhafızı',
     anahtarKelimeler: [

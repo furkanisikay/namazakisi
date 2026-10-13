@@ -200,6 +200,11 @@ export const DEPOLAMA_ANAHTARLARI = {
   KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
   // Sade görünüm (issue #295) — YEDEKLENİR (beyaz listenin ÜÇ yerinde).
   SADE_GORUNUM_AYARLARI: 'sade_gorunum_ayarlari',
+  // Seferîlik bilgi kartı (issue #296) — ayar (kart açık, mezhep, ikamet yeri)
+  // YEDEKLENİR (beyaz listenin ÜÇ yerinde); "bu yolculukta kapattım" hafızası
+  // cihaza özgü → yedeklemeye GİRMEZ.
+  SEFERILIK_AYARLARI: 'seferilik_ayarlari',
+  SEFERILIK_KART_HAFIZASI: '@namaz_akisi/seferilik_kart_hafizasi',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu

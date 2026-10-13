@@ -40,6 +40,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Seferîlik bilgi kartı (issue #296) — kart kapalı; özellik ana ekranda kendiliğinden çıkar.
+    {
+        id: 'seferilik-bilgi-karti',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Yolculukta Bilgi Kartı',
+        aciklama:
+            'İkamet yerinizden yaklaşık 90 km uzaklaştığınızda ana ekranda, Diyanet\'in yolculuk (seferîlik) fetvalarını mezhebinize göre özetleyen kısa bir bilgi kartı görürsünüz.',
+        detayAciklama:
+            'Kart bir hüküm vermez; ölçüyü (yaklaşık 90 km), kalış süresini, dört rekâtlı farzların kısaltılmasını (kasr) ve namazları birleştirmeyi (cem) Diyanet Din İşleri Yüksek Kurulu fetvalarına dayanarak özetler ve kaynağa yönlendirir. Yolculuk başına bir kez çıkar, bildirim göndermez. Ayarlar\'dan mezhebinizi (Hanefî veya Şâfiî) ve ikamet yerinizi seçebilir, kartı kapatabilirsiniz.',
+        ikon: 'route',
+        hedefSayfa: 'SeferilikAyarlari',
+        ctaEtiketi: 'İnceleyin',
+        kartGoster: false,
+        detaylar: [
+            'Mezhep seçimi yalnız kartın içeriğini değiştirir; namaz vakitleri aynı kalır',
+            'Mesafe kuş uçuşu ölçülür; yolcu sayılıp sayılmadığınız yolculuğunuzun amacına, süresine ve niyetinize bağlıdır',
+            '"Burası evim" ile ikamet yerinizi tek dokunuşla güncelleyebilirsiniz',
+        ],
+    },
     // Gerçek alarm kanalı (issue #74) — hatırlatma adımında telefonun alarmı.
     {
         id: 'gercek-alarm',

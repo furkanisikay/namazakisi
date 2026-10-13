@@ -253,5 +253,9 @@
     <service android:name="expo.modules.location.services.LocationTaskService" tools:node="remove"/>
     <service android:name="expo.modules.audio.service.AudioControlsService" tools:node="remove"/>
     <service android:name="expo.modules.audio.service.AudioRecordingService" tools:node="remove"/>
+    <!-- Android AppFunctions (issue #94): asistanın okuduğu uygulama açıklaması. Servisin kendisi
+         (PlatformAppFunctionService, yalnız sistem bağlanabilir: BIND_APP_FUNCTION_SERVICE)
+         androidx.appfunctions-service manifestinden birleşir; yeni izin EKLEMEZ. -->
+    <property android:name="android.app.appfunctions.app_metadata" android:resource="@xml/asistan_uygulama_bilgisi"/>
   </application>
 </manifest>

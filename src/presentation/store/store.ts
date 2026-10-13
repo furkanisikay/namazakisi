@@ -17,6 +17,7 @@ import camiyeGitReducer from './camiyeGitSlice';
 import nafileReducer from './nafileSlice';
 import nowBarReducer from './nowBarSlice';
 import sadeGorunumReducer from './sadeGorunumSlice';
+import seferilikReducer from './seferilikSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
@@ -41,6 +42,7 @@ export const store = configureStore({
     nafile: nafileReducer,
     nowBar: nowBarReducer,
     sadeGorunum: sadeGorunumReducer,
+    seferilik: seferilikReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,
     sahurSayac: sahurSayacReducer,

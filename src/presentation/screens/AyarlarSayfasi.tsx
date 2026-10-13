@@ -38,6 +38,8 @@ import { useNowBarOzeti } from '../hooks/useNowBarOzeti';
 import { PilRehberModal } from '../components/pil/PilRehberi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
+import { useSeferilik } from '../hooks/useSeferilik';
+import { seferilikOzeti } from '../../core/seferilik/seferilikMetni';
 import { KildimGuvenServisi } from '../../domain/services/KildimGuvenServisi';
 import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
@@ -69,6 +71,8 @@ export const AyarlarSayfasi: React.FC = () => {
   const pilRehberi = usePilRehberi(sistem);
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
+  // Seferîlik bilgi kartı (#296): dilim yoksa (eski test mock'u) varsayılan özet.
+  const seferilik = useSeferilik().durum;
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
@@ -218,6 +222,14 @@ export const AyarlarSayfasi: React.FC = () => {
                   ozet={ozetler.takvim}
                   yeniRozetGoster={sayfaOkunmamisMi('TakvimAyarlari')}
                   onPress={() => menuyeGit('TakvimAyarlari')}
+                />
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="route" size={20} color={ikonRengi} solid />}
+                  baslik="Yolculuk bilgisi"
+                  ozet={seferilikOzeti(seferilik?.ayarlar.kartAcik ?? true, seferilik?.ayarlar.mezhep ?? 'hanefi')}
+                  yeniRozetGoster={sayfaOkunmamisMi('SeferilikAyarlari')}
+                  onPress={() => menuyeGit('SeferilikAyarlari')}
                 />
               </AyarGrubu>
 

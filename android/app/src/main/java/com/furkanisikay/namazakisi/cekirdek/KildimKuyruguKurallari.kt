@@ -40,7 +40,17 @@ object KildimKuyruguKurallari {
      * `otomasyon/OtomasyonEylemAlici`). Belirteç + güven listesi doğrulamasından sonra yazılır.
      */
     const val KAYNAK_OTOMASYON = "otomasyon"
-    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM, KAYNAK_OTOMASYON)
+    /**
+     * Sistem asistanının (Gemini vb.) AppFunctions çağrısı (issue #94,
+     * `asistan/NamazAsistanFonksiyonlari`). Çağıran `EXECUTE_APP_FUNCTIONS` iznini
+     * tutan ayrıcalıklı ajandır; işaretleme yalnız kullanıcının asistanda verdiği
+     * onaydan sonra (onay kimliği eşleşince) yazılır.
+     */
+    const val KAYNAK_ASISTAN = "asistan"
+    val KAYNAKLAR = setOf(
+        KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM,
+        KAYNAK_OTOMASYON, KAYNAK_ASISTAN,
+    )
 
     private val GECERLI_VAKITLER = setOf("imsak", "ogle", "ikindi", "aksam", "yatsi")
     private val TARIH_DESENI = Regex("""^\d{4}-\d{2}-\d{2}$""")
