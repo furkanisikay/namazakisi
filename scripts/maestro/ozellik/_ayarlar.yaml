@@ -1,0 +1,7 @@
+# Ortak: temiz acilis + Ayarlar sekmesi.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn: "Ayarlar"
+- waitForAnimationToEnd:
+    timeout: 3000

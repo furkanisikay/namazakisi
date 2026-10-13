@@ -1,0 +1,15 @@
+# Ortak acilis (ozellik turu): uygulamayi temiz baslatir, ana ekrani bekler,
+# acilis modallarini kapatir. Alt cizgiyle baslayan dosyalar hat tarafindan
+# AKIS olarak calistirilmaz; diger akislar `runFlow` ile cagirir.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- extendedWaitUntil:
+    visible: "Kıble yönünü bul"
+    timeout: 90000
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
