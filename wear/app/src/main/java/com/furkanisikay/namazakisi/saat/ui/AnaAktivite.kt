@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.saat.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -86,6 +87,7 @@ class AnaAktivite : ComponentActivity() {
                 onKildim = { tarih, vakit ->
                     kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
                 },
+                onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
             )
         }
     }

@@ -68,6 +68,14 @@ object BugunTileKarari {
     }
 
     /**
+     * Tesbihat kısayolu (issue #293) ipucu satırının YERİNE çizilir: yalnız bilekte
+     * yapılacak bir iş (onay bekleyen ya da kılınmamış vakit) yokken. Tipik an: vakti
+     * yeni işaretlemiş kişi — tam tesbihat zamanı. Ayrı satır eklenmez (küçük yuvarlak
+     * ekranda daireler kenara taşardı).
+     */
+    fun tesbihatKisayoluGoster(onayVar: Boolean, kalanVar: Boolean): Boolean = !onayVar && !kalanVar
+
+    /**
      * Saklanan onay hâlâ geçerli mi? Onay beklerken tile başka bir sebeple yeniden
      * istenirse (yeni yük, aynı eski kimliğe ikinci hızlı dokunuş → `Yok`) "Tekrar"
      * görünümü kaybolmamalı: süre ve işaretlenebilirlik sürdükçe yeniden çizilir.
