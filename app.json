@@ -74,8 +74,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
-          "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması ve Camideyim açıksa camiye girince Namaz modunun açılması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek ve Camideyim açıksa camiye girince Namaz modunu açmak için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "locationWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "isAndroidBackgroundLocationEnabled": true,
           "isAndroidForegroundServiceEnabled": false

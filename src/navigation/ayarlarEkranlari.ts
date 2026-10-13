@@ -19,6 +19,8 @@ export const AYARLAR_EKRANLARI = [
   'Hakkinda',
   'RamazanAyarlari',
   'NafileAyarlari',
+  'CamideyimAyarlari',
+  'NamazModuAyarlari',
   'DebugLogs',
   'TakvimAyarlari',
   'NelerYeni',

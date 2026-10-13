@@ -9,6 +9,7 @@
  * İki farklı varyant destekler:
  *   - 'onPlan':  Ön plan (foreground) konum izni
  *   - 'arkaPlan': Her zaman / arka plan konum izni (seyahat modu)
+ *   - 'camideyim': Her zaman konum izni (camiye girince Namaz modu, issue #297)
  */
 
 import * as React from 'react';
@@ -29,7 +30,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 
-export type IzinTipi = 'onPlan' | 'arkaPlan';
+export type IzinTipi = 'onPlan' | 'arkaPlan' | 'camideyim';
 
 interface DisclosureMaddesi {
   ikon: string;
@@ -97,6 +98,12 @@ const MADDELER: Record<IzinTipi, {
         renk: '#10b981',
       },
       {
+        ikon: 'mosque',
+        baslik: 'Camiye Girince Namaz Modu',
+        aciklama: 'Camideyim özelliğini açarsanız, vakit yakınında bir camide durduğunuz anlaşılır ve telefonunuzun Namaz modu açılır.',
+        renk: '#2E7D32',
+      },
+      {
         ikon: 'mobile-alt',
         baslik: 'Yalnızca Cihazda İşlenir',
         aciklama: 'Arka planda alınan konum verisi yalnızca cihazınızda kullanılır; sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.',
@@ -106,6 +113,39 @@ const MADDELER: Record<IzinTipi, {
         ikon: 'toggle-off',
         baslik: 'İstediğiniz Zaman Kapatın',
         aciklama: 'Bu özelliği uygulama içinden kapatabilir veya Android Ayarlar → Uygulamalar → İzinler yolundan "Her zaman" iznini geri alabilirsiniz.',
+        renk: '#f59e0b',
+      },
+    ],
+    kabulButonMetni: 'Devam Et ve İzin Ekranını Aç',
+    reddetButonMetni: 'Vazgeç',
+  },
+  camideyim: {
+    baslik: 'Camideyim için Konum',
+    altBaslik: 'Camiye girince Namaz modunun açılabilmesi için konum izninin "Her zaman" olması gerekir. Devam etmeden önce nasıl kullanıldığını gözden geçirin.',
+    ikon: 'mosque',
+    maddeler: [
+      {
+        ikon: 'mosque',
+        baslik: 'Camiye Girince Namaz Modu',
+        aciklama: 'Uygulama kapalıyken bile, vakit yakınında bir camide birkaç dakika kaldığınız anlaşılır ve telefonunuzun Namaz modu açılır.',
+        renk: '#2E7D32',
+      },
+      {
+        ikon: 'battery-half',
+        baslik: 'Sürekli Konum Okunmaz',
+        aciklama: 'Yakındaki camilerin çevresini telefonun kendi konum servisi izler; uygulama yalnız bir camide beklediğinizde tek bir ölçüm yapar.',
+        renk: '#10b981',
+      },
+      {
+        ikon: 'mobile-alt',
+        baslik: 'Yalnızca Cihazda İşlenir',
+        aciklama: 'Hangi camiye gittiğiniz telefonunuzda kalır; sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.',
+        renk: '#3b82f6',
+      },
+      {
+        ikon: 'toggle-off',
+        baslik: 'İstediğiniz Zaman Kapatın',
+        aciklama: 'Camideyim ayarlarından kapatabilir ya da Android Ayarlar → Uygulamalar → İzinler yolundan "Her zaman" iznini geri alabilirsiniz.',
         renk: '#f59e0b',
       },
     ],

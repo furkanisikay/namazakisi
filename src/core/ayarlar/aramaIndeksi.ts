@@ -84,6 +84,20 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Hatırlatmalar',
   },
   {
+    id: 'sayfa-camideyim',
+    baslik: 'Camideyim',
+    anahtarKelimeler: ['cami', 'camideyim', 'mescit', 'cemaat', 'konum', 'sessiz'],
+    sayfa: 'CamideyimAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
+    id: 'sayfa-namaz-modu',
+    baslik: 'Namaz modu',
+    anahtarKelimeler: ['namaz modu', 'mod', 'rahatsız etmeyin', 'sessiz', 'cuma', 'hutbe', 'rutin'],
+    sayfa: 'NamazModuAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
     id: 'sayfa-gorunum',
     baslik: 'Görünüm',
     anahtarKelimeler: ['tema', 'renk', 'görünüm', 'karanlık mod'],

@@ -33,6 +33,7 @@ import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
 import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
 import { useSistemDurumu } from '../hooks/useSistemDurumu';
 import { usePilRehberi } from '../hooks/usePilRehberi';
+import { useCamideyimOzeti } from '../hooks/useCamideyimOzeti';
 import { PilRehberModal } from '../components/pil/PilRehberi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
@@ -58,6 +59,8 @@ export const AyarlarSayfasi: React.FC = () => {
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
   // Pil muafiyeti + tam alarm: uygulamaya dönüşte de tazelenir (ayar ekranından geri gelince).
   const sistem = useSistemDurumu();
+  // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
+  const camideyim = useCamideyimOzeti();
   const pilRehberi = usePilRehberi(sistem);
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
@@ -254,6 +257,27 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('NafileAyarlari')}
                   onPress={() => menuyeGit('NafileAyarlari')}
                 />
+                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
+                {camideyim.kullanilabilir && [
+                  <AyarSatiri
+                    key="camideyim"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="mosque" size={20} color={ikonRengi} solid />}
+                    baslik="Camideyim"
+                    ozet={camideyim.cami}
+                    yeniRozetGoster={sayfaOkunmamisMi('CamideyimAyarlari')}
+                    onPress={() => menuyeGit('CamideyimAyarlari')}
+                  />,
+                  <AyarSatiri
+                    key="namaz-modu"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="moon" size={20} color={ikonRengi} />}
+                    baslik="Namaz modu"
+                    ozet={camideyim.namazModu}
+                    yeniRozetGoster={sayfaOkunmamisMi('NamazModuAyarlari')}
+                    onPress={() => menuyeGit('NamazModuAyarlari')}
+                  />,
+                ]}
               </AyarGrubu>
 
               <AyarGrubu baslik="Uygulama">

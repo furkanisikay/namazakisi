@@ -40,6 +40,49 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Camideyim + Namaz modu (issue #297 / #277) — yalnız Android; kart iOS'ta da
+    // görüneceği için kapalı (yalnız "Neler Yeni" listesi).
+    {
+        id: 'camideyim',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Camideyim: Camiye Girince Telefonunuz Anlar',
+        aciklama:
+            'Android telefonunuzda hangi camiye giderseniz gidin, vakit yakınında birkaç dakika kaldığınızda Namaz modu kendiliğinden açılır.',
+        detayAciklama:
+            'Tek bir konum seçmeniz gerekmez: telefonunuz yakınınızdaki camileri izler. Önünden geçmek, yandaki kafede oturmak ya da vakit dışında uğramak "camidesiniz" sayılmaz. Camideyken hatırlatmalarınız iptal edilmez, sessiz gelir; çıkınca "Kıldınız mı?" diye sorulur. Yanlış algılanan yeri "Cami değil" diye işaretleyebilir, iş yerinizdeki mescidi kendiniz ekleyebilirsiniz. Konumunuz telefonunuzdan çıkmaz.',
+        ikon: 'mosque',
+        hedefSayfa: 'CamideyimAyarlari',
+        ctaEtiketi: 'Camideyim ayarını açın',
+        kartGoster: false,
+        detaylar: [
+            'Türkiye\'deki camiler uygulamanın içinde (OpenStreetMap verisi)',
+            'Geçip gitmek ve vakit dışında uğramak sayılmaz',
+            'Camideyken hatırlatmalar sessiz gelir, sesli anons konuşmaz',
+            'Çıkınca tek dokunuşla "Kıldım" diyebilirsiniz',
+            '"Son algılamalar" ile neden algılandığını görebilirsiniz',
+        ],
+    },
+    {
+        id: 'namaz-modu',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Telefonunuza "Namaz" Modu',
+        aciklama:
+            'Android telefonunuzun Modlar listesine "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır.',
+        detayAciklama:
+            'Aramaların, bildirimlerin ve ekranın namazda ne yapacağını telefonunuzun kendi Modlar ekranında siz seçersiniz; Namaz Akışı yalnız ne zaman açılacağını söyler. "Kıldım" dediğinizde mod kapanır. Modu elle kapatırsanız o vakit için yeniden açılmaz.',
+        ikon: 'moon',
+        hedefSayfa: 'NamazModuAyarlari',
+        ctaEtiketi: 'Namaz modunu açın',
+        kartGoster: false,
+        detaylar: [
+            'Cuma hutbesinde kendiliğinden açılır',
+            'İsterseniz her vakit girince birkaç dakika',
+            '"Kıldım" deyince kapanır',
+            'Hatırlatmalarınız iptal edilmez',
+        ],
+    },
     // Bilinçli olarak NÖTR ve kartsız (issue #272): özel gün etiketi açıklanmaz,
     // yalnız "Neler Yeni" listesinde görünür.
     {
