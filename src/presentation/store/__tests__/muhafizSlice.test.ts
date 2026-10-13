@@ -27,7 +27,7 @@ import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../../core/muhafiz/matrisIslemleri';
-import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { matrisYapisiGecerliMi, vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
 import { adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
@@ -170,6 +170,31 @@ describe('muhafizSlice', () => {
             expect(state).toEqual({ ...kayitli, matris: eskidenMatriseGoc(kayitli) });
         });
 
+        it('NULL HÜCRE: bozuk matris yüklemeyi REDDETMEZ, ayarlar kaybolmaz (#274)', async () => {
+            // Eşik tekilliği göçü null hücrede fırlatıyordu → thunk catch'e düşüp null
+            // dönüyor ve kullanıcının TÜM ayarları (aktif, yoğunluk…) kaybolmuş görünüyordu.
+            const matris = eskidenMatriseGoc({
+                esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+                sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+            }) as unknown as Record<string, { seviyeler: unknown[] }>;
+            matris.ogle.seviyeler[1] = null;
+            mockStore.set(
+                ANAHTAR,
+                JSON.stringify({ aktif: true, yogunluk: 'yogun', matris, presetGocuYapildi: true })
+            );
+
+            const store = yeniStore();
+            const sonuc = await store.dispatch(muhafizAyarlariniYukle());
+
+            expect(sonuc.payload).not.toBeNull();
+            const state = store.getState().muhafiz as MuhafizAyarlari;
+            expect(state.aktif).toBe(true);
+            expect(state.yogunluk).toBe('yogun');
+            // Ekran motorun gördüğü matrisi görür: yapısal bozuk matris eski
+            // alanlardan türetilir (`muhafizMatrisiniCoz` ile aynı).
+            expect(matrisYapisiGecerliMi(state.matris)).toBe(true);
+        });
+
         it('fulfilled: eksik alanlar ?? ile initialState varsayılanından doldurulur', async () => {
             // Diskte yalnızca 'gelismisMod' var; diğer TÜM alanlar (aktif dahil) varsayılana
             // düşmeli — her bir alanın ?? sol-tarafı null/undefined dalını kapsar.
@@ -306,7 +331,12 @@ describe('muhafizSlice matris', () => {
 
 describe('muhafizAyarlariniYukle matris [M2]', () => {
     test('diskte matris VARSA migrasyon çalışmaz, mevcut matris korunur', async () => {
-        const ozelMatris = bosMatris();
+        // Yapısal olarak GEÇERLİ olmalı: boş `seviyeler` (bosMatris) artık motorla
+        // aynı şekilde bozuk sayılır ve eski alanlardan türetilir (#274 null-tolerans).
+        const ozelMatris = eskidenMatriseGoc({
+            esikler: { seviye1: 77, seviye2: 33, seviye3: 12, seviye4: 4 },
+            sikliklar: { seviye1: 11, seviye2: 6, seviye3: 2, seviye4: 1 },
+        });
         // Bayrak VAR → preset göçü karışmaz; test yalnız M2 (matris türetme) davranışını ölçer.
         mockStore.set(
             ANAHTAR,

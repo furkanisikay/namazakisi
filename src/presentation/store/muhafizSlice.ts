@@ -299,7 +299,13 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     esikler: { ...initialState.esikler, ...parsed.esikler },
                     sikliklar: { ...initialState.sikliklar, ...parsed.sikliklar },
                 };
-                const hamMatris: MuhafizMatrisi = parsed.matris ?? eskidenMatriseGoc(temel);
+                // Yapısal olarak bozuk matris (null hücre, sayı olmayan eşik) motorun
+                // gördüğüyle AYNI şekilde eski alanlardan türetilir
+                // (`muhafizMatrisiniCoz` sözleşmesi) — yoksa ekran motorun hiç
+                // kullanmadığı bozuk matrisi gösterir ve `seviyeler`de çöker.
+                const hamMatris: MuhafizMatrisi = matrisYapisiGecerliMi(parsed.matris)
+                    ? parsed.matris
+                    : eskidenMatriseGoc(temel);
                 // Eski 'alarm' ses id'si → görünür `acilKanal` alanına taşınır. Burada
                 // yapılırsa sonuç DİSKE de yazılır (aşağıdaki `gocGerekli` dalı veya
                 // sonraki herhangi bir reducer yazımı) → aciliyet ekranda görünür ve

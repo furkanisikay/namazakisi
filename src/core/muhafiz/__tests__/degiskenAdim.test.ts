@@ -175,6 +175,114 @@ describe('esikTekilliginiGoc — davranışı BİREBİR korur', () => {
     expect(goclu.aksam.seviyeler.map((s) => s.esikDk)).toEqual([9, 10]);
   });
 
+  // Nöbetçi (Fable incelemesi): göç çıktısı KRONOLOJİK olmalı — kaydırılan
+  // adım yerinde kalırsa "N. hatırlatma" numarası ile not/önizleme ayrışır.
+  // TESLİM edilen plan (zaman, ton, kanal, aciliyet, ses, metin) birebir aynı
+  // kalmalı; `adimIndeks` bilinçli olarak hariç — o yalnız ekran numarasıdır ve
+  // kapalı adım artık kartta kendi sırasında durduğu için YENİ diziyi izlemelidir.
+  const tamPlanlar = (m: MuhafizMatrisi) =>
+    MUHAFIZ_VAKITLERI.map((v) =>
+      vakitUyariPlaniOlustur(m[v], 1000).map((u) => [
+        u.olcuDk,
+        u.kalanDk,
+        u.seviye,
+        u.kanallar,
+        u.acilKanal,
+        u.bildirimSesi,
+        u.anonsMetni,
+      ])
+    );
+  const numaraTutarli = (m: MuhafizMatrisi) =>
+    MUHAFIZ_VAKITLERI.every((v) =>
+      vakitUyariPlaniOlustur(m[v], 1000).every((u) => {
+        // Plandaki "N. hatırlatma" dizinin N. elemanını göstermeli: o adım AÇIK,
+        // bu dakikayı kapsıyor ve aynı kanallarla konuşuyor.
+        const adim = m[v].seviyeler[u.adimIndeks];
+        return (
+          !!adim &&
+          adim.esikDk >= u.olcuDk &&
+          JSON.stringify(adim.kanallar) === JSON.stringify(u.kanallar)
+        );
+      })
+    );
+
+  test('kaybeden SERT kapalıyken ([45,25,25,3]) çıktı kronolojik, plan BİREBİR aynı', () => {
+    const ham = matrisKur(() => ({
+      seviyeler: [
+        sv('nazik', 45, 15),
+        sv('uyari', 25, 10),
+        sv('sert', 25, 5, {}),
+        sv('acil', 3, 1),
+      ],
+    }));
+    const goclu = esikTekilliginiGoc(ham);
+    expect(goclu.ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 26, 25, 3]);
+    expect(goclu.ogle.seviyeler.map((s) => s.kademe)).toEqual(['nazik', 'sert', 'uyari', 'acil']);
+    expect(esikSiralamasiGecerliMi(goclu.ogle.seviyeler, 'cikisaDogru')).toBe(true);
+    expect(matrisGecerliMi(goclu)).toBe(true);
+    expect(tamPlanlar(goclu)).toEqual(tamPlanlar(ham));
+    // Kart numarası (dizi indeksi + 1) önizlemedeki "N. hatırlatma" ile aynı.
+    expect(numaraTutarli(goclu)).toBe(true);
+  });
+
+  test('3+ eşit eşik ([30,30,30,30]) → kronolojik ve tekil, plan BİREBİR aynı', () => {
+    const ham = matrisKur(() => ({
+      seviyeler: [sv('nazik', 30, 5), sv('uyari', 30, 5), sv('sert', 30, 5), sv('acil', 30, 1)],
+    }));
+    const goclu = esikTekilliginiGoc(ham);
+    expect(goclu.ogle.seviyeler.map((s) => s.esikDk)).toEqual([33, 32, 31, 30]);
+    expect(goclu.ogle.seviyeler[3].kademe).toBe('acil');
+    expect(esikSiralamasiGecerliMi(goclu.ogle.seviyeler, 'cikisaDogru')).toBe(true);
+    expect(tamPlanlar(goclu)).toEqual(tamPlanlar(ham));
+    expect(numaraTutarli(goclu)).toBe(true);
+    // İdempotent: ikinci tur aynı referansı döndürür.
+    expect(esikTekilliginiGoc(goclu)).toBe(goclu);
+  });
+
+  test('giriş yönünde 3+ eşit eşik de kronolojik (ARTAN) çıkar, plan aynı', () => {
+    const ham = matrisKur(() => ({
+      yon: 'girisindenItibaren',
+      seviyeler: [sv('nazik', 20, 5), sv('uyari', 20, 5), sv('sert', 20, 5)],
+    }));
+    const goclu = esikTekilliginiGoc(ham);
+    expect(esikSiralamasiGecerliMi(goclu.ogle.seviyeler, 'girisindenItibaren')).toBe(true);
+    const plan = (m: MuhafizMatrisi) =>
+      vakitUyariPlaniOlustur(m.ogle, 1, { pencereUzunluguDk: 120 }).map((u) => [
+        u.olcuDk,
+        u.seviye,
+        u.kanallar,
+      ]);
+    expect(plan(goclu)).toEqual(plan(ham));
+  });
+
+  test('sıra değişen vakitte `yonYedegi` silinir (indeks hizası bozulur)', () => {
+    const ham = matrisKur(() => ({
+      seviyeler: [sv('nazik', 30), sv('uyari', 30), sv('acil', 3)],
+      yonYedegi: { girisindenItibaren: [{ esikDk: 5, siklik: 'birkez' }] },
+    }));
+    const goclu = esikTekilliginiGoc(ham);
+    expect(goclu.ogle.yonYedegi).toBeUndefined();
+  });
+
+  test('NULL-TOLERANS: bozuk hücrede FIRLATMAZ, o vakti atlar', () => {
+    const ham = matrisKur(() => ({ seviyeler: [sv('nazik', 30), sv('acil', 30)] }));
+    const bozuk = {
+      ...ham,
+      imsak: { seviyeler: [null, sv('acil', 5)] },
+      ogle: { seviyeler: [sv('nazik', Number.NaN), sv('acil', 5)] },
+      ikindi: null,
+      aksam: { seviyeler: 'bozuk' },
+    } as unknown as MuhafizMatrisi;
+    let sonuc: MuhafizMatrisi | undefined;
+    expect(() => {
+      sonuc = esikTekilliginiGoc(bozuk);
+    }).not.toThrow();
+    expect(sonuc!.imsak).toBe(bozuk.imsak);
+    expect(sonuc!.ogle).toBe(bozuk.ogle);
+    // Sağlam vakit yine göçer.
+    expect(sonuc!.yatsi.seviyeler.map((s) => s.esikDk)).toEqual([31, 30]);
+  });
+
   test('muhafizMatrisiniCoz eşit eşikli matrisi eskiden TÜRETMEZ (kanallar korunur)', () => {
     const ham = matrisKur(() => ({
       seviyeler: [sv('nazik', 30, 'birkez', { sesli: true }), sv('acil', 30)],

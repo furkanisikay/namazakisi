@@ -1,7 +1,7 @@
 import type { EskiUyariModu, MuhafizMatrisi, SeviyeAyari } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
 import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi';
-import { esikSiralamasiGecerliMi, esiklerTekilMi } from './aktifSeviye';
+import { esikSiralamasiGecerliMi, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
@@ -165,7 +165,7 @@ function eskiDortAdimSekliMi(seviyeler: SeviyeAyari[] | undefined): seviyeler is
  * en yakin bos dakikaya kaydirir — cikista erkene (+1), giriste erkene (-1;
  * 1'in altina dusemezse sonraya). Kapali adim pencere saglamaz ve tetiklenmez,
  * yani plan degismez; kullanicinin kurdugu her sey adimda durur, adimi acarak
- * geri alabilir.
+ * geri alabilir. Sonuc dizisi KRONOLOJIK siralanir ve `yonYedegi` silinir.
  *
  * Kanal gocundan (`modlariKanallaraGoc`) SONRA calismali: acik/kapali ayrimi
  * `kanallar`a bakar. DEGISIKLIK YOKSA AYNI REFERANS doner.
@@ -178,7 +178,14 @@ export function esikTekilliginiGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
     const vakitAyari = matris[vakit];
     sonuc[vakit] = vakitAyari;
     const seviyeler = vakitAyari?.seviyeler;
-    if (!Array.isArray(seviyeler) || esiklerTekilMi(seviyeler)) continue;
+    // NULL-TOLERANS: bozuk hucre (null adim, sayi olmayan esik) burada FIRLATIRSA
+    // `muhafizAyarlariniYukle` thunk'i tumden reddolur ve kullanicinin TUM
+    // ayarlari kaybolmus gorunur. Diger goclar gibi atla; yapisal kapi
+    // (`matrisYapisiGecerliMi`/`matrisGecerliMi`) bozuklugu ayrica ele alir.
+    if (!Array.isArray(seviyeler) || seviyeler.some((s) => !s || !Number.isFinite(s.esikDk))) {
+      continue;
+    }
+    if (esiklerTekilMi(seviyeler)) continue;
 
     const girisYonu = vakitAyari.yon === 'girisindenItibaren';
     const kullanilan = new Set<number>();
@@ -217,7 +224,18 @@ export function esikTekilliginiGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
     }
 
     degisti = true;
-    sonuc[vakit] = { ...vakitAyari, seviyeler: yeniSeviyeler };
+    // KRONOLOJIK SIRA (AGENTS.md #274 kurali a): kaydirilan adim dizide yerinde
+    // kalirsa (or. [45,25,25,3] → [45,25,26,3]; [30,30,30,30] → [31,32,33,30])
+    // kart numarasi ("N. hatirlatma" = indeks + 1) ile not/onizleme ayrisir ve
+    // stepper komsu kisitinda kilitlenir. Siralama plani DEGISTIRMEZ: motor zaten
+    // `kronolojikSirala` gorunumunden okur.
+    // `yonYedegi` INDEKSLE geri yuklenir → sira degisince hizasi bozulur; silinir
+    // (karsi yone gecis taban tablodan kurulur, `vaktinYonunuDegistir` sozlesmesi).
+    const { yonYedegi: _atilanYedek, ...yedeksiz } = vakitAyari;
+    sonuc[vakit] = {
+      ...yedeksiz,
+      seviyeler: kronolojikSirala(yeniSeviyeler, vakitAyari.yon),
+    };
   }
 
   return degisti ? sonuc : matris;
