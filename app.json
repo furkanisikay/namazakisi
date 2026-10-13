@@ -57,6 +57,12 @@
       "./plugins/withPlayStoreDependency",
       "./plugins/withSiriKisayollari",
       [
+        "./plugins/withNamazWidget",
+        {
+          "etkin": false
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": false,
