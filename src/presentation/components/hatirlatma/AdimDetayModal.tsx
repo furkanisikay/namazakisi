@@ -39,6 +39,9 @@ import { anonsSablonlari, anonsMetniniCoz, varsayilanAnonsMetni } from '../../..
 import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
+import { AlarmOnayModal } from './AlarmOnayModal';
+import { AlarmBilgiSatirlari, alarmNotlariniOlustur } from './AlarmBilgiSatirlari';
+import { useAlarmIzinleri } from '../../hooks/useAlarmIzinleri';
 import { ANONS_METIN_UST_SINIRI } from '../../../core/muhafiz/ios/anonsKlibi';
 import {
     acilTonSecilebilirMi,
@@ -58,6 +61,8 @@ import {
     adimBilgisiAl,
     TITRESIM_ACIKLAMASI,
     TITRESIM_ETIKETI,
+    ALARM_ACIKLAMASI,
+    ALARM_ETIKETI,
     cipKanallariniBirlestir,
     kanalCipiSeciliMi,
     esikBasligiOlustur,
@@ -84,6 +89,13 @@ export interface AdimDetayModalProps {
      * çağıran, son hatırlatmada (en az bir tane kalmalı) bunu geçmez.
      */
     onSil?: () => void;
+    /**
+     * Gerçek alarm rızası (issue #74, `muhafizSlice.alarmOnayi`) verildi mi? Verilmediyse
+     * anahtarı açmak önce `AlarmOnayModal`'ı gösterir.
+     */
+    alarmOnayiVar?: boolean;
+    /** Kullanıcı `AlarmOnayModal`'da onayladı — rıza kaydını yazar. */
+    onAlarmOnayiVer?: () => void;
 }
 
 /** Bolum basligi (kucuk, harf arali); `sag` ile satirin sagina aksiyon konabilir. */
@@ -111,9 +123,15 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     onDegistir,
     onKapat,
     onSil,
+    alarmOnayiVar = false,
+    onAlarmOnayiVer,
 }) => {
     const renkler = useRenkler();
     const seviye = seviyeler[indeks];
+    /** Gerçek alarm rıza modalı açık mı (anahtar ilk kez açılırken). */
+    const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
+    const alarmAcikMi = gorunur && kanalAcikMi(seviye?.kanallar, 'alarm');
+    const alarmIzinleri = useAlarmIzinleri(alarmAcikMi && tanim.yetenekler.platform === 'android');
 
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
@@ -167,6 +185,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     });
     const kapaliMi = adimKapaliMi(seviye.kanallar);
     const titresimliMi = kanalAcikMi(seviye.kanallar, 'titresim');
+    const alarmliMi = kanalAcikMi(seviye.kanallar, 'alarm');
     const sesliMi = sesliAnonsGerekliMi(seviye.kanallar);
     const bildirimliMi = bildirimSesiGerekliMi(seviye.kanallar) && tanim.sesSecimiVar;
     const tekrarliMi = seviye.siklik !== 'birkez';
@@ -206,6 +225,22 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                 ? { ...seviye.kanallar, titresim: true }
                 : { ...seviye.kanallar, titresim: false },
         });
+    };
+
+    /**
+     * GERÇEK ALARM aç/kapat (issue #74). Titreşim gibi bağımsız eksen: çip kümesine
+     * dokunmaz. AÇMAK rıza ister — kayıt yoksa önce `AlarmOnayModal`; "Vazgeç" hiçbir
+     * şey yazmaz. KAPATMAK rıza istemez.
+     */
+    const alarmiYaz = (acik: boolean) => {
+        onDegistir({ ...seviye, kanallar: { ...seviye.kanallar, alarm: acik } });
+    };
+    const alarmiAyarla = (acik: boolean) => {
+        if (acik && !alarmOnayiVar) {
+            setAlarmOnayAcik(true);
+            return;
+        }
+        alarmiYaz(acik);
     };
 
     /**
@@ -400,6 +435,54 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             accessibilityState={{ checked: titresimliMi }}
                                             accessibilityLabel={TITRESIM_ETIKETI}
                                         />
+                                    </View>
+                                )}
+
+                                {/* GERÇEK ALARM (issue #74) — titreşimle AYNI gerekçe: bağımsız
+                                    kanal → bağımsız anahtar. Adım kapalıyken gösterilmez. */}
+                                {!kapaliMi && tanim.alarmSecilebilir === true && (
+                                    <View
+                                        className="p-3.5 rounded-2xl border mt-2"
+                                        style={{
+                                            backgroundColor: renkler.arkaplan,
+                                            borderColor: alarmliMi ? bilgi.renk : renkler.sinir,
+                                        }}
+                                    >
+                                        <View className="flex-row items-center">
+                                            <View
+                                                className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                                                style={{ backgroundColor: `${bilgi.renk}20` }}
+                                            >
+                                                <FontAwesome5 name="clock" size={16} color={bilgi.renk} solid />
+                                            </View>
+                                            <View className="flex-1 pr-3">
+                                                <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                                    {ALARM_ETIKETI}
+                                                </Text>
+                                                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                                    {ALARM_ACIKLAMASI}
+                                                </Text>
+                                            </View>
+                                            <Anahtar
+                                                value={alarmliMi}
+                                                onValueChange={alarmiAyarla}
+                                                trackColor={{ false: renkler.sinir, true: `${bilgi.renk}80` }}
+                                                thumbColor={alarmliMi ? bilgi.renk : '#f4f3f4'}
+                                                accessibilityRole="switch"
+                                                accessibilityState={{ checked: alarmliMi }}
+                                                accessibilityLabel={ALARM_ETIKETI}
+                                            />
+                                        </View>
+                                        {alarmliMi && (
+                                            <AlarmBilgiSatirlari
+                                                notlar={alarmNotlariniOlustur({
+                                                    platform: tanim.yetenekler.platform,
+                                                    tamEkran: alarmIzinleri.tamEkran,
+                                                    tamAlarm: alarmIzinleri.tamAlarm,
+                                                })}
+                                                onIzinAyari={() => void alarmIzinleri.ayariAc()}
+                                            />
+                                        )}
                                     </View>
                                 )}
                             </>
@@ -822,6 +905,21 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                         )}
                     </ScrollView>
                 </View>
+
+                {/* Gerçek alarm rızası — modal AĞACININ İÇİNDE (iç içe): iOS aynı anda iki
+                    kardeş modal sunamaz. Onay rızayı yazar VE anahtarı açar. */}
+                {alarmOnayAcik && (
+                    <AlarmOnayModal
+                        gorunur
+                        platform={tanim.yetenekler.platform}
+                        onOnayla={() => {
+                            setAlarmOnayAcik(false);
+                            onAlarmOnayiVer?.();
+                            alarmiYaz(true);
+                        }}
+                        onIptal={() => setAlarmOnayAcik(false)}
+                    />
+                )}
             </View>
         </Modal>
     );

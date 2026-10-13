@@ -64,6 +64,8 @@ export function nafileTeslimcisiniAl(): MuhafizTeslimcisi {
             alarmButcesi: ANDROID_NAFILE_PAYI,
             kanalHazirligi: async (m) => m,
             anonsOneki: NAFILE_ID_ONEKI,
+            // Gerçek alarm (issue #74) muhafızındır; bu örnek alarm kanallarını toplamasın.
+            alarmDestegi: false,
         });
     }
     return _teslimci;

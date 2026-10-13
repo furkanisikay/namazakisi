@@ -59,7 +59,12 @@ describe('adimKapaliMi — motorun "kapali" kapisi', () => {
     expect(adimKapaliMi({ titresim: true })).toBe(false);
   });
   test('KANAL_ADLARI kumeyi tam kapsar', () => {
-    expect([...KANAL_ADLARI].sort()).toEqual(['bildirim', 'sesli', 'titresim']);
+    expect([...KANAL_ADLARI].sort()).toEqual(['alarm', 'bildirim', 'sesli', 'titresim']);
+  });
+
+  test('yalniz GERCEK ALARM acik adim KAPALI DEGILDIR (issue #74)', () => {
+    expect(adimKapaliMi({ alarm: true })).toBe(false);
+    expect(adimKapaliMi({ alarm: false })).toBe(true);
   });
 });
 

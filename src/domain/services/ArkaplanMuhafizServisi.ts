@@ -278,6 +278,14 @@ export class ArkaplanMuhafizServisi {
         const dun = dunuAl();
         const tarihler = [bugun, dun];
 
+        // Gerçek alarmlar (issue #74) expo listesinde yoktur (alarm o tetiğin bildiriminin
+        // YERİNE geçer) → önekle native kayıttan iptal edilir.
+        for (const tarih of tarihler) {
+            muhafizTeslimcisiniAl().vakitYanKanallariniIptalEt?.(
+                `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`
+            );
+        }
+
         // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
         const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
 

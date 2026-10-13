@@ -210,6 +210,56 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
         expect(Vibration.vibrate).not.toHaveBeenCalled();
     });
 
+    /**
+     * GERÇEK ALARM (issue #74) — ÇİFT SES KURALI. Adımın ilk tetiğinde sistem alarmı
+     * uygulama açıkken de çalar; ön plan o dakikada anons planlamaz, titretmez ve
+     * ekrana "ses çalma" der (dördüncü argüman). Tekrarlarda her şey eskisi gibi.
+     */
+    test('alarm anında ön plan ses/anons/titreşim ÜRETMEZ, banner sistemAlarmi=true ile çıkar', () => {
+        const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[0].kanallar = { bildirim: true, sesli: true, titresim: true, alarm: true };
+            matris[vakit].seviyeler[0].anonsMetni = '{vakit} vakti';
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 45 * 60 * 1000, // seviye 1'in eşik anı
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 1, VARSAYILAN_SES, true);
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        expect(Vibration.vibrate).not.toHaveBeenCalled();
+    });
+
+    test('alarmlı adımın TEKRARINDA (eşik anı değil) ön plan eskisi gibi konuşur', () => {
+        // Seviye 1: eşik 45, her 5 dk → 40 dk kala tekrar (seviye 2'nin eşiği 30 kapsamaz).
+        const matris = tekDuzeMatris([
+            { esikDk: 45, siklikDk: 5 },
+            { esikDk: 30, siklikDk: 10 },
+            { esikDk: 15, siklikDk: 5 },
+            { esikDk: 5, siklikDk: 1 },
+        ]);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[0].kanallar = { bildirim: true, sesli: true, titresim: true, alarm: true };
+            matris[vakit].seviyeler[0].anonsMetni = '{vakit} vakti';
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 40 * 60 * 1000,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 1, VARSAYILAN_SES);
+        expect(bildirimSpx.mock.calls[0]).toHaveLength(3);
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        expect(Vibration.vibrate).toHaveBeenCalled();
+    });
+
     test('Seviye 2 bildirimi (30 dk kala)', () => {
         mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
             vakit: 'ogle',

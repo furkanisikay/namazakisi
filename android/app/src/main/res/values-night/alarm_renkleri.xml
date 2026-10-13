@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tam ekran alarm (issue #74) — gece. -->
+<resources>
+    <color name="alarm_zemin">#121613</color>
+    <color name="alarm_metin">#F1F5F1</color>
+    <color name="alarm_ikincil">#B3BDB5</color>
+    <color name="alarm_birincil">#81C784</color>
+    <color name="alarm_birincil_ustu">#0B1F0D</color>
+    <color name="alarm_ikincil_zemin">#1E2420</color>
+    <color name="alarm_sinir">#36403A</color>
+    <color name="alarm_ikon_zemin">#22352A</color>
+</resources>

@@ -18,6 +18,10 @@
       tools:replace="android:maxSdkVersion"/>
   <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
+  <!-- Gerçek alarm (issue #74): kilit ekranında tam ekran alarm. Android 14+'ta yalnız
+       çağrı/alarm uygulamalarına otomatik verilir; Play Console "Tam ekran amaçları"
+       beyanı gerekir (AGENTS.md). İzin yoksa sistem heads-up'a indirger, ses yine çalar. -->
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
   <!-- Kütüphaneler merge sırasında bu izinleri geri ekleyebilir; aşağıdakiler bunu engeller -->
@@ -211,6 +215,22 @@
         <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/kildim"/>
       </intent-filter>
     </service>
+    <!-- Gerçek alarm (issue #74): setAlarmClock tetiği, bildirim düğmeleri, susturma ve
+         yeniden başlatmada geri kurulum. Dışa kapalı; çağrılar açık bileşenle. -->
+    <receiver android:name=".alarm.MuhafizAlarmAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+      </intent-filter>
+    </receiver>
+    <!-- Tam ekran alarm: kilit ekranının üstünde, ayrı görev (son uygulamalarda görünmez). -->
+    <activity
+        android:name=".alarm.MuhafizAlarmActivity"
+        android:exported="false"
+        android:excludeFromRecents="true"
+        android:launchMode="singleInstance"
+        android:taskAffinity=""
+        android:theme="@android:style/Theme.Material.NoActionBar"/>
     <!-- Ortak "Kıldım" kuyruğunun headless JS görevi (saat, widget, kutu, kısayol) -->
     <service android:name=".kildim.KildimGorevServisi" android:exported="false"/>
     <!-- Wear OS (issue #280): muhafız bildirimlerine köprü etiketi basar; saat kendi

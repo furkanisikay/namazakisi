@@ -55,6 +55,15 @@ export type KesintiSeviyesi = 'active' | 'timeSensitive';
  */
 export const IOS_BILDIRIM_SESI = 'bildirim_ios.wav';
 
+/**
+ * GERCEK ALARM adiminin iOS sesi (issue #74) — `bildirim_ios.wav`'in 9 kez, araliklarla
+ * tekrari (~28 sn; iOS 30 sn'yi asan bildirim sesini kirpmaz, HIC calmaz). AlarmKit
+ * (iOS 26) gelene kadar alarm, zamana duyarli bildirim + bu uzun sesle teslim edilir;
+ * sessiz anahtarini DELMEZ (ekran bunu soyler). Govde adi Android `res/raw`'daki
+ * hicbir kaynakla cakismaz (bkz. `IOS_BILDIRIM_SESI` notu).
+ */
+export const IOS_ALARM_SESI = 'alarm_ios.wav';
+
 /** Bu seviyeden itibaren Odak delinir. */
 export const TIME_SENSITIVE_ESIK_SEVIYESI = 2;
 
@@ -99,7 +108,19 @@ export function iosTesliminiCoz(
     uyari: UyariPlani,
     yetenekler: PlatformYetenekleri
 ): IosTeslim {
-    const alarmOlmali = uyari.acilKanal === true && yetenekler.sessizligiDelebilir;
+    const alarmOlmali =
+        (uyari.acilKanal === true || uyari.alarm === true) && yetenekler.sessizligiDelebilir;
+
+    // GERCEK ALARM KANALI (issue #74): AlarmKit yokken zamana duyarli bildirim + UZUN
+    // ses. Seviye 1 (nazik) bile olsa Odak'i deler — kullanici bu adim icin acikca
+    // "alarm" istedi; nazik tonun zamana duyarli olmama gerekcesi burada gecmez.
+    if (uyari.alarm === true) {
+        return {
+            tur: alarmOlmali ? 'alarm' : 'bildirim',
+            kesintiSeviyesi: 'timeSensitive',
+            ses: IOS_ALARM_SESI,
+        };
+    }
 
     return {
         tur: alarmOlmali ? 'alarm' : 'bildirim',

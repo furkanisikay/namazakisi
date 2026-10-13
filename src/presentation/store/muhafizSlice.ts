@@ -168,6 +168,13 @@ export interface MuhafizAyarlari {
      */
     sesliOnayi?: boolean;
     /**
+     * GERCEK ALARMIN (issue #74) sessiz modu/Rahatsiz Etmeyin'i delip kilit ekraninda
+     * tam ekran calabilecegi kullaniciya anlatildi ve onaylandi mi? `sesliOnayi` gibi
+     * bir RIZA KAYDIDIR — UYDURULAMAZ: yalniz `AlarmOnayModal` onayinda yazilir.
+     * Hazir yogunluklar ve goc alarm kanalini ACMAZ.
+     */
+    alarmOnayi?: boolean;
+    /**
      * Bir kerelik preset gocu (tekrar azaltma) bu kayda uygulandi mi?
      * `initialState`'te TRUE — taze kurulum zaten guncel preset'le baslar; yalnizca
      * diskteki ESKI kayitlar (bu alan yok) goce girer. Bkz. `presetGocunuUygula`.
@@ -371,6 +378,9 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     ozelMatrisYedegi: yedek,
                     // sesliOnayi: undefined = henüz onay yok → sesli hücreler açılmaz.
                     sesliOnayi: parsed.sesliOnayi,
+                    // alarmOnayi (issue #74): aynı tuzak — taşınmazsa onay her açılışta
+                    // kaybolur ve alarm anahtarı her seferinde yeniden onay ister.
+                    alarmOnayi: parsed.alarmOnayi === true ? true : undefined,
                     presetGocuYapildi: true,
                 };
 

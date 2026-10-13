@@ -8,7 +8,7 @@ import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelG
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { etkinSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { alarmAniMi, etkinSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
@@ -40,11 +40,17 @@ const VARSAYILAN_MATRIS: MuhafizMatrisi = eskidenMatriseGoc({
  * Ekran bunu calmali: aksi halde AYNI adim uygulama KAPALIYKEN kullanicinin
  * sectigi sesle (kanal sesi), ACIKKEN paketlenmis varsayilan canla duyulurdu.
  * Banner temizleme cagrisinda (seviye 0) verilmez.
+ *
+ * `sistemAlarmi` = bu dakikada adimin GERCEK ALARMI calar (issue #74, `alarmAniMi`).
+ * Ekran o zaman SES CALMAZ ve TITRETMEZ: alarm (Android `setAlarmClock`, iOS zamana
+ * duyarli bildirim) uygulama acikken de tetiklenir ve kendi sesini calar — ikinci bir
+ * ses cift ses olurdu. Banner yine cizilir.
  */
 type BildirimCallback = (
     mesaj: string,
     seviye: 0 | 1 | 2 | 3 | 4,
-    bildirimSesi?: string
+    bildirimSesi?: string,
+    sistemAlarmi?: boolean
 ) => void;
 
 /**
@@ -342,21 +348,29 @@ export class NamazMuhafiziServisi {
         // TON: acil kısıtı (son 15 dk, yalnız çıkış yönü) plan ile AYNI kapıdan.
         const aktifSeviye = etkinSeviyeNo(kazanan, yon);
 
-        // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+        // GERCEK ALARM (issue #74) — CIFT SES KURALI: adimin ilk tetiginde sistem alarmi
+        // uygulama acikken de calar (kendi sesi + titresimi). On plan o dakikada ne anons
+        // planlar ne titretir; ekran da ses calmaz (`sistemAlarmi`). Anonsu planlamamak
+        // ayrica SART: arka plan o tetige anons KURMADI (alarm onun yerine gecti), on plan
+        // ayni kimlikle kursaydi alarmin ustune TTS konusurdu.
+        const sistemAlarmi = alarmAniMi(kazanan, olcuDk);
 
-        // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
-        // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
-        // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
-        // kapaliyken titrer, acikken titremezdi.
-        this.titresimVer(kazanan);
+        if (!sistemAlarmi) {
+            // Faz 5: uygulama ACIKKEN de sesli anons konussun.
+            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+
+            // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
+            // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
+            // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
+            // kapaliyken titrer, acikken titremezdi.
+            this.titresimVer(kazanan);
+        }
 
         if (this.onBildirim) {
-            this.onBildirim(
-                this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon),
-                aktifSeviye,
-                kazanan.bildirimSesi
-            );
+            const mesaj = this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon);
+            // Dördüncü argüman YALNIZ alarm anında: alarm kanalı kapalı akış birebir eski çağrı.
+            if (sistemAlarmi) this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi, true);
+            else this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi);
         }
     }
 

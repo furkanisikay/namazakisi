@@ -29,6 +29,7 @@ class MainApplication : Application(), ReactApplication {
               add(PlayStoreGuncellemePackage())
               add(WidgetVeriPackage())
               add(com.furkanisikay.namazakisi.wear.WearSenkronPackage())
+              add(com.furkanisikay.namazakisi.alarm.MuhafizAlarmPackage())
             }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"

@@ -247,7 +247,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         const odakSessiz = odakSessizlestirirMi(this.odak, zaman.getTime());
         // Sesli adimda bildirimin sesi ANONS KLIBIDIR; klip yoksa paket sesi kalir.
         // Slot kontrolunden SONRA: planlanmayacak uyari icin sentez yapilmaz.
-        const ses = (odakSessiz ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
+        // GERCEK ALARM (issue #74): alarm adiminda ses UZUN alarm sesidir, anons klibi
+        // onu ezmez (anons kisa bir cumle — alarmin varlik sebebi uzun calmasi).
+        const ses = (odakSessiz || uyari.alarm === true ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
 
         // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden (Android ile aynı kural).
         // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.

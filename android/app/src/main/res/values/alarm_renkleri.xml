@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tam ekran alarm (issue #74) — uygulamanın yeşil kimliği; gece ikizi values-night'ta.
+     Metin renkleri zeminle AA kontrastında (alarm_metin/zemin ~15:1, birincil_ustu/birincil ~5:1). -->
+<resources>
+    <color name="alarm_zemin">#F4F8F4</color>
+    <color name="alarm_metin">#1B1F1C</color>
+    <color name="alarm_ikincil">#55605A</color>
+    <color name="alarm_birincil">#2E7D32</color>
+    <color name="alarm_birincil_ustu">#FFFFFF</color>
+    <color name="alarm_ikincil_zemin">#FFFFFF</color>
+    <color name="alarm_sinir">#C8D3CB</color>
+    <color name="alarm_ikon_zemin">#DCEBDD</color>
+</resources>

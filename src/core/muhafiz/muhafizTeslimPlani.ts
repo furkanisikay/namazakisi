@@ -159,3 +159,13 @@ export const anonsAlarmiKurarMi = (aday: Pick<MuhafizTeslimAdayi, 'uyari'>): boo
     aday.uyari.sesliAnons === true &&
     typeof aday.uyari.anonsMetni === 'string' &&
     aday.uyari.anonsMetni.trim().length > 0;
+
+/**
+ * Android'de bu aday GERCEK ALARM (`setAlarmClock`) olarak mi teslim edilir?
+ * (issue #74 — `AndroidMuhafizTeslimcisi.alarmPlanla` kapısının saf ikizi.)
+ *
+ * Alarm o tetiğin bildirimi + sesli anonsunun YERİNE geçer: alarm bildirimi tam
+ * ekran/heads-up olarak zaten görünür, aynı anda TTS de konuşsaydı alarm sesinin
+ * üstüne binerdi. Bu yüzden defter alarmlı adayı TEK alarm olarak sayar.
+ */
+export const alarmKurarMi = (aday: Pick<MuhafizTeslimAdayi, 'uyari'>): boolean => aday.uyari.alarm === true;

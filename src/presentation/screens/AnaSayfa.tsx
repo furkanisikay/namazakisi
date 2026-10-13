@@ -470,8 +470,10 @@ export const AnaSayfa: React.FC = () => {
       // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
       muhafiz.acilistaKilinanlariYukle().finally(() => {
         if (iptalEdildi) return;
-        muhafiz.baslat((mesaj, seviye, bildirimSesi) => {
+        muhafiz.baslat((mesaj, seviye, bildirimSesi, sistemAlarmi) => {
           setMuhafizDurumu({ mesaj, seviye });
+          // Gerçek alarm (issue #74) bu dakikada kendi sesini çalar: ikinci ses/titreşim YOK.
+          if (sistemAlarmi) return;
           if (seviye >= 3) {
             HaptikServisi.gucluTitresim();
             // ADIMIN KENDİ SESİ çalınır. Eskiden burada `SesServisi.bildirimSesiCal()`

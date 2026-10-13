@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerçek alarm (issue #74). Düğmeler kullanıcıyı ibadete çağırmaz, uygulamayı yönetir →
+     kibar ve kısa. "Kıldım" muhafız bildirimindeki düğmeyle AYNI ad (aksiyon adı sabit). -->
+<resources>
+    <string name="alarm_baslik">Namaz alarmı</string>
+    <string name="alarm_kildim">Kıldım</string>
+    <string name="alarm_ertele">10 dk ertele</string>
+    <string name="alarm_kapat">Kapat</string>
+    <string name="alarm_kanal_aciklamasi">Seçtiğiniz hatırlatma adımlarında çalan gerçek alarm</string>
+</resources>

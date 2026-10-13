@@ -11,10 +11,10 @@
  */
 import type { EskiUyariModu, UyariKanallari } from './matrisTipleri';
 
-export type KanalAdi = 'bildirim' | 'sesli' | 'titresim';
+export type KanalAdi = 'bildirim' | 'sesli' | 'titresim' | 'alarm';
 
 /** Kumeyi TAM kapsayan ad listesi — yeni kanal eklenince buraya da eklenmeli. */
-export const KANAL_ADLARI: readonly KanalAdi[] = ['bildirim', 'sesli', 'titresim'];
+export const KANAL_ADLARI: readonly KanalAdi[] = ['bildirim', 'sesli', 'titresim', 'alarm'];
 
 /** Adim kapali. */
 export const KAPALI_KANALLAR: UyariKanallari = {};
@@ -37,7 +37,7 @@ export const kanalAcikMi = (kanallar: UyariKanallari | undefined, ad: KanalAdi):
  *
  * `titresim` de sayilir: bugun hicbir yol onu yazmaz, ama Faz 6'da yalniz
  * titresimle kurulmus bir adim mesru bir hatirlatmadir ve "actim ama kapali
- * gorunuyor" sapmasi dogmamalidir.
+ * gorunuyor" sapmasi dogmamalidir. `alarm` (issue #74) da ayni gerekceyle sayilir.
  */
 export const adimKapaliMi = (kanallar: UyariKanallari | undefined): boolean =>
   !KANAL_ADLARI.some((ad) => kanalAcikMi(kanallar, ad));

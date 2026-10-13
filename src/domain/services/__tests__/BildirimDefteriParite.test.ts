@@ -11,7 +11,7 @@
  * servisler `new Date()` okur, defter `simdi` alır — ikisi aynı anı görmeli.
  */
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import notifee from '@notifee/react-native';
 
@@ -149,6 +149,29 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         expect(say(g, 'muhafiz')).toBeGreaterThan(0);
         expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
         expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+    });
+
+    it('Android GERÇEK ALARM (issue #74): alarm + bildirim + anons ayrı ayrı birebir', async () => {
+        // Köprü varmış gibi: alarm kurulur → o tetiğin bildirimi ve anonsu KURULMAZ.
+        const nativeAlarm = { planla: jest.fn().mockResolvedValue(true), onekliIptalEt: jest.fn().mockResolvedValue(0), kanallariTemizle: jest.fn().mockResolvedValue(undefined) };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        try {
+            const alarmli = matrisKur();
+            for (const v of Object.keys(alarmli) as (keyof MuhafizMatrisi)[]) {
+                // Yoğun fikstürün sesli 3. adımı (15 dk, her 3 dk) alarm da çalsın.
+                alarmli[v].seviyeler[2].kanallar = { ...alarmli[v].seviyeler[2].kanallar, alarm: true };
+            }
+            muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: alarmli });
+
+            const g = temelGirdi('android', { muhafiz: { aktif: true, matris: alarmli } });
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+        }
     });
 
     it('iOS: bildirim sayısı birebir (slot bolken)', async () => {

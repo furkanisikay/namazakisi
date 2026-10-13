@@ -7,11 +7,13 @@ import android.util.Log
 import com.facebook.react.ReactApplication
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.common.LifecycleState
+import com.furkanisikay.namazakisi.alarm.MuhafizAlarmZamanlayici
 import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
 import com.furkanisikay.namazakisi.wear.KopruEtiketliBildirimServisi
 import expo.modules.countdownnotification.AnonsZamanlayici
 import expo.modules.notifications.notifications.model.NotificationContent
+import expo.modules.notifications.notifications.enums.NotificationPriority
 import expo.modules.notifications.notifications.model.NotificationRequest
 import expo.modules.notifications.notifications.triggers.DateTrigger
 import expo.modules.notifications.service.NotificationsService
@@ -114,6 +116,61 @@ object BildirimErteleIsleyici {
         return true
     }
 
+    /**
+     * GERÇEK ALARMDAN "10 dk ertele" (issue #74). Alarm bildirimi bir expo isteği
+     * DEĞİLDİR (native `setAlarmClock` + kendi bildirimimiz) → içerik expo yanıtından
+     * değil, alarm yükünden kurulur; geri kalan her şey bildirim ertelemesiyle AYNIDIR:
+     * aynı kimlik (`..._ertele`, vakit başına tek erteleme), aynı fıkhi sınır
+     * (`erteleSinirMs`, JS hesaplar), aynı başlık şablonu, aynı susturma ve aynı JS
+     * haberi. Ertelenen kopya bir NORMAL muhafız bildirimidir (alarm tekrar çalmaz):
+     * JS'in bir sonraki planlama turu ertelemeyi bekleyen bildirimlerdeki kopyadan
+     * öğrenir (`etkinErtelemeler`) — kopya native bir alarm olsaydı JS onu göremez ve
+     * susturulan aralığa yeniden uyarı kurardı.
+     *
+     * @param veri alarm yükündeki muhafız `data` nesnesi (`cikisMs`, `erteleSinirMs`,
+     *   `ertelemeBasligi` dahil). @param kanal ertelenen kopyanın NORMAL kanalı.
+     * @return ertelendiyse true; sınır geçtiyse/veri eksikse false (alarm yine kapanır).
+     */
+    fun alarmdanErtele(
+        context: Context,
+        zamanlama: SchedulingDelegate,
+        kimlik: String,
+        sureDk: Long,
+        baslik: String,
+        metin: String,
+        veri: JSONObject,
+        kanal: String,
+        seviye: Int,
+    ): Boolean {
+        val vakit = BildirimKildimKurallari.vakitCoz(kimlik) ?: return false
+        val sinirMs = veri.optLong("erteleSinirMs", 0L)
+        val cikisMs = veri.optLong("cikisMs", 0L)
+        if (sinirMs <= 0L || cikisMs <= 0L) return false
+        val hedef = ErtelemeKurallari.hedefHesapla(System.currentTimeMillis(), sureDk, sinirMs) ?: return false
+        return try {
+            val yeniGovde = JSONObject(veri.toString()).put("ertelemeHedefMs", hedef).put("kanalId", kanal)
+            val yeniBaslik = ErtelemeKurallari.baslik(veri.optString("ertelemeBasligi", ""), cikisMs, hedef) ?: baslik
+            val icerik = NotificationContent.Builder()
+                .setTitle(yeniBaslik)
+                .setText(metin)
+                .setBody(yeniGovde)
+                .setPriority(if (seviye >= 3) NotificationPriority.MAX else NotificationPriority.HIGH)
+                .setAutoDismiss(true)
+                .setCategoryId(ErtelemeKurallari.kategori(hedef, sinirMs))
+                .build()
+            val ertelemeKimligi = ErtelemeKurallari.kimlik(vakit.tarih, vakit.vakit)
+            KopruEtiketliBildirimServisi.eskiExpoTetiginiIptalEt(context, ertelemeKimligi)
+            zamanlama.scheduleNotification(NotificationRequest(ertelemeKimligi, icerik, DateTrigger(kanal, hedef)))
+            araliktakileriSustur(context, zamanlama, vakit, cikisMs, hedef)
+            Log.i(TAG, "${vakit.vakit} (${vakit.tarih}) alarmdan $sureDk dk ertelendi")
+            jsBildir(context)
+            true
+        } catch (e: Exception) {
+            Log.w(TAG, "Alarm ertelenemedi: $kimlik", e)
+            false
+        }
+    }
+
     /** Hedef ana kadarki planlı muhafız tetiklerini ve sesli anonslarını iptal eder. */
     private fun araliktakileriSustur(
         context: Context,
@@ -143,6 +200,13 @@ object BildirimErteleIsleyici {
             AnonsZamanlayici.eslesenleriIptalEt(context, susturulur)
         } catch (e: Exception) {
             Log.w(TAG, "Anons alarmlari susturulamadi", e)
+        }
+        try {
+            // Gerçek alarmlar (issue #74) da kendi kayıt defterinden: ertelenen aralığa
+            // düşen bir alarm çalsaydı "ertele" yalan söylerdi.
+            MuhafizAlarmZamanlayici.eslesenleriIptalEt(context, susturulur)
+        } catch (e: Exception) {
+            Log.w(TAG, "Gercek alarmlar susturulamadi", e)
         }
     }
 

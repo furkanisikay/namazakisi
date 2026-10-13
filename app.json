@@ -68,7 +68,8 @@
         {
           "sounds": [
             "./assets/sounds/bildirim.mp3",
-            "./assets/sounds/bildirim_ios.wav"
+            "./assets/sounds/bildirim_ios.wav",
+            "./assets/sounds/alarm_ios.wav"
           ]
         }
       ],

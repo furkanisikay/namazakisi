@@ -21,7 +21,8 @@ import * as Notifications from 'expo-notifications';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
-import { muhafizKanaliSec, titresimGerekliMi } from '../../core/muhafiz/motorAdaptoru';
+import { alarmGerekliMi, muhafizKanaliSec, titresimGerekliMi } from '../../core/muhafiz/motorAdaptoru';
+import { alarmKanallariniCikar, alarmYukuOlustur } from '../../core/muhafiz/alarmYuku';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { ertelemeTeslimBilgisi } from '../../core/muhafiz/erteleme';
@@ -33,6 +34,12 @@ import {
 } from '../../../modules/expo-countdown-notification/src';
 import { sessizBitisMs } from '../../../modules/expo-cami-geofence/src';
 import { MuhafizKanalServisi } from './MuhafizKanalServisi';
+import {
+    alarmKanallariniTemizle,
+    alarmKoprusuVarMi,
+    alarmPlanla as nativeAlarmPlanla,
+    onekliAlarmlariIptalEt,
+} from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
@@ -67,6 +74,13 @@ export interface AndroidTeslimciSecenekleri {
     kanalHazirligi?: (matris?: MuhafizMatrisi) => Promise<MuhafizMatrisi | undefined>;
     /** Sesli anonsların kimlik öneki — `tumYanKanallariIptalEt` YALNIZ bunları siler. */
     anonsOneki?: string;
+    /**
+     * Gerçek alarm (issue #74) bu teslimcide yönetilsin mi? Varsayılan EVET (muhafız).
+     * Muhafız DIŞI örnek (nafile) `false` geçmeli: alarm kanallarının çöp toplaması ve
+     * önekli alarm temizliği muhafızın işidir — nafile örneği her turda muhafızın alarm
+     * kanallarını "öksüz" sanıp silerdi.
+     */
+    alarmDestegi?: boolean;
 }
 
 export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
@@ -75,8 +89,10 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private readonly alarmButcesi: number;
     private readonly kanalHazirligi: (matris?: MuhafizMatrisi) => Promise<MuhafizMatrisi | undefined>;
     private readonly anonsOneki: string;
+    private readonly alarmDestegi: boolean;
 
     constructor(secenekler: AndroidTeslimciSecenekleri = {}) {
+        this.alarmDestegi = secenekler.alarmDestegi ?? true;
         this.alarmButcesi = secenekler.alarmButcesi ?? ANDROID_MUHAFIZ_ALARM_BUTCESI;
         // Matrissiz çağrı ARGÜMANSIZ geçer (kayıt-oynat sözleşmesi: `hazirla()`).
         this.kanalHazirligi =
@@ -134,16 +150,107 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         }
         if (matris === undefined) {
             await this.kanalHazirligi();
+            await this.alarmlariHazirla(undefined);
             return undefined;
         }
-        return (await this.kanalHazirligi(matris)) ?? matris;
+        const dogrulanmis = (await this.kanalHazirligi(matris)) ?? matris;
+        await this.alarmlariHazirla(dogrulanmis);
+        return dogrulanmis;
+    }
+
+    /**
+     * GERÇEK ALARM hazırlığı (issue #74): önceki turun alarmları iptal edilir ve öksüz
+     * alarm kanalları toplanır. İptal BURADA ve BEKLENEREK yapılır (ateşle-unut
+     * `tumYanKanallariIptalEt`'te DEĞİL): köprü çağrıları ayrı kuyrukta yarışırsa geç
+     * kalan bir iptal bu turda yeni kurulan alarmları silerdi. `hazirla` her turda
+     * planlamadan ÖNCE çağrılır (muhafız kapalıyken de → alarmlar ve kanallar temizlenir).
+     */
+    private async alarmlariHazirla(matris: MuhafizMatrisi | undefined): Promise<void> {
+        if (!this.alarmDestegi || !alarmKoprusuVarMi()) return;
+        try {
+            await onekliAlarmlariIptalEt(this.anonsOneki);
+            await alarmKanallariniTemizle(alarmKanallariniCikar(matris));
+        } catch (error) {
+            Logger.warn('ArkaplanMuhafiz', 'Gercek alarmlar hazirlanamadi', error);
+        }
     }
 
     async uyariPlanla(teslim: UyariTeslimi): Promise<void> {
+        // GERÇEK ALARM (issue #74): alarm o tetiğin bildirimi + anonsunun YERİNE geçer
+        // (alarm bildirimi tam ekran/heads-up olarak zaten görünür; aynı anda TTS de
+        // konuşsaydı alarm sesinin üstüne binerdi). Kurulamazsa (izin yok, köprü yok,
+        // camide) aynı tetik NORMAL yoldan kurulur — sessiz kayıp yok.
+        if (await this.alarmPlanla(teslim)) return;
         await this.tekBildirimPlanla(teslim);
         // mod 'sesli'/'ikisi' ise ayni ana bir de TTS anonsu planla.
         // Anons id = bildirim id -> iptal zinciri simetrik kalir.
         this.anonsPlanla(teslim);
+    }
+
+    /**
+     * Gerçek alarmı kurar. `false` → çağıran normal bildirim + anons yoluna düşer.
+     * Yalnız muhafız teslimi (`ozel` yok): nafile/diğer yükler alarm taşımaz.
+     */
+    private async alarmPlanla(teslim: UyariTeslimi): Promise<boolean> {
+        const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel, cikis } = teslim;
+        if (!this.alarmDestegi || ozel || uyari.alarm !== true || !alarmGerekliMi(uyari.kanallar)) return false;
+        if (zaman.getTime() <= Date.now()) return false;
+        // Camideyken (#297) alarm çalmaz: namazdaki kişiyi bölmesin.
+        if (this.camideMi(zaman)) return false;
+        if (!alarmKoprusuVarMi()) return false;
+        if (!this.alarmPayiAl()) return false;
+
+        const kanalId = muhafizKanaliSec(
+            uyari.seviye,
+            uyari.bildirimSesi,
+            uyari.acilKanal,
+            titresimGerekliMi(uyari.kanallar)
+        );
+        const ertele = cikis ? ertelemeTeslimBilgisi(vakit, cikis.getTime(), zaman.getTime()) : null;
+        const kuruldu = await nativeAlarmPlanla(
+            alarmYukuOlustur({
+                kimlik: id,
+                tetikMs: zaman.getTime(),
+                baslik,
+                metin: mesaj,
+                vakit,
+                tarih,
+                cikisMs: cikis?.getTime() ?? 0,
+                erteleSinirMs: ertele?.veri.erteleSinirMs ?? 0,
+                seviye: uyari.seviye,
+                bildirimSesi: uyari.bildirimSesi,
+                sesAdi: uyari.sesAdi,
+                kanalId,
+                // Ertelenen kopyanın gövdesi — muhafız bildirimiyle AYNI `data` (Kıldım,
+                // erteleme ve JS `etkinErtelemeler` aynı alanları okur).
+                veri: {
+                    tip: 'muhafiz',
+                    seviye: uyari.seviye,
+                    vakit,
+                    tarih,
+                    kanallar: uyari.kanallar,
+                    bildirimSesi: uyari.bildirimSesi,
+                    sesliAnons: uyari.sesliAnons,
+                    anonsMetni: uyari.anonsMetni,
+                    ...(ertele ? { ...ertele.veri, kanalId } : {}),
+                },
+            })
+        );
+        if (!kuruldu) {
+            // Pay iade: aynı tetik normal yoldan kurulacak ve kendi payını alacak.
+            this.kurulanAlarm = Math.max(0, this.kurulanAlarm - 1);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Uygulama içi "Kıldım" (issue #74): vaktin GERÇEK alarmları expo listesinde yoktur
+     * (alarm o tetiğin bildiriminin yerine geçer) → önekle native kayıttan iptal edilir.
+     */
+    vakitYanKanallariniIptalEt(onek: string): void {
+        if (!this.alarmDestegi || !alarmKoprusuVarMi()) return;
+        void onekliAlarmlariIptalEt(onek);
     }
 
     yanKanaliIptalEt(id: string): void {

@@ -33,6 +33,17 @@ export interface UyariKanallari {
    * `adimKapaliMi`dir (adim "acik mi" kurali simdiden dogru olsun diye).
    */
   titresim?: boolean;
+  /**
+   * GERCEK ALARM (issue #74) — adimin ILK tetiginde isletim sisteminin alarmi
+   * calar (Android: `setAlarmClock` + tam ekran alarm etkinligi, `USAGE_ALARM`
+   * sesi; iOS: AlarmKit gelene kadar zamana duyarli bildirim + uzun ses).
+   *
+   * NEDEN KANAL: titresim gibi bagimsiz bir eksendir — kullanici "her vakit
+   * icin" istedigi adimda acar. Ekranda cip DEGIL, ayri bir anahtardir.
+   * Alan YOKSA kapali: eski kayitlar birebir eski plani uretir, goc gerekmez.
+   * Hazir yogunluklar bu alani YAZMAZ (riza: alarm sessiz modu delebilir).
+   */
+  alarm?: boolean;
 }
 
 export interface SeviyeAyari {

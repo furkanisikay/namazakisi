@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.furkanisikay.namazakisi.alarm.MuhafizAlarmZamanlayici
 import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.wear.KopruEtiketliBildirimServisi
@@ -45,12 +46,23 @@ object BildirimKildimIsleyici {
         } catch (_: Exception) {
             null
         } ?: return false
+        return vakitIsle(context, vakit, zamanlama)
+    }
 
+    /**
+     * Vakit kimliği çözülmüş bir "Kıldım"ın ORTAK gövdesi — bildirim eylemi ve gerçek
+     * alarm (issue #74, `alarm/MuhafizAlarmEylemleri`) AYNI yoldan geçer: kuyruk +
+     * tetik/anons/alarm iptali + gösterilenleri kaldırma + widget + JS uyandırma.
+     *
+     * @return kuyruğa yazılamadıysa false (çağıran kendi yedeğine düşer).
+     */
+    fun vakitIsle(context: Context, vakit: BildirimKildimKurallari.Vakit, zamanlama: SchedulingDelegate): Boolean {
         if (!KildimKuyrugu.ekle(context, vakit.tarih, vakit.vakit, KildimKuyruguKurallari.KAYNAK_BILDIRIM)) {
             return false
         }
         tetikleriIptalEt(context, vakit, zamanlama)
         anonslariIptalEt(context, vakit)
+        alarmlariIptalEt(context, vakit)
         gosterilenleriKaldir(context, vakit)
         try {
             WidgetGuncelleyici.tumunuGuncelle(context)
@@ -81,6 +93,18 @@ object BildirimKildimIsleyici {
             AnonsZamanlayici.eslesenleriIptalEt(context) { BildirimKildimKurallari.buVakteAitMi(it, v) }
         } catch (e: Exception) {
             Log.w(TAG, "Anons alarmlari iptal edilemedi", e)
+        }
+    }
+
+    /**
+     * Gerçek alarmlar (issue #74) — anons gibi KENDİ kayıt defterinden seçilir: alarm o
+     * tetiğin expo bildiriminin yerine geçtiği için mağazada izi yoktur.
+     */
+    private fun alarmlariIptalEt(context: Context, v: BildirimKildimKurallari.Vakit) {
+        try {
+            MuhafizAlarmZamanlayici.eslesenleriIptalEt(context) { BildirimKildimKurallari.buVakteAitMi(it, v) }
+        } catch (e: Exception) {
+            Log.w(TAG, "Gercek alarmlar iptal edilemedi", e)
         }
     }
 

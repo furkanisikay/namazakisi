@@ -921,6 +921,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                             ? () => adimSilVakitten(detay.vakit, detay.indeks)
                             : undefined
                     }
+                    // Gerçek alarm rızası (issue #74) — yalnız onay modalında yazılır.
+                    alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
+                    onAlarmOnayiVer={() => dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }))}
                 />
             )}
 

@@ -9,6 +9,8 @@
  *
  *   muhafız         → `muhafizTeslimPlaniOlustur` (bugünün kalan vakitleri)
  *   sesli anons     → aynı adaylar, `anonsAlarmiKurarMi` (yalnız Android)
+ *   gerçek alarm    → aynı adaylar, `alarmKurarMi` (yalnız Android; o tetiğin
+ *                     bildirimi + anonsunun YERİNE tek `setAlarmClock` — issue #74)
  *   vakit bildirimi → `vakitBildirimPlaniOlustur` (bugün + yarın)
  *   cuma            → `cumaPlaniOlustur` (4 cuma)
  *   camiye gitme    → `camiyeGitPlaniOlustur` (iOS 3, Android 7 gün; cuma öğlesi çakışması)
@@ -29,6 +31,7 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import type { VakitAdi } from '../types';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
 import {
+    alarmKurarMi,
     anonsAlarmiKurarMi,
     muhafizTeslimPlaniOlustur,
     muhafizVakitleriniHesapla,
@@ -57,6 +60,7 @@ import {
 export type DefterKaynagi =
     | 'muhafiz'
     | 'anons'
+    | 'alarm'
     | 'vakitBildirimi'
     | 'cuma'
     | 'camiyeGit'
@@ -70,6 +74,7 @@ export type DefterKaynagi =
 export const DEFTER_KAYNAK_SIRASI: DefterKaynagi[] = [
     'muhafiz',
     'anons',
+    'alarm',
     'nafile',
     'vakitBildirimi',
     'cuma',
@@ -146,6 +151,12 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         const matris = g.muhafiz.matris;
         guvenli(() => {
             for (const aday of muhafizTeslimPlaniOlustur({ matris, vakitler, simdi: g.simdi, kilindiMi, ozelGundeMi })) {
+                // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
+                // YERİNE geçer → tek alarm sayılır. iOS'ta bildirim olarak kalır.
+                if (android && alarmKurarMi(aday)) {
+                    ekle('alarm', aday.zaman.getTime(), 'alarm');
+                    continue;
+                }
                 ekle('muhafiz', aday.zaman.getTime());
                 if (android && anonsAlarmiKurarMi(aday)) ekle('anons', aday.zaman.getTime(), 'alarm');
             }
@@ -296,7 +307,8 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
     let gelmeyecek = Math.max(0, toplam - sinir);
     if (platform === 'android') {
         // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser.
-        const muhafizAlarm = (sayac.get('muhafiz') ?? 0) + (sayac.get('anons') ?? 0);
+        const muhafizAlarm =
+            (sayac.get('muhafiz') ?? 0) + (sayac.get('anons') ?? 0) + (sayac.get('alarm') ?? 0);
         gelmeyecek = Math.max(gelmeyecek, muhafizAlarm - ANDROID_MUHAFIZ_PAYI);
     } else {
         // iOS teslimcisi muhafıza `64 − muhafız dışı − güvenlik payı` slot bırakır

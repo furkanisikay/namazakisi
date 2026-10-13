@@ -534,6 +534,39 @@ describe('muhafizSlice sesliOnayi (sesli anons tek seferlik onayı)', () => {
     });
 });
 
+describe('muhafizSlice alarmOnayi (gerçek alarm rızası, issue #74)', () => {
+    test('initialState onay içermez ve hiçbir hücrede alarm açık değildir', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.alarmOnayi).toBeUndefined();
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(bas.matris![v].seviyeler.some((s) => s.kanallar.alarm === true)).toBe(false);
+        }
+    });
+
+    test('KALICILIK: onay uygulama yeniden açılınca kaybolmaz (opsiyonel alan tuzağı)', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal', alarmOnayi: true }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        expect((store.getState().muhafiz as MuhafizAyarlari).alarmOnayi).toBe(true);
+    });
+
+    test('diskte onay yoksa undefined (anahtar yine sorar); bozuk değer onay SAYILMAZ', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal', alarmOnayi: 'evet' }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        expect((store.getState().muhafiz as MuhafizAyarlari).alarmOnayi).toBeUndefined();
+    });
+
+    test('hazır yoğunluklar alarm kanalını AÇMAZ (rıza yalnız ekranda alınır)', () => {
+        for (const y of ['hafif', 'normal', 'yogun'] as const) {
+            const matris = presetMatrisiOlustur(HATIRLATMA_PRESETLERI[y].seviyeler, true);
+            for (const v of MUHAFIZ_VAKITLERI) {
+                expect(matris[v].seviyeler.some((s) => s.kanallar.alarm === true)).toBe(false);
+            }
+        }
+    });
+});
+
 /**
  * Preset'lerin ÜRETTİĞİ uyari sayilari — motorun kendi plan fonksiyonuyla ölçülür,
  * yani burada doğrulanan sayı arka planın gerçekten göndereceği sayıdır.

@@ -156,14 +156,22 @@ export function cipKanallariniBirlestir(
     cip: KanalCipi
 ): UyariKanallari {
     if (cip.id === 'kapali') return { ...cip.kanallar };
-    return kanalAcikMi(mevcut, 'titresim')
-        ? { ...cip.kanallar, titresim: true }
-        : { ...cip.kanallar };
+    // GERCEK ALARM (issue #74) da titresim gibi bagimsiz eksendir → korunur.
+    return {
+        ...cip.kanallar,
+        ...(kanalAcikMi(mevcut, 'titresim') ? { titresim: true } : {}),
+        ...(kanalAcikMi(mevcut, 'alarm') ? { alarm: true } : {}),
+    };
 }
 
 /** Titresim anahtarinin ekran metinleri (kibar "siz"). */
 export const TITRESIM_ETIKETI = 'Titreşim';
 export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
+
+/** Gercek alarm anahtarinin ekran metinleri (issue #74, kibar "siz"). */
+export const ALARM_ETIKETI = 'Gerçek alarm';
+export const ALARM_ACIKLAMASI =
+    'Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; tekrarlar normal bildirimle gelir.';
 
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
@@ -270,6 +278,12 @@ export interface PencereTanimi {
      * kullaniciyi yanlis yonlendirir.
      */
     titresimSecilebilir: boolean;
+    /**
+     * GERCEK ALARM anahtari gosterilsin mi? (issue #74) Yalniz muhafiz vakitleri —
+     * cuma, nafile, yatis gibi tek atislik hatirlatmalarda alarm kanali YOK.
+     * Verilmezse kapali.
+     */
+    alarmSecilebilir?: boolean;
     /**
      * Platformun ham yetenekleri.
      *
@@ -462,6 +476,7 @@ export function vakitPencereTanimi(
         sesSecimiVar: yetenekler.sesSecici,
         anonsMetniDuzenlenebilir: yetenekler.serbestAnonsMetni,
         titresimSecilebilir: yetenekler.titresimSecimi,
+        alarmSecilebilir: true,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: TEKRAR_MIN_DK,

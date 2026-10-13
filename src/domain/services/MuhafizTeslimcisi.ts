@@ -110,6 +110,14 @@ export interface MuhafizTeslimcisi {
     tumYanKanallariIptalEt(): void;
 
     /**
+     * Bir vaktin (onek: `muhafiz_<tarih>_vakit_<vakit>`) expo listesinde GORUNMEYEN yan
+     * kanallarini iptal et — uygulama ici "Kildim". Android'de gercek alarmlar (issue
+     * #74): alarm o tetigin bildiriminin YERINE gectigi icin listede izi yoktur.
+     * Opsiyonel: iOS'ta ve el yapimi teslimcilerde is yoktur.
+     */
+    vakitYanKanallariniIptalEt?(onek: string): void;
+
+    /**
      * Planlama turu BITTIKTEN sonra calisir (muhafiz kapaliyken de). iOS'ta
      * kullanilmayan anons kliplerini toplar; Android'de is yoktur.
      *

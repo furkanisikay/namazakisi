@@ -34,6 +34,7 @@ const { height: EKRAN_YUKSEKLIGI } = Dimensions.get('window');
 export const KAYNAK_BILGILERI: Record<DefterKaynagi, { ad: string; ikon: string }> = {
     muhafiz: { ad: 'Namaz muhafızı', ikon: 'shield-alt' },
     anons: { ad: 'Sesli anons alarmları', ikon: 'volume-up' },
+    alarm: { ad: 'Gerçek alarmlar', ikon: 'clock' },
     nafile: { ad: 'Nafile hatırlatmaları', ikon: 'star-and-crescent' },
     vakitBildirimi: { ad: 'Vakit girdi bildirimleri', ikon: 'bell' },
     cuma: { ad: 'Cuma hatırlatması', ikon: 'mosque' },

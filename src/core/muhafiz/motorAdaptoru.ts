@@ -11,6 +11,7 @@
  *   sesli    -> native TTS anonsu; `sesliAnons` bayragi + `anonsMetni` veriye tasinir
  *   titresim -> kanal titresimi + on planda `Vibration.vibrate` (Faz 6); kanal
  *               id'sinin de girdisidir (bkz. `muhafizKanaliSec`)
+ *   alarm    -> adimin ILK tetiginde gercek alarm (issue #74, `alarmAniMi`)
  */
 import type {
   MuhafizMatrisi,
@@ -154,6 +155,33 @@ export function titresimGerekliMi(kanallar: UyariKanallari | undefined): boolean
 }
 
 /**
+ * Kanal kumesi GERCEK ALARM istiyor mu? (issue #74)
+ *
+ * Ayni gerekce: kural tek yerde dursun. Plan (`alarmAniMi`), Android teslimcisi,
+ * iOS teslim plani, on plan susturmasi ve bildirim defteri buradan gecer.
+ */
+export function alarmGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'alarm');
+}
+
+/**
+ * Bu olcude adimin GERCEK ALARMI calar mi? (issue #74)
+ *
+ * KURAL: alarm yalniz adimin ILK tetiginde, yani adimin kendi esik aninda
+ * (`olcuDk === esikDk`) calar; tekrarlar normal bildirim olarak gelir. Sahip
+ * metni "ilk bildirim zamaninda alarm calmali" der; 5 dk'da bir calan tam
+ * ekran alarm tekrar degil iskencedir. `seviyeTetiklenirMi` esik aninda HER
+ * IKI yonde ve her siklikta tetikledigi icin (capa = esik) bu an daima planda
+ * bulunur — adimin kendisi o an kazaniyorsa.
+ *
+ * TEK KAPI: plan (`vakitUyariPlaniOlustur` → `UyariPlani.alarm`) ve on plan
+ * muhafizi (`NamazMuhafiziServisi`, cift ses kurali) buradan gecer.
+ */
+export function alarmAniMi(seviye: Pick<SeviyeAyari, 'kanallar' | 'esikDk'>, olcuDk: number): boolean {
+  return alarmGerekliMi(seviye.kanallar) && olcuDk === seviye.esikDk;
+}
+
+/**
  * Bu seviye, vaktin cikmasina `kalanDk` varken tetiklenir mi?
  * Pencere (kalanDk <= esikDk) + siklik kurali birlikte degerlendirilir.
  *
@@ -270,6 +298,13 @@ export interface UyariPlani {
   anonsMetni: string;
   /** TTS bayragi ('sesli' kanali acik mi) */
   sesliAnons: boolean;
+  /**
+   * Bu tetikte GERCEK ALARM calar (issue #74; `alarmAniMi`). Alan yalniz `true`
+   * iken yazilir — alarm kanali kapali planlar BIREBIR eskisi kalir (kayit-oynat
+   * ve esitlik testleri). Android'de alarm o tetigin bildirimi + anonsunun
+   * YERINE gecer; iOS'ta bildirim zamana duyarli + uzun sesle gelir.
+   */
+  alarm?: true;
 }
 
 export interface PlanSecenekleri {
@@ -339,6 +374,7 @@ export function vakitUyariPlaniOlustur(
       acilKanal: etkinAcilKanal(kazanan, yon),
       anonsMetni: kazanan.anonsMetni,
       sesliAnons: sesliAnonsGerekliMi(kazanan.kanallar),
+      ...(alarmAniMi(kazanan, o) ? { alarm: true as const } : {}),
     });
   }
   return plan;
