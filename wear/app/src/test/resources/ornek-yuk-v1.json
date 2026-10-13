@@ -1,0 +1,55 @@
+{
+  "surum": 1,
+  "konumAdi": "Fatih, İstanbul",
+  "kerahatDk": {
+    "suruk": 20,
+    "istiva": 5,
+    "gurub": 20
+  },
+  "gunler": [
+    {
+      "tarih": "2026-10-11",
+      "vakitler": {
+        "imsak": 1791686400000,
+        "gunes": 1791691440000,
+        "ogle": 1791712560000,
+        "ikindi": 1791723780000,
+        "aksam": 1791733020000,
+        "yatsi": 1791737760000
+      },
+      "kilinan": [
+        "imsak",
+        "ogle",
+        "ikindi",
+        "aksam",
+        "yatsi"
+      ]
+    },
+    {
+      "tarih": "2026-10-12",
+      "vakitler": {
+        "imsak": 1791772860000,
+        "gunes": 1791777900000,
+        "ogle": 1791798960000,
+        "ikindi": 1791810120000,
+        "aksam": 1791819300000,
+        "yatsi": 1791824040000
+      },
+      "kilinan": [
+        "imsak"
+      ]
+    },
+    {
+      "tarih": "2026-10-13",
+      "vakitler": {
+        "imsak": 1791859320000,
+        "gunes": 1791864360000,
+        "ogle": 1791885300000,
+        "ikindi": 1791896460000,
+        "aksam": 1791905640000,
+        "yatsi": 1791910380000
+      },
+      "kilinan": []
+    }
+  ]
+}

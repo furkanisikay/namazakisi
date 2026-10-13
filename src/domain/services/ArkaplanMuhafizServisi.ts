@@ -10,18 +10,19 @@ import * as Notifications from 'expo-notifications';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
-import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
+import { basligiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
+import { muhafizGovdesiSec } from '../../core/muhafiz/muhafizGovdesi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
+import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -68,6 +69,13 @@ export class ArkaplanMuhafizServisi {
         try {
             await this.planla(ayarlar);
         } finally {
+            // Saat (Wear OS) hazir plani tasir → plan degisince o da tazelenir.
+            // `hazirla` ile DOGRULANMIS matris gecer (kimlik paritesi).
+            const son = this.ayarlar ?? ayarlar;
+            const dinleyiciHatasi = muhafizPlaniDegistiBildir({ aktif: son.aktif, matris: son.matris });
+            if (dinleyiciHatasi) {
+                Logger.warn('ArkaplanMuhafiz', 'Plan dinleyicisi hata verdi', dinleyiciHatasi);
+            }
             // Tur sonu isi (iOS: anons klibi GC). HER cikis yolunda calismali —
             // muhafiz kapaliyken ya da hic vakit kalmamisken de; aksi halde
             // kapatilan muhafizin klipleri cihazda sonsuza kadar kalirdi.
@@ -335,18 +343,9 @@ export class ArkaplanMuhafizServisi {
         seviye: MuhafizSeviye,
         yon: PencereYonu = VARSAYILAN_PENCERE_YONU
     ): string {
-        const icerikler =
-            yon === 'girisindenItibaren' ? GIRIS_ICERIK_HAVUZU[seviye] : null;
-        if (icerikler) {
-            return icerikler[Math.floor(Math.random() * icerikler.length)];
-        }
-
-        const mucadeleIcerikleri = uygunIcerikleriBul(vakit, seviye);
-        if (mucadeleIcerikleri.length > 0) {
-            const rastgele = Math.floor(Math.random() * mucadeleIcerikleri.length);
-            return icerikMetniOlustur(mucadeleIcerikleri[rastgele]);
-        }
-        return bildirimGovdesiOlustur(seviye, yon);
+        // Secim `core/muhafiz/muhafizGovdesi.ts`'te (saat yuku ayni secimi
+        // deterministik oranla tekrarlar). Telefonda rastgelelik Math.random.
+        return muhafizGovdesiSec(vakit, seviye, yon, Math.random);
     }
 
     /**

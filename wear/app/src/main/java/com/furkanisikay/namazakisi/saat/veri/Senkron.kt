@@ -7,6 +7,8 @@ import android.util.Log
 import androidx.wear.tiles.TileService
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
+import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
+import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.komplikasyon.VakitKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.tile.VakitTileServisi
 import com.google.android.gms.wearable.DataMapItem
@@ -23,7 +25,16 @@ object Senkron {
     const val KILDIM_YOLU_ONEKI = "/namazakisi/kildim/"
     private const val TAG = "SaatSenkron"
 
-    /** Yeni yük geldi → tile ve komplikasyonları tazele (zaman çizelgeleri yeniden kurulur). */
+    /**
+     * Yerel veri değişti (yeni yük ya da saatte "Kıldım") → yüzeyler + bağımsız
+     * hatırlatma zinciri (issue #280) birlikte tazelenir.
+     */
+    fun yerelVeriDegisti(context: Context) {
+        yuzeyleriTazele(context)
+        Hatirlatici.tazele(context)
+    }
+
+    /** Tile ve komplikasyonları tazele (zaman çizelgeleri yeniden kurulur). */
     fun yuzeyleriTazele(context: Context) {
         try {
             TileService.getUpdater(context).requestUpdate(VakitTileServisi::class.java)
@@ -47,7 +58,7 @@ object Senkron {
             try {
                 for (oge in tampon) {
                     val json = DataMapItem.fromDataItem(oge).dataMap.getString("yuk") ?: continue
-                    if (YukDeposu(context).kaydet(json)) yuzeyleriTazele(context)
+                    if (YukDeposu(context).kaydet(json)) yerelVeriDegisti(context)
                 }
             } finally {
                 tampon.release()
@@ -63,7 +74,10 @@ object Senkron {
      */
     suspend fun kildimGonder(context: Context, tarih: String, vakit: String) {
         YukDeposu(context).bekleyenEkle(VakitHesabi.kimlik(tarih, vakit))
-        yuzeyleriTazele(context)
+        // Telefon uzakta olsa da o vaktin kalan uyarıları HEMEN susar: bekleyen
+        // kimlik zinciri o vakti atlatır, ekrandaki bildirim kaldırılır.
+        MuhafizBildirimci.vakitBildiriminiKaldir(context, tarih, vakit)
+        yerelVeriDegisti(context)
         try {
             val istek = PutDataMapRequest.create("$KILDIM_YOLU_ONEKI${tarih}_$vakit").apply {
                 dataMap.putString("tarih", tarih)
