@@ -104,6 +104,29 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Saat, uygulamayı her dakika uyandırmadan günceller',
         ],
     },
+    // Camideyim Faz 2 (issue #297) — harita, açılış biçimi, izleme kapsamı. Yalnız
+    // Android; kart iOS'ta da görüneceği için kapalı.
+    {
+        id: 'camideyim-harita',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Camideyim: Harita ve "Camide misiniz?"',
+        aciklama:
+            'Camileri ve algılama alanlarını haritada görün; emin olunamayan durumlarda Namaz modu açılmadan önce size sorulur.',
+        detayAciklama:
+            'Camideyim artık ezan vaktine yakınlığı, cuma namazını, caminin binası içinde olup olmadığınızı ve hızınızı birlikte değerlendirir. Güven yüksekse Namaz modu kendiliğinden açılır; trafikte caminin önünde beklemek gibi sınırda durumlarda sessiz bir bildirimle "Camide misiniz?" diye sorulur, önünden geçerken hiçbir şey olmaz. İsterseniz her seferinde sorulmasını ya da hep kendiliğinden açılmasını seçebilir, yalnız favori camilerinizin ve eklediğiniz yerlerin izlenmesini isteyebilirsiniz. Haritada bir camiye dokunarak algılama alanını daraltabilir, favorilere ekleyebilir ya da "Cami değil" diye işaretleyebilirsiniz.',
+        ikon: 'map-marked-alt',
+        hedefSayfa: 'CamideyimAyarlari',
+        ctaEtiketi: 'Haritayı açın',
+        kartGoster: false,
+        detaylar: [
+            'Akıllı, otomatik ya da sorarak açılış',
+            'Yakındaki tüm camiler ya da yalnız seçtikleriniz',
+            'Haritada alanı 10–150 m arasında ayarlama',
+            'Haritanın ortasına iğne koyarak yer ekleme',
+            'Harita: © OpenStreetMap katkıcıları, OpenFreeMap',
+        ],
+    },
     // Camideyim + Namaz modu (issue #297 / #277) — yalnız Android; kart iOS'ta da
     // görüneceği için kapalı (yalnız "Neler Yeni" listesi).
     {
