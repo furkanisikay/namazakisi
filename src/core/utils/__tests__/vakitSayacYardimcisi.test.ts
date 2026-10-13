@@ -1,4 +1,9 @@
-import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../vakitSayacYardimcisi';
+import {
+  sayacBaslangicEsikleriHesapla,
+  muhafizUyarilanVakitleriBul,
+  sayacBaslangicSecenekleriOlustur,
+  seciliSayacBaslangici,
+} from '../vakitSayacYardimcisi';
 import type { MuhafizMatrisi } from '../../muhafiz/matrisTipleri';
 import { eskidenMatriseGoc } from '../../muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI } from '../../muhafiz/matrisTipleri';
@@ -181,5 +186,52 @@ describe('sayacBaslangicEsikleriHesapla — kronolojik N. hatırlatma (issue #27
     const m = matrisKur([60, 50, 40, 30, 20, 10].map((e) => adim('uyari', e)));
     expect(sayacBaslangicEsikleriHesapla(6, m).aksam).toBe(10);
     expect(sayacBaslangicEsikleriHesapla(7, m).aksam).toBe(60); // aralık dışı → 1.
+  });
+});
+
+describe('sayacBaslangicSecenekleriOlustur (issue #274 — bayat global eşik yok)', () => {
+  it('tek düze matris: 4 seçenek, metin gerçek kronolojik eşik', () => {
+    expect(sayacBaslangicSecenekleriOlustur(tekDuzeMatris)).toEqual([
+      { seviye: 1, metin: 'Son 45 Dakika' },
+      { seviye: 2, metin: 'Son 25 Dakika' },
+      { seviye: 3, metin: 'Son 10 Dakika' },
+      { seviye: 4, metin: 'Son 3 Dakika' },
+    ]);
+  });
+
+  it('seçenek sayısı matristeki EN FAZLA adım sayısıdır; eksik vakit SON adıma düşer', () => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    const sablon = matris.ogle.seviyeler;
+    for (const v of MUHAFIZ_VAKITLERI) matris[v].seviyeler = matris[v].seviyeler.slice(2); // 10, 3
+    matris.ogle.seviyeler = [
+      sablon[0], // 45
+      sablon[1], // 25
+      { ...sablon[1], esikDk: 20 },
+      { ...sablon[1], esikDk: 15 },
+      sablon[2], // 10
+      sablon[3], // 3
+    ];
+    const secenekler = sayacBaslangicSecenekleriOlustur(matris);
+    expect(secenekler).toHaveLength(6);
+    expect(secenekler[0].metin).toBe('Son 10–45 Dakika (vakte göre)');
+    // 2 adımlı vakitlerde 6. hatırlatma yok → son hatırlatma (3 dk).
+    expect(secenekler[5].metin).toBe('Son 3 Dakika');
+  });
+
+  it('bayat global eşikleri OKUMAZ (matristen gelir)', () => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    for (const v of MUHAFIZ_VAKITLERI) {
+      matris[v].seviyeler = [matris[v].seviyeler[1], matris[v].seviyeler[3]]; // 25, 3
+    }
+    expect(sayacBaslangicSecenekleriOlustur(matris).map((s) => s.metin)).toEqual([
+      'Son 25 Dakika',
+      'Son 3 Dakika',
+    ]);
+  });
+
+  it('seçili değer seçenek sayısını aşarsa son seçenek seçili görünür', () => {
+    expect(seciliSayacBaslangici(undefined, 4)).toBe(1);
+    expect(seciliSayacBaslangici(3, 4)).toBe(3);
+    expect(seciliSayacBaslangici(5, 2)).toBe(2);
   });
 });

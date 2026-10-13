@@ -19,7 +19,12 @@ import { Anahtar } from '../components/common/Anahtar';
 import { CanliGuncellemeBilgisi } from '../components/common/CanliGuncellemeBilgisi';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
+import {
+  sayacBaslangicEsikleriHesapla,
+  muhafizUyarilanVakitleriBul,
+  sayacBaslangicSecenekleriOlustur,
+  seciliSayacBaslangici,
+} from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
@@ -162,6 +167,15 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
   const muhafizState = useAppSelector((state) => state.muhafiz);
   const { ayarlar: cumaAyarlari } = useAppSelector((state) => state.cumaHatirlatma);
+  // Vakit sayacı başlangıç seçenekleri GERÇEK matristen (bayat global eşikler değil).
+  const sayacSecenekleri = useMemo(
+    () => sayacBaslangicSecenekleriOlustur(muhafizMatrisiniCoz(muhafizState)),
+    [muhafizState]
+  );
+  const seciliSayacSeviyesi = seciliSayacBaslangici(
+    sayacAyarlari.sayacBaslangicSeviyesi,
+    sayacSecenekleri.length
+  );
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -493,13 +507,8 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                 </Text>
 
                 <View className="flex-col gap-2">
-                  {[
-                    { seviye: 1, metin: `Son ${muhafizState.esikler.seviye1} Dakika` },
-                    { seviye: 2, metin: `Son ${muhafizState.esikler.seviye2} Dakika` },
-                    { seviye: 3, metin: `Son ${muhafizState.esikler.seviye3} Dakika` },
-                    { seviye: 4, metin: `Son ${muhafizState.esikler.seviye4} Dakika` },
-                  ].map((secenek) => {
-                    const isSelected = (sayacAyarlari.sayacBaslangicSeviyesi || 1) === secenek.seviye;
+                  {sayacSecenekleri.map((secenek) => {
+                    const isSelected = seciliSayacSeviyesi === secenek.seviye;
                     return (
                       <TouchableOpacity
                         key={secenek.seviye}

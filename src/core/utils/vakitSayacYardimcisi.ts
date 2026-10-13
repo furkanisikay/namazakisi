@@ -89,6 +89,54 @@ export const sayacBaslangicEsikleriHesapla = (
   return sonuc;
 };
 
+/** Vakit sayaci baslangic secenegi: kronolojik N. hatirlatma + gorunen metin. */
+export interface SayacBaslangicSecenegi {
+  seviye: number;
+  metin: string;
+}
+
+/**
+ * Vakit sayaci "Ne zaman calismaya baslasin?" secenekleri (issue #274).
+ *
+ * Eskiden ekran bayat GLOBAL `esikler.seviye1..4`'ten dort sabit secenek
+ * uretiyordu: matris Faz 3'ten beri motoru besliyor, adim sayisi 1..6 ve
+ * zamanlama vakit bazli → "Son 45 Dakika (1. hatirlatma)" gercek planla
+ * ayrisiyordu. Secenek sayisi = matristeki EN FAZLA adim sayisi; metin
+ * `sayacBaslangicEsikleriHesapla`'dan (sayacin GERCEKTEN kullandigi esik) gelir.
+ * Vakitler farkli esik veriyorsa aralik gosterilir.
+ */
+export const sayacBaslangicSecenekleriOlustur = (
+  matris: MuhafizMatrisi
+): SayacBaslangicSecenegi[] => {
+  const enFazla = Math.max(
+    1,
+    ...MUHAFIZ_VAKITLERI.map((v) => matris[v]?.seviyeler?.length ?? 0)
+  );
+  const adet = Math.min(enFazla, MUHAFIZ_MAKS_ADIM);
+  return Array.from({ length: adet }, (_, i) => {
+    const seviye = i + 1;
+    const esikler = Object.values(sayacBaslangicEsikleriHesapla(seviye, matris)).filter(
+      (e) => Number.isFinite(e) && e > 0
+    );
+    const enAz = Math.min(...esikler);
+    const enCok = Math.max(...esikler);
+    const metin =
+      esikler.length === 0
+        ? `${seviye}. hatırlatmadan itibaren`
+        : enAz === enCok
+          ? `Son ${enAz} Dakika`
+          : `Son ${enAz}–${enCok} Dakika (vakte göre)`;
+    return { seviye, metin };
+  });
+};
+
+/**
+ * Secili secenek: kayitli deger secenek sayisini asiyorsa (adim silinmis) sayac
+ * zaten SON hatirlatmaya duser (`sayacBaslangicEsikleriHesapla`) → o secili gorunur.
+ */
+export const seciliSayacBaslangici = (kayitli: number | undefined, secenekSayisi: number): number =>
+  Math.min(seviyeIndeksi(kayitli) + 1, Math.max(1, secenekSayisi));
+
 /**
  * Muhafizin GERCEKTEN uyari urettigi vakitler: en az bir adimi ACIK (bir kanali
  * acik) olan vakitler. #90 bastirmasi yalniz bu vakitlerde uygulanir.
