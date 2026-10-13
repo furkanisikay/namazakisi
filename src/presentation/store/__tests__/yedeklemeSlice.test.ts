@@ -86,6 +86,9 @@ jest.mock('../nafileSlice', () => ({
 jest.mock('../nowBarSlice', () => ({
   nowBarAyarlariniYukle: jest.fn(() => ({ type: 'nowBar/yukle' })),
 }));
+jest.mock('../sadeGorunumSlice', () => ({
+  sadeGorunumAyarlariniYukle: jest.fn(() => ({ type: 'sadeGorunum/yukle' })),
+}));
 const mockNafileGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
 jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
   NafileHatirlatmaServisi: {
@@ -225,6 +228,15 @@ describe('yedeklemeSlice', () => {
         getState as never,
         undefined
       );
+
+    it('sade görünüm ayarı (issue #295) ZORLA yeniden yüklenir — yüklüyse condition atlamasın', async () => {
+      const cagriSirasi: string[] = [];
+      (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({ a: 1 });
+      await calistir(dispatchYap(cagriSirasi), getStateYap());
+      const { sadeGorunumAyarlariniYukle } = jest.requireMock('../sadeGorunumSlice');
+      expect(sadeGorunumAyarlariniYukle).toHaveBeenCalledWith({ zorla: true });
+      expect(cagriSirasi).toContain('sadeGorunum/yukle');
+    });
 
     it('store tazeleme spec §10 sırasında: konum İLK, reconcile SIRALI ve seriVerileriniYukle SONRASI', async () => {
       const cagriSirasi: string[] = [];

@@ -31,6 +31,7 @@ import { camiyeGitAyarlariniYukle } from './camiyeGitSlice';
 import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { nowBarAyarlariniYukle } from './nowBarSlice';
+import { sadeGorunumAyarlariniYukle } from './sadeGorunumSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
 import { WearSenkronServisi } from '../../domain/services/WearSenkronServisi';
@@ -91,6 +92,8 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(camiyeGitAyarlariniYukle()),
       dispatch(nafileAyarlariniYukle()),
       dispatch(nowBarAyarlariniYukle()),
+      // Sade görünüm (issue #295): `condition` yüklüyse atlar → zorla tazele.
+      dispatch(sadeGorunumAyarlariniYukle({ zorla: true })),
       dispatch(takvimAyarlariniYukle()),
     ]);
     await dispatch(namazlariYukle({ tarih: bugunuAl() }));

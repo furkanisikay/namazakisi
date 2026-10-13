@@ -167,6 +167,14 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     capa: 'palet',
   },
   {
+    id: 'sadeGorunum',
+    baslik: 'Sade görünüm',
+    anahtarKelimeler: ['sade', 'sade görünüm', 'büyük yazı', 'yaşlı', 'basit', 'kolay görünüm', 'sesli okuma'],
+    sayfa: 'GorünumAyarlari',
+    grup: 'Görünüm',
+    capa: 'sadeGorunum',
+  },
+  {
     id: 'vakitBildirimleri',
     baslik: 'Vakit bildirimleri',
     anahtarKelimeler: ['ezan', 'vakit bildirimi', 'namaz vakti'],

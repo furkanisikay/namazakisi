@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Sade görünüm (issue #295) — yaşlı kullanıcılar için tek ekran.
+    {
+        id: 'sade-gorunum',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Sade Görünüm',
+        aciklama:
+            'Ana ekranda yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi: büyüklerimiz için tek bakışta anlaşılan, dokununca sesli okunan bir ekran.',
+        detayAciklama:
+            'Ayarlar > Görünüm\'den açtığınızda ana ekran sadeleşir: vaktin adı ve kalan süre büyük yazıyla görünür, altında sıradaki vakit yer alır. Vakte dokunduğunuzda "Şimdi ikindi vakti. Çıkmasına 42 dakika var." gibi sesli okunur. Diğer bölümlere ekranın altındaki "Tüm uygulamayı açın" bağlantısıyla geçebilirsiniz; uygulamayı kapatıp açtığınızda sade görünüme dönülür.',
+        ikon: 'eye',
+        hedefSayfa: 'GorünumAyarlari',
+        ctaEtiketi: 'Görünümü açın',
+        kartGoster: true,
+        detaylar: [
+            'Telefonunuzun yazı boyutu ayarına uyar',
+            'Kalan süre dakikada bir güncellenir',
+            'Kerahat vaktinde işaretlemeden önce yine size sorulur',
+            'Ana ekran widget\'ı kilit ekranında da kullanılabilir (Android 16)',
+        ],
+    },
     // Samsung Rutinler + Tasker/MacroDroid/Automate eklentisi (issue #278) — yalnız
     // Android; kart kapalı (Ayarlar satırı yalnız Android'de görünür).
     {

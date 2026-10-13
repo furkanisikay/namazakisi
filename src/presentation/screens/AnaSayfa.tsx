@@ -20,6 +20,8 @@ import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
 import { KazaOneriModal } from '../components/home/KazaOneriModal';
 import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
+import { useSadeGorunum } from '../hooks/useSadeGorunum';
+import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { ikiBolmeliMi } from '../../core/utils/ekranSinifi';
@@ -85,6 +87,8 @@ export const AnaSayfa: React.FC = () => {
   const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
   // "Her farzla bir kaza" önerisi (issue #294): karar saf çekirdekte, burada yalnız tetiklenir.
   const kazaOnerisi = useFarzSonrasiKazaOnerisi();
+  // Sade görünüm (issue #295): açıksa ana ekranın yerine tek ekran çizilir (aşağıda seçim dalı).
+  const sade = useSadeGorunum();
 
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
@@ -362,6 +366,23 @@ export const AnaSayfa: React.FC = () => {
       try { NamazMuhafiziServisi.getInstance().durdur(); } catch (e) { }
     };
   }, [aktifGun]);
+
+  // Sade görünüm (issue #295) daima AKTİF GÜNÜ işaretler. Kullanıcı geçmiş bir güne
+  // bakarken açtıysa gösterilen gün aktif güne çekilir; pager sade görünümde ÇİZİLMEZ,
+  // normal görünüme dönünce DOĞRU sayfada doğsun diye açılış indeksi de güncellenir
+  // (pager mount'ta imperatif komutla düzeltilmez — AGENTS.md).
+  useEffect(() => {
+    if (!sade.etkin) return;
+    const indeks = tarihiSayfaIndeksineCevir(aktifGun);
+    ilkSayfaIndeksiRef.current = indeks;
+    mevcutSayfaIndeksiRef.current = indeks;
+    programatikGecisRef.current = false;
+    setMevcutSayfaIndeksi(indeks);
+    if (mevcutTarih !== aktifGun) {
+      dispatch(tarihiDegistir(aktifGun));
+      namazlariGetir(aktifGun);
+    }
+  }, [sade.etkin, aktifGun, mevcutTarih, dispatch, namazlariGetir, tarihiSayfaIndeksineCevir]);
 
   // Seri + puanlama senkronu: gunlukNamazlar her degistiginde (yukleme/toggle/toplu) once
   // seriKontrolet'i AWAIT edip ARDINDAN reconcile'i zincirle -> TEK-YAZICI, yaris yok.
@@ -642,6 +663,12 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
+  // Sade görünüm "Kıldım"ı (React.memo'lu bileşen için referans-kararlı): AYNI yol —
+  // suankiVakitTamamla → namazToggle → kerahat onay modalı.
+  const suankiVakitTamamlaRef = useRef(suankiVakitTamamla);
+  suankiVakitTamamlaRef.current = suankiVakitTamamla;
+  const handleSadeKildim = useCallback(() => suankiVakitTamamlaRef.current(), []);
+
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
@@ -789,6 +816,52 @@ export const AnaSayfa: React.FC = () => {
     return <GunSayfasiDuzeni key={sayfaIndeksi} ikiBolmeli={ikiBolmeli} ustBolum={ustBolum} akis={akis} />;
   };
 
+  // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp
+  // sade görünüme zıplamasın).
+  if (!sade.yuklendi) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
+
+  // ---- Sade görünüm (issue #295): tek ekran; işaretleme ve modallar ana ekranla AYNI ----
+  if (sade.etkin) {
+    const sadeKayitHazir = !!gunlukNamazlar && gunlukNamazlar.tarih === aktifGun;
+    const sadeNamazAdi = vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] : undefined;
+    const sadeTamamlandi =
+      sadeKayitHazir && !!gunlukNamazlar.namazlar.find(n => n.namazAdi === sadeNamazAdi)?.tamamlandi;
+    return (
+      <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
+        <StatusBar backgroundColor={renkler.arkaplan} barStyle={koyuMu ? 'light-content' : 'dark-content'} />
+        <SadeGorunum
+          vakit={vakitBilgisi?.vakit ?? null}
+          giris={vakitBilgisi?.giris ?? null}
+          sonrakiGirisIso={vakitBilgisi?.sonrakiVakitGiris || null}
+          sonrakiVakit={(vakitBilgisi?.sonrakiVakitAdi as VakitBilgisi['vakit'] | undefined) ?? null}
+          tamamlandi={sadeTamamlandi}
+          kayitHazir={sadeKayitHazir}
+          mekruhMu={mekruhBilgi.mekruhMu}
+          cumaEtiketi={cumaEtiketi}
+          onKildim={handleSadeKildim}
+          onTumUygulama={sade.tumUygulamayiAc}
+        />
+        <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
+        <KazaOneriModal
+          gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+          kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
+          kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
+          isleniyor={kazaOnerisi.isleniyor}
+          onKildim={kazaOnerisi.kildim}
+          onSimdiDegil={kazaOnerisi.simdiDegil}
+          onBirDahaSorma={kazaOnerisi.birDahaSorma}
+        />
+        <KerahatOnayModal
+          gorunur={kerahatOnayBekleyen !== null}
+          aciklama={mekruhBilgi.aciklama}
+          namazAdi={kerahatOnayBekleyen ?? ''}
+          onOnayla={kerahatOnayla}
+          onVazgec={kerahatVazgec}
+        />
+      </View>
+    );
+  }
+
   if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
   if (hata && !gunlukNamazlar) return <View className="flex-1 justify-center items-center p-6" style={{ backgroundColor: renkler.arkaplan }}><Text className="text-red-500 mb-4">{hata}</Text><AnimasyonluButon metin="Tekrar Dene" ikon="🔄" onPress={() => namazlariGetir(mevcutTarih)} tip="birincil" /></View>;
 
@@ -808,6 +881,20 @@ export const AnaSayfa: React.FC = () => {
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
+
+      {/* Sade görünümden bu oturum için çıkıldıysa tek dokunuşla geri dönüş (issue #295) */}
+      {sade.geciciCikista && (
+        <TouchableOpacity
+          onPress={sade.sadeyeDon}
+          accessibilityRole="button"
+          accessibilityLabel="Sade görünüme dönün"
+          className="flex-row items-center justify-center mx-3 mb-1 rounded-xl border"
+          style={{ minHeight: 44, backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+        >
+          <FontAwesome5 name="compress-alt" size={14} color={renkler.birincil} style={{ marginRight: 8 }} />
+          <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Sade görünüme dönün</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Toparlanma Banner */}
       {seriOzeti?.toparlanmaModu && seriOzeti.toparlanmaIlerleme && (

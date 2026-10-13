@@ -59,6 +59,7 @@ import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinMo
 import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
+import { useSadeGorunum } from '../presentation/hooks/useSadeGorunum';
 
 /** Ayarlar yığınındaki her ekranın sarmalayıcısı (modül düzeyi: referansı sabit). */
 const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => (
@@ -163,6 +164,9 @@ const MainTabs: React.FC = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const { okunmamisVarMi } = useYeniOzellikler();
+  // Sade görünüm (issue #295): ana ekranda sekme çubuğu GİZLİ — tek ekran, gezinme yok.
+  // Koşullu yayma şart: `tabBarStyle: undefined` screenOptions'taki stili EZERDİ.
+  const sade = useSadeGorunum();
 
   // Yeni özellik duyuru durumunu uygulama açılışında yükle (tab rozeti için)
   useEffect(() => {
@@ -215,6 +219,7 @@ const MainTabs: React.FC = () => {
           title: 'Namaz Akışı',
           tabBarLabel: 'Ana Sayfa',
           headerShown: false,
+          ...(sade.etkin ? { tabBarStyle: { display: 'none' as const } } : {}),
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
