@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Bildirim sınırı rehberi (issue #298).
+    {
+        id: 'bildirim-siniri-rehberi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Bildirim Sınırı Rehberi',
+        aciklama:
+            'Telefonunuzun bekletebildiği bildirim sayısı sınırlıdır; uygulama sınıra yaklaştığınızda sizi önceden uyarır ve yer açmanın en kolay yollarını önerir.',
+        detayAciklama:
+            'iPhone aynı anda en fazla 64 bildirim bekletir, Android de uygulama başına sınırlı sayıda alarm tutar; fazlası hata vermeden sessizce düşer. Namaz Muhafızı ve Nafile Namazlar ekranlarının üstündeki kart, kurulu bütün hatırlatmalarınızı sayar. Sığmayacak bir hatırlatma eklemeye çalıştığınızda ekleme yapılmaz; nedenini ve yer açma yollarını görürsünüz. Her öneri gerçekten hesaplanır, tek dokunuşla uygulanır ve geri alınabilir.',
+        ikon: 'layer-group',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Bildirimlerinizi görün',
+        kartGoster: false,
+        detaylar: [
+            'Kart sınıra yaklaşınca turuncu, aşınca kırmızı olur ve kaç bildirimin gelmeyeceğini söyler',
+            'Öneriler anlam kaybı en az olandan başlar: tekrarları seyrekleştirmek, nazik hatırlatmayı tek seferlik yapmak, iPhone’da nafileyi günü gününe kurmak',
+            'Sert ve acil tonlu hatırlatmalara hiç dokunulmaz',
+            'Android’de kart yalnız sınıra çok yaklaştığınızda görünür',
+        ],
+    },
     // Bildirimdeki "Kıldım" native + otomasyon güven listesi (issue #299) — yalnız
     // Android; kart kapalı (yalnız "Neler Yeni" listesi).
     {
