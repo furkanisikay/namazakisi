@@ -144,6 +144,19 @@ object AnonsZamanlayici {
         kayittanCikar(context, id)
     }
 
+    /**
+     * Kayıtlı anonslardan [esles] koşuluna uyanların hepsini iptal eder (issue #299:
+     * bildirimdeki "Kıldım" o vaktin TÜM anonslarını JS'i beklemeden susturur).
+     * Anons bildirimle AYNI kimliği taşır, ama sesli-yalnız adımın bildirimi hiç
+     * planlanmamış olabilir → bildirim mağazasından değil, BU kayıttan seçilir.
+     * @return iptal edilen kimlikler
+     */
+    fun eslesenleriIptalEt(context: Context, esles: (String) -> Boolean): List<String> {
+        val secilen = kayitliIdler(context).filter(esles)
+        secilen.forEach { iptal(context, it) }
+        return secilen
+    }
+
     fun tumunuIptal(context: Context) {
         val idler = kayitliIdler(context)
         try {

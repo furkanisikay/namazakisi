@@ -13,11 +13,19 @@
   <string name="kisayol_kible_uzun">Kıble yönünü gösterin</string>
   <string name="kisayol_kaza_kisa">Kaza defteri</string>
   <string name="kisayol_kaza_uzun">Kaza defterini açın</string>
-  <!-- Kısayol ana ekran DIŞINDAN (otomasyon, başka uygulama) çağrıldığında onay. -->
+  <!-- Başlatanı BİLİNMEYEN "Kıldım" isteğinde tek seferlik onay (karar saklanamaz). -->
   <string name="kildim_onay_baslik">%1$s namazı kılındı olarak işaretlensin mi?</string>
-  <string name="kildim_onay_mesaj">Bu istek ana ekran dışından geldi. Namazınızı kıldıysanız onaylayın.</string>
+  <string name="kildim_onay_mesaj">Bu isteği hangi uygulamanın gönderdiği anlaşılamadı. Namazınızı kıldıysanız onaylayın.</string>
   <string name="kildim_onay_evet">Kıldım</string>
   <string name="kildim_onay_vazgec">Vazgeç</string>
+  <!-- Güven listesi sorusu (issue #299): başlatan uygulama tanınıyor, karar paket başına saklanır. -->
+  <string name="kildim_guven_baslik">%1$s namazlarınızı kılındı olarak işaretleyebilsin mi?</string>
+  <string name="kildim_guven_mesaj">Şu an işaretlenecek vakit: %1$s. Kararınızı daha sonra Ayarlar &gt; Kıldım işaretleyebilen uygulamalar bölümünden değiştirebilirsiniz.</string>
+  <string name="kildim_guven_tarayici_mesaj">Şu an işaretlenecek vakit: %1$s. Bu istek bir tarayıcıdan geldi; her web sayfası bu bağlantıyı açabildiği için kalıcı izin verilemez.</string>
+  <string name="kildim_guven_her_zaman">Her zaman izin ver</string>
+  <string name="kildim_guven_bu_sefer">Yalnız bu sefer</string>
+  <string name="kildim_guven_engelle">Engelle</string>
+  <string name="kildim_guven_engellendi">%1$s artık namazlarınızı işaretleyemez. Ayarlardan değiştirebilirsiniz.</string>
 
   <!-- Widget yapılandırma ekranı (issue #275) -->
   <string name="widget_ayar_baslik">Widget\'ı özelleştirin</string>

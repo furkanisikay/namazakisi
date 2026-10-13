@@ -101,8 +101,9 @@ if (Platform.OS === 'android') {
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
 // Aksiyon `opensAppToForeground: false` olduğu için telefon açılmaz (saate köprülenen
-// bildirimde saatten basılınca cepteki telefon öne çıkmasın); expo-notifications
-// yanıtı bu göreve verir. `defineTask` modül üst seviyesinde SENKRON olmalı (Wear
+// bildirimde saatten basılınca cepteki telefon öne çıkmasın). Issue #299'dan beri eylem
+// NATIVE işlenir (`KopruEtiketliBildirimServisi` → Kıldım kuyruğu, kaynak `bildirim`) ve
+// bu göreve HİÇ gelmez; görev yalnız native yol başarısız olursa devreye giren yedektir. `defineTask` modül üst seviyesinde SENKRON olmalı (Wear
 // headless dersi). Aynı yanıt açılışta getLastNotificationResponseAsync'e de düşer;
 // tekilleştirme diskte (`BildirimServisi.yanitiIsle`).
 const MUHAFIZ_YANIT_GOREVI = 'MUHAFIZ_BILDIRIM_YANITI';

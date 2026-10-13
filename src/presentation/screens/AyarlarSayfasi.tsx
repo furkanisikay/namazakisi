@@ -37,6 +37,7 @@ import { useCamideyimOzeti } from '../hooks/useCamideyimOzeti';
 import { PilRehberModal } from '../components/pil/PilRehberi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
+import { KildimGuvenServisi } from '../../domain/services/KildimGuvenServisi';
 import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
@@ -61,6 +62,7 @@ export const AyarlarSayfasi: React.FC = () => {
   const sistem = useSistemDurumu();
   // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
   const camideyim = useCamideyimOzeti();
+  const kildimGuvenVar = KildimGuvenServisi.kullanilabilirMi();
   const pilRehberi = usePilRehberi(sistem);
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
@@ -289,6 +291,18 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
                   onPress={() => menuyeGit('GorünumAyarlari')}
                 />
+                {/* Otomasyon güven listesi (issue #299) — yalnız Android (köprü varsa). */}
+                {kildimGuvenVar && [
+                  <AyarSatiri
+                    key="kildim-uygulamalari"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="user-shield" size={20} color={ikonRengi} solid />}
+                    baslik="Kıldım işaretleyebilen uygulamalar"
+                    ozet="Rutinler, Tasker ve diğer otomasyonlar"
+                    yeniRozetGoster={sayfaOkunmamisMi('KildimUygulamalari')}
+                    onPress={() => menuyeGit('KildimUygulamalari')}
+                  />,
+                ]}
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
