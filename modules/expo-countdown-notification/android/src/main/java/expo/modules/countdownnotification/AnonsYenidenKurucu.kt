@@ -23,6 +23,12 @@ class AnonsYenidenKurucu : BroadcastReceiver() {
                 } catch (e: Exception) {
                     Log.e("AnonsYenidenKurucu", "Anonslar yeniden kurulamadi: ${e.message}")
                 }
+                // Now Bar planı (issue #282): alarm zinciri ve gösterilen sayaçlar da silindi.
+                try {
+                    CanliPlan.yenidenKur(context.applicationContext)
+                } catch (e: Exception) {
+                    Log.e("AnonsYenidenKurucu", "Canli plan yeniden kurulamadi: ${e.message}")
+                }
             }
         }
     }

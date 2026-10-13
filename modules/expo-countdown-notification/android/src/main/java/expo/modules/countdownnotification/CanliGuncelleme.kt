@@ -67,6 +67,9 @@ object CanliGuncelleme {
         "vakit" to Pair(0xFF8E7C78.toInt(), 0xFFE53935.toInt()),
         "iftar" to Pair(0xFF1E88E5.toInt(), 0xFFFFB300.toInt()),
         "sahur" to Pair(0xFF7E57C2.toInt(), 0xFFFFB300.toInt()),
+        "seri" to Pair(0xFF8E7C78.toInt(), 0xFFFF7043.toInt()),
+        "cuma" to Pair(0xFF2E7D32.toInt(), 0xFFFFB300.toInt()),
+        "nafile" to Pair(0xFF5C6BC0.toInt(), 0xFFFFB300.toInt()),
     )
 
     fun destekleniyorMu(context: Context): Boolean {
@@ -217,6 +220,8 @@ object CanliGuncelleme {
     fun kildimIsle(context: Context, id: String, tarih: String?, vakit: String?) {
         CountdownNotificationHelper.cancelNotification(context, id)
         CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
+        // Kılındı: Now Bar planındaki ileriki dilimleri (ör. öne çıkma sırası) de düşer.
+        CanliPlan.kimligiDusur(context, id)
         if (tarih.isNullOrEmpty() || vakit.isNullOrEmpty()) return
         try {
             context.sendBroadcast(

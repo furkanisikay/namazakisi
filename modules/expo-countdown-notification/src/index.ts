@@ -106,6 +106,10 @@ interface CountdownNativeModule {
         titresim: boolean
     ): Promise<void>;
     muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void>;
+    /** Now Bar planı (issue #282 ikinci aşama) — eski native ikili TAŞIMAZ (opsiyonel). */
+    canliDurumu?(): Promise<string>;
+    canliPlaniKur?(json: string): Promise<void>;
+    canliAyarlariniAc?(): Promise<string | null>;
     pilOptimizasyonuMuafMi(): Promise<boolean | null>;
     pilAyarlariniAc(): Promise<string | null>;
     samsungMu(): boolean;
@@ -245,6 +249,66 @@ export function iptalEtAnons(id: string): void {
 export function iptalEtTumAnonslar(): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.iptalEtTumAnonslar();
+}
+
+// ============================================================
+// NOW BAR / CANLI SAYAC PLANI (issue #282 ikinci asama)
+// ============================================================
+
+/**
+ * Android 16 one cikarma durumu:
+ * - `desteklenmiyor`: Android disi, API < 36 ya da bu surumden eski native ikili
+ *   (plan fonksiyonlari yok) → sayaclar ESKI yolunda kalir.
+ * - `kapali`: kullanici sistemde "Canli guncellemeler"i kapatti.
+ * - `acik`: planlayici Now Bar'i yonetir.
+ * Asla firlatmaz.
+ */
+export type CanliDurum = 'desteklenmiyor' | 'kapali' | 'acik';
+
+export async function canliDurumu(): Promise<CanliDurum> {
+    if (
+        Platform.OS !== 'android' ||
+        !ExpoCountdownNotification?.canliDurumu ||
+        !ExpoCountdownNotification.canliPlaniKur
+    ) {
+        return 'desteklenmiyor';
+    }
+    try {
+        const sonuc = await ExpoCountdownNotification.canliDurumu();
+        return sonuc === 'acik' || sonuc === 'kapali' ? sonuc : 'desteklenmiyor';
+    } catch {
+        return 'desteklenmiyor';
+    }
+}
+
+/**
+ * Planlayicinin olay listesini native'e verir (saklar, su anki hali uygular, tek
+ * alarm zincirini kurar). Native taraf yoksa `false`. Asla firlatmaz.
+ */
+export async function canliPlaniKur(json: string): Promise<boolean> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.canliPlaniKur) return false;
+    try {
+        await ExpoCountdownNotification.canliPlaniKur(json);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export type AcilanCanliEkrani = 'canli' | 'bildirim' | 'uygulama';
+
+/**
+ * Sistemdeki "Canli guncellemeler" ayarini acar (yoksa uygulamanin bildirim
+ * ayarlari, o da yoksa uygulama bilgisi). Izin ISTEMEZ. Asla firlatmaz.
+ */
+export async function canliAyarlariniAc(): Promise<AcilanCanliEkrani | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.canliAyarlariniAc) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.canliAyarlariniAc();
+        return sonuc === 'canli' || sonuc === 'bildirim' || sonuc === 'uygulama' ? sonuc : null;
+    } catch {
+        return null;
+    }
 }
 
 // ============================================================

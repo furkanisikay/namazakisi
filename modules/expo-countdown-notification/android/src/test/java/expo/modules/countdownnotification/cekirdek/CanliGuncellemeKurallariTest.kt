@@ -46,11 +46,15 @@ class CanliGuncellemeKurallariTest {
     }
 
     @Test
-    fun seriOneCikarilmaz() {
+    fun oneCikarilabilirTemalar() {
         assertTrue(k.oneCikarilabilirMi("vakit"))
         assertTrue(k.oneCikarilabilirMi("iftar"))
         assertTrue(k.oneCikarilabilirMi("sahur"))
-        assertFalse(k.oneCikarilabilirMi("seri"))
+        // Seri/cuma/nafile yalnız planlayıcıdan (kullanıcı Now Bar'da açtıysa) gelir;
+        // politika kapısı JS'te (`canliGuncellemeyeUygunMu` eski yolda seriyi hâlâ dışlar).
+        assertTrue(k.oneCikarilabilirMi("seri"))
+        assertTrue(k.oneCikarilabilirMi("cuma"))
+        assertTrue(k.oneCikarilabilirMi("nafile"))
         assertFalse(k.oneCikarilabilirMi(""))
     }
 
