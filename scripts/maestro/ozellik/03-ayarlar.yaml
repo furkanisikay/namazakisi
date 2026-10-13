@@ -1,0 +1,11 @@
+# tohum: ozellik
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- takeScreenshot: ozk/04-ayarlar
+- scrollUntilVisible:
+    element:
+      text: "Hakkında\\..*"
+    direction: DOWN
+    timeout: 20000
+- takeScreenshot: ozk/05-ayarlar-alt

@@ -1,0 +1,17 @@
+# tohum: ozellik
+# Now Bar ve canli sayaclar (yalniz Android). Tohum secimi YAZMAZ: varsayilan.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Now Bar ve canlı sayaçlar\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Now Bar ve canlı sayaçlar\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/20-now-bar
+- scroll
+- takeScreenshot: ozk/21-now-bar-alt

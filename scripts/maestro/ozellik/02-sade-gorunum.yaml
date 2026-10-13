@@ -1,0 +1,17 @@
+# tohum: sade
+# Sade gorunum: ana ekranin yerine tek ekran (sekme cubugu gizli). "Kıble
+# yönünü bul" burada YOK — ortak acilis akisi kullanilamaz.
+appId: com.furkanisikay.namazakisi
+---
+- launchApp:
+    stopApp: true
+- extendedWaitUntil:
+    visible:
+      id: "sade-kildim"
+    timeout: 90000
+- repeat:
+    while:
+      visible: "Devam Et"
+    commands:
+      - tapOn: "Devam Et"
+- takeScreenshot: ozk/03-sade-gorunum

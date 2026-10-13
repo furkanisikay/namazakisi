@@ -1,0 +1,14 @@
+# tohum: ozellik
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Neler yeni\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Neler yeni\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/30-neler-yeni

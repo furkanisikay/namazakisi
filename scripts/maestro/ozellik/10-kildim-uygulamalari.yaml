@@ -1,0 +1,16 @@
+# tohum: ozellik
+# Kildim isaretleyebilen uygulamalar (yalniz Android). Ayri akis: otomasyon
+# rehberinden geri donus yarida kalirsa bu kare kaybolmasin.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Kıldım işaretleyebilen uygulamalar\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Kıldım işaretleyebilen uygulamalar\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/24-kildim-uygulamalari
