@@ -25,6 +25,14 @@ class KildimKuyruguKurallariTest {
     }
 
     @Test
+    fun bildirimKaynagiKabulEdilir() {
+        // Muhafız bildirimindeki "Kıldım" native yolu (issue #299).
+        val l = k.ekle(emptyList(), "2026-10-12", "yatsi", k.KAYNAK_BILDIRIM)!!
+        assertEquals("bildirim", l.single().kaynak)
+        assertEquals("2026-10-12_yatsi", l.single().id)
+    }
+
+    @Test
     fun gecersizOgeReddedilir() {
         assertNull(k.ekle(emptyList(), "13.10.2026", "ogle", k.KAYNAK_WIDGET))
         // Widget kodu 'sabah' kuyruğa GİRMEZ: kayıt katmanı 'imsak' bekler.

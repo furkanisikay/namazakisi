@@ -27,6 +27,13 @@ export interface Tema {
       uyari: string;
       hata: string;
       bilgi: string;
+      /**
+       * TURUNCU "dikkat" (issue #298 — bildirim sınırına yaklaşma). `uyari`
+       * sarı-amberdir ve turuncu DEĞİLDİR (AGENTS.md kontrast tuzağı). Yalnız
+       * DEKORATİF kullanım (ikon, çubuk, kenar; ≥3:1) — küçük gövde metninde
+       * kullanmayın, metin daima `metin`/`metinIkincil`.
+       */
+      dikkat: string;
     };
   };
 }
@@ -97,6 +104,7 @@ export const ACIK_TEMA: Tema = {
       uyari: '#FFC107',
       hata: '#F44336',
       bilgi: '#2196F3',
+      dikkat: '#E65100',
     },
   },
 };
@@ -115,6 +123,7 @@ export const KOYU_TEMA: Tema = {
       uyari: '#FFCA28',
       hata: '#EF5350',
       bilgi: '#42A5F5',
+      dikkat: '#FFB74D',
     },
   },
 };

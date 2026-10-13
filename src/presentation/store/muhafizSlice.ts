@@ -446,7 +446,10 @@ const muhafizSlice = createSlice({
          * cagrilir (guvenlik agi) ve kullanici zaten 'ozel' iken her matris
          * degisikliginde cagrilir ki yedek her zaman en guncel ozel hali tutsun.
          */
-        ozelMatrisYedegiGuncelle: (state, action: PayloadAction<MuhafizMatrisi>) => {
+        ozelMatrisYedegiGuncelle: (state, action: PayloadAction<MuhafizMatrisi | undefined>) => {
+            // `undefined` yedeği TEMİZLER: "Geri al" yedeği olmayan bir durumu geri
+            // yüklerken değişikliğin yazdığı yedek kalsaydı, daha önce olmayan bir
+            // "Özel" seçeneği belirir ve reddedilen matrisi geri getirirdi.
             const yeniState = { ...state, ozelMatrisYedegi: action.payload };
             AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI, JSON.stringify(yeniState));
             return yeniState;

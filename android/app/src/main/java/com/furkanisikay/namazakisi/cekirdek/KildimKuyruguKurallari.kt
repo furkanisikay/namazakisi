@@ -29,7 +29,13 @@ object KildimKuyruguKurallari {
     const val KAYNAK_KISAYOL = "kisayol"
     /** Öne çıkarılmış (Android 16 Live Update) vakit sayacındaki "Kıldım" (issue #282). */
     const val KAYNAK_SAYAC = "sayac"
-    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC)
+    /**
+     * Muhafız bildirimindeki "Kıldım" (issue #299): `KopruEtiketliBildirimServisi` eylemi
+     * JS'i beklemeden kuyruğa yazar; expo'nun yanıt yolu (görev/dinleyici) o eylem için
+     * HİÇ çalışmaz → tek işleme yolu budur.
+     */
+    const val KAYNAK_BILDIRIM = "bildirim"
+    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM)
 
     private val GECERLI_VAKITLER = setOf("imsak", "ogle", "ikindi", "aksam", "yatsi")
     private val TARIH_DESENI = Regex("""^\d{4}-\d{2}-\d{2}$""")

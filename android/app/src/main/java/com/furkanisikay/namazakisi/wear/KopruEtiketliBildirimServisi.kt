@@ -9,6 +9,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
 import expo.modules.notifications.service.NotificationsService
@@ -29,7 +30,8 @@ import expo.modules.notifications.service.interfaces.PresentationDelegate
  * NEDEN ALT SINIF: expo-notifications `WearableExtender`'ı JS'e açmaz. Paket, olayları
  * `findDesignatedBroadcastReceiver` ile bulduğu EN YÜKSEK öncelikli alıcıya gönderir
  * (kendi alıcısı `priority=-1`); manifestte `priority=0` ile kaydedilen bu sınıf
- * sunumu devralır, geri kalan her şey (zamanlama, yanıt, kategori) üst sınıfta kalır.
+ * sunumu devralır, geri kalan her şey (zamanlama, yanıt, kategori) üst sınıfta kalır —
+ * tek istisna muhafız "Kıldım" eylemidir (issue #299, [onReceiveNotificationResponse]).
  * BOOT/MY_PACKAGE_REPLACED kurulum eylemleri BİLEREK burada dinlenmez — expo'nun
  * kendi alıcısı yapar, iki kez kurulmasın.
  *
@@ -52,6 +54,27 @@ import expo.modules.notifications.service.interfaces.PresentationDelegate
 class KopruEtiketliBildirimServisi : NotificationsService() {
     override fun getPresentationDelegate(context: Context): PresentationDelegate =
         KopruEtiketliSunucu(context)
+
+    /**
+     * Muhafız "Kıldım" eylemi NATIVE işlenir (issue #299, `BildirimKildimIsleyici`).
+     *
+     * BİLİNÇLİ KARAR — işlenen eylemde `super` ÇAĞRILMAZ: üst sınıf yanıtı JS'e üç
+     * yoldan daha verirdi (headless `MUHAFIZ_BILDIRIM_YANITI` görevi, ön plandaki yanıt
+     * dinleyicisi, açılıştaki `getLastNotificationResponseAsync`). JS bu eylemi yalnız
+     * "kıldım" için dinler; kuyruk öğesi aynı gövdeyi (`kildimAksiyonunuIsle`) zaten
+     * çalıştırdığı için o yollar yalnız ÇİFT işleme üretirdi. Eylem `opensAppToForeground:
+     * false` olduğu için üst sınıfın uygulamayı açma dalı da zaten çalışmıyordu.
+     * Gövdeye dokunma ve diğer bildirimler değişmeden üst sınıfa gider; native yol
+     * başarısızsa (kuyruğa yazılamadı) da üst sınıfa düşülür → eski davranış.
+     */
+    override fun onReceiveNotificationResponse(context: Context, intent: Intent) {
+        val islendi = try {
+            BildirimKildimIsleyici.isle(context, intent, getSchedulingDelegate(context))
+        } catch (_: Exception) {
+            false
+        }
+        if (!islendi) super.onReceiveNotificationResponse(context, intent)
+    }
 
     override fun onRemoveScheduledNotifications(context: Context, intent: Intent) {
         intent.extras?.getStringArray(NotificationsService.IDENTIFIERS_KEY)?.forEach { eskiExpoTetiginiIptalEt(context, it) }

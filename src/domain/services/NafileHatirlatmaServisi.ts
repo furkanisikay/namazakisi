@@ -2,32 +2,23 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { LocalNafileServisi, nafileHatirlatmaAcikMi } from '../../data/local/LocalNafileServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
-import { gununNafilePencereleri, koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
-import { teheccudHedefZamani, type NafilePencere } from '../../core/nafile/nafileVakitleri';
-import { nafileBildirimMetni } from '../../core/nafile/nafileMetinleri';
-import type { NafileAyarlari, NafileTuru } from '../../core/nafile/nafileTipleri';
-
-/** Bildirim id öneki — temizlik bu önekle SÜZER, başka sistemlere dokunmaz. */
-export const NAFILE_ID_ONEKI = 'nafile_';
+import { koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
+import {
+    NAFILE_ID_ONEKI,
+    nafilePlaniOlustur,
+    nafilePlanSecenekleri,
+    type NafileBildirimPlani,
+} from '../../core/nafile/nafilePlani';
 
 /**
- * Kaç gün ileri planlanır.
- * - Gündüz nafileleri: bugün + 2 (vakit bildirimlerinden geniş; uygulama 3 gün
- *   açılmasa da sürer).
- * - Teheccüd: 7 gece — bir "uyandırma"dır; OEM arka plan görevini öldürürse
- *   3 günde sessizce biterdi (cuma'nın 4 hafta planlamasıyla aynı gerekçe).
- * iOS 64 bekleyen bildirim bütçesine en fazla 2×3 + 2×7 = 20 girer.
+ * Plan üretici SAF modüle taşındı (`core/nafile/nafilePlani.ts`): bildirim
+ * defteri (issue #298) aynı fonksiyonu kuru çalıştırır. Geriye uyumluluk için
+ * buradan yeniden dışa aktarılır.
  */
-const GUNDUZ_GUN_SAYISI = 3;
-const TEHECCUD_GECE_SAYISI = 7;
-
-/** Uyandırma açıkken ikinci hatırlatmanın gecikmesi (tek 2,4 sn'lik ses alarm beklentisini karşılamaz). */
-const UYANDIRMA_TEKRAR_DK = 3;
-
-const DK = 60 * 1000;
+export { NAFILE_ID_ONEKI, nafilePlaniOlustur, type NafileBildirimPlani } from '../../core/nafile/nafilePlani';
 
 /**
  * Nafile namaz hatırlatmaları (issue #77).
@@ -92,7 +83,8 @@ export class NafileHatirlatmaServisi {
         const ozelGundeMi = await ozelGunSuzgeciniOku();
 
         const simdi = new Date();
-        for (const plan of nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi)) {
+        const secenekler = nafilePlanSecenekleri(ayarlar);
+        for (const plan of nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi, secenekler)) {
             await this.planla(plan);
         }
     }
@@ -166,87 +158,4 @@ export class NafileHatirlatmaServisi {
             Logger.error('NafileHatirlatma', 'Temizlik hatasi', e);
         }
     }
-}
-
-export interface NafileBildirimPlani {
-    id: string;
-    tur: NafileTuru;
-    zaman: Date;
-    baslik: string;
-    govde: string;
-    uyandirma: boolean;
-}
-
-/**
- * SAF plan üretici — hangi nafile bildirimi hangi anda, hangi metinle gidecek.
- * `bugunIso` ve `simdi` ENJEKTE edilir (testte sabit tarih yazılmaz).
- *
- * `gunAtlanirMi` (ops.): true dönen GÜN hiç planlanmaz — o günün gündüz
- * nafileleri ve o güne ait gece (yatsı → ertesi imsak) teheccüdü dahil.
- * Özel gün kapısı buradan bağlanır (issue #272).
- */
-export function nafilePlaniOlustur(
-    koordinat: NafileKoordinat,
-    ayarlar: NafileAyarlari,
-    simdi: Date,
-    bugunIso: string,
-    gunAtlanirMi: (iso: string) => boolean = () => false
-): NafileBildirimPlani[] {
-    const planlar: NafileBildirimPlani[] = [];
-    const gelecekMi = (z: Date) => z.getTime() > simdi.getTime();
-
-    // Dün (gece yarısı sonrası teheccüd) → bugün + TEHECCUD_GECE_SAYISI - 1
-    for (let i = -1; i < TEHECCUD_GECE_SAYISI; i++) {
-        const iso = gunEkle(bugunIso, i);
-        if (gunAtlanirMi(iso)) continue;
-        let pencereler: NafilePencere[];
-        try {
-            pencereler = gununNafilePencereleri(koordinat, iso);
-        } catch (e) {
-            Logger.warn('NafileHatirlatma', `Pencere hesaplanamadi: ${iso}`, e);
-            continue;
-        }
-
-        for (const p of pencereler) {
-            if (p.tur === 'teheccud') {
-                const t = ayarlar.teheccud;
-                if (!t.aktif) continue;
-                const zaman = teheccudHedefZamani(p, t.hedef, t.imsaktanOnceDk);
-                const metin = nafileBildirimMetni({
-                    tur: 'teheccud',
-                    son: p.bitis,
-                    teheccudHedefi: t.hedef,
-                    imsaktanOnceDk: Math.round((p.bitis.getTime() - zaman.getTime()) / DK),
-                    uyandirma: t.uyandirma,
-                });
-                if (gelecekMi(zaman)) {
-                    planlar.push({ id: `${NAFILE_ID_ONEKI}${iso}_teheccud`, tur: 'teheccud', zaman, ...metin, uyandirma: t.uyandirma });
-                }
-                if (t.uyandirma) {
-                    const ikinci = new Date(zaman.getTime() + UYANDIRMA_TEKRAR_DK * DK);
-                    if (gelecekMi(ikinci) && ikinci.getTime() < p.bitis.getTime()) {
-                        planlar.push({ id: `${NAFILE_ID_ONEKI}${iso}_teheccud_2`, tur: 'teheccud', zaman: ikinci, ...metin, uyandirma: true });
-                    }
-                }
-                continue;
-            }
-
-            // Gündüz nafileleri yalnız bugün + 2 gün.
-            if (i < 0 || i >= GUNDUZ_GUN_SAYISI) continue;
-            const ayar = ayarlar.hatirlatmalar[p.tur];
-            if (!ayar.aktif) continue;
-            const zaman = new Date(p.baslangic.getTime() + ayar.ofsetDk * DK);
-            // Ofset pencereyi aşarsa (kısa kış kuşluğu) o gün planlanmaz.
-            if (zaman.getTime() >= p.bitis.getTime() || !gelecekMi(zaman)) continue;
-            planlar.push({
-                id: `${NAFILE_ID_ONEKI}${iso}_${p.tur}`,
-                tur: p.tur,
-                zaman,
-                ...nafileBildirimMetni({ tur: p.tur, son: p.bitis }),
-                uyandirma: false,
-            });
-        }
-    }
-
-    return planlar.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
 }

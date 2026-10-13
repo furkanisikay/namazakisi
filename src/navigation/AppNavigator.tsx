@@ -30,6 +30,7 @@ import {
   NafileAyarlariSayfasi,
   CamideyimAyarlariSayfasi,
   NamazModuAyarlariSayfasi,
+  KildimUygulamalariSayfasi,
   DebugLogsSayfasi,
   KazaDefteriSayfasi,
   KurulumSihirbaziSayfasi,
@@ -52,7 +53,7 @@ import {
   kildimOnayBasligi,
   KILDIM_ONAY_MESAJI,
 } from '../presentation/hooks/useKildimDerinBaglantisi';
-import { BildirimModali } from '../presentation/components/common/BildirimModali';
+import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinModali';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 
@@ -105,6 +106,7 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   NafileAyarlari: { component: NafileAyarlariSayfasi, options: { title: 'Nafile Namazlar' } },
   CamideyimAyarlari: { component: CamideyimAyarlariSayfasi, options: { title: 'Camideyim' } },
   NamazModuAyarlari: { component: NamazModuAyarlariSayfasi, options: { title: 'Namaz Modu' } },
+  KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
   DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Debug Logları' } },
   TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Takvim Entegrasyonu' } },
   NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
@@ -290,7 +292,7 @@ export const AppNavigator: React.FC = () => {
   }, []);
 
   // Kurulum sihirbazı sürerken derin bağlantı sihirbazı atlatmasın (issue #276).
-  // Bağlantı dışarıdan gelebilir → işaretleme yalnız onay penceresinden.
+  // Bağlantı dışarıdan gelebilir → güven listesi karar verir (issue #299).
   const kildimOnayi = useKildimDerinBaglantisi(ilkKurulum === false);
 
   if (ilkKurulum === null) {
@@ -312,16 +314,15 @@ export const AppNavigator: React.FC = () => {
       <ErrorBoundary name="GuncellemeBoundary">
         <GuncellemeBildirimi />
       </ErrorBoundary>
-      <BildirimModali
-        gorunur={kildimOnayi.onayAdayi != null}
-        tip="bilgi"
-        baslik={kildimOnayi.onayAdayi ? kildimOnayBasligi(kildimOnayi.onayAdayi) : ''}
-        mesaj={KILDIM_ONAY_MESAJI}
-        birincilEtiket="Kıldım"
-        birincilIkon="check"
-        onBirincil={kildimOnayi.onayla}
-        onKapat={kildimOnayi.vazgec}
-        kapatEtiketi="Vazgeç"
+      <KildimIzinModali
+        vakitAdi={kildimOnayi.onayAdayi?.vakitAdi ?? null}
+        baslatan={kildimOnayi.baslatan}
+        kimliksizBaslik={kildimOnayi.onayAdayi ? kildimOnayBasligi(kildimOnayi.onayAdayi) : ''}
+        kimliksizMesaj={KILDIM_ONAY_MESAJI}
+        onHerZaman={kildimOnayi.herZamanIzinVer}
+        onBuSefer={kildimOnayi.onayla}
+        onEngelle={kildimOnayi.engelle}
+        onVazgec={kildimOnayi.vazgec}
       />
     </NavigationContainer>
   );

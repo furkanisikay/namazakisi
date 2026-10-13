@@ -2,7 +2,8 @@
  * Ortak "Kıldım" kuyruğu — JS tarafı (issue #269 → #275/#276).
  *
  * Uygulama DIŞINDAN gelen işaretlemeler (Wear OS saati, ana ekran widget'ı, hızlı
- * ayarlar kutusu, "Şu anki vakti kıldım" kısayolu) native `KildimKuyrugu`'na
+ * ayarlar kutusu, "Şu anki vakti kıldım" kısayolu, öne çıkarılmış sayaç ve — issue
+ * #299'dan beri — muhafız bildirimindeki "Kıldım") native `KildimKuyrugu`'na
  * (SharedPreferences, kalıcı) düşer. `bekleyenleriIsle()` kuyruğu boşaltır ve her
  * öğeyi bildirimdeki "Kıldım" ile AYNI gövdeden işler
  * (`BildirimServisi.kuyruktanKildimIsle` → `kildimAksiyonunuIsle`).
