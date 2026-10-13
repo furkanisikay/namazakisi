@@ -724,7 +724,10 @@ export const AnaSayfa: React.FC = () => {
         if (sonrakiNamaz) {
           vakitAraligi = `${suankiNamaz.saat} - ${sonrakiNamaz.saat}`;
         } else {
-          vakitAraligi = `${suankiNamaz.saat} - ...`;
+          // Yatsı zincirin son vaktidir; çıkışı ertesi imsaktır ve servis onu
+          // `vakitBilgisi.saat` olarak zaten verir ("..." yazmak bitişi gizliyordu).
+          const cikis = vakitBilgisi.saat;
+          vakitAraligi = `${suankiNamaz.saat} - ${cikis.getHours().toString().padStart(2, '0')}:${cikis.getMinutes().toString().padStart(2, '0')}`;
         }
       }
     }

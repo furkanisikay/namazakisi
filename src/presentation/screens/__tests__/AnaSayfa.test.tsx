@@ -149,9 +149,15 @@ jest.mock('../../components/home/HomeHeader', () => {
     ),
   };
 });
+const mockVakitKartiProplari: { vakitAraligi?: string }[] = [];
 jest.mock('../../components/home/VakitKarti', () => {
   const { View } = require('react-native');
-  return { VakitKarti: () => <View testID="vakit-karti" /> };
+  return {
+    VakitKarti: (props: { vakitAraligi?: string }) => {
+      mockVakitKartiProplari.push(props);
+      return <View testID="vakit-karti" />;
+    },
+  };
 });
 const mockVakitAkisiProplari: { onVakitTikla?: (ad: string, val: boolean) => void }[] = [];
 jest.mock('../../components/home/VakitAkisi', () => {
@@ -228,8 +234,14 @@ jest.mock('@expo/vector-icons', () => {
 });
 
 // ── Domain servisleri (native köprü / yan etki yok) ──────────────────────────
-const mockVakitBilgisi = {
-  vakit: 'ogle' as const,
+const mockVakitBilgisi: {
+  vakit: 'ogle' | 'yatsi';
+  saat: Date;
+  kalanSureMs: number;
+  sonrakiVakitAdi: string;
+  sonrakiVakitGiris: string;
+} = {
+  vakit: 'ogle',
   saat: new Date(),
   kalanSureMs: 3600000,
   sonrakiVakitAdi: 'İkindi',
@@ -562,6 +574,28 @@ describe('AnaSayfa', () => {
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
     });
   });
+  describe('Vakit kartı aralığı', () => {
+    afterEach(() => {
+      mockVakitBilgisi.vakit = 'ogle';
+      mockVakitBilgisi.saat = new Date();
+    });
+
+    it('yatsıda bitiş "..." DEĞİL, servisin verdiği çıkış (ertesi imsak) saatidir', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const cikis = new Date();
+      cikis.setHours(5, 7, 0, 0);
+      mockVakitBilgisi.vakit = 'yatsi';
+      mockVakitBilgisi.saat = cikis;
+      mockVakitKartiProplari.length = 0;
+
+      await kur(bugunuAl());
+
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1];
+      expect(son.vakitAraligi).toBe('20:30 - 05:07');
+    });
+  });
+
   // ── "Her farzla bir kaza" (issue #294) ────────────────────────────────────
   describe('Kaza önerisi tetiklemesi', () => {
     const vakitTikla = (ad: string, val: boolean) =>
