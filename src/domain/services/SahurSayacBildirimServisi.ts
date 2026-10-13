@@ -19,6 +19,8 @@ import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 
 interface SahurSayacAyarlari {
   aktif: boolean;
@@ -78,6 +80,15 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     yarin.setDate(yarin.getDate() + 1);
     const prayerTimesYarin = new PrayerTimes(coordinates, yarin, params);
     const imsakYarin = prayerTimesYarin.fajr;
+
+    // Özel gün (issue #272): sayaç, hedeflediği imsakla BAŞLAYAN oruç günü
+    // içindir (imsak + 10 dk'ya kadar bugünün imsağı, sonra yarınınki). O gün
+    // özel günse (hayız/nifas → oruç tutulmaz) sahur sayacı kurulmaz; eski plan
+    // yukarıda temizlendi. Özel günün SON gecesinde ertesi günün sahuru kurulur.
+    const hedefImsak =
+      simdi.getTime() < imsakBugun.getTime() + 10 * 60 * 1000 ? imsakBugun : imsakYarin;
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+    if (ozelGundeMi(tarihiISOFormatinaCevir(hedefImsak))) return;
 
     const bugunTarihStr = bugunuAl();
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC}${bugunTarihStr}`;

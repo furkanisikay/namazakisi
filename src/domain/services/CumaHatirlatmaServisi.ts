@@ -11,6 +11,7 @@ import {
     cumaPenceresiOlustur,
 } from '../../core/utils/cumaYardimcisi';
 import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
 /** Bildirim id oneki — temizlik bu onekle SUZER, baska sistemlere dokunmaz. */
 const ID_ONEKI = 'cuma_hatirlatma_';
@@ -121,7 +122,13 @@ export class CumaHatirlatmaServisi {
         const pencere = cumaPenceresiOlustur(ayarlar.oncedenDk, ayarlar.siklik);
         const adimlar = vakitUyariPlaniOlustur(pencere, ayarlar.oncedenDk).map((a) => a.kalanDk);
 
+        // Özel gün (issue #272): aralığa düşen cumanın hatırlatması kurulmaz
+        // (eski plan yukarıda temizlendi). Ufuk kaymaz: dört cumadan biri
+        // aralıktaysa o hafta atlanır, beşinci cuma eklenmez.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+
         for (const cuma of sonrakiCumalar(simdi, PLANLANACAK_CUMA_SAYISI)) {
+            if (ozelGundeMi(tarihiISOFormatinaCevir(cuma))) continue;
             // Vakit hesabi GUN BAZINDA: her cuma icin ayri PrayerTimes.
             const ogleVakti = new PrayerTimes(coordinates, cuma, params).dhuhr;
             for (const [sira, kalanDk] of adimlar.entries()) {

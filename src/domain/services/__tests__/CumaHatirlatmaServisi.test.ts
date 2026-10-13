@@ -1,6 +1,8 @@
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { LocalCumaHatirlatmaServisi } from '../../../data/local/LocalCumaHatirlatmaServisi';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import type { Siklik } from '../../../core/muhafiz/matrisTipleri';
 
 jest.mock('expo-notifications');
@@ -320,5 +322,57 @@ describe('CumaHatirlatmaServisi', () => {
 
             expect(cumaninDakikalari('2026-08-07')).toEqual([30, 15]);
         });
+    });
+});
+
+describe('CumaHatirlatmaServisi — ozel gun kapisi (issue #272)', () => {
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        jest.useFakeTimers();
+        jest.setSystemTime(CARSAMBA_SABAH);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
+        await AsyncStorage.clear();
+    });
+
+    afterEach(async () => {
+        jest.useRealTimers();
+        await AsyncStorage.clear();
+    });
+
+    it('ozel gun araligindaki cuma ATLANIR, digerleri birebir kurulur (ufuk kaymaz)', async () => {
+        ayarlariKur(true);
+        await AsyncStorage.setItem(
+            DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+            JSON.stringify({
+                ozelGunModuAktif: true,
+                aktifOzelGun: { baslangicTarihi: '2026-08-12', bitisTarihi: '2026-08-18' },
+                gecmisKayitlar: [],
+            })
+        );
+
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
+
+        expect(planlananlar().map((i) => i.identifier)).toEqual([
+            'cuma_hatirlatma_2026-08-07',
+            'cuma_hatirlatma_2026-08-21',
+            'cuma_hatirlatma_2026-08-28',
+        ]);
+    });
+
+    it('ozel gun modu KAPALIYKEN aralik yok sayilir', async () => {
+        ayarlariKur(true);
+        await AsyncStorage.setItem(
+            DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+            JSON.stringify({
+                ozelGunModuAktif: false,
+                aktifOzelGun: { baslangicTarihi: '2026-08-01', bitisTarihi: '2026-09-30' },
+                gecmisKayitlar: [],
+            })
+        );
+
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
+
+        expect(planlananlar()).toHaveLength(4);
     });
 });

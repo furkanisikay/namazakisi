@@ -8,7 +8,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, type NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -47,6 +47,8 @@ import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
 import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
+import { useKildimDerinBaglantisi } from '../presentation/hooks/useKildimDerinBaglantisi';
+import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 
 /** Ayarlar yığınındaki her ekranın sarmalayıcısı (modül düzeyi: referansı sabit). */
@@ -60,7 +62,8 @@ const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => 
  */
 export type RootStackParamList = {
   KurulumSihirbazi: undefined;
-  MainTabs: undefined;
+  /** Parametre yalnız derin bağlantı içindir (`namazakisi://kaza`, issue #276). */
+  MainTabs: NavigatorScreenParams<AnaSekmeParamList> | undefined;
   KibleSayfasi: undefined;
 };
 
@@ -281,12 +284,15 @@ export const AppNavigator: React.FC = () => {
     });
   }, []);
 
+  // Kurulum sihirbazı sürerken derin bağlantı sihirbazı atlatmasın (issue #276).
+  useKildimDerinBaglantisi(ilkKurulum === false);
+
   if (ilkKurulum === null) {
     return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={ilkKurulum ? undefined : derinBaglantiYapilandirmasi}>
       <ErrorBoundary name="NavigatorBoundary">
         <RootStack.Navigator
           screenOptions={{ headerShown: false }}

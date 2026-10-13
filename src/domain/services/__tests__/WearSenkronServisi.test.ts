@@ -1,5 +1,5 @@
 /**
- * WearSenkronServisi (issue #269) — telefon tarafı senkron ve saat "Kıldım" kuyruğu.
+ * WearSenkronServisi (issue #269) — telefon tarafı senkron; saat "Kıldım" kuyruğu ortaktır (KildimKuyruguServisi).
  * Native modül `NativeModules.WearSenkron` mock'lanır; platform AÇIKÇA seçilir
  * (jest varsayılanı iOS — AGENTS.md).
  */
@@ -20,9 +20,9 @@ jest.mock('../../../data/local/LocalNamazServisi', () => ({
     kayitDegistiDinleyicisiniAyarla: (...a: unknown[]) => mockDinleyiciAyarla(...a),
     kilinanVakitleriAl: (...a: unknown[]) => mockMuhafizKilinan(...a),
 }));
-const mockSaattenKildim = jest.fn();
-jest.mock('../BildirimServisi', () => ({
-    BildirimServisi: { getInstance: () => ({ saattenKildimIsle: (...a: unknown[]) => mockSaattenKildim(...a) }) },
+const mockKuyrukIsle = jest.fn(() => Promise.resolve());
+jest.mock('../KildimKuyruguServisi', () => ({
+    KildimKuyruguServisi: { getInstance: () => ({ bekleyenleriIsle: () => mockKuyrukIsle() }) },
 }));
 
 import { WearSenkronServisi } from '../WearSenkronServisi';
@@ -31,9 +31,6 @@ import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 
 const modul = {
     durumGonder: jest.fn(() => Promise.resolve()),
-    bekleyenleriAl: jest.fn(() => Promise.resolve('[]')),
-    tamamlandi: jest.fn(() => Promise.resolve()),
-    basarisiz: jest.fn(() => Promise.resolve()),
 };
 const servis = WearSenkronServisi.getInstance();
 
@@ -65,7 +62,6 @@ beforeEach(() => {
             { tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Sabah, tamamlandi: true }] },
         ],
     });
-    mockSaattenKildim.mockResolvedValue(undefined);
     mockMuhafizKilinan.mockResolvedValue([]);
     muhafizPlaniDinleyicisiniAyarla(null);
 });
@@ -208,40 +204,8 @@ describe('gonder', () => {
 });
 
 describe('bekleyenleriIsle', () => {
-    it('her öğeyi bildirim "Kıldım" yolundan işler, tamamlandı işaretler, sonra saati tazeler', async () => {
-        konumKur();
-        modul.bekleyenleriAl.mockResolvedValue(
-            JSON.stringify([{ id: 'a', tarih: bugunuAl(), vakit: 'ogle' }, { id: 'b', tarih: bugunuAl(), vakit: 'ikindi' }])
-        );
+    it('ortak "Kıldım" kuyruğuna DEVREDER (saat, widget, kutu tek kuyruk — #275/#276)', async () => {
         await servis.bekleyenleriIsle();
-        expect(mockSaattenKildim).toHaveBeenNthCalledWith(1, 'ogle', bugunuAl());
-        expect(mockSaattenKildim).toHaveBeenNthCalledWith(2, 'ikindi', bugunuAl());
-        expect(modul.tamamlandi).toHaveBeenCalledWith('a');
-        expect(modul.tamamlandi).toHaveBeenCalledWith('b');
-        expect(modul.durumGonder).toHaveBeenCalled();
-    });
-
-    it('başarısız öğe kuyrukta kalır (basarisiz), diğerleri işlenmeye devam eder', async () => {
-        modul.bekleyenleriAl.mockResolvedValue(
-            JSON.stringify([{ id: 'a', tarih: bugunuAl(), vakit: 'ogle' }, { id: 'b', tarih: bugunuAl(), vakit: 'aksam' }])
-        );
-        mockSaattenKildim.mockRejectedValueOnce(new Error('disk'));
-        await servis.bekleyenleriIsle();
-        expect(modul.basarisiz).toHaveBeenCalledWith('a');
-        expect(modul.tamamlandi).not.toHaveBeenCalledWith('a');
-        expect(modul.tamamlandi).toHaveBeenCalledWith('b');
-    });
-
-    it('eşzamanlı çağrılar TEK turu paylaşır (headless + ön plan olayı)', async () => {
-        modul.bekleyenleriAl.mockResolvedValue(JSON.stringify([{ id: 'a', tarih: bugunuAl(), vakit: 'ogle' }]));
-        await Promise.all([servis.bekleyenleriIsle(), servis.bekleyenleriIsle()]);
-        expect(modul.bekleyenleriAl).toHaveBeenCalledTimes(1);
-        expect(mockSaattenKildim).toHaveBeenCalledTimes(1);
-    });
-
-    it('bozuk kuyruk JSON çökertmez', async () => {
-        modul.bekleyenleriAl.mockResolvedValue('{bozuk');
-        await expect(servis.bekleyenleriIsle()).resolves.toBeUndefined();
-        expect(mockSaattenKildim).not.toHaveBeenCalled();
+        expect(mockKuyrukIsle).toHaveBeenCalledTimes(1);
     });
 });

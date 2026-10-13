@@ -1,1 +1,8 @@
-<resources/>
+<resources>
+  <!-- Material You öncesi (API < 31) "duvar kağıdı renkleri" zemini gece koyu palete düşer. -->
+  <color name="widget_my_zemin">@color/widget_koyu_zemin</color>
+  <color name="widget_my_metin">@color/widget_koyu_metin</color>
+  <color name="widget_my_ikincil">@color/widget_koyu_ikincil</color>
+  <color name="widget_my_vurgu">@color/widget_koyu_vurgu</color>
+  <color name="widget_my_vurgu_ustu">@color/widget_koyu_vurgu_ustu</color>
+</resources>

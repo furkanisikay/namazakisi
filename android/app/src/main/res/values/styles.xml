@@ -8,4 +8,9 @@
   <style name="Theme.App.SplashScreen" parent="AppTheme">
     <item name="android:windowBackground">@drawable/ic_launcher_background</item>
   </style>
+  <!-- Widget yapılandırma ekranı (issue #275): sistem açık/koyu temasını izleyen pencere. -->
+  <style name="WidgetYapilandirmaTemasi" parent="Theme.AppCompat.DayNight.Dialog">
+    <item name="colorAccent">@color/widget_acik_vurgu</item>
+    <item name="windowNoTitle">true</item>
+  </style>
 </resources>

@@ -1,28 +1,47 @@
 /**
- * Widget Servisi — Hesaplanan namaz vakitlerini Android home screen widget'ı için
- * native SharedPreferences'a yazar.
+ * Widget Servisi — ana ekran widget'ı ve hızlı ayarlar kutusunun veri kaynağı
+ * (issue #275/#276). Yalnız Android.
  *
- * Veri akışı: adhan.js → WidgetServisi → WidgetVeriModulu.kt → SharedPreferences → NamazWidget.kt
+ * Veri akışı: adhan (`core/widget/widgetYuku.ts`) → WidgetServisi → `WidgetVeri`
+ * native modülü → SharedPreferences → `WidgetGuncelleyici.kt` (widget + kutu HEMEN
+ * tazelenir).
+ *
+ * İKİ YAZIM:
+ * - `vakitleriyaz(koordinat)`: dün + 8 günlük vakit çizelgesi. Konuma bağlı
+ *   tüketicidir → `App.tsx` açılışı + `KonumDegisikligiServisi` + 15 dk arka plan görevi.
+ * - `kilinanlariYaz()`: dün + bugünün kılınmışlığı. Kılınmışlık her değiştiğinde
+ *   (`LocalNamazServisi` gözlemcisi, `baslat`) çağrılır → uygulamada, bildirimde ya da
+ *   saatte yapılan işaretleme ≤ 1 sn'de widget'a yansır.
+ *
+ * Store'a BAĞIMLI DEĞİLDİR: headless görevde (Redux yok) de çalışır.
  */
-
 import { NativeModules, Platform } from 'react-native';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
+import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
+import { widgetKilinanlariOlustur, widgetVerisiOlustur } from '../../core/widget/widgetYuku';
+import {
+  kayitDegistiDinleyicisiEkle,
+  localTarihAraligindakiNamazlariGetir,
+} from '../../data/local/LocalNamazServisi';
 
-interface WidgetVakitVeri {
-  vakit: 'sabah' | 'gunes' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
-  ms: number;
+interface WidgetVeriModulu {
+  vakitlerKaydet(json: string): void;
+  kilinanlarKaydet?(json: string): void;
 }
 
-interface WidgetVerisi {
-  tarih: string; // YYYY-MM-DD
-  vakitler: WidgetVakitVeri[]; // Kronolojik sırada, 3 günlük veri
-}
+/** `LocalNamazServisi` dinleyici yuvasının adı. */
+export const WIDGET_DINLEYICI_ADI = 'widget';
 
-const { WidgetVeri } = NativeModules;
+const modul = (): WidgetVeriModulu | null => {
+  if (Platform.OS !== 'android') return null;
+  return (NativeModules.WidgetVeri as WidgetVeriModulu | undefined) ?? null;
+};
 
 export class WidgetServisi {
   private static instance: WidgetServisi;
+  /** Kılınmışlık yazımları SIRALI: hızlı aç/kapa'da eski durum yenisinin üstüne yazılmasın. */
+  private kilinanZinciri: Promise<void> = Promise.resolve();
 
   public static getInstance(): WidgetServisi {
     if (!WidgetServisi.instance) {
@@ -31,48 +50,50 @@ export class WidgetServisi {
     return WidgetServisi.instance;
   }
 
+  /** Kılınmışlık her değiştiğinde widget'ı tazele (idempotent — adlı yuva). */
+  public baslat(): void {
+    if (!modul()) return;
+    kayitDegistiDinleyicisiEkle(WIDGET_DINLEYICI_ADI, () => {
+      this.kilinanlariYaz().catch(() => undefined);
+    });
+  }
+
   /**
-   * Verilen koordinatlar için bugün, yarın ve 2 gün sonrasının namaz vakitlerini
-   * hesaplayıp widget SharedPreferences'ına yazar.
-   *
-   * Android dışında no-op.
+   * Verilen koordinatlar için dün + 8 günlük vakitleri yazar. (0,0) "konum yok"
+   * nöbetçisidir: Gine Körfezi vakitleri yazılmaz. Android dışında no-op.
    */
   public async vakitleriyaz(koordinatlar: { lat: number; lng: number }): Promise<void> {
-    if (Platform.OS !== 'android' || !WidgetVeri) {
-      return;
-    }
-
+    const m = modul();
+    if (!m || !koordinatGecerliMi(koordinatlar)) return;
     try {
-      const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-      const params = CalculationMethod.Turkey();
-
-      const vakitler: WidgetVakitVeri[] = [];
-
-      for (let gunOffset = 0; gunOffset < 3; gunOffset++) {
-        const tarih = new Date();
-        tarih.setDate(tarih.getDate() + gunOffset);
-
-        const prayerTimes = new PrayerTimes(coordinates, tarih, params);
-
-        vakitler.push({ vakit: 'sabah', ms: prayerTimes.fajr.getTime() });
-        vakitler.push({ vakit: 'gunes', ms: prayerTimes.sunrise.getTime() });
-        vakitler.push({ vakit: 'ogle', ms: prayerTimes.dhuhr.getTime() });
-        vakitler.push({ vakit: 'ikindi', ms: prayerTimes.asr.getTime() });
-        vakitler.push({ vakit: 'aksam', ms: prayerTimes.maghrib.getTime() });
-        vakitler.push({ vakit: 'yatsi', ms: prayerTimes.isha.getTime() });
-      }
-
-      // Kronolojik sırala (adhan zaten sıralı üretir ama güvenlik için)
-      vakitler.sort((a, b) => a.ms - b.ms);
-
-      const bugun = new Date();
-      const tarihStr = `${bugun.getFullYear()}-${String(bugun.getMonth() + 1).padStart(2, '0')}-${String(bugun.getDate()).padStart(2, '0')}`;
-
-      const verisi: WidgetVerisi = { tarih: tarihStr, vakitler };
-
-      WidgetVeri.vakitlerKaydet(JSON.stringify(verisi));
+      m.vakitlerKaydet(JSON.stringify(widgetVerisiOlustur(koordinatlar, bugunuAl())));
     } catch (e) {
       Logger.error('WidgetServisi', 'Widget verisi kaydedilemedi', e);
     }
+  }
+
+  /** Dün + bugünün kılınmışlığını yazar (gece yarısından sonra yatsı dünündür). */
+  public kilinanlariYaz(): Promise<void> {
+    const tur = this.kilinanZinciri.then(() => this.kilinanTuru());
+    this.kilinanZinciri = tur.catch(() => undefined);
+    return tur;
+  }
+
+  private async kilinanTuru(): Promise<void> {
+    const m = modul();
+    if (!m?.kilinanlarKaydet) return;
+    try {
+      const bugun = bugunuAl();
+      const kayit = await localTarihAraligindakiNamazlariGetir(gunEkle(bugun, -1), bugun);
+      if (!kayit.basarili || !kayit.veri) return;
+      m.kilinanlarKaydet(JSON.stringify(widgetKilinanlariOlustur(kayit.veri)));
+    } catch (e) {
+      Logger.warn('WidgetServisi', 'Widget kilinmislik verisi yazilamadi', e);
+    }
+  }
+
+  /** Yalnız testler için. */
+  public __testIcinSifirla(): void {
+    this.kilinanZinciri = Promise.resolve();
   }
 }

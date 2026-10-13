@@ -40,6 +40,7 @@ import { IftarSayacBildirimServisi } from './IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
@@ -206,6 +207,13 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
             SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(
                 await seriSayacAyarlariniHazirla(koordinatlar),
             ),
+        ),
+
+        // Gün sonu seri hatırlatması: otomatik modda imsaktan X dk önceye kurulur,
+        // imsak şehirle kayar. Özel gün değişikliği de bu listeden geçtiği için
+        // (`OzelGunDegisikligiServisi`) aralıktaki günlerin tetikleri burada düşer.
+        guvenliCalistir('Gun sonu hatirlatmasi', () =>
+            gunSonuHatirlatmalariniGuncelle(koordinatlar),
         ),
 
         guvenliCalistir('Widget', () =>

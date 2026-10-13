@@ -6,7 +6,8 @@
 
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
-import { WearSenkronServisi, WEAR_KILDIM_OLAYI } from './src/domain/services/WearSenkronServisi';
+import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
+import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -24,6 +25,7 @@ import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildi
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHatirlaticiServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
@@ -241,6 +243,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       seriSayacAyarlariniHazirla(konumState.koordinatlar).then((seriSayacAyarlari) =>
         SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(seriSayacAyarlari)
       ),
+      // Gün sonu seri hatırlatması: TARİHLİ tetikler (özel gün atlanır), pencere
+      // sonlu olduğu için her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      gunSonuHatirlatmalariniGuncelle(konumState.koordinatlar),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
@@ -278,17 +283,21 @@ const AppIcerik: React.FC = () => {
         // Wear OS (issue #269): kılınmışlık her değiştiğinde saati tazele ve
         // uygulama kapalıyken saatten gelmiş "Kıldım"ları işle.
         WearSenkronServisi.getInstance().baslat();
-        WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // Widget + hızlı ayarlar (issue #275/#276): kılınmışlık değişince tazelenir;
+        // uygulama kapalıyken saatten/widget'tan/kutudan gelmiş "Kıldım"lar işlenir.
+        WidgetServisi.getInstance().baslat();
+        WidgetServisi.getInstance().kilinanlariYaz().catch(() => {});
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
         // Camideyim: "Kıldım deyince Namaz modu kapansın" dinleyicisi + çıkış sorusu kuyruğu.
         CamideyimServisi.getInstance().baslat();
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
-    // Saatten "Kıldım" uygulama AÇIKKEN gelirse native taraf headless görev
-    // başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
-    const wearAbonelik = DeviceEventEmitter.addListener(WEAR_KILDIM_OLAYI, () => {
-      WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+    // Saatten/widget'tan/kutudan "Kıldım" uygulama AÇIKKEN gelirse native taraf headless
+    // görev başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
+    const wearAbonelik = DeviceEventEmitter.addListener(KILDIM_KUYRUGU_OLAYI, () => {
+      KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
     });
 
     // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
@@ -319,9 +328,9 @@ const AppIcerik: React.FC = () => {
     const FOREGROUND_DEBOUNCE_MS = 5 * 60 * 1000;
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
-        // Saat kuyruğu DEBOUNCE'SUZ boşaltılır: ucuzdur ve headless görev OEM
-        // kısıtıyla başlatılamamışsa tek güvenlik ağı budur (issue #269).
-        WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // "Kıldım" kuyruğu (saat/widget/kutu/kısayol) DEBOUNCE'SUZ boşaltılır: ucuzdur ve
+        // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
         const simdiMs = Date.now();
         if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {

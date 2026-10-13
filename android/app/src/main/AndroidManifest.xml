@@ -65,6 +65,12 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="namazakisi"/>
       </intent-filter>
+      <!-- Hızlı ayarlar kutusuna uzun basış uygulamayı açar (issue #276) -->
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+      </intent-filter>
+      <!-- Statik kısayollar: Kıble, Kaza defteri, Şu anki vakti kıldım (issue #276) -->
+      <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
     </activity>
 
     <!-- 1x1 Namaz Widget -->
@@ -91,15 +97,53 @@
           android:resource="@xml/widget_namaz_genis_bilgisi" />
     </receiver>
 
-    <!-- Widget dakikalık güncelleme + önyükleme alıcısı -->
+    <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
+         YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->
     <receiver
         android:name=".widget.NamazWidgetAlarmAlici"
         android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
         <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+        <action android:name="android.intent.action.TIME_SET" />
+        <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+        <action android:name="android.intent.action.DATE_CHANGED" />
       </intent-filter>
     </receiver>
+    <!-- Widget "Kıldım" dokunuşu (PendingIntent.getBroadcast, açık bileşen) -->
+    <receiver android:name=".widget.WidgetKildimAlici" android:exported="false"/>
+    <!-- Widget özelleştirme (android:configure) -->
+    <activity
+        android:name=".widget.WidgetYapilandirmaActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:theme="@style/WidgetYapilandirmaTemasi">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+      </intent-filter>
+    </activity>
+    <!-- Hızlı ayarlar kutusu: "Şu anki vakti kıldım" (issue #276) -->
+    <service
+        android:name=".kildim.KildimKutusuServisi"
+        android:exported="true"
+        android:icon="@drawable/ic_qs_kildim"
+        android:label="@string/kutu_kildim_etiket"
+        android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE"/>
+      </intent-filter>
+    </service>
+    <!-- "Şu anki vakti kıldım" kısayolu: arayüzsüz geçiş etkinliği. Kısayol ve otomasyon
+         uygulamaları açık bileşen adıyla çağırır; intent-filter YOK (MainActivity'nin
+         namazakisi:// filtresiyle seçim penceresi açılmasın). -->
+    <activity
+        android:name=".kildim.KildimKisayolActivity"
+        android:excludeFromRecents="true"
+        android:exported="true"
+        android:noHistory="true"
+        android:taskAffinity=""
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
     <!-- Wear OS saatinden "Kıldım" (issue #269): saat /namazakisi/kildim/... DataItem'ı yazar -->
     <service android:name=".wear.WearDinleyiciServisi" android:exported="true">
       <intent-filter>
@@ -107,10 +151,17 @@
         <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/kildim"/>
       </intent-filter>
     </service>
-    <service android:name=".wear.WearKildimGorevServisi" android:exported="false"/>
+    <!-- Ortak "Kıldım" kuyruğunun headless JS görevi (saat, widget, kutu, kısayol) -->
+    <service android:name=".kildim.KildimGorevServisi" android:exported="false"/>
     <!-- Wear OS (issue #280): muhafız bildirimlerine köprü etiketi basar; saat kendi
          planını kurunca yalnız bu etiketi dışlar (çift bildirim olmasın). expo-notifications
          olayları EN YÜKSEK öncelikli alıcıya gönderir (kendi alıcısı -1). -->
+    <!-- Güncelleme öncesi expo bileşeniyle kurulmuş tetik alarmlarını siler (çift bildirim). -->
+    <receiver android:name=".wear.EskiExpoAlarmTemizleyici" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+      </intent-filter>
+    </receiver>
     <receiver android:name=".wear.KopruEtiketliBildirimServisi" android:enabled="true" android:exported="false">
       <intent-filter android:priority="0">
         <action android:name="expo.modules.notifications.NOTIFICATION_EVENT"/>

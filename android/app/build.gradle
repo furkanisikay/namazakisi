@@ -160,6 +160,10 @@ dependencies {
     implementation("com.google.android.play:app-update-ktx:2.1.0")
     // Wear OS saat senkronu (issue #269) — saat uygulamasi (wear/) ile AYNI surum
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
+    // JVM birim testleri (src/test): widget / hızlı ayarlar saf çekirdeği (issue #275/#276).
+    // org.json: android.jar'daki taklit (stub) org.json testte "not mocked" fırlatır.
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";

@@ -94,7 +94,7 @@ export class CamideyimServisi {
     public baslat(): void {
         if (this.baslatildi || !this.kullanilabilirMi()) return;
         this.baslatildi = true;
-        kayitDegistiDinleyicisiEkle(() => {
+        kayitDegistiDinleyicisiEkle('namazModu', () => {
             this.kildimSonrasiModuKapat().catch(() => undefined);
         });
     }

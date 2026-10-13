@@ -19,6 +19,7 @@ import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
 interface IftarSayacAyarlari {
   aktif: boolean;
@@ -62,6 +63,12 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
 
     if (Platform.OS !== 'android') return;
     if (!ayarlar.aktif) return;
+
+    // Özel gün (issue #272): hayız/nifas günlerinde oruç da tutulmaz → o günün
+    // iftar sayacı kurulmaz (eski plan yukarıda temizlendi). Gün = takvim günü:
+    // iftar o günün akşamıdır, gece yarısından sonra da bugünün akşamı planlanır.
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+    if (ozelGundeMi(bugunuAl())) return;
 
     await this.kanalOlustur();
 

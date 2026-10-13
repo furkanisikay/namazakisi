@@ -32,46 +32,42 @@ import { Depolama } from './Depolama';
 type GunVerisi = Record<string, boolean>;
 
 /**
- * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS senkronu — issue #269).
+ * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS #269, widget/hızlı ayarlar #275/#276).
  *
  * Kılınmışlık ÜÇ yazıcıdan geçer (`localNamazDurumunuGuncelle`,
- * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin bayat ✓
+ * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin/widget'ın bayat ✓
  * göstermemesi için üçü de başarılı yolda haber verir. Data katmanı domain
- * import EDEMEZ → dinleyici dışarıdan kaydedilir (`WearSenkronServisi.baslat`).
- * İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol gönderimi kendisi yapar.
- * Dinleyici hatası yazımı ASLA düşürmez.
+ * import EDEMEZ → dinleyiciler dışarıdan kaydedilir (`WearSenkronServisi.baslat`,
+ * `WidgetServisi.baslat`). İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol
+ * tazelemeyi kendisi yapar.
+ *
+ * ÇOKLU DİNLEYİCİ: her dinleyici ADLI bir yuvadadır; aynı adla yeniden kayıt
+ * öncekinin YERİNE geçer (açılış zinciri `baslat`'ı birden çok kez çağırabilir,
+ * dinleyici çoğalmamalı). Her dinleyici kendi try/catch'inde çalışır: biri
+ * patlarsa diğerleri yine haber alır, yazım ASLA düşmez.
  */
-let kayitDegistiDinleyicisi: (() => void) | null = null;
+const kayitDegistiDinleyicileri = new Map<string, () => void>();
 
-export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void => {
-  kayitDegistiDinleyicisi = fn;
+/** Adlı yuvaya dinleyici kaydeder (`null` yuvayı boşaltır). */
+export const kayitDegistiDinleyicisiEkle = (ad: string, fn: (() => void) | null): void => {
+  if (fn) kayitDegistiDinleyicileri.set(ad, fn);
+  else kayitDegistiDinleyicileri.delete(ad);
 };
 
 /**
- * Ek dinleyiciler (Namaz modu "Kıldım deyince kapansın" — issue #277). Tek yuvalı
- * `kayitDegistiDinleyicisiniAyarla` Wear'e aittir; ikinci bir tüketici onu
- * ezmesin diye ayrı küme. Dönen fonksiyon aboneliği kaldırır.
+ * Geriye uyumlu tek-dinleyici arayüzü (Wear senkronu). `wear` yuvasına yazar;
+ * diğer dinleyicileri (widget) ETKİLEMEZ.
  */
-const ekDinleyiciler = new Set<() => void>();
-
-export const kayitDegistiDinleyicisiEkle = (fn: () => void): (() => void) => {
-  ekDinleyiciler.add(fn);
-  return () => {
-    ekDinleyiciler.delete(fn);
-  };
+export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void => {
+  kayitDegistiDinleyicisiEkle('wear', fn);
 };
 
 const kayitDegistiBildir = (): void => {
-  try {
-    kayitDegistiDinleyicisi?.();
-  } catch (e) {
-    Logger.warn('LocalNamazServisi', 'Kayit degisti dinleyicisi hata verdi', e);
-  }
-  ekDinleyiciler.forEach((fn) => {
+  kayitDegistiDinleyicileri.forEach((fn, ad) => {
     try {
       fn();
     } catch (e) {
-      Logger.warn('LocalNamazServisi', 'Kayit degisti ek dinleyicisi hata verdi', e);
+      Logger.warn('LocalNamazServisi', `Kayit degisti dinleyicisi hata verdi: ${ad}`, e);
     }
   });
 };

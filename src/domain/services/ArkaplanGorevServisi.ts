@@ -17,8 +17,11 @@ import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
+import { KildimKuyruguServisi } from './KildimKuyruguServisi';
+import { WidgetServisi } from './WidgetServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -356,14 +359,30 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
         // =====================================================
         try {
-            await WearSenkronServisi.getInstance().bekleyenleriIsle();
+            // Ortak "Kıldım" kuyruğu: saat + widget + hızlı ayarlar + kısayol (#275/#276).
+            await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
             await WearSenkronServisi.getInstance().gonder();
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
         }
 
         // =====================================================
-        // ADIM 1.58: CAMİDEYİM + NAMAZ MODU (#297/#277)
+        // ADIM 1.58: ANA EKRAN WIDGET'I (issue #275)
+        //
+        // Dün + 8 günlük çizelge gün döndükçe kayar; uygulama günlerce açılmasa da
+        // widget ve hızlı ayarlar kutusu doğru vakti göstersin. Muhafızdan
+        // bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            const koordinat = await arkaplandaKoordinatOku();
+            if (koordinat) await WidgetServisi.getInstance().vakitleriyaz(koordinat);
+            await WidgetServisi.getInstance().kilinanlariYaz();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Widget tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.59: CAMİDEYİM + NAMAZ MODU (#297/#277)
         //
         // (a) Camiden çıkış sorusundaki "Kıldım" kuyruğu (headless görev OEM
         //     kısıtına takıldıysa güvenlik ağı). (b) 8 günlük vakit kapısı ve
@@ -400,6 +419,20 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Seri sayacı tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.65: GUN SONU SERI HATIRLATMASINI TAZELE (issue #272 devami)
+        //
+        // Hatirlatma artik DAILY degil, TARIHLI tetiklerdir (ozel gun kapisi
+        // tarih ister) → penceresi sonludur ve tazelenmezse biter. Cuma/seri
+        // sayaci ile ayni gerekce: muhafizdan bagimsizdir, muhafiz erken
+        // donuslerinden ONCE durmali. Ayarlar ham depolamadan okunur.
+        // =====================================================
+        try {
+            await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Gün sonu hatırlatması tazelenemedi', e);
         }
 
         // =====================================================

@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Günün vakitleri widget'ı (issue #275): aynı çizici, 4×2 başlar. Sınıf adı
+  (NamazGenisBoyutWidget) mevcut yerleşimler düşmesin diye KORUNUR.
+-->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="250dp"
+    android:configure="com.furkanisikay.namazakisi.widget.WidgetYapilandirmaActivity"
+    android:description="@string/widget_genis_aciklama"
+    android:initialLayout="@layout/widget_genis"
     android:minHeight="110dp"
+    android:minResizeHeight="40dp"
+    android:minResizeWidth="40dp"
+    android:minWidth="250dp"
+    android:previewLayout="@layout/widget_genis"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellHeight="2"
+    android:targetCellWidth="4"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/widget_namaz_genis"
-    android:resizeMode="horizontal"
     android:widgetCategory="home_screen"
-    android:description="@string/widget_genis_aciklama" />
+    android:widgetFeatures="reconfigurable|configuration_optional" />

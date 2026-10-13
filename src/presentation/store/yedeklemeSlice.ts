@@ -27,7 +27,9 @@ import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { nafileAyarlariniYukle } from './nafileSlice';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
+import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
 import { WearSenkronServisi } from '../../domain/services/WearSenkronServisi';
+import { WidgetServisi } from '../../domain/services/WidgetServisi';
 import { takvimAyarlariniYukle } from './takvimSlice';
 import { namazlariYukle } from './namazSlice';
 import {
@@ -97,26 +99,57 @@ export const iceAktarmayiUygula = createAsyncThunk(
     await dispatch(kazaVerileriniYukle());
     await dispatch(ozellikleriYukle());
 
-    // Cuma hatırlatmasını GERÇEKTEN yeniden planla: ayarı yüklemek yalnız ekranı
-    // günceller, bildirimleri kurmaz. Yedeğinde cuma açık olan kullanıcıda ayar
-    // "açık" görünüp bildirimler bir sonraki soğuk açılışa kadar kurulmazdı —
-    // penceresi 4 hafta ve olay haftada bir olduğu için kaçırma riski yüksek.
-    try {
-      const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
-      await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
-    } catch {
-      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+    // Özel gün / seri ayarı geri yüklendiyse TÜM hatırlatmaları yeniden kur
+    // (issue #272): içe aktarma diske `Depolama.yaz` ile doğrudan yazar, özel gün
+    // thunk'ları çalışmaz → `ozelGunListener` TETİKLENMEZ. Yeniden kurulmazsa
+    // yedekteki aralık "aktif" görünür ama muhafız/vakit/nafile/iftar/sahur/cuma
+    // ve gün sonu hatırlatmaları bir sonraki tazelemeye kadar çalmaya devam eder.
+    // `ozelGunDegistiUygula` tek yayma listesini (`konumDegistiUygula`) koşturur;
+    // cuma/nafile/gün sonu o listede zaten var → aşağıda yeniden çağrılmaz.
+    // Gün sonu hatırlatması seri AYARLARINA da bağlı olduğu için o anahtar da
+    // aynı yoldan geçer. TEMBEL `require`: zincir native köprüleri çeker
+    // (`ozelGunListener` ile aynı gerekçe).
+    const yayilmaGerekli =
+      DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI in plan || DEPOLAMA_ANAHTARLARI.SERI_AYARLARI in plan;
+    let yayildi = false;
+    if (yayilmaGerekli) {
+      try {
+        const { ozelGunDegistiUygula } = require('../../domain/services/OzelGunDegisikligiServisi') as
+          typeof import('../../domain/services/OzelGunDegisikligiServisi');
+        yayildi = await ozelGunDegistiUygula();
+      } catch {
+        // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+      }
     }
-    // Nafile hatırlatmaları da (issue #77): aynı gerekçe — ayarı yüklemek bildirim kurmaz.
-    try {
+
+    if (!yayildi) {
+      // Cuma hatırlatmasını GERÇEKTEN yeniden planla: ayarı yüklemek yalnız ekranı
+      // günceller, bildirimleri kurmaz. Yedeğinde cuma açık olan kullanıcıda ayar
+      // "açık" görünüp bildirimler bir sonraki soğuk açılışa kadar kurulmazdı —
+      // penceresi 4 hafta ve olay haftada bir olduğu için kaçırma riski yüksek.
       const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
-      await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
-    } catch {
-      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+      try {
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+      } catch {
+        // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+      }
+      // Nafile hatırlatmaları da (issue #77): aynı gerekçe — ayarı yüklemek bildirim kurmaz.
+      try {
+        await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+      } catch {
+        // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+      }
+      // Gün sonu seri hatırlatması: konum yokken yayma koşmaz ama sabit modda /
+      // 04:00 yedeğiyle yine kurulabilir; seri ayarı geri yüklendiyse burada kurulur.
+      if (yayilmaGerekli) {
+        await gunSonuHatirlatmalariniGuncelle(sonKonum).catch(() => undefined);
+      }
     }
     // Wear OS saati (issue #269): içe aktarma kayıtları `Depolama.yaz` ile DOĞRUDAN
     // yazar (LocalNamazServisi gözlemcisinden geçmez) → saati açıkça tazele.
     await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+    // Ana ekran widget'ı + hızlı ayarlar kutusu (issue #275): aynı gerekçe.
+    await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
 
     return { yazilanAnahtarSayisi: Object.keys(plan).length };
   }
