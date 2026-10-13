@@ -54,7 +54,15 @@ object WidgetGuncelleyici {
      */
     private const val PENCERE_MS = 5_000L
 
-    private val SAGLAYICILAR = listOf(NamazWidget::class.java, NamazGenisBoyutWidget::class.java)
+    /**
+     * Tüm widget sağlayıcıları — TEK liste (çizim turu ve `onDisabled` sayımı buradan).
+     * Yeni sağlayıcı yalnız buraya eklenir.
+     */
+    val SAGLAYICILAR = listOf(
+        NamazWidget::class.java,
+        NamazGenisBoyutWidget::class.java,
+        NamazKapakWidget::class.java,
+    )
 
     private data class Palet(val zemin: Int, val metin: Int, val ikincil: Int, val vurgu: Int, val vurguUstu: Int)
 
@@ -140,8 +148,11 @@ object WidgetGuncelleyici {
         val secenek = yonetici.getAppWidgetOptions(id)
         // Kilit ekranı / hub (issue #295): communal ana bilgisayarı KEYGUARD kategorisiyle
         // bağlar; orada widget salt okunur (yayın niyeti kilit açılmadan işlerdi).
-        val kilitEkrani = KilitEkraniKarari.kilitEkraniMi(
+        // Samsung Flex Window (issue #283) sağlayıcısı kategoriden bağımsız salt okunur.
+        val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
+        val kilitEkrani = KilitEkraniKarari.saltOkunurMu(
             secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, 0),
+            kapakEkraniSaglayicisi = saglayici == NamazKapakWidget::class.java.name,
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return RemoteViews(
@@ -158,7 +169,7 @@ object WidgetGuncelleyici {
         val yukseklik = secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0).toFloat()
         val duzen = if (genislik > 0f && yukseklik > 0f) {
             WidgetDuzenSecici.sec(genislik, yukseklik)
-        } else if (yonetici.getAppWidgetInfo(id)?.provider?.className == NamazGenisBoyutWidget::class.java.name) {
+        } else if (saglayici == NamazGenisBoyutWidget::class.java.name || saglayici == NamazKapakWidget::class.java.name) {
             WidgetDuzeni.GENIS
         } else {
             WidgetDuzeni.KUCUK
