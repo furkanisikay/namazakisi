@@ -13,6 +13,21 @@ jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
 jest.mock('../../store/nafileSlice', () => ({
     nafileAyariniGuncelle: jest.fn((d: unknown) => ({ type: 'nafile/guncelle', payload: d })),
+    nafileAyarlariniBirlestir: jest.requireActual('../../store/nafileSlice').nafileAyarlariniBirlestir,
+}));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+// Bildirim sınırı rehberi (issue #298) ayrı testlerde; burada defter "hazır değil"
+// → kart çizilmez, simülasyon hiçbir değişikliği engellemez.
+jest.mock('../../hooks/useBildirimButcesi', () => ({
+    useBildirimButcesi: () => ({
+        platform: 'ios',
+        ozet: null,
+        girdi: null,
+        girdiyiKur: () => null,
+        onerileriHesapla: () => [],
+        simuleEt: () => null,
+    }),
 }));
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {

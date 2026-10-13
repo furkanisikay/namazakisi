@@ -160,6 +160,23 @@ object AnonsZamanlayici {
         detayYaz(context, JSONObject())
     }
 
+    /**
+     * Gelecekte tetiklenecek (BEKLEYEN) anons alarmi sayisi — bildirim sinirı
+     * rehberinin olcumu (issue #298). Gecmis/bozuk kayit sayilmaz: alarm ya
+     * zaten tetiklendi ya da hic kurulmadi; sistemin havuzunda degiller.
+     */
+    fun bekleyenSayisi(context: Context): Int {
+        val detay = detayOku(context)
+        val simdi = System.currentTimeMillis()
+        var sayi = 0
+        detay.keys().forEach { id ->
+            try {
+                if (detay.getJSONObject(id).getLong("t") > simdi) sayi++
+            } catch (_: Exception) { /* bozuk kayit sayilmaz */ }
+        }
+        return sayi
+    }
+
     /** Alarm tetiklendikten sonra kaydi temizler (alarm zaten tuketildi). */
     fun kayittanCikar(context: Context, id: String) {
         val idler = kayitliIdler(context)
