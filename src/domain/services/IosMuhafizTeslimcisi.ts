@@ -104,6 +104,11 @@ const ucustakiKlipler = new Map<string, number>();
 /** Klip çöp toplaması tek sıra: iki `tamamla` aynı kaydı aynı anda yazmasın. */
 let klipGcZinciri: Promise<void> = Promise.resolve();
 
+/** Testler için: süreç düzeyi uçuştaki klip kaydını sıfırlar (turunu bitirmeyen örnekler sızmasın). */
+export function ucustakiKlipleriSifirla(): void {
+    ucustakiKlipler.clear();
+}
+
 export interface IosTeslimciSecenekleri {
     /**
      * Bu teslimcinin bildirim kimlik öneki. Bütçe ölçümü "kendimiz dışındaki"

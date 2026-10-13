@@ -77,7 +77,10 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     constructor(secenekler: AndroidTeslimciSecenekleri = {}) {
         this.alarmButcesi = secenekler.alarmButcesi ?? ANDROID_MUHAFIZ_ALARM_BUTCESI;
-        this.kanalHazirligi = secenekler.kanalHazirligi ?? ((m) => MuhafizKanalServisi.hazirla(m));
+        // Matrissiz çağrı ARGÜMANSIZ geçer (kayıt-oynat sözleşmesi: `hazirla()`).
+        this.kanalHazirligi =
+            secenekler.kanalHazirligi ??
+            ((m) => (m === undefined ? MuhafizKanalServisi.hazirla() : MuhafizKanalServisi.hazirla(m)));
         this.anonsOneki = secenekler.anonsOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
     }
 

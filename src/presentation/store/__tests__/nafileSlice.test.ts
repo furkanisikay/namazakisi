@@ -44,7 +44,7 @@ describe('nafileSlice', () => {
         await store.dispatch(nafileAyariniGuncelle({ hatirlatmalar: { evvabin: { aktif: true } } }));
 
         const kaydedilen = (LocalNafileServisi.saveAyarlar as jest.Mock).mock.calls[0][0];
-        expect(kaydedilen.hatirlatmalar.evvabin).toEqual({ aktif: true, ofsetDk: 15 });
+        expect(kaydedilen.hatirlatmalar.evvabin).toEqual({ ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.evvabin, aktif: true });
         expect(kaydedilen.hatirlatmalar.kusluk).toEqual(VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.kusluk);
         expect(mockGuncelle).toHaveBeenCalledWith(ANKARA);
         expect(store.getState().nafile.ayarlar.hatirlatmalar.evvabin.aktif).toBe(true);
@@ -59,5 +59,12 @@ describe('nafileSlice', () => {
     it('birleştirme teheccüd alanlarını kısmen günceller', () => {
         const b = nafileAyarlariniBirlestir(VARSAYILAN_NAFILE_AYARLARI, { teheccud: { uyandirma: true } });
         expect(b.teheccud).toEqual({ ...VARSAYILAN_NAFILE_AYARLARI.teheccud, uyandirma: true });
+    });
+
+    it('sesli anons rızası (issue #273) birleştirmede taşınır, yazılmadıkça UYDURULMAZ', () => {
+        const onayli = nafileAyarlariniBirlestir(VARSAYILAN_NAFILE_AYARLARI, { sesliOnayi: true });
+        expect(onayli.sesliOnayi).toBe(true);
+        expect(nafileAyarlariniBirlestir(onayli, { gostergeAktif: true }).sesliOnayi).toBe(true);
+        expect(nafileAyarlariniBirlestir(VARSAYILAN_NAFILE_AYARLARI, { gostergeAktif: true })).not.toHaveProperty('sesliOnayi');
     });
 });
