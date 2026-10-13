@@ -169,6 +169,25 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Vaktin son 15 dakikası dışındaki acil hatırlatmalar sert tonda çalışır, Rahatsız Etmeyin\'i delmez; ekranda bu adımların altında not görürsünüz',
         ],
     },
+    // Saatte tesbihat sayacı (issue #293) — yalnız saat sahipleri; kart kapalı.
+    {
+        id: 'wear-tesbihat',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Saatinizde Tesbihat Sayacı',
+        aciklama:
+            'Namazdan sonra tesbihatı Wear OS saatinizde sayabilirsiniz: ekrana dokunun ya da tacı çevirin, her 33\'te saat belirgin şekilde titrer.',
+        detayAciklama:
+            'Sübhânallah, Elhamdülillâh ve Allâhü ekber otuz üçer kez sayılır, yüzüncüsü "Lâ ilâhe illallâhü vahdehû…" ile tamamlanır (Müslim, Mesâcid 146). Ekranın tamamı dokunma alanıdır; saatin tacı ya da çerçevesiyle de sayabilirsiniz. Her sayımda kısa bir tık, her 33\'te belirgin bir titreşim, sonunda ayrı bir bitiş titreşimi hissedersiniz; ekrana bakmanız gerekmez. Yanlış dokunuşu "Geri al" ile silebilir, uzun basarak baştan başlayabilirsiniz. Ekran kapanırsa sayım kaybolmaz: kadrandaki tesbihat simgesine dokunarak kaldığınız yerden sürdürürsünüz. Saat uygulamasının ana ekranından ve "Bugün" kutucuğundan açılır.',
+        ikon: 'circle-notch',
+        kartGoster: false,
+        detaylar: [
+            '33 · 33 · 33 + 1, her 33\'te belirgin titreşim',
+            'Dokunarak ya da tacı çevirerek sayım',
+            'Son sayımı geri alma, uzun basarak baştan başlama',
+            'Ekran kapansa da kaldığınız yerden devam',
+        ],
+    },
     // Wear OS yüzeyleri (issue #281) — yalnız saat sahiplerini ilgilendirdiği için
     // kart kapalı (yalnız "Neler Yeni" listesi).
     {
