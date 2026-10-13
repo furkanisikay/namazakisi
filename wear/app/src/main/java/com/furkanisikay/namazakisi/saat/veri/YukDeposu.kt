@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.saat.veri
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.furkanisikay.namazakisi.saat.cekirdek.CozumSonucu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
@@ -48,6 +49,11 @@ class YukDeposu(context: Context) {
         prefs.edit().putStringSet(BEKLEYEN, bekleyenler() + kimlik).apply()
     }
 
+    /** Zincirin en son GÖSTERDİĞİ uyarının anı — aynı uyarı iki kez çalınmasın. */
+    var sonGosterilenMs: Long
+        get() = prefs.getLong(SON_GOSTERILEN, 0L)
+        set(deger) = prefs.edit { putLong(SON_GOSTERILEN, deger) }
+
     fun dinle(dinleyici: SharedPreferences.OnSharedPreferenceChangeListener) =
         prefs.registerOnSharedPreferenceChangeListener(dinleyici)
 
@@ -65,5 +71,6 @@ class YukDeposu(context: Context) {
         private const val YUK = "yuk"
         private const val BEKLEYEN = "bekleyen"
         private const val GUNCELLEME_GEREKLI = "guncelleme_gerekli"
+        private const val SON_GOSTERILEN = "son_gosterilen_ms"
     }
 }

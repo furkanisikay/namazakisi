@@ -19,6 +19,7 @@ import type { VakitAdi } from '../../core/types';
 import type { MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
 interface VakitZamani {
   vakit: VakitAdi;
@@ -110,10 +111,18 @@ export class VakitSayacBildirimServisi {
       [dunuAl()]: kilinanDun,
     };
 
+    // Özel gün (issue #272): aralıktaki günün vakitleri için sayaç kurulmaz.
+    // Eski sayaçlar yukarıda zaten temizlendi; kapı vaktin GÜNÜNE bakar.
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+
     // Çıkış süresi henüz geçmemiş VE kılınmamış vakitler için planlama yap
     const gelecekVakitler = vakitler.filter(v => {
       // Vakit zamanı geçmiş mi?
       if (v.cikis.getTime() <= simdi.getTime()) {
+        return false;
+      }
+
+      if (ozelGundeMi(v.tarih)) {
         return false;
       }
 

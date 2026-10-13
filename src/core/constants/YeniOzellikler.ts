@@ -40,6 +40,45 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Bilinçli olarak NÖTR ve kartsız (issue #272): özel gün etiketi açıklanmaz,
+    // yalnız "Neler Yeni" listesinde görünür.
+    {
+        id: 'ozel-gun-hatirlatma-sessizligi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Özel Günlerde Hatırlatmalar Durur',
+        aciklama:
+            'Özel gün modu açıkken seçtiğiniz tarihler boyunca namaz hatırlatmaları da durur; tarihler bitince kendiliğinden geri gelir.',
+        detayAciklama:
+            'Özel gün modu artık yalnızca serinizi dondurmaz. Seçtiğiniz tarihler boyunca vakit bildirimleri, namaz muhafızı ve sesli anonsları, vakit sayacı ve nafile hatırlatmaları da gönderilmez. Tarihler bittiğinde hatırlatmalar sizin bir şey yapmanıza gerek kalmadan geri gelir.',
+        ikon: 'bell-slash',
+        hedefSayfa: 'SeriHedefAyarlari',
+        ctaEtiketi: 'Özel gün ayarını açın',
+        kartGoster: false,
+        detaylar: [
+            'Serinizin dondurulması aynen sürer',
+            'Bu tarihlerde vakit, muhafız, sayaç ve nafile hatırlatmaları gelmez',
+            'Tarihler bitince hatırlatmalar kendiliğinden geri gelir',
+        ],
+    },
+    {
+        id: 'katlanabilir-tablet-duzeni',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Katlanabilir ve Tablet Ekranlara Uygun Düzen',
+        aciklama:
+            'Galaxy Z Fold gibi katlanabilir telefonların iç ekranında ve tabletlerde ana ekran iki sütunda açılır.',
+        detayAciklama:
+            'Geniş ekranlarda ana ekran artık boşluklu tek bir sütun değil: solda şu anki vakit kartını ve geri sayımı, sağda günlük akışı aynı anda görürsünüz. Ayar ekranları ortada okunaklı bir genişlikte durur. Tablette ve katlanabilir telefonun iç ekranında uygulamayı yatay da kullanabilirsiniz; telefonu katlayıp açtığınızda geri sayım ve baktığınız gün olduğu gibi kalır. Telefon ekranında hiçbir şey değişmez.',
+        ikon: 'tablet-alt',
+        detaylar: [
+            'Geniş ekranda solda vakit kartı, sağda günlük akış',
+            'Ayar ekranları ortada okunaklı genişlikte',
+            'Tablette ve katlanabilir iç ekranda yatay kullanım',
+            'Katlayıp açınca baktığınız gün ve geri sayım korunur',
+            'Telefon ekranında düzen aynı kalır',
+        ],
+    },
     {
         id: 'nafile-namaz-vakitleri',
         surum: '0.31.0',

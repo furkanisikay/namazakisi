@@ -4,6 +4,7 @@ import { Logger } from '../../core/utils/Logger';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { LocalNafileServisi, nafileHatirlatmaAcikMi } from '../../data/local/LocalNafileServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { gununNafilePencereleri, koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
 import { teheccudHedefZamani, type NafilePencere } from '../../core/nafile/nafileVakitleri';
 import { nafileBildirimMetni } from '../../core/nafile/nafileMetinleri';
@@ -86,8 +87,12 @@ export class NafileHatirlatmaServisi {
 
         await this.mevcutlariTemizle();
 
+        // Özel gün (issue #272): aralıktaki günlerin (ve gecelerinin) nafile
+        // hatırlatmaları kurulmaz; eski plan az önce temizlendi.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+
         const simdi = new Date();
-        for (const plan of nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl())) {
+        for (const plan of nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi)) {
             await this.planla(plan);
         }
     }
@@ -175,12 +180,17 @@ export interface NafileBildirimPlani {
 /**
  * SAF plan üretici — hangi nafile bildirimi hangi anda, hangi metinle gidecek.
  * `bugunIso` ve `simdi` ENJEKTE edilir (testte sabit tarih yazılmaz).
+ *
+ * `gunAtlanirMi` (ops.): true dönen GÜN hiç planlanmaz — o günün gündüz
+ * nafileleri ve o güne ait gece (yatsı → ertesi imsak) teheccüdü dahil.
+ * Özel gün kapısı buradan bağlanır (issue #272).
  */
 export function nafilePlaniOlustur(
     koordinat: NafileKoordinat,
     ayarlar: NafileAyarlari,
     simdi: Date,
-    bugunIso: string
+    bugunIso: string,
+    gunAtlanirMi: (iso: string) => boolean = () => false
 ): NafileBildirimPlani[] {
     const planlar: NafileBildirimPlani[] = [];
     const gelecekMi = (z: Date) => z.getTime() > simdi.getTime();
@@ -188,6 +198,7 @@ export function nafilePlaniOlustur(
     // Dün (gece yarısı sonrası teheccüd) → bugün + TEHECCUD_GECE_SAYISI - 1
     for (let i = -1; i < TEHECCUD_GECE_SAYISI; i++) {
         const iso = gunEkle(bugunIso, i);
+        if (gunAtlanirMi(iso)) continue;
         let pencereler: NafilePencere[];
         try {
             pencereler = gununNafilePencereleri(koordinat, iso);

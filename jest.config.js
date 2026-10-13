@@ -24,6 +24,10 @@ module.exports = {
   ],
   // Test dosyalari .test.ts ve .test.tsx uzantili olsun
   testMatch: ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.tsx"],
+  // Paralel ajanlarin git worktree'leri (.claude/worktrees) ikinci bir repo kopyasidir:
+  // taranirsa testler iki kez kosar ve haste "duplicate module" cakismasi verir.
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/.claude/"],
+  modulePathIgnorePatterns: ["<rootDir>/.claude/"],
   moduleNameMapper: {
     "^expo-notifications$": "<rootDir>/__mocks__/expo-notifications.js",
     "^expo-location$": "<rootDir>/__mocks__/expo-location.js",

@@ -102,6 +102,7 @@ import { TITRESIM_DESENI } from '../../../core/muhafiz/titresimDeseni';
 // YESIL KALARAK. `MuhafizTeslimcisi` bu yuzden enjekte edilebilir.
 import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
+import { muhafizPlaniDinleyicisiniAyarla } from '../muhafizPlaniGozlemcisi';
 
 beforeEach(() => {
     muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
@@ -531,6 +532,23 @@ describe('ArkaplanMuhafizServisi - Aktif/pasif ve siklik savunmasi', () => {
         ).resolves.toBeUndefined();
 
         expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+    });
+
+    test('Wear (#280): plan dinleyicisi aktif VE pasif turda DOGRULANMIS matrisle haber alir; hatasi planlamayi dusurmez', async () => {
+        const dinleyici = jest.fn(() => {
+            throw new Error('saat');
+        });
+        muhafizPlaniDinleyicisiniAyarla(dinleyici);
+        try {
+            await expect(
+                servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41.0, lng: 29.0 }, matris: STANDART_MATRIS })
+            ).resolves.toBeUndefined();
+            await servis.yapilandirVePlanla({ aktif: false, koordinatlar: { lat: 41.0, lng: 29.0 }, matris: STANDART_MATRIS });
+            expect(dinleyici).toHaveBeenNthCalledWith(1, { aktif: true, matris: expect.any(Object) });
+            expect(dinleyici).toHaveBeenNthCalledWith(2, { aktif: false, matris: STANDART_MATRIS });
+        } finally {
+            muhafizPlaniDinleyicisiniAyarla(null);
+        }
     });
 });
 
