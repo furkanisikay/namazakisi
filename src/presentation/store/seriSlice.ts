@@ -20,9 +20,8 @@ import { GunlukNamazlar } from '../../core/types';
 import * as LocalSeriServisi from '../../data/local/LocalSeriServisi';
 import { localVerileriSenkronizasyonIcinAl } from '../../data/local/LocalNamazServisi';
 import { puanlamayiYenidenDegerlendir } from '../../domain/services/PuanlamaServisi';
-import { BildirimServisi } from '../../domain/services/BildirimServisi';
+import { gunSonuHatirlatmalariniGuncelle } from '../../domain/services/GunSonuHatirlaticiServisi';
 import { uygulamaImsakSaglayici } from '../../domain/services/SeriHesaplayiciServisi';
-import { sonrakiImsakVaktiBul } from '../../core/seri/seriGunSonu';
 import {
   seriHesapla,
   seriOzetiniOlustur,
@@ -142,53 +141,17 @@ export const seriAyarlariniGuncelle = createAsyncThunk(
 
     await LocalSeriServisi.localSeriAyarlariniKaydet(yeniAyarlar);
 
-    // Bildirimleri planla veya iptal et
-    const bildirim = BildirimServisi.getInstance();
-    if (yeniAyarlar.gunSonuBildirimAktif) {
-      let planlanmisSaat: number;
-      let planlanmisDakika: number;
-
-      if (yeniAyarlar.gunSonuBildirimModu === 'sabit') {
-        // SABIT MOD: Kullanicinin sectigi sabit saat ve dakika
-        planlanmisSaat = yeniAyarlar.bildirimSaati;
-        planlanmisDakika = yeniAyarlar.bildirimDakikasi;
-      } else {
-        // OTOMATIK MOD: Imsak vaktinden X dakika once.
-        //
-        // KAYNAK DEGISTI (iki ayri bug birden): eskiden
-        // `KonumYoneticiServisi.sonrakiGunImsakVaktiGetir()` cagriliyordu ve
-        //   (a) o servis URETIMDE HIC DOLDURULMUYOR (`koordinatlarAyarla` yalniz
-        //       testlerden cagriliyor) -> daima `null` donuyor, yani bildirim
-        //       pratikte HEP 04:00 fallback'ine dusuyordu;
-        //   (b) KOSULSUZ YARININ fajr'ini donduruyordu -> saat 02:00'de seri
-        //       gununun gercek sonu BUGUNUN imsagidir, yarininki degil.
-        // Ikisi de `sonrakiImsakVaktiBul` + gercekten hidrate edilen
-        // `NamazVaktiHesaplayiciServisi` saglayicisi ile duzeldi.
-        const imsakVakti = sonrakiImsakVaktiBul(new Date(), uygulamaImsakSaglayici);
-
-        if (imsakVakti) {
-          const imsakDakikaTarih = new Date(imsakVakti);
-          imsakDakikaTarih.setMinutes(imsakDakikaTarih.getMinutes() - yeniAyarlar.bildirimImsakOncesiDk);
-
-          planlanmisSaat = imsakDakikaTarih.getHours();
-          planlanmisDakika = imsakDakikaTarih.getMinutes();
-        } else {
-          // Konum yoksa varsayilan (Eski davranis: 05:00 - 60dk = 04:00)
-          planlanmisSaat = 4;
-          planlanmisDakika = 0;
-        }
-      }
-
-      await bildirim.bildirimPlanla(
-        'gun_sonu_hatirlatici',
-        '🚨 Seri Hatırlatıcı',
-        `Gün bitmek üzere! Serinizi bozmamak için bugünkü namazlarınızı girmeyi unutmayın.\n\n«${SERI_SOZU.metin}» (${SERI_SOZU.kaynak})`,
-        planlanmisSaat,
-        planlanmisDakika
-      );
-    } else {
-      await bildirim.bildirimIptalEt('gun_sonu_hatirlatici');
-    }
+    // Gun sonu hatirlatmasini planla veya iptal et (issue #272 devami).
+    //
+    // Eskiden burada tek bir DAILY bildirim kuruluyordu: tarih tasimadigi icin
+    // ozel gun kapisina baglanamiyordu ve saati kurulum anindaki imsaktan BIR
+    // KEZ turetiliyordu. Artik onumuzdeki seri gunleri icin TARIHLI tetikler
+    // kurulur (ozel gunler atlanir); eski DAILY kimligi her turda iptal edilir.
+    //
+    // Imsak kaynagi: uygulama icinde hidrate edilen `NamazVaktiHesaplayiciServisi`
+    // (`uygulamaImsakSaglayici`) — eski `KonumYoneticiServisi` uretimde HIC
+    // doldurulmuyordu ve bildirim daima 04:00 fallback'ine dusuyordu.
+    await gunSonuHatirlatmalariniGuncelle(uygulamaImsakSaglayici, yeniAyarlar);
 
     return yeniAyarlar;
   }
@@ -600,7 +563,6 @@ export default seriSlice.reducer;
 // ==================== SELECTOR'LAR ====================
 
 import { createSelector } from '@reduxjs/toolkit';
-import { SERI_SOZU } from '../../core/data/SeriSozu';
 
 export const seriOzetiSelector = createSelector(
   [(state: { seri: SeriState }) => state.seri.seriDurumu, (state: { seri: SeriState }) => state.seri.ayarlar],

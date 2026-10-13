@@ -22,6 +22,7 @@ import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildi
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHatirlaticiServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
@@ -236,6 +237,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       seriSayacAyarlariniHazirla(konumState.koordinatlar).then((seriSayacAyarlari) =>
         SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(seriSayacAyarlari)
       ),
+      // Gün sonu seri hatırlatması: TARİHLİ tetikler (özel gün atlanır), pencere
+      // sonlu olduğu için her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      gunSonuHatirlatmalariniGuncelle(konumState.koordinatlar),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');

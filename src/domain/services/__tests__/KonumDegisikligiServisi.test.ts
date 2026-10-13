@@ -50,6 +50,12 @@ jest.mock('../SeriSayacHazirlayici', () => ({
         Promise.resolve({ aktif: true, hedef: new Date(), seriBugunTamMi: false })
     ),
 }));
+// Gun sonu seri hatirlatmasi (issue #272): imsaktan X dk once; ozel gun degisimi
+// de bu listeden gecer.
+const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../GunSonuHatirlaticiServisi', () => ({
+    gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
+}));
 jest.mock('../NafileHatirlatmaServisi', () => ({
     NafileHatirlatmaServisi: {
         getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
@@ -172,6 +178,10 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
         // Wear OS saati (issue #269): vakitler telefonda hesaplanıp gönderilir.
         expect(sahte.wear).toHaveBeenCalledTimes(1);
+        // Gün sonu seri hatırlatması (issue #272): otomatik modda imsaktan X dk
+        // önce — şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
+        expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+        expect(mockGunSonuGuncelle).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {
