@@ -25,7 +25,11 @@ import { TurkceTtsUyarisi, DinleButonu } from '../../components/hatirlatma/Anons
 export interface SesliOnayModalProps {
     gorunur: boolean;
     /** Secilen yogunlugun gorunen adi ("Normal" / "Yoğun") */
-    yogunlukEtiketi: string;
+    yogunlukEtiketi?: string;
+    /** Baslik alti satiri; verilmezse yogunluk etiketinden uretilir (nafile #273 kendi metnini verir). */
+    altBaslik?: string;
+    /** Alt bilgi notu; verilmezse muhafiz metni. */
+    kapatmaNotu?: string;
     /** Yer tutuculari COZULMUS ornek anons metni */
     ornekMetin: string;
     /** Cihazda Turkce TTS paketi var mi (null = bilinmiyor → uyari gosterilmez) */
@@ -63,6 +67,8 @@ const MADDELER: { ikon: string; metin: string }[] = [
 export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
     gorunur,
     yogunlukEtiketi,
+    altBaslik,
+    kapatmaNotu,
     ornekMetin,
     ttsDestekli,
     onOnayla,
@@ -118,7 +124,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                                 Sesli anons açılsın mı?
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {yogunlukEtiketi} yoğunluğu sesli anons içerir
+                                {altBaslik ?? `${yogunlukEtiketi ?? ''} yoğunluğu sesli anons içerir`}
                             </Text>
                         </View>
                     </View>
@@ -165,7 +171,7 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                     <TurkceTtsUyarisi destekli={ttsDestekli} />
 
                     <Text className="text-xs leading-4 mt-3" style={{ color: renkler.metinIkincil }}>
-                        Dilediğiniz zaman her vaktin adımlarından kapatabilirsiniz.
+                        {kapatmaNotu ?? 'Dilediğiniz zaman her vaktin adımlarından kapatabilirsiniz.'}
                     </Text>
 
                     {/* Butonlar */}

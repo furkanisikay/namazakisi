@@ -222,3 +222,58 @@ export function nafileKanalAyarlari(a: NafileAyarlari): VakitMuhafizAyari[] {
     }
     return sonuc;
 }
+
+/** Bir nafilenin YAPISAL yükü: adım sayısı, sesli adım, tekrarlı adım, tekrar yoğunluğu. */
+interface YapisalYuk {
+    adim: number;
+    sesli: number;
+    tekrarli: number;
+    /** Σ 1/herDk — aralık kısalınca artar. */
+    yogunluk: number;
+}
+
+const yapisalYuk = (a: NafileHatirlatmaAyari): YapisalYuk => {
+    const y: YapisalYuk = { adim: 0, sesli: 0, tekrarli: 0, yogunluk: 0 };
+    if (!a.aktif) return y;
+    for (const s of a.adimlar) {
+        y.adim++;
+        if (s.kanallar?.sesli === true) y.sesli++;
+        if (s.siklik !== 'birkez') {
+            y.tekrarli++;
+            y.yogunluk += 1 / Math.max(1, s.siklik.herDk);
+        }
+    }
+    return y;
+};
+
+/**
+ * Değişiklik bekleyen hatırlatma SAYISINI YAPISAL olarak artırıyor mu?
+ * (bildirim sınırı rehberinin ekleme-anı simülasyon kapısı — issue #298/#273)
+ *
+ * YALNIZ şunlar kapıdan geçer: nafile açma (aktif false→true), günü gününe
+ * kurmayı kapatma, adım ekleme, sesli kanal açma (Android'de ayrı anons alarmı),
+ * tek atıştan tekrara geçme ya da tekrar aralığını kısaltma, tekrarlı adım
+ * varken teheccüd penceresini uzatma (son üçte bir → yatsıdan).
+ *
+ * Salt ZAMAN değişimleri (eşik, yön, tekrarsız pencere seçimi, uyandırma)
+ * kapıdan GEÇMEZ: bir sonraki tetiği geçmişten geleceğe taşıyıp sayıyı +1
+ * yapabilirler ve iOS'ta zaten aşımda olan kullanıcı VAR OLAN hatırlatmasının
+ * saatini değiştiremez hâle gelirdi (Fable incelemesi M4).
+ */
+export function nafileYukuArtiyorMu(eski: NafileAyarlari, yeni: NafileAyarlari): boolean {
+    if (eski.gunuGununeKur === true && yeni.gunuGununeKur !== true) return true;
+    const ciftler: [NafileHatirlatmaAyari, NafileHatirlatmaAyari][] = [
+        [eski.hatirlatmalar.kusluk, yeni.hatirlatmalar.kusluk],
+        [eski.hatirlatmalar.evvabin, yeni.hatirlatmalar.evvabin],
+        [eski.teheccud, yeni.teheccud],
+    ];
+    for (const [e, y] of ciftler) {
+        if (!e.aktif && y.aktif) return true;
+        const ey = yapisalYuk(e);
+        const yy = yapisalYuk(y);
+        if (yy.adim > ey.adim || yy.sesli > ey.sesli || yy.tekrarli > ey.tekrarli) return true;
+        if (yy.yogunluk > ey.yogunluk + 1e-9) return true;
+    }
+    const tekrarliTeheccud = yeni.teheccud.aktif && yeni.teheccud.adimlar.some((s) => s.siklik !== 'birkez');
+    return tekrarliTeheccud && eski.teheccud.pencere === 'sonUcteBir' && yeni.teheccud.pencere === 'yatsi';
+}

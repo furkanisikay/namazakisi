@@ -25,7 +25,7 @@ import { tonGeriGidenAdim } from '../../../core/muhafiz/adimDuzenleme';
 import { etkinKademe } from '../../../core/muhafiz/motorAdaptoru';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import {
-    ADIM_SINIRI_NOTU,
+    adimSiniriNotu,
     adimBasligiOlustur,
     adimBilgisiAl,
     cevrilemeyenAnonsVarMi,
@@ -107,8 +107,10 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     const ozet = vakitOzetiOlustur(ayar);
     const aktifSayi = aktifSeviyeSayisi(ayar);
     const tamamenKapali = aktifSayi === 0;
-    const govdeGorunur = tekAdimli || acikMi;
     const gomulu = stil === 'gomulu';
+    // Gömülü kartta (cuma, nafile #273) başlık satırı ev sahibinindir → gövde daima açık.
+    const baslikSatiriVar = !tekAdimli && !gomulu;
+    const govdeGorunur = !baslikSatiriVar || acikMi;
 
     const yonSecilir = tanim.yonSecilebilir && !!onYonDegistir;
     const girisYonu = tanim.yon === 'girisindenItibaren';
@@ -352,7 +354,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     </TouchableOpacity>
                 ) : (
                     <Text className="text-xs text-center mb-2" style={{ color: renkler.metinIkincil }}>
-                        {ADIM_SINIRI_NOTU}
+                        {adimSiniriNotu(tanim.maksAdim)}
                     </Text>
                 ))}
         </>
@@ -371,7 +373,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             }
         >
             {/* ── Katman 1: pencere satiri (tek adimli pencerede yok) ── */}
-            {!tekAdimli && (
+            {baslikSatiriVar && (
                 <TouchableOpacity
                     className="flex-row items-center p-4"
                     onPress={onAcKapa}
@@ -424,8 +426,8 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             {/* ── Katman 2: yon + adimlar ── */}
             {govdeGorunur && (
                 <View
-                    className={tekAdimli ? '' : 'px-4 pb-4 border-t pt-3'}
-                    style={tekAdimli ? undefined : { borderTopColor: renkler.sinir }}
+                    className={!baslikSatiriVar ? '' : 'px-4 pb-4 border-t pt-3'}
+                    style={!baslikSatiriVar ? undefined : { borderTopColor: renkler.sinir }}
                 >
                     {yonSecilir && (
                         <>
@@ -536,7 +538,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                             )}
 
                             {/* Giris yonunun kullaniciya gorunen bedeli (Faz 1 / B3) */}
-                            {girisYonu && sesliAdimVar && (
+                            {girisYonu && sesliAdimVar && tanim.onPlanBanneriVar !== false && (
                                 <AdimNotlari notlar={[{ tip: 'bilgi', metin: GIRIS_SESLI_GECIKME_NOTU }]} />
                             )}
                             <View className="h-2.5" />
