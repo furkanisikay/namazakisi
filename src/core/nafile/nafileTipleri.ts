@@ -48,6 +48,10 @@ export interface NafileAyarlari {
     gunuGununeKur?: boolean;
 }
 
+/** En az bir hatırlatma açık mı? (planlama kısa devresi + ekran özeti + bildirim defteri) */
+export const nafileHatirlatmaAcikMi = (a: NafileAyarlari): boolean =>
+    a.hatirlatmalar.kusluk.aktif || a.hatirlatmalar.evvabin.aktif || a.teheccud.aktif;
+
 export const NAFILE_OFSET_MIN_DK = 5;
 export const NAFILE_OFSET_MAX_DK = 120;
 export const NAFILE_OFSET_ADIM_DK = 5;

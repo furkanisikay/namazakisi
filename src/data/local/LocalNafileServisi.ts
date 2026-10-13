@@ -7,6 +7,7 @@ import {
     TEHECCUD_IMSAK_ONCESI_MAX_DK,
     TEHECCUD_IMSAK_ONCESI_MIN_DK,
     VARSAYILAN_NAFILE_AYARLARI,
+    nafileHatirlatmaAcikMi,
     type GunduzHatirlatmaAyari,
     type NafileAyarlari,
     type TeheccudAyari,
@@ -77,9 +78,8 @@ export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
     };
 };
 
-/** En az bir hatırlatma açık mı? (planlama kısa devresi + ekran özeti) */
-export const nafileHatirlatmaAcikMi = (a: NafileAyarlari): boolean =>
-    a.hatirlatmalar.kusluk.aktif || a.hatirlatmalar.evvabin.aktif || a.teheccud.aktif;
+/** En az bir hatırlatma açık mı? — saf tanım `nafileTipleri`nde (bildirim defteri de kullanır). */
+export { nafileHatirlatmaAcikMi };
 
 export const LocalNafileServisi = {
     getAyarlar: async (): Promise<NafileAyarlari> => {
