@@ -41,12 +41,28 @@ class MuhafizAlarmModulu(reactContext: ReactApplicationContext) : ReactContextBa
         promise.resolve(null)
     }
 
-    /** Öneki taşıyan TÜM alarmlar (yeniden planlama öncesi temizlik, uygulama içi "Kıldım"). */
+    /** Öneki taşıyan TÜM BEKLEYEN alarmlar (yeniden planlama öncesi temizlik; çalanı susturmaz). */
     @ReactMethod
     fun onekliIptalEt(onek: String, promise: Promise) {
         promise.resolve(
             try {
                 MuhafizAlarmZamanlayici.onekliIptalEt(reactApplicationContext, onek)
+            } catch (_: Exception) {
+                0
+            }
+        )
+    }
+
+    /**
+     * Uygulama içi "Kıldım": vaktin bekleyen alarmları + ÇALAN alarm bildirimi (ses, tam
+     * ekran, susturma alarmı). [onekliIptalEt] çalanı GÖRMEZ (tetiklenen alarm kayıttan
+     * düşmüştür) — planlama turu o yüzden onu kullanır, "Kıldım" bunu.
+     */
+    @ReactMethod
+    fun vakitAlarmlariniSustur(onek: String, promise: Promise) {
+        promise.resolve(
+            try {
+                MuhafizAlarmTemizligi.onekliSustur(reactApplicationContext, onek)
             } catch (_: Exception) {
                 0
             }

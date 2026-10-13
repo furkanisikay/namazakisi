@@ -39,6 +39,7 @@ import {
     alarmKoprusuVarMi,
     alarmPlanla as nativeAlarmPlanla,
     onekliAlarmlariIptalEt,
+    vakitAlarmlariniSustur,
 } from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
@@ -246,11 +247,12 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     /**
      * Uygulama içi "Kıldım" (issue #74): vaktin GERÇEK alarmları expo listesinde yoktur
-     * (alarm o tetiğin bildiriminin yerine geçer) → önekle native kayıttan iptal edilir.
+     * (alarm o tetiğin bildiriminin yerine geçer) → önekle native kayıttan iptal edilir;
+     * o an ÇALAN alarm da (ses + tam ekran) susturulur (`vakitAlarmlariniSustur`).
      */
     vakitYanKanallariniIptalEt(onek: string): void {
         if (!this.alarmDestegi || !alarmKoprusuVarMi()) return;
-        void onekliAlarmlariIptalEt(onek);
+        void vakitAlarmlariniSustur(onek);
     }
 
     yanKanaliIptalEt(id: string): void {

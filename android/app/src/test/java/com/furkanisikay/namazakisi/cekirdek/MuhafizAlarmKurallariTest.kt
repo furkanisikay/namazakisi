@@ -112,4 +112,67 @@ class MuhafizAlarmKurallariTest {
         val sonuc = MuhafizAlarmKurallari.yenidenKurulacaklar(mapOf("c" to 300L, "a" to 100L, "b" to 200L, "eski" to 50L), 100L)
         assertEquals(listOf("b", "c"), sonuc)
     }
+
+    @Test
+    fun kuyruktaBekleyenVakitAlarmiCalmaz() {
+        // Saatten/widget'tan "Kıldım" kuyrukta, JS henüz işlemedi → alarm çalmamalı (M1).
+        assertEquals(
+            MuhafizAlarmKurallari.Karar.ATLA,
+            MuhafizAlarmKurallari.tetikKarari(1_000L, 1_000L, 10_000_000L, 0L, kuyruktaKilindi = true),
+        )
+        // Kuyruk boşken eski karar BİREBİR.
+        assertEquals(
+            MuhafizAlarmKurallari.Karar.CAL,
+            MuhafizAlarmKurallari.tetikKarari(1_000L, 1_000L, 10_000_000L, 0L, kuyruktaKilindi = false),
+        )
+    }
+
+    @Test
+    fun kuyrukKimligiMuhafizKimligiyleEslesir() {
+        val kimlik = "muhafiz_2026-10-13_vakit_imsak_seviye_4_dk_10"
+        val yuk = MuhafizAlarmKurallari.yukCoz(
+            JSONObject()
+                .put("surum", MuhafizAlarmKurallari.YUK_SURUMU)
+                .put("kimlik", kimlik)
+                .put("tetikMs", 1L)
+                .put("alarmKanalId", MuhafizAlarmKurallari.KANAL_TABANI)
+                .toString()
+        )!!
+        // Kuyruk ekleme kuralıyla AYNI kimlik üreticisi (kayıt kodu `imsak`).
+        val kuyruk = KildimKuyruguKurallari.ekle(emptyList(), "2026-10-13", "imsak", KildimKuyruguKurallari.KAYNAK_WEAR)!!
+        val bekleyen = KildimKuyruguKurallari.bekleyenKimlikler(kuyruk)
+        assertTrue(MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, bekleyen))
+        // Komşu gün ve komşu vakit eşleşmez.
+        assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi("2026-10-12", "imsak", bekleyen))
+        assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi("2026-10-13", "ogle", bekleyen))
+        // Widget kodu `sabah` kuyrukta hiç yoktur (kuyruk reddeder).
+        assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi("2026-10-13", "sabah", bekleyen))
+        assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi("", "", bekleyen))
+    }
+
+    @Test
+    fun calanAlarmBildirimiEtiketVeNumarayla() {
+        val v = BildirimKildimKurallari.Vakit("2026-10-13", "ogle")
+        val esles: (String) -> Boolean = { BildirimKildimKurallari.buVakteAitMi(it, v) }
+        val n = MuhafizAlarmKurallari.BILDIRIM_NUMARASI
+        assertTrue(MuhafizAlarmKurallari.alarmBildirimiMi("muhafiz_2026-10-13_vakit_ogle_seviye_4_dk_10", n, esles))
+        // Aynı etiketli expo bildirimi (numara 0) bu yoldan kapatılmaz.
+        assertFalse(MuhafizAlarmKurallari.alarmBildirimiMi("muhafiz_2026-10-13_vakit_ogle_seviye_4_dk_10", 0, esles))
+        assertFalse(MuhafizAlarmKurallari.alarmBildirimiMi("muhafiz_2026-10-13_vakit_ikindi_seviye_4_dk_10", n, esles))
+        assertFalse(MuhafizAlarmKurallari.alarmBildirimiMi(null, n, esles))
+        // Önek eşleştiricisi: JS'in uygulama içi "Kıldım" öneki.
+        val onek = MuhafizAlarmKurallari.onekEslestirici("muhafiz_2026-10-13_vakit_ogle")
+        assertTrue(MuhafizAlarmKurallari.alarmBildirimiMi("muhafiz_2026-10-13_vakit_ogle_seviye_2_dk_25", n, onek))
+        assertFalse(MuhafizAlarmKurallari.alarmBildirimiMi("muhafiz_2026-10-14_vakit_ogle_seviye_2_dk_25", n, onek))
+        // Boş önek hiçbir şeyi susturmaz.
+        assertFalse(MuhafizAlarmKurallari.onekEslestirici("")("muhafiz_2026-10-13_vakit_ogle"))
+    }
+
+    @Test
+    fun kilitEkranindaKildimKaydiYazilmaz() {
+        assertEquals(MuhafizAlarmKurallari.KildimYolu.DOGRUDAN, MuhafizAlarmKurallari.kildimYolu(false, false))
+        assertEquals(MuhafizAlarmKurallari.KildimYolu.DOGRUDAN, MuhafizAlarmKurallari.kildimYolu(false, true))
+        assertEquals(MuhafizAlarmKurallari.KildimYolu.KILIDI_AC, MuhafizAlarmKurallari.kildimYolu(true, true))
+        assertEquals(MuhafizAlarmKurallari.KildimYolu.GIZLE, MuhafizAlarmKurallari.kildimYolu(true, false))
+    }
 }
