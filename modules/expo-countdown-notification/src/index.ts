@@ -28,6 +28,31 @@ export interface CountdownConfig {
      * davranisi birebir korunur.
      */
     autoDismissAtTarget?: boolean;
+    /**
+     * Android 16 Live Update (issue #282) — durum cubugu cipi ve One UI 8 Now Bar.
+     *
+     * Verilirse native taraf, API 36+ ve kullanici "Canli guncellemeler"e izin
+     * veriyorsa STANDART sablonlu ikiz bildirimi (kisa metin + chronometer +
+     * ProgressStyle + "Kildim") gonderir. Aksi halde (API < 36, izin kapali, seri
+     * temasi) mevcut ozel RemoteViews yolu BIREBIR calisir. Hangi sayacin
+     * verecegine `src/core/sayac/canliGuncelleme.ts` karar verir.
+     */
+    canli?: CanliGuncellemeSecenekleri;
+}
+
+/** Ilerleme cubugunun bir bolumu (dakika). */
+export interface CanliIlerlemeBolumu {
+    uzunlukDk: number;
+    vurgulu: boolean;
+}
+
+export interface CanliGuncellemeSecenekleri {
+    /** Ilerleme cubugunun basladigi an (epoch ms). Bolum yoksa kullanilmaz. */
+    baslangicMs: number;
+    /** Ilerleme bolumleri (toplam = baslangic → hedef, dk). Bossa cubuk cizilmez. */
+    bolumler: CanliIlerlemeBolumu[];
+    /** Yalniz vakit sayacinda: "Kildim" eylemi (ortak Kildim kuyruguna gider). */
+    kildim?: { tarih: string; vakit: string };
 }
 
 /**
@@ -46,6 +71,17 @@ interface CountdownNativeModule {
         smallIcon: string,
         themeType: string,
         autoDismissAtTarget: boolean
+    ): void;
+    /** Expo `Function` en fazla 8 arguman alir → ek veri tek JSON'da (bkz. Kotlin). */
+    startCountdownCanli?(
+        id: string,
+        targetTimeMs: number,
+        title: string,
+        bodyTemplate: string,
+        channelId: string,
+        smallIcon: string,
+        themeType: string,
+        ekJson: string
     ): void;
     stopCountdown(id: string): void;
     stopAll(): void;
@@ -114,6 +150,27 @@ const ExpoCountdownNotification =
 export function startCountdown(config: CountdownConfig): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) {
         console.warn('[CountdownNotification] Only supported on Android');
+        return;
+    }
+
+    // Eski native ikili (bu surumden once derlenmis APK) `startCountdownCanli`yi
+    // tasimaz → eski yola dus, sayac kaybolmasin.
+    if (config.canli && typeof ExpoCountdownNotification.startCountdownCanli === 'function') {
+        ExpoCountdownNotification.startCountdownCanli(
+            config.id,
+            config.targetTimeMs,
+            config.title,
+            config.bodyTemplate,
+            config.channelId,
+            config.smallIcon ?? '',
+            config.themeType ?? 'vakit',
+            JSON.stringify({
+                baslangicMs: config.canli.baslangicMs,
+                bolumler: config.canli.bolumler,
+                kildim: config.canli.kildim,
+                hedefteKaybol: config.autoDismissAtTarget ?? false,
+            })
+        );
         return;
     }
 

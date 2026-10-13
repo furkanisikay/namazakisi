@@ -343,6 +343,17 @@ describe('VakitSayacBildirimServisi', () => {
     expect(ogleCountdown![0].targetTimeMs).toBe(mockPrayerTimes.asr.getTime());
     expect(ogleCountdown![0].channelId).toBe(BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC);
 
+    // Live Update (#282): ilerleme vaktin GIRISINDEN (12:00) cikisina (15:00); sayacin
+    // basladigi esikten (14:30) sonrasi vurgulu; "Kildim" o vaktin kaydina gider.
+    expect(ogleCountdown![0].canli).toEqual({
+      baslangicMs: mockPrayerTimes.dhuhr.getTime(),
+      bolumler: [
+        { uzunlukDk: 150, vurgulu: false },
+        { uzunlukDk: 30, vurgulu: true },
+      ],
+      kildim: { tarih: '2026-02-19', vakit: 'ogle' },
+    });
+
     // Hemen baslayan sayac icin trigger (placeholder) DEGIL countdown kullanilmali
     const ogleTrigger = (notifee.createTriggerNotification as jest.Mock).mock.calls
       .find((c: any[]) => c[0].id === ogleId);

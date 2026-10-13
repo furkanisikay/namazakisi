@@ -18,6 +18,13 @@ class KildimKuyruguKurallariTest {
     }
 
     @Test
+    fun sayacKaynagiKabulEdilir() {
+        // Öne çıkarılmış vakit sayacındaki "Kıldım" (issue #282) — kaynak tanıda ayrı görünür.
+        val l = k.ekle(emptyList(), "2026-10-13", "ikindi", k.KAYNAK_SAYAC)!!
+        assertEquals("sayac", l.single().kaynak)
+    }
+
+    @Test
     fun gecersizOgeReddedilir() {
         assertNull(k.ekle(emptyList(), "13.10.2026", "ogle", k.KAYNAK_WIDGET))
         // Widget kodu 'sabah' kuyruğa GİRMEZ: kayıt katmanı 'imsak' bekler.

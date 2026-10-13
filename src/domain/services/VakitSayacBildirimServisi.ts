@@ -20,6 +20,7 @@ import type { MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { vakitCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface VakitZamani {
   vakit: VakitAdi;
@@ -326,6 +327,16 @@ export class VakitSayacBildirimServisi {
           bodyTemplate: bodyTemplate,
           channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
           themeType: 'vakit',
+          // Live Update (issue #282): API 36+'da durum çubuğu çipi / Now Bar,
+          // vakit penceresi ilerlemesi ve "Kıldım" eylemi. Native taraf
+          // desteklemiyorsa eski görünüm BİREBİR kalır.
+          canli: vakitCanliYukuOlustur({
+            girisMs: vakit.giris.getTime(),
+            cikisMs: cikisSuresi,
+            sayacBaslangicMs: sayacBaslangic,
+            tarih: vakit.tarih,
+            vakit: vakit.vakit,
+          }),
         });
         Logger.info('VakitSayac', `${vakit.vakit} icin native sayac hemen baslatildi`);
       } catch (error) {

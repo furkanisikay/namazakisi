@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.content.Context
 import android.util.Log
+import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
 
 class ExpoCountdownNotificationModule : Module() {
 
@@ -42,40 +43,41 @@ class ExpoCountdownNotificationModule : Module() {
                     context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon,
                     themeType, autoDismissAtTarget
                 )
-
                 // Süre dolduğunda tetiklenecek AlarmManager
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-                val intent = Intent(context, CountdownReceiver::class.java).apply {
-                    action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                    putExtra(CountdownReceiver.EXTRA_ID, id)
-                    putExtra(CountdownReceiver.EXTRA_TITLE, title)
-                    putExtra(CountdownReceiver.EXTRA_BODY_TEMPLATE, bodyTemplate)
-                    putExtra(CountdownReceiver.EXTRA_CHANNEL_ID, channelId)
-                    putExtra(CountdownReceiver.EXTRA_SMALL_ICON, smallIcon)
-                }
-
-                val pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    id.hashCode(),
-                    intent,
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                CountdownNotificationHelper.bitisAlarminiKur(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon
                 )
+            }
+            Unit
+        }
 
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (alarmManager.canScheduleExactAlarms()) {
-                            alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                        } else {
-                            alarmManager.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                        }
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                    } else {
-                        alarmManager.setExact(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                    }
-                } catch (e: Exception) {
-                    Log.e("CountdownModule", "Alarm ayarlanamadi: \${e.message}")
-                }
+        /**
+         * `startCountdown`'ın Android 16 Live Update ikizi (issue #282). Expo
+         * `Function` en fazla 8 argüman alır → `autoDismissAtTarget` ve öne çıkarma
+         * verisi (ilerleme bölümleri, "Kıldım") tek JSON'da gelir. Öne çıkarma
+         * desteklenmiyorsa (API < 36, kullanıcı kapattı, seri teması) helper eski
+         * RemoteViews yoluna BİREBİR düşer.
+         */
+        Function("startCountdownCanli") {
+            id: String,
+            targetTimeMs: Double,
+            title: String,
+            bodyTemplate: String,
+            channelId: String,
+            smallIcon: String,
+            themeType: String,
+            ekJson: String ->
+
+            val context = appContext.reactContext
+            if (context != null) {
+                val ek = CanliGuncellemeKurallari.ekYukuCoz(ekJson)
+                CountdownNotificationHelper.showCountdownNotification(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon,
+                    themeType, ek.hedefteKaybol, ek
+                )
+                CountdownNotificationHelper.bitisAlarminiKur(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon
+                )
             }
             Unit
         }
@@ -83,21 +85,10 @@ class ExpoCountdownNotificationModule : Module() {
         Function("stopCountdown") { id: String ->
             val context = appContext.reactContext
             if (context != null) {
-                // Bildirimi iptal et
+                // Bildirimi iptal et (öne çıkarılmış ikizin tazelemesi dahil)
                 CountdownNotificationHelper.cancelNotification(context, id)
-
                 // Varsa iptal et (AlarmManager)
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-                val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
-                    action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                }
-                val pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    id.hashCode(),
-                    cancelIntent,
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
+                CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
             }
             Unit
         }
@@ -105,22 +96,12 @@ class ExpoCountdownNotificationModule : Module() {
         Function("stopAll") {
             val context = appContext.reactContext
             if (context != null) {
-                val ids = CountdownNotificationHelper.getActiveIds()
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-
+                // Bellek-içi liste süreç ölünce boşalır; öne çıkarılmış sayaçlar
+                // diskte de tutulur → ikisinin birleşimi.
+                val ids = (CountdownNotificationHelper.getActiveIds() + CanliGuncelleme.kayitliIdler(context)).toSet()
                 ids.forEach { id ->
                     CountdownNotificationHelper.cancelNotification(context, id)
-
-                    val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
-                        action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                    }
-                    val pendingIntent = android.app.PendingIntent.getBroadcast(
-                        context,
-                        id.hashCode(),
-                        cancelIntent,
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                    )
-                    alarmManager.cancel(pendingIntent)
+                    CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
                 }
             }
             Unit

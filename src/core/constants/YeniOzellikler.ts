@@ -40,6 +40,28 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Android 16 Live Update / Now Bar (issue #282) — yalnız Android 16+ cihazları
+    // ilgilendirdiği için kart kapalı (yalnız "Neler Yeni" listesi).
+    {
+        id: 'sayac-canli-guncelleme',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Sayaçlarınız Durum Çubuğunda ve Now Bar\'da',
+        aciklama:
+            'Android 16 ve üzeri cihazlarda vakit, iftar ve sahur sayacınız durum çubuğunda kalan süreyle görünür; Samsung cihazlarda Now Bar\'a da taşınır.',
+        detayAciklama:
+            'Vaktin kılınmamış son dakikalarında, iftara ve sahura kadar kalan süreyi bildirim panelini açmadan görebilirsiniz. Bildirimde vaktin ne kadarının geçtiği bir çubukla gösterilir; vakit sayacında "Kıldım" düğmesiyle tek dokunuşta işaretleyebilirsiniz. Seri sayacı ve sıradaki vakit bu alana taşınmaz. Bu gösterimi telefonunuzun bildirim ayarlarındaki "Canlı güncellemeler" seçeneğiyle kapatabilirsiniz; kapattığınızda sayaç bildiriminiz eskisi gibi görünür.',
+        ikon: 'mobile-alt',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Sayaç ayarlarını inceleyin',
+        kartGoster: false,
+        detaylar: [
+            'Durum çubuğunda kalan süre: "12 dk", "1 sa 5 dk"',
+            'Vaktin, orucun ve sahurun ilerleyişi çubukla',
+            'Vakit sayacında tek dokunuşla "Kıldım"',
+            'Saat geri sayımı kendi yüzeyinde gösterir, telefondaki sayaç saate düşmez',
+        ],
+    },
     // Namaz muhafızı: vakit başına 1–6 hatırlatma + ayrı ton (issue #274).
     {
         id: 'muhafiz-hatirlatma-sayisi',

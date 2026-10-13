@@ -21,6 +21,7 @@ import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { sahurCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface SahurSayacAyarlari {
   aktif: boolean;
@@ -98,7 +99,15 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     if (simdi.getTime() < imsakBugun.getTime()) {
       // Gece yarisini gecmisiz, imsak (sahur) vaktine dogru ilerliyoruz
       const imsakArti10 = new Date(imsakBugun.getTime() + 10 * 60 * 1000);
-      this.nativeCountdownBaslat(bildirimId, imsakBugun.getTime());
+      // Live Update (issue #282): ilerleme = DÜNÜN yatsısından bugünün imsağına.
+      const dun = new Date(simdi);
+      dun.setDate(dun.getDate() - 1);
+      const yatsiDun = new PrayerTimes(coordinates, dun, params).isha;
+      this.nativeCountdownBaslat(
+        bildirimId,
+        imsakBugun.getTime(),
+        sahurCanliYukuOlustur({ yatsiMs: yatsiDun.getTime(), imsakMs: imsakBugun.getTime() })
+      );
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, imsakBugun.getTime());
       await this.temizlemePlanla(temizlemeId, imsakArti10.getTime());
     } else if (simdi.getTime() < imsakBugun.getTime() + 10 * 60 * 1000) {
@@ -114,7 +123,11 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     } else {
       // Yatsi vaktini gecmisiz (aksam/gece vakti), yarin sabahki imsak hedefimiz
       const imsakArti10Yarin = new Date(imsakYarin.getTime() + 10 * 60 * 1000);
-      this.nativeCountdownBaslat(bildirimId, imsakYarin.getTime());
+      this.nativeCountdownBaslat(
+        bildirimId,
+        imsakYarin.getTime(),
+        sahurCanliYukuOlustur({ yatsiMs: yatsiBugun.getTime(), imsakMs: imsakYarin.getTime() })
+      );
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, imsakYarin.getTime());
       await this.temizlemePlanla(temizlemeId, imsakArti10Yarin.getTime());
     }
