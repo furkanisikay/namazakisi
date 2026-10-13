@@ -42,13 +42,23 @@ describe('defterOzeti — iOS', () => {
     });
 
     it('eşikler: %85 altı normal, üstü yakın (turuncu), 64 üstü aşım (kırmızı)', () => {
-        expect(defterOzeti(n(54), 'ios').durum).toBe('normal');
-        expect(defterOzeti(n(55), 'ios').durum).toBe('yakin');
-        expect(defterOzeti(n(64), 'ios').durum).toBe('yakin');
-        const asim = defterOzeti(n(84), 'ios');
+        expect(defterOzeti(n(54, 'nafile'), 'ios').durum).toBe('normal');
+        expect(defterOzeti(n(55, 'nafile'), 'ios').durum).toBe('yakin');
+        expect(defterOzeti(n(64, 'nafile'), 'ios').durum).toBe('yakin');
+        const asim = defterOzeti(n(84, 'nafile'), 'ios');
         expect(asim.durum).toBe('asim');
         expect(asim.gelmeyecek).toBe(20); // "en geç kurulan 20 bildirim gelmeyecek"
         expect(asim.oran).toBe(1);
+    });
+
+    it('muhafız teslimcinin slotunu (64 − diğer − güvenlik payı) aşarsa 64 altında da KESİLEN sayılır', () => {
+        // 37 diğer + 25 muhafız = 62 < 64, ama teslimci muhafıza 64 − 37 − 4 = 23 slot bırakır.
+        const o = defterOzeti([...n(37, 'nafile'), ...n(25)], 'ios');
+        expect(o.toplam).toBe(62);
+        expect(o.gelmeyecek).toBe(2);
+        expect(o.durum).toBe('asim');
+        // Slot içinde kalan muhafız kesilmez.
+        expect(defterOzeti([...n(37, 'nafile'), ...n(23)], 'ios').gelmeyecek).toBe(0);
     });
 
     it('kart iOS\'ta daima görünür (hiç bildirim yoksa gizli)', () => {

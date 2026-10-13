@@ -32,6 +32,7 @@ import {
     muhafizVakitleriniHesapla,
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
+import { kullanilabilirSlotHesapla } from '../muhafiz/ios/bildirimButcesi';
 import { nafilePlaniOlustur } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
@@ -248,6 +249,14 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
         // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser.
         const muhafizAlarm = (sayac.get('muhafiz') ?? 0) + (sayac.get('anons') ?? 0);
         gelmeyecek = Math.max(gelmeyecek, muhafizAlarm - ANDROID_MUHAFIZ_PAYI);
+    } else {
+        // iOS teslimcisi muhafıza `64 − muhafız dışı − güvenlik payı` slot bırakır
+        // (`IosMuhafizTeslimcisi.hazirla`); toplam 64'ün altında kalsa da muhafız
+        // o slotu aşarsa uyarılar PLANLANMAZ. Android 360 payının ikizi.
+        const muhafiz = sayac.get('muhafiz') ?? 0;
+        if (muhafiz > 0) {
+            gelmeyecek = Math.max(gelmeyecek, muhafiz - kullanilabilirSlotHesapla(toplam - muhafiz));
+        }
     }
 
     const yakinEsik = platform === 'ios' ? sinir * YAKINLIK_ORANI : ANDROID_UYARI_ESIGI;

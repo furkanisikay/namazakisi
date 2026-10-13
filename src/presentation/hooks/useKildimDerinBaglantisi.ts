@@ -85,6 +85,19 @@ interface Onay {
     baslatan: KildimBaglantiKarari;
 }
 
+/**
+ * Açılış bağlantısı süreç başına BİR KEZ işlenir. `getInitialURL` süreç ömrü
+ * boyunca aynı adresi döndürür; kancayı taşıyan ağaç yeniden bağlanırsa
+ * (ör. sihirbaz → ana akış) bağlantı ikinci kez işlenir, native kayıt ilk
+ * turda tüketildiği için başlatan BİLİNMİYOR olur ve gereksiz ikinci soru çıkardı.
+ */
+let acilisBaglantisiIslendi = false;
+
+/** Yalnız testler için: modül düzeyi bayrağı sıfırlar. */
+export const acilisBaglantisiBayraginiSifirla = (): void => {
+    acilisBaglantisiIslendi = false;
+};
+
 /** @param etkin Kurulum sihirbazı sürerken bağlantı yok sayılır. */
 export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOnayi {
     const [onay, setOnay] = useState<Onay | null>(null);
@@ -113,7 +126,15 @@ export function useKildimDerinBaglantisi(etkin: boolean): KildimDerinBaglantiOna
                 kisaBildirimGoster(HATA_METNI);
             }
         };
-        Linking.getInitialURL().then(isle).catch(() => undefined);
+        if (!acilisBaglantisiIslendi) {
+            Linking.getInitialURL()
+                .then((url) => {
+                    if (acilisBaglantisiIslendi) return;
+                    acilisBaglantisiIslendi = true;
+                    return isle(url);
+                })
+                .catch(() => undefined);
+        }
         const abonelik = Linking.addEventListener('url', ({ url }) => {
             isle(url).catch(() => undefined);
         });

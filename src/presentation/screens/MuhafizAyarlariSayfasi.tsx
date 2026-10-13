@@ -322,7 +322,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         geriYukle: (yedek) => {
             dispatch(matrisiGuncelle(yedek.matris));
             dispatch(muhafizAyarlariniGuncelle({ yogunluk: yedek.yogunluk }));
-            if (yedek.ozelMatrisYedegi) dispatch(ozelMatrisYedegiGuncelle(yedek.ozelMatrisYedegi));
+            // KOŞULSUZ: yedek yoksa açıkça temizlenir (öneri `matrisiYaz` ile yedek
+            // yazmış olabilir; buradaki kapanış o yazımı görmeyecek kadar bayat olabilir).
+            dispatch(ozelMatrisYedegiGuncelle(yedek.ozelMatrisYedegi));
             if (nafileAyarlari && yedek.nafileGunuGunune !== (nafileAyarlari.gunuGununeKur === true)) {
                 dispatch(nafileAyariniGuncelle({ gunuGununeKur: yedek.nafileGunuGunune }));
             }
@@ -459,7 +461,8 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         if (sigdi) return;
         dispatch(matrisiGuncelle(once.matris));
         // `matrisiYaz` her dokunuşta özel yedeği de yazdı — reddedilen değişiklik orada kalmasın.
-        if (once.ozelMatrisYedegi) dispatch(ozelMatrisYedegiGuncelle(once.ozelMatrisYedegi));
+        // Koşulsuz: önceden yedek yoksa açıkça temizlenir.
+        dispatch(ozelMatrisYedegiGuncelle(once.ozelMatrisYedegi));
         if (once.yogunluk !== muhafizAyarlari.yogunluk) {
             dispatch(muhafizAyarlariniGuncelle({ yogunluk: once.yogunluk }));
         }
