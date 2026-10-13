@@ -21,6 +21,9 @@ on:
       - 'targets/**'
       - 'modules/expo-siri-kisayollari/**'
       - 'plugins/withSiriKisayollari.js'
+      - 'modules/expo-muhafiz-alarmkit/**'
+      - 'plugins/withMuhafizAlarmKit.js'
+      - 'android/app/src/test/resources/erteleme-ornekleri.json'
       - 'src/core/siri/**'
       - 'android/app/src/test/resources/widget-ornek.json'
       - '.github/workflows/ios-siri-derleme.yml'
@@ -54,6 +57,18 @@ jobs:
             android/app/src/test/resources/widget-ornek.json \
             modules/expo-siri-kisayollari/test/siri-ornek.json
 
+      # Gerçek alarm (AlarmKit, issue #74): UUID + erteleme kuralları — JS/Kotlin ile ortak fikstür.
+      - name: 🧪 AlarmKurallari + AlarmDeposu (ortak fikstür)
+        run: |
+          set -eo pipefail
+          swiftc -swift-version 5 -o "$RUNNER_TEMP/alarmkit-test" \
+            modules/expo-muhafiz-alarmkit/ios/AlarmKurallari.swift \
+            modules/expo-muhafiz-alarmkit/ios/AlarmDeposu.swift \
+            modules/expo-muhafiz-alarmkit/test/main.swift
+          "$RUNNER_TEMP/alarmkit-test" \
+            modules/expo-muhafiz-alarmkit/test/alarmkit-ornek.json \
+            android/app/src/test/resources/erteleme-ornekleri.json
+
   derleme:
     name: 🍎 Simülatör derlemesi + Metadata.appintents
     needs: swift-cekirdek
@@ -85,11 +100,13 @@ jobs:
         run: |
           set -eo pipefail
           PBX=$(ls -d ios/*.xcodeproj | head -1)/project.pbxproj
-          for f in NamazIntentleri NamazKisayollari NamazOdakFiltresi; do
+          for f in NamazIntentleri NamazKisayollari NamazOdakFiltresi NamazAlarmPlanlayici NamazAlarmNiyetleri; do
             grep -q "$f.swift in Sources" "$PBX" || { echo "$f.swift ana hedefin Sources fazında yok"; exit 1; }
           done
           grep -q 'developmentRegion = tr;' "$PBX" || { echo "Geliştirme bölgesi tr değil (Türkçe Siri ifadeleri eşleşmez)"; exit 1; }
           grep -q 'AppIntents.framework in Frameworks .*ATTRIBUTES = (Weak' "$PBX" || { echo "AppIntents zayıf bağlı değil (iOS 15'te açılış çöker)"; exit 1; }
+          grep -q 'AlarmKit.framework in Frameworks .*ATTRIBUTES = (Weak' "$PBX" || { echo "AlarmKit zayıf bağlı değil (iOS < 26'da açılış çöker)"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :NSAlarmKitUsageDescription' ios/*/Info.plist >/dev/null || { echo "NSAlarmKitUsageDescription yok (AlarmKit hiç alarm kurmaz)"; exit 1; }
 
       - name: 🧩 CocoaPods
         working-directory: ios
@@ -122,9 +139,9 @@ jobs:
           META="$APP/Metadata.appintents"
           [ -d "$META" ] || { echo "Metadata.appintents YOK — Siri/Kısayollar intent'leri göremez"; ls "$APP"; exit 1; }
           ls -la "$META"
-          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi; do
+          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi NamazAlarmDurdurIntent NamazAlarmErteleIntent NamazAlarmKildimIntent; do
             grep -rqa "$ad" "$META" || { echo "Metadata'da $ad yok"; exit 1; }
           done
-          echo "✅ Metadata.appintents dört intent'i de taşıyor"
+          echo "✅ Metadata.appintents Siri ve alarm intent'lerini taşıyor"
           # Kısayol ifadeleri (AppShortcutsProvider) — bilgi amaçlı döküm.
           find "$META" -type f -name '*.actionsdata' -exec python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(json.dumps({k: d[k] for k in d if "hortcut" in k}, ensure_ascii=False, indent=1)[:4000])' {} \; || true
