@@ -20,7 +20,7 @@
  * BAŞLATICI öneridir ve Diyanet'in ihtiyatlı ucunu kullanır (40-50 → 45; 10).
  */
 
-import type { NafileTuru, TeheccudHedefi } from './nafileTipleri';
+import type { NafileTuru, TeheccudPenceresi } from './nafileTipleri';
 
 export const NAFILE_SABITLERI = {
     /** Şuruk kerahatinin çıkışı: güneş doğuşundan sonra (Diyanet 40-50 dk; ihtiyatlı uç). */
@@ -103,20 +103,19 @@ export function gecininSonUcteBiri(aksam: Date, ertesiImsak: Date): Date {
 }
 
 /**
- * Teheccüd hatırlatmasının hedef anı. Pencere dışına taşmaz (yatsıdan önce
- * düşerse yatsıya kenetlenir — kısa yaz gecelerinde imsaktan 120 dk önce
- * yatsıdan önce olabilir).
+ * Teheccüdün HATIRLATMA penceresi (issue #273): kullanıcı seçimine göre
+ * pencerenin başı ya yatsıdır ya gecenin son üçte biri; sonu daima imsaktır.
+ * Diğer nafilelerde pencere aynen döner.
+ *
+ * Son üçte bir başı DAKİKAYA AŞAĞI yuvarlanır: motor dakika tamsayılarıyla
+ * çalışır (`pencereUzunluguDk`) ve pencere dakika hizalı değilse tetikler kesirli
+ * dakikalara düşerdi. Göstergede (`saatMetni`) zaten dakika gösterilir.
  */
-export function teheccudHedefZamani(
-    pencere: NafilePencere,
-    hedef: TeheccudHedefi,
-    imsaktanOnceDk: number
-): Date {
-    const ham =
-        hedef === 'imsaktanOnce'
-            ? pencere.bitis.getTime() - imsaktanOnceDk * DK
-            : pencere.faziletli.getTime();
-    return new Date(Math.max(pencere.baslangic.getTime(), Math.min(ham, pencere.bitis.getTime() - DK)));
+export function teheccudPenceresiniUygula(p: NafilePencere, secim: TeheccudPenceresi): NafilePencere {
+    if (p.tur !== 'teheccud' || secim === 'yatsi') return p;
+    const bas = Math.floor(p.faziletli.getTime() / DK) * DK;
+    // Aşırı enlemde (son üçte bir yatsıdan önce) pencere yatsıdan başlar.
+    return { ...p, baslangic: new Date(Math.max(p.baslangic.getTime(), bas)) };
 }
 
 export interface NafileDurumu {
@@ -131,21 +130,18 @@ export interface NafileDurumu {
  * Gösterge için: şu an hangi nafile vakti içindeyiz, değilse sıradaki hangisi?
  *
  * Teheccüd, uyuyup kalkma şartı dakikayla modellenemeyeceği için yatsı girer
- * girmez DEĞİL, hedef an (son üçte bir ya da imsaktan önce) girince "aktif"
+ * girmez DEĞİL, seçilen pencere (son üçte bir ya da yatsıdan) girince "aktif"
  * sayılır; öncesinde "sıradaki" olarak gösterilir.
  */
 export function nafileDurumunuBul(
     pencereler: NafilePencere[],
     simdi: Date,
-    teheccudHedefi: { hedef: TeheccudHedefi; imsaktanOnceDk: number }
+    teheccudPenceresi: TeheccudPenceresi
 ): NafileDurumu | null {
     const t = simdi.getTime();
-    for (const p of pencereler) {
-        const etkinBasi =
-            p.tur === 'teheccud'
-                ? teheccudHedefZamani(p, teheccudHedefi.hedef, teheccudHedefi.imsaktanOnceDk)
-                : p.baslangic;
-        if (t < etkinBasi.getTime()) return { tur: p.tur, durum: 'sirada', an: etkinBasi };
+    for (const ham of pencereler) {
+        const p = teheccudPenceresiniUygula(ham, teheccudPenceresi);
+        if (t < p.baslangic.getTime()) return { tur: p.tur, durum: 'sirada', an: p.baslangic };
         if (t < p.bitis.getTime()) return { tur: p.tur, durum: 'aktif', an: p.bitis };
     }
     return null;

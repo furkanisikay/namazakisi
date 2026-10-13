@@ -138,6 +138,20 @@ class ExpoCountdownNotificationModule : Module() {
             Unit
         }
 
+        /**
+         * Kimligi [onek] ile baslayan planli anonslari iptal eder (issue #273).
+         * Muhafiz ve nafile anonslari ayni kayitta yasar; biri yeniden
+         * planlanirken digerinin anonslari silinmemeli. Iptal edilen sayiyi dondurur.
+         */
+        Function("iptalEtOnekliAnonslar") { onek: String ->
+            val context = appContext.reactContext
+            if (context == null || onek.isEmpty()) {
+                0
+            } else {
+                AnonsZamanlayici.eslesenleriIptalEt(context.applicationContext) { it.startsWith(onek) }.size
+            }
+        }
+
         // ============================================================
         // BILDIRIM SESI SECIMI (sistem ses secici + kanal yonetimi)
         // ============================================================

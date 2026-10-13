@@ -160,6 +160,11 @@ export const DEPOLAMA_ANAHTARLARI = {
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
+  // Nafile "Kıldım" (issue #273): o günün o nafilesinin kalan hatırlatmaları
+  // yeniden planlanmasın diye { 'YYYY-MM-DD': NafileTuru[] }. Kayıt/puan/seri
+  // DEĞİLDİR, yalnız susturma hafızası; birkaç günde budanır. Cihaza özgü →
+  // yedeklemeye GİRMEZ.
+  NAFILE_KILINAN: '@namaz_akisi/nafile_kilinan',
   // Bildirim "Kıldım" yanıtının son işlenen kimliği. Yanıt hem arka plan görevine
   // (Android, uygulama kapalıyken) hem açılışta getLastNotificationResponseAsync'e
   // düşer; bellek-içi koruma headless süreçte sıfırlandığı için tekilleştirme diskte.

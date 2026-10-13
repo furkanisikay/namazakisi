@@ -1,83 +1,75 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
+import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import {
-    NAFILE_OFSET_MAX_DK,
-    NAFILE_OFSET_MIN_DK,
-    TEHECCUD_IMSAK_ONCESI_MAX_DK,
-    TEHECCUD_IMSAK_ONCESI_MIN_DK,
     VARSAYILAN_NAFILE_AYARLARI,
-    type GunduzHatirlatmaAyari,
     type NafileAyarlari,
-    type TeheccudAyari,
+    type NafileTuru,
 } from '../../core/nafile/nafileTipleri';
+import { gunduzNafileNormalize, teheccudNormalize } from '../../core/nafile/nafileAdimlari';
 
 /**
- * Nafile namaz ayarları (issue #77).
+ * Nafile namaz ayarları (issue #77, #273).
  *
  * Okuma ASLA reddetmez: bozuk/nesne-dışı kayıt varsayılana, eksik alan
  * varsayılandan tamamlanır, sınır dışı sayı kenetlenir (`LocalCumaHatirlatmaServisi`
- * deseni; AGENTS.md "sessiz sonsuz spinner" dersi).
+ * deseni; AGENTS.md "sessiz sonsuz spinner" dersi). Eski tek-ofsetli kayıt
+ * normalize sırasında adımlı modele GÖÇER (`nafileAdimlari.ts`; saf, idempotent).
  */
 
 const nesneMi = (d: unknown): d is Record<string, unknown> =>
     !!d && typeof d === 'object' && !Array.isArray(d);
 
-const sayiKenetle = (deger: unknown, min: number, max: number, varsayilan: number): number => {
-    if (typeof deger !== 'number' || !Number.isFinite(deger)) return varsayilan;
-    return Math.min(max, Math.max(min, Math.round(deger)));
-};
-
-const gunduzNormalize = (ham: unknown, varsayilan: GunduzHatirlatmaAyari): GunduzHatirlatmaAyari => {
-    if (!nesneMi(ham)) return { ...varsayilan };
-    return {
-        aktif: ham.aktif === true,
-        ofsetDk: sayiKenetle(ham.ofsetDk, NAFILE_OFSET_MIN_DK, NAFILE_OFSET_MAX_DK, varsayilan.ofsetDk),
-    };
-};
-
-const teheccudNormalize = (ham: unknown): TeheccudAyari => {
-    const v = VARSAYILAN_NAFILE_AYARLARI.teheccud;
-    if (!nesneMi(ham)) return { ...v };
-    return {
-        aktif: ham.aktif === true,
-        hedef: ham.hedef === 'imsaktanOnce' ? 'imsaktanOnce' : 'sonUcteBir',
-        imsaktanOnceDk: sayiKenetle(
-            ham.imsaktanOnceDk,
-            TEHECCUD_IMSAK_ONCESI_MIN_DK,
-            TEHECCUD_IMSAK_ONCESI_MAX_DK,
-            v.imsaktanOnceDk
-        ),
-        uyandirma: ham.uyandirma === true,
-    };
-};
-
 /** Herhangi bir değeri geçerli `NafileAyarlari`ya çevirir (disk + slice + yedek yolu). */
 export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
-    if (!nesneMi(ham)) {
-        return {
-            ...VARSAYILAN_NAFILE_AYARLARI,
-            hatirlatmalar: {
-                kusluk: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.kusluk },
-                evvabin: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.evvabin },
-            },
-            teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud },
-        };
-    }
-    const hatirlatmalar = nesneMi(ham.hatirlatmalar) ? ham.hatirlatmalar : {};
-    return {
-        gostergeAktif: ham.gostergeAktif === true,
+    const v = VARSAYILAN_NAFILE_AYARLARI;
+    const kaynak = nesneMi(ham) ? ham : {};
+    const hatirlatmalar = nesneMi(kaynak.hatirlatmalar) ? kaynak.hatirlatmalar : {};
+    const sonuc: NafileAyarlari = {
+        gostergeAktif: kaynak.gostergeAktif === true,
         hatirlatmalar: {
-            kusluk: gunduzNormalize(hatirlatmalar.kusluk, VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.kusluk),
-            evvabin: gunduzNormalize(hatirlatmalar.evvabin, VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.evvabin),
+            kusluk: gunduzNafileNormalize(hatirlatmalar.kusluk, v.hatirlatmalar.kusluk),
+            evvabin: gunduzNafileNormalize(hatirlatmalar.evvabin, v.hatirlatmalar.evvabin),
         },
-        teheccud: teheccudNormalize(ham.teheccud),
+        teheccud: teheccudNormalize(kaynak.teheccud, v.teheccud),
     };
+    // Rıza kaydı yalnız AÇIKÇA true ise taşınır (uydurulamaz; yoksa alan hiç yazılmaz).
+    if (kaynak.sesliOnayi === true) sonuc.sesliOnayi = true;
+    return sonuc;
 };
 
 /** En az bir hatırlatma açık mı? (planlama kısa devresi + ekran özeti) */
 export const nafileHatirlatmaAcikMi = (a: NafileAyarlari): boolean =>
     a.hatirlatmalar.kusluk.aktif || a.hatirlatmalar.evvabin.aktif || a.teheccud.aktif;
+
+/** "Kıldım" hafızası: { 'YYYY-MM-DD': NafileTuru[] } — bkz. `NAFILE_KILINAN`. */
+export type NafileKilinanKaydi = Record<string, NafileTuru[]>;
+
+/** Kıldım hafızası kaç gün tutulur (teheccüd dünün gecesi olabilir). */
+const KILINAN_TUTMA_GUNU = 3;
+
+const TURLER: NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
+
+const kilinanNormalize = (ham: unknown): NafileKilinanKaydi => {
+    if (!nesneMi(ham)) return {};
+    const sonuc: NafileKilinanKaydi = {};
+    for (const [gun, turler] of Object.entries(ham)) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(gun) || !Array.isArray(turler)) continue;
+        const temiz = TURLER.filter((t) => turler.includes(t));
+        if (temiz.length > 0) sonuc[gun] = temiz;
+    }
+    return sonuc;
+};
+
+/** ISO günleri dize olarak karşılaştırılır (`new Date('YYYY-MM-DD')` UTC tuzağı). */
+const budanmis = (kayit: NafileKilinanKaydi, enEskiIso: string): NafileKilinanKaydi => {
+    const sonuc: NafileKilinanKaydi = {};
+    for (const [gun, turler] of Object.entries(kayit)) {
+        if (gun >= enEskiIso) sonuc[gun] = turler;
+    }
+    return sonuc;
+};
 
 export const LocalNafileServisi = {
     getAyarlar: async (): Promise<NafileAyarlari> => {
@@ -98,6 +90,34 @@ export const LocalNafileServisi = {
         } catch (e) {
             Logger.error('LocalNafileServisi', 'Ayarlar okunamadi:', e);
             return nafileAyarlariniNormalize(null);
+        }
+    },
+
+    /** Kıldım hafızası — asla reddetmez (bozuk kayıt = boş). */
+    getKilinanlar: async (): Promise<NafileKilinanKaydi> => {
+        try {
+            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAFILE_KILINAN);
+            return ham ? kilinanNormalize(JSON.parse(ham)) : {};
+        } catch {
+            return {};
+        }
+    },
+
+    /**
+     * (gün, tür) "kılındı" diye işaretlenir; `KILINAN_TUTMA_GUNU`'nden eski
+     * günler budanır. `bugunIso` ENJEKTE edilir (testte sabit tarih yazılmaz).
+     */
+    kilindiIsaretle: async (gunIso: string, tur: NafileTuru, bugunIso: string): Promise<void> => {
+        try {
+            const mevcut = await LocalNafileServisi.getKilinanlar();
+            const enEski = gunEkle(bugunIso, -KILINAN_TUTMA_GUNU);
+            const kayit = budanmis(mevcut, enEski);
+            const turler = new Set(kayit[gunIso] ?? []);
+            turler.add(tur);
+            kayit[gunIso] = TURLER.filter((t) => turler.has(t));
+            await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.NAFILE_KILINAN, JSON.stringify(kayit));
+        } catch (e) {
+            Logger.error('LocalNafileServisi', 'Kildim kaydi yazilamadi:', e);
         }
     },
 

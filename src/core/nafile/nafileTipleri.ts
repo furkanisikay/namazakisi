@@ -3,34 +3,50 @@
  *
  * Tasarım: docs/superpowers/specs/2026-10-12-nafile-namaz-vakitleri-design.md
  * (Fable incelemesinden geçen nihai hali "Nihai kararlar" bölümündedir).
+ *
+ * Issue #273: her nafile artık muhafızla AYNI dili konuşur — yön + en fazla 3
+ * adım (`SeviyeAyari`), her adımın eşiği, sıklığı ve kanalları (bildirim /
+ * sesli anons / titreşim). Eski tek-ofsetli kayıt `nafileAdimlari.ts`
+ * içindeki göçle tek adıma çevrilir (idempotent, birebir aynı plan).
  */
+import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
+import type { PencereYonu } from '../muhafiz/pencereTipleri';
 
-/** Gündüz/akşam nafileleri — kullanıcı ofsetiyle tek atışlık hatırlatma. */
+/** Gündüz/akşam nafileleri. */
 export type GunduzNafile = 'kusluk' | 'evvabin';
 
 export type NafileTuru = GunduzNafile | 'teheccud';
 
 /**
- * Teheccüd hatırlatmasının hedef anı.
- * - `sonUcteBir`: gecenin son üçte biri (akşam → ertesi imsak; adhan `SunnahTimes` ile birebir)
- * - `imsaktanOnce`: imsaktan N dk önce
+ * Teheccüd hatırlatma PENCERESİ (issue #273).
+ * - `sonUcteBir`: gecenin son üçte biri → imsak (en faziletli an; adhan
+ *   `SunnahTimes` ile birebir)
+ * - `yatsi`: yatsı → imsak
  */
-export type TeheccudHedefi = 'sonUcteBir' | 'imsaktanOnce';
+export type TeheccudPenceresi = 'sonUcteBir' | 'yatsi';
 
-export interface GunduzHatirlatmaAyari {
+/**
+ * Bir nafilenin hatırlatma planı — muhafızın bir vaktiyle aynı şekil.
+ *
+ * `adimlar` KRONOLOJİK sıradadır (çıkışta eşik AZALAN, girişte ARTAN) ve
+ * eşikler tekildir; 1..`NAFILE_MAKS_ADIM` eleman. Adımlarda ton YOKTUR
+ * (`kademe` daima 'nazik', `acilKanal` daima false), ses seçilemez
+ * (`bildirimSesi` daima varsayılan) — nafile gönüllüdür, ısrar değil davettir.
+ */
+export interface NafileHatirlatmaAyari {
     aktif: boolean;
-    /** Pencere başından kaç dk sonra hatırlatılsın. */
-    ofsetDk: number;
+    yon: PencereYonu;
+    adimlar: SeviyeAyari[];
 }
 
-export interface TeheccudAyari {
-    aktif: boolean;
-    hedef: TeheccudHedefi;
-    /** `hedef === 'imsaktanOnce'` iken kullanılır. */
-    imsaktanOnceDk: number;
+/** Geriye uyumlu ad (issue #273 öncesi tek ofsetli gündüz ayarı). */
+export type GunduzHatirlatmaAyari = NafileHatirlatmaAyari;
+
+export interface TeheccudAyari extends NafileHatirlatmaAyari {
+    pencere: TeheccudPenceresi;
     /**
-     * Uyandırma: alarm ses kanalı (sessiz modu deler) + 3 dk sonra ikinci hatırlatma.
-     * Kapalıyken normal vakit bildirimi kanalından tek bildirim gider.
+     * Uyandırma: bildirim alarm ses kanalından (sessiz modu deler) gider ve
+     * metin emir kipindedir ("Kalk"). Kapalıyken adımın kendi kanalları geçerlidir.
      */
     uyandirma: boolean;
 }
@@ -38,33 +54,64 @@ export interface TeheccudAyari {
 export interface NafileAyarlari {
     /** Ana ekranda nafile şeridi. */
     gostergeAktif: boolean;
-    hatirlatmalar: Record<GunduzNafile, GunduzHatirlatmaAyari>;
+    hatirlatmalar: Record<GunduzNafile, NafileHatirlatmaAyari>;
     teheccud: TeheccudAyari;
+    /**
+     * Sesli anons RIZASI (issue #273) — muhafızınkinden AYRI tutulur: TTS
+     * `USAGE_ALARM` ile sessiz modu ve DND'yi deler; muhafız için verilen onay
+     * nafileye taşınmaz. Yalnız kullanıcı `SesliOnayModal`'ı EKRANDA onayladığında
+     * yazılır; göç ya da varsayılan bunu UYDURAMAZ.
+     */
+    sesliOnayi?: boolean;
 }
 
+/** Bir nafileye kurulabilecek en fazla hatırlatma. */
+export const NAFILE_MAKS_ADIM = 3;
+
+/** Eşik stepper adımı. */
+export const NAFILE_ESIK_ADIM_DK = 5;
+
+/**
+ * Tekrar aralığı sınırları (Fable kararı): alt sınır 10 dk — gönüllü bir
+ * ibadeti dakika dakika hatırlatmak davet değil ısrar olur.
+ */
+export const NAFILE_TEKRAR_MIN_DK = 10;
+export const NAFILE_TEKRAR_MAX_DK = 60;
+export const NAFILE_VARSAYILAN_TEKRAR_DK = 10;
+
+/** Eski (issue #273 öncesi) ofset sınırları — yalnız göç kenetlemesi için. */
 export const NAFILE_OFSET_MIN_DK = 5;
 export const NAFILE_OFSET_MAX_DK = 120;
-export const NAFILE_OFSET_ADIM_DK = 5;
-
 export const TEHECCUD_IMSAK_ONCESI_MIN_DK = 15;
 export const TEHECCUD_IMSAK_ONCESI_MAX_DK = 120;
-export const TEHECCUD_IMSAK_ONCESI_ADIM_DK = 15;
 
 /**
  * Varsayılanlar: HEPSİ KAPALI (nafile gönüllüdür, ayardan açılır).
- * Kuşluk ofseti 5 dk → pratikte "işrak" (kuşluğun ilk vakti); evvâbîn 15 dk →
- * akşamın farzı ve sünneti kılınmış sayılır.
+ * Kuşluk 5 dk → pratikte "işrak" (kuşluğun ilk vakti); evvâbîn 15 dk →
+ * akşamın farzı ve sünneti kılınmış sayılır; teheccüd son üçte bir girince.
+ * Hepsi yalnız BİLDİRİM: sesli anons rıza ister.
  */
+const tekAdim = (esikDk: number): SeviyeAyari => ({
+    kademe: 'nazik',
+    kanallar: { bildirim: true },
+    esikDk,
+    siklik: 'birkez',
+    bildirimSesi: 'varsayilan',
+    acilKanal: false,
+    anonsMetni: '',
+});
+
 export const VARSAYILAN_NAFILE_AYARLARI: NafileAyarlari = {
     gostergeAktif: false,
     hatirlatmalar: {
-        kusluk: { aktif: false, ofsetDk: 5 },
-        evvabin: { aktif: false, ofsetDk: 15 },
+        kusluk: { aktif: false, yon: 'girisindenItibaren', adimlar: [tekAdim(5)] },
+        evvabin: { aktif: false, yon: 'girisindenItibaren', adimlar: [tekAdim(15)] },
     },
     teheccud: {
         aktif: false,
-        hedef: 'sonUcteBir',
-        imsaktanOnceDk: 60,
+        yon: 'girisindenItibaren',
+        adimlar: [tekAdim(5)],
+        pencere: 'sonUcteBir',
         uyandirma: false,
     },
 };
@@ -75,3 +122,16 @@ export const NAFILE_ADLARI: Record<NafileTuru, string> = {
     evvabin: 'Evvâbîn',
     teheccud: 'Teheccüd',
 };
+
+/** Cümle içi küçük harfli adlar — `toLowerCase()` YAZMA (sabit harita). */
+export const NAFILE_ADLARI_KUCUK: Record<NafileTuru, string> = {
+    kusluk: 'kuşluk',
+    evvabin: 'evvâbîn',
+    teheccud: 'teheccüd',
+};
+
+export const NAFILE_TURLERI: NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
+
+/** Bir nafilenin hatırlatma ayarı (gündüz ya da teheccüd) — tek erişim noktası. */
+export const nafileAyariniAl = (a: NafileAyarlari, tur: NafileTuru): NafileHatirlatmaAyari =>
+    tur === 'teheccud' ? a.teheccud : a.hatirlatmalar[tur];

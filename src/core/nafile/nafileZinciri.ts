@@ -12,9 +12,9 @@
  * Arayüz dili (kibar "siz"); saate hal eki EKLENMEZ ("bitiş 11:47").
  */
 import { NamazAdi } from '../constants/UygulamaSabitleri';
-import { NAFILE_ADLARI, type NafileTuru, type TeheccudHedefi } from './nafileTipleri';
+import { NAFILE_ADLARI, type NafileTuru, type TeheccudPenceresi } from './nafileTipleri';
 import { NAFILE_ACIKLAMALARI } from './nafileMetinleri';
-import { teheccudHedefZamani, type NafilePencere } from './nafileVakitleri';
+import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 
 const saatMetni = (t: Date): string =>
     `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
@@ -44,19 +44,13 @@ export interface NafileZincirSatiri {
     bilgiMetni: string;
 }
 
-export interface TeheccudGosterimAyari {
-    hedef: TeheccudHedefi;
-    imsaktanOnceDk: number;
-}
-
 /**
  * Teheccüd, uyuyup kalkma şartı dakikayla modellenemediği için yatsı girer girmez
- * DEĞİL, hedef an (son üçte bir ya da imsaktan önce) girince "aktif" sayılır
- * (`nafileDurumunuBul` ile aynı kural). Satırın saati de bu andır: yatsının hemen
- * ardından yatsı saatini tekrar yazmak bilgi taşımazdı.
+ * DEĞİL, seçilen pencere (son üçte bir ya da yatsıdan) girince "aktif" sayılır
+ * (`nafileDurumunuBul` ile aynı kural). Satırın saati de bu andır.
  */
-const etkinBasi = (p: NafilePencere, teheccud: TeheccudGosterimAyari): Date =>
-    p.tur === 'teheccud' ? teheccudHedefZamani(p, teheccud.hedef, teheccud.imsaktanOnceDk) : p.baslangic;
+const etkinBasi = (p: NafilePencere, teheccud: TeheccudPenceresi): Date =>
+    teheccudPenceresiniUygula(p, teheccud).baslangic;
 
 const bilgiMetniOlustur = (p: NafilePencere): string => {
     let bilgi = `${NAFILE_ACIKLAMALARI[p.tur]}\n\nBugün: ${saatMetni(p.baslangic)} – ${saatMetni(p.bitis)}`;
@@ -68,7 +62,7 @@ const bilgiMetniOlustur = (p: NafilePencere): string => {
 export function nafileZincirSatirlariOlustur(
     pencereler: NafilePencere[],
     simdi: Date,
-    teheccud: TeheccudGosterimAyari
+    teheccud: TeheccudPenceresi
 ): NafileZincirSatiri[] {
     const t = simdi.getTime();
     return pencereler.map((p) => {

@@ -88,6 +88,8 @@ interface CountdownNativeModule {
     planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
+    /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
+    iptalEtOnekliAnonslar?(onek: string): number;
     trDestekleniyorMu(): Promise<boolean>;
     sesSecAsync(
         mevcutUri: string | null,
@@ -245,6 +247,24 @@ export function iptalEtAnons(id: string): void {
 export function iptalEtTumAnonslar(): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.iptalEtTumAnonslar();
+}
+
+/**
+ * Kimliği [onek] ile başlayan planlı anonsları iptal eder (issue #273).
+ *
+ * Muhafız (`muhafiz_`) ve nafile (`nafile_`) anonsları AYNI native kayıtta
+ * yaşar; birinin yeniden planlaması ötekinin anonslarını silmemeli. Nafile
+ * "Kıldım"ı da bununla o günün o nafilesinin kalan anonslarını susturur.
+ *
+ * @returns iptal YAPILABİLDİYSE true (Android dışında yapılacak iş olmadığı
+ *   için de true). Native fonksiyon yoksa (eski köprü) false — çağıran kendi
+ *   yedek yoluna düşer.
+ */
+export function iptalEtOnekliAnonslar(onek: string): boolean {
+    if (Platform.OS !== 'android') return true;
+    if (!onek || !ExpoCountdownNotification?.iptalEtOnekliAnonslar) return false;
+    ExpoCountdownNotification.iptalEtOnekliAnonslar(onek);
+    return true;
 }
 
 // ============================================================

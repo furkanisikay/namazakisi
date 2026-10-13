@@ -91,8 +91,36 @@ function onPlandaMi(): boolean {
     }
 }
 
+/**
+ * BU SÜREÇTE henüz `tamamla`'ya ulaşmamış turların klip adları (issue #273).
+ *
+ * İki teslimci (muhafız + nafile) aynı `Library/Sounds` dizinini ve aynı yaş
+ * kaydını paylaşır. Nafile turu bir klip SENTEZLEYİP henüz kaydetmemişken
+ * muhafızın `tamamla`'sı koşarsa o klip kayıtta yoktur ve SİLİNİRDİ — bildirim
+ * de olmayan bir ses dosyasına bağlı kalırdı. Uçuştaki adlar GC'den korunur.
+ */
+const ucustakiKlipler = new Map<string, number>();
+
+/** Klip çöp toplaması tek sıra: iki `tamamla` aynı kaydı aynı anda yazmasın. */
+let klipGcZinciri: Promise<void> = Promise.resolve();
+
+export interface IosTeslimciSecenekleri {
+    /**
+     * Bu teslimcinin bildirim kimlik öneki. Bütçe ölçümü "kendimiz dışındaki"
+     * bekleyenleri sayar; nafile teslimcisi muhafız bildirimlerini de SAYMALIDIR
+     * (aynı 64 sınırını paylaşırlar).
+     */
+    kendiOneki?: string;
+}
+
 export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'ios' as const;
+
+    private readonly kendiOneki: string;
+
+    constructor(secenekler: IosTeslimciSecenekleri = {}) {
+        this.kendiOneki = secenekler.kendiOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+    }
 
     /**
      * Bu planlama turunda kalan slot. `hazirla` ile olculur, `uyariPlanla` ile
@@ -121,6 +149,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kesilenSayisi = 0;
+        this.ucustanBirak();
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
         this.sentezIzni = onPlandaMi();
@@ -131,7 +160,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         try {
             const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
             const muhafizDisi = bekleyenler.filter(
-                (b) => !b.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
+                (b) => !b.identifier.startsWith(this.kendiOneki)
             ).length;
 
             this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
@@ -151,7 +180,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     }
 
     async uyariPlanla(teslim: UyariTeslimi): Promise<void> {
-        const { id, baslik, mesaj, zaman, uyari, vakit, tarih } = teslim;
+        const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel } = teslim;
 
         const simdi = new Date();
         if (zaman.getTime() <= simdi.getTime()) return;
@@ -190,9 +219,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     body: mesaj,
                     // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali.
                     sound: ses,
-                    interruptionLevel: plan.kesintiSeviyesi,
+                    interruptionLevel: ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
                     categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
-                    data: {
+                    data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
                         vakit: vakit,
@@ -236,6 +265,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Dosya henuz olmasa da AD kaydedilir: arka plan turunda uretilemeyen bir
         // klibin adi korunursa, bir sonraki on plan turunda uretilen dosya ilk GC'de
         // silinmez. Var olmayan dosya icin kayit zararsizdir.
+        if (!this.kullanilanKlipler.has(ad)) ucustakiKlipler.set(ad, (ucustakiKlipler.get(ad) ?? 0) + 1);
         this.kullanilanKlipler.add(ad);
 
         const bilinen = this.klipDurumu.get(ad);
@@ -259,18 +289,35 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      * Asla firlatmaz.
      */
     async tamamla(): Promise<void> {
-        try {
-            const bugun = gunAnahtari(new Date());
-            const mevcut = await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI);
-            const kayit = klipKaydiniGuncelle(mevcut, this.kullanilanKlipler, bugun);
-
-            await Depolama.yaz(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI, kayit);
-            const silinen = await kullanilmayanKlipleriSil(Object.keys(kayit), ANONS_KLIP_ONEKI);
-            if (silinen > 0) {
-                Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+        const kullanilan = this.kullanilanKlipler;
+        const is = klipGcZinciri.then(async () => {
+            try {
+                const bugun = gunAnahtari(new Date());
+                // Atomik okuma-değiştirme-yazma: öteki teslimcinin kaydı ezilmesin.
+                const kayit = await Depolama.guncelle<Record<string, string>>(
+                    DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI,
+                    (mevcut) => klipKaydiniGuncelle(mevcut, kullanilan, bugun)
+                );
+                this.ucustanBirak();
+                const korunan = [...Object.keys(kayit), ...ucustakiKlipler.keys()];
+                const silinen = await kullanilmayanKlipleriSil(korunan, ANONS_KLIP_ONEKI);
+                if (silinen > 0) {
+                    Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+                }
+            } catch (error) {
+                Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
             }
-        } catch (error) {
-            Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
+        });
+        klipGcZinciri = is;
+        await is;
+    }
+
+    /** Bu turun klip adlarını "uçuşta" listesinden düşer (kayda yazıldılar ya da tur yenilendi). */
+    private ucustanBirak(): void {
+        for (const ad of this.kullanilanKlipler) {
+            const kalan = (ucustakiKlipler.get(ad) ?? 1) - 1;
+            if (kalan > 0) ucustakiKlipler.set(ad, kalan);
+            else ucustakiKlipler.delete(ad);
         }
     }
 
