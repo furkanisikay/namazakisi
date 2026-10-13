@@ -17,11 +17,13 @@ import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { basligiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
 import { muhafizGovdesiSec } from '../../core/muhafiz/muhafizGovdesi';
-import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
-import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
-import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
-import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
+import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import {
+    muhafizVakitleriniHesapla,
+    planlanacakMuhafizVakitleri,
+    vakitTeslimAdaylari,
+} from '../../core/muhafiz/muhafizTeslimPlani';
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 
@@ -120,18 +122,17 @@ export class ArkaplanMuhafizServisi {
                 (await muhafizTeslimcisiniAl().hazirla(ayarlar.matris)) ?? ayarlar.matris,
         };
 
-        // Bugunun vakit zamanlarini al
-        const vakitler = this.bugunVakitleriniHesapla();
+        // Vakitler + eleme + uyari uretimi SAF plan ureticisinde
+        // (`core/muhafiz/muhafizTeslimPlani.ts`). Bildirim defteri (issue #298)
+        // AYNI fonksiyonu kuru calistirir; burada ayri bir mantik YAZILMAZ,
+        // yoksa rehber ekrani ile cihazdaki plan ayrisir.
         const simdi = new Date();
+        const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi);
 
         // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
-        const kilinanVakitlerBugun = await kilinanVakitleriAl(bugunuAl());
-        const kilinanVakitlerDun = await kilinanVakitleriAl(dunuAl());
-
-        // Kolay erisim icin tarihe gore map olustur
         const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
-            [bugunuAl()]: kilinanVakitlerBugun,
-            [dunuAl()]: kilinanVakitlerDun,
+            [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
+            [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
         };
 
         // OZEL GUN (issue #272): aralik aktifken o gunun vakitleri icin ne
@@ -142,26 +143,14 @@ export class ArkaplanMuhafizServisi {
         // icin kapi burada TEK yerde durur.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
 
-        // Cikis suresi henuz gecmemis (gelecekte olan) VE kilinmamis vakitler icin planlama yap
-        const gelecekVakitler = vakitler.filter(v => {
-            // Vakit zamani gecmis mi?
-            if (v.cikis.getTime() <= simdi.getTime()) {
-                return false;
-            }
-
-            if (ozelGundeMi(v.tarih)) {
-                return false;
-            }
-
-            // Bu vakit kilinmis mi? (vaktin ait oldugu tarihe gore kontrol et)
-            const tarihinKilinanVakitleri = kilinanVakitlerMap[v.tarih] || [];
-            if (tarihinKilinanVakitleri.includes(v.vakit)) {
-
-                return false;
-            }
-
-            return true;
-        });
+        const planGirdisi = {
+            matris: this.ayarlar.matris,
+            vakitler,
+            simdi,
+            kilindiMi: (tarih: string, vakit: VakitAdi) => (kilinanVakitlerMap[tarih] || []).includes(vakit),
+            ozelGundeMi,
+        };
+        const gelecekVakitler = planlanacakMuhafizVakitleri(planGirdisi);
 
         if (gelecekVakitler.length === 0) {
             Logger.info('ArkaplanMuhafiz', 'Gelecek veya kilinmamis vakit bulunamadi');
@@ -176,165 +165,43 @@ export class ArkaplanMuhafizServisi {
     }
 
     /**
-     * Bugun icin tum namaz vakitlerini hesapla
-     * Gece yarisi gecislerini dogru sekilde ele alir
-     */
-    private bugunVakitleriniHesapla(): VakitZamani[] {
-        if (!this.ayarlar) return [];
-
-        const { lat, lng } = this.ayarlar.koordinatlar;
-        const coordinates = new Coordinates(lat, lng);
-        const params = CalculationMethod.Turkey();
-        const simdi = new Date();
-
-        // Bugun ve dun icin hesapla (gece yarisi gecisleri icin)
-        const bugunTarih = new Date(simdi);
-        const dunTarih = new Date(simdi);
-        dunTarih.setDate(dunTarih.getDate() - 1);
-        const yarinTarih = new Date(simdi);
-        yarinTarih.setDate(yarinTarih.getDate() + 1);
-
-        const bugunPrayerTimes = new PrayerTimes(coordinates, bugunTarih, params);
-        const dunPrayerTimes = new PrayerTimes(coordinates, dunTarih, params);
-        const yarinPrayerTimes = new PrayerTimes(coordinates, yarinTarih, params);
-
-        // Tarih formatla - yerel saat dilimine gore (UTC degil!)
-        const formatDate = (d: Date) => {
-            const yil = d.getFullYear();
-            const ay = String(d.getMonth() + 1).padStart(2, '0');
-            const gun = String(d.getDate()).padStart(2, '0');
-            return `${yil}-${ay}-${gun}`;
-        };
-        const bugunStr = formatDate(bugunTarih);
-        const dunStr = formatDate(dunTarih);
-
-        const vakitler: VakitZamani[] = [];
-
-        // Eger su an imsak vaktinden onceyse, dunun yatsi vakti hala aktiftir
-        if (simdi < bugunPrayerTimes.fajr) {
-            // Dunun yatsisi hala devam ediyor (gece yarisi gecmis ama imsak olmamis)
-            vakitler.push({
-                vakit: 'yatsi',
-                giris: dunPrayerTimes.isha,
-                cikis: bugunPrayerTimes.fajr,
-                tarih: dunStr, // Dune ait!
-            });
-        }
-
-        // Bugunun vakitleri
-        vakitler.push(
-            {
-                vakit: 'imsak',
-                giris: bugunPrayerTimes.fajr,
-                cikis: bugunPrayerTimes.sunrise,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'ogle',
-                giris: bugunPrayerTimes.dhuhr,
-                cikis: bugunPrayerTimes.asr,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'ikindi',
-                giris: bugunPrayerTimes.asr,
-                cikis: bugunPrayerTimes.maghrib,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'aksam',
-                giris: bugunPrayerTimes.maghrib,
-                cikis: bugunPrayerTimes.isha,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'yatsi',
-                giris: bugunPrayerTimes.isha,
-                cikis: yarinPrayerTimes.fajr, // Yarinin imsak vaktine kadar
-                tarih: bugunStr,
-            }
-        );
-
-        return vakitler;
-    }
-
-    /**
-     * Belirli bir vakit icin tum seviye bildirimlerini planla.
+     * Belirli bir vakit icin uyarilari teslimciye aktar.
      *
-     * Faz 3: dakika taramasi + seviye/siklik karari SAF `vakitUyariPlaniOlustur`
-     * icinde (o vaktin kendi matris satiri okunur). Sessiz (mod='sessiz') seviye
-     * pencere saglamaz -> hic planlanmaz; ayni dakikaya birden cok seviye dusemez
-     * (en acil kazanir) -> cakisma dogal olarak tekildir.
+     * Hangi dakikada hangi adimin konusacagi SAF `vakitTeslimAdaylari`'ndan gelir
+     * (motor: `vakitUyariPlaniOlustur`); burada yalniz METIN uretilir (rastgele
+     * govde secimi) ve teslimci cagrilir.
      */
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
 
-        const simdi = new Date();
-        const cikisSuresi = vakit.cikis.getTime();
-
-        // Vakit zaten gecmisse planlamaya gerek yok
-        if (cikisSuresi <= simdi.getTime()) {
-            return;
-        }
-
-        // 'gunes' muhafizda planlanmaz -> matriste satiri yoktur.
-        const muhafizVakti = vakit.vakit as MuhafizVakti;
-        const vakitAyari = this.ayarlar.matris[muhafizVakti];
-        if (!vakitAyari) return;
-
-        // FAZ 1 — YON. Giris yonunde motor `pencereUzunluguDk` OLMADAN hic
-        // tetiklenmez (plan bos doner): olcunun ust siniri ancak pencereden
-        // turetilebilir. Ayni degeri on plan (`NamazMuhafiziServisi`) da hesaplar;
-        // ayrisirlarsa banner ile bildirim ayri dakikalara duser (AGENTS.md'de
-        // kayitli ders).
-        const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
-        const pencereUzunluguDk = pencereUzunluguDkHesapla(vakit.giris, vakit.cikis);
-
-        // Tarama SU ANKI olcuden baslar: cikis yonunde kalan, giris yonunde
-        // girisin uzerinden gecen dakika (vakit henuz girmediyse negatif → motor
-        // 1'den tarar ve pencerenin tamamini planlar).
-        const suankiOlcu = olcuDkHesapla(
-            { kaynak: `vakit:${vakit.vakit}`, baslangic: vakit.giris, bitis: vakit.cikis, yon },
-            simdi
-        );
-        const plan = vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk });
-
-        let planlanan = 0;
-        for (const uyari of plan) {
-            const bildirimZamani = new Date(cikisSuresi - uyari.kalanDk * 60 * 1000);
-            // Zaten gecmisse atla (dakika yuvarlamasi sinirda geriye dusebilir)
-            if (bildirimZamani.getTime() <= simdi.getTime()) continue;
-
+        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date());
+        for (const aday of adaylar) {
+            const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;
             // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
             // yonunde ikisi farklidir ve kalanDk verilirse basligi "655 dk ·
             // YATSI VAKTİ ÇIKIYOR" gibi ters bir cumle olur.
             const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
             const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
-            // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
-            // Vakit tarihini kullan (yatsi icin onceki gun olabilir).
-            // ID uretimi PAYLASILAN yardimciya devredildi — on plan (NamazMuhafiziServisi)
-            // ayni anonsu ayni id ile yeniden planlar; format sapmasi cift konusma
-            // uretir (bkz. core/muhafiz/anonsKimligi.ts).
-            const bildirimId = muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk);
 
             // TESLIM platforma gore ayrisir (Android: kanal + TTS alarmi,
-            // iOS: kesinti seviyesi + paket sesi). Plan uretimi ayni kalir.
+            // iOS: kesinti seviyesi + paket sesi). Id paylasilan yardimcidan gelir
+            // (`muhafizBildirimIdOlustur`) — on plan ayni anonsu ayni id ile
+            // yeniden planlar; format sapmasi cift konusma uretir.
             await muhafizTeslimcisiniAl().uyariPlanla({
-                id: bildirimId,
+                id: aday.id,
                 baslik,
                 mesaj,
-                zaman: bildirimZamani,
+                zaman: aday.zaman,
                 uyari,
                 vakit: vakit.vakit,
-                muhafizVakti,
+                muhafizVakti: aday.muhafizVakti,
                 tarih: vakit.tarih,
                 yon,
             });
-            planlanan++;
         }
 
-        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${planlanan} bildirim planlandi`);
+        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${adaylar.length} bildirim planlandi`);
     }
 
     /**
