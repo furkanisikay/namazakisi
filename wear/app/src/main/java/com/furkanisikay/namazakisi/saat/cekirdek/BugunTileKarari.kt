@@ -66,4 +66,21 @@ object BugunTileKarari {
             else -> Karar.Yok
         }
     }
+
+    /**
+     * Saklanan onay hâlâ geçerli mi? Onay beklerken tile başka bir sebeple yeniden
+     * istenirse (yeni yük, aynı eski kimliğe ikinci hızlı dokunuş → `Yok`) "Tekrar"
+     * görünümü kaybolmamalı: süre ve işaretlenebilirlik sürdükçe yeniden çizilir.
+     */
+    fun etkinOnay(
+        kimlik: String?,
+        secimMs: Long,
+        simdi: Long,
+        isaretlenebilir: (String) -> Boolean,
+    ): Karar.OnayBekle? {
+        if (kimlik.isNullOrEmpty() || simdi < secimMs) return null
+        val bitis = secimMs + ONAY_SURESI_MS
+        if (simdi >= bitis || !isaretlenebilir(kimlik)) return null
+        return Karar.OnayBekle(kimlik, secimMs, bitis)
+    }
 }

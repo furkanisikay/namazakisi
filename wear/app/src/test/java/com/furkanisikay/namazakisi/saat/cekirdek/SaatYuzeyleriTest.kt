@@ -204,6 +204,16 @@ class SaatYuzeyleriTest {
     }
 
     @Test
+    fun saklananOnaySureBoyuncaYenidenCizilir() {
+        val beklenen = BugunTileKarari.Karar.OnayBekle(kimlik, 1_000, 1_000 + BugunTileKarari.ONAY_SURESI_MS)
+        assertEquals(beklenen, BugunTileKarari.etkinOnay(kimlik, 1_000, 5_000, hep))
+        assertNull("sure doldu", BugunTileKarari.etkinOnay(kimlik, 1_000, 9_000, hep))
+        assertNull("artik isaretlenemez", BugunTileKarari.etkinOnay(kimlik, 1_000, 5_000) { false })
+        assertNull("kayit yok", BugunTileKarari.etkinOnay(null, 1_000, 5_000, hep))
+        assertNull("saat geri alindi", BugunTileKarari.etkinOnay(kimlik, 1_000, 500, hep))
+    }
+
+    @Test
     fun saatGeriAlinincaOnayGecersiz() {
         val id = BugunTileKarari.onayKimligi(kimlik, 10_000)
         assertEquals(BugunTileKarari.Karar.Yok, BugunTileKarari.karar(id, null, 9_000, hep))

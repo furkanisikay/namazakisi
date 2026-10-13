@@ -40,6 +40,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Wear OS yüzeyleri (issue #281) — yalnız saat sahiplerini ilgilendirdiği için
+    // kart kapalı (yalnız "Neler Yeni" listesi).
+    {
+        id: 'wear-kadran-yuzeyleri',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Saat Kadranınızda Namaz Akışı',
+        aciklama:
+            'Wear OS saatinizde kadranı özelleştirirken takvim ya da hava durumu gibi bir yuvaya Namaz Akışı\'nı seçebilirsiniz.',
+        detayAciklama:
+            'Kadran yuvaları için dört seçenek var: sıradaki vakit ve kalan süre, bugün kılınan vakit sayısı, günün beş vaktinin dağılımı ve kerahat vakti. Yalnız simge kabul eden yuvalarda sıradaki vaktin simgesi görünür. "Bugün" kutucuğunda beş vakti tek bakışta görür, kıldığınız vakte iki kez dokunarak işaretlersiniz. Bir vaktin son dakikalarında henüz kılmadıysanız kadranda dokunulabilir bir sayaç belirir; kıldığınızda ya da vakit çıktığında kendiliğinden kalkar.',
+        ikon: 'clock',
+        kartGoster: false,
+        detaylar: [
+            'Sıradaki vakit, günlük ilerleme, gün dağılımı ve kerahat yuvaları',
+            '"Bugün" kutucuğunda iki dokunuşla işaretleme',
+            'Kılınmamış vaktin son dakikalarında kadranda sayaç',
+            'Saat, uygulamayı her dakika uyandırmadan günceller',
+        ],
+    },
     // Camideyim + Namaz modu (issue #297 / #277) — yalnız Android; kart iOS'ta da
     // görüneceği için kapalı (yalnız "Neler Yeni" listesi).
     {

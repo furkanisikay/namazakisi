@@ -64,17 +64,30 @@ class BugunTileServisi : TileService() {
         val yuk = depo.yuk()
         val simdi = System.currentTimeMillis()
         var onay: BugunTileKarari.Karar.OnayBekle? = null
-        if (yuk != null && !tiklanan.isNullOrEmpty()) {
+        if (yuk != null) {
             val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
             val sonIslenen = prefs.getString(SON_ISLENEN, null)
             val satirlar = VakitHesabi.satirlar(yuk, simdi, VakitHesabi.tarih(simdi), depo.bekleyenler())
                 .associateBy { VakitHesabi.kimlik(it.tarih, it.vakit) }
-            val karar = BugunTileKarari.karar(tiklanan, sonIslenen, simdi) { satirlar[it]?.isaretlenebilir == true }
-            if (tiklanan != sonIslenen) prefs.edit { putString(SON_ISLENEN, tiklanan) }
+            val isaretlenebilir = { k: String -> satirlar[k]?.isaretlenebilir == true }
+            val karar = BugunTileKarari.karar(tiklanan, sonIslenen, simdi, isaretlenebilir)
+            prefs.edit {
+                if (!tiklanan.isNullOrEmpty()) putString(SON_ISLENEN, tiklanan)
+                when (karar) {
+                    is BugunTileKarari.Karar.OnayBekle -> {
+                        putString(ONAY_KIMLIK, karar.kimlik)
+                        putLong(ONAY_SECIM, karar.secimMs)
+                    }
+                    is BugunTileKarari.Karar.Isaretle -> remove(ONAY_KIMLIK)
+                    BugunTileKarari.Karar.Yok -> Unit
+                }
+            }
             when (karar) {
                 is BugunTileKarari.Karar.OnayBekle -> onay = karar
                 is BugunTileKarari.Karar.Isaretle -> kildim(depo, karar.kimlik)
-                BugunTileKarari.Karar.Yok -> Unit
+                BugunTileKarari.Karar.Yok -> onay = BugunTileKarari.etkinOnay(
+                    prefs.getString(ONAY_KIMLIK, null), prefs.getLong(ONAY_SECIM, 0L), simdi, isaretlenebilir,
+                )
             }
         }
         return tileOlustur(yuk, depo.bekleyenler(), simdi, onay)
@@ -325,6 +338,8 @@ class BugunTileServisi : TileService() {
         private const val KAYNAK_SURUMU = "1"
         private const val PREFS = "saat_bugun_tile"
         private const val SON_ISLENEN = "son_islenen_tik"
+        private const val ONAY_KIMLIK = "onay_kimlik"
+        private const val ONAY_SECIM = "onay_secim_ms"
         private const val UYGULAMAYI_AC = "uygulamayi_ac"
 
         /**
