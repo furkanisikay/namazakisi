@@ -24,6 +24,7 @@ const pencereleriYaz = jest.fn().mockResolvedValue(undefined);
 const izlemeyiTazele = jest.fn().mockResolvedValue('yok');
 const suresiGecenleriTemizle = jest.fn().mockResolvedValue(undefined);
 const yakinCamiler = jest.fn().mockResolvedValue([]);
+const soruyuCevapla = jest.fn().mockResolvedValue(undefined);
 const gunlukAl = jest.fn().mockResolvedValue([]);
 const gunluguTemizle = jest.fn().mockResolvedValue(undefined);
 const camidenCik = jest.fn().mockResolvedValue(undefined);
@@ -49,6 +50,7 @@ module.exports = {
   izlemeyiTazele,
   suresiGecenleriTemizle,
   yakinCamiler,
+  soruyuCevapla,
   gunlukAl,
   gunluguTemizle,
   camidenCik,

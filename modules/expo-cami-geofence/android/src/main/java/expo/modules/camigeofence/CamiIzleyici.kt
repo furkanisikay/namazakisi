@@ -48,6 +48,8 @@ object CamiIzleyici {
     const val YENILEME_ID = "y:yenileme"
     private const val ISTEK_KODU = 7301
     private const val ETIKET = "CamiIzleyici"
+    /** "Yalnız seçtiklerim": favorilerin OSM kaydını bulmak için taranan en yakın kayıt sayısı. */
+    private const val SECILEN_ARAMA_SAYISI = 150
 
     fun pendingIntent(ctx: Context): PendingIntent {
         val bayrak = PendingIntent.FLAG_UPDATE_CURRENT or
@@ -125,17 +127,30 @@ object CamiIzleyici {
             )
             val mLat = secim.lat
             val mLng = secim.lng
+            // Faz 2 izleme kapsamı: "Yalnız seçtiklerim" → yalnız favoriler + eklenen
+            // yerler izlenir. Yakındaki favoriler yine OSM kaydından (bina poligonuyla)
+            // gelsin diye geniş bir en-yakın sorgusu FAVORİLERE süzülür; uzaktakiler ek
+            // kotadan (kayıtlı konumla) girer. K dolmadığı için yenileme çemberi en geniştir.
+            val yalnizSecilenler = ayarlar.izlemeKapsami == "secilenler"
             val haricSayisi = ayarlar.yerler.values.count { it.durum == "haric" }
-            val osm = CamiVeriKaynagi.al(ctx)
-                ?.enYakinlar(mLat, mLng, CamiSabitleri.IZLENEN_CAMI_SAYISI + haricSayisi)
-                ?.map { it.kayit }
-                ?: emptyList()
+            val veri = CamiVeriKaynagi.al(ctx)
+            val osm = if (yalnizSecilenler) {
+                veri?.enYakinlar(mLat, mLng, SECILEN_ARAMA_SAYISI)
+                    ?.map { it.kayit }
+                    ?.filter { ayarlar.yerler[it.id]?.durum == "favori" }
+                    ?: emptyList()
+            } else {
+                veri?.enYakinlar(mLat, mLng, CamiSabitleri.IZLENEN_CAMI_SAYISI + haricSayisi)
+                    ?.map { it.kayit }
+                    ?: emptyList()
+            }
             val (izlenenler, kinci) = CamiKarar.izlenecekleriSec(mLat, mLng, osm, ayarlar.yerler)
+            val yenilemeKinci = if (yalnizSecilenler) null else kinci
             if (IzlemeKarari.dokunmaMi(kip, kayitCanli, secim, IzlemeKarari.imza(CamiDepo.izlenenler(ctx)), IzlemeKarari.imza(izlenenler))) {
                 bitti("degismedi")
                 return
             }
-            val yaricap = CamiKarar.yenilemeYaricapiM(kinci)
+            val yaricap = CamiKarar.yenilemeYaricapiM(yenilemeKinci)
             val bekleme = (ayarlar.beklemeDk * CamiSabitleri.DAKIKA_MS).toInt()
 
             val camiler = izlenenler.map { yer ->

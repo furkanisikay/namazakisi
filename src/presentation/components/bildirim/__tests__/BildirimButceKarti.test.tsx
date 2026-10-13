@@ -49,7 +49,8 @@ describe('BildirimButceKarti', () => {
         const ekran = render(<BildirimButceKarti ozet={defterOzeti(kayitlar(84), 'ios')} onPress={jest.fn()} />);
         expect(cubukRengi(ekran)).toBe('#F44336');
         expect(
-            ekran.getByText('iPhone en fazla 64 bildirim bekletir; en geç kurulan 20 bildirim gelmeyecek. Düzeltmek için dokunun.')
+            // Kayıtların hepsi muhafız: teslimci 64 − 4 güvenlik payı = 60 slot bırakır → 24 kesilir.
+            ekran.getByText('iPhone en fazla 64 bildirim bekletir; en geç kurulan 24 bildirim gelmeyecek. Düzeltmek için dokunun.')
         ).toBeTruthy();
     });
 

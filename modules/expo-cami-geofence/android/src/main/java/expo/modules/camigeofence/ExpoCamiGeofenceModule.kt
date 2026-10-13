@@ -89,6 +89,7 @@ class ExpoCamiGeofenceModule : Module() {
                     .put("izin", CamiIzleyici.izinDurumu(c))
                     .put("izlenenSayisi", CamiDepo.izlenenler(c).size)
                     .put("camide", CamiDepo.camide(c)?.json() ?: JSONObject.NULL)
+                    .put("soru", CamiDepo.soru(c)?.json() ?: JSONObject.NULL)
                     .put("sessizBitisMs", CamiDepo.sessizBitisMs(c))
                     .put("namazModu", NamazModu.durumJson(c))
                     .toString()
@@ -161,19 +162,30 @@ class ExpoCamiGeofenceModule : Module() {
             CamiIzleyici.kur(c, lat, lng, IzlemeKipi.PERIYODIK) { promise.resolve(it) }
         }
 
-        /** Yakındaki camiler (ayar ekranı listesi) — en yakın [k], mesafe sıralı. */
+        /**
+         * Yakındaki camiler (ayar listesi + harita) — en yakın [k], mesafe sıralı.
+         * Harita bina sınırını çizebilsin diye poligon da döner ([[enlem, boylam], …]).
+         */
         AsyncFunction("yakinCamiler") { lat: Double, lng: Double, k: Int, promise: Promise ->
             val c = ctx()
             val veri = c?.let { CamiVeriKaynagi.al(it) }
             val a = JSONArray()
-            veri?.enYakinlar(lat, lng, k.coerceIn(1, 100), CamiSabitleri.ARAMA_AZAMI_M)?.forEach { e ->
+            veri?.enYakinlar(lat, lng, k.coerceIn(1, 150), CamiSabitleri.ARAMA_AZAMI_M)?.forEach { e ->
                 val k_ = e.kayit
+                val pol = k_.poligon?.let { p -> JSONArray().apply { p.forEach { put(JSONArray().put(it[0]).put(it[1])) } } }
                 a.put(
                     JSONObject().put("id", k_.id).put("ad", k_.ad).put("lat", k_.lat).put("lng", k_.lng)
                         .put("yaricapM", k_.yaricapM).put("poligonVar", k_.poligon != null).put("mesafeM", e.mesafeM)
+                        .put("poligon", pol ?: JSONObject.NULL)
                 )
             }
             promise.resolve(a.toString())
+        }
+
+        /** Uygulama içinden soruyu cevaplar: true = Namaz modunu aç, false = Hayır. */
+        AsyncFunction("soruyuCevapla") { evet: Boolean, promise: Promise ->
+            ctx()?.let { if (evet) CamiDurumu.soruyuKabulEt(it) else CamiDurumu.soruyuReddet(it) }
+            promise.resolve(null)
         }
 
         AsyncFunction("gunlukAl") { promise: Promise ->

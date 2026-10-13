@@ -27,6 +27,9 @@ object CamiDepo {
     private const val YENILEME = "yenileme"
     private const val CAMIDE = "camide"
     private const val KAYIT_BASARILI = "kayit_basarili"
+    private const val SORU = "soru"
+    private const val REDDEDILENLER = "reddedilenler"
+    private const val REDDEDILEN_AZAMI = 30
 
     /**
      * Başka modülün (`expo-countdown-notification` → `AnonsReceiver`) okuduğu
@@ -52,6 +55,10 @@ object CamiDepo {
         val namazModu: Boolean,
         val sessiz: Boolean,
         val kildimSor: Boolean,
+        /** "yakindakiler" | "secilenler" (favori + eklenen yerler) */
+        val izlemeKapsami: String,
+        /** "akilli" | "otomatik" | "sorarak" */
+        val acilisBicimi: String,
         val yerler: Map<String, YerKaydi>,
     )
 
@@ -66,6 +73,8 @@ object CamiDepo {
             namazModu = o.getBoolean("namazModu"),
             sessiz = o.getBoolean("sessiz"),
             kildimSor = o.getBoolean("kildimSor"),
+            izlemeKapsami = o.getString("izlemeKapsami"),
+            acilisBicimi = o.getString("acilisBicimi"),
             yerler = YerKaydi.haritaCoz(o.optJSONObject("yerler")),
         )
     }
@@ -119,6 +128,8 @@ object CamiDepo {
             .put("namazModu", k.optBoolean("namazModu", true))
             .put("sessiz", k.optBoolean("sessiz", true))
             .put("kildimSor", k.optBoolean("kildimSor", true))
+            .put("izlemeKapsami", if (k.optString("izlemeKapsami") == "secilenler") "secilenler" else "yakindakiler")
+            .put("acilisBicimi", k.optString("acilisBicimi").let { if (it == "otomatik" || it == "sorarak") it else "akilli" })
             .put("yerler", yerler)
     }
 
@@ -185,6 +196,74 @@ object CamiDepo {
     }
 
     fun kayitBasarili(ctx: Context): Boolean = prefs(ctx).getBoolean(KAYIT_BASARILI, false)
+
+    // ---------------------------------------------------------- "Camide misiniz?" sorusu
+    /**
+     * Güven puanı SOR dediğinde bekleyen soru (Faz 2). Kullanıcı "Namaz modunu aç"
+     * derse aynı yer ve vakitle `CamiDurumu.giris` çağrılır; soru [bitisMs]'den sonra
+     * ya da o yerden çıkılınca düşer.
+     */
+    data class Soru(
+        val yer: IzlenenYer,
+        val vakit: String?,
+        val tarih: String?,
+        val cuma: Boolean,
+        val tur: String,
+        val zamanMs: Long,
+        val bitisMs: Long,
+    ) {
+        fun json(): JSONObject = JSONObject().put("yer", yer.json())
+            .put("vakit", vakit ?: JSONObject.NULL).put("tarih", tarih ?: JSONObject.NULL)
+            .put("cuma", cuma).put("tur", tur).put("zamanMs", zamanMs).put("bitisMs", bitisMs)
+    }
+
+    fun soruYaz(ctx: Context, s: Soru?) {
+        val e = prefs(ctx).edit()
+        if (s == null) e.remove(SORU) else e.putString(SORU, s.json().toString())
+        e.apply()
+    }
+
+    /** Geçerli (süresi dolmamış) bekleyen soru; süresi dolmuşsa siler ve null döner. */
+    fun soru(ctx: Context): Soru? {
+        val s = jsonOku(ctx, SORU)?.let {
+            try {
+                Soru(
+                    IzlenenYer.coz(it.getJSONObject("yer")) ?: return@let null,
+                    if (it.isNull("vakit")) null else it.getString("vakit"),
+                    if (it.isNull("tarih")) null else it.getString("tarih"),
+                    it.optBoolean("cuma", false), it.getString("tur"), it.getLong("zamanMs"), it.getLong("bitisMs"),
+                )
+            } catch (_: Exception) {
+                null
+            }
+        }
+        if (s == null || s.bitisMs <= System.currentTimeMillis()) {
+            if (prefs(ctx).contains(SORU)) soruYaz(ctx, null)
+            return null
+        }
+        return s
+    }
+
+    /** "Hayır" denen (tur, yer) çiftleri: o turda o yer için bir daha sorulmaz/açılmaz. */
+    private fun reddedilenAnahtari(tur: String, yerId: String) = "$tur|$yerId"
+
+    fun reddedildiMi(ctx: Context, tur: String, yerId: String): Boolean = try {
+        val a = JSONArray(prefs(ctx).getString(REDDEDILENLER, "[]"))
+        val k = reddedilenAnahtari(tur, yerId)
+        (0 until a.length()).any { a.optString(it) == k }
+    } catch (_: Exception) {
+        false
+    }
+
+    @Synchronized
+    fun reddedilenEkle(ctx: Context, tur: String, yerId: String) {
+        val eski = try { JSONArray(prefs(ctx).getString(REDDEDILENLER, "[]")) } catch (_: Exception) { JSONArray() }
+        val k = reddedilenAnahtari(tur, yerId)
+        val liste = (0 until eski.length()).map { eski.optString(it) }.filter { it.isNotEmpty() && it != k } + k
+        val yeni = JSONArray()
+        liste.takeLast(REDDEDILEN_AZAMI).forEach { yeni.put(it) }
+        prefs(ctx).edit().putString(REDDEDILENLER, yeni.toString()).apply()
+    }
 
     // ---------------------------------------------------------- camide hâli
     data class Camide(

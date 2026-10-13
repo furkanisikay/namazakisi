@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
-import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
+import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
 import {
@@ -110,23 +110,32 @@ export function useBildirimButcesi(): BildirimButcesi {
     }, []);
 
     // Store'da muhafız dilimi yoksa (yalın test kurulumları) muhafız sayılmaz.
-    const matris: MuhafizMatrisi | null = useMemo(
-        () => (muhafiz ? muhafiz.matris ?? eskidenMatriseGoc(muhafiz) : null),
-        [muhafiz]
-    );
+    // Servislerle AYNI çözücü: yapısal bozuk matris eski alanlardan kurulur
+    // (`?? eskidenMatriseGoc` bozuk ama var olan matrisi "0 muhafız" sayardı).
+    const matris: MuhafizMatrisi | null = useMemo(() => (muhafiz ? muhafizMatrisiniCoz(muhafiz) : null), [muhafiz]);
+
+    // "Bekleyen" şu andan sonrasıdır: ekran açık kaldıkça geçmişe düşen tetikler
+    // sayılmaya devam etmesin diye an dakikada bir tazelenir (yoksa kart şişer ve
+    // simülasyon sahte aşımla meşru eklemeyi engellerdi).
+    const [dakika, setDakika] = useState(() => Math.floor(Date.now() / 60_000));
+    useEffect(() => {
+        const zamanlayici = setInterval(() => setDakika(Math.floor(Date.now() / 60_000)), 60_000);
+        return () => clearInterval(zamanlayici);
+    }, []);
 
     const girdi = useMemo<DefterGirdisi | null>(() => {
         if (!dis) return null;
         return {
             ...dis,
             platform,
-            simdi: new Date(),
+            // `dakika` her tick'te memo'yu yeniden kurar; an yine gerçek saattir.
+            simdi: new Date(Math.max(Date.now(), dakika * 60_000)),
             koordinat: koordinat ?? null,
             muhafiz: muhafiz && matris ? { aktif: muhafiz.aktif, matris } : null,
             nafile: nafile ?? null,
             vakitSayaci: sayac ? { aktif: sayac.aktif === true, sayacBaslangicSeviyesi: sayac.sayacBaslangicSeviyesi } : null,
         };
-    }, [dis, platform, koordinat, muhafiz, matris, nafile, sayac]);
+    }, [dis, platform, koordinat, muhafiz, matris, nafile, sayac, dakika]);
 
     const ozet = useMemo(() => (girdi ? defterOzetiHesapla(girdi) : null), [girdi]);
 

@@ -12,6 +12,7 @@ import {
     type YerDurumu,
     type YerKaydi,
 } from './camiTipleri';
+import type { AcilisBicimi, IzlemeKapsami } from './guvenPuani';
 
 export interface CamideyimAyarlari {
     aktif: boolean;
@@ -24,6 +25,10 @@ export interface CamideyimAyarlari {
     sessiz: boolean;
     /** Çıkınca "kıldınız mı?" diye sorulsun. */
     kildimSor: boolean;
+    /** Faz 2: yakındaki tüm camiler mi, yalnız seçilenler (favori + eklenen yerler) mi izlenir. */
+    izlemeKapsami: IzlemeKapsami;
+    /** Faz 2: "camide" kararından sonra mod otomatik mi açılır, sorulur mu (güven puanı). */
+    acilisBicimi: AcilisBicimi;
     yerler: Record<string, YerKaydi>;
 }
 
@@ -34,6 +39,8 @@ export const VARSAYILAN_CAMIDEYIM_AYARLARI: CamideyimAyarlari = {
     namazModu: true,
     sessiz: true,
     kildimSor: true,
+    izlemeKapsami: 'yakindakiler',
+    acilisBicimi: 'akilli',
     yerler: {},
 };
 
@@ -75,6 +82,8 @@ export function camideyimAyarlariniNormalize(ham: unknown): CamideyimAyarlari {
         namazModu: ham.namazModu !== false,
         sessiz: ham.sessiz !== false,
         kildimSor: ham.kildimSor !== false,
+        izlemeKapsami: ham.izlemeKapsami === 'secilenler' ? 'secilenler' : 'yakindakiler',
+        acilisBicimi: ham.acilisBicimi === 'otomatik' || ham.acilisBicimi === 'sorarak' ? ham.acilisBicimi : 'akilli',
         yerler,
     };
 }

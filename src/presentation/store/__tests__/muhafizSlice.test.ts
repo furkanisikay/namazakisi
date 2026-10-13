@@ -378,6 +378,13 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
         expect(sonra.yogunluk).toBe(bas.yogunluk); // yoğunluğa dokunulmadı
     });
 
+    test('ozelMatrisYedegiGuncelle(undefined) yedeği TEMİZLER ("Geri al" yedeksiz duruma döner)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const yazili = reducer(bas, ozelMatrisYedegiGuncelle(gecerliYedek()));
+        const sonra = reducer(yazili, ozelMatrisYedegiGuncelle(undefined));
+        expect(sonra.ozelMatrisYedegi).toBeUndefined();
+    });
+
     test('ozelMatrisYedegiGuncelle TAM state AsyncStorage anahtarına yazılır', async () => {
         const store = yeniStore();
         const yedek = gecerliYedek();
