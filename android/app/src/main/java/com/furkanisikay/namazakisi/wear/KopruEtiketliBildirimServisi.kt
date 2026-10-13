@@ -1,11 +1,19 @@
 package com.furkanisikay.namazakisi.wear
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
 import expo.modules.notifications.service.NotificationsService
 import expo.modules.notifications.service.delegates.ExpoPresentationDelegate
+import expo.modules.notifications.service.delegates.SharedPreferencesNotificationsStore
 import expo.modules.notifications.service.interfaces.PresentationDelegate
 
 /**
@@ -29,13 +37,31 @@ import expo.modules.notifications.service.interfaces.PresentationDelegate
  * önek). Saat tarafında dışlama ancak saatin kendi planı VE bildirim izni varken
  * açılır; yoksa köprü bildirimi tek uyarı olarak kalır.
  *
- * CİHAZDA DOĞRULANACAK: (1) alıcı seçiminin önceliğe göre yapıldığı, (2) güncelleme
- * öncesi kurulmuş alarmlar expo'nun alıcısını hedeflediği için ilk muhafız yeniden
- * planlamasına kadar etiketsiz gidebilir (her açılışta / 15 dk'da yeniden kurulur).
+ * GÜNCELLEME GEÇİŞİ (Fable incelemesi, YÜKSEK): expo tetik PendingIntent'ini tasarlanan
+ * alıcının bileşeniyle ve istek kodu = bileşen sınıf adının hash'iyle kurar. Bu sınıf
+ * gelince yeni alarmlar BİZİM bileşenimizi hedefler; güncelleme ÖNCESİ kurulmuş alarmlar
+ * ise expo'nun `NotificationsService` bileşenini. expo iptali de yeni bileşenle yaptığı için
+ * eski alarm HİÇ iptal edilemez ve aynı kimlikli yeniden planlama yanında ikinci bir alarm
+ * olarak kalırdı → cuma'da dört haftaya kadar çift bildirim. Bu yüzden: (a) iptal
+ * olaylarında eski bileşenli tetik de iptal edilir; (b) `EskiExpoAlarmTemizleyici`
+ * MY_PACKAGE_REPLACED'da bekleyen her istek için eski tetiği siler (uygulama hiç
+ * açılmasa da). Alarmlar yeniden başlatmada zaten silinir.
+ *
+ * CİHAZDA DOĞRULANACAK: alıcı seçiminin önceliğe göre yapıldığı.
  */
 class KopruEtiketliBildirimServisi : NotificationsService() {
     override fun getPresentationDelegate(context: Context): PresentationDelegate =
         KopruEtiketliSunucu(context)
+
+    override fun onRemoveScheduledNotifications(context: Context, intent: Intent) {
+        intent.extras?.getStringArray(NotificationsService.IDENTIFIERS_KEY)?.forEach { eskiExpoTetiginiIptalEt(context, it) }
+        super.onRemoveScheduledNotifications(context, intent)
+    }
+
+    override fun onRemoveAllScheduledNotifications(context: Context, intent: Intent) {
+        tumEskiExpoTetikleriniIptalEt(context)
+        super.onRemoveAllScheduledNotifications(context, intent)
+    }
 
     private class KopruEtiketliSunucu(context: Context) : ExpoPresentationDelegate(context) {
         override suspend fun createNotification(
@@ -64,6 +90,44 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
          * Kurulmuş bildirimin ekstralarına `WearableExtender` paketini ekler. Anahtar
          * adlarını elle yazmamak için geçici bir builder'a uygulanıp kopyalanır.
          */
+        /** expo'nun KENDİ alıcısının bileşeni — güncelleme öncesi alarmlar bunu hedefler. */
+        private const val EXPO_ALICISI = "expo.modules.notifications.service.NotificationsService"
+
+        /**
+         * Güncelleme öncesi, expo'nun bileşeniyle kurulmuş tetik alarmını iptal eder.
+         * Eşleşme `createNotificationTrigger` ile birebir: eylem + veri URI'si + bileşen +
+         * istek kodu (bileşen adının hash'i) + değişebilirlik bayrağı. Yoksa hiçbir şey yapmaz.
+         */
+        fun eskiExpoTetiginiIptalEt(context: Context, kimlik: String) {
+            try {
+                val intent = Intent(
+                    NotificationsService.NOTIFICATION_EVENT_ACTION,
+                    Uri.parse("expo-notifications://notifications/").buildUpon()
+                        .appendPath("scheduled").appendPath(kimlik).appendPath("trigger").build(),
+                ).setComponent(ComponentName(context.packageName, EXPO_ALICISI))
+                val degisebilir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+                val pi = PendingIntent.getBroadcast(
+                    context,
+                    EXPO_ALICISI.hashCode(),
+                    intent,
+                    PendingIntent.FLAG_NO_CREATE or degisebilir,
+                ) ?: return
+                (context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager)?.cancel(pi)
+                pi.cancel()
+            } catch (_: Exception) {
+                // En kötü: güncelleme günü bir kerelik çift bildirim.
+            }
+        }
+
+        fun tumEskiExpoTetikleriniIptalEt(context: Context) {
+            try {
+                SharedPreferencesNotificationsStore(context).allNotificationRequests
+                    .forEach { eskiExpoTetiginiIptalEt(context, it.identifier) }
+            } catch (_: Exception) {
+                // Mağaza okunamazsa geçiş temizliği atlanır.
+            }
+        }
+
         fun koprulemeEtiketiEkle(context: Context, bildirim: android.app.Notification) {
             val gecici = NotificationCompat.Builder(context, "kopru_etiketi")
             NotificationCompat.WearableExtender()
@@ -71,5 +135,17 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
                 .extend(gecici)
             bildirim.extras.putAll(gecici.extras)
         }
+    }
+}
+
+/**
+ * Uygulama güncellenince (MY_PACKAGE_REPLACED) güncelleme ÖNCESİ expo bileşeniyle kurulmuş
+ * tetik alarmlarını siler; expo'nun kendi alıcısı aynı yayında bekleyen istekleri YENİ
+ * bileşenle yeniden kurar. İkisinin sırası önemsizdir: farklı PendingIntent'ler.
+ */
+class EskiExpoAlarmTemizleyici : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent?) {
+        if (intent?.action != Intent.ACTION_MY_PACKAGE_REPLACED) return
+        KopruEtiketliBildirimServisi.tumEskiExpoTetikleriniIptalEt(context)
     }
 }

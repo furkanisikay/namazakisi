@@ -46,13 +46,37 @@ object Hatirlatici {
     /** Zincirdeki alarm çaldı: gerekiyorsa göster, sonrakini kur. */
     fun tetiklendi(context: Context) {
         val app = context.applicationContext
-        val depo = YukDeposu(app)
-        val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs)
-        karar.goster?.let {
-            MuhafizBildirimci.goster(app, it)
-            depo.sonGosterilenMs = it.ms
+        try {
+            val depo = YukDeposu(app)
+            val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs)
+            // Sonraki alarm, gösterim patlasa bile kurulmalı: zincir koparsa telefon
+            // uzaktayken (özelliğin varlık sebebi) bir sonraki yüke kadar hiç uyarı olmaz.
+            try {
+                karar.goster?.let {
+                    MuhafizBildirimci.goster(app, it)
+                    depo.sonGosterilenMs = it.ms
+                }
+            } finally {
+                ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Tetik islenemedi, zincir yeniden kuruluyor", e)
+            tazele(app)
         }
-        ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki)
+    }
+
+    /**
+     * Saat geri alındıysa (NTP/telefon düzeltmesi) gelecekte kalmış "son gösterilen"
+     * damgası, o ana kadarki kayıtları yutardı → şimdiye çek.
+     */
+    fun saatDegisti(context: Context) {
+        try {
+            val depo = YukDeposu(context.applicationContext)
+            val simdi = System.currentTimeMillis()
+            if (depo.sonGosterilenMs > simdi) depo.sonGosterilenMs = simdi
+        } catch (e: Exception) {
+            Log.w(TAG, "Saat degisimi islenemedi", e)
+        }
     }
 }
 
@@ -110,11 +134,20 @@ class MuhafizAlarmAlicisi : BroadcastReceiver() {
 class YenidenKurAlicisi : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
+            // Köprü ayarının sistemde kalıcılığı doğrulanmadı → yeniden başlatma ve
+            // güncellemede önbelleği atıp yeniden uygula (ucuz sigorta).
             Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            -> {
+                KopruAyari.onbellegiSil(context)
+                Hatirlatici.tazele(context)
+            }
             Intent.ACTION_TIME_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED,
-            Intent.ACTION_MY_PACKAGE_REPLACED,
-            -> Hatirlatici.tazele(context)
+            -> {
+                Hatirlatici.saatDegisti(context)
+                Hatirlatici.tazele(context)
+            }
         }
     }
 }
@@ -134,6 +167,10 @@ object KopruAyari {
     const val MUHAFIZ_KOPRU_ETIKETI = "namazakisi_muhafiz"
     private const val PREFS = "saat_kopru"
     private const val SON_KARAR = "dislandi"
+
+    fun onbellegiSil(context: Context) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit { remove(SON_KARAR) }
+    }
 
     fun uygula(context: Context, dislansin: Boolean) {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)

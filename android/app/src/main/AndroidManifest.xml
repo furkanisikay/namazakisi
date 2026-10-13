@@ -156,6 +156,12 @@
     <!-- Wear OS (issue #280): muhafız bildirimlerine köprü etiketi basar; saat kendi
          planını kurunca yalnız bu etiketi dışlar (çift bildirim olmasın). expo-notifications
          olayları EN YÜKSEK öncelikli alıcıya gönderir (kendi alıcısı -1). -->
+    <!-- Güncelleme öncesi expo bileşeniyle kurulmuş tetik alarmlarını siler (çift bildirim). -->
+    <receiver android:name=".wear.EskiExpoAlarmTemizleyici" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+      </intent-filter>
+    </receiver>
     <receiver android:name=".wear.KopruEtiketliBildirimServisi" android:enabled="true" android:exported="false">
       <intent-filter android:priority="0">
         <action android:name="expo.modules.notifications.NOTIFICATION_EVENT"/>

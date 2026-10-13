@@ -147,5 +147,7 @@ class AlarmZinciriTest {
         assertFalse(KopruKarari.muhafizKoprusuDislansinMi(yuk(plan), bildirimIzni = false))
         assertFalse(KopruKarari.muhafizKoprusuDislansinMi(yuk(emptyList(), surum = 1), bildirimIzni = true))
         assertFalse(KopruKarari.muhafizKoprusuDislansinMi(null, bildirimIzni = true))
+        // Plan boşsa (telefon planı okuyamadı) köprü dışlanmaz: bilek uyarısız kalmasın.
+        assertFalse(KopruKarari.muhafizKoprusuDislansinMi(yuk(emptyList()), bildirimIzni = true))
     }
 }

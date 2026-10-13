@@ -93,5 +93,7 @@ class ZincirYoneticisi(private val kurucu: AlarmKurucu) {
  */
 object KopruKarari {
     fun muhafizKoprusuDislansinMi(yuk: Yuk?, bildirimIzni: Boolean): Boolean =
-        bildirimIzni && yuk != null && yuk.surum >= 2
+        // Plan BOŞSA çoğaltacak bir şey yok: köprü kalmalı, yoksa telefon muhafızı açıkken
+        // (plan okunamayıp boş gönderildiyse) bilekte hiç uyarı kalmaz (Fable incelemesi).
+        bildirimIzni && yuk != null && yuk.surum >= 2 && yuk.plan.isNotEmpty()
 }
