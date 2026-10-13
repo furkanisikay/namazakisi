@@ -31,6 +31,7 @@ import {
 } from '../../../modules/expo-countdown-notification/src';
 import { sessizBitisMs } from '../../../modules/expo-cami-geofence/src';
 import { MuhafizKanalServisi } from './MuhafizKanalServisi';
+import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
 /**
@@ -46,8 +47,11 @@ import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
  * Kesme KRONOLOJİKTİR (çağrılar zaman sırasıyla gelir): en uzaktaki tetikler düşer
  * ve bir sonraki tur (15 dk görevi / açılış) onları yeniden kurar. iOS'taki
  * 64 bildirim bütçesinin (`ios/bildirimButcesi.ts`) Android ikizi.
+ *
+ * Sayı TOPLAM alarm havuzundan türer (`core/bildirim/butceSabitleri.ts`,
+ * 480 − 120 = 360): rehber ekranı da aynı havuzu sayar (issue #298).
  */
-export const ANDROID_MUHAFIZ_ALARM_BUTCESI = 360;
+export const ANDROID_MUHAFIZ_ALARM_BUTCESI = ANDROID_MUHAFIZ_PAYI;
 
 export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'android' as const;

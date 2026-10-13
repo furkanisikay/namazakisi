@@ -144,6 +144,19 @@ object AnonsZamanlayici {
         kayittanCikar(context, id)
     }
 
+    /**
+     * Kayıtlı anonslardan [esles] koşuluna uyanların hepsini iptal eder (issue #299:
+     * bildirimdeki "Kıldım" o vaktin TÜM anonslarını JS'i beklemeden susturur).
+     * Anons bildirimle AYNI kimliği taşır, ama sesli-yalnız adımın bildirimi hiç
+     * planlanmamış olabilir → bildirim mağazasından değil, BU kayıttan seçilir.
+     * @return iptal edilen kimlikler
+     */
+    fun eslesenleriIptalEt(context: Context, esles: (String) -> Boolean): List<String> {
+        val secilen = kayitliIdler(context).filter(esles)
+        secilen.forEach { iptal(context, it) }
+        return secilen
+    }
+
     fun tumunuIptal(context: Context) {
         val idler = kayitliIdler(context)
         try {
@@ -158,6 +171,23 @@ object AnonsZamanlayici {
         }
         kayitYaz(context, emptySet())
         detayYaz(context, JSONObject())
+    }
+
+    /**
+     * Gelecekte tetiklenecek (BEKLEYEN) anons alarmi sayisi — bildirim sinirı
+     * rehberinin olcumu (issue #298). Gecmis/bozuk kayit sayilmaz: alarm ya
+     * zaten tetiklendi ya da hic kurulmadi; sistemin havuzunda degiller.
+     */
+    fun bekleyenSayisi(context: Context): Int {
+        val detay = detayOku(context)
+        val simdi = System.currentTimeMillis()
+        var sayi = 0
+        detay.keys().forEach { id ->
+            try {
+                if (detay.getJSONObject(id).getLong("t") > simdi) sayi++
+            } catch (_: Exception) { /* bozuk kayit sayilmaz */ }
+        }
+        return sayi
     }
 
     /** Alarm tetiklendikten sonra kaydi temizler (alarm zaten tuketildi). */

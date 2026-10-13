@@ -1,30 +1,13 @@
 import * as Notifications from 'expo-notifications';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
-import {
-    sonrakiCumalar,
-    hatirlatmaZamaniHesapla,
-    sureMetniOlustur,
-    cumaPenceresiOlustur,
-} from '../../core/utils/cumaYardimcisi';
-import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
+import { sureMetniOlustur } from '../../core/utils/cumaYardimcisi';
+import { CUMA_ID_ONEKI, cumaPlaniOlustur, type CumaPlanKaydi } from '../../core/bildirim/cumaPlani';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 
-/** Bildirim id oneki — temizlik bu onekle SUZER, baska sistemlere dokunmaz. */
-const ID_ONEKI = 'cuma_hatirlatma_';
-
-/**
- * Kac cuma ileri planlanir.
- *
- * Vakit bildirimlerinin "bugun + yarin" penceresi cuma icin YETERSIZ (olay haftada
- * bir). Dort hafta, kullanici uygulamayi bir ay acmasa bile hatirlatmanin
- * surmesini saglar. Ust sinir da gerekli: uzaga kurulan mutlak zamanlar konum
- * degisimi/DST gibi kaymalari bir sonraki acilisa kadar tasiyabilir.
- */
-const PLANLANACAK_CUMA_SAYISI = 4;
+/** Bildirim id oneki — temizlik bu onekle SUZER (tek kaynak: `core/bildirim/cumaPlani.ts`). */
+const ID_ONEKI = CUMA_ID_ONEKI;
 
 export interface CumaKoordinat {
     lat: number;
@@ -109,64 +92,37 @@ export class CumaHatirlatmaServisi {
 
         await this.mevcutlariTemizle();
 
-        const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-        const params = CalculationMethod.Turkey();
-        const simdi = new Date();
-
-        // Adim dakikalari ORTAK PLAN URETICISINDEN gelir (cuma icin ayri bir
-        // zamanlama mantigi yazilmaz): `oncedenDk` esikli tek adimli bir pencere
-        // → 'birkez' tek dakika, tekrarli siklik ise seyrekleseren bir dizi verir.
-        // Plan butcesi (`etkinSiklikHesapla`) de motorun icinde oldugu icin
-        // "180 dk once basla, 5 dk'da bir" gibi bir ayar bildirim patlamasi
-        // uretemez — muhafizla ayni tavan gecerlidir.
-        const pencere = cumaPenceresiOlustur(ayarlar.oncedenDk, ayarlar.siklik);
-        const adimlar = vakitUyariPlaniOlustur(pencere, ayarlar.oncedenDk).map((a) => a.kalanDk);
-
+        // Plan SAF ureticiden gelir (`core/bildirim/cumaPlani.ts`): bildirim
+        // defteri (issue #298) ayni listeyi sayar. Adim dakikalari ortak motor
+        // (`vakitUyariPlaniOlustur`) uzerinden uretilir — plan butcesi dahil.
+        //
         // Özel gün (issue #272): aralığa düşen cumanın hatırlatması kurulmaz
         // (eski plan yukarıda temizlendi). Ufuk kaymaz: dört cumadan biri
         // aralıktaysa o hafta atlanır, beşinci cuma eklenmez.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
-
-        for (const cuma of sonrakiCumalar(simdi, PLANLANACAK_CUMA_SAYISI)) {
-            if (ozelGundeMi(tarihiISOFormatinaCevir(cuma))) continue;
-            // Vakit hesabi GUN BAZINDA: her cuma icin ayri PrayerTimes.
-            const ogleVakti = new PrayerTimes(coordinates, cuma, params).dhuhr;
-            for (const [sira, kalanDk] of adimlar.entries()) {
-                await this.tekHatirlatmaPlanla(cuma, ogleVakti, kalanDk, simdi, sira === 0);
-            }
+        const plan = cumaPlaniOlustur(koordinatlar, ayarlar, new Date(), ozelGundeMi);
+        for (const kayit of plan) {
+            await this.tekHatirlatmaPlanla(kayit);
         }
     }
 
     /**
-     * @param ilkMi Bu, o cumanin ILK (en erken) hatirlatmasi mi?
-     *   - identifier: ilk hatirlatma TARIHSEL id'yi (`cuma_hatirlatma_<ISO>`)
-     *     korur; tekrarlar dakikayla ayrisir. Boylece `'birkez'` ayari eski
-     *     kurulumlarla birebir ayni id kumesini uretir.
-     *   - metin: cuma'ya OZGU nass (Cuma 62/9) yalnizca ilk hatirlatmada gecer;
-     *     her tekrarda okunmasi hem gurultu hem de nassin degerini asindirir.
+     * Tek hatirlatmayi kurar. Metin:
+     *   - cuma'ya OZGU nass (Cuma 62/9) yalnizca ILK hatirlatmada gecer; her
+     *     tekrarda okunmasi hem gurultu hem de nassin degerini asindirir.
      */
-    private async tekHatirlatmaPlanla(
-        cuma: Date,
-        ogleVakti: Date,
-        oncedenDk: number,
-        simdi: Date,
-        ilkMi: boolean
-    ): Promise<void> {
-        const zaman = hatirlatmaZamaniHesapla(ogleVakti, oncedenDk);
-        if (zaman.getTime() <= simdi.getTime()) return;
-
-        const sure = sureMetniOlustur(oncedenDk);
-        const iso = tarihiISOFormatinaCevir(cuma);
+    private async tekHatirlatmaPlanla(kayit: CumaPlanKaydi): Promise<void> {
+        const sure = sureMetniOlustur(kayit.oncedenDk);
 
         try {
             await Notifications.scheduleNotificationAsync({
-                identifier: ilkMi ? `${ID_ONEKI}${iso}` : `${ID_ONEKI}${iso}_${oncedenDk}`,
+                identifier: kayit.id,
                 content: {
                     title: 'Cuma namazı yaklaşıyor',
                     // İbadete cagri kaydi ("sen" + emir kipi) — arayuz dili DEGIL.
                     // Cuma'ya OZGU nass (Cuma 62:9) burada dogru yerde: yalniz bu
                     // bildirime ait, genel havuza karismaz.
-                    body: ilkMi
+                    body: kayit.ilkMi
                         ? `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`
                         : `Öğle vaktine ${sure} kaldı. Camiye yola çık.`,
                     sound: true,
@@ -174,7 +130,7 @@ export class CumaHatirlatmaServisi {
                 },
                 trigger: {
                     type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: zaman,
+                    date: kayit.zaman,
                     channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
                 },
             });
