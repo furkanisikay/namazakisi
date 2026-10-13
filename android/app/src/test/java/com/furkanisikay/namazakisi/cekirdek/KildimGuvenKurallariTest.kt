@@ -91,6 +91,24 @@ class KildimGuvenKurallariTest {
     }
 
     @Test
+    fun kildimBaglantisiJsIleAyniDesen() {
+        assertTrue(k.kildimBaglantisiMi("namazakisi://kildim"))
+        assertTrue(k.kildimBaglantisiMi("namazakisi://kildim/"))
+        assertTrue(k.kildimBaglantisiMi("NAMAZAKISI://KILDIM?kaynak=rutin"))
+        assertFalse(k.kildimBaglantisiMi("namazakisi://kible"))
+        assertFalse(k.kildimBaglantisiMi("namazakisi://kildimx"))
+        assertFalse(k.kildimBaglantisiMi(null))
+    }
+
+    @Test
+    fun bayatDerinBaglantiKaydiKullanilmaz() {
+        assertTrue(k.kayitTazeMi(1_000L, 1_000L + k.DERIN_BAGLANTI_GECERLILIK_MS))
+        assertFalse(k.kayitTazeMi(1_000L, 1_001L + k.DERIN_BAGLANTI_GECERLILIK_MS))
+        // Saat geri alındıysa da güvenilmez.
+        assertFalse(k.kayitTazeMi(5_000L, 4_000L))
+    }
+
+    @Test
     fun kalicilikGidisDonusVeBozukKayit() {
         val l = mapOf(rutin to Kayit(rutin, Karar.IZIN, "Modlar ve Rutinler", 1700000000000L))
         assertEquals(l, k.jsondanOku(k.jsonaYaz(l)))

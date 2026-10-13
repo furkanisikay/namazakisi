@@ -21,6 +21,7 @@ export const AYARLAR_EKRANLARI = [
   'NafileAyarlari',
   'CamideyimAyarlari',
   'NamazModuAyarlari',
+  'KildimUygulamalari',
   'DebugLogs',
   'TakvimAyarlari',
   'NelerYeni',

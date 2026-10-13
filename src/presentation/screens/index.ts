@@ -25,6 +25,7 @@ export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
 export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
 export { CamideyimAyarlariSayfasi } from './CamideyimAyarlariSayfasi';
 export { NamazModuAyarlariSayfasi } from './NamazModuAyarlariSayfasi';
+export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';
 export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
 export { NelerYeniSayfasi } from './NelerYeniSayfasi';

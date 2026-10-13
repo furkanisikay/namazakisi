@@ -2,23 +2,24 @@ package com.furkanisikay.namazakisi.kildim
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import com.furkanisikay.namazakisi.R
+import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.Eylem
+import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.Karar
+import com.furkanisikay.namazakisi.cekirdek.KildimGuvenKurallari.KaynakSinifi
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
-import com.furkanisikay.namazakisi.cekirdek.KisayolKaynagi
 
 /**
  * "Şu anki vakti kıldım" kısayolu (issue #276) — arayüzü olmayan geçiş etkinliği.
  * Uygulamayı AÇMADAN işaretler, kısa bir mesaj gösterip kapanır. Samsung Rutinler ve
  * otomasyon uygulamaları kısayolu "uygulama eylemi" olarak çağırır.
  *
- * DIŞA AÇIK olduğu için (`exported`) başlatan doğrulanır (`KisayolKaynagi`): ana
- * ekrandan gelen dokunuş doğrudan işaretlenir; otomasyon, Rutinler ya da bilinmeyen
- * bir uygulama başlattıysa küçük bir onay sorulur — başka bir uygulama kullanıcı
+ * DIŞA AÇIK olduğu için (`exported`) başlatan çözülür ([KildimBaslatani]) ve GÜVEN
+ * LİSTESİNE bakılır (issue #299, `KildimGuvenKurallari`): ana ekran ve izinli uygulama
+ * doğrudan işaretler, engelli uygulama yok sayılır; ilk kez gelen uygulamaya tek
+ * seferlik soru sorulur — [Her zaman izin ver] [Yalnız bu sefer] [Engelle]. Böylece bir
+ * kez onaylanan otomasyon bir daha manuele düşmez, başka bir uygulama da kullanıcı
  * adına sessizce "kıldım" yazamaz.
  *
  * Etkinlik görünür olduğu an uygulama ön plandadır → headless görev arka plan
@@ -31,12 +32,21 @@ class KildimKisayolActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val baslatan = KildimBaslatani.coz(this, intent)
+        val eylem = baslatan.eylem(this)
+        if (eylem is Eylem.YokSay) {
+            // Engellenmiş uygulama: hiçbir şey yazılmaz, otomasyon her seferinde mesajla
+            // rahatsız etmesin diye sessizce kapanılır.
+            finish()
+            return
+        }
         when (val d = KildimIslemleri.simdikiVaktiDegerlendir(this)) {
-            // İşaretlenecek bir şey yok: yalnız bilgi verilir, onay gerekmez.
+            // İşaretlenecek bir şey yok: yalnız bilgi verilir, soru gerekmez.
             is KildimIslemleri.Degerlendirme.Kesin -> bitir(d.sonuc)
-            is KildimIslemleri.Degerlendirme.Aday ->
-                if (anaEkrandanMi()) bitir(KildimIslemleri.adayiKuyrugaAl(this, d, KildimKuyruguKurallari.KAYNAK_KISAYOL))
-                else onayGoster(d)
+            is KildimIslemleri.Degerlendirme.Aday -> when (eylem) {
+                is Eylem.Sor -> soruGoster(d, baslatan, eylem)
+                else -> isaretle(d)
+            }
         }
     }
 
@@ -47,46 +57,47 @@ class KildimKisayolActivity : Activity() {
         super.onDestroy()
     }
 
-    /** Başlatan paket bir ana ekran uygulaması mı (uydurulabilen referrer eki yoksa)? */
-    private fun anaEkrandanMi(): Boolean {
-        val ekVar = try {
-            intent.hasExtra(Intent.EXTRA_REFERRER) || intent.hasExtra(Intent.EXTRA_REFERRER_NAME)
-        } catch (_: Exception) {
-            true // Okunamayan ek (bozuk Parcel) → güvenme.
-        }
-        val paket = if (ekVar) null else KisayolKaynagi.paketAdiCoz(referrer?.toString())
-        return KisayolKaynagi.onaysizMi(paket, ekVar, paket != null && anaEkranUygulamasiMi(paket), packageName)
-    }
+    private fun isaretle(aday: KildimIslemleri.Degerlendirme.Aday) =
+        bitir(KildimIslemleri.adayiKuyrugaAl(this, aday, KildimKuyruguKurallari.KAYNAK_KISAYOL))
 
-    /**
-     * Başlatan uygulama paket görünürlüğünde zaten görünür (bizi başlattı) →
-     * `<queries>` gerekmez. Okunamazsa ana ekran SAYILMAZ (onay sorulur).
-     */
-    private fun anaEkranUygulamasiMi(paket: String): Boolean = try {
-        val sorgu = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).setPackage(paket)
-        val sonuc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.queryIntentActivities(sorgu, PackageManager.ResolveInfoFlags.of(0))
-        } else {
-            @Suppress("DEPRECATION")
-            packageManager.queryIntentActivities(sorgu, 0)
-        }
-        sonuc.isNotEmpty()
-    } catch (_: Exception) {
-        false
-    }
-
-    private fun onayGoster(aday: KildimIslemleri.Degerlendirme.Aday) {
+    private fun soruGoster(aday: KildimIslemleri.Degerlendirme.Aday, baslatan: KildimBaslatani, sor: Eylem.Sor) {
         var islendi = false
-        onay = AlertDialog.Builder(this, R.style.KildimOnayTemasi)
-            .setTitle(getString(R.string.kildim_onay_baslik, aday.vakitAdi))
-            .setMessage(R.string.kildim_onay_mesaj)
-            .setPositiveButton(R.string.kildim_onay_evet) { _, _ ->
-                islendi = true
-                bitir(KildimIslemleri.adayiKuyrugaAl(this, aday, KildimKuyruguKurallari.KAYNAK_KISAYOL))
-            }
-            .setNegativeButton(R.string.kildim_onay_vazgec) { _, _ -> islendi = true; finish() }
+        val paket = baslatan.paket
+        val insa = AlertDialog.Builder(this, R.style.KildimOnayTemasi)
             .setOnDismissListener { if (!islendi && !isFinishing) finish() }
-            .show()
+        if (paket == null) {
+            // Kimliği olmayan başlatan: karar saklanamaz → yalnız bu seferlik onay.
+            insa.setTitle(getString(R.string.kildim_onay_baslik, aday.vakitAdi))
+                .setMessage(R.string.kildim_onay_mesaj)
+                .setPositiveButton(R.string.kildim_onay_evet) { _, _ -> islendi = true; isaretle(aday) }
+                .setNegativeButton(R.string.kildim_onay_vazgec) { _, _ -> islendi = true; finish() }
+        } else {
+            val tarayici = baslatan.sinif == KaynakSinifi.TARAYICI
+            insa.setTitle(getString(R.string.kildim_guven_baslik, baslatan.ad))
+                .setMessage(
+                    getString(if (tarayici) R.string.kildim_guven_tarayici_mesaj else R.string.kildim_guven_mesaj, aday.vakitAdi)
+                )
+            if (sor.herZamanSunulur) {
+                insa.setPositiveButton(R.string.kildim_guven_her_zaman) { _, _ ->
+                    islendi = true
+                    KildimGuvenDeposu.kaydet(this, paket, Karar.IZIN, baslatan.ad)
+                    isaretle(aday)
+                }
+                insa.setNeutralButton(R.string.kildim_guven_bu_sefer) { _, _ -> islendi = true; isaretle(aday) }
+            } else {
+                insa.setPositiveButton(R.string.kildim_guven_bu_sefer) { _, _ -> islendi = true; isaretle(aday) }
+            }
+            if (sor.engelSunulur) {
+                insa.setNegativeButton(R.string.kildim_guven_engelle) { _, _ ->
+                    islendi = true
+                    KildimGuvenDeposu.kaydet(this, paket, Karar.ENGEL, baslatan.ad)
+                    Toast.makeText(applicationContext, getString(R.string.kildim_guven_engellendi, baslatan.ad), Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
+        // Geri tuşu / dışarı dokunma = Vazgeç: karar SAKLANMAZ, bir dahaki istekte yine sorulur.
+        onay = insa.show()
     }
 
     private fun bitir(sonuc: KildimIslemleri.Sonuc) {

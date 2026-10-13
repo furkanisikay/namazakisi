@@ -1,5 +1,6 @@
 package com.furkanisikay.namazakisi
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
@@ -11,6 +12,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnable
 import com.facebook.react.defaults.DefaultReactActivityDelegate
 
 import expo.modules.ReactActivityDelegateWrapper
+import com.furkanisikay.namazakisi.kildim.KildimDerinBaglantiKaydi
 
 class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +22,15 @@ class MainActivity : ReactActivity() {
     setTheme(R.style.AppTheme);
     super.onCreate(null)
     yonKilidiniUygula(resources.configuration)
+    // `namazakisi://kildim` başlatanı (issue #299): getReferrer() yalnız BU AN geçerli.
+    KildimDerinBaglantiKaydi.yakala(this, intent)
+  }
+
+  override fun onNewIntent(intent: Intent) {
+    // super'den ÖNCE: sistem getReferrer()'ı yalnız onNewIntent çağrısı boyunca yeni
+    // intent'e göre verir; JS bağlantı olayını super içinde alır.
+    KildimDerinBaglantiKaydi.yakala(this, intent)
+    super.onNewIntent(intent)
   }
 
   /**

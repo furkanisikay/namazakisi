@@ -86,6 +86,21 @@ object KildimGuvenKurallari {
     fun sirali(liste: Map<String, Kayit>): List<Kayit> =
         liste.values.sortedWith(compareBy<Kayit>({ it.karar.ordinal }, { it.ad.lowercase() }, { it.paket }))
 
+    /** JS `derinBaglantilar.kildimBaglantisiMi` ile AYNI desen (sonda `/`, sorgu ya da parça olabilir). */
+    private val KILDIM_BAGLANTISI = Regex("""^namazakisi://kildim/?(?:[?#].*)?$""", RegexOption.IGNORE_CASE)
+
+    fun kildimBaglantisiMi(uri: String?): Boolean = uri != null && KILDIM_BAGLANTISI.matches(uri)
+
+    /**
+     * Derin bağlantının başlatanı kaydedildikten sonra JS'in onu sorduğu ana kadar
+     * geçebilecek en uzun süre. Soğuk açılışta JS'in ayağa kalkması saniyeler sürer;
+     * bayat kayıt başka bir bağlantıya (ör. web sayfasından gelen) yanlış kimlik vermesin.
+     */
+    const val DERIN_BAGLANTI_GECERLILIK_MS = 120_000L
+
+    fun kayitTazeMi(kayitMs: Long, simdiMs: Long): Boolean =
+        simdiMs >= kayitMs && simdiMs - kayitMs <= DERIN_BAGLANTI_GECERLILIK_MS
+
     // --- Kalıcılık biçimi: {"<paket>": {"k": "izin"|"engel", "a": "<ad>", "t": <ms>}} ---
 
     private val PAKET_DESENI = Regex("""^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)+$""")
