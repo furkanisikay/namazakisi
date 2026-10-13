@@ -63,13 +63,15 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
     await this.tumBildirimleriniTemizle();
 
     if (Platform.OS !== 'android') return;
-    if (!ayarlar.aktif) return;
+    // Now Bar (issue #282): kapalı/özel gün yolunda da planlayıcıya "aday yok" denir,
+    // yoksa önceki turun iftar penceresi planda kalırdı.
+    if (!ayarlar.aktif) return this.canliKaynagiBildir('iftarSayac', []);
 
     // Özel gün (issue #272): hayız/nifas günlerinde oruç da tutulmaz → o günün
     // iftar sayacı kurulmaz (eski plan yukarıda temizlendi). Gün = takvim günü:
     // iftar o günün akşamıdır, gece yarısından sonra da bugünün akşamı planlanır.
     const ozelGundeMi = await ozelGunSuzgeciniOku();
-    if (ozelGundeMi(bugunuAl())) return;
+    if (ozelGundeMi(bugunuAl())) return this.canliKaynagiBildir('iftarSayac', []);
 
     await this.kanalOlustur();
 
@@ -88,23 +90,33 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
     const vakitGirdiId = `${bildirimId}_vakitgirdi`;
     const temizlemeId = `${bildirimId}_bitis`;
 
+    // Now Bar (issue #282 ikinci aşama): iftar penceresi (imsak → akşam) planlayıcıya
+    // bildirilir; Android 16'da öğe açıksa sayacı planlayıcı gösterir (tam imsakta,
+    // exact alarmla) ve bu servis KENDİ bildirimini kurmaz — çift sayaç olmaz.
+    const iftarCanli = iftarCanliYukuOlustur({
+      imsakMs: sabahVakti.getTime(),
+      ogleMs: prayerTimes.dhuhr.getTime(),
+      ikindiMs: prayerTimes.asr.getTime(),
+      aksamMs: aksamVakti.getTime(),
+    });
+    const karar = await this.canliKarari('iftar');
+    await this.canliKaynagiBildir(
+      'iftarSayac',
+      simdi < aksamVakti
+        ? [this.canliAdayi('iftar', bildirimId, sabahVakti.getTime(), aksamVakti.getTime(), iftarCanli)]
+        : []
+    );
+
     if (simdi < sabahVakti) {
       // Sabah namazindan once: aksam vaktinde "vakit girdi" goster, aksam+10dk'da temizle
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
-      // Sabah ile aksam arasi: hemen native countdown baslat
+      // Sabah ile aksam arasi: hemen native countdown baslat (planlayıcı devralmadıysa)
       // Live Update (issue #282): ilerleme çubuğu gün boyu orucu gösterir.
-      this.nativeCountdownBaslat(
-        bildirimId,
-        aksamVakti.getTime(),
-        iftarCanliYukuOlustur({
-          imsakMs: sabahVakti.getTime(),
-          ogleMs: prayerTimes.dhuhr.getTime(),
-          ikindiMs: prayerTimes.asr.getTime(),
-          aksamMs: aksamVakti.getTime(),
-        })
-      );
+      if (!karar.devralir) {
+        this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime(), karar.oneCikar ? iftarCanli : undefined);
+      }
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {

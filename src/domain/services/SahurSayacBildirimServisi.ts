@@ -64,7 +64,8 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     await this.tumBildirimleriniTemizle();
 
     if (Platform.OS !== 'android') return;
-    if (!ayarlar.aktif) return;
+    // Now Bar (issue #282): kapalıyken planlayıcıya "aday yok" denir.
+    if (!ayarlar.aktif) return this.canliKaynagiBildir('sahurSayac', []);
 
     await this.kanalOlustur();
 
@@ -89,25 +90,55 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     const hedefImsak =
       simdi.getTime() < imsakBugun.getTime() + 10 * 60 * 1000 ? imsakBugun : imsakYarin;
     const ozelGundeMi = await ozelGunSuzgeciniOku();
-    if (ozelGundeMi(tarihiISOFormatinaCevir(hedefImsak))) return;
+    if (ozelGundeMi(tarihiISOFormatinaCevir(hedefImsak))) return this.canliKaynagiBildir('sahurSayac', []);
 
     const bugunTarihStr = bugunuAl();
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAHUR_SAYAC}${bugunTarihStr}`;
     const vakitGirdiId = `${bildirimId}_vakitgirdi`;
     const temizlemeId = `${bildirimId}_bitis`;
 
+    // Now Bar (issue #282 ikinci aşama): sahur penceresi (yatsı → imsak) planlayıcıya
+    // bildirilir. Android 16'da öğe açıksa planlayıcı tam yatsıda (exact alarm)
+    // gösterir — gündüz kurulan plan artık arka plan turunu beklemez — ve bu servis
+    // kendi bildirimini kurmaz.
+    const dunTarihi = new Date(simdi);
+    dunTarihi.setDate(dunTarihi.getDate() - 1);
+    const yatsiDun = new PrayerTimes(coordinates, dunTarihi, params).isha;
+    const pencere =
+      simdi.getTime() < imsakBugun.getTime()
+        ? { yatsi: yatsiDun, imsak: imsakBugun }
+        : simdi.getTime() < imsakBugun.getTime() + 10 * 60 * 1000
+          ? null
+          : { yatsi: yatsiBugun, imsak: imsakYarin };
+    const karar = await this.canliKarari('sahur');
+    await this.canliKaynagiBildir(
+      'sahurSayac',
+      pencere
+        ? [
+            this.canliAdayi(
+              'sahur',
+              bildirimId,
+              pencere.yatsi.getTime(),
+              pencere.imsak.getTime(),
+              sahurCanliYukuOlustur({ yatsiMs: pencere.yatsi.getTime(), imsakMs: pencere.imsak.getTime() })
+            ),
+          ]
+        : []
+    );
+
     if (simdi.getTime() < imsakBugun.getTime()) {
       // Gece yarisini gecmisiz, imsak (sahur) vaktine dogru ilerliyoruz
       const imsakArti10 = new Date(imsakBugun.getTime() + 10 * 60 * 1000);
       // Live Update (issue #282): ilerleme = DÜNÜN yatsısından bugünün imsağına.
-      const dun = new Date(simdi);
-      dun.setDate(dun.getDate() - 1);
-      const yatsiDun = new PrayerTimes(coordinates, dun, params).isha;
-      this.nativeCountdownBaslat(
-        bildirimId,
-        imsakBugun.getTime(),
-        sahurCanliYukuOlustur({ yatsiMs: yatsiDun.getTime(), imsakMs: imsakBugun.getTime() })
-      );
+      if (!karar.devralir) {
+        this.nativeCountdownBaslat(
+          bildirimId,
+          imsakBugun.getTime(),
+          karar.oneCikar
+            ? sahurCanliYukuOlustur({ yatsiMs: yatsiDun.getTime(), imsakMs: imsakBugun.getTime() })
+            : undefined
+        );
+      }
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, imsakBugun.getTime());
       await this.temizlemePlanla(temizlemeId, imsakArti10.getTime());
     } else if (simdi.getTime() < imsakBugun.getTime() + 10 * 60 * 1000) {
@@ -123,11 +154,15 @@ export class SahurSayacBildirimServisi extends SayacBildirimTemeli {
     } else {
       // Yatsi vaktini gecmisiz (aksam/gece vakti), yarin sabahki imsak hedefimiz
       const imsakArti10Yarin = new Date(imsakYarin.getTime() + 10 * 60 * 1000);
-      this.nativeCountdownBaslat(
-        bildirimId,
-        imsakYarin.getTime(),
-        sahurCanliYukuOlustur({ yatsiMs: yatsiBugun.getTime(), imsakMs: imsakYarin.getTime() })
-      );
+      if (!karar.devralir) {
+        this.nativeCountdownBaslat(
+          bildirimId,
+          imsakYarin.getTime(),
+          karar.oneCikar
+            ? sahurCanliYukuOlustur({ yatsiMs: yatsiBugun.getTime(), imsakMs: imsakYarin.getTime() })
+            : undefined
+        );
+      }
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, imsakYarin.getTime());
       await this.temizlemePlanla(temizlemeId, imsakArti10Yarin.getTime());
     }

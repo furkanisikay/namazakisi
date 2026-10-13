@@ -20,6 +20,7 @@ import { SERI_SAYAC_VARSAYILAN_ESIK_DK, sayacBaslamaliMi } from '../../core/seri
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
 import { SERI_SOZU } from '../../core/data/SeriSozu';
+import { NOW_BAR_SON_DK_MAX } from '../../core/sayac/nowBar';
 
 export interface SeriSayacAyarlari {
   /** Kullanici gun sonu hatirlatmasini acti mi? */
@@ -72,20 +73,38 @@ export class SeriSayacBildirimServisi extends SayacBildirimTemeli {
     await this.tumBildirimleriniTemizle();
 
     if (Platform.OS !== 'android') return;
-    if (!ayarlar.aktif) return;
     // Gun zaten tamsa hatirlatacak bir sey yok — kalici bir bildirimle
-    // kullaniciyi bosuna mesgul etme.
-    if (ayarlar.seriBugunTamMi) return;
+    // kullaniciyi bosuna mesgul etme. Now Bar planlayıcısına da "aday yok".
+    if (!ayarlar.aktif || ayarlar.seriBugunTamMi || !ayarlar.hedef) {
+      return this.canliKaynagiBildir('seriSayac', []);
+    }
 
     const simdi = new Date();
     const esik = ayarlar.esikDk ?? SERI_SAYAC_VARSAYILAN_ESIK_DK;
+    const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SERI_SAYAC}${bugunuAl()}`;
+    const hedefMs = ayarlar.hedef.getTime();
+
+    // Now Bar (issue #282 ikinci aşama): seri YALNIZ kullanıcı Now Bar'da açarsa
+    // öne çıkar (varsayılan kapalı — baskı hissi). Açıksa planlayıcı tam eşikte
+    // (exact alarm) gösterir; bu servis kendi bildirimini kurmaz. "Son N dk"
+    // seçimi en fazla `NOW_BAR_SON_DK_MAX` geriye uzanır.
+    const karar = await this.canliKarari('seri');
+    await this.canliKaynagiBildir('seriSayac', [
+      this.canliAdayi(
+        'seri',
+        bildirimId,
+        hedefMs - esik * 60 * 1000,
+        hedefMs,
+        { baslangicMs: hedefMs - esik * 60 * 1000, bolumler: [] },
+        hedefMs - NOW_BAR_SON_DK_MAX * 60 * 1000
+      ),
+    ]);
+    if (karar.devralir) return;
     if (!sayacBaslamaliMi(simdi, ayarlar.hedef, esik)) return;
 
     await this.kanalOlustur();
-    this.nativeCountdownBaslat(
-      `${BILDIRIM_SABITLERI.ONEKLEME.SERI_SAYAC}${bugunuAl()}`,
-      (ayarlar.hedef as Date).getTime()
-    );
+    // Eski yol seriyi öne ÇIKARMAZ (`canliGuncellemeyeUygunMu`).
+    this.nativeCountdownBaslat(bildirimId, hedefMs);
   }
 
   /**
