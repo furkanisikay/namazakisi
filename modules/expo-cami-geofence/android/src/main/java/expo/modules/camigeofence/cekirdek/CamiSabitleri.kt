@@ -31,6 +31,17 @@ object CamiSabitleri {
     const val CAMIDE_AZAMI_DK = 90L
     const val CAMIDE_CUMA_AZAMI_DK = 150L
 
+    const val KAPI_ONCE_DK = 20L
+
+    // Güven puanı (Faz 2) — JS: GUVEN_* / HIZ_* / SORU_AZAMI_DK
+    const val GUVEN_EZAN_ONCE_DK = 10L
+    const val GUVEN_EZAN_SONRA_DK = 40L
+    const val HIZ_HAREKETLI_MPS = 1.5
+    const val HIZ_DURGUN_MPS = 0.5
+    const val GUVEN_OTOMATIK_ESIK = 75
+    const val GUVEN_SOR_ESIK = 50
+    const val SORU_AZAMI_DK = 30L
+
     const val KONUM_TAZELIK_MS = 2 * 60 * 1000L
     const val YENILEME_BEKLEMESI_MS = 60 * 1000L
 
