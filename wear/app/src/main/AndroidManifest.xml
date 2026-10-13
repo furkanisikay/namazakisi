@@ -84,6 +84,22 @@
                 android:resource="@drawable/tile_onizleme" />
         </service>
 
+        <!-- "Bugün" tile'ı (issue #281): beş vakit + iki dokunuşla "Kıldım". -->
+        <service
+            android:name=".tile.BugunTileServisi"
+            android:exported="true"
+            android:label="@string/bugun_tile_adi"
+            android:description="@string/bugun_tile_aciklama"
+            android:icon="@drawable/ic_vakit"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/bugun_tile_onizleme" />
+        </service>
+
         <service
             android:name=".komplikasyon.VakitKomplikasyonServisi"
             android:exported="true"
@@ -95,8 +111,99 @@
             </intent-filter>
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="SHORT_TEXT,LONG_TEXT,RANGED_VALUE" />
+                android:value="SHORT_TEXT,LONG_TEXT,RANGED_VALUE,MONOCHROMATIC_IMAGE,SMALL_IMAGE" />
             <!-- 0: periyodik güncelleme YOK — zaman çizelgesi + telefon verisi tetikler. -->
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+
+        <!--
+          Issue #281 komplikasyon seti. GOAL_PROGRESS / WEIGHTED_ELEMENTS Wear OS 4 (API 33)
+          ile geldi: her kaynağın API 33+ servisi (@bool/api33) ve yalnız eski türleri
+          bildiren "Yedek" ikizi (@bool/api33_alti) vardır; cihazda yalnız biri etkindir.
+          Hepsinde UPDATE_PERIOD 0: zaman çizelgesi + kılınmışlık değişimi tazeler.
+        -->
+        <service
+            android:name=".komplikasyon.GunlukIlerlemeKomplikasyonServisi"
+            android:enabled="@bool/api33"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/ilerleme_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="GOAL_PROGRESS,RANGED_VALUE,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunlukIlerlemeYedekKomplikasyonServisi"
+            android:enabled="@bool/api33_alti"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/ilerleme_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="RANGED_VALUE,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunDagilimiKomplikasyonServisi"
+            android:enabled="@bool/api33"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/dagilim_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="WEIGHTED_ELEMENTS,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunDagilimiYedekKomplikasyonServisi"
+            android:enabled="@bool/api33_alti"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/dagilim_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.KerahatKomplikasyonServisi"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit_gunes"
+            android:label="@string/kerahat_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="0" />

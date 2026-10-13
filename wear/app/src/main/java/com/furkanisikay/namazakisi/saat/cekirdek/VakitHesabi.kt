@@ -111,6 +111,10 @@ object VakitHesabi {
     fun saat(ms: Long, bolge: ZoneId = ZoneId.systemDefault()): String =
         DateTimeFormatter.ofPattern("HH:mm").withZone(bolge).format(Instant.ofEpochMilli(ms))
 
+    /** Anın yerel takvim günü (`YYYY-MM-DD`) — zaman çizelgesindeki her girdinin "bugün"ü. */
+    fun tarih(ms: Long, bolge: ZoneId = ZoneId.systemDefault()): String =
+        Instant.ofEpochMilli(ms).atZone(bolge).toLocalDate().toString()
+
     /** "1 sa 12 dk" / "12 dk" / "1 dk'dan az" */
     fun kalanMetni(ms: Long): String {
         val dk = ms / 60_000L

@@ -14,6 +14,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.AlarmKurucu
 import com.furkanisikay.namazakisi.saat.cekirdek.AlarmZinciri
 import com.furkanisikay.namazakisi.saat.cekirdek.KopruKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.ZincirYoneticisi
+import com.furkanisikay.namazakisi.saat.veri.Senkron
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 
 /**
@@ -33,7 +34,10 @@ object Hatirlatici {
             val depo = YukDeposu(app)
             val yuk = depo.yuk()
             val bekleyen = depo.bekleyenler()
-            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, System.currentTimeMillis())
+            val simdi = System.currentTimeMillis()
+            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, simdi)
+            // Son dakikalar sayacı (issue #281): kılındıysa/pencere dışındaysa kalkar.
+            SonDakikalarBildirimi.guncelle(app, yuk, bekleyen, simdi)
             if (yuk != null) {
                 MuhafizBildirimci.kilinmislariKaldir(app) { t, v -> AlarmZinciri.kilinmisMi(yuk, bekleyen, t, v) }
             }
@@ -58,6 +62,13 @@ object Hatirlatici {
                 }
             } finally {
                 ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki)
+                // Son dakikalar penceresi daima bir plan kaydının anında açılır (bkz.
+                // `SonDakikalar`) → sayaç tam bu tetikte kadrana çıkar.
+                try {
+                    SonDakikalarBildirimi.guncelle(app, depo.yuk(), depo.bekleyenler(), System.currentTimeMillis())
+                } catch (e: Exception) {
+                    Log.w(TAG, "Son dakikalar sayaci guncellenemedi", e)
+                }
             }
         } catch (e: Exception) {
             Log.w(TAG, "Tetik islenemedi, zincir yeniden kuruluyor", e)
@@ -141,12 +152,16 @@ class YenidenKurAlicisi : BroadcastReceiver() {
             -> {
                 KopruAyari.onbellegiSil(context)
                 Hatirlatici.tazele(context)
+                // Yeni yüzeyler (issue #281) güncellemeden sonra ilk kez kurulur.
+                Senkron.yuzeyleriTazele(context)
             }
             Intent.ACTION_TIME_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED,
             -> {
                 Hatirlatici.saatDegisti(context)
                 Hatirlatici.tazele(context)
+                // Yüzeylerdeki saat metinleri ve "bugün" yerel saate bağlı.
+                Senkron.yuzeyleriTazele(context)
             }
         }
     }

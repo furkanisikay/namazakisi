@@ -9,7 +9,13 @@ import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUp
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
+import com.furkanisikay.namazakisi.saat.komplikasyon.GunDagilimiKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.GunDagilimiYedekKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.GunlukIlerlemeYedekKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.komplikasyon.KerahatKomplikasyonServisi
 import com.furkanisikay.namazakisi.saat.komplikasyon.VakitKomplikasyonServisi
+import com.furkanisikay.namazakisi.saat.tile.BugunTileServisi
 import com.furkanisikay.namazakisi.saat.tile.VakitTileServisi
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
@@ -34,15 +40,40 @@ object Senkron {
         Hatirlatici.tazele(context)
     }
 
+    private val TILELAR = listOf(VakitTileServisi::class.java, BugunTileServisi::class.java)
+
+    /**
+     * Tüm komplikasyon veri kaynakları. Yeni bir kaynak eklenirse BURAYA da eklenmeli —
+     * yoksa kılınmışlık değişince o yuva bir sonraki vakit sınırına kadar eski kalır.
+     * Yedek ikizler (API 33 öncesi) cihazda devre dışıysa istek zararsızdır.
+     */
+    private val KOMPLIKASYONLAR = listOf(
+        VakitKomplikasyonServisi::class.java,
+        GunlukIlerlemeKomplikasyonServisi::class.java,
+        GunlukIlerlemeYedekKomplikasyonServisi::class.java,
+        GunDagilimiKomplikasyonServisi::class.java,
+        GunDagilimiYedekKomplikasyonServisi::class.java,
+        KerahatKomplikasyonServisi::class.java,
+    )
+
     /** Tile ve komplikasyonları tazele (zaman çizelgeleri yeniden kurulur). */
     fun yuzeyleriTazele(context: Context) {
-        try {
-            TileService.getUpdater(context).requestUpdate(VakitTileServisi::class.java)
-            ComplicationDataSourceUpdateRequester
-                .create(context, ComponentName(context, VakitKomplikasyonServisi::class.java))
-                .requestUpdateAll()
-        } catch (e: Exception) {
-            Log.w(TAG, "Yuzeyler tazelenemedi", e)
+        // Her yüzey kendi try'ında: biri patlarsa diğerleri yine tazelensin.
+        for (tile in TILELAR) {
+            try {
+                TileService.getUpdater(context).requestUpdate(tile)
+            } catch (e: Exception) {
+                Log.w(TAG, "Tile tazelenemedi: ${tile.simpleName}", e)
+            }
+        }
+        for (kaynak in KOMPLIKASYONLAR) {
+            try {
+                ComplicationDataSourceUpdateRequester
+                    .create(context, ComponentName(context, kaynak))
+                    .requestUpdateAll()
+            } catch (e: Exception) {
+                Log.w(TAG, "Komplikasyon tazelenemedi: ${kaynak.simpleName}", e)
+            }
         }
     }
 

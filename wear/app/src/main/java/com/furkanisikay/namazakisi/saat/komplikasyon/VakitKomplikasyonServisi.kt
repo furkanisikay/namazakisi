@@ -1,26 +1,21 @@
 package com.furkanisikay.namazakisi.saat.komplikasyon
 
-import android.app.PendingIntent
-import android.content.Intent
 import androidx.wear.watchface.complications.data.ComplicationData
-import androidx.wear.watchface.complications.data.ComplicationText
 import androidx.wear.watchface.complications.data.ComplicationType
 import androidx.wear.watchface.complications.data.CountDownTimeReference
 import androidx.wear.watchface.complications.data.LongTextComplicationData
-import androidx.wear.watchface.complications.data.NoDataComplicationData
-import androidx.wear.watchface.complications.data.PlainComplicationText
+import androidx.wear.watchface.complications.data.MonochromaticImageComplicationData
 import androidx.wear.watchface.complications.data.RangedValueComplicationData
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
+import androidx.wear.watchface.complications.data.SmallImageComplicationData
 import androidx.wear.watchface.complications.data.TimeDifferenceComplicationText
 import androidx.wear.watchface.complications.data.TimeDifferenceStyle
 import androidx.wear.watchface.complications.datasource.ComplicationDataTimeline
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingTimelineComplicationDataSourceService
-import androidx.wear.watchface.complications.datasource.TimeInterval
-import androidx.wear.watchface.complications.datasource.TimelineEntry
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.ZamanCizelgesi
-import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak.duz
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import java.time.Instant
 import java.util.concurrent.TimeUnit
@@ -32,6 +27,9 @@ import java.util.concurrent.TimeUnit
  * uygulama her dakika uyanmaz. Vakit sınırlarında zaman çizelgesi bir sonraki
  * girdiye geçer. RANGED_VALUE ilerlemesi girdiler arasında statiktir (dinamik
  * değer API 34+; bilinçli bedel).
+ *
+ * Issue #281: SMALL_IMAGE + MONOCHROMATIC_IMAGE (yalnız ikon kabul eden kadran
+ * yuvaları) ve metin türlerine sıradaki vaktin tek renkli simgesi eklendi.
  */
 class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService() {
 
@@ -39,16 +37,9 @@ class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService
         val yuk = YukDeposu(this).yuk()
         val simdi = System.currentTimeMillis()
         val araliklar = if (yuk == null) emptyList() else ZamanCizelgesi.araliklar(yuk, simdi)
-        // Her aralık AÇIK geçerlilikli bir girdidir; varsayılan "veri yok"tur. Böylece
-        // çizelge tükenirse (telefon günlerce veri göndermedi) komplikasyon geçmiş
-        // bir geri sayımda donup "0 dk" göstermez, boşalır.
-        val girdiler = araliklar.map { a ->
-            TimelineEntry(
-                TimeInterval(Instant.ofEpochMilli(a.baslangic), Instant.ofEpochMilli(a.bitis)),
-                veri(request.complicationType, a, a.baslangic) ?: NoDataComplicationData(),
-            )
-        }
-        return ComplicationDataTimeline(NoDataComplicationData(), girdiler)
+        return KomplikasyonOrtak.cizelge(
+            araliklar.map { a -> Triple(a.baslangic, a.bitis, veri(request.complicationType, a, a.baslangic)) }
+        )
     }
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
@@ -68,19 +59,19 @@ class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService
             CountDownTimeReference(Instant.ofEpochMilli(a.siradaki.ms)),
         ).setMinimumTimeUnit(TimeUnit.MINUTES).build()
         val aciklama = duz("Sıradaki vakit ${a.siradaki.ad}, ${VakitHesabi.saat(a.siradaki.ms)}")
-        val dokunus = PendingIntent.getActivity(
-            this, 0, Intent(this, AnaAktivite::class.java),
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
+        val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
+        val ikon = KomplikasyonOrtak.vakitIkonu(a.siradaki.vakit)
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
                 ShortTextComplicationData.Builder(geriSayim, aciklama)
                     .setTitle(duz(a.siradaki.ad))
+                    .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.LONG_TEXT ->
                 LongTextComplicationData.Builder(geriSayim, aciklama)
                     .setTitle(duz("${a.siradaki.ad} ${VakitHesabi.saat(a.siradaki.ms)}"))
+                    .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.RANGED_VALUE -> {
@@ -90,12 +81,19 @@ class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService
                 RangedValueComplicationData.Builder(deger, 0f, 1f, aciklama)
                     .setText(geriSayim)
                     .setTitle(duz(a.siradaki.ad))
+                    .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()
             }
+            ComplicationType.MONOCHROMATIC_IMAGE ->
+                MonochromaticImageComplicationData.Builder(KomplikasyonOrtak.monokrom(this, ikon), aciklama)
+                    .setTapAction(dokunus)
+                    .build()
+            ComplicationType.SMALL_IMAGE ->
+                SmallImageComplicationData.Builder(KomplikasyonOrtak.kucukIkon(this, ikon), aciklama)
+                    .setTapAction(dokunus)
+                    .build()
             else -> null
         }
     }
-
-    private fun duz(metin: String): ComplicationText = PlainComplicationText.Builder(metin).build()
 }

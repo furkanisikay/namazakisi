@@ -4,4 +4,11 @@
     <string name="tile_adi">Sıradaki vakit</string>
     <string name="tile_aciklama">Sıradaki namaz vakti ve saati</string>
     <string name="komplikasyon_adi">Sıradaki vakit</string>
+    <string name="bugun_tile_adi">Bugün</string>
+    <string name="bugun_tile_aciklama">Bugünün beş vakti; kıldığınızı iki dokunuşla işaretleyin</string>
+    <string name="ilerleme_komplikasyon_adi">Günlük ilerleme</string>
+    <string name="dagilim_komplikasyon_adi">Gün dağılımı</string>
+    <string name="kerahat_komplikasyon_adi">Kerahat</string>
+    <string name="son_dakikalar_kanal_adi">Son dakikalar</string>
+    <string name="son_dakikalar_kanal_aciklama">Kılınmamış vaktin son dakikalarında kadrandaki sayaç</string>
 </resources>
