@@ -27,6 +27,7 @@ export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
 export { CamideyimAyarlariSayfasi } from './CamideyimAyarlariSayfasi';
 export { NamazModuAyarlariSayfasi } from './NamazModuAyarlariSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
+export { OtomasyonRehberiSayfasi } from './OtomasyonRehberiSayfasi';
 export { DebugLogsSayfasi } from './DebugLogsSayfasi';
 export { TakvimAyarlariSayfasi } from './TakvimAyarlariSayfasi';
 export { NelerYeniSayfasi } from './NelerYeniSayfasi';

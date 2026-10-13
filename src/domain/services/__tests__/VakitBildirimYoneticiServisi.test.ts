@@ -131,7 +131,7 @@ describe('VakitBildirimYoneticiServisi', () => {
                 (c) => c.identifier === 'vakit_bildirim_imsak_2024-06-15'
             );
             expect(bugunImsak).toBeDefined();
-            expect(bugunImsak.content.title).toBe('İmsak Vakti Girdi');
+            expect(bugunImsak.content.title).toBe('İmsak vakti girdi');
             expect(bugunImsak.content.data).toEqual({ tip: 'vakit_bildirim', vakit: 'imsak' });
             expect(bugunImsak.trigger.date).toEqual(new Date('2024-06-15T05:00:00'));
             expect(bugunImsak.trigger.channelId).toBe('vakit_bildirim');
@@ -142,7 +142,7 @@ describe('VakitBildirimYoneticiServisi', () => {
                 (c) => c.identifier === 'vakit_bildirim_ikindi_2024-06-15'
             );
             expect(bugunIkindi).toBeDefined();
-            expect(bugunIkindi.content.title).toBe('İkindi Vakti Girdi');
+            expect(bugunIkindi.content.title).toBe('İkindi vakti girdi');
             expect(bugunIkindi.trigger.date).toEqual(new Date('2024-06-15T17:00:00'));
 
             // Yarının imsak çağrısı yarın tarihinde (off-by-one / gün kayması regresyonunu yakalar)
