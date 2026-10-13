@@ -33,6 +33,13 @@ class KildimKuyruguKurallariTest {
     }
 
     @Test
+    fun otomasyonKaynagiKabulEdilir() {
+        // Tasker/MacroDroid eklentisinin "Kıldım" eylemi (issue #278).
+        val l = k.ekle(emptyList(), "2026-10-13", "aksam", k.KAYNAK_OTOMASYON)!!
+        assertEquals("otomasyon", l.single().kaynak)
+    }
+
+    @Test
     fun gecersizOgeReddedilir() {
         assertNull(k.ekle(emptyList(), "13.10.2026", "ogle", k.KAYNAK_WIDGET))
         // Widget kodu 'sabah' kuyruğa GİRMEZ: kayıt katmanı 'imsak' bekler.

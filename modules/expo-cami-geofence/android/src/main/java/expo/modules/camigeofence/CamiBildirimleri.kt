@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import expo.modules.camigeofence.cekirdek.CamiSabitleri
 
 /**
  * Camideyim bildirimleri (native — uygulama süreci ölüyken de gösterilir).
@@ -77,7 +78,6 @@ object CamiBildirimleri {
 
     fun camidesiniz(ctx: Context, c: CamiDepo.Camide, sessiz: Boolean) {
         kanallariGarantile(ctx)
-        val ad = c.ad.ifBlank { "Cami" }
         val govde = when {
             c.modAcildi && sessiz -> "Namaz modu açık. Hatırlatmalar sessiz gelecek."
             c.modAcildi -> "Namaz modu açık."
@@ -86,7 +86,7 @@ object CamiBildirimleri {
         }
         val b = NotificationCompat.Builder(ctx, KANAL_DURUM)
             .setSmallIcon(R.drawable.ic_namaz_modu)
-            .setContentTitle("Camidesiniz · $ad")
+            .setContentTitle(CamiSabitleri.camidesinizBasligi(c.ad))
             .setContentText(govde)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOnlyAlertOnce(true)

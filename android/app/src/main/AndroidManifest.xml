@@ -155,6 +155,55 @@
         android:noHistory="true"
         android:taskAffinity=""
         android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+    <!-- Otomasyon eklentisi (issue #278): Locale protokolü (Tasker, MacroDroid, Automate).
+         Düzenleme etkinlikleri çağıranı güven listesine sorar ve pakete gizli belirteç yazar;
+         dışa açık alıcılar yalnız protokol eylemini ve belirteç + "izin" taşıyan paketi kabul eder. -->
+    <activity
+        android:name=".otomasyon.OtomasyonEylemActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_eylem_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".otomasyon.OtomasyonKosulActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_kosul_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".otomasyon.OtomasyonOlayActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_olay_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT"/>
+      </intent-filter>
+    </activity>
+    <receiver android:name=".otomasyon.OtomasyonEylemAlici" android:exported="true">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+      </intent-filter>
+    </receiver>
+    <receiver android:name=".otomasyon.OtomasyonKosulAlici" android:exported="true">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION"/>
+      </intent-filter>
+    </receiver>
+    <!-- Camideyim modülünün paket-kapsamlı yayını (setPackage) — dışa kapalı. -->
+    <receiver android:name=".otomasyon.OtomasyonCamiAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="com.furkanisikay.namazakisi.CAMI_DURUMU"/>
+      </intent-filter>
+    </receiver>
     <!-- Wear OS saatinden "Kıldım" (issue #269): saat /namazakisi/kildim/... DataItem'ı yazar -->
     <service android:name=".wear.WearDinleyiciServisi" android:exported="true">
       <intent-filter>

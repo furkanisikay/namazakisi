@@ -35,7 +35,12 @@ object KildimKuyruguKurallari {
      * HİÇ çalışmaz → tek işleme yolu budur.
      */
     const val KAYNAK_BILDIRIM = "bildirim"
-    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM)
+    /**
+     * Tasker / MacroDroid / Automate eklentisinin "Kıldım" eylemi (issue #278,
+     * `otomasyon/OtomasyonEylemAlici`). Belirteç + güven listesi doğrulamasından sonra yazılır.
+     */
+    const val KAYNAK_OTOMASYON = "otomasyon"
+    val KAYNAKLAR = setOf(KAYNAK_WEAR, KAYNAK_WIDGET, KAYNAK_KUTU, KAYNAK_KISAYOL, KAYNAK_SAYAC, KAYNAK_BILDIRIM, KAYNAK_OTOMASYON)
 
     private val GECERLI_VAKITLER = setOf("imsak", "ogle", "ikindi", "aksam", "yatsi")
     private val TARIH_DESENI = Regex("""^\d{4}-\d{2}-\d{2}$""")
