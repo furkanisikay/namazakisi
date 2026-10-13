@@ -119,9 +119,9 @@ export const kildimEngellendiMetni = (uygulamaAdi: string): string =>
     `${uygulamaAdi} artık namazlarınızı işaretleyemez. Ayarlardan değiştirebilirsiniz.`;
 
 export const KILDIM_GUVEN_ETIKETLERI = {
-    herZaman: 'Her zaman izin ver',
+    herZaman: 'Her zaman izin verin',
     buSefer: 'Yalnız bu sefer',
-    engelle: 'Engelle',
+    engelle: 'Engelleyin',
 } as const;
 
 export const guvenKarariEtiketi = (karar: KildimGuvenKarari): string =>

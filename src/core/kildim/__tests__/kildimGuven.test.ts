@@ -93,9 +93,9 @@ describe('metinler', () => {
 
     it('düğme etiketleri issue metniyle aynı', () => {
         expect(KILDIM_GUVEN_ETIKETLERI).toEqual({
-            herZaman: 'Her zaman izin ver',
+            herZaman: 'Her zaman izin verin',
             buSefer: 'Yalnız bu sefer',
-            engelle: 'Engelle',
+            engelle: 'Engelleyin',
         });
     });
 });

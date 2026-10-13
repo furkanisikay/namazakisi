@@ -56,9 +56,9 @@ describe('KildimIzinModali', () => {
         const { getByText, getByLabelText, cb } = kur(RUTIN);
         expect(getByText('Modlar ve Rutinler namazlarınızı kılındı olarak işaretleyebilsin mi?')).toBeTruthy();
         expect(getByText(/Şu an işaretlenecek vakit: Öğle\./)).toBeTruthy();
-        fireEvent.press(getByLabelText('Her zaman izin ver'));
+        fireEvent.press(getByLabelText('Her zaman izin verin'));
         fireEvent.press(getByLabelText('Yalnız bu sefer'));
-        fireEvent.press(getByLabelText('Engelle'));
+        fireEvent.press(getByLabelText('Engelleyin'));
         expect(cb.onHerZaman).toHaveBeenCalledTimes(1);
         expect(cb.onBuSefer).toHaveBeenCalledTimes(1);
         expect(cb.onEngelle).toHaveBeenCalledTimes(1);
@@ -66,9 +66,9 @@ describe('KildimIzinModali', () => {
 
     it('tarayıcıya "her zaman" sunulmaz, nedeni açıklanır', () => {
         const { queryByLabelText, getByLabelText, getByText } = kur({ ...RUTIN, ad: 'Chrome', herZaman: false });
-        expect(queryByLabelText('Her zaman izin ver')).toBeNull();
+        expect(queryByLabelText('Her zaman izin verin')).toBeNull();
         expect(getByLabelText('Yalnız bu sefer')).toBeTruthy();
-        expect(getByLabelText('Engelle')).toBeTruthy();
+        expect(getByLabelText('Engelleyin')).toBeTruthy();
         expect(getByText(/kalıcı izin verilemez/)).toBeTruthy();
     });
 
@@ -81,8 +81,8 @@ describe('KildimIzinModali', () => {
             engel: false,
         });
         expect(getByText('Öğle namazı kılındı olarak işaretlensin mi?')).toBeTruthy();
-        expect(queryByLabelText('Her zaman izin ver')).toBeNull();
-        expect(queryByLabelText('Engelle')).toBeNull();
+        expect(queryByLabelText('Her zaman izin verin')).toBeNull();
+        expect(queryByLabelText('Engelleyin')).toBeNull();
         fireEvent.press(getByLabelText('Kıldım'));
         expect(cb.onBuSefer).toHaveBeenCalledTimes(1);
         fireEvent.press(getByLabelText('Vazgeç'));
