@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.furkanisikay.namazakisi.R
 import com.furkanisikay.namazakisi.cekirdek.KildimDurumu
+import com.furkanisikay.namazakisi.cekirdek.KilitEkraniKarari
 import com.furkanisikay.namazakisi.cekirdek.SinirAlarmi
 import com.furkanisikay.namazakisi.cekirdek.SureGosterimi
 import com.furkanisikay.namazakisi.cekirdek.VakitCizelgesi
@@ -136,18 +137,23 @@ object WidgetGuncelleyici {
         anlik: WidgetVeriDeposu.Anlik,
     ): RemoteViews {
         val ayar = WidgetVeriDeposu.ayar(context, id)
+        val secenek = yonetici.getAppWidgetOptions(id)
+        // Kilit ekranı / hub (issue #295): communal ana bilgisayarı KEYGUARD kategorisiyle
+        // bağlar; orada widget salt okunur (yayın niyeti kilit açılmadan işlerdi).
+        val kilitEkrani = KilitEkraniKarari.kilitEkraniMi(
+            secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, 0),
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return RemoteViews(
                 mapOf(
-                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik),
+                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik, kilitEkrani),
                     SizeF(WidgetDuzenSecici.ORTA_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik),
+                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik, kilitEkrani),
                     SizeF(WidgetDuzenSecici.GENIS_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik),
+                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik, kilitEkrani),
                 )
             )
         }
-        val secenek = yonetici.getAppWidgetOptions(id)
         val genislik = secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0).toFloat()
         val yukseklik = secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0).toFloat()
         val duzen = if (genislik > 0f && yukseklik > 0f) {
@@ -157,10 +163,16 @@ object WidgetGuncelleyici {
         } else {
             WidgetDuzeni.KUCUK
         }
-        return ciz(context, duzen, ayar, anlik)
+        return ciz(context, duzen, ayar, anlik, kilitEkrani)
     }
 
-    private fun ciz(context: Context, duzen: WidgetDuzeni, ayar: WidgetAyari, a: WidgetVeriDeposu.Anlik): RemoteViews {
+    private fun ciz(
+        context: Context,
+        duzen: WidgetDuzeni,
+        ayar: WidgetAyari,
+        a: WidgetVeriDeposu.Anlik,
+        kilitEkrani: Boolean,
+    ): RemoteViews {
         val v = RemoteViews(
             context.packageName,
             when (duzen) {
@@ -185,7 +197,7 @@ object WidgetGuncelleyici {
             sonraki != null -> Triple(VakitKodlari.gorunenAd(sonraki.kod), sonraki.ms, "Giriş")
             else -> Triple("Namaz vakti", null, null)
         }
-        val kildimNiyeti = if (a.kildim == KildimDurumu.KILINABILIR && aktif != null) {
+        val kildimNiyeti = if (KilitEkraniKarari.kildimNiyetiVerilsinMi(a.kildim, kilitEkrani) && aktif != null) {
             kildimNiyeti(context, aktif.tarih, aktif.kod)
         } else null
 
@@ -199,7 +211,7 @@ object WidgetGuncelleyici {
             gorselRengi(context, v, R.id.widget_kildim, if (a.kildim == KildimDurumu.YOK) p.ikincil else p.vurgu)
             isaretiCiz(context, v, R.id.widget_kildim_ikon, a.kildim, p)
             v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-            v.setContentDescription(R.id.widget_kildim, erisimMetni(ad, a.kildim))
+            v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani))
             return v
         }
 
@@ -232,16 +244,23 @@ object WidgetGuncelleyici {
         v.setTextViewText(R.id.widget_sonraki, sonrakiMetni ?: "")
         metinRengi(context, v, R.id.widget_sonraki, p.ikincil)
 
-        dugmeyiCiz(context, v, a.kildim, sayacVar, p)
+        dugmeyiCiz(context, v, a.kildim, sayacVar, kilitEkrani, p)
         v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-        v.setContentDescription(R.id.widget_kildim, erisimMetni(ad, a.kildim))
+        v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani))
 
         if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p)
         return v
     }
 
-    private fun dugmeyiCiz(context: Context, v: RemoteViews, kildim: KildimDurumu, veriVar: Boolean, p: Palet) {
-        if (!veriVar) {
+    private fun dugmeyiCiz(
+        context: Context,
+        v: RemoteViews,
+        kildim: KildimDurumu,
+        veriVar: Boolean,
+        kilitEkrani: Boolean,
+        p: Palet,
+    ) {
+        if (!KilitEkraniKarari.dugmeGorunurMu(kildim, veriVar, kilitEkrani)) {
             v.setViewVisibility(R.id.widget_kildim_dugme, View.GONE)
             return
         }
@@ -311,13 +330,6 @@ object WidgetGuncelleyici {
                 isaretiCiz(context, v, isaretId, satirDurumu, p)
             }
         }
-    }
-
-    private fun erisimMetni(ad: String, kildim: KildimDurumu): String = when (kildim) {
-        KildimDurumu.KILINABILIR -> "$ad namazını kılındı olarak işaretleyin"
-        KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
-        KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"
-        KildimDurumu.YOK -> "Uygulamayı açın"
     }
 
     // --- Niyetler (PendingIntent) ------------------------------------------------------

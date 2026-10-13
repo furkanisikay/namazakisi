@@ -2,6 +2,9 @@
 <!--
   Günün vakitleri widget'ı (issue #275): aynı çizici, 4×2 başlar. Sınıf adı
   (NamazGenisBoyutWidget) mevcut yerleşimler düşmesin diye KORUNUR.
+  keyguard (issue #295): Android 16 QPR2 kilit ekranı ve tablet hub (şarj istasyonu)
+  modu widget'ı bu kategoriyle bağlar; orada widget SALT OKUNURDUR ("Kıldım" yayını
+  kilit açılmadan işlerdi) — karar `cekirdek/KilitEkraniKarari`.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:configure="com.furkanisikay.namazakisi.widget.WidgetYapilandirmaActivity"
@@ -16,5 +19,5 @@
     android:targetCellHeight="2"
     android:targetCellWidth="4"
     android:updatePeriodMillis="0"
-    android:widgetCategory="home_screen"
+    android:widgetCategory="home_screen|keyguard"
     android:widgetFeatures="reconfigurable|configuration_optional" />
