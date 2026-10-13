@@ -1,19 +1,23 @@
 import Foundation
 
 /**
- * SIRI / KISAYOLLAR PAYLASILAN DEPOSU (issue #279) — yalniz Foundation.
+ * SIRI / KISAYOLLAR / WIDGET PAYLASILAN DEPOSU (issue #279, #295) — yalniz Foundation.
  *
- * App Intents ANA UYGULAMA HEDEFINDE derlenir (uzanti degil; bkz.
- * `plugins/withSiriKisayollari.js`) → intent'ler ile JS koprusu (`ExpoSiriKisayollariModule`)
- * AYNI SURECTE calisir ve ayni `UserDefaults.standard`'i paylasir. Bu yuzden App
- * Group GEREKMEZ (eklemek EAS'in etkilesimsiz build'inde imza profilini
- * yeniden uretmeyi gerektirirdi). Ileride bir iOS widget'i / uzanti gelirse
- * `varsayilan` App Group suite'ine tasinir ve anahtarlar bir kez kopyalanir.
+ * App Intents ANA UYGULAMA HEDEFINDE derlenir (bkz. `plugins/withSiriKisayollari.js`);
+ * intent'ler ile JS koprusu (`ExpoSiriKisayollariModule`) AYNI SURECTE calisir.
+ * iOS widget uzantisi (#295, `plugins/withNamazWidget.js`) ise AYRI bir surectir ve bu
+ * dosyanin KOPYASINI derler → veri App Group suite'inde (`ortakGrup`) durur.
+ *
+ * DEPO SECIMI CALISMA ANINDA: App Group kapsayicisi erisilebilirse (entitlement var)
+ * suite kullanilir ve standart depodaki eski anahtarlar BIR KEZ kopyalanir; yoksa
+ * (widget bayragi kapali build) eskisi gibi `UserDefaults.standard`. Boylece bayrak
+ * acildiginda Siri kuyrugu/odak kaybolmaz ve bayrak kapaliyken hicbir sey degismez.
  *
  * TEK YAZICI kurali: her anahtari tek taraf yazar.
  *   - cizelge, kilinanlar        → JS (WidgetServisi yuku)
- *   - kildimKuyrugu              → intent EKLER, JS (bu sinif uzerinden) DUSER — ikisi de
- *                                  AYNI kilitten gecer (ayni surec), kayip yazim olmaz
+ *   - kildimKuyrugu              → intent/widget dugmesi EKLER, JS (bu sinif uzerinden) DUSER —
+ *                                  widget dugmesi `LiveActivityIntent`'tir, UYGULAMA
+ *                                  surecinde calisir → ayni kilit, kayip yazim olmaz
  *   - odak, ekranIstegi          → intent yazar, JS okur/tuketir (yine ayni kilit)
  *
  * Her degisiklik `degisiklikBildirimi` ile duyurulur; uygulama aciksa kopru bunu JS
@@ -22,8 +26,43 @@ import Foundation
 public final class SiriDeposu: @unchecked Sendable {
     public static let degisiklikBildirimi = Notification.Name("NamazAkisiSiriDegisikligi")
 
-    /// Varsayilan depo: uygulamanin kendi `UserDefaults`'u.
-    public static let varsayilan = SiriDeposu(defaults: .standard)
+    /// App Group (widget uzantisi ile paylasim, #295). Entitlement yoksa kullanilmaz.
+    public static let ortakGrup = "group.com.furkanisikay.namazakisi"
+
+    /// Varsayilan depo: App Group erisilebilirse suite (bir kerelik goc ile), yoksa
+    /// uygulamanin kendi `UserDefaults`'u.
+    public static let varsayilan: SiriDeposu = SiriDeposu(defaults: varsayilanDefaults())
+
+    /// Gocun tamamlandigini gosteren isaret (suite icinde).
+    static let gocIsareti = "namazakisi.siri.gocYapildi"
+
+    private static func varsayilanDefaults() -> UserDefaults {
+        #if canImport(Darwin)
+        if FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ortakGrup) != nil,
+           let ortak = UserDefaults(suiteName: ortakGrup) {
+            // Goc YALNIZ uygulama surecinde: uzanti (.appex) kendi bos standart deposundan
+            // "goc" yapip isareti koysaydi uygulamanin gercek verisi hic tasinmazdi.
+            if Bundle.main.bundleURL.pathExtension != "appex" {
+                gocEt(kaynak: .standard, hedef: ortak)
+            }
+            return ortak
+        }
+        #endif
+        return .standard
+    }
+
+    /// Standart depodaki anahtarlari suite'e BIR KEZ kopyalar. Hedefte zaten olan anahtara
+    /// dokunmaz (uzanti ya da onceki surum yazmis olabilir); kaynagi SILMEZ (veri kaybi yok,
+    /// eski kopya bayatlar). Idempotenttir.
+    public static func gocEt(kaynak: UserDefaults, hedef: UserDefaults) {
+        if hedef.bool(forKey: gocIsareti) { return }
+        for anahtar in Anahtar.hepsi where hedef.object(forKey: anahtar) == nil {
+            if let deger = kaynak.object(forKey: anahtar) {
+                hedef.set(deger, forKey: anahtar)
+            }
+        }
+        hedef.set(true, forKey: gocIsareti)
+    }
 
     enum Anahtar {
         static let cizelge = "namazakisi.siri.cizelge"
@@ -31,6 +70,7 @@ public final class SiriDeposu: @unchecked Sendable {
         static let kuyruk = "namazakisi.siri.kildimKuyrugu"
         static let odak = "namazakisi.siri.odak"
         static let ekranIstegi = "namazakisi.siri.ekranIstegi"
+        static let hepsi = [cizelge, kilinanlar, kuyruk, odak, ekranIstegi]
     }
 
     /// Zehirli oge esigi — Android `KildimKuyrugu` ile ayni (5 deneme).

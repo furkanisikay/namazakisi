@@ -6,13 +6,16 @@
 //   swiftc -o /tmp/siri-test \
 //     modules/expo-siri-kisayollari/ios/VakitKarari.swift \
 //     modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
+//     modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
 //     modules/expo-siri-kisayollari/test/main.swift
 //   /tmp/siri-test android/app/src/test/resources/widget-ornek.json \
-//     modules/expo-siri-kisayollari/test/siri-ornek.json
+//     modules/expo-siri-kisayollari/test/siri-ornek.json \
+//     modules/expo-siri-kisayollari/test/widget-ios-ornek.json
 //
 // Fikstürler JS (`src/core/siri/__tests__/siriKarari.test.ts`,
 // `src/core/widget/__tests__/widgetYuku.test.ts`) ve Kotlin (`VakitCizelgesiTest`)
-// testleriyle ORTAKTIR. Herhangi bir uyusmazlikta cikis kodu 1'dir.
+// testleriyle ORTAKTIR. iOS widget fikstürü (#295, ucuncu arguman)
+// `src/core/widget/__tests__/iosWidgetKarari.test.ts` ile ortaktir. Herhangi bir uyusmazlikta cikis kodu 1'dir.
 
 import Foundation
 
@@ -238,6 +241,86 @@ esitMi(duyurulan, ["kildim", "odak", "ekran"], "her degisiklik duyurulur")
 esitMi(SiriDeposu.bugunIso(Date(timeIntervalSince1970: 1782080400), saatDilimi: istanbul), "2026-06-22", "bugunIso takvim gunu (01:00 +03)")
 
 defaults.removePersistentDomain(forName: suite)
+
+// MARK: - 4) App Group gocu (issue #295) — standart → suite, bir kez, kaynagi silmeden
+
+let kaynakAd = "namazakisi.siri.test.kaynak.\(UUID().uuidString)"
+let hedefAd = "namazakisi.siri.test.hedef.\(UUID().uuidString)"
+let gocKaynak = UserDefaults(suiteName: kaynakAd)!
+let gocHedef = UserDefaults(suiteName: hedefAd)!
+gocKaynak.set("{\"sessiz\":true,\"ms\":5}", forKey: "namazakisi.siri.odak")
+gocKaynak.set("[]", forKey: "namazakisi.siri.kildimKuyrugu")
+gocKaynak.set("eski", forKey: "namazakisi.siri.cizelge")
+gocHedef.set("yeni", forKey: "namazakisi.siri.cizelge")
+SiriDeposu.gocEt(kaynak: gocKaynak, hedef: gocHedef)
+esitMi(SiriDeposu(defaults: gocHedef).odakJson(), "{\"sessiz\":true,\"ms\":5}", "goc: odak suite'e tasinir")
+esitMi(gocHedef.string(forKey: "namazakisi.siri.kildimKuyrugu"), "[]", "goc: kuyruk suite'e tasinir")
+esitMi(gocHedef.string(forKey: "namazakisi.siri.cizelge"), "yeni", "goc: hedefte olan anahtar EZILMEZ")
+esitMi(gocKaynak.string(forKey: "namazakisi.siri.odak") != nil, true, "goc: kaynak SILINMEZ")
+gocKaynak.set("{\"sessiz\":false,\"ms\":9}", forKey: "namazakisi.siri.odak")
+gocHedef.removeObject(forKey: "namazakisi.siri.odak")
+SiriDeposu.gocEt(kaynak: gocKaynak, hedef: gocHedef)
+esitMi(gocHedef.string(forKey: "namazakisi.siri.odak"), nil, "goc: ikinci kez CALISMAZ (idempotent)")
+gocKaynak.removePersistentDomain(forName: kaynakAd)
+gocHedef.removePersistentDomain(forName: hedefAd)
+
+// MARK: - 5) iOS widget gorunum karari — widget-ios-ornek.json (istege bagli 3. arguman)
+
+struct WidgetIosBeklenen: Decodable {
+    let aktif: VakitOzeti?
+    let bitisMs: Int64?
+    let kilindi: Bool
+    let sonraki: VakitOzeti?
+    let gunTarihi: String?
+    let sinirlar: [Int64]
+}
+struct WidgetIosDurum: Decodable {
+    let ad: String
+    let simdiMs: Int64
+    let kilinanlar: [String: [String]]
+    let bekleyenler: [SiriBekleyenKildim]
+    let azamiSinir: Int
+    let beklenen: WidgetIosBeklenen
+}
+struct WidgetIosGun: Decodable {
+    let tarih: String
+    let beklenen: [String]
+}
+struct WidgetIosOrnek: Decodable {
+    let durumlar: [WidgetIosDurum]
+    let gunler: [WidgetIosGun]
+}
+
+if argumanlar.count >= 4 {
+    let wi = oku(argumanlar[3], WidgetIosOrnek.self)
+    for d in wi.durumlar {
+        let g = WidgetKarari.gorunum(
+            vakitler: widget.vakitler, kilinanlar: d.kilinanlar, bekleyenler: d.bekleyenler, simdiMs: d.simdiMs
+        )
+        esitMi(ozet(g.aktif), d.beklenen.aktif, "widgetGorunum[\(d.ad)].aktif")
+        esitMi(g.bitisMs, d.beklenen.bitisMs, "widgetGorunum[\(d.ad)].bitisMs")
+        esitMi(g.kilindi, d.beklenen.kilindi, "widgetGorunum[\(d.ad)].kilindi")
+        esitMi(ozet(g.sonraki), d.beklenen.sonraki, "widgetGorunum[\(d.ad)].sonraki")
+        esitMi(g.gunTarihi, d.beklenen.gunTarihi, "widgetGorunum[\(d.ad)].gunTarihi")
+        esitMi(
+            WidgetKarari.sinirlar(widget.vakitler, simdiMs: d.simdiMs, azami: d.azamiSinir),
+            d.beklenen.sinirlar,
+            "widgetSinirlari[\(d.ad)]"
+        )
+    }
+    for g in wi.gunler {
+        esitMi(
+            WidgetKarari.gunVakitleri(widget.vakitler, tarih: g.tarih).map { $0.vakit },
+            g.beklenen,
+            "gunVakitleri[\(g.tarih)]"
+        )
+    }
+    esitMi(
+        WidgetKarari.sinirlar(widget.vakitler, simdiMs: widget.vakitler[0].ms - 1).count,
+        WidgetKarari.azamiSinir,
+        "varsayilan sinir tavani (TS IOS_WIDGET_AZAMI_SINIR ile ayni)"
+    )
+}
 
 // MARK: - Sonuc
 
