@@ -24,6 +24,7 @@ import {
 import { GunlukNamazlar } from '../../core/types';
 import { tarihiISOFormatinaCevir, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { gunTamMi as gunTamMiSaf } from '../../core/seri/gunTamMi';
+import { ozelGunAktifMi as ozelGunKapisindanGecerMi } from '../../core/seri/ozelGunKapisi';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
 
 /**
@@ -260,27 +261,17 @@ export const bosSeriDurumuOlustur = (): SeriDurumu => ({
 });
 
 /**
- * Bir tarihin ozel gun kapsaminda olup olmadigini kontrol eder
+ * Bir tarihin ozel gun kapsaminda olup olmadigini kontrol eder.
+ *
+ * TEK KAPIYA delege eder (`core/seri/ozelGunKapisi`): namaz hatirlatmalari da
+ * ayni kapidan gecer, seri dondurma ile hatirlatma susturma ayrisamaz (#272).
+ * Gecerli `YYYY-MM-DD` girdilerde eski `new Date` + `setHours(0)` karsilastirmasiyla
+ * birebir ayni sonucu verir (nobetci testler: `ozelGunKapisi.test.ts`).
  */
 export const ozelGunAktifMi = (
   tarih: string,
   ayarlar: OzelGunAyarlari
-): boolean => {
-  if (!ayarlar.ozelGunModuAktif || !ayarlar.aktifOzelGun) {
-    return false;
-  }
-
-  const kontrolTarihi = new Date(tarih);
-  const baslangic = new Date(ayarlar.aktifOzelGun.baslangicTarihi);
-  const bitis = new Date(ayarlar.aktifOzelGun.bitisTarihi);
-
-  // Saat farklarini ortadan kaldirmak icin sadece tarih kismini karsilastiriyoruz
-  kontrolTarihi.setHours(0, 0, 0, 0);
-  baslangic.setHours(0, 0, 0, 0);
-  bitis.setHours(0, 0, 0, 0);
-
-  return kontrolTarihi >= baslangic && kontrolTarihi <= bitis;
-};
+): boolean => ozelGunKapisindanGecerMi(tarih, ayarlar);
 
 /**
  * Toparlanma modunu baslatir

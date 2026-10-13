@@ -10,7 +10,8 @@ import { LocalNafileServisi } from '../../../data/local/LocalNafileServisi';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
 import { gununNafilePencereleri } from '../../../core/nafile/gunVakitleri';
 import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
-import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Fabrikalı mock: automock `export *` ile gelen ses enum'larını (AndroidAudioUsage) düşürür.
 jest.mock('expo-notifications', () => ({
@@ -64,6 +65,22 @@ describe('nafilePlaniOlustur', () => {
         const k = gununNafilePencereleri(ISTANBUL, GUN)[0];
         expect(plan[0].zaman.getTime()).toBe(k.baslangic.getTime() + 5 * DK);
         expect(plan[0].uyandirma).toBe(false);
+    });
+
+    // ÖZEL GÜN (issue #272): atlanan GÜNÜN gündüz nafilesi de gecesinin
+    // teheccüdü de kurulmaz; aralık dışındaki günler aynen kalır.
+    it('gunAtlanirMi: atlanan günün gündüz + gece hatırlatmaları planlanmaz', () => {
+        const ayarlar = ayar({
+            hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: false, ofsetDk: 15 } },
+            teheccud: { aktif: true, hedef: 'sonUcteBir', imsaktanOnceDk: 60, uyandirma: false },
+        });
+        const tam = nafilePlaniOlustur(ISTANBUL, ayarlar, gunBasi, GUN);
+        const atlanan = new Set(['2026-06-21', '2026-06-22']);
+        const plan = nafilePlaniOlustur(ISTANBUL, ayarlar, gunBasi, GUN, (iso) => atlanan.has(iso));
+
+        expect(plan.some((p) => p.id.includes('2026-06-21') || p.id.includes('2026-06-22'))).toBe(false);
+        expect(plan).toEqual(tam.filter((p) => !p.id.includes('2026-06-21') && !p.id.includes('2026-06-22')));
+        expect(plan.map((p) => p.id)).toContain(`${NAFILE_ID_ONEKI}2026-06-23_kusluk`);
     });
 
     it('ofset pencereyi aşarsa o gün planlanmaz', () => {
@@ -149,6 +166,25 @@ describe('NafileHatirlatmaServisi', () => {
     });
 
     afterEach(() => jest.restoreAllMocks());
+
+    it('özel gün tüm pencereyi kapsıyorsa eski plan temizlenir, yenisi KURULMAZ (issue #272)', async () => {
+        getAyarlar.mockResolvedValue(ayar({ teheccud: { ...VARSAYILAN_NAFILE_AYARLARI.teheccud, aktif: true } }));
+        await AsyncStorage.setItem(
+            'ozel_gun_ayarlari',
+            JSON.stringify({
+                ozelGunModuAktif: true,
+                aktifOzelGun: { baslangicTarihi: gunEkle(bugunuAl(), -1), bitisTarihi: gunEkle(bugunuAl(), 10) },
+                gecmisKayitlar: [],
+            })
+        );
+        try {
+            await servis.hatirlatmalariGuncelle(ISTANBUL);
+            expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith(`${NAFILE_ID_ONEKI}eski`);
+            expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+        } finally {
+            await AsyncStorage.removeItem('ozel_gun_ayarlari');
+        }
+    });
 
     it('ANDROID: uyandırma açıkken kanal planlamadan ÖNCE, YOKSA oluşturulur ve bildirim o kanala gider', async () => {
         // Jest varsayılan platformu iOS'tur (AGENTS.md) — Android dalı açıkça seçilir.

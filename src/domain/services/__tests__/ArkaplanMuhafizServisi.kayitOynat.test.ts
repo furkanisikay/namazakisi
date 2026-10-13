@@ -96,7 +96,9 @@ import {
     SEVIYE_KADEMELERI,
     VARSAYILAN_SES,
 } from '../../../core/muhafiz/matrisTipleri';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
 /**
  * Snapshot'tan TARIHI COZ.
@@ -302,5 +304,96 @@ describe('ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT', () => {
         // Oksuz kanallar bildirim ayarlarinda kalmasin diye GC matrissiz cagrilir.
         expect(mockKanallariHazirla).toHaveBeenCalledWith();
         expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+    });
+});
+
+/**
+ * NOBETCI — OZEL GUN (issue #272). Aralik aktifken HICBIR muhafiz bildirimi ve
+ * TTS anons alarmi kurulmaz; eski plan yine temizlenir. Aralik bitince (ya da
+ * mod kapaliyken) plan, ozel gun hic yokmuscasina BIREBIR ayni uretilir.
+ */
+describe('ArkaplanMuhafizServisi — OZEL GUN KAPISI (kayit-oynat)', () => {
+    const getItem = AsyncStorage.getItem as jest.Mock;
+
+    function ozelGunDiskte(ayarlar: unknown) {
+        getItem.mockImplementation((anahtar: string) =>
+            Promise.resolve(
+                anahtar === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI ? JSON.stringify(ayarlar) : null
+            )
+        );
+    }
+
+    async function planiKaydet() {
+        jest.clearAllMocks();
+        const cikisMs = vakitCikisiniAl();
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
+            aktif: true,
+            matris: fikstürMatrisi(),
+            koordinatlar: { lat: 41.0082, lng: 28.9784 },
+        });
+        return { bildirimler: bildirimKayitlari(cikisMs), anonslar: anonsKayitlari(cikisMs) };
+    }
+
+    beforeEach(() => {
+        jest.spyOn(Math, 'random').mockReturnValue(0);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        mockKanallariHazirla.mockImplementation(
+            (matris?: MuhafizMatrisi) => Promise.resolve(matris)
+        );
+    });
+
+    afterEach(() => {
+        // clearAllMocks implementasyonu SILMEZ — sonraki suite'lere sizmasin.
+        getItem.mockReset();
+        getItem.mockResolvedValue(null);
+    });
+
+    const aralik = (bas: number, bit: number) => ({
+        id: 'x',
+        baslangicTarihi: gunEkle(bugunuAl(), bas),
+        bitisTarihi: gunEkle(bugunuAl(), bit),
+        olusturulmaTarihi: new Date().toISOString(),
+    });
+
+    test('aralik BUGUNU kapsiyorsa: bildirim YOK, anons alarmi YOK, eski plan temizlenir', async () => {
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: aralik(-2, 3), gecmisKayitlar: [] });
+
+        const { bildirimler, anonslar } = await planiKaydet();
+
+        expect(bildirimler).toEqual([]);
+        expect(anonslar).toEqual([]);
+        expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+    });
+
+    test('aralik DUN bittiyse plan ozel gunsuz planla BIREBIR ayni (geri gelir)', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+        expect(taban.bildirimler.length).toBeGreaterThan(0);
+
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: aralik(-5, -1), gecmisKayitlar: [] });
+        expect(await planiKaydet()).toEqual(taban);
+    });
+
+    test('mod KAPALIYKEN ya da yalniz GECMIS kayit bugunu kapsarken plan degismez', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+
+        ozelGunDiskte({ ozelGunModuAktif: false, aktifOzelGun: aralik(-1, 1), gecmisKayitlar: [] });
+        expect(await planiKaydet()).toEqual(taban);
+
+        // Erken bitirilen kayit gecmise ORIJINAL bitisiyle tasinir; susturmaya
+        // devam etmemeli.
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: null, gecmisKayitlar: [aralik(-1, 3)] });
+        expect(await planiKaydet()).toEqual(taban);
+    });
+
+    test('bozuk ozel gun kaydi muhafizi SUSTURMAZ', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+
+        getItem.mockImplementation((anahtar: string) =>
+            Promise.resolve(anahtar === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI ? '{bozuk' : null)
+        );
+        expect(await planiKaydet()).toEqual(taban);
     });
 });

@@ -1,5 +1,7 @@
 package com.furkanisikay.namazakisi
 
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 
@@ -17,6 +19,43 @@ class MainActivity : ReactActivity() {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null)
+    yonKilidiniUygula(resources.configuration)
+  }
+
+  /**
+   * Katla/aç, döndürme ve pencere boyutu değişimleri manifestteki `configChanges`
+   * ile burada karşılanır — Activity YENİDEN YARATILMAZ (pager ve geri sayım
+   * durumu korunur, issue #283). Bu yüzden yön kilidi onCreate'te bir kez değil,
+   * her yapılandırma değişiminde yeniden değerlendirilir: Fold'un iç ekranında
+   * açılıp kapak ekranına geçen uygulama telefonda yine dikeye kilitlenmeli.
+   */
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    super.onConfigurationChanged(newConfig)
+    yonKilidiniUygula(newConfig)
+  }
+
+  /**
+   * Telefonda (en küçük genişlik < 600 dp) dikey kilit korunur; tablet ve
+   * katlanabilir iç ekranında (≥ 600 dp) yön serbest bırakılır. Android 16
+   * (API 36) bu ekranlarda kilidi zaten yok sayıyor; burada niyeti açıkça
+   * belirtip eski sürümlerde de aynı davranışı veriyoruz. Manifest varsayılanı
+   * `portrait` kalır (açılışta telefonda yön zıplaması olmasın).
+   */
+  private fun yonKilidiniUygula(config: Configuration) {
+    val istenen = if (config.smallestScreenWidthDp >= BUYUK_EKRAN_EN_KUCUK_GENISLIK_DP) {
+      ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+    } else {
+      ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+    // Aynı değeri yeniden yazmak gereksiz bir yeniden düzen tetikleyebilir.
+    if (requestedOrientation != istenen) {
+      requestedOrientation = istenen
+    }
+  }
+
+  private companion object {
+    /** Material "orta" pencere sınıfının alt sınırı (JS: `ORTA_KIRILIM_DP`). */
+    const val BUYUK_EKRAN_EN_KUCUK_GENISLIK_DP = 600
   }
 
   /**

@@ -14,6 +14,7 @@ jest.mock('../../../data/local/LocalNamazServisi', () => ({
   localNamazlariGetir: (tarih: string) => mockNamazlar(tarih),
 }));
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { koordinattanImsakSaglayici, seriSayacAyarlariniHazirla } from '../SeriSayacHazirlayici';
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
@@ -65,6 +66,25 @@ describe('seriSayacAyarlariniHazirla', () => {
     expect(sonuc.aktif).toBe(true);
     expect(sonuc.seriBugunTamMi).toBe(false);
     expect(sonuc.hedef).toBeInstanceOf(Date);
+  });
+
+  // ÖZEL GÜN (issue #272): seri o gün DONDURULUR → "serin tehlikede" sayacı
+  // çıkmaz. Kapı TAKVİM gününe değil SERİ gününe bakar (02:00 → dünün seri günü).
+  test('seri günü özel gündeyse sayaç KAPALI; yalnız takvim günü özel gündeyse açık', async () => {
+    const yaz = (bas: string, bit: string) =>
+      AsyncStorage.setItem(
+        'ozel_gun_ayarlari',
+        JSON.stringify({ ozelGunModuAktif: true, aktifOzelGun: { baslangicTarihi: bas, bitisTarihi: bit }, gecmisKayitlar: [] })
+      );
+    try {
+      await yaz('2026-01-10', '2026-01-14');
+      expect((await seriSayacAyarlariniHazirla(ISTANBUL, new Date(2026, 0, 15, 2, 0))).aktif).toBe(false);
+
+      await yaz('2026-01-15', '2026-01-20');
+      expect((await seriSayacAyarlariniHazirla(ISTANBUL, new Date(2026, 0, 15, 2, 0))).aktif).toBe(true);
+    } finally {
+      await AsyncStorage.removeItem('ozel_gun_ayarlari');
+    }
   });
 
   test('gün ZATEN TAMSA sayaç çıkmaz (kalıcı bildirimle boşuna meşgul etme)', async () => {

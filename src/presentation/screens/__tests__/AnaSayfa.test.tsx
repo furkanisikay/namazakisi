@@ -21,13 +21,14 @@
  * gerçek zamanda beklenir.
  */
 import React from 'react';
-import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, act, waitFor, within } from '@testing-library/react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
+import { useEkranSinifi } from '../../hooks/useEkranSinifi';
 
 // AnaSayfa sabitleri: GECMIS_GUN_SAYISI = 90 → bugünün sayfa indeksi 90.
 const BUGUN_INDEKSI = 90;
@@ -53,6 +54,9 @@ interface TarihSeciciProplari {
 }
 const mockTarihSeciciProplari: TarihSeciciProplari[] = [];
 
+/** Pager cocuklarini ciz (yalniz sayfa duzeni testleri; varsayilan KAPALI). */
+const mockPagerCocuklari = { ciz: false };
+
 jest.mock('react-native-pager-view', () => {
   const ReactMock = require('react');
   const { View } = require('react-native');
@@ -66,7 +70,8 @@ jest.mock('react-native-pager-view', () => {
     // alir ve bu testlerin olctugu sey yalnizca Pager'a giden PROP'lar. Coverage
     // enstrumantasyonu altinda 92 sayfayi cizmek suiti CI runner'inda 30 sn'lik
     // testTimeout'u asacak kadar yavaslatiyordu (yerelde ~3 sn, CI'da timeout).
-    return <View />;
+    // Istisna: duzen testleri (issue #283) sayfa icerigini olcer → yalniz onlar acar.
+    return mockPagerCocuklari.ciz ? <View>{props.children}</View> : <View />;
   });
   return { __esModule: true, default: Pager };
 });
@@ -146,12 +151,13 @@ jest.mock('../../components/home/HomeHeader', () => {
 });
 jest.mock('../../components/home/VakitKarti', () => {
   const { View } = require('react-native');
-  return { VakitKarti: () => <View /> };
+  return { VakitKarti: () => <View testID="vakit-karti" /> };
 });
 jest.mock('../../components/home/VakitAkisi', () => {
   const { View } = require('react-native');
-  return { VakitAkisi: () => <View /> };
+  return { VakitAkisi: () => <View testID="vakit-akisi" /> };
 });
+jest.mock('../../hooks/useEkranSinifi', () => ({ useEkranSinifi: jest.fn(() => 'kompakt') }));
 jest.mock('../../components/home/SeriKartiModal', () => {
   const { View } = require('react-native');
   return { SeriKartiModal: () => <View /> };
@@ -323,6 +329,8 @@ describe('AnaSayfa', () => {
     jest.clearAllMocks();
     mockPagerProplari.length = 0;
     mockTarihSeciciProplari.length = 0;
+    mockPagerCocuklari.ciz = false;
+    (useEkranSinifi as jest.Mock).mockReturnValue('kompakt');
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
@@ -453,6 +461,46 @@ describe('AnaSayfa', () => {
       geceYarisiSenaryosu();
       await kur(bugunuAl());
 
+      expect(mockPagerSetPage).not.toHaveBeenCalled();
+      expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Katlanabilir / tablet düzeni (issue #283) ─────────────────────────────
+  describe('Katlanabilir/tablet düzeni', () => {
+    it('telefonda (kompakt) düzen DEĞİŞMEZ: tek sütun, iki bölme yok', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const ekran = await kur(bugunuAl());
+
+      expect(ekran.getByTestId('vakit-karti')).toBeTruthy();
+      expect(ekran.getByTestId('vakit-akisi')).toBeTruthy();
+      expect(ekran.queryByTestId('anasayfa-iki-bolme')).toBeNull();
+    });
+
+    it.each(['orta', 'genis'] as const)(
+      '%s pencerede vakit kartı SOL, Günlük Akış SAĞ bölmede çizilir',
+      async (sinif) => {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        (useEkranSinifi as jest.Mock).mockReturnValue(sinif);
+        const ekran = await kur(bugunuAl());
+
+        const sol = ekran.getByTestId('anasayfa-sol-bolme');
+        const sag = ekran.getByTestId('anasayfa-sag-bolme');
+        expect(within(sol).getByTestId('vakit-karti')).toBeTruthy();
+        expect(within(sol).queryByTestId('vakit-akisi')).toBeNull();
+        expect(within(sag).getByTestId('vakit-akisi')).toBeTruthy();
+        expect(within(sag).queryByTestId('vakit-karti')).toBeNull();
+      }
+    );
+
+    it('iki bölmeli düzen pager açılış sayfasını ETKİLEMEZ (gece yarısı = dün)', async () => {
+      geceYarisiSenaryosu();
+      (useEkranSinifi as jest.Mock).mockReturnValue('genis');
+      await kur(bugunuAl());
+
+      expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
       expect(mockPagerSetPage).not.toHaveBeenCalled();
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
     });

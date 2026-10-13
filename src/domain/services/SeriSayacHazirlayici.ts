@@ -23,6 +23,7 @@ import { gunTamMi } from '../../core/seri/gunTamMi';
 import { sonrakiImsakVaktiBul, type ImsakSaglayici } from '../../core/seri/seriGunSonu';
 import { localNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { Logger } from '../../core/utils/Logger';
 import { namazGunuHesapla } from './SeriHesaplayiciServisi';
 import type { SeriSayacAyarlari } from './SeriSayacBildirimServisi';
@@ -73,6 +74,11 @@ export async function seriSayacAyarlariniHazirla(
     // Seri gunu takvim gunu DEGIL: ertesi imsakta biter. Hangi gunun tamligina
     // bakacagimizi motorun kendi kuralindan sor.
     const seriGunu = namazGunuHesapla(simdi, ayarlar.gunBitisSaati, imsakSaglayici);
+
+    // Ozel gunde seri DONDURULUR (motor, ayni kapi) → "seri gunun bitiyor"
+    // geri sayimi anlamsiz ve namaza cagiran bir baski olur (issue #272).
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+    if (ozelGundeMi(seriGunu)) return kapali;
     const namazYanit = await localNamazlariGetir(seriGunu);
     if (!namazYanit.basarili || !namazYanit.veri) return kapali;
 
