@@ -1,7 +1,7 @@
 import type { EskiUyariModu, MuhafizMatrisi, SeviyeAyari } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTipleri';
-import { modKanallaraCevir } from './kanalKumesi';
-import { esikSiralamasiGecerliMi } from './aktifSeviye';
+import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi';
+import { esikSiralamasiGecerliMi, esiklerTekilMi } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
@@ -116,7 +116,11 @@ export function yonEsiklerineGoc(matris: MuhafizMatrisi, yogunluk?: unknown): Mu
     const vakitAyari = matris[vakit];
     sonuc[vakit] = vakitAyari;
 
-    if (!vakitAyari?.seviyeler || vakitAyari.seviyeler.length !== SEVIYE_KADEMELERI.length) continue;
+    // YALNIZ ESKI SEKIL (issue #274): 4 adim, tonlar nazik → acil dizi sirasinda.
+    // Hata yalniz bu sekilde dogmustu; yeni (1..6 adimli, serbest tonlu)
+    // kayitlar ekran tarafindan zaten kronolojik tutulur — bu goc onlara
+    // dokunmamali, yoksa bilincli kurulmus bir yapilandirmayi tabloyla ezerdi.
+    if (!eskiDortAdimSekliMi(vakitAyari?.seviyeler)) continue;
     if (vakitAyari.yon !== 'girisindenItibaren') continue;
     if (esikSiralamasiGecerliMi(vakitAyari.seviyeler, 'girisindenItibaren')) continue;
 
@@ -129,6 +133,91 @@ export function yonEsiklerineGoc(matris: MuhafizMatrisi, yogunluk?: unknown): Mu
         return { ...seviye, esikDk: hedef.esikDk, siklik: hedef.siklik };
       }),
     };
+  }
+
+  return degisti ? sonuc : matris;
+}
+
+/** Eski (issue #274 oncesi) sekil: tam 4 adim, tonlar `SEVIYE_KADEMELERI` sirasinda. */
+function eskiDortAdimSekliMi(seviyeler: SeviyeAyari[] | undefined): seviyeler is SeviyeAyari[] {
+  return (
+    Array.isArray(seviyeler) &&
+    seviyeler.length === SEVIYE_KADEMELERI.length &&
+    seviyeler.every((s, i) => s?.kademe === SEVIYE_KADEMELERI[i])
+  );
+}
+
+/**
+ * ESIK TEKILLIGI GOCU (issue #274) — DAVRANIS KORUYAN, idempotent.
+ *
+ * `matrisGecerliMi` artik vakit icinde esiklerin TEKIL olmasini ister: degisken
+ * uzunluklu dizide "N. hatirlatma" numarasi ve esik stepper'i esit esikte
+ * belirsizlesir. Esit esik yalniz eski kayitlarda dogabilir (eski global
+ * ayarlardan `eskidenMatriseGoc` ile turetilen matris).
+ *
+ * MATRISI REDDETMEK YANLIS OLURDU: `muhafizMatrisiniCoz` gecersiz matriste
+ * `eskidenMatriseGoc`'a duser ve kullanicinin kanal/ses/anons/yon ayarlari
+ * kaybolur (AGENTS.md'de kayitli tuzak).
+ *
+ * BIREBIR AYNI DAVRANIS: esit esikte motor (`aktifSeviyeyiBul`) daha SERT ACIK
+ * adimi secer; digerleri o dakikalarda HIC konusmaz. Goc kazanani yerinde
+ * birakir, digerlerini (acik olanlari `oncekiKanallar` hafizasiyla KAPATIP)
+ * en yakin bos dakikaya kaydirir — cikista erkene (+1), giriste erkene (-1;
+ * 1'in altina dusemezse sonraya). Kapali adim pencere saglamaz ve tetiklenmez,
+ * yani plan degismez; kullanicinin kurdugu her sey adimda durur, adimi acarak
+ * geri alabilir.
+ *
+ * Kanal gocundan (`modlariKanallaraGoc`) SONRA calismali: acik/kapali ayrimi
+ * `kanallar`a bakar. DEGISIKLIK YOKSA AYNI REFERANS doner.
+ */
+export function esikTekilliginiGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
+  let degisti = false;
+  const sonuc = {} as MuhafizMatrisi;
+
+  for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    sonuc[vakit] = vakitAyari;
+    const seviyeler = vakitAyari?.seviyeler;
+    if (!Array.isArray(seviyeler) || esiklerTekilMi(seviyeler)) continue;
+
+    const girisYonu = vakitAyari.yon === 'girisindenItibaren';
+    const kullanilan = new Set<number>();
+    const yeniSeviyeler = [...seviyeler];
+
+    // Her esik grubunda motorun kazanani: en sert ACIK adim (yoksa ilk adim).
+    const sertlik = (s: SeviyeAyari) => SEVIYE_KADEMELERI.indexOf(s.kademe);
+    const gruplar = new Map<number, number[]>();
+    seviyeler.forEach((s, i) => {
+      gruplar.set(s.esikDk, [...(gruplar.get(s.esikDk) ?? []), i]);
+    });
+    const kaydirilacak: number[] = [];
+    gruplar.forEach((indeksler, esik) => {
+      kullanilan.add(esik);
+      if (indeksler.length === 1) return;
+      const aciklar = indeksler.filter((i) => !adimKapaliMi(seviyeler[i].kanallar));
+      const adaylar = aciklar.length > 0 ? aciklar : indeksler;
+      const kazanan = adaylar.reduce((enSert, i) =>
+        sertlik(seviyeler[i]) > sertlik(seviyeler[enSert]) ? i : enSert
+      );
+      indeksler.filter((i) => i !== kazanan).forEach((i) => kaydirilacak.push(i));
+    });
+
+    for (const i of kaydirilacak) {
+      const s = seviyeler[i];
+      const adim = girisYonu ? -1 : 1;
+      let yeniEsik = s.esikDk + adim;
+      while (kullanilan.has(yeniEsik) || yeniEsik < 1) {
+        yeniEsik = yeniEsik < 1 ? s.esikDk + 1 : yeniEsik + (yeniEsik < s.esikDk ? -1 : 1);
+      }
+      kullanilan.add(yeniEsik);
+      const kapali = adimKapaliMi(s.kanallar)
+        ? s
+        : { ...s, kanallar: KAPALI_KANALLAR, oncekiKanallar: s.kanallar };
+      yeniSeviyeler[i] = { ...kapali, esikDk: yeniEsik };
+    }
+
+    degisti = true;
+    sonuc[vakit] = { ...vakitAyari, seviyeler: yeniSeviyeler };
   }
 
   return degisti ? sonuc : matris;

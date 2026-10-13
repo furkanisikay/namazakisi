@@ -77,7 +77,7 @@ const kur = (pencereVar: boolean) =>
             acikMi
             onAdimSec={jest.fn()}
             onYonDegistir={jest.fn()}
-            karsiYonAyari={vaktinYonunuDegistir(AYAR, 'yatsi', 'girisindenItibaren', CIKIS_TABLOSU, 'normal')}
+            karsiYonAyari={vaktinYonunuDegistir(AYAR, 'yatsi', 'girisindenItibaren', SEVIYE_KADEMELERI.map((k) => CIKIS_TABLOSU[k]), 'normal')}
         />
     );
 

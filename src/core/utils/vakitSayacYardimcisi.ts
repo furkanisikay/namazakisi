@@ -1,9 +1,11 @@
 /**
  * Vakit sayaci bildiriminin baslangic esiklerini (dakika) hesaplar.
  *
- * Kullanici, vakit sayacinin hangi muhafiz seviyesinde baslayacagini secer
- * (`sayacBaslangicSeviyesi`, 1-4). Bu yardimci o seviyeyi muhafiz matrisinden
- * okur. Seviye 1 = en erken baslangic (varsayilan).
+ * Kullanici, vakit sayacinin vaktin KACINCI hatirlatmasinda baslayacagini secer
+ * (`sayacBaslangicSeviyesi`, 1..6 — tarihsel adi "seviye"). Issue #274'ten beri
+ * sayi TONU degil KRONOLOJIK sirayi anlatir: "2" = o vaktin 2. hatirlatmasi.
+ * 1 = en erken baslangic (varsayilan). Vakitte o kadar hatirlatma yoksa SON
+ * hatirlatmaya duser (en gec baslangic — kullanicinin "gec baslasin" niyeti).
  *
  * Faz 3: esikler artik GLOBAL degil VAKIT BAZLI -> her vakit icin ayri deger
  * doner. (Kullanici Ogle'ye 45 dk, Ikindi'ye 20 dk verebilir.)
@@ -13,18 +15,23 @@
  * sectigi baslangic seviyesi yok sayiliyordu; #90 review bulgusu.)
  */
 import type { MuhafizMatrisi, MuhafizVakti } from '../muhafiz/matrisTipleri';
-import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../muhafiz/matrisTipleri';
+import { MUHAFIZ_MAKS_ADIM, MUHAFIZ_VAKITLERI } from '../muhafiz/matrisTipleri';
+import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { adimKapaliMi } from '../muhafiz/kanalKumesi';
 
 /**
- * Seviye no (1-4) -> matris seviye indeksi (0-3).
- * Gecersiz/aralik disi deger -> seviye 1 (en erken baslangic; eski davranis).
+ * Hatirlatma no (1..6) -> kronolojik indeks (0..5).
+ * Gecersiz/aralik disi deger -> 1. hatirlatma (en erken baslangic; eski davranis).
  */
 const seviyeIndeksi = (seviye: number | undefined): number => {
   if (typeof seviye !== 'number' || !Number.isInteger(seviye)) return 0;
-  if (seviye < 1 || seviye > SEVIYE_KADEMELERI.length) return 0;
+  if (seviye < 1 || seviye > MUHAFIZ_MAKS_ADIM) return 0;
   return seviye - 1;
 };
+
+/** Diziden kronolojik `indeks`'teki eleman; dizi kisaysa SON eleman. */
+const sinirliAl = <T>(dizi: readonly T[] | undefined, indeks: number): T | undefined =>
+  dizi && dizi.length > 0 ? dizi[Math.min(indeks, dizi.length - 1)] : undefined;
 
 /**
  * Giris-yonlu vakitte sayac esigi icin CIKIS tabani (dk, nazik → acil).
@@ -63,15 +70,21 @@ export const sayacBaslangicEsikleriHesapla = (
   for (const vakit of MUHAFIZ_VAKITLERI) {
     const vakitAyari = matris[vakit];
     if (vakitAyari?.yon === 'girisindenItibaren') {
-      const cikisYedegi = vakitAyari.yonYedegi?.cikisaDogru?.[indeks]?.esikDk;
+      // Yedek de kronolojik (cikista AZALAN) saklanir.
+      const cikisYedegi = sinirliAl(
+        kronolojikSirala(vakitAyari.yonYedegi?.cikisaDogru ?? [], 'cikisaDogru'),
+        indeks
+      )?.esikDk;
       sonuc[vakit] = Number.isFinite(cikisYedegi)
         ? (cikisYedegi as number)
-        : VARSAYILAN_CIKIS_ESIKLERI[indeks];
+        : (sinirliAl(VARSAYILAN_CIKIS_ESIKLERI, indeks) as number);
       continue;
     }
     // Eşik yalnız bir ZAMAN referansıdır; adımın kanalları (hepsi kapalı olsa
-    // bile) sayacın ne zaman başlayacağını değiştirmez.
-    sonuc[vakit] = vakitAyari?.seviyeler?.[indeks]?.esikDk ?? 0;
+    // bile) sayacın ne zaman başlayacağını değiştirmez. Sıra DİZİ indeksinden
+    // değil kronolojik görünümden gelir (ton artık sırayı ima etmez).
+    sonuc[vakit] =
+      sinirliAl(kronolojikSirala(vakitAyari?.seviyeler ?? [], 'cikisaDogru'), indeks)?.esikDk ?? 0;
   }
   return sonuc;
 };

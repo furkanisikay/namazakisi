@@ -310,7 +310,7 @@ export class ArkaplanMuhafizServisi {
             // yonunde ikisi farklidir ve kalanDk verilirse basligi "655 dk ·
             // YATSI VAKTİ ÇIKIYOR" gibi ters bir cumle olur.
             const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon);
+            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
             // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
             // Vakit tarihini kullan (yatsi icin onceki gun olabilir).
             // ID uretimi PAYLASILAN yardimciya devredildi — on plan (NamazMuhafiziServisi)
@@ -354,11 +354,13 @@ export class ArkaplanMuhafizServisi {
     private bildirimMesajiOlustur(
         vakit: VakitAdi,
         seviye: MuhafizSeviye,
-        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+        olcuDk?: number
     ): string {
         // Secim `core/muhafiz/muhafizGovdesi.ts`'te (saat yuku ayni secimi
         // deterministik oranla tekrarlar). Telefonda rastgelelik Math.random.
-        return muhafizGovdesiSec(vakit, seviye, yon, Math.random);
+        // `olcuDk`: metin = (ton, olcu) kurali (issue #274).
+        return muhafizGovdesiSec(vakit, seviye, yon, Math.random, olcuDk);
     }
 
     /**

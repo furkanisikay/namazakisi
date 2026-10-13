@@ -27,8 +27,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { SayisalSecici } from '../common/SayisalSecici';
-import type { SeviyeAyari, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
-import { VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import type { SeviyeAyari, SeviyeKademe, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
+import { SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
+import { basligiOlustur } from '../../../core/utils/muhafizMetinYardimcisi';
 import { adimKapaliMi, kanalAcikMi } from '../../../core/muhafiz/kanalKumesi';
 import { ozelSesMi } from '../../../core/muhafiz/sesKimligi';
 import { sesSec } from '../../../../modules/expo-countdown-notification/src';
@@ -39,10 +40,21 @@ import { esikSinirlariniHesapla } from '../../../core/muhafiz/esikSinirlari';
 import { TurkceTtsUyarisi, DinleButonu } from './AnonsBilesenleri';
 import { AdimNotlari, adimNotlariniOlustur } from './AdimNotlari';
 import { ANONS_METIN_UST_SINIRI } from '../../../core/muhafiz/ios/anonsKlibi';
-import { bildirimSesiGerekliMi, sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
+import {
+    acilTonSecilebilirMi,
+    bildirimSesiGerekliMi,
+    etkinKademe,
+    kademeSeviyeNo,
+    sesliAnonsGerekliMi,
+} from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
 import {
     KANAL_CIPLERI,
+    SEVIYE_BILGILERI,
+    TON_ETIKETLERI,
+    acilTonKisitNotu,
+    adimBasligiOlustur,
+    adimBilgisiAl,
     TITRESIM_ACIKLAMASI,
     TITRESIM_ETIKETI,
     cipKanallariniBirlestir,
@@ -66,6 +78,11 @@ export interface AdimDetayModalProps {
     ttsDestekli: boolean | null;
     onDegistir: (yeniSeviye: SeviyeAyari) => void;
     onKapat: () => void;
+    /**
+     * Hatırlatmayı sil (issue #274). Verilmezse "Sil" düğmesi çizilmez —
+     * çağıran, son hatırlatmada (en az bir tane kalmalı) bunu geçmez.
+     */
+    onSil?: () => void;
 }
 
 /** Bolum basligi (kucuk, harf arali); `sag` ile satirin sagina aksiyon konabilir. */
@@ -92,6 +109,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     ttsDestekli,
     onDegistir,
     onKapat,
+    onSil,
 }) => {
     const renkler = useRenkler();
     const seviye = seviyeler[indeks];
@@ -129,7 +147,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
     if (!seviye) return null;
 
-    const bilgi = tanim.adimBilgileri[indeks] ?? tanim.adimBilgileri[0];
+    const bilgi = adimBilgisiAl(tanim, seviye, indeks);
+    const adimBasligi = adimBasligiOlustur(tanim, seviye, indeks);
+    // Ekranda görünen ton = motorun kullandığı ton (acil kısıtı dahil).
+    const etkinTon = etkinKademe(seviye, tanim.yon);
+    const acilSecilebilir = acilTonSecilebilirMi(seviye.esikDk, tanim.yon);
     const sinirlar =
         tanim.esikSinirlari ??
         esikSinirlariniHesapla(seviyeler, indeks, {
@@ -183,6 +205,17 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                 ? { ...seviye.kanallar, titresim: true }
                 : { ...seviye.kanallar, titresim: false },
         });
+    };
+
+    /**
+     * Ton seçimi (issue #274). Aciliyet tonla birlikte yazılır: yalnız ACİL ton
+     * acil kanaldan (en üst önem) gider, diğerleri gitmez — kullanıcı ekranda
+     * neyi seçtiyse bildirim de o ağırlıkta gelir.
+     */
+    const tonSec = (kademe: SeviyeKademe) => {
+        if (kademe === 'acil' && !acilSecilebilir) return;
+        if (kademe === seviye.kademe && seviye.acilKanal === (kademe === 'acil')) return;
+        onDegistir({ ...seviye, kademe, acilKanal: kademe === 'acil' });
     };
 
     const sablonSec = (sablon: string) => {
@@ -251,10 +284,11 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                             </View>
                             <View className="flex-1">
                                 <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                    {bilgi.baslik}
+                                    {adimBasligi}
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {tanim.kanalSecimiVar ? `${tanim.baslik} vakti` : tanim.baslik}
+                                    {tanim.tonSecilebilir ? ` · ${TON_ETIKETLERI[etkinTon]} ton` : ''}
                                 </Text>
                             </View>
                             <TouchableOpacity
@@ -490,6 +524,80 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 )}
                                 </>)}
 
+                                {/* ── Ton (issue #274) ── sıra zamandan gelir, sertlik buradan */}
+                                {tanim.tonSecilebilir && (
+                                    <>
+                                        <BolumBasligi metin="TON" />
+                                        <View className="flex-row gap-1.5">
+                                            {SEVIYE_KADEMELERI.map((kademe) => {
+                                                const tonBilgi = SEVIYE_BILGILERI[kademe];
+                                                const secili = etkinTon === kademe;
+                                                const devreDisi = kademe === 'acil' && !acilSecilebilir;
+                                                return (
+                                                    <TouchableOpacity
+                                                        key={kademe}
+                                                        className="flex-1 items-center justify-center py-2.5 rounded-2xl border"
+                                                        style={{
+                                                            minHeight: 56,
+                                                            opacity: devreDisi ? 0.4 : 1,
+                                                            backgroundColor: secili ? `${tonBilgi.renk}15` : renkler.arkaplan,
+                                                            borderColor: secili ? tonBilgi.renk : renkler.sinir,
+                                                            borderWidth: secili ? 2 : 1,
+                                                        }}
+                                                        disabled={devreDisi}
+                                                        onPress={() => tonSec(kademe)}
+                                                        activeOpacity={0.7}
+                                                        accessibilityRole="button"
+                                                        accessibilityState={{ selected: secili, disabled: devreDisi }}
+                                                        accessibilityLabel={`${TON_ETIKETLERI[kademe]} ton`}
+                                                    >
+                                                        <FontAwesome5
+                                                            name={tonBilgi.ikon}
+                                                            size={14}
+                                                            color={secili ? tonBilgi.renk : renkler.metinIkincil}
+                                                            solid
+                                                        />
+                                                        <Text
+                                                            className="text-xs font-semibold mt-1"
+                                                            style={{ color: renkler.metin }}
+                                                        >
+                                                            {TON_ETIKETLERI[kademe]}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                );
+                                            })}
+                                        </View>
+                                        {!acilSecilebilir && (
+                                            <Text className="text-xs mt-2 leading-4" style={{ color: renkler.metinIkincil }}>
+                                                {acilTonKisitNotu(tanim.yon)}
+                                            </Text>
+                                        )}
+                                        {/* Örnek: bu tonla ve bu eşikte GERÇEK bildirim başlığı */}
+                                        <View
+                                            className="flex-row items-start p-3 rounded-2xl mt-2"
+                                            style={{ backgroundColor: `${bilgi.renk}10` }}
+                                        >
+                                            <FontAwesome5
+                                                name="quote-left"
+                                                size={10}
+                                                color={renkler.metinIkincil}
+                                                style={{ marginRight: 8, marginTop: 3 }}
+                                            />
+                                            <Text className="flex-1 text-xs leading-4" style={{ color: renkler.metin }}>
+                                                {basligiOlustur(
+                                                    tanim.vakit,
+                                                    kademeSeviyeNo(etkinTon),
+                                                    seviye.esikDk,
+                                                    tanim.yon
+                                                )}
+                                                {etkinTon === 'acil'
+                                                    ? ' · Bildirim ekranın üstünde kalır; Rahatsız Etmeyin modunu delebilir.'
+                                                    : ''}
+                                            </Text>
+                                        </View>
+                                    </>
+                                )}
+
                                 {/* ── Bildirim sesi ──
                                     Tek satir: secili sesin adi + "dinle" + secici.
                                     (Eski uc cipli palet ucunu de AYNI dosyaya cozuyordu — kaldirildi.) */}
@@ -652,6 +760,33 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                     </>
                                 )}
                             </>
+                        )}
+
+                        {/* ── Sil (issue #274) — en az bir hatırlatma kalır ── */}
+                        {onSil && (
+                            <TouchableOpacity
+                                className="flex-row items-center justify-center rounded-2xl mt-6"
+                                style={{
+                                    minHeight: 48,
+                                    backgroundColor: renkler.arkaplan,
+                                    borderWidth: 1,
+                                    borderColor: renkler.sinir,
+                                }}
+                                onPress={onSil}
+                                activeOpacity={0.7}
+                                accessibilityRole="button"
+                                accessibilityLabel={`${adimBasligi} — silin`}
+                            >
+                                <FontAwesome5
+                                    name="trash-alt"
+                                    size={13}
+                                    color={renkler.metinIkincil}
+                                    style={{ marginRight: 8 }}
+                                />
+                                <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                    Bu hatırlatmayı silin
+                                </Text>
+                            </TouchableOpacity>
                         )}
                     </ScrollView>
                 </View>

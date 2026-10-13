@@ -533,19 +533,20 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
     test('sesli adımlarda BİLDİRİM kanalı da açık kalır (TTS susarsa görsel iz kalsın)', () => {
         for (const yogunluk of ['normal', 'yogun'] as const) {
             const seviyeler = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
-            for (const kademe of SEVIYE_KADEMELERI) {
+            for (const adim of seviyeler) {
                 // Hiçbir hücre YALNIZ sesli değildir
-                expect(seviyeler[kademe].kanallar.sesli === true && !seviyeler[kademe].kanallar.bildirim)
-                    .toBe(false);
+                expect(adim.kanallar.sesli === true && !adim.kanallar.bildirim).toBe(false);
             }
-            expect(seviyeler.acil.kanallar).toEqual({ bildirim: true, sesli: true });
+            expect(seviyeler[seviyeler.length - 1].kanallar).toEqual({ bildirim: true, sesli: true });
         }
     });
 
     test('eşikler kesin azalan sıradadır (nazik → acil)', () => {
         for (const yogunluk of ['hafif', 'normal', 'yogun'] as const) {
             const s = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
-            const esikler = SEVIYE_KADEMELERI.map((k) => s[k].esikDk);
+            const esikler = s.map((a) => a.esikDk);
+            // Ton sırası da korunur (bugünkü preset'ler nazik → acil, 4 adım).
+            expect(s.map((a) => a.kademe)).toEqual(SEVIYE_KADEMELERI);
             for (let i = 1; i < esikler.length; i++) {
                 expect(esikler[i]).toBeLessThan(esikler[i - 1]);
             }
@@ -555,10 +556,10 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
     test('yoğun preset acil adımı ACİL KANAL bayrağıyla işaretlenir (ses ile DEĞİL)', () => {
         // Aciliyet artık `acilKanal` alanında; eskiden `bildirimSesi: 'alarm'` ile
         // taşınıyordu ve preset her uygulandığında kullanıcının seçtiği sesi silerdi.
-        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil.acilKanal).toBe(true);
-        expect(HATIRLATMA_PRESETLERI.normal.seviyeler.acil.acilKanal).toBe(false);
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3].acilKanal).toBe(true);
+        expect(HATIRLATMA_PRESETLERI.normal.seviyeler[3].acilKanal).toBe(false);
         // Preset ARTIK SES YAZMAZ — kullanıcı seçimi korunsun diye.
-        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil).not.toHaveProperty('bildirimSesi');
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3]).not.toHaveProperty('bildirimSesi');
     });
 
     test("eski `sikliklar` alanı 'birkez'i eşiğe eşitleyerek türetilir", () => {

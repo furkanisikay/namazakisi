@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Namaz muhafızı: vakit başına 1–6 hatırlatma + ayrı ton (issue #274).
+    {
+        id: 'muhafiz-hatirlatma-sayisi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Muhafızda İstediğiniz Kadar Hatırlatma',
+        aciklama:
+            'Her vakit için 1 ile 6 arasında hatırlatma kurabilir, her birinin tonunu ayrı seçebilirsiniz.',
+        detayAciklama:
+            'Dört sabit kademe yerine artık "1. hatırlatma, 2. hatırlatma…" diye kendi akışınızı kurarsınız. Numaralar zamana göre kendiliğinden sıralanır; Nazik, Uyarı, Sert ya da Acil tonu her hatırlatmada ayrı seçersiniz. Acil ton yalnız vaktin son 15 dakikasında seçilebilir. Bugünkü ayarlarınız aynen korunur.',
+        ikon: 'shield-alt',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Hatırlatmalarınızı düzenleyin',
+        kartGoster: false,
+        detaylar: [
+            'Vakit başına en fazla 6 hatırlatma ekleyebilir, istemediğinizi silebilirsiniz',
+            'Ton (Nazik, Uyarı, Sert, Acil) sıradan bağımsız seçilir',
+            'Vaktin bitmesine çok varken sert ton bile "vakit çıkıyor" demez',
+            'Ton geri giderse ekranda kısa bir not görürsünüz',
+        ],
+    },
     // Wear OS yüzeyleri (issue #281) — yalnız saat sahiplerini ilgilendirdiği için
     // kart kapalı (yalnız "Neler Yeni" listesi).
     {

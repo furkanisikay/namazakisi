@@ -215,13 +215,14 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
     });
 
     test('Aynı dakikaya düşen bildirimler birleştirilmeli', async () => {
-        // Tum esikler ayni dakikaya (25) ve sikligi pencereden buyuk (30) ayarlanir.
-        // Boylece dort seviye de YALNIZ 25. dakikada aktif olur ve uretim bunlari
+        // Tum esikler ayni dakikaya (10) ve sikligi pencereden buyuk (30) ayarlanir.
+        // Boylece dort seviye de YALNIZ 10. dakikada aktif olur ve uretim bunlari
         // tek bildirime indirgemeli (cakisan dakikada en yuksek seviye kazanir).
+        // 10 dk: acil ton yalniz son 15 dakikada gecerli (issue #274).
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }]),
+            matris: tekDuzeMatris([{ esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }]),
         });
 
         const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -233,9 +234,9 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         // Birlesen tek bildirim, cakisan en yuksek seviyeyi (seviye 4) tasimali
         const tekBildirim = scheduleCalllari[0][0];
         expect(tekBildirim.content.data.seviye).toBe(4);
-        expect(tekBildirim.content.title).toBe('🚨 25 dk · AKŞAM VAKTİ ÇIKIYOR');
-        // Cakisma 25. dakikada oldugu icin ID son-eki _dk_25 olmali
-        expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(25);
+        expect(tekBildirim.content.title).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
+        // Cakisma 10. dakikada oldugu icin ID son-eki _dk_10 olmali
+        expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(10);
         // Seviye 4 acil kanala baglanmali (ses/titresim ayarlari icin)
         expect(tekBildirim.trigger.channelId).toBe('muhafiz_acil');
     });

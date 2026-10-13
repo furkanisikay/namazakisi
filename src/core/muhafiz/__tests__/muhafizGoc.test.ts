@@ -294,6 +294,7 @@ describe('yonEsiklerineGoc', () => {
     const seviyeler = plan.map((p) => p.seviye);
     expect([...seviyeler].sort((a, b) => a - b)).toEqual(seviyeler);
     expect(seviyeler[0]).toBe(1);
-    expect(seviyeler[seviyeler.length - 1]).toBe(4);
+    // Giriş yönünde acil ton yok (issue #274) → en sert konuşan adım "sert".
+    expect(seviyeler[seviyeler.length - 1]).toBe(3);
   });
 });
