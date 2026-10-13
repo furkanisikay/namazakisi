@@ -53,15 +53,17 @@ const durumKur = (ek: Partial<SeferilikState> = {}): SeferilikState => ({
   ...ek,
 });
 
-const storeKur = (seferilik: SeferilikState | null, konum: KonumDilimi = { koordinatlar: ESKISEHIR }) =>
+const storeKur = (seferilik: SeferilikState, konum: KonumDilimi = { koordinatlar: ESKISEHIR }) =>
   configureStore({
-    reducer: seferilik
-      ? { seferilik: seferilikReducer, konum: (s: KonumDilimi = konum) => s }
-      : { konum: (s: KonumDilimi = konum) => s },
-    preloadedState: seferilik ? { seferilik, konum } : { konum },
+    reducer: { seferilik: seferilikReducer, konum: (s: KonumDilimi = konum) => s },
+    preloadedState: { seferilik, konum },
   });
 
-const ciz = (store: ReturnType<typeof storeKur>) =>
+/** Seferîlik dilimi OLMAYAN store (eski ekran test mock'ları). */
+const dilimsizStoreKur = () =>
+  configureStore({ reducer: { konum: (s: KonumDilimi = { koordinatlar: ESKISEHIR }) => s } });
+
+const ciz = (store: ReturnType<typeof storeKur> | ReturnType<typeof dilimsizStoreKur>) =>
   render(
     <Provider store={store}>
       <SeferilikBilgiKarti />
@@ -114,7 +116,7 @@ describe('SeferilikBilgiKarti', () => {
   });
 
   it('dilim store\'da yoksa (eski mock) hiçbir şey çizmez ve çökmez', () => {
-    expect(ciz(storeKur(null)).toJSON()).toBeNull();
+    expect(ciz(dilimsizStoreKur()).toJSON()).toBeNull();
   });
 
   it('kapatma kartı hemen kaldırır ve hafızayı diske yazar', async () => {
@@ -134,7 +136,7 @@ describe('SeferilikBilgiKarti', () => {
     const { getByLabelText, queryByTestId } = ciz(store);
     fireEvent.press(getByLabelText('Burası evim, ikamet yerim olarak kaydedin'));
     await waitFor(() => expect(queryByTestId('seferilik-bilgi-karti')).toBeNull());
-    expect(store.getState().seferilik?.ayarlar.ikamet).toMatchObject({ ...ESKISEHIR, kaynak: 'kullanici' });
+    expect(store.getState().seferilik.ayarlar.ikamet).toMatchObject({ ...ESKISEHIR, kaynak: 'kullanici' });
     expect(kisaBildirimGoster).toHaveBeenCalledWith('İkamet yeriniz güncellendi');
   });
 
@@ -154,8 +156,8 @@ describe('SeferilikBilgiKarti', () => {
       { koordinatlar: ISTANBUL },
     );
     ciz(store);
-    await waitFor(() => expect(store.getState().seferilik?.ayarlar.ikamet).not.toBeNull());
-    expect(store.getState().seferilik?.ayarlar.ikamet).toMatchObject({ ...ESKISEHIR, kaynak: 'ilkKonum' });
-    expect(store.getState().seferilik?.sonKonum).toEqual(ESKISEHIR);
+    await waitFor(() => expect(store.getState().seferilik.ayarlar.ikamet).not.toBeNull());
+    expect(store.getState().seferilik.ayarlar.ikamet).toMatchObject({ ...ESKISEHIR, kaynak: 'ilkKonum' });
+    expect(store.getState().seferilik.sonKonum).toEqual(ESKISEHIR);
   });
 });
