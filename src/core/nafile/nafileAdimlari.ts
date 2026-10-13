@@ -12,7 +12,7 @@
  * `hedef`/`imsaktanOnceDk`/`uyandirma`) kurulur. Saf ve deterministik olduğu
  * için İDEMPOTENTTİR (göçmüş kayıt tekrar göçmez, aynısı çıkar).
  */
-import type { SeviyeAyari, Siklik, UyariKanallari } from '../muhafiz/matrisTipleri';
+import type { SeviyeAyari, Siklik, UyariKanallari, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
@@ -26,6 +26,7 @@ import {
     NAFILE_TEKRAR_MIN_DK,
     TEHECCUD_IMSAK_ONCESI_MAX_DK,
     TEHECCUD_IMSAK_ONCESI_MIN_DK,
+    type NafileAyarlari,
     type NafileHatirlatmaAyari,
     type TeheccudAyari,
     type TeheccudPenceresi,
@@ -203,4 +204,21 @@ export function nafileAdimGuncelle<T extends NafileHatirlatmaAyari>(ayar: T, ind
 export function nafileYonunuDegistir<T extends NafileHatirlatmaAyari>(ayar: T, yon: PencereYonu): T {
     if (ayar.yon === yon) return ayar;
     return { ...ayar, yon, adimlar: kronolojikSirala(ayar.adimlar, yon) };
+}
+
+/**
+ * Nafilenin bildirim KANALI ihtiyacı (issue #273) — muhafız kanal uzayıyla
+ * ortak (`muhafiz` tabanı / titreşimli `muhafiz_<hash>`). Yalnız açık nafileler;
+ * uyandırmalı teheccüd kendi `nafile_uyandirma` kanalından gittiği için dahil
+ * edilmez. `MuhafizKanalServisi` hem oluştururken hem çöp toplarken bunu okur.
+ */
+export function nafileKanalAyarlari(a: NafileAyarlari): VakitMuhafizAyari[] {
+    const sonuc: VakitMuhafizAyari[] = [];
+    for (const g of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin]) {
+        if (g.aktif) sonuc.push({ yon: g.yon, seviyeler: g.adimlar });
+    }
+    if (a.teheccud.aktif && !a.teheccud.uyandirma) {
+        sonuc.push({ yon: a.teheccud.yon, seviyeler: a.teheccud.adimlar });
+    }
+    return sonuc;
 }

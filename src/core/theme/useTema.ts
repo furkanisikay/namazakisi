@@ -60,6 +60,7 @@ export const useRenkler = () => {
     uyari: tema.renkler.durum.uyari,
     hata: tema.renkler.durum.hata,
     bilgi: tema.renkler.durum.bilgi,
+    dikkat: tema.renkler.durum.dikkat,
     // Durum renkleri (iç içe erişim için: renkler.durum.hata)
     durum: tema.renkler.durum,
     // Palet renkleri

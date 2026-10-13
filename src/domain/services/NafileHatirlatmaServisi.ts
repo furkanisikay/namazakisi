@@ -2,47 +2,109 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
-import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
+import { ANDROID_NAFILE_PAYI } from '../../core/bildirim/butceSabitleri';
+import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { LocalNafileServisi, nafileHatirlatmaAcikMi } from '../../data/local/LocalNafileServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
-import { gununNafilePencereleri, koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
-import { teheccudHedefZamani, type NafilePencere } from '../../core/nafile/nafileVakitleri';
-import { nafileBildirimMetni } from '../../core/nafile/nafileMetinleri';
-import type { NafileAyarlari, NafileTuru } from '../../core/nafile/nafileTipleri';
-
-/** Bildirim id öneki — temizlik bu önekle SÜZER, başka sistemlere dokunmaz. */
-export const NAFILE_ID_ONEKI = 'nafile_';
+import { koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
+import { nafileKanalAyarlari } from '../../core/nafile/nafileAdimlari';
+import type { NafileTuru } from '../../core/nafile/nafileTipleri';
+import {
+    NAFILE_ID_ONEKI,
+    nafileKimlikOneki,
+    nafilePlaniOlustur,
+    nafilePlanSecenekleri,
+    type NafileBildirimPlani,
+} from '../../core/nafile/nafilePlani';
+import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
 
 /**
- * Kaç gün ileri planlanır.
- * - Gündüz nafileleri: bugün + 2 (vakit bildirimlerinden geniş; uygulama 3 gün
- *   açılmasa da sürer).
- * - Teheccüd: 7 gece — bir "uyandırma"dır; OEM arka plan görevini öldürürse
- *   3 günde sessizce biterdi (cuma'nın 4 hafta planlamasıyla aynı gerekçe).
- * iOS 64 bekleyen bildirim bütçesine en fazla 2×3 + 2×7 = 20 girer.
+ * Plan üretici SAF modüldedir (`core/nafile/nafilePlani.ts`): bildirim
+ * defteri (issue #298) aynı fonksiyonu kuru çalıştırır. Geriye uyumluluk için
+ * buradan yeniden dışa aktarılır.
  */
-const GUNDUZ_GUN_SAYISI = 3;
-const TEHECCUD_GECE_SAYISI = 7;
+export { NAFILE_ID_ONEKI, nafilePlaniOlustur, type NafileBildirimPlani } from '../../core/nafile/nafilePlani';
 
-/** Uyandırma açıkken ikinci hatırlatmanın gecikmesi (tek 2,4 sn'lik ses alarm beklentisini karşılamaz). */
-const UYANDIRMA_TEKRAR_DK = 3;
-
-const DK = 60 * 1000;
+/** Bildirim `data` yükü — "Kıldım" yanıtı bunu okur (`BildirimServisi`). */
+export interface NafileBildirimVerisi {
+    tip: 'nafile';
+    tur: NafileTuru;
+    /** Nafilenin GÜNÜ (teheccüd: gecesinin yatsısının günü). */
+    tarih: string;
+}
 
 /**
- * Nafile namaz hatırlatmaları (issue #77).
+ * NAFİLE TESLİMCİSİ — muhafızla AYNI teslim katmanı, AYRI örnek (issue #273).
+ *
+ * Fable kararı: teslim `AndroidMuhafizTeslimcisi` / `IosMuhafizTeslimcisi`
+ * üzerinden (kanal uzayı, titreşim, TTS anons alarmı, iOS anons klibi aynı
+ * kod). Ayrı ÖRNEK şarttır: muhafız örneğinin tur başı bütçe sayacı ve iOS slot
+ * ölçümü nafile turuyla karışmamalı. Seçenekler:
+ * - Android: kanal hazırlığı KİMLİK (çöp toplama muhafızın işidir; nafile
+ *   kanallarını `MuhafizKanalServisi.ekKanallariHazirla` oluşturur), anons
+ *   temizliği yalnız `nafile_` önekli, bütçe `ANDROID_NAFILE_PAYI` (asıl kesme
+ *   üreticide; teslimcideki sayaç emniyet ağıdır).
+ * - iOS: bütçe ölçümü "nafile DIŞI" bekleyenleri sayar (muhafız dahil),
+ *   anons sesi matrissiz hazırlanır.
+ *
+ * Seçim ENJEKTE EDİLEBİLİR (jest varsayılan platformu iOS'tur — AGENTS.md).
+ */
+let _teslimci: MuhafizTeslimcisi | null = null;
+
+export function nafileTeslimcisiniAl(): MuhafizTeslimcisi {
+    if (_teslimci) return _teslimci;
+    if (Platform.OS === 'ios') {
+        const { IosMuhafizTeslimcisi } =
+            require('./IosMuhafizTeslimcisi') as typeof import('./IosMuhafizTeslimcisi');
+        _teslimci = new IosMuhafizTeslimcisi({ kendiOneki: NAFILE_ID_ONEKI, matrissizAnons: true });
+    } else {
+        const { AndroidMuhafizTeslimcisi } =
+            require('./AndroidMuhafizTeslimcisi') as typeof import('./AndroidMuhafizTeslimcisi');
+        _teslimci = new AndroidMuhafizTeslimcisi({
+            alarmButcesi: ANDROID_NAFILE_PAYI,
+            kanalHazirligi: async (m) => m,
+            anonsOneki: NAFILE_ID_ONEKI,
+        });
+    }
+    return _teslimci;
+}
+
+/** Test / özel senaryo: teslimciyi ayarla (`null` → platformdan yeniden türet). */
+export function nafileTeslimcisiniAyarla(teslimci: MuhafizTeslimcisi | null): void {
+    _teslimci = teslimci;
+}
+
+/** Native önekli anons iptali — tembel yüklenir (köprü grafiği testlere sızmasın). */
+function anonslariOnekleIptalEt(onek: string): void {
+    if (Platform.OS !== 'android') return;
+    try {
+        const { iptalEtOnekliAnonslar } =
+            require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src');
+        iptalEtOnekliAnonslar(onek);
+    } catch (e) {
+        Logger.error('NafileHatirlatma', 'Anons alarmlari iptal edilemedi', e);
+    }
+}
+
+/**
+ * Nafile namaz hatırlatmaları (issue #77, #273).
  *
  * KOORDİNAT PARAMETREDİR (cuma dersi): `NamazVaktiHesaplayiciServisi` bellek-içidir,
  * headless arka plan görevinde boştur → servis sessizce hiçbir şey planlamazdı.
  *
  * Gece yarısı: gece yarısından sonra (aktif gün = dün) DÜNÜN gecesinin teheccüd
- * hedefi hâlâ gelecektedir → geceler dünden başlayarak taranır.
+ * hatırlatmaları hâlâ gelecektedir → geceler dünden başlayarak taranır.
+ *
+ * "KILDIM" (#273) yalnız o günün o nafilesinin kalan hatırlatmalarını (bildirim +
+ * anons alarmı + gösterilen bildirim) iptal eder ve bir susturma hafızası yazar;
+ * kayıt/puan/seri TUTMAZ. Native Kıldım yolu (#299) yalnız `muhafiz_` kimlikleri
+ * içindir — nafile yanıtı JS'e (`BildirimServisi`) düşer ve buraya gelir.
  */
 export class NafileHatirlatmaServisi {
     private static instance: NafileHatirlatmaServisi;
 
-    /** Süren planlama: "temizle → planla" çok adımlı; iç içe girerse plan ayrışır (cuma deseni). */
-    private surenPlanlama: Promise<void> | null = null;
+    /** Süren iş: "temizle → planla" ve Kıldım aynı sıradan geçer (yarış = ayrışan plan). */
+    private surenIs: Promise<void> | null = null;
 
     private constructor() { }
 
@@ -53,17 +115,54 @@ export class NafileHatirlatmaServisi {
         return NafileHatirlatmaServisi.instance;
     }
 
-    public async hatirlatmalariGuncelle(koordinatlar: NafileKoordinat | null): Promise<void> {
-        const onceki = this.surenPlanlama ?? Promise.resolve();
+    private async siraya(is: () => Promise<void>): Promise<void> {
+        const onceki = this.surenIs ?? Promise.resolve();
         const bu = onceki
             .catch(() => { /* önceki turun hatası bu turu düşürmez */ })
-            .then(() => this.planlamayiCalistir(koordinatlar));
-        this.surenPlanlama = bu;
+            .then(is);
+        this.surenIs = bu;
         try {
             await bu;
         } finally {
-            if (this.surenPlanlama === bu) this.surenPlanlama = null;
+            if (this.surenIs === bu) this.surenIs = null;
         }
+    }
+
+    public async hatirlatmalariGuncelle(koordinatlar: NafileKoordinat | null): Promise<void> {
+        await this.siraya(() => this.planlamayiCalistir(koordinatlar));
+    }
+
+    /**
+     * Bildirimdeki "Kıldım" (issue #273): o günün o nafilesinin kalan
+     * hatırlatmaları susar. Asla fırlatmaz.
+     */
+    public async kildimIsle(tarih: string, tur: NafileTuru): Promise<void> {
+        await this.siraya(async () => {
+            await LocalNafileServisi.kilindiIsaretle(tarih, tur, bugunuAl());
+            const onek = nafileKimlikOneki(tarih, tur);
+            try {
+                const tumu = await Notifications.getAllScheduledNotificationsAsync();
+                for (const b of tumu) {
+                    if (b.identifier.startsWith(onek)) {
+                        await Notifications.cancelScheduledNotificationAsync(b.identifier);
+                    }
+                }
+            } catch (e) {
+                Logger.error('NafileHatirlatma', 'Kildim: bekleyenler iptal edilemedi', e);
+            }
+            anonslariOnekleIptalEt(onek);
+            try {
+                const gosterilen = await Notifications.getPresentedNotificationsAsync();
+                for (const b of gosterilen) {
+                    if (b.request.identifier.startsWith(onek)) {
+                        await Notifications.dismissNotificationAsync(b.request.identifier);
+                    }
+                }
+            } catch (e) {
+                Logger.warn('NafileHatirlatma', 'Kildim: gosterilen bildirimler kaldirilamadi', e);
+            }
+            Logger.info('NafileHatirlatma', `Kildim: ${tur} (${tarih}) kalan hatirlatmalari iptal edildi`);
+        });
     }
 
     private async planlamayiCalistir(koordinatlar: NafileKoordinat | null): Promise<void> {
@@ -81,46 +180,76 @@ export class NafileHatirlatmaServisi {
             return;
         }
 
+        // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
         if (ayarlar.teheccud.aktif && ayarlar.teheccud.uyandirma) {
             await this.uyandirmaKanaliniGarantile();
         }
+        await this.kanallariHazirla(nafileKanalAyarlari(ayarlar));
 
         await this.mevcutlariTemizle();
 
         // Özel gün (issue #272): aralıktaki günlerin (ve gecelerinin) nafile
         // hatırlatmaları kurulmaz; eski plan az önce temizlendi.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
+        const kilinan = await LocalNafileServisi.getKilinanlar();
 
         const simdi = new Date();
-        for (const plan of nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi)) {
-            await this.planla(plan);
+        const secenekler = {
+            ...nafilePlanSecenekleri(ayarlar),
+            ...(Platform.OS === 'android' ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
+            kilindiMi: (iso: string, tur: NafileTuru) => (kilinan[iso] ?? []).includes(tur),
+        };
+        const planlar = nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi, secenekler);
+
+        const teslimci = nafileTeslimcisiniAl();
+        try {
+            await teslimci.hazirla();
+            // KRONOLOJİK sıra: iOS bütçesi sayaçla keser, ters sıra yakın uyarıları atardı.
+            for (const plan of planlar) {
+                await this.planla(teslimci, plan);
+            }
+        } finally {
+            await teslimci.tamamla?.();
         }
     }
 
-    private async planla(plan: NafileBildirimPlani): Promise<void> {
+    private async planla(teslimci: MuhafizTeslimcisi, plan: NafileBildirimPlani): Promise<void> {
+        const veri: NafileBildirimVerisi = { tip: 'nafile', tur: plan.tur, tarih: plan.tarih };
         try {
-            const uyandirma = plan.uyandirma;
-            await Notifications.scheduleNotificationAsync({
-                identifier: plan.id,
-                content: {
-                    title: plan.baslik,
-                    body: plan.govde,
-                    sound: Platform.OS === 'ios' ? 'bildirim.wav' : true,
+            await teslimci.uyariPlanla({
+                id: plan.id,
+                baslik: plan.baslik,
+                mesaj: plan.govde,
+                zaman: plan.zaman,
+                uyari: plan.uyari,
+                // Teslim sözleşmesi bir vakit kimliği ister; nafile yükü (`ozel.veri`)
+                // bunun yerine geçer, anons metni yer tutucu içermez → kullanılmaz.
+                vakit: 'ogle',
+                muhafizVakti: 'ogle',
+                tarih: plan.tarih,
+                yon: plan.yon,
+                ozel: {
+                    veri: { ...veri },
+                    ...(plan.uyandirma ? { kanalId: BILDIRIM_SABITLERI.KANALLAR.NAFILE_UYANDIRMA } : {}),
                     // iOS: uyandırma Odak'ı deler (sessiz anahtarı DELMEZ — ekranda söylenir).
-                    ...(uyandirma ? { interruptionLevel: 'timeSensitive' as const } : {}),
-                    data: { tip: 'nafile', tur: plan.tur },
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: plan.zaman,
-                    channelId: uyandirma
-                        ? BILDIRIM_SABITLERI.KANALLAR.NAFILE_UYANDIRMA
-                        : BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+                    zamanaDuyarli: plan.uyandirma,
                 },
             });
         } catch (e) {
             // Tek bir bildirim patlarsa kalanlar yine kurulmalı.
             Logger.error('NafileHatirlatma', 'Planlama hatasi', e);
+        }
+    }
+
+    /** Ortak muhafız kanal uzayındaki nafile kanallarını oluşturur (çöp toplamaz). */
+    private async kanallariHazirla(ayarlar: ReturnType<typeof nafileKanalAyarlari>): Promise<void> {
+        if (Platform.OS !== 'android' || ayarlar.length === 0) return;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            await MuhafizKanalServisi.ekKanallariHazirla(ayarlar);
+        } catch (e) {
+            Logger.error('NafileHatirlatma', 'Kanallar hazirlanamadi', e);
         }
     }
 
@@ -154,6 +283,7 @@ export class NafileHatirlatmaServisi {
         }
     }
 
+    /** Bekleyen nafile bildirimleri + Android anons alarmları (yalnız `nafile_` önekli). */
     private async mevcutlariTemizle(): Promise<void> {
         try {
             const tumu = await Notifications.getAllScheduledNotificationsAsync();
@@ -165,88 +295,6 @@ export class NafileHatirlatmaServisi {
         } catch (e) {
             Logger.error('NafileHatirlatma', 'Temizlik hatasi', e);
         }
+        anonslariOnekleIptalEt(NAFILE_ID_ONEKI);
     }
-}
-
-export interface NafileBildirimPlani {
-    id: string;
-    tur: NafileTuru;
-    zaman: Date;
-    baslik: string;
-    govde: string;
-    uyandirma: boolean;
-}
-
-/**
- * SAF plan üretici — hangi nafile bildirimi hangi anda, hangi metinle gidecek.
- * `bugunIso` ve `simdi` ENJEKTE edilir (testte sabit tarih yazılmaz).
- *
- * `gunAtlanirMi` (ops.): true dönen GÜN hiç planlanmaz — o günün gündüz
- * nafileleri ve o güne ait gece (yatsı → ertesi imsak) teheccüdü dahil.
- * Özel gün kapısı buradan bağlanır (issue #272).
- */
-export function nafilePlaniOlustur(
-    koordinat: NafileKoordinat,
-    ayarlar: NafileAyarlari,
-    simdi: Date,
-    bugunIso: string,
-    gunAtlanirMi: (iso: string) => boolean = () => false
-): NafileBildirimPlani[] {
-    const planlar: NafileBildirimPlani[] = [];
-    const gelecekMi = (z: Date) => z.getTime() > simdi.getTime();
-
-    // Dün (gece yarısı sonrası teheccüd) → bugün + TEHECCUD_GECE_SAYISI - 1
-    for (let i = -1; i < TEHECCUD_GECE_SAYISI; i++) {
-        const iso = gunEkle(bugunIso, i);
-        if (gunAtlanirMi(iso)) continue;
-        let pencereler: NafilePencere[];
-        try {
-            pencereler = gununNafilePencereleri(koordinat, iso);
-        } catch (e) {
-            Logger.warn('NafileHatirlatma', `Pencere hesaplanamadi: ${iso}`, e);
-            continue;
-        }
-
-        for (const p of pencereler) {
-            if (p.tur === 'teheccud') {
-                const t = ayarlar.teheccud;
-                if (!t.aktif) continue;
-                const zaman = teheccudHedefZamani(p, t.hedef, t.imsaktanOnceDk);
-                const metin = nafileBildirimMetni({
-                    tur: 'teheccud',
-                    son: p.bitis,
-                    teheccudHedefi: t.hedef,
-                    imsaktanOnceDk: Math.round((p.bitis.getTime() - zaman.getTime()) / DK),
-                    uyandirma: t.uyandirma,
-                });
-                if (gelecekMi(zaman)) {
-                    planlar.push({ id: `${NAFILE_ID_ONEKI}${iso}_teheccud`, tur: 'teheccud', zaman, ...metin, uyandirma: t.uyandirma });
-                }
-                if (t.uyandirma) {
-                    const ikinci = new Date(zaman.getTime() + UYANDIRMA_TEKRAR_DK * DK);
-                    if (gelecekMi(ikinci) && ikinci.getTime() < p.bitis.getTime()) {
-                        planlar.push({ id: `${NAFILE_ID_ONEKI}${iso}_teheccud_2`, tur: 'teheccud', zaman: ikinci, ...metin, uyandirma: true });
-                    }
-                }
-                continue;
-            }
-
-            // Gündüz nafileleri yalnız bugün + 2 gün.
-            if (i < 0 || i >= GUNDUZ_GUN_SAYISI) continue;
-            const ayar = ayarlar.hatirlatmalar[p.tur];
-            if (!ayar.aktif) continue;
-            const zaman = new Date(p.baslangic.getTime() + ayar.ofsetDk * DK);
-            // Ofset pencereyi aşarsa (kısa kış kuşluğu) o gün planlanmaz.
-            if (zaman.getTime() >= p.bitis.getTime() || !gelecekMi(zaman)) continue;
-            planlar.push({
-                id: `${NAFILE_ID_ONEKI}${iso}_${p.tur}`,
-                tur: p.tur,
-                zaman,
-                ...nafileBildirimMetni({ tur: p.tur, son: p.bitis }),
-                uyandirma: false,
-            });
-        }
-    }
-
-    return planlar.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
 }

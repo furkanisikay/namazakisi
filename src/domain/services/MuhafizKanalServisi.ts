@@ -14,8 +14,9 @@
  * kanal ID'si de degisir (bkz. `core/muhafiz/sesKimligi.ts`).
  */
 import { Platform } from 'react-native';
-import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
 import {
+    ayarlardanKanallariCikar,
     cozulemeyenSesleriDusur,
     matristenKanallariCikar,
     ozelSesleriTopla,
@@ -32,6 +33,8 @@ import {
     muhafizKanallariniTemizle,
     sesAdiAl,
 } from '../../../modules/expo-countdown-notification/src';
+import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
+import { nafileKanalAyarlari } from '../../core/nafile/nafileAdimlari';
 
 /** Android bildirim ayarlarinda kanal adi — kullanici hangisi oldugunu ayirt edebilmeli. */
 function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
@@ -93,8 +96,16 @@ export const MuhafizKanalServisi = {
     hazirla: async (matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> => {
         if (Platform.OS !== 'android') return matris;
 
+        // Kanal uzayı nafileyle ORTAKTIR (issue #273): çöp toplama nafilenin
+        // kullandığı kanalları da korumalı, yoksa her muhafız turu nafile
+        // bildirimlerinin kanalını siler (Android 8+ o bildirimi HİÇ göstermez).
+        // Diskten okunur: arka plan görevinde nafile servisi aynı süreçte
+        // kayıt bırakmamış olabilir.
+        const ekTanimlar = ayarlardanKanallariCikar(await nafileKanalAyarlariniOku());
+
         if (!matris) {
-            await copleriTopla([]);
+            await kanallariOlustur(ekTanimlar);
+            await copleriTopla(ekTanimlar.map((t) => t.kanalId));
             return matris;
         }
 
@@ -115,39 +126,15 @@ export const MuhafizKanalServisi = {
         let tanimlar: MuhafizKanalTanimi[];
         try {
             tanimlar = matristenKanallariCikar(dogrulanmisMatris);
+            for (const ek of ekTanimlar) {
+                if (!tanimlar.some((t) => t.kanalId === ek.kanalId)) tanimlar.push(ek);
+            }
         } catch (error) {
             Logger.error('MuhafizKanal', 'Kanal listesi cikarilamadi', error);
             return dogrulanmisMatris;
         }
 
-        // Yalniz HASH'LI (ozel sesli) kanallar burada olusturulur; taban
-        // kanallari (`muhafiz`/`muhafiz_acil`) BildirimServisi.izinIste kuruyor
-        // ve mevcut kurulumlarda kullanicinin tercihleri orada birikmis durumda.
-        //
-        // TRY/CATCH HER KANAL ICIN AYRI: tek bir ortak catch, ilk patlayan kanalda
-        // DONGUYU KESERDI ve kalan kanallar hic olusmazdi. Kanali olusmayan bir
-        // adim Android 8+'ta HIC GOSTERILMEZ (varsayilan sese DUSMEZ — kanal
-        // zorunludur), yani bir kanalin hatasi otekileri de sessizce susturur.
-        for (const tanim of tanimlar) {
-            if (!silinebilirMuhafizKanaliMi(tanim.kanalId)) continue;
-            try {
-                await muhafizKanaliniGarantile(
-                    tanim.kanalId,
-                    kanalAdiOlustur(tanim),
-                    kanalAciklamasiOlustur(tanim),
-                    // VARSAYILAN ses `null` gider: `sesKimligi` burada 'varsayilan'
-                    // DIZESIDIR ve native'e gecseydi `Uri.parse("varsayilan")` ile
-                    // OLU bir ses kurulurdu. Faz 6'dan once bu dal hic olusmuyordu
-                    // (hash'li kanal ancak ozel sesle dogardi); titresim ekseni
-                    // "varsayilan ses + hash'li kanal" bilesimini mumkun kildi.
-                    ozelSesMi(tanim.sesKimligi) ? tanim.sesKimligi : null,
-                    tanim.acilMi,
-                    tanim.titresim
-                );
-            } catch (error) {
-                Logger.error('MuhafizKanal', `Kanal olusturulamadi: ${tanim.kanalId}`, error);
-            }
-        }
+        await kanallariOlustur(tanimlar);
 
         // GC: matriste artik referans verilmeyen hash'li kanallar silinir.
         // Kullanici sesi her degistirdiginde eskisi oksuz kalir; toplanmazsa
@@ -157,11 +144,60 @@ export const MuhafizKanalServisi = {
         return dogrulanmisMatris;
     },
 
+    /**
+     * Muhafız DIŞI tüketicinin (nafile, issue #273) kanallarını YALNIZ oluşturur —
+     * çöp TOPLAMAZ. Toplama `hazirla`'nın işidir ve iki kaynağın birleşimini bilir;
+     * ikinci bir toplayıcı muhafız kanallarını silerdi. Asla fırlatmaz.
+     */
+    ekKanallariHazirla: async (ayarlar: ReadonlyArray<VakitMuhafizAyari>): Promise<void> => {
+        if (Platform.OS !== 'android') return;
+        try {
+            await kanallariOlustur(ayarlardanKanallariCikar(ayarlar));
+        } catch (error) {
+            Logger.error('MuhafizKanal', 'Ek kanallar hazirlanamadi', error);
+        }
+    },
+
     /** Testler icin: GC onbellegini sifirlar. */
     onbellegiSifirla: (): void => {
         sonToplananKume = null;
     },
 };
+
+/** Nafile ayarlarının kanal ihtiyacı (diskten; bozuk/okunamaz → boş). */
+async function nafileKanalAyarlariniOku(): Promise<VakitMuhafizAyari[]> {
+    try {
+        return nafileKanalAyarlari(await LocalNafileServisi.getAyarlar());
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Hash'li kanalları oluşturur. TRY/CATCH HER KANAL İÇİN AYRI: tek ortak catch
+ * ilk patlayan kanalda döngüyü keserdi ve kalan adımlar hiç gösterilmezdi.
+ */
+async function kanallariOlustur(tanimlar: ReadonlyArray<MuhafizKanalTanimi>): Promise<void> {
+    // Yalniz HASH'LI kanallar burada olusturulur; taban kanallari (`muhafiz`/
+    // `muhafiz_acil`) BildirimServisi.izinIste kuruyor.
+    for (const tanim of tanimlar) {
+        if (!silinebilirMuhafizKanaliMi(tanim.kanalId)) continue;
+        try {
+            await muhafizKanaliniGarantile(
+                tanim.kanalId,
+                kanalAdiOlustur(tanim),
+                kanalAciklamasiOlustur(tanim),
+                // VARSAYILAN ses `null` gider: 'varsayilan' DIZESI native'e gecseydi
+                // `Uri.parse("varsayilan")` ile OLU bir ses kurulurdu.
+                ozelSesMi(tanim.sesKimligi) ? tanim.sesKimligi : null,
+                tanim.acilMi,
+                tanim.titresim
+            );
+        } catch (error) {
+            Logger.error('MuhafizKanal', `Kanal olusturulamadi: ${tanim.kanalId}`, error);
+        }
+    }
+}
 
 async function copleriTopla(korunacakIdler: string[]): Promise<void> {
     const kume = [...korunacakIdler].sort().join('|');

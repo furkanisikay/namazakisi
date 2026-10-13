@@ -30,6 +30,8 @@ export interface NafileAyarDegisikligi {
         [K in keyof NafileAyarlari['hatirlatmalar']]: Partial<NafileAyarlari['hatirlatmalar'][K]>;
     }>;
     teheccud?: Partial<NafileAyarlari['teheccud']>;
+    /** Bildirim sınırı rehberinin "günü gününe kurun" önerisi (issue #298). */
+    gunuGununeKur?: boolean;
 }
 
 export const nafileAyarlariniBirlestir = (
@@ -43,6 +45,7 @@ export const nafileAyarlariniBirlestir = (
             evvabin: { ...mevcut.hatirlatmalar.evvabin, ...d.hatirlatmalar?.evvabin },
         },
         teheccud: { ...mevcut.teheccud, ...d.teheccud },
+        gunuGununeKur: d.gunuGununeKur ?? mevcut.gunuGununeKur,
     });
 
 /**

@@ -152,6 +152,16 @@ class ExpoCountdownNotificationModule : Module() {
             }
         }
 
+        /**
+         * Bekleyen (gelecekteki) anons alarmi sayisi — bildirim siniri rehberi
+         * (issue #298). SharedPreferences okumasi → AsyncFunction (JS thread'ini
+         * bloklamasin). Baglam yoksa `null` (bilinmiyor).
+         */
+        AsyncFunction("bekleyenAnonsSayisi") { promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(context?.let { AnonsZamanlayici.bekleyenSayisi(it.applicationContext) })
+        }
+
         // ============================================================
         // BILDIRIM SESI SECIMI (sistem ses secici + kanal yonetimi)
         // ============================================================

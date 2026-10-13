@@ -111,15 +111,23 @@ export interface IosTeslimciSecenekleri {
      * (aynı 64 sınırını paylaşırlar).
      */
     kendiOneki?: string;
+    /**
+     * Anons sesi matris verilmeden de hazırlansın mı? Muhafız matrissiz `hazirla`
+     * = "muhafız kapalı" demektir (anons yok); nafile teslimcisi ise kendi
+     * planını matrissiz kurar ve anonsu her turda ister (issue #273).
+     */
+    matrissizAnons?: boolean;
 }
 
 export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'ios' as const;
 
     private readonly kendiOneki: string;
+    private readonly matrissizAnons: boolean;
 
     constructor(secenekler: IosTeslimciSecenekleri = {}) {
         this.kendiOneki = secenekler.kendiOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.matrissizAnons = secenekler.matrissizAnons === true;
     }
 
     /**
@@ -155,7 +163,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         this.sentezIzni = onPlandaMi();
         // Ses tanimlayicisi klip adinin PARCASIDIR (gelismis ses indirilince adlar
         // degismeli). Kopru asla firlatmaz; ses yoksa `null` → anons yok.
-        this.sesTanimlayici = matris ? await trSesTanimlayici() : null;
+        this.sesTanimlayici = matris || this.matrissizAnons ? await trSesTanimlayici() : null;
 
         try {
             const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();

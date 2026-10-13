@@ -63,7 +63,17 @@ export interface NafileAyarlari {
      * yazılır; göç ya da varsayılan bunu UYDURAMAZ.
      */
     sesliOnayi?: boolean;
+    /**
+     * Hatırlatmalar yalnız BUGÜN (ve sürmekte olan gece) için kurulsun mu?
+     * (issue #298 — iOS 64 bildirim sınırı rehberinin önerisi.) Alan YOKSA
+     * `false`: gündüz 3 gün, teheccüd 7 gece ileri kurulur.
+     */
+    gunuGununeKur?: boolean;
 }
+
+/** En az bir hatırlatma açık mı? (planlama kısa devresi + ekran özeti + bildirim defteri) */
+export const nafileHatirlatmaAcikMi = (a: NafileAyarlari): boolean =>
+    a.hatirlatmalar.kusluk.aktif || a.hatirlatmalar.evvabin.aktif || a.teheccud.aktif;
 
 /** Bir nafileye kurulabilecek en fazla hatırlatma. */
 export const NAFILE_MAKS_ADIM = 3;

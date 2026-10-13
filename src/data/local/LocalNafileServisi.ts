@@ -4,6 +4,7 @@ import { Logger } from '../../core/utils/Logger';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import {
     VARSAYILAN_NAFILE_AYARLARI,
+    nafileHatirlatmaAcikMi,
     type NafileAyarlari,
     type NafileTuru,
 } from '../../core/nafile/nafileTipleri';
@@ -33,15 +34,16 @@ export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
             evvabin: gunduzNafileNormalize(hatirlatmalar.evvabin, v.hatirlatmalar.evvabin),
         },
         teheccud: teheccudNormalize(kaynak.teheccud, v.teheccud),
+        // Yalnız AÇIKKEN yazılır: eski kayıt / varsayılan birebir aynı nesneyi üretir.
+        ...(kaynak.gunuGununeKur === true ? { gunuGununeKur: true } : {}),
     };
     // Rıza kaydı yalnız AÇIKÇA true ise taşınır (uydurulamaz; yoksa alan hiç yazılmaz).
     if (kaynak.sesliOnayi === true) sonuc.sesliOnayi = true;
     return sonuc;
 };
 
-/** En az bir hatırlatma açık mı? (planlama kısa devresi + ekran özeti) */
-export const nafileHatirlatmaAcikMi = (a: NafileAyarlari): boolean =>
-    a.hatirlatmalar.kusluk.aktif || a.hatirlatmalar.evvabin.aktif || a.teheccud.aktif;
+/** En az bir hatırlatma açık mı? — saf tanım `nafileTipleri`nde (bildirim defteri de kullanır). */
+export { nafileHatirlatmaAcikMi };
 
 /** "Kıldım" hafızası: { 'YYYY-MM-DD': NafileTuru[] } — bkz. `NAFILE_KILINAN`. */
 export type NafileKilinanKaydi = Record<string, NafileTuru[]>;

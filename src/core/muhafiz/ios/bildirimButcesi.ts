@@ -23,17 +23,13 @@
  * Zaman ve dis dunya PARAMETREDIR.
  */
 
-/** iOS'un uygulama basina bekleyen yerel bildirim tavani. */
-export const IOS_BEKLEYEN_TAVANI = 64;
+import { IOS_BEKLEYEN_TAVANI, IOS_GUVENLIK_PAYI } from '../../bildirim/butceSabitleri';
 
 /**
- * Guvenlik payi.
- *
- * Muhafiz disindaki tuketiciler (vakit bildirimleri, cuma) planlamayi bizden
- * SONRA da yapabilir; tavani tam doldurursak onlarin bildirimleri sessizce
- * dusuruluyor olurdu. Pay, yarisi bize degil onlara birakir.
+ * iOS'un uygulama basina bekleyen yerel bildirim tavani ve guvenlik payi —
+ * TEK KAYNAK `core/bildirim/butceSabitleri.ts` (rehber ekrani da oradan okur).
  */
-export const IOS_GUVENLIK_PAYI = 4;
+export { IOS_BEKLEYEN_TAVANI, IOS_GUVENLIK_PAYI };
 
 /**
  * iOS'ta kac gun ileri planlanmali? — ⚠️ HENUZ BAGLI DEGIL (Faz 1 kapsam disi).

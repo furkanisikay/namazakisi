@@ -90,6 +90,7 @@ interface CountdownNativeModule {
     iptalEtTumAnonslar(): void;
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
     iptalEtOnekliAnonslar?(onek: string): number;
+    bekleyenAnonsSayisi?(): Promise<number | null>;
     trDestekleniyorMu(): Promise<boolean>;
     sesSecAsync(
         mevcutUri: string | null,
@@ -265,6 +266,21 @@ export function iptalEtOnekliAnonslar(onek: string): boolean {
     if (!onek || !ExpoCountdownNotification?.iptalEtOnekliAnonslar) return false;
     ExpoCountdownNotification.iptalEtOnekliAnonslar(onek);
     return true;
+}
+
+/**
+ * Bekleyen (gelecekteki) sesli anons alarmi sayisi — bildirim siniri
+ * rehberinin cihaz olcumu (issue #298). `null` = bilinmiyor (Android disi,
+ * eski build, hata). Asla firlatmaz.
+ */
+export async function bekleyenAnonsSayisi(): Promise<number | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.bekleyenAnonsSayisi) return null;
+    try {
+        const sayi = await ExpoCountdownNotification.bekleyenAnonsSayisi();
+        return typeof sayi === 'number' && Number.isFinite(sayi) ? sayi : null;
+    } catch {
+        return null;
+    }
 }
 
 // ============================================================
