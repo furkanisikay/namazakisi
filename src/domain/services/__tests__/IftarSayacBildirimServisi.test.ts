@@ -399,7 +399,7 @@ describe('IftarSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikin
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (IftarSayacBildirimServisi as any).instance = undefined;
+    (IftarSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
     mockOzelGundeMi.mockImplementation(() => false);
     karar = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'ogeKarari');
     bildir = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'kaynakBildir').mockResolvedValue(undefined);

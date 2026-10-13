@@ -698,7 +698,7 @@ describe('VakitSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikin
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (VakitSayacBildirimServisi as any).instance = undefined;
+    (VakitSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
     (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
     (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
