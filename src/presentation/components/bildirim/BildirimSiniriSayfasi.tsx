@@ -37,6 +37,7 @@ export const KAYNAK_BILGILERI: Record<DefterKaynagi, { ad: string; ikon: string 
     nafile: { ad: 'Nafile hatırlatmaları', ikon: 'star-and-crescent' },
     vakitBildirimi: { ad: 'Vakit girdi bildirimleri', ikon: 'bell' },
     cuma: { ad: 'Cuma hatırlatması', ikon: 'mosque' },
+    camiyeGit: { ad: 'Camiye gitme hatırlatması', ikon: 'walking' },
     gunSonu: { ad: 'Seri gün sonu hatırlatması', ikon: 'fire' },
     sayac: { ad: 'Geri sayım bildirimleri', ikon: 'hourglass-half' },
     widget: { ad: 'Ana ekran widget’ı', ikon: 'th-large' },

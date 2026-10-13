@@ -29,6 +29,8 @@ import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHa
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
+import { CamiyeGitHatirlatmaServisi } from './src/domain/services/CamiyeGitHatirlatmaServisi';
+import { camiyeGitAyarlariniYukle } from './src/presentation/store/camiyeGitSlice';
 import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
@@ -180,6 +182,7 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
       store.dispatch(cumaHatirlatmaAyarlariniYukle()),
+      store.dispatch(camiyeGitAyarlariniYukle()),
       // Ana ekran nafile şeridi bu slice'ı okur → açılışta HİDRATE edilmeli
       // (AGENTS.md: "HER slice açılışta yüklenmez").
       store.dispatch(nafileAyarlariniYukle()),
@@ -217,6 +220,8 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Koordinat PARAMETRE gecilir: servis bellek-ici hesaplayici konfigine bagli
       // olsaydi arka plan/headless yollarinda sessizce hicbir sey planlamazdi.
       CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // "Camide kılacağım" (issue #292) — 7/3 günlük pencere her açılışta tazelenir.
+      CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
       // Nafile hatırlatmaları (issue #77) — 3 gün / 7 gece pencere her açılışta tazelenir.
       NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({

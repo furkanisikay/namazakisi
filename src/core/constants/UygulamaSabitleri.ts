@@ -158,6 +158,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
+  // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
+  // Varsayılan KAPALI; yedeklenir (beyaz listenin ÜÇ yerinde de).
+  CAMIYE_GIT_AYARLARI: 'camiye_git_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
   // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir

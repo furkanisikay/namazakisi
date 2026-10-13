@@ -24,6 +24,12 @@ import { configureStore } from '@reduxjs/toolkit';
 // Mock dependencies
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
 jest.mock('../../../domain/services/CumaHatirlatmaServisi');
+const mockCamiyeGitGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
+    CamiyeGitHatirlatmaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockCamiyeGitGuncelle(...a) }),
+    },
+}));
 
 // `siklik` Faz 4'te eklendi; varsayilani `'birkez'` = ESKI davranis (tek atis).
 const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60, siklik: 'birkez' };
@@ -252,5 +258,15 @@ describe('cumaHatirlatmaAyariniGuncelle', () => {
         expect(store.getState().cumaHatirlatma.ayarlar).toEqual(VARSAYILAN);
         // Yazılamayan ayar üzerine bildirim planlanmamalı
         expect(mockServis.hatirlatmalariGuncelle).not.toHaveBeenCalled();
+    });
+
+    test('ÇAKIŞMA (issue #292): cuma açılıp kapanınca "camide kılacağım" planı da yeniden kurulur', async () => {
+        await store.dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: true }));
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledWith({ lat: 41.0082, lng: 28.9784 });
+
+        mockCamiyeGitGuncelle.mockClear();
+        // Yalnız süre değişimi cuma gününü değiştirmez → gereksiz yeniden planlama yok.
+        await store.dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: 45 }));
+        expect(mockCamiyeGitGuncelle).not.toHaveBeenCalled();
     });
 });

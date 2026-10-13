@@ -126,6 +126,8 @@ const depolamayiAyarla = (): void => {
         return { aktif: true };
       case DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI:
         return { sehir: 'İstanbul' };
+      case DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI:
+        return { aktif: true, yurumeDk: 12 };
       default:
         return null;
     }
@@ -173,6 +175,8 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.kazaTempo).toEqual({ '2026-06-14': 2 });
     expect(payload.ayarlar.muhafiz).toEqual({ aktif: true });
     expect(payload.ayarlar.konum).toEqual({ sehir: 'İstanbul' });
+    // "Camide kılacağım" (issue #292): beyaz listeye eklenmeseydi cihaz değişiminde kaybolurdu.
+    expect(payload.ayarlar.camiyeGit).toEqual({ aktif: true, yurumeDk: 12 });
   });
 
   it('SON_DISA_AKTARMA yedeğe girmez: payload oluşturma yolunda o anahtarla Depolama.oku hiç çağrılmaz', async () => {

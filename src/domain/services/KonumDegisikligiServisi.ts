@@ -43,6 +43,7 @@ import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
@@ -226,6 +227,12 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // yeni şehrinde bir ay boyunca eski şehrin saatiyle hatırlatılır.
         guvenliCalistir('Cuma hatirlatmasi', () =>
             CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // "Camide kılacağım" (issue #292): ezandan yürüme süresi kadar önce — vakit
+        // girişleri şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
+        guvenliCalistir('Camiye git hatirlatmasi', () =>
+            CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
 
         // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları güneş,

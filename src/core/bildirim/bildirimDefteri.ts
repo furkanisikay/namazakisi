@@ -11,6 +11,7 @@
  *   sesli anons     → aynı adaylar, `anonsAlarmiKurarMi` (yalnız Android)
  *   vakit bildirimi → `vakitBildirimPlaniOlustur` (bugün + yarın)
  *   cuma            → `cumaPlaniOlustur` (4 cuma)
+ *   camiye gitme    → `camiyeGitPlaniOlustur` (iOS 3, Android 7 gün; cuma öğlesi çakışması)
  *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe)
  *   gün sonu        → `gunSonuPlaniOlustur` (iOS 3, Android 7 gün)
  *   vakit sayacı    → `sayacPlaniOlustur` (yalnız Android; vakit başına 2)
@@ -39,6 +40,7 @@ import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../utils/vakitSayacYardimcisi';
 import { cumaPlaniOlustur, type CumaPlanAyarlari } from './cumaPlani';
+import { camiyeGitPlaniOlustur, CAMIYE_GIT_PLAN_GUN_SAYISI, type CamiyeGitPlanAyarlari } from './camiyeGitPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
 import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vakitBildirimPlani';
 import {
@@ -55,6 +57,7 @@ export type DefterKaynagi =
     | 'anons'
     | 'vakitBildirimi'
     | 'cuma'
+    | 'camiyeGit'
     | 'nafile'
     | 'gunSonu'
     | 'sayac'
@@ -67,6 +70,7 @@ export const DEFTER_KAYNAK_SIRASI: DefterKaynagi[] = [
     'nafile',
     'vakitBildirimi',
     'cuma',
+    'camiyeGit',
     'gunSonu',
     'sayac',
     'widget',
@@ -96,6 +100,8 @@ export interface DefterGirdisi {
     muhafiz?: { aktif: boolean; matris: MuhafizMatrisi } | null;
     vakitBildirimi?: VakitBildirimPlanAyarlari | null;
     cuma?: CumaPlanAyarlari | null;
+    /** "Camide kılacağım" (issue #292). Cuma öğlesi çakışması `cuma.aktif`'ten okunur. */
+    camiyeGit?: CamiyeGitPlanAyarlari | null;
     nafile?: NafileAyarlari | null;
     gunSonu?: (GunSonuPlanAyarlari & { gunSonuBildirimAktif: boolean }) | null;
     /** Vakit sayacı ayarı (Android). Eşikler muhafız matrisinden türer. */
@@ -153,6 +159,19 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         const ayar = g.cuma;
         guvenli(() => {
             for (const k of cumaPlaniOlustur(koordinat, ayar, g.simdi, ozelGundeMi)) ekle('cuma', k.zaman.getTime());
+        });
+    }
+
+    // ── "Camide kılacağım" (servisle AYNI seçenekler) ──
+    if (koordinat && g.camiyeGit?.aktif) {
+        const ayar = g.camiyeGit;
+        guvenli(() => {
+            const plan = camiyeGitPlaniOlustur(koordinat, ayar, g.simdi, {
+                gunSayisi: CAMIYE_GIT_PLAN_GUN_SAYISI[g.platform],
+                gunAtlanirMi: ozelGundeMi,
+                cumaHatirlatmasiAcik: g.cuma?.aktif === true,
+            });
+            for (const k of plan) ekle('camiyeGit', k.zaman.getTime());
         });
     }
 
