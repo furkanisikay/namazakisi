@@ -22,6 +22,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.hatirlatma.KildimAlicisi
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
+import com.furkanisikay.namazakisi.saat.ui.TesbihatAktivite
 import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
@@ -189,7 +190,14 @@ class BugunTileServisi : TileService() {
             .addContent(bosluk(6f))
             .addContent(satir(daireler.drop(3)))
             .addContent(bosluk(6f))
-            .addContent(metin(ipucu, 11f, if (onay != null) AMBER else GRI, false))
+            .addContent(
+                // Yapılacak iş yokken ipucu satırı tesbihat kısayoluna döner (issue #293).
+                if (BugunTileKarari.tesbihatKisayoluGoster(onay != null, ozet.haller.contains(GunDurumu.Hal.KALAN))) {
+                    tesbihatKisayolu()
+                } else {
+                    metin(ipucu, 11f, if (onay != null) AMBER else GRI, false)
+                }
+            )
             .build()
         return LayoutElementBuilders.Box.Builder()
             .setWidth(expand()).setHeight(expand())
@@ -307,6 +315,48 @@ class BugunTileServisi : TileService() {
             .setSemantics(ModifiersBuilders.Semantics.Builder().setContentDescription(aciklama).build())
             .build()
 
+    /** Küçük hap düğme: ipucu satırının yerini alır, yükseklik neredeyse aynı kalır. */
+    private fun tesbihatKisayolu(): LayoutElementBuilders.LayoutElement =
+        LayoutElementBuilders.Box.Builder()
+            .setHeight(dp(KISAYOL_YUKSEKLIK_DP))
+            .setModifiers(
+                ModifiersBuilders.Modifiers.Builder()
+                    .setClickable(
+                        ModifiersBuilders.Clickable.Builder()
+                            .setId(TESBIHAT_AC)
+                            .setOnClick(
+                                ActionBuilders.LaunchAction.Builder()
+                                    .setAndroidActivity(
+                                        ActionBuilders.AndroidActivity.Builder()
+                                            .setPackageName(packageName)
+                                            .setClassName(TesbihatAktivite::class.java.name)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .setSemantics(
+                        ModifiersBuilders.Semantics.Builder()
+                            .setContentDescription("Tesbihat sayacını açın")
+                            .setRole(ModifiersBuilders.SEMANTICS_ROLE_BUTTON)
+                            .build()
+                    )
+                    .setBackground(
+                        ModifiersBuilders.Background.Builder()
+                            .setColor(argb(KOYU))
+                            .setCorner(ModifiersBuilders.Corner.Builder().setRadius(dp(KISAYOL_YUKSEKLIK_DP / 2)).build())
+                            .build()
+                    )
+                    .setBorder(ModifiersBuilders.Border.Builder().setWidth(dp(1f)).setColor(argb(YESIL)).build())
+                    .setPadding(
+                        ModifiersBuilders.Padding.Builder().setStart(dp(10f)).setEnd(dp(10f)).build()
+                    )
+                    .build()
+            )
+            .addContent(metin("Tesbihat", 11f, BEYAZ, false))
+            .build()
+
     private fun uygulamayiAc(): ActionBuilders.Action =
         ActionBuilders.LaunchAction.Builder()
             .setAndroidActivity(
@@ -341,6 +391,14 @@ class BugunTileServisi : TileService() {
         private const val ONAY_KIMLIK = "onay_kimlik"
         private const val ONAY_SECIM = "onay_secim_ms"
         private const val UYGULAMAYI_AC = "uygulamayi_ac"
+        private const val TESBIHAT_AC = "tesbihat_ac"
+
+        /**
+         * Kısayol hapı ipucu satırından (11 sp ≈ 15 dp) yalnız birkaç dp yüksek: küçük
+         * yuvarlak ekranda vakit daireleri kenara itilmesin. Dokunma hedefi 48 dp'nin
+         * altındadır — tile'ın birincil eylemi değil, uygulamada da aynı giriş var.
+         */
+        private const val KISAYOL_YUKSEKLIK_DP = 22f
 
         /**
          * Girdi tavanı: her girdi tam bir düzen taşır (yük 31 gün ≈ 186 sınır).

@@ -51,6 +51,17 @@
             </intent-filter>
         </activity>
 
+        <!--
+          Tesbihat sayacı (issue #293). exported: "Bugün" tile'ının LaunchAction'ı ve
+          Ongoing simgesinin dokunuşu sistem (SysUI) tarafından başlatılır. Filtre yok.
+        -->
+        <activity
+            android:name=".ui.TesbihatAktivite"
+            android:exported="true"
+            android:label="@string/tesbihat_adi"
+            android:launchMode="singleTop"
+            android:taskAffinity="" />
+
         <service
             android:name=".veri.TelefonDinleyiciServisi"
             android:exported="true">
