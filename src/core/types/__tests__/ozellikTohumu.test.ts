@@ -15,7 +15,12 @@ import { LocalCamiyeGitServisi } from '../../../data/local/LocalCamiyeGitServisi
 import { LocalCumaHatirlatmaServisi } from '../../../data/local/LocalCumaHatirlatmaServisi';
 import { LocalSadeGorunumServisi } from '../../../data/local/LocalSadeGorunumServisi';
 import { LocalKazaOneriServisi } from '../../../data/local/LocalKazaOneriServisi';
-import { matrisGecerliMi, muhafizMatrisiniCoz, vakitUyariPlaniOlustur } from '../../muhafiz/motorAdaptoru';
+import {
+    matrisGecerliMi,
+    muhafizMatrisiniCoz,
+    vakitUyariPlaniOlustur,
+    type MatrisKaynagi,
+} from '../../muhafiz/motorAdaptoru';
 import { MUHAFIZ_VAKITLERI, type MuhafizMatrisi } from '../../muhafiz/matrisTipleri';
 
 const { ozellikTohumVerisi, VARYANTLAR } = require('../../../../scripts/ozellik-tohum-verisi');
@@ -89,7 +94,7 @@ describe('ozellik turu tohumu', () => {
 
         it('matris gecerli ve goc gerektirmez (yukleme onu degistirmez)', () => {
             expect(matrisGecerliMi(matris)).toBe(true);
-            expect(muhafizMatrisiniCoz({ matris, yogunluk: ayar.yogunluk })).toBe(matris);
+            expect(muhafizMatrisiniCoz({ matris, yogunluk: ayar.yogunluk } as MatrisKaynagi)).toBe(matris);
             expect(ayar.sesliOnayi).toBe(true);
             // Alarm onay modali karesi rizanin YOKLUGUNA baglidir.
             expect(ayar.alarmOnayi).toBeUndefined();

@@ -180,6 +180,13 @@ async function bolum(ad, fn) {
         cek('21-neler-yeni');
     });
 
+    await bolum('seferilik', async () => {
+        await temizAcilis('ozellik');
+        if (!(await ayarlaraGit())) return;
+        if (!(await kaydirarakDokun(/^Yolculuk bilgisi\./i, 'yolculuk satiri', 'seferilik', { bekle: 3000 }))) return;
+        cek('22-seferilik');
+    });
+
     const kareler = fs.readdirSync(cikis).filter((f) => /\.png$/i.test(f)).sort();
     console.log(`\nToplam ${kareler.length} kare (tema: ${TEMA}): ${kareler.join(', ')}`);
     if (!kareler.length) process.exit(1);

@@ -1,0 +1,16 @@
+# tohum: ozellik
+# Yolculuk bilgisi (seferilik) ayarlari. Ana ekran karti yalniz yolculukta
+# cikar; tohum yolculuk kurmaz, burada yalniz ayar sayfasi cekilir.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Yolculuk bilgisi\\..*"
+    direction: DOWN
+    timeout: 20000
+- tapOn:
+    text: "Yolculuk bilgisi\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/31-seferilik
