@@ -214,6 +214,14 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     capa: 'camiyeGitHatirlatmasi',
   },
   {
+    id: 'takvimCakismaUyarisi',
+    baslik: 'Takvim çakışması uyarısı',
+    anahtarKelimeler: ['takvim', 'toplantı', 'etkinlik', 'çakışma', 'ajanda'],
+    sayfa: 'BildirimAyarlari',
+    grup: 'Bildirimler',
+    capa: 'takvimCakismaUyarisi',
+  },
+  {
     id: 'vakitSayaci',
     baslik: 'Vakit sayacı',
     anahtarKelimeler: ['sayaç', 'geri sayım', 'vakit çıkıyor'],

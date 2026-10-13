@@ -45,6 +45,7 @@ import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
+import { TakvimCakismaServisi } from './TakvimCakismaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
 import { CamideyimServisi } from './CamideyimServisi';
@@ -242,6 +243,13 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // girişleri şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
         guvenliCalistir('Camiye git hatirlatmasi', () =>
             CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // Takvim çakışması uyarısı (issue #291): vakit girişi/çıkışı şehirle kayar,
+        // "etkinlik vaktin sonunu yutuyor mu" kararı yeniden verilmeli; özel gün
+        // değişimi de bu listeden yeniden kurar.
+        guvenliCalistir('Takvim cakismasi', () =>
+            TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
 
         // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları güneş,

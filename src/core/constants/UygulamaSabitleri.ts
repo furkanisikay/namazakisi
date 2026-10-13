@@ -164,6 +164,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
   // Varsayılan KAPALI; yedeklenir (beyaz listenin ÜÇ yerinde de).
   CAMIYE_GIT_AYARLARI: 'camiye_git_ayarlari',
+  // Takvim çakışması uyarısı (issue #291) — varsayılan KAPALI, açık rıza ister.
+  // Yedeklenir (beyaz listenin ÜÇ yerinde de). Takvim VERİSİ hiç saklanmaz.
+  TAKVIM_CAKISMA_AYARLARI: 'takvim_cakisma_ayarlari',
   // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
   NAFILE_AYARLARI: 'nafile_ayarlari',
   // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir
