@@ -446,8 +446,10 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /** Onay modalındaki örnek okunuş — seçilen preset'in sesli adımının eşiğiyle. */
     const sesliOrnekMetni = useMemo(() => {
         if (!sesliOnayi) return '';
-        const acil = HATIRLATMA_PRESETLERI[sesliOnayi].seviyeler.acil;
-        return anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', acil.esikDk);
+        const adimlar = HATIRLATMA_PRESETLERI[sesliOnayi].seviyeler;
+        // Örnek, preset'in SESLİ ilk adımının eşiğiyle (yoksa son adım).
+        const sesliAdim = adimlar.find((a) => a.kanallar.sesli) ?? adimlar[adimlar.length - 1];
+        return anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', sesliAdim.esikDk);
     }, [sesliOnayi]);
 
     /** "Özel" seçeneğine dönüş: yedeklenen matrisi geri yükler (onay istemez — veri kaybı yok). */

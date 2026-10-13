@@ -226,7 +226,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     // erişilebilirlik düğümüne düzleştirir → içine konan switch
                     // TalkBack'te ayrıca odaklanamaz, dokunma hedefleri de çakışır.
                     <View
-                        key={seviye.kademe}
+                        key={`adim-${indeks}`}
                         className="rounded-xl border mb-2"
                         style={{
                             backgroundColor: renkler.arkaplan,

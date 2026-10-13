@@ -20,19 +20,30 @@ import type {
   UyariKanallari,
   VakitMuhafizAyari,
 } from './matrisTipleri';
-import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
+import {
+  MUHAFIZ_MAKS_ADIM,
+  MUHAFIZ_MIN_ADIM,
+  MUHAFIZ_VAKITLERI,
+  SEVIYE_KADEMELERI,
+} from './matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
-import { aktifSeviyeyiBul } from './aktifSeviye';
+import { aktifSeviyeyiBul, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
   eskiAlarmSesiniGoc,
   yonEsiklerineGoc,
   eskidenMatriseGoc,
+  esikTekilliginiGoc,
   modlariKanallaraGoc,
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
-import { cikisSegmentiHesapla, girisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
+import {
+  cikisSegmentiHesapla,
+  girisSegmentiHesapla,
+  etkinSiklikHesapla,
+  kardeslerdenButce,
+} from './planButcesi';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
@@ -144,7 +155,11 @@ export function seviyeTetiklenirMi(
     span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
   }
 
-  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik));
+  // VAKIT BUTCESI (issue #274): kardesler verilirse seviye basi butce acik adim
+  // sayisina gore daralir (6 adimda 10) → vakit basi en fazla 60 uyari. Kardes
+  // yoksa tarihsel seviye basi 15 — iki motor da kardesleri GECMEK zorunda.
+  const butce = kardesler ? kardeslerdenButce(kardesler) : undefined;
+  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik, butce));
   if (herDk === null) return olcuDk === seviye.esikDk; // birkez: iki yonde de yalniz esik aninda
   if (herDk <= 0) return false;
   // Capa daima seviyenin KENDI esigidir; yalniz isaret doner.
@@ -165,7 +180,18 @@ export interface UyariPlani {
    * gibi ters cumleler dogar (Faz 1 / B11).
    */
   olcuDk: number;
+  /**
+   * Kazanan adimin TON numarasi (1 nazik … 4 acil). Metin, onem
+   * (`muhafizAcilKanalMi`), iOS kesinti seviyesi ve bildirim id'si bunu
+   * kullanir — issue #274'ten beri SIRAYI tasimaz (bkz. `adimIndeks`).
+   */
   seviye: SeviyeNo;
+  /**
+   * Kazanan adimin KRONOLOJIK sira numarasi (0'dan; ekranda "N. hatirlatma" =
+   * `adimIndeks + 1`). Ayni tonu tasiyan iki adimi ayirt eder (serit cubuklari,
+   * onizleme). Bildirim id'sine GIRMEZ — id bicimi sabit kalir.
+   */
+  adimIndeks: number;
   /** Kazanan adimin KANAL KUMESI (Faz 2'de `mod: UyariModu` yerini aldi). */
   kanallar: UyariKanallari;
   /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
@@ -225,6 +251,9 @@ export function vakitUyariPlaniOlustur(
   const bitis = girisYonu ? (pencereUzunluguDk as number) - 1 : 1;
   const adim = girisYonu ? 1 : -1;
 
+  // Kronolojik sira bir kez hesaplanir; kazanan adimin "N. hatirlatma" numarasi.
+  const kronolojik = kronolojikSirala(vakitAyari.seviyeler, yon);
+
   const plan: UyariPlani[] = [];
   for (let o = baslangic; girisYonu ? o <= bitis : o >= bitis; o += adim) {
     const kazanan = aktifSeviyeyiBul(vakitAyari, o);
@@ -236,6 +265,7 @@ export function vakitUyariPlaniOlustur(
       kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
       olcuDk: o,
       seviye: kademeSeviyeNo(kazanan.kademe),
+      adimIndeks: kronolojik.indexOf(kazanan),
       kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,
       sesAdi: kazanan.sesAdi,
@@ -305,18 +335,40 @@ export function muhafizKanaliSec(
   );
 }
 
-/** Matris yapisal olarak kullanilabilir mi? (5 vakit x 4 seviye + gecerli esik) */
-export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is MuhafizMatrisi {
+/**
+ * Matris YAPISAL olarak okunabilir mi? (5 vakit x 1..6 adim + sonlu esik)
+ *
+ * Esik TEKILLIGINE bakmaz: tekillik bozuksa matris yine de kurtarilabilir
+ * (`esikTekilliginiGoc`); tumden reddetmek `eskidenMatriseGoc` ile kullanicinin
+ * kanal/ses/anons/yon ayarlarini siler (AGENTS.md: siralama yuklemini yapisal
+ * kapiya BAGLAMA).
+ */
+export function matrisYapisiGecerliMi(
+  matris: MuhafizMatrisi | undefined
+): matris is MuhafizMatrisi {
   if (!matris) return false;
   return MUHAFIZ_VAKITLERI.every((vakit) => {
     const vakitAyari = matris[vakit];
     return (
       !!vakitAyari &&
       Array.isArray(vakitAyari.seviyeler) &&
-      vakitAyari.seviyeler.length === SEVIYE_KADEMELERI.length &&
+      vakitAyari.seviyeler.length >= MUHAFIZ_MIN_ADIM &&
+      vakitAyari.seviyeler.length <= MUHAFIZ_MAKS_ADIM &&
       vakitAyari.seviyeler.every((s) => !!s && Number.isFinite(s.esikDk))
     );
   });
+}
+
+/**
+ * Matris kullanilabilir mi? Yapi (1..6 adim, sonlu esik) + her vakitte ESIK
+ * TEKILLIGI (issue #274). Eski 4 elemanli kayitlar kesin sirali oldugu icin
+ * goçsuz gecer.
+ */
+export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is MuhafizMatrisi {
+  return (
+    matrisYapisiGecerliMi(matris) &&
+    MUHAFIZ_VAKITLERI.every((vakit) => esiklerTekilMi(matris[vakit].seviyeler))
+  );
 }
 
 /**
@@ -345,9 +397,10 @@ export type MatrisKaynagi = EskiMuhafizAyari & {
  * (kimlik korunur, gereksiz kopya yok).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
-  if (!matrisGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
+  if (!matrisYapisiGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
+  // Tekillik gocu kanal gocundan SONRA: kapali/acik ayrimi `kanallar`a bakar.
   return yonEsiklerineGoc(
-    modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris)),
+    esikTekilliginiGoc(modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))),
     kaynak.yogunluk
   );
 }

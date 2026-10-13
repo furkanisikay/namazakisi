@@ -198,3 +198,27 @@ describe('seritCumlesiOlustur', () => {
         expect(cumle(cikisPlani(), 'cikisaDogru', { simdi, baslangic: BASLANGIC })).not.toContain('Sıradaki');
     });
 });
+
+describe('issue #274 — çubuklar ADIMA göre, ton yalnız boy/renk', () => {
+    test('aynı tonlu iki adım iki ayrı ÇUBUK üretir (ikincisi tik değil)', () => {
+        const ayar: VakitMuhafizAyari = {
+            seviyeler: [40, 20].map((esikDk) => ({
+                kademe: 'nazik' as const,
+                kanallar: { bildirim: true },
+                esikDk,
+                siklik: 'birkez' as const,
+                bildirimSesi: VARSAYILAN_SES,
+                anonsMetni: '',
+            })),
+        };
+        const duzen = seritDuzeniHesapla(
+            vakitUyariPlaniOlustur(ayar, 24 * 60, { pencereUzunluguDk: PENCERE_DK }),
+            PENCERE_DK
+        );
+        expect(duzen.cubuklar.map((c) => [c.adimIndeks, c.seviye])).toEqual([
+            [0, 1],
+            [1, 1],
+        ]);
+        expect(duzen.tikler).toHaveLength(0);
+    });
+});

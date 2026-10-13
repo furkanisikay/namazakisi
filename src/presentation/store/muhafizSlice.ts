@@ -12,6 +12,7 @@ import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import {
     eskiAlarmSesiniGoc,
     eskidenMatriseGoc,
+    esikTekilliginiGoc,
     modlariKanallaraGoc,
     yonEsiklerineGoc,
 } from '../../core/muhafiz/muhafizGoc';
@@ -21,7 +22,7 @@ import {
     presetSesliIceriyorMu,
     presetZamanlamasiniUygula,
 } from '../../core/muhafiz/matrisIslemleri';
-import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
+import { matrisGecerliMi, matrisYapisiGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 
 /**
  * Hatirlatma yogunlugu preset tipleri
@@ -56,53 +57,45 @@ export interface EskiSeviyeDegerleri {
  * Sesli adimlarda BILDIRIM kanali da acik birakilir — ses tek kanal olmamali; TTS
  * yoksa/sessizse gorsel iz kalmali.
  */
-const HAFIF_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    uyari: { esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    sert: { esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    acil: { esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-};
+const HAFIF_SEVIYELERI: PresetSeviyeleri = [
+    { kademe: 'nazik', esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'acil', esikDk: 2, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+];
 
-const NORMAL_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    uyari: { esikDk: 25, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
-    sert: { esikDk: 10, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
-    acil: { esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true }, acilKanal: false },
-};
+const NORMAL_SEVIYELERI: PresetSeviyeleri = [
+    { kademe: 'nazik', esikDk: 45, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 25, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'sert', esikDk: 10, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'acil', esikDk: 3, siklik: 'birkez', kanallar: { bildirim: true, sesli: true }, acilKanal: false },
+];
 
-/**
- * 'yogun' son adimi ACIL kanaldan gider (MAX onem + bypassDnd). Bu, eskiden
- * `bildirimSesi: 'alarm'` ile ifade ediliyordu; ses ile onem AYRILDIGI icin artik
- * dogru alanda duruyor — boylece bu preset kullanicinin sectigi sesi SILMEZ.
- */
-const YOGUN_SEVIYELERI: PresetSeviyeleri = {
-    nazik: { esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
-    uyari: { esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
-    sert: { esikDk: 15, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
-    acil: { esikDk: 6, siklik: { herDk: 3 }, kanallar: { bildirim: true, sesli: true }, acilKanal: true },
-};
-
-const eskiEsikler = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
-    seviye1: s.nazik.esikDk,
-    seviye2: s.uyari.esikDk,
-    seviye3: s.sert.esikDk,
-    seviye4: s.acil.esikDk,
-});
+const YOGUN_SEVIYELERI: PresetSeviyeleri = [
+    { kademe: 'nazik', esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'uyari', esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'sert', esikDk: 15, siklik: { herDk: 5 }, kanallar: { bildirim: true }, acilKanal: false },
+    { kademe: 'acil', esikDk: 6, siklik: { herDk: 3 }, kanallar: { bildirim: true, sesli: true }, acilKanal: true },
+];
 
 /**
- * Eski semada 'birkez' YOKTUR (yalniz dakika sayisi). Esik = siklik yazmak eski
- * motorda da "yalniz esik aninda tetikle" demektir ((esik - kalan) % esik === 0
- * bir sonraki tetigi kalan=0'a atar, o da pencere disi) → sadik cevrim.
+ * Eski global `seviyeN` alanlari preset'in ILK DORT KRONOLOJIK adimindan
+ * turetilir (eksikse son adim tekrarlanir). Bugun her preset tam 4 adimdir.
  */
+const eskiDegerler = (
+    s: PresetSeviyeleri,
+    deger: (p: PresetSeviyeAyari) => number
+): EskiSeviyeDegerleri => {
+    const al = (i: number) => deger(s[Math.min(i, s.length - 1)]);
+    return { seviye1: al(0), seviye2: al(1), seviye3: al(2), seviye4: al(3) };
+};
+
+const eskiEsikler = (s: PresetSeviyeleri): EskiSeviyeDegerleri => eskiDegerler(s, (p) => p.esikDk);
+
 const eskiSiklik = (p: PresetSeviyeAyari): number =>
     p.siklik === 'birkez' ? p.esikDk : p.siklik.herDk;
 
-const eskiSikliklar = (s: PresetSeviyeleri): EskiSeviyeDegerleri => ({
-    seviye1: eskiSiklik(s.nazik),
-    seviye2: eskiSiklik(s.uyari),
-    seviye3: eskiSiklik(s.sert),
-    seviye4: eskiSiklik(s.acil),
-});
+const eskiSikliklar = (s: PresetSeviyeleri): EskiSeviyeDegerleri => eskiDegerler(s, eskiSiklik);
 
 export interface HatirlatmaPreseti {
     aciklama: string;
@@ -316,7 +309,11 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // (`muhafizMatrisiniCoz` ham AsyncStorage okuyan arka plan
                 // tüketicileri için aynı göçü ayrıca uygular; bu yol ise sonucu
                 // DİSKE yazar → kanallar görünür/değiştirilebilir olur.)
-                const semaGoclu = modlariKanallaraGoc(eskiAlarmSesiniGoc(hamMatris));
+                // Issue #274: eşik TEKİLLİĞİ göçü kanal göçünden SONRA (açık/kapalı
+                // ayrımı `kanallar`a bakar); davranışı birebir korur.
+                const semaGoclu = esikTekilliginiGoc(
+                    modlariKanallaraGoc(eskiAlarmSesiniGoc(hamMatris))
+                );
                 const sesGocuGerekli = semaGoclu !== hamMatris;
 
                 // Bir kerelik preset göçü: yalnız bayrağı OLMAYAN eski kayıtlarda.
@@ -337,14 +334,22 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // `matris`e yazar. Eski şemada kalsaydı hücrelerde `kanallar`
                 // bulunmaz, motor hepsini KAPALI sayar → kullanıcı tek dokunuşla
                 // muhafızı sessizce tümden susturmuş olurdu.
-                const hamYedek: MuhafizMatrisi | undefined = matrisGecerliMi(parsed.ozelMatrisYedegi)
+                const hamYedek: MuhafizMatrisi | undefined = matrisYapisiGecerliMi(
+                    parsed.ozelMatrisYedegi
+                )
                     ? parsed.ozelMatrisYedegi
                     : undefined;
                 // Yön göçü YEDEĞE DE uygulanmalı: "Özel"e dönmek bu matrisi doğrudan
                 // `matris`e yazar → atlanırsa ters eskalasyon tek dokunuşla geri gelir.
-                const yedek = hamYedek
-                    ? yonEsiklerineGoc(modlariKanallaraGoc(hamYedek), temel.yogunluk)
+                // Tekillik göçü de: tekilliği bozuk yedek `matrisGecerliMi`'den geçmez
+                // ve "Özel" seçeneği sessizce kaybolurdu.
+                const yedekAday = hamYedek
+                    ? yonEsiklerineGoc(
+                        esikTekilliginiGoc(modlariKanallaraGoc(hamYedek)),
+                        temel.yogunluk
+                    )
                     : undefined;
+                const yedek = matrisGecerliMi(yedekAday) ? yedekAday : undefined;
                 const yedekGocuGerekli = !!hamYedek && yedek !== hamYedek;
 
                 const sonuc: MuhafizAyarlari = {

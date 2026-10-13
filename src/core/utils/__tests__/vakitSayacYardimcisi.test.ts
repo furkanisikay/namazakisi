@@ -33,11 +33,11 @@ describe('sayacBaslangicEsikleriHesapla', () => {
   it('VAKİT BAZLI: her vakit kendi eşiğini döndürür (global değil)', () => {
     const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
     matris.ogle.seviyeler[0].esikDk = 60;
-    matris.ikindi.seviyeler[0].esikDk = 12;
+    matris.ikindi.seviyeler[0].esikDk = 52;
 
     const esikler = sayacBaslangicEsikleriHesapla(1, matris);
     expect(esikler.ogle).toBe(60);
-    expect(esikler.ikindi).toBe(12);
+    expect(esikler.ikindi).toBe(52);
     expect(esikler.aksam).toBe(45); // dokunulmayan vakit varsayılanda kalır
   });
 
@@ -151,5 +151,35 @@ describe('sayacBaslangicEsikleriHesapla — giris yonlu vakit', () => {
 
     expect(sayacBaslangicEsikleriHesapla(1, matris).ogle).toBe(45);
     expect(sayacBaslangicEsikleriHesapla(3, matris).ikindi).toBe(10);
+  });
+});
+
+describe('sayacBaslangicEsikleriHesapla — kronolojik N. hatırlatma (issue #274)', () => {
+  const adim = (kademe: 'nazik' | 'uyari' | 'sert' | 'acil', esikDk: number) => ({
+    kademe,
+    kanallar: { bildirim: true },
+    esikDk,
+    siklik: 'birkez' as const,
+    bildirimSesi: 'varsayilan',
+    anonsMetni: '',
+  });
+  const matrisKur = (seviyeler: ReturnType<typeof adim>[]): MuhafizMatrisi =>
+    Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler }])) as MuhafizMatrisi;
+
+  it('numara TONU değil SIRAYI anlatır: 2. hatırlatma ikinci en büyük eşiktir', () => {
+    // Tonlar sırasız: sert önce, nazik sonra.
+    const m = matrisKur([adim('sert', 50), adim('nazik', 20), adim('acil', 5)]);
+    expect(sayacBaslangicEsikleriHesapla(2, m).ogle).toBe(20);
+  });
+
+  it('vakitte o kadar hatırlatma yoksa SON hatırlatmaya düşer', () => {
+    const m = matrisKur([adim('nazik', 30), adim('sert', 8)]);
+    expect(sayacBaslangicEsikleriHesapla(4, m).yatsi).toBe(8);
+  });
+
+  it('5. ve 6. hatırlatma seçilebilir', () => {
+    const m = matrisKur([60, 50, 40, 30, 20, 10].map((e) => adim('uyari', e)));
+    expect(sayacBaslangicEsikleriHesapla(6, m).aksam).toBe(10);
+    expect(sayacBaslangicEsikleriHesapla(7, m).aksam).toBe(60); // aralık dışı → 1.
   });
 });

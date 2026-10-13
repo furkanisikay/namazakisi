@@ -44,6 +44,11 @@ export function tumVakitlereUygula(matris: MuhafizMatrisi, kaynak: MuhafizVakti)
  * yogunlukta sessizce acil kanala dusulurdu.
  */
 export interface PresetSeviyeAyari {
+  /**
+   * Adimin TONU (issue #274). Dizi sirasi KRONOLOJIKtir; ton ayri yazilir —
+   * preset uygulamasi hucreye tonu da yazar (sertlik preset'in parcasidir).
+   */
+  kademe: SeviyeKademe;
   esikDk: number;
   siklik: Siklik;
   /** Bu adim hangi kanallardan uyarir? (Faz 2'de `mod: UyariModu` yerini aldi.) */
@@ -52,11 +57,33 @@ export interface PresetSeviyeAyari {
   acilKanal: boolean;
 }
 
-export type PresetSeviyeleri = Record<SeviyeKademe, PresetSeviyeAyari>;
+/**
+ * Hazir yogunlugun adimlari — KRONOLOJIK dizi (issue #274: `Record<kademe, …>`
+ * idi). Bugun her preset 4 adim uretir; Faz 2'de 3–5 adim olabilir.
+ */
+export type PresetSeviyeleri = readonly PresetSeviyeAyari[];
 
 /** Preset'in herhangi bir seviyesi sesli anons (TTS) istiyor mu? */
 export function presetSesliIceriyorMu(seviyeler: PresetSeviyeleri): boolean {
-  return SEVIYE_KADEMELERI.some((kademe) => sesliAnonsGerekliMi(seviyeler[kademe].kanallar));
+  return seviyeler.some((s) => sesliAnonsGerekliMi(s.kanallar));
+}
+
+/** `Record<kademe, …>` bicimindeki giris tablosunu kronolojik diziye cevirir. */
+export function zamanlamaDizisi(tablo: ZamanlamaSeviyeleri): ZamanlamaAyari[] {
+  return SEVIYE_KADEMELERI.map((kademe) => tablo[kademe]);
+}
+
+/** Preset/goc hucresi yokken (preset'in adim sayisi mevcut adimlardan fazla) taban hucre. */
+function bosHucre(kademe: SeviyeKademe, esikDk: number): SeviyeAyari {
+  return {
+    kademe,
+    kanallar: VARSAYILAN_ACIK_KANALLAR,
+    esikDk,
+    siklik: 'birkez',
+    bildirimSesi: VARSAYILAN_SES,
+    acilKanal: false,
+    anonsMetni: '',
+  };
 }
 
 /**
@@ -92,6 +119,7 @@ function seviyeyeUygula(
       : preset.kanallar;
   return {
     ...mevcut,
+    kademe: preset.kademe,
     kanallar,
     // Zamanlama YONE gore gelir: giris yonlu bir vakte cikis tablosunu
     // (45/25/10/3) yazmak eskalasyonu TERSINE cevirir — yon degisimi
@@ -132,13 +160,17 @@ export function presetUygula(
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
     const giris = girisZamanlamasiVarsa(sonuc[v], v, yogunluk);
-    sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) =>
+    const mevcut = sonuc[v].seviyeler;
+    // ADIM SAYISI PRESET'TEN gelir (issue #274): kullanici 6 adim kurmus olsa da
+    // preset kendi adimlarini yazar. Ses/anons INDEKSLE korunur; preset daha
+    // fazla adim tasiyorsa eksik hucre taban hucreden kurulur.
+    sonuc[v].seviyeler = seviyeler.map((preset, i) =>
       seviyeyeUygula(
-        s,
-        seviyeler[SEVIYE_KADEMELERI[i]],
+        mevcut[i] ?? bosHucre(preset.kademe, preset.esikDk),
+        preset,
         sesliIzinVar,
         sonuc[v].yon,
-        giris?.[SEVIYE_KADEMELERI[i]]
+        giris?.[i]
       )
     );
     // Preset zamanlamayi ezdi → ayrilan yonun yedegi BAYAT. Birakilsaydi
@@ -154,9 +186,9 @@ function girisZamanlamasiVarsa(
   vakitAyari: VakitMuhafizAyari,
   vakit: MuhafizVakti,
   yogunluk?: unknown
-): ZamanlamaSeviyeleri | undefined {
+): ZamanlamaAyari[] | undefined {
   return (vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU) === 'girisindenItibaren'
-    ? girisZamanlamasiniSec(vakit, yogunluk)
+    ? zamanlamaDizisi(girisZamanlamasiniSec(vakit, yogunluk))
     : undefined;
 }
 
@@ -180,8 +212,12 @@ export function presetZamanlamasiniUygula(
   const sonuc = derinKopya(matris);
   for (const v of MUHAFIZ_VAKITLERI) {
     const giris = girisZamanlamasiVarsa(sonuc[v], v, yogunluk);
+    // Yalniz ADIM SAYISI preset'le ayniysa (eski 4 adimli kayit): hucre-hucre
+    // zamanlama tasinir. Farkliysa kullanici yapiyi bilincli kurmustur —
+    // goc kanal ezmedigi gibi YAPI da ezmez (issue #274).
+    if (sonuc[v].seviyeler.length !== seviyeler.length) continue;
     sonuc[v].seviyeler = sonuc[v].seviyeler.map((s, i) => {
-      const kaynak = giris?.[SEVIYE_KADEMELERI[i]] ?? seviyeler[SEVIYE_KADEMELERI[i]];
+      const kaynak = giris?.[i] ?? seviyeler[i];
       return { ...s, esikDk: kaynak.esikDk, siklik: kaynak.siklik };
     });
     sonuc[v].yonYedegi = undefined; // `presetUygula` ile ayni gerekce (bayat yedek).
@@ -203,20 +239,8 @@ export function presetMatrisiOlustur(
   sesliIzinVar: boolean
 ): MuhafizMatrisi {
   const vakitAyari = (): VakitMuhafizAyari => ({
-    seviyeler: SEVIYE_KADEMELERI.map((kademe) =>
-      seviyeyeUygula(
-        {
-          kademe,
-          kanallar: VARSAYILAN_ACIK_KANALLAR,
-          esikDk: seviyeler[kademe].esikDk,
-          siklik: 'birkez',
-          bildirimSesi: VARSAYILAN_SES,
-          acilKanal: false,
-          anonsMetni: '',
-        },
-        seviyeler[kademe],
-        sesliIzinVar
-      )
+    seviyeler: seviyeler.map((preset) =>
+      seviyeyeUygula(bosHucre(preset.kademe, preset.esikDk), preset, sesliIzinVar)
     ),
   });
   const matris = {} as MuhafizMatrisi;
@@ -274,9 +298,12 @@ export function yonDegisimindeMetniCevir(
  */
 function yonYedegiGecerliMi(
   yedek: YonZamanlamaYedegi[] | undefined,
-  yon: PencereYonu
+  yon: PencereYonu,
+  adimSayisi: number
 ): yedek is YonZamanlamaYedegi[] {
-  if (!Array.isArray(yedek) || yedek.length !== SEVIYE_KADEMELERI.length) return false;
+  // Yedek ADIM ADIM (indeksle) geri yuklenir → adim sayisi degistiyse (kullanici
+  // arada hatirlatma ekleyip sildiyse) hizasi kaybolmustur, kullanilmaz.
+  if (!Array.isArray(yedek) || yedek.length !== adimSayisi) return false;
   if (!yedek.every((y) => !!y && Number.isFinite(y.esikDk) && y.esikDk >= 1)) return false;
   return esikSiralamasiGecerliMi(yedek, yon);
 }
@@ -304,7 +331,7 @@ function yonYedegiGecerliMi(
 export function yonuDegistir(
   vakitAyari: VakitMuhafizAyari,
   hedefYon: PencereYonu,
-  hedefZamanlama: ZamanlamaSeviyeleri
+  hedefZamanlama: readonly ZamanlamaAyari[]
 ): VakitMuhafizAyari {
   const mevcutYon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
   if (mevcutYon === hedefYon) return vakitAyari;
@@ -317,11 +344,15 @@ export function yonuDegistir(
     siklik: s.siklik,
   }));
 
+  const adimSayisi = vakitAyari.seviyeler.length;
   const mevcutYedek = vakitAyari.yonYedegi?.[hedefYon];
-  const geriYuklenen = yonYedegiGecerliMi(mevcutYedek, hedefYon) ? mevcutYedek : null;
+  const geriYuklenen = yonYedegiGecerliMi(mevcutYedek, hedefYon, adimSayisi) ? mevcutYedek : null;
+  // Taban tablo 4 adimlidir; vakitte farkli sayida adim varsa tablo o sayiya
+  // UYARLANIR (issue #274) — adimlar kaybolmaz, yalniz zamanlamalari kurulur.
+  const taban = zamanlamayiUyarla(hedefZamanlama, adimSayisi, hedefYon);
 
   const seviyeler = cevrilmis.seviyeler.map((s, i) => {
-    const kaynak = geriYuklenen ? geriYuklenen[i] : hedefZamanlama[SEVIYE_KADEMELERI[i]];
+    const kaynak = geriYuklenen ? geriYuklenen[i] : taban[i];
     return { ...s, esikDk: kaynak.esikDk, siklik: kaynak.siklik };
   });
 
@@ -339,22 +370,73 @@ export function vaktinYonunuDegistir(
   vakitAyari: VakitMuhafizAyari,
   vakit: MuhafizVakti,
   hedefYon: PencereYonu,
-  cikisZamanlamasi: ZamanlamaSeviyeleri,
+  cikisZamanlamasi: readonly ZamanlamaAyari[],
   yogunluk?: unknown
 ): VakitMuhafizAyari {
   const hedefZamanlama =
     hedefYon === 'girisindenItibaren'
-      ? girisZamanlamasiniSec(vakit, yogunluk)
+      ? zamanlamaDizisi(girisZamanlamasiniSec(vakit, yogunluk))
       : cikisZamanlamasi;
   return yonuDegistir(vakitAyari, hedefYon, hedefZamanlama);
+}
+
+/**
+ * Kronolojik bir zamanlama tablosunu `adimSayisi` adima UYARLAR (SAF).
+ *
+ * - Ayni sayi → tablo AYNEN (4 adimli kayitlarin davranisi birebir korunur).
+ * - Daha az adim → tablonun SON adimlari (vaktin sonuna en yakin / giriste en
+ *   gec baslayan; "kilana kadar" suren son adim kaybolmasin).
+ * - Daha fazla adim → en genis bosluga (0 ile ilk esik arasi dahil) orta nokta
+ *   eklenir; esikler TEKIL kalir. Eklenen adimin sikligi kronolojik onceki
+ *   adiminkidir.
+ *
+ * Donus KRONOLOJIK sirada: cikista esik AZALAN, giriste ARTAN.
+ */
+export function zamanlamayiUyarla(
+  tablo: readonly ZamanlamaAyari[],
+  adimSayisi: number,
+  yon: PencereYonu
+): ZamanlamaAyari[] {
+  const girisYonu = yon === 'girisindenItibaren';
+  const kronolojik = (dizi: ZamanlamaAyari[]) =>
+    [...dizi].sort((a, b) => (girisYonu ? a.esikDk - b.esikDk : b.esikDk - a.esikDk));
+
+  if (adimSayisi <= 0) return [];
+  const sirali = kronolojik([...tablo]);
+  if (sirali.length === adimSayisi) return sirali;
+  if (sirali.length > adimSayisi) return sirali.slice(sirali.length - adimSayisi);
+
+  const sonuc = [...sirali];
+  while (sonuc.length < adimSayisi) {
+    const artan = [...sonuc].sort((a, b) => a.esikDk - b.esikDk);
+    let enIyi: { esik: number; bosluk: number; komsu: ZamanlamaAyari | undefined } | null = null;
+    for (let i = 0; i < artan.length; i++) {
+      const alt = i === 0 ? 0 : artan[i - 1].esikDk;
+      const ust = artan[i].esikDk;
+      const orta = Math.round((alt + ust) / 2);
+      if (ust - alt < 2 || orta < 1) continue;
+      if (!enIyi || ust - alt > enIyi.bosluk) {
+        enIyi = { esik: orta, bosluk: ust - alt, komsu: girisYonu ? artan[i - 1] ?? artan[i] : artan[i] };
+      }
+    }
+    if (!enIyi) {
+      // Bosluk kalmadiysa (sikisik kucuk esikler) en buyugun ustune ekle.
+      const enBuyuk = artan[artan.length - 1];
+      enIyi = { esik: (enBuyuk?.esikDk ?? 0) + 1, bosluk: 0, komsu: enBuyuk };
+    }
+    sonuc.push({ esikDk: enIyi.esik, siklik: enIyi.komsu?.siklik ?? 'birkez' });
+  }
+  return kronolojik(sonuc);
 }
 
 const siklikDk = (s: Siklik): number => (s === 'birkez' ? -1 : s.herDk);
 
 export function zamanlamaDegistiMi(a: MuhafizMatrisi, b: MuhafizMatrisi): boolean {
   // Yalnız esikDk + siklik karşılaştırılır (kanal/ses/anons zamanlama ekseni değil).
+  // Adım EKLEMEK/SİLMEK de zamanlama değişikliğidir (issue #274) → yoğunluk 'ozel'.
   for (const v of MUHAFIZ_VAKITLERI) {
     const as = a[v].seviyeler, bs = b[v].seviyeler;
+    if (as.length !== bs.length) return true;
     for (let i = 0; i < as.length; i++) {
       if (as[i].esikDk !== bs[i].esikDk) return true;
       if (siklikDk(as[i].siklik) !== siklikDk(bs[i].siklik)) return true;

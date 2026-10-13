@@ -7,6 +7,7 @@ import {
   muhafizKanaliSec,
   muhafizAcilKanalMi,
   matrisGecerliMi,
+  matrisYapisiGecerliMi,
   muhafizMatrisiniCoz,
 } from '../motorAdaptoru';
 import type {
@@ -583,10 +584,30 @@ describe('matrisGecerliMi / muhafizMatrisiniCoz', () => {
     expect(muhafizMatrisiniCoz({ ...ESKI_AYAR, matris: bozuk }).yatsi.seviyeler).toHaveLength(4);
   });
 
-  test('eksik seviye / geçersiz eşik içeren matris REDDEDİLİR', () => {
-    const eksikSeviye = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
-    eksikSeviye.ogle.seviyeler = eksikSeviye.ogle.seviyeler.slice(0, 2);
-    expect(matrisGecerliMi(eksikSeviye)).toBe(false);
+  test('adım sayısı 1..6 arası GEÇERLİDİR, 0 ve 7 REDDEDİLİR (issue #274)', () => {
+    const ikiAdim = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
+    ikiAdim.ogle.seviyeler = ikiAdim.ogle.seviyeler.slice(0, 2);
+    expect(matrisGecerliMi(ikiAdim)).toBe(true);
+
+    const bos = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
+    bos.ogle.seviyeler = [];
+    expect(matrisGecerliMi(bos)).toBe(false);
+
+    const yedi = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
+    const sablon = yedi.ogle.seviyeler[0];
+    yedi.ogle.seviyeler = [70, 60, 50, 40, 30, 20, 10].map((esikDk) => ({ ...sablon, esikDk }));
+    expect(matrisGecerliMi(yedi)).toBe(false);
+    expect(matrisYapisiGecerliMi(yedi)).toBe(false);
+  });
+
+  test('eşik TEKİLLİĞİ: aynı vakitte eşit eşik geçerli DEĞİL ama yapısal olarak okunur', () => {
+    const esit = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
+    esit.ogle.seviyeler[1].esikDk = esit.ogle.seviyeler[0].esikDk;
+    expect(matrisGecerliMi(esit)).toBe(false);
+    expect(matrisYapisiGecerliMi(esit)).toBe(true);
+  });
+
+  test('geçersiz eşik içeren matris REDDEDİLİR', () => {
 
     const bozukEsik = JSON.parse(JSON.stringify(gecerli)) as MuhafizMatrisi;
     (bozukEsik.ikindi.seviyeler[0] as { esikDk: unknown }).esikDk = null;

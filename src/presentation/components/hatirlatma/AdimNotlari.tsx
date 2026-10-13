@@ -19,11 +19,7 @@ import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
 import { sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
 import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
-import {
-    cikisSegmentiHesapla,
-    girisSegmentiHesapla,
-    etkinSiklikHesapla,
-} from '../../../core/muhafiz/planButcesi';
+import { adimEtkinSikligi } from '../../../core/muhafiz/planButcesi';
 import {
     ANDROID_YETENEKLERI,
     type PlatformYetenekleri,
@@ -111,11 +107,8 @@ export function adimNotlariniOlustur(
     }
 
     const siklik = seviye.siklik;
-    const segment =
-        yon === 'girisindenItibaren'
-            ? girisSegmentiHesapla(seviyeler, seviye, pencereUzunluguDk)
-            : cikisSegmentiHesapla(seviyeler, seviye);
-    const etkin = etkinSiklikHesapla(segment, siklik);
+    // Motorla AYNI hesap (segment + vakit butcesi) — ayrisirsa not yalan soyler.
+    const etkin = adimEtkinSikligi(seviye, seviyeler, yon, pencereUzunluguDk);
     if (etkin !== siklik && etkin !== 'birkez') {
         notlar.push({
             tip: 'bilgi',
