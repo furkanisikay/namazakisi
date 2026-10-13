@@ -1,4 +1,5 @@
 import ExpoModulesCore
+import Foundation
 
 /**
  * SIRI / KISAYOLLAR / ODAK — JS koprusu (issue #279).

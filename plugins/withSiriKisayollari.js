@@ -22,8 +22,8 @@
  *  - Gelistirme bolgesi `tr`: App Shortcuts ifadeleri koddaki gelistirme dilinde
  *    sayilir; `en` kalsaydi Turkce ifadeler Ingilizce sanilir ve Turkce Siri
  *    eslestiremezdi.
- *  - AppIntents ZAYIF baglanir: dagitim hedefi 15.1, AppIntents iOS 16'dadir.
- *    Guclu bagli kalsaydi uygulama iOS 15'te acilista "Library not loaded" ile cokerdi.
+ *  - AppIntents.framework hedefe ZAYIF (Weak) baglanir: dagitim hedefi 15.1,
+ *    AppIntents iOS 16'dadir (bkz. `appIntentsZayifBagla`).
  */
 const fs = require('fs');
 const path = require('path');
@@ -43,7 +43,6 @@ try {
 
 const KAYNAK_DIZINI = path.join(__dirname, '..', 'targets', 'siri-kisayollari');
 const GELISTIRME_BOLGESI = 'tr';
-const ZAYIF_BAGLANTI = ['"-weak_framework"', '"AppIntents"'];
 
 /** Kopyalanacak Swift dosyalari (sirali → deterministik proje dosyasi). */
 function swiftDosyalari() {
@@ -76,19 +75,17 @@ function gelistirmeBolgesiniAyarla(proje) {
   firstProject.knownRegions = bolgeler;
 }
 
+/**
+ * AppIntents.framework'u ana hedefin "Link Binary With Libraries" fazina ISTEGE BAGLI
+ * (Weak) ekler. Iki sebebi var: (1) dagitim hedefi iOS 15.1, framework iOS 16'da →
+ * guclu bag iOS 15'te acilista "Library not loaded" ile cokertirdi; (2) Xcode'un
+ * metadata cikarimi ("Extract App Intents Metadata") hedefin AppIntents bagimliligini
+ * gormezse "Metadata extraction skipped" deyip `Metadata.appintents` URETMEZ.
+ */
 function appIntentsZayifBagla(proje, projeAdi) {
-  const { target } = IOSConfig.XcodeUtils.getApplicationNativeTarget({ project: proje, projectName: projeAdi });
-  const yapilandirmalar = IOSConfig.XcodeUtils.getBuildConfigurationsForListId(
-    proje,
-    target.buildConfigurationList
-  );
-  for (const [, yapilandirma] of yapilandirmalar) {
-    const ayarlar = yapilandirma.buildSettings;
-    let bayraklar = ayarlar.OTHER_LDFLAGS;
-    if (!Array.isArray(bayraklar)) bayraklar = bayraklar ? [bayraklar] : ['"$(inherited)"'];
-    if (!bayraklar.includes(ZAYIF_BAGLANTI[1])) bayraklar = [...bayraklar, ...ZAYIF_BAGLANTI];
-    ayarlar.OTHER_LDFLAGS = bayraklar;
-  }
+  const { uuid } = IOSConfig.XcodeUtils.getApplicationNativeTarget({ project: proje, projectName: projeAdi });
+  // `addFramework` zaten varsa (yeniden prebuild) `false` doner; idempotent.
+  proje.addFramework('AppIntents.framework', { weak: true, target: uuid });
 }
 
 module.exports = function withSiriKisayollari(config) {
