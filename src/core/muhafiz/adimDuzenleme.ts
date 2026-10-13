@@ -10,7 +10,7 @@
  * DİZİ KRONOLOJİK KALIR: ekleme sıralı yere yapılır (ekrandaki "N. hatırlatma"
  * numarası dizi indeksidir, `yonYedegi` de indeksle hizalanır).
  */
-import type { SeviyeAyari, VakitMuhafizAyari } from './matrisTipleri';
+import type { SeviyeAyari, SeviyeKademe, VakitMuhafizAyari } from './matrisTipleri';
 import {
   MUHAFIZ_MAKS_ADIM,
   MUHAFIZ_MIN_ADIM,
@@ -20,7 +20,13 @@ import {
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
 import { kronolojikSirala } from './aktifSeviye';
 import { esikSinirlariniHesapla, ESIK_MUTLAK_MIN } from './esikSinirlari';
-import { etkinKademe } from './motorAdaptoru';
+import {
+  acilTonSecilebilirMi,
+  etkinAcilKanal,
+  etkinKademe,
+  etkinSeviyeNo,
+  muhafizAcilKanalMi,
+} from './motorAdaptoru';
 import { adimKapaliMi } from './kanalKumesi';
 
 /** Yeni hatırlatma en erken hatırlatmadan bu kadar ÖNCE konur. */
@@ -143,4 +149,35 @@ export function tonGeriGidenAdim(
     oncekiSertlik = sertlik;
   }
   return 0;
+}
+
+/**
+ * Ton çipine dokunmanın sonucu (issue #274) — değişiklik yoksa `null`.
+ *
+ * SEÇİLİ ÇİP = ETKİN TON (`etkinKademe`): ekranda seçili görünen çipe dokunmak
+ * hiçbir şey YAZMAMALI. Eski karşılaştırma ham alanlara bakıyordu
+ * (`kademe === seviye.kademe && acilKanal === (kademe === 'acil')`); eski kayıtta
+ * `acilKanal` undefined olduğu için seçili "Sert" çipine dokunmak `false` yazıyor
+ * ve tarihsel `seviye >= 3` kuralıyla acil kanala düşen adımın aciliyetini
+ * SESSİZCE düşürüyordu.
+ *
+ * Aciliyet tonla birlikte yazılır: yalnız ACİL ton acil kanaldan gider. Etkin
+ * ton ve ETKİN aciliyet (`muhafizAcilKanalMi(etkinSeviyeNo, ses, etkinAcilKanal)`)
+ * zaten istenendeyse de yazılmaz.
+ */
+export function tonSecimiUygula(
+  seviye: SeviyeAyari,
+  kademe: SeviyeKademe,
+  yon?: PencereYonu
+): SeviyeAyari | null {
+  if (kademe === 'acil' && !acilTonSecilebilirMi(seviye.esikDk, yon)) return null;
+  if (kademe === etkinKademe(seviye, yon)) return null;
+  const acilKanal = kademe === 'acil';
+  const etkinAcil = muhafizAcilKanalMi(
+    etkinSeviyeNo(seviye, yon),
+    seviye.bildirimSesi,
+    etkinAcilKanal(seviye, yon)
+  );
+  if (kademe === seviye.kademe && etkinAcil === acilKanal) return null;
+  return { ...seviye, kademe, acilKanal };
 }

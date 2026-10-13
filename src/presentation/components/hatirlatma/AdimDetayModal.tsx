@@ -48,6 +48,7 @@ import {
     sesliAnonsGerekliMi,
 } from '../../../core/muhafiz/motorAdaptoru';
 import { seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import { tonSecimiUygula } from '../../../core/muhafiz/adimDuzenleme';
 import {
     KANAL_CIPLERI,
     SEVIYE_BILGILERI,
@@ -213,9 +214,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
      * neyi seçtiyse bildirim de o ağırlıkta gelir.
      */
     const tonSec = (kademe: SeviyeKademe) => {
-        if (kademe === 'acil' && !acilSecilebilir) return;
-        if (kademe === seviye.kademe && seviye.acilKanal === (kademe === 'acil')) return;
-        onDegistir({ ...seviye, kademe, acilKanal: kademe === 'acil' });
+        // Seçili çipe (etkin ton) dokunmak eski kaydın aciliyetini düşürmez.
+        const yeni = tonSecimiUygula(seviye, kademe, tanim.yon);
+        if (yeni) onDegistir(yeni);
     };
 
     const sablonSec = (sablon: string) => {

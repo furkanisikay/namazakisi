@@ -705,7 +705,8 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
                 aksam: [
-                    { esikDk: 20, siklikDk: 30, ses: 'alarm', kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
+                    // 14 dk: acil kanal yalnız son 15 dk'da kullanılabilir (issue #274).
+                    { esikDk: 14, siklikDk: 30, ses: 'alarm', kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
                     { esikDk: 12, siklikDk: 30, ses: 'melodi' },
                     { esikDk: 8, siklikDk: 30, kanallar: {} },
                     { esikDk: 4, siklikDk: 30, kanallar: {} },
@@ -717,7 +718,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
 
-        const nazik = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const nazik = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(nazik).toBeDefined();
         // 'alarm' sesi -> seviye 1 olmasina ragmen acil kanal
         expect(nazik.trigger.channelId).toBe('muhafiz_acil');
@@ -1110,7 +1111,8 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
                 ],
                 {
                     aksam: [
-                        { esikDk: 20, siklikDk: 30, ses, acilKanal },
+                        // 14 dk: acil kanal yalnız son 15 dk'da kullanılabilir (issue #274).
+                        { esikDk: 14, siklikDk: 30, ses, acilKanal },
                         { esikDk: 12, siklikDk: 30, kanallar: {} },
                         { esikDk: 8, siklikDk: 30, kanallar: {} },
                         { esikDk: 4, siklikDk: 30, kanallar: {} },
@@ -1138,7 +1140,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('ÖZEL ses seçilince kanal id ses hash\'inden türetilir (taban kanal DEĞİL)', async () => {
         await planla(OZEL_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim).toBeDefined();
         expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, false));
         expect(bildirim.trigger.channelId).not.toBe('muhafiz');
@@ -1147,7 +1149,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('VARSAYILAN ses taban kanalda kalır (mevcut kurulumlarla birebir uyum)', async () => {
         await planla(VARSAYILAN_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim.trigger.channelId).toBe('muhafiz');
     });
 
@@ -1186,14 +1188,14 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('titreşim KAPALIYKEN bildirim kendi desenini TAŞIMAZ (davranış birebir eski)', async () => {
         await planla(VARSAYILAN_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim.content.vibrate).toBeUndefined();
     });
 
     test('acilKanal bayrağı SESİ değiştirmeden aciliyeti yükseltir', async () => {
         await planla(OZEL_SES, true);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         // Aynı ses hash'i, acil taban → ses ile önem BAĞIMSIZ eksenler.
         expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, true));
     });

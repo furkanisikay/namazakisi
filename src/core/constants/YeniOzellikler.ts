@@ -71,7 +71,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Her vakit için 1 ile 6 arasında hatırlatma kurabilir, her birinin tonunu ayrı seçebilirsiniz.',
         detayAciklama:
-            'Dört sabit kademe yerine artık "1. hatırlatma, 2. hatırlatma…" diye kendi akışınızı kurarsınız. Numaralar zamana göre kendiliğinden sıralanır; Nazik, Uyarı, Sert ya da Acil tonu her hatırlatmada ayrı seçersiniz. Acil ton yalnız vaktin son 15 dakikasında seçilebilir. Bugünkü ayarlarınız aynen korunur.',
+            'Dört sabit kademe yerine artık "1. hatırlatma, 2. hatırlatma…" diye kendi akışınızı kurarsınız. Numaralar zamana göre kendiliğinden sıralanır; Nazik, Uyarı, Sert ya da Acil tonu her hatırlatmada ayrı seçersiniz. Acil ton yalnız vaktin son 15 dakikasında seçilebilir. Bugünkü ayarlarınız korunur; yalnız bu aralığın dışında kalan acil hatırlatmalarınız artık sert tonda çalışır ve Rahatsız Etmeyin\'i delmez.',
         ikon: 'shield-alt',
         hedefSayfa: 'MuhafizAyarlari',
         ctaEtiketi: 'Hatırlatmalarınızı düzenleyin',
@@ -81,6 +81,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Ton (Nazik, Uyarı, Sert, Acil) sıradan bağımsız seçilir',
             'Vaktin bitmesine çok varken sert ton bile "vakit çıkıyor" demez',
             'Ton geri giderse ekranda kısa bir not görürsünüz',
+            'Vaktin son 15 dakikası dışındaki acil hatırlatmalar sert tonda çalışır, Rahatsız Etmeyin\'i delmez; ekranda bu adımların altında not görürsünüz',
         ],
     },
     // Wear OS yüzeyleri (issue #281) — yalnız saat sahiplerini ilgilendirdiği için

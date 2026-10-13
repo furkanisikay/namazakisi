@@ -90,19 +90,26 @@ export function etkinKademe(
 /**
  * Adimin GERCEKTE kullanilan aciliyet tercihi (`acilKanal`).
  *
- * Acil kisitina takilip SERT konusan bir acil adim DND'yi de DELMEMELI: "erken
- * DND delme yok" (issue #274). Ekranda acil tonu secmek `acilKanal: true` yazar;
- * kullanici esigi sonradan 15 dk'nin ustune cekerse ya da yonu girise cevirirse
- * bayrak burada yok sayilir (kayit degismez, geri cekince geri gelir). Diger
- * butun durumlarda alan AYNEN doner (uc durumlu sozlesme korunur).
+ * URUN KURALI: ERKEN DND DELME YOK (issue #274). Acil kanal (IMPORTANCE_MAX +
+ * bypassDnd) yalniz cikis yonunde vaktin son `ACIL_TON_UST_DK` dakikasinda
+ * kullanilabilir; disindaki (cikista > 15 dk ya da giris yonlu) her adim icin
+ * burada `false` doner — kaydin ne dedigine BAKILMAKSIZIN:
+ *  - `acilKanal: true` (ekranda acil ton secilip esik sonradan 15'in ustune
+ *    cekilmis ya da yon girise cevrilmis, ya da eski 'alarm' sesinden gocmus),
+ *  - `acilKanal: undefined` (eski kayit): `muhafizAcilKanalMi`'nin tarihsel
+ *    `seviye >= 3` kurali erken sert/acil adimi da acil kanala dusururdu.
+ * Kayit DEGISMEZ (esik geri cekilince eski davranis geri gelir). Pencere icinde
+ * alan AYNEN doner (uc durumlu sozlesme korunur → varsayilan matris 10/3 dk
+ * adimlari birebir eskisi gibi acil kanala duser).
+ *
+ * TEK KAPI: plan (`vakitUyariPlaniOlustur` → on plan/arka plan/saat yuku) ve
+ * kanal plani (`kanalPlaniOlustur`) buradan gecer; ham `acilKanal` okuma.
  */
 export function etkinAcilKanal(
   seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk' | 'acilKanal'>,
   yon?: PencereYonu
 ): boolean | undefined {
-  if (seviye.acilKanal === true && seviye.kademe === 'acil' && etkinKademe(seviye, yon) !== 'acil') {
-    return false;
-  }
+  if (!acilTonSecilebilirMi(seviye.esikDk, yon) && seviye.acilKanal !== false) return false;
   return seviye.acilKanal;
 }
 

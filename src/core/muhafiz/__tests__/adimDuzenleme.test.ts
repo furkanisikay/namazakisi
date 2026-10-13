@@ -10,11 +10,13 @@ import {
   adimSilinebilirMi,
   tonGeriGidenAdim,
   yeniAdimEsigi,
+  tonSecimiUygula,
 } from '../adimDuzenleme';
 import {
   ACIL_TON_UST_DK,
   acilTonSecilebilirMi,
   etkinAcilKanal,
+  muhafizAcilKanalMi,
   etkinKademe,
   matrisGecerliMi,
   vakitUyariPlaniOlustur,
@@ -129,17 +131,50 @@ describe('acil ton kısıtı — yalnız çıkış yönünde son 15 dk', () => {
       seviyeler: [{ ...sv('acil', 5), acilKanal: undefined }],
     };
     const matris = Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit])) as MuhafizMatrisi;
-    // Sert de (tarihsel taban kural seviye >= 3) acil kanala düşer → kanal id değişmez.
-    expect(matristenKanallariCikar(matris).map((k) => k.acilMi)).toEqual([true]);
+    // ERKEN DND DELME YOK: eski kayıtta (acilKanal undefined) tarihsel `seviye >= 3`
+    // kuralı sert adımı acil kanala düşürürdü; giriş yönünde bu artık uygulanmaz.
+    expect(matristenKanallariCikar(matris).map((k) => k.acilMi)).toEqual([false]);
   });
 
   test('erken DND delme yok: kısıta takılan acil adımın acilKanal bayrağı yok sayılır', () => {
     const erken = { ...sv('acil', 40), acilKanal: true };
     expect(etkinAcilKanal(erken, 'cikisaDogru')).toBe(false);
     expect(vakitUyariPlaniOlustur({ seviyeler: [erken] }, 100)[0].acilKanal).toBe(false);
-    // Geçerli acil ve üç durumlu sözleşme (undefined/false) aynen kalır.
+    // Pencere içinde (çıkış, ≤15 dk) üç durumlu sözleşme aynen kalır.
     expect(etkinAcilKanal({ ...sv('acil', 5), acilKanal: true }, 'cikisaDogru')).toBe(true);
-    expect(etkinAcilKanal(sv('sert', 40), 'cikisaDogru')).toBeUndefined();
+    expect(etkinAcilKanal(sv('sert', 10), 'cikisaDogru')).toBeUndefined();
+    expect(etkinAcilKanal({ ...sv('sert', 10), acilKanal: false }, 'cikisaDogru')).toBe(false);
+  });
+
+  test('ESKİ KAYIT (acilKanal undefined) erken adımda da acil kanala DÜŞMEZ', () => {
+    // Tarihsel `seviye >= 3` kuralı 40 dk kala sert adımı DND delen kanala atardı.
+    const eskiSert = sv('sert', 40);
+    expect(eskiSert.acilKanal).toBeUndefined();
+    expect(etkinAcilKanal(eskiSert, 'cikisaDogru')).toBe(false);
+    expect(etkinAcilKanal({ ...sv('acil', 40) }, 'cikisaDogru')).toBe(false);
+    expect(etkinAcilKanal(sv('sert', 3), 'girisindenItibaren')).toBe(false);
+    // Eski 'alarm' sesinden göçmüş erken nazik adım da delmez.
+    expect(etkinAcilKanal({ ...sv('nazik', 45), acilKanal: true }, 'cikisaDogru')).toBe(false);
+
+    // PARİTE: plan (ön plan/arka plan/saat bunu okur) ile kanal planı aynı kararı verir.
+    const vakit: VakitMuhafizAyari = { seviyeler: [sv('nazik', 45), eskiSert, sv('acil', 5)] };
+    const matris = Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit])) as MuhafizMatrisi;
+    const plan = vakitUyariPlaniOlustur(vakit, 100);
+    const sertPlan = plan.find((u) => u.olcuDk === 40)!;
+    expect(muhafizAcilKanalMi(sertPlan.seviye, sertPlan.bildirimSesi, sertPlan.acilKanal)).toBe(false);
+    const acilPlan = plan.find((u) => u.olcuDk === 5)!;
+    expect(muhafizAcilKanalMi(acilPlan.seviye, acilPlan.bildirimSesi, acilPlan.acilKanal)).toBe(true);
+    expect(matristenKanallariCikar(matris).map((k) => k.acilMi).sort()).toEqual([false, true]);
+  });
+
+  test('varsayılan eski matris (45/25/10/3) aciliyeti DEĞİŞMEZ: 10 ve 3 dk acil kalır', () => {
+    const vakit: VakitMuhafizAyari = {
+      seviyeler: [sv('nazik', 45), sv('uyari', 25), sv('sert', 10), sv('acil', 3)],
+    };
+    const acilMi = vakitUyariPlaniOlustur(vakit, 100)
+      .filter((u) => [45, 25, 10, 3].includes(u.olcuDk))
+      .map((u) => muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal));
+    expect(acilMi).toEqual([false, false, true, true]);
   });
 
   test('geçerli acil (çıkış, ≤15 dk) acil kalır', () => {
@@ -169,5 +204,36 @@ describe('tonGeriGidenAdim', () => {
   test('giriş yönünde kronolojik sıra eşik ARTAN', () => {
     const s = [sv('nazik', 90), sv('sert', 10)];
     expect(tonGeriGidenAdim(s, 'girisindenItibaren')).toBe(2);
+  });
+});
+
+describe('tonSecimiUygula — seçili çip aciliyeti düşürmez', () => {
+  test('ESKİ KAYIT: seçili "Sert" çipine dokunmak acilKanal YAZMAZ (aciliyet korunur)', () => {
+    const eski = sv('sert', 10);
+    expect(eski.acilKanal).toBeUndefined();
+    // Tarihsel kural: seviye 3 → acil kanal.
+    expect(muhafizAcilKanalMi(3, eski.bildirimSesi, etkinAcilKanal(eski, 'cikisaDogru'))).toBe(true);
+    expect(tonSecimiUygula(eski, 'sert', 'cikisaDogru')).toBeNull();
+  });
+
+  test('kısıta takılan acil adım "Sert" görünür; ona dokunmak kaydı değiştirmez', () => {
+    const kisitli = { ...sv('acil', 40), acilKanal: true };
+    expect(tonSecimiUygula(kisitli, 'sert', 'cikisaDogru')).toBeNull();
+  });
+
+  test('farklı ton seçilince ton ve aciliyet birlikte yazılır', () => {
+    expect(tonSecimiUygula(sv('sert', 10), 'nazik', 'cikisaDogru')).toMatchObject({
+      kademe: 'nazik',
+      acilKanal: false,
+    });
+    expect(tonSecimiUygula(sv('sert', 10), 'acil', 'cikisaDogru')).toMatchObject({
+      kademe: 'acil',
+      acilKanal: true,
+    });
+  });
+
+  test('acil, kısıt dışındaysa seçilemez', () => {
+    expect(tonSecimiUygula(sv('sert', 40), 'acil', 'cikisaDogru')).toBeNull();
+    expect(tonSecimiUygula(sv('sert', 5), 'acil', 'girisindenItibaren')).toBeNull();
   });
 });

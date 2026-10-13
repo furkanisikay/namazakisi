@@ -40,8 +40,10 @@ const matrisOlustur = (seviyeler: SeviyeAyari[]): MuhafizMatrisi =>
         MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler: seviyeler.map((s) => ({ ...s })) }])
     ) as MuhafizMatrisi;
 
+// Gerçekçi eşikler (45/25/10/3): acil kanal yalnız son 15 dk'da (issue #274).
+const VARSAYILAN_ESIKLER = [45, 25, 10, 3];
 const dortSeviye = (o: Partial<SeviyeAyari> = {}) =>
-    SEVIYE_KADEMELERI.map((kademe) => sv({ kademe, ...o }));
+    SEVIYE_KADEMELERI.map((kademe, i) => sv({ kademe, esikDk: VARSAYILAN_ESIKLER[i], ...o }));
 
 describe('MuhafizKanalServisi.hazirla', () => {
     const oncekiPlatform = Platform.OS;
