@@ -6,7 +6,7 @@
 import { NativeModules, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({ getItem: jest.fn() }));
 jest.mock('../../../core/utils/Logger', () => ({
@@ -14,9 +14,11 @@ jest.mock('../../../core/utils/Logger', () => ({
 }));
 const mockAralik = jest.fn();
 const mockDinleyiciAyarla = jest.fn();
+const mockMuhafizKilinan = jest.fn();
 jest.mock('../../../data/local/LocalNamazServisi', () => ({
     localTarihAraligindakiNamazlariGetir: (...a: unknown[]) => mockAralik(...a),
     kayitDegistiDinleyicisiniAyarla: (...a: unknown[]) => mockDinleyiciAyarla(...a),
+    kilinanVakitleriAl: (...a: unknown[]) => mockMuhafizKilinan(...a),
 }));
 const mockKuyrukIsle = jest.fn(() => Promise.resolve());
 jest.mock('../KildimKuyruguServisi', () => ({
@@ -24,18 +26,29 @@ jest.mock('../KildimKuyruguServisi', () => ({
 }));
 
 import { WearSenkronServisi } from '../WearSenkronServisi';
+import { muhafizPlaniDegistiBildir, muhafizPlaniDinleyicisiniAyarla } from '../muhafizPlaniGozlemcisi';
+import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 
 const modul = {
     durumGonder: jest.fn(() => Promise.resolve()),
 };
 const servis = WearSenkronServisi.getInstance();
 
-const konumKur = (koordinatlar = { lat: 41.0082, lng: 28.9784 }) =>
-    (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) =>
-        k === DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI
-            ? JSON.stringify({ konumModu: 'manuel', seciliIlAdi: 'İstanbul', seciliIlceAdi: 'Fatih', koordinatlar })
-            : null
-    );
+const konumKur = (koordinatlar = { lat: 41.0082, lng: 28.9784 }, muhafiz: unknown = null, ozelGun: unknown = null) =>
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) => {
+        if (k === DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI) {
+            return JSON.stringify({ konumModu: 'manuel', seciliIlAdi: 'İstanbul', seciliIlceAdi: 'Fatih', koordinatlar });
+        }
+        if (k === DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI && muhafiz) return JSON.stringify(muhafiz);
+        if (k === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI && ozelGun) return JSON.stringify(ozelGun);
+        return null;
+    });
+
+const gonderilenYuk = (i = 0) => JSON.parse((modul.durumGonder.mock.calls[i] as unknown as [string])[0]);
+const ESKI_AYAR = {
+    esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+    sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+};
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -49,6 +62,8 @@ beforeEach(() => {
             { tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Sabah, tamamlandi: true }] },
         ],
     });
+    mockMuhafizKilinan.mockResolvedValue([]);
+    muhafizPlaniDinleyicisiniAyarla(null);
 });
 afterEach(() => jest.restoreAllMocks());
 
@@ -121,6 +136,65 @@ describe('gonder', () => {
         await Promise.all([servis.gonder(), servis.gonder()]);
         expect(enCok).toBe(1);
         modul.durumGonder.mockImplementation(() => Promise.resolve());
+    });
+
+    it('muhafız ayarı yoksa plan BOŞ gider (vakitler yine gider), sürüm 2', async () => {
+        konumKur();
+        await servis.gonder();
+        const yuk = gonderilenYuk();
+        expect(yuk.surum).toBe(2);
+        expect(yuk.muhafiz).toEqual([]);
+        expect(yuk.gunler).toHaveLength(31);
+    });
+
+    it('muhafız diskte açıksa (ham AsyncStorage) telefonun planı saate gider; kapalıysa gitmez', async () => {
+        konumKur(undefined, { aktif: true, ...ESKI_AYAR });
+        await servis.gonder();
+        const plan = gonderilenYuk().muhafiz as { id: string; ms: number }[];
+        expect(plan.length).toBeGreaterThan(0);
+        expect(plan[0].id).toMatch(/^muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+_seviye_[1-4]_dk_\d+$/);
+
+        servis.__testIcinSifirla();
+        modul.durumGonder.mockClear();
+        konumKur(undefined, { aktif: false, ...ESKI_AYAR });
+        await servis.gonder();
+        expect(gonderilenYuk().muhafiz).toEqual([]);
+    });
+
+    it('özel gün aralığında saatin planı da BOŞ (#272 — telefonla aynı kapı)', async () => {
+        konumKur(undefined, { aktif: true, ...ESKI_AYAR }, {
+            ozelGunModuAktif: true,
+            aktifOzelGun: { baslangicTarihi: dunuAl(), bitisTarihi: gunEkle(bugunuAl(), 5) },
+        });
+        await servis.gonder();
+        expect(gonderilenYuk().muhafiz).toEqual([]);
+    });
+
+    it('muhafız kılınmışlığı (kilinanVakitleriAl) da planı boşaltır — tek doğru kaynak', async () => {
+        konumKur(undefined, { aktif: true, ...ESKI_AYAR });
+        await servis.gonder();
+        const once = (gonderilenYuk().muhafiz as { tarih: string; vakit: string }[]).filter(
+            (k) => k.tarih === bugunuAl() && k.vakit === 'yatsi'
+        );
+        expect(once.length).toBeGreaterThan(0);
+
+        servis.__testIcinSifirla();
+        modul.durumGonder.mockClear();
+        mockMuhafizKilinan.mockImplementation(async (t: string) => (t === bugunuAl() ? ['yatsi'] : []));
+        await servis.gonder();
+        const sonra = (gonderilenYuk().muhafiz as { tarih: string; vakit: string }[]).filter(
+            (k) => k.tarih === bugunuAl() && k.vakit === 'yatsi'
+        );
+        expect(sonra).toEqual([]);
+    });
+
+    it('muhafız planı değişince (ArkaplanMuhafizServisi bildirimi) saat tazelenir ve O matrisi kullanır', async () => {
+        konumKur();
+        servis.baslat();
+        muhafizPlaniDegistiBildir({ aktif: true, matris: muhafizMatrisiniCoz(ESKI_AYAR) });
+        await servis.gonder(); // zincirdeki turu bekle
+        expect(modul.durumGonder).toHaveBeenCalled();
+        expect(gonderilenYuk().muhafiz.length).toBeGreaterThan(0);
     });
 
     it('baslat kılınmışlık dinleyicisini kaydeder', () => {

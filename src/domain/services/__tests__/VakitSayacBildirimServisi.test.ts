@@ -394,6 +394,35 @@ describe('VakitSayacBildirimServisi', () => {
     expect(createIds).toContain(ogleId);
   });
 
+  // OZEL GUN (issue #272): aralikta sayac kurulmaz; aralik bitince ayni girdiyle
+  // sayac kendiliginden geri gelir.
+  it('ozel gun aralikta: HICBIR sayac/countdown kurulmamali; aralik bitince geri gelmeli', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+    const ozelGun = (bas: string, bit: string) => (anahtar: string) =>
+      Promise.resolve(
+        anahtar === 'ozel_gun_ayarlari'
+          ? JSON.stringify({ ozelGunModuAktif: true, aktifOzelGun: { baslangicTarihi: bas, bitisTarihi: bit }, gecmisKayitlar: [] })
+          : null
+      );
+    const girdi = {
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+      muhafizAktif: false,
+    };
+
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(ozelGun('2026-02-17', '2026-02-19'));
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla(girdi);
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(ozelGun('2026-02-17', '2026-02-18'));
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla(girdi);
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    expect(createIds).toContain(`${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`);
+  });
+
   it('muhafiz aktif ama O VAKIT tumden sessiz: sayac bastirilmamali (#90 boslugu)', async () => {
     // Faz 2 ile kullanici TEK bir vakti matriste tumden susturabiliyor. O vakitte
     // muhafiz hicbir bildirim uretmez -> global bastirma uygulanirsa kullanici o

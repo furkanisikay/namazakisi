@@ -2,17 +2,13 @@
  * Wear OS senkronu — telefon tarafı (issue #269).
  *
  * İKİ YÖN:
- * 1. Telefon → saat: `gonder()` 8 günlük vakitleri + dün/bugün kılınmışlığı
- *    Wearable Data Layer'a (`/namazakisi/durum`) yazar. Native modül
+ * 1. Telefon → saat: `gonder()` 31 günlük vakitleri + dün/bugün kılınmışlığı +
+ *    2 günlük HAZIR muhafız planını (issue #280; saat telefon yokken de
+ *    hatırlatsın) Wearable Data Layer'a (`/namazakisi/durum`) yazar. Native modül
  *    `WearSenkron` (`android/app/.../wear/WearSenkronModulu.kt`).
  * 2. Saat → telefon: saat "Kıldım" deyince native `WearDinleyiciServisi` öğeyi
- *    SharedPreferences KUYRUĞUNA alır. `bekleyenleriIsle()` kuyruğu boşaltır ve
- *    her öğeyi bildirimdeki "Kıldım" ile AYNI yoldan işler
- *    (`BildirimServisi.saattenKildimIsle`).
- *
- * Kuyruğu boşaltan ÜÇ yol vardır ve doğruluk hiçbirine tek başına bağlı değildir:
- * headless görev (`index.ts > WearKildim`), uygulama ön plana gelince
- * (`App.tsx` AppState + canlı olay) ve 15 dk'lık arka plan görevi.
+ *    ORTAK "Kıldım" kuyruğuna alır (widget/hızlı ayarlar/kısayolla aynı — issue
+ *    #275/#276); kuyruğu `KildimKuyruguServisi` boşaltır.
  *
  * Store'a BAĞIMLI DEĞİLDİR (arka planda Redux yok): konum ham AsyncStorage'dan,
  * kılınmışlık `LocalNamazServisi`'nden okunur. Android dışında / modül yoksa no-op.
@@ -24,12 +20,16 @@ import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/constants/UygulamaSab
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
 import { konumMetniHesapla, type KonumMetniGirdisi } from '../../core/ayarlar/konumMetni';
-import { wearYukuOlustur } from '../../core/wear/wearYuku';
+import { wearYukuOlustur, type WearYukGirdisi } from '../../core/wear/wearYuku';
 import type { VakitAdi } from '../../core/types';
 import {
     kayitDegistiDinleyicisiniAyarla,
+    kilinanVakitleriAl,
     localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
+import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muhafizPlaniGozlemcisi';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
@@ -60,6 +60,12 @@ export class WearSenkronServisi {
     private kullanilamaz = false;
     /** Gönderimler SIRALI: hızlı aç/kapa'da eski yük yenisinin üstüne yazılmasın. */
     private gonderimZinciri: Promise<void> = Promise.resolve();
+    /**
+     * Telefonun EN SON planladığı muhafız durumu (doğrulanmış matris). Varsa
+     * diskten okumaya yeğlenir: ekrandaki değişiklik diske yazılmadan önce de
+     * planlanmış olabilir, saat telefonla aynı matrisi görmeli.
+     */
+    private sonMuhafiz: MuhafizPlaniDurumu | null = null;
 
     private constructor() { }
 
@@ -74,6 +80,11 @@ export class WearSenkronServisi {
     public baslat(): void {
         if (!modul()) return;
         kayitDegistiDinleyicisiniAyarla(() => {
+            this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
+        });
+        // Muhafız planı değişince (ayar ekranı, kılınma, konum) saatin planı da tazelenir.
+        muhafizPlaniDinleyicisiniAyarla((durum) => {
+            this.sonMuhafiz = durum;
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
     }
@@ -105,7 +116,13 @@ export class WearSenkronServisi {
             }
 
             const json = JSON.stringify(
-                wearYukuOlustur({ koordinat: konum.koordinat, bugunIso: bugun, konumAdi: konum.ad, kilinanlar })
+                wearYukuOlustur({
+                    koordinat: konum.koordinat,
+                    bugunIso: bugun,
+                    konumAdi: konum.ad,
+                    kilinanlar,
+                    muhafiz: await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar),
+                })
             );
             if (json === this.sonGonderilen) return;
             await m.durumGonder(json);
@@ -130,6 +147,68 @@ export class WearSenkronServisi {
         return KildimKuyruguServisi.getInstance().bekleyenleriIsle();
     }
 
+    /**
+     * Plan girdisi: muhafız açık mı + matris + kılınmışlık. Kılınmışlık iki
+     * kaynağın BİRLEŞİMİdir — telefondaki muhafız `kilinanVakitleriAl`'ı (tek
+     * doğru kaynak, AGENTS.md) okur; namaz kaydı ise saatin ✓ gösterimidir.
+     * Muhafız ayarı okunamazsa `undefined` → plan boş gider (vakitler yine gider).
+     */
+    private async muhafizGirdisiniHazirla(
+        bugun: string,
+        dun: string,
+        kayitKilinanlari: Record<string, VakitAdi[]>
+    ): Promise<WearYukGirdisi['muhafiz']> {
+        const durum = this.sonMuhafiz ?? (await this.muhafizDurumunuOku());
+        if (!durum) return undefined;
+        const kilinanlar: Record<string, VakitAdi[]> = {};
+        for (const tarih of [dun, bugun]) {
+            const muhafizKilinan = await kilinanVakitleriAl(tarih).catch(() => [] as VakitAdi[]);
+            kilinanlar[tarih] = [...new Set([...(kayitKilinanlari[tarih] ?? []), ...muhafizKilinan])];
+        }
+        // Özel gün (issue #272): telefon o günün muhafızını planlamaz → saat de planlamaz.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+        return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi };
+    }
+
+    /**
+     * Ham AsyncStorage'dan muhafız durumu — arka planda Redux yoktur. Matris
+     * `muhafizMatrisiniCoz`'dan geçer (göçler + `yogunluk`; AGENTS.md: ham okuyan
+     * tüketici yoğunluğu geçmezse slice ile ayrışır).
+     */
+    private async muhafizDurumunuOku(): Promise<MuhafizPlaniDurumu | null> {
+        try {
+            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI);
+            if (!ham) return null;
+            const a = JSON.parse(ham) as Record<string, unknown> | null;
+            if (!a || typeof a !== 'object') return null;
+            const esikler = (a.esikler ?? {}) as Partial<Record<'seviye1' | 'seviye2' | 'seviye3' | 'seviye4', number>>;
+            const sikliklar = (a.sikliklar ?? {}) as Partial<Record<'seviye1' | 'seviye2' | 'seviye3' | 'seviye4', number>>;
+            return {
+                aktif: a.aktif === true,
+                matris: muhafizMatrisiniCoz({
+                    matris: a.matris as Parameters<typeof muhafizMatrisiniCoz>[0]['matris'],
+                    yogunluk: a.yogunluk,
+                    // `ArkaplanGorevServisi` ile AYNI tarihsel taban.
+                    esikler: {
+                        seviye1: esikler.seviye1 || 45,
+                        seviye2: esikler.seviye2 || 25,
+                        seviye3: esikler.seviye3 || 10,
+                        seviye4: esikler.seviye4 || 3,
+                    },
+                    sikliklar: {
+                        seviye1: sikliklar.seviye1 || 15,
+                        seviye2: sikliklar.seviye2 || 10,
+                        seviye3: sikliklar.seviye3 || 5,
+                        seviye4: sikliklar.seviye4 || 1,
+                    },
+                }),
+            };
+        } catch (e) {
+            Logger.warn('WearSenkron', 'Muhafiz ayarlari okunamadi; saat plani bos gidecek', e);
+            return null;
+        }
+    }
+
     private async konumuOku(): Promise<{ koordinat: { lat: number; lng: number }; ad: string } | null> {
         const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI);
         if (!ham) return null;
@@ -150,6 +229,7 @@ export class WearSenkronServisi {
     public __testIcinSifirla(): void {
         this.sonGonderilen = null;
         this.kullanilamaz = false;
+        this.sonMuhafiz = null;
         this.gonderimZinciri = Promise.resolve();
     }
 }

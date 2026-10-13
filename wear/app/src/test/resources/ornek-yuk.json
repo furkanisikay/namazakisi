@@ -1,5 +1,5 @@
 {
-  "surum": 1,
+  "surum": 2,
   "konumAdi": "Fatih, İstanbul",
   "kerahatDk": {
     "suruk": 20,
@@ -50,6 +50,30 @@
         "yatsi": 1791910380000
       },
       "kilinan": []
+    }
+  ],
+  "muhafiz": [
+    {
+      "id": "muhafiz_2026-10-12_vakit_ikindi_seviye_1_dk_45",
+      "ms": 1791816600000,
+      "tarih": "2026-10-12",
+      "vakit": "ikindi",
+      "seviye": 1,
+      "baslik": "⏰ 45 dk · İkindi vakti",
+      "govde": "Vakit daralmaya başladı, fırsat varken kıl.",
+      "titresim": false,
+      "acil": false
+    },
+    {
+      "id": "muhafiz_2026-10-12_vakit_ikindi_seviye_4_dk_3",
+      "ms": 1791819120000,
+      "tarih": "2026-10-12",
+      "vakit": "ikindi",
+      "seviye": 4,
+      "baslik": "🚨 3 dk · İKİNDİ VAKTİ ÇIKIYOR",
+      "govde": "Hemen namaza dur — sonra kaza etmek zorunda kalırsın.",
+      "titresim": true,
+      "acil": true
     }
   ]
 }

@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.wear.protolayout.expression)
     implementation(libs.complications.data.source.ktx)
     implementation(libs.play.services.wearable)
+    implementation(libs.wear.phone.interactions)
     implementation(libs.concurrent.futures)
     implementation(libs.coroutines.play.services)
 
