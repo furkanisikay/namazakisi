@@ -51,6 +51,7 @@ import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt, indirmeTamamlandiIsaretle } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { WidgetServisi } from './src/domain/services/WidgetServisi';
+import { CanliSayacPlanlayici } from './src/domain/services/CanliSayacPlanlayici';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
@@ -312,6 +313,12 @@ const AppIcerik: React.FC = () => {
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
         // Yatış hatırlatması (issue #290): kılınmışlık değişince muhasebe içeriği tazelenir.
         YatisHatirlatmaServisi.getInstance().baslat();
+        // iOS canlı etkinlik (#295): yalnız uygulama açıkken başlatılabilir → açılışta eşitle,
+        // kılınmışlık değişince ("Kıldım") tazele. Android'de no-op (planı sayaçlar kurar).
+        if (Platform.OS === 'ios') {
+          CanliSayacPlanlayici.getInstance().iosBaslat();
+          CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
+        }
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
@@ -367,6 +374,11 @@ const AppIcerik: React.FC = () => {
         // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
         KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
         CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+        // iOS canlı etkinlik (#295) DEBOUNCE'SUZ: arka planda başlatılamadığı için her ön
+        // plana gelişte "şu an hangisi?" yeniden eşitlenir (ucuz; değişmediyse köprü dokunmaz).
+        if (Platform.OS === 'ios') {
+          CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
+        }
         const simdiMs = Date.now();
         if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
           return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez

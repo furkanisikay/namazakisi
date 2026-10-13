@@ -10,8 +10,11 @@
  *
  * Ekranda art arda dokunuşlar tek turda birleşsin diye çağıran debounce eder.
  * STORE'SUZ, asla fırlatmaz.
+ *
+ * iOS'ta (#295) aynı seçim canlı etkinliği (Live Activity) belirler.
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
 import { Logger } from '../../core/utils/Logger';
@@ -24,6 +27,9 @@ export async function nowBarDegistiUygula(): Promise<void> {
     const k = ham ? (JSON.parse(ham) as { koordinatlar?: { lat: number; lng: number } } | null)?.koordinatlar : null;
     if (koordinatGecerliMi(k)) {
       await konumDegistiUygula(k);
+      // iOS (#295): sayaç bildirimi yok → planlayıcıya bildiren de yok; canlı etkinlik
+      // seçimi değişince doğrudan eşitlenir.
+      if (Platform.OS === 'ios') await CanliSayacPlanlayici.getInstance().yenidenPlanla();
       return;
     }
     // Konum yok: sayaçlar zaten planlanmamıştır; yalnız planlayıcı (saat payı) tazelenir.

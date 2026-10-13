@@ -18,6 +18,10 @@ const siriKildimKuyrugu = jest.fn().mockReturnValue(null);
 const siriOdakDurumuAl = jest.fn().mockResolvedValue(null);
 const siriEkranIstegiAl = jest.fn().mockResolvedValue(null);
 const siriDegisikliginiDinle = jest.fn().mockReturnValue(() => undefined);
+// #295 canlı etkinlik: varsayılan DESTEKLENMİYOR (widget bayrağı kapalı build gibi).
+const canliEtkinlikDestekli = jest.fn().mockReturnValue(false);
+const canliEtkinlikIzniAcik = jest.fn().mockResolvedValue(null);
+const canliEtkinlikEsitle = jest.fn().mockResolvedValue('desteklenmiyor');
 
 module.exports = {
   siriVeriYazici,
@@ -25,4 +29,7 @@ module.exports = {
   siriOdakDurumuAl,
   siriEkranIstegiAl,
   siriDegisikliginiDinle,
+  canliEtkinlikDestekli,
+  canliEtkinlikIzniAcik,
+  canliEtkinlikEsitle,
 };

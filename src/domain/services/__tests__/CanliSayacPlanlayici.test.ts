@@ -24,8 +24,12 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
 }));
 
 const mockKilinan = jest.fn();
+const mockKayit = jest.fn();
+const mockDinleyiciEkle = jest.fn();
 jest.mock('../../../data/local/LocalNamazServisi', () => ({
   kilinanVakitleriAl: (...a: unknown[]) => mockKilinan(...a),
+  localTarihAraligindakiNamazlariGetir: (...a: unknown[]) => mockKayit(...a),
+  kayitDegistiDinleyicisiEkle: (...a: unknown[]) => mockDinleyiciEkle(...a),
 }));
 jest.mock('../../../data/local/LocalOzelGunOkuyucu', () => ({
   ozelGunSuzgeciniOku: jest.fn(async () => () => false),
@@ -135,5 +139,79 @@ describe('CanliSayacPlanlayici', () => {
     mockDepo[DEPOLAMA_ANAHTARLARI.CANLI_SAYAC_KAYNAKLARI] = '{bozuk';
     await p.yenidenPlanla();
     expect(mockCanliPlaniKur).toHaveBeenCalledWith('[]');
+  });
+
+  describe('iOS canlı etkinlik (#295)', () => {
+    // moduleNameMapper mock'u: aynı örneğe `require` ile ulaşılır (AGENTS.md).
+    const siri = require('../../../../modules/expo-siri-kisayollari/src') as {
+      canliEtkinlikDestekli: jest.Mock;
+      canliEtkinlikEsitle: jest.Mock;
+    };
+    const platform = (require('react-native') as { Platform: { OS: string } }).Platform;
+    // 2026-10-15 11:00 UTC = İstanbul 14:00 → öğle vakti (12:5x–15:5x). Yalnız Date sahte.
+    const SIMDI = Date.UTC(2026, 9, 15, 11, 0);
+
+    beforeEach(() => {
+      platform.OS = 'ios';
+      jest.useFakeTimers({ now: SIMDI, doNotFake: ['setTimeout', 'setInterval', 'setImmediate', 'nextTick', 'queueMicrotask'] });
+      siri.canliEtkinlikDestekli.mockReturnValue(true);
+      siri.canliEtkinlikEsitle.mockResolvedValue('baslatildi');
+      mockKayit.mockResolvedValue({ basarili: true, veri: [] });
+      mockDepo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI] = JSON.stringify({ koordinatlar: { lat: 41.0082, lng: 28.9784 } });
+      mockDepo[DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI] = JSON.stringify(
+        nowBarAyariniBirlestir(VARSAYILAN_NOW_BAR_AYARLARI, 'ogle', { baslangic: 'girince' })
+      );
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+      platform.OS = 'android';
+      siri.canliEtkinlikDestekli.mockReturnValue(false);
+      siri.canliEtkinlikEsitle.mockResolvedValue('desteklenmiyor');
+    });
+
+    test('Android planı kurulmaz; şu anki vakit köprüye istenir', async () => {
+      await p.yenidenPlanla();
+      expect(mockCanliPlaniKur).not.toHaveBeenCalled();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'sayac_2026-10-15_ogle', ad: 'Öğle', kildimTarih: '2026-10-15', kildimVakit: 'ogle' })
+      );
+    });
+
+    test('namaz KAYDINDA kılınmış vakit (muhafız diski henüz yazılmamış) etkinliği kapatır', async () => {
+      mockKayit.mockResolvedValue({
+        basarili: true,
+        veri: [{ tarih: '2026-10-15', namazlar: [{ namazAdi: 'Öğle', tamamlandi: true }] }],
+      });
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+    });
+
+    test('muhafız diskinde kılınmış vakit de kapatır', async () => {
+      mockKilinan.mockImplementation(async (t: string) => (t === '2026-10-15' ? ['ogle'] : []));
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+    });
+
+    test('konum yoksa mevcut etkinlik bitirilir', async () => {
+      delete mockDepo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI];
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+    });
+
+    test('destek yoksa (widget bayrağı kapalı build) köprüye hiç gidilmez, dinleyici kurulmaz', async () => {
+      siri.canliEtkinlikDestekli.mockReturnValue(false);
+      await p.yenidenPlanla();
+      p.iosBaslat();
+      expect(siri.canliEtkinlikEsitle).not.toHaveBeenCalled();
+      expect(mockDinleyiciEkle).not.toHaveBeenCalled();
+    });
+
+    test('kılınmışlık dinleyicisi adlı yuvaya kurulur ve yeniden eşitler', async () => {
+      p.iosBaslat();
+      expect(mockDinleyiciEkle).toHaveBeenCalledWith('canliEtkinlik', expect.any(Function));
+      (mockDinleyiciEkle.mock.calls[0][1] as () => void)();
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledTimes(2);
+    });
   });
 });

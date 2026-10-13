@@ -15,6 +15,9 @@ import Foundation
  *   - `vakitlerKaydet` / `kilinanlarKaydet` ← Android `WidgetVeri` (WidgetServisi aynen kullanir)
  *   - `bekleyenleriAl` / `tamamlandi` / `basarisiz` ← Android `KildimKuyrugu`
  *     (KildimKuyruguServisi aynen kullanir)
+ *
+ * iOS widget uzantisi ve canli etkinlik (#295) ayni depoyu (App Group) ve ayni yuku
+ * kullanir; `canliEtkinlik*` fonksiyonlari `CanliEtkinlikKoprusu`'na devreder.
  */
 public class ExpoSiriKisayollariModule: Module {
     private var gozlemci: NSObjectProtocol?
@@ -44,12 +47,15 @@ public class ExpoSiriKisayollariModule: Module {
             }
         }
 
+        // Widget (#295) ayni yukten beslenir: her yazimdan sonra zaman cizelgeleri tazelenir.
         Function("vakitlerKaydet") { (json: String) in
             SiriDeposu.varsayilan.cizelgeyiYaz(json)
+            CanliEtkinlikKoprusu.widgetlariTazele()
         }
 
         Function("kilinanlarKaydet") { (json: String) in
             SiriDeposu.varsayilan.kilinanlariYaz(json)
+            CanliEtkinlikKoprusu.widgetlariTazele()
         }
 
         AsyncFunction("bekleyenleriAl") { () -> String in
@@ -67,6 +73,21 @@ public class ExpoSiriKisayollariModule: Module {
         /// Odak filtresinin son durumu (`{"sessiz":Bool,"ms":Int}`); hic calismadiysa nil.
         AsyncFunction("odakDurumuAl") { () -> String? in
             return SiriDeposu.varsayilan.odakJson()
+        }
+
+        /// Canli etkinlik (Live Activity, #295) bu build'de var mi? (Widget uzantisi bayragi.)
+        Function("canliEtkinlikDestekli") { () -> Bool in
+            return CanliEtkinlikKoprusu.destekleniyor
+        }
+
+        /// Kullanici Ayarlar'dan canli etkinlikleri kapatmis mi?
+        AsyncFunction("canliEtkinlikIzniAcik") { () -> Bool in
+            return CanliEtkinlikKoprusu.izinAcik()
+        }
+
+        /// Mevcut canli etkinlikleri ISTENENE esitler (nil = hicbiri). Sonuc kodu doner.
+        AsyncFunction("canliEtkinlikEsitle") { (json: String?) async -> String in
+            return await CanliEtkinlikKoprusu.esitle(json: json)
         }
 
         /// Bekleyen ekran istegini TUKETIR (ör. "kible"); yoksa/bayatsa nil.
