@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Bilinçli olarak NÖTR ve kartsız (issue #272): özel gün etiketi açıklanmaz,
+    // yalnız "Neler Yeni" listesinde görünür.
+    {
+        id: 'ozel-gun-hatirlatma-sessizligi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Özel Günlerde Hatırlatmalar Durur',
+        aciklama:
+            'Özel gün modu açıkken seçtiğiniz tarihler boyunca namaz hatırlatmaları da durur; tarihler bitince kendiliğinden geri gelir.',
+        detayAciklama:
+            'Özel gün modu artık yalnızca serinizi dondurmaz. Seçtiğiniz tarihler boyunca vakit bildirimleri, namaz muhafızı ve sesli anonsları, vakit sayacı ve nafile hatırlatmaları da gönderilmez. Tarihler bittiğinde hatırlatmalar sizin bir şey yapmanıza gerek kalmadan geri gelir.',
+        ikon: 'bell-slash',
+        hedefSayfa: 'SeriHedefAyarlari',
+        ctaEtiketi: 'Özel gün ayarını açın',
+        kartGoster: false,
+        detaylar: [
+            'Serinizin dondurulması aynen sürer',
+            'Bu tarihlerde vakit, muhafız, sayaç ve nafile hatırlatmaları gelmez',
+            'Tarihler bitince hatırlatmalar kendiliğinden geri gelir',
+        ],
+    },
     {
         id: 'katlanabilir-tablet-duzeni',
         surum: '0.31.0',

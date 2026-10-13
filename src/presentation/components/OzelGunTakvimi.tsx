@@ -76,7 +76,7 @@ export const OzelGunTakvimi: React.FC<OzelGunTakvimiProps> = ({
                         Özel Gün Başlat
                     </Text>
                     <Text style={[styles.aciklama, { color: renkler.metinIkincil }]}>
-                        Seçeceğiniz tarihler arasında namaz seriniz dondurulacaktır.
+                        Seçeceğiniz tarihler arasında namaz seriniz dondurulacaktır. Bu günlerde namaz hatırlatmaları da durur.
                     </Text>
 
                     <View style={styles.seciciGrup}>
