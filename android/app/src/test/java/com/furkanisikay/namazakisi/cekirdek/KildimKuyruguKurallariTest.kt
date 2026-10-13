@@ -40,6 +40,13 @@ class KildimKuyruguKurallariTest {
     }
 
     @Test
+    fun asistanKaynagiKabulEdilir() {
+        // Sistem asistanının AppFunctions "Kıldım" çağrısı (issue #94).
+        val l = k.ekle(emptyList(), "2026-10-13", "ogle", k.KAYNAK_ASISTAN)!!
+        assertEquals("asistan", l.single().kaynak)
+    }
+
+    @Test
     fun gecersizOgeReddedilir() {
         assertNull(k.ekle(emptyList(), "13.10.2026", "ogle", k.KAYNAK_WIDGET))
         // Widget kodu 'sabah' kuyruğa GİRMEZ: kayıt katmanı 'imsak' bekler.
