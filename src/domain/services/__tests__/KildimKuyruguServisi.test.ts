@@ -22,6 +22,10 @@ const mockKuyruktanKildim = jest.fn();
 jest.mock('../BildirimServisi', () => ({
     BildirimServisi: { getInstance: () => ({ kuyruktanKildimIsle: (...a: unknown[]) => mockKuyruktanKildim(...a) }) },
 }));
+const mockNafileKildim = jest.fn();
+jest.mock('../NafileHatirlatmaServisi', () => ({
+    NafileHatirlatmaServisi: { getInstance: () => ({ kildimIsle: (...a: unknown[]) => mockNafileKildim(...a) }) },
+}));
 const mockKilinanlariYaz = jest.fn();
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: { getInstance: () => ({ kilinanlariYaz: () => mockKilinanlariYaz() }) },
@@ -133,6 +137,71 @@ describe('bekleyenleriIsle', () => {
         expect(mockKuyruktanKildim).toHaveBeenCalledWith('imsak', bugunuAl());
         expect(siri.tamamlandi).toHaveBeenCalledWith('s1');
         expect(mockKilinanlariYaz).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('nafile kuyruğu (issue #273, native NafileKildimIsleyici)', () => {
+    const nafileModul = {
+        ...modul,
+        nafileBekleyenleriAl: jest.fn(() => Promise.resolve('[]')),
+        nafileTamamlandi: jest.fn(() => Promise.resolve()),
+        nafileBasarisiz: jest.fn(() => Promise.resolve()),
+    };
+    beforeEach(() => {
+        (NativeModules as Record<string, unknown>).KildimKuyrugu = nafileModul;
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue('[]');
+        nafileModul.nafileTamamlandi.mockResolvedValue(undefined);
+        mockNafileKildim.mockResolvedValue(undefined);
+    });
+
+    it('nafile öğesi YALNIZ susturma hafızasına gider — farz kaydı ASLA yazılmaz', async () => {
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue(
+            JSON.stringify([{ id: '2026-10-13_kusluk', tarih: '2026-10-13', tur: 'kusluk', deneme: 0 }])
+        );
+        await servis.bekleyenleriIsle();
+        expect(mockNafileKildim).toHaveBeenCalledWith('2026-10-13', 'kusluk');
+        expect(nafileModul.nafileTamamlandi).toHaveBeenCalledWith('2026-10-13_kusluk');
+        expect(mockKuyruktanKildim).not.toHaveBeenCalled();
+        // Nafile kılınmışlığı widget/saati etkilemez.
+        expect(mockKilinanlariYaz).not.toHaveBeenCalled();
+    });
+
+    it('farz ve nafile kuyrukları aynı turda birlikte boşalır', async () => {
+        nafileModul.bekleyenleriAl.mockResolvedValue(JSON.stringify([{ id: 'a', tarih: bugunuAl(), vakit: 'ogle' }]));
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue(
+            JSON.stringify([{ id: '2026-10-12_teheccud', tarih: '2026-10-12', tur: 'teheccud' }])
+        );
+        await servis.bekleyenleriIsle();
+        expect(mockKuyruktanKildim).toHaveBeenCalledWith('ogle', bugunuAl());
+        expect(mockNafileKildim).toHaveBeenCalledWith('2026-10-12', 'teheccud');
+    });
+
+    it('bilinmeyen tür ve bozuk öğe işlenmez; bozuk JSON çökertmez', async () => {
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue(
+            JSON.stringify([{ id: 'x', tarih: '2026-10-13', tur: 'ogle' }, null, { id: 'y' }])
+        );
+        await servis.bekleyenleriIsle();
+        expect(mockNafileKildim).not.toHaveBeenCalled();
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue('{bozuk');
+        await expect(servis.bekleyenleriIsle()).resolves.toBeUndefined();
+    });
+
+    it('başarısız öğe kuyrukta kalır (nafileBasarisiz)', async () => {
+        nafileModul.nafileBekleyenleriAl.mockResolvedValue(
+            JSON.stringify([{ id: '2026-10-13_evvabin', tarih: '2026-10-13', tur: 'evvabin' }])
+        );
+        mockNafileKildim.mockRejectedValueOnce(new Error('disk'));
+        await servis.bekleyenleriIsle();
+        expect(nafileModul.nafileBasarisiz).toHaveBeenCalledWith('2026-10-13_evvabin');
+        expect(nafileModul.nafileTamamlandi).not.toHaveBeenCalled();
+    });
+
+    it('eski ikili (nafile yöntemleri yok) farz kuyruğunu yine boşaltır', async () => {
+        (NativeModules as Record<string, unknown>).KildimKuyrugu = modul;
+        modul.bekleyenleriAl.mockResolvedValue(JSON.stringify([{ id: 'a', tarih: bugunuAl(), vakit: 'ogle' }]));
+        await servis.bekleyenleriIsle();
+        expect(mockKuyruktanKildim).toHaveBeenCalledTimes(1);
+        expect(mockNafileKildim).not.toHaveBeenCalled();
     });
 });
 

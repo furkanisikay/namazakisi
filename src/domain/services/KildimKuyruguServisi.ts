@@ -13,6 +13,10 @@
  * çalışmaz). Aynı fonksiyon adlarıyla aynı yoldan boşaltılır; iOS'ta headless görev
  * yoktur, uygulama açıkken intent olayı (`siriDegisikliginiDinle`) tetikler.
  *
+ * Android'de aynı turda ayrı bir NAFİLE kuyruğu da boşalır (issue #273, native
+ * `NafileKildimKuyrugu`): öğe yalnız `NafileHatirlatmaServisi.kildimIsle`'ye gider
+ * (susturma hafızası) — farz kaydı ASLA yazılmaz.
+ *
  * Kuyruğu boşaltan ÜÇ yol vardır, doğruluk hiçbirine tek başına bağlı değildir:
  * headless görev (`index.ts > KildimKuyrugu`), uygulama ön plana gelince
  * (`App.tsx` AppState + canlı olay) ve 15 dk'lık arka plan görevi.
@@ -37,6 +41,7 @@ import {
 } from '../../core/widget/widgetYuku';
 import { localNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { siriKildimKuyrugu } from '../../../modules/expo-siri-kisayollari/src';
+import type { NafileTuru } from '../../core/nafile/nafileTipleri';
 
 /** Native taraf uygulama AÇIKKEN kuyruğa öğe düşünce bu olayı yayar (`KildimKuyrugu.OLAY_ADI`). */
 export const KILDIM_KUYRUGU_OLAYI = 'KildimKuyruguGeldi';
@@ -48,6 +53,13 @@ interface KildimKuyruguModulu {
     bekleyenleriAl(): Promise<string>;
     tamamlandi(id: string): Promise<void>;
     basarisiz(id: string): Promise<void>;
+    /**
+     * Nafile "Kıldım" kuyruğu (issue #273; yalnız Android, native `NafileKildimKuyrugu`).
+     * Opsiyonel: eski ikili ve iOS (`siriKildimKuyrugu`) taşımaz.
+     */
+    nafileBekleyenleriAl?(): Promise<string>;
+    nafileTamamlandi?(id: string): Promise<void>;
+    nafileBasarisiz?(id: string): Promise<void>;
 }
 
 interface KuyrukOgesi {
@@ -56,6 +68,25 @@ interface KuyrukOgesi {
     vakit: string;
     kaynak?: string;
 }
+
+interface NafileKuyrukOgesi {
+    id: string;
+    tarih: string;
+    tur: NafileTuru;
+}
+
+const NAFILE_TURLERI: readonly NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
+
+const nafileOgesiMi = (o: unknown): o is NafileKuyrukOgesi => {
+    if (!o || typeof o !== 'object') return false;
+    const x = o as Record<string, unknown>;
+    return (
+        typeof x.id === 'string' &&
+        typeof x.tarih === 'string' &&
+        typeof x.tur === 'string' &&
+        (NAFILE_TURLERI as readonly string[]).includes(x.tur)
+    );
+};
 
 export type SimdikiVakitSonucu =
     | { tur: 'isaretlendi'; vakitAdi: string }
@@ -116,6 +147,43 @@ export class KildimKuyruguServisi {
     private async isle(): Promise<void> {
         const m = modul();
         if (!m) return;
+        await this.farzKuyrugunuIsle(m);
+        await this.nafileKuyrugunuIsle(m);
+    }
+
+    /**
+     * Nafile "Kıldım"ları (issue #273): native `NafileKildimIsleyici` bekleyen tetikleri,
+     * anonsları ve gösterilenleri ZATEN iptal etti; burada yalnız `NAFILE_KILINAN`
+     * susturma hafızası yazılır (sonraki planlama o nafileyi yeniden kurmasın) —
+     * `kildimIsle` aynı iptalleri de tekrarlar (zararsız, idempotent). Farz kaydı/puan/
+     * seri ASLA yazılmaz: bu öğeler `kuyruktanKildimIsle`'ye gitmez.
+     */
+    private async nafileKuyrugunuIsle(m: KildimKuyruguModulu): Promise<void> {
+        if (!m.nafileBekleyenleriAl) return;
+        let ogeler: NafileKuyrukOgesi[] = [];
+        try {
+            const ham: unknown = JSON.parse(await m.nafileBekleyenleriAl());
+            ogeler = Array.isArray(ham) ? ham.filter(nafileOgesiMi) : [];
+        } catch (e) {
+            Logger.warn('KildimKuyrugu', 'Nafile kuyrugu okunamadi', e);
+            return;
+        }
+        if (ogeler.length === 0) return;
+        const { NafileHatirlatmaServisi } =
+            require('./NafileHatirlatmaServisi') as typeof import('./NafileHatirlatmaServisi');
+        for (const oge of ogeler) {
+            try {
+                await NafileHatirlatmaServisi.getInstance().kildimIsle(oge.tarih, oge.tur);
+                await m.nafileTamamlandi?.(oge.id);
+                Logger.info('KildimKuyrugu', `Nafile susturuldu: ${oge.id}`);
+            } catch (e) {
+                Logger.warn('KildimKuyrugu', `Nafile Kildim islenemedi: ${oge.id}`, e);
+                await m.nafileBasarisiz?.(oge.id)?.catch(() => undefined);
+            }
+        }
+    }
+
+    private async farzKuyrugunuIsle(m: KildimKuyruguModulu): Promise<void> {
         let ogeler: KuyrukOgesi[] = [];
         try {
             const ham = JSON.parse(await m.bekleyenleriAl());
