@@ -923,14 +923,17 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                         gorunur
                         platform={tanim.yetenekler.platform}
                         alarmKit={alarmIzinleri.alarmKit}
-                        onOnayla={async () => {
+                        onOnayla={() => {
                             setAlarmOnayAcik(false);
                             onAlarmOnayiVer?.();
+                            if (tanim.yetenekler.platform !== 'ios') {
+                                alarmiYaz(true);
+                                return;
+                            }
                             // iOS: sistem alarm izni (AlarmKit) anahtar YAZILMADAN ÖNCE istenir —
                             // matris değişince ekranın planlaması izin sonucuyla koşsun. Red
                             // edilse de anahtar açılır (uzun sesli bildirim + ekranda uyarı).
-                            await alarmIzinleri.izinIste(false);
-                            alarmiYaz(true);
+                            void alarmIzinleri.izinIste(false).finally(() => alarmiYaz(true));
                         }}
                         onIptal={() => setAlarmOnayAcik(false)}
                     />
