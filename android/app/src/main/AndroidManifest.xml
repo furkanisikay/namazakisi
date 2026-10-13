@@ -108,6 +108,14 @@
       </intent-filter>
     </service>
     <service android:name=".wear.WearKildimGorevServisi" android:exported="false"/>
+    <!-- Wear OS (issue #280): muhafız bildirimlerine köprü etiketi basar; saat kendi
+         planını kurunca yalnız bu etiketi dışlar (çift bildirim olmasın). expo-notifications
+         olayları EN YÜKSEK öncelikli alıcıya gönderir (kendi alıcısı -1). -->
+    <receiver android:name=".wear.KopruEtiketliBildirimServisi" android:enabled="true" android:exported="false">
+      <intent-filter android:priority="0">
+        <action android:name="expo.modules.notifications.NOTIFICATION_EVENT"/>
+      </intent-filter>
+    </receiver>
     <!-- expo-location konum güncelleme servisi (foregroundServiceType=location): kodda
          startLocationUpdatesAsync yok, geofence onu kullanmaz. Bildirimi kalsaydı Play
          FGS beyanı isterdi. Bkz. üstteki FOREGROUND_SERVICE_LOCATION notu. -->

@@ -1,13 +1,18 @@
 package com.furkanisikay.namazakisi.saat.cekirdek
 
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
  * Telefon → saat YÜK SÖZLEŞMESİ (issue #269) — telefon tarafının aynası:
  * `src/core/wear/wearYuku.ts`. İki taraf AYNI örnek dosyayı kabul eder
  * (`src/test/resources/ornek-yuk.json`); şema tek taraflı değiştirilemez.
+ *
+ * Sürüm 2 (issue #280): `muhafiz` = telefonun motoruyla üretilmiş HAZIR plan.
+ * Saat yalnız sıradaki alarmı kurar, ikinci bir motor YOKTUR. Sürüm 1 yükü
+ * (eski telefon) okunmaya devam eder; planı boş sayılır.
  */
-const val DESTEKLENEN_YUK_SURUMU = 1
+const val DESTEKLENEN_YUK_SURUMU = 2
 
 /** Sözleşme sırası; `gunes` görüntülenir ama asla "kılınmış" olmaz. */
 val VAKITLER = listOf("imsak", "gunes", "ogle", "ikindi", "aksam", "yatsi")
@@ -21,11 +26,31 @@ data class Gun(
     val kilinan: Set<String>,
 )
 
+/** Telefonun planladığı tek bir muhafız uyarısı (kimlik telefondaki bildirimle AYNI). */
+data class PlanKaydi(
+    val id: String,
+    /** Tetik anı (epoch ms) */
+    val ms: Long,
+    /** Vaktin ait olduğu gün — gece yarısından sonra süren yatsı DÜNE aittir. */
+    val tarih: String,
+    val vakit: String,
+    /** 1 nazik · 2 uyarı · 3 sert · 4 acil */
+    val seviye: Int,
+    val baslik: String,
+    val govde: String,
+    /** Kullanıcının açtığı belirgin titreşim */
+    val titresim: Boolean,
+    /** Acil ton → acil kanal + CATEGORY_ALARM */
+    val acil: Boolean,
+)
+
 data class Yuk(
     val surum: Int,
     val konumAdi: String,
     val kerahat: Kerahat,
     val gunler: List<Gun>,
+    /** Kronolojik muhafız planı; v1 yükünde ve muhafız kapalıyken boş. */
+    val plan: List<PlanKaydi> = emptyList(),
 )
 
 sealed class CozumSonucu {
@@ -59,9 +84,33 @@ object YukCozucu {
                 require(kilinan.all { it in VAKITLER && it != "gunes" })
                 Gun(tarih, vakitler, kilinan)
             }.sortedBy { it.tarih }
-            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler))
+            val plan = if (surum >= 2) planiCoz(o.getJSONArray("muhafiz")) else emptyList()
+            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan))
         } catch (_: Exception) {
             CozumSonucu.Gecersiz
         }
     }
+
+    /** Tek bozuk kayıt tüm yükü reddeder (JS `wearYukuGecerliMi` ile aynı katılık). */
+    private fun planiCoz(dizi: JSONArray): List<PlanKaydi> =
+        (0 until dizi.length()).map { i ->
+            val k = dizi.getJSONObject(i)
+            val tarih = k.getString("tarih")
+            val vakit = k.getString("vakit")
+            val seviye = k.getInt("seviye")
+            require(TARIH.matches(tarih))
+            require(vakit in VAKITLER && vakit != "gunes")
+            require(seviye in 1..4)
+            PlanKaydi(
+                id = k.getString("id"),
+                ms = k.getLong("ms"),
+                tarih = tarih,
+                vakit = vakit,
+                seviye = seviye,
+                baslik = k.getString("baslik"),
+                govde = k.getString("govde"),
+                titresim = k.getBoolean("titresim"),
+                acil = k.getBoolean("acil"),
+            )
+        }.sortedBy { it.ms }
 }

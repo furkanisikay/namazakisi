@@ -40,6 +40,7 @@ fun AnaEkran(
     yuk: Yuk?,
     bekleyen: Set<String>,
     guncellemeGerekli: Boolean,
+    bildirimIzni: Boolean,
     simdi: Long,
     bugun: String,
     onKildim: (tarih: String, vakit: String) -> Unit,
@@ -59,7 +60,7 @@ fun AnaEkran(
                     if (yuk == null) {
                         item {
                             BilgiMetni(
-                                if (guncellemeGerekli) "Telefonunuzdaki Namaz Akışı'nı güncelleyin."
+                                if (guncellemeGerekli) GUNCELLEME_METNI
                                 else "Vakitleri görmek için telefonunuzda Namaz Akışı'nı açın."
                             )
                         }
@@ -81,7 +82,12 @@ fun AnaEkran(
                         }
                     }
                     if (guncellemeGerekli) {
-                        item { BilgiMetni("Telefonunuzdaki Namaz Akışı'nı güncelleyin.") }
+                        item { BilgiMetni(GUNCELLEME_METNI) }
+                    }
+                    if (!bildirimIzni) {
+                        item {
+                            BilgiMetni("Telefonunuz yanınızda değilken de hatırlatma almak için saatin ayarlarından Namaz Akışı bildirimlerine izin verin.")
+                        }
                     }
                     item { ListHeader { Text("Bugün") } }
                     items(VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen)) { satir ->
@@ -113,6 +119,12 @@ fun AnaEkran(
         }
     }
 }
+
+/**
+ * Telefon saatin tanımadığı DAHA YENİ bir şema gönderdi → güncellenmesi gereken SAAT
+ * uygulamasıdır (eski metin telefonu işaret ediyordu).
+ */
+private const val GUNCELLEME_METNI = "Saatinizdeki Namaz Akışı'nı güncelleyin."
 
 @Composable
 private fun VakitSatiri(satir: VakitHesabi.Satir, onSec: () -> Unit) {

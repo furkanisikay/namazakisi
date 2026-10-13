@@ -2,9 +2,22 @@
 <!--
   Namaz Akışı — Wear OS saat uygulaması (issue #269).
   applicationId telefonla AYNI (build.gradle.kts) → Data Layer eşleşmesi.
-  Yeni İZİN YOK: veri telefondan Data Layer ile gelir, saatte konum/ağ kullanılmaz.
+  Veri telefondan Data Layer ile gelir, saatte konum/ağ kullanılmaz.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Bağımsız hatırlatma (issue #280): telefon yanında değilken de saat, telefonun
+      hazır muhafız planını KENDİ alarmlarıyla çalar. Yalnız SIRADAKİ alarm kuruludur
+      (zincir). USE_EXACT_ALARM 33+ (namaz vakti = kullanıcının beklediği saatli
+      uyarı); 31–32'de SCHEDULE_EXACT_ALARM. İzin yoksa yaklaşık alarma düşülür.
+      POST_NOTIFICATIONS Wear OS 4+'ta kurulumda kapalı gelir → uygulama açılınca istenir.
+    -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Play: saat uygulaması olduğunu bildirir (required=false VERİLMEZ). -->
     <uses-feature android:name="android.hardware.type.watch" />
@@ -43,6 +56,18 @@
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/durum" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".hatirlatma.MuhafizAlarmAlicisi" android:exported="false" />
+        <receiver android:name=".hatirlatma.KildimAlicisi" android:exported="false" />
+        <!-- Android yeniden başlatmada tüm alarmları siler; saat/saat dilimi değişimi sıradakini kaydırır. -->
+        <receiver android:name=".hatirlatma.YenidenKurAlicisi" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".tile.VakitTileServisi"
