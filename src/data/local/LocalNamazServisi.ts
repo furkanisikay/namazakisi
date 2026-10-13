@@ -47,12 +47,33 @@ export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void =
   kayitDegistiDinleyicisi = fn;
 };
 
+/**
+ * Ek dinleyiciler (Namaz modu "Kıldım deyince kapansın" — issue #277). Tek yuvalı
+ * `kayitDegistiDinleyicisiniAyarla` Wear'e aittir; ikinci bir tüketici onu
+ * ezmesin diye ayrı küme. Dönen fonksiyon aboneliği kaldırır.
+ */
+const ekDinleyiciler = new Set<() => void>();
+
+export const kayitDegistiDinleyicisiEkle = (fn: () => void): (() => void) => {
+  ekDinleyiciler.add(fn);
+  return () => {
+    ekDinleyiciler.delete(fn);
+  };
+};
+
 const kayitDegistiBildir = (): void => {
   try {
     kayitDegistiDinleyicisi?.();
   } catch (e) {
     Logger.warn('LocalNamazServisi', 'Kayit degisti dinleyicisi hata verdi', e);
   }
+  ekDinleyiciler.forEach((fn) => {
+    try {
+      fn();
+    } catch (e) {
+      Logger.warn('LocalNamazServisi', 'Kayit degisti ek dinleyicisi hata verdi', e);
+    }
+  });
 };
 
 const gunAnahtari = (tarih: string): string =>

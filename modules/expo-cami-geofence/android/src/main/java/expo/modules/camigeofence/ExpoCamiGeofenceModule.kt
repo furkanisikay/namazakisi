@@ -78,6 +78,15 @@ class ExpoCamiGeofenceModule : Module() {
             )
         }
 
+        /**
+         * Muhafız sessizliğinin bittiği an (ms) ya da 0 — muhafız teslimcisi her
+         * planlama turunda sorar (camideyken acil kanal kullanılmaz). Hafif:
+         * cami verisine dokunmaz.
+         */
+        AsyncFunction("sessizBitisMs") { promise: Promise ->
+            promise.resolve(ctx()?.let { CamiDepo.sessizBitisMs(it).toDouble() } ?: 0.0)
+        }
+
         AsyncFunction("ayarlariAl") { promise: Promise ->
             promise.resolve(ctx()?.let { CamiDepo.ayarlarHam(it).toString() } ?: "{}")
         }

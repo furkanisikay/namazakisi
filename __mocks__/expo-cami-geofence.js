@@ -17,6 +17,7 @@
  */
 const camiModuluVarMi = jest.fn().mockReturnValue(false);
 const durumAl = jest.fn().mockResolvedValue(null);
+const sessizBitisMs = jest.fn().mockResolvedValue(0);
 const ayarlariAl = jest.fn().mockResolvedValue(null);
 const ayarlariYaz = jest.fn().mockResolvedValue('yok');
 const pencereleriYaz = jest.fn().mockResolvedValue(undefined);
@@ -40,6 +41,7 @@ const camiOlayiniDinle = jest.fn().mockReturnValue({ remove: jest.fn() });
 module.exports = {
   camiModuluVarMi,
   durumAl,
+  sessizBitisMs,
   ayarlariAl,
   ayarlariYaz,
   pencereleriYaz,

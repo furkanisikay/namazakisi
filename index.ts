@@ -68,6 +68,24 @@ if (Platform.OS === 'android') {
     }
 }
 
+// Camiden çıkış sorusundaki "Kıldım" (Camideyim #297) — headless görev. Ad
+// `CamiKildimGorevServisi.kt` ile AYNI. Kuyruk native'de kalıcıdır; açılış ve
+// 15 dk görevi de boşaltır (Wear deseni).
+if (Platform.OS === 'android') {
+    try {
+        AppRegistry.registerHeadlessTask('CamiKildim', () => async () => {
+            try {
+                const { CamideyimServisi } = await import('./src/domain/services/CamideyimServisi');
+                await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
+            } catch {
+                // Kuyruk native tarafta korunur.
+            }
+        });
+    } catch {
+        // Kayıt başarısızsa diğer boşaltma yolları kalır.
+    }
+}
+
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
 // Aksiyon `opensAppToForeground: false` olduğu için telefon açılmaz (saate köprülenen
 // bildirimde saatten basılınca cepteki telefon öne çıkmasın); expo-notifications

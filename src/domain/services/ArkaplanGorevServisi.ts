@@ -16,6 +16,7 @@ import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhaf
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
+import { CamideyimServisi } from './CamideyimServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
@@ -359,6 +360,21 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             await WearSenkronServisi.getInstance().gonder();
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.58: CAMİDEYİM + NAMAZ MODU (#297/#277)
+        //
+        // (a) Camiden çıkış sorusundaki "Kıldım" kuyruğu (headless görev OEM
+        //     kısıtına takıldıysa güvenlik ağı). (b) 8 günlük vakit kapısı ve
+        //     Namaz modu planı gün döndükçe kayar; izlenen camiler de tazelenir.
+        // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
+            await CamideyimServisi.getInstance().konumaBagliTazele(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Camideyim tazelenemedi', e);
         }
 
         // =====================================================

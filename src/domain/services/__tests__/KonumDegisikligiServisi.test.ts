@@ -60,6 +60,11 @@ jest.mock('../WearSenkronServisi', () => ({
         getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve()) })),
     },
 }));
+jest.mock('../CamideyimServisi', () => ({
+    CamideyimServisi: {
+        getInstance: jest.fn(() => ({ konumaBagliTazele: jest.fn(() => Promise.resolve()) })),
+    },
+}));
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: {
         getInstance: jest.fn(() => ({ vakitleriyaz: jest.fn(() => Promise.resolve()) })),
@@ -91,6 +96,7 @@ import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
 import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
 import { WearSenkronServisi } from '../WearSenkronServisi';
+import { CamideyimServisi } from '../CamideyimServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -126,6 +132,7 @@ const sahte = {
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
     nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
     wear: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    cami: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
 beforeEach(() => {
@@ -146,6 +153,7 @@ beforeEach(() => {
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
     (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
     (WearSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.wear });
+    (CamideyimServisi.getInstance as jest.Mock).mockReturnValue({ konumaBagliTazele: sahte.cami });
 });
 
 describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
@@ -172,6 +180,8 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
         // Wear OS saati (issue #269): vakitler telefonda hesaplanıp gönderilir.
         expect(sahte.wear).toHaveBeenCalledTimes(1);
+        // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı ve izlenen camiler.
+        expect(sahte.cami).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

@@ -44,6 +44,7 @@ import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
 import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
 import { WearSenkronServisi } from './WearSenkronServisi';
+import { CamideyimServisi } from './CamideyimServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -228,6 +229,10 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         // Wear OS saati (issue #269): vakitler telefonda hesaplanıp saate gönderilir;
         // şehir değişince saat de yeni vakitleri ve konum adını almalı.
         guvenliCalistir('Wear senkronu', () => WearSenkronServisi.getInstance().gonder()),
+
+        // Camideyim + Namaz modu (#297/#277): vakit kapısı ve mod pencereleri vakit
+        // girişlerinden türer, izlenen camiler yeni konumun en yakınlarıdır.
+        guvenliCalistir('Camideyim', () => CamideyimServisi.getInstance().konumaBagliTazele(koordinatlar)),
     ]);
 
     Logger.info('KonumDegisikligi', 'Konuma bagli tum tuketiciler guncellendi');

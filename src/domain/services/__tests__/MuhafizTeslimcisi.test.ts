@@ -457,3 +457,35 @@ describe('AndroidMuhafizTeslimcisi — alarm butcesi (500 alarm tavani)', () => 
         expect(ANDROID_MUHAFIZ_ALARM_BUTCESI).toBeLessThanOrEqual(400);
     });
 });
+
+describe('AndroidMuhafizTeslimcisi — camideyken (Camideyim #297)', () => {
+    const camiKoprusu = require('../../../../modules/expo-cami-geofence/src') as { sessizBitisMs: jest.Mock };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        camiKoprusu.sessizBitisMs.mockResolvedValue(0);
+    });
+
+    const kanal = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0][0].trigger.channelId as string;
+    const sesliAcil: Partial<UyariPlani> = { seviye: 4, acilKanal: true, sesliAnons: true, anonsMetni: 'kalk', kanallar: { bildirim: true, sesli: true } };
+
+    test('camideyken bildirim İPTAL EDİLMEZ ama acil kanala düşmez ve sesli anons planlanmaz', async () => {
+        camiKoprusu.sessizBitisMs.mockResolvedValue(Date.now() + 60 * 60_000);
+        const t = new AndroidMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur(sesliAcil));
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+        expect(kanal()).toBe('muhafiz');
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+    });
+
+    test('camide hâli bittikten SONRAKİ uyarılar eskisi gibi (acil + anons)', async () => {
+        camiKoprusu.sessizBitisMs.mockResolvedValue(Date.now() + 60_000);
+        const t = new AndroidMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur(sesliAcil));
+        expect(kanal()).toBe('muhafiz_acil');
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+    });
+});

@@ -7,6 +7,8 @@
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi, WEAR_KILDIM_OLAYI } from './src/domain/services/WearSenkronServisi';
+import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
+import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
@@ -161,6 +163,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Wear OS saati (issue #269): 8 günlük vakit + kılınmışlık. Konuma bağlı
       // tüketicidir → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
       WearSenkronServisi.getInstance().gonder().catch(() => {});
+      // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı, izlenen camiler.
+      // Konuma bağlı tüketici → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
+      CamideyimServisi.getInstance().konumaBagliTazele(konumState.koordinatlar).catch(() => {});
     }
 
     // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
@@ -274,6 +279,9 @@ const AppIcerik: React.FC = () => {
         // uygulama kapalıyken saatten gelmiş "Kıldım"ları işle.
         WearSenkronServisi.getInstance().baslat();
         WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // Camideyim: "Kıldım deyince Namaz modu kapansın" dinleyicisi + çıkış sorusu kuyruğu.
+        CamideyimServisi.getInstance().baslat();
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 
@@ -281,6 +289,17 @@ const AppIcerik: React.FC = () => {
     // başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
     const wearAbonelik = DeviceEventEmitter.addListener(WEAR_KILDIM_OLAYI, () => {
       WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+    });
+
+    // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
+    // muhafız yeniden planlanır (camideyken acil kanal + sesli anons yok), "Kıldım"
+    // kuyruğu hemen işlenir. Uygulama kapalıyken aynı işler açılışta/15 dk görevinde.
+    const camiAbonelik = camiOlayiniDinle((tur) => {
+      if (tur === 'kildim') {
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+      } else if (tur === 'camide' || tur === 'cikis') {
+        arkaplanMuhafiziBildirimleriniPlanla();
+      }
     });
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
@@ -303,6 +322,7 @@ const AppIcerik: React.FC = () => {
         // Saat kuyruğu DEBOUNCE'SUZ boşaltılır: ucuzdur ve headless görev OEM
         // kısıtıyla başlatılamamışsa tek güvenlik ağı budur (issue #269).
         WearSenkronServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
         const simdiMs = Date.now();
         if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
           return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez
@@ -362,6 +382,7 @@ const AppIcerik: React.FC = () => {
     return () => {
       appStateListener.remove();
       wearAbonelik.remove();
+      camiAbonelik.remove();
       interactionHandle.cancel();
       if (notifeeUnsubscribe) {
         notifeeUnsubscribe();

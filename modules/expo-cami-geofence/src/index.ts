@@ -83,6 +83,7 @@ interface Abonelik {
 
 interface CamiNativeModulu {
     durumAl(): Promise<string>;
+    sessizBitisMs(): Promise<number>;
     ayarlariAl(): Promise<string>;
     ayarlariYaz(json: string, lat: number | null, lng: number | null): Promise<string>;
     pencereleriYaz(json: string): Promise<void>;
@@ -135,6 +136,13 @@ async function guvenli<T>(is: (m: CamiNativeModulu) => Promise<T>, yedek: T): Pr
 
 export const durumAl = (): Promise<CamiNativeDurumu | null> =>
     guvenli(async (m) => jsonCoz<CamiNativeDurumu | null>(await m.durumAl(), null), null);
+
+/** Camideyken muhafız sessizliğinin bittiği an (ms); camide değilse 0. */
+export const sessizBitisMs = (): Promise<number> =>
+    guvenli(async (m) => {
+        const v = await m.sessizBitisMs();
+        return typeof v === 'number' && Number.isFinite(v) ? v : 0;
+    }, 0);
 
 export const ayarlariAl = (): Promise<Record<string, unknown> | null> =>
     guvenli(async (m) => jsonCoz<Record<string, unknown> | null>(await m.ayarlariAl(), null), null);

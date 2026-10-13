@@ -29,6 +29,7 @@ import {
     iptalEtAnons,
     iptalEtTumAnonslar,
 } from '../../../modules/expo-countdown-notification/src';
+import { sessizBitisMs } from '../../../modules/expo-cami-geofence/src';
 import { MuhafizKanalServisi } from './MuhafizKanalServisi';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
@@ -54,6 +55,17 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     /** Bu turda kurulan alarm sayısı — `hazirla` (her turun başı) sıfırlar. */
     private kurulanAlarm = 0;
     private butceUyarisiYazildi = false;
+    /**
+     * CAMİDEYİM (#297): camideyken muhafız SUSTURULMAZ ama sessiz gelir — bu ana
+     * kadarki uyarılar acil kanala (bypassDnd) düşmez ve sesli anons planlanmaz.
+     * Kurulu anonslar zaten native'de (`AnonsReceiver`) konuşmaz; bu bayrak
+     * camideyken yapılan yeniden planlamada yenilerinin kurulmasını önler.
+     */
+    private camiSessizBitisMs = 0;
+
+    private camideMi(zaman: Date): boolean {
+        return zaman.getTime() < this.camiSessizBitisMs;
+    }
 
     private alarmPayiAl(): boolean {
         if (this.kurulanAlarm >= ANDROID_MUHAFIZ_ALARM_BUTCESI) {
@@ -82,6 +94,11 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kurulanAlarm = 0;
         this.butceUyarisiYazildi = false;
+        try {
+            this.camiSessizBitisMs = await sessizBitisMs();
+        } catch {
+            this.camiSessizBitisMs = 0;
+        }
         if (matris === undefined) {
             await MuhafizKanalServisi.hazirla();
             return undefined;
@@ -166,7 +183,8 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     channelId: muhafizKanaliSec(
                         uyari.seviye,
                         uyari.bildirimSesi,
-                        uyari.acilKanal,
+                        // Camideyken acil kanal (bypassDnd) kullanılmaz: Namaz modu delinmesin.
+                        this.camideMi(zaman) ? false : uyari.acilKanal,
                         titresimli
                     ),
                 },
@@ -192,6 +210,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         if (!uyari.sesliAnons) return;
         if (!uyari.anonsMetni || uyari.anonsMetni.trim().length === 0) return;
         if (zaman.getTime() <= Date.now()) return;
+        if (this.camideMi(zaman)) return;
         if (!this.alarmPayiAl()) return;
 
         try {
