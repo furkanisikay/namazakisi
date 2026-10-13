@@ -70,6 +70,7 @@ import { bildirimDefteriOlustur, type DefterGirdisi, type DefterKaynagi } from '
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
+import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../../core/utils/vakitSayacYardimcisi';
 import { ISTANBUL, matrisKur } from '../../../core/bildirim/__tests__/defterFikstur';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -187,11 +188,12 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
 });
 
 describe('nafile: defter = servisin kurduğu', () => {
-    const nafile: NafileAyarlari = {
+    // Eski (#273 öncesi) kayıt biçimi: göç yolu da kapsamda kalsın.
+    const nafile: NafileAyarlari = nafileAyarlariniNormalize({
         ...VARSAYILAN_NAFILE_AYARLARI,
         hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
         teheccud: { aktif: true, hedef: 'sonUcteBir', imsaktanOnceDk: 60, uyandirma: true },
-    };
+    });
 
     it.each([false, true])('günü gününe = %s', async (gunuGunune) => {
         const ayar = { ...nafile, gunuGununeKur: gunuGunune };

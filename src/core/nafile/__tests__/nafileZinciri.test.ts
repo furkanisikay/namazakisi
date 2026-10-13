@@ -15,7 +15,7 @@ const PENCERELER: NafilePencere[] = [
     p('evvabin', [21, 20, 40], [21, 22, 30], [21, 20, 40]),
     p('teheccud', [21, 22, 30], [22, 3, 30], [22, 1, 50]),
 ];
-const SON_UCTE_BIR = { hedef: 'sonUcteBir' as const, imsaktanOnceDk: 60 };
+const SON_UCTE_BIR = 'sonUcteBir' as const;
 
 describe('nafileZincirSatirlariOlustur', () => {
     it('her nafile kendi farzının ARDINA girer (kuşluk→sabah, evvâbîn→akşam, teheccüd→yatsı)', () => {
@@ -43,18 +43,17 @@ describe('nafileZincirSatirlariOlustur', () => {
         expect(sonra[0].durum).toBe('gecti');
     });
 
-    it('teheccüd yatsı girer girmez DEĞİL, hedef an girince aktif olur; saati hedef andır', () => {
+    it('teheccüd yatsı girer girmez DEĞİL, seçilen pencere girince aktif olur; saati pencere başıdır', () => {
         const yatsidaSonra = nafileZincirSatirlariOlustur(PENCERELER, an(21, 23, 0), SON_UCTE_BIR)[2];
         expect(yatsidaSonra.durum).toBe('sirada');
         expect(yatsidaSonra.saat).toBe('01:50');
         expect(yatsidaSonra.durumMetni).toBe('Nafile · 01:50–03:30');
         const gece = nafileZincirSatirlariOlustur(PENCERELER, an(22, 2, 0), SON_UCTE_BIR)[2];
         expect(gece.durum).toBe('aktif');
-        const imsakOncesi = nafileZincirSatirlariOlustur(PENCERELER, an(21, 23, 0), {
-            hedef: 'imsaktanOnce',
-            imsaktanOnceDk: 60,
-        })[2];
-        expect(imsakOncesi.saat).toBe('02:30');
+        // "Yatsıdan" penceresi seçiliyse satır yatsıyla başlar (issue #273).
+        const yatsidan = nafileZincirSatirlariOlustur(PENCERELER, an(21, 23, 0), 'yatsi')[2];
+        expect(yatsidan.saat).toBe('22:30');
+        expect(yatsidan.durum).toBe('aktif');
     });
 
     it('bilgi metni pencereyi ve faziletli anı söyler', () => {
