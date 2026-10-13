@@ -8,7 +8,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer, type NavigatorScreenParams } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef, type NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -55,6 +55,7 @@ import {
   KILDIM_ONAY_MESAJI,
 } from '../presentation/hooks/useKildimDerinBaglantisi';
 import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinModali';
+import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
 import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
 import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
 
@@ -296,13 +297,21 @@ export const AppNavigator: React.FC = () => {
   // Kurulum sihirbazı sürerken derin bağlantı sihirbazı atlatmasın (issue #276).
   // Bağlantı dışarıdan gelebilir → güven listesi karar verir (issue #299).
   const kildimOnayi = useKildimDerinBaglantisi(ilkKurulum === false);
+  // iOS Siri / Kısayollar "Kıbleyi aç" (issue #279): intent ekran isteği bırakır,
+  // gezinme kabı hazır olunca tüketilir (soğuk açılışta bağlantı olayı kaybolurdu).
+  const navRef = useNavigationContainerRef<RootStackParamList>();
+  const siriEkranIstegiIsle = useSiriEkranIstegi(ilkKurulum === false, navRef);
 
   if (ilkKurulum === null) {
     return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
   }
 
   return (
-    <NavigationContainer linking={ilkKurulum ? undefined : derinBaglantiYapilandirmasi}>
+    <NavigationContainer
+      ref={navRef}
+      onReady={siriEkranIstegiIsle}
+      linking={ilkKurulum ? undefined : derinBaglantiYapilandirmasi}
+    >
       <ErrorBoundary name="NavigatorBoundary">
         <RootStack.Navigator
           screenOptions={{ headerShown: false }}

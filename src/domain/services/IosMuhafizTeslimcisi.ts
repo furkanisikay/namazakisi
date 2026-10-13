@@ -32,6 +32,11 @@
  *    planlamada kalan slotu olcer ve tukendiginde KESILENI LOGLAR (sessiz kayip
  *    yerine gorunur kayip).
  *
+ * 4. ODAK FILTRESI (issue #279). Kullanici "Namaz" Odagina uygulamanin filtresini
+ *    ekleyip "Hatirlatmalari sessiz ver"i acarsa, filtre acikken (en fazla 3 sa)
+ *    tetiklenecek uyarilar `passive` kurulur: ekrani yakmaz, ses cikarmaz, Odagi
+ *    delmez. Durum `hazirla`'da BIR KEZ okunur (`core/muhafiz/ios/odakFiltresi.ts`).
+ *
  * Motor ve plan uretimi DEGISMEZ — bu dosya yalnizca "nasil duyulur"u bilir.
  *
  * ---------------------------------------------------------------------------
@@ -75,6 +80,12 @@ import {
     kullanilmayanKlipleriSil,
     trSesTanimlayici,
 } from '../../../modules/expo-muhafiz-anons/src';
+import { siriOdakDurumuAl } from '../../../modules/expo-siri-kisayollari/src';
+import {
+    odakDurumunuCoz,
+    odakSessizlestirirMi,
+    type OdakFiltresiDurumu,
+} from '../../core/muhafiz/ios/odakFiltresi';
 
 /**
  * Uygulama su an ON PLANDA mi? (sentez izni)
@@ -151,6 +162,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private kullanilanKlipler = new Set<string>();
     /** Ayni ad icin diske/sentezlere bir kez gidilsin: ad → kullanilabilir mi. */
     private klipDurumu = new Map<string, boolean>();
+    /** Bu turda okunan Odak filtresi durumu; `null` = filtre yok/okunamadi. */
+    private odak: OdakFiltresiDurumu | null = null;
 
     /**
      * iOS'ta kanal yok → matris aynen doner.
@@ -166,6 +179,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
         this.sentezIzni = onPlandaMi();
+        // Kopru asla firlatmaz; bozuk/eksik kayit = filtre yok (hatirlatmalar normal).
+        this.odak = odakDurumunuCoz(await siriOdakDurumuAl());
         // Ses tanimlayicisi klip adinin PARCASIDIR (gelismis ses indirilince adlar
         // degismeli). Kopru asla firlatmaz; ses yoksa `null` → anons yok.
         this.sesTanimlayici = matris || this.matrissizAnons ? await trSesTanimlayici() : null;
@@ -220,9 +235,13 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Faz 1: AlarmKit yok → `sessizligiDelebilir: false`. Acil adim da
         // bildirim olarak teslim edilir; ekran bunu kullaniciya SOYLER.
         const plan = iosTesliminiCoz(uyari, iosYetenekleri(false));
+        // Odak filtresi sessiz istiyorsa `passive`: ses calmaz, ekrani yakmaz, Odagi
+        // delmez (zamana duyarli ozel teslim dahil). Ses cikmayacagi icin anons
+        // klibi de URETILMEZ.
+        const odakSessiz = odakSessizlestirirMi(this.odak, zaman.getTime());
         // Sesli adimda bildirimin sesi ANONS KLIBIDIR; klip yoksa paket sesi kalir.
         // Slot kontrolunden SONRA: planlanmayacak uyari icin sentez yapilmaz.
-        const ses = (await this.anonsSesiniCoz(teslim)) ?? plan.ses;
+        const ses = (odakSessiz ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
 
         try {
             await Notifications.scheduleNotificationAsync({
@@ -232,7 +251,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     body: mesaj,
                     // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali.
                     sound: ses,
-                    interruptionLevel: ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
+                    interruptionLevel: odakSessiz
+                        ? 'passive'
+                        : ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
                     categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
                     data: ozel ? ozel.veri : {
                         tip: 'muhafiz',

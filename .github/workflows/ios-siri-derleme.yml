@@ -1,0 +1,130 @@
+# ========================================================================
+# iOS Siri / Kısayollar / Odak filtresi — derleme + Swift çekirdek testi (issue #279)
+# ========================================================================
+#
+# App Intents ana uygulama hedefine derlenir (`plugins/withSiriKisayollari.js`).
+# `npm run verify` Swift'i GÖRMEZ ve `ios/` git'te değildir (CNG) → bu iş:
+#   1. Swift çekirdeğini (`VakitKarari` + `SiriDeposu`, yalnız Foundation) ortak
+#      fikstürlerle doğrular — JS ve Kotlin testleriyle AYNI dosyalar.
+#   2. prebuild + pod install + simülatör derlemesi yapar ve `.app` içinde
+#      `Metadata.appintents`'in intent'leri taşıdığını doğrular. Metadata yoksa
+#      Siri/Kısayollar intent'leri HİÇ görmez — derleme yine de "başarılı" der.
+#
+# PR kontrolüdür; release KESMEZ, imza istemez (CODE_SIGNING_ALLOWED=NO).
+# ========================================================================
+
+name: iOS Siri / Kısayollar
+
+on:
+  pull_request:
+    paths:
+      - 'targets/**'
+      - 'modules/expo-siri-kisayollari/**'
+      - 'plugins/withSiriKisayollari.js'
+      - 'src/core/siri/**'
+      - 'android/app/src/test/resources/widget-ornek.json'
+      - '.github/workflows/ios-siri-derleme.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-siri-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  swift-cekirdek:
+    name: 🧪 Swift çekirdek testi
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: 🧪 VakitKarari + SiriDeposu (ortak fikstür)
+        run: |
+          set -eo pipefail
+          swiftc --version
+          swiftc -swift-version 5 -o "$RUNNER_TEMP/siri-test" \
+            modules/expo-siri-kisayollari/ios/VakitKarari.swift \
+            modules/expo-siri-kisayollari/ios/SiriDeposu.swift \
+            modules/expo-siri-kisayollari/test/main.swift
+          "$RUNNER_TEMP/siri-test" \
+            android/app/src/test/resources/widget-ornek.json \
+            modules/expo-siri-kisayollari/test/siri-ornek.json
+
+  derleme:
+    name: 🍎 Simülatör derlemesi + Metadata.appintents
+    needs: swift-cekirdek
+    # macos-26 (Xcode 26): TestFlight build'leri de Xcode 26 SDK ile derleniyor.
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri
+        run: xcodebuild -version
+
+      - name: 🏗️ Expo prebuild (iOS)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+
+      - name: 🔎 Intent dosyaları ana hedefe bağlandı mı?
+        run: |
+          set -eo pipefail
+          PBX=$(ls -d ios/*.xcodeproj | head -1)/project.pbxproj
+          for f in NamazIntentleri NamazKisayollari NamazOdakFiltresi; do
+            grep -q "$f.swift in Sources" "$PBX" || { echo "$f.swift ana hedefin Sources fazında yok"; exit 1; }
+          done
+          grep -q 'developmentRegion = tr;' "$PBX" || { echo "Geliştirme bölgesi tr değil (Türkçe Siri ifadeleri eşleşmez)"; exit 1; }
+          grep -q '"-weak_framework",' "$PBX" || { echo "AppIntents zayıf bağlı değil (iOS 15'te açılış çöker)"; exit 1; }
+
+      - name: 🧩 CocoaPods
+        working-directory: ios
+        run: pod install --repo-update
+
+      - name: 🔨 Simülatör için derle
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          WS=$(ls -d *.xcworkspace | head -1)
+          # Şema adı PROJE DOSYASINDAN (schemes[0] alfabetik → Pods şeması seçilirdi).
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          SCHEME="${PROJ%.xcodeproj}"
+          xcodebuild \
+            -workspace "$WS" \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+
+      - name: ✅ Metadata.appintents doğrula
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          APP=$(find build -name '*.app' -maxdepth 6 -not -path '*.dSYM*' | head -1)
+          [ -z "$APP" ] && { echo "Derleme .app üretmedi"; exit 1; }
+          META="$APP/Metadata.appintents"
+          [ -d "$META" ] || { echo "Metadata.appintents YOK — Siri/Kısayollar intent'leri göremez"; ls "$APP"; exit 1; }
+          ls -la "$META"
+          for ad in SiradakiNamazIntent SimdikiVaktiKildimIntent KibleyiAcIntent NamazOdakFiltresi; do
+            grep -rqa "$ad" "$META" || { echo "Metadata'da $ad yok"; exit 1; }
+          done
+          echo "✅ Metadata.appintents dört intent'i de taşıyor"
+          # Kısayol ifadeleri (AppShortcutsProvider) — bilgi amaçlı döküm.
+          find "$META" -type f -name '*.actionsdata' -exec python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(json.dumps({k: d[k] for k in d if "hortcut" in k}, ensure_ascii=False, indent=1)[:4000])' {} \; || true

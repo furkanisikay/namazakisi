@@ -8,6 +8,11 @@
  * öğeyi bildirimdeki "Kıldım" ile AYNI gövdeden işler
  * (`BildirimServisi.kuyruktanKildimIsle` → `kildimAksiyonunuIsle`).
  *
+ * iOS'ta (issue #279) aynı kuyruğun ikizi `modules/expo-siri-kisayollari`'dadır: Siri /
+ * Kısayollar / Eylem düğmesindeki "Şu anki vakti kıldım" oraya yazar (arka planda JS
+ * çalışmaz). Aynı fonksiyon adlarıyla aynı yoldan boşaltılır; iOS'ta headless görev
+ * yoktur, uygulama açıkken intent olayı (`siriDegisikliginiDinle`) tetikler.
+ *
  * Kuyruğu boşaltan ÜÇ yol vardır, doğruluk hiçbirine tek başına bağlı değildir:
  * headless görev (`index.ts > KildimKuyrugu`), uygulama ön plana gelince
  * (`App.tsx` AppState + canlı olay) ve 15 dk'lık arka plan görevi.
@@ -31,6 +36,7 @@ import {
     widgetVerisiOlustur,
 } from '../../core/widget/widgetYuku';
 import { localNamazlariGetir } from '../../data/local/LocalNamazServisi';
+import { siriKildimKuyrugu } from '../../../modules/expo-siri-kisayollari/src';
 
 /** Native taraf uygulama AÇIKKEN kuyruğa öğe düşünce bu olayı yayar (`KildimKuyrugu.OLAY_ADI`). */
 export const KILDIM_KUYRUGU_OLAYI = 'KildimKuyruguGeldi';
@@ -75,6 +81,7 @@ export type SimdikiVakitDegerlendirmesi =
     | KildimAdayi;
 
 const modul = (): KildimKuyruguModulu | null => {
+    if (Platform.OS === 'ios') return siriKildimKuyrugu();
     if (Platform.OS !== 'android') return null;
     return (NativeModules.KildimKuyrugu as KildimKuyruguModulu | undefined) ?? null;
 };

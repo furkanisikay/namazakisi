@@ -55,6 +55,7 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
+      "./plugins/withSiriKisayollari",
       [
         "expo-audio",
         {

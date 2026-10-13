@@ -1,6 +1,8 @@
 /**
  * Widget Servisi — ana ekran widget'ı ve hızlı ayarlar kutusunun veri kaynağı
- * (issue #275/#276). Yalnız Android.
+ * (issue #275/#276). Android'de widget/kutu; iOS'ta AYNI YÜK Siri / Kısayollar /
+ * Spotlight içindir (issue #279): App Intents uygulama JS'i çalışmadan cevap verir
+ * ve çizelgeyi `modules/expo-siri-kisayollari` deposundan okur.
  *
  * Veri akışı: adhan (`core/widget/widgetYuku.ts`) → WidgetServisi → `WidgetVeri`
  * native modülü → SharedPreferences → `WidgetGuncelleyici.kt` (widget + kutu HEMEN
@@ -16,6 +18,7 @@
  * Store'a BAĞIMLI DEĞİLDİR: headless görevde (Redux yok) de çalışır.
  */
 import { NativeModules, Platform } from 'react-native';
+import { siriVeriYazici } from '../../../modules/expo-siri-kisayollari/src';
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import { koordinatGecerliMi } from '../../core/nafile/gunVakitleri';
@@ -34,6 +37,8 @@ interface WidgetVeriModulu {
 export const WIDGET_DINLEYICI_ADI = 'widget';
 
 const modul = (): WidgetVeriModulu | null => {
+  // iOS: Siri/Kısayollar deposu (aynı fonksiyon adları); modül yoksa null → no-op.
+  if (Platform.OS === 'ios') return siriVeriYazici();
   if (Platform.OS !== 'android') return null;
   return (NativeModules.WidgetVeri as WidgetVeriModulu | undefined) ?? null;
 };
@@ -60,7 +65,7 @@ export class WidgetServisi {
 
   /**
    * Verilen koordinatlar için dün + 8 günlük vakitleri yazar. (0,0) "konum yok"
-   * nöbetçisidir: Gine Körfezi vakitleri yazılmaz. Android dışında no-op.
+   * nöbetçisidir: Gine Körfezi vakitleri yazılmaz. Modül yoksa no-op.
    */
   public async vakitleriyaz(koordinatlar: { lat: number; lng: number }): Promise<void> {
     const m = modul();

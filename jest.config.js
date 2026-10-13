@@ -40,6 +40,8 @@ module.exports = {
     // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden
     // sentez yoluna girmez.
     "expo-muhafiz-anons/src$": "<rootDir>/__mocks__/expo-muhafiz-anons.js",
+    // Siri / Kısayollar / Odak köprüsü (iOS native). Varsayılan: modül yok.
+    "expo-siri-kisayollari/src$": "<rootDir>/__mocks__/expo-siri-kisayollari.js",
     // Camideyim + Namaz modu köprüsü (Android native). Varsayılan: modül yok.
     "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
     // Camideyim haritası (MapLibre) Fabric native bileşenleri; jest'te yok.

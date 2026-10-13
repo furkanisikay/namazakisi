@@ -10,6 +10,7 @@ import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
 import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
+import { siriDegisikliginiDinle } from './modules/expo-siri-kisayollari/src';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
@@ -311,6 +312,17 @@ const AppIcerik: React.FC = () => {
       }
     });
 
+    // iOS Siri / Kısayollar / Odak (issue #279): intent uygulama AÇIKKEN çalışırsa "Kıldım"
+    // kuyruğu hemen işlenir, Odak filtresi değişince hatırlatmalar yeni kesinti
+    // seviyesiyle yeniden kurulur. Kapalıyken aynı işler açılış zincirinde yapılır.
+    const siriAboneligiKaldir = siriDegisikliginiDinle((tur) => {
+      if (tur === 'kildim') {
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+      } else if (tur === 'odak') {
+        arkaplanMuhafiziBildirimleriniPlanla();
+      }
+    });
+
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
     const interactionHandle = InteractionManager.runAfterInteractions(() => {
       // Konum takibini senkronize et ve yeniden baslat
@@ -392,6 +404,7 @@ const AppIcerik: React.FC = () => {
       appStateListener.remove();
       wearAbonelik.remove();
       camiAbonelik.remove();
+      siriAboneligiKaldir();
       interactionHandle.cancel();
       if (notifeeUnsubscribe) {
         notifeeUnsubscribe();

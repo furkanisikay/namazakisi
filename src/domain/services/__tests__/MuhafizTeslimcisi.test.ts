@@ -569,3 +569,78 @@ describe('Muhafız DIŞI tüketici (nafile, issue #273) — teslimci seçenekler
     });
 });
 
+
+/**
+ * ODAK FİLTRESİ (issue #279): kullanıcı "Namaz" Odağına filtreyi ekleyip
+ * "Hatırlatmaları sessiz ver"i açtıysa uyarılar `passive` kurulur — Odağı delen
+ * `timeSensitive` dahil. Durum köprüden (`siriOdakDurumuAl`) `hazirla`'da okunur.
+ */
+describe('IosMuhafizTeslimcisi — Odak filtresi (issue #279)', () => {
+    const siriKoprusu = require('../../../../modules/expo-siri-kisayollari/src') as {
+        siriOdakDurumuAl: jest.Mock;
+    };
+    const odakKur = (sessiz: boolean, ms: number) =>
+        siriKoprusu.siriOdakDurumuAl.mockResolvedValue(JSON.stringify({ sessiz, ms }));
+    const planlanan = () =>
+        (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0].content);
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        ucustakiKlipleriSifirla();
+        mockPlatformDurumu.uygulamaDurumu = 'active';
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        kopru.trSesTanimlayici.mockResolvedValue(null);
+        siriKoprusu.siriOdakDurumuAl.mockResolvedValue(null);
+    });
+    afterAll(() => siriKoprusu.siriOdakDurumuAl.mockResolvedValue(null));
+
+    test('filtre sessizken HER seviye ve zamana duyarlı özel teslim passive kurulur', async () => {
+        odakKur(true, Date.now() - 60_000);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 1 }));
+        await t.uyariPlanla(teslimKur({ seviye: 4, kalanDk: 3 }));
+        await t.uyariPlanla({ ...teslimKur({ kalanDk: 2 }), id: 'nafile_1', ozel: { veri: {}, zamanaDuyarli: true } });
+        expect(planlanan().map((c) => c.interruptionLevel)).toEqual(['passive', 'passive', 'passive']);
+    });
+
+    test('filtre yoksa / sessiz kapalıysa davranış birebir aynı', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 1 }));
+        odakKur(false, Date.now() - 60_000);
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 3 }));
+        expect(planlanan().map((c) => c.interruptionLevel)).toEqual(['active', 'timeSensitive']);
+    });
+
+    test('SÜRE TAVANI: filtre 3 saatten eski uyarıları susturmaz', async () => {
+        odakKur(true, Date.now() - 3 * 60 * 60 * 1000 + 5 * 60 * 1000);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 3 }, Date.now() + 2 * 60 * 1000)); // tavan içinde
+        await t.uyariPlanla(teslimKur({ seviye: 3 }, Date.now() + 10 * 60 * 1000)); // tavan dışında
+        expect(planlanan().map((c) => c.interruptionLevel)).toEqual(['passive', 'timeSensitive']);
+    });
+
+    test('sessizken sesli adımın anons klibi ÜRETİLMEZ (ses çalmayacak)', async () => {
+        odakKur(true, Date.now() - 60_000);
+        kopru.trSesTanimlayici.mockResolvedValue(TR_SES);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(
+            teslimKur({ seviye: 3, kanallar: { bildirim: true, sesli: true }, sesliAnons: true, anonsMetni: 'Akşam vakti.' })
+        );
+        expect(kopru.klipVarMi).not.toHaveBeenCalled();
+        expect(kopru.klipSentezle).not.toHaveBeenCalled();
+        expect(planlanan()[0].sound).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('bozuk filtre kaydı hatırlatmaları susturmaz', async () => {
+        siriKoprusu.siriOdakDurumuAl.mockResolvedValue('{bozuk');
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 3 }));
+        expect(planlanan()[0].interruptionLevel).toBe('timeSensitive');
+    });
+});

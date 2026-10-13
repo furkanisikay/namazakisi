@@ -50,12 +50,30 @@ describe('vakitleriyaz', () => {
         expect(modul.vakitlerKaydet).not.toHaveBeenCalled();
     });
 
-    it('iOS\'ta no-op', async () => {
+    it('iOS\'ta Siri modülü yoksa no-op (Android modülüne de dokunmaz)', async () => {
         jest.replaceProperty(Platform, 'OS', 'ios');
         await servis.vakitleriyaz({ lat: 41, lng: 29 });
         servis.baslat();
         expect(modul.vakitlerKaydet).not.toHaveBeenCalled();
         expect(mockDinleyiciEkle).not.toHaveBeenCalled();
+    });
+
+    it('iOS\'ta AYNI yük Siri/Kısayollar deposuna yazılır (issue #279)', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const siri = { vakitlerKaydet: jest.fn(), kilinanlarKaydet: jest.fn() };
+        const kopru = require('../../../../modules/expo-siri-kisayollari/src');
+        kopru.siriVeriYazici.mockReturnValue(siri);
+        try {
+            await servis.vakitleriyaz({ lat: 41.0082, lng: 28.9784 });
+            await servis.kilinanlariYaz();
+            servis.baslat();
+        } finally {
+            kopru.siriVeriYazici.mockReturnValue(null);
+        }
+        expect(modul.vakitlerKaydet).not.toHaveBeenCalled();
+        expect(JSON.parse(siri.vakitlerKaydet.mock.calls[0][0]).surum).toBe(2);
+        expect(JSON.parse(siri.kilinanlarKaydet.mock.calls[0][0])[bugunuAl()]).toEqual(['sabah']);
+        expect(mockDinleyiciEkle).toHaveBeenCalledWith(WIDGET_DINLEYICI_ADI, expect.any(Function));
     });
 });
 

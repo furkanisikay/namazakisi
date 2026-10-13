@@ -40,6 +40,25 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Siri, Kısayollar ve Odak filtresi (issue #279) — yalnız iPhone; kart kapalı.
+    {
+        id: 'ios-siri-kisayollar-odak',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: "iPhone'da Siri, Kısayollar ve Odak",
+        aciklama:
+            "iPhone'da Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir ve \"Namaz\" Odağınızda hatırlatmaları sessize alabilirsiniz.",
+        detayAciklama:
+            "Bu özellik yalnız iPhone içindir. Kurulum gerekmez: \"Namaz Akışı sıradaki namaz ne zaman\", \"Namaz Akışı şu anki vakti kıldım\" ya da \"Namaz Akışı kıbleyi aç\" demeniz yeterli. Aynı eylemler Kısayollar uygulamasında, Spotlight aramasında ve Eylem düğmesinde de görünür. Kıldım işaretlemesi siz onayladıktan sonra yapılır ve uygulamayı açtığınızda takviminize işlenir. Ayarlar > Odak bölümünden kendi Odağınıza Namaz Akışı filtresini ekleyip \"Hatırlatmaları sessiz ver\"i açarsanız, o Odak açıkken namaz hatırlatmaları ekranı yakmadan ve ses çıkarmadan gelir.",
+        ikon: 'microphone',
+        kartGoster: false,
+        detaylar: [
+            'Yalnız iPhone (iOS 16 ve üstü)',
+            'Siri sıradaki namazı ve giriş saatini söyler',
+            '"Şu anki vakti kıldım" onayınızla işaretler',
+            'Odak filtresi açıkken hatırlatmalar en fazla 3 saat sessiz gelir',
+        ],
+    },
     // Nafile hatırlatmalarında kanal seçimi ve çok adımlı plan (issue #273).
     {
         id: 'nafile-kanal-ve-adimlar',

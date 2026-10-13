@@ -112,6 +112,28 @@ describe('bekleyenleriIsle', () => {
         await servis.bekleyenleriIsle();
         expect(modul.bekleyenleriAl).not.toHaveBeenCalled();
     });
+
+    it('iOS: Siri "Şu anki vakti kıldım" kuyruğu AYNI gövdeden işlenir (issue #279)', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const siri = {
+            bekleyenleriAl: jest.fn(() =>
+                Promise.resolve(JSON.stringify([{ id: 's1', tarih: bugunuAl(), vakit: 'imsak', kaynak: 'siri' }]))
+            ),
+            tamamlandi: jest.fn(() => Promise.resolve()),
+            basarisiz: jest.fn(() => Promise.resolve()),
+        };
+        const kopru = require('../../../../modules/expo-siri-kisayollari/src');
+        kopru.siriKildimKuyrugu.mockReturnValue(siri);
+        try {
+            await servis.bekleyenleriIsle();
+        } finally {
+            kopru.siriKildimKuyrugu.mockReturnValue(null);
+        }
+        expect(modul.bekleyenleriAl).not.toHaveBeenCalled();
+        expect(mockKuyruktanKildim).toHaveBeenCalledWith('imsak', bugunuAl());
+        expect(siri.tamamlandi).toHaveBeenCalledWith('s1');
+        expect(mockKilinanlariYaz).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('simdikiVaktiKildim (namazakisi://kildim)', () => {
