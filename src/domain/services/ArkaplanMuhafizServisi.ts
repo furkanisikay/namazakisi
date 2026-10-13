@@ -26,12 +26,13 @@ import {
 } from '../../core/muhafiz/muhafizTeslimPlani';
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
 import {
-    ertelemedeSusturulurMu,
     ertelemeKimligiMi,
+    ertelemeSusturuyorMu,
     etkinErtelemeler,
     muhafizPlanKimligiMi,
 } from '../../core/muhafiz/erteleme';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
+import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -59,6 +60,8 @@ export class ArkaplanMuhafizServisi {
     private ayarlar: ArkaplanMuhafizAyarlari | null = null;
     /** Bu turda korunan ertelemeler: `<tarih>_<vakit>` → hedef ms (issue #289). */
     private ertelemeler: Record<string, number> = {};
+    /** Bildirim kategorileri bu süreçte kaydedildi mi (L7 — düğmesiz bildirim olmasın). */
+    private kategorilerKayitli = false;
 
     private constructor() { }
 
@@ -117,6 +120,13 @@ export class ArkaplanMuhafizServisi {
             return;
         }
 
+        // Kategoriler (eylem dugmeleri) PLANLAMADAN ONCE garanti: guncelleme sonrasi
+        // yeni kategori ("Ertele" #289) ancak kayit kosunca vardir ve dinleyici
+        // kurulumu (index.ts dinamik import) bu turla YARISIR. Kayitsiz kategoriyle
+        // gosterilen bildirim dugmesiz cikar. Surec basina bir kez; basarisizsa
+        // sonraki turda yeniden denenir. Planlamayi ASLA dusurmez.
+        await this.kategorileriGarantile();
+
         // Kanal id'leri artik SESIN fonksiyonu (bkz. core/muhafiz/sesKimligi.ts) →
         // planlamadan ONCE gerekli kanallar olusturulmali; var olmayan bir kanala
         // gonderilen bildirim Android 8+'ta hic gosterilmez. Ayni cagri oksuz
@@ -174,6 +184,16 @@ export class ArkaplanMuhafizServisi {
         Logger.info('ArkaplanMuhafiz', `Toplam ${gelecekVakitler.length} vakit icin bildirimler planlandi`);
     }
 
+    private async kategorileriGarantile(): Promise<void> {
+        if (this.kategorilerKayitli) return;
+        try {
+            await bildirimKategorileriniKaydet();
+            this.kategorilerKayitli = true;
+        } catch (error) {
+            Logger.warn('ArkaplanMuhafiz', 'Bildirim kategorileri kaydedilemedi', error);
+        }
+    }
+
     /**
      * Belirli bir vakit icin uyarilari teslimciye aktar.
      *
@@ -187,9 +207,10 @@ export class ArkaplanMuhafizServisi {
         // Ertelenen vakitte (issue #289) hedef ana kadarki uyarilar KURULMAZ —
         // erteleme "o zamana kadar sus" demektir; 15 dk gorevi / acilis onlari
         // geri getirmemeli. Ertelenen kopya hedef aninda kendisi gelir.
-        const ertelemeHedefi = this.ertelemeler[`${vakit.tarih}_${vakit.vakit}`];
+        // Kural TEK kaynaktan (`ertelemeSusturuyorMu`): on plan banner'i ve saatin
+        // plani da ayni fonksiyondan gecer.
         const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date()).filter(
-            (a) => ertelemeHedefi === undefined || !ertelemedeSusturulurMu(a.zaman.getTime(), ertelemeHedefi)
+            (a) => !ertelemeSusturuyorMu(this.ertelemeler, vakit.tarih, vakit.vakit, a.zaman.getTime())
         );
         for (const aday of adaylar) {
             const { uyari, yon } = aday;

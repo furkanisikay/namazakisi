@@ -155,6 +155,47 @@ export function kimliktenKalanDk(kimlik: string): number | null {
 export const ertelemedeSusturulurMu = (tetikMs: number, hedefMs: number): boolean =>
     tetikMs < hedefMs + ERTELEME_CAKISMA_PAYI_MS;
 
+/** Etkin ertelemeler haritasının anahtarı: `<namaz günü>_<vakit>` (`etkinErtelemeler` ile AYNI). */
+export const ertelemeAnahtari = (tarih: string, vakit: string): string => `${tarih}_${vakit}`;
+
+/**
+ * `tetikMs`'teki (tarih, vakit) uyarısı etkin bir erteleme yüzünden susar mı?
+ *
+ * TEK KURAL: arka plan planı (`ArkaplanMuhafizServisi`), ön plan banner'ı
+ * (`NamazMuhafiziServisi`) ve saatin hazır planı (`wearMuhafizPlani`) aynı
+ * fonksiyondan geçer — biri ayrışırsa "ertele çalışmıyor" olur (yaşanmış:
+ * ön plan ertelemeyi bilmiyordu, banner + ses + anons sürüyordu).
+ */
+export function ertelemeSusturuyorMu(
+    ertelemeler: Readonly<Record<string, number>> | null | undefined,
+    tarih: string,
+    vakit: string,
+    tetikMs: number
+): boolean {
+    const hedef = ertelemeler?.[ertelemeAnahtari(tarih, vakit)];
+    return typeof hedef === 'number' && ertelemedeSusturulurMu(tetikMs, hedef);
+}
+
+/**
+ * Bellek-içi erteleme önbelleğini tazelerken eski girdilerden hâlâ SÜRENLERİ korur.
+ *
+ * Neden: ertelenen kopya hedef anında tetiklenince bekleyen listesinden çıkar, ama
+ * susturma `hedef + ERTELEME_CAKISMA_PAYI_MS`'e kadar sürer (arka plan o dakikaya
+ * uyarı kurmadı). Yalnız bekleyen listesine bakılsaydı ön plan bu payda banner
+ * çıkarır, arka planla ayrışırdı. Yeni değer eskisinin yerine geçer.
+ */
+export function ertelemeleriBirlestir(
+    eski: Readonly<Record<string, number>>,
+    yeni: Readonly<Record<string, number>>,
+    simdiMs: number
+): Record<string, number> {
+    const sonuc: Record<string, number> = {};
+    for (const [anahtar, hedef] of Object.entries(eski)) {
+        if (hedef + ERTELEME_CAKISMA_PAYI_MS > simdiMs) sonuc[anahtar] = hedef;
+    }
+    return { ...sonuc, ...yeni };
+}
+
 /** "25 dk" / "1 sa" / "1 sa 5 dk" — Kotlin `sureMetni` ile AYNI. */
 export function sureMetni(dk: number): string {
     const d = Math.max(0, Math.floor(dk));
@@ -190,13 +231,16 @@ export function etkinErtelemeler(
     bekleyenler: ReadonlyArray<{ identifier: string; content?: { data?: unknown } }>
 ): Record<string, number> {
     const sonuc: Record<string, number> = {};
+    // Native liste beklenmedik şekilde gelebilir (mock/eski köprü) — sessizce boş.
+    if (!Array.isArray(bekleyenler)) return sonuc;
     for (const b of bekleyenler) {
+        if (!b || typeof b.identifier !== 'string') continue;
         const coz = ertelemeKimliginiCoz(b.identifier);
         if (!coz) continue;
         const veri = b.content?.data as { ertelemeHedefMs?: unknown } | undefined;
         const hedef = veri?.ertelemeHedefMs;
         if (typeof hedef !== 'number' || !Number.isFinite(hedef)) continue;
-        sonuc[`${coz.tarih}_${coz.vakit}`] = hedef;
+        sonuc[ertelemeAnahtari(coz.tarih, coz.vakit)] = hedef;
     }
     return sonuc;
 }

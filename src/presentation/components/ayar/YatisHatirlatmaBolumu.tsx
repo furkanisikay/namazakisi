@@ -30,6 +30,8 @@ import {
     YATIS_ONCE_ADIM_DK,
     YATIS_ONCE_MAX_DK,
     YATIS_ONCE_MIN_DK,
+    yatisTetikAni,
+    yatsiOncesiTetikBilgisi,
     type YatisAyarlari,
 } from '../../../core/yatis/yatisPlani';
 
@@ -48,6 +50,7 @@ export const pencereDakikasindanSaate = (dk: number): { saat: number; dakika: nu
 });
 
 const ikiHane = (n: number) => String(n).padStart(2, '0');
+const saatDakika = (t: Date) => `${ikiHane(t.getHours())}:${ikiHane(t.getMinutes())}`;
 
 type Taslak = Partial<Pick<YatisAyarlari, 'saat' | 'dakika' | 'onceDk'>>;
 
@@ -56,6 +59,7 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const { ayarlar } = useAppSelector((s) => s.yatisHatirlatma);
+    const koordinat = useAppSelector((s) => s.konum.koordinatlar);
 
     const [taslak, setTaslak] = useState<Taslak | null>(null);
     const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -151,6 +155,28 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
     );
 
     const saatMetni = `${ikiHane(gosterilen.saat)}:${ikiHane(gosterilen.dakika)}`;
+
+    // Yazın erken yatış (20:30) yatsı girişinden (~22:00) önce düşer: yatsı
+    // hatırlatması yatsı girdikten sonraya kayar (plan üreticisi), muhasebe ise
+    // seçilen saatte gelir ve yatsıyı saymaz. Sessiz sapma bırakılmaz — söylenir.
+    const yatsiOncesi = useMemo(
+        () =>
+            yatsiOncesiTetikBilgisi(
+                koordinat,
+                { saat: gosterilen.saat, dakika: gosterilen.dakika, onceDk: gosterilen.onceDk },
+                new Date()
+            ),
+        [koordinat, gosterilen.saat, gosterilen.dakika, gosterilen.onceDk]
+    );
+    const yatsiOncesiMetni = (() => {
+        if (!yatsiOncesi || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return null;
+        const tetik = saatDakika(yatisTetikAni(new Date(), gosterilen));
+        const yatsi = saatDakika(yatsiOncesi.yatsiGiris);
+        const giris = `Hatırlatma saati (${tetik}) bugün yatsı vaktinden (${yatsi}) önce. `;
+        return ayarlar.yatsiHatirlatmasi
+            ? `${giris}Yatsı hatırlatması yatsı girdikten sonra gelir.`
+            : `${giris}Gün sonu muhasebesi yatsıyı saymaz.`;
+    })();
     const stepperDugmesi = (ikon: 'minus' | 'plus', adim: number, etiket: string, pasif: boolean) => (
         <TouchableOpacity
             className="w-11 h-11 rounded-full items-center justify-center"
@@ -272,6 +298,15 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                             'İşaretlenmemiş vakitleri gösterir; tek eksik varsa bildirimden işaretleyebilir ya da kazaya ekleyebilirsiniz.',
                             ayarlar.muhasebe,
                             'muhasebe'
+                        )}
+
+                        {yatsiOncesiMetni && (
+                            <View className="flex-row items-start mt-4 gap-2" accessible accessibilityRole="text">
+                                <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+                                <Text className="text-xs flex-1" style={{ color: renkler.metin }}>
+                                    {yatsiOncesiMetni}
+                                </Text>
+                            </View>
                         )}
 
                         <View className="flex-row items-start mt-4 gap-2">

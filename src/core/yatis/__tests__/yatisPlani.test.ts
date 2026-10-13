@@ -5,11 +5,13 @@ import {
     FARZ_VAKITLER,
     MUHASEBE_KATEGORILERI,
     YATIS_VARSAYILAN_AYARLARI,
+    YATIS_YATSI_GIRIS_PAYI_DK,
     namazGunuVakitleri,
     yatisIcerigiOlustur,
     yatisKimligiMi,
     yatisPlaniOlustur,
     yatisTetikAni,
+    yatsiOncesiTetikBilgisi,
     type FarzVakit,
     type VakitPenceresi,
     type YatisAyarlari,
@@ -185,5 +187,58 @@ describe('yatisPlaniOlustur', () => {
         const v = namazGunuVakitleri(ISTANBUL, t(13, 0));
         expect(v.yatsi.cikis.getDate()).toBe(14);
         expect(v.yatsi.giris.getTime()).toBe(v.aksam.cikis.getTime());
+    });
+});
+
+/**
+ * YAZ + ERKEN YATIŞ (Fable incelemesi M2): yazın İstanbul'da yatsı ~22:30'da
+ * girer; 20:30'da yatan kullanıcının tetiği yatsıdan ÖNCE düşer. Eskiden o anda
+ * yatsı "girmemiş" sayılıyordu → yatsı hatırlatması hiç tutmuyor, muhasebe de
+ * yatsıyı saymıyordu ve ekran bunu söylemiyordu. Saatler o günün gerçek yatsı
+ * girişinden türetilir (test saat dilimine bağlı kalmasın).
+ */
+describe('yatış yatsı girişinden ÖNCE (yaz fikstürü)', () => {
+    const YAZ_GUNU = new Date(2026, 5, 21);
+    const v = namazGunuVakitleri(ISTANBUL, YAZ_GUNU);
+    // Yatış = yatsı girişinden 30 dk önce, 30 dk önce hatırlat → tetik yatsıdan 1 sa önce.
+    const yatis = new Date(v.yatsi.giris.getTime() - 30 * 60_000);
+    const ayar: YatisAyarlari = { ...AYAR, saat: yatis.getHours(), dakika: yatis.getMinutes(), onceDk: 30 };
+    const simdi = new Date(2026, 5, 21, 12, 0);
+    const plan = (a: Partial<YatisAyarlari> = {}, kilinan: FarzVakit[] = []) =>
+        yatisPlaniOlustur({
+            koordinat: ISTANBUL,
+            ayarlar: { ...ayar, ...a },
+            simdi,
+            gunSayisi: 1,
+            kilinanlar: () => kilinan,
+        })[0];
+
+    it('yatsı hatırlatması yatsı GİRDİKTEN sonra (giriş + pay) gelir ve yatsıyı hatırlatır', () => {
+        const k = plan({}, ['imsak', 'ogle', 'ikindi', 'aksam']);
+        expect(k.tur).toBe('yatsi');
+        expect(k.zaman.getTime()).toBe(v.yatsi.giris.getTime() + YATIS_YATSI_GIRIS_PAYI_DK * 60_000);
+        expect(k.zaman.getTime()).toBeLessThan(v.yatsi.cikis.getTime());
+    });
+
+    it('yatsı zaten kılınmışsa seçilen saat KORUNUR (muhasebe)', () => {
+        const k = plan({}, ['imsak', 'ikindi', 'aksam', 'yatsi']);
+        expect(k.zaman.getTime()).toBe(v.yatsi.giris.getTime() - 60 * 60_000);
+        expect(k.tur).toBe('muhasebeTek');
+    });
+
+    it('yalnız muhasebe açıkken saat kaymaz; muhasebe yatsıyı saymaz (ekran söyler)', () => {
+        const k = plan({ yatsiHatirlatmasi: false }, ['imsak', 'ogle', 'ikindi']);
+        expect(k.zaman.getTime()).toBe(v.yatsi.giris.getTime() - 60 * 60_000);
+        expect(k.baslik).toBe('Bugün 3/5 · akşam işaretlenmemiş');
+    });
+
+    it('ekran bilgisi: tetik yatsıdan önceyse yatsı girişini, değilse null döner', () => {
+        expect(yatsiOncesiTetikBilgisi(ISTANBUL, ayar, simdi)).toEqual({ yatsiGiris: v.yatsi.giris });
+        const gec = new Date(v.yatsi.giris.getTime() + 90 * 60_000);
+        expect(
+            yatsiOncesiTetikBilgisi(ISTANBUL, { saat: gec.getHours(), dakika: gec.getMinutes(), onceDk: 30 }, simdi)
+        ).toBeNull();
+        expect(yatsiOncesiTetikBilgisi(null, ayar, simdi)).toBeNull();
+        expect(yatsiOncesiTetikBilgisi({ lat: 0, lng: 0 }, ayar, simdi)).toBeNull();
     });
 });

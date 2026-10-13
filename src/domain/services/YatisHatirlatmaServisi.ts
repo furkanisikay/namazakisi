@@ -30,6 +30,7 @@ import {
     type YatisAyarlari,
     type YatisPlanKaydi,
 } from '../../core/yatis/yatisPlani';
+import { bildirimKategorileriniGarantile } from './bildirimKategorileri';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 import {
     kayitDegistiDinleyicisiEkle,
@@ -173,6 +174,9 @@ export class YatisHatirlatmaServisi {
     }
 
     private async planla(kayit: YatisPlanKaydi): Promise<void> {
+        // Muhasebe "Kıldım / Kazaya ekle" düğmeleri kategoriye bağlı; muhafız
+        // kapalıyken kategori kaydını başka kimse garanti etmez.
+        await bildirimKategorileriniGarantile();
         try {
             await Notifications.scheduleNotificationAsync({
                 identifier: kayit.kimlik,

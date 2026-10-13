@@ -128,4 +128,53 @@ describe('muhafizErtelemesiniIsle', () => {
         ).toBe(true);
         expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     });
+
+    describe('iOS Odak filtresi (#279) basış anında YENİDEN değerlendirilir', () => {
+        const kopru = require('../../../../modules/expo-siri-kisayollari/src');
+        const bas = (ek: Record<string, unknown>) =>
+            muhafizErtelemesiniIsle(
+                {
+                    kimlik: 'muhafiz_2027-01-15_vakit_ogle_seviye_2_dk_45',
+                    eylem: 'ertele_10',
+                    data: veri({ ertelemeSesi: 'bildirim.wav', kesintiSeviyesi: 'timeSensitive', ...ek }),
+                },
+                SIMDI
+            );
+
+        beforeEach(() => jest.replaceProperty(Platform, 'OS', 'ios'));
+        afterEach(() => kopru.siriOdakDurumuAl.mockResolvedValue(null));
+
+        it('hedef anında Odak sessizliği SÜRÜYORSA kopya passive kurulur (planlamada sessiz olmasa bile)', async () => {
+            kopru.siriOdakDurumuAl.mockResolvedValue(JSON.stringify({ sessiz: true, ms: SIMDI - DK }));
+            await bas({ odakSessiz: false });
+            expect(planlanan()[0].content.interruptionLevel).toBe('passive');
+        });
+
+        it('planlamada sessizdi ama Odak KAPANDIYSA taban seviyeye döner', async () => {
+            kopru.siriOdakDurumuAl.mockResolvedValue(JSON.stringify({ sessiz: false, ms: SIMDI - DK }));
+            await bas({ odakSessiz: true });
+            expect(planlanan()[0].content.interruptionLevel).toBe('timeSensitive');
+        });
+
+        it('Odak durumu okunamazsa planlama anının kararı KORUNUR (sessizlik kaybolmaz)', async () => {
+            kopru.siriOdakDurumuAl.mockResolvedValue(null);
+            await bas({ odakSessiz: true });
+            expect(planlanan()[0].content.interruptionLevel).toBe('passive');
+        });
+    });
+
+    it('erteleme kurulunca "ertelendi" gözlemcisi haber alır (ön plan banner + saat planı)', async () => {
+        const { ertelemeDinleyicisiEkle } = require('../muhafizErtelemeDurumu');
+        const dinleyici = jest.fn();
+        const kaldir = ertelemeDinleyicisiEkle('test', dinleyici);
+        try {
+            await muhafizErtelemesiniIsle(
+                { kimlik: 'muhafiz_2027-01-15_vakit_ogle_seviye_1_dk_45', eylem: 'ertele_10', data: veri() },
+                SIMDI
+            );
+            expect(dinleyici).toHaveBeenCalledTimes(1);
+        } finally {
+            kaldir();
+        }
+    });
 });

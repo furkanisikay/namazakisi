@@ -53,6 +53,14 @@ jest.mock('../../../../domain/services/YatisHatirlatmaServisi', () => ({
     YatisHatirlatmaServisi: { getInstance: () => ({ hatirlatmalariGuncelle: jest.fn().mockResolvedValue(undefined) }) },
 }));
 
+// Bugünün yatsı girişi test anına ve saat dilimine bağlı → karar mock'lanır (saf
+// fonksiyonun kendisi `yatisPlani.test.ts`'te ölçülür).
+const mockYatsiOncesi = jest.fn();
+jest.mock('../../../../core/yatis/yatisPlani', () => ({
+    ...jest.requireActual('../../../../core/yatis/yatisPlani'),
+    yatsiOncesiTetikBilgisi: (...a: unknown[]) => mockYatsiOncesi(...a),
+}));
+
 import reducer from '../../../store/yatisHatirlatmaSlice';
 import {
     YatisHatirlatmaBolumu,
@@ -78,6 +86,7 @@ const kur = (ayarlar: Partial<YatisAyarlari> = {}) => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    mockYatsiOncesi.mockReturnValue(null);
 });
 
 describe('saat dönüşümü (20:00 tabanlı, gece yarısını sarar)', () => {
@@ -136,5 +145,33 @@ describe('YatisHatirlatmaBolumu', () => {
     it('aralığın uçlarında stepper pasif', () => {
         const { getByLabelText } = kur({ aktif: true, saat: 20, dakika: 0 });
         expect(getByLabelText('Yatış saatini 5 dakika geri alın').props.accessibilityState).toMatchObject({ disabled: true });
+    });
+
+    describe('yatış yatsıdan önce (Fable M2 — sessiz sapma yok)', () => {
+        const yatsi = new Date(2026, 5, 21, 22, 4);
+
+        it('yatsı hatırlatması açıkken: saat yatsıdan önce, hatırlatma yatsı girdikten sonra gelir', () => {
+            mockYatsiOncesi.mockReturnValue({ yatsiGiris: yatsi });
+            const { getByText } = kur({ aktif: true, saat: 20, dakika: 30, onceDk: 30 });
+            expect(
+                getByText('Hatırlatma saati (20:00) bugün yatsı vaktinden (22:04) önce. Yatsı hatırlatması yatsı girdikten sonra gelir.')
+            ).toBeTruthy();
+            expect(mockYatsiOncesi).toHaveBeenCalledWith(
+                { lat: 41, lng: 29 },
+                { saat: 20, dakika: 30, onceDk: 30 },
+                expect.any(Date)
+            );
+        });
+
+        it('yalnız muhasebe açıkken: muhasebenin yatsıyı saymadığını söyler', () => {
+            mockYatsiOncesi.mockReturnValue({ yatsiGiris: yatsi });
+            const { getByText } = kur({ aktif: true, saat: 20, dakika: 30, onceDk: 30, yatsiHatirlatmasi: false });
+            expect(getByText(/Gün sonu muhasebesi yatsıyı saymaz\./)).toBeTruthy();
+        });
+
+        it('saat yatsıdan sonraysa satır YOK', () => {
+            const { queryByText } = kur({ aktif: true });
+            expect(queryByText(/yatsı vaktinden/)).toBeNull();
+        });
     });
 });

@@ -7,6 +7,7 @@
 import React, { useEffect } from 'react';
 import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
 import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
+import { MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir } from './src/domain/services/muhafizErtelemeDurumu';
 import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
@@ -319,6 +320,9 @@ const AppIcerik: React.FC = () => {
     const wearAbonelik = DeviceEventEmitter.addListener(KILDIM_KUYRUGU_OLAYI, () => {
       KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
     });
+    // Muhafız "Ertele" (issue #289) uygulama AÇIKKEN native işlenince: ön plan banner'ı
+    // ve saatin planı ertelemeyi öğrensin (gözlemci: NamazMuhafiziServisi + WearSenkronServisi).
+    const ertelemeAbonelik = DeviceEventEmitter.addListener(MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir);
 
     // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
     // muhafız yeniden planlanır (camideyken acil kanal + sesli anons yok), "Kıldım"
@@ -422,6 +426,7 @@ const AppIcerik: React.FC = () => {
     return () => {
       appStateListener.remove();
       wearAbonelik.remove();
+      ertelemeAbonelik.remove();
       camiAbonelik.remove();
       siriAboneligiKaldir();
       interactionHandle.cancel();

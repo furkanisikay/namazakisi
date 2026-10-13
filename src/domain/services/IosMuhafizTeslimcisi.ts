@@ -278,8 +278,17 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         anonsMetni: uyari.anonsMetni,
                         // iOS yanıtı sesin ADINI geri vermez → ertelenen kopya aynı
                         // sesi (anons klibi dahil) ve kesinti seviyesini buradan alır.
+                        // Odak (#279): sessizlik KAYBOLMASIN — `odakSessiz` taşınır,
+                        // basış anında Odak yeniden değerlendirilir
+                        // (`MuhafizErtelemeServisi.iosKesintiSeviyesi`); `kesintiSeviyesi`
+                        // Odak bitince dönülecek TABAN seviyedir.
                         ...(ertele
-                            ? { ...ertele.veri, ertelemeSesi: ses, kesintiSeviyesi: plan.kesintiSeviyesi }
+                            ? {
+                                  ...ertele.veri,
+                                  ertelemeSesi: ses,
+                                  kesintiSeviyesi: plan.kesintiSeviyesi,
+                                  odakSessiz,
+                              }
                             : {}),
                     },
                 },

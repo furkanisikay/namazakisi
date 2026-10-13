@@ -29,6 +29,7 @@ import { WearSenkronServisi } from '../WearSenkronServisi';
 import { muhafizPlaniDegistiBildir, muhafizPlaniDinleyicisiniAyarla } from '../muhafizPlaniGozlemcisi';
 import { muhafizMatrisiniCoz } from '../../../core/muhafiz/motorAdaptoru';
 import { canliSaatPayiDegisti } from '../canliSaatGozlemcisi';
+import { ertelemeDegistiBildir } from '../muhafizErtelemeDurumu';
 
 const modul = {
     durumGonder: jest.fn(() => Promise.resolve()),
@@ -187,6 +188,32 @@ describe('gonder', () => {
             (k) => k.tarih === bugunuAl() && k.vakit === 'yatsi'
         );
         expect(sonra).toEqual([]);
+    });
+
+    it('ERTELEME (#289): bekleyen ertelenen kopyanın aralığı saatin planından SÜZÜLÜR; "ertelendi" gözlemcisi saati tazeler', async () => {
+        const Notifications = require('expo-notifications');
+        konumKur(undefined, { aktif: true, ...ESKI_AYAR });
+        servis.baslat();
+        Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
+        await servis.gonder();
+        const yatsiKayitlari = (i: number) =>
+            (gonderilenYuk(i).muhafiz as { tarih: string; vakit: string }[]).filter(
+                (k) => k.tarih === bugunuAl() && k.vakit === 'yatsi'
+            );
+        expect(yatsiKayitlari(0).length).toBeGreaterThan(0);
+
+        // Hedef çok ileride: bugünün yatsısının tüm kayıtları erteleme içinde kalır.
+        Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+            {
+                identifier: `muhafiz_${bugunuAl()}_vakit_yatsi_ertele`,
+                content: { data: { ertelemeHedefMs: Date.now() + 3 * 24 * 60 * 60 * 1000 } },
+            },
+        ]);
+        ertelemeDegistiBildir();
+        await servis.gonder(); // zincirdeki turu bekle
+        expect(modul.durumGonder).toHaveBeenCalledTimes(2);
+        expect(yatsiKayitlari(1)).toEqual([]);
+        Notifications.getAllScheduledNotificationsAsync.mockReset();
     });
 
     it('muhafız planı değişince (ArkaplanMuhafizServisi bildirimi) saat tazelenir ve O matrisi kullanır', async () => {
