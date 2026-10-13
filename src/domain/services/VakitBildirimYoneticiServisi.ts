@@ -6,6 +6,7 @@ import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { vakitBildirimPlaniOlustur } from '../../core/bildirim/vakitBildirimPlani';
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { vakitGirdiBasligi } from '../../core/otomasyon/anahtarKelimeler';
 
 export class VakitBildirimYoneticiServisi {
     private static instance: VakitBildirimYoneticiServisi;
@@ -75,14 +76,9 @@ export class VakitBildirimYoneticiServisi {
         const icerikHavuzu = VAKIT_BILDIRIM_ICERIKLERI[vakit];
         const icerik = icerikHavuzu[Math.floor(Math.random() * icerikHavuzu.length)];
 
-        let baslik = '';
-        switch(vakit) {
-            case 'imsak': baslik = 'İmsak Vakti Girdi'; break;
-            case 'ogle': baslik = 'Öğle Vakti Girdi'; break;
-            case 'ikindi': baslik = 'İkindi Vakti Girdi'; break;
-            case 'aksam': baslik = 'Akşam Vakti Girdi'; break;
-            case 'yatsi': baslik = 'Yatsı Vakti Girdi'; break;
-        }
+        // Başlık SABİT önekli: Samsung Rutinler "Bildirim alındığında" koşulunun
+        // anahtar kelimesi (issue #278) — metni yalnız `vakitGirdiBasligi`'nda değiştirin.
+        const baslik = vakitGirdiBasligi(vakit);
 
         let govde = icerik.metin;
         if (icerik.kaynak) {

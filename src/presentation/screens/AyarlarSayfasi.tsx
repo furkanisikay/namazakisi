@@ -309,6 +309,15 @@ export const AyarlarSayfasi: React.FC = () => {
                 {/* Otomasyon güven listesi (issue #299) — yalnız Android (köprü varsa). */}
                 {kildimGuvenVar && [
                   <AyarSatiri
+                    key="otomasyon-rehberi"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="magic" size={20} color={ikonRengi} solid />}
+                    baslik="Otomasyonlarla kullanın"
+                    ozet="Samsung Rutinler, Tasker, MacroDroid"
+                    yeniRozetGoster={sayfaOkunmamisMi('OtomasyonRehberi')}
+                    onPress={() => menuyeGit('OtomasyonRehberi')}
+                  />,
+                  <AyarSatiri
                     key="kildim-uygulamalari"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="user-shield" size={20} color={ikonRengi} solid />}

@@ -53,6 +53,7 @@ object CamiDurumu {
         PlanliAlarm.kur(ctx, c.bitisMs, ustSureIntent(ctx))
         CamiGunluk.ekle(ctx, "camide", mapOf("yer" to yer.ad, "vakit" to karar.vakit, "mod" to modSonucu))
         CamiBildirimleri.camidesiniz(ctx, c, ayarlar.sessiz)
+        CamiOtomasyonYayini.yay(ctx, c)
         CamiOlaylari.yay("camide")
     }
 
@@ -65,6 +66,7 @@ object CamiDurumu {
         PlanliAlarm.iptal(ctx, ustSureIntent(ctx))
         NamazModu.kapat(ctx, KAYNAK)
         CamiBildirimleri.kapat(ctx, CamiBildirimleri.ID_CAMIDE)
+        CamiOtomasyonYayini.yay(ctx, null)
         CamiGunluk.ekle(ctx, sebep, mapOf("yer" to c.ad, "dk" to ((System.currentTimeMillis() - c.girisMs) / 60_000)))
         // "Cami değil" yanlış algılamadır → soru sorulmaz.
         if (sebep != "haric" && ayarlar.kildimSor && c.vakit != null && c.tarih != null) {

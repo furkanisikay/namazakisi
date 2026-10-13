@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.furkanisikay.namazakisi.cekirdek.ErtelemeKurallari
 import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
+import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 import expo.modules.notifications.notifications.model.Notification
 import expo.modules.notifications.notifications.model.NotificationBehaviorRecord
 import expo.modules.notifications.service.NotificationsService
@@ -100,6 +101,9 @@ class KopruEtiketliBildirimServisi : NotificationsService() {
         ): android.app.Notification {
             val bildirim = super.createNotification(notification, notificationBehavior)
             val kimlik = notification.notificationRequest?.identifier ?: return bildirim
+            // Otomasyon "vakit çıkıyor" olayı (issue #278): muhafızın ≤45 dk kala ilk
+            // plan bildirimi. Ayrı alarm yok; koşul paketi yoksa hiçbir şey yapmaz.
+            OtomasyonOlaylari.muhafizUyarisi(context, kimlik)
             // Yalnız muhafız PLANI: saat yalnız planı kendi kurar. Erteleme (#289)
             // ve yatış/muhasebe (#290) aynı `muhafiz_` uzayında ama saatte YOK →
             // köprüyle gelmeleri gerekir, etiket basılırsa bilekte hiç görünmezlerdi.

@@ -26,6 +26,7 @@ import com.furkanisikay.namazakisi.cekirdek.WidgetZemini
 import com.furkanisikay.namazakisi.cekirdek.kildimIstekKodu
 import com.furkanisikay.namazakisi.cekirdek.saatMetni
 import com.furkanisikay.namazakisi.kildim.KildimKutusuServisi
+import com.furkanisikay.namazakisi.otomasyon.OtomasyonDeposu
 
 /**
  * Widget 2.0 çizicisi ve zamanlayıcısı (issue #275) — TEK kapı.
@@ -97,7 +98,13 @@ object WidgetGuncelleyici {
                     guncelle(uygulama, yonetici, id, anlik)
                 }
             }
-            if (widgetVar) sinirAlarminiKur(uygulama, anlik) else sinirAlarminiIptalEt(uygulama)
+            // Otomasyon eklentisi (issue #278) "vakit girdi" olayını AYNI alarmdan alır:
+            // widget yoksa da bir koşul paketi varken alarm kurulur (yeni alarm YOK).
+            if (widgetVar || OtomasyonDeposu.kosulKullaniliyor(uygulama)) {
+                sinirAlarminiKur(uygulama, anlik)
+            } else {
+                sinirAlarminiIptalEt(uygulama)
+            }
         } catch (e: Throwable) {
             Log.e(TAG, "Widgetlar guncellenemedi", e)
         }

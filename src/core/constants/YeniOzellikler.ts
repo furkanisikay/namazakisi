@@ -40,6 +40,28 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Samsung Rutinler + Tasker/MacroDroid/Automate eklentisi (issue #278) — yalnız
+    // Android; kart kapalı (Ayarlar satırı yalnız Android'de görünür).
+    {
+        id: 'otomasyonlarla-kullanin',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Otomasyonlarla Kullanın',
+        aciklama:
+            'Vakit girince telefonunuz sessize alınsın, camiye girince bir şey kapansın: Samsung Rutinler, Tasker ve MacroDroid ile Namaz Akışı\'nı birlikte kullanabilirsiniz.',
+        detayAciklama:
+            'Samsung Rutinler\'in "Bildirim alındığında" koşuluna "Öğle vakti girdi" ya da "Camidesiniz" gibi sabit bir anahtar kelime yazarak rutininizi başlatabilir, "Şu anki vakti kıldım" kısayolunu rutinin eylemi yapabilirsiniz. Tasker, MacroDroid ve Automate\'te Namaz Akışı eklentisi vakit girdi, vakit çıkıyor ve camidesiniz olaylarını verir; "Kıldım" eylemiyle namazınızı işaretler. Bir uygulama ilk kez eklendiğinde size sorulur. Adım adım rehber Ayarlar\'da.',
+        ikon: 'magic',
+        hedefSayfa: 'OtomasyonRehberi',
+        ctaEtiketi: 'Rehberi açın',
+        kartGoster: false,
+        detaylar: [
+            'Vakit bildirimleri sabit bir başlıkla gelir: "Öğle vakti girdi"',
+            'Tasker değişkenleri: %vakit, %vakitkodu, %tarih, %kalandk, %cami',
+            'İzin vermediğiniz uygulama namazınızı işaretleyemez, olayları göremez',
+            'Yalnız Android',
+        ],
+    },
     // "Her farzla bir kaza" önerisi (issue #294).
     {
         id: 'her-farzla-bir-kaza',

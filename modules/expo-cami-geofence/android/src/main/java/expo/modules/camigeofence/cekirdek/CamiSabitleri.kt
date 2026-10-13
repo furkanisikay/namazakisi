@@ -8,6 +8,17 @@ package expo.modules.camigeofence.cekirdek
  * Bu paket (cekirdek) SAFTIR: android.* import ETMEZ → JVM birim testinde koşar.
  */
 object CamiSabitleri {
+    /**
+     * "Camidesiniz" bildirim başlığının SABİT öneki (issue #278): Samsung Rutinler'in
+     * "Bildirim alındığında" koşulu bu anahtar kelimeyle eşleşir. Değiştirmek kurulu
+     * rutinleri sessizce bozar — nöbetçi: JS `otomasyonAnahtarKelimeleri.test.ts`
+     * (bu dosyayı okur) + `CamiBildirimMetniTest`.
+     */
+    const val CAMIDESINIZ_BASLIK_ONEKI = "Camidesiniz"
+
+    /** Bildirim başlığı: önek + " · " + cami adı (ad yoksa "Cami"). */
+    fun camidesinizBasligi(ad: String): String = "$CAMIDESINIZ_BASLIK_ONEKI · ${ad.ifBlank { "Cami" }}"
+
     const val GEOFENCE_YARICAPI_M = 100.0
     const val GEOFENCE_ALAN_PAYI_M = 50.0
     const val VARSAYILAN_ALAN_M = 25.0

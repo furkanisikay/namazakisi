@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi.widget
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 
 /**
  * Widget'ı yeniden hesaplatan olaylar (issue #275):
@@ -20,6 +21,9 @@ class NamazWidgetAlarmAlici : BroadcastReceiver() {
         if (intent.action == null || intent.action in EYLEMLER) {
             WidgetGuncelleyici.tumunuGuncelle(context)
         }
+        // Otomasyon "vakit girdi" olayı (issue #278): yalnız sınır alarmında; koşul paketi
+        // yoksa hiçbir şey yapmaz, aynı vakit için ikinci kez olay üretmez.
+        if (intent.action == WidgetGuncelleyici.SINIR_EYLEMI) OtomasyonOlaylari.vakitSiniri(context)
     }
 
     companion object {

@@ -58,6 +58,32 @@ data class KildimBaslatani(val paket: String?, val sinif: KaynakSinifi, val ad: 
         }
 
         /**
+         * Otomasyon eklentisi düzenleme etkinliği (issue #278): çağıran `callingPackage`'tan
+         * gelir (`startActivityForResult` ile açıldığı için sistem yazar, uydurulamaz).
+         * Ana ekran sınıfı burada aranmaz — bir eklenti ayarı ancak bir otomasyon
+         * uygulamasından kaydedilir, ana ekran ayrıcalığı (soru sormadan) burada anlamsız.
+         */
+        fun paketten(context: Context, paket: String?): KildimBaslatani {
+            val pm = context.packageManager
+            val gecerli = paket?.takeIf { KildimGuvenKurallari.paketGecerliMi(it) }
+            val sinif = KildimGuvenKurallari.siniflandir(
+                paket = gecerli,
+                referrerEkiVar = false,
+                kendiPaketi = context.packageName,
+                anaEkranMi = false,
+                tarayiciMi = gecerli != null && cozuluyorMu(
+                    pm,
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://www.example.com/")).addCategory(Intent.CATEGORY_BROWSABLE),
+                    gecerli,
+                ),
+            )
+            return KildimBaslatani(gecerli, sinif, gecerli?.let { uygulamaAdi(pm, it) } ?: "")
+        }
+
+        /** Ayarlar/olay yayını için görünen uygulama adı (çözülemezse paket adı). */
+        fun uygulamaAdiAl(context: Context, paket: String): String = uygulamaAdi(context.packageManager, paket)
+
+        /**
          * YALNIZ şu an seçili VARSAYILAN başlatıcı ana ekran sayılır. "HOME intent'ini
          * çözüyor mu" sorusu yetmez: herhangi bir uygulama manifestine HOME kategorili boş
          * bir etkinlik koyup sormadan "kıldım" yazdırabilirdi. Varsayılan seçilmemişse
