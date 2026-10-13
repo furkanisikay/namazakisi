@@ -152,4 +152,11 @@ async function araliktakiUyarilariSustur(tarih: string, vakit: string, cikisMs: 
     } catch (error) {
         Logger.warn('MuhafizErteleme', 'Planli uyarilar susturulamadi', error);
     }
+    // iOS gerçek alarmları (AlarmKit, issue #74) bekleyen bildirim listesinde görünmez →
+    // aynı kural kimlikten ayrıca uygulanır (Android'de erteleme native, burası çağrılmaz).
+    await muhafizTeslimcisiniAl().secilenYanKanallariIptalEt?.((kimlik) => {
+        if (!kimlik.startsWith(onek)) return false;
+        const kalanDk = kimliktenKalanDk(kimlik);
+        return kalanDk !== null && ertelemedeSusturulurMu(cikisMs - kalanDk * 60_000, hedefMs);
+    });
 }

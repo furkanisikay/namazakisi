@@ -123,9 +123,13 @@ export function adimNotlariniOlustur(
         });
     }
     if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {
+        // Gercek alarm (AlarmKit, issue #74) yalniz adimin ILK tetigidir; tekrarlar bildirim.
+        const ilkiAlarm = yetenekler.gercekAlarm && seviye.kanallar.alarm === true;
         notlar.push({
             tip: 'uyari',
-            metin: 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
+            metin: ilkiAlarm
+                ? 'İlk hatırlatma iPhone’da alarm olarak çalar; tekrarlar sessiz moddayken duyulmaz'
+                : 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
         });
     }
 

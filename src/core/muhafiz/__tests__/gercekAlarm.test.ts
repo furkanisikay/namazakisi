@@ -224,10 +224,22 @@ describe('iOS teslim — AlarmKit gelene kadar', () => {
 });
 
 describe('alarm notları — sessiz sapma yok', () => {
-    test('iOS: AlarmKit bilgisi', () => {
-        const n = alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null });
+    test('iOS: AlarmKit durumu bilinmiyorsa satır YOK (yanlış bilgi vermektense)', () => {
+        expect(alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null })).toEqual([]);
+        expect(alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null, alarmKit: null })).toEqual([]);
+    });
+    test.each([
+        ['desteklenmiyor', 'bilgi', undefined, 'iOS 26'],
+        ['belirsiz', 'bilgi', 'alarmIzni', 'izin'],
+        ['reddedildi', 'uyari', 'ayarlar', 'Ayarlar'],
+        ['izinli', 'bilgi', undefined, 'alarmı olarak çalar'],
+    ] as const)('iOS AlarmKit %s → tek satır (%s, eylem %s)', (alarmKit, tip, eylem, parca) => {
+        const n = alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null, alarmKit });
         expect(n).toHaveLength(1);
-        expect(n[0].metin).toContain('AlarmKit');
+        expect(n[0].tip).toBe(tip);
+        expect(n[0].eylem).toBe(eylem);
+        expect(n[0].metin).toContain(parca);
+        expect(n[0].metin).not.toMatch(/\b(sen|senin)\b/i);
     });
     test('Android: izinler bilinmiyorsa (null) uyarı YOK', () => {
         expect(alarmNotlariniOlustur({ platform: 'android', tamEkran: null, tamAlarm: null })).toEqual([]);

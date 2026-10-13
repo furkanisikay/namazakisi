@@ -203,8 +203,8 @@ describe('IosMuhafizTeslimcisi', () => {
         expect(mockPlanlaAnons).not.toHaveBeenCalled();
     });
 
-    test('yan kanal iptalleri no-op — native kopruye dokunmaz', () => {
-        teslimci.yanKanaliIptalEt();
+    test('yan kanal iptalleri Android TTS koprusune dokunmaz (iOS yan kanali yalniz AlarmKit)', () => {
+        teslimci.yanKanaliIptalEt('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_30');
         teslimci.tumYanKanallariIptalEt();
         expect(mockIptalEtAnons).not.toHaveBeenCalled();
         expect(mockIptalEtTumAnonslar).not.toHaveBeenCalled();
@@ -668,5 +668,169 @@ describe('IosMuhafizTeslimcisi — Odak filtresi (issue #279)', () => {
         await t.hazirla(BOS_MATRIS);
         await t.uyariPlanla(teslimKur({ seviye: 3 }));
         expect(planlanan()[0].interruptionLevel).toBe('timeSensitive');
+    });
+});
+
+describe('IosMuhafizTeslimcisi — GERÇEK ALARM / AlarmKit (iOS 26, issue #74)', () => {
+    const alarmKoprusu = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+        alarmKitDurumu: jest.Mock;
+        alarmKitPlanla: jest.Mock;
+        alarmKitIptalEt: jest.Mock;
+        alarmKitKayitlari: jest.Mock;
+    };
+    const siriKoprusu = require('../../../../modules/expo-siri-kisayollari/src') as {
+        siriOdakDurumuAl: jest.Mock;
+    };
+    const ALARM_ID = 'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_10';
+    const alarmTeslimi = (zamanMs?: number) => {
+        const zaman = zamanMs ?? Date.now() + 10 * 60 * 1000;
+        return {
+            ...teslimKur({ seviye: 1, alarm: true, kanallar: { bildirim: true, alarm: true } }, zaman),
+            cikis: new Date(zaman + 60 * 60 * 1000),
+        };
+    };
+    const KAYITLAR = [
+        { kimlik: 'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45', tetikMs: 1 },
+        { kimlik: 'muhafiz_2026-01-01_vakit_aksam_ertele', tetikMs: 2 },
+        { kimlik: 'muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30', tetikMs: 3 },
+    ];
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        kopru.trSesTanimlayici.mockResolvedValue(null);
+        siriKoprusu.siriOdakDurumuAl.mockResolvedValue(null);
+        alarmKoprusu.alarmKitDurumu.mockResolvedValue('izinli');
+        alarmKoprusu.alarmKitPlanla.mockResolvedValue(true);
+        alarmKoprusu.alarmKitIptalEt.mockResolvedValue(undefined);
+        alarmKoprusu.alarmKitKayitlari.mockResolvedValue(KAYITLAR);
+    });
+    afterAll(() => {
+        alarmKoprusu.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+        alarmKoprusu.alarmKitPlanla.mockResolvedValue(false);
+        alarmKoprusu.alarmKitKayitlari.mockResolvedValue([]);
+    });
+
+    test('izinliyken alarm tetiği SİSTEM ALARMI olur: bildirim kurulmaz, yük erteleme sınırını taşır', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        const teslim = alarmTeslimi();
+        await t.uyariPlanla(teslim);
+
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+        expect(alarmKoprusu.alarmKitPlanla).toHaveBeenCalledTimes(1);
+        const yuk = alarmKoprusu.alarmKitPlanla.mock.calls[0][0];
+        expect(yuk).toMatchObject({
+            kimlik: ALARM_ID,
+            tetikMs: teslim.zaman.getTime(),
+            vakit: 'aksam',
+            tarih: '2026-01-01',
+            cikisMs: teslim.cikis.getTime(),
+            erteleSinirMs: teslim.cikis.getTime() - 3 * 60_000,
+        });
+        expect(yuk.ertelemeBasligi).toContain('{sure}');
+    });
+
+    test('AlarmKit 64 bildirim bütçesine SAYILMAZ: slot dolu olsa da alarm kurulur', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+            Array.from({ length: 64 }, (_, i) => ({ identifier: `vakit_${i}` }))
+        );
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(alarmTeslimi());
+        await t.uyariPlanla(teslimKur({ kalanDk: 5 }));
+        expect(alarmKoprusu.alarmKitPlanla).toHaveBeenCalledTimes(1);
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+    });
+
+    test.each(['belirsiz', 'reddedildi', 'desteklenmiyor'])(
+        'durum %s → bugünkü yol: zamana duyarlı bildirim + uzun ses',
+        async (durum) => {
+            alarmKoprusu.alarmKitDurumu.mockResolvedValue(durum);
+            const t = new IosMuhafizTeslimcisi();
+            await t.hazirla(BOS_MATRIS);
+            await t.uyariPlanla(alarmTeslimi());
+            expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
+            const [girdi] = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0];
+            expect(girdi.content).toMatchObject({ interruptionLevel: 'timeSensitive', sound: 'alarm_ios.wav' });
+        }
+    );
+
+    test('kurulamazsa AYNI tetik bildirim olarak gelir (sessiz kayıp yok)', async () => {
+        alarmKoprusu.alarmKitPlanla.mockResolvedValue(false);
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(alarmTeslimi());
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0][0].identifier).toBe(ALARM_ID);
+    });
+
+    test('Odak filtresi sessizken alarm KURULMAZ (passive bildirim)', async () => {
+        siriKoprusu.siriOdakDurumuAl.mockResolvedValue(JSON.stringify({ sessiz: true, ms: Date.now() - 60_000 }));
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(alarmTeslimi());
+        expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
+        expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls[0][0].content.interruptionLevel).toBe(
+            'passive'
+        );
+    });
+
+    test('alarm OLMAYAN tetik (acil ton dahil) alarma çevrilmez', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        await t.uyariPlanla(teslimKur({ seviye: 4, kalanDk: 3, acilKanal: true }));
+        expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+    });
+
+    test('hazirla: önceki turun PLAN alarmları iptal, erteleme KORUNUR (muhafız açık)', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith([
+            'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45',
+            'muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30',
+        ]);
+    });
+
+    test('hazirla(): muhafız KAPALI → ertelenmiş dahil HEPSİ iptal, alarm kurulmaz', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        await t.hazirla();
+        expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith(KAYITLAR.map((k) => k.kimlik));
+        await t.uyariPlanla(alarmTeslimi());
+        expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
+    });
+
+    test('uygulama içi "Kıldım": vaktin alarmları önekle (plan + erteleme)', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        t.vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_aksam');
+        await t.secilenYanKanallariIptalEt(() => false); // zincirin bitmesini bekle
+        expect(alarmKoprusu.alarmKitIptalEt).toHaveBeenCalledWith([
+            'muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45',
+            'muhafiz_2026-01-01_vakit_aksam_ertele',
+        ]);
+    });
+
+    test('yeniden planlama (tumYanKanallariIptalEt) yalnız PLAN alarmlarını siler; tekil iptal kimlikle; SIRA korunur', async () => {
+        const t = new IosMuhafizTeslimcisi();
+        t.tumYanKanallariIptalEt();
+        t.yanKanaliIptalEt(ALARM_ID);
+        await t.secilenYanKanallariIptalEt(() => false);
+        expect(alarmKoprusu.alarmKitIptalEt.mock.calls).toEqual([
+            [['muhafiz_2026-01-01_vakit_aksam_seviye_1_dk_45', 'muhafiz_2026-01-01_vakit_yatsi_seviye_2_dk_30']],
+            [[ALARM_ID]],
+            [[]],
+        ]);
+    });
+
+    test('NAFİLE teslimcisi alarmlara HİÇ dokunmaz (muhafızın alarmlarını silmesin)', async () => {
+        const t = new IosMuhafizTeslimcisi({ kendiOneki: 'nafile_', matrissizAnons: true });
+        await t.hazirla();
+        t.tumYanKanallariIptalEt();
+        t.vakitYanKanallariniIptalEt('muhafiz_2026-01-01_vakit_aksam');
+        await t.uyariPlanla({ ...alarmTeslimi(), id: 'nafile_x', ozel: { veri: { tip: 'nafile' } } });
+        expect(alarmKoprusu.alarmKitDurumu).not.toHaveBeenCalled();
+        expect(alarmKoprusu.alarmKitIptalEt).not.toHaveBeenCalled();
+        expect(alarmKoprusu.alarmKitPlanla).not.toHaveBeenCalled();
     });
 });

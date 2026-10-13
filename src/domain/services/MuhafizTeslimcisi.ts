@@ -118,6 +118,13 @@ export interface MuhafizTeslimcisi {
     vakitYanKanallariniIptalEt?(onek: string): void;
 
     /**
+     * Kimligi seciciyi saglayan yan kanallari iptal et — bildirimdeki "Ertele"nin JS yolu
+     * (iOS) susturulan araliktaki GERCEK ALARMLARI (AlarmKit, issue #74) da kaldirsin.
+     * Opsiyonel: Android'de erteleme native islenir ve alarm kaydini kendisi tarar.
+     */
+    secilenYanKanallariIptalEt?(secici: (kimlik: string) => boolean): Promise<void>;
+
+    /**
      * Planlama turu BITTIKTEN sonra calisir (muhafiz kapaliyken de). iOS'ta
      * kullanilmayan anons kliplerini toplar; Android'de is yoktur.
      *

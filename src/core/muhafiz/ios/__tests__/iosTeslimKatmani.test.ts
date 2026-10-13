@@ -85,6 +85,7 @@ describe('platformYetenekleri', () => {
             serbestAnonsMetni: true,
             titresimSecimi: true,
             sessizligiDelebilir: true,
+            gercekAlarm: true,
         });
     });
 
@@ -99,12 +100,15 @@ describe('platformYetenekleri', () => {
             serbestAnonsMetni: true,
             titresimSecimi: false,
             sessizligiDelebilir: false,
+            gercekAlarm: false,
         });
     });
 
-    test('iOS Faz 3: AlarmKit varsa YALNIZ sessizligi delme acilir', () => {
+    test('iOS AlarmKit (issue #74): YALNIZ gercek alarm acilir — bildirim sessizligi yine delmez', () => {
         const yetenek = iosYetenekleri(true);
-        expect(yetenek.sessizligiDelebilir).toBe(true);
+        expect(yetenek.gercekAlarm).toBe(true);
+        // Acil tonlu BILDIRIM sessiz anahtarini AlarmKit varken de delmez.
+        expect(yetenek.sessizligiDelebilir).toBe(false);
         // Digerleri AlarmKit'ten bagimsizdir — acilmamali.
         expect(yetenek.sesSecici).toBe(false);
         expect(yetenek.serbestAnonsMetni).toBe(true);
@@ -150,12 +154,18 @@ describe('iosTesliminiCoz', () => {
         expect(teslim.kesintiSeviyesi).toBe('timeSensitive');
     });
 
-    test('Faz 3: AlarmKit varsa acil adim ALARM olur', () => {
+    test('AlarmKit varken ACIL TON alarma CEVRILMEZ (her dakika tam ekran alarm olurdu)', () => {
         const teslim = iosTesliminiCoz(
             uyari({ seviye: 4, acilKanal: true }),
             iosYetenekleri(true)
         );
-        expect(teslim.tur).toBe('alarm');
+        expect(teslim.tur).toBe('bildirim');
+        expect(teslim.kesintiSeviyesi).toBe('timeSensitive');
+    });
+
+    test('AlarmKit varken GERCEK ALARM tetigi alarm olur; yokken uzun sesli bildirim', () => {
+        expect(iosTesliminiCoz(uyari({ seviye: 1, alarm: true }), iosYetenekleri(true)).tur).toBe('alarm');
+        expect(iosTesliminiCoz(uyari({ seviye: 1, alarm: true }), iosYetenekleri(false)).tur).toBe('bildirim');
     });
 
     test('AlarmKit olsa bile acil OLMAYAN adim alarm YAPILMAZ', () => {

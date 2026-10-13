@@ -131,7 +131,13 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
     /** Gerçek alarm rıza modalı açık mı (anahtar ilk kez açılırken). */
     const [alarmOnayAcik, setAlarmOnayAcik] = useState(false);
     const alarmAcikMi = gorunur && kanalAcikMi(seviye?.kanallar, 'alarm');
-    const alarmIzinleri = useAlarmIzinleri(alarmAcikMi && tanim.yetenekler.platform === 'android');
+    // iOS'ta AlarmKit durumu rıza modalının metnini de belirler → adım detayı açıkken okunur.
+    const alarmIzinleri = useAlarmIzinleri(
+        gorunur &&
+            tanim.alarmSecilebilir === true &&
+            (tanim.yetenekler.platform === 'ios' || alarmAcikMi),
+        tanim.yetenekler.platform
+    );
 
     const [metinTaslak, setMetinTaslak] = useState(seviye?.anonsMetni ?? '');
     /** Ses secici acik mi? Cift dokunusa karsi butonu kilitler (bkz. `sesiSec`). */
@@ -479,8 +485,10 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                     platform: tanim.yetenekler.platform,
                                                     tamEkran: alarmIzinleri.tamEkran,
                                                     tamAlarm: alarmIzinleri.tamAlarm,
+                                                    alarmKit: alarmIzinleri.alarmKit,
                                                 })}
                                                 onIzinAyari={() => void alarmIzinleri.ayariAc()}
+                                                onAlarmIzni={() => void alarmIzinleri.izinIste()}
                                             />
                                         )}
                                     </View>
@@ -912,9 +920,14 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                     <AlarmOnayModal
                         gorunur
                         platform={tanim.yetenekler.platform}
-                        onOnayla={() => {
+                        alarmKit={alarmIzinleri.alarmKit}
+                        onOnayla={async () => {
                             setAlarmOnayAcik(false);
                             onAlarmOnayiVer?.();
+                            // iOS: sistem alarm izni (AlarmKit) anahtar YAZILMADAN ÖNCE istenir —
+                            // matris değişince ekranın planlaması izin sonucuyla koşsun. Red
+                            // edilse de anahtar açılır (uzun sesli bildirim + ekranda uyarı).
+                            await alarmIzinleri.izinIste(false);
                             alarmiYaz(true);
                         }}
                         onIptal={() => setAlarmOnayAcik(false)}

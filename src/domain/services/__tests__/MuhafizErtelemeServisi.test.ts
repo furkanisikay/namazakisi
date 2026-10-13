@@ -7,8 +7,12 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
 const mockYanKanaliIptalEt = jest.fn();
+const mockSecilenleriIptalEt = jest.fn(async (_secici: (kimlik: string) => boolean) => undefined);
 jest.mock('../MuhafizTeslimcisi', () => ({
-    muhafizTeslimcisiniAl: () => ({ yanKanaliIptalEt: mockYanKanaliIptalEt }),
+    muhafizTeslimcisiniAl: () => ({
+        yanKanaliIptalEt: mockYanKanaliIptalEt,
+        secilenYanKanallariIptalEt: mockSecilenleriIptalEt,
+    }),
 }));
 jest.mock('../../../core/utils/Logger', () => ({
     Logger: { warn: jest.fn(), error: jest.fn(), info: jest.fn(), debug: jest.fn() },
@@ -119,6 +123,19 @@ describe('muhafizErtelemesiniIsle', () => {
         expect(mockYanKanaliIptalEt.mock.calls.map((c) => c[0])).toEqual(iptal);
     });
 
+    it('iOS GERÇEK ALARMLAR (AlarmKit, #74) aynı kuralla susar: seçici yalnız aralıktaki PLAN alarmlarını seçer', async () => {
+        await muhafizErtelemesiniIsle(
+            { kimlik: 'muhafiz_2027-01-15_vakit_ogle_seviye_1_dk_45', eylem: 'ertele_10', data: veri() },
+            SIMDI
+        );
+        expect(mockSecilenleriIptalEt).toHaveBeenCalledTimes(1);
+        const secici = mockSecilenleriIptalEt.mock.calls[0][0];
+        expect(secici('muhafiz_2027-01-15_vakit_ogle_seviye_2_dk_40')).toBe(true);
+        expect(secici('muhafiz_2027-01-15_vakit_ogle_seviye_3_dk_30')).toBe(false);
+        expect(secici('muhafiz_2027-01-15_vakit_ikindi_seviye_1_dk_44')).toBe(false);
+        expect(secici('muhafiz_2027-01-15_vakit_ogle_ertele')).toBe(false);
+    });
+
     it('eksik veri (eski bildirim) kurulmaz ama çökmez', async () => {
         expect(
             await muhafizErtelemesiniIsle(
@@ -176,5 +193,22 @@ describe('muhafizErtelemesiniIsle', () => {
         } finally {
             kaldir();
         }
+    });
+});
+
+describe('bekleyenErtelemeleriOku — bildirim + iOS alarm ertelemeleri', () => {
+    const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as { alarmKitKayitlari: jest.Mock };
+    afterEach(() => alarmKit.alarmKitKayitlari.mockResolvedValue([]));
+
+    it('alarm ekranından ertelenen kopya (AlarmKit) bildirimdekilerle BİRLEŞİR', async () => {
+        const { bekleyenErtelemeleriOku } = require('../muhafizErtelemeDurumu');
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: 'muhafiz_2027-01-15_vakit_ogle_ertele', content: { data: { ertelemeHedefMs: 111 } } },
+        ]);
+        alarmKit.alarmKitKayitlari.mockResolvedValue([
+            { kimlik: 'muhafiz_2027-01-15_vakit_ikindi_ertele', tetikMs: 222 },
+            { kimlik: 'muhafiz_2027-01-15_vakit_ikindi_seviye_1_dk_45', tetikMs: 50 },
+        ]);
+        expect(await bekleyenErtelemeleriOku()).toEqual({ '2027-01-15_ogle': 111, '2027-01-15_ikindi': 222 });
     });
 });

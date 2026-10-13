@@ -70,7 +70,7 @@ import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
 import { YatisHatirlatmaServisi } from '../YatisHatirlatmaServisi';
 import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/yatisPlani';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
-import { bildirimDefteriOlustur, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
+import { bildirimDefteriOlustur, defterOzeti, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
@@ -188,6 +188,42 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         const g = temelGirdi('ios', { muhafiz: { aktif: true, matris: hafif } });
         expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
         expect(say(g, 'anons')).toBe(0); // iOS'ta anons bildirimin sesidir, ayrı alarm değil
+    });
+
+    it('iOS GERÇEK ALARM (AlarmKit, issue #74): alarm ayrı sayılır, 64 sınırına GİRMEZ', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+            alarmKitDurumu: jest.Mock;
+            alarmKitPlanla: jest.Mock;
+        };
+        alarmKit.alarmKitDurumu.mockResolvedValue('izinli');
+        alarmKit.alarmKitPlanla.mockResolvedValue(true);
+        try {
+            // Slot bol (64 sınırı burada ölçülmüyor): hafif matris, ilk adım alarmlı.
+            const alarmli: MuhafizMatrisi = matrisKur(() => ({
+                seviyeler: [
+                    { kademe: 'nazik', esikDk: 30, siklik: { herDk: 15 }, kanallar: { bildirim: true, alarm: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                    { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                ],
+            }));
+            muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: alarmli });
+
+            const g = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli }, iosAlarmKit: true });
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(alarmKit.alarmKitPlanla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
+            // iOS sayımı yalnız bildirimdir: alarmlar özette yer tutmaz.
+            const kayitlar = bildirimDefteriOlustur(g);
+            expect(defterOzeti(kayitlar, 'ios').toplam).toBe(say(g, 'muhafiz'));
+            // AlarmKit yokken aynı tetikler bildirim olarak sayılır (bugünkü davranış).
+            const alarmsiz = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli } });
+            expect(say(alarmsiz, 'alarm')).toBe(0);
+            expect(say(alarmsiz, 'muhafiz')).toBe(say(g, 'muhafiz') + say(g, 'alarm'));
+        } finally {
+            alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+            alarmKit.alarmKitPlanla.mockResolvedValue(false);
+        }
     });
 
     it('ÖNERİ uygulanınca gerçek plan da defterin söylediği sayıya iner', async () => {

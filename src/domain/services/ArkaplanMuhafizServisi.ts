@@ -33,6 +33,7 @@ import {
 } from '../../core/muhafiz/erteleme';
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
+import { alarmErtelemeleriniOku } from './muhafizErtelemeDurumu';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -99,6 +100,15 @@ export class ArkaplanMuhafizServisi {
                 Logger.error('ArkaplanMuhafiz', 'Teslimci tur sonu isi basarisiz', error);
             }
         }
+    }
+
+    /**
+     * Son ayarlarla yeniden planlar (ayar degismeden TESLIM yetenegi degistiginde —
+     * ör. iOS'ta AlarmKit izni verildi, issue #74). Hic yapilandirilmadiysa no-op:
+     * acilis zinciri zaten planlayacak.
+     */
+    public async yenidenPlanla(): Promise<void> {
+        if (this.ayarlar) await this.yapilandirVePlanla(this.ayarlar);
     }
 
     private async planla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
@@ -327,7 +337,11 @@ export class ArkaplanMuhafizServisi {
 
         try {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
-            const korunan = secenek.ertelemeyiKoru ? etkinErtelemeler(tumBildirimler) : {};
+            // iOS: alarm ekranından ertelenen kopya bir ALARMDIR (AlarmKit, issue #74),
+            // bekleyen bildirimlerde görünmez — alarm kaydından eklenir.
+            const korunan = secenek.ertelemeyiKoru
+                ? { ...etkinErtelemeler(tumBildirimler), ...(await alarmErtelemeleriniOku()) }
+                : {};
 
             for (const bildirim of tumBildirimler) {
                 const id = bildirim.identifier;

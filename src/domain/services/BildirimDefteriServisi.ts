@@ -22,11 +22,12 @@ import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { alarmKitDurumu } from '../../../modules/expo-muhafiz-alarmkit/src';
 
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
 export type DefterDisGirdisi = Pick<
     DefterGirdisi,
-    'vakitBildirimi' | 'cuma' | 'camiyeGit' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi'
+    'vakitBildirimi' | 'cuma' | 'camiyeGit' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi' | 'iosAlarmKit'
 >;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
@@ -41,7 +42,7 @@ const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> =
 export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     const bugun = bugunuAl();
     const dun = dunuAl();
-    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis] = await Promise.all([
+    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis, alarmKit] = await Promise.all([
         guvenli('vakit bildirimi', () => LocalVakitBildirimServisi.getAyarlar()),
         guvenli('cuma', () => LocalCumaHatirlatmaServisi.getAyarlar()),
         guvenli('camiye git', () => LocalCamiyeGitServisi.getAyarlar()),
@@ -53,6 +54,8 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         guvenli('kilinan (dun)', () => kilinanVakitleriAl(dun)),
         guvenli('ozel gun', () => ozelGunSuzgeciniOku()),
         guvenli('yatis', () => LocalYatisHatirlatmaServisi.getAyarlar()),
+        // iOS gerçek alarm (AlarmKit, #74): teslimci de aynı durumu `hazirla`da okur.
+        guvenli('alarmkit', () => alarmKitDurumu()),
     ]);
     const kilinan: Record<string, readonly VakitAdi[]> = {
         [bugun]: kilinanBugun ?? [],
@@ -66,6 +69,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         yatis,
         kilinan,
         ozelGundeMi: ozelGundeMi ?? undefined,
+        iosAlarmKit: Platform.OS === 'ios' && alarmKit === 'izinli',
     };
 }
 

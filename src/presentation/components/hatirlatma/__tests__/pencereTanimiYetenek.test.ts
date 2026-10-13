@@ -72,9 +72,10 @@ describe('iOS kapilari', () => {
         expect(iosTanim().yetenekler.sessizligiDelebilir).toBe(false);
     });
 
-    test('Faz 3: AlarmKit varsa sessizligi delme yetenegi tanima yansir', () => {
+    test('AlarmKit varsa gercek alarm yetenegi tanima yansir (bildirim sessizligi delmez)', () => {
         const tanim = vakitPencereTanimi('yatsi', 'cikisaDogru', 120, iosYetenekleri(true));
-        expect(tanim.yetenekler.sessizligiDelebilir).toBe(true);
+        expect(tanim.yetenekler.gercekAlarm).toBe(true);
+        expect(tanim.yetenekler.sessizligiDelebilir).toBe(false);
         // Diger kapilar AlarmKit'ten bagimsiz — acilmamali.
         expect(tanim.sesSecimiVar).toBe(false);
         expect(tanim.anonsMetniDuzenlenebilir).toBe(true);

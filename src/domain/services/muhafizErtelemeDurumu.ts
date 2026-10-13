@@ -17,6 +17,8 @@
  */
 import * as Notifications from 'expo-notifications';
 import { etkinErtelemeler } from '../../core/muhafiz/erteleme';
+import { alarmKitErtelemeleri } from '../../core/muhafiz/ios/alarmKit';
+import { alarmKitKayitlari } from '../../../modules/expo-muhafiz-alarmkit/src';
 
 /** Native `BildirimErteleIsleyici.OLAY_ADI` ile AYNI olmalı. */
 export const MUHAFIZ_ERTELENDI_OLAYI = 'MuhafizErtelendi';
@@ -24,14 +26,29 @@ export const MUHAFIZ_ERTELENDI_OLAYI = 'MuhafizErtelendi';
 /** Headless `KildimKuyrugu` görevine native'in eklediği neden (`KildimGorevServisi.NEDEN_ERTELE`). */
 export const ERTELEME_GOREV_NEDENI = 'ertele';
 
-/** Bekleyen bildirimlerden etkin ertelemeler (`<gün>_<vakit>` → hedef ms). Asla fırlatmaz. */
-export async function bekleyenErtelemeleriOku(): Promise<Record<string, number>> {
+/**
+ * iOS'ta "10 dk ertele" ALARM ekranından basıldıysa (AlarmKit, issue #74) ertelenen kopya
+ * bildirim değil yeni bir ALARMDIR → bekleyen bildirimlerde görünmez; alarm kaydından
+ * okunur. Modül yoksa (Android, iOS < 26, jest) boş. Asla fırlatmaz.
+ */
+export async function alarmErtelemeleriniOku(): Promise<Record<string, number>> {
     try {
-        const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
-        return etkinErtelemeler(Array.isArray(bekleyenler) ? bekleyenler : []);
+        return alarmKitErtelemeleri(await alarmKitKayitlari());
     } catch {
         return {};
     }
+}
+
+/** Bekleyen bildirimlerden + iOS alarm ertelemelerinden etkin ertelemeler (`<gün>_<vakit>` → hedef ms). Asla fırlatmaz. */
+export async function bekleyenErtelemeleriOku(): Promise<Record<string, number>> {
+    let bildirimden: Record<string, number> = {};
+    try {
+        const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
+        bildirimden = etkinErtelemeler(Array.isArray(bekleyenler) ? bekleyenler : []);
+    } catch {
+        bildirimden = {};
+    }
+    return { ...bildirimden, ...(await alarmErtelemeleriniOku()) };
 }
 
 type Dinleyici = () => void;

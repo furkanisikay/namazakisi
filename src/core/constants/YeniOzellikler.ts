@@ -40,6 +40,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // iPhone'da gerçek alarm — iOS 26 AlarmKit (issue #74). Yalnız iPhone'u ilgilendirir.
+    {
+        id: 'gercek-alarm-iphone',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'iPhone\'da Gerçek Alarm',
+        aciklama:
+            'iOS 26 kullanıyorsanız Namaz Muhafızı\'nda "Gerçek alarm" açtığınız adım artık iPhone\'unuzun alarmı olarak çalar; sessiz anahtarı ve Odak açıkken de duyulur.',
+        detayAciklama:
+            'Adımın ilk hatırlatması iPhone\'un kendi alarm ekranıyla gelir. Alarmı durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme "Kıldım" olur. İlk açılışta iPhone\'unuz bir kez alarm izni ister. iOS 26 öncesinde ya da izin vermediğinizde aynı adım, bugüne kadar olduğu gibi zamana duyarlı bir bildirim ve uzun bir sesle gelir.',
+        ikon: 'clock',
+        hedefSayfa: 'MuhafizAyarlari',
+        ctaEtiketi: 'Alarmı kurun',
+        kartGoster: false,
+        detaylar: [
+            'Yalnız iPhone ve iOS 26 ile çalışır; Android\'de gerçek alarm zaten vardı',
+            'Alarmı durdurmak namazı kılındı saymaz; "Kıldım" düğmesi ya da uygulama işaretler',
+            'Odak filtresinde "Hatırlatmaları sessiz ver" açıksa alarm çalmaz, bildirim sessiz gelir',
+            'İzni sonradan Ayarlar > Namaz Akışı bölümünden açıp kapatabilirsiniz',
+        ],
+    },
     // Seferîlik bilgi kartı (issue #296) — kart kapalı; özellik ana ekranda kendiliğinden çıkar.
     {
         id: 'seferilik-bilgi-karti',
@@ -77,7 +98,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detaylar: [
             'Telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir',
             'Android 14 ve sonrasında kilit ekranında tam ekran açılması için izin vermeniz gerekebilir; ekran sizi doğru ayara götürür',
-            'iPhone\'da şimdilik zamana duyarlı bildirim ve uzun bir sesle gelir; gerçek alarm iOS 26 AlarmKit desteğiyle gelecek',
+            'iPhone\'da iOS 26 ile gerçek alarm olarak çalar; daha eski sürümlerde zamana duyarlı bildirim ve uzun bir sesle gelir',
         ],
     },
     // Bileklik dostu başlıklar (issue #287) — kart kapalı; rehber yalnız Android'de.

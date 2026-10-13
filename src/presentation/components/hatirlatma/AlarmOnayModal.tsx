@@ -15,21 +15,51 @@ import { useRenkler } from '../../../core/theme';
 import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { ALARM_CALMA_SURESI_DK } from '../../../core/muhafiz/alarmYuku';
 import type { MuhafizPlatformu } from '../../../core/muhafiz/ios/platformYetenekleri';
+import type { AlarmKitDurumu } from '../../../core/muhafiz/ios/alarmKit';
 
 export interface AlarmOnayModalProps {
     gorunur: boolean;
     platform: MuhafizPlatformu;
+    /** iOS AlarmKit durumu (iOS 26) — maddeler buna göre; `null` bilinmiyor. */
+    alarmKit?: AlarmKitDurumu | null;
     onOnayla: () => void;
     /** Geri tuşu / backdrop / "Vazgeç": HİÇBİR ŞEY yazılmaz. */
     onIptal: () => void;
 }
 
-/** Maddeler platforma göre — iPhone'da gerçek alarm henüz yok, söylenmeli (sessiz sapma yok). */
-export function alarmOnayMaddeleri(platform: MuhafizPlatformu): { ikon: string; metin: string }[] {
+/** iPhone'da AlarmKit (iOS 26) kullanılabilir mi — izin verilmemiş olsa da istenebilir mi? */
+export const iosAlarmKitVarMi = (alarmKit: AlarmKitDurumu | null | undefined): boolean =>
+    alarmKit === 'belirsiz' || alarmKit === 'izinli' || alarmKit === 'reddedildi';
+
+/** Maddeler platforma göre — iPhone'da ne olacağı AlarmKit durumuna bağlı (sessiz sapma yok). */
+export function alarmOnayMaddeleri(
+    platform: MuhafizPlatformu,
+    alarmKit: AlarmKitDurumu | null = null
+): { ikon: string; metin: string }[] {
     const ortak = {
         ikon: 'check-circle',
         metin: 'Alarm ekranından tek dokunuşla "Kıldım" diyebilir ya da 10 dakika erteleyebilirsiniz.',
     };
+    if (platform === 'ios' && iosAlarmKitVarMi(alarmKit)) {
+        return [
+            {
+                ikon: 'clock',
+                metin: 'Bu adımın ilk hatırlatmasında iPhone\'unuzun alarmı çalar; sessiz anahtarı ve Odak açıkken de duyulur.',
+            },
+            alarmKit === 'reddedildi'
+                ? {
+                      ikon: 'cog',
+                      metin: 'Alarm izni şu an kapalı. Ayarlar\'dan açana kadar bu adım uzun sesli bir bildirimle gelir.',
+                  }
+                : alarmKit === 'belirsiz'
+                  ? { ikon: 'user-check', metin: 'Onayladığınızda iPhone\'unuz bir kez alarm izni isteyecek.' }
+                  : { ikon: 'shield-alt', metin: 'Alarm izni verilmiş; ek bir adım gerekmez.' },
+            {
+                ikon: 'check-circle',
+                metin: 'Alarm ekranından durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme "Kıldım" olur.',
+            },
+        ];
+    }
     if (platform === 'ios') {
         return [
             {
@@ -38,7 +68,7 @@ export function alarmOnayMaddeleri(platform: MuhafizPlatformu): { ikon: string; 
             },
             {
                 ikon: 'info-circle',
-                metin: 'iPhone\'da sessiz anahtarı açıkken ses duyulmaz. Gerçek alarm iOS 26 AlarmKit desteğiyle gelecek.',
+                metin: 'iPhone\'da sessiz anahtarı açıkken ses duyulmaz. iOS 26\'ya güncellediğinizde gerçek alarm olarak çalar.',
             },
             ortak,
         ];
@@ -57,7 +87,7 @@ export function alarmOnayMaddeleri(platform: MuhafizPlatformu): { ikon: string; 
     ];
 }
 
-export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({ gorunur, platform, onOnayla, onIptal }) => {
+export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({ gorunur, platform, alarmKit = null, onOnayla, onIptal }) => {
     const renkler = useRenkler();
     useDonanimGeriTusu(gorunur, onIptal);
 
@@ -92,14 +122,14 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({ gorunur, platfor
                                 Gerçek alarm açılsın mı?
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {platform === 'ios'
+                                {platform === 'ios' && !iosAlarmKitVarMi(alarmKit)
                                     ? 'iPhone\'da şimdilik uzun sesli bildirim olarak gelir'
                                     : 'Telefonunuzun alarm uygulaması gibi çalar'}
                             </Text>
                         </View>
                     </View>
 
-                    {alarmOnayMaddeleri(platform).map(({ ikon, metin }) => (
+                    {alarmOnayMaddeleri(platform, alarmKit).map(({ ikon, metin }) => (
                         <View key={ikon} className="flex-row items-start mb-2.5">
                             <FontAwesome5
                                 name={ikon}
