@@ -8,14 +8,14 @@ import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelG
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { etkinSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
-import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
+import { GIRIS_ICERIK_HAVUZU, sonDakikaDiliMi } from '../../core/utils/muhafizMetinYardimcisi';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Platform, Vibration } from 'react-native';
 
@@ -257,7 +257,8 @@ export class NamazMuhafiziServisi {
         // banner ile bildirim farklı dakikalara düşer.
         if (!seviyeTetiklenirMi(kazanan, olcuDk, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) return;
 
-        const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
+        // TON: acil kısıtı (son 15 dk, yalnız çıkış yönü) plan ile AYNI kapıdan.
+        const aktifSeviye = etkinSeviyeNo(kazanan, yon);
 
         // Faz 5: uygulama ACIKKEN de sesli anons konussun.
         this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
@@ -391,6 +392,13 @@ export class NamazMuhafiziServisi {
                 case 2: return `Vakit ilerliyor, namazı sona bırakma. (${olcuDk} dk geçti)`;
                 case 1: return `Namaz vakti gireli ${olcuDk} dakika oldu.`;
             }
+        }
+        // Issue #274 — metin = (ton, ölçü): erken sert/acil adım "VAKİT ÇIKIYOR"
+        // demez, vakte özgü nass da taşımaz (arka plan başlığıyla aynı kural).
+        if (!sonDakikaDiliMi(seviye, olcuDk)) {
+            return seviye === 4
+                ? `Namazı geciktirme, hemen namaza dur! (${olcuDk} dk kaldı)`
+                : this.girisIcerigiSec(3);
         }
         switch (seviye) {
             case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${olcuDk} dk kaldı)`;

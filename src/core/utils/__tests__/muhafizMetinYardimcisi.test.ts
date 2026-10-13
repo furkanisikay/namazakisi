@@ -3,7 +3,10 @@ import {
   bildirimGovdesiOlustur,
   VAKIT_ADLARI_BUYUK,
   GIRIS_ICERIK_HAVUZU,
+  SON_DAKIKA_ESIGI_DK,
 } from '../muhafizMetinYardimcisi';
+import { muhafizGovdesiSec } from '../../muhafiz/muhafizGovdesi';
+import { SEYTANLA_MUCADELE_ICERIGI } from '../../data/SeytanlaMucadeleIcerigi';
 
 describe('basligiOlustur', () => {
   test('seviye 1: süre + vakit adı', () => {
@@ -130,6 +133,45 @@ describe('giriş yönü metinleri', () => {
         expect(metin).not.toMatch(/terk|küfr|kâfir|secde/iu);
         expect(metin).not.toMatch(/çıkıyor|son dakika/iu);
       }
+    }
+  });
+});
+
+describe('METİN = (TON, ÖLÇÜ) — issue #274', () => {
+  test('NÖBETÇİ: ton 4 + olcuDk 90 → başlık "ÇIKIYOR" İÇERMEZ', () => {
+    for (const vakit of ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const) {
+      const baslik = basligiOlustur(vakit, 4, 90);
+      expect(baslik).not.toMatch(/ÇIKIYOR/);
+      expect(baslik).toContain('90 dk');
+    }
+  });
+
+  test('erken sert ton "kaçıyor" demez; son dakikalar BİREBİR eski dil', () => {
+    expect(basligiOlustur('ikindi', 3, 60)).not.toMatch(/kaçıyor/);
+    expect(basligiOlustur('ikindi', 3, SON_DAKIKA_ESIGI_DK)).toBe('🔥 30 dk · İkindi vakti kaçıyor');
+    expect(basligiOlustur('aksam', 4, 10)).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
+    // Nazik/uyarı tonu ölçüden bağımsız (zaten nötr).
+    expect(basligiOlustur('ogle', 2, 120)).toBe('⚠️ 120 dk · Öğle vakti daralıyor');
+  });
+
+  test('erken sert/acil gövde nötr havuzdan, son dakika gövdesi değişmez', () => {
+    expect(GIRIS_ICERIK_HAVUZU[4]).toContain(bildirimGovdesiOlustur(4, 'cikisaDogru', 90));
+    expect(bildirimGovdesiOlustur(4, 'cikisaDogru', 5)).toBe(
+      'Hemen namaza dur — sonra kaza etmek zorunda kalırsın.'
+    );
+    expect(bildirimGovdesiOlustur(4)).toBe('Hemen namaza dur — sonra kaza etmek zorunda kalırsın.');
+  });
+
+  test('erken sert/acil gövdesi VAKTE ÖZGÜ NASS taşımaz ve tek rastgele çağrı yapar', () => {
+    const nasslar = SEYTANLA_MUCADELE_ICERIGI.filter((i) => i.vakitler !== undefined).map(
+      (i) => i.metin
+    );
+    for (const oranDegeri of [0, 0.5, 0.99]) {
+      const oran = jest.fn(() => oranDegeri);
+      const govde = muhafizGovdesiSec('yatsi', 3, 'cikisaDogru', oran, 120);
+      expect(oran).toHaveBeenCalledTimes(1);
+      expect(GIRIS_ICERIK_HAVUZU[3]).toContain(govde);
+      expect(nasslar.some((n) => govde.includes(n))).toBe(false);
     }
   });
 });

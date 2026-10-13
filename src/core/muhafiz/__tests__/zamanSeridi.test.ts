@@ -79,7 +79,9 @@ describe('seritDuzeniHesapla', () => {
 
         expect(oranlar[0]).toBeLessThan(0.05);
         expect([...oranlar].sort((a, b) => a - b)).toEqual(oranlar);
-        expect(duzen.cubuklar.map((c) => c.seviye)).toEqual([1, 2, 3, 4]);
+        // Giriş yönünde acil ton yok (issue #274): son adım sert boyunda çizilir.
+        expect(duzen.cubuklar.map((c) => c.seviye)).toEqual([1, 2, 3, 3]);
+        expect(duzen.cubuklar.map((c) => c.adimIndeks)).toEqual([0, 1, 2, 3]);
     });
 
     it('bant ilk uyaridan son uyariya uzanir', () => {

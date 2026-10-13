@@ -18,6 +18,7 @@ import { uygunIcerikleriBul, icerikMetniOlustur } from '../data/SeytanlaMucadele
 import {
     bildirimGovdesiOlustur,
     GIRIS_ICERIK_HAVUZU,
+    sonDakikaDiliMi,
     type MuhafizSeviye,
 } from '../utils/muhafizMetinYardimcisi';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
@@ -30,15 +31,22 @@ const indeksSec = (uzunluk: number, oran: OranKaynagi): number =>
 
 /**
  * Bildirim gövdesi. Vakit adı ve kalan süre ALMAZ — ikisi de başlıkta.
+ * `olcuDk` (issue #274) metnin (ton, ölçü) kuralı içindir: verilmezse çıkış
+ * yönünde eski davranış birebir korunur.
  * Havuzda o (vakit, seviye) için hiçbir şey yoksa yedek metne düşer → gövde asla boş kalmaz.
  */
 export function muhafizGovdesiSec(
     vakit: VakitAdi,
     seviye: MuhafizSeviye,
     yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
-    oran: OranKaynagi = Math.random
+    oran: OranKaynagi = Math.random,
+    olcuDk?: number
 ): string {
-    const girisIcerikleri = yon === 'girisindenItibaren' ? GIRIS_ICERIK_HAVUZU[seviye] : null;
+    // Erken sert/acil (issue #274): mucadele havuzu vaktin SONUNA kuruludur ve
+    // vakte ozgu nass tasir → olcu son dakikalarda degilse notr havuz.
+    // Rastgele cagri SAYISI degismez (tek `oran()`), kayit-oynat bunu olcer.
+    const notrHavuz = yon === 'girisindenItibaren' || !sonDakikaDiliMi(seviye, olcuDk);
+    const girisIcerikleri = notrHavuz ? GIRIS_ICERIK_HAVUZU[seviye] : null;
     if (girisIcerikleri) {
         return girisIcerikleri[indeksSec(girisIcerikleri.length, oran)];
     }

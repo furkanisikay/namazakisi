@@ -54,6 +54,47 @@ export function kademeSeviyeNo(kademe: SeviyeKademe): SeviyeNo {
   return (indeks >= 0 ? indeks + 1 : 1) as SeviyeNo;
 }
 
+/**
+ * ACIL TON yalniz vaktin SON 15 dakikasinda (cikis yonu) gecerlidir — issue #274.
+ *
+ * Neden: acil ton "VAKIT CIKIYOR" der ve (acilKanal ile) Rahatsiz Etmeyin'i
+ * delebilir. 45 dk kala bunu soylemek yanlis (kisi namazi TERK etmis degil,
+ * GECIKTIRMIS — AGENTS.md fikih kurali), telefonu sessizdeyken caldirmak da
+ * gereksizdir. Giris yonunde ("vakit girer girmez") acil ton HIC yoktur: olcu
+ * vaktin sonuna degil basina baglidir.
+ */
+export const ACIL_TON_UST_DK = 15;
+
+/** Bu esik/yon icin acil ton secilebilir mi? (Ekranin ton cipi de buna bakar.) */
+export function acilTonSecilebilirMi(esikDk: number, yon?: PencereYonu): boolean {
+  return (yon ?? VARSAYILAN_PENCERE_YONU) === 'cikisaDogru' && esikDk <= ACIL_TON_UST_DK;
+}
+
+/**
+ * Adimin GERCEKTE kullanilan tonu: acil kisitini (bkz. `ACIL_TON_UST_DK`)
+ * saglamayan acil adim SERT'e duser (bozuk kayit, eski giris yonu tablosu ya da
+ * esigi sonradan 15'in ustune cekilmis adim). Kayit DEGISMEZ — kullanici esigi
+ * geri cekerse ya da cikis yonune donerse acil kendiliginden geri gelir.
+ *
+ * TUM TUKETICILER BURADAN GECER (plan, on plan banner'i, kanal plani, ekran):
+ * biri ham `kademe`yi okursa "ekranda Sert, bildirimde ACIL" ayrismasi dogar.
+ */
+export function etkinKademe(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk'>,
+  yon?: PencereYonu
+): SeviyeKademe {
+  if (seviye.kademe === 'acil' && !acilTonSecilebilirMi(seviye.esikDk, yon)) return 'sert';
+  return SEVIYE_KADEMELERI.includes(seviye.kademe) ? seviye.kademe : 'nazik';
+}
+
+/** `etkinKademe`nin sayisal karsiligi (1..4) — plan ve banner bunu kullanir. */
+export function etkinSeviyeNo(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk'>,
+  yon?: PencereYonu
+): SeviyeNo {
+  return kademeSeviyeNo(etkinKademe(seviye, yon));
+}
+
 /** 'birkez' -> null (tek atis); {herDk:n} -> n. */
 export function siklikDakikasi(siklik: Siklik): number | null {
   return siklik === 'birkez' ? null : siklik.herDk;
@@ -264,7 +305,7 @@ export function vakitUyariPlaniOlustur(
       // Zamanlama daima cikistan sayilir; giris yonunde pencereden turetilir.
       kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
       olcuDk: o,
-      seviye: kademeSeviyeNo(kazanan.kademe),
+      seviye: etkinSeviyeNo(kazanan, yon),
       adimIndeks: kronolojik.indexOf(kazanan),
       kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,

@@ -182,7 +182,8 @@ describe('vakitUyariPlaniOlustur', () => {
 
   test('eşit eşikte daha sert kademe kazanır (eski motorun override davranışı)', () => {
     const esitEsik: VakitMuhafizAyari = {
-      seviyeler: [sv('nazik', 25, 30), sv('uyari', 25, 30), sv('sert', 25, 30), sv('acil', 25, 30)],
+      // 10 dk: acil ton yalnız son 15 dakikada geçerli (issue #274).
+      seviyeler: [sv('nazik', 10, 30), sv('uyari', 10, 30), sv('sert', 10, 30), sv('acil', 10, 30)],
     };
     const plan = vakitUyariPlaniOlustur(esitEsik, 30);
 
@@ -245,8 +246,10 @@ describe('plan bütçesi (Faz 0) — tek kapı `seviyeTetiklenirMi`', () => {
       seviyeler: [sv('nazik', 720, 1), sv('uyari', 300, 1), sv('sert', 120, 1), sv('acil', 30, 1)],
     };
     const plan = vakitUyariPlaniOlustur(genis, 720);
-    for (const seviyeNo of [1, 2, 3, 4]) {
-      expect(plan.filter((u) => u.seviye === seviyeNo).length).toBeLessThanOrEqual(
+    // Adım ayrımı `adimIndeks` ile (issue #274: ton artık tekil değil; acil 30
+    // dk'da olduğu için sert tonla konuşur).
+    for (const adim of [0, 1, 2, 3]) {
+      expect(plan.filter((u) => u.adimIndeks === adim).length).toBeLessThanOrEqual(
         PLAN_ADIM_UST_SINIRI
       );
     }
@@ -374,7 +377,10 @@ describe('giriş yönü (YENİ-1) — vakitUyariPlaniOlustur', () => {
       // acil (180, her 30 dk) — TARAMA `enBuyukEsik`te DURMAZ
       180, 210,
     ]);
-    expect(plan.map((u) => u.seviye)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4]);
+    // Issue #274: giriş yönünde ACİL TON YOK — acil adım sert (3) olarak konuşur.
+    expect(plan.map((u) => u.seviye)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3]);
+    // Adım ayrımı ton değil sıra numarasıyla korunur.
+    expect(plan.map((u) => u.adimIndeks)).toEqual([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3]);
   });
 
   test('kalanDk pencereden TÜRETİLİR (tüketiciler çıkıştan zamanlamayı sürdürebilir)', () => {

@@ -12,7 +12,7 @@
 import type { MuhafizMatrisi } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
 import {
-  kademeSeviyeNo,
+  etkinSeviyeNo,
   muhafizAcilKanalMi,
   muhafizKanaliSec,
   titresimGerekliMi,
@@ -46,7 +46,8 @@ export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTan
     for (const seviye of vakitAyari.seviyeler) {
       if (!seviye || adimKapaliMi(seviye.kanallar)) continue;
 
-      const seviyeNo = kademeSeviyeNo(seviye.kademe);
+      // Planla AYNI ton (acil kisiti dahil) — kanal id'si ayrismasin.
+      const seviyeNo = etkinSeviyeNo(seviye, vakitAyari.yon);
       const titresim = titresimGerekliMi(seviye.kanallar);
       const kanalId = muhafizKanaliSec(
         seviyeNo,

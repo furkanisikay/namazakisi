@@ -128,7 +128,7 @@ export function pencereninKayitlari(
             vakit: pencere.vakit,
             seviye: u.seviye,
             baslik: basligiOlustur(pencere.vakit, u.seviye, u.olcuDk, yon),
-            govde: muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id)),
+            govde: muhafizGovdesiSec(pencere.vakit, u.seviye, yon, () => kimliktenOran(id), u.olcuDk),
             titresim: titresimGerekliMi(u.kanallar),
             acil: muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal),
         };
