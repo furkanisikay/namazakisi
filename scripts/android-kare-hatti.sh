@@ -75,6 +75,10 @@ adb shell run-as "$PAKET" mkdir -p shared_prefs
 adb shell run-as "$PAKET" cp /data/local/tmp/tercihler.xml "shared_prefs/${PAKET}_preferences.xml"
 
 # Temiz durum cubugu: Android'in sistem demo modu (iOS'taki 09:41 karsiligi).
+# Sistem hata/ANR pencerelerini gizle: yuklu emulatorde "Pixel Launcher isn't
+# responding" penceresi uygulamanin ustune acilip TUM akislari dusurdu (b830769).
+adb shell settings put global hide_error_dialogs 1 || true
+
 adb shell settings put global sysui_demo_allowed 1
 DEMO="adb shell am broadcast -a com.android.systemui.demo -e command"
 $DEMO enter

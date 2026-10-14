@@ -64,6 +64,10 @@ adb push /tmp/tercihler.xml /data/local/tmp/tercihler.xml
 adb shell run-as "$PAKET" mkdir -p shared_prefs
 adb shell run-as "$PAKET" cp /data/local/tmp/tercihler.xml "shared_prefs/${PAKET}_preferences.xml"
 
+# Sistem hata/ANR pencerelerini gizle: yuklu emulatorde "Pixel Launcher isn't
+# responding" penceresi uygulamanin ustune acilip TUM akislari dusurdu (b830769).
+adb shell settings put global hide_error_dialogs 1 || true
+
 # Temiz durum cubugu (SystemUI demo modu).
 adb shell settings put global sysui_demo_allowed 1
 DEMO="adb shell am broadcast -a com.android.systemui.demo -e command"
