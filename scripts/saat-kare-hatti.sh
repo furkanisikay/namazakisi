@@ -118,11 +118,21 @@ bul_ve_dokun() {
 # --- 01 / 02: ana ekran + vakit listesi ---
 adb shell am start -W -n "$PAKET/$SINIF.ui.AnaAktivite"
 hazir_bekle 'Sıradaki|Dokunarak|Kıldınız' || true
+if [ "$ETIKET" = kare ]; then
+  # Kare ekranda ilk konumda "Sıradaki" satiri TimeText'in altinda kaliyor (uygulamanin
+  # gercek ilk gorunumu); kucuk bir asagi kaydirma basligi saatin altina indirir.
+  adb shell input swipe $((G / 2)) $((Y / 3)) $((G / 2)) $((Y / 3 + Y / 9)) 600
+  sleep 1.5
+fi
 kare 01-ana-ekran 2 || true
 # Iki adim: vakit satirlari ekranin ortasina gelsin (tek adimda baslik TimeText'in
-# altinda yarim kaliyordu).
+# altinda yarim kaliyordu). Kare ekranda satirlar gorece buyuk → bir kisa adim daha.
 yukari_kaydir
 yukari_kaydir
+if [ "$ETIKET" = kare ]; then
+  adb shell input swipe $((G / 2)) $((Y / 2)) $((G / 2)) $((Y / 3)) 600
+  sleep 1.5
+fi
 kare 02-vakitler 1 || true
 
 # --- 03: "Kıldım" onayi (su anki vakit kilinmamis tohumlandi) ---
