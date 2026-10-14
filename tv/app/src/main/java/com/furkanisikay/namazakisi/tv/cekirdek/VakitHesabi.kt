@@ -46,12 +46,13 @@ data class GunlukVakitler(
 
 /**
  * Telefonla AYNI hesap (issue #286). Telefon: `adhan` JS +
- * `CalculationMethod.Turkey()` (`NamazVaktiHesaplayiciServisi.prayerTimesAl`).
+ * `turkiyeHesapParametreleri()` (= `CalculationMethod.Turkey()`).
  *
- * DİKKAT — madhab: telefonun yapılandırmasında `madhab: 'Hanafi'` alanı DURUR ama
- * hesap yolu onu `PrayerTimes`'a hiç geçirmez → adhan varsayılanı ŞAFİÎ (asr-ı evvel,
- * gölge 1×) kullanılır; Diyanet takvimi de ikindiyi asr-ı evvelle verir. Burada
- * `Madhab.HANAFI` yazmak ikindiyi telefondan ~45 dk sonraya kaydırırdı.
+ * DİKKAT — madhab: ikindi = ASR-I EVVEL (gölge 1×; adhan'da `Madhab.SHAFI`). Diyanet
+ * takvimi ikindiyi asr-ı evvelle verir (DİYK; kaynak notu
+ * `docs/superpowers/specs/2026-10-14-ikindi-vakti-asr-i-evvel-kaynak.md`). Telefonun
+ * tek kaynağı `turkiyeHesapParametreleri()` (`Turkey()` varsayılanı). Burada
+ * `Madhab.HANAFI` (asr-ı sânî) yazmak ikindiyi telefondan ~45 dk sonraya kaydırırdı.
  * Yüksek enlem kuralı da açıkça yazılır: adhan JS varsayılanı `MiddleOfTheNight`,
  * adhan2'nin varsayılanı (null) enleme göre öneri yapar.
  *

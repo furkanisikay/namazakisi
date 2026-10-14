@@ -3,7 +3,8 @@
  * Sihirbaz hesabı, motivasyon önerileri, tempo analizi ve mekruh vakit kontrolü
  */
 
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import {
   HesaplamaSihirbazGirdisi,
   MotivasyonOnerisi,
@@ -205,7 +206,7 @@ export const mekruhVakitKontrolEt = (
 ): MekruhVakitBilgisi => {
   try {
     const coordinates = new Coordinates(latitude, longitude);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const now = new Date();
     const prayerTimes = new PrayerTimes(coordinates, now, params);
 

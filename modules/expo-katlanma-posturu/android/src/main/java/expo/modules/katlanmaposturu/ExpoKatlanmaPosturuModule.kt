@@ -73,6 +73,13 @@ class ExpoKatlanmaPosturuModule : Module() {
             kapsam.launch { if (dinleyiciVar) izlemeyiBaslat() }
         }
 
+        // Arka planda postür değişse de ekran görünmez; akışı tutmak Activity'yi ve
+        // WindowManager dinleyicisini boşuna canlı tutar. Ön plana gelişte yukarıdaki
+        // blok yeniden başlatır ve akış o anki düzeni hemen yayınlar (kaçan değişim yok).
+        OnActivityEntersBackground {
+            kapsam.launch { izlemeyiDurdur() }
+        }
+
         OnActivityDestroys {
             kapsam.launch { izlemeyiDurdur() }
         }

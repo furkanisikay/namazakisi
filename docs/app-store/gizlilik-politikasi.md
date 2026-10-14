@@ -39,7 +39,10 @@ Takvim izni yalnızca aşağıdaki iki özellikten birini siz açtığınızda i
   onayınız alınır. Takviminizdeki etkinliklerin başlangıç ve bitiş saatleri,
   "tüm gün" ve "meşgul" bilgisi bir namaz vaktiyle çakışıp çakışmadığını
   anlamak için **yalnızca telefonunuzda** okunur. Etkinlik adı, siz ayrıca
-  açmadıkça bildirimde kullanılmaz.
+  açmadıkça bildirimde kullanılmaz. Adı göstermeyi açarsanız ad, bildirimin bir
+  parçası olarak kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da
+  benzeri uygulamalarda da görünebilir; bu uygulamaların bildirimleri nasıl
+  işlediği kendi gizlilik koşullarına bağlıdır.
 
 Her iki durumda da takvim bilgileriniz **saklanmaz, yedeğe girmez ve hiçbir
 yere gönderilmez**; uygulama bu bilgileri toplamaz ve kimseyle paylaşmaz.

@@ -30,7 +30,6 @@ describe('Güneş Vakti Hesaplama Entegrasyonu', () => {
       latitude: 41.0082,
       longitude: 28.9784,
       method: 'Turkey',
-      madhab: 'Hanafi'
     });
   });
 
@@ -226,12 +225,11 @@ describe('Güneş Vakti Hesaplama Entegrasyonu', () => {
     expect(bilgi?.kalanSureMs).toBe(60 * 60 * 1000);
   });
 
-  it('config madhab "Hanafi" olsa da ikindi Shafi (Turkey default) hesabıyla dönüyor (LATENT BUG karakterizasyonu)', () => {
-    // yapilandir({ madhab: 'Hanafi' }) çağrılmasına rağmen prayerTimesAl her zaman
-    // CalculationMethod.Turkey() kuruyor ve params.madhab'ı SET ETMİYOR. Turkey() varsayılanı
-    // Shafi olduğundan ikindi (asr) Shafi gölge uzunluğu (1) ile hesaplanır; Hanafi (2) UYGULANMAZ.
-    // Bu test mevcut (hatalı) davranışı SABİTLER: biri bug'ı düzeltip madhab'ı gerçekten
-    // bağlarsa ikindi ~41 dk kayar ve bu test FAIL ederek değişikliği görünür kılar.
+  it('NÖBETÇİ: ikindi = asr-ı evvel (Diyanet takvimi), Hanefî asr-ı sânî DEĞİL', () => {
+    // Diyanet takvimi ikindiyi asr-ı evvelle (gölge 1×) verir; adhan'da karşılığı
+    // Madhab.Shafi = Turkey() varsayılanı. Biri "Hanefî kullanıcıya Hanefî" diye
+    // Madhab.Hanafi'ye (asr-ı sânî, gölge 2×) geçerse ikindi ~40-45 dk kayar ve bu
+    // test FAIL eder. Kaynak: docs/superpowers/specs/2026-10-14-ikindi-vakti-asr-i-evvel-kaynak.md
     const { Madhab } = require('adhan');
     const testDate = new Date('2026-02-01T12:00:00');
     const coordinates = new Coordinates(41.0082, 28.9784);
@@ -247,7 +245,7 @@ describe('Güneş Vakti Hesaplama Entegrasyonu', () => {
     expect(hanafiPt.asr.getTime()).not.toBe(shafiPt.asr.getTime());
     expect(hanafiPt.asr.getTime()).toBeGreaterThan(shafiPt.asr.getTime()); // Hanafi daha geç
 
-    // Servis, madhab:'Hanafi' yapılandırılmış olmasına RAĞMEN Shafi ikindisini üretir.
+    // Servis asr-ı evvel (Shafi) ikindisini üretir.
     const vakitler = servis.getGunlukVakitler(testDate);
     expect(vakitler).not.toBeNull();
     expect(vakitler!.ikindi.getTime()).toBe(shafiPt.asr.getTime());

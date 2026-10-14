@@ -32,9 +32,21 @@ const olcuVer = (ekran: ReturnType<typeof ciz>, y: number, yukseklik: number) =>
   });
 };
 
-const yukseklik = (ekran: ReturnType<typeof ciz>, testID: string) => {
-  const stil = [ekran.getByTestId(testID).props.style].flat(Infinity) as Record<string, unknown>[];
-  return Object.assign({}, ...stil.filter(Boolean)).height;
+const stil = (ekran: ReturnType<typeof ciz>, testID: string): Record<string, unknown> => {
+  const parcalar = [ekran.getByTestId(testID).props.style].flat(Infinity) as Record<string, unknown>[];
+  return Object.assign({}, ...parcalar.filter(Boolean));
+};
+
+const yukseklik = (ekran: ReturnType<typeof ciz>, testID: string) => stil(ekran, testID).height;
+
+/** Eşit yarı yedeği: iki yarı da `flex: 1`, sabit yükseklik yok, büyüme kapatılmamış. */
+const esitYarilarMi = (ekran: ReturnType<typeof ciz>) => {
+  for (const id of ['anasayfa-masaustu-ust', 'anasayfa-masaustu-alt']) {
+    const s = stil(ekran, id);
+    expect(s.flex).toBe(1);
+    expect(s.height).toBeUndefined();
+    expect(s.flexGrow).not.toBe(0);
+  }
 };
 
 describe('GunSayfasiDuzeni', () => {
@@ -71,7 +83,14 @@ describe('GunSayfasiDuzeni', () => {
 
     it('ölçü gelmeden eşit yarılar (sabit yükseklik yok)', () => {
       const ekran = ciz('masaustu', mentese);
-      expect(yukseklik(ekran, 'anasayfa-masaustu-ust')).toBeUndefined();
+      esitYarilarMi(ekran);
+    });
+
+    it('menteşe sınırı yoksa (null) ölçü gelse de EŞİT YARILAR uygulanır', () => {
+      const ekran = ciz('masaustu', null);
+      olcuVer(ekran, 100, 700);
+      esitYarilarMi(ekran);
+      expect(within(ekran.getByTestId('anasayfa-masaustu-ust')).getByText('buyuk-sayac')).toBeTruthy();
     });
 
     it('sayfa ölçülünce yarılar MENTEŞEYE göre boyutlanır', () => {
@@ -85,7 +104,7 @@ describe('GunSayfasiDuzeni', () => {
     it('menteşe sayfanın kenarına çok yakınsa eşit yarılara düşer', () => {
       const ekran = ciz('masaustu', { sol: 0, ust: 150, sag: 800, alt: 150 });
       olcuVer(ekran, 100, 700);
-      expect(yukseklik(ekran, 'anasayfa-masaustu-ust')).toBeUndefined();
+      esitYarilarMi(ekran);
     });
   });
 });

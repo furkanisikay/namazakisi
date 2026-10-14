@@ -47,10 +47,30 @@ object KilitEkraniKarari {
     fun dugmeGorunurMu(kildim: KildimDurumu, veriVar: Boolean, kilitEkrani: Boolean): Boolean =
         veriVar && !(kilitEkrani && kildim == KildimDurumu.KILINABILIR)
 
+    /** Kapak ekranı ipucu (issue #283) — kılınabilir vakitte ne yapılacağını söyler. */
+    const val KAPAK_IPUCU = "İşaretlemek için telefonunuzu açın"
+
+    /**
+     * Samsung Flex Window ipucu satırı. Kapakta dokunuş uygulamayı açma niyetini
+     * taşır ama Flex Window'da uygulamanın kapakta açılması Samsung'un ayrı iznine
+     * (Flex Window'da uygulamalar / Good Lock MultiStar) bağlıdır; izin yoksa dokunuş
+     * SESSİZCE hiçbir şey yapmayabilir. Bu yüzden işaretlenebilir vakitte yol ekranda
+     * yazılır: telefonu açıp işaretleyin. Kapak dışında ya da kılınabilir olmayan
+     * durumda `null` (satır normal içeriğini gösterir).
+     */
+    fun kapakIpucu(kapakEkrani: Boolean, kildim: KildimDurumu): String? =
+        if (kapakEkrani && kildim == KildimDurumu.KILINABILIR) KAPAK_IPUCU else null
+
     /** Ekran okuyucu metni — kilit ekranında işaretleme vaadi verilmez. */
-    fun erisimMetni(ad: String, kildim: KildimDurumu, kilitEkrani: Boolean): String = when (kildim) {
+    fun erisimMetni(
+        ad: String,
+        kildim: KildimDurumu,
+        kilitEkrani: Boolean,
+        kapakEkrani: Boolean = false,
+    ): String = when (kildim) {
         KildimDurumu.KILINABILIR ->
-            if (kilitEkrani) "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın"
+            if (kapakEkrani) "$ad namazı kılınmadı. $KAPAK_IPUCU"
+            else if (kilitEkrani) "$ad namazı kılınmadı. İşaretlemek için uygulamayı açın"
             else "$ad namazını kılındı olarak işaretleyin"
         KildimDurumu.BEKLIYOR -> "$ad namazı işaretleniyor"
         KildimDurumu.KILINDI -> "$ad namazı kılındı. Uygulamayı açın"

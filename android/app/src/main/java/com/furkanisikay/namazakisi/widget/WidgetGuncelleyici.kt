@@ -150,18 +150,19 @@ object WidgetGuncelleyici {
         // bağlar; orada widget salt okunur (yayın niyeti kilit açılmadan işlerdi).
         // Samsung Flex Window (issue #283) sağlayıcısı kategoriden bağımsız salt okunur.
         val saglayici = yonetici.getAppWidgetInfo(id)?.provider?.className
+        val kapakEkrani = saglayici == NamazKapakWidget::class.java.name
         val kilitEkrani = KilitEkraniKarari.saltOkunurMu(
             secenek.getInt(AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY, 0),
-            kapakEkraniSaglayicisi = saglayici == NamazKapakWidget::class.java.name,
+            kapakEkraniSaglayicisi = kapakEkrani,
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return RemoteViews(
                 mapOf(
-                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik, kilitEkrani),
+                    SizeF(40f, 40f) to ciz(context, WidgetDuzeni.KUCUK, ayar, anlik, kilitEkrani, kapakEkrani),
                     SizeF(WidgetDuzenSecici.ORTA_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik, kilitEkrani),
+                        ciz(context, WidgetDuzeni.ORTA, ayar, anlik, kilitEkrani, kapakEkrani),
                     SizeF(WidgetDuzenSecici.GENIS_MIN_GENISLIK_DP, WidgetDuzenSecici.ORTA_MIN_YUKSEKLIK_DP) to
-                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik, kilitEkrani),
+                        ciz(context, WidgetDuzeni.GENIS, ayar, anlik, kilitEkrani, kapakEkrani),
                 )
             )
         }
@@ -174,7 +175,7 @@ object WidgetGuncelleyici {
         } else {
             WidgetDuzeni.KUCUK
         }
-        return ciz(context, duzen, ayar, anlik, kilitEkrani)
+        return ciz(context, duzen, ayar, anlik, kilitEkrani, kapakEkrani)
     }
 
     private fun ciz(
@@ -183,6 +184,7 @@ object WidgetGuncelleyici {
         ayar: WidgetAyari,
         a: WidgetVeriDeposu.Anlik,
         kilitEkrani: Boolean,
+        kapakEkrani: Boolean,
     ): RemoteViews {
         val v = RemoteViews(
             context.packageName,
@@ -222,7 +224,7 @@ object WidgetGuncelleyici {
             gorselRengi(context, v, R.id.widget_kildim, if (a.kildim == KildimDurumu.YOK) p.ikincil else p.vurgu)
             isaretiCiz(context, v, R.id.widget_kildim_ikon, a.kildim, p)
             v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-            v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani))
+            v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani))
             return v
         }
 
@@ -246,7 +248,9 @@ object WidgetGuncelleyici {
         metinRengi(context, v, R.id.widget_kalan_kucuk, p.ikincil)
         metinRengi(context, v, R.id.widget_bitis, p.ikincil)
 
-        val sonrakiMetni = when {
+        // Flex Window ipucu "sıradaki" satırının yerine geçer (kapak ekranında dokunuş
+        // uygulamayı açamayabilir — `KilitEkraniKarari.kapakIpucu`).
+        val sonrakiMetni = KilitEkraniKarari.kapakIpucu(kapakEkrani, a.kildim) ?: when {
             !ayar.sonrakiGoster || sonraki == null -> null
             aktif != null -> "Sıradaki ${VakitKodlari.gorunenAd(sonraki.kod)} · ${saatMetni(sonraki.ms)}"
             else -> "Şu an kılınacak vakit yok"
@@ -257,7 +261,7 @@ object WidgetGuncelleyici {
 
         dugmeyiCiz(context, v, a.kildim, sayacVar, kilitEkrani, p)
         v.setOnClickPendingIntent(R.id.widget_kildim, kildimNiyeti ?: uygulamaAc)
-        v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani))
+        v.setContentDescription(R.id.widget_kildim, KilitEkraniKarari.erisimMetni(ad, a.kildim, kilitEkrani, kapakEkrani))
 
         if (duzen == WidgetDuzeni.GENIS) listeyiCiz(context, v, a, p)
         return v

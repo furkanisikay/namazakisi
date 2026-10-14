@@ -198,15 +198,16 @@ describe('NamazVaktiHesaplayiciServisi', () => {
             expect(servis.getKonfig()).toEqual({ latitude: 41, longitude: 29 });
         });
 
-        it('var olan method/madhab tercihlerini korur', () => {
-            servis.yapilandir({ latitude: 41, longitude: 29, method: 'Turkey', madhab: 'Shafi' });
+        it('var olan method tercihini korur', () => {
+            servis.yapilandir({ latitude: 41, longitude: 29, method: 'Turkey' });
             servis.guncelleKonumManuel({ lat: 1, lng: 2 });
-            expect(servis.getKonfig()).toMatchObject({ method: 'Turkey', madhab: 'Shafi' });
+            expect(servis.getKonfig()).toMatchObject({ method: 'Turkey' });
         });
 
-        it('method/madhab yoksa varsayılan Turkey/Hanafi atanır', () => {
+        it('method yoksa varsayılan Turkey atanır; ölü madhab alanı YAZILMAZ (ikindi = asr-ı evvel)', () => {
             servis.guncelleKonumManuel({ lat: 1, lng: 2 });
-            expect(servis.getKonfig()).toMatchObject({ method: 'Turkey', madhab: 'Hanafi' });
+            expect(servis.getKonfig()).toMatchObject({ method: 'Turkey' });
+            expect(servis.getKonfig()).not.toHaveProperty('madhab');
         });
     });
 
@@ -220,7 +221,7 @@ describe('NamazVaktiHesaplayiciServisi', () => {
             const sonuc = await servis.guncelleKonumOto();
 
             expect(sonuc).toEqual({ lat: 40.5, lng: 32.5 });
-            expect(servis.getKonfig()).toMatchObject({ latitude: 40.5, longitude: 32.5, method: 'Turkey', madhab: 'Hanafi' });
+            expect(servis.getKonfig()).toMatchObject({ latitude: 40.5, longitude: 32.5, method: 'Turkey' });
         });
 
         it('izin reddedilince null döner ve config oluşmaz', async () => {

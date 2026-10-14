@@ -30,12 +30,37 @@ class PanoDurumuTest {
     }
 
     @Test
-    fun geceYarisindanSonraImsakOncesiAktifYatsiSiradakiBugununImsaki() {
+    fun geceYarisindanSonraImsakOncesiListeDununGunuSiradakiBugununImsaki() {
+        // Telefonun "aktif gün = dün" kuralının ikizi: yatsı sürerken liste DÜNÜ çizer,
+        // vurgulanan yatsı satırı dün akşamki giriş saatini gösterir (bu gecenin değil).
         val d = durum("2026-10-14T02:00:00")
-        assertEquals(LocalDate.parse("2026-10-14"), d.tarih)
+        val dun = VakitHesabi.hesapla(lat, lng, LocalDate.parse("2026-10-13"))
+        val bugun = VakitHesabi.hesapla(lat, lng, LocalDate.parse("2026-10-14"))
+        assertEquals(LocalDate.parse("2026-10-13"), d.tarih)
+        assertEquals(dun, d.vakitler)
         assertEquals(Vakit.YATSI, d.aktif)
+        assertTrue(d.vakitler.yatsi <= an("2026-10-14T02:00:00"))
         assertEquals(Vakit.IMSAK, d.siradaki)
-        assertEquals(d.vakitler.imsak, d.siradakiMs)
+        assertEquals(bugun.imsak, d.siradakiMs)
+        assertEquals(bugun.imsak - an("2026-10-14T02:00:00"), d.kalanMs)
+        // Kerahat gerçek ana göre: sıradaki bugünün şurukudur.
+        assertNull(d.kerahat)
+        assertEquals(Kerahat.Tur.SURUK, d.siradakiKerahat?.tur)
+        assertEquals(bugun.gunes, d.siradakiKerahat?.baslangic)
+    }
+
+    @Test
+    fun cumaGecesiImsaktanOnceGosterilenGunPersembedir() {
+        // 2026-10-16 Cuma 01:00 → namaz günü hâlâ Perşembe; öğle satırı "Cuma" okunmaz.
+        val d = durum("2026-10-16T01:00:00")
+        assertEquals(LocalDate.parse("2026-10-15"), d.tarih)
+        assertFalse(d.cuma)
+        // İmsak girdiği an gün Cuma'ya döner.
+        val cuma = VakitHesabi.hesapla(lat, lng, LocalDate.parse("2026-10-16"))
+        val g = PanoHesabi.hesapla(cuma.imsak, ist) { VakitHesabi.hesapla(lat, lng, it) }
+        assertEquals(LocalDate.parse("2026-10-16"), g.tarih)
+        assertEquals(Vakit.IMSAK, g.aktif)
+        assertTrue(g.cuma)
     }
 
     @Test

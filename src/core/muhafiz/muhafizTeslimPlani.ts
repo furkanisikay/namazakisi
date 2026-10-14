@@ -13,7 +13,8 @@
  * için `simdi`den türetilir. adhan core'da zaten kullanılıyor (`nafile/gunVakitleri`).
  * Başlık/gövde metinleri (rastgele seçim) SERVİSTE kalır — defter metin saymaz.
  */
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
 import type { MuhafizMatrisi, MuhafizVakti } from './matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from './motorAdaptoru';
@@ -124,7 +125,7 @@ export function muhafizVakitleriniHesapla(
     secenek: MuhafizVakitSecenegi = {}
 ): MuhafizVakitZamani[] {
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
 
     const bugunTarih = new Date(simdi);
     const dunTarih = new Date(simdi);

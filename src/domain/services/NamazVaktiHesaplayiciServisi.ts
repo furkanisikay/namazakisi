@@ -1,4 +1,5 @@
-import { Coordinates, CalculationMethod, PrayerTimes, Madhab, SunnahTimes } from 'adhan';
+import { Coordinates, CalculationMethod, PrayerTimes, SunnahTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import * as Location from 'expo-location';
 import { Logger } from '../../core/utils/Logger';
 import { TURKIYE_ILLERI_OFFLINE } from './TurkiyeKonumServisi';
@@ -26,7 +27,9 @@ export interface NamazVaktiHesaplayiciKonfig {
     latitude: number;
     longitude: number;
     method?: keyof typeof CalculationMethod; // default: Turkey
-    madhab?: keyof typeof Madhab; // default: Hanafi
+    // `madhab` alanı KALDIRILDI: hesap yolu onu hiç okumuyordu ve 'Hanafi' değeri
+    // yanıltıcıydı. İkindi = asr-ı evvel (Diyanet takvimi) — tek kaynak
+    // `core/vakit/hesapParametreleri.ts > turkiyeHesapParametreleri`.
 }
 
 export class NamazVaktiHesaplayiciServisi {
@@ -62,7 +65,7 @@ export class NamazVaktiHesaplayiciServisi {
         if (!pt) {
             if (this.ptCache.size > 4) this.ptCache.clear(); // sinirsiz buyumeyi onle
             const coordinates = new Coordinates(latitude, longitude);
-            const params = CalculationMethod.Turkey();
+            const params = turkiyeHesapParametreleri();
             pt = new PrayerTimes(coordinates, tarih, params);
             this.ptCache.set(anahtar, pt);
         }
@@ -90,8 +93,7 @@ export class NamazVaktiHesaplayiciServisi {
             this.yapilandir({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
-                method: this.config?.method || 'Turkey',
-                madhab: this.config?.madhab || 'Hanafi'
+                method: this.config?.method || 'Turkey'
             });
 
             return { lat: location.coords.latitude, lng: location.coords.longitude };
@@ -111,8 +113,7 @@ export class NamazVaktiHesaplayiciServisi {
             this.yapilandir({
                 latitude: plakaKoduVeyaKoordinat.lat,
                 longitude: plakaKoduVeyaKoordinat.lng,
-                method: this.config?.method || 'Turkey',
-                madhab: this.config?.madhab || 'Hanafi'
+                method: this.config?.method || 'Turkey'
             });
             return true;
         }
@@ -123,8 +124,7 @@ export class NamazVaktiHesaplayiciServisi {
             this.yapilandir({
                 latitude: il.lat,
                 longitude: il.lng,
-                method: this.config?.method || 'Turkey',
-                madhab: this.config?.madhab || 'Hanafi'
+                method: this.config?.method || 'Turkey'
             });
             return true;
         }

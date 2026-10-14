@@ -12,5 +12,10 @@ package com.furkanisikay.namazakisi.widget
  * Kapak ekranı kapalı telefonda kilit açılmadan kullanılır → widget her zaman SALT
  * OKUNUR çizilir ("Kıldım" yayını verilmez; dokunuş uygulamayı açar) —
  * `KilitEkraniKarari.saltOkunurMu`.
+ *
+ * Dokunuş yine uygulamayı açma niyetini taşır, ama Flex Window'da uygulamanın kapakta
+ * açılması Samsung'un ayrı iznine bağlıdır; izin yoksa dokunuş sessizce hiçbir şey
+ * yapmayabilir. Bu yüzden kılınabilir vakitte "sıradaki" satırının yerine
+ * "İşaretlemek için telefonunuzu açın" ipucu yazılır (`KilitEkraniKarari.kapakIpucu`).
  */
 class NamazKapakWidget : NamazWidgetSaglayicisi()

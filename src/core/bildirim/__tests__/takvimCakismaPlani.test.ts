@@ -1,6 +1,7 @@
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import {
     ETKINLIK_AZAMI_SURE_DK,
+    KAPLIYOR_AZAMI_ONCELIK_DK,
     KILMA_PAYI_DK,
     TAKVIM_CAKISMA_ID_ONEKI,
     etkinlikleriSuz,
@@ -103,9 +104,16 @@ describe('etkinlikleriSuz', () => {
         expect(sonuc).toEqual([{ baslangicMs: T0, bitisMs: T0 + SA, baslik: 'Kalan' }]);
     });
 
-    it('"tentative" (belki) ve iOS "unavailable" meşgul sayılır', () => {
-        expect(etkinlikleriSuz([ham({ availability: 'tentative' }), ham({ availability: 'unavailable', title: 'B' })]))
-            .toHaveLength(2);
+    it('"tentative" (belki) — availability ya da status — meşgul SAYILMAZ (yanlış pozitif)', () => {
+        expect(etkinlikleriSuz([ham({ availability: 'tentative' }), ham({ status: 'tentative', title: 'B' })]))
+            .toEqual([]);
+    });
+
+    it('iOS "unavailable" ve durum bilgisi olmayan etkinlik meşgul sayılır', () => {
+        expect(etkinlikleriSuz([
+            ham({ availability: 'unavailable', title: 'A' }),
+            ham({ availability: null, status: null, title: 'B' }),
+        ])).toHaveLength(2);
     });
 
     it('bozuk tarih, ters aralık ve 8 saatten uzun etkinlik atlanır; Date nesnesi kabul edilir', () => {
@@ -176,6 +184,15 @@ describe('takvimCakismaPlaniOlustur (gerçek vakitler, İstanbul)', () => {
         const plan = olustur([e]);
         expect(plan.map((k) => [k.vakit, k.tur])).toEqual([['ogle', 'kapliyor']]);
         expect(plan[0].zaman.getTime()).toBe(e.baslangicMs - 30 * DK);
+    });
+
+    it('"kapliyor" tetiği girişten en fazla KAPLIYOR_AZAMI_ONCELIK_DK önce: sabah başlayan uzun toplantı', () => {
+        // 09:00–16:25 benzeri: öğleden saatler önce başlayıp öğleyi tümden yutan blok.
+        const e = { baslangicMs: pt.dhuhr.getTime() - 4 * SA, bitisMs: pt.asr.getTime() + 5 * DK, baslik: null };
+        const plan = olustur([e]);
+        expect(plan.map((k) => [k.vakit, k.tur])).toEqual([['ogle', 'kapliyor']]);
+        expect(plan[0].zaman.getTime()).toBe(pt.dhuhr.getTime() - KAPLIYOR_AZAMI_ONCELIK_DK * DK);
+        expect(KAPLIYOR_AZAMI_ONCELIK_DK).toBe(60);
     });
 
     it('kılınmış vakit, özel gün ve geçmiş tetik atlanır', () => {
