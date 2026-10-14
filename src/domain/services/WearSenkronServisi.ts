@@ -10,8 +10,15 @@
  *    ORTAK "Kıldım" kuyruğuna alır (widget/hızlı ayarlar/kısayolla aynı — issue
  *    #275/#276); kuyruğu `KildimKuyruguServisi` boşaltır.
  *
+ * APPLE WATCH (issue #285): iOS'ta AYNI yük, WatchConnectivity köprüsüne
+ * (`modules/expo-siri-kisayollari` → `SaatKoprusu`, `updateApplicationContext`) gider —
+ * böylece konum yayması, açılış, "Kıldım" sonrası tazeleme ve arka plan görevi iki saat
+ * için de TEK yoldan geçer. Fark yalnız içerik payıdır: Apple Watch'a muhafız planı ve
+ * Now Bar payı GÖNDERİLMEZ (iPhone bildirimleri saate zaten yansır; saat ikinci bildirim
+ * kurarsa çift bildirim olur). Saatten gelen "Kıldım" Siri/widget ile ortak kuyruğa düşer.
+ *
  * Store'a BAĞIMLI DEĞİLDİR (arka planda Redux yok): konum ham AsyncStorage'dan,
- * kılınmışlık `LocalNamazServisi`'nden okunur. Android dışında / modül yoksa no-op.
+ * kılınmışlık `LocalNamazServisi`'nden okunur. Saat köprüsü yoksa no-op.
  */
 import { NativeModules, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,6 +39,7 @@ import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muhafizPlaniGozlemcisi';
 import { canliSaatDinleyicisiniAyarla } from './canliSaatGozlemcisi';
 import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtelemeDurumu';
+import { saatKoprusu } from '../../../modules/expo-siri-kisayollari/src';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
@@ -45,9 +53,22 @@ const NAMAZ_VAKIT: Partial<Record<string, VakitAdi>> = {
     [NamazAdi.Yatsi]: 'yatsi',
 };
 
-const modul = (): WearSenkronModulu | null => {
+/** `wear` = Wear OS (Data Layer), `appleWatch` = Apple Watch (WatchConnectivity). */
+type SaatTuru = 'wear' | 'appleWatch';
+
+interface SaatHedefi {
+    modul: WearSenkronModulu;
+    tur: SaatTuru;
+}
+
+const hedef = (): SaatHedefi | null => {
+    if (Platform.OS === 'ios') {
+        const kopru = saatKoprusu();
+        return kopru ? { modul: kopru, tur: 'appleWatch' } : null;
+    }
     if (Platform.OS !== 'android') return null;
-    return (NativeModules.WearSenkron as WearSenkronModulu | undefined) ?? null;
+    const m = (NativeModules.WearSenkron as WearSenkronModulu | undefined) ?? null;
+    return m ? { modul: m, tur: 'wear' } : null;
 };
 
 export class WearSenkronServisi {
@@ -80,10 +101,13 @@ export class WearSenkronServisi {
 
     /** Kılınmışlık her değiştiğinde saati tazele (uygulama açılışında bir kez çağrılır). */
     public baslat(): void {
-        if (!modul()) return;
+        const h = hedef();
+        if (!h) return;
         kayitDegistiDinleyicisiniAyarla(() => {
             this.gonder().catch(() => { /* gonder kendi hatasını loglar */ });
         });
+        // Apple Watch'a plan ve Now Bar payı gitmez → o gözlemciler yalnız Wear OS'ta.
+        if (h.tur !== 'wear') return;
         // Muhafız planı değişince (ayar ekranı, kılınma, konum) saatin planı da tazelenir.
         muhafizPlaniDinleyicisiniAyarla((durum) => {
             this.sonMuhafiz = durum;
@@ -106,8 +130,9 @@ export class WearSenkronServisi {
     }
 
     private async gonderTuru(): Promise<void> {
-        const m = modul();
-        if (!m || this.kullanilamaz) return;
+        const h = hedef();
+        if (!h || this.kullanilamaz) return;
+        const wear = h.tur === 'wear';
         try {
             const konum = await this.konumuOku();
             if (!konum) return;
@@ -131,12 +156,13 @@ export class WearSenkronServisi {
                     bugunIso: bugun,
                     konumAdi: konum.ad,
                     kilinanlar,
-                    muhafiz: await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar),
-                    canli: await this.canliPayiniOku(),
+                    // Apple Watch: hatırlatmayı iPhone bildirimi verir (saate yansır) → plan yok.
+                    muhafiz: wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined,
+                    canli: wear ? await this.canliPayiniOku() : undefined,
                 })
             );
             if (json === this.sonGonderilen) return;
-            await m.durumGonder(json);
+            await h.modul.durumGonder(json);
             this.sonGonderilen = json;
         } catch (e) {
             if ((e as { code?: string } | null)?.code === 'WEAR_YOK') {

@@ -102,6 +102,80 @@ describe('gonder', () => {
         expect(mockDinleyiciAyarla).not.toHaveBeenCalled();
     });
 
+    describe('Apple Watch (issue #285) — iOS\'ta AYNI yük WatchConnectivity köprüsüne gider', () => {
+        const siriKoprusu = require('../../../../modules/expo-siri-kisayollari/src');
+        const saat = { durumGonder: jest.fn((_json: string) => Promise.resolve()) };
+        const saatYuku = (i = 0) => JSON.parse(saat.durumGonder.mock.calls[i][0]);
+
+        beforeEach(() => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            saat.durumGonder.mockReset();
+            saat.durumGonder.mockResolvedValue(undefined);
+            siriKoprusu.saatKoprusu.mockReturnValue(saat);
+        });
+        afterAll(() => {
+            siriKoprusu.saatKoprusu.mockReturnValue(null);
+        });
+
+        it('Wear şemasıyla gönderir (31 gün + kılınmışlık); Android modülüne dokunmaz', async () => {
+            konumKur();
+            await servis.gonder();
+            expect(modul.durumGonder).not.toHaveBeenCalled();
+            expect(saat.durumGonder).toHaveBeenCalledTimes(1);
+            const yuk = saatYuku();
+            expect(yuk.surum).toBe(2);
+            expect(yuk.konumAdi).toBe('Fatih, İstanbul');
+            expect(yuk.gunler).toHaveLength(31);
+            expect(yuk.gunler[1].kilinan).toEqual(['imsak']);
+        });
+
+        it('muhafız AÇIK olsa da plan ve Now Bar payı GİTMEZ (iPhone bildirimi saate yansır — çift bildirim yok)', async () => {
+            konumKur(undefined, { aktif: true, ...ESKI_AYAR });
+            await servis.gonder();
+            const yuk = saatYuku();
+            expect(yuk.muhafiz).toEqual([]);
+            expect(yuk).not.toHaveProperty('canli');
+            // Plan için diske hiç bakılmaz (muhafız kılınmışlığı yalnız Wear planı içindir).
+            expect(mockMuhafizKilinan).not.toHaveBeenCalled();
+        });
+
+        it('içerik aynıysa ikinci kez göndermez; köprü hata verirse sonraki gönderim yeniden dener', async () => {
+            konumKur();
+            saat.durumGonder.mockRejectedValueOnce(new Error('hata'));
+            await servis.gonder();
+            await servis.gonder();
+            await servis.gonder();
+            expect(saat.durumGonder).toHaveBeenCalledTimes(2);
+        });
+
+        it('baslat: kılınmışlık değişince saat tazelenir; plan gözlemcisi Apple Watch\'ı TETİKLEMEZ', async () => {
+            konumKur();
+            servis.baslat();
+            expect(mockDinleyiciAyarla).toHaveBeenCalledTimes(1);
+            muhafizPlaniDegistiBildir({ aktif: true, matris: muhafizMatrisiniCoz(ESKI_AYAR) });
+            await servis.gonder();
+            expect(saat.durumGonder).toHaveBeenCalledTimes(1);
+            const dinleyici = mockDinleyiciAyarla.mock.calls[0][0] as () => void;
+            mockAralik.mockResolvedValue({
+                basarili: true,
+                veri: [{ tarih: bugunuAl(), namazlar: [{ namazAdi: NamazAdi.Ogle, tamamlandi: true }] }],
+            });
+            dinleyici();
+            await servis.gonder();
+            expect(saat.durumGonder).toHaveBeenCalledTimes(2);
+            expect(saatYuku(1).gunler[1].kilinan).toEqual(['ogle']);
+        });
+
+        it('saat uygulaması bu build\'de yoksa (köprü null) no-op', async () => {
+            siriKoprusu.saatKoprusu.mockReturnValue(null);
+            konumKur();
+            await servis.gonder();
+            servis.baslat();
+            expect(saat.durumGonder).not.toHaveBeenCalled();
+            expect(mockDinleyiciAyarla).not.toHaveBeenCalled();
+        });
+    });
+
     it('Wear API yoksa (WEAR_YOK) bir kez bilgi yazar, sonra HİÇ denemez (tanı logu dolmasın)', async () => {
         konumKur();
         const { Logger } = jest.requireMock('../../../core/utils/Logger');

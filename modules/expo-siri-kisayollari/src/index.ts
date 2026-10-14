@@ -35,6 +35,9 @@ interface SiriNativeModule {
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
     canliEtkinlikEsitle?(json: string | null): Promise<string>;
+    /** #285 Apple Watch — eski ikilide yok (opsiyonel). */
+    saatDestekli?(): boolean;
+    saatDurumGonder?(json: string): Promise<string>;
     addListener(olay: 'onSiriDegisikligi', dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
 
@@ -160,4 +163,47 @@ export async function canliEtkinlikEsitle(istek: CanliEtkinlikIstegi | null): Pr
     } catch {
         return 'hata';
     }
+}
+
+// ---------------------------------------------------------------------------
+// Apple Watch (WatchConnectivity, issue #285)
+// ---------------------------------------------------------------------------
+
+/**
+ * Saat köprüsü — Android `WearSenkron` native modülüyle AYNI arayüz (`durumGonder`),
+ * böylece `WearSenkronServisi` iki saati de aynı yükle besler.
+ */
+export interface SaatKoprusu {
+    durumGonder(json: string): Promise<void>;
+}
+
+/**
+ * Bu build Apple Watch uygulamasını taşıyor mu? Saat bayrağı (`withNamazSaat`) kapalıysa,
+ * iPad'de ya da eski ikilide `false`.
+ */
+export function saatUygulamasiDestekli(): boolean {
+    const m = modul();
+    if (!m || typeof m.saatDestekli !== 'function' || typeof m.saatDurumGonder !== 'function') return false;
+    try {
+        return m.saatDestekli() === true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * iOS'ta Apple Watch köprüsü; desteklenmiyorsa `null`. Native taraf son yükü saklar ve
+ * oturum etkinleşince / saat uygulaması sonradan kurulunca kendiliğinden gönderir →
+ * `bekliyor` ve `saatYok` HATA DEĞİLDİR. Yalnız `hata` reddedilir (yük yeniden denensin).
+ */
+export function saatKoprusu(): SaatKoprusu | null {
+    const m = modul();
+    if (!m || !saatUygulamasiDestekli() || typeof m.saatDurumGonder !== 'function') return null;
+    const gonder = m.saatDurumGonder.bind(m);
+    return {
+        async durumGonder(json: string): Promise<void> {
+            const sonuc = await gonder(json);
+            if (sonuc === 'hata') throw new Error('Apple Watch durumu gonderilemedi');
+        },
+    };
 }

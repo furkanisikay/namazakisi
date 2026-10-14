@@ -64,6 +64,12 @@
         }
       ],
       [
+        "./plugins/withNamazSaat",
+        {
+          "etkin": false
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": false,

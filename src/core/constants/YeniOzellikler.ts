@@ -18,7 +18,7 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
-export type YeniOzellikYetenegi = 'iosWidget';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch';
 
 export interface YeniOzellik {
     /** Benzersiz kimlik (kalıcı; değiştirme) */
@@ -48,6 +48,27 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Apple Watch uygulaması (issue #285) — yalnız saat hedefini taşıyan iOS build'inde
+    // görünür (saat bayrağı kapalıyken duyuru da yok).
+    {
+        id: 'apple-watch-uygulamasi',
+        surum: '0.31.0',
+        tarih: '2026-10-14',
+        baslik: 'Namaz Akışı Artık Apple Watch\'ta',
+        aciklama:
+            'İçinde bulunulan vakti ve çıkışına kalan süreyi bileğinizden görebilir, namazınızı saatten "Kıldım" diyerek işaretleyebilirsiniz.',
+        detayAciklama:
+            'Saat uygulaması vakitleri iPhone\'unuzdan alır; günün beş vakti, kalan süre ve kılınmışlık bilgisi bileğinizde görünür. "Kıldım" dediğiniz vakit iPhone\'daki kaydınıza işlenir. Saat kadranına komplikasyon ekleyerek vakti ve geri sayımı uygulamayı açmadan görebilirsiniz. Saatte ayrıca bir tesbihat sayacı vardır; Digital Crown\'u çevirerek ya da ekrana dokunarak sayabilirsiniz.',
+        ikon: 'clock',
+        kartGoster: true,
+        yetenek: 'appleWatch',
+        detaylar: [
+            'Saat uygulamasını iPhone\'unuzdaki Watch uygulamasından yükleyebilirsiniz',
+            'Hatırlatmalar iPhone bildirimleriyle bileğinize gelir; saat ikinci bir bildirim kurmaz',
+            'Telefonunuz yanınızda değilken dediğiniz "Kıldım", bağlantı kurulunca işlenir',
+            'Tesbihat sayacı yalnız saatte tutulur ve 90 dakika sonra sıfırlanır',
+        ],
+    },
     // iPhone'da gerçek alarm — iOS 26 AlarmKit (issue #74). Yalnız iPhone'u ilgilendirir.
     {
         id: 'gercek-alarm-iphone',

@@ -14,6 +14,11 @@
 # kapalı olsa bile prebuild `NAMAZ_IOS_WIDGET=1` ile koşar (imzasız simülatör derlemesi
 # kimlik bilgisi istemez) → `.app/PlugIns/NamazWidget.appex` üretildiği doğrulanır.
 #
+# Apple Watch (#285) AYRI bir işte derlenir (`saat-derleme`): prebuild `NAMAZ_IOS_SAAT=1`
+# ile koşar ve xcodebuild'e `-sdk` VERİLMEZ (`-sdk iphonesimulator` tüm hedeflerin
+# SDKROOT'unu ezer, watchOS hedefi iPhone SDK'sıyla derlenmeye çalışılırdı). Saat
+# çekirdeği (`targets/saat/ortak`) Wear OS'un ortak yük fikstürüyle test edilir.
+#
 # PR kontrolüdür; release KESMEZ, imza istemez (CODE_SIGNING_ALLOWED=NO).
 # ========================================================================
 
@@ -29,6 +34,8 @@ on:
       - 'plugins/withMuhafizAlarmKit.js'
       - 'android/app/src/test/resources/erteleme-ornekleri.json'
       - 'plugins/withNamazWidget.js'
+      - 'plugins/withNamazSaat.js'
+      - 'wear/app/src/test/resources/ornek-yuk.json'
       - 'src/core/siri/**'
       - 'src/core/widget/iosWidgetKarari.ts'
       - 'android/app/src/test/resources/widget-ornek.json'
@@ -76,6 +83,20 @@ jobs:
           "$RUNNER_TEMP/alarmkit-test" \
             modules/expo-muhafiz-alarmkit/test/alarmkit-ornek.json \
             android/app/src/test/resources/erteleme-ornekleri.json
+
+      # Apple Watch (#285): yük çözücü + ekran kararı + ileti + tesbihat — Wear ortak fikstürü.
+      - name: 🧪 Saat çekirdeği (Wear ortak yük fikstürü)
+        run: |
+          set -eo pipefail
+          swiftc -swift-version 5 -o "$RUNNER_TEMP/saat-test" \
+            modules/expo-siri-kisayollari/ios/VakitKarari.swift \
+            modules/expo-siri-kisayollari/ios/WidgetKarari.swift \
+            modules/expo-siri-kisayollari/ios/SaatIletisi.swift \
+            targets/saat/ortak/SaatYuku.swift \
+            targets/saat/ortak/SaatDeposu.swift \
+            targets/saat/ortak/Tesbihat.swift \
+            targets/saat/test/main.swift
+          "$RUNNER_TEMP/saat-test" wear/app/src/test/resources/ornek-yuk.json
 
   derleme:
     name: 🍎 Simülatör derlemesi + Metadata.appintents
@@ -163,3 +184,77 @@ jobs:
           echo "✅ NamazWidget.appex gömülü"
           # Kısayol ifadeleri (AppShortcutsProvider) — bilgi amaçlı döküm.
           find "$META" -type f -name '*.actionsdata' -exec python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(json.dumps({k: d[k] for k in d if "hortcut" in k}, ensure_ascii=False, indent=1)[:4000])' {} \; || true
+
+  saat-derleme:
+    name: ⌚ Apple Watch derlemesi (simülatör)
+    needs: swift-cekirdek
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i watch || true
+
+      - name: 🏗️ Expo prebuild (iOS, saat hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          # Bayrağı yalnız bu imzasız derleme için açar (EAS'te tanımlı değil).
+          NAMAZ_IOS_SAAT: '1'
+
+      - name: 🔎 Saat hedefleri bağlandı mı?
+        run: |
+          set -eo pipefail
+          PBX=$(ls -d ios/*.xcodeproj | head -1)/project.pbxproj
+          grep -q 'NamazSaat.app in Embed Watch Content' "$PBX" || { echo "Saat uygulaması ana uygulamaya gömülmüyor"; exit 1; }
+          grep -q 'NamazSaatWidget.appex in Embed Foundation Extensions' "$PBX" || { echo "Komplikasyon uzantısı saate gömülmüyor"; exit 1; }
+          grep -q 'SDKROOT = watchos;' "$PBX" || { echo "watchOS hedefi yok"; exit 1; }
+          grep -q 'SaatKomplikasyonu.swift in Sources' "$PBX" || { echo "Komplikasyon kaynakları bağlanmadı"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :NamazSaatUygulamasi' ios/*/Info.plist | grep -q true || { echo "NamazSaatUygulamasi plist anahtarı yok (telefon köprüsü hiç açılmaz)"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :WKCompanionAppBundleIdentifier' ios/NamazSaat/Info.plist
+
+      - name: 🧩 CocoaPods
+        working-directory: ios
+        run: pod install --repo-update
+
+      - name: 🔨 Simülatör için derle (iOS + gömülü watchOS)
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          WS=$(ls -d *.xcworkspace | head -1)
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          SCHEME="${PROJ%.xcodeproj}"
+          # -sdk VERİLMEZ: hedef başına SDK (iphonesimulator / watchsimulator) Xcode'ca seçilir.
+          xcodebuild \
+            -workspace "$WS" \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+
+      - name: ✅ Saat uygulaması ve komplikasyonlar gömülü mü?
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          APP=$(ls -d build/Build/Products/Debug-iphonesimulator/*.app | head -1)
+          [ -z "$APP" ] && { echo "Derleme iOS .app üretmedi"; ls build/Build/Products || true; exit 1; }
+          SAAT="$APP/Watch/NamazSaat.app"
+          [ -d "$SAAT" ] || { echo "Watch/NamazSaat.app YOK"; ls "$APP" ; exit 1; }
+          [ -d "$SAAT/PlugIns/NamazSaatWidget.appex" ] || { echo "Komplikasyon uzantısı YOK"; ls "$SAAT"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :WKApplication' "$SAAT/Info.plist"
+          echo "✅ Apple Watch uygulaması + komplikasyonlar gömülü"

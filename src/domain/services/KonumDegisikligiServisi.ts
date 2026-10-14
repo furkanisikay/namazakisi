@@ -259,7 +259,8 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         ),
 
         // Wear OS saati (issue #269): vakitler telefonda hesaplanıp saate gönderilir;
-        // şehir değişince saat de yeni vakitleri ve konum adını almalı.
+        // şehir değişince saat de yeni vakitleri ve konum adını almalı. iOS'ta AYNI
+        // servis Apple Watch'ı besler (issue #285, WatchConnectivity köprüsü).
         guvenliCalistir('Wear senkronu', () => WearSenkronServisi.getInstance().gonder()),
 
         // Camideyim + Namaz modu (#297/#277): vakit kapısı ve mod pencereleri vakit
