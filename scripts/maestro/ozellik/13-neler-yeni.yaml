@@ -7,6 +7,7 @@ appId: com.furkanisikay.namazakisi
       text: "Neler yeni\\..*"
     direction: DOWN
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Neler yeni\\..*"
 - waitForAnimationToEnd:

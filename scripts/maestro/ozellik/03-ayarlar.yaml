@@ -8,4 +8,5 @@ appId: com.furkanisikay.namazakisi
       text: "Hakkında\\..*"
     direction: DOWN
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/05-ayarlar-alt

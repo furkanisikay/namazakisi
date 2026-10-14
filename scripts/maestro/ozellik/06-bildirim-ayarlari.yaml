@@ -9,6 +9,7 @@ appId: com.furkanisikay.namazakisi
       text: "Bildirimler\\..*"
     direction: DOWN
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Bildirimler\\..*"
 - waitForAnimationToEnd:
@@ -20,6 +21,7 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     centerElement: true
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/14-cuma
 - scrollUntilVisible:
     element:
@@ -27,6 +29,7 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     centerElement: true
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/15-yatis
 - scrollUntilVisible:
     element:
@@ -34,6 +37,7 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     centerElement: true
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/16-camiye-git
 - scrollUntilVisible:
     element:
@@ -41,4 +45,5 @@ appId: com.furkanisikay.namazakisi
     direction: DOWN
     centerElement: true
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/17-bileklik-rehberi

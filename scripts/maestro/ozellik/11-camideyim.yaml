@@ -10,6 +10,7 @@ appId: com.furkanisikay.namazakisi
       text: "Camideyim\\..*"
     direction: DOWN
     timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Camideyim\\..*"
 - waitForAnimationToEnd:
