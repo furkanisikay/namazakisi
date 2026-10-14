@@ -53,10 +53,18 @@ export const iosCanliOgesiMi = (oge: NowBarOgesi): boolean => IOS_CANLI_OGELERI.
 
 /**
  * ActivityKit bir canlı etkinliği en fazla ~8 saat etkin tutar, sonra sistem bitirir.
- * Daha uzun pencere (ör. "Vakit girince" seçilmiş yaz yatsısı) hedefe varmadan biter;
- * ekran bunu söyler.
+ * Daha uzun pencerede (ör. "Vakit girince" seçilmiş kış yatsısı ~10 sa) etkinlik hedefe
+ * varmadan SESSİZCE biterdi → başlangıç `hedef − 8 sa`'e kaydırılır
+ * (`iosGorunurBaslangic`): geç başlar ama hedefe kadar sürer. Ekran bunu söyler.
  */
 export const IOS_CANLI_AZAMI_SURE_MS = 8 * 60 * 60_000;
+
+/**
+ * Seçilen başlangıcın iOS'taki gerçek karşılığı: pencere 8 saati aşıyorsa başlangıç
+ * `hedef − 8 sa`'e çekilir (sessiz kesinti yerine geç başlama).
+ */
+export const iosGorunurBaslangic = (basMs: number, hedefMs: number): number =>
+  Math.max(basMs, hedefMs - IOS_CANLI_AZAMI_SURE_MS);
 
 /** iOS'ta seçilebilen başlangıçlar: "sayaçla" yok (sayaç bildirimi yok). */
 export const iosBaslangicSecenekleri = (oge: NowBarOgesi): NowBarBaslangic[] =>
@@ -107,21 +115,40 @@ const istegeCevir = (aday: CanliAday, bas: number): IosCanliEtkinlik => {
   };
 };
 
+/** Eşitleme kararı: gösterilecek etkinlik + penceresi şu an süren TÜM adayların kimlikleri. */
+export interface IosCanliEtkinlikDurumu {
+  istek: IosCanliEtkinlik | null;
+  /**
+   * Kendi başına hâlâ geçerli olan (kılınmamış, penceresi süren) adaylar. Arka planda yeni
+   * etkinlik istenemediği için native yalnız BU listenin DIŞINDAKİLERİ bitirir.
+   */
+  gecerliKimlikler: string[];
+}
+
 /**
- * ŞU AN gösterilecek tek canlı etkinlik (yoksa `null`). Kılınmış vakit, özel gün ve
+ * ŞU AN gösterilecek tek canlı etkinlik + geçerli adaylar. Kılınmış vakit, özel gün ve
  * kapalı öğe aday üretiminde zaten elenir (`nowBarAdaylariniOlustur`).
  */
-export function iosCanliEtkinlikSec(g: NowBarAdayGirdisi): IosCanliEtkinlik | null {
+export function iosCanliEtkinlikDurumu(g: NowBarAdayGirdisi): IosCanliEtkinlikDurumu {
   const ayarlar = iosAyarlariniUyarla(g.ayarlar);
   const adaylar = nowBarAdaylariniOlustur({ ...g, ayarlar });
   let kazanan: EtkinAday | null = null;
+  const gecerliKimlikler: string[] = [];
   for (const aday of adaylar) {
-    const bas = secimliBaslangic(aday, ayarlar);
-    if (bas === null || bas > g.simdiMs || aday.hedefMs <= g.simdiMs) continue;
+    const secim = secimliBaslangic(aday, ayarlar);
+    if (secim === null) continue;
+    const bas = iosGorunurBaslangic(secim, aday.hedefMs);
+    if (bas > g.simdiMs || aday.hedefMs <= g.simdiMs) continue;
+    if (!gecerliKimlikler.includes(aday.id)) gecerliKimlikler.push(aday.id);
     const etkin = { aday, bas };
     if (!kazanan || kazananSirasi(etkin, kazanan) < 0) kazanan = etkin;
   }
-  return kazanan ? istegeCevir(kazanan.aday, kazanan.bas) : null;
+  return { istek: kazanan ? istegeCevir(kazanan.aday, kazanan.bas) : null, gecerliKimlikler };
+}
+
+/** ŞU AN gösterilecek tek canlı etkinlik (yoksa `null`). */
+export function iosCanliEtkinlikSec(g: NowBarAdayGirdisi): IosCanliEtkinlik | null {
+  return iosCanliEtkinlikDurumu(g).istek;
 }
 
 /**
@@ -132,8 +159,10 @@ export function iosSiradakiCanliBaslangic(g: NowBarAdayGirdisi): { ad: string; b
   const ayarlar = iosAyarlariniUyarla(g.ayarlar);
   let en: { ad: string; basMs: number } | null = null;
   for (const aday of nowBarAdaylariniOlustur({ ...g, ayarlar })) {
-    const bas = secimliBaslangic(aday, ayarlar);
-    if (bas === null || bas <= g.simdiMs) continue;
+    const secim = secimliBaslangic(aday, ayarlar);
+    if (secim === null) continue;
+    const bas = iosGorunurBaslangic(secim, aday.hedefMs);
+    if (bas <= g.simdiMs) continue;
     if (!en || bas < en.basMs) en = { ad: NOW_BAR_OGE_BILGILERI[aday.oge].ad, basMs: bas };
   }
   return en;

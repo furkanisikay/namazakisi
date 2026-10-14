@@ -3,8 +3,11 @@ import {
   IOS_CANLI_OGELERI,
   iosAyarlariniUyarla,
   iosBaslangicSecenekleri,
+  iosCanliEtkinlikDurumu,
   iosCanliEtkinlikSec,
   iosEtkinBaslangic,
+  iosGorunurBaslangic,
+  IOS_CANLI_AZAMI_SURE_MS,
   iosSiradakiCanliBaslangic,
 } from '../iosCanliEtkinlik';
 import {
@@ -137,5 +140,53 @@ describe('iOS canlı etkinlik seçimi (Now Bar ikizi)', () => {
   it('hedefe varmış etkinlik seçilmez', () => {
     expect(sec(VARSAYILAN_NOW_BAR_AYARLARI, an('2026-10-15', '15:40'))).toBeNull();
     expect(sec(VARSAYILAN_NOW_BAR_AYARLARI, an('2026-10-15', '15:40') - DK)?.id).toBe('sayac_2026-10-15_ogle');
+  });
+  it('8 saat sınırı: uzun pencere (kış yatsısı "girince") bitişten 8 saat önce GEÇ başlar, kesilmez', () => {
+    // Yatsı 19:40 → ertesi imsak 05:30 = 9 sa 50 dk. ActivityKit 8 saatte bitirirdi.
+    const ayarlar = ayarla({ yatsi: { baslangic: 'girince' } });
+    const hedef = an('2026-10-16', '05:30');
+    expect(sec(ayarlar, an('2026-10-15', '20:00'))).toBeNull();
+    const e = sec(ayarlar, an('2026-10-15', '21:30'));
+    expect(e?.id).toBe('sayac_2026-10-15_yatsi');
+    expect(e?.baslangicMs).toBe(hedef - IOS_CANLI_AZAMI_SURE_MS);
+    expect(e?.hedefMs).toBe(hedef);
+    // Ekrandaki "sıradaki" bilgisi de kaydırılmış başlangıcı söyler.
+    expect(
+      iosSiradakiCanliBaslangic({
+        ayarlar,
+        simdiMs: an('2026-10-15', '20:00'),
+        gunler: GUNLER,
+        kilinmisMi: () => false,
+        ozelGundeMi: () => false,
+      })
+    ).toEqual({ ad: 'Yatsı', basMs: hedef - IOS_CANLI_AZAMI_SURE_MS });
+    // Kısa pencere kaymaz.
+    expect(iosGorunurBaslangic(1_000, 2_000)).toBe(1_000);
+  });
+
+  it('geçerli kimlikler: penceresi süren TÜM adaylar (arka planda korunacaklar)', () => {
+    const ayarlar = ayarla({
+      cuma: { acik: true, baslangic: 'girince' },
+      kusluk: { acik: true, baslangic: 'girince' },
+    });
+    const d = iosCanliEtkinlikDurumu({
+      ayarlar,
+      simdiMs: an('2026-10-16', '09:00'),
+      gunler: GUNLER,
+      kilinmisMi: () => false,
+      ozelGundeMi: () => false,
+    });
+    expect(d.istek?.tema).toBe('cuma');
+    expect(d.gecerliKimlikler).toContain(d.istek?.id);
+    expect(d.gecerliKimlikler).toHaveLength(2);
+    // Kılınmış vakit geçerli değildir (arka planda bile bitirilir).
+    const k = iosCanliEtkinlikDurumu({
+      ayarlar: VARSAYILAN_NOW_BAR_AYARLARI,
+      simdiMs: an('2026-10-15', '15:20'),
+      gunler: GUNLER,
+      kilinmisMi: (t, v) => t === '2026-10-15' && v === 'ogle',
+      ozelGundeMi: () => false,
+    });
+    expect(k).toEqual({ istek: null, gecerliKimlikler: [] });
   });
 });

@@ -28,9 +28,10 @@ import {
   localTarihAraligindakiNamazlariGetir,
 } from '../../data/local/LocalNamazServisi';
 
+/** Android `@ReactMethod` void döner, iOS köprüsü `AsyncFunction` (Promise) — ikisi de `await`lenir. */
 interface WidgetVeriModulu {
-  vakitlerKaydet(json: string): void;
-  kilinanlarKaydet?(json: string): void;
+  vakitlerKaydet(json: string): void | Promise<void>;
+  kilinanlarKaydet?(json: string): void | Promise<void>;
 }
 
 /** `LocalNamazServisi` dinleyici yuvasının adı. */
@@ -71,7 +72,7 @@ export class WidgetServisi {
     const m = modul();
     if (!m || !koordinatGecerliMi(koordinatlar)) return;
     try {
-      m.vakitlerKaydet(JSON.stringify(widgetVerisiOlustur(koordinatlar, bugunuAl())));
+      await m.vakitlerKaydet(JSON.stringify(widgetVerisiOlustur(koordinatlar, bugunuAl())));
     } catch (e) {
       Logger.error('WidgetServisi', 'Widget verisi kaydedilemedi', e);
     }
@@ -91,7 +92,7 @@ export class WidgetServisi {
       const bugun = bugunuAl();
       const kayit = await localTarihAraligindakiNamazlariGetir(gunEkle(bugun, -1), bugun);
       if (!kayit.basarili || !kayit.veri) return;
-      m.kilinanlarKaydet(JSON.stringify(widgetKilinanlariOlustur(kayit.veri)));
+      await m.kilinanlarKaydet(JSON.stringify(widgetKilinanlariOlustur(kayit.veri)));
     } catch (e) {
       Logger.warn('WidgetServisi', 'Widget kilinmislik verisi yazilamadi', e);
     }

@@ -48,12 +48,13 @@ public class ExpoSiriKisayollariModule: Module {
         }
 
         // Widget (#295) ayni yukten beslenir: her yazimdan sonra zaman cizelgeleri tazelenir.
-        Function("vakitlerKaydet") { (json: String) in
+        // AsyncFunction: UserDefaults yazimi + WidgetCenter XPC'si JS thread'ini bekletmesin.
+        AsyncFunction("vakitlerKaydet") { (json: String) in
             SiriDeposu.varsayilan.cizelgeyiYaz(json)
             CanliEtkinlikKoprusu.widgetlariTazele()
         }
 
-        Function("kilinanlarKaydet") { (json: String) in
+        AsyncFunction("kilinanlarKaydet") { (json: String) in
             SiriDeposu.varsayilan.kilinanlariYaz(json)
             CanliEtkinlikKoprusu.widgetlariTazele()
         }
@@ -86,8 +87,9 @@ public class ExpoSiriKisayollariModule: Module {
         }
 
         /// Mevcut canli etkinlikleri ISTENENE esitler (nil = hicbiri). Sonuc kodu doner.
-        AsyncFunction("canliEtkinlikEsitle") { (json: String?) async -> String in
-            return await CanliEtkinlikKoprusu.esitle(json: json)
+        /// `secenek`: `{"onPlanda":Bool,"korunacaklar":[String]|null}` (yoksa on plan varsayilir).
+        AsyncFunction("canliEtkinlikEsitle") { (json: String?, secenek: String?) async -> String in
+            return await CanliEtkinlikKoprusu.esitle(json: json, secenekJson: secenek)
         }
 
         /// Bekleyen ekran istegini TUKETIR (ör. "kible"); yoksa/bayatsa nil.
