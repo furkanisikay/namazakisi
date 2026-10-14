@@ -13,7 +13,7 @@ def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 react {
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"].execute(null, rootDir).text.trim())
     reactNativeDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
-    hermesCommand = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
+    hermesCommand = new File(["node", "--print", "require.resolve('hermes-compiler/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/hermesc/%OS-BIN%/hermesc"
     codegenDir = new File(["node", "--print", "require.resolve('@react-native/codegen/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
 
     enableBundleCompression = (findProperty('android.enableBundleCompression') ?: false).toBoolean()
@@ -169,7 +169,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-wearable:20.0.1")
     // Android AppFunctions — "cihaz içi MCP" (issue #94, `asistan/NamazAsistanFonksiyonlari`).
     // Apache-2.0. alpha08'e SABİT: alpha09+ compileSdk 37 + AGP 9.1 ister (AAR metadata),
-    // RN 0.81 hattı compileSdk 36 + AGP 8.11'dir. Yükseltme Expo SDK yükseltmesini bekler.
+    // Expo SDK 57 / RN 0.86 hattı hâlâ compileSdk 36 + AGP 8.12'dir. Yükseltme, compileSdk 37 +
+    // AGP 9.1 getiren bir Expo SDK'sını bekler (ve bir API göçüdür — AGENTS.md).
     implementation("androidx.appfunctions:appfunctions:1.0.0-alpha08")
     implementation("androidx.appfunctions:appfunctions-service:1.0.0-alpha08")
     ksp("androidx.appfunctions:appfunctions-compiler:1.0.0-alpha08")
