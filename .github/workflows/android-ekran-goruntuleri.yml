@@ -139,7 +139,7 @@ jobs:
           profile: pixel_2
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           # Adimlar TEK bash betiginde: action her satiri ayri `sh` (dash) ile
           # calistirir; pipefail patlar ve degiskenler satirlar arasinda kaybolur.
           script: bash scripts/android-kare-hatti.sh
@@ -174,7 +174,7 @@ jobs:
           profile: ${{ inputs.ozellik_profili }}
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
 
       - name: 🧭 Özellik turu — tablet (açık)
@@ -187,7 +187,7 @@ jobs:
           profile: pixel_tablet
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           script: bash scripts/android-ozellik-hatti.sh tablet acik
 
       - name: 🧾 Özellik kareleri özeti
