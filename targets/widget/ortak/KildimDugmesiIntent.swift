@@ -7,7 +7,7 @@ import ActivityKit
 import WidgetKit
 #endif
 #if !NAMAZ_WIDGET_UZANTISI
-import ExpoSiriKisayollari
+internal import ExpoSiriKisayollari
 #endif
 
 // WIDGET + CANLI ETKINLIK "KILDIM" DUGMESI (issue #295).

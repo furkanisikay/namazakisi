@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
-import ExpoMuhafizAlarmKit
-import ExpoSiriKisayollari
+internal import ExpoMuhafizAlarmKit
+internal import ExpoSiriKisayollari
 #if canImport(AlarmKit)
 import ActivityKit
 import AlarmKit

@@ -1,6 +1,6 @@
 import AppIntents
 import Foundation
-import ExpoSiriKisayollari
+internal import ExpoSiriKisayollari
 
 // SIRI / KISAYOLLAR / SPOTLIGHT / EYLEM DUGMESI — App Intents (issue #279).
 //

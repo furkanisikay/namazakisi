@@ -1,5 +1,5 @@
 import AppIntents
-import ExpoSiriKisayollari
+internal import ExpoSiriKisayollari
 
 // ODAK FILTRESI (issue #279) — Android "Namaz modu"nun iOS karsiligi.
 //
