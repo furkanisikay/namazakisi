@@ -74,20 +74,24 @@ dump_al() {
   adb exec-out cat /data/local/tmp/ui.xml > /tmp/saat-ui.xml 2>/dev/null || true
 }
 
-# Uygulama ilk cizimini bitirene kadar bekler. swiftshader emulatorunde soguk acilis
-# `am start -W` donduktan SONRA da sistemin "Starting..." acilis ekranini gosterir
-# (ilk kosuda 01/02 kareleri o ekrandan cikti) → sabit `sleep` YETMEZ.
+# Uygulama ilk cizimini bitirene kadar bekler. swiftshader Wear emulatorunde soguk
+# acilista sistemin "Starting..." ekrani `am start -W` donduktan SONRA da kalir ve
+# bir dokunma olayi gelene kadar KALKMAZ (iki kosuda olculdu: 2 dk beklemede de
+# kalkmadi, ilk kaydirmadan hemen sonra uygulama gorundu). Bu yuzden her denemede
+# zararsiz bir "durtme" gonderilir: listenin basina dogru kisa kaydirma (liste zaten
+# en ustteyse etkisiz). Sabit `sleep` YETMEZ.
 hazir_bekle() {
   local desen="$1"
-  for i in $(seq 1 30); do
+  for i in $(seq 1 15); do
+    sleep 2
     dump_al
     if node scripts/saat/ui-merkez.js /tmp/saat-ui.xml "$desen" >/dev/null; then
       echo "hazir ($desen): ${i}. deneme"
       return 0
     fi
-    sleep 2
+    adb shell input swipe $((G / 2)) $((Y / 3)) $((G / 2)) $((Y / 2)) 400
   done
-  echo "UYARI: '$desen' 60 sn icinde gorunmedi"
+  echo "UYARI: '$desen' gorunmedi"
   return 1
 }
 
@@ -115,6 +119,9 @@ bul_ve_dokun() {
 adb shell am start -W -n "$PAKET/$SINIF.ui.AnaAktivite"
 hazir_bekle 'Sıradaki|Dokunarak|Kıldınız' || true
 kare 01-ana-ekran 2 || true
+# Iki adim: vakit satirlari ekranin ortasina gelsin (tek adimda baslik TimeText'in
+# altinda yarim kaliyordu).
+yukari_kaydir
 yukari_kaydir
 kare 02-vakitler 1 || true
 
@@ -164,44 +171,8 @@ tile_goster VakitTileServisi 06-tile-vakit || true
 adb shell input keyevent KEYCODE_BACK
 sleep 2
 
-# --- 07: kadranda komplikasyon (en iyi gayret) ---
-# Emulatorun varsayilan kadrani (Orbita) yuvalari KAPALI getirir: set-complication
-# "Complication slot is not enabled" der. Yuklu kadranlar listelenir, her biri icin
-# etkinlestirme + yuva denenir; hicbiri tutmazsa kare ALINMAZ (bos kadran karesi
-# yaniltici olurdu).
-echo "yuklu kadranlar:"
-adb shell cmd package query-services -a android.service.wallpaper.WallpaperService 2>/dev/null \
-  | sed -n 's/.*ComponentInfo{\([^}]*\)}.*/\1/p' | sort -u | tee /tmp/kadranlar.txt || true
-KADRAN=$(adb shell dumpsys wallpaper 2>/dev/null | sed -n 's/.*mWallpaperComponent=ComponentInfo{\([^}]*\)}.*/\1/p' | head -1)
-echo "etkin kadran: ${KADRAN:-bilinmiyor}"
-KOMP_TUTTU=0
-for kadran in $KADRAN $(grep -v "^$KADRAN\$" /tmp/kadranlar.txt 2>/dev/null || true); do
-  [ -z "$kadran" ] && continue
-  if [ "$kadran" != "$KADRAN" ]; then
-    adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
-      --es operation set-watchface --ecn component "$kadran" 2>&1 | tail -1 || true
-    sleep 4
-  fi
-  for yuva in 0 1 2 3 4 5; do
-    for tip in 3 5; do
-      cikti=$(adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
-        --es operation set-complication \
-        --ecn component "$PAKET/$SINIF.komplikasyon.VakitKomplikasyonServisi" \
-        --ecn watchface "$kadran" --ei slot "$yuva" --ei type "$tip" 2>&1 | tail -1 || true)
-      if echo "$cikti" | grep -q 'result=1'; then
-        echo "komplikasyon: $kadran yuva=$yuva tip=$tip"
-        KOMP_TUTTU=1
-        break 2
-      fi
-    done
-  done
-  [ "$KOMP_TUTTU" = 1 ] && break
-  echo "komplikasyon tutmadi: $kadran ($cikti)"
-done
-if [ "$KOMP_TUTTU" = 1 ]; then
-  kare 07-kadran-komplikasyon 6 || true
-else
-  echo "UYARI: hicbir kadranda komplikasyon yuvasi etkinlestirilemedi; 07 atlandi"
-fi
+# Kadranda komplikasyon karesi BILINCLI YOK: emulatorun tek kadrani (Orbita)
+# yuvalarini kapali getirir ("set-complication failed ... Complication slot is not
+# enabled", yuva >= 3 "out of range") ve imajda baska kadran yuklu degil.
 
 ls -la "$CIKIS"
