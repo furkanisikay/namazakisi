@@ -51,12 +51,17 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] && [ -f "/usr/share/zoneinfo/$TZ_ADI" ]; t
   sudo ln -sf "/usr/share/zoneinfo/$TZ_ADI" /etc/localtime && echo "Mac saat dilimi: $TZ_ADI ($(date '+%H:%M %Z'))"
 fi
 
-# Turkce bolge + 24 saat: tercih dosyasi ACILISTAN ONCE yazilir (fastlane snapshot
-# `localize_simulator` yontemi). `simctl spawn ... defaults write` KULLANMA — cfprefsd'yi
-# bekleyip adimi kilitler (AGENTS.md).
+# Turkce bolge + 24 saat: tercih dosyasi simulator KAPALIYKEN yazilir.
+# `simctl spawn ... defaults write` KULLANMA — cfprefsd'yi bekleyip adimi kilitler
+# (AGENTS.md). Dosya ilk acilista olusur: hic acilmamis cihaza `data/` dizinini elle
+# kurmak cihazi bozdu (uygulama "FBSOpenApplicationServiceErrorDomain code=4" ile
+# acilmadi, yasandi) → once bir kez ac, kapat, sonra yaz.
 yerellestir() {
   local tercih="$HOME/Library/Developer/CoreSimulator/Devices/$1/data/Library/Preferences/.GlobalPreferences.plist"
-  mkdir -p "$(dirname "$tercih")"
+  if [ ! -f "$tercih" ]; then
+    echo "UYARI: $1 tercih dosyası yok, bölge ayarlanmadı"
+    return 0
+  fi
   /usr/libexec/PlistBuddy -c "Delete :AppleLanguages" "$tercih" >/dev/null 2>&1 || true
   /usr/libexec/PlistBuddy -c "Add :AppleLanguages array" -c "Add :AppleLanguages:0 string tr-TR" "$tercih"
   /usr/libexec/PlistBuddy -c "Delete :AppleLocale" "$tercih" >/dev/null 2>&1 || true
@@ -66,17 +71,19 @@ yerellestir() {
 }
 
 SAAT=$(xcrun simctl create "magaza-saat" "$SAAT_TIPI" "$SAAT_RT")
-yerellestir "$SAAT"
 if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
   TELEFON=$(xcrun simctl create "magaza-saat-telefon" "$TELEFON_TIPI" "$IOS_RT")
-  yerellestir "$TELEFON"
   # Esleme: saat uygulamasi telefona bagli (`WKRunsIndependentlyOfCompanionApp=false`).
   xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
   xcrun simctl boot "$TELEFON" || true
 fi
 xcrun simctl boot "$SAAT" || true
 xcrun simctl bootstatus "$SAAT" -b
-echo "Saat simülatörünün saati: $(xcrun simctl spawn "$SAAT" date '+%H:%M %Z' 2>/dev/null || echo '?') (beklenen ~$SAAT_METNI)"
+# Ilk acilis tercih dosyasini olusturdu: kapat → Turkce bolge yaz → yeniden ac.
+xcrun simctl shutdown "$SAAT" || true
+yerellestir "$SAAT"
+xcrun simctl boot "$SAAT" || true
+xcrun simctl bootstatus "$SAAT" -b
 
 xcrun simctl install "$SAAT" "$APP"
 BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")
@@ -91,11 +98,19 @@ for k in $KARELER; do
   BEKLENEN=$((BEKLENEN + 1))
   xcrun simctl terminate "$SAAT" "$BUNDLE" >/dev/null 2>&1 || true
   sleep 1
-  if ! SIMCTL_CHILD_TZ="$TZ_ADI" \
-    SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
-    SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
-    SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
-    xcrun simctl launch "$SAAT" "$BUNDLE"; then
+  ACILDI=0
+  for deneme in 1 2; do
+    if SIMCTL_CHILD_TZ="$TZ_ADI" \
+      SIMCTL_CHILD_NAMAZ_SAAT_EKRAN="$EKRAN" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_YUK="$YUK" \
+      SIMCTL_CHILD_NAMAZ_SAAT_TOHUM_TESBIHAT="45" \
+      xcrun simctl launch "$SAAT" "$BUNDLE"; then
+      ACILDI=1
+      break
+    fi
+    sleep 15
+  done
+  if [ "$ACILDI" -ne 1 ]; then
     echo "UYARI: $AD için uygulama başlatılamadı"
     continue
   fi
