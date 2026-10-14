@@ -13,7 +13,7 @@
  *    calisma aninda TTS mumkun degil. Faz 2: anons metni PLANLAMA SIRASINDA
  *    cihazda (cevrimdisi `AVSpeechSynthesizer`) ses dosyasina cevrilir ve
  *    bildirimin SESI olur — yani yine "yan kanal" degil, bildirimin kendisi.
- *    Iptal fonksiyonlari bu yuzden no-op'tur.
+ *    Yan kanal iptalleri bu yuzden yalniz GERCEK ALARMLARA (madde 4) dokunur.
  *
  *    BAGLAM KURALI — SENTEZ YALNIZ ON PLANDA: arka plan gorevinin (background
  *    fetch) sure butcesi ~30 sn'dir ve sistem asimda uygulamayi oldurur;
@@ -32,7 +32,7 @@
  *    planlamada kalan slotu olcer ve tukendiginde KESILENI LOGLAR (sessiz kayip
  *    yerine gorunur kayip).
  *
- * 5. GERCEK ALARM — AlarmKit (iOS 26, issue #74). Alarm kanalli adimin ILK tetigi,
+ * 4. GERCEK ALARM — AlarmKit (iOS 26, issue #74). Alarm kanalli adimin ILK tetigi,
  *    AlarmKit izinliyken bildirim yerine SISTEM ALARMI olarak kurulur (sessiz anahtari
  *    ve Odak'i deler; 64 bekleyen bildirim butcesine SAYILMAZ — ayri sistem). Kimlik
  *    bildirimle AYNIDIR (`muhafizBildirimIdOlustur`; UUID kimlikten deterministik), iptal
@@ -44,7 +44,7 @@
  *    `alarmlariHazirla` dersi). Kurulamazsa (izin yok, iOS < 26, Odak filtresi sessiz)
  *    ayni tetik bugunku yoldan (zamana duyarli bildirim + uzun ses) teslim edilir.
  *
- * 4. ODAK FILTRESI (issue #279). Kullanici "Namaz" Odagina uygulamanin filtresini
+ * 5. ODAK FILTRESI (issue #279). Kullanici "Namaz" Odagina uygulamanin filtresini
  *    ekleyip "Hatirlatmalari sessiz ver"i acarsa, filtre acikken (en fazla 3 sa)
  *    tetiklenecek uyarilar `passive` kurulur: ekrani yakmaz, ses cikarmaz, Odagi
  *    delmez. Durum `hazirla`'da BIR KEZ okunur (`core/muhafiz/ios/odakFiltresi.ts`).
