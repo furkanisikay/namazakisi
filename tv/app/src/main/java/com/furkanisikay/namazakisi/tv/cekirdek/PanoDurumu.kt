@@ -8,10 +8,15 @@ import java.time.ZoneId
 /**
  * Panonun bir andaki hâli — SAF (android import etmez), zaman ve saat dilimi enjekte.
  *
- * @property tarih gösterilen TAKVİM günü (vakit listesi bu günündür; gece yarısından
- *   sonra imsak girene dek liste yeni günü gösterir, aktif vakit yine dünün yatsısıdır).
+ * @property tarih gösterilen NAMAZ günü (vakit listesi bu günündür). Gece yarısından sonra
+ *   imsak girene dek aktif vakit DÜNÜN yatsısıdır → liste de DÜNÜN günüdür (telefondaki
+ *   "aktif gün = dün" kuralının ikizi, `gunNavigasyonYardimcisi.aktifGunuHesapla`); yoksa
+ *   yatsı satırı bu gecenin (henüz girmemiş) saatiyle vurgulanırdı.
  * @property aktif şu an içinde bulunulan vakit; imsak öncesi [Vakit.YATSI] (dünün yatsısı).
- * @property siradaki girişi beklenen vakit; yatsıdan sonra YARININ imsakı.
+ * @property siradaki girişi beklenen vakit; yatsıdan sonra YARININ imsakı, imsak öncesi
+ *   BUGÜNÜN imsakı (o an liste dünü gösterdiği için [siradakiMs] listedeki imsak değildir).
+ * @property kerahat / siradakiKerahat gerçek ana göre BUGÜNÜN takvim gününden hesaplanır
+ *   (gece yarısından sonra sıradaki kerahat bugünün şurukudur).
  */
 data class PanoDurumu(
     val tarih: LocalDate,
@@ -36,8 +41,24 @@ object PanoHesabi {
     ): PanoDurumu {
         val bugun = Instant.ofEpochMilli(simdiMs).atZone(bolge).toLocalDate()
         val v = vakitleriHesapla(bugun)
-        val sirali = v.sirali()
 
+        // Gece yarısı → imsak arası: aktif vakit dünün yatsısı, gösterilen gün DÜN.
+        if (simdiMs < v.imsak) {
+            val dun = bugun.minusDays(1)
+            return PanoDurumu(
+                tarih = dun,
+                vakitler = vakitleriHesapla(dun),
+                aktif = Vakit.YATSI,
+                siradaki = Vakit.IMSAK,
+                siradakiMs = v.imsak,
+                kalanMs = (v.imsak - simdiMs).coerceAtLeast(0),
+                cuma = dun.dayOfWeek == DayOfWeek.FRIDAY,
+                kerahat = Kerahat.aktif(v, simdiMs),
+                siradakiKerahat = Kerahat.siradaki(v, simdiMs),
+            )
+        }
+
+        val sirali = v.sirali()
         val aktif = sirali.lastOrNull { it.second <= simdiMs }?.first ?: Vakit.YATSI
         val sonraki = sirali.firstOrNull { it.second > simdiMs }
         val (siradaki, siradakiMs) = sonraki
