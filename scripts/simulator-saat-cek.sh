@@ -36,17 +36,7 @@ echo "watchOS runtime: $SAAT_RT · cihaz: $SAAT_TIPI"
 echo "iOS runtime: $IOS_RT · eş telefon: $TELEFON_TIPI"
 [ -z "$SAAT_TIPI" ] && { echo "Apple Watch cihaz tipi bulunamadi"; xcrun simctl list devicetypes | grep -i watch; exit 1; }
 
-SAAT=$(xcrun simctl create "magaza-saat" "$SAAT_TIPI" "$SAAT_RT")
-if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
-  TELEFON=$(xcrun simctl create "magaza-saat-telefon" "$TELEFON_TIPI" "$IOS_RT")
-  # Esleme: saat uygulamasi telefona bagli (`WKRunsIndependentlyOfCompanionApp=false`).
-  xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
-  xcrun simctl boot "$TELEFON" || true
-fi
-xcrun simctl boot "$SAAT" || true
-xcrun simctl bootstatus "$SAAT" -b
-
-# --- Tohum ------------------------------------------------------------------------
+# --- Tohum (simulatorler acilmadan ONCE: saat dilimi ona gore kurulur) ---------------
 TOHUM=$(node scripts/saat-tohum-yuku.js)
 TZ_ADI=$(echo "$TOHUM" | json 'j.tz')
 SAAT_METNI=$(echo "$TOHUM" | json 'j.durumCubuguSaati')
@@ -54,8 +44,39 @@ YUK=$(echo "$TOHUM" | json 'j.yuk')
 echo "Saat dilimi: $TZ_ADI · ekrandaki saat: $SAAT_METNI · öğleye/ikindiye kalan: $(echo "$TOHUM" | json 'j.kalanDk') dk"
 echo "İstanbul vakitleri ($(echo "$TOHUM" | json 'j.tarih')): $(echo "$TOHUM" | json 'JSON.stringify(j.istanbulVakitleri)')"
 
-# Durum cubugu: saat ekrandaki geri sayimla tutarli olsun (watchOS'ta desteklenmeyebilir).
-xcrun simctl status_bar "$SAAT" override --time "$SAAT_METNI" || echo "UYARI: saat simulatorunde durum cubugu ezilemedi"
+# Saatin KENDI saati (sag ustteki) uygulamanin geri sayimiyla tutarli olsun: watchOS
+# simulatorunde `simctl status_bar override` CALISMAZ (olculdu) ve simulator saat
+# dilimini Mac'ten alir → yalniz CI'da (gecici makine) Mac'in saat dilimi degistirilir.
+if [ "${GITHUB_ACTIONS:-}" = "true" ] && [ -f "/usr/share/zoneinfo/$TZ_ADI" ]; then
+  sudo ln -sf "/usr/share/zoneinfo/$TZ_ADI" /etc/localtime && echo "Mac saat dilimi: $TZ_ADI ($(date '+%H:%M %Z'))"
+fi
+
+# Turkce bolge + 24 saat: tercih dosyasi ACILISTAN ONCE yazilir (fastlane snapshot
+# `localize_simulator` yontemi). `simctl spawn ... defaults write` KULLANMA — cfprefsd'yi
+# bekleyip adimi kilitler (AGENTS.md).
+yerellestir() {
+  local tercih="$HOME/Library/Developer/CoreSimulator/Devices/$1/data/Library/Preferences/.GlobalPreferences.plist"
+  mkdir -p "$(dirname "$tercih")"
+  /usr/libexec/PlistBuddy -c "Delete :AppleLanguages" "$tercih" >/dev/null 2>&1 || true
+  /usr/libexec/PlistBuddy -c "Add :AppleLanguages array" -c "Add :AppleLanguages:0 string tr-TR" "$tercih"
+  /usr/libexec/PlistBuddy -c "Delete :AppleLocale" "$tercih" >/dev/null 2>&1 || true
+  /usr/libexec/PlistBuddy -c "Add :AppleLocale string tr_TR" "$tercih"
+  /usr/libexec/PlistBuddy -c "Delete :AppleICUForce24HourTime" "$tercih" >/dev/null 2>&1 || true
+  /usr/libexec/PlistBuddy -c "Add :AppleICUForce24HourTime bool true" "$tercih"
+}
+
+SAAT=$(xcrun simctl create "magaza-saat" "$SAAT_TIPI" "$SAAT_RT")
+yerellestir "$SAAT"
+if [ -n "$IOS_RT" ] && [ -n "$TELEFON_TIPI" ]; then
+  TELEFON=$(xcrun simctl create "magaza-saat-telefon" "$TELEFON_TIPI" "$IOS_RT")
+  yerellestir "$TELEFON"
+  # Esleme: saat uygulamasi telefona bagli (`WKRunsIndependentlyOfCompanionApp=false`).
+  xcrun simctl pair "$SAAT" "$TELEFON" || echo "UYARI: esleme yapilamadi (saat tek basina denenecek)"
+  xcrun simctl boot "$TELEFON" || true
+fi
+xcrun simctl boot "$SAAT" || true
+xcrun simctl bootstatus "$SAAT" -b
+echo "Saat simülatörünün saati: $(xcrun simctl spawn "$SAAT" date '+%H:%M %Z' 2>/dev/null || echo '?') (beklenen ~$SAAT_METNI)"
 
 xcrun simctl install "$SAAT" "$APP"
 BUNDLE=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")

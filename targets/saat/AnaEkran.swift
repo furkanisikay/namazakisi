@@ -111,11 +111,10 @@ private struct DurumListesi: View {
         ScrollViewReader { kaydirici in
             liste
                 .onAppear {
-                    // Yalniz simulator kare cekimi: vakit listesini ortaya getir.
-                    guard SaatSimulatorTohumu.acilisEkrani == .vakitler, durum.satirlar.count > 2 else { return }
-                    let hedef = durum.satirlar[2].ms
+                    // Yalniz simulator kare cekimi: vakit listesini basa getir.
+                    guard SaatSimulatorTohumu.acilisEkrani == .vakitler, let ilk = durum.satirlar.first else { return }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        kaydirici.scrollTo(hedef, anchor: .center)
+                        kaydirici.scrollTo(ilk.ms, anchor: .top)
                     }
                 }
         }
