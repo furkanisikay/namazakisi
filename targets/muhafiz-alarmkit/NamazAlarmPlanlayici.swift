@@ -56,10 +56,10 @@ final class NamazAlarmPlanlayici: NSObject, MuhafizAlarmPlanlayicisi {
         tamam(false)
     }
 
-    func iptalEt(_ kimlikler: [String], _ tamam: @escaping () -> Void) {
+    func iptalEt(_ kimlikler: [String], _ calaniDurdur: Bool, _ tamam: @escaping () -> Void) {
         #if canImport(AlarmKit)
         if #available(iOS 26.0, *) {
-            NamazAlarmCekirdegi.iptalEt(kimlikler)
+            NamazAlarmCekirdegi.iptalEt(kimlikler, calaniDurdur: calaniDurdur)
             tamam()
             return
         }
@@ -68,25 +68,19 @@ final class NamazAlarmPlanlayici: NSObject, MuhafizAlarmPlanlayicisi {
         tamam()
     }
 
-    func canliUuidler(_ tamam: @escaping ([String]?) -> Void) {
+    func canliUuidler(_ tamam: @escaping ([String]?, [String]) -> Void) {
         #if canImport(AlarmKit)
         if #available(iOS 26.0, *) {
-            tamam(NamazAlarmCekirdegi.canliUuidler())
+            let durum = NamazAlarmCekirdegi.canliAlarmlar()
+            tamam(durum?.canli, durum?.calan ?? [])
             return
         }
         #endif
-        tamam([])
+        tamam([], [])
     }
 }
 
 #if canImport(AlarmKit)
-
-/// Alarm meta verisi (AlarmKit `AlarmAttributes` ister). Yalniz kimlik tasir; ayrintilar
-/// `AlarmDeposu` kaydindadir.
-@available(iOS 26.0, *)
-struct NamazAlarmVerisi: AlarmMetadata {
-    var kimlik: String
-}
 
 @available(iOS 26.0, *)
 enum NamazAlarmCekirdegi {
@@ -131,8 +125,12 @@ enum NamazAlarmCekirdegi {
         let ikinciDugme = erteleMi
             ? AlarmButton(text: "10 dk ertele", textColor: .white, systemImageName: "clock.arrow.circlepath")
             : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
+        // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
+        // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
+        // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
+        let baslikDegeri: String.LocalizationValue = "\(kayit.baslik)"
         let alert = AlarmPresentation.Alert(
-            title: LocalizedStringResource(stringLiteral: kayit.baslik),
+            title: LocalizedStringResource(baslikDegeri),
             stopButton: AlarmButton(text: "Durdur", textColor: .white, systemImageName: "stop.fill"),
             secondaryButton: ikinciDugme,
             secondaryButtonBehavior: .custom
@@ -163,16 +161,28 @@ enum NamazAlarmCekirdegi {
         }
     }
 
-    static func iptalEt(_ kimlikler: [String]) {
-        for kimlik in kimlikler {
-            try? AlarmManager.shared.cancel(id: AlarmKurallari.uuid(kimlik))
+    /// `calaniDurdur == false` (PLANLAMA turu: yeniden planlama, muhafiz kapatma, erteleme
+    /// araligi): o an CALAN alarm ATLANIR — Android kurali "planlama turu calan alarmi
+    /// susturmaz". JS secimi zaten haric tutar; burada iptal aninin GUNCEL durumu bir kez
+    /// daha uygulanir (okuma ile iptal arasinda calmaya baslayan alarm). Yalniz "Kildim"
+    /// `true` gecer: calani once durdurur, sonra iptal eder.
+    static func iptalEt(_ kimlikler: [String], calaniDurdur: Bool) {
+        let calan = calaniDurdur ? [] : Set(canliAlarmlar()?.calan ?? [])
+        let secilen = AlarmKurallari.iptalSecimi(kimlikler: kimlikler, calanUuidler: calan, calaniDurdur: calaniDurdur)
+        for kimlik in secilen {
+            let id = AlarmKurallari.uuid(kimlik)
+            if calaniDurdur { try? AlarmManager.shared.stop(id: id) }
+            try? AlarmManager.shared.cancel(id: id)
         }
-        AlarmDeposu.varsayilan.sil(kimlikler)
+        AlarmDeposu.varsayilan.sil(secilen)
     }
 
-    static func canliUuidler() -> [String]? {
+    /// Sistemde kurulu alarmlar (kucuk harf UUID) ve bunlardan o an CALANLAR; okunamazsa `nil`.
+    static func canliAlarmlar() -> (canli: [String], calan: [String])? {
         guard let alarmlar = try? AlarmManager.shared.alarms else { return nil }
-        return alarmlar.map { $0.id.uuidString.lowercased() }
+        let canli = alarmlar.map { $0.id.uuidString.lowercased() }
+        let calan = alarmlar.filter { $0.state == .alerting }.map { $0.id.uuidString.lowercased() }
+        return (canli, calan)
     }
 
     /// Calan alarmi susturur ve kaydini dusurur (durdur / ertele / kildim ortak ilk adim).
@@ -189,6 +199,9 @@ enum NamazAlarmCekirdegi {
     /// kadarki planli uyarilar (alarm + bildirim) susar. JS etkin ertelemeyi alarm
     /// kaydindan okur (`alarmKitErtelemeleri`), yeniden planlama araliga uyari kurmaz.
     static func ertele(_ kimlik: String) async {
+        // HER dalda duyurulur: kayit bulunamasa ya da sinira yer kalmasa da alarm
+        // SUSTURULDU (`kapat`) — uygulama aciksa JS planini/ekranini tazelemeli.
+        defer { MuhafizAlarmOlaylari.duyur("ertele") }
         guard let kayit = kapat(kimlik) else { return }
         guard let hedef = AlarmKurallari.ertelemeHedefi(
             simdiMs: simdiMs(),
@@ -196,7 +209,10 @@ enum NamazAlarmCekirdegi {
             sinirMs: kayit.erteleSinirMs
         ) else { return }
 
-        iptalEt(AlarmDeposu.varsayilan.susturulacaklar(tarih: kayit.tarih, vakit: kayit.vakit, hedefMs: hedef))
+        iptalEt(
+            AlarmDeposu.varsayilan.susturulacaklar(tarih: kayit.tarih, vakit: kayit.vakit, hedefMs: hedef),
+            calaniDurdur: false
+        )
         await bildirimleriSustur(tarih: kayit.tarih, vakit: kayit.vakit, cikisMs: kayit.cikisMs, hedefMs: hedef)
 
         let yeni = AlarmKaydi(
@@ -216,7 +232,6 @@ enum NamazAlarmCekirdegi {
         if !(await planla(yeni)) {
             NSLog("%@", "[NamazAlarm] Ertelenen alarm kurulamadi \(yeni.kimlik)")
         }
-        MuhafizAlarmOlaylari.duyur("ertele")
     }
 
     /// "Kildim": ortak "Kildim" kuyruguna yazar (JS kaydi `KildimKuyruguServisi` ile
@@ -227,7 +242,8 @@ enum NamazAlarmCekirdegi {
         guard let v = AlarmKurallari.kimliktenVakit(kimlik) else { return }
         SiriDeposu.varsayilan.kildimEkle(tarih: v.tarih, vakit: v.vakit, kaynak: "alarm", simdiMs: SiriDeposu.simdiMs())
         let onek = AlarmKurallari.vakitOneki(tarih: v.tarih, vakit: v.vakit)
-        iptalEt(AlarmDeposu.varsayilan.onekliKimlikler(onek))
+        // "Kildim" vaktin CALAN alarmini da susturur (Android `MuhafizAlarmTemizligi` ikizi).
+        iptalEt(AlarmDeposu.varsayilan.onekliKimlikler(onek), calaniDurdur: true)
         await bildirimleriKaldir(onek: onek)
         MuhafizAlarmOlaylari.duyur("kildim")
     }

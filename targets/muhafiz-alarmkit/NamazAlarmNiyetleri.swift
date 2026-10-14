@@ -59,11 +59,18 @@ struct NamazAlarmErteleIntent: LiveActivityIntent {
 }
 
 /// "Kıldım" — ortak Kildim kuyruguna yazar, vaktin kalan uyarilarini iptal eder.
+///
+/// KILIT ACILMADAN KAYIT YAZILMAZ (Android M4 ikizi: tam ekran alarmda kilitliyken
+/// `requestDismissKeyguard`, bildirimde `setAuthenticationRequired`). Kilit ekranindaki
+/// alarmdan "Kıldım"a basan kisi once Face ID / kod ile kilidi acar; kilitli telefonu
+/// eline alan baskasi ibadet kaydi yazamaz. "Durdur" ve "10 dk ertele" KAYIT DEGILDIR,
+/// kilitliyken calismaya devam eder (varsayilan `alwaysAllowed`).
 @available(iOS 26.0, *)
 struct NamazAlarmKildimIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "Namazı kıldım"
     static let isDiscoverable: Bool = false
     static let openAppWhenRun: Bool = false
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication
 
     @Parameter(title: "Alarm")
     var kimlik: String

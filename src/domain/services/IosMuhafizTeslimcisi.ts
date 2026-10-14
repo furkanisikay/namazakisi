@@ -51,6 +51,10 @@
  *    (`alarmIsi`): atesle-unut bir iptal ayni turda kurulan alarmi silemesin (Android
  *    `alarmlariHazirla` dersi). Kurulamazsa (izin yok, iOS < 26, Odak filtresi sessiz)
  *    ayni tetik bugunku yoldan (zamana duyarli bildirim + uzun ses) teslim edilir.
+ *    O an CALAN alarm PLANLAMA iptallerinden (hazirla, yeniden planlama, erteleme
+ *    araligi, tekil iptal) HARIC tutulur — Android kurali "planlama turu calan alarma
+ *    dokunmaz"; yalniz "Kildim" (`vakitYanKanallariniIptalEt`) calani da susturur
+ *    (`alarmKitIptalSecimi` + native `iptalEt(_, calaniDurdur)`).
  *
  * 5. ODAK FILTRESI (issue #279). Kullanici "Namaz" Odagina uygulamanin filtresini
  *    ekleyip "Hatirlatmalari sessiz ver"i acarsa, filtre acikken (en fazla 3 sa)
@@ -81,7 +85,7 @@ import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { iosYetenekleri } from '../../core/muhafiz/ios/platformYetenekleri';
 import { iosTesliminiCoz } from '../../core/muhafiz/ios/teslimPlani';
-import { alarmKitYukuOlustur } from '../../core/muhafiz/ios/alarmKit';
+import { alarmKitIptalSecimi, alarmKitYukuOlustur } from '../../core/muhafiz/ios/alarmKit';
 import {
     alarmKitDurumu,
     alarmKitIptalEt,
@@ -197,10 +201,17 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         return sonraki;
     }
 
-    /** Kurulu alarmlardan seçileni iptal eder (zincirin İÇİNDE çağrılır). */
-    private async alarmlariIptalEt(secici: (kimlik: string) => boolean): Promise<void> {
-        const kimlikler = (await alarmKitKayitlari()).map((k) => k.kimlik).filter(secici);
-        await alarmKitIptalEt(kimlikler);
+    /**
+     * Kurulu alarmlardan seçileni iptal eder (zincirin İÇİNDE çağrılır). Varsayılan
+     * PLANLAMA iptalidir: o an ÇALAN alarm atlanır (yeniden planlama kullanıcının
+     * uyanmak için kurduğu alarmı kesmesin). Yalnız "Kıldım" `calaniDurdur: true` geçer.
+     */
+    private async alarmlariIptalEt(
+        secici: (kimlik: string) => boolean,
+        calaniDurdur = false
+    ): Promise<void> {
+        const kimlikler = alarmKitIptalSecimi(await alarmKitKayitlari(), secici, calaniDurdur);
+        await alarmKitIptalEt(kimlikler, calaniDurdur);
     }
 
     /**
@@ -502,7 +513,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     /**
      * Ayni kimlikli GERCEK ALARM (AlarmKit) iptal edilir. Sesli anons iOS'ta bildirimin
-     * SESIDIR (ayri zincir degil) → bildirim iptal edilince o da gider.
+     * SESIDIR (ayri zincir degil) → bildirim iptal edilince o da gider. Planlama iptalidir:
+     * o an CALAN alarm native tarafta atlanir (`calaniDurdur` varsayilan false).
      */
     yanKanaliIptalEt(id: string): void {
         if (!this.alarmDestegi) return;
@@ -515,10 +527,13 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         void this.alarmIsi(() => this.alarmlariIptalEt(muhafizPlanKimligiMi));
     }
 
-    /** Uygulama ici "Kildim": vaktin alarmlari (plan + erteleme) onekle. */
+    /**
+     * Uygulama ici "Kildim": vaktin alarmlari (plan + erteleme) onekle — o an CALAN alarm
+     * DAHIL (Android `vakitAlarmlariniSustur` ikizi: "Kılındı" yazarken alarm calmamali).
+     */
     vakitYanKanallariniIptalEt(onek: string): void {
         if (!this.alarmDestegi || !onek) return;
-        void this.alarmIsi(() => this.alarmlariIptalEt((kimlik) => kimlik.startsWith(onek)));
+        void this.alarmIsi(() => this.alarmlariIptalEt((kimlik) => kimlik.startsWith(onek), true));
     }
 
     /** Bildirimdeki "Ertele" (JS yolu): susturulan araliktaki alarmlar. */

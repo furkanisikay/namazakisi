@@ -323,6 +323,49 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         }
     });
 
+    it.each(['reddedildi', 'belirsiz', 'desteklenmiyor'] as const)(
+        'iOS AlarmKit %s → alarm tetiği BİLDİRİM olur ve 64 sayımına GİRER (defter girdisi servisle aynı durumdan)',
+        async (durum) => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+                alarmKitDurumu: jest.Mock;
+                alarmKitPlanla: jest.Mock;
+            };
+            alarmKit.alarmKitDurumu.mockResolvedValue(durum);
+            // Köprü kurmaya razı olsa bile izin yokken teslimci alarm DENEMEMELİ.
+            alarmKit.alarmKitPlanla.mockResolvedValue(true);
+            try {
+                const alarmli: MuhafizMatrisi = matrisKur(() => ({
+                    seviyeler: [
+                        { kademe: 'nazik', esikDk: 30, siklik: { herDk: 15 }, kanallar: { bildirim: true, alarm: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                        { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                    ],
+                }));
+                muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());
+                await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: alarmli });
+
+                // Defterin AlarmKit girdisi ekranın kullandığı okuyucudan (servisle aynı köprü).
+                const dis = await defterDisGirdisiniOku();
+                expect(dis.iosAlarmKit).toBe(false);
+                const g = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli }, iosAlarmKit: dis.iosAlarmKit });
+
+                expect(alarmKit.alarmKitPlanla).not.toHaveBeenCalled();
+                expect(say(g, 'alarm')).toBe(0);
+                // Alarm adımının ilk tetiği dahil HER tetik bekleyen bildirimdir → 64'e sayılır.
+                expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
+                const ozet = defterOzeti(bildirimDefteriOlustur(g), 'ios');
+                expect(ozet.toplam + ozet.yedek).toBe(say(g, 'muhafiz'));
+                // İzinli olsaydı aynı tetikler alarm olurdu: fark tam olarak alarm adımları kadar.
+                const izinli = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli }, iosAlarmKit: true });
+                expect(say(izinli, 'alarm')).toBeGreaterThan(0);
+                expect(say(g, 'muhafiz')).toBe(say(izinli, 'muhafiz') + say(izinli, 'alarm'));
+            } finally {
+                alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+                alarmKit.alarmKitPlanla.mockResolvedValue(false);
+            }
+        }
+    );
+
     it('ÖNERİ uygulanınca gerçek plan da defterin söylediği sayıya iner', async () => {
         jest.replaceProperty(Platform, 'OS', 'ios');
         muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());

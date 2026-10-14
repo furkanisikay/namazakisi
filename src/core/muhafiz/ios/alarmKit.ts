@@ -120,6 +120,8 @@ export function alarmKitYukuOlustur(g: AlarmKitYukuGirdisi): AlarmKitYuku {
 export interface AlarmKitKaydi {
     kimlik: string;
     tetikMs: number;
+    /** O an ÇALIYOR mu (AlarmKit `alerting`)? Yalnız `true` iken yazılır. */
+    caliyor?: true;
 }
 
 /** Ham köprü listesini doğrular (bozuk öğe sessizce düşer). */
@@ -136,11 +138,29 @@ export function alarmKitKayitlariniCoz(ham: unknown): AlarmKitKaydi[] {
     const sonuc: AlarmKitKaydi[] = [];
     for (const o of dizi) {
         if (!o || typeof o !== 'object') continue;
-        const { kimlik, tetikMs } = o as { kimlik?: unknown; tetikMs?: unknown };
+        const { kimlik, tetikMs, caliyor } = o as { kimlik?: unknown; tetikMs?: unknown; caliyor?: unknown };
         if (typeof kimlik !== 'string' || typeof tetikMs !== 'number' || !Number.isFinite(tetikMs)) continue;
-        sonuc.push({ kimlik, tetikMs });
+        sonuc.push(caliyor === true ? { kimlik, tetikMs, caliyor: true } : { kimlik, tetikMs });
     }
     return sonuc;
+}
+
+/**
+ * İptal edilecek alarm kimlikleri. PLANLAMA turu (`calaniDurdur === false`: yeniden
+ * planlama, muhafız kapatma, erteleme aralığı) o an ÇALAN alarma DOKUNMAZ — Android
+ * kuralının ikizi ("planlama turu çalan alarmı susturmaz"); 15 dk'lık arka plan turu ya
+ * da ekrandaki bir ayar değişikliği kullanıcının uyanmak için kurduğu alarmı
+ * kesmemeli. Yalnız "Kıldım" (`true`) çalanı da susturur. Swift ikizi
+ * `AlarmKurallari.iptalSecimi` (ortak fikstür `alarmkit-ornek.json > iptalSecimi`);
+ * native taraf iptal anında aynı kuralı GÜNCEL durumla bir kez daha uygular (okuma ile
+ * iptal arasında çalmaya başlayan alarm).
+ */
+export function alarmKitIptalSecimi(
+    kayitlar: readonly AlarmKitKaydi[],
+    secici: (kimlik: string) => boolean,
+    calaniDurdur: boolean
+): string[] {
+    return kayitlar.filter((k) => secici(k.kimlik) && (calaniDurdur || k.caliyor !== true)).map((k) => k.kimlik);
 }
 
 /**

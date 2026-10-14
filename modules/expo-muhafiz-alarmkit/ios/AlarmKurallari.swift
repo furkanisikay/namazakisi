@@ -4,7 +4,8 @@ import Foundation
  * iOS GERCEK ALARM (AlarmKit, issue #74) — SAF kurallar, yalniz Foundation.
  *
  * IKIZLER (ortak fikstur, biri degisirse hepsi birlikte):
- *   - `src/core/muhafiz/ios/alarmKit.ts`  ↔ `test/alarmkit-ornek.json` (UUID, ikincil dugme)
+ *   - `src/core/muhafiz/ios/alarmKit.ts`  ↔ `test/alarmkit-ornek.json` (UUID, ikincil dugme,
+ *     calan alarmi koruyan iptal secimi)
  *   - `src/core/muhafiz/erteleme.ts`      ↔ `android/app/src/test/resources/erteleme-ornekleri.json`
  *     (erteleme hedefi, baslik, kimlikler, susturma — Kotlin `ErtelemeKurallari` ile ayni)
  *
@@ -152,6 +153,16 @@ public enum AlarmKurallari {
 
     public static func ertelemeKimligiMi(_ kimlik: String) -> Bool {
         return eslesme(ertelemeDeseni, kimlik) != nil
+    }
+
+    /// Iptal edilecek kimlikler. PLANLAMA turu (`calaniDurdur == false`: yeniden planlama,
+    /// muhafiz kapatma, erteleme araligi) o an CALAN alarma DOKUNMAZ — Android kurali
+    /// ("planlama turu calan alarmi susturmaz"); yalniz "Kildim" (`true`) calani da susturur.
+    /// JS `alarmKitIptalSecimi` (ortak fikstur `alarmkit-ornek.json > iptalSecimi`).
+    public static func iptalSecimi(kimlikler: [String], calanUuidler: Set<String>, calaniDurdur: Bool) -> [String] {
+        if calaniDurdur { return kimlikler }
+        let calan = Set(calanUuidler.map { $0.lowercased() })
+        return kimlikler.filter { !calan.contains(uuidMetni($0)) }
     }
 
     /// Muhafiz kimliginin (plan, erteleme, yatis...) namaz gunu + vakti.

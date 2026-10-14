@@ -47,6 +47,19 @@ const ORTAK_KAYNAK = path.join(UZANTI_KAYNAGI, 'ortak');
 const POD_KAYNAGI = path.join(KOK, 'modules', 'expo-siri-kisayollari', 'ios');
 /** Pod'dan uzantiya kopyalanan SAF dosyalar (pod'a baglanmadan ayni kod). */
 const POD_KOPYALARI = ['VakitKarari.swift', 'SiriDeposu.swift', 'WidgetKarari.swift', 'CanliEtkinlikNitelikleri.swift'];
+/**
+ * Muhafiz gercek alarmi (AlarmKit, issue #74) meta veri tipi: ana hedef zaten derler
+ * (`withMuhafizAlarmKit`), uzanti da `ActivityConfiguration(for: AlarmAttributes<NamazAlarmVerisi>.self)`
+ * icin AYNI tipi derler (ActivityKit eslesmesi tip adi + Codable sekliyle).
+ */
+const ALARMKIT_KAYNAGI = path.join(KOK, 'targets', 'muhafiz-alarmkit');
+const ALARMKIT_KOPYALARI = ['NamazAlarmVerisi.swift'];
+/**
+ * Bu uzantinin canli etkinlik CIZDIGINI soyleyen Info.plist anahtari. `NSSupportsLiveActivities`
+ * artik sinyal degil: AlarmKit icin uzantidan bagimsiz yazilir (`withMuhafizAlarmKit`).
+ * Okuyan: `CanliEtkinlikKoprusu.destekleniyor` (Swift).
+ */
+const CANLI_ETKINLIK_ANAHTARI = 'NamazAkisiCanliEtkinlikUzantisi';
 
 const HEDEF_ADI = 'NamazWidget';
 const APP_GROUP = 'group.com.furkanisikay.namazakisi';
@@ -250,6 +263,10 @@ function uzantiHedefiniEkle(proje, { anaHedefUuid, kimlik, kaynaklar }) {
     SWIFT_EMIT_LOC_STRINGS: 'YES',
     SWIFT_VERSION: '5.0',
     TARGETED_DEVICE_FAMILY: cihazAilesi,
+    // AlarmKit iOS 26'dir, uzanti 16.2: `import AlarmKit` otomatik baglamada GUCLU bag
+    // uretir → eski sistemde uzanti "Library not loaded" ile yuklenmezdi. ZAYIF bag
+    // (ana hedefteki `addFramework(weak)` ile ayni etki; uzantinin cerceve fazi bos).
+    OTHER_LDFLAGS: tirnak('$(inherited) -weak_framework AlarmKit'),
   };
   const yapilandirmaUuidleri = [];
   for (const ad of ['Debug', 'Release']) {
@@ -385,6 +402,7 @@ function uzantiDosyalariniYaz(platformKoku, surum, derleme) {
   for (const ad of swiftDosyalari(UZANTI_KAYNAGI)) kopyala(UZANTI_KAYNAGI, ad);
   for (const ad of swiftDosyalari(ORTAK_KAYNAK)) kopyala(ORTAK_KAYNAK, ad);
   for (const ad of POD_KOPYALARI) kopyala(POD_KAYNAGI, ad);
+  for (const ad of ALARMKIT_KOPYALARI) kopyala(ALARMKIT_KAYNAGI, ad);
   fs.writeFileSync(path.join(hedefDizin, 'Info.plist'), infoPlistIcerigi(surum, derleme));
   fs.writeFileSync(path.join(hedefDizin, `${HEDEF_ADI}.entitlements`), entitlementsIcerigi());
   // Ayni ad iki kaynakta olmamali (sessizce ezilirdi).
@@ -411,6 +429,7 @@ function withNamazWidget(config, secenekler) {
   });
   config = withInfoPlist(config, (mod) => {
     mod.modResults.NSSupportsLiveActivities = true;
+    mod.modResults[CANLI_ETKINLIK_ANAHTARI] = true;
     return mod;
   });
 
@@ -452,3 +471,6 @@ module.exports.infoPlistIcerigi = infoPlistIcerigi;
 module.exports.uzantiHedefiniEkle = uzantiHedefiniEkle;
 module.exports.HEDEF_ADI = HEDEF_ADI;
 module.exports.APP_GROUP = APP_GROUP;
+module.exports.CANLI_ETKINLIK_ANAHTARI = CANLI_ETKINLIK_ANAHTARI;
+module.exports.ALARMKIT_KOPYALARI = ALARMKIT_KOPYALARI;
+module.exports.uzantiDosyalariniYaz = uzantiDosyalariniYaz;

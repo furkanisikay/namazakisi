@@ -10,6 +10,7 @@ import {
     alarmKitDurumunuCoz,
     alarmKitErtelemeleri,
     alarmKitIkincilDugme,
+    alarmKitIptalSecimi,
     alarmKitKayitlariniCoz,
     alarmKitUuid,
     alarmKitYukuOlustur,
@@ -20,7 +21,32 @@ const FIKSTUR = path.join(__dirname, '../../../../../modules/expo-muhafiz-alarmk
 const fikstur = JSON.parse(fs.readFileSync(FIKSTUR, 'utf8')) as {
     uuidler: { kimlik: string; uuid: string }[];
     dugmeler: { ad: string; tetikMs: number; erteleSinirMs: number; beklenen: 'ertele' | 'kildim' }[];
+    iptalSecimi: {
+        ad: string;
+        kayitlar: { kimlik: string; caliyor: boolean }[];
+        calaniDurdur: boolean;
+        beklenen: string[];
+    }[];
 };
+
+describe('alarmKitIptalSecimi — ÇALAN alarm planlama turunda korunur (Swift ikiziyle ortak fikstür)', () => {
+    test.each(fikstur.iptalSecimi)('$ad', ({ kayitlar, calaniDurdur, beklenen }) => {
+        // Köprüden geldiği gibi: `caliyor` yalnız true iken yazılır.
+        const ham = JSON.stringify(
+            kayitlar.map((k, i) => (k.caliyor ? { kimlik: k.kimlik, tetikMs: i, caliyor: true } : { kimlik: k.kimlik, tetikMs: i }))
+        );
+        expect(alarmKitIptalSecimi(alarmKitKayitlariniCoz(ham), () => true, calaniDurdur)).toEqual(beklenen);
+    });
+
+    test('seçici yine uygulanır (önek dışı kimlik ne olursa olsun kalır)', () => {
+        const kayitlar = [
+            { kimlik: 'muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', tetikMs: 1 },
+            { kimlik: 'muhafiz_2026-10-13_vakit_ikindi_seviye_1_dk_45', tetikMs: 2, caliyor: true as const },
+        ];
+        const ogle = (k: string) => k.startsWith('muhafiz_2026-10-13_vakit_ogle');
+        expect(alarmKitIptalSecimi(kayitlar, ogle, true)).toEqual(['muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45']);
+    });
+});
 
 describe('alarmKitUuid — Swift ikiziyle ortak fikstür', () => {
     test.each(fikstur.uuidler)('$kimlik', ({ kimlik, uuid }) => {
@@ -94,8 +120,14 @@ describe('köprü verisi çözümü', () => {
             { kimlik: 'b' },
             null,
             { kimlik: 'c', tetikMs: Number.NaN },
+            { kimlik: 'd', tetikMs: 4, caliyor: true },
+            { kimlik: 'e', tetikMs: 5, caliyor: 'evet' },
         ]);
-        expect(alarmKitKayitlariniCoz(ham)).toEqual([{ kimlik: 'a', tetikMs: 1 }]);
+        expect(alarmKitKayitlariniCoz(ham)).toEqual([
+            { kimlik: 'a', tetikMs: 1 },
+            { kimlik: 'd', tetikMs: 4, caliyor: true },
+            { kimlik: 'e', tetikMs: 5 },
+        ]);
         expect(alarmKitKayitlariniCoz('{bozuk')).toEqual([]);
         expect(alarmKitKayitlariniCoz({ kimlik: 'a' })).toEqual([]);
     });
