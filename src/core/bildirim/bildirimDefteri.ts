@@ -7,7 +7,8 @@
  * beslenir. Tahmin fonksiyonu yazılsaydı ikiz ayrışır, ekran "sığıyor" derken
  * cihaz sessizce keserdi.
  *
- *   muhafız         → `muhafizTeslimPlaniOlustur` (bugünün kalan vakitleri; Android'de + yarının imsağı)
+ *   muhafız         → `muhafizTeslimPlaniOlustur` (bugünün kalan vakitleri + yarının imsağı;
+ *                     iOS'ta yarının imsağı BÜTÇE ARTIĞIDIR → `yedek` kayıt, kalan slota kadar)
  *   sesli anons     → aynı adaylar, `anonsAlarmiKurarMi` (yalnız Android)
  *   gerçek alarm    → aynı adaylar, `alarmKurarMi` (yalnız Android; o tetiğin
  *                     bildirimi + anonsunun YERİNE tek `setAlarmClock` — issue #74)
@@ -38,9 +39,10 @@ import {
     muhafizTeslimPlaniOlustur,
     muhafizVakitleriniHesapla,
     yarininImsagiPlanlanirMi,
+    butceArtigiMi,
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
-import { kullanilabilirSlotHesapla } from '../muhafiz/ios/bildirimButcesi';
+import { kullanilabilirSlotHesapla, yedekKapasitesiHesapla } from '../muhafiz/ios/bildirimButcesi';
 import { nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
@@ -97,6 +99,12 @@ export interface DefterKaydi {
     zamanMs: number;
     /** 'bildirim' = bildirim tetiği (expo/notifee); 'alarm' = yalnız native alarm (anons, widget). */
     tur: 'bildirim' | 'alarm';
+    /**
+     * BÜTÇE ARTIĞI (iOS, yarının imsağı): teslimci yalnız bugünün planından kalan slota
+     * kurar. Defter yalnız KURULACAK olanları tutar (`iosYedekleriSigdir`); özet onları
+     * `toplam`/`gelmeyecek`/eşiklere KATMAZ, `yedek` olarak ayrıca söyler.
+     */
+    yedek?: true;
 }
 
 export interface DefterKoordinat {
@@ -148,8 +156,8 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     const ozelGundeMi = g.ozelGundeMi ?? (() => false);
     const kilindiMi = (tarih: string, vakit: VakitAdi) => (g.kilinan?.[tarih] ?? []).includes(vakit);
     const android = g.platform === 'android';
-    const ekle = (kaynak: DefterKaynagi, zamanMs: number, tur: DefterKaydi['tur'] = 'bildirim') => {
-        if (zamanMs > simdiMs) kayitlar.push({ kaynak, zamanMs, tur });
+    const ekle = (kaynak: DefterKaynagi, zamanMs: number, tur: DefterKaydi['tur'] = 'bildirim', yedek = false) => {
+        if (zamanMs > simdiMs) kayitlar.push({ kaynak, zamanMs, tur, ...(yedek ? { yedek: true as const } : {}) });
     };
     const guvenli = (is: () => void) => {
         try {
@@ -167,8 +175,8 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     if (koordinat && g.muhafiz?.aktif) {
         const matris = g.muhafiz.matris;
         guvenli(() => {
-            // Servisle AYNI ufuk: Android'de yarının imsağı dahil (issue #74 M2). Sayaç planı aşağıda
-            // yarınsız `vakitler`'i kullanır — onun ufku ayrıdır.
+            // Servisle AYNI ufuk: yarının imsağı dahil (issue #74 M2; iOS'ta bütçe artığı).
+            // Sayaç planı aşağıda yarınsız `vakitler`'i kullanır — onun ufku ayrıdır.
             const muhafizVakitleri = muhafizVakitleriniHesapla(koordinat, g.simdi, {
                 yarininImsagi: yarininImsagiPlanlanirMi(g.platform),
             });
@@ -186,7 +194,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                     ekle('alarm', aday.zaman.getTime(), 'alarm');
                     continue;
                 }
-                ekle('muhafiz', aday.zaman.getTime());
+                ekle('muhafiz', aday.zaman.getTime(), 'bildirim', butceArtigiMi(aday.vakit, g.platform));
                 if (android && anonsAlarmiKurarMi(aday)) ekle('anons', aday.zaman.getTime(), 'alarm');
             }
         });
@@ -312,12 +320,37 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     // ── Widget dakika alarmı (Android) ──
     if (android && g.widget !== false) ekle('widget', simdiMs + 60_000, 'alarm');
 
-    return kayitlar.sort((a, b) => a.zamanMs - b.zamanMs);
+    kayitlar.sort((a, b) => a.zamanMs - b.zamanMs);
+    return android ? kayitlar : iosYedekleriSigdir(kayitlar);
 }
 
-/** Platformun SAYDIĞI kayıtlar: iOS'ta yalnız bildirimler, Android'de tüm havuz. */
+/**
+ * iOS: bütçe artığını (yarının imsağı) teslimcinin kuracağı kadarına indirir —
+ * `IosMuhafizTeslimcisi`'nin sayacının (`yedekSigarMi`) kapalı formu. Muhafız dışı
+ * bildirimler slotu belirler, bugünün muhafız planı önce tüketir, yedek KRONOLOJİK
+ * kalan yere girer. Sığmayan yedek kayıp değildir → defterden düşer.
+ * Girdi KRONOLOJİK olmalı; tekrar uygulanabilir (tutulan önek yeniden kırpılır).
+ */
+export function iosYedekleriSigdir(kayitlar: DefterKaydi[]): DefterKaydi[] {
+    if (!kayitlar.some((k) => k.yedek)) return kayitlar;
+    const bildirimler = kayitlar.filter((k) => k.tur === 'bildirim');
+    const bugunMuhafiz = bildirimler.filter((k) => k.kaynak === 'muhafiz' && !k.yedek).length;
+    const muhafizDisi = bildirimler.filter((k) => k.kaynak !== 'muhafiz').length;
+    let kalan = yedekKapasitesiHesapla(kullanilabilirSlotHesapla(muhafizDisi), bugunMuhafiz);
+    return kayitlar.filter((k) => {
+        if (!k.yedek) return true;
+        if (kalan <= 0) return false;
+        kalan--;
+        return true;
+    });
+}
+
+/**
+ * Platformun SAYDIĞI kayıtlar: iOS'ta yalnız bildirimler, Android'de tüm havuz.
+ * Bütçe artığı (`yedek`) SAYILMAZ: yalnız boş yere girer, sınırı zorlayamaz.
+ */
 export const sayilanKayitlar = (kayitlar: readonly DefterKaydi[], platform: BildirimPlatformu): DefterKaydi[] =>
-    platform === 'ios' ? kayitlar.filter((k) => k.tur === 'bildirim') : [...kayitlar];
+    platform === 'ios' ? kayitlar.filter((k) => k.tur === 'bildirim' && !k.yedek) : kayitlar.filter((k) => !k.yedek);
 
 export type ButceDurumu = 'normal' | 'yakin' | 'asim';
 
@@ -335,6 +368,11 @@ export interface DefterOzeti {
     oran: number;
     /** Kart görünsün mü? iOS: daima; Android: yalnız 400+ ya da aşımda. */
     kartGorunur: boolean;
+    /**
+     * Bugünün planından kalan yere ayrıca kurulan bütçe artığı (iOS: yarının imsağı).
+     * `toplam`'a, eşiklere ve `gelmeyecek`'e KATILMAZ; yer gerektiğinde ilk o çekilir.
+     */
+    yedek: number;
 }
 
 /** Defteri platformun sınırına göre özetler. */
@@ -378,6 +416,7 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
         durum,
         oran: sinir > 0 ? Math.min(1, toplam / sinir) : 0,
         kartGorunur: platform === 'ios' ? toplam > 0 || gelmeyecek > 0 : durum !== 'normal',
+        yedek: kayitlar.filter((k) => k.yedek && (platform === 'android' || k.tur === 'bildirim')).length,
     };
 }
 

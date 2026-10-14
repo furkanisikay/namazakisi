@@ -39,6 +39,8 @@ export interface VakitZamani {
     cikis: Date;
     /** YYYY-MM-DD — vaktin ait oldugu gun (yatsi icin onceki gun olabilir). */
     tarih: string;
+    /** Plana SONA eklenen yarinin imsagi mi? (`MuhafizVakitZamani.yarininImsagi`) */
+    yarininImsagi?: true;
 }
 
 /** Cihaza teslim edilecek TEK bir uyari. */
@@ -61,6 +63,13 @@ export interface UyariTeslimi {
      * (tarihsel davranis; eski el yapimi teslimler/testler).
      */
     cikis?: Date;
+    /**
+     * BÜTÇE ARTIĞI (iOS, yarının imsağı — `muhafizTeslimPlani.yarininImsagiKipi`):
+     * yalnız bugünün planı sığdıktan sonra kalan slota kurulur; sığmazsa SESSİZCE
+     * atlanır ve "kesilen" sayılmaz. Yalnız `true` iken yazılır (alan yoksa bugünün
+     * planıdır → Android teslimi ve kayıt-oynat birebir aynı kalır).
+     */
+    butceArtigi?: true;
     /**
      * Muhafız DIŞI bir tüketicinin (nafile, issue #273) teslim ayrıntıları.
      * Verilmezse muhafız davranışı BİREBİR korunur (kayıt-oynat nöbetçisi).

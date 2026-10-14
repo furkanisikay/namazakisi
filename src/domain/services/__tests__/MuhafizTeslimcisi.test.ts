@@ -271,6 +271,52 @@ describe('IosMuhafizTeslimcisi', () => {
         }
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(80);
     });
+
+    describe('BUTCE ARTIGI — yarinin imsagi (iOS)', () => {
+        const yedek = (i: number): UyariTeslimi => ({
+            ...teslimKur({ kalanDk: i + 1 }),
+            id: `muhafiz_2026-01-02_vakit_imsak_seviye_1_dk_${i + 1}`,
+            butceArtigi: true,
+        });
+
+        test('bugunun planindan SONRA kalan slota girer, rezerv (8) bos kalir', async () => {
+            // Muhafiz disi 20 → slot 40; bugun 25 → yedege 40 − 25 − 8 = 7
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+                Array.from({ length: 20 }, (_, i) => ({ identifier: `vakit_${i}` }))
+            );
+            const yeni = new IosMuhafizTeslimcisi();
+            await yeni.hazirla();
+            for (let i = 0; i < 25; i++) await yeni.uyariPlanla(teslimKur({ kalanDk: i + 1 }));
+            for (let i = 0; i < 20; i++) await yeni.uyariPlanla(yedek(i));
+
+            const kurulan = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0].identifier);
+            expect(kurulan.length).toBe(25 + 7);
+            // KRONOLOJIK: yedegin ILK tetikleri tutulur.
+            expect(kurulan.filter((k: string) => k.includes('imsak'))).toEqual(
+                Array.from({ length: 7 }, (_, i) => yedek(i).id)
+            );
+        });
+
+        test('bugun slotu tuketiyorsa yedek HIC kurulmaz (bugun onceliklidir)', async () => {
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+                Array.from({ length: 56 }, (_, i) => ({ identifier: `vakit_${i}` }))
+            );
+            const yeni = new IosMuhafizTeslimcisi();
+            await yeni.hazirla();
+            for (let i = 0; i < 4; i++) await yeni.uyariPlanla(teslimKur({ kalanDk: i + 1 }));
+            for (let i = 0; i < 5; i++) await yeni.uyariPlanla(yedek(i));
+            expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(4);
+        });
+
+        test('butce OLCULEMEZSE yedek kurulmaz (kor doldurma bugunu sistemin kesmesine iterdi)', async () => {
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockRejectedValue(new Error('okunamadi'));
+            const yeni = new IosMuhafizTeslimcisi();
+            await yeni.hazirla();
+            await yeni.uyariPlanla(teslimKur());
+            await yeni.uyariPlanla(yedek(0));
+            expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+        });
+    });
 });
 
 

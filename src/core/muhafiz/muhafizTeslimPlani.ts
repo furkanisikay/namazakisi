@@ -28,6 +28,12 @@ export interface MuhafizVakitZamani {
     cikis: Date;
     /** YYYY-MM-DD */
     tarih: string;
+    /**
+     * Bu pencere `yarininImsagi` seçeneğiyle SONA eklenen yarının imsağı mı?
+     * Yalnız o kayıtta `true` yazılır (alan yoksa bugünün planıdır). iOS'ta bu
+     * vaktin uyarıları BÜTÇE ARTIĞIDIR ([yarininImsagiKipi]).
+     */
+    yarininImsagi?: true;
 }
 
 /** Teslimciye gidecek tek bir uyarının metinsiz hâli. */
@@ -59,8 +65,8 @@ export interface MuhafizVakitSecenegi {
      * turda (15 dk görevi) kurulur — OEM görevi öldürürse HİÇ kurulmaz ve kişi sabah
      * namazına uyandırılmaz. Yarının imsağı TÜM adımlarıyla eklenir (yalnız alarmlı
      * adımla sınırlamak, ekranın gösterdiği akıştan sapan yarım bir plan üretirdi).
-     * Liste kronolojik kalır; Android 360 bütçesi kronolojik kestiği için sığmazsa ilk
-     * düşen o olur (bugünün uyarılarından önce).
+     * Liste kronolojik kalır; iki platformun bütçesi de kronolojik kestiği için sığmazsa
+     * ilk düşen o olur (bugünün uyarılarından önce). iOS'ta ayrıca BÜTÇE ARTIĞIDIR.
      *
      * Hangi platformda açık olduğu TEK yerden: [yarininImsagiPlanlanirMi].
      * Vakit sayacı (`VakitSayacBildirimServisi`) bunu AÇMAZ: kendi ufku ayrıdır.
@@ -69,18 +75,41 @@ export interface MuhafizVakitSecenegi {
 }
 
 /**
- * Yarının imsağı bu platformda planlanır mı? Servis (`teslimci.ad`) ve bildirim defteri
- * (`g.platform`) AYNI cevabı buradan alır — ayrışırsa rehber cihazdan farklı sayar.
+ * Yarının imsağı bu platformda NASIL planlanır? TEK KARAR KAYNAĞI: servis
+ * (`teslimci.ad`) ve bildirim defteri (`g.platform`) aynı cevabı buradan alır —
+ * ayrışırsa rehber cihazdan farklı sayar.
  *
- * YALNIZ ANDROID: gerçek alarm (`setAlarmClock`) ve 360'lık pay oradadır. iOS'ta 64
- * bekleyen bildirim sınırı bütün gün için paylaşılır; yarının imsağı (varsayılan matriste
- * ~10–20 bildirim) yoğun kurulumu sınırın üstüne iter ve bildirim sınırı rehberinin
- * HİÇBİR önerisi bunu geri alamaz (öneriler bugünün adımlarını seyreltir, yarın sabah
- * yine sığmaz) — "aşım" uyarısı kalıcı olurdu. iOS 26'da gerçek alarm AlarmKit ile
- * kurulur (64 sınırına sayılmaz) ama yarının imsağını yalnız alarm tetiğiyle eklemek
- * ekranın akışından sapan yarım bir plan olurdu → bilinçli olarak iOS'ta kapalı (açık konu).
+ *   'yok'         → planlanmaz (bugün hiçbir platform; ufuk yalnız bugün olurdu).
+ *   'tam'         → Android: bugünün planıyla eşit haklı. Gerçek alarm (`setAlarmClock`)
+ *                   ve 360'lık pay oradadır; pay kronolojik kestiği için sığmazsa ilk
+ *                   düşen yine o olur ve rehber bunu "gelmeyecek" sayar (#74 M2).
+ *   'butceArtigi' → iOS: 64 bekleyen bildirim sınırı bütün gün için paylaşılır. Yarının
+ *                   imsağı yalnız BUGÜNÜN planı sığdıktan SONRA kalan slota (bir yedek
+ *                   payı bırakılarak — `IOS_YEDEK_REZERVI`) kronolojik girer; sığmayan
+ *                   kısmı kayıp DEĞİLDİR, rehberde "gelmeyecek"/aşım sayılmaz. Eskiden
+ *                   iOS'ta hiç planlanmıyordu: akşam uygulamayı açıp sabaha kadar açmayan
+ *                   kullanıcının imsak uyarısı (background fetch güvenilmez) hiç
+ *                   kurulmuyordu; tam hak verilseydi yoğun kurulum kalıcı aşıma düşer ve
+ *                   rehberin hiçbir önerisi bunu geri alamazdı. Kronolojik sıra bilinçli:
+ *                   yedeğin değeri ilk uyarının kişiyi uyandırmasıdır, uygulama açılınca
+ *                   plan zaten tamamen yeniden kurulur. AlarmKit alarmı (gerçek alarm)
+ *                   64 sınırına sayılmadığı için yarının imsağında da daima kurulur.
  */
-export const yarininImsagiPlanlanirMi = (platform: 'android' | 'ios'): boolean => platform === 'android';
+export type YarininImsagiKipi = 'yok' | 'tam' | 'butceArtigi';
+
+export const yarininImsagiKipi = (platform: 'android' | 'ios'): YarininImsagiKipi =>
+    platform === 'android' ? 'tam' : 'butceArtigi';
+
+/** Yarının imsağı bu platformda plana girer mi? (bugün iki platformda da evet — kip ayrışır.) */
+export const yarininImsagiPlanlanirMi = (platform: 'android' | 'ios'): boolean =>
+    yarininImsagiKipi(platform) !== 'yok';
+
+/**
+ * Bu pencerenin uyarıları bu platformda BÜTÇE ARTIĞI mı? (iOS teslimcisi ve defter
+ * aynı kapıdan geçer.)
+ */
+export const butceArtigiMi = (vakit: Pick<MuhafizVakitZamani, 'yarininImsagi'>, platform: 'android' | 'ios'): boolean =>
+    vakit.yarininImsagi === true && yarininImsagiKipi(platform) === 'butceArtigi';
 
 /**
  * Bugünün (ve gerekiyorsa dünün sürmekte olan yatsısının) vakit pencereleri.
@@ -122,7 +151,13 @@ export function muhafizVakitleriniHesapla(
         { vakit: 'yatsi', giris: bugun.isha, cikis: yarin.fajr, tarih: bugunStr }
     );
     if (secenek.yarininImsagi) {
-        vakitler.push({ vakit: 'imsak', giris: yarin.fajr, cikis: yarin.sunrise, tarih: isoGun(yarinTarih) });
+        vakitler.push({
+            vakit: 'imsak',
+            giris: yarin.fajr,
+            cikis: yarin.sunrise,
+            tarih: isoGun(yarinTarih),
+            yarininImsagi: true,
+        });
     }
     return vakitler;
 }

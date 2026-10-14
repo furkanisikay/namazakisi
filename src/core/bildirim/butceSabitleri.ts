@@ -21,6 +21,16 @@ export const IOS_BEKLEYEN_TAVANI = 64;
 export const IOS_GUVENLIK_PAYI = 4;
 
 /**
+ * iOS'ta BÜTÇE ARTIĞI (yarının imsağı, `yarininImsagiKipi`) doldururken ek olarak
+ * BOŞ bırakılan slot. Yedek, bugünün planı sığdıktan sonra kalan yere girer; o yeri
+ * sonuna kadar doldursaydı muhafızdan SONRA planlanan tüketiciler (yeni açılan cuma,
+ * camiye gitme, nafile turunun büyümesi) 64'ü aşar ve iOS en UZAK tarihlileri — yani
+ * onların bildirimlerini, yarın sabahki yedeği değil — sessizce atardı. Yedek kendi
+ * başına hiçbir şeyi düşürmemeli: yedek doluyken 64 − 4 − 8 = 52'de durulur.
+ */
+export const IOS_YEDEK_REZERVI = 8;
+
+/**
  * Android'de uygulamanın kullandığı TOPLAM alarm havuzu tavanı.
  *
  * Sistem uygulama başına eşzamanlı ~500 alarm tutar; aşılınca `setExact...`

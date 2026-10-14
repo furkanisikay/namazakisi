@@ -84,7 +84,7 @@ import { defterDisGirdisiniOku } from '../BildirimDefteriServisi';
 import { takvimCakismaKimligiMi } from '../../../core/bildirim/takvimCakismaPlani';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
-import { bildirimDefteriOlustur, defterOzeti, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
+import { bildirimDefteriOlustur, defterOzeti, iosYedekleriSigdir, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
 import { muhafizVakitleriniHesapla } from '../../../core/muhafiz/muhafizTeslimPlani';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
@@ -178,12 +178,73 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
         expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
         expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
 
-        // iOS'ta ufuk bugünle sınırlı (64 bütçesi) — defter de saymaz.
-        const ios = bildirimDefteriOlustur(temelGirdi('ios', { simdi: aksam, muhafiz: { aktif: true, matris } }));
-        // Bugünün yatsısı gece yarısını aşar; sınır yarının imsak GİRİŞİ (= yatsının çıkışı).
-        const vakitler = muhafizVakitleriniHesapla(ISTANBUL, aksam);
-        const yarinImsakGirisi = vakitler[vakitler.length - 1].cikis.getTime();
-        expect(ios.filter((k) => k.kaynak === 'muhafiz' && k.zamanMs >= yarinImsakGirisi)).toEqual([]);
+        // Android'de yarının imsağı tam haklıdır: bütçe artığı (yedek) değildir.
+        expect(bildirimDefteriOlustur(g).some((k) => k.yedek)).toBe(false);
+    });
+
+    describe('iOS AKŞAM: yarının imsağı BÜTÇE ARTIĞI olarak kurulur', () => {
+        const aksam = new Date(2026, 9, 13, 21, 0, 0);
+        const iosAksam = async (m: MuhafizMatrisi, bekleyen = 0) => {
+            zamanDegilYalnizTarih(aksam);
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+                Array.from({ length: bekleyen }, (_, i) => ({ identifier: `vakit_bildirim_${i}` }))
+            );
+            muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: m });
+        };
+
+        it('yer varken yarının imsağının TAMAMI kurulur; defter birebir, aşım yok', async () => {
+            const hafif: MuhafizMatrisi = matrisKur(() => ({
+                seviyeler: [
+                    { kademe: 'nazik', esikDk: 30, siklik: { herDk: 15 }, kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                    { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                ],
+            }));
+            await iosAksam(hafif);
+
+            const yarinImsak = onekliSay('muhafiz_2026-10-14_vakit_imsak_');
+            expect(yarinImsak).toBeGreaterThan(0);
+            const g = temelGirdi('ios', { simdi: aksam, muhafiz: { aktif: true, matris: hafif } });
+            const ozet = defterOzeti(bildirimDefteriOlustur(g), 'ios');
+            expect(ozet.yedek).toBe(yarinImsak);
+            expect(onekliSay('muhafiz_')).toBe(ozet.toplam + ozet.yedek);
+            expect(ozet.gelmeyecek).toBe(0);
+        });
+
+        it('slot darsa bugün ÖNCE sığar; yedek kalan yere (rezerv bırakılarak) KRONOLOJİK girer', async () => {
+            // Muhafız dışı 25 bekleyen: muhafıza 64 − 25 − 4 = 35 slot.
+            const diger = 25;
+            const slot = 64 - diger - 4;
+            const matris = matrisKur();
+            await iosAksam(matris, diger);
+
+            const kurulan = planlananlar().map((p) => String(p.identifier)).filter((k) => k.startsWith('muhafiz_'));
+            const yedekKurulan = kurulan.filter((k) => k.startsWith('muhafiz_2026-10-14_vakit_imsak_'));
+
+            // Defter: aynı 25 muhafız dışı bildirimle (uzak tarihli cuma gibi) yeniden sığdırılır.
+            const disi = Array.from({ length: diger }, () => ({ kaynak: 'cuma' as const, zamanMs: aksam.getTime() + 1e10, tur: 'bildirim' as const }));
+            const ham = bildirimDefteriOlustur(temelGirdi('ios', { simdi: aksam, muhafiz: { aktif: true, matris } }));
+            const defter = iosYedekleriSigdir([...ham, ...disi].sort((x, y) => x.zamanMs - y.zamanMs));
+            const ozet = defterOzeti(defter, 'ios');
+
+            const bugun = ham.filter((k) => !k.yedek).length;
+            expect(bugun).toBeLessThan(slot - 8); // senaryo: bugün sığar, yedeğe yer kalır
+            expect(yedekKurulan.length).toBeGreaterThan(0);
+            // Kırpıldı: yarının imsağının tamamı sığmadı.
+            expect(yedekKurulan.length).toBeLessThan(ham.filter((k) => k.yedek).length);
+            expect(yedekKurulan.length).toBe(ozet.yedek);
+            expect(yedekKurulan.length).toBe(slot - bugun - 8);
+            expect(kurulan.length).toBe(bugun + ozet.yedek);
+            // Sığmayan yedek aşım DEĞİLDİR.
+            expect(ozet.gelmeyecek).toBe(0);
+            // KRONOLOJİK: kurulan yedekler yarının imsağının İLK tetikleridir.
+            const yedekZamanlari = defter.filter((k) => k.yedek).map((k) => k.zamanMs);
+            const kurulanZamanlar = planlananlar()
+                .filter((p) => String(p.identifier).startsWith('muhafiz_2026-10-14_vakit_imsak_'))
+                .map((p) => (p.trigger as { date: Date }).date.getTime());
+            expect(kurulanZamanlar).toEqual(yedekZamanlari);
+        });
     });
 
     it('Android GERÇEK ALARM (issue #74): alarm + bildirim + anons ayrı ayrı birebir', async () => {
@@ -248,9 +309,11 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
             expect(say(g, 'alarm')).toBeGreaterThan(0);
             expect(alarmKit.alarmKitPlanla).toHaveBeenCalledTimes(say(g, 'alarm'));
             expect(onekliSay('muhafiz_')).toBe(say(g, 'muhafiz'));
-            // iOS sayımı yalnız bildirimdir: alarmlar özette yer tutmaz.
+            // iOS sayımı yalnız bildirimdir: alarmlar özette yer tutmaz. Yarının imsağı
+            // (bütçe artığı) toplamda değil `yedek`te durur.
             const kayitlar = bildirimDefteriOlustur(g);
-            expect(defterOzeti(kayitlar, 'ios').toplam).toBe(say(g, 'muhafiz'));
+            const ozet = defterOzeti(kayitlar, 'ios');
+            expect(ozet.toplam + ozet.yedek).toBe(say(g, 'muhafiz'));
             // AlarmKit yokken aynı tetikler bildirim olarak sayılır (bugünkü davranış).
             const alarmsiz = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli } });
             expect(say(alarmsiz, 'alarm')).toBe(0);
@@ -277,10 +340,12 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
             });
             const kurulan = onekliSay('muhafiz_');
             // Teslimci 64 − 4 slotu aşan kısmı keser; defter TALEBİ sayar.
-            // Sınırın altına inen öneride ikisi birebir aynı olmalı.
-            if (oneri.sonrakiToplam <= 60) expect(kurulan).toBe(oneri.sonrakiToplam);
+            // Sınırın altına inen öneride ikisi birebir aynı olmalı — yarının imsağı
+            // (bütçe artığı) kalan yere girdiği için ondan ayrıca sayılır.
+            const yedek = defterOzeti(bildirimDefteriOlustur(oneri.girdi), 'ios').yedek;
+            if (oneri.sonrakiToplam <= 60) expect(kurulan).toBe(oneri.sonrakiToplam + yedek);
             else expect(kurulan).toBeLessThanOrEqual(oneri.sonrakiToplam);
-            expect(oneri.sonrakiToplam).toBe(say(oneri.girdi, 'muhafiz'));
+            expect(oneri.sonrakiToplam).toBe(bildirimDefteriOlustur(oneri.girdi).filter((k) => k.kaynak === 'muhafiz' && !k.yedek).length);
         }
     });
 });

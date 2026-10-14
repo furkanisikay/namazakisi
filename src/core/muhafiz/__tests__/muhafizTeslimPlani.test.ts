@@ -8,7 +8,9 @@
 import {
     muhafizTeslimPlaniOlustur,
     muhafizVakitleriniHesapla,
+    yarininImsagiKipi,
     yarininImsagiPlanlanirMi,
+    butceArtigiMi,
 } from '../muhafizTeslimPlani';
 import { ISTANBUL, matrisKur } from '../../bildirim/__tests__/defterFikstur';
 
@@ -38,6 +40,9 @@ describe('muhafizVakitleriniHesapla — yarının imsağı', () => {
         const son = liste[liste.length - 1];
         expect(son.vakit).toBe('imsak');
         expect(son.tarih).toBe(YARIN);
+        expect(son.yarininImsagi).toBe(true);
+        // İşaret YALNIZ eklenen kayıtta (bugünün planı işaretsiz kalır).
+        expect(liste.slice(0, -1).some((v) => v.yarininImsagi)).toBe(false);
         expect(isoGun(son.giris)).toBe(YARIN);
         // Yarının imsağı bugünün yatsısının çıkışında (fajr) girer.
         expect(son.giris.getTime()).toBe(liste[liste.length - 2].cikis.getTime());
@@ -94,9 +99,19 @@ describe('muhafizTeslimPlaniOlustur — yarının imsağı', () => {
     });
 });
 
-describe('yarininImsagiPlanlanirMi — tek kaynak', () => {
-    it('yalnız Android (iOS 64 bütçesi + gerçek alarm yok)', () => {
+describe('yarininImsagiKipi — tek kaynak', () => {
+    it('iki platformda da planlanır; Android tam hakla, iOS BÜTÇE ARTIĞI olarak', () => {
         expect(yarininImsagiPlanlanirMi('android')).toBe(true);
-        expect(yarininImsagiPlanlanirMi('ios')).toBe(false);
+        expect(yarininImsagiPlanlanirMi('ios')).toBe(true);
+        expect(yarininImsagiKipi('android')).toBe('tam');
+        expect(yarininImsagiKipi('ios')).toBe('butceArtigi');
+    });
+
+    it('bütçe artığı yalnız iOS + yalnız yarının imsağı', () => {
+        const liste = muhafizVakitleriniHesapla(ISTANBUL, AKSAM, { yarininImsagi: true });
+        const yarin = liste[liste.length - 1];
+        expect(butceArtigiMi(yarin, 'ios')).toBe(true);
+        expect(butceArtigiMi(yarin, 'android')).toBe(false);
+        expect(liste.slice(0, -1).some((v) => butceArtigiMi(v, 'ios'))).toBe(false);
     });
 });

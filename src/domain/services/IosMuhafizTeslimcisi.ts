@@ -32,6 +32,14 @@
  *    planlamada kalan slotu olcer ve tukendiginde KESILENI LOGLAR (sessiz kayip
  *    yerine gorunur kayip).
  *
+ *    BUTCE ARTIGI (yarinin imsagi, `UyariTeslimi.butceArtigi`): bugunun planindan
+ *    SONRA gelir (cagrilar kronolojik) ve yalniz `yedekSigarMi` iken kurulur —
+ *    `IOS_YEDEK_REZERVI` kadar slot daima bos kalir. Sigmayan artik KESILEN
+ *    SAYILMAZ (kayip degil, yedek). Slot olculemediyse (`kalanSlot === null`)
+ *    artik HIC kurulmaz: bugunun planini sistemin kesmesine biraktigimiz o turda
+ *    kor bir yedek, bugunun uyarilarini sistemin kronolojik kesmesine itebilirdi.
+ *    Gercek alarm (AlarmKit) 64'e sayilmadigi icin artikta da daima kurulur.
+ *
  * 4. GERCEK ALARM — AlarmKit (iOS 26, issue #74). Alarm kanalli adimin ILK tetigi,
  *    AlarmKit izinliyken bildirim yerine SISTEM ALARMI olarak kurulur (sessiz anahtari
  *    ve Odak'i deler; 64 bekleyen bildirim butcesine SAYILMAZ — ayri sistem). Kimlik
@@ -82,6 +90,7 @@ import {
 } from '../../../modules/expo-muhafiz-alarmkit/src';
 import {
     kullanilabilirSlotHesapla,
+    yedekSigarMi,
     IOS_BEKLEYEN_TAVANI,
 } from '../../core/muhafiz/ios/bildirimButcesi';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
@@ -201,6 +210,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     private kalanSlot: number | null = null;
     private kesilenSayisi = 0;
+    /** Bu turda yer kalmadigi icin kurulmayan butce artigi (yarinin imsagi) — kayip DEGIL. */
+    private atlananYedekSayisi = 0;
 
     /** Bu turda anons sentezinde kullanilacak Turkce ses; `null` = anons yok. */
     private sesTanimlayici: string | null = null;
@@ -223,6 +234,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kesilenSayisi = 0;
+        this.atlananYedekSayisi = 0;
         this.ucustanBirak();
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
@@ -289,7 +301,19 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // kurulursa bu tetigin bildirimi YOKTUR (slot da harcanmaz).
         if (await this.alarmKitIleKur(teslim, odakSessiz)) return;
 
-        if (this.kalanSlot !== null) {
+        if (teslim.butceArtigi === true) {
+            if (this.kalanSlot === null || !yedekSigarMi(this.kalanSlot)) {
+                this.atlananYedekSayisi++;
+                // Kayip degil: bugunun plani once sigar, yedek kalan yere girer.
+                if (this.atlananYedekSayisi === 1) {
+                    Logger.info(
+                        'IosMuhafizTeslimcisi',
+                        `Yarinin imsagi icin yer kalmadi (yedek) — bugunun plani once (ilki: ${id})`
+                    );
+                }
+                return;
+            }
+        } else if (this.kalanSlot !== null) {
             if (this.kalanSlot <= 0) {
                 this.kesilenSayisi++;
                 // Ilk kesmede bir kez uyar; her bildirimde loglamak gurultu olur.
