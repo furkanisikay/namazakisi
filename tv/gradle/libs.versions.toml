@@ -1,0 +1,34 @@
+# Android TV panosu (issue #286). wear/gradle/libs.versions.toml ile ayni hat:
+# AGP 8.13 + compileSdk 36. Surumler AAR metadata'si okunarak secildi:
+#  - tv-material 1.1.0 → Compose 1.10.3 ceker; ui-android/foundation-android 1.10.3
+#    minCompileSdk=35, AGP >= 8.6.0 (uyumlu). Compose 1.12 compileSdk 37 + AGP 9.1
+#    ister (wear dersi) → Compose'u ELLE yukseltme.
+#  - activity-compose 1.12.0: minCompileSdk=36, AGP >= 8.9.1.
+# Compose BOM bilerek YOK: Compose surumunu tv-material'in kendi bagimliligi belirler,
+# dogrudan kullandigimiz ui/foundation ayni surume sabitlenir.
+# adhan2 (com.batoulapps.adhan, MIT): telefonun adhan JS'inin Kotlin ikizi. 0.0.7
+# kotlin-stdlib 2.4.0 + kotlinx-datetime 0.8 ister (Kotlin 2.3 hattinin onunde) → 0.0.6
+# (kotlinx-datetime 0.7.1, kotlin.time.Instant).
+[versions]
+agp = "8.13.2"
+kotlin = "2.3.21"
+tvMaterial = "1.1.0"
+compose = "1.10.3"
+activityCompose = "1.12.0"
+adhan2 = "0.0.6"
+junit = "4.13.2"
+orgJson = "20240303"
+
+[libraries]
+tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
+compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+adhan2 = { group = "com.batoulapps.adhan", name = "adhan2", version.ref = "adhan2" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
