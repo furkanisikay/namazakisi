@@ -110,6 +110,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     kazaOneri,
     sadeGorunum,
     seferilik,
+    takvimCakisma,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -133,6 +134,9 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     // Seferîlik bilgi kartı (issue #296) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
     // Kapatma hafızası (SEFERILIK_KART_HAFIZASI) cihaza özgü → GİRMEZ.
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI),
+    // Takvim çakışması uyarısı (issue #291) — yalnız AYAR (rıza kaydı dahil);
+    // takvim verisi hiç saklanmaz. Beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI),
   ]);
   return {
     muhafiz,
@@ -152,6 +156,7 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     kazaOneri,
     sadeGorunum,
     seferilik,
+    takvimCakisma,
   };
 };
 

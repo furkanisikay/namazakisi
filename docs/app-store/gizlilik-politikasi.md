@@ -4,7 +4,7 @@ title: Gizlilik Politikası — Namaz Akışı
 
 # Gizlilik Politikası — Namaz Akışı
 
-**Son güncelleme:** 27 Eylül 2026
+**Son güncelleme:** 13 Ekim 2026
 
 Namaz Akışı, hiçbir kişisel verinizi toplamaz, saklamaz veya üçüncü taraflarla
 paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
@@ -31,10 +31,18 @@ Konum izni vermezseniz uygulama çalışmaya devam eder.
 
 ### Takvim
 
-Namaz vakitlerini telefonunuzun takvimine etkinlik olarak eklemek isterseniz
-takvim izni istenir. Bu izin yalnızca siz bu özelliği açtığınızda sorulur ve
-yalnızca etkinlik oluşturmak/silmek için kullanılır. Takviminizdeki diğer
-bilgiler okunmaz, hiçbir yere gönderilmez.
+Takvim izni yalnızca aşağıdaki iki özellikten birini siz açtığınızda istenir:
+
+- **Namaz vakitlerini takvime ekleme:** izin yalnızca uygulamanın kendi namaz
+  etkinliklerini oluşturmak ve silmek için kullanılır.
+- **Takvim çakışması uyarısı** (varsayılan kapalı): açarken ekranda ayrıca
+  onayınız alınır. Takviminizdeki etkinliklerin başlangıç ve bitiş saatleri,
+  "tüm gün" ve "meşgul" bilgisi bir namaz vaktiyle çakışıp çakışmadığını
+  anlamak için **yalnızca telefonunuzda** okunur. Etkinlik adı, siz ayrıca
+  açmadıkça bildirimde kullanılmaz.
+
+Her iki durumda da takvim bilgileriniz **saklanmaz, yedeğe girmez ve hiçbir
+yere gönderilmez**; uygulama bu bilgileri toplamaz ve kimseyle paylaşmaz.
 
 ### Bildirimler
 

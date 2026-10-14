@@ -36,6 +36,7 @@ import { YatisHatirlatmaServisi } from './src/domain/services/YatisHatirlatmaSer
 import { kazaVerileriniYukle } from './src/presentation/store/kazaSlice';
 import { CamiyeGitHatirlatmaServisi } from './src/domain/services/CamiyeGitHatirlatmaServisi';
 import { camiyeGitAyarlariniYukle } from './src/presentation/store/camiyeGitSlice';
+import { TakvimCakismaServisi } from './src/domain/services/TakvimCakismaServisi';
 import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
@@ -266,6 +267,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Yatış hatırlatması + gün sonu muhasebesi (issue #290): sonlu pencere,
       // her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
       YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // Takvim çakışması uyarısı (issue #291): sonlu pencere + takvim dışarıdan
+      // değişir → her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
@@ -319,6 +323,8 @@ const AppIcerik: React.FC = () => {
           CanliSayacPlanlayici.getInstance().iosBaslat();
           CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
         }
+        // Takvim çakışması (issue #291): kılınan vaktin uyarısı iptal edilir.
+        TakvimCakismaServisi.getInstance().baslat();
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 

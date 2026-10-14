@@ -7,6 +7,7 @@ import * as Calendar from 'expo-calendar';
 import { Platform } from 'react-native';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
+import { UYGULAMA_TAKVIM_NOTU } from '../../core/takvimCakisma/takvimCakismaAyarlari';
 
 // Domain-local tipler — presentation/store'a bağımlılık olmadan yapısal uyum sağlar
 type TakvimVakitAdi = 'imsak' | 'ogle' | 'ikindi' | 'aksam' | 'yatsi';
@@ -25,7 +26,8 @@ interface TakvimAyarlari {
     vakitAyarlari: Record<TakvimVakitAdi, VakitTakvimAyari>;
 }
 
-const OLUSTURULDU_NOTU = 'Namaz Akışı tarafından oluşturuldu';
+// Tek kaynak: çakışma taraması (issue #291) bu nottaki etkinlikleri HARİÇ tutar.
+const OLUSTURULDU_NOTU = UYGULAMA_TAKVIM_NOTU;
 
 const VAKIT_ISIMLERI: Record<TakvimVakitAdi, string> = {
     imsak:  'Sabah',

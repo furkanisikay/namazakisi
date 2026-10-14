@@ -66,6 +66,12 @@ jest.mock('../YatisHatirlatmaServisi', () => ({
         getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
     },
 }));
+const mockTakvimCakismaGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../TakvimCakismaServisi', () => ({
+    TakvimCakismaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockTakvimCakismaGuncelle(...a) }),
+    },
+}));
 jest.mock('../NafileHatirlatmaServisi', () => ({
     NafileHatirlatmaServisi: {
         getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
@@ -216,6 +222,9 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
         // ve "vakti çıkmış" kararları vakitlerden türer — şehirle kayar.
         expect(mockYatisGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Takvim çakışması uyarısı (issue #291): vakit giriş/çıkışı şehirle kayar,
+        // "etkinlik vaktin sonunu yutuyor mu" kararı yeniden verilmeli.
+        expect(mockTakvimCakismaGuncelle).toHaveBeenCalledWith(ANKARA);
         // Seferîlik bilgi kartı (issue #296): eve dönünce kapatma hafızası arka
         // planda da sıfırlanmalı; ilk ikamet yeri de buradan yazılabilir.
         expect(mockSeferilikIsle).toHaveBeenCalledWith(ANKARA);
