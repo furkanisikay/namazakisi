@@ -256,7 +256,12 @@ SiriDeposu.gocEt(kaynak: gocKaynak, hedef: gocHedef)
 esitMi(SiriDeposu(defaults: gocHedef).odakJson(), "{\"sessiz\":true,\"ms\":5}", "goc: odak suite'e tasinir")
 esitMi(gocHedef.string(forKey: "namazakisi.siri.kildimKuyrugu"), "[]", "goc: kuyruk suite'e tasinir")
 esitMi(gocHedef.string(forKey: "namazakisi.siri.cizelge"), "yeni", "goc: hedefte olan anahtar EZILMEZ")
-esitMi(gocKaynak.string(forKey: "namazakisi.siri.odak") != nil, true, "goc: kaynak SILINMEZ")
+// Olay anahtarlari kaynaktan SILINIR: depo .standard'a geri duserse bayat kuyruk
+// yeniden islenip geri alinan vakti tekrar "kilindi" yapmasin.
+esitMi(gocKaynak.object(forKey: "namazakisi.siri.kildimKuyrugu") == nil, true, "goc: kaynaktaki kuyruk SILINIR")
+esitMi(gocKaynak.object(forKey: "namazakisi.siri.odak") == nil, true, "goc: kaynaktaki odak SILINIR")
+esitMi(gocKaynak.string(forKey: "namazakisi.siri.cizelge"), "eski", "goc: kaynaktaki cizelge KALIR")
+esitMi(SiriDeposu(defaults: gocKaynak).bekleyenler(), [], "goc: geri dusulen depoda bekleyen YOK")
 gocKaynak.set("{\"sessiz\":false,\"ms\":9}", forKey: "namazakisi.siri.odak")
 gocHedef.removeObject(forKey: "namazakisi.siri.odak")
 SiriDeposu.gocEt(kaynak: gocKaynak, hedef: gocHedef)
@@ -320,6 +325,24 @@ if argumanlar.count >= 4 {
         WidgetKarari.azamiSinir,
         "varsayilan sinir tavani (TS IOS_WIDGET_AZAMI_SINIR ile ayni)"
     )
+}
+
+// MARK: - 6) Widget / canli etkinlik "Kildim" dugmesi — dokunus aninda yeniden karar
+
+if let ogle = widget.vakitler.first(where: { $0.vakit == "ogle" }) {
+    let dokunus = ogle.ms + 60_000
+    func dugme(_ vakit: String, kilinan: [String: [String]] = [:], bekleyen: [SiriBekleyenKildim] = [], vakitler: [SiriVakitAni]? = widget.vakitler) -> WidgetDugmeKarari {
+        return WidgetKarari.dugmeKarari(
+            tarih: ogle.tarih, vakit: vakit, vakitler: vakitler, kilinanlar: kilinan, bekleyenler: bekleyen, simdiMs: dokunus
+        )
+    }
+    esitMi(dugme("ogle"), .isaretle, "dugme: aktif ve kilinmamis vakit isaretlenir")
+    esitMi(dugme("imsak"), .gecersiz, "dugme: bayat cizim (vakit cikti) YAZMAZ ve etkinligi KAPATMAZ")
+    esitMi(dugme("imsak", kilinan: [ogle.tarih: ["sabah"]]), .zatenKilindi, "dugme: kayitta (widget kodu sabah) → zaten kilindi")
+    esitMi(dugme("ogle", bekleyen: [SiriBekleyenKildim(tarih: ogle.tarih, vakit: "ogle")]), .zatenKilindi, "dugme: kuyrukta → zaten kilindi")
+    esitMi(dugme("ogle", vakitler: nil), .gecersiz, "dugme: cizelge yoksa gecersiz")
+} else {
+    hatalar.append("widget fiksturunde ogle yok")
 }
 
 // MARK: - Sonuc

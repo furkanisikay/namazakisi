@@ -25,6 +25,16 @@ public struct WidgetGorunumu: Equatable {
     public let gunTarihi: String?
 }
 
+/// Widget / canli etkinlik "Kildim" dugmesine dokunus aninin karari (issue #295).
+public enum WidgetDugmeKarari: Equatable {
+    /// Dugmenin tasidigi vakit HALA kilinacak aday → kuyruga yaz, etkinligi kapat.
+    case isaretle
+    /// O vakit zaten kayitli ya da kuyrukta → yazma, etkinligi kapat (gorev bitmis).
+    case zatenKilindi
+    /// Vakit cikti / cizim bayat / veri yok → YAZMA ve etkinligi KAPATMA (yalniz tazele).
+    case gecersiz
+}
+
 public enum WidgetKarari {
     /// Bir zaman cizelgesinde en fazla bu kadar sinir girdisi (~2 gun).
     public static let azamiSinir = 12
@@ -69,5 +79,30 @@ public enum WidgetKarari {
         return vakitler
             .filter { $0.tarih == tarih && VakitKarari.kilinabilir.contains($0.vakit) }
             .sorted { $0.ms < $1.ms }
+    }
+
+    /// Dokunus aninda karar YENIDEN degerlendirilir (Android `dokunusGecerliMi` ikizi):
+    /// zaman cizelgesi bayat bir vakti cizmis olabilir. `vakit` KAYIT kodudur (`imsak`).
+    /// "Gecersiz"de etkinlik KAPATILMAZ: kullanici "bastim, kapandi ama isaretlenmedi"
+    /// yasamasin; dogru durumu bir sonraki esitleme (one gelis) kurar.
+    public static func dugmeKarari(
+        tarih: String,
+        vakit: String,
+        vakitler: [SiriVakitAni]?,
+        kilinanlar: [String: [String]],
+        bekleyenler: [SiriBekleyenKildim],
+        simdiMs: Int64
+    ) -> WidgetDugmeKarari {
+        let kayitta = (kilinanlar[tarih] ?? []).contains { VakitKarari.kayitVakti($0) == vakit }
+        let kuyrukta = bekleyenler.contains { $0.tarih == tarih && $0.vakit == vakit }
+        if kayitta || kuyrukta { return .zatenKilindi }
+        guard let vakitler else { return .gecersiz }
+        let karar = VakitKarari.kildimKarari(
+            vakitler: vakitler, kilinanlar: kilinanlar, bekleyenler: bekleyenler, simdiMs: simdiMs
+        )
+        if case let .aday(aday, kayitVakti, _) = karar, aday.tarih == tarih, kayitVakti == vakit {
+            return .isaretle
+        }
+        return .gecersiz
     }
 }

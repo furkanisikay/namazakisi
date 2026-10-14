@@ -27,7 +27,15 @@ import ExpoSiriKisayollari
 // dokunusla basilir; widget'ta diyalog da gosterilemez. Bunun yerine dokunus aninda karar
 // YENIDEN degerlendirilir: zaman cizelgesi eski bir vakti cizmis olabilir (Android
 // `KildimDurumKarari.dokunusGecerliMi` ikizi) → yalniz dugmenin tasidigi tarih + vakit
-// HALA kilinacak aday ise kuyruga yazilir.
+// HALA kilinacak aday ise kuyruga yazilir (`WidgetKarari.dugmeKarari`). Karar tutmazsa
+// (vakit cikti, cizim bayat) etkinlik KAPATILMAZ, yalniz zaman cizelgesi tazelenir:
+// kapatmak "bastim, kapandi ama isaretlenmedi" yasatirdi.
+//
+// KILIT EKRANI: Android'de kilit ekrani SALT OKUNURDUR (`cekirdek/KilitEkraniKarari.kt`;
+// kilit acilmadan kayit yazilmaz). Canli etkinlik kilit ekraninda da gorunur ve dugmesi
+// orada da basilabilir → `authenticationPolicy = .requiresAuthentication`: cihaz
+// kilitliyken sistem once kilidi actirir, `perform()` ancak sonra calisir. Ana ekran
+// widget'inda cihaz zaten acik oldugu icin etkisi yoktur; StandBy'da dugme cizilmez.
 @available(iOS 17.0, *)
 struct KildimDugmesiIntent: LiveActivityIntent {
     static let title: LocalizedStringResource = "Vakti kıldım"
@@ -35,6 +43,8 @@ struct KildimDugmesiIntent: LiveActivityIntent {
     static let openAppWhenRun: Bool = false
     // Kisayollar/Spotlight'ta ayri eylem olarak gorunmesin (Siri'nin kendi "Kildim"i var).
     static let isDiscoverable: Bool = false
+    // Kilit ekranindan (canli etkinlik) kayit yazmadan once kilidi actir (Android ikizi).
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication
 
     /// Namaz gunu ('YYYY-MM-DD').
     @Parameter(title: "Tarih")
@@ -53,19 +63,23 @@ struct KildimDugmesiIntent: LiveActivityIntent {
 
     func perform() async throws -> some IntentResult {
         let depo = SiriDeposu.varsayilan
-        if let cizelge = depo.cizelge() {
-            let karar = VakitKarari.kildimKarari(
-                vakitler: cizelge.vakitler,
-                kilinanlar: depo.kilinanlar(),
-                bekleyenler: depo.bekleyenler(),
-                simdiMs: SiriDeposu.simdiMs()
-            )
-            if case let .aday(adayVakit, kayitVakti, _) = karar, adayVakit.tarih == tarih, kayitVakti == vakit {
-                depo.kildimEkle(tarih: tarih, vakit: vakit, kaynak: "widget", simdiMs: SiriDeposu.simdiMs())
-            }
+        let simdi = SiriDeposu.simdiMs()
+        let karar = WidgetKarari.dugmeKarari(
+            tarih: tarih,
+            vakit: vakit,
+            vakitler: depo.cizelge()?.vakitler,
+            kilinanlar: depo.kilinanlar(),
+            bekleyenler: depo.bekleyenler(),
+            simdiMs: simdi
+        )
+        if karar == .isaretle {
+            depo.kildimEkle(tarih: tarih, vakit: vakit, kaynak: "widget", simdiMs: simdi)
         }
         #if canImport(ActivityKit)
-        await NamazCanliNitelikleri.kildimIleBitir(tarih: tarih, vakit: vakit)
+        // Gecersiz kararda etkinlik KALIR (bayat dokunus yazmaz, kapatmaz da).
+        if karar != .gecersiz {
+            await NamazCanliNitelikleri.kildimIleBitir(tarih: tarih, vakit: vakit)
+        }
         #endif
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()

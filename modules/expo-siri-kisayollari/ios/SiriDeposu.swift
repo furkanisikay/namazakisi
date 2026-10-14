@@ -52,8 +52,13 @@ public final class SiriDeposu: @unchecked Sendable {
     }
 
     /// Standart depodaki anahtarlari suite'e BIR KEZ kopyalar. Hedefte zaten olan anahtara
-    /// dokunmaz (uzanti ya da onceki surum yazmis olabilir); kaynagi SILMEZ (veri kaybi yok,
-    /// eski kopya bayatlar). Idempotenttir.
+    /// dokunmaz (uzanti ya da onceki surum yazmis olabilir). Idempotenttir.
+    ///
+    /// Tasinan OLAY anahtarlari (`Anahtar.olaylar`: Kildim kuyrugu, ekran istegi, odak)
+    /// kaynaktan SILINIR: depo bir gun yeniden `.standard`'a duserse (bayrak kapandi,
+    /// profil App Group'suz) bayat kuyruk yeniden islenir ve kullanicinin geri aldigi vakit
+    /// tekrar "kilindi" olurdu. Cizelge/kilinanlar KALIR (JS her acilista yeniden yazar,
+    /// bayat kopya zararsizdir).
     public static func gocEt(kaynak: UserDefaults, hedef: UserDefaults) {
         if hedef.bool(forKey: gocIsareti) { return }
         for anahtar in Anahtar.hepsi where hedef.object(forKey: anahtar) == nil {
@@ -62,6 +67,9 @@ public final class SiriDeposu: @unchecked Sendable {
             }
         }
         hedef.set(true, forKey: gocIsareti)
+        for anahtar in Anahtar.olaylar {
+            kaynak.removeObject(forKey: anahtar)
+        }
     }
 
     enum Anahtar {
@@ -71,6 +79,8 @@ public final class SiriDeposu: @unchecked Sendable {
         static let odak = "namazakisi.siri.odak"
         static let ekranIstegi = "namazakisi.siri.ekranIstegi"
         static let hepsi = [cizelge, kilinanlar, kuyruk, odak, ekranIstegi]
+        /// Intent'in yazip JS'in TUKETTIGI anahtarlar: goc sonrasi kaynakta birakilmaz.
+        static let olaylar = [kuyruk, odak, ekranIstegi]
     }
 
     /// Zehirli oge esigi — Android `KildimKuyrugu` ile ayni (5 deneme).
