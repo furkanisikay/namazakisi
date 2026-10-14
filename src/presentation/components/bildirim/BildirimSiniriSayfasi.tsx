@@ -148,6 +148,20 @@ export const BildirimSiniriSayfasi: React.FC<Props> = ({ gorunur, mod, ozet, one
                             ))}
                         </View>
 
+                        {/* Bütçe artığı (iOS: yarının imsağı) — sınıra sayılmaz, yalnız boş yere girer. */}
+                        {!ekleme && ozet.yedek > 0 && (
+                            <View className="flex-row items-start mb-4" testID="bildirim-siniri-yedek">
+                                <View className="w-6 items-center mr-2 mt-0.5">
+                                    <FontAwesome5 name="cloud-sun" size={12} color={renkler.metinIkincil} solid />
+                                </View>
+                                <Text className="text-xs flex-1 leading-4" style={{ color: renkler.metinIkincil }}>
+                                    Boş kalan yere yarın sabahki imsak hatırlatmalarından {ozet.yedek} tanesi de yedek olarak
+                                    kurulur; uygulamayı sabaha kadar açmasanız da uyarı gelir. Bunlar sınıra sayılmaz, yer
+                                    gerektiğinde önce onlar çıkar.
+                                </Text>
+                            </View>
+                        )}
+
                         {onerileriGoster && (
                             <>
                                 <Text className="text-[11px] font-bold tracking-wider mb-2" style={{ color: renkler.metinIkincil }}>

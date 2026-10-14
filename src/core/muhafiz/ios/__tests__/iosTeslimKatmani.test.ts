@@ -23,9 +23,11 @@ import {
 import {
     IOS_BEKLEYEN_TAVANI,
     IOS_GUVENLIK_PAYI,
-    IOS_PLAN_GUN_SAYISI,
+    IOS_YEDEK_REZERVI,
     butceyeSigdir,
     kullanilabilirSlotHesapla,
+    yedekKapasitesiHesapla,
+    yedekSigarMi,
 } from '../bildirimButcesi';
 import type { UyariPlani } from '../../motorAdaptoru';
 
@@ -178,10 +180,31 @@ describe('iosTesliminiCoz', () => {
 });
 
 describe('bildirimButcesi — 64 bekleyen siniri', () => {
-    test('sabitler: tavan 64, pay 4, iOS penceresi 2 gun', () => {
+    test('sabitler: tavan 64, pay 4, yedek rezervi 8', () => {
         expect(IOS_BEKLEYEN_TAVANI).toBe(64);
         expect(IOS_GUVENLIK_PAYI).toBe(4);
-        expect(IOS_PLAN_GUN_SAYISI).toBe(2);
+        expect(IOS_YEDEK_REZERVI).toBe(8);
+    });
+
+    test('butce artigi: bugunun planindan SONRA kalan slot, rezerv bos kalir', () => {
+        // 60 slot, bugun 30 → yedege 60 − 30 − 8 = 22
+        expect(yedekKapasitesiHesapla(60, 30)).toBe(22);
+        // Bugun slotu tuketiyorsa (ya da asiyorsa) yedek YOK — bugun onceliklidir.
+        expect(yedekKapasitesiHesapla(60, 55)).toBe(0);
+        expect(yedekKapasitesiHesapla(60, 90)).toBe(0);
+        expect(yedekKapasitesiHesapla(0, 0)).toBe(0);
+    });
+
+    test('teslim sayaci kapali formla AYNI sayiyi verir (defter = teslimci)', () => {
+        for (const [slot, bugun] of [[60, 30], [60, 52], [60, 53], [44, 10], [3, 0]] as const) {
+            let kalan = Math.max(0, slot - bugun);
+            let kurulan = 0;
+            while (yedekSigarMi(kalan)) {
+                kalan--;
+                kurulan++;
+            }
+            expect(kurulan).toBe(yedekKapasitesiHesapla(slot, bugun));
+        }
     });
 
     test('slot = tavan - muhafiz disi bekleyen - guvenlik payi', () => {

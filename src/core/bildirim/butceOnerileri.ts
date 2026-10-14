@@ -9,8 +9,10 @@
  *   - SERT ve ACİL tona ASLA dokunulmaz (ham ton da etkin ton da korunur).
  *   - Her öneri AYNI defterle ölçülür ("84 → 61"): öneri uygulanmış girdiyle
  *     `bildirimDefteriOlustur` yeniden çalıştırılır, ayrı bir tahmin yok.
- *   - "Ufku kısalt" (muhafızı daha az gün kur) SUNULMAZ: muhafız zaten yalnız
- *     bugünü kurar (`IOS_PLAN_GUN_SAYISI` bağlı değil).
+ *   - "Ufku kısalt" (muhafızı daha az gün kur) SUNULMAZ: muhafız tam hakla yalnız
+ *     bugünü kurar; iOS'ta yarının imsağı BÜTÇE ARTIĞIDIR (yalnız kalan yere girer,
+ *     `toplam`/`gelmeyecek`'e sayılmaz) → öneriler onu hiç hedeflemez ve aşımı
+ *     yalnız bugünün planı belirler.
  *
  * Bir vaktin SON açık adımı asla kapatılmaz (vakit tümden susmasın).
  */

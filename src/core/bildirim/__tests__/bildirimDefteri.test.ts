@@ -11,6 +11,7 @@ import {
     IOS_BEKLEYEN_TAVANI,
 } from '../butceSabitleri';
 import { IOS_BEKLEYEN_TAVANI as IOS_ESKI_YOL } from '../../muhafiz/ios/bildirimButcesi';
+import { muhafizVakitleriniHesapla } from '../../muhafiz/muhafizTeslimPlani';
 import { ISTANBUL, matrisKur } from './defterFikstur';
 
 const kayit = (kaynak: DefterKaydi['kaynak'], tur: DefterKaydi['tur'] = 'bildirim'): DefterKaydi => ({
@@ -59,6 +60,21 @@ describe('defterOzeti — iOS', () => {
         expect(o.durum).toBe('asim');
         // Slot içinde kalan muhafız kesilmez.
         expect(defterOzeti([...n(37, 'nafile'), ...n(23)], 'ios').gelmeyecek).toBe(0);
+    });
+
+    it('BÜTÇE ARTIĞI (yedek) toplama, eşiklere ve gelmeyecek\'e SAYILMAZ; ayrıca raporlanır', () => {
+        const yedek = (adet: number): DefterKaydi[] =>
+            Array.from({ length: adet }, () => ({ kaynak: 'muhafiz', zamanMs: 2, tur: 'bildirim', yedek: true }));
+        const o = defterOzeti([...n(30, 'nafile'), ...n(10), ...yedek(12)], 'ios');
+        expect(o.toplam).toBe(40);
+        expect(o.yedek).toBe(12);
+        expect(o.gelmeyecek).toBe(0);
+        expect(o.kaynaklar).toEqual([
+            { kaynak: 'muhafiz', sayi: 10 },
+            { kaynak: 'nafile', sayi: 30 },
+        ]);
+        // 52 dolu (sınıra yakın görünse de) — yalnız 40 sayılır → normal.
+        expect(o.durum).toBe('normal');
     });
 
     it('kart iOS\'ta daima görünür (hiç bildirim yoksa gizli)', () => {
@@ -123,7 +139,10 @@ describe('bildirimDefteriOlustur', () => {
         const bugun = '2026-10-13';
         const kilinmis = bildirimDefteriOlustur({ ...temel, kilinan: { [bugun]: ['ogle'] } }).length;
         expect(kilinmis).toBeLessThan(hepsi);
-        expect(bildirimDefteriOlustur({ ...temel, ozelGundeMi: (iso) => iso === bugun })).toEqual([]);
+        // Bugün özel gün → bugünün planı yok; yalnız yarının imsağı (iOS bütçe artığı) kalır.
+        const ozel = bildirimDefteriOlustur({ ...temel, ozelGundeMi: (iso) => iso === bugun });
+        expect(ozel.filter((k) => !k.yedek)).toEqual([]);
+        expect(bildirimDefteriOlustur({ ...temel, ozelGundeMi: (iso) => iso.startsWith('2026-10-1') })).toEqual([]);
     });
 
     it('iOS\'ta anons ALARMI ve widget yoktur; Android\'de vardır', () => {
@@ -133,6 +152,60 @@ describe('bildirimDefteriOlustur', () => {
         expect(ios.some((k) => k.kaynak === 'anons' || k.kaynak === 'widget')).toBe(false);
         expect(android.some((k) => k.kaynak === 'anons')).toBe(true);
         expect(android.filter((k) => k.kaynak === 'widget')).toHaveLength(1);
+    });
+
+    describe('yarının imsağı — iOS BÜTÇE ARTIĞI', () => {
+        const aksam = new Date(2026, 9, 13, 21, 0, 0);
+        const hafif = matrisKur(() => ({
+            seviyeler: [
+                { kademe: 'nazik', esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+            ],
+        }));
+        const yarinMi = (k: DefterKaydi, sinirMs: number) => k.kaynak === 'muhafiz' && k.zamanMs >= sinirMs;
+        // Yarının imsağı bugünün yatsısının çıkışında girer.
+        const bugununVakitleri = muhafizVakitleriniHesapla(ISTANBUL, aksam);
+        const yarinSiniri = bugununVakitleri[bugununVakitleri.length - 1].cikis.getTime();
+
+        it('yer varken yarının imsağı TAMAMEN yedek olarak defterde; toplam/gelmeyecek etkilenmez', () => {
+            const kayitlar = bildirimDefteriOlustur({ platform: 'ios', simdi: aksam, koordinat: ISTANBUL, muhafiz: { aktif: true, matris: hafif } });
+            const yarin = kayitlar.filter((k) => yarinMi(k, yarinSiniri));
+            expect(yarin.length).toBeGreaterThan(0);
+            expect(yarin.every((k) => k.yedek === true)).toBe(true);
+            const o = defterOzeti(kayitlar, 'ios');
+            expect(o.yedek).toBe(yarin.length);
+            expect(o.toplam).toBe(kayitlar.length - yarin.length);
+            expect(o.gelmeyecek).toBe(0);
+        });
+
+        it('bugünün planı slotu doldurunca yedek KIRPILIR (kronolojik) — ama aşım sayılmaz', () => {
+            // Akşam girmeden hemen önce: akşam + yatsı (yoğun fikstür) bugünün planı.
+            const oncesi = new Date(bugununVakitleri.find((v) => v.vakit === 'aksam')!.giris.getTime() - 60_000);
+            const g = { platform: 'ios' as const, simdi: oncesi, koordinat: ISTANBUL, muhafiz: { aktif: true, matris: matrisKur() } };
+            const kayitlar = bildirimDefteriOlustur(g);
+            const bugun = kayitlar.filter((k) => !k.yedek).length;
+            const yedekler = kayitlar.filter((k) => k.yedek);
+            // Talep: yarının imsağının tüm uyarıları (Android'de tam haklı → yedek değil).
+            const yarinSinir = muhafizVakitleriniHesapla(ISTANBUL, oncesi).slice(-1)[0].cikis.getTime();
+            const talep = bildirimDefteriOlustur({ ...g, platform: 'android', widget: false }).filter(
+                (k) => k.kaynak === 'muhafiz' && k.zamanMs >= yarinSinir
+            );
+            const kapasite = Math.max(0, 60 - bugun - 8);
+            expect(kapasite).toBeLessThan(talep.length); // senaryo gerçekten kırpıyor
+            expect(yedekler.length).toBe(kapasite);
+            // KRONOLOJİK: talebin İLK tetikleri tutulur.
+            expect(yedekler.map((k) => k.zamanMs)).toEqual(talep.slice(0, kapasite).map((k) => k.zamanMs));
+            const o = defterOzeti(kayitlar, 'ios');
+            expect(o.yedek).toBe(kapasite);
+            expect(o.gelmeyecek).toBe(Math.max(0, bugun - 60));
+        });
+
+        it("Android'de yarının imsağı bugünle eşit haklıdır (yedek değil, sayılır)", () => {
+            const kayitlar = bildirimDefteriOlustur({ platform: 'android', simdi: aksam, koordinat: ISTANBUL, muhafiz: { aktif: true, matris: hafif }, widget: false });
+            expect(kayitlar.some((k) => k.yedek)).toBe(false);
+            expect(kayitlar.some((k) => yarinMi(k, yarinSiniri))).toBe(true);
+            expect(defterOzeti(kayitlar, 'android').toplam).toBe(kayitlar.length);
+        });
     });
 
     it('muhafız kapalıysa muhafız sayılmaz', () => {

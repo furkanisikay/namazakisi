@@ -22,6 +22,7 @@ import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../../core/muhafiz/pe
 import {
     muhafizVakitleriniHesapla,
     yarininImsagiPlanlanirMi,
+    butceArtigiMi,
     planlanacakMuhafizVakitleri,
     vakitTeslimAdaylari,
 } from '../../core/muhafiz/muhafizTeslimPlani';
@@ -158,8 +159,9 @@ export class ArkaplanMuhafizServisi {
         // AYNI fonksiyonu kuru calistirir; burada ayri bir mantik YAZILMAZ,
         // yoksa rehber ekrani ile cihazdaki plan ayrisir.
         const simdi = new Date();
-        // Yarının imsağı da (issue #74 M2, yalnız Android): akşam kurulan plan sabahı da
-        // kapsasın — OEM 15 dk görevini öldürse de sabah alarmı kurulu olsun.
+        // Yarının imsağı da (issue #74 M2): akşam kurulan plan sabahı da kapsasın — OEM
+        // 15 dk görevini öldürse (Android) ya da background fetch hiç koşmasa (iOS) da
+        // sabah uyarısı kurulu olsun. iOS'ta BÜTÇE ARTIĞI olarak (bkz. `yarininImsagiKipi`).
         const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi, {
             yarininImsagi: yarininImsagiPlanlanirMi(muhafizTeslimcisiniAl().ad),
         });
@@ -251,6 +253,7 @@ export class ArkaplanMuhafizServisi {
                 tarih: vakit.tarih,
                 yon,
                 cikis: vakit.cikis,
+                ...(butceArtigiMi(vakit, muhafizTeslimcisiniAl().ad) ? { butceArtigi: true as const } : {}),
             });
         }
 
