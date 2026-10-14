@@ -123,6 +123,9 @@ kare 01-ana-ekran 2 || true
 # altinda yarim kaliyordu). Kare ekranda satirlar gorece buyuk → bir kisa adim daha.
 yukari_kaydir
 yukari_kaydir
+# Liste ilk ogeyle acildigi icin (initialCenterItemIndex = 0) bir adim daha: aktif
+# vakit satiri altta yarim kalmasin.
+yukari_kaydir
 if [ "$ETIKET" = kare ]; then
   adb shell input swipe $((G / 2)) $((Y / 2)) $((G / 2)) $((Y / 3)) 600
   sleep 1.5
