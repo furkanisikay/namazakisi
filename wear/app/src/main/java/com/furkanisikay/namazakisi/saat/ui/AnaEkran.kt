@@ -46,7 +46,10 @@ fun AnaEkran(
     onKildim: (tarih: String, vakit: String) -> Unit,
     onTesbihat: () -> Unit,
 ) {
-    val liste = rememberScalingLazyListState()
+    // Liste İLK öğeyle açılır: varsayılan `initialCenterItemIndex = 1` ikinci öğeyi
+    // ortaya alıyor, "Sıradaki" bloğu yukarı kayıp kare saatte (384) TimeText'in
+    // altında kalıyordu (mağaza karelerinde görüldü).
+    val liste = rememberScalingLazyListState(initialCenterItemIndex = 0)
     var onayBekleyen by remember { mutableStateOf<VakitHesabi.Satir?>(null) }
 
     MaterialTheme {
