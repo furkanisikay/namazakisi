@@ -6,13 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "scheme": "namazakisi",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#4CAF50"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
@@ -34,7 +28,6 @@
         "monochromeImage": "./assets/adaptive-icon-monochrome.png",
         "backgroundColor": "#4CAF50"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.ACCESS_FINE_LOCATION",
@@ -105,7 +98,15 @@
           "calendarPermission": "Namaz vakitlerini takviminize eklemek ve siz açarsanız takviminizdeki etkinliklerin bir namaz vaktiyle çakışıp çakışmadığını denetlemek için takvim izni kullanılır. Takvim bilgileriniz cihazınızdan çıkmaz."
         }
       ],
-      "expo-mail-composer"
+      "expo-mail-composer",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#4CAF50"
+        }
+      ]
     ],
     "owner": "furkanisikay",
     "extra": {

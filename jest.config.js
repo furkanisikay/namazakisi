@@ -1,6 +1,6 @@
 /** @type {import("jest").Config} **/
 module.exports = {
-  preset: "react-native",
+  preset: "@react-native/jest-preset",
   testEnvironment: "node",
   // Tam-sayfa RN render testleri (KazaDefteri/DebugLogs vb.) gerçek timer + waitFor
   // kullanır; CPU yükü altında veya Jules'un zayıf VM'inde varsayılan 5000ms'i aşıp
