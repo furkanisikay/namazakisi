@@ -110,6 +110,12 @@ jest.mock('../CamiyeGitHatirlatmaServisi', () => ({
     },
 }));
 
+// Cihazlar arası eşitleme (issue #288): görev onu TEMBEL require ile çağırır.
+const mockArkaplandaEsitle = jest.fn((): Promise<{ tur: string }> => Promise.resolve({ tur: 'kapali' }));
+jest.mock('../EsitlemeServisi', () => ({
+    EsitlemeServisi: { arkaplandaEsitle: () => mockArkaplandaEsitle() },
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
@@ -601,5 +607,50 @@ describe('gorev govdesi > Namaz modu suresi gecen kaynaklar', () => {
         expect(kopru.suresiGecenleriTemizle).toHaveBeenCalledTimes(1);
         // Konum yokken izleme tazelenmez ama temizlik yine de yapildi.
         expect(kopru.izlemeyiTazele).not.toHaveBeenCalled();
+    });
+});
+
+/**
+ * CİHAZLAR ARASI EŞİTLEME (issue #288) — muhafızdan bağımsızdır, erken dönüşlerden
+ * ÖNCE koşmalı; patlaması planlamayı düşürmemeli.
+ */
+describe('gorev govdesi > cihazlar arasi esitleme', () => {
+    beforeEach(() => {
+        mockArkaplandaEsitle.mockReset();
+        mockArkaplandaEsitle.mockResolvedValue({ tur: 'kapali' });
+    });
+
+    it('MUHAFIZ AYARI YOKKEN de esitleme turu kosar (erken donusten ONCE)', async () => {
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockArkaplandaEsitle).toHaveBeenCalledTimes(1);
+    });
+
+    it('esitleme patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockArkaplandaEsitle.mockRejectedValueOnce(new Error('x'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+
+    it('indirilen veride muhafiz planlamasi esitlemeden SONRA calisir', async () => {
+        mockArkaplandaEsitle.mockResolvedValueOnce({ tur: 'indirildi' });
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockArkaplandaEsitle.mock.invocationCallOrder[0]).toBeLessThan(
+            mockYapilandirVePlanla.mock.invocationCallOrder[0]
+        );
     });
 });

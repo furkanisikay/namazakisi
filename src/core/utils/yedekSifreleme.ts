@@ -31,13 +31,18 @@ const ANAHTAR_BAYTLARI = new Uint8Array([
 ]); // 32 bayt
 
 /**
- * Verilen düz metin stringi şifreler.
- * @returns Base64 kodlu `nonce` ve `veri` içeren nesne.
+ * Verilen düz metni VERİLEN anahtarla şifreler (secretbox, dosya-başına rastgele nonce).
+ *
+ * Cihazlar arası eşitleme (issue #288) aynı zarfı KULLANICI PAROLASINDAN türetilmiş
+ * anahtarla kullanır; yerel yedek uygulama anahtarıyla (`sifrele`).
  */
-export async function sifrele(metin: string): Promise<{ nonce: string; veri: string }> {
+export function anahtarlaSifrele(
+  metin: string,
+  anahtar: Uint8Array
+): { nonce: string; veri: string } {
   const nonceBaytlari = nacl.randomBytes(nacl.secretbox.nonceLength);
   const mesaj = naclUtil.decodeUTF8(metin);
-  const sifreli = nacl.secretbox(mesaj, nonceBaytlari, ANAHTAR_BAYTLARI);
+  const sifreli = nacl.secretbox(mesaj, nonceBaytlari, anahtar);
   return {
     nonce: naclUtil.encodeBase64(nonceBaytlari),
     veri: naclUtil.encodeBase64(sifreli),
@@ -45,19 +50,40 @@ export async function sifrele(metin: string): Promise<{ nonce: string; veri: str
 }
 
 /**
- * Şifrelenmiş veriyi çözer.
- * @returns Orijinal düz metin ya da hata/bütünlük başarısızlığında `null`.
+ * VERİLEN anahtarla şifreyi çözer.
+ * @returns Düz metin ya da hata/yanlış anahtar/bütünlük başarısızlığında `null`.
  */
-export function coz(nonce: string, veri: string): string | null {
+export function anahtarlaCoz(nonce: string, veri: string, anahtar: Uint8Array): string | null {
   try {
     const nonceBaytlari = naclUtil.decodeBase64(nonce);
     const sifreli = naclUtil.decodeBase64(veri);
-    const cozulen = nacl.secretbox.open(sifreli, nonceBaytlari, ANAHTAR_BAYTLARI);
+    const cozulen = nacl.secretbox.open(sifreli, nonceBaytlari, anahtar);
     if (!cozulen) return null;
     return naclUtil.encodeUTF8(cozulen);
   } catch {
     return null;
   }
+}
+
+/** Kriptografik rastgele bayt (CSPRNG — yukarıdaki `setPRNG` ile expo-crypto'dan). */
+export function rastgeleBaytlar(uzunluk: number): Uint8Array {
+  return nacl.randomBytes(uzunluk);
+}
+
+/**
+ * Verilen düz metin stringi şifreler.
+ * @returns Base64 kodlu `nonce` ve `veri` içeren nesne.
+ */
+export async function sifrele(metin: string): Promise<{ nonce: string; veri: string }> {
+  return anahtarlaSifrele(metin, ANAHTAR_BAYTLARI);
+}
+
+/**
+ * Şifrelenmiş veriyi çözer.
+ * @returns Orijinal düz metin ya da hata/bütünlük başarısızlığında `null`.
+ */
+export function coz(nonce: string, veri: string): string | null {
+  return anahtarlaCoz(nonce, veri, ANAHTAR_BAYTLARI);
 }
 
 /**

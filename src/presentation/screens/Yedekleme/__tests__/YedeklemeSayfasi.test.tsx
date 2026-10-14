@@ -13,6 +13,11 @@ jest.mock('../../../../core/feedback', () => ({ useFeedback: jest.fn() }));
 jest.mock('../../../../domain/services/YedeklemeServisi', () => ({
   yedeginiPaylas: jest.fn(),
 }));
+// Cihazlar arası eşitleme (issue #288): varsayılan hiçbir sağlayıcı yapılandırılmamış.
+const mockKullanilabilir = jest.fn((): Array<{ kimlik: string; ad: string }> => []);
+jest.mock('../../../../domain/services/esitlemeSaglayicilari', () => ({
+  kullanilabilirSaglayicilar: () => mockKullanilabilir(),
+}));
 // BildirimModali donanım geri tuşu hook'unu kullanır → test ortamında pasif geç
 jest.mock('../../../hooks/useDonanimGeriTusu', () => ({
   useDonanimGeriTusu: jest.fn(),
@@ -121,5 +126,23 @@ describe('YedeklemeSayfasi', () => {
     });
 
     errSpy.mockRestore();
+  });
+
+  describe('cihazlar arası eşitleme kartı (issue #288)', () => {
+    afterEach(() => mockKullanilabilir.mockReturnValue([]));
+
+    it('hiçbir sağlayıcı yapılandırılmamışken kart HİÇ görünmez', () => {
+      const { queryByText } = render(<YedeklemeSayfasi />);
+      expect(queryByText('Cihazlar arası eşitleme')).toBeNull();
+    });
+
+    it('sağlayıcı varken kart görünür ve eşitleme sayfasına gider', async () => {
+      mockKullanilabilir.mockReturnValue([{ kimlik: 'googleDrive', ad: 'Google Drive' }]);
+      const { getByText } = render(<YedeklemeSayfasi />);
+      fireEvent.press(getByText('Cihazlar arası eşitleme'));
+      await waitFor(() => {
+        expect(mockNavigation.navigate).toHaveBeenCalledWith('EsitlemeAyarlari');
+      });
+    });
   });
 });

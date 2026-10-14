@@ -59,6 +59,7 @@ import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
 import { TaniBildirModali } from './src/presentation/components/Tani/TaniBildirModali';
 import { KisaBildirimKatmani } from './src/presentation/components/common/KisaBildirim';
+import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
@@ -479,6 +480,8 @@ const AppIcerik: React.FC = () => {
       <TaniBildirModali />
       {/* Kısa bilgi mesajları (iOS). Android sistem toastını kullanır. */}
       <KisaBildirimKatmani />
+      {/* Cihazlar arası eşitleme (issue #288): açılış + öne geliş turu; kapalıyken etkisiz. */}
+      <EsitlemeTetikleyici />
     </View>
   );
 };

@@ -321,6 +321,27 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         await arkaplandanKonumTakibiniYenidenBaslat();
 
         // =====================================================
+        // ADIM 1.2: CİHAZLAR ARASI EŞİTLEME (issue #288)
+        //
+        // Muhafız erken dönüşlerinden ÖNCE (cuma deseni: muhafızdan bağımsız) ve
+        // hatırlatma planlamalarından ÖNCE: diğer cihazda kılınmış namaz diske
+        // birleşirse aşağıdaki planlayıcılar onu kılınmış görür. Kapalıysa tek disk
+        // okuması; ağ yoksa sessiz; kendi zaman aşımı var. TEMBEL require: zincir
+        // expo-crypto/expo-secure-store köprülerini çeker.
+        // =====================================================
+        try {
+            const { EsitlemeServisi } = require('./EsitlemeServisi') as typeof import('./EsitlemeServisi');
+            const esitleme = await EsitlemeServisi.arkaplandaEsitle();
+            if (esitleme.tur === 'indirildi' || esitleme.tur === 'indirildiVeYuklendi') {
+                // Kayıtlar store'suz diske yazıldı → saat ve widget kendiliğinden tazelenmez.
+                await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
+                await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+            }
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Eşitleme turu çalıştırılamadı', e);
+        }
+
+        // =====================================================
         // ADIM 1.5: CUMA HATIRLATMASINI TAZELE
         //
         // MUHAFIZ KONTROLLERINDEN ÖNCE: aşağıdaki bloklar muhafız ayarı yoksa

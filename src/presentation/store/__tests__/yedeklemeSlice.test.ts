@@ -28,6 +28,14 @@ jest.mock('../../../data/local/Depolama', () => ({
 
 jest.mock('../../../domain/services/YedeklemeServisi', () => ({
   mevcutVeriyiTopla: jest.fn(() => Promise.resolve({} as YedekPayload)),
+  // Ortak disk adımı (gerçek gövdesinin aynası): plan → Depolama.yaz, sonra göç bayrağı.
+  planiDiskeYaz: jest.fn(async (plan: Record<string, unknown>) => {
+    const { Depolama: D } = require('../../../data/local/Depolama');
+    for (const [anahtar, deger] of Object.entries(plan)) {
+      await D.yaz(anahtar, deger);
+    }
+    await D.hamYaz('@namaz_akisi/namaz_gun_migrasyon_tamam', '1');
+  }),
 }));
 
 jest.mock('../../../domain/services/YedekBirlestirmeServisi', () => ({

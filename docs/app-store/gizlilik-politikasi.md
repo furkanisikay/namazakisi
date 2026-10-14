@@ -11,7 +11,7 @@ paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
 
 ## Kısaca
 
-- Verileriniz **yalnızca telefonunuzda** tutulur.
+- Verileriniz **yalnızca telefonunuzda** tutulur (isteğe bağlı cihazlar arası eşitlemeyi açarsanız, şifreli bir kopyası kendi bulut hesabınızda da durur).
 - Reklam, izleme (tracking) ve analitik **yoktur**.
 - Uygulama namaz vakitlerini **internetsiz** hesaplar.
 - Kaynak kodları herkese açıktır; bu politikada yazanları kodda doğrulayabilirsiniz:
@@ -75,6 +75,26 @@ siler.
 **Yedekleme:** Verilerinizi şifreli bir dosyaya aktarıp başka bir cihaza
 taşıyabilirsiniz. Bu dosya siz nereye kaydederseniz oraya gider; uygulama onu
 hiçbir yere yüklemez.
+
+## Cihazlar arası eşitleme (isteğe bağlı)
+
+Bu özellik **varsayılan olarak kapalıdır** ve yalnızca uygulamanın o sürümünde bir
+eşitleme hizmeti etkinse görünür. Siz açarsanız:
+
+- Namaz kayıtlarınız, kaza defteriniz, rozetleriniz ve bonus puanınız **sizin kendi**
+  bulut hesabınıza (Android'de Google Drive'ın uygulamaya özel gizli klasörü
+  `appDataFolder`, iPhone'da iCloud) yazılır. Bizim bir sunucumuz yoktur; veriler
+  bize hiç gelmez.
+- Veriler telefonunuzdan çıkmadan önce **yalnızca sizin bildiğiniz bir parolayla**
+  şifrelenir (uçtan uca şifreleme). Ne biz ne de bulut hizmeti içeriği okuyabilir.
+- Ayarlarınız ve **konumunuz eşitlenmez**; her cihazda ayrı kalır.
+- Google Drive'da uygulama yalnızca kendi gizli klasörüne erişir (`drive.appdata`
+  izni); diğer dosyalarınızı göremez.
+- Parolanız yalnızca o cihazın güvenli anahtar deposunda tutulur ve yedeklere girmez.
+  Parolanızı unutursanız buluttaki veri **kurtarılamaz**; cihazlarınızdaki kayıtlar
+  yerinde kalır.
+- Eşitlemeyi istediğiniz an kapatabilir, buluttaki eşitleme verisini de
+  silebilirsiniz.
 
 ## Sorun bildirme
 

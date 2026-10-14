@@ -13,8 +13,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { YedekPayload, KategoriSecimleri, GunlukNamazlar } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
-import { Depolama } from '../../data/local/Depolama';
-import { mevcutVeriyiTopla } from '../../domain/services/YedeklemeServisi';
+import { mevcutVeriyiTopla, planiDiskeYaz } from '../../domain/services/YedeklemeServisi';
 import { birlestirmePlaniOlustur } from '../../domain/services/YedekBirlestirmeServisi';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { konumAyarlariniYukle } from './konumSlice';
@@ -74,13 +73,10 @@ export const iceAktarmayiUygula = createAsyncThunk(
     const mevcut = await mevcutVeriyiTopla();
     const plan = birlestirmePlaniOlustur(mevcut, arg.payload, arg.secimler);
 
-    // 1) Planı diske yaz (anahtar-bazlı atomik Depolama; lost-update korumalı).
-    for (const [anahtar, deger] of Object.entries(plan)) {
-      await Depolama.yaz(anahtar, deger);
-    }
-
-    // 2) Göç bayrağını set et — açılış göçü içe-aktarılan günleri EZMESİN (spec §11).
-    await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
+    // 1) Planı diske yaz (anahtar-bazlı atomik Depolama; lost-update korumalı) ve
+    // 2) göç bayrağını set et — açılış göçü içe-aktarılan günleri EZMESİN (spec §11).
+    // Ortak disk adımı: cihazlar arası eşitlemenin arka plan yolu da buradan geçer.
+    await planiDiskeYaz(plan);
 
     // 3) Store'u KRİTİK SIRAYLA tazele (spec §10).
     await dispatch(konumAyarlariniYukle()); // önce konum (sayaç/muhafız buna bağlı)
