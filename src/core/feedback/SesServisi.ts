@@ -174,7 +174,7 @@ export const SesServisi = {
   temizle: async (): Promise<void> => {
     for (const player of yukluSesler.values()) {
       try {
-        player.release();
+        player.remove();
       } catch (e) {
         // Sessizce devam
       }

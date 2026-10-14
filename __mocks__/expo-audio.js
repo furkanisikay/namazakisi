@@ -21,7 +21,7 @@ const sahteCalarOlustur = () => ({
     this.playing = false;
   }),
   seekTo: jest.fn().mockResolvedValue(undefined),
-  release: jest.fn(),
+  remove: jest.fn(),
   remove: jest.fn(),
 });
 

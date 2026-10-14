@@ -15,7 +15,7 @@
  *
  * TEKILLIK: tek bir calar tutulur. Kullanici "Dinle"ye ust uste basarsa ses
  * ust uste BINMEZ — mevcut calar basa sarilir. Kaynak degisirse eski calar
- * `release()` ile birakilir (bellek sizintisi yok).
+ * `remove()` ile birakilir (bellek sizintisi yok).
  */
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import {
@@ -66,7 +66,7 @@ function sesModunuHazirla(): void {
 function calariBirak(): void {
     if (!aktifCalar) return;
     try {
-        aktifCalar.release();
+        aktifCalar.remove();
     } catch {
         // Zaten birakilmis olabilir — onizleme icin onemsiz.
     }
