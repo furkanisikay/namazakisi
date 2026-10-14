@@ -26,6 +26,8 @@ import { vakitBildirimAyarlariniYukle } from './vakitBildirimSlice';
 import { cumaHatirlatmaAyarlariniYukle } from './cumaHatirlatmaSlice';
 import { yatisHatirlatmaAyarlariniYukle } from './yatisHatirlatmaSlice';
 import { YatisHatirlatmaServisi } from '../../domain/services/YatisHatirlatmaServisi';
+import { takvimCakismaAyarlariniYukle } from './takvimCakismaSlice';
+import { TakvimCakismaServisi } from '../../domain/services/TakvimCakismaServisi';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { camiyeGitAyarlariniYukle } from './camiyeGitSlice';
 import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
@@ -90,6 +92,7 @@ export const iceAktarmayiUygula = createAsyncThunk(
       dispatch(vakitBildirimAyarlariniYukle()),
       dispatch(cumaHatirlatmaAyarlariniYukle()),
       dispatch(yatisHatirlatmaAyarlariniYukle()),
+      dispatch(takvimCakismaAyarlariniYukle()),
       dispatch(camiyeGitAyarlariniYukle()),
       dispatch(nafileAyarlariniYukle()),
       dispatch(nowBarAyarlariniYukle()),
@@ -177,6 +180,14 @@ export const iceAktarmayiUygula = createAsyncThunk(
     try {
       const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
       await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
+    } catch {
+      // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
+    }
+    // Takvim çakışması uyarısı (issue #291): ayarı yüklemek bildirim kurmaz ve
+    // kılınmışlık (içe aktarılan kayıtlar) uyarıyı eler → yayma koşsa da koşmasa da.
+    try {
+      const sonKonum = (getState() as { konum?: { koordinatlar?: { lat: number; lng: number } } }).konum?.koordinatlar ?? null;
+      await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(sonKonum);
     } catch {
       // İçe aktarma başarılı sayılmalı; planlama bir sonraki açılışta tazelenir.
     }

@@ -24,6 +24,7 @@ import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
 import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
+import { TakvimCakismaServisi } from './TakvimCakismaServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -461,6 +462,19 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Yatış hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.67: TAKVIM CAKISMASI UYARISI (issue #291)
+        //
+        // Takvim uygulamanin DISINDA degisir (yeni toplanti eklenir) → bu gorev
+        // sonradan eklenen etkinligi yakalayan asil yoldur. Muhafizdan bagimsiz
+        // → muhafiz erken donuslerinden ONCE. Izin yoksa servis plani temizler.
+        // =====================================================
+        try {
+            await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Takvim çakışması tazelenemedi', e);
         }
 
         // =====================================================

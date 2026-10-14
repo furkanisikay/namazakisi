@@ -48,6 +48,7 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   kazaOneri: DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI,
   sadeGorunum: DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI,
   seferilik: DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI,
+  takvimCakisma: DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI,
 };
 
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */

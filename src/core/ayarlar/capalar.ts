@@ -16,6 +16,7 @@ export const CAPALAR = [
   'cumaHatirlatmasi',
   'yatisHatirlatmasi',
   'camiyeGitHatirlatmasi',
+  'takvimCakismaUyarisi',
   'vakitSayaci',
   'gunSonuBildirimi',
   'tamGunEsigi',
