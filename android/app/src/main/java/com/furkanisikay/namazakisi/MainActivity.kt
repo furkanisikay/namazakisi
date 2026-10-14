@@ -3,6 +3,7 @@ package com.furkanisikay.namazakisi
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 
@@ -21,7 +22,7 @@ class MainActivity : ReactActivity() {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null)
-    yonKilidiniUygula(resources.configuration)
+    yonKilidiniUygula()
     // `namazakisi://kildim` başlatanı (issue #299): getReferrer() yalnız BU AN geçerli.
     KildimDerinBaglantiKaydi.yakala(this, intent)
   }
@@ -42,7 +43,7 @@ class MainActivity : ReactActivity() {
    */
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
-    yonKilidiniUygula(newConfig)
+    yonKilidiniUygula()
   }
 
   /**
@@ -52,8 +53,8 @@ class MainActivity : ReactActivity() {
    * belirtip eski sürümlerde de aynı davranışı veriyoruz. Manifest varsayılanı
    * `portrait` kalır (açılışta telefonda yön zıplaması olmasın).
    */
-  private fun yonKilidiniUygula(config: Configuration) {
-    val istenen = if (config.smallestScreenWidthDp >= BUYUK_EKRAN_EN_KUCUK_GENISLIK_DP) {
+  private fun yonKilidiniUygula() {
+    val istenen = if (enKucukEkranGenisligiDp() >= BUYUK_EKRAN_EN_KUCUK_GENISLIK_DP) {
       ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     } else {
       ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -62,6 +63,27 @@ class MainActivity : ReactActivity() {
     if (requestedOrientation != istenen) {
       requestedOrientation = istenen
     }
+  }
+
+  /**
+   * Ekranın (pencerenin DEĞİL) en küçük kenarı, dp. `Configuration.smallestScreenWidthDp`
+   * KULLANILMAZ: manifest `portrait` iken yatay tablette sistem uygulamayı dar bir
+   * dikey kutuya alır (letterbox) ve yapılandırma o KUTUYU anlatır (< 600 dp) — karar
+   * "telefon" çıkar, kilit hiç açılmaz, uygulama tablette ortada dar kalır (özellik
+   * turu tablet karesinde yakalandı). En büyük pencere ölçüsü kutudan bağımsızdır ve
+   * katla/aç ile değişir.
+   */
+  private fun enKucukEkranGenisligiDp(): Int {
+    val (genislik, yukseklik) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      val sinir = windowManager.maximumWindowMetrics.bounds
+      sinir.width() to sinir.height()
+    } else {
+      val boyut = Point()
+      @Suppress("DEPRECATION")
+      windowManager.defaultDisplay.getRealSize(boyut)
+      boyut.x to boyut.y
+    }
+    return (minOf(genislik, yukseklik) / resources.displayMetrics.density).toInt()
   }
 
   private companion object {
