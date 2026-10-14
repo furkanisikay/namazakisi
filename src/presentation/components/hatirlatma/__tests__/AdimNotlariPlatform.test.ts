@@ -40,8 +40,20 @@ describe('AdimNotlari — platform notlari', () => {
         );
     });
 
-    it('iOS + AlarmKit (sessizligi delebilir): not CIKMAZ', () => {
-        expect(notlar(iosYetenekleri(true)).join(' ')).not.toContain('sessiz moddayken');
+    it('iOS + AlarmKit: sesli anons notu YINE CIKAR (anons bildirim sesidir, alarm degil)', () => {
+        expect(notlar(iosYetenekleri(true))).toContain(
+            'iPhone’da sesli anons bildirim sesi olarak çalar; sessiz moddayken duyulmaz'
+        );
+    });
+
+    it('iOS + AlarmKit + acil + alarm kanalli adim: ilk hatirlatmanin alarm oldugu soylenir', () => {
+        const alarmli: SeviyeAyari = { ...sesli, acilKanal: true, kanallar: { bildirim: true, alarm: true } };
+        expect(notlar(iosYetenekleri(true), alarmli)).toContain(
+            'İlk hatırlatma iPhone’da alarm olarak çalar; tekrarlar sessiz moddayken duyulmaz'
+        );
+        expect(notlar(iosYetenekleri(false), alarmli)).toContain(
+            'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir'
+        );
     });
 
     it('Android: not CIKMAZ (anons alarm sesiyle calar, sessiz modu deler)', () => {

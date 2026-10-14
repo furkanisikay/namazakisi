@@ -76,8 +76,9 @@ export interface MuhafizVakitSecenegi {
  * bekleyen bildirim sınırı bütün gün için paylaşılır; yarının imsağı (varsayılan matriste
  * ~10–20 bildirim) yoğun kurulumu sınırın üstüne iter ve bildirim sınırı rehberinin
  * HİÇBİR önerisi bunu geri alamaz (öneriler bugünün adımlarını seyreltir, yarın sabah
- * yine sığmaz) — "aşım" uyarısı kalıcı olurdu. iOS'ta gerçek alarm da yoktur (zamana
- * duyarlı bildirim), sabah uyandırmanın asıl değeri Android alarmındadır.
+ * yine sığmaz) — "aşım" uyarısı kalıcı olurdu. iOS 26'da gerçek alarm AlarmKit ile
+ * kurulur (64 sınırına sayılmaz) ama yarının imsağını yalnız alarm tetiğiyle eklemek
+ * ekranın akışından sapan yarım bir plan olurdu → bilinçli olarak iOS'ta kapalı (açık konu).
  */
 export const yarininImsagiPlanlanirMi = (platform: 'android' | 'ios'): boolean => platform === 'android';
 

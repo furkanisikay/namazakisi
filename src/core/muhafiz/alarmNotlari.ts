@@ -2,19 +2,23 @@
  * Gerçek alarm anahtarının altındaki bilgi satırları (issue #74) — SAF.
  *
  * "Sessiz sapma bırakma" kuralı (Faz 0): alarm her cihazda kullanıcının kurduğu gibi
- * çalmaz — iPhone'da gerçek alarm yok (AlarmKit bekleniyor), Android 14+'ta tam ekran
- * izni olmayabilir, Android 12'de tam alarm izni kapatılmış olabilir. Ekranda
+ * çalmaz — iPhone'da gerçek alarm yalnız iOS 26 + AlarmKit izniyle var, Android 14+'ta
+ * tam ekran izni olmayabilir, Android 12'de tam alarm izni kapatılmış olabilir. Ekranda
  * SÖYLENMEZSE kullanıcı "alarm kurdum ama çalmadı" yaşar.
  *
  * `null` izin = bilinmiyor → o satır ÜRETİLMEZ (yanlış alarm, hiç uyarmamaktan kötüdür).
  */
 import type { MuhafizPlatformu } from './ios/platformYetenekleri';
+import type { AlarmKitDurumu } from './ios/alarmKit';
 
 export interface AlarmNotu {
     tip: 'uyari' | 'bilgi';
     metin: string;
-    /** Satırda eylem düğmesi gösterilsin mi (tam ekran izni ayarı). */
-    eylem?: 'tamEkranIzni';
+    /**
+     * Satırın eylem düğmesi: Android tam ekran izni ayarı, iOS uygulamanın Ayarlar
+     * sayfası (AlarmKit izni reddedildiyse) ya da sistem alarm izni penceresi.
+     */
+    eylem?: 'tamEkranIzni' | 'ayarlar' | 'alarmIzni';
 }
 
 export interface AlarmNotuGirdisi {
@@ -23,18 +27,51 @@ export interface AlarmNotuGirdisi {
     tamEkran: boolean | null;
     /** Tam (exact) alarm izni; `null` bilinmiyor. */
     tamAlarm: boolean | null;
+    /** iOS AlarmKit durumu (iOS 26); `null`/verilmezse bilinmiyor → satır ÜRETİLMEZ. */
+    alarmKit?: AlarmKitDurumu | null;
+}
+
+/** iPhone'da AlarmKit yokken (iOS < 26) alarm adımının gerçekte nasıl geldiği. */
+export const IOS_ALARMSIZ_NOTU =
+    "iPhone'da iOS 26 öncesinde zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir; sessiz anahtarı açıkken duyulmaz. iOS 26'ya güncellediğinizde gerçek alarm olarak çalar.";
+
+function iosNotlari(durum: AlarmKitDurumu | null | undefined): AlarmNotu[] {
+    switch (durum) {
+        case 'izinli':
+            return [
+                {
+                    tip: 'bilgi',
+                    metin:
+                        "İlk hatırlatma iPhone'unuzun alarmı olarak çalar; sessiz anahtarı ve Odak açıkken de duyulur. Alarm ekranında durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme \"Kıldım\" olur.",
+                },
+            ];
+        case 'belirsiz':
+            return [
+                {
+                    tip: 'bilgi',
+                    metin: "Gerçek alarm için iPhone'unuzun bir kez izin vermesi gerekiyor. İzin verilene kadar bu adım uzun sesli bir bildirimle gelir.",
+                    eylem: 'alarmIzni',
+                },
+            ];
+        case 'reddedildi':
+            return [
+                {
+                    tip: 'uyari',
+                    metin:
+                        "Alarm izni kapalı; bu adım zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir, sessiz anahtarı açıkken duyulmaz. Ayarlar'dan \"Alarmlar\" iznini açabilirsiniz.",
+                    eylem: 'ayarlar',
+                },
+            ];
+        case 'desteklenmiyor':
+            return [{ tip: 'bilgi', metin: IOS_ALARMSIZ_NOTU }];
+        default:
+            // Bilinmiyor (durum henüz okunmadı): yanlış bilgi vermektense satır yok.
+            return [];
+    }
 }
 
 export function alarmNotlariniOlustur(g: AlarmNotuGirdisi): AlarmNotu[] {
-    if (g.platform === 'ios') {
-        return [
-            {
-                tip: 'bilgi',
-                metin:
-                    "iPhone'da şimdilik zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir; sessiz anahtarı açıkken duyulmaz. Gerçek alarm iOS 26 AlarmKit desteğiyle gelecek.",
-            },
-        ];
-    }
+    if (g.platform === 'ios') return iosNotlari(g.alarmKit);
     const notlar: AlarmNotu[] = [];
     if (g.tamAlarm === false) {
         notlar.push({

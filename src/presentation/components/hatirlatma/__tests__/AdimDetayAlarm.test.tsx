@@ -8,7 +8,7 @@
  *   'kapali' cipi alarmi da dusurur.
  */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -129,5 +129,55 @@ describe('cipKanallariniBirlestir — alarm bağımsız eksen', () => {
     });
     test("'kapalı' çipi alarmı da düşürür (yoksa 'kapattım ama çalıyor')", () => {
         expect(cipKanallariniBirlestir({ bildirim: true, alarm: true }, cip('kapali'))).toEqual({});
+    });
+});
+
+describe('iPhone — AlarmKit izni (iOS 26, issue #74)', () => {
+    const alarmKit = require('../../../../../modules/expo-muhafiz-alarmkit/src') as {
+        alarmKitDurumu: jest.Mock;
+        alarmKitIzniIste: jest.Mock;
+    };
+    const { iosYetenekleri } = require('../../../../core/muhafiz/ios/platformYetenekleri');
+    afterEach(() => {
+        alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+        alarmKit.alarmKitIzniIste.mockResolvedValue('desteklenmiyor');
+    });
+
+    const iosKur = (kanallar: UyariKanallari, alarmOnayiVar: boolean) => {
+        const onDegistir = jest.fn();
+        const ekran = render(
+            <AdimDetayModal
+                gorunur
+                tanim={vakitPencereTanimi('imsak', 'cikisaDogru', undefined, iosYetenekleri(false))}
+                seviyeler={[adim(kanallar)]}
+                indeks={0}
+                ttsDestekli={null}
+                onDegistir={onDegistir}
+                onKapat={jest.fn()}
+                alarmOnayiVar={alarmOnayiVar}
+                onAlarmOnayiVer={jest.fn()}
+            />
+        );
+        return { ekran, onDegistir };
+    };
+
+    test('onayda sistem izni anahtar YAZILMADAN önce istenir, sonra anahtar açılır', async () => {
+        alarmKit.alarmKitDurumu.mockResolvedValue('belirsiz');
+        alarmKit.alarmKitIzniIste.mockResolvedValue('izinli');
+        const { ekran, onDegistir } = iosKur({ bildirim: true }, false);
+        fireEvent(ekran.getByLabelText('Gerçek alarm'), 'valueChange', true);
+        expect(await ekran.findByText(/bir kez alarm izni isteyecek/)).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('Alarmı açın'));
+        expect(onDegistir).not.toHaveBeenCalled();
+        await waitFor(() =>
+            expect(onDegistir).toHaveBeenCalledWith(expect.objectContaining({ kanallar: { bildirim: true, alarm: true } }))
+        );
+        expect(alarmKit.alarmKitIzniIste).toHaveBeenCalledTimes(1);
+    });
+
+    test('izin reddedilmişse not Ayarlar düğmesini gösterir', async () => {
+        alarmKit.alarmKitDurumu.mockResolvedValue('reddedildi');
+        const { ekran } = iosKur({ bildirim: true, alarm: true }, true);
+        expect(await ekran.findByLabelText('Alarm iznini Ayarlar’dan açın')).toBeTruthy();
     });
 });

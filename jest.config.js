@@ -42,6 +42,8 @@ module.exports = {
     "expo-muhafiz-anons/src$": "<rootDir>/__mocks__/expo-muhafiz-anons.js",
     // Siri / Kısayollar / Odak köprüsü (iOS native). Varsayılan: modül yok.
     "expo-siri-kisayollari/src$": "<rootDir>/__mocks__/expo-siri-kisayollari.js",
+    // iOS 26 AlarmKit köprüsü (gerçek alarm, issue #74). Varsayılan: modül yok.
+    "expo-muhafiz-alarmkit/src$": "<rootDir>/__mocks__/expo-muhafiz-alarmkit.js",
     // Camideyim + Namaz modu köprüsü (Android native). Varsayılan: modül yok.
     "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
     // Katlanabilir postür köprüsü (WindowManager, Android). Varsayılan: modül yok → "düz".

@@ -13,7 +13,8 @@
  *   `timeSensitive` — Odak'i DELER, ekrani yakar. App ID'ye capability eklenir;
  *                     Apple ONAYI GEREKMEZ (Critical Alerts'in aksine).
  *
- * Hicbiri SESSIZ ANAHTARINI delmez — onu yalnizca AlarmKit yapar (Faz 3).
+ * Hicbiri SESSIZ ANAHTARINI delmez — onu yalnizca AlarmKit yapar (issue #74,
+ * yalniz gercek alarm adiminin ilk tetigi; `IosMuhafizTeslimcisi`).
  *
  * NEDEN HER SEVIYE `timeSensitive` DEGIL: Apple bu seviyenin "gercekten zamana
  * duyarli" bildirimlerle sinirli kullanilmasini bekler ve asiri kullanim App
@@ -58,8 +59,8 @@ export const IOS_BILDIRIM_SESI = 'bildirim_ios.wav';
 /**
  * GERCEK ALARM adiminin iOS sesi (issue #74) — `bildirim_ios.wav`'in 9 kez, araliklarla
  * tekrari (~28 sn; iOS 30 sn'yi asan bildirim sesini kirpmaz, HIC calmaz). AlarmKit
- * (iOS 26) gelene kadar alarm, zamana duyarli bildirim + bu uzun sesle teslim edilir;
- * sessiz anahtarini DELMEZ (ekran bunu soyler). Govde adi Android `res/raw`'daki
+ * yoksa (iOS < 26, izin reddedildi, Odak filtresi sessiz) alarm, zamana duyarli bildirim
+ * + bu uzun sesle teslim edilir; sessiz anahtarini DELMEZ (ekran bunu soyler). Govde adi Android `res/raw`'daki
  * hicbir kaynakla cakismaz (bkz. `IOS_BILDIRIM_SESI` notu).
  */
 export const IOS_ALARM_SESI = 'alarm_ios.wav';
@@ -69,7 +70,7 @@ export const TIME_SENSITIVE_ESIK_SEVIYESI = 2;
 
 /** Teslim edilecek tek bir iOS uyarisi. */
 export interface IosTeslim {
-    /** Faz 1'de daima 'bildirim'; Faz 3'te acil adim 'alarm' olur. */
+    /** 'alarm' = AlarmKit sistem alarmi (yalniz gercek alarm tetigi, iOS 26 + izin). */
     tur: 'bildirim' | 'alarm';
     kesintiSeviyesi: KesintiSeviyesi;
     /** Uygulama paketindeki ses dosyasinin adi. */
@@ -99,31 +100,30 @@ export function kesintiSeviyesiSec(seviye: number): KesintiSeviyesi {
 /**
  * Bir `UyariPlani`yi iOS teslimine cevir.
  *
- * `acilKanal` bayragi Faz 1'de teslim TURUNU degistirmez (AlarmKit Faz 3'te
- * gelir) ama `yetenekler.sessizligiDelebilir` false oldugu surece bunun
- * kullaniciya SOYLENMESI gerekir — ekran bu bilgiyi ayni yetenek nesnesinden
- * okur, dolayisiyla ikisi ayrisamaz.
+ * `tur: 'alarm'` YALNIZ gercek alarm tetiginde (`uyari.alarm` — adimin ILK tetigi,
+ * kullanicinin acikca sectigi alarm kanali) VE AlarmKit kullanilabilirken
+ * (`yetenekler.gercekAlarm`). Acil ton (`acilKanal`) alarma CEVRILMEZ: acil adim son
+ * dakikalarda her dakika tekrarlanir; her biri tam ekran alarm olsaydi kullanici
+ * dakikada bir alarm susturmak zorunda kalirdi (Android'de de acil kanal bildirimdir,
+ * alarm degil).
  */
 export function iosTesliminiCoz(
     uyari: UyariPlani,
     yetenekler: PlatformYetenekleri
 ): IosTeslim {
-    const alarmOlmali =
-        (uyari.acilKanal === true || uyari.alarm === true) && yetenekler.sessizligiDelebilir;
-
-    // GERCEK ALARM KANALI (issue #74): AlarmKit yokken zamana duyarli bildirim + UZUN
-    // ses. Seviye 1 (nazik) bile olsa Odak'i deler — kullanici bu adim icin acikca
-    // "alarm" istedi; nazik tonun zamana duyarli olmama gerekcesi burada gecmez.
+    // GERCEK ALARM KANALI (issue #74): AlarmKit varsa sistem alarmi; yoksa zamana duyarli
+    // bildirim + UZUN ses. Seviye 1 (nazik) bile olsa Odak'i deler — kullanici bu adim
+    // icin acikca "alarm" istedi; nazik tonun zamana duyarli olmama gerekcesi burada gecmez.
     if (uyari.alarm === true) {
         return {
-            tur: alarmOlmali ? 'alarm' : 'bildirim',
+            tur: yetenekler.gercekAlarm ? 'alarm' : 'bildirim',
             kesintiSeviyesi: 'timeSensitive',
             ses: IOS_ALARM_SESI,
         };
     }
 
     return {
-        tur: alarmOlmali ? 'alarm' : 'bildirim',
+        tur: 'bildirim',
         kesintiSeviyesi: kesintiSeviyesiSec(uyari.seviye),
         ses: iosSesiCoz(uyari.bildirimSesi),
     };

@@ -22,6 +22,7 @@ import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { alarmKitDurumu } from '../../../modules/expo-muhafiz-alarmkit/src';
 import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
 import { TAKVIM_CAKISMA_PLAN_GUN_SAYISI } from '../../core/bildirim/takvimCakismaPlani';
 import { cakismaEtkinlikleriniOku, okumaAraligi } from './TakvimEtkinlikOkuyucu';
@@ -29,7 +30,15 @@ import { cakismaEtkinlikleriniOku, okumaAraligi } from './TakvimEtkinlikOkuyucu'
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
 export type DefterDisGirdisi = Pick<
     DefterGirdisi,
-    'vakitBildirimi' | 'cuma' | 'camiyeGit' | 'gunSonu' | 'yatis' | 'takvimCakisma' | 'kilinan' | 'ozelGundeMi'
+    | 'vakitBildirimi'
+    | 'cuma'
+    | 'camiyeGit'
+    | 'gunSonu'
+    | 'yatis'
+    | 'takvimCakisma'
+    | 'kilinan'
+    | 'ozelGundeMi'
+    | 'iosAlarmKit'
 >;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
@@ -44,7 +53,7 @@ const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> =
 export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     const bugun = bugunuAl();
     const dun = dunuAl();
-    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis] = await Promise.all([
+    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis, alarmKit] = await Promise.all([
         guvenli('vakit bildirimi', () => LocalVakitBildirimServisi.getAyarlar()),
         guvenli('cuma', () => LocalCumaHatirlatmaServisi.getAyarlar()),
         guvenli('camiye git', () => LocalCamiyeGitServisi.getAyarlar()),
@@ -56,6 +65,8 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         guvenli('kilinan (dun)', () => kilinanVakitleriAl(dun)),
         guvenli('ozel gun', () => ozelGunSuzgeciniOku()),
         guvenli('yatis', () => LocalYatisHatirlatmaServisi.getAyarlar()),
+        // iOS gerçek alarm (AlarmKit, #74): teslimci de aynı durumu `hazirla`da okur.
+        guvenli('alarmkit', () => alarmKitDurumu()),
     ]);
     // Takvim çakışması (issue #291): yalnız AÇIKKEN takvim okunur; servisle AYNI
     // okuyucu + süzgeç. İzin yoksa servis de hiçbir şey kurmaz → null.
@@ -81,6 +92,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         takvimCakisma,
         kilinan,
         ozelGundeMi: ozelGundeMi ?? undefined,
+        iosAlarmKit: Platform.OS === 'ios' && alarmKit === 'izinli',
     };
 }
 

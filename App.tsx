@@ -12,6 +12,7 @@ import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/service
 import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
 import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
 import { siriDegisikliginiDinle } from './modules/expo-siri-kisayollari/src';
+import { alarmDegisikliginiDinle } from './modules/expo-muhafiz-alarmkit/src';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
@@ -329,6 +330,11 @@ const AppIcerik: React.FC = () => {
     // Muhafız "Ertele" (issue #289) uygulama AÇIKKEN native işlenince: ön plan banner'ı
     // ve saatin planı ertelemeyi öğrensin (gözlemci: NamazMuhafiziServisi + WearSenkronServisi).
     const ertelemeAbonelik = DeviceEventEmitter.addListener(MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir);
+    // iOS gerçek alarm (AlarmKit, #74) ekranından "10 dk ertele": aynı gözlemci. ("Kıldım"
+    // Siri kuyruğuna yazar → aşağıdaki Siri olayı işler.)
+    const alarmAboneligiKaldir = alarmDegisikliginiDinle((tur) => {
+      if (tur === 'ertele') ertelemeDegistiBildir();
+    });
 
     // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
     // muhafız yeniden planlanır (camideyken acil kanal + sesli anons yok), "Kıldım"
@@ -435,6 +441,7 @@ const AppIcerik: React.FC = () => {
       ertelemeAbonelik.remove();
       camiAbonelik.remove();
       siriAboneligiKaldir();
+      alarmAboneligiKaldir();
       interactionHandle.cancel();
       if (notifeeUnsubscribe) {
         notifeeUnsubscribe();

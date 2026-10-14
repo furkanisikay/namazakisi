@@ -131,6 +131,11 @@ export interface DefterGirdisi {
     vakitSayaci?: { aktif: boolean; sayacBaslangicSeviyesi?: number } | null;
     /** Android ana ekran widget'ının dakika alarmı sayılsın mı? (varsayılan: Android'de evet) */
     widget?: boolean;
+    /**
+     * iOS: AlarmKit (iOS 26) izinli mi? Öyleyse gerçek alarm tetiği SİSTEM ALARMI olarak
+     * kurulur ve 64 bekleyen bildirim sınırına SAYILMAZ (issue #74). Verilmezse bildirim.
+     */
+    iosAlarmKit?: boolean;
 }
 
 const koordinatGecerli = (k: DefterKoordinat | null | undefined): k is DefterKoordinat =>
@@ -175,8 +180,9 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 ozelGundeMi,
             })) {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
-                // YERİNE geçer → tek alarm sayılır. iOS'ta bildirim olarak kalır.
-                if (android && alarmKurarMi(aday)) {
+                // YERİNE geçer → tek alarm sayılır. iOS'ta AlarmKit izinliyse yine alarm
+                // (64 sınırına sayılmaz — `tur: 'alarm'`), değilse bildirim olarak kalır.
+                if ((android || g.iosAlarmKit === true) && alarmKurarMi(aday)) {
                     ekle('alarm', aday.zaman.getTime(), 'alarm');
                     continue;
                 }
