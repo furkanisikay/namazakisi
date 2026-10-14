@@ -9,7 +9,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Namaz muhafızı\\..*"
     direction: DOWN
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Namaz muhafızı\\..*"
@@ -25,7 +25,7 @@ appId: com.furkanisikay.namazakisi
       text: ".*ilk hatırlatma.*"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/07-muhafiz-zaman-seridi
 
@@ -35,7 +35,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "1\\. hatırlatma.*düzenleyin.*"
     direction: DOWN
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "1\\. hatırlatma.*düzenleyin.*"
@@ -48,7 +48,7 @@ appId: com.furkanisikay.namazakisi
       id: "adim-alarm-anahtari"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/09-adim-detay-anahtarlar
 

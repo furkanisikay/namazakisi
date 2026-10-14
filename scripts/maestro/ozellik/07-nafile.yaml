@@ -7,7 +7,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Nafile namazlar\\..*"
     direction: DOWN
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Nafile namazlar\\..*"
@@ -18,6 +18,6 @@ appId: com.furkanisikay.namazakisi
     element:
       id: "nafile-kart-teheccud"
     direction: DOWN
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/19-nafile-teheccud

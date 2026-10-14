@@ -8,7 +8,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Bildirimler\\..*"
     direction: DOWN
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
     text: "Bildirimler\\..*"
@@ -20,7 +20,7 @@ appId: com.furkanisikay.namazakisi
       text: "Cuma hatırlatması"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/14-cuma
 - scrollUntilVisible:
@@ -28,7 +28,7 @@ appId: com.furkanisikay.namazakisi
       text: "YATIŞ HATIRLATMASI"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/15-yatis
 - scrollUntilVisible:
@@ -36,7 +36,7 @@ appId: com.furkanisikay.namazakisi
       text: "CAMİYE GİTMEK"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/16-camiye-git
 - scrollUntilVisible:
@@ -44,6 +44,6 @@ appId: com.furkanisikay.namazakisi
       text: "Bilekliğinize yalnız namaz hatırlatmalarını gönderin"
     direction: DOWN
     centerElement: true
-    timeout: 120000
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/17-bileklik-rehberi
