@@ -19,6 +19,10 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {
+  // Önce platform: yalnız Android'e gelen özellik iPhone'da (ya da tersi) duyurulmaz.
+  // Liste bozuk/boşsa duyuru gösterilmez (yanlış platforma duyuru, hiç duyurmamaktan kötü).
+  const platformlar = ozellik.platformlar;
+  if (!Array.isArray(platformlar) || !platformlar.some((p) => p === Platform.OS)) return false;
   if (!ozellik.yetenek) return true;
   try {
     return YETENEKLER[ozellik.yetenek]?.() === true;

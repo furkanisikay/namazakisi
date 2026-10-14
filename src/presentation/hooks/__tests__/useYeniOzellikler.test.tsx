@@ -33,6 +33,7 @@ jest.mock('../../../core/constants/YeniOzellikler', () => ({
     YENI_OZELLIKLER: [
         {
             id: 'a',
+            platformlar: ['android', 'ios'],
             surum: '0.3.0',
             tarih: '2026-03-01',
             baslik: 'A',
@@ -43,6 +44,7 @@ jest.mock('../../../core/constants/YeniOzellikler', () => ({
         },
         {
             id: 'b',
+            platformlar: ['android', 'ios'],
             surum: '0.2.0',
             tarih: '2026-02-01',
             baslik: 'B',
@@ -53,6 +55,7 @@ jest.mock('../../../core/constants/YeniOzellikler', () => ({
         },
         {
             id: 'c',
+            platformlar: ['android', 'ios'],
             surum: '0.1.0',
             tarih: '2026-01-01',
             baslik: 'C',

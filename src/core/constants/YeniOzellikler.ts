@@ -20,9 +20,19 @@
  */
 export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch';
 
+/** Duyurunun görüneceği platformlar. */
+export type YeniOzellikPlatformu = 'android' | 'ios';
+
 export interface YeniOzellik {
     /** Benzersiz kimlik (kalıcı; değiştirme) */
     id: string;
+    /**
+     * Özelliğin GERÇEKTEN bulunduğu platformlar — ZORUNLU: yalnız Android'e gelen bir
+     * özellik iPhone kullanıcısına (ya da tersi) duyurulmaz. İkisine birden geldiyse
+     * `['android', 'ios']`. Platform içinde ayrıca bir build/cihaz koşulu varsa
+     * (widget uzantısı, saat hedefi) `yetenek` de verilir.
+     */
+    platformlar: YeniOzellikPlatformu[];
     /** Hangi sürümde eklendi (örn. '0.22.0') */
     surum: string;
     /** Tanıtım tarihi — 'YYYY-MM-DD' (Neler Yeni sıralaması için) */
@@ -52,6 +62,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // görünür (saat bayrağı kapalıyken duyuru da yok).
     {
         id: 'apple-watch-uygulamasi',
+        platformlar: ['ios'],
         surum: '0.31.0',
         tarih: '2026-10-14',
         baslik: 'Namaz Akışı Artık Apple Watch\'ta',
@@ -72,6 +83,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // iPhone'da gerçek alarm — iOS 26 AlarmKit (issue #74). Yalnız iPhone'u ilgilendirir.
     {
         id: 'gercek-alarm-iphone',
+        platformlar: ['ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'iPhone\'da Gerçek Alarm',
@@ -94,6 +106,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // taşıyan iOS build'inde görünür (widget bayrağı kapalıyken duyuru da yok).
     {
         id: 'ios-widget-canli-etkinlik',
+        platformlar: ['ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'iPhone\'da Kilit Ekranı ve Dinamik Ada',
@@ -115,6 +128,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Takvim çakışması uyarısı (issue #291) — varsayılan kapalı, açık rıza ile açılır.
     {
         id: 'takvim-cakismasi-uyarisi',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Toplantı Vakte Denk Gelirse Haber Verelim',
@@ -136,6 +150,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Seferîlik bilgi kartı (issue #296) — kart kapalı; özellik ana ekranda kendiliğinden çıkar.
     {
         id: 'seferilik-bilgi-karti',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Yolculukta Bilgi Kartı',
@@ -156,6 +171,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Gerçek alarm kanalı (issue #74) — hatırlatma adımında telefonun alarmı.
     {
         id: 'gercek-alarm',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Hatırlatmalarda Gerçek Alarm',
@@ -176,6 +192,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Bileklik dostu başlıklar (issue #287) — kart kapalı; rehber yalnız Android'de.
     {
         id: 'bileklik-dostu-basliklar',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Bilekliğinizde Tek Bakışta Okunur',
@@ -196,6 +213,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Sade görünüm (issue #295) — yaşlı kullanıcılar için tek ekran.
     {
         id: 'sade-gorunum',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Sade Görünüm',
@@ -218,6 +236,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Android; kart kapalı (Ayarlar satırı yalnız Android'de görünür).
     {
         id: 'otomasyonlarla-kullanin',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Otomasyonlarla Kullanın',
@@ -239,6 +258,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // "Her farzla bir kaza" önerisi (issue #294).
     {
         id: 'her-farzla-bir-kaza',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Her Farzla Bir Kaza',
@@ -258,6 +278,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
     {
         id: 'camide-kilacagim',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Camiye Zamanında Yetişin',
@@ -279,6 +300,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
     {
         id: 'yatis-hatirlatmasi',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Yatmadan Önce Hatırlatma',
@@ -298,6 +320,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Muhafız bildiriminde "Ertele" (issue #289) — kart kapalı (yalnız "Neler Yeni").
     {
         id: 'muhafiz-ertele',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Hatırlatmayı Erteleyin',
@@ -313,6 +336,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Siri, Kısayollar ve Odak filtresi (issue #279) — yalnız iPhone; kart kapalı.
     {
         id: 'ios-siri-kisayollar-odak',
+        platformlar: ['ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: "iPhone'da Siri, Kısayollar ve Odak",
@@ -332,6 +356,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Nafile hatırlatmalarında kanal seçimi ve çok adımlı plan (issue #273).
     {
         id: 'nafile-kanal-ve-adimlar',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Nafile Hatırlatmaları Yenilendi',
@@ -353,6 +378,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Now Bar öğe seçimi + saat (issue #282 ikinci aşama) — yalnız Android; kart kapalı.
     {
         id: 'now-bar-secimi',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: "Now Bar'da Ne Görüneceğini Siz Seçin",
@@ -374,6 +400,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Bildirim sınırı rehberi (issue #298).
     {
         id: 'bildirim-siniri-rehberi',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Bildirim Sınırı Rehberi',
@@ -396,6 +423,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Android; kart kapalı (yalnız "Neler Yeni" listesi).
     {
         id: 'kildim-guven-listesi',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: '"Kıldım" Artık Anında Susturur',
@@ -418,6 +446,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // ilgilendirdiği için kart kapalı (yalnız "Neler Yeni" listesi).
     {
         id: 'sayac-canli-guncelleme',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Sayaçlarınız Durum Çubuğunda ve Now Bar\'da',
@@ -439,6 +468,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Namaz muhafızı: vakit başına 1–6 hatırlatma + ayrı ton (issue #274).
     {
         id: 'muhafiz-hatirlatma-sayisi',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Muhafızda İstediğiniz Kadar Hatırlatma',
@@ -461,6 +491,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Saatte tesbihat sayacı (issue #293) — yalnız saat sahipleri; kart kapalı.
     {
         id: 'wear-tesbihat',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Saatinizde Tesbihat Sayacı',
@@ -481,6 +512,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // kart kapalı (yalnız "Neler Yeni" listesi).
     {
         id: 'wear-kadran-yuzeyleri',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Saat Kadranınızda Namaz Akışı',
@@ -501,6 +533,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Android; kart iOS'ta da görüneceği için kapalı.
     {
         id: 'camideyim-harita',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Camideyim: Harita ve "Camide misiniz?"',
@@ -524,6 +557,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // görüneceği için kapalı (yalnız "Neler Yeni" listesi).
     {
         id: 'camideyim',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Camideyim: Camiye Girince Telefonunuz Anlar',
@@ -545,6 +579,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'namaz-modu',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Telefonunuza "Namaz" Modu',
@@ -567,6 +602,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // yalnız "Neler Yeni" listesinde görünür.
     {
         id: 'ozel-gun-hatirlatma-sessizligi',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Özel Günlerde Hatırlatmalar Durur',
@@ -586,6 +622,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'katlanabilir-tablet-duzeni',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Katlanabilir ve Tablet Ekranlara Uygun Düzen',
@@ -605,6 +642,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     // Masaüstü postürü + Flex Window widget'ı (issue #283, ikinci aşama).
     {
         id: 'katlanabilir-masaustu-posturu',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Yarı Açık Katlanabilirde Büyük Geri Sayım',
@@ -622,6 +660,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'widget-2-hizli-ayarlar',
+        platformlar: ['android'],
         surum: '0.31.0',
         tarih: '2026-10-13',
         baslik: 'Yeni Widget ve Tek Dokunuşla "Kıldım"',
@@ -640,6 +679,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'nafile-namaz-vakitleri',
+        platformlar: ['android', 'ios'],
         surum: '0.31.0',
         tarih: '2026-10-12',
         baslik: 'Nafile Namaz Vakitleri',
@@ -661,6 +701,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'konum-degisim-bildirimi',
+        platformlar: ['android'],
         surum: '0.30.0',
         tarih: '2026-09-29',
         baslik: 'Konumunuz Değişince Haber Veriyoruz',
@@ -681,6 +722,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'gunluk-akis-zinciri',
+        platformlar: ['android', 'ios'],
         surum: '0.29.0',
         tarih: '2026-09-29',
         baslik: 'Vakit Saatleri Ana Ekranda',
@@ -699,6 +741,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-giris-yonu',
+        platformlar: ['android', 'ios'],
         surum: '0.25.0',
         tarih: '2026-08-28',
         baslik: 'Vakit Girer Girmez Hatırlatma',
@@ -719,6 +762,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-dinamik-esik',
+        platformlar: ['android', 'ios'],
         surum: '0.25.0',
         tarih: '2026-08-28',
         baslik: 'Uzun Vakitlerde Daha Geniş Aralık',
@@ -739,6 +783,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'cuma-periyodik-hatirlatma',
+        platformlar: ['android', 'ios'],
         surum: '0.25.0',
         tarih: '2026-08-28',
         baslik: 'Cuma Hatırlatması Tekrarlayabilir',
@@ -759,6 +804,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'seri-gun-sonu-sayaci',
+        platformlar: ['android'],
         surum: '0.25.0',
         tarih: '2026-08-28',
         baslik: 'Serinizi Kurtaracak Geri Sayım',
@@ -779,6 +825,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-titresim-kanali',
+        platformlar: ['android'],
         surum: '0.25.0',
         tarih: '2026-08-28',
         baslik: 'Hatırlatmalar Artık Titreşebilir',
@@ -799,6 +846,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'konumu-tek-dokunusla-yenile',
+        platformlar: ['android', 'ios'],
         surum: '0.25.0',
         tarih: '2026-08-27',
         baslik: 'Konumunuzu Tek Dokunuşla Yenileyin',
@@ -819,6 +867,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'toparlanma-iki-gun',
+        platformlar: ['android', 'ios'],
         surum: '0.25.0',
         tarih: '2026-08-27',
         baslik: 'Serinizi Artık 2 Günde Kurtarabilirsiniz',
@@ -837,6 +886,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'cuma-namazi-hatirlatmasi',
+        platformlar: ['android', 'ios'],
         surum: '0.24.0',
         tarih: '2026-07-28',
         baslik: 'Cuma Namazı Hatırlatması',
@@ -858,6 +908,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-adim-ac-kapa',
+        platformlar: ['android', 'ios'],
         surum: '0.24.0',
         tarih: '2026-07-28',
         baslik: 'Hatırlatma Adımlarını Tek Dokunuşla Kapatın',
@@ -878,6 +929,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-bildirim-sesi-secimi',
+        platformlar: ['android'],
         surum: '0.24.0',
         tarih: '2026-07-18',
         baslik: 'Hatırlatma Sesini Kendiniz Seçin',
@@ -899,6 +951,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'muhafiz-vakit-seviye-sesli-anons',
+        platformlar: ['android', 'ios'],
         surum: '0.24.0',
         tarih: '2026-07-18',
         baslik: 'Vakte Özel Hatırlatma ve Sesli Anons',
@@ -921,6 +974,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'yerel-yedekleme',
+        platformlar: ['android', 'ios'],
         surum: '0.24.0',
         tarih: '2026-06-14',
         baslik: 'Yedekleme & Aktarım',
@@ -940,6 +994,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'takvim-entegrasyonu',
+        platformlar: ['android', 'ios'],
         surum: '0.22.0',
         tarih: '2026-06-05',
         baslik: 'Namaz Vakitleri Artık Takviminizde',
@@ -959,6 +1014,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     },
     {
         id: 'ana-ekran-widgetlari',
+        platformlar: ['android'],
         surum: '0.21.0',
         tarih: '2026-05-20',
         baslik: 'Ana Ekran Widget’ları',
