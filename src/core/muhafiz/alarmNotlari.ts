@@ -41,8 +41,12 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined): AlarmNotu[] {
             return [
                 {
                     tip: 'bilgi',
+                    // Üç sessiz sapma da SÖYLENİR: (1) ses AlarmKit'in varsayılan alarm
+                    // sesidir, seçilen ses yok sayılır; (2) "Kıldım" kilit açtırır (Android
+                    // M4 ikizi); (3) Odak filtresi PLANLAMA anında okunur — sonradan açılan
+                    // Odak kurulu alarmı susturmaz, ancak bir sonraki planlama turu kaldırır.
                     metin:
-                        "İlk hatırlatma iPhone'unuzun alarmı olarak çalar; sessiz anahtarı ve Odak açıkken de duyulur. Alarm ekranında durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme \"Kıldım\" olur.",
+                        "İlk hatırlatma iPhone'unuzun alarmı olarak, iPhone'un varsayılan alarm sesiyle çalar (bu adım için seçtiğiniz ses kullanılmaz); sessiz anahtarı ve Odak açıkken de duyulur. Alarm ekranında durdurabilir ya da 10 dakika erteleyebilirsiniz; vaktin çıkmasına az kaldıysa ikinci düğme \"Kıldım\" olur ve kilit açıkken işaretler. Uygulamanın Odak filtresiyle hatırlatmaları sessize aldıysanız alarm kurulmaz; ancak filtreyi alarm kurulduktan sonra açarsanız o alarm, plan yenilenene kadar yine çalar.",
                 },
             ];
         case 'belirsiz':

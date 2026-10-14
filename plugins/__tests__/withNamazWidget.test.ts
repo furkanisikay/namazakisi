@@ -78,6 +78,22 @@ describe('withNamazWidget — EAS uzantı bildirimi', () => {
   });
 });
 
+describe('withNamazWidget — uzantı kaynakları', () => {
+  it('AlarmKit meta veri tipi uzantıya da kopyalanır (alarmın canlı etkinlik sunumu, issue #74)', () => {
+    const fs = require('fs');
+    const os = require('os');
+    const dizin = fs.mkdtempSync(path.join(os.tmpdir(), 'namaz-widget-'));
+    try {
+      const adlar: string[] = eklenti.uzantiDosyalariniYaz(dizin, '1.0.0', '1');
+      expect(adlar).toContain('NamazAlarmVerisi.swift');
+      expect(adlar).toContain('AlarmCanliEtkinlikWidget.swift');
+      expect(fs.existsSync(path.join(dizin, 'NamazWidget', 'NamazAlarmVerisi.swift'))).toBe(true);
+    } finally {
+      fs.rmSync(dizin, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('withNamazWidget — Xcode hedefi (Expo şablonu üzerinde)', () => {
   const kur = () => {
     const proje = sablonProjesi();
@@ -101,6 +117,8 @@ describe('withNamazWidget — Xcode hedefi (Expo şablonu üzerinde)', () => {
       expect(a.APPLICATION_EXTENSION_API_ONLY).toBe('YES');
       expect(String(a.SWIFT_ACTIVE_COMPILATION_CONDITIONS)).toContain('NAMAZ_WIDGET_UZANTISI');
       expect(a.CODE_SIGN_ENTITLEMENTS).toBe('"NamazWidget/NamazWidget.entitlements"');
+      // AlarmKit (iOS 26) 16.2 hedefli uzantıda ZAYIF bağlanır (eski sistemde yüklenebilsin).
+      expect(String(a.OTHER_LDFLAGS)).toContain('-weak_framework AlarmKit');
     }
     const kaynakFazi = proje.hash.project.objects.PBXSourcesBuildPhase[hedef.buildPhases[0].value];
     expect(kaynakFazi.files.map((f: { comment: string }) => f.comment)).toEqual([

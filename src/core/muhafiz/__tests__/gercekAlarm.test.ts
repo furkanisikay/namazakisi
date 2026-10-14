@@ -232,7 +232,7 @@ describe('alarm notları — sessiz sapma yok', () => {
         ['desteklenmiyor', 'bilgi', undefined, 'iOS 26'],
         ['belirsiz', 'bilgi', 'alarmIzni', 'izin'],
         ['reddedildi', 'uyari', 'ayarlar', 'Ayarlar'],
-        ['izinli', 'bilgi', undefined, 'alarmı olarak çalar'],
+        ['izinli', 'bilgi', undefined, 'alarmı olarak'],
     ] as const)('iOS AlarmKit %s → tek satır (%s, eylem %s)', (alarmKit, tip, eylem, parca) => {
         const n = alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null, alarmKit });
         expect(n).toHaveLength(1);
@@ -240,6 +240,14 @@ describe('alarm notları — sessiz sapma yok', () => {
         expect(n[0].eylem).toBe(eylem);
         expect(n[0].metin).toContain(parca);
         expect(n[0].metin).not.toMatch(/\b(sen|senin)\b/i);
+    });
+    test('iOS izinli: varsayılan alarm sesi, kilitli "Kıldım" ve sonradan açılan Odak SÖYLENİR (sessiz sapma yok)', () => {
+        const [not] = alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null, alarmKit: 'izinli' });
+        expect(not.metin).toContain('varsayılan alarm sesiyle');
+        expect(not.metin).toContain('seçtiğiniz ses kullanılmaz');
+        expect(not.metin).toContain('kilit açıkken');
+        expect(not.metin).toContain('Odak filtresi');
+        expect(not.metin).toContain('plan yenilenene kadar');
     });
     test('Android: izinler bilinmiyorsa (null) uyarı YOK', () => {
         expect(alarmNotlariniOlustur({ platform: 'android', tamEkran: null, tamAlarm: null })).toEqual([]);

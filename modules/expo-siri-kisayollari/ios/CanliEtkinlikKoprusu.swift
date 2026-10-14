@@ -31,10 +31,13 @@ public enum CanliEtkinlikKoprusu {
     }
 
     /// Bu build canli etkinlik tasiyor mu? Widget uzantisi (bayrak) kapaliysa
-    /// `NSSupportsLiveActivities` yazilmaz → `false` (JS ekrani gostermez).
+    /// `NamazAkisiCanliEtkinlikUzantisi` yazilmaz → `false` (JS ekrani gostermez).
+    /// `NSSupportsLiveActivities` ARTIK SINYAL DEGIL: AlarmKit (issue #74) icin uzantidan
+    /// bagimsiz yazilir (`plugins/withMuhafizAlarmKit.js`); ona bakilsaydi uzantisiz build
+    /// cizecek gorunumu olmayan etkinlik baslatirdi.
     public static var destekleniyor: Bool {
         guard #available(iOS 16.2, *) else { return false }
-        return (Bundle.main.object(forInfoDictionaryKey: "NSSupportsLiveActivities") as? Bool) == true
+        return (Bundle.main.object(forInfoDictionaryKey: "NamazAkisiCanliEtkinlikUzantisi") as? Bool) == true
     }
 
     /// Kullanici Ayarlar > Namaz Akışı > Canli Etkinlikler'i kapatmis olabilir.

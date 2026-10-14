@@ -13,6 +13,13 @@
  *  - `NSAlarmKitUsageDescription` Info.plist'e yazılır (anahtar yoksa AlarmKit HİÇ alarm
  *    kurmaz). app.json'daki `ios.infoPlist` bloğuna değil buraya konması bilinçli: aynı
  *    blok başka eklentilerce de genişletiliyor; değer zaten varsa EZİLMEZ.
+ *  - `NSSupportsLiveActivities = true` KOŞULSUZ yazılır (yoksa): AlarmKit alarmı telefon
+ *    kullanılırken Dinamik Ada / kilit ekranında bir canlı etkinlik olarak sunulur
+ *    (ActivityKit). Widget uzantısından BAĞIMSIZDIR — uzantı bayrağı kapalı build'de de
+ *    gerçek alarm kurulur. "Bu build canlı etkinlik ÇİZER mi?" sinyali artık bu anahtar
+ *    DEĞİL, `withNamazWidget`'ın yazdığı `NamazAkisiCanliEtkinlikUzantisi`dir
+ *    (`CanliEtkinlikKoprusu.destekleniyor`); aksi halde uzantısız build görünümü
+ *    olmayan etkinlik başlatırdı.
  */
 const fs = require('fs');
 const path = require('path');
@@ -66,13 +73,22 @@ function cerceveleriZayifBagla(proje, projeAdi) {
   }
 }
 
+/** Info.plist'e AlarmKit'in istediği anahtarları yazar; var olan değeri EZMEZ (saf, test edilir). */
+function infoPlistiDuzenle(plist) {
+  if (!plist.NSAlarmKitUsageDescription) {
+    plist.NSAlarmKitUsageDescription = ALARMKIT_ACIKLAMASI;
+  }
+  if (plist.NSSupportsLiveActivities === undefined) {
+    plist.NSSupportsLiveActivities = true;
+  }
+  return plist;
+}
+
 function withMuhafizAlarmKit(config) {
   if (!eklentiApi) return config;
   const { withInfoPlist, withXcodeProject } = eklentiApi;
   config = withInfoPlist(config, (mod) => {
-    if (!mod.modResults.NSAlarmKitUsageDescription) {
-      mod.modResults.NSAlarmKitUsageDescription = ALARMKIT_ACIKLAMASI;
-    }
+    mod.modResults = infoPlistiDuzenle(mod.modResults);
     return mod;
   });
   return withXcodeProject(config, (mod) => {
@@ -85,3 +101,4 @@ function withMuhafizAlarmKit(config) {
 
 module.exports = withMuhafizAlarmKit;
 module.exports.ALARMKIT_ACIKLAMASI = ALARMKIT_ACIKLAMASI;
+module.exports.infoPlistiDuzenle = infoPlistiDuzenle;
