@@ -2,6 +2,7 @@ package com.furkanisikay.namazakisi.cekirdek
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -57,6 +58,20 @@ class KilitEkraniKarariTest {
         assertEquals(
             "İkindi namazı kılındı. Uygulamayı açın",
             KilitEkraniKarari.erisimMetni("İkindi", KildimDurumu.KILINDI, kilitEkrani = true),
+        )
+    }
+
+    /** Flex Window'da dokunuş uygulamayı açamayabilir → kılınabilir vakitte yol ekranda yazar. */
+    @Test
+    fun kapakIpucuYalnizKapaktaVeKilinabilirken() {
+        assertEquals(KilitEkraniKarari.KAPAK_IPUCU, KilitEkraniKarari.kapakIpucu(true, KildimDurumu.KILINABILIR))
+        assertNull(KilitEkraniKarari.kapakIpucu(false, KildimDurumu.KILINABILIR))
+        assertNull(KilitEkraniKarari.kapakIpucu(true, KildimDurumu.KILINDI))
+        assertNull(KilitEkraniKarari.kapakIpucu(true, KildimDurumu.BEKLIYOR))
+        assertNull(KilitEkraniKarari.kapakIpucu(true, KildimDurumu.YOK))
+        assertEquals(
+            "İkindi namazı kılınmadı. İşaretlemek için telefonunuzu açın",
+            KilitEkraniKarari.erisimMetni("İkindi", KildimDurumu.KILINABILIR, kilitEkrani = true, kapakEkrani = true),
         )
     }
 
