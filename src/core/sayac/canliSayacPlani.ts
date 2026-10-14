@@ -257,12 +257,12 @@ export function nowBarAdaylariniOlustur(g: NowBarAdayGirdisi): CanliAday[] {
 // Zaman çizelgesi (tek öne çıkan kuralı)
 // ---------------------------------------------------------------------------
 
-interface EtkinAday {
+export interface EtkinAday {
   aday: CanliAday;
   bas: number;
 }
 
-const kazananSirasi = (a: EtkinAday, b: EtkinAday): number =>
+export const kazananSirasi = (a: EtkinAday, b: EtkinAday): number =>
   NOW_BAR_ONCELIK[a.aday.oge] - NOW_BAR_ONCELIK[b.aday.oge] ||
   a.aday.hedefMs - b.aday.hedefMs ||
   (a.aday.id < b.aday.id ? -1 : a.aday.id > b.aday.id ? 1 : 0);

@@ -31,6 +31,10 @@ interface SiriNativeModule {
     basarisiz(id: string): Promise<void>;
     odakDurumuAl(): Promise<string | null>;
     ekranIstegiAl(): Promise<string | null>;
+    /** #295 — eski ikilide yok (opsiyonel). */
+    canliEtkinlikDestekli?(): boolean;
+    canliEtkinlikIzniAcik?(): Promise<boolean>;
+    canliEtkinlikEsitle?(json: string | null): Promise<string>;
     addListener(olay: 'onSiriDegisikligi', dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
 
@@ -99,5 +103,61 @@ export function siriDegisikliginiDinle(dinleyici: (tur: SiriDegisiklikTuru) => v
         return () => abonelik.remove();
     } catch {
         return () => undefined;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Canlı etkinlik (Live Activity — Dinamik Ada / kilit ekranı, issue #295)
+// ---------------------------------------------------------------------------
+
+/** Native'e giden istenen etkinlik (Swift `CanliEtkinlikKoprusu.Istek` ile aynı alanlar). */
+export interface CanliEtkinlikIstegi {
+    id: string;
+    baslik: string;
+    ad: string;
+    baslangicMs: number;
+    hedefMs: number;
+    tema: string;
+    kildimTarih: string | null;
+    kildimVakit: string | null;
+}
+
+/**
+ * Bu build canlı etkinlik taşıyor mu? Widget uzantısı (app.json bayrağı) kapalıysa ya da
+ * iOS < 16.2 / eski ikili ise `false` → ekran ve servis hiçbir şey yapmaz.
+ */
+export function canliEtkinlikDestekli(): boolean {
+    const m = modul();
+    if (!m || typeof m.canliEtkinlikDestekli !== 'function') return false;
+    try {
+        return m.canliEtkinlikDestekli() === true;
+    } catch {
+        return false;
+    }
+}
+
+/** Kullanıcı sistem ayarlarından canlı etkinlikleri kapatmış mı? Bilinmiyorsa `null`. */
+export async function canliEtkinlikIzniAcik(): Promise<boolean | null> {
+    const m = modul();
+    if (!m || typeof m.canliEtkinlikIzniAcik !== 'function') return null;
+    try {
+        return await m.canliEtkinlikIzniAcik();
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Mevcut canlı etkinlikleri istenene eşitler (`null` = hiçbiri). Sonuç kodu:
+ * `baslatildi` | `guncellendi` | `ayni` | `bitirildi` | `yok` | `izinYok` |
+ * `desteklenmiyor` | `hata`. ASLA fırlatmaz.
+ */
+export async function canliEtkinlikEsitle(istek: CanliEtkinlikIstegi | null): Promise<string> {
+    const m = modul();
+    if (!m || typeof m.canliEtkinlikEsitle !== 'function') return 'desteklenmiyor';
+    try {
+        return await m.canliEtkinlikEsitle(istek ? JSON.stringify(istek) : null);
+    } catch {
+        return 'hata';
     }
 }

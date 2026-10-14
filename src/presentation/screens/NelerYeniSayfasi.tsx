@@ -17,6 +17,7 @@ import { useRenkler } from '../../core/theme';
 import { useAppDispatch } from '../store/hooks';
 import { ozellikGorulduIsaretle } from '../store/ozelliklerSlice';
 import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { yeniOzellikGorunurMu } from '../hooks/yeniOzellikYetenegi';
 import { useFeedback } from '../../core/feedback';
 
 // Android'de LayoutAnimation'ı etkinleştir (eski mimari güvencesi)
@@ -148,7 +149,7 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
 
     // Kronolojik (en yeni üstte)
     const siraliOzellikler = useMemo(
-        () => [...YENI_OZELLIKLER].sort((a, b) => b.tarih.localeCompare(a.tarih)),
+        () => YENI_OZELLIKLER.filter(yeniOzellikGorunurMu).sort((a, b) => b.tarih.localeCompare(a.tarih)),
         []
     );
 

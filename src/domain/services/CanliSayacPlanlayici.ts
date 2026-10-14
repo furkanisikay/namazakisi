@@ -18,6 +18,13 @@
  * STORE'SUZ: arka plan görevinde Redux yoktur; her şey ham AsyncStorage'dan.
  * Saate (Wear OS) giden pay da burada üretilir ve diske yazılır;
  * `WearSenkronServisi` onu okuyup yüke koyar (`canliSaatGozlemcisi` haber verir).
+ *
+ * iOS (#295): aynı seçim CANLI ETKİNLİK (Live Activity) olarak gösterilir. iOS'ta
+ * zamanlanmış başlatma yoktur → plan yerine "şu an hangisi?" (`iosCanliEtkinlikSec`)
+ * hesaplanır ve köprü mevcut etkinliği ona eşitler. Tetikler: açılış + her ön plana
+ * geliş (`App.tsx`), kılınmışlık değişimi (`iosBaslat`), Now Bar seçimi
+ * (`nowBarDegistiUygula`). Widget uzantısı bayrağı kapalı build'de köprü
+ * "desteklenmiyor" der ve hiçbir şey yapılmaz.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,10 +46,20 @@ import {
 import { nowBarVaktiMi, type NowBarAyarlari, type NowBarOgesi, type NowBarVakti } from '../../core/sayac/nowBar';
 import type { VakitAdi } from '../../core/types';
 import { LocalNowBarServisi } from '../../data/local/LocalNowBarServisi';
-import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import {
+  kayitDegistiDinleyicisiEkle,
+  kilinanVakitleriAl,
+  localTarihAraligindakiNamazlariGetir,
+} from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { canliDurumu, canliPlaniKur, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
 import { canliSaatPayiDegisti } from './canliSaatGozlemcisi';
+import { iosCanliEtkinlikSec } from '../../core/sayac/iosCanliEtkinlik';
+import { widgetKilinanlariOlustur, widgetKoduVakitAdina } from '../../core/widget/widgetYuku';
+import { canliEtkinlikDestekli, canliEtkinlikEsitle } from '../../../modules/expo-siri-kisayollari/src';
+
+/** `LocalNamazServisi` dinleyici yuvası (iOS canlı etkinlik). */
+export const CANLI_ETKINLIK_DINLEYICI_ADI = 'canliEtkinlik';
 
 export type CanliSayacKaynagi = 'vakitSayac' | 'iftarSayac' | 'sahurSayac' | 'seriSayac';
 
@@ -123,8 +140,65 @@ export class CanliSayacPlanlayici {
 
   /** Ayar değişti / konum değişti / arka plan turu: planı baştan kur. */
   public yenidenPlanla(): Promise<void> {
+    if (Platform.OS === 'ios') return this.sirala(() => this.iosEsitle());
     if (Platform.OS !== 'android') return Promise.resolve();
     return this.sirala(() => this.planla());
+  }
+
+  /**
+   * iOS (#295): kılınmışlık değişince canlı etkinlik tazelensin ("Kıldım" denen vaktin
+   * etkinliği kapanır). İdempotent (adlı yuva). Destek yoksa kurulmaz.
+   */
+  public iosBaslat(): void {
+    if (Platform.OS !== 'ios' || !canliEtkinlikDestekli()) return;
+    kayitDegistiDinleyicisiEkle(CANLI_ETKINLIK_DINLEYICI_ADI, () => {
+      this.yenidenPlanla().catch(() => undefined);
+    });
+  }
+
+  /** iOS: şu an görünmesi gereken TEK canlı etkinliği hesaplar ve köprüye eşitletir. */
+  private async iosEsitle(): Promise<void> {
+    if (!canliEtkinlikDestekli()) return;
+    const simdi = Date.now();
+    const [ayarlar, koordinat, ozelGundeMi] = await Promise.all([
+      LocalNowBarServisi.getAyarlar(),
+      this.koordinatOku(),
+      ozelGunSuzgeciniOku(),
+    ]);
+    const bugun = bugunuAl();
+    const dun = gunEkle(bugun, -1);
+    // Kılınmışlık = muhafız diski ∪ namaz kaydı: kayıt dinleyicisi muhafız diski
+    // yazılmadan önce tetiklenebilir; kayıt tek başına da yeterli olmalı.
+    const kilinan: Record<string, Set<string>> = { [dun]: new Set(), [bugun]: new Set() };
+    for (const t of [dun, bugun]) {
+      for (const v of await kilinanVakitleriAl(t).catch(() => [] as VakitAdi[])) kilinan[t].add(v);
+    }
+    const kayit = await localTarihAraligindakiNamazlariGetir(dun, bugun).catch(() => null);
+    if (kayit?.basarili && kayit.veri) {
+      for (const [tarih, kodlar] of Object.entries(widgetKilinanlariOlustur(kayit.veri))) {
+        for (const kod of kodlar) {
+          const ad = widgetKoduVakitAdina(kod);
+          if (ad) (kilinan[tarih] ??= new Set()).add(ad);
+        }
+      }
+    }
+    const gunler: PlanGunu[] = koordinat
+      ? [-1, 0, 1, 2].map((ofset) => {
+          const tarih = gunEkle(bugun, ofset);
+          return { tarih, vakitler: gunVakitleriniHesapla(koordinat, tarih) };
+        })
+      : [];
+    const istek = gunler.length
+      ? iosCanliEtkinlikSec({
+          ayarlar,
+          simdiMs: simdi,
+          gunler,
+          kilinmisMi: (tarih, vakit) => kilinan[tarih]?.has(vakit) ?? false,
+          ozelGundeMi,
+        })
+      : null;
+    const sonuc = await canliEtkinlikEsitle(istek);
+    Logger.info('CanliSayac', `iOS canli etkinlik: ${sonuc}${istek ? ` (${istek.id})` : ''}`);
   }
 
   private sirala(is: () => Promise<void>): Promise<void> {
@@ -224,7 +298,7 @@ export class CanliSayacPlanlayici {
   }
 
   /** Konum anahtarı birincil, eski kayıtlar için muhafız blob'u yedek (`arkaplandaKoordinatOku` ile aynı). */
-  private async koordinatOku(): Promise<{ lat: number; lng: number } | null> {
+  public async koordinatOku(): Promise<{ lat: number; lng: number } | null> {
     for (const anahtar of [DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI, DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI]) {
       try {
         const ham = await AsyncStorage.getItem(anahtar);

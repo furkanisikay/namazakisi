@@ -58,6 +58,12 @@
       "./plugins/withSiriKisayollari",
       "./plugins/withMuhafizAlarmKit",
       [
+        "./plugins/withNamazWidget",
+        {
+          "etkin": false
+        }
+      ],
+      [
         "expo-audio",
         {
           "microphonePermission": false,

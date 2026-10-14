@@ -10,7 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer, useNavigationContainerRef, type NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Text, StyleSheet, View } from 'react-native';
+import { Platform, Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -109,7 +109,11 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   Hakkinda: { component: HakkindaSayfasi, options: { title: 'Hakkında' } },
   RamazanAyarlari: { component: RamazanAyarlariSayfasi, options: { title: 'Ramazan Özel' } },
   NafileAyarlari: { component: NafileAyarlariSayfasi, options: { title: 'Nafile Namazlar' } },
-  NowBarAyarlari: { component: NowBarAyarlariSayfasi, options: { title: 'Now Bar ve Canlı Sayaçlar' } },
+  // iOS (#295): ayni secim canli etkinlik (Dinamik Ada / kilit ekrani) olarak calisir.
+  NowBarAyarlari: {
+    component: NowBarAyarlariSayfasi,
+    options: { title: Platform.OS === 'ios' ? 'Canlı Etkinlikler' : 'Now Bar ve Canlı Sayaçlar' },
+  },
   CamideyimAyarlari: { component: CamideyimAyarlariSayfasi, options: { title: 'Camideyim' } },
   NamazModuAyarlari: { component: NamazModuAyarlariSayfasi, options: { title: 'Namaz Modu' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },

@@ -14,6 +14,12 @@
  *   - `detayAciklama` + `detaylar` ile tıklayınca açılan detayda tam resmi verin.
  */
 
+/**
+ * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
+ * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
+ */
+export type YeniOzellikYetenegi = 'iosWidget';
+
 export interface YeniOzellik {
     /** Benzersiz kimlik (kalıcı; değiştirme) */
     id: string;
@@ -37,6 +43,8 @@ export interface YeniOzellik {
     kartGoster?: boolean;
     /** Açılınca gösterilen madde madde detaylar */
     detaylar?: string[];
+    /** Verilirse duyuru yalnız bu yetenek varken görünür (ör. iPhone widget'ı). */
+    yetenek?: YeniOzellikYetenegi;
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
@@ -59,6 +67,28 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Alarmı durdurmak namazı kılındı saymaz; "Kıldım" düğmesi ya da uygulama işaretler',
             'Odak filtresinde "Hatırlatmaları sessiz ver" açıksa alarm çalmaz, bildirim sessiz gelir',
             'İzni sonradan Ayarlar > Namaz Akışı bölümünden açıp kapatabilirsiniz',
+        ],
+    },
+    // iOS widget'ları + canlı etkinlik (issue #295, #282 iOS ikizi) — yalnız uzantıyı
+    // taşıyan iOS build'inde görünür (widget bayrağı kapalıyken duyuru da yok).
+    {
+        id: 'ios-widget-canli-etkinlik',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'iPhone\'da Kilit Ekranı ve Dinamik Ada',
+        aciklama:
+            'Vakti ve çıkışına kalan süreyi kilit ekranına, StandBy\'a ve ana ekrana widget olarak ekleyebilirsiniz; vakit çıkarken geri sayım Dinamik Ada\'da görünür.',
+        detayAciklama:
+            'Kilit ekranını düzenleyip "Namaz Akışı"nı seçerek içinde bulunulan vakti, kalan süreyi ve çıkış saatini görebilirsiniz. Ana ekrandaki widget günün beş vaktini gösterir ve "Kıldım" düğmesiyle vakti uygulamayı açmadan işaretlemenizi sağlar. Canlı etkinlik için hangi geri sayımın ne zaman başlayacağını Ayarlar\'dan seçebilirsiniz.',
+        ikon: 'mobile-alt',
+        hedefSayfa: 'NowBarAyarlari',
+        ctaEtiketi: 'İnceleyin',
+        kartGoster: true,
+        yetenek: 'iosWidget',
+        detaylar: [
+            'Kilit ekranı ve StandBy yalnız gösterir; işaretleme ana ekranda ve canlı etkinlikte yapılır',
+            'Canlı etkinlik uygulama açıkken başlar, sonra uygulamayı kapatsanız da sürer',
+            'Geri sayımı telefonunuz çizer; widget pil tüketmek için sürekli yenilenmez',
         ],
     },
     // Takvim çakışması uyarısı (issue #291) — varsayılan kapalı, açık rıza ile açılır.

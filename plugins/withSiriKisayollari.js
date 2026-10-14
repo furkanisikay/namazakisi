@@ -15,7 +15,8 @@
  *    etkilesimsiz (`--non-interactive`) iOS build'i bunlari Apple oturumu olmadan
  *    uretemez → yayin hatti kirilirdi.
  *  - Ana hedefte intent'ler ve JS koprusu (`modules/expo-siri-kisayollari`) AYNI
- *    surecte calisir, ayni `UserDefaults`'u paylasir; App Group gerekmez.
+ *    surecte calisir, ayni depoyu paylasir. Widget uzantisi (#295) AYRI bir surectir;
+ *    App Group'u ve uzanti hedefini `plugins/withNamazWidget.js` kurar (bayrakli).
  *  SDK yukseltmesinden sonra `expo-app-intents`'e gecis degerlendirilmeli (AGENTS.md).
  *
  * Ayrica:

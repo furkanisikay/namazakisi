@@ -12,6 +12,10 @@ Pod::Spec.new do |s|
 
   s.dependency 'ExpoModulesCore'
 
+  # Canli etkinlik (#295): ActivityKit iOS 16.1'dedir, dagitim hedefi 15.1 → ZAYIF bag.
+  # Guclu bag (Swift otomatik baglama) iOS 15'te acilista "Library not loaded" ile cokertirdi.
+  s.weak_frameworks = 'ActivityKit', 'WidgetKit'
+
   # Swift/Objective-C uyumluluk bayraklari (expo-module-scripts sablonu).
   # DEFINES_MODULE: ana uygulama hedefindeki App Intents `import ExpoSiriKisayollari`
   # ile `SiriDeposu`'nu kullanir — modul haritasi olmadan bu import derlenmez.

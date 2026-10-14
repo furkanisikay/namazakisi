@@ -21,7 +21,7 @@
  */
 import * as React from 'react';
 import { useRef, useEffect, useState, useMemo } from 'react';
-import { Text, Animated, Easing, Linking } from 'react-native';
+import { Text, Animated, Easing, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -280,7 +280,7 @@ export const AyarlarSayfasi: React.FC = () => {
                     key="now-bar"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="stopwatch" size={20} color={ikonRengi} solid />}
-                    baslik="Now Bar ve canlı sayaçlar"
+                    baslik={Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Now Bar ve canlı sayaçlar'}
                     ozet={nowBar.ozet ?? ''}
                     yeniRozetGoster={sayfaOkunmamisMi('NowBarAyarlari')}
                     onPress={() => menuyeGit('NowBarAyarlari')}

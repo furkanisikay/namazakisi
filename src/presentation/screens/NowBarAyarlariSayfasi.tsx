@@ -1,5 +1,6 @@
 /**
- * Now Bar ve canlı sayaçlar (issue #282 ikinci aşama) — yalnız Android.
+ * Now Bar ve canlı sayaçlar (issue #282 ikinci aşama) — Android; iOS'ta aynı seçim
+ * CANLI ETKİNLİK (Dinamik Ada / kilit ekranı, #295) olarak çalışır.
  *
  * Kullanıcı Android 16 Live Update'te (durum çubuğu çipi, One UI 8 Now Bar)
  * neyin görüneceğini öğe öğe açar ve her öğenin ne zaman başlayacağını seçer.
@@ -15,7 +16,7 @@
  */
 import * as React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { AppState, Linking, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -37,6 +38,13 @@ import {
   canliDurumu,
   type CanliDurum,
 } from '../../../modules/expo-countdown-notification/src';
+import { canliEtkinlikIzniAcik } from '../../../modules/expo-siri-kisayollari/src';
+import {
+  IOS_CANLI_AZAMI_SURE_MS,
+  iosBaslangicSecenekleri,
+  iosCanliOgesiMi,
+  iosEtkinBaslangic,
+} from '../../core/sayac/iosCanliEtkinlik';
 
 const GRUPLAR: { baslik: string; ogeler: NowBarOgesi[] }[] = [
   { baslik: 'VAKİTLER', ogeler: ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] },
@@ -48,11 +56,17 @@ const GRUPLAR: { baslik: string; ogeler: NowBarOgesi[] }[] = [
 /** Değişiklikleri tek yeniden planlamada birleştirme süresi. */
 const PLAN_GECIKMESI_MS = 1200;
 
+/** iOS (#295): canlı etkinlik izni → aynı üç durum (bilinmiyor = desteklenmiyor). */
+const iosDurumuOku = async (): Promise<CanliDurum> => {
+  const izin = await canliEtkinlikIzniAcik();
+  return izin === true ? 'acik' : izin === false ? 'kapali' : 'desteklenmiyor';
+};
+
 /** Sistem öne çıkarma durumu; ayarlardan dönünce (AppState active) tazelenir. */
 function useCanliDurum(): [CanliDurum | null, () => void] {
   const [durum, setDurum] = useState<CanliDurum | null>(null);
   const oku = useCallback(() => {
-    canliDurumu()
+    (Platform.OS === 'ios' ? iosDurumuOku() : canliDurumu())
       .then(setDurum)
       .catch(() => setDurum('desteklenmiyor'));
   }, []);
@@ -85,6 +99,32 @@ const DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string; ik
     ikon: 'info-circle',
   },
 };
+
+/** iOS (#295): canlı etkinlik metinleri (iPhone'da "Now Bar" yoktur). */
+const IOS_DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string; ikon: string }> = {
+  acik: {
+    baslik: 'Canlı etkinlikler açık',
+    aciklama: 'Açtığınız öğeler zamanı gelince kilit ekranında ve Dinamik Ada\'da görünür.',
+    ikon: 'check-circle',
+  },
+  kapali: {
+    baslik: 'Canlı etkinlikler kapalı',
+    aciklama: 'iPhone ayarlarında bu uygulama için canlı etkinlikler kapalı. Açmak için ayarları kullanabilirsiniz.',
+    ikon: 'pause-circle',
+  },
+  desteklenmiyor: {
+    baslik: 'Bu iPhone\'da kullanılamıyor',
+    aciklama: 'Canlı etkinlikler iOS 16.2 ve üstünde çalışır.',
+    ikon: 'info-circle',
+  },
+};
+
+/** iOS'ta zamanlanmış başlatma yoktur (#295) — ekran bunu açıkça söyler (sessiz sapma yok). */
+export const IOS_CANLI_SINIR_NOTU = `Canlı etkinlik yalnız uygulama açıkken başlatılabilir: sıradaki geri sayım, uygulamayı açtığınızda başlar. Başladıktan sonra uygulamayı kapatsanız da kilit ekranında ve Dinamik Ada'da sürer. iPhone bir canlı etkinliği en fazla ${
+  IOS_CANLI_AZAMI_SURE_MS / 3_600_000
+} saat gösterir.`;
+
+const iosMu = (): boolean => Platform.OS === 'ios';
 
 export const NowBarAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
@@ -130,15 +170,21 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
   );
 
   const ayarlariAc = useCallback(() => {
-    canliAyarlariniAc()
+    // iOS: canlı etkinlik izni uygulamanın kendi ayar sayfasındadır (dönüşte AppState okur).
+    (iosMu() ? Linking.openSettings() : canliAyarlariniAc())
       .then(() => durumuOku())
       .catch(() => undefined);
   }, [durumuOku]);
+  const ios = iosMu();
+  const metinler = ios ? IOS_DURUM_METINLERI : DURUM_METINLERI;
+  const gruplar = ios
+    ? GRUPLAR.map((g) => ({ ...g, ogeler: g.ogeler.filter(iosCanliOgesiMi) })).filter((g) => g.ogeler.length > 0)
+    : GRUPLAR;
 
   const kartStili = { backgroundColor: renkler.kartArkaplan, borderRadius: 24 };
   const durumRengi =
     durum === 'acik' ? renkler.durum.basarili : durum === 'kapali' ? renkler.durum.dikkat : renkler.durum.bilgi;
-  const ilkAcik = GRUPLAR.flatMap((g) => g.ogeler).find((o) => ayarlar.ogeler[o].acik);
+  const ilkAcik = gruplar.flatMap((g) => g.ogeler).find((o) => ayarlar.ogeler[o].acik);
 
   return (
     <ScrollView
@@ -148,8 +194,9 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Text className="text-sm mb-5" style={{ color: renkler.metinIkincil }}>
-        Durum çubuğunda ve Now Bar'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri öne
-        çıkar: vakit çıkışı, iftar, sahur, cuma, nafile, seri sırasıyla.
+        {ios
+          ? 'Kilit ekranında ve Dinamik Ada\'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri görünür: vakit çıkışı, cuma, nafile sırasıyla.'
+          : 'Durum çubuğunda ve Now Bar\'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri öne çıkar: vakit çıkışı, iftar, sahur, cuma, nafile, seri sırasıyla.'}
       </Text>
 
       {/* Durum kartı + çip önizlemesi (imza öğesi) */}
@@ -159,15 +206,15 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
             className="w-10 h-10 rounded-full items-center justify-center mr-3"
             style={{ backgroundColor: `${durumRengi}20` }}
           >
-            <FontAwesome5 name={durum ? DURUM_METINLERI[durum].ikon : 'circle-notch'} size={17} color={durumRengi} solid />
+            <FontAwesome5 name={durum ? metinler[durum].ikon : 'circle-notch'} size={17} color={durumRengi} solid />
           </View>
           <View className="flex-1">
             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-              {durum ? DURUM_METINLERI[durum].baslik : 'Denetleniyor…'}
+              {durum ? metinler[durum].baslik : 'Denetleniyor…'}
             </Text>
             {durum && (
               <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                {DURUM_METINLERI[durum].aciklama}
+                {metinler[durum].aciklama}
               </Text>
             )}
           </View>
@@ -187,7 +234,7 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
           </View>
         )}
 
-        {durum !== 'acik' && durum !== null && (
+        {durum !== 'acik' && durum !== null && !(ios && durum === 'desteklenmiyor') && (
           <TouchableOpacity
             className="flex-row items-center justify-center mt-4 py-3 rounded-2xl border"
             style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir, minHeight: 44 }}
@@ -205,18 +252,18 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
         <View className="flex-row items-start mt-4 gap-2">
           <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
           <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }} testID="now-bar-politika">
-            {NOW_BAR_POLITIKA_UYARISI}
+            {ios ? IOS_CANLI_SINIR_NOTU : NOW_BAR_POLITIKA_UYARISI}
           </Text>
         </View>
       </View>
 
-      {GRUPLAR.map((grup) => (
+      {gruplar.map((grup) => (
         <View key={grup.baslik} className="mb-2">
           <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
             {grup.baslik}
           </Text>
           {grup.ogeler.map((oge) => (
-            <OgeKarti key={oge} oge={oge} ayar={ayarlar.ogeler[oge]} onDegis={guncelle} kartStili={kartStili} />
+            <OgeKarti key={oge} oge={oge} ayar={ayarlar.ogeler[oge]} onDegis={guncelle} kartStili={kartStili} ios={ios} />
           ))}
         </View>
       ))}
@@ -229,10 +276,13 @@ const OgeKarti: React.FC<{
   ayar: NowBarOgeAyari;
   onDegis: (oge: NowBarOgesi, d: Partial<NowBarOgeAyari>) => void;
   kartStili: object;
-}> = ({ oge, ayar, onDegis, kartStili }) => {
+  /** iOS: "sayaçla" yok (sayaç bildirimi yok); kayıttaki "sayaçla" son dakikalar sayılır. */
+  ios: boolean;
+}> = ({ oge, ayar, onDegis, kartStili, ios }) => {
   const renkler = useRenkler();
   const bilgi = NOW_BAR_OGE_BILGILERI[oge];
-  const secenekler = NOW_BAR_BASLANGICLARI[oge];
+  const secenekler = ios ? iosBaslangicSecenekleri(oge) : NOW_BAR_BASLANGICLARI[oge];
+  const etkinBaslangic = ios ? iosEtkinBaslangic(ayar) : ayar.baslangic;
   return (
     <View className="mb-3 overflow-hidden" style={kartStili} testID={`now-bar-oge-${oge}`}>
       <View className="flex-row items-center p-4">
@@ -255,7 +305,7 @@ const OgeKarti: React.FC<{
           onValueChange={(v) => onDegis(oge, { acik: v })}
           trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
           thumbColor={ayar.acik ? renkler.birincil : '#f4f3f4'}
-          accessibilityLabel={`${bilgi.ad} Now Bar'da`}
+          accessibilityLabel={ios ? `${bilgi.ad} canlı etkinlikte` : `${bilgi.ad} Now Bar'da`}
         />
       </View>
 
@@ -266,7 +316,7 @@ const OgeKarti: React.FC<{
           </Text>
           <View className="flex-row flex-wrap gap-2">
             {secenekler.map((b) => {
-              const secili = ayar.baslangic === b;
+              const secili = etkinBaslangic === b;
               const etiket = bilgi.baslangicEtiketleri[b] ?? b;
               return (
                 <TouchableOpacity
@@ -292,7 +342,7 @@ const OgeKarti: React.FC<{
             })}
           </View>
 
-          {ayar.baslangic === 'sonDk' && (
+          {etkinBaslangic === 'sonDk' && (
             <View
               className="flex-row items-center justify-between p-3.5 rounded-2xl border mt-2"
               style={{ backgroundColor: renkler.arkaplan, borderColor: renkler.sinir }}
@@ -313,7 +363,7 @@ const OgeKarti: React.FC<{
             </View>
           )}
 
-          {bilgi.sayacGereksinimi && (ayar.baslangic === 'sayacla' || !NOW_BAR_BASLANGICLARI[oge].includes('girince')) && (
+          {!ios && bilgi.sayacGereksinimi && (ayar.baslangic === 'sayacla' || !NOW_BAR_BASLANGICLARI[oge].includes('girince')) && (
             <View className="flex-row items-start mt-3 gap-2">
               <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
               <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
