@@ -24,8 +24,9 @@ interface Abonelik {
 }
 
 interface SiriNativeModule {
-    vakitlerKaydet(json: string): void;
-    kilinanlarKaydet(json: string): void;
+    /** AsyncFunction (#295): yazım + widget tazelemesi JS thread'ini bekletmez. */
+    vakitlerKaydet(json: string): Promise<void>;
+    kilinanlarKaydet(json: string): Promise<void>;
     bekleyenleriAl(): Promise<string>;
     tamamlandi(id: string): Promise<void>;
     basarisiz(id: string): Promise<void>;
@@ -34,7 +35,7 @@ interface SiriNativeModule {
     /** #295 — eski ikilide yok (opsiyonel). */
     canliEtkinlikDestekli?(): boolean;
     canliEtkinlikIzniAcik?(): Promise<boolean>;
-    canliEtkinlikEsitle?(json: string | null): Promise<string>;
+    canliEtkinlikEsitle?(json: string | null, secenek?: string | null): Promise<string>;
     /** #285 Apple Watch — eski ikilide yok (opsiyonel). */
     saatDestekli?(): boolean;
     saatDurumGonder?(json: string): Promise<string>;
@@ -48,8 +49,8 @@ const modul = (): SiriNativeModule | null =>
 
 /** Widget yükü arayüzü (Android `WidgetVeri` ile aynı). iOS'ta Siri'nin okuduğu çizelge. */
 export interface SiriVeriYazici {
-    vakitlerKaydet(json: string): void;
-    kilinanlarKaydet(json: string): void;
+    vakitlerKaydet(json: string): Promise<void>;
+    kilinanlarKaydet(json: string): Promise<void>;
 }
 
 /** "Kıldım" kuyruğu arayüzü (Android `KildimKuyrugu` ile aynı). */
@@ -150,16 +151,33 @@ export async function canliEtkinlikIzniAcik(): Promise<boolean | null> {
     }
 }
 
+/** Eşitleme bağlamı (Swift `CanliEtkinlikKoprusu.Secenek`). */
+export interface CanliEtkinlikSecenegi {
+    /**
+     * Uygulama ön planda mı? Arka planda `Activity.request` başarısız olur (push-to-start
+     * ister) → native yeni etkinlik İSTEMEZ ve mevcut geçerli olanları BİTİRMEZ.
+     */
+    onPlanda: boolean;
+    /** Penceresi şu an süren adayların kimlikleri; `null` = bilinmiyor (ör. konum yok). */
+    korunacaklar: string[] | null;
+}
+
 /**
  * Mevcut canlı etkinlikleri istenene eşitler (`null` = hiçbiri). Sonuç kodu:
- * `baslatildi` | `guncellendi` | `ayni` | `bitirildi` | `yok` | `izinYok` |
+ * `baslatildi` | `guncellendi` | `ayni` | `bitirildi` | `korundu` | `yok` | `izinYok` |
  * `desteklenmiyor` | `hata`. ASLA fırlatmaz.
  */
-export async function canliEtkinlikEsitle(istek: CanliEtkinlikIstegi | null): Promise<string> {
+export async function canliEtkinlikEsitle(
+    istek: CanliEtkinlikIstegi | null,
+    secenek?: CanliEtkinlikSecenegi
+): Promise<string> {
     const m = modul();
     if (!m || typeof m.canliEtkinlikEsitle !== 'function') return 'desteklenmiyor';
     try {
-        return await m.canliEtkinlikEsitle(istek ? JSON.stringify(istek) : null);
+        return await m.canliEtkinlikEsitle(
+            istek ? JSON.stringify(istek) : null,
+            secenek ? JSON.stringify(secenek) : null
+        );
     } catch {
         return 'hata';
     }

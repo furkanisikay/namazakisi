@@ -122,7 +122,9 @@ const IOS_DURUM_METINLERI: Record<CanliDurum, { baslik: string; aciklama: string
 /** iOS'ta zamanlanmış başlatma yoktur (#295) — ekran bunu açıkça söyler (sessiz sapma yok). */
 export const IOS_CANLI_SINIR_NOTU = `Canlı etkinlik yalnız uygulama açıkken başlatılabilir: sıradaki geri sayım, uygulamayı açtığınızda başlar. Başladıktan sonra uygulamayı kapatsanız da kilit ekranında ve Dinamik Ada'da sürer. iPhone bir canlı etkinliği en fazla ${
   IOS_CANLI_AZAMI_SURE_MS / 3_600_000
-} saat gösterir.`;
+} saat gösterir; daha uzun aralıklarda geri sayım, bitişten ${
+  IOS_CANLI_AZAMI_SURE_MS / 3_600_000
+} saat önce başlar.`;
 
 const iosMu = (): boolean => Platform.OS === 'ios';
 

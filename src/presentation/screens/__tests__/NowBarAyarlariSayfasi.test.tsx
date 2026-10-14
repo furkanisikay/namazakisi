@@ -140,6 +140,8 @@ describe('NowBarAyarlariSayfasi — iOS canlı etkinlik (#295)', () => {
       'Canlı etkinlik yalnız uygulama açıkken başlatılabilir'
     );
     expect(ekran.getByTestId('now-bar-politika').props.children).toContain('en fazla 8 saat');
+    // Uzun pencere kesilmez, geç başlar (`iosGorunurBaslangic`) — ekran bunu söyler.
+    expect(ekran.getByTestId('now-bar-politika').props.children).toContain('bitişten 8 saat önce başlar');
     expect(mockCanliDurumu).not.toHaveBeenCalled();
   });
 

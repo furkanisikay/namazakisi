@@ -14,7 +14,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   },
 }));
 
-jest.mock('react-native', () => ({ Platform: { OS: 'android' } }));
+jest.mock('react-native', () => ({ Platform: { OS: 'android' }, AppState: { currentState: 'active' } }));
 
 const mockCanliDurumu = jest.fn();
 const mockCanliPlaniKur = jest.fn();
@@ -147,7 +147,8 @@ describe('CanliSayacPlanlayici', () => {
       canliEtkinlikDestekli: jest.Mock;
       canliEtkinlikEsitle: jest.Mock;
     };
-    const platform = (require('react-native') as { Platform: { OS: string } }).Platform;
+    const rn = require('react-native') as { Platform: { OS: string }; AppState: { currentState: string } };
+    const platform = rn.Platform;
     // 2026-10-15 11:00 UTC = İstanbul 14:00 → öğle vakti (12:5x–15:5x). Yalnız Date sahte.
     const SIMDI = Date.UTC(2026, 9, 15, 11, 0);
 
@@ -165,6 +166,7 @@ describe('CanliSayacPlanlayici', () => {
     afterEach(() => {
       jest.useRealTimers();
       platform.OS = 'android';
+      rn.AppState.currentState = 'active';
       siri.canliEtkinlikDestekli.mockReturnValue(false);
       siri.canliEtkinlikEsitle.mockResolvedValue('desteklenmiyor');
     });
@@ -173,7 +175,8 @@ describe('CanliSayacPlanlayici', () => {
       await p.yenidenPlanla();
       expect(mockCanliPlaniKur).not.toHaveBeenCalled();
       expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'sayac_2026-10-15_ogle', ad: 'Öğle', kildimTarih: '2026-10-15', kildimVakit: 'ogle' })
+        expect.objectContaining({ id: 'sayac_2026-10-15_ogle', ad: 'Öğle', kildimTarih: '2026-10-15', kildimVakit: 'ogle' }),
+        expect.anything()
       );
     });
 
@@ -183,19 +186,46 @@ describe('CanliSayacPlanlayici', () => {
         veri: [{ tarih: '2026-10-15', namazlar: [{ namazAdi: 'Öğle', tamamlandi: true }] }],
       });
       await p.yenidenPlanla();
-      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null, { onPlanda: true, korunacaklar: [] });
     });
 
     test('muhafız diskinde kılınmış vakit de kapatır', async () => {
       mockKilinan.mockImplementation(async (t: string) => (t === '2026-10-15' ? ['ogle'] : []));
       await p.yenidenPlanla();
-      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null, { onPlanda: true, korunacaklar: [] });
     });
 
-    test('konum yoksa mevcut etkinlik bitirilir', async () => {
+    test('konum yoksa: istek yok, geçerlilik BİLİNMİYOR (arka planda native korur)', async () => {
       delete mockDepo[DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI];
       await p.yenidenPlanla();
-      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null);
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null, { onPlanda: true, korunacaklar: null });
+    });
+
+    test('ön planda: köprüye onPlanda + geçerli kimlikler gider', async () => {
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(expect.objectContaining({ id: 'sayac_2026-10-15_ogle' }), {
+        onPlanda: true,
+        korunacaklar: ['sayac_2026-10-15_ogle'],
+      });
+    });
+
+    test('ARKA PLANDA (background fetch / headless Kıldım) yeni etkinlik istenmez, geçerli olan korunur', async () => {
+      // Önce bitir sonra iste deseni arka planda kilit ekranını boşaltıyordu:
+      // Activity.request arka planda başarısız olur. Native onPlanda=false'ta istemez ve
+      // yalnız korunacaklar DIŞINDAKİLERİ bitirir.
+      rn.AppState.currentState = 'background';
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(expect.objectContaining({ id: 'sayac_2026-10-15_ogle' }), {
+        onPlanda: false,
+        korunacaklar: ['sayac_2026-10-15_ogle'],
+      });
+    });
+
+    test('arka planda kılınan vakit geçerli listeden düşer (native onu bitirir)', async () => {
+      rn.AppState.currentState = 'background';
+      mockKilinan.mockImplementation(async (t: string) => (t === '2026-10-15' ? ['ogle'] : []));
+      await p.yenidenPlanla();
+      expect(siri.canliEtkinlikEsitle).toHaveBeenCalledWith(null, { onPlanda: false, korunacaklar: [] });
     });
 
     test('destek yoksa (widget bayrağı kapalı build) köprüye hiç gidilmez, dinleyici kurulmaz', async () => {

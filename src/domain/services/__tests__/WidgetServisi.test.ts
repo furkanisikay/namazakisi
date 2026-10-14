@@ -60,7 +60,8 @@ describe('vakitleriyaz', () => {
 
     it('iOS\'ta AYNI yük Siri/Kısayollar deposuna yazılır (issue #279)', async () => {
         jest.replaceProperty(Platform, 'OS', 'ios');
-        const siri = { vakitlerKaydet: jest.fn(), kilinanlarKaydet: jest.fn() };
+        // iOS köprüsü AsyncFunction'dır (#295): Promise döner, servis onu bekler.
+        const siri = { vakitlerKaydet: jest.fn().mockResolvedValue(undefined), kilinanlarKaydet: jest.fn().mockResolvedValue(undefined) };
         const kopru = require('../../../../modules/expo-siri-kisayollari/src');
         kopru.siriVeriYazici.mockReturnValue(siri);
         try {
@@ -74,6 +75,22 @@ describe('vakitleriyaz', () => {
         expect(JSON.parse(siri.vakitlerKaydet.mock.calls[0][0]).surum).toBe(2);
         expect(JSON.parse(siri.kilinanlarKaydet.mock.calls[0][0])[bugunuAl()]).toEqual(['sabah']);
         expect(mockDinleyiciEkle).toHaveBeenCalledWith(WIDGET_DINLEYICI_ADI, expect.any(Function));
+    });
+
+    it('iOS köprüsünün reddedilen Promise\'i yakalanır (servis fırlatmaz)', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const siri = {
+            vakitlerKaydet: jest.fn().mockRejectedValue(new Error('kopru')),
+            kilinanlarKaydet: jest.fn().mockRejectedValue(new Error('kopru')),
+        };
+        const kopru = require('../../../../modules/expo-siri-kisayollari/src');
+        kopru.siriVeriYazici.mockReturnValue(siri);
+        try {
+            await expect(servis.vakitleriyaz({ lat: 41.0082, lng: 28.9784 })).resolves.toBeUndefined();
+            await expect(servis.kilinanlariYaz()).resolves.toBeUndefined();
+        } finally {
+            kopru.siriVeriYazici.mockReturnValue(null);
+        }
     });
 });
 

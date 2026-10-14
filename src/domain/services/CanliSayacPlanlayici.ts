@@ -24,11 +24,13 @@
  * hesaplanır ve köprü mevcut etkinliği ona eşitler. Tetikler: açılış + her ön plana
  * geliş (`App.tsx`), kılınmışlık değişimi (`iosBaslat`), Now Bar seçimi
  * (`nowBarDegistiUygula`). Widget uzantısı bayrağı kapalı build'de köprü
- * "desteklenmiyor" der ve hiçbir şey yapılmaz.
+ * "desteklenmiyor" der ve hiçbir şey yapılmaz. ARKA PLANDA (background fetch, konum
+ * yayması, bildirimden "Kıldım") yeni etkinlik istenemez → köprüye `onPlanda: false` +
+ * geçerli kimlikler gider; native yalnız geçersizleşenleri bitirir, ekrandakini korur.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
@@ -54,7 +56,7 @@ import {
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { canliDurumu, canliPlaniKur, type CanliDurum } from '../../../modules/expo-countdown-notification/src';
 import { canliSaatPayiDegisti } from './canliSaatGozlemcisi';
-import { iosCanliEtkinlikSec } from '../../core/sayac/iosCanliEtkinlik';
+import { iosCanliEtkinlikDurumu } from '../../core/sayac/iosCanliEtkinlik';
 import { widgetKilinanlariOlustur, widgetKoduVakitAdina } from '../../core/widget/widgetYuku';
 import { canliEtkinlikDestekli, canliEtkinlikEsitle } from '../../../modules/expo-siri-kisayollari/src';
 
@@ -188,8 +190,8 @@ export class CanliSayacPlanlayici {
           return { tarih, vakitler: gunVakitleriniHesapla(koordinat, tarih) };
         })
       : [];
-    const istek = gunler.length
-      ? iosCanliEtkinlikSec({
+    const durum = gunler.length
+      ? iosCanliEtkinlikDurumu({
           ayarlar,
           simdiMs: simdi,
           gunler,
@@ -197,7 +199,13 @@ export class CanliSayacPlanlayici {
           ozelGundeMi,
         })
       : null;
-    const sonuc = await canliEtkinlikEsitle(istek);
+    const istek = durum?.istek ?? null;
+    // Arka planda `Activity.request` başarısız olur; önce bitirip sonra istemek kilit
+    // ekranını boşaltıyordu. Konum yoksa geçerlilik bilinmez (`null`): arka planda korunur.
+    const sonuc = await canliEtkinlikEsitle(istek, {
+      onPlanda: AppState.currentState === 'active',
+      korunacaklar: durum ? durum.gecerliKimlikler : null,
+    });
     Logger.info('CanliSayac', `iOS canli etkinlik: ${sonuc}${istek ? ` (${istek.id})` : ''}`);
   }
 
