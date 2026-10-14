@@ -57,5 +57,34 @@
       "erteleSinirMs": 0,
       "beklenen": "kildim"
     }
+  ],
+  "iptalSecimi": [
+    {
+      "ad": "planlama turu CALAN alarma dokunmaz",
+      "kayitlar": [
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "caliyor": true },
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_3_dk_10", "caliyor": false },
+        { "kimlik": "muhafiz_2026-10-13_vakit_ikindi_seviye_4_dk_3", "caliyor": false }
+      ],
+      "calaniDurdur": false,
+      "beklenen": ["muhafiz_2026-10-13_vakit_ogle_seviye_3_dk_10", "muhafiz_2026-10-13_vakit_ikindi_seviye_4_dk_3"]
+    },
+    {
+      "ad": "Kildim calani da susturur",
+      "kayitlar": [
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "caliyor": true },
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "caliyor": false }
+      ],
+      "calaniDurdur": true,
+      "beklenen": ["muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "muhafiz_2026-10-13_vakit_ogle_ertele"]
+    },
+    {
+      "ad": "calan yoksa hepsi",
+      "kayitlar": [
+        { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "caliyor": false }
+      ],
+      "calaniDurdur": false,
+      "beklenen": ["muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45"]
+    }
   ]
 }

@@ -22,9 +22,12 @@ import Foundation
     func izinIste(_ tamam: @escaping (String) -> Void)
     /// `AlarmKaydi` JSON'u; kuruldu mu.
     func planla(_ kayitJson: String, _ tamam: @escaping (Bool) -> Void)
-    func iptalEt(_ kimlikler: [String], _ tamam: @escaping () -> Void)
-    /// Sistemde HALA kurulu alarmlarin UUID'leri; okunamazsa `nil` (kayit budanmaz).
-    func canliUuidler(_ tamam: @escaping ([String]?) -> Void)
+    /// `calaniDurdur == false` (planlama turu): o an CALAN (`alerting`) alarm ATLANIR.
+    /// Yalniz "Kildim" `true` gecer ve calani da susturur (`AlarmKurallari.iptalSecimi`).
+    func iptalEt(_ kimlikler: [String], _ calaniDurdur: Bool, _ tamam: @escaping () -> Void)
+    /// Sistemde HALA kurulu alarmlarin UUID'leri (okunamazsa `nil`, kayit budanmaz) ve
+    /// bunlardan o an CALANLARIN UUID'leri.
+    func canliUuidler(_ tamam: @escaping ([String]?, [String]) -> Void)
 }
 
 /// Ana hedefteki intent'ler JS'e haber verir (uygulama aciksa): `["tur": "ertele"|"kildim"]`.
@@ -89,24 +92,24 @@ public class ExpoMuhafizAlarmKitModule: Module {
             p.planla(json) { promise.resolve($0) }
         }
 
-        AsyncFunction("iptalEt") { (kimlikler: [String], promise: Promise) in
+        AsyncFunction("iptalEt") { (kimlikler: [String], calaniDurdur: Bool, promise: Promise) in
             guard let p = ExpoMuhafizAlarmKitModule.planlayici(), !kimlikler.isEmpty else {
                 AlarmDeposu.varsayilan.sil(kimlikler)
                 promise.resolve(nil)
                 return
             }
-            p.iptalEt(kimlikler) { promise.resolve(nil) }
+            p.iptalEt(kimlikler, calaniDurdur) { promise.resolve(nil) }
         }
 
-        /// Sistemde HALA kurulu alarmlarin kaydi (`[{kimlik, tetikMs}]` JSON).
+        /// Sistemde HALA kurulu alarmlarin kaydi (`[{kimlik, tetikMs, caliyor?}]` JSON).
         AsyncFunction("kayitlar") { (promise: Promise) in
             guard let p = ExpoMuhafizAlarmKitModule.planlayici() else {
                 promise.resolve(AlarmDeposu.listeJson(AlarmDeposu.varsayilan.kayitlar()))
                 return
             }
-            p.canliUuidler { uuidler in
+            p.canliUuidler { uuidler, calanlar in
                 let kalan = AlarmDeposu.varsayilan.buda(canliUuidler: uuidler.map { Set($0) })
-                promise.resolve(AlarmDeposu.listeJson(kalan))
+                promise.resolve(AlarmDeposu.listeJson(kalan, calanUuidler: Set(calanlar)))
             }
         }
     }

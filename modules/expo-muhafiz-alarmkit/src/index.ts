@@ -33,7 +33,7 @@ interface AlarmKitNativeModule {
     durum(): Promise<string>;
     izinIste(): Promise<string>;
     planla(json: string): Promise<boolean>;
-    iptalEt(kimlikler: string[]): Promise<void>;
+    iptalEt(kimlikler: string[], calaniDurdur: boolean): Promise<void>;
     kayitlar(): Promise<string>;
     addListener(olay: 'onAlarmDegisikligi', dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
@@ -81,17 +81,22 @@ export async function alarmKitPlanla(yuk: AlarmKitYuku): Promise<boolean> {
     }
 }
 
-export async function alarmKitIptalEt(kimlikler: string[]): Promise<void> {
+/**
+ * Alarmları iptal eder. `calaniDurdur === false` (varsayılan — planlama turu) iken native
+ * taraf o an ÇALAN alarmı ATLAR; yalnız "Kıldım" `true` geçer ve çalanı da susturur
+ * (`alarmKitIptalSecimi` ile aynı kural, iptal anının güncel durumuyla).
+ */
+export async function alarmKitIptalEt(kimlikler: string[], calaniDurdur = false): Promise<void> {
     const m = modul();
     if (!m || kimlikler.length === 0) return;
     try {
-        await m.iptalEt(kimlikler);
+        await m.iptalEt(kimlikler, calaniDurdur);
     } catch {
         // Kayıtlı olmayan alarm zararsız; iptal planlamayı asla durdurmaz.
     }
 }
 
-/** Sistemde HÂLÂ kurulu alarmlar (`{kimlik, tetikMs}`); modül yoksa/okunamazsa boş. */
+/** Sistemde HÂLÂ kurulu alarmlar (`{kimlik, tetikMs, caliyor?}`); modül yoksa/okunamazsa boş. */
 export async function alarmKitKayitlari(): Promise<AlarmKitKaydi[]> {
     const m = modul();
     if (!m) return [];

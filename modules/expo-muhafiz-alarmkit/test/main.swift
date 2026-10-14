@@ -47,7 +47,13 @@ guard argumanlar.count >= 3 else {
 
 struct UuidOrnegi: Decodable { let kimlik: String; let uuid: String }
 struct DugmeOrnegi: Decodable { let ad: String; let tetikMs: Int64; let erteleSinirMs: Int64; let beklenen: String }
-struct AlarmKitFiksturu: Decodable { let uuidler: [UuidOrnegi]; let dugmeler: [DugmeOrnegi] }
+struct IptalKaydi: Decodable { let kimlik: String; let caliyor: Bool }
+struct IptalOrnegi: Decodable { let ad: String; let kayitlar: [IptalKaydi]; let calaniDurdur: Bool; let beklenen: [String] }
+struct AlarmKitFiksturu: Decodable {
+    let uuidler: [UuidOrnegi]
+    let dugmeler: [DugmeOrnegi]
+    let iptalSecimi: [IptalOrnegi]
+}
 
 let akf = oku(argumanlar[1], AlarmKitFiksturu.self)
 for o in akf.uuidler {
@@ -57,6 +63,15 @@ for o in akf.uuidler {
 }
 for o in akf.dugmeler {
     esitMi(AlarmKurallari.ikincilDugme(tetikMs: o.tetikMs, erteleSinirMs: o.erteleSinirMs), o.beklenen, "dugme: \(o.ad)")
+}
+for o in akf.iptalSecimi {
+    // Native taraf CALAN alarmi UUID'den tanir (AlarmKit `Alarm` kimligimizi tasimaz).
+    let calan = Set(o.kayitlar.filter(\.caliyor).map { AlarmKurallari.uuidMetni($0.kimlik).uppercased() })
+    esitMi(
+        AlarmKurallari.iptalSecimi(kimlikler: o.kayitlar.map(\.kimlik), calanUuidler: calan, calaniDurdur: o.calaniDurdur),
+        o.beklenen,
+        "iptal secimi: \(o.ad)"
+    )
 }
 
 // MARK: - 2) Erteleme kurallari (Android/JS ortak fikstürü)
@@ -148,6 +163,12 @@ esitMi(depo.buda(canliUuidler: nil).count, 2, "sistem listesi okunamazsa BUDANMA
 depo.sil([plan10.kimlik])
 esitMi(depo.kayitlar().map(\.kimlik), [ertele.kimlik], "sil")
 esitMi(AlarmDeposu.listeJson(depo.kayitlar()).contains("\"tetikMs\""), true, "liste JSON tetikMs tasir")
+esitMi(AlarmDeposu.listeJson(depo.kayitlar()).contains("caliyor"), false, "calmayan kayitta caliyor alani YOK")
+esitMi(
+    AlarmDeposu.listeJson(depo.kayitlar(), calanUuidler: [ertele.uuidMetni.uppercased()]).contains("\"caliyor\":true"),
+    true,
+    "calan kayit isaretlenir (buyuk/kucuk harf duyarsiz)"
+)
 defaults.removePersistentDomain(forName: suite)
 
 // MARK: - Sonuc

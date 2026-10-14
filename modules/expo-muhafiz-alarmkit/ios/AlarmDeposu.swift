@@ -147,9 +147,15 @@ public final class AlarmDeposu: @unchecked Sendable {
             .map(\.kimlik)
     }
 
-    /// JS'e giden canli kayit listesi (`[{kimlik, tetikMs}]`).
-    public static func listeJson(_ kayitlar: [AlarmKaydi]) -> String {
-        let ozet = kayitlar.map { ["kimlik": $0.kimlik, "tetikMs": NSNumber(value: $0.tetikMs)] as [String: Any] }
+    /// JS'e giden canli kayit listesi (`[{kimlik, tetikMs, caliyor?}]`). `caliyor` yalniz o an
+    /// CALAN (`Alarm.State.alerting`) alarmda yazilir: planlama turu onu iptal etmez.
+    public static func listeJson(_ kayitlar: [AlarmKaydi], calanUuidler: Set<String> = []) -> String {
+        let calan = Set(calanUuidler.map { $0.lowercased() })
+        let ozet = kayitlar.map { k -> [String: Any] in
+            var o: [String: Any] = ["kimlik": k.kimlik, "tetikMs": NSNumber(value: k.tetikMs)]
+            if calan.contains(k.uuidMetni) { o["caliyor"] = true }
+            return o
+        }
         guard let veri = try? JSONSerialization.data(withJSONObject: ozet),
               let ham = String(data: veri, encoding: .utf8) else { return "[]" }
         return ham
