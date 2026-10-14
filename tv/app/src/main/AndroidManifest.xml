@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Namaz Akışı — Android TV vakit panosu (issue #286).
+  applicationId telefonla AYNI (build.gradle.kts): Play'de aynı kaydın "Android TV"
+  form faktörü izine ayrı AAB. Vakitler cihazda hesaplanır; AĞ ve KONUM İZNİ YOK
+  (il elle seçilir).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Yalnız TV'ye kurulur; dokunmatik ekran istenmez (D-pad). -->
+    <uses-feature android:name="android.software.leanback" android:required="true" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:banner="@drawable/banner"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Tema.Pano">
+
+        <activity
+            android:name=".ui.PanoActivity"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|smallestScreenSize|density|uiMode"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- İsteğe bağlı ekran koruyucu (Daydream). Yalnız sistem bağlanabilir. -->
+        <service
+            android:name=".ui.PanoDreamServisi"
+            android:exported="true"
+            android:label="@string/ekran_koruyucu_adi"
+            android:permission="android.permission.BIND_DREAM_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.dreams.DreamService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

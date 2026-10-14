@@ -214,7 +214,7 @@ export const mekruhVakitKontrolEt = (
     const sunset = prayerTimes.maghrib; // Akşam = Gün batımı
 
     const toleransMs = KAZA_SABITLERI.MEKRUH_TOLERANS_DK * 60 * 1000;
-    const istiwaToleransMs = 5 * 60 * 1000; // İstiwa için 5 dakika
+    const istiwaToleransMs = KAZA_SABITLERI.ISTIVA_TOLERANS_DK * 60 * 1000;
 
     const namazTuru = namazTipi === 'farz' ? 'namaz' : 'kaza namazı';
 

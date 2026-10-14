@@ -88,3 +88,9 @@ android/.kotlin/
 /wear/app/build/
 /wear/.kotlin/
 /wear/local.properties
+# Android TV panosu (bağımsız Gradle kökü, issue #286)
+/tv/.gradle/
+/tv/build/
+/tv/app/build/
+/tv/.kotlin/
+/tv/local.properties

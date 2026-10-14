@@ -123,6 +123,11 @@ export const KAZA_SABITLERI = {
   VARSAYILAN_GUNLUK_HEDEF: 3,
   /** Mekruh vakit toleransı (dakika) — güneş doğuş/batışından önce/sonra */
   MEKRUH_TOLERANS_DK: 20,
+  /**
+   * İstiva (güneş tam tepede) kerahati: öğle girişinden önceki dakika.
+   * İkizi Android TV panosunda (`tv/.../cekirdek/Kerahat.kt`); fikstür ikisini kilitler.
+   */
+  ISTIVA_TOLERANS_DK: 5,
   /** Tempo hesabı için kullanılan gün sayısı */
   TEMPO_HESAP_GUNLERI: 7,
 } as const;

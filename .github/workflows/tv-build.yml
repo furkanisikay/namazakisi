@@ -1,0 +1,80 @@
+# ========================================================================
+# Android TV vakit panosu — derleme + birim test + lint (issue #286)
+# ========================================================================
+#
+# `tv/` BAĞIMSIZ bir Gradle köküdür (wear/'in ikizi; android/ RN yapılandırmasına
+# dahil değil). Bu iş PR kontrolüdür; release KESMEZ. `ci.yml` `tv/**`
+# değişikliklerini yok sayar → TV commit'leri telefon için gereksiz EAS/Play
+# release'i üretmez (AGENTS.md "araç commit'leri de release keser" dersi).
+#
+# Parite İKİ TARAFTA kilitli: telefonun adhan JS hesabı ile TV'nin adhan2 hesabı
+# aynı fikstürü (tv/app/src/test/resources/vakit-fiksturu.json) kabul etmeli.
+# Play dağıtımı (Android TV form faktörü izi) AYRI fazdır.
+# ========================================================================
+
+name: Android TV
+
+on:
+  pull_request:
+    paths:
+      - 'tv/**'
+      - 'scripts/tv/**'
+      - 'src/domain/services/NamazVaktiHesaplayiciServisi.ts'
+      - 'src/domain/services/KazaHesaplayiciServisi.ts'
+      - 'src/domain/services/TurkiyeKonumServisi.ts'
+      - 'src/domain/services/__tests__/TvVakitParitesi.test.ts'
+      - 'src/core/constants/UygulamaSabitleri.ts'
+      - '.github/workflows/tv-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tv-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tv:
+    name: 📺 TV panosu
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v7
+
+      - name: ☕ Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐘 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 🤖 Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: 📦 Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıklar
+        run: npm ci
+
+      - name: 📜 Parite testi (JS — telefonun hesap yolu)
+        run: npx jest TvVakitParitesi
+
+      - name: 🧪 Birim test + lint + derleme (TV)
+        working-directory: tv
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+
+      - name: 📤 Debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: namazakisi-tv-debug
+          path: tv/app/build/outputs/apk/debug/*.apk
+          retention-days: 14
