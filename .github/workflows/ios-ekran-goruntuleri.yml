@@ -15,6 +15,9 @@ name: 📸 iOS Ekran Görüntüleri
 #           `ios-ozellik-kareleri`; scripts/simulator-ozellik-cek.js). ASC'ye
 #           GONDERILMEZ.
 #   ikisi   — ikisi de, ayni derlemeyle.
+#   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
+#           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
+#           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
 
 on:
   workflow_dispatch:
@@ -29,7 +32,7 @@ on:
         required: false
         default: false
       tur:
-        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi'
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch)'
         type: choice
         required: false
         default: 'magaza'
@@ -37,6 +40,7 @@ on:
           - magaza
           - ozellik
           - ikisi
+          - saat
       ozellik_koyu:
         description: 'Özellik turunu koyu temada da çek'
         type: boolean
@@ -49,6 +53,8 @@ permissions:
 jobs:
   kareler:
     name: 📸 Simülatörde kare çek
+    # Apple Watch turu ayri istedir (asagida); iPhone hatti o degerde kosmaz.
+    if: ${{ inputs.tur != 'saat' }}
     # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
     # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
@@ -265,3 +271,81 @@ jobs:
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
         # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
         run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir
+
+  # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
+  # Yalniz saat hedefleri derlenir (`-target NamazSaat -sdk watchsimulator`): saat
+  # hedefleri pod'a ve RN'e baglanmaz → pod install ve iPhone derlemesi (~25 dk) gerekmez.
+  # Veri WatchConnectivity'den DEGIL, baslatma ortamindan gelir (yalniz simulator
+  # derlemesinde okunur; gerekce `scripts/simulator-saat-cek.sh` basinda).
+  saat-kareler:
+    name: ⌚ Apple Watch kareleri
+    if: ${{ inputs.tur == 'saat' }}
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri ve watchOS runtime
+        run: |
+          set -eo pipefail
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i watch || true
+          if ! xcrun simctl list runtimes | grep -q '^watchOS'; then
+            echo "watchOS simülatör runtime'ı yok — indiriliyor"
+            xcodebuild -downloadPlatform watchOS
+          fi
+          xcrun simctl list runtimes | grep -iE 'ios|watchos'
+
+      - name: 🏗️ Expo prebuild (iOS, saat hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          # Bayrak yalniz bu imzasiz simulator derlemesi icin acilir (EAS'te tanimli degil).
+          NAMAZ_IOS_SAAT: '1'
+
+      - name: 🔨 Saat uygulamasını derle (watchOS simülatör, Release)
+        id: saat_derleme
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          # Yalniz saat hedefleri (`-target`): -sdk watchsimulator yalniz watchOS
+          # hedeflerine uygulanir, iPhone hedefi derlenmez. Release: kullanicinin
+          # gordugu derleme.
+          xcodebuild \
+            -project "$PROJ" \
+            -target NamazSaat \
+            -configuration Release \
+            -sdk watchsimulator \
+            SYMROOT="$PWD/build-saat" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+          APP="$PWD/build-saat/Release-watchsimulator/NamazSaat.app"
+          [ -d "$APP" ] || { echo "NamazSaat.app üretilmedi"; find build-saat -maxdepth 3 -name '*.app' -print; exit 1; }
+          [ -d "$APP/PlugIns/NamazSaatWidget.appex" ] || { echo "Komplikasyon uzantısı gömülmedi"; ls "$APP"; exit 1; }
+          echo "app=$APP" >> "$GITHUB_OUTPUT"
+          echo "uretilen: $APP"
+
+      - name: 📸 Kareleri çek
+        env:
+          SAAT_APP: ${{ steps.saat_derleme.outputs.app }}
+        run: bash scripts/simulator-saat-cek.sh kareler-saat "$SAAT_APP"
+
+      - name: ⬆️ Saat karelerini yükle
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-saat-kareleri
+          path: kareler-saat/
+          retention-days: 14
+          if-no-files-found: warn

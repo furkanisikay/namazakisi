@@ -38,6 +38,8 @@ enum SaatGorunum {
 struct AnaEkran: View {
     @EnvironmentObject private var baglanti: SaatBaglantisi
     @Environment(\.scenePhase) private var sahne
+    /// Yalniz simulator kare cekimi (`SaatSimulatorTohumu`) acar; cihazda daima false.
+    @State private var tesbihatAcik = false
 
     var body: some View {
         NavigationStack {
@@ -46,6 +48,12 @@ struct AnaEkran: View {
                 icerik(simdi: baglam.date, yenileme: baglanti.yenileme)
             }
             .navigationTitle("Namaz Akışı")
+            .navigationDestination(isPresented: $tesbihatAcik) {
+                TesbihatEkrani()
+            }
+        }
+        .onAppear {
+            if SaatSimulatorTohumu.acilisEkrani == .tesbihat { tesbihatAcik = true }
         }
         .onChange(of: sahne) { _, yeni in
             if yeni == .active { baglanti.baslat() }
@@ -100,6 +108,20 @@ private struct DurumListesi: View {
     let surumYeni: Bool
 
     var body: some View {
+        ScrollViewReader { kaydirici in
+            liste
+                .onAppear {
+                    // Yalniz simulator kare cekimi: vakit listesini ortaya getir.
+                    guard SaatSimulatorTohumu.acilisEkrani == .vakitler, durum.satirlar.count > 2 else { return }
+                    let hedef = durum.satirlar[2].ms
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        kaydirici.scrollTo(hedef, anchor: .center)
+                    }
+                }
+        }
+    }
+
+    private var liste: some View {
         List {
             Section {
                 UstKart(durum: durum, simdi: simdi)
@@ -108,6 +130,7 @@ private struct DurumListesi: View {
                 Section("Vakitler") {
                     ForEach(durum.satirlar, id: \.ms) { satir in
                         VakitSatiri(satir: satir)
+                            .id(satir.ms)
                     }
                 }
             }
@@ -178,6 +201,11 @@ private struct UstKart: View {
         .confirmationDialog(onayMetni, isPresented: $onayAcik, titleVisibility: .visible) {
             Button("İşaretle") { isaretle() }
             Button("Vazgeç", role: .cancel) {}
+        }
+        .onAppear {
+            // Yalniz simulator kare cekimi: onay penceresini ac (cihazda acilisEkrani nil).
+            guard SaatSimulatorTohumu.acilisEkrani == .onay, aday != nil else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { onayAcik = true }
         }
     }
 

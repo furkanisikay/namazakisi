@@ -10,6 +10,8 @@ import SwiftUI
 @main
 struct NamazSaatUygulamasi: App {
     init() {
+        // Yalniz simulatorde (magaza kareleri); cihazda hicbir sey yapmaz.
+        SaatSimulatorTohumu.uygula(SaatDeposu.varsayilan)
         SaatBaglantisi.paylasilan.baslat()
     }
 
