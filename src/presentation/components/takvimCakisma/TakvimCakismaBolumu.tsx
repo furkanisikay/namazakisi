@@ -220,8 +220,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
                                 Etkinlik adını gösterin
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                Kapalıyken "Takvimindeki bir etkinlik" yazar. Ad, kilit ekranında ve saatinizde
-                                görünebilir.
+                                Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
+                                bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir.
                             </Text>
                         </View>
                         <Anahtar
@@ -238,7 +238,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
                         <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
                             Bir etkinlik bittiğinde vaktin çıkmasına {KILMA_PAYI_DK} dakikadan az kalıyorsa,
                             etkinlikten {oncedenDk} dk önce uyarılırsınız (vakit o sırada henüz girmediyse vakit
-                            girince). Tüm gün etkinlikleri, "meşgul değil"
+                            girince). Tüm gün etkinlikleri, "meşgul değil" ya da "belki"
                             işaretliler ve uygulamanın eklediği namaz etkinlikleri sayılmaz. Takviminiz yalnızca bu
                             cihazda okunur; hiçbir yere gönderilmez.
                         </Text>

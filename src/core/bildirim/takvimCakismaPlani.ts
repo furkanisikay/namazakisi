@@ -10,7 +10,9 @@
  * önceden uyarılır. Ayrıntılar:
  *
  *  1. Etkinlik süzgeci (`etkinlikleriSuz`): tüm gün etkinlikleri, "meşgul
- *     değil" (availability `free`) ve iptal edilmiş (`canceled`) etkinlikler,
+ *     değil" (availability `free`), "belki" (availability ya da status
+ *     `tentative` — yanıtlanmamış/kesinleşmemiş davetler; meşgul sayılınca
+ *     yanlış pozitif yağıyordu) ve iptal edilmiş (`canceled`) etkinlikler,
  *     uygulamanın KENDİ yazdığı namaz etkinlikleri (`UYGULAMA_TAKVIM_NOTU`),
  *     bozuk tarihliler ve `ETKINLIK_AZAMI_SURE_DK`'dan (8 sa) uzun olanlar
  *     atlanır. Uzun blok çoğu zaman "mesai/izin" işaretidir; onu her gün öğle
@@ -31,7 +33,9 @@
  *       vakit girmeden "kıl" denmez.
  *     - `kapliyor`: vakit girdiğinde blok zaten sürüyor (ya da PAY'den az sonra
  *       başlıyor) → vakit tümden kaplanmış; "ara verip kılmayı planla".
- *       Bildirim `min(blok başı, giriş) − öncedenDk`.
+ *       Bildirim `min(blok başı, giriş) − öncedenDk`, ama vakit girişinden en
+ *       fazla `KAPLIYOR_AZAMI_ONCELIK_DK` (60) önce: blok vakitten saatler önce
+ *       başlıyorsa (09:00–16:25 toplantısı) öğle uyarısı sabah 08:30'a düşerdi.
  *  6. Vakit başına (gün başına) en fazla BİR uyarı; bloklardan sonuncusu
  *     (vaktin sonunu yutan) seçilir. Kılınmış vakit, özel gün (issue #272) ve
  *     geçmiş tetikler atlanır.
@@ -42,7 +46,8 @@
  *
  * SAF: `simdi` enjekte edilir; React/expo import ETMEZ.
  */
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -61,6 +66,12 @@ export const TAKVIM_CAKISMA_PLAN_GUN_SAYISI: Record<BildirimPlatformu, number> =
 
 /** Bir farz namaz için gereken en kısa boşluk (abdestli, kısa kıraat). */
 export const KILMA_PAYI_DK = 10;
+
+/**
+ * "Kaplıyor" uyarısı vakit girişinden en fazla bu kadar önce gelir (bkz. kural 5).
+ * Uyarının konusu o vakit; saatler önce gelen uyarı unutulur ve gürültüdür.
+ */
+export const KAPLIYOR_AZAMI_ONCELIK_DK = 60;
 
 /** Bundan uzun TEK etkinlik (mesai, izin bloğu) çakışma sayılmaz. */
 export const ETKINLIK_AZAMI_SURE_DK = 8 * 60;
@@ -102,6 +113,8 @@ export function etkinlikleriSuz(hamlar: readonly HamTakvimEtkinligi[]): TakvimEt
     for (const e of hamlar) {
         if (!e || e.allDay === true) continue;
         if (e.availability === 'free') continue;
+        // "Belki": kesinleşmemiş davet — meşgul sayılırsa her yanıtlanmamış davet uyarı üretir.
+        if (e.availability === 'tentative' || e.status === 'tentative') continue;
         if (e.status === 'canceled') continue;
         if (typeof e.notes === 'string' && e.notes.includes(UYGULAMA_TAKVIM_NOTU)) continue;
         const baslangicMs = zamanMs(e.startDate);
@@ -205,7 +218,7 @@ export interface TakvimCakismaPlanGirdisi {
 }
 
 const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVakti, VakitAraligi> | null => {
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const pt = new PrayerTimes(coordinates, gun, params);
     const yarin = new PrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1), params);
     const zamanlar = [pt.fajr, pt.sunrise, pt.dhuhr, pt.asr, pt.maghrib, pt.isha, yarin.fajr];
@@ -249,7 +262,10 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
             const zamanMs =
                 tur === 'once'
                     ? Math.max(blok.baslangicMs - oncedenMs, aralik.girisMs)
-                    : Math.min(blok.baslangicMs, aralik.girisMs) - oncedenMs;
+                    : Math.max(
+                        Math.min(blok.baslangicMs, aralik.girisMs) - oncedenMs,
+                        aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK
+                    );
             if (zamanMs <= simdiMs) continue;
             plan.push({
                 id: `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`,
