@@ -7,6 +7,9 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Hakkında\\..*"
     direction: DOWN
-    timeout: 120000
+    # Tablette her kaydirma ~34 sn suruyor ve kisa kaliyor: 120 sn'de 4 kaydirma
+    # listenin sonuna yetmedi (5bea060). Daha hizli (uzun) kaydirma + genis sure.
+    speed: 80
+    timeout: 300000
     waitToSettleTimeoutMs: 1500
 - takeScreenshot: ozk/05-ayarlar-alt
