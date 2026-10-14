@@ -1158,6 +1158,13 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
     describe('erteleme (#289)', () => {
         const Notifications = require('expo-notifications');
         const DK = 60 * 1000;
+        // Saati bugünün öğlesine sabitle: testler `Date.now() + 10 dk` kurar ve
+        // 23:50'de koşunca hedef ertesi güne taşar (gün anahtarı ayrışır, test düşer).
+        beforeEach(() => {
+            const ogle = new Date();
+            ogle.setHours(12, 0, 0, 0);
+            jest.setSystemTime(ogle);
+        });
         const sesliTitresimliMatris = () => {
             const matris = tekDuzeMatris(VARSAYILAN_TANIM);
             matris.ogle.seviyeler[3] = {
