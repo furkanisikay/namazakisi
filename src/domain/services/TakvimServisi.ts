@@ -5,7 +5,8 @@
 
 import * as Calendar from 'expo-calendar';
 import { Platform } from 'react-native';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { Logger } from '../../core/utils/Logger';
 import { UYGULAMA_TAKVIM_NOTU } from '../../core/takvimCakisma/takvimCakismaAyarlari';
 
@@ -177,7 +178,7 @@ export class TakvimServisi {
         await this.eskiOlaylariTemizle(ayarlar.takvimId, ayarlar.kaciGunIlerisi);
 
         const coordinates = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-        const params = CalculationMethod.Turkey();
+        const params = turkiyeHesapParametreleri();
         let toplamOlusturulan = 0;
 
         // IANA timezone: 'local' gecersiz, cihazin gercek timezone'unu al

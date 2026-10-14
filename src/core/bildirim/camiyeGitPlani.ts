@@ -17,7 +17,8 @@
  *
  * Metin serviste DEĞİL burada üretilir (saf, testli): `camiyeGitMetniOlustur`.
  */
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaMi } from '../utils/cumaYardimcisi';
@@ -75,7 +76,7 @@ export function camiyeGitPlaniOlustur(
     if (!CAMIYE_GIT_VAKITLERI.some((v) => ayarlar.vakitler[v])) return [];
     const gunAtlanirMi = secenekler.gunAtlanirMi ?? (() => false);
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const oncedenDk = camiyeGitOncedenDk(ayarlar);
 
     const plan: CamiyeGitPlanKaydi[] = [];

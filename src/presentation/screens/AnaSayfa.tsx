@@ -51,7 +51,8 @@ import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { Namaz } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
 
@@ -196,7 +197,7 @@ export const AnaSayfa: React.FC = () => {
     // gerisindeki saat dilimlerinde adhan ÖNCEKİ günün vakitlerini hesaplar (AGENTS.md).
     const date = ISOTarihiDateNesnesiNeCevir(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const prayerTimes = new PrayerTimes(coordinates, date, params);
 
     const zamanFormatla = (d: Date) => {
@@ -229,7 +230,7 @@ export const AnaSayfa: React.FC = () => {
 
     if (konumAyarlari.koordinatlar) {
       const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-      const params = CalculationMethod.Turkey();
+      const params = turkiyeHesapParametreleri();
       const prayerTimes = new PrayerTimes(coordinates, now, params);
       imsakZamani = prayerTimes.fajr;
     }
@@ -415,7 +416,6 @@ export const AnaSayfa: React.FC = () => {
       latitude: konumAyarlari.koordinatlar.lat,
       longitude: konumAyarlari.koordinatlar.lng,
       method: 'Turkey',
-      madhab: 'Hanafi'
     });
 
     // Onceki vakit bilgisini ref'te tut (gecis tespiti icin)

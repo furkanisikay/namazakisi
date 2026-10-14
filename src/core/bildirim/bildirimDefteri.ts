@@ -30,7 +30,8 @@
  * Bilinçli kapsam dışı (Android, ≤6 tetik): iftar/sahur/seri sayaçları —
  * pencereleri gün içinde değişir ve 120'lik diğer-tüketici payının içinde kalır.
  */
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
 import type { MuhafizMatrisi } from '../muhafiz/matrisTipleri';
 import {
@@ -251,7 +252,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         const ayar = g.gunSonu;
         guvenli(() => {
             const konum = koordinat ? new Coordinates(koordinat.lat, koordinat.lng) : null;
-            const params = CalculationMethod.Turkey();
+            const params = turkiyeHesapParametreleri();
             const plan = gunSonuPlaniOlustur({
                 simdi: g.simdi,
                 ayarlar: ayar,

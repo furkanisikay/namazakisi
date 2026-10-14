@@ -4,7 +4,8 @@
  * `CumaHatirlatmaServisi` ve bildirim defteri AYNI listeyi kullanır. Metin
  * (nass yalnız ilk hatırlatmada) serviste kalır; defter metin saymaz.
  */
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { Siklik } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur } from '../muhafiz/motorAdaptoru';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -50,7 +51,7 @@ export function cumaPlaniOlustur(
 ): CumaPlanKaydi[] {
     if (!ayarlar.aktif) return [];
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
 
     const pencere = cumaPenceresiOlustur(ayarlar.oncedenDk, ayarlar.siklik);
     const adimlar = vakitUyariPlaniOlustur(pencere, ayarlar.oncedenDk).map((a) => a.kalanDk);
