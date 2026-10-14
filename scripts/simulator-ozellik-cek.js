@@ -86,7 +86,7 @@ async function bolum(ad, fn) {
         await temizAcilis('ozellik');
         cek('01-ana-ekran');
         // Nafile zincir satirlari (kusluk sabahin, evvabin aksamin ardinda).
-        if (await getir(/nafile-satir-(kusluk|evvabin)|, nafile,/, 'nafile-satiri')) cek('02-ana-nafile-zinciri');
+        if (await getir(/nafile-satir-(kusluk|evvabin)|, nafile,/, 'nafile-satiri', { ust: 0.15, alt: 0.85 })) cek('02-ana-nafile-zinciri');
     });
 
     await bolum('sade gorunum', async () => {

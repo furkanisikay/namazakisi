@@ -56,6 +56,11 @@ jobs:
     runs-on: macos-26
     # Ozellik turu (her bolum temiz acilis + yeniden tohum) ayni iste kosar.
     timeout-minutes: 150
+    # Simulator UTC'dir; tohum Istanbul'dur. `simctl launch` SIMCTL_CHILD_ onekli
+    # degiskenleri uygulamaya gecirir → vakitler Istanbul saatiyle cizilir
+    # (yoksa ogle "09:55" gibi 3 saat geri gorunur).
+    env:
+      SIMCTL_CHILD_TZ: Europe/Istanbul
 
     steps:
       - name: 📥 Kodu çek
