@@ -9,7 +9,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Namaz muhafızı\\..*"
     direction: DOWN
-    timeout: 20000
+    timeout: 120000
 - tapOn:
     text: "Namaz muhafızı\\..*"
 - waitForAnimationToEnd:
@@ -24,7 +24,7 @@ appId: com.furkanisikay.namazakisi
       text: ".*ilk hatırlatma.*"
     direction: DOWN
     centerElement: true
-    timeout: 20000
+    timeout: 120000
 - takeScreenshot: ozk/07-muhafiz-zaman-seridi
 
 # Adim satirinin etiketi "1. hatırlatma, <ton> ton — düzenleyin. …". Ayni satirdaki
@@ -33,7 +33,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "1\\. hatırlatma.*düzenleyin.*"
     direction: DOWN
-    timeout: 20000
+    timeout: 120000
 - tapOn:
     text: "1\\. hatırlatma.*düzenleyin.*"
 - waitForAnimationToEnd:
@@ -45,7 +45,7 @@ appId: com.furkanisikay.namazakisi
       id: "adim-alarm-anahtari"
     direction: DOWN
     centerElement: true
-    timeout: 20000
+    timeout: 120000
 - takeScreenshot: ozk/09-adim-detay-anahtarlar
 
 - tapOn:

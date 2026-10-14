@@ -10,5 +10,5 @@ appId: com.furkanisikay.namazakisi
       id: "nafile-satir-kusluk"
     direction: DOWN
     centerElement: true
-    timeout: 20000
+    timeout: 120000
 - takeScreenshot: ozk/02-ana-nafile-zinciri

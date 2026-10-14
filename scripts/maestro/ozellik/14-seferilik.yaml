@@ -8,7 +8,7 @@ appId: com.furkanisikay.namazakisi
     element:
       text: "Yolculuk bilgisi\\..*"
     direction: DOWN
-    timeout: 20000
+    timeout: 120000
 - tapOn:
     text: "Yolculuk bilgisi\\..*"
 - waitForAnimationToEnd:

@@ -151,8 +151,8 @@ async function bolum(ad, fn) {
         if (!(await kaydirarakDokun(/^Bildirimler\./i, 'bildirimler satiri', 'bildirimler', { bekle: 3000 }))) return;
         cek('13-bildirim-ayarlari');
         if (await getir(/^Cuma hatırlatması$/i, 'cuma', { ust: 0.15, alt: 0.4 })) cek('14-cuma');
-        if (await getir(/^Yatış hatırlatması$/i, 'yatis', { ust: 0.15, alt: 0.4 })) cek('15-yatis');
-        if (await getir(/^Camide kılacağım hatırlatması$/i, 'camiye-git', { ust: 0.15, alt: 0.4 })) cek('16-camiye-git');
+        if (await getir(/^Yatış hatırlatması(?: \||$)/i, 'yatis', { ust: 0.15, alt: 0.4 })) cek('15-yatis');
+        if (await getir(/^Camide kılacağım hatırlatması(?: \||$)/i, 'camiye-git', { ust: 0.15, alt: 0.4 })) cek('16-camiye-git');
     });
 
     await bolum('nafile', async () => {
@@ -160,7 +160,7 @@ async function bolum(ad, fn) {
         if (!(await ayarlaraGit())) return;
         if (!(await kaydirarakDokun(/^Nafile namazlar\./i, 'nafile satiri', 'nafile', { bekle: 3000 }))) return;
         cek('17-nafile');
-        if (await getir(/nafile-kart-teheccud|^Teheccüd hatırlatması$/i, 'teheccud', { ust: 0.15, alt: 0.45 })) {
+        if (await getir(/nafile-kart-teheccud|^Teheccüd hatırlatması(?: \||$)/i, 'teheccud', { ust: 0.15, alt: 0.45 })) {
             cek('18-nafile-teheccud');
         }
     });
@@ -170,7 +170,7 @@ async function bolum(ad, fn) {
         const a = await agac('kaza-oncesi');
         if (!(await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 }))) return;
         cek('19-kaza');
-        if (await getir(/^Her farzdan sonra kaza önerin$/i, 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
+        if (await getir(/^Her farzdan sonra kaza önerin(?: \||$)/i, 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
     });
 
     await bolum('neler yeni', async () => {
