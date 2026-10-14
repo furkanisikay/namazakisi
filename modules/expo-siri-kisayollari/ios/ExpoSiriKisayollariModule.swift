@@ -18,6 +18,10 @@ import Foundation
  *
  * iOS widget uzantisi ve canli etkinlik (#295) ayni depoyu (App Group) ve ayni yuku
  * kullanir; `canliEtkinlik*` fonksiyonlari `CanliEtkinlikKoprusu`'na devreder.
+ *
+ * Apple Watch (#285): `saat*` fonksiyonlari `SaatKoprusu`'na devreder (WatchConnectivity).
+ * Saat yuku Wear OS'a giden yukun AYNISIDIR (`WearSenkronServisi`); saatten gelen
+ * "Kildim" yukaridaki ortak kuyruga duser.
  */
 public class ExpoSiriKisayollariModule: Module {
     private var gozlemci: NSObjectProtocol?
@@ -88,6 +92,16 @@ public class ExpoSiriKisayollariModule: Module {
         /// Mevcut canli etkinlikleri ISTENENE esitler (nil = hicbiri). Sonuc kodu doner.
         AsyncFunction("canliEtkinlikEsitle") { (json: String?) async -> String in
             return await CanliEtkinlikKoprusu.esitle(json: json)
+        }
+
+        /// Bu build Apple Watch uygulamasini tasiyor mu? (#285, `NamazSaatUygulamasi` plist anahtari)
+        Function("saatDestekli") { () -> Bool in
+            return SaatKoprusu.destekleniyor
+        }
+
+        /// Wear yukunu saate gonderir (son durum). Sonuc kodu: gonderildi | bekliyor | saatYok | hata.
+        AsyncFunction("saatDurumGonder") { (json: String) -> String in
+            return SaatKoprusu.paylasilan.durumGonder(json)
         }
 
         /// Bekleyen ekran istegini TUKETIR (ör. "kible"); yoksa/bayatsa nil.

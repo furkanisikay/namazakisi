@@ -9,11 +9,13 @@
  */
 import { Platform } from 'react-native';
 import type { YeniOzellik, YeniOzellikYetenegi } from '../../core/constants/YeniOzellikler';
-import { canliEtkinlikDestekli } from '../../../modules/expo-siri-kisayollari/src';
+import { canliEtkinlikDestekli, saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
 
 const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   // iOS widget uzantısı + canlı etkinlik (#295): yalnız uzantıyı taşıyan iOS build'i.
   iosWidget: () => Platform.OS === 'ios' && canliEtkinlikDestekli(),
+  // Apple Watch (#285): yalnız saat hedefini taşıyan iOS build'i (iPad'de de görünmez).
+  appleWatch: () => Platform.OS === 'ios' && saatUygulamasiDestekli(),
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {
