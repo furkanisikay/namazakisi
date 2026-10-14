@@ -65,18 +65,41 @@ kare() {
 }
 
 dokun_merkez() { adb shell input tap $((G / 2)) $((Y * 2 / 5)); }
-yukari_kaydir() { adb shell input swipe $((G / 2)) $((Y * 3 / 4)) $((G / 2)) $((Y / 4)) 350; sleep 1; }
+# Kisa ve yavas kaydirma: hizli/uzun kaydirma ScalingLazyColumn'da firlatma olur,
+# hedef satir bir adimda gorus alaninin disina kacar.
+yukari_kaydir() { adb shell input swipe $((G / 2)) $((Y * 2 / 3)) $((G / 2)) $((Y / 3)) 600; sleep 1.5; }
+
+dump_al() {
+  adb shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
+  adb exec-out cat /data/local/tmp/ui.xml > /tmp/saat-ui.xml 2>/dev/null || true
+}
+
+# Uygulama ilk cizimini bitirene kadar bekler. swiftshader emulatorunde soguk acilis
+# `am start -W` donduktan SONRA da sistemin "Starting..." acilis ekranini gosterir
+# (ilk kosuda 01/02 kareleri o ekrandan cikti) → sabit `sleep` YETMEZ.
+hazir_bekle() {
+  local desen="$1"
+  for i in $(seq 1 30); do
+    dump_al
+    if node scripts/saat/ui-merkez.js /tmp/saat-ui.xml "$desen" >/dev/null; then
+      echo "hazir ($desen): ${i}. deneme"
+      return 0
+    fi
+    sleep 2
+  done
+  echo "UYARI: '$desen' 60 sn icinde gorunmedi"
+  return 1
+}
 
 # Desene uyan dugumu bulana kadar listeyi kaydirir ve ona dokunur.
 bul_ve_dokun() {
-  local desen="$1" xy
-  for _ in 1 2 3 4 5 6; do
-    adb shell uiautomator dump /data/local/tmp/ui.xml >/dev/null 2>&1 || true
-    adb exec-out cat /data/local/tmp/ui.xml > /tmp/saat-ui.xml 2>/dev/null || true
+  local desen="$1" xy yy
+  for _ in 1 2 3 4 5 6 7 8; do
+    dump_al
     if xy=$(node scripts/saat/ui-merkez.js /tmp/saat-ui.xml "$desen"); then
-      # Dugum kenara cok yakinsa (yuvarlak ekranda kirpik) bir kez daha kaydir.
-      local yy=${xy#* }
-      if [ "$yy" -gt $((Y * 4 / 5)) ]; then yukari_kaydir; continue; fi
+      yy=${xy#* }
+      # Yuvarlak ekranda alt kenardaki satir kirpiktir; ortaya gelsin.
+      if [ "$yy" -gt $((Y * 3 / 4)) ]; then yukari_kaydir; continue; fi
       echo "dokunma ($desen): $xy"
       adb shell input tap $xy
       return 0
@@ -84,15 +107,16 @@ bul_ve_dokun() {
     yukari_kaydir
   done
   echo "UYARI: '$desen' bulunamadi"
-  grep -o 'content-desc="[^"]*"' /tmp/saat-ui.xml | head -20 || true
+  grep -o 'content-desc="[^"]\+"' /tmp/saat-ui.xml | head -20 || true
   return 1
 }
 
 # --- 01 / 02: ana ekran + vakit listesi ---
 adb shell am start -W -n "$PAKET/$SINIF.ui.AnaAktivite"
-kare 01-ana-ekran 5 || true
+hazir_bekle 'Sıradaki|Dokunarak|Kıldınız' || true
+kare 01-ana-ekran 2 || true
 yukari_kaydir
-kare 02-vakitler || true
+kare 02-vakitler 1 || true
 
 # --- 03: "Kıldım" onayi (su anki vakit kilinmamis tohumlandi) ---
 if bul_ve_dokun 'Dokunarak işaretleyin'; then
@@ -103,11 +127,16 @@ fi
 # --- 04: tesbihat sayaci (gercek dokunuslarla) ---
 adb shell am force-stop "$PAKET"
 adb shell am start -W -n "$PAKET/$SINIF.ui.TesbihatAktivite"
-sleep 2
+hazir_bekle 'Sübhânallah|Sayın|sayacı' || sleep 5
 for _ in $(seq 1 21); do dokun_merkez; sleep 0.3; done
 kare 04-tesbihat 2 || true
 
-# --- 05 / 06: tile'lar (Wear "debug surface" yayini) ---
+# --- 05 / 06: tile'lar ---
+# `add-tile` DEBUG_SURFACE, `show-tile` ise DEBUG_SYSUI eylemidir (ilk kosuda
+# show-tile DEBUG_SURFACE'e gonderildi → "Unrecognized operation"). Eklenen tile
+# 0. siraya girer; gosterim basarisizsa kadrandan bir kez sola kaydirilir.
+# Kadrandayken HOME'a basmak uygulama listesini acar (ilk kosuda tile karesi yerine
+# o cikti) → uygulamadan cikis force-stop ile, HOME'suz.
 tile_goster() {
   local servis="$1" ad="$2" cikti indeks
   cikti=$(adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
@@ -118,32 +147,61 @@ tile_goster() {
     echo "UYARI: $servis tile eklenemedi"
     return 1
   fi
-  adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
-    --es operation show-tile --ei index "$indeks"
-  kare "$ad" 5
+  cikti=$(adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SYSUI \
+    --es operation show-tile --ei index "$indeks" 2>&1 || true)
+  echo "show-tile $indeks: $cikti"
+  if ! echo "$cikti" | grep -q 'result=1'; then
+    adb shell input swipe $((G * 4 / 5)) $((Y / 2)) $((G / 5)) $((Y / 2)) 300
+  fi
+  kare "$ad" 6
 }
 adb shell am force-stop "$PAKET"
-adb shell input keyevent KEYCODE_HOME
 sleep 2
 tile_goster BugunTileServisi 05-tile-bugun || true
+adb shell input keyevent KEYCODE_BACK
+sleep 2
 tile_goster VakitTileServisi 06-tile-vakit || true
+adb shell input keyevent KEYCODE_BACK
+sleep 2
 
 # --- 07: kadranda komplikasyon (en iyi gayret) ---
-adb shell input keyevent KEYCODE_HOME
-sleep 2
+# Emulatorun varsayilan kadrani (Orbita) yuvalari KAPALI getirir: set-complication
+# "Complication slot is not enabled" der. Yuklu kadranlar listelenir, her biri icin
+# etkinlestirme + yuva denenir; hicbiri tutmazsa kare ALINMAZ (bos kadran karesi
+# yaniltici olurdu).
+echo "yuklu kadranlar:"
+adb shell cmd package query-services -a android.service.wallpaper.WallpaperService 2>/dev/null \
+  | sed -n 's/.*ComponentInfo{\([^}]*\)}.*/\1/p' | sort -u | tee /tmp/kadranlar.txt || true
 KADRAN=$(adb shell dumpsys wallpaper 2>/dev/null | sed -n 's/.*mWallpaperComponent=ComponentInfo{\([^}]*\)}.*/\1/p' | head -1)
 echo "etkin kadran: ${KADRAN:-bilinmiyor}"
-if [ -n "$KADRAN" ]; then
-  # ComplicationData tipleri: SHORT_TEXT=3, RANGED_VALUE=5. Yuva 0..3 denenir.
-  for yuva in 0 1 2 3; do
+KOMP_TUTTU=0
+for kadran in $KADRAN $(grep -v "^$KADRAN\$" /tmp/kadranlar.txt 2>/dev/null || true); do
+  [ -z "$kadran" ] && continue
+  if [ "$kadran" != "$KADRAN" ]; then
     adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
-      --es operation set-complication \
-      --ecn component "$PAKET/$SINIF.komplikasyon.VakitKomplikasyonServisi" \
-      --ecn watchface "$KADRAN" --ei slot "$yuva" --ei type 3 || true
+      --es operation set-watchface --ecn component "$kadran" 2>&1 | tail -1 || true
+    sleep 4
+  fi
+  for yuva in 0 1 2 3 4 5; do
+    for tip in 3 5; do
+      cikti=$(adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE \
+        --es operation set-complication \
+        --ecn component "$PAKET/$SINIF.komplikasyon.VakitKomplikasyonServisi" \
+        --ecn watchface "$kadran" --ei slot "$yuva" --ei type "$tip" 2>&1 | tail -1 || true)
+      if echo "$cikti" | grep -q 'result=1'; then
+        echo "komplikasyon: $kadran yuva=$yuva tip=$tip"
+        KOMP_TUTTU=1
+        break 2
+      fi
+    done
   done
+  [ "$KOMP_TUTTU" = 1 ] && break
+  echo "komplikasyon tutmadi: $kadran ($cikti)"
+done
+if [ "$KOMP_TUTTU" = 1 ]; then
   kare 07-kadran-komplikasyon 6 || true
 else
-  echo "UYARI: kadran bulunamadi, komplikasyon karesi atlandi"
+  echo "UYARI: hicbir kadranda komplikasyon yuvasi etkinlestirilemedi; 07 atlandi"
 fi
 
 ls -la "$CIKIS"

@@ -285,7 +285,9 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           script: bash scripts/saat-kare-hatti.sh yuvarlak
 
-      - name: ⌚ Kare saat (Wear OS 5)
+      # wearos_square profili 360x360'tir; Play saat karesi en az 384x384 ister →
+      # ekran `-skin 384x384` ile buyutulur (yogunluk ayni, ~16 dp daha genis).
+      - name: ⌚ Kare saat (Wear OS 5, 384x384)
         if: ${{ !cancelled() }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -294,7 +296,7 @@ jobs:
           arch: x86_64
           profile: wearos_square
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -skin 384x384
           script: bash scripts/saat-kare-hatti.sh kare
 
       - name: 🧾 Saat kareleri özeti
