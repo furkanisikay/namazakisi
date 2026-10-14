@@ -61,6 +61,27 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'İzni sonradan Ayarlar > Namaz Akışı bölümünden açıp kapatabilirsiniz',
         ],
     },
+    // Takvim çakışması uyarısı (issue #291) — varsayılan kapalı, açık rıza ile açılır.
+    {
+        id: 'takvim-cakismasi-uyarisi',
+        surum: '0.31.0',
+        tarih: '2026-10-13',
+        baslik: 'Toplantı Vakte Denk Gelirse Haber Verelim',
+        aciklama:
+            'Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım.',
+        detayAciklama:
+            'Bildirim ayarlarındaki "Takvim çakışması uyarısı"nı açtığınızda, bir etkinlik bittiğinde vaktin çıkmasına 10 dakikadan az kalıyorsa etkinlikten önce tek bir hatırlatma alırsınız. Vakti baştan sona kaplayan etkinliklerde ara verip kılmayı planlamanız için haber verilir. Özellik varsayılan olarak kapalıdır ve açarken nelerin okunduğunu açıkça gösteririz: takviminiz yalnızca bu cihazda okunur, hiçbir yere gönderilmez ve saklanmaz.',
+        ikon: 'calendar-times',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'İnceleyin',
+        kartGoster: false,
+        detaylar: [
+            'Etkinlik adı varsayılan olarak bildirimde görünmez; isterseniz açabilirsiniz',
+            'Tüm gün etkinlikleri ve "meşgul değil" işaretli etkinlikler sayılmaz',
+            'İkindide güneşin sararmasından (kerahat) önceki an esas alınır',
+            'Vakti kıldığınızda o vaktin uyarısı kendiliğinden kalkar',
+        ],
+    },
     // Seferîlik bilgi kartı (issue #296) — kart kapalı; özellik ana ekranda kendiliğinden çıkar.
     {
         id: 'seferilik-bilgi-karti',

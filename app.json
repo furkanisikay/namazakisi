@@ -90,7 +90,7 @@
       [
         "expo-calendar",
         {
-          "calendarPermission": "Namaz vakitlerini takviminize eklemek için takvim iznine ihtiyaç var."
+          "calendarPermission": "Namaz vakitlerini takviminize eklemek ve siz açarsanız takviminizdeki etkinliklerin bir namaz vaktiyle çakışıp çakışmadığını denetlemek için takvim izni kullanılır. Takvim bilgileriniz cihazınızdan çıkmaz."
         }
       ],
       "expo-mail-composer"

@@ -117,6 +117,10 @@ if (Platform.OS === 'android') {
     import('./src/domain/services/YatisHatirlatmaServisi')
         .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
         .catch(() => undefined);
+    // Takvim çakışması (issue #291): kılınan vaktin uyarısı headless'ta da iptal edilsin.
+    import('./src/domain/services/TakvimCakismaServisi')
+        .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).

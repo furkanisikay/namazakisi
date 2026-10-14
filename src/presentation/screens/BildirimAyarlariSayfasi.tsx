@@ -57,6 +57,7 @@ import { AyarCapasi } from '../components/ayar/AyarCapasi';
 import { YatisHatirlatmaBolumu } from '../components/ayar/YatisHatirlatmaBolumu';
 import { yatisHatirlatmaAyarlariniYukle } from '../store/yatisHatirlatmaSlice';
 import { CamiyeGitBolumu } from '../components/camiyeGit/CamiyeGitBolumu';
+import { TakvimCakismaBolumu } from '../components/takvimCakisma/TakvimCakismaBolumu';
 import { BileklikRehberKarti } from '../components/bildirim/BileklikRehberKarti';
 
 /**
@@ -656,6 +657,16 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
             CAMİYE GİTMEK
           </Text>
           <CamiyeGitBolumu />
+        </View>
+        </AyarCapasi>
+
+        {/* Takvim çakışması uyarısı — açık rıza ile diğer takvimleri okur (issue #291) */}
+        <AyarCapasi id="takvimCakismaUyarisi">
+        <View className="mb-6">
+          <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+            TAKVİM
+          </Text>
+          <TakvimCakismaBolumu />
         </View>
         </AyarCapasi>
 

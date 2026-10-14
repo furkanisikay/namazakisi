@@ -17,6 +17,8 @@
  *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe)
  *   gün sonu        → `gunSonuPlaniOlustur` (iOS 3, Android 7 gün)
  *   yatış/muhasebe  → `yatisPlaniOlustur` (iOS 3, Android 7 namaz günü; issue #290)
+ *   takvim çakışması → `takvimCakismaPlaniOlustur` (iOS 3, Android 7 gün; issue #291 —
+ *                     etkinlikleri girdi olarak alır, takvimi kendisi okumaz)
  *   vakit sayacı    → `sayacPlaniOlustur` (yalnız Android; vakit başına 2)
  *   widget          → dakika alarmı (yalnız Android; 1)
  *
@@ -48,6 +50,8 @@ import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../u
 import { cumaPlaniOlustur, type CumaPlanAyarlari } from './cumaPlani';
 import { camiyeGitPlaniOlustur, CAMIYE_GIT_PLAN_GUN_SAYISI, type CamiyeGitPlanAyarlari } from './camiyeGitPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
+import { takvimCakismaPlaniOlustur, TAKVIM_CAKISMA_PLAN_GUN_SAYISI, type TakvimEtkinligi } from './takvimCakismaPlani';
+import type { TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
 import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vakitBildirimPlani';
 import {
     ANDROID_MUHAFIZ_PAYI,
@@ -68,6 +72,7 @@ export type DefterKaynagi =
     | 'nafile'
     | 'gunSonu'
     | 'yatis'
+    | 'takvimCakisma'
     | 'sayac'
     | 'widget';
 
@@ -82,6 +87,7 @@ export const DEFTER_KAYNAK_SIRASI: DefterKaynagi[] = [
     'camiyeGit',
     'gunSonu',
     'yatis',
+    'takvimCakisma',
     'sayac',
     'widget',
 ];
@@ -116,6 +122,11 @@ export interface DefterGirdisi {
     gunSonu?: (GunSonuPlanAyarlari & { gunSonuBildirimAktif: boolean }) | null;
     /** Yatış hatırlatması + gün sonu muhasebesi (issue #290). */
     yatis?: YatisAyarlari | null;
+    /**
+     * Takvim çakışması (issue #291): ayar + servisle AYNI süzgeçten geçmiş
+     * etkinlikler (`TakvimEtkinlikOkuyucu`). İzin yoksa `null`.
+     */
+    takvimCakisma?: { ayarlar: Pick<TakvimCakismaAyarlari, 'aktif' | 'oncedenDk'>; etkinlikler: readonly TakvimEtkinligi[] } | null;
     /** Vakit sayacı ayarı (Android). Eşikler muhafız matrisinden türer. */
     vakitSayaci?: { aktif: boolean; sayacBaslangicSeviyesi?: number } | null;
     /** Android ana ekran widget'ının dakika alarmı sayılsın mı? (varsayılan: Android'de evet) */
@@ -257,6 +268,23 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 gunAtlanirMi: ozelGundeMi,
             });
             for (const k of plan) ekle('yatis', k.zaman.getTime());
+        });
+    }
+
+    // ── Takvim çakışması uyarısı ── (konum yoksa servis kurmaz)
+    if (koordinat && g.takvimCakisma?.ayarlar.aktif) {
+        const girdi = g.takvimCakisma;
+        guvenli(() => {
+            const plan = takvimCakismaPlaniOlustur({
+                koordinat,
+                ayarlar: girdi.ayarlar,
+                simdi: g.simdi,
+                gunSayisi: TAKVIM_CAKISMA_PLAN_GUN_SAYISI[g.platform],
+                etkinlikler: girdi.etkinlikler,
+                kilinanlar: (gun) => g.kilinan?.[gun] ?? [],
+                gunAtlanirMi: ozelGundeMi,
+            });
+            for (const k of plan) ekle('takvimCakisma', k.zaman.getTime());
         });
     }
 

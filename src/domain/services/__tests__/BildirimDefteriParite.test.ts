@@ -48,6 +48,16 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
     muhafizKanallariniTemizle: jest.fn(),
 }));
 
+// Takvim çakışması (issue #291): servis ve defter AYNI okuyucudan geçer.
+const mockTakvimEtkinlikleri = jest.fn((..._a: unknown[]) => Promise.resolve([] as unknown[]));
+jest.mock('expo-calendar', () => ({
+    EntityTypes: { EVENT: 'event' },
+    getCalendarPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+    requestCalendarPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+    getCalendarsAsync: jest.fn(() => Promise.resolve([{ id: 'is' }])),
+    getEventsAsync: (...a: unknown[]) => mockTakvimEtkinlikleri(...a),
+}));
+
 jest.mock('../MuhafizKanalServisi', () => ({
     MuhafizKanalServisi: { hazirla: jest.fn(async (m?: unknown) => m) },
 }));
@@ -69,6 +79,10 @@ import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
 import { YatisHatirlatmaServisi } from '../YatisHatirlatmaServisi';
 import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/yatisPlani';
+import { TakvimCakismaServisi } from '../TakvimCakismaServisi';
+import { defterDisGirdisiniOku } from '../BildirimDefteriServisi';
+import { takvimCakismaKimligiMi } from '../../../core/bildirim/takvimCakismaPlani';
+import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { bildirimDefteriOlustur, defterOzeti, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
@@ -384,6 +398,46 @@ describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = s
         const g = temelGirdi(platform, { yatis: ayar });
         expect(say(g, 'yatis')).toBe(platform === 'ios' ? 3 : 7);
         expect(kurulan).toBe(say(g, 'yatis'));
+    });
+});
+
+describe('takvim çakışması (issue #291): defter = servisin kurduğu', () => {
+    // Her gün ikindinin sonunu yutan bir toplantı (ikindi + 60 dk → akşam + 10 dk).
+    const toplantilar = () =>
+        Array.from({ length: 8 }, (_, i) => {
+            const gun = new Date(SABAH.getFullYear(), SABAH.getMonth(), SABAH.getDate() + i);
+            const pt = new PrayerTimes(new Coordinates(ISTANBUL.lat, ISTANBUL.lng), gun, CalculationMethod.Turkey());
+            return {
+                startDate: new Date(pt.asr.getTime() + 60 * 60_000).toISOString(),
+                endDate: new Date(pt.maghrib.getTime() + 10 * 60_000).toISOString(),
+                allDay: false,
+                availability: 'busy',
+                status: 'confirmed',
+                title: 'Toplantı',
+                notes: '',
+            };
+        });
+
+    it.each(['ios', 'android'] as const)('%s ufku (okuyucu dahil)', async (platform) => {
+        jest.replaceProperty(Platform, 'OS', platform);
+        mockTakvimEtkinlikleri.mockResolvedValue(toplantilar());
+        disk.set(
+            DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI,
+            JSON.stringify({ aktif: true, oncedenDk: 30, baslikGoster: false, rizaZamani: '2026-10-01T00:00:00.000Z' })
+        );
+        await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+        const kurulan = planlananlar().filter((p) => takvimCakismaKimligiMi(String(p.identifier))).length;
+        const dis = await defterDisGirdisiniOku();
+        const g = temelGirdi(platform, { takvimCakisma: dis.takvimCakisma });
+        expect(say(g, 'takvimCakisma')).toBe(platform === 'ios' ? 3 : 7);
+        expect(kurulan).toBe(say(g, 'takvimCakisma'));
+    });
+
+    it('özellik kapalıyken defter takvimi OKUMAZ', async () => {
+        mockTakvimEtkinlikleri.mockClear();
+        const dis = await defterDisGirdisiniOku();
+        expect(dis.takvimCakisma).toBeNull();
+        expect(mockTakvimEtkinlikleri).not.toHaveBeenCalled();
     });
 });
 

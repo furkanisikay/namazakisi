@@ -23,11 +23,22 @@ import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { alarmKitDurumu } from '../../../modules/expo-muhafiz-alarmkit/src';
+import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
+import { TAKVIM_CAKISMA_PLAN_GUN_SAYISI } from '../../core/bildirim/takvimCakismaPlani';
+import { cakismaEtkinlikleriniOku, okumaAraligi } from './TakvimEtkinlikOkuyucu';
 
 /** Defterin muhafız/nafile/konum DIŞINDAKİ girdileri. */
 export type DefterDisGirdisi = Pick<
     DefterGirdisi,
-    'vakitBildirimi' | 'cuma' | 'camiyeGit' | 'gunSonu' | 'yatis' | 'kilinan' | 'ozelGundeMi' | 'iosAlarmKit'
+    | 'vakitBildirimi'
+    | 'cuma'
+    | 'camiyeGit'
+    | 'gunSonu'
+    | 'yatis'
+    | 'takvimCakisma'
+    | 'kilinan'
+    | 'ozelGundeMi'
+    | 'iosAlarmKit'
 >;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
@@ -57,6 +68,17 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         // iOS gerçek alarm (AlarmKit, #74): teslimci de aynı durumu `hazirla`da okur.
         guvenli('alarmkit', () => alarmKitDurumu()),
     ]);
+    // Takvim çakışması (issue #291): yalnız AÇIKKEN takvim okunur; servisle AYNI
+    // okuyucu + süzgeç. İzin yoksa servis de hiçbir şey kurmaz → null.
+    const takvimCakisma = await guvenli('takvim cakismasi', async () => {
+        const ayarlar = await LocalTakvimCakismaServisi.getAyarlar();
+        if (!ayarlar.aktif) return null;
+        const simdi = new Date();
+        const gunSayisi = TAKVIM_CAKISMA_PLAN_GUN_SAYISI[Platform.OS === 'ios' ? 'ios' : 'android'];
+        const { baslangic, bitis } = okumaAraligi(simdi, gunSayisi);
+        const okuma = await cakismaEtkinlikleriniOku(baslangic, bitis);
+        return okuma.durum === 'tamam' ? { ayarlar, etkinlikler: okuma.etkinlikler } : null;
+    });
     const kilinan: Record<string, readonly VakitAdi[]> = {
         [bugun]: kilinanBugun ?? [],
         [dun]: kilinanDun ?? [],
@@ -67,6 +89,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         camiyeGit,
         gunSonu: seri,
         yatis,
+        takvimCakisma,
         kilinan,
         ozelGundeMi: ozelGundeMi ?? undefined,
         iosAlarmKit: Platform.OS === 'ios' && alarmKit === 'izinli',

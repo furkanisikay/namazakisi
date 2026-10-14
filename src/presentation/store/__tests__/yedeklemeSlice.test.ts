@@ -71,6 +71,17 @@ jest.mock('../../../domain/services/YatisHatirlatmaServisi', () => ({
     getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
   },
 }));
+jest.mock('../takvimCakismaSlice', () => ({
+  takvimCakismaAyarlariniYukle: jest.fn(() => ({ type: 'takvimCakisma/yukle' })),
+}));
+// Takvim çakışması (issue #291): içe aktarılan kayıtlar kılınmışlığı değiştirir
+// ve ayarı yüklemek bildirim kurmaz → yayma koşsa da koşmasa da yeniden planlanır.
+const mockTakvimCakismaGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/TakvimCakismaServisi', () => ({
+  TakvimCakismaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockTakvimCakismaGuncelle(...a) }),
+  },
+}));
 jest.mock('../camiyeGitSlice', () => ({
   camiyeGitAyarlariniYukle: jest.fn(() => ({ type: 'camiyeGit/yukle' })),
 }));
@@ -418,10 +429,13 @@ describe('yedeklemeSlice', () => {
           '@namaz_akisi/namaz_gun_2026-06-14': { sabah: true },
         });
         mockYatisGuncelle.mockClear();
+        mockTakvimCakismaGuncelle.mockClear();
 
         await calistir(dispatchYap([]), getStateYap());
 
         expect(mockYatisGuncelle).toHaveBeenCalledTimes(1);
+        // Takvim çakışması (#291): kılınmış vaktin uyarısı elensin.
+        expect(mockTakvimCakismaGuncelle).toHaveBeenCalledTimes(1);
       });
     });
   });
