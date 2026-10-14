@@ -51,7 +51,7 @@ on:
         required: false
         default: 'pixel_6'
       tablet:
-        description: 'Özellik turunu tablette de çek (pixel_tablet, açık tema; ~+20 dk)'
+        description: 'Özellik turunu tablette de çek (pixel_tablet, açık tema; ~+60-90 dk)'
         type: boolean
         required: false
         default: false
@@ -67,7 +67,9 @@ jobs:
     runs-on: ubuntu-latest
     # 90 dk magaza turu icin yetiyordu; ozellik turu (iki tema + istege bagli
     # tablet, her akistan once yeniden tohumlama) ayni isin icinde kosar.
-    timeout-minutes: 180
+    timeout-minutes: 330
+    # Telefon (acik+koyu) + tablet ozellik turu ~3,5 sa suruyor (kaydirma basina ~35 sn);
+    # 180 dk tabletin son akisini kesti (5817e59). GitHub is tavani 360 dk.
 
     steps:
       - name: 📥 Kodu çek
