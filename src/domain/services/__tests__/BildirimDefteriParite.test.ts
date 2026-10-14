@@ -86,7 +86,6 @@ import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { bildirimDefteriOlustur, defterOzeti, iosYedekleriSigdir, type DefterGirdisi, type DefterKaynagi } from '../../../core/bildirim/bildirimDefteri';
 import { butceOnerileriOlustur } from '../../../core/bildirim/butceOnerileri';
-import { muhafizVakitleriniHesapla } from '../../../core/muhafiz/muhafizTeslimPlani';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
 import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
