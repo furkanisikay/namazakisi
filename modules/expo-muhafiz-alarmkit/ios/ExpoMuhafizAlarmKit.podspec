@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.author         = 'Furkan ISIKAY'
   s.homepage       = 'https://github.com/furkanisikay/namazakisi'
   s.license        = { :type => 'GPL-3.0', :file => '../../../LICENSE' }
-  s.platforms      = { :ios => '15.1' }
+  s.platforms      = { :ios => '16.4' }
   s.source         = { git: 'https://github.com/furkanisikay/namazakisi' }
   s.static_framework = true
 

@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
 import * as Sharing from 'expo-sharing';
-import { File, Paths } from 'expo-file-system/next';
+import { File, Paths } from 'expo-file-system';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRenkler } from '../../core/theme';

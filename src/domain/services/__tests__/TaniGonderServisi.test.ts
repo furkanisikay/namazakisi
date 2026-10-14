@@ -1,7 +1,7 @@
 jest.mock('react-native', () => ({ Platform: { OS: 'android', Version: 34, constants: { Model: 'X', Release: '16' } } }));
 jest.mock('../../../core/utils/Logger', () => ({ Logger: { exportLogs: () => 'log', error: jest.fn() } }));
 const mockYaz = jest.fn();
-jest.mock('expo-file-system/next', () => ({
+jest.mock('expo-file-system', () => ({
   Paths: { cache: '/cache' },
   File: class { uri = 'file:///cache/tani.txt'; constructor() {} create() {} write(v: string) { mockYaz(v); } },
 }));

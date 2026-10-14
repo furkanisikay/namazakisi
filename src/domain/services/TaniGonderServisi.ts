@@ -1,6 +1,6 @@
 import * as MailComposer from 'expo-mail-composer';
 import * as Sharing from 'expo-sharing';
-import { File, Paths } from 'expo-file-system/next';
+import { File, Paths } from 'expo-file-system';
 import { UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import { taniRaporuOlustur } from './TaniRaporuServisi';
