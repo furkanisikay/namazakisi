@@ -50,6 +50,18 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   seferilik: DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI,
 };
 
+/**
+ * Dört kategoride de "akıllı" strateji (union; hiçbir şey geri alınmaz, ayarlara
+ * dokunulmaz). Cihazlar arası eşitleme (issue #288) daima bunu kullanır — son
+ * yazan kazanır YOKTUR.
+ */
+export const AKILLI_SECIMLER: Readonly<KategoriSecimleri> = Object.freeze({
+  namaz: 'akilli',
+  puan: 'akilli',
+  kaza: 'akilli',
+  ayarlar: 'akilli',
+});
+
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */
 type KazaGorunumu = { toplamTamamlanan?: number } | null;
 

@@ -105,6 +105,20 @@ sonra açılıyor (kişisel ibadet verisi içermez).
 verisi GÖNDERMEZ, yalnız şehir listesi indirir ve çevrimdışı yedeği vardır. Veri
 toplama beyanını etkilemez.
 
+**Cihazlar arası eşitleme (issue #288) — sağlayıcı ETKİNLEŞTİRİLDİĞİNDE yeniden
+değerlendirin.** Özellik isteğe bağlıdır ve varsayılan kapalıdır; veri kullanıcının
+KENDİ bulut alanına (Drive `appDataFolder` / iCloud) kullanıcı parolasından türetilen
+anahtarla **uçtan uca şifreli** gider, geliştiricinin sunucusu yoktur ve geliştirici
+içeriği okuyamaz. Ayarlar ve konum gönderilmez. Bugünkü sürümde hiçbir sağlayıcı
+yapılandırılmadığı için beyan DEĞİŞMEZ. Etkinleştirildiğinde:
+- **Apple App Privacy:** Apple, geliştiricinin erişemediği uçtan uca şifreli veriyi
+  "toplanan veri" saymayabilir; beyanı yine de ASC'de gözden geçirin (API'den
+  yazılamaz, yalnız web arayüzü).
+- **Google Play Data Safety:** "Veri aktarımı şifreli" + kullanıcının kendi Google
+  hesabına yazılan uçtan uca şifreli içerik; Google'ın "end-to-end encrypted" istisnasının
+  bu kullanıma uyduğunu sahibin Play Console yardım metniyle doğrulaması gerekir.
+  OAuth onay ekranı `drive.appdata` kapsamını gösterir.
+
 ## Yaş derecelendirmesi
 
 Tüm sorulara "Yok / Hiçbiri". İbadet içeriği Apple'ın "Horror/Fear Themes" veya

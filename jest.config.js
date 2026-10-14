@@ -46,6 +46,11 @@ module.exports = {
     "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
     // Katlanabilir postür köprüsü (WindowManager, Android). Varsayılan: modül yok → "düz".
     "expo-katlanma-posturu/src$": "<rootDir>/__mocks__/expo-katlanma-posturu.js",
+    // Cihazlar arası eşitleme (issue #288): iCloud köprüsü (iOS native, varsayılan YOK),
+    // güvenli depo ve tarayıcı oturumu (native köprüler) — bellek-içi/iptal eden mock'lar.
+    "expo-icloud-esitleme/src$": "<rootDir>/__mocks__/expo-icloud-esitleme.js",
+    "^expo-secure-store$": "<rootDir>/__mocks__/expo-secure-store.js",
+    "^expo-web-browser$": "<rootDir>/__mocks__/expo-web-browser.js",
     // Camideyim haritası (MapLibre) Fabric native bileşenleri; jest'te yok.
     "^@maplibre/maplibre-react-native$": "<rootDir>/__mocks__/maplibre-react-native.js",
     // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı

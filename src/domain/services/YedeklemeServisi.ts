@@ -21,6 +21,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import {
   YedekZarfi,
   YedekPayload,
+  YazimPlani,
   NamazGunleri,
   GunNamazHaritasi,
   YEDEK_BICIMI,
@@ -208,6 +209,22 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
  * İçe-aktarma orkestratörü (yedeklemeSlice) birleştirme için mevcut tarafı bununla alır.
  */
 export const mevcutVeriyiTopla = (): Promise<YedekPayload> => payloadOlustur();
+
+/**
+ * Birleştirme planını diske yazar ve açılış göç bayrağını kurar — içe aktarmanın
+ * DİSK adımı. İki çağıran AYNI yoldan geçer: `yedeklemeSlice.iceAktarmayiUygula`
+ * (ardından store'u tazeler) ve cihazlar arası eşitlemenin arka plan yolu (Redux
+ * yok; store açılışta diskten yüklenir). İkinci bir yazma yolu AÇMA.
+ *
+ * Sıra (AGENTS.md "İçe-aktarma sırası"): plan → göç bayrağı (açılış göçü
+ * içe-aktarılan günleri EZMESİN).
+ */
+export const planiDiskeYaz = async (plan: YazimPlani): Promise<void> => {
+  for (const [anahtar, deger] of Object.entries(plan)) {
+    await Depolama.yaz(anahtar, deger);
+  }
+  await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
+};
 
 /**
  * Tüm yerel veriyi okur, payload'ı kurar, bütünlük özetini hesaplar, şifreler ve

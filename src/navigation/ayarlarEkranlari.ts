@@ -30,6 +30,7 @@ export const AYARLAR_EKRANLARI = [
   'NelerYeni',
   'YedeklemeAktarim',
   'IceAktarmaSihirbazi',
+  'EsitlemeAyarlari',
   'TaniGeriBildirim',
 ] as const;
 

@@ -218,6 +218,12 @@ export const DEPOLAMA_ANAHTARLARI = {
   TANI_HATIRLATMA_ACIK: '@namaz_akisi/tani_hatirlatma_acik',
   /** Son dışa aktarma zamanı (ISO). Cihaza özgü eylem geçmişi — YEDEĞE GİRMEZ. */
   SON_DISA_AKTARMA: '@namaz_akisi/son_disa_aktarma',
+  /**
+   * Cihazlar arası eşitleme durumu (issue #288): açık mı, sağlayıcı, son etiket/özet,
+   * son eşitleme. Cihaza özgü → YEDEĞE GİRMEZ. Parola/anahtar burada DEĞİL,
+   * `expo-secure-store`'dadır.
+   */
+  ESITLEME_DURUMU: '@namaz_akisi/esitleme_durumu',
 } as const;
 
 // Tarih formatlari

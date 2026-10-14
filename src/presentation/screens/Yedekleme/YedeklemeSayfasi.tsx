@@ -31,6 +31,7 @@ import { BildirimModali } from '../../components/common/BildirimModali';
 import { VurguSaglayici } from '../../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../../components/ayar/AyarCapasi';
+import { kullanilabilirSaglayicilar } from '../../../domain/services/esitlemeSaglayicilari';
 
 /**
  * Büyük aksiyon kartı — birincil eylem (yedek oluştur) ve ikincil eylem
@@ -162,6 +163,14 @@ const YedeklemeIcerik: React.FC = () => {
     await handleYedekOlustur();
   };
 
+  // Sağlayıcı yapılandırması derleme zamanı sabittir → bir kez hesaplanır.
+  const esitlemeVar = React.useMemo(() => kullanilabilirSaglayicilar().length > 0, []);
+
+  const handleEsitleme = async () => {
+    await butonTiklandiFeedback();
+    navigation.navigate('EsitlemeAyarlari' as never);
+  };
+
   const handleIceAktar = async () => {
     await butonTiklandiFeedback();
     navigation.navigate('IceAktarmaSihirbazi' as never);
@@ -271,6 +280,18 @@ const YedeklemeIcerik: React.FC = () => {
               pasif={yedekleniyor}
             />
           </AyarCapasi>
+
+          {/* Cihazlar arası eşitleme (issue #288): YALNIZ bu build'de yapılandırılmış
+              bir sağlayıcı varsa görünür — kullanıcıya çalışmayan seçenek sunulmaz. */}
+          {esitlemeVar && (
+            <AksiyonKarti
+              ikon="sync-alt"
+              baslik="Cihazlar arası eşitleme"
+              aciklama="Kayıtlarınızı kendi bulut hesabınız üzerinden, uçtan uca şifreli olarak eşitleyin."
+              onPress={handleEsitleme}
+              pasif={yedekleniyor}
+            />
+          )}
         </Animated.View>
       </ScrollView>
 
