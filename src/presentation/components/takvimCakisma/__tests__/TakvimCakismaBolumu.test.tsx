@@ -75,7 +75,7 @@ beforeEach(() => {
     jest.clearAllMocks();
     mockDisk = takvimCakismaAyarlariniNormalize(null);
     mockIzinDurumu.mockResolvedValue('verilmedi');
-    mockIzinIste.mockResolvedValue(true);
+    mockIzinIste.mockResolvedValue({ verildi: true, tekrarSorulabilir: true });
 });
 
 describe('TakvimCakismaBolumu', () => {
@@ -88,6 +88,8 @@ describe('TakvimCakismaBolumu', () => {
         expect(mockIzinIste).not.toHaveBeenCalled();
 
         fireEvent.press(getByLabelText('Kabul ediyorum, takvim iznini isteyin'));
+        // İzin, rıza modalı kapanırken AYNI ANDA istenmez (Samsung iç testi): önce modal kapanır.
+        expect(mockIzinIste).not.toHaveBeenCalled();
         await waitFor(() => expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(true));
         expect(mockIzinIste).toHaveBeenCalledTimes(1);
         expect(store.getState().takvimCakisma.ayarlar.rizaZamani).toEqual(expect.any(String));
@@ -103,14 +105,29 @@ describe('TakvimCakismaBolumu', () => {
         expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false);
     });
 
-    it('sistem izni reddedilirse özellik AÇILMAZ ve ayarlara yönlendiren bilgi çıkar', async () => {
-        mockIzinIste.mockResolvedValue(false);
+    it('sistem izni kalıcı reddedilmişse özellik AÇILMAZ ve ayarlara yönlendiren bilgi çıkar', async () => {
+        mockIzinIste.mockResolvedValue({ verildi: false, tekrarSorulabilir: false });
         const { getByLabelText, findByText, store } = kur();
         fireEvent(getByLabelText('Takvim çakışması uyarısı'), 'valueChange', true);
         await findByText('Takviminiz okunsun mu?');
         fireEvent.press(getByLabelText('Kabul ediyorum, takvim iznini isteyin'));
         expect(await findByText('Takvim izni verilmedi')).toBeTruthy();
+        expect(await findByText('Ayarları açın')).toBeTruthy();
         expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false);
+    });
+
+    it('diyalog yeniden açılabiliyorsa "Tekrar deneyin" sunulur ve ikinci denemede açılır', async () => {
+        mockIzinIste
+            .mockResolvedValueOnce({ verildi: false, tekrarSorulabilir: true })
+            .mockResolvedValueOnce({ verildi: true, tekrarSorulabilir: true });
+        const { getByLabelText, findByText, store } = kur();
+        fireEvent(getByLabelText('Takvim çakışması uyarısı'), 'valueChange', true);
+        await findByText('Takviminiz okunsun mu?');
+        fireEvent.press(getByLabelText('Kabul ediyorum, takvim iznini isteyin'));
+        fireEvent.press(await findByText('Tekrar deneyin'));
+        await waitFor(() => expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(true));
+        expect(mockIzinIste).toHaveBeenCalledTimes(2);
+        expect(store.getState().takvimCakisma.ayarlar.rizaZamani).toEqual(expect.any(String));
     });
 
     it('açıkken izin geri alınmışsa uyarı ve "İzin verin" düğmesi görünür', async () => {

@@ -166,7 +166,7 @@ describe('TakvimEtkinlikOkuyucu izin yardımcıları', () => {
         mockIzin.mockResolvedValue({ status: 'undetermined' });
         await expect(takvimIzinDurumunuOku()).resolves.toBe('verilmedi');
         expect(mockIzinIste).not.toHaveBeenCalled();
-        await expect(takvimIzniIste()).resolves.toBe(true);
+        await expect(takvimIzniIste()).resolves.toEqual({ verildi: true, tekrarSorulabilir: true });
         mockIzin.mockRejectedValue(new Error('x'));
         await expect(takvimIzinDurumunuOku()).resolves.toBe('bilinmiyor');
     });

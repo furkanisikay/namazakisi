@@ -49,17 +49,50 @@ export async function takvimIzinDurumunuOku(): Promise<TakvimIzinDurumu> {
     }
 }
 
-/** Sistem izin diyaloğunu açar (yalnız ayar ekranından, rıza VERİLDİKTEN sonra). */
-export async function takvimIzniIste(): Promise<boolean> {
+/** İzin isteğinin sonucu. `tekrarSorulabilir: false` → sistem diyaloğu bir daha açılmaz, ayarlar gerekir. */
+export interface TakvimIzinIstekSonucu {
+    verildi: boolean;
+    tekrarSorulabilir: boolean;
+}
+
+type HamIzin = { status?: unknown; canAskAgain?: unknown; granted?: unknown };
+
+const hamVerildiMi = (h: HamIzin | null | undefined): boolean => !!h && (h.status === 'granted' || h.granted === true);
+
+/** Loga yalnız durum alanları (kişisel veri yok). */
+const hamOzet = (h: HamIzin | null | undefined): string =>
+    h ? `status=${String(h.status)} canAskAgain=${String(h.canAskAgain)}` : 'yok';
+
+/**
+ * Sistem izin diyaloğunu açar (yalnız ayar ekranından, rıza VERİLDİKTEN ve rıza
+ * modalı TAMAMEN kapandıktan sonra). ASLA fırlatmaz.
+ *
+ * İstek "verilmedi" derse durum bir kez daha OKUNUR: v0.31.0 iç testinde (Samsung)
+ * kullanıcı izni verdiği hâlde özellik "izin verilmedi" dedi — istek, kapanmakta
+ * olan modalla aynı anda gönderilince sonuç güvenilmez olabiliyor. Gerçek durum
+ * okumada "verildi" ise verildi sayılır. Ham durum + `canAskAgain` loglanır.
+ */
+export async function takvimIzniIste(): Promise<TakvimIzinIstekSonucu> {
     const Calendar = modulAl();
-    if (!Calendar) return false;
+    if (!Calendar) return { verildi: false, tekrarSorulabilir: false };
+    let istek: HamIzin | null = null;
     try {
-        const { status } = await Calendar.requestCalendarPermissionsAsync();
-        return status === 'granted';
+        istek = (await Calendar.requestCalendarPermissionsAsync()) as HamIzin;
     } catch (e) {
         Logger.warn('TakvimEtkinlikOkuyucu', 'Takvim izni istenemedi', e);
-        return false;
     }
+    if (hamVerildiMi(istek)) return { verildi: true, tekrarSorulabilir: true };
+
+    let okuma: HamIzin | null = null;
+    try {
+        okuma = (await Calendar.getCalendarPermissionsAsync()) as HamIzin;
+    } catch (e) {
+        Logger.warn('TakvimEtkinlikOkuyucu', 'Takvim izni okunamadi', e);
+    }
+    Logger.info('TakvimEtkinlikOkuyucu', `Takvim izni: istek ${hamOzet(istek)} / okuma ${hamOzet(okuma)}`);
+    if (hamVerildiMi(okuma)) return { verildi: true, tekrarSorulabilir: true };
+    const kaynak = okuma ?? istek;
+    return { verildi: false, tekrarSorulabilir: kaynak?.canAskAgain !== false };
 }
 
 /**
