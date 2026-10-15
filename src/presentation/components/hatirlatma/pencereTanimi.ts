@@ -186,6 +186,12 @@ export const alarmAciklamasiOlustur = (kapsam: AlarmKapsami | undefined): string
         ? 'Bu adımın her hatırlatmasında telefonunuzun alarmı çalar.'
         : ALARM_ACIKLAMASI;
 
+/**
+ * Önizlemede GERÇEK ALARM çalan tetiğin etiketi ("Alarm çalar · 13:52"). Saat
+ * bilinmiyorsa (pencere yok) yalnız "Alarm çalar". Ekran okuyucu da aynısını okur.
+ */
+export const alarmOnizlemeEtiketi = (saat?: string): string => (saat ? `Alarm çalar · ${saat}` : 'Alarm çalar');
+
 /** "Her uyarıda" seçiliyken bedeli. iPhone satırı yalnız iOS'ta eklenir. */
 export const ALARM_KAPSAMI_NOTU = 'Her alarm tam ekran açılır ve bildirim sınırına sayılır.';
 export const IOS_ALARM_KAPSAMI_NOTU =
