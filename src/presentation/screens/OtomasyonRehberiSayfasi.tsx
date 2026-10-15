@@ -264,17 +264,32 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
 
             {sekme === 'rutinler' ? <RutinlerRehberi renkler={renkler} /> : <EklentiRehberi renkler={renkler} />}
 
+            {/* "Kıldım işaretleyebilen uygulamalar" (#299) Ayarlar ana listesinde DEĞİL, yalnız
+                burada: güven listesi otomasyonun parçasıdır; ana listeyi kalabalıklaştırıyordu. */}
             <TouchableOpacity
                 testID="rehber-guven-listesi"
                 accessibilityRole="button"
+                accessibilityLabel="Kıldım işaretleyebilen uygulamalar"
+                accessibilityHint="Otomasyon uygulamalarına verdiğiniz izinleri yönetin"
                 onPress={() => navigation.navigate('KildimUygulamalari')}
-                className="flex-row items-center justify-center mt-5 px-4 rounded-2xl"
-                style={{ minHeight: 48, backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                className="flex-row items-center mt-5 p-4"
+                style={{ minHeight: 64, backgroundColor: renkler.kartArkaplan, borderRadius: 24, borderWidth: 1, borderColor: renkler.sinir }}
             >
-                <FontAwesome5 name="user-shield" size={14} color={renkler.birincil} solid />
-                <Text className="ml-2 text-sm font-semibold" style={{ color: renkler.metin }}>
-                    İzin verdiğiniz uygulamaları yönetin
-                </Text>
+                <View
+                    className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
+                    style={{ backgroundColor: renkler.birincil + '20' }}
+                >
+                    <FontAwesome5 name="user-shield" size={17} color={renkler.birincil} solid />
+                </View>
+                <View className="flex-1">
+                    <Text className="text-base font-bold" style={{ color: renkler.metin }}>
+                        Kıldım işaretleyebilen uygulamalar
+                    </Text>
+                    <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                        İzin verdiğiniz uygulamaları yönetin
+                    </Text>
+                </View>
+                <FontAwesome5 name="chevron-right" size={14} color={renkler.metinIkincil} />
             </TouchableOpacity>
         </ScrollView>
     );
