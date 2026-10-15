@@ -72,3 +72,16 @@ Kurallar:
 - Telefon modeli, One UI/Android sürümü, uygulamanın "Canlı bildirimler" ayarı.
 - Takvim hatasını tekrarlayıp Ayarlar → Sorun bildir ile tanı raporu.
 - Kıble: kameralı AR (KAMERA izni) mi, kamerasız 3B ufuk pusulası mı?
+
+## Kararlar (2026-10-15)
+
+**Kaza Defteri 2.0** (tasarım: https://claude.ai/artifact/BTqLPYNmHanmBcA9gmPvEi)
+- Otomatik kayıt namaz kaydının AYNASIDIR. Sayısı fold anında İZDÜŞÜMLE türetilir: kapanmış her namaz günü ≥ başlangıç, özel gün değil, "bana sorun" bekleyeninde değil, temizlikle gizlenmemiş, aynı referanslı `bildirim` kaydı yok ve vakit işaretsiz ise +1. "Kıldım" deyince düşer, "kılmadım" deyince geri gelir. Kimlik `oto:<gün>_<vakit>` (temizlik gizleyebilsin). Geçmiş satırları için ayrı bir `tarama` olay günlüğü tutulur. Toggle olayı SAKLANMAZ; saklansaydı birleşim (union) ile çalışan namaz eşitlemesinde iki cihaz farklı sonuç üretirdi.
+- Uygulamanın hiç açılmadığı (işaretsiz) günler: "Bana sorun" (varsayılan).
+- Geçişle gelen taban ilk yeniden hesaplamada önizlemeyle birlikte TÜMDEN değiştirilir.
+- Yeni hesaptan fazla kılınan sayı AYRI tutulur: yalnız gösterilir, sonradan eklenen borçlardan düşülmez.
+- Vitir otomatiği ORTAK mezhep ayarına bağlı (Hanefî: vacip → eklenir).
+- Otomatik ekleme namaz günü kapanınca yapılır; ek gecikme yok.
+- Ayrı bildirim YOK. Gün sonu muhasebesine (#290) satır eklenir: tetik anında kayıt henüz yazılmamış olduğu için ileriye dönük ifade kullanılır ("işaretlemezseniz kazaya eklenecek").
+- "Vakit seçmeden kıldım" (genel tamamlama) KALDIRILIR; arayüzde hiçbir düğme onu çağırmıyordu.
+- Mezhep ORTAK ayar olur (bugün yalnız Seferîlik/yolculuk ekranında). Namaz vakti hesabına DOKUNMAZ (ikindi asr-ı evvel).
