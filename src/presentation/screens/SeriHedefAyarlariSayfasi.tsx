@@ -36,6 +36,7 @@ import { BildirimModali, BildirimTipi } from '../components/common/BildirimModal
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../hooks/useSayisalAdim';
 
 /**
  * Bildirim/onay modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile
@@ -78,24 +79,23 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
 }) => {
   const renkler = useRenkler();
   const butonRenk = renk || renkler.birincil;
-
-  const azalt = useCallback(() => {
-    const yeni = Math.max(min, deger - adim);
-    onChange(yeni);
-  }, [deger, min, adim, onChange]);
-
-  const artir = useCallback(() => {
-    const yeni = Math.min(max, deger + adim);
-    onChange(yeni);
-  }, [deger, max, adim, onChange]);
+  const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
+    deger,
+    min,
+    max,
+    adim,
+    onChange,
+  });
+  const altta = gorunenDeger <= min;
+  const ustte = gorunenDeger >= max;
 
   return (
     <View className="flex-row items-center justify-center gap-2">
       <TouchableOpacity
         className="w-10 h-10 rounded-full items-center justify-center"
-        style={{ backgroundColor: deger <= min ? renkler.sinir : butonRenk }}
-        onPress={azalt}
-        disabled={deger <= min}
+        style={{ backgroundColor: altta ? renkler.sinir : butonRenk }}
+        {...azaltDugmesi}
+        disabled={altta}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel="Azalt"
@@ -103,15 +103,21 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         <FontAwesome5
           name="minus"
           size={14}
-          color={deger <= min ? renkler.metinIkincil : '#FFFFFF'}
+          color={altta ? renkler.metinIkincil : '#FFFFFF'}
         />
       </TouchableOpacity>
       <View
         className="min-w-[60px] py-2 px-3 rounded-lg border flex-row items-center justify-center gap-1"
         style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel="Değer"
+        accessibilityValue={{ min, max, now: gorunenDeger }}
+        accessibilityActions={AYARLANABILIR_EYLEMLER}
+        onAccessibilityAction={erisilebilirlikEylemi}
       >
         <Text className="text-lg font-bold" style={{ color: renkler.metin }}>
-          {String(deger).padStart(2, '0')}
+          {String(gorunenDeger).padStart(2, '0')}
         </Text>
         {birim ? (
           <Text className="text-sm" style={{ color: renkler.metinIkincil }}>{birim}</Text>
@@ -119,9 +125,9 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
       </View>
       <TouchableOpacity
         className="w-10 h-10 rounded-full items-center justify-center"
-        style={{ backgroundColor: deger >= max ? renkler.sinir : butonRenk }}
-        onPress={artir}
-        disabled={deger >= max}
+        style={{ backgroundColor: ustte ? renkler.sinir : butonRenk }}
+        {...artirDugmesi}
+        disabled={ustte}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel="Artır"
@@ -129,7 +135,7 @@ const SayisalSecici: React.FC<SayisalSeciciProps> = ({
         <FontAwesome5
           name="plus"
           size={14}
-          color={deger >= max ? renkler.metinIkincil : '#FFFFFF'}
+          color={ustte ? renkler.metinIkincil : '#FFFFFF'}
         />
       </TouchableOpacity>
     </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, act } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
 jest.mock('../../../../core/theme', () => ({
@@ -14,13 +14,13 @@ jest.mock('../../../../core/theme', () => ({
 import { SayisalSecici } from '../SayisalSecici';
 
 describe('SayisalSecici', () => {
-  it('artır butonu onChange(deger + adim) çağırır', () => {
+  it('artır butonu bir sonraki adım katına oturur (5, adım 2 → 6)', () => {
     const onChange = jest.fn();
     const { getByLabelText } = render(
       <SayisalSecici deger={5} min={0} max={10} adim={2} onChange={onChange} renk="#000" />
     );
     fireEvent.press(getByLabelText('Artır'));
-    expect(onChange).toHaveBeenCalledWith(7);
+    expect(onChange).toHaveBeenCalledWith(6);
   });
 
   it('azalt butonu onChange(deger - adim) çağırır', () => {
@@ -168,5 +168,128 @@ describe('SayisalSecici', () => {
     expect(getByText('3')).toBeTruthy();
     expect(getByText('saat')).toBeTruthy();
     expect(queryByText('dk')).toBeNull();
+  });
+  it('iç test senaryosu: 1 dk ve 5 adımla artır 5 verir (6 değil)', () => {
+    const onChange = jest.fn();
+    const { getByLabelText } = render(
+      <SayisalSecici deger={1} min={1} max={60} adim={5} onChange={onChange} renk="#000" />
+    );
+    fireEvent.press(getByLabelText('Artır'));
+    expect(onChange).toHaveBeenCalledWith(5);
+  });
+
+  it('muhafız eşiği 3 dk (ızgara dışı): artır 5, azalt min', () => {
+    const onChange = jest.fn();
+    const { getByLabelText } = render(
+      <SayisalSecici deger={3} min={1} max={9} adim={5} onChange={onChange} renk="#000" />
+    );
+    fireEvent.press(getByLabelText('Artır'));
+    expect(onChange).toHaveBeenLastCalledWith(5);
+    const simdi = Date.now();
+    const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(simdi + 1000);
+    try {
+      fireEvent.press(getByLabelText('Azalt'));
+      expect(onChange).toHaveBeenLastCalledWith(1);
+    } finally {
+      nowSpy.mockRestore();
+    }
+  });
+
+  it('erişilebilirlik increment/decrement eylemleri adım atar', () => {
+    const onChange = jest.fn();
+    const { getByLabelText } = render(
+      <SayisalSecici deger={10} min={0} max={60} adim={5} onChange={onChange} renk="#000" aciklama="Süre" />
+    );
+    const kutu = getByLabelText('Süre');
+    expect(kutu.props.accessibilityRole).toBe('adjustable');
+    fireEvent(kutu, 'accessibilityAction', { nativeEvent: { actionName: 'increment' } });
+    expect(onChange).toHaveBeenLastCalledWith(15);
+    fireEvent(kutu, 'accessibilityAction', { nativeEvent: { actionName: 'decrement' } });
+    expect(onChange).toHaveBeenLastCalledWith(5);
+  });
+
+  describe('basılı tutma (yalıtılmış bileşen, sahte zamanlayıcı)', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('tutuş boyunca değer seçicide değişir, onChange bırakınca TEK kez çağrılır', () => {
+      const onChange = jest.fn();
+      const { getByLabelText, getByText } = render(
+        <SayisalSecici deger={10} min={0} max={100} adim={5} onChange={onChange} renk="#000" />
+      );
+      const artir = getByLabelText('Artır');
+      fireEvent(artir, 'longPress');
+      expect(getByText('15')).toBeTruthy();
+      act(() => {
+        jest.advanceTimersByTime(1000);
+      });
+      expect(onChange).not.toHaveBeenCalled();
+      fireEvent(artir, 'pressOut');
+      expect(onChange).toHaveBeenCalledTimes(1);
+      const son = onChange.mock.calls[0][0];
+      expect(son).toBeGreaterThan(20);
+      expect(son % 5).toBe(0);
+      // Bırakıştan sonra zamanlayıcı durmuş olmalı.
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('sınıra dayanınca kendiliğinden durur ve sınır değerini yazar', () => {
+      const onChange = jest.fn();
+      const { getByLabelText } = render(
+        <SayisalSecici deger={50} min={0} max={60} adim={5} onChange={onChange} renk="#000" />
+      );
+      fireEvent(getByLabelText('Artır'), 'longPress');
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(60);
+    });
+
+    it('hızlanır: 2 sn tutuşta sabit aralığın üretebileceğinden fazla adım atılır', () => {
+      const onChange = jest.fn();
+      const { getByLabelText } = render(
+        <SayisalSecici deger={0} min={0} max={1000} adim={1} onChange={onChange} renk="#000" />
+      );
+      const artir = getByLabelText('Artır');
+      fireEvent(artir, 'longPress');
+      act(() => {
+        jest.advanceTimersByTime(2000);
+      });
+      fireEvent(artir, 'pressOut');
+      // Sabit 220 ms ile 2 sn'de ~10 adım olurdu; hızlanma bunu belirgin aşar.
+      expect(onChange.mock.calls[0][0]).toBeGreaterThan(14);
+    });
+
+    it('unmount zamanlayıcıyı temizler', () => {
+      const onChange = jest.fn();
+      const { getByLabelText, unmount } = render(
+        <SayisalSecici deger={0} min={0} max={1000} onChange={onChange} renk="#000" />
+      );
+      const hataSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+      try {
+        fireEvent(getByLabelText('Artır'), 'longPress');
+        unmount();
+        // Zamanlayıcı temizlenmeseydi tekrar döngüsü kendini yeniden kurardı.
+        const kurSpy = jest.spyOn(global, 'setTimeout');
+        act(() => {
+          jest.advanceTimersByTime(5000);
+        });
+        expect(kurSpy).not.toHaveBeenCalled();
+        kurSpy.mockRestore();
+        // Tutuş yarıda kaldı: ne yazım ne de unmount sonrası setState uyarısı.
+        expect(onChange).not.toHaveBeenCalled();
+        expect(hataSpy).not.toHaveBeenCalled();
+      } finally {
+        hataSpy.mockRestore();
+      }
+    });
   });
 });
