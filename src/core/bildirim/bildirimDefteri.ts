@@ -60,6 +60,8 @@ import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vak
 import {
     ANDROID_MUHAFIZ_PAYI,
     ANDROID_NAFILE_PAYI,
+    IOS_ALARMKIT_MUHAFIZ_PAYI,
+    IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
     YAKINLIK_ORANI,
     platformSiniri,
@@ -182,6 +184,8 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
             const muhafizVakitleri = muhafizVakitleriniHesapla(koordinat, g.simdi, {
                 yarininImsagi: yarininImsagiPlanlanirMi(g.platform),
             });
+            // iOS AlarmKit tavanı (teslimciyle AYNI pay, kronolojik): fazlası bildirim.
+            let iosAlarm = 0;
             for (const aday of muhafizTeslimPlaniOlustur({
                 matris,
                 vakitler: muhafizVakitleri,
@@ -192,7 +196,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
                 // YERİNE geçer → tek alarm sayılır. iOS'ta AlarmKit izinliyse yine alarm
                 // (64 sınırına sayılmaz — `tur: 'alarm'`), değilse bildirim olarak kalır.
-                if ((android || g.iosAlarmKit === true) && alarmKurarMi(aday)) {
+                const iosAlarmKurulur =
+                    !android && g.iosAlarmKit === true && aday.zaman.getTime() > simdiMs && iosAlarm < IOS_ALARMKIT_MUHAFIZ_PAYI;
+                if ((android || iosAlarmKurulur) && alarmKurarMi(aday)) {
+                    if (!android) iosAlarm++;
                     ekle('alarm', aday.zaman.getTime(), 'alarm');
                     continue;
                 }
@@ -241,11 +248,14 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 ...(android ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
             };
             const plan = nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi, secenekler);
+            let iosAlarm = 0;
             for (const k of plan) {
                 // Gerçek alarm (issue #74, nafilede de standart): muhafızla AYNI kural —
                 // Android'de bildirim + anonsun YERİNE tek alarm, iOS'ta AlarmKit izinliyse
-                // alarm (64 sınırına sayılmaz), değilse bildirim.
-                if ((android || g.iosAlarmKit === true) && nafileAlarmKurarMi(k)) {
+                // (ve nafile payı dolmadıysa) alarm (64 sınırına sayılmaz), değilse bildirim.
+                const iosAlarmKurulur = !android && g.iosAlarmKit === true && iosAlarm < IOS_ALARMKIT_NAFILE_PAYI;
+                if ((android || iosAlarmKurulur) && nafileAlarmKurarMi(k)) {
+                    if (!android) iosAlarm++;
                     ekle('alarm', k.zaman.getTime(), 'alarm');
                     continue;
                 }

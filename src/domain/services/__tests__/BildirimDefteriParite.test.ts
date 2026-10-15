@@ -71,7 +71,7 @@ import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
-import { ANDROID_NAFILE_PAYI } from '../../../core/bildirim/butceSabitleri';
+import { ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
@@ -317,6 +317,74 @@ describe('muhafız: defter = teslimcinin kurduğu', () => {
             const alarmsiz = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli } });
             expect(say(alarmsiz, 'alarm')).toBe(0);
             expect(say(alarmsiz, 'muhafiz')).toBe(say(g, 'muhafiz') + say(g, 'alarm'));
+        } finally {
+            alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+            alarmKit.alarmKitPlanla.mockResolvedValue(false);
+        }
+    });
+
+    it('iOS "HER UYARIDA" alarm: AlarmKit payı (kronolojik) dolunca kalan tetikler BİLDİRİM olur — defter aynı sayar', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+            alarmKitDurumu: jest.Mock;
+            alarmKitPlanla: jest.Mock;
+        };
+        alarmKit.alarmKitDurumu.mockResolvedValue('izinli');
+        alarmKit.alarmKitPlanla.mockResolvedValue(true);
+        try {
+            const hepsi: MuhafizMatrisi = matrisKur(() => ({
+                seviyeler: [
+                    {
+                        kademe: 'nazik',
+                        esikDk: 60,
+                        siklik: { herDk: 5 },
+                        kanallar: { bildirim: true, alarm: true },
+                        alarmKapsami: 'hepsi',
+                        bildirimSesi: 'varsayilan',
+                        anonsMetni: '',
+                    },
+                ],
+            }));
+            muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: hepsi });
+
+            const g = temelGirdi('ios', { muhafiz: { aktif: true, matris: hepsi }, iosAlarmKit: true });
+            expect(say(g, 'alarm')).toBe(IOS_ALARMKIT_MUHAFIZ_PAYI);
+            expect(alarmKit.alarmKitPlanla).toHaveBeenCalledTimes(IOS_ALARMKIT_MUHAFIZ_PAYI);
+            // Pay dışı tetikler bildirim olarak kurulur ve 64'e sayılır.
+            expect(say(g, 'muhafiz')).toBeGreaterThan(0);
+            const ozet = defterOzeti(bildirimDefteriOlustur(g), 'ios');
+            expect(onekliSay('muhafiz_')).toBe(Math.min(say(g, 'muhafiz'), ozet.toplam + ozet.yedek));
+            // Pay KRONOLOJİKTİR: alarmlar en yakın tetiklerdir.
+            const kayitlar = bildirimDefteriOlustur(g);
+            const sonAlarm = Math.max(...kayitlar.filter((k) => k.kaynak === 'alarm').map((k) => k.zamanMs));
+            const ilkBildirim = Math.min(...kayitlar.filter((k) => k.kaynak === 'muhafiz').map((k) => k.zamanMs));
+            expect(sonAlarm).toBeLessThanOrEqual(ilkBildirim);
+        } finally {
+            alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+            alarmKit.alarmKitPlanla.mockResolvedValue(false);
+        }
+    });
+
+    it('iOS AlarmKit kurmayı reddederse (ör. maximumLimitReached) tetik BİLDİRİM olarak kurulur', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+            alarmKitDurumu: jest.Mock;
+            alarmKitPlanla: jest.Mock;
+        };
+        alarmKit.alarmKitDurumu.mockResolvedValue('izinli');
+        alarmKit.alarmKitPlanla.mockResolvedValue(false);
+        try {
+            const alarmli: MuhafizMatrisi = matrisKur(() => ({
+                seviyeler: [
+                    { kademe: 'nazik', esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true, alarm: true }, bildirimSesi: 'varsayilan', anonsMetni: '' },
+                ],
+            }));
+            muhafizTeslimcisiniAyarla(new IosMuhafizTeslimcisi());
+            await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: ISTANBUL, matris: alarmli });
+            const alarmsiz = temelGirdi('ios', { muhafiz: { aktif: true, matris: alarmli } });
+            expect(alarmKit.alarmKitPlanla).toHaveBeenCalled();
+            expect(onekliSay('muhafiz_')).toBe(say(alarmsiz, 'muhafiz'));
         } finally {
             alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
             alarmKit.alarmKitPlanla.mockResolvedValue(false);

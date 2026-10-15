@@ -174,11 +174,19 @@ export function alarmGerekliMi(kanallar: UyariKanallari | undefined): boolean {
  * IKI yonde ve her siklikta tetikledigi icin (capa = esik) bu an daima planda
  * bulunur — adimin kendisi o an kazaniyorsa.
  *
+ * KAPSAM (`SeviyeAyari.alarmKapsami`): kullanici "Her uyarida" (`'hepsi'`) secerse
+ * adimin HER tetigi alarmdir — bu cagri yalniz tetiklenen dakikalarda yapilir, yani
+ * `true` donmek o tetigi alarm yapar. Alan yoksa `'ilk'` (eski davranis birebir).
+ *
  * TEK KAPI: plan (`vakitUyariPlaniOlustur` → `UyariPlani.alarm`) ve on plan
  * muhafizi (`NamazMuhafiziServisi`, cift ses kurali) buradan gecer.
  */
-export function alarmAniMi(seviye: Pick<SeviyeAyari, 'kanallar' | 'esikDk'>, olcuDk: number): boolean {
-  return alarmGerekliMi(seviye.kanallar) && olcuDk === seviye.esikDk;
+export function alarmAniMi(
+  seviye: Pick<SeviyeAyari, 'kanallar' | 'esikDk' | 'alarmKapsami'>,
+  olcuDk: number
+): boolean {
+  if (!alarmGerekliMi(seviye.kanallar)) return false;
+  return seviye.alarmKapsami === 'hepsi' || olcuDk === seviye.esikDk;
 }
 
 /**

@@ -106,6 +106,7 @@ import {
 import { gunAnahtari, klipKaydiniGuncelle } from '../../core/muhafiz/ios/klipKullanimi';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { ertelemeTeslimBilgisi, muhafizPlanKimligiMi } from '../../core/muhafiz/erteleme';
+import { IOS_ALARMKIT_MUHAFIZ_PAYI, IOS_ALARMKIT_NAFILE_PAYI } from '../../core/bildirim/butceSabitleri';
 import { Depolama } from '../../data/local/Depolama';
 import {
     klipSentezle,
@@ -195,6 +196,15 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     /** Muhafız DIŞI örneğin alarm kimlikleri (iptal seçicisi) — yalnız kendi öneki. */
     private readonly kendiKimligimizMi = (kimlik: string): boolean => kimlik.startsWith(this.kendiOneki);
 
+    /** Bu turda kurulan AlarmKit alarmı — `hazirla` sıfırlar; `alarmKitPayi`'na kadar. */
+    private kurulanAlarmKit = 0;
+    private alarmKitPayiUyarisiYazildi = false;
+
+    /** Tur başına AlarmKit payı (`IOS_ALARMKIT_*_PAYI`): muhafız 20, diğerleri kalan. */
+    private alarmKitPayi(): number {
+        return this.muhafizMi() ? IOS_ALARMKIT_MUHAFIZ_PAYI : IOS_ALARMKIT_NAFILE_PAYI;
+    }
+
     /** Bu turda gerçek alarm AlarmKit ile kurulabilir mi (iOS 26 + izin + muhafız açık)? */
     private alarmKitIzinli = false;
     /** Alarm köprüsü çağrılarının TEK sırası (iptal ↔ kurulum yarışmasın). */
@@ -267,6 +277,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // açıkken yalnız PLAN alarmları (kullanıcının ertelemesi korunur, bildirimdeki
         // ertelemeyle aynı kural), kapalıyken ertelenmişler dahil hepsi.
         this.alarmKitIzinli = false;
+        this.kurulanAlarmKit = 0;
+        this.alarmKitPayiUyarisiYazildi = false;
         if (this.alarmDestegi) {
             const durum = await alarmKitDurumu();
             // Muhafızda matrissiz `hazirla` = "muhafız kapalı" (alarm yok); muhafız DIŞI
@@ -433,6 +445,17 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         if (!this.alarmKitIzinli || odakSessiz) return false;
         if (ozel && !ozel.alarmAdi) return false;
         if (iosTesliminiCoz(uyari, iosYetenekleri(true)).tur !== 'alarm') return false;
+        // Tavan (belgelenmemiş AlarmKit sınırına karşı, KRONOLOJİK): fazlası bildirim olur.
+        if (this.kurulanAlarmKit >= this.alarmKitPayi()) {
+            if (!this.alarmKitPayiUyarisiYazildi) {
+                this.alarmKitPayiUyarisiYazildi = true;
+                Logger.info(
+                    'IosMuhafizTeslimcisi',
+                    `AlarmKit payi doldu (${this.alarmKitPayi()}); kalan alarm tetikleri bildirim olarak gelecek`
+                );
+            }
+            return false;
+        }
 
         const yuk = alarmKitYukuOlustur({
             kimlik: teslim.id,
@@ -447,7 +470,11 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
             kuruldu = await alarmKitPlanla(yuk);
         });
         if (!kuruldu) {
+            // `maximumLimitReached` dahil HER AlarmKit hatası native'de `false` döner →
+            // aynı tetik bildirim olur (sessiz kayıp yok).
             Logger.warn('IosMuhafizTeslimcisi', `Gercek alarm kurulamadi, bildirim olarak gelecek (${teslim.id})`);
+        } else {
+            this.kurulanAlarmKit++;
         }
         return kuruldu;
     }

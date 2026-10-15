@@ -17,6 +17,7 @@
  * (AGENTS.md kontrast tuzagi) yanlis olurdu: `durum.uyari` = #FFC107 sari-amber.
  */
 import type {
+    AlarmKapsami,
     MuhafizVakti,
     SeviyeAyari,
     SeviyeKademe,
@@ -172,6 +173,23 @@ export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
 export const ALARM_ETIKETI = 'Gerçek alarm';
 export const ALARM_ACIKLAMASI =
     'Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; tekrarlar normal bildirimle gelir.';
+
+/** Alarm kapsamı seçimi (issue #74 — "Yalnız ilk uyarıda" / "Her uyarıda"). */
+export const ALARM_KAPSAMI_SECENEKLERI: { kapsam: AlarmKapsami; etiket: string; ikon: string }[] = [
+    { kapsam: 'ilk', etiket: 'Yalnız ilk uyarıda', ikon: 'dot-circle' },
+    { kapsam: 'hepsi', etiket: 'Her uyarıda', ikon: 'redo' },
+];
+
+/** Alarm anahtarının açıklaması seçilen kapsamı söyler (sessiz sapma yok). */
+export const alarmAciklamasiOlustur = (kapsam: AlarmKapsami | undefined): string =>
+    kapsam === 'hepsi'
+        ? 'Bu adımın her hatırlatmasında telefonunuzun alarmı çalar.'
+        : ALARM_ACIKLAMASI;
+
+/** "Her uyarıda" seçiliyken bedeli. iPhone satırı yalnız iOS'ta eklenir. */
+export const ALARM_KAPSAMI_NOTU = 'Her alarm tam ekran açılır ve bildirim sınırına sayılır.';
+export const IOS_ALARM_KAPSAMI_NOTU =
+    "iPhone'da aynı anda kurulabilecek alarm sayısı sınırlıdır; sınırı aşan uyarılar bildirim olarak gelir.";
 
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;

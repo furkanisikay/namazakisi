@@ -119,6 +119,8 @@ const adimNormalize = (ham: unknown): SeviyeAyari | null => {
     const kapali = !(kanallar.bildirim || kanallar.sesli || kanallar.titresim || kanallar.alarm);
     const hafiza = kapali ? oncekiKanallarNormalize(ham.oncekiKanallar) : undefined;
     if (hafiza) adim.oncekiKanallar = hafiza;
+    // Alarm kapsamı (#74): yalnız "Her uyarıda" yazılır; yokluğu "yalnız ilk" demektir.
+    if (ham.alarmKapsami === 'hepsi') adim.alarmKapsami = 'hepsi';
     return adim;
 };
 
