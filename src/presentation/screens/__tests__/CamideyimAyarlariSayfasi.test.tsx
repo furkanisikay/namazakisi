@@ -259,8 +259,7 @@ describe('NamazModuAyarlariSayfasi', () => {
         expect(k.erisimAyariniAc).not.toHaveBeenCalled();
     });
 
-    it('erişim ekranı "zatenVar" derse Ayarlar açılmaz, kısa bilgi verilir', async () => {
-        const { kisaBildirimGoster } = jest.requireMock('../../components/common/KisaBildirim');
+    it('erişim ekranı "zatenVar" derse Ayarlar açılmaz, etkin mod yeniden kurulur', async () => {
         k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, erisim: false });
         k.erisimAyariniAc.mockResolvedValue('zatenVar');
         const e = render(<NamazModuAyarlariSayfasi />);
@@ -268,6 +267,9 @@ describe('NamazModuAyarlariSayfasi', () => {
         fireEvent.press(e.getByTestId('namaz-modu-erisim-uyarisi'));
         await waitFor(() => expect(e.getByTestId('namaz-modu-rehberi')).toBeTruthy());
         fireEvent.press(e.getByLabelText('Erişim ayarını açın'));
-        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith('Rahatsız Etmeyin erişimi zaten açık.'));
+        await waitFor(() =>
+            expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: true }))
+        );
+        expect(e.queryByTestId('namaz-modu-rehberi')).toBeNull();
     });
 });

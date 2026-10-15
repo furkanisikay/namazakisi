@@ -107,8 +107,9 @@ export function useNamazModu(): NamazModuEkranDurumu {
             // Yönlendirme yapılmadı: erişim zaten var, kuralı şimdi kurmayı dene.
             donusBekleniyor.current = false;
             await yenile().catch(() => null);
+            // Etkinse kuralı kurmayı dene (kurulamazsa `yaz` kendi bilgisini verir).
             if (ayarlarRef.current.etkin) await yaz(ayarlarRef.current).catch(() => undefined);
-            kisaBildirimGoster('Rahatsız Etmeyin erişimi zaten açık.');
+            else kisaBildirimGoster('Rahatsız Etmeyin erişimi zaten açık.');
             return;
         }
         if (sonuc !== 'acildi') {

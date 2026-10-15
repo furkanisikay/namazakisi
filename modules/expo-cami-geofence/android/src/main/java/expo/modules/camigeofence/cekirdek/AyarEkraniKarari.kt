@@ -44,7 +44,7 @@ object AyarEkraniKarari {
      */
     fun modEkranlari(sdk: Int, uretici: String?, kuralId: String?): List<AyarHedefi> {
         val sonuc = mutableListOf<AyarHedefi>()
-        val sorunlu = uretici?.trim()?.lowercase() in KURAL_SAYFASI_SORUNLU
+        val sorunlu = (uretici?.trim()?.lowercase() ?: "") in KURAL_SAYFASI_SORUNLU
         if (sdk >= KURAL_AYARI_API && !kuralId.isNullOrBlank() && !sorunlu) sonuc.add(AyarHedefi.KURAL_AYARI)
         sonuc.add(AyarHedefi.MODLAR)
         sonuc.add(AyarHedefi.UYGULAMA_AYRINTI)
