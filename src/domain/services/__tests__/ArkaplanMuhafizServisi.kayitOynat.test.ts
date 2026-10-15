@@ -141,6 +141,23 @@ beforeEach(() => {
     muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
 });
 
+// GOVDE RASTGELEDIR: `muhafizGovdesiSec` havuzdan bir oranla secer. Snapshot'in
+// anlamli olmasi icin oran 0'a sabitlenir → havuzun ILK maddesi secilir.
+// `Math.random` GLOBAL olarak SABITLENMEZ: CI'da coverage altinda
+// `source-map`'in quick-sort'u da `Math.random` ile pivot secer; sabit 0 her
+// pivotu dizinin basina koyar ve sirali veride ozyineleme yigini tasirir
+// (`RangeError: Maximum call stack size exceeded`, yerelde gorunmez).
+import * as govdeModulu from '../../../core/muhafiz/muhafizGovdesi';
+const gercekGovdeSec = govdeModulu.muhafizGovdesiSec;
+function govdeOraniniSabitle(): void {
+    jest.spyOn(govdeModulu, 'muhafizGovdesiSec').mockImplementation(
+        (vakit, seviye, yon, _oran, olcuDk) => gercekGovdeSec(vakit, seviye, yon, () => 0, olcuDk)
+    );
+}
+afterEach(() => {
+    (govdeModulu.muhafizGovdesiSec as unknown as jest.Mock).mockRestore?.();
+});
+
 afterAll(() => {
     // Modul duzeyi durumu diger suite'lere sizdirma.
     muhafizTeslimcisiniAyarla(null);
@@ -258,11 +275,7 @@ function anonsKayitlari(cikisMs: number) {
 describe('ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // GOVDE RASTGELEDIR: `bildirimMesajiOlustur` mucadele havuzundan
-        // `Math.random()` ile secer. Snapshot'in anlamli olmasi icin rastgelelik
-        // sabitlenir → havuzun ILK maddesi secilir. Rastgeleligi snapshot'tan
-        // atmak yerine sabitliyoruz ki govde metni de kapsamda kalsin.
-        jest.spyOn(Math, 'random').mockReturnValue(0);
+        govdeOraniniSabitle();
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
         // `hazirla` dogrulanmis matrisi doner; mock aynen geri versin ki
         // planlama ham matrisle ayni kanal id'lerini uretsin.
@@ -352,7 +365,7 @@ describe('ArkaplanMuhafizServisi — OZEL GUN KAPISI (kayit-oynat)', () => {
     }
 
     beforeEach(() => {
-        jest.spyOn(Math, 'random').mockReturnValue(0);
+        govdeOraniniSabitle();
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
         mockKanallariHazirla.mockImplementation(
             (matris?: MuhafizMatrisi) => Promise.resolve(matris)

@@ -137,7 +137,7 @@ jobs:
           grep -q 'developmentRegion = tr;' "$PBX" || { echo "Geliştirme bölgesi tr değil (Türkçe Siri ifadeleri eşleşmez)"; exit 1; }
           grep -q 'AppIntents.framework in Frameworks .*ATTRIBUTES = (Weak' "$PBX" || { echo "AppIntents zayıf bağlı değil (iOS 15'te açılış çöker)"; exit 1; }
           grep -q 'AlarmKit.framework in Frameworks .*ATTRIBUTES = (Weak' "$PBX" || { echo "AlarmKit zayıf bağlı değil (iOS < 26'da açılış çöker)"; exit 1; }
-          /usr/libexec/PlistBuddy -c 'Print :NSAlarmKitUsageDescription' ios/*/Info.plist >/dev/null || { echo "NSAlarmKitUsageDescription yok (AlarmKit hiç alarm kurmaz)"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :NSAlarmKitUsageDescription' "ios/$(basename "$(ls -d ios/*.xcodeproj | head -1)" .xcodeproj)/Info.plist" >/dev/null || { echo "NSAlarmKitUsageDescription yok (AlarmKit hiç alarm kurmaz)"; exit 1; }
           # Widget uzantısı (#295): hedef + gömme fazı + ActivityKit zayıf bağı.
           grep -q 'productType = "com.apple.product-type.app-extension"' "$PBX" || { echo "Widget uzantı hedefi yok"; exit 1; }
           grep -q 'NamazWidget.appex in Embed Foundation Extensions' "$PBX" || { echo "Uzantı ana uygulamaya gömülmüyor"; exit 1; }
@@ -223,7 +223,7 @@ jobs:
           grep -q 'NamazSaatWidget.appex in Embed Foundation Extensions' "$PBX" || { echo "Komplikasyon uzantısı saate gömülmüyor"; exit 1; }
           grep -q 'SDKROOT = watchos;' "$PBX" || { echo "watchOS hedefi yok"; exit 1; }
           grep -q 'SaatKomplikasyonu.swift in Sources' "$PBX" || { echo "Komplikasyon kaynakları bağlanmadı"; exit 1; }
-          /usr/libexec/PlistBuddy -c 'Print :NamazSaatUygulamasi' ios/*/Info.plist | grep -q true || { echo "NamazSaatUygulamasi plist anahtarı yok (telefon köprüsü hiç açılmaz)"; exit 1; }
+          /usr/libexec/PlistBuddy -c 'Print :NamazSaatUygulamasi' "ios/$(basename "$(ls -d ios/*.xcodeproj | head -1)" .xcodeproj)/Info.plist" | grep -q true || { echo "NamazSaatUygulamasi plist anahtarı yok (telefon köprüsü hiç açılmaz)"; exit 1; }
           /usr/libexec/PlistBuddy -c 'Print :WKCompanionAppBundleIdentifier' ios/NamazSaat/Info.plist
 
       - name: 🧩 CocoaPods

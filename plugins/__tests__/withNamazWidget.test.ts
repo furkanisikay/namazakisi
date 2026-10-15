@@ -17,8 +17,9 @@ const KOK = path.join(__dirname, '../..');
 function sablonProjesi() {
   const icerik = execFileSync(
     'tar',
-    ['-xzf', path.join(KOK, 'node_modules/expo/template.tgz'), '-O', 'package/ios/HelloWorld.xcodeproj/project.pbxproj'],
-    { encoding: 'utf8' }
+    // Goreli yol + cwd: Windows'ta GNU tar `D:\...` yolunu uzak makine sanar.
+    ['-xzf', 'node_modules/expo/template.tgz', '-O', 'package/ios/HelloWorld.xcodeproj/project.pbxproj'],
+    { encoding: 'utf8', cwd: KOK }
   );
   const proje = xcode.project('/yok/project.pbxproj');
   proje.hash = require('xcode/lib/parser/pbxproj').parse(icerik);

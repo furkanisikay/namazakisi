@@ -44,11 +44,15 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v7
 
-      - name: ☕ Java 17
+      # JDK 21: adhan2/kotlinx-datetime JVM ikilileri Java 21 sinif surumuyla
+      # yayinlanmis; JVM birim testleri JDK 17'de UnsupportedClassVersionError
+      # verir (APK derlemesi etkilenmez, D8 yeni sinif surumunu okur). Uretilen
+      # bayt kodu yine 17 hedefli (build.gradle.kts > jvmTarget).
+      - name: ☕ Java 21
         uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: 🐘 Gradle
         uses: gradle/actions/setup-gradle@v6
