@@ -5,6 +5,125 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.31.0] - 2026-10-15
+
+### Eklendi
+- [neler-yeni] duyurular yalnız özelliğin geldiği platformda görünür
+- [alarm-ios] AlarmKit canli etkinlik sunumu, kilitli Kildim ve acik notlar
+- [saat] Apple Watch uygulamasi, komplikasyonlar ve WatchConnectivity koprusu
+- [muhafiz] iOS'ta yarının imsağı bütçe artığı olarak plana girer
+- [esitleme] sunucusuz, uçtan uca şifreli cihazlar arası eşitleme
+- [tv] Android TV namaz vakitleri panosu
+- [ios-canli] canli etkinlik ayar ekrani, duyuru ve simulator derlemesi
+- [alarm] iPhone'da gerçek alarm adımı AlarmKit ile sistem alarmı olur
+- [alarm] iOS 26 AlarmKit köprüsü, ana hedef intent'leri ve eklenti
+- [takvim] takvim çakışması uyarısı — etkinlik vaktin sonunu yutarsa önceden tek bildirim
+- [anasayfa] katlanabilir masaustu posturunde buyuk geri sayim
+- [ios-widget] WidgetKit uzantisi, kilit ekrani, StandBy, canli etkinlik
+- [ios-canli] Now Bar seciminin iOS canli etkinlik ikizi
+- [widget] Samsung Flex Window icin kapak ekrani widget'i
+- [wear] tesbihat sayacinda always-on (ambient) gorunum
+- [ios-widget] widget gorunum karari ve App Group deposu
+- [asistan] Android AppFunctions ile cihaz ici asistan fonksiyonlari
+- [seferilik] ana ekran bilgi karti ve yolculuk bilgisi ayarlari
+- [seferilik] seferilik karar cekirdegi, depolama ve kaynak notu
+- [asistan] AppFunctions icin saf karar cekirdegi ve asistan kuyruk kaynagi
+- [muhafiz] gercek alarm kanali (setAlarmClock + tam ekran)
+- [bildirim] bileklik dostu, onden okunur hatirlatma basliklari
+- [sade] yaslilar icin sade gorunum ve dokununca sesli okuma
+- [widget] kilit ekrani ve hub icin keyguard kategorisi, salt okunur Kildim
+- [otomasyon] sabit bildirim anahtar kelimeleri + "Otomasyonlarla kullanın" rehberi
+- [otomasyon] Tasker/MacroDroid/Automate eklentisi (Locale protokolü)
+- [kaza] her farzla bir kaza önerisi
+- [camiye-git] Bildirim Ayarları'nda "Camide kılacağım" bölümü
+- [yatis] yatis saatine gore yatsi hatirlatmasi ve gun sonu muhasebesi
+- [ios] Siri, Kısayollar ve Odak filtresi (App Intents)
+- [camiye-git] "Camide kılacağım" hatırlatma motoru
+- [muhafiz] bildirimde "10/20 dk ertele" — fikhi ust sinirla, native
+- [wear] saatte namaz sonrasi tesbihat sayaci
+- [wear] saatin canli sayaci Now Bar secimine uyar; Wear OS 6 one cikarma istegi
+- [wear] Now Bar secimi saat yukune eklemeli opsiyonel "canli" alaniyla gider
+- [ayarlar] "Now Bar ve canli sayaclar" sayfasi, slice ve yedekleme
+- [cami] Neler Yeni duyurusu + AGENTS.md Faz 2 kurallari
+- [cami] Camideyim haritasi ve uc sekmeli ayar ekrani
+- [nafile] adimli plan, kanal secimi ve Kildim iptali
+- [sayac] vakit sayaci Now Bar planlayicisina devreder; planlayici testleri
+- [cami] MapLibre bagimliligi ve saf harita veri katmani
+- [cami] izleme kapsami, acilis bicimi ve "Camide misiniz?" sorusu
+- [sayac] canli sayac planlayicisi; iftar/sahur/seri sayaclari pencerelerini bildirir
+- [sayac] Now Bar secimi icin saf plan ve native tek alarmli uygulayici
+- [cami] guven puani — saf ikiz (JS + Kotlin) ve senaryo fiksturu
+- [kildim] otomasyon kaynaklari icin paket basina guven listesi
+- [bildirim] bildirim siniri rehberi ekranlari (kart, sayfa, uygula + geri al)
+- [kildim] bildirimdeki Kildim native islenir, vaktin alarmlari JS'i beklemeden susar
+- [bildirim] bildirim defteri ve butce oneri motoru
+- [sayac] Android 16 Live Update / Now Bar icin standart sablonlu ikiz sayac
+- [muhafiz] vakit basina 1-6 hatirlatma, ton secici ve sil
+- [muhafiz] ton kurali, acil kisiti ve hatirlatma ekle/sil cekirdegi
+- [wear] Bugun tile'inda onay durumu korunur; duyuru ve AGENTS.md
+- [wear] komplikasyon seti, Bugun tile'i ve son dakikalar sayaci
+- [wear] saat yuzeyleri icin saf cekirdek (gun durumu, kerahat, son dakikalar, tile onayi)
+- [camideyim] Camideyim ve Namaz modu ayar sayfalari
+- [camideyim] JS orkestrasyonu, muhafiz sessizligi ve Namaz modu plani
+- [ozel-gun] gun sonu, iftar/sahur ve cuma hatirlatmalari da ozel gunde susar
+- [camideyim] cami verisi hatti, saf karar cekirdegi ve native modul iskeleti
+- [widget] Widget 2.0, hızlı ayarlar kutusu ve uygulama kısayolları
+- [wear] özel gün aralığında saatin muhafız planı da boş
+- [wear] telefon yanında değilken de saatte muhafız hatırlatması
+- [ozel-gun] ozel gun araliginda namaz hatirlatmalari susar
+- [android] buyuk ekranda yon serbest, katla/ac'ta Activity korunur
+- [duzen] katlanabilir ve tablet ekranlarda iki bolmeli ana ekran
+- [seri] seri hadisi gun sonu hatirlaticisinda ve seri geri sayim bildiriminde
+- [android] temali (monokrom) uygulama simgesi
+- [android] pil kisiti uyarisi, rehberi ve Samsung kurulum adimi
+- [android] Samsung ve Doze'a dayanikli bildirim/alarm altyapisi
+- [nafile] ana ekranda nafile vakitleri gunluk akis zincirine girer; ci: APK prebuild'siz derlenir
+- [wear] Wear OS saat uygulaması ve telefon senkronu (#269)
+- [nafile] kuşluk, evvâbîn ve teheccüd vakitleri, gösterge ve hatırlatma (#77)
+- [seri] serinin dayandığı hadisi Seri sekmesinde göster (#72)
+
+### Düzeltildi
+- [ci] PR #300 kontrolleri — kayit-oynat yigin tasmasi, iOS plist yolu, TV JDK 21
+- [wear] saat ana ekranı ilk öğeyle açılır, kare saatte başlık TimeText altında kalmaz
+- [ios] ana hedefte yerel pod'lar internal import ile (SDK 57)
+- [sdk57] expo-modules-core acik bagimlilik, expo-audio remove()
+- [alarm-ios] planlama turu CALAN AlarmKit alarmini susturmaz
+- [tv] gece yarisi-imsak arasi pano dunun gununu cizer
+- [katlanabilir] postur akisi arka planda durur, kapak widget'inda ipucu
+- [takvim-cakisma] belki etkinlikleri elendi, kapliyor tetigine 60 dk tavan
+- [canli-etkinlik] arka planda kilit ekranini bosaltma, 8 saat sinirinda gec basla
+- [ios-widget] Kildim dugmesi kilit acar, gecersiz dokunusta etkinligi kapatmaz, goc kaynak kuyrugu temizler
+- [android] tablette yon kilidi ekran boyutundan karar verir (letterbox kutusu degil)
+- [alarm] Android'de alarm onayı eşzamanlı kalsın; iOS izin akışı testleri
+- [nafile] bildirimdeki "Kildim" Android'de native islenir
+- [anasayfa] yatsi kartinda bitis saati ertesi imsak olarak gosterilir
+- [muhafiz] preset gercek alarm kanalini korur; AGENTS #74 guncellemesi
+- [muhafiz] Android planina yarinin imsak vakti de girer
+- [muhafiz] Kildim calan gercek alarmi susturur, alarm isi arka planda
+- [ios] Siri modulu belge yorumundaki ic ice /* derlemeyi kiriyordu
+- [yatis] muhasebe dugmeleri icin kategori kaydi planlamadan once garanti
+- [muhafiz] ertelemeyi on plan muhafizi, saat ve iOS Odak da bilir
+- [yatis] yatis yatsidan onceyse yatsi hatirlatmasi yatsi girince gelir
+- [kaza] yazma thunk'lari diskteki guncel kaydi taban alir
+- [ios] AppIntents.framework hedefe Weak eklenir (metadata çıkarımı)
+- [butce,kildim] inceleme bulgulari — varsayilan baslatici, iOS slot paritesi, geri al yedegi
+- [bildirim] reddedilen adim degisikligi ozel yedekten de geri alinir
+- [kildim] guven sorusundaki dugme metinleri kibar siz diliyle
+- [wear] son dakikalar penceresi vaktin zamanca son adimindan acilir
+- [bildirim] vakit sayaci secenekleri gercek matristen uretilir
+- [muhafiz] erken adim eski kayitta da DND delmez; kisit ekranda soylenir
+- [muhafiz] esik tekilligi gocu kronolojik siralar ve bozuk hucrede firlatmaz
+- [kildim] disaridan gelen "kildim" onaysiz isaretlemez, widget siniri gecikmez
+- [camideyim] Rahatsiz Etmeyin takili kalmaz, bayat merkez taze merkezi ezmez
+- [wear] guncelleme sonrasi cift bildirim, saat zinciri ve kopru kararinda hatalar
+- [wear] Fable incelemesi — çizelge ufku, Wear API'siz cihaz, kilit
+
+### Değiştirildi
+- [vakit] olu madhab yapilandirmasi kaldirildi, hesap parametresi tek kaynakta
+- [bildirim] nafile, cuma, vakit bildirimi ve vakit sayaci planlari saf ureticilere tasindi
+- [bildirim] butce sabitleri tek yerde, muhafiz plani saf ureticiye tasindi
+- [muhafiz] degisken uzunluklu seviyeler icin Faz 0 altyapisi
+
 ## [0.30.2] - 2026-10-12
 
 ### Düzeltildi
