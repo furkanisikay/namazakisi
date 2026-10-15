@@ -17,7 +17,7 @@ const mockIzin = jest.fn();
 const mockIzinIste = jest.fn();
 const mockTakvimler = jest.fn();
 const mockEtkinlikler = jest.fn();
-jest.mock('expo-calendar', () => ({
+jest.mock('expo-calendar/legacy', () => ({
     EntityTypes: { EVENT: 'event' },
     getCalendarPermissionsAsync: (...a: unknown[]) => mockIzin(...a),
     requestCalendarPermissionsAsync: (...a: unknown[]) => mockIzinIste(...a),

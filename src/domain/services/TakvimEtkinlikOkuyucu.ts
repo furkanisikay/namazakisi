@@ -27,11 +27,11 @@ export type TakvimOkumaSonucu =
 
 export type TakvimIzinDurumu = 'verildi' | 'verilmedi' | 'bilinmiyor';
 
-type TakvimModulu = typeof import('expo-calendar');
+type TakvimModulu = typeof import('expo-calendar/legacy');
 
 const modulAl = (): TakvimModulu | null => {
     try {
-        return require('expo-calendar') as TakvimModulu;
+        return require('expo-calendar/legacy') as TakvimModulu;
     } catch {
         return null;
     }

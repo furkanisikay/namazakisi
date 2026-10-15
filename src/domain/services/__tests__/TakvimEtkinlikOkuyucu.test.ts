@@ -4,7 +4,7 @@
  */
 const mockIste = jest.fn();
 const mockOku = jest.fn();
-jest.mock('expo-calendar', () => ({
+jest.mock('expo-calendar/legacy', () => ({
     requestCalendarPermissionsAsync: (...a: unknown[]) => mockIste(...a),
     getCalendarPermissionsAsync: (...a: unknown[]) => mockOku(...a),
 }));

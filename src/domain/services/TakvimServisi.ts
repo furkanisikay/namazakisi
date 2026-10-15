@@ -3,7 +3,7 @@
  * Namaz vakitleri icin cihaz takvim etkinlikleri olusturma
  */
 
-import * as Calendar from 'expo-calendar';
+import * as Calendar from 'expo-calendar/legacy';
 import { Platform } from 'react-native';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';

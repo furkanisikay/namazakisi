@@ -3,7 +3,7 @@
  * expo-calendar + adhan mock'lariyla takvim etkinligi olusturma/temizleme akislari
  */
 
-import * as Calendar from 'expo-calendar';
+import * as Calendar from 'expo-calendar/legacy';
 import { TakvimServisi } from '../TakvimServisi';
 
 // ─── Mock'lar ──────────────────────────────────────────────────────────────────
@@ -14,7 +14,7 @@ jest.mock('../../../core/utils/Logger', () => ({
     Logger: { error: jest.fn(), info: jest.fn(), warn: jest.fn() },
 }));
 
-jest.mock('expo-calendar', () => ({
+jest.mock('expo-calendar/legacy', () => ({
     EntityTypes: { EVENT: 'event' },
     requestCalendarPermissionsAsync: jest.fn(),
     getCalendarsAsync: jest.fn(),

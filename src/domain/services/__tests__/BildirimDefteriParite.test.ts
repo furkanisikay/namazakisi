@@ -50,7 +50,7 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
 
 // Takvim çakışması (issue #291): servis ve defter AYNI okuyucudan geçer.
 const mockTakvimEtkinlikleri = jest.fn((..._a: unknown[]) => Promise.resolve([] as unknown[]));
-jest.mock('expo-calendar', () => ({
+jest.mock('expo-calendar/legacy', () => ({
     EntityTypes: { EVENT: 'event' },
     getCalendarPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
     requestCalendarPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
