@@ -117,7 +117,8 @@ interface CamiNativeModulu {
     namazModuPlaniniYaz(json: string): Promise<void>;
     namazModuKildim(): Promise<void>;
     namazModuAktifTurlari(): Promise<string>;
-    erisimAyariniAc(): Promise<boolean>;
+    /** Yeni ikili dize döndürür; eski ikili `boolean`. */
+    erisimAyariniAc(): Promise<string | boolean>;
     modAyarlariniAc(): Promise<boolean>;
     addListener?(olay: string, dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
@@ -225,7 +226,19 @@ export const namazModuKildim = (): Promise<void> => guvenli((m) => m.namazModuKi
 export const namazModuAktifTurlari = (): Promise<string[]> =>
     guvenli(async (m) => jsonCoz<string[]>(await m.namazModuAktifTurlari(), []), []);
 
-export const erisimAyariniAc = (): Promise<boolean> => guvenli((m) => m.erisimAyariniAc(), false);
+/**
+ * Rahatsız Etmeyin erişimi ekranı. `zatenVar`: erişim verilmiş, yönlendirme
+ * YAPILMADI (v0.31.0 iç testi: erişim varken Ayarlar'a gönderilip çöküş).
+ */
+export type ErisimEkraniSonucu = 'zatenVar' | 'acildi' | 'acilamadi';
+
+export const erisimAyariniAc = (): Promise<ErisimEkraniSonucu> =>
+    guvenli(async (m) => {
+        const ham = await m.erisimAyariniAc();
+        if (ham === 'zatenVar' || ham === 'acildi' || ham === 'acilamadi') return ham;
+        // Eski ikili: true/false.
+        return ham === true ? 'acildi' : 'acilamadi';
+    }, 'acilamadi' as ErisimEkraniSonucu);
 
 export const modAyarlariniAc = (): Promise<boolean> => guvenli((m) => m.modAyarlariniAc(), false);
 
