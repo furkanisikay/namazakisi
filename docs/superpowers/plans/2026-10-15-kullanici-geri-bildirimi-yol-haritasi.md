@@ -18,10 +18,10 @@ Kurallar:
 | # | Madde | Durum | Not |
 |---|---|---|---|
 | 1.1 | "Fiziksel aktivite" izni | bekliyor | `expo-sensors` (pedometre) ekliyor; kullanılmıyor → `tools:node="remove"`. Debug APK ile manifest doğrulaması. |
-| 1.2 | "Yakındaki cihazlar" izni | araştırma | v0.31.0 GitHub APK'sında bu grubun hiçbir izni YOK. Play AAB'si (App bundle explorer → İzinler) kontrol edilecek. |
-| 1.3 | Takvim çakışması: izin verili ama "verilmedi" | bekliyor | İzin isteği rıza modalı kapanırken atılıyor; ret sonrası durum yeniden okunmalı; ham `status`/`canAskAgain` loglanmalı. Cihazda tanı raporu istenecek. |
+| 1.2 | "Yakındaki cihazlar" izni | bitti (kod değişikliği yok) | SM-S721B'de ölçüldü: izin `ACCESS_LOCAL_NETWORK` (Android 17'nin yeni yerel ağ izni, "Yakındaki cihazlar" grubunda). Play'den kurulan v0.31.0 APK'sının manifestinde YOK; Android 17 onu INTERNET isteyen her uygulamaya örtük ekliyor (telefonda 703 izin kaydı). Bizim kaldıracağımız bir şey yok. |
+| 1.3 | Takvim çakışması: izin verili ama "verilmedi" | bitti (PR #307) | Kök neden: SDK 57'de `expo-calendar` kök girişindeki eski fonksiyonlar HATA FIRLATIYOR; `expo-calendar/legacy`'ye geçildi (takvime namaz etkinliği yazma da bozuktu). Cihazda izin `granted` doğrulandı. Önceki not: | İzin isteği rıza modalı kapanırken atılıyor; ret sonrası durum yeniden okunmalı; ham `status`/`canAskAgain` loglanmalı. Cihazda tanı raporu istenecek. |
 | 1.4 | Namazdayım "Modu açın" → ana ekran + Ayarlar hatası | bekliyor | Samsung'da olmayan ayar ekranı niyeti şüphesi; izin zaten verilmişse yönlendirme yapılmamalı; `ActivityNotFoundException` yedeği. |
-| 1.5 | Now Bar: sabit bildirim + ilerleme çubuğu | araştırma | Öne çıkarılmamış `ProgressStyle`. Cihaz bilgisi (One UI sürümü, "Canlı bildirimler" ayarı) + `dumpsys notification` gerekli; kör düzeltme YOK. |
+| 1.5 | Now Bar: sabit bildirim + ilerleme çubuğu | araştırma | Cihaz: SM-S721B (S24 FE), Android 17 (API 37), One UI 9.0. `POST_PROMOTED_NOTIFICATIONS` verili. Sayaç ekrandayken `dumpsys notification` alınacak (ADB Tailscale üzerinden erişilebilir). |
 | 1.6 | Süre artır/azalt | bekliyor | Ortak `SayisalSecici`: kısa basış = küçük adım, uzun basış = bırakılana/sınıra dek hızlanarak sürekli. Tüm ekranlar aynı. 1'den 15'e ulaşılamama hatası biter. |
 
 ## Faz 2 — Ortak hatırlatma yapısı (tek PR)
@@ -42,7 +42,7 @@ Kurallar:
 | 3.1 | Kaza defteri 2.0 (defter/kayıt modeli) | sürüyor | Ekleme-yalnız kayıt defteri; hesaplanan taban ayrı kayıt (yeniden hesap eskisini EZMEZ); otomatik ekleme geri alınabilir ve kaynağıyla izlenir; seçmeli temizlik. Diyagram + ekranlar sahibe gösterilecek. |
 | 3.2 | Ana ekran | bekliyor | Birebir ekran görüntüsüyle onay. |
 | 3.3 | Ayarlar bilgi mimarisi | bekliyor | Çok ekran, çok kaydırma → gruplama/arama. |
-| 3.4 | Kıble: AR yerine kendi çözümümüz + pusula tasarımı | bekliyor | Kameralı AR yeni KAMERA izni ister → sahibin kararı. |
+| 3.4 | Kıble: AR yerine kendi çözümümüz + pusula tasarımı | bekliyor | KARAR (2026-10-16): kameralı AR; KAMERA izni verilmezse kamerasız pusula. |
 | 3.5 | İstatistik (gün/hafta/ay) | bekliyor | Sanal personalarla geri bildirim turu. |
 | 3.6 | İkamet yeri haritadan/aramayla | bekliyor | Camideyim harita bileşeni. |
 | 3.7 | Camide kılacağım: vakit × gün, boş seçimde süre gizli, "vakit yakınında" düzenlenebilir | bekliyor | |
@@ -68,10 +68,7 @@ Kurallar:
 | 5.3 | Apple TV uygulaması | bekliyor | Yeni tvOS hedefi; imza için sahibin etkileşimli EAS adımı. |
 
 ## Sahipten beklenenler
-- "Yakındaki cihazlar" ekran görüntüsü.
-- Telefon modeli, One UI/Android sürümü, uygulamanın "Canlı bildirimler" ayarı.
-- Takvim hatasını tekrarlayıp Ayarlar → Sorun bildir ile tanı raporu.
-- Kıble: kameralı AR (KAMERA izni) mi, kamerasız 3B ufuk pusulası mı?
+- Sayaç bildirimi göründüğü an haber (Now Bar dökümü için).
 
 ## Kararlar (2026-10-15)
 
@@ -85,3 +82,5 @@ Kurallar:
 - Ayrı bildirim YOK. Gün sonu muhasebesine (#290) satır eklenir: tetik anında kayıt henüz yazılmamış olduğu için ileriye dönük ifade kullanılır ("işaretlemezseniz kazaya eklenecek").
 - "Vakit seçmeden kıldım" (genel tamamlama) KALDIRILIR; arayüzde hiçbir düğme onu çağırmıyordu.
 - Mezhep ORTAK ayar olur (bugün yalnız Seferîlik/yolculuk ekranında). Namaz vakti hesabına DOKUNMAZ (ikindi asr-ı evvel).
+
+**Kıble (2026-10-16):** Kameralı AR. KAMERA izni yalnız AR ekranı açılırken istenir; reddedilirse ya da izin yoksa ekran kamerasız 3B pusulaya düşer (aynı yön hesabı). Veri güvenliği beyanı ve iOS `NSCameraUsageDescription` güncellenir.
