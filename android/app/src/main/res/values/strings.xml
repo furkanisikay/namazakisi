@@ -1,7 +1,49 @@
 <resources>
   <string name="app_name">Namaz Akışı</string>
-  <string name="widget_aciklama">Sonraki namaz vaktine kalan süreyi gösterir</string>
-  <string name="widget_genis_aciklama">Tüm namaz vakitlerini ve geri sayımı gösterir</string>
+  <string name="widget_aciklama">İçinde bulunduğunuz vakit, çıkış saati ve tek dokunuşla Kıldım</string>
+  <string name="widget_genis_aciklama">Günün beş vakti, geri sayım ve tek dokunuşla Kıldım</string>
+  <!-- Samsung Flex Window (Z Flip kapak ekranı) widget'ı (issue #283) -->
+  <string name="widget_kapak_adi">Kapak ekranı vakitleri</string>
+  <string name="widget_kapak_aciklama">Galaxy Z Flip kapak ekranı için günün vakitleri ve geri sayım</string>
   <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
   <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+
+  <!-- Hızlı ayarlar kutusu ve kısayollar (issue #276) -->
+  <string name="kutu_kildim_etiket">Kıldım</string>
+  <string name="kisayol_kildim_kisa">Kıldım</string>
+  <string name="kisayol_kildim_uzun">Şu anki vakti kıldım</string>
+  <string name="kisayol_kible_kisa">Kıble</string>
+  <string name="kisayol_kible_uzun">Kıble yönünü gösterin</string>
+  <string name="kisayol_kaza_kisa">Kaza defteri</string>
+  <string name="kisayol_kaza_uzun">Kaza defterini açın</string>
+  <!-- Başlatanı BİLİNMEYEN "Kıldım" isteğinde tek seferlik onay (karar saklanamaz). -->
+  <string name="kildim_onay_baslik">%1$s namazı kılındı olarak işaretlensin mi?</string>
+  <string name="kildim_onay_mesaj">Bu isteği hangi uygulamanın gönderdiği anlaşılamadı. Namazınızı kıldıysanız onaylayın.</string>
+  <string name="kildim_onay_evet">Kıldım</string>
+  <string name="kildim_onay_vazgec">Vazgeç</string>
+  <!-- Güven listesi sorusu (issue #299): başlatan uygulama tanınıyor, karar paket başına saklanır. -->
+  <string name="kildim_guven_baslik">%1$s namazlarınızı kılındı olarak işaretleyebilsin mi?</string>
+  <string name="kildim_guven_mesaj">Şu an işaretlenecek vakit: %1$s. Kararınızı daha sonra Ayarlar &gt; Kıldım işaretleyebilen uygulamalar bölümünden değiştirebilirsiniz.</string>
+  <string name="kildim_guven_tarayici_mesaj">Şu an işaretlenecek vakit: %1$s. Bu istek bir tarayıcıdan geldi; her web sayfası bu bağlantıyı açabildiği için kalıcı izin verilemez.</string>
+  <string name="kildim_guven_her_zaman">Her zaman izin verin</string>
+  <string name="kildim_guven_bu_sefer">Yalnız bu sefer</string>
+  <string name="kildim_guven_engelle">Engelleyin</string>
+  <string name="kildim_guven_engellendi">%1$s artık namazlarınızı işaretleyemez. Ayarlardan değiştirebilirsiniz.</string>
+
+  <!-- Widget yapılandırma ekranı (issue #275) -->
+  <string name="widget_ayar_baslik">Widget\'ı özelleştirin</string>
+  <string name="widget_ayar_zemin">Zemin</string>
+  <string name="widget_ayar_zemin_material">Duvar kağıdı renkleri</string>
+  <string name="widget_ayar_zemin_sistem">Sistem teması</string>
+  <string name="widget_ayar_zemin_acik">Açık</string>
+  <string name="widget_ayar_zemin_koyu">Koyu</string>
+  <string name="widget_ayar_zemin_seffaf">Şeffaf</string>
+  <string name="widget_ayar_opaklik">Zemin opaklığı</string>
+  <string name="widget_ayar_gosterim">Büyük yazılsın</string>
+  <string name="widget_ayar_gosterim_kalan">Kalan süre</string>
+  <string name="widget_ayar_gosterim_bitis">Bitiş saati</string>
+  <string name="widget_ayar_gosterim_not">Bitiş saati her boyutta yazılı kalır.</string>
+  <string name="widget_ayar_sonraki">Sıradaki vakti gösterin</string>
+  <string name="widget_ayar_vazgec">Vazgeç</string>
+  <string name="widget_ayar_kaydet">Kaydet</string>
 </resources>

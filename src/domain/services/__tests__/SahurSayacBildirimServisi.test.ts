@@ -3,6 +3,7 @@ import notifee from '@notifee/react-native';
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn().mockResolvedValue('channel-id'),
     deleteChannel: jest.fn().mockResolvedValue(undefined),
     displayNotification: jest.fn().mockResolvedValue('notif-id'),
@@ -13,6 +14,8 @@ jest.mock('@notifee/react-native', () => ({
     createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
   },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   AndroidStyle: { BIGTEXT: 0 },
 }));
@@ -28,6 +31,12 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   startCountdown: (...args: any[]) => mockStartCountdown(...args),
   stopCountdown: (...args: any[]) => mockStopCountdown(...args),
   stopAll: (...args: any[]) => mockStopAll(...args),
+}));
+
+// Ozel gun kapisi (issue #272): deterministik suzgec; sorulan tarihler kaydedilir.
+const mockOzelGundeMi = jest.fn((_t: string) => false);
+jest.mock('../../../data/local/LocalOzelGunOkuyucu', () => ({
+  ozelGunSuzgeciniOku: jest.fn(async () => (t: string) => mockOzelGundeMi(t)),
 }));
 
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
@@ -213,6 +222,43 @@ describe('SahurSayacBildirimServisi', () => {
     expect(bitisCall![1].timestamp).toBe(fajrYarin.getTime() + 10 * 60 * 1000);
   });
 
+  it('Live Update (#282): imsak oncesi ilerleme DUNUN yatsisindan baslar; son 60 dk vurgulu, Kildim YOK', async () => {
+    const yatsiDun = new OriginalDate('2026-02-18T20:00:00');
+    (PrayerTimes as unknown as jest.Mock).mockImplementation((_coord: any, tarih: Date) => ({
+      ...mockPrayerTimes,
+      isha: tarih.getDate() === 18 ? yatsiDun : mockPrayerTimes.isha,
+    }));
+    tarihiSabitle('2026-02-19T02:00:00');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    expect(mockStartCountdown.mock.calls[0][0].canli).toEqual({
+      baslangicMs: yatsiDun.getTime(),
+      bolumler: [
+        { uzunlukDk: 420, vurgulu: false },
+        { uzunlukDk: 60, vurgulu: true },
+      ],
+    });
+  });
+
+  it('Live Update (#282): yatsi sonrasi ilerleme BUGUNUN yatsisindan yarinin imsagina', async () => {
+    const fajrYarin = new OriginalDate('2026-02-20T03:50:00');
+    (PrayerTimes as unknown as jest.Mock).mockImplementation((_coord: any, tarih: Date) => ({
+      ...mockPrayerTimes,
+      fajr: tarih.getDate() === 20 ? fajrYarin : mockPrayerTimes.fajr,
+    }));
+    tarihiSabitle('2026-02-19T22:00:00');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    const canli = mockStartCountdown.mock.calls[0][0].canli;
+    expect(canli.baslangicMs).toBe(mockPrayerTimes.isha.getTime());
+    expect(canli.bolumler).toEqual([
+      { uzunlukDk: 410, vurgulu: false },
+      { uzunlukDk: 60, vurgulu: true },
+    ]);
+  });
+
   it('yatsi sonrasi / gece penceresi (simdi >= yatsi): countdown YARIN imsakina baslar', async () => {
     const fajrBugun = new OriginalDate('2026-02-19T04:00:00');
     const fajrYarin = new OriginalDate('2026-02-20T03:50:00');
@@ -301,5 +347,70 @@ describe('SahurSayacBildirimServisi', () => {
 
     // Hataya ragmen trigger planlama akisi devam etmis olmali (akis kesilmedi).
     expect(notifee.createTriggerNotification).toHaveBeenCalled();
+  });
+});
+
+describe('SahurSayacBildirimServisi — ozel gun kapisi (issue #272)', () => {
+  /** Tarihe duyarli imsak: istenen gunun 04:00'u, yatsi 20:00. */
+  const tarihliVakitler = () =>
+    (PrayerTimes as unknown as jest.Mock).mockImplementation((_k: unknown, tarih: Date) => {
+      const gun = (s: number) =>
+        new OriginalDate(tarih.getFullYear(), tarih.getMonth(), tarih.getDate(), s, 0);
+      return { ...mockPrayerTimes, fajr: gun(4), isha: gun(20) };
+    });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (SahurSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    tarihliVakitler();
+  });
+
+  afterEach(() => {
+    mockOzelGundeMi.mockImplementation(() => false);
+    (PrayerTimes as unknown as jest.Mock).mockImplementation(() => mockPrayerTimes);
+    global.Date = OriginalDate;
+  });
+
+  it('imsak oncesi: hedef BUGUNUN orucu — o gun ozel gunse sayac kurulmaz', async () => {
+    tarihiSabitle('2026-02-19T02:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-19');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockOzelGundeMi).toHaveBeenCalledWith('2026-02-19');
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+  });
+
+  it('yatsi sonrasi: hedef YARININ orucudur — ozel gunun SON gecesinde yarinin sahuru kurulur', async () => {
+    tarihiSabitle('2026-02-19T21:00:00');
+    // Ozel gun bugun (19) bitiyor; yarin (20) normal gun.
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-19');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockOzelGundeMi).toHaveBeenCalledWith('2026-02-20');
+    expect(mockStartCountdown).toHaveBeenCalledTimes(1);
+  });
+
+  it('yatsi sonrasi: yarin ozel gunse sayac kurulmaz', async () => {
+    tarihiSabitle('2026-02-19T21:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-20');
+
+    await SahurSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
   });
 });

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Telefonun koyu tema zemini (#121212): ilk karede beyaz parlama olmasın. -->
+    <color name="arkaplan">#FF121212</color>
+
+    <style name="Tema.Pano" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@color/arkaplan</item>
+        <item name="android:colorBackground">@color/arkaplan</item>
+    </style>
+</resources>

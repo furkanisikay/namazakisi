@@ -22,8 +22,14 @@ const matris = (seviyeler: SeviyeAyari[]): MuhafizMatrisi =>
     MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler: seviyeler.map((s) => ({ ...s })) }])
   ) as MuhafizMatrisi;
 
+/**
+ * Gerçekçi (tekil, kronolojik) eşikler: 45/25/10/3. Acil kanal yalnız çıkışta son
+ * 15 dk'da kullanılabildiği için (issue #274, erken DND delme yok) aciliyet ekseni
+ * sert (10) + acil (3) adımlarından gelir.
+ */
+const VARSAYILAN_ESIKLER = [45, 25, 10, 3];
 const dortSeviye = (o: Partial<SeviyeAyari> = {}) =>
-  SEVIYE_KADEMELERI.map((kademe) => sv({ kademe, ...o }));
+  SEVIYE_KADEMELERI.map((kademe, i) => sv({ kademe, esikDk: VARSAYILAN_ESIKLER[i], ...o }));
 
 describe('matristenKanallariCikar', () => {
   /**
@@ -85,12 +91,25 @@ describe('matristenKanallariCikar', () => {
 
   it('acilKanal bayrağı olan hücre acil kanala düşer', () => {
     const seviyeler = dortSeviye();
-    seviyeler[0].acilKanal = true;
-    seviyeler[0].bildirimSesi = SES_A;
+    // Uyarı tonu normalde acil değil; son 15 dk içindeki bayrak onu yükseltir.
+    seviyeler[1].esikDk = 12;
+    seviyeler[1].acilKanal = true;
+    seviyeler[1].bildirimSesi = SES_A;
 
     const idler = matristenKanallariCikar(matris(seviyeler)).map((k) => k.kanalId);
 
     expect(idler).toContain(muhafizKanalIdOlustur(SES_A, true));
+  });
+
+  it('ERKEN DND DELME YOK: son 15 dk dışındaki bayrak acil kanal ÜRETMEZ (#274)', () => {
+    const seviyeler = dortSeviye();
+    seviyeler[0].acilKanal = true; // 45 dk kala
+    seviyeler[0].bildirimSesi = SES_A;
+
+    const idler = matristenKanallariCikar(matris(seviyeler)).map((k) => k.kanalId);
+
+    expect(idler).toContain(muhafizKanalIdOlustur(SES_A, false));
+    expect(idler).not.toContain(muhafizKanalIdOlustur(SES_A, true));
   });
 
   /**

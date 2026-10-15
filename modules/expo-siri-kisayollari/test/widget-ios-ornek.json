@@ -1,0 +1,174 @@
+{
+  "aciklama": "iOS widget gorunum karari (issue #295). JS (src/core/widget/__tests__/iosWidgetKarari.test.ts) ve Swift (modules/expo-siri-kisayollari/test/main.swift) AYNI dosyayi dogrular. Vakitler android/app/src/test/resources/widget-ornek.json'dan okunur (Istanbul 2026-06-20..22). Beklenenler ELLE yazildi.",
+  "durumlar": [
+    {
+      "ad": "ogle icinde, kilinmamis",
+      "simdiMs": 1782039600000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 3,
+      "beklenen": {
+        "aktif": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "bitisMs": 1782051060000,
+        "kilindi": false,
+        "sonraki": { "vakit": "ikindi", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782051060000, 1782064020000, 1782070680000]
+      }
+    },
+    {
+      "ad": "ogle kayitta kilinmis",
+      "simdiMs": 1782039600000,
+      "kilinanlar": { "2026-06-21": ["sabah", "ogle"] },
+      "bekleyenler": [],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "bitisMs": 1782051060000,
+        "kilindi": true,
+        "sonraki": { "vakit": "ikindi", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782051060000]
+      }
+    },
+    {
+      "ad": "ogle kuyrukta bekliyor (henuz islenmedi) kilinmis sayilir",
+      "simdiMs": 1782039600000,
+      "kilinanlar": {},
+      "bekleyenler": [{ "tarih": "2026-06-21", "vakit": "ogle" }],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "bitisMs": 1782051060000,
+        "kilindi": true,
+        "sonraki": { "vakit": "ikindi", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782051060000]
+      }
+    },
+    {
+      "ad": "baska gunun kaydi ve kuyrugu sayilmaz",
+      "simdiMs": 1782039600000,
+      "kilinanlar": { "2026-06-20": ["ogle"] },
+      "bekleyenler": [{ "tarih": "2026-06-22", "vakit": "ogle" }],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "bitisMs": 1782051060000,
+        "kilindi": false,
+        "sonraki": { "vakit": "ikindi", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782051060000]
+      }
+    },
+    {
+      "ad": "sabah kuyrukta KAYIT koduyla (imsak) kilinmis sayilir",
+      "simdiMs": 1782002040000,
+      "kilinanlar": {},
+      "bekleyenler": [{ "tarih": "2026-06-21", "vakit": "imsak" }],
+      "azamiSinir": 2,
+      "beklenen": {
+        "aktif": { "vakit": "sabah", "tarih": "2026-06-21" },
+        "bitisMs": 1782008700000,
+        "kilindi": true,
+        "sonraki": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782008700000, 1782036660000]
+      }
+    },
+    {
+      "ad": "kuyrukta widget kodu (sabah) kayit kodu degildir, sayilmaz",
+      "simdiMs": 1782002040000,
+      "kilinanlar": {},
+      "bekleyenler": [{ "tarih": "2026-06-21", "vakit": "sabah" }],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "sabah", "tarih": "2026-06-21" },
+        "bitisMs": 1782008700000,
+        "kilindi": false,
+        "sonraki": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782008700000]
+      }
+    },
+    {
+      "ad": "gunes-ogle arasi: kilinabilir vakit yok, gun bugun",
+      "simdiMs": 1782021600000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 2,
+      "beklenen": {
+        "aktif": null,
+        "bitisMs": null,
+        "kilindi": false,
+        "sonraki": { "vakit": "ogle", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782036660000, 1782051060000]
+      }
+    },
+    {
+      "ad": "gece yarisindan sonra yatsi ve gun DUNUNDUR",
+      "simdiMs": 1781992800000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "yatsi", "tarih": "2026-06-20" },
+        "bitisMs": 1782001440000,
+        "kilindi": false,
+        "sonraki": { "vakit": "sabah", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-20",
+        "sinirlar": [1782001440000]
+      }
+    },
+    {
+      "ad": "tam sinir aninda vakit girmistir, sinir listesine girmez",
+      "simdiMs": 1782051060000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": { "vakit": "ikindi", "tarih": "2026-06-21" },
+        "bitisMs": 1782064020000,
+        "kilindi": false,
+        "sonraki": { "vakit": "aksam", "tarih": "2026-06-21" },
+        "gunTarihi": "2026-06-21",
+        "sinirlar": [1782064020000]
+      }
+    },
+    {
+      "ad": "ilk giristen once: gun siradaki vaktin gunu",
+      "simdiMs": 1781915039000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 1,
+      "beklenen": {
+        "aktif": null,
+        "bitisMs": null,
+        "kilindi": false,
+        "sonraki": { "vakit": "sabah", "tarih": "2026-06-20" },
+        "gunTarihi": "2026-06-20",
+        "sinirlar": [1781915040000]
+      }
+    },
+    {
+      "ad": "veri tukendi: aktif yok, sinir yok, gun son girisin gunu",
+      "simdiMs": 1782160680000,
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "azamiSinir": 5,
+      "beklenen": {
+        "aktif": null,
+        "bitisMs": null,
+        "kilindi": false,
+        "sonraki": null,
+        "gunTarihi": "2026-06-22",
+        "sinirlar": []
+      }
+    }
+  ],
+  "gunler": [
+    { "tarih": "2026-06-21", "beklenen": ["sabah", "ogle", "ikindi", "aksam", "yatsi"] },
+    { "tarih": "2026-06-25", "beklenen": [] }
+  ]
+}

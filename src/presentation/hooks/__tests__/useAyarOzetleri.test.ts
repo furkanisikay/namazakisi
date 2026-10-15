@@ -15,6 +15,7 @@ import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri'
 import { vakitBildirimAyarlariniYukle } from '../../store/vakitBildirimSlice';
 import { takvimAyarlariniYukle } from '../../store/takvimSlice';
 import { useAyarOzetleri } from '../useAyarOzetleri';
+import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
 jest.mock('../../store/hooks', () => ({ useAppSelector: jest.fn(), useAppDispatch: jest.fn() }));
 
@@ -63,6 +64,7 @@ const stateOlustur = (ustyaz: Record<string, unknown> = {}) => ({
     ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: true, yatsi: false },
   },
   cumaHatirlatma: { ayarlar: { aktif: true, oncedenDk: 60 } },
+  nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
   seri: { ayarlar: { tamGunEsigi: 4, gunSonuBildirimAktif: true } },
   iftarSayac: { ayarlar: { aktif: true } },
   sahurSayac: { ayarlar: { aktif: false } },

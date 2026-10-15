@@ -41,7 +41,27 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   seriAyarlari: DEPOLAMA_ANAHTARLARI.SERI_AYARLARI,
   ozelGun: DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
   cumaHatirlatma: DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI,
+  nafile: DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI,
+  yatisHatirlatma: DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI,
+  nowBar: DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI,
+  camiyeGit: DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI,
+  kazaOneri: DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI,
+  sadeGorunum: DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI,
+  seferilik: DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI,
+  takvimCakisma: DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI,
 };
+
+/**
+ * Dört kategoride de "akıllı" strateji (union; hiçbir şey geri alınmaz, ayarlara
+ * dokunulmaz). Cihazlar arası eşitleme (issue #288) daima bunu kullanır — son
+ * yazan kazanır YOKTUR.
+ */
+export const AKILLI_SECIMLER: Readonly<KategoriSecimleri> = Object.freeze({
+  namaz: 'akilli',
+  puan: 'akilli',
+  kaza: 'akilli',
+  ayarlar: 'akilli',
+});
 
 /** Kaza anlık görüntüsünü güvenli okumak için dar tip. */
 type KazaGorunumu = { toplamTamamlanan?: number } | null;

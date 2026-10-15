@@ -18,9 +18,15 @@ const gun = (geriGun) => {
 };
 
 const TAM_GUN = { Sabah: true, 'Öğle': true, 'İkindi': true, 'Akşam': true, 'Yatsı': true };
-// Bugun kismen kilinmis: ana ekranda hem isaretli hem bekleyen vakit gorunsun.
-const BUGUN = { Sabah: true, 'Öğle': true, 'İkindi': true };
 const GECMIS_GUN = 25;
+// Bugun kismen kilinmis: ana ekranda hem isaretli hem bekleyen vakit gorunsun.
+// En fazla bu uc vakit isaretlenir, ama YALNIZ vakti girmis olanlar: sabit liste
+// ogle/ikindi girmeden ("Vakit Girmedi") onlari kilinmis gosteriyordu.
+const BUGUN_ADAYLARI = [
+    ['Sabah', 'fajr'],
+    ['Öğle', 'dhuhr'],
+    ['İkindi', 'asr'],
+];
 
 const KONUM = {
     konumModu: 'manuel',
@@ -51,6 +57,24 @@ const SEVIYELER = [
     { seviye: 7, minPuan: 2500, rank: 'Kâmil', ikon: '👑' },
 ];
 
+/**
+ * Bugun vakti girmis adaylar (`simdi` enjekte edilebilir). Hesap uygulamanin
+ * yoluyla ayni: `CalculationMethod.Turkey()` (asr-i evvel), tohum konumunda.
+ */
+function bugunKilinanlar(simdi = new Date()) {
+    const { Coordinates, CalculationMethod, PrayerTimes } = require('adhan');
+    const vakitler = new PrayerTimes(
+        new Coordinates(KONUM.koordinatlar.lat, KONUM.koordinatlar.lng),
+        simdi,
+        CalculationMethod.Turkey()
+    );
+    const sonuc = {};
+    for (const [ad, alan] of BUGUN_ADAYLARI) {
+        if (vakitler[alan].getTime() <= simdi.getTime()) sonuc[ad] = true;
+    }
+    return sonuc;
+}
+
 function seviyeBul(puan) {
     let i = 0;
     while (i + 1 < SEVIYELER.length && SEVIYELER[i + 1].minPuan <= puan) i++;
@@ -59,7 +83,8 @@ function seviyeBul(puan) {
 }
 
 /** AsyncStorage anahtar -> ham string deger. */
-function tohumVerisi() {
+function tohumVerisi(simdi = new Date()) {
+    const BUGUN = bugunKilinanlar(simdi);
     const depo = {
         '@namaz_akisi/ilk_kurulum_tamamlandi': 'true',
         '@namaz_akisi/konum_ayarlari': JSON.stringify(KONUM),
@@ -146,4 +171,4 @@ function tohumVerisi() {
     return depo;
 }
 
-module.exports = { tohumVerisi, gun, GECMIS_GUN, SEVIYELER };
+module.exports = { tohumVerisi, bugunKilinanlar, gun, GECMIS_GUN, SEVIYELER };

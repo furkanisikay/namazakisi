@@ -1,0 +1,18 @@
+# tohum: ozellik
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Neler yeni\\..*"
+    direction: DOWN
+    # Ayarlar listesinin EN SONU: emulatorde her kaydirma ~35 sn suruyor (761ef5d'de
+    # 120 sn'de 4 kaydirma yetmedi). 03-ayarlar ile ayni: hizli kaydirma + genis sure.
+    speed: 80
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Neler yeni\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/30-neler-yeni

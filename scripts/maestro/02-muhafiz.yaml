@@ -38,7 +38,7 @@ appId: com.furkanisikay.namazakisi
 # "İkisi de" secilince sheet sesli anons metniyle dolar; yalniz bildirimde alt
 # yarisi bos kaliyordu.
 - tapOn:
-    text: "Uyarı adımını düzenleyin.*"
+    text: "1\\. hatırlatma.*düzenleyin.*"
 - tapOn: "İkisi de"
 - waitForAnimationToEnd:
     timeout: 3000

@@ -6,6 +6,9 @@
  *      calismaz (yazin yatsi ~6 saat, kisin ~11 saat; sabit tavan bunu gizliyordu).
  *   2. Plan butcesi sikligi seyreltti -> kullanicinin sectigi "her 1 dk" yerine
  *      daha genis araliklarla uyarilir.
+ *   3. Acil ton kisiti (issue #274): son 15 dk disindaki (ya da giris yonlu) acil
+ *      adim SERT konusur ve Rahatsiz Etmeyin'i delmez — eski kayitlarda bu adim
+ *      kullanicinin bildiginden farkli calisir, ekranda soylenmeli.
  *
  * Faz 0'in kendi ilkesi: sessiz sapma birakilmaz.
  */
@@ -17,13 +20,14 @@ import type { SeviyeAyari } from '../../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
 import { seviyeAcikMi } from '../../../core/muhafiz/seviyeAcKapa';
-import { sesliAnonsGerekliMi } from '../../../core/muhafiz/motorAdaptoru';
-import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
 import {
-    cikisSegmentiHesapla,
-    girisSegmentiHesapla,
-    etkinSiklikHesapla,
-} from '../../../core/muhafiz/planButcesi';
+    ACIL_TON_UST_DK,
+    acilTonSecilebilirMi,
+    etkinKademe,
+    sesliAnonsGerekliMi,
+} from '../../../core/muhafiz/motorAdaptoru';
+import { adimPencereyeSigarMi, pencereSuresiMetni } from '../../../core/muhafiz/pencereUzunlugu';
+import { adimEtkinSikligi } from '../../../core/muhafiz/planButcesi';
 import {
     ANDROID_YETENEKLERI,
     type PlatformYetenekleri,
@@ -89,6 +93,21 @@ export function adimNotlariniOlustur(
     const notlar: AdimNotu[] = [];
     const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
 
+    // ACIL TON KISITI — motorla AYNI kapi (`etkinKademe`/`acilTonSecilebilirMi`):
+    // kayit acil der ama adim sert konusur ve acil kanal kullanilmaz.
+    const acilKisitlandi = seviye.kademe === 'acil' && etkinKademe(seviye, yon) !== 'acil';
+    if (acilKisitlandi) {
+        notlar.push({ tip: 'bilgi', metin: acilKisitNotu(yon) });
+    } else if (seviye.acilKanal === true && !acilTonSecilebilirMi(seviye.esikDk, yon)) {
+        notlar.push({
+            tip: 'bilgi',
+            metin:
+                yon === 'girisindenItibaren'
+                    ? 'Vakit girer girmez çalışan adımlar Rahatsız Etmeyin’i delmez'
+                    : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için Rahatsız Etmeyin’i delmez`,
+        });
+    }
+
     // PLATFORM NOTLARI — kullanicinin kurdugu sey ile cihazda olacak sey
     // ayrisiyorsa BURADA soylenir (sessiz sapma birakma).
     // iPhone'da anons BILDIRIM SESIDIR (Android'deki gibi alarm sesi degil) →
@@ -104,18 +123,19 @@ export function adimNotlariniOlustur(
         });
     }
     if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {
+        // Gercek alarm (AlarmKit, issue #74) yalniz adimin ILK tetigidir; tekrarlar bildirim.
+        const ilkiAlarm = yetenekler.gercekAlarm && seviye.kanallar.alarm === true;
         notlar.push({
             tip: 'uyari',
-            metin: 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
+            metin: ilkiAlarm
+                ? 'İlk hatırlatma iPhone’da alarm olarak çalar; tekrarlar sessiz moddayken duyulmaz'
+                : 'Bu adım iPhone’da sessiz moddayken duyulmaz; bildirim olarak gelir',
         });
     }
 
     const siklik = seviye.siklik;
-    const segment =
-        yon === 'girisindenItibaren'
-            ? girisSegmentiHesapla(seviyeler, seviye, pencereUzunluguDk)
-            : cikisSegmentiHesapla(seviyeler, seviye);
-    const etkin = etkinSiklikHesapla(segment, siklik);
+    // Motorla AYNI hesap (segment + vakit butcesi) — ayrisirsa not yalan soyler.
+    const etkin = adimEtkinSikligi(seviye, seviyeler, yon, pencereUzunluguDk);
     if (etkin !== siklik && etkin !== 'birkez') {
         notlar.push({
             tip: 'bilgi',
@@ -124,6 +144,13 @@ export function adimNotlariniOlustur(
     }
 
     return notlar;
+}
+
+/** Acil ton kisitina takilan adimin bilgi satiri (kibar "siz" dili). */
+export function acilKisitNotu(yon: PencereYonu): string {
+    return yon === 'girisindenItibaren'
+        ? 'Vakit girer girmez çalışan adımlarda acil ton kullanılmaz; bu adım sert tonda çalışır ve Rahatsız Etmeyin’i delmez'
+        : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için sert tonda çalışır; Rahatsız Etmeyin’i delmez`;
 }
 
 /**

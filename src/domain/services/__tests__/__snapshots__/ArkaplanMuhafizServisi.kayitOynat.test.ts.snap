@@ -16,10 +16,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
   ],
   "bildirimler": [
     {
-      "baslik": "⏰ 25 dk · Akşam vakti",
+      "baslik": "Akşam · 25 dk kaldı ⏰",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz",
         "kanallar": {
           "bildirim": true,
         },
@@ -34,17 +38,21 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
 — Hûd sûresi 114 (özet)",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_1_dk_25",
       "kanalId": "muhafiz",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele2_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
       "titresim": null,
     },
     {
-      "baslik": "⚠️ 15 dk · Akşam vakti daralıyor",
+      "baslik": "Akşam · 15 dk · vakit daralıyor ⚠️",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -59,7 +67,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Namazı sona bırakma; şimdi kılmak için vakit uygun.",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_2_dk_15",
       "kanalId": "muhafiz_aec026e2",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
@@ -75,10 +83,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "⚠️ 10 dk · Akşam vakti daralıyor",
+      "baslik": "Akşam · 10 dk · vakit daralıyor ⚠️",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_aec026e2",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -93,7 +105,7 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Namazı sona bırakma; şimdi kılmak için vakit uygun.",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_2_dk_10",
       "kanalId": "muhafiz_aec026e2",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "high",
       "ses": true,
       "tetikTipi": "date",
@@ -109,10 +121,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🔥 8 dk · Akşam vakti kaçıyor",
+      "baslik": "Akşam · 8 dk · vakit kaçıyor 🔥",
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
           "sesli": true,
@@ -127,17 +143,21 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "govde": "Şeytan şu an sana "Sonra kılarsın" diye fısıldıyor. Onu dinleme!",
       "id": "muhafiz_<BUGUN>_vakit_aksam_seviye_3_dk_8",
       "kanalId": "muhafiz_acil",
-      "kategori": "muhafiz_category",
+      "kategori": "muhafiz_ertele1_category",
       "oncelik": "max",
       "ses": true,
       "tetikTipi": "date",
       "titresim": null,
     },
     {
-      "baslik": "🔥 4 dk · Akşam vakti kaçıyor",
+      "baslik": "Akşam · 4 dk · vakit kaçıyor 🔥",
       "data": {
         "anonsMetni": "{vakit} vakti çıkıyor, {süre} dakika {yön}.",
         "bildirimSesi": "varsayilan",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_acil",
         "kanallar": {
           "bildirim": true,
           "sesli": true,
@@ -159,10 +179,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       "titresim": null,
     },
     {
-      "baslik": "🚨 3 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 3 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -193,10 +217,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🚨 2 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 2 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,
@@ -227,10 +255,14 @@ exports[`ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT yogun fikstur — 
       ],
     },
     {
-      "baslik": "🚨 1 dk · AKŞAM VAKTİ ÇIKIYOR",
+      "baslik": "AKŞAM · 1 dk · VAKİT ÇIKIYOR 🚨",
       "data": {
         "anonsMetni": "",
         "bildirimSesi": "content://media/internal/audio/media/42",
+        "cikisMs": "0 dk kala",
+        "erteleSinirMs": "3 dk kala",
+        "ertelemeBasligi": "Akşam · {sure} kaldı · ertelediğin namaz ⏳",
+        "kanalId": "muhafiz_acil_4620883a",
         "kanallar": {
           "bildirim": true,
           "titresim": true,

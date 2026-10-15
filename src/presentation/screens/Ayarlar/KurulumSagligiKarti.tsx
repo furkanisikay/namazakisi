@@ -84,7 +84,7 @@ export const KurulumSagligiKarti: React.FC<KurulumSagligiKartiProps> = ({
             className="w-11 h-11 rounded-2xl items-center justify-center mr-3"
             style={{ backgroundColor: `${renk}20` }}
           >
-            <FontAwesome5 name={SEVIYE_IKONLARI[sorun.seviye]} size={16} color={renk} solid />
+            <FontAwesome5 name={sorun.ikon ?? SEVIYE_IKONLARI[sorun.seviye]} size={16} color={renk} solid />
           </View>
           <View className="flex-1">
             <Text className="text-sm font-bold" style={{ color: renkler.metin }}>

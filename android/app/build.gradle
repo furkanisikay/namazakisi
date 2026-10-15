@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+// Android AppFunctions (issue #94): `@AppFunction` yöntemlerinden şema + çağırıcı üretir.
+apply plugin: "com.google.devtools.ksp"
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
@@ -11,7 +13,7 @@ def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 react {
     entryFile = file(["node", "-e", "require('expo/scripts/resolveAppEntry')", projectRoot, "android", "absolute"].execute(null, rootDir).text.trim())
     reactNativeDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
-    hermesCommand = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
+    hermesCommand = new File(["node", "--print", "require.resolve('hermes-compiler/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsolutePath() + "/hermesc/%OS-BIN%/hermesc"
     codegenDir = new File(["node", "--print", "require.resolve('@react-native/codegen/package.json', { paths: [require.resolve('react-native/package.json')] })"].execute(null, rootDir).text.trim()).getParentFile().getAbsoluteFile()
 
     enableBundleCompression = (findProperty('android.enableBundleCompression') ?: false).toBoolean()
@@ -152,12 +154,30 @@ android {
     }
 }
 
+// AppFunctions: uygulama modülündeki tüm fonksiyonlar tek envantere toplanır (şema XML'i assets'e).
+ksp {
+    arg("appfunctions:aggregateAppFunctions", "true")
+}
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
     // Play Store In-App Updates (PlayStoreGuncellemeModulu.kt)
     implementation("com.google.android.play:app-update:2.1.0")
     implementation("com.google.android.play:app-update-ktx:2.1.0")
+    // Wear OS saat senkronu (issue #269) — saat uygulamasi (wear/) ile AYNI surum
+    implementation("com.google.android.gms:play-services-wearable:20.0.1")
+    // Android AppFunctions — "cihaz içi MCP" (issue #94, `asistan/NamazAsistanFonksiyonlari`).
+    // Apache-2.0. alpha08'e SABİT: alpha09+ compileSdk 37 + AGP 9.1 ister (AAR metadata),
+    // Expo SDK 57 / RN 0.86 hattı hâlâ compileSdk 36 + AGP 8.12'dir. Yükseltme, compileSdk 37 +
+    // AGP 9.1 getiren bir Expo SDK'sını bekler (ve bir API göçüdür — AGENTS.md).
+    implementation("androidx.appfunctions:appfunctions:1.0.0-alpha08")
+    implementation("androidx.appfunctions:appfunctions-service:1.0.0-alpha08")
+    ksp("androidx.appfunctions:appfunctions-compiler:1.0.0-alpha08")
+    // JVM birim testleri (src/test): widget / hızlı ayarlar saf çekirdeği (issue #275/#276).
+    // org.json: android.jar'daki taklit (stub) org.json testte "not mocked" fırlatır.
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";

@@ -1,6 +1,6 @@
 /** @type {import("jest").Config} **/
 module.exports = {
-  preset: "react-native",
+  preset: "@react-native/jest-preset",
   testEnvironment: "node",
   // Tam-sayfa RN render testleri (KazaDefteri/DebugLogs vb.) gerçek timer + waitFor
   // kullanır; CPU yükü altında veya Jules'un zayıf VM'inde varsayılan 5000ms'i aşıp
@@ -24,6 +24,10 @@ module.exports = {
   ],
   // Test dosyalari .test.ts ve .test.tsx uzantili olsun
   testMatch: ["**/__tests__/**/*.test.ts", "**/__tests__/**/*.test.tsx"],
+  // Paralel ajanlarin git worktree'leri (.claude/worktrees) ikinci bir repo kopyasidir:
+  // taranirsa testler iki kez kosar ve haste "duplicate module" cakismasi verir.
+  testPathIgnorePatterns: ["/node_modules/", "<rootDir>/.claude/"],
+  modulePathIgnorePatterns: ["<rootDir>/.claude/"],
   moduleNameMapper: {
     "^expo-notifications$": "<rootDir>/__mocks__/expo-notifications.js",
     "^expo-location$": "<rootDir>/__mocks__/expo-location.js",
@@ -36,6 +40,21 @@ module.exports = {
     // tutar; varsayilani "Turkce ses yok" oldugu icin hicbir test istemeden
     // sentez yoluna girmez.
     "expo-muhafiz-anons/src$": "<rootDir>/__mocks__/expo-muhafiz-anons.js",
+    // Siri / Kısayollar / Odak köprüsü (iOS native). Varsayılan: modül yok.
+    "expo-siri-kisayollari/src$": "<rootDir>/__mocks__/expo-siri-kisayollari.js",
+    // iOS 26 AlarmKit köprüsü (gerçek alarm, issue #74). Varsayılan: modül yok.
+    "expo-muhafiz-alarmkit/src$": "<rootDir>/__mocks__/expo-muhafiz-alarmkit.js",
+    // Camideyim + Namaz modu köprüsü (Android native). Varsayılan: modül yok.
+    "expo-cami-geofence/src$": "<rootDir>/__mocks__/expo-cami-geofence.js",
+    // Katlanabilir postür köprüsü (WindowManager, Android). Varsayılan: modül yok → "düz".
+    "expo-katlanma-posturu/src$": "<rootDir>/__mocks__/expo-katlanma-posturu.js",
+    // Cihazlar arası eşitleme (issue #288): iCloud köprüsü (iOS native, varsayılan YOK),
+    // güvenli depo ve tarayıcı oturumu (native köprüler) — bellek-içi/iptal eden mock'lar.
+    "expo-icloud-esitleme/src$": "<rootDir>/__mocks__/expo-icloud-esitleme.js",
+    "^expo-secure-store$": "<rootDir>/__mocks__/expo-secure-store.js",
+    "^expo-web-browser$": "<rootDir>/__mocks__/expo-web-browser.js",
+    // Camideyim haritası (MapLibre) Fabric native bileşenleri; jest'te yok.
+    "^@maplibre/maplibre-react-native$": "<rootDir>/__mocks__/maplibre-react-native.js",
     // transform override'ı RN preset'inin varlık dönüştürücüsünü devre dışı
     // bıraktığı için ham mp3 require'ı SyntaxError verir.
     "\\.(mp3|wav|m4a|ogg)$": "<rootDir>/__mocks__/sesDosyasiMock.js",

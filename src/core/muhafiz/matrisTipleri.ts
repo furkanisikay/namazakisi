@@ -33,9 +33,27 @@ export interface UyariKanallari {
    * `adimKapaliMi`dir (adim "acik mi" kurali simdiden dogru olsun diye).
    */
   titresim?: boolean;
+  /**
+   * GERCEK ALARM (issue #74) — adimin ILK tetiginde isletim sisteminin alarmi
+   * calar (Android: `setAlarmClock` + tam ekran alarm etkinligi, `USAGE_ALARM`
+   * sesi; iOS: AlarmKit gelene kadar zamana duyarli bildirim + uzun ses).
+   *
+   * NEDEN KANAL: titresim gibi bagimsiz bir eksendir — kullanici "her vakit
+   * icin" istedigi adimda acar. Ekranda cip DEGIL, ayri bir anahtardir.
+   * Alan YOKSA kapali: eski kayitlar birebir eski plani uretir, goc gerekmez.
+   * Hazir yogunluklar bu alani YAZMAZ (riza: alarm sessiz modu delebilir).
+   */
+  alarm?: boolean;
 }
 
 export interface SeviyeAyari {
+  /**
+   * Adimin TONU (issue #274) — nazik/uyari/sert/acil. Eskiden hem SIRAYI hem
+   * metnin sertligini tasiyordu; artik yalniz sertligi tasir: bildirim
+   * metni, onem (`muhafizAcilKanalMi`), iOS kesinti seviyesi ve serit cubuk
+   * boyu buradan gelir. SIRA zamandan (esikten) gelir — iki adim ayni tonu
+   * tasiyabilir, ton geri de gidebilir (motor bir sey yapmaz, ekran not duser).
+   */
   kademe: SeviyeKademe;
   /**
    * Bu adim hangi kanallardan uyarir? (Faz 2'de `mod: UyariModu` yerini aldi.)
@@ -78,7 +96,15 @@ export interface SeviyeAyari {
 }
 
 export interface VakitMuhafizAyari {
-  seviyeler: SeviyeAyari[]; // her zaman 4, SEVIYE_KADEMELERI sırası
+  /**
+   * Vaktin hatırlatmaları — DEĞİŞKEN UZUNLUKLU, 1..`MUHAFIZ_MAKS_ADIM` (issue #274).
+   *
+   * Dizi daima KRONOLOJİK sırada tutulur (çıkışta eşik AZALAN, girişte ARTAN);
+   * ekrandaki "N. hatırlatma" numarası dizi indeksinin +1'idir. Eşikler TEKİLDİR
+   * (`matrisGecerliMi`). Eski 4 elemanlı kayıt (nazik → acil) bu kuralı zaten
+   * sağlar → göçsüz okunur.
+   */
+  seviyeler: SeviyeAyari[];
   /**
    * Uyarıların hangi uçtan ölçüleceği (Faz 1). Alan YOKSA `'cikisaDogru'` —
    * eski kayıtlar birebir eski davranışı üretir, göç gerekmez.
@@ -88,8 +114,8 @@ export interface VakitMuhafizAyari {
    */
   yon?: PencereYonu;
   /**
-   * AYRILAN yönün zamanlaması (yalnızca `esikDk` + `siklik`, 4 adım,
-   * SEVIYE_KADEMELERI sırasında).
+   * AYRILAN yönün zamanlaması (yalnızca `esikDk` + `siklik`, adım başına bir
+   * eleman, KRONOLOJİK sırada — `seviyeler` ile aynı uzunlukta).
    *
    * Yön değişimi eşikleri hedef yöne uygun yeniden kurar (çıkış eşikleri
    * AZALAN, giriş eşikleri ARTAN olmak zorunda). Yedek olmasaydı kullanıcı
@@ -114,6 +140,10 @@ export type MuhafizMatrisi = Record<MuhafizVakti, VakitMuhafizAyari>;
 
 export const MUHAFIZ_VAKITLERI: MuhafizVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 export const SEVIYE_KADEMELERI: SeviyeKademe[] = ['nazik', 'uyari', 'sert', 'acil'];
+
+/** Bir vakitte en az / en fazla kaç hatırlatma kurulabilir (issue #274). */
+export const MUHAFIZ_MIN_ADIM = 1;
+export const MUHAFIZ_MAKS_ADIM = 6;
 
 /**
  * Uygulamayla gelen ses. Kullanici sistem seciciden baska bir ses secerse

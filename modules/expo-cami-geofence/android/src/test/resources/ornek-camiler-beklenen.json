@@ -1,0 +1,272 @@
+{
+  "aciklama": "TEST FIKSTURU (sentetik veri) — ornek-camiler.bin icin beklenen cozum. JS ve Kotlin cozuculeri AYNI degerleri vermeli.",
+  "surum": 1,
+  "kayitSayisi": 7,
+  "veriZamani": 1790000000,
+  "kayitlar": [
+    {
+      "id": "osm:n9000000004",
+      "ad": "Uzak Camii (fikstür)",
+      "lat": 39.92,
+      "lng": 32.85,
+      "yaricapM": 0,
+      "koseSayisi": 0,
+      "poligon": []
+    },
+    {
+      "id": "osm:w9100000002",
+      "ad": "Yuvarlak Camii (fikstür)",
+      "lat": 41.005,
+      "lng": 28.96,
+      "yaricapM": 31,
+      "koseSayisi": 12,
+      "poligon": [
+        [
+          41.005,
+          28.960357
+        ],
+        [
+          41.005083,
+          28.96034
+        ],
+        [
+          41.005218,
+          28.96021
+        ],
+        [
+          41.00527,
+          28.96
+        ],
+        [
+          41.005218,
+          28.95979
+        ],
+        [
+          41.005083,
+          28.95966
+        ],
+        [
+          41.005,
+          28.959643
+        ],
+        [
+          41.004917,
+          28.95966
+        ],
+        [
+          41.004782,
+          28.95979
+        ],
+        [
+          41.00473,
+          28.96
+        ],
+        [
+          41.004782,
+          28.96021
+        ],
+        [
+          41.004917,
+          28.96034
+        ]
+      ]
+    },
+    {
+      "id": "osm:n9000000001",
+      "ad": "Test Camii A (fikstür)",
+      "lat": 41.01,
+      "lng": 28.97,
+      "yaricapM": 0,
+      "koseSayisi": 0,
+      "poligon": []
+    },
+    {
+      "id": "osm:w9100000001",
+      "ad": "Kare Camii (fikstür)",
+      "lat": 41.011,
+      "lng": 28.972,
+      "yaricapM": 29,
+      "koseSayisi": 4,
+      "poligon": [
+        [
+          41.01082,
+          28.971762
+        ],
+        [
+          41.01082,
+          28.972238
+        ],
+        [
+          41.01118,
+          28.972238
+        ],
+        [
+          41.01118,
+          28.971762
+        ]
+      ]
+    },
+    {
+      "id": "osm:n9000000002",
+      "ad": "",
+      "lat": 41.013,
+      "lng": 28.975,
+      "yaricapM": 0,
+      "koseSayisi": 0,
+      "poligon": []
+    },
+    {
+      "id": "osm:n5000000000",
+      "ad": "Büyük Kimlik Mescidi (fikstür)",
+      "lat": 41.02,
+      "lng": 28.98,
+      "yaricapM": 0,
+      "koseSayisi": 0,
+      "poligon": []
+    },
+    {
+      "id": "osm:r9200000001",
+      "ad": "Külliye Camii (fikstür)",
+      "lat": 41.03,
+      "lng": 28.99,
+      "yaricapM": 43,
+      "koseSayisi": 4,
+      "poligon": [
+        [
+          41.02973,
+          28.989642
+        ],
+        [
+          41.02973,
+          28.990358
+        ],
+        [
+          41.03027,
+          28.990358
+        ],
+        [
+          41.03027,
+          28.989642
+        ]
+      ]
+    }
+  ],
+  "sorgular": [
+    {
+      "lat": 41.0105,
+      "lng": 28.9705,
+      "k": 3,
+      "azamiMesafeM": 50000,
+      "sonuc": [
+        {
+          "id": "osm:n9000000001",
+          "mesafeM": 69.7
+        },
+        {
+          "id": "osm:w9100000001",
+          "mesafeM": 137.6
+        },
+        {
+          "id": "osm:n9000000002",
+          "mesafeM": 468.9
+        }
+      ]
+    },
+    {
+      "lat": 41.03,
+      "lng": 28.99,
+      "k": 2,
+      "azamiMesafeM": 50000,
+      "sonuc": [
+        {
+          "id": "osm:r9200000001",
+          "mesafeM": 0.0
+        },
+        {
+          "id": "osm:n5000000000",
+          "mesafeM": 1392.9
+        }
+      ]
+    },
+    {
+      "lat": 41.0105,
+      "lng": 28.9705,
+      "k": 10,
+      "azamiMesafeM": 50000,
+      "sonuc": [
+        {
+          "id": "osm:n9000000001",
+          "mesafeM": 69.7
+        },
+        {
+          "id": "osm:w9100000001",
+          "mesafeM": 137.6
+        },
+        {
+          "id": "osm:n9000000002",
+          "mesafeM": 468.9
+        },
+        {
+          "id": "osm:w9100000002",
+          "mesafeM": 1072.5
+        },
+        {
+          "id": "osm:n5000000000",
+          "mesafeM": 1323.3
+        },
+        {
+          "id": "osm:r9200000001",
+          "mesafeM": 2716.2
+        }
+      ]
+    },
+    {
+      "lat": 39.9201,
+      "lng": 32.8501,
+      "k": 2,
+      "azamiMesafeM": 50000,
+      "sonuc": [
+        {
+          "id": "osm:n9000000004",
+          "mesafeM": 14.0
+        }
+      ]
+    },
+    {
+      "lat": 41.0105,
+      "lng": 28.9705,
+      "k": 10,
+      "azamiMesafeM": 1000000,
+      "sonuc": [
+        {
+          "id": "osm:n9000000001",
+          "mesafeM": 69.7
+        },
+        {
+          "id": "osm:w9100000001",
+          "mesafeM": 137.6
+        },
+        {
+          "id": "osm:n9000000002",
+          "mesafeM": 468.9
+        },
+        {
+          "id": "osm:w9100000002",
+          "mesafeM": 1072.5
+        },
+        {
+          "id": "osm:n5000000000",
+          "mesafeM": 1323.3
+        },
+        {
+          "id": "osm:r9200000001",
+          "mesafeM": 2716.2
+        },
+        {
+          "id": "osm:n9000000004",
+          "mesafeM": 349839.5
+        }
+      ]
+    }
+  ]
+}

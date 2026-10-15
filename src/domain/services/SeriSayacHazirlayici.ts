@@ -18,11 +18,13 @@
  * baglansaydik arka plan yolu sessizce hicbir sey yapmazdi.
  */
 
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { gunTamMi } from '../../core/seri/gunTamMi';
 import { sonrakiImsakVaktiBul, type ImsakSaglayici } from '../../core/seri/seriGunSonu';
 import { localNamazlariGetir } from '../../data/local/LocalNamazServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { Logger } from '../../core/utils/Logger';
 import { namazGunuHesapla } from './SeriHesaplayiciServisi';
 import type { SeriSayacAyarlari } from './SeriSayacBildirimServisi';
@@ -41,7 +43,7 @@ export function koordinattanImsakSaglayici(koordinatlar: {
   if (koordinatlar.lat === 0 && koordinatlar.lng === 0) return () => null;
 
   const konum = new Coordinates(koordinatlar.lat, koordinatlar.lng);
-  const params = CalculationMethod.Turkey();
+  const params = turkiyeHesapParametreleri();
   // Gun bazinda ayri `PrayerTimes` (AGENTS.md kurali).
   return (tarih: Date) => new PrayerTimes(konum, tarih, params).fajr ?? null;
 }
@@ -73,6 +75,11 @@ export async function seriSayacAyarlariniHazirla(
     // Seri gunu takvim gunu DEGIL: ertesi imsakta biter. Hangi gunun tamligina
     // bakacagimizi motorun kendi kuralindan sor.
     const seriGunu = namazGunuHesapla(simdi, ayarlar.gunBitisSaati, imsakSaglayici);
+
+    // Ozel gunde seri DONDURULUR (motor, ayni kapi) → "seri gunun bitiyor"
+    // geri sayimi anlamsiz ve namaza cagiran bir baski olur (issue #272).
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+    if (ozelGundeMi(seriGunu)) return kapali;
     const namazYanit = await localNamazlariGetir(seriGunu);
     if (!namazYanit.basarili || !namazYanit.veri) return kapali;
 

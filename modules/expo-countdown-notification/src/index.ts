@@ -28,6 +28,31 @@ export interface CountdownConfig {
      * davranisi birebir korunur.
      */
     autoDismissAtTarget?: boolean;
+    /**
+     * Android 16 Live Update (issue #282) — durum cubugu cipi ve One UI 8 Now Bar.
+     *
+     * Verilirse native taraf, API 36+ ve kullanici "Canli guncellemeler"e izin
+     * veriyorsa STANDART sablonlu ikiz bildirimi (kisa metin + chronometer +
+     * ProgressStyle + "Kildim") gonderir. Aksi halde (API < 36, izin kapali, seri
+     * temasi) mevcut ozel RemoteViews yolu BIREBIR calisir. Hangi sayacin
+     * verecegine `src/core/sayac/canliGuncelleme.ts` karar verir.
+     */
+    canli?: CanliGuncellemeSecenekleri;
+}
+
+/** Ilerleme cubugunun bir bolumu (dakika). */
+export interface CanliIlerlemeBolumu {
+    uzunlukDk: number;
+    vurgulu: boolean;
+}
+
+export interface CanliGuncellemeSecenekleri {
+    /** Ilerleme cubugunun basladigi an (epoch ms). Bolum yoksa kullanilmaz. */
+    baslangicMs: number;
+    /** Ilerleme bolumleri (toplam = baslangic → hedef, dk). Bossa cubuk cizilmez. */
+    bolumler: CanliIlerlemeBolumu[];
+    /** Yalniz vakit sayacinda: "Kildim" eylemi (ortak Kildim kuyruguna gider). */
+    kildim?: { tarih: string; vakit: string };
 }
 
 /**
@@ -47,11 +72,25 @@ interface CountdownNativeModule {
         themeType: string,
         autoDismissAtTarget: boolean
     ): void;
+    /** Expo `Function` en fazla 8 arguman alir → ek veri tek JSON'da (bkz. Kotlin). */
+    startCountdownCanli?(
+        id: string,
+        targetTimeMs: number,
+        title: string,
+        bodyTemplate: string,
+        channelId: string,
+        smallIcon: string,
+        themeType: string,
+        ekJson: string
+    ): void;
     stopCountdown(id: string): void;
     stopAll(): void;
     planlaAnons(id: string, tetikZamanMs: number, metin: string): void;
     iptalEtAnons(id: string): void;
     iptalEtTumAnonslar(): void;
+    /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
+    iptalEtOnekliAnonslar?(onek: string): number;
+    bekleyenAnonsSayisi?(): Promise<number | null>;
     trDestekleniyorMu(): Promise<boolean>;
     sesSecAsync(
         mevcutUri: string | null,
@@ -70,6 +109,13 @@ interface CountdownNativeModule {
         titresim: boolean
     ): Promise<void>;
     muhafizKanallariniTemizle(korunacakIdler: string[]): Promise<void>;
+    /** Now Bar planı (issue #282 ikinci aşama) — eski native ikili TAŞIMAZ (opsiyonel). */
+    canliDurumu?(): Promise<string>;
+    canliPlaniKur?(json: string): Promise<void>;
+    canliAyarlariniAc?(): Promise<string | null>;
+    pilOptimizasyonuMuafMi(): Promise<boolean | null>;
+    pilAyarlariniAc(): Promise<string | null>;
+    samsungMu(): boolean;
 }
 
 /**
@@ -111,6 +157,27 @@ const ExpoCountdownNotification =
 export function startCountdown(config: CountdownConfig): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) {
         console.warn('[CountdownNotification] Only supported on Android');
+        return;
+    }
+
+    // Eski native ikili (bu surumden once derlenmis APK) `startCountdownCanli`yi
+    // tasimaz → eski yola dus, sayac kaybolmasin.
+    if (config.canli && typeof ExpoCountdownNotification.startCountdownCanli === 'function') {
+        ExpoCountdownNotification.startCountdownCanli(
+            config.id,
+            config.targetTimeMs,
+            config.title,
+            config.bodyTemplate,
+            config.channelId,
+            config.smallIcon ?? '',
+            config.themeType ?? 'vakit',
+            JSON.stringify({
+                baslangicMs: config.canli.baslangicMs,
+                bolumler: config.canli.bolumler,
+                kildim: config.canli.kildim,
+                hedefteKaybol: config.autoDismissAtTarget ?? false,
+            })
+        );
         return;
     }
 
@@ -185,6 +252,146 @@ export function iptalEtAnons(id: string): void {
 export function iptalEtTumAnonslar(): void {
     if (Platform.OS !== 'android' || !ExpoCountdownNotification) return;
     ExpoCountdownNotification.iptalEtTumAnonslar();
+}
+
+/**
+ * Kimliği [onek] ile başlayan planlı anonsları iptal eder (issue #273).
+ *
+ * Muhafız (`muhafiz_`) ve nafile (`nafile_`) anonsları AYNI native kayıtta
+ * yaşar; birinin yeniden planlaması ötekinin anonslarını silmemeli. Nafile
+ * "Kıldım"ı da bununla o günün o nafilesinin kalan anonslarını susturur.
+ *
+ * @returns iptal YAPILABİLDİYSE true (Android dışında yapılacak iş olmadığı
+ *   için de true). Native fonksiyon yoksa (eski köprü) false — çağıran kendi
+ *   yedek yoluna düşer.
+ */
+export function iptalEtOnekliAnonslar(onek: string): boolean {
+    if (Platform.OS !== 'android') return true;
+    if (!onek || !ExpoCountdownNotification?.iptalEtOnekliAnonslar) return false;
+    ExpoCountdownNotification.iptalEtOnekliAnonslar(onek);
+    return true;
+}
+
+/**
+ * Bekleyen (gelecekteki) sesli anons alarmi sayisi — bildirim siniri
+ * rehberinin cihaz olcumu (issue #298). `null` = bilinmiyor (Android disi,
+ * eski build, hata). Asla firlatmaz.
+ */
+export async function bekleyenAnonsSayisi(): Promise<number | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.bekleyenAnonsSayisi) return null;
+    try {
+        const sayi = await ExpoCountdownNotification.bekleyenAnonsSayisi();
+        return typeof sayi === 'number' && Number.isFinite(sayi) ? sayi : null;
+    } catch {
+        return null;
+    }
+}
+
+// ============================================================
+// NOW BAR / CANLI SAYAC PLANI (issue #282 ikinci asama)
+// ============================================================
+
+/**
+ * Android 16 one cikarma durumu:
+ * - `desteklenmiyor`: Android disi, API < 36 ya da bu surumden eski native ikili
+ *   (plan fonksiyonlari yok) → sayaclar ESKI yolunda kalir.
+ * - `kapali`: kullanici sistemde "Canli guncellemeler"i kapatti.
+ * - `acik`: planlayici Now Bar'i yonetir.
+ * Asla firlatmaz.
+ */
+export type CanliDurum = 'desteklenmiyor' | 'kapali' | 'acik';
+
+export async function canliDurumu(): Promise<CanliDurum> {
+    if (
+        Platform.OS !== 'android' ||
+        !ExpoCountdownNotification?.canliDurumu ||
+        !ExpoCountdownNotification.canliPlaniKur
+    ) {
+        return 'desteklenmiyor';
+    }
+    try {
+        const sonuc = await ExpoCountdownNotification.canliDurumu();
+        return sonuc === 'acik' || sonuc === 'kapali' ? sonuc : 'desteklenmiyor';
+    } catch {
+        return 'desteklenmiyor';
+    }
+}
+
+/**
+ * Planlayicinin olay listesini native'e verir (saklar, su anki hali uygular, tek
+ * alarm zincirini kurar). Native taraf yoksa `false`. Asla firlatmaz.
+ */
+export async function canliPlaniKur(json: string): Promise<boolean> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.canliPlaniKur) return false;
+    try {
+        await ExpoCountdownNotification.canliPlaniKur(json);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export type AcilanCanliEkrani = 'canli' | 'bildirim' | 'uygulama';
+
+/**
+ * Sistemdeki "Canli guncellemeler" ayarini acar (yoksa uygulamanin bildirim
+ * ayarlari, o da yoksa uygulama bilgisi). Izin ISTEMEZ. Asla firlatmaz.
+ */
+export async function canliAyarlariniAc(): Promise<AcilanCanliEkrani | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.canliAyarlariniAc) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.canliAyarlariniAc();
+        return sonuc === 'canli' || sonuc === 'bildirim' || sonuc === 'uygulama' ? sonuc : null;
+    } catch {
+        return null;
+    }
+}
+
+// ============================================================
+// PIL KISITI (Doze + Samsung "uyuyan uygulamalar")
+// ============================================================
+
+/**
+ * Uygulama pil optimizasyonundan muaf mi? `null` = bilinmiyor (Android disi,
+ * eski build, hata) → ekran uyari GOSTERMEMELI (yanlis alarm, hic uyarmamaktan
+ * kotudur). Asla firlatmaz.
+ */
+export async function pilOptimizasyonuMuafMi(): Promise<boolean | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.pilOptimizasyonuMuafMi) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.pilOptimizasyonuMuafMi();
+        return typeof sonuc === 'boolean' ? sonuc : null;
+    } catch {
+        return null;
+    }
+}
+
+export type AcilanPilEkrani = 'uygulama' | 'pil';
+
+/**
+ * Uygulama bilgisi ekranini acar (Pil → Kisitlanmamis); olmazsa pil
+ * optimizasyonu listesini. Izin ISTEMEZ. Acilan ekrani dondurur; hicbiri
+ * acilamazsa `null`. Asla firlatmaz. Samsung'un "Asla uyumayan" listesi BILINCLI
+ * hedef degil: okunamayan ayri bir durumdur (PilAyarlari.kt).
+ */
+export async function pilAyarlariniAc(): Promise<AcilanPilEkrani | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.pilAyarlariniAc) return null;
+    try {
+        const sonuc = await ExpoCountdownNotification.pilAyarlariniAc();
+        return sonuc === 'pil' || sonuc === 'uygulama' ? sonuc : null;
+    } catch {
+        return null;
+    }
+}
+
+/** Cihaz Samsung mu? Android disinda/eski build'de `false`. */
+export function samsungMu(): boolean {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.samsungMu) return false;
+    try {
+        return ExpoCountdownNotification.samsungMu() === true;
+    } catch {
+        return false;
+    }
 }
 
 /**

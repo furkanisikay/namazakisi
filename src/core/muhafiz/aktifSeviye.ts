@@ -46,12 +46,68 @@ export function aktifSeviyeyiBul(
 }
 
 /**
- * Eşik dizisi (SEVIYE_KADEMELERI sırası: nazik → acil) yöne uygun mu?
- * - `cikisaDogru`: kesin AZALAN (nazik en büyük eşiği taşır)
- * - `girisindenItibaren`: kesin ARTAN (nazik en küçük eşiği taşır)
+ * Adımların KRONOLOJİK (eşiğe göre sıralı) görünümü — issue #274.
+ *
+ * Çıkışta en erken uyarı en BÜYÜK eşiktir (eşik AZALAN), girişte en KÜÇÜK
+ * (eşik ARTAN). Dizi indeksi artık tonu (`kademe`) ima etmez; "N. hatırlatma"
+ * numarası, sınır hesabı ve plan sırası bu görünümden gelir. Eşit eşikte
+ * (yalnız bozuk/eski kayıt) sıralama kararlıdır — dizideki sıra korunur.
+ *
+ * Kopya döner, girdiye dokunmaz (Immer'ın dondurduğu diziler de güvenle verilir).
+ */
+export function kronolojikSirala<T extends { esikDk: number }>(
+  seviyeler: readonly T[],
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+): T[] {
+  const girisYonu = yon === 'girisindenItibaren';
+  return seviyeler
+    .map((s, i) => ({ s, i }))
+    .sort((a, b) =>
+      a.s.esikDk !== b.s.esikDk
+        ? girisYonu
+          ? a.s.esikDk - b.s.esikDk
+          : b.s.esikDk - a.s.esikDk
+        : a.i - b.i
+    )
+    .map((x) => x.s);
+}
+
+/**
+ * Bir adımın kronolojik sıra numarası (0'dan) — `UyariPlani.adimIndeks` ve
+ * ekrandaki "N. hatırlatma" etiketi buradan beslenir. Adım listede yoksa -1.
+ */
+export function kronolojikIndeks(
+  seviyeler: readonly SeviyeAyari[],
+  seviye: SeviyeAyari,
+  yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+): number {
+  return kronolojikSirala(seviyeler, yon).indexOf(seviye);
+}
+
+/**
+ * Eşikler TEKİL mi? (`matrisGecerliMi` kapısı — issue #274.)
+ *
+ * Eşit eşikli iki adım aynı dakikaları kapsar ve biri kalıcı gölgede kalır;
+ * değişken uzunluklu dizide "N. hatırlatma" numarası da belirsizleşir.
+ */
+export function esiklerTekilMi(seviyeler: readonly { esikDk: number }[]): boolean {
+  return new Set(seviyeler.map((s) => s.esikDk)).size === seviyeler.length;
+}
+
+/**
+ * Eşik dizisi KRONOLOJİK sırada mı (dizi indeksi = zaman sırası)?
+ * - `cikisaDogru`: kesin AZALAN (ilk hatırlatma en büyük eşiği taşır)
+ * - `girisindenItibaren`: kesin ARTAN (ilk hatırlatma en küçük eşiği taşır)
  *
  * "Kesin" şart: eşit eşik iki adımı aynı dakikalara koyar, biri kalıcı gölgede
  * kalır (bkz. `aktifSeviyeyiBul` tie-break notu).
+ *
+ * NEDEN HÂLÂ DİZİ SIRASINA BAKIYOR (issue #274): ekran diziyi daima kronolojik
+ * tutar (ekleme sıralı yere yapılır, eşik stepper'ı komşulara kilitlidir).
+ * Dizi sırasıyla eşleşen iki tüketici var ve ikisi de İNDEKS hizası ister:
+ * `yonYedegi` geri yüklemesi (yedek adım adım, indeksle eşlenir) ve sahadaki
+ * ters eskalasyonlu eski kayıtları yakalayan `yonEsiklerineGoc`. Ton artık
+ * sırayı ima etmez; bu kapı tona HİÇ bakmaz.
  */
 export function esikSiralamasiGecerliMi(
   // `SeviyeAyari[]` DEGIL: yon degisimi ve goc yollari yalniz zamanlama tasiyan

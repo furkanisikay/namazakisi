@@ -1,0 +1,185 @@
+{
+  "aciklama": "Widget/kutu vakit karari sozlesmesi (issue #275/#276). JS (src/core/widget/__tests__/widgetYuku.test.ts) ve Kotlin (cekirdek/VakitCizelgesiTest) AYNI dosyayi dogrular. Vakitler Istanbul 2026-06-20..22, CalculationMethod.Turkey(). istekKodlari Java String.hashCode ile bagimsiz hesaplandi.",
+  "vakitler": [
+    {
+      "vakit": "sabah",
+      "ms": 1781915040000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1781922300000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1781950260000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1781964660000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1781977620000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1781984280000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "sabah",
+      "ms": 1782001440000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1782008700000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1782036660000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1782051060000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1782064020000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1782070680000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "sabah",
+      "ms": 1782087840000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1782095100000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1782123060000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1782137460000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1782150420000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1782157080000,
+      "tarih": "2026-06-22"
+    }
+  ],
+  "durumlar": [
+    {
+      "ad": "gece yarisindan sonra yatsi dunundur",
+      "simdiMs": 1781992800000,
+      "aktif": {
+        "vakit": "yatsi",
+        "tarih": "2026-06-20"
+      },
+      "bitisMs": 1782001440000,
+      "sonraki": {
+        "vakit": "sabah",
+        "tarih": "2026-06-21"
+      }
+    },
+    {
+      "ad": "sabah vakti",
+      "simdiMs": 1782002040000,
+      "aktif": {
+        "vakit": "sabah",
+        "tarih": "2026-06-21"
+      },
+      "bitisMs": 1782008700000,
+      "sonraki": {
+        "vakit": "ogle",
+        "tarih": "2026-06-21"
+      }
+    },
+    {
+      "ad": "gunes-ogle arasi kilinabilir vakit yok",
+      "simdiMs": 1782021600000,
+      "aktif": null,
+      "bitisMs": null,
+      "sonraki": {
+        "vakit": "ogle",
+        "tarih": "2026-06-21"
+      }
+    },
+    {
+      "ad": "tam giris aninda vakit girmistir",
+      "simdiMs": 1782051060000,
+      "aktif": {
+        "vakit": "ikindi",
+        "tarih": "2026-06-21"
+      },
+      "bitisMs": 1782064020000,
+      "sonraki": {
+        "vakit": "aksam",
+        "tarih": "2026-06-21"
+      }
+    },
+    {
+      "ad": "veri tukendi: sure var denmez",
+      "simdiMs": 1782160680000,
+      "aktif": null,
+      "bitisMs": null,
+      "sonraki": null
+    },
+    {
+      "ad": "ilk giristen once",
+      "simdiMs": 1781915039000,
+      "aktif": null,
+      "bitisMs": null,
+      "sonraki": {
+        "vakit": "sabah",
+        "tarih": "2026-06-20"
+      }
+    }
+  ],
+  "istekKodlari": [
+    {
+      "tarih": "2026-06-21",
+      "vakit": "ogle",
+      "kod": 1283550261
+    },
+    {
+      "tarih": "2026-06-20",
+      "vakit": "yatsi",
+      "kod": 256913437
+    },
+    {
+      "tarih": "2026-10-13",
+      "vakit": "imsak",
+      "kod": 544323455
+    },
+    {
+      "tarih": "2026-12-31",
+      "vakit": "aksam",
+      "kod": 1854462005
+    }
+  ]
+}

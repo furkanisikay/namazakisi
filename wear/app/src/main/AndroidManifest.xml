@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Namaz Akışı — Wear OS saat uygulaması (issue #269).
+  applicationId telefonla AYNI (build.gradle.kts) → Data Layer eşleşmesi.
+  Veri telefondan Data Layer ile gelir, saatte konum/ağ kullanılmaz.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Bağımsız hatırlatma (issue #280): telefon yanında değilken de saat, telefonun
+      hazır muhafız planını KENDİ alarmlarıyla çalar. Yalnız SIRADAKİ alarm kuruludur
+      (zincir). USE_EXACT_ALARM 33+ (namaz vakti = kullanıcının beklediği saatli
+      uyarı); 31–32'de SCHEDULE_EXACT_ALARM. İzin yoksa yaklaşık alarma düşülür.
+      POST_NOTIFICATIONS Wear OS 4+'ta kurulumda kapalı gelir → uygulama açılınca istenir.
+    -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Live Update (issue #282): Wear OS 6+ (API 36) canlı sayacı öne çıkarma isteği. NORMAL izin;
+         eski sistem bilinmeyen izni yok sayar. -->
+    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
+
+    <!-- Play: saat uygulaması olduğunu bildirir (required=false VERİLMEZ). -->
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault">
+
+        <uses-library android:name="com.google.android.wearable" android:required="false" />
+
+        <!--
+          standalone=false: vakitler TELEFONDA hesaplanır (tek hesap kaynağı).
+          Bilinçli bedel: telefonsuz (untethered) saatlerde Play listesinde görünmez.
+        -->
+        <meta-data android:name="com.google.android.wearable.standalone" android:value="false" />
+
+        <activity
+            android:name=".ui.AnaAktivite"
+            android:exported="true"
+            android:taskAffinity="">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Tesbihat sayacı (issue #293). exported: "Bugün" tile'ının LaunchAction'ı ve
+          Ongoing simgesinin dokunuşu sistem (SysUI) tarafından başlatılır. Filtre yok.
+        -->
+        <activity
+            android:name=".ui.TesbihatAktivite"
+            android:exported="true"
+            android:label="@string/tesbihat_adi"
+            android:launchMode="singleTop"
+            android:taskAffinity="" />
+
+        <service
+            android:name=".veri.TelefonDinleyiciServisi"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/durum" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".hatirlatma.MuhafizAlarmAlicisi" android:exported="false" />
+        <receiver android:name=".hatirlatma.KildimAlicisi" android:exported="false" />
+        <!-- Android yeniden başlatmada tüm alarmları siler; saat/saat dilimi değişimi sıradakini kaydırır. -->
+        <receiver android:name=".hatirlatma.YenidenKurAlicisi" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".tile.VakitTileServisi"
+            android:exported="true"
+            android:label="@string/tile_adi"
+            android:description="@string/tile_aciklama"
+            android:icon="@drawable/ic_vakit"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/tile_onizleme" />
+        </service>
+
+        <!-- "Bugün" tile'ı (issue #281): beş vakit + iki dokunuşla "Kıldım". -->
+        <service
+            android:name=".tile.BugunTileServisi"
+            android:exported="true"
+            android:label="@string/bugun_tile_adi"
+            android:description="@string/bugun_tile_aciklama"
+            android:icon="@drawable/ic_vakit"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/bugun_tile_onizleme" />
+        </service>
+
+        <service
+            android:name=".komplikasyon.VakitKomplikasyonServisi"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT,LONG_TEXT,RANGED_VALUE,MONOCHROMATIC_IMAGE,SMALL_IMAGE" />
+            <!-- 0: periyodik güncelleme YOK — zaman çizelgesi + telefon verisi tetikler. -->
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+
+        <!--
+          Issue #281 komplikasyon seti. GOAL_PROGRESS / WEIGHTED_ELEMENTS Wear OS 4 (API 33)
+          ile geldi: her kaynağın API 33+ servisi (@bool/api33) ve yalnız eski türleri
+          bildiren "Yedek" ikizi (@bool/api33_alti) vardır; cihazda yalnız biri etkindir.
+          Hepsinde UPDATE_PERIOD 0: zaman çizelgesi + kılınmışlık değişimi tazeler.
+        -->
+        <service
+            android:name=".komplikasyon.GunlukIlerlemeKomplikasyonServisi"
+            android:enabled="@bool/api33"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/ilerleme_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="GOAL_PROGRESS,RANGED_VALUE,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunlukIlerlemeYedekKomplikasyonServisi"
+            android:enabled="@bool/api33_alti"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/ilerleme_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="RANGED_VALUE,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunDagilimiKomplikasyonServisi"
+            android:enabled="@bool/api33"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/dagilim_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="WEIGHTED_ELEMENTS,SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.GunDagilimiYedekKomplikasyonServisi"
+            android:enabled="@bool/api33_alti"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit"
+            android:label="@string/dagilim_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+        <service
+            android:name=".komplikasyon.KerahatKomplikasyonServisi"
+            android:exported="true"
+            android:icon="@drawable/ic_vakit_gunes"
+            android:label="@string/kerahat_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+    </application>
+</manifest>

@@ -24,7 +24,7 @@ jest.mock('expo-sharing', () => ({
   shareAsync: jest.fn().mockResolvedValue(undefined),
 }));
 const mockDosyaYaz = jest.fn().mockResolvedValue(undefined);
-jest.mock('expo-file-system/next', () => ({
+jest.mock('expo-file-system', () => ({
   File: jest.fn().mockImplementation(() => ({
     write: mockDosyaYaz,
     uri: 'file://tmp/logs.txt',

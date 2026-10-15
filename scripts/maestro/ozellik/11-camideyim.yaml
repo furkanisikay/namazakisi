@@ -1,0 +1,28 @@
+# tohum: ozellik
+# Camideyim (yalniz Android): uc sekme (testID `sekme-<deger>`). Harita karolari
+# agdan (OpenFreeMap) iner; `waitForAnimationToEnd` ekran duragan olana kadar
+# bekler, zaman asimi hata DEGILDIR.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Camideyim\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Camideyim\\..*"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/25-camideyim-ayarlar
+- tapOn:
+    id: "sekme-harita"
+- waitForAnimationToEnd:
+    timeout: 15000
+- takeScreenshot: ozk/26-camideyim-harita
+- tapOn:
+    id: "sekme-nasil"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: ozk/27-camideyim-nasil

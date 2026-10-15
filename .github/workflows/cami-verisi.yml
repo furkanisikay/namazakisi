@@ -1,0 +1,134 @@
+name: 🕌 Cami verisi
+
+# Camideyim (issue #297) için Türkiye cami verisini OpenStreetMap'ten üretir.
+#
+# Kaynak: Geofabrik `turkey-latest.osm.pbf` (Overpass DEĞİL — CI'da kota/zaman
+# aşımına düşer). osmium-tool ile süzülür, `scripts/camiler/cami_verisi_uret.py`
+# ile `assets/camiler/tr.bin`'e yazılır (biçim: scripts/camiler/BICIM.md).
+#
+# MASTER'A DOĞRUDAN YAZMAZ: çıktı ayrı bir dala commit'lenir ve PR açılır.
+# master'a her push release keser (AGENTS.md "araç commit'leri de release keser");
+# veri yalnız gözden geçirilmiş PR ile girer. Veri değişmediyse PR açılmaz.
+#
+# Ön koşul: depo ayarlarında "Allow GitHub Actions to create and approve pull
+# requests" açık olmalı (yoksa `gh pr create` 403 verir). GITHUB_TOKEN ile açılan
+# PR'da pull_request iş akışları tetiklenmez; kontrolleri PR'ı güncelleyerek
+# (ya da elle dispatch ederek) koşturun.
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_ac:
+        description: 'Veri değiştiyse PR açılsın mı? (hayır = yalnız artifact)'
+        type: boolean
+        default: true
+  schedule:
+    # Her ayın 3'ü 03:17 UTC (Geofabrik günlük üretir; ay başı yoğunluğundan uzak).
+    - cron: '17 3 3 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cami-verisi
+  cancel-in-progress: false
+
+jobs:
+  uret:
+    name: 🕌 Veriyi üret
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      PBF_URL: https://download.geofabrik.de/europe/turkey-latest.osm.pbf
+      HEDEF_DAL: otomatik/cami-verisi
+      CIKTI: assets/camiler/tr.bin
+      ASGARI_KAYIT: '5000'
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: 🧰 osmium-tool + pyosmium
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq osmium-tool
+          python3 -m pip install --quiet 'osmium==4.3.1'
+
+      - name: 🌍 Geofabrik PBF indir (+ MD5 doğrula)
+        run: |
+          mkdir -p "$RUNNER_TEMP/osm"
+          cd "$RUNNER_TEMP/osm"
+          curl -fsSL --retry 3 -o turkey.osm.pbf "$PBF_URL"
+          curl -fsSL --retry 3 -o turkey.osm.pbf.md5 "$PBF_URL.md5"
+          echo "$(cut -d' ' -f1 turkey.osm.pbf.md5)  turkey.osm.pbf" | md5sum -c -
+          ls -lh turkey.osm.pbf
+
+      - name: 🔎 Süz ve üret
+        id: uret
+        run: |
+          osmium tags-filter "$RUNNER_TEMP/osm/turkey.osm.pbf" nwr/amenity=place_of_worship \
+            -o "$RUNNER_TEMP/osm/suzulmus.osm.pbf" --overwrite
+          python3 -I scripts/camiler/cami_verisi_uret.py \
+            "$RUNNER_TEMP/osm/suzulmus.osm.pbf" "$CIKTI" --ozet "$RUNNER_TEMP/ozet.json"
+          KAYIT=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['kayit'])" "$RUNNER_TEMP/ozet.json")
+          BAYT=$(stat -c %s "$CIKTI")
+          echo "kayit=$KAYIT" >> "$GITHUB_OUTPUT"
+          echo "bayt=$BAYT" >> "$GITHUB_OUTPUT"
+          if [ "$KAYIT" -lt "$ASGARI_KAYIT" ]; then
+            echo "::error::Yalniz $KAYIT kayit uretildi (asgari $ASGARI_KAYIT) — girdi bozuk olabilir"
+            exit 1
+          fi
+          {
+            echo "### 🕌 Cami verisi"
+            echo ""
+            echo "| Kayıt | Boyut |"
+            echo "|---|---|"
+            echo "| $KAYIT | $((BAYT / 1024)) KB |"
+            echo ""
+            echo '```json'
+            cat "$RUNNER_TEMP/ozet.json"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 📦 Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cami-verisi
+          path: ${{ env.CIKTI }}
+          retention-days: 30
+
+      - name: 🔀 Ayrı dala commit + PR
+        if: ${{ github.event_name == 'schedule' || inputs.pr_ac }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KAYIT: ${{ steps.uret.outputs.kayit }}
+          BAYT: ${{ steps.uret.outputs.bayt }}
+        run: |
+          set -euo pipefail
+          # Güvenlik kilidi: bu iş master'a ASLA yazmaz.
+          case "$HEDEF_DAL" in
+            master|main|"") echo "::error::Hedef dal gecersiz: '$HEDEF_DAL'"; exit 1 ;;
+          esac
+          if git diff --quiet -- "$CIKTI" && git ls-files --error-unmatch "$CIKTI" >/dev/null 2>&1; then
+            echo "Veri degismedi; PR acilmiyor."
+            exit 0
+          fi
+          TARIH=$(date -u +%Y-%m-%d)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$HEDEF_DAL"
+          git add "$CIKTI"
+          git commit -m "chore(camiler): OpenStreetMap cami verisi $TARIH" \
+            -m "$KAYIT kayit, $((BAYT / 1024)) KB. Kaynak: Geofabrik turkey-latest.osm.pbf (ODbL)." \
+            -m "Refs #297"
+          git push --force origin "HEAD:refs/heads/$HEDEF_DAL"
+          if [ -z "$(gh pr list --head "$HEDEF_DAL" --state open --json number --jq '.[0].number')" ]; then
+            gh pr create --base master --head "$HEDEF_DAL" \
+              --title "chore(camiler): OpenStreetMap cami verisi $TARIH" \
+              --body "Aylık otomatik güncelleme (issue #297). **$KAYIT kayıt**, $((BAYT / 1024)) KB. Veri © OpenStreetMap katkıcıları, ODbL 1.0 (assets/camiler/LICENSE.ODbL)."
+          else
+            echo "Acik PR zaten var; dal guncellendi."
+          fi

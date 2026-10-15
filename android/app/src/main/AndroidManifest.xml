@@ -6,15 +6,22 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
   <uses-permission android:name="android.permission.READ_CALENDAR"/>
   <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
-  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+  <!-- Android 13+ USE_EXACT_ALARM kurulumda verilir; SCHEDULE_EXACT_ALARM yalnız 12/12L
+       için gerekir (Google'ın önerdiği ikili). notifee kütüphanesi izni niteliksiz
+       bildirdiği için maxSdkVersion birleştirmede ezilmesin diye tools:replace. -->
+  <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
+      android:maxSdkVersion="32"
+      tools:replace="android:maxSdkVersion"/>
   <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
+  <!-- Gerçek alarm (issue #74): kilit ekranında tam ekran alarm. Android 14+'ta yalnız
+       çağrı/alarm uygulamalarına otomatik verilir; Play Console "Tam ekran amaçları"
+       beyanı gerekir (AGENTS.md). İzin yoksa sistem heads-up'a indirger, ses yine çalar. -->
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
   <!-- Kütüphaneler merge sırasında bu izinleri geri ekleyebilir; aşağıdakiler bunu engeller -->
@@ -26,6 +33,19 @@
       tools:node="remove"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
       tools:node="remove"/>
+  <!-- Foreground service KULLANILMIYOR (AGENTS.md: konum = geofence, anons = exact
+       alarm + goAsync). Kullanılmayan FGS türü Play Console'da beyan ve inceleme
+       yükü getirir. expo-location'ın konum servisi yalnız startLocationUpdatesAsync
+       ile başlar; o API kodda yok — çağrılırsa bu satırlar geri alınmalı. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"
+      tools:node="remove"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+      tools:node="remove"/>
+  <!-- expo-audio: kilit ekranı medya kontrolleri (mediaPlayback FGS) ve ses kaydı
+       (microphone FGS) için. Uygulama yalnız kısa önizleme sesi çalar
+       (setActiveForLockScreen ve kayıt KULLANILMAZ) → izin + iki servis atılır. -->
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      tools:node="remove"/>
 
   <queries>
     <intent>
@@ -33,12 +53,16 @@
       <category android:name="android.intent.category.BROWSABLE"/>
       <data android:scheme="https"/>
     </intent>
+    <intent>
+      <action android:name="android.intent.action.MAIN"/>
+      <category android:name="android.intent.category.HOME"/>
+    </intent>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
+    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|density|uiMode|assetsPaths" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -49,6 +73,22 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="namazakisi"/>
       </intent-filter>
+      <!-- Cihazlar arası eşitleme (issue #288): Google OAuth (PKCE) yönlendirmesi
+           `com.furkanisikay.namazakisi:/oauth2redirect`. Custom Tab dönüşü buraya düşer;
+           expo-web-browser yanıtı JS'te yakalar (state doğrulanır). Google Cloud'daki
+           Android OAuth istemcisinde "Özel URI şeması" açık olmalı. -->
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="com.furkanisikay.namazakisi"/>
+      </intent-filter>
+      <!-- Hızlı ayarlar kutusuna uzun basış uygulamayı açar (issue #276) -->
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+      </intent-filter>
+      <!-- Statik kısayollar: Kıble, Kaza defteri, Şu anki vakti kıldım (issue #276) -->
+      <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
     </activity>
 
     <!-- 1x1 Namaz Widget -->
@@ -75,14 +115,174 @@
           android:resource="@xml/widget_namaz_genis_bilgisi" />
     </receiver>
 
-    <!-- Widget dakikalık güncelleme + önyükleme alıcısı -->
+    <!-- Samsung Flex Window (Z Flip kapak ekranı) widget'ı (issue #283): AYRI sağlayıcı,
+         mevcut iki widget'a dokunulmaz. Samsung meta-data'sı display="sub_screen". -->
+    <receiver
+        android:name=".widget.NamazKapakWidget"
+        android:label="@string/widget_kapak_adi"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+          android:name="android.appwidget.provider"
+          android:resource="@xml/widget_namaz_kapak_bilgisi" />
+      <meta-data
+          android:name="com.samsung.android.appwidget.provider"
+          android:resource="@xml/samsung_meta_info_kapak_widget" />
+    </receiver>
+
+    <!-- Widget yeniden hesaplama alıcısı (issue #275): vakit sınırı alarmı (dakikalık alarm
+         YOK), açılış, güncelleme, saat / saat dilimi / tarih değişimi. -->
     <receiver
         android:name=".widget.NamazWidgetAlarmAlici"
         android:exported="true">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
         <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+        <action android:name="android.intent.action.TIME_SET" />
+        <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+        <action android:name="android.intent.action.DATE_CHANGED" />
       </intent-filter>
     </receiver>
+    <!-- Widget "Kıldım" dokunuşu (PendingIntent.getBroadcast, açık bileşen) -->
+    <receiver android:name=".widget.WidgetKildimAlici" android:exported="false"/>
+    <!-- Öne çıkarılmış (Android 16 Live Update) vakit sayacındaki "Kıldım" (issue #282).
+         Sayaç modülü uygulama sınıflarını göremez → paket-kapsamlı açık yayın gönderir. -->
+    <receiver android:name=".kildim.SayacKildimAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="com.furkanisikay.namazakisi.SAYAC_KILDIM"/>
+      </intent-filter>
+    </receiver>
+    <!-- Widget özelleştirme (android:configure) -->
+    <activity
+        android:name=".widget.WidgetYapilandirmaActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:theme="@style/WidgetYapilandirmaTemasi">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+      </intent-filter>
+    </activity>
+    <!-- Hızlı ayarlar kutusu: "Şu anki vakti kıldım" (issue #276) -->
+    <service
+        android:name=".kildim.KildimKutusuServisi"
+        android:exported="true"
+        android:icon="@drawable/ic_qs_kildim"
+        android:label="@string/kutu_kildim_etiket"
+        android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE"/>
+      </intent-filter>
+    </service>
+    <!-- "Şu anki vakti kıldım" kısayolu: arayüzsüz geçiş etkinliği. Kısayol ve otomasyon
+         uygulamaları açık bileşen adıyla çağırır; intent-filter YOK (MainActivity'nin
+         namazakisi:// filtresiyle seçim penceresi açılmasın). -->
+    <activity
+        android:name=".kildim.KildimKisayolActivity"
+        android:excludeFromRecents="true"
+        android:exported="true"
+        android:noHistory="true"
+        android:taskAffinity=""
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+    <!-- Otomasyon eklentisi (issue #278): Locale protokolü (Tasker, MacroDroid, Automate).
+         Düzenleme etkinlikleri çağıranı güven listesine sorar ve pakete gizli belirteç yazar;
+         dışa açık alıcılar yalnız protokol eylemini ve belirteç + "izin" taşıyan paketi kabul eder. -->
+    <activity
+        android:name=".otomasyon.OtomasyonEylemActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_eylem_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".otomasyon.OtomasyonKosulActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_kosul_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".otomasyon.OtomasyonOlayActivity"
+        android:exported="true"
+        android:excludeFromRecents="true"
+        android:label="@string/otomasyon_olay_etiket"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+      <intent-filter>
+        <action android:name="net.dinglisch.android.tasker.ACTION_EDIT_EVENT"/>
+      </intent-filter>
+    </activity>
+    <receiver android:name=".otomasyon.OtomasyonEylemAlici" android:exported="true">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+      </intent-filter>
+    </receiver>
+    <receiver android:name=".otomasyon.OtomasyonKosulAlici" android:exported="true">
+      <intent-filter>
+        <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION"/>
+      </intent-filter>
+    </receiver>
+    <!-- Camideyim modülünün paket-kapsamlı yayını (setPackage) — dışa kapalı. -->
+    <receiver android:name=".otomasyon.OtomasyonCamiAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="com.furkanisikay.namazakisi.CAMI_DURUMU"/>
+      </intent-filter>
+    </receiver>
+    <!-- Wear OS saatinden "Kıldım" (issue #269): saat /namazakisi/kildim/... DataItem'ı yazar -->
+    <service android:name=".wear.WearDinleyiciServisi" android:exported="true">
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/kildim"/>
+      </intent-filter>
+    </service>
+    <!-- Gerçek alarm (issue #74): setAlarmClock tetiği, bildirim düğmeleri, susturma ve
+         yeniden başlatmada geri kurulum. Dışa kapalı; çağrılar açık bileşenle. -->
+    <receiver android:name=".alarm.MuhafizAlarmAlici" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+      </intent-filter>
+    </receiver>
+    <!-- Tam ekran alarm: kilit ekranının üstünde, ayrı görev (son uygulamalarda görünmez). -->
+    <activity
+        android:name=".alarm.MuhafizAlarmActivity"
+        android:exported="false"
+        android:excludeFromRecents="true"
+        android:launchMode="singleInstance"
+        android:taskAffinity=""
+        android:theme="@android:style/Theme.Material.NoActionBar"/>
+    <!-- Ortak "Kıldım" kuyruğunun headless JS görevi (saat, widget, kutu, kısayol) -->
+    <service android:name=".kildim.KildimGorevServisi" android:exported="false"/>
+    <!-- Wear OS (issue #280): muhafız bildirimlerine köprü etiketi basar; saat kendi
+         planını kurunca yalnız bu etiketi dışlar (çift bildirim olmasın). expo-notifications
+         olayları EN YÜKSEK öncelikli alıcıya gönderir (kendi alıcısı -1). -->
+    <!-- Güncelleme öncesi expo bileşeniyle kurulmuş tetik alarmlarını siler (çift bildirim). -->
+    <receiver android:name=".wear.EskiExpoAlarmTemizleyici" android:enabled="true" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+      </intent-filter>
+    </receiver>
+    <receiver android:name=".wear.KopruEtiketliBildirimServisi" android:enabled="true" android:exported="false">
+      <intent-filter android:priority="0">
+        <action android:name="expo.modules.notifications.NOTIFICATION_EVENT"/>
+      </intent-filter>
+    </receiver>
+    <!-- expo-location konum güncelleme servisi (foregroundServiceType=location): kodda
+         startLocationUpdatesAsync yok, geofence onu kullanmaz. Bildirimi kalsaydı Play
+         FGS beyanı isterdi. Bkz. üstteki FOREGROUND_SERVICE_LOCATION notu. -->
+    <service android:name="expo.modules.location.services.LocationTaskService" tools:node="remove"/>
+    <service android:name="expo.modules.audio.service.AudioControlsService" tools:node="remove"/>
+    <service android:name="expo.modules.audio.service.AudioRecordingService" tools:node="remove"/>
+    <!-- Android AppFunctions (issue #94): asistanın okuduğu uygulama açıklaması. Servisin kendisi
+         (PlatformAppFunctionService, yalnız sistem bağlanabilir: BIND_APP_FUNCTION_SERVICE)
+         androidx.appfunctions-service manifestinden birleşir; yeni izin EKLEMEZ. -->
+    <property android:name="android.app.appfunctions.app_metadata" android:resource="@xml/asistan_uygulama_bilgisi"/>
   </application>
 </manifest>

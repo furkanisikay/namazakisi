@@ -8,6 +8,7 @@ jest.mock('expo-notifications', () => ({
     scheduleNotificationAsync: jest.fn(),
     cancelScheduledNotificationAsync: jest.fn(),
     getAllScheduledNotificationsAsync: jest.fn().mockResolvedValue([]),
+    setNotificationCategoryAsync: jest.fn().mockResolvedValue(null),
     AndroidNotificationPriority: {
         MAX: 'max',
         HIGH: 'high',
@@ -102,6 +103,7 @@ import { TITRESIM_DESENI } from '../../../core/muhafiz/titresimDeseni';
 // YESIL KALARAK. `MuhafizTeslimcisi` bu yuzden enjekte edilebilir.
 import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
+import { muhafizPlaniDinleyicisiniAyarla } from '../muhafizPlaniGozlemcisi';
 
 beforeEach(() => {
     muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
@@ -214,13 +216,14 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
     });
 
     test('Aynı dakikaya düşen bildirimler birleştirilmeli', async () => {
-        // Tum esikler ayni dakikaya (25) ve sikligi pencereden buyuk (30) ayarlanir.
-        // Boylece dort seviye de YALNIZ 25. dakikada aktif olur ve uretim bunlari
+        // Tum esikler ayni dakikaya (10) ve sikligi pencereden buyuk (30) ayarlanir.
+        // Boylece dort seviye de YALNIZ 10. dakikada aktif olur ve uretim bunlari
         // tek bildirime indirgemeli (cakisan dakikada en yuksek seviye kazanir).
+        // 10 dk: acil ton yalniz son 15 dakikada gecerli (issue #274).
         await servis.yapilandirVePlanla({
             aktif: true,
             koordinatlar: { lat: 41.0, lng: 29.0 },
-            matris: tekDuzeMatris([{ esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }, { esikDk: 25, siklikDk: 30 }]),
+            matris: tekDuzeMatris([{ esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }, { esikDk: 10, siklikDk: 30 }]),
         });
 
         const scheduleCalllari = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -232,9 +235,9 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         // Birlesen tek bildirim, cakisan en yuksek seviyeyi (seviye 4) tasimali
         const tekBildirim = scheduleCalllari[0][0];
         expect(tekBildirim.content.data.seviye).toBe(4);
-        expect(tekBildirim.content.title).toBe('🚨 25 dk · AKŞAM VAKTİ ÇIKIYOR');
-        // Cakisma 25. dakikada oldugu icin ID son-eki _dk_25 olmali
-        expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(25);
+        expect(tekBildirim.content.title).toBe('AKŞAM · 10 dk · VAKİT ÇIKIYOR 🚨');
+        // Cakisma 10. dakikada oldugu icin ID son-eki _dk_10 olmali
+        expect(dkSonEkiniAl(tekBildirim.identifier)).toBe(10);
         // Seviye 4 acil kanala baglanmali (ses/titresim ayarlari icin)
         expect(tekBildirim.trigger.channelId).toBe('muhafiz_acil');
     });
@@ -261,7 +264,7 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
         expect(onDkBildirimleri.length).toBe(1);
         // Ve bu bildirim cakismada kazanan en yuksek seviyeyi (4) tasimali
         expect(onDkBildirimleri[0].content.data.seviye).toBe(4);
-        expect(onDkBildirimleri[0].content.title).toBe('🚨 10 dk · AKŞAM VAKTİ ÇIKIYOR');
+        expect(onDkBildirimleri[0].content.title).toBe('AKŞAM · 10 dk · VAKİT ÇIKIYOR 🚨');
     });
 
     test('Farklı dakikalara düşen bildirimler ayrı planlanmalı', async () => {
@@ -300,15 +303,15 @@ describe('ArkaplanMuhafizServisi - Bildirim Çakışma Testi', () => {
             dkToBildirim.set(dkSonEkiniAl(b.identifier), b);
         }
         expect(dkToBildirim.get(25)!.content.data.seviye).toBe(1);
-        expect(dkToBildirim.get(25)!.content.title).toBe('⏰ 25 dk · Akşam vakti');
+        expect(dkToBildirim.get(25)!.content.title).toBe('Akşam · 25 dk kaldı ⏰');
         expect(dkToBildirim.get(20)!.content.data.seviye).toBe(2);
-        expect(dkToBildirim.get(20)!.content.title).toBe('⚠️ 20 dk · Akşam vakti daralıyor');
+        expect(dkToBildirim.get(20)!.content.title).toBe('Akşam · 20 dk · vakit daralıyor ⚠️');
         expect(dkToBildirim.get(15)!.content.data.seviye).toBe(3);
-        expect(dkToBildirim.get(15)!.content.title).toBe('🔥 15 dk · Akşam vakti kaçıyor');
+        expect(dkToBildirim.get(15)!.content.title).toBe('Akşam · 15 dk · vakit kaçıyor 🔥');
         // k=10,8,6,4,2 tamamen seviye 4 olmali
         for (const k of [10, 8, 6, 4, 2]) {
             expect(dkToBildirim.get(k)!.content.data.seviye).toBe(4);
-            expect(dkToBildirim.get(k)!.content.title).toBe(`🚨 ${k} dk · AKŞAM VAKTİ ÇIKIYOR`);
+            expect(dkToBildirim.get(k)!.content.title).toBe(`AKŞAM · ${k} dk · VAKİT ÇIKIYOR 🚨`);
         }
 
         // 4) ID'deki dakika son-eki gercek planlanan zamanla TUTARLI olmali.
@@ -438,7 +441,8 @@ describe('ArkaplanMuhafizServisi - Bildirim icerigi (oncelik/kanal/data)', () =>
 
         const bugun = bugunuAl();
         for (const b of bildirimler) {
-            expect(b.content.categoryIdentifier).toBe('muhafiz_category');
+            // Kategori sınıra kalan süreye göre ertele düğmesi taşır (issue #289).
+            expect(b.content.categoryIdentifier).toMatch(/^muhafiz_(ertele[12]_)?category$/);
             expect(b.content.data.tip).toBe('muhafiz');
             // Tek planlanabilir vakit 'aksam' ve bugune ait.
             expect(b.content.data.vakit).toBe('aksam');
@@ -531,6 +535,23 @@ describe('ArkaplanMuhafizServisi - Aktif/pasif ve siklik savunmasi', () => {
         ).resolves.toBeUndefined();
 
         expect((Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length).toBe(0);
+    });
+
+    test('Wear (#280): plan dinleyicisi aktif VE pasif turda DOGRULANMIS matrisle haber alir; hatasi planlamayi dusurmez', async () => {
+        const dinleyici = jest.fn(() => {
+            throw new Error('saat');
+        });
+        muhafizPlaniDinleyicisiniAyarla(dinleyici);
+        try {
+            await expect(
+                servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41.0, lng: 29.0 }, matris: STANDART_MATRIS })
+            ).resolves.toBeUndefined();
+            await servis.yapilandirVePlanla({ aktif: false, koordinatlar: { lat: 41.0, lng: 29.0 }, matris: STANDART_MATRIS });
+            expect(dinleyici).toHaveBeenNthCalledWith(1, { aktif: true, matris: expect.any(Object) });
+            expect(dinleyici).toHaveBeenNthCalledWith(2, { aktif: false, matris: STANDART_MATRIS });
+        } finally {
+            muhafizPlaniDinleyicisiniAyarla(null);
+        }
     });
 });
 
@@ -686,7 +707,8 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             koordinatlar: { lat: 41.0, lng: 29.0 },
             matris: vakitBazliMatris([{ esikDk: 25, siklikDk: 15 }, { esikDk: 20, siklikDk: 10 }, { esikDk: 15, siklikDk: 5 }, { esikDk: 10, siklikDk: 2 }], {
                 aksam: [
-                    { esikDk: 20, siklikDk: 30, ses: 'alarm', kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
+                    // 14 dk: acil kanal yalnız son 15 dk'da kullanılabilir (issue #274).
+                    { esikDk: 14, siklikDk: 30, ses: 'alarm', kanallar: { bildirim: true, sesli: true }, anons: '{vakit} vakti çıkıyor, son {süre} dakika.' },
                     { esikDk: 12, siklikDk: 30, ses: 'melodi' },
                     { esikDk: 8, siklikDk: 30, kanallar: {} },
                     { esikDk: 4, siklikDk: 30, kanallar: {} },
@@ -698,7 +720,7 @@ describe('ArkaplanMuhafizServisi - Faz 3 matris motoru', () => {
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
 
-        const nazik = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const nazik = bildirimler.find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(nazik).toBeDefined();
         // 'alarm' sesi -> seviye 1 olmasina ragmen acil kanal
         expect(nazik.trigger.channelId).toBe('muhafiz_acil');
@@ -1091,7 +1113,8 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
                 ],
                 {
                     aksam: [
-                        { esikDk: 20, siklikDk: 30, ses, acilKanal },
+                        // 14 dk: acil kanal yalnız son 15 dk'da kullanılabilir (issue #274).
+                        { esikDk: 14, siklikDk: 30, ses, acilKanal },
                         { esikDk: 12, siklikDk: 30, kanallar: {} },
                         { esikDk: 8, siklikDk: 30, kanallar: {} },
                         { esikDk: 4, siklikDk: 30, kanallar: {} },
@@ -1104,6 +1127,23 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
         (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls
             .map((c) => c[0])
             .filter((b) => b.identifier.includes('_vakit_aksam_'));
+
+    test('L7: bildirim KATEGORİLERİ ("Ertele" düğmeleri) planlamadan ÖNCE kaydedilir, süreçte BİR kez', async () => {
+        (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+        await planla(OZEL_SES);
+
+        const kategoriCagrilari = Notifications.setNotificationCategoryAsync as jest.Mock;
+        expect(kategoriCagrilari.mock.calls.map((c) => c[0])).toEqual(
+            expect.arrayContaining(['muhafiz_category', 'muhafiz_ertele1_category', 'muhafiz_ertele2_category'])
+        );
+        const ilkPlanlama = (Notifications.scheduleNotificationAsync as jest.Mock).mock.invocationCallOrder[0];
+        expect(Math.max(...kategoriCagrilari.mock.invocationCallOrder)).toBeLessThan(ilkPlanlama);
+
+        kategoriCagrilari.mockClear();
+        await planla(OZEL_SES);
+        expect(kategoriCagrilari).not.toHaveBeenCalled();
+    });
 
     test('kanallar planlamadan ÖNCE hazırlanır (var olmayan kanala bildirim gitmez)', async () => {
         await planla(OZEL_SES);
@@ -1119,7 +1159,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('ÖZEL ses seçilince kanal id ses hash\'inden türetilir (taban kanal DEĞİL)', async () => {
         await planla(OZEL_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim).toBeDefined();
         expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, false));
         expect(bildirim.trigger.channelId).not.toBe('muhafiz');
@@ -1128,7 +1168,7 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('VARSAYILAN ses taban kanalda kalır (mevcut kurulumlarla birebir uyum)', async () => {
         await planla(VARSAYILAN_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim.trigger.channelId).toBe('muhafiz');
     });
 
@@ -1167,14 +1207,14 @@ describe('ArkaplanMuhafizServisi — bildirim sesi ve kanal secimi', () => {
     test('titreşim KAPALIYKEN bildirim kendi desenini TAŞIMAZ (davranış birebir eski)', async () => {
         await planla(VARSAYILAN_SES);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         expect(bildirim.content.vibrate).toBeUndefined();
     });
 
     test('acilKanal bayrağı SESİ değiştirmeden aciliyeti yükseltir', async () => {
         await planla(OZEL_SES, true);
 
-        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 20)!;
+        const bildirim = aksamBildirimleri().find((b) => dkSonEkiniAl(b.identifier) === 14)!;
         // Aynı ses hash'i, acil taban → ses ile önem BAĞIMSIZ eksenler.
         expect(bildirim.trigger.channelId).toBe(muhafizKanalIdOlustur(OZEL_SES, true));
     });
@@ -1325,6 +1365,71 @@ describe('ArkaplanMuhafizServisi — giriş yönü (Faz 1)', () => {
 
         const bildirimler = aksamBildirimleri();
         expect(bildirimler.map((b) => dkSonEkiniAl(b.identifier))).toEqual([20]);
-        expect(bildirimler[0].content.title).toContain('20 dk · Akşam vakti');
+        expect(bildirimler[0].content.title).toContain('Akşam · 20 dk');
+    });
+});
+
+describe('ArkaplanMuhafizServisi — Ertele (issue #289)', () => {
+    let servis: ArkaplanMuhafizServisi;
+    const bugun = bugunuAl();
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        varsayilanMocklariSifirla();
+        varsayilanVakitleriKur();
+        (ArkaplanMuhafizServisi as unknown as { instance?: unknown }).instance = undefined;
+        servis = ArkaplanMuhafizServisi.getInstance();
+    });
+
+    const iptaller = () => (Notifications.cancelScheduledNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+    const planlananlar = () => (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map((c) => c[0]);
+
+    test('yeniden planlama ERTELEMEYI ve YATIS bildirimini silmez; yalniz plan kimliklerini temizler', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20` },
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 10 * 60000 } } },
+            { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_seviye_2_dk_20`]);
+    });
+
+    test('ertelenen vakitte hedef ana kadarki uyarilar KURULMAZ (15 dk gorevi susturulanlari geri getirmesin)', async () => {
+        const hedef = Date.now() + 12 * 60000; // cikisa ~18 dk kala
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: hedef } } },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        const zamanlar = planlananlar().map((p) => (p.trigger.date as Date).getTime());
+        expect(zamanlar.length).toBeGreaterThan(0);
+        for (const z of zamanlar) expect(z).toBeGreaterThanOrEqual(hedef + 60000);
+    });
+
+    test('muhafiz KAPATILINCA erteleme de iptal edilir, yatis bildirimi KORUNUR', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele`, content: { data: { ertelemeHedefMs: Date.now() + 60000 } } },
+            { identifier: `muhafiz_${bugun}_vakit_yatsi_yatis` },
+        ]);
+        await servis.yapilandirVePlanla({ aktif: false, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
+    });
+
+    test('"Kildim" (vakit iptali) ertelenmis kopyayi DA iptal eder', async () => {
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+            { identifier: `muhafiz_${bugun}_vakit_aksam_ertele` },
+            { identifier: `muhafiz_${bugun}_vakit_ikindi_ertele` },
+        ]);
+        await servis.vakitBildirimleriniIptalEt('aksam');
+        expect(iptaller()).toEqual([`muhafiz_${bugun}_vakit_aksam_ertele`]);
+    });
+
+    test('bildirim ertele verisi tasir: cikis, fikhi sinir (cikis − 3 dk), kanal', async () => {
+        await servis.yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 }, matris: STANDART_MATRIS });
+        const p = planlananlar()[0];
+        const cikis = (PrayerTimes as jest.Mock).mock.results[0].value.isha.getTime();
+        expect(p.content.data.cikisMs).toBe(cikis);
+        expect(p.content.data.erteleSinirMs).toBe(cikis - 3 * 60000);
+        expect(p.content.data.kanalId).toBe(p.trigger.channelId);
+        expect(p.content.data.ertelemeBasligi).toContain('Akşam');
     });
 });

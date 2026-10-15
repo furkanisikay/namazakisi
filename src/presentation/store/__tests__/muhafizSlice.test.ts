@@ -27,7 +27,7 @@ import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 import { presetMatrisiOlustur, presetSesliIceriyorMu } from '../../../core/muhafiz/matrisIslemleri';
-import { vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
+import { matrisYapisiGecerliMi, vakitUyariPlaniOlustur } from '../../../core/muhafiz/motorAdaptoru';
 import { adimKapaliMi } from '../../../core/muhafiz/kanalKumesi';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure dışına erişebilsin).
@@ -170,6 +170,31 @@ describe('muhafizSlice', () => {
             expect(state).toEqual({ ...kayitli, matris: eskidenMatriseGoc(kayitli) });
         });
 
+        it('NULL HÜCRE: bozuk matris yüklemeyi REDDETMEZ, ayarlar kaybolmaz (#274)', async () => {
+            // Eşik tekilliği göçü null hücrede fırlatıyordu → thunk catch'e düşüp null
+            // dönüyor ve kullanıcının TÜM ayarları (aktif, yoğunluk…) kaybolmuş görünüyordu.
+            const matris = eskidenMatriseGoc({
+                esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+                sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+            }) as unknown as Record<string, { seviyeler: unknown[] }>;
+            matris.ogle.seviyeler[1] = null;
+            mockStore.set(
+                ANAHTAR,
+                JSON.stringify({ aktif: true, yogunluk: 'yogun', matris, presetGocuYapildi: true })
+            );
+
+            const store = yeniStore();
+            const sonuc = await store.dispatch(muhafizAyarlariniYukle());
+
+            expect(sonuc.payload).not.toBeNull();
+            const state = store.getState().muhafiz as MuhafizAyarlari;
+            expect(state.aktif).toBe(true);
+            expect(state.yogunluk).toBe('yogun');
+            // Ekran motorun gördüğü matrisi görür: yapısal bozuk matris eski
+            // alanlardan türetilir (`muhafizMatrisiniCoz` ile aynı).
+            expect(matrisYapisiGecerliMi(state.matris)).toBe(true);
+        });
+
         it('fulfilled: eksik alanlar ?? ile initialState varsayılanından doldurulur', async () => {
             // Diskte yalnızca 'gelismisMod' var; diğer TÜM alanlar (aktif dahil) varsayılana
             // düşmeli — her bir alanın ?? sol-tarafı null/undefined dalını kapsar.
@@ -306,7 +331,12 @@ describe('muhafizSlice matris', () => {
 
 describe('muhafizAyarlariniYukle matris [M2]', () => {
     test('diskte matris VARSA migrasyon çalışmaz, mevcut matris korunur', async () => {
-        const ozelMatris = bosMatris();
+        // Yapısal olarak GEÇERLİ olmalı: boş `seviyeler` (bosMatris) artık motorla
+        // aynı şekilde bozuk sayılır ve eski alanlardan türetilir (#274 null-tolerans).
+        const ozelMatris = eskidenMatriseGoc({
+            esikler: { seviye1: 77, seviye2: 33, seviye3: 12, seviye4: 4 },
+            sikliklar: { seviye1: 11, seviye2: 6, seviye3: 2, seviye4: 1 },
+        });
         // Bayrak VAR → preset göçü karışmaz; test yalnız M2 (matris türetme) davranışını ölçer.
         mockStore.set(
             ANAHTAR,
@@ -346,6 +376,13 @@ describe('muhafizSlice ozelMatrisYedegi (özel yoğunluk hatırlama)', () => {
         expect(sonra.ozelMatrisYedegi).toEqual(yedek);
         expect(sonra.matris).toEqual(bas.matris); // aktif matrise dokunulmadı
         expect(sonra.yogunluk).toBe(bas.yogunluk); // yoğunluğa dokunulmadı
+    });
+
+    test('ozelMatrisYedegiGuncelle(undefined) yedeği TEMİZLER ("Geri al" yedeksiz duruma döner)', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        const yazili = reducer(bas, ozelMatrisYedegiGuncelle(gecerliYedek()));
+        const sonra = reducer(yazili, ozelMatrisYedegiGuncelle(undefined));
+        expect(sonra.ozelMatrisYedegi).toBeUndefined();
     });
 
     test('ozelMatrisYedegiGuncelle TAM state AsyncStorage anahtarına yazılır', async () => {
@@ -497,6 +534,39 @@ describe('muhafizSlice sesliOnayi (sesli anons tek seferlik onayı)', () => {
     });
 });
 
+describe('muhafizSlice alarmOnayi (gerçek alarm rızası, issue #74)', () => {
+    test('initialState onay içermez ve hiçbir hücrede alarm açık değildir', () => {
+        const bas = reducer(undefined, { type: '@@INIT' });
+        expect(bas.alarmOnayi).toBeUndefined();
+        for (const v of MUHAFIZ_VAKITLERI) {
+            expect(bas.matris![v].seviyeler.some((s) => s.kanallar.alarm === true)).toBe(false);
+        }
+    });
+
+    test('KALICILIK: onay uygulama yeniden açılınca kaybolmaz (opsiyonel alan tuzağı)', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal', alarmOnayi: true }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        expect((store.getState().muhafiz as MuhafizAyarlari).alarmOnayi).toBe(true);
+    });
+
+    test('diskte onay yoksa undefined (anahtar yine sorar); bozuk değer onay SAYILMAZ', async () => {
+        mockStore.set(ANAHTAR, JSON.stringify({ aktif: true, yogunluk: 'normal', alarmOnayi: 'evet' }));
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        expect((store.getState().muhafiz as MuhafizAyarlari).alarmOnayi).toBeUndefined();
+    });
+
+    test('hazır yoğunluklar alarm kanalını AÇMAZ (rıza yalnız ekranda alınır)', () => {
+        for (const y of ['hafif', 'normal', 'yogun'] as const) {
+            const matris = presetMatrisiOlustur(HATIRLATMA_PRESETLERI[y].seviyeler, true);
+            for (const v of MUHAFIZ_VAKITLERI) {
+                expect(matris[v].seviyeler.some((s) => s.kanallar.alarm === true)).toBe(false);
+            }
+        }
+    });
+});
+
 /**
  * Preset'lerin ÜRETTİĞİ uyari sayilari — motorun kendi plan fonksiyonuyla ölçülür,
  * yani burada doğrulanan sayı arka planın gerçekten göndereceği sayıdır.
@@ -533,19 +603,20 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
     test('sesli adımlarda BİLDİRİM kanalı da açık kalır (TTS susarsa görsel iz kalsın)', () => {
         for (const yogunluk of ['normal', 'yogun'] as const) {
             const seviyeler = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
-            for (const kademe of SEVIYE_KADEMELERI) {
+            for (const adim of seviyeler) {
                 // Hiçbir hücre YALNIZ sesli değildir
-                expect(seviyeler[kademe].kanallar.sesli === true && !seviyeler[kademe].kanallar.bildirim)
-                    .toBe(false);
+                expect(adim.kanallar.sesli === true && !adim.kanallar.bildirim).toBe(false);
             }
-            expect(seviyeler.acil.kanallar).toEqual({ bildirim: true, sesli: true });
+            expect(seviyeler[seviyeler.length - 1].kanallar).toEqual({ bildirim: true, sesli: true });
         }
     });
 
     test('eşikler kesin azalan sıradadır (nazik → acil)', () => {
         for (const yogunluk of ['hafif', 'normal', 'yogun'] as const) {
             const s = HATIRLATMA_PRESETLERI[yogunluk].seviyeler;
-            const esikler = SEVIYE_KADEMELERI.map((k) => s[k].esikDk);
+            const esikler = s.map((a) => a.esikDk);
+            // Ton sırası da korunur (bugünkü preset'ler nazik → acil, 4 adım).
+            expect(s.map((a) => a.kademe)).toEqual(SEVIYE_KADEMELERI);
             for (let i = 1; i < esikler.length; i++) {
                 expect(esikler[i]).toBeLessThan(esikler[i - 1]);
             }
@@ -555,10 +626,10 @@ describe('HATIRLATMA_PRESETLERI — üretilen uyarı sayıları', () => {
     test('yoğun preset acil adımı ACİL KANAL bayrağıyla işaretlenir (ses ile DEĞİL)', () => {
         // Aciliyet artık `acilKanal` alanında; eskiden `bildirimSesi: 'alarm'` ile
         // taşınıyordu ve preset her uygulandığında kullanıcının seçtiği sesi silerdi.
-        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil.acilKanal).toBe(true);
-        expect(HATIRLATMA_PRESETLERI.normal.seviyeler.acil.acilKanal).toBe(false);
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3].acilKanal).toBe(true);
+        expect(HATIRLATMA_PRESETLERI.normal.seviyeler[3].acilKanal).toBe(false);
         // Preset ARTIK SES YAZMAZ — kullanıcı seçimi korunsun diye.
-        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler.acil).not.toHaveProperty('bildirimSesi');
+        expect(HATIRLATMA_PRESETLERI.yogun.seviyeler[3]).not.toHaveProperty('bildirimSesi');
     });
 
     test("eski `sikliklar` alanı 'birkez'i eşiğe eşitleyerek türetilir", () => {

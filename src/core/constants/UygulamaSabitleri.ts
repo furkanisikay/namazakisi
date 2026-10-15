@@ -123,6 +123,11 @@ export const KAZA_SABITLERI = {
   VARSAYILAN_GUNLUK_HEDEF: 3,
   /** Mekruh vakit toleransı (dakika) — güneş doğuş/batışından önce/sonra */
   MEKRUH_TOLERANS_DK: 20,
+  /**
+   * İstiva (güneş tam tepede) kerahati: öğle girişinden önceki dakika.
+   * İkizi Android TV panosunda (`tv/.../cekirdek/Kerahat.kt`); fikstür ikisini kilitler.
+   */
+  ISTIVA_TOLERANS_DK: 5,
   /** Tempo hesabı için kullanılan gün sayısı */
   TEMPO_HESAP_GUNLERI: 7,
 } as const;
@@ -158,6 +163,34 @@ export const DEPOLAMA_ANAHTARLARI = {
   VAKIT_BILDIRIM_AYARLARI: 'vakit_bildirim_ayarlari',
   // Cuma namazı hatırlatması (issue #173) — varsayılan KAPALI
   CUMA_HATIRLATMA_AYARLARI: 'cuma_hatirlatma_ayarlari',
+  // Yatış saatine göre yatsı hatırlatması + gün sonu muhasebesi (issue #290).
+  // Yedekleme beyaz listesinde (YedeklemeServisi + YedekBirlestirmeServisi).
+  YATIS_HATIRLATMA_AYARLARI: 'yatis_hatirlatma_ayarlari',
+  // "Camide kılacağım" — yürüme süresine göre erken hatırlatma (issue #292).
+  // Varsayılan KAPALI; yedeklenir (beyaz listenin ÜÇ yerinde de).
+  CAMIYE_GIT_AYARLARI: 'camiye_git_ayarlari',
+  // Takvim çakışması uyarısı (issue #291) — varsayılan KAPALI, açık rıza ister.
+  // Yedeklenir (beyaz listenin ÜÇ yerinde de). Takvim VERİSİ hiç saklanmaz.
+  TAKVIM_CAKISMA_AYARLARI: 'takvim_cakisma_ayarlari',
+  // Nafile namaz vakitleri (issue #77) — varsayılan KAPALI
+  NAFILE_AYARLARI: 'nafile_ayarlari',
+  // Now Bar ve canlı sayaçlar seçimi (issue #282 ikinci aşama) — yedeklenir
+  NOW_BAR_AYARLARI: 'now_bar_ayarlari',
+  // Sayaç servislerinin Now Bar planlayıcısına bildirdiği pencereler. Mutlak zaman
+  // taşır, cihaza özgüdür → yedeklemeye GİRMEZ.
+  CANLI_SAYAC_KAYNAKLARI: '@namaz_akisi/canli_sayac_kaynaklari',
+  // Planlayıcının saate (Wear OS) giden çıktısı; WearSenkronServisi okur. Yedeklenmez.
+  CANLI_SAAT_VERISI: '@namaz_akisi/canli_saat_verisi',
+  // Nafile "Kıldım" (issue #273): o günün o nafilesinin kalan hatırlatmaları
+  // yeniden planlanmasın diye { 'YYYY-MM-DD': NafileTuru[] }. Kayıt/puan/seri
+  // DEĞİLDİR, yalnız susturma hafızası; birkaç günde budanır. Cihaza özgü →
+  // yedeklemeye GİRMEZ.
+  NAFILE_KILINAN: '@namaz_akisi/nafile_kilinan',
+  // Bildirim "Kıldım" yanıtının son işlenen kimliği. Yanıt hem arka plan görevine
+  // (Android, uygulama kapalıyken) hem açılışta getLastNotificationResponseAsync'e
+  // düşer; bellek-içi koruma headless süreçte sıfırlandığı için tekilleştirme diskte.
+  // Cihaza özgü → yedeklemeye GİRMEZ.
+  ISLENMIS_BILDIRIM_YANITI: '@namaz_akisi/islenmis_bildirim_yaniti',
   // Vakit Sayacı Ayarları
   VAKIT_SAYAC_AYARLARI: 'vakit_sayac_ayarlari',
   // İftar Sayacı Ayarları
@@ -169,6 +202,17 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Kaza Defteri
   KAZA_DURUMU: '@namaz_akisi/kaza_durumu',
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
+  // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
+  // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
+  KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',
+  KAZA_ONERI_KAYDI: '@namaz_akisi/kaza_oneri_kaydi',
+  // Sade görünüm (issue #295) — YEDEKLENİR (beyaz listenin ÜÇ yerinde).
+  SADE_GORUNUM_AYARLARI: 'sade_gorunum_ayarlari',
+  // Seferîlik bilgi kartı (issue #296) — ayar (kart açık, mezhep, ikamet yeri)
+  // YEDEKLENİR (beyaz listenin ÜÇ yerinde); "bu yolculukta kapattım" hafızası
+  // cihaza özgü → yedeklemeye GİRMEZ.
+  SEFERILIK_AYARLARI: 'seferilik_ayarlari',
+  SEFERILIK_KART_HAFIZASI: '@namaz_akisi/seferilik_kart_hafizasi',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu
@@ -182,6 +226,12 @@ export const DEPOLAMA_ANAHTARLARI = {
   TANI_HATIRLATMA_ACIK: '@namaz_akisi/tani_hatirlatma_acik',
   /** Son dışa aktarma zamanı (ISO). Cihaza özgü eylem geçmişi — YEDEĞE GİRMEZ. */
   SON_DISA_AKTARMA: '@namaz_akisi/son_disa_aktarma',
+  /**
+   * Cihazlar arası eşitleme durumu (issue #288): açık mı, sağlayıcı, son etiket/özet,
+   * son eşitleme. Cihaza özgü → YEDEĞE GİRMEZ. Parola/anahtar burada DEĞİL,
+   * `expo-secure-store`'dadır.
+   */
+  ESITLEME_DURUMU: '@namaz_akisi/esitleme_durumu',
 } as const;
 
 // Tarih formatlari
@@ -336,6 +386,9 @@ export const BILDIRIM_SABITLERI = {
   // Muhafiz aksiyonlari
   AKSIYONLAR: {
     KILDIM: 'kildim_action',
+    // Gün sonu muhasebesi (issue #290). Erteleme eylemleri: `core/muhafiz/erteleme.ts`.
+    KAZAYA_EKLE: 'kazaya_ekle_action',
+    INCELE: 'incele_action',
   },
   // Kategoriler
   KATEGORI: {
@@ -364,6 +417,9 @@ export const BILDIRIM_SABITLERI = {
     SERI_SAYAC: 'seri_sayac',
     // Otomatik konum degisikligi bilgisi: SESSIZ (LOW). Genel kanal MAX + sesli, bilgi mesaji icin fazla.
     KONUM: 'konum',
+    // Teheccüd uyandırması: alarm ses kullanımı (sessiz modu deler). Servis kanalı
+    // YOKSA oluşturur; mevcut kanala ses yazmaya kalkışmaz (AGENTS.md).
+    NAFILE_UYANDIRMA: 'nafile_uyandirma',
   },
 } as const;
 

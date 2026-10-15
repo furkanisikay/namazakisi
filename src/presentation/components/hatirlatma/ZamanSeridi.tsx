@@ -278,7 +278,7 @@ export const ZamanSeridi: React.FC<ZamanSeridiProps> = ({
                         {/* Ilk-tetik cubuklari */}
                         {duzen.cubuklar.map((c, i) => (
                             <Animated.View
-                                key={`cubuk-${c.seviye}`}
+                                key={`cubuk-${c.adimIndeks}`}
                                 testID="zaman-seridi-cubuk"
                                 style={{
                                     position: 'absolute',

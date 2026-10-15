@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Tek vakit widget'ı (issue #275): 1×1 başlar, büyütülebilir; düzen boyuta göre seçilir
+  (1×1 halka → 2×2 düğme → 4×2 günün beş vakti). Sınıf adı (NamazWidget) KORUNUR —
+  değişseydi kullanıcıların ana ekranındaki mevcut widget'lar düşerdi.
+  updatePeriodMillis=0: güncelleme yalnız vakit sınırlarında ve kayıt değişince.
+  keyguard (issue #295): Android 16 QPR2 kilit ekranı ve tablet hub (şarj istasyonu)
+  modu widget'ı bu kategoriyle bağlar; orada widget SALT OKUNURDUR ("Kıldım" yayını
+  kilit açılmadan işlerdi) — karar `cekirdek/KilitEkraniKarari`.
+-->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="72dp"
-    android:minHeight="72dp"
+    android:configure="com.furkanisikay.namazakisi.widget.WidgetYapilandirmaActivity"
+    android:description="@string/widget_aciklama"
+    android:initialLayout="@layout/widget_kucuk"
+    android:minHeight="40dp"
+    android:minResizeHeight="40dp"
+    android:minResizeWidth="40dp"
+    android:minWidth="40dp"
+    android:previewLayout="@layout/widget_kucuk"
+    android:resizeMode="horizontal|vertical"
+    android:targetCellHeight="1"
+    android:targetCellWidth="1"
     android:updatePeriodMillis="0"
-    android:initialLayout="@layout/widget_namaz"
-    android:resizeMode="none"
-    android:widgetCategory="home_screen"
-    android:description="@string/widget_aciklama" />
+    android:widgetCategory="home_screen|keyguard"
+    android:widgetFeatures="reconfigurable|configuration_optional" />

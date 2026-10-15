@@ -125,4 +125,14 @@ describe('Kopru — Android ama native modul YOK (ikinci savunma)', () => {
     await expect(kopru.sesAdiAl('content://ses/1')).resolves.toBe('');
     await expect(kopru.onizlemeCaliyorMu()).resolves.toBe(false);
   });
+
+  test('pil fonksiyonlari "bilinmiyor" doner — yanlis pil uyarisi cikmaz', async () => {
+    await expect(kopru.pilOptimizasyonuMuafMi()).resolves.toBeNull();
+    await expect(kopru.pilAyarlariniAc()).resolves.toBeNull();
+    expect(kopru.samsungMu()).toBe(false);
+  });
+
+  test('bekleyen anons sayisi "bilinmiyor" doner (issue #298 tani olcumu)', async () => {
+    await expect(kopru.bekleyenAnonsSayisi()).resolves.toBeNull();
+  });
 });

@@ -39,6 +39,8 @@ export interface VakitZamani {
     cikis: Date;
     /** YYYY-MM-DD — vaktin ait oldugu gun (yatsi icin onceki gun olabilir). */
     tarih: string;
+    /** Plana SONA eklenen yarinin imsagi mi? (`MuhafizVakitZamani.yarininImsagi`) */
+    yarininImsagi?: true;
 }
 
 /** Cihaza teslim edilecek TEK bir uyari. */
@@ -55,6 +57,37 @@ export interface UyariTeslimi {
     muhafizVakti: MuhafizVakti;
     tarih: string;
     yon: PencereYonu;
+    /**
+     * Vaktin cikisi — "Ertele" (issue #289) ust siniri ve ertelenen kopyanin
+     * basligi buradan turer. Verilmezse bildirim ertele dugmesi TASIMAZ
+     * (tarihsel davranis; eski el yapimi teslimler/testler).
+     */
+    cikis?: Date;
+    /**
+     * BÜTÇE ARTIĞI (iOS, yarının imsağı — `muhafizTeslimPlani.yarininImsagiKipi`):
+     * yalnız bugünün planı sığdıktan sonra kalan slota kurulur; sığmazsa SESSİZCE
+     * atlanır ve "kesilen" sayılmaz. Yalnız `true` iken yazılır (alan yoksa bugünün
+     * planıdır → Android teslimi ve kayıt-oynat birebir aynı kalır).
+     */
+    butceArtigi?: true;
+    /**
+     * Muhafız DIŞI bir tüketicinin (nafile, issue #273) teslim ayrıntıları.
+     * Verilmezse muhafız davranışı BİREBİR korunur (kayıt-oynat nöbetçisi).
+     *
+     * `veri` ZORUNLUDUR: muhafız yükü (`tip: 'muhafiz', vakit, tarih`) "Kıldım"da
+     * FARZ namazı kılındı diye işaretler — nafile bildirimi o yükü taşırsa nafile
+     * için basılan Kıldım öğleyi kaydederdi.
+     */
+    ozel?: OzelTeslim;
+}
+
+export interface OzelTeslim {
+    /** Bildirimin `data` yükü (muhafız yükünün YERİNE). */
+    veri: Record<string, unknown>;
+    /** Android: kanal id'si zorlanır (ör. teheccüd uyandırması `nafile_uyandirma`). */
+    kanalId?: string;
+    /** iOS: Odak'ı delen `timeSensitive` kesinti seviyesi zorlanır. */
+    zamanaDuyarli?: boolean;
 }
 
 export interface MuhafizTeslimcisi {
@@ -84,6 +117,21 @@ export interface MuhafizTeslimcisi {
 
     /** Tum yan kanallari iptal et (yeniden planlama oncesi temizlik). */
     tumYanKanallariIptalEt(): void;
+
+    /**
+     * Bir vaktin (onek: `muhafiz_<tarih>_vakit_<vakit>`) expo listesinde GORUNMEYEN yan
+     * kanallarini iptal et — uygulama ici "Kildim". Android'de gercek alarmlar (issue
+     * #74): alarm o tetigin bildiriminin YERINE gectigi icin listede izi yoktur.
+     * Opsiyonel: iOS'ta ve el yapimi teslimcilerde is yoktur.
+     */
+    vakitYanKanallariniIptalEt?(onek: string): void;
+
+    /**
+     * Kimligi seciciyi saglayan yan kanallari iptal et — bildirimdeki "Ertele"nin JS yolu
+     * (iOS) susturulan araliktaki GERCEK ALARMLARI (AlarmKit, issue #74) da kaldirsin.
+     * Opsiyonel: Android'de erteleme native islenir ve alarm kaydini kendisi tarar.
+     */
+    secilenYanKanallariIptalEt?(secici: (kimlik: string) => boolean): Promise<void>;
 
     /**
      * Planlama turu BITTIKTEN sonra calisir (muhafiz kapaliyken de). iOS'ta

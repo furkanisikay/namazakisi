@@ -42,6 +42,13 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     grup: 'Namaz vakitleri',
   },
   {
+    id: 'sayfa-seferilik',
+    baslik: 'Yolculuk bilgisi',
+    anahtarKelimeler: ['yolculuk', 'seferî', 'seferi', 'misafir', 'kasr', 'cem', 'mezhep', 'ikamet'],
+    sayfa: 'SeferilikAyarlari',
+    grup: 'Namaz vakitleri',
+  },
+  {
     id: 'sayfa-muhafiz',
     baslik: 'Namaz muhafızı',
     anahtarKelimeler: [
@@ -74,6 +81,27 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     baslik: 'Ramazan özel',
     anahtarKelimeler: ['ramazan', 'iftar', 'sahur', 'oruç'],
     sayfa: 'RamazanAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
+    id: 'sayfa-nafile',
+    baslik: 'Nafile namazlar',
+    anahtarKelimeler: ['nafile', 'kuşluk', 'duha', 'işrak', 'evvabin', 'teheccüd', 'gece namazı'],
+    sayfa: 'NafileAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
+    id: 'sayfa-camideyim',
+    baslik: 'Camideyim',
+    anahtarKelimeler: ['cami', 'camideyim', 'mescit', 'cemaat', 'konum', 'sessiz'],
+    sayfa: 'CamideyimAyarlari',
+    grup: 'Hatırlatmalar',
+  },
+  {
+    id: 'sayfa-namaz-modu',
+    baslik: 'Namaz modu',
+    anahtarKelimeler: ['namaz modu', 'mod', 'rahatsız etmeyin', 'sessiz', 'cuma', 'hutbe', 'rutin'],
+    sayfa: 'NamazModuAyarlari',
     grup: 'Hatırlatmalar',
   },
   {
@@ -146,6 +174,14 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     capa: 'palet',
   },
   {
+    id: 'sadeGorunum',
+    baslik: 'Sade görünüm',
+    anahtarKelimeler: ['sade', 'sade görünüm', 'büyük yazı', 'yaşlı', 'basit', 'kolay görünüm', 'sesli okuma'],
+    sayfa: 'GorünumAyarlari',
+    grup: 'Görünüm',
+    capa: 'sadeGorunum',
+  },
+  {
     id: 'vakitBildirimleri',
     baslik: 'Vakit bildirimleri',
     anahtarKelimeler: ['ezan', 'vakit bildirimi', 'namaz vakti'],
@@ -160,6 +196,30 @@ export const AYAR_INDEKSI: AyarIndeksKaydi[] = [
     sayfa: 'BildirimAyarlari',
     grup: 'Bildirimler',
     capa: 'cumaHatirlatmasi',
+  },
+  {
+    id: 'yatisHatirlatmasi',
+    baslik: 'Yatış hatırlatması',
+    anahtarKelimeler: ['yatış', 'uyku', 'yatsı', 'gün sonu muhasebesi', 'kaza'],
+    sayfa: 'BildirimAyarlari',
+    grup: 'Bildirimler',
+    capa: 'yatisHatirlatmasi',
+  },
+  {
+    id: 'camiyeGitHatirlatmasi',
+    baslik: 'Camide kılacağım',
+    anahtarKelimeler: ['cami', 'camiye git', 'yürüme', 'cemaat', 'ezandan önce'],
+    sayfa: 'BildirimAyarlari',
+    grup: 'Bildirimler',
+    capa: 'camiyeGitHatirlatmasi',
+  },
+  {
+    id: 'takvimCakismaUyarisi',
+    baslik: 'Takvim çakışması uyarısı',
+    anahtarKelimeler: ['takvim', 'toplantı', 'etkinlik', 'çakışma', 'ajanda'],
+    sayfa: 'BildirimAyarlari',
+    grup: 'Bildirimler',
+    capa: 'takvimCakismaUyarisi',
   },
   {
     id: 'vakitSayaci',

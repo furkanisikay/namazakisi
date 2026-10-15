@@ -54,10 +54,20 @@ export interface PlatformYetenekleri {
      * Cihazin SESSIZLIGINI (sessiz anahtari / Odak) delebilir miyiz?
      *
      * Android: acil kanal `setBypassDnd(true)` ile deler.
-     * iOS: yalniz AlarmKit deler (Faz 3) — `false` iken acil adim da normal
-     * bildirime duser ve ekran bunu KULLANICIYA SOYLER (sessiz sapma yok).
+     * iOS: HAYIR — bildirim (acil ton dahil) sessiz anahtarini delmez; ekran bunu
+     * KULLANICIYA SOYLER (sessiz sapma yok). AlarmKit (iOS 26) YALNIZ gercek alarm
+     * adimini deler → o ayri yetenektir (`gercekAlarm`); acil tonu alarma CEVIRMEZ.
      */
     sessizligiDelebilir: boolean;
+
+    /**
+     * Gercek alarm adimi (issue #74) SISTEM ALARMI olarak kurulabilir mi?
+     *
+     * Android: evet — `setAlarmClock` + alarm kanali (izin yoksa normal bildirime duser).
+     * iOS: yalniz AlarmKit kullanilabilir VE izin verilmisken (iOS 26+). `false` iken
+     * alarm adimi zamana duyarli bildirim + uzun sesle gelir ve ekran bunu soyler.
+     */
+    gercekAlarm: boolean;
 }
 
 /** Android — bugunku davranisin tamami. Hicbir yetenek kisitli degil. */
@@ -67,13 +77,15 @@ export const ANDROID_YETENEKLERI: PlatformYetenekleri = {
     serbestAnonsMetni: true,
     titresimSecimi: true,
     sessizligiDelebilir: true,
+    gercekAlarm: true,
 };
 
 /**
  * iOS yetenekleri.
  *
- * @param alarmKitVar Faz 3'te AlarmKit kullanilabilir mi (izin + iOS 26+).
- *                    Faz 1/2'de daima `false`.
+ * @param alarmKitVar AlarmKit kullanilabilir mi (iOS 26+ VE izin verildi). Yalniz
+ *                    `gercekAlarm`'i acar; `sessizligiDelebilir` iOS'ta daima `false`
+ *                    (acil tonlu BILDIRIM sessiz anahtarini yine delmez).
  */
 export function iosYetenekleri(alarmKitVar: boolean = false): PlatformYetenekleri {
     return {
@@ -81,7 +93,8 @@ export function iosYetenekleri(alarmKitVar: boolean = false): PlatformYetenekler
         sesSecici: false,
         serbestAnonsMetni: true,
         titresimSecimi: false,
-        sessizligiDelebilir: alarmKitVar,
+        sessizligiDelebilir: false,
+        gercekAlarm: alarmKitVar,
     };
 }
 

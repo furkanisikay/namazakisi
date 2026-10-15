@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   Animated,
+  AppState,
   Dimensions,
   StatusBar,
   ActivityIndicator,
@@ -18,7 +19,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { styles } from './KurulumSihirbazi/stiller';
 import { BildirimAyarlari, MuhafizYogunluk, KonumDurumu } from './KurulumSihirbazi/tipler';
-import { HosgeldinizAdimi, BildirimIzniAdimi, KonumAdimi, TemaAdimi, VakitBildirimAdimi, MuhafizTanitimAdimi, MuhafizYogunlukAdimi, OzelGunAdimi, HazirAdimi } from './KurulumSihirbazi/adimlar';
+import { HosgeldinizAdimi, BildirimIzniAdimi, KonumAdimi, TemaAdimi, VakitBildirimAdimi, MuhafizTanitimAdimi, MuhafizYogunlukAdimi, OzelGunAdimi, HazirAdimi, PilAdimi } from './KurulumSihirbazi/adimlar';
+import { pilDurumunuOku, pilAyarlariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
@@ -41,9 +43,10 @@ import { KonumIzniDisclosureModali } from '../components/KonumIzniDisclosureModa
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
 const { width: EKRAN_GENISLIGI } = Dimensions.get('window');
-const TOPLAM_ADIM = 9;
+const TOPLAM_ADIM = 10;
 
-// Adım sabitleri — okunabilirlik için
+// Adım sabitleri — okunabilirlik için. PIL koşulludur: yalnız Samsung'da ve
+// uygulama henüz "Kısıtlanmamış" değilse gösterilir, aksi halde atlanır.
 const ADIM = {
   HOSGELDINIZ: 0,
   BILDIRIM_IZNI: 1,
@@ -52,8 +55,9 @@ const ADIM = {
   VAKIT_BILDIRIM: 4,
   MUHAFIZ_TANITIM: 5,
   MUHAFIZ_YOGUNLUK: 6,
-  OZEL_GUN: 7,
-  HAZIR: 8,
+  PIL: 7,
+  OZEL_GUN: 8,
+  HAZIR: 9,
 } as const;
 
 
@@ -89,6 +93,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const [muhafizAktif, setMuhafizAktif] = useState(true);
   const [muhafizYogunluk, setMuhafizYogunluk] = useState<MuhafizYogunluk>('normal');
 
+  // Pil (Samsung uyutma) adımı — durum okunamazsa adım GÖSTERİLMEZ (yanlış alarm yok).
+  const [pilAdimiGerekli, setPilAdimiGerekli] = useState(false);
+  const [pilTamam, setPilTamam] = useState(false);
+  const pilDonusBekleniyor = useRef(false);
+
   // Konum izni disclosure modal
   const [disclosureGorunur, setDisclosureGorunur] = useState(false);
   const disclosureKabulRef = useRef<(() => void) | null>(null);
@@ -109,13 +118,56 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     });
   }, [fadeAnim, slideAnim]);
 
+  const adimGosterilirMi = useCallback(
+    (a: number) => a !== ADIM.PIL || pilAdimiGerekli,
+    [pilAdimiGerekli]
+  );
+
   const ilerle = useCallback(() => {
-    if (adim < TOPLAM_ADIM - 1) gecisYap(adim + 1);
-  }, [adim, gecisYap]);
+    let hedef = adim + 1;
+    while (hedef < TOPLAM_ADIM - 1 && !adimGosterilirMi(hedef)) hedef++;
+    if (hedef <= TOPLAM_ADIM - 1) gecisYap(hedef);
+  }, [adim, gecisYap, adimGosterilirMi]);
 
   const geriDon = useCallback(() => {
-    if (adim > 0) gecisYap(adim - 1);
-  }, [adim, gecisYap]);
+    let hedef = adim - 1;
+    while (hedef > 0 && !adimGosterilirMi(hedef)) hedef--;
+    if (hedef >= 0) gecisYap(hedef);
+  }, [adim, gecisYap, adimGosterilirMi]);
+
+  // ─── Pil (Samsung) ───────────────────────────────────────────────────────
+
+  useEffect(() => {
+    let iptal = false;
+    pilDurumunuOku().then((p) => {
+      if (!iptal) setPilAdimiGerekli(p.samsung && p.muaf === false);
+    });
+    return () => {
+      iptal = true;
+    };
+  }, []);
+
+  // Ayar ekranından dönüşte doğrula; "Kısıtlanmamış" olduysa kısa onay → ilerle.
+  useEffect(() => {
+    const abonelik = AppState.addEventListener('change', async (durum) => {
+      if (durum !== 'active' || !pilDonusBekleniyor.current) return;
+      pilDonusBekleniyor.current = false;
+      const p = await pilDurumunuOku();
+      if (p.muaf === true) {
+        setPilTamam(true);
+        setTimeout(() => ilerle(), 1400);
+      }
+    });
+    return () => abonelik.remove();
+  }, [ilerle]);
+
+  const pilAyarlariniAcVeBekle = useCallback(async () => {
+    pilDonusBekleniyor.current = true;
+    if (!(await pilAyarlariniAc())) {
+      pilDonusBekleniyor.current = false;
+      ilerle();
+    }
+  }, [ilerle]);
 
   // ─── Bildirim İzni ───────────────────────────────────────────────────────
 
@@ -257,16 +309,19 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
   const renderNoktalar = () => (
     <View style={styles.noktaKapsayici}>
-      {Array.from({ length: TOPLAM_ADIM }).map((_, i) => (
-        <View
-          key={i}
-          style={[
-            styles.nokta,
-            i === adim && styles.noktaAktif,
-            i < adim && styles.noktaTamamlandi,
-          ]}
-        />
-      ))}
+      {Array.from({ length: TOPLAM_ADIM })
+        .map((_, i) => i)
+        .filter(adimGosterilirMi)
+        .map((i) => (
+          <View
+            key={i}
+            style={[
+              styles.nokta,
+              i === adim && styles.noktaAktif,
+              i < adim && styles.noktaTamamlandi,
+            ]}
+          />
+        ))}
     </View>
   );
 
@@ -308,6 +363,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           muhafizAktif={muhafizAktif}
         />
       );
+      case ADIM.PIL: return <PilAdimi tamam={pilTamam} />;
       case ADIM.OZEL_GUN: return <OzelGunAdimi />;
       case ADIM.HAZIR: return <HazirAdimi />;
       default: return null;
@@ -395,6 +451,24 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       if (konumDurumu === 'gpsAliniyor' || konumDurumu === 'gpsBasarili') {
         return null; // auto-advance
       }
+    }
+    if (adim === ADIM.PIL) {
+      if (pilTamam) return null; // auto-advance
+      return (
+        <>
+          <TouchableOpacity
+            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
+            onPress={pilAyarlariniAcVeBekle}
+            accessibilityRole="button"
+          >
+            <FontAwesome5 name="shield-alt" size={16} color="#fff" />
+            <Text style={styles.butonMetin}>Şimdi Ayarlayın</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.atlaButon} onPress={ilerle} accessibilityRole="button">
+            <Text style={styles.atlaButonMetin}>Daha sonra</Text>
+          </TouchableOpacity>
+        </>
+      );
     }
     if (adim === ADIM.HAZIR) {
       return (

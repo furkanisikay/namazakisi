@@ -4,6 +4,7 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import { taniListenerMiddleware } from './taniListener';
+import { ozelGunListenerMiddleware } from './ozelGunListener';
 import authReducer from './authSlice';
 import namazReducer from './namazSlice';
 import seriReducer from './seriSlice';
@@ -11,6 +12,13 @@ import muhafizReducer from './muhafizSlice';
 import konumReducer from './konumSlice';
 import vakitBildirimReducer from './vakitBildirimSlice';
 import cumaHatirlatmaReducer from './cumaHatirlatmaSlice';
+import yatisHatirlatmaReducer from './yatisHatirlatmaSlice';
+import camiyeGitReducer from './camiyeGitSlice';
+import takvimCakismaReducer from './takvimCakismaSlice';
+import nafileReducer from './nafileSlice';
+import nowBarReducer from './nowBarSlice';
+import sadeGorunumReducer from './sadeGorunumSlice';
+import seferilikReducer from './seferilikSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
 import sahurSayacReducer from './sahurSayacSlice';
@@ -30,6 +38,13 @@ export const store = configureStore({
     konum: konumReducer,
     vakitBildirim: vakitBildirimReducer,
     cumaHatirlatma: cumaHatirlatmaReducer,
+    yatisHatirlatma: yatisHatirlatmaReducer,
+    camiyeGit: camiyeGitReducer,
+    takvimCakisma: takvimCakismaReducer,
+    nafile: nafileReducer,
+    nowBar: nowBarReducer,
+    sadeGorunum: sadeGorunumReducer,
+    seferilik: seferilikReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,
     sahurSayac: sahurSayacReducer,
@@ -43,7 +58,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).prepend(taniListenerMiddleware.middleware),
+    })
+      .prepend(taniListenerMiddleware.middleware)
+      .prepend(ozelGunListenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

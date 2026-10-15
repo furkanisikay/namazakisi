@@ -40,8 +40,10 @@ const matrisOlustur = (seviyeler: SeviyeAyari[]): MuhafizMatrisi =>
         MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler: seviyeler.map((s) => ({ ...s })) }])
     ) as MuhafizMatrisi;
 
+// Gerçekçi eşikler (45/25/10/3): acil kanal yalnız son 15 dk'da (issue #274).
+const VARSAYILAN_ESIKLER = [45, 25, 10, 3];
 const dortSeviye = (o: Partial<SeviyeAyari> = {}) =>
-    SEVIYE_KADEMELERI.map((kademe) => sv({ kademe, ...o }));
+    SEVIYE_KADEMELERI.map((kademe, i) => sv({ kademe, esikDk: VARSAYILAN_ESIKLER[i], ...o }));
 
 describe('MuhafizKanalServisi.hazirla', () => {
     const oncekiPlatform = Platform.OS;
@@ -237,5 +239,57 @@ describe('MuhafizKanalServisi.hazirla', () => {
         // 2 kanal gerekiyordu (normal + acil); ilki patladı, ikincisi yine denendi.
         expect(mockGarantile).toHaveBeenCalledTimes(2);
         expect(mockTemizle).toHaveBeenCalled();
+    });
+});
+
+describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', () => {
+    const oncekiPlatform = Platform.OS;
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    const TITRESIMLI = muhafizKanalIdOlustur(VARSAYILAN_SES, false, true);
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        (Platform as { OS: string }).OS = 'android';
+        mockSesAdiAl.mockResolvedValue('Bir ses');
+        MuhafizKanalServisi.onbellegiSifirla();
+        await AsyncStorage.setItem(
+            'nafile_ayarlari',
+            JSON.stringify({
+                hatirlatmalar: {
+                    kusluk: {
+                        aktif: true,
+                        yon: 'girisindenItibaren',
+                        adimlar: [{ esikDk: 5, kanallar: { bildirim: true, titresim: true }, siklik: 'birkez' }],
+                    },
+                },
+            })
+        );
+    });
+
+    afterEach(async () => {
+        await AsyncStorage.removeItem('nafile_ayarlari');
+    });
+
+    afterAll(() => {
+        (Platform as { OS: string }).OS = oncekiPlatform;
+    });
+
+    it('muhafız turu nafilenin titreşimli kanalını OLUŞTURUR ve çöp toplamada KORUR', async () => {
+        await MuhafizKanalServisi.hazirla(matrisOlustur(dortSeviye()));
+        expect(mockGarantile.mock.calls.map((c) => c[0])).toContain(TITRESIMLI);
+        expect(mockTemizle.mock.calls[0][0]).toEqual(expect.arrayContaining(['muhafiz', TITRESIMLI]));
+    });
+
+    it('muhafız KAPALIYKEN (matrissiz) de nafile kanalı korunur', async () => {
+        await MuhafizKanalServisi.hazirla();
+        expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
+    });
+
+    it('ekKanallariHazirla yalnız oluşturur, çöp TOPLAMAZ', async () => {
+        await MuhafizKanalServisi.ekKanallariHazirla([
+            { yon: 'girisindenItibaren', seviyeler: [sv({ kanallar: { bildirim: true, titresim: true } })] },
+        ]);
+        expect(mockGarantile.mock.calls.map((c) => c[0])).toEqual([TITRESIMLI]);
+        expect(mockTemizle).not.toHaveBeenCalled();
     });
 });

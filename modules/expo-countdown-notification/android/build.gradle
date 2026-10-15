@@ -38,7 +38,9 @@ afterEvaluate {
 
 android {
   namespace 'expo.modules.countdownnotification'
-  compileSdkVersion safeExtGet("compileSdkVersion", 34)
+  // Live Update (issue #282) API 36 siniflari ister (ProgressStyle, setShortCriticalText,
+  // canPostPromotedNotifications). RN 0.81 katalogu zaten 36 verir; yedek de 36.
+  compileSdkVersion safeExtGet("compileSdkVersion", 36)
 
   defaultConfig {
     minSdkVersion safeExtGet("minSdkVersion", 23)
@@ -73,6 +75,10 @@ dependencies {
   implementation project(':expo-modules-core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
   implementation "androidx.core:core-ktx:1.12.0"
+
+  // Saf cekirdek (`cekirdek/`) JVM birim testleri. Android'in org.json'u JVM'de stub'dir.
+  testImplementation "junit:junit:4.13.2"
+  testImplementation "org.json:json:20240303"
 }
 
 def safeExtGet(prop, fallback) {

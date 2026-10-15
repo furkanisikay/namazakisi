@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, ScrollView, AppState, AppStateStatus, StyleSheet } from 'react-native';
+import { View, Text, Platform, TouchableOpacity, StatusBar, AppState, AppStateStatus, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -18,6 +18,18 @@ import { kisaBildirimGoster } from '../components/common/KisaBildirim';
 import { VakitAkisi } from '../components/home/VakitAkisi';
 import { SeriKartiModal } from '../components/home/SeriKartiModal';
 import { KerahatOnayModal } from '../components/home/KerahatOnayModal';
+import { KazaOneriModal } from '../components/home/KazaOneriModal';
+import { useFarzSonrasiKazaOnerisi } from '../hooks/useFarzSonrasiKazaOnerisi';
+import { useSadeGorunum } from '../hooks/useSadeGorunum';
+import { SadeGorunum } from '../components/sade/SadeGorunum';
+import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
+import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
+import { SeferilikBilgiKarti } from '../components/home/SeferilikBilgiKarti';
+import { useEkranSinifi } from '../hooks/useEkranSinifi';
+import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
+import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
+import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
+import { nafileZincirSatirlariOlustur } from '../../core/nafile/nafileZinciri';
 import { NamazAdi } from '../../core/constants/UygulamaSabitleri';
 import { bugunuAl, tarihiGorunumFormatinaCevir, bugunMu, tarihiISOFormatinaCevir, gunEkle, ISOTarihiDateNesnesiNeCevir } from '../../core/utils/TarihYardimcisi';
 import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
@@ -39,7 +51,8 @@ import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { Namaz } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
 
@@ -56,6 +69,11 @@ export const AnaSayfa: React.FC = () => {
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
   const { koyuMu } = useTema();
+  // Katlanabilir/tablet (issue #283): pencere ≥600 dp ise gün sayfası iki bölmeli;
+  // yarı açık + yatay menteşede (masaüstü postürü) üstte büyük geri sayım, altta akış.
+  // Telefonda (kompakt, düz) düzen birebir eskisi gibi tek sütundur.
+  const katlanmaPosturu = useKatlanmaPosturu();
+  const gunDuzeni = gunDuzeniSec(useEkranSinifi(), katlanmaPosturu);
   const { tumNamazlarTamamlandiFeedback } = useFeedback();
 
   const [mevcutSayfaIndeksi, setMevcutSayfaIndeksi] = useState(BASLANGIC_SAYFA_INDEKSI);
@@ -73,6 +91,10 @@ export const AnaSayfa: React.FC = () => {
   // Kerahat vaktinde işaretleme öncesi kibar onay modalı için bekleyen namaz (issue #82).
   // null değilse modal görünür; onaylanırsa bu namaz "kılındı" işaretlenir.
   const [kerahatOnayBekleyen, setKerahatOnayBekleyen] = useState<NamazAdi | null>(null);
+  // "Her farzla bir kaza" önerisi (issue #294): karar saf çekirdekte, burada yalnız tetiklenir.
+  const kazaOnerisi = useFarzSonrasiKazaOnerisi();
+  // Sade görünüm (issue #295): açıksa ana ekranın yerine tek ekran çizilir (aşağıda seçim dalı).
+  const sade = useSadeGorunum();
 
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
@@ -91,6 +113,7 @@ export const AnaSayfa: React.FC = () => {
   // Cuma etiketi yalniz kullanici cuma hatirlatmasini actiysa gosterilir —
   // cuma herkese farz-i ayn degildir, etiketi herkese dayatmayiz.
   const cumaEtiketi = useAppSelector((state) => state.cumaHatirlatma.ayarlar.aktif);
+  const nafileAyarlari = useAppSelector((state) => state.nafile.ayarlar);
   // useEffect bagimliliklarinda obje referansi yerine stabil string kullanilir
   // (Redux dispatch sonrasi ayni degerlerle bile yeni obje olusturulur, bu gereksiz tetiklemeyi onler)
   const konumAyarlariStr = JSON.stringify(konumAyarlari.koordinatlar);
@@ -174,7 +197,7 @@ export const AnaSayfa: React.FC = () => {
     // gerisindeki saat dilimlerinde adhan ÖNCEKİ günün vakitlerini hesaplar (AGENTS.md).
     const date = ISOTarihiDateNesnesiNeCevir(mevcutTarih);
     const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const prayerTimes = new PrayerTimes(coordinates, date, params);
 
     const zamanFormatla = (d: Date) => {
@@ -207,13 +230,32 @@ export const AnaSayfa: React.FC = () => {
 
     if (konumAyarlari.koordinatlar) {
       const coordinates = new Coordinates(konumAyarlari.koordinatlar.lat, konumAyarlari.koordinatlar.lng);
-      const params = CalculationMethod.Turkey();
+      const params = turkiyeHesapParametreleri();
       const prayerTimes = new PrayerTimes(coordinates, now, params);
       imsakZamani = prayerTimes.fajr;
     }
 
     return aktifGunuHesapla(bugun, now, imsakZamani, gunEkle(bugun, -1));
   }, [konumAyarlari.koordinatlar, vakitBilgisi?.vakit]); // vakitBilgisi.vakit degisince aktif gun yeniden hesaplanir (imsak gecisi = yeni gun)
+
+  // Nafile satırları (issue #77): "Günlük Akış" zincirinde kendi farzlarının ardına
+  // girer. Pencereler AKTİF GÜN tabanlı (gece yarısı sonrası = dün). Ekran saniyede
+  // bir çizildiği için dizi DAKİKA anahtarıyla memo'lanır: VakitAkisi memo'su yalnız
+  // dakika dönünce (aktif/geçti durumu değişebilir) kırılır.
+  const { pencereler: nafilePencereleri } = useNafilePencereleri(aktifGun);
+  const nafileDakikasi = Math.floor(Date.now() / 60000);
+  const { gostergeAktif: nafileGostergesi, teheccud: nafileTeheccud } = nafileAyarlari;
+  const nafileSatirlari = useMemo(
+    () =>
+      nafileGostergesi
+        ? nafileZincirSatirlariOlustur(
+            nafilePencereleri,
+            new Date(nafileDakikasi * 60000),
+            nafileTeheccud.pencere
+          )
+        : undefined,
+    [nafileGostergesi, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere]
+  );
 
   // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).
   // Önceden `initialPage` sabit "bugün" idi ve doğru sayfaya mount effect'indeki
@@ -331,6 +373,23 @@ export const AnaSayfa: React.FC = () => {
     };
   }, [aktifGun]);
 
+  // Sade görünüm (issue #295) daima AKTİF GÜNÜ işaretler. Kullanıcı geçmiş bir güne
+  // bakarken açtıysa gösterilen gün aktif güne çekilir; pager sade görünümde ÇİZİLMEZ,
+  // normal görünüme dönünce DOĞRU sayfada doğsun diye açılış indeksi de güncellenir
+  // (pager mount'ta imperatif komutla düzeltilmez — AGENTS.md).
+  useEffect(() => {
+    if (!sade.etkin) return;
+    const indeks = tarihiSayfaIndeksineCevir(aktifGun);
+    ilkSayfaIndeksiRef.current = indeks;
+    mevcutSayfaIndeksiRef.current = indeks;
+    programatikGecisRef.current = false;
+    setMevcutSayfaIndeksi(indeks);
+    if (mevcutTarih !== aktifGun) {
+      dispatch(tarihiDegistir(aktifGun));
+      namazlariGetir(aktifGun);
+    }
+  }, [sade.etkin, aktifGun, mevcutTarih, dispatch, namazlariGetir, tarihiSayfaIndeksineCevir]);
+
   // Seri + puanlama senkronu: gunlukNamazlar her degistiginde (yukleme/toggle/toplu) once
   // seriKontrolet'i AWAIT edip ARDINDAN reconcile'i zincirle -> TEK-YAZICI, yaris yok.
   // Ilk senkron (acilis) SESSIZ; sonraki (gercek kullanici eylemi) seviye atlamada kutlar.
@@ -357,7 +416,6 @@ export const AnaSayfa: React.FC = () => {
       latitude: konumAyarlari.koordinatlar.lat,
       longitude: konumAyarlari.koordinatlar.lng,
       method: 'Turkey',
-      madhab: 'Hanafi'
     });
 
     // Onceki vakit bilgisini ref'te tut (gecis tespiti icin)
@@ -438,8 +496,10 @@ export const AnaSayfa: React.FC = () => {
       // çan sesi çalardı (#92). baslat() ilk kontrolEt'i hemen çağırdığından sıra önemli.
       muhafiz.acilistaKilinanlariYukle().finally(() => {
         if (iptalEdildi) return;
-        muhafiz.baslat((mesaj, seviye, bildirimSesi) => {
+        muhafiz.baslat((mesaj, seviye, bildirimSesi, sistemAlarmi) => {
           setMuhafizDurumu({ mesaj, seviye });
+          // Gerçek alarm (issue #74) bu dakikada kendi sesini çalar: ikinci ses/titreşim YOK.
+          if (sistemAlarmi) return;
           if (seviye >= 3) {
             HaptikServisi.gucluTitresim();
             // ADIMIN KENDİ SESİ çalınır. Eskiden burada `SesServisi.bildirimSesiCal()`
@@ -512,6 +572,16 @@ export const AnaSayfa: React.FC = () => {
   // Namaz İşlemleri — gerçek işaretleme (kerahat onayından geçtikten sonra çağrılır)
   const namazIsaretle = async (namazAdi: NamazAdi, tamamlandi: boolean) => {
     dispatch(namazDurumunuDegistir({ tarih: mevcutTarih, namazAdi: namazAdi, tamamlandi }));
+    // Kaza önerisi (issue #294): yalnız aktif günün o anki vaktinde, kerahat dışında,
+    // borç varsa sorar. Geri almada (tamamlandi=false) bekleyen değerlendirmeyi iptal eder.
+    void kazaOnerisi.degerlendir({
+      kilinanNamaz: namazAdi,
+      tamamlandi,
+      gosterilenGun: mevcutTarih,
+      aktifGun,
+      suankiVakitNamazi: vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] ?? null : null,
+      koordinat: konumAyarlari.koordinatlar,
+    });
     // Puanlama + seri: gunlukNamazlar degisince yukaridaki useEffect (seriKontrolet -> reconcile)
     // SIRALI ve TEK-YAZICI olarak otomatik kosar; burada ayrica dispatch GEREKMEZ (yaris onlenir).
 
@@ -600,6 +670,12 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
+  // Sade görünüm "Kıldım"ı (React.memo'lu bileşen için referans-kararlı): AYNI yol —
+  // suankiVakitTamamla → namazToggle → kerahat onay modalı.
+  const suankiVakitTamamlaRef = useRef(suankiVakitTamamla);
+  suankiVakitTamamlaRef.current = suankiVakitTamamla;
+  const handleSadeKildim = useCallback(() => suankiVakitTamamlaRef.current(), []);
+
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
@@ -652,13 +728,21 @@ export const AnaSayfa: React.FC = () => {
         if (sonrakiNamaz) {
           vakitAraligi = `${suankiNamaz.saat} - ${sonrakiNamaz.saat}`;
         } else {
-          vakitAraligi = `${suankiNamaz.saat} - ...`;
+          // Yatsı zincirin son vaktidir; çıkışı ertesi imsaktır ve servis onu
+          // `vakitBilgisi.saat` olarak zaten verir ("..." yazmak bitişi gizliyordu).
+          const cikis = vakitBilgisi.saat;
+          vakitAraligi = `${suankiNamaz.saat} - ${cikis.getHours().toString().padStart(2, '0')}:${cikis.getMinutes().toString().padStart(2, '0')}`;
         }
       }
     }
 
-    return (
-      <ScrollView key={sayfaIndeksi} className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>
+    // Üst bölüm (uyarı bantları + şu anki vakit kartı) ile akış AYRI düğümlerdir:
+    // telefonda tek sütunda alt alta, katlanabilir/tablette iki bölmede yan yana
+    // çizilir (issue #283). Bileşenler ve prop'ları iki düzende AYNIDIR.
+    // Uyarı bantları: telefonda/iki bölmede vakit kartının ÜSTÜNDE, masaüstü
+    // postüründe alt yarıda akışın üstünde (dik yarı yalnız geri sayımı taşır).
+    const bantlar = (
+      <>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
         {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
@@ -687,6 +771,25 @@ export const AnaSayfa: React.FC = () => {
             </Text>
           </View>
         )}
+      </>
+    );
+
+    const gecmisGunKarti = (
+      <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
+        style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
+        <Text className="text-xl font-bold" style={{ color: renkler.metin }}>
+          {tarihiGorunumFormatinaCevir(sayfaTarihi)}
+        </Text>
+        <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
+          Geçmiş gün görüntüleniyor
+        </Text>
+      </View>
+    );
+    const gorunenVakitAdi = namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi);
+
+    const ustBolum = (
+      <>
+        {bantlar}
 
         {/* Ana Vakit Kartı (Hero) - Sadece aktif gün gösterilir */}
         {aktifGunKontrol ? (
@@ -702,20 +805,19 @@ export const AnaSayfa: React.FC = () => {
             konumMetni={konumMetni}
             onKonumYenile={konumYenile.yenile}
             konumYenileniyor={konumYenile.yenileniyor}
-            gorunenVakitAdi={namazGorunenAdi(suankiVakitAdi, sayfaTarihiDate, cumaEtiketi)}
+            gorunenVakitAdi={gorunenVakitAdi}
           />
         ) : (
-          <View className="mb-6 p-6 rounded-3xl items-center justify-center border"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
-            <Text className="text-xl font-bold" style={{ color: renkler.metin }}>
-              {tarihiGorunumFormatinaCevir(sayfaTarihi)}
-            </Text>
-            <Text className="text-sm mt-2" style={{ color: renkler.metinIkincil }}>
-              Geçmiş gün görüntüleniyor
-            </Text>
-          </View>
+          gecmisGunKarti
         )}
 
+        {/* Seferîlik bilgi kartı (issue #296): ≈90 km'den uzakta, hüküm değil bilgi */}
+        {aktifGunKontrol && <SeferilikBilgiKarti />}
+      </>
+    );
+
+    const akis = (
+      <>
         {/* Akış Listesi — memo'lu: gün ISO dizesiyle geçer ki saniyelik geri sayım
             render'ı memo'yu kırmasın. "Vakit geçti mi" içeride `new Date()` okur ama
             satır yalnız prop değişince yeniden çizilir; doğruluk, satır saatlerinin
@@ -731,12 +833,92 @@ export const AnaSayfa: React.FC = () => {
           kilitli={kilitli}
           gunTarihiIso={sayfaTarihi}
           cumaEtiketi={cumaEtiketi}
+          // Nafile yalnız aktif günde: geçmiş günde "şu an vakti girdi" anlamsız.
+          nafileSatirlari={aktifGunKontrol ? nafileSatirlari : undefined}
         />
-        {/* ScrollView sonu için boşluk */}
-        <View className="h-10" />
-      </ScrollView>
+      </>
     );
+
+    if (gunDuzeni === 'masaustu') {
+      // Masaüstü postürü: dik duran üst yarı salt gösterimdir (büyük geri sayım);
+      // "Kıldım" masadaki alt yarıdan, akış satırından işaretlenir.
+      const masaustuUst = aktifGunKontrol ? (
+        <MasaustuGeriSayim
+          vakitAdi={gorunenVakitAdi}
+          kalanSureStr={kalanSureStr}
+          vakitAraligi={vakitAraligi}
+          tamamlandi={suankiVakitTamamlandi}
+          kilitli={kilitli}
+        />
+      ) : (
+        <View className="flex-1 justify-center px-5">{gecmisGunKarti}</View>
+      );
+      return (
+        <GunSayfasiDuzeni
+          key={sayfaIndeksi}
+          duzen="masaustu"
+          ustBolum={ustBolum}
+          akis={akis}
+          masaustuUst={masaustuUst}
+          masaustuBantlar={
+            <>
+              {bantlar}
+              {aktifGunKontrol && <SeferilikBilgiKarti />}
+            </>
+          }
+          mentese={katlanmaPosturu.mentese}
+        />
+      );
+    }
+
+    return <GunSayfasiDuzeni key={sayfaIndeksi} duzen={gunDuzeni} ustBolum={ustBolum} akis={akis} />;
   };
+
+  // Sade görünüm ayarı diskten okunmadan karar verilmez (normal ekran bir an görünüp
+  // sade görünüme zıplamasın).
+  if (!sade.yuklendi) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
+
+  // ---- Sade görünüm (issue #295): tek ekran; işaretleme ve modallar ana ekranla AYNI ----
+  if (sade.etkin) {
+    const sadeKayitHazir = !!gunlukNamazlar && gunlukNamazlar.tarih === aktifGun;
+    const sadeNamazAdi = vakitBilgisi?.vakit ? servisToNamazAdi[vakitBilgisi.vakit] : undefined;
+    const sadeTamamlandi =
+      sadeKayitHazir && !!gunlukNamazlar.namazlar.find(n => n.namazAdi === sadeNamazAdi)?.tamamlandi;
+    return (
+      <View className="flex-1" style={{ backgroundColor: renkler.arkaplan }}>
+        <StatusBar backgroundColor={renkler.arkaplan} barStyle={koyuMu ? 'light-content' : 'dark-content'} />
+        <SadeGorunum
+          vakit={vakitBilgisi?.vakit ?? null}
+          giris={vakitBilgisi?.giris ?? null}
+          sonrakiGirisIso={vakitBilgisi?.sonrakiVakitGiris || null}
+          sonrakiVakit={(vakitBilgisi?.sonrakiVakitAdi as VakitBilgisi['vakit'] | undefined) ?? null}
+          tamamlandi={sadeTamamlandi}
+          kayitHazir={sadeKayitHazir}
+          mekruhMu={mekruhBilgi.mekruhMu}
+          cumaEtiketi={cumaEtiketi}
+          onKildim={handleSadeKildim}
+          onTumUygulama={sade.tumUygulamayiAc}
+        />
+        <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
+        <KazaOneriModal
+          gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+          kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
+          kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
+          isleniyor={kazaOnerisi.isleniyor}
+          onKildim={kazaOnerisi.kildim}
+          onSimdiDegil={kazaOnerisi.simdiDegil}
+          onBirDahaSorma={kazaOnerisi.birDahaSorma}
+        />
+        <KerahatOnayModal
+          gorunur={kerahatOnayBekleyen !== null}
+          aciklama={mekruhBilgi.aciklama}
+          namazAdi={kerahatOnayBekleyen ?? ''}
+          onOnayla={kerahatOnayla}
+          onVazgec={kerahatVazgec}
+        />
+      </View>
+    );
+  }
 
   if (yukleniyor && !gunlukNamazlar) return <View className="flex-1 justify-center items-center" style={{ backgroundColor: renkler.arkaplan }}><YuklemeGostergesi mesaj="Yükleniyor..." /></View>;
   if (hata && !gunlukNamazlar) return <View className="flex-1 justify-center items-center p-6" style={{ backgroundColor: renkler.arkaplan }}><Text className="text-red-500 mb-4">{hata}</Text><AnimasyonluButon metin="Tekrar Dene" ikon="🔄" onPress={() => namazlariGetir(mevcutTarih)} tip="birincil" /></View>;
@@ -757,6 +939,20 @@ export const AnaSayfa: React.FC = () => {
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
+
+      {/* Sade görünümden bu oturum için çıkıldıysa tek dokunuşla geri dönüş (issue #295) */}
+      {sade.geciciCikista && (
+        <TouchableOpacity
+          onPress={sade.sadeyeDon}
+          accessibilityRole="button"
+          accessibilityLabel="Sade görünüme dönün"
+          className="flex-row items-center justify-center mx-3 mb-1 rounded-xl border"
+          style={{ minHeight: 44, backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+        >
+          <FontAwesome5 name="compress-alt" size={14} color={renkler.birincil} style={{ marginRight: 8 }} />
+          <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Sade görünüme dönün</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Toparlanma Banner */}
       {seriOzeti?.toparlanmaModu && seriOzeti.toparlanmaIlerleme && (
@@ -841,6 +1037,17 @@ export const AnaSayfa: React.FC = () => {
       <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
 
       {/* Kerahat (mekruh) vaktinde işaretleme öncesi kibar onay (issue #82) */}
+      {/* Kutlama modalı açıkken beklesin; kapanınca görünür (iki modal üst üste binmesin). */}
+      <KazaOneriModal
+        gorunur={kazaOnerisi.oneri !== null && !ilkKutlama}
+        kilinanFarz={kazaOnerisi.oneri?.kilinanFarz ?? null}
+        kazaNamazi={kazaOnerisi.oneri?.kazaNamazi ?? null}
+        isleniyor={kazaOnerisi.isleniyor}
+        onKildim={kazaOnerisi.kildim}
+        onSimdiDegil={kazaOnerisi.simdiDegil}
+        onBirDahaSorma={kazaOnerisi.birDahaSorma}
+      />
+
       <KerahatOnayModal
         gorunur={kerahatOnayBekleyen !== null}
         aciklama={mekruhBilgi.aciklama}

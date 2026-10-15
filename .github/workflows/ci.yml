@@ -22,6 +22,14 @@ on:
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
+      # Wear OS saat uygulaması kendi hattında (wear-build.yml) derlenir; telefon
+      # release'i (EAS AAB + Play + GitHub Release) KESMEZ.
+      - 'wear/**'
+      - '.github/workflows/wear-build.yml'
+      # Android TV panosu da öyle (tv-build.yml; issue #286).
+      - 'tv/**'
+      - 'scripts/tv/**'
+      - '.github/workflows/tv-build.yml'
   pull_request:
     branches: [master, develop]
     paths-ignore:
@@ -29,6 +37,14 @@ on:
       - 'docs/**'
       - '.github/ISSUE_TEMPLATE/**'
       - 'LICENSE'
+      # Wear OS saat uygulaması kendi hattında (wear-build.yml) derlenir; telefon
+      # release'i (EAS AAB + Play + GitHub Release) KESMEZ.
+      - 'wear/**'
+      - '.github/workflows/wear-build.yml'
+      # Android TV panosu da öyle (tv-build.yml; issue #286).
+      - 'tv/**'
+      - 'scripts/tv/**'
+      - '.github/workflows/tv-build.yml'
 
 concurrency:
   group: ci-${{ github.ref }}

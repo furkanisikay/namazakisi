@@ -21,7 +21,7 @@
  */
 import * as React from 'react';
 import { useRef, useEffect, useState, useMemo } from 'react';
-import { Text, Animated, Easing, Linking } from 'react-native';
+import { Text, Animated, Easing, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -31,7 +31,16 @@ import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
 import { useYeniOzellikler } from '../hooks/useYeniOzellikler';
 import { useAyarOzetleri } from '../hooks/useAyarOzetleri';
+import { useSistemDurumu } from '../hooks/useSistemDurumu';
+import { usePilRehberi } from '../hooks/usePilRehberi';
+import { useCamideyimOzeti } from '../hooks/useCamideyimOzeti';
+import { useNowBarOzeti } from '../hooks/useNowBarOzeti';
+import { PilRehberModal } from '../components/pil/PilRehberi';
+import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
+import { useSeferilik } from '../hooks/useSeferilik';
+import { seferilikOzeti } from '../../core/seferilik/seferilikMetni';
+import { KildimGuvenServisi } from '../../domain/services/KildimGuvenServisi';
 import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
@@ -52,8 +61,18 @@ export const AyarlarSayfasi: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
   const { ayarlar, titresimDurumunuDegistir, sesDurumunuDegistir } = useFeedback();
   const { kart, okunmamisVarMi, sayfaOkunmamisMi, sayfayiGorulduIsaretle, kartiKapat } = useYeniOzellikler();
-  const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri();
+  // Pil muafiyeti + tam alarm: uygulamaya dönüşte de tazelenir (ayar ekranından geri gelince).
+  const sistem = useSistemDurumu();
+  // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
+  const camideyim = useCamideyimOzeti();
+  // Now Bar ve canlı sayaçlar (#282): yalnız Android.
+  const nowBar = useNowBarOzeti();
+  const kildimGuvenVar = KildimGuvenServisi.kullanilabilirMi();
+  const pilRehberi = usePilRehberi(sistem);
+  const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
+  // Seferîlik bilgi kartı (#296): dilim yoksa (eski test mock'u) varsayılan özet.
+  const seferilik = useSeferilik().durum;
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
@@ -111,6 +130,10 @@ export const AyarlarSayfasi: React.FC = () => {
       Linking.openSettings();
     } else if (sorun.eylem?.tip === 'sayfa') {
       menuyeGit(sorun.eylem.sayfa as AyarlarEkranAdi);
+    } else if (sorun.eylem?.tip === 'pilAyarlari') {
+      pilRehberi.rehberiAc();
+    } else if (sorun.eylem?.tip === 'alarmIzni') {
+      void alarmIzniAyariniAc();
     }
   };
 
@@ -200,6 +223,14 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('TakvimAyarlari')}
                   onPress={() => menuyeGit('TakvimAyarlari')}
                 />
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="route" size={20} color={ikonRengi} solid />}
+                  baslik="Yolculuk bilgisi"
+                  ozet={seferilikOzeti(seferilik?.ayarlar.kartAcik ?? true, seferilik?.ayarlar.mezhep ?? 'hanefi')}
+                  yeniRozetGoster={sayfaOkunmamisMi('SeferilikAyarlari')}
+                  onPress={() => menuyeGit('SeferilikAyarlari')}
+                />
               </AyarGrubu>
 
               <AyarGrubu baslik="Hatırlatmalar">
@@ -235,6 +266,47 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('RamazanAyarlari')}
                   onPress={() => menuyeGit('RamazanAyarlari')}
                 />
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="star-and-crescent" size={20} color={ikonRengi} solid />}
+                  baslik="Nafile namazlar"
+                  ozet={ozetler.nafile}
+                  yeniRozetGoster={sayfaOkunmamisMi('NafileAyarlari')}
+                  onPress={() => menuyeGit('NafileAyarlari')}
+                />
+                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
+                {nowBar.kullanilabilir && [
+                  <AyarSatiri
+                    key="now-bar"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="stopwatch" size={20} color={ikonRengi} solid />}
+                    baslik={Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Now Bar ve canlı sayaçlar'}
+                    ozet={nowBar.ozet ?? ''}
+                    yeniRozetGoster={sayfaOkunmamisMi('NowBarAyarlari')}
+                    onPress={() => menuyeGit('NowBarAyarlari')}
+                  />,
+                ]}
+                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
+                {camideyim.kullanilabilir && [
+                  <AyarSatiri
+                    key="camideyim"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="mosque" size={20} color={ikonRengi} solid />}
+                    baslik="Camideyim"
+                    ozet={camideyim.cami}
+                    yeniRozetGoster={sayfaOkunmamisMi('CamideyimAyarlari')}
+                    onPress={() => menuyeGit('CamideyimAyarlari')}
+                  />,
+                  <AyarSatiri
+                    key="namaz-modu"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="moon" size={20} color={ikonRengi} />}
+                    baslik="Namaz modu"
+                    ozet={camideyim.namazModu}
+                    yeniRozetGoster={sayfaOkunmamisMi('NamazModuAyarlari')}
+                    onPress={() => menuyeGit('NamazModuAyarlari')}
+                  />,
+                ]}
               </AyarGrubu>
 
               <AyarGrubu baslik="Uygulama">
@@ -246,6 +318,27 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
                   onPress={() => menuyeGit('GorünumAyarlari')}
                 />
+                {/* Otomasyon güven listesi (issue #299) — yalnız Android (köprü varsa). */}
+                {kildimGuvenVar && [
+                  <AyarSatiri
+                    key="otomasyon-rehberi"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="magic" size={20} color={ikonRengi} solid />}
+                    baslik="Otomasyonlarla kullanın"
+                    ozet="Samsung Rutinler, Tasker, MacroDroid"
+                    yeniRozetGoster={sayfaOkunmamisMi('OtomasyonRehberi')}
+                    onPress={() => menuyeGit('OtomasyonRehberi')}
+                  />,
+                  <AyarSatiri
+                    key="kildim-uygulamalari"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="user-shield" size={20} color={ikonRengi} solid />}
+                    baslik="Kıldım işaretleyebilen uygulamalar"
+                    ozet="Rutinler, Tasker ve diğer otomasyonlar"
+                    yeniRozetGoster={sayfaOkunmamisMi('KildimUygulamalari')}
+                    onPress={() => menuyeGit('KildimUygulamalari')}
+                  />,
+                ]}
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
@@ -302,6 +395,12 @@ export const AyarlarSayfasi: React.FC = () => {
           )}
         </Animated.View>
       </Animated.ScrollView>
+      <PilRehberModal
+        gorunur={pilRehberi.rehberGorunur}
+        samsung={pilRehberi.samsung}
+        onAc={pilRehberi.ayarlariAc}
+        onKapat={pilRehberi.rehberiKapat}
+      />
     </SafeAreaView>
   );
 };

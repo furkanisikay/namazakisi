@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TEST FIKSTURU: SENTETIK veri, gercek OpenStreetMap kaydi DEGILDIR. Kimlikler, adlar ve
+     konumlar uydurmadir; yalniz cami_verisi_uret.py ve cozucu testleri (JS + Kotlin) icindir.
+     Yeniden uretmek: python3 -I scripts/camiler/cami_verisi_uret.py ornek-camiler.osm
+     ../../modules/expo-cami-geofence/android/src/test/resources/ornek-camiler.bin (veri zamani 1790000000) -->
+<osm version="0.6" generator="namazakisi-fikstur">
+  <node id="9000000001" version="1" lat="41.0100000" lon="28.9700000">
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="name" v="Test Camii A (fikstür)"/>
+  </node>
+  <node id="9000000002" version="1" lat="41.0130000" lon="28.9750000">
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+  </node>
+  <node id="9000000003" version="1" lat="41.0140000" lon="28.9710000">
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="christian"/>
+    <tag k="name" v="Kilise (fikstür, süzülmeli)"/>
+  </node>
+  <node id="5000000000" version="1" lat="41.0200000" lon="28.9800000">
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="name" v="Büyük Kimlik Mescidi (fikstür)"/>
+  </node>
+  <node id="9000000004" version="1" lat="39.9200000" lon="32.8500000">
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="name" v="Uzak Camii (fikstür)"/>
+  </node>
+  <node id="8000000001" version="1" lat="41.0108201" lon="28.9717616"/>
+  <node id="8000000002" version="1" lat="41.0108201" lon="28.9722384"/>
+  <node id="8000000003" version="1" lat="41.0111799" lon="28.9722384"/>
+  <node id="8000000004" version="1" lat="41.0111799" lon="28.9717616"/>
+  <node id="8000000005" version="1" lat="41.0050000" lon="28.9603575"/>
+  <node id="8000000006" version="1" lat="41.0050834" lon="28.9603400"/>
+  <node id="8000000007" version="1" lat="41.0051586" lon="28.9602892"/>
+  <node id="8000000008" version="1" lat="41.0052183" lon="28.9602101"/>
+  <node id="8000000009" version="1" lat="41.0052566" lon="28.9601105"/>
+  <node id="8000000010" version="1" lat="41.0052698" lon="28.9600000"/>
+  <node id="8000000011" version="1" lat="41.0052566" lon="28.9598895"/>
+  <node id="8000000012" version="1" lat="41.0052183" lon="28.9597899"/>
+  <node id="8000000013" version="1" lat="41.0051586" lon="28.9597108"/>
+  <node id="8000000014" version="1" lat="41.0050834" lon="28.9596600"/>
+  <node id="8000000015" version="1" lat="41.0050000" lon="28.9596425"/>
+  <node id="8000000016" version="1" lat="41.0049166" lon="28.9596600"/>
+  <node id="8000000017" version="1" lat="41.0048414" lon="28.9597108"/>
+  <node id="8000000018" version="1" lat="41.0047817" lon="28.9597899"/>
+  <node id="8000000019" version="1" lat="41.0047434" lon="28.9598895"/>
+  <node id="8000000020" version="1" lat="41.0047302" lon="28.9600000"/>
+  <node id="8000000021" version="1" lat="41.0047434" lon="28.9601105"/>
+  <node id="8000000022" version="1" lat="41.0047817" lon="28.9602101"/>
+  <node id="8000000023" version="1" lat="41.0048414" lon="28.9602892"/>
+  <node id="8000000024" version="1" lat="41.0049166" lon="28.9603400"/>
+  <node id="8000000025" version="1" lat="41.0297302" lon="28.9896424"/>
+  <node id="8000000026" version="1" lat="41.0297302" lon="28.9903576"/>
+  <node id="8000000027" version="1" lat="41.0302698" lon="28.9903576"/>
+  <node id="8000000028" version="1" lat="41.0302698" lon="28.9896424"/>
+  <node id="8000000029" version="1" lat="41.0299101" lon="28.9898808"/>
+  <node id="8000000030" version="1" lat="41.0299101" lon="28.9901192"/>
+  <node id="8000000031" version="1" lat="41.0300899" lon="28.9901192"/>
+  <node id="8000000032" version="1" lat="41.0300899" lon="28.9898808"/>
+  <way id="9100000001" version="1">
+    <nd ref="8000000001"/>
+    <nd ref="8000000002"/>
+    <nd ref="8000000003"/>
+    <nd ref="8000000004"/>
+    <nd ref="8000000001"/>
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="name" v="Kare Camii (fikstür)"/>
+    <tag k="building" v="mosque"/>
+  </way>
+  <way id="9100000002" version="1">
+    <nd ref="8000000005"/>
+    <nd ref="8000000006"/>
+    <nd ref="8000000007"/>
+    <nd ref="8000000008"/>
+    <nd ref="8000000009"/>
+    <nd ref="8000000010"/>
+    <nd ref="8000000011"/>
+    <nd ref="8000000012"/>
+    <nd ref="8000000013"/>
+    <nd ref="8000000014"/>
+    <nd ref="8000000015"/>
+    <nd ref="8000000016"/>
+    <nd ref="8000000017"/>
+    <nd ref="8000000018"/>
+    <nd ref="8000000019"/>
+    <nd ref="8000000020"/>
+    <nd ref="8000000021"/>
+    <nd ref="8000000022"/>
+    <nd ref="8000000023"/>
+    <nd ref="8000000024"/>
+    <nd ref="8000000005"/>
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="name:tr" v="Yuvarlak Camii (fikstür)"/>
+    <tag k="name" v="Round Mosque"/>
+  </way>
+  <way id="9100000010" version="1">
+    <nd ref="8000000025"/>
+    <nd ref="8000000026"/>
+    <nd ref="8000000027"/>
+    <nd ref="8000000028"/>
+    <nd ref="8000000025"/>
+  </way>
+  <way id="9100000011" version="1">
+    <nd ref="8000000029"/>
+    <nd ref="8000000030"/>
+    <nd ref="8000000031"/>
+    <nd ref="8000000032"/>
+    <nd ref="8000000029"/>
+  </way>
+  <relation id="9200000001" version="1">
+    <member type="way" ref="9100000010" role="outer"/>
+    <member type="way" ref="9100000011" role="inner"/>
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="religion" v="muslim"/>
+    <tag k="type" v="multipolygon"/>
+    <tag k="name" v="Külliye Camii (fikstür)"/>
+  </relation>
+</osm>

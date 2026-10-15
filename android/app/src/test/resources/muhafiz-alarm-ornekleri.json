@@ -1,0 +1,56 @@
+{
+  "aciklama": "Gercek alarm (issue #74) sozlesmesi. JS (core/muhafiz/alarmYuku.ts) 'girdi'den 'yuk'u BIREBIR uretir; Kotlin (cekirdek/MuhafizAlarmKurallari) 'yuk'u cozer ve 'kararlar'/'erteleme'/'kanallar'i dogrular. Birini degistiren ucunu degistirir.",
+  "girdi": {
+    "kimlik": "muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_88",
+    "tetikMs": 1791000000000,
+    "baslik": "Sabah vakti girdi",
+    "metin": "Sabah namazina kalk.",
+    "vakit": "imsak",
+    "tarih": "2026-10-13",
+    "cikisMs": 1791005280000,
+    "erteleSinirMs": 1791005100000,
+    "seviye": 1,
+    "bildirimSesi": "content://media/external/audio/media/12",
+    "sesAdi": "Ezan",
+    "kanalId": "muhafiz_1234abcd",
+    "veri": { "tip": "muhafiz", "seviye": 1, "vakit": "imsak", "tarih": "2026-10-13" }
+  },
+  "yuk": {
+    "surum": 1,
+    "kimlik": "muhafiz_2026-10-13_vakit_imsak_seviye_1_dk_88",
+    "tetikMs": 1791000000000,
+    "baslik": "Sabah vakti girdi",
+    "metin": "Sabah namazina kalk.",
+    "vakit": "imsak",
+    "vakitAdi": "Sabah",
+    "tarih": "2026-10-13",
+    "cikisMs": 1791005280000,
+    "erteleSinirMs": 1791005100000,
+    "seviye": 1,
+    "alarmKanalId": "namaz_alarm_8e1cdbd8",
+    "alarmKanalAdi": "Namaz alarmı · Ezan",
+    "sesUri": "content://media/external/audio/media/12",
+    "kanalId": "muhafiz_1234abcd",
+    "veri": { "tip": "muhafiz", "seviye": 1, "vakit": "imsak", "tarih": "2026-10-13" }
+  },
+  "kanallar": [
+    { "ses": "varsayilan", "beklenen": "namaz_alarm" },
+    { "ses": "", "beklenen": "namaz_alarm" },
+    { "ses": "content://media/external/audio/media/12", "beklenen": "namaz_alarm_8e1cdbd8" }
+  ],
+  "kararlar": [
+    { "ad": "zamaninda", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 9000000, "camiSessizBitisMs": 0, "beklenen": "CAL" },
+    { "ad": "tolerans siniri", "tetikMs": 1000000, "simdiMs": 1600000, "cikisMs": 9000000, "camiSessizBitisMs": 0, "beklenen": "CAL" },
+    { "ad": "gec kaldi", "tetikMs": 1000000, "simdiMs": 1600001, "cikisMs": 9000000, "camiSessizBitisMs": 0, "beklenen": "BILDIRIM" },
+    { "ad": "camide", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 9000000, "camiSessizBitisMs": 2000000, "beklenen": "SESSIZ_BILDIRIM" },
+    { "ad": "cami bitti", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 9000000, "camiSessizBitisMs": 1000500, "beklenen": "CAL" },
+    { "ad": "vakit cikti", "tetikMs": 1000000, "simdiMs": 9000000, "cikisMs": 9000000, "camiSessizBitisMs": 0, "beklenen": "ATLA" },
+    { "ad": "cikis bilinmiyor", "tetikMs": 1000000, "simdiMs": 1000500, "cikisMs": 0, "camiSessizBitisMs": 0, "beklenen": "CAL" }
+  ],
+  "erteleme": [
+    { "ad": "bol vakit", "simdiMs": 0, "sinirMs": 1800000, "beklenen": true },
+    { "ad": "5 dk", "simdiMs": 0, "sinirMs": 300000, "beklenen": true },
+    { "ad": "5 dk alti", "simdiMs": 0, "sinirMs": 299999, "beklenen": false },
+    { "ad": "sinir yok", "simdiMs": 0, "sinirMs": 0, "beklenen": false }
+  ]
+}

@@ -96,6 +96,26 @@ jest.mock('../SeriSayacHazirlayici', () => ({
     seriSayacAyarlariniHazirla: (...args: unknown[]) => mockSeriSayacHazirla(...(args as [])),
 }));
 
+// Gun sonu seri hatirlatmasi (issue #272): tarihli tetikler → 15 dk gorevi tazeler.
+const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../GunSonuHatirlaticiServisi', () => ({
+    gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
+}));
+
+// "Camide kılacağım" (issue #292): tarihli 7/3 günlük pencere → 15 dk görevi tazeler.
+const mockCamiyeGitGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../CamiyeGitHatirlatmaServisi', () => ({
+    CamiyeGitHatirlatmaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockCamiyeGitGuncelle(...a) }),
+    },
+}));
+
+// Cihazlar arası eşitleme (issue #288): görev onu TEMBEL require ile çağırır.
+const mockArkaplandaEsitle = jest.fn((): Promise<{ tur: string }> => Promise.resolve({ tur: 'kapali' }));
+jest.mock('../EsitlemeServisi', () => ({
+    EsitlemeServisi: { arkaplandaEsitle: () => mockArkaplandaEsitle() },
+}));
+
 import {
     ArkaplanGorevServisi,
     BILDIRIM_YENILEME_GOREVI,
@@ -492,5 +512,145 @@ describe('gorev govdesi > seri sayaci tazelemesi', () => {
 
         expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
         expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// GUN SONU SERI HATIRLATMASI (issue #272) — DAILY degil TARIHLI tetik → tazelenmeli
+// =====================================================================
+describe('gorev govdesi > gun sonu hatirlatmasi tazelemesi', () => {
+    it('MUHAFIZ AYARI YOKKEN de tazelenir (erken donusten ONCE cagrilir)', async () => {
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+    });
+
+    it('diskteki konumla cagrilir', async () => {
+        mockDepo.set(
+            KONUM_DEPOLAMA_ANAHTARI,
+            JSON.stringify({ koordinatlar: { lat: 39.9, lng: 41.27 } })
+        );
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockGunSonuGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+    });
+
+    it('gun sonu patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockGunSonuGuncelle.mockRejectedValueOnce(new Error('x'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// "CAMIDE KILACAGIM" (issue #292) — tarihli pencere, muhafizdan BAGIMSIZ
+// =====================================================================
+describe('gorev govdesi > camiye gitme hatirlatmasi tazelemesi', () => {
+    it('MUHAFIZ AYARI YOKKEN de diskteki konumla tazelenir (erken donusten ONCE)', async () => {
+        mockDepo.set(
+            KONUM_DEPOLAMA_ANAHTARI,
+            JSON.stringify({ koordinatlar: { lat: 39.9, lng: 41.27 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledTimes(1);
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledWith({ lat: 39.9, lng: 41.27 });
+    });
+
+    it('patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockCamiyeGitGuncelle.mockRejectedValueOnce(new Error('x'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+});
+
+// =====================================================================
+// CAMIDEYIM / NAMAZ MODU — Rahatsiz Etmeyin ust sureden uzun ACIK KALMAZ
+// =====================================================================
+describe('gorev govdesi > Namaz modu suresi gecen kaynaklar', () => {
+    // Global moduleNameMapper mock'u (__mocks__/expo-cami-geofence.js). `require`
+    // ŞART: `jest.requireMock` burada servisin gördüğünden AYRI bir örnek döndürür.
+    const kopru = require('../../../../modules/expo-cami-geofence/src') as {
+        camiModuluVarMi: jest.Mock;
+        suresiGecenleriTemizle: jest.Mock;
+        izlemeyiTazele: jest.Mock;
+    };
+
+    afterEach(() => {
+        kopru.camiModuluVarMi.mockReturnValue(false);
+    });
+
+    it('MUHAFIZ AYARI ve KONUM YOKKEN de her turda temizlik cagrilir', async () => {
+        kopru.camiModuluVarMi.mockReturnValue(true);
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(kopru.suresiGecenleriTemizle).toHaveBeenCalledTimes(1);
+        // Konum yokken izleme tazelenmez ama temizlik yine de yapildi.
+        expect(kopru.izlemeyiTazele).not.toHaveBeenCalled();
+    });
+});
+
+/**
+ * CİHAZLAR ARASI EŞİTLEME (issue #288) — muhafızdan bağımsızdır, erken dönüşlerden
+ * ÖNCE koşmalı; patlaması planlamayı düşürmemeli.
+ */
+describe('gorev govdesi > cihazlar arasi esitleme', () => {
+    beforeEach(() => {
+        mockArkaplandaEsitle.mockReset();
+        mockArkaplandaEsitle.mockResolvedValue({ tur: 'kapali' });
+    });
+
+    it('MUHAFIZ AYARI YOKKEN de esitleme turu kosar (erken donusten ONCE)', async () => {
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).toBe(BackgroundFetch.BackgroundFetchResult.NoData);
+        expect(mockArkaplandaEsitle).toHaveBeenCalledTimes(1);
+    });
+
+    it('esitleme patlarsa muhafiz planlamasi DUSMEZ', async () => {
+        mockArkaplandaEsitle.mockRejectedValueOnce(new Error('x'));
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        const sonuc = await gorevGeriCagrisiniAl()();
+
+        expect(sonuc).not.toBe(BackgroundFetch.BackgroundFetchResult.Failed);
+        expect(mockYapilandirVePlanla).toHaveBeenCalled();
+    });
+
+    it('indirilen veride muhafiz planlamasi esitlemeden SONRA calisir', async () => {
+        mockArkaplandaEsitle.mockResolvedValueOnce({ tur: 'indirildi' });
+        mockDepo.set(
+            MUHAFIZ_AYARLARI_ANAHTAR,
+            JSON.stringify({ aktif: true, koordinatlar: { lat: 41, lng: 29 } })
+        );
+
+        await gorevGeriCagrisiniAl()();
+
+        expect(mockArkaplandaEsitle.mock.invocationCallOrder[0]).toBeLessThan(
+            mockYapilandirVePlanla.mock.invocationCallOrder[0]
+        );
     });
 });

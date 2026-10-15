@@ -8,4 +8,13 @@
   <style name="Theme.App.SplashScreen" parent="AppTheme">
     <item name="android:windowBackground">@drawable/ic_launcher_background</item>
   </style>
+  <!-- Widget yapılandırma ekranı (issue #275): sistem açık/koyu temasını izleyen pencere. -->
+  <style name="WidgetYapilandirmaTemasi" parent="Theme.AppCompat.DayNight.Dialog">
+    <item name="colorAccent">@color/widget_acik_vurgu</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+  <!-- Kısayol "Kıldım" onayı (issue #276): platform AlertDialog; gece sürümü values-night'ta. -->
+  <style name="KildimOnayTemasi" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+    <item name="android:colorAccent">@color/widget_acik_vurgu</item>
+  </style>
 </resources>

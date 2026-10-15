@@ -8,6 +8,8 @@ import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
 import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
+import type { NafileZincirSatiri as NafileSatiri } from '../../../core/nafile/nafileZinciri';
+import { NafileZincirSatiri } from './NafileZincirSatiri';
 
 interface VakitAkisiProps {
     namazlar: (Namaz & { saat: string })[];
@@ -32,6 +34,11 @@ interface VakitAkisiProps {
     gunTarihiIso: string;
     /** Cuma hatirlatmasi acikken cuma gunu ogle "Cuma" olarak GOSTERILIR (salt etiket). */
     cumaEtiketi?: boolean;
+    /**
+     * Nafile vakitleri (issue #77): her biri kendi farzının ARDINA girer. Dizi
+     * çağıranda DAKİKA anahtarıyla `useMemo`'lanmalı (ana ekran saniyede bir çizilir).
+     */
+    nafileSatirlari?: NafileSatiri[];
 }
 
 const getVakitIkonu = (vakit: string): string => {
@@ -55,7 +62,8 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
     aktifGunMu = false,
     kilitli = false,
     gunTarihiIso,
-    cumaEtiketi = false
+    cumaEtiketi = false,
+    nafileSatirlari
 }) => {
     const renkler = useRenkler();
     // Yerel tarih (UTC degil) — `new Date('YYYY-MM-DD')` kullanma (AGENTS.md).
@@ -116,6 +124,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     const ustBaglantiDolu = index > 0 && baglantiDoluMu(index - 1);
                     const altBaglantiDolu = baglantiDoluMu(index);
                     const sonMu = index === gorunenNamazlar.length - 1;
+                    const ardindakiNafileler = (nafileSatirlari ?? []).filter((n) => n.ardindan === namaz.namazAdi);
 
                     // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
                     // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
@@ -123,104 +132,114 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     const durumEtiketi = tamamlandi ? 'kılındı' : (aktifMi ? 'vakti geldi' : (pasifMi ? 'vakit girmedi' : 'vakti bekleniyor'));
 
                     return (
-                        <TouchableOpacity
-                            key={namaz.namazAdi}
-                            className="flex-row items-stretch"
-                            activeOpacity={0.7}
-                            onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
-                            disabled={pasifMi}
-                            accessibilityRole="button"
-                            accessibilityLabel={`${gorunenAd} vakti${namaz.saat ? `, ${namaz.saat}` : ''}, ${durumEtiketi}`}
-                        >
-                            {/* Giriş saati — sağa hizalı, eşit genişlikli rakam: iki nokta alt alta durur */}
-                            <View className="w-12 justify-center items-end" style={{ opacity }}>
-                                <Text
-                                    className="text-base font-bold"
-                                    style={{ color: renkler.metin, fontVariant: ['tabular-nums'] }}
-                                >
-                                    {namaz.saat}
-                                </Text>
-                            </View>
+                        <React.Fragment key={namaz.namazAdi}>
+                            <TouchableOpacity
+                                className="flex-row items-stretch"
+                                activeOpacity={0.7}
+                                onPress={() => onVakitTikla(namaz.namazAdi, !namaz.tamamlandi)}
+                                disabled={pasifMi}
+                                accessibilityRole="button"
+                                accessibilityLabel={`${gorunenAd} vakti${namaz.saat ? `, ${namaz.saat}` : ''}, ${durumEtiketi}`}
+                            >
+                                {/* Giriş saati — sağa hizalı, eşit genişlikli rakam: iki nokta alt alta durur */}
+                                <View className="w-12 justify-center items-end" style={{ opacity }}>
+                                    <Text
+                                        className="text-base font-bold"
+                                        style={{ color: renkler.metin, fontVariant: ['tabular-nums'] }}
+                                    >
+                                        {namaz.saat}
+                                    </Text>
+                                </View>
 
-                            {/* Halka + bağlantı çizgisi */}
-                            <View className="w-10 mx-2 items-center justify-center">
-                                {index > 0 && (
-                                    <View
-                                        testID={`baglanti-ust-${namaz.namazAdi}`}
-                                        className="absolute top-0 w-0.5"
-                                        style={{ height: '50%', backgroundColor: ustBaglantiDolu ? renkler.durum.basarili : renkler.sinir }} />
-                                )}
-                                {!sonMu && (
-                                    <View
-                                        testID={`baglanti-alt-${namaz.namazAdi}`}
-                                        className="absolute bottom-0 w-0.5"
-                                        style={{ height: '50%', backgroundColor: altBaglantiDolu ? renkler.durum.basarili : renkler.sinir }} />
-                                )}
-                                <View className="w-10 h-10 rounded-full items-center justify-center"
-                                    style={{ backgroundColor: aktifVeAcik ? renkler.birincil + '33' : 'transparent' }}>
-                                    <View className="w-8 h-8 rounded-full items-center justify-center"
-                                        style={tamamlandi
-                                            ? { backgroundColor: renkler.durum.basarili }
-                                            : aktifVeAcik
-                                                ? { backgroundColor: renkler.birincil }
-                                                : { backgroundColor: renkler.kartArkaplan, borderWidth: 2, borderColor: renkler.sinir }}>
-                                        {tamamlandi ? (
-                                            <FontAwesome5 name="check" size={13} color="#fff" />
-                                        ) : aktifVeAcik ? (
-                                            <FontAwesome5 name="hourglass-half" size={13} color="#fff" />
-                                        ) : (
-                                            <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} />
-                                        )}
+                                {/* Halka + bağlantı çizgisi */}
+                                <View className="w-10 mx-2 items-center justify-center">
+                                    {index > 0 && (
+                                        <View
+                                            testID={`baglanti-ust-${namaz.namazAdi}`}
+                                            className="absolute top-0 w-0.5"
+                                            style={{ height: '50%', backgroundColor: ustBaglantiDolu ? renkler.durum.basarili : renkler.sinir }} />
+                                    )}
+                                    {(!sonMu || ardindakiNafileler.length > 0) && (
+                                        <View
+                                            testID={`baglanti-alt-${namaz.namazAdi}`}
+                                            className="absolute bottom-0 w-0.5"
+                                            style={{ height: '50%', backgroundColor: altBaglantiDolu ? renkler.durum.basarili : renkler.sinir }} />
+                                    )}
+                                    <View className="w-10 h-10 rounded-full items-center justify-center"
+                                        style={{ backgroundColor: aktifVeAcik ? renkler.birincil + '33' : 'transparent' }}>
+                                        <View className="w-8 h-8 rounded-full items-center justify-center"
+                                            style={tamamlandi
+                                                ? { backgroundColor: renkler.durum.basarili }
+                                                : aktifVeAcik
+                                                    ? { backgroundColor: renkler.birincil }
+                                                    : { backgroundColor: renkler.kartArkaplan, borderWidth: 2, borderColor: renkler.sinir }}>
+                                            {tamamlandi ? (
+                                                <FontAwesome5 name="check" size={13} color="#fff" />
+                                            ) : aktifVeAcik ? (
+                                                <FontAwesome5 name="hourglass-half" size={13} color="#fff" />
+                                            ) : (
+                                                <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} />
+                                            )}
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
 
-                            {/* Kart */}
-                            <View
-                                className={`flex-1 flex-row items-center gap-3 my-1.5 p-3 rounded-xl ${aktifMi ? 'shadow-md' : 'shadow-sm'}`}
-                                style={{
-                                    backgroundColor: renkler.kartArkaplan,
-                                    opacity,
-                                    borderWidth: 1.5,
-                                    borderColor: aktifVeAcik ? renkler.birincil : 'transparent',
-                                    minHeight: 56,
-                                }}
-                            >
-                                <View className="flex-1">
-                                    <Text
-                                        className={`font-bold ${aktifMi ? 'text-lg' : ''}`}
-                                        style={{
-                                            color: renkler.metin,
-                                            textDecorationLine: tamamlandi ? 'line-through' : 'none',
-                                            textDecorationColor: renkler.metinIkincil
-                                        }}>
-                                        {gorunenAd}
-                                    </Text>
-                                    <Text className="text-xs font-medium"
-                                        style={{
-                                            color: pasifMi ? renkler.metinIkincil : (tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil))
-                                        }}>
-                                        {pasifMi ? ((aktifMi && kilitli) ? 'Vakit Girmedi' : 'Vakti Bekleniyor') : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
-                                    </Text>
-                                </View>
-
-                                {/* Sağ Kısım: Puan Göstergesi ve İkon */}
-                                {!tamamlandi && !pasifMi && (
-                                    <View className="px-1.5 py-0.5 rounded-full"
-                                        style={{ backgroundColor: renkler.birincil + '15' }}>
-                                        <Text className="text-[10px] font-bold" style={{ color: renkler.birincil }}>
-                                            +{PUAN_DEGERLERI.namaz_kilindi}
+                                {/* Kart */}
+                                <View
+                                    className={`flex-1 flex-row items-center gap-3 my-1.5 p-3 rounded-xl ${aktifMi ? 'shadow-md' : 'shadow-sm'}`}
+                                    style={{
+                                        backgroundColor: renkler.kartArkaplan,
+                                        opacity,
+                                        borderWidth: 1.5,
+                                        borderColor: aktifVeAcik ? renkler.birincil : 'transparent',
+                                        minHeight: 56,
+                                    }}
+                                >
+                                    <View className="flex-1">
+                                        <Text
+                                            className={`font-bold ${aktifMi ? 'text-lg' : ''}`}
+                                            style={{
+                                                color: renkler.metin,
+                                                textDecorationLine: tamamlandi ? 'line-through' : 'none',
+                                                textDecorationColor: renkler.metinIkincil
+                                            }}>
+                                            {gorunenAd}
+                                        </Text>
+                                        <Text className="text-xs font-medium"
+                                            style={{
+                                                color: pasifMi ? renkler.metinIkincil : (tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil))
+                                            }}>
+                                            {pasifMi ? ((aktifMi && kilitli) ? 'Vakit Girmedi' : 'Vakti Bekleniyor') : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
                                         </Text>
                                     </View>
-                                )}
-                                <FontAwesome5
-                                    name={vakitIkonu}
-                                    size={aktifMi ? 20 : 16}
-                                    color={aktifMi ? renkler.birincil : renkler.sinir}
-                                    style={{ opacity: tamamlandi ? 0.5 : 1 }}
+
+                                    {/* Sağ Kısım: Puan Göstergesi ve İkon */}
+                                    {!tamamlandi && !pasifMi && (
+                                        <View className="px-1.5 py-0.5 rounded-full"
+                                            style={{ backgroundColor: renkler.birincil + '15' }}>
+                                            <Text className="text-[10px] font-bold" style={{ color: renkler.birincil }}>
+                                                +{PUAN_DEGERLERI.namaz_kilindi}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    <FontAwesome5
+                                        name={vakitIkonu}
+                                        size={aktifMi ? 20 : 16}
+                                        color={aktifMi ? renkler.birincil : renkler.sinir}
+                                        style={{ opacity: tamamlandi ? 0.5 : 1 }}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                            {ardindakiNafileler.map((nafile, nIndex) => (
+                                <NafileZincirSatiri
+                                    key={nafile.tur}
+                                    satir={nafile}
+                                    ustCizgi
+                                    altCizgi={!sonMu || nIndex < ardindakiNafileler.length - 1}
+                                    cizgiDolu={altBaglantiDolu}
                                 />
-                            </View>
-                        </TouchableOpacity>
+                            ))}
+                        </React.Fragment>
                     );
                 })}
             </View>

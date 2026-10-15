@@ -82,3 +82,15 @@ android/.kotlin/
 # ile EAGER_BUNDLE fazinda duser. Ayrica o dizine sonradan eklenen dosyalar
 # `git add -A` ile SESSIZCE atlanir.
 /ios/
+# Wear OS saat uygulaması (bağımsız Gradle kökü) — KÖKE SABİTLİ kalıplar (AGENTS.md `/ios/` dersi)
+/wear/.gradle/
+/wear/build/
+/wear/app/build/
+/wear/.kotlin/
+/wear/local.properties
+# Android TV panosu (bağımsız Gradle kökü, issue #286)
+/tv/.gradle/
+/tv/build/
+/tv/app/build/
+/tv/.kotlin/
+/tv/local.properties

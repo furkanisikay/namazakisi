@@ -316,8 +316,14 @@ jobs:
       # ==========================================
       # APK Build
       # ==========================================
-      - name: 🔧 Expo Prebuild
-        run: npx expo prebuild --platform android --clean
+      # PREBUILD YOK (bilincli): android/ git'te ve native ozellestirmeler
+      # (ana ekran widget'i, Wear OS servisleri, Play guncelleme modulu,
+      # manifestteki tools:node="remove" izin sikilastirmasi) YALNIZ orada yasar.
+      # `expo prebuild --clean` dizini app.json'dan yeniden uretip bunlarin hepsini
+      # siliyordu: GitHub APK'larinda widget yoktu, kaldirilan izinler geri geliyordu.
+      # Ustelik release commit'i build.gradle'i `git add` ettigi icin yeniden
+      # uretilen dosya master'a geri yazilabilirdi. EAS (AAB) zaten git'teki
+      # android/'i kullaniyor; APK artik ayni kaynaktan derlenir.
 
       - name: ⚡ Gradle optimizasyonlari
         run: |
@@ -361,6 +367,9 @@ jobs:
       - name: 🔧 Build.gradle signing config (Release)
         if: inputs.build_type == 'release' && env.use_debug_signing == 'false'
         run: |
+          # Yama yalniz bu derleme icindir: release commit'i build.gradle'i
+          # `git add` ettigi icin yamasiz hali saklanip derlemeden sonra geri konur.
+          cp android/app/build.gradle "$RUNNER_TEMP/build.gradle.imzasiz"
           cat << 'EOF' > update_signing.js
           const fs = require('fs');
           const path = 'android/app/build.gradle';
@@ -408,16 +417,27 @@ jobs:
       # ==========================================
       # Gradle Build
       # ==========================================
+      # :app JVM birim testleri (android/app/src/test — widget/hızlı ayarlar saf
+      # çekirdeği, issue #275/#276) AYNI Gradle çağrısında koşar: derleme
+      # yapılandırması paylaşılır, test düşerse APK üretilmez.
       - name: 🏗️ Build APK
         working-directory: android
         run: |
           chmod +x gradlew
           if [ "${{ inputs.build_type }}" == "release" ]; then
             echo "🚀 Release APK build ediliyor..."
-            ./gradlew assembleRelease --no-daemon
+            ./gradlew :app:testReleaseUnitTest assembleRelease --no-daemon
           else
             echo "🔧 Debug APK build ediliyor..."
-            ./gradlew assembleDebug --no-daemon
+            ./gradlew :app:testDebugUnitTest assembleDebug --no-daemon
+          fi
+
+      - name: ↩️ Imza yamasini geri al (Release)
+        if: always() && inputs.build_type == 'release'
+        run: |
+          if [ -f "$RUNNER_TEMP/build.gradle.imzasiz" ]; then
+            cp "$RUNNER_TEMP/build.gradle.imzasiz" android/app/build.gradle
+            echo "✅ build.gradle imza yamasindan arindirildi (commit'e girmez)"
           fi
 
       - name: 📦 APK'yi yeniden adlandir

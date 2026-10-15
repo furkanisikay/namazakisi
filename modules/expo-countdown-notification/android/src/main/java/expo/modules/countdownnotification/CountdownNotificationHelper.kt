@@ -6,8 +6,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import android.widget.RemoteViews
+import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
 
 object CountdownNotificationHelper {
 
@@ -81,7 +83,8 @@ object CountdownNotificationHelper {
         channelId: String,
         smallIcon: String,
         themeType: String,
-        autoDismissAtTarget: Boolean = false
+        autoDismissAtTarget: Boolean = false,
+        canli: CanliGuncellemeKurallari.EkYuk? = null
     ) {
         createChannel(context)
         registerActiveId(id)
@@ -93,6 +96,38 @@ object CountdownNotificationHelper {
         if (millisRemaining <= 0) {
             cancelNotification(context, id)
             return
+        }
+
+        // Android 16 Live Update (issue #282): yalnız istendiğinde (JS ek yük verdi),
+        // yalnız izinli temada (seri YOK) ve yalnız sistem öne çıkarmaya izin
+        // veriyorsa standart şablonlu İKİZ yola geçilir. Aksi halde aşağıdaki özel
+        // RemoteViews yolu BİREBİR çalışır.
+        if (canli != null && CanliGuncellemeKurallari.oneCikarilabilirMi(themeType) &&
+            CanliGuncelleme.destekleniyorMu(context)
+        ) {
+            val durum = CanliGuncellemeKurallari.Durum(
+                id = id,
+                hedefMs = targetTimeMs,
+                baslik = title,
+                metin = aciklamaMetni(bodyTemplate, themeType),
+                kanalId = channelId,
+                kucukIkon = smallIcon,
+                tema = themeType,
+                hedefteKaybol = autoDismissAtTarget,
+                baslangicMs = canli.baslangicMs,
+                bolumler = canli.bolumler,
+                kildimTarih = canli.kildimTarih,
+                kildimVakit = canli.kildimVakit,
+            )
+            if (CanliGuncelleme.goster(context, durum)) return
+            // Gösterilemediyse (beklenmeyen hata) eski yola düş: kullanıcı sayaçsız kalmasın.
+        }
+
+        // Eski yol: önceki bir öne çıkarılmış gösterimin dakikalık tazelemesi kalmışsa
+        // bu bildirimi standart şablonla EZMESİN (kullanıcı Canlı güncellemeleri kapattı).
+        try {
+            CanliGuncelleme.temizle(context, id)
+        } catch (_: Exception) {
         }
 
         val collapsedLayoutRes = when (themeType) {
@@ -122,14 +157,7 @@ object CountdownNotificationHelper {
             remoteViewsExpanded.setChronometerCountDown(R.id.tv_countdown, true)
         }
 
-        val descriptionText = bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()
-        val descFinal = descriptionText.takeIf { it.isNotEmpty() } ?: when (themeType) {
-            "iftar" -> "Zaman daralıyor!"
-            "sahur" -> "Yemeye içmeye devam, imsak yaklaşıyor!"
-            "seri" -> "Bugünkü namazların eksik, serini kaybetme!"
-            else -> "Acele et, vaktin çıkmasına az kaldı!"
-        }
-        remoteViewsExpanded.setTextViewText(R.id.tv_description, descFinal)
+        remoteViewsExpanded.setTextViewText(R.id.tv_description, aciklamaMetni(bodyTemplate, themeType))
 
         val activeChannelId = if (channelId.isNotEmpty()) channelId else FOREGROUND_CHANNEL_ID
         val builder = NotificationCompat.Builder(context, activeChannelId)
@@ -149,18 +177,11 @@ object CountdownNotificationHelper {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setSilent(true)
+            // Saat kendi geri sayım yüzeyini çiziyor (#281) → telefondaki sayaç
+            // Wear OS'a köprülenmesin (yalnız sayaç bildirimleri).
+            .setLocalOnly(true)
 
-        val stopIntent = Intent(context, CountdownReceiver::class.java).apply {
-            action = CountdownReceiver.ACTION_STOP
-            putExtra(CountdownReceiver.EXTRA_ID, id)
-        }
-        val stopPendingIntent = PendingIntent.getBroadcast(
-            context,
-            id.hashCode(),
-            stopIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Durdur", stopPendingIntent)
+        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Durdur", stopPendingIntent(context, id))
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.notify(notificationId, builder.build())
@@ -168,9 +189,94 @@ object CountdownNotificationHelper {
 
 
 
+    /** Bildirim gövdesi: şablondaki `{time}` / ⏱️ ayıklanır, boşsa temaya göre yedek. */
+    fun aciklamaMetni(bodyTemplate: String, themeType: String): String {
+        val descriptionText = bodyTemplate.replace("{time}", "").replace("⏱️", "").trim()
+        return descriptionText.takeIf { it.isNotEmpty() } ?: when (themeType) {
+            "iftar" -> "Zaman daralıyor!"
+            "sahur" -> "Yemeye içmeye devam, imsak yaklaşıyor!"
+            "seri" -> "Bugünkü namazların eksik, serini kaybetme!"
+            else -> "Acele et, vaktin çıkmasına az kaldı!"
+        }
+    }
+
+    fun smallIconRes(context: Context, iconName: String): Int = getSmallIconRes(context, iconName)
+
+    fun launchPendingIntent(context: Context): PendingIntent = getLaunchPendingIntent(context)
+
+    /** "Durdur" eylemi (iki yol da aynı alıcıyı kullanır). */
+    fun stopPendingIntent(context: Context, id: String): PendingIntent {
+        val stopIntent = Intent(context, CountdownReceiver::class.java).apply {
+            action = CountdownReceiver.ACTION_STOP
+            putExtra(CountdownReceiver.EXTRA_ID, id)
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            id.hashCode(),
+            stopIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
     fun cancelNotification(context: Context, id: String) {
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.cancel(generateNotificationId(id))
         removeActiveId(id)
+        // Öne çıkarılmış ikiz: saklı durum + dakikalık tazeleme alarmı da gitmeli,
+        // yoksa alarm kapatılmış bildirimi geri getirirdi.
+        try {
+            CanliGuncelleme.temizle(context, id)
+        } catch (e: Exception) {
+            Log.w("CountdownHelper", "Canli guncelleme durumu temizlenemedi", e)
+        }
+    }
+
+    /** Hedef anında bildirimi kaldıran alarm (iki yol için ortak). */
+    fun bitisAlarminiKur(context: Context, id: String, targetTimeMs: Long, title: String, bodyTemplate: String, channelId: String, smallIcon: String) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+        val intent = Intent(context, CountdownReceiver::class.java).apply {
+            action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
+            putExtra(CountdownReceiver.EXTRA_ID, id)
+            putExtra(CountdownReceiver.EXTRA_TITLE, title)
+            putExtra(CountdownReceiver.EXTRA_BODY_TEMPLATE, bodyTemplate)
+            putExtra(CountdownReceiver.EXTRA_CHANNEL_ID, channelId)
+            putExtra(CountdownReceiver.EXTRA_SMALL_ICON, smallIcon)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs, pendingIntent)
+                } else {
+                    alarmManager.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs, pendingIntent)
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs, pendingIntent)
+            } else {
+                alarmManager.setExact(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs, pendingIntent)
+            }
+        } catch (e: Exception) {
+            Log.e("CountdownModule", "Alarm ayarlanamadi: ${e.message}")
+        }
+    }
+
+    /** Bitiş alarmını iptal eder (`filterEquals` ekstraları yok sayar; eylem + istek kodu yeter). */
+    fun bitisAlarminiIptalEt(context: Context, id: String) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+        val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
+            action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id.hashCode(),
+            cancelIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(pendingIntent)
     }
 }

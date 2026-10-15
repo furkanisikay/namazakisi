@@ -65,16 +65,12 @@ jest.mock('../../../data/local/LocalNamazServisi', () => ({
   localVerileriSenkronizasyonIcinAl: jest.fn(async () => []),
 }));
 
-// BildirimServisi mock — planla/iptal cagrilarini gercek argumanlariyla yakalamak icin
-const mockBildirimPlanla = jest.fn();
-const mockBildirimIptalEt = jest.fn();
-jest.mock('../../../domain/services/BildirimServisi', () => ({
-  BildirimServisi: {
-    getInstance: jest.fn(() => ({
-      bildirimPlanla: (...a: unknown[]) => mockBildirimPlanla(...a),
-      bildirimIptalEt: (...a: unknown[]) => mockBildirimIptalEt(...a),
-    })),
-  },
+// Gun sonu hatirlatma servisi mock — thunk artik planlamayi ona DEVREDER
+// (tarihli tetikler; zamanlama kurallari `gunSonuPlani.test.ts` +
+// `GunSonuHatirlaticiServisi.test.ts`'te).
+const mockGunSonuGuncelle = jest.fn();
+jest.mock('../../../domain/services/GunSonuHatirlaticiServisi', () => ({
+  gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
 }));
 
 // Imsak kaynagi mock'u — test bazinda degistirilebilir.
@@ -166,8 +162,7 @@ beforeEach(() => {
   mockLocalSeriDurumunuKaydet.mockResolvedValue({ basarili: true });
   mockLocalRozetleriKaydet.mockResolvedValue({ basarili: true });
   mockLocalBonusPuaniKaydet.mockResolvedValue({ basarili: true });
-  mockBildirimPlanla.mockResolvedValue(undefined);
-  mockBildirimIptalEt.mockResolvedValue(undefined);
+  mockGunSonuGuncelle.mockResolvedValue(undefined);
 });
 
 // ==================== seriVerileriniYukle.rejected ====================
@@ -244,7 +239,7 @@ describe('seriVerileriniYukle hata yolu (rejected)', () => {
 // ==================== seriAyarlariniGuncelle + bildirim planlama ====================
 
 describe('seriAyarlariniGuncelle bildirim planlama dallari', () => {
-  test('gunSonuBildirimAktif=false ise bildirim IPTAL edilir, planlanmaz', async () => {
+  test('gunSonuBildirimAktif=false: KAPALI ayar servise iletilir (servis iptal eder)', async () => {
     const store = storeOlustur();
 
     const sonuc = await store.dispatch(
@@ -252,15 +247,17 @@ describe('seriAyarlariniGuncelle bildirim planlama dallari', () => {
     );
 
     expect(sonuc.type).toContain('fulfilled');
-    expect(mockBildirimIptalEt).toHaveBeenCalledWith('gun_sonu_hatirlatici');
-    expect(mockBildirimPlanla).not.toHaveBeenCalled();
+    expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+    expect(mockGunSonuGuncelle.mock.calls[0][1]).toEqual(
+      expect.objectContaining({ gunSonuBildirimAktif: false })
+    );
     // Ayar state'e yansidi
     expect(store.getState().seri.ayarlar.gunSonuBildirimAktif).toBe(false);
     // Disk'e kaydedildi (mevcut + degisiklik birlesimi)
     expect(mockLocalSeriAyarlariniKaydet).toHaveBeenCalled();
   });
 
-  test('SABIT mod: kullanicinin sectigi sabit saat/dakika ile planlanir', async () => {
+  test('SABIT mod: BIRLESIK yeni ayar servise iletilir', async () => {
     const store = storeOlustur();
 
     await store.dispatch(
@@ -274,55 +271,32 @@ describe('seriAyarlariniGuncelle bildirim planlama dallari', () => {
       })
     );
 
-    expect(mockBildirimPlanla).toHaveBeenCalledTimes(1);
-    const cagriArgs = mockBildirimPlanla.mock.calls[0];
-    // (id, baslik, mesaj, saat, dakika)
-    expect(cagriArgs[0]).toBe('gun_sonu_hatirlatici');
-    expect(cagriArgs[3]).toBe(22); // saat
-    expect(cagriArgs[4]).toBe(15); // dakika
-    expect(mockBildirimIptalEt).not.toHaveBeenCalled();
+    expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+    const [, ayarlar] = mockGunSonuGuncelle.mock.calls[0];
+    expect(ayarlar).toEqual({
+      ...VARSAYILAN_SERI_AYARLARI,
+      gunSonuBildirimAktif: true,
+      gunSonuBildirimModu: 'sabit',
+      bildirimSaati: 22,
+      bildirimDakikasi: 15,
+    });
     expect(store.getState().seri.ayarlar.gunSonuBildirimModu).toBe('sabit');
   });
 
-  test('OTOMATIK mod + imsak vakti var: imsaktan X dk once planlanir', async () => {
-    // Imsak 06:00, 30 dk once -> 05:30
+  test('imsak kaynagi uygulama icinde HIDRATE edilen hesaplayicidir (KonumYoneticiServisi DEGIL)', async () => {
+    // Imsak 06:00 → saglayici o degeri dondurmeli (NamazVaktiHesaplayiciServisi mock'u).
     mockImsakVakti = new Date(2026, 5, 25, 6, 0, 0);
     const store = storeOlustur();
 
     await store.dispatch(
       seriAyarlariniGuncelle({
-        ayarlar: {
-          gunSonuBildirimAktif: true,
-          gunSonuBildirimModu: 'otomatik',
-          bildirimImsakOncesiDk: 30,
-        },
+        ayarlar: { gunSonuBildirimAktif: true, gunSonuBildirimModu: 'otomatik' },
       })
     );
 
-    expect(mockBildirimPlanla).toHaveBeenCalledTimes(1);
-    const cagriArgs = mockBildirimPlanla.mock.calls[0];
-    expect(cagriArgs[3]).toBe(5); // saat = 05
-    expect(cagriArgs[4]).toBe(30); // dakika = 30 (06:00 - 30dk)
-  });
-
-  test('OTOMATIK mod + imsak vakti yok (konum yok): varsayilan 04:00 ile planlanir', async () => {
-    mockImsakVakti = null; // konum yok
-    const store = storeOlustur();
-
-    await store.dispatch(
-      seriAyarlariniGuncelle({
-        ayarlar: {
-          gunSonuBildirimAktif: true,
-          gunSonuBildirimModu: 'otomatik',
-          bildirimImsakOncesiDk: 60,
-        },
-      })
-    );
-
-    expect(mockBildirimPlanla).toHaveBeenCalledTimes(1);
-    const cagriArgs = mockBildirimPlanla.mock.calls[0];
-    expect(cagriArgs[3]).toBe(4); // varsayilan saat
-    expect(cagriArgs[4]).toBe(0); // varsayilan dakika
+    const [saglayici] = mockGunSonuGuncelle.mock.calls[0];
+    expect(typeof saglayici).toBe('function');
+    expect(saglayici(new Date(2026, 5, 25))).toEqual(mockImsakVakti);
   });
 
   test('kismi ayar guncellemesi mevcut ayarlarla BIRLESTIRILIR', async () => {

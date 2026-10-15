@@ -1,0 +1,17 @@
+# tohum: ozellik
+# Kaza defteri: borc magaza tohumunda, "Her farzla bir kaza" acik.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- tapOn: "Kaza"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/28-kaza
+- scrollUntilVisible:
+    element:
+      text: "Her farzdan sonra kaza önerin"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/29-kaza-her-farzla

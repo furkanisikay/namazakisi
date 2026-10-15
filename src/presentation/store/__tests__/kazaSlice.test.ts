@@ -16,6 +16,8 @@ import kazaReducer, {
   gunlukHedefiGuncelle,
   gizlemeToggle,
   hataTemizle,
+  kazaOneriAyarlariniYukle,
+  kazaOneriAyarlariniGuncelle,
 } from '../kazaSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
@@ -80,7 +82,7 @@ describe('hataTemizle', () => {
 describe('kazaVerileriniYukle', () => {
   it('pending → yukleniyor true & hata temizlenir', () => {
     const s = kazaReducer(
-      { kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: false, hata: 'eski' },
+      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: false, hata: 'eski' },
       { type: kazaVerileriniYukle.pending.type }
     );
     expect(s.yukleniyor).toBe(true);
@@ -149,7 +151,7 @@ describe('kazaVerileriniYukle', () => {
     // servisi doğrudan mock'layıp {basarili:false} döndürmek gerekir. Burada thunk'ın
     // rejected reducer'ını izole test ediyoruz (gerçek reddedilmiş action ile).
     const s = kazaReducer(
-      { kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
+      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
       {
         type: kazaVerileriniYukle.rejected.type,
         error: { message: 'Kaza verileri yüklenemedi' },
@@ -161,7 +163,7 @@ describe('kazaVerileriniYukle', () => {
 
   it('rejected: error.message yoksa varsayılan mesaj kullanılır', () => {
     const s = kazaReducer(
-      { kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
+      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
       { type: kazaVerileriniYukle.rejected.type, error: {} }
     );
     expect(s.hata).toBe('Kaza verileri yüklenemedi');
@@ -225,6 +227,33 @@ describe('kazaTamamla', () => {
     expect(kalan(d, 'Öğle')).toBe(4);
     // tempo geçmişine bugünün toplamı yazıldı
     expect(st.tempoGecmis[bugun()]).toBe(3);
+  });
+
+  it('REGRESYON: store dışından diske eklenen borç (bildirimden "Kazaya ekle") SİLİNMEZ', async () => {
+    const store = await borcluStoreHazirla();
+    // Bildirim aksiyonu store'u atlayıp diske yazar (#290); bellekteki durum bayat kalır.
+    const disk = diskDurumOku()!;
+    mockStore.set(
+      DURUM_KEY,
+      JSON.stringify({
+        ...disk,
+        namazlar: disk.namazlar.map((n) =>
+          n.namazAdi === 'Akşam' ? { ...n, toplamBorc: 1, kalanBorc: 1 } : n
+        ),
+        toplamKalan: disk.toplamKalan + 1,
+      })
+    );
+    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
+    expect(kalan(diskDurumOku()!, 'Akşam')).toBe(1);
+    expect(kalan(store.getState().kaza.kazaDurumu!, 'Akşam')).toBe(1);
+    expect(kalan(diskDurumOku()!, 'Sabah')).toBe(9);
+  });
+
+  it('disk kaydı BOZUKSA bellekteki durumla devam edilir (bozuk kaydın üstüne boş durum yazılmaz)', async () => {
+    const store = await borcluStoreHazirla();
+    mockStore.set(DURUM_KEY, 'null');
+    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
+    expect(kalan(store.getState().kaza.kazaDurumu!, 'Öğle')).toBe(4);
   });
 
   it('kalandan fazla istense bile 0\'ın altına inmez (clamp); fazlalık tamamlanana sayılmaz', async () => {
@@ -374,5 +403,35 @@ describe('entegrasyon: yaşam döngüsü kalıcılığı', () => {
     expect(kalan(d, 'İkindi')).toBe(4);
     expect(tamamlanan(d, 'İkindi')).toBe(2);
     expect(d.toplamKalan).toBe(4);
+  });
+});
+
+// ==================== kaza önerisi ayarı (issue #294) ====================
+
+describe('kaza önerisi ayarı', () => {
+  const AYAR_KEY = DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI;
+
+  it('kayıt yoksa varsayılan AÇIK yüklenir ve "yüklendi" işaretlenir', async () => {
+    const store = yeniStore();
+    expect(store.getState().kaza.oneriAyarlariYuklendi).toBe(false);
+    await store.dispatch(kazaOneriAyarlariniYukle());
+    expect(store.getState().kaza.oneriAyarlari).toEqual({ farzSonrasiOner: true });
+    expect(store.getState().kaza.oneriAyarlariYuklendi).toBe(true);
+  });
+
+  it('bozuk kayıtta REDDETMEZ, varsayılana düşer', async () => {
+    mockStore.set(AYAR_KEY, '{bozuk');
+    const store = yeniStore();
+    const sonuc = await store.dispatch(kazaOneriAyarlariniYukle());
+    expect(kazaOneriAyarlariniYukle.fulfilled.match(sonuc)).toBe(true);
+    expect(store.getState().kaza.oneriAyarlari).toEqual({ farzSonrasiOner: true });
+  });
+
+  it('kapatma diske yazılır ve yeniden yüklemede korunur', async () => {
+    await yeniStore().dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: false }));
+    expect(JSON.parse(mockStore.get(AYAR_KEY)!)).toEqual({ farzSonrasiOner: false });
+    const store2 = yeniStore();
+    await store2.dispatch(kazaOneriAyarlariniYukle());
+    expect(store2.getState().kaza.oneriAyarlari).toEqual({ farzSonrasiOner: false });
   });
 });

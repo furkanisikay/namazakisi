@@ -2,6 +2,8 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "types": ["jest", "node"]
+  },
+  "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js", "jest.setup.js", "jest.setup.after-env.js", "android", "ios", ".claude"]
 }

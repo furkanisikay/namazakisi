@@ -1,19 +1,18 @@
 package com.furkanisikay.namazakisi
 
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.furkanisikay.namazakisi.widget.NamazGenisBoyutWidget
-import com.furkanisikay.namazakisi.widget.NamazWidget
+import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
+import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 
 /**
- * Widget veri köprüsü — RN tarafından hesaplanan namaz vakitlerini
- * SharedPreferences'a yazar ve tüm widget örneklerini güncellemeye zorlar.
+ * Widget veri köprüsü — JS'in hesapladığı vakitleri ve kılınmışlığı
+ * SharedPreferences'a yazar, widget'ları + hızlı ayarlar kutusunu HEMEN tazeler
+ * (issue #275: uygulamadaki işaretleme ≤ 1 sn'de widget'a yansır).
+ * JS tarafı: `src/domain/services/WidgetServisi.ts`.
  */
 class WidgetVeriModulu(reactContext: ReactApplicationContext) :
     ReactContextBaseJavaModule(reactContext) {
@@ -21,50 +20,34 @@ class WidgetVeriModulu(reactContext: ReactApplicationContext) :
     companion object {
         private const val TAG = "WidgetVeriModulu"
         const val MODULE_NAME = "WidgetVeri"
-        const val PREFS_NAME = "namazakisi_widget"
-        const val KEY_DATA = "widget_data"
+        const val PREFS_NAME = WidgetVeriDeposu.PREFS_NAME
+        const val KEY_DATA = WidgetVeriDeposu.KEY_DATA
     }
 
     override fun getName(): String = MODULE_NAME
 
-    /**
-     * Namaz vakitlerini (JSON string) SharedPreferences'a kaydeder
-     * ve mevcut tüm widget örneklerini (küçük + büyük) günceller.
-     */
+    /** Vakit çizelgesi (dün + 8 gün, `src/core/widget/widgetYuku.ts`). */
     @ReactMethod
     fun vakitlerKaydet(dataJson: String) {
+        yazVeTazele(WidgetVeriDeposu.KEY_DATA, dataJson)
+    }
+
+    /** tarih → kılınan widget kodları. */
+    @ReactMethod
+    fun kilinanlarKaydet(json: String) {
+        yazVeTazele(WidgetVeriDeposu.KEY_KILINAN, json)
+    }
+
+    private fun yazVeTazele(anahtar: String, deger: String) {
         try {
             val context = reactApplicationContext
-            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            context.getSharedPreferences(WidgetVeriDeposu.PREFS_NAME, Context.MODE_PRIVATE)
                 .edit()
-                .putString(KEY_DATA, dataJson)
-                .apply()
-
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-
-            // Küçük widget (1x1)
-            val kucukIds = appWidgetManager.getAppWidgetIds(
-                ComponentName(context, NamazWidget::class.java)
-            )
-            if (kucukIds.isNotEmpty()) {
-                context.sendBroadcast(Intent(context, NamazWidget::class.java).apply {
-                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, kucukIds)
-                })
-            }
-
-            // Büyük widget (4x2)
-            val buyukIds = appWidgetManager.getAppWidgetIds(
-                ComponentName(context, NamazGenisBoyutWidget::class.java)
-            )
-            if (buyukIds.isNotEmpty()) {
-                context.sendBroadcast(Intent(context, NamazGenisBoyutWidget::class.java).apply {
-                    action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, buyukIds)
-                })
-            }
+                .putString(anahtar, deger)
+                .commit()
+            WidgetGuncelleyici.tumunuGuncelle(context)
         } catch (e: Throwable) {
-            Log.e(TAG, "Vakit verisi kaydedilemedi veya widget güncellenemedi", e)
+            Log.e(TAG, "Widget verisi kaydedilemedi veya widget guncellenemedi", e)
         }
     }
 }

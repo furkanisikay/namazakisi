@@ -1,12 +1,18 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { NamazAdi, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NamazAdi, BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from './ArkaplanMuhafizServisi';
 import type { VakitAdi } from '../../core/types';
 import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
+import { eylemSuresiDk } from '../../core/muhafiz/erteleme';
+import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
+import type { KazaNamazAdi } from '../../core/types/KazaTipleri';
+import { localKazayaBorcEkle } from '../../data/local/LocalKazaServisi';
+import { muhafizErtelemesiniIsle } from './MuhafizErtelemeServisi';
 
 /**
  * Vakit adi donusturme - ArkaplanMuhafizServisi'nin kullandigi format ile NamazAdi enum arasinda
@@ -97,19 +103,55 @@ try {
  */
 let responseListenerSubscription: Notifications.EventSubscription | null = null;
 
+interface MuhafizYanitVerisi {
+  tip?: string;
+  vakit?: string;
+  tarih?: string;
+  seviye?: number;
+  /** Gün sonu muhasebesi (issue #290): vakti çıkmış, kazaya eklenebilecek eksikler. */
+  kazayaEklenebilir?: unknown;
+  /** Nafile bildirimi (issue #273): 'kusluk' | 'evvabin' | 'teheccud'. */
+  tur?: string;
+  [anahtar: string]: unknown;
+}
+
+/** "Kıldım" düğmesi taşıyan bildirim tipleri (muhafız + yatış/muhasebe, issue #290). */
+const KILDIM_TIPLERI = new Set(['muhafiz', 'yatis', 'muhasebe']);
+
+const VAKITTEN_KAZAYA: Record<string, KazaNamazAdi> = {
+  imsak: 'Sabah',
+  ogle: 'Öğle',
+  ikindi: 'İkindi',
+  aksam: 'Akşam',
+  yatsi: 'Yatsı',
+};
+
+const NAFILE_TURLERI = ['kusluk', 'evvabin', 'teheccud'] as const;
+type NafileYanitTuru = (typeof NAFILE_TURLERI)[number];
+const nafileTuruMu = (t: unknown): t is NafileYanitTuru =>
+  typeof t === 'string' && (NAFILE_TURLERI as readonly string[]).includes(t);
+
 /**
  * Kildim aksiyonu callback tipi
  * Domain katmanindan presentation katmanina olay bildirimi icin kullanilir
  */
 type KildimCallback = (tarih: string, namazAdi: NamazAdi) => void;
+/** Bildirimden "Kazaya ekle" sonrası (UI kaza durumunu tazelesin). */
+type KazaEklendiCallback = () => void;
 
 export class BildirimServisi {
   private static instance: BildirimServisi;
   private kategorilerOlusturuldu: boolean = false;
   private islenmisYanitId: string | null = null; // Cold-start tekrar isleme korumasi
   private onKildimCallback: KildimCallback | null = null;
+  private onKazaEklendiCallback: KazaEklendiCallback | null = null;
 
   private constructor() { }
+
+  /** "Kazaya ekle" sonrası presentation katmanını bilgilendir (issue #290). */
+  public setOnKazaEklendiCallback(callback: KazaEklendiCallback | null): void {
+    this.onKazaEklendiCallback = callback;
+  }
 
   /**
    * Kildim aksiyonu callback'ini ayarla
@@ -168,17 +210,7 @@ export class BildirimServisi {
     }
 
     try {
-      // Muhafiz kategorisi - "Kildim" aksiyonu ile
-      await Notifications.setNotificationCategoryAsync(BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ, [
-        {
-          identifier: BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM,
-          buttonTitle: '✅ Kıldım',
-          options: {
-            opensAppToForeground: true, // Uygulama oldurulmus olsa bile aksiyonun calismasi icin true
-          },
-        },
-      ]);
-
+      await bildirimKategorileriniKaydet();
       this.kategorilerOlusturuldu = true;
       Logger.info('BildirimServisi', 'Bildirim kategorileri olusturuldu');
     } catch (error) {
@@ -195,27 +227,132 @@ export class BildirimServisi {
   ): Promise<void> {
     const { actionIdentifier, notification } = response;
 
-    // Ayni yaniti tekrar isleme (cold-start + listener cift tetikleme korumasi)
-    const yanitId = notification.request.identifier + '_' + actionIdentifier;
-    if (this.islenmisYanitId === yanitId) {
+    await this.yanitiIsle(
+      notification.request.identifier,
+      actionIdentifier,
+      notification.request.content.data as MuhafizYanitVerisi,
+      {
+        baslik: notification.request.content.title,
+        govde: notification.request.content.body,
+        tarihMs: notification.date,
+      }
+    );
+  }
+
+  /**
+   * Android arka plan görevi (uygulama kapalı/arka plandayken basılan aksiyon).
+   * Yük expo-notifications'ın native serileştirmesidir; şekli sürüme göre küçük
+   * farklar gösterebildiği için savunmalı okunur: veri nesne ya da `dataString`
+   * (JSON) olabilir. Tanınmayan yük sessizce yok sayılır.
+   */
+  public async arkaplanYanitiniIsle(yuk: unknown): Promise<void> {
+    const y = (yuk ?? {}) as {
+      actionIdentifier?: string;
+      notification?: {
+        date?: number;
+        request?: {
+          identifier?: string;
+          content?: { data?: unknown; dataString?: string; title?: string | null; body?: string | null };
+        };
+      };
+    };
+    const aksiyon = y.actionIdentifier;
+    const istek = y.notification?.request;
+    if (!aksiyon || !istek?.identifier) return;
+    let veri: unknown = istek.content?.data;
+    if ((!veri || typeof veri !== 'object') && typeof istek.content?.dataString === 'string') {
+      try {
+        veri = JSON.parse(istek.content.dataString);
+      } catch {
+        veri = null;
+      }
+    }
+    if (!veri || typeof veri !== 'object') return;
+    await this.yanitiIsle(istek.identifier, aksiyon, veri as MuhafizYanitVerisi, {
+      baslik: istek.content?.title,
+      govde: istek.content?.body,
+      tarihMs: y.notification?.date,
+    });
+  }
+
+  private async yanitiIsle(
+    bildirimId: string,
+    actionIdentifier: string,
+    data: MuhafizYanitVerisi,
+    icerik: { baslik?: string | null; govde?: string | null; tarihMs?: number } = {}
+  ): Promise<void> {
+    // Ayni yaniti tekrar isleme: listener + cold-start + (Android) arka plan gorevi
+    // ayni yaniti uc kez teslim edebilir. Bellek-ici koruma headless surecte
+    // sifirlandigi icin son islenen kimlik DISKTE de tutulur.
+    // Ertelenen kopya vakit basina SABIT kimlik tasir (yeniden ertelenebilir) →
+    // ertelemede kimlige bildirimin gosterilme ani da katilir; yoksa ikinci
+    // erteleme "zaten islendi" sanilirdi.
+    const ertelemeMi = eylemSuresiDk(actionIdentifier) !== null;
+    const yanitId =
+      bildirimId + '_' + actionIdentifier + (ertelemeMi && icerik.tarihMs ? '_' + icerik.tarihMs : '');
+    if (this.islenmisYanitId === yanitId || (await this.diskteIslenmisMi(yanitId))) {
       Logger.info('BildirimServisi', 'Yanit zaten islendi, atlaniyor:', yanitId);
       return;
     }
-
-    const data = notification.request.content.data as {
-      tip?: string;
-      vakit?: string;
-      tarih?: string;
-      seviye?: number;
-    };
 
     Logger.info('BildirimServisi', 'Bildirim yaniti alindi:', {
       actionIdentifier,
       data,
     });
 
-    // Muhafiz bildirimi mi?
-    if (data?.tip !== 'muhafiz') {
+    // Nafile bildirimi (issue #273): "Kıldım" yalnız o günün o nafilesinin kalan
+    // hatırlatmalarını iptal eder; namaz kaydı/puan/seri YAZILMAZ. Muhafız yoluna
+    // (`kildimAksiyonunuIsle`) ASLA düşmemeli — o yol farz vakti kaydeder.
+    // Android'de eylem native işlenir (`NafileKildimIsleyici` → nafile kuyruğu →
+    // `KildimKuyruguServisi`); buraya yalnız iOS'ta ya da native yol kuyruğa
+    // yazamadığında gelinir.
+    if (data?.tip === 'nafile') {
+      if (actionIdentifier !== BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) return;
+      if (!nafileTuruMu(data.tur) || typeof data.tarih !== 'string') return;
+      try {
+        const { NafileHatirlatmaServisi } =
+          require('./NafileHatirlatmaServisi') as typeof import('./NafileHatirlatmaServisi');
+        await NafileHatirlatmaServisi.getInstance().kildimIsle(data.tarih, data.tur);
+        this.islenmisYanitId = yanitId;
+        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI, yanitId).catch(() => undefined);
+      } catch (error) {
+        Logger.error('BildirimServisi', 'Nafile Kildim isleme basarisiz:', error);
+      }
+      return;
+    }
+
+    const tip = typeof data?.tip === 'string' ? data.tip : undefined;
+    if (!tip || !KILDIM_TIPLERI.has(tip)) {
+      return;
+    }
+
+    const islendi = async () => {
+      this.islenmisYanitId = yanitId;
+      await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI, yanitId).catch(() => undefined);
+    };
+
+    // "Ertele" (issue #289) — Android'de native islenir; buraya yalniz iOS'ta ya
+    // da native yol isleyemediginde gelinir.
+    if (ertelemeMi && tip === 'muhafiz') {
+      await muhafizErtelemesiniIsle({
+        kimlik: bildirimId,
+        eylem: actionIdentifier,
+        baslik: icerik.baslik,
+        govde: icerik.govde,
+        data: data as Record<string, unknown>,
+      });
+      await islendi();
+      return;
+    }
+
+    // "Kazaya ekle" (issue #290, gun sonu muhasebesi)
+    if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE && tip === 'muhasebe') {
+      try {
+        await this.kazayaEkleAksiyonunuIsle(bildirimId, data.kazayaEklenebilir);
+        await islendi();
+      } catch (error) {
+        Logger.error('BildirimServisi', 'Kazaya ekleme basarisiz, tekrar denenebilir:', error);
+      }
       return;
     }
 
@@ -224,11 +361,51 @@ export class BildirimServisi {
       try {
         await this.kildimAksiyonunuIsle(data.vakit, data.tarih);
         // Basariyla islendikten sonra tekrar islemeyi engelle
-        this.islenmisYanitId = yanitId;
+        await islendi();
       } catch (error) {
         // Basarisiz oldu - yanitId set edilmez, boylece retry mumkun
         Logger.error('BildirimServisi', 'Kildim isleme basarisiz, tekrar denenebilir:', error);
       }
+    }
+  }
+
+  /**
+   * Gun sonu muhasebesindeki "Kazaya ekle" (issue #290): vakti cikmis eksik
+   * vakit(ler) kaza defterine birer borc olarak eklenir. Kaza ekraninin ekleme
+   * yolu (`borcEklenmisDurum`) kullanilir; store'suz calisir (headless).
+   * Bozuk kaza kaydinin USTUNE YAZILMAZ (`localKazayaBorcEkle` reddeder).
+   */
+  private async kazayaEkleAksiyonunuIsle(bildirimId: string, ham: unknown): Promise<void> {
+    const vakitler = Array.isArray(ham) ? ham.filter((v): v is string => typeof v === 'string') : [];
+    const eklenecekler = vakitler
+      .map((v) => VAKITTEN_KAZAYA[v])
+      .filter((ad): ad is KazaNamazAdi => !!ad)
+      .map((namazAdi) => ({ namazAdi, sayi: 1 }));
+    if (eklenecekler.length === 0) return;
+
+    const sonuc = await localKazayaBorcEkle(eklenecekler);
+    if (!sonuc.basarili) throw new Error(sonuc.hata ?? 'Kaza borcu eklenemedi');
+    Logger.info('BildirimServisi', `Kazaya eklendi: ${vakitler.join(', ')}`);
+
+    try {
+      await Notifications.dismissNotificationAsync(bildirimId);
+    } catch {
+      // Bildirim zaten kalkmış olabilir.
+    }
+    if (this.onKazaEklendiCallback) {
+      try {
+        this.onKazaEklendiCallback();
+      } catch (callbackError) {
+        Logger.warn('BildirimServisi', 'Kaza callback hatasi:', callbackError);
+      }
+    }
+  }
+
+  private async diskteIslenmisMi(yanitId: string): Promise<boolean> {
+    try {
+      return (await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.ISLENMIS_BILDIRIM_YANITI)) === yanitId;
+    } catch {
+      return false;
     }
   }
 
@@ -250,6 +427,28 @@ export class BildirimServisi {
     }
     const tarih = kalan.slice(0, ayrac);
     const vakit = kalan.slice(ayrac + 1);
+    await this.kildimAksiyonunuIsle(vakit, tarih);
+  }
+
+  /**
+   * Wear OS saatinden gelen "Kildim" (issue #269).
+   *
+   * Bildirimdeki "Kildim" dugmesiyle BIREBIR ayni govdeyi calistirir (kayit +
+   * o vaktin muhafiz/sayac bildirimlerinin iptali) — iki yol ayrisamaz. Headless
+   * baglamda (Redux yok) guvenlidir: `onKildimCallback` yoksa atlanir. Hata
+   * YUKARI iletilir; kuyruk ogeyi birakip deneme sayacini artirir.
+   */
+  public async saattenKildimIsle(vakit: string, tarih: string): Promise<void> {
+    await this.kildimAksiyonunuIsle(vakit, tarih);
+  }
+
+  /**
+   * Ortak "Kıldım" kuyruğundan gelen istek (issue #275/#276): Wear saati, ana ekran
+   * widget'ı, hızlı ayarlar kutusu, kısayol, `namazakisi://kildim` derin bağlantısı.
+   * Bildirimdeki "Kıldım" ile BİREBİR aynı gövde; hata YUKARI iletilir (kuyruk
+   * öğeyi bırakıp deneme sayacını artırır).
+   */
+  public async kuyruktanKildimIsle(vakit: string, tarih: string): Promise<void> {
     await this.kildimAksiyonunuIsle(vakit, tarih);
   }
 

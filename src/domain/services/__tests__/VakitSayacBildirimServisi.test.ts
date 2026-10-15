@@ -4,6 +4,7 @@ import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn().mockResolvedValue('channel-id'),
     deleteChannel: jest.fn().mockResolvedValue(undefined),
     displayNotification: jest.fn().mockResolvedValue('notif-id'),
@@ -14,6 +15,8 @@ jest.mock('@notifee/react-native', () => ({
     createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
   },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   AndroidStyle: { BIGTEXT: 0 },
 }));
@@ -184,6 +187,9 @@ describe('VakitSayacBildirimServisi', () => {
     // Sayac, cikis - esikDk*60000 (14:30) tetiklenmeli; simdi+5sn (10:00:05) alt siniri burada baskin degil
     expect(ogleSayac![1].timestamp).toBe(cikis - 30 * 60 * 1000);
     expect(ogleSayac![1].type).toBe(TriggerType.TIMESTAMP);
+    // Samsung uyku modunda gecikmesin: WorkManager değil AlarmManager (tam alarm).
+    expect(ogleSayac![1].alarmManager).toEqual({ type: 3 });
+    expect(ogleBitis![1].alarmManager).toEqual({ type: 3 });
     // Sayac, temizlemeden ONCE tetiklenmeli (mantiksal sira: once say, sonra temizle)
     expect(ogleSayac![1].timestamp).toBeLessThan(ogleBitis![1].timestamp);
   });
@@ -337,6 +343,17 @@ describe('VakitSayacBildirimServisi', () => {
     expect(ogleCountdown![0].targetTimeMs).toBe(mockPrayerTimes.asr.getTime());
     expect(ogleCountdown![0].channelId).toBe(BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC);
 
+    // Live Update (#282): ilerleme vaktin GIRISINDEN (12:00) cikisina (15:00); sayacin
+    // basladigi esikten (14:30) sonrasi vurgulu; "Kildim" o vaktin kaydina gider.
+    expect(ogleCountdown![0].canli).toEqual({
+      baslangicMs: mockPrayerTimes.dhuhr.getTime(),
+      bolumler: [
+        { uzunlukDk: 150, vurgulu: false },
+        { uzunlukDk: 30, vurgulu: true },
+      ],
+      kildim: { tarih: '2026-02-19', vakit: 'ogle' },
+    });
+
     // Hemen baslayan sayac icin trigger (placeholder) DEGIL countdown kullanilmali
     const ogleTrigger = (notifee.createTriggerNotification as jest.Mock).mock.calls
       .find((c: any[]) => c[0].id === ogleId);
@@ -386,6 +403,35 @@ describe('VakitSayacBildirimServisi', () => {
       .map((c: any[]) => c[0].id as string);
     const ogleId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`;
     expect(createIds).toContain(ogleId);
+  });
+
+  // OZEL GUN (issue #272): aralikta sayac kurulmaz; aralik bitince ayni girdiyle
+  // sayac kendiliginden geri gelir.
+  it('ozel gun aralikta: HICBIR sayac/countdown kurulmamali; aralik bitince geri gelmeli', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T10:00:00'));
+    const ozelGun = (bas: string, bit: string) => (anahtar: string) =>
+      Promise.resolve(
+        anahtar === 'ozel_gun_ayarlari'
+          ? JSON.stringify({ ozelGunModuAktif: true, aktifOzelGun: { baslangicTarihi: bas, bitisTarihi: bit }, gecmisKayitlar: [] })
+          : null
+      );
+    const girdi = {
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+      muhafizAktif: false,
+    };
+
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(ozelGun('2026-02-17', '2026-02-19'));
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla(girdi);
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+
+    (AsyncStorage.getItem as jest.Mock).mockImplementation(ozelGun('2026-02-17', '2026-02-18'));
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla(girdi);
+    const createIds = (notifee.createTriggerNotification as jest.Mock).mock.calls
+      .map((c: any[]) => c[0].id as string);
+    expect(createIds).toContain(`${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}2026-02-19_ogle`);
   });
 
   it('muhafiz aktif ama O VAKIT tumden sessiz: sayac bastirilmamali (#90 boslugu)', async () => {
@@ -642,5 +688,72 @@ describe('VakitSayacBildirimServisi', () => {
     const servis = VakitSayacBildirimServisi.getInstance();
 
     await expect(servis.tumSayacBildirimleriniTemizle()).resolves.toBeUndefined();
+  });
+});
+
+describe('VakitSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikinci aşama)', () => {
+  const { CanliSayacPlanlayici } = require('../CanliSayacPlanlayici') as typeof import('../CanliSayacPlanlayici');
+  let karar: jest.SpyInstance;
+  let bildir: jest.SpyInstance;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (VakitSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    mockKilinanVakitleriAl.mockResolvedValue([]);
+    karar = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'ogeKarari');
+    bildir = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'kaynakBildir').mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    karar.mockRestore();
+    bildir.mockRestore();
+    global.Date = OriginalDate;
+  });
+
+  it('devralınan vakitte sayaç başlangıcı (A) kurulmaz, çıkış temizliği (B) kalır; pencere bildirilir', async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00')); // öğle sayacı (30 dk) zaten başladı
+    karar.mockImplementation(async (oge: string) => ({ devralir: oge === 'ogle', oneCikar: true }));
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+
+    const ogleId = expect.stringMatching(/_ogle$/);
+    expect(mockStartCountdown).not.toHaveBeenCalledWith(expect.objectContaining({ id: ogleId }));
+    const tetikIdleri = (notifee.createTriggerNotification as jest.Mock).mock.calls.map((c) => c[0].id as string);
+    expect(tetikIdleri.some((id) => id.endsWith('_ogle_bitis'))).toBe(true);
+    const adaylar = bildir.mock.calls[0][1] as { oge: string; baslangicMs: number; hedefMs: number }[];
+    const ogle = adaylar.find((a) => a.oge === 'ogle');
+    expect(ogle).toMatchObject({
+      baslangicMs: mockPrayerTimes.asr.getTime() - 30 * 60_000,
+      hedefMs: mockPrayerTimes.asr.getTime(),
+    });
+  });
+
+  it("Now Bar'da vakit kapalıysa eski yol öne çıkarma istemez", async () => {
+    saatiDondur(new OriginalDate('2026-02-19T14:45:00'));
+    karar.mockResolvedValue({ devralir: false, oneCikar: false });
+
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+
+    expect(mockStartCountdown).toHaveBeenCalledWith(expect.objectContaining({ canli: undefined }));
+  });
+
+  it('sayaç kapalıyken planlayıcıya "aday yok" bildirilir', async () => {
+    await VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: false,
+      koordinatlar: { lat: 41, lng: 29 },
+      baslangicEsikleri: TUM_VAKITLER_30,
+    });
+    expect(bildir).toHaveBeenCalledWith('vakitSayac', []);
   });
 });

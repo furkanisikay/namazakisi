@@ -13,7 +13,7 @@
  *    calisma aninda TTS mumkun degil. Faz 2: anons metni PLANLAMA SIRASINDA
  *    cihazda (cevrimdisi `AVSpeechSynthesizer`) ses dosyasina cevrilir ve
  *    bildirimin SESI olur — yani yine "yan kanal" degil, bildirimin kendisi.
- *    Iptal fonksiyonlari bu yuzden no-op'tur.
+ *    Yan kanal iptalleri bu yuzden yalniz GERCEK ALARMLARA (madde 4) dokunur.
  *
  *    BAGLAM KURALI — SENTEZ YALNIZ ON PLANDA: arka plan gorevinin (background
  *    fetch) sure butcesi ~30 sn'dir ve sistem asimda uygulamayi oldurur;
@@ -31,6 +31,35 @@
  *    atar. Butce `core/muhafiz/ios/bildirimButcesi.ts`'te; bu teslimci her
  *    planlamada kalan slotu olcer ve tukendiginde KESILENI LOGLAR (sessiz kayip
  *    yerine gorunur kayip).
+ *
+ *    BUTCE ARTIGI (yarinin imsagi, `UyariTeslimi.butceArtigi`): bugunun planindan
+ *    SONRA gelir (cagrilar kronolojik) ve yalniz `yedekSigarMi` iken kurulur —
+ *    `IOS_YEDEK_REZERVI` kadar slot daima bos kalir. Sigmayan artik KESILEN
+ *    SAYILMAZ (kayip degil, yedek). Slot olculemediyse (`kalanSlot === null`)
+ *    artik HIC kurulmaz: bugunun planini sistemin kesmesine biraktigimiz o turda
+ *    kor bir yedek, bugunun uyarilarini sistemin kronolojik kesmesine itebilirdi.
+ *    Gercek alarm (AlarmKit) 64'e sayilmadigi icin artikta da daima kurulur.
+ *
+ * 4. GERCEK ALARM — AlarmKit (iOS 26, issue #74). Alarm kanalli adimin ILK tetigi,
+ *    AlarmKit izinliyken bildirim yerine SISTEM ALARMI olarak kurulur (sessiz anahtari
+ *    ve Odak'i deler; 64 bekleyen bildirim butcesine SAYILMAZ — ayri sistem). Kimlik
+ *    bildirimle AYNIDIR (`muhafizBildirimIdOlustur`; UUID kimlikten deterministik), iptal
+ *    zinciri bu yuzden simetrik: `hazirla` onceki turun PLAN alarmlarini (muhafiz
+ *    kapaliysa ertelenmisleri de) BEKLEYEREK iptal eder, uygulama ici "Kildim"
+ *    (`vakitYanKanallariniIptalEt`) onekle, yeniden planlama (`tumYanKanallariIptalEt`)
+ *    plan kimlikleriyle. Butun alarm koprusu cagrilari TEK bir zincirden gecer
+ *    (`alarmIsi`): atesle-unut bir iptal ayni turda kurulan alarmi silemesin (Android
+ *    `alarmlariHazirla` dersi). Kurulamazsa (izin yok, iOS < 26, Odak filtresi sessiz)
+ *    ayni tetik bugunku yoldan (zamana duyarli bildirim + uzun ses) teslim edilir.
+ *    O an CALAN alarm PLANLAMA iptallerinden (hazirla, yeniden planlama, erteleme
+ *    araligi, tekil iptal) HARIC tutulur — Android kurali "planlama turu calan alarma
+ *    dokunmaz"; yalniz "Kildim" (`vakitYanKanallariniIptalEt`) calani da susturur
+ *    (`alarmKitIptalSecimi` + native `iptalEt(_, calaniDurdur)`).
+ *
+ * 5. ODAK FILTRESI (issue #279). Kullanici "Namaz" Odagina uygulamanin filtresini
+ *    ekleyip "Hatirlatmalari sessiz ver"i acarsa, filtre acikken (en fazla 3 sa)
+ *    tetiklenecek uyarilar `passive` kurulur: ekrani yakmaz, ses cikarmaz, Odagi
+ *    delmez. Durum `hazirla`'da BIR KEZ okunur (`core/muhafiz/ios/odakFiltresi.ts`).
  *
  * Motor ve plan uretimi DEGISMEZ — bu dosya yalnizca "nasil duyulur"u bilir.
  *
@@ -56,8 +85,16 @@ import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { iosYetenekleri } from '../../core/muhafiz/ios/platformYetenekleri';
 import { iosTesliminiCoz } from '../../core/muhafiz/ios/teslimPlani';
+import { alarmKitIptalSecimi, alarmKitYukuOlustur } from '../../core/muhafiz/ios/alarmKit';
+import {
+    alarmKitDurumu,
+    alarmKitIptalEt,
+    alarmKitKayitlari,
+    alarmKitPlanla,
+} from '../../../modules/expo-muhafiz-alarmkit/src';
 import {
     kullanilabilirSlotHesapla,
+    yedekSigarMi,
     IOS_BEKLEYEN_TAVANI,
 } from '../../core/muhafiz/ios/bildirimButcesi';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
@@ -68,6 +105,7 @@ import {
 } from '../../core/muhafiz/ios/anonsKlibi';
 import { gunAnahtari, klipKaydiniGuncelle } from '../../core/muhafiz/ios/klipKullanimi';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
+import { ertelemeTeslimBilgisi, muhafizPlanKimligiMi } from '../../core/muhafiz/erteleme';
 import { Depolama } from '../../data/local/Depolama';
 import {
     klipSentezle,
@@ -75,6 +113,12 @@ import {
     kullanilmayanKlipleriSil,
     trSesTanimlayici,
 } from '../../../modules/expo-muhafiz-anons/src';
+import { siriOdakDurumuAl } from '../../../modules/expo-siri-kisayollari/src';
+import {
+    odakDurumunuCoz,
+    odakSessizlestirirMi,
+    type OdakFiltresiDurumu,
+} from '../../core/muhafiz/ios/odakFiltresi';
 
 /**
  * Uygulama su an ON PLANDA mi? (sentez izni)
@@ -91,8 +135,84 @@ function onPlandaMi(): boolean {
     }
 }
 
+/**
+ * BU SÜREÇTE henüz `tamamla`'ya ulaşmamış turların klip adları (issue #273).
+ *
+ * İki teslimci (muhafız + nafile) aynı `Library/Sounds` dizinini ve aynı yaş
+ * kaydını paylaşır. Nafile turu bir klip SENTEZLEYİP henüz kaydetmemişken
+ * muhafızın `tamamla`'sı koşarsa o klip kayıtta yoktur ve SİLİNİRDİ — bildirim
+ * de olmayan bir ses dosyasına bağlı kalırdı. Uçuştaki adlar GC'den korunur.
+ */
+const ucustakiKlipler = new Map<string, number>();
+
+/** Klip çöp toplaması tek sıra: iki `tamamla` aynı kaydı aynı anda yazmasın. */
+let klipGcZinciri: Promise<void> = Promise.resolve();
+
+/** Testler için: süreç düzeyi uçuştaki klip kaydını sıfırlar (turunu bitirmeyen örnekler sızmasın). */
+export function ucustakiKlipleriSifirla(): void {
+    ucustakiKlipler.clear();
+}
+
+export interface IosTeslimciSecenekleri {
+    /**
+     * Bu teslimcinin bildirim kimlik öneki. Bütçe ölçümü "kendimiz dışındaki"
+     * bekleyenleri sayar; nafile teslimcisi muhafız bildirimlerini de SAYMALIDIR
+     * (aynı 64 sınırını paylaşırlar).
+     */
+    kendiOneki?: string;
+    /**
+     * Anons sesi matris verilmeden de hazırlansın mı? Muhafız matrissiz `hazirla`
+     * = "muhafız kapalı" demektir (anons yok); nafile teslimcisi ise kendi
+     * planını matrissiz kurar ve anonsu her turda ister (issue #273).
+     */
+    matrissizAnons?: boolean;
+    /**
+     * Gerçek alarm (AlarmKit, issue #74) bu teslimcide yönetilsin mi? Varsayılan: yalnız
+     * muhafız öneki. Nafile örneği yönetmez — yoksa her turda muhafızın alarmlarını
+     * iptal ederdi (Android `alarmDestegi` ikizi).
+     */
+    alarmDestegi?: boolean;
+}
+
 export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'ios' as const;
+
+    private readonly kendiOneki: string;
+    private readonly matrissizAnons: boolean;
+    private readonly alarmDestegi: boolean;
+
+    constructor(secenekler: IosTeslimciSecenekleri = {}) {
+        this.kendiOneki = secenekler.kendiOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.matrissizAnons = secenekler.matrissizAnons === true;
+        this.alarmDestegi =
+            secenekler.alarmDestegi ?? this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+    }
+
+    /** Bu turda gerçek alarm AlarmKit ile kurulabilir mi (iOS 26 + izin + muhafız açık)? */
+    private alarmKitIzinli = false;
+    /** Alarm köprüsü çağrılarının TEK sırası (iptal ↔ kurulum yarışmasın). */
+    private alarmZinciri: Promise<void> = Promise.resolve();
+
+    private alarmIsi(is: () => Promise<void>): Promise<void> {
+        const sonraki = this.alarmZinciri.then(is).catch((error) => {
+            Logger.warn('IosMuhafizTeslimcisi', 'Alarm koprusu islemi basarisiz', error);
+        });
+        this.alarmZinciri = sonraki;
+        return sonraki;
+    }
+
+    /**
+     * Kurulu alarmlardan seçileni iptal eder (zincirin İÇİNDE çağrılır). Varsayılan
+     * PLANLAMA iptalidir: o an ÇALAN alarm atlanır (yeniden planlama kullanıcının
+     * uyanmak için kurduğu alarmı kesmesin). Yalnız "Kıldım" `calaniDurdur: true` geçer.
+     */
+    private async alarmlariIptalEt(
+        secici: (kimlik: string) => boolean,
+        calaniDurdur = false
+    ): Promise<void> {
+        const kimlikler = alarmKitIptalSecimi(await alarmKitKayitlari(), secici, calaniDurdur);
+        await alarmKitIptalEt(kimlikler, calaniDurdur);
+    }
 
     /**
      * Bu planlama turunda kalan slot. `hazirla` ile olculur, `uyariPlanla` ile
@@ -101,6 +221,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     private kalanSlot: number | null = null;
     private kesilenSayisi = 0;
+    /** Bu turda yer kalmadigi icin kurulmayan butce artigi (yarinin imsagi) — kayip DEGIL. */
+    private atlananYedekSayisi = 0;
 
     /** Bu turda anons sentezinde kullanilacak Turkce ses; `null` = anons yok. */
     private sesTanimlayici: string | null = null;
@@ -110,6 +232,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private kullanilanKlipler = new Set<string>();
     /** Ayni ad icin diske/sentezlere bir kez gidilsin: ad → kullanilabilir mi. */
     private klipDurumu = new Map<string, boolean>();
+    /** Bu turda okunan Odak filtresi durumu; `null` = filtre yok/okunamadi. */
+    private odak: OdakFiltresiDurumu | null = null;
 
     /**
      * iOS'ta kanal yok → matris aynen doner.
@@ -121,18 +245,41 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      */
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kesilenSayisi = 0;
+        this.atlananYedekSayisi = 0;
+        this.ucustanBirak();
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
         this.sentezIzni = onPlandaMi();
+        // Kopru asla firlatmaz; bozuk/eksik kayit = filtre yok (hatirlatmalar normal).
+        this.odak = odakDurumunuCoz(await siriOdakDurumuAl());
         // Ses tanimlayicisi klip adinin PARCASIDIR (gelismis ses indirilince adlar
         // degismeli). Kopru asla firlatmaz; ses yoksa `null` → anons yok.
-        this.sesTanimlayici = matris ? await trSesTanimlayici() : null;
+        this.sesTanimlayici = matris || this.matrissizAnons ? await trSesTanimlayici() : null;
+
+        // GERÇEK ALARM (issue #74): önceki turun alarmları BEKLENEREK iptal edilir — muhafız
+        // açıkken yalnız PLAN alarmları (kullanıcının ertelemesi korunur, bildirimdeki
+        // ertelemeyle aynı kural), kapalıyken ertelenmişler dahil hepsi.
+        this.alarmKitIzinli = false;
+        if (this.alarmDestegi) {
+            const durum = await alarmKitDurumu();
+            this.alarmKitIzinli = matris !== undefined && durum === 'izinli';
+            await this.alarmIsi(() =>
+                this.alarmlariIptalEt(
+                    matris ? muhafizPlanKimligiMi : (kimlik) => kimlik.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
+                )
+            );
+        }
 
         try {
             const bekleyenler = await Notifications.getAllScheduledNotificationsAsync();
-            const muhafizDisi = bekleyenler.filter(
-                (b) => !b.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
-            ).length;
+            // Muhafız teslimcisinde yalnız PLAN kendimizdir: aynı `muhafiz_` uzayındaki
+            // erteleme (#289) ve yatış/muhasebe (#290) başka sahiplerin slotudur.
+            // Başka önekli teslimci (nafile #273) kendi önekini sayar.
+            const kendimizMi =
+                this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
+                    ? muhafizPlanKimligiMi
+                    : (kimlik: string) => kimlik.startsWith(this.kendiOneki);
+            const muhafizDisi = bekleyenler.filter((b) => !kendimizMi(b.identifier)).length;
 
             this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
 
@@ -151,12 +298,33 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     }
 
     async uyariPlanla(teslim: UyariTeslimi): Promise<void> {
-        const { id, baslik, mesaj, zaman, uyari, vakit, tarih } = teslim;
+        const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel } = teslim;
 
         const simdi = new Date();
         if (zaman.getTime() <= simdi.getTime()) return;
 
-        if (this.kalanSlot !== null) {
+        // Odak filtresi sessiz istiyorsa `passive`: ses calmaz, ekrani yakmaz, Odagi
+        // delmez (zamana duyarli ozel teslim dahil). Ses cikmayacagi icin anons
+        // klibi de URETILMEZ, gercek alarm da KURULMAZ (alarm Odak'i delerdi).
+        const odakSessiz = odakSessizlestirirMi(this.odak, zaman.getTime());
+
+        // GERCEK ALARM (AlarmKit): bildirim BUTCESINDEN ONCE — alarm 64 sinirina sayilmaz,
+        // kurulursa bu tetigin bildirimi YOKTUR (slot da harcanmaz).
+        if (await this.alarmKitIleKur(teslim, odakSessiz)) return;
+
+        if (teslim.butceArtigi === true) {
+            if (this.kalanSlot === null || !yedekSigarMi(this.kalanSlot)) {
+                this.atlananYedekSayisi++;
+                // Kayip degil: bugunun plani once sigar, yedek kalan yere girer.
+                if (this.atlananYedekSayisi === 1) {
+                    Logger.info(
+                        'IosMuhafizTeslimcisi',
+                        `Yarinin imsagi icin yer kalmadi (yedek) — bugunun plani once (ilki: ${id})`
+                    );
+                }
+                return;
+            }
+        } else if (this.kalanSlot !== null) {
             if (this.kalanSlot <= 0) {
                 this.kesilenSayisi++;
                 // Ilk kesmede bir kez uyar; her bildirimde loglamak gurultu olur.
@@ -175,12 +343,20 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
             // planlanmazdi.
         }
 
-        // Faz 1: AlarmKit yok → `sessizligiDelebilir: false`. Acil adim da
+        // Buraya gelen tetik BILDIRIMDIR (AlarmKit yolu yukarida denendi). Acil adim da
         // bildirim olarak teslim edilir; ekran bunu kullaniciya SOYLER.
         const plan = iosTesliminiCoz(uyari, iosYetenekleri(false));
         // Sesli adimda bildirimin sesi ANONS KLIBIDIR; klip yoksa paket sesi kalir.
         // Slot kontrolunden SONRA: planlanmayacak uyari icin sentez yapilmaz.
-        const ses = (await this.anonsSesiniCoz(teslim)) ?? plan.ses;
+        // GERCEK ALARM (issue #74): alarm adiminda ses UZUN alarm sesidir, anons klibi
+        // onu ezmez (anons kisa bir cumle — alarmin varlik sebebi uzun calmasi).
+        const ses = (odakSessiz || uyari.alarm === true ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
+
+        // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden (Android ile aynı kural).
+        // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.
+        const ertele = teslim.cikis && !teslim.ozel
+            ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
+            : null;
 
         try {
             await Notifications.scheduleNotificationAsync({
@@ -190,9 +366,11 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     body: mesaj,
                     // iOS'ta ses DOSYA ADIdir (kanal degil). <=30 sn olmali.
                     sound: ses,
-                    interruptionLevel: plan.kesintiSeviyesi,
-                    categoryIdentifier: BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
-                    data: {
+                    interruptionLevel: odakSessiz
+                        ? 'passive'
+                        : ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
+                    categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
+                    data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
                         vakit: vakit,
@@ -201,6 +379,20 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         bildirimSesi: uyari.bildirimSesi,
                         sesliAnons: uyari.sesliAnons,
                         anonsMetni: uyari.anonsMetni,
+                        // iOS yanıtı sesin ADINI geri vermez → ertelenen kopya aynı
+                        // sesi (anons klibi dahil) ve kesinti seviyesini buradan alır.
+                        // Odak (#279): sessizlik KAYBOLMASIN — `odakSessiz` taşınır,
+                        // basış anında Odak yeniden değerlendirilir
+                        // (`MuhafizErtelemeServisi.iosKesintiSeviyesi`); `kesintiSeviyesi`
+                        // Odak bitince dönülecek TABAN seviyedir.
+                        ...(ertele
+                            ? {
+                                  ...ertele.veri,
+                                  ertelemeSesi: ses,
+                                  kesintiSeviyesi: plan.kesintiSeviyesi,
+                                  odakSessiz,
+                              }
+                            : {}),
                     },
                 },
                 trigger: {
@@ -215,6 +407,33 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         } catch (error) {
             Logger.error('IosMuhafizTeslimcisi', `Bildirim planlanamadi: ${id}`, error);
         }
+    }
+
+    /**
+     * Gercek alarm tetigini AlarmKit ile kurar. `false` → cagiran normal bildirim yolunda
+     * devam eder. Yalniz muhafiz teslimi (`ozel` yok): nafile/diger yukler alarm tasimaz.
+     */
+    private async alarmKitIleKur(teslim: UyariTeslimi, odakSessiz: boolean): Promise<boolean> {
+        const { uyari, ozel } = teslim;
+        if (!this.alarmKitIzinli || ozel || odakSessiz) return false;
+        if (iosTesliminiCoz(uyari, iosYetenekleri(true)).tur !== 'alarm') return false;
+
+        const yuk = alarmKitYukuOlustur({
+            kimlik: teslim.id,
+            tetikMs: teslim.zaman.getTime(),
+            baslik: teslim.baslik,
+            vakit: teslim.vakit,
+            tarih: teslim.tarih,
+            cikisMs: teslim.cikis?.getTime() ?? null,
+        });
+        let kuruldu = false;
+        await this.alarmIsi(async () => {
+            kuruldu = await alarmKitPlanla(yuk);
+        });
+        if (!kuruldu) {
+            Logger.warn('IosMuhafizTeslimcisi', `Gercek alarm kurulamadi, bildirim olarak gelecek (${teslim.id})`);
+        }
+        return kuruldu;
     }
 
     /**
@@ -236,6 +455,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Dosya henuz olmasa da AD kaydedilir: arka plan turunda uretilemeyen bir
         // klibin adi korunursa, bir sonraki on plan turunda uretilen dosya ilk GC'de
         // silinmez. Var olmayan dosya icin kayit zararsizdir.
+        if (!this.kullanilanKlipler.has(ad)) ucustakiKlipler.set(ad, (ucustakiKlipler.get(ad) ?? 0) + 1);
         this.kullanilanKlipler.add(ad);
 
         const bilinen = this.klipDurumu.get(ad);
@@ -259,29 +479,66 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      * Asla firlatmaz.
      */
     async tamamla(): Promise<void> {
-        try {
-            const bugun = gunAnahtari(new Date());
-            const mevcut = await Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI);
-            const kayit = klipKaydiniGuncelle(mevcut, this.kullanilanKlipler, bugun);
-
-            await Depolama.yaz(DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI, kayit);
-            const silinen = await kullanilmayanKlipleriSil(Object.keys(kayit), ANONS_KLIP_ONEKI);
-            if (silinen > 0) {
-                Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+        const kullanilan = this.kullanilanKlipler;
+        const is = klipGcZinciri.then(async () => {
+            try {
+                const bugun = gunAnahtari(new Date());
+                // Atomik okuma-değiştirme-yazma: öteki teslimcinin kaydı ezilmesin.
+                const kayit = await Depolama.guncelle<Record<string, string>>(
+                    DEPOLAMA_ANAHTARLARI.IOS_ANONS_KLIP_KULLANIMI,
+                    (mevcut) => klipKaydiniGuncelle(mevcut, kullanilan, bugun)
+                );
+                this.ucustanBirak();
+                const korunan = [...Object.keys(kayit), ...ucustakiKlipler.keys()];
+                const silinen = await kullanilmayanKlipleriSil(korunan, ANONS_KLIP_ONEKI);
+                if (silinen > 0) {
+                    Logger.info('IosMuhafizTeslimcisi', `${silinen} kullanilmayan anons klibi silindi`);
+                }
+            } catch (error) {
+                Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
             }
-        } catch (error) {
-            Logger.error('IosMuhafizTeslimcisi', 'Anons klibi temizligi basarisiz', error);
+        });
+        klipGcZinciri = is;
+        await is;
+    }
+
+    /** Bu turun klip adlarını "uçuşta" listesinden düşer (kayda yazıldılar ya da tur yenilendi). */
+    private ucustanBirak(): void {
+        for (const ad of this.kullanilanKlipler) {
+            const kalan = (ucustakiKlipler.get(ad) ?? 1) - 1;
+            if (kalan > 0) ucustakiKlipler.set(ad, kalan);
+            else ucustakiKlipler.delete(ad);
         }
     }
 
-    /** iOS'ta bildirimin disinda bir yan kanal yok → no-op. */
-    yanKanaliIptalEt(): void {
-        // Bilincli bos: sesli anons iOS'ta bildirimin SESIDIR, ayri bir alarm
-        // zinciri degil. Bildirim iptal edilince sesi de gider.
+    /**
+     * Ayni kimlikli GERCEK ALARM (AlarmKit) iptal edilir. Sesli anons iOS'ta bildirimin
+     * SESIDIR (ayri zincir degil) → bildirim iptal edilince o da gider. Planlama iptalidir:
+     * o an CALAN alarm native tarafta atlanir (`calaniDurdur` varsayilan false).
+     */
+    yanKanaliIptalEt(id: string): void {
+        if (!this.alarmDestegi) return;
+        void this.alarmIsi(() => alarmKitIptalEt([id]));
     }
 
-    /** iOS'ta yan kanal yok → no-op. */
+    /** Yeniden planlama oncesi: PLAN alarmlari (erteleme korunur; `hazirla` ayrica bekleyerek siler). */
     tumYanKanallariIptalEt(): void {
-        // Bilincli bos (yukaridaki gerekce).
+        if (!this.alarmDestegi) return;
+        void this.alarmIsi(() => this.alarmlariIptalEt(muhafizPlanKimligiMi));
+    }
+
+    /**
+     * Uygulama ici "Kildim": vaktin alarmlari (plan + erteleme) onekle — o an CALAN alarm
+     * DAHIL (Android `vakitAlarmlariniSustur` ikizi: "Kılındı" yazarken alarm calmamali).
+     */
+    vakitYanKanallariniIptalEt(onek: string): void {
+        if (!this.alarmDestegi || !onek) return;
+        void this.alarmIsi(() => this.alarmlariIptalEt((kimlik) => kimlik.startsWith(onek), true));
+    }
+
+    /** Bildirimdeki "Ertele" (JS yolu): susturulan araliktaki alarmlar. */
+    secilenYanKanallariIptalEt(secici: (kimlik: string) => boolean): Promise<void> {
+        if (!this.alarmDestegi) return Promise.resolve();
+        return this.alarmIsi(() => this.alarmlariIptalEt(secici));
     }
 }

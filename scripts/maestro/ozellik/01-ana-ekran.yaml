@@ -1,0 +1,15 @@
+# tohum: ozellik
+# Ana ekran + nafile zincir satirlari (kusluk sabahin, evvabin aksamin,
+# teheccud yatsinin ardinda; tohumda nafile gostergesi ACIK).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _acilis.yaml
+- takeScreenshot: ozk/01-ana-ekran
+- scrollUntilVisible:
+    element:
+      id: "nafile-satir-kusluk"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/02-ana-nafile-zinciri

@@ -1,53 +1,40 @@
 package com.furkanisikay.namazakisi.widget
 
-import android.appwidget.AppWidgetManager
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 
 /**
- * AlarmManager ve önyükleme olaylarını dinler.
- * Her dakika tetiklenerek tüm widget tiplerini günceller ve bir sonraki alarmı kurar.
- * Cihaz yeniden başladığında (kilitli veya açık) alarmı yeniden başlatır.
+ * Widget'ı yeniden hesaplatan olaylar (issue #275):
+ * - vakit sınırı alarmı ([WidgetGuncelleyici.SINIR_EYLEMI]) — dakikalık alarm YOK,
+ * - Widget 1.0'ın eylemsiz dakika alarmı (güncellemeden sonra son kez gelebilir),
+ * - açılış, uygulama güncellemesi,
+ * - saat / saat dilimi / tarih değişimi: kalan süre `Chronometer` tabanı ve sınır
+ *   alarmı duvar saatine göre kurulduğu için elle saat değişince yeniden kurulmalı.
+ *
+ * Her durumda tek iş: [WidgetGuncelleyici.tumunuGuncelle] (çiz + tek alarm + kutu).
  */
 class NamazWidgetAlarmAlici : BroadcastReceiver() {
 
-    companion object {
-        private const val TAG = "NamazWidgetAlarmAlici"
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == null || intent.action in EYLEMLER) {
+            WidgetGuncelleyici.tumunuGuncelle(context)
+        }
+        // Otomasyon "vakit girdi" olayı (issue #278): yalnız sınır alarmında; koşul paketi
+        // yoksa hiçbir şey yapmaz, aynı vakit için ikinci kez olay üretmez.
+        if (intent.action == WidgetGuncelleyici.SINIR_EYLEMI) OtomasyonOlaylari.vakitSiniri(context)
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        val action = intent.action
-
-        // Sadece beklenen aksiyonları işle: önyükleme olayları veya (aksiyon olmayan) AlarmManager tetikleyicisi
-        val isBootAction = action == Intent.ACTION_BOOT_COMPLETED ||
-                action == "android.intent.action.LOCKED_BOOT_COMPLETED"
-        val isAlarmTick = action == null
-
-        if (!isBootAction && !isAlarmTick) return
-
-        val appWidgetManager = AppWidgetManager.getInstance(context)
-        val kucukIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NamazWidget::class.java))
-        val buyukIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NamazGenisBoyutWidget::class.java))
-
-        // Hiç widget yoksa alarmı yeniden kurma
-        if (kucukIds.isEmpty() && buyukIds.isEmpty()) return
-
-        if (isBootAction) {
-            // Cihaz yeniden başladı, alarmı yeniden kur
-            NamazWidget.sonrakiGuncellemeIcinAlarmAyarla(context)
-            return
-        }
-
-        // Dakikalık alarm: her iki widget tipini de güncelle
-        try {
-            for (id in kucukIds) NamazWidget.guncelleWidget(context, appWidgetManager, id)
-            for (id in buyukIds) NamazGenisBoyutWidget.guncelleWidget(context, appWidgetManager, id)
-        } catch (e: Throwable) {
-            Log.e(TAG, "Widget güncellemesi sırasında hata oluştu", e)
-        }
-        NamazWidget.sonrakiGuncellemeIcinAlarmAyarla(context)
+    companion object {
+        private val EYLEMLER = setOf(
+            WidgetGuncelleyici.SINIR_EYLEMI,
+            Intent.ACTION_BOOT_COMPLETED,
+            "android.intent.action.LOCKED_BOOT_COMPLETED",
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            Intent.ACTION_TIME_CHANGED,
+            Intent.ACTION_TIMEZONE_CHANGED,
+            Intent.ACTION_DATE_CHANGED,
+        )
     }
 }

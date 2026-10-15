@@ -32,8 +32,13 @@ object AnonsKonusucu {
     private const val ETIKET = "AnonsKonusucu"
     private const val SOYLEM_ID = "muhafiz_anons"
 
-    /** goAsync penceresi ~10 sn; guvenli tarafta 9 sn'de kapat. */
-    private const val AZAMI_SURE_MS = 9_000L
+    /**
+     * Pencere HER DURUMDA bu sure sonunda kapatilir. Alarm yayini ARKA PLAN
+     * kuyrugundan gelir (FLAG_RECEIVER_FOREGROUND yok) → ANR esigi 60 sn; 10 sn
+     * on plan yayinlari icindir. Samsung'da TTS motorunun soguk baslamasi 3-5 sn
+     * surebildigi icin 9 sn ilk anonsu kesiyordu; 14 sn hem payli hem guvenli.
+     */
+    private const val AZAMI_SURE_MS = 14_000L
 
     /** TTS motorunun baglanmasi icin beklenen azami sure (dil sorgusu). */
     private const val SORGU_ZAMAN_ASIMI_MS = 5_000L

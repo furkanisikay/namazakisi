@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  API kapısı (issue #281): GOAL_PROGRESS ve WEIGHTED_ELEMENTS komplikasyon türleri
+  Wear OS 4 (API 33) ile geldi. Eski sistem SUPPORTED_TYPES içindeki tanımadığı türü
+  çözemeyebileceği için aynı veri kaynağının İKİ servisi vardır; cihazda yalnız biri
+  etkin olur (`android:enabled`), seçicide tek giriş görünür.
+-->
+<resources>
+    <bool name="api33">false</bool>
+    <bool name="api33_alti">true</bool>
+</resources>

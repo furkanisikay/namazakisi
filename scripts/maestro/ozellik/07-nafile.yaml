@@ -1,0 +1,23 @@
+# tohum: ozellik
+# Nafile ayarlari: uc nafile acik, adimli (kusluk 2 adim, teheccud 2 adim).
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Nafile namazlar\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Nafile namazlar\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/18-nafile
+- scrollUntilVisible:
+    element:
+      id: "nafile-kart-teheccud"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/19-nafile-teheccud

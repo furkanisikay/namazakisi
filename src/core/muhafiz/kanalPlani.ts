@@ -9,10 +9,11 @@
  * KAPALI hucreler (hicbir kanali acik degil) listeye GIRMEZ — kullanmadigi bir
  * ses icin kullanicinin bildirim ayarlarinda kanal birikmemeli.
  */
-import type { MuhafizMatrisi } from './matrisTipleri';
+import type { MuhafizMatrisi, VakitMuhafizAyari } from './matrisTipleri';
 import { MUHAFIZ_VAKITLERI, VARSAYILAN_SES } from './matrisTipleri';
 import {
-  kademeSeviyeNo,
+  etkinAcilKanal,
+  etkinSeviyeNo,
   muhafizAcilKanalMi,
   muhafizKanaliSec,
   titresimGerekliMi,
@@ -37,30 +38,37 @@ export interface MuhafizKanalTanimi {
  * (kanal enflasyonu yok).
  */
 export function matristenKanallariCikar(matris: MuhafizMatrisi): MuhafizKanalTanimi[] {
+  return ayarlardanKanallariCikar(MUHAFIZ_VAKITLERI.map((vakit) => matris[vakit]));
+}
+
+/**
+ * Herhangi bir vakit-benzeri ayar listesinin (muhafız vakitleri, nafile
+ * pencereleri — issue #273) ihtiyaç duyduğu kanallar. Kanal uzayı ORTAKTIR:
+ * aynı (ses, aciliyet, titreşim) üçlüsü tek kanal üretir.
+ */
+export function ayarlardanKanallariCikar(
+  ayarlar: ReadonlyArray<VakitMuhafizAyari | undefined>
+): MuhafizKanalTanimi[] {
   const kanallar = new Map<string, MuhafizKanalTanimi>();
 
-  for (const vakit of MUHAFIZ_VAKITLERI) {
-    const vakitAyari = matris[vakit];
+  for (const vakitAyari of ayarlar) {
     if (!vakitAyari?.seviyeler) continue;
 
     for (const seviye of vakitAyari.seviyeler) {
       if (!seviye || adimKapaliMi(seviye.kanallar)) continue;
 
-      const seviyeNo = kademeSeviyeNo(seviye.kademe);
+      // Planla AYNI ton (acil kisiti dahil) — kanal id'si ayrismasin.
+      const seviyeNo = etkinSeviyeNo(seviye, vakitAyari.yon);
       const titresim = titresimGerekliMi(seviye.kanallar);
-      const kanalId = muhafizKanaliSec(
-        seviyeNo,
-        seviye.bildirimSesi,
-        seviye.acilKanal,
-        titresim
-      );
+      const acilKanal = etkinAcilKanal(seviye, vakitAyari.yon);
+      const kanalId = muhafizKanaliSec(seviyeNo, seviye.bildirimSesi, acilKanal, titresim);
       if (kanallar.has(kanalId)) continue;
 
       kanallar.set(kanalId, {
         kanalId,
         sesKimligi: sesKimliginiNormalize(seviye.bildirimSesi),
         sesAdi: seviye.sesAdi,
-        acilMi: muhafizAcilKanalMi(seviyeNo, seviye.bildirimSesi, seviye.acilKanal),
+        acilMi: muhafizAcilKanalMi(seviyeNo, seviye.bildirimSesi, acilKanal),
         titresim,
       });
     }

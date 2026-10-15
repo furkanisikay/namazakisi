@@ -13,6 +13,7 @@ import {
   Easing,
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
+import { CanliGuncellemeBilgisi } from '../components/common/CanliGuncellemeBilgisi';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
@@ -224,6 +225,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     10 dakika sonra otomatik kaybolur.
                   </Text>
                 </View>
+                <CanliGuncellemeBilgisi />
               </View>
             )}
           </View>
@@ -304,6 +306,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     10 dakika sonra otomatik kaybolur.
                   </Text>
                 </View>
+                <CanliGuncellemeBilgisi />
               </View>
             )}
           </View>

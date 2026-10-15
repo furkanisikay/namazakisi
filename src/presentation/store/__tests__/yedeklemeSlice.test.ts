@@ -28,6 +28,14 @@ jest.mock('../../../data/local/Depolama', () => ({
 
 jest.mock('../../../domain/services/YedeklemeServisi', () => ({
   mevcutVeriyiTopla: jest.fn(() => Promise.resolve({} as YedekPayload)),
+  // Ortak disk adımı (gerçek gövdesinin aynası): plan → Depolama.yaz, sonra göç bayrağı.
+  planiDiskeYaz: jest.fn(async (plan: Record<string, unknown>) => {
+    const { Depolama: D } = require('../../../data/local/Depolama');
+    for (const [anahtar, deger] of Object.entries(plan)) {
+      await D.yaz(anahtar, deger);
+    }
+    await D.hamYaz('@namaz_akisi/namaz_gun_migrasyon_tamam', '1');
+  }),
 }));
 
 jest.mock('../../../domain/services/YedekBirlestirmeServisi', () => ({
@@ -60,6 +68,72 @@ jest.mock('../vakitBildirimSlice', () => ({
 jest.mock('../cumaHatirlatmaSlice', () => ({
   cumaHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'cumaHatirlatma/yukle' })),
 }));
+jest.mock('../yatisHatirlatmaSlice', () => ({
+  yatisHatirlatmaAyarlariniYukle: jest.fn(() => ({ type: 'yatisHatirlatma/yukle' })),
+}));
+// Yatış hatırlatması (issue #290): içerik namaz kayıtlarından üretilir; içe
+// aktarma kayıtları doğrudan yazdığı için yayma koşsa da koşmasa da yeniden planlanır.
+const mockYatisGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/YatisHatirlatmaServisi', () => ({
+  YatisHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
+  },
+}));
+jest.mock('../takvimCakismaSlice', () => ({
+  takvimCakismaAyarlariniYukle: jest.fn(() => ({ type: 'takvimCakisma/yukle' })),
+}));
+// Takvim çakışması (issue #291): içe aktarılan kayıtlar kılınmışlığı değiştirir
+// ve ayarı yüklemek bildirim kurmaz → yayma koşsa da koşmasa da yeniden planlanır.
+const mockTakvimCakismaGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/TakvimCakismaServisi', () => ({
+  TakvimCakismaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockTakvimCakismaGuncelle(...a) }),
+  },
+}));
+jest.mock('../camiyeGitSlice', () => ({
+  camiyeGitAyarlariniYukle: jest.fn(() => ({ type: 'camiyeGit/yukle' })),
+}));
+const mockCamiyeGitGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
+  CamiyeGitHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockCamiyeGitGuncelle(...a) }),
+  },
+}));
+jest.mock('../nafileSlice', () => ({
+  nafileAyarlariniYukle: jest.fn(() => ({ type: 'nafile/yukle' })),
+}));
+jest.mock('../nowBarSlice', () => ({
+  nowBarAyarlariniYukle: jest.fn(() => ({ type: 'nowBar/yukle' })),
+}));
+jest.mock('../sadeGorunumSlice', () => ({
+  sadeGorunumAyarlariniYukle: jest.fn(() => ({ type: 'sadeGorunum/yukle' })),
+}));
+jest.mock('../seferilikSlice', () => ({
+  seferilikYukle: jest.fn(() => ({ type: 'seferilik/yukle' })),
+}));
+const mockNafileGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/NafileHatirlatmaServisi', () => ({
+  NafileHatirlatmaServisi: {
+    getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockNafileGuncelle(...a) }),
+  },
+}));
+// Özel gün geri yüklenince tüm hatırlatmalar yeniden kurulmalı (issue #272):
+// içe aktarma diske doğrudan yazar, `ozelGunListener` tetiklenmez.
+const mockOzelGunDegistiUygula = jest.fn(() => Promise.resolve(true));
+jest.mock('../../../domain/services/OzelGunDegisikligiServisi', () => ({
+  ozelGunDegistiUygula: () => mockOzelGunDegistiUygula(),
+}));
+const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../../../domain/services/GunSonuHatirlaticiServisi', () => ({
+  gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
+}));
+jest.mock('../../../domain/services/WearSenkronServisi', () => ({
+  WearSenkronServisi: { getInstance: () => ({ gonder: jest.fn(() => Promise.resolve()) }) },
+}));
+jest.mock('../../../domain/services/WidgetServisi', () => ({
+  WidgetServisi: { getInstance: () => ({ kilinanlariYaz: jest.fn(() => Promise.resolve()) }) },
+}));
+
 jest.mock('../takvimSlice', () => ({
   takvimAyarlariniYukle: jest.fn(() => ({ type: 'takvim/yukle' })),
 }));
@@ -79,6 +153,7 @@ jest.mock('../seriSlice', () => ({
 }));
 jest.mock('../kazaSlice', () => ({
   kazaVerileriniYukle: jest.fn(() => ({ type: 'kaza/yukle' })),
+  kazaOneriAyarlariniYukle: jest.fn(() => ({ type: 'kaza/oneriYukle' })),
 }));
 jest.mock('../ozelliklerSlice', () => ({
   ozellikleriYukle: jest.fn(() => ({ type: 'ozellikler/yukle' })),
@@ -176,6 +251,24 @@ describe('yedeklemeSlice', () => {
         undefined
       );
 
+    it('sade görünüm ayarı (issue #295) ZORLA yeniden yüklenir — yüklüyse condition atlamasın', async () => {
+      const cagriSirasi: string[] = [];
+      (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({ a: 1 });
+      await calistir(dispatchYap(cagriSirasi), getStateYap());
+      const { sadeGorunumAyarlariniYukle } = jest.requireMock('../sadeGorunumSlice');
+      expect(sadeGorunumAyarlariniYukle).toHaveBeenCalledWith({ zorla: true });
+      expect(cagriSirasi).toContain('sadeGorunum/yukle');
+    });
+
+    it('seferîlik ayarı (issue #296) ZORLA yeniden yüklenir', async () => {
+      const cagriSirasi: string[] = [];
+      (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({ a: 1 });
+      await calistir(dispatchYap(cagriSirasi), getStateYap());
+      const { seferilikYukle } = jest.requireMock('../seferilikSlice');
+      expect(seferilikYukle).toHaveBeenCalledWith({ zorla: true });
+      expect(cagriSirasi).toContain('seferilik/yukle');
+    });
+
     it('store tazeleme spec §10 sırasında: konum İLK, reconcile SIRALI ve seriVerileriniYukle SONRASI', async () => {
       const cagriSirasi: string[] = [];
       const dispatch = dispatchYap(cagriSirasi);
@@ -199,6 +292,8 @@ describe('yedeklemeSlice', () => {
       // namaz, tüm ayar loader'larından SONRA.
       expect(i('namaz/yukle')).toBeGreaterThan(i('muhafiz/yukle'));
       expect(i('namaz/yukle')).toBeGreaterThan(i('takvim/yukle'));
+      // Nafile ayarı da içe aktarmada store'a geri yüklenir (issue #77).
+      expect(i('nafile/yukle')).toBeGreaterThan(i('konum/yukle'));
 
       // seriVerileriniYukle, reconcile zincirinden ÖNCE.
       expect(i('seri/yukle')).toBeGreaterThan(i('namaz/yukle'));
@@ -280,6 +375,76 @@ describe('yedeklemeSlice', () => {
         '1'
       );
       expect(sonuc.payload).toEqual({ yazilanAnahtarSayisi: 0 });
+    });
+
+    describe('özel gün / seri ayarı geri yüklenince yeniden planlama (issue #272)', () => {
+      beforeEach(() => {
+        mockOzelGunDegistiUygula.mockResolvedValue(true);
+      });
+
+      it('özel gün kaydı plandaysa TEK yayma noktası çağrılır, cuma/nafile ayrıca kurulmaz', async () => {
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          ozel_gun_ayarlari: { ozelGunModuAktif: true, aktifOzelGun: null, gecmisKayitlar: [] },
+        });
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockOzelGunDegistiUygula).toHaveBeenCalledTimes(1);
+        // Yayma listesi (konumDegistiUygula) cuma/nafile/gün sonunu zaten kapsar.
+        expect(mockNafileGuncelle).not.toHaveBeenCalled();
+        expect(mockCamiyeGitGuncelle).not.toHaveBeenCalled();
+        expect(mockGunSonuGuncelle).not.toHaveBeenCalled();
+      });
+
+      it('seri ayarı plandaysa da yayma çağrılır (gün sonu hatırlatması seri ayarına bağlı)', async () => {
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          seri_ayarlari: { gunSonuBildirimAktif: false },
+        });
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockOzelGunDegistiUygula).toHaveBeenCalledTimes(1);
+      });
+
+      it('konum yoksa (yayma koşmadı) konumsuz tüketiciler doğrudan tazelenir', async () => {
+        mockOzelGunDegistiUygula.mockResolvedValue(false);
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          ozel_gun_ayarlari: { ozelGunModuAktif: false, aktifOzelGun: null, gecmisKayitlar: [] },
+        });
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockNafileGuncelle).toHaveBeenCalledTimes(1);
+        expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+      });
+
+      it('özel gün/seri ayarı plan DIŞINDAYSA yayma çağrılmaz, eski yol (cuma/nafile) sürer', async () => {
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          '@namaz_akisi/namaz_gun_2026-06-14': { sabah: true },
+        });
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockOzelGunDegistiUygula).not.toHaveBeenCalled();
+        expect(mockGunSonuGuncelle).not.toHaveBeenCalled();
+        expect(mockNafileGuncelle).toHaveBeenCalledTimes(1);
+        // "Camide kılacağım" (issue #292): ayarı yüklemek bildirim KURMAZ → açıkça planlanır.
+        expect(mockCamiyeGitGuncelle).toHaveBeenCalledTimes(1);
+      });
+
+      it('NÖBETÇİ (#290): namaz kayıtları içe aktarılınca yatış/muhasebe yeniden planlanır (kılınmışlık gözlemcisi tetiklenmez)', async () => {
+        (birlestirmePlaniOlustur as jest.Mock).mockReturnValue({
+          '@namaz_akisi/namaz_gun_2026-06-14': { sabah: true },
+        });
+        mockYatisGuncelle.mockClear();
+        mockTakvimCakismaGuncelle.mockClear();
+
+        await calistir(dispatchYap([]), getStateYap());
+
+        expect(mockYatisGuncelle).toHaveBeenCalledTimes(1);
+        // Takvim çakışması (#291): kılınmış vaktin uyarısı elensin.
+        expect(mockTakvimCakismaGuncelle).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

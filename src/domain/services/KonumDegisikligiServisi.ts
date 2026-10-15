@@ -40,8 +40,16 @@ import { IftarSayacBildirimServisi } from './IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from './SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
 import { WidgetServisi } from './WidgetServisi';
 import { CumaHatirlatmaServisi } from './CumaHatirlatmaServisi';
+import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
+import { TakvimCakismaServisi } from './TakvimCakismaServisi';
+import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
+import { WearSenkronServisi } from './WearSenkronServisi';
+import { CamideyimServisi } from './CamideyimServisi';
+import { SeferilikServisi } from './SeferilikServisi';
 
 /** Koordinat çifti (store tipine bağlı olmamak için yerel) */
 export interface Koordinatlar {
@@ -205,6 +213,20 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
             ),
         ),
 
+        // Gün sonu seri hatırlatması: otomatik modda imsaktan X dk önceye kurulur,
+        // imsak şehirle kayar. Özel gün değişikliği de bu listeden geçtiği için
+        // (`OzelGunDegisikligiServisi`) aralıktaki günlerin tetikleri burada düşer.
+        guvenliCalistir('Gun sonu hatirlatmasi', () =>
+            gunSonuHatirlatmalariniGuncelle(koordinatlar),
+        ),
+
+        // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
+        // ve kazaya eklenebilirlik vakitlerden türer; özel gün değişimi de buradan
+        // geçer (aralıktaki namaz günleri düşer).
+        guvenliCalistir('Yatis hatirlatmasi', () =>
+            YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
         guvenliCalistir('Widget', () =>
             WidgetServisi.getInstance().vakitleriyaz(koordinatlar),
         ),
@@ -216,6 +238,41 @@ export async function konumDegistiUygula(koordinatlar: Koordinatlar): Promise<vo
         guvenliCalistir('Cuma hatirlatmasi', () =>
             CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
         ),
+
+        // "Camide kılacağım" (issue #292): ezandan yürüme süresi kadar önce — vakit
+        // girişleri şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
+        guvenliCalistir('Camiye git hatirlatmasi', () =>
+            CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // Takvim çakışması uyarısı (issue #291): vakit girişi/çıkışı şehirle kayar,
+        // "etkinlik vaktin sonunu yutuyor mu" kararı yeniden verilmeli; özel gün
+        // değişimi de bu listeden yeniden kurar.
+        guvenliCalistir('Takvim cakismasi', () =>
+            TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları güneş,
+        // öğle, akşam, yatsı ve imsaktan türer — şehir değişince hepsi kayar.
+        guvenliCalistir('Nafile hatirlatmasi', () =>
+            NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(koordinatlar),
+        ),
+
+        // Wear OS saati (issue #269): vakitler telefonda hesaplanıp saate gönderilir;
+        // şehir değişince saat de yeni vakitleri ve konum adını almalı. iOS'ta AYNI
+        // servis Apple Watch'ı besler (issue #285, WatchConnectivity köprüsü).
+        guvenliCalistir('Wear senkronu', () => WearSenkronServisi.getInstance().gonder()),
+
+        // Camideyim + Namaz modu (#297/#277): vakit kapısı ve mod pencereleri vakit
+        // girişlerinden türer, izlenen camiler yeni konumun en yakınlarıdır.
+        guvenliCalistir('Camideyim', () => CamideyimServisi.getInstance().konumaBagliTazele(koordinatlar)),
+
+        // Seferîlik bilgi kartı (issue #296): bildirim GÖNDERMEZ; yalnız ilk ikamet
+        // yerini yazar ve eve dönülünce "bu yolculukta kapattım" hafızasını sıfırlar
+        // (kullanıcı uygulamayı açmadan dönse de sonraki yolculukta kart çıksın).
+        guvenliCalistir('Seferilik', async () => {
+            await SeferilikServisi.konumIsle(koordinatlar);
+        }),
     ]);
 
     Logger.info('KonumDegisikligi', 'Konuma bagli tum tuketiciler guncellendi');

@@ -1,0 +1,333 @@
+{
+  "aciklama": "Siri/Kisayollar karar ve metin sozlesmesi (issue #279). JS (src/core/siri/__tests__/siriKarari.test.ts) ve Swift (modules/expo-siri-kisayollari/test/main.swift) AYNI dosyayi dogrular. Vakitler widget-ornek.json ile ayni (Istanbul 2026-06-20..22); saatler Europe/Istanbul (+03:00) ile bicimlenir.",
+  "saatDilimi": "Europe/Istanbul",
+  "vakitler": [
+    {
+      "vakit": "sabah",
+      "ms": 1781915040000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1781922300000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1781950260000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1781964660000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1781977620000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1781984280000,
+      "tarih": "2026-06-20"
+    },
+    {
+      "vakit": "sabah",
+      "ms": 1782001440000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1782008700000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1782036660000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1782051060000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1782064020000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1782070680000,
+      "tarih": "2026-06-21"
+    },
+    {
+      "vakit": "sabah",
+      "ms": 1782087840000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "gunes",
+      "ms": 1782095100000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "ogle",
+      "ms": 1782123060000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "ikindi",
+      "ms": 1782137460000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "aksam",
+      "ms": 1782150420000,
+      "tarih": "2026-06-22"
+    },
+    {
+      "vakit": "yatsi",
+      "ms": 1782157080000,
+      "tarih": "2026-06-22"
+    }
+  ],
+  "durumlar": [
+    {
+      "ad": "ogle surerken kilinmamis",
+      "simdiMs": 1782039600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Şu an Öğle vakti. Sıradaki namaz İkindi, saat 17:11.",
+        "kildim": {
+          "tur": "aday",
+          "tarih": "2026-06-21",
+          "kayitVakti": "ogle",
+          "ad": "Öğle"
+        },
+        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi.",
+        "onayMetni": "Öğle namazı kılındı olarak işaretlensin mi?"
+      }
+    },
+    {
+      "ad": "ogle kayitta kilinmis",
+      "simdiMs": 1782039600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {
+        "2026-06-21": [
+          "ogle"
+        ]
+      },
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz İkindi, saat 17:11.",
+        "kildim": {
+          "tur": "zatenKilindi",
+          "ad": "Öğle"
+        },
+        "kildimMetni": "Öğle namazı zaten kılındı olarak işaretli.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "ogle kuyrukta bekliyor",
+      "simdiMs": 1782039600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [
+        {
+          "tarih": "2026-06-21",
+          "vakit": "ogle"
+        }
+      ],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz İkindi, saat 17:11.",
+        "kildim": {
+          "tur": "zatenKilindi",
+          "ad": "Öğle"
+        },
+        "kildimMetni": "Öğle namazı zaten kılındı olarak işaretli.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "baska gunun kaydi sayilmaz",
+      "simdiMs": 1782039600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {
+        "2026-06-20": [
+          "ogle"
+        ]
+      },
+      "bekleyenler": [
+        {
+          "tarih": "2026-06-20",
+          "vakit": "ogle"
+        }
+      ],
+      "beklenen": {
+        "siradakiMetni": "Şu an Öğle vakti. Sıradaki namaz İkindi, saat 17:11.",
+        "kildim": {
+          "tur": "aday",
+          "tarih": "2026-06-21",
+          "kayitVakti": "ogle",
+          "ad": "Öğle"
+        },
+        "kildimMetni": "Öğle namazınız kılındı olarak işaretlendi.",
+        "onayMetni": "Öğle namazı kılındı olarak işaretlensin mi?"
+      }
+    },
+    {
+      "ad": "yatsi aksam: sabah yarin",
+      "simdiMs": 1782072000000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Şu an Yatsı vakti. Sıradaki namaz Sabah, yarın saat 03:24.",
+        "kildim": {
+          "tur": "aday",
+          "tarih": "2026-06-21",
+          "kayitVakti": "yatsi",
+          "ad": "Yatsı"
+        },
+        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi.",
+        "onayMetni": "Yatsı namazı kılındı olarak işaretlensin mi?"
+      }
+    },
+    {
+      "ad": "gece yarisindan sonra yatsi dunundur",
+      "simdiMs": 1782079200000,
+      "bugun": "2026-06-22",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Şu an Yatsı vakti. Sıradaki namaz Sabah, saat 03:24.",
+        "kildim": {
+          "tur": "aday",
+          "tarih": "2026-06-21",
+          "kayitVakti": "yatsi",
+          "ad": "Yatsı"
+        },
+        "kildimMetni": "Yatsı namazınız kılındı olarak işaretlendi.",
+        "onayMetni": "Yatsı namazı kılındı olarak işaretlensin mi?"
+      }
+    },
+    {
+      "ad": "sabah: cikis gunes, siradaki ogle",
+      "simdiMs": 1782003600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Şu an Sabah vakti, çıkışı saat 05:25. Sıradaki namaz Öğle, saat 13:11.",
+        "kildim": {
+          "tur": "aday",
+          "tarih": "2026-06-21",
+          "kayitVakti": "imsak",
+          "ad": "Sabah"
+        },
+        "kildimMetni": "Sabah namazınız kılındı olarak işaretlendi.",
+        "onayMetni": "Sabah namazı kılındı olarak işaretlensin mi?"
+      }
+    },
+    {
+      "ad": "sabah kuyrukta imsak olarak bekler",
+      "simdiMs": 1782003600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [
+        {
+          "tarih": "2026-06-21",
+          "vakit": "imsak"
+        }
+      ],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz Öğle, saat 13:11.",
+        "kildim": {
+          "tur": "zatenKilindi",
+          "ad": "Sabah"
+        },
+        "kildimMetni": "Sabah namazı zaten kılındı olarak işaretli.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "sabah kilinanlarda widget kodu sabah",
+      "simdiMs": 1782003600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {
+        "2026-06-21": [
+          "sabah"
+        ]
+      },
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz Öğle, saat 13:11.",
+        "kildim": {
+          "tur": "zatenKilindi",
+          "ad": "Sabah"
+        },
+        "kildimMetni": "Sabah namazı zaten kılındı olarak işaretli.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "gunes-ogle arasi",
+      "simdiMs": 1782021600000,
+      "bugun": "2026-06-21",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz Öğle, saat 13:11.",
+        "kildim": {
+          "tur": "vakitYok",
+          "siradaki": {
+            "vakit": "ogle",
+            "tarih": "2026-06-21"
+          }
+        },
+        "kildimMetni": "Şu an kılınacak vakit yok. Sıradaki Öğle, saat 13:11.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "veri tukendi",
+      "simdiMs": 1782198000000,
+      "bugun": "2026-06-23",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Vakit bilgisi eskimiş. Güncellemek için uygulamayı bir kez açın.",
+        "kildim": {
+          "tur": "vakitYok",
+          "siradaki": null
+        },
+        "kildimMetni": "Şu an kılınacak vakit yok.",
+        "onayMetni": null
+      }
+    },
+    {
+      "ad": "ilk giristen once",
+      "simdiMs": 1781906400000,
+      "bugun": "2026-06-20",
+      "kilinanlar": {},
+      "bekleyenler": [],
+      "beklenen": {
+        "siradakiMetni": "Sıradaki namaz Sabah, saat 03:24.",
+        "kildim": {
+          "tur": "vakitYok",
+          "siradaki": {
+            "vakit": "sabah",
+            "tarih": "2026-06-20"
+          }
+        },
+        "kildimMetni": "Şu an kılınacak vakit yok. Sıradaki Sabah, saat 03:24.",
+        "onayMetni": null
+      }
+    }
+  ]
+}

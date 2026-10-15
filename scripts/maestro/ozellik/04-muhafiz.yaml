@@ -1,0 +1,61 @@
+# tohum: ozellik
+# Muhafiz: vakit karti (zaman seridi), adim detayi (kanal cipleri, titresim ve
+# gercek alarm anahtarlari), gercek alarm riza modali. Tohumda `alarmOnayi`
+# YOK — anahtara dokunmak modali acar; "Vazgeç" hicbir sey yazmaz.
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- scrollUntilVisible:
+    element:
+      text: "Namaz muhafızı\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Namaz muhafızı\\..*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/06-muhafiz
+
+# SABAH: listenin son karti (Yatsi) acilinca icerik ekran disinda kalir.
+- tapOn:
+    text: "Sabah vakti hatırlatma ayarları.*"
+- scrollUntilVisible:
+    element:
+      text: ".*ilk hatırlatma.*"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/07-muhafiz-zaman-seridi
+
+# Adim satirinin etiketi "1. hatırlatma, <ton> ton — düzenleyin. …". Ayni satirdaki
+# "… — açın veya kapatın" ANAHTARDIR; ona basmak adimi kapatir.
+- scrollUntilVisible:
+    element:
+      text: "1\\. hatırlatma.*düzenleyin.*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "1\\. hatırlatma.*düzenleyin.*"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: ozk/08-adim-detay
+
+- scrollUntilVisible:
+    element:
+      id: "adim-alarm-anahtari"
+    direction: DOWN
+    centerElement: true
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/09-adim-detay-anahtarlar
+
+- tapOn:
+    id: "adim-alarm-anahtari"
+- extendedWaitUntil:
+    visible: "Alarmı açın"
+    timeout: 10000
+- takeScreenshot: ozk/10-alarm-onay
+- tapOn: "Vazgeç"

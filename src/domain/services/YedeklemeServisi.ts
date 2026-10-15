@@ -21,6 +21,7 @@ import * as FileSystem from 'expo-file-system/legacy';
 import {
   YedekZarfi,
   YedekPayload,
+  YazimPlani,
   NamazGunleri,
   GunNamazHaritasi,
   YEDEK_BICIMI,
@@ -103,6 +104,14 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     seriAyarlari,
     ozelGun,
     cumaHatirlatma,
+    nafile,
+    yatisHatirlatma,
+    nowBar,
+    camiyeGit,
+    kazaOneri,
+    sadeGorunum,
+    seferilik,
+    takvimCakisma,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -114,6 +123,21 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.SERI_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI),
+    // Yatış hatırlatması (issue #290) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.NOW_BAR_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI),
+    // "Her farzla bir kaza" (issue #294) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI),
+    // Sade görünüm (issue #295) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI),
+    // Seferîlik bilgi kartı (issue #296) — beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    // Kapatma hafızası (SEFERILIK_KART_HAFIZASI) cihaza özgü → GİRMEZ.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI),
+    // Takvim çakışması uyarısı (issue #291) — yalnız AYAR (rıza kaydı dahil);
+    // takvim verisi hiç saklanmaz. Beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI),
   ]);
   return {
     muhafiz,
@@ -126,6 +150,14 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     seriAyarlari,
     ozelGun,
     cumaHatirlatma,
+    nafile,
+    yatisHatirlatma,
+    nowBar,
+    camiyeGit,
+    kazaOneri,
+    sadeGorunum,
+    seferilik,
+    takvimCakisma,
   };
 };
 
@@ -182,6 +214,22 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
  * İçe-aktarma orkestratörü (yedeklemeSlice) birleştirme için mevcut tarafı bununla alır.
  */
 export const mevcutVeriyiTopla = (): Promise<YedekPayload> => payloadOlustur();
+
+/**
+ * Birleştirme planını diske yazar ve açılış göç bayrağını kurar — içe aktarmanın
+ * DİSK adımı. İki çağıran AYNI yoldan geçer: `yedeklemeSlice.iceAktarmayiUygula`
+ * (ardından store'u tazeler) ve cihazlar arası eşitlemenin arka plan yolu (Redux
+ * yok; store açılışta diskten yüklenir). İkinci bir yazma yolu AÇMA.
+ *
+ * Sıra (AGENTS.md "İçe-aktarma sırası"): plan → göç bayrağı (açılış göçü
+ * içe-aktarılan günleri EZMESİN).
+ */
+export const planiDiskeYaz = async (plan: YazimPlani): Promise<void> => {
+  for (const [anahtar, deger] of Object.entries(plan)) {
+    await Depolama.yaz(anahtar, deger);
+  }
+  await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');
+};
 
 /**
  * Tüm yerel veriyi okur, payload'ı kurar, bütünlük özetini hesaplar, şifreler ve

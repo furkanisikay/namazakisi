@@ -28,7 +28,7 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-      # ── Expo SDK 54'ün yönettiği paketler (node_modules/expo/bundledNativeModules.json) ──
+      # ── Expo SDK 57'nin yönettiği paketler (node_modules/expo/bundledNativeModules.json) ──
       # Sürümlerini SDK belirler; SDK dışına çıkan güncelleme native build'i kırabilir
       # (#201/#202/#204/#205 bu yüzden kapatıldı). Bunlar SDK yükseltmesiyle, `npx expo install --fix`
       # ile birlikte güncellenir. Listeyi yeniden üretmek: bundledNativeModules ∩ package.json.
@@ -40,10 +40,16 @@ updates:
       - dependency-name: "react-dom"
       - dependency-name: "react-native"
       - dependency-name: "react-native-pager-view"
+      - dependency-name: "react-native-reanimated"
       - dependency-name: "react-native-svg"
       - dependency-name: "react-native-view-shot"
       - dependency-name: "react-native-webview"
       - dependency-name: "react-native-worklets"
+      # SDK'ya dolaylı kilitli (bundledNativeModules'ta yok ama sürümü SDK'dan gelir):
+      # react-test-renderer peer `react@^<kendi sürümü>` ister (PR #258 ERESOLVE),
+      # @react-native/jest-preset react-native sürümüyle birebir gider.
+      - dependency-name: "react-test-renderer"
+      - dependency-name: "@react-native/jest-preset"
       # Expo '~'/'^' ile sabitliyor: yalnız yama sürümleri gelebilir.
       - dependency-name: "@expo/vector-icons"
         update-types: ["version-update:semver-minor"]
@@ -75,21 +81,28 @@ updates:
         update-types: ["version-update:semver-minor"]
       - dependency-name: "expo-notifications"
         update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-secure-store"
+        update-types: ["version-update:semver-minor"]
       - dependency-name: "expo-sensors"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "expo-sharing"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "expo-task-manager"
         update-types: ["version-update:semver-minor"]
+      - dependency-name: "expo-web-browser"
+        update-types: ["version-update:semver-minor"]
       - dependency-name: "jest-expo"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "lottie-react-native"
-        update-types: ["version-update:semver-minor"]
-      - dependency-name: "react-native-reanimated"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "react-native-safe-area-context"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "react-native-screens"
         update-types: ["version-update:semver-minor"]
       - dependency-name: "react-native-web"
+        update-types: ["version-update:semver-minor"]
+      # `npx expo install --fix` bunları da SDK'ya hizalar (SDK 57: TypeScript 6.0, @types/react 19.2).
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-minor"]
+      - dependency-name: "@types/react"
         update-types: ["version-update:semver-minor"]

@@ -16,7 +16,9 @@ import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { Depolama } from '../../../data/local/Depolama';
 import { YENI_OZELLIKLER } from '../../../core/constants/YeniOzellikler';
+import { yeniOzellikGorunurMu } from '../../hooks/yeniOzellikYetenegi';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
+import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
@@ -29,6 +31,14 @@ jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn(), useTema: jest.fn() }));
 jest.mock('../../../core/feedback', () => ({ useFeedback: jest.fn() }));
 jest.mock('../../../data/local/Depolama', () => ({ Depolama: { oku: jest.fn() } }));
+const mockPilDurumu = { muaf: null as boolean | null, samsung: false };
+const mockPilAyarlariniAc = jest.fn().mockResolvedValue('uygulama');
+jest.mock('../../../domain/services/SistemDurumuOkuyucu', () => ({
+  pilDurumunuOku: jest.fn(async () => ({ ...mockPilDurumu })),
+  tamAlarmDurumunuOku: jest.fn(async () => 'verildi'),
+  alarmIzniAyariniAc: jest.fn(),
+  pilAyarlariniAc: (...a: unknown[]) => mockPilAyarlariniAc(...a),
+}));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
   const { Text } = require('react-native');
   return (props: { name: string }) => <Text>{props.name}</Text>;
@@ -74,6 +84,7 @@ const stateOlustur = (ustyaz: Record<string, unknown> = {}) => ({
     ayarlar: { imsak: true, ogle: false, ikindi: false, aksam: true, yatsi: false },
   },
   cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+  nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
   seri: { ayarlar: { tamGunEsigi: 4, gunSonuBildirimAktif: true } },
   iftarSayac: { ayarlar: { aktif: false } },
   sahurSayac: { ayarlar: { aktif: false } },
@@ -160,7 +171,8 @@ describe('AyarlarSayfasi', () => {
     // EN ÜSTE kayıt eklemeyi söylüyor, sabit başlık bir sonraki özellik duyurusunda
     // bu testi sebepsiz kırardı. Kart, `useYeniOzellikler` ile aynı kuraldan seçilir:
     // okunmamışlar arasında kartGoster'i olan İLK kayıt (her kayıt kart göstermez).
-    const kartOzelligi = YENI_OZELLIKLER.find(o => o.kartGoster);
+    // Yetenek isteyen duyuru (ör. iPhone widget'ı) bu cihazda yoksa atlanır.
+    const kartOzelligi = YENI_OZELLIKLER.find(o => o.kartGoster && yeniOzellikGorunurMu(o));
     expect(kartOzelligi).toBeDefined();
 
     const { getByText } = render(<AyarlarSayfasi />);
@@ -214,6 +226,7 @@ describe('AyarlarSayfasi', () => {
         ayarlar: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false },
       },
       cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+      nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
     });
     const { getByText } = render(<AyarlarSayfasi />);
 
@@ -316,6 +329,36 @@ describe('AyarlarSayfasi', () => {
       await waitFor(() => {
         expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari', { vurgula: 'cumaHatirlatmasi' });
       });
+    });
+  });
+
+  describe('pil kısıtı (Samsung)', () => {
+    afterEach(() => {
+      mockPilDurumu.muaf = null;
+      mockPilDurumu.samsung = false;
+    });
+
+    it('Samsung + kısıtlı → kartta "Uyutulmasın"; dokununca rehber açılır, "Ayarları açın" ayar ekranını açar', async () => {
+      mockPilDurumu.muaf = false;
+      mockPilDurumu.samsung = true;
+      const { findByText, getByTestId, getByLabelText } = render(<AyarlarSayfasi />);
+      fireEvent.press(await findByText('Uyutulmasın'));
+      expect(getByTestId('pil-rehberi')).toBeTruthy();
+      // Minyatür bilinçli olarak erişilebilirlik ağacının DIŞINDA (yalnız görsel yönlendirme).
+      expect(getByTestId('pil-minyatur', { includeHiddenElements: true })).toBeTruthy();
+      await act(async () => {
+        fireEvent.press(getByLabelText('Ayarları açın'));
+      });
+      expect(mockPilAyarlariniAc).toHaveBeenCalledTimes(1);
+    });
+
+    it('NÖBETÇİ: durum okunamazsa (null) kartta pil uyarısı yok', async () => {
+      const { queryByText } = render(<AyarlarSayfasi />);
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(queryByText('Uyutulmasın')).toBeNull();
+      expect(queryByText('Pil ayarlarını açın')).toBeNull();
     });
   });
 });

@@ -16,9 +16,12 @@
 import { AndroidStyle } from '@notifee/react-native';
 import { Platform } from 'react-native';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { SayacBildirimTemeli, SayacKonfig } from './SayacBildirimTemeli';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { iftarCanliYukuOlustur } from '../../core/sayac/canliGuncelleme';
 
 interface IftarSayacAyarlari {
   aktif: boolean;
@@ -61,13 +64,21 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
     await this.tumBildirimleriniTemizle();
 
     if (Platform.OS !== 'android') return;
-    if (!ayarlar.aktif) return;
+    // Now Bar (issue #282): kapalı/özel gün yolunda da planlayıcıya "aday yok" denir,
+    // yoksa önceki turun iftar penceresi planda kalırdı.
+    if (!ayarlar.aktif) return this.canliKaynagiBildir('iftarSayac', []);
+
+    // Özel gün (issue #272): hayız/nifas günlerinde oruç da tutulmaz → o günün
+    // iftar sayacı kurulmaz (eski plan yukarıda temizlendi). Gün = takvim günü:
+    // iftar o günün akşamıdır, gece yarısından sonra da bugünün akşamı planlanır.
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
+    if (ozelGundeMi(bugunuAl())) return this.canliKaynagiBildir('iftarSayac', []);
 
     await this.kanalOlustur();
 
     const { lat, lng } = ayarlar.koordinatlar;
     const coordinates = new Coordinates(lat, lng);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const simdi = new Date();
     const prayerTimes = new PrayerTimes(coordinates, simdi, params);
 
@@ -80,13 +91,33 @@ export class IftarSayacBildirimServisi extends SayacBildirimTemeli {
     const vakitGirdiId = `${bildirimId}_vakitgirdi`;
     const temizlemeId = `${bildirimId}_bitis`;
 
+    // Now Bar (issue #282 ikinci aşama): iftar penceresi (imsak → akşam) planlayıcıya
+    // bildirilir; Android 16'da öğe açıksa sayacı planlayıcı gösterir (tam imsakta,
+    // exact alarmla) ve bu servis KENDİ bildirimini kurmaz — çift sayaç olmaz.
+    const iftarCanli = iftarCanliYukuOlustur({
+      imsakMs: sabahVakti.getTime(),
+      ogleMs: prayerTimes.dhuhr.getTime(),
+      ikindiMs: prayerTimes.asr.getTime(),
+      aksamMs: aksamVakti.getTime(),
+    });
+    const karar = await this.canliKarari('iftar');
+    await this.canliKaynagiBildir(
+      'iftarSayac',
+      simdi < aksamVakti
+        ? [this.canliAdayi('iftar', bildirimId, sabahVakti.getTime(), aksamVakti.getTime(), iftarCanli)]
+        : []
+    );
+
     if (simdi < sabahVakti) {
       // Sabah namazindan once: aksam vaktinde "vakit girdi" goster, aksam+10dk'da temizle
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamVakti) {
-      // Sabah ile aksam arasi: hemen native countdown baslat
-      this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime());
+      // Sabah ile aksam arasi: hemen native countdown baslat (planlayıcı devralmadıysa)
+      // Live Update (issue #282): ilerleme çubuğu gün boyu orucu gösterir.
+      if (!karar.devralir) {
+        this.nativeCountdownBaslat(bildirimId, aksamVakti.getTime(), karar.oneCikar ? iftarCanli : undefined);
+      }
       await this.vakitGirdiBildirimiPlanla(vakitGirdiId, aksamVakti.getTime());
       await this.temizlemePlanla(temizlemeId, aksamArti10.getTime());
     } else if (simdi < aksamArti10) {

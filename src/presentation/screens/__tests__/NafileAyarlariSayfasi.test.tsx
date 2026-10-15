@@ -1,0 +1,249 @@
+/**
+ * NafileAyarlariSayfasi (issue #77) — anahtarlar doğru kısmi güncellemeyi
+ * gönderir; kapalı kartın ayrıntısı gizlidir; teheccüd seçicileri benzersiz etiketlidir.
+ */
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react-native';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useRenkler } from '../../../core/theme';
+import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
+import { nafileAyariniGuncelle } from '../../store/nafileSlice';
+import { nafileAyarlariniNormalize } from '../../../data/local/LocalNafileServisi';
+import { nafileAdimi } from '../../../core/nafile/nafileAdimlari';
+
+/** Eski (#273 öncesi) biçimde kayıt → göçmüş ayar. */
+const eski = (k: Record<string, unknown>): NafileAyarlari =>
+    nafileAyarlariniNormalize({ ...VARSAYILAN_NAFILE_AYARLARI, ...k });
+
+jest.mock('../../store/hooks');
+jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn() }));
+jest.mock('../../store/nafileSlice', () => ({
+    nafileAyariniGuncelle: jest.fn((d: unknown) => ({ type: 'nafile/guncelle', payload: d })),
+    nafileAyarlariniBirlestir: jest.requireActual('../../store/nafileSlice').nafileAyarlariniBirlestir,
+}));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+// Bildirim sınırı rehberi (issue #298) ayrı testlerde; burada defter "hazır değil"
+// → kart çizilmez, simülasyon hiçbir değişikliği engellemez.
+const mockButceKutusu: { deger: unknown } = { deger: null };
+jest.mock('../../hooks/useBildirimButcesi', () => {
+    const gercek = jest.requireActual('../../hooks/useBildirimButcesi');
+    return {
+        ...gercek,
+        useBildirimButcesi: () => mockButceKutusu.deger ?? gercek.butceNesnesiOlustur('ios', null, null),
+    };
+});
+jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+    const { Text } = require('react-native');
+    return (props: { name: string }) => <Text>{props.name}</Text>;
+});
+jest.mock('@expo/vector-icons', () => {
+    const { Text } = require('react-native');
+    return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
+});
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    sesSec: jest.fn(),
+    sesiOnizle: jest.fn(),
+    onizlemeyiDurdur: jest.fn(),
+    trDestekleniyorMu: () => Promise.resolve(true),
+}));
+jest.mock('../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { bildirimSesiniCal: jest.fn(), bitisiniBekle: jest.fn(), temizle: jest.fn() },
+}));
+
+import { NafileAyarlariSayfasi } from '../NafileAyarlariSayfasi';
+
+const RENKLER = {
+    birincil: '#4CAF50',
+    arkaplan: '#FAFAFA',
+    kartArkaplan: '#FFFFFF',
+    metin: '#15161A',
+    metinIkincil: '#757575',
+    sinir: '#E0E0E0',
+    birincilMetin: '#FFFFFF',
+    durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
+};
+
+const dispatch = jest.fn();
+const kur = (ayarlar: NafileAyarlari) => {
+    (useAppDispatch as jest.Mock).mockReturnValue(dispatch);
+    (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
+        sec({ nafile: { ayarlar }, konum: { koordinatlar: { lat: 41.0082, lng: 28.9784 } } })
+    );
+    (useRenkler as jest.Mock).mockReturnValue(RENKLER);
+    return render(<NafileAyarlariSayfasi />);
+};
+
+describe('NafileAyarlariSayfasi', () => {
+    beforeEach(() => jest.clearAllMocks());
+
+    it('başlık gövdede tekrarlanmaz; hepsi kapalıyken ayrıntılar gizli', () => {
+        const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
+        expect(ekran.queryByText('Nafile Namazlar')).toBeNull();
+        expect(ekran.queryByText('NE ZAMAN HATIRLATILSIN')).toBeNull();
+        expect(ekran.queryByText('PENCERE')).toBeNull();
+    });
+
+    it('kuşluk anahtarı yalnız kendi alanını günceller', () => {
+        const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
+        fireEvent(ekran.getByLabelText('Kuşluk hatırlatması'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ hatirlatmalar: { kusluk: { aktif: true } } });
+        expect(dispatch).toHaveBeenCalled();
+    });
+
+    it('gösterge anahtarı', () => {
+        const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
+        fireEvent(ekran.getByLabelText('Ana ekranda göster hatırlatması'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gostergeAktif: true });
+    });
+
+    it('teheccüd açıkken pencere seçimi (saatleriyle) ve uyandırma görünür', () => {
+        const ekran = kur(eski({ teheccud: { aktif: true, hedef: 'imsaktanOnce', imsaktanOnceDk: 60, uyandirma: false } }));
+        expect(ekran.getByText('PENCERE')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText(/^Teheccüd penceresi: Son üçte bir · \d\d:\d\d$/));
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ teheccud: { pencere: 'sonUcteBir' } });
+        fireEvent(ekran.getByLabelText('Teheccüd uyandırması'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ teheccud: { uyandirma: true } });
+    });
+
+    it('kuşluk açıkken ortak pencere kartı: yön seçici, adım ve "Hatırlatma ekleyin"', () => {
+        const ekran = kur(eski({ hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: false, ofsetDk: 15 } } }));
+        expect(ekran.getAllByText(/girişten 5 dk sonra/).length).toBeGreaterThan(0);
+        expect(ekran.getByText('NE ZAMAN HATIRLATILSIN')).toBeTruthy();
+        expect(ekran.getByLabelText('Kuşluk vaktine hatırlatma ekleyin')).toBeTruthy();
+    });
+
+    it('adım ekleme yeni adımı yazar ve en fazla 3 adıma izin verir', () => {
+        const kusluk = { aktif: true, yon: 'girisindenItibaren' as const, adimlar: [nafileAdimi(20), nafileAdimi(40), nafileAdimi(60)] };
+        const ekran = kur({ ...VARSAYILAN_NAFILE_AYARLARI, hatirlatmalar: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar, kusluk } });
+        expect(ekran.queryByLabelText('Kuşluk vaktine hatırlatma ekleyin')).toBeNull();
+        expect(ekran.getByText('Bir vakit için en fazla 3 hatırlatma kurabilirsiniz.')).toBeTruthy();
+        expect(ekran.getAllByText('2. hatırlatma').length).toBeGreaterThan(0);
+    });
+
+    describe('adım detayı + sesli anons rızası', () => {
+        const KUSLUK = eski({ hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: false, ofsetDk: 15 } } });
+        const ac = (ayarlar: NafileAyarlari) => {
+            const ekran = kur(ayarlar);
+            fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
+            return ekran;
+        };
+
+        it('"Kapalı" çipi YOK; Bildirim / Sesli anons / İkisi de var', () => {
+            const ekran = ac(KUSLUK);
+            expect(ekran.queryByLabelText('Kapalı')).toBeNull();
+            expect(ekran.getByLabelText('Bildirim')).toBeTruthy();
+            expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
+            expect(ekran.getByLabelText('İkisi de')).toBeTruthy();
+        });
+
+        it('sesli İLK kez seçilince onay sorulur, ayar YAZILMAZ; "Sesli olmadan" adımı bildirimle bırakır', () => {
+            const ekran = ac(KUSLUK);
+            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
+            expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+            fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
+            const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true });
+            expect(d).not.toHaveProperty('sesliOnayi');
+        });
+
+        it('onaylanınca adım sesli olur ve rıza AYRI (nafile) kaydına yazılır', () => {
+            const ekran = ac(KUSLUK);
+            fireEvent.press(ekran.getByLabelText('Sesli anons'));
+            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+            expect(d.sesliOnayi).toBe(true);
+            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ sesli: true });
+        });
+
+        it('rıza zaten varsa doğrudan yazılır', () => {
+            const ekran = ac({ ...KUSLUK, sesliOnayi: true });
+            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
+            const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        });
+    });
+});
+
+describe('NafileAyarlariSayfasi — bildirim sınırı rehberi (issue #298)', () => {
+    const { butceNesnesiOlustur } = jest.requireActual('../../hooks/useBildirimButcesi');
+    const { matrisKur, ISTANBUL } = jest.requireActual('../../../core/bildirim/__tests__/defterFikstur');
+    const SABAH = new Date(2026, 9, 13, 9, 0, 0);
+    const GUNDUZ: NafileAyarlari = eski({
+        hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: true, ofsetDk: 15 } },
+    });
+
+    const butceKur = (nafile: NafileAyarlari) => {
+        mockButceKutusu.deger = butceNesnesiOlustur('ios', {
+            platform: 'ios',
+            simdi: SABAH,
+            koordinat: ISTANBUL,
+            muhafiz: { aktif: true, matris: matrisKur() },
+            nafile,
+        });
+    };
+
+    beforeEach(() => jest.clearAllMocks());
+    afterEach(() => {
+        mockButceKutusu.deger = null;
+    });
+
+    it('iPhone sınırı aşıldığında kart görünür; sayfada YALNIZ nafile önerisi + muhafız yönlendirmesi', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        expect(ekran.getByText('Bazı hatırlatmalar gelmeyecek')).toBeTruthy();
+        fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
+        expect(ekran.getByTestId('oneri-nafileGunuGunune')).toBeTruthy();
+        expect(ekran.queryByTestId('oneri-seyreklestir')).toBeNull();
+        fireEvent.press(ekran.getByLabelText('Namaz Muhafızı ayarlarında yer açın'));
+        expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
+    });
+
+    it('sığmayan hatırlatma AÇILMAZ (teheccüd) — rehber açılır, ayar yazılmaz', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent(ekran.getByLabelText('Teheccüd hatırlatması'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
+        expect(ekran.getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+    });
+
+    it('"günü gününe" tek dokunuşla uygulanır ve GERİ AL ile geri gelir', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
+        fireEvent.press(ekran.getByLabelText('Nafile hatırlatmalarını günü gününe kurun: uygulayın'));
+        expect(nafileAyariniGuncelle).toHaveBeenLastCalledWith(expect.objectContaining({ gunuGununeKur: true }));
+        fireEvent.press(ekran.getByText('GERİ AL'));
+        expect(nafileAyariniGuncelle).toHaveBeenLastCalledWith(expect.objectContaining({ gunuGununeKur: false }));
+    });
+
+    // Fable incelemesi M4: aşımdaki kullanıcı VAR OLAN hatırlatmasının zamanını
+    // değiştirebilmeli — salt zaman değişimi simülasyon kapısından GEÇMEZ.
+    it('aşımdayken yön (zaman) değişikliği ENGELLENMEZ', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent.press(ekran.getAllByLabelText(/^Vakit çıkarken — /)[0]);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledTimes(1);
+        expect(ekran.queryByText('Bu hatırlatma sığmıyor')).toBeNull();
+    });
+
+    it('aşımdayken teheccüd penceresi (tekrarsız) değişikliği ENGELLENMEZ', () => {
+        const ayar = { ...GUNDUZ, teheccud: { ...GUNDUZ.teheccud, aktif: true } };
+        butceKur(ayar);
+        const ekran = kur(ayar);
+        fireEvent.press(ekran.getByLabelText(/^Teheccüd penceresi: Yatsıdan/));
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ teheccud: { pencere: 'yatsi' } });
+    });
+
+    it('aşımdayken adım EKLEME sığmıyorsa yazılmaz, rehber açılır', () => {
+        butceKur(GUNDUZ);
+        const ekran = kur(GUNDUZ);
+        fireEvent.press(ekran.getByLabelText('Kuşluk vaktine hatırlatma ekleyin'));
+        expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
+        expect(ekran.getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+    });
+});

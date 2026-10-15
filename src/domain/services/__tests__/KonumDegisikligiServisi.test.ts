@@ -50,6 +50,48 @@ jest.mock('../SeriSayacHazirlayici', () => ({
         Promise.resolve({ aktif: true, hedef: new Date(), seriBugunTamMi: false })
     ),
 }));
+// Gun sonu seri hatirlatmasi (issue #272): imsaktan X dk once; ozel gun degisimi
+// de bu listeden gecer.
+const mockGunSonuGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../GunSonuHatirlaticiServisi', () => ({
+    gunSonuHatirlatmalariniGuncelle: (...a: unknown[]) => mockGunSonuGuncelle(...a),
+}));
+const mockSeferilikIsle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../SeferilikServisi', () => ({
+    SeferilikServisi: { konumIsle: (...a: unknown[]) => mockSeferilikIsle(...a) },
+}));
+const mockYatisGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../YatisHatirlatmaServisi', () => ({
+    YatisHatirlatmaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockYatisGuncelle(...a) }),
+    },
+}));
+const mockTakvimCakismaGuncelle = jest.fn((..._a: unknown[]) => Promise.resolve());
+jest.mock('../TakvimCakismaServisi', () => ({
+    TakvimCakismaServisi: {
+        getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockTakvimCakismaGuncelle(...a) }),
+    },
+}));
+jest.mock('../NafileHatirlatmaServisi', () => ({
+    NafileHatirlatmaServisi: {
+        getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
+    },
+}));
+jest.mock('../CamiyeGitHatirlatmaServisi', () => ({
+    CamiyeGitHatirlatmaServisi: {
+        getInstance: jest.fn(() => ({ hatirlatmalariGuncelle: jest.fn(() => Promise.resolve()) })),
+    },
+}));
+jest.mock('../WearSenkronServisi', () => ({
+    WearSenkronServisi: {
+        getInstance: jest.fn(() => ({ gonder: jest.fn(() => Promise.resolve()) })),
+    },
+}));
+jest.mock('../CamideyimServisi', () => ({
+    CamideyimServisi: {
+        getInstance: jest.fn(() => ({ konumaBagliTazele: jest.fn(() => Promise.resolve()) })),
+    },
+}));
 jest.mock('../WidgetServisi', () => ({
     WidgetServisi: {
         getInstance: jest.fn(() => ({ vakitleriyaz: jest.fn(() => Promise.resolve()) })),
@@ -79,6 +121,10 @@ import { IftarSayacBildirimServisi } from '../IftarSayacBildirimServisi';
 import { SahurSayacBildirimServisi } from '../SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from '../SeriSayacBildirimServisi';
 import { WidgetServisi } from '../WidgetServisi';
+import { NafileHatirlatmaServisi } from '../NafileHatirlatmaServisi';
+import { WearSenkronServisi } from '../WearSenkronServisi';
+import { CamideyimServisi } from '../CamideyimServisi';
+import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
@@ -112,6 +158,10 @@ const sahte = {
     sahur: jest.fn((..._a: unknown[]) => Promise.resolve()),
     seriSayac: jest.fn((..._a: unknown[]) => Promise.resolve()),
     widget: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    nafile: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    wear: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    cami: jest.fn((..._a: unknown[]) => Promise.resolve()),
+    camiyeGit: jest.fn((..._a: unknown[]) => Promise.resolve()),
 };
 
 beforeEach(() => {
@@ -130,6 +180,10 @@ beforeEach(() => {
     (SahurSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.sahur });
     (SeriSayacBildirimServisi.getInstance as jest.Mock).mockReturnValue({ yapilandirVePlanla: sahte.seriSayac });
     (WidgetServisi.getInstance as jest.Mock).mockReturnValue({ vakitleriyaz: sahte.widget });
+    (NafileHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.nafile });
+    (WearSenkronServisi.getInstance as jest.Mock).mockReturnValue({ gonder: sahte.wear });
+    (CamideyimServisi.getInstance as jest.Mock).mockReturnValue({ konumaBagliTazele: sahte.cami });
+    (CamiyeGitHatirlatmaServisi.getInstance as jest.Mock).mockReturnValue({ hatirlatmalariGuncelle: sahte.camiyeGit });
 });
 
 describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
@@ -150,6 +204,30 @@ describe('konumDegistiUygula — tuketici kapsami (NOBETCI)', () => {
         // sehrin imsagina gore geri sayim gorur.
         expect(sahte.seriSayac).toHaveBeenCalledTimes(1);
         expect(sahte.widget).toHaveBeenCalledTimes(1);
+        // Nafile hatırlatmaları (issue #77): kuşluk/evvâbîn/teheccüd anları
+        // güneş/öğle/akşam/yatsı/imsaktan türer — şehirle birlikte kayar.
+        expect(sahte.nafile).toHaveBeenCalledTimes(1);
+        expect(sahte.nafile).toHaveBeenCalledWith(ANKARA);
+        // Wear OS saati (issue #269): vakitler telefonda hesaplanıp gönderilir.
+        expect(sahte.wear).toHaveBeenCalledTimes(1);
+        // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı ve izlenen camiler.
+        expect(sahte.cami).toHaveBeenCalledWith(ANKARA);
+        // "Camide kılacağım" (issue #292): vakit girişinden yürüme süresi kadar önce.
+        expect(sahte.camiyeGit).toHaveBeenCalledTimes(1);
+        expect(sahte.camiyeGit).toHaveBeenCalledWith(ANKARA);
+        // Gün sonu seri hatırlatması (issue #272): otomatik modda imsaktan X dk
+        // önce — şehirle kayar; özel gün değişimi de bu listeden yeniden kurar.
+        expect(mockGunSonuGuncelle).toHaveBeenCalledTimes(1);
+        expect(mockGunSonuGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Yatış hatırlatması + gün sonu muhasebesi (issue #290): "yatsı sürüyor"
+        // ve "vakti çıkmış" kararları vakitlerden türer — şehirle kayar.
+        expect(mockYatisGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Takvim çakışması uyarısı (issue #291): vakit giriş/çıkışı şehirle kayar,
+        // "etkinlik vaktin sonunu yutuyor mu" kararı yeniden verilmeli.
+        expect(mockTakvimCakismaGuncelle).toHaveBeenCalledWith(ANKARA);
+        // Seferîlik bilgi kartı (issue #296): eve dönünce kapatma hafızası arka
+        // planda da sıfırlanmalı; ilk ikamet yeri de buradan yazılabilir.
+        expect(mockSeferilikIsle).toHaveBeenCalledWith(ANKARA);
     });
 
     it('YENI koordinat her tuketiciye iletilmeli', async () => {

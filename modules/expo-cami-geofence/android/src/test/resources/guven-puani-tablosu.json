@@ -1,0 +1,1470 @@
+{
+  "aciklama": "Camideyim guven puani senaryolari (Faz 2) — JS (src/core/cami/__tests__/guvenPuani.test.ts) ve Kotlin (GuvenPuaniTest) AYNI sonuclari vermeli. Beklenenler ELLE yazildi; konumlar sentetik.",
+  "senaryolar": [
+    {
+      "ad": "ezan girişinde caminin içinde → otomatik",
+      "simdiMs": 1792058700000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "otomatik",
+        "zaman": "ezanYakin",
+        "yer": "poligonIci",
+        "hareket": "durgun",
+        "puan": 95,
+        "guvenKarari": "otomatik",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "cuma hutbesi, bina içi (hız bilinmiyor) → otomatik",
+      "simdiMs": 1792146000000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 15
+      },
+      "hizMps": null,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "otomatik",
+        "zaman": "cuma",
+        "yer": "poligonIci",
+        "hareket": "bilinmiyor",
+        "puan": 90,
+        "guvenKarari": "otomatik",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "cuma, avluda/sokakta (tampon) → sor",
+      "simdiMs": 1792146000000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 6
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "cuma",
+        "yer": "tampon",
+        "hareket": "durgun",
+        "puan": 65,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "önünden yürüyerek geçme (tampon, 1,8 m/s) → hiçbir",
+      "simdiMs": 1792059000000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 12
+      },
+      "hizMps": 1.8,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "hicbir",
+        "zaman": "ezanYakin",
+        "yer": "tampon",
+        "hareket": "hareketli",
+        "puan": 50,
+        "guvenKarari": "hicbir",
+        "tavan": "gecipGidiyor"
+      }
+    },
+    {
+      "ad": "trafikte 5 dk durma, yol bina tamponunda (hız 0) → en fazla sor",
+      "simdiMs": 1792059300000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 6
+      },
+      "hizMps": 0,
+      "beklemeDk": 5,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "ezanYakin",
+        "yer": "tampon",
+        "hareket": "durgun",
+        "puan": 65,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "trafikte 10 dk durma, nokta camisinin kenarı (puan yüksek ama kenar) → sor",
+      "simdiMs": 1792059300000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.02018,
+        "lng": 28.98,
+        "dogrulukM": 4
+      },
+      "hizMps": 0,
+      "beklemeDk": 10,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:n9000000002",
+          "ad": "Nokta Camii (fikstür)",
+          "lat": 41.02,
+          "lng": 28.98,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "ezanYakin",
+        "yer": "noktaKenar",
+        "hareket": "durgun",
+        "puan": 75,
+        "guvenKarari": "sor",
+        "tavan": "kenar"
+      }
+    },
+    {
+      "ad": "trafikte durma, yol binadan 41 m → hiçbir (alan dışı)",
+      "simdiMs": 1792059300000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010451,
+        "lng": 28.972,
+        "dogrulukM": 6
+      },
+      "hizMps": 0,
+      "beklemeDk": 5,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "eylem": "hicbir"
+      }
+    },
+    {
+      "ad": "yanındaki kafede oturma (41 m) → hiçbir",
+      "simdiMs": 1792072800000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010451,
+        "lng": 28.972,
+        "dogrulukM": 9
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "disarida",
+        "eylem": "hicbir"
+      }
+    },
+    {
+      "ad": "yanındaki kafede oturma (tampon içinde, vakit girişinden 50 dk sonra) → hiçbir",
+      "simdiMs": 1792072800000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 9
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "hicbir",
+        "zaman": "kapiIci",
+        "yer": "tampon",
+        "hareket": "durgun",
+        "puan": 40,
+        "guvenKarari": "hicbir",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "vakit dışında uğrama (kapı açık) → konum bile ölçülmez",
+      "simdiMs": 1792047600000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "vakitDisi",
+        "eylem": "hicbir"
+      }
+    },
+    {
+      "ad": "vakit dışında uğrama (kapı ayarı kapalı) → en fazla sor",
+      "simdiMs": 1792047600000,
+      "vakitKapisiAcik": false,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "serbest",
+        "yer": "poligonIci",
+        "hareket": "durgun",
+        "puan": 55,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "araçla bina içinden geçiş (3 m/s) → otomatik değil, sor",
+      "simdiMs": 1792058700000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "hizMps": 3,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "ezanYakin",
+        "yer": "poligonIci",
+        "hareket": "hareketli",
+        "puan": 90,
+        "guvenKarari": "sor",
+        "tavan": "hareketli"
+      }
+    },
+    {
+      "ad": "kendi eklediğiniz mescit, ezan vakti → otomatik",
+      "simdiMs": 1792058700000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.030072,
+        "lng": 28.99,
+        "dogrulukM": 8
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "kendi:fikstur",
+          "ad": "İş yerindeki mescit",
+          "lat": 41.03,
+          "lng": 28.99,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": 20,
+          "kaynak": "kendi",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "otomatik",
+        "zaman": "ezanYakin",
+        "yer": "kullaniciAlani",
+        "hareket": "durgun",
+        "puan": 85,
+        "guvenKarari": "otomatik",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "nokta camisi merkezi, vakitten 50 dk sonra (yavaş) → sor",
+      "simdiMs": 1792061400000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.020045,
+        "lng": 28.98,
+        "dogrulukM": 15
+      },
+      "hizMps": 0.9,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:n9000000002",
+          "ad": "Nokta Camii (fikstür)",
+          "lat": 41.02,
+          "lng": 28.98,
+          "yaricapM": 0,
+          "poligon": null,
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "kapiIci",
+        "yer": "noktaMerkez",
+        "hareket": "yavas",
+        "puan": 55,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "ezan girişinden 10 dk önce bina içi (sınır) → otomatik",
+      "simdiMs": 1792057800000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 20
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "otomatik",
+        "zaman": "ezanYakin",
+        "yer": "poligonIci",
+        "hareket": "durgun",
+        "puan": 90,
+        "guvenKarari": "otomatik",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "ezan girişinden 41 dk sonra bina içi → kapı içi",
+      "simdiMs": 1792060860000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 25
+      },
+      "hizMps": null,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "kapiIci",
+        "yer": "poligonIci",
+        "hareket": "bilinmiyor",
+        "puan": 60,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "\"Sorarak aç\": yüksek güven de sorulur",
+      "simdiMs": 1792058700000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 8
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "sorarak",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "sor",
+        "zaman": "ezanYakin",
+        "yer": "poligonIci",
+        "hareket": "durgun",
+        "puan": 95,
+        "guvenKarari": "otomatik",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "\"Otomatik aç\": sınırdaki durum da açılır",
+      "simdiMs": 1792059300000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 6
+      },
+      "hizMps": 0,
+      "beklemeDk": 5,
+      "acilisBicimi": "otomatik",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "otomatik",
+        "zaman": "ezanYakin",
+        "yer": "tampon",
+        "hareket": "durgun",
+        "puan": 65,
+        "guvenKarari": "sor",
+        "tavan": null
+      }
+    },
+    {
+      "ad": "\"Otomatik aç\": önünden geçme yine açılmaz",
+      "simdiMs": 1792059000000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.010775,
+        "lng": 28.972,
+        "dogrulukM": 12
+      },
+      "hizMps": 1.8,
+      "beklemeDk": 3,
+      "acilisBicimi": "otomatik",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "camide",
+        "eylem": "hicbir",
+        "zaman": "ezanYakin",
+        "yer": "tampon",
+        "hareket": "hareketli",
+        "puan": 50,
+        "guvenKarari": "hicbir",
+        "tavan": "gecipGidiyor"
+      }
+    },
+    {
+      "ad": "kaba ölçüm (45 m) → şüpheli, hiçbir",
+      "simdiMs": 1792058700000,
+      "vakitKapisiAcik": true,
+      "pencereler": [
+        {
+          "bas": 1792057200000,
+          "son": 1792062000000,
+          "vakit": "ogle",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792068600000,
+          "son": 1792073400000,
+          "vakit": "ikindi",
+          "tarih": "2026-10-15",
+          "cuma": false
+        },
+        {
+          "bas": 1792139400000,
+          "son": 1792150200000,
+          "vakit": "ogle",
+          "tarih": "2026-10-16",
+          "cuma": true
+        }
+      ],
+      "konum": {
+        "lat": 41.011,
+        "lng": 28.972,
+        "dogrulukM": 45
+      },
+      "hizMps": 0,
+      "beklemeDk": 3,
+      "acilisBicimi": "akilli",
+      "adaylar": [
+        {
+          "id": "osm:w9100000001",
+          "ad": "Kare Camii (fikstür)",
+          "lat": 41.011,
+          "lng": 28.972,
+          "yaricapM": 29,
+          "poligon": [
+            [
+              41.01082,
+              28.971762
+            ],
+            [
+              41.01082,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.972238
+            ],
+            [
+              41.01118,
+              28.971762
+            ]
+          ],
+          "ozelAlanM": null,
+          "kaynak": "osm",
+          "favori": false
+        }
+      ],
+      "haric": [],
+      "beklenen": {
+        "sonuc": "supheli",
+        "eylem": "hicbir"
+      }
+    }
+  ]
+}

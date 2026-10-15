@@ -6,13 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "scheme": "namazakisi",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#4CAF50"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.furkanisikay.namazakisi",
@@ -31,18 +25,16 @@
       "allowBackup": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
+        "monochromeImage": "./assets/adaptive-icon-monochrome.png",
         "backgroundColor": "#4CAF50"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_BACKGROUND_LOCATION",
-        "android.permission.FOREGROUND_SERVICE_LOCATION",
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.SCHEDULE_EXACT_ALARM",
         "android.permission.USE_EXACT_ALARM",
@@ -56,6 +48,20 @@
     },
     "plugins": [
       "./plugins/withPlayStoreDependency",
+      "./plugins/withSiriKisayollari",
+      "./plugins/withMuhafizAlarmKit",
+      [
+        "./plugins/withNamazWidget",
+        {
+          "etkin": false
+        }
+      ],
+      [
+        "./plugins/withNamazSaat",
+        {
+          "etkin": false
+        }
+      ],
       [
         "expo-audio",
         {
@@ -68,29 +74,39 @@
         {
           "sounds": [
             "./assets/sounds/bildirim.mp3",
-            "./assets/sounds/bildirim_ios.wav"
+            "./assets/sounds/bildirim_ios.wav",
+            "./assets/sounds/alarm_ios.wav"
           ]
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
-          "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationAlwaysAndWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması ve Camideyim açıksa camiye girince Namaz modunun açılması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
+          "locationAlwaysPermission": "Şehir değiştirdiğinizde namaz vakitlerini kendiliğinden güncellemek ve Camideyim açıksa camiye girince Namaz modunu açmak için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "locationWhenInUsePermission": "Namaz vakitlerinin bulunduğunuz yere göre doğru hesaplanması için konumunuz kullanılır. Konumunuz cihazınızdan çıkmaz.",
           "isAndroidBackgroundLocationEnabled": true,
-          "isAndroidForegroundServiceEnabled": true
+          "isAndroidForegroundServiceEnabled": false
         }
       ],
       "expo-task-manager",
       "expo-background-fetch",
+      "@maplibre/maplibre-react-native",
       [
         "expo-calendar",
         {
-          "calendarPermission": "Namaz vakitlerini takviminize eklemek için takvim iznine ihtiyaç var."
+          "calendarPermission": "Namaz vakitlerini takviminize eklemek ve siz açarsanız takviminizdeki etkinliklerin bir namaz vaktiyle çakışıp çakışmadığını denetlemek için takvim izni kullanılır. Takvim bilgileriniz cihazınızdan çıkmaz."
         }
       ],
-      "expo-mail-composer"
+      "expo-mail-composer",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#4CAF50"
+        }
+      ]
     ],
     "owner": "furkanisikay",
     "extra": {

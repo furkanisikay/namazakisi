@@ -47,13 +47,14 @@ describe('AkisOnizleme — giris yonu tarama baslangici', () => {
         expect(plan).toHaveLength(0);
     });
 
-    it('onizlemedeki adimlar ARTAN tonda ilerler (nazik → acil)', () => {
+    it('onizlemedeki adimlar ARTAN tonda ilerler (nazik → sert)', () => {
         const seviyeler = vakitUyariPlaniOlustur(girisAyari(), ONIZLEME_GIRIS_BASLANGIC_DK, {
             pencereUzunluguDk: YATSI_PENCERESI_DK,
         }).map((p) => p.seviye);
 
         expect(seviyeler[0]).toBe(1);
-        expect(seviyeler[seviyeler.length - 1]).toBe(4);
+        // Giriş yönünde acil ton yok (issue #274) → en sert konuşan "sert".
+        expect(seviyeler[seviyeler.length - 1]).toBe(3);
         expect([...seviyeler].sort((a, b) => a - b)).toEqual(seviyeler);
     });
 });

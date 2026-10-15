@@ -1,4 +1,9 @@
-import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../vakitSayacYardimcisi';
+import {
+  sayacBaslangicEsikleriHesapla,
+  muhafizUyarilanVakitleriBul,
+  sayacBaslangicSecenekleriOlustur,
+  seciliSayacBaslangici,
+} from '../vakitSayacYardimcisi';
 import type { MuhafizMatrisi } from '../../muhafiz/matrisTipleri';
 import { eskidenMatriseGoc } from '../../muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI } from '../../muhafiz/matrisTipleri';
@@ -33,11 +38,11 @@ describe('sayacBaslangicEsikleriHesapla', () => {
   it('VAKİT BAZLI: her vakit kendi eşiğini döndürür (global değil)', () => {
     const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
     matris.ogle.seviyeler[0].esikDk = 60;
-    matris.ikindi.seviyeler[0].esikDk = 12;
+    matris.ikindi.seviyeler[0].esikDk = 52;
 
     const esikler = sayacBaslangicEsikleriHesapla(1, matris);
     expect(esikler.ogle).toBe(60);
-    expect(esikler.ikindi).toBe(12);
+    expect(esikler.ikindi).toBe(52);
     expect(esikler.aksam).toBe(45); // dokunulmayan vakit varsayılanda kalır
   });
 
@@ -151,5 +156,82 @@ describe('sayacBaslangicEsikleriHesapla — giris yonlu vakit', () => {
 
     expect(sayacBaslangicEsikleriHesapla(1, matris).ogle).toBe(45);
     expect(sayacBaslangicEsikleriHesapla(3, matris).ikindi).toBe(10);
+  });
+});
+
+describe('sayacBaslangicEsikleriHesapla — kronolojik N. hatırlatma (issue #274)', () => {
+  const adim = (kademe: 'nazik' | 'uyari' | 'sert' | 'acil', esikDk: number) => ({
+    kademe,
+    kanallar: { bildirim: true },
+    esikDk,
+    siklik: 'birkez' as const,
+    bildirimSesi: 'varsayilan',
+    anonsMetni: '',
+  });
+  const matrisKur = (seviyeler: ReturnType<typeof adim>[]): MuhafizMatrisi =>
+    Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, { seviyeler }])) as MuhafizMatrisi;
+
+  it('numara TONU değil SIRAYI anlatır: 2. hatırlatma ikinci en büyük eşiktir', () => {
+    // Tonlar sırasız: sert önce, nazik sonra.
+    const m = matrisKur([adim('sert', 50), adim('nazik', 20), adim('acil', 5)]);
+    expect(sayacBaslangicEsikleriHesapla(2, m).ogle).toBe(20);
+  });
+
+  it('vakitte o kadar hatırlatma yoksa SON hatırlatmaya düşer', () => {
+    const m = matrisKur([adim('nazik', 30), adim('sert', 8)]);
+    expect(sayacBaslangicEsikleriHesapla(4, m).yatsi).toBe(8);
+  });
+
+  it('5. ve 6. hatırlatma seçilebilir', () => {
+    const m = matrisKur([60, 50, 40, 30, 20, 10].map((e) => adim('uyari', e)));
+    expect(sayacBaslangicEsikleriHesapla(6, m).aksam).toBe(10);
+    expect(sayacBaslangicEsikleriHesapla(7, m).aksam).toBe(60); // aralık dışı → 1.
+  });
+});
+
+describe('sayacBaslangicSecenekleriOlustur (issue #274 — bayat global eşik yok)', () => {
+  it('tek düze matris: 4 seçenek, metin gerçek kronolojik eşik', () => {
+    expect(sayacBaslangicSecenekleriOlustur(tekDuzeMatris)).toEqual([
+      { seviye: 1, metin: 'Son 45 Dakika' },
+      { seviye: 2, metin: 'Son 25 Dakika' },
+      { seviye: 3, metin: 'Son 10 Dakika' },
+      { seviye: 4, metin: 'Son 3 Dakika' },
+    ]);
+  });
+
+  it('seçenek sayısı matristeki EN FAZLA adım sayısıdır; eksik vakit SON adıma düşer', () => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    const sablon = matris.ogle.seviyeler;
+    for (const v of MUHAFIZ_VAKITLERI) matris[v].seviyeler = matris[v].seviyeler.slice(2); // 10, 3
+    matris.ogle.seviyeler = [
+      sablon[0], // 45
+      sablon[1], // 25
+      { ...sablon[1], esikDk: 20 },
+      { ...sablon[1], esikDk: 15 },
+      sablon[2], // 10
+      sablon[3], // 3
+    ];
+    const secenekler = sayacBaslangicSecenekleriOlustur(matris);
+    expect(secenekler).toHaveLength(6);
+    expect(secenekler[0].metin).toBe('Son 10–45 Dakika (vakte göre)');
+    // 2 adımlı vakitlerde 6. hatırlatma yok → son hatırlatma (3 dk).
+    expect(secenekler[5].metin).toBe('Son 3 Dakika');
+  });
+
+  it('bayat global eşikleri OKUMAZ (matristen gelir)', () => {
+    const matris: MuhafizMatrisi = JSON.parse(JSON.stringify(tekDuzeMatris));
+    for (const v of MUHAFIZ_VAKITLERI) {
+      matris[v].seviyeler = [matris[v].seviyeler[1], matris[v].seviyeler[3]]; // 25, 3
+    }
+    expect(sayacBaslangicSecenekleriOlustur(matris).map((s) => s.metin)).toEqual([
+      'Son 25 Dakika',
+      'Son 3 Dakika',
+    ]);
+  });
+
+  it('seçili değer seçenek sayısını aşarsa son seçenek seçili görünür', () => {
+    expect(seciliSayacBaslangici(undefined, 4)).toBe(1);
+    expect(seciliSayacBaslangici(3, 4)).toBe(3);
+    expect(seciliSayacBaslangici(5, 2)).toBe(2);
   });
 });

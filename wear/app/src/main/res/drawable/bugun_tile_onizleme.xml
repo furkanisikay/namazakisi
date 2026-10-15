@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- "Bugün" tile seçici önizlemesi (Wear kalite yönergesi WO-V10): üstte beş dilimli
+     yay, ortada 3 + 2 vakit dairesi. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="192dp" android:height="192dp"
+    android:viewportWidth="192" android:viewportHeight="192">
+    <path android:fillColor="#FF000000" android:pathData="M96,0a96,96 0,1 0,0.1 0z" />
+    <path android:strokeColor="#FF4CAF50" android:strokeWidth="5" android:pathData="M38,40A78,78 0,0 1,62 22" />
+    <path android:strokeColor="#FF4CAF50" android:strokeWidth="5" android:pathData="M68,19A78,78 0,0 1,90 14" />
+    <path android:strokeColor="#FFFFC107" android:strokeWidth="5" android:pathData="M96,14A78,78 0,0 1,120 18" />
+    <path android:strokeColor="#FF424242" android:strokeWidth="5" android:pathData="M126,20A78,78 0,0 1,148 33" />
+    <path android:strokeColor="#FF424242" android:strokeWidth="5" android:pathData="M152,37A78,78 0,0 1,166 54" />
+    <path android:fillColor="#FFBDBDBD" android:pathData="M76,44h40v8h-40z" />
+    <path android:fillColor="#FF4CAF50" android:pathData="M50,84a20,20 0,1 0,0.1 0z" />
+    <path android:fillColor="#FF4CAF50" android:pathData="M96,84a20,20 0,1 0,0.1 0z" />
+    <path android:fillColor="#FF202020" android:strokeColor="#FF4CAF50" android:strokeWidth="2.5"
+        android:pathData="M142,84a20,20 0,1 0,0.1 0z" />
+    <path android:fillColor="#FF303030" android:pathData="M73,128a20,20 0,1 0,0.1 0z" />
+    <path android:fillColor="#FF303030" android:pathData="M119,128a20,20 0,1 0,0.1 0z" />
+</vector>

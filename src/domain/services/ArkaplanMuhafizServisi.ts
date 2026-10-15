@@ -8,20 +8,35 @@
 
 import * as Notifications from 'expo-notifications';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/SeytanlaMucadeleIcerigi';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import type { VakitAdi } from '../../core/types';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
-import { basligiOlustur, bildirimGovdesiOlustur, GIRIS_ICERIK_HAVUZU, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
-import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur } from '../../core/muhafiz/motorAdaptoru';
-import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
-import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
-import { muhafizBildirimIdOlustur } from '../../core/muhafiz/anonsKimligi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { basligiOlustur, type MuhafizSeviye } from '../../core/utils/muhafizMetinYardimcisi';
+import { muhafizGovdesiSec } from '../../core/muhafiz/muhafizGovdesi';
+import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
+import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import {
+    muhafizVakitleriniHesapla,
+    yarininImsagiPlanlanirMi,
+    butceArtigiMi,
+    planlanacakMuhafizVakitleri,
+    vakitTeslimAdaylari,
+} from '../../core/muhafiz/muhafizTeslimPlani';
 import { muhafizTeslimcisiniAl, type VakitZamani } from './MuhafizTeslimcisi';
+import {
+    ertelemeKimligiMi,
+    ertelemeSusturuyorMu,
+    etkinErtelemeler,
+    muhafizPlanKimligiMi,
+} from '../../core/muhafiz/erteleme';
+import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
+import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
+import { alarmErtelemeleriniOku } from './muhafizErtelemeDurumu';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -47,6 +62,10 @@ export interface ArkaplanMuhafizAyarlari {
 export class ArkaplanMuhafizServisi {
     private static instance: ArkaplanMuhafizServisi;
     private ayarlar: ArkaplanMuhafizAyarlari | null = null;
+    /** Bu turda korunan ertelemeler: `<tarih>_<vakit>` → hedef ms (issue #289). */
+    private ertelemeler: Record<string, number> = {};
+    /** Bildirim kategorileri bu süreçte kaydedildi mi (L7 — düğmesiz bildirim olmasın). */
+    private kategorilerKayitli = false;
 
     private constructor() { }
 
@@ -68,6 +87,13 @@ export class ArkaplanMuhafizServisi {
         try {
             await this.planla(ayarlar);
         } finally {
+            // Saat (Wear OS) hazir plani tasir → plan degisince o da tazelenir.
+            // `hazirla` ile DOGRULANMIS matris gecer (kimlik paritesi).
+            const son = this.ayarlar ?? ayarlar;
+            const dinleyiciHatasi = muhafizPlaniDegistiBildir({ aktif: son.aktif, matris: son.matris });
+            if (dinleyiciHatasi) {
+                Logger.warn('ArkaplanMuhafiz', 'Plan dinleyicisi hata verdi', dinleyiciHatasi);
+            }
             // Tur sonu isi (iOS: anons klibi GC). HER cikis yolunda calismali —
             // muhafiz kapaliyken ya da hic vakit kalmamisken de; aksi halde
             // kapatilan muhafizin klipleri cihazda sonsuza kadar kalirdi.
@@ -79,13 +105,24 @@ export class ArkaplanMuhafizServisi {
         }
     }
 
+    /**
+     * Son ayarlarla yeniden planlar (ayar degismeden TESLIM yetenegi degistiginde —
+     * ör. iOS'ta AlarmKit izni verildi, issue #74). Hic yapilandirilmadiysa no-op:
+     * acilis zinciri zaten planlayacak.
+     */
+    public async yenidenPlanla(): Promise<void> {
+        if (this.ayarlar) await this.yapilandirVePlanla(this.ayarlar);
+    }
+
     private async planla(ayarlar: ArkaplanMuhafizAyarlari): Promise<void> {
         this.ayarlar = ayarlar;
 
         Logger.info('ArkaplanMuhafiz', `Muhafiz yapilandiriliyor (aktif: ${ayarlar.aktif})`);
 
-        // Once tum eski muhafiz bildirimlerini temizle
-        await this.tumMuhafizBildirimleriniTemizle();
+        // Once tum eski muhafiz bildirimlerini temizle. Kullanicinin ERTELEMESI
+        // (issue #289) muhafiz acikken korunur ve bu turun plani onun susturdugu
+        // araliga uyari kurmaz; muhafiz kapatildiysa erteleme de gider.
+        this.ertelemeler = await this.tumMuhafizBildirimleriniTemizle({ ertelemeyiKoru: ayarlar.aktif });
 
         // Ayarlar aktif degilse sadece temizle ve cik. Kanal COP TOPLAMA burada da
         // calisir (matris verilmeden): muhafiz kapatildiginda kullanicinin ozel sesli
@@ -95,6 +132,13 @@ export class ArkaplanMuhafizServisi {
             Logger.info('ArkaplanMuhafiz', 'Muhafiz devre disi, bildirimler temizlendi');
             return;
         }
+
+        // Kategoriler (eylem dugmeleri) PLANLAMADAN ONCE garanti: guncelleme sonrasi
+        // yeni kategori ("Ertele" #289) ancak kayit kosunca vardir ve dinleyici
+        // kurulumu (index.ts dinamik import) bu turla YARISIR. Kayitsiz kategoriyle
+        // gosterilen bildirim dugmesiz cikar. Surec basina bir kez; basarisizsa
+        // sonraki turda yeniden denenir. Planlamayi ASLA dusurmez.
+        await this.kategorileriGarantile();
 
         // Kanal id'leri artik SESIN fonksiyonu (bkz. core/muhafiz/sesKimligi.ts) →
         // planlamadan ONCE gerekli kanallar olusturulmali; var olmayan bir kanala
@@ -111,36 +155,40 @@ export class ArkaplanMuhafizServisi {
                 (await muhafizTeslimcisiniAl().hazirla(ayarlar.matris)) ?? ayarlar.matris,
         };
 
-        // Bugunun vakit zamanlarini al
-        const vakitler = this.bugunVakitleriniHesapla();
+        // Vakitler + eleme + uyari uretimi SAF plan ureticisinde
+        // (`core/muhafiz/muhafizTeslimPlani.ts`). Bildirim defteri (issue #298)
+        // AYNI fonksiyonu kuru calistirir; burada ayri bir mantik YAZILMAZ,
+        // yoksa rehber ekrani ile cihazdaki plan ayrisir.
         const simdi = new Date();
+        // Yarının imsağı da (issue #74 M2): akşam kurulan plan sabahı da kapsasın — OEM
+        // 15 dk görevini öldürse (Android) ya da background fetch hiç koşmasa (iOS) da
+        // sabah uyarısı kurulu olsun. iOS'ta BÜTÇE ARTIĞI olarak (bkz. `yarininImsagiKipi`).
+        const vakitler = muhafizVakitleriniHesapla(this.ayarlar.koordinatlar, simdi, {
+            yarininImsagi: yarininImsagiPlanlanirMi(muhafizTeslimcisiniAl().ad),
+        });
 
         // Kilinmis vakitleri al (bugun VE dun icin - gece yarisi gecisleri)
-        const kilinanVakitlerBugun = await kilinanVakitleriAl(bugunuAl());
-        const kilinanVakitlerDun = await kilinanVakitleriAl(dunuAl());
-
-        // Kolay erisim icin tarihe gore map olustur
         const kilinanVakitlerMap: Record<string, VakitAdi[]> = {
-            [bugunuAl()]: kilinanVakitlerBugun,
-            [dunuAl()]: kilinanVakitlerDun,
+            [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
+            [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
         };
 
-        // Cikis suresi henuz gecmemis (gelecekte olan) VE kilinmamis vakitler icin planlama yap
-        const gelecekVakitler = vakitler.filter(v => {
-            // Vakit zamani gecmis mi?
-            if (v.cikis.getTime() <= simdi.getTime()) {
-                return false;
-            }
+        // OZEL GUN (issue #272): aralik aktifken o gunun vakitleri icin ne
+        // bildirim ne TTS anons alarmi kurulur. Eski plan yukarida zaten
+        // temizlendi; aralik bitince ilk tur (acilis / 15 dk gorevi) planlamayi
+        // kendiliginden geri getirir. Kapi VAKTIN GUNUNE bakar (gece yarisindan
+        // sonraki yatsi DUNE aittir). Bes tuketici de bu fonksiyondan gectigi
+        // icin kapi burada TEK yerde durur.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
 
-            // Bu vakit kilinmis mi? (vaktin ait oldugu tarihe gore kontrol et)
-            const tarihinKilinanVakitleri = kilinanVakitlerMap[v.tarih] || [];
-            if (tarihinKilinanVakitleri.includes(v.vakit)) {
-
-                return false;
-            }
-
-            return true;
-        });
+        const planGirdisi = {
+            matris: this.ayarlar.matris,
+            vakitler,
+            simdi,
+            kilindiMi: (tarih: string, vakit: VakitAdi) => (kilinanVakitlerMap[tarih] || []).includes(vakit),
+            ozelGundeMi,
+        };
+        const gelecekVakitler = planlanacakMuhafizVakitleri(planGirdisi);
 
         if (gelecekVakitler.length === 0) {
             Logger.info('ArkaplanMuhafiz', 'Gelecek veya kilinmamis vakit bulunamadi');
@@ -154,166 +202,63 @@ export class ArkaplanMuhafizServisi {
         Logger.info('ArkaplanMuhafiz', `Toplam ${gelecekVakitler.length} vakit icin bildirimler planlandi`);
     }
 
-    /**
-     * Bugun icin tum namaz vakitlerini hesapla
-     * Gece yarisi gecislerini dogru sekilde ele alir
-     */
-    private bugunVakitleriniHesapla(): VakitZamani[] {
-        if (!this.ayarlar) return [];
-
-        const { lat, lng } = this.ayarlar.koordinatlar;
-        const coordinates = new Coordinates(lat, lng);
-        const params = CalculationMethod.Turkey();
-        const simdi = new Date();
-
-        // Bugun ve dun icin hesapla (gece yarisi gecisleri icin)
-        const bugunTarih = new Date(simdi);
-        const dunTarih = new Date(simdi);
-        dunTarih.setDate(dunTarih.getDate() - 1);
-        const yarinTarih = new Date(simdi);
-        yarinTarih.setDate(yarinTarih.getDate() + 1);
-
-        const bugunPrayerTimes = new PrayerTimes(coordinates, bugunTarih, params);
-        const dunPrayerTimes = new PrayerTimes(coordinates, dunTarih, params);
-        const yarinPrayerTimes = new PrayerTimes(coordinates, yarinTarih, params);
-
-        // Tarih formatla - yerel saat dilimine gore (UTC degil!)
-        const formatDate = (d: Date) => {
-            const yil = d.getFullYear();
-            const ay = String(d.getMonth() + 1).padStart(2, '0');
-            const gun = String(d.getDate()).padStart(2, '0');
-            return `${yil}-${ay}-${gun}`;
-        };
-        const bugunStr = formatDate(bugunTarih);
-        const dunStr = formatDate(dunTarih);
-
-        const vakitler: VakitZamani[] = [];
-
-        // Eger su an imsak vaktinden onceyse, dunun yatsi vakti hala aktiftir
-        if (simdi < bugunPrayerTimes.fajr) {
-            // Dunun yatsisi hala devam ediyor (gece yarisi gecmis ama imsak olmamis)
-            vakitler.push({
-                vakit: 'yatsi',
-                giris: dunPrayerTimes.isha,
-                cikis: bugunPrayerTimes.fajr,
-                tarih: dunStr, // Dune ait!
-            });
+    private async kategorileriGarantile(): Promise<void> {
+        if (this.kategorilerKayitli) return;
+        try {
+            await bildirimKategorileriniKaydet();
+            this.kategorilerKayitli = true;
+        } catch (error) {
+            Logger.warn('ArkaplanMuhafiz', 'Bildirim kategorileri kaydedilemedi', error);
         }
-
-        // Bugunun vakitleri
-        vakitler.push(
-            {
-                vakit: 'imsak',
-                giris: bugunPrayerTimes.fajr,
-                cikis: bugunPrayerTimes.sunrise,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'ogle',
-                giris: bugunPrayerTimes.dhuhr,
-                cikis: bugunPrayerTimes.asr,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'ikindi',
-                giris: bugunPrayerTimes.asr,
-                cikis: bugunPrayerTimes.maghrib,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'aksam',
-                giris: bugunPrayerTimes.maghrib,
-                cikis: bugunPrayerTimes.isha,
-                tarih: bugunStr,
-            },
-            {
-                vakit: 'yatsi',
-                giris: bugunPrayerTimes.isha,
-                cikis: yarinPrayerTimes.fajr, // Yarinin imsak vaktine kadar
-                tarih: bugunStr,
-            }
-        );
-
-        return vakitler;
     }
 
     /**
-     * Belirli bir vakit icin tum seviye bildirimlerini planla.
+     * Belirli bir vakit icin uyarilari teslimciye aktar.
      *
-     * Faz 3: dakika taramasi + seviye/siklik karari SAF `vakitUyariPlaniOlustur`
-     * icinde (o vaktin kendi matris satiri okunur). Sessiz (mod='sessiz') seviye
-     * pencere saglamaz -> hic planlanmaz; ayni dakikaya birden cok seviye dusemez
-     * (en acil kazanir) -> cakisma dogal olarak tekildir.
+     * Hangi dakikada hangi adimin konusacagi SAF `vakitTeslimAdaylari`'ndan gelir
+     * (motor: `vakitUyariPlaniOlustur`); burada yalniz METIN uretilir (rastgele
+     * govde secimi) ve teslimci cagrilir.
      */
     private async vakitIcinBildirimPlanla(vakit: VakitZamani): Promise<void> {
         if (!this.ayarlar) return;
 
-        const simdi = new Date();
-        const cikisSuresi = vakit.cikis.getTime();
-
-        // Vakit zaten gecmisse planlamaya gerek yok
-        if (cikisSuresi <= simdi.getTime()) {
-            return;
-        }
-
-        // 'gunes' muhafizda planlanmaz -> matriste satiri yoktur.
-        const muhafizVakti = vakit.vakit as MuhafizVakti;
-        const vakitAyari = this.ayarlar.matris[muhafizVakti];
-        if (!vakitAyari) return;
-
-        // FAZ 1 — YON. Giris yonunde motor `pencereUzunluguDk` OLMADAN hic
-        // tetiklenmez (plan bos doner): olcunun ust siniri ancak pencereden
-        // turetilebilir. Ayni degeri on plan (`NamazMuhafiziServisi`) da hesaplar;
-        // ayrisirlarsa banner ile bildirim ayri dakikalara duser (AGENTS.md'de
-        // kayitli ders).
-        const yon: PencereYonu = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
-        const pencereUzunluguDk = pencereUzunluguDkHesapla(vakit.giris, vakit.cikis);
-
-        // Tarama SU ANKI olcuden baslar: cikis yonunde kalan, giris yonunde
-        // girisin uzerinden gecen dakika (vakit henuz girmediyse negatif → motor
-        // 1'den tarar ve pencerenin tamamini planlar).
-        const suankiOlcu = olcuDkHesapla(
-            { kaynak: `vakit:${vakit.vakit}`, baslangic: vakit.giris, bitis: vakit.cikis, yon },
-            simdi
+        // Ertelenen vakitte (issue #289) hedef ana kadarki uyarilar KURULMAZ —
+        // erteleme "o zamana kadar sus" demektir; 15 dk gorevi / acilis onlari
+        // geri getirmemeli. Ertelenen kopya hedef aninda kendisi gelir.
+        // Kural TEK kaynaktan (`ertelemeSusturuyorMu`): on plan banner'i ve saatin
+        // plani da ayni fonksiyondan gecer.
+        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date()).filter(
+            (a) => !ertelemeSusturuyorMu(this.ertelemeler, vakit.tarih, vakit.vakit, a.zaman.getTime())
         );
-        const plan = vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk });
-
-        let planlanan = 0;
-        for (const uyari of plan) {
-            const bildirimZamani = new Date(cikisSuresi - uyari.kalanDk * 60 * 1000);
-            // Zaten gecmisse atla (dakika yuvarlamasi sinirda geriye dusebilir)
-            if (bildirimZamani.getTime() <= simdi.getTime()) continue;
-
+        for (const aday of adaylar) {
+            const { uyari, yon } = aday;
             const seviye = uyari.seviye as MuhafizSeviye;
             // METIN `olcuDk` ile uretilir (`kalanDk` ZAMANLAMA alanidir): giris
-            // yonunde ikisi farklidir ve kalanDk verilirse basligi "655 dk ·
-            // YATSI VAKTİ ÇIKIYOR" gibi ters bir cumle olur.
+            // yonunde ikisi farklidir ve kalanDk verilirse basligi "YATSI ·
+            // 655 dk · VAKİT ÇIKIYOR" gibi ters bir cumle olur.
             const baslik = basligiOlustur(vakit.vakit, seviye, uyari.olcuDk, yon);
-            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon);
-            // ID'ye dakikayi da ekleyelim ki uniqueness bozulmasin
-            // Vakit tarihini kullan (yatsi icin onceki gun olabilir).
-            // ID uretimi PAYLASILAN yardimciya devredildi — on plan (NamazMuhafiziServisi)
-            // ayni anonsu ayni id ile yeniden planlar; format sapmasi cift konusma
-            // uretir (bkz. core/muhafiz/anonsKimligi.ts).
-            const bildirimId = muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk);
+            const mesaj = this.bildirimMesajiOlustur(vakit.vakit, seviye, yon, uyari.olcuDk);
 
             // TESLIM platforma gore ayrisir (Android: kanal + TTS alarmi,
-            // iOS: kesinti seviyesi + paket sesi). Plan uretimi ayni kalir.
+            // iOS: kesinti seviyesi + paket sesi). Id paylasilan yardimcidan gelir
+            // (`muhafizBildirimIdOlustur`) — on plan ayni anonsu ayni id ile
+            // yeniden planlar; format sapmasi cift konusma uretir.
             await muhafizTeslimcisiniAl().uyariPlanla({
-                id: bildirimId,
+                id: aday.id,
                 baslik,
                 mesaj,
-                zaman: bildirimZamani,
+                zaman: aday.zaman,
                 uyari,
                 vakit: vakit.vakit,
-                muhafizVakti,
+                muhafizVakti: aday.muhafizVakti,
                 tarih: vakit.tarih,
                 yon,
+                cikis: vakit.cikis,
+                ...(butceArtigiMi(vakit, muhafizTeslimcisiniAl().ad) ? { butceArtigi: true as const } : {}),
             });
-            planlanan++;
         }
 
-        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${planlanan} bildirim planlandi`);
+        Logger.info('ArkaplanMuhafiz', `${vakit.vakit} (${vakit.tarih}) icin ${adaylar.length} bildirim planlandi`);
     }
 
     /**
@@ -333,20 +278,13 @@ export class ArkaplanMuhafizServisi {
     private bildirimMesajiOlustur(
         vakit: VakitAdi,
         seviye: MuhafizSeviye,
-        yon: PencereYonu = VARSAYILAN_PENCERE_YONU
+        yon: PencereYonu = VARSAYILAN_PENCERE_YONU,
+        olcuDk?: number
     ): string {
-        const icerikler =
-            yon === 'girisindenItibaren' ? GIRIS_ICERIK_HAVUZU[seviye] : null;
-        if (icerikler) {
-            return icerikler[Math.floor(Math.random() * icerikler.length)];
-        }
-
-        const mucadeleIcerikleri = uygunIcerikleriBul(vakit, seviye);
-        if (mucadeleIcerikleri.length > 0) {
-            const rastgele = Math.floor(Math.random() * mucadeleIcerikleri.length);
-            return icerikMetniOlustur(mucadeleIcerikleri[rastgele]);
-        }
-        return bildirimGovdesiOlustur(seviye, yon);
+        // Secim `core/muhafiz/muhafizGovdesi.ts`'te (saat yuku ayni secimi
+        // deterministik oranla tekrarlar). Telefonda rastgelelik Math.random.
+        // `olcuDk`: metin = (ton, olcu) kurali (issue #274).
+        return muhafizGovdesiSec(vakit, seviye, yon, Math.random, olcuDk);
     }
 
     /**
@@ -358,6 +296,14 @@ export class ArkaplanMuhafizServisi {
         const bugun = bugunuAl();
         const dun = dunuAl();
         const tarihler = [bugun, dun];
+
+        // Gerçek alarmlar (issue #74) expo listesinde yoktur (alarm o tetiğin bildiriminin
+        // YERİNE geçer) → önekle native kayıttan iptal edilir.
+        for (const tarih of tarihler) {
+            muhafizTeslimcisiniAl().vakitYanKanallariniIptalEt?.(
+                `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${tarih}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}`
+            );
+        }
 
         // Tum dakika ID'lerini de kapsayacak sekilde bildirimleri iptal et
         const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
@@ -393,21 +339,36 @@ export class ArkaplanMuhafizServisi {
      * gorunmezler) -> native tarafin kendi kayit defterinden topluca iptal edilir.
      * Muhafiz disinda anons kullanan yok; "tumunu iptal" burada dogru kapsamdir.
      */
-    public async tumMuhafizBildirimleriniTemizle(): Promise<void> {
+    public async tumMuhafizBildirimleriniTemizle(
+        secenek: { ertelemeyiKoru?: boolean } = {}
+    ): Promise<Record<string, number>> {
         muhafizTeslimcisiniAl().tumYanKanallariIptalEt();
 
         try {
             const tumBildirimler = await Notifications.getAllScheduledNotificationsAsync();
+            // iOS: alarm ekranından ertelenen kopya bir ALARMDIR (AlarmKit, issue #74),
+            // bekleyen bildirimlerde görünmez — alarm kaydından eklenir.
+            const korunan = secenek.ertelemeyiKoru
+                ? { ...etkinErtelemeler(tumBildirimler), ...(await alarmErtelemeleriniOku()) }
+                : {};
 
             for (const bildirim of tumBildirimler) {
-                if (bildirim.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
-                    await Notifications.cancelScheduledNotificationAsync(bildirim.identifier);
+                const id = bildirim.identifier;
+                // Yalniz muhafiz PLANI temizlenir. Ayni `muhafiz_` uzayindaki
+                // yatis/muhasebe hatirlatmalari (issue #290) baska bir servisindir;
+                // erteleme ancak muhafiz kapatilinca gider.
+                const temizlenir =
+                    muhafizPlanKimligiMi(id) || (!secenek.ertelemeyiKoru && ertelemeKimligiMi(id));
+                if (temizlenir) {
+                    await Notifications.cancelScheduledNotificationAsync(id);
                 }
             }
 
             Logger.info('ArkaplanMuhafiz', 'Tum muhafiz bildirimleri temizlendi');
+            return korunan;
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', 'Bildirimler temizlenirken hata:', error);
+            return {};
         }
     }
 
@@ -429,7 +390,7 @@ export class ArkaplanMuhafizServisi {
         if (vakit === 'yatsi') {
             const { lat, lng } = this.ayarlar.koordinatlar;
             const coordinates = new Coordinates(lat, lng);
-            const params = CalculationMethod.Turkey();
+            const params = turkiyeHesapParametreleri();
             const bugunPrayerTimes = new PrayerTimes(coordinates, simdi, params);
 
             // Eger su an imsak vaktinden onceyse, bu yatsi dune aittir

@@ -9,6 +9,12 @@ class CountdownReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_COUNTDOWN_FINISHED = "expo.countdown.ACTION_COUNTDOWN_FINISHED"
         const val ACTION_STOP = "expo.countdown.ACTION_STOP"
+        /** Öne çıkarılmış (Live Update) sayacın dakikalık yeniden çizimi (issue #282). */
+        const val ACTION_CANLI_TAZELE = "expo.countdown.ACTION_CANLI_TAZELE"
+        /** Öne çıkarılmış vakit sayacındaki "Kıldım" (issue #282). */
+        const val ACTION_KILDIM = "expo.countdown.ACTION_KILDIM"
+        /** Now Bar planındaki sıradaki olay (issue #282 ikinci aşama; tek alarm zinciri). */
+        const val ACTION_CANLI_PLAN = "expo.countdown.ACTION_CANLI_PLAN"
 
         const val EXTRA_ID = "countdown_id"
         const val EXTRA_TITLE = "title"
@@ -19,6 +25,11 @@ class CountdownReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
+        // Plan alarmı kimlik taşımaz (zincirin tek alarmı).
+        if (action == ACTION_CANLI_PLAN) {
+            CanliPlan.alarmGeldi(context)
+            return
+        }
         val id = intent.getStringExtra(EXTRA_ID) ?: return
 
         Log.d("CountdownReceiver", "Received action: $action for id: $id")
@@ -30,22 +41,19 @@ class CountdownReceiver : BroadcastReceiver() {
                 CountdownNotificationHelper.cancelNotification(context, id)
             }
             ACTION_STOP -> {
-                // Bildirimi kapat
+                // Bildirimi kapat; kurulmuş bitiş alarmını da iptal et
                 CountdownNotificationHelper.cancelNotification(context, id)
-                
-                // Eğer alarm kurulmuşsa onu da iptal et
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-                val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
-                    this.action = ACTION_COUNTDOWN_FINISHED
-                }
-                val pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    id.hashCode(),
-                    cancelIntent,
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
+                CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
+                // Kullanıcı kapattı: Now Bar planı onu sonraki dilimde geri getirmesin.
+                CanliPlan.kimligiDusur(context, id)
             }
+            ACTION_CANLI_TAZELE -> CanliGuncelleme.tazele(context, id)
+            ACTION_KILDIM -> CanliGuncelleme.kildimIsle(
+                context,
+                id,
+                intent.getStringExtra(CanliGuncelleme.EK_TARIH),
+                intent.getStringExtra(CanliGuncelleme.EK_VAKIT)
+            )
         }
     }
 }

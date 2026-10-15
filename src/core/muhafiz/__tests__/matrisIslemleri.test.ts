@@ -40,20 +40,20 @@ const matris = (): MuhafizMatrisi =>
   Object.fromEntries(MUHAFIZ_VAKITLERI.map((v) => [v, vakit(30)])) as MuhafizMatrisi;
 
 /** "normal" preset'e denk örnek: son adımda bildirim + sesli kanal açık. */
-const SESLI_PRESET: PresetSeviyeleri = {
-  nazik: { esikDk: 45, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
-  uyari: { esikDk: 25, siklik: { herDk: 10 }, kanallar: BILDIRIM, acilKanal: false },
-  sert: { esikDk: 10, siklik: { herDk: 5 }, kanallar: BILDIRIM, acilKanal: false },
-  acil: { esikDk: 3, siklik: 'birkez', kanallar: IKISI, acilKanal: true },
-};
+const SESLI_PRESET: PresetSeviyeleri = [
+  { kademe: 'nazik', esikDk: 45, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'uyari', esikDk: 25, siklik: { herDk: 10 }, kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'sert', esikDk: 10, siklik: { herDk: 5 }, kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'acil', esikDk: 3, siklik: 'birkez', kanallar: IKISI, acilKanal: true },
+];
 
 /** "hafif" preset'e denk örnek: hiçbir adımda ses yok. */
-const SESSIZ_PRESET: PresetSeviyeleri = {
-  nazik: { esikDk: 30, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
-  uyari: { esikDk: 10, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
-  sert: { esikDk: 5, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
-  acil: { esikDk: 2, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
-};
+const SESSIZ_PRESET: PresetSeviyeleri = [
+  { kademe: 'nazik', esikDk: 30, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'uyari', esikDk: 10, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'sert', esikDk: 5, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+  { kademe: 'acil', esikDk: 2, siklik: 'birkez', kanallar: BILDIRIM, acilKanal: false },
+];
 
 describe('tumVakitlereUygula', () => {
   test('kaynak vaktin ayarını tüm vakitlere kopyalar', () => {
@@ -113,6 +113,28 @@ describe('presetUygula', () => {
 
     expect(sonuc.ogle.seviyeler[3].bildirimSesi).toBe(OZEL_SES);
     expect(sonuc.ogle.seviyeler[3].sesAdi).toBe('Hızır');
+  });
+
+  /**
+   * GERÇEK ALARM (issue #74, Fable L1): alarm ayrı rızayla açılan bir seçimdir;
+   * preset'e dokunmak onu sessizce silseydi kişi sabah alarmını "hafif"i denediği
+   * için kaybederdi. Preset alarm AÇMAZ (rızasız), yalnız mevcut olanı taşır.
+   */
+  test('kullanıcının açtığı GERÇEK ALARM preset uygulamasında KORUNUR, preset alarm açmaz', () => {
+    const m = matris();
+    m.imsak.seviyeler[2].kanallar = { bildirim: true, alarm: true };
+
+    const hafif = presetUygula(m, SESSIZ_PRESET, true);
+    expect(hafif.imsak.seviyeler[2].kanallar).toEqual({ bildirim: true, alarm: true });
+    const normal = presetUygula(hafif, SESLI_PRESET, false);
+    expect(normal.imsak.seviyeler[2].kanallar.alarm).toBe(true);
+
+    // Alarmsız hücrelere preset alarm yazmaz.
+    for (const v of MUHAFIZ_VAKITLERI) {
+      normal[v].seviyeler.forEach((s, i) => {
+        if (!(v === 'imsak' && i === 2)) expect(s.kanallar.alarm).toBeUndefined();
+      });
+    }
   });
 
   test('ACİLİYET YAPIŞMAZ: yoğun→hafif geçişinde acil bayrağı geri düşer', () => {
@@ -392,12 +414,12 @@ describe('yonDegisimindeMetniCevir', () => {
 });
 
 describe('yonuDegistir — zamanlama yone gore YENIDEN KURULUR', () => {
-  const CIKIS_TABLOSU = {
-    nazik: { esikDk: 45, siklik: 'birkez' as const },
-    uyari: { esikDk: 25, siklik: { herDk: 10 } },
-    sert: { esikDk: 10, siklik: { herDk: 5 } },
-    acil: { esikDk: 3, siklik: 'birkez' as const },
-  };
+  const CIKIS_TABLOSU = [
+    { esikDk: 45, siklik: 'birkez' as const },
+    { esikDk: 25, siklik: { herDk: 10 } },
+    { esikDk: 10, siklik: { herDk: 5 } },
+    { esikDk: 3, siklik: 'birkez' as const },
+  ];
 
   /** Cikis yonlu, kullanicinin emegini tasiyan gercekci bir vakit. */
   const cikisVakti = (): VakitMuhafizAyari => ({
@@ -535,7 +557,7 @@ describe('REGRESYON: preset yolu giris yonunu BOZMAZ', () => {
 
     for (const v of MUHAFIZ_VAKITLERI) {
       expect(sonuc[v].seviyeler.map((s) => s.esikDk)).toEqual(
-        SEVIYE_KADEMELERI.map((k) => SESLI_PRESET[k].esikDk)
+        SESLI_PRESET.map((p) => p.esikDk)
       );
     }
   });

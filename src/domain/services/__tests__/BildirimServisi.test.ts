@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazAdi, BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
 import { ArkaplanMuhafizServisi } from '../ArkaplanMuhafizServisi';
@@ -16,9 +17,14 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
     trDestekleniyorMu: jest.fn().mockResolvedValue(true),
 }));
 jest.mock('../ArkaplanMuhafizServisi');
+const mockNafileKildimIsle = jest.fn();
+jest.mock('../NafileHatirlatmaServisi', () => ({
+  NafileHatirlatmaServisi: { getInstance: () => ({ kildimIsle: (...a: unknown[]) => mockNafileKildimIsle(...a) }) },
+}));
 jest.mock('@notifee/react-native', () => ({
     __esModule: true,
     default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
         createChannel: jest.fn(),
         displayNotification: jest.fn(),
         cancelNotification: jest.fn(),
@@ -30,6 +36,8 @@ jest.mock('@notifee/react-native', () => ({
         onBackgroundEvent: jest.fn(),
     },
     TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
     AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
     EventType: { ACTION_PRESS: 1, DISMISSED: 2 },
 }));
@@ -49,6 +57,15 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
     const d = new Date(parcalar[0], parcalar[1] - 1, parcalar[2] + gun);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }),
+}));
+
+const mockErtelemeIsle = jest.fn().mockResolvedValue(true);
+jest.mock('../MuhafizErtelemeServisi', () => ({
+  muhafizErtelemesiniIsle: (...a: unknown[]) => mockErtelemeIsle(...a),
+}));
+const mockKazayaBorcEkle = jest.fn().mockResolvedValue({ basarili: true });
+jest.mock('../../../data/local/LocalKazaServisi', () => ({
+  localKazayaBorcEkle: (...a: unknown[]) => mockKazayaBorcEkle(...a),
 }));
 
 // ArkaplanMuhafizServisi mock singleton
@@ -121,11 +138,64 @@ function sunulanBildirimOlustur(id: string) {
 describe('BildirimServisi', () => {
   let servis: BildirimServisi;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
+    // Islenmis yanit kimligi DISKTE tutulur; testler birbirine sizmasin.
+    await AsyncStorage.clear();
     // Singleton'u sifirla
     (BildirimServisi as any).instance = undefined;
     servis = BildirimServisi.getInstance();
+  });
+
+  // ==================== ARKA PLAN YANITI (Android, uygulama kapali) ====================
+
+  describe('arkaplanYanitiniIsle (saatten / kapali uygulamadan "Kıldım")', () => {
+    it('arka plan gorevi yukunu isler: namaz isaretlenir', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      await servis.arkaplanYanitiniIsle(muhafizYanitiOlustur('ogle', '2026-02-13'));
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-02-13', NamazAdi.Ogle, true);
+    });
+
+    it('veri JSON dizesi (dataString) olarak gelirse de cozulur', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      const yanit = muhafizYanitiOlustur('ikindi', '2026-02-13');
+      const { data } = yanit.notification.request.content;
+      const yuk = {
+        actionIdentifier: yanit.actionIdentifier,
+        notification: { request: { identifier: yanit.notification.request.identifier, content: { dataString: JSON.stringify(data) } } },
+      };
+      await servis.arkaplanYanitiniIsle(yuk);
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-02-13', NamazAdi.Ikindi, true);
+    });
+
+    it('NÖBETÇİ: arka planda islenen yanit acilista (yeni surec) TEKRAR islenmez — tekillestirme diskte', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+      const yanit = muhafizYanitiOlustur('aksam', '2026-02-13');
+      await servis.arkaplanYanitiniIsle(yanit);
+      // Headless surec bitti, uygulama acildi: bellek-ici koruma sifirlanir.
+      (BildirimServisi as any).instance = undefined;
+      const yeni = BildirimServisi.getInstance();
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(yanit);
+      (Notifications.addNotificationResponseReceivedListener as jest.Mock).mockReturnValue({ remove: jest.fn() });
+      await yeni.baslatBildirimDinleyicisi();
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledTimes(1);
+    });
+
+    it('NÖBETÇİ: Android\'de "Kıldım" telefonu ÖNE ACMAZ (saatten basınca cepteki telefon acilmasin)', async () => {
+      const { Platform } = require('react-native');
+      (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+      jest.replaceProperty(Platform, 'OS', 'android');
+      await servis.baslatBildirimDinleyicisi();
+      const secenek = (Notifications.setNotificationCategoryAsync as jest.Mock).mock.calls[0][1][0].options;
+      expect(secenek.opensAppToForeground).toBe(false);
+      jest.restoreAllMocks();
+    });
+
+    it('tanınmayan yuk sessizce yok sayilir', async () => {
+      await servis.arkaplanYanitiniIsle({ notification: null });
+      await servis.arkaplanYanitiniIsle(undefined);
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
   });
 
   // ==================== COLD-START TESTLERI ====================
@@ -493,6 +563,38 @@ describe('BildirimServisi', () => {
   });
 
   // ==================== MUHAFIZ BILDIRIMI FILTRELEME TESTLERI ====================
+
+  describe('Nafile "Kıldım" (issue #273)', () => {
+    const nafileYaniti = (tur: string, tarih: string, aksiyon: string = BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM) => ({
+      actionIdentifier: aksiyon,
+      notification: {
+        request: {
+          identifier: `nafile_${tarih}_${tur}_120`,
+          content: { data: { tip: 'nafile', tur, tarih } },
+        },
+      },
+    });
+
+    it('yalnız o nafilenin kalan hatırlatmalarını iptal eder; FARZ kaydı YAZILMAZ', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('kusluk', '2026-02-13'));
+      expect(mockNafileKildimIsle).toHaveBeenCalledWith('2026-02-13', 'kusluk');
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('Kıldım dışı eylem ve geçersiz tür yok sayılır', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('kusluk', '2026-02-13', 'expo.modules.notifications.actions.DEFAULT'));
+      await servis.arkaplanYanitiniIsle(nafileYaniti('ogle', '2026-02-13'));
+      expect(mockNafileKildimIsle).not.toHaveBeenCalled();
+      expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('aynı yanıt iki kez işlenmez (tekilleştirme diskte)', async () => {
+      await servis.arkaplanYanitiniIsle(nafileYaniti('teheccud', '2026-02-12'));
+      (BildirimServisi as unknown as { instance?: BildirimServisi }).instance = undefined;
+      await BildirimServisi.getInstance().arkaplanYanitiniIsle(nafileYaniti('teheccud', '2026-02-12'));
+      expect(mockNafileKildimIsle).toHaveBeenCalledTimes(1);
+    });
+  });
 
   describe('Muhafiz olmayan bildirim yanitlari', () => {
     it('tip muhafiz degilse hicbir islem yapmamali', async () => {
@@ -915,5 +1017,95 @@ describe('BildirimServisi', () => {
         'muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_20'
       );
     });
+  });
+});
+
+// ==================== ERTELE (#289) + GÜN SONU MUHASEBESİ (#290) ====================
+
+describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
+  let servis: BildirimServisi;
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await AsyncStorage.clear();
+    (BildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    servis = BildirimServisi.getInstance();
+    (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([]);
+    mockKazayaBorcEkle.mockResolvedValue({ basarili: true });
+  });
+
+  const yuk = (kimlik: string, eylem: string, data: Record<string, unknown>, date = 1000) => ({
+    actionIdentifier: eylem,
+    notification: { date, request: { identifier: kimlik, content: { title: 'Başlık', body: 'Gövde', data } } },
+  });
+
+  it('ertele eylemi JS yoluna (MuhafizErtelemeServisi) gider, namaz İŞARETLENMEZ', async () => {
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', 'ertele_10', { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' })
+    );
+    expect(mockErtelemeIsle).toHaveBeenCalledWith(
+      expect.objectContaining({ kimlik: 'muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45', eylem: 'ertele_10', baslik: 'Başlık', govde: 'Gövde' })
+    );
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+  });
+
+  it('ertelenmiş kopya (SABİT kimlik) yeniden ertelenebilir — tekilleştirme gösterilme anını da katar', async () => {
+    const data = { tip: 'muhafiz', vakit: 'ogle', tarih: '2026-10-13' };
+    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 1000));
+    await servis.arkaplanYanitiniIsle(yuk('muhafiz_2026-10-13_vakit_ogle_ertele', 'ertele_10', data, 2000));
+    expect(mockErtelemeIsle).toHaveBeenCalledTimes(2);
+  });
+
+  it('yatış hatırlatmasındaki "Kıldım" yatsıyı işaretler', async () => {
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_yatsi_yatis', BILDIRIM_SABITLERI.AKSIYONLAR.KILDIM, { tip: 'yatis', vakit: 'yatsi', tarih: '2026-10-13' })
+    );
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).toHaveBeenCalledWith('2026-10-13', NamazAdi.Yatsi, true);
+  });
+
+  it('muhasebedeki "Kazaya ekle" eksik vakti kaza defterine ekler ve UI\'ı bilgilendirir', async () => {
+    const cb = jest.fn();
+    servis.setOnKazaEklendiCallback(cb);
+    await servis.arkaplanYanitiniIsle(
+      yuk('muhafiz_2026-10-13_vakit_ogle_muhasebe', BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE, {
+        tip: 'muhasebe',
+        tarih: '2026-10-13',
+        vakit: 'ogle',
+        kazayaEklenebilir: ['ogle'],
+      })
+    );
+    expect(mockKazayaBorcEkle).toHaveBeenCalledWith([{ namazAdi: 'Öğle', sayi: 1 }]);
+    expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith('muhafiz_2026-10-13_vakit_ogle_muhasebe');
+    expect(cb).toHaveBeenCalled();
+    // Kazaya eklemek namazı "kıldım" yapmaz.
+    expect(LocalNamazServisi.localNamazDurumunuGuncelle).not.toHaveBeenCalled();
+  });
+
+  it('"Kazaya ekle" aynı yanıt ikinci kez gelirse (açılış) TEKRAR eklemez', async () => {
+    const y = yuk('muhafiz_2026-10-13_vakit_ogle_muhasebe', BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE, {
+      tip: 'muhasebe',
+      tarih: '2026-10-13',
+      kazayaEklenebilir: ['ogle'],
+    });
+    await servis.arkaplanYanitiniIsle(y);
+    await servis.arkaplanYanitiniIsle(y);
+    expect(mockKazayaBorcEkle).toHaveBeenCalledTimes(1);
+  });
+
+  it('kategoriler: ertele (tek/iki) ve muhasebe (tek/çoklu) kaydedilir; ertele uygulamayı AÇMAZ', async () => {
+    (Notifications.getLastNotificationResponseAsync as jest.Mock).mockResolvedValue(null);
+    await servis.baslatBildirimDinleyicisi();
+    const kategoriler = Object.fromEntries(
+      (Notifications.setNotificationCategoryAsync as jest.Mock).mock.calls.map((c) => [c[0], c[1]])
+    );
+    expect(kategoriler.muhafiz_ertele2_category.map((a: { identifier: string }) => a.identifier)).toEqual([
+      'kildim_action',
+      'ertele_10',
+      'ertele_20',
+    ]);
+    expect(kategoriler.muhafiz_ertele1_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'ertele_10']);
+    expect(kategoriler.muhafiz_ertele2_category[1].options.opensAppToForeground).toBe(false);
+    expect(kategoriler.muhasebe_tek_category.map((a: { identifier: string }) => a.identifier)).toEqual(['kildim_action', 'kazaya_ekle_action']);
+    expect(kategoriler.muhasebe_coklu_category[0].options.opensAppToForeground).toBe(true);
   });
 });

@@ -1,10 +1,12 @@
 import * as Notifications from 'expo-notifications';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
 import { NamazVaktiHesaplayiciServisi } from './NamazVaktiHesaplayiciServisi';
-import { LocalVakitBildirimServisi, VakitBildirimAyarlari } from '../../data/local/LocalVakitBildirimServisi';
+import { LocalVakitBildirimServisi } from '../../data/local/LocalVakitBildirimServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { vakitBildirimPlaniOlustur } from '../../core/bildirim/vakitBildirimPlani';
 import { VAKIT_BILDIRIM_ICERIKLERI, VakitBildirimTipi } from '../../core/data/VakitBildirimIcerikleri';
-import { BILDIRIM_SABITLERI, NamazAdi } from '../../core/constants/UygulamaSabitleri';
+import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { vakitGirdiBasligi } from '../../core/otomasyon/anahtarKelimeler';
 
 export class VakitBildirimYoneticiServisi {
     private static instance: VakitBildirimYoneticiServisi;
@@ -40,57 +42,29 @@ export class VakitBildirimYoneticiServisi {
             return;
         }
 
-        const coordinates = new Coordinates(config.latitude, config.longitude);
-        const params = CalculationMethod.Turkey(); // Türkiye Diyanet İşleri
-
-        // 4. Bugün ve Yarın için vakitleri hesapla
-        const bugun = new Date();
-        const yarin = new Date(bugun);
-        yarin.setDate(yarin.getDate() + 1);
-
-        const vakitlerBugun = new PrayerTimes(coordinates, bugun, params);
-        const vakitlerYarin = new PrayerTimes(coordinates, yarin, params);
-
-        // 5. Her bir vakit için planlama yap
-        await this.gunlukPlanlamaYap(vakitlerBugun, ayarlar, bugun);
-        await this.gunlukPlanlamaYap(vakitlerYarin, ayarlar, yarin);
+        // 4. Plan SAF ureticiden (`core/bildirim/vakitBildirimPlani.ts`): bildirim
+        // defteri (issue #298) ayni listeyi sayar. Pencere bugun + yarin.
+        // Özel gün (issue #272): aralıktaki GÜN hiç planlanmaz. Eski plan 2. adımda
+        // temizlendi; pencere bugün+yarın olduğu için aralığın son günü açılan
+        // uygulama ertesi günün bildirimlerini zaten kurar.
+        const ozelGundeMi = await ozelGunSuzgeciniOku();
+        const plan = vakitBildirimPlaniOlustur(
+            { lat: config.latitude, lng: config.longitude },
+            ayarlar,
+            new Date(),
+            ozelGundeMi
+        );
+        for (const kayit of plan) {
+            await this.tekBildirimPlanla(kayit.vakit, kayit.zaman, kayit.id);
+        }
 
         Logger.info('VakitBildirim', 'Bildirim planlama tamamlandı.');
     }
 
     /**
-     * Bir gün için bildirimleri planlar
-     */
-    private async gunlukPlanlamaYap(prayerTimes: PrayerTimes, ayarlar: VakitBildirimAyarlari, tarih: Date): Promise<void> {
-        // İmsak
-        if (ayarlar.imsak) {
-            await this.tekBildirimPlanla('imsak', prayerTimes.fajr, tarih);
-        }
-        // Güneş (Hariç tutuldu)
-        // if (ayarlar.gunes) ...
-
-        // Öğle
-        if (ayarlar.ogle) {
-            await this.tekBildirimPlanla('ogle', prayerTimes.dhuhr, tarih);
-        }
-        // İkindi
-        if (ayarlar.ikindi) {
-            await this.tekBildirimPlanla('ikindi', prayerTimes.asr, tarih);
-        }
-        // Akşam
-        if (ayarlar.aksam) {
-            await this.tekBildirimPlanla('aksam', prayerTimes.maghrib, tarih);
-        }
-        // Yatsı
-        if (ayarlar.yatsi) {
-            await this.tekBildirimPlanla('yatsi', prayerTimes.isha, tarih);
-        }
-    }
-
-    /**
      * Tek bir bildirim planlar
      */
-    private async tekBildirimPlanla(vakit: VakitBildirimTipi, zaman: Date, tarihRef: Date): Promise<void> {
+    private async tekBildirimPlanla(vakit: VakitBildirimTipi, zaman: Date, bildirimId: string): Promise<void> {
         const simdi = new Date();
 
         // Geçmiş zaman için planlama yapma
@@ -102,17 +76,9 @@ export class VakitBildirimYoneticiServisi {
         const icerikHavuzu = VAKIT_BILDIRIM_ICERIKLERI[vakit];
         const icerik = icerikHavuzu[Math.floor(Math.random() * icerikHavuzu.length)];
 
-        const tarihStr = `${tarihRef.getFullYear()}-${String(tarihRef.getMonth() + 1).padStart(2, '0')}-${String(tarihRef.getDate()).padStart(2, '0')}`;
-        const bildirimId = `vakit_bildirim_${vakit}_${tarihStr}`;
-
-        let baslik = '';
-        switch(vakit) {
-            case 'imsak': baslik = 'İmsak Vakti Girdi'; break;
-            case 'ogle': baslik = 'Öğle Vakti Girdi'; break;
-            case 'ikindi': baslik = 'İkindi Vakti Girdi'; break;
-            case 'aksam': baslik = 'Akşam Vakti Girdi'; break;
-            case 'yatsi': baslik = 'Yatsı Vakti Girdi'; break;
-        }
+        // Başlık SABİT önekli: Samsung Rutinler "Bildirim alındığında" koşulunun
+        // anahtar kelimesi (issue #278) — metni yalnız `vakitGirdiBasligi`'nda değiştirin.
+        const baslik = vakitGirdiBasligi(vakit);
 
         let govde = icerik.metin;
         if (icerik.kaynak) {

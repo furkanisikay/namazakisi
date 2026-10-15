@@ -2,7 +2,9 @@ import './global.css';
 import { registerRootComponent } from 'expo';
 import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import notifee, { EventType } from '@notifee/react-native';
-import { Platform } from 'react-native';
+import { Platform, AppRegistry } from 'react-native';
+import * as TaskManager from 'expo-task-manager';
+import * as Notifications from 'expo-notifications';
 
 // Reanimated strict mode uyarilarini kapat (3. parti kutuphaneler nedeniyle)
 configureReanimatedLogger({
@@ -44,6 +46,106 @@ if (Platform.OS === 'android') {
             }
         }
     }); } catch (_) {}
+}
+
+// Uygulama DIŞINDAN "Kıldım" (Wear OS saati #269, widget #275, hızlı ayarlar ve
+// kısayol #276) — ortak kuyruğun headless görevi.
+// `registerHeadlessTask` MODÜL ÜST SEVİYESİNDE ve SENKRON çağrılmalı (promise
+// içinde kaydedilirse native görev geldiğinde JS tarafı henüz hazır olmaz).
+// Görev adı `KildimGorevServisi.kt` ile AYNI. Doğruluk bu göreve bağlı
+// değildir: kuyruk ön plana gelişte ve 15 dk'lık arka plan görevinde de boşalır.
+if (Platform.OS === 'android') {
+    try {
+        AppRegistry.registerHeadlessTask('KildimKuyrugu', () => async (veri?: { neden?: string }) => {
+            try {
+                const { KildimKuyruguServisi } = await import('./src/domain/services/KildimKuyruguServisi');
+                await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
+            } catch {
+                // Kuyruk native tarafta korunur; ön plan / 15 dk görevi yeniden dener.
+            }
+            // Muhafız ertelemesi (issue #289): native `BildirimErteleIsleyici` uygulama
+            // kapalıyken bu görevi `neden=ertele` ile başlatır → saatin hazır planı
+            // ertelenen aralıktan arındırılsın (bilekte uyarı sürmesin).
+            if (veri?.neden === 'ertele') {
+                try {
+                    const { WearSenkronServisi } = await import('./src/domain/services/WearSenkronServisi');
+                    await WearSenkronServisi.getInstance().gonder();
+                } catch {
+                    // Saat bir sonraki gönderimde (açılış / 15 dk görevi) süzülmüş planı alır.
+                }
+            }
+        });
+    } catch {
+        // Kayıt başarısızsa headless yol yok sayılır; diğer iki boşaltma yolu kalır.
+    }
+    // Widget kılınmışlık tazelemesi HER JS bağlamında (headless dahil) kurulsun:
+    // bildirimdeki "Kıldım" uygulama kapalıyken işlenince widget da ≤1 sn'de
+    // güncellenmeli; App.tsx o bağlamda hiç yüklenmez (issue #275).
+    import('./src/domain/services/WidgetServisi')
+        .then(({ WidgetServisi }) => WidgetServisi.getInstance().baslat())
+        .catch(() => undefined);
+}
+
+// Camiden çıkış sorusundaki "Kıldım" (Camideyim #297) — headless görev. Ad
+// `CamiKildimGorevServisi.kt` ile AYNI. Kuyruk native'de kalıcıdır; açılış ve
+// 15 dk görevi de boşaltır (Wear deseni).
+if (Platform.OS === 'android') {
+    try {
+        AppRegistry.registerHeadlessTask('CamiKildim', () => async () => {
+            try {
+                const { CamideyimServisi } = await import('./src/domain/services/CamideyimServisi');
+                await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
+            } catch {
+                // Kuyruk native tarafta korunur.
+            }
+        });
+    } catch {
+        // Kayıt başarısızsa diğer boşaltma yolları kalır.
+    }
+    // Namaz modu "Kıldım deyince kapansın" dinleyicisi HER JS bağlamında (headless
+    // dahil): uygulama kapalıyken bildirimden "Kıldım" işlenince mod da kapanmalı;
+    // App.tsx o bağlamda hiç yüklenmez. `baslat` idempotenttir (App.tsx de çağırır).
+    import('./src/domain/services/CamideyimServisi')
+        .then(({ CamideyimServisi }) => CamideyimServisi.getInstance().baslat())
+        .catch(() => undefined);
+}
+
+// Yatış hatırlatması + gün sonu muhasebesi (issue #290): kılınmışlık değişince
+// yeniden planlanır. HER JS bağlamında (headless dahil): bildirimden "Kıldım"
+// uygulama kapalıyken işlenince muhasebe içeriği bayat kalmasın. İdempotent.
+if (Platform.OS === 'android') {
+    import('./src/domain/services/YatisHatirlatmaServisi')
+        .then(({ YatisHatirlatmaServisi }) => YatisHatirlatmaServisi.getInstance().baslat())
+        .catch(() => undefined);
+    // Takvim çakışması (issue #291): kılınan vaktin uyarısı headless'ta da iptal edilsin.
+    import('./src/domain/services/TakvimCakismaServisi')
+        .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())
+        .catch(() => undefined);
+}
+
+// Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).
+// Aksiyon `opensAppToForeground: false` olduğu için telefon açılmaz (saate köprülenen
+// bildirimde saatten basılınca cepteki telefon öne çıkmasın). Issue #299'dan beri eylem
+// NATIVE işlenir (`KopruEtiketliBildirimServisi` → Kıldım kuyruğu, kaynak `bildirim`) ve
+// bu göreve HİÇ gelmez; görev yalnız native yol başarısız olursa devreye giren yedektir. `defineTask` modül üst seviyesinde SENKRON olmalı (Wear
+// headless dersi). Aynı yanıt açılışta getLastNotificationResponseAsync'e de düşer;
+// tekilleştirme diskte (`BildirimServisi.yanitiIsle`).
+const MUHAFIZ_YANIT_GOREVI = 'MUHAFIZ_BILDIRIM_YANITI';
+if (Platform.OS === 'android') {
+    try {
+        TaskManager.defineTask(MUHAFIZ_YANIT_GOREVI, async ({ data, error }) => {
+            if (error || !data) return;
+            try {
+                const { BildirimServisi } = await import('./src/domain/services/BildirimServisi');
+                await BildirimServisi.getInstance().arkaplanYanitiniIsle(data);
+            } catch {
+                // Açılıştaki getLastNotificationResponseAsync yolu yanıtı yine işler.
+            }
+        });
+        Notifications.registerTaskAsync(MUHAFIZ_YANIT_GOREVI).catch(() => undefined);
+    } catch {
+        // Görev kurulamazsa yanıt açılışta işlenir (eski davranış).
+    }
 }
 
 // Bildirim dinleyicisini global olarak baslat (dinamik import — eager yük azaltma)

@@ -23,10 +23,12 @@
 import type { UyariPlani } from './motorAdaptoru';
 import type { PencereYonu } from './pencereTipleri';
 
-/** Bir adimin (kademenin) pencerede ILK tetigi — seritte cubuk olarak cizilir. */
+/** Bir adimin pencerede ILK tetigi — seritte cubuk olarak cizilir. */
 export interface SeritCubugu {
-    /** 1 nazik · 2 uyari · 3 sert · 4 acil */
+    /** TON: 1 nazik · 2 uyari · 3 sert · 4 acil — cubuk boyu ve rengi buradan. */
     seviye: number;
+    /** Adimin kronolojik sirasi (issue #274) — ayni tonlu iki adimi ayirir. */
+    adimIndeks: number;
     /** Pencere icindeki konum, 0 = giris, 1 = cikis. */
     oran: number;
     /** Tetik aninin vaktin cikisina kalan dakikasi (saat hesabi icin). */
@@ -36,6 +38,7 @@ export interface SeritCubugu {
 /** Bir adimin TEKRARI — seritte ince cizik olarak cizilir. */
 export interface SeritTiki {
     seviye: number;
+    adimIndeks: number;
     oran: number;
     kalanDk: number;
 }
@@ -51,7 +54,7 @@ export interface SeritDuzeni {
     ilkKalanDk: number | null;
     sonKalanDk: number | null;
     /**
-     * Son (en sert) adim TEKRARLANIYOR mu? Giris yonunde bu "kilana kadar
+     * Son adim TEKRARLANIYOR mu? Giris yonunde bu "kilana kadar
      * surer" demektir; tek atislarda (hafif yogunluk) o cumle YALAN olur.
      */
     sonAdimTekrarli: boolean;
@@ -86,6 +89,8 @@ export function seritDuzeniHesapla(
     // Kronolojik sira = cikisa kalan dakika AZALAN.
     const sirali = [...plan].sort((a, b) => b.kalanDk - a.kalanDk);
 
+    // Gruplama ADIMA gore (issue #274): ton artik tekil degil — iki "nazik"
+    // adimin ikincisinin ilk tetigi tik degil kendi cubugu olmali.
     const gorulen = new Set<number>();
     const cubuklar: SeritCubugu[] = [];
     const tikler: SeritTiki[] = [];
@@ -93,18 +98,19 @@ export function seritDuzeniHesapla(
 
     for (const uyari of sirali) {
         const oran = sinirla(1 - uyari.kalanDk / pencereUzunluguDk);
-        tetikSayisi.set(uyari.seviye, (tetikSayisi.get(uyari.seviye) ?? 0) + 1);
-        if (gorulen.has(uyari.seviye)) {
-            tikler.push({ seviye: uyari.seviye, oran, kalanDk: uyari.kalanDk });
+        const adim = uyari.adimIndeks;
+        tetikSayisi.set(adim, (tetikSayisi.get(adim) ?? 0) + 1);
+        const nokta = { seviye: uyari.seviye, adimIndeks: adim, oran, kalanDk: uyari.kalanDk };
+        if (gorulen.has(adim)) {
+            tikler.push(nokta);
         } else {
-            gorulen.add(uyari.seviye);
-            cubuklar.push({ seviye: uyari.seviye, oran, kalanDk: uyari.kalanDk });
+            gorulen.add(adim);
+            cubuklar.push(nokta);
         }
     }
 
     const ilk = sirali[0];
     const son = sirali[sirali.length - 1];
-    const enSertSeviye = Math.max(...sirali.map((u) => u.seviye));
 
     return {
         cubuklar,
@@ -116,7 +122,8 @@ export function seritDuzeniHesapla(
         uyariSayisi: sirali.length,
         ilkKalanDk: ilk.kalanDk,
         sonKalanDk: son.kalanDk,
-        sonAdimTekrarli: (tetikSayisi.get(enSertSeviye) ?? 0) > 1,
+        // "Son adim" = son uyariyi veren adim (kronolojik olarak en gec konusan).
+        sonAdimTekrarli: (tetikSayisi.get(son.adimIndeks) ?? 0) > 1,
     };
 }
 

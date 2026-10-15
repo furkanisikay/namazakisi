@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tasker / MacroDroid / Automate eklentisi (issue #278): host'un eklenti listesinde
+     görünen adlar. Ayrı dosya: diğer işlerle birleştirme çakışması olmasın. -->
+<resources>
+  <string name="otomasyon_eylem_etiket">Namaz Akışı: Kıldım</string>
+  <string name="otomasyon_kosul_etiket">Namaz Akışı: Vakit durumu</string>
+  <string name="otomasyon_olay_etiket">Namaz Akışı: Vakit olayı</string>
+</resources>

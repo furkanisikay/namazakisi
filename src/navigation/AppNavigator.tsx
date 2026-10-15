@@ -8,9 +8,9 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef, type NavigatorScreenParams } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { Text, StyleSheet, View } from 'react-native';
+import { Platform, Text, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,13 +27,21 @@ import {
   KonumAyarlariSayfasi,
   KibleSayfasi,
   RamazanAyarlariSayfasi,
+  NafileAyarlariSayfasi,
+  NowBarAyarlariSayfasi,
+  CamideyimAyarlariSayfasi,
+  NamazModuAyarlariSayfasi,
+  KildimUygulamalariSayfasi,
+  OtomasyonRehberiSayfasi,
   DebugLogsSayfasi,
   KazaDefteriSayfasi,
   KurulumSihirbaziSayfasi,
   TakvimAyarlariSayfasi,
+  SeferilikAyarlariSayfasi,
   NelerYeniSayfasi,
   YedeklemeSayfasi,
   IceAktarmaSihirbaziSayfasi,
+  EsitlemeSayfasi,
   TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari';
@@ -44,6 +52,21 @@ import { ozellikleriYukle } from '../presentation/store/ozelliklerSlice';
 import { useYeniOzellikler } from '../presentation/hooks/useYeniOzellikler';
 import { GuncellemeBildirimi } from '../presentation/components/guncelleme/GuncellemeBildirimi';
 import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
+import {
+  useKildimDerinBaglantisi,
+  kildimOnayBasligi,
+  KILDIM_ONAY_MESAJI,
+} from '../presentation/hooks/useKildimDerinBaglantisi';
+import { KildimIzinModali } from '../presentation/components/kildim/KildimIzinModali';
+import { useSiriEkranIstegi } from '../presentation/hooks/useSiriEkranIstegi';
+import { derinBaglantiYapilandirmasi, type AnaSekmeParamList } from './derinBaglantilar';
+import { OkunabilirGenislik } from '../presentation/components/common/OkunabilirGenislik';
+import { useSadeGorunum } from '../presentation/hooks/useSadeGorunum';
+
+/** Ayarlar yığınındaki her ekranın sarmalayıcısı (modül düzeyi: referansı sabit). */
+const ayarEkraniYerlesimi = ({ children }: { children: React.ReactElement }) => (
+  <OkunabilirGenislik>{children}</OkunabilirGenislik>
+);
 
 /**
  * Root stack navigation parameter list.
@@ -51,7 +74,8 @@ import ErrorBoundary from '../presentation/components/common/ErrorBoundary';
  */
 export type RootStackParamList = {
   KurulumSihirbazi: undefined;
-  MainTabs: undefined;
+  /** Parametre yalnız derin bağlantı içindir (`namazakisi://kaza`, issue #276). */
+  MainTabs: NavigatorScreenParams<AnaSekmeParamList> | undefined;
   KibleSayfasi: undefined;
 };
 
@@ -85,11 +109,23 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   MuhafizAyarlari: { component: MuhafizAyarlariSayfasi, options: { title: 'Namaz Muhafızı' } },
   Hakkinda: { component: HakkindaSayfasi, options: { title: 'Hakkında' } },
   RamazanAyarlari: { component: RamazanAyarlariSayfasi, options: { title: 'Ramazan Özel' } },
+  NafileAyarlari: { component: NafileAyarlariSayfasi, options: { title: 'Nafile Namazlar' } },
+  // iOS (#295): ayni secim canli etkinlik (Dinamik Ada / kilit ekrani) olarak calisir.
+  NowBarAyarlari: {
+    component: NowBarAyarlariSayfasi,
+    options: { title: Platform.OS === 'ios' ? 'Canlı Etkinlikler' : 'Now Bar ve Canlı Sayaçlar' },
+  },
+  CamideyimAyarlari: { component: CamideyimAyarlariSayfasi, options: { title: 'Camideyim' } },
+  NamazModuAyarlari: { component: NamazModuAyarlariSayfasi, options: { title: 'Namaz Modu' } },
+  KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
+  OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, options: { title: 'Otomasyonlarla Kullanın' } },
   DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Debug Logları' } },
   TakvimAyarlari: { component: TakvimAyarlariSayfasi, options: { title: 'Takvim Entegrasyonu' } },
+  SeferilikAyarlari: { component: SeferilikAyarlariSayfasi, options: { title: 'Yolculuk Bilgisi' } },
   NelerYeni: { component: NelerYeniSayfasi, options: { title: 'Neler Yeni' } },
   YedeklemeAktarim: { component: YedeklemeSayfasi, options: { title: 'Yedekleme & Aktarım' } },
   IceAktarmaSihirbazi: { component: IceAktarmaSihirbaziSayfasi, options: { headerShown: false } },
+  EsitlemeAyarlari: { component: EsitlemeSayfasi, options: { title: 'Cihazlar Arası Eşitleme' } },
   TaniGeriBildirim: { component: TaniGeriBildirimSayfasi, options: { title: 'Tanı ve Geri Bildirim' } },
 };
 
@@ -115,6 +151,9 @@ const AyarlarStack: React.FC = () => {
         // ("AyarlarAna") gorunuyordu. Yalniz ok gosterilir.
         headerBackButtonDisplayMode: 'minimal',
       }}
+      // Katlanabilir/tablet (issue #283): geniş pencerede ayar ekranlarının
+      // içeriği okunabilir genişlikte (≈640 dp) ortalanır; telefonda etkisizdir.
+      screenLayout={ayarEkraniYerlesimi}
     >
       {(Object.entries(AYARLAR_EKRAN_TANIMLARI) as Array<
         [AyarlarEkranAdi, (typeof AYARLAR_EKRAN_TANIMLARI)[AyarlarEkranAdi]]
@@ -133,6 +172,9 @@ const MainTabs: React.FC = () => {
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const { okunmamisVarMi } = useYeniOzellikler();
+  // Sade görünüm (issue #295): ana ekranda sekme çubuğu GİZLİ — tek ekran, gezinme yok.
+  // Koşullu yayma şart: `tabBarStyle: undefined` screenOptions'taki stili EZERDİ.
+  const sade = useSadeGorunum();
 
   // Yeni özellik duyuru durumunu uygulama açılışında yükle (tab rozeti için)
   useEffect(() => {
@@ -185,6 +227,7 @@ const MainTabs: React.FC = () => {
           title: 'Namaz Akışı',
           tabBarLabel: 'Ana Sayfa',
           headerShown: false,
+          ...(sade.etkin ? { tabBarStyle: { display: 'none' as const } } : {}),
           tabBarIcon: ({ focused, color, size }) => (
             <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
@@ -266,12 +309,24 @@ export const AppNavigator: React.FC = () => {
     });
   }, []);
 
+  // Kurulum sihirbazı sürerken derin bağlantı sihirbazı atlatmasın (issue #276).
+  // Bağlantı dışarıdan gelebilir → güven listesi karar verir (issue #299).
+  const kildimOnayi = useKildimDerinBaglantisi(ilkKurulum === false);
+  // iOS Siri / Kısayollar "Kıbleyi aç" (issue #279): intent ekran isteği bırakır,
+  // gezinme kabı hazır olunca tüketilir (soğuk açılışta bağlantı olayı kaybolurdu).
+  const navRef = useNavigationContainerRef<RootStackParamList>();
+  const siriEkranIstegiIsle = useSiriEkranIstegi(ilkKurulum === false, navRef);
+
   if (ilkKurulum === null) {
     return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      ref={navRef}
+      onReady={siriEkranIstegiIsle}
+      linking={ilkKurulum ? undefined : derinBaglantiYapilandirmasi}
+    >
       <ErrorBoundary name="NavigatorBoundary">
         <RootStack.Navigator
           screenOptions={{ headerShown: false }}
@@ -285,6 +340,16 @@ export const AppNavigator: React.FC = () => {
       <ErrorBoundary name="GuncellemeBoundary">
         <GuncellemeBildirimi />
       </ErrorBoundary>
+      <KildimIzinModali
+        vakitAdi={kildimOnayi.onayAdayi?.vakitAdi ?? null}
+        baslatan={kildimOnayi.baslatan}
+        kimliksizBaslik={kildimOnayi.onayAdayi ? kildimOnayBasligi(kildimOnayi.onayAdayi) : ''}
+        kimliksizMesaj={KILDIM_ONAY_MESAJI}
+        onHerZaman={kildimOnayi.herZamanIzinVer}
+        onBuSefer={kildimOnayi.onayla}
+        onEngelle={kildimOnayi.engelle}
+        onVazgec={kildimOnayi.vazgec}
+      />
     </NavigationContainer>
   );
 };

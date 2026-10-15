@@ -1,9 +1,14 @@
-// Gradle init script: force AGP 8.11.0 for ALL project buildscript classpaths.
+// Gradle init script: force AGP 8.12.0 for ALL project buildscript classpaths.
+//
+// KEEP IN SYNC: the forced version MUST equal `agp` in
+// node_modules/react-native/gradle/libs.versions.toml (Expo SDK 57 / RN 0.86 → 8.12.0).
+// Forcing an older AGP than React Native's own Gradle plugin was compiled against
+// breaks the build after every Expo SDK upgrade.
 //
 // WHY THIS FILE EXISTS:
 // Some 3rd-party React Native library build.gradle files declare old Android
 // Gradle Plugin versions (4.x, 7.x, 8.2.x) in their own buildscript blocks.
-// On a fresh EAS build environment (no local Gradle cache), Gradle 8.14 cannot
+// On a fresh EAS build environment (no local Gradle cache), Gradle 9.x cannot
 // initialize those old AGP versions, causing the Android library plugin to fail
 // silently — resulting in "No variants exist" errors for every affected subproject.
 //
@@ -23,7 +28,7 @@ allprojects {
     buildscript {
         configurations.all {
             resolutionStrategy {
-                force 'com.android.tools.build:gradle:8.11.0'
+                force 'com.android.tools.build:gradle:8.12.0'
             }
         }
     }

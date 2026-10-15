@@ -7,6 +7,17 @@ name: 📸 iOS Ekran Görüntüleri
 #
 # Kareler once ARTIFACT olarak yuklenir (gozden gecirilebilsin); App Store Connect'e
 # gonderim yalnizca `asc_yukle: true` ile yapilir.
+#
+# `tur` girdisi:
+#   magaza  (varsayilan) — magaza kareleri + mockup; ozellik turu eklenmeden
+#           oncekiyle BIREBIR ayni.
+#   ozellik — yeni ekranlarin kareleri (`kareler-ozellik/iphone-<tema>/`, artifact
+#           `ios-ozellik-kareleri`; scripts/simulator-ozellik-cek.js). ASC'ye
+#           GONDERILMEZ.
+#   ikisi   — ikisi de, ayni derlemeyle.
+#   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
+#           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
+#           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
 
 on:
   workflow_dispatch:
@@ -16,7 +27,22 @@ on:
         required: false
         default: ''
       asc_yukle:
-        description: "Kareleri App Store Connect kaydına yükle"
+        description: "Kareleri App Store Connect kaydına yükle (yalnız mağaza turu)"
+        type: boolean
+        required: false
+        default: false
+      tur:
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch)'
+        type: choice
+        required: false
+        default: 'magaza'
+        options:
+          - magaza
+          - ozellik
+          - ikisi
+          - saat
+      ozellik_koyu:
+        description: 'Özellik turunu koyu temada da çek'
         type: boolean
         required: false
         default: false
@@ -27,12 +53,20 @@ permissions:
 jobs:
   kareler:
     name: 📸 Simülatörde kare çek
+    # Apple Watch turu ayri istedir (asagida); iPhone hatti o degerde kosmaz.
+    if: ${{ inputs.tur != 'saat' }}
     # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
     # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
     # derleniyor, yani kareler kullanicinin gercekte gordugu gorunumu yansitir.
     runs-on: macos-26
-    timeout-minutes: 90
+    # Ozellik turu (her bolum temiz acilis + yeniden tohum) ayni iste kosar.
+    timeout-minutes: 150
+    # Simulator UTC'dir; tohum Istanbul'dur. `simctl launch` SIMCTL_CHILD_ onekli
+    # degiskenleri uygulamaya gecirir → vakitler Istanbul saatiyle cizilir
+    # (yoksa ogle "09:55" gibi 3 saat geri gorunur).
+    env:
+      SIMCTL_CHILD_TZ: Europe/Istanbul
 
     steps:
       - name: 📥 Kodu çek
@@ -170,6 +204,7 @@ jobs:
           xcrun simctl launch "$UDID" "$BUNDLE"
 
       - name: 📸 Kareleri çek
+        if: ${{ inputs.tur != 'ozellik' }}
         run: |
           set -eo pipefail
           idb connect "${{ steps.sim.outputs.udid }}" || true
@@ -180,13 +215,14 @@ jobs:
           done
 
       - name: 🎨 Mockup üret
+        if: ${{ inputs.tur != 'ozellik' }}
         run: |
           # Magazaya giden kare ham ekran goruntusu DEGIL, basligi ve cihaz
           # cercevesi olan mockup'tir. Adimlar Chrome'u headless kullanir.
           node scripts/magaza-mockup.js kareler mockup --platform ios
 
       - name: ⬆️ Kareleri, mockup'ları ve erişilebilirlik ağaçlarını yükle
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
           name: ios-ekran-goruntuleri
@@ -196,11 +232,120 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
 
+      # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
+      # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur bagimsiz.
+      - name: 🧭 Özellik turu
+        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        run: |
+          set -eo pipefail
+          idb connect "${{ steps.sim.outputs.udid }}" || true
+          TEMALAR="acik"
+          [ "${{ inputs.ozellik_koyu }}" = "true" ] && TEMALAR="acik koyu"
+          for tema in $TEMALAR; do
+            # Bir tema dusse de digeri cekilsin.
+            node scripts/simulator-ozellik-cek.js "kareler-ozellik/iphone-$tema" \
+              --udid "${{ steps.sim.outputs.udid }}" --bundle "${{ steps.kurulum.outputs.bundle }}" --tema "$tema" \
+              || echo "UYARI: özellik turu ($tema) hatayla bitti"
+          done
+
+      - name: 🧾 Özellik kareleri özeti
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        run: node scripts/ozellik-kare-ozeti.js kareler-ozellik ios | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Özellik karelerini yükle
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ozellik-kareleri
+          # Kareler + her adimin erisilebilirlik agaci (agac/*.json): bir adim
+          # tutmazsa ekranda hangi ogelerin oldugu oradan gorulur.
+          path: kareler-ozellik/
+          retention-days: 14
+          if-no-files-found: warn
+
       - name: 🏪 App Store Connect'e yükle
-        if: ${{ inputs.asc_yukle }}
+        if: ${{ inputs.asc_yukle && inputs.tur != 'ozellik' }}
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
           ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
         # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
         run: node scripts/app-store-ekran-goruntuleri.js mockup --degistir
+
+  # --- APPLE WATCH TURU (issue #285) — iPhone isinden BAGIMSIZ, yalniz `tur: saat` ---
+  # Yalniz saat hedefleri derlenir (`-target NamazSaat -sdk watchsimulator`): saat
+  # hedefleri pod'a ve RN'e baglanmaz → pod install ve iPhone derlemesi (~25 dk) gerekmez.
+  # Veri WatchConnectivity'den DEGIL, baslatma ortamindan gelir (yalniz simulator
+  # derlemesinde okunur; gerekce `scripts/simulator-saat-cek.sh` basinda).
+  saat-kareler:
+    name: ⌚ Apple Watch kareleri
+    if: ${{ inputs.tur == 'saat' }}
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci
+
+      - name: 🍎 Araç sürümleri ve watchOS runtime
+        run: |
+          set -eo pipefail
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i watch || true
+          if ! xcrun simctl list runtimes | grep -q '^watchOS'; then
+            echo "watchOS simülatör runtime'ı yok — indiriliyor"
+            xcodebuild -downloadPlatform watchOS
+          fi
+          xcrun simctl list runtimes | grep -iE 'ios|watchos'
+
+      - name: 🏗️ Expo prebuild (iOS, saat hedefi AÇIK)
+        run: npx expo prebuild --platform ios --no-install
+        env:
+          EXPO_NO_TELEMETRY: '1'
+          # Bayrak yalniz bu imzasiz simulator derlemesi icin acilir (EAS'te tanimli degil).
+          NAMAZ_IOS_SAAT: '1'
+
+      - name: 🔨 Saat uygulamasını derle (watchOS simülatör, Release)
+        id: saat_derleme
+        working-directory: ios
+        run: |
+          set -eo pipefail
+          PROJ=$(ls -d *.xcodeproj | head -1)
+          # Yalniz saat hedefleri (`-target`): -sdk watchsimulator yalniz watchOS
+          # hedeflerine uygulanir, iPhone hedefi derlenmez. Release: kullanicinin
+          # gordugu derleme.
+          xcodebuild \
+            -project "$PROJ" \
+            -target NamazSaat \
+            -configuration Release \
+            -sdk watchsimulator \
+            SYMROOT="$PWD/build-saat" \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet
+          APP="$PWD/build-saat/Release-watchsimulator/NamazSaat.app"
+          [ -d "$APP" ] || { echo "NamazSaat.app üretilmedi"; find build-saat -maxdepth 3 -name '*.app' -print; exit 1; }
+          [ -d "$APP/PlugIns/NamazSaatWidget.appex" ] || { echo "Komplikasyon uzantısı gömülmedi"; ls "$APP"; exit 1; }
+          echo "app=$APP" >> "$GITHUB_OUTPUT"
+          echo "uretilen: $APP"
+
+      - name: 📸 Kareleri çek
+        env:
+          SAAT_APP: ${{ steps.saat_derleme.outputs.app }}
+        run: bash scripts/simulator-saat-cek.sh kareler-saat "$SAAT_APP"
+
+      - name: ⬆️ Saat karelerini yükle
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-saat-kareleri
+          path: kareler-saat/
+          retention-days: 14
+          if-no-files-found: warn

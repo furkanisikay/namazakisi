@@ -4,14 +4,14 @@ title: Gizlilik Politikası — Namaz Akışı
 
 # Gizlilik Politikası — Namaz Akışı
 
-**Son güncelleme:** 27 Eylül 2026
+**Son güncelleme:** 13 Ekim 2026
 
 Namaz Akışı, hiçbir kişisel verinizi toplamaz, saklamaz veya üçüncü taraflarla
 paylaşmaz. Uygulamayı kullanmak için hesap açmanız gerekmez.
 
 ## Kısaca
 
-- Verileriniz **yalnızca telefonunuzda** tutulur.
+- Verileriniz **yalnızca telefonunuzda** tutulur (isteğe bağlı cihazlar arası eşitlemeyi açarsanız, şifreli bir kopyası kendi bulut hesabınızda da durur).
 - Reklam, izleme (tracking) ve analitik **yoktur**.
 - Uygulama namaz vakitlerini **internetsiz** hesaplar.
 - Kaynak kodları herkese açıktır; bu politikada yazanları kodda doğrulayabilirsiniz:
@@ -31,10 +31,21 @@ Konum izni vermezseniz uygulama çalışmaya devam eder.
 
 ### Takvim
 
-Namaz vakitlerini telefonunuzun takvimine etkinlik olarak eklemek isterseniz
-takvim izni istenir. Bu izin yalnızca siz bu özelliği açtığınızda sorulur ve
-yalnızca etkinlik oluşturmak/silmek için kullanılır. Takviminizdeki diğer
-bilgiler okunmaz, hiçbir yere gönderilmez.
+Takvim izni yalnızca aşağıdaki iki özellikten birini siz açtığınızda istenir:
+
+- **Namaz vakitlerini takvime ekleme:** izin yalnızca uygulamanın kendi namaz
+  etkinliklerini oluşturmak ve silmek için kullanılır.
+- **Takvim çakışması uyarısı** (varsayılan kapalı): açarken ekranda ayrıca
+  onayınız alınır. Takviminizdeki etkinliklerin başlangıç ve bitiş saatleri,
+  "tüm gün" ve "meşgul" bilgisi bir namaz vaktiyle çakışıp çakışmadığını
+  anlamak için **yalnızca telefonunuzda** okunur. Etkinlik adı, siz ayrıca
+  açmadıkça bildirimde kullanılmaz. Adı göstermeyi açarsanız ad, bildirimin bir
+  parçası olarak kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da
+  benzeri uygulamalarda da görünebilir; bu uygulamaların bildirimleri nasıl
+  işlediği kendi gizlilik koşullarına bağlıdır.
+
+Her iki durumda da takvim bilgileriniz **saklanmaz, yedeğe girmez ve hiçbir
+yere gönderilmez**; uygulama bu bilgileri toplamaz ve kimseyle paylaşmaz.
 
 ### Bildirimler
 
@@ -67,6 +78,26 @@ siler.
 **Yedekleme:** Verilerinizi şifreli bir dosyaya aktarıp başka bir cihaza
 taşıyabilirsiniz. Bu dosya siz nereye kaydederseniz oraya gider; uygulama onu
 hiçbir yere yüklemez.
+
+## Cihazlar arası eşitleme (isteğe bağlı)
+
+Bu özellik **varsayılan olarak kapalıdır** ve yalnızca uygulamanın o sürümünde bir
+eşitleme hizmeti etkinse görünür. Siz açarsanız:
+
+- Namaz kayıtlarınız, kaza defteriniz, rozetleriniz ve bonus puanınız **sizin kendi**
+  bulut hesabınıza (Android'de Google Drive'ın uygulamaya özel gizli klasörü
+  `appDataFolder`, iPhone'da iCloud) yazılır. Bizim bir sunucumuz yoktur; veriler
+  bize hiç gelmez.
+- Veriler telefonunuzdan çıkmadan önce **yalnızca sizin bildiğiniz bir parolayla**
+  şifrelenir (uçtan uca şifreleme). Ne biz ne de bulut hizmeti içeriği okuyabilir.
+- Ayarlarınız ve **konumunuz eşitlenmez**; her cihazda ayrı kalır.
+- Google Drive'da uygulama yalnızca kendi gizli klasörüne erişir (`drive.appdata`
+  izni); diğer dosyalarınızı göremez.
+- Parolanız yalnızca o cihazın güvenli anahtar deposunda tutulur ve yedeklere girmez.
+  Parolanızı unutursanız buluttaki veri **kurtarılamaz**; cihazlarınızdaki kayıtlar
+  yerinde kalır.
+- Eşitlemeyi istediğiniz an kapatabilir, buluttaki eşitleme verisini de
+  silebilirsiniz.
 
 ## Sorun bildirme
 

@@ -6,18 +6,35 @@
  * Foreground Service + CountDownTimer ile batarya verimli calisir.
  */
 
-import notifee, { TriggerType, AndroidImportance, TimestampTrigger, AndroidStyle } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidStyle } from '@notifee/react-native';
+import { zamanTetigiOlustur } from './notifeeTetik';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { Platform } from 'react-native';
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Logger } from '../../core/utils/Logger';
 import { DEPOLAMA_ANAHTARLARI, BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { startCountdown, stopCountdown } from '../../../modules/expo-countdown-notification/src';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
-import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
+import { muhafizVakitleriniHesapla } from '../../core/muhafiz/muhafizTeslimPlani';
+import { sayacEsigiAl, sayacVakitleriniSec } from '../../core/bildirim/sayacPlani';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { vakitCanliYukuOlustur, type CanliGuncellemeYuku } from '../../core/sayac/canliGuncelleme';
+import type { CanliAday } from '../../core/sayac/canliSayacPlani';
+import { CanliSayacPlanlayici, type CanliOgeKarari } from './CanliSayacPlanlayici';
+
+const VAKIT_ADLARI: Record<VakitAdi, string> = {
+  imsak: 'Sabah',
+  gunes: 'Güneş',
+  ogle: 'Öğle',
+  ikindi: 'İkindi',
+  aksam: 'Akşam',
+  yatsi: 'Yatsı',
+};
+
+/** Planlayıcıya ulaşılamazsa ilk aşamanın davranışı: devralma yok, öne çıkarma isteği var. */
+const ILK_ASAMA_KARARI: CanliOgeKarari = { devralir: false, oneCikar: true };
 
 interface VakitZamani {
   vakit: VakitAdi;
@@ -83,64 +100,46 @@ export class VakitSayacBildirimServisi {
       return;
     }
 
-    // Aktif değilse bitir
+    // Aktif değilse bitir (Now Bar planlayıcısına da "aday yok").
     if (!ayarlar.aktif) {
       Logger.info('VakitSayac', 'Sayaç devre dışı');
+      await this.canliKaynagiBildir([]);
       return;
     }
 
-    // Muhafız aktifken, muhafızın UYARDIĞI vakitlerde sayaç planlanmaz: sayaç
-    // muhafız başlangıç eşiğinde başladığından muhafızın ilk hatırlatmasıyla eş
-    // zamanlı çakışan gereksiz bir "çıkmak üzere" bildirimi olur (#90).
-    // Muhafızın tümden susturulduğu vakitler bastırılmaz (bkz. muhafizUyarilanVakitler).
-    const bastirilanVakitler: Set<string> = new Set(
-      ayarlar.muhafizAktif ? (ayarlar.muhafizUyarilanVakitler ?? MUHAFIZ_VAKITLERI) : []
-    );
-
-    // Bugünün vakit zamanlarını hesapla
-    const vakitler = this.bugunVakitleriniHesapla();
+    // Eleme kuralı SAF üreticide (`core/bildirim/sayacPlani.ts`): bildirim
+    // defteri (issue #298) aynı listeyi sayar.
+    //  - Muhafız aktifken, muhafızın UYARDIĞI vakitlerde sayaç planlanmaz (#90):
+    //    sayaç muhafız başlangıç eşiğinde başladığından ilk hatırlatmayla
+    //    çakışırdı. Tümden susturulan vakit bastırılmaz.
+    //  - Özel gün (issue #272): kapı vaktin GÜNÜNE bakar.
+    //  - Kılınmış, geçmiş, eşiksiz vakit ve güneş planlanmaz.
     const simdi = new Date();
-
-    // Kılınan vakitleri al (bugün ve dün için - gece yarısı geçişleri)
-    const kilinanBugun = await kilinanVakitleriAl(bugunuAl());
-    const kilinanDun = await kilinanVakitleriAl(dunuAl());
+    const vakitler = muhafizVakitleriniHesapla(ayarlar.koordinatlar, simdi);
     const kilinanMap: Record<string, VakitAdi[]> = {
-      [bugunuAl()]: kilinanBugun,
-      [dunuAl()]: kilinanDun,
+      [bugunuAl()]: await kilinanVakitleriAl(bugunuAl()),
+      [dunuAl()]: await kilinanVakitleriAl(dunuAl()),
     };
+    const ozelGundeMi = await ozelGunSuzgeciniOku();
 
-    // Çıkış süresi henüz geçmemiş VE kılınmamış vakitler için planlama yap
-    const gelecekVakitler = vakitler.filter(v => {
-      // Vakit zamanı geçmiş mi?
-      if (v.cikis.getTime() <= simdi.getTime()) {
-        return false;
-      }
-
-      // Güneş vakti değil (namaz olarak kılınmaz)
-      if (v.vakit === 'gunes') {
-        return false;
-      }
-
-      // Muhafız bu vakti zaten kapsıyorsa çakışmayı önlemek için atla (#90)
-      if (bastirilanVakitler.has(v.vakit)) {
-        Logger.info('VakitSayac', `${v.vakit} muhafız kapsamında, çakışmayı önlemek için atlanıyor`);
-        return false;
-      }
-
-      // Eşik yoksa/geçersizse planlanacak bir başlangıç noktası yok
-      if (!this.vakitEsiginiAl(v.vakit)) {
-        return false;
-      }
-
-      // Bu vakit kılınmış mı?
-      const tarihinKilinanVakitleri = kilinanMap[v.tarih] || [];
-      if (tarihinKilinanVakitleri.includes(v.vakit)) {
-        Logger.info('VakitSayac', `${v.vakit} (${v.tarih}) zaten kılınmış, atlanıyor`);
-        return false;
-      }
-
-      return true;
+    const gelecekVakitler = sayacVakitleriniSec({
+      vakitler,
+      simdi,
+      baslangicEsikleri: ayarlar.baslangicEsikleri,
+      muhafizAktif: ayarlar.muhafizAktif,
+      muhafizUyarilanVakitler: ayarlar.muhafizUyarilanVakitler,
+      kilindiMi: (tarih, vakit) => (kilinanMap[tarih] || []).includes(vakit),
+      ozelGundeMi,
     });
+
+    // Now Bar (issue #282 ikinci aşama): pencereler planlayıcıya bildirilir —
+    // kendi bildirimini kurmadan ÖNCE (plan, önceki turdan kalan aynı kimlikli
+    // bildirimi kaldırırken bu turun taze sayacını silmesin).
+    const kararlar = new Map<VakitAdi, CanliOgeKarari>();
+    for (const v of gelecekVakitler) {
+      if (!kararlar.has(v.vakit)) kararlar.set(v.vakit, await this.canliKarari(v.vakit));
+    }
+    await this.canliKaynagiBildir(gelecekVakitler.map((v) => this.canliAdayi(v)));
 
     if (gelecekVakitler.length === 0) {
       Logger.info('VakitSayac', 'Gelecek veya kılınmamış vakit bulunamadı');
@@ -152,10 +151,62 @@ export class VakitSayacBildirimServisi {
     await this.kanalOlustur();
 
     for (const vakit of gelecekVakitler) {
-      await this.vakitIcinSayacPlanla(vakit);
+      await this.vakitIcinSayacPlanla(vakit, kararlar.get(vakit.vakit) ?? ILK_ASAMA_KARARI);
     }
 
     Logger.info('VakitSayac', `Toplam ${gelecekVakitler.length} vakit için sayaç planlandı`);
+  }
+
+  /** Now Bar: bu vakit için planlayıcı devraldı mı? (hata → ilk aşama davranışı) */
+  private async canliKarari(vakit: VakitAdi): Promise<CanliOgeKarari> {
+    if (vakit === 'gunes') return { devralir: false, oneCikar: false };
+    try {
+      return await CanliSayacPlanlayici.getInstance().ogeKarari(vakit);
+    } catch {
+      return ILK_ASAMA_KARARI;
+    }
+  }
+
+  private async canliKaynagiBildir(adaylar: CanliAday[]): Promise<void> {
+    try {
+      await CanliSayacPlanlayici.getInstance().kaynakBildir('vakitSayac', adaylar);
+    } catch {
+      // Plan kurulamazsa sayaç eski yolunda çalışmaya devam eder.
+    }
+  }
+
+  /** Sayacın başlangıcı: o vaktin muhafız/sayaç eşiği kadar çıkıştan önce. */
+  private sayacBaslangiciMs(vakit: VakitZamani): number {
+    return vakit.cikis.getTime() - this.vakitEsiginiAl(vakit.vakit) * 60 * 1000;
+  }
+
+  private canliYuku(vakit: VakitZamani): CanliGuncellemeYuku {
+    return vakitCanliYukuOlustur({
+      girisMs: vakit.giris.getTime(),
+      cikisMs: vakit.cikis.getTime(),
+      sayacBaslangicMs: this.sayacBaslangiciMs(vakit),
+      tarih: vakit.tarih,
+      vakit: vakit.vakit,
+    });
+  }
+
+  /** Planlayıcıya giden aday (kimlik/başlık/kanal sayacın kendisiyle AYNI). */
+  private canliAdayi(vakit: VakitZamani): CanliAday {
+    const ad = VAKIT_ADLARI[vakit.vakit];
+    return {
+      oge: vakit.vakit as Exclude<VakitAdi, 'gunes'>,
+      kaynak: 'sayac',
+      id: `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${vakit.tarih}_${vakit.vakit}`,
+      baslangicMs: this.sayacBaslangiciMs(vakit),
+      dogalBaslangicMs: vakit.giris.getTime(),
+      hedefMs: vakit.cikis.getTime(),
+      baslik: `\u23F1\uFE0F ${ad} Namazı`,
+      govdeSablonu: `${ad} namazı vakti çıkmak üzere!\n\u23F1\uFE0F {time}`,
+      kanalId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
+      tema: 'vakit',
+      hedefteKaybol: false,
+      canli: this.canliYuku(vakit),
+    };
   }
 
   /**
@@ -163,8 +214,7 @@ export class VakitSayacBildirimServisi {
    * Geçersiz/eksik/0 değer -> 0 döner (o vakit planlanmaz).
    */
   private vakitEsiginiAl(vakit: VakitAdi): number {
-    const esik = this.ayarlar?.baslangicEsikleri?.[vakit as MuhafizVakti];
-    return typeof esik === 'number' && Number.isFinite(esik) && esik > 0 ? esik : 0;
+    return sayacEsigiAl(this.ayarlar?.baslangicEsikleri, vakit);
   }
 
   /**
@@ -196,118 +246,35 @@ export class VakitSayacBildirimServisi {
   }
 
   /**
-   * Bugün için tüm namaz vakitlerini hesapla
-   * ArkaplanMuhafizServisi ile aynı mantık
-   */
-  private bugunVakitleriniHesapla(): VakitZamani[] {
-    if (!this.ayarlar) return [];
-
-    const { lat, lng } = this.ayarlar.koordinatlar;
-    const coordinates = new Coordinates(lat, lng);
-    const params = CalculationMethod.Turkey();
-    const simdi = new Date();
-
-    const bugunTarih = new Date(simdi);
-    const dunTarih = new Date(simdi);
-    dunTarih.setDate(dunTarih.getDate() - 1);
-    const yarinTarih = new Date(simdi);
-    yarinTarih.setDate(yarinTarih.getDate() + 1);
-
-    const bugunPrayerTimes = new PrayerTimes(coordinates, bugunTarih, params);
-    const dunPrayerTimes = new PrayerTimes(coordinates, dunTarih, params);
-    const yarinPrayerTimes = new PrayerTimes(coordinates, yarinTarih, params);
-
-    const formatDate = (d: Date) => {
-      const yil = d.getFullYear();
-      const ay = String(d.getMonth() + 1).padStart(2, '0');
-      const gun = String(d.getDate()).padStart(2, '0');
-      return `${yil}-${ay}-${gun}`;
-    };
-
-    const bugunStr = formatDate(bugunTarih);
-    const dunStr = formatDate(dunTarih);
-
-    const vakitler: VakitZamani[] = [];
-
-    // Eğer şu an imsak vaktinden önceyse, dünün yatsı vakti hala aktiftir
-    if (simdi < bugunPrayerTimes.fajr) {
-      vakitler.push({
-        vakit: 'yatsi',
-        giris: dunPrayerTimes.isha,
-        cikis: bugunPrayerTimes.fajr,
-        tarih: dunStr, // Düne ait!
-      });
-    }
-
-    // Bugünün vakitleri
-    vakitler.push(
-      {
-        vakit: 'imsak',
-        giris: bugunPrayerTimes.fajr,
-        cikis: bugunPrayerTimes.sunrise,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'ogle',
-        giris: bugunPrayerTimes.dhuhr,
-        cikis: bugunPrayerTimes.asr,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'ikindi',
-        giris: bugunPrayerTimes.asr,
-        cikis: bugunPrayerTimes.maghrib,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'aksam',
-        giris: bugunPrayerTimes.maghrib,
-        cikis: bugunPrayerTimes.isha,
-        tarih: bugunStr,
-      },
-      {
-        vakit: 'yatsi',
-        giris: bugunPrayerTimes.isha,
-        cikis: yarinPrayerTimes.fajr,
-        tarih: bugunStr,
-      }
-    );
-
-    return vakitler;
-  }
-
-  /**
    * Belirli bir vakit için sayaç bildirimi planla
    * Her vakit için 2 trigger notification:
    * 1. Muhafiz ilk bildirimle eş zamanlı başlayan chronometer countdown
    * 2. Vakit çıkışında replace + otomatik kapanma
    */
-  private async vakitIcinSayacPlanla(vakit: VakitZamani): Promise<void> {
+  private async vakitIcinSayacPlanla(vakit: VakitZamani, karar: CanliOgeKarari): Promise<void> {
     if (!this.ayarlar) return;
 
     const simdi = new Date();
     const cikisSuresi = vakit.cikis.getTime();
     // Eşik VAKİT BAZLI (Faz 3): sayaç, o vaktin muhafız başlangıç eşiğinde başlar.
-    const sayacBaslangic = cikisSuresi - (this.vakitEsiginiAl(vakit.vakit) * 60 * 1000);
+    const sayacBaslangic = this.sayacBaslangiciMs(vakit);
 
     const bildirimId = `${BILDIRIM_SABITLERI.ONEKLEME.SAYAC}${vakit.tarih}_${vakit.vakit}`;
-
-    const vakitAdlari: Record<VakitAdi, string> = {
-      imsak: 'Sabah',
-      gunes: 'Güneş',
-      ogle: 'Öğle',
-      ikindi: 'İkindi',
-      aksam: 'Akşam',
-      yatsi: 'Yatsı',
-    };
+    const vakitAdlari = VAKIT_ADLARI;
 
     // A) Geri sayim bildirimi - native modül ile body'de countdown
     const tetikZamani = Math.max(sayacBaslangic, simdi.getTime() + 5000);
     const vakitBasligi = `\u23F1\uFE0F ${vakitAdlari[vakit.vakit]} Namazı`;
     const bodyTemplate = `${vakitAdlari[vakit.vakit]} namazı vakti çıkmak üzere!\n\u23F1\uFE0F {time}`;
 
-    // Eger zaten muhafiz baslangic araligindaysak hemen native countdown baslat
-    if (tetikZamani <= simdi.getTime() + 5000) {
+    // Now Bar (issue #282 ikinci aşama): planlayıcı devraldıysa sayacı o gösterir
+    // (tam başlangıçta, exact alarmla). Yalnız A atlanır; B (çıkışta temizleme)
+    // zararsızdır ve bildirim defteri (#298) iki tetiği saymaya devam eder —
+    // defter bu yolda en fazla vakit başına bir fazla sayar (ihtiyatlı taraf).
+    if (karar.devralir) {
+      Logger.info('VakitSayac', `${vakit.vakit} sayacı Now Bar planlayıcısında`);
+    } else if (tetikZamani <= simdi.getTime() + 5000) {
+      // Eger zaten muhafiz baslangic araligindaysak hemen native countdown baslat
       try {
         startCountdown({
           id: bildirimId,
@@ -316,6 +283,11 @@ export class VakitSayacBildirimServisi {
           bodyTemplate: bodyTemplate,
           channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_SAYAC,
           themeType: 'vakit',
+          // Live Update (issue #282): API 36+'da durum çubuğu çipi / Now Bar,
+          // vakit penceresi ilerlemesi ve "Kıldım" eylemi. Native taraf
+          // desteklemiyorsa eski görünüm BİREBİR kalır. Kullanıcı Now Bar'da
+          // bu vakti kapattıysa öne çıkarma istenmez.
+          canli: karar.oneCikar ? this.canliYuku(vakit) : undefined,
         });
         Logger.info('VakitSayac', `${vakit.vakit} icin native sayac hemen baslatildi`);
       } catch (error) {
@@ -325,10 +297,7 @@ export class VakitSayacBildirimServisi {
       // Gelecekte tetiklenecek - trigger ile placeholder bildirim gonder,
       // arkaplan gorevi (muhafiz) tetiklenince native countdown baslatilacak
       try {
-        const trigger: TimestampTrigger = {
-          type: TriggerType.TIMESTAMP,
-          timestamp: tetikZamani,
-        };
+        const trigger = await zamanTetigiOlustur(tetikZamani);
         const bildirimIcerigi = {
           id: bildirimId,
           title: vakitBasligi,
@@ -357,10 +326,7 @@ export class VakitSayacBildirimServisi {
     // B) Vakit sonu temizleme (farkli ID - trigger cakismasini onler)
     const temizlemeId = `${bildirimId}_bitis`;
     try {
-      const temizlemeTrigger: TimestampTrigger = {
-        type: TriggerType.TIMESTAMP,
-        timestamp: cikisSuresi,
-      };
+      const temizlemeTrigger = await zamanTetigiOlustur(cikisSuresi);
 
       await notifee.createTriggerNotification(
         {

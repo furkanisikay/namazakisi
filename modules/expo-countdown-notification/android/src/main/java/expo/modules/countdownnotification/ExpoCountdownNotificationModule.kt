@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.content.Context
 import android.util.Log
+import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
 
 class ExpoCountdownNotificationModule : Module() {
 
@@ -42,40 +43,41 @@ class ExpoCountdownNotificationModule : Module() {
                     context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon,
                     themeType, autoDismissAtTarget
                 )
-
                 // Süre dolduğunda tetiklenecek AlarmManager
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-                val intent = Intent(context, CountdownReceiver::class.java).apply {
-                    action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                    putExtra(CountdownReceiver.EXTRA_ID, id)
-                    putExtra(CountdownReceiver.EXTRA_TITLE, title)
-                    putExtra(CountdownReceiver.EXTRA_BODY_TEMPLATE, bodyTemplate)
-                    putExtra(CountdownReceiver.EXTRA_CHANNEL_ID, channelId)
-                    putExtra(CountdownReceiver.EXTRA_SMALL_ICON, smallIcon)
-                }
-
-                val pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    id.hashCode(),
-                    intent,
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                CountdownNotificationHelper.bitisAlarminiKur(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon
                 )
+            }
+            Unit
+        }
 
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (alarmManager.canScheduleExactAlarms()) {
-                            alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                        } else {
-                            alarmManager.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                        }
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        alarmManager.setExactAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                    } else {
-                        alarmManager.setExact(android.app.AlarmManager.RTC_WAKEUP, targetTimeMs.toLong(), pendingIntent)
-                    }
-                } catch (e: Exception) {
-                    Log.e("CountdownModule", "Alarm ayarlanamadi: \${e.message}")
-                }
+        /**
+         * `startCountdown`'ın Android 16 Live Update ikizi (issue #282). Expo
+         * `Function` en fazla 8 argüman alır → `autoDismissAtTarget` ve öne çıkarma
+         * verisi (ilerleme bölümleri, "Kıldım") tek JSON'da gelir. Öne çıkarma
+         * desteklenmiyorsa (API < 36, kullanıcı kapattı, seri teması) helper eski
+         * RemoteViews yoluna BİREBİR düşer.
+         */
+        Function("startCountdownCanli") {
+            id: String,
+            targetTimeMs: Double,
+            title: String,
+            bodyTemplate: String,
+            channelId: String,
+            smallIcon: String,
+            themeType: String,
+            ekJson: String ->
+
+            val context = appContext.reactContext
+            if (context != null) {
+                val ek = CanliGuncellemeKurallari.ekYukuCoz(ekJson)
+                CountdownNotificationHelper.showCountdownNotification(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon,
+                    themeType, ek.hedefteKaybol, ek
+                )
+                CountdownNotificationHelper.bitisAlarminiKur(
+                    context, id, targetTimeMs.toLong(), title, bodyTemplate, channelId, smallIcon
+                )
             }
             Unit
         }
@@ -83,44 +85,62 @@ class ExpoCountdownNotificationModule : Module() {
         Function("stopCountdown") { id: String ->
             val context = appContext.reactContext
             if (context != null) {
-                // Bildirimi iptal et
+                // Bildirimi iptal et (öne çıkarılmış ikizin tazelemesi dahil)
                 CountdownNotificationHelper.cancelNotification(context, id)
-
                 // Varsa iptal et (AlarmManager)
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-                val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
-                    action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                }
-                val pendingIntent = android.app.PendingIntent.getBroadcast(
-                    context,
-                    id.hashCode(),
-                    cancelIntent,
-                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                )
-                alarmManager.cancel(pendingIntent)
+                CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
+                // Now Bar planındaki ileriki dilimleri de düşür ("Kıldım", yeniden planlama).
+                CanliPlan.kimligiDusur(context, id)
             }
             Unit
+        }
+
+        // ============================================================
+        // NOW BAR / CANLI SAYAÇ PLANI (issue #282 ikinci aşama)
+        // ============================================================
+
+        /**
+         * Öne çıkarma durumu: "desteklenmiyor" (API < 36), "kapali" (kullanıcı
+         * sistemde "Canlı güncellemeler"i kapattı) ya da "acik". Binder çağrısı →
+         * AsyncFunction.
+         */
+        AsyncFunction("canliDurumu") { promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(
+                when {
+                    context == null || Build.VERSION.SDK_INT < 36 -> "desteklenmiyor"
+                    CanliGuncelleme.destekleniyorMu(context) -> "acik"
+                    else -> "kapali"
+                }
+            )
+        }
+
+        /** JS'in hesapladığı olay listesini saklar, şu anki hâli uygular, zinciri kurar. */
+        AsyncFunction("canliPlaniKur") { json: String, promise: Promise ->
+            val context = appContext.reactContext
+            if (context != null) CanliPlan.kur(context, json)
+            promise.resolve(null)
+        }
+
+        /**
+         * Sistemdeki öne çıkarma ayarını açar (Android 16: uygulamanın "Canlı
+         * güncellemeler" sayfası). Yoksa uygulamanın bildirim ayarları, o da yoksa
+         * uygulama ayrıntıları. @return açılan ekran ya da null.
+         */
+        AsyncFunction("canliAyarlariniAc") { promise: Promise ->
+            val context: Context? = appContext.currentActivity ?: appContext.reactContext
+            promise.resolve(if (context == null) null else canliAyarEkraniniAc(context))
         }
 
         Function("stopAll") {
             val context = appContext.reactContext
             if (context != null) {
-                val ids = CountdownNotificationHelper.getActiveIds()
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
-
+                // Bellek-içi liste süreç ölünce boşalır; öne çıkarılmış sayaçlar
+                // diskte de tutulur → ikisinin birleşimi.
+                val ids = (CountdownNotificationHelper.getActiveIds() + CanliGuncelleme.kayitliIdler(context)).toSet()
                 ids.forEach { id ->
                     CountdownNotificationHelper.cancelNotification(context, id)
-
-                    val cancelIntent = Intent(context, CountdownReceiver::class.java).apply {
-                        action = CountdownReceiver.ACTION_COUNTDOWN_FINISHED
-                    }
-                    val pendingIntent = android.app.PendingIntent.getBroadcast(
-                        context,
-                        id.hashCode(),
-                        cancelIntent,
-                        android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
-                    )
-                    alarmManager.cancel(pendingIntent)
+                    CountdownNotificationHelper.bitisAlarminiIptalEt(context, id)
                 }
             }
             Unit
@@ -155,6 +175,30 @@ class ExpoCountdownNotificationModule : Module() {
                 AnonsZamanlayici.tumunuIptal(context.applicationContext)
             }
             Unit
+        }
+
+        /**
+         * Kimligi [onek] ile baslayan planli anonslari iptal eder (issue #273).
+         * Muhafiz ve nafile anonslari ayni kayitta yasar; biri yeniden
+         * planlanirken digerinin anonslari silinmemeli. Iptal edilen sayiyi dondurur.
+         */
+        Function("iptalEtOnekliAnonslar") { onek: String ->
+            val context = appContext.reactContext
+            if (context == null || onek.isEmpty()) {
+                0
+            } else {
+                AnonsZamanlayici.eslesenleriIptalEt(context.applicationContext) { it.startsWith(onek) }.size
+            }
+        }
+
+        /**
+         * Bekleyen (gelecekteki) anons alarmi sayisi — bildirim siniri rehberi
+         * (issue #298). SharedPreferences okumasi → AsyncFunction (JS thread'ini
+         * bloklamasin). Baglam yoksa `null` (bilinmiyor).
+         */
+        AsyncFunction("bekleyenAnonsSayisi") { promise: Promise ->
+            val context = appContext.reactContext
+            promise.resolve(context?.let { AnonsZamanlayici.bekleyenSayisi(it.applicationContext) })
         }
 
         // ============================================================
@@ -298,6 +342,26 @@ class ExpoCountdownNotificationModule : Module() {
             }
         }
 
+        /**
+         * Uygulama pil optimizasyonundan muaf mi? (Doze ve OEM uyku kisitlari.)
+         * Salt okur — REQUEST_IGNORE_BATTERY_OPTIMIZATIONS izni ISTENMEZ (Play riski).
+         * `null` = bilinmiyor (eski API / hata): ekran yanlis alarm vermesin.
+         */
+        AsyncFunction("pilOptimizasyonuMuafMi") { promise: Promise ->
+            promise.resolve(appContext.reactContext?.let { PilAyarlari.muafMi(it) })
+        }
+
+        /** Uygulama bilgisi (Pil → Kisitlanmamis); olmazsa pil optimizasyonu listesi. Izin istemez. */
+        AsyncFunction("pilAyarlariniAc") { promise: Promise ->
+            val aktivite = appContext.currentActivity
+            promise.resolve(if (aktivite == null) null else PilAyarlari.ac(aktivite))
+        }
+
+        /** Cihaz Samsung mu? (Kurulum adimi/metinleri icin.) */
+        Function("samsungMu") {
+            PilAyarlari.samsungMu()
+        }
+
         /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */
         AsyncFunction("trDestekleniyorMu") { promise: Promise ->
             val context = appContext.reactContext
@@ -314,5 +378,32 @@ class ExpoCountdownNotificationModule : Module() {
                 }
             }
         }
+    }
+
+    /** `canliAyarlariniAc` gövdesi (sıralı yedekler; `resolveActivity` KULLANILMAZ — AGENTS.md). */
+    private fun canliAyarEkraniniAc(context: Context): String? {
+        val paket = context.packageName
+        val adaylar = mutableListOf<Pair<String, Intent>>()
+        if (Build.VERSION.SDK_INT >= 36) {
+            // API 36 `Settings.ACTION_APP_NOTIFICATION_PROMOTION_SETTINGS` (eski SDK ile de derlensin diye dize).
+            adaylar += "canli" to Intent("android.settings.APP_NOTIFICATION_PROMOTION_SETTINGS")
+                .putExtra("android.provider.extra.APP_PACKAGE", paket)
+        }
+        adaylar += "bildirim" to Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+            .putExtra("android.provider.extra.APP_PACKAGE", paket)
+        adaylar += "uygulama" to Intent(
+            "android.settings.APPLICATION_DETAILS_SETTINGS",
+            android.net.Uri.fromParts("package", paket, null)
+        )
+        for ((ad, intent) in adaylar) {
+            try {
+                context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                return ad
+            } catch (_: android.content.ActivityNotFoundException) {
+            } catch (e: Exception) {
+                Log.w("ExpoCountdown", "Ayar ekrani acilamadi: $ad", e)
+            }
+        }
+        return null
     }
 }

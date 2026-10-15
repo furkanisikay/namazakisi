@@ -11,6 +11,7 @@
  *   sesli    -> native TTS anonsu; `sesliAnons` bayragi + `anonsMetni` veriye tasinir
  *   titresim -> kanal titresimi + on planda `Vibration.vibrate` (Faz 6); kanal
  *               id'sinin de girdisidir (bkz. `muhafizKanaliSec`)
+ *   alarm    -> adimin ILK tetiginde gercek alarm (issue #74, `alarmAniMi`)
  */
 import type {
   MuhafizMatrisi,
@@ -20,19 +21,30 @@ import type {
   UyariKanallari,
   VakitMuhafizAyari,
 } from './matrisTipleri';
-import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from './matrisTipleri';
+import {
+  MUHAFIZ_MAKS_ADIM,
+  MUHAFIZ_MIN_ADIM,
+  MUHAFIZ_VAKITLERI,
+  SEVIYE_KADEMELERI,
+} from './matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from './kanalKumesi';
-import { aktifSeviyeyiBul } from './aktifSeviye';
+import { aktifSeviyeyiBul, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import {
   ESKI_ALARM_SESI,
   eskiAlarmSesiniGoc,
   yonEsiklerineGoc,
   eskidenMatriseGoc,
+  esikTekilliginiGoc,
   modlariKanallaraGoc,
   type EskiMuhafizAyari,
 } from './muhafizGoc';
 import { muhafizKanalIdOlustur } from './sesKimligi';
-import { cikisSegmentiHesapla, girisSegmentiHesapla, etkinSiklikHesapla } from './planButcesi';
+import {
+  cikisSegmentiHesapla,
+  girisSegmentiHesapla,
+  etkinSiklikHesapla,
+  kardeslerdenButce,
+} from './planButcesi';
 import { VARSAYILAN_PENCERE_YONU, type PencereYonu } from './pencereTipleri';
 
 /** Kademe'nin sayisal karsiligi (1..4) — baslik/oncelik/icerik havuzu bunu kullanir. */
@@ -41,6 +53,73 @@ export type SeviyeNo = 1 | 2 | 3 | 4;
 export function kademeSeviyeNo(kademe: SeviyeKademe): SeviyeNo {
   const indeks = SEVIYE_KADEMELERI.indexOf(kademe);
   return (indeks >= 0 ? indeks + 1 : 1) as SeviyeNo;
+}
+
+/**
+ * ACIL TON yalniz vaktin SON 15 dakikasinda (cikis yonu) gecerlidir — issue #274.
+ *
+ * Neden: acil ton "VAKIT CIKIYOR" der ve (acilKanal ile) Rahatsiz Etmeyin'i
+ * delebilir. 45 dk kala bunu soylemek yanlis (kisi namazi TERK etmis degil,
+ * GECIKTIRMIS — AGENTS.md fikih kurali), telefonu sessizdeyken caldirmak da
+ * gereksizdir. Giris yonunde ("vakit girer girmez") acil ton HIC yoktur: olcu
+ * vaktin sonuna degil basina baglidir.
+ */
+export const ACIL_TON_UST_DK = 15;
+
+/** Bu esik/yon icin acil ton secilebilir mi? (Ekranin ton cipi de buna bakar.) */
+export function acilTonSecilebilirMi(esikDk: number, yon?: PencereYonu): boolean {
+  return (yon ?? VARSAYILAN_PENCERE_YONU) === 'cikisaDogru' && esikDk <= ACIL_TON_UST_DK;
+}
+
+/**
+ * Adimin GERCEKTE kullanilan tonu: acil kisitini (bkz. `ACIL_TON_UST_DK`)
+ * saglamayan acil adim SERT'e duser (bozuk kayit, eski giris yonu tablosu ya da
+ * esigi sonradan 15'in ustune cekilmis adim). Kayit DEGISMEZ — kullanici esigi
+ * geri cekerse ya da cikis yonune donerse acil kendiliginden geri gelir.
+ *
+ * TUM TUKETICILER BURADAN GECER (plan, on plan banner'i, kanal plani, ekran):
+ * biri ham `kademe`yi okursa "ekranda Sert, bildirimde ACIL" ayrismasi dogar.
+ */
+export function etkinKademe(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk'>,
+  yon?: PencereYonu
+): SeviyeKademe {
+  if (seviye.kademe === 'acil' && !acilTonSecilebilirMi(seviye.esikDk, yon)) return 'sert';
+  return SEVIYE_KADEMELERI.includes(seviye.kademe) ? seviye.kademe : 'nazik';
+}
+
+/**
+ * Adimin GERCEKTE kullanilan aciliyet tercihi (`acilKanal`).
+ *
+ * URUN KURALI: ERKEN DND DELME YOK (issue #274). Acil kanal (IMPORTANCE_MAX +
+ * bypassDnd) yalniz cikis yonunde vaktin son `ACIL_TON_UST_DK` dakikasinda
+ * kullanilabilir; disindaki (cikista > 15 dk ya da giris yonlu) her adim icin
+ * burada `false` doner — kaydin ne dedigine BAKILMAKSIZIN:
+ *  - `acilKanal: true` (ekranda acil ton secilip esik sonradan 15'in ustune
+ *    cekilmis ya da yon girise cevrilmis, ya da eski 'alarm' sesinden gocmus),
+ *  - `acilKanal: undefined` (eski kayit): `muhafizAcilKanalMi`'nin tarihsel
+ *    `seviye >= 3` kurali erken sert/acil adimi da acil kanala dusururdu.
+ * Kayit DEGISMEZ (esik geri cekilince eski davranis geri gelir). Pencere icinde
+ * alan AYNEN doner (uc durumlu sozlesme korunur → varsayilan matris 10/3 dk
+ * adimlari birebir eskisi gibi acil kanala duser).
+ *
+ * TEK KAPI: plan (`vakitUyariPlaniOlustur` → on plan/arka plan/saat yuku) ve
+ * kanal plani (`kanalPlaniOlustur`) buradan gecer; ham `acilKanal` okuma.
+ */
+export function etkinAcilKanal(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk' | 'acilKanal'>,
+  yon?: PencereYonu
+): boolean | undefined {
+  if (!acilTonSecilebilirMi(seviye.esikDk, yon) && seviye.acilKanal !== false) return false;
+  return seviye.acilKanal;
+}
+
+/** `etkinKademe`nin sayisal karsiligi (1..4) — plan ve banner bunu kullanir. */
+export function etkinSeviyeNo(
+  seviye: Pick<SeviyeAyari, 'kademe' | 'esikDk'>,
+  yon?: PencereYonu
+): SeviyeNo {
+  return kademeSeviyeNo(etkinKademe(seviye, yon));
 }
 
 /** 'birkez' -> null (tek atis); {herDk:n} -> n. */
@@ -73,6 +152,33 @@ export function bildirimSesiGerekliMi(kanallar: UyariKanallari | undefined): boo
  */
 export function titresimGerekliMi(kanallar: UyariKanallari | undefined): boolean {
   return kanalAcikMi(kanallar, 'titresim');
+}
+
+/**
+ * Kanal kumesi GERCEK ALARM istiyor mu? (issue #74)
+ *
+ * Ayni gerekce: kural tek yerde dursun. Plan (`alarmAniMi`), Android teslimcisi,
+ * iOS teslim plani, on plan susturmasi ve bildirim defteri buradan gecer.
+ */
+export function alarmGerekliMi(kanallar: UyariKanallari | undefined): boolean {
+  return kanalAcikMi(kanallar, 'alarm');
+}
+
+/**
+ * Bu olcude adimin GERCEK ALARMI calar mi? (issue #74)
+ *
+ * KURAL: alarm yalniz adimin ILK tetiginde, yani adimin kendi esik aninda
+ * (`olcuDk === esikDk`) calar; tekrarlar normal bildirim olarak gelir. Sahip
+ * metni "ilk bildirim zamaninda alarm calmali" der; 5 dk'da bir calan tam
+ * ekran alarm tekrar degil iskencedir. `seviyeTetiklenirMi` esik aninda HER
+ * IKI yonde ve her siklikta tetikledigi icin (capa = esik) bu an daima planda
+ * bulunur — adimin kendisi o an kazaniyorsa.
+ *
+ * TEK KAPI: plan (`vakitUyariPlaniOlustur` → `UyariPlani.alarm`) ve on plan
+ * muhafizi (`NamazMuhafiziServisi`, cift ses kurali) buradan gecer.
+ */
+export function alarmAniMi(seviye: Pick<SeviyeAyari, 'kanallar' | 'esikDk'>, olcuDk: number): boolean {
+  return alarmGerekliMi(seviye.kanallar) && olcuDk === seviye.esikDk;
 }
 
 /**
@@ -144,7 +250,11 @@ export function seviyeTetiklenirMi(
     span = kardesler ? cikisSegmentiHesapla(kardesler, seviye) : seviye.esikDk;
   }
 
-  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik));
+  // VAKIT BUTCESI (issue #274): kardesler verilirse seviye basi butce acik adim
+  // sayisina gore daralir (6 adimda 10) → vakit basi en fazla 60 uyari. Kardes
+  // yoksa tarihsel seviye basi 15 — iki motor da kardesleri GECMEK zorunda.
+  const butce = kardesler ? kardeslerdenButce(kardesler) : undefined;
+  const herDk = siklikDakikasi(etkinSiklikHesapla(span, seviye.siklik, butce));
   if (herDk === null) return olcuDk === seviye.esikDk; // birkez: iki yonde de yalniz esik aninda
   if (herDk <= 0) return false;
   // Capa daima seviyenin KENDI esigidir; yalniz isaret doner.
@@ -165,7 +275,18 @@ export interface UyariPlani {
    * gibi ters cumleler dogar (Faz 1 / B11).
    */
   olcuDk: number;
+  /**
+   * Kazanan adimin TON numarasi (1 nazik … 4 acil). Metin, onem
+   * (`muhafizAcilKanalMi`), iOS kesinti seviyesi ve bildirim id'si bunu
+   * kullanir — issue #274'ten beri SIRAYI tasimaz (bkz. `adimIndeks`).
+   */
   seviye: SeviyeNo;
+  /**
+   * Kazanan adimin KRONOLOJIK sira numarasi (0'dan; ekranda "N. hatirlatma" =
+   * `adimIndeks + 1`). Ayni tonu tasiyan iki adimi ayirt eder (serit cubuklari,
+   * onizleme). Bildirim id'sine GIRMEZ — id bicimi sabit kalir.
+   */
+  adimIndeks: number;
   /** Kazanan adimin KANAL KUMESI (Faz 2'de `mod: UyariModu` yerini aldi). */
   kanallar: UyariKanallari;
   /** `VARSAYILAN_SES` ya da kullanicinin sectigi `content://...` URI'si */
@@ -177,6 +298,13 @@ export interface UyariPlani {
   anonsMetni: string;
   /** TTS bayragi ('sesli' kanali acik mi) */
   sesliAnons: boolean;
+  /**
+   * Bu tetikte GERCEK ALARM calar (issue #74; `alarmAniMi`). Alan yalniz `true`
+   * iken yazilir — alarm kanali kapali planlar BIREBIR eskisi kalir (kayit-oynat
+   * ve esitlik testleri). Android'de alarm o tetigin bildirimi + anonsunun
+   * YERINE gecer; iOS'ta bildirim zamana duyarli + uzun sesle gelir.
+   */
+  alarm?: true;
 }
 
 export interface PlanSecenekleri {
@@ -225,6 +353,9 @@ export function vakitUyariPlaniOlustur(
   const bitis = girisYonu ? (pencereUzunluguDk as number) - 1 : 1;
   const adim = girisYonu ? 1 : -1;
 
+  // Kronolojik sira bir kez hesaplanir; kazanan adimin "N. hatirlatma" numarasi.
+  const kronolojik = kronolojikSirala(vakitAyari.seviyeler, yon);
+
   const plan: UyariPlani[] = [];
   for (let o = baslangic; girisYonu ? o <= bitis : o >= bitis; o += adim) {
     const kazanan = aktifSeviyeyiBul(vakitAyari, o);
@@ -235,13 +366,15 @@ export function vakitUyariPlaniOlustur(
       // Zamanlama daima cikistan sayilir; giris yonunde pencereden turetilir.
       kalanDk: girisYonu ? (pencereUzunluguDk as number) - o : o,
       olcuDk: o,
-      seviye: kademeSeviyeNo(kazanan.kademe),
+      seviye: etkinSeviyeNo(kazanan, yon),
+      adimIndeks: kronolojik.indexOf(kazanan),
       kanallar: kazanan.kanallar,
       bildirimSesi: kazanan.bildirimSesi,
       sesAdi: kazanan.sesAdi,
-      acilKanal: kazanan.acilKanal,
+      acilKanal: etkinAcilKanal(kazanan, yon),
       anonsMetni: kazanan.anonsMetni,
       sesliAnons: sesliAnonsGerekliMi(kazanan.kanallar),
+      ...(alarmAniMi(kazanan, o) ? { alarm: true as const } : {}),
     });
   }
   return plan;
@@ -305,18 +438,40 @@ export function muhafizKanaliSec(
   );
 }
 
-/** Matris yapisal olarak kullanilabilir mi? (5 vakit x 4 seviye + gecerli esik) */
-export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is MuhafizMatrisi {
+/**
+ * Matris YAPISAL olarak okunabilir mi? (5 vakit x 1..6 adim + sonlu esik)
+ *
+ * Esik TEKILLIGINE bakmaz: tekillik bozuksa matris yine de kurtarilabilir
+ * (`esikTekilliginiGoc`); tumden reddetmek `eskidenMatriseGoc` ile kullanicinin
+ * kanal/ses/anons/yon ayarlarini siler (AGENTS.md: siralama yuklemini yapisal
+ * kapiya BAGLAMA).
+ */
+export function matrisYapisiGecerliMi(
+  matris: MuhafizMatrisi | undefined
+): matris is MuhafizMatrisi {
   if (!matris) return false;
   return MUHAFIZ_VAKITLERI.every((vakit) => {
     const vakitAyari = matris[vakit];
     return (
       !!vakitAyari &&
       Array.isArray(vakitAyari.seviyeler) &&
-      vakitAyari.seviyeler.length === SEVIYE_KADEMELERI.length &&
+      vakitAyari.seviyeler.length >= MUHAFIZ_MIN_ADIM &&
+      vakitAyari.seviyeler.length <= MUHAFIZ_MAKS_ADIM &&
       vakitAyari.seviyeler.every((s) => !!s && Number.isFinite(s.esikDk))
     );
   });
+}
+
+/**
+ * Matris kullanilabilir mi? Yapi (1..6 adim, sonlu esik) + her vakitte ESIK
+ * TEKILLIGI (issue #274). Eski 4 elemanli kayitlar kesin sirali oldugu icin
+ * goçsuz gecer.
+ */
+export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is MuhafizMatrisi {
+  return (
+    matrisYapisiGecerliMi(matris) &&
+    MUHAFIZ_VAKITLERI.every((vakit) => esiklerTekilMi(matris[vakit].seviyeler))
+  );
 }
 
 /**
@@ -345,9 +500,10 @@ export type MatrisKaynagi = EskiMuhafizAyari & {
  * (kimlik korunur, gereksiz kopya yok).
  */
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
-  if (!matrisGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
+  if (!matrisYapisiGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
+  // Tekillik gocu kanal gocundan SONRA: kapali/acik ayrimi `kanallar`a bakar.
   return yonEsiklerineGoc(
-    modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris)),
+    esikTekilliginiGoc(modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))),
     kaynak.yogunluk
   );
 }

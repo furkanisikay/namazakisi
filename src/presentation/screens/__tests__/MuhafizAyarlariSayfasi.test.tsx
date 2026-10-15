@@ -131,6 +131,19 @@ jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
   },
 }));
 
+
+// BİLDİRİM SINIRI REHBERİ (issue #298). Varsayılan: defter HAZIR DEĞİL (kart
+// çizilmez, simülasyon hiçbir şeyi engellemez) → diğer testler etkilenmez.
+// Rehber testleri kutuya GERÇEK çekirdekten kurulmuş bir bütçe koyar.
+const mockButceKutusu: { deger: unknown } = { deger: null };
+jest.mock('../../hooks/useBildirimButcesi', () => {
+  const gercek = jest.requireActual('../../hooks/useBildirimButcesi');
+  return {
+    ...gercek,
+    useBildirimButcesi: () => mockButceKutusu.deger ?? gercek.butceNesnesiOlustur('ios', null, null),
+  };
+});
+
 jest.mock('../../store/muhafizSlice', () => {
   const gercek = jest.requireActual('../../store/muhafizSlice');
   return {
@@ -245,16 +258,17 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   // ── Katman 2 ──────────────────────────────────────────────────────────────
-  it('vakte dokununca 4 adım ve "Tüm vakitlere uygula" açılır', async () => {
-    const { getByText, queryByText } = await kur();
-    expect(queryByText('Nazik hatırlatma')).toBeNull();
+  it('vakte dokununca 4 hatırlatma (numara + ton) ve "Tüm vakitlere uygula" açılır', async () => {
+    const { getByText, queryByText, getByLabelText } = await kur();
+    expect(queryByText(/^1\. hatırlatma/)).toBeNull();
 
     fireEvent.press(getByText('İkindi'));
 
-    expect(getByText('Nazik hatırlatma')).toBeTruthy();
-    expect(getByText('Uyarı')).toBeTruthy();
-    expect(getByText('Sert uyarı')).toBeTruthy();
-    expect(getByText('Acil')).toBeTruthy();
+    // Issue #274: başlık KRONOLOJİK numara, ton yanında.
+    expect(getByLabelText(/^1\. hatırlatma, Nazik ton/)).toBeTruthy();
+    expect(getByLabelText(/^2\. hatırlatma, Uyarı ton/)).toBeTruthy();
+    expect(getByLabelText(/^3\. hatırlatma, Sert ton/)).toBeTruthy();
+    expect(getByLabelText(/^4\. hatırlatma, Acil ton/)).toBeTruthy();
     expect(getByText('Tüm vakitlere uygula')).toBeTruthy();
     // Adım özeti seviyeOzetiOlustur'dan gelir
     expect(getByText('45 dk kala · bildirim · Uygulama sesi')).toBeTruthy();
@@ -285,7 +299,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('adıma dokununca detay modalı kanallar/eşik/sıklık ile açılır', async () => {
     const { getByText, getByLabelText, queryByText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     expect(getByText('NASIL UYARSIN')).toBeTruthy();
     expect(getByText('KAÇ DK KALA')).toBeTruthy();
@@ -300,7 +314,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('eşik stepper sınırları komşu seviyeye göre kısıtlanır (spec 4.2)', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     // nazik=45, komşusu uyari=25 → min 26, max 120
     expect(getByText('26–120 dk arası seçebilirsiniz')).toBeTruthy();
   });
@@ -308,7 +322,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('eşik değişince matris yazılır ve yoğunluk "ozel" olur', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     fireEvent.press(getByLabelText('Kaç dk kala artır'));
 
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
@@ -324,7 +338,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('kanal değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     fireEvent.press(getByLabelText('Kapalı'));
 
     expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
@@ -342,7 +356,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
 
-    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+    fireEvent(getByLabelText('1. hatırlatma — açın veya kapatın'), 'valueChange', false);
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(yeni.ogle.seviyeler[0].kanallar).toEqual({});
@@ -363,7 +377,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
 
-    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+    fireEvent(getByLabelText('1. hatırlatma — açın veya kapatın'), 'valueChange', false);
     const kapali: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     expect(kapali.ogle.seviyeler[0].kanallar).toEqual({});
     expect(kapali.ogle.seviyeler[0].oncekiKanallar).toEqual({ bildirim: true, sesli: true });
@@ -373,7 +387,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const ikinci = await kur({ matris: kapali });
     fireEvent.press(ikinci.getByText('Öğle'));
     fireEvent(
-      ikinci.getByLabelText('Nazik hatırlatma adımını açın veya kapatın'),
+      ikinci.getByLabelText('1. hatırlatma — açın veya kapatın'),
       'valueChange',
       true
     );
@@ -395,7 +409,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, sesli: true };
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     fireEvent.press(getByLabelText('Kapalı'));
 
@@ -414,7 +428,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('titreşim anahtarı kanalı açar, seçili çipi BOZMAZ', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     fireEvent(getByLabelText('Titreşim'), 'valueChange', true);
 
@@ -429,7 +443,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     fireEvent.press(getByLabelText('İkisi de'));
 
@@ -446,7 +460,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     fireEvent.press(getByLabelText('Kapalı'));
 
@@ -464,7 +478,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     };
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     fireEvent.press(getByLabelText('Bildirim'));
 
@@ -477,7 +491,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
 
-    fireEvent(getByLabelText('Nazik hatırlatma adımını açın veya kapatın'), 'valueChange', false);
+    fireEvent(getByLabelText('1. hatırlatma — açın veya kapatın'), 'valueChange', false);
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
     // Mod zamanlama ekseni değil (spec 4.1)
@@ -492,7 +506,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('sesli moda geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
     const { getByText, getByLabelText } = await kur();
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     fireEvent.press(getByLabelText('Sesli anons'));
 
     const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
@@ -505,7 +519,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     matris.ogle.seviyeler[0].kanallar = {};
     const { getByText, getByLabelText, queryByText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     expect(queryByText('KAÇ DK KALA')).toBeNull();
     expect(queryByText('SIKLIK')).toBeNull();
@@ -518,7 +532,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     matris.ogle.seviyeler[0].anonsMetni = '{vakit} vakti çıkıyor, son {süre} dakika.';
     const { getByText, getByLabelText } = await kur({ matris });
     fireEvent.press(getByText('Öğle'));
-    fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
     expect(getByText('SESLİ ANONS METNİ')).toBeTruthy();
     // {vakit}/{süre} çözülmüş önizleme (eşik 45)
@@ -811,7 +825,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const detayiAc = async (ustyaz: Record<string, unknown>) => {
       const ekran = await kur(ustyaz);
       fireEvent.press(ekran.getByText('Öğle'));
-      fireEvent.press(ekran.getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(ekran.getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
       return ekran;
     };
 
@@ -849,7 +863,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const detayiAc = async (matris?: MuhafizMatrisi) => {
       const ekran = await kur(matris ? { matris } : {});
       fireEvent.press(ekran.getByText('Öğle'));
-      fireEvent.press(ekran.getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(ekran.getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
       return ekran;
     };
 
@@ -1004,9 +1018,9 @@ describe('MuhafizAyarlariSayfasi', () => {
       // → 45, 25, 15, 10, 5, 3, 1 (kazanan seviye en küçük eşikli olan)
       expect(getByText('Vakit çıkmadan önce 7 hatırlatma alırsınız')).toBeTruthy();
       // basligiOlustur çıktısı — ilk adım nazik (seviye 1)
-      expect(getByText('⏰ 45 dk · İkindi vakti')).toBeTruthy();
+      expect(getByText('İkindi · 45 dk kaldı ⏰')).toBeTruthy();
       // son adım acil (seviye 4) — büyük harf haritası kullanılır
-      expect(getByText('🚨 1 dk · İKİNDİ VAKTİ ÇIKIYOR')).toBeTruthy();
+      expect(getByText('İKİNDİ · 1 dk · VAKİT ÇIKIYOR 🚨')).toBeTruthy();
     });
 
     it('sesli adımda çözülmüş anons metnini gösterir ve "Dinle" onu okutur', async () => {
@@ -1089,7 +1103,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     const esigiDegistir = (getByText: ReturnType<typeof render>['getByText'],
       getByLabelText: ReturnType<typeof render>['getByLabelText']) => {
       fireEvent.press(getByText('Öğle'));
-      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
       fireEvent.press(getByLabelText('Kaç dk kala artır'));
     };
 
@@ -1128,7 +1142,7 @@ describe('MuhafizAyarlariSayfasi', () => {
     it('arka arkaya değişiklik TEK planlamaya iner (debounce)', async () => {
       const { getByText, getByLabelText } = await kur();
       fireEvent.press(getByText('Öğle'));
-      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
       fireEvent.press(getByLabelText('Kaç dk kala artır'));
       fireEvent.press(getByLabelText('Kaç dk kala artır'));
       fireEvent.press(getByLabelText('Kaç dk kala artır'));
@@ -1200,7 +1214,7 @@ describe('MuhafizAyarlariSayfasi', () => {
       const { getByText, getByLabelText } = await kur();
 
       fireEvent.press(getByText('Öğle'));
-      fireEvent.press(getByLabelText(/Nazik hatırlatma adımını düzenleyin/));
+      fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
       // Pencere 40 dk → tavan 39; alt sınır komşudan (25) gelir
       expect(getByText('26–39 dk arası seçebilirsiniz')).toBeTruthy();
@@ -1244,5 +1258,218 @@ describe('MuhafizAyarlariSayfasi', () => {
     const bozukYedek = { imsak: { seviyeler: [] } } as unknown as MuhafizMatrisi;
     const { queryByLabelText } = await kur({ yogunluk: 'normal', ozelMatrisYedegi: bozukYedek });
     expect(queryByLabelText(/^Özel yoğunluk/)).toBeNull();
+  });
+  // ── Issue #274: hatırlatma ekle / sil / ton ───────────────────────────────
+  describe('Hatırlatma ekle / sil / ton (issue #274)', () => {
+    const sonMatris = (): MuhafizMatrisi => {
+      const cagrilar = (matrisiGuncelle as unknown as jest.Mock).mock.calls;
+      return cagrilar[cagrilar.length - 1][0];
+    };
+
+    it('"Hatırlatma ekleyin" en erken hatırlatmanın 15 dk öncesine nazik + bildirim + 15 dk tekrar ekler', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('İkindi'));
+      fireEvent.press(getByLabelText('İkindi vaktine hatırlatma ekleyin'));
+
+      const ikindi = sonMatris().ikindi;
+      expect(ikindi.seviyeler.map((s) => s.esikDk)).toEqual([60, 45, 25, 10, 3]);
+      expect(ikindi.seviyeler[0]).toMatchObject({
+        kademe: 'nazik',
+        kanallar: { bildirim: true },
+        siklik: { herDk: 15 },
+      });
+      // Adım sayısı değişimi zamanlamadır → yoğunluk özel olur.
+      expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ yogunluk: 'ozel' });
+    });
+
+    it('6 hatırlatmada ekleme düğmesi yerine sınır notu çıkar', async () => {
+      const matris = varsayilanMatris();
+      const sablon = matris.ikindi.seviyeler[0];
+      matris.ikindi.seviyeler = [70, 60, 45, 25, 10, 3].map((esikDk) => ({ ...sablon, esikDk }));
+      const { getByText, queryByLabelText } = await kur({ matris });
+      fireEvent.press(getByText('İkindi'));
+
+      expect(queryByLabelText('İkindi vaktine hatırlatma ekleyin')).toBeNull();
+      expect(getByText('Bir vakit için en fazla 6 hatırlatma kurabilirsiniz.')).toBeTruthy();
+    });
+
+    it('detaydaki "Sil" hatırlatmayı kaldırır; tek hatırlatmada Sil görünmez', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('Öğle'));
+      fireEvent.press(getByLabelText(/^2\. hatırlatma, Uyarı ton — düzenleyin/));
+      fireEvent.press(getByLabelText('2. hatırlatma — silin'));
+      expect(sonMatris().ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 10, 3]);
+
+      const tek = varsayilanMatris();
+      tek.aksam.seviyeler = [tek.aksam.seviyeler[0]];
+      const ekran = await kur({ matris: tek });
+      fireEvent.press(ekran.getByText('Akşam'));
+      fireEvent.press(ekran.getByLabelText(/^1\. hatırlatma, Nazik ton — düzenleyin/));
+      expect(ekran.queryByLabelText('1. hatırlatma — silin')).toBeNull();
+    });
+
+    it('ton çipi tonu ve aciliyeti birlikte yazar; acil 15 dk üstünde seçilemez', async () => {
+      const { getByText, getByLabelText } = await kur();
+      fireEvent.press(getByText('Öğle'));
+      fireEvent.press(getByLabelText(/^1\. hatırlatma, Nazik ton — düzenleyin/));
+
+      // 45 dk kala: acil çipi devre dışı + açıklama.
+      expect(getByText('Acil ton yalnız vaktin son 15 dakikasında seçilebilir.')).toBeTruthy();
+      expect(getByLabelText('Acil ton').props.accessibilityState).toMatchObject({ disabled: true });
+
+      fireEvent.press(getByLabelText('Sert ton'));
+      expect(sonMatris().ogle.seviyeler[0]).toMatchObject({ kademe: 'sert', acilKanal: false });
+      // Ton değişimi zamanlama DEĞİLDİR → yoğunluk özel olmaz.
+      expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalledWith({ yogunluk: 'ozel' });
+    });
+
+    it('ton geri giderse kısa not çıkar (engellemez)', async () => {
+      const matris = varsayilanMatris();
+      matris.yatsi.seviyeler[0].kademe = 'sert';
+      const { getByText } = await kur({ matris });
+      fireEvent.press(getByText('Yatsı'));
+      expect(
+        getByText('2. hatırlatma bir öncekinden daha yumuşak. Bilerek seçtiyseniz sorun yok.')
+      ).toBeTruthy();
+    });
+  });
+
+  // ── Bildirim sınırı rehberi (issue #298) ───────────────────────────────────
+  describe('bildirim sınırı rehberi', () => {
+    const {
+      butceNesnesiOlustur,
+    } = jest.requireActual('../../hooks/useBildirimButcesi');
+    const { matrisKur, ISTANBUL } = jest.requireActual('../../../core/bildirim/__tests__/defterFikstur');
+    const RENKLER_DURUMLU = {
+      ...mockRenkler,
+      birincilMetin: '#FFFFFF',
+      durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
+    };
+    // Sabit an: her koşuda aynı plan (saat değil mock girdisi senaryoyu kurar).
+    const SABAH = new Date(2026, 9, 13, 9, 0, 0);
+    const yogunMatris = (): MuhafizMatrisi => matrisKur();
+
+    const butceKur = (matris: MuhafizMatrisi) => {
+      mockButceKutusu.deger = butceNesnesiOlustur('ios', {
+        platform: 'ios',
+        simdi: SABAH,
+        koordinat: ISTANBUL,
+        muhafiz: { aktif: true, matris },
+      });
+    };
+
+    beforeEach(() => {
+      (useRenkler as jest.Mock).mockReturnValue(RENKLER_DURUMLU);
+    });
+    afterEach(() => {
+      mockButceKutusu.deger = null;
+    });
+
+    it('aşımda kart kırmızıdır ve kaç bildirimin gelmeyeceğini söyler', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      expect(getByText('Bazı hatırlatmalar gelmeyecek')).toBeTruthy();
+      expect(getByTestId('bildirim-butce-sayi').props.children.join('')).toMatch(/^\d+ \/ 64$/);
+      expect(getByText(/en geç kurulan \d+ bildirim gelmeyecek/)).toBeTruthy();
+      expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#F44336');
+    });
+
+    it('sınırın altında kart sakin (birincil renk), iPhone sınırı yazılır', async () => {
+      const hafif = matrisKur(() => ({
+        seviyeler: [{ kademe: 'sert', esikDk: 10, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: 'varsayilan', anonsMetni: '' }],
+      }));
+      butceKur(hafif);
+      const { getByText, getByTestId } = await kur({ matris: hafif });
+      expect(getByText('Bekleyen bildirimleriniz')).toBeTruthy();
+      expect(getByText('iPhone sınırı 64. Ayrıntı için dokunun.')).toBeTruthy();
+      expect(getByTestId('bildirim-butce-cubuk', { includeHiddenElements: true }).props.style.backgroundColor).toBe('#4CAF50');
+    });
+
+    it('karta dokununca kaynak dökümü ve ölçülmüş öneriler görünür', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByTestId('bildirim-butce-karti'));
+      expect(getByText('Bildirim sınırı')).toBeTruthy();
+      expect(getByTestId('kaynak-muhafiz')).toBeTruthy();
+      expect(getByText('ÖNERİLERİMİZ')).toBeTruthy();
+      const [once, ok] = getByTestId('oneri-sayi-seyreklestir').props.children;
+      expect(typeof once).toBe('number');
+      expect(ok).toBe(' → ');
+    });
+
+    it('SIĞMAYAN hatırlatma EKLENMEZ; rehber nedenini gösterir, Vazgeç hiçbir şey yazmaz', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByText, getByLabelText, queryByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByText('Yatsı'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      fireEvent.press(getByLabelText('Yatsı vaktine hatırlatma ekleyin'));
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+      expect(getByText('Bu hatırlatma sığmıyor')).toBeTruthy();
+      fireEvent.press(getByLabelText('Vazgeç'));
+      expect(queryByText('Bu hatırlatma sığmıyor')).toBeNull();
+      expect(matrisiGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('öneri tek dokunuşla uygulanır, GERİ AL eski matrisi ve yoğunluğu geri getirir', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByTestId, getByLabelText, getByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByTestId('bildirim-butce-karti'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      fireEvent.press(getByLabelText('Nazik hatırlatmalar bir kez çalsın: uygulayın'));
+      const yazilan = (matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0] as MuhafizMatrisi;
+      expect(yazilan.ogle.seviyeler[0].siklik).toBe('birkez');
+      // Sert/acil adımlar AYNEN kalır.
+      expect(yazilan.ogle.seviyeler[2]).toEqual(matris.ogle.seviyeler[2]);
+      expect(getByText(/Nazik hatırlatmalar bir kez çalsın · \d+ bildirim/)).toBeTruthy();
+
+      fireEvent.press(getByText('GERİ AL'));
+      expect((matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0]).toBe(matris);
+      expect(muhafizAyarlariniGuncelle).toHaveBeenLastCalledWith({ yogunluk: 'ozel' });
+    });
+
+    it('adım detayında SIĞMAYAN değişiklik kapanışta geri alınır ve rehber açılır', async () => {
+      const matris = yogunMatris();
+      matris.yatsi.seviyeler[0] = { ...matris.yatsi.seviyeler[0], siklik: { herDk: 10 } };
+      butceKur(matris);
+      const ekran = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(ekran.getByText('Yatsı'));
+      fireEvent.press(ekran.getByLabelText(/^1\. hatırlatma, Nazik ton — düzenleyin/));
+      fireEvent.press(ekran.getByLabelText('Tekrar aralığı azalt'));
+      const sik = (matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0] as MuhafizMatrisi;
+      expect(sik.yatsi.seviyeler[0].siklik).toEqual({ herDk: 9 });
+
+      // Store'un yazılanı yansıttığı an (ekran canlı state'ten okur).
+      (useAppSelector as unknown as jest.Mock).mockImplementation(
+        (selector: (state: ReturnType<typeof stateOlustur>) => unknown) =>
+          selector(stateOlustur({ matris: sik, yogunluk: 'ozel' }))
+      );
+      const { MuhafizAyarlariSayfasi } = require('../MuhafizAyarlariSayfasi');
+      ekran.rerender(<MuhafizAyarlariSayfasi />);
+
+      fireEvent.press(ekran.getByLabelText('Kapat'));
+      expect(ekran.getByText('Bu değişiklik sığmıyor')).toBeTruthy();
+      expect((matrisiGuncelle as unknown as jest.Mock).mock.calls.at(-1)[0]).toBe(matris);
+    });
+
+    it('ekleme sayfasında öneriler sığdırınca değişiklik öneriyle BİRLİKTE yazılır', async () => {
+      const matris = yogunMatris();
+      butceKur(matris);
+      const { getByText, getByLabelText, getAllByLabelText, queryByText } = await kur({ matris, yogunluk: 'ozel' });
+      fireEvent.press(getByText('Yatsı'));
+      fireEvent.press(getByLabelText('Yatsı vaktine hatırlatma ekleyin'));
+      (matrisiGuncelle as unknown as jest.Mock).mockClear();
+      // Önerileri sırayla uygula: sığana kadar hiçbir şey yazılmaz.
+      for (let i = 0; i < 6 && queryByText('Bu hatırlatma sığmıyor'); i++) {
+        fireEvent.press(getAllByLabelText(/: uygulayın$/)[0]);
+      }
+      expect(queryByText('Bu hatırlatma sığmıyor')).toBeNull();
+      expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
+      const yazilan = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0] as MuhafizMatrisi;
+      expect(yazilan.yatsi.seviyeler).toHaveLength(matris.yatsi.seviyeler.length + 1);
+    });
   });
 });

@@ -3,7 +3,8 @@
  * Sihirbaz hesabı, motivasyon önerileri, tempo analizi ve mekruh vakit kontrolü
  */
 
-import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
 import {
   HesaplamaSihirbazGirdisi,
   MotivasyonOnerisi,
@@ -12,6 +13,7 @@ import {
 } from '../../core/types/KazaTipleri';
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
+import { gurubKerahatiBaslangiciMs } from '../../core/muhafiz/erteleme';
 
 // ==================== SİHİRBAZ HESABI ====================
 
@@ -204,7 +206,7 @@ export const mekruhVakitKontrolEt = (
 ): MekruhVakitBilgisi => {
   try {
     const coordinates = new Coordinates(latitude, longitude);
-    const params = CalculationMethod.Turkey();
+    const params = turkiyeHesapParametreleri();
     const now = new Date();
     const prayerTimes = new PrayerTimes(coordinates, now, params);
 
@@ -213,7 +215,7 @@ export const mekruhVakitKontrolEt = (
     const sunset = prayerTimes.maghrib; // Akşam = Gün batımı
 
     const toleransMs = KAZA_SABITLERI.MEKRUH_TOLERANS_DK * 60 * 1000;
-    const istiwaToleransMs = 5 * 60 * 1000; // İstiwa için 5 dakika
+    const istiwaToleransMs = KAZA_SABITLERI.ISTIVA_TOLERANS_DK * 60 * 1000;
 
     const namazTuru = namazTipi === 'farz' ? 'namaz' : 'kaza namazı';
 
@@ -243,7 +245,9 @@ export const mekruhVakitKontrolEt = (
     // Fıkhi kural: İkindi kılındıktan sonra güneş batana kadar mekruhtur.
     // Ancak İkindi vakti bilgisi olmadan bu sınırı belirlemek mümkün değil;
     // gün batımından 20 dakika geriye bakarak yaklaşık bir uyarı veriliyor.
-    const gurubBasi = new Date(sunset.getTime() - toleransMs);
+    // TEK KAYNAK: muhafız "Ertele" düğmesinin ikindi üst sınırı (issue #289) da
+    // aynı fonksiyonu kullanır (`core/muhafiz/erteleme.ts`).
+    const gurubBasi = new Date(gurubKerahatiBaslangiciMs(sunset.getTime()));
     if (now >= gurubBasi && now <= sunset) {
       return {
         mekruhMu: true,

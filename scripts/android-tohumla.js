@@ -2,7 +2,10 @@
 /**
  * Android emulatorundeki AsyncStorage veritabanini (RKStorage) tohumlar.
  *
- * Kullanim: node scripts/android-tohumla.js <RKStorage yolu>
+ * Kullanim: node scripts/android-tohumla.js <RKStorage yolu> [--varyant <ad>] [--tema acik|koyu]
+ *
+ * `--varyant` verilmezse MAGAZA tohumu yazilir (magaza hatti bunu kullanir,
+ * davranisi degismedi). Verilirse ozellik turu tohumu (`ozellik-tohum-verisi.js`).
  *
  * AsyncStorage Android'de SQLite kullanir: `databases/RKStorage` icindeki
  * `catalystLocalStorage(key, value)` tablosu. Dosya `run-as` ile cekilir,
@@ -12,8 +15,14 @@
  */
 const { DatabaseSync } = require('node:sqlite');
 const { tohumVerisi } = require('./magaza-tohum-verisi');
+const { ozellikTohumVerisi } = require('./ozellik-tohum-verisi');
 
 const yol = process.argv[2];
+const secenek = (ad) => {
+    const i = process.argv.indexOf(`--${ad}`);
+    return i >= 0 ? process.argv[i + 1] : null;
+};
+const varyant = secenek('varyant');
 if (!yol) {
     console.error('RKStorage dosya yolunu verin.');
     process.exit(1);
@@ -36,7 +45,7 @@ if (!tablo) {
 // FARKLI sonuc verir ve Android'de kutlama modali acilirdi (yasandi).
 db.exec('DELETE FROM catalystLocalStorage');
 
-const veri = tohumVerisi();
+const veri = varyant ? ozellikTohumVerisi({ varyant, tema: secenek('tema') || 'acik' }) : tohumVerisi();
 const yaz = db.prepare('INSERT OR REPLACE INTO catalystLocalStorage (key, value) VALUES (?, ?)');
 let n = 0;
 for (const [k, v] of Object.entries(veri)) {
@@ -49,4 +58,4 @@ db.exec('PRAGMA wal_checkpoint(TRUNCATE)');
 db.exec('PRAGMA journal_mode=DELETE');
 const kontrol = db.prepare('SELECT COUNT(*) AS n FROM catalystLocalStorage').get();
 db.close();
-console.log(`Tohumlandi: ${n} anahtar -> ${yol} (tabloda toplam ${kontrol.n})`);
+console.log(`Tohumlandi${varyant ? ` (${varyant})` : ''}: ${n} anahtar -> ${yol} (tabloda toplam ${kontrol.n})`);

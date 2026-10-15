@@ -13,6 +13,8 @@ module.exports = [
   {
     ignores: [
       'node_modules/**',
+      // Paralel ajanlarin git worktree'leri (yerel, git'te degil).
+      '.claude/**',
       '.expo/**',
       'android/**',
       'ios/**',

@@ -1,0 +1,10 @@
+<resources>
+  <!-- Material You (API 31+): duvar kağıdından türeyen sistem renkleri. Widget bunları
+       RemoteViews.setColorStateList ile BAŞLATICININ yapılandırmasında çözer → duvar
+       kağıdı ya da gece modu değişince yeniden çizim gerekmez. -->
+  <color name="widget_my_zemin">@android:color/system_neutral1_50</color>
+  <color name="widget_my_metin">@android:color/system_neutral1_900</color>
+  <color name="widget_my_ikincil">@android:color/system_neutral2_700</color>
+  <color name="widget_my_vurgu">@android:color/system_accent1_600</color>
+  <color name="widget_my_vurgu_ustu">@android:color/system_accent1_0</color>
+</resources>

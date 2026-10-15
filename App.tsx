@@ -5,7 +5,14 @@
  */
 
 import React, { useEffect } from 'react';
-import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager } from 'react-native';
+import { StatusBar, View, ActivityIndicator, StyleSheet, Text, AppState, AppStateStatus, Platform, InteractionManager, DeviceEventEmitter } from 'react-native';
+import { WearSenkronServisi } from './src/domain/services/WearSenkronServisi';
+import { MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir } from './src/domain/services/muhafizErtelemeDurumu';
+import { KildimKuyruguServisi, KILDIM_KUYRUGU_OLAYI } from './src/domain/services/KildimKuyruguServisi';
+import { CamideyimServisi } from './src/domain/services/CamideyimServisi';
+import { camiOlayiniDinle } from './modules/expo-cami-geofence/src';
+import { siriDegisikliginiDinle } from './modules/expo-siri-kisayollari/src';
+import { alarmDegisikliginiDinle } from './modules/expo-muhafiz-alarmkit/src';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import notifee, { EventType } from '@notifee/react-native';
 import { Provider } from 'react-redux';
@@ -21,9 +28,18 @@ import { IftarSayacBildirimServisi } from './src/domain/services/IftarSayacBildi
 import { SahurSayacBildirimServisi } from './src/domain/services/SahurSayacBildirimServisi';
 import { SeriSayacBildirimServisi } from './src/domain/services/SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './src/domain/services/SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './src/domain/services/GunSonuHatirlaticiServisi';
 import { VakitBildirimYoneticiServisi } from './src/domain/services/VakitBildirimYoneticiServisi';
 import { CumaHatirlatmaServisi } from './src/domain/services/CumaHatirlatmaServisi';
 import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHatirlatmaSlice';
+import { yatisHatirlatmaAyarlariniYukle } from './src/presentation/store/yatisHatirlatmaSlice';
+import { YatisHatirlatmaServisi } from './src/domain/services/YatisHatirlatmaServisi';
+import { kazaVerileriniYukle } from './src/presentation/store/kazaSlice';
+import { CamiyeGitHatirlatmaServisi } from './src/domain/services/CamiyeGitHatirlatmaServisi';
+import { camiyeGitAyarlariniYukle } from './src/presentation/store/camiyeGitSlice';
+import { TakvimCakismaServisi } from './src/domain/services/TakvimCakismaServisi';
+import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
+import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
 import { vakitSayacAyarlariniYukle } from './src/presentation/store/vakitSayacSlice';
@@ -37,11 +53,13 @@ import { KonumTakipServisi } from './src/domain/services/KonumTakipServisi';
 import { guncellemeKontrolEt, indirmeTamamlandiIsaretle } from './src/presentation/store/guncellemeSlice';
 import { PlayStoreModulu } from './src/domain/services/PlayStoreGuncellemeModulu';
 import { WidgetServisi } from './src/domain/services/WidgetServisi';
+import { CanliSayacPlanlayici } from './src/domain/services/CanliSayacPlanlayici';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from './src/core/constants/UygulamaSabitleri';
 import { Logger } from './src/core/utils/Logger';
 import { TaniBildirModali } from './src/presentation/components/Tani/TaniBildirModali';
 import { KisaBildirimKatmani } from './src/presentation/components/common/KisaBildirim';
+import { EsitlemeTetikleyici } from './src/presentation/components/esitleme/EsitlemeTetikleyici';
 import { hatirlatmaAyariniYukle } from './src/presentation/store/taniSlice';
 
 // Bildirim aksiyonu callback'ini ayarla (domain → presentation koprusu)
@@ -62,6 +80,11 @@ try {
     } catch {
       // Callback icindeki hatayi sessizce yut
     }
+  });
+  // Gün sonu muhasebesindeki "Kazaya ekle" (issue #290) kaza defterini diskte
+  // günceller; açık bir kaza ekranı varsa store tazelensin.
+  BildirimServisi.getInstance().setOnKazaEklendiCallback(() => {
+    if (store.getState().kaza.kazaDurumu) store.dispatch(kazaVerileriniYukle());
   });
 } catch {
   // BildirimServisi başlatılamazsa uygulama çalışmaya devam etsin
@@ -155,6 +178,12 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       });
       // Widget verilerini güncelle (fire-and-forget, kritik değil)
       WidgetServisi.getInstance().vakitleriyaz(konumState.koordinatlar).catch(() => {});
+      // Wear OS saati (issue #269): 8 günlük vakit + kılınmışlık. Konuma bağlı
+      // tüketicidir → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
+      WearSenkronServisi.getInstance().gonder().catch(() => {});
+      // Camideyim + Namaz modu (#297/#277): vakit kapısı, mod planı, izlenen camiler.
+      // Konuma bağlı tüketici → `KonumDegisikligiServisi` listesinde de var (ikiz liste).
+      CamideyimServisi.getInstance().konumaBagliTazele(konumState.koordinatlar).catch(() => {});
     }
 
     // 2. Servis ayarlarini ve bildirim iznini paralel yukle (birbirinden bagimsiz)
@@ -167,6 +196,11 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       store.dispatch(iftarSayacAyarlariniYukle()),
       store.dispatch(sahurSayacAyarlariniYukle()),
       store.dispatch(cumaHatirlatmaAyarlariniYukle()),
+      store.dispatch(yatisHatirlatmaAyarlariniYukle()),
+      store.dispatch(camiyeGitAyarlariniYukle()),
+      // Ana ekran nafile şeridi bu slice'ı okur → açılışta HİDRATE edilmeli
+      // (AGENTS.md: "HER slice açılışta yüklenmez").
+      store.dispatch(nafileAyarlariniYukle()),
       kurulumTamamlandi ? BildirimServisi.getInstance().izinIste() : Promise.resolve(),
     ]);
 
@@ -201,6 +235,10 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Koordinat PARAMETRE gecilir: servis bellek-ici hesaplayici konfigine bagli
       // olsaydi arka plan/headless yollarinda sessizce hicbir sey planlamazdi.
       CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // "Camide kılacağım" (issue #292) — 7/3 günlük pencere her açılışta tazelenir.
+      CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // Nafile hatırlatmaları (issue #77) — 3 gün / 7 gece pencere her açılışta tazelenir.
+      NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
       VakitSayacBildirimServisi.getInstance().yapilandirVePlanla({
         aktif: sayacState.ayarlar.aktif,
         koordinatlar: konumState.koordinatlar,
@@ -225,6 +263,15 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       seriSayacAyarlariniHazirla(konumState.koordinatlar).then((seriSayacAyarlari) =>
         SeriSayacBildirimServisi.getInstance().yapilandirVePlanla(seriSayacAyarlari)
       ),
+      // Gün sonu seri hatırlatması: TARİHLİ tetikler (özel gün atlanır), pencere
+      // sonlu olduğu için her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      gunSonuHatirlatmalariniGuncelle(konumState.koordinatlar),
+      // Yatış hatırlatması + gün sonu muhasebesi (issue #290): sonlu pencere,
+      // her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
+      // Takvim çakışması uyarısı (issue #291): sonlu pencere + takvim dışarıdan
+      // değişir → her açılışta tazelenir. İkiz liste: KonumDegisikligiServisi.
+      TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(konumState.koordinatlar),
     ]);
 
     Logger.info('App', 'Arka plan muhafiz, vakit bildirimleri ve sayac planlandi');
@@ -259,8 +306,65 @@ const AppIcerik: React.FC = () => {
         arkaplanMuhafiziBildirimleriniPlanla();
         // Arka planda birikmis eski muhafiz bildirimlerini temizle
         BildirimServisi.getInstance().sunulanEskiMuhafizBildirimleriniTemizle();
+        // Wear OS (issue #269): kılınmışlık her değiştiğinde saati tazele ve
+        // uygulama kapalıyken saatten gelmiş "Kıldım"ları işle.
+        WearSenkronServisi.getInstance().baslat();
+        // Widget + hızlı ayarlar (issue #275/#276): kılınmışlık değişince tazelenir;
+        // uygulama kapalıyken saatten/widget'tan/kutudan gelmiş "Kıldım"lar işlenir.
+        WidgetServisi.getInstance().baslat();
+        WidgetServisi.getInstance().kilinanlariYaz().catch(() => {});
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        // Camideyim: "Kıldım deyince Namaz modu kapansın" dinleyicisi + çıkış sorusu kuyruğu.
+        CamideyimServisi.getInstance().baslat();
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+        // Yatış hatırlatması (issue #290): kılınmışlık değişince muhasebe içeriği tazelenir.
+        YatisHatirlatmaServisi.getInstance().baslat();
+        // iOS canlı etkinlik (#295): yalnız uygulama açıkken başlatılabilir → açılışta eşitle,
+        // kılınmışlık değişince ("Kıldım") tazele. Android'de no-op (planı sayaçlar kurar).
+        if (Platform.OS === 'ios') {
+          CanliSayacPlanlayici.getInstance().iosBaslat();
+          CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
+        }
+        // Takvim çakışması (issue #291): kılınan vaktin uyarısı iptal edilir.
+        TakvimCakismaServisi.getInstance().baslat();
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
+
+    // Saatten/widget'tan/kutudan "Kıldım" uygulama AÇIKKEN gelirse native taraf headless
+    // görev başlatmaz (ReactContext RESUMED iken izinsiz görev çöker), bu olayı yayar.
+    const wearAbonelik = DeviceEventEmitter.addListener(KILDIM_KUYRUGU_OLAYI, () => {
+      KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+    });
+    // Muhafız "Ertele" (issue #289) uygulama AÇIKKEN native işlenince: ön plan banner'ı
+    // ve saatin planı ertelemeyi öğrensin (gözlemci: NamazMuhafiziServisi + WearSenkronServisi).
+    const ertelemeAbonelik = DeviceEventEmitter.addListener(MUHAFIZ_ERTELENDI_OLAYI, ertelemeDegistiBildir);
+    // iOS gerçek alarm (AlarmKit, #74) ekranından "10 dk ertele": aynı gözlemci. ("Kıldım"
+    // Siri kuyruğuna yazar → aşağıdaki Siri olayı işler.)
+    const alarmAboneligiKaldir = alarmDegisikliginiDinle((tur) => {
+      if (tur === 'ertele') ertelemeDegistiBildir();
+    });
+
+    // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta
+    // muhafız yeniden planlanır (camideyken acil kanal + sesli anons yok), "Kıldım"
+    // kuyruğu hemen işlenir. Uygulama kapalıyken aynı işler açılışta/15 dk görevinde.
+    const camiAbonelik = camiOlayiniDinle((tur) => {
+      if (tur === 'kildim') {
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+      } else if (tur === 'camide' || tur === 'cikis') {
+        arkaplanMuhafiziBildirimleriniPlanla();
+      }
+    });
+
+    // iOS Siri / Kısayollar / Odak (issue #279): intent uygulama AÇIKKEN çalışırsa "Kıldım"
+    // kuyruğu hemen işlenir, Odak filtresi değişince hatırlatmalar yeni kesinti
+    // seviyesiyle yeniden kurulur. Kapalıyken aynı işler açılış zincirinde yapılır.
+    const siriAboneligiKaldir = siriDegisikliginiDinle((tur) => {
+      if (tur === 'kildim') {
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+      } else if (tur === 'odak') {
+        arkaplanMuhafiziBildirimleriniPlanla();
+      }
+    });
 
     // Kritik olmayan islemleri UI animasyonlari tamamlandiktan sonra calistir
     const interactionHandle = InteractionManager.runAfterInteractions(() => {
@@ -279,6 +383,15 @@ const AppIcerik: React.FC = () => {
     const FOREGROUND_DEBOUNCE_MS = 5 * 60 * 1000;
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active') {
+        // "Kıldım" kuyruğu (saat/widget/kutu/kısayol) DEBOUNCE'SUZ boşaltılır: ucuzdur ve
+        // headless görev OEM kısıtıyla başlatılamamışsa tek güvenlik ağı budur (#269/#275).
+        KildimKuyruguServisi.getInstance().bekleyenleriIsle().catch(() => {});
+        CamideyimServisi.getInstance().bekleyenKildimleriIsle().catch(() => {});
+        // iOS canlı etkinlik (#295) DEBOUNCE'SUZ: arka planda başlatılamadığı için her ön
+        // plana gelişte "şu an hangisi?" yeniden eşitlenir (ucuz; değişmediyse köprü dokunmaz).
+        if (Platform.OS === 'ios') {
+          CanliSayacPlanlayici.getInstance().yenidenPlanla().catch(() => {});
+        }
         const simdiMs = Date.now();
         if (simdiMs - sonForegroundMs < FOREGROUND_DEBOUNCE_MS) {
           return; // 5 dk icinde tekrar one geldi -> agir yeniden-planlama gerekmez
@@ -337,6 +450,11 @@ const AppIcerik: React.FC = () => {
 
     return () => {
       appStateListener.remove();
+      wearAbonelik.remove();
+      ertelemeAbonelik.remove();
+      camiAbonelik.remove();
+      siriAboneligiKaldir();
+      alarmAboneligiKaldir();
       interactionHandle.cancel();
       if (notifeeUnsubscribe) {
         notifeeUnsubscribe();
@@ -362,6 +480,8 @@ const AppIcerik: React.FC = () => {
       <TaniBildirModali />
       {/* Kısa bilgi mesajları (iOS). Android sistem toastını kullanır. */}
       <KisaBildirimKatmani />
+      {/* Cihazlar arası eşitleme (issue #288): açılış + öne geliş turu; kapalıyken etkisiz. */}
+      <EsitlemeTetikleyici />
     </View>
   );
 };

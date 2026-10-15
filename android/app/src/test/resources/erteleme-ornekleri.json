@@ -1,0 +1,241 @@
+{
+  "_aciklama": "Muhafiz Ertele (issue #289) ikiz sozlesmesi: JS core/muhafiz/erteleme.ts ile Kotlin cekirdek/ErtelemeKurallari.kt AYNI ciktiyi vermeli.",
+  "secenekler": [
+    {
+      "ad": "sinira 45 dk: iki secenek",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800002700000,
+      "beklenen": [
+        10,
+        20
+      ],
+      "kategori": "muhafiz_ertele2_category"
+    },
+    {
+      "ad": "sinira tam 20 dk: iki secenek",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800001200000,
+      "beklenen": [
+        10,
+        20
+      ],
+      "kategori": "muhafiz_ertele2_category"
+    },
+    {
+      "ad": "sinira 19 dk 59 sn: tek secenek",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800001199000,
+      "beklenen": [
+        10
+      ],
+      "kategori": "muhafiz_ertele1_category"
+    },
+    {
+      "ad": "sinira 7 dk: kisa sure tek secenek (sinira cekilir)",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800000420000,
+      "beklenen": [
+        10
+      ],
+      "kategori": "muhafiz_ertele1_category"
+    },
+    {
+      "ad": "sinira tam 5 dk: tek secenek",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800000300000,
+      "beklenen": [
+        10
+      ],
+      "kategori": "muhafiz_ertele1_category"
+    },
+    {
+      "ad": "sinira 4 dk: ertele yok",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1800000240000,
+      "beklenen": [],
+      "kategori": "muhafiz_category"
+    },
+    {
+      "ad": "sinir gecmis: ertele yok",
+      "tetikMs": 1800000000000,
+      "sinirMs": 1799999940000,
+      "beklenen": [],
+      "kategori": "muhafiz_category"
+    }
+  ],
+  "hedef": [
+    {
+      "ad": "10 dk sigar",
+      "simdiMs": 1800000000000,
+      "sureDk": 10,
+      "sinirMs": 1800001800000,
+      "beklenen": 1800000600000
+    },
+    {
+      "ad": "20 dk sinira cekilir",
+      "simdiMs": 1800000000000,
+      "sureDk": 20,
+      "sinirMs": 1800000900000,
+      "beklenen": 1800000900000
+    },
+    {
+      "ad": "sinira tam 1 dk: kurulur",
+      "simdiMs": 1800000000000,
+      "sureDk": 10,
+      "sinirMs": 1800000060000,
+      "beklenen": 1800000060000
+    },
+    {
+      "ad": "sinira 59 sn: ertelenmez",
+      "simdiMs": 1800000000000,
+      "sureDk": 10,
+      "sinirMs": 1800000059000,
+      "beklenen": null
+    },
+    {
+      "ad": "sinir gecmis: ertelenmez",
+      "simdiMs": 1800000000000,
+      "sureDk": 10,
+      "sinirMs": 1799999700000,
+      "beklenen": null
+    }
+  ],
+  "eylemler": [
+    {
+      "eylem": "ertele_10",
+      "sure": 10
+    },
+    {
+      "eylem": "ertele_20",
+      "sure": 20
+    },
+    {
+      "eylem": "kildim_action",
+      "sure": null
+    },
+    {
+      "eylem": "ertele_15",
+      "sure": null
+    }
+  ],
+  "kimlikler": [
+    {
+      "kimlik": "muhafiz_2026-10-13_vakit_ikindi_seviye_2_dk_25",
+      "planMi": true,
+      "kalanDk": 25,
+      "ertelemeMi": false
+    },
+    {
+      "kimlik": "muhafiz_2026-10-12_vakit_yatsi_seviye_4_dk_3",
+      "planMi": true,
+      "kalanDk": 3,
+      "ertelemeMi": false
+    },
+    {
+      "kimlik": "muhafiz_2026-10-13_vakit_ikindi_ertele",
+      "planMi": false,
+      "kalanDk": null,
+      "ertelemeMi": true
+    },
+    {
+      "kimlik": "muhafiz_2026-10-13_vakit_yatsi_yatis",
+      "planMi": false,
+      "kalanDk": null,
+      "ertelemeMi": false
+    },
+    {
+      "kimlik": "muhafiz_2026-10-13_vakit_ogle_muhasebe",
+      "planMi": false,
+      "kalanDk": null,
+      "ertelemeMi": false
+    },
+    {
+      "kimlik": "muhafiz_anons_onizleme",
+      "planMi": false,
+      "kalanDk": null,
+      "ertelemeMi": false
+    },
+    {
+      "kimlik": "muhasebe_2026-10-13",
+      "planMi": false,
+      "kalanDk": null,
+      "ertelemeMi": false
+    }
+  ],
+  "ertelemeKimligi": [
+    {
+      "tarih": "2026-10-13",
+      "vakit": "ikindi",
+      "kimlik": "muhafiz_2026-10-13_vakit_ikindi_ertele"
+    }
+  ],
+  "sureMetni": [
+    {
+      "dk": 0,
+      "metin": "0 dk"
+    },
+    {
+      "dk": 25,
+      "metin": "25 dk"
+    },
+    {
+      "dk": 60,
+      "metin": "1 sa"
+    },
+    {
+      "dk": 65,
+      "metin": "1 sa 5 dk"
+    },
+    {
+      "dk": -3,
+      "metin": "0 dk"
+    }
+  ],
+  "baslik": [
+    {
+      "ad": "sure doldurulur",
+      "sablon": "İkindi · {sure} kaldı · ertelediğin namaz ⏳",
+      "cikisMs": 1800002700000,
+      "hedefMs": 1800000600000,
+      "beklenen": "İkindi · 35 dk kaldı · ertelediğin namaz ⏳"
+    },
+    {
+      "ad": "saatli sure",
+      "sablon": "Yatsı · {sure} kaldı · ertelediğin namaz ⏳",
+      "cikisMs": 1800007830000,
+      "hedefMs": 1800000600000,
+      "beklenen": "Yatsı · 2 sa kaldı · ertelediğin namaz ⏳"
+    },
+    {
+      "ad": "sablon yok",
+      "sablon": "",
+      "cikisMs": 1800000000000,
+      "hedefMs": 1800000000000,
+      "beklenen": null
+    },
+    {
+      "ad": "yer tutucusuz sablon",
+      "sablon": "Başlık",
+      "cikisMs": 1800000000000,
+      "hedefMs": 1800000000000,
+      "beklenen": null
+    }
+  ],
+  "susturma": [
+    {
+      "tetikMs": 1800000300000,
+      "hedefMs": 1800000600000,
+      "beklenen": true
+    },
+    {
+      "tetikMs": 1800000630000,
+      "hedefMs": 1800000600000,
+      "beklenen": true
+    },
+    {
+      "tetikMs": 1800000660000,
+      "hedefMs": 1800000600000,
+      "beklenen": false
+    }
+  ]
+}

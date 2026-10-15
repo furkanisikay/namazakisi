@@ -3,17 +3,21 @@ import { uygunIcerikleriBul, icerikMetniOlustur } from '../../core/data/Seytanla
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
+import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import { aktifSeviyeyiBul } from '../../core/muhafiz/aktifSeviye';
-import { kademeSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
+import { alarmAniMi, etkinSeviyeNo, seviyeTetiklenirMi, sesliAnonsGerekliMi, titresimGerekliMi, type SeviyeNo } from '../../core/muhafiz/motorAdaptoru';
 import { titresimDeseniAl } from '../../core/muhafiz/titresimDeseni';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { muhafizBildirimIdOlustur, muhafizVaktiTarihiniSec } from '../../core/muhafiz/anonsKimligi';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../../core/muhafiz/pencereUzunlugu';
-import { GIRIS_ICERIK_HAVUZU } from '../../core/utils/muhafizMetinYardimcisi';
+import { GIRIS_ICERIK_HAVUZU, sonDakikaDiliMi } from '../../core/utils/muhafizMetinYardimcisi';
+import { ertelemeAnahtari, ertelemeleriBirlestir, ertelemeSusturuyorMu } from '../../core/muhafiz/erteleme';
+import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtelemeDurumu';
 import { planlaAnons } from '../../../modules/expo-countdown-notification/src';
 import { Platform, Vibration } from 'react-native';
 
@@ -36,11 +40,17 @@ const VARSAYILAN_MATRIS: MuhafizMatrisi = eskidenMatriseGoc({
  * Ekran bunu calmali: aksi halde AYNI adim uygulama KAPALIYKEN kullanicinin
  * sectigi sesle (kanal sesi), ACIKKEN paketlenmis varsayilan canla duyulurdu.
  * Banner temizleme cagrisinda (seviye 0) verilmez.
+ *
+ * `sistemAlarmi` = bu dakikada adimin GERCEK ALARMI calar (issue #74, `alarmAniMi`).
+ * Ekran o zaman SES CALMAZ ve TITRETMEZ: alarm (Android `setAlarmClock`, iOS zamana
+ * duyarli bildirim) uygulama acikken de tetiklenir ve kendi sesini calar — ikinci bir
+ * ses cift ses olurdu. Banner yine cizilir.
  */
 type BildirimCallback = (
     mesaj: string,
     seviye: 0 | 1 | 2 | 3 | 4,
-    bildirimSesi?: string
+    bildirimSesi?: string,
+    sistemAlarmi?: boolean
 ) => void;
 
 /**
@@ -48,6 +58,11 @@ type BildirimCallback = (
  * (Native taraf "hemen konus" sunmaz; en yakin zamana alarm kurulur.)
  */
 const ON_PLAN_ANONS_GECIKMESI_MS = 1000;
+
+const DK_MS = 60 * 1000;
+
+/** `muhafizErtelemeDurumu` gözlemcisindeki yuva adı. */
+const ERTELEME_YUVASI = 'onPlanMuhafiz';
 
 export class NamazMuhafiziServisi {
     private static instance: NamazMuhafiziServisi;
@@ -61,6 +76,26 @@ export class NamazMuhafiziServisi {
 
     // Temizleme bildirimi gönderilen vakitler (gereksiz tekrar çağrıları önlemek için)
     private temizlenenVakitler: Record<string, boolean> = {};
+
+    /**
+     * Özel gün kapısının girdisi (issue #272). BELLEK-İÇİ önbellek: `kontrolEt`
+     * dakikada bir SENKRON koşar, her turda diski okuyamaz. Doldurulan iki yol:
+     * açılış hidrasyonu (`acilistaKilinanlariYukle`) ve özel gün değişince
+     * `ozelGunDurumunuYukle` (bkz. `OzelGunDegisikligiServisi`).
+     */
+    private ozelGun: OzelGunKapisiGirdisi | null = null;
+
+    /**
+     * Etkin ERTELEMELER (issue #289): `<namaz günü>_<vakit>` → hedef ms. BELLEK-İÇİ
+     * önbellek (`kontrolEt` senkron koşar). Kaynak bekleyen bildirimlerdeki ertelenen
+     * kopyadır; doldurulan yollar: açılış hidrasyonu, her tick başında arka planda
+     * tazeleme ve "ertelendi" gözlemcisi (Android native olayı / iOS JS işleyicisi).
+     * Bilinmeseydi uygulama açıkken banner + ses + titreşim sürer ve ön plan, native'in
+     * az önce iptal ettiği TTS anonsunu AYNI kimlikle yeniden kurardı.
+     */
+    private ertelemeler: Record<string, number> = {};
+    private ertelemeTazelemesi: Promise<void> | null = null;
+    private ertelemeAboneligi: (() => void) | null = null;
 
     private constructor() {
         this.hesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
@@ -77,6 +112,12 @@ export class NamazMuhafiziServisi {
         this.onBildirim = callback;
         if (this.intervalId) return;
 
+        // Erteleme kurulunca banner HEMEN kalksın (bir sonraki tick'i beklemesin).
+        this.ertelemeAboneligi?.();
+        this.ertelemeAboneligi = ertelemeDinleyicisiEkle(ERTELEME_YUVASI, () => {
+            void this.ertelemeDurumunuYukle();
+        });
+
         // Her dakika kontrol et
         this.intervalId = setInterval(() => this.kontrolEt(), 60 * 1000);
         this.kontrolEt(); // İlk başlatmada hemen kontrol et
@@ -88,6 +129,8 @@ export class NamazMuhafiziServisi {
             clearInterval(this.intervalId);
             this.intervalId = null;
         }
+        this.ertelemeAboneligi?.();
+        this.ertelemeAboneligi = null;
     }
 
     /**
@@ -97,6 +140,9 @@ export class NamazMuhafiziServisi {
         this.durdur();
         this.kilinanVakitler = {};
         this.temizlenenVakitler = {};
+        this.ozelGun = null;
+        this.ertelemeler = {};
+        this.ertelemeTazelemesi = null;
         this.matris = VARSAYILAN_MATRIS;
         this.onBildirim = null;
     }
@@ -137,6 +183,14 @@ export class NamazMuhafiziServisi {
      * `${Date.toDateString()}_${vakit}`.
      */
     public async acilistaKilinanlariYukle(): Promise<void> {
+        // Özel gün kapısı da açılışta diskten hydrate edilmeli — aksi halde ilk
+        // `kontrolEt` boş önbellekle koşar ve özel gündeki kullanıcıya tam
+        // açılışta banner/ses/anons çıkardı (kılınmışlık #92 dersinin ikizi).
+        // Okuyucu asla fırlatmaz.
+        this.ozelGun = await ozelGunKapisiniOku();
+        // Ertelemeler de (issue #289): ertelendikten sonra uygulama açılınca ilk
+        // `kontrolEt` banner/ses/anons çıkarmasın. Okuyucu asla fırlatmaz.
+        await this.ertelemeleriTazele(true);
         try {
             const bugunTarih = new Date();
             const dunTarih = new Date();
@@ -165,7 +219,50 @@ export class NamazMuhafiziServisi {
         }
     }
 
+    /**
+     * Özel gün ayarlarını diskten yeniden okur ve kapıyı HEMEN uygular
+     * (özel gün başlatılınca açık bir banner bir dakika daha beklemesin).
+     * Asla fırlatmaz.
+     */
+    public async ozelGunDurumunuYukle(): Promise<void> {
+        this.ozelGun = await ozelGunKapisiniOku();
+        if (this.intervalId) this.kontrolEt();
+    }
+
+    /**
+     * Ertelemeleri bekleyen bildirimlerden yeniden okur ve kapıyı HEMEN uygular
+     * (açık banner kalksın). "Ertelendi" gözlemcisi çağırır. Asla fırlatmaz.
+     */
+    public async ertelemeDurumunuYukle(): Promise<void> {
+        await this.ertelemeleriTazele(true);
+        if (this.intervalId) this.kontrolEt();
+    }
+
+    /**
+     * Tick tazelemeleri süren okumayı paylaşır. `taze` = okuma BU ANDAN SONRA
+     * başlamalı (açılış, "ertelendi" olayı): süren okuma native kopyayı yazmadan
+     * önce başlamış olabilir, onu paylaşmak ertelemeyi bir dakika kaçırırdı.
+     */
+    private ertelemeleriTazele(taze = false): Promise<void> {
+        if (this.ertelemeTazelemesi && !taze) return this.ertelemeTazelemesi;
+        const onceki = this.ertelemeTazelemesi ?? Promise.resolve();
+        const bu: Promise<void> = onceki
+            .then(() => bekleyenErtelemeleriOku())
+            .then((yeni) => {
+                this.ertelemeler = ertelemeleriBirlestir(this.ertelemeler, yeni, Date.now());
+            })
+            .finally(() => {
+                if (this.ertelemeTazelemesi === bu) this.ertelemeTazelemesi = null;
+            });
+        this.ertelemeTazelemesi = bu;
+        return bu;
+    }
+
     private kontrolEt() {
+        // Ertelemeler bir sonraki tick için arka planda tazelenir (ateşle-unut):
+        // native erteleme olayı kaçtıysa (yarış, olay yayılamadı) en geç bir dakika.
+        void this.ertelemeleriTazele();
+
         const vakitBilgisi = this.hesaplayici.getSuankiVakitBilgisi();
         if (!vakitBilgisi) return;
 
@@ -175,6 +272,21 @@ export class NamazMuhafiziServisi {
         // Eğer bu vakit zaten kılındıysa banner'ı temizle (sadece bir kez) ve rahatsız etme
         const bugun = new Date().toDateString();
         const vakitAnahtari = `${bugun}_${vakit}`;
+
+        // ÖZEL GÜN (issue #272): banner, ses, titreşim ve sesli anons YOK.
+        // Kapı vaktin GÜNÜNE bakar — gece yarısından sonraki yatsı DÜNE aittir
+        // (arka planla aynı tarih kuralı: `muhafizVaktiTarihiniSec`).
+        const simdi = new Date();
+        const cikisAni = vakitBilgisi.saat ?? new Date(simdi.getTime() + kalanSureMs);
+        const vakitGunu = muhafizVaktiTarihiniSec(vakit, simdi, cikisAni, bugunuAl(), dunuAl());
+        if (ozelGunAktifMi(vakitGunu, this.ozelGun)) {
+            const ozelAnahtar = `ozel_${vakitAnahtari}`;
+            if (!this.temizlenenVakitler[ozelAnahtar] && this.onBildirim) {
+                this.onBildirim('', 0);
+                this.temizlenenVakitler[ozelAnahtar] = true;
+            }
+            return;
+        }
         if (this.kilinanVakitler[vakitAnahtari]) {
             // Temizleme bildirimi henüz gönderilmediyse gönder
             if (!this.temizlenenVakitler[vakitAnahtari] && this.onBildirim) {
@@ -203,6 +315,23 @@ export class NamazMuhafiziServisi {
                 ? olcuDkHesapla({ kaynak: `vakit:${vakit}`, baslangic: giris, bitis: cikis, yon }, new Date())
                 : kalanDk;
 
+        // ERTELEME (issue #289): hedef ana (+ çakışma payı) kadar banner, ses, titreşim
+        // ve sesli anons YOK. Kural arka planla AYNI (`ertelemeSusturuyorMu`) ve aynı
+        // tetik anına uygulanır: çıkışta `çıkış − kalanDk`, girişte `giriş + olcuDk`
+        // (planın bu dakikaya kurduğu uyarının anı). Gün = vaktin NAMAZ GÜNÜ.
+        const tetikMs =
+            yon === 'girisindenItibaren' && giris
+                ? giris.getTime() + olcuDk * DK_MS
+                : cikis.getTime() - kalanDk * DK_MS;
+        if (ertelemeSusturuyorMu(this.ertelemeler, vakitGunu, vakit, tetikMs)) {
+            const erteleAnahtari = `ertele_${ertelemeAnahtari(vakitGunu, vakit)}_${this.ertelemeler[ertelemeAnahtari(vakitGunu, vakit)]}`;
+            if (!this.temizlenenVakitler[erteleAnahtari] && this.onBildirim) {
+                this.onBildirim('', 0);
+                this.temizlenenVakitler[erteleAnahtari] = true;
+            }
+            return;
+        }
+
         // Sessiz (mod='sessiz') seviye pencere sağlamaz; o aralıkta bir üst
         // (daha nazik) seviye aktifse onun sıklığı işler.
         const kazanan = aktifSeviyeyiBul(vakitAyari, olcuDk);
@@ -216,23 +345,32 @@ export class NamazMuhafiziServisi {
         // banner ile bildirim farklı dakikalara düşer.
         if (!seviyeTetiklenirMi(kazanan, olcuDk, vakitAyari.seviyeler, { yon, pencereUzunluguDk })) return;
 
-        const aktifSeviye = kademeSeviyeNo(kazanan.kademe);
+        // TON: acil kısıtı (son 15 dk, yalnız çıkış yönü) plan ile AYNI kapıdan.
+        const aktifSeviye = etkinSeviyeNo(kazanan, yon);
 
-        // Faz 5: uygulama ACIKKEN de sesli anons konussun.
-        this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+        // GERCEK ALARM (issue #74) — CIFT SES KURALI: adimin ilk tetiginde sistem alarmi
+        // uygulama acikken de calar (kendi sesi + titresimi). On plan o dakikada ne anons
+        // planlar ne titretir; ekran da ses calmaz (`sistemAlarmi`). Anonsu planlamamak
+        // ayrica SART: arka plan o tetige anons KURMADI (alarm onun yerine gecti), on plan
+        // ayni kimlikle kursaydi alarmin ustune TTS konusurdu.
+        const sistemAlarmi = alarmAniMi(kazanan, olcuDk);
 
-        // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
-        // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
-        // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
-        // kapaliyken titrer, acikken titremezdi.
-        this.titresimVer(kazanan);
+        if (!sistemAlarmi) {
+            // Faz 5: uygulama ACIKKEN de sesli anons konussun.
+            this.onPlanAnonsuPlanla(vakit as MuhafizVakti, kazanan, aktifSeviye, kalanDk, kalanSureMs, yon);
+
+            // Faz 6: uygulama ACIKKEN bildirim golgeligine bir sey dusmez (banner
+            // ekranda cizilir) → KANAL titresimi de islemez. On planda titresimi
+            // servisin kendisi calistirmak zorunda; aksi halde ayni adim uygulama
+            // kapaliyken titrer, acikken titremezdi.
+            this.titresimVer(kazanan);
+        }
 
         if (this.onBildirim) {
-            this.onBildirim(
-                this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon),
-                aktifSeviye,
-                kazanan.bildirimSesi
-            );
+            const mesaj = this.seviyeMesajiOlustur(vakit, aktifSeviye, olcuDk, yon);
+            // Dördüncü argüman YALNIZ alarm anında: alarm kanalı kapalı akış birebir eski çağrı.
+            if (sistemAlarmi) this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi, true);
+            else this.onBildirim(mesaj, aktifSeviye, kazanan.bildirimSesi);
         }
     }
 
@@ -350,6 +488,13 @@ export class NamazMuhafiziServisi {
                 case 2: return `Vakit ilerliyor, namazı sona bırakma. (${olcuDk} dk geçti)`;
                 case 1: return `Namaz vakti gireli ${olcuDk} dakika oldu.`;
             }
+        }
+        // Issue #274 — metin = (ton, ölçü): erken sert/acil adım "VAKİT ÇIKIYOR"
+        // demez, vakte özgü nass da taşımaz (arka plan başlığıyla aynı kural).
+        if (!sonDakikaDiliMi(seviye, olcuDk)) {
+            return seviye === 4
+                ? `Namazı geciktirme, hemen namaza dur! (${olcuDk} dk kaldı)`
+                : this.girisIcerigiSec(3);
         }
         switch (seviye) {
             case 4: return `VAKİT ÇIKIYOR! Hemen namaza dur! (${olcuDk} dk kaldı)`;

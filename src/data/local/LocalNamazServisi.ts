@@ -31,6 +31,47 @@ import { Depolama } from './Depolama';
 /** Tek bir gunun verisi: namazAdi -> kilindi mi. */
 type GunVerisi = Record<string, boolean>;
 
+/**
+ * KILINMIŞLIK DEĞİŞTİ GÖZLEMCİSİ (Wear OS #269, widget/hızlı ayarlar #275/#276).
+ *
+ * Kılınmışlık ÜÇ yazıcıdan geçer (`localNamazDurumunuGuncelle`,
+ * `localTumNamazlariGuncelle`, `localVerileriTemizle`); saatin/widget'ın bayat ✓
+ * göstermemesi için üçü de başarılı yolda haber verir. Data katmanı domain
+ * import EDEMEZ → dinleyiciler dışarıdan kaydedilir (`WearSenkronServisi.baslat`,
+ * `WidgetServisi.baslat`). İçe aktarma `Depolama.yaz` ile doğrudan yazar; o yol
+ * tazelemeyi kendisi yapar.
+ *
+ * ÇOKLU DİNLEYİCİ: her dinleyici ADLI bir yuvadadır; aynı adla yeniden kayıt
+ * öncekinin YERİNE geçer (açılış zinciri `baslat`'ı birden çok kez çağırabilir,
+ * dinleyici çoğalmamalı). Her dinleyici kendi try/catch'inde çalışır: biri
+ * patlarsa diğerleri yine haber alır, yazım ASLA düşmez.
+ */
+const kayitDegistiDinleyicileri = new Map<string, () => void>();
+
+/** Adlı yuvaya dinleyici kaydeder (`null` yuvayı boşaltır). */
+export const kayitDegistiDinleyicisiEkle = (ad: string, fn: (() => void) | null): void => {
+  if (fn) kayitDegistiDinleyicileri.set(ad, fn);
+  else kayitDegistiDinleyicileri.delete(ad);
+};
+
+/**
+ * Geriye uyumlu tek-dinleyici arayüzü (Wear senkronu). `wear` yuvasına yazar;
+ * diğer dinleyicileri (widget) ETKİLEMEZ.
+ */
+export const kayitDegistiDinleyicisiniAyarla = (fn: (() => void) | null): void => {
+  kayitDegistiDinleyicisiEkle('wear', fn);
+};
+
+const kayitDegistiBildir = (): void => {
+  kayitDegistiDinleyicileri.forEach((fn, ad) => {
+    try {
+      fn();
+    } catch (e) {
+      Logger.warn('LocalNamazServisi', `Kayit degisti dinleyicisi hata verdi: ${ad}`, e);
+    }
+  });
+};
+
 const gunAnahtari = (tarih: string): string =>
   `${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}${tarih}`;
 
@@ -142,6 +183,7 @@ export const localNamazDurumunuGuncelle = async (
       ...(mevcut ?? {}),
       [namazAdi]: tamamlandi,
     }));
+    kayitDegistiBildir();
     return { basarili: true };
   } catch (error) {
     return {
@@ -165,6 +207,7 @@ export const localTumNamazlariGuncelle = async (
       gun[namazAdi] = tamamlandi;
     });
     await Depolama.yaz(gunAnahtari(tarih), gun);
+    kayitDegistiBildir();
     return { basarili: true };
   } catch (error) {
     return {
@@ -244,6 +287,7 @@ export const localVerileriTemizle = async (): Promise<void> => {
   );
   await Depolama.cogunuSil(anahtarlar);
   await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.NAMAZ_VERILERI);
+  kayitDegistiBildir();
 };
 
 /**

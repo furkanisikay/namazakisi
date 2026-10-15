@@ -1,0 +1,15 @@
+# tohum: ozellik
+appId: com.furkanisikay.namazakisi
+---
+- runFlow: _ayarlar.yaml
+- takeScreenshot: ozk/04-ayarlar
+- scrollUntilVisible:
+    element:
+      text: "Hakkında\\..*"
+    direction: DOWN
+    # Tablette her kaydirma ~34 sn suruyor ve kisa kaliyor: 120 sn'de 4 kaydirma
+    # listenin sonuna yetmedi (5bea060). Daha hizli (uzun) kaydirma + genis sure.
+    speed: 80
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- takeScreenshot: ozk/05-ayarlar-alt

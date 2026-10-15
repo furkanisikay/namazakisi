@@ -4,6 +4,7 @@ import { BILDIRIM_SABITLERI } from '../../../core/constants/UygulamaSabitleri';
 jest.mock('@notifee/react-native', () => ({
   __esModule: true,
   default: {
+    getNotificationSettings: jest.fn(() => Promise.resolve({ android: { alarm: 1 } })),
     createChannel: jest.fn().mockResolvedValue('channel-id'),
     deleteChannel: jest.fn().mockResolvedValue(undefined),
     displayNotification: jest.fn().mockResolvedValue('notif-id'),
@@ -14,6 +15,8 @@ jest.mock('@notifee/react-native', () => ({
     createTriggerNotification: jest.fn().mockResolvedValue('trigger-id'),
   },
   TriggerType: { TIMESTAMP: 0 },
+  AlarmType: { SET_AND_ALLOW_WHILE_IDLE: 1, SET_EXACT_AND_ALLOW_WHILE_IDLE: 3 },
+  AndroidNotificationSetting: { NOT_SUPPORTED: -1, DISABLED: 0, ENABLED: 1 },
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   AndroidStyle: { BIGTEXT: 0 },
 }));
@@ -29,6 +32,12 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
   startCountdown: (...args: any[]) => mockStartCountdown(...args),
   stopCountdown: (...args: any[]) => mockStopCountdown(...args),
   stopAll: (...args: any[]) => mockStopAll(...args),
+}));
+
+// Ozel gun kapisi (issue #272): deterministik suzgec; sorulan tarihler kaydedilir.
+const mockOzelGundeMi = jest.fn((_t: string) => false);
+jest.mock('../../../data/local/LocalOzelGunOkuyucu', () => ({
+  ozelGunSuzgeciniOku: jest.fn(async () => (t: string) => mockOzelGundeMi(t)),
 }));
 
 import { Platform } from 'react-native';
@@ -141,6 +150,18 @@ describe('IftarSayacBildirimServisi', () => {
         targetTimeMs: mockPrayerTimes.maghrib.getTime(),
       })
     );
+
+    // Live Update (issue #282): ilerleme gün boyu orucu gösterir — imsak → öğle →
+    // ikindi → akşam (8 sa + 3 sa + 3 sa), son bölüm vurgulu. "Kıldım" YOK.
+    const canli = mockStartCountdown.mock.calls[0][0].canli;
+    expect(canli).toEqual({
+      baslangicMs: mockPrayerTimes.fajr.getTime(),
+      bolumler: [
+        { uzunlukDk: 480, vurgulu: false },
+        { uzunlukDk: 180, vurgulu: false },
+        { uzunlukDk: 180, vurgulu: true },
+      ],
+    });
 
     // vakitGirdi ve temizleme trigger'lari Notifee ile planlanmali
     const triggerCalls = (notifee.createTriggerNotification as jest.Mock).mock.calls;
@@ -324,5 +345,108 @@ describe('IftarSayacBildirimServisi', () => {
 
     // kanalOlusturuldu onbellegi sayesinde createChannel sadece ilk seferde cagrilmali
     expect(notifee.createChannel).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('IftarSayacBildirimServisi — ozel gun kapisi (issue #272)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (IftarSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    (notifee.getTriggerNotificationIds as jest.Mock).mockResolvedValue([]);
+    (notifee.getDisplayedNotifications as jest.Mock).mockResolvedValue([]);
+    (Platform as { OS: string }).OS = 'android';
+  });
+
+  afterEach(() => {
+    mockOzelGundeMi.mockImplementation(() => false);
+    global.Date = OriginalDate;
+  });
+
+  it('ozel gunde (hayiz/nifas → oruc yok) iftar sayaci KURULMAZ ama eski plan temizlenir', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-19');
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockOzelGundeMi).toHaveBeenCalledWith('2026-02-19');
+    expect(notifee.getTriggerNotificationIds).toHaveBeenCalled();
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(notifee.createTriggerNotification).not.toHaveBeenCalled();
+  });
+
+  it('ozel gun DISINDA birebir eski akis (countdown + trigger)', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    mockOzelGundeMi.mockImplementation((t) => t === '2026-02-20');
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({
+      aktif: true,
+      koordinatlar: { lat: 41, lng: 29 },
+    });
+
+    expect(mockStartCountdown).toHaveBeenCalledTimes(1);
+    expect(notifee.createTriggerNotification).toHaveBeenCalled();
+  });
+});
+
+describe('IftarSayacBildirimServisi — Now Bar planlayıcısı (issue #282 ikinci aşama)', () => {
+  // Planlayıcı casuslarla yönetilir (gerçek planlama bu suite'te ölçülmez).
+  const { CanliSayacPlanlayici } = require('../CanliSayacPlanlayici') as typeof import('../CanliSayacPlanlayici');
+  let karar: jest.SpyInstance;
+  let bildir: jest.SpyInstance;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (IftarSayacBildirimServisi as unknown as { instance?: unknown }).instance = undefined;
+    mockOzelGundeMi.mockImplementation(() => false);
+    karar = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'ogeKarari');
+    bildir = jest.spyOn(CanliSayacPlanlayici.getInstance(), 'kaynakBildir').mockResolvedValue(undefined);
+  });
+
+  afterEach(() => {
+    karar.mockRestore();
+    bildir.mockRestore();
+    global.Date = OriginalDate;
+  });
+
+  it('planlayıcı devraldıysa sayaç KENDİ bildirimini kurmaz ama penceresini bildirir', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    karar.mockResolvedValue({ devralir: true, oneCikar: true });
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    expect(mockStartCountdown).not.toHaveBeenCalled();
+    expect(bildir).toHaveBeenCalledWith('iftarSayac', [
+      expect.objectContaining({
+        oge: 'iftar',
+        kaynak: 'sayac',
+        baslangicMs: mockPrayerTimes.fajr.getTime(),
+        hedefMs: mockPrayerTimes.maghrib.getTime(),
+      }),
+    ]);
+  });
+
+  it("Now Bar'da iftar kapalıysa eski yol öne çıkarma İSTEMEZ", async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    karar.mockResolvedValue({ devralir: false, oneCikar: false });
+
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+
+    expect(mockStartCountdown).toHaveBeenCalledTimes(1);
+    expect(mockStartCountdown.mock.calls[0][0].canli).toBeUndefined();
+  });
+
+  it('kapalı sayaç planlayıcıya "aday yok" der (önceki tur planda kalmasın)', async () => {
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: false, koordinatlar: { lat: 41, lng: 29 } });
+    expect(bildir).toHaveBeenCalledWith('iftarSayac', []);
+  });
+
+  it('bildirim, sayacın kendi gösteriminden ÖNCE yapılır (plan taze sayacı silmesin)', async () => {
+    saatiDondur('2026-02-19T10:00:00');
+    karar.mockResolvedValue({ devralir: false, oneCikar: true });
+    await IftarSayacBildirimServisi.getInstance().yapilandirVePlanla({ aktif: true, koordinatlar: { lat: 41, lng: 29 } });
+    expect(bildir.mock.invocationCallOrder[0]).toBeLessThan(mockStartCountdown.mock.invocationCallOrder[0]);
   });
 });

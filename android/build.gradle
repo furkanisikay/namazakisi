@@ -9,6 +9,11 @@ buildscript {
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
     classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+    // KSP — Android AppFunctions derleyicisi için (issue #94, android/app/build.gradle).
+    // Sürüm Kotlin sürümüne KİLİTLİDİR: RN 0.86 / Expo SDK 57 hâlâ Kotlin 2.1.20 kullanır ve
+    // Expo'nun kendi eşlemesi (`KSPLookup`) de 2.1.20 → 2.1.20-2.0.1 der. Kotlin yükselirse
+    // bu satır da yükselmeli (aksi halde KSP "unsupported Kotlin version" ile düşer).
+    classpath('com.google.devtools.ksp:symbol-processing-gradle-plugin:2.1.20-2.0.1')
   }
 }
 

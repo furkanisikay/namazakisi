@@ -8,7 +8,7 @@
  */
 import { SEVIYE_TANIMLARI } from '../SeriTipleri';
 
-const { SEVIYELER, tohumVerisi } = require('../../../../scripts/magaza-tohum-verisi');
+const { SEVIYELER, tohumVerisi, bugunKilinanlar, gun } = require('../../../../scripts/magaza-tohum-verisi');
 
 describe('magaza tohumu seviye tablosu', () => {
     it('SEVIYE_TANIMLARI ile birebir aynidir', () => {
@@ -21,5 +21,23 @@ describe('magaza tohumu seviye tablosu', () => {
         expect(tanim).toBeDefined();
         expect(seviye.toplamPuan).toBeGreaterThanOrEqual(tanim!.minPuan);
         expect(seviye.rank).toBe(tanim!.rank);
+    });
+
+    it('bugun yalniz vakti GIRMIS namazlari isaretler (Istanbul, 14 Ekim)', () => {
+        // Istanbul 14.10.2026: sabah ~05:43, ogle ~12:55, ikindi ~15:59 (yerel, UTC+3).
+        expect(bugunKilinanlar(new Date('2026-10-14T01:00:00Z'))).toEqual({});
+        expect(bugunKilinanlar(new Date('2026-10-14T07:00:00Z'))).toEqual({ Sabah: true });
+        expect(bugunKilinanlar(new Date('2026-10-14T11:00:00Z'))).toEqual({ Sabah: true, 'Öğle': true });
+        expect(bugunKilinanlar(new Date('2026-10-14T14:00:00Z'))).toEqual({
+            Sabah: true,
+            'Öğle': true,
+            'İkindi': true,
+        });
+    });
+
+    it('tohumun bugunku kaydi enjekte edilen ana gore kurulur', () => {
+        const simdi = new Date();
+        const depo = tohumVerisi(simdi);
+        expect(JSON.parse(depo[`namaz_gun_${gun(0)}`])).toEqual(bugunKilinanlar(simdi));
     });
 });

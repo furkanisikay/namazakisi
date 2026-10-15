@@ -23,9 +23,11 @@ import {
 import {
     IOS_BEKLEYEN_TAVANI,
     IOS_GUVENLIK_PAYI,
-    IOS_PLAN_GUN_SAYISI,
+    IOS_YEDEK_REZERVI,
     butceyeSigdir,
     kullanilabilirSlotHesapla,
+    yedekKapasitesiHesapla,
+    yedekSigarMi,
 } from '../bildirimButcesi';
 import type { UyariPlani } from '../../motorAdaptoru';
 
@@ -85,6 +87,7 @@ describe('platformYetenekleri', () => {
             serbestAnonsMetni: true,
             titresimSecimi: true,
             sessizligiDelebilir: true,
+            gercekAlarm: true,
         });
     });
 
@@ -99,12 +102,15 @@ describe('platformYetenekleri', () => {
             serbestAnonsMetni: true,
             titresimSecimi: false,
             sessizligiDelebilir: false,
+            gercekAlarm: false,
         });
     });
 
-    test('iOS Faz 3: AlarmKit varsa YALNIZ sessizligi delme acilir', () => {
+    test('iOS AlarmKit (issue #74): YALNIZ gercek alarm acilir — bildirim sessizligi yine delmez', () => {
         const yetenek = iosYetenekleri(true);
-        expect(yetenek.sessizligiDelebilir).toBe(true);
+        expect(yetenek.gercekAlarm).toBe(true);
+        // Acil tonlu BILDIRIM sessiz anahtarini AlarmKit varken de delmez.
+        expect(yetenek.sessizligiDelebilir).toBe(false);
         // Digerleri AlarmKit'ten bagimsizdir — acilmamali.
         expect(yetenek.sesSecici).toBe(false);
         expect(yetenek.serbestAnonsMetni).toBe(true);
@@ -150,12 +156,18 @@ describe('iosTesliminiCoz', () => {
         expect(teslim.kesintiSeviyesi).toBe('timeSensitive');
     });
 
-    test('Faz 3: AlarmKit varsa acil adim ALARM olur', () => {
+    test('AlarmKit varken ACIL TON alarma CEVRILMEZ (her dakika tam ekran alarm olurdu)', () => {
         const teslim = iosTesliminiCoz(
             uyari({ seviye: 4, acilKanal: true }),
             iosYetenekleri(true)
         );
-        expect(teslim.tur).toBe('alarm');
+        expect(teslim.tur).toBe('bildirim');
+        expect(teslim.kesintiSeviyesi).toBe('timeSensitive');
+    });
+
+    test('AlarmKit varken GERCEK ALARM tetigi alarm olur; yokken uzun sesli bildirim', () => {
+        expect(iosTesliminiCoz(uyari({ seviye: 1, alarm: true }), iosYetenekleri(true)).tur).toBe('alarm');
+        expect(iosTesliminiCoz(uyari({ seviye: 1, alarm: true }), iosYetenekleri(false)).tur).toBe('bildirim');
     });
 
     test('AlarmKit olsa bile acil OLMAYAN adim alarm YAPILMAZ', () => {
@@ -168,10 +180,31 @@ describe('iosTesliminiCoz', () => {
 });
 
 describe('bildirimButcesi — 64 bekleyen siniri', () => {
-    test('sabitler: tavan 64, pay 4, iOS penceresi 2 gun', () => {
+    test('sabitler: tavan 64, pay 4, yedek rezervi 8', () => {
         expect(IOS_BEKLEYEN_TAVANI).toBe(64);
         expect(IOS_GUVENLIK_PAYI).toBe(4);
-        expect(IOS_PLAN_GUN_SAYISI).toBe(2);
+        expect(IOS_YEDEK_REZERVI).toBe(8);
+    });
+
+    test('butce artigi: bugunun planindan SONRA kalan slot, rezerv bos kalir', () => {
+        // 60 slot, bugun 30 → yedege 60 − 30 − 8 = 22
+        expect(yedekKapasitesiHesapla(60, 30)).toBe(22);
+        // Bugun slotu tuketiyorsa (ya da asiyorsa) yedek YOK — bugun onceliklidir.
+        expect(yedekKapasitesiHesapla(60, 55)).toBe(0);
+        expect(yedekKapasitesiHesapla(60, 90)).toBe(0);
+        expect(yedekKapasitesiHesapla(0, 0)).toBe(0);
+    });
+
+    test('teslim sayaci kapali formla AYNI sayiyi verir (defter = teslimci)', () => {
+        for (const [slot, bugun] of [[60, 30], [60, 52], [60, 53], [44, 10], [3, 0]] as const) {
+            let kalan = Math.max(0, slot - bugun);
+            let kurulan = 0;
+            while (yedekSigarMi(kalan)) {
+                kalan--;
+                kurulan++;
+            }
+            expect(kurulan).toBe(yedekKapasitesiHesapla(slot, bugun));
+        }
     });
 
     test('slot = tavan - muhafiz disi bekleyen - guvenlik payi', () => {

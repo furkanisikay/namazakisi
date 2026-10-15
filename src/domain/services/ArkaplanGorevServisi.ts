@@ -14,8 +14,17 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArkaplanMuhafizServisi, ArkaplanMuhafizAyarlari } from './ArkaplanMuhafizServisi';
 import { CumaHatirlatmaServisi, CumaKoordinat } from './CumaHatirlatmaServisi';
+import { NafileHatirlatmaServisi } from './NafileHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from './CamiyeGitHatirlatmaServisi';
+import { WearSenkronServisi } from './WearSenkronServisi';
+import { CamideyimServisi } from './CamideyimServisi';
+import { KildimKuyruguServisi } from './KildimKuyruguServisi';
+import { WidgetServisi } from './WidgetServisi';
 import { SeriSayacBildirimServisi } from './SeriSayacBildirimServisi';
 import { seriSayacAyarlariniHazirla } from './SeriSayacHazirlayici';
+import { gunSonuHatirlatmalariniGuncelle } from './GunSonuHatirlaticiServisi';
+import { YatisHatirlatmaServisi } from './YatisHatirlatmaServisi';
+import { TakvimCakismaServisi } from './TakvimCakismaServisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import {
     DEPOLAMA_ANAHTARLARI,
@@ -312,6 +321,27 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         await arkaplandanKonumTakibiniYenidenBaslat();
 
         // =====================================================
+        // ADIM 1.2: CİHAZLAR ARASI EŞİTLEME (issue #288)
+        //
+        // Muhafız erken dönüşlerinden ÖNCE (cuma deseni: muhafızdan bağımsız) ve
+        // hatırlatma planlamalarından ÖNCE: diğer cihazda kılınmış namaz diske
+        // birleşirse aşağıdaki planlayıcılar onu kılınmış görür. Kapalıysa tek disk
+        // okuması; ağ yoksa sessiz; kendi zaman aşımı var. TEMBEL require: zincir
+        // expo-crypto/expo-secure-store köprülerini çeker.
+        // =====================================================
+        try {
+            const { EsitlemeServisi } = require('./EsitlemeServisi') as typeof import('./EsitlemeServisi');
+            const esitleme = await EsitlemeServisi.arkaplandaEsitle();
+            if (esitleme.tur === 'indirildi' || esitleme.tur === 'indirildiVeYuklendi') {
+                // Kayıtlar store'suz diske yazıldı → saat ve widget kendiliğinden tazelenmez.
+                await WidgetServisi.getInstance().kilinanlariYaz().catch(() => undefined);
+                await WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+            }
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Eşitleme turu çalıştırılamadı', e);
+        }
+
+        // =====================================================
         // ADIM 1.5: CUMA HATIRLATMASINI TAZELE
         //
         // MUHAFIZ KONTROLLERINDEN ÖNCE: aşağıdaki bloklar muhafız ayarı yoksa
@@ -326,6 +356,82 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Cuma hatırlatması tazelenemedi', e);
+        }
+
+        // ADIM 1.52: "CAMİDE KILACAĞIM" HATIRLATMASI (issue #292) — cuma ile AYNI
+        // gerekçe: muhafızdan bağımsız, 7/3 günlük pencere; muhafız erken
+        // dönüşlerinden ÖNCE durmalı.
+        try {
+            await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku()
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Camiye gitme hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.55: NAFILE HATIRLATMALARINI TAZELE (issue #77)
+        //
+        // Cuma ile AYNI gerekçe: muhafızdan bağımsız bir ayardır, muhafız erken
+        // dönüşlerinden ÖNCE durmalı; aksi halde muhafızı kapatan kullanıcıda
+        // 3 gün / 7 gecelik pencere tazelenmez ve hatırlatma sessizce biterdi.
+        // =====================================================
+        try {
+            await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                await arkaplandaKoordinatOku()
+            );
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Nafile hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.57: WEAR OS SAATİ (issue #269)
+        //
+        // (a) Saatten gelip işlenememiş "Kıldım"ları boşalt — headless görev
+        //     OEM kısıtıyla başlatılamadıysa güvenlik ağı budur (JobScheduler
+        //     tabanlı bu görev arka plan servis kısıtından muaftır).
+        // (b) 8 günlük pencereyi tazele (gün döndükçe kayar).
+        // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            // Ortak "Kıldım" kuyruğu: saat + widget + hızlı ayarlar + kısayol (#275/#276).
+            await KildimKuyruguServisi.getInstance().bekleyenleriIsle();
+            await WearSenkronServisi.getInstance().gonder();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Wear senkronu tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.58: ANA EKRAN WIDGET'I (issue #275)
+        //
+        // Dün + 8 günlük çizelge gün döndükçe kayar; uygulama günlerce açılmasa da
+        // widget ve hızlı ayarlar kutusu doğru vakti göstersin. Muhafızdan
+        // bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            const koordinat = await arkaplandaKoordinatOku();
+            if (koordinat) await WidgetServisi.getInstance().vakitleriyaz(koordinat);
+            await WidgetServisi.getInstance().kilinanlariYaz();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Widget tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.59: CAMİDEYİM + NAMAZ MODU (#297/#277)
+        //
+        // (a) Camiden çıkış sorusundaki "Kıldım" kuyruğu (headless görev OEM
+        //     kısıtına takıldıysa güvenlik ağı). (b) 8 günlük vakit kapısı ve
+        //     Namaz modu planı gün döndükçe kayar; izlenen camiler de tazelenir.
+        // Muhafızdan bağımsızdır → erken dönüşlerden ÖNCE (cuma deseni).
+        // =====================================================
+        try {
+            // Konumdan bağımsız İLK iş: üst süresi geçmiş Rahatsız Etmeyin kaynağı
+            // (alarmı OEM kısıtıyla silinmiş olabilir) her turda düşsün.
+            await CamideyimServisi.getInstance().suresiGecenleriTemizle();
+            await CamideyimServisi.getInstance().bekleyenKildimleriIsle();
+            await CamideyimServisi.getInstance().konumaBagliTazele(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Camideyim tazelenemedi', e);
         }
 
         // =====================================================
@@ -351,6 +457,45 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
             );
         } catch (e) {
             Logger.error('ArkaplanGorev', 'Seri sayacı tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.65: GUN SONU SERI HATIRLATMASINI TAZELE (issue #272 devami)
+        //
+        // Hatirlatma artik DAILY degil, TARIHLI tetiklerdir (ozel gun kapisi
+        // tarih ister) → penceresi sonludur ve tazelenmezse biter. Cuma/seri
+        // sayaci ile ayni gerekce: muhafizdan bagimsizdir, muhafiz erken
+        // donuslerinden ONCE durmali. Ayarlar ham depolamadan okunur.
+        // =====================================================
+        try {
+            await gunSonuHatirlatmalariniGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Gün sonu hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.66: YATIS HATIRLATMASI + GUN SONU MUHASEBESI (issue #290)
+        //
+        // Gun sonu ile ayni gerekce: tarihli tetikler, sonlu pencere, muhafizdan
+        // bagimsiz → muhafiz erken donuslerinden ONCE. Ayarlar ham depolamadan.
+        // =====================================================
+        try {
+            await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Yatış hatırlatması tazelenemedi', e);
+        }
+
+        // =====================================================
+        // ADIM 1.67: TAKVIM CAKISMASI UYARISI (issue #291)
+        //
+        // Takvim uygulamanin DISINDA degisir (yeni toplanti eklenir) → bu gorev
+        // sonradan eklenen etkinligi yakalayan asil yoldur. Muhafizdan bagimsiz
+        // → muhafiz erken donuslerinden ONCE. Izin yoksa servis plani temizler.
+        // =====================================================
+        try {
+            await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(await arkaplandaKoordinatOku());
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Takvim çakışması tazelenemedi', e);
         }
 
         // =====================================================

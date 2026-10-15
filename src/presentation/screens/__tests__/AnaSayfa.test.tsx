@@ -21,12 +21,14 @@
  * gerçek zamanda beklenir.
  */
 import React from 'react';
-import { render, fireEvent, act, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, act, waitFor, within } from '@testing-library/react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler, useTema } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { bugunuAl } from '../../../core/utils/TarihYardimcisi';
+import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
+import { useEkranSinifi } from '../../hooks/useEkranSinifi';
 
 // AnaSayfa sabitleri: GECMIS_GUN_SAYISI = 90 → bugünün sayfa indeksi 90.
 const BUGUN_INDEKSI = 90;
@@ -52,6 +54,9 @@ interface TarihSeciciProplari {
 }
 const mockTarihSeciciProplari: TarihSeciciProplari[] = [];
 
+/** Pager cocuklarini ciz (yalniz sayfa duzeni testleri; varsayilan KAPALI). */
+const mockPagerCocuklari = { ciz: false };
+
 jest.mock('react-native-pager-view', () => {
   const ReactMock = require('react');
   const { View } = require('react-native');
@@ -65,7 +70,8 @@ jest.mock('react-native-pager-view', () => {
     // alir ve bu testlerin olctugu sey yalnizca Pager'a giden PROP'lar. Coverage
     // enstrumantasyonu altinda 92 sayfayi cizmek suiti CI runner'inda 30 sn'lik
     // testTimeout'u asacak kadar yavaslatiyordu (yerelde ~3 sn, CI'da timeout).
-    return <View />;
+    // Istisna: duzen testleri (issue #283) sayfa icerigini olcer → yalniz onlar acar.
+    return mockPagerCocuklari.ciz ? <View>{props.children}</View> : <View />;
   });
   return { __esModule: true, default: Pager };
 });
@@ -143,22 +149,84 @@ jest.mock('../../components/home/HomeHeader', () => {
     ),
   };
 });
+const mockVakitKartiProplari: { vakitAraligi?: string }[] = [];
 jest.mock('../../components/home/VakitKarti', () => {
   const { View } = require('react-native');
-  return { VakitKarti: () => <View /> };
+  return {
+    VakitKarti: (props: { vakitAraligi?: string }) => {
+      mockVakitKartiProplari.push(props);
+      return <View testID="vakit-karti" />;
+    },
+  };
 });
+const mockVakitAkisiProplari: { onVakitTikla?: (ad: string, val: boolean) => void }[] = [];
 jest.mock('../../components/home/VakitAkisi', () => {
   const { View } = require('react-native');
-  return { VakitAkisi: () => <View /> };
+  return {
+    VakitAkisi: (props: { onVakitTikla?: (ad: string, val: boolean) => void }) => {
+      mockVakitAkisiProplari.push(props);
+      return <View testID="vakit-akisi" />;
+    },
+  };
 });
+jest.mock('../../hooks/useEkranSinifi', () => ({ useEkranSinifi: jest.fn(() => 'kompakt') }));
+// Masaüstü postürü (issue #283): varsayılan DÜZ; düzen testleri değeri değiştirir.
+const mockPostur: { deger: { tur: string; mentese: unknown } } = { deger: { tur: 'duz', mentese: null } };
+jest.mock('../../hooks/useKatlanmaPosturu', () => ({ useKatlanmaPosturu: () => mockPostur.deger }));
 jest.mock('../../components/home/SeriKartiModal', () => {
   const { View } = require('react-native');
   return { SeriKartiModal: () => <View /> };
 });
+const mockKerahatModalProplari: { gorunur: boolean; onOnayla: () => void }[] = [];
 jest.mock('../../components/home/KerahatOnayModal', () => {
   const { View } = require('react-native');
-  return { KerahatOnayModal: () => <View /> };
+  return {
+    KerahatOnayModal: (props: { gorunur: boolean; onOnayla: () => void }) => {
+      mockKerahatModalProplari.push(props);
+      return <View />;
+    },
+  };
 });
+// "Her farzla bir kaza" (issue #294): karar hook'ta (kendi testi var); burada yalnız
+// ana ekranın onu DOĞRU girdiyle çağırdığı ölçülür.
+const mockKazaDegerlendir = jest.fn();
+jest.mock('../../hooks/useFarzSonrasiKazaOnerisi', () => ({
+  useFarzSonrasiKazaOnerisi: () => ({
+    oneri: null,
+    isleniyor: false,
+    degerlendir: mockKazaDegerlendir,
+    kildim: jest.fn(),
+    simdiDegil: jest.fn(),
+    birDahaSorma: jest.fn(),
+  }),
+}));
+jest.mock('../../components/home/KazaOneriModal', () => {
+  const { View } = require('react-native');
+  return { KazaOneriModal: () => <View /> };
+});
+// Sade görünüm (issue #295): bileşen native TTS köprüsünü çeker (requireNativeModule
+// tuzağı) → hafif taklit; ana ekranın ona DOĞRU girdiyi verdiği ölçülür.
+interface SadeProplari {
+  vakit: string | null;
+  tamamlandi: boolean;
+  kayitHazir: boolean;
+  mekruhMu: boolean;
+  onKildim: () => void;
+  onTumUygulama: () => void;
+}
+const mockSadeProplari: SadeProplari[] = [];
+jest.mock('../../components/sade/SadeGorunum', () => {
+  const { View } = require('react-native');
+  return {
+    SadeGorunum: (props: SadeProplari) => {
+      mockSadeProplari.push(props);
+      return <View testID="sade-gorunum" />;
+    },
+  };
+});
+/** `state.sadeGorunum` — undefined iken dilim YOK (eski davranış birebir). */
+const mockSadeDurumu: { deger: unknown } = { deger: undefined };
+
 jest.mock('react-native-safe-area-context', () => {
   const { View } = require('react-native');
   return { SafeAreaView: (props: { children?: React.ReactNode }) => <View>{props.children}</View> };
@@ -169,8 +237,14 @@ jest.mock('@expo/vector-icons', () => {
 });
 
 // ── Domain servisleri (native köprü / yan etki yok) ──────────────────────────
-const mockVakitBilgisi = {
-  vakit: 'ogle' as const,
+const mockVakitBilgisi: {
+  vakit: 'ogle' | 'yatsi';
+  saat: Date;
+  kalanSureMs: number;
+  sonrakiVakitAdi: string;
+  sonrakiVakitGiris: string;
+} = {
+  vakit: 'ogle',
   saat: new Date(),
   kalanSureMs: 3600000,
   sonrakiVakitAdi: 'İkindi',
@@ -233,6 +307,7 @@ const mockRenkler = {
   metin: '#333333',
   metinIkincil: '#666666',
   sinir: '#cccccc',
+  durum: { basarili: '#4CAF50' },
 };
 
 /**
@@ -299,6 +374,8 @@ describe('AnaSayfa', () => {
       },
       vakitSayac: { ayarlar: { aktif: false } },
       cumaHatirlatma: { ayarlar: { aktif: false, oncedenDk: 60 } },
+      nafile: { ayarlar: VARSAYILAN_NAFILE_AYARLARI, yuklendi: true, hata: null },
+      sadeGorunum: mockSadeDurumu.deger,
     });
 
   /**
@@ -321,6 +398,13 @@ describe('AnaSayfa', () => {
     jest.clearAllMocks();
     mockPagerProplari.length = 0;
     mockTarihSeciciProplari.length = 0;
+    mockPagerCocuklari.ciz = false;
+    mockVakitAkisiProplari.length = 0;
+    mockKerahatModalProplari.length = 0;
+    mockSadeProplari.length = 0;
+    mockSadeDurumu.deger = undefined;
+    (useEkranSinifi as jest.Mock).mockReturnValue('kompakt');
+    mockPostur.deger = { tur: 'duz', mentese: null };
     mockAdhanAyari.fajrSaat = 5;
     mockAdhanAyari.fajrDakika = 30;
     (useNavigation as jest.Mock).mockReturnValue({ navigate: jest.fn() });
@@ -453,6 +537,231 @@ describe('AnaSayfa', () => {
 
       expect(mockPagerSetPage).not.toHaveBeenCalled();
       expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Katlanabilir / tablet düzeni (issue #283) ─────────────────────────────
+  describe('Katlanabilir/tablet düzeni', () => {
+    it('telefonda (kompakt) düzen DEĞİŞMEZ: tek sütun, iki bölme yok', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const ekran = await kur(bugunuAl());
+
+      expect(ekran.getByTestId('vakit-karti')).toBeTruthy();
+      expect(ekran.getByTestId('vakit-akisi')).toBeTruthy();
+      expect(ekran.queryByTestId('anasayfa-iki-bolme')).toBeNull();
+    });
+
+    it.each(['orta', 'genis'] as const)(
+      '%s pencerede vakit kartı SOL, Günlük Akış SAĞ bölmede çizilir',
+      async (sinif) => {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        (useEkranSinifi as jest.Mock).mockReturnValue(sinif);
+        const ekran = await kur(bugunuAl());
+
+        const sol = ekran.getByTestId('anasayfa-sol-bolme');
+        const sag = ekran.getByTestId('anasayfa-sag-bolme');
+        expect(within(sol).getByTestId('vakit-karti')).toBeTruthy();
+        expect(within(sol).queryByTestId('vakit-akisi')).toBeNull();
+        expect(within(sag).getByTestId('vakit-akisi')).toBeTruthy();
+        expect(within(sag).queryByTestId('vakit-karti')).toBeNull();
+      }
+    );
+
+    it.each(['kompakt', 'genis'] as const)(
+      'masaüstü postüründe (%s) üstte büyük geri sayım, altta akış; Kıldım kartı çizilmez',
+      async (sinif) => {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        (useEkranSinifi as jest.Mock).mockReturnValue(sinif);
+        mockPostur.deger = { tur: 'masaustu', mentese: { sol: 0, ust: 440, sag: 800, alt: 440 } };
+        const ekran = await kur(bugunuAl());
+
+        const ust = ekran.getByTestId('anasayfa-masaustu-ust');
+        const alt = ekran.getByTestId('anasayfa-masaustu-alt');
+        expect(within(ust).getByTestId('masaustu-geri-sayim')).toBeTruthy();
+        expect(within(alt).getByTestId('vakit-akisi')).toBeTruthy();
+        expect(within(ust).queryByTestId('vakit-akisi')).toBeNull();
+        // Dik duran yarı salt gösterimdir: Kıldım düğmeli vakit kartı yok, işaretleme akıştan.
+        expect(ekran.queryByTestId('vakit-karti')).toBeNull();
+        expect(ekran.queryByTestId('anasayfa-iki-bolme')).toBeNull();
+      }
+    );
+
+    it('kitap postürü (dikey menteşe) masaüstü düzeni AÇMAZ', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      (useEkranSinifi as jest.Mock).mockReturnValue('orta');
+      mockPostur.deger = { tur: 'kitap', mentese: { sol: 400, ust: 0, sag: 400, alt: 800 } };
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('anasayfa-masaustu')).toBeNull();
+      expect(ekran.getByTestId('anasayfa-iki-bolme')).toBeTruthy();
+    });
+
+    it('iki bölmeli düzen pager açılış sayfasını ETKİLEMEZ (gece yarısı = dün)', async () => {
+      geceYarisiSenaryosu();
+      (useEkranSinifi as jest.Mock).mockReturnValue('genis');
+      await kur(bugunuAl());
+
+      expect(mockPagerProplari[0].initialPage).toBe(BUGUN_INDEKSI - 1);
+      expect(mockPagerSetPage).not.toHaveBeenCalled();
+      expect(mockPagerSetPageWithoutAnimation).not.toHaveBeenCalled();
+    });
+  });
+  describe('Vakit kartı aralığı', () => {
+    afterEach(() => {
+      mockVakitBilgisi.vakit = 'ogle';
+      mockVakitBilgisi.saat = new Date();
+    });
+
+    it('yatsıda bitiş "..." DEĞİL, servisin verdiği çıkış (ertesi imsak) saatidir', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const cikis = new Date();
+      cikis.setHours(5, 7, 0, 0);
+      mockVakitBilgisi.vakit = 'yatsi';
+      mockVakitBilgisi.saat = cikis;
+      mockVakitKartiProplari.length = 0;
+
+      await kur(bugunuAl());
+
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1];
+      expect(son.vakitAraligi).toBe('20:30 - 05:07');
+    });
+  });
+
+  // ── "Her farzla bir kaza" (issue #294) ────────────────────────────────────
+  describe('Kaza önerisi tetiklemesi', () => {
+    const vakitTikla = (ad: string, val: boolean) =>
+      act(async () => {
+        mockVakitAkisiProplari[mockVakitAkisiProplari.length - 1].onVakitTikla!(ad, val);
+        await Promise.resolve();
+      });
+
+    it('aktif günde o anki vakit "kıldım" işaretlenince öneri doğru girdiyle değerlendirilir', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      await vakitTikla('Öğle', true);
+
+      expect(mockKazaDegerlendir).toHaveBeenCalledWith(
+        expect.objectContaining({
+          kilinanNamaz: 'Öğle',
+          tamamlandi: true,
+          gosterilenGun: bugunuAl(),
+          aktifGun: bugunuAl(),
+          suankiVakitNamazi: 'Öğle',
+          koordinat: { lat: 41.0082, lng: 28.9784 },
+        })
+      );
+    });
+
+    it('geri almada da çağrılır (bekleyen değerlendirme iptal edilsin) — tamamlandi=false', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      await vakitTikla('Öğle', false);
+      expect(mockKazaDegerlendir).toHaveBeenCalledWith(expect.objectContaining({ tamamlandi: false }));
+    });
+
+    it('KERAHAT vaktinde önce kerahat onayı açılır; öneri onay beklenirken değerlendirilmez', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        await kur(bugunuAl());
+        await vakitTikla('Öğle', true);
+        expect(mockKazaDegerlendir).not.toHaveBeenCalled();
+        expect(mockKerahatModalProplari[mockKerahatModalProplari.length - 1].gorunur).toBe(true);
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+  });
+
+  // ── Sade görünüm (issue #295) ─────────────────────────────────────────────
+  describe('Sade görünüm seçim dalı', () => {
+    const sadeAcik = (ek: Record<string, unknown> = {}) => {
+      mockSadeDurumu.deger = {
+        ayarlar: { aktif: true },
+        yuklendi: true,
+        yukleniyor: false,
+        geciciCikis: false,
+        hata: null,
+        ...ek,
+      };
+    };
+    const sonSade = () => mockSadeProplari[mockSadeProplari.length - 1];
+
+    it('açıkken ana ekranın YERİNE sade görünüm çizilir (pager yok)', async () => {
+      gunduzSenaryosu();
+      sadeAcik();
+      const ekran = await kur(bugunuAl());
+      expect(ekran.getByTestId('sade-gorunum')).toBeTruthy();
+      expect(mockPagerProplari.length).toBe(0);
+      expect(sonSade().vakit).toBe('ogle');
+      expect(sonSade().kayitHazir).toBe(true);
+      expect(sonSade().tamamlandi).toBe(false);
+    });
+
+    it('"Kıldım" AYNI işaretleme yolundan geçer (aktif gün, şu anki vakit)', async () => {
+      gunduzSenaryosu();
+      sadeAcik();
+      await kur(bugunuAl());
+      await act(async () => {
+        sonSade().onKildim();
+        await Promise.resolve();
+      });
+      const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+      expect(namazDurumunuDegistir).toHaveBeenCalledWith({ tarih: bugunuAl(), namazAdi: 'Öğle', tamamlandi: true });
+    });
+
+    it('KERAHAT vaktinde "Kıldım" ENGELLENMEZ ama önce onay modalı açılır', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      try {
+        gunduzSenaryosu();
+        sadeAcik();
+        await kur(bugunuAl());
+        expect(sonSade().mekruhMu).toBe(true);
+        await act(async () => {
+          sonSade().onKildim();
+          await Promise.resolve();
+        });
+        const { namazDurumunuDegistir } = jest.requireMock('../../store/namazSlice');
+        expect(namazDurumunuDegistir).not.toHaveBeenCalled();
+        expect(mockKerahatModalProplari[mockKerahatModalProplari.length - 1].gorunur).toBe(true);
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+
+    it('ayar diskten okunmadan karar verilmez: yükleniyor gösterilir', async () => {
+      gunduzSenaryosu();
+      sadeAcik({ yuklendi: false, ayarlar: { aktif: false } });
+      const ekran = await kur(bugunuAl());
+      expect(ekran.getByText('yukleniyor')).toBeTruthy();
+      expect(mockPagerProplari.length).toBe(0);
+    });
+
+    it('geçici çıkışta normal ekran + "Sade görünüme dönün" düğmesi', async () => {
+      gunduzSenaryosu();
+      sadeAcik({ geciciCikis: true });
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
+      expect(mockPagerProplari.length).toBeGreaterThan(0);
+      fireEvent.press(ekran.getByLabelText('Sade görünüme dönün'));
+      expect(dispatchMock).toHaveBeenCalledWith({ type: 'sadeGorunum/geciciCikisiBitir', payload: undefined });
+    });
+
+    it('dilim yoksa (eski kayıt/test) ana ekran BİREBİR eskisi gibi', async () => {
+      gunduzSenaryosu();
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
+      expect(ekran.queryByLabelText('Sade görünüme dönün')).toBeNull();
+      expect(mockPagerProplari.length).toBeGreaterThan(0);
     });
   });
 });

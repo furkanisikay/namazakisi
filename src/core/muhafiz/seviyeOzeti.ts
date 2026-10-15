@@ -36,5 +36,7 @@ export function seviyeOzetiOlustur(
   // Titresim BAGIMSIZ bir kanaldir (Faz 6): otekilerin yerine gecmez, yanina
   // eklenir. Yalniz titresimle kurulmus adim da mesrudur ve KAPALI degildir.
   if (kanalAcikMi(seviye.kanallar, 'titresim')) parcalar.push('titreşim');
+  // Gercek alarm (issue #74): kartta gorunmeli — sessiz modu delebilen bir ayar.
+  if (kanalAcikMi(seviye.kanallar, 'alarm')) parcalar.push('alarm');
   return parcalar.join(' · ');
 }

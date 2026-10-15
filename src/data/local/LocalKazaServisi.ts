@@ -122,6 +122,93 @@ export const localKazaDurumunuKaydet = async (
   }
 };
 
+/**
+ * Yazmadan ÖNCE okunacak güncel kaza durumu — kayıt yoksa boş durum; okunamaz
+ * ya da BOZUKSA `null` (çağıran bellekteki duruma döner, bozuk ham değerin ya da
+ * geçici bir okuma hatasının üstüne boş durum yazılmaz).
+ *
+ * Neden: bildirimdeki "Kazaya ekle" (issue #290) store'u atlayıp diske yazar;
+ * Kaza Defteri bellekteki eski durumla yazsaydı o borç sessizce SİLİNİRDİ.
+ */
+export const localKazaDurumunuYazimIcinGetir = async (): Promise<KazaDurumu | null> => {
+  try {
+    const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
+    if (ham) {
+      let cozulen: unknown = null;
+      try {
+        cozulen = JSON.parse(ham);
+      } catch {
+        cozulen = null;
+      }
+      if (cozulen === null || typeof cozulen !== 'object' || Array.isArray(cozulen)) return null;
+    }
+    const okunan = await localKazaDurumunuGetir();
+    return okunan.basarili && okunan.veri ? okunan.veri : null;
+  } catch {
+    return null;
+  }
+};
+
+// ==================== BORÇ EKLEME (tek yol) ====================
+
+/**
+ * Bir namaz türüne borç ekler — SAF. `kazaSlice.borcEkle` ve bildirimdeki
+ * "Kazaya ekle" (issue #290, headless) AYNI fonksiyondan geçer.
+ */
+export const borcEklenmisDurum = (
+  durum: KazaDurumu,
+  namazAdi: KazaNamazAdi,
+  sayi: number
+): KazaDurumu => {
+  const namazlar = durum.namazlar.map((n) =>
+    n.namazAdi === namazAdi
+      ? { ...n, toplamBorc: n.toplamBorc + sayi, kalanBorc: n.kalanBorc + sayi }
+      : n
+  );
+  return {
+    ...durum,
+    namazlar,
+    toplamKalan: namazlar.reduce((t, n) => t + n.kalanBorc, 0),
+    toplamTamamlanan: namazlar.reduce((t, n) => t + n.tamamlanan, 0),
+    guncellemeTarihi: new Date().toISOString(),
+  };
+};
+
+/**
+ * Store'suz borç ekleme (bildirim aksiyonu; arka planda Redux yok).
+ *
+ * Diskteki ham değer BOZUKSA yazmayı REDDEDER: okuma o durumda boş durumla
+ * devam eder ve üstüne yazmak kurtarılabilir kaydı silerdi (AGENTS.md kaza
+ * dayanıklılığı kuralı).
+ */
+export const localKazayaBorcEkle = async (
+  eklenecekler: ReadonlyArray<{ namazAdi: KazaNamazAdi; sayi: number }>
+): Promise<ApiYanit<KazaDurumu>> => {
+  try {
+    const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
+    if (ham) {
+      let cozulen: unknown = null;
+      try {
+        cozulen = JSON.parse(ham);
+      } catch {
+        cozulen = null;
+      }
+      if (cozulen === null || typeof cozulen !== 'object' || Array.isArray(cozulen)) {
+        return { basarili: false, hata: 'Kaza kaydı bozuk, üzerine yazılmadı' };
+      }
+    }
+    const okunan = await localKazaDurumunuGetir();
+    let durum = okunan.veri ?? bosKazaDurumuOlustur();
+    for (const e of eklenecekler) {
+      if (e.sayi > 0) durum = borcEklenmisDurum(durum, e.namazAdi, e.sayi);
+    }
+    const yazim = await localKazaDurumunuKaydet(durum);
+    return yazim.basarili ? { basarili: true, veri: durum } : { basarili: false, hata: yazim.hata };
+  } catch (error) {
+    return { basarili: false, hata: error instanceof Error ? error.message : 'Bilinmeyen hata' };
+  }
+};
+
 // ==================== TEMPO GEÇMİŞİ ====================
 
 /**

@@ -23,7 +23,13 @@ import type {
     UyariKanallari,
     VakitMuhafizAyari,
 } from '../../../core/muhafiz/matrisTipleri';
-import { vakitUyariPlaniOlustur, type UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
+import {
+    ACIL_TON_UST_DK,
+    etkinKademe,
+    vakitUyariPlaniOlustur,
+    type UyariPlani,
+} from '../../../core/muhafiz/motorAdaptoru';
+import { MUHAFIZ_MAKS_ADIM } from '../../../core/muhafiz/matrisTipleri';
 import type { EsikSinirlari } from '../../../core/muhafiz/esikSinirlari';
 import type { PencereYonu } from '../../../core/muhafiz/pencereTipleri';
 import { VARSAYILAN_PENCERE_YONU } from '../../../core/muhafiz/pencereTipleri';
@@ -34,6 +40,12 @@ import {
     ANDROID_YETENEKLERI,
     type PlatformYetenekleri,
 } from '../../../core/muhafiz/ios/platformYetenekleri';
+import {
+    NAFILE_MAKS_ADIM,
+    NAFILE_TEKRAR_MAX_DK,
+    NAFILE_TEKRAR_MIN_DK,
+    NAFILE_VARSAYILAN_TEKRAR_DK,
+} from '../../../core/nafile/nafileTipleri';
 
 /**
  * CUMLE ICINDE gecen kucuk harfli pencere adlari ("… yatsı bugün 6 sa 40 dk").
@@ -64,7 +76,18 @@ export const SEVIYE_BILGILERI: Record<SeviyeKademe, AdimBilgisi> = {
     acil: { baslik: 'Acil', ikon: 'exclamation-circle', renk: '#D32F2F' },
 };
 
-/** Muhafizin dort kademesi — `PencereTanimi.adimBilgileri` varsayilani. */
+/**
+ * TON secicinin kisa etiketleri (issue #274). Kademe artik bir SIRA degil,
+ * hatirlatmanin TONUdur; liste "N. hatirlatma · Ton" der.
+ */
+export const TON_ETIKETLERI: Record<SeviyeKademe, string> = {
+    nazik: 'Nazik',
+    uyari: 'Uyarı',
+    sert: 'Sert',
+    acil: 'Acil',
+};
+
+/** Muhafizin dort TONU (renk/ikon) — seviye no 1..4 sirasinda; serit ve onizleme renkleri. */
 export const MUHAFIZ_ADIM_BILGILERI: AdimBilgisi[] = [
     SEVIYE_BILGILERI.nazik,
     SEVIYE_BILGILERI.uyari,
@@ -133,14 +156,22 @@ export function cipKanallariniBirlestir(
     cip: KanalCipi
 ): UyariKanallari {
     if (cip.id === 'kapali') return { ...cip.kanallar };
-    return kanalAcikMi(mevcut, 'titresim')
-        ? { ...cip.kanallar, titresim: true }
-        : { ...cip.kanallar };
+    // GERCEK ALARM (issue #74) da titresim gibi bagimsiz eksendir → korunur.
+    return {
+        ...cip.kanallar,
+        ...(kanalAcikMi(mevcut, 'titresim') ? { titresim: true } : {}),
+        ...(kanalAcikMi(mevcut, 'alarm') ? { alarm: true } : {}),
+    };
 }
 
 /** Titresim anahtarinin ekran metinleri (kibar "siz"). */
 export const TITRESIM_ETIKETI = 'Titreşim';
 export const TITRESIM_ACIKLAMASI = 'Uyarı gelince cihazınız da titrer.';
+
+/** Gercek alarm anahtarinin ekran metinleri (issue #74, kibar "siz"). */
+export const ALARM_ETIKETI = 'Gerçek alarm';
+export const ALARM_ACIKLAMASI =
+    'Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; tekrarlar normal bildirimle gelir.';
 
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
@@ -207,8 +238,16 @@ export interface PencereTanimi {
     yon: PencereYonu;
     /** Yon degistirilebilir mi? (muhafiz: evet, cuma/seri: hayir) */
     yonSecilebilir: boolean;
-    /** Kac adim (kademe) var? (muhafiz 4, cuma 1) */
+    /** En fazla kac adim kurulabilir? (muhafiz 6, cuma/nafile 1) */
     maksAdim: number;
+    /**
+     * Adimlar TON tasir mi? (issue #274 — muhafiz: evet)
+     *
+     * Evet ise satirin rengi/ikonu adimin TONUNDAN (`SEVIYE_BILGILERI[kademe]`),
+     * basligi kronolojik numaradan ("2. hatırlatma") gelir ve detayda ton
+     * secici cizilir. Hayir ise (cuma, nafile) `adimBilgileri[indeks]`.
+     */
+    tonSecilebilir?: boolean;
     /** Pencerenin BUGUNKU uzunlugu (dk) — esik tavani ve giris yonu plani buradan. */
     pencereUzunluguDk?: number;
     adimBilgileri: AdimBilgisi[];
@@ -216,6 +255,12 @@ export interface PencereTanimi {
     kanalSecimiVar: boolean;
     /** Bildirim sesi satiri gosterilsin mi? (cuma kanalin kendi sesini kullanir) */
     sesSecimiVar: boolean;
+    /**
+     * Siklik (bir kez / tekrarli) secimi gosterilsin mi? Verilmezse EVET.
+     * Nafile hatirlatmalari tek atisliktir: gonullu bir ibadeti tekrar tekrar
+     * hatirlatmak davet degil israr olur → secim gizlenir.
+     */
+    siklikSecimiVar?: boolean;
     /**
      * Anons metni SERBESTCE yazilabilir mi?
      *
@@ -233,6 +278,12 @@ export interface PencereTanimi {
      * kullaniciyi yanlis yonlendirir.
      */
     titresimSecilebilir: boolean;
+    /**
+     * GERCEK ALARM anahtari gosterilsin mi? (issue #74) Yalniz muhafiz vakitleri —
+     * cuma, nafile, yatis gibi tek atislik hatirlatmalarda alarm kanali YOK.
+     * Verilmezse kapali.
+     */
+    alarmSecilebilir?: boolean;
     /**
      * Platformun ham yetenekleri.
      *
@@ -261,6 +312,23 @@ export interface PencereTanimi {
     esikErisimAdi?: string;
     /** Esik degerinin birimi ("dk kala"); verilmezse yonden turetilir. */
     esikBirimi?: string;
+    /**
+     * "Kapalı" kanal çipi gösterilsin mi? Verilmezse EVET. Nafilede (issue #273)
+     * HAYIR: kartın kendi anahtarı ve "Sil" var; kapalı bir adım anlamsızdır.
+     */
+    kapaliCipiVar?: boolean;
+    /**
+     * Sesli adımda serbest anons metni YERİNE gösterilecek örnek cümle ("Telefonunuz
+     * şöyle okur"). Verilirse anons editörü çizilmez — metin bağlamdan üretilir
+     * (nafile: muhafızın `{vakit}` şablonları farz vaktine kurulu).
+     */
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    /**
+     * Uygulama açıkken ekranda banner çıkıyor mu? Verilmezse EVET (muhafız).
+     * Nafilenin ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra
+     * duyulur" notu yanlış olurdu.
+     */
+    onPlanBanneriVar?: boolean;
     /**
      * Pencerenin BUGUNKU giris ve cikis ANLARI.
      *
@@ -323,6 +391,44 @@ export const YON_SECENEKLERI: {
 export const GIRIS_SESLI_GECIKME_NOTU =
     'Uygulama açıkken sesli anons, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
 
+/**
+ * Bir adimin gorunumu (renk/ikon) — ton secilebilen pencerede adimin ETKIN
+ * tonundan (acil kisitina takilan adim sert gorunur, motorla ayni), aksi halde
+ * indeksten.
+ */
+export function adimBilgisiAl(
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'adimBilgileri' | 'yon'>,
+    seviye: SeviyeAyari,
+    indeks: number
+): AdimBilgisi {
+    if (tanim.tonSecilebilir) return SEVIYE_BILGILERI[etkinKademe(seviye, tanim.yon)];
+    return tanim.adimBilgileri[indeks] ?? tanim.adimBilgileri[0];
+}
+
+/** Adim basligi: ton secilebilen pencerede "2. hatırlatma", degilse adim adi. */
+export function adimBasligiOlustur(
+    tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'adimBilgileri' | 'yon'>,
+    seviye: SeviyeAyari,
+    indeks: number
+): string {
+    return tanim.tonSecilebilir ? `${indeks + 1}. hatırlatma` : adimBilgisiAl(tanim, seviye, indeks).baslik;
+}
+
+/** Ton notu (issue #274): hatirlatma bir oncekinden YUMUSAKSA ekranda kisa bilgi. */
+export const tonGeriNotuOlustur = (numara: number): string =>
+    `${numara}. hatırlatma bir öncekinden daha yumuşak. Bilerek seçtiyseniz sorun yok.`;
+
+/** Acil ton cipi devre disiyken altindaki aciklama. */
+export const acilTonKisitNotu = (yon: PencereYonu): string =>
+    yon === 'girisindenItibaren'
+        ? '“Vakit girer girmez” seçeneğinde acil ton kullanılmaz.'
+        : `Acil ton yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
+
+/** Ekleme sinirina ulasildiginda dugmenin yerine cikan metin. */
+export const adimSiniriNotu = (maksAdim: number): string =>
+    `Bir vakit için en fazla ${maksAdim} hatırlatma kurabilirsiniz.`;
+export const ADIM_SINIRI_NOTU = adimSiniriNotu(MUHAFIZ_MAKS_ADIM);
+
 /** Esik bolumu basligi (yon varsayilani). */
 export const esikBasligiOlustur = (yon: PencereYonu): string =>
     yon === 'girisindenItibaren' ? 'GİRİŞTEN NE KADAR SONRA' : 'KAÇ DK KALA';
@@ -362,13 +468,15 @@ export function vakitPencereTanimi(
         vakit,
         yon,
         yonSecilebilir: true,
-        maksAdim: 4,
+        maksAdim: MUHAFIZ_MAKS_ADIM,
+        tonSecilebilir: true,
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
         kanalSecimiVar: true,
         sesSecimiVar: yetenekler.sesSecici,
         anonsMetniDuzenlenebilir: yetenekler.serbestAnonsMetni,
         titresimSecilebilir: yetenekler.titresimSecimi,
+        alarmSecilebilir: true,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: TEKRAR_MIN_DK,
@@ -423,6 +531,44 @@ export function cumaPencereTanimi(secenekler: {
 }
 
 /**
+ * Yatış hatırlatması (issue #290) için pencere tanımı — cuma deseni.
+ *
+ * TEK ADIM, TEK ATIŞ, yön/kanal/ses/sıklık seçimi kapalı: ölçü daima kullanıcının
+ * yatış saatine kalan süredir ("yatıştan 30 dk önce"). Bildirim yatsı
+ * hatırlatmasıysa muhafızın taban kanalından, muhasebeyse vakit kanalından
+ * gider — yeni kanal ACILMAZ.
+ */
+export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; esikAdimDk: number }): PencereTanimi {
+    return {
+        kaynak: 'yatis',
+        baslik: 'Yatış hatırlatması',
+        baslikKucuk: 'yatış hatırlatması',
+        ikon: 'bed',
+        // Kimlik yatsıdır; anons kullanılmaz, değer tip sözleşmesini doldurur.
+        vakit: 'yatsi',
+        yon: 'cikisaDogru',
+        yonSecilebilir: false,
+        maksAdim: 1,
+        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bed', renk: SEVIYE_BILGILERI.nazik.renk }],
+        kanalSecimiVar: false,
+        sesSecimiVar: false,
+        siklikSecimiVar: false,
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
+        yetenekler: ANDROID_YETENEKLERI,
+        esikAdimDk: secenekler.esikAdimDk,
+        tekrarMinDk: TEKRAR_MIN_DK,
+        tekrarMaxDk: TEKRAR_MAX_DK,
+        varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
+        esikSinirlari: secenekler.esikSinirlari,
+        esikBasligi: 'NE KADAR ÖNCE',
+        esikAciklamasi: 'Yatış saatinize',
+        esikErisimAdi: 'Yatıştan kaç dk önce',
+        esikBirimi: 'dk kala',
+    };
+}
+
+/**
  * Yon degisiminden sonra CEVRILEMEYEN bir anons metni kaldi mi?
  *
  * `matrisIslemleri.yonDegisimindeMetniCevir` yalniz havuzdaki bir sablonla
@@ -441,4 +587,71 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
         if (metin.includes('{yön}')) return false;
         return !havuz.includes(metin);
     });
+}
+
+/**
+ * Nafile (kuşluk / evvâbîn / teheccüd) hatırlatması için pencere tanımı
+ * (issue #77, #273).
+ *
+ * Muhafızla AYNI dil: yön seçilir, en fazla 3 adım, her adımın eşiği/sıklığı
+ * (bir kez ya da 10–60 dk tekrar) ve kanalları (bildirim / sesli anons / ikisi
+ * + titreşim). Farklar: TON YOK (nafile davettir, ısrar değil), ses seçimi yok
+ * (kanal sesi), "Kapalı" çipi yok (kartın anahtarı kapatır), anons metni
+ * yazılmaz (bağlamdan üretilir — `anonsOrnegiOlustur`), ön plan banner'ı yok.
+ * `pencere` verilirse zaman şeridi bugünün penceresini çizer.
+ */
+export function nafilePencereTanimi(secenekler: {
+    kaynak: string;
+    baslik: string;
+    baslikKucuk: string;
+    ikon: string;
+    yon: PencereYonu;
+    adimSayisi: number;
+    pencere?: { baslangic: Date; bitis: Date };
+    yetenekler?: PlatformYetenekleri;
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+}): PencereTanimi {
+    const pencereUzunluguDk = secenekler.pencere
+        ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
+        : undefined;
+    const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const renk = SEVIYE_BILGILERI.nazik.renk;
+    // Tek adımda "Hatırlatma", birden çokta "N. hatırlatma" (prototip).
+    const adimBilgileri: AdimBilgisi[] =
+        secenekler.adimSayisi > 1
+            ? Array.from({ length: NAFILE_MAKS_ADIM }, (_, i) => ({
+                baslik: `${i + 1}. hatırlatma`,
+                ikon: 'bell',
+                renk,
+            }))
+            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
+    return {
+        kaynak: secenekler.kaynak,
+        baslik: secenekler.baslik,
+        baslikKucuk: secenekler.baslikKucuk,
+        ikon: secenekler.ikon,
+        // Metin cozumu icin bir vakit kimligi gerekir; nafile anonsu yer tutucu
+        // icermez, deger yalniz tip sozlesmesini doldurur.
+        vakit: 'ogle',
+        yon: secenekler.yon,
+        yonSecilebilir: true,
+        maksAdim: NAFILE_MAKS_ADIM,
+        tonSecilebilir: false,
+        pencereUzunluguDk,
+        adimBilgileri,
+        kanalSecimiVar: true,
+        sesSecimiVar: false,
+        siklikSecimiVar: true,
+        kapaliCipiVar: false,
+        onPlanBanneriVar: false,
+        anonsMetniDuzenlenebilir: false,
+        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        titresimSecilebilir: yetenekler.titresimSecimi,
+        yetenekler,
+        esikAdimDk: ESIK_ADIM_DK,
+        tekrarMinDk: NAFILE_TEKRAR_MIN_DK,
+        tekrarMaxDk: NAFILE_TEKRAR_MAX_DK,
+        varsayilanTekrarDk: NAFILE_VARSAYILAN_TEKRAR_DK,
+        pencere: secenekler.pencere,
+    };
 }

@@ -1,0 +1,13 @@
+{
+    "platforms": [
+        "ios"
+    ],
+    "ios": {
+        "modules": [
+            "ExpoSiriKisayollariModule"
+        ],
+        "appDelegateSubscribers": [
+            "SaatAppDelegateAboneligi"
+        ]
+    }
+}

@@ -21,7 +21,9 @@ import { NamazMuhafiziServisi } from '../NamazMuhafiziServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { SEYTANLA_MUCADELE_ICERIGI } from '../../../core/data/SeytanlaMucadeleIcerigi';
 import { kilinanVakitleriAl } from '../../../data/local/LocalNamazServisi';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import type { MuhafizMatrisi, MuhafizVakti, UyariKanallari } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../core/muhafiz/matrisTipleri';
 import { muhafizBildirimIdOlustur } from '../../../core/muhafiz/anonsKimligi';
@@ -206,6 +208,56 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
 
         expect(bildirimSpx).toHaveBeenCalled();
         expect(Vibration.vibrate).not.toHaveBeenCalled();
+    });
+
+    /**
+     * GERÇEK ALARM (issue #74) — ÇİFT SES KURALI. Adımın ilk tetiğinde sistem alarmı
+     * uygulama açıkken de çalar; ön plan o dakikada anons planlamaz, titretmez ve
+     * ekrana "ses çalma" der (dördüncü argüman). Tekrarlarda her şey eskisi gibi.
+     */
+    test('alarm anında ön plan ses/anons/titreşim ÜRETMEZ, banner sistemAlarmi=true ile çıkar', () => {
+        const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[0].kanallar = { bildirim: true, sesli: true, titresim: true, alarm: true };
+            matris[vakit].seviyeler[0].anonsMetni = '{vakit} vakti';
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 45 * 60 * 1000, // seviye 1'in eşik anı
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 1, VARSAYILAN_SES, true);
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        expect(Vibration.vibrate).not.toHaveBeenCalled();
+    });
+
+    test('alarmlı adımın TEKRARINDA (eşik anı değil) ön plan eskisi gibi konuşur', () => {
+        // Seviye 1: eşik 45, her 5 dk → 40 dk kala tekrar (seviye 2'nin eşiği 30 kapsamaz).
+        const matris = tekDuzeMatris([
+            { esikDk: 45, siklikDk: 5 },
+            { esikDk: 30, siklikDk: 10 },
+            { esikDk: 15, siklikDk: 5 },
+            { esikDk: 5, siklikDk: 1 },
+        ]);
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            matris[vakit].seviyeler[0].kanallar = { bildirim: true, sesli: true, titresim: true, alarm: true };
+            matris[vakit].seviyeler[0].anonsMetni = '{vakit} vakti';
+        }
+        muhafiz.yapilandir(matris);
+        mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+            vakit: 'ogle',
+            kalanSureMs: 40 * 60 * 1000,
+        });
+
+        muhafiz.baslat(bildirimSpx);
+
+        expect(bildirimSpx).toHaveBeenCalledWith(expect.any(String), 1, VARSAYILAN_SES);
+        expect(bildirimSpx.mock.calls[0]).toHaveLength(3);
+        expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        expect(Vibration.vibrate).toHaveBeenCalled();
     });
 
     test('Seviye 2 bildirimi (30 dk kala)', () => {
@@ -1091,6 +1143,209 @@ describe('NamazMuhafiziServisi Unit Testleri', () => {
             muhafiz.baslat(bildirimSpx);
             expect(bildirimSpx).toHaveBeenCalledTimes(1);
             expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+    });
+
+    // ── ÖZEL GÜN (issue #272) ───────────────────────────────────────────────
+    // Aralık aktifken ön planda banner, ses, titreşim ve sesli anons YOKTUR;
+    // açık bir banner varsa bir kez temizlenir.
+    /**
+     * ERTELE (issue #289) — ön plan muhafızı ertelemeyi BİLMELİ. Bilmezse uygulama
+     * açıkken (ya da ertelendikten sonra açılınca) banner + ses + titreşim sürer ve
+     * ön plan, native'in az önce iptal ettiği TTS anonsunu AYNI kimlikle yeniden
+     * kurar → "ertele çalışmıyor". Kaynak: bekleyen bildirimlerdeki ertelenen kopya.
+     */
+    describe('erteleme (#289)', () => {
+        const Notifications = require('expo-notifications');
+        const DK = 60 * 1000;
+        // Saati bugünün öğlesine sabitle: testler `Date.now() + 10 dk` kurar ve
+        // 23:50'de koşunca hedef ertesi güne taşar (gün anahtarı ayrışır, test düşer).
+        beforeEach(() => {
+            const ogle = new Date();
+            ogle.setHours(12, 0, 0, 0);
+            jest.setSystemTime(ogle);
+        });
+        const sesliTitresimliMatris = () => {
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[3] = {
+                ...matris.ogle.seviyeler[3],
+                kanallar: { bildirim: true, sesli: true, titresim: true },
+                anonsMetni: '{vakit} vakti çıkıyor.',
+            };
+            return matris;
+        };
+        const ertelemeKopyasi = (hedefMs: number, tarih = bugunuAl(), vakit = 'ogle') => ({
+            identifier: `muhafiz_${tarih}_vakit_${vakit}_ertele`,
+            content: { data: { ertelemeHedefMs: hedefMs } },
+        });
+
+        afterEach(() => {
+            Notifications.getAllScheduledNotificationsAsync.mockReset();
+        });
+
+        it('etkin erteleme varken banner, ses, titreşim ve anons ÜRETİLMEZ (açılış hidrasyonu)', async () => {
+            const simdi = Date.now();
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+            expect(Vibration.vibrate).not.toHaveBeenCalled();
+        });
+
+        it('erteleme hedefinden (+ çakışma payı) SONRA uyarılar aynen geri gelir', async () => {
+            const simdi = Date.now();
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 14 * DK });
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+
+            // Kopya tetiklendi → bekleyenlerden düştü. Hedef + 2 dk: kural artık susturmaz.
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
+            jest.setSystemTime(simdi + 12 * DK);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 2 * DK });
+            await muhafiz.ertelemeDurumunuYukle();
+
+            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.any(String), 4, expect.any(String));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+            expect(Vibration.vibrate).toHaveBeenCalled();
+        });
+
+        it('hedef dakikası çakışma payı içinde susar — kopya bekleyenlerden düşse bile (arka planla AYNI kural)', async () => {
+            const simdi = Date.now();
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(simdi + 10 * DK)]);
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 14 * DK });
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            // Hedef anı: kopya tetiklendi (listede yok) ama bu dakikanın uyarısı
+            // `ertelemedeSusturulurMu` ile susar → önbellek eski girdiyi korumalı.
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
+            jest.setSystemTime(simdi + 10 * DK);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
+            await muhafiz.ertelemeDurumunuYukle();
+
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+            expect(bildirimSpx).not.toHaveBeenCalledWith(expect.any(String), 4, expect.any(String));
+        });
+
+        it('erteleme SONRADAN kurulunca ("ertelendi" gözlemcisi) açık banner HEMEN kalkar', async () => {
+            const { ertelemeDegistiBildir } = require('../muhafizErtelemeDurumu');
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([]);
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 4 * DK });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.any(String), 4, expect.any(String));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([ertelemeKopyasi(Date.now() + 10 * DK)]);
+            ertelemeDegistiBildir();
+            // Gözlemci ateşle-unut: mikro görevleri boşalt (okuma zinciri birkaç adım).
+            await new Promise((r) => jest.requireActual('timers').setImmediate(r));
+
+            expect(bildirimSpx).toHaveBeenLastCalledWith('', 0);
+            jest.advanceTimersByTime(60 * 1000);
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(1);
+        });
+
+        it('başka vaktin ertelemesi bu vakti SUSTURMAZ', async () => {
+            Notifications.getAllScheduledNotificationsAsync.mockResolvedValue([
+                ertelemeKopyasi(Date.now() + 10 * DK, bugunuAl(), 'ikindi'),
+            ]);
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * DK });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
+        });
+    });
+
+    describe('özel gün kapısı', () => {
+        const ozelGunYaz = (bas: string, bit: string) =>
+            AsyncStorage.setItem(
+                DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+                JSON.stringify({
+                    ozelGunModuAktif: true,
+                    aktifOzelGun: { id: 'x', baslangicTarihi: bas, bitisTarihi: bit, olusturulmaTarihi: '' },
+                    gecmisKayitlar: [],
+                })
+            );
+        const sesliTitresimliMatris = () => {
+            const matris = tekDuzeMatris(VARSAYILAN_TANIM);
+            matris.ogle.seviyeler[0] = {
+                ...matris.ogle.seviyeler[0],
+                kanallar: { bildirim: true, sesli: true, titresim: true },
+                anonsMetni: '{vakit} vakti çıkıyor.',
+            };
+            return matris;
+        };
+
+        afterEach(async () => {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI);
+        });
+
+        it('açılışta diskten hydrate edilir: banner/anons/titreşim YOK, yalnız temizleme', async () => {
+            await ozelGunYaz(gunEkle(bugunuAl(), -1), gunEkle(bugunuAl(), 2));
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+            jest.advanceTimersByTime(60 * 1000);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+            expect(mockPlanlaAnons).not.toHaveBeenCalled();
+            expect(Vibration.vibrate).not.toHaveBeenCalled();
+        });
+
+        it('özel gün SONRADAN başlatılınca açık banner HEMEN kalkar', async () => {
+            muhafiz.yapilandir(sesliTitresimliMatris());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+            muhafiz.baslat(bildirimSpx);
+            expect(bildirimSpx).toHaveBeenLastCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
+
+            await ozelGunYaz(bugunuAl(), bugunuAl());
+            await muhafiz.ozelGunDurumunuYukle();
+
+            expect(bildirimSpx).toHaveBeenLastCalledWith('', 0);
+        });
+
+        it('aralık DÜN bittiyse bile gece yarısından sonraki yatsı DÜNE aittir → susar', async () => {
+            const gece = new Date();
+            gece.setHours(1, 0, 0, 0);
+            jest.setSystemTime(gece);
+            await ozelGunYaz(gunEkle(bugunuAl(), -3), dunuAl());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({
+                vakit: 'yatsi',
+                kalanSureMs: 5 * 60 * 1000,
+                saat: new Date(gece.getTime() + 5 * 60 * 1000),
+            });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledTimes(1);
+            expect(bildirimSpx).toHaveBeenCalledWith('', 0);
+        });
+
+        it('aralık bitince (yarından itibaren) uyarılar aynen geri gelir', async () => {
+            await ozelGunYaz(gunEkle(bugunuAl(), -5), dunuAl());
+            mockHesaplayici.getSuankiVakitBilgisi.mockReturnValue({ vakit: 'ogle', kalanSureMs: 45 * 60 * 1000 });
+
+            await muhafiz.acilistaKilinanlariYukle();
+            muhafiz.baslat(bildirimSpx);
+
+            expect(bildirimSpx).toHaveBeenCalledWith(expect.stringContaining('45 dakika'), 1, expect.any(String));
         });
     });
 });

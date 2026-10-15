@@ -1,0 +1,76 @@
+# ========================================================================
+# Wear OS saat uygulaması — derleme + birim test (issue #269)
+# ========================================================================
+#
+# `wear/` BAĞIMSIZ bir Gradle köküdür (android/ RN yapılandırmasına dahil değil).
+# Bu iş PR kontrolüdür; release KESMEZ. `ci.yml` `wear/**` değişikliklerini
+# yok sayar → saat commit'leri telefon için gereksiz EAS/Play release'i üretmez
+# (AGENTS.md "araç commit'leri de release keser" dersi).
+#
+# Play dağıtımı (wear:internal track) AYRI fazdır: saat AAB'si telefonla AYNI
+# upload anahtarıyla imzalanmalı; anahtar EAS'te yönetiliyor.
+# ========================================================================
+
+name: Wear OS
+
+on:
+  pull_request:
+    paths:
+      - 'wear/**'
+      - 'src/core/wear/**'
+      - '.github/workflows/wear-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wear-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wear:
+    name: ⌚ Saat uygulaması
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v7
+
+      - name: ☕ Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐘 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 🤖 Android SDK
+        uses: android-actions/setup-android@v4
+
+      # Sözleşme İKİ TARAFTA kilitli: JS doğrulayıcısı ve Kotlin YukCozucu aynı
+      # örnek dosyayı (wear/app/src/test/resources/ornek-yuk.json) kabul etmeli.
+      - name: 📦 Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıklar
+        run: npm ci
+
+      - name: 📜 Sözleşme testi (JS)
+        run: npx jest src/core/wear
+
+      - name: 🧪 Birim test + lint + derleme (saat)
+        working-directory: wear
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+
+      - name: 📤 Debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: namazakisi-wear-debug
+          path: wear/app/build/outputs/apk/debug/*.apk
+          retention-days: 14

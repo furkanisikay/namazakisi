@@ -1,0 +1,348 @@
+/**
+ * Takvim çakışması uyarısı PLANI — SAF (issue #291).
+ *
+ * `TakvimCakismaServisi` ve bildirim defteri (issue #298) AYNI üreticiyi
+ * kullanır: servise eklenecek her eleme kuralı BURAYA eklenir, yoksa rehber
+ * ekranı "sığıyor" derken cihaz keser.
+ *
+ * KARAR KURALI (tek cümle): **etkinlik bittiğinde vaktin çıkmasına
+ * `KILMA_PAYI_DK`'dan az kalıyorsa, etkinlik o vaktin sonunu yutar** ve kişi
+ * önceden uyarılır. Ayrıntılar:
+ *
+ *  1. Etkinlik süzgeci (`etkinlikleriSuz`): tüm gün etkinlikleri, "meşgul
+ *     değil" (availability `free`), "belki" (availability ya da status
+ *     `tentative` — yanıtlanmamış/kesinleşmemiş davetler; meşgul sayılınca
+ *     yanlış pozitif yağıyordu) ve iptal edilmiş (`canceled`) etkinlikler,
+ *     uygulamanın KENDİ yazdığı namaz etkinlikleri (`UYGULAMA_TAKVIM_NOTU`),
+ *     bozuk tarihliler ve `ETKINLIK_AZAMI_SURE_DK`'dan (8 sa) uzun olanlar
+ *     atlanır. Uzun blok çoğu zaman "mesai/izin" işaretidir; onu her gün öğle
+ *     ve ikindiyle çakıştırmak bildirimi gürültüye çevirirdi.
+ *  2. Bloklar: aralarında `KILMA_PAYI_DK`'dan kısa boşluk olan etkinlikler TEK
+ *     blok sayılır (14:00–15:30 + 15:35–17:30 → 14:00–17:30). Beş dakikalık
+ *     arada namaz kılınamaz; ayrı ayrı bakılsaydı art arda toplantılar hiçbir
+ *     zaman "çakışma" sayılmazdı.
+ *  3. Vaktin SON UYGUN ANI: çıkış. İkindide çıkış değil gurub kerahatinin
+ *     başlangıcı (`gurubKerahatiBaslangiciMs` — kaza ve erteleme ile TEK kaynak):
+ *     ikindiyi güneşin sararmasına bırakmak da bir kayıptır.
+ *  4. Çakışma: blok `sonAn − PAY`'den ÖNCE başlar ve `sonAn − PAY`'den SONRA
+ *     biter. Blok vaktin son dakikalarında başlıyorsa (sonAn − PAY sonrası)
+ *     kayıp önemsizdir → uyarı yok.
+ *  5. Tür:
+ *     - `once`: girişle blok arasında en az PAY dakika var → "etkinlik
+ *       başlamadan kıl". Bildirim `max(blok başı − öncedenDk, vakit girişi)`:
+ *       vakit girmeden "kıl" denmez.
+ *     - `kapliyor`: vakit girdiğinde blok zaten sürüyor (ya da PAY'den az sonra
+ *       başlıyor) → vakit tümden kaplanmış; "ara verip kılmayı planla".
+ *       Bildirim `min(blok başı, giriş) − öncedenDk`, ama vakit girişinden en
+ *       fazla `KAPLIYOR_AZAMI_ONCELIK_DK` (60) önce: blok vakitten saatler önce
+ *       başlıyorsa (09:00–16:25 toplantısı) öğle uyarısı sabah 08:30'a düşerdi.
+ *  6. Vakit başına (gün başına) en fazla BİR uyarı; bloklardan sonuncusu
+ *     (vaktin sonunu yutan) seçilir. Kılınmış vakit, özel gün (issue #272) ve
+ *     geçmiş tetikler atlanır.
+ *
+ * Kimlik `takvim_cakisma_<vaktin günü>_<vakit>` (yatsının günü girdiği gündür).
+ * Metin (`takvimCakismaMetniOlustur`) İBADETE ÇAĞRI kaydındadır ("sen" + emir
+ * kipi — AGENTS.md istisnası); ayar ekranı kibar "siz" kalır.
+ *
+ * SAF: `simdi` enjekte edilir; React/expo import ETMEZ.
+ */
+import { Coordinates, PrayerTimes } from 'adhan';
+import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
+import type { VakitAdi } from '../types';
+import type { BildirimPlatformu } from './butceSabitleri';
+import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
+import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
+import { gurubKerahatiBaslangiciMs } from '../muhafiz/erteleme';
+import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
+
+export type CakismaVakti = Exclude<VakitAdi, 'gunes'>;
+export const CAKISMA_VAKITLERI: readonly CakismaVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
+
+/** Bildirim id öneki — temizlik bu önekle SÜZER, başka sistemlere dokunmaz. */
+export const TAKVIM_CAKISMA_ID_ONEKI = 'takvim_cakisma_';
+
+/** Kaç gün ileri planlanır (bugün dahil) — iOS 64 bekleyen bildirim bütçesi. */
+export const TAKVIM_CAKISMA_PLAN_GUN_SAYISI: Record<BildirimPlatformu, number> = { android: 7, ios: 3 };
+
+/** Bir farz namaz için gereken en kısa boşluk (abdestli, kısa kıraat). */
+export const KILMA_PAYI_DK = 10;
+
+/**
+ * "Kaplıyor" uyarısı vakit girişinden en fazla bu kadar önce gelir (bkz. kural 5).
+ * Uyarının konusu o vakit; saatler önce gelen uyarı unutulur ve gürültüdür.
+ */
+export const KAPLIYOR_AZAMI_ONCELIK_DK = 60;
+
+/** Bundan uzun TEK etkinlik (mesai, izin bloğu) çakışma sayılmaz. */
+export const ETKINLIK_AZAMI_SURE_DK = 8 * 60;
+
+const DK = 60_000;
+
+/** expo-calendar `Event`'in kullandığımız alanları (core expo import etmez). */
+export interface HamTakvimEtkinligi {
+    startDate?: string | Date | null;
+    endDate?: string | Date | null;
+    allDay?: boolean | null;
+    /** expo `Availability`: 'busy' | 'free' | 'tentative' | 'unavailable' | 'notSupported' */
+    availability?: string | null;
+    /** expo `EventStatus`: 'none' | 'confirmed' | 'tentative' | 'canceled' */
+    status?: string | null;
+    title?: string | null;
+    notes?: string | null;
+}
+
+export interface TakvimEtkinligi {
+    baslangicMs: number;
+    bitisMs: number;
+    /** Kırpılmış ad; yoksa null. YALNIZ bellekte yaşar, diske/loga yazılmaz. */
+    baslik: string | null;
+}
+
+const BASLIK_AZAMI_UZUNLUK = 60;
+
+const zamanMs = (d: string | Date | null | undefined): number => {
+    if (d instanceof Date) return d.getTime();
+    if (typeof d === 'string' && d.length > 0) return Date.parse(d);
+    return Number.NaN;
+};
+
+/** Ham etkinlikleri kurala göre süzer ve sıralar (bkz. dosya başı, kural 1). */
+export function etkinlikleriSuz(hamlar: readonly HamTakvimEtkinligi[]): TakvimEtkinligi[] {
+    const sonuc: TakvimEtkinligi[] = [];
+    const gorulen = new Set<string>();
+    for (const e of hamlar) {
+        if (!e || e.allDay === true) continue;
+        if (e.availability === 'free') continue;
+        // "Belki": kesinleşmemiş davet — meşgul sayılırsa her yanıtlanmamış davet uyarı üretir.
+        if (e.availability === 'tentative' || e.status === 'tentative') continue;
+        if (e.status === 'canceled') continue;
+        if (typeof e.notes === 'string' && e.notes.includes(UYGULAMA_TAKVIM_NOTU)) continue;
+        const baslangicMs = zamanMs(e.startDate);
+        const bitisMs = zamanMs(e.endDate);
+        if (!Number.isFinite(baslangicMs) || !Number.isFinite(bitisMs) || bitisMs <= baslangicMs) continue;
+        if (bitisMs - baslangicMs > ETKINLIK_AZAMI_SURE_DK * DK) continue;
+        const kirpilmis = typeof e.title === 'string' ? e.title.trim().slice(0, BASLIK_AZAMI_UZUNLUK) : '';
+        const baslik = kirpilmis.length > 0 ? kirpilmis : null;
+        // Aynı etkinlik iki takvimde (davetli + kendi kopyası) görünebilir.
+        const anahtar = `${baslangicMs}|${bitisMs}|${baslik ?? ''}`;
+        if (gorulen.has(anahtar)) continue;
+        gorulen.add(anahtar);
+        sonuc.push({ baslangicMs, bitisMs, baslik });
+    }
+    return sonuc.sort((a, b) => a.baslangicMs - b.baslangicMs || a.bitisMs - b.bitisMs);
+}
+
+export interface MesgulBlok {
+    baslangicMs: number;
+    bitisMs: number;
+    etkinlikler: TakvimEtkinligi[];
+}
+
+/** Arası `KILMA_PAYI_DK`'dan kısa etkinlikleri tek bloğa birleştirir (kural 2). */
+export function mesgulBloklariOlustur(etkinlikler: readonly TakvimEtkinligi[]): MesgulBlok[] {
+    const sirali = [...etkinlikler].sort((a, b) => a.baslangicMs - b.baslangicMs);
+    const bloklar: MesgulBlok[] = [];
+    for (const e of sirali) {
+        const son = bloklar[bloklar.length - 1];
+        if (son && e.baslangicMs - son.bitisMs < KILMA_PAYI_DK * DK) {
+            son.bitisMs = Math.max(son.bitisMs, e.bitisMs);
+            son.etkinlikler.push(e);
+        } else {
+            bloklar.push({ baslangicMs: e.baslangicMs, bitisMs: e.bitisMs, etkinlikler: [e] });
+        }
+    }
+    return bloklar;
+}
+
+export interface VakitAraligi {
+    girisMs: number;
+    /** Vaktin son uygun anı (ikindide gurub kerahati başı). */
+    sonAnMs: number;
+}
+
+export type CakismaTuru = 'once' | 'kapliyor';
+
+export interface CakismaKarari {
+    tur: CakismaTuru;
+    blok: MesgulBlok;
+}
+
+/**
+ * Tek vakit için karar (kural 4–6). Saf ve zamandan bağımsız: tetik anını
+ * çağıran hesaplar. Çakışma yoksa `null`.
+ */
+export function vakitCakismasiniBul(vakit: VakitAraligi, bloklar: readonly MesgulBlok[]): CakismaKarari | null {
+    const pay = KILMA_PAYI_DK * DK;
+    const kritik = vakit.sonAnMs - pay;
+    if (kritik <= vakit.girisMs) return null;
+    let onceki: MesgulBlok | null = null;
+    for (const blok of bloklar) {
+        if (blok.baslangicMs < kritik && blok.bitisMs > kritik) {
+            const serbestBas = Math.max(vakit.girisMs, onceki ? onceki.bitisMs : Number.NEGATIVE_INFINITY);
+            const tur: CakismaTuru = blok.baslangicMs - serbestBas >= pay ? 'once' : 'kapliyor';
+            return { tur, blok };
+        }
+        if (blok.baslangicMs >= kritik) break;
+        onceki = blok;
+    }
+    return null;
+}
+
+export interface TakvimCakismaPlanKaydi {
+    id: string;
+    vakit: CakismaVakti;
+    /** Vaktin ait olduğu gün (YYYY-MM-DD). */
+    tarih: string;
+    tur: CakismaTuru;
+    /** Bildirim anı. */
+    zaman: Date;
+    girisMs: number;
+    sonAnMs: number;
+    blokBaslangicMs: number;
+    blokBitisMs: number;
+    etkinlikSayisi: number;
+    /** Tek etkinlik varsa adı (yalnız `baslikGoster` iken METNE girer). */
+    tekBaslik: string | null;
+}
+
+export interface TakvimCakismaPlanGirdisi {
+    koordinat: { lat: number; lng: number };
+    ayarlar: Pick<TakvimCakismaAyarlari, 'aktif' | 'oncedenDk'>;
+    simdi: Date;
+    gunSayisi: number;
+    etkinlikler: readonly TakvimEtkinligi[];
+    /** Gün (YYYY-MM-DD) → kılınmış vakitler. */
+    kilinanlar?: (tarih: string) => readonly VakitAdi[];
+    /** Özel gün kapısı — `true` dönen günün hiçbir uyarısı kurulmaz. */
+    gunAtlanirMi?: (tarih: string) => boolean;
+}
+
+const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVakti, VakitAraligi> | null => {
+    const params = turkiyeHesapParametreleri();
+    const pt = new PrayerTimes(coordinates, gun, params);
+    const yarin = new PrayerTimes(coordinates, new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1), params);
+    const zamanlar = [pt.fajr, pt.sunrise, pt.dhuhr, pt.asr, pt.maghrib, pt.isha, yarin.fajr];
+    if (zamanlar.some((z) => !(z instanceof Date) || !Number.isFinite(z.getTime()))) return null;
+    return {
+        imsak: { girisMs: pt.fajr.getTime(), sonAnMs: pt.sunrise.getTime() },
+        ogle: { girisMs: pt.dhuhr.getTime(), sonAnMs: pt.asr.getTime() },
+        ikindi: { girisMs: pt.asr.getTime(), sonAnMs: gurubKerahatiBaslangiciMs(pt.maghrib.getTime()) },
+        aksam: { girisMs: pt.maghrib.getTime(), sonAnMs: pt.isha.getTime() },
+        yatsi: { girisMs: pt.isha.getTime(), sonAnMs: yarin.fajr.getTime() },
+    };
+};
+
+/**
+ * Önümüzdeki `gunSayisi` günün uyarıları (kronolojik). Plan DÜNDEN başlar:
+ * gece yarısından sonra dünün yatsısı hâlâ sürüyordur.
+ */
+export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCakismaPlanKaydi[] {
+    if (!g.ayarlar.aktif || g.etkinlikler.length === 0) return [];
+    const bloklar = mesgulBloklariOlustur(g.etkinlikler);
+    const coordinates = new Coordinates(g.koordinat.lat, g.koordinat.lng);
+    const oncedenMs = Math.max(0, g.ayarlar.oncedenDk) * DK;
+    const simdiMs = g.simdi.getTime();
+    const gunAtlanirMi = g.gunAtlanirMi ?? (() => false);
+    const plan: TakvimCakismaPlanKaydi[] = [];
+
+    for (let i = -1; i < g.gunSayisi; i++) {
+        // YEREL gün aritmetiği (ISO parse UTC tuzağı).
+        const gun = new Date(g.simdi.getFullYear(), g.simdi.getMonth(), g.simdi.getDate() + i);
+        const tarih = tarihiISOFormatinaCevir(gun);
+        if (gunAtlanirMi(tarih)) continue;
+        const araliklar = vakitAraliklari(gun, coordinates);
+        if (!araliklar) continue;
+        const kilinan = g.kilinanlar?.(tarih) ?? [];
+        for (const vakit of CAKISMA_VAKITLERI) {
+            if (kilinan.includes(vakit)) continue;
+            const aralik = araliklar[vakit];
+            const karar = vakitCakismasiniBul(aralik, bloklar);
+            if (!karar) continue;
+            const { blok, tur } = karar;
+            const zamanMs =
+                tur === 'once'
+                    ? Math.max(blok.baslangicMs - oncedenMs, aralik.girisMs)
+                    : Math.max(
+                        Math.min(blok.baslangicMs, aralik.girisMs) - oncedenMs,
+                        aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK
+                    );
+            if (zamanMs <= simdiMs) continue;
+            plan.push({
+                id: `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`,
+                vakit,
+                tarih,
+                tur,
+                zaman: new Date(zamanMs),
+                girisMs: aralik.girisMs,
+                sonAnMs: aralik.sonAnMs,
+                blokBaslangicMs: blok.baslangicMs,
+                blokBitisMs: blok.bitisMs,
+                etkinlikSayisi: blok.etkinlikler.length,
+                tekBaslik: blok.etkinlikler.length === 1 ? blok.etkinlikler[0].baslik : null,
+            });
+        }
+    }
+    return plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
+}
+
+/** Bu servisin bildirim kimliği mi? */
+export const takvimCakismaKimligiMi = (kimlik: string): boolean => kimlik.startsWith(TAKVIM_CAKISMA_ID_ONEKI);
+
+/** Kılınan bir vaktin uyarı kimliği (kılınma anında iptal için). */
+export const takvimCakismaKimligi = (tarih: string, vakit: CakismaVakti): string =>
+    `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`;
+
+const VAKIT_KUCUK: Record<CakismaVakti, string> = {
+    imsak: 'sabah',
+    ogle: 'öğle',
+    ikindi: 'ikindi',
+    aksam: 'akşam',
+    yatsi: 'yatsı',
+};
+
+const saat = (ms: number): string => {
+    const t = new Date(ms);
+    return `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
+};
+
+/**
+ * Bildirim metni. Saate HAL EKİ eklenmez (AGENTS.md: "04:26'da" okunuşa göre
+ * değişir) → "çıkışı 17:12" gibi isim tamlaması kullanılır. Başlık önden
+ * okunur (issue #287): vakit adı önde, bileklik ilk ~16 karakteri gösterir.
+ * Etkinlik adı YALNIZ `baslikGoster` açıkken ve blokta tek etkinlik varken yazılır.
+ */
+export function takvimCakismaMetniOlustur(
+    kayit: Pick<
+        TakvimCakismaPlanKaydi,
+        'vakit' | 'tur' | 'girisMs' | 'sonAnMs' | 'blokBaslangicMs' | 'blokBitisMs' | 'etkinlikSayisi' | 'tekBaslik'
+    >,
+    ayarlar: Pick<TakvimCakismaAyarlari, 'baslikGoster'>
+): { baslik: string; govde: string } {
+    const ad = VAKIT_ADLARI[kayit.vakit];
+    const kucuk = VAKIT_KUCUK[kayit.vakit];
+    const aralik = `${saat(kayit.blokBaslangicMs)}–${saat(kayit.blokBitisMs)}`;
+    const etkinlik =
+        ayarlar.baslikGoster && kayit.etkinlikSayisi === 1 && kayit.tekBaslik
+            ? `“${kayit.tekBaslik}”`
+            : kayit.etkinlikSayisi > 1
+                ? `Takvimindeki ${kayit.etkinlikSayisi} etkinlik art arda`
+                : 'Takvimindeki bir etkinlik';
+
+    if (kayit.tur === 'once') {
+        const sonAn =
+            kayit.vakit === 'ikindi'
+                ? `ikindi için son uygun an ${saat(kayit.sonAnMs)} (sonrası kerahat)`
+                : `${kucuk} vaktinin çıkışı ${saat(kayit.sonAnMs)}`;
+        return {
+            baslik: `${ad} · etkinlik ${saat(kayit.blokBaslangicMs)} · önce kıl`,
+            govde: `${etkinlik} ${aralik} arası sürüyor; ${sonAn}. Etkinlik başlamadan ${kucuk} namazını kıl.`,
+        };
+    }
+    return {
+        baslik: `${ad} · etkinlik vakti kaplıyor`,
+        govde:
+            `${etkinlik} ${aralik} arası sürüyor ve ${kucuk} vaktini ` +
+            `(${saat(kayit.girisMs)}–${saat(kayit.sonAnMs)}) kaplıyor. ` +
+            `Kısa bir ara verip ${kucuk} namazını kılmayı şimdiden planla.`,
+    };
+}

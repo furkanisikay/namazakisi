@@ -23,39 +23,43 @@
  * Zaman ve dis dunya PARAMETREDIR.
  */
 
-/** iOS'un uygulama basina bekleyen yerel bildirim tavani. */
-export const IOS_BEKLEYEN_TAVANI = 64;
+import { IOS_BEKLEYEN_TAVANI, IOS_GUVENLIK_PAYI, IOS_YEDEK_REZERVI } from '../../bildirim/butceSabitleri';
 
 /**
- * Guvenlik payi.
- *
- * Muhafiz disindaki tuketiciler (vakit bildirimleri, cuma) planlamayi bizden
- * SONRA da yapabilir; tavani tam doldurursak onlarin bildirimleri sessizce
- * dusuruluyor olurdu. Pay, yarisi bize degil onlara birakir.
+ * iOS'un uygulama basina bekleyen yerel bildirim tavani ve guvenlik payi —
+ * TEK KAYNAK `core/bildirim/butceSabitleri.ts` (rehber ekrani da oradan okur).
  */
-export const IOS_GUVENLIK_PAYI = 4;
+export { IOS_BEKLEYEN_TAVANI, IOS_GUVENLIK_PAYI, IOS_YEDEK_REZERVI };
 
 /**
- * iOS'ta kac gun ileri planlanmali? — ⚠️ HENUZ BAGLI DEGIL (Faz 1 kapsam disi).
+ * Plan ufku: BUGUN + (yalniz butce artigi olarak) YARININ IMSAGI.
  *
- * HEDEF: Android 1 gun planlar cunku arka plan gorevi (15 dk) ve exact alarm
- * zinciri plani guvenilir sekilde tazeler. iOS'ta ikisi de yok:
- * `BGTaskScheduler` firsatcidir, hic kosmayabilir. Tek guvenilir tazeleme ani
- * uygulamanin ON PLANA GELISIDIR → kullanici uygulamayi bir gun hic acmazsa
- * plan tukenmesin diye pencerenin 2 gune cikmasi gerekir.
- *
- * BUGUNKU DURUM: `ArkaplanMuhafizServisi.bugunVakitleriniHesapla()` gun sayisi
- * parametresi ALMIYOR; iOS'ta plan da Android gibi YALNIZ BUGUNU kapsiyor.
- * Yani bu sabit su an hicbir yerden okunmuyor. Bilinen bedel: kullanici
- * uygulamayi bir gun hic acmazsa ertesi gun muhafiz bildirimi gelmez.
- *
- * BAGLARKEN DIKKAT: gun sayisi 1'den buyuk olunca (a) yarinin vakitleri icin
- * `kilinan` listesi bos kabul edilmeli, (b) bildirim id'leri vakit TARIHINI
- * tasidigi icin cakisma olmaz ama iptal zinciri iki gunu de taramali,
- * (c) teslim sirasi gun-gun uretilirse artik kronolojik OLMAZ → butce
- * `butceyeSigdir` ile toplu uygulanmali (bkz. `IosMuhafizTeslimcisi` on kosulu).
+ * iOS'ta guvenilir arka plan tazelemesi yok (`BGTaskScheduler` firsatcidir); tek
+ * guvenilir an uygulamanin on plana gelisidir. Aksam uygulamayi acip sabaha kadar
+ * acmayan kullanicinin imsak uyarisi bu yuzden yarinin imsagindan gelir — ama 64
+ * siniri bugunle PAYLASILDIGI icin o vakit yalniz kalan slota girer
+ * (`muhafizTeslimPlani.yarininImsagiKipi`, `yedekKapasitesiHesapla`). Iki gunluk tam
+ * plan (eski `IOS_PLAN_GUN_SAYISI = 2` hedefi) bilincli olarak KURULMADI: yogun
+ * kurulumu kalici asima iter ve rehberin onerileri bunu geri alamaz.
  */
-export const IOS_PLAN_GUN_SAYISI = 2;
+
+/**
+ * Bugunun plani `bugunMuhafiz` bildirim kullaniyorken yarinin imsagina (butce artigi)
+ * kac bildirim kalir? Teslimcinin sayacinin (`yedekSigarMi`) kapali formu — bildirim
+ * defteri ayni sayiyi buradan alir.
+ *
+ * @param slot `kullanilabilirSlotHesapla` sonucu (muhafiza kalan slot).
+ */
+export function yedekKapasitesiHesapla(slot: number, bugunMuhafiz: number): number {
+    return Math.max(0, slot - Math.max(0, bugunMuhafiz) - IOS_YEDEK_REZERVI);
+}
+
+/**
+ * Teslim aninda: kalan slotla bir butce artigi bildirimi daha kurulabilir mi?
+ * Bugunun plani once tuketir (cagrilar kronolojik), artik `IOS_YEDEK_REZERVI`
+ * kadar slotu daima bos birakir.
+ */
+export const yedekSigarMi = (kalanSlot: number): boolean => kalanSlot > IOS_YEDEK_REZERVI;
 
 /** Butceye girecek asgari teslim sekli. */
 export interface ButceAdayi {

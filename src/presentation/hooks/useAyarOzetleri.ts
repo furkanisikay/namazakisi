@@ -26,12 +26,14 @@ import {
   bildirimOzeti,
   seriOzeti,
   ramazanOzeti,
+  nafileOzeti,
   gorunumOzeti,
   yedeklemeOzeti,
   hakkindaOzeti,
 } from '../../core/ayarlar/ozetler';
 import { kurulumSagligi, type Sorun } from '../../core/ayarlar/kurulumSagligi';
 import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
+import type { SistemDurumu } from './useSistemDurumu';
 
 export interface AyarOzetleri {
   konum: string;
@@ -40,6 +42,7 @@ export interface AyarOzetleri {
   bildirim: string;
   seri: string;
   ramazan: string;
+  nafile: string;
   gorunum: string;
   yedekleme: string;
   hakkinda: string;
@@ -55,7 +58,10 @@ const ASYNC_VARSAYILAN: AsyncOzetVerisi = {
   sonDisaAktarmaISO: null,
 };
 
-export function useAyarOzetleri(): {
+/**
+ * @param sistem Pil/tam alarm durumu (`useSistemDurumu`); verilmezse o kontroller yapılmaz.
+ */
+export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>): {
   ozetler: AyarOzetleri;
   sorunlar: Sorun[];
   saglikOzetSatiri: string;
@@ -71,6 +77,7 @@ export function useAyarOzetleri(): {
   const seriAyarlari = useAppSelector((s) => s.seri.ayarlar);
   const iftarAktif = useAppSelector((s) => s.iftarSayac.ayarlar.aktif);
   const sahurAktif = useAppSelector((s) => s.sahurSayac.ayarlar.aktif);
+  const nafileAyarlari = useAppSelector((s) => s.nafile.ayarlar);
   const takvimAktif = useAppSelector((s) => s.takvim.ayarlar.aktif);
   const guncellemeMevcut = useAppSelector((s) => s.guncelleme.guncellemeMevcut);
 
@@ -130,6 +137,8 @@ export function useAyarOzetleri(): {
     akilliTakipAktif: konum.akilliTakipAktif,
     muhafizAktif,
     acikVakitBildirimSayisi,
+    pil: sistem?.pil,
+    tamAlarm: sistem?.tamAlarm,
     simdi,
   });
 
@@ -140,6 +149,12 @@ export function useAyarOzetleri(): {
     bildirim: bildirimOzeti(acikVakitBildirimSayisi, cumaAktif),
     seri: seriOzeti(seriAyarlari),
     ramazan: ramazanOzeti(iftarAktif, sahurAktif),
+    nafile: nafileOzeti({
+      kusluk: nafileAyarlari.hatirlatmalar.kusluk.aktif,
+      evvabin: nafileAyarlari.hatirlatmalar.evvabin.aktif,
+      teheccud: nafileAyarlari.teheccud.aktif,
+      gosterge: nafileAyarlari.gostergeAktif,
+    }),
     gorunum: gorunumOzeti(tema.mod, palet.ad),
     yedekleme: yedeklemeOzeti(asyncVeri.sonDisaAktarmaISO, simdi),
     hakkinda: hakkindaOzeti(UYGULAMA.VERSIYON, guncellemeMevcut),

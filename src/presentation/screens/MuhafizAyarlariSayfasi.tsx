@@ -3,7 +3,7 @@
  *
  * Üç katmanlı progressive disclosure (spec 2026-07-17-muhafiz-ekrani-ve-sesli-uyari):
  *   Katman 1 — ana switch + yoğunluk preset'i + 5 vakit satırı (dinamik özet)
- *   Katman 2 — vakit açılınca o vaktin 4 adımı + "Tüm vakitlere uygula"
+ *   Katman 2 — vakit açılınca o vaktin 1..6 hatırlatması (ekle/sil) + "Tüm vakitlere uygula"
  *   Katman 3 — adıma dokununca detay (kanallar / eşik / sıklık / ses / anons metni)
  *
  * Yazma yolu: matris `matrisiGuncelle` ile yazılır. Eski `esikler`/`sikliklar`
@@ -39,6 +39,7 @@ import {
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
 import { seviyeyiAc, seviyeyiKapat } from '../../core/muhafiz/seviyeAcKapa';
+import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import {
@@ -63,6 +64,25 @@ import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { nafileAyariniGuncelle } from '../store/nafileSlice';
+import type { HatirlatmaYogunlugu } from '../store/muhafizSlice';
+import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
+import { useBildirimButcesi } from '../hooks/useBildirimButcesi';
+import { useButceRehberi } from '../hooks/useButceRehberi';
+import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
+import type { DefterGirdisi } from '../../core/bildirim/bildirimDefteri';
+
+/**
+ * Bildirim sınırı rehberinin geri alma yedeği (Fable: `butceYedegi`). Öneri
+ * matrisi, yoğunluğu (zamanlama değişince 'ozel'e döner), özel yedeği
+ * (`matrisiYaz` onu da ezer) ve nafile ufkunu değiştirebilir — hepsi geri gelir.
+ */
+interface ButceYedegi {
+    matris: MuhafizMatrisi;
+    yogunluk: HatirlatmaYogunlugu;
+    ozelMatrisYedegi?: MuhafizMatrisi;
+    nafileGunuGunune: boolean;
+}
 
 type PresetYogunlugu = 'hafif' | 'normal' | 'yogun';
 
@@ -105,6 +125,13 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const [sesliOnayi, setSesliOnayi] = useState<PresetYogunlugu | null>(null);
     const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
     const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
+    /** Adım detayı açılırken matris + yoğunluk (kapanışta sığma simülasyonu için). */
+    const detayOncesiRef = useRef<{
+        matris: MuhafizMatrisi;
+        yogunluk: HatirlatmaYogunlugu;
+        ozelMatrisYedegi?: MuhafizMatrisi;
+    } | null>(null);
+    const nafileAyarlari = useAppSelector((state) => state.nafile?.ayarlar) as NafileAyarlari | undefined;
 
     // Faz 5: cihazda Türkçe konuşma paketi yoksa sesli modlarda kibar uyarı
     // gösterilir (engelleme YOK — ayar yine kaydedilir).
@@ -272,6 +299,39 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         [dispatch, matris, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]
     );
 
+    /**
+     * BİLDİRİM SINIRI REHBERİ (issue #298). Sayı gerçek plan üreticilerinin
+     * kuru çalışmasından gelir; öneriler tek dokunuşla uygulanır ve geri alınır.
+     */
+    const butce = useBildirimButcesi();
+    const rehber = useButceRehberi<ButceYedegi>(butce, {
+        yaz: (hedef: DefterGirdisi) => {
+            const hedefMatris = hedef.muhafiz?.matris;
+            if (hedefMatris && hedefMatris !== matris) matrisiYaz(hedefMatris);
+            const hedefGunuGunune = hedef.nafile?.gunuGununeKur === true;
+            if (nafileAyarlari && hedefGunuGunune !== (nafileAyarlari.gunuGununeKur === true)) {
+                dispatch(nafileAyariniGuncelle({ gunuGununeKur: hedefGunuGunune }));
+            }
+        },
+        yedekAl: () => ({
+            matris,
+            yogunluk: muhafizAyarlari.yogunluk,
+            ozelMatrisYedegi: muhafizAyarlari.ozelMatrisYedegi,
+            nafileGunuGunune: nafileAyarlari?.gunuGununeKur === true,
+        }),
+        geriYukle: (yedek) => {
+            dispatch(matrisiGuncelle(yedek.matris));
+            dispatch(muhafizAyarlariniGuncelle({ yogunluk: yedek.yogunluk }));
+            // KOŞULSUZ: yedek yoksa açıkça temizlenir (öneri `matrisiYaz` ile yedek
+            // yazmış olabilir; buradaki kapanış o yazımı görmeyecek kadar bayat olabilir).
+            dispatch(ozelMatrisYedegiGuncelle(yedek.ozelMatrisYedegi));
+            if (nafileAyarlari && yedek.nafileGunuGunune !== (nafileAyarlari.gunuGununeKur === true)) {
+                dispatch(nafileAyariniGuncelle({ gunuGununeKur: yedek.nafileGunuGunune }));
+            }
+            planlamayiKuyrugaAl();
+        },
+    });
+
     const seviyeGuncelle = useCallback(
         (vakit: MuhafizVakti, indeks: number, yeniSeviye: SeviyeAyari) => {
             matrisiYaz({
@@ -353,15 +413,93 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         [dispatch, matris, yonDegisiminiHesapla, planlamayiKuyrugaAl]
     );
 
+    /**
+     * Hatırlatma ekle / sil (issue #274). İkisi de `matrisiYaz`'dan geçer:
+     * adım sayısı değişimi ZAMANLAMA değişikliğidir (`zamanlamaDegistiMi`) →
+     * yoğunluk 'ozel' olur, özel yedek yazılır, plan debounce'la tazelenir.
+     */
+    const adimEkleVakte = useCallback(
+        (vakit: MuhafizVakti) => {
+            const yeni = adimEkle(matris[vakit], vakitPencereleri[vakit]);
+            if (yeni === matris[vakit]) return; // sınırda — eklenecek yer yok
+            const yeniMatris = { ...matris, [vakit]: yeni };
+            // EKLEME ANINDA SİMÜLASYON (issue #298): sığmayacak hatırlatma
+            // EKLENMEZ — rehber nedenini ve yer açma yollarını gösterir.
+            if (!rehber.degisikligiDene({ matris: yeniMatris })) return;
+            matrisiYaz(yeniMatris);
+        },
+        [matris, matrisiYaz, vakitPencereleri, rehber]
+    );
+
+    /** Adım detayını aç — kapanışta sığma simülasyonu için önceki hâli sakla. */
+    const detayiAc = useCallback(
+        (vakit: MuhafizVakti, indeks: number) => {
+            detayOncesiRef.current = {
+                matris,
+                yogunluk: muhafizAyarlari.yogunluk,
+                ozelMatrisYedegi: muhafizAyarlari.ozelMatrisYedegi,
+            };
+            setDetay({ vakit, indeks });
+        },
+        [matris, muhafizAyarlari.yogunluk, muhafizAyarlari.ozelMatrisYedegi]
+    );
+
+    /**
+     * Detay kapanışı = planlama anı. Modalda yapılan değişiklik (ör. tekrarı
+     * sıklaştırmak) sınırı aşırıyorsa geri alınır ve rehber açılır; öneriyle
+     * yer açılınca değişiklik öneriyle birlikte yazılır.
+     */
+    const detayiKapat = useCallback(() => {
+        const once = detayOncesiRef.current;
+        detayOncesiRef.current = null;
+        setDetay(null);
+        if (!once || once.matris === matris) return;
+        const sigdi = rehber.degisikligiDene(
+            { matris },
+            { once: { matris: once.matris }, baslik: 'Bu değişiklik sığmıyor' }
+        );
+        if (sigdi) return;
+        dispatch(matrisiGuncelle(once.matris));
+        // `matrisiYaz` her dokunuşta özel yedeği de yazdı — reddedilen değişiklik orada kalmasın.
+        // Koşulsuz: önceden yedek yoksa açıkça temizlenir.
+        dispatch(ozelMatrisYedegiGuncelle(once.ozelMatrisYedegi));
+        if (once.yogunluk !== muhafizAyarlari.yogunluk) {
+            dispatch(muhafizAyarlariniGuncelle({ yogunluk: once.yogunluk }));
+        }
+        planlamayiKuyrugaAl();
+    }, [matris, rehber, dispatch, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]);
+
+    const adimSilVakitten = useCallback(
+        (vakit: MuhafizVakti, indeks: number) => {
+            const yeni = adimSil(matris[vakit], indeks);
+            detayOncesiRef.current = null;
+            setDetay(null);
+            if (yeni === matris[vakit]) return; // son hatırlatma silinmez
+            matrisiYaz({ ...matris, [vakit]: yeni });
+        },
+        [matris, matrisiYaz]
+    );
+
     const seviyeAcKapa = useCallback(
         (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
             const mevcut = matris[vakit].seviyeler[indeks];
             // Geri açılan adımın BOŞ anons kutusu yön-uygun şablonla dolar.
             const yeni = acik ? seviyeyiAc(mevcut, matris[vakit].yon) : seviyeyiKapat(mevcut);
             if (yeni === mevcut) return; // Zaten istenen durumda — gereksiz yazma yok.
+            // Adımı AÇMAK da hatırlatma eklemektir → aynı sığma simülasyonu (issue #298).
+            if (acik) {
+                const yeniMatris = {
+                    ...matris,
+                    [vakit]: {
+                        ...matris[vakit],
+                        seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeni : s)),
+                    },
+                };
+                if (!rehber.degisikligiDene({ matris: yeniMatris })) return;
+            }
             seviyeGuncelle(vakit, indeks, yeni);
         },
-        [matris, seviyeGuncelle]
+        [matris, seviyeGuncelle, rehber]
     );
 
     /**
@@ -446,8 +584,10 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     /** Onay modalındaki örnek okunuş — seçilen preset'in sesli adımının eşiğiyle. */
     const sesliOrnekMetni = useMemo(() => {
         if (!sesliOnayi) return '';
-        const acil = HATIRLATMA_PRESETLERI[sesliOnayi].seviyeler.acil;
-        return anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', acil.esikDk);
+        const adimlar = HATIRLATMA_PRESETLERI[sesliOnayi].seviyeler;
+        // Örnek, preset'in SESLİ ilk adımının eşiğiyle (yoksa son adım).
+        const sesliAdim = adimlar.find((a) => a.kanallar.sesli) ?? adimlar[adimlar.length - 1];
+        return anonsMetniniCoz(ANONS_SABLONLARI[0], 'ogle', sesliAdim.esikDk);
     }, [sesliOnayi]);
 
     /** "Özel" seçeneğine dönüş: yedeklenen matrisi geri yükler (onay istemez — veri kaybı yok). */
@@ -546,6 +686,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         </Text>
                     </View>
                 )}
+
+                {/* ── BİLDİRİM SINIRI (issue #298) — üstte tek kart ── */}
+                <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />
 
                 {muhafizAyarlari.aktif && (
                     <>
@@ -732,8 +875,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                 ayar={matris[vakit]}
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
-                                onAdimSec={(indeks) => setDetay({ vakit, indeks })}
+                                onAdimSec={(indeks) => detayiAc(vakit, indeks)}
                                 onAdimAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
+                                onAdimEkle={() => adimEkleVakte(vakit)}
                                 onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
                                 onAkisiOnizle={() => setOnizleme(vakit)}
                                 onYonDegistir={(yon) => yonDegistir(vakit, yon)}
@@ -771,7 +915,15 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     indeks={detay.indeks}
                     ttsDestekli={ttsDestekli}
                     onDegistir={(yeniSeviye) => seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye)}
-                    onKapat={() => setDetay(null)}
+                    onKapat={detayiKapat}
+                    onSil={
+                        adimSilinebilirMi(matris[detay.vakit])
+                            ? () => adimSilVakitten(detay.vakit, detay.indeks)
+                            : undefined
+                    }
+                    // Gerçek alarm rızası (issue #74) — yalnız onay modalında yazılır.
+                    alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
+                    onAlarmOnayiVer={() => dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }))}
                 />
             )}
 
@@ -830,6 +982,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                     onIptal={() => setSesliOnayi(null)}
                 />
             )}
+
+            {/* Bildirim sınırı rehberi: sayfa + GERİ AL şeridi */}
+            {rehber.ogeler}
 
             {/* Tüm vakitlere uygula onayı (spec 3.3 {vakit} ipucu) */}
             <BildirimModali

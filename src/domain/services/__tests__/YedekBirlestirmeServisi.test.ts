@@ -259,6 +259,30 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
   });
 });
 
+describe('YedekBirlestirmeServisi — "camide kılacağım" ayarı geri yüklenir (issue #292)', () => {
+  it('uzerineYaz: gelen camiyeGit alt-ayarı CAMIYE_GIT_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, camiyeGit: { aktif: true, yurumeDk: 12 } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI]).toEqual({ aktif: true, yurumeDk: 12 });
+  });
+});
+
+describe('YedekBirlestirmeServisi — kaza önerisi ayarı geri yüklenir (issue #294)', () => {
+  it('uzerineYaz: gelen kazaOneri alt-ayarı KAZA_ONERI_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, kazaOneri: { farzSonrasiOner: false } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_ONERI_AYARLARI]).toEqual({ farzSonrasiOner: false });
+    // Sorulma hafızası cihaza özgüdür, yedekten asla yazılmaz.
+    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_ONERI_KAYDI]).toBeUndefined();
+  });
+});
+
 describe('YedekBirlestirmeServisi — SON_DISA_AKTARMA yedeğe girmez (bilinçli)', () => {
   it('uzerineYaz stratejisinde bile SON_DISA_AKTARMA anahtarı plana eklenmez', () => {
     const mevcut = payloadKur({});
@@ -323,5 +347,25 @@ describe('YedekBirlestirmeServisi — kaza akilli daha-ileri seçimi', () => {
     const gelen = payloadKur({ kaza: { toplamTamamlanan: 2 }, kazaTempo: { g1: 3, g3: 4 } });
     const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('akilli'));
     expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS]).toEqual({ g1: 5, g2: 1, g3: 4 });
+  });
+});
+
+describe('YedekBirlestirmeServisi — sade görünüm ayarı geri yüklenir (issue #295)', () => {
+  it('uzerineYaz: gelen sadeGorunum alt-ayarı SADE_GORUNUM_AYARLARI anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, sadeGorunum: { aktif: true } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI]).toEqual({ aktif: true });
+  });
+
+  it('uzerineYaz: gelen seferilik alt-ayarı SEFERILIK_AYARLARI (issue #296) anahtarına yazılır', () => {
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({}),
+      payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { kartAcik: false, mezhep: 'safii', ikamet: null } } }),
+      secimler('uzerineYaz')
+    );
+    expect(plan[DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI]).toEqual({ kartAcik: false, mezhep: 'safii', ikamet: null });
   });
 });

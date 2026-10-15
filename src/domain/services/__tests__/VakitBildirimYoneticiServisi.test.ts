@@ -2,6 +2,8 @@ import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { NamazVaktiHesaplayiciServisi } from '../NamazVaktiHesaplayiciServisi';
 import { LocalVakitBildirimServisi } from '../../../data/local/LocalVakitBildirimServisi';
 import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
 // Mock dependencies
 jest.mock('expo-notifications');
@@ -129,7 +131,7 @@ describe('VakitBildirimYoneticiServisi', () => {
                 (c) => c.identifier === 'vakit_bildirim_imsak_2024-06-15'
             );
             expect(bugunImsak).toBeDefined();
-            expect(bugunImsak.content.title).toBe('İmsak Vakti Girdi');
+            expect(bugunImsak.content.title).toBe('İmsak vakti girdi');
             expect(bugunImsak.content.data).toEqual({ tip: 'vakit_bildirim', vakit: 'imsak' });
             expect(bugunImsak.trigger.date).toEqual(new Date('2024-06-15T05:00:00'));
             expect(bugunImsak.trigger.channelId).toBe('vakit_bildirim');
@@ -140,7 +142,7 @@ describe('VakitBildirimYoneticiServisi', () => {
                 (c) => c.identifier === 'vakit_bildirim_ikindi_2024-06-15'
             );
             expect(bugunIkindi).toBeDefined();
-            expect(bugunIkindi.content.title).toBe('İkindi Vakti Girdi');
+            expect(bugunIkindi.content.title).toBe('İkindi vakti girdi');
             expect(bugunIkindi.trigger.date).toEqual(new Date('2024-06-15T17:00:00'));
 
             // Yarının imsak çağrısı yarın tarihinde (off-by-one / gün kayması regresyonunu yakalar)
@@ -334,6 +336,48 @@ describe('VakitBildirimYoneticiServisi', () => {
             expect(yarinImsak).toBeDefined();
             expect(yarinImsak.trigger.date).toEqual(new Date('2024-06-16T05:00:00'));
         } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    // ÖZEL GÜN (issue #272): aralıktaki GÜN hiç planlanmaz, aralık dışındaki gün
+    // aynen planlanır (aralık bitince bildirimler kendiliğinden geri gelir).
+    it('özel gün aralığındaki gün için HİÇ vakit bildirimi planlamamalı', async () => {
+        jest.useFakeTimers();
+        jest.setSystemTime(new Date('2024-06-15T03:00:00'));
+
+        try {
+            await AsyncStorage.setItem(
+                DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI,
+                JSON.stringify({
+                    ozelGunModuAktif: true,
+                    aktifOzelGun: { id: 'x', baslangicTarihi: '2024-06-10', bitisTarihi: '2024-06-15', olusturulmaTarihi: '' },
+                    gecmisKayitlar: [],
+                })
+            );
+            (LocalVakitBildirimServisi.getAyarlar as jest.Mock).mockResolvedValue({
+                imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true
+            });
+            const mockHesaplayici = NamazVaktiHesaplayiciServisi.getInstance();
+            (mockHesaplayici.getKonfig as jest.Mock).mockReturnValue({ latitude: 41, longitude: 29 });
+            (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
+            (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
+                { identifier: 'vakit_bildirim_ogle_2024-06-15', content: {} },
+            ]);
+
+            await service.bildirimleriGuncelle();
+
+            const idler = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.map(
+                (c) => c[0].identifier as string
+            );
+            // Önceden kurulmuş bildirim iptal edilir…
+            expect(Notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('vakit_bildirim_ogle_2024-06-15');
+            // …özel günün kendisi için yenisi kurulmaz, ertesi gün (aralık bitti) tam kurulur.
+            expect(idler.some((id) => id.endsWith('_2024-06-15'))).toBe(false);
+            expect(idler).toHaveLength(5);
+            expect(idler.every((id) => id.endsWith('_2024-06-16'))).toBe(true);
+        } finally {
+            await AsyncStorage.removeItem(DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI);
             jest.useRealTimers();
         }
     });

@@ -27,7 +27,10 @@ import {
   sihirbazIleBaslat,
   gunlukHedefiGuncelle,
   gizlemeToggle,
+  kazaOneriAyarlariniYukle,
+  kazaOneriAyarlariniGuncelle,
 } from '../store/kazaSlice';
+import { Anahtar } from '../components/common/Anahtar';
 import { useRenkler } from '../../core/theme';
 import { KazaNamazAdi } from '../../core/types/KazaTipleri';
 import {
@@ -65,6 +68,9 @@ export const KazaDefteriSayfasi: React.FC = () => {
   const renkler = useRenkler();
 
   const { kazaDurumu, istatistik, yukleniyor } = useAppSelector((s) => s.kaza);
+  // "Her farzdan sonra kaza önerin" (issue #294) — eski test/mock state'inde alan olmayabilir.
+  const oneriAyarlari = useAppSelector((s) => s.kaza.oneriAyarlari);
+  const oneriAyarlariYuklendi = useAppSelector((s) => s.kaza.oneriAyarlariYuklendi);
   const koordinatlar = useAppSelector((s) => s.konum.koordinatlar);
 
   // Modal state
@@ -114,7 +120,15 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   useEffect(() => {
     dispatch(kazaVerileriniYukle());
+    dispatch(kazaOneriAyarlariniYukle());
   }, [dispatch]);
+
+  const oneriAyariniDegistir = useCallback(
+    (acik: boolean) => {
+      dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: acik }));
+    },
+    [dispatch]
+  );
 
   // Mekruh vakit kontrolü — her dakika güncelle
   useEffect(() => {
@@ -472,6 +486,36 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </Text>
           )}
         </View>
+
+        {/* HER FARZLA BİR KAZA (issue #294) — yalnız borcu olan kullanıcıya görünür */}
+        {oneriAyarlariYuklendi && oneriAyarlari && kazaDurumu.toplamKalan > 0 && (
+          <View
+            style={[
+              styles.oneriKart,
+              { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir },
+            ]}
+          >
+            <View style={[styles.oneriIkon, { backgroundColor: renkler.birincil + '20' }]}>
+              <FontAwesome5 name="link" size={14} color={renkler.birincil} />
+            </View>
+            <View style={styles.oneriMetinler}>
+              <Text style={[styles.gunlukHedefEtiket, { color: renkler.metin }]}>
+                Her farzla bir kaza
+              </Text>
+              <Text style={[styles.hedefsizMetin, { color: renkler.metinIkincil }]}>
+                Ana ekranda bir farzı kıldım olarak işaretlediğinizde bir kaza kılmayı önerir.
+                Kerahat vaktinde sorulmaz.
+              </Text>
+            </View>
+            <Anahtar
+              value={oneriAyarlari.farzSonrasiOner}
+              onValueChange={oneriAyariniDegistir}
+              trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+              thumbColor={oneriAyarlari.farzSonrasiOner ? renkler.birincil : '#f4f3f4'}
+              accessibilityLabel="Her farzdan sonra kaza önerin"
+            />
+          </View>
+        )}
 
         {/* NAMAZ KARTLARI */}
         <View style={styles.namazKartlarBaslik}>
@@ -1041,6 +1085,28 @@ const styles = StyleSheet.create({
   hedefsizMetin: {
     fontSize: 13,
     lineHeight: 18,
+  },
+
+  // KAZA ÖNERİSİ
+  oneriKart: {
+    borderRadius: 14,
+    borderWidth: 1,
+    padding: 14,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  oneriIkon: {
+    width: 44,
+    height: 44,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  oneriMetinler: {
+    flex: 1,
+    gap: 4,
   },
 
   // NAMAZ KARTLARI

@@ -5,6 +5,23 @@ name: 📸 Android Ekran Görüntüleri
 #
 # Play telefon karesi en-boy orani en fazla 2:1 olabilir -> 1080x1920 (16:9)
 # profili secilir; yayindaki mevcut kareler de bu boyutta.
+#
+# `tur` girdisi:
+#   magaza  (varsayilan) — yalniz magaza kareleri (`kareler/`, artifact
+#           `android-ekran-goruntuleri`); davranisi ozellik turu eklenmeden
+#           oncekiyle BIREBIR ayni.
+#   ozellik — yeni ekranlarin kareleri (`kareler-ozellik/<profil>-<tema>/`,
+#           artifact `android-ozellik-kareleri`): telefon acik + koyu tema,
+#           istenirse tablet (acik). Akislar `scripts/maestro/ozellik/`.
+#   ikisi   — ikisi de, AYNI APK ile (Gradle bir kez).
+#   saat    — Wear OS saat uygulamasinin kareleri (`kareler-saat/<yuvarlak|kare>/`,
+#           artifact `android-saat-kareleri`); ayri is, telefon APK'si derlenmez.
+#   tv      — Android TV panosunun kareleri (`kareler-tv/`, artifact
+#           `android-tv-kareleri`); ayri is.
+#   cihazlar — saat + tv (iki is paralel kosar).
+#
+# NOT: saat/TV icin AYRI workflow acilmadi: GitHub varsayilan dalda (master) olmayan
+# bir workflow'u workflow_dispatch ile calistiramaz (404); bu dosya zaten master'da.
 
 on:
   workflow_dispatch:
@@ -17,6 +34,27 @@ on:
         description: 'Önceki koşunun debug APK artifact''ını kullan (boş = yeniden derle). JS Metro''dan geldiği için APK yalnız native kod değişince yenilenmeli.'
         required: false
         default: ''
+      tur:
+        description: 'Hangi kareler: magaza (Play kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Wear OS) | tv (Android TV) | cihazlar (saat + tv)'
+        type: choice
+        required: false
+        default: 'magaza'
+        options:
+          - magaza
+          - ozellik
+          - ikisi
+          - saat
+          - tv
+          - cihazlar
+      ozellik_profili:
+        description: 'Özellik turu telefon profili (avdmanager cihaz kimliği)'
+        required: false
+        default: 'pixel_6'
+      tablet:
+        description: 'Özellik turunu tablette de çek (pixel_tablet, açık tema; ~+60-90 dk)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -24,8 +62,14 @@ permissions:
 jobs:
   kareler:
     name: 📸 Emülatörde kare çek
+    # Telefon kareleri yalniz telefon turlarinda (saat/tv kendi islerinde).
+    if: ${{ inputs.tur == 'magaza' || inputs.tur == 'ozellik' || inputs.tur == 'ikisi' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # 90 dk magaza turu icin yetiyordu; ozellik turu (iki tema + istege bagli
+    # tablet, her akistan once yeniden tohumlama) ayni isin icinde kosar.
+    timeout-minutes: 330
+    # Telefon (acik+koyu) + tablet ozellik turu ~3,5 sa suruyor (kaydirma basina ~35 sn);
+    # 180 dk tabletin son akisini kesti (5817e59). GitHub is tavani 360 dk.
 
     steps:
       - name: 📥 Kodu çek
@@ -101,6 +145,7 @@ jobs:
           echo "Metro hazır"
 
       - name: 📱 Emülatörde kareleri çek
+        if: ${{ inputs.tur != 'ozellik' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ inputs.api }}
@@ -109,26 +154,67 @@ jobs:
           profile: pixel_2
           ram-size: 4096M
           disable-animations: true
-          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
           # Adimlar TEK bash betiginde: action her satiri ayri `sh` (dash) ile
           # calistirir; pipefail patlar ve degiskenler satirlar arasinda kaybolur.
           script: bash scripts/android-kare-hatti.sh
 
       - name: 🧾 Kare boyutları
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         run: |
           for f in kareler/*.png; do
             node -e 'const b=require("fs").readFileSync(process.argv[1]);console.log(process.argv[1], b.readUInt32BE(16)+"x"+b.readUInt32BE(20))' "$f"
           done || true
 
       - name: ⬆️ Kareleri yükle
-        if: always()
+        if: ${{ always() && inputs.tur != 'ozellik' }}
         uses: actions/upload-artifact@v7
         with:
           name: android-ekran-goruntuleri
           # YALNIZ kareler: disaridan bir yol (~/.maestro) eklenince ortak kok
           # degisiyor ve kareler artifact icinde alt klasore iniyordu.
           path: kareler/
+          retention-days: 14
+          if-no-files-found: warn
+
+      # --- OZELLIK TURU (magaza turuna dokunmaz; ayri klasor + ayri artifact) ---
+      # Magaza adimi dustuyse de kossun (`!cancelled()`): iki tur birbirinden bagimsiz.
+      - name: 🧭 Özellik turu — telefon (açık + koyu)
+        if: ${{ !cancelled() && inputs.tur != 'magaza' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: ${{ inputs.ozellik_profili }}
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/android-ozellik-hatti.sh telefon acik koyu
+
+      - name: 🧭 Özellik turu — tablet (açık)
+        if: ${{ !cancelled() && inputs.tur != 'magaza' && inputs.tablet }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ inputs.api }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_tablet
+          ram-size: 4096M
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/android-ozellik-hatti.sh tablet acik
+
+      - name: 🧾 Özellik kareleri özeti
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        run: node scripts/ozellik-kare-ozeti.js kareler-ozellik android | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Özellik karelerini yükle
+        if: ${{ always() && inputs.tur != 'magaza' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-ozellik-kareleri
+          path: kareler-ozellik/
           retention-days: 14
           if-no-files-found: warn
 
@@ -144,3 +230,149 @@ jobs:
       - name: 🪵 Metro günlüğü (hata ayıklama)
         if: failure()
         run: tail -60 /tmp/metro.log || true
+
+  # --- WEAR OS SAAT (telefon isinden bagimsiz; `wear/` ayri Gradle koku) ---
+  saat:
+    name: ⌚ Saat kareleri (Wear OS)
+    if: ${{ inputs.tur == 'saat' || inputs.tur == 'cihazlar' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: ☕ JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # ~/.gradle onbellegi (wear-build.yml ile ayni eylem): bagimliliklar her kosuda inmesin.
+      - name: 🐘 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Tohum yuku adhan JS ile uretilir (telefonun hesap yolu); yamalar gerekmez.
+      - name: 📦 Bağımlılıkları kur
+        run: npm ci --ignore-scripts
+
+      - name: 🔓 KVM'i etkinleştir
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: 🔨 Saat debug APK
+        working-directory: wear
+        run: |
+          chmod +x gradlew
+          # DEBUG bilincli: `run-as` yalniz debuggable build'de calisir (tohum yolu).
+          ./gradlew --no-daemon assembleDebug
+          find app/build/outputs/apk -name '*.apk' -print
+
+      - name: ⌚ Yuvarlak saat (Wear OS 5, 454x454)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: android-wear
+          arch: x86_64
+          profile: wearos_large_round
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/saat-kare-hatti.sh yuvarlak
+
+      # wearos_square profili 360x360'tir; Play saat karesi en az 384x384 ister →
+      # ekran `-skin 384x384` ile buyutulur (yogunluk ayni, ~16 dp daha genis).
+      - name: ⌚ Kare saat (Wear OS 5, 384x384)
+        if: ${{ !cancelled() }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: android-wear
+          arch: x86_64
+          profile: wearos_square
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul -skin 384x384
+          script: bash scripts/saat-kare-hatti.sh kare
+
+      - name: 🧾 Saat kareleri özeti
+        if: always()
+        run: node scripts/cihaz-kare-ozeti.js kareler-saat saat | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ Saat karelerini yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-saat-kareleri
+          path: kareler-saat/
+          retention-days: 14
+          if-no-files-found: warn
+
+  # --- ANDROID TV (bagimsiz; `tv/` ayri Gradle koku) ---
+  tv:
+    name: 📺 TV kareleri (Android TV)
+    if: ${{ inputs.tur == 'tv' || inputs.tur == 'cihazlar' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: ☕ JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐘 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 🔓 KVM'i etkinleştir
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: 🔨 TV debug APK
+        working-directory: tv
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          find app/build/outputs/apk -name '*.apk' -print
+
+      # android-tv imaji API 34'te yalniz x86 (x86_64 yok); uygulama saf Kotlin/JVM.
+      - name: 📺 TV (1080p)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: android-tv
+          arch: x86
+          profile: tv_1080p
+          disable-animations: true
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -timezone Europe/Istanbul
+          script: bash scripts/tv-kare-hatti.sh
+
+      - name: 🧾 TV kareleri özeti
+        if: always()
+        run: node scripts/cihaz-kare-ozeti.js kareler-tv tv | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ⬆️ TV karelerini yükle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-tv-kareleri
+          path: kareler-tv/
+          retention-days: 14
+          if-no-files-found: warn

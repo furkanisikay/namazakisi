@@ -4,6 +4,7 @@ import {
     CumaHatirlatmaAyarlari,
 } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import type { RootState } from './store';
 
 interface CumaHatirlatmaState {
@@ -49,6 +50,18 @@ export const cumaHatirlatmaAyariniGuncelle = createAsyncThunk(
         await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
             state.konum.koordinatlar ?? null
         );
+
+        // "Camide kılacağım" (issue #292) cuma günü öğleyi cuma AÇIKKEN atlar →
+        // cuma açılıp kapanınca o plan da yeniden kurulmalı. Hatası cuma ayarını düşürmez.
+        if (degisiklik.aktif !== undefined) {
+            try {
+                await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(
+                    state.konum.koordinatlar ?? null
+                );
+            } catch {
+                // Bir sonraki açılış/arka plan turu tazeler.
+            }
+        }
 
         // Diskteki normalize edilmis hali dondur (sinir disi deger duzeltilmis olur).
         return LocalCumaHatirlatmaServisi.getAyarlar();

@@ -96,7 +96,9 @@ import {
     SEVIYE_KADEMELERI,
     VARSAYILAN_SES,
 } from '../../../core/muhafiz/matrisTipleri';
-import { bugunuAl, dunuAl } from '../../../core/utils/TarihYardimcisi';
+import { bugunuAl, dunuAl, gunEkle } from '../../../core/utils/TarihYardimcisi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 
 /**
  * Snapshot'tan TARIHI COZ.
@@ -137,6 +139,23 @@ import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 
 beforeEach(() => {
     muhafizTeslimcisiniAyarla(new AndroidMuhafizTeslimcisi());
+});
+
+// GOVDE RASTGELEDIR: `muhafizGovdesiSec` havuzdan bir oranla secer. Snapshot'in
+// anlamli olmasi icin oran 0'a sabitlenir → havuzun ILK maddesi secilir.
+// `Math.random` GLOBAL olarak SABITLENMEZ: CI'da coverage altinda
+// `source-map`'in quick-sort'u da `Math.random` ile pivot secer; sabit 0 her
+// pivotu dizinin basina koyar ve sirali veride ozyineleme yigini tasirir
+// (`RangeError: Maximum call stack size exceeded`, yerelde gorunmez).
+import * as govdeModulu from '../../../core/muhafiz/muhafizGovdesi';
+const gercekGovdeSec = govdeModulu.muhafizGovdesiSec;
+function govdeOraniniSabitle(): void {
+    jest.spyOn(govdeModulu, 'muhafizGovdesiSec').mockImplementation(
+        (vakit, seviye, yon, _oran, olcuDk) => gercekGovdeSec(vakit, seviye, yon, () => 0, olcuDk)
+    );
+}
+afterEach(() => {
+    (govdeModulu.muhafizGovdesiSec as unknown as jest.Mock).mockRestore?.();
 });
 
 afterAll(() => {
@@ -202,6 +221,23 @@ function fikstürMatrisi(): MuhafizMatrisi {
     return matris;
 }
 
+/**
+ * `data` icindeki MUTLAK zaman alanlari (Ertele, issue #289: `cikisMs`,
+ * `erteleSinirMs`) da "cikisa kalan dakika"ya cevrilir — yoksa snapshot her
+ * kosuda degisirdi.
+ */
+function veriyiNormalize(data: Record<string, unknown> | undefined, cikisMs: number) {
+    if (!data) return data;
+    const cikti: Record<string, unknown> = {};
+    for (const [anahtar, deger] of Object.entries(data)) {
+        cikti[anahtar] =
+            anahtar.endsWith('Ms') && typeof deger === 'number'
+                ? `${Math.round((cikisMs - deger) / 60000)} dk kala`
+                : deger;
+    }
+    return cikti;
+}
+
 /** `scheduleNotificationAsync` cagrilarini zamandan arindirilmis hale getir. */
 function bildirimKayitlari(cikisMs: number) {
     const cagrilar = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls;
@@ -217,7 +253,7 @@ function bildirimKayitlari(cikisMs: number) {
                 titresim: girdi.content.vibrate ?? null,
                 oncelik: girdi.content.priority,
                 kategori: girdi.content.categoryIdentifier,
-                data: girdi.content.data,
+                data: veriyiNormalize(girdi.content.data, cikisMs),
                 tetikTipi: tetik.type,
                 kanalId: tetik.channelId ?? null,
             };
@@ -239,11 +275,7 @@ function anonsKayitlari(cikisMs: number) {
 describe('ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // GOVDE RASTGELEDIR: `bildirimMesajiOlustur` mucadele havuzundan
-        // `Math.random()` ile secer. Snapshot'in anlamli olmasi icin rastgelelik
-        // sabitlenir → havuzun ILK maddesi secilir. Rastgeleligi snapshot'tan
-        // atmak yerine sabitliyoruz ki govde metni de kapsamda kalsin.
-        jest.spyOn(Math, 'random').mockReturnValue(0);
+        govdeOraniniSabitle();
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
         // `hazirla` dogrulanmis matrisi doner; mock aynen geri versin ki
         // planlama ham matrisle ayni kanal id'lerini uretsin.
@@ -302,5 +334,96 @@ describe('ArkaplanMuhafizServisi — ANDROID PLANI KAYIT-OYNAT', () => {
         // Oksuz kanallar bildirim ayarlarinda kalmasin diye GC matrissiz cagrilir.
         expect(mockKanallariHazirla).toHaveBeenCalledWith();
         expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+    });
+});
+
+/**
+ * NOBETCI — OZEL GUN (issue #272). Aralik aktifken HICBIR muhafiz bildirimi ve
+ * TTS anons alarmi kurulmaz; eski plan yine temizlenir. Aralik bitince (ya da
+ * mod kapaliyken) plan, ozel gun hic yokmuscasina BIREBIR ayni uretilir.
+ */
+describe('ArkaplanMuhafizServisi — OZEL GUN KAPISI (kayit-oynat)', () => {
+    const getItem = AsyncStorage.getItem as jest.Mock;
+
+    function ozelGunDiskte(ayarlar: unknown) {
+        getItem.mockImplementation((anahtar: string) =>
+            Promise.resolve(
+                anahtar === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI ? JSON.stringify(ayarlar) : null
+            )
+        );
+    }
+
+    async function planiKaydet() {
+        jest.clearAllMocks();
+        const cikisMs = vakitCikisiniAl();
+        await ArkaplanMuhafizServisi.getInstance().yapilandirVePlanla({
+            aktif: true,
+            matris: fikstürMatrisi(),
+            koordinatlar: { lat: 41.0082, lng: 28.9784 },
+        });
+        return { bildirimler: bildirimKayitlari(cikisMs), anonslar: anonsKayitlari(cikisMs) };
+    }
+
+    beforeEach(() => {
+        govdeOraniniSabitle();
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        mockKanallariHazirla.mockImplementation(
+            (matris?: MuhafizMatrisi) => Promise.resolve(matris)
+        );
+    });
+
+    afterEach(() => {
+        // clearAllMocks implementasyonu SILMEZ — sonraki suite'lere sizmasin.
+        getItem.mockReset();
+        getItem.mockResolvedValue(null);
+    });
+
+    const aralik = (bas: number, bit: number) => ({
+        id: 'x',
+        baslangicTarihi: gunEkle(bugunuAl(), bas),
+        bitisTarihi: gunEkle(bugunuAl(), bit),
+        olusturulmaTarihi: new Date().toISOString(),
+    });
+
+    test('aralik BUGUNU kapsiyorsa: bildirim YOK, anons alarmi YOK, eski plan temizlenir', async () => {
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: aralik(-2, 3), gecmisKayitlar: [] });
+
+        const { bildirimler, anonslar } = await planiKaydet();
+
+        expect(bildirimler).toEqual([]);
+        expect(anonslar).toEqual([]);
+        expect(mockIptalEtTumAnonslar).toHaveBeenCalled();
+    });
+
+    test('aralik DUN bittiyse plan ozel gunsuz planla BIREBIR ayni (geri gelir)', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+        expect(taban.bildirimler.length).toBeGreaterThan(0);
+
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: aralik(-5, -1), gecmisKayitlar: [] });
+        expect(await planiKaydet()).toEqual(taban);
+    });
+
+    test('mod KAPALIYKEN ya da yalniz GECMIS kayit bugunu kapsarken plan degismez', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+
+        ozelGunDiskte({ ozelGunModuAktif: false, aktifOzelGun: aralik(-1, 1), gecmisKayitlar: [] });
+        expect(await planiKaydet()).toEqual(taban);
+
+        // Erken bitirilen kayit gecmise ORIJINAL bitisiyle tasinir; susturmaya
+        // devam etmemeli.
+        ozelGunDiskte({ ozelGunModuAktif: true, aktifOzelGun: null, gecmisKayitlar: [aralik(-1, 3)] });
+        expect(await planiKaydet()).toEqual(taban);
+    });
+
+    test('bozuk ozel gun kaydi muhafizi SUSTURMAZ', async () => {
+        getItem.mockResolvedValue(null);
+        const taban = await planiKaydet();
+
+        getItem.mockImplementation((anahtar: string) =>
+            Promise.resolve(anahtar === DEPOLAMA_ANAHTARLARI.OZEL_GUN_AYARLARI ? '{bozuk' : null)
+        );
+        expect(await planiKaydet()).toEqual(taban);
     });
 });

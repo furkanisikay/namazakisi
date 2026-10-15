@@ -16,9 +16,15 @@ import {
   Easing,
 } from 'react-native';
 import { Anahtar } from '../components/common/Anahtar';
+import { CanliGuncellemeBilgisi } from '../components/common/CanliGuncellemeBilgisi';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { sayacBaslangicEsikleriHesapla, muhafizUyarilanVakitleriBul } from '../../core/utils/vakitSayacYardimcisi';
+import {
+  sayacBaslangicEsikleriHesapla,
+  muhafizUyarilanVakitleriBul,
+  sayacBaslangicSecenekleriOlustur,
+  seciliSayacBaslangici,
+} from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { useRenkler } from '../../core/theme';
 import { useFeedback } from '../../core/feedback';
@@ -48,6 +54,11 @@ import { store } from '../store/store';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { YatisHatirlatmaBolumu } from '../components/ayar/YatisHatirlatmaBolumu';
+import { yatisHatirlatmaAyarlariniYukle } from '../store/yatisHatirlatmaSlice';
+import { CamiyeGitBolumu } from '../components/camiyeGit/CamiyeGitBolumu';
+import { TakvimCakismaBolumu } from '../components/takvimCakisma/TakvimCakismaBolumu';
+import { BileklikRehberKarti } from '../components/bildirim/BileklikRehberKarti';
 
 /**
  * Saat/dakika secici bileseni (artir/azalt butonlu)
@@ -161,6 +172,15 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
   const { ayarlar: sayacAyarlari } = useAppSelector((state) => state.vakitSayac);
   const muhafizState = useAppSelector((state) => state.muhafiz);
   const { ayarlar: cumaAyarlari } = useAppSelector((state) => state.cumaHatirlatma);
+  // Vakit sayacı başlangıç seçenekleri GERÇEK matristen (bayat global eşikler değil).
+  const sayacSecenekleri = useMemo(
+    () => sayacBaslangicSecenekleriOlustur(muhafizMatrisiniCoz(muhafizState)),
+    [muhafizState]
+  );
+  const seciliSayacSeviyesi = seciliSayacBaslangici(
+    sayacAyarlari.sayacBaslangicSeviyesi,
+    sayacSecenekleri.length
+  );
 
   // Giris animasyonu
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -169,6 +189,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
     dispatch(vakitBildirimAyarlariniYukle());
     dispatch(vakitSayacAyarlariniYukle());
     dispatch(cumaHatirlatmaAyarlariniYukle());
+    dispatch(yatisHatirlatmaAyarlariniYukle());
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
@@ -492,13 +513,8 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                 </Text>
 
                 <View className="flex-col gap-2">
-                  {[
-                    { seviye: 1, metin: `Son ${muhafizState.esikler.seviye1} Dakika` },
-                    { seviye: 2, metin: `Son ${muhafizState.esikler.seviye2} Dakika` },
-                    { seviye: 3, metin: `Son ${muhafizState.esikler.seviye3} Dakika` },
-                    { seviye: 4, metin: `Son ${muhafizState.esikler.seviye4} Dakika` },
-                  ].map((secenek) => {
-                    const isSelected = (sayacAyarlari.sayacBaslangicSeviyesi || 1) === secenek.seviye;
+                  {sayacSecenekleri.map((secenek) => {
+                    const isSelected = seciliSayacSeviyesi === secenek.seviye;
                     return (
                       <TouchableOpacity
                         key={secenek.seviye}
@@ -509,7 +525,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                         }}
                         onPress={() => handleSayacBaslangicSeviyesiChange(secenek.seviye)}
                         accessibilityRole="button"
-                        accessibilityLabel={`Seviye ${secenek.seviye} ${isSelected ? 'seçili' : 'seçili değil'}`}
+                        accessibilityLabel={`${secenek.seviye}. hatırlatmayla başlasın, ${isSelected ? 'seçili' : 'seçili değil'}`}
                       >
                         <View
                           className="w-5 h-5 rounded-full border-2 items-center justify-center mr-3"
@@ -525,7 +541,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                           className="text-sm font-semibold flex-1"
                           style={{ color: isSelected ? renkler.birincilMetin : renkler.metin }}
                         >
-                          {secenek.metin} (Seviye {secenek.seviye})
+                          {secenek.metin} ({secenek.seviye}. hatırlatma)
                         </Text>
                       </TouchableOpacity>
                     );
@@ -540,6 +556,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                     <Text className="font-semibold">Sadece Android cihazlarda aktiftir.</Text>
                   </Text>
                 </View>
+                <CanliGuncellemeBilgisi />
               </View>
             )}
           </View>
@@ -625,6 +642,31 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
               </View>
             )}
           </View>
+        </View>
+        </AyarCapasi>
+
+        {/* Yatış hatırlatması + gün sonu muhasebesi (issue #290) */}
+        <AyarCapasi id="yatisHatirlatmasi">
+          <YatisHatirlatmaBolumu />
+        </AyarCapasi>
+
+        {/* Camide kılacağım — yürüme süresine göre erken hatırlatma (issue #292) */}
+        <AyarCapasi id="camiyeGitHatirlatmasi">
+        <View className="mb-6">
+          <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+            CAMİYE GİTMEK
+          </Text>
+          <CamiyeGitBolumu />
+        </View>
+        </AyarCapasi>
+
+        {/* Takvim çakışması uyarısı — açık rıza ile diğer takvimleri okur (issue #291) */}
+        <AyarCapasi id="takvimCakismaUyarisi">
+        <View className="mb-6">
+          <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+            TAKVİM
+          </Text>
+          <TakvimCakismaBolumu />
         </View>
         </AyarCapasi>
 
@@ -873,6 +915,9 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
         </AyarCapasi>
 
 
+
+        {/* Bileklik rehberi (issue #287) — yalnız Android, kendisi karar verir */}
+        <BileklikRehberKarti />
 
         {/* Bilgi Notu */}
         <View

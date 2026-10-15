@@ -85,7 +85,7 @@ describe('OnizlemeSesServisi', () => {
     const calar = sonCalar();
     servis.temizle();
 
-    expect(calar.release).toHaveBeenCalledTimes(1);
+    expect(calar.remove).toHaveBeenCalledTimes(1);
 
     await servis.bildirimSesiniCal('varsayilan');
     expect(audio.createAudioPlayer).toHaveBeenCalledTimes(2);

@@ -79,7 +79,9 @@ describe('seritDuzeniHesapla', () => {
 
         expect(oranlar[0]).toBeLessThan(0.05);
         expect([...oranlar].sort((a, b) => a - b)).toEqual(oranlar);
-        expect(duzen.cubuklar.map((c) => c.seviye)).toEqual([1, 2, 3, 4]);
+        // Giriş yönünde acil ton yok (issue #274): son adım sert boyunda çizilir.
+        expect(duzen.cubuklar.map((c) => c.seviye)).toEqual([1, 2, 3, 3]);
+        expect(duzen.cubuklar.map((c) => c.adimIndeks)).toEqual([0, 1, 2, 3]);
     });
 
     it('bant ilk uyaridan son uyariya uzanir', () => {
@@ -196,5 +198,29 @@ describe('seritCumlesiOlustur', () => {
     it('vakit disindayken siradaki eklenmez', () => {
         const simdi = new Date(BASLANGIC.getTime() - 60000);
         expect(cumle(cikisPlani(), 'cikisaDogru', { simdi, baslangic: BASLANGIC })).not.toContain('Sıradaki');
+    });
+});
+
+describe('issue #274 — çubuklar ADIMA göre, ton yalnız boy/renk', () => {
+    test('aynı tonlu iki adım iki ayrı ÇUBUK üretir (ikincisi tik değil)', () => {
+        const ayar: VakitMuhafizAyari = {
+            seviyeler: [40, 20].map((esikDk) => ({
+                kademe: 'nazik' as const,
+                kanallar: { bildirim: true },
+                esikDk,
+                siklik: 'birkez' as const,
+                bildirimSesi: VARSAYILAN_SES,
+                anonsMetni: '',
+            })),
+        };
+        const duzen = seritDuzeniHesapla(
+            vakitUyariPlaniOlustur(ayar, 24 * 60, { pencereUzunluguDk: PENCERE_DK }),
+            PENCERE_DK
+        );
+        expect(duzen.cubuklar.map((c) => [c.adimIndeks, c.seviye])).toEqual([
+            [0, 1],
+            [1, 1],
+        ]);
+        expect(duzen.tikler).toHaveLength(0);
     });
 });
