@@ -495,6 +495,53 @@ describe('NafileHatirlatmaServisi', () => {
         });
     });
 
+    describe('GERÇEK ALARM (issue #74 — nafilede de standart yetenek)', () => {
+        it('Kıldım o nafilenin GERÇEK alarmlarını da (çalan dahil) yalnız kendi önekiyle susturur', async () => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            const { AndroidMuhafizTeslimcisi } = jest.requireActual('../AndroidMuhafizTeslimcisi') as typeof import('../AndroidMuhafizTeslimcisi');
+            const teslimci = new AndroidMuhafizTeslimcisi({ anonsOneki: NAFILE_ID_ONEKI, alarmKanalTemizligi: false });
+            const sustur = jest.spyOn(teslimci, 'vakitYanKanallariniIptalEt');
+            nafileTeslimcisiniAyarla(teslimci);
+            const gun = bugunuAl();
+            await servis.kildimIsle(gun, 'teheccud');
+            expect(sustur).toHaveBeenCalledWith(`${NAFILE_ID_ONEKI}${gun}_teheccud_`);
+        });
+
+        it('iOS: alarmdan basılan Kıldım kuyruğu planlamadan ÖNCE okunur ve susturma hafızasına yazılır', async () => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+                alarmKitNafileKildimleriniAl: jest.Mock;
+            };
+            alarmKit.alarmKitNafileKildimleriniAl.mockResolvedValueOnce([
+                { tarih: '2026-10-13', tur: 'teheccud' },
+                { tarih: '2026-10-13', tur: 'bozuk' },
+            ]);
+            getAyarlar.mockResolvedValue(ayar({}));
+            await servis.hatirlatmalariGuncelle(ISTANBUL);
+            expect(LocalNafileServisi.kilindiIsaretle).toHaveBeenCalledTimes(1);
+            expect(LocalNafileServisi.kilindiIsaretle).toHaveBeenCalledWith('2026-10-13', 'teheccud', bugunuAl());
+        });
+
+        it('hepsi kapatılınca bekleyen nafile alarmları da silinir (expo listesinde görünmezler)', async () => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            const { NativeModules } = jest.requireActual('react-native') as typeof import('react-native');
+            const nativeAlarm = {
+                planla: jest.fn().mockResolvedValue(true),
+                onekliIptalEt: jest.fn().mockResolvedValue(0),
+                kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+            };
+            (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+            try {
+                getAyarlar.mockResolvedValue(ayar({}));
+                await servis.hatirlatmalariGuncelle(ISTANBUL);
+                expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith(NAFILE_ID_ONEKI);
+                expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            } finally {
+                delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            }
+        });
+    });
+
     it('DEPOLAMA: Kıldım hafızası anahtarı yedekleme dışı, ayrı öneklidir', () => {
         expect(DEPOLAMA_ANAHTARLARI.NAFILE_KILINAN.startsWith('@namaz_akisi/')).toBe(true);
     });

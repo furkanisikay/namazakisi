@@ -66,14 +66,42 @@ describe('adimlariNormalize', () => {
         const sesli = a[1];
         expect(sesli.kademe).toBe('nazik');
         expect(sesli.acilKanal).toBe(false);
-        expect(sesli.bildirimSesi).toBe('varsayilan');
+        // Ses seçimi STANDART yetenektir (sahip kararı): kullanıcının sesi KORUNUR.
+        expect(sesli.bildirimSesi).toBe('content://x');
         expect(sesli.siklik).toEqual({ herDk: NAFILE_TEKRAR_MIN_DK });
         expect(sesli.kanallar).toEqual({ sesli: true });
     });
 
-    it('boş/bozuk → yedek eşikle tek adım; kanalsız adım bildirime düşer', () => {
+    it('boş/bozuk → yedek eşikle tek adım; bozuk kanal bildirime düşer, BOŞ küme kapalı adımdır', () => {
         expect(adimlariNormalize(null, 'cikisaDogru', 7)).toEqual([nafileAdimi(7)]);
-        expect(adimlariNormalize([{ esikDk: 9, kanallar: {} }], 'cikisaDogru', 7)[0].kanallar).toEqual({ bildirim: true });
+        expect(adimlariNormalize([{ esikDk: 9, kanallar: 'bozuk' }], 'cikisaDogru', 7)[0].kanallar).toEqual({ bildirim: true });
+        // "Kapalı" çipi standart yetenek: hiçbir kanalı açık olmayan adım kapalı KALIR,
+        // kanal hafızası (geri açınca kurduğu küme) korunur.
+        const kapali = adimlariNormalize(
+            [{ esikDk: 9, kanallar: {}, oncekiKanallar: { sesli: true, titresim: true } }],
+            'cikisaDogru',
+            7
+        )[0];
+        expect(kapali.kanallar).toEqual({});
+        expect(kapali.oncekiKanallar).toEqual({ sesli: true, titresim: true });
+    });
+
+    it('STANDART: alarm, ses adı ve titreşim normalize sonrası KORUNUR (yeniden açılışta geri dönmez)', () => {
+        const [a] = adimlariNormalize(
+            [{ esikDk: 20, kanallar: { bildirim: true, titresim: true, alarm: true }, bildirimSesi: 'content://s', sesAdi: 'Ezan' }],
+            'girisindenItibaren',
+            5
+        );
+        expect(a.kanallar).toEqual({ bildirim: true, titresim: true, alarm: true });
+        expect(a.bildirimSesi).toBe('content://s');
+        expect(a.sesAdi).toBe('Ezan');
+        // Açık adımda kanal hafızası tutulmaz.
+        expect(a.oncekiKanallar).toBeUndefined();
+        // Yalnız alarm açıksa tekrarlar için bildirim de açılır.
+        expect(adimlariNormalize([{ esikDk: 20, kanallar: { alarm: true } }], 'cikisaDogru', 5)[0].kanallar).toEqual({
+            alarm: true,
+            bildirim: true,
+        });
     });
 });
 

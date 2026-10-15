@@ -10,7 +10,9 @@ import android.os.Build
 import android.util.Log
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari.Karar
+import com.furkanisikay.namazakisi.cekirdek.NafileKildimKurallari
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
+import com.furkanisikay.namazakisi.kildim.NafileKildimKuyrugu
 import com.furkanisikay.namazakisi.otomasyon.OtomasyonOlaylari
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -96,7 +98,12 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         // uyanmadıysa (Samsung uyku kısıtı) diskteki kılınmışlık kaydı YOKTUR — native
         // AsyncStorage'ı okumaz, kuyruk yeterli kanıttır.
         val kuyruktaKilindi = try {
-            MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, KildimKuyrugu.bekleyenKimlikler(context))
+            if (yuk.nafileTuru != null) {
+                // Nafile: kendi kuyruğunda bekliyorsa (bildirimden Kıldım, JS henüz uyanmadı).
+                NafileKildimKuyrugu.bekliyorMu(context, NafileKildimKurallari.Nafile(yuk.tarih, yuk.nafileTuru))
+            } else {
+                MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, KildimKuyrugu.bekleyenKimlikler(context))
+            }
         } catch (_: Exception) {
             false
         }
@@ -114,7 +121,8 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         // otomasyon olayı (#278, normalde `KopruEtiketliBildirimServisi`'nde muhafız
         // bildirimi gösterilirken yayılır) burada yayılmalı — yoksa alarmlı adımda olay
         // hiç doğmaz. Kural (çıkışa ≤45 dk, vakit başına ilk) olayın kendi çekirdeğinde.
-        if (karar != Karar.ATLA) OtomasyonOlaylari.muhafizUyarisi(context, yuk.kimlik)
+        // Nafile alarmı farz "vakit çıkıyor" olayı değildir.
+        if (karar != Karar.ATLA && yuk.nafileTuru == null) OtomasyonOlaylari.muhafizUyarisi(context, yuk.kimlik)
     }
 
     private fun sustur(context: Context, intent: Intent) {

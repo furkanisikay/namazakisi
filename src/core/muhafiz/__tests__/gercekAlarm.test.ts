@@ -103,6 +103,9 @@ describe('alarm yükü — Kotlin ile ORTAK örnek (sözleşme)', () => {
     test('JS üreticisi örnekteki yükü BİREBİR üretir', () => {
         expect(alarmYukuOlustur(ORNEK.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.yuk);
     });
+    test('NAFİLE alarm yükü (standart yetenek): kendi adı + kendi yükü, örnekle BİREBİR', () => {
+        expect(alarmYukuOlustur(ORNEK.nafile.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.nafile.yuk);
+    });
     test('kanal kimlikleri örnekle aynı ve muhafız GC uzayının DIŞINDA', () => {
         for (const k of ORNEK.kanallar as { ses: string; beklenen: string }[]) {
             expect(alarmKanalIdOlustur(k.ses)).toBe(k.beklenen);

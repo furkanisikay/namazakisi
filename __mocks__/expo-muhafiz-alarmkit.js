@@ -18,6 +18,7 @@ const alarmKitPlanla = jest.fn().mockResolvedValue(false);
 const alarmKitIptalEt = jest.fn().mockResolvedValue(undefined);
 const alarmKitKayitlari = jest.fn().mockResolvedValue([]);
 const alarmDegisikliginiDinle = jest.fn().mockReturnValue(() => undefined);
+const alarmKitNafileKildimleriniAl = jest.fn().mockResolvedValue([]);
 
 module.exports = {
   alarmKitModuluVarMi,
@@ -27,4 +28,5 @@ module.exports = {
   alarmKitIptalEt,
   alarmKitKayitlari,
   alarmDegisikliginiDinle,
+  alarmKitNafileKildimleriniAl,
 };

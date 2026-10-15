@@ -30,7 +30,7 @@ import Foundation
     func canliUuidler(_ tamam: @escaping ([String]?, [String]) -> Void)
 }
 
-/// Ana hedefteki intent'ler JS'e haber verir (uygulama aciksa): `["tur": "ertele"|"kildim"]`.
+/// Ana hedefteki intent'ler JS'e haber verir (uygulama aciksa): `["tur": "ertele"|"kildim"|"nafileKildim"]`.
 public enum MuhafizAlarmOlaylari {
     public static let degisiklik = Notification.Name("NamazAkisiAlarmDegisikligi")
 
@@ -99,6 +99,11 @@ public class ExpoMuhafizAlarmKitModule: Module {
                 return
             }
             p.iptalEt(kimlikler, calaniDurdur) { promise.resolve(nil) }
+        }
+
+        /// Nafile alarmindan basilan "Kildim"lar (`<gun>_<tur>`) — okunur ve BOSALTILIR.
+        AsyncFunction("nafileKildimleriniAl") { () -> [String] in
+            return AlarmDeposu.varsayilan.nafileKildimleriniAl()
         }
 
         /// Sistemde HALA kurulu alarmlarin kaydi (`[{kimlik, tetikMs, caliyor?}]` JSON).

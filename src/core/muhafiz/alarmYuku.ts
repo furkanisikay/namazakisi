@@ -71,6 +71,12 @@ export interface AlarmYukuGirdisi {
     baslik: string;
     metin: string;
     vakit: VakitAdi;
+    /**
+     * Alarm ekranındaki ad — verilmezse vaktin adı (`VAKIT_ADLARI`). Muhafız DIŞI
+     * alarm (nafile) kendi adını verir; "Öğle" yazmasın. Native, alarmın hangi
+     * yola ait olduğunu KİMLİKTEN çözer (`nafile_` → nafile Kıldım).
+     */
+    vakitAdi?: string;
     /** Vaktin ait olduğu gün (YYYY-MM-DD) — kimlikle aynı. */
     tarih: string;
     cikisMs: number;
@@ -115,7 +121,7 @@ export function alarmYukuOlustur(g: AlarmYukuGirdisi): AlarmYuku {
         baslik: g.baslik,
         metin: g.metin,
         vakit: g.vakit,
-        vakitAdi: VAKIT_ADLARI[g.vakit] ?? '',
+        vakitAdi: g.vakitAdi ?? VAKIT_ADLARI[g.vakit] ?? '',
         tarih: g.tarih,
         cikisMs: g.cikisMs,
         erteleSinirMs: g.erteleSinirMs,

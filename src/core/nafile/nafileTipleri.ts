@@ -74,6 +74,13 @@ export interface NafileAyarlari {
      */
     sesliOnayi?: boolean;
     /**
+     * GERÇEK ALARM rızası (issue #74) — muhafızınkinden (`muhafizSlice.alarmOnayi`)
+     * AYRI: alarm tam ekran açılır ve Rahatsız Etmeyin'de duyulur; muhafız için
+     * verilen onay nafileye taşınmaz (`sesliOnayi` deseni). Yalnız `AlarmOnayModal`
+     * onayında yazılır; göç ya da varsayılan UYDURAMAZ.
+     */
+    alarmOnayi?: boolean;
+    /**
      * Hatırlatmalar yalnız BUGÜN (ve sürmekte olan gece) için kurulsun mu?
      * (issue #298 — iOS 64 bildirim sınırı rehberinin önerisi.) Alan YOKSA
      * `false`: gündüz 3 gün, teheccüd 7 gece ileri kurulur.

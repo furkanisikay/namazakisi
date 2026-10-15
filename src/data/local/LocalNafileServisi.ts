@@ -50,6 +50,7 @@ export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
     };
     // Rıza kaydı yalnız AÇIKÇA true ise taşınır (uydurulamaz; yoksa alan hiç yazılmaz).
     if (kaynak.sesliOnayi === true) sonuc.sesliOnayi = true;
+    if (kaynak.alarmOnayi === true) sonuc.alarmOnayi = true;
     return sonuc;
 };
 

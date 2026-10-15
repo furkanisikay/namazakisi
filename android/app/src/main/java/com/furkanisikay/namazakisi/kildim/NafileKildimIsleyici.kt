@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.furkanisikay.namazakisi.alarm.MuhafizAlarmTemizligi
 import com.furkanisikay.namazakisi.cekirdek.NafileKildimKurallari
 import com.furkanisikay.namazakisi.wear.KopruEtiketliBildirimServisi
 import expo.modules.countdownnotification.AnonsZamanlayici
@@ -45,7 +46,11 @@ object NafileKildimIsleyici {
         return nafileIsle(context, nafile, zamanlama)
     }
 
-    private fun nafileIsle(context: Context, n: NafileKildimKurallari.Nafile, zamanlama: SchedulingDelegate): Boolean {
+    /**
+     * Bir nafilenin "Kıldım"ı — bildirim yanıtı ve GERÇEK ALARM düğmesi (issue #74,
+     * `MuhafizAlarmEylemleri`) AYNI gövdeden geçer.
+     */
+    fun nafileIsle(context: Context, n: NafileKildimKurallari.Nafile, zamanlama: SchedulingDelegate): Boolean {
         val yazildi = try {
             NafileKildimKuyrugu.ekle(context, n)
         } catch (e: Exception) {
@@ -55,6 +60,7 @@ object NafileKildimIsleyici {
         if (!yazildi) return false
         tetikleriIptalEt(context, n, zamanlama)
         anonslariIptalEt(context, n)
+        alarmlariSustur(context, n)
         gosterilenleriKaldir(context, n)
         KildimKuyrugu.jsUyandir(context)
         return true
@@ -79,6 +85,19 @@ object NafileKildimIsleyici {
             AnonsZamanlayici.eslesenleriIptalEt(context) { NafileKildimKurallari.buNafileyeAitMi(it, n) }
         } catch (e: Exception) {
             Log.w(TAG, "Nafile anons alarmlari iptal edilemedi", e)
+        }
+    }
+
+    /**
+     * Gerçek alarmlar (issue #74): bekleyenler + o an ÇALAN alarm (insistent ses, tam
+     * ekran). Farz kuyruğunun `KildimKuyrugu.ekle` → `MuhafizAlarmTemizligi` ikizi; önek
+     * `_` ile bittiği için komşu nafile susturulmaz.
+     */
+    private fun alarmlariSustur(context: Context, n: NafileKildimKurallari.Nafile) {
+        try {
+            MuhafizAlarmTemizligi.onekliSustur(context, NafileKildimKurallari.onek(n))
+        } catch (e: Exception) {
+            Log.w(TAG, "Nafile alarmlari susturulamadi", e)
         }
     }
 

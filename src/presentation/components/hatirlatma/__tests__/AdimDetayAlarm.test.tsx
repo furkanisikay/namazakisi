@@ -105,7 +105,7 @@ describe('Gerçek alarm anahtarı', () => {
         expect(ekran.queryByLabelText('Gerçek alarm')).toBeNull();
     });
 
-    test('alarm kanalı yalnız muhafız vakitlerinde seçilebilir', () => {
+    test('alarm kanalı muhafız vakitlerinde seçilebilir, cumada (teslimci dışı) değil', () => {
         expect(vakitPencereTanimi('ogle').alarmSecilebilir).toBe(true);
         const cuma = cumaPencereTanimi({
             esikSinirlari: { min: 15, max: 180 },

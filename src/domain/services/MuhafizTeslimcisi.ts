@@ -88,6 +88,13 @@ export interface OzelTeslim {
     kanalId?: string;
     /** iOS: Odak'ı delen `timeSensitive` kesinti seviyesi zorlanır. */
     zamanaDuyarli?: boolean;
+    /**
+     * GERÇEK ALARM (issue #74) bu özel teslimde destekleniyor mu? Verilirse alarm
+     * ekranında görünen ad budur ("Teheccüd"). Verilmezse özel teslim alarm KURMAZ
+     * (tetik normal bildirim olur). Kimlik öneki (ör. `nafile_`) native tarafta
+     * "Kıldım"ın doğru yola (nafile, FARZ DEĞİL) gitmesini belirler.
+     */
+    alarmAdi?: string;
 }
 
 export interface MuhafizTeslimcisi {

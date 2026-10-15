@@ -38,6 +38,27 @@ class MuhafizAlarmKurallariTest {
     }
 
     @Test
+    fun nafileYukuNafileYolunaGider() {
+        // Sahip kararı: gerçek alarm nafilede de standart yetenektir. Kimlik YOLU belirler:
+        // Kıldım farz kuyruğuna ASLA gitmemeli (vakit boş), ertelenmez (sınır 0).
+        val yuk = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("nafile").getJSONObject("yuk").toString())
+        assertNotNull(yuk)
+        yuk!!
+        assertEquals("teheccud", yuk.nafileTuru)
+        assertEquals("2026-10-13", yuk.tarih)
+        assertEquals("", yuk.vakit)
+        assertEquals("Teheccüd", yuk.vakitAdi)
+        assertEquals(0L, yuk.erteleSinirMs)
+        assertEquals("nafile", yuk.veri.getString("tip"))
+        assertFalse(MuhafizAlarmKurallari.ertelemeDugmesiVarMi(0L, yuk.erteleSinirMs))
+        // Elle sınır yazılmış olsa bile nafile ertelenmez.
+        val sinirli = JSONObject(ornek.getJSONObject("nafile").getJSONObject("yuk").toString()).put("erteleSinirMs", 9_000_000L)
+        assertEquals(0L, MuhafizAlarmKurallari.yukCoz(sinirli.toString())!!.erteleSinirMs)
+        // Muhafız yükünde alan YOK.
+        assertNull(MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("yuk").toString())!!.nafileTuru)
+    }
+
+    @Test
     fun sozlesmeDisiYukReddedilir() {
         val dogru = ornek.getJSONObject("yuk")
         assertNull(MuhafizAlarmKurallari.yukCoz(null))

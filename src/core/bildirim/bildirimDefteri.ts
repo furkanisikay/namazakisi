@@ -15,7 +15,8 @@
  *   vakit bildirimi → `vakitBildirimPlaniOlustur` (bugün + yarın)
  *   cuma            → `cumaPlaniOlustur` (4 cuma)
  *   camiye gitme    → `camiyeGitPlaniOlustur` (iOS 3, Android 7 gün; cuma öğlesi çakışması)
- *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe)
+ *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe; gerçek
+ *                     alarm adımı muhafızla aynı kuralla `alarm` sayılır)
  *   gün sonu        → `gunSonuPlaniOlustur` (iOS 3, Android 7 gün)
  *   yatış/muhasebe  → `yatisPlaniOlustur` (iOS 3, Android 7 namaz günü; issue #290)
  *   takvim çakışması → `takvimCakismaPlaniOlustur` (iOS 3, Android 7 gün; issue #291 —
@@ -44,7 +45,7 @@ import {
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
 import { kullanilabilirSlotHesapla, yedekKapasitesiHesapla } from '../muhafiz/ios/bildirimButcesi';
-import { nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
+import { nafileAlarmKurarMi, nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -241,6 +242,13 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
             };
             const plan = nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi, secenekler);
             for (const k of plan) {
+                // Gerçek alarm (issue #74, nafilede de standart): muhafızla AYNI kural —
+                // Android'de bildirim + anonsun YERİNE tek alarm, iOS'ta AlarmKit izinliyse
+                // alarm (64 sınırına sayılmaz), değilse bildirim.
+                if ((android || g.iosAlarmKit === true) && nafileAlarmKurarMi(k)) {
+                    ekle('alarm', k.zaman.getTime(), 'alarm');
+                    continue;
+                }
                 ekle('nafile', k.zaman.getTime());
                 if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm');
             }

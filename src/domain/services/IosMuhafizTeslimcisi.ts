@@ -167,9 +167,9 @@ export interface IosTeslimciSecenekleri {
      */
     matrissizAnons?: boolean;
     /**
-     * Gerçek alarm (AlarmKit, issue #74) bu teslimcide yönetilsin mi? Varsayılan: yalnız
-     * muhafız öneki. Nafile örneği yönetmez — yoksa her turda muhafızın alarmlarını
-     * iptal ederdi (Android `alarmDestegi` ikizi).
+     * Gerçek alarm (AlarmKit, issue #74) bu teslimcide kurulsun mu? Varsayılan: yalnız
+     * muhafız öneki. Nafile örneği `true` geçer (standart yetenek); iptalleri yalnız
+     * KENDİ önekini (`nafile_`) seçer, muhafızın alarmlarına dokunmaz.
      */
     alarmDestegi?: boolean;
 }
@@ -187,6 +187,13 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         this.alarmDestegi =
             secenekler.alarmDestegi ?? this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
     }
+
+    private muhafizMi(): boolean {
+        return this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+    }
+
+    /** Muhafız DIŞI örneğin alarm kimlikleri (iptal seçicisi) — yalnız kendi öneki. */
+    private readonly kendiKimligimizMi = (kimlik: string): boolean => kimlik.startsWith(this.kendiOneki);
 
     /** Bu turda gerçek alarm AlarmKit ile kurulabilir mi (iOS 26 + izin + muhafız açık)? */
     private alarmKitIzinli = false;
@@ -262,10 +269,16 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         this.alarmKitIzinli = false;
         if (this.alarmDestegi) {
             const durum = await alarmKitDurumu();
-            this.alarmKitIzinli = matris !== undefined && durum === 'izinli';
+            // Muhafızda matrissiz `hazirla` = "muhafız kapalı" (alarm yok); muhafız DIŞI
+            // örnek (nafile) planını matrissiz kurar.
+            this.alarmKitIzinli = (matris !== undefined || !this.muhafizMi()) && durum === 'izinli';
             await this.alarmIsi(() =>
                 this.alarmlariIptalEt(
-                    matris ? muhafizPlanKimligiMi : (kimlik) => kimlik.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
+                    !this.muhafizMi()
+                        ? this.kendiKimligimizMi
+                        : matris
+                          ? muhafizPlanKimligiMi
+                          : (kimlik) => kimlik.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
                 )
             );
         }
@@ -411,11 +424,14 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     /**
      * Gercek alarm tetigini AlarmKit ile kurar. `false` → cagiran normal bildirim yolunda
-     * devam eder. Yalniz muhafiz teslimi (`ozel` yok): nafile/diger yukler alarm tasimaz.
+     * devam eder. Ozel teslim (nafile) ancak `ozel.alarmAdi` tasiyorsa alarm kurar ve
+     * ERTELENMEZ (`cikisMs: null` → ikincil dugme "Kildim"; native kimlikten NAFILE
+     * yoluna gider, FARZ yazmaz — `NamazAlarmCekirdegi.kildim`).
      */
     private async alarmKitIleKur(teslim: UyariTeslimi, odakSessiz: boolean): Promise<boolean> {
         const { uyari, ozel } = teslim;
-        if (!this.alarmKitIzinli || ozel || odakSessiz) return false;
+        if (!this.alarmKitIzinli || odakSessiz) return false;
+        if (ozel && !ozel.alarmAdi) return false;
         if (iosTesliminiCoz(uyari, iosYetenekleri(true)).tur !== 'alarm') return false;
 
         const yuk = alarmKitYukuOlustur({
@@ -424,7 +440,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
             baslik: teslim.baslik,
             vakit: teslim.vakit,
             tarih: teslim.tarih,
-            cikisMs: teslim.cikis?.getTime() ?? null,
+            cikisMs: ozel ? null : (teslim.cikis?.getTime() ?? null),
         });
         let kuruldu = false;
         await this.alarmIsi(async () => {
@@ -524,7 +540,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     /** Yeniden planlama oncesi: PLAN alarmlari (erteleme korunur; `hazirla` ayrica bekleyerek siler). */
     tumYanKanallariIptalEt(): void {
         if (!this.alarmDestegi) return;
-        void this.alarmIsi(() => this.alarmlariIptalEt(muhafizPlanKimligiMi));
+        void this.alarmIsi(() =>
+            this.alarmlariIptalEt(this.muhafizMi() ? muhafizPlanKimligiMi : this.kendiKimligimizMi)
+        );
     }
 
     /**

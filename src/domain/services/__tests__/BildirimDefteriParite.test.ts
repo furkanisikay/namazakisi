@@ -429,6 +429,86 @@ describe('nafile: defter = servisin kurduğu', () => {
         expect(say(g, 'nafile') + say(g, 'anons')).toBeGreaterThan(ANDROID_NAFILE_PAYI - 2);
     });
 
+    // Sahip kararı: GERÇEK ALARM nafilede de standart yetenektir (issue #74).
+    const alarmliNafile = () =>
+        nafileAyarlariniNormalize({
+            hatirlatmalar: {
+                kusluk: {
+                    aktif: true,
+                    yon: 'girisindenItibaren',
+                    adimlar: [
+                        { esikDk: 5, kanallar: { bildirim: true, alarm: true }, siklik: { herDk: 30 } },
+                        { esikDk: 60, kanallar: { bildirim: true, sesli: true }, siklik: 'birkez' },
+                    ],
+                },
+            },
+        });
+
+    it('Android GERÇEK ALARM (nafile): alarm + bildirim + anons birebir; yük NAFİLE yüküdür, kanal toplanmaz', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        nafileTeslimcisiniAyarla(null);
+        try {
+            const ayar = alarmliNafile();
+            disk.set(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI, JSON.stringify(ayar));
+            await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const g = temelGirdi('android', { nafile: ayar });
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('nafile_')).toBe(say(g, 'nafile'));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+            // Önceki turun alarmları YALNIZ nafile önekiyle silinir; muhafızın alarm
+            // kanallarına bu örnek dokunmaz (çöp toplama muhafızın).
+            expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith('nafile_');
+            expect(nativeAlarm.onekliIptalEt).not.toHaveBeenCalledWith('muhafiz_');
+            expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            const [kimlik, , ham] = nativeAlarm.planla.mock.calls[0];
+            const yuk = JSON.parse(ham);
+            expect(kimlik).toMatch(/^nafile_\d{4}-\d{2}-\d{2}_kusluk_/);
+            // Muhafız yükü ASLA: Kıldım FARZ yazardı.
+            expect(yuk.veri.tip).toBe('nafile');
+            expect(yuk.vakitAdi).toBe('Kuşluk');
+            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk.cikisMs).toBeGreaterThan(yuk.tetikMs);
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            nafileTeslimcisiniAyarla(null);
+        }
+    });
+
+    it('iOS GERÇEK ALARM (nafile, AlarmKit): alarm ayrı sayılır, ertelenmez', async () => {
+        jest.replaceProperty(Platform, 'OS', 'ios');
+        const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+            alarmKitDurumu: jest.Mock;
+            alarmKitPlanla: jest.Mock;
+        };
+        alarmKit.alarmKitDurumu.mockResolvedValue('izinli');
+        alarmKit.alarmKitPlanla.mockResolvedValue(true);
+        nafileTeslimcisiniAyarla(null);
+        try {
+            const ayar = alarmliNafile();
+            disk.set(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI, JSON.stringify(ayar));
+            await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const g = temelGirdi('ios', { nafile: ayar, iosAlarmKit: true });
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(alarmKit.alarmKitPlanla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('nafile_')).toBe(say(g, 'nafile'));
+            const yuk = alarmKit.alarmKitPlanla.mock.calls[0][0];
+            expect(yuk.kimlik).toMatch(/^nafile_/);
+            expect(yuk.erteleSinirMs).toBe(0);
+        } finally {
+            alarmKit.alarmKitDurumu.mockResolvedValue('desteklenmiyor');
+            alarmKit.alarmKitPlanla.mockResolvedValue(false);
+            nafileTeslimcisiniAyarla(null);
+        }
+    });
+
     it('günü gününe kurmak sayıyı GERÇEKTEN düşürür', () => {
         const uc = say(temelGirdi('ios', { nafile }), 'nafile');
         const bir = say(temelGirdi('ios', { nafile: { ...nafile, gunuGununeKur: true } }), 'nafile');

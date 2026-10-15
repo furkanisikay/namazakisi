@@ -125,6 +125,9 @@ public enum AlarmKurallari {
     private static let ertelemeDeseni = try! NSRegularExpression(
         pattern: "^muhafiz_(\\d{4}-\\d{2}-\\d{2})_vakit_([a-z]+)_ertele$"
     )
+    private static let nafileDeseni = try! NSRegularExpression(
+        pattern: "^nafile_(\\d{4}-\\d{2}-\\d{2})_(kusluk|evvabin|teheccud)_[^_]+$"
+    )
     private static let vakitDeseni = try! NSRegularExpression(
         pattern: "^muhafiz_(\\d{4}-\\d{2}-\\d{2})_vakit_([a-z]+)(?:_|$)"
     )
@@ -163,6 +166,19 @@ public enum AlarmKurallari {
         if calaniDurdur { return kimlikler }
         let calan = Set(calanUuidler.map { $0.lowercased() })
         return kimlikler.filter { !calan.contains(uuidMetni($0)) }
+    }
+
+    /// NAFILE alarm kimligi (`nafile_<gun>_<tur>_<k>`) — gun + tur. JS `nafilePlani` kimligi,
+    /// Kotlin `NafileKildimKurallari.nafileCoz` ikizi. "Kildim" bu kimlikte FARZ yazmaz.
+    public static func kimliktenNafile(_ kimlik: String) -> (tarih: String, tur: String)? {
+        guard let g = eslesme(nafileDeseni, kimlik), g.count == 2 else { return nil }
+        return (g[0], g[1])
+    }
+
+    /// `nafile_<gun>_<tur>_` — o gunun o nafilesinin TUM uyarilari (sondaki `_` komsu
+    /// turu susturmasin). JS `nafileKimlikOneki`.
+    public static func nafileOneki(tarih: String, tur: String) -> String {
+        return "nafile_\(tarih)_\(tur)_"
     }
 
     /// Muhafiz kimliginin (plan, erteleme, yatis...) namaz gunu + vakti.

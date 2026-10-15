@@ -122,6 +122,15 @@ for o in ef.ertelemeKimligi {
 }
 esitMi(AlarmKurallari.kimliktenVakit("muhasebe_2026-10-13")?.vakit, nil, "muhafiz disi kimlik cozulmez")
 
+// Nafile alarmi (issue #74): Kildim FARZ yazmasin diye kimlikten AYRI cozulur.
+let nafileCoz = AlarmKurallari.kimliktenNafile("nafile_2026-10-13_teheccud_1")
+esitMi(nafileCoz?.tarih, "2026-10-13", "kimliktenNafile tarih")
+esitMi(nafileCoz?.tur, "teheccud", "kimliktenNafile tur")
+esitMi(AlarmKurallari.kimliktenVakit("nafile_2026-10-13_teheccud_1")?.vakit, nil, "nafile kimligi muhafiz vakti DEGIL")
+esitMi(AlarmKurallari.kimliktenNafile("muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45")?.tur, nil, "muhafiz kimligi nafile DEGIL")
+esitMi(AlarmKurallari.kimliktenNafile("nafile_2026-10-13_bilinmeyen_1")?.tur, nil, "bilinmeyen tur cozulmez")
+esitMi(AlarmKurallari.nafileOneki(tarih: "2026-10-13", tur: "kusluk"), "nafile_2026-10-13_kusluk_", "nafile oneki")
+
 // MARK: - 3) AlarmDeposu (gecici UserDefaults suite)
 
 let suite = "namazakisi.alarmkit.test.\(UUID().uuidString)"
@@ -169,6 +178,11 @@ esitMi(
     true,
     "calan kayit isaretlenir (buyuk/kucuk harf duyarsiz)"
 )
+depo.nafileKildimEkle(tarih: "2026-10-13", tur: "teheccud")
+depo.nafileKildimEkle(tarih: "2026-10-13", tur: "teheccud")
+depo.nafileKildimEkle(tarih: "2026-10-14", tur: "kusluk")
+esitMi(depo.nafileKildimleriniAl(), ["2026-10-13_teheccud", "2026-10-14_kusluk"], "nafile Kildim kuyrugu tekil")
+esitMi(depo.nafileKildimleriniAl(), [], "nafile Kildim kuyrugu okununca BOSALIR")
 defaults.removePersistentDomain(forName: suite)
 
 // MARK: - Sonuc

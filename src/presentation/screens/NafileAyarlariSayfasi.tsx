@@ -15,7 +15,7 @@
  * bildirimle kalır, geri tuşu hiçbir şey yazmaz.
  */
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -210,11 +210,19 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     const yonDegistir = (tur: NafileTuru, yon: PencereYonu) =>
         ayariYaz(tur, nafileYonunuDegistir(nafileAyariniAl(ayarlar, tur), yon));
 
+    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
+    const alarmOnayiBekliyor = useRef(false);
+
     /** Adım detayındaki değişiklik — sesli kanal ilk kez açılıyorsa önce rıza. */
     const adimDegistir = (tur: NafileTuru, indeks: number, seviye: SeviyeAyari) => {
         const ayar = nafileAyariniAl(ayarlar, tur);
         const eski = ayar.adimlar[indeks];
         if (!eski) return;
+        if (alarmOnayiBekliyor.current) {
+            alarmOnayiBekliyor.current = false;
+            ayariYaz(tur, nafileAdimGuncelle(ayar, indeks, seviye), { alarmOnayi: true });
+            return;
+        }
         const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
         if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
             setSesliBekleyen({ tur, indeks, seviye });
@@ -479,6 +487,14 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                             : undefined
                     }
                     onKapat={() => setDetay(null)}
+                    // Gerçek alarm rızası (#74) — nafilenin KENDİ kaydı (muhafızınki taşınmaz).
+                    alarmOnayiVar={ayarlar.alarmOnayi === true}
+                    onAlarmOnayiVer={() => {
+                        // Ayrı bir yazım DEĞİL: modal onaydan hemen sonra anahtarı yazar
+                        // (`onDegistir`); iki eşzamanlı thunk aynı eski durumu birleştirip
+                        // birbirini ezerdi. Rıza o yazımla BİRLİKTE gider (`adimDegistir`).
+                        alarmOnayiBekliyor.current = true;
+                    }}
                 />
             )}
 

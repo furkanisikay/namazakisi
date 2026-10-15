@@ -40,6 +40,8 @@ export interface NafileAyarDegisikligi {
      * yazılır; muhafızın `sesliOnayi`'sinden ayrıdır.
      */
     sesliOnayi?: boolean;
+    /** Gerçek alarm rızası (#74) — YALNIZ `AlarmOnayModal` onayında `true`. */
+    alarmOnayi?: boolean;
 }
 
 export const nafileAyarlariniBirlestir = (
@@ -60,6 +62,7 @@ export const nafileAyarlariniBirlestir = (
         teheccud: { ...mevcut.teheccud, ...d.teheccud },
         gunuGununeKur: d.gunuGununeKur ?? mevcut.gunuGununeKur,
         sesliOnayi: d.sesliOnayi ?? mevcut.sesliOnayi,
+        alarmOnayi: d.alarmOnayi ?? mevcut.alarmOnayi,
     });
 
 /**
