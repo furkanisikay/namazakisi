@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalNafileServisi, nafileAyarlariniNormalize } from '../../data/local/LocalNafileServisi';
 import { NafileHatirlatmaServisi } from '../../domain/services/NafileHatirlatmaServisi';
-import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
+import type { NafileAyarlari, NafileTuru } from '../../core/nafile/nafileTipleri';
 import type { RootState } from './store';
 
 interface NafileState {
@@ -25,7 +25,10 @@ export const nafileAyarlariniYukle = createAsyncThunk('nafile/yukle', async () =
 
 /** Kısmi güncelleme: üst düzey alanlar + iç içe nesneler ayrı ayrı birleştirilir. */
 export interface NafileAyarDegisikligi {
+    /** ÜÇÜNÜ BİRDEN açar/kapatır (rehber yazımı, eski çağıranlar). `gosterge` önceliklidir. */
     gostergeAktif?: boolean;
+    /** Nafile başına ana ekran göstergesi (tek tek açılır/kapanır). */
+    gosterge?: Partial<Record<NafileTuru, boolean>>;
     hatirlatmalar?: Partial<{
         [K in keyof NafileAyarlari['hatirlatmalar']]: Partial<NafileAyarlari['hatirlatmalar'][K]>;
     }>;
@@ -44,7 +47,12 @@ export const nafileAyarlariniBirlestir = (
     d: NafileAyarDegisikligi
 ): NafileAyarlari =>
     nafileAyarlariniNormalize({
-        gostergeAktif: d.gostergeAktif ?? mevcut.gostergeAktif,
+        gosterge: {
+            ...(d.gostergeAktif === undefined
+                ? mevcut.gosterge
+                : { kusluk: d.gostergeAktif, evvabin: d.gostergeAktif, teheccud: d.gostergeAktif }),
+            ...d.gosterge,
+        },
         hatirlatmalar: {
             kusluk: { ...mevcut.hatirlatmalar.kusluk, ...d.hatirlatmalar?.kusluk },
             evvabin: { ...mevcut.hatirlatmalar.evvabin, ...d.hatirlatmalar?.evvabin },

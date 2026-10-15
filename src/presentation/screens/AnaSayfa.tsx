@@ -244,17 +244,19 @@ export const AnaSayfa: React.FC = () => {
   // dakika dönünce (aktif/geçti durumu değişebilir) kırılır.
   const { pencereler: nafilePencereleri } = useNafilePencereleri(aktifGun);
   const nafileDakikasi = Math.floor(Date.now() / 60000);
-  const { gostergeAktif: nafileGostergesi, teheccud: nafileTeheccud } = nafileAyarlari;
+  // Gösterge NAFİLE BAŞINADIR (`gosterge`); `gostergeAktif` "en az biri açık" türevidir.
+  const { gostergeAktif: nafileGostergesi, gosterge: nafileGosterge, teheccud: nafileTeheccud } = nafileAyarlari;
   const nafileSatirlari = useMemo(
     () =>
       nafileGostergesi
         ? nafileZincirSatirlariOlustur(
             nafilePencereleri,
             new Date(nafileDakikasi * 60000),
-            nafileTeheccud.pencere
+            nafileTeheccud.pencere,
+            nafileGosterge
           )
         : undefined,
-    [nafileGostergesi, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere]
+    [nafileGostergesi, nafileGosterge, nafilePencereleri, nafileDakikasi, nafileTeheccud.pencere]
   );
 
   // Pager'ın AÇILIŞ sayfası: aktif gün (gece yarısından sonra yatsı sürerken = dün).

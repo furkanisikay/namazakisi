@@ -52,8 +52,18 @@ export interface TeheccudAyari extends NafileHatirlatmaAyari {
 }
 
 export interface NafileAyarlari {
-    /** Ana ekranda nafile şeridi. */
+    /**
+     * Ana ekranda en az bir nafile gösteriliyor mu? TÜREV alandır (`gosterge`'nin
+     * "herhangi biri"): normalize her zaman yeniden hesaplar. Diske yine yazılır —
+     * eski sürüm bu yedeği açarsa tek bayrağı okur.
+     */
     gostergeAktif: boolean;
+    /**
+     * Ana ekran "Günlük Akış"ında HER nafile ayrı ayrı gösterilir mi? (Eskiden tek
+     * anahtar üçünü birden açıp kapatıyordu.) Alan yoksa (eski kayıt) üçü de eski
+     * `gostergeAktif` değerini alır — göç yok, kullanıcı aynı ekranı görür.
+     */
+    gosterge: Record<NafileTuru, boolean>;
     hatirlatmalar: Record<GunduzNafile, NafileHatirlatmaAyari>;
     teheccud: TeheccudAyari;
     /**
@@ -113,6 +123,7 @@ const tekAdim = (esikDk: number): SeviyeAyari => ({
 
 export const VARSAYILAN_NAFILE_AYARLARI: NafileAyarlari = {
     gostergeAktif: false,
+    gosterge: { kusluk: false, evvabin: false, teheccud: false },
     hatirlatmalar: {
         kusluk: { aktif: false, yon: 'girisindenItibaren', adimlar: [tekAdim(5)] },
         evvabin: { aktif: false, yon: 'girisindenItibaren', adimlar: [tekAdim(15)] },

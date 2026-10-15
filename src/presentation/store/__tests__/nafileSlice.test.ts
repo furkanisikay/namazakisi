@@ -28,7 +28,11 @@ describe('nafileSlice', () => {
     });
 
     it('yükleme diskteki ayarı yazar', async () => {
-        const disk = { ...VARSAYILAN_NAFILE_AYARLARI, gostergeAktif: true };
+        const disk = {
+            ...VARSAYILAN_NAFILE_AYARLARI,
+            gostergeAktif: true,
+            gosterge: { kusluk: true, evvabin: false, teheccud: false },
+        };
         (LocalNafileServisi.getAyarlar as jest.Mock).mockResolvedValue(disk);
         const store = storeKur();
         await store.dispatch(nafileAyarlariniYukle());
@@ -54,6 +58,19 @@ describe('nafileSlice', () => {
         (LocalNafileServisi.saveAyarlar as jest.Mock).mockResolvedValue(false);
         await storeKur().dispatch(nafileAyariniGuncelle({ gostergeAktif: true }));
         expect(mockGuncelle).not.toHaveBeenCalled();
+    });
+
+    it('gösterge: nafile başına yazılır, `gostergeAktif` üçünü birden yazar', () => {
+        const tek = nafileAyarlariniBirlestir(VARSAYILAN_NAFILE_AYARLARI, { gosterge: { evvabin: true } });
+        expect(tek.gosterge).toEqual({ kusluk: false, evvabin: true, teheccud: false });
+        expect(tek.gostergeAktif).toBe(true);
+        expect(nafileAyarlariniBirlestir(tek, { gostergeAktif: false }).gosterge).toEqual({
+            kusluk: false,
+            evvabin: false,
+            teheccud: false,
+        });
+        // Başka bir alanı yazmak göstergeye dokunmaz.
+        expect(nafileAyarlariniBirlestir(tek, { teheccud: { uyandirma: true } }).gosterge).toEqual(tek.gosterge);
     });
 
     it('birleştirme teheccüd alanlarını kısmen günceller', () => {

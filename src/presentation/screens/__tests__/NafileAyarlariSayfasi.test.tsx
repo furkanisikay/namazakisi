@@ -93,10 +93,12 @@ describe('NafileAyarlariSayfasi', () => {
         expect(dispatch).toHaveBeenCalled();
     });
 
-    it('gösterge anahtarı', () => {
+    it('gösterge nafile BAŞINA: her anahtar yalnız kendi nafilesini yazar', () => {
         const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
-        fireEvent(ekran.getByLabelText('Ana ekranda göster hatırlatması'), 'valueChange', true);
-        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gostergeAktif: true });
+        fireEvent(ekran.getByLabelText('Evvâbîn ana ekranda gösterilsin'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { evvabin: true } });
+        fireEvent(ekran.getByLabelText('Teheccüd ana ekranda gösterilsin'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { teheccud: true } });
     });
 
     it('teheccüd açıkken pencere seçimi (saatleriyle) ve uyandırma görünür', () => {

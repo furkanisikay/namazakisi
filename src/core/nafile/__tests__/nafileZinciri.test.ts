@@ -27,6 +27,16 @@ describe('nafileZincirSatirlariOlustur', () => {
         ]);
     });
 
+    it('gösterge nafile BAŞINA: kapalı olanın satırı zincire girmez, verilmezse hepsi görünür', () => {
+        const s = nafileZincirSatirlariOlustur(PENCERELER, an(21, 5, 0), SON_UCTE_BIR, {
+            kusluk: true,
+            evvabin: false,
+            teheccud: true,
+        });
+        expect(s.map((x) => x.tur)).toEqual(['kusluk', 'teheccud']);
+        expect(nafileZincirSatirlariOlustur(PENCERELER, an(21, 5, 0), SON_UCTE_BIR)).toHaveLength(3);
+    });
+
     it('pencere içindeyken aktif: "Vakti girdi · bitiş 13:00"; saate hal eki yok', () => {
         const [kusluk] = nafileZincirSatirlariOlustur(PENCERELER, an(21, 9, 0), SON_UCTE_BIR);
         expect(kusluk.durum).toBe('aktif');
