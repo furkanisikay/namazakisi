@@ -1,9 +1,13 @@
 import {
   eskiAlarmSesiniGoc,
   eskidenMatriseGoc,
+  kapaliVarsayilanAdimlariTemizle,
+  kapaliVarsayilanAdimMi,
   modlariKanallaraGoc,
   yonEsiklerineGoc,
 } from '../muhafizGoc';
+import { anonsSablonlari } from '../anonsMetni';
+import { muhafizMatrisiniCoz } from '../motorAdaptoru';
 import { esikSiralamasiGecerliMi } from '../aktifSeviye';
 import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
@@ -296,5 +300,61 @@ describe('yonEsiklerineGoc', () => {
     expect(seviyeler[0]).toBe(1);
     // Giriş yönünde acil ton yok (issue #274) → en sert konuşan adım "sert".
     expect(seviyeler[seviyeler.length - 1]).toBe(3);
+  });
+});
+
+
+describe('kapaliVarsayilanAdimlariTemizle (bir kerelik — içi boş kapalı adımlar SİLİNİR)', () => {
+  const kapali = (s: SeviyeAyari, ek: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
+    ...s,
+    kanallar: {},
+    oncekiKanallar: { bildirim: true },
+    ...ek,
+  });
+
+  test('varsayılan kapalı adım (boş/şablon metin, varsayılan ses, bildirim hafızası) silinir; plan DEĞİŞMEZ', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.ogle.seviyeler[1] = kapali(m.ogle.seviyeler[1]);
+    m.ogle.seviyeler[2] = kapali(m.ogle.seviyeler[2], { anonsMetni: anonsSablonlari('cikisaDogru')[0] });
+    m.ogle.yonYedegi = { girisindenItibaren: m.ogle.seviyeler };
+    const t = kapaliVarsayilanAdimlariTemizle(m);
+    expect(t.ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 3]);
+    // İndeksle hizalı yedek atılır.
+    expect(t.ogle.yonYedegi).toBeUndefined();
+    // Tetikler (an, ton, kanal) BİREBİR; yalnız kronolojik sıra numarası (`adimIndeks`
+    // = "N. hatırlatma") silinen adım kadar kayar — kimlik/zaman ona bağlı değil.
+    const sirasiz = (p: ReturnType<typeof vakitUyariPlaniOlustur>) => p.map(({ adimIndeks: _a, ...k }) => k);
+    expect(sirasiz(vakitUyariPlaniOlustur(t.ogle, 24 * 60))).toEqual(sirasiz(vakitUyariPlaniOlustur(m.ogle, 24 * 60)));
+    // Dokunulmayan vakit AYNI referans.
+    expect(t.ikindi).toBe(m.ikindi);
+  });
+
+  test('kullanıcının emeği taşıyan kapalı adım KALIR (ses, metin, titreşim/sesli/alarm hafızası, kapsam)', () => {
+    const s = eskidenMatriseGoc(eski).ogle.seviyeler[0];
+    expect(kapaliVarsayilanAdimMi(kapali(s, { bildirimSesi: 'content://x' }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { anonsMetni: 'Kendi cümlem' }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { bildirim: true, titresim: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { sesli: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { bildirim: true, alarm: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { alarmKapsami: 'hepsi' }))).toBe(false);
+    // Açık adım asla.
+    expect(kapaliVarsayilanAdimMi(s)).toBe(false);
+    // Hafızasız kapalı adım ve eski palet sesi ("melodi" → varsayılan) varsayılandır.
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: undefined, bildirimSesi: 'melodi' }))).toBe(true);
+  });
+
+  test('hepsi boş-kapalıysa en az bir adım kalır; değişiklik yoksa AYNI referans', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.yatsi.seviyeler = m.yatsi.seviyeler.map((s) => kapali(s));
+    expect(kapaliVarsayilanAdimlariTemizle(m).yatsi.seviyeler).toHaveLength(1);
+    const temiz = eskidenMatriseGoc(eski);
+    expect(kapaliVarsayilanAdimlariTemizle(temiz)).toBe(temiz);
+  });
+
+  test('muhafizMatrisiniCoz: bayrak YOKSA bellekte uygulanır (ham okuyan tüketiciler), VARSA dokunmaz', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.aksam.seviyeler[0] = kapali(m.aksam.seviyeler[0]);
+    expect(muhafizMatrisiniCoz({ ...eski, matris: m }).aksam.seviyeler).toHaveLength(3);
+    expect(muhafizMatrisiniCoz({ ...eski, matris: m, kapaliAdimTemizligiYapildi: true }).aksam.seviyeler).toHaveLength(4);
   });
 });

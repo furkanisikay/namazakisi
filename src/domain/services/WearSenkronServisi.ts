@@ -228,6 +228,8 @@ export class WearSenkronServisi {
                 matris: muhafizMatrisiniCoz({
                     matris: a.matris as Parameters<typeof muhafizMatrisiniCoz>[0]['matris'],
                     yogunluk: a.yogunluk,
+                    // Bir kerelik kapalı adım temizliği slice ile aynı kayda göre.
+                    kapaliAdimTemizligiYapildi: a.kapaliAdimTemizligiYapildi === true,
                     // `ArkaplanGorevServisi` ile AYNI tarihsel taban.
                     esikler: {
                         seviye1: esikler.seviye1 || 45,

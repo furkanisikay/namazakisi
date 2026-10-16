@@ -3,6 +3,9 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTi
 import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi';
 import { esikSiralamasiGecerliMi, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
+import { anonsSablonlari } from './anonsMetni';
+import { sesKimliginiNormalize } from './sesKimligi';
+import { MUHAFIZ_MIN_ADIM } from './matrisTipleri';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
 export const ESKI_ALARM_SESI = 'alarm';
@@ -77,6 +80,62 @@ export function eskiAlarmSesiniGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
     sonuc[vakit] = vakitDegisti ? { ...vakitAyari, seviyeler } : vakitAyari;
   }
 
+  return degisti ? sonuc : matris;
+}
+
+/** Hazır şablon havuzu (iki yön) — kullanıcının yazmadığı anons metni. */
+const SABLON_HAVUZU = new Set<string>([...anonsSablonlari('cikisaDogru'), ...anonsSablonlari('girisindenItibaren')]);
+
+/**
+ * Kapalı adım VARSAYILAN mı — kullanıcının emeği taşımıyor mu? Hepsi gerekir:
+ * kapalı (`adimKapaliMi`) · anons metni boş ya da havuzdaki bir şablonla BİREBİR ·
+ * bildirim sesi varsayılan · alarm kapsamı yok · kanal hafızası yok ya da YALNIZ
+ * bildirim (titreşim/sesli/alarm hafızası kullanıcı seçimidir — silinmez).
+ */
+export function kapaliVarsayilanAdimMi(s: SeviyeAyari): boolean {
+  if (!s || !adimKapaliMi(s.kanallar)) return false;
+  const metin = s.anonsMetni ?? '';
+  if (metin.length > 0 && !SABLON_HAVUZU.has(metin)) return false;
+  if (sesKimliginiNormalize(s.bildirimSesi) !== VARSAYILAN_SES) return false;
+  if (s.alarmKapsami !== undefined) return false;
+  const h = s.oncekiKanallar;
+  if (h && (h.sesli === true || h.titresim === true || h.alarm === true)) return false;
+  return true;
+}
+
+/**
+ * BİR KERELİK: içi BOŞ kapalı adımları SİLER (sahip geri bildirimi, Faz 2).
+ *
+ * Hazır yoğunluklar ve eşik tekilliği göçü (`esikTekilliginiGoc`) eski kayıtlarda
+ * kullanıcının hiç kurmadığı adımları "Kapalı" olarak bıraktı; ekranda artık işe
+ * yaramayan satırlar olarak duruyorlardı. Yalnız `kapaliVarsayilanAdimMi` olanlar
+ * silinir — kullanıcının sesi/metni/titreşimi/alarmı olan kapalı adım KALIR.
+ * En az `MUHAFIZ_MIN_ADIM` adım kalır (hepsi boş-kapalıysa ilk adım korunur).
+ *
+ * PLAN DEĞİŞMEZ: kapalı adım pencere sağlamaz ve tetiklenmez (`aktifSeviyeyiBul`,
+ * segment hesabı kapalı komşuyu atlar). Silinen vakitte `yonYedegi` atılır
+ * (indeksle hizalıdır). DEĞİŞİKLİK YOKSA AYNI REFERANS döner.
+ *
+ * YALNIZ BİR KEZ (`MuhafizAyarlari.kapaliAdimTemizligiYapildi`): bayrak sonrasında
+ * kullanıcının bilerek kapattığı bir adım bir daha silinmez — "Adımı silin" düğmesi
+ * zaten var.
+ */
+export function kapaliVarsayilanAdimlariTemizle(matris: MuhafizMatrisi): MuhafizMatrisi {
+  let degisti = false;
+  const sonuc = {} as MuhafizMatrisi;
+  for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    sonuc[vakit] = vakitAyari;
+    const seviyeler = vakitAyari?.seviyeler;
+    if (!Array.isArray(seviyeler) || seviyeler.some((s) => !s)) continue;
+    let kalan = seviyeler.filter((s) => !kapaliVarsayilanAdimMi(s));
+    if (kalan.length === seviyeler.length) continue;
+    if (kalan.length < MUHAFIZ_MIN_ADIM) kalan = seviyeler.slice(0, MUHAFIZ_MIN_ADIM);
+    if (kalan.length === seviyeler.length) continue;
+    degisti = true;
+    const { yonYedegi: _atilanYedek, ...yedeksiz } = vakitAyari;
+    sonuc[vakit] = { ...yedeksiz, seviyeler: kalan };
+  }
   return degisti ? sonuc : matris;
 }
 

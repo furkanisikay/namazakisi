@@ -576,6 +576,8 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 <FontAwesome5 name="bell-slash" size={34} color={renkler.metinIkincil} />
                                 <Text className="text-sm text-center mt-3" style={{ color: renkler.metinIkincil }}>
                                     Bu adım kapalı. {tanim.baslik} vaktinde bu aşamada uyarı almazsınız.
+                                    {/* Sahip: kullanılmayan adım kapalı durmasın, silinsin. */}
+                                    {onSil ? ' Kullanmayacaksanız aşağıdan silebilirsiniz.' : ''}
                                 </Text>
                             </View>
                         ) : (

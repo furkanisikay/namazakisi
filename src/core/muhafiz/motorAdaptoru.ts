@@ -35,6 +35,7 @@ import {
   yonEsiklerineGoc,
   eskidenMatriseGoc,
   esikTekilliginiGoc,
+  kapaliVarsayilanAdimlariTemizle,
   modlariKanallaraGoc,
   type EskiMuhafizAyari,
 } from './muhafizGoc';
@@ -491,6 +492,13 @@ export function matrisGecerliMi(matris: MuhafizMatrisi | undefined): matris is M
 export type MatrisKaynagi = EskiMuhafizAyari & {
   matris?: MuhafizMatrisi;
   yogunluk?: unknown;
+  /**
+   * Bir kerelik "içi boş kapalı adım" temizliği (`kapaliVarsayilanAdimlariTemizle`)
+   * bu kayda yapıldı mı? `true` değilse burada da (bellekte) uygulanır — ham
+   * AsyncStorage okuyan tüketiciler slice'ın yazdığı sonucu görmeden önce aynı
+   * matrisi kullansın. Ham okuyanlar bayrağı diskten AYNEN geçmeli.
+   */
+  kapaliAdimTemizligiYapildi?: boolean;
 };
 
 /**
@@ -510,8 +518,10 @@ export type MatrisKaynagi = EskiMuhafizAyari & {
 export function muhafizMatrisiniCoz(kaynak: MatrisKaynagi): MuhafizMatrisi {
   if (!matrisYapisiGecerliMi(kaynak.matris)) return eskidenMatriseGoc(kaynak);
   // Tekillik gocu kanal gocundan SONRA: kapali/acik ayrimi `kanallar`a bakar.
-  return yonEsiklerineGoc(
+  const goclu = yonEsiklerineGoc(
     esikTekilliginiGoc(modlariKanallaraGoc(eskiAlarmSesiniGoc(kaynak.matris))),
     kaynak.yogunluk
   );
+  // Tekillik göçü kapalı gölge adım ÜRETİR → temizlik ondan SONRA. Plan değişmez.
+  return kaynak.kapaliAdimTemizligiYapildi === true ? goclu : kapaliVarsayilanAdimlariTemizle(goclu);
 }
