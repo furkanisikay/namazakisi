@@ -17,29 +17,29 @@ Kurallar:
 
 | # | Madde | Durum | Not |
 |---|---|---|---|
-| 1.1 | "Fiziksel aktivite" izni | bekliyor | `expo-sensors` (pedometre) ekliyor; kullanılmıyor → `tools:node="remove"`. Debug APK ile manifest doğrulaması. |
+| 1.1 | "Fiziksel aktivite" izni | bitti (v0.31.1) | `expo-sensors` (pedometre) ekliyor; kullanılmıyor → `tools:node="remove"`. Debug APK ile manifest doğrulaması. |
 | 1.2 | "Yakındaki cihazlar" izni | bitti (kod değişikliği yok) | SM-S721B'de ölçüldü: izin `ACCESS_LOCAL_NETWORK` (Android 17'nin yeni yerel ağ izni, "Yakındaki cihazlar" grubunda). Play'den kurulan v0.31.0 APK'sının manifestinde YOK; Android 17 onu INTERNET isteyen her uygulamaya örtük ekliyor (telefonda 703 izin kaydı). Bizim kaldıracağımız bir şey yok. |
-| 1.3 | Takvim çakışması: izin verili ama "verilmedi" | bitti (PR #307) | Kök neden: SDK 57'de `expo-calendar` kök girişindeki eski fonksiyonlar HATA FIRLATIYOR; `expo-calendar/legacy`'ye geçildi (takvime namaz etkinliği yazma da bozuktu). Cihazda izin `granted` doğrulandı. Önceki not: | İzin isteği rıza modalı kapanırken atılıyor; ret sonrası durum yeniden okunmalı; ham `status`/`canAskAgain` loglanmalı. Cihazda tanı raporu istenecek. |
-| 1.4 | Namazdayım "Modu açın" → ana ekran + Ayarlar hatası | bekliyor | Samsung'da olmayan ayar ekranı niyeti şüphesi; izin zaten verilmişse yönlendirme yapılmamalı; `ActivityNotFoundException` yedeği. |
+| 1.3 | Takvim çakışması: izin verili ama "verilmedi" | bitti (v0.31.1) | Kök neden: SDK 57'de `expo-calendar` kök girişindeki eski fonksiyonlar HATA FIRLATIYOR; `expo-calendar/legacy`'ye geçildi (takvime namaz etkinliği yazma da bozuktu). Cihazda izin `granted` doğrulandı. Önceki not: | İzin isteği rıza modalı kapanırken atılıyor; ret sonrası durum yeniden okunmalı; ham `status`/`canAskAgain` loglanmalı. Cihazda tanı raporu istenecek. |
+| 1.4 | Namazdayım "Modu açın" → ana ekran + Ayarlar hatası | bitti (v0.31.1) | Samsung'da olmayan ayar ekranı niyeti şüphesi; izin zaten verilmişse yönlendirme yapılmamalı; `ActivityNotFoundException` yedeği. |
 | 1.5 | Now Bar: sabit bildirim + ilerleme çubuğu | araştırma | Cihaz: SM-S721B (S24 FE), Android 17 (API 37), One UI 9.0. `POST_PROMOTED_NOTIFICATIONS` verili. Sayaç ekrandayken `dumpsys notification` alınacak (ADB Tailscale üzerinden erişilebilir). |
-| 1.6 | Süre artır/azalt | bekliyor | Ortak `SayisalSecici`: kısa basış = küçük adım, uzun basış = bırakılana/sınıra dek hızlanarak sürekli. Tüm ekranlar aynı. 1'den 15'e ulaşılamama hatası biter. |
+| 1.6 | Süre artır/azalt | bitti (v0.31.1) | Ortak `SayisalSecici`: kısa basış = küçük adım, uzun basış = bırakılana/sınıra dek hızlanarak sürekli. Tüm ekranlar aynı. 1'den 15'e ulaşılamama hatası biter. |
 
 ## Faz 2 — Ortak hatırlatma yapısı (tek PR)
 
 | # | Madde | Durum | Not |
 |---|---|---|---|
-| 2.1 | Tüm hatırlatma yüzeyleri aynı yetenekler | bekliyor | `PencereTanimi` varsayılanı HER yetenek açık (alarm, ses, kanal, sıklık); kapatma gerekçeli istisna. Nafile + cuma + camiye gitme aynı kart. |
-| 2.2 | Alarm kapsamı: ilk uyarı / her uyarı | bekliyor | Adım başına alan. Android muhafız payı (360) defterle ölçülür; iOS AlarmKit sınırı araştırılacak. |
-| 2.3 | Önizlemede alarm | bekliyor | Alarm çalacak tetikte ikon + saat. |
-| 2.4 | Kapalı eski adımlar | bekliyor | Göç kullanıcı seçimini ezmez → yalnız içeriği varsayılan olan gölge adımlar silinir + adım başına "Sil". |
-| 2.5 | Nafile "ana ekranda göster" | bekliyor | Üç nafile için ayrı ayrı. |
-| 2.6 | "Kıldım işaretleyebilen uygulamalar" | bekliyor | Ayarlar'dan çıkar, yalnız Otomasyon sayfasında. |
+| 2.1 | Tüm hatırlatma yüzeyleri aynı yetenekler | bitti (v0.32.0) | `PencereTanimi` varsayılanı HER yetenek açık (alarm, ses, kanal, sıklık); kapatma gerekçeli istisna. Nafile + cuma + camiye gitme aynı kart. |
+| 2.2 | Alarm kapsamı: ilk uyarı / her uyarı | bitti (v0.32.0) | Adım başına alan. Android muhafız payı (360) defterle ölçülür; iOS AlarmKit sınırı araştırılacak. |
+| 2.3 | Önizlemede alarm | bitti (v0.32.0) | Alarm çalacak tetikte ikon + saat. |
+| 2.4 | Kapalı eski adımlar | bitti (v0.32.0) | Göç kullanıcı seçimini ezmez → yalnız içeriği varsayılan olan gölge adımlar silinir + adım başına "Sil". |
+| 2.5 | Nafile "ana ekranda göster" | bitti (v0.32.0) | Üç nafile için ayrı ayrı. |
+| 2.6 | "Kıldım işaretleyebilen uygulamalar" | bitti (v0.32.0) | Ayarlar'dan çıkar, yalnız Otomasyon sayfasında. |
 
 ## Faz 3 — Tasarım teslimleri (önce onay, sonra kod)
 
 | # | Madde | Durum | Not |
 |---|---|---|---|
-| 3.1 | Kaza defteri 2.0 (defter/kayıt modeli) | sürüyor | Ekleme-yalnız kayıt defteri; hesaplanan taban ayrı kayıt (yeniden hesap eskisini EZMEZ); otomatik ekleme geri alınabilir ve kaynağıyla izlenir; seçmeli temizlik. Diyagram + ekranlar sahibe gösterilecek. |
+| 3.1 | Kaza defteri 2.0 (defter/kayıt modeli) | onay bekliyor (PR #310) | Ekleme-yalnız kayıt defteri; hesaplanan taban ayrı kayıt (yeniden hesap eskisini EZMEZ); otomatik ekleme geri alınabilir ve kaynağıyla izlenir; seçmeli temizlik. Diyagram + ekranlar sahibe gösterilecek. |
 | 3.2 | Ana ekran | bekliyor | Birebir ekran görüntüsüyle onay. |
 | 3.3 | Ayarlar bilgi mimarisi | bekliyor | Çok ekran, çok kaydırma → gruplama/arama. |
 | 3.4 | Kıble: AR yerine kendi çözümümüz + pusula tasarımı | bekliyor | KARAR (2026-10-16): kameralı AR; KAMERA izni verilmezse kamerasız pusula. |
