@@ -254,10 +254,12 @@ const tabanSec = (etkin: readonly KazaHareketi[], tumu: readonly KazaHareketi[])
     else if (!gercek || siraKarsilastir(h, gercek) > 0) gercek = h;
   }
   gocTabanlari.sort(siraKarsilastir);
+  // Kaynak defter yalnız otomatik eklemeden (otoAyar + izdüşüm) ibaret olabilir:
+  // görüntünün kalanı o izdüşümdür, `otoAyar` gelince göç düşmeli.
   const kaynakGeldi = (t: KazaHareketi): boolean =>
     tumu.some(
       (h) =>
-        DOLU_KAYNAKLAR.includes(h.kaynak) &&
+        (DOLU_KAYNAKLAR.includes(h.kaynak) || h.kaynak === 'otoAyar') &&
         h.grup !== t.grup &&
         h.zaman <= (t.turetilmisKadar as string)
     );

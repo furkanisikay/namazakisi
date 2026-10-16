@@ -152,6 +152,14 @@ describe('iki cihazlı göç birleşimi (geç göç defteri ezmez)', () => {
     expect(hesapSirasiz([...aDefteri, ...bGoc], ek)).toEqual(aYalniz);
   });
 
+  it("(b) A'nın defteri yalnız otomatik eklemeden ibaretse de türetilmiş göç düşer (otomatik borç iki kez sayılmaz)", () => {
+    const aDefteri = [{ ...oto('2026-10-10', true, 'ekle'), cihaz: 'a' }];
+    const aYalniz = hesapSirasiz(aDefteri);
+    expect(hesap(aDefteri).ozet.otomatik).toBeGreaterThan(0);
+    const bGoc = eskiDurumdanHareketler(eskiAnlikGoruntuUret(hesap(aDefteri)), '2026-10-16T08:00:00.000Z', 'b')!.hareketler;
+    expect(hesapSirasiz([...aDefteri, ...bGoc])).toEqual(aYalniz);
+  });
+
   it("(b) A'nın defteri hiç gelmezse B'nin türetilmiş göçü tek başına görünen kalanı BİREBİR korur", () => {
     const aDefteri = [
       ...eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler,
