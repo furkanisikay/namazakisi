@@ -19,6 +19,11 @@ interface TakvimCakismaRizaModalProps {
     gorunur: boolean;
     onKabul: () => void;
     onVazgec: () => void;
+    /**
+     * Modal ekrandan TAMAMEN kalkınca (yalnız iOS; RN Android'de `onDismiss`
+     * çağırmaz). Sistem izin diyaloğu bundan sonra açılmalı.
+     */
+    onKapandi?: () => void;
 }
 
 interface Madde {
@@ -48,12 +53,19 @@ const MADDELER: Madde[] = [
     },
 ];
 
-export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ gorunur, onKabul, onVazgec }) => {
+export const TakvimCakismaRizaModal: React.FC<TakvimCakismaRizaModalProps> = ({ gorunur, onKabul, onVazgec, onKapandi }) => {
     const renkler = useRenkler();
     useDonanimGeriTusu(gorunur, onVazgec);
 
     return (
-        <Modal visible={gorunur} animationType="fade" transparent statusBarTranslucent onRequestClose={onVazgec}>
+        <Modal
+            visible={gorunur}
+            animationType="fade"
+            transparent
+            statusBarTranslucent
+            onRequestClose={onVazgec}
+            onDismiss={onKapandi}
+        >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback onPress={onVazgec} accessibilityLabel="Vazgeçin">
                     <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />

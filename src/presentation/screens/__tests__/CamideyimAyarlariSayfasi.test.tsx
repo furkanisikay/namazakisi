@@ -225,7 +225,7 @@ describe('NamazModuAyarlariSayfasi', () => {
 
     it('erişim yoksa uyarı ve rehber; rehberden ayar ekranı açılır', async () => {
         k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, erisim: false });
-        k.erisimAyariniAc.mockResolvedValue(true);
+        k.erisimAyariniAc.mockResolvedValue('acildi');
         const e = render(<NamazModuAyarlariSayfasi />);
         await waitFor(() => expect(e.getByTestId('namaz-modu-erisim-uyarisi')).toBeTruthy());
         fireEvent.press(e.getByTestId('namaz-modu-erisim-uyarisi'));
@@ -235,11 +235,41 @@ describe('NamazModuAyarlariSayfasi', () => {
     });
 
     it('etkinleştirme erişim yüzünden kurulamazsa rehber kendiliğinden açılır', async () => {
-        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, ayarlar: { ...MOD_DURUMU.ayarlar, etkin: false } });
+        k.namazModuDurumu.mockResolvedValue({
+            ...MOD_DURUMU,
+            erisim: false,
+            ayarlar: { ...MOD_DURUMU.ayarlar, etkin: false },
+        });
         k.namazModuAyarlariniYaz.mockResolvedValue('erisimYok');
         const e = render(<NamazModuAyarlariSayfasi />);
         await bosalt();
         fireEvent(e.getByLabelText('Namaz modunu kullanın'), 'valueChange', true);
         await waitFor(() => expect(e.getByTestId('namaz-modu-rehberi')).toBeTruthy());
+    });
+
+    it('REGRESYON (iç test): erişim VARKEN kural kurulamazsa rehber AÇILMAZ, bilgi verilir', async () => {
+        const { kisaBildirimGoster } = jest.requireMock('../../components/common/KisaBildirim');
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, ayarlar: { ...MOD_DURUMU.ayarlar, etkin: false } });
+        k.namazModuAyarlariniYaz.mockResolvedValue('erisimYok');
+        const e = render(<NamazModuAyarlariSayfasi />);
+        await bosalt();
+        fireEvent(e.getByLabelText('Namaz modunu kullanın'), 'valueChange', true);
+        await waitFor(() => expect(kisaBildirimGoster).toHaveBeenCalledWith(expect.stringContaining('kurulamadı'), true));
+        expect(e.queryByTestId('namaz-modu-rehberi')).toBeNull();
+        expect(k.erisimAyariniAc).not.toHaveBeenCalled();
+    });
+
+    it('erişim ekranı "zatenVar" derse Ayarlar açılmaz, etkin mod yeniden kurulur', async () => {
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, erisim: false });
+        k.erisimAyariniAc.mockResolvedValue('zatenVar');
+        const e = render(<NamazModuAyarlariSayfasi />);
+        await waitFor(() => expect(e.getByTestId('namaz-modu-erisim-uyarisi')).toBeTruthy());
+        fireEvent.press(e.getByTestId('namaz-modu-erisim-uyarisi'));
+        await waitFor(() => expect(e.getByTestId('namaz-modu-rehberi')).toBeTruthy());
+        fireEvent.press(e.getByLabelText('Erişim ayarını açın'));
+        await waitFor(() =>
+            expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: true }))
+        );
+        expect(e.queryByTestId('namaz-modu-rehberi')).toBeNull();
     });
 });

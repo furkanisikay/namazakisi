@@ -4,13 +4,17 @@
  *
  * Açma akışı: anahtar → `TakvimCakismaRizaModal` (açık rıza) → sistem takvim
  * izni → ayar `aktif + rizaZamani` ile yazılır. İzin verilmezse ayar AÇILMAZ ve
- * kullanıcı sistem ayarlarına yönlendirilir (`BildirimModali`). İzin sonradan
+ * kullanıcı sistem ayarlarına yönlendirilir (`BildirimModali`; sistem diyaloğu yeniden
+ * açılabiliyorsa "Tekrar deneyin" sunulur). İzin, rıza modalı TAMAMEN kapandıktan
+ * sonra istenir (`izniModalKapandiktanSonraIste`): v0.31.0 iç testinde (Samsung)
+ * modal kapanırken aynı anda istenen izin verildiği hâlde "verilmedi" görünüyordu.
+ * İzin sonradan
  * geri alınırsa kart bunu söyler ve "İzin verin" düğmesi gösterir; servis o
  * sırada hiçbir şey planlamaz (eski plan temizlenir).
  */
 import * as React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, Linking, AppState } from 'react-native';
+import { View, Text, TouchableOpacity, Linking, AppState, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
@@ -35,6 +39,16 @@ import {
 /** Stepper'a arka arkaya basmak TEK yazmaya insin (cuma/camiye gitme ile aynı gerekçe). */
 const YAZMA_GECIKMESI_MS = 1200;
 
+/**
+ * Rıza modalının kapanış animasyonundan sonra izin isteğine kadar beklenen süre.
+ * Android'de RN `Modal.onDismiss` çağrılmaz → süre esastır; iOS'ta `onDismiss`
+ * önce gelirse beklemeden istenir, gelmezse bu süre güvenlik ağıdır.
+ */
+export const RIZA_KAPANIS_BEKLEMESI_MS = Platform.OS === 'ios' ? 1000 : 400;
+
+/** İzin reddinde gösterilecek yol: diyalog yeniden açılabiliyorsa tekrar dene, değilse ayarlar. */
+type IzinHatasi = null | 'tekrar' | 'ayarlar';
+
 export const TakvimCakismaBolumu: React.FC = () => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
@@ -42,7 +56,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
     const ayarlar = useAppSelector((s) => s.takvimCakisma.ayarlar);
 
     const [rizaAcik, setRizaAcik] = useState(false);
-    const [izinHatasi, setIzinHatasi] = useState(false);
+    const [izinHatasi, setIzinHatasi] = useState<IzinHatasi>(null);
     const [izin, setIzin] = useState<TakvimIzinDurumu>('bilinmiyor');
 
     useEffect(() => {
@@ -104,28 +118,67 @@ export const TakvimCakismaBolumu: React.FC = () => {
         [butonTiklandiFeedback, dispatch]
     );
 
-    const rizaKabul = useCallback(async () => {
+    /**
+     * İzni ister; verilirse `verilince` çalışır, verilmezse doğru yolu gösterir.
+     * `etkinlestir`: rıza akışında özelliği rıza kaydıyla açar.
+     */
+    const izinAkisi = useCallback(
+        async (etkinlestir: boolean) => {
+            const sonuc = await takvimIzniIste();
+            setIzin(sonuc.verildi ? 'verildi' : 'verilmedi');
+            if (!sonuc.verildi) {
+                setIzinHatasi(sonuc.tekrarSorulabilir ? 'tekrar' : 'ayarlar');
+                return;
+            }
+            if (etkinlestir) {
+                dispatch(takvimCakismaAyariniGuncelle({ aktif: true, rizaZamani: new Date().toISOString() }));
+            } else {
+                // Planı izinle yeniden kur (ayar değişmez).
+                dispatch(takvimCakismaAyariniGuncelle({}));
+            }
+        },
+        [dispatch]
+    );
+
+    // ── Rıza modalı kapandıktan SONRA izin isteği ──
+    /** null = bekleyen istek yok; true = rıza akışı (özelliği aç); false = yalnız izin. */
+    const bekleyenIzinRef = useRef<boolean | null>(null);
+    const kapanisZamanlayiciRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const bekleyenIzniIste = useCallback(() => {
+        if (kapanisZamanlayiciRef.current) clearTimeout(kapanisZamanlayiciRef.current);
+        kapanisZamanlayiciRef.current = null;
+        const etkinlestir = bekleyenIzinRef.current;
+        bekleyenIzinRef.current = null;
+        if (etkinlestir === null) return;
+        void izinAkisi(etkinlestir);
+    }, [izinAkisi]);
+
+    useEffect(() => {
+        if (rizaAcik || bekleyenIzinRef.current === null) return undefined;
+        // InteractionManager RN 0.86'da kullanımdan kalktı ve Modal animasyonunu
+        // "etkileşim" saymaz → kapanış süresi kadar düz bekleme.
+        if (kapanisZamanlayiciRef.current) clearTimeout(kapanisZamanlayiciRef.current);
+        kapanisZamanlayiciRef.current = setTimeout(bekleyenIzniIste, RIZA_KAPANIS_BEKLEMESI_MS);
+        return undefined;
+    }, [rizaAcik, bekleyenIzniIste]);
+
+    useEffect(
+        () => () => {
+            if (kapanisZamanlayiciRef.current) clearTimeout(kapanisZamanlayiciRef.current);
+        },
+        []
+    );
+
+    const rizaKabul = useCallback(() => {
+        bekleyenIzinRef.current = true;
         setRizaAcik(false);
-        const verildi = await takvimIzniIste();
-        setIzin(verildi ? 'verildi' : 'verilmedi');
-        if (!verildi) {
-            setIzinHatasi(true);
-            return;
-        }
-        dispatch(takvimCakismaAyariniGuncelle({ aktif: true, rizaZamani: new Date().toISOString() }));
-    }, [dispatch]);
+    }, []);
 
     const izinVer = useCallback(async () => {
         await butonTiklandiFeedback();
-        const verildi = await takvimIzniIste();
-        setIzin(verildi ? 'verildi' : 'verilmedi');
-        if (verildi) {
-            // Planı izinle yeniden kur (ayar değişmez).
-            dispatch(takvimCakismaAyariniGuncelle({}));
-        } else {
-            setIzinHatasi(true);
-        }
-    }, [butonTiklandiFeedback, dispatch]);
+        await izinAkisi(false);
+    }, [butonTiklandiFeedback, izinAkisi]);
 
     const baslikAnahtari = useCallback(
         async (deger: boolean) => {
@@ -246,19 +299,36 @@ export const TakvimCakismaBolumu: React.FC = () => {
                 </View>
             )}
 
-            <TakvimCakismaRizaModal gorunur={rizaAcik} onKabul={rizaKabul} onVazgec={() => setRizaAcik(false)} />
+            <TakvimCakismaRizaModal
+                gorunur={rizaAcik}
+                onKabul={rizaKabul}
+                onVazgec={() => setRizaAcik(false)}
+                onKapandi={bekleyenIzniIste}
+            />
             <BildirimModali
-                gorunur={izinHatasi}
+                gorunur={izinHatasi !== null}
                 tip="bilgi"
                 baslik="Takvim izni verilmedi"
-                mesaj="Uyarının çalışması için takvim izni gerekiyor. İzni uygulama ayarlarından verebilirsiniz."
-                birincilEtiket="Ayarları açın"
-                birincilIkon="cog"
+                mesaj={
+                    izinHatasi === 'tekrar'
+                        ? 'Uyarının çalışması için takvim izni gerekiyor. İzin penceresinde "İzin ver"i seçebilirsiniz.'
+                        : 'Uyarının çalışması için takvim izni gerekiyor. İzni uygulama ayarlarından, İzinler > Takvim bölümünden verebilirsiniz.'
+                }
+                birincilEtiket={izinHatasi === 'tekrar' ? 'Tekrar deneyin' : 'Ayarları açın'}
+                birincilIkon={izinHatasi === 'tekrar' ? 'redo' : 'cog'}
                 onBirincil={() => {
-                    setIzinHatasi(false);
+                    const tekrar = izinHatasi === 'tekrar';
+                    setIzinHatasi(null);
+                    if (tekrar) {
+                        // Bilgi modalı kapansın, sonra iste (aynı kapanış tuzağı).
+                        bekleyenIzinRef.current = !ayarlar.aktif;
+                        if (kapanisZamanlayiciRef.current) clearTimeout(kapanisZamanlayiciRef.current);
+                        kapanisZamanlayiciRef.current = setTimeout(bekleyenIzniIste, RIZA_KAPANIS_BEKLEMESI_MS);
+                        return;
+                    }
                     Linking.openSettings().catch(() => undefined);
                 }}
-                onKapat={() => setIzinHatasi(false)}
+                onKapat={() => setIzinHatasi(null)}
             />
         </View>
     );

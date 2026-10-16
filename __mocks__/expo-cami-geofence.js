@@ -36,7 +36,7 @@ const namazModuAyarlariniYaz = jest.fn().mockResolvedValue('yok');
 const namazModuPlaniniYaz = jest.fn().mockResolvedValue(undefined);
 const namazModuKildim = jest.fn().mockResolvedValue(undefined);
 const namazModuAktifTurlari = jest.fn().mockResolvedValue([]);
-const erisimAyariniAc = jest.fn().mockResolvedValue(false);
+const erisimAyariniAc = jest.fn().mockResolvedValue('acilamadi');
 const modAyarlariniAc = jest.fn().mockResolvedValue(false);
 const camiOlayiniDinle = jest.fn().mockReturnValue({ remove: jest.fn() });
 

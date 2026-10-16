@@ -3,7 +3,7 @@
  * Namaz vakitleri icin cihaz takvim etkinlikleri olusturma
  */
 
-import * as Calendar from 'expo-calendar';
+import * as Calendar from 'expo-calendar/legacy';
 import { Platform } from 'react-native';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
@@ -50,12 +50,27 @@ export class TakvimServisi {
         return TakvimServisi.instance;
     }
 
+    /**
+     * İzni ister. "Verilmedi" yanıtında durum bir kez daha OKUNUR (takvim çakışması
+     * ile aynı ders, v0.31.0 iç testi: verilmiş izin "verilmedi" görünebiliyordu);
+     * ham durum + `canAskAgain` loglanır.
+     */
     public async izinIste(): Promise<boolean> {
+        let istek: { status?: unknown; canAskAgain?: unknown } | null = null;
         try {
-            const { status } = await Calendar.requestCalendarPermissionsAsync();
-            return status === 'granted';
+            istek = await Calendar.requestCalendarPermissionsAsync();
+            if (istek.status === 'granted') return true;
         } catch (hata) {
             Logger.error('TakvimServisi', 'Takvim izni istenemedi', hata);
+        }
+        try {
+            const okuma = await Calendar.getCalendarPermissionsAsync();
+            Logger.info(
+                'TakvimServisi',
+                `Takvim izni: istek status=${String(istek?.status)} canAskAgain=${String(istek?.canAskAgain)} / okuma status=${String(okuma.status)} canAskAgain=${String(okuma.canAskAgain)}`
+            );
+            return okuma.status === 'granted';
+        } catch {
             return false;
         }
     }

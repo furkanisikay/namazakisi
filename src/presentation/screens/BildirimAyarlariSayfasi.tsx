@@ -27,6 +27,7 @@ import {
 } from '../../core/utils/vakitSayacYardimcisi';
 import { muhafizMatrisiniCoz } from '../../core/muhafiz/motorAdaptoru';
 import { useRenkler } from '../../core/theme';
+import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../hooks/useSayisalAdim';
 import { useFeedback } from '../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { seriAyarlariniGuncelle } from '../store/seriSlice';
@@ -82,59 +83,66 @@ const SaatSecici: React.FC<SaatSeciciProps> = ({
 }) => {
   const renkler = useRenkler();
   const { butonTiklandiFeedback } = useFeedback();
-
-  const handleAzalt = async () => {
-    await butonTiklandiFeedback();
-    const yeniDeger = deger - adim;
-    if (yeniDeger >= min) {
-      onChange(yeniDeger);
-    }
-  };
-
-  const handleArtir = async () => {
-    await butonTiklandiFeedback();
-    const yeniDeger = deger + adim;
-    if (yeniDeger <= max) {
-      onChange(yeniDeger);
-    }
-  };
+  const degistir = useCallback(
+    (yeni: number) => {
+      void butonTiklandiFeedback();
+      onChange(yeni);
+    },
+    [butonTiklandiFeedback, onChange]
+  );
+  // Izgaraya oturan adım + hızlanan basılı tutma: tek kaynak `useSayisalAdim`.
+  const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
+    deger,
+    min,
+    max,
+    adim,
+    onChange: degistir,
+  });
+  const altta = gorunenDeger <= min;
+  const ustte = gorunenDeger >= max;
 
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
         className="w-10 h-10 rounded-full items-center justify-center"
-        style={{ backgroundColor: deger <= min ? renkler.sinir : renkler.birincil }}
-        onPress={handleAzalt}
-        disabled={deger <= min}
+        style={{ backgroundColor: altta ? renkler.sinir : renkler.birincil }}
+        {...azaltDugmesi}
+        disabled={altta}
         accessibilityRole="button"
         accessibilityLabel="Değeri azalt"
       >
         <FontAwesome5
           name="minus"
           size={14}
-          color={deger <= min ? renkler.metinIkincil : renkler.birincilMetin}
+          color={altta ? renkler.metinIkincil : renkler.birincilMetin}
         />
       </TouchableOpacity>
       <View
         className="px-4 py-2 rounded-lg min-w-[80px] items-center"
         style={{ backgroundColor: renkler.kartArkaplan }}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel="Değer"
+        accessibilityValue={{ min, max, now: gorunenDeger }}
+        accessibilityActions={AYARLANABILIR_EYLEMLER}
+        onAccessibilityAction={erisilebilirlikEylemi}
       >
         <Text className="text-lg font-semibold" style={{ color: renkler.metin }}>
-          {String(deger).padStart(2, '0')}{birim ? ` ${birim}` : ''}
+          {String(gorunenDeger).padStart(2, '0')}{birim ? ` ${birim}` : ''}
         </Text>
       </View>
       <TouchableOpacity
         className="w-10 h-10 rounded-full items-center justify-center"
-        style={{ backgroundColor: deger >= max ? renkler.sinir : renkler.birincil }}
-        onPress={handleArtir}
-        disabled={deger >= max}
+        style={{ backgroundColor: ustte ? renkler.sinir : renkler.birincil }}
+        {...artirDugmesi}
+        disabled={ustte}
         accessibilityRole="button"
         accessibilityLabel="Değeri artır"
       >
         <FontAwesome5
           name="plus"
           size={14}
-          color={deger >= max ? renkler.metinIkincil : renkler.birincilMetin}
+          color={ustte ? renkler.metinIkincil : renkler.birincilMetin}
         />
       </TouchableOpacity>
     </View>
@@ -883,7 +891,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                         <SaatSecici
                           deger={seriAyarlari.bildirimDakikasi || 0}
                           min={0}
-                          max={59}
+                          max={45}
                           adim={15}
                           onChange={handleBildirimDakikasiChange}
                         />

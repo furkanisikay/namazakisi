@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
-
-const THROTTLE_SURESI = 100;
+import { AYARLANABILIR_EYLEMLER, useSayisalAdim } from '../../hooks/useSayisalAdim';
 
 /**
  * Numerik artir/azalt (kare buton) bileseni.
  * TakvimAyarlari ve MuhafizAyarlari ekranlarinda paylasilir.
  * Not: SeriHedefAyarlari'ndaki yuvarlak-butonlu varyant gorsel olarak
- * farkli oldugu icin ayri tutulmustur.
+ * farkli oldugu icin ayri tutulmustur — davranisi (izgaraya oturan adim,
+ * hizlanan basili tutma) yine `useSayisalAdim`'dan gelir.
  */
 export interface SayisalSeciciProps {
   deger: number;
@@ -44,55 +43,52 @@ export const SayisalSecici: React.FC<SayisalSeciciProps> = ({
   const renkler = useRenkler();
   const azaltEtiketi = aciklama ? `${aciklama} azalt` : 'Azalt';
   const artirEtiketi = aciklama ? `${aciklama} artır` : 'Artır';
-  const sonTiklamaRef = useRef<number>(0);
-
-  const throttleKontrol = useCallback((): boolean => {
-    const simdi = Date.now();
-    if (simdi - sonTiklamaRef.current < THROTTLE_SURESI) {
-      return false;
-    }
-    sonTiklamaRef.current = simdi;
-    return true;
-  }, []);
-
-  const azalt = useCallback(() => {
-    if (!throttleKontrol()) return;
-    onChange(Math.max(min, deger - adim));
-  }, [deger, min, adim, onChange, throttleKontrol]);
-
-  const artir = useCallback(() => {
-    if (!throttleKontrol()) return;
-    onChange(Math.min(max, deger + adim));
-  }, [deger, max, adim, onChange, throttleKontrol]);
+  const { gorunenDeger, azaltDugmesi, artirDugmesi, erisilebilirlikEylemi } = useSayisalAdim({
+    deger,
+    min,
+    max,
+    adim,
+    onChange,
+  });
+  const altta = gorunenDeger <= min;
+  const ustte = gorunenDeger >= max;
 
   return (
     <View className="flex-row items-center rounded-lg overflow-hidden border" style={{ borderColor: renkler.sinir }}>
       <TouchableOpacity
         className="w-11 h-11 items-center justify-center"
-        style={{ backgroundColor: deger <= min ? renkler.sinir : renk }}
-        onPress={azalt}
-        disabled={deger <= min}
+        style={{ backgroundColor: altta ? renkler.sinir : renk }}
+        {...azaltDugmesi}
+        disabled={altta}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={azaltEtiketi}
+        accessibilityHint="Basılı tutarak hızlıca değiştirebilirsiniz"
       >
         <FontAwesome5 name="minus" size={12} color="#FFF" />
       </TouchableOpacity>
       <View
         className="px-3 h-11 items-center justify-center flex-row"
         style={{ backgroundColor: renkler.kartArkaplan, minWidth: degerGenisligi }}
+        accessible
+        accessibilityRole="adjustable"
+        accessibilityLabel={aciklama ?? 'Değer'}
+        accessibilityValue={{ min, max, now: gorunenDeger, text: `${gorunenDeger} ${birim}`.trim() }}
+        accessibilityActions={AYARLANABILIR_EYLEMLER}
+        onAccessibilityAction={erisilebilirlikEylemi}
       >
-        <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{deger}</Text>
+        <Text className="text-base font-bold mr-1" style={{ color: renkler.metin }}>{gorunenDeger}</Text>
         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>{birim}</Text>
       </View>
       <TouchableOpacity
         className="w-11 h-11 items-center justify-center"
-        style={{ backgroundColor: deger >= max ? renkler.sinir : renk }}
-        onPress={artir}
-        disabled={deger >= max}
+        style={{ backgroundColor: ustte ? renkler.sinir : renk }}
+        {...artirDugmesi}
+        disabled={ustte}
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={artirEtiketi}
+        accessibilityHint="Basılı tutarak hızlıca değiştirebilirsiniz"
       >
         <FontAwesome5 name="plus" size={12} color="#FFF" />
       </TouchableOpacity>

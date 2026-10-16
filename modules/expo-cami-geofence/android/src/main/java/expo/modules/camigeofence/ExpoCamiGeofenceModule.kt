@@ -3,9 +3,12 @@ package expo.modules.camigeofence
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import expo.modules.camigeofence.cekirdek.AyarEkraniKarari
+import expo.modules.camigeofence.cekirdek.AyarHedefi
 import expo.modules.camigeofence.cekirdek.CamiSabitleri
 import expo.modules.camigeofence.cekirdek.IzlemeKipi
 import expo.modules.kotlin.Promise
@@ -26,14 +29,20 @@ class ExpoCamiGeofenceModule : Module() {
 
     private fun ctx(): Context? = appContext.reactContext?.applicationContext
 
+    /**
+     * Sistem ekranını açar. Bulunamayan / izin verilmeyen ekran `false` döner
+     * (çağıran sıradaki yedeğe geçer). NEW_TASK: Ayarlar kendi görevinde açılsın;
+     * orada bir çöküş uygulamanın görevini sürüklemesin.
+     */
     private fun ekraniAc(intent: Intent): Boolean {
-        val aktivite = appContext.currentActivity
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         return try {
+            val aktivite = appContext.currentActivity
             if (aktivite != null) {
                 aktivite.startActivity(intent)
             } else {
                 val c = ctx() ?: return false
-                c.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                c.startActivity(intent)
             }
             true
         } catch (_: ActivityNotFoundException) {
@@ -41,8 +50,30 @@ class ExpoCamiGeofenceModule : Module() {
         } catch (e: SecurityException) {
             Log.w("CamiGeofence", "Ayar ekrani acilamadi: ${e.message}")
             false
+        } catch (e: RuntimeException) {
+            Log.w("CamiGeofence", "Ayar ekrani acilamadi: ${e.javaClass.simpleName}")
+            false
         }
     }
+
+    private fun hedefNiyeti(c: Context, hedef: AyarHedefi): Intent? = when (hedef) {
+        AyarHedefi.DND_ERISIMI -> Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+        AyarHedefi.KURAL_AYARI -> {
+            val id = NamazModu.kuralId(c)
+            if (id != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                Intent(Settings.ACTION_AUTOMATIC_ZEN_RULE_SETTINGS).putExtra(Settings.EXTRA_AUTOMATIC_ZEN_RULE_ID, id)
+            } else {
+                null
+            }
+        }
+        AyarHedefi.MODLAR -> Intent("android.settings.ZEN_MODE_SETTINGS")
+        AyarHedefi.UYGULAMA_AYRINTI ->
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", c.packageName, null))
+    }
+
+    /** Hedefleri sırayla dener; ilk açılanda durur. */
+    private fun siraylaAc(c: Context, hedefler: List<AyarHedefi>): Boolean =
+        hedefler.any { h -> hedefNiyeti(c, h)?.let { ekraniAc(it) } == true }
 
     /** Süresi geçmiş camide hâli / mod kaynakları + plan zinciri. Asla fırlatmaz. */
     private fun tutarlilikDenetle(c: Context) {
@@ -250,22 +281,36 @@ class ExpoCamiGeofenceModule : Module() {
             promise.resolve(ctx()?.let { JSONArray(NamazModu.aktifTurlar(it)).toString() } ?: "[]")
         }
 
-        /** Rahatsız Etmeyin erişimi ekranı (izin İSTENMEZ, ekran açılır). */
+        /**
+         * Rahatsız Etmeyin erişimi ekranı (izin İSTENMEZ, ekran açılır).
+         * @return "zatenVar" (erişim var → yönlendirme YOK) | "acildi" | "acilamadi"
+         */
         AsyncFunction("erisimAyariniAc") { promise: Promise ->
-            promise.resolve(ekraniAc(Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)))
-        }
-
-        /** Modun kendi ayar ekranı (API 35+), yoksa genel Rahatsız Etmeyin ekranı. */
-        AsyncFunction("modAyarlariniAc") { promise: Promise ->
             val c = ctx()
-            val id = c?.let { NamazModu.kuralId(it) }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && id != null &&
-                ekraniAc(Intent(Settings.ACTION_AUTOMATIC_ZEN_RULE_SETTINGS).putExtra(Settings.EXTRA_AUTOMATIC_ZEN_RULE_ID, id))
-            ) {
-                promise.resolve(true)
+            if (c == null) {
+                promise.resolve("acilamadi")
                 return@AsyncFunction
             }
-            promise.resolve(ekraniAc(Intent("android.settings.ZEN_MODE_SETTINGS")))
+            val hedefler = AyarEkraniKarari.erisimEkranlari(NamazModu.erisimVarMi(c))
+            when {
+                hedefler.isEmpty() -> promise.resolve("zatenVar")
+                siraylaAc(c, hedefler) -> promise.resolve("acildi")
+                else -> promise.resolve("acilamadi")
+            }
+        }
+
+        /**
+         * Modun ayar ekranı: API 35+ kurala özgü sayfa (Samsung HARİÇ — iç testte
+         * Ayarlar'ı çökertti), yoksa genel Modlar / Rahatsız Etmeyin ekranı.
+         */
+        AsyncFunction("modAyarlariniAc") { promise: Promise ->
+            val c = ctx()
+            if (c == null) {
+                promise.resolve(false)
+                return@AsyncFunction
+            }
+            val hedefler = AyarEkraniKarari.modEkranlari(Build.VERSION.SDK_INT, Build.MANUFACTURER, NamazModu.kuralId(c))
+            promise.resolve(siraylaAc(c, hedefler))
         }
     }
 }

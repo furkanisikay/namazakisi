@@ -33,6 +33,12 @@
       tools:node="remove"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
       tools:node="remove"/>
+  <!-- expo-sensors adımsayar (Pedometer) için ekler → kullanıcı "Fiziksel aktivite"
+       izni görür. Adımsayar KULLANILMIYOR (Kıble yalnız manyetometre/ivmeölçer). -->
+  <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"
+      tools:node="remove"/>
+  <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"
+      tools:node="remove"/>
   <!-- Foreground service KULLANILMIYOR (AGENTS.md: konum = geofence, anons = exact
        alarm + goAsync). Kullanılmayan FGS türü Play Console'da beyan ve inceleme
        yükü getirir. expo-location'ın konum servisi yalnız startLocationUpdatesAsync

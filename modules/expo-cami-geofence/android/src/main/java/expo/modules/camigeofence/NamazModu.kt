@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.Condition
 import android.util.Log
+import expo.modules.camigeofence.cekirdek.AyarEkraniKarari
 import expo.modules.camigeofence.cekirdek.ModKaynagi
 import org.json.JSONObject
 
@@ -126,9 +127,16 @@ object NamazModu {
             prefs(ctx).edit().putString(KURAL_ID, id).apply()
             "tamam"
         } catch (e: SecurityException) {
-            "erisimYok"
+            // Erişim VARKEN atılan SecurityException başka sebeptendir (v0.31.0 iç
+            // testi, Samsung): "erisimYok" demek kullanıcıyı zaten verdiği erişim
+            // ekranına yollardı. Gerçek istisna günlüğe yazılır (kişisel veri yok).
+            val erisim = erisimVarMi(ctx)
+            Log.w(ETIKET, "Kural kurulamadi (erisim=$erisim): ${e.javaClass.simpleName}: ${e.message}")
+            CamiGunluk.ekle(ctx, "modKuralHatasi", mapOf("hata" to e.javaClass.simpleName, "erisim" to erisim))
+            AyarEkraniKarari.guvenlikHatasiSonucu(erisim)
         } catch (e: Exception) {
-            Log.w(ETIKET, "Kural kurulamadi: ${e.message}")
+            Log.w(ETIKET, "Kural kurulamadi: ${e.javaClass.simpleName}: ${e.message}")
+            CamiGunluk.ekle(ctx, "modKuralHatasi", mapOf("hata" to e.javaClass.simpleName, "erisim" to erisimVarMi(ctx)))
             "hata"
         }
     }
