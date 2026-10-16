@@ -12,6 +12,7 @@ import {
   defteriOku,
   hareketleriEkle,
   localKazayaBorcEkle,
+  yeniHareketTemeli,
 } from '../LocalKazaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { defterHesapla } from '../../../core/kaza/kazaDefteriHesabi';
@@ -170,6 +171,20 @@ describe('defteriOku — göç ve dayanıklılık', () => {
     mockStore.set(BAYRAK, '1');
     mockStore.set(`${ONEK}2026-09`, JSON.stringify({ a: 1 }));
     expect((await defteriOku()).bozukAylar).toEqual([`${ONEK}2026-09`]);
+  });
+});
+
+describe('yeniHareketTemeli — sıra', () => {
+  test('aynı milisaniyede art arda yazılan hareketlerin zamanı KESİN ARTAR (fold sırası eylem sırasıdır)', async () => {
+    // Saat DONDURULUR (Date.now ve new Date aynı anı verir).
+    jest.useFakeTimers({ now: new Date('2026-10-15T08:00:00.000Z'), doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+    try {
+      const a = await yeniHareketTemeli('manuel');
+      const b = await yeniHareketTemeli('kilindi');
+      expect(b.zaman > a.zaman).toBe(true);
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });
 

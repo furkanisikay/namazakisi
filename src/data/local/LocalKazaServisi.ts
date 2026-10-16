@@ -82,6 +82,8 @@ export async function ayarlariGuncelle(donustur: (m: KazaAyarlari) => KazaAyarla
 // ==================== CİHAZ KİMLİĞİ ====================
 
 let cihazOnbellegi: string | null = null;
+/** `yeniHareketTemeli`'nin son verdiği an (süreç içi kesin artan zaman). */
+let sonHareketMs = 0;
 
 /** Kısa, kalıcı, cihaza özgü kimlik (yedeklenmez). Okunamazsa geçici bir kimlik. */
 export async function cihazKimligiAl(): Promise<string> {
@@ -106,6 +108,7 @@ export async function cihazKimligiAl(): Promise<string> {
 export function _testIcinSifirla(): void {
   cihazOnbellegi = null;
   gocKilidi = null;
+  sonHareketMs = 0;
 }
 
 // ==================== OKUMA ====================
@@ -243,9 +246,23 @@ export async function hareketleriEkle(liste: readonly unknown[]): Promise<number
   return eklenen;
 }
 
-/** Yeni bir hareketin ortak alanları (zaman + cihaz + kimlik). */
-export async function yeniHareketTemeli(onek: string, simdi: Date = new Date()): Promise<Pick<KazaHareketi, 'id' | 'zaman' | 'cihaz'>> {
-  return { id: hareketKimligi(onek, simdi.getTime()), zaman: simdi.toISOString(), cihaz: await cihazKimligiAl() };
+
+/**
+ * Yeni bir hareketin ortak alanları (zaman + cihaz + kimlik).
+ *
+ * Saat verilmezse zaman süreç içinde KESİN ARTANDIR: fold aynı `zaman`daki iki
+ * hareketi kimlik önekine göre sıralar (`kilindi` < `manuel`); aynı milisaniyede
+ * art arda "borç ekle" + "kıldım" yazılırsa kılınan önce uygulanıp fazlaya
+ * gider, kalan düşmezdi.
+ */
+export async function yeniHareketTemeli(onek: string, simdi?: Date): Promise<Pick<KazaHareketi, 'id' | 'zaman' | 'cihaz'>> {
+  let an = simdi;
+  if (!an) {
+    const ms = Math.max(Date.now(), sonHareketMs + 1);
+    sonHareketMs = ms;
+    an = new Date(ms);
+  }
+  return { id: hareketKimligi(onek, an.getTime()), zaman: an.toISOString(), cihaz: await cihazKimligiAl() };
 }
 
 // ==================== GÖÇ (KAZA_DURUMU → defter) ====================

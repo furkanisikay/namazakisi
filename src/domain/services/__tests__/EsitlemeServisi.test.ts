@@ -510,7 +510,7 @@ describe('karışık sürüm eşitlemesi — sonsuz karşılıklı yükleme YOK'
     const s = new SahteSaglayici();
     const yeni = yeniCihaz();
     const eski = eskiCihaz();
-    expect(yeni.durum().kaza?.toplamTamamlanan).toBe(2); // gizlenen eski görüntü sayılmıyor
+    expect((yeni.durum().kaza as { toplamTamamlanan: number }).toplamTamamlanan).toBe(2); // gizlenen eski görüntü sayılmıyor
     const yeniDurum = { sonEtiket: null as string | null, sonOzet: null as string | null };
     const yeniTur = async () => {
       const t = await esitlemeTuru(
@@ -533,7 +533,7 @@ describe('karışık sürüm eşitlemesi — sonsuz karşılıklı yükleme YOK'
     await eski.tur(s);
     expect(s.yazmaSayisi).toBe(yazma);
     // Gizlenen kılınan geri GELMEDİ; eski cihaz kendi ilerlemesini korudu.
-    expect(yeni.durum().kaza?.toplamTamamlanan).toBe(2);
+    expect((yeni.durum().kaza as { toplamTamamlanan: number }).toplamTamamlanan).toBe(2);
     expect((eski.kaza() as { toplamTamamlanan: number }).toplamTamamlanan).toBe(5);
   });
 
