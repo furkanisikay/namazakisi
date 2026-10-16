@@ -17,6 +17,7 @@
  * (AGENTS.md kontrast tuzagi) yanlis olurdu: `durum.uyari` = #FFC107 sari-amber.
  */
 import type {
+    AlarmKapsami,
     MuhafizVakti,
     SeviyeAyari,
     SeviyeKademe,
@@ -173,6 +174,29 @@ export const ALARM_ETIKETI = 'Gerçek alarm';
 export const ALARM_ACIKLAMASI =
     'Bu adımın ilk hatırlatmasında telefonunuzun alarmı çalar; tekrarlar normal bildirimle gelir.';
 
+/** Alarm kapsamı seçimi (issue #74 — "Yalnız ilk uyarıda" / "Her uyarıda"). */
+export const ALARM_KAPSAMI_SECENEKLERI: { kapsam: AlarmKapsami; etiket: string; ikon: string }[] = [
+    { kapsam: 'ilk', etiket: 'Yalnız ilk uyarıda', ikon: 'dot-circle' },
+    { kapsam: 'hepsi', etiket: 'Her uyarıda', ikon: 'redo' },
+];
+
+/** Alarm anahtarının açıklaması seçilen kapsamı söyler (sessiz sapma yok). */
+export const alarmAciklamasiOlustur = (kapsam: AlarmKapsami | undefined): string =>
+    kapsam === 'hepsi'
+        ? 'Bu adımın her hatırlatmasında telefonunuzun alarmı çalar.'
+        : ALARM_ACIKLAMASI;
+
+/**
+ * Önizlemede GERÇEK ALARM çalan tetiğin etiketi ("Alarm çalar · 13:52"). Saat
+ * bilinmiyorsa (pencere yok) yalnız "Alarm çalar". Ekran okuyucu da aynısını okur.
+ */
+export const alarmOnizlemeEtiketi = (saat?: string): string => (saat ? `Alarm çalar · ${saat}` : 'Alarm çalar');
+
+/** "Her uyarıda" seçiliyken bedeli. iPhone satırı yalnız iOS'ta eklenir. */
+export const ALARM_KAPSAMI_NOTU = 'Her alarm tam ekran açılır ve bildirim sınırına sayılır.';
+export const IOS_ALARM_KAPSAMI_NOTU =
+    "iPhone'da aynı anda kurulabilecek alarm sayısı sınırlıdır; sınırı aşan uyarılar bildirim olarak gelir.";
+
 /** "Akisi onizle" tarama siniri — bir pencerenin en genis halini kapsar (dk). */
 export const ONIZLEME_TARAMA_SINIRI_DK = 24 * 60;
 
@@ -236,7 +260,7 @@ export interface PencereTanimi {
      */
     vakit: MuhafizVakti;
     yon: PencereYonu;
-    /** Yon degistirilebilir mi? (muhafiz: evet, cuma/seri: hayir) */
+    /** Yon degistirilebilir mi? */
     yonSecilebilir: boolean;
     /** En fazla kac adim kurulabilir? (muhafiz 6, cuma/nafile 1) */
     maksAdim: number;
@@ -251,18 +275,14 @@ export interface PencereTanimi {
     /** Pencerenin BUGUNKU uzunlugu (dk) — esik tavani ve giris yonu plani buradan. */
     pencereUzunluguDk?: number;
     adimBilgileri: AdimBilgisi[];
-    /** Kanal cipleri gosterilsin mi? (cuma tek kanaldan gonderir) */
+    /** Kanal cipleri (bildirim / sesli anons / ikisi) gosterilsin mi? */
     kanalSecimiVar: boolean;
-    /** Bildirim sesi satiri gosterilsin mi? (cuma kanalin kendi sesini kullanir) */
+    /** Bildirim sesi satiri gosterilsin mi? */
     sesSecimiVar: boolean;
+    /** Siklik (bir kez / tekrarli) secimi gosterilsin mi? */
+    siklikSecimiVar: boolean;
     /**
-     * Siklik (bir kez / tekrarli) secimi gosterilsin mi? Verilmezse EVET.
-     * Nafile hatirlatmalari tek atisliktir: gonullu bir ibadeti tekrar tekrar
-     * hatirlatmak davet degil israr olur → secim gizlenir.
-     */
-    siklikSecimiVar?: boolean;
-    /**
-     * Anons metni SERBESTCE yazilabilir mi?
+     * Anons metni SERBESTCE yazilabilir mi? (Standart EVET; iOS ve nafile istisna.)
      *
      * iOS'ta HAYIR: metin calisma aninda seslendirilemez (arka planda kod
      * calistirilamaz), anons on-kayitli sabit bir klip olur → kutu salt okunur
@@ -278,12 +298,8 @@ export interface PencereTanimi {
      * kullaniciyi yanlis yonlendirir.
      */
     titresimSecilebilir: boolean;
-    /**
-     * GERCEK ALARM anahtari gosterilsin mi? (issue #74) Yalniz muhafiz vakitleri —
-     * cuma, nafile, yatis gibi tek atislik hatirlatmalarda alarm kanali YOK.
-     * Verilmezse kapali.
-     */
-    alarmSecilebilir?: boolean;
+    /** GERCEK ALARM anahtari gosterilsin mi? (issue #74) */
+    alarmSecilebilir: boolean;
     /**
      * Platformun ham yetenekleri.
      *
@@ -312,11 +328,8 @@ export interface PencereTanimi {
     esikErisimAdi?: string;
     /** Esik degerinin birimi ("dk kala"); verilmezse yonden turetilir. */
     esikBirimi?: string;
-    /**
-     * "Kapalı" kanal çipi gösterilsin mi? Verilmezse EVET. Nafilede (issue #273)
-     * HAYIR: kartın kendi anahtarı ve "Sil" var; kapalı bir adım anlamsızdır.
-     */
-    kapaliCipiVar?: boolean;
+    /** "Kapalı" kanal çipi gösterilsin mi? */
+    kapaliCipiVar: boolean;
     /**
      * Sesli adımda serbest anons metni YERİNE gösterilecek örnek cümle ("Telefonunuz
      * şöyle okur"). Verilirse anons editörü çizilmez — metin bağlamdan üretilir
@@ -324,11 +337,11 @@ export interface PencereTanimi {
      */
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
     /**
-     * Uygulama açıkken ekranda banner çıkıyor mu? Verilmezse EVET (muhafız).
-     * Nafilenin ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra
-     * duyulur" notu yanlış olurdu.
+     * Uygulama açıkken ekranda banner çıkıyor mu? (yetenek değil, OLGU:) Nafilenin
+     * ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra duyulur"
+     * notu yanlış olurdu.
      */
-    onPlanBanneriVar?: boolean;
+    onPlanBanneriVar: boolean;
     /**
      * Pencerenin BUGUNKU giris ve cikis ANLARI.
      *
@@ -340,6 +353,37 @@ export interface PencereTanimi {
      */
     pencere?: { baslangic: Date; bitis: Date };
 }
+
+/**
+ * HATIRLATMA YETENEKLERİNİN STANDARDI — hepsi AÇIK.
+ *
+ * Sahip kararı: hatırlatma yapısı HER YERDE aynıdır — bir yüzeye sesli anons,
+ * alarm ya da tekrar eklenip ötekine eklenmemesi kabul edilmez. Her pencere
+ * tanımı bu nesneyi YAYAR; bir yeteneği kapatmak, gerekçesi yanında yazan AÇIK
+ * bir istisnadır (yorum zorunlu). Platform yeteneği olmayanlar (iOS'ta ses
+ * seçici, titreşim, serbest anons metni) `yetenekler`den türetilir — o da
+ * istisna değil, cihazın gerçeğidir.
+ *
+ * Nöbetçi: `pencereTanimi.test.ts > YETENEK STANDARDI`.
+ */
+export const STANDART_YETENEKLER = {
+    yonSecilebilir: true,
+    kanalSecimiVar: true,
+    sesSecimiVar: true,
+    siklikSecimiVar: true,
+    alarmSecilebilir: true,
+    kapaliCipiVar: true,
+    titresimSecilebilir: true,
+    anonsMetniDuzenlenebilir: true,
+} as const;
+
+/** Platformun izin verdiği kadarıyla standart yetenekler. */
+const platformaGoreStandart = (yetenekler: PlatformYetenekleri) => ({
+    ...STANDART_YETENEKLER,
+    sesSecimiVar: yetenekler.sesSecici,
+    titresimSecilebilir: yetenekler.titresimSecimi,
+    anonsMetniDuzenlenebilir: yetenekler.serbestAnonsMetni,
+});
 
 /** Yon secicideki iki secenek — kullaniciya donuk kibar "siz" dili. */
 export const YON_SECENEKLERI: {
@@ -461,22 +505,18 @@ export function vakitPencereTanimi(
     pencere?: { baslangic: Date; bitis: Date }
 ): PencereTanimi {
     return {
+        ...platformaGoreStandart(yetenekler),
         kaynak: `vakit:${vakit}`,
         baslik: VAKIT_ADLARI[vakit],
         baslikKucuk: VAKIT_ADLARI_KUCUK[vakit],
         ikon: 'mosque',
         vakit,
         yon,
-        yonSecilebilir: true,
         maksAdim: MUHAFIZ_MAKS_ADIM,
         tonSecilebilir: true,
+        onPlanBanneriVar: true,
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
-        kanalSecimiVar: true,
-        sesSecimiVar: yetenekler.sesSecici,
-        anonsMetniDuzenlenebilir: yetenekler.serbestAnonsMetni,
-        titresimSecilebilir: yetenekler.titresimSecimi,
-        alarmSecilebilir: true,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: TEKRAR_MIN_DK,
@@ -489,10 +529,16 @@ export function vakitPencereTanimi(
 /**
  * Cuma namazi hatirlatmasi icin pencere tanimi.
  *
- * TEK ADIM + yon secilemez: cuma "vakit cikiyor" degil "camiye yetis"
- * hatirlatmasidir, olcu daima ogle vaktinin girisine kalan suredir. Kanal ve
- * ses de secilemez (mevcut `vakit_bildirim` kanali kullanilir, yeni kanal
- * ACILMAZ) → kart bugunkunden daha karmasik gorunmez, yalnizca "tekrar" kazanir.
+ * STANDART İSTİSNALARI (her biri teknik gerekçeli — sessiz boşluk değil, açık takip):
+ * - Yön: cuma "vakit çıkıyor" değil "camiye yetiş" hatırlatmasıdır; ölçü daima
+ *   öğlenin GİRİŞİNE kalan süredir. "Vakit çıkarken" yönünün cumada karşılığı yok.
+ * - Tek adım, kanal/ses/titreşim/alarm/kapalı çipi: `CumaHatirlatmaServisi` muhafız
+ *   teslim katmanından (`MuhafizTeslimcisi`) GEÇMEZ — 4 haftalık planı doğrudan
+ *   `vakit_bildirim` kanalına kurar ve ayarı tek bir ofset + sıklıktır
+ *   (`CumaHatirlatmaAyarlari`), adım dizisi değildir. Bu yetenekler ancak cuma
+ *   nafile gibi (#273) kendi önekli bir teslimci örneğine taşınınca (adım dizisi +
+ *   göç + defter paritesi) açılabilir; tek başına bayrak açmak ekranda çalışmayan
+ *   anahtarlar gösterirdi.
  */
 export function cumaPencereTanimi(secenekler: {
     esikSinirlari: EsikSinirlari;
@@ -502,6 +548,15 @@ export function cumaPencereTanimi(secenekler: {
     varsayilanTekrarDk: number;
 }): PencereTanimi {
     return {
+        ...STANDART_YETENEKLER,
+        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (teslimci dışı, tek ofsetli model).
+        yonSecilebilir: false,
+        kanalSecimiVar: false,
+        sesSecimiVar: false,
+        alarmSecilebilir: false,
+        kapaliCipiVar: false,
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
         kaynak: 'cuma',
         baslik: 'Cuma namazı',
         baslikKucuk: 'cuma namazı',
@@ -509,14 +564,9 @@ export function cumaPencereTanimi(secenekler: {
         // Kimlik ogle namazidir; "Cuma" yalnizca gorunen addir.
         vakit: 'ogle',
         yon: 'cikisaDogru',
-        yonSecilebilir: false,
         maksAdim: 1,
+        onPlanBanneriVar: false,
         adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'mosque', renk: SEVIYE_BILGILERI.nazik.renk }],
-        kanalSecimiVar: false,
-        sesSecimiVar: false,
-        // Cuma tek kanaldan gonderilir; metin/titresim duzenlemesi zaten yok.
-        anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
         yetenekler: ANDROID_YETENEKLERI,
         esikAdimDk: secenekler.esikAdimDk,
         tekrarMinDk: secenekler.tekrarMinDk,
@@ -533,13 +583,25 @@ export function cumaPencereTanimi(secenekler: {
 /**
  * Yatış hatırlatması (issue #290) için pencere tanımı — cuma deseni.
  *
- * TEK ADIM, TEK ATIŞ, yön/kanal/ses/sıklık seçimi kapalı: ölçü daima kullanıcının
- * yatış saatine kalan süredir ("yatıştan 30 dk önce"). Bildirim yatsı
- * hatırlatmasıysa muhafızın taban kanalından, muhasebeyse vakit kanalından
- * gider — yeni kanal ACILMAZ.
+ * STANDART İSTİSNALARI (teknik gerekçeli): yatış hatırlatması bir PENCERE değil
+ * TEK bir andır (yatıştan X dk önce) ve içeriği tetik anındaki kayıttan üretilen
+ * "muhasebe"dir — tekrar etmesi, yönü ya da adım dizisi yoktur. Kanalı içerik
+ * belirler (yatsı hatırlatması muhafızın taban kanalı, muhasebe vakit kanalı);
+ * `YatisHatirlatmaServisi` teslimciden geçmediği için kanal/ses/titreşim/alarm
+ * anahtarları ekranda çalışmayan seçenek olurdu.
  */
 export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; esikAdimDk: number }): PencereTanimi {
     return {
+        ...STANDART_YETENEKLER,
+        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (tek an, içerik kayıttan).
+        yonSecilebilir: false,
+        kanalSecimiVar: false,
+        sesSecimiVar: false,
+        siklikSecimiVar: false,
+        alarmSecilebilir: false,
+        kapaliCipiVar: false,
+        anonsMetniDuzenlenebilir: false,
+        titresimSecilebilir: false,
         kaynak: 'yatis',
         baslik: 'Yatış hatırlatması',
         baslikKucuk: 'yatış hatırlatması',
@@ -547,14 +609,9 @@ export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; e
         // Kimlik yatsıdır; anons kullanılmaz, değer tip sözleşmesini doldurur.
         vakit: 'yatsi',
         yon: 'cikisaDogru',
-        yonSecilebilir: false,
         maksAdim: 1,
+        onPlanBanneriVar: false,
         adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bed', renk: SEVIYE_BILGILERI.nazik.renk }],
-        kanalSecimiVar: false,
-        sesSecimiVar: false,
-        siklikSecimiVar: false,
-        anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
         yetenekler: ANDROID_YETENEKLERI,
         esikAdimDk: secenekler.esikAdimDk,
         tekrarMinDk: TEKRAR_MIN_DK,
@@ -593,11 +650,16 @@ export function cevrilemeyenAnonsVarMi(seviyeler: SeviyeAyari[], yon: PencereYon
  * Nafile (kuşluk / evvâbîn / teheccüd) hatırlatması için pencere tanımı
  * (issue #77, #273).
  *
- * Muhafızla AYNI dil: yön seçilir, en fazla 3 adım, her adımın eşiği/sıklığı
- * (bir kez ya da 10–60 dk tekrar) ve kanalları (bildirim / sesli anons / ikisi
- * + titreşim). Farklar: TON YOK (nafile davettir, ısrar değil), ses seçimi yok
- * (kanal sesi), "Kapalı" çipi yok (kartın anahtarı kapatır), anons metni
- * yazılmaz (bağlamdan üretilir — `anonsOrnegiOlustur`), ön plan banner'ı yok.
+ * Muhafızla AYNI yetenekler (`STANDART_YETENEKLER`): yön, en fazla 3 adım, her
+ * adımın eşiği/sıklığı (bir kez ya da 10–60 dk tekrar), kanallar (bildirim /
+ * sesli anons / ikisi / kapalı), bildirim sesi, titreşim ve GERÇEK ALARM.
+ *
+ * STANDART İSTİSNALARI (gerekçeli):
+ * - TON YOK: nafile gönüllü ibadettir; "sert/acil" ton ve acil kanal (Rahatsız
+ *   Etmeyin'i deler) davet değil ısrar olur (#273 fıkıh kararı).
+ * - Anons metni yazılmaz: muhafız şablonları `{vakit}` ile FARZ vaktine kuruludur;
+ *   nafile cümlesi bağlamdan üretilir (`anonsOrnegiOlustur` gösterir).
+ * - Ön plan banner'ı yok (olgu, yetenek değil): ön plan muhafızı yalnız farz izler.
  * `pencere` verilirse zaman şeridi bugünün penceresini çizer.
  */
 export function nafilePencereTanimi(secenekler: {
@@ -626,6 +688,11 @@ export function nafilePencereTanimi(secenekler: {
             }))
             : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
     return {
+        ...platformaGoreStandart(yetenekler),
+        // İSTİSNALAR — gerekçe fonksiyonun belgesinde.
+        tonSecilebilir: false,
+        anonsMetniDuzenlenebilir: false,
+        onPlanBanneriVar: false,
         kaynak: secenekler.kaynak,
         baslik: secenekler.baslik,
         baslikKucuk: secenekler.baslikKucuk,
@@ -634,19 +701,10 @@ export function nafilePencereTanimi(secenekler: {
         // icermez, deger yalniz tip sozlesmesini doldurur.
         vakit: 'ogle',
         yon: secenekler.yon,
-        yonSecilebilir: true,
         maksAdim: NAFILE_MAKS_ADIM,
-        tonSecilebilir: false,
         pencereUzunluguDk,
         adimBilgileri,
-        kanalSecimiVar: true,
-        sesSecimiVar: false,
-        siklikSecimiVar: true,
-        kapaliCipiVar: false,
-        onPlanBanneriVar: false,
-        anonsMetniDuzenlenebilir: false,
         anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
-        titresimSecilebilir: yetenekler.titresimSecimi,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: NAFILE_TEKRAR_MIN_DK,

@@ -8,7 +8,7 @@ import { LocalNafileServisi, nafileHatirlatmaAcikMi } from '../../data/local/Loc
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
 import { nafileKanalAyarlari } from '../../core/nafile/nafileAdimlari';
-import type { NafileTuru } from '../../core/nafile/nafileTipleri';
+import { NAFILE_ADLARI, type NafileAyarlari, type NafileTuru } from '../../core/nafile/nafileTipleri';
 import {
     NAFILE_ID_ONEKI,
     nafileKimlikOneki,
@@ -56,7 +56,9 @@ export function nafileTeslimcisiniAl(): MuhafizTeslimcisi {
     if (Platform.OS === 'ios') {
         const { IosMuhafizTeslimcisi } =
             require('./IosMuhafizTeslimcisi') as typeof import('./IosMuhafizTeslimcisi');
-        _teslimci = new IosMuhafizTeslimcisi({ kendiOneki: NAFILE_ID_ONEKI, matrissizAnons: true });
+        // Gerçek alarm (AlarmKit, #74) nafilede de STANDART yetenektir; iptaller yalnız
+        // `nafile_` önekli kimliklere dokunur (muhafızın alarmları korunur).
+        _teslimci = new IosMuhafizTeslimcisi({ kendiOneki: NAFILE_ID_ONEKI, matrissizAnons: true, alarmDestegi: true });
     } else {
         const { AndroidMuhafizTeslimcisi } =
             require('./AndroidMuhafizTeslimcisi') as typeof import('./AndroidMuhafizTeslimcisi');
@@ -64,8 +66,11 @@ export function nafileTeslimcisiniAl(): MuhafizTeslimcisi {
             alarmButcesi: ANDROID_NAFILE_PAYI,
             kanalHazirligi: async (m) => m,
             anonsOneki: NAFILE_ID_ONEKI,
-            // Gerçek alarm (issue #74) muhafızındır; bu örnek alarm kanallarını toplamasın.
-            alarmDestegi: false,
+            // Gerçek alarm (issue #74) nafilede de kurulur; önceki turun alarmları yalnız
+            // `nafile_` önekiyle silinir. Alarm KANALLARINI muhafız toplar (nafileninkileri
+            // diskten okuyup korur) — bu örnek toplarsa muhafızın kanallarını silerdi.
+            alarmDestegi: true,
+            alarmKanalTemizligi: false,
         });
     }
     return _teslimci;
@@ -153,6 +158,13 @@ export class NafileHatirlatmaServisi {
                 Logger.error('NafileHatirlatma', 'Kildim: bekleyenler iptal edilemedi', e);
             }
             anonslariOnekleIptalEt(onek);
+            // Gerçek alarmlar (#74): bekleyenler + o an ÇALAN alarm (Android ses + tam
+            // ekran; iOS AlarmKit) susar. Native Kıldım yolu da aynı öneki susturur.
+            try {
+                nafileTeslimcisiniAl().vakitYanKanallariniIptalEt?.(onek);
+            } catch (e) {
+                Logger.warn('NafileHatirlatma', 'Kildim: alarmlar susturulamadi', e);
+            }
             try {
                 const gosterilen = await Notifications.getPresentedNotificationsAsync();
                 for (const b of gosterilen) {
@@ -167,11 +179,48 @@ export class NafileHatirlatmaServisi {
         });
     }
 
+    /**
+     * iOS: nafile GERÇEK ALARMINDAN (AlarmKit) basılan "Kıldım"lar. Native o nafilenin
+     * kalan alarm/bildirimlerini zaten iptal etti; burada yalnız susturma HAFIZASI yazılır
+     * (yoksa bir sonraki planlama o günün kalanını yeniden kurardı). Asla fırlatmaz.
+     */
+    public async alarmKildimleriniIsle(): Promise<void> {
+        if (Platform.OS !== 'ios') return;
+        await this.siraya(() => this.alarmKildimleriniYaz());
+    }
+
+    private async alarmKildimleriniYaz(): Promise<void> {
+        if (Platform.OS !== 'ios') return;
+        try {
+            const { alarmKitNafileKildimleriniAl } =
+                require('../../../modules/expo-muhafiz-alarmkit/src') as typeof import('../../../modules/expo-muhafiz-alarmkit/src');
+            for (const k of await alarmKitNafileKildimleriniAl()) {
+                if (k.tur !== 'kusluk' && k.tur !== 'evvabin' && k.tur !== 'teheccud') continue;
+                await LocalNafileServisi.kilindiIsaretle(k.tarih, k.tur, bugunuAl());
+            }
+        } catch (e) {
+            Logger.warn('NafileHatirlatma', 'Alarm Kildim kuyrugu okunamadi', e);
+        }
+    }
+
     private async planlamayiCalistir(koordinatlar: NafileKoordinat | null): Promise<void> {
-        const ayarlar = await LocalNafileServisi.getAyarlar();
+        // Alarmdan gelen Kıldım'lar ÖNCE: kılınmış nafilenin kalanı yeniden kurulmasın.
+        await this.alarmKildimleriniYaz();
+        // Özel sesler DOĞRULANIR (Android): başka cihazdan geri yüklenen `content://`
+        // çözülmez; kanal/alarm ölü sesle kurulup kalıcı sessiz çalardı. Plan, kanal
+        // hazırlığı ve muhafızın çöp toplaması AYNI doğrulamadan geçer (id paritesi).
+        const ayarlar = await this.sesleriDogrula(await LocalNafileServisi.getAyarlar());
 
         if (!nafileHatirlatmaAcikMi(ayarlar)) {
             await this.mevcutlariTemizle();
+            // Bekleyen GERÇEK ALARMLAR (#74) expo listesinde yoktur: teslimcinin
+            // hazırlığı önceki turunkileri `nafile_` önekiyle siler.
+            const teslimci = nafileTeslimcisiniAl();
+            try {
+                await teslimci.hazirla();
+            } finally {
+                await teslimci.tamamla?.();
+            }
             return;
         }
 
@@ -230,8 +279,12 @@ export class NafileHatirlatmaServisi {
                 muhafizVakti: 'ogle',
                 tarih: plan.tarih,
                 yon: plan.yon,
+                // Pencere sonu: gerçek alarm geç tetiklenirse (vakit bittiyse) çalmaz.
+                cikis: plan.son,
                 ozel: {
                     veri: { ...veri },
+                    // Gerçek alarm ekranında görünen ad (Kıldım native'de NAFİLE yoluna gider).
+                    alarmAdi: NAFILE_ADLARI[plan.tur],
                     ...(plan.uyandirma ? { kanalId: BILDIRIM_SABITLERI.KANALLAR.NAFILE_UYANDIRMA } : {}),
                     // iOS: uyandırma Odak'ı deler (sessiz anahtarı DELMEZ — ekranda söylenir).
                     zamanaDuyarli: plan.uyandirma,
@@ -240,6 +293,19 @@ export class NafileHatirlatmaServisi {
         } catch (e) {
             // Tek bir bildirim patlarsa kalanlar yine kurulmalı.
             Logger.error('NafileHatirlatma', 'Planlama hatasi', e);
+        }
+    }
+
+    /** `MuhafizKanalServisi.nafileSesleriniDogrula` — tembel (köprü grafiği testlere sızmasın). */
+    private async sesleriDogrula(ayarlar: NafileAyarlari): Promise<NafileAyarlari> {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            return await MuhafizKanalServisi.nafileSesleriniDogrula(ayarlar);
+        } catch (e) {
+            Logger.error('NafileHatirlatma', 'Sesler dogrulanamadi', e);
+            return ayarlar;
         }
     }
 

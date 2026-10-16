@@ -1,11 +1,14 @@
 /**
  * Nafile hatırlatma ADIMLARI (issue #273) — SAF: göç, normalize, ekle/sil, yön.
  *
- * Nafile artık muhafızın bir vaktiyle aynı şekli taşır (`{ yon, adimlar }`),
- * ama üç kısıtla: en fazla `NAFILE_MAKS_ADIM` adım, ton YOK (her adım 'nazik',
- * `acilKanal: false` — acil kanal DND'yi deler, gönüllü ibadete uygun değil),
- * ses seçimi YOK (`bildirimSesi` daima varsayılan). Bu üç kısıt NORMALİZE ile
- * zorlanır: diskten ya da yedekten ne gelirse gelsin motor aynı şeyi görür.
+ * Nafile artık muhafızın bir vaktiyle aynı şekli taşır (`{ yon, adimlar }`)
+ * ve aynı yetenekleri (kanallar + titreşim + GERÇEK ALARM, bildirim sesi, kapalı
+ * adım) — iki kısıtla: en fazla `NAFILE_MAKS_ADIM` adım, ton YOK (her adım
+ * 'nazik', `acilKanal: false` — acil kanal DND'yi deler, gönüllü ibadete uygun
+ * değil). Kısıtlar NORMALİZE ile zorlanır: diskten ya da yedekten ne gelirse
+ * gelsin motor aynı şeyi görür. Normalize kullanıcının seçtiği alanları
+ * (alarm, ses, kanal hafızası) KORUMAK zorundadır — atarsa ekrandaki her
+ * anahtar yeniden açılışta sessizce geri döner.
  *
  * GÖÇ (eski tek-ofsetli kayıt → tek adım) şekle bakar, bayrağa DEĞİL:
  * `adimlar` dizisi varsa kayıt yenidir; yoksa eski alanlardan (`ofsetDk`,
@@ -14,6 +17,7 @@
  */
 import type { SeviyeAyari, Siklik, UyariKanallari, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
+import { ozelSesMi } from '../muhafiz/sesKimligi';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
@@ -56,16 +60,36 @@ export function nafileAdimi(esikDk: number, siklik: Siklik = 'birkez', kanallar:
     };
 }
 
-const kanallarNormalize = (ham: unknown): UyariKanallari => {
-    if (!nesneMi(ham)) return { bildirim: true };
+/** Kanal kümesinin yalnız tanınan, AÇIK alanları. */
+const kanalAlanlari = (ham: Record<string, unknown>): UyariKanallari => {
     const k: UyariKanallari = {};
     if (ham.bildirim === true) k.bildirim = true;
     if (ham.sesli === true) k.sesli = true;
     if (ham.titresim === true) k.titresim = true;
-    // Nafilede "kapalı adım" yoktur (kartın kendi anahtarı ve "Sil" var):
-    // bildirim de sesli de yoksa adım bildirime düşer, yoksa hiç konuşmazdı.
-    if (!k.bildirim && !k.sesli) k.bildirim = true;
+    if (ham.alarm === true) k.alarm = true;
     return k;
+};
+
+/**
+ * Kanal kümesi. Hiçbir kanal açık değilse adım KAPALIDIR (muhafızla aynı:
+ * "Kapalı" çipi). Yalnız titreşim/alarm açıkken bildirim de açılır: titreşim tek
+ * başına sessiz bir uyarıdır, alarmın tekrarları da bildirimle gelir — ikisi de
+ * bildirimsiz kalırsa adım fiilen konuşmazdı. Bozuk (nesne olmayan) kayıt
+ * bildirime düşer (eski davranış).
+ */
+const kanallarNormalize = (ham: unknown): UyariKanallari => {
+    if (!nesneMi(ham)) return { bildirim: true };
+    const k = kanalAlanlari(ham);
+    const acikVar = k.bildirim || k.sesli || k.titresim || k.alarm;
+    if (acikVar && !k.bildirim && !k.sesli) k.bildirim = true;
+    return k;
+};
+
+/** Kapalı adımın kanal hafızası (`seviyeAcKapa`); boş/bozuksa yok sayılır. */
+const oncekiKanallarNormalize = (ham: unknown): UyariKanallari | undefined => {
+    if (!nesneMi(ham)) return undefined;
+    const k = kanallarNormalize(ham);
+    return k.bildirim || k.sesli ? k : undefined;
 };
 
 const siklikNormalize = (ham: unknown): Siklik => {
@@ -75,14 +99,30 @@ const siklikNormalize = (ham: unknown): Siklik => {
     return 'birkez';
 };
 
-/** Tek bir adımı nafile kısıtlarına çeker; çözülemezse `null`. */
+/**
+ * Tek bir adımı nafile kısıtlarına çeker; çözülemezse `null`. Ton/aciliyet/anons
+ * metni ZORLANIR; kullanıcının seçtikleri (kanallar, bildirim sesi + adı, kapalı
+ * adımın kanal hafızası) KORUNUR.
+ */
 const adimNormalize = (ham: unknown): SeviyeAyari | null => {
     if (!nesneMi(ham) || typeof ham.esikDk !== 'number' || !Number.isFinite(ham.esikDk)) return null;
-    return nafileAdimi(
+    const kanallar = kanallarNormalize(ham.kanallar);
+    const adim = nafileAdimi(
         sayiKenetle(ham.esikDk, ESIK_MUTLAK_MIN, ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN),
         siklikNormalize(ham.siklik),
-        kanallarNormalize(ham.kanallar)
+        kanallar
     );
+    if (typeof ham.bildirimSesi === 'string' && ham.bildirimSesi.length > 0) {
+        adim.bildirimSesi = ham.bildirimSesi;
+        if (typeof ham.sesAdi === 'string' && ham.sesAdi.length > 0) adim.sesAdi = ham.sesAdi;
+    }
+    // Hafıza YALNIZ kapalı adımda anlamlıdır ("oncekiKanallar var ⟺ adım kapalı").
+    const kapali = !(kanallar.bildirim || kanallar.sesli || kanallar.titresim || kanallar.alarm);
+    const hafiza = kapali ? oncekiKanallarNormalize(ham.oncekiKanallar) : undefined;
+    if (hafiza) adim.oncekiKanallar = hafiza;
+    // Alarm kapsamı (#74): yalnız "Her uyarıda" yazılır; yokluğu "yalnız ilk" demektir.
+    if (ham.alarmKapsami === 'hepsi') adim.alarmKapsami = 'hepsi';
+    return adim;
 };
 
 /**
@@ -204,6 +244,63 @@ export function nafileAdimGuncelle<T extends NafileHatirlatmaAyari>(ayar: T, ind
 export function nafileYonunuDegistir<T extends NafileHatirlatmaAyari>(ayar: T, yon: PencereYonu): T {
     if (ayar.yon === yon) return ayar;
     return { ...ayar, yon, adimlar: kronolojikSirala(ayar.adimlar, yon) };
+}
+
+/**
+ * Açık nafilelerin kullandığı BENZERSİZ özel ses URI'leri (SAF) — muhafızın
+ * `ozelSesleriTopla` ikizi. Çağıran bunları native'de çözerek doğrular.
+ */
+export function nafileOzelSesleriniTopla(a: NafileAyarlari): string[] {
+    const sesler = new Set<string>();
+    for (const n of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]) {
+        if (!n.aktif) continue;
+        for (const s of n.adimlar) {
+            if (s && ozelSesMi(s.bildirimSesi)) sesler.add(s.bildirimSesi);
+        }
+    }
+    return [...sesler];
+}
+
+/**
+ * ÇÖZÜLEMEYEN özel sesleri varsayılana düşürür (SAF) — muhafızın
+ * `cozulemeyenSesleriDusur` ikizi. `content://` cihaza özgüdür: başka cihazdan geri
+ * yüklenen yedekte ses çözülmez; kanal (ya da gerçek alarm kanalı) o ölü URI ile
+ * kurulursa SESSİZ çalar ve kanal sesi sonradan DEĞİŞTİRİLEMEZ. Plan, nafile kanal
+ * listesi ve muhafızın çöp toplamada koruduğu nafile kanal id'leri AYNI doğrulanmış
+ * ayardan türemeli, yoksa id'ler ayrışır. Değişiklik yoksa AYNI referans döner.
+ */
+export function nafileCozulemeyenSesleriDusur(a: NafileAyarlari, cozulemeyen: ReadonlySet<string>): NafileAyarlari {
+    if (cozulemeyen.size === 0) return a;
+    const duzelt = <T extends NafileHatirlatmaAyari>(n: T): T => {
+        if (!n.adimlar.some((s) => s && cozulemeyen.has(s.bildirimSesi))) return n;
+        return {
+            ...n,
+            adimlar: n.adimlar.map((s) =>
+                s && cozulemeyen.has(s.bildirimSesi) ? { ...s, bildirimSesi: VARSAYILAN_SES, sesAdi: undefined } : s
+            ),
+        };
+    };
+    const kusluk = duzelt(a.hatirlatmalar.kusluk);
+    const evvabin = duzelt(a.hatirlatmalar.evvabin);
+    const teheccud = duzelt(a.teheccud);
+    if (kusluk === a.hatirlatmalar.kusluk && evvabin === a.hatirlatmalar.evvabin && teheccud === a.teheccud) return a;
+    return { ...a, hatirlatmalar: { ...a.hatirlatmalar, kusluk, evvabin }, teheccud };
+}
+
+/**
+ * Nafile adımlarının kullandığı GERÇEK ALARM kanalı sesleri (muhafızın alarm kanal
+ * çöp toplaması bunları KORUMALI — `MuhafizKanalServisi`/`alarmKanallariniCikar` deseni).
+ * Yalnız açık nafileler ve alarmı açık adımlar.
+ */
+export function nafileAlarmSesleri(a: NafileAyarlari): string[] {
+    const sesler = new Set<string>();
+    for (const n of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]) {
+        if (!n.aktif) continue;
+        for (const s of n.adimlar) {
+            if (s.kanallar?.alarm === true) sesler.add(s.bildirimSesi ?? VARSAYILAN_SES);
+        }
+    }
+    return [...sesler];
 }
 
 /**

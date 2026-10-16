@@ -127,6 +127,12 @@ object MuhafizAlarmKurallari {
 
     data class Yuk(
         val kimlik: String,
+        /**
+         * NAFİLE alarmı mı? (`nafile_<gün>_<tür>_<k>` kimliği — issue #74 nafilede de
+         * standart yetenek.) `null` = muhafız. "Kıldım" bu alana göre YOL SEÇER: nafile
+         * FARZ kuyruğuna ASLA yazmaz, ertelenmez, otomasyon "vakit çıkıyor" olayı doğurmaz.
+         */
+        val nafileTuru: String? = null,
         val tetikMs: Long,
         val baslik: String,
         val metin: String,
@@ -153,7 +159,10 @@ object MuhafizAlarmKurallari {
             val o = JSONObject(ham)
             if (o.optInt("surum", 0) != YUK_SURUMU) return null
             val kimlik = o.optString("kimlik", "")
-            val vakit = BildirimKildimKurallari.vakitCoz(kimlik) ?: return null
+            // Kimlik YOLU belirler: muhafız vakti ya da nafile; ikisi de değilse çalmaz
+            // (Kıldım/iptal öneki bulamazdı).
+            val vakit = BildirimKildimKurallari.vakitCoz(kimlik)
+            val nafile = if (vakit == null) NafileKildimKurallari.nafileCoz(kimlik) ?: return null else null
             val alarmKanalId = o.optString("alarmKanalId", "")
             if (!alarmKanaliMi(alarmKanalId)) return null
             val tetikMs = o.optLong("tetikMs", 0L)
@@ -161,14 +170,17 @@ object MuhafizAlarmKurallari {
             val sesUri = if (o.isNull("sesUri")) null else o.optString("sesUri", "").ifBlank { null }
             Yuk(
                 kimlik = kimlik,
+                nafileTuru = nafile?.tur,
                 tetikMs = tetikMs,
                 baslik = o.optString("baslik", ""),
                 metin = o.optString("metin", ""),
-                vakit = vakit.vakit,
+                // Nafilede vakit (farz kayıt kodu) YOKTUR: boş — farz kuyruğu boşu reddeder.
+                vakit = vakit?.vakit ?: "",
                 vakitAdi = o.optString("vakitAdi", ""),
-                tarih = vakit.tarih,
+                tarih = vakit?.tarih ?: nafile!!.tarih,
                 cikisMs = o.optLong("cikisMs", 0L),
-                erteleSinirMs = o.optLong("erteleSinirMs", 0L),
+                // Nafile ertelenmez (fıkhi sınır muhafızın vaktine kuruludur).
+                erteleSinirMs = if (nafile != null) 0L else o.optLong("erteleSinirMs", 0L),
                 seviye = o.optInt("seviye", 1),
                 alarmKanalId = alarmKanalId,
                 alarmKanalAdi = o.optString("alarmKanalAdi", "").ifBlank { "Namaz alarmı" },

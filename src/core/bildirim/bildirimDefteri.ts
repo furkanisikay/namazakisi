@@ -15,7 +15,8 @@
  *   vakit bildirimi → `vakitBildirimPlaniOlustur` (bugün + yarın)
  *   cuma            → `cumaPlaniOlustur` (4 cuma)
  *   camiye gitme    → `camiyeGitPlaniOlustur` (iOS 3, Android 7 gün; cuma öğlesi çakışması)
- *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe)
+ *   nafile          → `nafilePlaniOlustur` (3 gün / 7 gece ya da günü gününe; gerçek
+ *                     alarm adımı muhafızla aynı kuralla `alarm` sayılır)
  *   gün sonu        → `gunSonuPlaniOlustur` (iOS 3, Android 7 gün)
  *   yatış/muhasebe  → `yatisPlaniOlustur` (iOS 3, Android 7 namaz günü; issue #290)
  *   takvim çakışması → `takvimCakismaPlaniOlustur` (iOS 3, Android 7 gün; issue #291 —
@@ -44,7 +45,7 @@ import {
     type MuhafizVakitZamani,
 } from '../muhafiz/muhafizTeslimPlani';
 import { kullanilabilirSlotHesapla, yedekKapasitesiHesapla } from '../muhafiz/ios/bildirimButcesi';
-import { nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
+import { nafileAlarmKurarMi, nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
@@ -59,6 +60,8 @@ import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vak
 import {
     ANDROID_MUHAFIZ_PAYI,
     ANDROID_NAFILE_PAYI,
+    IOS_ALARMKIT_MUHAFIZ_PAYI,
+    IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
     YAKINLIK_ORANI,
     platformSiniri,
@@ -106,6 +109,14 @@ export interface DefterKaydi {
      * `toplam`/`gelmeyecek`/eşiklere KATMAZ, `yedek` olarak ayrıca söyler.
      */
     yedek?: true;
+    /**
+     * Kaydın PAYI başka bir teslimci örneğine aittir (Android nafile: `ANDROID_NAFILE_PAYI`,
+     * üreticide kesilir). Nafilenin gerçek alarmı ve anons alarmı `alarm`/`anons`
+     * kaynağında GÖRÜNÜR ama muhafızın 360'lık payına SAYILMAZ — sayılsaydı muhafız
+     * 330 + nafile 40 alarmda defter 10 "gelmeyecek" der, sığan eklemeyi reddeder ve
+     * muhafızı seyreltmeyi önerirdi; cihaz ise hepsini kurar. Toplam havuzda sayılır.
+     */
+    nafilePayi?: true;
 }
 
 export interface DefterKoordinat {
@@ -157,8 +168,22 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     const ozelGundeMi = g.ozelGundeMi ?? (() => false);
     const kilindiMi = (tarih: string, vakit: VakitAdi) => (g.kilinan?.[tarih] ?? []).includes(vakit);
     const android = g.platform === 'android';
-    const ekle = (kaynak: DefterKaynagi, zamanMs: number, tur: DefterKaydi['tur'] = 'bildirim', yedek = false) => {
-        if (zamanMs > simdiMs) kayitlar.push({ kaynak, zamanMs, tur, ...(yedek ? { yedek: true as const } : {}) });
+    const ekle = (
+        kaynak: DefterKaynagi,
+        zamanMs: number,
+        tur: DefterKaydi['tur'] = 'bildirim',
+        yedek = false,
+        nafilePayi = false
+    ) => {
+        if (zamanMs > simdiMs) {
+            kayitlar.push({
+                kaynak,
+                zamanMs,
+                tur,
+                ...(yedek ? { yedek: true as const } : {}),
+                ...(nafilePayi ? { nafilePayi: true as const } : {}),
+            });
+        }
     };
     const guvenli = (is: () => void) => {
         try {
@@ -181,6 +206,8 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
             const muhafizVakitleri = muhafizVakitleriniHesapla(koordinat, g.simdi, {
                 yarininImsagi: yarininImsagiPlanlanirMi(g.platform),
             });
+            // iOS AlarmKit tavanı (teslimciyle AYNI pay, kronolojik): fazlası bildirim.
+            let iosAlarm = 0;
             for (const aday of muhafizTeslimPlaniOlustur({
                 matris,
                 vakitler: muhafizVakitleri,
@@ -191,7 +218,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
                 // YERİNE geçer → tek alarm sayılır. iOS'ta AlarmKit izinliyse yine alarm
                 // (64 sınırına sayılmaz — `tur: 'alarm'`), değilse bildirim olarak kalır.
-                if ((android || g.iosAlarmKit === true) && alarmKurarMi(aday)) {
+                const iosAlarmKurulur =
+                    !android && g.iosAlarmKit === true && aday.zaman.getTime() > simdiMs && iosAlarm < IOS_ALARMKIT_MUHAFIZ_PAYI;
+                if ((android || iosAlarmKurulur) && alarmKurarMi(aday)) {
+                    if (!android) iosAlarm++;
                     ekle('alarm', aday.zaman.getTime(), 'alarm');
                     continue;
                 }
@@ -240,9 +270,20 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 ...(android ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
             };
             const plan = nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi, secenekler);
+            let iosAlarm = 0;
             for (const k of plan) {
+                // Gerçek alarm (issue #74, nafilede de standart): muhafızla AYNI kural —
+                // Android'de bildirim + anonsun YERİNE tek alarm, iOS'ta AlarmKit izinliyse
+                // (ve nafile payı dolmadıysa) alarm (64 sınırına sayılmaz), değilse bildirim.
+                const iosAlarmKurulur = !android && g.iosAlarmKit === true && iosAlarm < IOS_ALARMKIT_NAFILE_PAYI;
+                if ((android || iosAlarmKurulur) && nafileAlarmKurarMi(k)) {
+                    if (!android) iosAlarm++;
+                    // Payı nafilenin (`ANDROID_NAFILE_PAYI`), muhafızın 360'ına sayılmaz.
+                    ekle('alarm', k.zaman.getTime(), 'alarm', false, true);
+                    continue;
+                }
                 ekle('nafile', k.zaman.getTime());
-                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm');
+                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, true);
             }
         });
     }
@@ -391,9 +432,11 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
 
     let gelmeyecek = Math.max(0, toplam - sinir);
     if (platform === 'android') {
-        // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser.
-        const muhafizAlarm =
-            (sayac.get('muhafiz') ?? 0) + (sayac.get('anons') ?? 0) + (sayac.get('alarm') ?? 0);
+        // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser. Nafilenin
+        // alarm/anonsları AYRI teslimci örneğinin AYRI payındadır (`nafilePayi`).
+        const muhafizAlarm = sayilan.filter(
+            (k) => !k.nafilePayi && (k.kaynak === 'muhafiz' || k.kaynak === 'anons' || k.kaynak === 'alarm')
+        ).length;
         gelmeyecek = Math.max(gelmeyecek, muhafizAlarm - ANDROID_MUHAFIZ_PAYI);
     } else {
         // iOS teslimcisi muhafıza `64 − muhafız dışı − güvenlik payı` slot bırakır

@@ -342,6 +342,8 @@ const AppIcerik: React.FC = () => {
     // Siri kuyruğuna yazar → aşağıdaki Siri olayı işler.)
     const alarmAboneligiKaldir = alarmDegisikliginiDinle((tur) => {
       if (tur === 'ertele') ertelemeDegistiBildir();
+      // Nafile alarmındaki "Kıldım" (FARZ yazmaz): susturma hafızası hemen yazılsın.
+      else if (tur === 'nafileKildim') NafileHatirlatmaServisi.getInstance().alarmKildimleriniIsle().catch(() => {});
     });
 
     // Camideyim olayları (uygulama AÇIKKEN native yayar): camiye girişte/çıkışta

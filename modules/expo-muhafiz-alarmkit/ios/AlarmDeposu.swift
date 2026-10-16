@@ -130,6 +130,34 @@ public final class AlarmDeposu: @unchecked Sendable {
         }
     }
 
+    // MARK: - Nafile "Kildim" kuyrugu (issue #74 + #273)
+    //
+    // Nafile alarmindaki "Kildim" FARZ kaydi YAZMAZ (Siri kuyrugu farz kuyrugudur). JS
+    // yalniz o gunun o nafilesinin susturma hafizasini yazmali; uygulama kapaliyken
+    // basildiysa haber burada bekler, JS bir sonraki planlamada / olayda bosaltir.
+
+    static let nafileAnahtari = "namazakisi.alarmkit.nafile_kildim"
+    static let nafileTavani = 32
+
+    /// `<gun>_<tur>` ekler (ayni oge iki kez eklenmez; tavan asilirsa en ESKI duser).
+    public func nafileKildimEkle(tarih: String, tur: String) {
+        kilitli {
+            var liste = defaults.stringArray(forKey: Self.nafileAnahtari) ?? []
+            let oge = "\(tarih)_\(tur)"
+            if !liste.contains(oge) { liste.append(oge) }
+            defaults.set(Array(liste.suffix(Self.nafileTavani)), forKey: Self.nafileAnahtari)
+        }
+    }
+
+    /// Bekleyen nafile "Kildim"larini dondurur ve BOSALTIR.
+    public func nafileKildimleriniAl() -> [String] {
+        return kilitli {
+            let liste = defaults.stringArray(forKey: Self.nafileAnahtari) ?? []
+            defaults.removeObject(forKey: Self.nafileAnahtari)
+            return liste
+        }
+    }
+
     /// Onekle baslayan kayitlarin kimlikleri ("Kildim": `muhafiz_<gun>_vakit_<vakit>`).
     public func onekliKimlikler(_ onek: String) -> [String] {
         return kayitlar().map(\.kimlik).filter { $0.hasPrefix(onek) }

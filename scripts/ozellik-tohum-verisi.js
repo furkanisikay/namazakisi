@@ -48,7 +48,9 @@ function nafileAyarlari(yogun) {
     const tekrar = yogun ? { herDk: 10 } : 'birkez';
     return {
         // Ana ekranda zincir satirlari (kusluk/evvabin/teheccud) gorunsun.
+        // Gosterge nafile BASINADIR; `gostergeAktif` "en az biri" turevidir.
         gostergeAktif: true,
+        gosterge: { kusluk: true, evvabin: true, teheccud: true },
         hatirlatmalar: {
             kusluk: {
                 aktif: true,

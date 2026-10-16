@@ -54,6 +54,14 @@ describe('alarmAniMi — yalnız adımın İLK tetiği', () => {
         expect(alarmAniMi(adim(30, { bildirim: true }), 30)).toBe(false);
         expect(alarmGerekliMi(undefined)).toBe(false);
     });
+    test('KAPSAM "hepsi": adımın HER tetiği alarmdır; alan yoksa yalnız ilk (eski davranış)', () => {
+        const hepsi = { ...adim(30, { bildirim: true, alarm: true }, { herDk: 5 }), alarmKapsami: 'hepsi' as const };
+        expect(alarmAniMi(hepsi, 30)).toBe(true);
+        expect(alarmAniMi(hepsi, 25)).toBe(true);
+        // Alarm kanalı kapalıysa kapsam bir şey açmaz.
+        expect(alarmAniMi({ ...hepsi, kanallar: { bildirim: true } }, 25)).toBe(false);
+        expect(alarmAniMi({ ...hepsi, alarmKapsami: 'ilk' }, 25)).toBe(false);
+    });
     test('yalnız alarm açık adım KAPALI değildir (tek kapı)', () => {
         expect(adimKapaliMi({ alarm: true })).toBe(false);
     });
@@ -73,6 +81,15 @@ describe('vakitUyariPlaniOlustur — alarm işareti', () => {
         const alarmlar = plan.filter((u) => u.alarm === true).map((u) => u.kalanDk);
         expect(alarmlar).toEqual([20]);
         expect(plan.some((u) => u.kalanDk === 15 && u.alarm === undefined)).toBe(true);
+    });
+
+    test('kapsam "hepsi": adımın tekrarları da alarm (20/15/10), diğer adımlar etkilenmez', () => {
+        const hepsi: VakitMuhafizAyari = {
+            seviyeler: cikis.seviyeler.map((s, i) => (i === 1 ? { ...s, alarmKapsami: 'hepsi' as const } : s)),
+        };
+        const plan = vakitUyariPlaniOlustur(hepsi, 60);
+        expect(plan.filter((u) => u.alarm === true).map((u) => u.kalanDk)).toEqual([20, 15, 10]);
+        expect(plan.some((u) => u.kalanDk === 45 && u.alarm === true)).toBe(false);
     });
 
     test('alarm kanalı KAPALI plan alanı HİÇ taşımaz (kayıt-oynat/eşitlik nöbetçisi)', () => {
@@ -102,6 +119,9 @@ describe('vakitUyariPlaniOlustur — alarm işareti', () => {
 describe('alarm yükü — Kotlin ile ORTAK örnek (sözleşme)', () => {
     test('JS üreticisi örnekteki yükü BİREBİR üretir', () => {
         expect(alarmYukuOlustur(ORNEK.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.yuk);
+    });
+    test('NAFİLE alarm yükü (standart yetenek): kendi adı + kendi yükü, örnekle BİREBİR', () => {
+        expect(alarmYukuOlustur(ORNEK.nafile.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.nafile.yuk);
     });
     test('kanal kimlikleri örnekle aynı ve muhafız GC uzayının DIŞINDA', () => {
         for (const k of ORNEK.kanallar as { ses: string; beklenen: string }[]) {

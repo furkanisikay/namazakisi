@@ -31,6 +31,11 @@ object NafileKildimKuyrugu {
     @Synchronized
     fun tumu(context: Context): String = jsonaCevir(oku(context)).toString()
 
+    /** Bu nafile kuyrukta bekliyor mu? (Gerçek alarm tetikte çalmasın — farz M1 ikizi.) */
+    @Synchronized
+    fun bekliyorMu(context: Context, n: NafileKildimKurallari.Nafile): Boolean =
+        oku(context).any { it.id == NafileKildimKurallari.kimlik(n) }
+
     @Synchronized
     fun tamamlandi(context: Context, id: String) {
         yaz(context, NafileKildimKurallari.tamamlandi(oku(context), id))

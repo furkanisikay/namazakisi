@@ -51,6 +51,7 @@ import {
     pencerePlaniOlustur,
     GIRIS_SESLI_GECIKME_NOTU,
     TON_ETIKETLERI,
+    alarmOnizlemeEtiketi,
     type PencereTanimi,
 } from './pencereTanimi';
 
@@ -233,6 +234,12 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                             : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
                                     const dinlenebilir = bildirimSesiGerekliMi(adim.kanallar) || !!anonsMetni;
+                                    // GERCEK ALARM (issue #74): planin isaretledigi tetik (ilk ya da
+                                    // "her uyarida"). Motorla ayni alan → onizleme gercegi soyler.
+                                    const alarmSaati = tanim.pencere
+                                        ? saatMetni(kalanDkAni(tanim.pencere.bitis, adim.kalanDk))
+                                        : undefined;
+                                    const alarmEtiketi = adim.alarm === true ? alarmOnizlemeEtiketi(alarmSaati) : null;
 
                                     return (
                                         <View
@@ -245,7 +252,7 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                 borderLeftColor: bilgi.renk,
                                             }}
                                             accessible
-                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}`}
+                                            accessibilityLabel={`${esikIfadesi(adim.olcuDk, tanim.yon)}, ${adimEtiketi}${alarmEtiketi ? `, ${alarmEtiketi}` : ''}`}
                                         >
                                             {/* Adim basligi: olcu rozeti + kademe */}
                                             <View className="flex-row items-center mb-2">
@@ -276,6 +283,25 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                                     {adimEtiketi}
                                                 </Text>
                                             </View>
+
+                                            {alarmEtiketi && (
+                                                <View
+                                                    testID="onizleme-alarm"
+                                                    className="flex-row items-center self-start px-2 py-1 rounded-lg mb-2"
+                                                    style={{ backgroundColor: `${bilgi.renk}20` }}
+                                                >
+                                                    <FontAwesome5
+                                                        name="clock"
+                                                        size={11}
+                                                        color={bilgi.renk}
+                                                        solid
+                                                        style={{ marginRight: 6 }}
+                                                    />
+                                                    <Text className="text-[11px] font-bold" style={{ color: renkler.metin }}>
+                                                        {alarmEtiketi}
+                                                    </Text>
+                                                </View>
+                                            )}
 
                                             {/* Bildirim onizlemesi (adim kapali olamaz — plan kapalilari elemistir) */}
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>

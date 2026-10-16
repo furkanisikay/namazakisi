@@ -20,7 +20,9 @@ import {
     type NafileAyarlari,
     type NafileHatirlatmaAyari,
 } from '../../../core/nafile/nafileTipleri';
-import { nafileAdimi } from '../../../core/nafile/nafileAdimlari';
+import { nafileAdimi, nafileCozulemeyenSesleriDusur } from '../../../core/nafile/nafileAdimlari';
+import { ALARM_KANAL_TABANI, alarmKanalIdOlustur } from '../../../core/muhafiz/alarmYuku';
+import { muhafizKanalIdOlustur } from '../../../core/muhafiz/sesKimligi';
 import { gununNafilePencereleri } from '../../../core/nafile/gunVakitleri';
 import { NAFILE_NASLARI } from '../../../core/nafile/nafileMetinleri';
 import { nafileAnonsAlarmiKurarMi } from '../../../core/nafile/nafilePlani';
@@ -53,6 +55,7 @@ jest.mock('../MuhafizKanalServisi', () => ({
     MuhafizKanalServisi: {
         hazirla: jest.fn(async (m: unknown) => m),
         ekKanallariHazirla: jest.fn(async () => undefined),
+        nafileSesleriniDogrula: jest.fn(async (a: unknown) => a),
     },
 }));
 jest.mock('../../../data/local/LocalNafileServisi', () => ({
@@ -70,7 +73,7 @@ jest.mock('../../../core/utils/Logger', () => ({
 
 const kopru = jest.requireMock('../../../../modules/expo-countdown-notification/src') as Record<string, jest.Mock>;
 const { MuhafizKanalServisi } = jest.requireMock('../MuhafizKanalServisi') as {
-    MuhafizKanalServisi: { ekKanallariHazirla: jest.Mock };
+    MuhafizKanalServisi: { ekKanallariHazirla: jest.Mock; nafileSesleriniDogrula: jest.Mock };
 };
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
@@ -492,6 +495,104 @@ describe('NafileHatirlatmaServisi', () => {
             expect(kopru.iptalEtOnekliAnonslar).toHaveBeenCalledWith(`${NAFILE_ID_ONEKI}${gun}_kusluk_`);
             expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(1);
             expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith(`${NAFILE_ID_ONEKI}${gun}_kusluk_200`);
+        });
+    });
+
+    describe('GERÇEK ALARM (issue #74 — nafilede de standart yetenek)', () => {
+        it('Kıldım o nafilenin GERÇEK alarmlarını da (çalan dahil) yalnız kendi önekiyle susturur', async () => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            const { AndroidMuhafizTeslimcisi } = jest.requireActual('../AndroidMuhafizTeslimcisi') as typeof import('../AndroidMuhafizTeslimcisi');
+            const teslimci = new AndroidMuhafizTeslimcisi({ anonsOneki: NAFILE_ID_ONEKI, alarmKanalTemizligi: false });
+            const sustur = jest.spyOn(teslimci, 'vakitYanKanallariniIptalEt');
+            nafileTeslimcisiniAyarla(teslimci);
+            const gun = bugunuAl();
+            await servis.kildimIsle(gun, 'teheccud');
+            expect(sustur).toHaveBeenCalledWith(`${NAFILE_ID_ONEKI}${gun}_teheccud_`);
+        });
+
+        it('iOS: alarmdan basılan Kıldım kuyruğu planlamadan ÖNCE okunur ve susturma hafızasına yazılır', async () => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            const alarmKit = require('../../../../modules/expo-muhafiz-alarmkit/src') as {
+                alarmKitNafileKildimleriniAl: jest.Mock;
+            };
+            alarmKit.alarmKitNafileKildimleriniAl.mockResolvedValueOnce([
+                { tarih: '2026-10-13', tur: 'teheccud' },
+                { tarih: '2026-10-13', tur: 'bozuk' },
+            ]);
+            getAyarlar.mockResolvedValue(ayar({}));
+            await servis.hatirlatmalariGuncelle(ISTANBUL);
+            expect(LocalNafileServisi.kilindiIsaretle).toHaveBeenCalledTimes(1);
+            expect(LocalNafileServisi.kilindiIsaretle).toHaveBeenCalledWith('2026-10-13', 'teheccud', bugunuAl());
+        });
+
+        it('hepsi kapatılınca bekleyen nafile alarmları da silinir (expo listesinde görünmezler)', async () => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            const { NativeModules } = jest.requireActual('react-native') as typeof import('react-native');
+            const nativeAlarm = {
+                planla: jest.fn().mockResolvedValue(true),
+                onekliIptalEt: jest.fn().mockResolvedValue(0),
+                kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+            };
+            (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+            try {
+                getAyarlar.mockResolvedValue(ayar({}));
+                await servis.hatirlatmalariGuncelle(ISTANBUL);
+                expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith(NAFILE_ID_ONEKI);
+                expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            } finally {
+                delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            }
+        });
+
+        // Bulgu: nafile özel sesi DOĞRULANMADAN kanala/alarm yüküne gidiyordu. Başka
+        // cihazdan geri yüklenen `content://` çözülmez; kanal ölü sesle kurulur ve kanal
+        // sesi sonradan değişmediği için teheccüd alarmı kalıcı SESSİZ çalardı.
+        it('ÇÖZÜLEMEYEN özel ses: plan, kanal hazırlığı ve alarm yükü DOĞRULANMIŞ (varsayılan) sesi kullanır', async () => {
+            jest.replaceProperty(Platform, 'OS', 'android');
+            const OLU_SES = 'content://media/external/audio/media/9999';
+            const { NativeModules } = jest.requireActual('react-native') as typeof import('react-native');
+            const nativeAlarm = {
+                planla: jest.fn().mockResolvedValue(true),
+                onekliIptalEt: jest.fn().mockResolvedValue(0),
+                kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+            };
+            (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+            // Native `sesAdiAl` bu URI'yi çözemiyor → servis varsayılana düşürür.
+            MuhafizKanalServisi.nafileSesleriniDogrula.mockImplementationOnce(async (a: NafileAyarlari) =>
+                nafileCozulemeyenSesleriDusur(a, new Set([OLU_SES]))
+            );
+            try {
+                const kusluk = gunduz({
+                    adimlar: [
+                        { ...nafileAdimi(5, { herDk: 30 }, { bildirim: true, titresim: true, alarm: true }), bildirimSesi: OLU_SES, sesAdi: 'Eski telefon' },
+                    ],
+                });
+                const hamAyar = ayar({ hatirlatmalar: { kusluk, evvabin: VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar.evvabin } });
+                getAyarlar.mockResolvedValue(hamAyar);
+                await servis.hatirlatmalariGuncelle(ISTANBUL);
+
+                expect(MuhafizKanalServisi.nafileSesleriniDogrula).toHaveBeenCalledWith(hamAyar);
+                // Kanal hazırlığı doğrulanmış sesle (ölü URI'li hash kanal KURULMAZ).
+                const hazirlanan = MuhafizKanalServisi.ekKanallariHazirla.mock.calls[0][0];
+                expect(hazirlanan[0].seviyeler[0].bildirimSesi).toBe('varsayilan');
+                expect(hazirlanan[0].seviyeler[0].sesAdi).toBeUndefined();
+                // Gerçek alarm varsayılan alarm kanalına, ses URI'si olmadan.
+                expect(nativeAlarm.planla).toHaveBeenCalled();
+                for (const [, , ham] of nativeAlarm.planla.mock.calls) {
+                    const yuk = JSON.parse(ham);
+                    expect(yuk.alarmKanalId).toBe(ALARM_KANAL_TABANI);
+                    expect(yuk.alarmKanalId).not.toBe(alarmKanalIdOlustur(OLU_SES));
+                    expect(yuk.sesUri).toBeNull();
+                    // Normal bildirime düşüş kanalı da doğrulanmış sesin kanalı.
+                    expect(yuk.kanalId).toBe(muhafizKanalIdOlustur('varsayilan', false, true));
+                }
+                // Alarm kurulamayan tekrar tetikleri de (bildirim yolu) aynı kanala gider.
+                for (const [istek] of (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls) {
+                    expect(istek.trigger.channelId).toBe(muhafizKanalIdOlustur('varsayilan', false, true));
+                }
+            } finally {
+                delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            }
         });
     });
 

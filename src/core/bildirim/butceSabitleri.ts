@@ -31,6 +31,20 @@ export const IOS_GUVENLIK_PAYI = 4;
 export const IOS_YEDEK_REZERVI = 8;
 
 /**
+ * iPhone AlarmKit TAVANI — bir planlama turunda kurulabilecek en fazla gerçek alarm.
+ *
+ * AlarmKit'in uygulama başına alarm sınırı BELGELENMEMİŞTİR (yalnız hata kodu var:
+ * `AlarmManager.AlarmError.maximumLimitReached`). "Her uyarıda alarm" (#74 kapsamı)
+ * tek vakitte onlarca alarm üretebildiği için ihtiyatlı bir tavan konur; fazlası
+ * NORMAL bildirim olarak gelir (kayıp değil, zayıflamış teslim). Kesme KRONOLOJİKTİR
+ * (en yakınlar alarm kalır). Muhafız ve nafile AYRI teslimci örnekleridir → tavan
+ * ikiye bölünür; bildirim defteri aynı payları kullanır (parite).
+ */
+export const IOS_ALARMKIT_TAVANI = 24;
+export const IOS_ALARMKIT_MUHAFIZ_PAYI = 20;
+export const IOS_ALARMKIT_NAFILE_PAYI = IOS_ALARMKIT_TAVANI - IOS_ALARMKIT_MUHAFIZ_PAYI;
+
+/**
  * Android'de uygulamanın kullandığı TOPLAM alarm havuzu tavanı.
  *
  * Sistem uygulama başına eşzamanlı ~500 alarm tutar; aşılınca `setExact...`

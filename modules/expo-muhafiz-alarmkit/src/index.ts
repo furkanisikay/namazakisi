@@ -22,8 +22,11 @@ import {
 
 export type { AlarmKitDurumu, AlarmKitKaydi, AlarmKitYuku };
 
-/** Uygulama açıkken alarm düğmesine basılınca gelen olayın türü. */
-export type AlarmDegisiklikTuru = 'ertele' | 'kildim';
+/**
+ * Uygulama açıkken alarm düğmesine basılınca gelen olayın türü. `nafileKildim`: nafile
+ * alarmındaki "Kıldım" (FARZ yazmaz; `alarmKitNafileKildimleriniAl` boşaltılmalı).
+ */
+export type AlarmDegisiklikTuru = 'ertele' | 'kildim' | 'nafileKildim';
 
 interface Abonelik {
     remove(): void;
@@ -35,6 +38,8 @@ interface AlarmKitNativeModule {
     planla(json: string): Promise<boolean>;
     iptalEt(kimlikler: string[], calaniDurdur: boolean): Promise<void>;
     kayitlar(): Promise<string>;
+    /** Eski ikili bu yöntemi taşımayabilir (nafile alarmı yoktu → kuyruk da yok). */
+    nafileKildimleriniAl?(): Promise<string[]>;
     addListener(olay: 'onAlarmDegisikligi', dinleyici: (veri: { tur?: string }) => void): Abonelik;
 }
 
@@ -107,13 +112,34 @@ export async function alarmKitKayitlari(): Promise<AlarmKitKaydi[]> {
     }
 }
 
+/**
+ * Nafile alarmından basılan "Kıldım"lar (issue #74 + #273) — `{tarih, tur}`. Native kuyruk
+ * okununca BOŞALIR (tek tüketici: `NafileHatirlatmaServisi`). Modül/yöntem yoksa boş.
+ */
+export async function alarmKitNafileKildimleriniAl(): Promise<{ tarih: string; tur: string }[]> {
+    const m = modul();
+    if (!m || typeof m.nafileKildimleriniAl !== 'function') return [];
+    try {
+        const ham = await m.nafileKildimleriniAl();
+        if (!Array.isArray(ham)) return [];
+        const sonuc: { tarih: string; tur: string }[] = [];
+        for (const oge of ham) {
+            const eslesme = typeof oge === 'string' ? /^(\d{4}-\d{2}-\d{2})_([a-z]+)$/.exec(oge) : null;
+            if (eslesme) sonuc.push({ tarih: eslesme[1], tur: eslesme[2] });
+        }
+        return sonuc;
+    } catch {
+        return [];
+    }
+}
+
 /** Uygulama açıkken alarm düğmesi ("10 dk ertele", "Kıldım") işlendi. */
 export function alarmDegisikliginiDinle(fn: (tur: AlarmDegisiklikTuru) => void): () => void {
     const m = modul();
     if (!m) return () => undefined;
     try {
         const abonelik = m.addListener('onAlarmDegisikligi', (veri) => {
-            if (veri?.tur === 'ertele' || veri?.tur === 'kildim') fn(veri.tur);
+            if (veri?.tur === 'ertele' || veri?.tur === 'kildim' || veri?.tur === 'nafileKildim') fn(veri.tur);
         });
         return () => abonelik.remove();
     } catch {

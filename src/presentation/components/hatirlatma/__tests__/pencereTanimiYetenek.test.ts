@@ -14,11 +14,14 @@
 import {
     vakitPencereTanimi,
     cumaPencereTanimi,
+    nafilePencereTanimi,
+    STANDART_YETENEKLER,
     type PencereTanimi,
 } from '../pencereTanimi';
 import {
     ANDROID_YETENEKLERI,
     iosYetenekleri,
+    type PlatformYetenekleri,
 } from '../../../../core/muhafiz/ios/platformYetenekleri';
 import { MUHAFIZ_VAKITLERI } from '../../../../core/muhafiz/matrisTipleri';
 import type { MuhafizVakti } from '../../../../core/muhafiz/matrisTipleri';
@@ -100,5 +103,50 @@ describe('cumaPencereTanimi', () => {
 
     test('cuma kimligi ogle namazidir (AGENTS.md: "Cuma" salt gorunum)', () => {
         expect(cuma().vakit).toBe('ogle');
+    });
+});
+
+/**
+ * YETENEK STANDARDI (sahip kararı): hatırlatma yapısı her yerde aynıdır. Teslimciden
+ * geçen her yüzey (muhafız vakitleri + nafile) STANDART yetenekleri AYNI değerle taşır;
+ * bir farklılık ancak gerekçesi kodda yazılı istisnadır (aşağıdaki liste o istisnaların
+ * TAM listesidir — yeni bir fark eklenirse bu test kırılır ve gerekçe istenir).
+ */
+describe('YETENEK STANDARDI', () => {
+    const nafile = (yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI) =>
+        nafilePencereTanimi({
+            kaynak: 'nafile:kusluk',
+            baslik: 'Kuşluk',
+            baslikKucuk: 'kuşluk',
+            ikon: 'sun',
+            yon: 'girisindenItibaren',
+            adimSayisi: 1,
+            yetenekler,
+        });
+    const ANAHTARLAR = Object.keys(STANDART_YETENEKLER) as (keyof typeof STANDART_YETENEKLER)[];
+    /** Nafilenin kodda gerekçelenen istisnaları (ton ayrıca: `tonSecilebilir`). */
+    const NAFILE_ISTISNALARI = new Set<string>(['anonsMetniDuzenlenebilir']);
+
+    test.each([
+        ['Android', ANDROID_YETENEKLERI],
+        ['iOS', iosYetenekleri(false)],
+    ] as const)('%s: muhafız vakti ve nafile AYNI yetenekleri taşır (istisna listesi dışında)', (_ad, y) => {
+        const muhafiz = vakitPencereTanimi('ogle', 'cikisaDogru', 120, y);
+        const n = nafile(y);
+        for (const anahtar of ANAHTARLAR) {
+            if (NAFILE_ISTISNALARI.has(anahtar)) continue;
+            expect([anahtar, n[anahtar]]).toEqual([anahtar, muhafiz[anahtar]]);
+        }
+    });
+
+    test('Android: muhafızda HER standart yetenek açık; nafilede de (gerekçeli istisna hariç)', () => {
+        const muhafiz = vakitPencereTanimi('ogle');
+        for (const anahtar of ANAHTARLAR) expect([anahtar, muhafiz[anahtar]]).toEqual([anahtar, true]);
+        const n = nafile();
+        for (const anahtar of ANAHTARLAR) {
+            if (NAFILE_ISTISNALARI.has(anahtar)) continue;
+            expect([anahtar, n[anahtar]]).toEqual([anahtar, true]);
+        }
+        expect(n.tonSecilebilir).toBe(false);
     });
 });

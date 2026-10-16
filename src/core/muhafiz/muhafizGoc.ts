@@ -3,6 +3,10 @@ import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI, VARSAYILAN_SES } from './matrisTi
 import { KAPALI_KANALLAR, adimKapaliMi, modKanallaraCevir } from './kanalKumesi';
 import { esikSiralamasiGecerliMi, esiklerTekilMi, kronolojikSirala } from './aktifSeviye';
 import { girisZamanlamasiniSec } from './girisZamanlamasi';
+import { anonsSablonlari } from './anonsMetni';
+import { sesKimliginiNormalize } from './sesKimligi';
+import { MUHAFIZ_MIN_ADIM } from './matrisTipleri';
+import { vakitSayacEsigiHesapla } from '../utils/vakitSayacYardimcisi';
 
 /** Eski semada ACILIYETI tasiyan ses id'si (bkz. `eskiAlarmSesiniGoc`). */
 export const ESKI_ALARM_SESI = 'alarm';
@@ -77,6 +81,86 @@ export function eskiAlarmSesiniGoc(matris: MuhafizMatrisi): MuhafizMatrisi {
     sonuc[vakit] = vakitDegisti ? { ...vakitAyari, seviyeler } : vakitAyari;
   }
 
+  return degisti ? sonuc : matris;
+}
+
+/** Hazır şablon havuzu (iki yön) — kullanıcının yazmadığı anons metni. */
+const SABLON_HAVUZU = new Set<string>([...anonsSablonlari('cikisaDogru'), ...anonsSablonlari('girisindenItibaren')]);
+
+/**
+ * Kapalı adım VARSAYILAN mı — kullanıcının emeği taşımıyor mu? Hepsi gerekir:
+ * kapalı (`adimKapaliMi`) · anons metni boş ya da havuzdaki bir şablonla BİREBİR ·
+ * bildirim sesi varsayılan · alarm kapsamı yok · kanal hafızası yok ya da YALNIZ
+ * bildirim (titreşim/sesli/alarm hafızası kullanıcı seçimidir — silinmez).
+ */
+export function kapaliVarsayilanAdimMi(s: SeviyeAyari): boolean {
+  if (!s || !adimKapaliMi(s.kanallar)) return false;
+  const metin = s.anonsMetni ?? '';
+  if (metin.length > 0 && !SABLON_HAVUZU.has(metin)) return false;
+  if (sesKimliginiNormalize(s.bildirimSesi) !== VARSAYILAN_SES) return false;
+  if (s.alarmKapsami !== undefined) return false;
+  const h = s.oncekiKanallar;
+  if (h && (h.sesli === true || h.titresim === true || h.alarm === true)) return false;
+  return true;
+}
+
+/**
+ * BİR KERELİK: içi BOŞ kapalı adımları SİLER (sahip geri bildirimi, Faz 2).
+ *
+ * Hazır yoğunluklar ve eşik tekilliği göçü (`esikTekilliginiGoc`) eski kayıtlarda
+ * kullanıcının hiç kurmadığı adımları "Kapalı" olarak bıraktı; ekranda artık işe
+ * yaramayan satırlar olarak duruyorlardı. Yalnız `kapaliVarsayilanAdimMi` olanlar
+ * silinir — kullanıcının sesi/metni/titreşimi/alarmı olan kapalı adım KALIR.
+ * En az `MUHAFIZ_MIN_ADIM` adım kalır (hepsi boş-kapalıysa ilk adım korunur).
+ *
+ * MOTOR PLANI DEĞİŞMEZ: kapalı adım pencere sağlamaz ve tetiklenmez
+ * (`aktifSeviyeyiBul`, segment hesabı kapalı komşuyu atlar).
+ *
+ * AMA VAKİT SAYACI DEĞİŞEBİLİR: sayacın başlangıcı "vaktin N. hatırlatması"dır
+ * (`sayacBaslangicSeviyesi`, GLOBAL tek sayı) ve N KRONOLOJİK indekstir — kapalı
+ * adımlar da sayılır. `[45,25,26(kapalı),3]` + N=3 → sayaç 25 dk kala başlar;
+ * kapalı 26 silinince `[45,25,3]` → 3 dk kala. N global olduğu ve her vakitten farklı
+ * sayıda adım silindiği için N'yi "taşımak" mümkün değildir. Bu yüzden temizlik
+ * sayacın eşiğini KORUR: o vaktin eşiği (`vakitSayacEsigiHesapla`) değişecekse önce
+ * eşiği veren adım korunarak denenir, yine değişiyorsa vakte HİÇ dokunulmaz. Giriş
+ * yönlü vakitte eşik `yonYedegi`'nden okunur; yedek atılınca eşik kayarsa vakit
+ * yine korunur. Çağıran `sayacBaslangicSeviyesi`'ni diskten AYNEN geçmeli.
+ *
+ * Silinen vakitte `yonYedegi` atılır (indeksle hizalıdır). DEĞİŞİKLİK YOKSA AYNI
+ * REFERANS döner.
+ *
+ * YALNIZ BİR KEZ (`MuhafizAyarlari.kapaliAdimTemizligiYapildi`): bayrak sonrasında
+ * kullanıcının bilerek kapattığı bir adım bir daha silinmez — "Adımı silin" düğmesi
+ * zaten var. Yalnız slice (`muhafizAyarlariniYukle`) çağırır; ham AsyncStorage
+ * okuyanlar temizlemez — motor planı ve sayaç eşiği iki matriste de aynıdır.
+ */
+export function kapaliVarsayilanAdimlariTemizle(
+  matris: MuhafizMatrisi,
+  sayacBaslangicSeviyesi?: number
+): MuhafizMatrisi {
+  let degisti = false;
+  const sonuc = {} as MuhafizMatrisi;
+  for (const vakit of MUHAFIZ_VAKITLERI) {
+    const vakitAyari = matris[vakit];
+    sonuc[vakit] = vakitAyari;
+    const seviyeler = vakitAyari?.seviyeler;
+    if (!Array.isArray(seviyeler) || seviyeler.some((s) => !s)) continue;
+    const sayacEsigi = vakitSayacEsigiHesapla(sayacBaslangicSeviyesi, vakitAyari);
+    const { yonYedegi: _atilanYedek, ...yedeksiz } = vakitAyari;
+    // Önce tüm boş-kapalı adımlar; sayaç eşiği kayıyorsa eşiği veren adım korunur.
+    const esikAdimi = seviyeler.find((s) => s.esikDk === sayacEsigi);
+    const adaylar = esikAdimi ? [undefined, esikAdimi] : [undefined];
+    for (const korunan of adaylar) {
+      let kalan = seviyeler.filter((s) => s === korunan || !kapaliVarsayilanAdimMi(s));
+      if (kalan.length < MUHAFIZ_MIN_ADIM) kalan = seviyeler.slice(0, MUHAFIZ_MIN_ADIM);
+      if (kalan.length === seviyeler.length) break;
+      const aday = { ...yedeksiz, seviyeler: kalan };
+      if (vakitSayacEsigiHesapla(sayacBaslangicSeviyesi, aday) !== sayacEsigi) continue;
+      degisti = true;
+      sonuc[vakit] = aday;
+      break;
+    }
+  }
   return degisti ? sonuc : matris;
 }
 

@@ -28,6 +28,30 @@ describe('LocalNafileServisi', () => {
         await expect(LocalNafileServisi.getAyarlar()).resolves.toEqual(VARSAYILAN_NAFILE_AYARLARI);
     });
 
+    it('gösterge: ESKİ tek bayrak üç nafileye de eşlenir; yeni kayıt nafile başına okunur', () => {
+        expect(nafileAyarlariniNormalize({ gostergeAktif: true }).gosterge).toEqual({
+            kusluk: true,
+            evvabin: true,
+            teheccud: true,
+        });
+        expect(nafileAyarlariniNormalize({ gostergeAktif: false }).gosterge).toEqual({
+            kusluk: false,
+            evvabin: false,
+            teheccud: false,
+        });
+        const yeni = nafileAyarlariniNormalize({
+            gostergeAktif: true,
+            gosterge: { kusluk: false, evvabin: true, teheccud: 'evet' },
+        });
+        // Bozuk değer eski bayrağa düşer; `gostergeAktif` her zaman "en az biri" türevidir.
+        expect(yeni.gosterge).toEqual({ kusluk: false, evvabin: true, teheccud: true });
+        expect(yeni.gostergeAktif).toBe(true);
+        expect(
+            nafileAyarlariniNormalize({ gostergeAktif: true, gosterge: { kusluk: false, evvabin: false, teheccud: false } })
+                .gostergeAktif
+        ).toBe(false);
+    });
+
     it('depolama hatası da reddetmez', async () => {
         getItem.mockRejectedValue(new Error('disk'));
         await expect(LocalNafileServisi.getAyarlar()).resolves.toEqual(VARSAYILAN_NAFILE_AYARLARI);

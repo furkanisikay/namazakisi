@@ -430,7 +430,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Bildirimdeki "Kıldım"a dokunduğunuzda o vaktin kalan hatırlatmaları ve sesli anonsları hemen susar; otomasyonlarınız için kalıcı izin verebilirsiniz.',
         detayAciklama:
-            'Bildirimden "Kıldım" dediğinizde uygulama açılmaz ve telefonunuz uyku kısıtındayken bile o vaktin kalan uyarıları beklemeden iptal edilir. Samsung Rutinler, Tasker gibi bir uygulama namazınızı ilk kez işaretlemek istediğinde size bir kez sorulur: her zaman izin verebilir, yalnız o seferlik onaylayabilir ya da engelleyebilirsiniz. Kararlarınızı Ayarlar\'daki "Kıldım işaretleyebilen uygulamalar" bölümünden değiştirebilirsiniz.',
+            'Bildirimden "Kıldım" dediğinizde uygulama açılmaz ve telefonunuz uyku kısıtındayken bile o vaktin kalan uyarıları beklemeden iptal edilir. Samsung Rutinler, Tasker gibi bir uygulama namazınızı ilk kez işaretlemek istediğinde size bir kez sorulur: her zaman izin verebilir, yalnız o seferlik onaylayabilir ya da engelleyebilirsiniz. Kararlarınızı Ayarlar > "Otomasyonlarla kullanın" sayfasındaki "Kıldım işaretleyebilen uygulamalar" bölümünden değiştirebilirsiniz.',
         ikon: 'user-shield',
         hedefSayfa: 'KildimUygulamalari',
         ctaEtiketi: 'İzinleri inceleyin',

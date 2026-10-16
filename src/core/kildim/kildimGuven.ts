@@ -110,7 +110,7 @@ export const kildimIzinSorusu = (uygulamaAdi: string): string =>
     `${uygulamaAdi} namazlarınızı kılındı olarak işaretleyebilsin mi?`;
 
 export const kildimIzinAciklamasi = (vakitAdi: string): string =>
-    `Şu an işaretlenecek vakit: ${vakitAdi}. Kararınızı daha sonra Ayarlar > Kıldım işaretleyebilen uygulamalar bölümünden değiştirebilirsiniz.`;
+    `Şu an işaretlenecek vakit: ${vakitAdi}. Kararınızı daha sonra Ayarlar > Otomasyonlarla kullanın > Kıldım işaretleyebilen uygulamalar bölümünden değiştirebilirsiniz.`;
 
 export const kildimTarayiciAciklamasi = (vakitAdi: string): string =>
     `Şu an işaretlenecek vakit: ${vakitAdi}. Bu istek bir tarayıcıdan geldi; her web sayfası bu bağlantıyı açabildiği için kalıcı izin verilemez.`;

@@ -61,6 +61,7 @@ const mockKanallariHazirla = jest.fn();
 jest.mock('../MuhafizKanalServisi', () => ({
     MuhafizKanalServisi: {
         hazirla: (...args: unknown[]) => mockKanallariHazirla(...args),
+        nafileSesleriniDogrula: async (a: unknown) => a,
     },
 }));
 

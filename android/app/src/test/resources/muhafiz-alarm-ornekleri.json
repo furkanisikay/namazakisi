@@ -33,6 +33,42 @@
     "kanalId": "muhafiz_1234abcd",
     "veri": { "tip": "muhafiz", "seviye": 1, "vakit": "imsak", "tarih": "2026-10-13" }
   },
+  "nafile": {
+    "aciklama": "Nafile alarmi (issue #74 standart yetenek): kimlik nafile_ onekli, yuk NAFILE yuku, erteleme yok. Kotlin nafileTuru'nu kimlikten cozer.",
+    "girdi": {
+      "kimlik": "nafile_2026-10-13_teheccud_1",
+      "tetikMs": 1791020000000,
+      "baslik": "Teheccüd vakti girdi",
+      "metin": "Gecenin son üçte biri girdi.",
+      "vakit": "ogle",
+      "vakitAdi": "Teheccüd",
+      "tarih": "2026-10-13",
+      "cikisMs": 1791030000000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "bildirimSesi": "varsayilan",
+      "kanalId": "nafile_uyandirma",
+      "veri": { "tip": "nafile", "tur": "teheccud", "tarih": "2026-10-13" }
+    },
+    "yuk": {
+      "surum": 1,
+      "kimlik": "nafile_2026-10-13_teheccud_1",
+      "tetikMs": 1791020000000,
+      "baslik": "Teheccüd vakti girdi",
+      "metin": "Gecenin son üçte biri girdi.",
+      "vakit": "ogle",
+      "vakitAdi": "Teheccüd",
+      "tarih": "2026-10-13",
+      "cikisMs": 1791030000000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "alarmKanalId": "namaz_alarm",
+      "alarmKanalAdi": "Namaz alarmı",
+      "sesUri": null,
+      "kanalId": "nafile_uyandirma",
+      "veri": { "tip": "nafile", "tur": "teheccud", "tarih": "2026-10-13" }
+    }
+  },
   "kanallar": [
     { "ses": "varsayilan", "beklenen": "namaz_alarm" },
     { "ses": "", "beklenen": "namaz_alarm" },

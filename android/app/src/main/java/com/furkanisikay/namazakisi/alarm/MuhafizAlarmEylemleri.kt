@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.furkanisikay.namazakisi.cekirdek.BildirimKildimKurallari
 import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
+import com.furkanisikay.namazakisi.cekirdek.NafileKildimKurallari
+import com.furkanisikay.namazakisi.kildim.NafileKildimIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimErteleIsleyici
 import com.furkanisikay.namazakisi.kildim.BildirimKildimIsleyici
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
@@ -37,6 +39,18 @@ object MuhafizAlarmEylemleri {
     }
 
     private fun kildim(context: Context, yuk: MuhafizAlarmKurallari.Yuk) {
+        // NAFİLE alarmı (issue #74 + #273): kendi kuyruğu, kendi iptalleri — FARZ ASLA.
+        val nafile = yuk.nafileTuru?.let { NafileKildimKurallari.Nafile(yuk.tarih, it) }
+        if (nafile != null) {
+            val islendi = try {
+                NafileKildimIsleyici.nafileIsle(context, nafile, ExpoSchedulingDelegate(context))
+            } catch (e: Exception) {
+                Log.w(TAG, "Nafile Kildim native islenemedi", e)
+                false
+            }
+            if (!islendi) Log.w(TAG, "Nafile Kildim kuyruga yazilamadi (${yuk.kimlik})")
+            return
+        }
         val vakit = BildirimKildimKurallari.vakitCoz(yuk.kimlik) ?: return
         val islendi = try {
             BildirimKildimIsleyici.vakitIsle(context, vakit, ExpoSchedulingDelegate(context))
@@ -53,6 +67,8 @@ object MuhafizAlarmEylemleri {
     }
 
     private fun ertele(context: Context, yuk: MuhafizAlarmKurallari.Yuk) {
+        // Nafile ertelenmez: düğme zaten çizilmez (sınır 0); eski/elle gelen yayına karşı kapı.
+        if (yuk.nafileTuru != null) return
         try {
             BildirimErteleIsleyici.alarmdanErtele(
                 context,

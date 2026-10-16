@@ -42,6 +42,9 @@ import {
     vakitAlarmlariniSustur,
 } from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
+import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
+import { nafileAlarmSesleri } from '../../core/nafile/nafileAdimlari';
+import { alarmKanalIdOlustur } from '../../core/muhafiz/alarmYuku';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
 /**
@@ -63,6 +66,20 @@ import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
  */
 export const ANDROID_MUHAFIZ_ALARM_BUTCESI = ANDROID_MUHAFIZ_PAYI;
 
+/**
+ * Nafilenin GERÇEK ALARM kanalları — muhafız çöp toplaması korur (kanal uzayı ortak:
+ * `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN okunur: arka plan görevinde nafile
+ * servisi aynı süreçte hiç çalışmamış olabilir (`MuhafizKanalServisi` normal kanal
+ * deseni) ve nafile turuyla AYNI ses doğrulamasından geçer. Okuma hatası FIRLATIR →
+ * çağıran o turda toplamayı atlar.
+ */
+async function nafileAlarmKanallariniOku(): Promise<string[]> {
+    // DOĞRULANMIŞ seslerden: nafile turu alarmı varsayılana düşmüş sesle kurar;
+    // ham URI'nin kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi.
+    const ayarlar = await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar());
+    return nafileAlarmSesleri(ayarlar).map(alarmKanalIdOlustur);
+}
+
 export interface AndroidTeslimciSecenekleri {
     /** Tur başına alarm bütçesi (bildirim + anons). Varsayılan muhafız bütçesi. */
     alarmButcesi?: number;
@@ -76,12 +93,22 @@ export interface AndroidTeslimciSecenekleri {
     /** Sesli anonsların kimlik öneki — `tumYanKanallariIptalEt` YALNIZ bunları siler. */
     anonsOneki?: string;
     /**
-     * Gerçek alarm (issue #74) bu teslimcide yönetilsin mi? Varsayılan EVET (muhafız).
-     * Muhafız DIŞI örnek (nafile) `false` geçmeli: alarm kanallarının çöp toplaması ve
-     * önekli alarm temizliği muhafızın işidir — nafile örneği her turda muhafızın alarm
-     * kanallarını "öksüz" sanıp silerdi.
+     * Gerçek alarm (issue #74) bu teslimcide KURULSUN mu? Varsayılan EVET. Önceki turun
+     * alarmları yalnız `anonsOneki` ile iptal edilir (nafile örneği muhafızınkilere dokunmaz).
      */
     alarmDestegi?: boolean;
+    /**
+     * Öksüz ALARM KANALLARINI bu teslimci mi toplar? Varsayılan = `alarmDestegi`.
+     * Muhafız DIŞI örnek (nafile) `false` geçmeli: çöp toplama muhafızın işidir ve
+     * nafilenin alarm kanallarını DİSKTEN okuyup korur (`nafileAlarmSesleri`); ikinci bir
+     * toplayıcı ötekinin kanallarını "öksüz" sanıp silerdi (alarm var olmayan kanala gider).
+     */
+    alarmKanalTemizligi?: boolean;
+    /**
+     * Çöp toplamada KORUNACAK ek alarm kanalları (muhafız örneği nafileninkileri geçer).
+     * Verilmezse yalnız matrisin kanalları korunur.
+     */
+    ekAlarmKanallari?: () => Promise<string[]>;
 }
 
 export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
@@ -91,9 +118,13 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private readonly kanalHazirligi: (matris?: MuhafizMatrisi) => Promise<MuhafizMatrisi | undefined>;
     private readonly anonsOneki: string;
     private readonly alarmDestegi: boolean;
+    private readonly alarmKanalTemizligi: boolean;
+    private readonly ekAlarmKanallari: () => Promise<string[]>;
 
     constructor(secenekler: AndroidTeslimciSecenekleri = {}) {
         this.alarmDestegi = secenekler.alarmDestegi ?? true;
+        this.alarmKanalTemizligi = secenekler.alarmKanalTemizligi ?? this.alarmDestegi;
+        this.ekAlarmKanallari = secenekler.ekAlarmKanallari ?? nafileAlarmKanallariniOku;
         this.alarmButcesi = secenekler.alarmButcesi ?? ANDROID_MUHAFIZ_ALARM_BUTCESI;
         // Matrissiz çağrı ARGÜMANSIZ geçer (kayıt-oynat sözleşmesi: `hazirla()`).
         this.kanalHazirligi =
@@ -170,7 +201,17 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         if (!this.alarmDestegi || !alarmKoprusuVarMi()) return;
         try {
             await onekliAlarmlariIptalEt(this.anonsOneki);
-            await alarmKanallariniTemizle(alarmKanallariniCikar(matris));
+            if (this.alarmKanalTemizligi) {
+                let ek: string[] = [];
+                try {
+                    ek = await this.ekAlarmKanallari();
+                } catch {
+                    // Ek liste okunamazsa toplama YAPILMAZ: bilinmeyen kanalı silmektense
+                    // öksüz bir kanalı bir tur daha tutmak yeğdir.
+                    return;
+                }
+                await alarmKanallariniTemizle([...new Set([...alarmKanallariniCikar(matris), ...ek])].sort());
+            }
         } catch (error) {
             Logger.warn('ArkaplanMuhafiz', 'Gercek alarmlar hazirlanamadi', error);
         }
@@ -190,11 +231,13 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     /**
      * Gerçek alarmı kurar. `false` → çağıran normal bildirim + anons yoluna düşer.
-     * Yalnız muhafız teslimi (`ozel` yok): nafile/diğer yükler alarm taşımaz.
+     * Özel teslim (nafile) ancak `ozel.alarmAdi` taşıyorsa alarm kurar: yükü (`veri`)
+     * kendi `data`sıdır — muhafız yükü ASLA (Kıldım FARZ yazardı) — ertelemesi yoktur.
      */
     private async alarmPlanla(teslim: UyariTeslimi): Promise<boolean> {
         const { id, baslik, mesaj, zaman, uyari, vakit, tarih, ozel, cikis } = teslim;
-        if (!this.alarmDestegi || ozel || uyari.alarm !== true || !alarmGerekliMi(uyari.kanallar)) return false;
+        if (!this.alarmDestegi || uyari.alarm !== true || !alarmGerekliMi(uyari.kanallar)) return false;
+        if (ozel && !ozel.alarmAdi) return false;
         if (zaman.getTime() <= Date.now()) return false;
         // Camideyken (#297) alarm çalmaz: namazdaki kişiyi bölmesin.
         if (this.camideMi(zaman)) return false;
@@ -207,7 +250,8 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
             uyari.acilKanal,
             titresimGerekliMi(uyari.kanallar)
         );
-        const ertele = cikis ? ertelemeTeslimBilgisi(vakit, cikis.getTime(), zaman.getTime()) : null;
+        // Özel teslim (nafile) ertelenmez: "10 dk ertele" muhafızın fıkhi sınırına kurulu.
+        const ertele = cikis && !ozel ? ertelemeTeslimBilgisi(vakit, cikis.getTime(), zaman.getTime()) : null;
         const kuruldu = await nativeAlarmPlanla(
             alarmYukuOlustur({
                 kimlik: id,
@@ -215,16 +259,19 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 baslik,
                 metin: mesaj,
                 vakit,
+                ...(ozel?.alarmAdi ? { vakitAdi: ozel.alarmAdi } : {}),
                 tarih,
                 cikisMs: cikis?.getTime() ?? 0,
                 erteleSinirMs: ertele?.veri.erteleSinirMs ?? 0,
                 seviye: uyari.seviye,
                 bildirimSesi: uyari.bildirimSesi,
                 sesAdi: uyari.sesAdi,
-                kanalId,
+                // Normal bildirime düşüşün kanalı: özel teslimin zorladığı kanal önce.
+                kanalId: ozel?.kanalId ?? kanalId,
                 // Ertelenen kopyanın gövdesi — muhafız bildirimiyle AYNI `data` (Kıldım,
-                // erteleme ve JS `etkinErtelemeler` aynı alanları okur).
-                veri: {
+                // erteleme ve JS `etkinErtelemeler` aynı alanları okur). Özel teslimde
+                // kendi yükü (nafile: `{tip:'nafile'}`).
+                veri: ozel ? { ...ozel.veri } : {
                     tip: 'muhafiz',
                     seviye: uyari.seviye,
                     vakit,

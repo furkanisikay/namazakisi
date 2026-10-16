@@ -3,7 +3,7 @@
  * gönderir; kapalı kartın ayrıntısı gizlidir; teheccüd seçicileri benzersiz etiketlidir.
  */
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
@@ -93,10 +93,12 @@ describe('NafileAyarlariSayfasi', () => {
         expect(dispatch).toHaveBeenCalled();
     });
 
-    it('gösterge anahtarı', () => {
+    it('gösterge nafile BAŞINA: her anahtar yalnız kendi nafilesini yazar', () => {
         const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
-        fireEvent(ekran.getByLabelText('Ana ekranda göster hatırlatması'), 'valueChange', true);
-        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gostergeAktif: true });
+        fireEvent(ekran.getByLabelText('Evvâbîn ana ekranda gösterilsin'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { evvabin: true } });
+        fireEvent(ekran.getByLabelText('Teheccüd ana ekranda gösterilsin'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { teheccud: true } });
     });
 
     it('teheccüd açıkken pencere seçimi (saatleriyle) ve uyandırma görünür', () => {
@@ -131,12 +133,26 @@ describe('NafileAyarlariSayfasi', () => {
             return ekran;
         };
 
-        it('"Kapalı" çipi YOK; Bildirim / Sesli anons / İkisi de var', () => {
+        it('STANDART yetenekler: Kapalı / Bildirim / Sesli anons / İkisi de ve GERÇEK ALARM', () => {
             const ekran = ac(KUSLUK);
-            expect(ekran.queryByLabelText('Kapalı')).toBeNull();
+            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
             expect(ekran.getByLabelText('Bildirim')).toBeTruthy();
             expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
             expect(ekran.getByLabelText('İkisi de')).toBeTruthy();
+            expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
+        });
+
+        it('gerçek alarm ilk kez açılırken NAFİLENİN kendi rızası sorulur; onay rızayı ANAHTARLA BİRLİKTE yazar', async () => {
+            const ekran = ac(KUSLUK);
+            fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
+            // Rıza yokken anahtar doğrudan yazılmaz.
+            expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
+            fireEvent.press(ekran.getByLabelText('Alarmı açın'));
+            await waitFor(() => expect(nafileAyariniGuncelle).toHaveBeenCalledTimes(1));
+            // TEK yazım: iki eşzamanlı thunk aynı eski durumu birleştirip birbirini ezerdi.
+            const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
+            expect(d.alarmOnayi).toBe(true);
+            expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, alarm: true });
         });
 
         it('sesli İLK kez seçilince onay sorulur, ayar YAZILMAZ; "Sesli olmadan" adımı bildirimle bırakır', () => {

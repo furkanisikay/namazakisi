@@ -14,7 +14,7 @@
  * kullanir. (Onceden App/AnaSayfa `esikler.seviye1`'e sabitti -> kullanicinin
  * sectigi baslangic seviyesi yok sayiliyordu; #90 review bulgusu.)
  */
-import type { MuhafizMatrisi, MuhafizVakti } from '../muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
 import { MUHAFIZ_MAKS_ADIM, MUHAFIZ_VAKITLERI } from '../muhafiz/matrisTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { adimKapaliMi } from '../muhafiz/kanalKumesi';
@@ -65,28 +65,39 @@ export const sayacBaslangicEsikleriHesapla = (
   seviye: number | undefined,
   matris: MuhafizMatrisi
 ): Record<MuhafizVakti, number> => {
-  const indeks = seviyeIndeksi(seviye);
   const sonuc = {} as Record<MuhafizVakti, number>;
   for (const vakit of MUHAFIZ_VAKITLERI) {
-    const vakitAyari = matris[vakit];
-    if (vakitAyari?.yon === 'girisindenItibaren') {
-      // Yedek de kronolojik (cikista AZALAN) saklanir.
-      const cikisYedegi = sinirliAl(
-        kronolojikSirala(vakitAyari.yonYedegi?.cikisaDogru ?? [], 'cikisaDogru'),
-        indeks
-      )?.esikDk;
-      sonuc[vakit] = Number.isFinite(cikisYedegi)
-        ? (cikisYedegi as number)
-        : (sinirliAl(VARSAYILAN_CIKIS_ESIKLERI, indeks) as number);
-      continue;
-    }
-    // Eşik yalnız bir ZAMAN referansıdır; adımın kanalları (hepsi kapalı olsa
-    // bile) sayacın ne zaman başlayacağını değiştirmez. Sıra DİZİ indeksinden
-    // değil kronolojik görünümden gelir (ton artık sırayı ima etmez).
-    sonuc[vakit] =
-      sinirliAl(kronolojikSirala(vakitAyari?.seviyeler ?? [], 'cikisaDogru'), indeks)?.esikDk ?? 0;
+    sonuc[vakit] = vakitSayacEsigiHesapla(seviye, matris[vakit]);
   }
   return sonuc;
+};
+
+/**
+ * TEK vaktin sayac baslangic esigi (dk) — `sayacBaslangicEsikleriHesapla`'nin
+ * vakit basina cekirdegi. Bir kerelik kapali adim temizligi
+ * (`muhafizGoc.kapaliVarsayilanAdimlariTemizle`) da AYNI fonksiyonla "temizlik bu
+ * vaktin sayac esigini kaydiriyor mu?" diye sorar: sira KRONOLOJIK indekstir ve
+ * kapali adimlari da sayar, yani bir adimi silmek sonraki adimlarin sirasini kaydirir.
+ */
+export const vakitSayacEsigiHesapla = (
+  seviye: number | undefined,
+  vakitAyari: VakitMuhafizAyari | undefined
+): number => {
+  const indeks = seviyeIndeksi(seviye);
+  if (vakitAyari?.yon === 'girisindenItibaren') {
+    // Yedek de kronolojik (cikista AZALAN) saklanir.
+    const cikisYedegi = sinirliAl(
+      kronolojikSirala(vakitAyari.yonYedegi?.cikisaDogru ?? [], 'cikisaDogru'),
+      indeks
+    )?.esikDk;
+    return Number.isFinite(cikisYedegi)
+      ? (cikisYedegi as number)
+      : (sinirliAl(VARSAYILAN_CIKIS_ESIKLERI, indeks) as number);
+  }
+  // Eşik yalnız bir ZAMAN referansıdır; adımın kanalları (hepsi kapalı olsa
+  // bile) sayacın ne zaman başlayacağını değiştirmez. Sıra DİZİ indeksinden
+  // değil kronolojik görünümden gelir (ton artık sırayı ima etmez).
+  return sinirliAl(kronolojikSirala(vakitAyari?.seviyeler ?? [], 'cikisaDogru'), indeks)?.esikDk ?? 0;
 };
 
 /** Vakit sayaci baslangic secenegi: kronolojik N. hatirlatma + gorunen metin. */

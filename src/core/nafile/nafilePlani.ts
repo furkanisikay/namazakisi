@@ -90,15 +90,28 @@ export interface NafileBildirimPlani {
     uyandirma: boolean;
     yon: PencereYonu;
     /**
+     * Hatırlatma penceresinin SONU (teheccüdde seçilen pencerenin sonu = imsak).
+     * Gerçek alarm buna göre karar verir: pencere bittikten sonra geç tetiklenen
+     * alarm çalmaz (`MuhafizAlarmKurallari.tetikKarari` → ATLA).
+     */
+    son: Date;
+    /**
      * Motorun ürettiği uyarı — kanallar ve sesli anons bayrağı buradan.
      * `anonsMetni` ÇÖZÜLMÜŞ nafile anons cümlesidir (yer tutucu içermez).
      */
     uyari: UyariPlani;
 }
 
+/**
+ * Bu tetik GERÇEK ALARM mı? (issue #74; teslimciyle aynı kapı.) Android'de alarm o
+ * tetiğin bildirimi + anonsunun YERİNE geçer (tek alarm payı).
+ */
+export const nafileAlarmKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean =>
+    p.uyari.alarm === true && p.uyari.kanallar?.alarm === true;
+
 /** Bu plan Android'de ayrı bir sesli anons alarmı kurar mı? (teslimciyle aynı kapı) */
 export const nafileAnonsAlarmiKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean =>
-    p.uyari.sesliAnons && p.uyari.anonsMetni.trim().length > 0;
+    !nafileAlarmKurarMi(p) && p.uyari.sesliAnons && p.uyari.anonsMetni.trim().length > 0;
 
 export interface PencereTetigi {
     zaman: Date;
@@ -203,6 +216,7 @@ export function nafilePlaniOlustur(
                     ...nafileBildirimMetni(girdi),
                     uyandirma,
                     yon: ayar.yon,
+                    son: p.bitis,
                     uyari: { ...t.uyari, anonsMetni: nafileAnonsMetni(girdi) },
                 });
             }
@@ -212,7 +226,8 @@ export function nafilePlaniOlustur(
     planlar.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
     if (alarmButcesi === undefined) return planlar;
 
-    // Android alarm bütçesi — KRONOLOJİK: bildirim 1, sesli anons ayrıca 1.
+    // Android alarm bütçesi — KRONOLOJİK: bildirim 1, sesli anons ayrıca 1; GERÇEK
+    // ALARM ikisinin yerine geçer (1).
     const sigan: NafileBildirimPlani[] = [];
     let kullanilan = 0;
     for (const p of planlar) {

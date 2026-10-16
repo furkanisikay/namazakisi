@@ -93,7 +93,19 @@ export interface SeviyeAyari {
    */
   oncekiKanallar?: UyariKanallari;
   anonsMetni: string;
+  /**
+   * GERÇEK ALARM hangi tetiklerde çalar? (yalnız `kanallar.alarm` açıkken anlamlı)
+   * - `'ilk'` (alan YOKSA da bu): yalnız adımın İLK tetiğinde; tekrarlar bildirim.
+   * - `'hepsi'`: adımın HER tetiğinde (tekrarlar dahil). Her alarm tam ekran açılır
+   *   ve bildirim sınırına sayılır; iPhone'da tur başına AlarmKit payı vardır
+   *   (`IOS_ALARMKIT_MUHAFIZ_PAYI`), fazlası bildirim olarak gelir.
+   * Alan yoksa `'ilk'` → göç yok, kayıt-oynat planı birebir aynı.
+   */
+  alarmKapsami?: AlarmKapsami;
 }
+
+/** Gerçek alarmın adım içindeki kapsamı (bkz. `SeviyeAyari.alarmKapsami`). */
+export type AlarmKapsami = 'ilk' | 'hepsi';
 
 export interface VakitMuhafizAyari {
   /**

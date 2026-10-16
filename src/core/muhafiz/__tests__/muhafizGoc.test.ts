@@ -1,15 +1,20 @@
 import {
   eskiAlarmSesiniGoc,
   eskidenMatriseGoc,
+  kapaliVarsayilanAdimlariTemizle,
+  kapaliVarsayilanAdimMi,
   modlariKanallaraGoc,
   yonEsiklerineGoc,
 } from '../muhafizGoc';
+import { anonsSablonlari } from '../anonsMetni';
+import { muhafizMatrisiniCoz } from '../motorAdaptoru';
 import { esikSiralamasiGecerliMi } from '../aktifSeviye';
 import { MUHAFIZ_VAKITLERI } from '../matrisTipleri';
 import type { MuhafizMatrisi, SeviyeAyari } from '../matrisTipleri';
 import { adimKapaliMi, kanalAcikMi } from '../kanalKumesi';
 import { seviyeyiAc } from '../seviyeAcKapa';
 import { vakitUyariPlaniOlustur } from '../motorAdaptoru';
+import { sayacBaslangicEsikleriHesapla } from '../../utils/vakitSayacYardimcisi';
 
 const eski = {
   esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
@@ -296,5 +301,120 @@ describe('yonEsiklerineGoc', () => {
     expect(seviyeler[0]).toBe(1);
     // Giriş yönünde acil ton yok (issue #274) → en sert konuşan adım "sert".
     expect(seviyeler[seviyeler.length - 1]).toBe(3);
+  });
+});
+
+
+describe('kapaliVarsayilanAdimlariTemizle (bir kerelik — içi boş kapalı adımlar SİLİNİR)', () => {
+  const kapali = (s: SeviyeAyari, ek: Partial<SeviyeAyari> = {}): SeviyeAyari => ({
+    ...s,
+    kanallar: {},
+    oncekiKanallar: { bildirim: true },
+    ...ek,
+  });
+
+  test('varsayılan kapalı adım (boş/şablon metin, varsayılan ses, bildirim hafızası) silinir; plan DEĞİŞMEZ', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.ogle.seviyeler[1] = kapali(m.ogle.seviyeler[1]);
+    m.ogle.seviyeler[2] = kapali(m.ogle.seviyeler[2], { anonsMetni: anonsSablonlari('cikisaDogru')[0] });
+    m.ogle.yonYedegi = { girisindenItibaren: m.ogle.seviyeler };
+    const t = kapaliVarsayilanAdimlariTemizle(m);
+    expect(t.ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 3]);
+    // İndeksle hizalı yedek atılır.
+    expect(t.ogle.yonYedegi).toBeUndefined();
+    // Tetikler (an, ton, kanal) BİREBİR; yalnız kronolojik sıra numarası (`adimIndeks`
+    // = "N. hatırlatma") silinen adım kadar kayar — kimlik/zaman ona bağlı değil.
+    const sirasiz = (p: ReturnType<typeof vakitUyariPlaniOlustur>) => p.map(({ adimIndeks: _a, ...k }) => k);
+    expect(sirasiz(vakitUyariPlaniOlustur(t.ogle, 24 * 60))).toEqual(sirasiz(vakitUyariPlaniOlustur(m.ogle, 24 * 60)));
+    // Dokunulmayan vakit AYNI referans.
+    expect(t.ikindi).toBe(m.ikindi);
+  });
+
+  test('kullanıcının emeği taşıyan kapalı adım KALIR (ses, metin, titreşim/sesli/alarm hafızası, kapsam)', () => {
+    const s = eskidenMatriseGoc(eski).ogle.seviyeler[0];
+    expect(kapaliVarsayilanAdimMi(kapali(s, { bildirimSesi: 'content://x' }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { anonsMetni: 'Kendi cümlem' }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { bildirim: true, titresim: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { sesli: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: { bildirim: true, alarm: true } }))).toBe(false);
+    expect(kapaliVarsayilanAdimMi(kapali(s, { alarmKapsami: 'hepsi' }))).toBe(false);
+    // Açık adım asla.
+    expect(kapaliVarsayilanAdimMi(s)).toBe(false);
+    // Hafızasız kapalı adım ve eski palet sesi ("melodi" → varsayılan) varsayılandır.
+    expect(kapaliVarsayilanAdimMi(kapali(s, { oncekiKanallar: undefined, bildirimSesi: 'melodi' }))).toBe(true);
+  });
+
+  test('hepsi boş-kapalıysa en az bir adım kalır; değişiklik yoksa AYNI referans', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.yatsi.seviyeler = m.yatsi.seviyeler.map((s) => kapali(s));
+    expect(kapaliVarsayilanAdimlariTemizle(m).yatsi.seviyeler).toHaveLength(1);
+    const temiz = eskidenMatriseGoc(eski);
+    expect(kapaliVarsayilanAdimlariTemizle(temiz)).toBe(temiz);
+  });
+
+  test('muhafizMatrisiniCoz temizlemez (yalnız slice — sayaç seviyesini bilen tek yer)', () => {
+    const m = eskidenMatriseGoc(eski);
+    m.aksam.seviyeler[0] = kapali(m.aksam.seviyeler[0]);
+    expect(muhafizMatrisiniCoz({ ...eski, matris: m }).aksam.seviyeler).toHaveLength(4);
+  });
+
+  // Bulgu: "plan değişmez" yalnız motor için doğruydu. Vakit sayacının başlangıcı
+  // "N. hatırlatma"dır (kronolojik indeks, kapalı adımlar dahil) → silinen adım
+  // sonraki adımların sırasını kaydırıp sayacı başka dakikaya taşıyordu.
+  const esikliMatris = (esikler: number[], kapaliIndeksler: number[]): MuhafizMatrisi => {
+    const m = eskidenMatriseGoc(eski);
+    for (const v of MUHAFIZ_VAKITLERI) {
+      const sablon = m[v].seviyeler[0];
+      m[v] = {
+        seviyeler: esikler.map((esikDk, i) => {
+          const s = { ...sablon, kademe: m[v].seviyeler[Math.min(i, 3)].kademe, esikDk };
+          return kapaliIndeksler.includes(i) ? kapali(s) : s;
+        }),
+      };
+    }
+    return m;
+  };
+
+  test.each([
+    { ad: 'inceleme örneği [45,25,26k,3]', esikler: [45, 25, 26, 3], kapali: [2] },
+    { ad: 'ilk adım kapalı [45k,25,10,3]', esikler: [45, 25, 10, 3], kapali: [0] },
+    { ad: 'son adım kapalı [45,25,10,3k]', esikler: [45, 25, 10, 3], kapali: [3] },
+    { ad: 'iki kapalı [45,25k,10k,3]', esikler: [45, 25, 10, 3], kapali: [1, 2] },
+    { ad: 'altı adım [60k,45,30k,20,10k,3]', esikler: [60, 45, 30, 20, 10, 3], kapali: [0, 2, 4] },
+  ])('SAYAÇ EŞİĞİ BİREBİR: $ad — her başlangıç seçiminde (1..6 + yok)', ({ esikler, kapali: k }) => {
+    const m = esikliMatris(esikler, k);
+    for (const n of [undefined, 1, 2, 3, 4, 5, 6]) {
+      const t = kapaliVarsayilanAdimlariTemizle(m, n);
+      expect(sayacBaslangicEsikleriHesapla(n, t)).toEqual(sayacBaslangicEsikleriHesapla(n, m));
+    }
+  });
+
+  test('inceleme örneği: N=3 iken sayaç 25 dk kalır (eskiden 3 dk kala başlıyordu)', () => {
+    const m = esikliMatris([45, 25, 26, 3], [2]);
+    expect(sayacBaslangicEsikleriHesapla(3, m).ogle).toBe(25);
+    const t = kapaliVarsayilanAdimlariTemizle(m, 3);
+    expect(sayacBaslangicEsikleriHesapla(3, t).ogle).toBe(25);
+  });
+
+  test('temizlik NO-OP DEĞİL: sayaç eşiğini kaydırmayan boş-kapalı adımlar yine silinir', () => {
+    // N=1 → eşik ilk adım (45); sondaki kapalı 3 silinebilir.
+    expect(kapaliVarsayilanAdimlariTemizle(esikliMatris([45, 25, 10, 3], [3]), 1).ogle.seviyeler.map((s) => s.esikDk))
+      .toEqual([45, 25, 10]);
+    // İlk adım kapalı + N=1: eşiği VEREN adım korunur, diğer boş-kapalılar gider.
+    expect(kapaliVarsayilanAdimlariTemizle(esikliMatris([45, 25, 10, 3], [0, 2]), 1).ogle.seviyeler.map((s) => s.esikDk))
+      .toEqual([45, 25, 3]);
+  });
+
+  test('giriş yönlü vakit: yedek atılınca sayaç eşiği kayacaksa vakte DOKUNULMAZ', () => {
+    const m = esikliMatris([5, 20, 40, 90], [1]);
+    m.ogle = {
+      ...m.ogle,
+      yon: 'girisindenItibaren',
+      // Kullanıcının ayrıldığı ÖZEL çıkış ayarı (varsayılan 45/25/10/3 DEĞİL).
+      yonYedegi: { cikisaDogru: eskidenMatriseGoc(eski).ogle.seviyeler.map((s, i) => ({ ...s, esikDk: [50, 30, 12, 4][i] })) },
+    };
+    const t = kapaliVarsayilanAdimlariTemizle(m, 2);
+    expect(sayacBaslangicEsikleriHesapla(2, t).ogle).toBe(30);
+    expect(t.ogle).toBe(m.ogle);
   });
 });

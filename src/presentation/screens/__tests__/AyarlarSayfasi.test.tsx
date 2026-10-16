@@ -18,6 +18,7 @@ import { Depolama } from '../../../data/local/Depolama';
 import { YENI_OZELLIKLER } from '../../../core/constants/YeniOzellikler';
 import { yeniOzellikGorunurMu } from '../../hooks/yeniOzellikYetenegi';
 import { AyarlarSayfasi } from '../AyarlarSayfasi';
+import { KildimGuvenServisi } from '../../../domain/services/KildimGuvenServisi';
 import { VARSAYILAN_NAFILE_AYARLARI } from '../../../core/nafile/nafileTipleri';
 
 jest.mock('@react-navigation/native', () => ({
@@ -134,6 +135,22 @@ describe('AyarlarSayfasi', () => {
     await act(async () => {
       await Promise.resolve();
     });
+  });
+
+  it('NÖBETÇİ: "Kıldım işaretleyebilen uygulamalar" ana listede YOK, yalnız otomasyon rehberinden açılır', async () => {
+    const spy = jest.spyOn(KildimGuvenServisi, 'kullanilabilirMi').mockReturnValue(true);
+    try {
+      const { getByText, queryByText } = render(<AyarlarSayfasi />);
+
+      expect(getByText('Otomasyonlarla kullanın')).toBeTruthy();
+      expect(queryByText('Kıldım işaretleyebilen uygulamalar')).toBeNull();
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+    } finally {
+      spy.mockRestore();
+    }
   });
 
   it('muhafiz satırı dinamik özeti gösterir ("Açık · normal yoğunluk")', async () => {

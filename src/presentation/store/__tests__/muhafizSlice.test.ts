@@ -22,6 +22,7 @@ import reducer, {
     MuhafizAyarlari,
 } from '../muhafizSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { sayacBaslangicEsikleriHesapla } from '../../../core/utils/vakitSayacYardimcisi';
 import { configureStore } from '@reduxjs/toolkit';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
@@ -159,6 +160,7 @@ describe('muhafizSlice', () => {
                 esikler: { seviye1: 11, seviye2: 9, seviye3: 4, seviye4: 1 },
                 sikliklar: { seviye1: 12, seviye2: 6, seviye3: 3, seviye4: 1 },
                 presetGocuYapildi: true,
+                kapaliAdimTemizligiYapildi: true,
             };
             mockStore.set(ANAHTAR, JSON.stringify(kayitli));
 
@@ -919,7 +921,8 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
         });
         ozelMatris.ikindi.seviyeler[0].kanallar = {};
         ozelMatris.aksam.seviyeler[2].bildirimSesi = 'melodi';
-        eskiKayitYaz({ yogunluk: 'ozel', matris: ozelMatris });
+        // Kapalı adım temizliği AYRI bir göçtür (aşağıda ölçülür); burada yalnız preset göçü.
+        eskiKayitYaz({ yogunluk: 'ozel', matris: ozelMatris, kapaliAdimTemizligiYapildi: true });
 
         const store = yeniStore();
         await store.dispatch(muhafizAyarlariniYukle());
@@ -1009,7 +1012,7 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
     });
 
     it('bayrağı OLAN kayıt göçe girmez ve diske gereksiz yazma yapılmaz', async () => {
-        const kayitli = eskiKayitYaz({ presetGocuYapildi: true });
+        const kayitli = eskiKayitYaz({ presetGocuYapildi: true, kapaliAdimTemizligiYapildi: true });
         const oncekiJson = mockStore.get(ANAHTAR);
 
         const store = yeniStore();
@@ -1051,5 +1054,67 @@ describe('preset göçü (bir kerelik, iki kapılı)', () => {
     it('taze kurulum bayrakla başlar — göç hiç tetiklenmez', () => {
         const bas = reducer(undefined, { type: '@@INIT' });
         expect(bas.presetGocuYapildi).toBe(true);
+    });
+});
+
+
+describe('bir kerelik KAPALI ADIM TEMİZLİĞİ (Faz 2 — sahip: boş kapalı adımlar silinsin)', () => {
+    const kayit = (ust: Record<string, unknown> = {}) => {
+        const matris = eskidenMatriseGoc({
+            esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+            sikliklar: { seviye1: 15, seviye2: 10, seviye3: 5, seviye4: 1 },
+        });
+        // Preset'ten kalmış, kullanıcının hiç dokunmadığı kapalı adım...
+        matris.ogle.seviyeler[1] = { ...matris.ogle.seviyeler[1], kanallar: {}, oncekiKanallar: { bildirim: true } };
+        // ...ve kullanıcının bilerek kapattığı, kendi sesini seçtiği adım.
+        matris.ikindi.seviyeler[1] = { ...matris.ikindi.seviyeler[1], kanallar: {}, bildirimSesi: 'content://benim' };
+        const veri = { aktif: true, yogunluk: 'ozel', matris, ozelMatrisYedegi: matris, presetGocuYapildi: true, ...ust };
+        mockStore.set(ANAHTAR, JSON.stringify(veri));
+        return veri;
+    };
+
+    it('bayraksız eski kayıt: boş kapalı adım SİLİNİR (yedekte de), emekli kapalı adım KALIR; bayrak diske yazılır', async () => {
+        kayit({ koordinatlar: { lat: 1, lng: 2 } });
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        const state = store.getState().muhafiz as MuhafizAyarlari;
+        expect(state.matris!.ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 10, 3]);
+        expect(state.ozelMatrisYedegi!.ogle.seviyeler.map((s) => s.esikDk)).toEqual([45, 10, 3]);
+        expect(state.matris!.ikindi.seviyeler).toHaveLength(4);
+        expect(state.kapaliAdimTemizligiYapildi).toBe(true);
+        const disk = JSON.parse(mockStore.get(ANAHTAR)!);
+        expect(disk.kapaliAdimTemizligiYapildi).toBe(true);
+        expect(disk.matris.ogle.seviyeler).toHaveLength(3);
+        // Bilinmeyen alanlar korunur (AGENTS: `{...parsed, ...sonuc}`).
+        expect(disk.koordinatlar).toEqual({ lat: 1, lng: 2 });
+    });
+
+    it('VAKİT SAYACI EŞİĞİ KORUNUR: diskteki başlangıç seçimi (N) okunur, eşiği kaydıracak silme YAPILMAZ', async () => {
+        // Öğle [45, 25(boş kapalı), 10, 3] + sayaç "2. hatırlatma" → 25 dk kala başlar.
+        // Kapalı 25 silinseydi [45, 10, 3] → sayaç sessizce 10 dk kalaya kayardı.
+        const veri = kayit();
+        mockStore.set(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI, JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 2 }));
+        try {
+            const once = sayacBaslangicEsikleriHesapla(2, veri.matris);
+            expect(once.ogle).toBe(25);
+            const store = yeniStore();
+            await store.dispatch(muhafizAyarlariniYukle());
+            const state = store.getState().muhafiz as MuhafizAyarlari;
+            expect(sayacBaslangicEsikleriHesapla(2, state.matris!)).toEqual(once);
+            expect(sayacBaslangicEsikleriHesapla(2, state.ozelMatrisYedegi!)).toEqual(once);
+            expect(state.matris!.ogle.seviyeler).toHaveLength(4);
+            expect(state.kapaliAdimTemizligiYapildi).toBe(true);
+        } finally {
+            mockStore.delete(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+        }
+    });
+
+    it('bayrak VARSA (temizlik yapılmış) kullanıcının sonradan kapattığı boş adım SİLİNMEZ ve diske yazılmaz', async () => {
+        kayit({ kapaliAdimTemizligiYapildi: true });
+        const once = mockStore.get(ANAHTAR);
+        const store = yeniStore();
+        await store.dispatch(muhafizAyarlariniYukle());
+        expect((store.getState().muhafiz as MuhafizAyarlari).matris!.ogle.seviyeler).toHaveLength(4);
+        expect(mockStore.get(ANAHTAR)).toBe(once);
     });
 });

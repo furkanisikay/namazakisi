@@ -15,7 +15,7 @@
  * bildirimle kalır, geri tuşu hiçbir şey yazmaz.
  */
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -79,7 +79,8 @@ const yalnizNafileOnerisi = (o: ButceOnerisi): boolean => o.tur === 'nafileGunuG
 
 /** Tam ayarı kısmi değişiklik biçimine çevirir (geri al / rehber yazımı). */
 const tamDegisiklik = (a: NafileAyarlari): NafileAyarDegisikligi => ({
-    gostergeAktif: a.gostergeAktif,
+    // Nafile başına gösterge — `gostergeAktif` (türev) üçünü birden yazardı.
+    gosterge: a.gosterge,
     hatirlatmalar: a.hatirlatmalar,
     teheccud: a.teheccud,
     gunuGununeKur: a.gunuGununeKur === true,
@@ -209,11 +210,19 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     const yonDegistir = (tur: NafileTuru, yon: PencereYonu) =>
         ayariYaz(tur, nafileYonunuDegistir(nafileAyariniAl(ayarlar, tur), yon));
 
+    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
+    const alarmOnayiBekliyor = useRef(false);
+
     /** Adım detayındaki değişiklik — sesli kanal ilk kez açılıyorsa önce rıza. */
     const adimDegistir = (tur: NafileTuru, indeks: number, seviye: SeviyeAyari) => {
         const ayar = nafileAyariniAl(ayarlar, tur);
         const eski = ayar.adimlar[indeks];
         if (!eski) return;
+        if (alarmOnayiBekliyor.current) {
+            alarmOnayiBekliyor.current = false;
+            ayariYaz(tur, nafileAdimGuncelle(ayar, indeks, seviye), { alarmOnayi: true });
+            return;
+        }
         const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
         if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
             setSesliBekleyen({ tur, indeks, seviye });
@@ -411,15 +420,46 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 {/* Bildirim sınırı (issue #298) — üstte tek kart */}
                 <BildirimButceKarti ozet={butce.ozet} onPress={rehber.karttanAc} />
 
-                {/* Gösterge */}
+                {/* Gösterge — nafile BAŞINA (eskiden tek anahtar üçünü birden açıyordu) */}
                 <View className="mb-6 overflow-hidden" style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24 }}>
-                    {kartBasligi(
-                        'eye',
-                        'Ana ekranda göster',
-                        'Günlük akışta, vakitlerin arasında',
-                        ayarlar.gostergeAktif,
-                        (v) => guncelle({ gostergeAktif: v })
-                    )}
+                    <View className="flex-row items-center px-4 pt-4 pb-2">
+                        <View
+                            className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                            style={{ backgroundColor: `${renkler.birincil}20` }}
+                        >
+                            <FontAwesome5 name="eye" size={17} color={renkler.birincil} solid />
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                                Ana ekranda göster
+                            </Text>
+                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                Günlük akışta, vakitlerin arasında
+                            </Text>
+                        </View>
+                    </View>
+                    {KARTLAR.map((k) => (
+                        <View
+                            key={k.tur}
+                            className="flex-row items-center px-4 py-2 border-t"
+                            style={{ borderTopColor: `${renkler.sinir}50`, minHeight: 52 }}
+                        >
+                            <FontAwesome5 name={k.ikon} size={14} color={renkler.metinIkincil} solid style={{ width: 24 }} />
+                            <Text className="flex-1 text-sm font-medium ml-2" style={{ color: renkler.metin }}>
+                                {NAFILE_ADLARI[k.tur]}
+                            </Text>
+                            <Anahtar
+                                testID={`nafile-gosterge-${k.tur}`}
+                                value={ayarlar.gosterge[k.tur]}
+                                onValueChange={(v) => {
+                                    guncelle({ gosterge: { [k.tur]: v } });
+                                }}
+                                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                                thumbColor={ayarlar.gosterge[k.tur] ? renkler.birincil : '#f4f3f4'}
+                                accessibilityLabel={`${NAFILE_ADLARI[k.tur]} ana ekranda gösterilsin`}
+                            />
+                        </View>
+                    ))}
                 </View>
 
                 {bolumBasligi('GÜNDÜZ VE AKŞAM')}
@@ -447,6 +487,14 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                             : undefined
                     }
                     onKapat={() => setDetay(null)}
+                    // Gerçek alarm rızası (#74) — nafilenin KENDİ kaydı (muhafızınki taşınmaz).
+                    alarmOnayiVar={ayarlar.alarmOnayi === true}
+                    onAlarmOnayiVer={() => {
+                        // Ayrı bir yazım DEĞİL: modal onaydan hemen sonra anahtarı yazar
+                        // (`onDegistir`); iki eşzamanlı thunk aynı eski durumu birleştirip
+                        // birbirini ezerdi. Rıza o yazımla BİRLİKTE gider (`adimDegistir`).
+                        alarmOnayiBekliyor.current = true;
+                    }}
                 />
             )}
 

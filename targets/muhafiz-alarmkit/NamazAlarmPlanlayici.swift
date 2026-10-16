@@ -239,6 +239,17 @@ enum NamazAlarmCekirdegi {
     /// bildirimlerini HEMEN iptal eder (JS uyanmasa da ses susmali).
     static func kildim(_ kimlik: String) async {
         _ = kapat(kimlik)
+        // NAFILE alarmi (issue #74 nafilede de standart yetenek): FARZ kuyruguna ASLA
+        // yazilmaz. O nafilenin kalan alarmlari + bildirimleri hemen susar, haber JS'e
+        // nafile kuyrugundan gider (`nafileKildimleriniAl`).
+        if let n = AlarmKurallari.kimliktenNafile(kimlik) {
+            let onek = AlarmKurallari.nafileOneki(tarih: n.tarih, tur: n.tur)
+            iptalEt(AlarmDeposu.varsayilan.onekliKimlikler(onek), calaniDurdur: true)
+            await bildirimleriKaldir(onek: onek)
+            AlarmDeposu.varsayilan.nafileKildimEkle(tarih: n.tarih, tur: n.tur)
+            MuhafizAlarmOlaylari.duyur("nafileKildim")
+            return
+        }
         guard let v = AlarmKurallari.kimliktenVakit(kimlik) else { return }
         SiriDeposu.varsayilan.kildimEkle(tarih: v.tarih, vakit: v.vakit, kaynak: "alarm", simdiMs: SiriDeposu.simdiMs())
         let onek = AlarmKurallari.vakitOneki(tarih: v.tarih, vakit: v.vakit)

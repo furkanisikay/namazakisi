@@ -13,6 +13,7 @@ import {
     eskiAlarmSesiniGoc,
     eskidenMatriseGoc,
     esikTekilliginiGoc,
+    kapaliVarsayilanAdimlariTemizle,
     modlariKanallaraGoc,
     yonEsiklerineGoc,
 } from '../../core/muhafiz/muhafizGoc';
@@ -180,6 +181,13 @@ export interface MuhafizAyarlari {
      * diskteki ESKI kayitlar (bu alan yok) goce girer. Bkz. `presetGocunuUygula`.
      */
     presetGocuYapildi?: boolean;
+    /**
+     * Bir kerelik "içi boş kapalı adım" temizliği yapıldı mı? (Faz 2 — sahip: eski
+     * preset'lerden kalan kapalı adımlar SİLİNMELİ, kapalı durmamalı.) `initialState`'te
+     * TRUE (taze kurulumda temizlenecek bir şey yok); yalnız alanı olmayan eski kayıtlar
+     * temizlenir, sonra kullanıcının bilerek kapattığı adım bir daha silinmez.
+     */
+    kapaliAdimTemizligiYapildi?: boolean;
 }
 
 type PresetliYogunluk = Exclude<HatirlatmaYogunlugu, 'ozel'>;
@@ -282,7 +290,23 @@ const initialState: MuhafizAyarlari = {
     sikliklar: HATIRLATMA_PRESETLERI.normal.sikliklar,
     matris: presetMatrisiOlustur(HATIRLATMA_PRESETLERI.normal.seviyeler, false),
     presetGocuYapildi: true,
+    kapaliAdimTemizligiYapildi: true,
 };
+
+/**
+ * Vakit sayacının başlangıç seçimi (`VAKIT_SAYAC_AYARLARI.sayacBaslangicSeviyesi`) —
+ * bir kerelik kapalı adım temizliği sayacın eşiğini korumak için okur. Okunamazsa
+ * `undefined` (= 1. hatırlatma; `vakitSayacSlice`'ın yedeğiyle aynı).
+ */
+async function sayacBaslangicSeviyesiniOku(): Promise<number | undefined> {
+    try {
+        const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+        const seviye = ham ? (JSON.parse(ham) as { sayacBaslangicSeviyesi?: unknown } | null)?.sayacBaslangicSeviyesi : undefined;
+        return typeof seviye === 'number' ? seviye : undefined;
+    } catch {
+        return undefined;
+    }
+}
 
 /**
  * Muhafiz ayarlarini AsyncStorage'dan yukle
@@ -340,8 +364,17 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // yönlü kayıtlar çıkış sırasındaki (azalan) eşiklerle duruyor →
                 // eskalasyon tersine dönmüş durumda; bu göç onları düzeltir.
                 const preGocMatris = goc.matris ?? semaGoclu;
-                const mevcutMatris = yonEsiklerineGoc(preGocMatris, temel.yogunluk);
-                const yonGocuGerekli = mevcutMatris !== preGocMatris;
+                const yonGoclu = yonEsiklerineGoc(preGocMatris, temel.yogunluk);
+                const yonGocuGerekli = yonGoclu !== preGocMatris;
+                // İçi boş kapalı adımlar BİR KEZ silinir (tekillik göçü gölge adım
+                // ürettiği için ondan SONRA). Motor planı değişmez; vakit sayacının
+                // başlangıç eşiği kronolojik indeksten okunduğu için temizlik onu
+                // KORUR — sayaç seviyesi diskten okunur (yalnız gerektiğinde).
+                const temizlikGerekli = parsed.kapaliAdimTemizligiYapildi !== true;
+                const sayacSeviyesi = temizlikGerekli ? await sayacBaslangicSeviyesiniOku() : undefined;
+                const mevcutMatris = temizlikGerekli
+                    ? kapaliVarsayilanAdimlariTemizle(yonGoclu, sayacSeviyesi)
+                    : yonGoclu;
 
                 // ÖZEL YEDEK DE GÖÇMELİ: "Özel"e dönmek bu matrisi doğrudan
                 // `matris`e yazar. Eski şemada kalsaydı hücrelerde `kanallar`
@@ -356,12 +389,15 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 // `matris`e yazar → atlanırsa ters eskalasyon tek dokunuşla geri gelir.
                 // Tekillik göçü de: tekilliği bozuk yedek `matrisGecerliMi`'den geçmez
                 // ve "Özel" seçeneği sessizce kaybolurdu.
-                const yedekAday = hamYedek
+                const yedekGoclu = hamYedek
                     ? yonEsiklerineGoc(
                         esikTekilliginiGoc(modlariKanallaraGoc(hamYedek)),
                         temel.yogunluk
                     )
                     : undefined;
+                // Temizlik YEDEĞE DE: "Özel"e dönmek boş kapalı adımları geri getirmesin.
+                const yedekAday =
+                    yedekGoclu && temizlikGerekli ? kapaliVarsayilanAdimlariTemizle(yedekGoclu, sayacSeviyesi) : yedekGoclu;
                 const yedek = matrisGecerliMi(yedekAday) ? yedekAday : undefined;
                 const yedekGocuGerekli = !!hamYedek && yedek !== hamYedek;
 
@@ -382,9 +418,10 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     // kaybolur ve alarm anahtarı her seferinde yeniden onay ister.
                     alarmOnayi: parsed.alarmOnayi === true ? true : undefined,
                     presetGocuYapildi: true,
+                    kapaliAdimTemizligiYapildi: true,
                 };
 
-                if (gocGerekli || sesGocuGerekli || yedekGocuGerekli || yonGocuGerekli) {
+                if (gocGerekli || sesGocuGerekli || yedekGocuGerekli || yonGocuGerekli || temizlikGerekli) {
                     // Bayrağı HEMEN diske yaz — yoksa göç her açılışta yeniden çalışır ve
                     // kullanıcının elle yaptığı kanal/ses değişikliklerini sürekli geri alır.
                     // (Reducer'lar da bu anahtara aynı biçimde yazar; tek yazıcı yok.)

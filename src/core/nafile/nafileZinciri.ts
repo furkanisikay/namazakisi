@@ -59,13 +59,18 @@ const bilgiMetniOlustur = (p: NafilePencere): string => {
     return bilgi;
 };
 
+/**
+ * `gosterilen` (ops.): nafile BAŞINA ana ekran göstergesi (`NafileAyarlari.gosterge`).
+ * Verilmezse hepsi gösterilir; `false` olan nafilenin satırı zincire GİRMEZ.
+ */
 export function nafileZincirSatirlariOlustur(
     pencereler: NafilePencere[],
     simdi: Date,
-    teheccud: TeheccudPenceresi
+    teheccud: TeheccudPenceresi,
+    gosterilen?: Readonly<Record<NafileTuru, boolean>>
 ): NafileZincirSatiri[] {
     const t = simdi.getTime();
-    return pencereler.map((p) => {
+    return pencereler.filter((p) => gosterilen?.[p.tur] !== false).map((p) => {
         const bas = etkinBasi(p, teheccud);
         const durum: NafileSatirDurumu =
             t >= p.bitis.getTime() ? 'gecti' : t >= bas.getTime() ? 'aktif' : 'sirada';

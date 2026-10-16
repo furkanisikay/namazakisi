@@ -22,13 +22,24 @@ import { gunduzNafileNormalize, teheccudNormalize } from '../../core/nafile/nafi
 const nesneMi = (d: unknown): d is Record<string, unknown> =>
     !!d && typeof d === 'object' && !Array.isArray(d);
 
+const TURLER: NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
+
 /** Herhangi bir değeri geçerli `NafileAyarlari`ya çevirir (disk + slice + yedek yolu). */
 export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
     const v = VARSAYILAN_NAFILE_AYARLARI;
     const kaynak = nesneMi(ham) ? ham : {};
     const hatirlatmalar = nesneMi(kaynak.hatirlatmalar) ? kaynak.hatirlatmalar : {};
+    // Nafile başına gösterge (eski kayıtta yok → üçü de eski tek bayrağı alır).
+    const eskiGosterge = kaynak.gostergeAktif === true;
+    const hamGosterge = nesneMi(kaynak.gosterge) ? kaynak.gosterge : {};
+    const gosterge = {} as Record<NafileTuru, boolean>;
+    for (const tur of TURLER) {
+        const deger = hamGosterge[tur];
+        gosterge[tur] = typeof deger === 'boolean' ? deger : eskiGosterge;
+    }
     const sonuc: NafileAyarlari = {
-        gostergeAktif: kaynak.gostergeAktif === true,
+        gostergeAktif: TURLER.some((t) => gosterge[t]),
+        gosterge,
         hatirlatmalar: {
             kusluk: gunduzNafileNormalize(hatirlatmalar.kusluk, v.hatirlatmalar.kusluk),
             evvabin: gunduzNafileNormalize(hatirlatmalar.evvabin, v.hatirlatmalar.evvabin),
@@ -39,6 +50,7 @@ export const nafileAyarlariniNormalize = (ham: unknown): NafileAyarlari => {
     };
     // Rıza kaydı yalnız AÇIKÇA true ise taşınır (uydurulamaz; yoksa alan hiç yazılmaz).
     if (kaynak.sesliOnayi === true) sonuc.sesliOnayi = true;
+    if (kaynak.alarmOnayi === true) sonuc.alarmOnayi = true;
     return sonuc;
 };
 
@@ -51,7 +63,6 @@ export type NafileKilinanKaydi = Record<string, NafileTuru[]>;
 /** Kıldım hafızası kaç gün tutulur (teheccüd dünün gecesi olabilir). */
 const KILINAN_TUTMA_GUNU = 3;
 
-const TURLER: NafileTuru[] = ['kusluk', 'evvabin', 'teheccud'];
 
 const kilinanNormalize = (ham: unknown): NafileKilinanKaydi => {
     if (!nesneMi(ham)) return {};

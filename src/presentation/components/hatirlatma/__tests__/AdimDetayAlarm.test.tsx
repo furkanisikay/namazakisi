@@ -105,7 +105,7 @@ describe('Gerçek alarm anahtarı', () => {
         expect(ekran.queryByLabelText('Gerçek alarm')).toBeNull();
     });
 
-    test('alarm kanalı yalnız muhafız vakitlerinde seçilebilir', () => {
+    test('alarm kanalı muhafız vakitlerinde seçilebilir, cumada (teslimci dışı) değil', () => {
         expect(vakitPencereTanimi('ogle').alarmSecilebilir).toBe(true);
         const cuma = cumaPencereTanimi({
             esikSinirlari: { min: 15, max: 180 },
@@ -115,6 +115,44 @@ describe('Gerçek alarm anahtarı', () => {
             varsayilanTekrarDk: 10,
         });
         expect(cuma.alarmSecilebilir).not.toBe(true);
+    });
+});
+
+describe('Alarm kapsamı ("Yalnız ilk uyarıda" / "Her uyarıda")', () => {
+    test('alarm açıkken iki seçenek görünür; varsayılan "Yalnız ilk uyarıda"', () => {
+        const { ekran } = kur({ bildirim: true, alarm: true }, true);
+        expect(ekran.getByLabelText('Alarm: Yalnız ilk uyarıda').props.accessibilityState.selected).toBe(true);
+        expect(ekran.getByLabelText('Alarm: Her uyarıda').props.accessibilityState.selected).toBe(false);
+    });
+
+    test('"Her uyarıda" alanı yazar; "Yalnız ilk" alanı SİLER (yokluğu "ilk" — kayıt-oynat değişmez)', () => {
+        const { ekran, onDegistir } = kur({ bildirim: true, alarm: true }, true);
+        fireEvent.press(ekran.getByLabelText('Alarm: Her uyarıda'));
+        expect(onDegistir).toHaveBeenLastCalledWith(expect.objectContaining({ alarmKapsami: 'hepsi' }));
+
+        const onDegistir2 = jest.fn();
+        const ikinci = render(
+            <AdimDetayModal
+                gorunur
+                tanim={vakitPencereTanimi('imsak')}
+                seviyeler={[{ ...adim({ bildirim: true, alarm: true }), alarmKapsami: 'hepsi' }]}
+                indeks={0}
+                ttsDestekli={null}
+                onDegistir={onDegistir2}
+                onKapat={jest.fn()}
+                alarmOnayiVar
+            />
+        );
+        // "Her uyarıda" seçiliyken bedel söylenir.
+        expect(ikinci.getByText(/Her alarm tam ekran açılır ve bildirim sınırına sayılır/)).toBeTruthy();
+        fireEvent.press(ikinci.getByLabelText('Alarm: Yalnız ilk uyarıda'));
+        const yazilan = onDegistir2.mock.calls.at(-1)[0];
+        expect('alarmKapsami' in yazilan).toBe(false);
+    });
+
+    test('alarm kapalıyken kapsam seçimi gösterilmez', () => {
+        const { ekran } = kur({ bildirim: true }, true);
+        expect(ekran.queryByLabelText('Alarm: Her uyarıda')).toBeNull();
     });
 });
 

@@ -318,27 +318,21 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
                   onPress={() => menuyeGit('GorünumAyarlari')}
                 />
-                {/* Otomasyon güven listesi (issue #299) — yalnız Android (köprü varsa). */}
-                {kildimGuvenVar && [
+                {/* Otomasyon rehberi (issue #278) — yalnız Android (köprü varsa). "Kıldım
+                    işaretleyebilen uygulamalar" (#299) bu listede AYRI satır DEĞİLDİR: güven
+                    listesi otomasyonun bir parçasıdır ve yalnız rehber sayfasından açılır
+                    (rota korunur — "Neler Yeni" ve izin sorusu oraya gider). */}
+                {kildimGuvenVar && (
                   <AyarSatiri
                     key="otomasyon-rehberi"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="magic" size={20} color={ikonRengi} solid />}
                     baslik="Otomasyonlarla kullanın"
                     ozet="Samsung Rutinler, Tasker, MacroDroid"
-                    yeniRozetGoster={sayfaOkunmamisMi('OtomasyonRehberi')}
+                    yeniRozetGoster={sayfaOkunmamisMi('OtomasyonRehberi') || sayfaOkunmamisMi('KildimUygulamalari')}
                     onPress={() => menuyeGit('OtomasyonRehberi')}
-                  />,
-                  <AyarSatiri
-                    key="kildim-uygulamalari"
-                    varyant="navigasyon"
-                    ikon={<FontAwesome5 name="user-shield" size={20} color={ikonRengi} solid />}
-                    baslik="Kıldım işaretleyebilen uygulamalar"
-                    ozet="Rutinler, Tasker ve diğer otomasyonlar"
-                    yeniRozetGoster={sayfaOkunmamisMi('KildimUygulamalari')}
-                    onPress={() => menuyeGit('KildimUygulamalari')}
-                  />,
-                ]}
+                  />
+                )}
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
