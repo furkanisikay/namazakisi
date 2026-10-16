@@ -5,6 +5,21 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.32.0] - 2026-10-16
+
+### Eklendi
+- [muhafiz] içi boş kapalı eski adımları bir kez temizle
+- [onizleme] akış önizlemesi gerçek alarm tetiklerini saatiyle gösterir
+- [alarm] adım başına alarm kapsamı — yalnız ilk uyarıda ya da her uyarıda
+- [hatirlatma] yetenekler her yüzeyde standart, nafileye gerçek alarm
+- [nafile] ana ekran göstergesi nafile başına açılıp kapansın
+
+### Düzeltildi
+- [muhafiz] kapalı adım temizliği vakit sayacının eşiğini kaydırmasın
+- [nafile] çözülemeyen özel sesleri kanal kurulmadan önce düşür
+- [defter] nafile alarmlarını muhafız payına sayma
+- [ayarlar] Kıldım işaretleyen uygulamalar yalnız otomasyon rehberinden açılsın
+
 ## [0.31.1] - 2026-10-16
 
 ### Düzeltildi
