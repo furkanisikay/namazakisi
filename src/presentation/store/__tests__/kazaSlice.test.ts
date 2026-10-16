@@ -121,12 +121,20 @@ describe('kazaVerileriniYukle', () => {
   });
 
   it('bozuk eski kayıtta REDDETMEZ: fulfilled + "eski kayıt okunamadı" bayrağı (sonsuz yükleme yok)', async () => {
-    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU, 'null');
+    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU, '{kesik');
     const store = yeniStore();
     const sonuc = await store.dispatch(kazaVerileriniYukle());
     expect(kazaVerileriniYukle.fulfilled.match(sonuc)).toBe(true);
     expect(store.getState().kaza.kazaDurumu).not.toBeNull();
     expect(store.getState().kaza.eskiKayitBozuk).toBe(true);
+  });
+
+  it('JSON null eski kayıt (eski "üzerine yaz") BOZUK DEĞİLDİR: "okunamadı" bandı çıkmaz', async () => {
+    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU, 'null');
+    const store = yeniStore();
+    await store.dispatch(kazaVerileriniYukle());
+    expect(store.getState().kaza.kazaDurumu).not.toBeNull();
+    expect(store.getState().kaza.eskiKayitBozuk).toBe(false);
   });
 
   it('bozuk ay anahtarı bildirilir, sayfa yine açılır', async () => {
