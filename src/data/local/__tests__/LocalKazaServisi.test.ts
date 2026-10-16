@@ -113,6 +113,16 @@ describe('defteriOku — göç ve dayanıklılık', () => {
     expect(gorunum(ikinci.hareketler).toplamKalan).toBe(3);
   });
 
+  test('defterOzeti damgalı (TÜRETİLMİŞ) eski kayıt ayrı grup olarak işaretlenir; kalan yine birebir', async () => {
+    const turetilmis = { ...JSON.parse(eskiDurum({ Sabah: 3 }, { Sabah: 1 })), defterOzeti: 'defter-x', guncellemeTarihi: '2026-10-01T08:00:00.000Z' };
+    mockStore.set(ESKI, JSON.stringify(turetilmis));
+    const o = await defteriOku();
+    const t = o.hareketler.find((h) => h.kaynak === 'taban')!;
+    expect(t.grup).toMatch(/^goct-/);
+    expect(t.turetilmisKadar).toBe('2026-10-01T08:00:00.000Z');
+    expect(gorunum(o.hareketler).namazlar.find((n) => n.namazAdi === 'Sabah')).toMatchObject({ kalanBorc: 3, tamamlanan: 1 });
+  });
+
   test('eşzamanlı açılışlar tek göçü paylaşır', async () => {
     mockStore.set(ESKI, eskiDurum({ Sabah: 3 }));
     const [a, b] = await Promise.all([defteriOku(), defteriOku()]);

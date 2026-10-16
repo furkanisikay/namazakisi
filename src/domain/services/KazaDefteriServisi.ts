@@ -318,9 +318,10 @@ export async function yeniTabanOnizlemesiHesapla(
   const o: YeniTabanOnizlemesi = yeniTabanOnizlemesi(girdi, taban, kapsamBitis, simdi.toISOString(), cihaz, (onek) =>
     hareketKimligi(onek, simdi.getTime())
   );
-  const gocmisKilinan = o.eski.taban?.gocmis
+  const gocGrubu = o.eski.taban?.gocmis ? o.eski.taban.grup : null;
+  const gocmisKilinan = gocGrubu
     ? girdi.hareketler
-        .filter((h) => h.kaynak === 'kilindi' && h.gocmis)
+        .filter((h) => h.kaynak === 'kilindi' && h.gocmis && h.grup === gocGrubu)
         .reduce((t, h) => t + (h.adet ?? 0), 0)
     : 0;
   return {

@@ -83,7 +83,7 @@ describe('göç (eski KAZA_DURUMU → hareketler)', () => {
     expect(eskiDurumdanHareketler(42, 'z', 'a')).toBeNull();
   });
 
-  it('iki farklı göç grubu birleşirse yalnız KAZANAN grubun kılınanı sayılır (çift sayım yok)', () => {
+  it('iki farklı göç grubu birleşirse yalnız KAZANAN (ilk göç eden) grubun kılınanı sayılır (çift sayım yok)', () => {
     const a = eskiDurumdanHareketler(eski, '2026-10-15T10:00:00.000Z', 'a')!.hareketler;
     const b = eskiDurumdanHareketler(
       { namazlar: [{ namazAdi: 'Sabah', kalanBorc: 10, tamamlanan: 5 }] },
@@ -91,7 +91,103 @@ describe('göç (eski KAZA_DURUMU → hareketler)', () => {
       'b'
     )!.hareketler;
     const d = hesap([...a, ...b]);
+    expect(vakit(d, 'Sabah')).toMatchObject({ kalanBorc: 12, tamamlanan: 3 });
+  });
+});
+
+/**
+ * İki cihazlı birleşim: her cihaz açılışta, BİRLEŞTİRMEDEN önce kendi eski
+ * KAZA_DURUMU'nu göç ettirir (defter o an boştur). Sonuç birleşimin sırasından
+ * bağımsız olmalı ve geç göç eden cihaz ilk cihazın defterini EZMEMELİ.
+ */
+describe('iki cihazlı göç birleşimi (geç göç defteri ezmez)', () => {
+  const A_ESKI = { namazlar: [{ namazAdi: 'Sabah', kalanBorc: 12, tamamlanan: 3 }, { namazAdi: 'Öğle', kalanBorc: 7, tamamlanan: 1 }] };
+  const B_ESKI = { namazlar: [{ namazAdi: 'Sabah', kalanBorc: 40, tamamlanan: 9 }] };
+  const ozetle = (d: ReturnType<typeof hesap>) => ({
+    namazlar: d.namazlar.map((n) => [n.namazAdi, n.kalanBorc, n.tamamlanan]),
+    fazla: d.toplamFazla,
+    taban: d.taban?.id ?? null,
+  });
+  const hesapSirasiz = (liste: KazaHareketi[], ek: Partial<DefterHesapGirdisi> = {}) => {
+    const ileri = ozetle(hesap(liste, ek));
+    expect(ozetle(hesap([...liste].reverse(), ek))).toEqual(ileri);
+    return ileri;
+  };
+
+  it("(a) A yeniden hesapladı (T1); B SONRADAN kendi eski kaydını göç ettirdi → A'nın sonucu birebir kalır", () => {
+    const aGoc = eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler;
+    const t1 = taban('2026-10-05T08:00:00.000Z', { sabah: 60, ogle: 20 }, { cihaz: 'a' });
+    const aKil = { ...kilindi('2026-10-06T08:00:00.000Z', 'sabah', 2), cihaz: 'a' };
+    const aDefteri = [...aGoc, t1, aKil];
+    const aYalniz = hesapSirasiz(aDefteri);
+    // A yalnızken: T1 tabanı; göç kılınanları (3 + 1) ve sonraki kılınan (2) düşer.
+    expect(aYalniz.namazlar.find((n) => n[0] === 'Sabah')).toEqual(['Sabah', 55, 5]);
+    expect(aYalniz.taban).toBe(t1.id);
+
+    const bGoc = eskiDurumdanHareketler(B_ESKI, '2026-10-10T08:00:00.000Z', 'b')!.hareketler;
+    expect(hesapSirasiz([...aDefteri, ...bGoc])).toEqual(aYalniz);
+  });
+
+  it("(a) göç tabanı, kendisinden ÖNCE yazılmış yeniden hesabı da geçemez", () => {
+    const t1 = taban('2026-10-05T08:00:00.000Z', { sabah: 60 }, { cihaz: 'a' });
+    const bGoc = eskiDurumdanHareketler(B_ESKI, '2026-10-20T08:00:00.000Z', 'b')!.hareketler;
+    const d = hesap([t1, ...bGoc]);
+    expect(d.taban?.id).toBe(t1.id);
+  });
+
+  it("(b) eski sürüm B, A'nın TÜRETİLMİŞ görüntüsünü göç ettirdi → birleşimde çift sayım yok, A'nın sonucu birebir", () => {
+    const aGoc = eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler;
+    const aDefteri = [
+      ...aGoc,
+      { ...manuel('2026-10-02T08:00:00.000Z', 'ogle', 4), cihaz: 'a' },
+      { ...kilindi('2026-10-03T08:00:00.000Z', 'sabah', 2), cihaz: 'a' },
+      { ...oto('2026-10-10'), cihaz: 'a' },
+    ];
+    const ek: Partial<DefterHesapGirdisi> = { isaretliler: {} };
+    const aGorunum = hesap(aDefteri, ek);
+    const aYalniz = hesapSirasiz(aDefteri, ek);
+    // B (eski sürüm) A'nın türetilmiş görüntüsünü KAZA_DURUMU'na yazdı, sonra güncellendi.
+    const gorunum = eskiAnlikGoruntuUret(aGorunum);
+    const bGoc = eskiDurumdanHareketler(gorunum, '2026-10-16T08:00:00.000Z', 'b')!.hareketler;
+    expect(hesapSirasiz([...aDefteri, ...bGoc], ek)).toEqual(aYalniz);
+  });
+
+  it("(b) A'nın defteri hiç gelmezse B'nin türetilmiş göçü tek başına görünen kalanı BİREBİR korur", () => {
+    const aDefteri = [
+      ...eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler,
+      { ...manuel('2026-10-02T08:00:00.000Z', 'ogle', 4), cihaz: 'a' },
+    ];
+    const aGorunum = hesap(aDefteri);
+    const bGoc = eskiDurumdanHareketler(eskiAnlikGoruntuUret(aGorunum), '2026-10-16T08:00:00.000Z', 'b')!.hareketler;
+    const bYalniz = hesap(bGoc);
+    expect(bYalniz.namazlar.map((n) => [n.kalanBorc, n.tamamlanan])).toEqual(
+      aGorunum.namazlar.map((n) => [n.kalanBorc, n.tamamlanan])
+    );
+    // B kendi işini yapsa da (yeni hareket) türetilmiş taban geçerli kalır.
+    const bKil = { ...kilindi('2026-10-17T08:00:00.000Z', 'ogle', 1), cihaz: 'b' };
+    expect(vakit(hesap([...bGoc, bKil]), 'Öğle').kalanBorc).toBe(vakit(aGorunum, 'Öğle').kalanBorc - 1);
+  });
+
+  it("(b) B eski sürümde fazladan kıldıysa (görüntü değişti) birleşimde yalnız «en az bu kadar» sayılır, çift sayılmaz", () => {
+    const aDefteri = eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler;
+    const aGorunum = hesap(aDefteri);
+    const gorunum = eskiAnlikGoruntuUret(aGorunum);
+    const degismis = {
+      ...gorunum,
+      namazlar: gorunum.namazlar.map((n) => (n.namazAdi === 'Sabah' ? { ...n, kalanBorc: n.kalanBorc - 2, tamamlanan: n.tamamlanan + 2 } : n)),
+    };
+    const bGoc = eskiDurumdanHareketler(degismis, '2026-10-16T08:00:00.000Z', 'b')!.hareketler;
+    const d = hesap([...aDefteri, ...bGoc]);
     expect(vakit(d, 'Sabah')).toMatchObject({ kalanBorc: 10, tamamlanan: 5 });
+    expect(d.toplamFazla).toBe(0);
+  });
+
+  it("(c) iki cihaz da GERÇEK eski kayıtla göç etti → tek grup, sıradan bağımsız, çift sayım yok", () => {
+    const aGoc = eskiDurumdanHareketler(A_ESKI, '2026-10-01T08:00:00.000Z', 'a')!.hareketler;
+    const bGoc = eskiDurumdanHareketler(B_ESKI, '2026-10-02T08:00:00.000Z', 'b')!.hareketler;
+    const sonuc = hesapSirasiz([...bGoc, ...aGoc]);
+    expect(sonuc.namazlar.find((n) => n[0] === 'Sabah')).toEqual(['Sabah', 12, 3]);
+    expect(hesap([...aGoc, ...bGoc]).toplamTamamlanan).toBe(4);
   });
 });
 

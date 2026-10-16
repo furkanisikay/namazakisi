@@ -131,6 +131,12 @@ export interface KazaHareketi {
   gocmis?: boolean;
   /** Göç grubu: yalnız KAZANAN göç grubunun kılınanı sayılır (çift sayım yok). */
   grup?: string;
+  /**
+   * Göç `taban`ı: kaynak eski kayıt bir defterin TÜRETİLMİŞ görüntüsüydü
+   * (`defterOzeti` damgalı). Değer görüntünün kapsadığı son hareket anıdır;
+   * o ana kadarki kaynak hareketler deftere gelince bu göç grubu sayılmaz.
+   */
+  turetilmisKadar?: string;
   /** `temizlik`: gizlenen kimlikler. */
   hedefIdler?: string[];
   /** `temizlikGeriAl`: geri alınan temizliğin kimliği. */
@@ -225,6 +231,9 @@ export function hareketNormalize(ham: unknown): KazaHareketi | null {
       if (ham.gocmis === true) h.gocmis = true;
       const grup = kisaMetin(ham.grup, 80);
       if (grup) h.grup = grup;
+      if (h.gocmis && typeof ham.turetilmisKadar === 'string' && ISO_ZAMAN.test(ham.turetilmisKadar)) {
+        h.turetilmisKadar = ham.turetilmisKadar.slice(0, 40);
+      }
       return h;
     }
     case 'manuel':

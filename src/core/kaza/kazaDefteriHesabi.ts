@@ -199,6 +199,8 @@ export interface TabanBilgisi {
   id: string;
   zaman: string;
   gocmis: boolean;
+  /** Göç tabanının grubu (göç değilse `null`). */
+  grup: string | null;
   kapsamBitis: string | null;
   toplam: number;
   degerler: Record<KazaVakti, number>;
@@ -219,14 +221,51 @@ export interface KazaDefterGorunumu extends KazaDurumu {
   tempoGecmis: Record<string, number>;
 }
 
-/** Göç kılınanlarını yalnız KAZANAN göç grubundan say (iki cihaz farklı göç ettiyse). */
-const kazananGocGrubu = (etkin: readonly KazaHareketi[]): string | null => {
-  let kazanan: KazaHareketi | null = null;
+/** Sayıya etki eden kaynaklar (göç kapısı ve türetilmiş göçün kaynak kontrolü). */
+const DOLU_KAYNAKLAR: readonly string[] = ['taban', 'manuel', 'bildirim', 'kilindi', 'duzeltme'];
+
+interface TabanSecimi {
+  taban: KazaHareketi | null;
+  /** Kılınanı sayılan TEK göç grubu (yoksa `null`). */
+  gocGrubu: string | null;
+}
+
+/**
+ * Taban + göç grubu seçimi. Birleşimin SIRASINDAN bağımsızdır (iki cihaz aynı
+ * kümeden aynı sonucu kurar). Her cihaz açılışta, birleştirmeden önce kendi eski
+ * kaydını göç ettirdiği için geç gelen bir göç ilk cihazın defterini EZMEMELİ:
+ *
+ * - Göç-OLMAYAN taban (yeniden hesap / sihirbaz) varsa en sonuncusu tabandır;
+ *   göç tabanı onu, zamanı ne olursa olsun, ASLA geçmez.
+ * - Birden çok göç grubu varsa kılınanı sayılan TEK grup İLK göç edendir
+ *   (toplam sıra). Göç grupları temizlikle gizlenemediği için sonradan gelen
+ *   grubun kuralla kaybetmesi şarttır.
+ * - TÜRETİLMİŞ göç (eski sürümün sakladığı, yeni defterden türemiş görüntü)
+ *   yalnız gerçek göç grubu yokken ve görüntünün kaynağı olan hareketler
+ *   (`turetilmisKadar` anına kadarki başka dolu hareketler) deftere HİÇ
+ *   gelmemişken sayılır; kaynak gelince görüntü çift sayılmasın diye düşer.
+ */
+const tabanSec = (etkin: readonly KazaHareketi[], tumu: readonly KazaHareketi[]): TabanSecimi => {
+  let gercek: KazaHareketi | null = null;
+  const gocTabanlari: KazaHareketi[] = [];
   for (const h of etkin) {
-    if (h.kaynak !== 'taban' || !h.gocmis) continue;
-    if (!kazanan || siraKarsilastir(h, kazanan) > 0) kazanan = h;
+    if (h.kaynak !== 'taban') continue;
+    if (h.gocmis) gocTabanlari.push(h);
+    else if (!gercek || siraKarsilastir(h, gercek) > 0) gercek = h;
   }
-  return kazanan?.grup ?? null;
+  gocTabanlari.sort(siraKarsilastir);
+  const kaynakGeldi = (t: KazaHareketi): boolean =>
+    tumu.some(
+      (h) =>
+        DOLU_KAYNAKLAR.includes(h.kaynak) &&
+        h.grup !== t.grup &&
+        h.zaman <= (t.turetilmisKadar as string)
+    );
+  const secilen =
+    gocTabanlari.find((t) => !t.turetilmisKadar) ??
+    gocTabanlari.find((t) => !kaynakGeldi(t)) ??
+    null;
+  return { taban: gercek ?? secilen, gocGrubu: secilen?.grup ?? null };
 };
 
 /**
@@ -263,10 +302,8 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
   const gizli = gizliKimlikler(hareketler);
   const etkin = hareketler.filter((h) => !(gizli.has(h.id) && gizlenebilirMi(h)));
 
-  // Taban: en son (toplam sıraya göre) etkin taban.
-  let taban: KazaHareketi | null = null;
-  for (const h of etkin) if (h.kaynak === 'taban' && (!taban || siraKarsilastir(h, taban) > 0)) taban = h;
-  const gocGrubu = kazananGocGrubu(etkin);
+  // Taban ve sayılan göç grubu (bkz. `tabanSec`: göç, göç olmayan tabanı geçemez).
+  const { taban, gocGrubu } = tabanSec(etkin, hareketler);
 
   const kalan = sifirVakitler();
   const fazlaSayi = sifirVakitler();
@@ -437,6 +474,7 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
           id: taban.id,
           zaman: taban.zaman,
           gocmis: taban.gocmis === true,
+          grup: taban.grup ?? null,
           kapsamBitis: taban.kapsamBitis ?? null,
           toplam: KAZA_VAKITLERI.reduce((t, v) => t + (taban?.taban?.[v] ?? 0), 0),
           degerler: { ...taban.taban },
@@ -568,23 +606,47 @@ export function eskiDurumdanHareketler(ham: unknown, zaman: string, cihaz: strin
   const bos = KAZA_VAKITLERI.every((v) => kalan[v] === 0 && tamam[v] === 0);
   if (bos) return { hareketler: [], ayarlar };
 
-  const grup = `goc-${fnv1aHex(kanonikDize({ kalan, tamam }))}`;
+  // TÜRETİLMİŞ görüntü (`defterOzeti` damgalı; eski sürüm yeni bir cihazın
+  // yedeğini/eşitlemesini KAZA_DURUMU'na yazmış): ayrı önekli grup + kaynağın
+  // kapsadığı son an. Kaynak defter bu cihaza gelince grup sayılmaz (çift sayım
+  // yok, `tabanSec`); hiç gelmezse görünen kalan yine birebir korunur. Eski
+  // sürümde görüntü değiştiyse fark "en az bu kadar kılındı" olarak taşınır.
+  const turetilmis = typeof durum.defterOzeti === 'string';
+  const grup = `${turetilmis ? 'goct' : 'goc'}-${fnv1aHex(kanonikDize({ kalan, tamam }))}`;
   const taban = sifirVakitler();
   for (const v of KAZA_VAKITLERI) taban[v] = kalan[v] + tamam[v];
-  const hareketler: KazaHareketi[] = [
-    { id: `${grup}:taban`, zaman, cihaz, kaynak: 'taban', taban, gocmis: true, grup, kapsamBitis: zaman.slice(0, 10) },
-  ];
+  const tabanHareketi: KazaHareketi = {
+    id: `${grup}:taban`,
+    zaman,
+    cihaz,
+    kaynak: 'taban',
+    taban,
+    gocmis: true,
+    grup,
+    kapsamBitis: zaman.slice(0, 10),
+  };
+  if (turetilmis) {
+    const kadar = durum.guncellemeTarihi;
+    // Kapsam anı okunamazsa en geniş kabul: herhangi bir kaynak hareket gelince düşer.
+    tabanHareketi.turetilmisKadar =
+      typeof kadar === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(kadar) ? kadar : '9999-12-31T23:59:59.999Z';
+  }
+  const hareketler: KazaHareketi[] = [tabanHareketi];
   for (const v of KAZA_VAKITLERI) {
     if (tamam[v] > 0) {
       hareketler.push({ id: `${grup}:kilindi:${v}`, zaman, cihaz, kaynak: 'kilindi', vakit: v, adet: tamam[v], gocmis: true, grup });
     }
+  }
+  if (turetilmis) {
+    const enAz = eskiGorunumHareketi(ham, zaman, cihaz);
+    if (enAz) hareketler.push(enAz);
   }
   return { hareketler, ayarlar };
 }
 
 /** Defterde sayıya etki eden bir hareket var mı (göç / eski yedek kapısı)? */
 export const defterDoluMu = (hareketler: readonly KazaHareketi[]): boolean =>
-  hareketler.some((h) => ['taban', 'manuel', 'bildirim', 'kilindi', 'duzeltme'].includes(h.kaynak));
+  hareketler.some((h) => DOLU_KAYNAKLAR.includes(h.kaynak));
 
 // ==================== YENİDEN HESAPLAMA ÖNİZLEMESİ ====================
 
