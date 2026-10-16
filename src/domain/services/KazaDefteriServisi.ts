@@ -34,11 +34,18 @@ import {
   type KazaVakti,
 } from '../../core/kaza/kazaHareketi';
 import {
+  KAZA_VAKITLERI,
+  hareketKimligi,
+} from '../../core/kaza/kazaHareketi';
+import {
   defterHesapla,
   izdusumGunleri,
+  otomatikBaslangicGecerliMi,
   taramaFarki,
+  yeniTabanOnizlemesi,
   type DefterHesapGirdisi,
   type KazaDefterGorunumu,
+  type YeniTabanOnizlemesi,
 } from '../../core/kaza/kazaDefteriHesabi';
 import {
   namazGunuHesapla,
@@ -54,6 +61,8 @@ const TARAMA_GECIKMESI_MS = 1500;
 export interface DefterSonucu {
   gorunum: KazaDefterGorunumu;
   girdi: DefterHesapGirdisi;
+  /** Bu sürümün çözemediği hareketler (yedek/eşitleme yüküne aynen gider). */
+  bilinmeyenler: LocalKaza.DefterOkumasi['bilinmeyenler'];
   bozukAylar: string[];
   eskiKayitBozuk: boolean;
   sonTarama: string | null;
@@ -169,6 +178,7 @@ export async function defteriHesapla(s: GirdiSecenekleri = {}): Promise<DefterSo
   return {
     gorunum: defterHesapla(girdi),
     girdi,
+    bilinmeyenler: okuma.bilinmeyenler,
     bozukAylar: okuma.bozukAylar,
     eskiKayitBozuk: okuma.eskiKayitBozuk,
     sonTarama,
@@ -266,4 +276,115 @@ export async function yazVeHesapla(uret: (temel: (onek: string) => Promise<Temel
   const hareketler = await uret((onek) => LocalKaza.yeniHareketTemeli(onek));
   if (hareketler.length > 0) await LocalKaza.hareketleriEkle(hareketler);
   return defteriHesapla();
+}
+
+// ==================== ÖNİZLEMELER (yazmaz) ====================
+
+/** Önizlemede ekranın ihtiyaç duyduğu, serileştirilebilir özet. */
+export interface TabanOnizlemeOzeti {
+  kapsamBitis: string;
+  eskiKalan: number;
+  ayricaKalan: number;
+  /** Örtüşen kayıt yoksa `null`. */
+  gizleKalan: number | null;
+  eskiTaban: number | null;
+  yeniTaban: number;
+  ortusenOtomatik: number;
+  ortusenBildirim: number;
+  /** Değişen taban önceki sürümden aktarılmışsa ekran bunu AÇIKÇA söyler. */
+  gocmisTabanDegisiyor: boolean;
+  /** Önceki sürümde kılınanlar (göçle gelen) — yeni tabandan da düşülür. */
+  gocmisKilinan: number;
+  ozet: KazaDefterGorunumu['ozet'];
+  /** Vakit başına eski → yeni kalan. */
+  vakitler: Array<{ vakit: KazaVakti; eski: number; yeni: number }>;
+  yeniFazla: number;
+}
+
+/**
+ * Sihirbazın son adımı: yeni taban DİSKTEN TAZE okunan defterle önizlenir.
+ * HİÇBİR ŞEY YAZMAZ. Uygulama anında (`yeniTabanUygula`) önizleme yeniden
+ * kurulur; arada disk değiştiyse sayılar küçük farklarla güncellenebilir.
+ */
+export async function yeniTabanOnizlemesiHesapla(
+  taban: Record<KazaVakti, number>,
+  s: GirdiSecenekleri = {}
+): Promise<TabanOnizlemeOzeti> {
+  const { girdi, cihaz } = await defteriHesapla(s);
+  const simdi = s.simdi ?? new Date();
+  const kapsamBitis = girdi.bugunNamazGunu;
+  const o: YeniTabanOnizlemesi = yeniTabanOnizlemesi(girdi, taban, kapsamBitis, simdi.toISOString(), cihaz, (onek) =>
+    hareketKimligi(onek, simdi.getTime())
+  );
+  const gocmisKilinan = o.eski.taban?.gocmis
+    ? girdi.hareketler
+        .filter((h) => h.kaynak === 'kilindi' && h.gocmis)
+        .reduce((t, h) => t + (h.adet ?? 0), 0)
+    : 0;
+  return {
+    kapsamBitis,
+    eskiKalan: o.eski.toplamKalan,
+    ayricaKalan: o.ayrica.toplamKalan,
+    gizleKalan: o.gizle ? o.gizle.toplamKalan : null,
+    eskiTaban: o.eski.taban?.toplam ?? null,
+    yeniTaban: KAZA_VAKITLERI.reduce((t, v) => t + (taban[v] ?? 0), 0),
+    ortusenOtomatik: o.ortusenOtomatik,
+    ortusenBildirim: o.ortusenBildirim,
+    gocmisTabanDegisiyor: o.gocmisTabanDegisiyor,
+    gocmisKilinan,
+    ozet: o.eski.ozet,
+    vakitler: KAZA_VAKITLERI.map((v, i) => ({
+      vakit: v,
+      eski: o.eski.namazlar[i].kalanBorc,
+      yeni: o.ayrica.namazlar[i].kalanBorc,
+    })),
+    yeniFazla: o.ayrica.toplamFazla,
+  };
+}
+
+/** "Geçmiş günleri tarayın" önizlemesi: başlangıç geriye alınırsa ne eklenir? */
+export interface GecmisTaramaOnizlemesi {
+  baslangic: string;
+  /** Eklenecek otomatik kayıt sayısı (şu anki görünüme göre fark). */
+  eklenecek: number;
+  /** Hiç işaret olmayan ("bana sorun") günler — karar bekler. */
+  bekleyenGun: number;
+  yeniKalan: number;
+  eskiKalan: number;
+}
+
+export async function gecmisTaramaOnizlemesi(
+  baslangic: string,
+  s: GirdiSecenekleri = {}
+): Promise<GecmisTaramaOnizlemesi> {
+  const bugun = bugunNamazGunuAl(s.simdi ?? new Date(), s.imsakSaglayici);
+  if (!otomatikBaslangicGecerliMi(baslangic, bugun)) throw new Error('Geçersiz başlangıç günü');
+  const simdiki = await defteriHesapla(s);
+  const temel = { id: 'onizleme:otoAyar', zaman: (s.simdi ?? new Date()).toISOString(), cihaz: simdiki.cihaz };
+  const sonra = await defteriHesapla({
+    ...s,
+    ekHareketler: [hareketUret.otoAyar(temel, true, baslangic, simdiki.gorunum.otomatik.kayitsiz)],
+  });
+  return {
+    baslangic,
+    eklenecek: Math.max(0, sonra.gorunum.ozet.otomatik - simdiki.gorunum.ozet.otomatik),
+    bekleyenGun: Math.max(0, sonra.gorunum.bekleyenGunler.length - simdiki.gorunum.bekleyenGunler.length),
+    yeniKalan: sonra.gorunum.toplamKalan,
+    eskiKalan: simdiki.gorunum.toplamKalan,
+  };
+}
+
+/** Temizlik önizlemesi: seçili kayıtlar gizlenince kalan kaç olur? (yazmaz) */
+export async function temizlikOnizlemesi(
+  hedefIdler: readonly string[],
+  s: GirdiSecenekleri = {}
+): Promise<{ eskiKalan: number; yeniKalan: number }> {
+  const simdiki = await defteriHesapla(s);
+  if (hedefIdler.length === 0) return { eskiKalan: simdiki.gorunum.toplamKalan, yeniKalan: simdiki.gorunum.toplamKalan };
+  const temel = { id: 'onizleme:temizlik', zaman: (s.simdi ?? new Date()).toISOString(), cihaz: simdiki.cihaz };
+  const gorunum = defterHesapla({
+    ...simdiki.girdi,
+    hareketler: [...simdiki.girdi.hareketler, hareketUret.temizlik(temel, [...hedefIdler])],
+  });
+  return { eskiKalan: simdiki.gorunum.toplamKalan, yeniKalan: gorunum.toplamKalan };
 }

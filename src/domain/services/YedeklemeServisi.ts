@@ -29,8 +29,9 @@ import {
 } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Depolama } from '../../data/local/Depolama';
-import { defteriOku, hareketleriEkle } from '../../data/local/LocalKazaServisi';
-import type { KazaHareketi } from '../../core/kaza/kazaHareketi';
+import { hareketleriEkle } from '../../data/local/LocalKazaServisi';
+import { defteriHesapla } from './KazaDefteriServisi';
+import { eskiAnlikGoruntuUret } from '../../core/kaza/kazaDefteriHesabi';
 import { sifrele, coz, kontrolHesapla } from '../../core/utils/yedekSifreleme';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
@@ -197,10 +198,11 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
     Depolama.oku<number>(DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI),
     Depolama.oku<number>(DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI),
     Depolama.oku<Record<string, number>>(DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS),
-    // Kaza Defteri 2.0: hareketler (göç okumadan önce garanti edilir). Eski
-    // `KAZA_DURUMU` artık yedeğe GİRMEZ (göçten sonra bayattır; eski bir
-    // sürüme geri yüklenince yanlış sayı gösterirdi).
-    defteriOku(),
+    // Kaza Defteri 2.0: hareketler + TÜRETİLMİŞ eski şekilli anlık görüntü
+    // (göç okumadan önce garanti edilir). Diskteki eski `KAZA_DURUMU` artık
+    // yedeğe GİRMEZ (göçten sonra bayattır); yerine defterden türetilen görüntü
+    // yazılır ki eski sürüm bu yedeği açınca/eşitleyince doğru sayıyı görsün.
+    defteriHesapla(),
     ayarlariTopla(),
   ]);
 
@@ -216,9 +218,10 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
       mukemmelGun: mukemmelGun ?? 0,
       toparlanma: toparlanma ?? 0,
     },
-    kaza: null,
+    kaza: eskiAnlikGoruntuUret(kazaDefteri.gorunum),
     kazaTempo: kazaTempo ?? {},
-    kazaHareketleri: kazaDefteri.hareketler,
+    // Bu sürümün çözemediği (yeni sürüm) hareketler de AYNEN taşınır.
+    kazaHareketleri: [...kazaDefteri.girdi.hareketler, ...kazaDefteri.bilinmeyenler],
     ayarlar,
   };
 };
@@ -244,7 +247,7 @@ export const planiDiskeYaz = async (plan: YazimPlani): Promise<void> => {
       // Kaza defteri: düz yazım DEĞİL, defterin tek kapısından kimlik birleşimi —
       // plan toplandıktan sonra eklenen bir hareket (bildirimden "Kazaya ekle")
       // ezilmesin; bozuk ay anahtarının üstüne yazılmasın.
-      await hareketleriEkle(Array.isArray(deger) ? (deger as KazaHareketi[]) : []);
+      await hareketleriEkle(Array.isArray(deger) ? (deger as unknown[]) : []);
       continue;
     }
     await Depolama.yaz(anahtar, deger);

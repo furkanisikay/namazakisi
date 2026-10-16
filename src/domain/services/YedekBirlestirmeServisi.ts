@@ -26,12 +26,13 @@ import {
 } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import {
+  bilinmeyenleriBirlestir,
   hareketAyi,
-  hareketNormalize,
+  hareketleriAyristir,
   hareketleriBirlestir,
   type KazaHareketi,
 } from '../../core/kaza/kazaHareketi';
-import { defterDoluMu, eskiDurumdanHareketler } from '../../core/kaza/kazaDefteriHesabi';
+import { defterDoluMu, eskiDurumdanHareketler, eskiGorunumHareketi } from '../../core/kaza/kazaDefteriHesabi';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -72,16 +73,8 @@ export const AKILLI_SECIMLER: Readonly<KategoriSecimleri> = Object.freeze({
   ayarlar: 'akilli',
 });
 
-/** Ham hareket dizisini doğrular (bozuk öğe atlanır). */
-export const kazaHareketleriniCoz = (ham: unknown): KazaHareketi[] => {
-  if (!Array.isArray(ham)) return [];
-  const sonuc: KazaHareketi[] = [];
-  for (const oge of ham) {
-    const h = hareketNormalize(oge);
-    if (h) sonuc.push(h);
-  }
-  return sonuc;
-};
+/** Ham hareket dizisinin bu sürümün çözebildiği kısmı (çözülemeyenler planda ayrıca korunur). */
+export const kazaHareketleriniCoz = (ham: unknown): KazaHareketi[] => hareketleriAyristir(ham).taninan;
 
 /** İki tarafta da bulunan tarihlerin (kümeler kesişimi) sayısı. */
 const cakisanSayisi = (a: Record<string, unknown>, b: Record<string, unknown>): number =>
@@ -300,8 +293,10 @@ export interface BirlestirmeBaglami {
  * (geri alınabilir) gizlenir. Plan ay anahtarlarına bölünür; `planiDiskeYaz`
  * bunları defterin tek kapısından (kimlik birleşimi) yazar.
  *
- * ESKİ YEDEK (yalnız `kaza` anlık görüntüsü): defter boşsa göç onun üzerinden
- * yapılır; doluysa ikinci bir göç tabanı EKLENMEZ.
+ * ESKİ YEDEK / ESKİ SÜRÜMLÜ CİHAZ (yalnız `kaza` anlık görüntüsü): defter boşsa
+ * göç onun üzerinden yapılır; doluysa ikinci bir göç tabanı EKLENMEZ, yalnız
+ * `eskiGorunum` ("en az bu kadar kılındı") hareketi yazılır. Çözülemeyen (yeni
+ * sürüm) hareketler de plana AYNEN girer.
  */
 const kazaPlaniEkle = (
   plan: YazimPlani,
@@ -310,16 +305,33 @@ const kazaPlaniEkle = (
   gelen: YedekPayload,
   baglam: BirlestirmeBaglami
 ): void => {
-  const mevcutHareketler = kazaHareketleriniCoz(mevcut.kazaHareketleri);
-  let gelenHareketler = kazaHareketleriniCoz(gelen.kazaHareketleri);
-  if (gelenHareketler.length === 0 && gelen.kaza != null && !defterDoluMu(mevcutHareketler)) {
-    gelenHareketler = eskiDurumdanHareketler(gelen.kaza, baglam.zaman, baglam.cihaz)?.hareketler ?? [];
+  const mevcutAyrim = hareketleriAyristir(mevcut.kazaHareketleri);
+  const gelenAyrim = hareketleriAyristir(gelen.kazaHareketleri);
+  const mevcutHareketler = mevcutAyrim.taninan;
+  let gelenHareketler: KazaHareketi[] = gelenAyrim.taninan;
+  // ESKİ SÜRÜMÜN YÜKÜ (hareket alanı hiç yok): anlık görüntü yalnız göç kaynağıdır.
+  // Defter boşsa göç (içerikten türeyen `goc-` kimlikleri → tekrar uygulanabilir);
+  // doluysa yalnız "en az bu kadar kılındı" tabanı (eski cihazda kılınanlar
+  // kaybolmasın, karışık sürüm eşitlemesi buluşsun). Borç yönü ALINMAZ.
+  const eskiSurumYuku = !Array.isArray(gelen.kazaHareketleri) && gelen.kaza != null;
+  if (eskiSurumYuku) {
+    if (!defterDoluMu(mevcutHareketler)) {
+      gelenHareketler = eskiDurumdanHareketler(gelen.kaza, baglam.zaman, baglam.cihaz)?.hareketler ?? [];
+    } else {
+      const taban = eskiGorunumHareketi(gelen.kaza, baglam.zaman, baglam.cihaz);
+      gelenHareketler = taban && !mevcutHareketler.some((h) => h.id === taban.id) ? [taban] : [];
+    }
   }
-  if (gelenHareketler.length > 0) {
+  const gelenBilinmeyen = gelenAyrim.bilinmeyen;
+  if (gelenHareketler.length > 0 || gelenBilinmeyen.length > 0) {
     const birlesik = hareketleriBirlestir(mevcutHareketler, gelenHareketler);
-    const etkilenenAylar = new Set(gelenHareketler.map(hareketAyi));
-    const aylar = new Map<string, KazaHareketi[]>();
-    for (const h of birlesik) {
+    const taninanIdler = new Set(birlesik.map((h) => h.id));
+    const bilinmeyen = bilinmeyenleriBirlestir(mevcutAyrim.bilinmeyen, gelenBilinmeyen).filter(
+      (b) => !taninanIdler.has(b.id)
+    );
+    const etkilenenAylar = new Set([...gelenHareketler.map(hareketAyi), ...gelenBilinmeyen.map(hareketAyi)]);
+    const aylar = new Map<string, unknown[]>();
+    for (const h of [...birlesik, ...bilinmeyen]) {
       const ay = hareketAyi(h);
       if (!etkilenenAylar.has(ay)) continue;
       aylar.set(ay, [...(aylar.get(ay) ?? []), h]);

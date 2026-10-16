@@ -21,12 +21,16 @@ import { Logger } from '../../core/utils/Logger';
 import type { ApiYanit } from '../../core/types';
 import { Depolama } from './Depolama';
 import {
+  bilinmeyenHareketMi,
+  bilinmeyenleriBirlestir,
   hareketAyi,
   hareketKimligi,
   hareketNormalize,
+  hareketleriAyristir,
   hareketleriBirlestir,
   isoGunMu,
   referansOlustur,
+  type BilinmeyenHareket,
   type KazaHareketi,
   type KazaVakti,
 } from '../../core/kaza/kazaHareketi';
@@ -106,9 +110,15 @@ export function _testIcinSifirla(): void {
 
 // ==================== OKUMA ====================
 
-/** Ham ay değerini çözer: `null` = BOZUK (nesne-dışı ya da ayrıştırılamaz). */
-function hamAyiCoz(ham: string | null): KazaHareketi[] | null {
-  if (ham === null) return [];
+interface AyIcerigi {
+  taninan: KazaHareketi[];
+  /** Bu sürümün çözemediği (yeni sürümden) öğeler — yazarken GERİ KONUR. */
+  bilinmeyen: BilinmeyenHareket[];
+}
+
+/** Ham ay değerini çözer: `null` = BOZUK (dizi-dışı ya da ayrıştırılamaz). */
+function hamAyiCoz(ham: string | null): AyIcerigi | null {
+  if (ham === null) return { taninan: [], bilinmeyen: [] };
   let cozulen: unknown;
   try {
     cozulen = JSON.parse(ham);
@@ -116,16 +126,16 @@ function hamAyiCoz(ham: string | null): KazaHareketi[] | null {
     return null;
   }
   if (!Array.isArray(cozulen)) return null;
-  const sonuc: KazaHareketi[] = [];
-  for (const oge of cozulen) {
-    const h = hareketNormalize(oge);
-    if (h) sonuc.push(h);
-  }
-  return sonuc;
+  return hareketleriAyristir(cozulen);
 }
 
 export interface DefterOkumasi {
   hareketler: KazaHareketi[];
+  /**
+   * Yeni bir sürümün yazdığı, bu sürümün çözemediği öğeler (ileri uyumluluk).
+   * Hesaba girmez; yedek/eşitleme yüküne AYNEN konur.
+   */
+  bilinmeyenler: BilinmeyenHareket[];
   /** Okunamayan (bozuk) ay anahtarları — ekran uyarı bandı gösterir. */
   bozukAylar: string[];
   /** Eski KAZA_DURUMU okunamadığı için göç tamamlanamadı. */
@@ -137,6 +147,7 @@ async function hamDefteriOku(): Promise<Omit<DefterOkumasi, 'eskiKayitBozuk'>> {
   const ciftler = await Depolama.cogunuOku(anahtarlar);
   const bozukAylar: string[] = [];
   const listeler: KazaHareketi[][] = [];
+  const bilinmeyenListeler: BilinmeyenHareket[][] = [];
   for (const [anahtar, ham] of ciftler) {
     const ay = hamAyiCoz(ham);
     if (ay === null) {
@@ -147,9 +158,16 @@ async function hamDefteriOku(): Promise<Omit<DefterOkumasi, 'eskiKayitBozuk'>> {
       });
       continue;
     }
-    listeler.push(ay);
+    listeler.push(ay.taninan);
+    bilinmeyenListeler.push(ay.bilinmeyen);
   }
-  return { hareketler: hareketleriBirlestir(...listeler), bozukAylar };
+  const hareketler = hareketleriBirlestir(...listeler);
+  const taninanIdler = new Set(hareketler.map((h) => h.id));
+  return {
+    hareketler,
+    bilinmeyenler: bilinmeyenleriBirlestir(...bilinmeyenListeler).filter((b) => !taninanIdler.has(b.id)),
+    bozukAylar,
+  };
 }
 
 /** Defterin tamamı (göç önce garanti edilir). ASLA reddetmez. */
@@ -164,27 +182,34 @@ export async function defteriOku(): Promise<DefterOkumasi> {
     return { ...(await hamDefteriOku()), eskiKayitBozuk };
   } catch (e) {
     Logger.error('LocalKazaServisi', 'Kaza defteri okunamadı, boş defterle devam ediliyor', e);
-    return { hareketler: [], bozukAylar: [], eskiKayitBozuk };
+    return { hareketler: [], bilinmeyenler: [], bozukAylar: [], eskiKayitBozuk };
   }
 }
 
 // ==================== YAZMA (TEK KAPI) ====================
 
 /**
- * Hareketleri deftere ekler (kimlik zaten varsa YAZILMAZ). Geçersiz hareket
- * sessizce atlanır. Bozuk ay anahtarına dokunulmaz → kardeş anahtar.
- * Fırlatabilir (çağıran thunk reddeder; okuma yolu etkilenmez).
+ * Hareketleri deftere ekler (kimlik zaten varsa YAZILMAZ). Bu sürümün
+ * çözemediği ama yapısal olarak geçerli öğe (yedekten/buluttan gelen yeni
+ * sürüm hareketi) HAM olarak korunur; yapısız değer atlanır. Mevcut ayın
+ * bilinmeyen öğeleri de yazarken GERİ KONUR (ileri uyumluluk). Bozuk ay
+ * anahtarına dokunulmaz → kardeş anahtar. Fırlatabilir (çağıran reddeder).
  */
-export async function hareketleriEkle(liste: readonly KazaHareketi[]): Promise<number> {
-  const aylar = new Map<string, KazaHareketi[]>();
+export async function hareketleriEkle(liste: readonly unknown[]): Promise<number> {
+  const aylar = new Map<string, AyIcerigi>();
+  const ayGrubu = (ay: string): AyIcerigi => {
+    let g = aylar.get(ay);
+    if (!g) {
+      g = { taninan: [], bilinmeyen: [] };
+      aylar.set(ay, g);
+    }
+    return g;
+  };
   for (const ham of liste) {
     const h = hareketNormalize(ham);
-    if (!h) {
-      Logger.warn('LocalKazaServisi', 'Geçersiz kaza hareketi atlandı', { kaynak: (ham as KazaHareketi)?.kaynak });
-      continue;
-    }
-    const ay = hareketAyi(h);
-    aylar.set(ay, [...(aylar.get(ay) ?? []), h]);
+    if (h) ayGrubu(hareketAyi(h)).taninan.push(h);
+    else if (bilinmeyenHareketMi(ham)) ayGrubu(hareketAyi(ham)).bilinmeyen.push(ham);
+    else Logger.warn('LocalKazaServisi', 'Geçersiz kaza hareketi atlandı', { tur: typeof ham });
   }
   let eklenen = 0;
   for (const [ay, grup] of aylar) {
@@ -198,10 +223,14 @@ export async function hareketleriEkle(liste: readonly KazaHareketi[]): Promise<n
           bozuk = true;
           return null; // bozuk kaydın ÜSTÜNE YAZMA
         }
-        const birlesik = hareketleriBirlestir(mevcut, grup);
-        const yeni = birlesik.length - mevcut.length;
-        eklenen += yeni;
-        return yeni > 0 || ham === null ? JSON.stringify(birlesik) : null;
+        const birlesik = hareketleriBirlestir(mevcut.taninan, grup.taninan);
+        const taninanIdler = new Set(birlesik.map((x) => x.id));
+        const bilinmeyen = bilinmeyenleriBirlestir(mevcut.bilinmeyen, grup.bilinmeyen).filter(
+          (b) => !taninanIdler.has(b.id)
+        );
+        const yeni = birlesik.length + bilinmeyen.length - mevcut.taninan.length - mevcut.bilinmeyen.length;
+        eklenen += Math.max(0, yeni);
+        return yeni > 0 || ham === null ? JSON.stringify([...birlesik, ...bilinmeyen]) : null;
       });
       if (bozuk) {
         Logger.warn('LocalKazaServisi', 'Kaza ayı bozuk, kardeş anahtara yazılıyor', { anahtar });

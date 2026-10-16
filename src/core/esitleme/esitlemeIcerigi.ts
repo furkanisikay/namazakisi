@@ -22,7 +22,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex } from '@noble/hashes/utils';
 import naclUtil from 'tweetnacl-util';
 import { YedekPayload, NamazGunleri, GunNamazHaritasi } from '../types/YedeklemeTipleri';
-import { hareketNormalize, hareketleriBirlestir, type KazaHareketi } from '../kaza/kazaHareketi';
+import { bilinmeyenleriBirlestir, hareketleriAyristir, hareketleriBirlestir } from '../kaza/kazaHareketi';
 
 const TARIH_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -71,16 +71,15 @@ const temizTempo = (deger: unknown): Record<string, number> => {
 
 /**
  * Kaza defteri hareketlerini doğrular ve kimliğe göre tekilleştirir (sıralı →
- * aynı küme aynı dizi). Bozuk öğe atlanır.
+ * aynı küme aynı dizi). Bu sürümün çözemediği ama yapısal olarak geçerli öğe
+ * (yeni sürümün hareketi) HAM olarak KORUNUR — atılsaydı bu cihaz onu buluttan
+ * siler ve iki cihazın özeti hiç buluşmazdı. Yapısız öğe atlanır.
  */
-const temizKazaHareketleri = (deger: unknown): KazaHareketi[] => {
-  if (!Array.isArray(deger)) return [];
-  const liste: KazaHareketi[] = [];
-  for (const oge of deger) {
-    const h = hareketNormalize(oge);
-    if (h) liste.push(h);
-  }
-  return hareketleriBirlestir(liste);
+const temizKazaHareketleri = (deger: unknown): unknown[] => {
+  const { taninan, bilinmeyen } = hareketleriAyristir(deger);
+  const birlesik = hareketleriBirlestir(taninan);
+  const taninanIdler = new Set(birlesik.map((h) => h.id));
+  return [...birlesik, ...bilinmeyenleriBirlestir(bilinmeyen).filter((b) => !taninanIdler.has(b.id))];
 };
 
 /** Yerel anlık görüntüyü buluta gidecek (azaltılmış) içeriğe indirir. */
@@ -93,8 +92,10 @@ export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
     seviye: null,
     bonusPuan: sonluSayi(yerel.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
-    // Kaza Defteri 2.0: eski anlık görüntü GİTMEZ, değişmez hareketler gider.
-    kaza: null,
+    // Kaza Defteri 2.0: değişmez hareketler + defterden TÜRETİLMİŞ eski şekilli
+    // anlık görüntü (`eskiAnlikGoruntuUret`). Görüntü yalnız ESKİ sürümlü cihazlar
+    // içindir (onların "daha ilerlemiş olanı seç" kuralı yeni cihazı görsün).
+    kaza: nesneMi(yerel.kaza) ? yerel.kaza : null,
     kazaTempo: temizTempo(yerel.kazaTempo),
     kazaHareketleri: temizKazaHareketleri(yerel.kazaHareketleri),
     ayarlar: {},
@@ -119,10 +120,15 @@ export function icerikNormalizeEt(deger: unknown): YedekPayload | null {
     seviye: null,
     bonusPuan: sonluSayi(deger.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
-    // Eski sürümden gelen anlık görüntü: defter boşsa birleştirmede göç edilir.
+    // Eski sürümden gelen anlık görüntü: defter boşsa göç, doluysa yalnız
+    // "en az bu kadar kılındı" tabanı (`eskiGorunumHareketi`).
     kaza: nesneMi(deger.kaza) ? deger.kaza : null,
     kazaTempo: temizTempo(deger.kazaTempo),
-    kazaHareketleri: temizKazaHareketleri(deger.kazaHareketleri),
+    // Alan YOKSA (eski sürümün yükü) `undefined` kalır: birleştirme eski cihazı
+    // bundan tanır. Boş dizi = yeni sürüm, boş defter.
+    ...(Array.isArray(deger.kazaHareketleri)
+      ? { kazaHareketleri: temizKazaHareketleri(deger.kazaHareketleri) }
+      : {}),
     ayarlar: {},
   };
 }
@@ -163,7 +169,12 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
     enUzunSeri: sonluSayi(seri?.enUzunSeri),
     // Kaza Defteri 2.0: ilerleme SAYISI değil, hareket KİMLİK KÜMESİ (G-Set
     // birleşimi yakınsar → iki cihaz aynı özete ulaşır, ping-pong yok).
-    kazaHareketleri: ((indirgenmis.kazaHareketleri ?? []) as KazaHareketi[]).map((h) => h.id).sort(),
+    // Çözülemeyen (yeni sürüm) öğeler de sayılır: onları koruyan iki cihaz aynı
+    // özete ulaşsın.
+    kazaHareketleri: (indirgenmis.kazaHareketleri ?? [])
+      .map((h) => (h as { id?: unknown }).id)
+      .filter((id): id is string => typeof id === 'string')
+      .sort(),
     kazaTempo: indirgenmis.kazaTempo,
   };
 };

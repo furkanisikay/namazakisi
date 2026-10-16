@@ -31,6 +31,7 @@ import {
 } from '../../core/kaza/kazaHareketi';
 import {
   defterHesapla,
+  otomatikBaslangicGecerliMi,
   yeniTabanOnizlemesi,
   type KazaDefterGorunumu,
   type OrtusmeSecimi,
@@ -180,10 +181,11 @@ export const kazaTamamla = createAsyncThunk(
  */
 export const yeniTabanUygula = createAsyncThunk(
   'kaza/yeniTaban',
-  async (arg: { taban: Record<KazaVakti, number>; kapsamBitis: string; ortusme: OrtusmeSecimi }) => {
+  async (arg: { taban: Record<KazaVakti, number>; kapsamBitis?: string; ortusme: OrtusmeSecimi }) => {
     const { girdi, cihaz } = await KazaDefteri.defteriHesapla();
     const zaman = new Date();
-    const onizleme = yeniTabanOnizlemesi(girdi, arg.taban, arg.kapsamBitis, zaman.toISOString(), cihaz, (onek) =>
+    const kapsamBitis = arg.kapsamBitis ?? girdi.bugunNamazGunu;
+    const onizleme = yeniTabanOnizlemesi(girdi, arg.taban, kapsamBitis, zaman.toISOString(), cihaz, (onek) =>
       hareketKimligi(onek, zaman.getTime())
     );
     await LocalKaza.hareketleriEkle(onizleme.yazilacak[arg.ortusme]);
@@ -212,8 +214,13 @@ export const gizlemeToggle = createAsyncThunk('kaza/gizlemeToggle', async () => 
 export const otomatikAyarla = createAsyncThunk(
   'kaza/otomatikAyarla',
   async (arg: { aktif: boolean; kayitsiz?: KayitsizGunTercihi; gun?: string }) => {
+    const bugun = KazaDefteri.bugunNamazGunuAl();
+    const gun = arg.gun ?? bugun;
+    // Geçersiz, gelecekteki ya da `GECMIS_TARAMA_AZAMI_GUN`'den eski başlangıç
+    // YAZILMAZ (izdüşüm penceresi bozuk aralıkla şişmesin).
+    if (!otomatikBaslangicGecerliMi(gun, bugun)) throw new Error('Otomatik ekleme başlangıcı geçersiz');
     const sonuc = await KazaDefteri.yazVeHesapla(async (temel) => [
-      KazaDefteri.hareketUret.otoAyar(await temel('oto'), arg.aktif, arg.gun ?? KazaDefteri.bugunNamazGunuAl(), arg.kayitsiz),
+      KazaDefteri.hareketUret.otoAyar(await temel('oto'), arg.aktif, gun, arg.kayitsiz),
     ]);
     // Gün sonu muhasebesi (#290) "işaretlemezseniz kazaya eklenecek" satırını
     // bu ayara göre yazar → plan tazelensin. TEMBEL require: bildirim köprüsü.
@@ -263,8 +270,9 @@ export const temizlikGeriAl = createAsyncThunk('kaza/temizlikGeriAl', async (arg
 );
 
 /**
- * "Fazla kılınanı sıfırla": yeni hesaptan fazla kılınan sayı AYRI gösterilir;
- * kullanıcı isterse bir `duzeltme` ile o vaktin ham değerini 0'a çeker.
+ * "Fazla kılınanı sıfırla": fazla kılınan sayı AYRI bir akümülatördedir
+ * (sonradan eklenen borçtan düşülmez). Her vakit için NEGATİF bir `duzeltme`
+ * yazılır; fold onu yalnız fazladan düşer — kalan DEĞİŞMEZ.
  */
 export const fazlayiSifirla = createAsyncThunk('kaza/fazlayiSifirla', async () => {
   const { gorunum } = await KazaDefteri.defteriHesapla();
@@ -273,7 +281,7 @@ export const fazlayiSifirla = createAsyncThunk('kaza/fazlayiSifirla', async () =
       const liste: KazaHareketi[] = [];
       for (const [ad, adet] of Object.entries(gorunum.fazla)) {
         const v = KAZA_ADINDAN_VAKTE[ad];
-        if (v && adet > 0) liste.push(KazaDefteri.hareketUret.duzeltme(await temel('duzeltme'), v, adet));
+        if (v && adet > 0) liste.push(KazaDefteri.hareketUret.duzeltme(await temel('duzeltme'), v, -adet));
       }
       return liste;
     })
