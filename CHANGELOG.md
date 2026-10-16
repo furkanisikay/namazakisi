@@ -5,6 +5,16 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.31.1] - 2026-10-16
+
+### Düzeltildi
+- [takvim] expo-calendar eski API'sini /legacy alt yolundan al
+- [namaz-modu] üretici karşılaştırmasını null güvenli yap, çift bildirimi kaldır
+- [namaz-modu] erişim varken Ayarlar'a yönlendirme, Samsung'da kural sayfasını atla
+- [takvim] takvim iznini rıza modalı kapandıktan sonra iste, reddi yeniden doğrula
+- [ayarlar] sayısal seçici ızgaraya otursun, basılı tutunca hızlansın
+- [android] kullanılmayan "Fiziksel aktivite" iznini manifestten kaldır
+
 ## [0.31.0] - 2026-10-15
 
 ### Eklendi
