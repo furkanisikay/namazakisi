@@ -104,6 +104,19 @@ describe('defterOzeti — Android', () => {
         expect(o.gelmeyecek).toBe(10);
         expect(o.durum).toBe('asim');
     });
+
+    it('NAFİLE alarm/anonsları muhafız payına SAYILMAZ (ayrı teslimci, ayrı pay) — toplamda sayılır', () => {
+        const nafileAlarm = (adet: number, kaynak: 'alarm' | 'anons'): DefterKaydi[] =>
+            n(adet, kaynak, 'alarm').map((k) => ({ ...k, nafilePayi: true as const }));
+        // Muhafız 330 + nafile 30 gerçek alarm + 10 anons = 370: cihaz hepsini kurar.
+        const o = defterOzeti([...n(330), ...nafileAlarm(30, 'alarm'), ...nafileAlarm(10, 'anons')], 'android');
+        expect(o.toplam).toBe(370);
+        expect(o.gelmeyecek).toBe(0);
+        expect(o.durum).toBe('normal');
+        // Sınır hâlâ çalışır: muhafızın KENDİ alarmları payını aşarsa kesilen sayılır.
+        const asim = defterOzeti([...n(330), ...n(31, 'alarm', 'alarm'), ...nafileAlarm(40, 'alarm')], 'android');
+        expect(asim.gelmeyecek).toBe(1);
+    });
 });
 
 describe('bildirimDefteriOlustur', () => {

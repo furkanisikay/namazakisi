@@ -71,7 +71,7 @@ import { muhafizTeslimcisiniAyarla } from '../MuhafizTeslimcisi';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
-import { ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
+import { ANDROID_MUHAFIZ_PAYI, ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
@@ -543,6 +543,59 @@ describe('nafile: defter = servisin kurduğu', () => {
             expect(yuk.vakitAdi).toBe('Kuşluk');
             expect(yuk.erteleSinirMs).toBe(0);
             expect(yuk.cikisMs).toBeGreaterThan(yuk.tetikMs);
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            nafileTeslimcisiniAyarla(null);
+        }
+    });
+
+    // Bulgu: nafile alarm/anonsları muhafızın 360'lık payına yazılıyordu. Nafilenin
+    // AYRI teslimci örneği ve AYRI payı (`ANDROID_NAFILE_PAYI`) var; cihaz muhafız
+    // payını dolduran kullanıcıda da nafile alarmlarını KURAR → özet "gelmeyecek" demez.
+    it('Android ÖZET: nafile gerçek alarmları muhafız payını DOLDURMAZ (cihaz hepsini kurar)', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        nafileTeslimcisiniAyarla(null);
+        try {
+            const ayar = nafileAyarlariniNormalize({
+                hatirlatmalar: {
+                    kusluk: {
+                        aktif: true,
+                        yon: 'girisindenItibaren',
+                        adimlar: [
+                            {
+                                esikDk: 5,
+                                kanallar: { bildirim: true, alarm: true },
+                                alarmKapsami: 'hepsi',
+                                siklik: { herDk: 10 },
+                            },
+                        ],
+                    },
+                },
+            });
+            disk.set(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI, JSON.stringify(ayar));
+            await NafileHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const nafileKayitlari = bildirimDefteriOlustur(temelGirdi('android', { nafile: ayar }));
+            const nafileAlarmi = nafileKayitlari.filter((k) => k.kaynak === 'alarm').length;
+            expect(nafileAlarmi).toBeGreaterThan(1);
+            // Cihaz: nafile teslimcisi bu alarmların HEPSİNİ kurdu (kendi payı içinde).
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(nafileAlarmi);
+
+            // Muhafız payını TAM dolduran kurulum (teslimci 360'ın hepsini kurar).
+            const muhafizDolu = Array.from({ length: ANDROID_MUHAFIZ_PAYI }, () => ({
+                kaynak: 'muhafiz' as const,
+                zamanMs: SABAH.getTime() + 60_000,
+                tur: 'bildirim' as const,
+            }));
+            const ozet = defterOzeti([...muhafizDolu, ...nafileKayitlari], 'android');
+            expect(ozet.toplam).toBe(ANDROID_MUHAFIZ_PAYI + nafileKayitlari.length);
+            expect(ozet.gelmeyecek).toBe(0);
+            expect(ozet.durum).not.toBe('asim');
         } finally {
             delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
             nafileTeslimcisiniAyarla(null);
