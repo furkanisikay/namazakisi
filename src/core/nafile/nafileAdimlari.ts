@@ -17,6 +17,7 @@
  */
 import type { SeviyeAyari, Siklik, UyariKanallari, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
+import { ozelSesMi } from '../muhafiz/sesKimligi';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
@@ -243,6 +244,47 @@ export function nafileAdimGuncelle<T extends NafileHatirlatmaAyari>(ayar: T, ind
 export function nafileYonunuDegistir<T extends NafileHatirlatmaAyari>(ayar: T, yon: PencereYonu): T {
     if (ayar.yon === yon) return ayar;
     return { ...ayar, yon, adimlar: kronolojikSirala(ayar.adimlar, yon) };
+}
+
+/**
+ * Açık nafilelerin kullandığı BENZERSİZ özel ses URI'leri (SAF) — muhafızın
+ * `ozelSesleriTopla` ikizi. Çağıran bunları native'de çözerek doğrular.
+ */
+export function nafileOzelSesleriniTopla(a: NafileAyarlari): string[] {
+    const sesler = new Set<string>();
+    for (const n of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]) {
+        if (!n.aktif) continue;
+        for (const s of n.adimlar) {
+            if (s && ozelSesMi(s.bildirimSesi)) sesler.add(s.bildirimSesi);
+        }
+    }
+    return [...sesler];
+}
+
+/**
+ * ÇÖZÜLEMEYEN özel sesleri varsayılana düşürür (SAF) — muhafızın
+ * `cozulemeyenSesleriDusur` ikizi. `content://` cihaza özgüdür: başka cihazdan geri
+ * yüklenen yedekte ses çözülmez; kanal (ya da gerçek alarm kanalı) o ölü URI ile
+ * kurulursa SESSİZ çalar ve kanal sesi sonradan DEĞİŞTİRİLEMEZ. Plan, nafile kanal
+ * listesi ve muhafızın çöp toplamada koruduğu nafile kanal id'leri AYNI doğrulanmış
+ * ayardan türemeli, yoksa id'ler ayrışır. Değişiklik yoksa AYNI referans döner.
+ */
+export function nafileCozulemeyenSesleriDusur(a: NafileAyarlari, cozulemeyen: ReadonlySet<string>): NafileAyarlari {
+    if (cozulemeyen.size === 0) return a;
+    const duzelt = <T extends NafileHatirlatmaAyari>(n: T): T => {
+        if (!n.adimlar.some((s) => s && cozulemeyen.has(s.bildirimSesi))) return n;
+        return {
+            ...n,
+            adimlar: n.adimlar.map((s) =>
+                s && cozulemeyen.has(s.bildirimSesi) ? { ...s, bildirimSesi: VARSAYILAN_SES, sesAdi: undefined } : s
+            ),
+        };
+    };
+    const kusluk = duzelt(a.hatirlatmalar.kusluk);
+    const evvabin = duzelt(a.hatirlatmalar.evvabin);
+    const teheccud = duzelt(a.teheccud);
+    if (kusluk === a.hatirlatmalar.kusluk && evvabin === a.hatirlatmalar.evvabin && teheccud === a.teheccud) return a;
+    return { ...a, hatirlatmalar: { ...a.hatirlatmalar, kusluk, evvabin }, teheccud };
 }
 
 /**

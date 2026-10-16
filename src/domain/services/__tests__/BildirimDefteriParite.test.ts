@@ -59,7 +59,10 @@ jest.mock('expo-calendar/legacy', () => ({
 }));
 
 jest.mock('../MuhafizKanalServisi', () => ({
-    MuhafizKanalServisi: { hazirla: jest.fn(async (m?: unknown) => m) },
+    MuhafizKanalServisi: {
+        hazirla: jest.fn(async (m?: unknown) => m),
+        nafileSesleriniDogrula: jest.fn(async (a: unknown) => a),
+    },
 }));
 
 jest.mock('../../../core/utils/Logger', () => ({

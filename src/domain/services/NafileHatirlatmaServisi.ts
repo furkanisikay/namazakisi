@@ -8,7 +8,7 @@ import { LocalNafileServisi, nafileHatirlatmaAcikMi } from '../../data/local/Loc
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { koordinatGecerliMi, type NafileKoordinat } from '../../core/nafile/gunVakitleri';
 import { nafileKanalAyarlari } from '../../core/nafile/nafileAdimlari';
-import { NAFILE_ADLARI, type NafileTuru } from '../../core/nafile/nafileTipleri';
+import { NAFILE_ADLARI, type NafileAyarlari, type NafileTuru } from '../../core/nafile/nafileTipleri';
 import {
     NAFILE_ID_ONEKI,
     nafileKimlikOneki,
@@ -206,7 +206,10 @@ export class NafileHatirlatmaServisi {
     private async planlamayiCalistir(koordinatlar: NafileKoordinat | null): Promise<void> {
         // Alarmdan gelen Kıldım'lar ÖNCE: kılınmış nafilenin kalanı yeniden kurulmasın.
         await this.alarmKildimleriniYaz();
-        const ayarlar = await LocalNafileServisi.getAyarlar();
+        // Özel sesler DOĞRULANIR (Android): başka cihazdan geri yüklenen `content://`
+        // çözülmez; kanal/alarm ölü sesle kurulup kalıcı sessiz çalardı. Plan, kanal
+        // hazırlığı ve muhafızın çöp toplaması AYNI doğrulamadan geçer (id paritesi).
+        const ayarlar = await this.sesleriDogrula(await LocalNafileServisi.getAyarlar());
 
         if (!nafileHatirlatmaAcikMi(ayarlar)) {
             await this.mevcutlariTemizle();
@@ -290,6 +293,19 @@ export class NafileHatirlatmaServisi {
         } catch (e) {
             // Tek bir bildirim patlarsa kalanlar yine kurulmalı.
             Logger.error('NafileHatirlatma', 'Planlama hatasi', e);
+        }
+    }
+
+    /** `MuhafizKanalServisi.nafileSesleriniDogrula` — tembel (köprü grafiği testlere sızmasın). */
+    private async sesleriDogrula(ayarlar: NafileAyarlari): Promise<NafileAyarlari> {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            return await MuhafizKanalServisi.nafileSesleriniDogrula(ayarlar);
+        } catch (e) {
+            Logger.error('NafileHatirlatma', 'Sesler dogrulanamadi', e);
+            return ayarlar;
         }
     }
 

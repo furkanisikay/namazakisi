@@ -34,7 +34,12 @@ import {
     sesAdiAl,
 } from '../../../modules/expo-countdown-notification/src';
 import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
-import { nafileKanalAyarlari } from '../../core/nafile/nafileAdimlari';
+import {
+    nafileCozulemeyenSesleriDusur,
+    nafileKanalAyarlari,
+    nafileOzelSesleriniTopla,
+} from '../../core/nafile/nafileAdimlari';
+import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
 
 /** Android bildirim ayarlarinda kanal adi — kullanici hangisi oldugunu ayirt edebilmeli. */
 function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
@@ -63,9 +68,9 @@ function kanalAciklamasiOlustur(tanim: MuhafizKanalTanimi): string {
 let sonToplananKume: string | null = null;
 
 /** Ozel ses URI'lerini native'de cozerek gecerliligini dogrular. */
-async function cozulemeyenSesleriBul(matris: MuhafizMatrisi): Promise<Set<string>> {
+async function cozulemeyenSesleriBul(uriler: readonly string[]): Promise<Set<string>> {
     const cozulemeyen = new Set<string>();
-    for (const uri of ozelSesleriTopla(matris)) {
+    for (const uri of uriler) {
         try {
             // Bos ad = URI cozulemedi (silinmis dosya, baska cihazdan gelen yedek,
             // kaybedilmis erisim). `sesAdiAl` asla firlatmaz ama savunmaci kalalim.
@@ -111,7 +116,7 @@ export const MuhafizKanalServisi = {
 
         let dogrulanmisMatris = matris;
         try {
-            const cozulemeyen = await cozulemeyenSesleriBul(matris);
+            const cozulemeyen = await cozulemeyenSesleriBul(ozelSesleriTopla(matris));
             if (cozulemeyen.size > 0) {
                 Logger.info(
                     'MuhafizKanal',
@@ -158,16 +163,40 @@ export const MuhafizKanalServisi = {
         }
     },
 
+    /**
+     * NAFİLE ayarlarının özel seslerini doğrular (`hazirla`'nın matris doğrulamasının
+     * ikizi, issue #273): çözülemeyen `content://` sesi varsayılana düşer. Nafile
+     * planı, nafile kanal hazırlığı ve muhafızın çöp toplamada koruduğu nafile kanal /
+     * alarm kanalı id'leri HEPSİ bu doğrulanmış ayardan türemeli — biri ham ayarı
+     * okusaydı kanal id'leri ayrışır, korunan kanal ölü sesli olurdu. Diske YAZILMAZ
+     * (ekran kaydıyla yarışmasın); her tur yeniden doğrulanır. Android dışında ve
+     * hatada ayarı AYNEN döndürür, asla fırlatmaz.
+     */
+    nafileSesleriniDogrula: async (ayarlar: NafileAyarlari): Promise<NafileAyarlari> => {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const cozulemeyen = await cozulemeyenSesleriBul(nafileOzelSesleriniTopla(ayarlar));
+            if (cozulemeyen.size === 0) return ayarlar;
+            Logger.info('MuhafizKanal', `${cozulemeyen.size} nafile özel sesi çözülemedi; varsayılan sese düşürülüyor`);
+            return nafileCozulemeyenSesleriDusur(ayarlar, cozulemeyen);
+        } catch (error) {
+            Logger.error('MuhafizKanal', 'Nafile ses dogrulamasi basarisiz', error);
+            return ayarlar;
+        }
+    },
+
     /** Testler icin: GC onbellegini sifirlar. */
     onbellegiSifirla: (): void => {
         sonToplananKume = null;
     },
 };
 
-/** Nafile ayarlarının kanal ihtiyacı (diskten; bozuk/okunamaz → boş). */
+/** Nafile ayarlarının kanal ihtiyacı (diskten, sesleri doğrulanmış; bozuk/okunamaz → boş). */
 async function nafileKanalAyarlariniOku(): Promise<VakitMuhafizAyari[]> {
     try {
-        return nafileKanalAyarlari(await LocalNafileServisi.getAyarlar());
+        // DOĞRULANMIŞ ayardan: nafile turu kanalları doğrulanmış seslerle kurar;
+        // ham ayardan türetilen id ölü sesli kanalı korur, gerçek kanalı silerdi.
+        return nafileKanalAyarlari(await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar()));
     } catch {
         return [];
     }

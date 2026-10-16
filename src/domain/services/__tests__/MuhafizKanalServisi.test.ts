@@ -285,6 +285,61 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
     });
 
+    it('ÇÖZÜLEMEYEN nafile sesi: çöp toplama DOĞRULANMIŞ sesin kanalını korur (nafile turuyla aynı id)', async () => {
+        await AsyncStorage.setItem(
+            'nafile_ayarlari',
+            JSON.stringify({
+                hatirlatmalar: {
+                    kusluk: {
+                        aktif: true,
+                        yon: 'girisindenItibaren',
+                        adimlar: [
+                            { esikDk: 5, kanallar: { bildirim: true, titresim: true }, siklik: 'birkez', bildirimSesi: OZEL_SES },
+                        ],
+                    },
+                },
+            })
+        );
+        mockSesAdiAl.mockResolvedValue('');
+        await MuhafizKanalServisi.hazirla();
+        // Nafile turu ölü sesi varsayılana düşürüp TITRESIMLI kanala kurar → o korunmalı;
+        // ölü URI'nin kanalı ne kurulur ne korunur.
+        expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
+        expect(mockGarantile.mock.calls.map((c) => c[0])).toEqual([TITRESIMLI]);
+        expect(mockGarantile.mock.calls[0][3]).toBeNull();
+    });
+
+    it('nafileSesleriniDogrula: çözülemeyen ses varsayılana, çözülen dokunulmadan (aynı referans)', async () => {
+        const { nafileAyarlariniNormalize } = require('../../../data/local/LocalNafileServisi');
+        const ayar = nafileAyarlariniNormalize({
+            hatirlatmalar: {
+                kusluk: {
+                    aktif: true,
+                    yon: 'girisindenItibaren',
+                    adimlar: [{ esikDk: 5, kanallar: { bildirim: true, alarm: true }, siklik: 'birkez', bildirimSesi: OZEL_SES }],
+                },
+            },
+            teheccud: {
+                aktif: true,
+                yon: 'girisindenItibaren',
+                pencere: 'yatsi',
+                adimlar: [{ esikDk: 5, kanallar: { bildirim: true }, siklik: 'birkez', bildirimSesi: OZEL_SES }],
+            },
+        });
+        mockSesAdiAl.mockResolvedValue('Bir ses');
+        expect(await MuhafizKanalServisi.nafileSesleriniDogrula(ayar)).toBe(ayar);
+
+        mockSesAdiAl.mockResolvedValue('');
+        const dogru = await MuhafizKanalServisi.nafileSesleriniDogrula(ayar);
+        expect(dogru.hatirlatmalar.kusluk.adimlar[0].bildirimSesi).toBe(VARSAYILAN_SES);
+        expect(dogru.teheccud.adimlar[0].bildirimSesi).toBe(VARSAYILAN_SES);
+        // Ham ayar değişmez (diske yazılmaz, her tur yeniden doğrulanır).
+        expect(ayar.hatirlatmalar.kusluk.adimlar[0].bildirimSesi).toBe(OZEL_SES);
+
+        (Platform as { OS: string }).OS = 'ios';
+        expect(await MuhafizKanalServisi.nafileSesleriniDogrula(ayar)).toBe(ayar);
+    });
+
     it('ekKanallariHazirla yalnız oluşturur, çöp TOPLAMAZ', async () => {
         await MuhafizKanalServisi.ekKanallariHazirla([
             { yon: 'girisindenItibaren', seviyeler: [sv({ kanallar: { bildirim: true, titresim: true } })] },

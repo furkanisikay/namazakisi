@@ -70,10 +70,14 @@ export const ANDROID_MUHAFIZ_ALARM_BUTCESI = ANDROID_MUHAFIZ_PAYI;
  * Nafilenin GERÇEK ALARM kanalları — muhafız çöp toplaması korur (kanal uzayı ortak:
  * `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN okunur: arka plan görevinde nafile
  * servisi aynı süreçte hiç çalışmamış olabilir (`MuhafizKanalServisi` normal kanal
- * deseni). Okuma hatası FIRLATIR → çağıran o turda toplamayı atlar.
+ * deseni) ve nafile turuyla AYNI ses doğrulamasından geçer. Okuma hatası FIRLATIR →
+ * çağıran o turda toplamayı atlar.
  */
 async function nafileAlarmKanallariniOku(): Promise<string[]> {
-    return nafileAlarmSesleri(await LocalNafileServisi.getAyarlar()).map(alarmKanalIdOlustur);
+    // DOĞRULANMIŞ seslerden: nafile turu alarmı varsayılana düşmüş sesle kurar;
+    // ham URI'nin kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi.
+    const ayarlar = await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar());
+    return nafileAlarmSesleri(ayarlar).map(alarmKanalIdOlustur);
 }
 
 export interface AndroidTeslimciSecenekleri {

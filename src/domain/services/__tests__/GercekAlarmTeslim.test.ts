@@ -26,7 +26,10 @@ jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
 }));
 
 jest.mock('../MuhafizKanalServisi', () => ({
-    MuhafizKanalServisi: { hazirla: jest.fn(async (m: unknown) => m) },
+    MuhafizKanalServisi: {
+        hazirla: jest.fn(async (m: unknown) => m),
+        nafileSesleriniDogrula: jest.fn(async (a: unknown) => a),
+    },
 }));
 
 const mockKopru = {
@@ -58,7 +61,7 @@ import type { UyariTeslimi } from '../MuhafizTeslimcisi';
 import type { UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import type { MuhafizMatrisi } from '../../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../../core/muhafiz/matrisTipleri';
-import { ALARM_KANAL_TABANI, type AlarmYuku } from '../../../core/muhafiz/alarmYuku';
+import { ALARM_KANAL_TABANI, alarmKanalIdOlustur, type AlarmYuku } from '../../../core/muhafiz/alarmYuku';
 
 const DK = 60_000;
 
@@ -198,6 +201,37 @@ describe('hazırlık ve temizlik', () => {
         await t.hazirla();
         expect(mockKopru.onekliIptal).toHaveBeenCalledWith('muhafiz_');
         expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([]);
+    });
+
+    test("nafilenin alarm kanalı DOĞRULANMIŞ sesten korunur (çözülemeyen URI'nin kanalı DEĞİL)", async () => {
+        const OLU = 'content://media/external/audio/media/9999';
+        const AsyncStorage = require('@react-native-async-storage/async-storage');
+        const { MuhafizKanalServisi } = jest.requireMock('../MuhafizKanalServisi') as {
+            MuhafizKanalServisi: { nafileSesleriniDogrula: jest.Mock };
+        };
+        const { nafileCozulemeyenSesleriDusur } = require('../../../core/nafile/nafileAdimlari');
+        await AsyncStorage.setItem(
+            'nafile_ayarlari',
+            JSON.stringify({
+                hatirlatmalar: {
+                    kusluk: {
+                        aktif: true,
+                        yon: 'girisindenItibaren',
+                        adimlar: [{ esikDk: 5, kanallar: { bildirim: true, alarm: true }, siklik: 'birkez', bildirimSesi: OLU }],
+                    },
+                },
+            })
+        );
+        MuhafizKanalServisi.nafileSesleriniDogrula.mockImplementationOnce(async (a: unknown) =>
+            nafileCozulemeyenSesleriDusur(a, new Set([OLU]))
+        );
+        try {
+            await new AndroidMuhafizTeslimcisi().hazirla();
+            expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([ALARM_KANAL_TABANI]);
+            expect(mockKopru.kanalTemizle.mock.calls[0][0]).not.toContain(alarmKanalIdOlustur(OLU));
+        } finally {
+            await AsyncStorage.removeItem('nafile_ayarlari');
+        }
     });
 
     test('nafile örneği (alarmDestegi: false) muhafızın alarmlarına/kanallarına DOKUNMAZ', async () => {
