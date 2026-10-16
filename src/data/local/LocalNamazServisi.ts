@@ -224,15 +224,29 @@ export const localTarihAraligindakiNamazlariGetir = async (
   baslangicTarihi: string,
   bitisTarihi: string
 ): Promise<ApiYanit<GunlukNamazlar[]>> => {
+  const tarihler: string[] = [];
   try {
-    await migrasyonyiGarantile();
-    // Aralikitaki tum gunleri TEK batch (multiGet) ile oku -> O(aralik) sirali round-trip yerine tek tur.
-    const tarihler: string[] = [];
     let mevcutTarih = baslangicTarihi;
     while (mevcutTarih <= bitisTarihi) {
       tarihler.push(mevcutTarih);
       mevcutTarih = gunEkle(mevcutTarih, 1);
     }
+  } catch (error) {
+    return { basarili: false, hata: error instanceof Error ? error.message : 'Bilinmeyen hata' };
+  }
+  return localGunlerinNamazlariniGetir(tarihler);
+};
+
+/**
+ * YALNIZ verilen günlerin kayıtlarını TEK batch (multiGet) ile okur — seyrek
+ * gün kümesinde (ör. kaza defterinin ayrık otomatik aralıkları) aradaki boşluk
+ * günleri okunmaz. Sonuç verilen sırayı izler.
+ */
+export const localGunlerinNamazlariniGetir = async (
+  tarihler: readonly string[]
+): Promise<ApiYanit<GunlukNamazlar[]>> => {
+  try {
+    await migrasyonyiGarantile();
     const ciftler = await Depolama.cogunuOku(tarihler.map(gunAnahtari));
     const hamHarita = new Map(ciftler);
     const sonuc: GunlukNamazlar[] = tarihler.map((tarih) => {

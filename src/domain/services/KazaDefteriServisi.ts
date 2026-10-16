@@ -24,7 +24,7 @@ import * as LocalKaza from '../../data/local/LocalKazaServisi';
 import { LocalMezhepServisi } from '../../data/local/LocalMezhepServisi';
 import {
   kayitDegistiDinleyicisiEkle,
-  localTarihAraligindakiNamazlariGetir,
+  localGunlerinNamazlariniGetir,
 } from '../../data/local/LocalNamazServisi';
 import { vitirOtomatikEklenirMi } from '../../core/mezhep/mezhepAyari';
 import { ozelGunKumesi, type OzelGunAraligi } from '../../core/seri/ozelGunKumesi';
@@ -103,7 +103,8 @@ async function isaretlileriOku(gunler: readonly string[]): Promise<Record<string
     if (!liste.includes(v)) liste.push(v);
   };
   const istenen = new Set(gunler);
-  const yanit = await localTarihAraligindakiNamazlariGetir(gunler[0], gunler[gunler.length - 1]);
+  // Yalnız izdüşüm günleri okunur (ayrık otomatik aralıkların arası değil).
+  const yanit = await localGunlerinNamazlariniGetir(gunler);
   if (!yanit.basarili || !yanit.veri) throw new Error(yanit.hata ?? 'Namaz kaydı okunamadı');
   {
     for (const g of yanit.veri) {

@@ -101,6 +101,32 @@ describe('defteriHesapla — girdi diskten', () => {
     expect((await defteriHesapla(S)).gorunum.ozet.otomatik).toBe(0);
   });
 
+  it('PERFORMANS: yalnız izdüşüm günleri okunur, ayrık otomatik aralıkların arasındaki günler OKUNMAZ', async () => {
+    const otoKapat = (gun: string): KazaHareketi => ({
+      id: `otoKapat:${gun}`,
+      zaman: '2025-11-05T06:00:00.000Z',
+      cihaz: 'abc',
+      kaynak: 'otoAyar',
+      aktif: false,
+      gun,
+    });
+    await hareketleriEkle([
+      { ...otoAc('2025-11-01'), id: 'oto:eski', zaman: '2025-11-01T06:00:00.000Z' },
+      otoKapat('2025-11-04'),
+      otoAc('2026-10-13'),
+    ]);
+    const AsyncStorage = jest.requireMock('@react-native-async-storage/async-storage').default;
+    const casus = jest.spyOn(AsyncStorage, 'multiGet');
+    await defteriHesapla(S);
+    const namazAnahtarlari = casus.mock.calls
+      .flatMap((c) => c[0] as string[])
+      .filter((k) => k.startsWith(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK))
+      .map((k) => k.slice(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK.length))
+      .sort();
+    casus.mockRestore();
+    expect(namazAnahtarlari).toEqual(['2025-11-01', '2025-11-02', '2025-11-03', '2026-10-13', '2026-10-14']);
+  });
+
   it('ozelGunleriCoz bozuk kayıtta boş küme', () => {
     expect(ozelGunleriCoz('x').size).toBe(0);
     expect(ozelGunleriCoz({ gecmisKayitlar: [{ baslangicTarihi: 1 }] }).size).toBe(0);
