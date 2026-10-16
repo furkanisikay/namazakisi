@@ -10,8 +10,10 @@
  *
  * GÜN SINIRI: `namazGunuHesapla` + `uygulamaImsakSaglayici` (seri ile TEK
  * kaynak). `KonumYoneticiServisi` KULLANILMAZ (üretimde hiç doldurulmuyor).
- * Arka planda imsak kaynağı yapılandırılmamışsa 05:00 yedeğine düşülür —
- * gün en kötü ihtimalle biraz geç kapanır (erken DEĞİL).
+ * Arka planda imsak kaynağı yapılandırılmamışsa 05:00 yedeğine düşülür — gün
+ * mevsime göre imsaktan biraz ERKEN (kış) ya da GEÇ (yaz) kapanabilir. Sayılar
+ * etkilenmez (izdüşüm her türetmede yeniden kurulur); en fazla tarama günlüğünde
+ * "eklendi → geri alındı" çifti oluşur (ör. kışın 05:00–imsak arası kılınan yatsı).
  */
 
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';

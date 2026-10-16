@@ -92,7 +92,8 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
       await dispatch(
         namazDurumunuDegistir({ tarih: satir.gun, namazAdi: NAMAZ_KAYDI[satir.vakit], tamamlandi: true })
       ).unwrap();
-      // Seri ve puan kayıttan TÜRER: geçmiş gün değişince yeniden türetilir.
+      // Puan kayıttan TÜRER. Seri geçmiş gün için yeniden kurulmaz (AnaSayfa'nın
+      // geçmiş gün yoluyla aynı); metin bu yüzden yalnız puanı vaat eder.
       await dispatch(puanlamayiYenidenHesapla({ sessiz: true }));
       await dispatch(kazaVerileriniYukle());
     }, 'Kıldım olarak işaretlendi; otomatik kayıt geri alındı');
@@ -154,7 +155,7 @@ export const KazaHareketAyrintiModal: React.FC<Props> = ({ satir, cihaz, onKapat
                   devreDisi={mesgul}
                 />
                 <Text style={[stiller.not, { color: renkler.metinIkincil }]}>
-                  Namaz kaydınız düzelir; seri ve puanınız kayıttan yeniden hesaplanır.
+                  Namaz kaydınız düzelir; puanınız kayıttan yeniden hesaplanır.
                 </Text>
                 <KazaDugme etiket="Yalnız defterden çıkarın" tur="ikincil" onPress={gizle} devreDisi={mesgul} />
               </>

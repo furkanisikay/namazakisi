@@ -258,6 +258,12 @@ describe('karışık sürüm: eski anlık görüntü', () => {
     expect(vakit(d, 'Sabah')).toMatchObject({ kalanBorc: 7, tamamlanan: 3 });
   });
 
+  it('temizlikle gizlenen eski görüntü tabanı artık uygulanmaz (kaçış yolu)', () => {
+    const e = eskiGorunumHareketi({ namazlar: [{ namazAdi: 'Sabah', kalanBorc: 7, tamamlanan: 3 }] }, 'z', 'a')!;
+    const gizle = h('temizlik', '2026-10-16T00:00:00.000Z', { hedefIdler: [e.id] });
+    expect(vakit(hesap([...temelDefter, e, gizle]), 'Sabah')).toMatchObject({ kalanBorc: 10, tamamlanan: 0 });
+  });
+
   it('defterde zaten daha fazla kılınan varsa etkisi yoktur', () => {
     const e = eskiGorunumHareketi({ namazlar: [{ namazAdi: 'Sabah', kalanBorc: 9, tamamlanan: 1 }] }, 'z', 'a')!;
     const d = hesap([...temelDefter, kilindi('2026-10-01T00:00:00.000Z', 'sabah', 4), e]);

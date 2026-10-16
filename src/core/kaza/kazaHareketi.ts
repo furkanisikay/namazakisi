@@ -155,7 +155,9 @@ export interface KazaHareketi {
 }
 
 /** Temizlikle gizlenebilen kaynaklar (taban ve işaret satırları gizlenmez). */
-export const GIZLENEBILIR_KAYNAKLAR: readonly KazaKaynagi[] = ['manuel', 'bildirim', 'kilindi', 'duzeltme'];
+// `eskiGorunum` da gizlenebilir: eski cihazdan gelen "en az bu kadar kılındı" tabanı
+// her fold'da yeniden uygulanır; gizlenemeseydi temizlik onu hiç kaldıramazdı.
+export const GIZLENEBILIR_KAYNAKLAR: readonly KazaKaynagi[] = ['manuel', 'bildirim', 'kilindi', 'duzeltme', 'eskiGorunum'];
 
 export const OTO_ONEK = 'oto:';
 export const otoKimligi = (referans: string): string => `${OTO_ONEK}${referans}`;
