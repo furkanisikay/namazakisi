@@ -549,7 +549,6 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
                 // gorev varsayilan tabloyu, slice ise kullanicinin yogunlugunu
                 // yazar ve iki plan uygulama acilana kadar ayrisir.
                 yogunluk: ayarlar.yogunluk,
-                kapaliAdimTemizligiYapildi: ayarlar.kapaliAdimTemizligiYapildi === true,
                 esikler: {
                     seviye1: ayarlar.esikler?.seviye1 || 45,
                     seviye2: ayarlar.esikler?.seviye2 || 25,

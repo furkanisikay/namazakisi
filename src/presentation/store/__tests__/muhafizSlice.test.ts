@@ -22,6 +22,7 @@ import reducer, {
     MuhafizAyarlari,
 } from '../muhafizSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { sayacBaslangicEsikleriHesapla } from '../../../core/utils/vakitSayacYardimcisi';
 import { configureStore } from '@reduxjs/toolkit';
 import { eskidenMatriseGoc } from '../../../core/muhafiz/muhafizGoc';
 import { MUHAFIZ_VAKITLERI, SEVIYE_KADEMELERI } from '../../../core/muhafiz/matrisTipleri';
@@ -1086,6 +1087,26 @@ describe('bir kerelik KAPALI ADIM TEMİZLİĞİ (Faz 2 — sahip: boş kapalı a
         expect(disk.matris.ogle.seviyeler).toHaveLength(3);
         // Bilinmeyen alanlar korunur (AGENTS: `{...parsed, ...sonuc}`).
         expect(disk.koordinatlar).toEqual({ lat: 1, lng: 2 });
+    });
+
+    it('VAKİT SAYACI EŞİĞİ KORUNUR: diskteki başlangıç seçimi (N) okunur, eşiği kaydıracak silme YAPILMAZ', async () => {
+        // Öğle [45, 25(boş kapalı), 10, 3] + sayaç "2. hatırlatma" → 25 dk kala başlar.
+        // Kapalı 25 silinseydi [45, 10, 3] → sayaç sessizce 10 dk kalaya kayardı.
+        const veri = kayit();
+        mockStore.set(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI, JSON.stringify({ aktif: true, sayacBaslangicSeviyesi: 2 }));
+        try {
+            const once = sayacBaslangicEsikleriHesapla(2, veri.matris);
+            expect(once.ogle).toBe(25);
+            const store = yeniStore();
+            await store.dispatch(muhafizAyarlariniYukle());
+            const state = store.getState().muhafiz as MuhafizAyarlari;
+            expect(sayacBaslangicEsikleriHesapla(2, state.matris!)).toEqual(once);
+            expect(sayacBaslangicEsikleriHesapla(2, state.ozelMatrisYedegi!)).toEqual(once);
+            expect(state.matris!.ogle.seviyeler).toHaveLength(4);
+            expect(state.kapaliAdimTemizligiYapildi).toBe(true);
+        } finally {
+            mockStore.delete(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+        }
     });
 
     it('bayrak VARSA (temizlik yapılmış) kullanıcının sonradan kapattığı boş adım SİLİNMEZ ve diske yazılmaz', async () => {

@@ -294,6 +294,21 @@ const initialState: MuhafizAyarlari = {
 };
 
 /**
+ * Vakit sayacının başlangıç seçimi (`VAKIT_SAYAC_AYARLARI.sayacBaslangicSeviyesi`) —
+ * bir kerelik kapalı adım temizliği sayacın eşiğini korumak için okur. Okunamazsa
+ * `undefined` (= 1. hatırlatma; `vakitSayacSlice`'ın yedeğiyle aynı).
+ */
+async function sayacBaslangicSeviyesiniOku(): Promise<number | undefined> {
+    try {
+        const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_SAYAC_AYARLARI);
+        const seviye = ham ? (JSON.parse(ham) as { sayacBaslangicSeviyesi?: unknown } | null)?.sayacBaslangicSeviyesi : undefined;
+        return typeof seviye === 'number' ? seviye : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
+/**
  * Muhafiz ayarlarini AsyncStorage'dan yukle
  */
 export const muhafizAyarlariniYukle = createAsyncThunk(
@@ -352,9 +367,14 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                 const yonGoclu = yonEsiklerineGoc(preGocMatris, temel.yogunluk);
                 const yonGocuGerekli = yonGoclu !== preGocMatris;
                 // İçi boş kapalı adımlar BİR KEZ silinir (tekillik göçü gölge adım
-                // ürettiği için ondan SONRA). Plan değişmez; yalnız ekran sadeleşir.
+                // ürettiği için ondan SONRA). Motor planı değişmez; vakit sayacının
+                // başlangıç eşiği kronolojik indeksten okunduğu için temizlik onu
+                // KORUR — sayaç seviyesi diskten okunur (yalnız gerektiğinde).
                 const temizlikGerekli = parsed.kapaliAdimTemizligiYapildi !== true;
-                const mevcutMatris = temizlikGerekli ? kapaliVarsayilanAdimlariTemizle(yonGoclu) : yonGoclu;
+                const sayacSeviyesi = temizlikGerekli ? await sayacBaslangicSeviyesiniOku() : undefined;
+                const mevcutMatris = temizlikGerekli
+                    ? kapaliVarsayilanAdimlariTemizle(yonGoclu, sayacSeviyesi)
+                    : yonGoclu;
 
                 // ÖZEL YEDEK DE GÖÇMELİ: "Özel"e dönmek bu matrisi doğrudan
                 // `matris`e yazar. Eski şemada kalsaydı hücrelerde `kanallar`
@@ -377,7 +397,7 @@ export const muhafizAyarlariniYukle = createAsyncThunk(
                     : undefined;
                 // Temizlik YEDEĞE DE: "Özel"e dönmek boş kapalı adımları geri getirmesin.
                 const yedekAday =
-                    yedekGoclu && temizlikGerekli ? kapaliVarsayilanAdimlariTemizle(yedekGoclu) : yedekGoclu;
+                    yedekGoclu && temizlikGerekli ? kapaliVarsayilanAdimlariTemizle(yedekGoclu, sayacSeviyesi) : yedekGoclu;
                 const yedek = matrisGecerliMi(yedekAday) ? yedekAday : undefined;
                 const yedekGocuGerekli = !!hamYedek && yedek !== hamYedek;
 

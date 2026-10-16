@@ -373,9 +373,6 @@ describe('BILDIRIM_YENILEME_GOREVI gorev govdesi', () => {
                 esikler: { seviye1: 5, seviye2: 4, seviye3: 3, seviye4: 2 },
                 sikliklar: { seviye1: 1, seviye2: 1, seviye3: 1, seviye4: 1 },
                 matris,
-                // Bir kerelik kapalı adım temizliği yapılmış kayıt: kullanıcının bilerek
-                // kapattığı adım (eşik 99) korunur.
-                kapaliAdimTemizligiYapildi: true,
             })
         );
         const gorev = gorevGeriCagrisiniAl();
