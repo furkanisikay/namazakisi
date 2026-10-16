@@ -183,3 +183,35 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
 export function icerikOzeti(icerik: YedekPayload): string {
   return bytesToHex(sha256(naclUtil.decodeUTF8(kanonikJson(yakinsayanGorunum(icerik)))));
 }
+
+// ---------------------------------------------------------------------------
+// Karışık sürüm (eski sürümlü cihaz) — yükleme kararı
+// ---------------------------------------------------------------------------
+
+/** Eski sürümün (Kaza Defteri 1.x) yükü: kaza hareket alanı hiç yok. */
+export const eskiSurumYukuMu = (icerik: YedekPayload): boolean => !Array.isArray(icerik.kazaHareketleri);
+
+/** Eski sürümün kaza ilerleme ölçüsü (yoksa -1; eski motorla birebir). */
+const eskiKazaIlerlemesi = (kaza: unknown): number => {
+  const t = (kaza as { toplamTamamlanan?: unknown } | null)?.toplamTamamlanan;
+  return typeof t === 'number' && Number.isFinite(t) ? t : -1;
+};
+
+/**
+ * Eski sürümlü cihazın yükünü indirip birleştirdikten sonra birleşik hâli
+ * YÜKLEMEK GEREKİR Mİ? Eski cihaz hareket kümesini okuyamaz; yalnız işaretleri
+ * (union) ve "daha ilerlemiş" kaza görüntüsünü (`toplamTamamlanan` BÜYÜKSE)
+ * alır. Yerel, ona alabileceği hiçbir şey vermiyorsa yükleme yapılmaz: yeni
+ * cihazın görüntüsü eskininkinden gerideyken (ör. temizlikle gizlenen kılınan)
+ * eski cihaz onu hiç benimsemez ve her yükleme karşı yüklemeyle döner (sonsuz
+ * ping-pong). Hareket kimlikleri kıyasa GİRMEZ (eski yükte hiç yoktur).
+ */
+export function eskiSurumeYuklemeGerekliMi(yerel: YedekPayload, gelen: YedekPayload): boolean {
+  const hareketsiz = (p: YedekPayload): string => {
+    const gorunum = { ...(yakinsayanGorunum(p) as Record<string, unknown>) };
+    delete gorunum.kazaHareketleri;
+    return kanonikJson(gorunum);
+  };
+  if (hareketsiz(yerel) !== hareketsiz(gelen)) return true;
+  return eskiKazaIlerlemesi(yerel.kaza) > eskiKazaIlerlemesi(gelen.kaza);
+}

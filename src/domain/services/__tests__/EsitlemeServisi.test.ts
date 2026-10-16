@@ -402,3 +402,152 @@ describe('EsitlemeServisi (kurulum, tur, kapatma)', () => {
     expect(icerikOzeti(bos())).toBe(icerikOzeti({ ...bos(), ayarlar: { x: 1 } }));
   });
 });
+
+/**
+ * KARIŞIK SÜRÜM: eski sürüm (Kaza Defteri 1.x) cihaz yükünde hareket alanı
+ * taşımaz; özeti `toplamTamamlanan`'dır ve "daha ilerlemiş olanı seç" kuralıyla
+ * birleştirir. Yeni cihaz temizlikle bir kılınanı gizlediyse türetilmiş
+ * görüntüsü eskininkinden GERİDE kalır: eski cihaz onu hiç benimsemez, yeni
+ * cihaz da eski yükü hiç "aynı" saymazsa iki cihaz her turda birbirine yükler.
+ */
+describe('karışık sürüm eşitlemesi — sonsuz karşılıklı yükleme YOK', () => {
+  const { birlestirmePlaniOlustur, AKILLI_SECIMLER } =
+    jest.requireActual('../YedekBirlestirmeServisi') as typeof import('../YedekBirlestirmeServisi');
+  const { defterHesapla, eskiAnlikGoruntuUret, eskiGorunumHareketi } =
+    jest.requireActual('../../../core/kaza/kazaDefteriHesabi') as typeof import('../../../core/kaza/kazaDefteriHesabi');
+  const { hareketleriAyristir, hareketleriBirlestir } =
+    jest.requireActual('../../../core/kaza/kazaHareketi') as typeof import('../../../core/kaza/kazaHareketi');
+  type Hareket = import('../../../core/kaza/kazaHareketi').KazaHareketi;
+
+  const SIFIR = { sabah: 0, ogle: 0, ikindi: 0, aksam: 0, yatsi: 0, vitir: 0 };
+  const ESKI_KAZA = {
+    namazlar: [{ namazAdi: 'Sabah', kalanBorc: 5, tamamlanan: 5, toplamBorc: 10 }],
+    toplamKalan: 5,
+    toplamTamamlanan: 5,
+  };
+
+  const gorunum = (hareketler: Hareket[]) =>
+    eskiAnlikGoruntuUret(
+      defterHesapla({
+        hareketler,
+        bugunNamazGunu: '2026-10-13',
+        bugunTakvim: '2026-10-13',
+        isaretliler: {},
+        ozelGunler: new Set(),
+        vitirDahil: false,
+        gunlukHedef: 0,
+        toplamGizleMi: false,
+      })
+    );
+
+  /** Yeni sürüm cihaz: gerçek akıllı birleştirme planı, defter hareketlerden türer. */
+  const yeniCihaz = () => {
+    const enAz = eskiGorunumHareketi(ESKI_KAZA, '2026-10-02T08:00:00.000Z', 'yeni')!;
+    let hareketler: Hareket[] = [
+      { id: 'taban:1', zaman: '2026-10-01T08:00:00.000Z', cihaz: 'yeni', kaynak: 'taban', taban: { ...SIFIR, sabah: 10 } },
+      { id: 'kilindi:1', zaman: '2026-10-01T09:00:00.000Z', cihaz: 'yeni', kaynak: 'kilindi', vakit: 'sabah', adet: 2 },
+      enAz,
+      // Kullanıcı eski cihazdan gelen "en az bu kadar kılındı" tabanını gizledi.
+      { id: 'temizlik:1', zaman: '2026-10-03T08:00:00.000Z', cihaz: 'yeni', kaynak: 'temizlik', hedefIdler: [enAz.id] },
+    ];
+    let namazGunleri: YedekPayload['namazGunleri'] = { '2026-10-01': { Sabah: true } };
+    const durum = (): YedekPayload => ({ ...bos(), namazGunleri, kaza: gorunum(hareketler), kazaHareketleri: hareketler });
+    return {
+      durum,
+      yerelTopla: async () => durum(),
+      uygula: jest.fn(async (gelen: YedekPayload) => {
+        const plan = birlestirmePlaniOlustur(durum(), gelen, AKILLI_SECIMLER, { zaman: '2026-10-13T10:00:00.000Z', cihaz: 'yeni' });
+        const yeniler: Hareket[] = [];
+        for (const [anahtar, deger] of Object.entries(plan)) {
+          if (anahtar.startsWith(DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK)) yeniler.push(...hareketleriAyristir(deger).taninan);
+        }
+        hareketler = hareketleriBirlestir(hareketler, yeniler);
+        namazGunleri = birlestirNamazGunleri('akilli', namazGunleri, gelen.namazGunleri);
+      }),
+    };
+  };
+
+  /** Eski sürüm cihazın motoru (0.31.0): özet = ilerleme, birleştirme = "daha ilerlemiş olanı seç". */
+  const eskiCihaz = () => {
+    let kaza: Record<string, unknown> = { ...ESKI_KAZA };
+    let namazGunleri: YedekPayload['namazGunleri'] = { '2026-10-01': { Sabah: true } };
+    const son = { etiket: null as string | null, ozet: null as string | null };
+    const ilerleme = (k: unknown): number => {
+      const t = (k as { toplamTamamlanan?: unknown } | null)?.toplamTamamlanan;
+      return typeof t === 'number' ? t : -1;
+    };
+    const ozet = (p: { namazGunleri: YedekPayload['namazGunleri']; kaza: unknown }) =>
+      JSON.stringify({ namaz: Object.keys(p.namazGunleri ?? {}).sort(), kaza: ilerleme(p.kaza) });
+    const yerel = () => ({ namazGunleri, kaza });
+    return {
+      kaza: () => kaza,
+      tur: async (s: SahteSaglayici) => {
+        const meta = await s.meta();
+        if (meta && meta.etiket === son.etiket && ozet(yerel()) === son.ozet) return;
+        let uzakOzet: string | null = null;
+        if (meta) {
+          const gelen = uzaktakiIcerik(s);
+          uzakOzet = ozet(gelen);
+          if (uzakOzet !== ozet(yerel())) {
+            namazGunleri = birlestirNamazGunleri('akilli', namazGunleri, gelen.namazGunleri);
+            if (ilerleme(gelen.kaza) > ilerleme(kaza)) kaza = gelen.kaza as Record<string, unknown>;
+          }
+        }
+        if (uzakOzet !== ozet(yerel())) {
+          // Eski yük: hareket alanı YOK.
+          const yuk = { ...bos(), namazGunleri, kaza };
+          const m = await s.yaz(zarfOlustur(JSON.stringify(yuk), anahtar, KDF, new Date('2026-10-13T10:00:00Z')));
+          son.etiket = m.etiket;
+        } else {
+          son.etiket = meta?.etiket ?? null;
+        }
+        son.ozet = ozet(yerel());
+      },
+    };
+  };
+
+  it('yeni cihazın görüntüsü eskininkinden gerideyken iki cihaz birkaç turda yakınsar (yükleme sayısı sınırlı)', async () => {
+    const s = new SahteSaglayici();
+    const yeni = yeniCihaz();
+    const eski = eskiCihaz();
+    expect(yeni.durum().kaza?.toplamTamamlanan).toBe(2); // gizlenen eski görüntü sayılmıyor
+    const yeniDurum = { sonEtiket: null as string | null, sonOzet: null as string | null };
+    const yeniTur = async () => {
+      const t = await esitlemeTuru(
+        { saglayici: s, yerelTopla: yeni.yerelTopla, uygula: yeni.uygula, anahtarAl: async () => ({ tur: 'hazir', anahtar, kdf: KDF }), simdi: () => new Date('2026-10-13T10:00:00Z') },
+        yeniDurum
+      );
+      if (t.etiket) Object.assign(yeniDurum, { sonEtiket: t.etiket, sonOzet: t.ozet });
+      return t.sonuc;
+    };
+
+    await eski.tur(s);
+    for (let i = 0; i < 6; i++) {
+      await yeniTur();
+      await eski.tur(s);
+    }
+    const yazma = s.yazmaSayisi;
+    expect(yazma).toBeLessThanOrEqual(3);
+    // Yakınsadı: iki taraf da artık yüklemez.
+    expect(await yeniTur()).toEqual({ tur: 'guncel' });
+    await eski.tur(s);
+    expect(s.yazmaSayisi).toBe(yazma);
+    // Gizlenen kılınan geri GELMEDİ; eski cihaz kendi ilerlemesini korudu.
+    expect(yeni.durum().kaza?.toplamTamamlanan).toBe(2);
+    expect((eski.kaza() as { toplamTamamlanan: number }).toplamTamamlanan).toBe(5);
+  });
+
+  it('yeni cihaz eski cihazın bilmediği bir namaz işaretlediyse yine yükler (eski cihaz alır)', async () => {
+    const s = new SahteSaglayici();
+    const yeni = yeniCihaz();
+    const eski = eskiCihaz();
+    await eski.tur(s);
+    await yeni.uygula({ ...bos(), namazGunleri: { '2026-10-05': { Öğle: true } } });
+    const t = await esitlemeTuru(
+      { saglayici: s, yerelTopla: yeni.yerelTopla, uygula: yeni.uygula, anahtarAl: async () => ({ tur: 'hazir', anahtar, kdf: KDF }), simdi: () => new Date('2026-10-13T10:00:00Z') },
+      { sonEtiket: null, sonOzet: null }
+    );
+    expect(t.sonuc.tur).toBe('indirildiVeYuklendi');
+    expect(Object.keys(uzaktakiIcerik(s).namazGunleri)).toContain('2026-10-05');
+  });
+});

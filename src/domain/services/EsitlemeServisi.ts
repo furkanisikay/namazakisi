@@ -33,6 +33,8 @@ import {
 import { zarfiAc, zarfiAyristir, zarfOlustur } from '../../core/esitleme/esitlemeZarfi';
 import {
   esitlemeIcerigineIndir,
+  eskiSurumeYuklemeGerekliMi,
+  eskiSurumYukuMu,
   icerikNormalizeEt,
   icerikOzeti,
 } from '../../core/esitleme/esitlemeIcerigi';
@@ -157,6 +159,12 @@ export async function esitlemeTuru(
 
     if (yerelOzet === gelenOzet) {
       return { sonuc: { tur: indirildi ? 'indirildi' : 'guncel' }, etiket: kayit.etiket, ozet: gelenOzet };
+    }
+    // ESKİ SÜRÜMLÜ cihazın yükü: hareket kimlikleri hiç buluşmaz. Eski cihaz
+    // yerelden alabileceği hiçbir şey yoksa YÜKLENMEZ; uzak etiket + YEREL özet
+    // saklanır → sonraki tur "değişmedi" kapısından geçer (ping-pong yok).
+    if (eskiSurumYukuMu(gelen) && !eskiSurumeYuklemeGerekliMi(yerel, gelen)) {
+      return { sonuc: { tur: indirildi ? 'indirildi' : 'guncel' }, etiket: kayit.etiket, ozet: yerelOzet };
     }
     // Yerelde uzakta olmayan veri var: birleşmiş hâli yükle (aynı tuz/parametre).
     const etiket = await yukle(o, yerel, a.anahtar, ayr.zarf.kdf);
