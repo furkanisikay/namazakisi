@@ -49,8 +49,14 @@ export interface YedekPayload {
   seviye: unknown;
   bonusPuan: number;
   istatistik: { toplamKilinan: number; mukemmelGun: number; toparlanma: number };
+  /** ESKİ (Kaza Defteri 2.0 öncesi) anlık görüntü; yalnız eski yedeklerden OKUNUR. */
   kaza: unknown;
   kazaTempo: Record<string, number>;
+  /**
+   * Kaza Defteri 2.0 hareketleri (değişmez defter). OPSİYONEL: eski yedeklerde
+   * yoktur, eski uygulama bilinmeyen alanı yok sayar → `YEDEK_SURUMU` artmadı.
+   */
+  kazaHareketleri?: unknown[];
   ayarlar: Record<string, unknown>;
 }
 

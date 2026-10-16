@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalSeferilikServisi } from '../../data/local/LocalSeferilikServisi';
+import { LocalMezhepServisi } from '../../data/local/LocalMezhepServisi';
+import { kazaVerileriniYukle } from './kazaSlice';
 import { SeferilikServisi, type SeferilikDiskDurumu } from '../../domain/services/SeferilikServisi';
 import {
   VARSAYILAN_SEFERILIK_AYARLARI,
@@ -75,8 +77,16 @@ export const seferilikKartiniKapat = createAsyncThunk('seferilik/kartiKapat', as
 /** Kart anahtarı ve mezhep. */
 export const seferilikAyarlariniGuncelle = createAsyncThunk(
   'seferilik/ayarlariGuncelle',
-  async (degisiklik: { kartAcik?: boolean; mezhep?: Mezhep }) =>
-    LocalSeferilikServisi.ayarlariGuncelle((m) => ({ ...m, ...degisiklik })),
+  async (degisiklik: { kartAcik?: boolean; mezhep?: Mezhep }, { dispatch, getState }) => {
+    // Mezhep ORTAK ayardır (Kaza Defteri 2.0): önce ortak kayda yazılır; açık bir
+    // kaza defteri vitir izdüşümünü yeni mezhebe göre yeniden türetir.
+    if (degisiklik.mezhep) await LocalMezhepServisi.yaz(degisiklik.mezhep);
+    const sonuc = await LocalSeferilikServisi.ayarlariGuncelle((m) => ({ ...m, ...degisiklik }));
+    if (degisiklik.mezhep && (getState() as { kaza?: { kazaDurumu: unknown } }).kaza?.kazaDurumu) {
+      void dispatch(kazaVerileriniYukle());
+    }
+    return sonuc;
+  },
 );
 
 /**

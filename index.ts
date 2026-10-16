@@ -121,6 +121,11 @@ if (Platform.OS === 'android') {
     import('./src/domain/services/TakvimCakismaServisi')
         .then(({ TakvimCakismaServisi }) => TakvimCakismaServisi.getInstance().baslat())
         .catch(() => undefined);
+    // Kaza Defteri 2.0: bildirimden "Kıldım" headless işlenince otomatik kaza
+    // tarama günlüğü de tazelensin (sayılar zaten kayıttan türer). İdempotent.
+    import('./src/domain/services/KazaDefteriServisi')
+        .then((KazaDefteriServisi) => KazaDefteriServisi.baslat())
+        .catch(() => undefined);
 }
 
 // Muhafız bildirimindeki "Kıldım" — uygulama KAPALI/arka plandayken (yalnız Android).

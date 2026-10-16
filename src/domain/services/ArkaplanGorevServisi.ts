@@ -499,6 +499,20 @@ TaskManager.defineTask(BILDIRIM_YENILEME_GOREVI, async () => {
         }
 
         // =====================================================
+        // ADIM 1.68: KAZA DEFTERİ OTOMATİK TARAMASI (Kaza Defteri 2.0)
+        //
+        // Sayılar kayıttan TÜRER (izdüşüm); tarama yalnız geçmiş ekranının
+        // "otomatik eklendi / geri alındı" günlüğünü tazeler. Muhafızdan bağımsız
+        // → muhafız erken dönüşlerinden ÖNCE. TEMBEL require: domain zinciri.
+        // =====================================================
+        try {
+            const KazaDefteri = require('./KazaDefteriServisi') as typeof import('./KazaDefteriServisi');
+            await KazaDefteri.taramaYap();
+        } catch (e) {
+            Logger.error('ArkaplanGorev', 'Kaza taraması yapılamadı', e);
+        }
+
+        // =====================================================
         // ADIM 2: BILDIRIMLERI YENIDEN PLANLA
         // =====================================================
 

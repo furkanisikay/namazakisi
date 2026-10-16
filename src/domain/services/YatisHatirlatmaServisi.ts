@@ -23,10 +23,13 @@ import { BILDIRIM_SABITLERI, DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../core/c
 import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import type { VakitAdi } from '../../core/types';
+import { defteriOku } from '../../data/local/LocalKazaServisi';
+import { otomatikDurumu } from '../../core/kaza/kazaDefteriHesabi';
 import {
     YATIS_PLAN_GUN_SAYISI,
     yatisKimligiMi,
     yatisPlaniOlustur,
+    type OtomatikKazaBilgisi,
     type YatisAyarlari,
     type YatisPlanKaydi,
 } from '../../core/yatis/yatisPlani';
@@ -128,9 +131,10 @@ export class YatisHatirlatmaServisi {
         }
 
         const gunSayisi = yatisPlanGunSayisi();
-        const [kilinanlar, ozelGundeMi] = await Promise.all([
+        const [kilinanlar, ozelGundeMi, otomatikKaza] = await Promise.all([
             this.kilinanlariOku(gunSayisi),
             ozelGunSuzgeciniOku(),
+            this.otomatikKazaOku(),
         ]);
         const plan = yatisPlaniOlustur({
             koordinat,
@@ -139,11 +143,28 @@ export class YatisHatirlatmaServisi {
             gunSayisi,
             kilinanlar: (gun) => kilinanlar[gun] ?? [],
             gunAtlanirMi: ozelGundeMi,
+            otomatikKaza,
         });
 
         await this.mevcutlariTemizle();
         for (const kayit of plan) {
             await this.planla(kayit);
+        }
+    }
+
+    /**
+     * Kaza Defteri 2.0: otomatik ekleme açık mı? (Muhasebe metnine ileriye dönük
+     * satır.) Defter okunamazsa satır EKLENMEZ — "eklenecek" sözü verilmez.
+     */
+    private async otomatikKazaOku(): Promise<OtomatikKazaBilgisi | null> {
+        try {
+            const { hareketler } = await defteriOku();
+            const durum = otomatikDurumu(hareketler);
+            return durum.aktif && durum.baslangic
+                ? { baslangic: durum.baslangic, kayitsizSor: durum.kayitsiz === 'sor' }
+                : null;
+        } catch {
+            return null;
         }
     }
 

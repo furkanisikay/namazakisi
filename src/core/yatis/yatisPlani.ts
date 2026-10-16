@@ -228,7 +228,8 @@ export function yatisIcerigiOlustur(
     vakitler: Record<FarzVakit, VakitPenceresi>,
     kilinan: readonly VakitAdi[],
     tetikMs: number,
-    ayarlar: Pick<YatisAyarlari, 'yatsiHatirlatmasi' | 'muhasebe'>
+    ayarlar: Pick<YatisAyarlari, 'yatsiHatirlatmasi' | 'muhasebe'>,
+    otomatikKaza: OtomatikKazaBilgisi | null = null
 ): YatisIcerigi | null {
     const kilindi = new Set(kilinan);
     const kilinanSayi = FARZ_VAKITLER.filter((v) => kilindi.has(v)).length;
@@ -255,6 +256,10 @@ export function yatisIcerigiOlustur(
     // 2. Gün sonu muhasebesi (uygulama yönetimi: kibar "siz").
     if (!ayarlar.muhasebe || eksikler.length === 0) return null;
 
+    // Kaza Defteri 2.0: otomatik ekleme açıksa İLERİYE DÖNÜK satır. Tetik anında
+    // kayıt henüz yazılmamıştır (gün ertesi imsakta kapanır) → "eklendi" DENMEZ.
+    const otoSatiri = otomatikKazaSatiri(gun, kilinanSayi, otomatikKaza);
+
     if (eksikler.length === 1) {
         const v = eksikler[0];
         const kaza = cikmisMi(v);
@@ -263,9 +268,11 @@ export function yatisIcerigiOlustur(
             kimlik: vakitKimligi(gun, v, MUHASEBE_EKI),
             kategori: kaza ? MUHASEBE_KATEGORILERI.TEK : BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
             baslik: ozet(eksikler),
-            govde: kaza
-                ? 'Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.'
-                : 'Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.',
+            govde: otoSatiri
+                ? `Kıldıysanız işaretleyin. ${otoSatiri}`
+                : kaza
+                  ? 'Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.'
+                  : 'Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.',
             data: { tip: 'muhasebe', tarih: gun, vakit: v, kazayaEklenebilir: kaza ? [v] : [] },
         };
     }
@@ -275,9 +282,36 @@ export function yatisIcerigiOlustur(
         kimlik: `${MUHASEBE_ID_ONEKI}${gun}`,
         kategori: MUHASEBE_KATEGORILERI.COKLU,
         baslik: ozet(eksikler),
-        govde: 'Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.',
+        govde: otoSatiri
+            ? `Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin. ${otoSatiri}`
+            : 'Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.',
         data: { tip: 'muhasebe', tarih: gun, kazayaEklenebilir: eksikler.filter(cikmisMi) },
     };
+}
+
+/** Otomatik kaza ekleme açıksa muhasebe satırı için gereken bilgi (Kaza Defteri 2.0). */
+export interface OtomatikKazaBilgisi {
+    /** Açık otomatik aralığın başladığı namaz günü. */
+    baslangic: string;
+    /** İşaretsiz günler "bana sorun" mu? (Hiç işaret yoksa borç yazılmaz, sorulur.) */
+    kayitsizSor: boolean;
+}
+
+/**
+ * Muhasebe gövdesine eklenecek ileriye dönük cümle; otomatik kapalıysa ya da gün
+ * aralık öncesindeyse `null`. Hiç işaretsiz gün "bana sorun" tercihinde deftere
+ * YAZILMAZ — o durumda "eklenecek" demek yalan olurdu.
+ */
+export function otomatikKazaSatiri(
+    gun: string,
+    kilinanSayi: number,
+    oto: OtomatikKazaBilgisi | null
+): string | null {
+    if (!oto || gun < oto.baslangic) return null;
+    if (kilinanSayi === 0 && oto.kayitsizSor) {
+        return "İşaretlemezseniz bu gün Kaza Defteri'nde size sorulacak.";
+    }
+    return 'İşaretlemezseniz namaz günü bitince kazaya eklenecek.';
 }
 
 export interface YatisPlanGirdisi {
@@ -289,6 +323,8 @@ export interface YatisPlanGirdisi {
     kilinanlar?: (gun: string) => readonly VakitAdi[];
     /** Özel gün kapısı (issue #272) — namaz gününe uygulanır. */
     gunAtlanirMi?: (gun: string) => boolean;
+    /** Otomatik kaza ekleme açıksa (Kaza Defteri 2.0); muhasebe metnine satır ekler. */
+    otomatikKaza?: OtomatikKazaBilgisi | null;
 }
 
 function koordinatGecerli(k: { lat: number; lng: number } | null | undefined): k is { lat: number; lng: number } {
@@ -334,7 +370,7 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         const kilinan = kilinanlar(a.gun);
         // Yatış yatsı girişinden önceyse yatsı hatırlatması yatsı girdikten sonraya kayar.
         const zaman = yatsiHatirlatmaTetigi(a.zaman, vakitler, kilinan, ayarlar);
-        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, zaman.getTime(), ayarlar);
+        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, zaman.getTime(), ayarlar, g.otomatikKaza ?? null);
         if (icerik) plan.push({ ...icerik, gun: a.gun, zaman });
     }
     return plan;

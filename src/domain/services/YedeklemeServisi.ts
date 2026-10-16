@@ -29,6 +29,8 @@ import {
 } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI, UYGULAMA } from '../../core/constants/UygulamaSabitleri';
 import { Depolama } from '../../data/local/Depolama';
+import { defteriOku, hareketleriEkle } from '../../data/local/LocalKazaServisi';
+import type { KazaHareketi } from '../../core/kaza/kazaHareketi';
 import { sifrele, coz, kontrolHesapla } from '../../core/utils/yedekSifreleme';
 import { bugunuAl } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
@@ -112,6 +114,8 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     sadeGorunum,
     seferilik,
     takvimCakisma,
+    kazaAyarlari,
+    mezhep,
   ] = await Promise.all([
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI),
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI),
@@ -138,6 +142,10 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     // Takvim çakışması uyarısı (issue #291) — yalnız AYAR (rıza kaydı dahil);
     // takvim verisi hiç saklanmaz. Beyaz liste: YedekBirlestirmeServisi + yedeklemeSlice.
     Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI),
+    // Kaza Defteri 2.0 ayarları (günlük hedef, gizle) + ortak mezhep — beyaz liste:
+    // YedekBirlestirmeServisi + yedeklemeSlice.
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.KAZA_AYARLARI),
+    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI),
   ]);
   return {
     muhafiz,
@@ -158,6 +166,8 @@ const ayarlariTopla = async (): Promise<Record<string, unknown>> => {
     sadeGorunum,
     seferilik,
     takvimCakisma,
+    kazaAyarlari,
+    mezhep,
   };
 };
 
@@ -173,8 +183,8 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
     toplamKilinan,
     mukemmelGun,
     toparlanma,
-    kaza,
     kazaTempo,
+    kazaDefteri,
     ayarlar,
   ] = await Promise.all([
     namazGunleriniTopla(),
@@ -186,8 +196,11 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
     Depolama.oku<number>(DEPOLAMA_ANAHTARLARI.TOPLAM_KILILAN_NAMAZ),
     Depolama.oku<number>(DEPOLAMA_ANAHTARLARI.MUKEMMEL_GUN_SAYISI),
     Depolama.oku<number>(DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI),
-    Depolama.oku<unknown>(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU),
     Depolama.oku<Record<string, number>>(DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS),
+    // Kaza Defteri 2.0: hareketler (göç okumadan önce garanti edilir). Eski
+    // `KAZA_DURUMU` artık yedeğe GİRMEZ (göçten sonra bayattır; eski bir
+    // sürüme geri yüklenince yanlış sayı gösterirdi).
+    defteriOku(),
     ayarlariTopla(),
   ]);
 
@@ -203,8 +216,9 @@ const payloadOlustur = async (): Promise<YedekPayload> => {
       mukemmelGun: mukemmelGun ?? 0,
       toparlanma: toparlanma ?? 0,
     },
-    kaza: kaza ?? null,
+    kaza: null,
     kazaTempo: kazaTempo ?? {},
+    kazaHareketleri: kazaDefteri.hareketler,
     ayarlar,
   };
 };
@@ -226,6 +240,13 @@ export const mevcutVeriyiTopla = (): Promise<YedekPayload> => payloadOlustur();
  */
 export const planiDiskeYaz = async (plan: YazimPlani): Promise<void> => {
   for (const [anahtar, deger] of Object.entries(plan)) {
+    if (anahtar.startsWith(DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK)) {
+      // Kaza defteri: düz yazım DEĞİL, defterin tek kapısından kimlik birleşimi —
+      // plan toplandıktan sonra eklenen bir hareket (bildirimden "Kazaya ekle")
+      // ezilmesin; bozuk ay anahtarının üstüne yazılmasın.
+      await hareketleriEkle(Array.isArray(deger) ? (deger as KazaHareketi[]) : []);
+      continue;
+    }
     await Depolama.yaz(anahtar, deger);
   }
   await Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_MIGRASYON, '1');

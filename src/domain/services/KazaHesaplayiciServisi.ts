@@ -14,6 +14,7 @@ import {
 import { KAZA_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../../core/utils/TarihYardimcisi';
 import { gurubKerahatiBaslangiciMs } from '../../core/muhafiz/erteleme';
+import { KAZA_ADINDAN_VAKTE, type KazaVakti } from '../../core/kaza/kazaHareketi';
 
 // ==================== SİHİRBAZ HESABI ====================
 
@@ -64,6 +65,21 @@ export const borcuVakitlerePaylaştır = (toplamBorc: number): Record<string, nu
     dagılım[ad] = perVakit + (index < kalan ? 1 : 0);
   });
   return dagılım;
+};
+
+/**
+ * Sihirbaz girdisinden YENİ TABAN (Kaza Defteri 2.0): vakit kodu → borç.
+ * Defter bunu tek bir `taban` hareketi olarak yazar; kılınanlar ve eklemeler
+ * ayrı hareketlerdir ve yeni tabana kendiliğinden uygulanır.
+ */
+export const sihirbazTabani = (girdi: HesaplamaSihirbazGirdisi): Record<KazaVakti, number> => {
+  const dagilim = borcuVakitlerePaylaştır(hesaplaTahminiBorcMiktari(girdi));
+  const taban = { sabah: 0, ogle: 0, ikindi: 0, aksam: 0, yatsi: 0, vitir: 0 } as Record<KazaVakti, number>;
+  for (const [ad, adet] of Object.entries(dagilim)) {
+    const v = KAZA_ADINDAN_VAKTE[ad];
+    if (v) taban[v] = adet;
+  }
+  return taban;
 };
 
 // ==================== MOTİVASYON ÖNERİLERİ ====================

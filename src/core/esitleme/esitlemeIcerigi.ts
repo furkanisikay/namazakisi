@@ -12,7 +12,7 @@
  *
  * ÖZET (`icerikOzeti`) "yalnız değiştiyse yükle" kararının ölçüsüdür ve YALNIZ
  * birleştirmenin YAKINSADIĞI görünüme bakar: işaretli namazlar, kılınan vakitler,
- * rozet kimlikleri, bonus puan, en uzun seri, kaza ilerlemesi, kaza temposu. Cihaza
+ * rozet kimlikleri, bonus puan, en uzun seri, kaza HAREKET KİMLİKLERİ, kaza temposu. Cihaza
  * özgü kalan alanlar (güncel seri ayrıntısı, rozet tarihleri) özete girseydi iki
  * cihaz HİÇ aynı özete ulaşamaz ve her eşitlemede birbirinin üzerine yükleme
  * yapardı (sonsuz ping-pong).
@@ -22,6 +22,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex } from '@noble/hashes/utils';
 import naclUtil from 'tweetnacl-util';
 import { YedekPayload, NamazGunleri, GunNamazHaritasi } from '../types/YedeklemeTipleri';
+import { hareketNormalize, hareketleriBirlestir, type KazaHareketi } from '../kaza/kazaHareketi';
 
 const TARIH_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -68,6 +69,20 @@ const temizTempo = (deger: unknown): Record<string, number> => {
   return sonuc;
 };
 
+/**
+ * Kaza defteri hareketlerini doğrular ve kimliğe göre tekilleştirir (sıralı →
+ * aynı küme aynı dizi). Bozuk öğe atlanır.
+ */
+const temizKazaHareketleri = (deger: unknown): KazaHareketi[] => {
+  if (!Array.isArray(deger)) return [];
+  const liste: KazaHareketi[] = [];
+  for (const oge of deger) {
+    const h = hareketNormalize(oge);
+    if (h) liste.push(h);
+  }
+  return hareketleriBirlestir(liste);
+};
+
 /** Yerel anlık görüntüyü buluta gidecek (azaltılmış) içeriğe indirir. */
 export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
   return {
@@ -78,8 +93,10 @@ export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
     seviye: null,
     bonusPuan: sonluSayi(yerel.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
-    kaza: nesneMi(yerel.kaza) ? yerel.kaza : null,
+    // Kaza Defteri 2.0: eski anlık görüntü GİTMEZ, değişmez hareketler gider.
+    kaza: null,
     kazaTempo: temizTempo(yerel.kazaTempo),
+    kazaHareketleri: temizKazaHareketleri(yerel.kazaHareketleri),
     ayarlar: {},
   };
 }
@@ -102,8 +119,10 @@ export function icerikNormalizeEt(deger: unknown): YedekPayload | null {
     seviye: null,
     bonusPuan: sonluSayi(deger.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
+    // Eski sürümden gelen anlık görüntü: defter boşsa birleştirmede göç edilir.
     kaza: nesneMi(deger.kaza) ? deger.kaza : null,
     kazaTempo: temizTempo(deger.kazaTempo),
+    kazaHareketleri: temizKazaHareketleri(deger.kazaHareketleri),
     ayarlar: {},
   };
 }
@@ -136,14 +155,15 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
     ([tarih, vakitler]) => [tarih, [...vakitler].sort()] as const
   );
   const seri = indirgenmis.seri as { enUzunSeri?: unknown } | null;
-  const kaza = indirgenmis.kaza as { toplamTamamlanan?: unknown } | null;
   return {
     namaz: namaz.sort((a, b) => a[0].localeCompare(b[0])),
     kilinan: kilinan.sort((a, b) => a[0].localeCompare(b[0])),
     rozetler: Array.from(new Set(indirgenmis.rozetler.map(rozetKimligi))).sort(),
     bonusPuan: indirgenmis.bonusPuan,
     enUzunSeri: sonluSayi(seri?.enUzunSeri),
-    kazaIlerleme: typeof kaza?.toplamTamamlanan === 'number' ? kaza.toplamTamamlanan : -1,
+    // Kaza Defteri 2.0: ilerleme SAYISI değil, hareket KİMLİK KÜMESİ (G-Set
+    // birleşimi yakınsar → iki cihaz aynı özete ulaşır, ping-pong yok).
+    kazaHareketleri: ((indirgenmis.kazaHareketleri ?? []) as KazaHareketi[]).map((h) => h.id).sort(),
     kazaTempo: indirgenmis.kazaTempo,
   };
 };

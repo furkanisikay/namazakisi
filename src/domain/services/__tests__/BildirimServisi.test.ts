@@ -1074,7 +1074,7 @@ describe('BildirimServisi — Ertele ve muhasebe eylemleri', () => {
         kazayaEklenebilir: ['ogle'],
       })
     );
-    expect(mockKazayaBorcEkle).toHaveBeenCalledWith([{ namazAdi: 'Öğle', sayi: 1 }]);
+    expect(mockKazayaBorcEkle).toHaveBeenCalledWith([{ gun: '2026-10-13', vakit: 'ogle' }]);
     expect(Notifications.dismissNotificationAsync).toHaveBeenCalledWith('muhafiz_2026-10-13_vakit_ogle_muhasebe');
     expect(cb).toHaveBeenCalled();
     // Kazaya eklemek namazı "kıldım" yapmaz.

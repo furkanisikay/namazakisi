@@ -13,15 +13,11 @@
  *   kapattım" hafızası.
  */
 
-export type Mezhep = 'hanefi' | 'safii';
-
-export const MEZHEPLER: readonly Mezhep[] = ['hanefi', 'safii'];
-
-/** Görünen mezhep adları (sabit harita — `toUpperCase`/`toLowerCase` kullanılmaz). */
-export const MEZHEP_ADLARI: Record<Mezhep, string> = {
-  hanefi: 'Hanefî',
-  safii: 'Şâfiî',
-};
+// Mezhep artık ORTAK ayardır (`core/mezhep/mezhepAyari.ts`, Kaza Defteri 2.0).
+// `SeferilikAyarlari.mezhep` ekranlara aynı değeri taşır; kaynağı ortak ayardır.
+import type { Mezhep } from '../mezhep/mezhepAyari';
+export { MEZHEPLER, MEZHEP_ADLARI } from '../mezhep/mezhepAyari';
+export type { Mezhep } from '../mezhep/mezhepAyari';
 
 /**
  * Kullanıcının "evim" dediği yer. `ilkKonum`: kullanıcı hiç seçmediyse uygulamanın
