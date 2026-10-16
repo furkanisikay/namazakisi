@@ -35,6 +35,10 @@ import {
   OtomasyonRehberiSayfasi,
   DebugLogsSayfasi,
   KazaDefteriSayfasi,
+  KazaGecmisiSayfasi,
+  KazaOtomatikAyarSayfasi,
+  KazaTemizlikSayfasi,
+  KazaYenidenHesaplaSayfasi,
   KurulumSihirbaziSayfasi,
   TakvimAyarlariSayfasi,
   SeferilikAyarlariSayfasi,
@@ -45,6 +49,7 @@ import {
   TaniGeriBildirimSayfasi,
 } from '../presentation/screens';
 import type { AyarlarEkranAdi, AyarlarStackParamList } from './ayarlarEkranlari';
+import { KAZA_EKRAN_BASLIKLARI, type KazaStackParamList } from './kazaEkranlari';
 import { DEPOLAMA_ANAHTARLARI } from '../core/constants/UygulamaSabitleri';
 import { useRenkler } from '../core/theme';
 import { useAppDispatch } from '../presentation/store/hooks';
@@ -85,6 +90,7 @@ export type RootNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<AyarlarStackParamList>();
 const RootStack = createNativeStackNavigator<RootStackParamList>();
+const KazaStackNav = createNativeStackNavigator<KazaStackParamList>();
 
 /**
  * Ayarlar stack'indeki ekran tanımları — `Record<AyarlarEkranAdi, …>` her
@@ -161,6 +167,43 @@ const AyarlarStack: React.FC = () => {
         <Stack.Screen key={ad} name={ad} component={tanim.component} options={tanim.options} />
       ))}
     </Stack.Navigator>
+  );
+};
+
+/**
+ * Kaza Defteri sekmesi (Kaza Defteri 2.0): kök kendi başlığını taşır, alt
+ * ekranların başlığı yalnız burada (navigasyon header'ı) durur.
+ */
+const KazaStack: React.FC = () => {
+  const renkler = useRenkler();
+  return (
+    <KazaStackNav.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: renkler.birincil },
+        headerTintColor: '#FFFFFF',
+        headerTitleStyle: { fontWeight: 'bold' },
+        headerBackButtonDisplayMode: 'minimal',
+      }}
+      screenLayout={ayarEkraniYerlesimi}
+    >
+      <KazaStackNav.Screen
+        name="KazaDefteriAna"
+        component={KazaDefteriSayfasi}
+        options={{ headerShown: false, title: 'Kaza Defteri' }}
+      />
+      <KazaStackNav.Screen name="KazaGecmisi" component={KazaGecmisiSayfasi} options={{ title: KAZA_EKRAN_BASLIKLARI.KazaGecmisi }} />
+      <KazaStackNav.Screen
+        name="KazaOtomatikAyar"
+        component={KazaOtomatikAyarSayfasi}
+        options={{ title: KAZA_EKRAN_BASLIKLARI.KazaOtomatikAyar }}
+      />
+      <KazaStackNav.Screen name="KazaTemizlik" component={KazaTemizlikSayfasi} options={{ title: KAZA_EKRAN_BASLIKLARI.KazaTemizlik }} />
+      <KazaStackNav.Screen
+        name="KazaYenidenHesapla"
+        component={KazaYenidenHesaplaSayfasi}
+        options={{ title: KAZA_EKRAN_BASLIKLARI.KazaYenidenHesapla }}
+      />
+    </KazaStackNav.Navigator>
   );
 };
 
@@ -247,7 +290,7 @@ const MainTabs: React.FC = () => {
       />
       <Tab.Screen
         name="KazaDefteri"
-        component={KazaDefteriSayfasi}
+        component={KazaStack}
         options={{
           title: 'Kaza Defteri',
           headerShown: false,

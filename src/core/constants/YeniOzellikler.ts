@@ -58,6 +58,26 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Kaza Defteri 2.0 — hareket defteri, otomatik ekleme, yeniden hesaplama önizlemesi.
+    {
+        id: 'kaza-defteri-2',
+        platformlar: ['android', 'ios'],
+        surum: '0.32.0',
+        tarih: '2026-10-16',
+        baslik: 'Kaza Defteri Artık Her Hareketi Hatırlıyor',
+        aciklama:
+            'Eklediğiniz, kıldığınız ve bildirimden gelen her kaza ayrı bir satır olarak saklanır; yeniden hesapladığınızda emeğiniz kaybolmaz. İsterseniz kılınmayan farzlar namaz günü bitince kendiliğinden eklenir.',
+        detayAciklama:
+            'Kaza Defteri'nin "Hareket geçmişi" ekranında her kaydın ne zaman, hangi kaynaktan ve hangi cihazdan geldiğini görebilirsiniz. Sihirbazla yeniden hesapladığınızda yalnız hesaplanan borç değişir; elle eklediğiniz, bildirimden eklenen ve kıldığınız kazalar yeni hesaba kendiliğinden uygulanır ve uygulamadan önce önizlenir. Otomatik ekleme varsayılan olarak kapalıdır: açarsanız işaretlemediğiniz farzlar ertesi imsakta deftere eklenir, sonradan "kıldım" derseniz geri alınır. Hiç işaret olmayan günler önce size sorulur.',
+        ikon: 'book',
+        kartGoster: true,
+        detaylar: [
+            'Hiçbir kayıt silinmez: temizlik kayıtları gizler ve her temizlik geri alınabilir',
+            'Vitir namazının otomatik eklenmesi ortak mezhep ayarınıza bağlıdır (Hanefî: vacip)',
+            'Hesaplanan borçtan fazla kıldığınız kazalar ayrıca gösterilir',
+            'İki cihazınızdaki defterler eşitlemede birbirini ezmeden birleşir',
+        ],
+    },
     // Apple Watch uygulaması (issue #285) — yalnız saat hedefini taşıyan iOS build'inde
     // görünür (saat bayrağı kapalıyken duyuru da yok).
     {

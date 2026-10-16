@@ -36,3 +36,7 @@ export { YedeklemeSayfasi } from './Yedekleme/YedeklemeSayfasi';
 export { IceAktarmaSihirbaziSayfasi } from './Yedekleme/IceAktarmaSihirbazi/IceAktarmaSihirbaziSayfasi';
 export { EsitlemeSayfasi } from './Yedekleme/EsitlemeSayfasi';
 export { TaniGeriBildirimSayfasi } from './TaniGeriBildirimSayfasi';
+export { KazaGecmisiSayfasi } from './Kaza/KazaGecmisiSayfasi';
+export { KazaOtomatikAyarSayfasi } from './Kaza/KazaOtomatikAyarSayfasi';
+export { KazaTemizlikSayfasi } from './Kaza/KazaTemizlikSayfasi';
+export { KazaYenidenHesaplaSayfasi } from './Kaza/KazaYenidenHesaplaSayfasi';

@@ -11,6 +11,7 @@
  *   ile işaretler; bu yol iOS ve elle açılan bağlantı içindir.
  */
 import type { LinkingOptions, NavigatorScreenParams } from '@react-navigation/native';
+import type { KazaStackParamList } from './kazaEkranlari';
 
 export const DERIN_BAGLANTI_ONEKLERI = ['namazakisi://'];
 
@@ -18,7 +19,8 @@ export const DERIN_BAGLANTI_ONEKLERI = ['namazakisi://'];
 export type AnaSekmeParamList = {
     AnaSayfa: undefined;
     Rozetler: undefined;
-    KazaDefteri: undefined;
+    /** Kaza Defteri 2.0'dan beri iç yığındır; `namazakisi://kaza` kökünü açar. */
+    KazaDefteri: NavigatorScreenParams<KazaStackParamList> | undefined;
     Istatistikler: undefined;
     Ayarlar: undefined;
 };

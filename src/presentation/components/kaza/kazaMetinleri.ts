@@ -32,6 +32,7 @@ export const KAYNAK_GORUNUMU: Record<GecmisTuru, KaynakGorunumu> = {
   temizlikGeriAl: { ikon: 'undo', renk: 'metinIkincil', etiket: 'Temizlik' },
   gunKarari: { ikon: 'calendar-check', renk: 'bilgi', etiket: 'Gün kararı' },
   otoAyar: { ikon: 'robot', renk: 'bilgi', etiket: 'Otomatik' },
+  eskiGorunum: { ikon: 'sync-alt', renk: 'basarili', etiket: 'Eşitleme' },
 };
 
 export const TEMIZLIK_KAYNAK_ETIKETI: Record<TemizlikKaynagi, string> = {
@@ -40,6 +41,15 @@ export const TEMIZLIK_KAYNAK_ETIKETI: Record<TemizlikKaynagi, string> = {
   bildirim: 'Bildirimden',
   kilindi: 'Kılınan',
   duzeltme: 'Düzeltme',
+};
+
+/** Cümle içi küçük harfli kaynak adı (sabit harita — `toLowerCase` 'İ'yi bozar). */
+export const TEMIZLIK_KAYNAK_KUCUK: Record<TemizlikKaynagi, string> = {
+  otomatik: 'otomatik',
+  manuel: 'elle',
+  bildirim: 'bildirimden',
+  kilindi: 'kılınan',
+  duzeltme: 'düzeltme',
 };
 
 /** Geçmiş süzgeç çipleri (Tümü hariç). */
@@ -100,7 +110,7 @@ export function satirBasligi(s: GecmisSatiri): string {
     case 'kilindi':
       return h?.gocmis ? `${ad} · önceki sürümde kılınanlar` : `${ad} · kılındı`;
     case 'duzeltme':
-      return `${ad} · düzeltme`;
+      return (h?.adet ?? 0) < 0 ? `${ad} · fazla kılınan sıfırlandı` : `${ad} · düzeltme`;
     case 'taban':
       return h?.gocmis ? 'Önceki sürümden aktarılan borç' : 'Yeniden hesaplandı';
     case 'temizlik':
@@ -111,6 +121,8 @@ export function satirBasligi(s: GecmisSatiri): string {
       return h?.karar === 'ekle' ? 'İşaretsiz gün kazaya eklendi' : 'İşaretsiz gün yok sayıldı';
     case 'otoAyar':
       return h?.aktif ? 'Otomatik ekleme açıldı' : 'Otomatik ekleme kapatıldı';
+    case 'eskiGorunum':
+      return 'Eski sürümlü cihazdaki kılınanlar eşitlendi';
     default:
       return '';
   }
@@ -128,6 +140,7 @@ export function satirAltMetni(s: GecmisSatiri, cihaz: string | null): string {
   if (s.tur === 'otoAyar' && s.hareket?.gun) parcalar.push(`${gunMetni(s.hareket.gun)} itibarıyla`);
   parcalar.push(saatMetni(s.zaman));
   if (s.cihaz && cihaz) parcalar.push(s.cihaz === cihaz ? 'bu cihaz' : 'başka cihaz');
+  else if (!s.cihaz && s.tur === 'otomatik') parcalar.push('otomatik tarama');
   return parcalar.filter(Boolean).join(' · ');
 }
 

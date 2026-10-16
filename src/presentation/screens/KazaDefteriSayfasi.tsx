@@ -1,6 +1,8 @@
 /**
- * Kaza Defteri Sayfası
- * Kaza namazı takibi: borç ekleme, tamamlama, motivasyon, mekruh vakit uyarısı
+ * Kaza Defteri Sayfası (Kaza Defteri 2.0 — sekme kökü, kendi başlığını taşır)
+ * Kaza namazı takibi: borç ekleme, tamamlama, motivasyon, mekruh vakit uyarısı,
+ * otomatik ekleme durumu, kontrol bekleyen günler, fazla kılınan, bozuk kayıt
+ * uyarısı. Sayılar diskteki hareket defterinden TÜRER (slice).
  */
 
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
@@ -18,13 +20,15 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   kazaVerileriniYukle,
   borcEkle,
   kazaTamamla,
-  sihirbazIleBaslat,
+  fazlayiSifirla,
   gunlukHedefiGuncelle,
   gizlemeToggle,
   kazaOneriAyarlariniYukle,
@@ -41,14 +45,20 @@ import {
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
 import { SayiGirisModali } from '../components/common/SayiGirisModali';
 import { BildirimModali } from '../components/common/BildirimModali';
+import { KazaBekleyenGunlerModal } from '../components/kaza/KazaBekleyenGunlerModal';
+import { KazaBant } from '../components/kaza/KazaOrtak';
+import { gunMetni, saatMetni } from '../components/kaza/kazaMetinleri';
+import type { KazaStackParamList } from '../../navigation/kazaEkranlari';
 
 // ==================== TİPLER ====================
 
 type ModalTipi =
   | { tip: 'borcEkle'; namazAdi: KazaNamazAdi }
-  | { tip: 'topluTamamla'; namazAdi: KazaNamazAdi | null }
+  | { tip: 'topluTamamla'; namazAdi: KazaNamazAdi }
   | { tip: 'gunlukHedef' }
-  | { tip: 'sihirbaz'; adim: 1 | 2 | 3 };
+  | { tip: 'sihirbaz'; adim: 1 | 2 | 3 }
+  | { tip: 'bekleyenGunler' }
+  | { tip: 'fazlaSifirla' };
 
 // ==================== NAMAZ SIRASI & İKON ====================
 
@@ -61,13 +71,45 @@ const NAMAZ_IKONLARI: Record<KazaNamazAdi, string> = {
   Vitir: 'star-half-alt',
 };
 
+const DEFTER_BAGLANTILARI = [
+  { ikon: 'history', metin: 'Hareket geçmişi', hedef: 'KazaGecmisi' },
+  { ikon: 'robot', metin: 'Otomatik kaza ekleme', hedef: 'KazaOtomatikAyar' },
+  { ikon: 'broom', metin: 'Kayıtları temizleyin', hedef: 'KazaTemizlik' },
+] as const;
+
+/** '201 kılındı · 30 elle, 12 otomatik eklendi' */
+function kaynakOzetiMetni(ozet: { kilinan: number; elle: number; otomatik: number; bildirim: number }): string {
+  const eklemeler = [
+    ozet.elle ? `${ozet.elle} elle` : null,
+    ozet.otomatik ? `${ozet.otomatik} otomatik` : null,
+    ozet.bildirim ? `${ozet.bildirim} bildirimden` : null,
+  ].filter(Boolean);
+  const kilinan = `${ozet.kilinan.toLocaleString('tr-TR')} kılındı`;
+  return eklemeler.length > 0 ? `${kilinan} · ${eklemeler.join(', ')} eklendi` : kilinan;
+}
+
+function otomatikCipMetni(aktif: boolean, sonTarama: string | null): string {
+  if (!aktif) return 'Otomatik ekleme kapalı';
+  return sonTarama ? `Otomatik ekleme açık · son tarama ${saatMetni(sonTarama)}` : 'Otomatik ekleme açık';
+}
+
+function bekleyenGunlerMetni(gunler: readonly string[]): string {
+  if (gunler.length === 1) return `${gunMetni(gunler[0])} gününde hiç işaret yok`;
+  return `${gunMetni(gunler[0])} – ${gunMetni(gunler[gunler.length - 1])} arasında hiç işaret olmayan günler var`;
+}
+
 // ==================== ANA BİLEŞEN ====================
 
 export const KazaDefteriSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const renkler = useRenkler();
+  const navigation = useNavigation<NativeStackNavigationProp<KazaStackParamList>>();
 
   const { kazaDurumu, istatistik, yukleniyor } = useAppSelector((s) => s.kaza);
+  // Eski test/mock state'lerinde bu alanlar olmayabilir → güvenli varsayılan.
+  const bozukAylar = useAppSelector((s) => s.kaza.bozukAylar) ?? [];
+  const eskiKayitBozuk = useAppSelector((s) => s.kaza.eskiKayitBozuk) === true;
+  const sonTarama = useAppSelector((s) => s.kaza.sonTarama) ?? null;
   // "Her farzdan sonra kaza önerin" (issue #294) — eski test/mock state'inde alan olmayabilir.
   const oneriAyarlari = useAppSelector((s) => s.kaza.oneriAyarlari);
   const oneriAyarlariYuklendi = useAppSelector((s) => s.kaza.oneriAyarlariYuklendi);
@@ -106,7 +148,8 @@ export const KazaDefteriSayfasi: React.FC = () => {
   // Animasyon: tamamlama flash
   const flashAnim = useRef(new Animated.Value(1)).current;
 
-  // Donanım geri tuşu: sihirbazda önceki adıma dön, değilse aktif modalı kapat
+  // Donanım geri tuşu: sihirbazda önceki adıma dön, değilse aktif modalı kapat.
+  // Bekleyen günler sayfası kendi geri tuşu kancasını taşır.
   const handleModalGeri = useCallback(() => {
     if (aktifModal?.tip === 'sihirbaz' && aktifModal.adim > 1) {
       setAktifModal({ tip: 'sihirbaz', adim: (aktifModal.adim - 1) as 1 | 2 | 3 });
@@ -114,7 +157,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       setAktifModal(null);
     }
   }, [aktifModal]);
-  useDonanimGeriTusu(aktifModal !== null, handleModalGeri);
+  useDonanimGeriTusu(aktifModal !== null && aktifModal.tip !== 'bekleyenGunler', handleModalGeri);
 
   // ==================== YÜKLEME ====================
 
@@ -181,7 +224,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       hataGoster('Geçerli bir sayı giriniz.');
       return;
     }
-    const modal = aktifModal as { tip: 'topluTamamla'; namazAdi: KazaNamazAdi | null };
+    const modal = aktifModal as { tip: 'topluTamamla'; namazAdi: KazaNamazAdi };
     dispatch(kazaTamamla({ namazAdi: modal.namazAdi, sayi }));
     tamamlamaFlash();
     setAktifModal(null);
@@ -218,17 +261,18 @@ export const KazaDefteriSayfasi: React.FC = () => {
       hataGoster('Geçerli bir doğum yılı giriniz.');
       return;
     }
-    const dogumTarihi = `${dogumYili}-01-01`;
-    dispatch(
-      sihirbazIleBaslat({
-        dogumTarihi,
-        ergenlikYasi: sihirbazErgenlikYasi,
-        kildigiTahminiYuzdesi: sihirbazKildigiYuzde,
-      })
-    );
+    // Sihirbazın son adımı ÖNİZLEMEDİR: yeni taban yazılmadan önce neyin değişip
+    // neyin kaldığı gösterilir (Kaza Defteri 2.0, ekran 4).
     setAktifModal(null);
     setSihirbazDogumYili('');
-  }, [dispatch, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde, hataGoster]);
+    navigation.navigate('KazaYenidenHesapla', {
+      girdi: {
+        dogumTarihi: `${dogumYili}-01-01`,
+        ergenlikYasi: sihirbazErgenlikYasi,
+        kildigiTahminiYuzdesi: sihirbazKildigiYuzde,
+      },
+    });
+  }, [navigation, sihirbazDogumYili, sihirbazErgenlikYasi, sihirbazKildigiYuzde, hataGoster]);
 
   // ==================== YARDIMCI ====================
 
@@ -275,6 +319,15 @@ export const KazaDefteriSayfasi: React.FC = () => {
         </View>
         <View style={styles.baslikSagButonlar}>
           <TouchableOpacity
+            onPress={() => navigation.navigate('KazaGecmisi')}
+            style={styles.ikonButon}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            accessibilityRole="button"
+            accessibilityLabel="Hareket geçmişini açın"
+          >
+            <FontAwesome5 name="history" size={18} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => dispatch(gizlemeToggle())}
             style={styles.ikonButon}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -302,6 +355,28 @@ export const KazaDefteriSayfasi: React.FC = () => {
               {mekruhBilgi.aciklama}
             </Text>
           </View>
+        )}
+
+        {/* BOZUK KAYIT UYARILARI — sayfa asla sonsuz yüklemede kalmaz */}
+        {bozukAylar.length > 0 && (
+          <KazaBant
+            testID="kaza-bozuk-ay-bandi"
+            ikon="exclamation-triangle"
+            renk={renkler.dikkat}
+            metin={
+              bozukAylar.length === 1
+                ? 'Bir aylık kayıt okunamadı; o ayın hareketleri sayılmıyor. Kayıt silinmedi, cihazınızda korunuyor.'
+                : `${bozukAylar.length} aylık kayıt okunamadı; o ayların hareketleri sayılmıyor. Kayıtlar silinmedi, cihazınızda korunuyor.`
+            }
+          />
+        )}
+        {eskiKayitBozuk && (
+          <KazaBant
+            testID="kaza-eski-kayit-bandi"
+            ikon="exclamation-triangle"
+            renk={renkler.dikkat}
+            metin="Önceki sürümdeki kaza kaydınız okunamadı ve aktarılamadı. Kayıt silinmedi; Ayarlar > Tanı ve Geri Bildirim'den bize bildirebilirsiniz."
+          />
         )}
 
         {/* TOPLAM KART */}
@@ -351,6 +426,29 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </View>
           )}
 
+          {/* Kaynak özeti: kılınan · elle · otomatik · bildirim */}
+          {kazaDurumu.ozet && (
+            <Text style={[styles.tahminiMetin, styles.kaynakOzeti, { color: renkler.metinIkincil }]}>
+              {kaynakOzetiMetni(kazaDurumu.ozet)}
+            </Text>
+          )}
+
+          {/* Fazla kılınan: AYRI gösterilir, sonradan eklenen borçtan düşülmez */}
+          {(kazaDurumu.toplamFazla ?? 0) > 0 && (
+            <TouchableOpacity
+              onPress={() => setAktifModal({ tip: 'fazlaSifirla' })}
+              accessibilityRole="button"
+              accessibilityLabel={`${kazaDurumu.toplamFazla} kaza hesaplanan borçtan fazla kılınmış. Sıfırlamak için dokunun`}
+              style={[styles.tahminiSatir, styles.fazlaSatir]}
+            >
+              <FontAwesome5 name="info-circle" size={12} color={renkler.bilgi} />
+              <Text style={[styles.tahminiMetin, { color: renkler.metin }]}>
+                {kazaDurumu.toplamFazla} fazla kılınmış ·{' '}
+                <Text style={styles.altiCizili}>Sıfırlayın</Text>
+              </Text>
+            </TouchableOpacity>
+          )}
+
           {/* Tahmini bitiş tarihi */}
           {istatistik?.tahminiTamamlanmaTarihi && (
             <View style={styles.tahminiSatir}>
@@ -365,6 +463,52 @@ export const KazaDefteriSayfasi: React.FC = () => {
             </View>
           )}
         </Animated.View>
+
+        {/* OTOMATİK EKLEME ÇİPİ */}
+        {kazaDurumu.otomatik && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('KazaOtomatikAyar')}
+            accessibilityRole="button"
+            accessibilityLabel={`${otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama)}. Ayarı açın`}
+            style={[styles.otoCip, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
+          >
+            <View style={[styles.oneriIkon, { backgroundColor: `${renkler.bilgi}20` }]}>
+              <FontAwesome5 name="robot" size={13} color={renkler.bilgi} />
+            </View>
+            <Text style={[styles.otoCipMetin, { color: renkler.metin }]}>
+              {otomatikCipMetni(kazaDurumu.otomatik.aktif, sonTarama)}
+            </Text>
+            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+          </TouchableOpacity>
+        )}
+
+        {/* KONTROL BEKLEYEN GÜNLER ("Bana sorun") */}
+        {(kazaDurumu.bekleyenGunler?.length ?? 0) > 0 && (
+          <View
+            testID="kaza-bekleyen-gunler"
+            style={[styles.oneriKart, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.dikkat }]}
+          >
+            <View style={[styles.oneriIkon, { backgroundColor: `${renkler.dikkat}20` }]}>
+              <FontAwesome5 name="calendar-check" size={14} color={renkler.dikkat} />
+            </View>
+            <View style={styles.oneriMetinler}>
+              <Text style={[styles.gunlukHedefEtiket, { color: renkler.metin }]}>
+                Kontrol bekleyen {kazaDurumu.bekleyenGunler.length} gün
+              </Text>
+              <Text style={[styles.hedefsizMetin, { color: renkler.metinIkincil }]}>
+                {bekleyenGunlerMetni(kazaDurumu.bekleyenGunler)}
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setAktifModal({ tip: 'bekleyenGunler' })}
+              accessibilityRole="button"
+              accessibilityLabel="Kontrol bekleyen günleri inceleyin"
+              style={[styles.inceleButon, { borderColor: renkler.sinir, backgroundColor: renkler.arkaplan }]}
+            >
+              <Text style={[styles.inceleMetin, { color: renkler.metin }]}>İnceleyin</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* MOTİVASYON KARTI */}
         {kazaDurumu.toplamKalan > 0 && motivasyonOnerileri.length > 0 && (
@@ -608,6 +752,23 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         ))}
 
+        {/* DEFTER BAĞLANTILARI */}
+        {DEFTER_BAGLANTILARI.map((b) => (
+          <TouchableOpacity
+            key={b.hedef}
+            onPress={() => navigation.navigate(b.hedef)}
+            accessibilityRole="button"
+            accessibilityLabel={b.metin}
+            style={[styles.otoCip, { backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }]}
+          >
+            <View style={[styles.oneriIkon, { backgroundColor: `${renkler.birincil}20` }]}>
+              <FontAwesome5 name={b.ikon} size={13} color={renkler.birincil} />
+            </View>
+            <Text style={[styles.otoCipMetin, { color: renkler.metin }]}>{b.metin}</Text>
+            <FontAwesome5 name="chevron-right" size={12} color={renkler.metinIkincil} />
+          </TouchableOpacity>
+        ))}
+
         {/* SİHİRBAZ BUTONU */}
         <TouchableOpacity
           onPress={() =>
@@ -621,7 +782,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
         >
           <FontAwesome5 name="magic" size={16} color={renkler.birincil} />
           <Text style={[styles.sihirbazButonMetin, { color: renkler.birincil }]}>
-            Hesaplama Sihirbazı ile Başla
+            {kazaDurumu.taban ? 'Yeniden hesaplayın' : 'Hesaplama sihirbazı ile başlayın'}
           </Text>
         </TouchableOpacity>
 
@@ -646,7 +807,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
       {/* TOPLU TAMAMLA MODAL */}
       <SayiGirisModali
         gorunur={aktifModal?.tip === 'topluTamamla'}
-        baslik={aktifModal?.tip === 'topluTamamla' && aktifModal.namazAdi ? `Toplu Tamamla — ${aktifModal.namazAdi}` : 'Toplu Tamamla'}
+        baslik={aktifModal?.tip === 'topluTamamla' ? `Toplu Tamamla — ${aktifModal.namazAdi}` : 'Toplu Tamamla'}
         aciklama="Kaç kaza kıldınız?"
         placeholder="Örn: 5"
         onayMetni="Kaydet"
@@ -858,7 +1019,7 @@ export const KazaDefteriSayfasi: React.FC = () => {
                     style={[styles.modalOnayButon, { backgroundColor: renkler.birincil }]}
                     accessibilityRole="button"
                   >
-                    <Text style={styles.modalOnayMetin}>Hesapla</Text>
+                    <Text style={styles.modalOnayMetin}>Önizleyin</Text>
                   </TouchableOpacity>
                 </View>
               </>
@@ -866,6 +1027,29 @@ export const KazaDefteriSayfasi: React.FC = () => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* KONTROL BEKLEYEN GÜNLER */}
+      <KazaBekleyenGunlerModal
+        gorunur={aktifModal?.tip === 'bekleyenGunler'}
+        gunler={kazaDurumu.bekleyenGunler ?? []}
+        onKapat={() => setAktifModal(null)}
+      />
+
+      {/* FAZLA KILINANI SIFIRLA — kalan DEĞİŞMEZ, yalnız fazla göstergesi */}
+      <BildirimModali
+        gorunur={aktifModal?.tip === 'fazlaSifirla'}
+        tip="bilgi"
+        baslik="Fazla kılınan sıfırlansın mı?"
+        mesaj={`Hesaplanan borçtan ${kazaDurumu.toplamFazla ?? 0} fazla kaza kılmışsınız. Bu sayı ileride eklenen borçlardan düşülmez, yalnız gösterilir. Sıfırlarsanız kalan değişmez; işlem hareket geçmişinde görünür.`}
+        birincilEtiket="Sıfırlayın"
+        birincilIkon="eraser"
+        onBirincil={() => {
+          dispatch(fazlayiSifirla());
+          setAktifModal(null);
+        }}
+        kapatEtiketi="Vazgeçin"
+        onKapat={() => setAktifModal(null)}
+      />
 
       {/* Hata bildirimi — Alert.alert yerine tema-uyumlu modal */}
       <BildirimModali
@@ -1185,6 +1369,44 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 14,
     marginTop: 8,
+  },
+  kaynakOzeti: {
+    marginTop: 8,
+  },
+  fazlaSatir: {
+    minHeight: 44,
+  },
+  altiCizili: {
+    fontWeight: '700',
+    textDecorationLine: 'underline',
+  },
+  otoCip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 24,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 12,
+    minHeight: 52,
+    gap: 12,
+  },
+  otoCipMetin: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  inceleButon: {
+    minHeight: 44,
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inceleMetin: {
+    fontSize: 14,
+    fontWeight: '700',
   },
   sihirbazButonMetin: {
     fontSize: 15,
