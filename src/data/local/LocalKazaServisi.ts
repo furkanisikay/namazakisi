@@ -255,13 +255,20 @@ let gocKilidi: Promise<{ eskiKayitBozuk: boolean }> | null = null;
 async function gocuYurut(): Promise<{ eskiKayitBozuk: boolean }> {
   if ((await Depolama.ham(DEPOLAMA_ANAHTARLARI.KAZA_DEFTERI_GOCU)) === '1') return { eskiKayitBozuk: false };
   const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
+  let cozulen: unknown = undefined;
+  let ayristi = false;
   if (ham !== null) {
-    let cozulen: unknown = null;
     try {
       cozulen = JSON.parse(ham);
+      ayristi = true;
     } catch {
-      cozulen = null;
+      ayristi = false;
     }
+  }
+  // JSON `null` BOŞ kayıttır, bozuk değil: eski "üzerine yaz" içe aktarması
+  // kazasız yedekte `kaza ?? null` yazıyordu. Ayrıştırılamayan metin ise
+  // bozuktur (aşağıda; bayrak yazılmaz, ham kayıt korunur).
+  if (ham !== null && !(ayristi && cozulen === null)) {
     const sonuc = eskiDurumdanHareketler(cozulen, new Date().toISOString(), await cihazKimligiAl());
     if (!sonuc) {
       // Bayrak YAZILMAZ: kayıt diskte kalır, ekran "eski kayıt okunamadı" der.

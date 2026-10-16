@@ -130,7 +130,7 @@ describe('defteriOku — göç ve dayanıklılık', () => {
     expect(b.hareketler).toHaveLength(1);
   });
 
-  test.each([['null'], ['{kesik'], ['42'], ['"metin"']])(
+  test.each([['{kesik'], ['42'], ['"metin"'], ['[]']])(
     'okunamayan eski kayıt (%s): REDDETMEZ, bayrak yazılmaz, ham kayıt korunur',
     async (ham) => {
       mockStore.set(ESKI, ham);
@@ -141,6 +141,15 @@ describe('defteriOku — göç ve dayanıklılık', () => {
       expect(mockStore.get(ESKI)).toBe(ham);
     }
   );
+
+  test('JSON null eski kayıt (eski "üzerine yaz" içe aktarması) BOŞ kayıttır: göç tamam, bant YOK', async () => {
+    mockStore.set(ESKI, 'null');
+    const o = await defteriOku();
+    expect(o.eskiKayitBozuk).toBe(false);
+    expect(o.hareketler).toEqual([]);
+    expect(mockStore.get(BAYRAK)).toBe('1');
+    expect(mockStore.get(ESKI)).toBe('null');
+  });
 
   test('bozuk ay anahtarı atlanır, ÜZERİNE YAZILMAZ; yeni hareket kardeş anahtara gider', async () => {
     mockStore.set(BAYRAK, '1');
