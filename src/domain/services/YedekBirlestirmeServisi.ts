@@ -33,6 +33,7 @@ import {
   type KazaHareketi,
 } from '../../core/kaza/kazaHareketi';
 import { defterDoluMu, eskiDurumdanHareketler, eskiGorunumHareketi } from '../../core/kaza/kazaDefteriHesabi';
+import { mezhepSecildiMi, seferilikMezhebi } from '../../core/mezhep/mezhepAyari';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -356,6 +357,7 @@ const kazaPlaniEkle = (
 const ayarPlaniEkle = (
   plan: YazimPlani,
   strateji: KategoriStratejisi,
+  mevcut: YedekPayload,
   gelen: YedekPayload
 ): void => {
   if (strateji !== 'uzerineYaz') return; // akilli: cihaz korunur; eksikleriEkle: dokunma.
@@ -365,6 +367,15 @@ const ayarPlaniEkle = (
     const deger = ayarlar[alan];
     if (deger !== null && deger !== undefined) {
       plan[anahtar] = deger;
+    }
+  }
+  // ESKİ YEDEK (ortak mezhep anahtarından önce): mezhep yalnız seferîlik kaydında.
+  // Ortak ayar ona taşınmazsa açılışta yazılmış ortak ayar kazanır ve Şâfiî
+  // kullanıcıya vitir borcu eklenirdi. Kullanıcının bilinçli seçimi EZİLMEZ.
+  if (ayarlar.mezhep === null || ayarlar.mezhep === undefined) {
+    const eski = seferilikMezhebi(ayarlar.seferilik);
+    if (eski && !mezhepSecildiMi(mevcut.ayarlar?.mezhep)) {
+      plan[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI] = { mezhep: eski };
     }
   }
 };
@@ -383,6 +394,6 @@ export const birlestirmePlaniOlustur = (
   namazPlaniEkle(plan, secimler.namaz, mevcut, gelen);
   puanPlaniEkle(plan, secimler.puan, mevcut, gelen);
   kazaPlaniEkle(plan, secimler.kaza, mevcut, gelen, baglam);
-  ayarPlaniEkle(plan, secimler.ayarlar, gelen);
+  ayarPlaniEkle(plan, secimler.ayarlar, mevcut, gelen);
   return plan;
 };

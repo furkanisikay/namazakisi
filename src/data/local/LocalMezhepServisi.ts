@@ -7,8 +7,8 @@ import { mezhepGocKarari, mezhepNormalize, VARSAYILAN_MEZHEP, type Mezhep } from
  * Ortak mezhep ayarı depolaması (Kaza Defteri 2.0). Store'suz okunur: kaza
  * defterinin arka plan taraması ve seferîlik kartı aynı kaynaktan beslenir.
  *
- * Göç: ortak anahtar yoksa eski `SEFERILIK_AYARLARI.mezhep` bir kez taşınır.
- * Okuma ASLA reddetmez (bozuk → Hanefî).
+ * Göç: ortak anahtar yoksa eski `SEFERILIK_AYARLARI.mezhep` bir kez taşınır;
+ * hiçbiri yoksa varsayılan döner ama yazılmaz. Okuma ASLA reddetmez (bozuk → Hanefî).
  */
 export const LocalMezhepServisi = {
   oku: async (): Promise<Mezhep> => {
@@ -32,9 +32,10 @@ export const LocalMezhepServisi = {
     }
   },
 
+  /** Kullanıcının ekrandan seçimi (bilinçli → eski yedeğin seferîlik mezhebi ezmez). */
   yaz: async (mezhep: Mezhep): Promise<Mezhep> => {
     const normal = mezhepNormalize(mezhep);
-    await Depolama.yaz(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI, { mezhep: normal });
+    await Depolama.yaz(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI, { mezhep: normal, secildi: true });
     return normal;
   },
 };

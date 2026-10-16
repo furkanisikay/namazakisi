@@ -23,10 +23,25 @@ export const MEZHEP_ADLARI: Record<Mezhep, string> = {
 
 export const VARSAYILAN_MEZHEP: Mezhep = 'hanefi';
 
-/** Kayıtlı ayar biçimi: `{ mezhep }`. */
+/**
+ * Kayıtlı ayar biçimi: `{ mezhep, secildi? }`. `secildi` kullanıcının ekrandan
+ * BİLİNÇLİ seçtiğini söyler; eski yedeğin seferîlik mezhebi onu ezmez.
+ */
 export interface MezhepAyari {
   mezhep: Mezhep;
+  secildi?: boolean;
 }
+
+/** Ham seferîlik kaydındaki GEÇERLİ mezhep (yoksa `null`; varsayılana düşülmez). */
+export function seferilikMezhebi(seferilikHam: unknown): Mezhep | null {
+  if (!seferilikHam || typeof seferilikHam !== 'object' || Array.isArray(seferilikHam)) return null;
+  const m = (seferilikHam as Record<string, unknown>).mezhep;
+  return m === 'hanefi' || m === 'safii' ? m : null;
+}
+
+/** Ortak ayar kullanıcının bilinçli seçimi mi? */
+export const mezhepSecildiMi = (ortakHam: unknown): boolean =>
+  !!ortakHam && typeof ortakHam === 'object' && (ortakHam as Record<string, unknown>).secildi === true;
 
 /** Ham değeri mezhebe çevirir; tanınmayan her şey varsayılana düşer. */
 export function mezhepNormalize(ham: unknown): Mezhep {
@@ -41,16 +56,17 @@ export function mezhepNormalize(ham: unknown): Mezhep {
 /**
  * Ortak ayar henüz yazılmamışsa (eski kurulum) seferîlik kaydındaki mezhep
  * kaynak alınır. Ortak ayar varsa O kazanır. Saf: göçün karar kısmı.
+ *
+ * Hiçbir kaynak yoksa varsayılan döner ama KALICI YAZILMAZ: yazılsaydı sonradan
+ * geri yüklenen eski yedekteki seferîlik mezhebi (ör. Şâfiî) ortak ayara hiç
+ * ulaşamaz ve vitir her gün borca eklenirdi.
  */
 export function mezhepGocKarari(ortakHam: unknown, seferilikHam: unknown): { mezhep: Mezhep; yazilmali: boolean } {
   if (ortakHam !== null && ortakHam !== undefined) {
     return { mezhep: mezhepNormalize(ortakHam), yazilmali: false };
   }
-  const eski =
-    seferilikHam && typeof seferilikHam === 'object' && !Array.isArray(seferilikHam)
-      ? (seferilikHam as Record<string, unknown>).mezhep
-      : undefined;
-  return { mezhep: mezhepNormalize(eski), yazilmali: true };
+  const eski = seferilikMezhebi(seferilikHam);
+  return eski ? { mezhep: eski, yazilmali: true } : { mezhep: VARSAYILAN_MEZHEP, yazilmali: false };
 }
 
 /** Vitir (Hanefî'de vacip) kaza defterine otomatik eklenir mi? */

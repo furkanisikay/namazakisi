@@ -32,7 +32,14 @@ describe('mezhepNormalize', () => {
 describe('mezhepGocKarari', () => {
   it('ortak ayar yoksa seferîlik kaydındaki mezhep BİR KEZ taşınır', () => {
     expect(mezhepGocKarari(null, { mezhep: 'safii', kartAcik: true })).toEqual({ mezhep: 'safii', yazilmali: true });
-    expect(mezhepGocKarari(undefined, null)).toEqual({ mezhep: 'hanefi', yazilmali: true });
+  });
+
+  it('ne ortak ne seferîlik mezhebi varsa VARSAYILAN döner ama KALICI YAZILMAZ', () => {
+    // Yazılsaydı sonradan içe aktarılan eski yedekteki seferîlik mezhebi (ör. Şâfiî)
+    // ortak ayara hiç ulaşamaz, vitir her gün borca eklenirdi.
+    expect(mezhepGocKarari(undefined, null)).toEqual({ mezhep: 'hanefi', yazilmali: false });
+    expect(mezhepGocKarari(null, { kartAcik: true })).toEqual({ mezhep: 'hanefi', yazilmali: false });
+    expect(mezhepGocKarari(null, { mezhep: 'maliki' })).toEqual({ mezhep: 'hanefi', yazilmali: false });
   });
 
   it('ortak ayar varsa O kazanır, yazım gerekmez', () => {

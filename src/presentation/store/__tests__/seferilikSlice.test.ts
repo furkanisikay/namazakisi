@@ -69,8 +69,9 @@ describe('seferilikSlice', () => {
     const store = storeKur();
     await store.dispatch(seferilikAyarlariniGuncelle({ mezhep: 'safii' }));
     await store.dispatch(seferilikAyarlariniGuncelle({ kartAcik: false }));
-    // Mezhep ortak anahtara da yazılır (kaza defteri vitri buradan okur).
-    expect(await oku(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI)).toEqual({ mezhep: 'safii' });
+    // Mezhep ortak anahtara da yazılır (kaza defteri vitri buradan okur); kullanıcının
+    // BİLİNÇLİ seçimi olarak işaretlenir (eski yedeğin seferîlik mezhebi onu ezmez).
+    expect(await oku(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI)).toEqual({ mezhep: 'safii', secildi: true });
     expect(await oku(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI)).toEqual({
       kartAcik: false,
       mezhep: 'safii',

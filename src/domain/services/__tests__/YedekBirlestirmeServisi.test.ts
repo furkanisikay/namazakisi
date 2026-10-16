@@ -261,6 +261,29 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
   });
 });
 
+describe('YedekBirlestirmeServisi — eski yedeğin seferîlik mezhebi ortak ayara taşınır', () => {
+  const eskiYedek = payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { mezhep: 'safii', kartAcik: true }, mezhep: null } });
+
+  it('uzerineYaz: ortak mezhep içermeyen eski yedekte seferîlik mezhebi MEZHEP_AYARI anahtarına da yazılır', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, mezhep: { mezhep: 'hanefi' } } });
+    const plan = birlestirmePlaniOlustur(mevcut, eskiYedek, secimler('uzerineYaz'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI]).toEqual({ mezhep: 'safii' });
+    expect(plan[DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI]).toEqual({ mezhep: 'safii', kartAcik: true });
+  });
+
+  it('kullanıcının BİLİNÇLİ seçtiği ortak mezhep eski yedeğin seferîlik mezhebiyle EZİLMEZ', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, mezhep: { mezhep: 'hanefi', secildi: true } } });
+    const plan = birlestirmePlaniOlustur(mevcut, eskiYedek, secimler('uzerineYaz'));
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI);
+  });
+
+  it('yeni yedek kendi ortak mezhebini taşır; akıllı strateji ayarlara dokunmaz', () => {
+    const yeni = payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { mezhep: 'hanefi' }, mezhep: { mezhep: 'safii' } } });
+    expect(birlestirmePlaniOlustur(payloadKur({}), yeni, secimler('uzerineYaz'))[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI]).toEqual({ mezhep: 'safii' });
+    expect(birlestirmePlaniOlustur(payloadKur({}), eskiYedek, secimler('akilli'))).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI);
+  });
+});
+
 describe('YedekBirlestirmeServisi — "camide kılacağım" ayarı geri yüklenir (issue #292)', () => {
   it('uzerineYaz: gelen camiyeGit alt-ayarı CAMIYE_GIT_AYARLARI anahtarına yazılır', () => {
     const plan = birlestirmePlaniOlustur(
