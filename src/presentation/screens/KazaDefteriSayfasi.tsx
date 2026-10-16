@@ -43,6 +43,7 @@ import {
   motivasyonOnerileriHesapla,
 } from '../../domain/services/KazaHesaplayiciServisi';
 import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { useHareketAzalt } from '../hooks/useHareketAzalt';
 import { SayiGirisModali } from '../components/common/SayiGirisModali';
 import { BildirimModali } from '../components/common/BildirimModali';
 import { KazaBekleyenGunlerModal } from '../components/kaza/KazaBekleyenGunlerModal';
@@ -198,12 +199,15 @@ export const KazaDefteriSayfasi: React.FC = () => {
 
   // ==================== FLASH ANİMASYON ====================
 
+  // "Animasyonları azalt" açıksa sayı yalnız güncellenir (bilgi hareketle verilmez).
+  const hareketAzalt = useHareketAzalt();
   const tamamlamaFlash = useCallback(() => {
+    if (hareketAzalt) return;
     Animated.sequence([
       Animated.timing(flashAnim, { toValue: 0.3, duration: 80, useNativeDriver: true }),
       Animated.timing(flashAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
     ]).start();
-  }, [flashAnim]);
+  }, [flashAnim, hareketAzalt]);
 
   // ==================== AKSİYONLAR ====================
 

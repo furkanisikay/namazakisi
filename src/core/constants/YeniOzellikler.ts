@@ -68,7 +68,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Eklediğiniz, kıldığınız ve bildirimden gelen her kaza ayrı bir satır olarak saklanır; yeniden hesapladığınızda emeğiniz kaybolmaz. İsterseniz kılınmayan farzlar namaz günü bitince kendiliğinden eklenir.',
         detayAciklama:
-            'Kaza Defteri'nin "Hareket geçmişi" ekranında her kaydın ne zaman, hangi kaynaktan ve hangi cihazdan geldiğini görebilirsiniz. Sihirbazla yeniden hesapladığınızda yalnız hesaplanan borç değişir; elle eklediğiniz, bildirimden eklenen ve kıldığınız kazalar yeni hesaba kendiliğinden uygulanır ve uygulamadan önce önizlenir. Otomatik ekleme varsayılan olarak kapalıdır: açarsanız işaretlemediğiniz farzlar ertesi imsakta deftere eklenir, sonradan "kıldım" derseniz geri alınır. Hiç işaret olmayan günler önce size sorulur.',
+            'Kaza Defteri\'nin "Hareket geçmişi" ekranında her kaydın ne zaman, hangi kaynaktan ve hangi cihazdan geldiğini görebilirsiniz. Sihirbazla yeniden hesapladığınızda yalnız hesaplanan borç değişir; elle eklediğiniz, bildirimden eklenen ve kıldığınız kazalar yeni hesaba kendiliğinden uygulanır ve uygulamadan önce önizlenir. Otomatik ekleme varsayılan olarak kapalıdır: açarsanız işaretlemediğiniz farzlar ertesi imsakta deftere eklenir, sonradan "kıldım" derseniz geri alınır. Hiç işaret olmayan günler önce size sorulur.',
         ikon: 'book',
         kartGoster: true,
         detaylar: [
