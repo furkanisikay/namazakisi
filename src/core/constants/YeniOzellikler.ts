@@ -62,7 +62,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'kaza-defteri-2',
         platformlar: ['android', 'ios'],
-        surum: '0.32.0',
+        surum: '0.33.0',
         tarih: '2026-10-16',
         baslik: 'Kaza Defteri Artık Her Hareketi Hatırlıyor',
         aciklama:
