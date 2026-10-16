@@ -79,12 +79,19 @@ export type KazaKaynagi =
   | 'manuel' // kullanıcı +N ekledi
   | 'bildirim' // gün sonu muhasebesi "Kazaya ekle" (#290) — referanslı
   | 'kilindi' // kaza kılındı → −N (vakit ZORUNLU; genel tamamlama kaldırıldı)
-  | 'duzeltme' // ±N ("fazlayı sıfırla" gibi)
+  // +N → kalana eklenir · −N → "fazla kılınan" göstergesinden düşülür (fazlayı
+  // sıfırla). Kalanı AZALTAN düzeltme yoktur: yanlış eklenmiş kayıt temizlikle gizlenir.
+  | 'duzeltme'
   | 'temizlik' // seçili hareketleri (ve oto: kimliklerini) gizler
   | 'temizlikGeriAl' // bir temizliği geri alır
   | 'gunKarari' // "Kontrol bekleyen gün" kararı (ekle / yok say)
   | 'otoAyar' // otomatik ekleme aç/kapa (+ işaretsiz gün tercihi)
-  | 'tarama'; // otomatik izdüşüm günlüğü (yalnız geçmiş ekranı; sayıya girmez)
+  | 'tarama' // otomatik izdüşüm günlüğü (yalnız geçmiş ekranı; sayıya girmez)
+  // ESKİ SÜRÜMLÜ cihazın (1.x) anlık görüntüsünden gelen "en az bu kadar kılındı"
+  // tabanı (karışık sürüm eşitlemesi). Vakit başına MAKSİMUM alınır → tekrar
+  // uygulanabilir, değişmeli. Borç yönü bilinçli olarak YOKTUR (eski cihazdaki
+  // bayat bir hesap yeni hesaplamayı geri getirmesin).
+  | 'eskiGorunum';
 
 export const KAZA_KAYNAKLARI: readonly KazaKaynagi[] = [
   'taban',
@@ -97,6 +104,7 @@ export const KAZA_KAYNAKLARI: readonly KazaKaynagi[] = [
   'gunKarari',
   'otoAyar',
   'tarama',
+  'eskiGorunum',
 ];
 
 /** Hiç işaret olmayan (uygulamanın açılmadığı) günler için tercih. */
@@ -135,6 +143,8 @@ export interface KazaHareketi {
   gun?: string;
   /** `otoAyar`: işaretsiz gün tercihi. */
   kayitsiz?: KayitsizGunTercihi;
+  /** `eskiGorunum`: eski cihazın gösterdiği vakit başına toplam kılınan. */
+  kilinanlar?: Record<KazaVakti, number>;
   /** `tarama`: izdüşüme giren / çıkan referanslar. */
   eklenen?: string[];
   cikan?: string[];
@@ -270,6 +280,13 @@ export function hareketNormalize(ham: unknown): KazaHareketi | null {
       if (ham.kayitsiz === 'sor' || ham.kayitsiz === 'ekle') h.kayitsiz = ham.kayitsiz;
       return h;
     }
+    case 'eskiGorunum': {
+      if (!nesneMi(ham.kilinanlar)) return null;
+      const kilinanlar = {} as Record<KazaVakti, number>;
+      for (const v of KAZA_VAKITLERI) kilinanlar[v] = negatifOlmayanTamsayi((ham.kilinanlar as Record<string, unknown>)[v]);
+      h.kilinanlar = kilinanlar;
+      return h;
+    }
     case 'tarama': {
       const eklenen = kimlikDizisi(ham.eklenen) ?? [];
       const cikan = kimlikDizisi(ham.cikan) ?? [];
@@ -280,6 +297,58 @@ export function hareketNormalize(ham: unknown): KazaHareketi | null {
     default:
       return null;
   }
+}
+
+// ==================== İLERİ UYUMLULUK ====================
+
+/**
+ * Yeni bir sürümün yazdığı, bu sürümün ÇÖZEMEDİĞİ ama yapısal olarak geçerli
+ * hareket (bilinmeyen `kaynak` ya da tanınan kaynağın yeni biçimi). Hesaba
+ * KATILMAZ ama diskte/yedekte/bulutta KORUNUR: atılsaydı eski sürüm, yeni
+ * sürümün hareketini bir sonraki yazımda siler ve iki cihaz birbirinin
+ * defterini budardı.
+ */
+export interface BilinmeyenHareket {
+  id: string;
+  zaman: string;
+  kaynak: string;
+  [alan: string]: unknown;
+}
+
+/**
+ * Yapısal olarak geçerli (kimlik + zaman + kaynak dizesi) ama bu sürümün
+ * `hareketNormalize`'ından GEÇMEYEN öğe mi? Yapısız değer → hayır (atlanır).
+ */
+export function bilinmeyenHareketMi(ham: unknown): ham is BilinmeyenHareket {
+  if (!nesneMi(ham)) return false;
+  const id = kisaMetin(ham.id, 160);
+  const zamanGecerli =
+    typeof ham.zaman === 'string' && ISO_ZAMAN.test(ham.zaman) && Number.isFinite(Date.parse(ham.zaman));
+  const kaynak = kisaMetin(ham.kaynak, 40);
+  return !!id && zamanGecerli && !!kaynak && hareketNormalize(ham) === null;
+}
+
+/**
+ * Ham listeyi ikiye ayırır: tanınan (normalize) + bilinmeyen (ham, kimliğe göre
+ * tekil). Yalnız yapısız değer atlanır.
+ */
+export function hareketleriAyristir(ham: unknown): { taninan: KazaHareketi[]; bilinmeyen: BilinmeyenHareket[] } {
+  const taninan: KazaHareketi[] = [];
+  const bilinmeyen = new Map<string, BilinmeyenHareket>();
+  if (!Array.isArray(ham)) return { taninan, bilinmeyen: [] };
+  for (const oge of ham) {
+    const h = hareketNormalize(oge);
+    if (h) taninan.push(h);
+    else if (bilinmeyenHareketMi(oge) && !bilinmeyen.has(oge.id)) bilinmeyen.set(oge.id, oge);
+  }
+  return { taninan, bilinmeyen: Array.from(bilinmeyen.values()) };
+}
+
+/** Bilinmeyen listeleri kimliğe göre birleştirir (ilk görülen kalır; sıralı). */
+export function bilinmeyenleriBirlestir(...listeler: ReadonlyArray<readonly BilinmeyenHareket[]>): BilinmeyenHareket[] {
+  const harita = new Map<string, BilinmeyenHareket>();
+  for (const liste of listeler) for (const h of liste) if (!harita.has(h.id)) harita.set(h.id, h);
+  return Array.from(harita.values()).sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
 }
 
 // ==================== SIRALAMA VE BİRLEŞTİRME ====================
@@ -334,11 +403,18 @@ export const hareketAyi = (h: Pick<KazaHareketi, 'zaman'>): string => h.zaman.sl
 
 // ==================== KİMLİK ÜRETİMİ ====================
 
-/** Rastgele, sıralanabilir kimlik: `<önek>:<zaman36><rastgele>`. */
+let kimlikSayaci = 0;
+
+/**
+ * Rastgele, sıralanabilir kimlik: `<önek>:<zaman36>-<sayaç36><rastgele>`.
+ * Süreç içi sayaç aynı milisaniyede (ve `Math.random` sabitlenmiş testte) N
+ * kimliğin çakışmasını önler; rastgele kısım iki cihazı ayırır.
+ */
 export function hareketKimligi(onek: string, simdiMs: number = Date.now()): string {
+  kimlikSayaci = (kimlikSayaci + 1) % 1_679_616; // 36^4
   let r = '';
   for (let i = 0; i < 8; i++) r += Math.floor(Math.random() * 36).toString(36);
-  return `${onek}:${simdiMs.toString(36)}${r}`;
+  return `${onek}:${simdiMs.toString(36)}-${kimlikSayaci.toString(36)}${r}`;
 }
 
 /** FNV-1a (32 bit, hex) — göç grubu gibi içerikten türeyen kimlikler için. */

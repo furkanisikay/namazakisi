@@ -9,8 +9,9 @@
  * Kurallar (sahip kararları, 2026-10-15):
  * - En son `taban` geçerlidir; eskiler tarihçe. Kılınanlar ve eklemeler
  *   tabandan bağımsızdır → taban değişince kendiliğinden yeniden uygulanır.
- * - kalan = max(0, ham); "fazla kılınan" AYRI gösterilir ve sonradan eklenen
- *   borçlardan DÜŞÜLMEZ (fıkhî iddia içermesin).
+ * - Fold KRONOLOJİKTİR: kılınan kalanı aşarsa taşan kısım AYRI `fazla`
+ *   akümülatörüne gider; sonradan eklenen borçlardan DÜŞÜLMEZ (fıkhî iddia
+ *   içermesin). Fazla yalnız gösterilir; "fazlayı sıfırla" = −düzeltme.
  * - Otomatik kaza: kapanmış her namaz günü (otomatik aralık içinde) için,
  *   özel gün değilse, "bana sorun" bekleyeni değilse, temizlikle gizlenmemişse,
  *   aynı referanslı `bildirim` yoksa ve vakit işaretsizse +1 (`oto:<gün>_<v>`).
@@ -18,14 +19,16 @@
  */
 
 import type { KazaDurumu, KazaNamaz, KazaNamazAdi } from '../types/KazaTipleri';
-import { gunEkle, tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
+import { gunEkle, ISOTarihiDateNesnesiNeCevir, tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import {
   FARZ_KAZA_VAKITLERI,
+  KAZA_ADINDAN_VAKTE,
   GIZLENEBILIR_KAYNAKLAR,
   KAZA_VAKITLERI,
   KAZA_VAKTI_ADI,
   OTO_ONEK,
   fnv1aHex,
+  isoGunMu,
   kanonikDize,
   otoKimligi,
   referansCoz,
@@ -112,6 +115,18 @@ export function otomatikDurumu(hareketler: readonly KazaHareketi[]): OtomatikDur
   }
   if (acik !== null) araliklar.push({ baslangic: acik, bitis: null });
   return { aktif: acik !== null, baslangic: acik, kayitsiz, araliklar };
+}
+
+/**
+ * Otomatik eklemenin başlangıç günü geçerli mi? ISO gün olmalı, bugünün namaz
+ * gününü geçmemeli ve en fazla `GECMIS_TARAMA_AZAMI_GUN` geriye gidebilir
+ * ("geçmiş günleri tarayın" sınırı). Sınır YAZIM anında uygulanır; izdüşüm
+ * eski kayıtları yaşa göre kırpmaz (kırpsaydı bir yıl önceki otomatik kayıtlar
+ * kendiliğinden kaybolur ve kalan kullanıcı bir şey yapmadan düşerdi).
+ */
+export function otomatikBaslangicGecerliMi(gun: unknown, bugunNamazGunu: string): gun is string {
+  if (!isoGunMu(gun)) return false;
+  return gun <= bugunNamazGunu && gun >= gunEkle(bugunNamazGunu, -GECMIS_TARAMA_AZAMI_GUN);
 }
 
 /**
@@ -214,7 +229,35 @@ const kazananGocGrubu = (etkin: readonly KazaHareketi[]): string | null => {
   return kazanan?.grup ?? null;
 };
 
-/** Defterin bütün görünür sayılarını türetir. */
+/**
+ * Otomatik kaydın fold'daki sözde anı: namaz gününün ertesi takvim günü 00:00
+ * UTC. Deterministik ve saat diliminden bağımsız (iki cihaz aynı sırayı kurar).
+ * Gösterim için değil, yalnız SIRALAMA içindir — geçmiş ekranı yerel saati
+ * `gecmisSatirlari` içinde ayrıca hesaplar.
+ */
+export const otoSozdeZamani = (gun: string): string => `${gunEkle(gun, 1)}T00:00:00.000Z`;
+
+/** Fold olayı: gerçek hareket ya da otomatik izdüşüm kaydı. */
+interface FoldOlayi {
+  zaman: string;
+  /** Aynı anda eşitlik bozucu (gerçek hareket önce, sonra otomatik). */
+  sira: string;
+  tur: 'ekle' | 'kil' | 'fazlaDus';
+  vakit: KazaVakti;
+  adet: number;
+  tempoGunu?: string | null;
+}
+
+/**
+ * Defterin bütün görünür sayılarını türetir.
+ *
+ * FOLD KRONOLOJİKTİR (sahip kararı: fazla kılınan sonradan eklenen borçtan
+ * DÜŞÜLMEZ). En son taban t=0'da başlangıçtır (mutlaktır, zamanından bağımsız);
+ * ardından eklemeler (elle, bildirim, otomatik, +düzeltme) ve kılınanlar ZAMAN
+ * sırasıyla uygulanır. Kılınan kalanı sıfırın altına iterse taşan kısım AYRI
+ * `fazla` akümülatörüne gider ve kalan 0'da durur; sonraki eklemeler fazladan
+ * DÜŞÜLMEZ. −düzeltme yalnız fazlayı azaltır ("fazlayı sıfırla").
+ */
 export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
   const hareketler = [...g.hareketler].sort(siraKarsilastir);
   const gizli = gizliKimlikler(hareketler);
@@ -225,26 +268,29 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
   for (const h of etkin) if (h.kaynak === 'taban' && (!taban || siraKarsilastir(h, taban) > 0)) taban = h;
   const gocGrubu = kazananGocGrubu(etkin);
 
-  const ham = sifirVakitler();
+  const kalan = sifirVakitler();
+  const fazlaSayi = sifirVakitler();
   const kilinan = sifirVakitler();
   const ozet: DefterOzeti = { taban: 0, elle: 0, bildirim: 0, otomatik: 0, kilinan: 0, duzeltme: 0 };
   if (taban?.taban) {
     for (const v of KAZA_VAKITLERI) {
-      ham[v] += taban.taban[v];
+      kalan[v] += taban.taban[v];
       ozet.taban += taban.taban[v];
     }
   }
 
   const bildirimRefleri = new Set<string>();
   const kararlar = new Map<string, 'ekle' | 'yoksay'>();
-  const tempo: Record<string, number> = {};
+  const olaylar: FoldOlayi[] = [];
+  const eskiKilinan = sifirVakitler();
 
   for (const h of etkin) {
     const v = h.vakit;
+    const sira = `0|${h.cihaz}|${h.id}`;
     switch (h.kaynak) {
       case 'manuel':
         if (v && h.adet) {
-          ham[v] += h.adet;
+          olaylar.push({ zaman: h.zaman, sira, tur: 'ekle', vakit: v, adet: h.adet });
           ozet.elle += h.adet;
         }
         break;
@@ -252,29 +298,36 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
         if (v && h.referans && !bildirimRefleri.has(h.referans)) {
           // Aynı referans iki kez yazılmışsa (iki cihaz) tek borç sayılır.
           bildirimRefleri.add(h.referans);
-          ham[v] += 1;
+          olaylar.push({ zaman: h.zaman, sira, tur: 'ekle', vakit: v, adet: 1 });
           ozet.bildirim += 1;
         }
         break;
       case 'kilindi':
         if (!v || !h.adet) break;
         if (h.gocmis && h.grup !== gocGrubu) break;
-        ham[v] -= h.adet;
-        kilinan[v] += h.adet;
+        olaylar.push({
+          zaman: h.zaman,
+          sira,
+          tur: 'kil',
+          vakit: v,
+          adet: h.adet,
+          tempoGunu: h.gocmis ? null : zamanGunu(h.zaman),
+        });
         ozet.kilinan += h.adet;
-        if (!h.gocmis) {
-          const gun = zamanGunu(h.zaman);
-          tempo[gun] = (tempo[gun] ?? 0) + h.adet;
-        }
         break;
       case 'duzeltme':
-        if (v && h.adet) {
-          ham[v] += h.adet;
+        if (v && h.adet && h.adet > 0) {
+          olaylar.push({ zaman: h.zaman, sira, tur: 'ekle', vakit: v, adet: h.adet });
           ozet.duzeltme += h.adet;
+        } else if (v && h.adet && h.adet < 0) {
+          olaylar.push({ zaman: h.zaman, sira, tur: 'fazlaDus', vakit: v, adet: -h.adet });
         }
         break;
       case 'gunKarari':
         if (h.referans && h.karar) kararlar.set(h.referans, h.karar); // sıralı: son karar kazanır
+        break;
+      case 'eskiGorunum':
+        for (const ev of KAZA_VAKITLERI) eskiKilinan[ev] = Math.max(eskiKilinan[ev], h.kilinanlar?.[ev] ?? 0);
         break;
       default:
         break;
@@ -305,8 +358,37 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
       const id = otoKimligi(referans);
       if (gizli.has(id) || bildirimRefleri.has(referans)) continue;
       otomatikKayitlar.push({ id, referans, gun, vakit: v });
-      ham[v] += 1;
+      olaylar.push({ zaman: otoSozdeZamani(gun), sira: `1|${id}`, tur: 'ekle', vakit: v, adet: 1 });
       ozet.otomatik += 1;
+    }
+  }
+
+  // ---- Kronolojik fold ----
+  olaylar.sort((a, b) =>
+    a.zaman < b.zaman ? -1 : a.zaman > b.zaman ? 1 : a.sira < b.sira ? -1 : a.sira > b.sira ? 1 : 0
+  );
+  const tempo: Record<string, number> = {};
+  const kil = (v: KazaVakti, adet: number): void => {
+    kilinan[v] += adet;
+    const dusen = Math.min(kalan[v], adet);
+    kalan[v] -= dusen;
+    fazlaSayi[v] += adet - dusen;
+  };
+  for (const o of olaylar) {
+    if (o.tur === 'ekle') kalan[o.vakit] += o.adet;
+    else if (o.tur === 'fazlaDus') fazlaSayi[o.vakit] = Math.max(0, fazlaSayi[o.vakit] - o.adet);
+    else {
+      kil(o.vakit, o.adet);
+      if (o.tempoGunu) tempo[o.tempoGunu] = (tempo[o.tempoGunu] ?? 0) + o.adet;
+    }
+  }
+  // Eski sürümlü cihazın gösterdiği kılınan bu defterinkinden fazlaysa aradaki
+  // fark (o cihazda kılınmış kazalar) en sonda uygulanır. Maksimum → idempotent.
+  for (const v of KAZA_VAKITLERI) {
+    const eksik = eskiKilinan[v] - kilinan[v];
+    if (eksik > 0) {
+      kil(v, eksik);
+      ozet.kilinan += eksik;
     }
   }
 
@@ -323,17 +405,14 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
     tempoGecmis[gun] = (tempoGecmis[gun] ?? 0) + adet;
   }
 
-  const namazlar: KazaNamaz[] = KAZA_VAKITLERI.map((v) => {
-    const kalanBorc = Math.max(0, ham[v]);
-    return {
-      namazAdi: KAZA_VAKTI_ADI[v],
-      kalanBorc,
-      tamamlanan: kilinan[v],
-      toplamBorc: kalanBorc + kilinan[v],
-    };
-  });
+  const namazlar: KazaNamaz[] = KAZA_VAKITLERI.map((v) => ({
+    namazAdi: KAZA_VAKTI_ADI[v],
+    kalanBorc: kalan[v],
+    tamamlanan: kilinan[v],
+    toplamBorc: kalan[v] + kilinan[v],
+  }));
   const fazla = {} as Record<KazaNamazAdi, number>;
-  for (const v of KAZA_VAKITLERI) fazla[KAZA_VAKTI_ADI[v]] = Math.max(0, -ham[v]);
+  for (const v of KAZA_VAKITLERI) fazla[KAZA_VAKTI_ADI[v]] = fazlaSayi[v];
 
   const sonZaman = hareketler.length > 0 ? hareketler[hareketler.length - 1].zaman : '';
 
@@ -364,6 +443,84 @@ export function defterHesapla(g: DefterHesapGirdisi): KazaDefterGorunumu {
         }
       : null,
     tempoGecmis,
+  };
+}
+
+// ==================== ESKİ SÜRÜM UYUMLULUĞU (anlık görüntü) ====================
+
+/**
+ * Eski (1.x) `KazaDurumu` şeklinde TÜRETİLMİŞ anlık görüntü — yedeğe ve buluta
+ * hareketlerin YANINDA yazılır ki eski sürümlü bir cihaz yeni cihazın
+ * ilerlemesini görebilsin ("daha ilerlemiş olanı seç"). `defterOzeti` bu
+ * görüntünün sayılarından türer: eski cihaz görüntüyü DEĞİŞTİRMEDEN geri
+ * yüklerse özet tutar ve yeni defter onu yeniden içe almaz (temizlikle
+ * gizlenen bir kılınanı geri getirmesin).
+ */
+export interface EskiAnlikGoruntu extends KazaDurumu {
+  defterOzeti: string;
+}
+
+const anlikSayilari = (namazlar: unknown): Record<KazaVakti, { kalan: number; kilinan: number }> | null => {
+  if (!Array.isArray(namazlar)) return null;
+  const sonuc = {} as Record<KazaVakti, { kalan: number; kilinan: number }>;
+  for (const v of KAZA_VAKITLERI) sonuc[v] = { kalan: 0, kilinan: 0 };
+  for (const n of namazlar) {
+    if (!n || typeof n !== 'object') continue;
+    const k = n as Record<string, unknown>;
+    const v = KAZA_ADINDAN_VAKTE[String(k.namazAdi)];
+    if (!v) continue;
+    const sayi = (x: unknown): number => (typeof x === 'number' && Number.isFinite(x) && x > 0 ? Math.floor(x) : 0);
+    sonuc[v] = { kalan: sayi(k.kalanBorc), kilinan: sayi(k.tamamlanan) };
+  }
+  return sonuc;
+};
+
+const anlikOzeti = (sayilar: Record<KazaVakti, { kalan: number; kilinan: number }>): string =>
+  `defter-${fnv1aHex(kanonikDize(sayilar))}`;
+
+/** Görünümden eski şekilli anlık görüntü üretir. */
+export function eskiAnlikGoruntuUret(g: KazaDurumu): EskiAnlikGoruntu {
+  const namazlar = g.namazlar.map((n) => ({
+    namazAdi: n.namazAdi,
+    kalanBorc: n.kalanBorc,
+    tamamlanan: n.tamamlanan,
+    toplamBorc: n.kalanBorc + n.tamamlanan,
+  }));
+  const sayilar = anlikSayilari(namazlar) as Record<KazaVakti, { kalan: number; kilinan: number }>;
+  return {
+    namazlar,
+    toplamKalan: g.toplamKalan,
+    toplamTamamlanan: g.toplamTamamlanan,
+    gunlukHedef: g.gunlukHedef,
+    gunlukTamamlanan: g.gunlukTamamlanan,
+    gunlukHedefTarihi: g.gunlukHedefTarihi,
+    toplamGizleMi: g.toplamGizleMi,
+    guncellemeTarihi: g.guncellemeTarihi,
+    defterOzeti: anlikOzeti(sayilar),
+  };
+}
+
+/**
+ * Eski sürümlü cihazdan gelen anlık görüntüyü (dolu bir deftere) `eskiGorunum`
+ * hareketine çevirir. Kimlik İÇERİKTEN türer → aynı görüntüyü alan iki cihaz
+ * aynı hareketi üretir. Bu defterin kendi (değişmemiş) görüntüsü, kılınanı
+ * olmayan ya da bozuk görüntü → `null`.
+ */
+export function eskiGorunumHareketi(ham: unknown, zaman: string, cihaz: string): KazaHareketi | null {
+  if (!ham || typeof ham !== 'object' || Array.isArray(ham)) return null;
+  const durum = ham as Record<string, unknown>;
+  const sayilar = anlikSayilari(durum.namazlar);
+  if (!sayilar) return null;
+  if (typeof durum.defterOzeti === 'string' && durum.defterOzeti === anlikOzeti(sayilar)) return null;
+  const kilinanlar = sifirVakitler();
+  for (const v of KAZA_VAKITLERI) kilinanlar[v] = sayilar[v].kilinan;
+  if (KAZA_VAKITLERI.every((v) => kilinanlar[v] === 0)) return null;
+  return {
+    id: `eski-gorunum-${fnv1aHex(kanonikDize(kilinanlar))}`,
+    zaman,
+    cihaz,
+    kaynak: 'eskiGorunum',
+    kilinanlar,
   };
 }
 
@@ -546,7 +703,9 @@ export function temizlikAdaylari(
     if (!gizlenebilirMi(h) || gizli.has(h.id) || !h.vakit) continue;
     const kaynak = h.kaynak as TemizlikKaynagi;
     const gun = h.kaynak === 'bildirim' ? referansCoz(h.referans)?.gun ?? zamanGunu(h.zaman) : zamanGunu(h.zaman);
-    const etki = h.kaynak === 'kilindi' ? -(h.adet ?? 0) : h.kaynak === 'bildirim' ? 1 : h.adet ?? 0;
+    // −düzeltme yalnız "fazla"yı etkiler → kalana etkisi yok.
+    const etki =
+      h.kaynak === 'kilindi' ? -(h.adet ?? 0) : h.kaynak === 'bildirim' ? 1 : Math.max(0, h.adet ?? 0);
     const a: TemizlikAdayi = { id: h.id, kaynak, vakit: h.vakit, etki, gun };
     if (uyar(a)) adaylar.push(a);
   }
@@ -588,7 +747,8 @@ export type GecmisTuru =
   | 'temizlik'
   | 'temizlikGeriAl'
   | 'gunKarari'
-  | 'otoAyar';
+  | 'otoAyar'
+  | 'eskiGorunum';
 
 export interface GecmisSatiri {
   /** Liste anahtarı (otomatik satırda `oto:` kimliği). */
@@ -647,7 +807,7 @@ export function gecmisSatirlari(
     if (h.kaynak === 'manuel') delta = h.adet ?? 0;
     else if (h.kaynak === 'bildirim') delta = 1;
     else if (h.kaynak === 'kilindi') delta = -(h.adet ?? 0);
-    else if (h.kaynak === 'duzeltme') delta = h.adet ?? 0;
+    else if (h.kaynak === 'duzeltme') delta = (h.adet ?? 0) > 0 ? (h.adet as number) : null;
     else if (h.kaynak === 'temizlik') delta = null;
     const gun =
       h.kaynak === 'bildirim' ? referansCoz(h.referans)?.gun : h.kaynak === 'gunKarari' ? h.referans : undefined;
@@ -665,9 +825,11 @@ export function gecmisSatirlari(
       cihaz: h.cihaz,
     });
   }
+  // Tarama günlüğü yoksa (ilk açılış) gün kapanışını YEREL gece yarısı olarak
+  // göster (fold'un UTC sözde anı yalnız sıralama içindir, gösterim değil).
+  const kapanisAni = (gun: string): string => ISOTarihiDateNesnesiNeCevir(gunEkle(gun, 1)).toISOString();
   for (const o of gorunum.otomatikKayitlar) {
-    // Tarama günlüğü yoksa (ilk açılış) gün kapanışını yaklaşık an olarak göster.
-    const zaman = ilkGorulme.get(o.referans) ?? `${gunEkle(o.gun, 1)}T00:00:00.000Z`;
+    const zaman = ilkGorulme.get(o.referans) ?? kapanisAni(o.gun);
     satirlar.push({ anahtar: o.id, tur: 'otomatik', zaman, vakit: o.vakit, gun: o.gun, delta: 1, gizli: false, kimlik: o.id });
   }
   // Gizlenmiş otomatik kayıtlar da görünür kalsın (geri alınabilsin) — yalnız
@@ -677,7 +839,7 @@ export function gecmisSatirlari(
     if (!id.startsWith(OTO_ONEK) || !adaylar.has(id.slice(OTO_ONEK.length))) continue;
     const ref = referansCoz(id.slice(OTO_ONEK.length));
     if (!ref) continue;
-    const zaman = ilkGorulme.get(id.slice(OTO_ONEK.length)) ?? `${gunEkle(ref.gun, 1)}T00:00:00.000Z`;
+    const zaman = ilkGorulme.get(id.slice(OTO_ONEK.length)) ?? kapanisAni(ref.gun);
     satirlar.push({ anahtar: `gizli:${id}`, tur: 'otomatik', zaman, vakit: ref.vakit, gun: ref.gun, delta: 1, gizli: true, kimlik: id });
   }
   return satirlar.sort((a, b) => (a.zaman < b.zaman ? 1 : a.zaman > b.zaman ? -1 : a.anahtar < b.anahtar ? -1 : 1));
