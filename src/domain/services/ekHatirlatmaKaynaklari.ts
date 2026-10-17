@@ -19,6 +19,7 @@
 import type { SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
+import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 
 /** Bir yüzeyin AÇIK adım dizisi. */
 export interface EkAdimDizisi {
@@ -53,8 +54,17 @@ const nafileKaynagi: EkHatirlatmaKaynagi = {
     },
 };
 
+/** Cuma (#173): tek adım dizisi, yön sabit (öğle girişine kalan). KATI okuma: disk okunamazsa fırlatır. */
+const cumaKaynagi: EkHatirlatmaKaynagi = {
+    ad: 'cuma',
+    diziler: async () => {
+        const a = await LocalCumaHatirlatmaServisi.getAyarlarKati();
+        return a.aktif ? [{ yon: 'cikisaDogru', adimlar: a.adimlar, kanalKullanir: true }] : [];
+    },
+};
+
 /** Kayıtlı kaynaklar — yeni yüzey (camiye gitme, yatış, takvim) buraya EKLENİR. */
-const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi];
+const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi];
 
 /** Kayıtlı kaynaklar (sıra önemsiz). */
 export function ekHatirlatmaKaynaklari(): readonly EkHatirlatmaKaynagi[] {

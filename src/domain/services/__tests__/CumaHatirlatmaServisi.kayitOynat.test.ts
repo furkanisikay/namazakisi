@@ -22,7 +22,8 @@
  */
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
-import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
+import { CumaHatirlatmaServisi, cumaTeslimcisiniAl, cumaTeslimcisiniAyarla } from '../CumaHatirlatmaServisi';
+import { ucustakiKlipleriSifirla } from '../IosMuhafizTeslimcisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -129,11 +130,16 @@ describe('CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan
     describe.each(['android', 'ios'] as const)('%s', (platform) => {
         beforeEach(() => {
             jest.replaceProperty(Platform, 'OS', platform);
+            // Teslimci GERÇEK fabrikadan, platforma göre türesin (refactor sonrası yol).
+            cumaTeslimcisiniAyarla(null);
+            ucustakiKlipleriSifirla();
         });
 
         it.each(SENARYOLAR)('$ad', async ({ kayit }) => {
             const plan = await oynat(kayit, platform);
             expect(plan.length).toBeGreaterThan(0);
+            // Kanıt: ölçülen yol GERÇEKTEN o platformun teslimcisi (jest varsayılanı iOS).
+            expect(cumaTeslimcisiniAl().ad).toBe(platform);
             expect(plan).toMatchSnapshot();
         });
     });

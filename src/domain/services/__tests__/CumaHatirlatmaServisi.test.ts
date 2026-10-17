@@ -1,4 +1,5 @@
-import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
+import { CumaHatirlatmaServisi, cumaTeslimcisiniAyarla } from '../CumaHatirlatmaServisi';
+import { Platform } from 'react-native';
 import { LocalCumaHatirlatmaServisi } from '../../../data/local/LocalCumaHatirlatmaServisi';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,6 +8,16 @@ import type { Siklik } from '../../../core/muhafiz/matrisTipleri';
 import { cumaAyarlariniNormalize } from '../../../core/cuma/cumaAyarlari';
 
 jest.mock('expo-notifications');
+// Android teslimcisi native TTS köprüsünü import eder (jest'te yok — AGENTS.md).
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    iptalEtAnons: jest.fn(),
+    iptalEtTumAnonslar: jest.fn(),
+    iptalEtOnekliAnonslar: jest.fn(() => true),
+    muhafizKanaliniGarantile: jest.fn(),
+    muhafizKanallariniTemizle: jest.fn(),
+    sesAdiAl: jest.fn().mockResolvedValue('Bir ses'),
+}));
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
 
 // adhan mock: ogle vakti her gun 13:00 (deterministik).
@@ -43,12 +54,17 @@ describe('CumaHatirlatmaServisi', () => {
         jest.useFakeTimers();
         jest.setSystemTime(CARSAMBA_SABAH);
         servis = CumaHatirlatmaServisi.getInstance();
+        // Android teslim yolu (kanal = vakit_bildirim); iOS kayıt-oynat testinde ölçülür.
+        jest.replaceProperty(Platform, 'OS', 'android');
+        cumaTeslimcisiniAyarla(null);
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
         (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
     });
 
     afterEach(() => {
         jest.useRealTimers();
+        jest.restoreAllMocks();
+        cumaTeslimcisiniAyarla(null);
     });
 
     it('ayar kapaliyken hicbir hatirlatma planlamaz', async () => {
@@ -374,5 +390,69 @@ describe('CumaHatirlatmaServisi — ozel gun kapisi (issue #272)', () => {
         await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
 
         expect(planlananlar()).toHaveLength(4);
+    });
+});
+
+describe('CumaHatirlatmaServisi — ortak hatırlatma yetenekleri (plan §5.1, Android)', () => {
+    const kopru = require('../../../../modules/expo-countdown-notification/src') as { planlaAnons: jest.Mock; iptalEtOnekliAnonslar: jest.Mock };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.useFakeTimers();
+        jest.setSystemTime(CARSAMBA_SABAH);
+        jest.replaceProperty(Platform, 'OS', 'android');
+        cumaTeslimcisiniAyarla(null);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+        cumaTeslimcisiniAyarla(null);
+    });
+
+    const adimliKur = (adimlar: Record<string, unknown>[]) =>
+        (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue(
+            cumaAyarlariniNormalize({ aktif: true, adimlar })
+        );
+
+    it('sesli adım: bildirimle AYNI kimlikte cuma anonsu planlanır (nass okunmaz)', async () => {
+        adimliKur([{ esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true, sesli: true } }]);
+
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
+
+        expect(kopru.planlaAnons).toHaveBeenCalledTimes(4);
+        const [id, , metin] = kopru.planlaAnons.mock.calls[0];
+        expect(id).toBe('cuma_hatirlatma_2026-08-07');
+        expect(metin).toBe('Cuma için öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.');
+        // Önceki turun anonsları YALNIZ cuma önekiyle silinir (muhafız/nafile korunur).
+        expect(kopru.iptalEtOnekliAnonslar).toHaveBeenCalledWith('cuma_hatirlatma_');
+        expect(kopru.iptalEtOnekliAnonslar).not.toHaveBeenCalledWith('muhafiz_');
+    });
+
+    it('çok adım + titreşim: ikinci adım ortak muhafız kanal uzayına (titreşimli) gider, ilk adım vakit_bildirim', async () => {
+        adimliKur([
+            { esikDk: 90, siklik: 'birkez' },
+            { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true, titresim: true } },
+        ]);
+
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
+
+        const ilkCuma = planlananlar().filter((p) => String(p.identifier).startsWith('cuma_hatirlatma_2026-08-07'));
+        expect(ilkCuma.map((p) => p.identifier)).toEqual(['cuma_hatirlatma_2026-08-07', 'cuma_hatirlatma_2026-08-07_30']);
+        expect(ilkCuma[0].trigger.channelId).toBe('vakit_bildirim');
+        expect(String(ilkCuma[1].trigger.channelId)).toMatch(/^muhafiz_[0-9a-f]{8}$/);
+        // "Kıldım" FARZ yazmasın: kategori YOK, yük muhafız yükü değil.
+        for (const p of ilkCuma) {
+            expect('categoryIdentifier' in p.content).toBe(false);
+            expect(p.content.data).toEqual({ tip: 'cuma_hatirlatma' });
+        }
+    });
+
+    it('tüm adımlar kapalıysa hiçbir şey kurulmaz', async () => {
+        adimliKur([{ esikDk: 60, siklik: 'birkez', kanallar: {} }]);
+        await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(KOORDINAT);
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     });
 });

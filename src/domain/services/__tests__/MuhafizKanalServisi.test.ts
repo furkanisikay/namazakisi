@@ -280,6 +280,22 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         expect(mockTemizle.mock.calls[0][0]).toEqual(expect.arrayContaining(['muhafiz', TITRESIMLI]));
     });
 
+    it('CUMA (ortak hatırlatma yüzeyi) özel sesli kanalı da KORUNUR — kayıt defterinden', async () => {
+        const OZEL = 'content://media/external/audio/media/77';
+        await AsyncStorage.setItem(
+            'cuma_hatirlatma_ayarlari',
+            JSON.stringify({ aktif: true, adimlar: [{ esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: OZEL }] })
+        );
+        try {
+            await MuhafizKanalServisi.hazirla();
+            expect(mockTemizle.mock.calls[0][0]).toEqual(
+                expect.arrayContaining([TITRESIMLI, muhafizKanalIdOlustur(OZEL, false, false)])
+            );
+        } finally {
+            await AsyncStorage.removeItem('cuma_hatirlatma_ayarlari');
+        }
+    });
+
     it('muhafız KAPALIYKEN (matrissiz) de nafile kanalı korunur', async () => {
         await MuhafizKanalServisi.hazirla();
         expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
