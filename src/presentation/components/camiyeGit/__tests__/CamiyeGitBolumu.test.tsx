@@ -21,12 +21,36 @@ jest.mock('../../../../core/theme', () => ({
         birincilMetin: '#FFFFFF',
         arkaplan: '#FAFAFA',
         kartArkaplan: '#FFFFFF',
+        bilgi: '#2196F3',
+        durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
     }),
 }));
 jest.mock('../../../../core/feedback', () => ({
     useFeedback: () => ({ butonTiklandiFeedback: jest.fn().mockResolvedValue(undefined) }),
 }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
+jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+const mockButceKutusu: { deger: unknown } = { deger: null };
+jest.mock('../../../hooks/useBildirimButcesi', () => {
+    const gercek = jest.requireActual('../../../hooks/useBildirimButcesi');
+    return {
+        ...gercek,
+        useBildirimButcesi: () => mockButceKutusu.deger ?? gercek.butceNesnesiOlustur('android', null, null),
+    };
+});
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    sesSec: jest.fn(),
+    sesiOnizle: jest.fn(),
+    onizlemeyiDurdur: jest.fn(),
+    trDestekleniyorMu: () => Promise.resolve(true),
+}));
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { bildirimSesiniCal: jest.fn(), bitisiniBekle: jest.fn(), temizle: jest.fn() },
+}));
 
 let mockDisk: CamiyeGitAyarlari = camiyeGitAyarlariniNormalize(null);
 jest.mock('../../../../data/local/LocalCamiyeGitServisi', () => ({
@@ -46,7 +70,7 @@ jest.mock('../../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
     CamiyeGitHatirlatmaServisi: { getInstance: () => ({ hatirlatmalariGuncelle: (...a: unknown[]) => mockPlanla(...a) }) },
 }));
 
-import { CamiyeGitBolumu } from '../CamiyeGitBolumu';
+import { CamiyeGitBolumu, CAMIYE_GIT_YON_GEREKCESI } from '../CamiyeGitBolumu';
 
 // `require` ŞART: moduleNameMapper mock'una `jest.requireMock` ayrı örnek döndürür (AGENTS.md).
 const kopru = require('../../../../../modules/expo-cami-geofence/src') as {
@@ -74,6 +98,7 @@ const kur = (cumaAktif = false) => {
 
 beforeEach(() => {
     jest.clearAllMocks();
+    mockButceKutusu.deger = null;
     mockDisk = camiyeGitAyarlariniNormalize(null);
     kopru.camiModuluVarMi.mockReturnValue(false);
     kopru.ayarlariAl.mockResolvedValue(null);
@@ -97,7 +122,7 @@ describe('CamiyeGitBolumu', () => {
 
         const ikindi = await findByLabelText('İkindi namazı');
         expect(ikindi.props.accessibilityState).toMatchObject({ checked: true });
-        await waitFor(() => expect(getByText('Seçtiğiniz vakitlerde ezandan 17 dk önce hatırlatılırsınız.')).toBeTruthy());
+        await waitFor(() => expect(getByText('Seçtiğiniz vakitlerde ilk hatırlatma ezandan 17 dk önce gelir.')).toBeTruthy());
 
         fireEvent.press(ikindi);
         await waitFor(() => expect(store.getState().camiyeGit.ayarlar.vakitler.ikindi).toBe(false));
@@ -148,5 +173,65 @@ describe('CamiyeGitBolumu', () => {
         await waitFor(() => expect(mockDisk.yurumeDk).toBe(11));
         expect(mockDisk.yurumeKaynagi).toBe('elle');
         expect(store.getState().camiyeGit.ayarlar.yurumeDk).toBe(11);
+    });
+
+    it('ortak kart: YÖN GEREKÇESİ ekranda, akış önizlemesi, adım ekleme; yola çıkış özeti', async () => {
+        mockDisk = camiyeGitAyarlariniNormalize({ aktif: true, yurumeDk: 12, hazirlikDk: 5 });
+        const ekran = kur();
+        expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
+        expect(ekran.getByText(CAMIYE_GIT_YON_GEREKCESI)).toBeTruthy();
+        expect(ekran.getByText('Yola çıkış: 17 dk (yürüme 12 + hazırlık 5)')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('Camide kılacağım akışını önizleyin'));
+        expect(ekran.getByText('Camide kılacağım akışı')).toBeTruthy();
+    });
+
+    it('STANDART yetenekler adım detayında: kanal çipleri + GERÇEK ALARM; sesli rıza KENDİ alanına yazılır', async () => {
+        mockDisk = camiyeGitAyarlariniNormalize({ aktif: true });
+        const ekran = kur();
+        fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
+        expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
+        expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
+        expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('İkisi de'));
+        expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+        await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));
+        expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+    });
+
+    it('yürüme süresi değişince adımların TÜMÜ aynı farkla kayar', async () => {
+        mockDisk = camiyeGitAyarlariniNormalize({
+            aktif: true,
+            yurumeDk: 10,
+            hazirlikDk: 5,
+            yurumeKaynagi: 'elle',
+            adimlar: [{ esikDk: 30, kanallar: { bildirim: true } }, { esikDk: 15, kanallar: { bildirim: true } }],
+        });
+        const { findByLabelText, unmount } = kur();
+        fireEvent.press(await findByLabelText('Yürüme süresi artır'));
+        unmount();
+        await waitFor(() => expect(mockDisk.yurumeDk).toBe(11));
+        expect(mockDisk.adimlar.map((a) => a.esikDk)).toEqual([31, 16]);
+    });
+
+    it('bildirim sınırı: sığmayan AÇMA yazılmaz (rehber açılır, muhafıza yönlendirir)', async () => {
+        const { butceNesnesiOlustur } = jest.requireActual('../../../hooks/useBildirimButcesi');
+        const { matrisKur, ISTANBUL } = jest.requireActual('../../../../core/bildirim/__tests__/defterFikstur');
+        // iOS 64: muhafız + 5 vakit × (180 dk'dan 5 dk'da bir) sınırı aşar → açma sığmaz.
+        mockDisk = camiyeGitAyarlariniNormalize({ aktif: false, adimlar: [{ esikDk: 180, siklik: { herDk: 5 } }] });
+        mockButceKutusu.deger = butceNesnesiOlustur('ios', {
+            platform: 'ios',
+            simdi: new Date(2026, 9, 15, 9, 0, 0),
+            koordinat: ISTANBUL,
+            muhafiz: { aktif: true, matris: matrisKur() },
+            camiyeGit: mockDisk,
+        });
+        const ekran = kur();
+        await waitFor(() => expect(ekran.store.getState().camiyeGit.ayarlar.adimlar[0].esikDk).toBe(180));
+        fireEvent(ekran.getByLabelText('Camide kılacağım hatırlatması'), 'valueChange', true);
+        fireEvent.press(await ekran.findByText('Namaz Muhafızı ayarlarında yer açın'));
+        expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
+        ekran.unmount();
+        expect(mockDisk.aktif).toBe(false);
     });
 });
