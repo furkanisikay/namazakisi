@@ -9,7 +9,7 @@
 #
 # Parite İKİ TARAFTA kilitli: telefonun adhan JS hesabı ile TV'nin adhan2 hesabı
 # aynı fikstürü (tv/app/src/test/resources/vakit-fiksturu.json) kabul etmeli.
-# Play dağıtımı (Android TV form faktörü izi) AYRI fazdır.
+# Play dağıtımı: expo-build.yml > saat_tv işi (tv:<kanal>).
 # ========================================================================
 
 name: Android TV
@@ -72,9 +72,11 @@ jobs:
       - name: 📜 Parite testi (JS — telefonun hesap yolu)
         run: npx jest TvVakitParitesi
 
+      # bundleRelease: Play hattinin (expo-build.yml > saat_tv) yolunu PR'da kanitlar;
+      # imza ozellikleri yokken IMZASIZ paket uretir (build.gradle.kts).
       - name: 🧪 Birim test + lint + derleme (TV)
         working-directory: tv
-        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug bundleRelease
 
       - name: 📤 Debug APK
         uses: actions/upload-artifact@v7

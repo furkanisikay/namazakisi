@@ -7,8 +7,8 @@
 # yok sayar → saat commit'leri telefon için gereksiz EAS/Play release'i üretmez
 # (AGENTS.md "araç commit'leri de release keser" dersi).
 #
-# Play dağıtımı (wear:internal track) AYRI fazdır: saat AAB'si telefonla AYNI
-# upload anahtarıyla imzalanmalı; anahtar EAS'te yönetiliyor.
+# Play dağıtımı: expo-build.yml > saat_tv işi (wear:<kanal>). Saat AAB'si telefonla AYNI
+# upload anahtarıyla imzalanır; anahtar EAS'ten scripts/eas-yukleme-anahtari.js ile okunur.
 # ========================================================================
 
 name: Wear OS
@@ -64,9 +64,11 @@ jobs:
       - name: 📜 Sözleşme testi (JS)
         run: npx jest src/core/wear
 
+      # bundleRelease: Play hattinin (expo-build.yml > saat_tv) yolunu PR'da kanitlar;
+      # imza ozellikleri yokken IMZASIZ paket uretir (build.gradle.kts).
       - name: 🧪 Birim test + lint + derleme (saat)
         working-directory: wear
-        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug
+        run: ./gradlew --no-daemon testDebugUnitTest lintDebug assembleDebug bundleRelease
 
       - name: 📤 Debug APK
         uses: actions/upload-artifact@v7

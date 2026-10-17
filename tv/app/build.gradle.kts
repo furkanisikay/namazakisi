@@ -39,6 +39,18 @@ android {
     }
 
     signingConfigs {
+        // Play YUKLEME anahtari = telefonla AYNI (Play App Signing ayni kaydin tum form
+        // faktorlerinde ayni yukleme anahtarini ister). Kaynak EAS kimlik bilgileri.
+        val yuklemeDosyasi = project.findProperty("yuklemeKeystore") as String?
+        if (yuklemeDosyasi != null) {
+            create("yukleme") {
+                storeFile = file(yuklemeDosyasi)
+                storeType = (project.findProperty("yuklemeKeystoreTuru") as String?) ?: "jks"
+                storePassword = project.findProperty("yuklemeKeystoreParolasi") as String?
+                keyAlias = project.findProperty("yuklemeAnahtarAdi") as String?
+                keyPassword = project.findProperty("yuklemeAnahtarParolasi") as String?
+            }
+        }
         // Debug: telefonun debug anahtariyla ayni (wear deseni; tek anahtar dosyasi).
         getByName("debug") {
             storeFile = rootProject.file("../android/app/debug.keystore")
@@ -48,8 +60,14 @@ android {
         }
     }
 
+    val yuklemeImzasi = signingConfigs.findByName("yukleme")
+
     buildTypes {
         release {
+            // Yukleme imzasi yalniz Play hattinda verilir (expo-build.yml > saat_tv):
+            // anahtar EAS'te, CI onu ORG_GRADLE_PROJECT_yukleme* ozellikleriyle verir.
+            // Ozellik yoksa (yerel/PR) bundleRelease IMZASIZ paket uretir, hata vermez.
+            if (yuklemeImzasi != null) signingConfig = yuklemeImzasi
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
