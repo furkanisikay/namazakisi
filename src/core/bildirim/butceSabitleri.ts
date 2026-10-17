@@ -41,8 +41,28 @@ export const IOS_YEDEK_REZERVI = 8;
  * ikiye bölünür; bildirim defteri aynı payları kullanır (parite).
  */
 export const IOS_ALARMKIT_TAVANI = 24;
-export const IOS_ALARMKIT_MUHAFIZ_PAYI = 20;
-export const IOS_ALARMKIT_NAFILE_PAYI = IOS_ALARMKIT_TAVANI - IOS_ALARMKIT_MUHAFIZ_PAYI;
+/**
+ * Örnek başına AlarmKit payları (ortak hatırlatma yüzeyleri, plan K2) — HEPSİ AÇIK sabit;
+ * toplamları `IOS_ALARMKIT_TAVANI`'nı AŞMAZ (nöbetçi `butceSabitleri.test.ts`). Eskiden
+ * nafile `TAVAN − MUHAFIZ` ile türüyordu; yeni yüzey eklenince toplam sessizce kayardı.
+ * Ek yüzeylerde alarm varsayılan olarak adımın İLK tetiğindedir → 1 yeter; fazlası
+ * bildirim olarak gelir (kayıp değil, zayıflamış teslim).
+ */
+export const IOS_ALARMKIT_MUHAFIZ_PAYI = 16;
+export const IOS_ALARMKIT_NAFILE_PAYI = 4;
+export const IOS_ALARMKIT_CUMA_PAYI = 1;
+export const IOS_ALARMKIT_CAMIYE_GIT_PAYI = 1;
+export const IOS_ALARMKIT_YATIS_PAYI = 1;
+export const IOS_ALARMKIT_TAKVIM_PAYI = 1;
+/** Tüm payların listesi (toplam nöbetçisi). */
+export const IOS_ALARMKIT_PAYLARI: readonly number[] = [
+    IOS_ALARMKIT_MUHAFIZ_PAYI,
+    IOS_ALARMKIT_NAFILE_PAYI,
+    IOS_ALARMKIT_CUMA_PAYI,
+    IOS_ALARMKIT_CAMIYE_GIT_PAYI,
+    IOS_ALARMKIT_YATIS_PAYI,
+    IOS_ALARMKIT_TAKVIM_PAYI,
+];
 
 /**
  * Android'de uygulamanın kullandığı TOPLAM alarm havuzu tavanı.
@@ -85,3 +105,21 @@ export const platformSiniri = (platform: BildirimPlatformu): number =>
  * servis aynı sayıyı görür; en uzak geceler düşer, sonraki tur kurar.
  */
 export const ANDROID_NAFILE_PAYI = 60;
+
+/**
+ * EK HATIRLATMA YÜZEYLERİNİN Android alarm payları (ortak hatırlatma yüzeyleri, plan K1 = B).
+ *
+ * Kesme ÜRETİCİDE ve KRONOLOJİKTİR (nafile deseni): defter ile servis aynı sayıyı görür,
+ * teslimcideki sayaç emniyet ağıdır. K1 = B: bu paylar `ANDROID_MUHAFIZ_PAYI`'ndan
+ * DÜŞÜLMEZ (muhafız 360 kalır); toplamı defterin 480 kapısı (`degisiklikSimuleEt`)
+ * korur — kullanıcı eyleminden bağımsız artış (takvime sonradan eklenen etkinlik)
+ * kapıya takılmadan aşabilir, rehber kartı bunu sayıyla söyler.
+ *
+ * CUMA 60: göçten gelen tekrarlı kayıt BİREBİR aynı planı üretmeli — tek adım, plan
+ * bütçesi adım başına en fazla 15 tetik × 4 cuma = 60. Daha düşük bir pay eski
+ * kullanıcının 2.–4. cumalarını sessizce keserdi.
+ */
+export const ANDROID_CUMA_PAYI = 60;
+export const ANDROID_CAMIYE_GIT_PAYI = 50;
+export const ANDROID_YATIS_PAYI = 21;
+export const ANDROID_TAKVIM_CAKISMA_PAYI = 35;

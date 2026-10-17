@@ -70,7 +70,7 @@ jest.mock('../MuhafizAlarmKoprusu', () => ({
 
 import * as Notifications from 'expo-notifications';
 import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
-import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
+import { IosMuhafizTeslimcisi, ucustakiKlipleriSifirla } from '../IosMuhafizTeslimcisi';
 import type { OzelTeslim, UyariTeslimi } from '../MuhafizTeslimcisi';
 import type { UyariPlani } from '../../../core/muhafiz/motorAdaptoru';
 import { muhafizKanaliSec } from '../../../core/muhafiz/motorAdaptoru';
@@ -218,6 +218,27 @@ describe('iOS — ek hatırlatma teslimi', () => {
         await t.hazirla();
         await t.uyariPlanla(teslim({ bildirimSesi: 'content://media/1' }));
         expect(son().content.sound).toBe(IOS_BILDIRIM_SESI);
+    });
+
+    test('NÖBETÇİ 64: PARALEL iki örnek (muhafız + cuma) toplamda sınırı AŞMAZ — sıra varsayımı YOK', async () => {
+        ucustakiKlipleriSifirla();
+        const BASKA = 40;
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue(
+            Array.from({ length: BASKA }, (_, i) => ({ identifier: `vakit_bildirim_${i}` }))
+        );
+        const muhafiz = new IosMuhafizTeslimcisi();
+        const cuma = new IosMuhafizTeslimcisi({ sahiplik: { tur: 'onek', onek: 'cuma_hatirlatma_' }, matrissizAnons: true });
+        // İkisi de AYNI anda ölçer (Promise.all ile paralel koşan tüketiciler).
+        await Promise.all([muhafiz.hazirla({} as never), cuma.hazirla()]);
+        for (let i = 0; i < 30; i++) {
+            await muhafiz.uyariPlanla({ ...teslim(), id: `muhafiz_2026-10-16_vakit_ogle_seviye_1_dk_${i + 1}`, ozel: undefined });
+            await cuma.uyariPlanla({ ...teslim(), id: `cuma_hatirlatma_2026-10-16_${i + 1}` });
+        }
+        const kurulan = (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length;
+        // 64 − 40 başka − 4 güvenlik payı = 20: iki örnek AYNI boş slotu iki kez harcamaz.
+        expect(kurulan).toBe(64 - BASKA - 4);
+        await Promise.all([muhafiz.tamamla(), cuma.tamamla()]);
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
     });
 
     test('NÖBETÇİ: muhafız KAPALIYKEN AlarmKit temizliği yatış/muhasebe alarmlarını SİLMEZ', async () => {

@@ -110,13 +110,14 @@ export interface DefterKaydi {
      */
     yedek?: true;
     /**
-     * Kaydın PAYI başka bir teslimci örneğine aittir (Android nafile: `ANDROID_NAFILE_PAYI`,
-     * üreticide kesilir). Nafilenin gerçek alarmı ve anons alarmı `alarm`/`anons`
-     * kaynağında GÖRÜNÜR ama muhafızın 360'lık payına SAYILMAZ — sayılsaydı muhafız
-     * 330 + nafile 40 alarmda defter 10 "gelmeyecek" der, sığan eklemeyi reddeder ve
-     * muhafızı seyreltmeyi önerirdi; cihaz ise hepsini kurar. Toplam havuzda sayılır.
+     * Kaydın PAYI başka bir teslimci örneğine aittir (Android: nafile `ANDROID_NAFILE_PAYI`,
+     * cuma `ANDROID_CUMA_PAYI`…; üreticide kesilir). Ek yüzeylerin gerçek alarmı ve anons
+     * alarmı `alarm`/`anons` kaynağında GÖRÜNÜR ama muhafızın 360'lık payına SAYILMAZ —
+     * sayılsaydı muhafız 330 + nafile 40 alarmda defter 10 "gelmeyecek" der, sığan eklemeyi
+     * reddeder ve muhafızı seyreltmeyi önerirdi; cihaz ise hepsini kurar. Toplam havuzda
+     * sayılır. Değer payın SAHİBİ kaynaktır (`'nafile'`, `'cuma'`).
      */
-    nafilePayi?: true;
+    pay?: DefterKaynagi;
 }
 
 export interface DefterKoordinat {
@@ -173,7 +174,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         zamanMs: number,
         tur: DefterKaydi['tur'] = 'bildirim',
         yedek = false,
-        nafilePayi = false
+        pay?: DefterKaynagi
     ) => {
         if (zamanMs > simdiMs) {
             kayitlar.push({
@@ -181,7 +182,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 zamanMs,
                 tur,
                 ...(yedek ? { yedek: true as const } : {}),
-                ...(nafilePayi ? { nafilePayi: true as const } : {}),
+                ...(pay ? { pay } : {}),
             });
         }
     };
@@ -279,11 +280,11 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 if ((android || iosAlarmKurulur) && nafileAlarmKurarMi(k)) {
                     if (!android) iosAlarm++;
                     // Payı nafilenin (`ANDROID_NAFILE_PAYI`), muhafızın 360'ına sayılmaz.
-                    ekle('alarm', k.zaman.getTime(), 'alarm', false, true);
+                    ekle('alarm', k.zaman.getTime(), 'alarm', false, 'nafile');
                     continue;
                 }
                 ekle('nafile', k.zaman.getTime());
-                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, true);
+                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, 'nafile');
             }
         });
     }
@@ -433,9 +434,9 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
     let gelmeyecek = Math.max(0, toplam - sinir);
     if (platform === 'android') {
         // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser. Nafilenin
-        // alarm/anonsları AYRI teslimci örneğinin AYRI payındadır (`nafilePayi`).
+        // ve öteki ek yüzeylerin alarm/anonsları AYRI teslimci örneğinin AYRI payındadır (`pay`).
         const muhafizAlarm = sayilan.filter(
-            (k) => !k.nafilePayi && (k.kaynak === 'muhafiz' || k.kaynak === 'anons' || k.kaynak === 'alarm')
+            (k) => !k.pay && (k.kaynak === 'muhafiz' || k.kaynak === 'anons' || k.kaynak === 'alarm')
         ).length;
         gelmeyecek = Math.max(gelmeyecek, muhafizAlarm - ANDROID_MUHAFIZ_PAYI);
     } else {

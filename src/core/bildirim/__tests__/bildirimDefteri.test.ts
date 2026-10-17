@@ -107,7 +107,7 @@ describe('defterOzeti — Android', () => {
 
     it('NAFİLE alarm/anonsları muhafız payına SAYILMAZ (ayrı teslimci, ayrı pay) — toplamda sayılır', () => {
         const nafileAlarm = (adet: number, kaynak: 'alarm' | 'anons'): DefterKaydi[] =>
-            n(adet, kaynak, 'alarm').map((k) => ({ ...k, nafilePayi: true as const }));
+            n(adet, kaynak, 'alarm').map((k) => ({ ...k, pay: 'nafile' as const }));
         // Muhafız 330 + nafile 30 gerçek alarm + 10 anons = 370: cihaz hepsini kurar.
         const o = defterOzeti([...n(330), ...nafileAlarm(30, 'alarm'), ...nafileAlarm(10, 'anons')], 'android');
         expect(o.toplam).toBe(370);

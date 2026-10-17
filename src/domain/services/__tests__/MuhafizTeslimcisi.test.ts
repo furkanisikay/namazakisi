@@ -248,8 +248,9 @@ describe('IosMuhafizTeslimcisi', () => {
 
     test('ayni `muhafiz_` uzayindaki ERTELEME ve YATIS bildirimleri muhafiz disi sayilir (#289/#290)', async () => {
         (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([
-            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-0${(i % 9) + 1}_vakit_yatsi_yatis` })),
-            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-0${(i % 9) + 1}_vakit_ogle_ertele` })),
+            // Kimlikler TEKİL (iOS bekleyen listesi kimliğe göre tekildir; bütçe kimlikle sayar).
+            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-${String(i + 1).padStart(2, '0')}_vakit_yatsi_yatis` })),
+            ...Array.from({ length: 28 }, (_, i) => ({ identifier: `muhafiz_2026-01-${String(i + 1).padStart(2, '0')}_vakit_ogle_ertele` })),
         ]);
         const yeni = new IosMuhafizTeslimcisi();
         await yeni.hazirla();

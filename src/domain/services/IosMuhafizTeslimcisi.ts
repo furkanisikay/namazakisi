@@ -156,9 +156,28 @@ const ucustakiKlipler = new Map<string, number>();
 /** Klip çöp toplaması tek sıra: iki `tamamla` aynı kaydı aynı anda yazmasın. */
 let klipGcZinciri: Promise<void> = Promise.resolve();
 
-/** Testler için: süreç düzeyi uçuştaki klip kaydını sıfırlar (turunu bitirmeyen örnekler sızmasın). */
+/**
+ * 64 SINIRI — PARALEL ÖRNEKLER İÇİN ORTAK DEFTER (ortak hatırlatma yüzeyleri, plan §4.4).
+ *
+ * Muhafız, nafile, cuma… AYRI teslimci örnekleridir ve `konumDegistiUygula` onları
+ * `Promise.all` ile PARALEL koşturur. Her örnek "kendisi dışındaki" bekleyenleri
+ * `hazirla`'da BİR KEZ ölçer; paralel iki örnek aynı boş slotu görür ve toplam 64'ü aşar
+ * → iOS en UZAK tarihlileri sessizce atar. Sıra varsayımı YAZILMAZ: her örnek bu turda
+ * kurduğu kimlikleri buraya yazar (sahip anahtarıyla), slot hesabı her teslimde
+ * "ölçülen diğerleri ∪ öteki örneklerin uçuştaki kimlikleri" BİRLEŞİMİNİ sayar. Kimlikle
+ * birleştirmek çift saymayı önler (öteki örneğin ölçümden önce kurduğu kimlik iki kez
+ * sayılmaz). Örnek turunu `tamamla` ile bitirince kaydı düşer (kurduğu bildirimler artık
+ * cihaz listesindedir, sonraki ölçümler onları görür).
+ */
+const ucustakiBildirimler = new Map<string, Set<string>>();
+
+/**
+ * Testler için: süreç düzeyi uçuş kayıtlarını (klipler + 64 defteri) sıfırlar — turunu
+ * bitirmeyen örnekler sızmasın.
+ */
 export function ucustakiKlipleriSifirla(): void {
     ucustakiKlipler.clear();
+    ucustakiBildirimler.clear();
 }
 
 export interface IosTeslimciSecenekleri {
@@ -181,6 +200,11 @@ export interface IosTeslimciSecenekleri {
      */
     matrissizAnons?: boolean;
     /**
+     * Tur başına AlarmKit PAYI (`IOS_ALARMKIT_*_PAYI`, plan K2). Verilmezse muhafızda
+     * `IOS_ALARMKIT_MUHAFIZ_PAYI`, diğerlerinde `IOS_ALARMKIT_NAFILE_PAYI`.
+     */
+    alarmKitPayi?: number;
+    /**
      * Gerçek alarm (AlarmKit, issue #74) bu teslimcide kurulsun mu? Varsayılan: yalnız
      * muhafız öneki. Nafile örneği `true` geçer (standart yetenek); iptalleri yalnız
      * KENDİ önekini (`nafile_`) seçer, muhafızın alarmlarına dokunmaz.
@@ -196,6 +220,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private readonly alarmDestegi: boolean;
     /** Muhafız DIŞI örneğin kimlikleri (bütçe sayımı + AlarmKit iptal seçicisi). */
     private readonly kendiKimligimizMi: (kimlik: string) => boolean;
+    private readonly alarmKitPayiDegeri: number | undefined;
+    /** 64 defterindeki anahtar — aynı sahibin yeni turu öncekinin yerine geçer. */
+    private readonly sahipAnahtari: string;
 
     constructor(secenekler: IosTeslimciSecenekleri = {}) {
         this.sahiplik =
@@ -206,6 +233,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         this.matrissizAnons = secenekler.matrissizAnons === true;
         this.alarmDestegi = secenekler.alarmDestegi ?? this.muhafizMi();
         this.kendiKimligimizMi = sahipligiEslestir(this.sahiplik);
+        this.alarmKitPayiDegeri = secenekler.alarmKitPayi;
+        this.sahipAnahtari = this.sahiplik.tur === 'onek' ? `onek:${this.sahiplik.onek}` : this.sahiplik.tur;
     }
 
     private muhafizMi(): boolean {
@@ -218,7 +247,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     /** Tur başına AlarmKit payı (`IOS_ALARMKIT_*_PAYI`): muhafız 20, diğerleri kalan. */
     private alarmKitPayi(): number {
-        return this.muhafizMi() ? IOS_ALARMKIT_MUHAFIZ_PAYI : IOS_ALARMKIT_NAFILE_PAYI;
+        return this.alarmKitPayiDegeri ?? (this.muhafizMi() ? IOS_ALARMKIT_MUHAFIZ_PAYI : IOS_ALARMKIT_NAFILE_PAYI);
     }
 
     /** Bu turda gerçek alarm AlarmKit ile kurulabilir mi (iOS 26 + izin + muhafız açık)? */
@@ -248,11 +277,27 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     }
 
     /**
-     * Bu planlama turunda kalan slot. `hazirla` ile olculur, `uyariPlanla` ile
-     * tuketilir. `null` = henuz olculmedi (tek basina `uyariPlanla` cagrilirsa
-     * butce uygulanmaz; cagiran zinciri bozmus demektir, plan kaybolmasin).
+     * `hazirla`'da ölçülen "kendimiz dışındaki" bekleyen kimlikler. `null` = ölçülmedi
+     * (tek başına `uyariPlanla` çağrılırsa ya da liste okunamazsa bütçe UYGULANMAZ).
      */
-    private kalanSlot: number | null = null;
+    private olculenDigerleri: Set<string> | null = null;
+    /** Bu turda cihazda GERÇEKTEN kurulan bildirim sayısı. */
+    private kendiKurulan = 0;
+
+    /**
+     * Bu planlama turunda kalan slot — HER teslimde yeniden hesaplanır: ölçülen diğerleri
+     * ∪ öteki örneklerin uçuştaki kimlikleri (`ucustakiBildirimler`), eksi bu turda
+     * kurduklarımız. `null` = ölçülmedi.
+     */
+    private get kalanSlot(): number | null {
+        if (!this.olculenDigerleri) return null;
+        const digerleri = new Set(this.olculenDigerleri);
+        for (const [sahip, kume] of ucustakiBildirimler) {
+            if (sahip === this.sahipAnahtari) continue;
+            for (const id of kume) digerleri.add(id);
+        }
+        return kullanilabilirSlotHesapla(digerleri.size) - this.kendiKurulan;
+    }
     private kesilenSayisi = 0;
     /** Bu turda yer kalmadigi icin kurulmayan butce artigi (yarinin imsagi) — kayip DEGIL. */
     private atlananYedekSayisi = 0;
@@ -279,6 +324,10 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     async hazirla(matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> {
         this.kesilenSayisi = 0;
         this.atlananYedekSayisi = 0;
+        this.kendiKurulan = 0;
+        this.olculenDigerleri = null;
+        // Bu sahibin yeni turu: önceki turun uçuş kaydı biter (aynı kimlikler yeniden kurulur).
+        ucustakiBildirimler.set(this.sahipAnahtari, new Set());
         this.ucustanBirak();
         this.kullanilanKlipler = new Set();
         this.klipDurumu = new Map();
@@ -319,9 +368,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
             // erteleme (#289) ve yatış/muhasebe (#290) başka sahiplerin slotudur.
             // Başka önekli teslimci (nafile #273) kendi önekini sayar.
             const kendimizMi = this.muhafizMi() ? muhafizPlanKimligiMi : this.kendiKimligimizMi;
-            const muhafizDisi = bekleyenler.filter((b) => !kendimizMi(b.identifier)).length;
-
-            this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
+            const digerleri = bekleyenler.filter((b) => !kendimizMi(b.identifier)).map((b) => b.identifier);
+            const muhafizDisi = digerleri.length;
+            this.olculenDigerleri = new Set(digerleri);
 
             Logger.info(
                 'IosMuhafizTeslimcisi',
@@ -330,7 +379,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         } catch (error) {
             // Olculemezse butce UYGULANMAZ (plani kesmektense sistemin kendi
             // kesmesine birakmak yeglenir — en azindan en yakinlar korunur).
-            this.kalanSlot = null;
+            this.olculenDigerleri = null;
             Logger.error('IosMuhafizTeslimcisi', 'Bildirim butcesi olculemedi', error);
         }
 
@@ -364,8 +413,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 }
                 return;
             }
-        } else if (this.kalanSlot !== null) {
-            if (this.kalanSlot <= 0) {
+        } else {
+            const kalan = this.kalanSlot;
+            if (kalan !== null && kalan <= 0) {
                 this.kesilenSayisi++;
                 // Ilk kesmede bir kez uyar; her bildirimde loglamak gurultu olur.
                 if (this.kesilenSayisi === 1) {
@@ -455,8 +505,10 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 },
             });
 
-            // Slot YALNIZ cihazda gercekten kurulan bildirim icin dusulur.
-            if (this.kalanSlot !== null) this.kalanSlot--;
+            // Slot YALNIZ cihazda gercekten kurulan bildirim icin dusulur — ve öteki
+            // örnekler (paralel turlar) bu kimliği hemen görür.
+            this.kendiKurulan++;
+            ucustakiBildirimler.get(this.sahipAnahtari)?.add(id);
         } catch (error) {
             Logger.error('IosMuhafizTeslimcisi', `Bildirim planlanamadi: ${id}`, error);
         }
@@ -550,6 +602,8 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
      * Asla firlatmaz.
      */
     async tamamla(): Promise<void> {
+        // Tur bitti: kurduklarımız artık cihaz listesinde → sonraki ölçümler onları görür.
+        ucustakiBildirimler.delete(this.sahipAnahtari);
         const kullanilan = this.kullanilanKlipler;
         const is = klipGcZinciri.then(async () => {
             try {
