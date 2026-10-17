@@ -364,7 +364,10 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // her şey (yatış hariç)" kapsamı açık/kapalı iki turda da doğrudur.
         const sahip = nativeSahipAdi(this.sahiplik, false);
         if (sahip !== null && sahipliIptalVarMi()) {
-            void sahipliYanKanallariIptalEt(sahip, { anons: true, alarm: false });
+            // Native başarısız olursa (false) önekli yola düşülür; anonslar kalmasın.
+            void sahipliYanKanallariIptalEt(sahip, { anons: true, alarm: false }).then((tamam) => {
+                if (!tamam) this.onekliAnonslariIptalEt();
+            });
             return;
         }
         this.onekliAnonslariIptalEt();

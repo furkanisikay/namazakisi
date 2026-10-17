@@ -33,6 +33,16 @@ object AnonsZamanlayici {
     private const val KAYIT_ANAHTARI = "planli_idler"
     private const val DETAY_ANAHTARI = "planli_anons_detay"
 
+    /**
+     * Kayit defterinin (id kumesi + detay) TEK kilidi. Okuma-degistir-yaz adimlari
+     * farkli thread'lerden gelir: JS `planlaAnons` (expo modul kuyrugu) ile RN
+     * `MuhafizAlarm.sahipliIptalEt` (native-modules thread'i) paralel calisir;
+     * kilitsiz kayip guncelleme kurulu alarmi kayittan dusurur → iptal/Kıldım onu
+     * bulamaz, "hayalet" anons konusur. JVM monitorleri yeniden girilebilir:
+     * `eslesenleriIptalEt → iptal → kayittanCikar` ic ice kilit almasi guvenlidir.
+     */
+    private val kilit = Any()
+
     /** CountdownReceiver'in istek kodu araligiyla (id.hashCode + 0) carpismasin diye kaydirilir. */
     private fun istekKodu(id: String): Int = (id.hashCode() and 0x7FFFFFFF) % 1_000_000 + 900_000
 
@@ -79,33 +89,35 @@ object AnonsZamanlayici {
     }
 
     fun planla(context: Context, id: String, tetikZamanMs: Long, metin: String) {
-        if (id.isEmpty() || metin.isBlank()) return
-        if (tetikZamanMs <= System.currentTimeMillis()) return
+        synchronized(kilit) {
+            if (id.isEmpty() || metin.isBlank()) return
+            if (tetikZamanMs <= System.currentTimeMillis()) return
 
-        val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
-        val pendingIntent = anonsIntenti(context, id, metin)
+            val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
+            val pendingIntent = anonsIntenti(context, id, metin)
 
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmYoneticisi.canScheduleExactAlarms()) {
-                    alarmYoneticisi.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (alarmYoneticisi.canScheduleExactAlarms()) {
+                        alarmYoneticisi.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
+                    } else {
+                        // Tam alarm izni yoksa yaklasik alarm: anons birkac dakika kayabilir
+                        // ama tamamen kaybolmaz (bildirim zaten ayrica cikiyor).
+                        alarmYoneticisi.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
+                    }
                 } else {
-                    // Tam alarm izni yoksa yaklasik alarm: anons birkac dakika kayabilir
-                    // ama tamamen kaybolmaz (bildirim zaten ayrica cikiyor).
-                    alarmYoneticisi.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
+                    alarmYoneticisi.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
                 }
-            } else {
-                alarmYoneticisi.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, tetikZamanMs, pendingIntent)
-            }
 
-            val idler = kayitliIdler(context)
-            idler.add(id)
-            kayitYaz(context, idler)
-            val detay = detayOku(context)
-            detay.put(id, JSONObject().put("t", tetikZamanMs).put("m", metin))
-            detayYaz(context, detay)
-        } catch (e: Exception) {
-            Log.e(ETIKET, "Anons alarmi kurulamadi: ${e.message}")
+                val idler = kayitliIdler(context)
+                idler.add(id)
+                kayitYaz(context, idler)
+                val detay = detayOku(context)
+                detay.put(id, JSONObject().put("t", tetikZamanMs).put("m", metin))
+                detayYaz(context, detay)
+            } catch (e: Exception) {
+                Log.e(ETIKET, "Anons alarmi kurulamadi: ${e.message}")
+            }
         }
     }
 
@@ -114,7 +126,7 @@ object AnonsZamanlayici {
      * kurar. Gecmis zamanlilar atilir (gec konusan anons yanlis bilgi verir).
      * @return yeniden kurulan anons sayisi
      */
-    fun yenidenKur(context: Context): Int {
+    fun yenidenKur(context: Context): Int = synchronized(kilit) {
         val detay = detayOku(context)
         val simdi = System.currentTimeMillis()
         val gelecek = mutableListOf<Triple<String, Long, String>>()
@@ -134,14 +146,16 @@ object AnonsZamanlayici {
     }
 
     fun iptal(context: Context, id: String) {
-        if (id.isEmpty()) return
-        try {
-            val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-            alarmYoneticisi?.cancel(anonsIntenti(context, id, ""))
-        } catch (e: Exception) {
-            Log.e(ETIKET, "Anons alarmi iptal edilemedi: ${e.message}")
+        synchronized(kilit) {
+            if (id.isEmpty()) return
+            try {
+                val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+                alarmYoneticisi?.cancel(anonsIntenti(context, id, ""))
+            } catch (e: Exception) {
+                Log.e(ETIKET, "Anons alarmi iptal edilemedi: ${e.message}")
+            }
+            kayittanCikar(context, id)
         }
-        kayittanCikar(context, id)
     }
 
     /**
@@ -151,26 +165,28 @@ object AnonsZamanlayici {
      * planlanmamış olabilir → bildirim mağazasından değil, BU kayıttan seçilir.
      * @return iptal edilen kimlikler
      */
-    fun eslesenleriIptalEt(context: Context, esles: (String) -> Boolean): List<String> {
+    fun eslesenleriIptalEt(context: Context, esles: (String) -> Boolean): List<String> = synchronized(kilit) {
         val secilen = kayitliIdler(context).filter(esles)
         secilen.forEach { iptal(context, it) }
         return secilen
     }
 
     fun tumunuIptal(context: Context) {
-        val idler = kayitliIdler(context)
-        try {
-            val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
-            idler.forEach { id ->
-                try {
-                    alarmYoneticisi?.cancel(anonsIntenti(context, id, ""))
-                } catch (_: Exception) { /* tek tek hata yutulur, digerleri iptal edilsin */ }
+        synchronized(kilit) {
+            val idler = kayitliIdler(context)
+            try {
+                val alarmYoneticisi = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+                idler.forEach { id ->
+                    try {
+                        alarmYoneticisi?.cancel(anonsIntenti(context, id, ""))
+                    } catch (_: Exception) { /* tek tek hata yutulur, digerleri iptal edilsin */ }
+                }
+            } catch (e: Exception) {
+                Log.e(ETIKET, "Anons alarmlari iptal edilemedi: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e(ETIKET, "Anons alarmlari iptal edilemedi: ${e.message}")
+            kayitYaz(context, emptySet())
+            detayYaz(context, JSONObject())
         }
-        kayitYaz(context, emptySet())
-        detayYaz(context, JSONObject())
     }
 
     /**
@@ -178,7 +194,7 @@ object AnonsZamanlayici {
      * rehberinin olcumu (issue #298). Gecmis/bozuk kayit sayilmaz: alarm ya
      * zaten tetiklendi ya da hic kurulmadi; sistemin havuzunda degiller.
      */
-    fun bekleyenSayisi(context: Context): Int {
+    fun bekleyenSayisi(context: Context): Int = synchronized(kilit) {
         val detay = detayOku(context)
         val simdi = System.currentTimeMillis()
         var sayi = 0
@@ -192,12 +208,14 @@ object AnonsZamanlayici {
 
     /** Alarm tetiklendikten sonra kaydi temizler (alarm zaten tuketildi). */
     fun kayittanCikar(context: Context, id: String) {
-        val idler = kayitliIdler(context)
-        if (idler.remove(id)) kayitYaz(context, idler)
-        val detay = detayOku(context)
-        if (detay.has(id)) {
-            detay.remove(id)
-            detayYaz(context, detay)
+        synchronized(kilit) {
+            val idler = kayitliIdler(context)
+            if (idler.remove(id)) kayitYaz(context, idler)
+            val detay = detayOku(context)
+            if (detay.has(id)) {
+                detay.remove(id)
+                detayYaz(context, detay)
+            }
         }
     }
 }
