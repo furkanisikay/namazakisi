@@ -4,6 +4,7 @@ import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import type { Siklik } from '../../../core/muhafiz/matrisTipleri';
+import { cumaAyarlariniNormalize } from '../../../core/cuma/cumaAyarlari';
 
 jest.mock('expo-notifications');
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
@@ -25,11 +26,10 @@ const KOORDINAT = { lat: 41.0, lng: 29.0 };
 const CARSAMBA_SABAH = new Date(2026, 7, 5, 9, 0, 0);
 
 const ayarlariKur = (aktif: boolean, oncedenDk = 60, siklik: Siklik = 'birkez') => {
-    (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue({
-        aktif,
-        oncedenDk,
-        siklik,
-    });
+    // Disk katmanı daima NORMALIZE (adımlı) ayar döndürür — eski biçim göçer.
+    (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue(
+        cumaAyarlariniNormalize({ aktif, oncedenDk, siklik })
+    );
 };
 
 const planlananlar = () =>

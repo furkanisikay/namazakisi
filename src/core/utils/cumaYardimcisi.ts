@@ -138,3 +138,30 @@ const kisaSureMetni = (dakika: number): string => {
  */
 export const cumaBasligiOlustur = (oncedenDk: number): string =>
   `Cuma · ${kisaSureMetni(oncedenDk)} kaldı · namaz yaklaşıyor`;
+
+/** Cuma'ya ÖZGÜ nass (Cuma 62/9) — yalnız bu bildirimde, yalnız cumanın İLK tetiğinde. */
+export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`;
+
+/**
+ * Cuma hatırlatmasının başlık + gövdesi — üretici (`cumaPlaniOlustur`), servis ve "Akışı
+ * önizle" AYNI kaynaktan okur. İbadete çağrı kaydı ("sen" + emir kipi, AGENTS.md istisnası).
+ * Nass yalnız İLK tetikte: her tekrarda okunması hem gürültü hem nassın değerini aşındırır.
+ */
+export const cumaBildirimMetni = (kalanDk: number, ilk: boolean): { baslik: string; govde: string } => {
+  const sure = sureMetniOlustur(kalanDk);
+  return {
+    // Önden okunur (issue #287): bileklikler başlığın ilk ~16 karakterini gösterir.
+    baslik: cumaBasligiOlustur(kalanDk),
+    govde: ilk
+      ? `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n${CUMA_NASSI}`
+      : `Öğle vaktine ${sure} kaldı. Camiye yola çık.`,
+  };
+};
+
+/**
+ * Sesli anons cümlesi ("Telefonunuz şöyle okur"). Nass OKUNMAZ (plan §3.4); süre öğle
+ * GİRİŞİNE kalan süredir — cuma namazı hutbeyle öğle girdikten sonra başlar.
+ */
+export const cumaAnonsMetni = (kalanDk: number): string =>
+  `Cuma için öğle vaktine ${sureMetniOlustur(kalanDk)} kaldı. Hazırlan, camiye yola çık.`;
+

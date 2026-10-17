@@ -3,6 +3,7 @@
  * sıra (seyrek → tek kez → nafile günü gününe → kapat), sert/acil dokunulmaz,
  * her öneri aynı defterle ölçülür, ekleme anında simülasyon.
  */
+import { cumaAyarlariniNormalize } from '../../cuma/cumaAyarlari';
 import {
     adimlariKapat,
     butceOnerileriOlustur,
@@ -36,7 +37,7 @@ const girdi = (ek: Partial<DefterGirdisi> = {}): DefterGirdisi => ({
     muhafiz: { aktif: true, matris: matrisKur() },
     nafile: NAFILE,
     vakitBildirimi: { imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true },
-    cuma: { aktif: true, oncedenDk: 60, siklik: 'birkez' },
+    cuma: cumaAyarlariniNormalize({ aktif: true, oncedenDk: 60, siklik: 'birkez' }),
     ...ek,
 });
 

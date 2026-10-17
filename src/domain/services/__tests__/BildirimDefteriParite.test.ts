@@ -76,6 +76,7 @@ import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
 import { ANDROID_MUHAFIZ_PAYI, ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
+import { cumaAyarlariniNormalize } from '../../../core/cuma/cumaAyarlari';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
@@ -645,7 +646,7 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         const cuma = { aktif: true, oncedenDk: 60, siklik: { herDk: 15 } };
         disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
         await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
-        const g = temelGirdi('ios', { cuma });
+        const g = temelGirdi('ios', { cuma: cumaAyarlariniNormalize(cuma) });
         expect(say(g, 'cuma')).toBeGreaterThan(4);
         expect(onekliSay('cuma_hatirlatma_')).toBe(say(g, 'cuma'));
     });
@@ -663,7 +664,7 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
         disk.set(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI, JSON.stringify(camiyeGit));
         await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
-        const g = temelGirdi(platform, { cuma, camiyeGit });
+        const g = temelGirdi(platform, { cuma: cumaAyarlariniNormalize(cuma), camiyeGit });
         expect(say(g, 'camiyeGit')).toBeGreaterThan(0);
         expect(onekliSay('camiye_git_')).toBe(say(g, 'camiyeGit'));
         // Android ufku (7 gün) 16 Ekim cumasını kapsar: o gün öğle KURULMAZ.
