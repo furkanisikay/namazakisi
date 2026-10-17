@@ -30,6 +30,7 @@
  *
  * SAF: `simdi` enjekte edilir; adhan core'da zaten kullanılıyor.
  */
+import { yatisSahipliMi } from '../muhafiz/teslimSahipligi';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
@@ -139,11 +140,12 @@ export interface VakitPenceresi {
 const vakitKimligi = (gun: string, vakit: FarzVakit, ek: string): string =>
     `${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}${gun}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}${vakit}${ek}`;
 
-const YATIS_KIMLIK_DESENI = /^muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+_(yatis|muhasebe)$/;
-
-/** Bu servisin bildirimi mi? (temizlik bununla süzer) */
-export const yatisKimligiMi = (kimlik: string): boolean =>
-    YATIS_KIMLIK_DESENI.test(kimlik) || kimlik.startsWith(MUHASEBE_ID_ONEKI);
+/**
+ * Bu servisin bildirimi mi? (temizlik bununla süzer) — TEK kural teslim sahipliğindedir
+ * (`core/muhafiz/teslimSahipligi.ts`, Kotlin ikiziyle ortak örnek): muhafız turu yatış
+ * kimliklerini oradan tanıyıp silmez. Desen tekrar tetiklerinin `_<kalanDk>` ekini de kapsar.
+ */
+export const yatisKimligiMi = (kimlik: string): boolean => yatisSahipliMi(kimlik);
 
 const gecerliTarih = (t: unknown): t is Date => t instanceof Date && Number.isFinite(t.getTime());
 

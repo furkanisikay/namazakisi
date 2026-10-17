@@ -36,6 +36,7 @@ const mockKopru = {
     var: true,
     planla: jest.fn(async (_yuk: unknown) => true),
     onekliIptal: jest.fn(async (_onek: string) => undefined),
+    sahipliIptal: jest.fn(async (_sahip: string, _k: { anons: boolean; alarm: boolean }) => true),
     sustur: jest.fn(async (_onek: string) => undefined),
     kanalTemizle: jest.fn(async (_k: string[]) => undefined),
     sira: [] as string[],
@@ -50,6 +51,11 @@ jest.mock('../MuhafizAlarmKoprusu', () => ({
         mockKopru.sira.push('iptal');
         return mockKopru.onekliIptal(onek);
     },
+    sahipliYanKanallariIptalEt: (sahip: string, k: { anons: boolean; alarm: boolean }) => {
+        mockKopru.sira.push('iptal');
+        return mockKopru.sahipliIptal(sahip, k);
+    },
+    sahipliIptalVarMi: () => mockKopru.var,
     alarmKanallariniTemizle: (k: string[]) => mockKopru.kanalTemizle(k),
     vakitAlarmlariniSustur: (onek: string) => mockKopru.sustur(onek),
 }));
@@ -110,6 +116,7 @@ beforeEach(() => {
     jest.clearAllMocks();
     mockKopru.var = true;
     mockKopru.planla.mockResolvedValue(true);
+    mockKopru.sahipliIptal.mockResolvedValue(true);
     mockKopru.sira = [];
     (sessizBitisMs as jest.Mock).mockResolvedValue(0);
 });
@@ -191,7 +198,10 @@ describe('hazırlık ve temizlik', () => {
         const t = new AndroidMuhafizTeslimcisi();
         await t.hazirla(alarmliMatris());
         await t.uyariPlanla(teslimKur());
-        expect(mockKopru.onekliIptal).toHaveBeenCalledWith('muhafiz_');
+        // SAHİPLİ iptal (plan §4.1): muhafız PLAN kimlikleri — `muhafiz_` önekiyle silmek
+        // aynı uzaydaki yatış/muhasebe alarmlarını da silerdi.
+        expect(mockKopru.sahipliIptal).toHaveBeenCalledWith('muhafiz_plan', { anons: false, alarm: true });
+        expect(mockKopru.onekliIptal).not.toHaveBeenCalled();
         expect(mockKopru.sira).toEqual(['iptal', 'planla']);
         expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([ALARM_KANAL_TABANI]);
     });
@@ -199,8 +209,26 @@ describe('hazırlık ve temizlik', () => {
     test('muhafız kapalıyken (matrissiz) alarmlar ve hash\'li kanallar temizlenir', async () => {
         const t = new AndroidMuhafizTeslimcisi();
         await t.hazirla();
-        expect(mockKopru.onekliIptal).toHaveBeenCalledWith('muhafiz_');
+        // Kapalıyken erteleme dahil muhafız sahipli her şey — yatış HARİÇ.
+        expect(mockKopru.sahipliIptal).toHaveBeenCalledWith('muhafiz_tumu', { anons: false, alarm: true });
         expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([]);
+    });
+
+    test('sahipli native yöntem YOKSA (eski ikili) muhafız önekli eski yola düşer', async () => {
+        mockKopru.sahipliIptal.mockResolvedValueOnce(false);
+        await new AndroidMuhafizTeslimcisi().hazirla(alarmliMatris());
+        expect(mockKopru.onekliIptal).toHaveBeenCalledWith('muhafiz_');
+    });
+
+    test('önekli örnek (cuma) yalnız KENDİ önekini iptal eder, sahipli yolu kullanmaz', async () => {
+        const t = new AndroidMuhafizTeslimcisi({
+            sahiplik: { tur: 'onek', onek: 'cuma_hatirlatma_' },
+            kanalHazirligi: async (m) => m,
+            alarmKanalTemizligi: false,
+        });
+        await t.hazirla();
+        expect(mockKopru.onekliIptal).toHaveBeenCalledWith('cuma_hatirlatma_');
+        expect(mockKopru.sahipliIptal).not.toHaveBeenCalled();
     });
 
     test("nafilenin alarm kanalı DOĞRULANMIŞ sesten korunur (çözülemeyen URI'nin kanalı DEĞİL)", async () => {

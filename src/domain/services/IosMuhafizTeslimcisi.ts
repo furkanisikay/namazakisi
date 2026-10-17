@@ -107,6 +107,13 @@ import { gunAnahtari, klipKaydiniGuncelle } from '../../core/muhafiz/ios/klipKul
 import { anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { ertelemeTeslimBilgisi, muhafizPlanKimligiMi } from '../../core/muhafiz/erteleme';
 import { IOS_ALARMKIT_MUHAFIZ_PAYI, IOS_ALARMKIT_NAFILE_PAYI } from '../../core/bildirim/butceSabitleri';
+import {
+    MUHAFIZ_SAHIPLIGI,
+    onekSahipligi,
+    sahipligiEslestir,
+    type TeslimSahipligi,
+} from '../../core/muhafiz/teslimSahipligi';
+import { ozelSesMi, sesKimliginiNormalize } from '../../core/muhafiz/sesKimligi';
 import { Depolama } from '../../data/local/Depolama';
 import {
     klipSentezle,
@@ -156,6 +163,12 @@ export function ucustakiKlipleriSifirla(): void {
 
 export interface IosTeslimciSecenekleri {
     /**
+     * Bu örneğin kimlik SAHİPLİĞİ (`core/muhafiz/teslimSahipligi.ts`). Bütçe ölçümü
+     * "kendimiz dışındaki" bekleyenleri sayar; AlarmKit iptalleri yalnız kendi
+     * kimliklerimizi seçer. Varsayılan muhafız. `kendiOneki` geriye uyumlu kısayoldur.
+     */
+    sahiplik?: TeslimSahipligi;
+    /**
      * Bu teslimcinin bildirim kimlik öneki. Bütçe ölçümü "kendimiz dışındaki"
      * bekleyenleri sayar; nafile teslimcisi muhafız bildirimlerini de SAYMALIDIR
      * (aynı 64 sınırını paylaşırlar).
@@ -178,23 +191,26 @@ export interface IosTeslimciSecenekleri {
 export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
     readonly ad = 'ios' as const;
 
-    private readonly kendiOneki: string;
+    private readonly sahiplik: TeslimSahipligi;
     private readonly matrissizAnons: boolean;
     private readonly alarmDestegi: boolean;
+    /** Muhafız DIŞI örneğin kimlikleri (bütçe sayımı + AlarmKit iptal seçicisi). */
+    private readonly kendiKimligimizMi: (kimlik: string) => boolean;
 
     constructor(secenekler: IosTeslimciSecenekleri = {}) {
-        this.kendiOneki = secenekler.kendiOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.sahiplik =
+            secenekler.sahiplik ??
+            (secenekler.kendiOneki && secenekler.kendiOneki !== BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
+                ? onekSahipligi(secenekler.kendiOneki)
+                : MUHAFIZ_SAHIPLIGI);
         this.matrissizAnons = secenekler.matrissizAnons === true;
-        this.alarmDestegi =
-            secenekler.alarmDestegi ?? this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.alarmDestegi = secenekler.alarmDestegi ?? this.muhafizMi();
+        this.kendiKimligimizMi = sahipligiEslestir(this.sahiplik);
     }
 
     private muhafizMi(): boolean {
-        return this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        return this.sahiplik.tur === 'muhafiz';
     }
-
-    /** Muhafız DIŞI örneğin alarm kimlikleri (iptal seçicisi) — yalnız kendi öneki. */
-    private readonly kendiKimligimizMi = (kimlik: string): boolean => kimlik.startsWith(this.kendiOneki);
 
     /** Bu turda kurulan AlarmKit alarmı — `hazirla` sıfırlar; `alarmKitPayi`'na kadar. */
     private kurulanAlarmKit = 0;
@@ -290,7 +306,9 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                         ? this.kendiKimligimizMi
                         : matris
                           ? muhafizPlanKimligiMi
-                          : (kimlik) => kimlik.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)
+                          // Muhafız kapalı: erteleme dahil muhafız sahipli her şey — `muhafiz_`
+                          // uzayındaki yatış/muhasebe (#290) HARİÇ (plan §4.1).
+                          : sahipligiEslestir(MUHAFIZ_SAHIPLIGI, false)
                 )
             );
         }
@@ -300,10 +318,7 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
             // Muhafız teslimcisinde yalnız PLAN kendimizdir: aynı `muhafiz_` uzayındaki
             // erteleme (#289) ve yatış/muhasebe (#290) başka sahiplerin slotudur.
             // Başka önekli teslimci (nafile #273) kendi önekini sayar.
-            const kendimizMi =
-                this.kendiOneki === BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
-                    ? muhafizPlanKimligiMi
-                    : (kimlik: string) => kimlik.startsWith(this.kendiOneki);
+            const kendimizMi = this.muhafizMi() ? muhafizPlanKimligiMi : this.kendiKimligimizMi;
             const muhafizDisi = bekleyenler.filter((b) => !kendimizMi(b.identifier)).length;
 
             this.kalanSlot = kullanilabilirSlotHesapla(muhafizDisi);
@@ -375,7 +390,15 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // Slot kontrolunden SONRA: planlanmayacak uyari icin sentez yapilmaz.
         // GERCEK ALARM (issue #74): alarm adiminda ses UZUN alarm sesidir, anons klibi
         // onu ezmez (anons kisa bir cumle — alarmin varlik sebebi uzun calmasi).
-        const ses = (odakSessiz || uyari.alarm === true ? null : await this.anonsSesiniCoz(teslim)) ?? plan.ses;
+        const klip = odakSessiz || uyari.alarm === true ? null : await this.anonsSesiniCoz(teslim);
+        // Ek hatırlatma yüzeyinin varsayılan sesi (göçten gelen kayıt): SİSTEM sesi
+        // (`sound: true`) — bugünkü cuma bildirimiyle birebir; paket sesine çevrilmez.
+        const sistemSesi =
+            klip === null &&
+            ozel?.varsayilanSistemSesi === true &&
+            uyari.alarm !== true &&
+            !ozelSesMi(sesKimliginiNormalize(uyari.bildirimSesi));
+        const ses: string | boolean = klip ?? (sistemSesi ? true : plan.ses);
 
         // "Ertele" (issue #289): düğme kümesi sınıra kalan süreden (Android ile aynı kural).
         // Muhafız DIŞI teslim (`ozel`, nafile #273) ertele taşımaz.
@@ -394,7 +417,12 @@ export class IosMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     interruptionLevel: odakSessiz
                         ? 'passive'
                         : ozel?.zamanaDuyarli ? 'timeSensitive' : plan.kesintiSeviyesi,
-                    categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
+                    // Özel teslim `kategori: null` → HİÇ yazılmaz (cuma "Kıldım" FARZ yazmasın).
+                    ...(ozel && ozel.kategori !== undefined
+                        ? ozel.kategori !== null
+                            ? { categoryIdentifier: ozel.kategori }
+                            : {}
+                        : { categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ }),
                     data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,

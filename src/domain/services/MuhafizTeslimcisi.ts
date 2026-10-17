@@ -95,6 +95,25 @@ export interface OzelTeslim {
      * "Kıldım"ın doğru yola (nafile, FARZ DEĞİL) gitmesini belirler.
      */
     alarmAdi?: string;
+    /**
+     * Bildirim KATEGORİSİ (eylem düğmeleri). `null` = kategori YOK: cuma / camiye gitme /
+     * takvim bildiriminde muhafız kategorisinin "Kıldım" düğmesi FARZ namazı yazardı
+     * (vakit girmeden gelen hatırlatmada kılınacak bir şey yoktur). `undefined` = muhafız
+     * davranışı (`MUHAFIZ` ya da ertele kategorisi — nafile bunu kullanır).
+     */
+    kategori?: string | null;
+    /**
+     * Android: adım VARSAYILAN ses + titreşimsizken kullanılacak kanal. Göçten gelen kayıt
+     * bugünkü kanalında kalır (cuma: `vakit_bildirim`); kullanıcı ses ya da titreşim
+     * seçince ortak `muhafiz_<hash8>` uzayına geçer. `kanalId` zorlaması bundan önce gelir.
+     */
+    varsayilanKanalId?: string;
+    /**
+     * iOS: adım varsayılan sesteyken (ve sesli anons klibi yokken) bildirim SİSTEM sesiyle
+     * (`sound: true`) çalar — paket sesine (`bildirim.wav`) çevrilmez. Göçten gelen kayıt
+     * (cuma bugün `sound: true` kurar) birebir aynı duyulsun.
+     */
+    varsayilanSistemSesi?: boolean;
 }
 
 export interface MuhafizTeslimcisi {

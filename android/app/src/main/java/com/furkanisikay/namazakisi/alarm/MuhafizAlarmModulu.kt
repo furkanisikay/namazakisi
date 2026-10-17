@@ -9,6 +9,8 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
+import com.furkanisikay.namazakisi.cekirdek.TeslimSahipligi
+import expo.modules.countdownnotification.AnonsZamanlayici
 
 /**
  * JS ↔ gerçek alarm köprüsü (issue #74). JS adı: `NativeModules.MuhafizAlarm`
@@ -67,6 +69,36 @@ class MuhafizAlarmModulu(reactContext: ReactApplicationContext) : ReactContextBa
                 0
             }
         )
+    }
+
+    /**
+     * Bir teslim SAHİPLİĞİNİN (ortak hatırlatma yüzeyleri, plan §4.1) bekleyen sesli anons
+     * ve/veya gerçek alarm kayıtlarını iptal eder: `muhafiz_plan` (muhafız açık — yalnız plan
+     * kimlikleri), `muhafiz_tumu` (muhafız kapalı — erteleme dahil, YATIŞ HARİÇ), `yatis`.
+     * Önek yetmez: yatış/muhasebe kimlikleri `muhafiz_` uzayındadır; önekle silmek her
+     * muhafız turunda onları da silerdi. Kural `cekirdek/TeslimSahipligi` (JVM testi). Çalan
+     * alarma dokunmaz (planlama iptali). Silinen kayıt sayısını döndürür.
+     */
+    @ReactMethod
+    fun sahipliIptalEt(sahip: String, anons: Boolean, alarm: Boolean, promise: Promise) {
+        val ctx = reactApplicationContext
+        val esles: (String) -> Boolean = { TeslimSahipligi.eslesir(sahip, it) }
+        var sayi = 0
+        if (alarm) {
+            try {
+                sayi += MuhafizAlarmZamanlayici.eslesenleriIptalEt(ctx, esles).size
+            } catch (_: Exception) {
+                // Bir sonraki turda yeniden denenir.
+            }
+        }
+        if (anons) {
+            try {
+                sayi += AnonsZamanlayici.eslesenleriIptalEt(ctx, esles).size
+            } catch (_: Exception) {
+                // Bir sonraki turda yeniden denenir.
+            }
+        }
+        promise.resolve(sayi)
     }
 
     @ReactMethod
