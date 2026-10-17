@@ -16,12 +16,22 @@
  * için İDEMPOTENTTİR (göçmüş kayıt tekrar göçmez, aynısı çıkar).
  */
 import type { SeviyeAyari, Siklik, UyariKanallari, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
-import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
-import { ozelSesMi } from '../muhafiz/sesKimligi';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
-import { ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
-import { yeniAdimEsigi } from '../muhafiz/adimDuzenleme';
+import { ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
+import {
+    adimAlarmSesleri,
+    adimCozulemeyenSesleriDusur,
+    adimEkle,
+    adimEklenebilirMi,
+    adimGuncelle,
+    adimOzelSesleri,
+    adimSil,
+    adimlariNormalize as ortakAdimlariNormalize,
+    ekAdim,
+    sayiKenetle,
+    type AdimKisitlari,
+} from '../hatirlatma/adimDizisi';
 import {
     NAFILE_MAKS_ADIM,
     NAFILE_OFSET_MAX_DK,
@@ -39,106 +49,30 @@ import {
 const nesneMi = (d: unknown): d is Record<string, unknown> =>
     !!d && typeof d === 'object' && !Array.isArray(d);
 
-const sayiKenetle = (deger: unknown, min: number, max: number, varsayilan: number): number => {
-    if (typeof deger !== 'number' || !Number.isFinite(deger)) return varsayilan;
-    return Math.min(max, Math.max(min, Math.round(deger)));
-};
-
 const yonNormalize = (ham: unknown, varsayilan: PencereYonu): PencereYonu =>
     ham === 'cikisaDogru' || ham === 'girisindenItibaren' ? ham : varsayilan;
 
+/**
+ * Nafilenin adım KISITLARI — ortak adım dizisinin (`core/hatirlatma/adimDizisi.ts`)
+ * nafile parametreleri: en fazla 3 adım, tekrar 10–60 dk, eşik motorun mutlak sınırları.
+ */
+export const NAFILE_ADIM_KISITLARI: AdimKisitlari = {
+    maksAdim: NAFILE_MAKS_ADIM,
+    tekrarMinDk: NAFILE_TEKRAR_MIN_DK,
+    tekrarMaxDk: NAFILE_TEKRAR_MAX_DK,
+};
+
 /** Yeni bir nafile adımı — yalnız bildirim, tek atış. */
 export function nafileAdimi(esikDk: number, siklik: Siklik = 'birkez', kanallar: UyariKanallari = { bildirim: true }): SeviyeAyari {
-    return {
-        kademe: 'nazik',
-        kanallar,
-        esikDk,
-        siklik,
-        bildirimSesi: VARSAYILAN_SES,
-        acilKanal: false,
-        anonsMetni: '',
-    };
+    return ekAdim(esikDk, siklik, kanallar);
 }
-
-/** Kanal kümesinin yalnız tanınan, AÇIK alanları. */
-const kanalAlanlari = (ham: Record<string, unknown>): UyariKanallari => {
-    const k: UyariKanallari = {};
-    if (ham.bildirim === true) k.bildirim = true;
-    if (ham.sesli === true) k.sesli = true;
-    if (ham.titresim === true) k.titresim = true;
-    if (ham.alarm === true) k.alarm = true;
-    return k;
-};
-
-/**
- * Kanal kümesi. Hiçbir kanal açık değilse adım KAPALIDIR (muhafızla aynı:
- * "Kapalı" çipi). Yalnız titreşim/alarm açıkken bildirim de açılır: titreşim tek
- * başına sessiz bir uyarıdır, alarmın tekrarları da bildirimle gelir — ikisi de
- * bildirimsiz kalırsa adım fiilen konuşmazdı. Bozuk (nesne olmayan) kayıt
- * bildirime düşer (eski davranış).
- */
-const kanallarNormalize = (ham: unknown): UyariKanallari => {
-    if (!nesneMi(ham)) return { bildirim: true };
-    const k = kanalAlanlari(ham);
-    const acikVar = k.bildirim || k.sesli || k.titresim || k.alarm;
-    if (acikVar && !k.bildirim && !k.sesli) k.bildirim = true;
-    return k;
-};
-
-/** Kapalı adımın kanal hafızası (`seviyeAcKapa`); boş/bozuksa yok sayılır. */
-const oncekiKanallarNormalize = (ham: unknown): UyariKanallari | undefined => {
-    if (!nesneMi(ham)) return undefined;
-    const k = kanallarNormalize(ham);
-    return k.bildirim || k.sesli ? k : undefined;
-};
-
-const siklikNormalize = (ham: unknown): Siklik => {
-    if (nesneMi(ham) && typeof ham.herDk === 'number' && Number.isFinite(ham.herDk)) {
-        return { herDk: sayiKenetle(ham.herDk, NAFILE_TEKRAR_MIN_DK, NAFILE_TEKRAR_MAX_DK, NAFILE_TEKRAR_MIN_DK) };
-    }
-    return 'birkez';
-};
-
-/**
- * Tek bir adımı nafile kısıtlarına çeker; çözülemezse `null`. Ton/aciliyet/anons
- * metni ZORLANIR; kullanıcının seçtikleri (kanallar, bildirim sesi + adı, kapalı
- * adımın kanal hafızası) KORUNUR.
- */
-const adimNormalize = (ham: unknown): SeviyeAyari | null => {
-    if (!nesneMi(ham) || typeof ham.esikDk !== 'number' || !Number.isFinite(ham.esikDk)) return null;
-    const kanallar = kanallarNormalize(ham.kanallar);
-    const adim = nafileAdimi(
-        sayiKenetle(ham.esikDk, ESIK_MUTLAK_MIN, ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN),
-        siklikNormalize(ham.siklik),
-        kanallar
-    );
-    if (typeof ham.bildirimSesi === 'string' && ham.bildirimSesi.length > 0) {
-        adim.bildirimSesi = ham.bildirimSesi;
-        if (typeof ham.sesAdi === 'string' && ham.sesAdi.length > 0) adim.sesAdi = ham.sesAdi;
-    }
-    // Hafıza YALNIZ kapalı adımda anlamlıdır ("oncekiKanallar var ⟺ adım kapalı").
-    const kapali = !(kanallar.bildirim || kanallar.sesli || kanallar.titresim || kanallar.alarm);
-    const hafiza = kapali ? oncekiKanallarNormalize(ham.oncekiKanallar) : undefined;
-    if (hafiza) adim.oncekiKanallar = hafiza;
-    // Alarm kapsamı (#74): yalnız "Her uyarıda" yazılır; yokluğu "yalnız ilk" demektir.
-    if (ham.alarmKapsami === 'hepsi') adim.alarmKapsami = 'hepsi';
-    return adim;
-};
 
 /**
  * Adım dizisini normalize eder: kronolojik sıra, tekil eşik, en fazla 3,
  * en az 1 (boşsa `yedekEsikDk` ile tek adım).
  */
 export function adimlariNormalize(ham: unknown, yon: PencereYonu, yedekEsikDk: number): SeviyeAyari[] {
-    const adimlar = Array.isArray(ham)
-        ? ham.map(adimNormalize).filter((a): a is SeviyeAyari => a !== null)
-        : [];
-    const tekil: SeviyeAyari[] = [];
-    for (const a of kronolojikSirala(adimlar, yon)) {
-        if (!tekil.some((t) => t.esikDk === a.esikDk)) tekil.push(a);
-    }
-    const sonuc = tekil.slice(0, NAFILE_MAKS_ADIM);
-    return sonuc.length > 0 ? sonuc : [nafileAdimi(yedekEsikDk)];
+    return ortakAdimlariNormalize(ham, yon, yedekEsikDk, NAFILE_ADIM_KISITLARI);
 }
 
 /**
@@ -202,7 +136,7 @@ export function teheccudNormalize(ham: unknown, varsayilan: TeheccudAyari): Tehe
 
 /** Bir adım daha eklenebilir mi? */
 export const nafileAdimEklenebilirMi = (ayar: NafileHatirlatmaAyari): boolean =>
-    ayar.adimlar.length < NAFILE_MAKS_ADIM;
+    adimEklenebilirMi(ayar, NAFILE_ADIM_KISITLARI);
 
 /**
  * Yeni adım: muhafızla aynı yer kuralı (`yeniAdimEsigi` — en erken adımın
@@ -210,16 +144,12 @@ export const nafileAdimEklenebilirMi = (ayar: NafileHatirlatmaAyari): boolean =>
  * Eklenemiyorsa AYNI referans döner.
  */
 export function nafileAdimEkle<T extends NafileHatirlatmaAyari>(ayar: T, pencereUzunluguDk?: number): T {
-    if (!nafileAdimEklenebilirMi(ayar)) return ayar;
-    const esik = yeniAdimEsigi(ayar.adimlar, ayar.yon, pencereUzunluguDk);
-    if (esik === null) return ayar;
-    return { ...ayar, adimlar: kronolojikSirala([...ayar.adimlar, nafileAdimi(esik)], ayar.yon) };
+    return adimEkle(ayar, ayar.yon, NAFILE_ADIM_KISITLARI, pencereUzunluguDk);
 }
 
 /** Adımı siler — son adım silinmez (kartın anahtarı kapatır). AYNI referans döner. */
 export function nafileAdimSil<T extends NafileHatirlatmaAyari>(ayar: T, indeks: number): T {
-    if (ayar.adimlar.length <= 1 || indeks < 0 || indeks >= ayar.adimlar.length) return ayar;
-    return { ...ayar, adimlar: ayar.adimlar.filter((_, i) => i !== indeks) };
+    return adimSil(ayar, indeks);
 }
 
 /**
@@ -228,11 +158,7 @@ export function nafileAdimSil<T extends NafileHatirlatmaAyari>(ayar: T, indeks: 
  * muhafız alanlarıyla döndürse bile diske nafile dışı bir şey yazılmaz.
  */
 export function nafileAdimGuncelle<T extends NafileHatirlatmaAyari>(ayar: T, indeks: number, yeni: SeviyeAyari): T {
-    if (indeks < 0 || indeks >= ayar.adimlar.length) return ayar;
-    const temiz = adimNormalize(yeni);
-    if (!temiz) return ayar;
-    const adimlar = ayar.adimlar.map((a, i) => (i === indeks ? temiz : a));
-    return { ...ayar, adimlar: adimlariNormalize(adimlar, ayar.yon, temiz.esikDk) };
+    return adimGuncelle(ayar, indeks, yeni, ayar.yon, NAFILE_ADIM_KISITLARI);
 }
 
 /**
@@ -251,14 +177,7 @@ export function nafileYonunuDegistir<T extends NafileHatirlatmaAyari>(ayar: T, y
  * `ozelSesleriTopla` ikizi. Çağıran bunları native'de çözerek doğrular.
  */
 export function nafileOzelSesleriniTopla(a: NafileAyarlari): string[] {
-    const sesler = new Set<string>();
-    for (const n of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]) {
-        if (!n.aktif) continue;
-        for (const s of n.adimlar) {
-            if (s && ozelSesMi(s.bildirimSesi)) sesler.add(s.bildirimSesi);
-        }
-    }
-    return [...sesler];
+    return adimOzelSesleri([a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]);
 }
 
 /**
@@ -271,18 +190,9 @@ export function nafileOzelSesleriniTopla(a: NafileAyarlari): string[] {
  */
 export function nafileCozulemeyenSesleriDusur(a: NafileAyarlari, cozulemeyen: ReadonlySet<string>): NafileAyarlari {
     if (cozulemeyen.size === 0) return a;
-    const duzelt = <T extends NafileHatirlatmaAyari>(n: T): T => {
-        if (!n.adimlar.some((s) => s && cozulemeyen.has(s.bildirimSesi))) return n;
-        return {
-            ...n,
-            adimlar: n.adimlar.map((s) =>
-                s && cozulemeyen.has(s.bildirimSesi) ? { ...s, bildirimSesi: VARSAYILAN_SES, sesAdi: undefined } : s
-            ),
-        };
-    };
-    const kusluk = duzelt(a.hatirlatmalar.kusluk);
-    const evvabin = duzelt(a.hatirlatmalar.evvabin);
-    const teheccud = duzelt(a.teheccud);
+    const kusluk = adimCozulemeyenSesleriDusur(a.hatirlatmalar.kusluk, cozulemeyen);
+    const evvabin = adimCozulemeyenSesleriDusur(a.hatirlatmalar.evvabin, cozulemeyen);
+    const teheccud = adimCozulemeyenSesleriDusur(a.teheccud, cozulemeyen);
     if (kusluk === a.hatirlatmalar.kusluk && evvabin === a.hatirlatmalar.evvabin && teheccud === a.teheccud) return a;
     return { ...a, hatirlatmalar: { ...a.hatirlatmalar, kusluk, evvabin }, teheccud };
 }
@@ -293,14 +203,7 @@ export function nafileCozulemeyenSesleriDusur(a: NafileAyarlari, cozulemeyen: Re
  * Yalnız açık nafileler ve alarmı açık adımlar.
  */
 export function nafileAlarmSesleri(a: NafileAyarlari): string[] {
-    const sesler = new Set<string>();
-    for (const n of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]) {
-        if (!n.aktif) continue;
-        for (const s of n.adimlar) {
-            if (s.kanallar?.alarm === true) sesler.add(s.bildirimSesi ?? VARSAYILAN_SES);
-        }
-    }
-    return [...sesler];
+    return adimAlarmSesleri([a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin, a.teheccud]);
 }
 
 /**
