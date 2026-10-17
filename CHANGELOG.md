@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.36.0] - 2026-10-17
+
+### Eklendi
+- [yatis] ortak model + teslim muhafız katmanından + ortak kart
+- [camiye] ekran ortak hatırlatma kartıyla — tüm yetenekler
+- [camiye] ortak model — adım dizisi, şekilden göç, teslim muhafız katmanından
+
+### Düzeltildi
+- [yatis] içerik üreten ilk tetikte içerik seç; kayıt-oynat iOS teslimcisini ölçsün
+- [yatis] Android alarm payını 35'e çıkar, duyuru sürümünü düzelt
+
 ## [0.35.0] - 2026-10-17
 
 ### Eklendi
