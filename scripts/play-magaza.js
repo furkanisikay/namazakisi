@@ -191,9 +191,9 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri'];
+    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -305,6 +305,40 @@ function playMetinleri() {
             const c = await api('POST', '/edits/' + editId + ':commit');
             if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
             console.log('YAYINLANDI: ' + yuklenen + ' saat/TV karesi');
+            return;
+        }
+
+        if (mod === 'tv-ekle') {
+            // Android TV Play'de AYRI kanal almaz: telefonla AYNI kanalda (internal) yaşar.
+            // TV AAB'si, kanaldaki telefon sürümüne EK paket olarak eklenir (leanback
+            // required → yalnız TV'ye; telefon paketiyle cihaz kümesi çakışmaz). Önceki TV
+            // kodu sürüm adındaki "+TV <kod>" izinden bulunup çıkarılır; EAS telefon
+            // gönderimi sürümü yeniden kurunca iz kaybolur ve TV yeniden eklenir.
+            const dosya = arg('dosya');
+            const kanal = arg('kanal') || 'internal';
+            if (!dosya || !fs.existsSync(dosya)) throw new Error('--dosya gerekli (var olan bir .aab)');
+            if (kanal !== 'internal') throw new Error('tv-ekle yalnız internal kanalda çalışır (telefon sürümüne dokunur)');
+            const y = await paketYukle(editId, dosya);
+            if (y.kod >= 300 || !y.j || !y.j.versionCode) {
+                throw new Error('paket yuklenemedi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+            }
+            const kod = String(y.j.versionCode);
+            const t = await api('GET', '/edits/' + editId + '/tracks/' + kanal);
+            if (t.kod >= 300) throw new Error(kanal + ' okunamadi: ' + t.kod + ' ' + JSON.stringify(t.j).slice(0, 300));
+            const surumler = (t.j && t.j.releases) || [];
+            const hedef = surumler.find((r) => r.status === 'completed');
+            if (!hedef) throw new Error(kanal + ' kanalinda tamamlanmis telefon surumu yok; TV eklenmedi');
+            const iz = /\s*\+TV (\d+)\s*$/;
+            const eskiTv = ((hedef.name || '').match(iz) || [])[1];
+            const kodlar = (hedef.versionCodes || []).map(String).filter((k) => k !== eskiTv && k !== kod);
+            if (!kodlar.length) throw new Error('telefon surum kodu bulunamadi; TV tek basina birakilmaz');
+            const ad = ((hedef.name || '').replace(iz, '') + ' +TV ' + kod).trim().slice(0, 50);
+            const yeni = surumler.map((r) => (r === hedef ? { ...r, name: ad, versionCodes: [...kodlar, kod] } : r));
+            const u = await api('PUT', '/edits/' + editId + '/tracks/' + kanal, { track: kanal, releases: yeni });
+            if (u.kod >= 300) throw new Error(kanal + ' yazilamadi: ' + u.kod + ' ' + JSON.stringify(u.j).slice(0, 300));
+            const c = await api('POST', '/edits/' + editId + ':commit');
+            if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
+            console.log('YAYINLANDI: TV ' + kod + ' -> ' + kanal + ' (' + ad + ') kodlar: ' + [...kodlar, kod].join(','));
             return;
         }
 

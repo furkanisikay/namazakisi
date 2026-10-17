@@ -654,19 +654,15 @@ jobs:
             --kanal "wear:${{ inputs.saat_tv_kanal }}" \
             --ad "${{ steps.vc.outputs.surum }} (saat)"
 
-      - name: 🚀 TV → tv:${{ inputs.saat_tv_kanal }}
+      # TV Play'de telefonla AYNI kanalda: paket burada yalnız artifact olur, telefon
+      # gönderimi BİTTİKTEN sonra `tv_telefon_kanalina` işi sürüme ek paket olarak ekler.
+      - name: 📦 TV AAB'sini sakla
         if: inputs.saat_tv == 'tv' || inputs.saat_tv == 'ikisi'
-        # TV form faktörünün özel kanalı Play Console'da açılmadıysa ("Track not found")
-        # saat gönderimi ve iş yine başarılı sayılsın; özet uyarıyı yazar.
-        id: tv_yukle
-        continue-on-error: true
-        env:
-          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-        run: |
-          node scripts/play-magaza.js aab-yukle \
-            --dosya "$(ls tv/app/build/outputs/bundle/release/*.aab | head -1)" \
-            --kanal "tv:${{ inputs.saat_tv_kanal }}" \
-            --ad "${{ steps.vc.outputs.surum }} (TV)"
+        uses: actions/upload-artifact@v7
+        with:
+          name: tv-aab
+          path: tv/app/build/outputs/bundle/release/*.aab
+          retention-days: 3
 
       - name: 📊 Özet
         if: always()
@@ -677,11 +673,39 @@ jobs:
             echo "| Hedef | versionCode | Kanal |"
             echo "|---|---|---|"
             case "${{ inputs.saat_tv }}" in saat|ikisi) echo "| ⌚ Wear OS | \`${{ steps.vc.outputs.saat }}\` | \`wear:${{ inputs.saat_tv_kanal }}\` |";; esac
-            case "${{ inputs.saat_tv }}" in tv|ikisi) echo "| 📺 Android TV | \`${{ steps.vc.outputs.tv }}\` | \`tv:${{ inputs.saat_tv_kanal }}\` |";; esac
+            case "${{ inputs.saat_tv }}" in tv|ikisi) echo "| 📺 Android TV | \`${{ steps.vc.outputs.tv }}\` | telefonla aynı \`internal\` sürümüne eklenir (ayrı iş) |";; esac
             echo ""
             echo "Sürüm adı: \`${{ steps.vc.outputs.surum }}\` · iş sonucu: ${{ job.status }}"
-            if [ "${{ steps.tv_yukle.outcome }}" = "failure" ]; then
-              echo ""
-              echo "⚠️ TV yüklenemedi (ör. Play Console'da Android TV özel kanalı açık değil). Saat gönderimi etkilenmedi."
-            fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Android TV: Play'de ayrı kanal YOK, telefonla aynı `internal` kanalında yaşar.
+  # Telefon gönderimi (build işi, eas submit) sürümü yeniden kurar; TV paketi ondan
+  # SONRA o sürüme ek paket olarak eklenir — önce eklenseydi eas submit onu düşürürdü.
+  tv_telefon_kanalina:
+    name: 📺 TV → internal (telefon sürümüne ek)
+    needs: [build, saat_tv]
+    if: |
+      always() && needs.saat_tv.result == 'success' &&
+      (inputs.saat_tv == 'tv' || inputs.saat_tv == 'ikisi') &&
+      inputs.saat_tv_kanal == 'internal'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v7
+      - name: 📦 Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: 📥 TV AAB
+        uses: actions/download-artifact@v8
+        with:
+          name: tv-aab
+          path: tv-aab
+      - name: 🚀 TV → internal
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          node scripts/play-magaza.js tv-ekle             --dosya "$(ls tv-aab/*.aab | head -1)"             --kanal internal
