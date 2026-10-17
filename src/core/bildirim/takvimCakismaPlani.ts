@@ -46,7 +46,8 @@
  *   - `once`: çapa = blok başı, taban = vakit girişi.
  *   - `kapliyor`: çapa = `min(blok başı, giriş)`, taban = `giriş − KAPLIYOR_AZAMI_ONCELIK_DK`.
  * Tekrar çapaya kadar sürer (= AYNI uyarının yeniden teslimi; metin değişmez). Tabana
- * kenetlenip AYNI ana düşen tetikler TEK kazanana iner (motor sırasında ilki).
+ * kenetlenip AYNI ana düşen tetikler TEK uyarıda BİRLEŞİR (`ayniAnaDusenleriBirlestir`:
+ * kanallar OR, ses/anons/alarm en güçlü adımdan; kimlik ve sıra öncekinin).
  * KİMLİK: çakışmanın İLK tetiği (motor sırası) tarihsel `takvim_cakisma_<gün>_<vakit>`
  * kimliğini korur — göçten gelen tek adımlı kayıt birebir aynı planı üretir; diğerleri
  * `_<kalanDk>` ekiyle ayrışır. Android alarm payı (`alarmButcesi`) KRONOLOJİK keser.
@@ -72,7 +73,7 @@ import { gurubKerahatiBaslangiciMs } from '../muhafiz/erteleme';
 import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
-import { alarmPayinaSigdir, ekAlarmKurarMi } from '../hatirlatma/ekPlan';
+import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir, ekAlarmKurarMi } from '../hatirlatma/ekPlan';
 
 export type CakismaVakti = Exclude<VakitAdi, 'gunes'>;
 export const CAKISMA_VAKITLERI: readonly CakismaVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -318,11 +319,17 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
             };
             const kok = takvimCakismaKimligi(tarih, vakit);
             const anons = takvimCakismaAnonsMetni(vakit, tur);
-            const gorulen = new Set<number>();
+            // Tabana kenetlenip AYNI ana düşen tetikler TEK uyarıda BİRLEŞİR (kanallar OR,
+            // ses/alarm en güçlü adımdan) — ilkini tutmak güçlü kanalı (alarm) düşürürdü.
+            const anlar = new Map<number, { sira: number; uyari: UyariPlani }>();
             for (const [sira, uyari] of adimPlani.entries()) {
                 const zamanMs = Math.max(capaMs - uyari.kalanDk * DK, tabanMs);
-                if (zamanMs <= simdiMs || gorulen.has(zamanMs)) continue;
-                gorulen.add(zamanMs);
+                if (zamanMs <= simdiMs) continue;
+                const mevcut = anlar.get(zamanMs);
+                if (mevcut) mevcut.uyari = ayniAnaDusenleriBirlestir(mevcut.uyari, uyari);
+                else anlar.set(zamanMs, { sira, uyari });
+            }
+            for (const [zamanMs, { sira, uyari }] of anlar) {
                 const adimUyarisi: UyariPlani = { ...uyari, anonsMetni: anons };
                 // Gerçek alarm tam ekran kilit ekranında açılır → ad ASLA (baslikGoster olsa bile).
                 const adGosterilir = baslikGoster && !ekAlarmKurarMi({ uyari: adimUyarisi });

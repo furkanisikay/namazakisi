@@ -38,7 +38,7 @@ import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { YatisAyarlari } from './yatisAyarlari';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
-import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
+import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir } from '../hatirlatma/ekPlan';
 
 export type FarzVakit = Exclude<VakitAdi, 'gunes'>;
 export const FARZ_VAKITLER: readonly FarzVakit[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -372,7 +372,8 @@ type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
  * gibi `vakitUyariPlaniOlustur`'a verilir (eşik, sıklık, kanallar, gerçek alarm anı aynı
  * motordan). Kurallar:
  *   - Yatsı girişi KAYMASI (`yatsiHatirlatmaTetigi`) HER tetiğe uygulanır; kaymayla aynı
- *     ana düşen tetikler TEK kazanana indirgenir (ilki kalır).
+ *     ana düşen tetikler TEK uyarıda BİRLEŞİR (`ayniAnaDusenleriBirlestir`: kanallar OR,
+ *     ses/alarm en güçlü adımdan; kimlik ve sıra öncekinin).
  *   - İÇERİK günde BİR KEZ, (kaymış) İLK tetiğin anında seçilir ve o günün TÜM tetikleri
  *     aynı içeriği (kimlik kökü, kategori, `data`) taşır: tekrar = aynı uyarının yeniden
  *     teslimi. Böylece kimlik kökü sabit kalır — native "Kıldım" (`muhafiz_<gün>_vakit_<v>`
@@ -428,8 +429,11 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         for (const t of a.tetikler) {
             if (t.zaman.getTime() >= cikis.getTime()) continue;
             const zaman = yatsiHatirlatmaTetigi(t.zaman, vakitler, kilinan, ayarlar);
-            if (kaymis.some((k) => k.zaman.getTime() === zaman.getTime())) continue;
-            kaymis.push({ ...t, zaman });
+            // Aynı ana düşen tetik BİRLEŞİR (kanallar OR, ses/alarm en güçlü adımdan) — ilkini
+            // tutmak kaymayla tabana yığılan güçlü kanalı (gerçek alarm) düşürürdü.
+            const ayni = kaymis.find((k) => k.zaman.getTime() === zaman.getTime());
+            if (ayni) ayni.uyari = ayniAnaDusenleriBirlestir(ayni.uyari, t.uyari);
+            else kaymis.push({ ...t, zaman });
         }
         if (kaymis.length === 0) continue;
         kaymis.sort((x, y) => x.zaman.getTime() - y.zaman.getTime());

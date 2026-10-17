@@ -353,7 +353,7 @@ describe('ORTAK MODEL (plan §5.4): adım dizisi, göç, gizlilik', () => {
         expect(yeni).toEqual(eski);
     });
 
-    it('çok adım + tekrar: tetikler çapaya kadar, tabana kenetlenenler TEK kazanana iner, kimlikler tekil', () => {
+    it('çok adım + tekrar: tetikler çapaya kadar, tabana kenetlenenler TEK uyarıda birleşir, kimlikler tekil', () => {
         const plan = olustur({ aktif: true, adimlar: [ekAdim(60), ekAdim(30, { herDk: 10 })] });
         expect(new Set(plan.map((k) => k.id)).size).toBe(plan.length);
         // once (bugün ikindi): blok − 60, −30, −20, −10.
@@ -369,6 +369,39 @@ describe('ORTAK MODEL (plan §5.4): adım dizisi, göç, gizlilik', () => {
         // kapliyor (yarın öğle): taban = giriş − 60; çapa blok başı (giriş − 4 sa) → hepsi TEK tetik.
         const ogle = plan.filter((k) => k.vakit === 'ogle');
         expect(ogle.map((k) => k.zaman.getTime())).toEqual([p1.dhuhr.getTime() - KAPLIYOR_AZAMI_ONCELIK_DK * DK]);
+    });
+
+    it('REGRESYON: tabana yığılan adımlarda GÜÇLÜ kanal düşmez (120 dk bildirim + 30 dk gerçek alarm)', () => {
+        // 09:00–16:25 benzeri toplantı yarın öğleyi kaplar: iki adım da giriş − 60'a kenetlenir.
+        // Eskiden motor sırasındaki ilki (yalnız bildirim) kalıyor, alarm sessizce kayboluyordu.
+        const plan = olustur({
+            aktif: true,
+            baslikGoster: true,
+            adimlar: [
+                { ...ekAdim(120), kanallar: { bildirim: true } },
+                { ...ekAdim(30), kanallar: { bildirim: true, titresim: true, alarm: true } },
+            ],
+        });
+        const ogle = plan.filter((k) => k.vakit === 'ogle');
+        expect(ogle).toHaveLength(1);
+        expect(ogle[0].zaman.getTime()).toBe(p1.dhuhr.getTime() - KAPLIYOR_AZAMI_ONCELIK_DK * DK);
+        // Kimlik: çakışmanın İLK tetiği kökü korur.
+        expect(ogle[0].id).toMatch(/_ogle$/);
+        expect(ogle[0].uyari.alarm).toBe(true);
+        expect(ogle[0].uyari.kanallar).toEqual({ bildirim: true, titresim: true, alarm: true });
+        // Gerçek alarm tetiği kilit ekranında açılır → ad (ayar açık olsa bile) YOK.
+        expect(`${ogle[0].baslik} ${ogle[0].govde}`).not.toContain('Atölye');
+        // Ters sıra (güçlü adım önce) da aynı sonucu verir.
+        const ters = olustur({
+            aktif: true,
+            adimlar: [
+                { ...ekAdim(120), kanallar: { bildirim: true, sesli: true } },
+                { ...ekAdim(30), kanallar: { bildirim: true } },
+            ],
+        }).filter((k) => k.vakit === 'ogle');
+        expect(ters).toHaveLength(1);
+        expect(ters[0].uyari.kanallar).toEqual({ bildirim: true, sesli: true });
+        expect(ters[0].uyari.sesliAnons).toBe(true);
     });
 
     it('her kaydın cikis alanı tetikten SONRA (gerçek alarm doğar doğmaz atlanmasın)', () => {
