@@ -147,11 +147,16 @@ enum NamazAlarmCekirdegi {
             metadata: NamazAlarmVerisi(kimlik: kayit.kimlik),
             tintColor: renk
         )
-        let ikinciNiyet: (any LiveActivityIntent)? = bilgiMi
-            ? nil
-            : erteleMi
-                ? NamazAlarmErteleIntent(kimlik: kayit.kimlik)
-                : NamazAlarmKildimIntent(kimlik: kayit.kimlik)
+        // Üçlü `? :` iki farklı intent tipini ortak varoluşsal tipe yükseltmez (derleme hatası);
+        // açık if/else ile atanır.
+        let ikinciNiyet: (any LiveActivityIntent)?
+        if bilgiMi {
+            ikinciNiyet = nil
+        } else if erteleMi {
+            ikinciNiyet = NamazAlarmErteleIntent(kimlik: kayit.kimlik)
+        } else {
+            ikinciNiyet = NamazAlarmKildimIntent(kimlik: kayit.kimlik)
+        }
         let tarih = Date(timeIntervalSince1970: TimeInterval(kayit.tetikMs) / 1000)
         let yapilandirma = AlarmManager.AlarmConfiguration<NamazAlarmVerisi>.alarm(
             schedule: .fixed(tarih),
