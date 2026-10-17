@@ -426,14 +426,19 @@ describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
     });
 
     it('REGRESYON: kaymayla aynı ana düşen adımlarda GÜÇLÜ kanal (gerçek alarm) düşmez', () => {
-        // Yatış 20:30 → 19:30 (yalnız bildirim) ve 19:50 (gerçek alarm); İstanbul Ekim yatsısı
-        // ~19:54 → ikisi de aynı ana kayar. Eskiden ilki (bildirim) kalıyor, alarm kayboluyordu.
+        // Yatış = yatsı + 36 dk → tetikler giriş −24 (yalnız bildirim) ve −4 (gerçek alarm);
+        // ikisi de aynı ana kayar. Eskiden ilki (bildirim) kalıyor, alarm kayboluyordu.
+        // Boylam makinenin UTC farkına göre kaydırılır (CI UTC'de koşar; bkz. KAYMA testi).
+        const yerelFark = -t(13, 0).getTimezoneOffset() / 60;
+        const koord = { lat: ISTANBUL.lat, lng: ISTANBUL.lng + (yerelFark - 3) * 15 };
+        const giris = namazGunuVakitleri(koord, t(13, 0)).yatsi.giris;
+        const yatis = new Date(Math.ceil(giris.getTime() / 60_000) * 60_000 + 36 * 60_000);
         const plan = yatisPlaniOlustur({
-            koordinat: ISTANBUL,
+            koordinat: koord,
             ayarlar: yatisAyarlariniNormalize({
                 ...AYAR,
-                saat: 20,
-                dakika: 30,
+                saat: yatis.getHours(),
+                dakika: yatis.getMinutes(),
                 adimlar: [
                     { esikDk: 60, kanallar: { bildirim: true } },
                     { esikDk: 40, kanallar: { bildirim: true, alarm: true } },
