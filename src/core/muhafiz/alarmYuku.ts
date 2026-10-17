@@ -103,6 +103,12 @@ export interface AlarmYukuGirdisi {
     veri: Record<string, unknown>;
     /** Yük türü — verilmezse YAZILMAZ (muhafız/nafile yükü birebir eskisi). */
     tur?: AlarmTuru;
+    /**
+     * Bilgi alarmı vaktin kılınmışlığına bağlı mı (takvim çakışması)? YALNIZ `true` iken
+     * yazılır (diğer yükler birebir eskisi; `ALARM_YUK_SURUMU` artmadı). Native: vakit
+     * "Kıldım" kuyruğunda bekliyorsa çalmaz; `vakit` + `tarih` bu yüzden yükten okunur.
+     */
+    kilinmisligaBagli?: boolean;
 }
 
 export interface AlarmYuku {
@@ -124,6 +130,7 @@ export interface AlarmYuku {
     kanalId: string;
     veri: Record<string, unknown>;
     tur?: AlarmTuru;
+    kilinmisligaBagli?: true;
 }
 
 /** Native `MuhafizAlarm.planla`'ya giden yük. */
@@ -147,5 +154,6 @@ export function alarmYukuOlustur(g: AlarmYukuGirdisi): AlarmYuku {
         kanalId: g.kanalId,
         veri: g.veri,
         ...(g.tur ? { tur: g.tur } : {}),
+        ...(g.kilinmisligaBagli === true ? { kilinmisligaBagli: true as const } : {}),
     };
 }

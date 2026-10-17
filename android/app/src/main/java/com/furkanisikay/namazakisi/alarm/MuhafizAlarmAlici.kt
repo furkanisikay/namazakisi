@@ -98,7 +98,8 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         // uyanmadıysa (Samsung uyku kısıtı) diskteki kılınmışlık kaydı YOKTUR — native
         // AsyncStorage'ı okumaz, kuyruk yeterli kanıttır.
         val kuyruktaKilindi = try {
-            if (yuk.bilgi) {
+            if (!MuhafizAlarmKurallari.kuyrukDenetlenirMi(yuk)) {
+                // Cuma / camiye gitme: vakit girmeden çalar, kılınacak bir şey yok.
                 false
             } else if (yuk.nafileTuru != null) {
                 // Nafile: kendi kuyruğunda bekliyorsa (bildirimden Kıldım, JS henüz uyanmadı).

@@ -57,6 +57,21 @@ class BildirimKildimKurallariTest {
     }
 
     @Test
+    fun kildimTakvimCakismasiAlarmlariniDaSusturur() {
+        // Kuyruğa ekleme (`MuhafizAlarmTemizligi.vaktiSustur`) kılınmışlığa bağlı takvim
+        // alarmını da susturmalı — kök ve `_<kalanDk>` tekrarları; komşu vakit/gün DEĞİL.
+        assertTrue(k.kildimdaSusanAlarmMi("takvim_cakisma_2026-10-13_ogle", ogle))
+        assertTrue(k.kildimdaSusanAlarmMi("takvim_cakisma_2026-10-13_ogle_20", ogle))
+        assertTrue(k.kildimdaSusanAlarmMi("muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_5", ogle))
+        assertFalse(k.kildimdaSusanAlarmMi("takvim_cakisma_2026-10-13_ikindi", ogle))
+        assertFalse(k.kildimdaSusanAlarmMi("takvim_cakisma_2026-10-12_ogle", ogle))
+        assertFalse(k.kildimdaSusanAlarmMi("takvim_cakisma_2026-10-13_oglen", ogle))
+        // Cuma / camiye gitme vakit girmeden çalar: kılınmışlıkla susmaz.
+        assertFalse(k.kildimdaSusanAlarmMi("cuma_hatirlatma_2026-10-13", ogle))
+        assertFalse(k.kildimdaSusanAlarmMi("camiye_git_2026-10-13_ogle", ogle))
+    }
+
+    @Test
     fun onekJsIleAyni() {
         // JS: `${MUHAFIZ}${tarih}${VAKIT}${vakit}` (ArkaplanMuhafizServisi.vakitBildirimleriniIptalEt).
         assertEquals("muhafiz_2026-10-13_vakit_ogle", k.vaktinOneki(ogle))

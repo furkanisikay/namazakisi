@@ -283,6 +283,26 @@ describe('TakvimCakismaServisi', () => {
         expect(metin).not.toMatch(/\d{2}:\d{2}/);
     });
 
+    it('teslim KILINMIŞLIĞA BAĞLI bilgi alarmıdır (native: kuyrukta bekleyen vakitte çalmaz)', async () => {
+        await ayarYaz(ACIK);
+        const uyariPlanla = jest.fn(async () => undefined);
+        takvimCakismaTeslimcisiniAyarla({
+            ad: 'android',
+            hazirla: jest.fn(async () => undefined),
+            uyariPlanla,
+            yanKanaliIptalEt: jest.fn(),
+            tumYanKanallariIptalEt: jest.fn(),
+        });
+        await servis.hatirlatmalariGuncelle(ISTANBUL, SIMDI);
+        expect(uyariPlanla).toHaveBeenCalledTimes(1);
+        expect(uyariPlanla).toHaveBeenCalledWith(
+            expect.objectContaining({
+                vakit: 'ikindi',
+                ozel: expect.objectContaining({ alarmTuru: 'bilgi', alarmKilinmisligaBagli: true }),
+            })
+        );
+    });
+
     it('izin geri alınınca önceki turun ALARM/ANONSLARI da temizlenir (teslimci hazırlığı)', async () => {
         await ayarYaz(ACIK);
         mockIzin.mockResolvedValue({ status: 'denied' });

@@ -29,6 +29,7 @@ import { IOS_ALARM_SESI, IOS_BILDIRIM_SESI, iosTesliminiCoz } from '../ios/tesli
 import { iosYetenekleri } from '../ios/platformYetenekleri';
 import { bildirimDefteriOlustur, defterOzeti } from '../../bildirim/bildirimDefteri';
 import { ISTANBUL } from '../../bildirim/__tests__/defterFikstur';
+import { TAKVIM_CAKISMA_ID_ONEKI } from '../../bildirim/takvimCakismaPlani';
 
 const PROJE_KOKU = path.resolve(__dirname, '../../../..');
 const ORNEK = JSON.parse(
@@ -125,6 +126,19 @@ describe('alarm yükü — Kotlin ile ORTAK örnek (sözleşme)', () => {
     });
     test('BİLGİ alarm yükü (cuma/camiye gitme/takvim): tur alanı + örnekle BİREBİR', () => {
         expect(alarmYukuOlustur(ORNEK.bilgi.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.bilgi.yuk);
+    });
+    test('KILINMIŞLIĞA BAĞLI bilgi yükü (takvim): bayrak + vakit örnekle BİREBİR; diğerlerinde ALAN YOK', () => {
+        expect(alarmYukuOlustur(ORNEK.takvim.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.takvim.yuk);
+        for (const g of [ORNEK.girdi, ORNEK.nafile.girdi, ORNEK.bilgi.girdi]) {
+            expect('kilinmisligaBagli' in alarmYukuOlustur(g as AlarmYukuGirdisi)).toBe(false);
+        }
+        // Takvim kimliği Kotlin'in susturma önekiyle aynı (JS `TAKVIM_CAKISMA_ID_ONEKI`).
+        const kt = fs.readFileSync(
+            path.join(PROJE_KOKU, 'android/app/src/main/java/com/furkanisikay/namazakisi/cekirdek/BildirimKildimKurallari.kt'),
+            'utf8'
+        );
+        expect(kt).toContain(`const val TAKVIM_CAKISMA_ONEKI = "${TAKVIM_CAKISMA_ID_ONEKI}"`);
+        expect(ORNEK.takvim.yuk.kimlik.startsWith(TAKVIM_CAKISMA_ID_ONEKI)).toBe(true);
     });
     test('tur verilmezse yükte ALAN YOK (muhafız/nafile yükü birebir eskisi)', () => {
         expect('tur' in alarmYukuOlustur(ORNEK.girdi as AlarmYukuGirdisi)).toBe(false);

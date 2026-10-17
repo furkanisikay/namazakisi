@@ -107,6 +107,46 @@
       "tur": "bilgi"
     }
   },
+  "takvim": {
+    "aciklama": "Kilinmisliga BAGLI bilgi alarmi (takvim cakismasi, vaktin ICINDE calar). JS yalniz true iken 'kilinmisligaBagli' yazar; Kotlin vakit+tarih'i YUKTEN okur: vakit 'Kildim' kuyrugunda bekliyorsa CALMAZ, kuyruga ekleme bu alarmi susturur. Kildim/Ertele dugmesi yine YOK.",
+    "girdi": {
+      "kimlik": "takvim_cakisma_2026-10-16_ogle",
+      "tetikMs": 1791020000000,
+      "baslik": "Öğle · etkinlik vakti kaplıyor",
+      "metin": "Takvimindeki bir etkinlik öğle vaktine denk geliyor.",
+      "vakit": "ogle",
+      "vakitAdi": "Takvim",
+      "tarih": "2026-10-16",
+      "cikisMs": 1791023600000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "bildirimSesi": "varsayilan",
+      "kanalId": "vakit_bildirim",
+      "veri": { "tip": "takvim_cakisma", "vakit": "ogle", "tarih": "2026-10-16" },
+      "tur": "bilgi",
+      "kilinmisligaBagli": true
+    },
+    "yuk": {
+      "surum": 1,
+      "kimlik": "takvim_cakisma_2026-10-16_ogle",
+      "tetikMs": 1791020000000,
+      "baslik": "Öğle · etkinlik vakti kaplıyor",
+      "metin": "Takvimindeki bir etkinlik öğle vaktine denk geliyor.",
+      "vakit": "ogle",
+      "vakitAdi": "Takvim",
+      "tarih": "2026-10-16",
+      "cikisMs": 1791023600000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "alarmKanalId": "namaz_alarm",
+      "alarmKanalAdi": "Namaz alarmı",
+      "sesUri": null,
+      "kanalId": "vakit_bildirim",
+      "veri": { "tip": "takvim_cakisma", "vakit": "ogle", "tarih": "2026-10-16" },
+      "tur": "bilgi",
+      "kilinmisligaBagli": true
+    }
+  },
   "kanallar": [
     { "ses": "varsayilan", "beklenen": "namaz_alarm" },
     { "ses": "", "beklenen": "namaz_alarm" },

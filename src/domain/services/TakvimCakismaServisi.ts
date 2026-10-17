@@ -302,6 +302,9 @@ export class TakvimCakismaServisi {
                     // Alarm ekranındaki ad — etkinlik adı DEĞİL (kilit ekranında görünür).
                     alarmAdi: 'Takvim',
                     alarmTuru: 'bilgi',
+                    // Vaktin İÇİNDE çalar: vakit native "Kıldım" ile kılındıysa (JS geç
+                    // uyansa bile) native alıcı çalmaz, kuyruğa ekleme bu alarmı susturur.
+                    alarmKilinmisligaBagli: true,
                 },
             });
         } catch (e) {

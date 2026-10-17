@@ -325,6 +325,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     ...(ertele ? { ...ertele.veri, kanalId } : {}),
                 },
                 ...(ozel?.alarmTuru ? { tur: ozel.alarmTuru } : {}),
+                ...(ozel?.alarmKilinmisligaBagli === true ? { kilinmisligaBagli: true } : {}),
             })
         );
         if (!kuruldu) {
