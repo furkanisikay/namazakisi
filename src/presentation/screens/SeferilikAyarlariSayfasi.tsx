@@ -84,7 +84,7 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
           />
         </AyarGrubu>
 
-        <AyarGrubu baslik="Mezhep">
+        <AyarGrubu baslik="Mezhep (ortak ayar)">
           {MEZHEPLER.map((mezhep) => {
             const secili = ayarlar.mezhep === mezhep;
             return (
@@ -115,7 +115,8 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
           })}
         </AyarGrubu>
         <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
-          Bu seçim yalnız kartın içeriğini değiştirir; namaz vakitlerinin hesabını etkilemez.
+          Mezhep uygulamanın ortak ayarıdır: yolculuk kartının içeriğini ve Kaza Defteri'nde vitir namazının otomatik
+          eklenip eklenmeyeceğini belirler; namaz vakitlerinin hesabını etkilemez.
         </Text>
 
         <AyarGrubu baslik="İkamet yeri">

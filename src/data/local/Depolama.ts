@@ -81,6 +81,22 @@ export const Depolama = {
     });
   },
 
+  /**
+   * HAM atomik read-modify-write: donusturucu ham dizeyi (yoksa null) gorur ve
+   * yazilacak dizeyi dondurur; `null` dondururse HICBIR SEY YAZILMAZ. Bozuk bir
+   * kaydi ayirt edip USTUNE YAZMAMASI gereken cagiranlar icindir (kaza defteri).
+   */
+  async hamGuncelle(
+    anahtar: string,
+    donustur: (ham: string | null) => string | null
+  ): Promise<string | null> {
+    return anahtarSirasinaAl(anahtar, async () => {
+      const yeni = donustur(await AsyncStorage.getItem(anahtar));
+      if (yeni !== null) await AsyncStorage.setItem(anahtar, yeni);
+      return yeni;
+    });
+  },
+
   /** Anahtari sil (anahtar-kuyrugunda). */
   async sil(anahtar: string): Promise<void> {
     await anahtarSirasinaAl(anahtar, () => AsyncStorage.removeItem(anahtar));

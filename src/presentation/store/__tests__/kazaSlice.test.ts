@@ -1,10 +1,9 @@
 /**
- * kazaSlice — DAVRANIŞSAL testler
+ * kazaSlice — DAVRANIŞSAL testler (Kaza Defteri 2.0).
  *
- * Thunk'lar gerçek LocalKazaServisi + KazaHesaplayiciServisi'ni (AsyncStorage
- * in-memory mock'lu) kullanır; gerçek store üzerinde dispatch edilip hem Redux
- * state'i hem diske yazılan blob doğrulanır. Tarihe bağlı alanlar SABİT yazılmaz
- * (tarihiISOFormatinaCevir ile bugünden türetilir).
+ * Thunk'lar gerçek defter yolunu (LocalKazaServisi → KazaDefteriServisi →
+ * saf türetme) bellek-içi AsyncStorage ile kullanır; hem Redux state'i hem
+ * diske yazılan hareketler doğrulanır. Tarihe bağlı alanlar SABİT yazılmaz.
  */
 
 import { configureStore } from '@reduxjs/toolkit';
@@ -12,18 +11,24 @@ import kazaReducer, {
   kazaVerileriniYukle,
   borcEkle,
   kazaTamamla,
-  sihirbazIleBaslat,
+  yeniTabanUygula,
   gunlukHedefiGuncelle,
   gizlemeToggle,
   hataTemizle,
+  otomatikAyarla,
+  gunKarariVer,
+  temizlikUygula,
+  temizlikGeriAl,
+  fazlayiSifirla,
   kazaOneriAyarlariniYukle,
   kazaOneriAyarlariniGuncelle,
 } from '../kazaSlice';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
-import { tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
-import type { KazaDurumu } from '../../../core/types/KazaTipleri';
+import { gunEkle, tarihiISOFormatinaCevir } from '../../../core/utils/TarihYardimcisi';
+import { _testIcinSifirla, localKazayaBorcEkle } from '../../../data/local/LocalKazaServisi';
+import type { KazaDefterGorunumu } from '../../../core/kaza/kazaDefteriHesabi';
+import type { KazaHareketi } from '../../../core/kaza/kazaHareketi';
 
-// In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası closure'a erişebilsin)
 const mockStore = new Map<string, string>();
 jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
@@ -35,374 +40,315 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     removeItem: async (k: string) => {
       mockStore.delete(k);
     },
+    getAllKeys: async () => Array.from(mockStore.keys()),
+    multiGet: async (ks: readonly string[]) => ks.map((k) => [k, mockStore.has(k) ? mockStore.get(k)! : null]),
   },
 }));
 
-// Logger sustur
 jest.mock('../../../core/utils/Logger', () => ({
   Logger: { warn: jest.fn(), error: jest.fn(), info: jest.fn(), debug: jest.fn() },
 }));
 
-const DURUM_KEY = DEPOLAMA_ANAHTARLARI.KAZA_DURUMU;
-const TEMPO_KEY = DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS;
+// `otomatikAyarla` gün sonu muhasebesini tembel `require` ile tazeler (bildirim köprüsü).
+const mockMuhasebeTazele = jest.fn().mockResolvedValue(undefined);
+jest.mock('../../../domain/services/YatisHatirlatmaServisi', () => ({
+  YatisHatirlatmaServisi: { getInstance: () => ({ hatirlatmalariGuncelle: mockMuhasebeTazele }) },
+}));
 
+const ONEK = DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK;
 const bugun = () => tarihiISOFormatinaCevir(new Date());
-
-/** Diskten KazaDurumu blob'unu okur (yoksa null). */
-const diskDurumOku = (): KazaDurumu | null => {
-  const v = mockStore.get(DURUM_KEY);
-  return v ? (JSON.parse(v) as KazaDurumu) : null;
-};
-
 const yeniStore = () => configureStore({ reducer: { kaza: kazaReducer } });
 
-const kalan = (d: KazaDurumu, ad: string) =>
-  d.namazlar.find((n) => n.namazAdi === ad)!.kalanBorc;
-const tamamlanan = (d: KazaDurumu, ad: string) =>
-  d.namazlar.find((n) => n.namazAdi === ad)!.tamamlanan;
+const kalan = (d: KazaDefterGorunumu, ad: string) => d.namazlar.find((n) => n.namazAdi === ad)!.kalanBorc;
+const tamamlanan = (d: KazaDefterGorunumu, ad: string) => d.namazlar.find((n) => n.namazAdi === ad)!.tamamlanan;
+
+/** Diskteki bütün (tanınan) hareketler. */
+const diskHareketleri = (): KazaHareketi[] =>
+  Array.from(mockStore.entries())
+    .filter(([k]) => k.startsWith(ONEK))
+    .flatMap(([, v]) => JSON.parse(v) as KazaHareketi[]);
+
+const SIFIR = { sabah: 0, ogle: 0, ikindi: 0, aksam: 0, yatsi: 0, vitir: 0 };
 
 beforeEach(() => {
   mockStore.clear();
+  _testIcinSifirla();
+  jest.clearAllMocks();
 });
-
-// ==================== hataTemizle reducer ====================
 
 describe('hataTemizle', () => {
   it('hata alanını null yapar, diğer state korunur', () => {
     const baslangic = kazaReducer(undefined, { type: '@@INIT' });
-    const hataliState = { ...baslangic, hata: 'bir şey patladı', yukleniyor: true };
-    const sonuc = kazaReducer(hataliState, hataTemizle());
+    const sonuc = kazaReducer({ ...baslangic, hata: 'patladı', yukleniyor: true }, hataTemizle());
     expect(sonuc.hata).toBeNull();
-    expect(sonuc.yukleniyor).toBe(true); // dokunulmadı
+    expect(sonuc.yukleniyor).toBe(true);
   });
 });
-
-// ==================== kazaVerileriniYukle ====================
 
 describe('kazaVerileriniYukle', () => {
   it('pending → yukleniyor true & hata temizlenir', () => {
     const s = kazaReducer(
-      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: false, hata: 'eski' },
+      { ...kazaReducer(undefined, { type: '@@INIT' }), hata: 'eski' },
       { type: kazaVerileriniYukle.pending.type }
     );
     expect(s.yukleniyor).toBe(true);
     expect(s.hata).toBeNull();
   });
 
-  it('boş diskte fulfilled: boş durum yüklenir, istatistik üretilir', async () => {
+  it('boş diskte fulfilled: boş görünüm, istatistik üretilir, otomatik ekleme KAPALI', async () => {
     const store = yeniStore();
     await store.dispatch(kazaVerileriniYukle());
     const st = store.getState().kaza;
     expect(st.yukleniyor).toBe(false);
-    expect(st.kazaDurumu).not.toBeNull();
-    expect(st.kazaDurumu!.namazlar.length).toBeGreaterThan(0);
-    expect(st.istatistik).not.toBeNull();
-    // toplamKalan 0 iken tahmin yok, motivasyon önerisi boş
+    expect(st.kazaDurumu!.toplamKalan).toBe(0);
+    expect(st.kazaDurumu!.otomatik.aktif).toBe(false);
     expect(st.istatistik!.tahminiTamamlanmaTarihi).toBeNull();
-    expect(st.istatistik!.motivasyonOnerileri).toEqual([]);
   });
 
-  it('diskteki tempo geçmişi state.tempoGecmis olarak yüklenir', async () => {
-    const tempo = { '2026-01-01': 5, '2026-01-02': 3 };
-    mockStore.set(TEMPO_KEY, JSON.stringify(tempo));
-    const store = yeniStore();
-    await store.dispatch(kazaVerileriniYukle());
-    expect(store.getState().kaza.tempoGecmis).toEqual(tempo);
-  });
-
-  it('gunlukHedefTarihi dünden ise günlük sayaç sıfırlanır', async () => {
-    const durum: KazaDurumu = {
-      namazlar: [{ namazAdi: 'Sabah', toplamBorc: 5, kalanBorc: 5, tamamlanan: 0 }],
-      toplamKalan: 5,
-      toplamTamamlanan: 0,
-      gunlukHedef: 3,
-      gunlukTamamlanan: 7, // dünkü ilerleme
-      gunlukHedefTarihi: '2000-01-01', // geçmiş tarih → sıfırlanmalı
-      toplamGizleMi: false,
-      guncellemeTarihi: '2000-01-01',
-    };
-    mockStore.set(DURUM_KEY, JSON.stringify(durum));
-    const store = yeniStore();
-    await store.dispatch(kazaVerileriniYukle());
-    const st = store.getState().kaza.kazaDurumu!;
-    expect(st.gunlukTamamlanan).toBe(0);
-    expect(st.gunlukHedefTarihi).toBe(bugun());
-  });
-
-  it('gunlukHedefTarihi bugün ise günlük sayaç KORUNUR', async () => {
-    const durum: KazaDurumu = {
-      namazlar: [{ namazAdi: 'Sabah', toplamBorc: 5, kalanBorc: 5, tamamlanan: 0 }],
-      toplamKalan: 5,
-      toplamTamamlanan: 0,
-      gunlukHedef: 3,
-      gunlukTamamlanan: 4,
-      gunlukHedefTarihi: bugun(),
-      toplamGizleMi: false,
-      guncellemeTarihi: bugun(),
-    };
-    mockStore.set(DURUM_KEY, JSON.stringify(durum));
-    const store = yeniStore();
-    await store.dispatch(kazaVerileriniYukle());
-    expect(store.getState().kaza.kazaDurumu!.gunlukTamamlanan).toBe(4);
-  });
-
-  it('rejected: kaza servisi başarısız olursa hata state\'e yazılır', async () => {
-    // localKazaDurumunuGetir bozuk veride bile başarılı döner; reddi tetiklemek için
-    // servisi doğrudan mock'layıp {basarili:false} döndürmek gerekir. Burada thunk'ın
-    // rejected reducer'ını izole test ediyoruz (gerçek reddedilmiş action ile).
-    const s = kazaReducer(
-      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
-      {
-        type: kazaVerileriniYukle.rejected.type,
-        error: { message: 'Kaza verileri yüklenemedi' },
-      }
-    );
-    expect(s.yukleniyor).toBe(false);
-    expect(s.hata).toBe('Kaza verileri yüklenemedi');
-  });
-
-  it('rejected: error.message yoksa varsayılan mesaj kullanılır', () => {
-    const s = kazaReducer(
-      { ...kazaReducer(undefined, { type: '@@INIT' }), kazaDurumu: null, istatistik: null, tempoGecmis: {}, yukleniyor: true, hata: null },
-      { type: kazaVerileriniYukle.rejected.type, error: {} }
-    );
-    expect(s.hata).toBe('Kaza verileri yüklenemedi');
-  });
-});
-
-// ==================== borcEkle ====================
-
-describe('borcEkle', () => {
-  it('boş state\'ten Sabah\'a borç ekler, toplamlar güncellenir, diske yazılır', async () => {
-    const store = yeniStore();
-    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 10 }));
-    const st = store.getState().kaza.kazaDurumu!;
-    expect(kalan(st, 'Sabah')).toBe(10);
-    expect(st.namazlar.find((n) => n.namazAdi === 'Sabah')!.toplamBorc).toBe(10);
-    expect(st.toplamKalan).toBe(10);
-    // diğer namazlar etkilenmedi
-    expect(kalan(st, 'Öğle')).toBe(0);
-    // diske yazıldı
-    expect(kalan(diskDurumOku()!, 'Sabah')).toBe(10);
-  });
-
-  it('mevcut borca ekler (kümülatif), istatistik tahmini üretir', async () => {
-    const store = yeniStore();
-    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 5 }));
-    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 3 }));
-    const st = store.getState().kaza;
-    expect(kalan(st.kazaDurumu!, 'Öğle')).toBe(8);
-    expect(st.kazaDurumu!.toplamKalan).toBe(8);
-    // toplamKalan > 0 → motivasyon önerileri var
-    expect(st.istatistik!.motivasyonOnerileri.length).toBeGreaterThan(0);
-  });
-
-  it('guncellemeTarihi ISO damgası yazılır', async () => {
-    const store = yeniStore();
-    await store.dispatch(borcEkle({ namazAdi: 'Vitir', sayi: 1 }));
-    const ts = store.getState().kaza.kazaDurumu!.guncellemeTarihi;
-    expect(Number.isNaN(Date.parse(ts))).toBe(false);
-  });
-});
-
-// ==================== kazaTamamla ====================
-
-describe('kazaTamamla', () => {
-  const borcluStoreHazirla = async () => {
-    const store = yeniStore();
-    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 10 }));
-    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 4 }));
-    return store;
-  };
-
-  it('belirli namazdan tamamlama: kalan düşer, tamamlanan artar, günlük sayaç artar', async () => {
-    const store = await borcluStoreHazirla();
-    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 3 }));
-    const st = store.getState().kaza;
-    const d = st.kazaDurumu!;
-    expect(kalan(d, 'Sabah')).toBe(7);
-    expect(tamamlanan(d, 'Sabah')).toBe(3);
-    expect(d.gunlukTamamlanan).toBe(3);
-    // Öğle dokunulmadı
-    expect(kalan(d, 'Öğle')).toBe(4);
-    // tempo geçmişine bugünün toplamı yazıldı
-    expect(st.tempoGecmis[bugun()]).toBe(3);
-  });
-
-  it('REGRESYON: store dışından diske eklenen borç (bildirimden "Kazaya ekle") SİLİNMEZ', async () => {
-    const store = await borcluStoreHazirla();
-    // Bildirim aksiyonu store'u atlayıp diske yazar (#290); bellekteki durum bayat kalır.
-    const disk = diskDurumOku()!;
+  it('eski KAZA_DURUMU göç edilir ve göç öncesi tempo geçmişi okunur', async () => {
     mockStore.set(
-      DURUM_KEY,
-      JSON.stringify({
-        ...disk,
-        namazlar: disk.namazlar.map((n) =>
-          n.namazAdi === 'Akşam' ? { ...n, toplamBorc: 1, kalanBorc: 1 } : n
-        ),
-        toplamKalan: disk.toplamKalan + 1,
-      })
+      DEPOLAMA_ANAHTARLARI.KAZA_DURUMU,
+      JSON.stringify({ namazlar: [{ namazAdi: 'Sabah', kalanBorc: 5, tamamlanan: 2, toplamBorc: 7 }], gunlukHedef: 3 })
     );
-    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
-    expect(kalan(diskDurumOku()!, 'Akşam')).toBe(1);
-    expect(kalan(store.getState().kaza.kazaDurumu!, 'Akşam')).toBe(1);
-    expect(kalan(diskDurumOku()!, 'Sabah')).toBe(9);
-  });
-
-  it('disk kaydı BOZUKSA bellekteki durumla devam edilir (bozuk kaydın üstüne boş durum yazılmaz)', async () => {
-    const store = await borcluStoreHazirla();
-    mockStore.set(DURUM_KEY, 'null');
-    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
-    expect(kalan(store.getState().kaza.kazaDurumu!, 'Öğle')).toBe(4);
-  });
-
-  it('kalandan fazla istense bile 0\'ın altına inmez (clamp); fazlalık tamamlanana sayılmaz', async () => {
-    const store = await borcluStoreHazirla();
-    await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 100 }));
-    const d = store.getState().kaza.kazaDurumu!;
-    expect(kalan(d, 'Öğle')).toBe(0);
-    expect(tamamlanan(d, 'Öğle')).toBe(4); // 100 değil, gerçek kalan kadar
-    // günlük tamamlanan gerçekleşen miktar (4) olmalı, 100 değil
-    expect(d.gunlukTamamlanan).toBe(4);
-  });
-
-  it('genel tamamlama (namazAdi=null): en yüksek kalandan düşer, orijinal sıra korunur', async () => {
-    const store = await borcluStoreHazirla(); // Sabah=10, Öğle=4
-    await store.dispatch(kazaTamamla({ namazAdi: null, sayi: 3 }));
-    const d = store.getState().kaza.kazaDurumu!;
-    // en yüksek kalan Sabah(10) → 3 ondan düşer
-    expect(kalan(d, 'Sabah')).toBe(7);
-    expect(kalan(d, 'Öğle')).toBe(4);
-    // sıra korundu: ilk eleman hala Sabah
-    expect(d.namazlar[0].namazAdi).toBe('Sabah');
-    expect(d.gunlukTamamlanan).toBe(3);
-  });
-
-  it('genel tamamlama bir vakti aşınca sonraki en yüksek vakte taşar', async () => {
-    const store = await borcluStoreHazirla(); // Sabah=10, Öğle=4
-    // 13 düş: Sabah(10) biter, kalan 3 Öğle'den düşer
-    await store.dispatch(kazaTamamla({ namazAdi: null, sayi: 13 }));
-    const d = store.getState().kaza.kazaDurumu!;
-    expect(kalan(d, 'Sabah')).toBe(0);
-    expect(kalan(d, 'Öğle')).toBe(1);
-    expect(d.toplamKalan).toBe(1);
-    expect(d.gunlukTamamlanan).toBe(13);
-  });
-
-  it('borç yokken genel tamamlama günlük sayacı bozmaz (gerçek tamamlanan 0)', async () => {
+    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS, JSON.stringify({ '2026-01-01': 5 }));
     const store = yeniStore();
-    await store.dispatch(kazaTamamla({ namazAdi: null, sayi: 5 }));
+    await store.dispatch(kazaVerileriniYukle());
     const d = store.getState().kaza.kazaDurumu!;
-    expect(d.toplamKalan).toBe(0);
-    expect(d.gunlukTamamlanan).toBe(0);
+    expect(kalan(d, 'Sabah')).toBe(5);
+    expect(tamamlanan(d, 'Sabah')).toBe(2);
+    expect(d.gunlukHedef).toBe(3);
+    expect(store.getState().kaza.tempoGecmis['2026-01-01']).toBe(5);
   });
 
-  it('art arda tamamlamalar günlük sayacı kümülatif biriktirir', async () => {
-    const store = await borcluStoreHazirla();
-    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 2 }));
-    await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 3 }));
-    const d = store.getState().kaza.kazaDurumu!;
-    expect(d.gunlukTamamlanan).toBe(5);
-    expect(store.getState().kaza.tempoGecmis[bugun()]).toBe(5);
+  it('bozuk eski kayıtta REDDETMEZ: fulfilled + "eski kayıt okunamadı" bayrağı (sonsuz yükleme yok)', async () => {
+    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU, '{kesik');
+    const store = yeniStore();
+    const sonuc = await store.dispatch(kazaVerileriniYukle());
+    expect(kazaVerileriniYukle.fulfilled.match(sonuc)).toBe(true);
+    expect(store.getState().kaza.kazaDurumu).not.toBeNull();
+    expect(store.getState().kaza.eskiKayitBozuk).toBe(true);
+  });
+
+  it('JSON null eski kayıt (eski "üzerine yaz") BOZUK DEĞİLDİR: "okunamadı" bandı çıkmaz', async () => {
+    mockStore.set(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU, 'null');
+    const store = yeniStore();
+    await store.dispatch(kazaVerileriniYukle());
+    expect(store.getState().kaza.kazaDurumu).not.toBeNull();
+    expect(store.getState().kaza.eskiKayitBozuk).toBe(false);
+  });
+
+  it('bozuk ay anahtarı bildirilir, sayfa yine açılır', async () => {
+    mockStore.set(`${ONEK}2026-03`, '{bozuk');
+    const store = yeniStore();
+    await store.dispatch(kazaVerileriniYukle());
+    expect(store.getState().kaza.bozukAylar).toEqual([`${ONEK}2026-03`]);
+    expect(store.getState().kaza.kazaDurumu).not.toBeNull();
   });
 });
 
-// ==================== sihirbazIleBaslat ====================
-
-describe('sihirbazIleBaslat', () => {
-  it('toplam borcu 6 vakte dağıtır, toplamKalan dağıtılan toplamına eşittir', async () => {
+describe('borcEkle / kazaTamamla', () => {
+  it('borç ekler (kümülatif), her işlem diske BİR hareket olarak yazılır', async () => {
     const store = yeniStore();
-    // Bugün doğmuş biri için (ergenlik gelecekte) borç 0 olur; geçmiş doğum tarihi ver
-    await store.dispatch(
-      sihirbazIleBaslat({ dogumTarihi: '1990-01-01', ergenlikYasi: 14, kildigiTahminiYuzdesi: 0 })
-    );
-    const d = store.getState().kaza.kazaDurumu!;
-    const dagilimToplami = d.namazlar.reduce((s, n) => s + n.kalanBorc, 0);
-    expect(d.toplamKalan).toBe(dagilimToplami);
-    expect(d.toplamKalan).toBeGreaterThan(0);
-    // toplamBorc = kalan + tamamlanan invariantı (tamamlanan 0)
-    d.namazlar.forEach((n) => expect(n.toplamBorc).toBe(n.kalanBorc + n.tamamlanan));
-    // diske yazıldı
-    expect(diskDurumOku()!.toplamKalan).toBe(d.toplamKalan);
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 3 }));
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 2, not: 'Yolculuk' }));
+    expect(kalan(store.getState().kaza.kazaDurumu!, 'Sabah')).toBe(5);
+    const h = diskHareketleri();
+    expect(h).toHaveLength(2);
+    expect(h.find((x) => x.adet === 2)).toMatchObject({ kaynak: 'manuel', vakit: 'sabah', not: 'Yolculuk' });
   });
 
-  it('ergenlik geleceyse (sıfır borç) tüm kalanlar 0 olur', async () => {
+  it('sıfır/negatif/kesirli sayı yazılmaz (rejected)', async () => {
     const store = yeniStore();
-    await store.dispatch(
-      sihirbazIleBaslat({ dogumTarihi: '2025-01-01', ergenlikYasi: 14, kildigiTahminiYuzdesi: 0 })
-    );
-    const d = store.getState().kaza.kazaDurumu!;
-    expect(d.toplamKalan).toBe(0);
-    d.namazlar.forEach((n) => expect(n.kalanBorc).toBe(0));
+    for (const sayi of [0, -2, 1.5]) {
+      const r = await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi }));
+      expect(borcEkle.rejected.match(r)).toBe(true);
+    }
+    expect(diskHareketleri()).toEqual([]);
   });
 
-  it('mevcut tamamlanan değeri sihirbaz sonrası toplamBorc invariantında korunur', async () => {
+  it('tamamlama: kalan düşer, tamamlanan ve BUGÜNÜN sayacı artar', async () => {
     const store = yeniStore();
-    // önce bir tamamlama yap (Sabah'a borç ekle + 2 tamamla)
+    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 4 }));
+    await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 1 }));
+    await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 2 }));
+    const d = store.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Öğle')).toBe(1);
+    expect(tamamlanan(d, 'Öğle')).toBe(3);
+    expect(d.gunlukTamamlanan).toBe(3);
+    expect(d.gunlukHedefTarihi).toBe(bugun());
+  });
+
+  it('REGRESYON: store dışından eklenen borç (bildirimden "Kazaya ekle") SİLİNMEZ', async () => {
+    const store = yeniStore();
+    await store.dispatch(borcEkle({ namazAdi: 'Öğle', sayi: 2 }));
+    await localKazayaBorcEkle([{ gun: gunEkle(bugun(), -1), vakit: 'sabah' }]);
+    await store.dispatch(kazaTamamla({ namazAdi: 'Öğle', sayi: 1 }));
+    const d = store.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Öğle')).toBe(1);
+    expect(kalan(d, 'Sabah')).toBe(1);
+  });
+
+  it('kalandan fazla kılınırsa kalan 0, fazlası AYRI gösterilir; sonra eklenen borç fazladan DÜŞÜLMEZ', async () => {
+    const store = yeniStore();
+    await store.dispatch(borcEkle({ namazAdi: 'Yatsı', sayi: 2 }));
+    await store.dispatch(kazaTamamla({ namazAdi: 'Yatsı', sayi: 5 }));
+    let d = store.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Yatsı')).toBe(0);
+    expect(d.fazla['Yatsı']).toBe(3);
+    await store.dispatch(borcEkle({ namazAdi: 'Yatsı', sayi: 4 }));
+    d = store.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Yatsı')).toBe(4);
+    expect(d.fazla['Yatsı']).toBe(3);
+  });
+
+  it('fazlayı sıfırla: fazla 0 olur, kalan DEĞİŞMEZ; işlem geçmişte −düzeltme olarak durur', async () => {
+    const store = yeniStore();
+    await store.dispatch(borcEkle({ namazAdi: 'Akşam', sayi: 1 }));
+    await store.dispatch(kazaTamamla({ namazAdi: 'Akşam', sayi: 4 }));
+    await store.dispatch(borcEkle({ namazAdi: 'Akşam', sayi: 2 }));
+    await store.dispatch(fazlayiSifirla());
+    const d = store.getState().kaza.kazaDurumu!;
+    expect(d.toplamFazla).toBe(0);
+    expect(kalan(d, 'Akşam')).toBe(2);
+    expect(diskHareketleri().find((h) => h.kaynak === 'duzeltme')).toMatchObject({ vakit: 'aksam', adet: -3 });
+  });
+});
+
+describe('yeniTabanUygula', () => {
+  const taban = { ...SIFIR, sabah: 100, ogle: 100 };
+
+  it('yeni taban yazılır; elle eklenen ve kılınan yeni tabana kendiliğinden uygulanır', async () => {
+    const store = yeniStore();
     await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 5 }));
     await store.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 2 }));
-    const tamamlananOnce = tamamlanan(store.getState().kaza.kazaDurumu!, 'Sabah');
-    expect(tamamlananOnce).toBe(2);
-    // sihirbazı çalıştır
-    await store.dispatch(
-      sihirbazIleBaslat({ dogumTarihi: '1990-01-01', ergenlikYasi: 14, kildigiTahminiYuzdesi: 0 })
-    );
-    const sabah = store.getState().kaza.kazaDurumu!.namazlar.find((n) => n.namazAdi === 'Sabah')!;
-    expect(sabah.tamamlanan).toBe(2); // korundu
-    expect(sabah.toplamBorc).toBe(sabah.kalanBorc + 2); // invariant
+    await store.dispatch(yeniTabanUygula({ taban, ortusme: 'ayrica' }));
+    const d = store.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Sabah')).toBe(103);
+    expect(kalan(d, 'Öğle')).toBe(100);
+    expect(d.taban?.toplam).toBe(200);
+  });
+
+  it('önceki taban SİLİNMEZ (tarihçe); en son taban geçerli', async () => {
+    const store = yeniStore();
+    await store.dispatch(yeniTabanUygula({ taban, ortusme: 'ayrica' }));
+    await store.dispatch(yeniTabanUygula({ taban: { ...SIFIR, sabah: 7 }, ortusme: 'ayrica' }));
+    expect(diskHareketleri().filter((h) => h.kaynak === 'taban')).toHaveLength(2);
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(7);
+  });
+
+  it('"gizle" seçimi örtüşen bildirim kayıtlarını TEK geri alınabilir temizlikle gizler', async () => {
+    const store = yeniStore();
+    await localKazayaBorcEkle([{ gun: gunEkle(bugun(), -3), vakit: 'ogle' }]);
+    await store.dispatch(yeniTabanUygula({ taban, ortusme: 'gizle' }));
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(200);
+    const temizlik = diskHareketleri().filter((h) => h.kaynak === 'temizlik');
+    expect(temizlik).toHaveLength(1);
+    await store.dispatch(temizlikGeriAl({ temizlikId: temizlik[0].id }));
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(201);
   });
 });
 
-// ==================== gunlukHedefiGuncelle ====================
-
-describe('gunlukHedefiGuncelle', () => {
-  it('hedefi günceller ve diske yazar', async () => {
+describe('otomatikAyarla', () => {
+  it('açar; defterde otoAyar hareketi olarak durur ve gün sonu muhasebesi tazelenir', async () => {
     const store = yeniStore();
-    await store.dispatch(gunlukHedefiGuncelle({ hedef: 8 }));
-    expect(store.getState().kaza.kazaDurumu!.gunlukHedef).toBe(8);
-    expect(diskDurumOku()!.gunlukHedef).toBe(8);
+    await store.dispatch(otomatikAyarla({ aktif: true, kayitsiz: 'sor' }));
+    expect(store.getState().kaza.kazaDurumu!.otomatik.aktif).toBe(true);
+    expect(diskHareketleri().find((h) => h.kaynak === 'otoAyar')).toMatchObject({ aktif: true, kayitsiz: 'sor' });
+    expect(mockMuhasebeTazele).toHaveBeenCalled();
   });
 
-  it('negatif hedef 0\'a kenetlenir (Math.max)', async () => {
+  it('geçersiz, gelecekteki ya da bir yıldan eski başlangıç YAZILMAZ (rejected)', async () => {
     const store = yeniStore();
-    await store.dispatch(gunlukHedefiGuncelle({ hedef: -5 }));
+    for (const gun of ['15.10.2026', gunEkle(bugun(), 3), gunEkle(bugun(), -400)]) {
+      const r = await store.dispatch(otomatikAyarla({ aktif: true, gun }));
+      expect(otomatikAyarla.rejected.match(r)).toBe(true);
+    }
+    expect(diskHareketleri()).toEqual([]);
+  });
+
+  it('geçmiş tarama: başlangıç geriye alınınca işaretsiz günler sorulur ("bana sorun")', async () => {
+    const store = yeniStore();
+    await store.dispatch(otomatikAyarla({ aktif: true, gun: gunEkle(bugun(), -3), kayitsiz: 'sor' }));
+    expect(store.getState().kaza.kazaDurumu!.bekleyenGunler.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('gunKarariVer', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it('birden çok günü TEK işlemde karar verir; kimlikler aynı ms ve sabit rastgelede bile tekil', async () => {
+    jest.spyOn(Math, 'random').mockReturnValue(0);
+    const store = yeniStore();
+    await store.dispatch(otomatikAyarla({ aktif: true, gun: gunEkle(bugun(), -4), kayitsiz: 'sor' }));
+    const bekleyen = store.getState().kaza.kazaDurumu!.bekleyenGunler;
+    expect(bekleyen.length).toBeGreaterThanOrEqual(3);
+    await store.dispatch(gunKarariVer({ gunler: bekleyen, karar: 'ekle' }));
+    const kararlar = diskHareketleri().filter((h) => h.kaynak === 'gunKarari');
+    expect(new Set(kararlar.map((h) => h.id)).size).toBe(bekleyen.length);
+    const d = store.getState().kaza.kazaDurumu!;
+    expect(d.bekleyenGunler).toEqual([]);
+    // 5 farz + vitir (varsayılan ortak mezhep Hanefî: vitir vaciptir).
+    expect(d.ozet.otomatik).toBe(bekleyen.length * 6);
+  });
+
+  it('"yok say" kararı izdüşüme katmaz', async () => {
+    const store = yeniStore();
+    await store.dispatch(otomatikAyarla({ aktif: true, gun: gunEkle(bugun(), -2), kayitsiz: 'sor' }));
+    const bekleyen = store.getState().kaza.kazaDurumu!.bekleyenGunler;
+    await store.dispatch(gunKarariVer({ gunler: bekleyen, karar: 'yoksay' }));
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(0);
+    expect(store.getState().kaza.kazaDurumu!.bekleyenGunler).toEqual([]);
+  });
+});
+
+describe('temizlikUygula / temizlikGeriAl', () => {
+  it('seçili kayıtları gizler (silmez) ve geri alınabilir', async () => {
+    const store = yeniStore();
+    await store.dispatch(borcEkle({ namazAdi: 'İkindi', sayi: 6 }));
+    const id = diskHareketleri()[0].id;
+    const r = await store.dispatch(temizlikUygula({ hedefIdler: [id] }));
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(0);
+    expect(diskHareketleri().some((h) => h.id === id)).toBe(true);
+    const temizlikId = (r.payload as { temizlikId: string }).temizlikId;
+    await store.dispatch(temizlikGeriAl({ temizlikId }));
+    expect(store.getState().kaza.kazaDurumu!.toplamKalan).toBe(6);
+  });
+
+  it('boş seçim yazılmaz', async () => {
+    const r = await yeniStore().dispatch(temizlikUygula({ hedefIdler: [] }));
+    expect(temizlikUygula.rejected.match(r)).toBe(true);
+  });
+});
+
+describe('gunlukHedefiGuncelle / gizlemeToggle', () => {
+  it('hedefi defter ayarına yazar; negatif 0\'a kenetlenir', async () => {
+    const store = yeniStore();
+    await store.dispatch(gunlukHedefiGuncelle({ hedef: 7 }));
+    expect(store.getState().kaza.kazaDurumu!.gunlukHedef).toBe(7);
+    await store.dispatch(gunlukHedefiGuncelle({ hedef: -3 }));
     expect(store.getState().kaza.kazaDurumu!.gunlukHedef).toBe(0);
+    expect(JSON.parse(mockStore.get(DEPOLAMA_ANAHTARLARI.KAZA_AYARLARI)!).gunlukHedef).toBe(0);
   });
-});
 
-// ==================== gizlemeToggle ====================
-
-describe('gizlemeToggle', () => {
-  it('toplamGizleMi değerini tersine çevirir (false→true)', async () => {
+  it('toplamGizleMi iki kez toggle başa döner', async () => {
     const store = yeniStore();
     await store.dispatch(gizlemeToggle());
     expect(store.getState().kaza.kazaDurumu!.toplamGizleMi).toBe(true);
-    expect(diskDurumOku()!.toplamGizleMi).toBe(true);
-  });
-
-  it('iki kez toggle başa döner (true→false)', async () => {
-    const store = yeniStore();
-    await store.dispatch(gizlemeToggle());
     await store.dispatch(gizlemeToggle());
     expect(store.getState().kaza.kazaDurumu!.toplamGizleMi).toBe(false);
   });
 });
 
-// ==================== entegrasyon: yükle → ekle → tamamla → kalıcılık ====================
-
 describe('entegrasyon: yaşam döngüsü kalıcılığı', () => {
-  it('borç ekleyip tamamlanan ilerleme yeniden yüklendiğinde korunur', async () => {
-    const store1 = yeniStore();
-    await store1.dispatch(borcEkle({ namazAdi: 'İkindi', sayi: 6 }));
-    await store1.dispatch(kazaTamamla({ namazAdi: 'İkindi', sayi: 2 }));
-
-    // yeni store ile diskten yükle
-    const store2 = yeniStore();
-    await store2.dispatch(kazaVerileriniYukle());
-    const d = store2.getState().kaza.kazaDurumu!;
-    expect(kalan(d, 'İkindi')).toBe(4);
-    expect(tamamlanan(d, 'İkindi')).toBe(2);
-    expect(d.toplamKalan).toBe(4);
+  it('borç ekleyip kılınan ilerleme yeni bir store ile yeniden yüklendiğinde korunur', async () => {
+    const s1 = yeniStore();
+    await s1.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 5 }));
+    await s1.dispatch(kazaTamamla({ namazAdi: 'Sabah', sayi: 1 }));
+    const s2 = yeniStore();
+    await s2.dispatch(kazaVerileriniYukle());
+    const d = s2.getState().kaza.kazaDurumu!;
+    expect(kalan(d, 'Sabah')).toBe(4);
+    expect(tamamlanan(d, 'Sabah')).toBe(1);
   });
 });
 

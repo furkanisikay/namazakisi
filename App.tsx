@@ -35,6 +35,7 @@ import { cumaHatirlatmaAyarlariniYukle } from './src/presentation/store/cumaHati
 import { yatisHatirlatmaAyarlariniYukle } from './src/presentation/store/yatisHatirlatmaSlice';
 import { YatisHatirlatmaServisi } from './src/domain/services/YatisHatirlatmaServisi';
 import { kazaVerileriniYukle } from './src/presentation/store/kazaSlice';
+import * as KazaDefteriServisi from './src/domain/services/KazaDefteriServisi';
 import { CamiyeGitHatirlatmaServisi } from './src/domain/services/CamiyeGitHatirlatmaServisi';
 import { camiyeGitAyarlariniYukle } from './src/presentation/store/camiyeGitSlice';
 import { TakvimCakismaServisi } from './src/domain/services/TakvimCakismaServisi';
@@ -327,6 +328,14 @@ const AppIcerik: React.FC = () => {
         }
         // Takvim çakışması (issue #291): kılınan vaktin uyarısı iptal edilir.
         TakvimCakismaServisi.getInstance().baslat();
+        // Kaza Defteri 2.0: kılınmışlık değişince otomatik kaza tarama günlüğü
+        // tazelenir; açılışta kapanmış günler taranır. Açık bir kaza ekranı varsa
+        // tarama sonrası görünüm de tazelenir.
+        KazaDefteriServisi.baslat();
+        KazaDefteriServisi.degisimDinleyicisiniAyarla(() => {
+          if (store.getState().kaza.kazaDurumu) store.dispatch(kazaVerileriniYukle());
+        });
+        KazaDefteriServisi.taramaYap().catch(() => undefined);
       })
       .catch(err => Logger.error('App', 'Logger baslatilamadi', err));
 

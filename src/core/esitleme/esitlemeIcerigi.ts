@@ -12,7 +12,7 @@
  *
  * ÖZET (`icerikOzeti`) "yalnız değiştiyse yükle" kararının ölçüsüdür ve YALNIZ
  * birleştirmenin YAKINSADIĞI görünüme bakar: işaretli namazlar, kılınan vakitler,
- * rozet kimlikleri, bonus puan, en uzun seri, kaza ilerlemesi, kaza temposu. Cihaza
+ * rozet kimlikleri, bonus puan, en uzun seri, kaza HAREKET KİMLİKLERİ, kaza temposu. Cihaza
  * özgü kalan alanlar (güncel seri ayrıntısı, rozet tarihleri) özete girseydi iki
  * cihaz HİÇ aynı özete ulaşamaz ve her eşitlemede birbirinin üzerine yükleme
  * yapardı (sonsuz ping-pong).
@@ -22,6 +22,7 @@ import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex } from '@noble/hashes/utils';
 import naclUtil from 'tweetnacl-util';
 import { YedekPayload, NamazGunleri, GunNamazHaritasi } from '../types/YedeklemeTipleri';
+import { bilinmeyenleriBirlestir, hareketleriAyristir, hareketleriBirlestir } from '../kaza/kazaHareketi';
 
 const TARIH_BICIMI = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -68,6 +69,19 @@ const temizTempo = (deger: unknown): Record<string, number> => {
   return sonuc;
 };
 
+/**
+ * Kaza defteri hareketlerini doğrular ve kimliğe göre tekilleştirir (sıralı →
+ * aynı küme aynı dizi). Bu sürümün çözemediği ama yapısal olarak geçerli öğe
+ * (yeni sürümün hareketi) HAM olarak KORUNUR — atılsaydı bu cihaz onu buluttan
+ * siler ve iki cihazın özeti hiç buluşmazdı. Yapısız öğe atlanır.
+ */
+const temizKazaHareketleri = (deger: unknown): unknown[] => {
+  const { taninan, bilinmeyen } = hareketleriAyristir(deger);
+  const birlesik = hareketleriBirlestir(taninan);
+  const taninanIdler = new Set(birlesik.map((h) => h.id));
+  return [...birlesik, ...bilinmeyenleriBirlestir(bilinmeyen).filter((b) => !taninanIdler.has(b.id))];
+};
+
 /** Yerel anlık görüntüyü buluta gidecek (azaltılmış) içeriğe indirir. */
 export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
   return {
@@ -78,8 +92,12 @@ export function esitlemeIcerigineIndir(yerel: YedekPayload): YedekPayload {
     seviye: null,
     bonusPuan: sonluSayi(yerel.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
+    // Kaza Defteri 2.0: değişmez hareketler + defterden TÜRETİLMİŞ eski şekilli
+    // anlık görüntü (`eskiAnlikGoruntuUret`). Görüntü yalnız ESKİ sürümlü cihazlar
+    // içindir (onların "daha ilerlemiş olanı seç" kuralı yeni cihazı görsün).
     kaza: nesneMi(yerel.kaza) ? yerel.kaza : null,
     kazaTempo: temizTempo(yerel.kazaTempo),
+    kazaHareketleri: temizKazaHareketleri(yerel.kazaHareketleri),
     ayarlar: {},
   };
 }
@@ -102,8 +120,15 @@ export function icerikNormalizeEt(deger: unknown): YedekPayload | null {
     seviye: null,
     bonusPuan: sonluSayi(deger.bonusPuan),
     istatistik: { toplamKilinan: 0, mukemmelGun: 0, toparlanma: 0 },
+    // Eski sürümden gelen anlık görüntü: defter boşsa göç, doluysa yalnız
+    // "en az bu kadar kılındı" tabanı (`eskiGorunumHareketi`).
     kaza: nesneMi(deger.kaza) ? deger.kaza : null,
     kazaTempo: temizTempo(deger.kazaTempo),
+    // Alan YOKSA (eski sürümün yükü) `undefined` kalır: birleştirme eski cihazı
+    // bundan tanır. Boş dizi = yeni sürüm, boş defter.
+    ...(Array.isArray(deger.kazaHareketleri)
+      ? { kazaHareketleri: temizKazaHareketleri(deger.kazaHareketleri) }
+      : {}),
     ayarlar: {},
   };
 }
@@ -136,14 +161,20 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
     ([tarih, vakitler]) => [tarih, [...vakitler].sort()] as const
   );
   const seri = indirgenmis.seri as { enUzunSeri?: unknown } | null;
-  const kaza = indirgenmis.kaza as { toplamTamamlanan?: unknown } | null;
   return {
     namaz: namaz.sort((a, b) => a[0].localeCompare(b[0])),
     kilinan: kilinan.sort((a, b) => a[0].localeCompare(b[0])),
     rozetler: Array.from(new Set(indirgenmis.rozetler.map(rozetKimligi))).sort(),
     bonusPuan: indirgenmis.bonusPuan,
     enUzunSeri: sonluSayi(seri?.enUzunSeri),
-    kazaIlerleme: typeof kaza?.toplamTamamlanan === 'number' ? kaza.toplamTamamlanan : -1,
+    // Kaza Defteri 2.0: ilerleme SAYISI değil, hareket KİMLİK KÜMESİ (G-Set
+    // birleşimi yakınsar → iki cihaz aynı özete ulaşır, ping-pong yok).
+    // Çözülemeyen (yeni sürüm) öğeler de sayılır: onları koruyan iki cihaz aynı
+    // özete ulaşsın.
+    kazaHareketleri: (indirgenmis.kazaHareketleri ?? [])
+      .map((h) => (h as { id?: unknown }).id)
+      .filter((id): id is string => typeof id === 'string')
+      .sort(),
     kazaTempo: indirgenmis.kazaTempo,
   };
 };
@@ -151,4 +182,36 @@ const yakinsayanGorunum = (icerik: YedekPayload): unknown => {
 /** İçeriğin yakınsayan görünümünün SHA-256 özeti (hex). */
 export function icerikOzeti(icerik: YedekPayload): string {
   return bytesToHex(sha256(naclUtil.decodeUTF8(kanonikJson(yakinsayanGorunum(icerik)))));
+}
+
+// ---------------------------------------------------------------------------
+// Karışık sürüm (eski sürümlü cihaz) — yükleme kararı
+// ---------------------------------------------------------------------------
+
+/** Eski sürümün (Kaza Defteri 1.x) yükü: kaza hareket alanı hiç yok. */
+export const eskiSurumYukuMu = (icerik: YedekPayload): boolean => !Array.isArray(icerik.kazaHareketleri);
+
+/** Eski sürümün kaza ilerleme ölçüsü (yoksa -1; eski motorla birebir). */
+const eskiKazaIlerlemesi = (kaza: unknown): number => {
+  const t = (kaza as { toplamTamamlanan?: unknown } | null)?.toplamTamamlanan;
+  return typeof t === 'number' && Number.isFinite(t) ? t : -1;
+};
+
+/**
+ * Eski sürümlü cihazın yükünü indirip birleştirdikten sonra birleşik hâli
+ * YÜKLEMEK GEREKİR Mİ? Eski cihaz hareket kümesini okuyamaz; yalnız işaretleri
+ * (union) ve "daha ilerlemiş" kaza görüntüsünü (`toplamTamamlanan` BÜYÜKSE)
+ * alır. Yerel, ona alabileceği hiçbir şey vermiyorsa yükleme yapılmaz: yeni
+ * cihazın görüntüsü eskininkinden gerideyken (ör. temizlikle gizlenen kılınan)
+ * eski cihaz onu hiç benimsemez ve her yükleme karşı yüklemeyle döner (sonsuz
+ * ping-pong). Hareket kimlikleri kıyasa GİRMEZ (eski yükte hiç yoktur).
+ */
+export function eskiSurumeYuklemeGerekliMi(yerel: YedekPayload, gelen: YedekPayload): boolean {
+  const hareketsiz = (p: YedekPayload): string => {
+    const gorunum = { ...(yakinsayanGorunum(p) as Record<string, unknown>) };
+    delete gorunum.kazaHareketleri;
+    return kanonikJson(gorunum);
+  };
+  if (hareketsiz(yerel) !== hareketsiz(gelen)) return true;
+  return eskiKazaIlerlemesi(yerel.kaza) > eskiKazaIlerlemesi(gelen.kaza);
 }

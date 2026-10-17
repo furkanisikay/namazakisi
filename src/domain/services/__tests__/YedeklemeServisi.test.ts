@@ -39,6 +39,48 @@ jest.mock('../../../core/utils/TarihYardimcisi', () => ({
   bugunuAl: () => '2026-06-14',
 }));
 
+// Kaza Defteri 2.0: yedek, defteri `KazaDefteriServisi.defteriHesapla` ile okur
+// (hareketler + çözülemeyen yeni sürüm öğeleri + türetilmiş görünüm). Bu suite
+// Depolama'yı ve tarih yardımcılarını mock'ladığı için servis de mock'lanır;
+// gerçek türetme `kazaDefteriHesabi.test.ts`'te ölçülür.
+const mockKazaHareketi = {
+  id: 'manuel:1',
+  zaman: '2026-06-14T08:00:00.000Z',
+  cihaz: 'abc123',
+  kaynak: 'manuel',
+  vakit: 'sabah',
+  adet: 2,
+};
+const mockBilinmeyen = { id: 'gelecek:1', zaman: '2026-06-14T09:00:00.000Z', kaynak: 'yeniTur', ek: 1 };
+jest.mock('../KazaDefteriServisi', () => ({
+  defteriHesapla: jest.fn(async () => ({
+    gorunum: {
+      namazlar: [
+        { namazAdi: 'Sabah', kalanBorc: 2, tamamlanan: 1, toplamBorc: 3 },
+        { namazAdi: 'Öğle', kalanBorc: 0, tamamlanan: 0, toplamBorc: 0 },
+      ],
+      toplamKalan: 2,
+      toplamTamamlanan: 1,
+      gunlukHedef: 3,
+      gunlukTamamlanan: 0,
+      gunlukHedefTarihi: '2026-06-14',
+      toplamGizleMi: false,
+      guncellemeTarihi: '2026-06-14T08:00:00.000Z',
+      fazla: {},
+      toplamFazla: 0,
+    },
+    girdi: { hareketler: [mockKazaHareketi] },
+    bilinmeyenler: [mockBilinmeyen],
+    bozukAylar: [],
+    eskiKayitBozuk: false,
+    sonTarama: null,
+    cihaz: 'abc123',
+  })),
+}));
+jest.mock('../../../data/local/LocalKazaServisi', () => ({
+  hareketleriEkle: jest.fn().mockResolvedValue(0),
+}));
+
 // Depolama: tüm metotları kontrol edilebilir mock olarak ver.
 jest.mock('../../../data/local/Depolama', () => ({
   Depolama: {
@@ -177,7 +219,19 @@ describe('YedeklemeServisi — yedekZarfiOlustur', () => {
     expect(payload.seviye).toEqual({ seviye: 3 });
     expect(payload.bonusPuan).toBe(50);
     expect(payload.istatistik).toEqual({ toplamKilinan: 1250, mukemmelGun: 42, toparlanma: 3 });
-    expect(payload.kaza).toEqual({ borclar: {} });
+    // Kaza Defteri 2.0: diskteki eski KAZA_DURUMU DEĞİL, defterden TÜRETİLMİŞ eski
+    // şekilli görüntü (eski sürümlü cihazlar ilerlemeyi görsün) + hareketler.
+    expect(payload.kaza).toMatchObject({
+      toplamKalan: 2,
+      toplamTamamlanan: 1,
+      namazlar: [
+        { namazAdi: 'Sabah', kalanBorc: 2, tamamlanan: 1, toplamBorc: 3 },
+        { namazAdi: 'Öğle', kalanBorc: 0, tamamlanan: 0, toplamBorc: 0 },
+      ],
+    });
+    expect(typeof payload.kaza.defterOzeti).toBe('string');
+    // Çözülemeyen (yeni sürüm) hareket de AYNEN taşınır (ileri uyumluluk).
+    expect(payload.kazaHareketleri).toEqual([mockKazaHareketi, mockBilinmeyen]);
     expect(payload.kazaTempo).toEqual({ '2026-06-14': 2 });
     expect(payload.ayarlar.muhafiz).toEqual({ aktif: true });
     expect(payload.ayarlar.konum).toEqual({ sehir: 'İstanbul' });

@@ -12,7 +12,9 @@ import {
     yatisPlaniOlustur,
     yatisTetikAni,
     yatsiOncesiTetikBilgisi,
+    otomatikKazaSatiri,
     type FarzVakit,
+    type OtomatikKazaBilgisi,
     type VakitPenceresi,
     type YatisAyarlari,
 } from '../yatisPlani';
@@ -117,6 +119,38 @@ describe('yatisIcerigiOlustur', () => {
         }
         expect(yatisKimligiMi('muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_5')).toBe(false);
         expect(yatisKimligiMi('muhafiz_2026-10-13_vakit_ogle_ertele')).toBe(false);
+    });
+});
+
+describe('Kaza Defteri 2.0 — otomatik ekleme satırı (ileriye dönük)', () => {
+    const icerik = (kilinan: FarzVakit[], oto: OtomatikKazaBilgisi | null) =>
+        yatisIcerigiOlustur(GUN, VAKITLER, kilinan, TETIK, AYAR, oto);
+
+    it('otomatik kapalıysa muhasebe metni DEĞİŞMEZ', () => {
+        expect(icerik(['imsak', 'ikindi', 'aksam', 'yatsi'], null)!.govde).toBe(
+            'Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.'
+        );
+    });
+
+    it('açıkken "eklenecek" der, "eklendi" DEMEZ (tetik anında kayıt henüz yazılmamıştır)', () => {
+        const oto = { baslangic: '2026-10-01', kayitsizSor: true };
+        const tek = icerik(['imsak', 'ikindi', 'aksam', 'yatsi'], oto)!;
+        expect(tek.govde).toBe('Kıldıysanız işaretleyin. İşaretlemezseniz namaz günü bitince kazaya eklenecek.');
+        const coklu = icerik(['imsak', 'yatsi'], oto)!;
+        expect(coklu.govde).toMatch(/kazaya eklenecek\.$/);
+        for (const i of [tek, coklu]) expect(i.govde).not.toMatch(/eklendi/);
+    });
+
+    it('aralık öncesindeki gün için satır YOK', () => {
+        const i = icerik(['imsak', 'ikindi', 'aksam', 'yatsi'], { baslangic: '2026-10-14', kayitsizSor: false })!;
+        expect(i.govde).not.toMatch(/eklenecek/);
+    });
+
+    it('hiç işaretsiz gün "bana sorun" tercihinde YAZILMAZ → "size sorulacak" der', () => {
+        expect(otomatikKazaSatiri(GUN, 0, { baslangic: '2026-10-01', kayitsizSor: true })).toBe(
+            "İşaretlemezseniz bu gün Kaza Defteri'nde size sorulacak."
+        );
+        expect(otomatikKazaSatiri(GUN, 0, { baslangic: '2026-10-01', kayitsizSor: false })).toMatch(/kazaya eklenecek/);
     });
 });
 

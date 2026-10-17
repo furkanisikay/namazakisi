@@ -15,6 +15,8 @@ import {
 } from '../YedekBirlestirmeServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import { YedekPayload, KategoriSecimleri, NamazGunleri } from '../../../core/types';
+import { hareketleriAyristir, hareketleriBirlestir, type KazaHareketi } from '../../../core/kaza/kazaHareketi';
+import { defterHesapla, eskiAnlikGoruntuUret } from '../../../core/kaza/kazaDefteriHesabi';
 
 const KILINAN_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
 
@@ -185,8 +187,8 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (akilli)', () => {
     expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.TAKVIM_AYARLARI);
   });
 
-  it('kaza akilli: daha ilerlemiş anlık görüntü gelen ise KAZA_DURUMU=gelen yazılır', () => {
-    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_DURUMU]).toEqual({ toplamTamamlanan: 3 });
+  it('kaza: eski KAZA_DURUMU anlık görüntüsü ARTIK hiçbir yolda yazılmaz (defter hareketlerdir)', () => {
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
   });
 });
 
@@ -241,8 +243,8 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
     expect(plan[DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI]).toBe(0);
   });
 
-  it('kaza kategorisinde KAZA_DURUMU ve KAZA_TEMPO_GECMIS gelenden yazılır', () => {
-    expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_DURUMU]).toEqual({ toplamTamamlanan: 1 });
+  it('kaza kategorisinde KAZA_TEMPO_GECMIS gelenden yazılır; KAZA_DURUMU yazılmaz', () => {
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
     expect(plan[DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS]).toEqual({ g1: 2 });
   });
 
@@ -256,6 +258,29 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (uzerineYaz)', () 
   it('namaz_gun_* çakışan günde gelen değeri yazılır', () => {
     expect(plan[`${DEPOLAMA_ANAHTARLARI.NAMAZ_GUN_ONEK}g1`]).toEqual({ Sabah: false });
     expect(plan[`${KILINAN_ONEK}g1`]).toEqual(['ogle']);
+  });
+});
+
+describe('YedekBirlestirmeServisi — eski yedeğin seferîlik mezhebi ortak ayara taşınır', () => {
+  const eskiYedek = payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { mezhep: 'safii', kartAcik: true }, mezhep: null } });
+
+  it('uzerineYaz: ortak mezhep içermeyen eski yedekte seferîlik mezhebi MEZHEP_AYARI anahtarına da yazılır', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, mezhep: { mezhep: 'hanefi' } } });
+    const plan = birlestirmePlaniOlustur(mevcut, eskiYedek, secimler('uzerineYaz'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI]).toEqual({ mezhep: 'safii' });
+    expect(plan[DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI]).toEqual({ mezhep: 'safii', kartAcik: true });
+  });
+
+  it('kullanıcının BİLİNÇLİ seçtiği ortak mezhep eski yedeğin seferîlik mezhebiyle EZİLMEZ', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, mezhep: { mezhep: 'hanefi', secildi: true } } });
+    const plan = birlestirmePlaniOlustur(mevcut, eskiYedek, secimler('uzerineYaz'));
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI);
+  });
+
+  it('yeni yedek kendi ortak mezhebini taşır; akıllı strateji ayarlara dokunmaz', () => {
+    const yeni = payloadKur({ ayarlar: { ...bosAyarlar, seferilik: { mezhep: 'hanefi' }, mezhep: { mezhep: 'safii' } } });
+    expect(birlestirmePlaniOlustur(payloadKur({}), yeni, secimler('uzerineYaz'))[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI]).toEqual({ mezhep: 'safii' });
+    expect(birlestirmePlaniOlustur(payloadKur({}), eskiYedek, secimler('akilli'))).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI);
   });
 });
 
@@ -334,14 +359,7 @@ describe('YedekBirlestirmeServisi — birlestirmePlaniOlustur (eksikleriEkle)', 
   });
 });
 
-describe('YedekBirlestirmeServisi — kaza akilli daha-ileri seçimi', () => {
-  it('mevcut daha ilerlemişse gelen seçilmez (KAZA_DURUMU plana eklenmez)', () => {
-    const mevcut = payloadKur({ kaza: { toplamTamamlanan: 10 } });
-    const gelen = payloadKur({ kaza: { toplamTamamlanan: 3 } });
-    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('akilli'));
-    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
-  });
-
+describe('YedekBirlestirmeServisi — kaza tempo', () => {
   it('tempo tarih bazında max ile birleşir', () => {
     const mevcut = payloadKur({ kaza: { toplamTamamlanan: 1 }, kazaTempo: { g1: 5, g2: 1 } });
     const gelen = payloadKur({ kaza: { toplamTamamlanan: 2 }, kazaTempo: { g1: 3, g3: 4 } });
@@ -367,5 +385,144 @@ describe('YedekBirlestirmeServisi — sade görünüm ayarı geri yüklenir (iss
       secimler('uzerineYaz')
     );
     expect(plan[DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI]).toEqual({ kartAcik: false, mezhep: 'safii', ikamet: null });
+  });
+});
+
+// ==================== KAZA DEFTERİ 2.0 ====================
+
+const BAGLAM = { zaman: '2026-10-15T10:00:00.000Z', cihaz: 'yeni1' };
+const ONEK = DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK;
+
+const eskiGoruntu = (sabahKalan: number, sabahKilinan: number) => ({
+  namazlar: [
+    { namazAdi: 'Sabah', kalanBorc: sabahKalan, tamamlanan: sabahKilinan, toplamBorc: sabahKalan + sabahKilinan },
+    { namazAdi: 'Öğle', kalanBorc: 4, tamamlanan: 0, toplamBorc: 4 },
+  ],
+  toplamKalan: sabahKalan + 4,
+  toplamTamamlanan: sabahKilinan,
+  gunlukHedef: 0,
+  gunlukTamamlanan: 0,
+  gunlukHedefTarihi: '2026-10-15',
+  toplamGizleMi: false,
+  guncellemeTarihi: '2026-10-15',
+});
+
+/** Planın kaza ay anahtarlarını mevcut hareketlere uygular (diskteki tek kapının saf ikizi). */
+const plandanHareketler = (plan: Record<string, unknown>, mevcut: KazaHareketi[]): KazaHareketi[] => {
+  const yeni = Object.entries(plan)
+    .filter(([a]) => a.startsWith(ONEK))
+    .flatMap(([, liste]) => hareketleriAyristir(liste).taninan);
+  return hareketleriBirlestir(mevcut, yeni);
+};
+
+const gorunum = (hareketler: KazaHareketi[]) =>
+  defterHesapla({
+    hareketler,
+    bugunNamazGunu: '2026-10-15',
+    bugunTakvim: '2026-10-15',
+    isaretliler: {},
+    ozelGunler: new Set(),
+    vitirDahil: false,
+    gunlukHedef: 0,
+    toplamGizleMi: false,
+  });
+
+const sabah = (hareketler: KazaHareketi[]) => gorunum(hareketler).namazlar.find((n) => n.namazAdi === 'Sabah')!;
+
+/** Yeni sürümün yükü: hareketler + türetilmiş eski şekilli görüntü. */
+const yeniYuk = (hareketler: unknown[]) =>
+  payloadKur({
+    kazaHareketleri: hareketler,
+    kaza: eskiAnlikGoruntuUret(gorunum(hareketleriAyristir(hareketler).taninan)),
+  });
+
+describe('YedekBirlestirmeServisi — Kaza Defteri 2.0 hareketleri', () => {
+  it('ESKİ yedek boş deftere: anlık görüntü göç edilir, kalan BİREBİR aynı', () => {
+    const plan = birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: [] }), payloadKur({ kaza: eskiGoruntu(10, 3) }), secimler('akilli'), BAGLAM);
+    const h = plandanHareketler(plan, []);
+    expect(sabah(h)).toMatchObject({ kalanBorc: 10, tamamlanan: 3 });
+    expect(Object.keys(plan).filter((a) => a.startsWith(ONEK))).toEqual([`${ONEK}2026-10`]);
+  });
+
+  it('ESKİ yedek DOLU deftere: ikinci taban EKLENMEZ, yalnız "en az bu kadar kılındı" girer', () => {
+    const mevcut = plandanHareketler(
+      birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: [] }), payloadKur({ kaza: eskiGoruntu(10, 0) }), secimler('akilli'), BAGLAM),
+      []
+    );
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({ kazaHareketleri: mevcut }),
+      payloadKur({ kaza: eskiGoruntu(7, 3) }),
+      secimler('akilli'),
+      { ...BAGLAM, zaman: '2026-10-16T10:00:00.000Z' }
+    );
+    const sonra = plandanHareketler(plan, mevcut);
+    expect(sonra.filter((h) => h.kaynak === 'taban')).toHaveLength(1);
+    expect(sonra.filter((h) => h.kaynak === 'eskiGorunum')).toHaveLength(1);
+    expect(sabah(sonra)).toMatchObject({ kalanBorc: 7, tamamlanan: 3 });
+  });
+
+  it('bayat eski görüntünün daha BÜYÜK borcu yeni hesabı geri getirmez (borç yönü alınmaz)', () => {
+    const mevcut: KazaHareketi[] = [
+      { id: 't1', zaman: '2026-10-01T00:00:00.000Z', cihaz: 'a', kaynak: 'taban', taban: { sabah: 2, ogle: 0, ikindi: 0, aksam: 0, yatsi: 0, vitir: 0 } },
+    ];
+    const plan = birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: mevcut }), payloadKur({ kaza: eskiGoruntu(500, 0) }), secimler('akilli'), BAGLAM);
+    expect(sabah(plandanHareketler(plan, mevcut)).kalanBorc).toBe(2);
+  });
+
+  it('yeni sürümün yükü: hareketler kimliğe göre birleşir; yalnız etkilenen aylar yazılır', () => {
+    const ortak: KazaHareketi = { id: 'm1', zaman: '2026-09-01T00:00:00.000Z', cihaz: 'a', kaynak: 'manuel', vakit: 'sabah', adet: 1 };
+    const yeni: KazaHareketi = { id: 'm2', zaman: '2026-10-02T00:00:00.000Z', cihaz: 'b', kaynak: 'kilindi', vakit: 'sabah', adet: 1 };
+    const plan = birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: [ortak] }), yeniYuk([ortak, yeni]), secimler('uzerineYaz'), BAGLAM);
+    expect(plan[`${ONEK}2026-10`]).toEqual([yeni]);
+    // Gelende geçen her ay yazılır; tek kapı kimliğe göre birleştirdiği için zararsızdır.
+    expect(plan[`${ONEK}2026-09`]).toEqual([ortak]);
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU);
+  });
+
+  it('İLERİ UYUMLULUK: gelen ve mevcut çözülemeyen öğeler plana aynen girer', () => {
+    const gelecek = { id: 'gelecek:1', zaman: '2026-10-03T00:00:00.000Z', kaynak: 'yeniTur', x: 1 };
+    const mevcutGelecek = { id: 'gelecek:0', zaman: '2026-10-01T00:00:00.000Z', kaynak: 'yeniTur' };
+    const plan = birlestirmePlaniOlustur(
+      payloadKur({ kazaHareketleri: [mevcutGelecek] }),
+      payloadKur({ kazaHareketleri: [gelecek] }),
+      secimler('akilli'),
+      BAGLAM
+    );
+    expect(plan[`${ONEK}2026-10`]).toEqual(expect.arrayContaining([gelecek, mevcutGelecek]));
+  });
+
+  it('KARIŞIK SÜRÜM EŞİTLEMESİ yakınsar: eski cihazda kılınan yeni cihaza gelir, sonra iki taraf durur', () => {
+    // 1) Yeni cihaz A: eski kayıttan göç etmiş (sabah 10 kalan).
+    let a = plandanHareketler(
+      birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: [] }), payloadKur({ kaza: eskiGoruntu(10, 0) }), secimler('akilli'), BAGLAM),
+      []
+    );
+    const aYuku = yeniYuk(a);
+
+    // 2) Eski cihaz B, A'nın türetilmiş görüntüsünü DEĞİŞTİRMEDEN geri yükler → A hiçbir şey eklemez.
+    const degismemis = birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: a }), payloadKur({ kaza: aYuku.kaza }), secimler('akilli'), BAGLAM);
+    expect(Object.keys(degismemis).some((k) => k.startsWith(ONEK))).toBe(false);
+
+    // 3) B'de 3 sabah kazası kılınır; B'nin yükünde hareket alanı YOKTUR (eski sürüm).
+    const bGoruntusu = { ...(aYuku.kaza as object), ...eskiGoruntu(7, 3) };
+    a = plandanHareketler(
+      birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: a }), payloadKur({ kaza: bGoruntusu }), secimler('akilli'), {
+        ...BAGLAM,
+        zaman: '2026-10-16T10:00:00.000Z',
+      }),
+      a
+    );
+    expect(sabah(a)).toMatchObject({ kalanBorc: 7, tamamlanan: 3 });
+
+    // 4) A'nın yeni görüntüsü B'ninkiyle aynı ilerlemede → eski cihazın "daha ilerlemiş olanı seç"
+    //    kuralı artık değiştirmez (ping-pong yok).
+    expect((yeniYuk(a).kaza as { toplamTamamlanan: number }).toplamTamamlanan).toBe(3);
+
+    // 5) B aynı görüntüyü yeniden yüklese de A'ya yeni hareket girmez (idempotent).
+    const tekrar = birlestirmePlaniOlustur(payloadKur({ kazaHareketleri: a }), payloadKur({ kaza: bGoruntusu }), secimler('akilli'), {
+      ...BAGLAM,
+      zaman: '2026-10-17T10:00:00.000Z',
+    });
+    expect(plandanHareketler(tekrar, a)).toHaveLength(a.length);
   });
 });

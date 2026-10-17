@@ -10,7 +10,7 @@ import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 import { eylemSuresiDk } from '../../core/muhafiz/erteleme';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
-import type { KazaNamazAdi } from '../../core/types/KazaTipleri';
+import { VAKIT_ADINDAN_KAZAYA, isoGunMu, type KazaVakti } from '../../core/kaza/kazaHareketi';
 import { localKazayaBorcEkle } from '../../data/local/LocalKazaServisi';
 import { muhafizErtelemesiniIsle } from './MuhafizErtelemeServisi';
 
@@ -118,13 +118,6 @@ interface MuhafizYanitVerisi {
 /** "Kıldım" düğmesi taşıyan bildirim tipleri (muhafız + yatış/muhasebe, issue #290). */
 const KILDIM_TIPLERI = new Set(['muhafiz', 'yatis', 'muhasebe']);
 
-const VAKITTEN_KAZAYA: Record<string, KazaNamazAdi> = {
-  imsak: 'Sabah',
-  ogle: 'Öğle',
-  ikindi: 'İkindi',
-  aksam: 'Akşam',
-  yatsi: 'Yatsı',
-};
 
 const NAFILE_TURLERI = ['kusluk', 'evvabin', 'teheccud'] as const;
 type NafileYanitTuru = (typeof NAFILE_TURLERI)[number];
@@ -348,7 +341,7 @@ export class BildirimServisi {
     // "Kazaya ekle" (issue #290, gun sonu muhasebesi)
     if (actionIdentifier === BILDIRIM_SABITLERI.AKSIYONLAR.KAZAYA_EKLE && tip === 'muhasebe') {
       try {
-        await this.kazayaEkleAksiyonunuIsle(bildirimId, data.kazayaEklenebilir);
+        await this.kazayaEkleAksiyonunuIsle(bildirimId, data.kazayaEklenebilir, data.tarih);
         await islendi();
       } catch (error) {
         Logger.error('BildirimServisi', 'Kazaya ekleme basarisiz, tekrar denenebilir:', error);
@@ -371,16 +364,17 @@ export class BildirimServisi {
 
   /**
    * Gun sonu muhasebesindeki "Kazaya ekle" (issue #290): vakti cikmis eksik
-   * vakit(ler) kaza defterine birer borc olarak eklenir. Kaza ekraninin ekleme
-   * yolu (`borcEklenmisDurum`) kullanilir; store'suz calisir (headless).
-   * Bozuk kaza kaydinin USTUNE YAZILMAZ (`localKazayaBorcEkle` reddeder).
+   * vakit(ler) kaza defterine REFERANSLI `bildirim` hareketi olarak eklenir
+   * (Kaza Defteri 2.0; referans = '<namaz gunu>_<vakit>' → ayni vakit ayrica
+   * otomatik sayilmaz). Defterin tek kapisindan gecer; store'suz (headless).
    */
-  private async kazayaEkleAksiyonunuIsle(bildirimId: string, ham: unknown): Promise<void> {
+  private async kazayaEkleAksiyonunuIsle(bildirimId: string, ham: unknown, tarih: unknown): Promise<void> {
+    if (!isoGunMu(tarih)) return;
     const vakitler = Array.isArray(ham) ? ham.filter((v): v is string => typeof v === 'string') : [];
     const eklenecekler = vakitler
-      .map((v) => VAKITTEN_KAZAYA[v])
-      .filter((ad): ad is KazaNamazAdi => !!ad)
-      .map((namazAdi) => ({ namazAdi, sayi: 1 }));
+      .map((v) => VAKIT_ADINDAN_KAZAYA[v])
+      .filter((v): v is KazaVakti => !!v)
+      .map((vakit) => ({ gun: tarih, vakit }));
     if (eklenecekler.length === 0) return;
 
     const sonuc = await localKazayaBorcEkle(eklenecekler);

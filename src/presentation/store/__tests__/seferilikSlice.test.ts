@@ -43,7 +43,10 @@ describe('seferilikSlice', () => {
       ayarlar: { mezhep: 'safii', kartAcik: true },
       hafiza: { yolculuktaKapatildi: true },
     });
-    await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI, JSON.stringify({ mezhep: 'hanefi' }));
+    // Mezhep ORTAK ayardır (Kaza Defteri 2.0): ilk okumada seferîlik kaydından bir kez
+    // göç edildi; bundan sonra kaynak ortak anahtardır.
+    expect(await oku(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI)).toEqual({ mezhep: 'safii' });
+    await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI, JSON.stringify({ mezhep: 'hanefi' }));
     await store.dispatch(seferilikYukle());
     expect(store.getState().seferilik.ayarlar.mezhep).toBe('safii');
     await store.dispatch(seferilikYukle({ zorla: true }));
@@ -66,6 +69,9 @@ describe('seferilikSlice', () => {
     const store = storeKur();
     await store.dispatch(seferilikAyarlariniGuncelle({ mezhep: 'safii' }));
     await store.dispatch(seferilikAyarlariniGuncelle({ kartAcik: false }));
+    // Mezhep ortak anahtara da yazılır (kaza defteri vitri buradan okur); kullanıcının
+    // BİLİNÇLİ seçimi olarak işaretlenir (eski yedeğin seferîlik mezhebi onu ezmez).
+    expect(await oku(DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI)).toEqual({ mezhep: 'safii', secildi: true });
     expect(await oku(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI)).toEqual({
       kartAcik: false,
       mezhep: 'safii',

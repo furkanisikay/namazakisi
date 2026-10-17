@@ -25,6 +25,15 @@ import {
   YazimPlani,
 } from '../../core/types';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import {
+  bilinmeyenleriBirlestir,
+  hareketAyi,
+  hareketleriAyristir,
+  hareketleriBirlestir,
+  type KazaHareketi,
+} from '../../core/kaza/kazaHareketi';
+import { defterDoluMu, eskiDurumdanHareketler, eskiGorunumHareketi } from '../../core/kaza/kazaDefteriHesabi';
+import { mezhepSecildiMi, seferilikMezhebi } from '../../core/mezhep/mezhepAyari';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -49,6 +58,8 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   sadeGorunum: DEPOLAMA_ANAHTARLARI.SADE_GORUNUM_AYARLARI,
   seferilik: DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI,
   takvimCakisma: DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI,
+  kazaAyarlari: DEPOLAMA_ANAHTARLARI.KAZA_AYARLARI,
+  mezhep: DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI,
 };
 
 /**
@@ -63,14 +74,8 @@ export const AKILLI_SECIMLER: Readonly<KategoriSecimleri> = Object.freeze({
   ayarlar: 'akilli',
 });
 
-/** Kaza anlık görüntüsünü güvenli okumak için dar tip. */
-type KazaGorunumu = { toplamTamamlanan?: number } | null;
-
-/** Kaza ilerleme ölçüsü (yoksa -1; böylece null < 0-ilerleme). */
-const kazaIlerlemesi = (kaza: unknown): number => {
-  const k = kaza as KazaGorunumu;
-  return typeof k?.toplamTamamlanan === 'number' ? k.toplamTamamlanan : -1;
-};
+/** Ham hareket dizisinin bu sürümün çözebildiği kısmı (çözülemeyenler planda ayrıca korunur). */
+export const kazaHareketleriniCoz = (ham: unknown): KazaHareketi[] => hareketleriAyristir(ham).taninan;
 
 /** İki tarafta da bulunan tarihlerin (kümeler kesişimi) sayısı. */
 const cakisanSayisi = (a: Record<string, unknown>, b: Record<string, unknown>): number =>
@@ -90,7 +95,7 @@ export const farkCikar = (mevcut: YedekPayload, gelen: YedekPayload): FarkOzeti 
     mevcutGunSayisi: Object.keys(mevcut.namazGunleri).length,
     cakisanGunSayisi: cakisanSayisi(mevcut.namazGunleri, gelen.namazGunleri),
     rozetVar: gelen.rozetler.length > 0,
-    kazaVar: gelen.kaza != null,
+    kazaVar: gelen.kaza != null || kazaHareketleriniCoz(gelen.kazaHareketleri).length > 0,
     ayarVar,
   };
 };
@@ -274,29 +279,75 @@ const puanPlaniEkle = (
   plan[DEPOLAMA_ANAHTARLARI.TOPARLANMA_SAYISI] = gelen.istatistik.toparlanma;
 };
 
-/** Kaza kategorisini plana ekler. */
+/** Göç/eski yedek bağlamı (testte sabitlenir). */
+export interface BirlestirmeBaglami {
+  zaman: string;
+  cihaz: string;
+}
+
+/**
+ * Kaza kategorisini plana ekler (Kaza Defteri 2.0).
+ *
+ * Defter DEĞİŞMEZ hareketlerden oluşur → üç stratejide de birleşim KİMLİĞE
+ * GÖREDİR (G-Set; değişmeli, tekrar uygulanabilir). "Üzerine yaz" bile mevcut
+ * hareketleri silmez: hareket bir olgudur, istenmeyen kayıt temizlikle
+ * (geri alınabilir) gizlenir. Plan ay anahtarlarına bölünür; `planiDiskeYaz`
+ * bunları defterin tek kapısından (kimlik birleşimi) yazar.
+ *
+ * ESKİ YEDEK / ESKİ SÜRÜMLÜ CİHAZ (yalnız `kaza` anlık görüntüsü): defter boşsa
+ * göç onun üzerinden yapılır; doluysa ikinci bir göç tabanı EKLENMEZ, yalnız
+ * `eskiGorunum` ("en az bu kadar kılındı") hareketi yazılır. Çözülemeyen (yeni
+ * sürüm) hareketler de plana AYNEN girer.
+ */
 const kazaPlaniEkle = (
   plan: YazimPlani,
   strateji: KategoriStratejisi,
   mevcut: YedekPayload,
-  gelen: YedekPayload
+  gelen: YedekPayload,
+  baglam: BirlestirmeBaglami
 ): void => {
-  if (strateji === 'eksikleriEkle') return;
+  const mevcutAyrim = hareketleriAyristir(mevcut.kazaHareketleri);
+  const gelenAyrim = hareketleriAyristir(gelen.kazaHareketleri);
+  const mevcutHareketler = mevcutAyrim.taninan;
+  let gelenHareketler: KazaHareketi[] = gelenAyrim.taninan;
+  // ESKİ SÜRÜMÜN YÜKÜ (hareket alanı hiç yok): anlık görüntü yalnız göç kaynağıdır.
+  // Defter boşsa göç (içerikten türeyen `goc-` kimlikleri → tekrar uygulanabilir);
+  // doluysa yalnız "en az bu kadar kılındı" tabanı (eski cihazda kılınanlar
+  // kaybolmasın, karışık sürüm eşitlemesi buluşsun). Borç yönü ALINMAZ.
+  const eskiSurumYuku = !Array.isArray(gelen.kazaHareketleri) && gelen.kaza != null;
+  if (eskiSurumYuku) {
+    if (!defterDoluMu(mevcutHareketler)) {
+      gelenHareketler = eskiDurumdanHareketler(gelen.kaza, baglam.zaman, baglam.cihaz)?.hareketler ?? [];
+    } else {
+      const taban = eskiGorunumHareketi(gelen.kaza, baglam.zaman, baglam.cihaz);
+      gelenHareketler = taban && !mevcutHareketler.some((h) => h.id === taban.id) ? [taban] : [];
+    }
+  }
+  const gelenBilinmeyen = gelenAyrim.bilinmeyen;
+  if (gelenHareketler.length > 0 || gelenBilinmeyen.length > 0) {
+    const birlesik = hareketleriBirlestir(mevcutHareketler, gelenHareketler);
+    const taninanIdler = new Set(birlesik.map((h) => h.id));
+    const bilinmeyen = bilinmeyenleriBirlestir(mevcutAyrim.bilinmeyen, gelenBilinmeyen).filter(
+      (b) => !taninanIdler.has(b.id)
+    );
+    const etkilenenAylar = new Set([...gelenHareketler.map(hareketAyi), ...gelenBilinmeyen.map(hareketAyi)]);
+    const aylar = new Map<string, unknown[]>();
+    for (const h of [...birlesik, ...bilinmeyen]) {
+      const ay = hareketAyi(h);
+      if (!etkilenenAylar.has(ay)) continue;
+      aylar.set(ay, [...(aylar.get(ay) ?? []), h]);
+    }
+    for (const [ay, liste] of aylar) plan[`${DEPOLAMA_ANAHTARLARI.KAZA_HAREKET_ONEK}${ay}`] = liste;
+  }
 
+  // Eski tempo geçmişi (göç öncesi günler).
+  if (strateji === 'eksikleriEkle') return;
   if (strateji === 'uzerineYaz') {
-    plan[DEPOLAMA_ANAHTARLARI.KAZA_DURUMU] = gelen.kaza;
     plan[DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS] = gelen.kazaTempo;
     return;
   }
-
-  // akilli: daha ilerlemiş anlık görüntüyü seç; mevcut seçilirse yazmaya gerek yok.
-  if (kazaIlerlemesi(gelen.kaza) > kazaIlerlemesi(mevcut.kaza)) {
-    plan[DEPOLAMA_ANAHTARLARI.KAZA_DURUMU] = gelen.kaza;
-  }
-
-  // tempo: tarih bazında max birleşimi.
   const birlesikTempo: Record<string, number> = { ...mevcut.kazaTempo };
-  for (const tarih of Object.keys(gelen.kazaTempo)) {
+  for (const tarih of Object.keys(gelen.kazaTempo ?? {})) {
     birlesikTempo[tarih] = Math.max(birlesikTempo[tarih] ?? 0, gelen.kazaTempo[tarih]);
   }
   plan[DEPOLAMA_ANAHTARLARI.KAZA_TEMPO_GECMIS] = birlesikTempo;
@@ -306,6 +357,7 @@ const kazaPlaniEkle = (
 const ayarPlaniEkle = (
   plan: YazimPlani,
   strateji: KategoriStratejisi,
+  mevcut: YedekPayload,
   gelen: YedekPayload
 ): void => {
   if (strateji !== 'uzerineYaz') return; // akilli: cihaz korunur; eksikleriEkle: dokunma.
@@ -317,6 +369,15 @@ const ayarPlaniEkle = (
       plan[anahtar] = deger;
     }
   }
+  // ESKİ YEDEK (ortak mezhep anahtarından önce): mezhep yalnız seferîlik kaydında.
+  // Ortak ayar ona taşınmazsa açılışta yazılmış ortak ayar kazanır ve Şâfiî
+  // kullanıcıya vitir borcu eklenirdi. Kullanıcının bilinçli seçimi EZİLMEZ.
+  if (ayarlar.mezhep === null || ayarlar.mezhep === undefined) {
+    const eski = seferilikMezhebi(ayarlar.seferilik);
+    if (eski && !mezhepSecildiMi(mevcut.ayarlar?.mezhep)) {
+      plan[DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI] = { mezhep: eski };
+    }
+  }
 };
 
 /**
@@ -326,12 +387,13 @@ const ayarPlaniEkle = (
 export const birlestirmePlaniOlustur = (
   mevcut: YedekPayload,
   gelen: YedekPayload,
-  secimler: KategoriSecimleri
+  secimler: KategoriSecimleri,
+  baglam: BirlestirmeBaglami = { zaman: new Date().toISOString(), cihaz: 'yedek' }
 ): YazimPlani => {
   const plan: YazimPlani = {};
   namazPlaniEkle(plan, secimler.namaz, mevcut, gelen);
   puanPlaniEkle(plan, secimler.puan, mevcut, gelen);
-  kazaPlaniEkle(plan, secimler.kaza, mevcut, gelen);
-  ayarPlaniEkle(plan, secimler.ayarlar, gelen);
+  kazaPlaniEkle(plan, secimler.kaza, mevcut, gelen, baglam);
+  ayarPlaniEkle(plan, secimler.ayarlar, mevcut, gelen);
   return plan;
 };

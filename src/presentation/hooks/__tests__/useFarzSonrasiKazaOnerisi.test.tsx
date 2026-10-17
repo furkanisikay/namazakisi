@@ -11,6 +11,8 @@ import kazaReducer from '../../store/kazaSlice';
 import { DEPOLAMA_ANAHTARLARI, NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { useFarzSonrasiKazaOnerisi, type KazaOnerisiDegerlendirmeGirdisi } from '../useFarzSonrasiKazaOnerisi';
 import { kisaBildirimGoster } from '../../components/common/KisaBildirim';
+import { defteriHesapla } from '../../../domain/services/KazaDefteriServisi';
+import { _testIcinSifirla, localKazayaBorcEkle } from '../../../data/local/LocalKazaServisi';
 
 const mockDisk = new Map<string, string>();
 jest.mock('@react-native-async-storage/async-storage', () => ({
@@ -22,6 +24,12 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     },
     removeItem: async (k: string) => {
       mockDisk.delete(k);
+    },
+    // Kaza Defteri 2.0: aylık hareket anahtarları önekle taranır (Depolama).
+    getAllKeys: async () => Array.from(mockDisk.keys()),
+    multiGet: async (ks: readonly string[]) => ks.map((k) => [k, mockDisk.has(k) ? mockDisk.get(k)! : null]),
+    multiRemove: async (ks: readonly string[]) => {
+      for (const k of ks) mockDisk.delete(k);
     },
   },
 }));
@@ -38,6 +46,10 @@ jest.mock('../../../core/utils/Logger', () => ({
 
 const GUN = '2026-10-13';
 
+/**
+ * Eski sürümün `KAZA_DURUMU` kaydını yazar; Kaza Defteri 2.0 ilk okumada onu
+ * hareketlere BİREBİR göç ettirir (gerçek göç yolu da sınanmış olur).
+ */
 const borcYaz = (borclar: Record<string, number>) => {
   const namazlar = ['Sabah', 'Öğle', 'İkindi', 'Akşam', 'Yatsı', 'Vitir'].map((namazAdi) => ({
     namazAdi,
@@ -78,13 +90,15 @@ const kur = () => {
   return { store, hook };
 };
 
-const kalanBorc = (ad: string): number => {
-  const d = JSON.parse(mockDisk.get(DEPOLAMA_ANAHTARLARI.KAZA_DURUMU)!);
-  return d.namazlar.find((n: { namazAdi: string }) => n.namazAdi === ad).kalanBorc;
+/** Kalan borç DEFTERDEN türetilir (diskteki hareketler). */
+const kalanBorc = async (ad: string): Promise<number> => {
+  const { gorunum } = await defteriHesapla();
+  return gorunum.namazlar.find((n) => n.namazAdi === ad)!.kalanBorc;
 };
 
 beforeEach(() => {
   mockDisk.clear();
+  _testIcinSifirla();
   mockKerahat.mekruhMu = false;
   jest.clearAllMocks();
 });
@@ -102,7 +116,7 @@ describe('useFarzSonrasiKazaOnerisi', () => {
       await hook.result.current.kildim();
     });
     expect(hook.result.current.oneri).toBeNull();
-    expect(kalanBorc('Öğle')).toBe(1);
+    expect(await kalanBorc('Öğle')).toBe(1);
     expect(kisaBildirimGoster).toHaveBeenCalledWith(expect.stringContaining('öğle kazası'));
   });
 
@@ -169,7 +183,7 @@ describe('useFarzSonrasiKazaOnerisi', () => {
       );
     });
     expect(hook.result.current.oneri).toBeNull();
-    expect(kalanBorc('Öğle')).toBe(2);
+    expect(await kalanBorc('Öğle')).toBe(2);
   });
 
   it('kıldım → hemen geri al: geç dönen değerlendirme bayat soruyu AÇMAZ', async () => {
@@ -205,13 +219,13 @@ describe('useFarzSonrasiKazaOnerisi', () => {
     await act(async () => {
       await hook.result.current.degerlendir(girdi());
     });
-    // Soru açıkken bildirimden "Kazaya ekle" store'suz diske yazar.
-    borcYaz({ 'Öğle': 2, Sabah: 5 });
+    // Soru açıkken bildirimden "Kazaya ekle" store'suz diske (defterin tek kapısına) yazar.
+    await localKazayaBorcEkle([{ gun: '2026-10-12', vakit: 'sabah' }]);
     await act(async () => {
       await hook.result.current.kildim();
     });
-    expect(kalanBorc('Öğle')).toBe(1);
-    expect(kalanBorc('Sabah')).toBe(5);
+    expect(await kalanBorc('Öğle')).toBe(1);
+    expect(await kalanBorc('Sabah')).toBe(1);
   });
 
   it('konum yoksa (kerahat bilinemez) sormaz', async () => {

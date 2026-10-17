@@ -202,6 +202,25 @@ export const DEPOLAMA_ANAHTARLARI = {
   // Kaza Defteri
   KAZA_DURUMU: '@namaz_akisi/kaza_durumu',
   KAZA_TEMPO_GECMIS: '@namaz_akisi/kaza_tempo_gecmis',
+  // Kaza Defteri 2.0 — değişmez hareket defteri, AYLIK anahtarlar:
+  // `kaza_hareket_<YYYY-MM>` (ay = hareketin `zaman`ının UTC ayı; iki cihaz aynı
+  // hareketi aynı anahtara koysun). ÖNEMLİ: başka HİÇBİR anahtar bu önekle
+  // BAŞLAMAMALI (`onEkiOlanAnahtarlar` onu ay sanır). Yedeklenir + eşitlenir.
+  KAZA_HAREKET_ONEK: 'kaza_hareket_',
+  // Defter ayarları (günlük hedef, toplamı gizle) — YEDEKLENİR (beyaz listenin üç yeri).
+  // Otomatik ekleme ayarı burada DEĞİL, defterdedir (`otoAyar` hareketi; iki cihaz aynı
+  // izdüşümü hesaplasın diye eşitlenir).
+  KAZA_AYARLARI: 'kaza_defteri_ayarlari',
+  // Eski KAZA_DURUMU → defter göçü bir kez (bayrak). Ham KAZA_DURUMU SİLİNMEZ.
+  KAZA_DEFTERI_GOCU: '@namaz_akisi/kaza_defteri_gocu',
+  // Son otomatik tarama anı (ISO) — yalnız ekrandaki "son tarama" çipi; cihaza özgü.
+  KAZA_SON_TARAMA: '@namaz_akisi/kaza_son_tarama',
+  // Kısa cihaz kimliği (hareketlerde kaynak gösterimi + sıralama eşitlik bozucu).
+  // Cihaza özgü → yedeklemeye GİRMEZ.
+  CIHAZ_KIMLIGI: '@namaz_akisi/cihaz_kimligi',
+  // Ortak mezhep ayarı (seferîlik kartı + kaza defterinde vitir). Namaz vakti
+  // hesabına DOKUNMAZ. YEDEKLENİR (beyaz listenin üç yeri).
+  MEZHEP_AYARI: 'mezhep_ayari',
   // "Her farzla bir kaza" önerisi (issue #294) — ayar YEDEKLENİR (beyaz listenin
   // ÜÇ yerinde); sorulma hafızası cihaza özgü, tek günlük → yedeklemeye GİRMEZ.
   KAZA_ONERI_AYARLARI: 'kaza_oneri_ayarlari',

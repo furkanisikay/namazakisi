@@ -9,6 +9,15 @@ import {
   kanonikJson,
 } from '../esitlemeIcerigi';
 
+const hareket = (id: string) => ({
+  id,
+  zaman: '2026-10-01T08:00:00.000Z',
+  cihaz: 'abc',
+  kaynak: 'manuel',
+  vakit: 'sabah',
+  adet: 1,
+});
+
 const payload = (ek: Partial<YedekPayload> = {}): YedekPayload => ({
   namazGunleri: { '2026-10-01': { Sabah: true, Öğle: false } },
   kilinanVakitler: { '2026-10-01': ['imsak'] },
@@ -33,6 +42,12 @@ describe('esitlemeIcerigineIndir (veri azaltma)', () => {
     expect(JSON.stringify(indirgenmis)).not.toContain('lat');
   });
 
+  it('eski sürümlü cihazlar için kaza anlık görüntüsü hareketlerin YANINDA gider', () => {
+    const indirgenmis = esitlemeIcerigineIndir(payload({ kazaHareketleri: [hareket('k1')] }));
+    expect(indirgenmis.kaza).toEqual({ toplamTamamlanan: 7 });
+    expect(indirgenmis.kazaHareketleri).toHaveLength(1);
+  });
+
   it('hiç işaretli namazı olmayan gün atılır', () => {
     const indirgenmis = esitlemeIcerigineIndir(payload({ namazGunleri: { '2026-10-02': { Sabah: false } } }));
     expect(indirgenmis.namazGunleri).toEqual({});
@@ -44,6 +59,12 @@ describe('icerikNormalizeEt (uzaktan gelen)', () => {
     expect(icerikNormalizeEt(null)).toBeNull();
     expect(icerikNormalizeEt([1])).toBeNull();
     expect(icerikNormalizeEt('x')).toBeNull();
+  });
+
+  it('hareket alanı OLMAYAN yük (eski sürüm) ile boş dizi (yeni sürüm, boş defter) ayrışır', () => {
+    expect(icerikNormalizeEt({ kaza: { toplamTamamlanan: 3 } })!.kazaHareketleri).toBeUndefined();
+    expect(icerikNormalizeEt({ kazaHareketleri: [] })!.kazaHareketleri).toEqual([]);
+    expect(icerikNormalizeEt({ kazaHareketleri: [42, hareket('k1')] })!.kazaHareketleri).toEqual([hareket('k1')]);
   });
 
   it('geçersiz tarih anahtarlarını, dizi olmayan kılınanları ve sayı olmayan tempoyu atar', () => {
@@ -92,7 +113,25 @@ describe('icerikOzeti', () => {
     expect(icerikOzeti(payload({ namazGunleri: { '2026-10-01': { Sabah: true, Öğle: true } } }))).not.toBe(taban);
     expect(icerikOzeti(payload({ seri: { enUzunSeri: 10 } }))).not.toBe(taban);
     expect(icerikOzeti(payload({ bonusPuan: 21 }))).not.toBe(taban);
-    expect(icerikOzeti(payload({ kaza: { toplamTamamlanan: 8 } }))).not.toBe(taban);
+    // Kaza Defteri 2.0: ilerleme SAYISI değil, hareket KİMLİK kümesi.
+    expect(icerikOzeti(payload({ kazaHareketleri: [hareket('k1')] }))).not.toBe(taban);
+  });
+
+  it('kaza: türetilmiş anlık görüntü özeti DEĞİŞTİRMEZ; hareket sırası/tekrarı da değiştirmez', () => {
+    const a = payload({ kazaHareketleri: [hareket('k1'), hareket('k2')] });
+    const b = payload({ kaza: { toplamTamamlanan: 99 }, kazaHareketleri: [hareket('k2'), hareket('k1'), hareket('k1')] });
+    expect(icerikOzeti(a)).toBe(icerikOzeti(b));
+  });
+
+  it('İLERİ UYUMLULUK: çözülemeyen (yeni sürüm) öğe korunur ve özete girer — iki cihaz buluşur', () => {
+    const gelecek = { id: 'gelecek:1', zaman: '2026-10-01T00:00:00.000Z', kaynak: 'yeniTur', x: 1 };
+    const yerel = payload({ kazaHareketleri: [hareket('k1'), gelecek] });
+    const indirgenmis = esitlemeIcerigineIndir(yerel);
+    expect(indirgenmis.kazaHareketleri).toEqual(expect.arrayContaining([gelecek]));
+    // Uzaktan aynısı gelir (normalize) → aynı özet; öğeyi atan cihazın özeti farklı olurdu.
+    const uzak = icerikNormalizeEt(JSON.parse(JSON.stringify(indirgenmis)))!;
+    expect(icerikOzeti(uzak)).toBe(icerikOzeti(yerel));
+    expect(icerikOzeti(payload({ kazaHareketleri: [hareket('k1')] }))).not.toBe(icerikOzeti(yerel));
   });
 
   it('kanonikJson iç içe anahtarları sıralar, undefined alanı atar', () => {
