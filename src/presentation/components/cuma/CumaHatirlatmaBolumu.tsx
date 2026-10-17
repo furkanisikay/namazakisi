@@ -22,6 +22,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -55,6 +56,15 @@ import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matri
 
 /** Taslağın diske yazılmadan önce beklediği süre (stepper → tek yazma). */
 export const CUMA_YAZMA_GECIKMESI_MS = 1200;
+
+type AyarNavigasyonu = { navigate: (ekran: string) => void };
+
+/**
+ * Bütçe rehberinin önerileri (`butceOnerileri`) muhafız matrisini ya da nafileyi değiştirir;
+ * bu bölüm yalnız cumayı YAZAR → öneri burada UYGULANMAZ (uygulansaydı yer açan değişiklik
+ * yazılmaz, sığmayan cuma değişikliği yazılırdı). Yer açma Namaz Muhafızı ekranından.
+ */
+const oneriUygulanmaz = (): boolean => false;
 
 /** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
 export const CUMA_YON_GEREKCESI =
@@ -134,14 +144,23 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
     }, [kayitli, taslak]);
 
     // ── Bildirim sınırı (issue #298) ──
+    const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
     const butce = useBildirimButcesi();
-    const rehber = useButceRehberi<CumaHatirlatmaAyarlari>(butce, {
-        yaz: (hedef) => {
-            if (hedef.cuma) yaz({ ...(hedef.cuma as CumaHatirlatmaAyarlari) }, true);
+    const rehber = useButceRehberi<CumaHatirlatmaAyarlari>(
+        butce,
+        {
+            // Öneri bu bölümde uygulanmaz (`oneriUygulanmaz`); yalnız geri alma yolu.
+            yaz: () => undefined,
+            yedekAl: () => ayarlar,
+            geriYukle: (yedek) => yaz(yedek, true),
         },
-        yedekAl: () => ayarlar,
-        geriYukle: (yedek) => yaz(yedek, true),
-    });
+        {
+            oneriFiltresi: oneriUygulanmaz,
+            ekYol: navigation
+                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                : undefined,
+        }
+    );
 
     /** Yapısal artışta sığma denetimi; sığmazsa YAZILMAZ (rehber açılır). */
     const guncelle = useCallback(

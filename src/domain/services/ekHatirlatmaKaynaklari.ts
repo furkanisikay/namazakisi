@@ -42,7 +42,8 @@ export interface EkHatirlatmaKaynagi {
 const nafileKaynagi: EkHatirlatmaKaynagi = {
     ad: 'nafile',
     diziler: async () => {
-        const a = await LocalNafileServisi.getAyarlar();
+        // KATI okuma: disk okunamazsa fırlatır → o turda çöp toplama yapılmaz.
+        const a = await LocalNafileServisi.getAyarlarKati();
         const sonuc: EkAdimDizisi[] = [];
         for (const g of [a.hatirlatmalar.kusluk, a.hatirlatmalar.evvabin]) {
             if (g.aktif) sonuc.push({ yon: g.yon, adimlar: g.adimlar, kanalKullanir: true });

@@ -29,6 +29,8 @@ jest.mock('../../../hooks/useBildirimButcesi', () => {
     };
 });
 jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
     return (props: { name: string }) => <Text>{props.name}</Text>;
@@ -176,6 +178,9 @@ describe('CumaHatirlatmaBolumu', () => {
         });
         const ekran = kur(dolu);
         fireEvent(ekran.getByLabelText('Cuma hatırlatması'), 'valueChange', true);
+        // Rehber açılır: bu bölüm muhafız/nafile önerisi UYGULAMAZ, yer açma için yönlendirir.
+        fireEvent.press(ekran.getByText('Namaz Muhafızı ayarlarında yer açın'));
+        expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
         ekran.unmount();
         expect(guncelleMock).not.toHaveBeenCalled();
     });

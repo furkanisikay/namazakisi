@@ -218,6 +218,11 @@ describe('hazırlık ve temizlik', () => {
         expect(mockKopru.kanalTemizle).toHaveBeenCalledWith([]);
     });
 
+    test('yeniden planlama öncesi anons temizliği SAHİPLİ (yatış hariç), önekle DEĞİL', () => {
+        new AndroidMuhafizTeslimcisi().tumYanKanallariIptalEt();
+        expect(mockKopru.sahipliIptal).toHaveBeenCalledWith('muhafiz_tumu', { anons: true, alarm: false });
+    });
+
     test('sahipli native yöntem YOKSA (eski ikili) muhafız önekli eski yola düşer', async () => {
         mockKopru.sahipliIptal.mockResolvedValueOnce(false);
         await new AndroidMuhafizTeslimcisi().hazirla(alarmliMatris());

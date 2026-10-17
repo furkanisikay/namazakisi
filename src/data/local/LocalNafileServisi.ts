@@ -85,6 +85,21 @@ const budanmis = (kayit: NafileKilinanKaydi, enEskiIso: string): NafileKilinanKa
 };
 
 export const LocalNafileServisi = {
+    /**
+     * Disk OKUNAMAZSA FIRLATIR (bozuk içerik yine varsayılana düşer). Kanal çöp toplaması
+     * bunu kullanır: okuma hatasında "nafile kapalı" sanıp nafilenin kanallarını silmesin
+     * (`ekHatirlatmaKaynaklari`).
+     */
+    getAyarlarKati: async (): Promise<NafileAyarlari> => {
+        const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI);
+        if (ham == null) return nafileAyarlariniNormalize(null);
+        try {
+            return nafileAyarlariniNormalize(JSON.parse(ham));
+        } catch {
+            return nafileAyarlariniNormalize(null);
+        }
+    },
+
     getAyarlar: async (): Promise<NafileAyarlari> => {
         try {
             const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.NAFILE_AYARLARI);
