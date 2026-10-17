@@ -5,6 +5,12 @@
  * Kullanim:
  *   node scripts/play-magaza.js oku
  *   node scripts/play-magaza.js yaz [--gorseller <klasor>]
+ *   node scripts/play-magaza.js aab-yukle --dosya <aab> --kanal <kanal> [--ad <surum adi>]
+ *
+ * `aab-yukle`: saat (Wear OS) ve TV paketlerini AYNI uygulama kaydinin form faktoru
+ * kanallarina yukler. Kanal adi `<onek>:<kanal>` bicimindedir (Play Developer API,
+ * "Form factor tracks": wear, tv, automotive) → `wear:internal`, `tv:internal`.
+ * Telefon AAB'si bu yoldan GITMEZ (EAS submit).
  *
  * Kimlik: GOOGLE_SERVICE_ACCOUNT ortam degiskeni (service account JSON icerigi).
  * Anahtar icerigi asla yazdirilmaz.
@@ -133,6 +139,24 @@ function gorselYukle(editId, tur, dosya) {
     );
 }
 
+/** AAB yukleme: ayri upload host'u, ikili govde. Yanit { versionCode, sha256 }. */
+function paketYukle(editId, dosya) {
+    const veri = fs.readFileSync(dosya);
+    return istekGonder(
+        {
+            method: 'POST',
+            host: 'androidpublisher.googleapis.com',
+            path: '/upload/androidpublisher/v3/applications/' + PAKET + '/edits/' + editId + '/bundles?uploadType=media',
+            headers: {
+                Authorization: 'Bearer ' + api.jeton,
+                'Content-Type': 'application/octet-stream',
+                'Content-Length': veri.length,
+            },
+        },
+        veri
+    );
+}
+
 /**
  * docs/app-store/surum-notlari.md icinden `#### <surum>` basligindaki kod
  * blogunu okur. Notlarin tek dogru kaynagi o dosya: magazaya elle yazilan not
@@ -167,9 +191,9 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al'];
+    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -251,6 +275,31 @@ function playMetinleri() {
             return;
         }
 
+        if (mod === 'aab-yukle') {
+            const dosya = arg('dosya');
+            const kanal = arg('kanal');
+            if (!dosya || !fs.existsSync(dosya)) throw new Error('--dosya gerekli (var olan bir .aab)');
+            // Yalniz form faktoru kanallari: telefon kanallarina bu yoldan yazmak
+            // EAS'in yukledigi telefon surumunu kanaldan dusururdu.
+            if (!/^(wear|tv):[a-z0-9-]+$/.test(kanal || '')) throw new Error('--kanal wear:<kanal> ya da tv:<kanal> olmali');
+            const y = await paketYukle(editId, dosya);
+            if (y.kod >= 300 || !y.j || !y.j.versionCode) {
+                throw new Error('paket yuklenemedi: ' + y.kod + ' ' + JSON.stringify(y.j).slice(0, 300));
+            }
+            const kod = y.j.versionCode;
+            console.log('PAKET yuklendi: kod ' + kod + ' | sha256 ' + String(y.j.sha256 || '').slice(0, 12) + '…');
+            const ad = arg('ad');
+            const u = await api('PUT', '/edits/' + editId + '/tracks/' + encodeURIComponent(kanal), {
+                track: kanal,
+                releases: [{ ...(ad ? { name: ad.slice(0, 50) } : {}), versionCodes: [String(kod)], status: 'completed' }],
+            });
+            if (u.kod >= 300) throw new Error(kanal + ' kanali yazilamadi: ' + u.kod + ' ' + JSON.stringify(u.j).slice(0, 300));
+            const c = await api('POST', '/edits/' + editId + ':commit');
+            if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
+            console.log('YAYINLANDI: ' + kanal + ' | kod ' + kod + (ad ? ' | ' + ad : ''));
+            return;
+        }
+
         const metin = playMetinleri();
         const y = await api('PUT', '/edits/' + editId + '/listings/' + DIL, {
             language: DIL,
@@ -294,7 +343,7 @@ function playMetinleri() {
         // Commit edilmemis edit'i birak: magazada hicbir sey degismez ama
         // bekleyen edit sonraki denemeleri karistirabilir.
         await api('DELETE', '/edits/' + editId).catch(() => {});
-        if (String(e.message).includes('PERMISSION_DENIED') || String(e.message).includes('403')) {
+        if (mod === 'yaz' && (String(e.message).includes('PERMISSION_DENIED') || String(e.message).includes('403'))) {
             console.error(
                 [
                     '',
