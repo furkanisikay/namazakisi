@@ -3,7 +3,7 @@
  * gönderir; kapalı kartın ayrıntısı gizlidir; teheccüd seçicileri benzersiz etiketlidir.
  */
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, within } from '@testing-library/react-native';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useRenkler } from '../../../core/theme';
 import { VARSAYILAN_NAFILE_AYARLARI, type NafileAyarlari } from '../../../core/nafile/nafileTipleri';
@@ -99,6 +99,30 @@ describe('NafileAyarlariSayfasi', () => {
         expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { evvabin: true } });
         fireEvent(ekran.getByLabelText('Teheccüd ana ekranda gösterilsin'), 'valueChange', true);
         expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { teheccud: true } });
+    });
+
+    it('gösterge anahtarı her nafilenin KENDİ kartında; hatırlatma kapalıyken de görünür', () => {
+        const ekran = kur(VARSAYILAN_NAFILE_AYARLARI);
+        // Ayrı "Ana ekranda göster" kartı kalktı: başlık metni yalnız kart içlerinde (3 kez).
+        expect(ekran.getAllByText('Ana ekranda göster')).toHaveLength(3);
+        for (const tur of ['kusluk', 'evvabin', 'teheccud'] as const) {
+            const kart = within(ekran.getByTestId(`nafile-kart-${tur}`));
+            const anahtar = kart.getByTestId(`nafile-gosterge-${tur}`);
+            expect(anahtar).toBeTruthy();
+            // Hatırlatma kapalı → ayrıntılar gizli ama gösterge satırı duruyor.
+            expect(kart.queryByText('NE ZAMAN HATIRLATILSIN')).toBeNull();
+        }
+        const kusluk = within(ekran.getByTestId('nafile-kart-kusluk'));
+        expect(kusluk.getByLabelText('Kuşluk ana ekranda gösterilsin')).toBeTruthy();
+        // Başka nafilenin anahtarı bu kartta yok (yanlış karta düşmedi).
+        expect(kusluk.queryByTestId('nafile-gosterge-evvabin')).toBeNull();
+    });
+
+    it('hatırlatma açıkken de gösterge satırı kartta kalır ve kendi alanını yazar', () => {
+        const ekran = kur(eski({ hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: false, ofsetDk: 15 } } }));
+        const kart = within(ekran.getByTestId('nafile-kart-kusluk'));
+        fireEvent(kart.getByTestId('nafile-gosterge-kusluk'), 'valueChange', true);
+        expect(nafileAyariniGuncelle).toHaveBeenCalledWith({ gosterge: { kusluk: true } });
     });
 
     it('teheccüd açıkken pencere seçimi (saatleriyle) ve uyandırma görünür', () => {
