@@ -2,8 +2,10 @@
 
 > Tarih: 2026-10-17 · Dal: `claude/faz2b-hatirlatma-yuzeyleri` (origin/master `3beaf13`)
 > Kaynak: sahibin v0.32.0 geri bildirimi (yol haritası 2.1 + nafile gösterge yeri).
-> Bu belge PLANDIR; kod yazılmadı. Kod öncesi iki onay gerekir: (1) §2'deki **sahip
-> kararları**, (2) §9'daki ekran taslağı (AGENTS.md "Ekran / UI tasarım standardı").
+> Bu belge PLANDIR. **İnceleme işlendi (2026-10-17):** §2 sahip kararları VERİLDİ (K1 = B,
+> K2–K5 kabul, K6 = dört PR); inceleme bulguları §3.2, §4.1, §4.2, §4.4, yeni §4.5–§4.6, §8 ve
+> §10'a işlendi. Kalan tek onay §9'daki ekran taslağıdır (AGENTS.md "Ekran / UI tasarım standardı").
+> PR-0 (nafile göstergesi + "Neler Yeni" + bu plan) bu dalda TAMAMLANDI.
 
 ## 0. Özet
 
@@ -21,7 +23,8 @@
 4. **Dört yapısal tuzak** önce altyapıda çözülür (§4): yatış kimliğinin `muhafiz_` uzayında
    olması, native alarmın yeni öneklerde ölü doğması, kanal/alarm-kanalı çöp toplamasının
    yalnız nafileyi koruması, bütçe paylarının yetmemesi.
-5. **Nafile göstergesi** her nafilenin kendi kartına "Ana ekranda göster" satırı olarak iner.
+5. **Nafile göstergesi** her nafilenin kendi kartına "Ana ekranda göster" satırı olarak indi
+   (PR-0, tamamlandı — §7).
 
 ---
 
@@ -35,13 +38,22 @@
 | Takvim çakışması (#291) | `{aktif, oncedenDk, baslikGoster, rizaZamani?}` — `core/takvimCakisma/takvimCakismaAyarlari.ts:19` | `TakvimCakismaServisi.planla` (`:186`); plan `takvimCakismaPlaniOlustur` (`core/bildirim/takvimCakismaPlani.ts:239`) | `takvim_cakisma_<gün>_<vakit>` | `vakit_bildirim` | yok | `TakvimCakismaBolumu.tsx` — ortak kartı kullanmıyor |
 | Nafile (#273) — **şablon** | `{aktif, yon, adimlar}` + `sesliOnayi`/`alarmOnayi` | `nafileTeslimcisiniAl()` (`NafileHatirlatmaServisi.ts:52`) → ayrı `Android/IosMuhafizTeslimcisi` örneği | `nafile_<gün>_<tür>_<k>` | ortak muhafız uzayı + `nafile_uyandirma` | `MUHAFIZ` (paylaşılır) | `PencereKarti` + `AdimDetayModal`, tam yetenek |
 
-Nafile ekranında gösterge anahtarları ayrı kartta: `screens/NafileAyarlariSayfasi.tsx:422-461`.
+Nafile ekranında gösterge anahtarları eskiden ayrı karttaydı; PR-0'da her nafile kartına taşındı (§7).
 
 ---
 
-## 2. Sahip kararları (kod öncesi ONAY gerekir)
+## 2. Sahip kararları — VERİLDİ (2026-10-17)
 
-Plan aşağıdaki **önerilerle** yazıldı; sahip farklı seçerse ilgili bölüm değişir.
+| Karar | Sonuç |
+|---|---|
+| K1 | **(B)** — muhafızın Android alarm payı (360) DÜŞÜRÜLMEZ; regresyonsuz seçenek. |
+| K2 | Kabul — iOS AlarmKit: muhafız 16 · nafile 4 · her yeni yüzey 1; toplam nöbetçisi. |
+| K3 | Kabul — yön istisnası dört yüzeyde, gerekçe ekranda. |
+| K4 | Kabul — ton yok. |
+| K5 | Kabul — anons metni düzenlenemez, "Telefonunuz şöyle okur". |
+| K6 | **Dört PR:** PR-0 (nafile anahtarı + duyuru + plan) · PR-A (altyapı + cuma) · PR-B (camiye gitme + yatış) · PR-C (takvim). |
+
+Aşağıdaki maddeler karar ÖNCESİ seçenek dökümüdür (gerekçe için korunur).
 
 - **K1 — Android alarm havuzu payları.** Bugün `ANDROID_DIGER_PAYI = 120`'nin 60'ı nafilede; kalan
   60'a vakit bildirimi (~10), gün sonu (7), sayaç (~10), widget, iftar/sahur/seri girer. Varsayılan
@@ -53,14 +65,18 @@ Plan aşağıdaki **önerilerle** yazıldı; sahip farklı seçerse ilgili böl�
     **muhafız 360 → 258**. Hazır yoğunluklar (vakit başına 4/6/7 uyarı ≈ 70 alarm) etkilenmez;
     yalnız uç özel matris (5×6 adım × 10 tetik + anons) seyrelir. `butceOnerileri` ve defter
     testlerindeki 360 sabitleri güncellenir.
-  - **(B)** Muhafız 360 kalır; yüzey payları yalnız emniyet ağı, toplamı defterin 480 kapısı
+  - **(B, SEÇİLDİ)** Muhafız 360 kalır; yüzey payları yalnız emniyet ağı, toplamı defterin 480 kapısı
     (`degisiklikSimuleEt`) korur. Bedel: takvime sonradan eklenen etkinlik gibi kullanıcı
-    eyleminden bağımsız artış kapıya takılmadan 480'i aşabilir (sessiz kesme).
-- **K2 — iOS AlarmKit payları.** `IOS_ALARMKIT_TAVANI = 24` (belgelenmemiş sınıra ihtiyatlı
-  tavan), muhafız 20 + nafile 4 → yeni yüzeylere pay YOK. Öneri: tavan 24 korunur, **muhafız 16 ·
+    eyleminden bağımsız artış kapıya takılmadan 480'i aşabilir (sessiz kesme). Uygulama:
+    yüzey payları (`ANDROID_<X>_PAYI`) üreticide kronolojik keser ama `ANDROID_MUHAFIZ_PAYI`'ndan
+    DÜŞÜLMEZ; `ANDROID_DIGER_PAYI` değişmez, `butceOnerileri` ve defter testlerindeki 360 aynen
+    kalır. Rehber kartı aşımı sayıyla gösterir (sessiz sapma yok).
+- **K2 — iOS AlarmKit payları (KABUL).** `IOS_ALARMKIT_TAVANI = 24` (belgelenmemiş sınıra ihtiyatlı
+  tavan), muhafız 20 + nafile 4 → yeni yüzeylere pay YOK. Karar: tavan 24 korunur, **muhafız 16 ·
   nafile 4 · cuma 1 · camiye 1 · yatış 1 · takvim 1** (alarm yalnız ilk tetikte varsayılan; kesme
-  kronolojik, fazlası bildirim olarak gelir — kayıp değil). Alternatif: tavanı 32'ye çıkarmak
-  (doğrulanmadı).
+  kronolojik, fazlası bildirim olarak gelir — kayıp değil). Payların hepsi AÇIK sabittir (nafile
+  bugün `TAVAN − MUHAFIZ` ile türüyor → açık sabite döner) ve nöbetçi test toplamın
+  `IOS_ALARMKIT_TAVANI`'nı aşmadığını kilitler. Tavanı 32'ye çıkarmak reddedildi (doğrulanmadı).
 - **K3 — Yön istisnası dördünde de.** Cuma/camiye gitme "vakit GİRMEDEN önce" (giriş yönü =
   hutbe/cemaat kaçmış demek), yatış "yatıştan önce" (pencerenin başı yok), takvim "etkinlikten
   önce" (olay tabanlı). Yön seçici çizilmez; yerine kartta tek satır gerekçe (§3.3). Sahip
@@ -71,9 +87,10 @@ Plan aşağıdaki **önerilerle** yazıldı; sahip farklı seçerse ilgili böl�
 - **K5 — Anons metni düzenlenemez**, bağlamdan üretilir ve "Telefonunuz şöyle okur" ile gösterilir
   (nafile emsali). Gerekçe: muhafız şablonları `{vakit}` + "vakit çıkıyor" dilinde; bu yüzeylerin
   hiçbiri vaktin sonunu anlatmıyor. İleride serbest metin istenirse ayrı iş.
-- **K6 — PR bölümü.** Varsayılan: hepsi bu dalda. Önerilen bölüm (her biri ayrı release):
-  **PR-A** = §8 adım 0–2 (nafile gösterge + altyapı + cuma) · **PR-B** = adım 3–4 (camiye gitme +
-  yatış) · **PR-C** = adım 5 (takvim). Altyapı (adım 1) her durumda ilk girer.
+- **K6 — PR bölümü (KARAR: DÖRT PR, her biri ayrı release).** **PR-0** = nafile göstergesi +
+  "Neler Yeni" (v0.32.0) duyurusu + bu plan (bu dal, tamamlandı) · **PR-A** = §8 adım 1–2
+  (altyapı + cuma) · **PR-B** = adım 3–4 (camiye gitme + yatış) · **PR-C** = adım 5 (takvim).
+  Altyapı (adım 1) PR-A'da ilk girer; PR-B/PR-C ona dayanır.
 
 ---
 
@@ -120,6 +137,18 @@ interface EkHatirlatmaAyari {           // yüzeyin ayar blob'unun İÇİNDE (ye
 - Teslimcinin `priority` alanı yazması bugünküyle fark yaratır; Android 8+'ta kanal önemi kazanır
   (minSdk 24 → yalnız Android 7'de heads-up farkı). Kabul edildi, kayıt-oynat karşılaştırması
   `priority`'yi hariç tutar ve AGENTS.md'de yazılır.
+- **Göç iki platformda da kendiliğinden birebir DEĞİL — `kategori: null` İKİ teslimciye işlenmeli
+  (inceleme).** Dört yüzey bugün `sound: true` + **kategorisiz** kuruluyor. Teslimciler ise `ozel`
+  teslimde bile kategoriyi `ertele?.kategori ?? KATEGORI.MUHAFIZ` yazıyor
+  (`IosMuhafizTeslimcisi.uyariPlanla:397`, `AndroidMuhafizTeslimcisi.ts:370`) → cuma bildirimine
+  farz öğleyi "kılındı" yazan **"Kıldım" düğmesi** gelirdi. Kural: `ozel.kategori === null` ⇒
+  `categoryIdentifier` HİÇ yazılmaz (iki teslimcide); `undefined` ⇒ bugünkü muhafız davranışı
+  (nafile değişmez). iOS'ta ayrıca `:393` sesi paket wav'a (`iosSesiCoz`) çevirir — varsayılan
+  ses + göçten gelen kayıt için `sound: true` (sistem sesi) korunur ya da fark bilinçli kabul
+  edilip yazılır; karar 1c'de, iOS kayıt-oynat snapshot'ı (§8 1a) bunu ölçer.
+- **`varsayilanKanalId` alarm düşüş kanalına da işlenir:** `AndroidMuhafizTeslimcisi.alarmPlanla:270`
+  normal bildirime düşüşte `ozel?.kanalId ?? kanalId` kullanıyor; `varsayilanKanalId` atlanırsa
+  alarmı kurulamayan (izin yok / camide) cuma tetiği `muhafiz` kanalına düşer.
 
 ### 3.3 Ekranda istisna gerekçesi
 - `PencereTanimi`'ne `yonSabitGerekcesi?: string` eklenir; `PencereKarti` yön seçici yerine bu
@@ -168,14 +197,17 @@ interface EkHatirlatmaAyari {           // yüzeyin ayar blob'unun İÇİNDE (ye
   (kimliği `yatis_…`'e taşımak) native `BildirimKildimKurallari.vakitCoz`'u, Kıldım önek iptalini,
   saat köprü etiketini ve otomasyonu yeniden açar; (b) iOS'ta zaten var olan deseni
   (`alarmKitIptalSecimi` + `muhafizPlanKimligiMi`) Android'e taşır.
-  - Native (Android, "önce sor" sınırı): `expo-countdown-notification` → `kayitliAnonsKimlikleri():
-    string[]` (`AsyncFunction`); `MuhafizAlarmModulu` → `kayitliAlarmKimlikleri(): string[]`. JS
-    süzer (`muhafizPlanKimligiMi`, kapalı muhafızda `muhafizSahipliMi` = plan ∪ erteleme) ve
-    mevcut tekil iptallerle (`iptalEtAnons`, `alarmIptalEt`) siler. Listeleme fonksiyonu yoksa
-    (eski ikili; JS+native aynı APK'da gelir, yalnız savunma): öneği olan örnekler (muhafız `muhafiz_`
-    yalnız yatış yoksa, nafile, cuma, camiye gitme, takvim) bugünkü önek yoluna düşer; **yatış
-    örneği HİÇBİR ŞEY silmez + `Logger.warn`** (önek karşılığı `muhafiz_`dir, düşüş muhafızın tüm
-    anons/alarmlarını silerdi). Nöbetçi: "listeleme yokken yatış teslimcisi hiçbir şeyi silmez".
+  - Native (Android, "önce sor" sınırı) — **inceleme sonrası sadeleşti:** listeleme fonksiyonu
+    (`kayitliAnonsKimlikleri` / `kayitliAlarmKimlikleri` + JS süzme) YAZILMAZ. Native'de seçici
+    zaten var: `MuhafizAlarmZamanlayici.eslesenleriIptalEt(context, esles)` (`:131`),
+    `AnonsZamanlayici.eslesenleriIptalEt` (`:154`) ve plan kimliği yüklemi Kotlin
+    `ErtelemeKurallari.planKimligiMi` (`:78`, JS `muhafizPlanKimligiMi`'nin ikizi). Tek yeni
+    `@ReactMethod`: **"muhafız plan kimliklerini iptal et"** — anons + alarm kayıt defterlerinde
+    `planKimligiMi` olanları siler; ikinci varyant (muhafız KAPALIYKEN) muhafız sahipli her şeyi
+    (plan ∪ erteleme) siler ama **`yatisKimligiMi` olanları HARİÇ** tutar. Kotlin yüklemi JVM
+    testiyle JS `muhafizPlanKimligiMi` fikstürüne kilitlenir.
+  - **Eski-ikili savunması GEREKSİZ:** JS paketi ve native kod aynı APK'da gelir (OTA yok); "metot
+    yoksa önek yoluna düş / yatış örneği hiçbir şey silmez" dalı yazılmaz.
   - `AndroidTeslimciSecenekleri.anonsOneki` → `kimlikSecici` (geri uyum: önek verilirse seçiciye
     çevrilir). iOS `kendiOneki` → `kimlikSecici` (aynı).
   - iOS muhafız-kapalı dalı `startsWith('muhafiz_')` → `muhafizSahipliMi`.
@@ -183,6 +215,12 @@ interface EkHatirlatmaAyari {           // yüzeyin ayar blob'unun İÇİNDE (ye
     snapshot'ı DEĞİŞMEZ.
 
 ### 4.2 Gerçek alarm yeni öneklerde native'de ölü doğar
+
+> **İnceleme sonrası küçültme:** `bilgi` türünde JS yüke `cikisMs = sonMs` (pencere sonu: öğle
+> girişi / vakit girişi / etkinlik başı) yazar → Kotlin `tetikKarari` (geç tetik / vakit çıktı
+> kuralı) **DEĞİŞMEZ**. `tur` alanı yalnız iki yerde okunur: düğme seti (`bilgi` = yalnız "Kapat")
+> ve `MuhafizAlarmAlici.kt:125` otomasyon kapısı (`bilgi` "vakit çıkıyor" olayı doğurmaz). Aşağıdaki
+> "`sonMs` ile geç tetik" ifadesi bu yolla karşılanır; ayrı Kotlin kuralı yazılmaz.
 - `MuhafizAlarmKurallari.yukCoz` (`android/.../cekirdek/MuhafizAlarmKurallari.kt:156,165`) kimlik
   ne muhafız vaktine ne nafileye çözülürse `null` → alarm ÇALMAZ, hata da vermez.
 - **Karar:** yüke OPSİYONEL `tur: "vakit" | "nafile" | "bilgi"` alanı. **`YUK_SURUMU` ARTMAZ:**
@@ -227,12 +265,48 @@ interface EkHatirlatmaAyari {           // yüzeyin ayar blob'unun İÇİNDE (ye
 - Üreticiler `UyariPlani` (en azından `kanallar`, `alarm`, `sesliAnons`) döndürür; defter
   `alarm`/`anons` kayıtlarını muhafız/nafile ile **aynı kuralla** (`alarmKurarMi`,
   `anonsAlarmiKurarMi` genellemesi) ekler.
-- iOS 64: her örnek "kendi dışı"nı ölçer → planlama SIRASI sonucu belirler. Sabit sıra
-  (`KonumDegisikligiServisi.konumDegistiUygula` + `App.tsx` açılışı + `ArkaplanGorevServisi`):
-  muhafız → vakit bildirimi → nafile → yatış → cuma → camiye gitme → takvim. Sıra AGENTS.md'ye yazılır.
+- **iOS 64 — "sabit iOS sırası" YOK (inceleme bulgusu; önceki taslak yanlıştı).**
+  `KonumDegisikligiServisi.konumDegistiUygula` (`:165-269`) tüketicileri `Promise.all` ile
+  **paralel** koşturur; `ArkaplanGorevServisi` ise muhafızı EN SON çalıştırır. iOS teslimcisi
+  muhafız-dışı bekleyenleri `hazirla`'da **bir kez** ölçer (`IosMuhafizTeslimcisi.ts:299-309`) →
+  paralel örnekler aynı boş slotu görür ve toplam 64'ü aşabilir; iOS en uzak tarihlileri sessizce
+  atar. Çözüm altyapı adımı 1f'ye eklenir (ikisinden biri — 1f'de ölçülerek seçilir):
+  - **(i) Yüzey sayısıyla büyüyen ortak rezerv:** her muhafız-dışı iOS örneği kendi payını
+    `64 − ölçülen − (diğer ek yüzeylerin üst sınırları toplamı) − güvenlik payı` ile sınırlar;
+    sıra bağımsız; ölçülemezse bugünkü "bütçe uygulanmaz" kuralı.
+  - **(ii) iOS planlamasını tek sıraya almak:** iOS'ta ek yüzey planlamaları ortak bir kuyruktan
+    (Promise zinciri) geçer; her örnek bir öncekinin kurduklarını ölçer. Android paralel kalır.
+  Hangisi seçilirse nöbetçi: paralel iki örnek + dolu bekleyen listesiyle toplamın 64'ü aşmadığı.
 - Ekleme kapısı: `nafileYukuArtiyorMu` → `adimYukuArtiyorMu(eski, yeni)` genellenir; dört yüzeyin
   ekranı yapısal artışta `degisiklikSimuleEt`'ten geçer (salt zaman değişimi geçmez — Fable M4).
   `butceOnerileri`'ne yeni öneri EKLENMEZ (kapsam dışı; rehber kartı sayıyı doğru gösterir).
+
+### 4.5 İncelemede atlanan noktalar (PR-A/PR-B'de zorunlu)
+- **Kategori garantisi korunur:** `YatisHatirlatmaServisi.ts:200` her planlamada
+  `bildirimKategorileriniGarantile()` çağırıyor (muhafız kapalıyken muhasebe "Kıldım / Kazaya
+  ekle" kategorisini başka kimse kaydetmez). Teslimciye geçince bu çağrı servis başında KALIR.
+- **`muhafiz_` önekli gruplama yatışı yutar:** `BildirimServisi.ts:86` (`handleNotification`) ve
+  `:548` (`oncekiMuhafizBildirimleriniTemizle`) `muhafiz_` ile başlayan HER bildirimi
+  `vakitOnekiniCikar` ile vakit grubuna koyuyor → yatışın tekrar tetikleri gösterildiğinde
+  muhafızın aynı günün yatsı uyarısını (ve tersi) kapatır. Karar: gruplama `muhafizPlanKimligiMi`
+  ile sınırlanır ya da yatış kendi grubunda tutulur; nöbetçi "yatış tekrarı muhafız yatsı uyarısını
+  kapatmaz".
+- **Camide bastırması (`camideMi`) dört yüzey için karar:** `AndroidMuhafizTeslimcisi.ts:243`
+  (alarm çalmaz), `:346` (acil kanal kullanılmaz), `:415` (anons planlanmaz). Kararlar:
+  - Camiye gitme: bastırma DOĞRU (zaten camidesiniz) — aynen.
+  - Cuma: aynen (camideyken hutbe/namaz bölünmez).
+  - Yatış: aynen — yatsı namazı sırasında alarm/anons bölmesin; bildirim yine gelir.
+  - Takvim: aynen — kişi camideyse çakışma uyarısının sesi gereksiz; bildirim yine gelir.
+  Dördünde de bugünkü kapı korunur; karar AGENTS.md'ye yazılır, her yüzey için nöbetçi test.
+- **`varsayilanKanalId` → `alarmPlanla:270` düşüş kanalı** (§3.2).
+
+### 4.6 Kod değişikliği gerektirmeyen ama NÖBETÇİ istenen noktalar
+- `ArkaplanMuhafizServisi.ts:361` `muhafizPlanKimligiMi` — yatış kimliğini plan saymadığı.
+- `OtomasyonKurallari.kt:341` — yatış/`bilgi` kimliği "vakit çıkıyor" olayı doğurmaz (JVM).
+- `KopruEtiketliBildirimServisi.kt:113` — saat köprü etiketi yalnız plan kimliğine basılır;
+  yatış/cuma/camiye/takvim köprülenir.
+- `BildirimKildimKurallari.kt:23` regex — genişleyen yatış deseni (`_<k>` eki) ve yeni önekler
+  "Kıldım"da doğru (ya da hiç) çözülür (JVM).
 
 ---
 
@@ -340,7 +414,11 @@ interface EkHatirlatmaAyari {           // yüzeyin ayar blob'unun İÇİNDE (ye
 
 ---
 
-## 7. Nafile göstergesi — yeni yer
+## 7. Nafile göstergesi — yeni yer (PR-0, TAMAMLANDI)
+
+> Uygulandı: satır başlığın hemen altında, hatırlatma kapalıyken de görünür; `testID` ve erişim
+> etiketi ("<Ad> ana ekranda gösterilsin") korundu; `NafileAyarlariSayfasi.test.tsx` yeni yeri
+> ölçer. Nafile akış önizlemesi (son madde) PR-0'a girmedi → PR-A (1h).
 
 - Ayrı "Ana ekranda göster" kartı (`NafileAyarlariSayfasi.tsx:422-461`) **kaldırılır**.
 - Her nafile kartında, başlıktan hemen sonra (`kart`, `:366`), hatırlatma kapalıyken de görünen
@@ -360,31 +438,41 @@ Her commit `npm run verify` geçer; native değişen commit'te ayrıca JVM/Swift
 (`./gradlew :app:testDebugUnitTest …` reçetesi, `swiftc` Linux reçetesi) ve dala push + debug APK
 (`android-build.yml`) — verify native'i göstermez.
 
-0. **feat(nafile): göstergeyi her nafilenin kendi kartına taşı** (+ nafile akış önizlemesi).
-   Testler: `NafileAyarlariSayfasi.test.tsx` (anahtar kart içinde, hatırlatma kapalıyken görünür,
-   testID aynı).
-1. **Altyapı** (alt commit'ler):
+**PR bölümü (K6):** PR-0 = adım 0 · PR-A = adım 1–2 · PR-B = adım 3–4 · PR-C = adım 5.
+
+0. **[PR-0, TAMAMLANDI]** `feat(nafile)`: gösterge her nafilenin kendi kartında ·
+   `docs(yeni-ozellikler)`: v0.32.0 duyurusu · `docs(plan)`: inceleme işlendi.
+1. **[PR-A] Altyapı** (alt commit'ler):
    1a. `test: dört yüzeyin kayıt-oynat snapshot'ı` — refactor ÖNCESİ kod üzerinde
        (`<Yuzey>Servisi.kayitOynat.test.ts`; zaman "çapaya kalan dk", tarih `<BUGUN>`/`<DUN>`,
-       `priority` hariç). Bu commit tek başına yeşil olmalı.
+       `priority` hariç). Bu commit tek başına yeşil olmalı. **Göç kanıtı şartları (Android):**
+       `priority` hariç her alan birebir; `categoryIdentifier` **YOK**; `data` şekli aynı;
+       `sound: true`; `channelId` = `vakit_bildirim` (yatsı yatış = `muhafiz` tabanı). **iOS
+       kayıt-oynat snapshot'ı da** alınır (`IosMuhafizTeslimcisi` sesi ve kategoriyi değiştirdiği
+       için — §3.2); jest varsayılanı iOS olduğundan platform açıkça kurulur.
    1b. `refactor(hatirlatma): core/hatirlatma/adimDizisi` — nafileAdimlari genellemesi; nafile
        ona geçer, nafile testleri DEĞİŞMEDEN geçer.
    1c. `feat(teslim): kimlik seçici + OzelTeslim kategori/varsayilanKanalId/alarmTuru` + muhafız
-       temizliğinin seçiciye çekilmesi (§4.1; native listeleme fonksiyonları). Kayıt-oynat
-       (muhafız) birebir.
+       temizliğinin seçiciye çekilmesi (§4.1; TEK native `@ReactMethod`, listeleme yok).
+       `kategori: null` iki teslimcide, `varsayilanKanalId` `alarmPlanla` düşüşünde de (§3.2).
+       Kayıt-oynat (muhafız) birebir.
    1d. `feat(alarm): bilgi türü alarm yükü` — Kotlin + Swift + fikstür (§4.2).
    1e. `feat(kanal): ek hatırlatma kaynakları kayıt defteri` (§4.3).
-   1f. `feat(butce): yüzey payları + defter pay alanı` (§4.4; K1/K2 kararına göre).
+   1f. `feat(butce): yüzey payları + defter pay alanı` (§4.4; K1 = B: muhafız 360 aynen; K2
+       payları açık sabit + toplam nöbetçisi) + **iOS 64 paralel planlama çözümü** (§4.4 i/ii).
    1g. `feat(hatirlatma): ekHatirlatmaPencereTanimi + yonSabitGerekcesi` + nöbetçi.
-2. **Cuma** — 2a model+göç+normalize · 2b üretici+defter+parite · 2c servis teslimciye
+   1h. Nafile akış önizlemesi (`onAkisiOnizle`, §7 son madde).
+2. **[PR-A] Cuma** — 2a model+göç+normalize · 2b üretici+defter+parite · 2c servis teslimciye
    (kayıt-oynat eşleşir) · 2d slice rızaları · 2e UI.
-3. **Camiye gitme** — aynı alt sıra; 3a'da ofset kaydırma yardımcısı.
-4. **Yatış** — aynı alt sıra; 4a'da kimlik deseni genişler.
-5. **Takvim** — aynı alt sıra; 5c'de önekli iptal + gizlilik nöbetçileri; politika metni.
+3. **[PR-B] Camiye gitme** — aynı alt sıra; 3a'da ofset kaydırma yardımcısı.
+4. **[PR-B] Yatış** — aynı alt sıra; 4a'da kimlik deseni genişler; `bildirimKategorileriniGarantile`
+   korunur ve `BildirimServisi` gruplaması yatışı yutmaz (§4.5).
+5. **[PR-C] Takvim** — aynı alt sıra; 5c'de önekli iptal + gizlilik nöbetçileri; politika metni.
 6. **docs: AGENTS.md** — her yüzey bölümü aynı commit'lerde güncellenir (CLAUDE.md kuralı); sonda
    "Hatırlatma arayüzü ORTAK bileşendir" maddesi yeni modelle yeniden yazılır, eski
-   "cuma/yatış istisnaları" ifadeleri silinir. `YeniOzellikler.ts` duyurusu (`platformlar:
-   ['android','ios']`, alarm iOS'ta AlarmKit yeteneğine bağlı → `yetenek` alanı kontrol edilir).
+   "cuma/yatış istisnaları" ifadeleri silinir. Her PR (A/B/C) kendi `YeniOzellikler.ts`
+   duyurusunu taşır (`platformlar: ['android','ios']`; ses/titreşim seçimi iOS'ta kapalı →
+   yalnız Android'e atfedilir; alarm iPhone'da iOS 26'ya bağlı — `yeniOzellikYetenegi.test.ts`).
 
 ---
 
@@ -405,7 +493,10 @@ bugünün penceresi; takvimde yok). Onay olmadan 0, 2e, 3e, 4e, 5e başlamaz.
 - **Kayıt-oynat:** dört yüzey refactor öncesi snapshot'la eşleşir (`-u` olmadan); muhafız
   kayıt-oynat değişmez.
 - **Teslim:** her örnek yalnız kendi seçicisini temizler; muhafız turu yatış anons/alarmını
-  silmez (Android + iOS); `kategori: null` → `categoryIdentifier` yazılmaz; varsayılan ses →
+  silmez (Android + iOS; muhafız KAPALIYKEN de — `yatisKimligiMi` hariç varyant); `kategori: null`
+  → `categoryIdentifier` yazılmaz (Android **ve** iOS teslimcisi); alarm düşüşü
+  `varsayilanKanalId`'yi kullanır; `camideMi` bastırması dört yüzeyde korunur; yatış tekrarı
+  muhafız yatsı uyarısını `BildirimServisi` gruplamasıyla kapatmaz; varsayılan ses →
   `vakit_bildirim`, özel ses/titreşim → `muhafiz_<hash8>`; `ozel.veri` muhafız yükü DEĞİL.
 - **Kanal GC:** muhafız `hazirla` dört yüzeyin özel ses kanallarını ve alarm kanallarını korur;
   kaynak okunamazsa toplama yapılmaz.
@@ -431,8 +522,11 @@ bugünün penceresi; takvimde yok). Onay olmadan 0, 2e, 3e, 4e, 5e başlamaz.
   bölümün ekran testi (kanal çipi, ses satırı, titreşim, alarm anahtarı + rıza modalı, adım ekle/sil,
   kapalı çip, akış önizleme, yön gerekçe satırı); `SesliOnayModal`/`AlarmOnayModal` yüzeyin kendi
   alanını yazar, muhafızınkini okumaz; ekleme kapısı yalnız yapısal artışta.
-- **Tazeleme:** `KonumDegisikligiServisi.test.ts` sıra nöbetçisi (iOS 64 sırası); arka plan
-  görevinde dört yüzey muhafız erken dönüşlerinden ÖNCE.
+- **Tazeleme:** paralel koşan iOS örnekleri toplamda 64'ü aşmaz (§4.4; sıra varsayımı YOK);
+  arka plan görevinde dört yüzey muhafız erken dönüşlerinden ÖNCE.
+- **Pay nöbetçileri (K1 = B, K2):** `ANDROID_MUHAFIZ_PAYI` 360 kalır; iOS AlarmKit payları
+  (16 + 4 + 1×4) toplamı `IOS_ALARMKIT_TAVANI`'nı aşmaz.
+- **Kod değişikliği gerektirmeyen nöbetçiler:** §4.6 listesi.
 
 ---
 
@@ -442,8 +536,10 @@ bugünün penceresi; takvimde yok). Onay olmadan 0, 2e, 3e, 4e, 5e başlamaz.
   Hata modu sessizdir (alarm çalmaz, kanal silinir) → JVM/Swift testleri + debug APK zorunlu.
 - **Muhafız temizlik seçicisi** yanlışsa eski plan alarmları birikebilir (önek → seçici geçişi);
   kayıt-oynat + "eski tur alarmları silinir" testi.
-- **Bütçe payı (K1)** muhafızı uç özel matriste seyreltebilir.
-- **iOS 64** — beş muhafız-dışı örnek bağımsız ölçer; sıra yanlışsa önemli uyarı düşer.
+- **Bütçe (K1 = B):** muhafız seyrelmez; bedeli, kullanıcı eyleminden bağımsız artışın (takvime
+  sonradan eklenen etkinlik) 480'i kapıya takılmadan aşabilmesidir — rehber kartı söyler.
+- **iOS 64** — muhafız-dışı örnekler paralel koşar ve `hazirla`'da bir kez ölçer; §4.4 çözümü
+  uygulanmazsa önemli uyarı sessizce düşer.
 - **Kanal geçişi:** kullanıcı ses seçince `vakit_bildirim` → `muhafiz_<hash>` kanalına geçer;
   `vakit_bildirim`'de yaptığı kanal ayarları (DND istisnası vb.) o adım için geçerliliğini yitirir
   (AdimNotlari'nda tek satır not).
