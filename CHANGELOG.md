@@ -5,6 +5,28 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.35.0] - 2026-10-17
+
+### Eklendi
+- [cuma] ekran ortak hatırlatma kartıyla — tüm yetenekler
+- [cuma] teslim muhafızın teslim katmanından, kendi örneğiyle
+- [cuma] adımlı üretici + metin + defter (alarm/anons, pay)
+- [cuma] ortak model — adım dizisi + şekilden göç
+- [nafile] akış önizlemesi + önizlemede yüzeyin kendi metni
+- [hatirlatma] ekHatirlatmaPencereTanimi + yön sabit gerekçesi
+- [butce] yüzey payları, defter pay alanı, iOS 64 ortak defteri
+- [kanal] ek hatırlatma kaynakları kayıt defteri
+- [alarm] bilgi türü alarm yükü (cuma/camiye gitme/takvim)
+- [teslim] teslim sahipliği + OzelTeslim kategori/varsayılan kanal/sistem sesi
+
+### Düzeltildi
+- [ios] AlarmKit ikincil niyeti açık if/else ile ata
+- [anons] kayıt defteri yarışını kilitle, sahipli iptal başarısızsa önekli yola düş
+- [cuma] bütçe rehberi öneri uygulamaz; kaynaklar katı okur
+
+### Değiştirildi
+- [hatirlatma] ortak adım dizisi (core/hatirlatma/adimDizisi)
+
 ## [0.34.0] - 2026-10-17
 
 ### Eklendi
