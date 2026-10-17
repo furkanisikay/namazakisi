@@ -5,14 +5,17 @@ import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
 import {
     CAMIYE_GIT_ID_ONEKI,
     CAMIYE_GIT_PLAN_GUN_SAYISI,
-    camiyeGitMetniOlustur,
     camiyeGitPlaniOlustur,
     type CamiyeGitPlanKaydi,
 } from '../../core/bildirim/camiyeGitPlani';
 import type { CamiyeGitAyarlari } from '../../core/camiyeGit/camiyeGitAyarlari';
+import { ANDROID_CAMIYE_GIT_PAYI, IOS_ALARMKIT_CAMIYE_GIT_PAYI } from '../../core/bildirim/butceSabitleri';
+import { onekSahipligi } from '../../core/muhafiz/teslimSahipligi';
+import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
 
 export interface CamiyeGitKoordinat {
     lat: number;
@@ -20,13 +23,76 @@ export interface CamiyeGitKoordinat {
 }
 
 /**
- * "Camide kılacağım" hatırlatması (issue #292) — cuma servisinin (#173) deseni.
+ * CAMİYE GİTME TESLİMCİSİ — muhafızla AYNI teslim katmanı, AYRI örnek (plan §3.2; cuma
+ * deseni). Kanal uzayı, titreşim, sesli anons (Android TTS alarmı / iOS anons klibi),
+ * gerçek alarm ve ses seçimi AYNI koddan gelir. Ayrı ÖRNEK şart: muhafızın tur başı bütçe
+ * sayacı ve iOS slot ölçümü bu turla karışmamalı.
+ * - Android: kanal hazırlığı KİMLİK (çöp toplama muhafızın işidir; kanalları
+ *   `MuhafizKanalServisi.ekKanallariHazirla` oluşturur, `ekHatirlatmaKaynaklari` korur),
+ *   önceki turun anons/alarmları yalnız `camiye_git_` önekiyle silinir, pay
+ *   `ANDROID_CAMIYE_GIT_PAYI` (asıl kesme üreticide; teslimcideki sayaç emniyet ağı).
+ * - iOS: bütçe ölçümü "kendi dışındaki" bekleyenleri sayar (ortak 64 defteri), anons sesi
+ *   matrissiz hazırlanır, AlarmKit payı `IOS_ALARMKIT_CAMIYE_GIT_PAYI`.
+ *
+ * Seçim ENJEKTE EDİLEBİLİR (jest varsayılan platformu iOS'tur — AGENTS.md).
+ */
+let _teslimci: MuhafizTeslimcisi | null = null;
+
+export function camiyeGitTeslimcisiniAl(): MuhafizTeslimcisi {
+    if (_teslimci) return _teslimci;
+    if (Platform.OS === 'ios') {
+        const { IosMuhafizTeslimcisi } =
+            require('./IosMuhafizTeslimcisi') as typeof import('./IosMuhafizTeslimcisi');
+        _teslimci = new IosMuhafizTeslimcisi({
+            sahiplik: onekSahipligi(CAMIYE_GIT_ID_ONEKI),
+            matrissizAnons: true,
+            alarmDestegi: true,
+            alarmKitPayi: IOS_ALARMKIT_CAMIYE_GIT_PAYI,
+        });
+    } else {
+        const { AndroidMuhafizTeslimcisi } =
+            require('./AndroidMuhafizTeslimcisi') as typeof import('./AndroidMuhafizTeslimcisi');
+        _teslimci = new AndroidMuhafizTeslimcisi({
+            alarmButcesi: ANDROID_CAMIYE_GIT_PAYI,
+            kanalHazirligi: async (m) => m,
+            sahiplik: onekSahipligi(CAMIYE_GIT_ID_ONEKI),
+            // Gerçek alarm STANDART yetenek; alarm KANALLARINI muhafız toplar.
+            alarmDestegi: true,
+            alarmKanalTemizligi: false,
+        });
+    }
+    return _teslimci;
+}
+
+/** Test / özel senaryo: teslimciyi ayarla (`null` → platformdan yeniden türet). */
+export function camiyeGitTeslimcisiniAyarla(teslimci: MuhafizTeslimcisi | null): void {
+    _teslimci = teslimci;
+}
+
+/** Native önekli anons iptali — tembel yüklenir (köprü grafiği testlere sızmasın). */
+function anonslariOnekleIptalEt(onek: string): void {
+    if (Platform.OS !== 'android') return;
+    try {
+        const { iptalEtOnekliAnonslar } =
+            require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src');
+        iptalEtOnekliAnonslar(onek);
+    } catch (e) {
+        Logger.error('CamiyeGit', 'Anons alarmlari iptal edilemedi', e);
+    }
+}
+
+/**
+ * "Camide kılacağım" hatırlatması (issue #292; ortak hatırlatma yüzeyleri plan §5.2).
  *
  * KOORDİNAT PARAMETREDİR (`NamazVaktiHesaplayiciServisi.getKonfig()`'ten
  * okunmaz): o konfig bellek-içidir, arka plan görevinde kurulu olmayabilir.
  * Plan SAF üreticiden gelir (`core/bildirim/camiyeGitPlani.ts`) — bildirim
- * defteri aynı listeyi sayar. Native köprü İMPORT ETMEZ (Camideyim tahmini
- * yalnız ekranda yapılır); böylece bu servisi yükleyen testler köprü mock'lamaz.
+ * defteri aynı listeyi sayar. Camideyim köprüsünü İMPORT ETMEZ (tahmin yalnız ekranda
+ * yapılır); böylece bu servisi yükleyen testler o köprüyü mock'lamaz.
+ *
+ * "KILDIM" YOK: bildirim kategorisizdir (`kategori: null`), yükü muhafız yükü değildir,
+ * gerçek alarmı BİLGİ türüdür (yalnız "Kapat") — ezandan önce gelen hatırlatmada kılınacak
+ * bir şey yoktur.
  */
 export class CamiyeGitHatirlatmaServisi {
     private static instance: CamiyeGitHatirlatmaServisi;
@@ -58,10 +124,19 @@ export class CamiyeGitHatirlatmaServisi {
     }
 
     private async planlamayiCalistir(koordinatlar: CamiyeGitKoordinat | null): Promise<void> {
-        const ayarlar = await LocalCamiyeGitServisi.getAyarlar();
+        // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — id paritesi).
+        const ayarlar = await this.sesleriDogrula(await LocalCamiyeGitServisi.getAyarlar());
 
         if (!ayarlar.aktif) {
             await this.mevcutlariTemizle();
+            // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
+            // turunkileri `camiye_git_` önekiyle siler.
+            const teslimci = camiyeGitTeslimcisiniAl();
+            try {
+                await teslimci.hazirla();
+            } finally {
+                await teslimci.tamamla?.();
+            }
             return;
         }
 
@@ -70,6 +145,9 @@ export class CamiyeGitHatirlatmaServisi {
             Logger.warn('CamiyeGit', 'Konum yok, mevcut plan korunuyor');
             return;
         }
+
+        // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
+        await this.kanallariHazirla(ayarlar);
 
         await this.mevcutlariTemizle();
 
@@ -82,36 +160,79 @@ export class CamiyeGitHatirlatmaServisi {
             gunSayisi: CAMIYE_GIT_PLAN_GUN_SAYISI[platform],
             gunAtlanirMi: ozelGundeMi,
             cumaHatirlatmasiAcik: cuma.aktif,
+            ...(platform === 'android' ? { alarmButcesi: ANDROID_CAMIYE_GIT_PAYI } : {}),
         });
-        for (const kayit of plan) {
-            await this.tekHatirlatmaPlanla(kayit, ayarlar);
+
+        const teslimci = camiyeGitTeslimcisiniAl();
+        try {
+            await teslimci.hazirla();
+            // KRONOLOJİK sıra: iOS bütçesi sayaçla keser, ters sıra yakın uyarıları atardı.
+            for (const kayit of plan) {
+                await this.tekHatirlatmaPlanla(teslimci, kayit);
+            }
+        } finally {
+            await teslimci.tamamla?.();
         }
     }
 
-    private async tekHatirlatmaPlanla(kayit: CamiyeGitPlanKaydi, ayarlar: CamiyeGitAyarlari): Promise<void> {
-        const { baslik, govde } = camiyeGitMetniOlustur(kayit.vakit, ayarlar);
+    /** Tek hatırlatmayı teslimciye verir. Biri patlarsa KALANLAR yine kurulur. */
+    private async tekHatirlatmaPlanla(teslimci: MuhafizTeslimcisi, kayit: CamiyeGitPlanKaydi): Promise<void> {
         try {
-            await Notifications.scheduleNotificationAsync({
-                identifier: kayit.id,
-                content: {
-                    title: baslik,
-                    body: govde,
-                    sound: true,
-                    data: { tip: 'camiye_git', vakit: kayit.vakit, tarih: kayit.tarih },
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: kayit.zaman,
-                    // Yeni kanal AÇILMAZ — vakit bildirimi kanalı.
-                    channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+            await teslimci.uyariPlanla({
+                id: kayit.id,
+                baslik: kayit.baslik,
+                mesaj: kayit.govde,
+                zaman: kayit.zaman,
+                // `anonsMetni` ÇÖZÜLMÜŞ cümledir (yer tutucu içermez).
+                uyari: kayit.uyari,
+                vakit: kayit.vakit,
+                muhafizVakti: kayit.vakit,
+                tarih: kayit.tarih,
+                yon: 'cikisaDogru',
+                // Pencere sonu (vaktin girişi): gerçek alarm geç tetiklenirse çalmaz.
+                cikis: kayit.giris,
+                ozel: {
+                    veri: { tip: 'camiye_git', vakit: kayit.vakit, tarih: kayit.tarih },
+                    // Kategori YOK: muhafızın "Kıldım" düğmesi FARZ namazı yazardı.
+                    kategori: null,
+                    // Göçten gelen (varsayılan ses, titreşimsiz) adım bugünkü kanalda kalır.
+                    varsayilanKanalId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+                    varsayilanSistemSesi: true,
+                    alarmAdi: `${VAKIT_ADLARI[kayit.vakit]} · camiye`,
+                    alarmTuru: 'bilgi',
                 },
             });
         } catch (e) {
-            // Tek bir hatırlatma patlarsa KALANLAR yine kurulmalı.
             Logger.error('CamiyeGit', 'Planlama hatasi', e);
         }
     }
 
+    /** `MuhafizKanalServisi.adimSesleriniDogrula` — tembel (köprü grafiği testlere sızmasın). */
+    private async sesleriDogrula(ayarlar: CamiyeGitAyarlari): Promise<CamiyeGitAyarlari> {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            return await MuhafizKanalServisi.adimSesleriniDogrula(ayarlar);
+        } catch (e) {
+            Logger.error('CamiyeGit', 'Sesler dogrulanamadi', e);
+            return ayarlar;
+        }
+    }
+
+    /** Ortak muhafız kanal uzayındaki kanalları oluşturur (çöp toplamaz). */
+    private async kanallariHazirla(ayarlar: CamiyeGitAyarlari): Promise<void> {
+        if (Platform.OS !== 'android') return;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            await MuhafizKanalServisi.ekKanallariHazirla([{ yon: 'cikisaDogru', seviyeler: ayarlar.adimlar }]);
+        } catch (e) {
+            Logger.error('CamiyeGit', 'Kanallar hazirlanamadi', e);
+        }
+    }
+
+    /** Bekleyen bildirimler + Android anons alarmları (yalnız `camiye_git_` önekli). */
     private async mevcutlariTemizle(): Promise<void> {
         try {
             const tumu = await Notifications.getAllScheduledNotificationsAsync();
@@ -123,5 +244,6 @@ export class CamiyeGitHatirlatmaServisi {
         } catch (e) {
             Logger.error('CamiyeGit', 'Temizlik hatasi', e);
         }
+        anonslariOnekleIptalEt(CAMIYE_GIT_ID_ONEKI);
     }
 }

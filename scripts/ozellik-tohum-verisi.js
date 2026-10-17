@@ -110,6 +110,17 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
 
     depo.tema_tercihleri = JSON.stringify({ mod: tema, paletId: 'zumrut' });
     depo.nafile_ayarlari = JSON.stringify(nafileAyarlari(yogun));
+    // Ek hatirlatma yuzeyleri ortak modelde (plan 5.1-5.3): adim dizisi. Sekil uygulamanin
+    // normalize ciktisiyla AYNI (nobetci ozellikTohumu.test); cumada TUREV `oncedenDk`/`siklik`.
+    const cumaAdimi = (esikDk, siklik) => ({
+        kademe: 'nazik',
+        kanallar: { bildirim: true },
+        esikDk,
+        siklik,
+        bildirimSesi: 'varsayilan',
+        acilKanal: false,
+        anonsMetni: '',
+    });
     depo.yatis_hatirlatma_ayarlari = JSON.stringify({
         aktif: true,
         saat: 23,
@@ -124,17 +135,7 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         yurumeDk: 12,
         hazirlikDk: 5,
         yurumeKaynagi: 'elle',
-    });
-    // Cuma ortak hatirlatma modelinde (plan 5.1): adim dizisi + TUREV `oncedenDk`/`siklik`
-    // (ilk adimdan). Sekil uygulamanin normalize ciktisiyla AYNI (nobetci ozellikTohumu.test).
-    const cumaAdimi = (esikDk, siklik) => ({
-        kademe: 'nazik',
-        kanallar: { bildirim: true },
-        esikDk,
-        siklik,
-        bildirimSesi: 'varsayilan',
-        acilKanal: false,
-        anonsMetni: '',
+        adimlar: [cumaAdimi(30, { herDk: 10 }), cumaAdimi(17, 'birkez')],
     });
     depo.cuma_hatirlatma_ayarlari = JSON.stringify(
         yogun

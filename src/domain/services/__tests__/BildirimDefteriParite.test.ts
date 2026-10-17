@@ -77,7 +77,8 @@ import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHati
 import { ANDROID_MUHAFIZ_PAYI, ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
 import { CumaHatirlatmaServisi, cumaTeslimcisiniAyarla } from '../CumaHatirlatmaServisi';
 import { cumaAyarlariniNormalize } from '../../../core/cuma/cumaAyarlari';
-import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
+import { CamiyeGitHatirlatmaServisi, camiyeGitTeslimcisiniAyarla } from '../CamiyeGitHatirlatmaServisi';
+import { camiyeGitAyarlariniNormalize } from '../../../core/camiyeGit/camiyeGitAyarlari';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
@@ -642,8 +643,14 @@ describe('nafile: defter = servisin kurduğu', () => {
 });
 
 describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
-    beforeEach(() => cumaTeslimcisiniAyarla(null));
-    afterAll(() => cumaTeslimcisiniAyarla(null));
+    beforeEach(() => {
+        cumaTeslimcisiniAyarla(null);
+        camiyeGitTeslimcisiniAyarla(null);
+    });
+    afterAll(() => {
+        cumaTeslimcisiniAyarla(null);
+        camiyeGitTeslimcisiniAyarla(null);
+    });
 
     it.each(['ios', 'android'] as const)(
         'cuma ESKİ kayıt (diskte tek ofsetli biçim, %s): defter servisle AYNI normalize/göç yolundan okur',
@@ -724,13 +731,64 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
         disk.set(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI, JSON.stringify(camiyeGit));
         await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
-        const g = temelGirdi(platform, { cuma: cumaAyarlariniNormalize(cuma), camiyeGit });
+        // ESKİ kayıt (tek ofset): defter servisle AYNI normalize/göç yolundan okur.
+        const dis = await defterDisGirdisiniOku();
+        const g = temelGirdi(platform, { cuma: cumaAyarlariniNormalize(cuma), camiyeGit: dis.camiyeGit });
         expect(say(g, 'camiyeGit')).toBeGreaterThan(0);
         expect(onekliSay('camiye_git_')).toBe(say(g, 'camiyeGit'));
         // Android ufku (7 gün) 16 Ekim cumasını kapsar: o gün öğle KURULMAZ.
         const ids = planlananlar().map((p) => String(p.identifier));
         expect(ids).not.toContain('camiye_git_2026-10-16_ogle');
         if (platform === 'android') expect(ids).toContain('camiye_git_2026-10-16_aksam');
+    });
+
+    it('camide kılacağım Android GERÇEK ALARM + sesli + tekrar: alarm + bildirim + anons birebir; BİLGİ türü, kendi payı', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        camiyeGitTeslimcisiniAyarla(null);
+        try {
+            const camiyeGit = camiyeGitAyarlariniNormalize({
+                aktif: true,
+                vakitler: { imsak: false, ogle: true, ikindi: false, aksam: true, yatsi: false },
+                yurumeDk: 10,
+                hazirlikDk: 5,
+                adimlar: [{ esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true, sesli: true, alarm: true } }],
+            });
+            disk.set(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI, JSON.stringify(camiyeGit));
+            await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const g = temelGirdi('android', { camiyeGit });
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('camiye_git_')).toBe(say(g, 'camiyeGit'));
+            expect(say(g, 'camiyeGit')).toBeGreaterThan(0);
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+            expect(say(g, 'anons')).toBe(say(g, 'camiyeGit'));
+            expect(
+                bildirimDefteriOlustur(g)
+                    .filter((k) => k.kaynak === 'alarm' || k.kaynak === 'anons')
+                    .every((k) => k.pay === 'camiyeGit')
+            ).toBe(true);
+            expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith('camiye_git_');
+            expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            const [kimlik, , ham] = nativeAlarm.planla.mock.calls[0];
+            const yuk = JSON.parse(ham);
+            expect(kimlik).toMatch(/^camiye_git_\d{4}-\d{2}-\d{2}_(ogle|aksam)$/);
+            expect(yuk.tur).toBe('bilgi');
+            expect(yuk.veri).toMatchObject({ tip: 'camiye_git' });
+            expect(yuk.vakitAdi).toMatch(/· camiye$/);
+            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk.kanalId).toBe('vakit_bildirim');
+            // Pencere sonu = vaktin girişi (30 dk sonra).
+            expect(yuk.cikisMs - yuk.tetikMs).toBe(30 * 60000);
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            camiyeGitTeslimcisiniAyarla(null);
+        }
     });
 
     it('vakit girdi bildirimleri (bugün + yarın)', async () => {

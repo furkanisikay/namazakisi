@@ -20,6 +20,8 @@ import type { SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
 import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
+import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
+import { CAMIYE_GIT_VAKITLERI } from '../../core/camiyeGit/camiyeGitAyarlari';
 
 /** Bir yüzeyin AÇIK adım dizisi. */
 export interface EkAdimDizisi {
@@ -64,8 +66,21 @@ const cumaKaynagi: EkHatirlatmaKaynagi = {
     },
 };
 
-/** Kayıtlı kaynaklar — yeni yüzey (camiye gitme, yatış, takvim) buraya EKLENİR. */
-const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi];
+/**
+ * "Camide kılacağım" (#292): beş vakit TEK adım dizisini paylaşır, yön sabit (ezana kalan).
+ * Hiç vakit seçili değilse plan boştur → kanal da korunmaz. KATI okuma.
+ */
+const camiyeGitKaynagi: EkHatirlatmaKaynagi = {
+    ad: 'camiyeGit',
+    diziler: async () => {
+        const a = await LocalCamiyeGitServisi.getAyarlarKati();
+        const vakitVar = CAMIYE_GIT_VAKITLERI.some((v) => a.vakitler[v]);
+        return a.aktif && vakitVar ? [{ yon: 'cikisaDogru', adimlar: a.adimlar, kanalKullanir: true }] : [];
+    },
+};
+
+/** Kayıtlı kaynaklar — yeni yüzey (takvim) buraya EKLENİR. */
+const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi, camiyeGitKaynagi];
 
 /** Kayıtlı kaynaklar (sıra önemsiz). */
 export function ekHatirlatmaKaynaklari(): readonly EkHatirlatmaKaynagi[] {
