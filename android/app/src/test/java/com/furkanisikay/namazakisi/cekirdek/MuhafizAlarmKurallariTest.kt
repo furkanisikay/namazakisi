@@ -226,6 +226,33 @@ class MuhafizAlarmKurallariTest {
     }
 
     @Test
+    fun kilinmisligaBagliTakvimAlarmiKuyruktaBekleyenVakitteCalmaz() {
+        // Takvim çakışması vaktin İÇİNDE çalar: widget/saat/bildirimden "Kıldım" kuyrukta,
+        // JS henüz uyanmadı → alarm ÇALMAMALI. Eskiden bilgi alarmında denetim atlanıyordu.
+        val yuk = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("takvim").getJSONObject("yuk").toString())!!
+        assertTrue(yuk.bilgi)
+        assertTrue(yuk.kilinmisligaBagli)
+        assertEquals("ogle", yuk.vakit)
+        assertEquals("2026-10-16", yuk.tarih)
+        // Düğmeler yine yok (bilgi alarmı).
+        assertFalse(MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk))
+        assertEquals(0L, yuk.erteleSinirMs)
+        assertTrue(MuhafizAlarmKurallari.kuyrukDenetlenirMi(yuk))
+        val kuyruk = KildimKuyruguKurallari.ekle(emptyList(), "2026-10-16", "ogle", KildimKuyruguKurallari.KAYNAK_WEAR)!!
+        val bekleyen = KildimKuyruguKurallari.bekleyenKimlikler(kuyruk)
+        assertTrue(MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, bekleyen))
+        // Cuma (kılınmışlığa bağlı DEĞİL) eskisi gibi denetlenmez.
+        val cuma = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString())!!
+        assertFalse(cuma.kilinmisligaBagli)
+        assertFalse(MuhafizAlarmKurallari.kuyrukDenetlenirMi(cuma))
+        // Bayrak var ama vakit kuyruk biçiminde değilse bağ YOK sayılır.
+        val bozuk = JSONObject(ornek.getJSONObject("takvim").getJSONObject("yuk").toString()).put("vakit", "sabah")
+        val b = MuhafizAlarmKurallari.yukCoz(bozuk.toString())!!
+        assertFalse(b.kilinmisligaBagli)
+        assertEquals("", b.vakit)
+    }
+
+    @Test
     fun calanAlarmBildirimiEtiketVeNumarayla() {
         val v = BildirimKildimKurallari.Vakit("2026-10-13", "ogle")
         val esles: (String) -> Boolean = { BildirimKildimKurallari.buVakteAitMi(it, v) }

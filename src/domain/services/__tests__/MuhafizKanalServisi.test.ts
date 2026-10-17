@@ -325,6 +325,23 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         expect(mockGarantile.mock.calls[0][3]).toBeNull();
     });
 
+    it('TAKVİM ÇAKIŞMASI (#291) kaynağı: açık + rızalı ayarın titreşimli kanalı KORUNUR; rızasız kayıt korunmaz', async () => {
+        const { DEPOLAMA_ANAHTARLARI } = require('../../../core/constants/UygulamaSabitleri');
+        const ayar = {
+            aktif: true,
+            rizaZamani: '2026-10-01T00:00:00.000Z',
+            adimlar: [{ esikDk: 30, kanallar: { bildirim: true, titresim: true }, siklik: 'birkez' }],
+        };
+        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI, JSON.stringify(ayar));
+        await MuhafizKanalServisi.hazirla();
+        expect(mockTemizle).toHaveBeenLastCalledWith([TITRESIMLI]);
+        // Rıza kaydı yoksa normalize KAPALI okur → kanal korunmaz (takvim okunmayan özellik).
+        mockTemizle.mockClear();
+        await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI, JSON.stringify({ ...ayar, rizaZamani: undefined }));
+        await MuhafizKanalServisi.hazirla();
+        for (const [korunan] of mockTemizle.mock.calls) expect(korunan).not.toContain(TITRESIMLI);
+    });
+
     it('nafileSesleriniDogrula: çözülemeyen ses varsayılana, çözülen dokunulmadan (aynı referans)', async () => {
         const { nafileAyarlariniNormalize } = require('../../../data/local/LocalNafileServisi');
         const ayar = nafileAyarlariniNormalize({

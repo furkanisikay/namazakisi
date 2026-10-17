@@ -403,7 +403,7 @@ describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
         expect(plan[0].cikis.getTime()).toBe(namazGunuVakitleri(ISTANBUL, t(13, 0)).yatsi.cikis.getTime());
     });
 
-    it('KAYMA her tetiğe uygulanır; aynı ana düşenler TEK kazanana iner', () => {
+    it('KAYMA her tetiğe uygulanır; aynı ana düşenler TEK uyarıda birleşir', () => {
         // Saat diliminden bağımsız (CI UTC'de koşar): yatış saati 20:00–02:55'e sıkıştırıldığı
         // için yerel yatsı İstanbul'unkiyle aynı olmalı → boylam, makinenin UTC farkına göre
         // kaydırılır (İstanbul UTC+3). Yatış = yatsı + 25 dk → tetikler giriş −35/−15/+5/+15;
@@ -423,6 +423,34 @@ describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
         const yatsiGiris = giris.getTime();
         expect(Math.min(...zamanlar)).toBe(yatsiGiris + YATIS_YATSI_GIRIS_PAYI_DK * 60_000);
         expect(plan.length).toBeLessThan(4);
+    });
+
+    it('REGRESYON: kaymayla aynı ana düşen adımlarda GÜÇLÜ kanal (gerçek alarm) düşmez', () => {
+        // Yatış = yatsı + 36 dk → tetikler giriş −24 (yalnız bildirim) ve −4 (gerçek alarm);
+        // ikisi de aynı ana kayar. Eskiden ilki (bildirim) kalıyor, alarm kayboluyordu.
+        // Boylam makinenin UTC farkına göre kaydırılır (CI UTC'de koşar; bkz. KAYMA testi).
+        const yerelFark = -t(13, 0).getTimezoneOffset() / 60;
+        const koord = { lat: ISTANBUL.lat, lng: ISTANBUL.lng + (yerelFark - 3) * 15 };
+        const giris = namazGunuVakitleri(koord, t(13, 0)).yatsi.giris;
+        const yatis = new Date(Math.ceil(giris.getTime() / 60_000) * 60_000 + 36 * 60_000);
+        const plan = yatisPlaniOlustur({
+            koordinat: koord,
+            ayarlar: yatisAyarlariniNormalize({
+                ...AYAR,
+                saat: yatis.getHours(),
+                dakika: yatis.getMinutes(),
+                adimlar: [
+                    { esikDk: 60, kanallar: { bildirim: true } },
+                    { esikDk: 40, kanallar: { bildirim: true, alarm: true } },
+                ],
+            }),
+            simdi: t(13, 9),
+            gunSayisi: 1,
+        });
+        expect(plan).toHaveLength(1);
+        expect(plan[0].kimlik).toBe('muhafiz_2026-10-13_vakit_yatsi_yatis');
+        expect(plan[0].uyari.alarm).toBe(true);
+        expect(plan[0].uyari.kanallar).toEqual({ bildirim: true, alarm: true });
     });
 
     it('muhasebe içeriği tekrarlarda da aynı; çoklu muhasebe kimliği `muhasebe_<gün>_<k>`', () => {

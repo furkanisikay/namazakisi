@@ -42,7 +42,11 @@ Takvim izni yalnızca aşağıdaki iki özellikten birini siz açtığınızda i
   açmadıkça bildirimde kullanılmaz. Adı göstermeyi açarsanız ad, bildirimin bir
   parçası olarak kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da
   benzeri uygulamalarda da görünebilir; bu uygulamaların bildirimleri nasıl
-  işlediği kendi gizlilik koşullarına bağlıdır.
+  işlediği kendi gizlilik koşullarına bağlıdır. Uyarıyı sesli anons ya da
+  gerçek alarm olarak duymayı seçerseniz anons yalnızca vakti söyler ("Takviminizdeki
+  bir etkinlik öğle vaktine denk geliyor") ve alarm ekranı yalnızca vakti ve
+  saatleri gösterir: etkinlik adı, ayar açık olsa bile, sesli anonsa ve alarm
+  ekranına **hiçbir zaman** girmez. Anons sesi telefonunuzda üretilir.
 
 Her iki durumda da takvim bilgileriniz **saklanmaz, yedeğe girmez ve hiçbir
 yere gönderilmez**; uygulama bu bilgileri toplamaz ve kimseyle paylaşmaz.

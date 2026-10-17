@@ -34,3 +34,51 @@ export function alarmPayinaSigdir<T extends { uyari: UyariPlani }>(planlar: T[],
     }
     return sigan;
 }
+
+/** Kanal gücü — alarm > sesli anons > bildirim > titreşim (aynı ana düşenlerde kazanan). */
+const kanalGucu = (u: UyariPlani): number => {
+    const k = u.kanallar ?? {};
+    return (
+        (ekAlarmKurarMi({ uyari: u }) ? 8 : 0) +
+        (k.sesli === true ? 4 : 0) +
+        (k.bildirim === true ? 2 : 0) +
+        (k.titresim === true ? 1 : 0)
+    );
+};
+
+/**
+ * AYNI ANA düşen iki tetiği TEK uyarıda BİRLEŞTİRİR (SAF). Ek yüzeylerde tetik bir tabana
+ * kenetlenebilir (takvim `kapliyor`: giriş − 60 dk; yatış: yatsı girişi kayması) ve farklı
+ * adımlar aynı dakikaya düşer. Eskiden motor sırasındaki İLKİ (en uzak eşik = çoğu zaman
+ * en yumuşak adım) kalıyordu: "120 dk bildirim + 30 dk gerçek alarm" kurulumunda ikisi de
+ * tabana düşünce yalnız bildirim kuruluyor, alarm SESSİZCE kayboluyordu.
+ *
+ * Kural: kanallar OR'lanır (bildirim/sesli/titreşim/alarm), gerçek alarm anı (`alarm`)
+ * herhangi biri taşıyorsa kalır; ses, ses adı, anons metni, ton ve aciliyet EN GÜÇLÜ
+ * adımdan gelir (alarm > sesli > bildirim > titreşim; eşitlikte önceki). Zamanlama
+ * kimliği (`kalanDk`, `olcuDk`, `adimIndeks`) ÖNCEKİNİN kalır — kayıt kimliği ve sırası
+ * değişmez. Defter aynı üreticiyi koştuğu için sayım da birleşmiş uyarıdan yapılır.
+ */
+export function ayniAnaDusenleriBirlestir(onceki: UyariPlani, yeni: UyariPlani): UyariPlani {
+    const guclu = kanalGucu(yeni) > kanalGucu(onceki) ? yeni : onceki;
+    const a = onceki.kanallar ?? {};
+    const b = yeni.kanallar ?? {};
+    const kanallar: UyariPlani['kanallar'] = {};
+    for (const ad of ['bildirim', 'sesli', 'titresim', 'alarm'] as const) {
+        if (a[ad] === true || b[ad] === true) kanallar[ad] = true;
+    }
+    const birlesik: UyariPlani = {
+        ...onceki,
+        kanallar,
+        seviye: guclu.seviye,
+        bildirimSesi: guclu.bildirimSesi,
+        anonsMetni: guclu.anonsMetni,
+        sesliAnons: onceki.sesliAnons || yeni.sesliAnons,
+    };
+    if (guclu.sesAdi !== undefined) birlesik.sesAdi = guclu.sesAdi;
+    else delete birlesik.sesAdi;
+    if (guclu.acilKanal !== undefined) birlesik.acilKanal = guclu.acilKanal;
+    else delete birlesik.acilKanal;
+    if (onceki.alarm === true || yeni.alarm === true) birlesik.alarm = true;
+    return birlesik;
+}

@@ -25,9 +25,13 @@ import com.furkanisikay.namazakisi.cekirdek.MuhafizAlarmKurallari
 object MuhafizAlarmTemizligi {
     private const val TAG = "MuhafizAlarm"
 
-    /** Vaktin (tarih + vakit) bütün alarmları. @return iptal edilen bekleyen alarm sayısı. */
+    /**
+     * Vaktin (tarih + vakit) bütün alarmları — muhafız/yatış VE kılınmışlığa bağlı takvim
+     * çakışması alarmı (`takvim_cakisma_<tarih>_<vakit>`; JS geç uyansa bile susar).
+     * @return iptal edilen bekleyen alarm sayısı.
+     */
     fun vaktiSustur(context: Context, vakit: BildirimKildimKurallari.Vakit): Int =
-        sustur(context) { BildirimKildimKurallari.buVakteAitMi(it, vakit) }
+        sustur(context) { BildirimKildimKurallari.kildimdaSusanAlarmMi(it, vakit) }
 
     /** Öneki taşıyan bütün alarmlar (JS `vakitYanKanallariniIptalEt` öneki). Boş önek → 0. */
     fun onekliSustur(context: Context, onek: String): Int =

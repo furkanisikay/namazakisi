@@ -122,6 +122,14 @@ export interface OzelTeslim {
      * tetik orada atlanır). Verilmezse yükte alan yoktur, native kimlikten çözer (muhafız/nafile).
      */
     alarmTuru?: AlarmTuru;
+    /**
+     * Bilgi alarmı KILINMIŞLIĞA BAĞLI mı? (takvim çakışması: vaktin İÇİNDE, o vakit
+     * kılınana kadar anlamlı). Android yüküne `kilinmisligaBagli: true` yazılır → native
+     * alıcı vakit ortak "Kıldım" kuyruğunda bekliyorsa ÇALMAZ ve kuyruğa ekleme o vaktin
+     * bu alarmlarını da susturur (JS geç uyansa bile). Cuma/camiye gitme vakit girmeden
+     * çalar, kılınmışlığa bağlı DEĞİLDİR.
+     */
+    alarmKilinmisligaBagli?: boolean;
 }
 
 export interface MuhafizTeslimcisi {

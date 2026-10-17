@@ -23,6 +23,7 @@ import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatma
 import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { CAMIYE_GIT_VAKITLERI } from '../../core/camiyeGit/camiyeGitAyarlari';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
+import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
 
 /** Bir yüzeyin AÇIK adım dizisi. */
 export interface EkAdimDizisi {
@@ -93,8 +94,27 @@ const yatisKaynagi: EkHatirlatmaKaynagi = {
     },
 };
 
-/** Kayıtlı kaynaklar — yeni yüzey (takvim) buraya EKLENİR. */
-const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi, camiyeGitKaynagi, yatisKaynagi];
+/**
+ * Takvim çakışması (#291): beş vakit TEK adım dizisini paylaşır, yön sabit (çakışmanın
+ * çapasına kalan). Rıza kaydı olmayan ayar normalize'de KAPALI okunur → kanal da korunmaz.
+ * KATI okuma.
+ */
+const takvimCakismaKaynagi: EkHatirlatmaKaynagi = {
+    ad: 'takvimCakisma',
+    diziler: async () => {
+        const a = await LocalTakvimCakismaServisi.getAyarlarKati();
+        return a.aktif ? [{ yon: 'cikisaDogru', adimlar: a.adimlar, kanalKullanir: true }] : [];
+    },
+};
+
+/** Kayıtlı kaynaklar — yeni yüzey buraya EKLENİR. */
+const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [
+    nafileKaynagi,
+    cumaKaynagi,
+    camiyeGitKaynagi,
+    yatisKaynagi,
+    takvimCakismaKaynagi,
+];
 
 /** Kayıtlı kaynaklar (sıra önemsiz). */
 export function ekHatirlatmaKaynaklari(): readonly EkHatirlatmaKaynagi[] {

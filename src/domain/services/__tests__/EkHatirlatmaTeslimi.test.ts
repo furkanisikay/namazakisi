@@ -211,6 +211,34 @@ describe('Android — ek hatırlatma teslimi', () => {
         expect(yuk.veri).toEqual({ tip: 'cuma_hatirlatma' });
         // Alarm o tetiğin bildiriminin YERİNE geçer.
         expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+        // Cuma kılınmışlığa bağlı DEĞİL (vakit girmeden çalar) → bayrak yükte YOK.
+        expect('kilinmisligaBagli' in yuk).toBe(false);
+    });
+
+    test('KILINMIŞLIĞA BAĞLI bilgi alarmı (takvim): yükte bayrak + vakit/tarih (native kuyruk denetimi)', async () => {
+        const t = new AndroidMuhafizTeslimcisi({
+            sahiplik: { tur: 'onek', onek: 'takvim_cakisma_' },
+            kanalHazirligi: async (m) => m,
+            alarmKanalTemizligi: false,
+        });
+        await t.hazirla();
+        mockKopru.planla.mockResolvedValue(true);
+        const te = {
+            ...teslim(
+                { kanallar: { bildirim: true, alarm: true }, alarm: true },
+                {
+                    veri: { tip: 'takvim_cakisma', vakit: 'ogle', tarih: '2026-10-16' },
+                    kategori: null,
+                    alarmAdi: 'Takvim',
+                    alarmTuru: 'bilgi',
+                    alarmKilinmisligaBagli: true,
+                }
+            ),
+            id: 'takvim_cakisma_2026-10-16_ogle',
+        };
+        await t.uyariPlanla(te);
+        const yuk = mockKopru.planla.mock.calls[0][0] as Record<string, unknown>;
+        expect(yuk).toMatchObject({ tur: 'bilgi', kilinmisligaBagli: true, vakit: 'ogle', tarih: '2026-10-16' });
     });
 });
 

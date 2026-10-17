@@ -11,6 +11,7 @@
  */
 import type { CumaPlanAyarlari } from '../../core/bildirim/cumaPlani';
 import type { CamiyeGitPlanAyarlari } from '../../core/bildirim/camiyeGitPlani';
+import type { TakvimCakismaPlanAyarlari } from '../../core/bildirim/takvimCakismaPlani';
 import type { YatisAyarlari } from '../../core/yatis/yatisAyarlari';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
@@ -47,6 +48,12 @@ export interface DefterDegisikligi {
     camiyeGit?: CamiyeGitPlanAyarlari;
     /** Yatış + gün sonu muhasebesi (ortak hatırlatma yüzeyi). */
     yatis?: YatisAyarlari;
+    /**
+     * Takvim çakışması (ortak hatırlatma yüzeyi). Yalnız AYAR değişir; etkinlikler girdidekiler
+     * kalır. Defter takvimi yalnız özellik AÇIKKEN okur → kapalıyken (girdi `null`) simülasyon
+     * artışı göremez ve engellemez (etkinlik bilinmeden sayı uydurulmaz).
+     */
+    takvimCakisma?: TakvimCakismaPlanAyarlari;
 }
 
 export interface BildirimButcesi {
@@ -82,6 +89,10 @@ export function butceNesnesiOlustur(
                 cuma: d.cuma ?? girdi.cuma,
                 camiyeGit: d.camiyeGit ?? girdi.camiyeGit,
                 yatis: d.yatis ?? girdi.yatis,
+                takvimCakisma:
+                    d.takvimCakisma && girdi.takvimCakisma
+                        ? { ...girdi.takvimCakisma, ayarlar: d.takvimCakisma }
+                        : girdi.takvimCakisma,
             }
             : null;
     return {

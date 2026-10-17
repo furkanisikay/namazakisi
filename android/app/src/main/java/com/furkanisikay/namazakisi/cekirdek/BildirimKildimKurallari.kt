@@ -54,6 +54,29 @@ object BildirimKildimKurallari {
         return kimlik == onek || kimlik.startsWith("${onek}_")
     }
 
+    /**
+     * Takvim çakışması uyarısının kimlik öneki — JS `TAKVIM_CAKISMA_ID_ONEKI`
+     * (`core/bildirim/takvimCakismaPlani.ts`; nöbetçi `gercekAlarm.test.ts`).
+     */
+    const val TAKVIM_CAKISMA_ONEKI = "takvim_cakisma_"
+
+    /**
+     * Kimlik bu vaktin takvim çakışması uyarısı mı? Kök `takvim_cakisma_<tarih>_<vakit>`,
+     * tekrarlar `kök_<kalanDk>` (JS `takvimCakismaKokuneAitMi` ile AYNI, sınır kontrollü).
+     */
+    fun takvimCakismasiBuVakteAitMi(kimlik: String, v: Vakit): Boolean {
+        val kok = "${TAKVIM_CAKISMA_ONEKI}${v.tarih}_${v.vakit}"
+        return kimlik == kok || kimlik.startsWith("${kok}_")
+    }
+
+    /**
+     * Vakit kılınınca SUSAN alarmlar: muhafız (+ yatış) alarmları ve kılınmışlığa bağlı
+     * takvim çakışması alarmı. `MuhafizAlarmTemizligi.vaktiSustur` (her kuyruk ekleme)
+     * bunu kullanır — bekleyen ve ÇALAN ikisi de.
+     */
+    fun kildimdaSusanAlarmMi(kimlik: String, v: Vakit): Boolean =
+        buVakteAitMi(kimlik, v) || takvimCakismasiBuVakteAitMi(kimlik, v)
+
     /** Verilen kimliklerden yalnız bu vakte ait olanlar (sıra korunur, tekrar yok). */
     fun iptalEdilecekler(kimlikler: Collection<String>, v: Vakit): List<String> =
         kimlikler.filter { buVakteAitMi(it, v) }.distinct()

@@ -1,6 +1,13 @@
 /**
- * Takvim çakışması uyarısı ayar bölümü (issue #291) — Bildirim Ayarları'nda,
- * "Camide kılacağım" kartının altında.
+ * Takvim çakışması uyarısı ayar bölümü (issue #291; ortak hatırlatma yüzeyleri plan §5.4) —
+ * Bildirim Ayarları'nda, "Camide kılacağım" kartının altında.
+ *
+ * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): uyarının adımları
+ * TEK `PencereKarti` (`stil="gomulu"`), adım detayı `AdimDetayModal`, önizleme
+ * `AkisOnizlemeModal`, tanım `ekHatirlatmaPencereTanimi` — muhafız, nafile, cuma, camiye
+ * gitme ve yatışla AYNI yetenekler (1–3 adım, kanal çipleri, ses, titreşim, gerçek alarm +
+ * kapsamı, tekrar, akış önizlemesi). İstisnalar (gerekçe kartta yazılı): yön sabit, ton yok,
+ * anons metni bağlamdan. Zaman şeridi ÇİZİLMEZ: olay tabanlıdır, sabit bir pencere yoktur.
  *
  * Açma akışı: anahtar → `TakvimCakismaRizaModal` (açık rıza) → sistem takvim
  * izni → ayar `aktif + rizaZamani` ile yazılır. İzin verilmezse ayar AÇILMAZ ve
@@ -8,35 +15,64 @@
  * açılabiliyorsa "Tekrar deneyin" sunulur). İzin, rıza modalı TAMAMEN kapandıktan
  * sonra istenir (`izniModalKapandiktanSonraIste`): v0.31.0 iç testinde (Samsung)
  * modal kapanırken aynı anda istenen izin verildiği hâlde "verilmedi" görünüyordu.
- * İzin sonradan
- * geri alınırsa kart bunu söyler ve "İzin verin" düğmesi gösterir; servis o
+ * İzin sonradan geri alınırsa kart bunu söyler ve "İzin verin" düğmesi gösterir; servis o
  * sırada hiçbir şey planlamaz (eski plan temizlenir).
+ *
+ * ÜÇ RIZA AYRIDIR: takvim okuma (`rizaZamani`, modal), sesli anons (`sesliOnayi`,
+ * `SesliOnayModal`) ve gerçek alarm (`alarmOnayi`, `AlarmOnayModal`) — sesli/alarm rızası
+ * adım yazımıyla BİRLİKTE yazılır. Kapatmak yalnız takvim rızasını siler.
+ *
+ * YAZMA DEBOUNCE'LU (cuma deseni): adım değişikliği TEK yazmaya/planlamaya iner; ekrandan
+ * çıkışta bekleyen yazma HEMEN uygulanır. Sayıyı YAPISAL artıran adım değişikliği bildirim
+ * sınırı rehberinden (`degisikligiDene`) geçer; defter takvimi yalnız özellik AÇIKKEN okur.
  */
 import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Linking, AppState, Platform } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 import { useRenkler } from '../../../core/theme';
 import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { takvimCakismaAyariniGuncelle, takvimCakismaAyarlariniYukle } from '../../store/takvimCakismaSlice';
 import { Anahtar } from '../common/Anahtar';
-import { SayisalSecici } from '../common/SayisalSecici';
 import { BildirimModali } from '../common/BildirimModali';
+import { PencereKarti } from '../hatirlatma/PencereKarti';
+import { AdimDetayModal } from '../hatirlatma/AdimDetayModal';
+import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
+import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
+import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
+import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
+import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
+import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
+import { useButceRehberi } from '../../hooks/useButceRehberi';
 import { TakvimCakismaRizaModal } from './TakvimCakismaRizaModal';
 import {
+    TAKVIM_CAKISMA_ADIM_KISITLARI,
     TAKVIM_CAKISMA_ONCE_ADIM_DK,
     TAKVIM_CAKISMA_ONCE_MAX_DK,
     TAKVIM_CAKISMA_ONCE_MIN_DK,
+    TAKVIM_CAKISMA_TEKRAR_MAX_DK,
+    TAKVIM_CAKISMA_TEKRAR_MIN_DK,
+    TAKVIM_CAKISMA_VARSAYILAN_TEKRAR_DK,
+    takvimCakismaAyarlariniBirlestir,
+    type TakvimCakismaAyarlari,
 } from '../../../core/takvimCakisma/takvimCakismaAyarlari';
-import { KILMA_PAYI_DK } from '../../../core/bildirim/takvimCakismaPlani';
+import {
+    KILMA_PAYI_DK,
+    takvimCakismaAnonsMetni,
+    takvimCakismaMetniOlustur,
+} from '../../../core/bildirim/takvimCakismaPlani';
+import { adimEkle, adimGuncelle, adimSil, adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
+import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import {
     takvimIzinDurumunuOku,
     takvimIzniIste,
     type TakvimIzinDurumu,
 } from '../../../domain/services/TakvimEtkinlikOkuyucu';
 
-/** Stepper'a arka arkaya basmak TEK yazmaya insin (cuma/camiye gitme ile aynı gerekçe). */
+/** Arka arkaya değişiklik TEK yazmaya insin (cuma/camiye gitme ile aynı gerekçe). */
 const YAZMA_GECIKMESI_MS = 1200;
 
 /**
@@ -46,14 +82,49 @@ const YAZMA_GECIKMESI_MS = 1200;
  */
 export const RIZA_KAPANIS_BEKLEMESI_MS = Platform.OS === 'ios' ? 1000 : 400;
 
+/** Yön sabit gerekçesi (plan §3.3) — kartta seçici yerine yazılır. */
+export const TAKVIM_CAKISMA_YON_GEREKCESI = 'Uyarı etkinliğinizden önce gelir; yön, etkinliğin saatine bağlıdır.';
+
 /** İzin reddinde gösterilecek yol: diyalog yeniden açılabiliyorsa tekrar dene, değilse ayarlar. */
 type IzinHatasi = null | 'tekrar' | 'ayarlar';
+
+type AyarNavigasyonu = { navigate: (ekran: string) => void };
+
+/** Bu bölüm yalnız takvim çakışmasını yazar → muhafız/nafile önerisi burada UYGULANMAZ (cuma deseni). */
+const oneriUygulanmaz = (): boolean => false;
+
+const vakitAyari = (a: Pick<TakvimCakismaAyarlari, 'adimlar'>): VakitMuhafizAyari => ({
+    yon: 'cikisaDogru',
+    seviyeler: a.adimlar,
+});
+
+/**
+ * ÖRNEK çakışma (önizleme ve "Telefonunuz şöyle okur"): öğle vaktine denk gelen tek bir
+ * etkinlik. Gerçek uyarının saatleri o günkü etkinlikten gelir; burada yalnız METİN gösterilir,
+ * etkinlik adı GÖSTERİLMEZ.
+ */
+function ornekCakisma() {
+    const gun = new Date();
+    const an = (s: number, d: number) => new Date(gun.getFullYear(), gun.getMonth(), gun.getDate(), s, d).getTime();
+    return {
+        vakit: 'ogle' as const,
+        tur: 'once' as const,
+        girisMs: an(13, 0),
+        sonAnMs: an(16, 30),
+        blokBaslangicMs: an(14, 0),
+        blokBitisMs: an(16, 45),
+        etkinlikSayisi: 1,
+        tekBaslik: null,
+    };
+}
 
 export const TakvimCakismaBolumu: React.FC = () => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
-    const ayarlar = useAppSelector((s) => s.takvimCakisma.ayarlar);
+    const kayitli = useAppSelector((s) => s.takvimCakisma.ayarlar);
+    const yetenekler = usePlatformYetenekleri();
+    const ttsDestekli = useTurkceTtsDestegi();
 
     const [rizaAcik, setRizaAcik] = useState(false);
     const [izinHatasi, setIzinHatasi] = useState<IzinHatasi>(null);
@@ -75,35 +146,75 @@ export const TakvimCakismaBolumu: React.FC = () => {
         return () => abonelik.remove();
     }, [izniTazele]);
 
-    // ── Önceden süre: taslak + debounce'lu yazma ──
-    const [taslakDk, setTaslakDk] = useState<number | null>(null);
-    const bekleyenRef = useRef<number | null>(null);
+    // ── Taslak + debounce'lu yazma ──
+    const [taslak, setTaslak] = useState<TakvimCakismaAyarlari | null>(null);
+    const bekleyenRef = useRef<Partial<TakvimCakismaAyarlari> | null>(null);
     const zamanlayiciRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const ayarlar = taslak ?? kayitli;
 
-    const bekleyeniYaz = useCallback(() => {
+    const hemenYaz = useCallback(() => {
         if (zamanlayiciRef.current) clearTimeout(zamanlayiciRef.current);
         zamanlayiciRef.current = null;
         const bekleyen = bekleyenRef.current;
         bekleyenRef.current = null;
-        if (bekleyen != null) dispatch(takvimCakismaAyariniGuncelle({ oncedenDk: bekleyen }));
+        if (bekleyen) dispatch(takvimCakismaAyariniGuncelle(bekleyen));
     }, [dispatch]);
 
-    const sureDegistir = useCallback(
-        (deger: number) => {
-            setTaslakDk(deger);
-            bekleyenRef.current = deger;
+    /** Değişikliği taslağa yazar ve debounce'lu dispatch'i kurar (`hemen` → beklemeden). */
+    const yaz = useCallback(
+        (degisiklik: Partial<TakvimCakismaAyarlari>, hemen = false) => {
+            setTaslak(takvimCakismaAyarlariniBirlestir(taslak ?? kayitli, degisiklik));
+            bekleyenRef.current = { ...(bekleyenRef.current ?? {}), ...degisiklik };
             if (zamanlayiciRef.current) clearTimeout(zamanlayiciRef.current);
-            zamanlayiciRef.current = setTimeout(bekleyeniYaz, YAZMA_GECIKMESI_MS);
+            if (hemen) {
+                hemenYaz();
+                return;
+            }
+            zamanlayiciRef.current = setTimeout(hemenYaz, YAZMA_GECIKMESI_MS);
         },
-        [bekleyeniYaz]
+        [taslak, kayitli, hemenYaz]
     );
 
-    useEffect(() => () => bekleyeniYaz(), [bekleyeniYaz]);
-    useEffect(() => {
-        if (bekleyenRef.current == null) setTaslakDk(null);
-    }, [ayarlar.oncedenDk]);
+    // Ekrandan çıkışta bekleyen yazma HEMEN uygulanır (sessizce kaybolmasın).
+    useEffect(() => () => hemenYaz(), [hemenYaz]);
 
-    const oncedenDk = taslakDk ?? ayarlar.oncedenDk;
+    // Store taslağa eşitlenince taslak bırakılır (normalize edilmiş değer gösterilsin).
+    useEffect(() => {
+        if (taslak && !bekleyenRef.current && JSON.stringify(kayitli) === JSON.stringify(taslak)) setTaslak(null);
+    }, [kayitli, taslak]);
+
+    // ── Bildirim sınırı (issue #298) ──
+    const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
+    const butce = useBildirimButcesi();
+    const rehber = useButceRehberi<TakvimCakismaAyarlari>(
+        butce,
+        {
+            yaz: () => undefined,
+            yedekAl: () => ayarlar,
+            geriYukle: (yedek) => yaz(yedek, true),
+        },
+        {
+            oneriFiltresi: oneriUygulanmaz,
+            ekYol: navigation
+                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                : undefined,
+        }
+    );
+
+    /** Yapısal artışta sığma denetimi; sığmazsa YAZILMAZ (rehber açılır). */
+    const guncelle = useCallback(
+        (yeni: TakvimCakismaAyarlari, ek: Partial<TakvimCakismaAyarlari> = {}, hemen = false): boolean => {
+            if (
+                adimYukuArtiyorMu(ayarlar, yeni) &&
+                !rehber.degisikligiDene({ takvimCakisma: yeni }, { once: { takvimCakisma: ayarlar } })
+            ) {
+                return false;
+            }
+            yaz({ adimlar: yeni.adimlar, ...ek }, hemen);
+            return true;
+        },
+        [ayarlar, rehber, yaz]
+    );
 
     const anaAnahtar = useCallback(
         async (deger: boolean) => {
@@ -113,9 +224,9 @@ export const TakvimCakismaBolumu: React.FC = () => {
                 setRizaAcik(true);
                 return;
             }
-            dispatch(takvimCakismaAyariniGuncelle({ aktif: false }));
+            yaz({ aktif: false }, true);
         },
-        [butonTiklandiFeedback, dispatch]
+        [butonTiklandiFeedback, yaz]
     );
 
     /**
@@ -131,13 +242,13 @@ export const TakvimCakismaBolumu: React.FC = () => {
                 return;
             }
             if (etkinlestir) {
-                dispatch(takvimCakismaAyariniGuncelle({ aktif: true, rizaZamani: new Date().toISOString() }));
+                yaz({ aktif: true, rizaZamani: new Date().toISOString() }, true);
             } else {
                 // Planı izinle yeniden kur (ayar değişmez).
                 dispatch(takvimCakismaAyariniGuncelle({}));
             }
         },
-        [dispatch]
+        [dispatch, yaz]
     );
 
     // ── Rıza modalı kapandıktan SONRA izin isteği ──
@@ -183,121 +294,268 @@ export const TakvimCakismaBolumu: React.FC = () => {
     const baslikAnahtari = useCallback(
         async (deger: boolean) => {
             await butonTiklandiFeedback();
-            dispatch(takvimCakismaAyariniGuncelle({ baslikGoster: deger }));
+            yaz({ baslikGoster: deger }, true);
         },
-        [butonTiklandiFeedback, dispatch]
+        [butonTiklandiFeedback, yaz]
     );
 
+    // ── Pencere tanımı (ortak kart) ──
+    const ornek = useMemo(() => ornekCakisma(), []);
+    const ornekAnons = useMemo(() => takvimCakismaAnonsMetni(ornek.vakit, ornek.tur), [ornek]);
+    const tanim = useMemo(
+        () =>
+            ekHatirlatmaPencereTanimi({
+                kaynak: 'takvimCakisma',
+                baslik: 'Takvim çakışması',
+                baslikKucuk: 'takvim çakışması',
+                ikon: 'calendar-times',
+                vakit: ornek.vakit,
+                yonSabitGerekcesi: TAKVIM_CAKISMA_YON_GEREKCESI,
+                adimSayisi: ayarlar.adimlar.length,
+                maksAdim: TAKVIM_CAKISMA_ADIM_KISITLARI.maksAdim,
+                esikSinirlari: { min: TAKVIM_CAKISMA_ONCE_MIN_DK, max: TAKVIM_CAKISMA_ONCE_MAX_DK },
+                esikAdimDk: TAKVIM_CAKISMA_ONCE_ADIM_DK,
+                tekrarMinDk: TAKVIM_CAKISMA_TEKRAR_MIN_DK,
+                tekrarMaxDk: TAKVIM_CAKISMA_TEKRAR_MAX_DK,
+                varsayilanTekrarDk: TAKVIM_CAKISMA_VARSAYILAN_TEKRAR_DK,
+                esikBasligi: 'NE KADAR ÖNCE',
+                esikAciklamasi: 'Etkinlik başlamadan',
+                esikErisimAdi: 'Etkinlikten kaç dk önce',
+                esikBirimi: 'dk önce',
+                yetenekler,
+                // Anons ADSIZDIR — ayar ne olursa olsun (gizlilik).
+                anonsOrnegiOlustur: () => ornekAnons,
+                onizlemeMetni: () => ({
+                    ...takvimCakismaMetniOlustur(ornek, { baslikGoster: false }),
+                    anons: ornekAnons,
+                }),
+                onizlemeOzeti: (adet) =>
+                    `Bir etkinlik vaktin sonunu kapladığında ${adet} uyarı alırsınız (örnek: öğle vakti)`,
+            }),
+        [ayarlar.adimlar.length, ornek, ornekAnons, yetenekler]
+    );
+
+    // ── Adım işlemleri (camiye gitme deseni) ──
+    const [detay, setDetay] = useState<number | null>(null);
+    const [onizleme, setOnizleme] = useState(false);
+    const [sesliBekleyen, setSesliBekleyen] = useState<{ indeks: number; seviye: SeviyeAyari } | null>(null);
+    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
+    const alarmOnayiBekliyor = useRef(false);
+
+    const kisit = TAKVIM_CAKISMA_ADIM_KISITLARI;
+
+    const adimEkleyin = () => {
+        const yeni = adimEkle(ayarlar, 'cikisaDogru', kisit);
+        if (yeni === ayarlar || !guncelle(yeni)) return;
+        const eskiEsikler = new Set(ayarlar.adimlar.map((a) => a.esikDk));
+        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
+        if (indeks >= 0) setDetay(indeks);
+    };
+
+    const adimAcKapa = (indeks: number, acik: boolean) => {
+        const mevcut = ayarlar.adimlar[indeks];
+        if (!mevcut) return;
+        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru') : seviyeyiKapat(mevcut);
+        if (seviye === mevcut) return;
+        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit));
+    };
+
+    const adimDegistir = (indeks: number, seviye: SeviyeAyari) => {
+        const eski = ayarlar.adimlar[indeks];
+        if (!eski) return;
+        if (alarmOnayiBekliyor.current) {
+            alarmOnayiBekliyor.current = false;
+            guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit), { alarmOnayi: true }, true);
+            return;
+        }
+        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
+        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
+            setSesliBekleyen({ indeks, seviye });
+            return;
+        }
+        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit));
+    };
+
+    const sesliOnayla = () => {
+        if (!sesliBekleyen) return;
+        const { indeks, seviye } = sesliBekleyen;
+        setSesliBekleyen(null);
+        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit), { sesliOnayi: true }, true);
+    };
+
+    /** "Sesli olmadan": adım bildirimle kalır (titreşim/alarm korunur). */
+    const sesliOlmadan = () => {
+        if (!sesliBekleyen) return;
+        const { indeks, seviye } = sesliBekleyen;
+        setSesliBekleyen(null);
+        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
+        guncelle(adimGuncelle(ayarlar, indeks, { ...seviye, kanallar }, 'cikisaDogru', kisit));
+    };
+
+    const detaySeviyesi = detay !== null ? ayarlar.adimlar[detay] : undefined;
+    const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
+
     return (
-        <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
-            <View className="flex-row items-center p-4">
-                <View
-                    className="w-10 h-10 rounded-full items-center justify-center mr-3"
-                    style={{ backgroundColor: `${renkler.birincil}20` }}
-                >
-                    <FontAwesome5 name="calendar-times" size={18} color={renkler.birincil} solid />
-                </View>
-                <View className="flex-1">
-                    <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                        Takvim çakışması uyarısı
-                    </Text>
-                    <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                        Bir etkinlik vaktin sonunu kaplıyorsa önceden haber verelim
-                    </Text>
-                </View>
-                <Anahtar
-                    value={ayarlar.aktif}
-                    onValueChange={anaAnahtar}
-                    trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                    thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                    accessibilityLabel="Takvim çakışması uyarısı"
-                />
-            </View>
-
-            {ayarlar.aktif && (
-                <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
-                    {izin === 'verilmedi' && (
-                        <View
-                            className="flex-row items-start mt-4 p-3 rounded-xl"
-                            style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
-                        >
-                            <FontAwesome5
-                                name="exclamation-triangle"
-                                size={13}
-                                color={renkler.durum.uyari}
-                                style={{ marginTop: 2, marginRight: 8 }}
-                            />
-                            <View className="flex-1">
-                                <Text className="text-sm" style={{ color: renkler.metin }}>
-                                    Takvim izni kapalı olduğu için uyarı gönderilemiyor.
-                                </Text>
-                                <TouchableOpacity
-                                    onPress={izinVer}
-                                    className="flex-row items-center self-start mt-2 px-3 rounded-xl"
-                                    style={{ minHeight: 44, backgroundColor: renkler.birincil }}
-                                    accessibilityRole="button"
-                                    accessibilityLabel="Takvim iznini verin"
-                                >
-                                    <FontAwesome5 name="unlock" size={12} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-                                    <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
-                                        İzin verin
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    )}
-
-                    <View className="flex-row items-center justify-between mt-4">
-                        <View className="flex-1 mr-3">
-                            <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Ne kadar önce
-                            </Text>
-                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                Etkinlik başlamadan
-                            </Text>
-                        </View>
-                        <SayisalSecici
-                            deger={oncedenDk}
-                            min={TAKVIM_CAKISMA_ONCE_MIN_DK}
-                            max={TAKVIM_CAKISMA_ONCE_MAX_DK}
-                            adim={TAKVIM_CAKISMA_ONCE_ADIM_DK}
-                            onChange={sureDegistir}
-                            renk={renkler.birincil}
-                            aciklama="Etkinlikten önceki süre"
-                        />
+        <View>
+            <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
+                <View className="flex-row items-center p-4">
+                    <View
+                        className="w-10 h-10 rounded-full items-center justify-center mr-3"
+                        style={{ backgroundColor: `${renkler.birincil}20` }}
+                    >
+                        <FontAwesome5 name="calendar-times" size={18} color={renkler.birincil} solid />
                     </View>
-
-                    <View className="flex-row items-center justify-between mt-5">
-                        <View className="flex-1 mr-3">
-                            <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                Etkinlik adını gösterin
-                            </Text>
-                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
-                                bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir.
-                            </Text>
-                        </View>
-                        <Anahtar
-                            value={ayarlar.baslikGoster}
-                            onValueChange={baslikAnahtari}
-                            trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
-                            thumbColor={ayarlar.baslikGoster ? renkler.birincil : '#f4f3f4'}
-                            accessibilityLabel="Etkinlik adını bildirimde gösterin"
-                        />
-                    </View>
-
-                    <View className="flex-row items-start mt-5 gap-2">
-                        <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
-                        <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
-                            Bir etkinlik bittiğinde vaktin çıkmasına {KILMA_PAYI_DK} dakikadan az kalıyorsa,
-                            etkinlikten {oncedenDk} dk önce uyarılırsınız (vakit o sırada henüz girmediyse vakit
-                            girince). Tüm gün etkinlikleri, "meşgul değil" ya da "belki"
-                            işaretliler ve uygulamanın eklediği namaz etkinlikleri sayılmaz. Takviminiz yalnızca bu
-                            cihazda okunur; hiçbir yere gönderilmez.
+                    <View className="flex-1">
+                        <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
+                            Takvim çakışması uyarısı
+                        </Text>
+                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                            Bir etkinlik vaktin sonunu kaplıyorsa önceden haber verelim
                         </Text>
                     </View>
+                    <Anahtar
+                        value={ayarlar.aktif}
+                        onValueChange={anaAnahtar}
+                        trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                        thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
+                        accessibilityLabel="Takvim çakışması uyarısı"
+                    />
                 </View>
+
+                {ayarlar.aktif && (
+                    <View className="px-4 pb-4 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
+                        {izin === 'verilmedi' && (
+                            <View
+                                className="flex-row items-start mt-4 p-3 rounded-xl"
+                                style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
+                            >
+                                <FontAwesome5
+                                    name="exclamation-triangle"
+                                    size={13}
+                                    color={renkler.durum.uyari}
+                                    style={{ marginTop: 2, marginRight: 8 }}
+                                />
+                                <View className="flex-1">
+                                    <Text className="text-sm" style={{ color: renkler.metin }}>
+                                        Takvim izni kapalı olduğu için uyarı gönderilemiyor.
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={izinVer}
+                                        className="flex-row items-center self-start mt-2 px-3 rounded-xl"
+                                        style={{ minHeight: 44, backgroundColor: renkler.birincil }}
+                                        accessibilityRole="button"
+                                        accessibilityLabel="Takvim iznini verin"
+                                    >
+                                        <FontAwesome5
+                                            name="unlock"
+                                            size={12}
+                                            color={renkler.birincilMetin}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.birincilMetin }}>
+                                            İzin verin
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )}
+
+                        <View className="flex-row items-center justify-between mt-4">
+                            <View className="flex-1 mr-3">
+                                <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
+                                    Etkinlik adını gösterin
+                                </Text>
+                                <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                    Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
+                                    bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir. Sesli
+                                    anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
+                                </Text>
+                            </View>
+                            <Anahtar
+                                value={ayarlar.baslikGoster}
+                                onValueChange={baslikAnahtari}
+                                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                                thumbColor={ayarlar.baslikGoster ? renkler.birincil : '#f4f3f4'}
+                                accessibilityLabel="Etkinlik adını bildirimde gösterin"
+                            />
+                        </View>
+
+                        <View className="mt-4">
+                            <PencereKarti
+                                tanim={tanim}
+                                ayar={vakitAyari(ayarlar)}
+                                onAdimSec={(indeks) => setDetay(indeks)}
+                                onAdimEkle={adimEkleyin}
+                                onAdimAcKapa={ayarlar.adimlar.length > 1 ? adimAcKapa : undefined}
+                                onAkisiOnizle={() => setOnizleme(true)}
+                                stil="gomulu"
+                            />
+                        </View>
+
+                        <View className="flex-row items-start mt-5 gap-2">
+                            <FontAwesome5 name="info-circle" size={12} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
+                            <Text className="text-xs flex-1" style={{ color: renkler.metinIkincil }}>
+                                Bir etkinlik bittiğinde vaktin çıkmasına {KILMA_PAYI_DK} dakikadan az kalıyorsa, ilk uyarı
+                                etkinlikten {enErkenDk} dk önce gelir (vakit o sırada henüz girmediyse vakit girince).
+                                Tekrarlar aynı uyarıyı etkinliğe kadar yeniden gönderir; namazı kıldığınızda kalanlar
+                                iptal edilir. Tüm gün etkinlikleri, "meşgul değil" ya da "belki" işaretliler ve
+                                uygulamanın eklediği namaz etkinlikleri sayılmaz. Takviminiz yalnızca bu cihazda okunur;
+                                hiçbir yere gönderilmez.
+                            </Text>
+                        </View>
+                    </View>
+                )}
+            </View>
+
+            {detay !== null && detaySeviyesi && (
+                <AdimDetayModal
+                    gorunur
+                    tanim={tanim}
+                    seviyeler={ayarlar.adimlar}
+                    indeks={detay}
+                    ttsDestekli={ttsDestekli}
+                    onDegistir={(s: SeviyeAyari) => adimDegistir(detay, s)}
+                    onSil={
+                        ayarlar.adimlar.length > 1
+                            ? () => {
+                                guncelle(adimSil(ayarlar, detay));
+                                setDetay(null);
+                            }
+                            : undefined
+                    }
+                    onKapat={() => {
+                        setDetay(null);
+                        // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
+                        hemenYaz();
+                    }}
+                    // Gerçek alarm rızası (#74) — bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
+                    alarmOnayiVar={ayarlar.alarmOnayi === true}
+                    onAlarmOnayiVer={() => {
+                        alarmOnayiBekliyor.current = true;
+                    }}
+                />
             )}
+
+            {onizleme && (
+                <AkisOnizlemeModal
+                    gorunur
+                    tanim={tanim}
+                    ayar={vakitAyari(ayarlar)}
+                    ttsDestekli={ttsDestekli}
+                    onKapat={() => setOnizleme(false)}
+                />
+            )}
+
+            <SesliOnayModal
+                gorunur={sesliBekleyen !== null}
+                altBaslik="Takvim çakışması uyarısında sesli anons"
+                kapatmaNotu="Anons etkinliğin adını hiçbir zaman okumaz. Dilediğiniz zaman uyarının ayarından kapatabilirsiniz."
+                ornekMetin={sesliBekleyen ? ornekAnons : ''}
+                ttsDestekli={ttsDestekli}
+                onOnayla={sesliOnayla}
+                onSessizUygula={sesliOlmadan}
+                onIptal={() => setSesliBekleyen(null)}
+            />
 
             <TakvimCakismaRizaModal
                 gorunur={rizaAcik}
@@ -330,6 +588,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
                 }}
                 onKapat={() => setIzinHatasi(null)}
             />
+
+            {rehber.ogeler}
         </View>
     );
 };

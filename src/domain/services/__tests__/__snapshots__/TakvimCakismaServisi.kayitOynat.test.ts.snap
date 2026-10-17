@@ -1,0 +1,570 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android 120 dk once (taban kenetlenmesi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 13:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 21:30–04:55 arası sürüyor; yatsı vaktinin çıkışı 05:00. Etkinlik başlamadan yatsı namazını kıl.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "takvim_cakisma",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · etkinlik 21:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 21:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 18:00–19:20 arası sürüyor; ikindi için son uygun an 19:10 (sonrası kerahat). Etkinlik başlamadan ikindi namazını kıl.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "takvim_cakisma",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · etkinlik 18:00 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 16:30",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android ad acik + 10 dk once 1`] = `
+[
+  {
+    "content": {
+      "body": "“Gizli proje toplantısı” 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 14:20",
+    },
+  },
+  {
+    "content": {
+      "body": "“Uzun atölye” 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 18:50",
+    },
+  },
+  {
+    "content": {
+      "body": "“Gece nöbeti” 21:30–04:55 arası sürüyor; yatsı vaktinin çıkışı 05:00. Etkinlik başlamadan yatsı namazını kıl.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "takvim_cakisma",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · etkinlik 21:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 21:20",
+    },
+  },
+  {
+    "content": {
+      "body": "“Veli toplantısı” 18:00–19:20 arası sürüyor; ikindi için son uygun an 19:10 (sonrası kerahat). Etkinlik başlamadan ikindi namazını kıl.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "takvim_cakisma",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · etkinlik 18:00 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 17:50",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android bugun ogle kilinmis (muhafiz kilinmisligi) 1`] = `
+[
+  {
+    "content": {
+      "body": "“Uzun atölye” 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+  {
+    "content": {
+      "body": "“Gece nöbeti” 21:30–04:55 arası sürüyor; yatsı vaktinin çıkışı 05:00. Etkinlik başlamadan yatsı namazını kıl.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "takvim_cakisma",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · etkinlik 21:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 21:00",
+    },
+  },
+  {
+    "content": {
+      "body": "“Veli toplantısı” 18:00–19:20 arası sürüyor; ikindi için son uygun an 19:10 (sonrası kerahat). Etkinlik başlamadan ikindi namazını kıl.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "takvim_cakisma",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · etkinlik 18:00 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 17:30",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android varsayilan (30 dk once, ad gizli) 1`] = `
+[
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 14:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 21:30–04:55 arası sürüyor; yatsı vaktinin çıkışı 05:00. Etkinlik başlamadan yatsı namazını kıl.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "takvim_cakisma",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · etkinlik 21:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 21:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 18:00–19:20 arası sürüyor; ikindi için son uygun an 19:10 (sonrası kerahat). Etkinlik başlamadan ikindi namazını kıl.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "takvim_cakisma",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · etkinlik 18:00 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 17:30",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios 120 dk once (taban kenetlenmesi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 13:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios ad acik + 10 dk once 1`] = `
+[
+  {
+    "content": {
+      "body": "“Gizli proje toplantısı” 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 14:20",
+    },
+  },
+  {
+    "content": {
+      "body": "“Uzun atölye” 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 18:50",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios bugun ogle kilinmis (muhafiz kilinmisligi) 1`] = `
+[
+  {
+    "content": {
+      "body": "“Uzun atölye” 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+]
+`;
+
+exports[`TakvimCakismaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios varsayilan (30 dk once, ad gizli) 1`] = `
+[
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 14:30–16:45 arası sürüyor; öğle vaktinin çıkışı 16:30. Etkinlik başlamadan öğle namazını kıl.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik 14:30 · önce kıl",
+    },
+    "identifier": "takvim_cakisma_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 14:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki bir etkinlik 12:00–17:00 arası sürüyor ve öğle vaktini (13:00–16:30) kaplıyor. Kısa bir ara verip öğle namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "takvim_cakisma",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Takvimindeki 2 etkinlik art arda 19:00–21:10 arası sürüyor ve akşam vaktini (19:30–21:00) kaplıyor. Kısa bir ara verip akşam namazını kılmayı şimdiden planla.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "takvim_cakisma",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · etkinlik vakti kaplıyor",
+    },
+    "identifier": "takvim_cakisma_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 18:30",
+    },
+  },
+]
+`;

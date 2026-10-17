@@ -1,5 +1,6 @@
 /**
- * Takvim çakışması uyarısı (issue #291) — cuma/yatış/camiye-git desenleri.
+ * Takvim çakışması uyarısı (issue #291; ortak hatırlatma yüzeyleri plan §5.4) —
+ * cuma/yatış/camiye-git desenleri.
  *
  * Plan SAF üreticiden gelir (`core/bildirim/takvimCakismaPlani.ts`); bildirim
  * defteri (issue #298) aynı listeyi sayar. Pencere sonludur (Android 7 / iOS 3
@@ -12,11 +13,18 @@
  *     takvime sonradan eklenen toplantıyı yakalayan asıl yol budur
  *   - yedekten geri yükleme (`yedeklemeSlice`)
  *   - KILINMIŞLIK: `baslat` → `LocalNamazServisi` adlı yuva `takvimCakisma`;
- *     kılınan vaktin uyarısı TAKVİM OKUMADAN iptal edilir (kimlik tarih+vakitten).
+ *     kılınan vaktin uyarıları (ilk tetik + `_<k>` tekrarları; bekleyen + gösterilen +
+ *     sesli anons + gerçek alarm) TAKVİM OKUMADAN, kimlik KÖKÜYLE iptal edilir.
+ *
+ * TESLİM muhafızla AYNI katmandan, AYRI örnekle (`takvimCakismaTeslimcisiniAl`): kanal
+ * çipleri, sesli anons, ses, titreşim, gerçek alarm aynı koddan. Kategori YOK (muhafızın
+ * "Kıldım"ı FARZ yazardı), yük muhafız yükü değil, gerçek alarm BİLGİ türü (yalnız "Kapat").
  *
  * STORE'A BAĞLI DEĞİLDİR (arka planda Redux yok). Koordinat verilmezse ham
  * konum kaydından okunur. İzin burada İSTENMEZ: yoksa kurulu plan TEMİZLENİR
- * (kullanıcı izni geri aldıysa takvimden türeyen bildirim de kalmamalı).
+ * (kullanıcı izni geri aldıysa takvimden türeyen bildirim, anons ve alarm da kalmamalı).
+ * Turlar SIRAYA dizilir (`surenPlanlama`): konum yayması ve açılış zinciri `Promise.all`
+ * ile paralel tetikleyebilir; "temizle → planla" iç içe girerse yeni plan silinirdi.
  */
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
@@ -27,14 +35,17 @@ import { bugunuAl, dunuAl, gunEkle } from '../../core/utils/TarihYardimcisi';
 import type { VakitAdi } from '../../core/types';
 import {
     CAKISMA_VAKITLERI,
+    TAKVIM_CAKISMA_ID_ONEKI,
     TAKVIM_CAKISMA_PLAN_GUN_SAYISI,
     takvimCakismaKimligi,
     takvimCakismaKimligiMi,
-    takvimCakismaMetniOlustur,
+    takvimCakismaKokuneAitMi,
     takvimCakismaPlaniOlustur,
     type TakvimCakismaPlanKaydi,
 } from '../../core/bildirim/takvimCakismaPlani';
 import type { TakvimCakismaAyarlari } from '../../core/takvimCakisma/takvimCakismaAyarlari';
+import { ANDROID_TAKVIM_CAKISMA_PAYI, IOS_ALARMKIT_TAKVIM_PAYI } from '../../core/bildirim/butceSabitleri';
+import { onekSahipligi } from '../../core/muhafiz/teslimSahipligi';
 import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
 import {
     kayitDegistiDinleyicisiEkle,
@@ -43,6 +54,7 @@ import {
 } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
 import { cakismaEtkinlikleriniOku, okumaAraligi } from './TakvimEtkinlikOkuyucu';
+import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
 
 export interface TakvimCakismaKoordinat {
     lat: number;
@@ -65,6 +77,64 @@ const koordinatGecerli = (k: TakvimCakismaKoordinat | null | undefined): k is Ta
 /** Platforma göre plan ufku. */
 export const takvimCakismaPlanGunSayisi = (): number =>
     Platform.OS === 'ios' ? TAKVIM_CAKISMA_PLAN_GUN_SAYISI.ios : TAKVIM_CAKISMA_PLAN_GUN_SAYISI.android;
+
+/**
+ * TAKVİM ÇAKIŞMASI TESLİMCİSİ — muhafızla AYNI teslim katmanı, AYRI örnek (plan §3.2; camiye
+ * gitme deseni). Ayrı ÖRNEK şart: muhafızın tur başı bütçe sayacı ve iOS slot ölçümü bu turla
+ * karışmamalı.
+ * - Android: kanal hazırlığı KİMLİK (çöp toplama muhafızın işidir; kanalları
+ *   `MuhafizKanalServisi.ekKanallariHazirla` oluşturur, `ekHatirlatmaKaynaklari` korur),
+ *   önceki turun anons/alarmları yalnız `takvim_cakisma_` önekiyle silinir, pay
+ *   `ANDROID_TAKVIM_CAKISMA_PAYI` (asıl kesme üreticide; teslimcideki sayaç emniyet ağı).
+ * - iOS: bütçe ölçümü "kendi dışındaki" bekleyenleri sayar (ortak 64 defteri), anons sesi
+ *   matrissiz hazırlanır, AlarmKit payı `IOS_ALARMKIT_TAKVIM_PAYI`.
+ *
+ * Seçim ENJEKTE EDİLEBİLİR (jest varsayılan platformu iOS'tur — AGENTS.md).
+ */
+let _teslimci: MuhafizTeslimcisi | null = null;
+
+export function takvimCakismaTeslimcisiniAl(): MuhafizTeslimcisi {
+    if (_teslimci) return _teslimci;
+    if (Platform.OS === 'ios') {
+        const { IosMuhafizTeslimcisi } =
+            require('./IosMuhafizTeslimcisi') as typeof import('./IosMuhafizTeslimcisi');
+        _teslimci = new IosMuhafizTeslimcisi({
+            sahiplik: onekSahipligi(TAKVIM_CAKISMA_ID_ONEKI),
+            matrissizAnons: true,
+            alarmDestegi: true,
+            alarmKitPayi: IOS_ALARMKIT_TAKVIM_PAYI,
+        });
+    } else {
+        const { AndroidMuhafizTeslimcisi } =
+            require('./AndroidMuhafizTeslimcisi') as typeof import('./AndroidMuhafizTeslimcisi');
+        _teslimci = new AndroidMuhafizTeslimcisi({
+            alarmButcesi: ANDROID_TAKVIM_CAKISMA_PAYI,
+            kanalHazirligi: async (m) => m,
+            sahiplik: onekSahipligi(TAKVIM_CAKISMA_ID_ONEKI),
+            // Gerçek alarm STANDART yetenek; alarm KANALLARINI muhafız toplar.
+            alarmDestegi: true,
+            alarmKanalTemizligi: false,
+        });
+    }
+    return _teslimci;
+}
+
+/** Test / özel senaryo: teslimciyi ayarla (`null` → platformdan yeniden türet). */
+export function takvimCakismaTeslimcisiniAyarla(teslimci: MuhafizTeslimcisi | null): void {
+    _teslimci = teslimci;
+}
+
+/** Native önekli anons iptali — tembel yüklenir (köprü grafiği testlere sızmasın). */
+function anonslariOnekleIptalEt(onek: string): void {
+    if (Platform.OS !== 'android') return;
+    try {
+        const { iptalEtOnekliAnonslar } =
+            require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src');
+        iptalEtOnekliAnonslar(onek);
+    } catch (e) {
+        Logger.error('TakvimCakisma', 'Anons alarmlari iptal edilemedi', e);
+    }
+}
 
 /**
  * Dün ve bugünün kılınmış vakitleri: namaz kaydı ∪ muhafız kılınmışlığı
@@ -94,7 +164,7 @@ export async function yakinKilinanlariOku(): Promise<Record<string, VakitAdi[]>>
 
 export class TakvimCakismaServisi {
     private static instance: TakvimCakismaServisi;
-    /** Süren planlama — turlar SIRAYA dizilir (cuma servisiyle aynı gerekçe). */
+    /** Süren iş — planlama turları ve kılınmışlık iptali SIRAYA dizilir (`sirayaAl`). */
     private surenPlanlama: Promise<void> | null = null;
 
     public static getInstance(): TakvimCakismaServisi {
@@ -105,8 +175,8 @@ export class TakvimCakismaServisi {
     }
 
     /**
-     * Kılınmışlık değişince o vaktin uyarısını iptal et (idempotent — adlı yuva).
-     * Takvim OKUNMAZ: kimlik tarih + vakitten kurulur, iş ucuzdur.
+     * Kılınmışlık değişince o vaktin uyarılarını iptal et (idempotent — adlı yuva).
+     * Takvim OKUNMAZ: kimlik kökü tarih + vakitten kurulur, iş ucuzdur.
      */
     public baslat(): void {
         kayitDegistiDinleyicisiEkle(DINLEYICI_ADI, () => {
@@ -122,27 +192,37 @@ export class TakvimCakismaServisi {
         koordinat?: TakvimCakismaKoordinat | null,
         simdi: Date = new Date()
     ): Promise<void> {
-        const onceki = this.surenPlanlama ?? Promise.resolve();
-        const bu = onceki
-            .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-            .then(() => this.planlamayiCalistir(koordinat, simdi));
-        this.surenPlanlama = bu;
         try {
-            await bu;
+            await this.sirayaAl(() => this.planlamayiCalistir(koordinat, simdi));
         } catch (e) {
             Logger.error('TakvimCakisma', 'Planlama basarisiz', e);
-        } finally {
-            if (this.surenPlanlama === bu) this.surenPlanlama = null;
         }
+    }
+
+    /**
+     * Planlama turları VE kılınmışlık iptali TEK sıradan geçer. İptal ayrı koşsaydı,
+     * kılınmışlığı "Kıldım"dan ÖNCE okumuş süren bir tur iptal bittikten SONRA o vaktin
+     * uyarılarını (bildirim, anons, gerçek alarm) yeniden kurabilirdi.
+     */
+    private sirayaAl(is: () => Promise<void>): Promise<void> {
+        const onceki = this.surenPlanlama ?? Promise.resolve();
+        const bu = onceki
+            .catch(() => { /* onceki isin hatasi bu isi dusurmez */ })
+            .then(is);
+        this.surenPlanlama = bu;
+        return bu.finally(() => {
+            if (this.surenPlanlama === bu) this.surenPlanlama = null;
+        });
     }
 
     private async planlamayiCalistir(
         verilenKoordinat: TakvimCakismaKoordinat | null | undefined,
         simdi: Date
     ): Promise<void> {
-        const ayarlar = await LocalTakvimCakismaServisi.getAyarlar();
+        // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — kanal id paritesi).
+        const ayarlar = await this.sesleriDogrula(await LocalTakvimCakismaServisi.getAyarlar());
         if (!ayarlar.aktif) {
-            await this.mevcutlariTemizle();
+            await this.tumunuTemizle();
             return;
         }
         const koordinat = verilenKoordinat === undefined ? await this.koordinatOku() : verilenKoordinat;
@@ -156,15 +236,18 @@ export class TakvimCakismaServisi {
         const { baslangic, bitis } = okumaAraligi(simdi, gunSayisi);
         const okuma = await cakismaEtkinlikleriniOku(baslangic, bitis);
         if (okuma.durum === 'izinYok') {
-            // İzin geri alındı: takvimden türemiş eski uyarılar da gitmeli.
+            // İzin geri alındı: takvimden türemiş eski uyarılar (anons + alarm dahil) da gitmeli.
             Logger.warn('TakvimCakisma', 'Takvim izni yok, plan temizlendi');
-            await this.mevcutlariTemizle();
+            await this.tumunuTemizle();
             return;
         }
         if (okuma.durum === 'hata') {
             Logger.warn('TakvimCakisma', 'Takvim okunamadi, mevcut plan korunuyor');
             return;
         }
+
+        // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
+        await this.kanallariHazirla(ayarlar);
 
         const [kilinanlar, ozelGundeMi] = await Promise.all([yakinKilinanlariOku(), ozelGunSuzgeciniOku()]);
         const plan = takvimCakismaPlaniOlustur({
@@ -175,61 +258,110 @@ export class TakvimCakismaServisi {
             etkinlikler: okuma.etkinlikler,
             kilinanlar: (gun) => kilinanlar[gun] ?? [],
             gunAtlanirMi: ozelGundeMi,
+            ...(Platform.OS === 'ios' ? {} : { alarmButcesi: ANDROID_TAKVIM_CAKISMA_PAYI }),
         });
 
-        await this.mevcutlariTemizle();
-        for (const kayit of plan) {
-            await this.planla(kayit, ayarlar);
+        await this.bekleyenleriTemizle();
+        const teslimci = takvimCakismaTeslimcisiniAl();
+        try {
+            // Önceki turun gerçek alarmları (expo listesinde YOK) `takvim_cakisma_` önekiyle silinir.
+            await teslimci.hazirla();
+            // KRONOLOJİK sıra: iOS bütçesi sayaçla keser, ters sıra yakın uyarıları atardı.
+            for (const kayit of plan) {
+                await this.tekUyariPlanla(teslimci, kayit);
+            }
+        } finally {
+            await teslimci.tamamla?.();
         }
     }
 
-    private async planla(kayit: TakvimCakismaPlanKaydi, ayarlar: TakvimCakismaAyarlari): Promise<void> {
-        const { baslik, govde } = takvimCakismaMetniOlustur(kayit, ayarlar);
+    /** Tek uyarıyı teslimciye verir. Biri patlarsa KALANLAR yine kurulur. */
+    private async tekUyariPlanla(teslimci: MuhafizTeslimcisi, kayit: TakvimCakismaPlanKaydi): Promise<void> {
         try {
-            await Notifications.scheduleNotificationAsync({
-                identifier: kayit.id,
-                content: {
-                    title: baslik,
-                    body: govde,
-                    sound: true,
-                    // Etkinlik adı veriye YAZILMAZ (yalnız ayar açıksa metinde görünür).
-                    data: { tip: 'takvim_cakisma', vakit: kayit.vakit, tarih: kayit.tarih },
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: kayit.zaman,
-                    // Yeni kanal AÇILMAZ — vakit bildirimi kanalı.
-                    channelId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+            await teslimci.uyariPlanla({
+                id: kayit.id,
+                baslik: kayit.baslik,
+                mesaj: kayit.govde,
+                zaman: kayit.zaman,
+                // `anonsMetni` ÇÖZÜLMÜŞ ve ADSIZ cümledir (yer tutucu içermez).
+                uyari: kayit.uyari,
+                vakit: kayit.vakit,
+                muhafizVakti: kayit.vakit,
+                tarih: kayit.tarih,
+                yon: 'cikisaDogru',
+                // Uyarının anlamlı olduğu son an: gerçek alarm geç tetiklenirse çalmaz.
+                cikis: kayit.cikis,
+                ozel: {
+                    // Etkinlik adı veriye YAZILMAZ (yalnız ayar açıksa bildirim metninde görünür).
+                    veri: { tip: 'takvim_cakisma', vakit: kayit.vakit, tarih: kayit.tarih },
+                    // Kategori YOK: muhafızın "Kıldım" düğmesi FARZ namazı yazardı.
+                    kategori: null,
+                    // Göçten gelen (varsayılan ses, titreşimsiz) adım bugünkü kanalda kalır.
+                    varsayilanKanalId: BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+                    varsayilanSistemSesi: true,
+                    // Alarm ekranındaki ad — etkinlik adı DEĞİL (kilit ekranında görünür).
+                    alarmAdi: 'Takvim',
+                    alarmTuru: 'bilgi',
+                    // Vaktin İÇİNDE çalar: vakit native "Kıldım" ile kılındıysa (JS geç
+                    // uyansa bile) native alıcı çalmaz, kuyruğa ekleme bu alarmı susturur.
+                    alarmKilinmisligaBagli: true,
                 },
             });
         } catch (e) {
-            // Tek uyarı patlarsa KALANLAR yine kurulmalı.
             Logger.error('TakvimCakisma', `Bildirim planlanamadi: ${kayit.id}`, e);
         }
     }
 
-    /** Dün/bugün kılınmış vakitlerin bekleyen ve gösterilen uyarılarını kaldırır. */
+    /**
+     * Dün/bugün kılınmış vakitlerin bekleyen + gösterilen uyarılarını, sesli anonslarını ve
+     * gerçek alarmlarını (ÇALAN dahil) kaldırır — kimlik KÖKÜYLE, tekrarlar da kapsanır.
+     */
     public async kilinanlarinUyarilariniIptalEt(): Promise<void> {
+        // Süren planlama turunun ARDINA girer (bkz. `sirayaAl`).
+        await this.sirayaAl(() => this.kilinanIptaliniCalistir());
+    }
+
+    private async kilinanIptaliniCalistir(): Promise<void> {
         const kilinanlar = await yakinKilinanlariOku();
+        const kokler: string[] = [];
         for (const [tarih, vakitler] of Object.entries(kilinanlar)) {
             for (const vakit of CAKISMA_VAKITLERI) {
-                if (!vakitler.includes(vakit)) continue;
-                const kimlik = takvimCakismaKimligi(tarih, vakit);
-                try {
-                    await Notifications.cancelScheduledNotificationAsync(kimlik);
-                } catch {
-                    // Bekleyen yoksa sorun değil.
-                }
-                try {
-                    await Notifications.dismissNotificationAsync(kimlik);
-                } catch {
-                    // Gösterilmemişse sorun değil.
-                }
+                if (vakitler.includes(vakit)) kokler.push(takvimCakismaKimligi(tarih, vakit));
+            }
+        }
+        if (kokler.length === 0) return;
+        const kokeAit = (kimlik: string) => kokler.some((k) => takvimCakismaKokuneAitMi(kimlik, k));
+        try {
+            const tumu = await Notifications.getAllScheduledNotificationsAsync();
+            for (const b of tumu) {
+                if (kokeAit(b.identifier)) await Notifications.cancelScheduledNotificationAsync(b.identifier);
+            }
+        } catch (e) {
+            Logger.warn('TakvimCakisma', 'Kilinan: bekleyenler iptal edilemedi', e);
+        }
+        try {
+            const gosterilen = (await Notifications.getPresentedNotificationsAsync?.()) ?? [];
+            for (const b of gosterilen) {
+                const kimlik = b.request.identifier;
+                if (kokeAit(kimlik)) await Notifications.dismissNotificationAsync(kimlik);
+            }
+        } catch (e) {
+            Logger.warn('TakvimCakisma', 'Kilinan: gosterilen bildirimler kaldirilamadi', e);
+        }
+        const teslimci = takvimCakismaTeslimcisiniAl();
+        for (const kok of kokler) {
+            anonslariOnekleIptalEt(kok);
+            // Gerçek alarmlar (#74): bekleyenler + o an ÇALAN alarm susar.
+            try {
+                teslimci.vakitYanKanallariniIptalEt?.(kok);
+            } catch (e) {
+                Logger.warn('TakvimCakisma', 'Kilinan: alarmlar susturulamadi', e);
             }
         }
     }
 
-    private async mevcutlariTemizle(): Promise<void> {
+    /** Bekleyen bildirimler + Android anons alarmları (yalnız `takvim_cakisma_` önekli). */
+    private async bekleyenleriTemizle(): Promise<void> {
         try {
             const tumu = await Notifications.getAllScheduledNotificationsAsync();
             for (const b of tumu) {
@@ -239,6 +371,45 @@ export class TakvimCakismaServisi {
             }
         } catch (e) {
             Logger.error('TakvimCakisma', 'Temizlik hatasi', e);
+        }
+        anonslariOnekleIptalEt(TAKVIM_CAKISMA_ID_ONEKI);
+    }
+
+    /** Kapalı / izinsiz: bekleyenler + anonslar + önceki turun gerçek alarmları. */
+    private async tumunuTemizle(): Promise<void> {
+        await this.bekleyenleriTemizle();
+        const teslimci = takvimCakismaTeslimcisiniAl();
+        try {
+            await teslimci.hazirla();
+        } catch (e) {
+            Logger.warn('TakvimCakisma', 'Alarmlar temizlenemedi', e);
+        } finally {
+            await teslimci.tamamla?.();
+        }
+    }
+
+    /** `MuhafizKanalServisi.adimSesleriniDogrula` — tembel (köprü grafiği testlere sızmasın). */
+    private async sesleriDogrula(ayarlar: TakvimCakismaAyarlari): Promise<TakvimCakismaAyarlari> {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            return await MuhafizKanalServisi.adimSesleriniDogrula(ayarlar);
+        } catch (e) {
+            Logger.error('TakvimCakisma', 'Sesler dogrulanamadi', e);
+            return ayarlar;
+        }
+    }
+
+    /** Ortak muhafız kanal uzayındaki kanalları oluşturur (çöp toplamaz). */
+    private async kanallariHazirla(ayarlar: TakvimCakismaAyarlari): Promise<void> {
+        if (Platform.OS !== 'android') return;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            await MuhafizKanalServisi.ekKanallariHazirla([{ yon: 'cikisaDogru', seviyeler: ayarlar.adimlar }]);
+        } catch (e) {
+            Logger.error('TakvimCakisma', 'Kanallar hazirlanamadi', e);
         }
     }
 

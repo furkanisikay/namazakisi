@@ -69,6 +69,22 @@ describe('takvimCakismaSlice', () => {
         expect(yazilan).not.toHaveProperty('rizaZamani');
     });
 
+    it('kapatmak sesli/alarm rızasına ve adımlara DOKUNMAZ (ayardır; yalnız takvim rızası silinir)', async () => {
+        (LocalTakvimCakismaServisi.getAyarlar as jest.Mock).mockResolvedValue({
+            ...VARSAYILAN_TAKVIM_CAKISMA_AYARLARI,
+            aktif: true,
+            rizaZamani: RIZA,
+            sesliOnayi: true,
+            alarmOnayi: true,
+        });
+        const store = storeOlustur();
+        await store.dispatch(takvimCakismaAyarlariniYukle());
+        await store.dispatch(takvimCakismaAyariniGuncelle({ aktif: false }));
+        const yazilan = (LocalTakvimCakismaServisi.saveAyarlar as jest.Mock).mock.calls[0][0];
+        expect(yazilan).toMatchObject({ aktif: false, sesliOnayi: true, alarmOnayi: true });
+        expect(yazilan.adimlar).toEqual(VARSAYILAN_TAKVIM_CAKISMA_AYARLARI.adimlar);
+    });
+
     it('disk yazımı başarısızsa planlama YAPILMAZ ve state değişmez', async () => {
         (LocalTakvimCakismaServisi.saveAyarlar as jest.Mock).mockResolvedValue(false);
         const store = storeOlustur();

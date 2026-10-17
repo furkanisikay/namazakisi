@@ -58,29 +58,32 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
-    // Ortak hatırlatma yüzeyleri PR-A + PR-B (plan 2026-10-17): cuma, camiye gitme ve yatış
-    // hatırlatmaları muhafızla aynı seçenekleri taşır (PR-A'nın cuma duyurusu bununla
-    // birleştirildi; yeni kimlik → cuma duyurusunu görmüş kullanıcı genişleyen kapsamı da görür).
+    // Ortak hatırlatma yüzeyleri PR-A + PR-B + PR-C (plan 2026-10-17): cuma, camiye gitme,
+    // yatış ve takvim çakışması uyarısı muhafızla aynı seçenekleri taşır. PR-B'nin
+    // `ek-hatirlatmalar-ortak` (v0.36.0) duyurusu takvimi de kapsayacak şekilde genişletildi;
+    // görülme KİMLİKLE tutulduğu için kimlik yenilendi → v0.36.0 duyurusunu görmüş kullanıcı
+    // takvimi de görür (PR-B'nin cuma duyurusunu birleştirirken izlediği yol).
     // İki platformda var; ses seçimi ve titreşim iOS'ta kapalı olduğundan duyuru onları yalnız
     // Android'e atfeder, gerçek alarm iPhone'da iOS 26'ya bağlıdır.
     {
-        id: 'ek-hatirlatmalar-ortak',
+        id: 'ek-hatirlatmalar-ortak-takvim',
         platformlar: ['android', 'ios'],
-        surum: '0.36.0',
+        surum: '0.37.0',
         tarih: '2026-10-17',
-        baslik: 'Cuma, Camiye Gitme ve Yatış Hatırlatmalarında Daha Fazla Seçenek',
+        baslik: 'Cuma, Camiye Gitme, Yatış ve Takvim Uyarılarında Daha Fazla Seçenek',
         aciklama:
-            'Cuma, "Camide kılacağım" ve yatış hatırlatmaları artık namaz hatırlatmasıyla aynı seçenekleri taşır: üç adıma kadar hatırlatma, tekrar, sesli anons ve gerçek alarm.',
+            'Cuma, "Camide kılacağım", yatış hatırlatmaları ve takvim çakışması uyarısı artık namaz hatırlatmasıyla aynı seçenekleri taşır: üç adıma kadar hatırlatma, tekrar, sesli anons ve gerçek alarm.',
         detayAciklama:
-            `Bildirim Ayarları'ndaki cuma, "Camide kılacağım" ve yatış kartlarında en fazla üç hatırlatma kurabilir, her birinin ne kadar önce geleceğini ve tekrarlanıp tekrarlanmayacağını seçebilirsiniz. Bir hatırlatmayı sesli anonsla ya da gerçek alarmla da duyabilirsiniz; Android'de ayrıca bildirim sesini ve titreşimi seçersiniz. "Akışı önizle" hangi saatlerde hatırlatılacağınızı gösterir. Camiye gitmede yürüme ya da hazırlık sürenizi değiştirdiğinizde bütün hatırlatmalar aynı farkla kayar; yatış hatırlatmasının tekrarları aynı içeriği (yatsı ya da gün sonu muhasebesi) taşır. Mevcut ayarlarınız aynen korundu.`,
+            `Bildirim Ayarları'ndaki cuma, "Camide kılacağım", yatış ve takvim çakışması kartlarında en fazla üç hatırlatma kurabilir, her birinin ne kadar önce geleceğini ve tekrarlanıp tekrarlanmayacağını seçebilirsiniz. Bir hatırlatmayı sesli anonsla ya da gerçek alarmla da duyabilirsiniz; Android'de ayrıca bildirim sesini ve titreşimi seçersiniz. "Akışı önizle" hangi saatlerde hatırlatılacağınızı gösterir. Camiye gitmede yürüme ya da hazırlık sürenizi değiştirdiğinizde bütün hatırlatmalar aynı farkla kayar; yatış hatırlatmasının tekrarları aynı içeriği (yatsı ya da gün sonu muhasebesi) taşır. Takvim uyarısının tekrarları etkinlik başlayana kadar sürer ve namazı kıldığınızda kalanlar iptal edilir; etkinliğin adı sesli anonsta ve alarm ekranında hiçbir zaman yer almaz. Mevcut ayarlarınız aynen korundu.`,
         ikon: 'bell',
         hedefSayfa: 'BildirimAyarlari',
         ctaEtiketi: 'Bildirim ayarlarını açın',
         kartGoster: false,
         detaylar: [
-            'Cuma, camiye gitme ve yatış için en fazla üç hatırlatma',
+            'Cuma, camiye gitme, yatış ve takvim uyarısı için en fazla üç hatırlatma',
             "Sesli anons ve gerçek alarm (iPhone'da iOS 26 gerekir)",
             'Akış önizlemesi saatleri gösterir',
+            'Takvim uyarısında etkinlik adı sesli okunmaz, alarmda görünmez',
             'Mevcut ayarlarınız değişmeden taşındı',
         ],
     },

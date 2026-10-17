@@ -131,10 +131,19 @@ object MuhafizAlarmKurallari {
     const val TUR_BILGI = "bilgi"
 
     /**
-     * Alarmda "Kıldım" düğmesi olur mu? BİLGİ alarmı (cuma, camiye gitme, takvim) vakit
-     * GİRMEDEN çalar: kılınacak bir namaz yoktur — düğme FARZ öğleyi yazardı.
+     * Alarmda "Kıldım" düğmesi olur mu? BİLGİ alarmı (cuma, camiye gitme, takvim) hatırlatmadır:
+     * cuma/camiye gitme vakit GİRMEDEN çalar, takvim uyarısı da düğmeyle FARZ yazmaz
+     * (kılınmışlığa bağlıdır ama yalnız susar — [kuyrukDenetlenirMi]).
      */
     fun kildimDugmesiVarMi(yuk: Yuk): Boolean = !yuk.bilgi
+
+    /**
+     * Tetik anında "vakit Kıldım kuyruğunda bekliyor mu?" denetlenir mi? Muhafız (farz)
+     * alarmı daima; bilgi alarmı YALNIZ kılınmışlığa bağlıysa (takvim çakışması — vaktin
+     * İÇİNDE çalar). Cuma / camiye gitme vakit girmeden çalar: denetim anlamsızdır.
+     * Nafile kendi kuyruğundan denetlenir (alıcıda ayrı dal).
+     */
+    fun kuyrukDenetlenirMi(yuk: Yuk): Boolean = !yuk.bilgi || yuk.kilinmisligaBagli
 
     /** Otomasyon "vakit çıkıyor" olayı (#278) doğar mı? Yalnız FARZ vakit alarmında. */
     fun otomasyonOlayiDogarMi(yuk: Yuk): Boolean = yuk.nafileTuru == null && !yuk.bilgi
@@ -154,6 +163,12 @@ object MuhafizAlarmKurallari {
          * başı) → geç tetik / "vakit çıktı" kuralı [tetikKarari] değişmeden uygulanır.
          */
         val bilgi: Boolean = false,
+        /**
+         * Bilgi alarmı vaktin KILINMIŞLIĞINA bağlı mı? (JS `kilinmisligaBagli: true` —
+         * takvim çakışması.) Bağlıysa `vakit` + `tarih` yükten okunur: vakit ortak "Kıldım"
+         * kuyruğunda bekliyorsa alarm ÇALMAZ ([kuyrukDenetlenirMi]). Alan yoksa `false`.
+         */
+        val kilinmisligaBagli: Boolean = false,
         val tetikMs: Long,
         val baslik: String,
         val metin: String,
@@ -196,6 +211,14 @@ object MuhafizAlarmKurallari {
                 "" -> if (vakit == null && nafile == null) return null else false
                 else -> return null
             }
+            // Kılınmışlığa bağlı bilgi alarmı (takvim) vakti/tarihi YÜKTEN taşır; ikisi de
+            // kuyruk biçiminde değilse bağ yok sayılır (yanlış vakti "kılınmış" saymasın).
+            val bagliVakit = if (bilgi && o.optBoolean("kilinmisligaBagli", false)) {
+                val v = o.optString("vakit", "")
+                v.takeIf { KildimKuyruguKurallari.gecerliMi(o.optString("tarih", ""), it) }
+            } else {
+                null
+            }
             val alarmKanalId = o.optString("alarmKanalId", "")
             if (!alarmKanaliMi(alarmKanalId)) return null
             val tetikMs = o.optLong("tetikMs", 0L)
@@ -205,11 +228,12 @@ object MuhafizAlarmKurallari {
                 kimlik = kimlik,
                 nafileTuru = nafile?.tur,
                 bilgi = bilgi,
+                kilinmisligaBagli = bagliVakit != null,
                 tetikMs = tetikMs,
                 baslik = o.optString("baslik", ""),
                 metin = o.optString("metin", ""),
                 // Nafilede vakit (farz kayıt kodu) YOKTUR: boş — farz kuyruğu boşu reddeder.
-                vakit = vakit?.vakit ?: "",
+                vakit = vakit?.vakit ?: bagliVakit ?: "",
                 vakitAdi = o.optString("vakitAdi", ""),
                 tarih = vakit?.tarih ?: nafile?.tarih ?: o.optString("tarih", ""),
                 cikisMs = o.optLong("cikisMs", 0L),

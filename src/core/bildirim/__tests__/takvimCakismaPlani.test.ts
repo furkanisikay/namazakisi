@@ -6,14 +6,17 @@ import {
     TAKVIM_CAKISMA_ID_ONEKI,
     etkinlikleriSuz,
     mesgulBloklariOlustur,
+    takvimCakismaAnonsMetni,
     takvimCakismaKimligiMi,
+    takvimCakismaKokuneAitMi,
     takvimCakismaMetniOlustur,
     takvimCakismaPlaniOlustur,
     vakitCakismasiniBul,
     type HamTakvimEtkinligi,
     type TakvimEtkinligi,
 } from '../takvimCakismaPlani';
-import { UYGULAMA_TAKVIM_NOTU } from '../../takvimCakisma/takvimCakismaAyarlari';
+import { UYGULAMA_TAKVIM_NOTU, takvimCakismaAyarlariniNormalize } from '../../takvimCakisma/takvimCakismaAyarlari';
+import { ekAdim } from '../../hatirlatma/adimDizisi';
 import { gurubKerahatiBaslangiciMs } from '../../muhafiz/erteleme';
 import { tarihiISOFormatinaCevir } from '../../utils/TarihYardimcisi';
 
@@ -141,7 +144,7 @@ describe('takvimCakismaPlaniOlustur (gerçek vakitler, İstanbul)', () => {
     const gun = new Date(2026, 9, 12);
     const pt = new PrayerTimes(new Coordinates(ISTANBUL.lat, ISTANBUL.lng), gun, CalculationMethod.Turkey());
     const tarih = tarihiISOFormatinaCevir(gun);
-    const ayarlar = { aktif: true, oncedenDk: 30 };
+    const ayarlar = { aktif: true, adimlar: [ekAdim(30)] };
     const ikindiSonAn = gurubKerahatiBaslangiciMs(pt.maghrib.getTime());
 
     const olustur = (etkinlikler: TakvimEtkinligi[], ek: Partial<Parameters<typeof takvimCakismaPlaniOlustur>[0]> = {}) =>
@@ -202,7 +205,7 @@ describe('takvimCakismaPlaniOlustur (gerçek vakitler, İstanbul)', () => {
     });
 
     it('özellik kapalıysa ya da etkinlik yoksa plan boş', () => {
-        expect(olustur([toplanti], { ayarlar: { aktif: false, oncedenDk: 30 } })).toEqual([]);
+        expect(olustur([toplanti], { ayarlar: { aktif: false, adimlar: [ekAdim(30)] } })).toEqual([]);
         expect(olustur([])).toEqual([]);
     });
 
@@ -262,5 +265,202 @@ describe('takvimCakismaMetniOlustur', () => {
                 expect(metin).not.toMatch(/\d{2}:\d{2}'/);
             }
         }
+    });
+});
+
+/**
+ * GÖÇ NÖBETÇİSİ — refactor ÖNCESİ üretici (DONDURULDU, 2026-10-17). Ortak modele (adım dizisi)
+ * geçiş eski `{ oncedenDk }` kaydını BİREBİR aynı plana çevirmeli: aynı kimlik, aynı tetik,
+ * aynı tür. Bu kopya DEĞİŞTİRİLMEZ; karar kuralı değişirse yalnız kararın kendisi
+ * (`vakitCakismasiniBul`) ikisini birlikte etkiler.
+ */
+function eskiTakvimCakismaPlani(g: {
+    koordinat: { lat: number; lng: number };
+    oncedenDk: number;
+    simdi: Date;
+    gunSayisi: number;
+    etkinlikler: readonly TakvimEtkinligi[];
+}): { id: string; zamanMs: number; tur: string }[] {
+    const bloklar = mesgulBloklariOlustur(g.etkinlikler);
+    const coordinates = new Coordinates(g.koordinat.lat, g.koordinat.lng);
+    const oncedenMs = Math.max(0, g.oncedenDk) * DK;
+    const plan: { id: string; zamanMs: number; tur: string }[] = [];
+    for (let i = -1; i < g.gunSayisi; i++) {
+        const gun = new Date(g.simdi.getFullYear(), g.simdi.getMonth(), g.simdi.getDate() + i);
+        const tarih = tarihiISOFormatinaCevir(gun);
+        const pt = new PrayerTimes(coordinates, gun, CalculationMethod.Turkey());
+        const yarin = new PrayerTimes(
+            coordinates,
+            new Date(gun.getFullYear(), gun.getMonth(), gun.getDate() + 1),
+            CalculationMethod.Turkey()
+        );
+        const araliklar = {
+            imsak: { girisMs: pt.fajr.getTime(), sonAnMs: pt.sunrise.getTime() },
+            ogle: { girisMs: pt.dhuhr.getTime(), sonAnMs: pt.asr.getTime() },
+            ikindi: { girisMs: pt.asr.getTime(), sonAnMs: gurubKerahatiBaslangiciMs(pt.maghrib.getTime()) },
+            aksam: { girisMs: pt.maghrib.getTime(), sonAnMs: pt.isha.getTime() },
+            yatsi: { girisMs: pt.isha.getTime(), sonAnMs: yarin.fajr.getTime() },
+        };
+        for (const vakit of ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const) {
+            const aralik = araliklar[vakit];
+            const k = vakitCakismasiniBul(aralik, bloklar);
+            if (!k) continue;
+            const zamanMs =
+                k.tur === 'once'
+                    ? Math.max(k.blok.baslangicMs - oncedenMs, aralik.girisMs)
+                    : Math.max(
+                        Math.min(k.blok.baslangicMs, aralik.girisMs) - oncedenMs,
+                        aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK
+                    );
+            if (zamanMs <= g.simdi.getTime()) continue;
+            plan.push({ id: `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`, zamanMs, tur: k.tur });
+        }
+    }
+    return plan.sort((a, b) => a.zamanMs - b.zamanMs);
+}
+
+describe('ORTAK MODEL (plan §5.4): adım dizisi, göç, gizlilik', () => {
+    const SIMDI = new Date(2026, 9, 12, 7, 0);
+    const pt = (gunEk: number) =>
+        new PrayerTimes(new Coordinates(ISTANBUL.lat, ISTANBUL.lng), new Date(2026, 9, 12 + gunEk), CalculationMethod.Turkey());
+    const p0 = pt(0);
+    const p1 = pt(1);
+    const p2 = pt(2);
+    const etkinlikler: TakvimEtkinligi[] = [
+        // bugün ikindi: once
+        {
+            baslangicMs: p0.asr.getTime() + 60 * DK,
+            bitisMs: gurubKerahatiBaslangiciMs(p0.maghrib.getTime()) + 20 * DK,
+            baslik: 'Gizli toplantı',
+        },
+        // yarın öğle: kapliyor (sabahtan uzun blok)
+        { baslangicMs: p1.dhuhr.getTime() - 4 * SA, bitisMs: p1.asr.getTime() + 5 * DK, baslik: 'Atölye' },
+        // +2 akşam: girişten 15 dk sonra başlayan (once, tabana kenetlenir)
+        { baslangicMs: p2.maghrib.getTime() + 15 * DK, bitisMs: p2.isha.getTime() + 10 * DK, baslik: null },
+    ];
+    const olustur = (
+        ayarlar: Parameters<typeof takvimCakismaPlaniOlustur>[0]['ayarlar'],
+        ek: Partial<Parameters<typeof takvimCakismaPlaniOlustur>[0]> = {}
+    ) => takvimCakismaPlaniOlustur({ koordinat: ISTANBUL, ayarlar, simdi: SIMDI, gunSayisi: 3, etkinlikler, ...ek });
+
+    it.each([10, 30, 45, 120])('ESKİ kayıt (oncedenDk %i) göçten sonra dondurulmuş üreticiyle BİREBİR aynı plan', (dk) => {
+        const ayar = takvimCakismaAyarlariniNormalize({ aktif: true, oncedenDk: dk, rizaZamani: '2026-10-01T00:00:00.000Z' });
+        expect(ayar.adimlar).toHaveLength(1);
+        expect(ayar.oncedenDk).toBe(dk);
+        const yeni = olustur(ayar).map((k) => ({ id: k.id, zamanMs: k.zaman.getTime(), tur: k.tur }));
+        const eski = eskiTakvimCakismaPlani({ koordinat: ISTANBUL, oncedenDk: dk, simdi: SIMDI, gunSayisi: 3, etkinlikler });
+        expect(eski.length).toBe(3);
+        expect(yeni).toEqual(eski);
+    });
+
+    it('çok adım + tekrar: tetikler çapaya kadar, tabana kenetlenenler TEK uyarıda birleşir, kimlikler tekil', () => {
+        const plan = olustur({ aktif: true, adimlar: [ekAdim(60), ekAdim(30, { herDk: 10 })] });
+        expect(new Set(plan.map((k) => k.id)).size).toBe(plan.length);
+        // once (bugün ikindi): blok − 60, −30, −20, −10.
+        const ikindi = plan.filter((k) => k.vakit === 'ikindi');
+        const bas = etkinlikler[0].baslangicMs;
+        expect(ikindi.map((k) => k.zaman.getTime())).toEqual([bas - 60 * DK, bas - 30 * DK, bas - 20 * DK, bas - 10 * DK]);
+        expect(ikindi[0].id).toMatch(/_ikindi$/);
+        expect(ikindi.slice(1).map((k) => k.id.split('_').pop())).toEqual(['30', '20', '10']);
+        // +2 akşam: blok girişten 15 dk sonra → −60/−30/−20 girişe kenetlenir (TEK), −10 ayrı.
+        const aksam = plan.filter((k) => k.vakit === 'aksam');
+        expect(aksam.map((k) => k.zaman.getTime())).toEqual([p2.maghrib.getTime(), etkinlikler[2].baslangicMs - 10 * DK]);
+        expect(aksam[0].id).toMatch(/_aksam$/);
+        // kapliyor (yarın öğle): taban = giriş − 60; çapa blok başı (giriş − 4 sa) → hepsi TEK tetik.
+        const ogle = plan.filter((k) => k.vakit === 'ogle');
+        expect(ogle.map((k) => k.zaman.getTime())).toEqual([p1.dhuhr.getTime() - KAPLIYOR_AZAMI_ONCELIK_DK * DK]);
+    });
+
+    it('REGRESYON: tabana yığılan adımlarda GÜÇLÜ kanal düşmez (120 dk bildirim + 30 dk gerçek alarm)', () => {
+        // 09:00–16:25 benzeri toplantı yarın öğleyi kaplar: iki adım da giriş − 60'a kenetlenir.
+        // Eskiden motor sırasındaki ilki (yalnız bildirim) kalıyor, alarm sessizce kayboluyordu.
+        const plan = olustur({
+            aktif: true,
+            baslikGoster: true,
+            adimlar: [
+                { ...ekAdim(120), kanallar: { bildirim: true } },
+                { ...ekAdim(30), kanallar: { bildirim: true, titresim: true, alarm: true } },
+            ],
+        });
+        const ogle = plan.filter((k) => k.vakit === 'ogle');
+        expect(ogle).toHaveLength(1);
+        expect(ogle[0].zaman.getTime()).toBe(p1.dhuhr.getTime() - KAPLIYOR_AZAMI_ONCELIK_DK * DK);
+        // Kimlik: çakışmanın İLK tetiği kökü korur.
+        expect(ogle[0].id).toMatch(/_ogle$/);
+        expect(ogle[0].uyari.alarm).toBe(true);
+        expect(ogle[0].uyari.kanallar).toEqual({ bildirim: true, titresim: true, alarm: true });
+        // Gerçek alarm tetiği kilit ekranında açılır → ad (ayar açık olsa bile) YOK.
+        expect(`${ogle[0].baslik} ${ogle[0].govde}`).not.toContain('Atölye');
+        // Ters sıra (güçlü adım önce) da aynı sonucu verir.
+        const ters = olustur({
+            aktif: true,
+            adimlar: [
+                { ...ekAdim(120), kanallar: { bildirim: true, sesli: true } },
+                { ...ekAdim(30), kanallar: { bildirim: true } },
+            ],
+        }).filter((k) => k.vakit === 'ogle');
+        expect(ters).toHaveLength(1);
+        expect(ters[0].uyari.kanallar).toEqual({ bildirim: true, sesli: true });
+        expect(ters[0].uyari.sesliAnons).toBe(true);
+    });
+
+    it('her kaydın cikis alanı tetikten SONRA (gerçek alarm doğar doğmaz atlanmasın)', () => {
+        const plan = olustur({ aktif: true, adimlar: [ekAdim(120), ekAdim(15, { herDk: 5 })] });
+        expect(plan.length).toBeGreaterThan(0);
+        for (const k of plan) expect(k.cikis.getTime()).toBeGreaterThan(k.zaman.getTime());
+        // kapliyor: blok vakitten saatler önce başladı → cikis = giriş (blok başı DEĞİL).
+        const ogle = plan.find((k) => k.vakit === 'ogle');
+        expect(ogle?.cikis.getTime()).toBe(p1.dhuhr.getTime());
+    });
+
+    it('GİZLİLİK: gerçek alarm tetiğinde metin ADSIZ; anons metni hiçbir tetikte ad/saat taşımaz', () => {
+        const plan = olustur({
+            aktif: true,
+            baslikGoster: true,
+            adimlar: [
+                { ...ekAdim(60), kanallar: { bildirim: true, sesli: true, alarm: true } },
+                { ...ekAdim(30, { herDk: 10 }), kanallar: { bildirim: true, sesli: true } },
+            ],
+        });
+        const ikindi = plan.filter((k) => k.vakit === 'ikindi');
+        expect(ikindi[0].uyari.alarm).toBe(true);
+        expect(`${ikindi[0].baslik} ${ikindi[0].govde}`).not.toContain('Gizli');
+        // Alarm OLMAYAN tetikte ayar açık → ad bildirimde görünür.
+        expect(ikindi[1].uyari.alarm).not.toBe(true);
+        expect(ikindi[1].govde).toContain('Gizli toplantı');
+        for (const k of plan) {
+            expect(k.uyari.anonsMetni).not.toContain('Gizli');
+            expect(k.uyari.anonsMetni).not.toMatch(/\d{2}:\d{2}/);
+        }
+    });
+
+    it('anons metni kibar "siz", fıkıh/üslup nöbetçisi', () => {
+        for (const tur of ['once', 'kapliyor'] as const) {
+            for (const vakit of ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'] as const) {
+                const m = takvimCakismaAnonsMetni(vakit, tur).toLocaleLowerCase('tr-TR');
+                expect(m).toContain('takviminizdeki');
+                expect(m).toContain('unutmayın');
+                expect(m).not.toMatch(/secde|terk|küfür/);
+            }
+        }
+        expect(takvimCakismaAnonsMetni('imsak', 'once')).toBe(
+            'Takviminizdeki bir etkinlik sabah vaktine denk geliyor. Etkinlikten önce kılmayı unutmayın.'
+        );
+    });
+
+    it('Android alarm payı KRONOLOJİK keser', () => {
+        const ayar = { aktif: true, adimlar: [{ ...ekAdim(60, { herDk: 5 }), kanallar: { bildirim: true, sesli: true } }] };
+        const tam = olustur(ayar);
+        const kesik = olustur(ayar, { alarmButcesi: 6 });
+        expect(tam.length).toBeGreaterThan(3);
+        expect(kesik).toEqual(tam.slice(0, 3));
+    });
+
+    it('kimlik kökü sınır kontrollü eşleşir', () => {
+        const kok = `${TAKVIM_CAKISMA_ID_ONEKI}2026-10-12_ogle`;
+        expect(takvimCakismaKokuneAitMi(kok, kok)).toBe(true);
+        expect(takvimCakismaKokuneAitMi(`${kok}_20`, kok)).toBe(true);
+        expect(takvimCakismaKokuneAitMi(`${TAKVIM_CAKISMA_ID_ONEKI}2026-10-12_oglex`, kok)).toBe(false);
+        expect(takvimCakismaKokuneAitMi(`${TAKVIM_CAKISMA_ID_ONEKI}2026-10-12_ikindi`, kok)).toBe(false);
     });
 });
