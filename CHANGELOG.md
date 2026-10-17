@@ -5,6 +5,23 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.33.0] - 2026-10-17
+
+### Eklendi
+- [kaza] Kaza Defteri 2.0 ekranları ve sekme içi yığın
+- [kaza] bilinmeyen hareketleri koru, karışık sürüm eşitlemesi, önizleme servisleri
+- [kaza] kronolojik fold, ayrı fazla akümülatörü ve ileri uyumlu hareketler
+
+### Düzeltildi
+- [kaza] yalnız otomatik eklemeden oluşan kaynak defter de türetilmiş göçü düşürür
+- [kaza] aynı milisaniyedeki hareketler eylem sırasıyla katlanır
+- [kaza] otomatik izdüşüm yalnız gereken günlerin namaz kaydını okur
+- [kaza] eski sürümlü cihazla eşitlemede sonsuz karşılıklı yükleme kesildi
+- [kaza] eski yedekteki Şâfiî mezhebi ortak ayara ulaşır, varsayılan kalıcı yazılmaz
+- [kaza] JSON null eski kaza kaydı boş sayılır, yanlış "okunamadı" bandı çıkmaz
+- [kaza] geç göç defteri ezmez, türetilmiş görüntü çift sayılmaz
+- [kaza] eski görüntü tabanı gizlenebilir, ayrıntı metni seri vaat etmez
+
 ## [0.32.0] - 2026-10-16
 
 ### Eklendi
