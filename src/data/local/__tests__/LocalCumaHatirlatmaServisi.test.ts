@@ -17,6 +17,8 @@ import {
   CUMA_ONCEDEN_MAX_DK,
 } from '../LocalCumaHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
+import { ekAdim } from '../../../core/hatirlatma/adimDizisi';
+import type { Siklik } from '../../../core/muhafiz/matrisTipleri';
 
 // In-memory AsyncStorage mock (mock* öneki: jest.mock fabrikası erişebilsin).
 const mockStore = new Map<string, string>();
@@ -45,8 +47,19 @@ jest.mock('../../../core/utils/Logger', () => ({
 
 const KEY = DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI;
 
+/**
+ * Ortak model (plan §5.1): eski tek ofsetli kayıt TEK adıma göçer, türev alanlar
+ * (`oncedenDk`, `siklik`) ilk adımdan yazılmaya devam eder.
+ */
+const tam = (aktif: boolean, oncedenDk: number, siklik: Siklik = 'birkez'): CumaHatirlatmaAyarlari => ({
+  aktif,
+  adimlar: [ekAdim(oncedenDk, siklik)],
+  oncedenDk,
+  siklik,
+});
+
 // Cuma herkese farz-ı ayn değil → varsayılan KAPALI.
-const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60, siklik: 'birkez' };
+const VARSAYILAN: CumaHatirlatmaAyarlari = tam(false, 60);
 
 beforeEach(() => {
   mockStore.clear();
@@ -67,7 +80,7 @@ describe('LocalCumaHatirlatmaServisi.getAyarlar', () => {
 
     const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 90, siklik: 'birkez' });
+    expect(ayarlar).toEqual(tam(true, 90));
   });
 
   test('aktif alanı yalnız gerçek true iken açıktır (truthy string açmaz)', async () => {
@@ -140,13 +153,13 @@ describe('LocalCumaHatirlatmaServisi — oncedenDk normalizasyonu (okuma)', () =
 
     const ayarlar = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(ayarlar).toEqual({ aktif: true, oncedenDk: 60, siklik: 'birkez' });
+    expect(ayarlar).toEqual(tam(true, 60));
   });
 });
 
 describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   test('ayarı doğru anahtara JSON olarak yazar ve true döner', async () => {
-    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 45, siklik: 'birkez' };
+    const ayarlar = tam(true, 45);
 
     const sonuc = await LocalCumaHatirlatmaServisi.saveAyarlar(ayarlar);
 
@@ -156,23 +169,20 @@ describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   });
 
   test('yazarken de normalize eder (sınır dışı değer diske sızmaz)', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: 999, siklik: 'birkez' });
+    await LocalCumaHatirlatmaServisi.saveAyarlar(tam(true, 999));
 
-    expect(JSON.parse(mockStore.get(KEY)!)).toEqual({
-      aktif: true,
-      oncedenDk: CUMA_ONCEDEN_MAX_DK,
-      siklik: 'birkez',
-    });
+    expect(JSON.parse(mockStore.get(KEY)!)).toEqual(tam(true, CUMA_ONCEDEN_MAX_DK));
   });
 
   test('NaN gibi geçersiz süre diske varsayılan olarak yazılır', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: NaN, siklik: 'birkez' });
+    // Eski biçimde (adımsız) gelen yazım da göçer; NaN → varsayılan 60.
+    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: true, oncedenDk: NaN, siklik: 'birkez' } as CumaHatirlatmaAyarlari);
 
-    expect(JSON.parse(mockStore.get(KEY)!)).toEqual({ aktif: true, oncedenDk: 60, siklik: 'birkez' });
+    expect(JSON.parse(mockStore.get(KEY)!)).toEqual(tam(true, 60));
   });
 
   test('yazılan değer getAyarlar ile aynen geri okunur (round-trip)', async () => {
-    const ayarlar: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 30, siklik: { herDk: 15 } };
+    const ayarlar = tam(true, 30, { herDk: 15 });
 
     await LocalCumaHatirlatmaServisi.saveAyarlar(ayarlar);
     const okunan = await LocalCumaHatirlatmaServisi.getAyarlar();
@@ -181,11 +191,11 @@ describe('LocalCumaHatirlatmaServisi.saveAyarlar', () => {
   });
 
   test('sınır dışı yazım sonrası okuma da düzeltilmiş değeri verir (round-trip)', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({ aktif: false, oncedenDk: 0, siklik: 'birkez' });
+    await LocalCumaHatirlatmaServisi.saveAyarlar(tam(false, 0));
 
     const okunan = await LocalCumaHatirlatmaServisi.getAyarlar();
 
-    expect(okunan).toEqual({ aktif: false, oncedenDk: CUMA_ONCEDEN_MIN_DK, siklik: 'birkez' });
+    expect(okunan).toEqual(tam(false, CUMA_ONCEDEN_MIN_DK));
   });
 
   test('setItem fırlatırsa false döner (fırlatmaz)', async () => {
@@ -250,12 +260,60 @@ describe('LocalCumaHatirlatmaServisi — siklik (periyodik hatirlatma)', () => {
   });
 
   test('yazarken de normalize edilir', async () => {
-    await LocalCumaHatirlatmaServisi.saveAyarlar({
-      aktif: true,
-      oncedenDk: 60,
-      siklik: { herDk: 999 },
-    });
+    await LocalCumaHatirlatmaServisi.saveAyarlar(tam(true, 60, { herDk: 999 }));
 
     expect(JSON.parse(mockStore.get(KEY)!).siklik).toEqual({ herDk: 60 });
   });
 });
+
+/**
+ * ORTAK MODEL GÖÇÜ (plan §5.1) — şekle bakar, idempotent; rızalar uydurulmaz.
+ */
+describe('LocalCumaHatirlatmaServisi — ortak model göçü', () => {
+  test('adımlı kayıt KORUNUR: kanallar, ses, alarm kapsamı, çok adım (kronolojik)', async () => {
+    mockStore.set(
+      KEY,
+      JSON.stringify({
+        aktif: true,
+        adimlar: [
+          { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true, sesli: true } },
+          { esikDk: 90, siklik: { herDk: 15 }, kanallar: { bildirim: true, alarm: true }, alarmKapsami: 'hepsi', bildirimSesi: 'content://x', sesAdi: 'Ezan' },
+        ],
+        sesliOnayi: true,
+        alarmOnayi: true,
+      })
+    );
+
+    const a = await LocalCumaHatirlatmaServisi.getAyarlar();
+
+    expect(a.adimlar.map((s) => s.esikDk)).toEqual([90, 30]);
+    expect(a.adimlar[0]).toMatchObject({ kanallar: { bildirim: true, alarm: true }, alarmKapsami: 'hepsi', bildirimSesi: 'content://x', sesAdi: 'Ezan', kademe: 'nazik', acilKanal: false });
+    expect(a.oncedenDk).toBe(90);
+    expect(a.siklik).toEqual({ herDk: 15 });
+    expect(a.sesliOnayi).toBe(true);
+    expect(a.alarmOnayi).toBe(true);
+  });
+
+  test('göç İDEMPOTENT: göçmüş kayıt yeniden okununca aynısı çıkar', async () => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 75, siklik: { herDk: 20 } }));
+    const bir = await LocalCumaHatirlatmaServisi.getAyarlar();
+    await LocalCumaHatirlatmaServisi.saveAyarlar(bir);
+    const iki = await LocalCumaHatirlatmaServisi.getAyarlar();
+    expect(iki).toEqual(bir);
+  });
+
+  test('rızalar göçle YAZILMAZ (eski kayıtta yoksa yok)', async () => {
+    mockStore.set(KEY, JSON.stringify({ aktif: true, oncedenDk: 60, sesliOnayi: 'evet' }));
+    const a = await LocalCumaHatirlatmaServisi.getAyarlar();
+    expect(a.sesliOnayi).toBeUndefined();
+    expect(a.alarmOnayi).toBeUndefined();
+  });
+
+  test('getAyarlarKati okuma hatasında FIRLATIR (çöp toplama kanalı silmesin)', async () => {
+    mockGetItem.mockImplementationOnce(async () => {
+      throw new Error('disk');
+    });
+    await expect(LocalCumaHatirlatmaServisi.getAyarlarKati()).rejects.toThrow('disk');
+  });
+});
+
