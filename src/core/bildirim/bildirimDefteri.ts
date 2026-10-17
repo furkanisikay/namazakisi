@@ -64,8 +64,10 @@ import {
     ANDROID_NAFILE_PAYI,
     ANDROID_CUMA_PAYI,
     ANDROID_CAMIYE_GIT_PAYI,
+    ANDROID_YATIS_PAYI,
     IOS_ALARMKIT_CUMA_PAYI,
     IOS_ALARMKIT_CAMIYE_GIT_PAYI,
+    IOS_ALARMKIT_YATIS_PAYI,
     IOS_ALARMKIT_MUHAFIZ_PAYI,
     IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
@@ -349,8 +351,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 gunSayisi: YATIS_PLAN_GUN_SAYISI[g.platform],
                 kilinanlar: (gun) => g.kilinan?.[gun] ?? [],
                 gunAtlanirMi: ozelGundeMi,
+                ...(android ? { alarmButcesi: ANDROID_YATIS_PAYI } : {}),
             });
-            for (const k of plan) ekle('yatis', k.zaman.getTime());
+            // Servisle AYNI üretici + seçenekler (plan §5.3); alarm/anons payı yatışın.
+            ekYuzeyiSay('yatis', plan, IOS_ALARMKIT_YATIS_PAYI);
         });
     }
 

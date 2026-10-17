@@ -22,6 +22,7 @@ import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { CAMIYE_GIT_VAKITLERI } from '../../core/camiyeGit/camiyeGitAyarlari';
+import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 
 /** Bir yüzeyin AÇIK adım dizisi. */
 export interface EkAdimDizisi {
@@ -79,8 +80,21 @@ const camiyeGitKaynagi: EkHatirlatmaKaynagi = {
     },
 };
 
+/**
+ * Yatış + gün sonu muhasebesi (#290): tek adım dizisi, yön sabit (yatışa kalan). İki alt
+ * seçenek de kapalıysa plan boştur → kanal da korunmaz. KATI okuma.
+ */
+const yatisKaynagi: EkHatirlatmaKaynagi = {
+    ad: 'yatis',
+    diziler: async () => {
+        const a = await LocalYatisHatirlatmaServisi.getAyarlarKati();
+        const icerikVar = a.yatsiHatirlatmasi || a.muhasebe;
+        return a.aktif && icerikVar ? [{ yon: 'cikisaDogru', adimlar: a.adimlar, kanalKullanir: true }] : [];
+    },
+};
+
 /** Kayıtlı kaynaklar — yeni yüzey (takvim) buraya EKLENİR. */
-const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi, camiyeGitKaynagi];
+const KAYNAKLAR: readonly EkHatirlatmaKaynagi[] = [nafileKaynagi, cumaKaynagi, camiyeGitKaynagi, yatisKaynagi];
 
 /** Kayıtlı kaynaklar (sıra önemsiz). */
 export function ekHatirlatmaKaynaklari(): readonly EkHatirlatmaKaynagi[] {

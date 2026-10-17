@@ -30,12 +30,27 @@ jest.mock('../../../../core/theme', () => ({
         hata: '#F44336',
         bilgi: '#2196F3',
         basarili: '#4CAF50',
+        durum: { hata: '#F44336', uyari: '#FFC107', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
     }),
 }));
 jest.mock('../../../../core/feedback', () => ({ useFeedback: () => ({ butonTiklandiFeedback: jest.fn() }) }));
 jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
-// Modal native ses/TTS köprüsünü çeker (requireNativeModule jest'te yok); burada açılmaz.
-jest.mock('../../hatirlatma/AdimDetayModal', () => ({ AdimDetayModal: () => null }));
+const mockNavigate = jest.fn();
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+jest.mock('../../../hooks/useBildirimButcesi', () => {
+    const gercek = jest.requireActual('../../../hooks/useBildirimButcesi');
+    return { ...gercek, useBildirimButcesi: () => gercek.butceNesnesiOlustur('android', null, null) };
+});
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    sesSec: jest.fn(),
+    sesiOnizle: jest.fn(),
+    onizlemeyiDurdur: jest.fn(),
+    trDestekleniyorMu: () => Promise.resolve(true),
+}));
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { bildirimSesiniCal: jest.fn(), bitisiniBekle: jest.fn(), temizle: jest.fn() },
+}));
 
 const mockKaydet = jest.fn();
 let mockDisk: Record<string, unknown> = {};
@@ -64,6 +79,7 @@ jest.mock('../../../../core/yatis/yatisPlani', () => ({
 import reducer from '../../../store/yatisHatirlatmaSlice';
 import {
     YatisHatirlatmaBolumu,
+    YATIS_YON_GEREKCESI,
     pencereDakikasindanSaate,
     saatiPencereDakikasinaCevir,
 } from '../YatisHatirlatmaBolumu';
@@ -172,6 +188,39 @@ describe('YatisHatirlatmaBolumu', () => {
         it('saat yatsıdan sonraysa satır YOK', () => {
             const { queryByText } = kur({ aktif: true });
             expect(queryByText(/yatsı vaktinden/)).toBeNull();
+        });
+    });
+
+    describe('ortak hatırlatma kartı (plan §5.3)', () => {
+        it('YÖN GEREKÇESİ ekranda; akış önizlemesi yatışın GERÇEK içeriğini gösterir', () => {
+            const ekran = kur({ aktif: true });
+            expect(ekran.getByTestId('yon-sabit-gerekcesi')).toBeTruthy();
+            expect(ekran.getByText(YATIS_YON_GEREKCESI)).toBeTruthy();
+            fireEvent.press(ekran.getByLabelText('Yatış hatırlatması akışını önizleyin'));
+            expect(ekran.getByText('Yatış hatırlatması akışı')).toBeTruthy();
+            expect(ekran.getAllByText(/^Yatsı · yatmadan önce kıl/).length).toBeGreaterThan(0);
+        });
+
+        it('STANDART yetenekler: kanal çipleri + gerçek alarm; sesli rıza YATIŞIN kendi alanına adımla birlikte yazılır', async () => {
+            const ekran = kur({ aktif: true });
+            fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
+            expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
+            expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
+            fireEvent.press(ekran.getByLabelText('İkisi de'));
+            expect(mockKaydet).not.toHaveBeenCalled();
+            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));
+            const kayit = mockKaydet.mock.calls[0][0];
+            expect(kayit.sesliOnayi).toBe(true);
+            expect(kayit.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        });
+
+        it('adım ekleme yeni adımı (5 dk katında, yatıştan daha önce) yazar; çıkışta kaybolmaz', async () => {
+            const ekran = kur({ aktif: true });
+            fireEvent.press(ekran.getByText(/Hatırlatma ekleyin/));
+            ekran.unmount();
+            await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));
+            expect(mockKaydet.mock.calls[0][0].adimlar.map((a: { esikDk: number }) => a.esikDk)).toEqual([35, 30]);
         });
     });
 });

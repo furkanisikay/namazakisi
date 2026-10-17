@@ -82,7 +82,8 @@ import { camiyeGitAyarlariniNormalize } from '../../../core/camiyeGit/camiyeGitA
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
 import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
-import { YatisHatirlatmaServisi } from '../YatisHatirlatmaServisi';
+import { YatisHatirlatmaServisi, yatisTeslimcisiniAyarla } from '../YatisHatirlatmaServisi';
+import { yatisAyarlariniNormalize } from '../../../core/yatis/yatisAyarlari';
 import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/yatisPlani';
 import { TakvimCakismaServisi } from '../TakvimCakismaServisi';
 import { defterDisGirdisiniOku } from '../BildirimDefteriServisi';
@@ -820,6 +821,71 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
 });
 
 describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = servisin kurduğu', () => {
+    beforeEach(() => yatisTeslimcisiniAyarla(null));
+    afterAll(() => yatisTeslimcisiniAyarla(null));
+
+    it.each(['ios', 'android'] as const)('ESKİ kayıt (%s, diskte tek ofset): defter servisle AYNI normalize/göç yolundan okur', async (platform) => {
+        jest.replaceProperty(Platform, 'OS', platform);
+        disk.set(
+            DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI,
+            JSON.stringify({ aktif: true, saat: 23, dakika: 15, onceDk: 45, yatsiHatirlatmasi: true, muhasebe: true })
+        );
+        disk.set(DEPOLAMA_ANAHTARLARI.KONUM_AYARLARI, JSON.stringify({ koordinatlar: ISTANBUL }));
+        await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(undefined, undefined, new Date(SABAH));
+        const kurulan = planlananlar().filter((p) => yatisKimligiMi(String(p.identifier))).length;
+        const dis = await defterDisGirdisiniOku();
+        const g = temelGirdi(platform, { yatis: dis.yatis });
+        expect(say(g, 'yatis')).toBe(platform === 'ios' ? 3 : 7);
+        expect(kurulan).toBe(say(g, 'yatis'));
+    });
+
+    it('Android GERÇEK ALARM + sesli + tekrar: alarm + bildirim + anons birebir; VAKİT türü, kendi payı', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            sahipliIptalEt: jest.fn().mockResolvedValue(undefined),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        try {
+            const ayar = yatisAyarlariniNormalize({
+                ...YATIS_VARSAYILAN_AYARLARI,
+                aktif: true,
+                adimlar: [{ esikDk: 60, siklik: { herDk: 20 }, kanallar: { bildirim: true, sesli: true, alarm: true } }],
+            });
+            await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL, ayar, new Date(SABAH));
+            const g = temelGirdi('android', { yatis: ayar });
+            // Pay (`ANDROID_YATIS_PAYI` 21) üreticide KRONOLOJİK keser: gün başına alarm 1 +
+            // (bildirim + anons) × 2 = 5 → ilk günler sığar, uzak günler sonraki turda.
+            expect(say(g, 'alarm')).toBeGreaterThan(0);
+            expect(say(g, 'alarm')).toBeLessThan(7);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(planlananlar().filter((p) => yatisKimligiMi(String(p.identifier))).length).toBe(say(g, 'yatis'));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+            expect(say(g, 'anons')).toBe(say(g, 'yatis'));
+            expect(
+                bildirimDefteriOlustur(g)
+                    .filter((k) => k.kaynak === 'alarm' || k.kaynak === 'anons')
+                    .every((k) => k.pay === 'yatis')
+            ).toBe(true);
+            // Önceki turun alarm/anonsları YATIŞ sahipliğiyle silinir — önek ('muhafiz_') ASLA.
+            expect(nativeAlarm.sahipliIptalEt).toHaveBeenCalledWith('yatis', false, true);
+            expect(nativeAlarm.onekliIptalEt).not.toHaveBeenCalled();
+            expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            const [kimlik, , ham] = nativeAlarm.planla.mock.calls[0];
+            const yuk = JSON.parse(ham);
+            expect(kimlik).toMatch(/^muhafiz_\d{4}-\d{2}-\d{2}_vakit_yatsi_yatis$/);
+            // "Kıldım" yatsıyı işaretlesin: VAKİT türü; yük yatış yükü; ertelenmez.
+            expect(yuk.tur).toBe('vakit');
+            expect(yuk.veri).toMatchObject({ tip: 'yatis', vakit: 'yatsi' });
+            expect(yuk.vakitAdi).toBe('Yatsı');
+            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk.kanalId).toBe('muhafiz');
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+        }
+    });
+
     it.each(['ios', 'android'] as const)('%s ufku', async (platform) => {
         jest.replaceProperty(Platform, 'OS', platform);
         const ayar = { ...YATIS_VARSAYILAN_AYARLARI, aktif: true };

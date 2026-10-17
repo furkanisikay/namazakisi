@@ -125,9 +125,10 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         aktif: true,
         saat: 23,
         dakika: 0,
-        onceDk: 30,
         yatsiHatirlatmasi: true,
         muhasebe: true,
+        adimlar: [cumaAdimi(45, { herDk: 15 }), cumaAdimi(10, 'birkez')],
+        onceDk: 45,
     });
     depo.camiye_git_ayarlari = JSON.stringify({
         aktif: true,

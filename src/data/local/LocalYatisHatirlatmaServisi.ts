@@ -2,63 +2,57 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { Logger } from '../../core/utils/Logger';
 import {
-    YATIS_DAKIKA_ADIM,
-    YATIS_ONCE_ADIM_DK,
-    YATIS_ONCE_MAX_DK,
-    YATIS_ONCE_MIN_DK,
-    YATIS_SAATLERI,
-    YATIS_VARSAYILAN_AYARLARI,
+    varsayilanYatisAyarlari,
+    yatisAyarlariniNormalize,
     type YatisAyarlari,
-} from '../../core/yatis/yatisPlani';
+} from '../../core/yatis/yatisAyarlari';
 
 /**
- * Yatış hatırlatması ayarları (issue #290) — VARSAYILAN KAPALI.
+ * Yatış hatırlatması ayarları (issue #290; ortak model — plan §5.3) — VARSAYILAN KAPALI.
  *
- * Bozuk/eksik alan varsayılana düşer: bozuk bir "önce" değeri (0, NaN)
- * yatış anının kendisine ya da geçmişe kurulan bildirim demek olurdu.
+ * Tip, kısıtlar, normalize ve GÖÇ saf modüldedir (`core/yatis/yatisAyarlari.ts`); bu katman
+ * yalnız diske okur/yazar. Bozuk/eksik alan varsayılana düşer: bozuk bir "önce" değeri
+ * (0, NaN) yatış anının kendisine ya da geçmişe kurulan bildirim demek olurdu.
  */
-const sayiMi = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 
-const adimaYuvarla = (deger: number, adim: number): number => Math.round(deger / adim) * adim;
-
-export function yatisAyarlariniNormalizeEt(ham: unknown): YatisAyarlari {
-    const v = YATIS_VARSAYILAN_AYARLARI;
-    if (!ham || typeof ham !== 'object' || Array.isArray(ham)) return { ...v };
-    const a = ham as Record<string, unknown>;
-    const saat = sayiMi(a.saat) && YATIS_SAATLERI.includes(Math.round(a.saat)) ? Math.round(a.saat) : v.saat;
-    const dakika = sayiMi(a.dakika)
-        ? Math.min(55, Math.max(0, adimaYuvarla(a.dakika, YATIS_DAKIKA_ADIM)))
-        : v.dakika;
-    const onceDk = sayiMi(a.onceDk)
-        ? Math.min(YATIS_ONCE_MAX_DK, Math.max(YATIS_ONCE_MIN_DK, adimaYuvarla(a.onceDk, YATIS_ONCE_ADIM_DK)))
-        : v.onceDk;
-    return {
-        aktif: a.aktif === true,
-        saat,
-        dakika,
-        onceDk,
-        yatsiHatirlatmasi: typeof a.yatsiHatirlatmasi === 'boolean' ? a.yatsiHatirlatmasi : v.yatsiHatirlatmasi,
-        muhasebe: typeof a.muhasebe === 'boolean' ? a.muhasebe : v.muhasebe,
-    };
-}
+/** Geriye uyumlu ad (testler ve eski çağıranlar). */
+export const yatisAyarlariniNormalizeEt = yatisAyarlariniNormalize;
 
 export const LocalYatisHatirlatmaServisi = {
+    /** Asla fırlatmaz: bozuk kayıt / okuma hatası varsayılana (KAPALI) düşer. */
     getAyarlar: async (): Promise<YatisAyarlari> => {
         try {
-            const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI);
-            if (ham == null) return { ...YATIS_VARSAYILAN_AYARLARI };
-            return yatisAyarlariniNormalizeEt(JSON.parse(ham));
+            return await LocalYatisHatirlatmaServisi.getAyarlarKati();
         } catch (e) {
             Logger.error('LocalYatisHatirlatmaServisi', 'Ayarlar okunamadi:', e);
-            return { ...YATIS_VARSAYILAN_AYARLARI };
+            return varsayilanYatisAyarlari();
         }
+    },
+
+    /**
+     * Disk OKUNAMAZSA FIRLATIR (bozuk içerik yine varsayılana düşer). Kanal çöp toplaması
+     * bunu kullanır: okuma hatasında "kapalı" sanıp yatışın kanallarını silmesin
+     * (`ekHatirlatmaKaynaklari`).
+     */
+    getAyarlarKati: async (): Promise<YatisAyarlari> => {
+        const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI);
+        if (ham == null) return varsayilanYatisAyarlari();
+        let cozulen: unknown;
+        try {
+            cozulen = JSON.parse(ham);
+        } catch {
+            Logger.warn('LocalYatisHatirlatmaServisi', 'Bozuk kayit (JSON), varsayilana donuldu');
+            return varsayilanYatisAyarlari();
+        }
+        return yatisAyarlariniNormalize(cozulen);
     },
 
     saveAyarlar: async (ayarlar: YatisAyarlari): Promise<boolean> => {
         try {
+            // Normalize + TÜREV `onceDk` yazılır: eski sürüm okuyabilsin.
             await AsyncStorage.setItem(
                 DEPOLAMA_ANAHTARLARI.YATIS_HATIRLATMA_AYARLARI,
-                JSON.stringify(yatisAyarlariniNormalizeEt(ayarlar))
+                JSON.stringify(yatisAyarlariniNormalize(ayarlar))
             );
             return true;
         } catch (e) {

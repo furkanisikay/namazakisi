@@ -9,6 +9,7 @@ import { VakitSayacBildirimServisi } from './VakitSayacBildirimServisi';
 import { gunEkle } from '../../core/utils/TarihYardimcisi';
 import { Logger } from '../../core/utils/Logger';
 import { eylemSuresiDk } from '../../core/muhafiz/erteleme';
+import { gosterimGrubu } from '../../core/muhafiz/teslimSahipligi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { VAKIT_ADINDAN_KAZAYA, isoGunMu, type KazaVakti } from '../../core/kaza/kazaHareketi';
 import { localKazayaBorcEkle } from '../../data/local/LocalKazaServisi';
@@ -36,28 +37,21 @@ function isVakitAdi(vakit: string): vakit is VakitAdi {
 
 /**
  * Onceki muhafiz bildirimlerini bildirim merkezinden temizle
- * Yeni bildirim geldiginde sadece AYNI VAKTin eski bildirimlerini temizler
- * Farkli vakitlerin bildirimleri korunur
+ * Yeni bildirim geldiginde sadece AYNI GOSTERIM GRUBUNUN eski bildirimlerini temizler
+ * (`gosterimGrubu`: muhafiz vakit oneki; yatis/muhasebe KENDI grubu — plan §4.5).
+ * Farkli grubun bildirimleri korunur: yatisin tekrari muhafizin yatsi uyarisini kapatmaz.
  */
 async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promise<void> {
   try {
+    const yeniGrup = gosterimGrubu(yeniBildirimId);
+    if (!yeniGrup) return;
     const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
 
-    // Yeni bildirimin vakit onekini cikar (ornegin: "muhafiz_2025-02-13_vakit_iksam")
-    // ID format: muhafiz_YYYY-MM-DD_vakit_VAKITADI_seviye_X_dk_Y
-    const vakitOnekMatch = yeniBildirimId.match(
-      new RegExp(`^(${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}\\d{4}-\\d{2}-\\d{2}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}[a-z]+)`)
-    );
-    const yeniVakitOneki = vakitOnekMatch ? vakitOnekMatch[1] : null;
-
     for (const bildirim of mevcutBildirimler) {
-      // Ayni vaktin eski muhafiz bildirimi mi ve yeni gelen bildirim degil mi?
-      if (
-        bildirim.request.identifier !== yeniBildirimId &&
-        yeniVakitOneki &&
-        bildirim.request.identifier.startsWith(yeniVakitOneki)
-      ) {
-        await Notifications.dismissNotificationAsync(bildirim.request.identifier);
+      const id = bildirim.request.identifier;
+      // Ayni grubun eski bildirimi mi ve yeni gelen bildirim degil mi?
+      if (id !== yeniBildirimId && gosterimGrubu(id) === yeniGrup) {
+        await Notifications.dismissNotificationAsync(id);
       }
     }
   } catch (error) {
@@ -66,24 +60,13 @@ async function oncekiMuhafizBildirimleriniTemizle(yeniBildirimId: string): Promi
 }
 
 /**
- * Vakit onekini bildirim ID'sinden cikar
- * Ornek: "muhafiz_2026-03-10_vakit_ikindi_seviye_2_dk_15" → "muhafiz_2026-03-10_vakit_ikindi"
- */
-function vakitOnekiniCikar(bildirimId: string): string | null {
-  const eslesme = bildirimId.match(
-    new RegExp(`^(${BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ}\\d{4}-\\d{2}-\\d{2}${BILDIRIM_SABITLERI.ONEKLEME.VAKIT}[a-z]+)`)
-  );
-  return eslesme ? eslesme[1] : null;
-}
-
-/**
  * Bildirim ayarlarini yapilandir
  */
 try {
   Notifications.setNotificationHandler({
     handleNotification: async (notification) => {
-      // Eger bu bir muhafiz bildirimiyse, onceki muhafiz bildirimlerini temizle
-      if (notification.request.identifier.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) {
+      // Gruplanan bir bildirimse (muhafiz / yatis), ayni grubun oncekilerini temizle
+      if (gosterimGrubu(notification.request.identifier) !== null) {
         await oncekiMuhafizBildirimleriniTemizle(notification.request.identifier);
       }
 
@@ -540,14 +523,12 @@ export class BildirimServisi {
     try {
       const mevcutBildirimler = await Notifications.getPresentedNotificationsAsync();
 
-      // Muhafiz bildirimlerini vakit onekine gore grupla
+      // Muhafiz bildirimlerini gosterim grubuna gore grupla (yatis/muhasebe KENDI grubunda)
       const vakitGruplari = new Map<string, Array<{ id: string; date: number }>>();
 
       for (const bildirim of mevcutBildirimler) {
         const id = bildirim.request.identifier;
-        if (!id.startsWith(BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ)) continue;
-
-        const vakitOneki = vakitOnekiniCikar(id);
+        const vakitOneki = gosterimGrubu(id);
         if (!vakitOneki) continue;
 
         if (!vakitGruplari.has(vakitOneki)) {

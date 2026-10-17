@@ -11,6 +11,7 @@
  */
 import type { CumaPlanAyarlari } from '../../core/bildirim/cumaPlani';
 import type { CamiyeGitPlanAyarlari } from '../../core/bildirim/camiyeGitPlani';
+import type { YatisAyarlari } from '../../core/yatis/yatisAyarlari';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
@@ -44,6 +45,8 @@ export interface DefterDegisikligi {
     cuma?: CumaPlanAyarlari;
     /** "Camide kılacağım" (ortak hatırlatma yüzeyi). */
     camiyeGit?: CamiyeGitPlanAyarlari;
+    /** Yatış + gün sonu muhasebesi (ortak hatırlatma yüzeyi). */
+    yatis?: YatisAyarlari;
 }
 
 export interface BildirimButcesi {
@@ -78,6 +81,7 @@ export function butceNesnesiOlustur(
                 nafile: d.nafile ?? girdi.nafile,
                 cuma: d.cuma ?? girdi.cuma,
                 camiyeGit: d.camiyeGit ?? girdi.camiyeGit,
+                yatis: d.yatis ?? girdi.yatis,
             }
             : null;
     return {

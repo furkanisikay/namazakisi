@@ -82,3 +82,21 @@ export const MUHAFIZ_SAHIPLIGI: TeslimSahipligi = { tur: 'muhafiz' };
 
 /** Önekli sahiplik kısayolu. */
 export const onekSahipligi = (onek: string): TeslimSahipligi => ({ tur: 'onek', onek });
+
+const VAKIT_ONEKI_DESENI = /^(muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+)/;
+
+/**
+ * Bildirim merkezindeki GÖSTERİM GRUBU (plan §4.5): aynı gruptan yeni bir bildirim gelince
+ * eskisi kaldırılır (tekrar tetikleri üst üste birikmesin). `null` = gruplanmaz.
+ *
+ * Muhafız (plan + erteleme) vakit önekiyle gruplanır (`muhafiz_<gün>_vakit_<v>`). YATIŞ /
+ * MUHASEBE (#290) aynı `muhafiz_` uzayında yaşar ama KENDİ grubundadır: eskiden önekle
+ * gruplandığı için yatışın bir tekrarı muhafızın aynı günkü yatsı uyarısını (ve tersi)
+ * kapatırdı. Yatış grubu `_<kalanDk>` eki soyulmuş köktür → yatışın tekrarları yalnız
+ * birbirinin yerine geçer.
+ */
+export function gosterimGrubu(kimlik: string): string | null {
+    if (yatisSahipliMi(kimlik)) return `yatis:${kimlik.replace(/_\d+$/, '')}`;
+    const m = kimlik.match(VAKIT_ONEKI_DESENI);
+    return m ? m[1] : null;
+}
