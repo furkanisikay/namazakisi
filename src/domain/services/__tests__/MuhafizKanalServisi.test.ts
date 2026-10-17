@@ -347,4 +347,26 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         expect(mockGarantile.mock.calls.map((c) => c[0])).toEqual([TITRESIMLI]);
         expect(mockTemizle).not.toHaveBeenCalled();
     });
+
+    it('NÖBETÇİ: bir ek hatırlatma kaynağı OKUNAMAZSA bu turda çöp TOPLANMAZ (kanal silinmez)', async () => {
+        const kaynaklar = require('../ekHatirlatmaKaynaklari');
+        const casus = jest.spyOn(kaynaklar, 'ekAdimDizileriniOku').mockRejectedValueOnce(new Error('disk'));
+        try {
+            await MuhafizKanalServisi.hazirla(matrisOlustur(dortSeviye()));
+            expect(mockTemizle).not.toHaveBeenCalled();
+            await MuhafizKanalServisi.hazirla();
+            // Okuma yeniden başarılı → toplama geri gelir.
+            expect(mockTemizle).toHaveBeenCalled();
+        } finally {
+            casus.mockRestore();
+        }
+    });
+
+    it('adimSesleriniDogrula: çözülemeyen ses varsayılana, çözülen dokunulmadan (aynı referans)', async () => {
+        const ayar = { aktif: true, adimlar: [sv({ bildirimSesi: OZEL_SES })] };
+        expect(await MuhafizKanalServisi.adimSesleriniDogrula(ayar)).toBe(ayar);
+        mockSesAdiAl.mockResolvedValue('');
+        const dogru = await MuhafizKanalServisi.adimSesleriniDogrula(ayar);
+        expect(dogru.adimlar[0].bildirimSesi).toBe(VARSAYILAN_SES);
+    });
 });

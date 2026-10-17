@@ -51,9 +51,6 @@ import {
     vakitAlarmlariniSustur,
 } from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
-import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
-import { nafileAlarmSesleri } from '../../core/nafile/nafileAdimlari';
-import { alarmKanalIdOlustur } from '../../core/muhafiz/alarmYuku';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
 /**
@@ -76,18 +73,14 @@ import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 export const ANDROID_MUHAFIZ_ALARM_BUTCESI = ANDROID_MUHAFIZ_PAYI;
 
 /**
- * Nafilenin GERÇEK ALARM kanalları — muhafız çöp toplaması korur (kanal uzayı ortak:
- * `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN okunur: arka plan görevinde nafile
- * servisi aynı süreçte hiç çalışmamış olabilir (`MuhafizKanalServisi` normal kanal
- * deseni) ve nafile turuyla AYNI ses doğrulamasından geçer. Okuma hatası FIRLATIR →
- * çağıran o turda toplamayı atlar.
+ * Ek hatırlatma yüzeylerinin (nafile, cuma…) GERÇEK ALARM kanalları — muhafız çöp
+ * toplaması korur (kanal uzayı ortak: `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN
+ * okunur (`ekHatirlatmaKaynaklari`): arka plan görevinde o servisler aynı süreçte hiç
+ * çalışmamış olabilir; sesler yüzeyin kendi turuyla AYNI doğrulamadan geçer (ham URI'nin
+ * kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi). Okuma hatası
+ * FIRLATIR → çağıran o turda toplamayı atlar.
  */
-async function nafileAlarmKanallariniOku(): Promise<string[]> {
-    // DOĞRULANMIŞ seslerden: nafile turu alarmı varsayılana düşmüş sesle kurar;
-    // ham URI'nin kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi.
-    const ayarlar = await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar());
-    return nafileAlarmSesleri(ayarlar).map(alarmKanalIdOlustur);
-}
+const ekAlarmKanallariniOku = (): Promise<string[]> => MuhafizKanalServisi.ekAlarmKanallariniOku();
 
 /**
  * Özel teslimin (ek hatırlatma yüzeyi) kanalı: zorlanan kanal (`kanalId`) önce; adım
@@ -159,7 +152,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     constructor(secenekler: AndroidTeslimciSecenekleri = {}) {
         this.alarmDestegi = secenekler.alarmDestegi ?? true;
         this.alarmKanalTemizligi = secenekler.alarmKanalTemizligi ?? this.alarmDestegi;
-        this.ekAlarmKanallari = secenekler.ekAlarmKanallari ?? nafileAlarmKanallariniOku;
+        this.ekAlarmKanallari = secenekler.ekAlarmKanallari ?? ekAlarmKanallariniOku;
         this.alarmButcesi = secenekler.alarmButcesi ?? ANDROID_MUHAFIZ_ALARM_BUTCESI;
         // Matrissiz çağrı ARGÜMANSIZ geçer (kayıt-oynat sözleşmesi: `hazirla()`).
         this.kanalHazirligi =

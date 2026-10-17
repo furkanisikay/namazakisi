@@ -33,13 +33,18 @@ import {
     muhafizKanallariniTemizle,
     sesAdiAl,
 } from '../../../modules/expo-countdown-notification/src';
-import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
 import {
     nafileCozulemeyenSesleriDusur,
-    nafileKanalAyarlari,
     nafileOzelSesleriniTopla,
 } from '../../core/nafile/nafileAdimlari';
 import type { NafileAyarlari } from '../../core/nafile/nafileTipleri';
+import {
+    adimAlarmSesleri,
+    adimCozulemeyenSesleriDusur,
+    adimOzelSesleri,
+} from '../../core/hatirlatma/adimDizisi';
+import { alarmKanalIdOlustur } from '../../core/muhafiz/alarmYuku';
+import { ekAdimDizileriniOku, type EkAdimDizisi } from './ekHatirlatmaKaynaklari';
 
 /** Android bildirim ayarlarinda kanal adi — kullanici hangisi oldugunu ayirt edebilmeli. */
 function kanalAdiOlustur(tanim: MuhafizKanalTanimi): string {
@@ -101,16 +106,23 @@ export const MuhafizKanalServisi = {
     hazirla: async (matris?: MuhafizMatrisi): Promise<MuhafizMatrisi | undefined> => {
         if (Platform.OS !== 'android') return matris;
 
-        // Kanal uzayı nafileyle ORTAKTIR (issue #273): çöp toplama nafilenin
-        // kullandığı kanalları da korumalı, yoksa her muhafız turu nafile
-        // bildirimlerinin kanalını siler (Android 8+ o bildirimi HİÇ göstermez).
-        // Diskten okunur: arka plan görevinde nafile servisi aynı süreçte
-        // kayıt bırakmamış olabilir.
-        const ekTanimlar = ayarlardanKanallariCikar(await nafileKanalAyarlariniOku());
+        // Kanal uzayı EK HATIRLATMA YÜZEYLERİYLE (nafile #273, cuma…) ORTAKTIR: çöp
+        // toplama onların kanallarını da korumalı, yoksa her muhafız turu o
+        // bildirimlerin kanalını siler (Android 8+ o bildirimi HİÇ göstermez).
+        // Diskten okunur (`ekHatirlatmaKaynaklari`). Bir kaynak OKUNAMAZSA bu turda
+        // TOPLAMA YAPILMAZ: bilinmeyen kanalı silmektense öksüzü bir tur daha tutmak yeğdir.
+        let ekTanimlar: MuhafizKanalTanimi[] = [];
+        let toplanabilir = true;
+        try {
+            ekTanimlar = ayarlardanKanallariCikar(await MuhafizKanalServisi.ekKanalAyarlariniOku());
+        } catch (error) {
+            toplanabilir = false;
+            Logger.warn('MuhafizKanal', 'Ek hatirlatma kanallari okunamadi; cop toplama atlandi', error);
+        }
 
         if (!matris) {
             await kanallariOlustur(ekTanimlar);
-            await copleriTopla(ekTanimlar.map((t) => t.kanalId));
+            if (toplanabilir) await copleriTopla(ekTanimlar.map((t) => t.kanalId));
             return matris;
         }
 
@@ -144,9 +156,57 @@ export const MuhafizKanalServisi = {
         // GC: matriste artik referans verilmeyen hash'li kanallar silinir.
         // Kullanici sesi her degistirdiginde eskisi oksuz kalir; toplanmazsa
         // bildirim ayarlarinda olu kanallar birikir.
-        await copleriTopla(tanimlar.map((t) => t.kanalId));
+        if (toplanabilir) await copleriTopla(tanimlar.map((t) => t.kanalId));
 
         return dogrulanmisMatris;
+    },
+
+    /**
+     * Ek hatırlatma yüzeylerinin (`ekHatirlatmaKaynaklari`) AÇIK adım dizileri, özel
+     * sesleri DOĞRULANMIŞ olarak (yüzeyin kendi turuyla aynı doğrulama → kanal id
+     * paritesi). Bir kaynak okunamazsa FIRLATIR.
+     */
+    ekDizileriOku: async (): Promise<EkAdimDizisi[]> => {
+        const diziler = await ekAdimDizileriniOku();
+        const cozulemeyen = await cozulemeyenSesleriBul(
+            adimOzelSesleri(diziler.map((d) => ({ aktif: true, adimlar: d.adimlar })))
+        );
+        if (cozulemeyen.size === 0) return diziler;
+        return diziler.map((d) => {
+            const duzeltilmis = adimCozulemeyenSesleriDusur({ aktif: true, adimlar: d.adimlar }, cozulemeyen);
+            return { ...d, adimlar: duzeltilmis.adimlar };
+        });
+    },
+
+    /** Ek yüzeylerin ORTAK kanal uzayındaki kanal ihtiyacı (çöp toplamada korunur). FIRLATABİLİR. */
+    ekKanalAyarlariniOku: async (): Promise<VakitMuhafizAyari[]> =>
+        (await MuhafizKanalServisi.ekDizileriOku())
+            .filter((d) => d.kanalKullanir)
+            .map((d) => ({ yon: d.yon, seviyeler: d.adimlar })),
+
+    /** Ek yüzeylerin GERÇEK ALARM kanalları (çöp toplamada korunur). FIRLATABİLİR. */
+    ekAlarmKanallariniOku: async (): Promise<string[]> =>
+        adimAlarmSesleri(
+            (await MuhafizKanalServisi.ekDizileriOku()).map((d) => ({ aktif: true, adimlar: d.adimlar }))
+        ).map(alarmKanalIdOlustur),
+
+    /**
+     * Ek yüzeyin adım dizisinin özel seslerini doğrular (`nafileSesleriniDogrula`
+     * genellemesi): çözülemeyen `content://` varsayılana düşer. Yüzeyin planı, kanal
+     * hazırlığı ve muhafızın çöp toplaması AYNI doğrulanmış sesten türemeli. Android
+     * dışında ve hatada AYNEN döndürür, asla fırlatmaz.
+     */
+    adimSesleriniDogrula: async <T extends { aktif: boolean; adimlar: EkAdimDizisi['adimlar'] }>(
+        ayar: T
+    ): Promise<T> => {
+        if (Platform.OS !== 'android') return ayar;
+        try {
+            const cozulemeyen = await cozulemeyenSesleriBul(adimOzelSesleri([ayar]));
+            return cozulemeyen.size === 0 ? ayar : adimCozulemeyenSesleriDusur(ayar, cozulemeyen);
+        } catch (error) {
+            Logger.error('MuhafizKanal', 'Ses dogrulamasi basarisiz', error);
+            return ayar;
+        }
     },
 
     /**
@@ -190,17 +250,6 @@ export const MuhafizKanalServisi = {
         sonToplananKume = null;
     },
 };
-
-/** Nafile ayarlarının kanal ihtiyacı (diskten, sesleri doğrulanmış; bozuk/okunamaz → boş). */
-async function nafileKanalAyarlariniOku(): Promise<VakitMuhafizAyari[]> {
-    try {
-        // DOĞRULANMIŞ ayardan: nafile turu kanalları doğrulanmış seslerle kurar;
-        // ham ayardan türetilen id ölü sesli kanalı korur, gerçek kanalı silerdi.
-        return nafileKanalAyarlari(await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar()));
-    } catch {
-        return [];
-    }
-}
 
 /**
  * Hash'li kanalları oluşturur. TRY/CATCH HER KANAL İÇİN AYRI: tek ortak catch

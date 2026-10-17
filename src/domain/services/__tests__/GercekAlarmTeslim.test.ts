@@ -29,6 +29,10 @@ jest.mock('../MuhafizKanalServisi', () => ({
     MuhafizKanalServisi: {
         hazirla: jest.fn(async (m: unknown) => m),
         nafileSesleriniDogrula: jest.fn(async (a: unknown) => a),
+        // GERÇEK uygulama: ek yüzeylerin (nafile, cuma) alarm kanalları diskten okunur ve
+        // sesler native çözümle doğrulanır (bu dosyada `sesAdiAl` yok → çözülemez sayılır).
+        ekAlarmKanallariniOku: () =>
+            jest.requireActual('../MuhafizKanalServisi').MuhafizKanalServisi.ekAlarmKanallariniOku(),
     },
 }));
 
@@ -234,10 +238,6 @@ describe('hazırlık ve temizlik', () => {
     test("nafilenin alarm kanalı DOĞRULANMIŞ sesten korunur (çözülemeyen URI'nin kanalı DEĞİL)", async () => {
         const OLU = 'content://media/external/audio/media/9999';
         const AsyncStorage = require('@react-native-async-storage/async-storage');
-        const { MuhafizKanalServisi } = jest.requireMock('../MuhafizKanalServisi') as {
-            MuhafizKanalServisi: { nafileSesleriniDogrula: jest.Mock };
-        };
-        const { nafileCozulemeyenSesleriDusur } = require('../../../core/nafile/nafileAdimlari');
         await AsyncStorage.setItem(
             'nafile_ayarlari',
             JSON.stringify({
@@ -249,9 +249,6 @@ describe('hazırlık ve temizlik', () => {
                     },
                 },
             })
-        );
-        MuhafizKanalServisi.nafileSesleriniDogrula.mockImplementationOnce(async (a: unknown) =>
-            nafileCozulemeyenSesleriDusur(a, new Set([OLU]))
         );
         try {
             await new AndroidMuhafizTeslimcisi().hazirla();
