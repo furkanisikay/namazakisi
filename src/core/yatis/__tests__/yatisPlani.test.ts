@@ -404,16 +404,23 @@ describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
     });
 
     it('KAYMA her tetiğe uygulanır; aynı ana düşenler TEK kazanana iner', () => {
-        // Yatış 20:30 → tetikler 19:30/19:50/20:10/20:20; İstanbul Ekim yatsısı ~19:54 → kayanlar tek ana.
+        // Saat diliminden bağımsız (CI UTC'de koşar): yatış saati 20:00–02:55'e sıkıştırıldığı
+        // için yerel yatsı İstanbul'unkiyle aynı olmalı → boylam, makinenin UTC farkına göre
+        // kaydırılır (İstanbul UTC+3). Yatış = yatsı + 25 dk → tetikler giriş −35/−15/+5/+15;
+        // girişten öncekiler giriş + pay'a kayar ve TEK ana iner.
+        const yerelFark = -t(13, 0).getTimezoneOffset() / 60;
+        const koord = { lat: ISTANBUL.lat, lng: ISTANBUL.lng + (yerelFark - 3) * 15 };
+        const giris = namazGunuVakitleri(koord, t(13, 0)).yatsi.giris;
+        const yatis = new Date(Math.ceil(giris.getTime() / 60_000) * 60_000 + 25 * 60_000);
         const plan = yatisPlaniOlustur({
-            koordinat: ISTANBUL,
-            ayarlar: cokAdim({ saat: 20, dakika: 30 }),
+            koordinat: koord,
+            ayarlar: cokAdim({ saat: yatis.getHours(), dakika: yatis.getMinutes() }),
             simdi: t(13, 9),
             gunSayisi: 1,
         });
         const zamanlar = plan.map((k) => k.zaman.getTime());
         expect(new Set(zamanlar).size).toBe(zamanlar.length);
-        const yatsiGiris = namazGunuVakitleri(ISTANBUL, t(13, 0)).yatsi.giris.getTime();
+        const yatsiGiris = giris.getTime();
         expect(Math.min(...zamanlar)).toBe(yatsiGiris + YATIS_YATSI_GIRIS_PAYI_DK * 60_000);
         expect(plan.length).toBeLessThan(4);
     });
