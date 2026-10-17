@@ -425,8 +425,8 @@ const SeriHedefAyarlariIcerik: React.FC = () => {
               <Anahtar
                 value={ozelGunAyarlari.ozelGunModuAktif}
                 onValueChange={handleOzelGunModuToggle}
-                trackColor={{ false: renkler.sinir, true: '#FFC0CB' }}
-                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? OZEL_GUN_RENGI : '#f4f3f4'}
+                trackColor={{ false: renkler.sinir, true: `${OZEL_GUN_RENGI}80` }}
+                thumbColor={ozelGunAyarlari.ozelGunModuAktif ? OZEL_GUN_RENGI : renkler.arkaplan}
               />
             </View>
           </AyarCapasi>
