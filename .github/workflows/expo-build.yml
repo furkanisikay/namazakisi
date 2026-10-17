@@ -549,10 +549,13 @@ jobs:
   #   Anahtar YALNIZ EAS'te → scripts/eas-yukleme-anahtari.js EXPO_TOKEN ile
   #   indirir, parmak izini dogrular, $RUNNER_TEMP'e yazar; is sonunda silinir.
   # versionCode: Play'de kod TUM uygulama icin tekil olmali. Telefon `date +%s`
-  #   kullanir; burada TEK taban alinir, saat +1, TV +2 (ayni kosuda iki paket ayni
-  #   kodu alamaz; ofset kucuk tutulur — buyuk ofset telefonun gelecekteki kodlarini
-  #   "rezerve" ederdi). Telefon build'i tam o saniyelerde kod alirsa Play ikinci
-  #   yuklemeyi ACIKCA reddeder (sessiz bozulma yok) → yeniden calistirin.
+  #   kullanir (build isinde, bu isle PARALEL). Burada TEK taban alinir ve GERIYE
+  #   kaydirilir: saat = taban-600, TV = taban-599. Ileri ofset (+1/+2) ayni kosudaki
+  #   telefon isinin 1-2 sn sonra okuyacagi koda denk gelebilirdi; carpismada Play
+  #   saatleri dakikalar icinde kabul eder, saatler sonraki telefon `eas submit`'ini
+  #   REDDEDERDI. Telefon kodu kendi isinin baslangicindan buyuktur; ayni kosuda
+  #   esitlik icin bu isin kurulumu telefonunkinden 10 dk uzun surmeli. Geriye
+  #   ofset saat/TV kanalinda monotonlugu bozmaz (her kosu bir oncekinden gec).
   saat_tv:
     name: ⌚📺 Saat / TV → Play (${{ inputs.saat_tv }} · ${{ inputs.saat_tv_kanal }})
     if: inputs.saat_tv != '' && inputs.saat_tv != 'yok'
@@ -597,10 +600,10 @@ jobs:
         id: vc
         run: |
           TABAN=$(date +%s)
-          echo "saat=$((TABAN + 1))" >> "$GITHUB_OUTPUT"
-          echo "tv=$((TABAN + 2))" >> "$GITHUB_OUTPUT"
+          echo "saat=$((TABAN - 600))" >> "$GITHUB_OUTPUT"
+          echo "tv=$((TABAN - 599))" >> "$GITHUB_OUTPUT"
           echo "surum=$(node -p "require('./app.json').expo.version")" >> "$GITHUB_OUTPUT"
-          echo "📌 saat $((TABAN + 1)) · tv $((TABAN + 2))"
+          echo "📌 saat $((TABAN - 600)) · tv $((TABAN - 599))"
 
       # Sirlar maskelenir, Gradle'a ORG_GRADLE_PROJECT_yukleme* ile gecer (komut
       # satirinda -P YOK). Keystore parmak izi EAS kaydiyla burada dogrulanir.
