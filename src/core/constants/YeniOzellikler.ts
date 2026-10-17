@@ -71,7 +71,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Kuşluk, evvâbîn ve teheccüd hatırlatmaları artık namaz hatırlatmasıyla aynı seçenekleri taşır: gerçek alarm dahil. Alarmın yalnız ilk uyarıda mı yoksa her uyarıda mı çalacağını da seçebilirsiniz.',
         detayAciklama:
-            'Bir hatırlatma adımında "Gerçek alarm"ı açtığınızda alarmın yalnız ilk uyarıda mı yoksa adımın her tekrarında mı çalacağını seçebilirsiniz; bu seçim namaz hatırlatmasında da geçerlidir. "Akışı önizle" ekranı alarmın çalacağı saatleri ayrıca gösterir. Nafile hatırlatmalarında da "Kapalı" seçeneği vardır; Android\'de ayrıca bildirim sesini seçebilirsiniz. Bir nafilenin ana ekrandaki günlük akışta görünüp görünmeyeceğini artık o nafilenin kendi kartındaki "Ana ekranda göster" satırından belirlersiniz; hatırlatması kapalıyken de görünür. Daha önceki sürümlerden kalan ve hiç kullanmadığınız boş "Kapalı" adımlar bir kez temizlendi; hatırlatma planınız değişmedi.',
+            'Bir hatırlatma adımında "Gerçek alarm"ı açtığınızda alarmın yalnız ilk uyarıda mı yoksa adımın her tekrarında mı çalacağını seçebilirsiniz; bu seçim namaz hatırlatmasında da geçerlidir. Namaz Muhafızı\'ndaki "Akışı önizle" ekranı alarmın çalacağı saatleri ayrıca gösterir. Nafile hatırlatmalarında da "Kapalı" seçeneği vardır; Android\'de ayrıca bildirim sesini seçebilirsiniz. Bir nafilenin ana ekrandaki günlük akışta görünüp görünmeyeceğini artık o nafilenin kendi kartındaki "Ana ekranda göster" satırından belirlersiniz; hatırlatması kapalıyken de görünür. Daha önceki sürümlerden kalan ve hiç kullanmadığınız boş "Kapalı" adımlar bir kez temizlendi; hatırlatma planınız değişmedi.',
         ikon: 'bell',
         hedefSayfa: 'NafileAyarlari',
         ctaEtiketi: 'Nafile ayarlarını açın',
@@ -79,7 +79,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         detaylar: [
             'Gerçek alarm nafile hatırlatmalarında da var (iPhone\'da iOS 26 gerekir)',
             'Alarm yalnız ilk uyarıda ya da her uyarıda çalabilir',
-            'Akış önizlemesi alarmın çalacağı saatleri gösterir',
+            'Namaz hatırlatmasının akış önizlemesi alarmın çalacağı saatleri gösterir',
             '"Ana ekranda göster" her nafilenin kendi kartında',
             'Kullanılmayan boş "Kapalı" adımlar bir kez temizlendi',
         ],
