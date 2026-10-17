@@ -5,6 +5,11 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.34.0] - 2026-10-17
+
+### Eklendi
+- [nafile] "Ana ekranda göster" her nafilenin kendi kartında
+
 ## [0.33.0] - 2026-10-17
 
 ### Eklendi
