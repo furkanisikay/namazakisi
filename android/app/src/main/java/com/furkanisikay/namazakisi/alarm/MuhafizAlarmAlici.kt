@@ -98,7 +98,9 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         // uyanmadıysa (Samsung uyku kısıtı) diskteki kılınmışlık kaydı YOKTUR — native
         // AsyncStorage'ı okumaz, kuyruk yeterli kanıttır.
         val kuyruktaKilindi = try {
-            if (yuk.nafileTuru != null) {
+            if (yuk.bilgi) {
+                false
+            } else if (yuk.nafileTuru != null) {
                 // Nafile: kendi kuyruğunda bekliyorsa (bildirimden Kıldım, JS henüz uyanmadı).
                 NafileKildimKuyrugu.bekliyorMu(context, NafileKildimKurallari.Nafile(yuk.tarih, yuk.nafileTuru))
             } else {
@@ -122,7 +124,8 @@ class MuhafizAlarmAlici : BroadcastReceiver() {
         // bildirimi gösterilirken yayılır) burada yayılmalı — yoksa alarmlı adımda olay
         // hiç doğmaz. Kural (çıkışa ≤45 dk, vakit başına ilk) olayın kendi çekirdeğinde.
         // Nafile alarmı farz "vakit çıkıyor" olayı değildir.
-        if (karar != Karar.ATLA && yuk.nafileTuru == null) OtomasyonOlaylari.muhafizUyarisi(context, yuk.kimlik)
+        // Bilgi alarmı (cuma/camiye gitme/takvim) vakit girmeden çalar — "vakit çıkıyor" değildir.
+        if (karar != Karar.ATLA && MuhafizAlarmKurallari.otomasyonOlayiDogarMi(yuk)) OtomasyonOlaylari.muhafizUyarisi(context, yuk.kimlik)
     }
 
     private fun sustur(context: Context, intent: Intent) {

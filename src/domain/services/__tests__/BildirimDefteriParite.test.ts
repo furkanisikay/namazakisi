@@ -75,7 +75,8 @@ import { AndroidMuhafizTeslimcisi } from '../AndroidMuhafizTeslimcisi';
 import { IosMuhafizTeslimcisi } from '../IosMuhafizTeslimcisi';
 import { NafileHatirlatmaServisi, nafileTeslimcisiniAyarla } from '../NafileHatirlatmaServisi';
 import { ANDROID_MUHAFIZ_PAYI, ANDROID_NAFILE_PAYI, IOS_ALARMKIT_MUHAFIZ_PAYI } from '../../../core/bildirim/butceSabitleri';
-import { CumaHatirlatmaServisi } from '../CumaHatirlatmaServisi';
+import { CumaHatirlatmaServisi, cumaTeslimcisiniAyarla } from '../CumaHatirlatmaServisi';
+import { cumaAyarlariniNormalize } from '../../../core/cuma/cumaAyarlari';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { VakitBildirimYoneticiServisi } from '../VakitBildirimYoneticiServisi';
 import { VakitSayacBildirimServisi } from '../VakitSayacBildirimServisi';
@@ -641,11 +642,71 @@ describe('nafile: defter = servisin kurduğu', () => {
 });
 
 describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
+    beforeEach(() => cumaTeslimcisiniAyarla(null));
+    afterAll(() => cumaTeslimcisiniAyarla(null));
+
+    it.each(['ios', 'android'] as const)(
+        'cuma ESKİ kayıt (diskte tek ofsetli biçim, %s): defter servisle AYNI normalize/göç yolundan okur',
+        async (platform) => {
+            jest.replaceProperty(Platform, 'OS', platform);
+            cumaTeslimcisiniAyarla(null);
+            disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify({ aktif: true, oncedenDk: 90, siklik: { herDk: 15 } }));
+            await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+            const dis = await defterDisGirdisiniOku();
+            const g = temelGirdi(platform, { cuma: dis.cuma });
+            expect(say(g, 'cuma')).toBeGreaterThan(4);
+            expect(onekliSay('cuma_hatirlatma_')).toBe(say(g, 'cuma'));
+        }
+    );
+
+    it('cuma Android GERÇEK ALARM + sesli: alarm + bildirim + anons birebir; yük BİLGİ türü, kendi payı', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        cumaTeslimcisiniAyarla(null);
+        try {
+            const cuma = cumaAyarlariniNormalize({
+                aktif: true,
+                adimlar: [{ esikDk: 60, siklik: { herDk: 30 }, kanallar: { bildirim: true, sesli: true, alarm: true } }],
+            });
+            disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
+            await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const g = temelGirdi('android', { cuma });
+            expect(say(g, 'alarm')).toBe(4);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(onekliSay('cuma_hatirlatma_')).toBe(say(g, 'cuma'));
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+            // Cumanın alarm/anonsu muhafızın 360'ına SAYILMAZ (kendi payı).
+            expect(bildirimDefteriOlustur(g).filter((k) => k.kaynak === 'alarm' || k.kaynak === 'anons').every((k) => k.pay === 'cuma')).toBe(true);
+            // Önceki turun alarmları YALNIZ cuma önekiyle silinir; kanal toplama muhafızın.
+            expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith('cuma_hatirlatma_');
+            expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            const [kimlik, , ham] = nativeAlarm.planla.mock.calls[0];
+            const yuk = JSON.parse(ham);
+            expect(kimlik).toMatch(/^cuma_hatirlatma_\d{4}-\d{2}-\d{2}$/);
+            // "Kıldım" FARZ yazmasın: BİLGİ türü, muhafız yükü değil, ertelenmez.
+            expect(yuk.tur).toBe('bilgi');
+            expect(yuk.veri).toEqual({ tip: 'cuma_hatirlatma' });
+            expect(yuk.vakitAdi).toBe('Cuma');
+            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk.kanalId).toBe('vakit_bildirim');
+            // Pencere sonu = öğle girişi (60 dk sonra).
+            expect(yuk.cikisMs - yuk.tetikMs).toBe(60 * 60000);
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            cumaTeslimcisiniAyarla(null);
+        }
+    });
+
     it('cuma (tekrarlı)', async () => {
         const cuma = { aktif: true, oncedenDk: 60, siklik: { herDk: 15 } };
         disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
         await CumaHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
-        const g = temelGirdi('ios', { cuma });
+        const g = temelGirdi('ios', { cuma: cumaAyarlariniNormalize(cuma) });
         expect(say(g, 'cuma')).toBeGreaterThan(4);
         expect(onekliSay('cuma_hatirlatma_')).toBe(say(g, 'cuma'));
     });
@@ -663,7 +724,7 @@ describe('cuma, vakit bildirimi, gün sonu: defter = servisin kurduğu', () => {
         disk.set(DEPOLAMA_ANAHTARLARI.CUMA_HATIRLATMA_AYARLARI, JSON.stringify(cuma));
         disk.set(DEPOLAMA_ANAHTARLARI.CAMIYE_GIT_AYARLARI, JSON.stringify(camiyeGit));
         await CamiyeGitHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
-        const g = temelGirdi(platform, { cuma, camiyeGit });
+        const g = temelGirdi(platform, { cuma: cumaAyarlariniNormalize(cuma), camiyeGit });
         expect(say(g, 'camiyeGit')).toBeGreaterThan(0);
         expect(onekliSay('camiye_git_')).toBe(say(g, 'camiyeGit'));
         // Android ufku (7 gün) 16 Ekim cumasını kapsar: o gün öğle KURULMAZ.

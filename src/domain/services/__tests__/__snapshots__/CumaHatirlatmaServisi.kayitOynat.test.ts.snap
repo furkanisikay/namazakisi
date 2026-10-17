@@ -1,0 +1,1525 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android siklik alani yok (en eski kayit) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android tekrarli 15 dk 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_75",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_45",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_30",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_15",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_75",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_45",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_30",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_15",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_75",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_45",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_30",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_15",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_75",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_45",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_30",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_15",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android uzun pencere 60 dk tekrar 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_120",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_120",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_120",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_120",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_60",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android varsayilan tek atis 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios siklik alani yok (en eski kayit) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios tekrarli 15 dk 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_75",
+    "trigger": {
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_45",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_30",
+    "trigger": {
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_15",
+    "trigger": {
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_75",
+    "trigger": {
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_45",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_30",
+    "trigger": {
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_15",
+    "trigger": {
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_75",
+    "trigger": {
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_45",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_30",
+    "trigger": {
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_15",
+    "trigger": {
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 30 dakika kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "ogleyeKalanDk": 90,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_75",
+    "trigger": {
+      "ogleyeKalanDk": 75,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 45 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 45 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_45",
+    "trigger": {
+      "ogleyeKalanDk": 45,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 30 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 30 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_30",
+    "trigger": {
+      "ogleyeKalanDk": 30,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 15 dakika kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 15 dk kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_15",
+    "trigger": {
+      "ogleyeKalanDk": 15,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios uzun pencere 60 dk tekrar 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_120",
+    "trigger": {
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_120",
+    "trigger": {
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_120",
+    "trigger": {
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 3 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 3 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "ogleyeKalanDk": 180,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 2 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 2 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_120",
+    "trigger": {
+      "ogleyeKalanDk": 120,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Camiye yola çık.",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28_60",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+]
+`;
+
+exports[`CumaHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios varsayilan tek atis 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-7",
+    "identifier": "cuma_hatirlatma_2026-08-07",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-14",
+    "identifier": "cuma_hatirlatma_2026-08-14",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-21",
+    "identifier": "cuma_hatirlatma_2026-08-21",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.
+"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)",
+      "data": {
+        "tip": "cuma_hatirlatma",
+      },
+      "sound": true,
+      "title": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+    },
+    "gun": "2026-8-28",
+    "identifier": "cuma_hatirlatma_2026-08-28",
+    "trigger": {
+      "ogleyeKalanDk": 60,
+      "type": "date",
+    },
+  },
+]
+`;

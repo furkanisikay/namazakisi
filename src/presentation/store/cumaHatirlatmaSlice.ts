@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import {
-    LocalCumaHatirlatmaServisi,
-    CumaHatirlatmaAyarlari,
-} from '../../data/local/LocalCumaHatirlatmaServisi';
+    cumaAyarlariniBirlestir,
+    varsayilanCumaAyarlari,
+    type CumaHatirlatmaAyarlari,
+} from '../../core/cuma/cumaAyarlari';
 import { CumaHatirlatmaServisi } from '../../domain/services/CumaHatirlatmaServisi';
 import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import type { RootState } from './store';
@@ -15,9 +17,8 @@ interface CumaHatirlatmaState {
 
 const initialState: CumaHatirlatmaState = {
     // Cuma herkese farz-i ayn degil → varsayilan KAPALI, ayardan acilir.
-    // `siklik: 'birkez'` = tarihsel davranis (tek hatirlatma); periyodik
-    // hatirlatma ekrandan acilir.
-    ayarlar: { aktif: false, oncedenDk: 60, siklik: 'birkez' },
+    // Tek adım, 60 dk önce, tek atış = tarihsel davranış (ortak model, plan §5.1).
+    ayarlar: varsayilanCumaAyarlari(),
     yukleniyor: false,
     hata: null,
 };
@@ -37,10 +38,13 @@ export const cumaHatirlatmaAyariniGuncelle = createAsyncThunk(
     'cumaHatirlatma/guncelle',
     async (degisiklik: Partial<CumaHatirlatmaAyarlari>, { getState }) => {
         const state = getState() as RootState;
-        const yeniAyarlar: CumaHatirlatmaAyarlari = {
-            ...state.cumaHatirlatma.ayarlar,
-            ...degisiklik,
-        };
+        // Kısmi değişiklik (adımlar, rızalar ya da eski `oncedenDk`/`siklik`) birleştirilip
+        // NORMALIZE edilir — türev alanlar adımlardan yeniden yazılır. Rıza alanları
+        // (`sesliOnayi`, `alarmOnayi`) yalnız ekranın açıkça geçtiği değerle değişir.
+        const yeniAyarlar: CumaHatirlatmaAyarlari = cumaAyarlariniBirlestir(
+            state.cumaHatirlatma.ayarlar,
+            degisiklik
+        );
 
         // Disk yazimi sessizce basarisiz olabilir; planlamaya devam etmek
         // kullaniciya "kaydedildi" hissi verip ayari kaybettirirdi.

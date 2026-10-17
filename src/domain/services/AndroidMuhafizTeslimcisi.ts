@@ -19,6 +19,13 @@
 import * as Notifications from 'expo-notifications';
 
 import { BILDIRIM_SABITLERI } from '../../core/constants/UygulamaSabitleri';
+import { ozelSesMi, sesKimliginiNormalize } from '../../core/muhafiz/sesKimligi';
+import {
+    MUHAFIZ_SAHIPLIGI,
+    nativeSahipAdi,
+    onekSahipligi,
+    type TeslimSahipligi,
+} from '../../core/muhafiz/teslimSahipligi';
 import { Logger } from '../../core/utils/Logger';
 import type { MuhafizMatrisi } from '../../core/muhafiz/matrisTipleri';
 import { alarmGerekliMi, muhafizKanaliSec, titresimGerekliMi } from '../../core/muhafiz/motorAdaptoru';
@@ -39,12 +46,11 @@ import {
     alarmKoprusuVarMi,
     alarmPlanla as nativeAlarmPlanla,
     onekliAlarmlariIptalEt,
+    sahipliIptalVarMi,
+    sahipliYanKanallariIptalEt,
     vakitAlarmlariniSustur,
 } from './MuhafizAlarmKoprusu';
 import { ANDROID_MUHAFIZ_PAYI } from '../../core/bildirim/butceSabitleri';
-import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
-import { nafileAlarmSesleri } from '../../core/nafile/nafileAdimlari';
-import { alarmKanalIdOlustur } from '../../core/muhafiz/alarmYuku';
 import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 
 /**
@@ -67,17 +73,31 @@ import type { MuhafizTeslimcisi, UyariTeslimi } from './MuhafizTeslimcisi';
 export const ANDROID_MUHAFIZ_ALARM_BUTCESI = ANDROID_MUHAFIZ_PAYI;
 
 /**
- * Nafilenin GERÇEK ALARM kanalları — muhafız çöp toplaması korur (kanal uzayı ortak:
- * `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN okunur: arka plan görevinde nafile
- * servisi aynı süreçte hiç çalışmamış olabilir (`MuhafizKanalServisi` normal kanal
- * deseni) ve nafile turuyla AYNI ses doğrulamasından geçer. Okuma hatası FIRLATIR →
- * çağıran o turda toplamayı atlar.
+ * Ek hatırlatma yüzeylerinin (nafile, cuma…) GERÇEK ALARM kanalları — muhafız çöp
+ * toplaması korur (kanal uzayı ortak: `namaz_alarm` / `namaz_alarm_<hash>`). DİSKTEN
+ * okunur (`ekHatirlatmaKaynaklari`): arka plan görevinde o servisler aynı süreçte hiç
+ * çalışmamış olabilir; sesler yüzeyin kendi turuyla AYNI doğrulamadan geçer (ham URI'nin
+ * kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi). Okuma hatası
+ * FIRLATIR → çağıran o turda toplamayı atlar.
  */
-async function nafileAlarmKanallariniOku(): Promise<string[]> {
-    // DOĞRULANMIŞ seslerden: nafile turu alarmı varsayılana düşmüş sesle kurar;
-    // ham URI'nin kanal id'si korunsaydı gerçek alarm kanalı "öksüz" sayılıp silinirdi.
-    const ayarlar = await MuhafizKanalServisi.nafileSesleriniDogrula(await LocalNafileServisi.getAyarlar());
-    return nafileAlarmSesleri(ayarlar).map(alarmKanalIdOlustur);
+const ekAlarmKanallariniOku = (): Promise<string[]> => MuhafizKanalServisi.ekAlarmKanallariniOku();
+
+/**
+ * Özel teslimin (ek hatırlatma yüzeyi) kanalı: zorlanan kanal (`kanalId`) önce; adım
+ * VARSAYILAN ses + titreşimsizse yüzeyin varsayılan kanalı (`varsayilanKanalId` — göçten
+ * gelen kayıt bugünkü kanalında kalır); aksi halde ortak muhafız uzayındaki kanal.
+ */
+function ozelKanalSec(teslim: UyariTeslimi, muhafizKanali: string): string {
+    const { ozel, uyari } = teslim;
+    if (ozel?.kanalId) return ozel.kanalId;
+    if (
+        ozel?.varsayilanKanalId &&
+        !ozelSesMi(sesKimliginiNormalize(uyari.bildirimSesi)) &&
+        !titresimGerekliMi(uyari.kanallar)
+    ) {
+        return ozel.varsayilanKanalId;
+    }
+    return muhafizKanali;
 }
 
 export interface AndroidTeslimciSecenekleri {
@@ -90,7 +110,13 @@ export interface AndroidTeslimciSecenekleri {
      * toplayıcı ötekinin kanallarını silerdi (Android 8+ o bildirimi HİÇ göstermez).
      */
     kanalHazirligi?: (matris?: MuhafizMatrisi) => Promise<MuhafizMatrisi | undefined>;
-    /** Sesli anonsların kimlik öneki — `tumYanKanallariIptalEt` YALNIZ bunları siler. */
+    /**
+     * Bu örneğin kimlik SAHİPLİĞİ (`core/muhafiz/teslimSahipligi.ts`): yeniden planlama
+     * öncesi temizlik (anons + gerçek alarm) YALNIZ bunları siler. Varsayılan muhafız
+     * (plan kimlikleri — `muhafiz_` uzayındaki yatış/muhasebe korunur).
+     */
+    sahiplik?: TeslimSahipligi;
+    /** Geriye uyumlu kısayol: `sahiplik: { tur: 'onek', onek }`. */
     anonsOneki?: string;
     /**
      * Gerçek alarm (issue #74) bu teslimcide KURULSUN mu? Varsayılan EVET. Önceki turun
@@ -116,7 +142,9 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
 
     private readonly alarmButcesi: number;
     private readonly kanalHazirligi: (matris?: MuhafizMatrisi) => Promise<MuhafizMatrisi | undefined>;
-    private readonly anonsOneki: string;
+    private readonly sahiplik: TeslimSahipligi;
+    /** Sahipli native iptal yoksa (köprü/yöntem yok) düşülen önek. Yatışta YOK (önek yetmez). */
+    private readonly yedekOnek: string | null;
     private readonly alarmDestegi: boolean;
     private readonly alarmKanalTemizligi: boolean;
     private readonly ekAlarmKanallari: () => Promise<string[]>;
@@ -124,13 +152,21 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     constructor(secenekler: AndroidTeslimciSecenekleri = {}) {
         this.alarmDestegi = secenekler.alarmDestegi ?? true;
         this.alarmKanalTemizligi = secenekler.alarmKanalTemizligi ?? this.alarmDestegi;
-        this.ekAlarmKanallari = secenekler.ekAlarmKanallari ?? nafileAlarmKanallariniOku;
+        this.ekAlarmKanallari = secenekler.ekAlarmKanallari ?? ekAlarmKanallariniOku;
         this.alarmButcesi = secenekler.alarmButcesi ?? ANDROID_MUHAFIZ_ALARM_BUTCESI;
         // Matrissiz çağrı ARGÜMANSIZ geçer (kayıt-oynat sözleşmesi: `hazirla()`).
         this.kanalHazirligi =
             secenekler.kanalHazirligi ??
             ((m) => (m === undefined ? MuhafizKanalServisi.hazirla() : MuhafizKanalServisi.hazirla(m)));
-        this.anonsOneki = secenekler.anonsOneki ?? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ;
+        this.sahiplik =
+            secenekler.sahiplik ??
+            (secenekler.anonsOneki ? onekSahipligi(secenekler.anonsOneki) : MUHAFIZ_SAHIPLIGI);
+        this.yedekOnek =
+            this.sahiplik.tur === 'onek'
+                ? this.sahiplik.onek
+                : this.sahiplik.tur === 'muhafiz'
+                  ? BILDIRIM_SABITLERI.ONEKLEME.MUHAFIZ
+                  : null;
     }
 
     /** Bu turda kurulan alarm sayısı — `hazirla` (her turun başı) sıfırlar. */
@@ -200,7 +236,11 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
     private async alarmlariHazirla(matris: MuhafizMatrisi | undefined): Promise<void> {
         if (!this.alarmDestegi || !alarmKoprusuVarMi()) return;
         try {
-            await onekliAlarmlariIptalEt(this.anonsOneki);
+            // SAHİPLİ iptal (plan §4.1): muhafız PLAN kimlikleriyle (kapalıyken muhafız
+            // sahipli her şey) — `muhafiz_` uzayındaki yatış/muhasebe alarmları korunur.
+            const sahip = nativeSahipAdi(this.sahiplik, matris !== undefined);
+            const sahipli = sahip !== null && (await sahipliYanKanallariIptalEt(sahip, { anons: false, alarm: true }));
+            if (!sahipli && this.yedekOnek) await onekliAlarmlariIptalEt(this.yedekOnek);
             if (this.alarmKanalTemizligi) {
                 let ek: string[] = [];
                 try {
@@ -261,13 +301,15 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 vakit,
                 ...(ozel?.alarmAdi ? { vakitAdi: ozel.alarmAdi } : {}),
                 tarih,
+                // Bilgi türünde (cuma/camiye gitme/takvim) `cikis` pencerenin SONUDUR.
                 cikisMs: cikis?.getTime() ?? 0,
                 erteleSinirMs: ertele?.veri.erteleSinirMs ?? 0,
                 seviye: uyari.seviye,
                 bildirimSesi: uyari.bildirimSesi,
                 sesAdi: uyari.sesAdi,
-                // Normal bildirime düşüşün kanalı: özel teslimin zorladığı kanal önce.
-                kanalId: ozel?.kanalId ?? kanalId,
+                // Normal bildirime düşüşün kanalı: özel teslimin zorladığı kanal önce, sonra
+                // yüzeyin varsayılan kanalı (göçten gelen kayıt bugünkü kanalında kalsın).
+                kanalId: ozelKanalSec(teslim, kanalId),
                 // Ertelenen kopyanın gövdesi — muhafız bildirimiyle AYNI `data` (Kıldım,
                 // erteleme ve JS `etkinErtelemeler` aynı alanları okur). Özel teslimde
                 // kendi yükü (nafile: `{tip:'nafile'}`).
@@ -282,6 +324,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     anonsMetni: uyari.anonsMetni,
                     ...(ertele ? { ...ertele.veri, kanalId } : {}),
                 },
+                ...(ozel?.alarmTuru ? { tur: ozel.alarmTuru } : {}),
             })
         );
         if (!kuruldu) {
@@ -316,9 +359,25 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
         // ÖNEKLE: nafile anonsları (issue #273) aynı native kayıtta yaşar; çıplak
         // "tümünü sil" her muhafız turunda (15 dk + her ekran değişikliği) nafile
         // anonslarını da silerdi. Native önekli iptal yoksa (eski köprü) eski yol.
+        // Muhafız / yatış: SAHİPLİ native iptal (plan §4.1) — önek yatışın anonslarını da
+        // silerdi. Muhafız tarafında anons yalnız plan kimliğinde kurulur; "muhafız sahipli
+        // her şey (yatış hariç)" kapsamı açık/kapalı iki turda da doğrudur.
+        const sahip = nativeSahipAdi(this.sahiplik, false);
+        if (sahip !== null && sahipliIptalVarMi()) {
+            // Native başarısız olursa (false) önekli yola düşülür; anonslar kalmasın.
+            void sahipliYanKanallariIptalEt(sahip, { anons: true, alarm: false }).then((tamam) => {
+                if (!tamam) this.onekliAnonslariIptalEt();
+            });
+            return;
+        }
+        this.onekliAnonslariIptalEt();
+    }
+
+    private onekliAnonslariIptalEt(): void {
+        if (!this.yedekOnek) return;
         try {
             const onekliIptal =
-                typeof iptalEtOnekliAnonslar === 'function' && iptalEtOnekliAnonslar(this.anonsOneki);
+                typeof iptalEtOnekliAnonslar === 'function' && iptalEtOnekliAnonslar(this.yedekOnek);
             if (!onekliIptal) iptalEtTumAnonslar();
         } catch (error) {
             Logger.error('ArkaplanMuhafiz', 'Sesli anonslar temizlenemedi:', error);
@@ -353,6 +412,12 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 ? ertelemeTeslimBilgisi(vakit, teslim.cikis.getTime(), zaman.getTime())
                 : null;
 
+            // Kategori: özel teslim `null` verirse HİÇ yazılmaz (cuma "Kıldım" FARZ yazmasın).
+            const kategori =
+                ozel && ozel.kategori !== undefined
+                    ? ozel.kategori
+                    : (ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ);
+
             await Notifications.scheduleNotificationAsync({
                 identifier: id,
                 content: {
@@ -367,7 +432,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     priority: uyari.seviye >= 3
                         ? Notifications.AndroidNotificationPriority.MAX
                         : Notifications.AndroidNotificationPriority.HIGH,
-                    categoryIdentifier: ertele?.kategori ?? BILDIRIM_SABITLERI.KATEGORI.MUHAFIZ,
+                    ...(kategori !== null ? { categoryIdentifier: kategori } : {}),
                     data: ozel ? ozel.veri : {
                         tip: 'muhafiz',
                         seviye: uyari.seviye,
@@ -388,7 +453,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     // hucrenin (ses + titresim) seciminden TURETILIR
                     // (`muhafizKanaliSec`). Aciliyet ayri alandan (`acilKanal`)
                     // gelir; ses artik onem tasimaz.
-                    channelId: ozel?.kanalId ?? kanalId,
+                    channelId: ozelKanalSec(teslim, kanalId),
                 },
             });
 

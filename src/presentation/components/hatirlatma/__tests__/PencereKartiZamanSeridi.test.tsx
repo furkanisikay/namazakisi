@@ -35,7 +35,7 @@ jest.mock('../../../../core/theme', () => ({
 jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 
 import { PencereKarti } from '../PencereKarti';
-import { vakitPencereTanimi, YON_SECENEKLERI } from '../pencereTanimi';
+import { ekHatirlatmaPencereTanimi, vakitPencereTanimi, YON_SECENEKLERI } from '../pencereTanimi';
 import { vaktinYonunuDegistir } from '../../../../core/muhafiz/matrisIslemleri';
 import { SEVIYE_KADEMELERI, VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
 import type { VakitMuhafizAyari } from '../../../../core/muhafiz/matrisTipleri';
@@ -123,3 +123,51 @@ describe('PencereKarti — zaman seridi', () => {
         expect(ekran.getByText(/^Vakit girince başlar: ilk hatırlatma 20:27/)).toBeTruthy();
     });
 });
+
+describe('PencereKarti — YÖN SABİT ek hatırlatma yüzeyi (plan §3.3)', () => {
+    const GEREKCE = 'Hatırlatma öğle vaktinden ÖNCE gelir; vakit girdikten sonra cuma için geç olur.';
+    const OGLE = new Date(2026, 9, 16, 13, 0);
+    const ekTanim = (pencere?: { baslangic: Date; bitis: Date }) =>
+        ekHatirlatmaPencereTanimi({
+            kaynak: 'cuma',
+            baslik: 'Cuma namazı',
+            baslikKucuk: 'cuma namazı',
+            ikon: 'mosque',
+            vakit: 'ogle',
+            yonSabitGerekcesi: GEREKCE,
+            adimSayisi: 1,
+            maksAdim: 3,
+            esikSinirlari: { min: 15, max: 180 },
+            esikAdimDk: 15,
+            tekrarMinDk: 5,
+            tekrarMaxDk: 60,
+            varsayilanTekrarDk: 15,
+            pencere,
+            seritGunEtiketi: 'Bu cuma',
+        });
+    const CUMA_AYAR: VakitMuhafizAyari = {
+        yon: 'cikisaDogru',
+        seviyeler: [{ kademe: 'nazik', kanallar: { bildirim: true }, esikDk: 60, siklik: 'birkez', bildirimSesi: VARSAYILAN_SES, anonsMetni: '' }],
+    };
+
+    it('yön seçici YERİNE gerekçe satırı çizilir (sessiz istisna yok)', () => {
+        const ekran = render(<PencereKarti tanim={ekTanim()} ayar={CUMA_AYAR} onAdimSec={jest.fn()} stil="gomulu" />);
+        expect(ekran.getByTestId('yon-sabit-gerekcesi')).toBeTruthy();
+        expect(ekran.getByText(GEREKCE)).toBeTruthy();
+        for (const secenek of YON_SECENEKLERI) expect(ekran.queryByText(secenek.kisaAciklama)).toBeNull();
+    });
+
+    it('pencere verilirse zaman şeridi yön sabitken de çizilir; cümle doğru günü söyler', () => {
+        const ekran = render(
+            <PencereKarti
+                tanim={ekTanim({ baslangic: new Date(OGLE.getTime() - 180 * 60000), bitis: OGLE })}
+                ayar={CUMA_AYAR}
+                onAdimSec={jest.fn()}
+                stil="gomulu"
+            />
+        );
+        expect(ekran.getByTestId('zaman-seridi')).toBeTruthy();
+        expect(ekran.getByTestId('zaman-seridi-cumle').props.children).toMatch(/^Bu cuma tek hatırlatma: 12:00/);
+    });
+});
+

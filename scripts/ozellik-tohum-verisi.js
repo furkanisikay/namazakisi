@@ -125,8 +125,21 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         hazirlikDk: 5,
         yurumeKaynagi: 'elle',
     });
+    // Cuma ortak hatirlatma modelinde (plan 5.1): adim dizisi + TUREV `oncedenDk`/`siklik`
+    // (ilk adimdan). Sekil uygulamanin normalize ciktisiyla AYNI (nobetci ozellikTohumu.test).
+    const cumaAdimi = (esikDk, siklik) => ({
+        kademe: 'nazik',
+        kanallar: { bildirim: true },
+        esikDk,
+        siklik,
+        bildirimSesi: 'varsayilan',
+        acilKanal: false,
+        anonsMetni: '',
+    });
     depo.cuma_hatirlatma_ayarlari = JSON.stringify(
-        yogun ? { aktif: true, oncedenDk: 180, siklik: { herDk: 5 } } : { aktif: true, oncedenDk: 60, siklik: 'birkez' }
+        yogun
+            ? { aktif: true, adimlar: [cumaAdimi(180, { herDk: 5 })], oncedenDk: 180, siklik: { herDk: 5 } }
+            : { aktif: true, adimlar: [cumaAdimi(90, 'birkez'), cumaAdimi(30, 'birkez')], oncedenDk: 90, siklik: 'birkez' }
     );
     // Kaza defteri "Her farzla bir kaza" anahtari acik gorunsun (borc magaza tohumunda).
     depo.kaza_oneri_ayarlari = JSON.stringify({ farzSonrasiOner: true });

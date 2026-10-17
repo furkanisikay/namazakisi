@@ -59,6 +59,60 @@ class MuhafizAlarmKurallariTest {
     }
 
     @Test
+    fun bilgiYukuYalnizKapatTasir() {
+        // Ortak hatırlatma yüzeyleri (plan §4.2): cuma/camiye gitme/takvim vakit GİRMEDEN çalar.
+        val yuk = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString())
+        assertNotNull(yuk)
+        yuk!!
+        assertTrue(yuk.bilgi)
+        assertNull(yuk.nafileTuru)
+        // FARZ kuyruğu boş vakti reddeder; Kıldım düğmesi zaten çizilmez.
+        assertEquals("", yuk.vakit)
+        assertEquals("2026-10-16", yuk.tarih)
+        assertEquals("Cuma", yuk.vakitAdi)
+        assertEquals("vakit_bildirim", yuk.kanalId)
+        assertFalse(MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk))
+        assertFalse(MuhafizAlarmKurallari.otomasyonOlayiDogarMi(yuk))
+        // Elle sınır yazılmış olsa bile bilgi alarmı ertelenmez.
+        val sinirli = JSONObject(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString()).put("erteleSinirMs", 9_000_000L)
+        assertEquals(0L, MuhafizAlarmKurallari.yukCoz(sinirli.toString())!!.erteleSinirMs)
+        // Kuyrukta bekleme kuralı bilgi alarmını kılınmış SAYMAZ (vakit boş).
+        assertFalse(MuhafizAlarmKurallari.kuyruktaKilindiMi(yuk.tarih, yuk.vakit, setOf("2026-10-16_ogle")))
+    }
+
+    @Test
+    fun bilgiAlarmiPencereSonundanSonraCalmaz() {
+        // cikisMs = pencere sonu (öğle girişi): tetikKarari DEĞİŞMEDEN geç tetiği atlar.
+        val yuk = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString())!!
+        assertEquals(
+            MuhafizAlarmKurallari.Karar.ATLA,
+            MuhafizAlarmKurallari.tetikKarari(yuk.tetikMs, yuk.cikisMs, yuk.cikisMs, 0L),
+        )
+        assertEquals(
+            MuhafizAlarmKurallari.Karar.CAL,
+            MuhafizAlarmKurallari.tetikKarari(yuk.tetikMs, yuk.tetikMs + 1000L, yuk.cikisMs, 0L),
+        )
+    }
+
+    @Test
+    fun turAlaniYoksaKimliktenCozulur() {
+        // Güncelleme ÖNCESİ kurulmuş alarm (tur alanı yok) bugünkü gibi çözülür.
+        val eski = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("yuk").toString())!!
+        assertFalse(eski.bilgi)
+        assertTrue(MuhafizAlarmKurallari.kildimDugmesiVarMi(eski))
+        assertTrue(MuhafizAlarmKurallari.otomasyonOlayiDogarMi(eski))
+        // Tür ile kimlik çelişirse (vakit denmiş ama kimlik vakit değil) çalmaz.
+        val celiski = JSONObject(ornek.getJSONObject("bilgi").getJSONObject("yuk").toString()).put("tur", "vakit")
+        assertNull(MuhafizAlarmKurallari.yukCoz(celiski.toString()))
+        // Bilinmeyen tür çalmaz.
+        val bilinmeyen = JSONObject(ornek.getJSONObject("yuk").toString()).put("tur", "baska")
+        assertNull(MuhafizAlarmKurallari.yukCoz(bilinmeyen.toString()))
+        // Nafile yükü otomasyon olayı doğurmaz.
+        val nafile = MuhafizAlarmKurallari.yukCoz(ornek.getJSONObject("nafile").getJSONObject("yuk").toString())!!
+        assertFalse(MuhafizAlarmKurallari.otomasyonOlayiDogarMi(nafile))
+    }
+
+    @Test
     fun sozlesmeDisiYukReddedilir() {
         val dogru = ornek.getJSONObject("yuk")
         assertNull(MuhafizAlarmKurallari.yukCoz(null))

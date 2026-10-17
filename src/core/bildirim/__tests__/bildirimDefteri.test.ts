@@ -2,6 +2,7 @@
  * Bildirim defteri özeti (issue #298): eşikler, platform sayımı, kaynak dökümü.
  * Plan üreticileriyle PARİTE `domain/services/__tests__/BildirimDefteriParite.test.ts`'te.
  */
+import { cumaAyarlariniNormalize } from '../../cuma/cumaAyarlari';
 import { bildirimDefteriOlustur, defterOzeti, type DefterKaydi } from '../bildirimDefteri';
 import {
     ANDROID_DIGER_PAYI,
@@ -107,7 +108,7 @@ describe('defterOzeti — Android', () => {
 
     it('NAFİLE alarm/anonsları muhafız payına SAYILMAZ (ayrı teslimci, ayrı pay) — toplamda sayılır', () => {
         const nafileAlarm = (adet: number, kaynak: 'alarm' | 'anons'): DefterKaydi[] =>
-            n(adet, kaynak, 'alarm').map((k) => ({ ...k, nafilePayi: true as const }));
+            n(adet, kaynak, 'alarm').map((k) => ({ ...k, pay: 'nafile' as const }));
         // Muhafız 330 + nafile 30 gerçek alarm + 10 anons = 370: cihaz hepsini kurar.
         const o = defterOzeti([...n(330), ...nafileAlarm(30, 'alarm'), ...nafileAlarm(10, 'anons')], 'android');
         expect(o.toplam).toBe(370);
@@ -128,7 +129,7 @@ describe('bildirimDefteriOlustur', () => {
             simdi,
             koordinat: ISTANBUL,
             muhafiz: { aktif: true, matris: matrisKur() },
-            cuma: { aktif: true, oncedenDk: 60, siklik: 'birkez' },
+            cuma: cumaAyarlariniNormalize({ aktif: true, oncedenDk: 60, siklik: 'birkez' }),
         });
         expect(kayitlar.length).toBeGreaterThan(0);
         for (let i = 1; i < kayitlar.length; i++) expect(kayitlar[i].zamanMs).toBeGreaterThanOrEqual(kayitlar[i - 1].zamanMs);
@@ -141,7 +142,7 @@ describe('bildirimDefteriOlustur', () => {
             simdi,
             koordinat: { lat: 0, lng: 0 },
             muhafiz: { aktif: true, matris: matrisKur() },
-            cuma: { aktif: true, oncedenDk: 60, siklik: 'birkez' },
+            cuma: cumaAyarlariniNormalize({ aktif: true, oncedenDk: 60, siklik: 'birkez' }),
         });
         expect(kayitlar).toEqual([]);
     });

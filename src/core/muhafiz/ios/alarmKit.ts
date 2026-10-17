@@ -74,6 +74,22 @@ export function alarmKitIkincilDugme(tetikMs: number, erteleSinirMs: number): 'e
     return erteleSinirMs > 0 && ertelemeSecenekleri(tetikMs, erteleSinirMs).length > 0 ? 'ertele' : 'kildim';
 }
 
+const VAKIT_KIMLIGI = /^muhafiz_\d{4}-\d{2}-\d{2}_vakit_[a-z]+(?:_|$)/;
+const NAFILE_KIMLIGI = /^nafile_\d{4}-\d{2}-\d{2}_(kusluk|evvabin|teheccud)_[^_]+$/;
+
+/**
+ * Alarmın TÜRÜ kimlikten (ortak hatırlatma yüzeyleri, plan §4.2) — Swift
+ * `AlarmKurallari.alarmTuru`, ortak fikstür `alarmkit-ornek.json > turler`:
+ * muhafız uzayı (plan, erteleme, yatış) → `vakit`; nafile → `nafile`; geri kalan
+ * (cuma, camiye gitme, takvim, çoklu muhasebe) → `bilgi`. Bilgi alarmında İKİNCİL DÜĞME
+ * YOKTUR (yalnız sistemin "Durdur"u): vakit girmeden çalar, "Kıldım" FARZ'ı yazardı.
+ */
+export function alarmKitTuru(kimlik: string): 'vakit' | 'nafile' | 'bilgi' {
+    if (VAKIT_KIMLIGI.test(kimlik)) return 'vakit';
+    if (NAFILE_KIMLIGI.test(kimlik)) return 'nafile';
+    return 'bilgi';
+}
+
 /** Native `planla`ya giden yük — Swift `AlarmKaydi` ile AYNI alanlar. */
 export interface AlarmKitYuku {
     kimlik: string;

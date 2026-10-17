@@ -113,6 +113,9 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     const govdeGorunur = !baslikSatiriVar || acikMi;
 
     const yonSecilir = tanim.yonSecilebilir && !!onYonDegistir;
+    // Yön SABİT (ek hatırlatma yüzeyleri, plan §3.3): seçici yerine gerekçe satırı + şerit.
+    const yonSabit = !tanim.yonSecilebilir && !!tanim.yonSabitGerekcesi;
+    const yonBolumu = yonSecilir || yonSabit;
     const girisYonu = tanim.yon === 'girisindenItibaren';
     const cevrilemeyenVar = yonSecilir && cevrilemeyenAnonsVarMi(ayar.seviyeler, tanim.yon);
     const sesliAdimVar = ayar.seviyeler.some((s) => s.kanallar?.sesli === true);
@@ -124,7 +127,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
     // ── Zaman seridi ──
     const { yon, pencereUzunluguDk, pencere } = tanim;
     const seritCizilir =
-        yonSecilir && !!pencere && Number.isFinite(pencereUzunluguDk) && (pencereUzunluguDk as number) > 0;
+        yonBolumu && !!pencere && Number.isFinite(pencereUzunluguDk) && (pencereUzunluguDk as number) > 0;
 
     // "Simdi" imleci: kart acikken dakikada bir tazelenir, kapaninca durur.
     const [simdi, setSimdi] = useState(() => new Date());
@@ -149,8 +152,9 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
             baslangic: pencere.baslangic,
             simdi,
             tumAdimlarKapali: tamamenKapali,
+            gunEtiketi: tanim.seritGunEtiketi,
         });
-    }, [seritCizilir, pencere, plan, pencereUzunluguDk, yon, simdi, tamamenKapali]);
+    }, [seritCizilir, pencere, plan, pencereUzunluguDk, yon, simdi, tamamenKapali, tanim.seritGunEtiketi]);
 
     /** "?" modalindaki iki blok: once secili yon, sonra digeri. */
     const bilgiBloklari = () => {
@@ -429,66 +433,84 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                     className={!baslikSatiriVar ? '' : 'px-4 pb-4 border-t pt-3'}
                     style={!baslikSatiriVar ? undefined : { borderTopColor: renkler.sinir }}
                 >
-                    {yonSecilir && (
+                    {yonBolumu && (
                         <>
-                            <View className="flex-row items-center justify-between mb-1">
-                                <Text
-                                    className="text-[11px] font-semibold tracking-wider"
-                                    style={{ color: renkler.metinIkincil }}
-                                >
-                                    NE ZAMAN HATIRLATILSIN
-                                </Text>
-                                <TouchableOpacity
-                                    className="w-11 h-11 items-center justify-center -mr-3"
-                                    onPress={() => setBilgiAcik(true)}
-                                    activeOpacity={0.7}
-                                    accessibilityRole="button"
-                                    accessibilityLabel="Bu seçenek ne anlama geliyor?"
-                                >
-                                    <FontAwesome5 name="question-circle" size={15} color={renkler.metinIkincil} />
-                                </TouchableOpacity>
-                            </View>
-                            <View className="flex-row gap-2 mb-2">
-                                {YON_SECENEKLERI.map((secenek) => {
-                                    const secili = tanim.yon === secenek.yon;
-                                    return (
-                                        <TouchableOpacity
-                                            key={secenek.yon}
-                                            className="flex-1 items-center py-3 px-2 rounded-2xl border"
-                                            style={{
-                                                minHeight: 44,
-                                                backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
-                                                borderColor: secili ? renkler.birincil : renkler.sinir,
-                                                borderWidth: secili ? 2 : 1,
-                                            }}
-                                            onPress={() => onYonDegistir?.(secenek.yon)}
-                                            activeOpacity={0.7}
-                                            accessibilityRole="button"
-                                            accessibilityState={{ selected: secili }}
-                                            accessibilityLabel={`${secenek.etiket} — ${secenek.aciklama}`}
-                                        >
-                                            <FontAwesome5
-                                                name={secenek.ikon}
-                                                size={14}
-                                                color={secili ? renkler.birincil : renkler.metinIkincil}
-                                                solid
-                                            />
-                                            <Text
-                                                className="text-xs font-semibold mt-1.5 text-center"
-                                                style={{ color: secili ? renkler.birincil : renkler.metin }}
+                            {yonSabit && (
+                                <View testID="yon-sabit-gerekcesi" className="flex-row items-start mb-2.5 gap-2">
+                                    <FontAwesome5
+                                        name="info-circle"
+                                        size={12}
+                                        color={renkler.metinIkincil}
+                                        style={{ marginTop: 2 }}
+                                        solid
+                                    />
+                                    <Text className="text-xs flex-1 leading-4" style={{ color: renkler.metinIkincil }}>
+                                        {tanim.yonSabitGerekcesi}
+                                    </Text>
+                                </View>
+                            )}
+                            {yonSecilir && (
+                                <>
+                                <View className="flex-row items-center justify-between mb-1">
+                                    <Text
+                                        className="text-[11px] font-semibold tracking-wider"
+                                        style={{ color: renkler.metinIkincil }}
+                                    >
+                                        NE ZAMAN HATIRLATILSIN
+                                    </Text>
+                                    <TouchableOpacity
+                                        className="w-11 h-11 items-center justify-center -mr-3"
+                                        onPress={() => setBilgiAcik(true)}
+                                        activeOpacity={0.7}
+                                        accessibilityRole="button"
+                                        accessibilityLabel="Bu seçenek ne anlama geliyor?"
+                                    >
+                                        <FontAwesome5 name="question-circle" size={15} color={renkler.metinIkincil} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View className="flex-row gap-2 mb-2">
+                                    {YON_SECENEKLERI.map((secenek) => {
+                                        const secili = tanim.yon === secenek.yon;
+                                        return (
+                                            <TouchableOpacity
+                                                key={secenek.yon}
+                                                className="flex-1 items-center py-3 px-2 rounded-2xl border"
+                                                style={{
+                                                    minHeight: 44,
+                                                    backgroundColor: secili ? `${renkler.birincil}15` : renkler.arkaplan,
+                                                    borderColor: secili ? renkler.birincil : renkler.sinir,
+                                                    borderWidth: secili ? 2 : 1,
+                                                }}
+                                                onPress={() => onYonDegistir?.(secenek.yon)}
+                                                activeOpacity={0.7}
+                                                accessibilityRole="button"
+                                                accessibilityState={{ selected: secili }}
+                                                accessibilityLabel={`${secenek.etiket} — ${secenek.aciklama}`}
                                             >
-                                                {secenek.etiket}
-                                            </Text>
-                                            <Text
-                                                className="text-[11px] mt-0.5 text-center"
-                                                style={{ color: renkler.metinIkincil }}
-                                            >
-                                                {secenek.kisaAciklama}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    );
-                                })}
-                            </View>
+                                                <FontAwesome5
+                                                    name={secenek.ikon}
+                                                    size={14}
+                                                    color={secili ? renkler.birincil : renkler.metinIkincil}
+                                                    solid
+                                                />
+                                                <Text
+                                                    className="text-xs font-semibold mt-1.5 text-center"
+                                                    style={{ color: secili ? renkler.birincil : renkler.metin }}
+                                                >
+                                                    {secenek.etiket}
+                                                </Text>
+                                                <Text
+                                                    className="text-[11px] mt-0.5 text-center"
+                                                    style={{ color: renkler.metinIkincil }}
+                                                >
+                                                    {secenek.kisaAciklama}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        );
+                                    })}
+                                </View>
+                                </>
+                            )}
                             {seritCizilir && pencere ? (
                                 <>
                                     <ZamanSeridi
@@ -515,13 +537,13 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         {seritCumlesi}
                                     </Text>
                                 </>
-                            ) : (
+                            ) : yonSecilir ? (
                                 // Pencere bilinmiyor (konum yok): yanlis resim cizmektense
                                 // yalniz metin. Konum gelince serit kendiliginden cizilir.
                                 <Text className="text-xs mb-2.5 leading-4" style={{ color: renkler.metinIkincil }}>
                                     {YON_SECENEKLERI.find((x) => x.yon === tanim.yon)?.aciklama}
                                 </Text>
-                            )}
+                            ) : null}
 
                             {/* Cevrilemeyen metin ipucu — kullanicinin elle yazdigi anons
                                 metnine DOKUNULMAZ, ama yeni yonde ters okunabilir. */}

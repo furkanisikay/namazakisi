@@ -12,8 +12,6 @@
  */
 
 import { NamazAdi } from '../constants/UygulamaSabitleri';
-import type { Siklik, VakitMuhafizAyari } from '../muhafiz/matrisTipleri';
-import { VARSAYILAN_SES } from '../muhafiz/matrisTipleri';
 
 /** JavaScript `Date.getDay()` degeri: 0 Pazar … 5 Cuma. */
 const CUMA_GUN_INDEKSI = 5;
@@ -78,40 +76,6 @@ export const namazGorunenAdi = (
   cumaGosterilsin: boolean
 ): string => (cumaGosterilsin && namazAdi === NamazAdi.Ogle && cumaMi(tarih) ? 'Cuma' : namazAdi);
 
-/**
- * Cuma ayarini ORTAK HATIRLATMA PENCERESI'ne cevirir (Faz 4).
- *
- * Pencere: `baslangic = ogleVakti − oncedenDk`, `bitis = ogleVakti`,
- * `yon: 'cikisaDogru'`, TEK adim. Boylece hem planlama (`vakitUyariPlaniOlustur`)
- * hem de ayar ekrani (`PencereKarti`) muhafizla AYNI motoru/bileseni kullanir;
- * cumaya ozel bir zamanlama mantigi ya da ikinci bir kart tasarimi YOKTUR.
- *
- * Kanal kumesi sabittir (`{ bildirim: true }`): cuma mevcut `vakit_bildirim`
- * kanalindan gonderilir (yeni kanal ACILMAZ) ve sesli anons (TTS) kullanmaz —
- * bu yuzden ekranda kanal/ses secimi de gosterilmez.
- */
-export const cumaPenceresiOlustur = (oncedenDk: number, siklik: Siklik): VakitMuhafizAyari => ({
-  yon: 'cikisaDogru',
-  seviyeler: [
-    {
-      kademe: 'nazik',
-      kanallar: { bildirim: true },
-      esikDk: oncedenDk,
-      siklik,
-      bildirimSesi: VARSAYILAN_SES,
-      anonsMetni: '',
-    },
-  ],
-});
-
-/** Pencerenin duzenlenmis halinden ayara geri donus (ekran yazma yolu). */
-export const cumaPencereAyariCoz = (
-  pencere: VakitMuhafizAyari
-): { oncedenDk: number; siklik: Siklik } => {
-  const adim = pencere.seviyeler[0];
-  return { oncedenDk: adim.esikDk, siklik: adim.siklik };
-};
-
 export const sureMetniOlustur = (dakika: number): string => {
   const saat = Math.floor(dakika / 60);
   const kalanDk = dakika % 60;
@@ -138,3 +102,30 @@ const kisaSureMetni = (dakika: number): string => {
  */
 export const cumaBasligiOlustur = (oncedenDk: number): string =>
   `Cuma · ${kisaSureMetni(oncedenDk)} kaldı · namaz yaklaşıyor`;
+
+/** Cuma'ya ÖZGÜ nass (Cuma 62/9) — yalnız bu bildirimde, yalnız cumanın İLK tetiğinde. */
+export const CUMA_NASSI = `"Cuma günü namaza çağırıldığında Allah'ı anmaya koşun." (Cuma, 62/9)`;
+
+/**
+ * Cuma hatırlatmasının başlık + gövdesi — üretici (`cumaPlaniOlustur`), servis ve "Akışı
+ * önizle" AYNI kaynaktan okur. İbadete çağrı kaydı ("sen" + emir kipi, AGENTS.md istisnası).
+ * Nass yalnız İLK tetikte: her tekrarda okunması hem gürültü hem nassın değerini aşındırır.
+ */
+export const cumaBildirimMetni = (kalanDk: number, ilk: boolean): { baslik: string; govde: string } => {
+  const sure = sureMetniOlustur(kalanDk);
+  return {
+    // Önden okunur (issue #287): bileklikler başlığın ilk ~16 karakterini gösterir.
+    baslik: cumaBasligiOlustur(kalanDk),
+    govde: ilk
+      ? `Öğle vaktine ${sure} kaldı. Hazırlan, camiye yola çık.\n${CUMA_NASSI}`
+      : `Öğle vaktine ${sure} kaldı. Camiye yola çık.`,
+  };
+};
+
+/**
+ * Sesli anons cümlesi ("Telefonunuz şöyle okur"). Nass OKUNMAZ (plan §3.4); süre öğle
+ * GİRİŞİNE kalan süredir — cuma namazı hutbeyle öğle girdikten sonra başlar.
+ */
+export const cumaAnonsMetni = (kalanDk: number): string =>
+  `Cuma için öğle vaktine ${sureMetniOlustur(kalanDk)} kaldı. Hazırlan, camiye yola çık.`;
+

@@ -61,4 +61,18 @@ class BildirimKildimKurallariTest {
         // JS: `${MUHAFIZ}${tarih}${VAKIT}${vakit}` (ArkaplanMuhafizServisi.vakitBildirimleriniIptalEt).
         assertEquals("muhafiz_2026-10-13_vakit_ogle", k.vaktinOneki(ogle))
     }
+
+    @Test
+    fun ekHatirlatmaKimlikleriDogruCozulur() {
+        // Ortak hatırlatma yüzeyleri (plan §4.6): yatış tekrar tetiği (`_<k>` eki) yatsıya
+        // çözülür (native Kıldım hepsini kapsar); cuma/camiye gitme/takvim FARZ'a ÇÖZÜLMEZ.
+        assertEquals(
+            BildirimKildimKurallari.Vakit("2026-10-13", "yatsi"),
+            BildirimKildimKurallari.vakitCoz("muhafiz_2026-10-13_vakit_yatsi_yatis_15"),
+        )
+        assertNull(BildirimKildimKurallari.vakitCoz("cuma_hatirlatma_2026-10-16"))
+        assertNull(BildirimKildimKurallari.vakitCoz("cuma_hatirlatma_2026-10-16_30"))
+        assertNull(BildirimKildimKurallari.vakitCoz("camiye_git_2026-10-13_ogle"))
+        assertNull(BildirimKildimKurallari.vakitCoz("takvim_cakisma_2026-10-13_ogle"))
+    }
 }

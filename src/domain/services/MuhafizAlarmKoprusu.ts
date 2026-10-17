@@ -19,6 +19,8 @@ interface MuhafizAlarmModulu {
     onekliIptalEt(onek: string): Promise<number>;
     /** Eski ikili bu yöntemi taşımayabilir → çağıran `onekliIptalEt`'e düşer. */
     vakitAlarmlariniSustur?(onek: string): Promise<number>;
+    /** Teslim sahipliğinin anons/alarm kayıtları (plan §4.1). */
+    sahipliIptalEt?(sahip: string, anons: boolean, alarm: boolean): Promise<number>;
     bekleyenSayisi(): Promise<number>;
     kanallariTemizle(korunacak: string[]): Promise<void>;
     tamEkranIzniVarMi(): Promise<boolean>;
@@ -84,6 +86,33 @@ export async function vakitAlarmlariniSustur(onek: string): Promise<void> {
     } catch (e) {
         Logger.debug('MuhafizAlarm', 'Vaktin alarmlari susturulamadi', e);
     }
+}
+
+/**
+ * Bir teslim SAHİPLİĞİNİN (`core/muhafiz/teslimSahipligi.ts`) bekleyen sesli anons ve/veya
+ * gerçek alarm kayıtlarını iptal eder (çalanı susturmaz). Önek yetmeyen sahiplikler içindir:
+ * muhafız plan kimlikleri ve yatış (#290) aynı `muhafiz_` uzayındadır. Köprü (ya da yöntem)
+ * yoksa `false` → çağıran önekli eski yola düşer. Alarm iptali yeniden planlamada BEKLENMELİ.
+ */
+export async function sahipliYanKanallariIptalEt(
+    sahip: string,
+    kanallar: { anons: boolean; alarm: boolean }
+): Promise<boolean> {
+    const m = modul();
+    if (!m || typeof m.sahipliIptalEt !== 'function') return false;
+    try {
+        await m.sahipliIptalEt(sahip, kanallar.anons, kanallar.alarm);
+        return true;
+    } catch (e) {
+        Logger.debug('MuhafizAlarm', 'Sahipli yan kanallar iptal edilemedi', e);
+        return false;
+    }
+}
+
+/** Sahipli iptal native olarak YAPILABİLİR mi? (köprü + yöntem) */
+export function sahipliIptalVarMi(): boolean {
+    const m = modul();
+    return !!m && typeof m.sahipliIptalEt === 'function';
 }
 
 /** Bekleyen alarm sayısı (bildirim sınırı rehberinin tanı ölçümü). */

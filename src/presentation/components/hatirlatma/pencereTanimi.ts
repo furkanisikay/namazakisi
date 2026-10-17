@@ -8,7 +8,7 @@
  * (`MuhafizAyarlari/VakitKarti` + `SeviyeDetayModal`) dogrudan `MuhafizVakti`ye
  * baglanmisti. `PencereTanimi` bu bagi kesen tek parametre nesnesidir: kart ve
  * modal artik "bir vakit" degil "bir HATIRLATMA PENCERESI" cizer — muhafizin 5
- * vakti, cuma ve ileride seri ayni bilesenden beslenir.
+ * vakti, nafile ve cuma (`ekHatirlatmaPencereTanimi`) ayni bilesenden beslenir.
  *
  * RENK NOTU: adim renkleri temada TOKEN OLARAK YOK (temada nazik/uyari/sert/acil
  * olcegi bulunmuyor) ve KASTEN hardcoded'dir; eski ekrandaki degerlerle birebir
@@ -262,6 +262,17 @@ export interface PencereTanimi {
     yon: PencereYonu;
     /** Yon degistirilebilir mi? */
     yonSecilebilir: boolean;
+    /**
+     * Yön SABİTSE (`yonSecilebilir: false`) ekranda yön seçici YERİNE yazılan tek satır
+     * gerekçe (ortak hatırlatma yüzeyleri, plan §3.3): istisna sessiz olmaz. Teslimciden
+     * geçen her yüzeyde yön sabitken ZORUNLUDUR (nöbetçi `pencereTanimiYetenek.test.ts`).
+     */
+    yonSabitGerekcesi?: string;
+    /**
+     * Zaman şeridi cümlesinin gün sözcüğü ("Bugün" yerine "Bu cuma") — pencere bugünün
+     * değilse cümle yanlış günü söylemesin.
+     */
+    seritGunEtiketi?: string;
     /** En fazla kac adim kurulabilir? (muhafiz 6, cuma/nafile 1) */
     maksAdim: number;
     /**
@@ -336,6 +347,15 @@ export interface PencereTanimi {
      * (nafile: muhafızın `{vakit}` şablonları farz vaktine kurulu).
      */
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    /**
+     * "Akışı önizle"de bir tetiğin GERÇEK metni (ek hatırlatma yüzeyleri, nafile). Verilmezse
+     * muhafızın vakit metinleri (`basligiOlustur` / `bildirimGovdesiOlustur` + anons şablonu)
+     * kullanılır — nafile/cuma için yanlış olurdu ("Öğle · 25 dk kaldı"). `ilk`: adımın ilk
+     * tetiği (nass yalnız ilkinde). `anons` = duyulacak cümle; yoksa `null`.
+     */
+    onizlemeMetni?: (adim: UyariPlani, ilk: boolean) => { baslik: string; govde: string; anons: string | null };
+    /** Önizleme başlığının alt satırı (adet → cümle). Verilmezse vakit dili. */
+    onizlemeOzeti?: (adet: number) => string;
     /**
      * Uygulama açıkken ekranda banner çıkıyor mu? (yetenek değil, OLGU:) Nafilenin
      * ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra duyulur"
@@ -527,60 +547,6 @@ export function vakitPencereTanimi(
 }
 
 /**
- * Cuma namazi hatirlatmasi icin pencere tanimi.
- *
- * STANDART İSTİSNALARI (her biri teknik gerekçeli — sessiz boşluk değil, açık takip):
- * - Yön: cuma "vakit çıkıyor" değil "camiye yetiş" hatırlatmasıdır; ölçü daima
- *   öğlenin GİRİŞİNE kalan süredir. "Vakit çıkarken" yönünün cumada karşılığı yok.
- * - Tek adım, kanal/ses/titreşim/alarm/kapalı çipi: `CumaHatirlatmaServisi` muhafız
- *   teslim katmanından (`MuhafizTeslimcisi`) GEÇMEZ — 4 haftalık planı doğrudan
- *   `vakit_bildirim` kanalına kurar ve ayarı tek bir ofset + sıklıktır
- *   (`CumaHatirlatmaAyarlari`), adım dizisi değildir. Bu yetenekler ancak cuma
- *   nafile gibi (#273) kendi önekli bir teslimci örneğine taşınınca (adım dizisi +
- *   göç + defter paritesi) açılabilir; tek başına bayrak açmak ekranda çalışmayan
- *   anahtarlar gösterirdi.
- */
-export function cumaPencereTanimi(secenekler: {
-    esikSinirlari: EsikSinirlari;
-    esikAdimDk: number;
-    tekrarMinDk: number;
-    tekrarMaxDk: number;
-    varsayilanTekrarDk: number;
-}): PencereTanimi {
-    return {
-        ...STANDART_YETENEKLER,
-        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (teslimci dışı, tek ofsetli model).
-        yonSecilebilir: false,
-        kanalSecimiVar: false,
-        sesSecimiVar: false,
-        alarmSecilebilir: false,
-        kapaliCipiVar: false,
-        anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
-        kaynak: 'cuma',
-        baslik: 'Cuma namazı',
-        baslikKucuk: 'cuma namazı',
-        ikon: 'mosque',
-        // Kimlik ogle namazidir; "Cuma" yalnizca gorunen addir.
-        vakit: 'ogle',
-        yon: 'cikisaDogru',
-        maksAdim: 1,
-        onPlanBanneriVar: false,
-        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'mosque', renk: SEVIYE_BILGILERI.nazik.renk }],
-        yetenekler: ANDROID_YETENEKLERI,
-        esikAdimDk: secenekler.esikAdimDk,
-        tekrarMinDk: secenekler.tekrarMinDk,
-        tekrarMaxDk: secenekler.tekrarMaxDk,
-        varsayilanTekrarDk: secenekler.varsayilanTekrarDk,
-        esikSinirlari: secenekler.esikSinirlari,
-        esikBasligi: 'NE KADAR ÖNCE',
-        esikAciklamasi: 'Öğle vaktine',
-        esikErisimAdi: 'Ne kadar önce',
-        esikBirimi: 'dk kala',
-    };
-}
-
-/**
  * Yatış hatırlatması (issue #290) için pencere tanımı — cuma deseni.
  *
  * STANDART İSTİSNALARI (teknik gerekçeli): yatış hatırlatması bir PENCERE değil
@@ -622,6 +588,93 @@ export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; e
         esikAciklamasi: 'Yatış saatinize',
         esikErisimAdi: 'Yatıştan kaç dk önce',
         esikBirimi: 'dk kala',
+    };
+}
+
+/**
+ * EK HATIRLATMA YÜZEYİ (cuma; sonra camiye gitme, yatış, takvim) için pencere tanımı —
+ * ortak hatırlatma yüzeyleri plan §3.3.
+ *
+ * Yüzey muhafızla AYNI teslimciden geçer (kendi örneği) → STANDART yetenekler AÇIKTIR:
+ * kanal çipleri (bildirim / sesli anons / ikisi / kapalı), bildirim sesi, titreşim,
+ * gerçek alarm + kapsamı, tekrar, 1..`maksAdim` adım, akış önizlemesi.
+ *
+ * STANDART İSTİSNALARI (gerekçeli, sahip kararları K3–K5):
+ * - YÖN SABİT (K3): her yüzeyin tek anlamlı yönü var (cuma/camiye gitme "vakit GİRMEDEN
+ *   önce", yatış "yatıştan önce", takvim "etkinlikten önce"); seçici yerine
+ *   `yonSabitGerekcesi` ekranda yazılır.
+ * - TON YOK (K4): her adım nazik, acil kanal yok (Rahatsız Etmeyin delinmez).
+ * - ANONS METNİ yazılmaz (K5): muhafız şablonları `{vakit}` + "vakit çıkıyor" dilinde;
+ *   cümle bağlamdan üretilir, `anonsOrnegiOlustur` "Telefonunuz şöyle okur" gösterir.
+ * - Ön plan banner'ı yok (olgu): ön plan muhafızı yalnız farz izler.
+ */
+export function ekHatirlatmaPencereTanimi(secenekler: {
+    kaynak: string;
+    baslik: string;
+    baslikKucuk: string;
+    ikon: string;
+    /** Metin çözümü için vakit kimliği (cuma: 'ogle' — "Cuma" salt görünüm). */
+    vakit: MuhafizVakti;
+    yonSabitGerekcesi: string;
+    adimSayisi: number;
+    maksAdim: number;
+    esikSinirlari: EsikSinirlari;
+    esikAdimDk: number;
+    tekrarMinDk: number;
+    tekrarMaxDk: number;
+    varsayilanTekrarDk: number;
+    esikBasligi?: string;
+    esikAciklamasi?: string;
+    esikErisimAdi?: string;
+    esikBirimi?: string;
+    pencere?: { baslangic: Date; bitis: Date };
+    seritGunEtiketi?: string;
+    yetenekler?: PlatformYetenekleri;
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    onizlemeMetni?: PencereTanimi['onizlemeMetni'];
+    onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
+}): PencereTanimi {
+    const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const pencereUzunluguDk = secenekler.pencere
+        ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
+        : undefined;
+    const renk = SEVIYE_BILGILERI.nazik.renk;
+    const adimBilgileri: AdimBilgisi[] =
+        secenekler.adimSayisi > 1
+            ? Array.from({ length: secenekler.maksAdim }, (_, i) => ({ baslik: `${i + 1}. hatırlatma`, ikon: 'bell', renk }))
+            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
+    return {
+        ...platformaGoreStandart(yetenekler),
+        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (K3–K5).
+        yonSecilebilir: false,
+        yonSabitGerekcesi: secenekler.yonSabitGerekcesi,
+        tonSecilebilir: false,
+        anonsMetniDuzenlenebilir: false,
+        onPlanBanneriVar: false,
+        kaynak: secenekler.kaynak,
+        baslik: secenekler.baslik,
+        baslikKucuk: secenekler.baslikKucuk,
+        ikon: secenekler.ikon,
+        vakit: secenekler.vakit,
+        yon: 'cikisaDogru',
+        maksAdim: secenekler.maksAdim,
+        pencereUzunluguDk,
+        adimBilgileri,
+        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeOzeti: secenekler.onizlemeOzeti,
+        yetenekler,
+        esikAdimDk: secenekler.esikAdimDk,
+        tekrarMinDk: secenekler.tekrarMinDk,
+        tekrarMaxDk: secenekler.tekrarMaxDk,
+        varsayilanTekrarDk: secenekler.varsayilanTekrarDk,
+        esikSinirlari: secenekler.esikSinirlari,
+        esikBasligi: secenekler.esikBasligi,
+        esikAciklamasi: secenekler.esikAciklamasi,
+        esikErisimAdi: secenekler.esikErisimAdi,
+        esikBirimi: secenekler.esikBirimi,
+        pencere: secenekler.pencere,
+        seritGunEtiketi: secenekler.seritGunEtiketi,
     };
 }
 
@@ -672,6 +725,8 @@ export function nafilePencereTanimi(secenekler: {
     pencere?: { baslangic: Date; bitis: Date };
     yetenekler?: PlatformYetenekleri;
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    onizlemeMetni?: PencereTanimi['onizlemeMetni'];
+    onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
 }): PencereTanimi {
     const pencereUzunluguDk = secenekler.pencere
         ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
@@ -705,6 +760,8 @@ export function nafilePencereTanimi(secenekler: {
         pencereUzunluguDk,
         adimBilgileri,
         anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: NAFILE_TEKRAR_MIN_DK,

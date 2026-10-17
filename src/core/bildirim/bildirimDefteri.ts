@@ -52,6 +52,7 @@ import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { YATIS_PLAN_GUN_SAYISI, yatisPlaniOlustur, type YatisAyarlari } from '../yatis/yatisPlani';
 import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../utils/vakitSayacYardimcisi';
 import { cumaPlaniOlustur, type CumaPlanAyarlari } from './cumaPlani';
+import { ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hatirlatma/ekPlan';
 import { camiyeGitPlaniOlustur, CAMIYE_GIT_PLAN_GUN_SAYISI, type CamiyeGitPlanAyarlari } from './camiyeGitPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
 import { takvimCakismaPlaniOlustur, TAKVIM_CAKISMA_PLAN_GUN_SAYISI, type TakvimEtkinligi } from './takvimCakismaPlani';
@@ -60,6 +61,8 @@ import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vak
 import {
     ANDROID_MUHAFIZ_PAYI,
     ANDROID_NAFILE_PAYI,
+    ANDROID_CUMA_PAYI,
+    IOS_ALARMKIT_CUMA_PAYI,
     IOS_ALARMKIT_MUHAFIZ_PAYI,
     IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
@@ -110,13 +113,14 @@ export interface DefterKaydi {
      */
     yedek?: true;
     /**
-     * Kaydın PAYI başka bir teslimci örneğine aittir (Android nafile: `ANDROID_NAFILE_PAYI`,
-     * üreticide kesilir). Nafilenin gerçek alarmı ve anons alarmı `alarm`/`anons`
-     * kaynağında GÖRÜNÜR ama muhafızın 360'lık payına SAYILMAZ — sayılsaydı muhafız
-     * 330 + nafile 40 alarmda defter 10 "gelmeyecek" der, sığan eklemeyi reddeder ve
-     * muhafızı seyreltmeyi önerirdi; cihaz ise hepsini kurar. Toplam havuzda sayılır.
+     * Kaydın PAYI başka bir teslimci örneğine aittir (Android: nafile `ANDROID_NAFILE_PAYI`,
+     * cuma `ANDROID_CUMA_PAYI`…; üreticide kesilir). Ek yüzeylerin gerçek alarmı ve anons
+     * alarmı `alarm`/`anons` kaynağında GÖRÜNÜR ama muhafızın 360'lık payına SAYILMAZ —
+     * sayılsaydı muhafız 330 + nafile 40 alarmda defter 10 "gelmeyecek" der, sığan eklemeyi
+     * reddeder ve muhafızı seyreltmeyi önerirdi; cihaz ise hepsini kurar. Toplam havuzda
+     * sayılır. Değer payın SAHİBİ kaynaktır (`'nafile'`, `'cuma'`).
      */
-    nafilePayi?: true;
+    pay?: DefterKaynagi;
 }
 
 export interface DefterKoordinat {
@@ -173,7 +177,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         zamanMs: number,
         tur: DefterKaydi['tur'] = 'bildirim',
         yedek = false,
-        nafilePayi = false
+        pay?: DefterKaynagi
     ) => {
         if (zamanMs > simdiMs) {
             kayitlar.push({
@@ -181,7 +185,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 zamanMs,
                 tur,
                 ...(yedek ? { yedek: true as const } : {}),
-                ...(nafilePayi ? { nafilePayi: true as const } : {}),
+                ...(pay ? { pay } : {}),
             });
         }
     };
@@ -239,11 +243,25 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         });
     }
 
-    // ── Cuma ──
+    // ── Cuma ── (servisle AYNI üretici + seçenekler; ortak hatırlatma yüzeyleri plan §5.1)
     if (koordinat && g.cuma?.aktif) {
         const ayar = g.cuma;
         guvenli(() => {
-            for (const k of cumaPlaniOlustur(koordinat, ayar, g.simdi, ozelGundeMi)) ekle('cuma', k.zaman.getTime());
+            const plan = cumaPlaniOlustur(koordinat, ayar, g.simdi, ozelGundeMi, android ? { alarmButcesi: ANDROID_CUMA_PAYI } : {});
+            let iosAlarm = 0;
+            for (const k of plan) {
+                // Gerçek alarm (#74): muhafız/nafile ile AYNI kural — Android'de bildirim +
+                // anonsun YERİNE tek alarm; iOS'ta AlarmKit izinliyse (ve cuma payı dolmadıysa).
+                const iosAlarmKurulur = !android && g.iosAlarmKit === true && iosAlarm < IOS_ALARMKIT_CUMA_PAYI;
+                if ((android || iosAlarmKurulur) && ekAlarmKurarMi(k)) {
+                    if (!android) iosAlarm++;
+                    // Payı cumanın (`ANDROID_CUMA_PAYI`), muhafızın 360'ına sayılmaz.
+                    ekle('alarm', k.zaman.getTime(), 'alarm', false, 'cuma');
+                    continue;
+                }
+                ekle('cuma', k.zaman.getTime());
+                if (android && ekAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, 'cuma');
+            }
         });
     }
 
@@ -279,11 +297,11 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 if ((android || iosAlarmKurulur) && nafileAlarmKurarMi(k)) {
                     if (!android) iosAlarm++;
                     // Payı nafilenin (`ANDROID_NAFILE_PAYI`), muhafızın 360'ına sayılmaz.
-                    ekle('alarm', k.zaman.getTime(), 'alarm', false, true);
+                    ekle('alarm', k.zaman.getTime(), 'alarm', false, 'nafile');
                     continue;
                 }
                 ekle('nafile', k.zaman.getTime());
-                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, true);
+                if (android && nafileAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, 'nafile');
             }
         });
     }
@@ -433,9 +451,9 @@ export function defterOzeti(kayitlar: readonly DefterKaydi[], platform: Bildirim
     let gelmeyecek = Math.max(0, toplam - sinir);
     if (platform === 'android') {
         // Muhafız kendi payını (360) aşarsa teslimci en uzak tetikleri keser. Nafilenin
-        // alarm/anonsları AYRI teslimci örneğinin AYRI payındadır (`nafilePayi`).
+        // ve öteki ek yüzeylerin alarm/anonsları AYRI teslimci örneğinin AYRI payındadır (`pay`).
         const muhafizAlarm = sayilan.filter(
-            (k) => !k.nafilePayi && (k.kaynak === 'muhafiz' || k.kaynak === 'anons' || k.kaynak === 'alarm')
+            (k) => !k.pay && (k.kaynak === 'muhafiz' || k.kaynak === 'anons' || k.kaynak === 'alarm')
         ).length;
         gelmeyecek = Math.max(gelmeyecek, muhafizAlarm - ANDROID_MUHAFIZ_PAYI);
     } else {

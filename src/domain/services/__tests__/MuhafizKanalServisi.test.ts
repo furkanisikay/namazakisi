@@ -280,6 +280,22 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         expect(mockTemizle.mock.calls[0][0]).toEqual(expect.arrayContaining(['muhafiz', TITRESIMLI]));
     });
 
+    it('CUMA (ortak hatırlatma yüzeyi) özel sesli kanalı da KORUNUR — kayıt defterinden', async () => {
+        const OZEL = 'content://media/external/audio/media/77';
+        await AsyncStorage.setItem(
+            'cuma_hatirlatma_ayarlari',
+            JSON.stringify({ aktif: true, adimlar: [{ esikDk: 60, siklik: 'birkez', kanallar: { bildirim: true }, bildirimSesi: OZEL }] })
+        );
+        try {
+            await MuhafizKanalServisi.hazirla();
+            expect(mockTemizle.mock.calls[0][0]).toEqual(
+                expect.arrayContaining([TITRESIMLI, muhafizKanalIdOlustur(OZEL, false, false)])
+            );
+        } finally {
+            await AsyncStorage.removeItem('cuma_hatirlatma_ayarlari');
+        }
+    });
+
     it('muhafız KAPALIYKEN (matrissiz) de nafile kanalı korunur', async () => {
         await MuhafizKanalServisi.hazirla();
         expect(mockTemizle).toHaveBeenCalledWith([TITRESIMLI]);
@@ -346,5 +362,27 @@ describe('MuhafizKanalServisi — nafileyle ORTAK kanal uzayı (issue #273)', ()
         ]);
         expect(mockGarantile.mock.calls.map((c) => c[0])).toEqual([TITRESIMLI]);
         expect(mockTemizle).not.toHaveBeenCalled();
+    });
+
+    it('NÖBETÇİ: bir ek hatırlatma kaynağı OKUNAMAZSA bu turda çöp TOPLANMAZ (kanal silinmez)', async () => {
+        const kaynaklar = require('../ekHatirlatmaKaynaklari');
+        const casus = jest.spyOn(kaynaklar, 'ekAdimDizileriniOku').mockRejectedValueOnce(new Error('disk'));
+        try {
+            await MuhafizKanalServisi.hazirla(matrisOlustur(dortSeviye()));
+            expect(mockTemizle).not.toHaveBeenCalled();
+            await MuhafizKanalServisi.hazirla();
+            // Okuma yeniden başarılı → toplama geri gelir.
+            expect(mockTemizle).toHaveBeenCalled();
+        } finally {
+            casus.mockRestore();
+        }
+    });
+
+    it('adimSesleriniDogrula: çözülemeyen ses varsayılana, çözülen dokunulmadan (aynı referans)', async () => {
+        const ayar = { aktif: true, adimlar: [sv({ bildirimSesi: OZEL_SES })] };
+        expect(await MuhafizKanalServisi.adimSesleriniDogrula(ayar)).toBe(ayar);
+        mockSesAdiAl.mockResolvedValue('');
+        const dogru = await MuhafizKanalServisi.adimSesleriniDogrula(ayar);
+        expect(dogru.adimlar[0].bildirimSesi).toBe(VARSAYILAN_SES);
     });
 });

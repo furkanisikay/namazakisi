@@ -34,7 +34,7 @@ jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
 }));
 
 import { AdimDetayModal } from '../AdimDetayModal';
-import { cipKanallariniBirlestir, KANAL_CIPLERI, vakitPencereTanimi, cumaPencereTanimi } from '../pencereTanimi';
+import { cipKanallariniBirlestir, KANAL_CIPLERI, vakitPencereTanimi, ekHatirlatmaPencereTanimi } from '../pencereTanimi';
 import type { SeviyeAyari, UyariKanallari } from '../../../../core/muhafiz/matrisTipleri';
 import { VARSAYILAN_SES } from '../../../../core/muhafiz/matrisTipleri';
 
@@ -105,16 +105,24 @@ describe('Gerçek alarm anahtarı', () => {
         expect(ekran.queryByLabelText('Gerçek alarm')).toBeNull();
     });
 
-    test('alarm kanalı muhafız vakitlerinde seçilebilir, cumada (teslimci dışı) değil', () => {
+    test('alarm kanalı muhafız vakitlerinde VE ek hatırlatma yüzeylerinde (cuma) seçilebilir — standart yetenek', () => {
         expect(vakitPencereTanimi('ogle').alarmSecilebilir).toBe(true);
-        const cuma = cumaPencereTanimi({
+        const cuma = ekHatirlatmaPencereTanimi({
+            kaynak: 'cuma',
+            baslik: 'Cuma namazı',
+            baslikKucuk: 'cuma namazı',
+            ikon: 'mosque',
+            vakit: 'ogle',
+            yonSabitGerekcesi: 'Öğleden önce.',
+            adimSayisi: 1,
+            maksAdim: 3,
             esikSinirlari: { min: 15, max: 180 },
-            esikAdimDk: 5,
+            esikAdimDk: 15,
             tekrarMinDk: 5,
             tekrarMaxDk: 60,
-            varsayilanTekrarDk: 10,
+            varsayilanTekrarDk: 15,
         });
-        expect(cuma.alarmSecilebilir).not.toBe(true);
+        expect(cuma.alarmSecilebilir).toBe(true);
     });
 });
 

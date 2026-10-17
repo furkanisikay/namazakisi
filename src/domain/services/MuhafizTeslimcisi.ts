@@ -31,6 +31,7 @@ import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import type { UyariPlani } from '../../core/muhafiz/motorAdaptoru';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import type { AlarmTuru } from '../../core/muhafiz/alarmYuku';
 
 /** Namaz vakti bilgisi — teslimci ve servis arasinda paylasilan sozlesme. */
 export interface VakitZamani {
@@ -95,6 +96,32 @@ export interface OzelTeslim {
      * "Kıldım"ın doğru yola (nafile, FARZ DEĞİL) gitmesini belirler.
      */
     alarmAdi?: string;
+    /**
+     * Bildirim KATEGORİSİ (eylem düğmeleri). `null` = kategori YOK: cuma / camiye gitme /
+     * takvim bildiriminde muhafız kategorisinin "Kıldım" düğmesi FARZ namazı yazardı
+     * (vakit girmeden gelen hatırlatmada kılınacak bir şey yoktur). `undefined` = muhafız
+     * davranışı (`MUHAFIZ` ya da ertele kategorisi — nafile bunu kullanır).
+     */
+    kategori?: string | null;
+    /**
+     * Android: adım VARSAYILAN ses + titreşimsizken kullanılacak kanal. Göçten gelen kayıt
+     * bugünkü kanalında kalır (cuma: `vakit_bildirim`); kullanıcı ses ya da titreşim
+     * seçince ortak `muhafiz_<hash8>` uzayına geçer. `kanalId` zorlaması bundan önce gelir.
+     */
+    varsayilanKanalId?: string;
+    /**
+     * iOS: adım varsayılan sesteyken (ve sesli anons klibi yokken) bildirim SİSTEM sesiyle
+     * (`sound: true`) çalar — paket sesine (`bildirim.wav`) çevrilmez. Göçten gelen kayıt
+     * (cuma bugün `sound: true` kurar) birebir aynı duyulsun.
+     */
+    varsayilanSistemSesi?: boolean;
+    /**
+     * Gerçek alarmın TÜRÜ (Android yükü, plan §4.2). `bilgi` = vakit GİRMEDEN çalan
+     * hatırlatma (cuma, camiye gitme, takvim): alarm ekranında yalnız "Kapat"; "Kıldım" /
+     * "Ertele" YOK, otomasyon olayı doğmaz; `UyariTeslimi.cikis` pencerenin SONUDUR (geç
+     * tetik orada atlanır). Verilmezse yükte alan yoktur, native kimlikten çözer (muhafız/nafile).
+     */
+    alarmTuru?: AlarmTuru;
 }
 
 export interface MuhafizTeslimcisi {

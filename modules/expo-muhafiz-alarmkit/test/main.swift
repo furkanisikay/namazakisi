@@ -49,8 +49,10 @@ struct UuidOrnegi: Decodable { let kimlik: String; let uuid: String }
 struct DugmeOrnegi: Decodable { let ad: String; let tetikMs: Int64; let erteleSinirMs: Int64; let beklenen: String }
 struct IptalKaydi: Decodable { let kimlik: String; let caliyor: Bool }
 struct IptalOrnegi: Decodable { let ad: String; let kayitlar: [IptalKaydi]; let calaniDurdur: Bool; let beklenen: [String] }
+struct TurOrnegi: Decodable { let kimlik: String; let beklenen: String }
 struct AlarmKitFiksturu: Decodable {
     let uuidler: [UuidOrnegi]
+    let turler: [TurOrnegi]
     let dugmeler: [DugmeOrnegi]
     let iptalSecimi: [IptalOrnegi]
 }
@@ -63,6 +65,9 @@ for o in akf.uuidler {
 }
 for o in akf.dugmeler {
     esitMi(AlarmKurallari.ikincilDugme(tetikMs: o.tetikMs, erteleSinirMs: o.erteleSinirMs), o.beklenen, "dugme: \(o.ad)")
+}
+for o in akf.turler {
+    esitMi(AlarmKurallari.alarmTuru(o.kimlik), o.beklenen, "tur: \(o.kimlik)")
 }
 for o in akf.iptalSecimi {
     // Native taraf CALAN alarmi UUID'den tanir (AlarmKit `Alarm` kimligimizi tasimaz).

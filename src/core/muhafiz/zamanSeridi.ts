@@ -190,6 +190,8 @@ export interface SeritCumlesiGirdisi {
     /** Verilirse ve vakit su an suruyorsa siradaki hatirlatma eklenir. */
     simdi?: Date;
     baslangic?: Date;
+    /** Cümlenin gün sözcüğü (varsayılan "Bugün"; cuma kartında "Bu cuma"). */
+    gunEtiketi?: string;
 }
 
 /**
@@ -206,10 +208,11 @@ export function seritCumlesiOlustur(g: SeritCumlesiGirdisi): string {
     if (duzen.uyariSayisi === 0 || duzen.ilkKalanDk === null || duzen.sonKalanDk === null) {
         return g.tumAdimlarKapali
             ? 'Tüm adımlar kapalı — bu vakitte hatırlatma almazsınız.'
-            : 'Bugün bu vakitte hatırlatma planlanmıyor.';
+            : `${g.gunEtiketi ?? 'Bugün'} bu vakitte hatırlatma planlanmıyor.`;
     }
 
     const ilk = saatMetni(kalanDkAni(bitis, duzen.ilkKalanDk));
+    const gun = g.gunEtiketi ?? 'Bugün';
     const son = saatMetni(kalanDkAni(bitis, duzen.sonKalanDk));
     const sayi = `toplam ${duzen.uyariSayisi} uyarı`;
 
@@ -221,8 +224,8 @@ export function seritCumlesiOlustur(g: SeritCumlesiGirdisi): string {
     } else {
         cumle =
             duzen.uyariSayisi === 1
-                ? `Bugün tek hatırlatma: ${ilk}.`
-                : `Bugün ilk hatırlatma ${ilk}, sonuncusu ${son} — ${sayi}.`;
+                ? `${gun} tek hatırlatma: ${ilk}.`
+                : `${gun} ilk hatırlatma ${ilk}, sonuncusu ${son} — ${sayi}.`;
     }
 
     const sirada = siradakiHatirlatma(g);

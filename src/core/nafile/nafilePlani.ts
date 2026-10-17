@@ -22,6 +22,7 @@ import { vakitUyariPlaniOlustur } from '../muhafiz/motorAdaptoru';
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { gununNafilePencereleri, type NafileKoordinat } from './gunVakitleri';
+import { alarmPayinaSigdir, ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hatirlatma/ekPlan';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 import { nafileAnonsMetni, nafileBildirimMetni } from './nafileMetinleri';
 import {
@@ -106,12 +107,10 @@ export interface NafileBildirimPlani {
  * Bu tetik GERÇEK ALARM mı? (issue #74; teslimciyle aynı kapı.) Android'de alarm o
  * tetiğin bildirimi + anonsunun YERİNE geçer (tek alarm payı).
  */
-export const nafileAlarmKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean =>
-    p.uyari.alarm === true && p.uyari.kanallar?.alarm === true;
+export const nafileAlarmKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean => ekAlarmKurarMi(p);
 
 /** Bu plan Android'de ayrı bir sesli anons alarmı kurar mı? (teslimciyle aynı kapı) */
-export const nafileAnonsAlarmiKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean =>
-    !nafileAlarmKurarMi(p) && p.uyari.sesliAnons && p.uyari.anonsMetni.trim().length > 0;
+export const nafileAnonsAlarmiKurarMi = (p: Pick<NafileBildirimPlani, 'uyari'>): boolean => ekAnonsAlarmiKurarMi(p);
 
 export interface PencereTetigi {
     zaman: Date;
@@ -224,19 +223,9 @@ export function nafilePlaniOlustur(
     }
 
     planlar.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
-    if (alarmButcesi === undefined) return planlar;
-
     // Android alarm bütçesi — KRONOLOJİK: bildirim 1, sesli anons ayrıca 1; GERÇEK
-    // ALARM ikisinin yerine geçer (1).
-    const sigan: NafileBildirimPlani[] = [];
-    let kullanilan = 0;
-    for (const p of planlar) {
-        const maliyet = 1 + (nafileAnonsAlarmiKurarMi(p) ? 1 : 0);
-        if (kullanilan + maliyet > alarmButcesi) break;
-        kullanilan += maliyet;
-        sigan.push(p);
-    }
-    return sigan;
+    // ALARM ikisinin yerine geçer (1). Kural ek yüzeylerle ortak (`core/hatirlatma/ekPlan`).
+    return alarmPayinaSigdir(planlar, alarmButcesi);
 }
 
 /**

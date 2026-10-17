@@ -20,6 +20,7 @@ import {
 } from '../../../data/local/LocalCumaHatirlatmaServisi';
 import { CumaHatirlatmaServisi } from '../../../domain/services/CumaHatirlatmaServisi';
 import { configureStore } from '@reduxjs/toolkit';
+import { cumaAyarlariniNormalize, varsayilanCumaAyarlari } from '../../../core/cuma/cumaAyarlari';
 
 // Mock dependencies
 jest.mock('../../../data/local/LocalCumaHatirlatmaServisi');
@@ -32,7 +33,10 @@ jest.mock('../../../domain/services/CamiyeGitHatirlatmaServisi', () => ({
 }));
 
 // `siklik` Faz 4'te eklendi; varsayilani `'birkez'` = ESKI davranis (tek atis).
-const VARSAYILAN: CumaHatirlatmaAyarlari = { aktif: false, oncedenDk: 60, siklik: 'birkez' };
+// Ortak model (plan §5.1): tek adım, 60 dk önce, tek atış = tarihsel davranış.
+const VARSAYILAN: CumaHatirlatmaAyarlari = varsayilanCumaAyarlari();
+/** Eski biçimli ham kayıt → tam (normalize) ayar. */
+const tam = (ham: Record<string, unknown>): CumaHatirlatmaAyarlari => cumaAyarlariniNormalize(ham);
 
 // Store'daki konum: thunk koordinatı buradan okuyup servise PARAMETRE geçmeli.
 let konumKoordinatlari: { lat: number; lng: number } | null = null;
@@ -62,7 +66,8 @@ describe('cumaHatirlatmaSlice — başlangıç durumu', () => {
         const state = store.getState().cumaHatirlatma;
 
         // Cuma herkese farz-ı ayn değil → özellik ayardan açılır, kendiliğinden açılmaz.
-        expect(state.ayarlar).toEqual({ aktif: false, oncedenDk: 60, siklik: 'birkez' });
+        expect(state.ayarlar).toEqual(VARSAYILAN);
+        expect(state.ayarlar).toMatchObject({ aktif: false, oncedenDk: 60, siklik: 'birkez' });
         expect(state.yukleniyor).toBe(false);
         expect(state.hata).toBeNull();
     });
@@ -70,7 +75,7 @@ describe('cumaHatirlatmaSlice — başlangıç durumu', () => {
 
 describe('cumaHatirlatmaAyarlariniYukle', () => {
     test('diskteki ayarları state\'e alır ve yukleniyor kapanır', async () => {
-        const kayitli: CumaHatirlatmaAyarlari = { aktif: true, oncedenDk: 90, siklik: 'birkez' };
+        const kayitli: CumaHatirlatmaAyarlari = tam({ aktif: true, oncedenDk: 90 });
         (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue(kayitli);
 
         await store.dispatch(cumaHatirlatmaAyarlariniYukle());
@@ -150,10 +155,9 @@ describe('cumaHatirlatmaAyariniGuncelle', () => {
         // Yalnız `aktif` geçiliyor → `oncedenDk` KORUNMALI (sıfırlanmamalı)
         await store.dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: true }));
 
-        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith({
-            aktif: true,
-            oncedenDk: 45,
-        });
+        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith(
+            expect.objectContaining({ aktif: true, oncedenDk: 45 })
+        );
         expect(store.getState().cumaHatirlatma.ayarlar).toEqual({ aktif: true, oncedenDk: 45 });
     });
 
@@ -171,10 +175,28 @@ describe('cumaHatirlatmaAyariniGuncelle', () => {
 
         await store.dispatch(cumaHatirlatmaAyariniGuncelle({ oncedenDk: 120 }));
 
-        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith({
-            aktif: true,
-            oncedenDk: 120,
-        });
+        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith(
+            expect.objectContaining({ aktif: true, oncedenDk: 120 })
+        );
+    });
+
+    test('ADIM dizisi değişikliği (ortak model) türev alanlarla birlikte yazılır; rıza korunur', async () => {
+        (LocalCumaHatirlatmaServisi.getAyarlar as jest.Mock).mockResolvedValue(
+            tam({ aktif: true, oncedenDk: 60, sesliOnayi: true })
+        );
+        await store.dispatch(cumaHatirlatmaAyarlariniYukle());
+
+        const adimlar = [
+            { ...VARSAYILAN.adimlar[0], esikDk: 90, siklik: { herDk: 15 } as const },
+            { ...VARSAYILAN.adimlar[0], esikDk: 30, kanallar: { bildirim: true, sesli: true } },
+        ];
+        await store.dispatch(cumaHatirlatmaAyariniGuncelle({ adimlar }));
+
+        const yazilan = (LocalCumaHatirlatmaServisi.saveAyarlar as jest.Mock).mock.calls[0][0] as CumaHatirlatmaAyarlari;
+        expect(yazilan.adimlar.map((a) => a.esikDk)).toEqual([90, 30]);
+        expect(yazilan.oncedenDk).toBe(90);
+        expect(yazilan.siklik).toEqual({ herDk: 15 });
+        expect(yazilan.sesliOnayi).toBe(true);
     });
 
     test('kaydettikten SONRA hatırlatmaları yeniden planlar', async () => {
@@ -236,12 +258,10 @@ describe('cumaHatirlatmaAyariniGuncelle', () => {
 
         await store.dispatch(cumaHatirlatmaAyariniGuncelle({ aktif: true, oncedenDk: 999 }));
 
-        // Ham istek diske gider (normalizasyon depolama katmanının sorumluluğu)...
-        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith({
-            aktif: true,
-            oncedenDk: 999,
-            siklik: 'birkez',
-        });
+        // İstek normalize edilip diske gider (sınır dışı değer üst sınıra çekilir)...
+        expect(LocalCumaHatirlatmaServisi.saveAyarlar).toHaveBeenCalledWith(
+            expect.objectContaining({ aktif: true, oncedenDk: 180, siklik: 'birkez' })
+        );
         // ...ama state'e diskten okunan DÜZELTİLMİŞ değer yazılır.
         expect(store.getState().cumaHatirlatma.ayarlar).toEqual({ aktif: true, oncedenDk: 180 });
     });
