@@ -61,6 +61,21 @@ on:
         required: false
         default: false
         type: boolean
+      # Saat (Wear OS) + TV paketleri AYRI is (saat_tv) — telefon build'inden
+      # bagimsiz. Yalniz saat/TV gondermek icin build_aab ve internal_a_gonder'i
+      # KAPATIN (yoksa telefon AAB'si de EAS'te derlenip internal'a gider).
+      saat_tv:
+        description: '⌚📺 Saat / TV paketini Play form faktörü kanalına yükle'
+        required: false
+        default: 'yok'
+        type: choice
+        options: ['yok', 'saat', 'tv', 'ikisi']
+      saat_tv_kanal:
+        description: 'Form faktörü kanalı (önek otomatik: wear: / tv:)'
+        required: false
+        default: 'internal'
+        type: choice
+        options: ['internal', 'alpha', 'beta', 'production']
 
   # android-build.yml tarafindan master merge sonrasi otomatik cagrilir
   workflow_call:
@@ -83,6 +98,14 @@ on:
       testflight_a_gonder:
         type: boolean
         default: false
+      # Release zincirine BAGLI DEGIL (varsayilan 'yok'); ileride android-build.yml
+      # 'saat_tv' gecirerek saat/TV'yi telefonla birlikte gonderebilir.
+      saat_tv:
+        type: string
+        default: 'yok'
+      saat_tv_kanal:
+        type: string
+        default: 'internal'
     secrets:
       EXPO_TOKEN:
         required: true
@@ -514,3 +537,143 @@ jobs:
             echo "---"
             echo "[📱 Expo Dashboard — Builds](https://expo.dev/accounts/furkanisikay/projects/namazakisi/builds)"
           } >> $GITHUB_STEP_SUMMARY
+
+  # ========================================================================
+  # Saat (Wear OS) + Android TV → Play form faktörü kanalları
+  # ========================================================================
+  #
+  # Ayni uygulama kaydi (com.furkanisikay.namazakisi), ayri AAB'ler:
+  #   wear/ → `wear:<kanal>`, tv/ → `tv:<kanal>` (Play Developer API "form factor
+  #   tracks": `<onek>:<varsayilan kanal adi>`).
+  # Imza: Play App Signing tum form faktorlerinde AYNI yukleme anahtarini ister.
+  #   Anahtar YALNIZ EAS'te → scripts/eas-yukleme-anahtari.js EXPO_TOKEN ile
+  #   indirir, parmak izini dogrular, $RUNNER_TEMP'e yazar; is sonunda silinir.
+  # versionCode: Play'de kod TUM uygulama icin tekil olmali. Telefon `date +%s`
+  #   kullanir (build isinde, bu isle PARALEL). Burada TEK taban alinir ve GERIYE
+  #   kaydirilir: saat = taban-600, TV = taban-599. Ileri ofset (+1/+2) ayni kosudaki
+  #   telefon isinin 1-2 sn sonra okuyacagi koda denk gelebilirdi; carpismada Play
+  #   saatleri dakikalar icinde kabul eder, saatler sonraki telefon `eas submit`'ini
+  #   REDDEDERDI. Telefon kodu kendi isinin baslangicindan buyuktur; ayni kosuda
+  #   esitlik icin bu isin kurulumu telefonunkinden 10 dk uzun surmeli. Geriye
+  #   ofset saat/TV kanalinda monotonlugu bozmaz (her kosu bir oncekinden gec).
+  saat_tv:
+    name: ⌚📺 Saat / TV → Play (${{ inputs.saat_tv }} · ${{ inputs.saat_tv_kanal }})
+    if: inputs.saat_tv != '' && inputs.saat_tv != 'yok'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v7
+
+      # JDK 21: TV'nin adhan2/kotlinx-datetime ikilileri 21 sinif surumu (tv-build.yml);
+      # AGP 8.13 + Gradle 8.14 saat icin de 21'de calisir. Bayt kodu 17 hedefli.
+      - name: ☕ Java 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: 🐘 Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: 🤖 Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: 📦 Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🔍 Secret kontrolü
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          GSA: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          [ -n "$EXPO_TOKEN" ] || { echo "❌ EXPO_TOKEN yok (yükleme anahtarı EAS'ten okunur)"; exit 1; }
+          [ -n "$GSA" ] || { echo "❌ GOOGLE_SERVICE_ACCOUNT yok"; exit 1; }
+          echo "✅ Secret'lar mevcut"
+
+      - name: 🔢 versionCode
+        id: vc
+        run: |
+          TABAN=$(date +%s)
+          echo "saat=$((TABAN - 600))" >> "$GITHUB_OUTPUT"
+          echo "tv=$((TABAN - 599))" >> "$GITHUB_OUTPUT"
+          echo "surum=$(node -p "require('./app.json').expo.version")" >> "$GITHUB_OUTPUT"
+          echo "📌 saat $((TABAN - 600)) · tv $((TABAN - 599))"
+
+      # Sirlar maskelenir, Gradle'a ORG_GRADLE_PROJECT_yukleme* ile gecer (komut
+      # satirinda -P YOK). Keystore parmak izi EAS kaydiyla burada dogrulanir.
+      - name: 🔑 Yükleme anahtarı (EAS)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: node scripts/eas-yukleme-anahtari.js "$RUNNER_TEMP/yukleme.jks"
+
+      - name: ⌚ Saat AAB (bundleRelease)
+        if: inputs.saat_tv == 'saat' || inputs.saat_tv == 'ikisi'
+        working-directory: wear
+        run: ./gradlew --no-daemon bundleRelease -PwearVersionCode=${{ steps.vc.outputs.saat }}
+
+      - name: 📺 TV AAB (bundleRelease)
+        if: inputs.saat_tv == 'tv' || inputs.saat_tv == 'ikisi'
+        working-directory: tv
+        run: ./gradlew --no-daemon bundleRelease -PtvVersionCode=${{ steps.vc.outputs.tv }}
+
+      # Paket gercekten yukleme anahtariyla mi imzalandi? Imza ozellikleri okunmazsa
+      # bundleRelease IMZASIZ paket uretir (yerel/PR davranisi); Play onu ancak
+      # yuklemeden sonra reddeder. Burada erken ve acik dussun.
+      - name: 🔏 İmza denetimi
+        run: |
+          set -euo pipefail
+          SAYI=0
+          for aab in wear/app/build/outputs/bundle/release/*.aab tv/app/build/outputs/bundle/release/*.aab; do
+            [ -f "$aab" ] || continue
+            IZ=$(keytool -printcert -jarfile "$aab" | awk '/SHA256:/{print $2; exit}' | tr -d ':' | tr 'A-F' 'a-f')
+            if [ "$IZ" != "$YUKLEME_SHA256" ]; then
+              echo "❌ $aab yükleme anahtarıyla imzalı değil"; exit 1
+            fi
+            echo "✅ $aab imzalı (${IZ:0:8}…)"
+            SAYI=$((SAYI + 1))
+          done
+          [ "$SAYI" -gt 0 ] || { echo "❌ AAB üretilmedi"; exit 1; }
+
+      - name: 🧹 Anahtarı sil
+        if: always()
+        run: rm -f "$RUNNER_TEMP/yukleme.jks"
+
+      - name: 🚀 Saat → wear:${{ inputs.saat_tv_kanal }}
+        if: inputs.saat_tv == 'saat' || inputs.saat_tv == 'ikisi'
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          node scripts/play-magaza.js aab-yukle \
+            --dosya "$(ls wear/app/build/outputs/bundle/release/*.aab | head -1)" \
+            --kanal "wear:${{ inputs.saat_tv_kanal }}" \
+            --ad "${{ steps.vc.outputs.surum }} (saat)"
+
+      - name: 🚀 TV → tv:${{ inputs.saat_tv_kanal }}
+        if: inputs.saat_tv == 'tv' || inputs.saat_tv == 'ikisi'
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        run: |
+          node scripts/play-magaza.js aab-yukle \
+            --dosya "$(ls tv/app/build/outputs/bundle/release/*.aab | head -1)" \
+            --kanal "tv:${{ inputs.saat_tv_kanal }}" \
+            --ad "${{ steps.vc.outputs.surum }} (TV)"
+
+      - name: 📊 Özet
+        if: always()
+        run: |
+          {
+            echo "## ⌚📺 Saat / TV → Play"
+            echo ""
+            echo "| Hedef | versionCode | Kanal |"
+            echo "|---|---|---|"
+            case "${{ inputs.saat_tv }}" in saat|ikisi) echo "| ⌚ Wear OS | \`${{ steps.vc.outputs.saat }}\` | \`wear:${{ inputs.saat_tv_kanal }}\` |";; esac
+            case "${{ inputs.saat_tv }}" in tv|ikisi) echo "| 📺 Android TV | \`${{ steps.vc.outputs.tv }}\` | \`tv:${{ inputs.saat_tv_kanal }}\` |";; esac
+            echo ""
+            echo "Sürüm adı: \`${{ steps.vc.outputs.surum }}\` · iş sonucu: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"
