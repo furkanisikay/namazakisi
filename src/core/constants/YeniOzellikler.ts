@@ -58,6 +58,30 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Ortak hatırlatma yüzeyleri PR-A (plan 2026-10-17): cuma hatırlatması muhafızla aynı
+    // seçenekleri taşır. İki platformda var; ses seçimi ve titreşim iOS'ta kapalı olduğundan
+    // duyuru onları yalnız Android'e atfeder, gerçek alarm iPhone'da iOS 26'ya bağlıdır.
+    {
+        id: 'cuma-ortak-hatirlatma',
+        platformlar: ['android', 'ios'],
+        surum: '0.33.0',
+        tarih: '2026-10-17',
+        baslik: 'Cuma Hatırlatmasında Daha Fazla Seçenek',
+        aciklama:
+            'Cuma hatırlatması artık namaz hatırlatmasıyla aynı seçenekleri taşır: üç adıma kadar hatırlatma, sesli anons ve gerçek alarm.',
+        detayAciklama:
+            `Bildirim Ayarları'ndaki cuma kartında öğle vaktinden önce en fazla üç hatırlatma kurabilir, her birinin ne kadar önce geleceğini ve tekrarlanıp tekrarlanmayacağını seçebilirsiniz. Bir hatırlatmayı sesli anonsla ya da gerçek alarmla da duyabilirsiniz; Android'de ayrıca bildirim sesini ve titreşimi seçersiniz. "Akışı önizle" bu cuma hangi saatlerde hatırlatılacağınızı gösterir. Mevcut ayarınız aynen korundu.`,
+        ikon: 'mosque',
+        hedefSayfa: 'BildirimAyarlari',
+        ctaEtiketi: 'Cuma ayarını açın',
+        kartGoster: false,
+        detaylar: [
+            'Öğle vaktinden önce en fazla üç hatırlatma',
+            "Sesli anons ve gerçek alarm (iPhone'da iOS 26 gerekir)",
+            'Akış önizlemesi bu cumanın saatlerini gösterir',
+            'Mevcut cuma ayarınız değişmeden taşındı',
+        ],
+    },
     // Faz 2 ortak hatırlatma (v0.32.0) — nafileye gerçek alarm, alarm kapsamı, önizlemede
     // alarm saatleri, eski kapalı adım temizliği, nafile başına gösterge (bu sürümde kartın
     // içine taşındı). İki platformda da var; ses seçimi iOS'ta kapalı olduğundan duyuru onu

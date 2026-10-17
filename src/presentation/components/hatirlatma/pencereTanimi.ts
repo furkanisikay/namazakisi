@@ -8,7 +8,7 @@
  * (`MuhafizAyarlari/VakitKarti` + `SeviyeDetayModal`) dogrudan `MuhafizVakti`ye
  * baglanmisti. `PencereTanimi` bu bagi kesen tek parametre nesnesidir: kart ve
  * modal artik "bir vakit" degil "bir HATIRLATMA PENCERESI" cizer — muhafizin 5
- * vakti, cuma ve ileride seri ayni bilesenden beslenir.
+ * vakti, nafile ve cuma (`ekHatirlatmaPencereTanimi`) ayni bilesenden beslenir.
  *
  * RENK NOTU: adim renkleri temada TOKEN OLARAK YOK (temada nazik/uyari/sert/acil
  * olcegi bulunmuyor) ve KASTEN hardcoded'dir; eski ekrandaki degerlerle birebir
@@ -543,60 +543,6 @@ export function vakitPencereTanimi(
         tekrarMaxDk: TEKRAR_MAX_DK,
         varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
         pencere,
-    };
-}
-
-/**
- * Cuma namazi hatirlatmasi icin pencere tanimi.
- *
- * STANDART İSTİSNALARI (her biri teknik gerekçeli — sessiz boşluk değil, açık takip):
- * - Yön: cuma "vakit çıkıyor" değil "camiye yetiş" hatırlatmasıdır; ölçü daima
- *   öğlenin GİRİŞİNE kalan süredir. "Vakit çıkarken" yönünün cumada karşılığı yok.
- * - Tek adım, kanal/ses/titreşim/alarm/kapalı çipi: `CumaHatirlatmaServisi` muhafız
- *   teslim katmanından (`MuhafizTeslimcisi`) GEÇMEZ — 4 haftalık planı doğrudan
- *   `vakit_bildirim` kanalına kurar ve ayarı tek bir ofset + sıklıktır
- *   (`CumaHatirlatmaAyarlari`), adım dizisi değildir. Bu yetenekler ancak cuma
- *   nafile gibi (#273) kendi önekli bir teslimci örneğine taşınınca (adım dizisi +
- *   göç + defter paritesi) açılabilir; tek başına bayrak açmak ekranda çalışmayan
- *   anahtarlar gösterirdi.
- */
-export function cumaPencereTanimi(secenekler: {
-    esikSinirlari: EsikSinirlari;
-    esikAdimDk: number;
-    tekrarMinDk: number;
-    tekrarMaxDk: number;
-    varsayilanTekrarDk: number;
-}): PencereTanimi {
-    return {
-        ...STANDART_YETENEKLER,
-        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (teslimci dışı, tek ofsetli model).
-        yonSecilebilir: false,
-        kanalSecimiVar: false,
-        sesSecimiVar: false,
-        alarmSecilebilir: false,
-        kapaliCipiVar: false,
-        anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
-        kaynak: 'cuma',
-        baslik: 'Cuma namazı',
-        baslikKucuk: 'cuma namazı',
-        ikon: 'mosque',
-        // Kimlik ogle namazidir; "Cuma" yalnizca gorunen addir.
-        vakit: 'ogle',
-        yon: 'cikisaDogru',
-        maksAdim: 1,
-        onPlanBanneriVar: false,
-        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'mosque', renk: SEVIYE_BILGILERI.nazik.renk }],
-        yetenekler: ANDROID_YETENEKLERI,
-        esikAdimDk: secenekler.esikAdimDk,
-        tekrarMinDk: secenekler.tekrarMinDk,
-        tekrarMaxDk: secenekler.tekrarMaxDk,
-        varsayilanTekrarDk: secenekler.varsayilanTekrarDk,
-        esikSinirlari: secenekler.esikSinirlari,
-        esikBasligi: 'NE KADAR ÖNCE',
-        esikAciklamasi: 'Öğle vaktine',
-        esikErisimAdi: 'Ne kadar önce',
-        esikBirimi: 'dk kala',
     };
 }
 

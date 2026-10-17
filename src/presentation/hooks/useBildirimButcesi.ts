@@ -9,6 +9,7 @@
  * içindir: ikisi ayrışırsa loga yazılır (bir plan üreticisi servisinden
  * kopmuş demektir).
  */
+import type { CumaPlanAyarlari } from '../../core/bildirim/cumaPlani';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
@@ -38,6 +39,8 @@ import { Logger } from '../../core/utils/Logger';
 export interface DefterDegisikligi {
     matris?: MuhafizMatrisi;
     nafile?: NafileAyarlari;
+    /** Cuma (ortak hatırlatma yüzeyi) — ekleme anı simülasyonu. */
+    cuma?: CumaPlanAyarlari;
 }
 
 export interface BildirimButcesi {
@@ -70,6 +73,7 @@ export function butceNesnesiOlustur(
                 ...girdi,
                 muhafiz: d.matris && girdi.muhafiz ? { ...girdi.muhafiz, matris: d.matris } : girdi.muhafiz,
                 nafile: d.nafile ?? girdi.nafile,
+                cuma: d.cuma ?? girdi.cuma,
             }
             : null;
     return {

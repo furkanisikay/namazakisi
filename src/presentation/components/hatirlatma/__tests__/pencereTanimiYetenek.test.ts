@@ -13,7 +13,6 @@
  */
 import {
     vakitPencereTanimi,
-    cumaPencereTanimi,
     nafilePencereTanimi,
     ekHatirlatmaPencereTanimi,
     STANDART_YETENEKLER,
@@ -86,19 +85,27 @@ describe('iOS kapilari', () => {
     });
 });
 
-describe('cumaPencereTanimi', () => {
+describe('cuma (ekHatirlatmaPencereTanimi)', () => {
     const cuma = () =>
-        cumaPencereTanimi({
+        ekHatirlatmaPencereTanimi({
+            kaynak: 'cuma',
+            baslik: 'Cuma namazı',
+            baslikKucuk: 'cuma namazı',
+            ikon: 'mosque',
+            vakit: 'ogle',
+            yonSabitGerekcesi: 'Öğleden önce.',
+            adimSayisi: 1,
+            maksAdim: 3,
             esikSinirlari: { min: 15, max: 180 },
-            esikAdimDk: 5,
+            esikAdimDk: 15,
             tekrarMinDk: 5,
             tekrarMaxDk: 60,
             varsayilanTekrarDk: 15,
         });
 
-    test('yeni alanlar cuma icin de tanimli (tip guvenligi degil, davranis)', () => {
+    test('serbest anons metni yazılmaz; yetenek nesnesi varsayılan Android', () => {
         expect(cuma().anonsMetniDuzenlenebilir).toBe(false);
-        expect(cuma().titresimSecilebilir).toBe(false);
+        expect(cuma().titresimSecilebilir).toBe(true);
         expect(cuma().yetenekler).toBe(ANDROID_YETENEKLERI);
     });
 
