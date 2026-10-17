@@ -164,7 +164,7 @@ export async function yakinKilinanlariOku(): Promise<Record<string, VakitAdi[]>>
 
 export class TakvimCakismaServisi {
     private static instance: TakvimCakismaServisi;
-    /** Süren planlama — turlar SIRAYA dizilir (cuma servisiyle aynı gerekçe). */
+    /** Süren iş — planlama turları ve kılınmışlık iptali SIRAYA dizilir (`sirayaAl`). */
     private surenPlanlama: Promise<void> | null = null;
 
     public static getInstance(): TakvimCakismaServisi {
@@ -192,18 +192,27 @@ export class TakvimCakismaServisi {
         koordinat?: TakvimCakismaKoordinat | null,
         simdi: Date = new Date()
     ): Promise<void> {
-        const onceki = this.surenPlanlama ?? Promise.resolve();
-        const bu = onceki
-            .catch(() => { /* onceki turun hatasi bu turu dusurmez */ })
-            .then(() => this.planlamayiCalistir(koordinat, simdi));
-        this.surenPlanlama = bu;
         try {
-            await bu;
+            await this.sirayaAl(() => this.planlamayiCalistir(koordinat, simdi));
         } catch (e) {
             Logger.error('TakvimCakisma', 'Planlama basarisiz', e);
-        } finally {
-            if (this.surenPlanlama === bu) this.surenPlanlama = null;
         }
+    }
+
+    /**
+     * Planlama turları VE kılınmışlık iptali TEK sıradan geçer. İptal ayrı koşsaydı,
+     * kılınmışlığı "Kıldım"dan ÖNCE okumuş süren bir tur iptal bittikten SONRA o vaktin
+     * uyarılarını (bildirim, anons, gerçek alarm) yeniden kurabilirdi.
+     */
+    private sirayaAl(is: () => Promise<void>): Promise<void> {
+        const onceki = this.surenPlanlama ?? Promise.resolve();
+        const bu = onceki
+            .catch(() => { /* onceki isin hatasi bu isi dusurmez */ })
+            .then(is);
+        this.surenPlanlama = bu;
+        return bu.finally(() => {
+            if (this.surenPlanlama === bu) this.surenPlanlama = null;
+        });
     }
 
     private async planlamayiCalistir(
@@ -305,6 +314,11 @@ export class TakvimCakismaServisi {
      * gerçek alarmlarını (ÇALAN dahil) kaldırır — kimlik KÖKÜYLE, tekrarlar da kapsanır.
      */
     public async kilinanlarinUyarilariniIptalEt(): Promise<void> {
+        // Süren planlama turunun ARDINA girer (bkz. `sirayaAl`).
+        await this.sirayaAl(() => this.kilinanIptaliniCalistir());
+    }
+
+    private async kilinanIptaliniCalistir(): Promise<void> {
         const kilinanlar = await yakinKilinanlariOku();
         const kokler: string[] = [];
         for (const [tarih, vakitler] of Object.entries(kilinanlar)) {

@@ -207,6 +207,43 @@ describe('TakvimCakismaServisi', () => {
         expect(mockEtkinlikler).not.toHaveBeenCalled();
     });
 
+    it('YARIŞ: süren tur kılınmışlığı Kıldım öncesi okuduysa iptal turun ARDINDAN koşar', async () => {
+        await ayarYaz(ACIK);
+        const kilinan: string[] = [];
+        jest.spyOn(LocalNamazServisi, 'kilinanVakitleriAl').mockImplementation(async (t) =>
+            (t === bugunuAl() ? [...kilinan] : []) as never
+        );
+        // Kurulan bildirim ancak `scheduleNotificationAsync` çözülünce "bekleyen" olur.
+        const bekleyen: { identifier: string }[] = [];
+        let birak: () => void = () => undefined;
+        const kapi = new Promise<void>((r) => { birak = r; });
+        (Notifications.scheduleNotificationAsync as jest.Mock).mockImplementation(async (istek: { identifier: string }) => {
+            await kapi;
+            bekleyen.push({ identifier: istek.identifier });
+            return istek.identifier;
+        });
+        (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockImplementation(async () => [...bekleyen]);
+
+        const tur = servis.hatirlatmalariGuncelle(ISTANBUL, SIMDI);
+        // Tur kılınmışlığı okudu ve teslime girdi (ikindi henüz kılınmamış).
+        for (let i = 0; i < 200 && (Notifications.scheduleNotificationAsync as jest.Mock).mock.calls.length === 0; i++) {
+            await new Promise((r) => setImmediate(r));
+        }
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
+        const kok = planlanan()[0].identifier as string;
+        expect(kok).toBe(`takvim_cakisma_${bugunuAl()}_ikindi`);
+
+        // Kullanıcı tam bu arada ikindiyi kıldı → adlı yuva iptali tetikler.
+        kilinan.push('ikindi');
+        const iptalIsi = servis.kilinanlarinUyarilariniIptalEt();
+        // İptale koşma fırsatı ver (sırasız olsaydı şimdi biter ve bekleyeni boş görürdü).
+        for (let i = 0; i < 50; i++) await new Promise((r) => setImmediate(r));
+        birak();
+        await Promise.all([tur, iptalIsi]);
+        // İptal turdan SONRA koştu: turun kurduğu uyarı da kaldırıldı.
+        expect(iptal()).toContain(kok);
+    });
+
     it('ÇOK ADIM + TEKRAR: tetikler çapaya kadar sürer, ilk tetik tarihsel kimliği korur', async () => {
         await ayarYaz({
             ...ACIK,
