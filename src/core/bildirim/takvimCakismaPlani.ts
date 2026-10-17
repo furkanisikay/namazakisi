@@ -36,13 +36,29 @@
  *       Bildirim `min(blok başı, giriş) − öncedenDk`, ama vakit girişinden en
  *       fazla `KAPLIYOR_AZAMI_ONCELIK_DK` (60) önce: blok vakitten saatler önce
  *       başlıyorsa (09:00–16:25 toplantısı) öğle uyarısı sabah 08:30'a düşerdi.
- *  6. Vakit başına (gün başına) en fazla BİR uyarı; bloklardan sonuncusu
+ *  6. Vakit başına (gün başına) en fazla BİR çakışma; bloklardan sonuncusu
  *     (vaktin sonunu yutan) seçilir. Kılınmış vakit, özel gün (issue #272) ve
  *     geçmiş tetikler atlanır.
  *
+ * ADIM DİZİSİ (ortak hatırlatma yüzeyleri plan §5.4): her çakışmanın tetikleri muhafızın bir
+ * vakti gibi `vakitUyariPlaniOlustur`'dan gelir (eşik, sıklık, kanallar, gerçek alarm anı
+ * AYNI motordan). Ölçü = ÇAPAYA kalan süre; her tetik `max(çapa − kalanDk, taban)`:
+ *   - `once`: çapa = blok başı, taban = vakit girişi.
+ *   - `kapliyor`: çapa = `min(blok başı, giriş)`, taban = `giriş − KAPLIYOR_AZAMI_ONCELIK_DK`.
+ * Tekrar çapaya kadar sürer (= AYNI uyarının yeniden teslimi; metin değişmez). Tabana
+ * kenetlenip AYNI ana düşen tetikler TEK kazanana iner (motor sırasında ilki).
+ * KİMLİK: çakışmanın İLK tetiği (motor sırası) tarihsel `takvim_cakisma_<gün>_<vakit>`
+ * kimliğini korur — göçten gelen tek adımlı kayıt birebir aynı planı üretir; diğerleri
+ * `_<kalanDk>` ekiyle ayrışır. Android alarm payı (`alarmButcesi`) KRONOLOJİK keser.
+ *
+ * GİZLİLİK: etkinlik ADI yalnız `baslikGoster` açıkken ve yalnız BİLDİRİM metnine girer.
+ * Sesli anons metni (`takvimCakismaAnonsMetni`) adı ve saati HİÇ taşımaz; GERÇEK ALARM
+ * kuran tetiğin metni `baslikGoster` kapalıymış gibi üretilir (alarm tam ekran kilit
+ * ekranında açılır). Bedel: alarm kurulamayıp bildirime düşerse o bildirim de adsızdır.
+ *
  * Kimlik `takvim_cakisma_<vaktin günü>_<vakit>` (yatsının günü girdiği gündür).
- * Metin (`takvimCakismaMetniOlustur`) İBADETE ÇAĞRI kaydındadır ("sen" + emir
- * kipi — AGENTS.md istisnası); ayar ekranı kibar "siz" kalır.
+ * Bildirim metni (`takvimCakismaMetniOlustur`) İBADETE ÇAĞRI kaydındadır ("sen" + emir
+ * kipi — AGENTS.md istisnası); anons metni ve ayar ekranı kibar "siz".
  *
  * SAF: `simdi` enjekte edilir; React/expo import ETMEZ.
  */
@@ -54,6 +70,9 @@ import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
 import { gurubKerahatiBaslangiciMs } from '../muhafiz/erteleme';
 import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
+import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
+import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
+import { alarmPayinaSigdir, ekAlarmKurarMi } from '../hatirlatma/ekPlan';
 
 export type CakismaVakti = Exclude<VakitAdi, 'gunes'>;
 export const CAKISMA_VAKITLERI: readonly CakismaVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -196,6 +215,13 @@ export interface TakvimCakismaPlanKaydi {
     tur: CakismaTuru;
     /** Bildirim anı. */
     zaman: Date;
+    /** Çapaya kaç dk kala (motorun `kalanDk`'sı; tabana kenetlenmiş tetikte de motorun değeri). */
+    kalanDk: number;
+    /**
+     * Uyarının anlamlı olduğu SON an (gerçek alarm geç tetikte burada atlar): `max(blok başı,
+     * vakit girişi)` — `once`'da blok başı, `kapliyor`'da çoğunlukla giriş; daima tetikten SONRA.
+     */
+    cikis: Date;
     girisMs: number;
     sonAnMs: number;
     blokBaslangicMs: number;
@@ -203,11 +229,19 @@ export interface TakvimCakismaPlanKaydi {
     etkinlikSayisi: number;
     /** Tek etkinlik varsa adı (yalnız `baslikGoster` iken METNE girer). */
     tekBaslik: string | null;
+    /** Bildirim başlığı/gövdesi (gerçek alarm tetiğinde ADSIZ). */
+    baslik: string;
+    govde: string;
+    /** Motorun uyarısı — kanallar, gerçek alarm anı; `anonsMetni` ÇÖZÜLMÜŞ ve ADSIZ cümledir. */
+    uyari: UyariPlani;
 }
+
+export type TakvimCakismaPlanAyarlari = Pick<TakvimCakismaAyarlari, 'aktif' | 'adimlar'> &
+    Partial<Pick<TakvimCakismaAyarlari, 'baslikGoster'>>;
 
 export interface TakvimCakismaPlanGirdisi {
     koordinat: { lat: number; lng: number };
-    ayarlar: Pick<TakvimCakismaAyarlari, 'aktif' | 'oncedenDk'>;
+    ayarlar: TakvimCakismaPlanAyarlari;
     simdi: Date;
     gunSayisi: number;
     etkinlikler: readonly TakvimEtkinligi[];
@@ -215,7 +249,11 @@ export interface TakvimCakismaPlanGirdisi {
     kilinanlar?: (tarih: string) => readonly VakitAdi[];
     /** Özel gün kapısı — `true` dönen günün hiçbir uyarısı kurulmaz. */
     gunAtlanirMi?: (tarih: string) => boolean;
+    /** Android alarm payı (bildirim + anons alarmı, kronolojik). Verilmezse kesilmez. */
+    alarmButcesi?: number;
 }
+
+const adimlarGecerliMi = (adimlar: unknown): adimlar is SeviyeAyari[] => Array.isArray(adimlar) && adimlar.length > 0;
 
 const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVakti, VakitAraligi> | null => {
     const params = turkiyeHesapParametreleri();
@@ -237,12 +275,17 @@ const vakitAraliklari = (gun: Date, coordinates: Coordinates): Record<CakismaVak
  * gece yarısından sonra dünün yatsısı hâlâ sürüyordur.
  */
 export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCakismaPlanKaydi[] {
-    if (!g.ayarlar.aktif || g.etkinlikler.length === 0) return [];
+    if (!g.ayarlar.aktif || g.etkinlikler.length === 0 || !adimlarGecerliMi(g.ayarlar.adimlar)) return [];
     const bloklar = mesgulBloklariOlustur(g.etkinlikler);
     const coordinates = new Coordinates(g.koordinat.lat, g.koordinat.lng);
-    const oncedenMs = Math.max(0, g.ayarlar.oncedenDk) * DK;
     const simdiMs = g.simdi.getTime();
     const gunAtlanirMi = g.gunAtlanirMi ?? (() => false);
+    const baslikGoster = g.ayarlar.baslikGoster === true;
+
+    // Tarama en uzak eşikten başlar (çıkış yönü: ölçü azalarak çapaya yaklaşır). Motor
+    // çıktısı kalanDk'ya göre AZALAN = kronolojik; ilk = çakışmanın ilk tetiği.
+    const enBuyukEsik = Math.max(...g.ayarlar.adimlar.map((a) => a.esikDk));
+    const adimPlani = vakitUyariPlaniOlustur({ yon: 'cikisaDogru', seviyeler: g.ayarlar.adimlar }, enBuyukEsik);
     const plan: TakvimCakismaPlanKaydi[] = [];
 
     for (let i = -1; i < g.gunSayisi; i++) {
@@ -259,38 +302,59 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
             const karar = vakitCakismasiniBul(aralik, bloklar);
             if (!karar) continue;
             const { blok, tur } = karar;
-            const zamanMs =
-                tur === 'once'
-                    ? Math.max(blok.baslangicMs - oncedenMs, aralik.girisMs)
-                    : Math.max(
-                        Math.min(blok.baslangicMs, aralik.girisMs) - oncedenMs,
-                        aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK
-                    );
-            if (zamanMs <= simdiMs) continue;
-            plan.push({
-                id: `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`,
+            const capaMs = tur === 'once' ? blok.baslangicMs : Math.min(blok.baslangicMs, aralik.girisMs);
+            const tabanMs = tur === 'once' ? aralik.girisMs : aralik.girisMs - KAPLIYOR_AZAMI_ONCELIK_DK * DK;
+            const cikis = new Date(Math.max(blok.baslangicMs, aralik.girisMs));
+            const ortak = {
                 vakit,
                 tarih,
                 tur,
-                zaman: new Date(zamanMs),
                 girisMs: aralik.girisMs,
                 sonAnMs: aralik.sonAnMs,
                 blokBaslangicMs: blok.baslangicMs,
                 blokBitisMs: blok.bitisMs,
                 etkinlikSayisi: blok.etkinlikler.length,
                 tekBaslik: blok.etkinlikler.length === 1 ? blok.etkinlikler[0].baslik : null,
-            });
+            };
+            const kok = takvimCakismaKimligi(tarih, vakit);
+            const anons = takvimCakismaAnonsMetni(vakit, tur);
+            const gorulen = new Set<number>();
+            for (const [sira, uyari] of adimPlani.entries()) {
+                const zamanMs = Math.max(capaMs - uyari.kalanDk * DK, tabanMs);
+                if (zamanMs <= simdiMs || gorulen.has(zamanMs)) continue;
+                gorulen.add(zamanMs);
+                const adimUyarisi: UyariPlani = { ...uyari, anonsMetni: anons };
+                // Gerçek alarm tam ekran kilit ekranında açılır → ad ASLA (baslikGoster olsa bile).
+                const adGosterilir = baslikGoster && !ekAlarmKurarMi({ uyari: adimUyarisi });
+                plan.push({
+                    ...ortak,
+                    id: sira === 0 ? kok : `${kok}_${uyari.kalanDk}`,
+                    zaman: new Date(zamanMs),
+                    kalanDk: uyari.kalanDk,
+                    cikis,
+                    ...takvimCakismaMetniOlustur(ortak, { baslikGoster: adGosterilir }),
+                    uyari: adimUyarisi,
+                });
+            }
         }
     }
-    return plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
+    plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
+    return alarmPayinaSigdir(plan, g.alarmButcesi);
 }
 
 /** Bu servisin bildirim kimliği mi? */
 export const takvimCakismaKimligiMi = (kimlik: string): boolean => kimlik.startsWith(TAKVIM_CAKISMA_ID_ONEKI);
 
-/** Kılınan bir vaktin uyarı kimliği (kılınma anında iptal için). */
+/**
+ * Bir vaktin uyarı kimlik KÖKÜ (`takvim_cakisma_<gün>_<vakit>`): ilk tetiğin kimliği budur,
+ * tekrarlar `_<kalanDk>` eki taşır. Kılınma anında iptal bu kökle (sınırlı) yapılır.
+ */
 export const takvimCakismaKimligi = (tarih: string, vakit: CakismaVakti): string =>
     `${TAKVIM_CAKISMA_ID_ONEKI}${tarih}_${vakit}`;
+
+/** `kimlik` bu köke (ilk tetik ya da `_<k>` tekrarı) mi ait? Sınır kontrollü — önek çakışmasın. */
+export const takvimCakismaKokuneAitMi = (kimlik: string, kok: string): boolean =>
+    kimlik === kok || kimlik.startsWith(`${kok}_`);
 
 const VAKIT_KUCUK: Record<CakismaVakti, string> = {
     imsak: 'sabah',
@@ -345,4 +409,14 @@ export function takvimCakismaMetniOlustur(
             `(${saat(kayit.girisMs)}–${saat(kayit.sonAnMs)}) kaplıyor. ` +
             `Kısa bir ara verip ${kucuk} namazını kılmayı şimdiden planla.`,
     };
+}
+
+/**
+ * Sesli anons metni — kibar "siz" (plan §3.4). Etkinlik ADI ve SAATİ HİÇBİR KOŞULDA girmez:
+ * anons yüksek sesle okunur ve sesli okuma `baslikGoster` seçeneğinin kapsamında değildir
+ * (rıza modalı ve gizlilik politikası bunu söyler). Nass okunmaz; yer tutucu yoktur.
+ */
+export function takvimCakismaAnonsMetni(vakit: CakismaVakti, tur: CakismaTuru): string {
+    const giris = `Takviminizdeki bir etkinlik ${VAKIT_KUCUK[vakit]} vaktine denk geliyor.`;
+    return tur === 'once' ? `${giris} Etkinlikten önce kılmayı unutmayın.` : `${giris} Ara verip kılmayı unutmayın.`;
 }

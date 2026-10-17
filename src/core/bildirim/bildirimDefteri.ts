@@ -56,8 +56,12 @@ import { ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hatirlatma/ekPlan';
 import type { UyariPlani } from '../muhafiz/motorAdaptoru';
 import { camiyeGitPlaniOlustur, CAMIYE_GIT_PLAN_GUN_SAYISI, type CamiyeGitPlanAyarlari } from './camiyeGitPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
-import { takvimCakismaPlaniOlustur, TAKVIM_CAKISMA_PLAN_GUN_SAYISI, type TakvimEtkinligi } from './takvimCakismaPlani';
-import type { TakvimCakismaAyarlari } from '../takvimCakisma/takvimCakismaAyarlari';
+import {
+    takvimCakismaPlaniOlustur,
+    TAKVIM_CAKISMA_PLAN_GUN_SAYISI,
+    type TakvimCakismaPlanAyarlari,
+    type TakvimEtkinligi,
+} from './takvimCakismaPlani';
 import { vakitBildirimPlaniOlustur, type VakitBildirimPlanAyarlari } from './vakitBildirimPlani';
 import {
     ANDROID_MUHAFIZ_PAYI,
@@ -65,9 +69,11 @@ import {
     ANDROID_CUMA_PAYI,
     ANDROID_CAMIYE_GIT_PAYI,
     ANDROID_YATIS_PAYI,
+    ANDROID_TAKVIM_CAKISMA_PAYI,
     IOS_ALARMKIT_CUMA_PAYI,
     IOS_ALARMKIT_CAMIYE_GIT_PAYI,
     IOS_ALARMKIT_YATIS_PAYI,
+    IOS_ALARMKIT_TAKVIM_PAYI,
     IOS_ALARMKIT_MUHAFIZ_PAYI,
     IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
@@ -155,7 +161,7 @@ export interface DefterGirdisi {
      * Takvim çakışması (issue #291): ayar + servisle AYNI süzgeçten geçmiş
      * etkinlikler (`TakvimEtkinlikOkuyucu`). İzin yoksa `null`.
      */
-    takvimCakisma?: { ayarlar: Pick<TakvimCakismaAyarlari, 'aktif' | 'oncedenDk'>; etkinlikler: readonly TakvimEtkinligi[] } | null;
+    takvimCakisma?: { ayarlar: TakvimCakismaPlanAyarlari; etkinlikler: readonly TakvimEtkinligi[] } | null;
     /** Vakit sayacı ayarı (Android). Eşikler muhafız matrisinden türer. */
     vakitSayaci?: { aktif: boolean; sayacBaslangicSeviyesi?: number } | null;
     /** Android ana ekran widget'ının dakika alarmı sayılsın mı? (varsayılan: Android'de evet) */
@@ -249,7 +255,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
     }
 
     /**
-     * Ek hatırlatma yüzeyinin (cuma, camiye gitme, yatış) tetikleri — muhafız/nafile ile AYNI
+     * Ek hatırlatma yüzeyinin (cuma, camiye gitme, yatış, takvim çakışması) tetikleri — muhafız/nafile ile AYNI
      * kural: Android'de gerçek alarm o tetiğin bildirimi + anonsunun YERİNE tek alarm; iOS'ta
      * AlarmKit izinliyse (ve yüzeyin payı dolmadıysa) alarm (64 sınırına sayılmaz), değilse
      * bildirim. Alarm/anons kayıtlarının payı yüzeyindir (`pay`), muhafızın 360'ına sayılmaz.
@@ -370,8 +376,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 etkinlikler: girdi.etkinlikler,
                 kilinanlar: (gun) => g.kilinan?.[gun] ?? [],
                 gunAtlanirMi: ozelGundeMi,
+                ...(android ? { alarmButcesi: ANDROID_TAKVIM_CAKISMA_PAYI } : {}),
             });
-            for (const k of plan) ekle('takvimCakisma', k.zaman.getTime());
+            // Servisle AYNI üretici + seçenekler (plan §5.4); alarm/anons payı takvimin.
+            ekYuzeyiSay('takvimCakisma', plan, IOS_ALARMKIT_TAKVIM_PAYI);
         });
     }
 

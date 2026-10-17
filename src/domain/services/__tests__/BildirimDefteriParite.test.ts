@@ -85,7 +85,8 @@ import { gunSonuHatirlatmalariniGuncelle } from '../GunSonuHatirlaticiServisi';
 import { YatisHatirlatmaServisi, yatisTeslimcisiniAyarla } from '../YatisHatirlatmaServisi';
 import { yatisAyarlariniNormalize } from '../../../core/yatis/yatisAyarlari';
 import { YATIS_VARSAYILAN_AYARLARI, yatisKimligiMi } from '../../../core/yatis/yatisPlani';
-import { TakvimCakismaServisi } from '../TakvimCakismaServisi';
+import { TakvimCakismaServisi, takvimCakismaTeslimcisiniAyarla } from '../TakvimCakismaServisi';
+import { takvimCakismaAyarlariniNormalize } from '../../../core/takvimCakisma/takvimCakismaAyarlari';
 import { defterDisGirdisiniOku } from '../BildirimDefteriServisi';
 import { takvimCakismaKimligiMi } from '../../../core/bildirim/takvimCakismaPlani';
 import { Coordinates, CalculationMethod, PrayerTimes } from 'adhan';
@@ -897,6 +898,8 @@ describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = s
 });
 
 describe('takvim çakışması (issue #291): defter = servisin kurduğu', () => {
+    beforeEach(() => takvimCakismaTeslimcisiniAyarla(null));
+    afterAll(() => takvimCakismaTeslimcisiniAyarla(null));
     // Her gün ikindinin sonunu yutan bir toplantı (ikindi + 60 dk → akşam + 10 dk).
     const toplantilar = () =>
         Array.from({ length: 8 }, (_, i) => {
@@ -933,6 +936,65 @@ describe('takvim çakışması (issue #291): defter = servisin kurduğu', () => 
         const dis = await defterDisGirdisiniOku();
         expect(dis.takvimCakisma).toBeNull();
         expect(mockTakvimEtkinlikleri).not.toHaveBeenCalled();
+    });
+
+    it('Android GERÇEK ALARM + sesli + tekrar: alarm + bildirim + anons birebir; BİLGİ türü, kendi payı, ADSIZ', async () => {
+        const nativeAlarm = {
+            planla: jest.fn().mockResolvedValue(true),
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn().mockResolvedValue(undefined),
+        };
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = nativeAlarm;
+        takvimCakismaTeslimcisiniAyarla(null);
+        try {
+            mockTakvimEtkinlikleri.mockResolvedValue(toplantilar().map((t) => ({ ...t, title: 'Gizli proje' })));
+            const ayar = takvimCakismaAyarlariniNormalize({
+                aktif: true,
+                baslikGoster: true,
+                rizaZamani: '2026-10-01T00:00:00.000Z',
+                sesliOnayi: true,
+                alarmOnayi: true,
+                adimlar: [{ esikDk: 30, siklik: { herDk: 10 }, kanallar: { bildirim: true, sesli: true, alarm: true } }],
+            });
+            disk.set(DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI, JSON.stringify(ayar));
+            await TakvimCakismaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL);
+
+            const dis = await defterDisGirdisiniOku();
+            const g = temelGirdi('android', { takvimCakisma: dis.takvimCakisma });
+            expect(say(g, 'alarm')).toBe(7);
+            expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
+            expect(planlananlar().filter((p) => takvimCakismaKimligiMi(String(p.identifier))).length).toBe(say(g, 'takvimCakisma'));
+            expect(say(g, 'takvimCakisma')).toBe(14);
+            expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
+            expect(say(g, 'anons')).toBe(say(g, 'takvimCakisma'));
+            expect(
+                bildirimDefteriOlustur(g)
+                    .filter((k) => k.kaynak === 'alarm' || k.kaynak === 'anons')
+                    .every((k) => k.pay === 'takvimCakisma')
+            ).toBe(true);
+            expect(nativeAlarm.onekliIptalEt).toHaveBeenCalledWith('takvim_cakisma_');
+            expect(nativeAlarm.kanallariTemizle).not.toHaveBeenCalled();
+            const [kimlik, , ham] = nativeAlarm.planla.mock.calls[0];
+            const yuk = JSON.parse(ham);
+            expect(kimlik).toMatch(/^takvim_cakisma_\d{4}-\d{2}-\d{2}_ikindi$/);
+            // "Kıldım" FARZ yazmasın: BİLGİ türü, takvim yükü, ertelenmez, vakit_bildirim düşüşü.
+            expect(yuk.tur).toBe('bilgi');
+            expect(yuk.veri).toEqual({ tip: 'takvim_cakisma', vakit: 'ikindi', tarih: expect.any(String) });
+            expect(yuk.vakitAdi).toBe('Takvim');
+            expect(yuk.erteleSinirMs).toBe(0);
+            expect(yuk.kanalId).toBe('vakit_bildirim');
+            // Pencere sonu = blok başı (tetikten 30 dk sonra).
+            expect(yuk.cikisMs - yuk.tetikMs).toBe(30 * 60000);
+            // GİZLİLİK: alarm ekranı ve sesli anons ad taşımaz (ayar açık olsa bile).
+            for (const [, , h] of nativeAlarm.planla.mock.calls) expect(String(h)).not.toContain('Gizli');
+            for (const c of mockPlanlaAnons.mock.calls) expect(JSON.stringify(c)).not.toContain('Gizli');
+            // Alarm olmayan tekrar bildiriminde ayar açık → ad görünür.
+            const tekrar = planlananlar().find((p) => /_ikindi_\d+$/.test(String(p.identifier)));
+            expect(JSON.stringify(tekrar?.content)).toContain('Gizli proje');
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+            takvimCakismaTeslimcisiniAyarla(null);
+        }
     });
 });
 

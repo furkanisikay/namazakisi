@@ -4,16 +4,21 @@
  */
 const mockIste = jest.fn();
 const mockOku = jest.fn();
+const mockTakvimler = jest.fn();
+const mockEtkinlikler = jest.fn();
 jest.mock('expo-calendar/legacy', () => ({
+    EntityTypes: { EVENT: 'event' },
     requestCalendarPermissionsAsync: (...a: unknown[]) => mockIste(...a),
     getCalendarPermissionsAsync: (...a: unknown[]) => mockOku(...a),
+    getCalendarsAsync: (...a: unknown[]) => mockTakvimler(...a),
+    getEventsAsync: (...a: unknown[]) => mockEtkinlikler(...a),
 }));
 const mockInfo = jest.fn();
 jest.mock('../../../core/utils/Logger', () => ({
     Logger: { info: (...a: unknown[]) => mockInfo(...a), warn: jest.fn(), error: jest.fn() },
 }));
 
-import { takvimIzniIste } from '../TakvimEtkinlikOkuyucu';
+import { cakismaEtkinlikleriniOku, takvimIzniIste } from '../TakvimEtkinlikOkuyucu';
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -49,5 +54,48 @@ describe('takvimIzniIste', () => {
     it('ret ama yeniden sorulabilir', async () => {
         mockIste.mockResolvedValue({ status: 'denied', canAskAgain: true, granted: false });
         await expect(takvimIzniIste()).resolves.toEqual({ verildi: false, tekrarSorulabilir: true });
+    });
+});
+
+describe('cakismaEtkinlikleriniOku — eşzamanlı çağrılar (Promise.all)', () => {
+    const bas = new Date(2026, 9, 12);
+    const bit = new Date(2026, 9, 20);
+    const etkinlik = {
+        startDate: new Date(2026, 9, 13, 14, 0).toISOString(),
+        endDate: new Date(2026, 9, 13, 15, 0).toISOString(),
+        allDay: false,
+        availability: 'busy',
+        status: 'confirmed',
+        title: 'Toplantı',
+        notes: '',
+    };
+
+    beforeEach(() => {
+        mockOku.mockResolvedValue({ status: 'granted' });
+        mockTakvimler.mockResolvedValue([{ id: 'is' }]);
+        mockEtkinlikler.mockResolvedValue([etkinlik]);
+    });
+
+    it('aynı aralığın eşzamanlı okumaları TEK köprü turunu paylaşır, sonuçlar bağımsız kopyadır', async () => {
+        const [a, b] = await Promise.all([cakismaEtkinlikleriniOku(bas, bit), cakismaEtkinlikleriniOku(bas, bit)]);
+        expect(mockEtkinlikler).toHaveBeenCalledTimes(1);
+        expect(a).toEqual(b);
+        expect(a.durum === 'tamam' && b.durum === 'tamam' && a.etkinlikler !== b.etkinlikler).toBe(true);
+    });
+
+    it('ardışık okuma KALICI önbelleğe takılmaz (takvim dışarıdan değişir)', async () => {
+        await cakismaEtkinlikleriniOku(bas, bit);
+        await cakismaEtkinlikleriniOku(bas, bit);
+        expect(mockEtkinlikler).toHaveBeenCalledTimes(2);
+    });
+
+    it('farklı aralıklar paylaşılmaz; hata paylaşılan çağrılara aynen döner ve sonraki tur yeniden dener', async () => {
+        await Promise.all([cakismaEtkinlikleriniOku(bas, bit), cakismaEtkinlikleriniOku(bas, new Date(2026, 9, 21))]);
+        expect(mockEtkinlikler).toHaveBeenCalledTimes(2);
+        mockEtkinlikler.mockRejectedValueOnce(new Error('binder'));
+        const [x, y] = await Promise.all([cakismaEtkinlikleriniOku(bas, bit), cakismaEtkinlikleriniOku(bas, bit)]);
+        expect(x).toEqual({ durum: 'hata' });
+        expect(y).toEqual({ durum: 'hata' });
+        await expect(cakismaEtkinlikleriniOku(bas, bit)).resolves.toMatchObject({ durum: 'tamam' });
     });
 });

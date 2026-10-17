@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalTakvimCakismaServisi } from '../../data/local/LocalTakvimCakismaServisi';
 import { TakvimCakismaServisi } from '../../domain/services/TakvimCakismaServisi';
 import {
-    VARSAYILAN_TAKVIM_CAKISMA_AYARLARI,
+    takvimCakismaAyarlariniBirlestir,
+    varsayilanTakvimCakismaAyarlari,
     type TakvimCakismaAyarlari,
 } from '../../core/takvimCakisma/takvimCakismaAyarlari';
 import type { RootState } from './store';
@@ -14,7 +15,7 @@ interface TakvimCakismaState {
 }
 
 const initialState: TakvimCakismaState = {
-    ayarlar: { ...VARSAYILAN_TAKVIM_CAKISMA_AYARLARI },
+    ayarlar: varsayilanTakvimCakismaAyarlari(),
     yukleniyor: false,
     hata: null,
 };
@@ -28,15 +29,16 @@ export const takvimCakismaAyarlariniYukle = createAsyncThunk('takvimCakisma/yukl
  * store'dan okunup servise PARAMETRE geçilir (cuma deseni).
  *
  * RIZA: `aktif: true` yalnız `rizaZamani` ile birlikte anlamlıdır (normalize
- * rızasız açık kaydı kapatır). Kapatmak rıza kaydını SİLER — yeniden açan
- * kullanıcı açıklamayı yeniden görür.
+ * rızasız açık kaydı kapatır). Kapatmak YALNIZ takvim rıza kaydını SİLER — yeniden açan
+ * kullanıcı açıklamayı yeniden görür; sesli/alarm rızası (`sesliOnayi`, `alarmOnayi`)
+ * ayardır, kalır (nafile emsali). Birleştirme + göç saf modülde
+ * (`takvimCakismaAyarlariniBirlestir`): eski `oncedenDk` değişikliği ilk adıma yazılır.
  */
 export const takvimCakismaAyariniGuncelle = createAsyncThunk(
     'takvimCakisma/guncelle',
     async (degisiklik: Partial<TakvimCakismaAyarlari>, { getState }) => {
         const state = getState() as RootState;
-        const yeni: TakvimCakismaAyarlari = { ...state.takvimCakisma.ayarlar, ...degisiklik };
-        if (degisiklik.aktif === false) delete yeni.rizaZamani;
+        const yeni: TakvimCakismaAyarlari = takvimCakismaAyarlariniBirlestir(state.takvimCakisma.ayarlar, degisiklik);
 
         const kaydedildi = await LocalTakvimCakismaServisi.saveAyarlar(yeni);
         if (!kaydedildi) throw new Error('Takvim çakışması ayarı kaydedilemedi');

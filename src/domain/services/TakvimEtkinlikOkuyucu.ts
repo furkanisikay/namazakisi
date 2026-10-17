@@ -96,10 +96,34 @@ export async function takvimIzniIste(): Promise<TakvimIzinIstekSonucu> {
 }
 
 /**
+ * Süren okumalar (aralık anahtarıyla). Konum yayması, açılış zinciri ve bildirim defteri
+ * (`Promise.all`) AYNI aralığı aynı anda okuyabilir: her biri ayrı köprü turu açarsa takvim
+ * sağlayıcısı (binder) gereksiz yere yorulur ve yarışan turlar farklı anlık görüntü görebilir.
+ * Eşzamanlı çağrılar TEK okumayı paylaşır; okuma bitince kayıt silinir (KALICI önbellek YOK —
+ * takvim dışarıdan değişir, her tur taze okur).
+ */
+const surenOkumalar = new Map<string, Promise<TakvimOkumaSonucu>>();
+
+/** Paylaşılan sonucun kopyası — bir tüketicinin diziyi değiştirmesi ötekine sızmasın. */
+const kopyala = (s: TakvimOkumaSonucu): TakvimOkumaSonucu =>
+    s.durum === 'tamam' ? { durum: 'tamam', etkinlikler: s.etkinlikler.map((e) => ({ ...e })) } : s;
+
+/**
  * [baslangic, bitis) aralığındaki etkinlikleri tüm etkinlik takvimlerinden
- * okuyup çakışma süzgecinden geçirir. ASLA fırlatmaz.
+ * okuyup çakışma süzgecinden geçirir. ASLA fırlatmaz. Aynı aralığın eşzamanlı
+ * okumaları tek köprü turunu paylaşır.
  */
 export async function cakismaEtkinlikleriniOku(baslangic: Date, bitis: Date): Promise<TakvimOkumaSonucu> {
+    const anahtar = `${baslangic.getTime()}|${bitis.getTime()}`;
+    let okuma = surenOkumalar.get(anahtar);
+    if (!okuma) {
+        okuma = etkinlikleriOku(baslangic, bitis).finally(() => surenOkumalar.delete(anahtar));
+        surenOkumalar.set(anahtar, okuma);
+    }
+    return kopyala(await okuma);
+}
+
+async function etkinlikleriOku(baslangic: Date, bitis: Date): Promise<TakvimOkumaSonucu> {
     const Calendar = modulAl();
     if (!Calendar) return { durum: 'hata' };
     const izin = await takvimIzinDurumunuOku();
