@@ -578,6 +578,9 @@ jobs:
                 build_aab: 'true',
                 build_apk: 'false',
                 internal_a_gonder: 'true',
+                // Saat (Wear OS) + TV her telefon sürümüyle birlikte (ayrı iş;
+                // başarısız olursa telefon gönderimini durdurmaz).
+                saat_tv: 'ikisi',
               },
             });
             console.log('✅ EAS Build kuyruğa alındı → internal track');
