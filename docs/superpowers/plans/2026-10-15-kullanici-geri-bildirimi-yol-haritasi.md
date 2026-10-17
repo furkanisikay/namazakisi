@@ -28,18 +28,18 @@ Kurallar:
 
 | # | Madde | Durum | Not |
 |---|---|---|---|
-| 2.1 | Tüm hatırlatma yüzeyleri aynı yetenekler | bitti (v0.32.0) | `PencereTanimi` varsayılanı HER yetenek açık (alarm, ses, kanal, sıklık); kapatma gerekçeli istisna. Nafile + cuma + camiye gitme aynı kart. |
+| 2.1 | Tüm hatırlatma yüzeyleri aynı yetenekler | bitti (v0.35.0–v0.37.0: cuma, camiye gitme, yatış, takvim de ortak kartta) | `PencereTanimi` varsayılanı HER yetenek açık (alarm, ses, kanal, sıklık); kapatma gerekçeli istisna. Nafile + cuma + camiye gitme aynı kart. |
 | 2.2 | Alarm kapsamı: ilk uyarı / her uyarı | bitti (v0.32.0) | Adım başına alan. Android muhafız payı (360) defterle ölçülür; iOS AlarmKit sınırı araştırılacak. |
 | 2.3 | Önizlemede alarm | bitti (v0.32.0) | Alarm çalacak tetikte ikon + saat. |
 | 2.4 | Kapalı eski adımlar | bitti (v0.32.0) | Göç kullanıcı seçimini ezmez → yalnız içeriği varsayılan olan gölge adımlar silinir + adım başına "Sil". |
-| 2.5 | Nafile "ana ekranda göster" | bitti (v0.32.0) | Üç nafile için ayrı ayrı. |
+| 2.5 | Nafile "ana ekranda göster" | bitti (v0.32.0; v0.34.0: anahtar her nafilenin kendi kartında) | Üç nafile için ayrı ayrı. |
 | 2.6 | "Kıldım işaretleyebilen uygulamalar" | bitti (v0.32.0) | Ayarlar'dan çıkar, yalnız Otomasyon sayfasında. |
 
 ## Faz 3 — Tasarım teslimleri (önce onay, sonra kod)
 
 | # | Madde | Durum | Not |
 |---|---|---|---|
-| 3.1 | Kaza defteri 2.0 (defter/kayıt modeli) | onay bekliyor (PR #310) | Ekleme-yalnız kayıt defteri; hesaplanan taban ayrı kayıt (yeniden hesap eskisini EZMEZ); otomatik ekleme geri alınabilir ve kaynağıyla izlenir; seçmeli temizlik. Diyagram + ekranlar sahibe gösterilecek. |
+| 3.1 | Kaza defteri 2.0 (defter/kayıt modeli) | bitti (v0.33.0) | Ekleme-yalnız kayıt defteri; hesaplanan taban ayrı kayıt (yeniden hesap eskisini EZMEZ); otomatik ekleme geri alınabilir ve kaynağıyla izlenir; seçmeli temizlik. Diyagram + ekranlar sahibe gösterilecek. |
 | 3.2 | Ana ekran | bekliyor | Birebir ekran görüntüsüyle onay. |
 | 3.3 | Ayarlar bilgi mimarisi | bekliyor | Çok ekran, çok kaydırma → gruplama/arama. |
 | 3.4 | Kıble: AR yerine kendi çözümümüz + pusula tasarımı | bekliyor | KARAR (2026-10-16): kameralı AR; KAMERA izni verilmezse kamerasız pusula. |
@@ -67,7 +67,12 @@ Kurallar:
 | 5.2 | Samsung Modlar ve Rutinler | araştırma | Bildirim tetikleyiciyle "aramayı reddet / mesaj gönder" seçilemiyor; Namaz modu Modlar listesinde görünmüyor (Rahatsız Etmeyin kuralı olarak yaşıyor). Üçüncü taraf tetik yolu araştırılacak. |
 | 5.3 | Apple TV uygulaması | bekliyor | Yeni tvOS hedefi; imza için sahibin etkileşimli EAS adımı. |
 
+## Yapılanlar (2026-10-17)
+- Saat (Wear OS) ve TV paketleri her telefon sürümüyle Play'in `wear:internal` / `tv:internal` kanallarına gider (`expo-build.yml` > `saat_tv`). TV kanalı Play Console'da "Özel sürüm kanalı" açılınca dolar.
+
 ## Sahipten beklenenler
+- Play Console: Wear OS dahili test kullanıcı listesi + Android TV özel kanal.
+- Namaz modu: Rahatsız Etmeyin mi, yalnız titreşim mi (karar).
 - Sayaç bildirimi göründüğü an haber (Now Bar dökümü için).
 
 ## Kararlar (2026-10-15)
