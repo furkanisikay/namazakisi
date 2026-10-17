@@ -21,6 +21,7 @@ on:
           - yaz
           - surumler
           - uretime-al
+          - cihaz-kareleri
         default: oku
       surum:
         description: "uretime-al için sürüm (ör. 0.28.2); not docs/app-store/surum-notlari.md'den okunur"
@@ -32,6 +33,10 @@ on:
         default: ''
       kare_run_id:
         description: 'Görseller için android-ekran-goruntuleri çalışma kimliği (boş = yalnız metin)'
+        required: false
+        default: ''
+      cihaz_run_id:
+        description: 'cihaz-kareleri için android-ekran-goruntuleri (tur=saat|tv|cihazlar) çalışma kimliği'
         required: false
         default: ''
 
@@ -84,6 +89,26 @@ jobs:
           path: mockup/
           retention-days: 14
 
+      - name: ⌚ Saat karelerini indir
+        if: ${{ inputs.mod == 'cihaz-kareleri' && inputs.cihaz_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: android-saat-kareleri
+          path: indirilen-saat
+          run-id: ${{ inputs.cihaz_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📺 TV karelerini indir
+        if: ${{ inputs.mod == 'cihaz-kareleri' && inputs.cihaz_run_id != '' }}
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: android-tv-kareleri
+          path: indirilen-tv
+          run-id: ${{ inputs.cihaz_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 🏪 Play kaydını ${{ inputs.mod }}
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
@@ -91,6 +116,13 @@ jobs:
           set -eo pipefail
           if [ "${{ inputs.mod }}" = "yaz" ] && [ -n "${{ inputs.kare_run_id }}" ]; then
             node scripts/play-magaza.js yaz --gorseller mockup
+          elif [ "${{ inputs.mod }}" = "cihaz-kareleri" ]; then
+            # Saat: Play kare (1:1) ister → yuvarlak profil; TV: 16:9 kareler.
+            mkdir -p saat tv
+            [ -d indirilen-saat ] && find indirilen-saat -path '*yuvarlak*' -name '[0-9][0-9]-*.png' -exec cp {} saat/ \;
+            [ -d indirilen-tv ] && find indirilen-tv -name '[0-9][0-9]-*.png' -exec cp {} tv/ \;
+            ls -la saat tv
+            node scripts/play-magaza.js cihaz-kareleri --saat saat --tv tv
           elif [ "${{ inputs.mod }}" = "uretime-al" ]; then
             EK=""
             [ -n "${{ inputs.oran }}" ] && EK="--oran ${{ inputs.oran }}"

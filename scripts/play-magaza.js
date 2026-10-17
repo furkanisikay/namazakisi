@@ -191,9 +191,9 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle'];
+    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
@@ -272,6 +272,39 @@ function playMetinleri() {
             const c = await api('POST', '/edits/' + editId + ':commit');
             if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
             console.log('YAYINLANDI (uretim kanali commit edildi).');
+            return;
+        }
+
+        if (mod === 'cihaz-kareleri') {
+            // Wear OS / Android TV form faktörü kareleri (Play'in opt-in önkoşulu). Yalnız
+            // `wearScreenshots` / `tvScreenshots` değişir; telefon kareleri ve metinler DOKUNULMAZ.
+            const hedefler = [
+                ['saat', 'wearScreenshots'],
+                ['tv', 'tvScreenshots'],
+            ];
+            let yuklenen = 0;
+            for (const [bayrak, tur] of hedefler) {
+                const klasor = arg(bayrak);
+                if (!klasor || !fs.existsSync(klasor)) continue;
+                const kareler = fs
+                    .readdirSync(klasor)
+                    .filter((f) => /^\d.*\.png$/i.test(f))
+                    .sort()
+                    .slice(0, 8);
+                if (!kareler.length) continue;
+                const sil = await api('DELETE', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
+                console.log('eski ' + tur + ' silindi:', sil.kod);
+                for (const f of kareler) {
+                    const r = await gorselYukle(editId, tur, path.join(klasor, f));
+                    console.log('  ' + tur + ' ' + f + ' -> ' + r.kod);
+                    if (r.kod >= 300) throw new Error(f + ' yuklenemedi: ' + JSON.stringify(r.j).slice(0, 300));
+                    yuklenen++;
+                }
+            }
+            if (!yuklenen) throw new Error('yuklenecek kare yok (--saat <klasor> / --tv <klasor>)');
+            const c = await api('POST', '/edits/' + editId + ':commit');
+            if (c.kod >= 300) throw new Error('commit basarisiz: ' + c.kod + ' ' + JSON.stringify(c.j).slice(0, 300));
+            console.log('YAYINLANDI: ' + yuklenen + ' saat/TV karesi');
             return;
         }
 
