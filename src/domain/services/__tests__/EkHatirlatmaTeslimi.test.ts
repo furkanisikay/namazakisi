@@ -180,6 +180,23 @@ describe('Android — ek hatırlatma teslimi', () => {
         expect(yuk.kanalId).toBe('vakit_bildirim');
     });
 
+    test('CAMİDEYKEN (#297, plan §4.5): alarm ve sesli anons KURULMAZ, bildirim yine gelir (bugünkü kapı korunur)', async () => {
+        const { sessizBitisMs } = require('../../../../modules/expo-cami-geofence/src');
+        (sessizBitisMs as jest.Mock).mockResolvedValue(Date.now() + 3 * 60 * DK);
+        const anons = require('../../../../modules/expo-countdown-notification/src').planlaAnons as jest.Mock;
+        try {
+            const t = yeni();
+            await t.hazirla();
+            mockKopru.planla.mockResolvedValue(true);
+            await t.uyariPlanla(teslim({ kanallar: { bildirim: true, sesli: true, alarm: true }, alarm: true, sesliAnons: true, anonsMetni: 'Cuma için öğle vaktine 1 saat kaldı.' }));
+            expect(mockKopru.planla).not.toHaveBeenCalled();
+            expect(anons).not.toHaveBeenCalled();
+            expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
+        } finally {
+            (sessizBitisMs as jest.Mock).mockResolvedValue(0);
+        }
+    });
+
     test('BİLGİ türü alarm: yük `tur: bilgi`, `cikisMs` = pencere sonu, ad = yüzey adı, data kendi yükü', async () => {
         const t = yeni();
         await t.hazirla();
