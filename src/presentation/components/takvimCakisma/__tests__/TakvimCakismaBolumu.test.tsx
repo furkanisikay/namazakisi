@@ -21,7 +21,8 @@ jest.mock('../../../../core/theme', () => ({
         birincilMetin: '#FFFFFF',
         arkaplan: '#FAFAFA',
         kartArkaplan: '#FFFFFF',
-        durum: { uyari: '#FFC107', hata: '#F44336', basarili: '#4CAF50', bilgi: '#2196F3' },
+        bilgi: '#2196F3',
+        durum: { uyari: '#FFC107', hata: '#F44336', basarili: '#4CAF50', bilgi: '#2196F3', dikkat: '#E65100' },
         hata: '#F44336',
     }),
 }));
@@ -30,6 +31,18 @@ jest.mock('../../../../core/feedback', () => ({
 }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+jest.mock('../../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
+jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: jest.fn() }) }));
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    sesSec: jest.fn(),
+    sesiOnizle: jest.fn(),
+    onizlemeyiDurdur: jest.fn(),
+    trDestekleniyorMu: () => Promise.resolve(true),
+}));
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({
+    OnizlemeSesServisi: { bildirimSesiniCal: jest.fn(), bitisiniBekle: jest.fn(), temizle: jest.fn() },
+}));
 
 let mockDisk: TakvimCakismaAyarlari = takvimCakismaAyarlariniNormalize(null);
 jest.mock('../../../../data/local/LocalTakvimCakismaServisi', () => ({
@@ -55,7 +68,7 @@ jest.mock('../../../../domain/services/TakvimEtkinlikOkuyucu', () => ({
     takvimIzniIste: (...a: unknown[]) => mockIzinIste(...a),
 }));
 
-import { TakvimCakismaBolumu } from '../TakvimCakismaBolumu';
+import { TakvimCakismaBolumu, TAKVIM_CAKISMA_YON_GEREKCESI } from '../TakvimCakismaBolumu';
 
 const KONUM = { lat: 41.0, lng: 29.0 };
 
@@ -142,9 +155,56 @@ describe('TakvimCakismaBolumu', () => {
         mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
         mockIzinDurumu.mockResolvedValue('verildi');
         const { findByText, getByLabelText, store } = kur();
-        await findByText('Ne kadar önce');
+        await findByText('Etkinlik adını gösterin');
         fireEvent(getByLabelText('Takvim çakışması uyarısı'), 'valueChange', false);
         await waitFor(() => expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false));
+        expect(mockDisk.rizaZamani).toBeUndefined();
+    });
+
+    it('ortak kart: YÖN GEREKÇESİ ekranda, akış önizlemesi; ad gizliliği açıklaması', async () => {
+        mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
+        mockIzinDurumu.mockResolvedValue('verildi');
+        const ekran = kur();
+        expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
+        expect(ekran.getByText(TAKVIM_CAKISMA_YON_GEREKCESI)).toBeTruthy();
+        expect(ekran.getByText(/Sesli anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
+        expect(ekran.getByText(/ilk uyarı etkinlikten 30 dk önce gelir/)).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('Takvim çakışması akışını önizleyin'));
+        expect(ekran.getByText('Takvim çakışması akışı')).toBeTruthy();
+    });
+
+    it('STANDART yetenekler adım detayında: kanal çipleri + GERÇEK ALARM; sesli rıza KENDİ alanına, adsız örnekle', async () => {
+        mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
+        mockIzinDurumu.mockResolvedValue('verildi');
+        const ekran = kur();
+        fireEvent.press(await ekran.findByLabelText(/^Hatırlatma — düzenleyin/));
+        expect(ekran.getByLabelText('Kapalı')).toBeTruthy();
+        expect(ekran.getByLabelText('Sesli anons')).toBeTruthy();
+        expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
+        fireEvent.press(ekran.getByLabelText('İkisi de'));
+        expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+        expect(ekran.getAllByText(/Takviminizdeki bir etkinlik öğle vaktine denk geliyor/).length).toBeGreaterThan(0);
+        fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+        await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));
+        expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        // Takvim rızası korunur (sesli rızası ayrı alan).
+        expect(mockDisk.rizaZamani).toBe('2026-10-01T00:00:00.000Z');
+        expect(mockDisk.aktif).toBe(true);
+    });
+
+    it('kapatmak sesli/alarm rızasını SİLMEZ (yalnız takvim rızası)', async () => {
+        mockDisk = takvimCakismaAyarlariniNormalize({
+            aktif: true,
+            rizaZamani: '2026-10-01T00:00:00.000Z',
+            sesliOnayi: true,
+            alarmOnayi: true,
+        });
+        mockIzinDurumu.mockResolvedValue('verildi');
+        const { findByText, getByLabelText, store } = kur();
+        await findByText('Etkinlik adını gösterin');
+        fireEvent(getByLabelText('Takvim çakışması uyarısı'), 'valueChange', false);
+        await waitFor(() => expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false));
+        expect(mockDisk).toMatchObject({ sesliOnayi: true, alarmOnayi: true });
         expect(mockDisk.rizaZamani).toBeUndefined();
     });
 });
