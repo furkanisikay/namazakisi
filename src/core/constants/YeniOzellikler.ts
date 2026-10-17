@@ -91,7 +91,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
     {
         id: 'ortak-hatirlatma-yetenekleri',
         platformlar: ['android', 'ios'],
-        surum: '0.33.0',
+        surum: '0.34.0',
         tarih: '2026-10-17',
         baslik: 'Nafile Hatırlatmalarında Gerçek Alarm',
         aciklama:

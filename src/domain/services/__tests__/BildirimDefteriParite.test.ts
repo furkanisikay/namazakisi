@@ -855,10 +855,9 @@ describe('yatış hatırlatması + gün sonu muhasebesi (issue #290): defter = s
             });
             await YatisHatirlatmaServisi.getInstance().hatirlatmalariGuncelle(ISTANBUL, ayar, new Date(SABAH));
             const g = temelGirdi('android', { yatis: ayar });
-            // Pay (`ANDROID_YATIS_PAYI` 21) üreticide KRONOLOJİK keser: gün başına alarm 1 +
-            // (bildirim + anons) × 2 = 5 → ilk günler sığar, uzak günler sonraki turda.
-            expect(say(g, 'alarm')).toBeGreaterThan(0);
-            expect(say(g, 'alarm')).toBeLessThan(7);
+            // Pay (`ANDROID_YATIS_PAYI` 35) üreticide KRONOLOJİK keser: gün başına alarm 1 +
+            // (bildirim + anons) × 2 = 5 → sesli + tekrarlı bu kurulumda 7 günün TAMAMI sığar.
+            expect(say(g, 'alarm')).toBe(7);
             expect(nativeAlarm.planla).toHaveBeenCalledTimes(say(g, 'alarm'));
             expect(planlananlar().filter((p) => yatisKimligiMi(String(p.identifier))).length).toBe(say(g, 'yatis'));
             expect(mockPlanlaAnons).toHaveBeenCalledTimes(say(g, 'anons'));
