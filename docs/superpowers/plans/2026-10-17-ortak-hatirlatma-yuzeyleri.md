@@ -6,6 +6,8 @@
 > K2–K5 kabul, K6 = dört PR); inceleme bulguları §3.2, §4.1, §4.2, §4.4, yeni §4.5–§4.6, §8 ve
 > §10'a işlendi. Kalan tek onay §9'daki ekran taslağıdır (AGENTS.md "Ekran / UI tasarım standardı").
 > PR-0 (nafile göstergesi + "Neler Yeni" + bu plan) bu dalda TAMAMLANDI.
+> PR-B (camiye gitme + yatış) uygulandı: §5.3'teki "her tetiğin içeriği tetik anında" ile "tekrar =
+> aynı içerik" çelişkisi İÇERİK GÜNDE BİR KEZ (kaymış ilk tetikte) seçilerek çözüldü (AGENTS.md yatış bölümü).
 
 ## 0. Özet
 
