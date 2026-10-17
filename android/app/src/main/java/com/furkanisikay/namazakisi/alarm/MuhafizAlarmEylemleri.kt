@@ -39,6 +39,9 @@ object MuhafizAlarmEylemleri {
     }
 
     private fun kildim(context: Context, yuk: MuhafizAlarmKurallari.Yuk) {
+        // Bilgi alarmı (cuma/camiye gitme/takvim): düğme çizilmez; eski/elle gelen yayına
+        // karşı kapı — FARZ öğle ASLA yazılmaz.
+        if (!MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk)) return
         // NAFİLE alarmı (issue #74 + #273): kendi kuyruğu, kendi iptalleri — FARZ ASLA.
         val nafile = yuk.nafileTuru?.let { NafileKildimKurallari.Nafile(yuk.tarih, it) }
         if (nafile != null) {
@@ -68,7 +71,7 @@ object MuhafizAlarmEylemleri {
 
     private fun ertele(context: Context, yuk: MuhafizAlarmKurallari.Yuk) {
         // Nafile ertelenmez: düğme zaten çizilmez (sınır 0); eski/elle gelen yayına karşı kapı.
-        if (yuk.nafileTuru != null) return
+        if (yuk.nafileTuru != null || yuk.bilgi) return
         try {
             BildirimErteleIsleyici.alarmdanErtele(
                 context,

@@ -83,6 +83,7 @@ const OZEL: OzelTeslim = {
     varsayilanKanalId: 'vakit_bildirim',
     varsayilanSistemSesi: true,
     alarmAdi: 'Cuma',
+    alarmTuru: 'bilgi',
 };
 
 function teslim(kismi: Partial<UyariPlani> = {}, ozel: OzelTeslim = OZEL): UyariTeslimi {
@@ -177,6 +178,22 @@ describe('Android — ek hatırlatma teslimi', () => {
         await t.uyariPlanla(teslim({ kanallar: { bildirim: true, alarm: true }, alarm: true }));
         const yuk = mockKopru.planla.mock.calls[0][0] as { kanalId: string };
         expect(yuk.kanalId).toBe('vakit_bildirim');
+    });
+
+    test('BİLGİ türü alarm: yük `tur: bilgi`, `cikisMs` = pencere sonu, ad = yüzey adı, data kendi yükü', async () => {
+        const t = yeni();
+        await t.hazirla();
+        mockKopru.planla.mockResolvedValue(true);
+        const te = teslim({ kanallar: { bildirim: true, alarm: true }, alarm: true });
+        await t.uyariPlanla(te);
+        const yuk = mockKopru.planla.mock.calls[0][0] as Record<string, unknown>;
+        expect(yuk.tur).toBe('bilgi');
+        expect(yuk.cikisMs).toBe(te.cikis!.getTime());
+        expect(yuk.erteleSinirMs).toBe(0);
+        expect(yuk.vakitAdi).toBe('Cuma');
+        expect(yuk.veri).toEqual({ tip: 'cuma_hatirlatma' });
+        // Alarm o tetiğin bildiriminin YERİNE geçer.
+        expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
     });
 });
 

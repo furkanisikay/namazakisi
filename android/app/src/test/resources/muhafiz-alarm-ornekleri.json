@@ -69,6 +69,44 @@
       "veri": { "tip": "nafile", "tur": "teheccud", "tarih": "2026-10-13" }
     }
   },
+  "bilgi": {
+    "aciklama": "Bilgi alarmi (ortak hatirlatma yuzeyleri, plan 4.2): cuma/camiye gitme/takvim. Kimlik vakit/nafile degil; tur 'bilgi' acikca yazilir. Yalniz Kapat: Kildim ve Ertele YOK, otomasyon olayi dogmaz. cikisMs = pencere sonu (ogle girisi). 'tur' alani olmayan eski yuk ('yuk' ornegi) kimlikten cozulur.",
+    "girdi": {
+      "kimlik": "cuma_hatirlatma_2026-10-16",
+      "tetikMs": 1791020000000,
+      "baslik": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+      "metin": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.",
+      "vakit": "ogle",
+      "vakitAdi": "Cuma",
+      "tarih": "2026-10-16",
+      "cikisMs": 1791023600000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "bildirimSesi": "varsayilan",
+      "kanalId": "vakit_bildirim",
+      "veri": { "tip": "cuma_hatirlatma" },
+      "tur": "bilgi"
+    },
+    "yuk": {
+      "surum": 1,
+      "kimlik": "cuma_hatirlatma_2026-10-16",
+      "tetikMs": 1791020000000,
+      "baslik": "Cuma · 1 sa kaldı · namaz yaklaşıyor",
+      "metin": "Öğle vaktine 1 saat kaldı. Hazırlan, camiye yola çık.",
+      "vakit": "ogle",
+      "vakitAdi": "Cuma",
+      "tarih": "2026-10-16",
+      "cikisMs": 1791023600000,
+      "erteleSinirMs": 0,
+      "seviye": 1,
+      "alarmKanalId": "namaz_alarm",
+      "alarmKanalAdi": "Namaz alarmı",
+      "sesUri": null,
+      "kanalId": "vakit_bildirim",
+      "veri": { "tip": "cuma_hatirlatma" },
+      "tur": "bilgi"
+    }
+  },
   "kanallar": [
     { "ses": "varsayilan", "beklenen": "namaz_alarm" },
     { "ses": "", "beklenen": "namaz_alarm" },

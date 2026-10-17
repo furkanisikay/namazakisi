@@ -270,7 +270,7 @@ class MuhafizAlarmActivity : Activity() {
         // Boşluk: düğmeler başparmağın eriştiği alta.
         kok.addView(View(this), LinearLayout.LayoutParams(1, 0, 1f))
 
-        val kildimVar = kildimYolu() != KildimYolu.GIZLE
+        val kildimVar = MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk) && kildimYolu() != KildimYolu.GIZLE
         if (kildimVar) {
             kok.addView(
                 dugme(getString(R.string.alarm_kildim), dolu = true, eylem = MuhafizAlarmAlici.EYLEM_KILDIM),

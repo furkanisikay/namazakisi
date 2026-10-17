@@ -191,8 +191,9 @@ object MuhafizAlarmBildirimi {
             .setLocalOnly(true)
             // Kilit ekranında içerik "özel": sistem [herkeseAcikSurum]'u (Kıldım'sız) gösterir.
             .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .addAction(kildimEylemi(context, yuk, hamYuk))
             .apply {
+                // Bilgi alarmında (cuma/camiye gitme/takvim) kılınacak namaz yoktur.
+                if (MuhafizAlarmKurallari.kildimDugmesiVarMi(yuk)) addAction(kildimEylemi(context, yuk, hamYuk))
                 if (MuhafizAlarmKurallari.ertelemeDugmesiVarMi(simdiMs, yuk.erteleSinirMs)) {
                     addAction(0, context.getString(R.string.alarm_ertele), eylemIntenti(context, MuhafizAlarmAlici.EYLEM_ERTELE, yuk, hamYuk))
                 }

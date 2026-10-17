@@ -181,6 +181,16 @@ public enum AlarmKurallari {
         return "nafile_\(tarih)_\(tur)_"
     }
 
+    /// Alarmin TURU kimlikten (ortak hatirlatma yuzeyleri, plan 4.2) — JS `alarmKitTuru`.
+    /// Muhafiz uzayi (plan, erteleme, yatis) "vakit", nafile "nafile", geri kalan (cuma,
+    /// camiye gitme, takvim, coklu muhasebe) "bilgi": bilgi alarminda IKINCIL DUGME YOK —
+    /// vakit girmeden calar, "Kildim" FARZ'i yazardi.
+    public static func alarmTuru(_ kimlik: String) -> String {
+        if kimliktenVakit(kimlik) != nil { return "vakit" }
+        if kimliktenNafile(kimlik) != nil { return "nafile" }
+        return "bilgi"
+    }
+
     /// Muhafiz kimliginin (plan, erteleme, yatis...) namaz gunu + vakti.
     public static func kimliktenVakit(_ kimlik: String) -> (tarih: String, vakit: String)? {
         guard let g = eslesme(vakitDeseni, kimlik), g.count == 2 else { return nil }

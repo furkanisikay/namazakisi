@@ -58,6 +58,17 @@
       "beklenen": "kildim"
     }
   ],
+  "turler": [
+    { "kimlik": "muhafiz_2026-10-13_vakit_ogle_seviye_1_dk_45", "beklenen": "vakit" },
+    { "kimlik": "muhafiz_2026-10-13_vakit_ogle_ertele", "beklenen": "vakit" },
+    { "kimlik": "muhafiz_2026-10-13_vakit_yatsi_yatis", "beklenen": "vakit" },
+    { "kimlik": "nafile_2026-10-13_teheccud_1", "beklenen": "nafile" },
+    { "kimlik": "cuma_hatirlatma_2026-10-16", "beklenen": "bilgi" },
+    { "kimlik": "cuma_hatirlatma_2026-10-16_30", "beklenen": "bilgi" },
+    { "kimlik": "camiye_git_2026-10-13_ogle", "beklenen": "bilgi" },
+    { "kimlik": "takvim_cakisma_2026-10-13_ogle", "beklenen": "bilgi" },
+    { "kimlik": "muhasebe_2026-10-13", "beklenen": "bilgi" }
+  ],
   "iptalSecimi": [
     {
       "ad": "planlama turu CALAN alarma dokunmaz",

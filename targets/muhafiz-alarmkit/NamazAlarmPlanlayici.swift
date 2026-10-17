@@ -121,28 +121,37 @@ enum NamazAlarmCekirdegi {
         // Durdurma dugmesini SISTEM cizer (iOS 26.1+ etiketi degistirilemez) → durdurmak
         // namazi KILINDI SAYMAZ. Ikinci dugme: sinira yer varsa "10 dk ertele", yoksa
         // "Kildim" (bildirimdeki kuralla ayni — `AlarmKurallari.ikincilDugme`).
-        let erteleMi = AlarmKurallari.ikincilDugme(tetikMs: kayit.tetikMs, erteleSinirMs: kayit.erteleSinirMs) == "ertele"
-        let ikinciDugme = erteleMi
-            ? AlarmButton(text: "10 dk ertele", textColor: .white, systemImageName: "clock.arrow.circlepath")
-            : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
+        //
+        // BILGI alarmi (cuma, camiye gitme, takvim — `AlarmKurallari.alarmTuru`) vakit GIRMEDEN
+        // calar: ikinci dugme YOK (yalniz sistemin "Durdur"u); "Kildim" FARZ'i yazardi.
+        let bilgiMi = AlarmKurallari.alarmTuru(kayit.kimlik) == "bilgi"
+        let erteleMi = !bilgiMi && AlarmKurallari.ikincilDugme(tetikMs: kayit.tetikMs, erteleSinirMs: kayit.erteleSinirMs) == "ertele"
+        let ikinciDugme: AlarmButton? = bilgiMi
+            ? nil
+            : erteleMi
+                ? AlarmButton(text: "10 dk ertele", textColor: .white, systemImageName: "clock.arrow.circlepath")
+                : AlarmButton(text: "Kıldım", textColor: .white, systemImageName: "checkmark")
         // Baslik DINAMIK metindir: `LocalizedStringResource(stringLiteral:)` onu bir
         // YERELLESTIRME ANAHTARI sayardi. Interpolasyonla anahtar "%@" olur, deger aynen
         // gosterilir (yerellestirme tablosunda karsiligi aranmaz).
         let baslikDegeri: String.LocalizationValue = "\(kayit.baslik)"
+        let ikinciDavranis: AlarmPresentation.Alert.SecondaryButtonBehavior? = bilgiMi ? nil : .custom
         let alert = AlarmPresentation.Alert(
             title: LocalizedStringResource(baslikDegeri),
             stopButton: AlarmButton(text: "Durdur", textColor: .white, systemImageName: "stop.fill"),
             secondaryButton: ikinciDugme,
-            secondaryButtonBehavior: .custom
+            secondaryButtonBehavior: ikinciDavranis
         )
         let nitelikler = AlarmAttributes<NamazAlarmVerisi>(
             presentation: AlarmPresentation(alert: alert),
             metadata: NamazAlarmVerisi(kimlik: kayit.kimlik),
             tintColor: renk
         )
-        let ikinciNiyet: any LiveActivityIntent = erteleMi
-            ? NamazAlarmErteleIntent(kimlik: kayit.kimlik)
-            : NamazAlarmKildimIntent(kimlik: kayit.kimlik)
+        let ikinciNiyet: (any LiveActivityIntent)? = bilgiMi
+            ? nil
+            : erteleMi
+                ? NamazAlarmErteleIntent(kimlik: kayit.kimlik)
+                : NamazAlarmKildimIntent(kimlik: kayit.kimlik)
         let tarih = Date(timeIntervalSince1970: TimeInterval(kayit.tetikMs) / 1000)
         let yapilandirma = AlarmManager.AlarmConfiguration<NamazAlarmVerisi>.alarm(
             schedule: .fixed(tarih),

@@ -237,4 +237,14 @@ class OtomasyonKurallariTest {
             assertEquals(ad, 3, it.split('\n').size)
         }
     }
+
+    @Test
+    fun ekHatirlatmaKimlikleriVakitCikiyorOlayiDogurmaz() {
+        // Ortak hatırlatma yüzeyleri (plan §4.6): yatış/muhasebe `muhafiz_` uzayındadır ama
+        // plan kimliği değildir; cuma/camiye gitme/takvim vakit girmeden gelir.
+        assertNull(OtomasyonKurallari.cikiyorOlayi("muhafiz_2026-10-13_vakit_yatsi_yatis", null))
+        assertNull(OtomasyonKurallari.cikiyorOlayi("muhafiz_2026-10-13_vakit_yatsi_yatis_15", null))
+        assertNull(OtomasyonKurallari.cikiyorOlayi("muhafiz_2026-10-13_vakit_ogle_muhasebe", null))
+        assertNull(OtomasyonKurallari.cikiyorOlayi("cuma_hatirlatma_2026-10-16_30", null))
+    }
 }

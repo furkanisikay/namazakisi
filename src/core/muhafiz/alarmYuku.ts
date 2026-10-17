@@ -65,6 +65,18 @@ export function alarmKanallariniCikar(matris: MuhafizMatrisi | undefined): strin
     return [...kume].sort();
 }
 
+/**
+ * Alarm yükünün TÜRÜ (ortak hatırlatma yüzeyleri, plan §4.2) — Kotlin `TUR_*`.
+ * - `vakit`: farz vakit (muhafız, yatış) — "Kıldım" FARZ'ı yazar, ertelenebilir.
+ * - `nafile`: nafile alarmı — kendi Kıldım yolu, ertelenmez.
+ * - `bilgi`: vakit GİRMEDEN çalan hatırlatma (cuma, camiye gitme, takvim): yalnız "Kapat";
+ *   Kıldım ve Ertele YOK, otomasyon "vakit çıkıyor" olayı doğmaz. `cikisMs` pencerenin
+ *   SONUDUR (öğle girişi / vakit girişi / etkinlik başı) → Kotlin geç tetik kuralı aynen.
+ * Alan YOKSA Kotlin kimlikten çözer (güncelleme öncesi kurulmuş alarmlar ölmesin —
+ * `ALARM_YUK_SURUMU` bu yüzden ARTMADI).
+ */
+export type AlarmTuru = 'vakit' | 'nafile' | 'bilgi';
+
 export interface AlarmYukuGirdisi {
     kimlik: string;
     tetikMs: number;
@@ -89,6 +101,8 @@ export interface AlarmYukuGirdisi {
     kanalId: string;
     /** Muhafız bildiriminin `data` nesnesi (ertelenen kopyanın gövdesi). */
     veri: Record<string, unknown>;
+    /** Yük türü — verilmezse YAZILMAZ (muhafız/nafile yükü birebir eskisi). */
+    tur?: AlarmTuru;
 }
 
 export interface AlarmYuku {
@@ -109,6 +123,7 @@ export interface AlarmYuku {
     sesUri: string | null;
     kanalId: string;
     veri: Record<string, unknown>;
+    tur?: AlarmTuru;
 }
 
 /** Native `MuhafizAlarm.planla`'ya giden yük. */
@@ -131,5 +146,6 @@ export function alarmYukuOlustur(g: AlarmYukuGirdisi): AlarmYuku {
         sesUri: ozelSesMi(ses) ? ses : null,
         kanalId: g.kanalId,
         veri: g.veri,
+        ...(g.tur ? { tur: g.tur } : {}),
     };
 }

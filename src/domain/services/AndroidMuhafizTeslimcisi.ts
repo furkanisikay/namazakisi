@@ -308,6 +308,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                 vakit,
                 ...(ozel?.alarmAdi ? { vakitAdi: ozel.alarmAdi } : {}),
                 tarih,
+                // Bilgi türünde (cuma/camiye gitme/takvim) `cikis` pencerenin SONUDUR.
                 cikisMs: cikis?.getTime() ?? 0,
                 erteleSinirMs: ertele?.veri.erteleSinirMs ?? 0,
                 seviye: uyari.seviye,
@@ -330,6 +331,7 @@ export class AndroidMuhafizTeslimcisi implements MuhafizTeslimcisi {
                     anonsMetni: uyari.anonsMetni,
                     ...(ertele ? { ...ertele.veri, kanalId } : {}),
                 },
+                ...(ozel?.alarmTuru ? { tur: ozel.alarmTuru } : {}),
             })
         );
         if (!kuruldu) {

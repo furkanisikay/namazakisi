@@ -123,6 +123,12 @@ describe('alarm yükü — Kotlin ile ORTAK örnek (sözleşme)', () => {
     test('NAFİLE alarm yükü (standart yetenek): kendi adı + kendi yükü, örnekle BİREBİR', () => {
         expect(alarmYukuOlustur(ORNEK.nafile.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.nafile.yuk);
     });
+    test('BİLGİ alarm yükü (cuma/camiye gitme/takvim): tur alanı + örnekle BİREBİR', () => {
+        expect(alarmYukuOlustur(ORNEK.bilgi.girdi as AlarmYukuGirdisi)).toEqual(ORNEK.bilgi.yuk);
+    });
+    test('tur verilmezse yükte ALAN YOK (muhafız/nafile yükü birebir eskisi)', () => {
+        expect('tur' in alarmYukuOlustur(ORNEK.girdi as AlarmYukuGirdisi)).toBe(false);
+    });
     test('kanal kimlikleri örnekle aynı ve muhafız GC uzayının DIŞINDA', () => {
         for (const k of ORNEK.kanallar as { ses: string; beklenen: string }[]) {
             expect(alarmKanalIdOlustur(k.ses)).toBe(k.beklenen);

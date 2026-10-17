@@ -12,6 +12,7 @@ import {
     alarmKitIkincilDugme,
     alarmKitIptalSecimi,
     alarmKitKayitlariniCoz,
+    alarmKitTuru,
     alarmKitUuid,
     alarmKitYukuOlustur,
 } from '../alarmKit';
@@ -21,6 +22,7 @@ const FIKSTUR = path.join(__dirname, '../../../../../modules/expo-muhafiz-alarmk
 const fikstur = JSON.parse(fs.readFileSync(FIKSTUR, 'utf8')) as {
     uuidler: { kimlik: string; uuid: string }[];
     dugmeler: { ad: string; tetikMs: number; erteleSinirMs: number; beklenen: 'ertele' | 'kildim' }[];
+    turler: { kimlik: string; beklenen: 'vakit' | 'nafile' | 'bilgi' }[];
     iptalSecimi: {
         ad: string;
         kayitlar: { kimlik: string; caliyor: boolean }[];
@@ -69,6 +71,12 @@ describe('alarmKitUuid — Swift ikiziyle ortak fikstür', () => {
 describe('alarmKitIkincilDugme — bildirimdeki erteleme kuralıyla AYNI', () => {
     test.each(fikstur.dugmeler)('$ad → $beklenen', ({ tetikMs, erteleSinirMs, beklenen }) => {
         expect(alarmKitIkincilDugme(tetikMs, erteleSinirMs)).toBe(beklenen);
+    });
+});
+
+describe('alarmKitTuru — bilgi alarmında ikincil düğme YOK (Swift ikiziyle ortak fikstür)', () => {
+    test.each(fikstur.turler)('$kimlik → $beklenen', ({ kimlik, beklenen }) => {
+        expect(alarmKitTuru(kimlik)).toBe(beklenen);
     });
 });
 

@@ -31,6 +31,7 @@ import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti } from '../../core/muhafiz/matrisTipleri';
 import type { UyariPlani } from '../../core/muhafiz/motorAdaptoru';
 import type { PencereYonu } from '../../core/muhafiz/pencereTipleri';
+import type { AlarmTuru } from '../../core/muhafiz/alarmYuku';
 
 /** Namaz vakti bilgisi — teslimci ve servis arasinda paylasilan sozlesme. */
 export interface VakitZamani {
@@ -114,6 +115,13 @@ export interface OzelTeslim {
      * (cuma bugün `sound: true` kurar) birebir aynı duyulsun.
      */
     varsayilanSistemSesi?: boolean;
+    /**
+     * Gerçek alarmın TÜRÜ (Android yükü, plan §4.2). `bilgi` = vakit GİRMEDEN çalan
+     * hatırlatma (cuma, camiye gitme, takvim): alarm ekranında yalnız "Kapat"; "Kıldım" /
+     * "Ertele" YOK, otomasyon olayı doğmaz; `UyariTeslimi.cikis` pencerenin SONUDUR (geç
+     * tetik orada atlanır). Verilmezse yükte alan yoktur, native kimlikten çözer (muhafız/nafile).
+     */
+    alarmTuru?: AlarmTuru;
 }
 
 export interface MuhafizTeslimcisi {
