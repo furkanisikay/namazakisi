@@ -262,6 +262,17 @@ export interface PencereTanimi {
     yon: PencereYonu;
     /** Yon degistirilebilir mi? */
     yonSecilebilir: boolean;
+    /**
+     * Yön SABİTSE (`yonSecilebilir: false`) ekranda yön seçici YERİNE yazılan tek satır
+     * gerekçe (ortak hatırlatma yüzeyleri, plan §3.3): istisna sessiz olmaz. Teslimciden
+     * geçen her yüzeyde yön sabitken ZORUNLUDUR (nöbetçi `pencereTanimiYetenek.test.ts`).
+     */
+    yonSabitGerekcesi?: string;
+    /**
+     * Zaman şeridi cümlesinin gün sözcüğü ("Bugün" yerine "Bu cuma") — pencere bugünün
+     * değilse cümle yanlış günü söylemesin.
+     */
+    seritGunEtiketi?: string;
     /** En fazla kac adim kurulabilir? (muhafiz 6, cuma/nafile 1) */
     maksAdim: number;
     /**
@@ -622,6 +633,89 @@ export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; e
         esikAciklamasi: 'Yatış saatinize',
         esikErisimAdi: 'Yatıştan kaç dk önce',
         esikBirimi: 'dk kala',
+    };
+}
+
+/**
+ * EK HATIRLATMA YÜZEYİ (cuma; sonra camiye gitme, yatış, takvim) için pencere tanımı —
+ * ortak hatırlatma yüzeyleri plan §3.3.
+ *
+ * Yüzey muhafızla AYNI teslimciden geçer (kendi örneği) → STANDART yetenekler AÇIKTIR:
+ * kanal çipleri (bildirim / sesli anons / ikisi / kapalı), bildirim sesi, titreşim,
+ * gerçek alarm + kapsamı, tekrar, 1..`maksAdim` adım, akış önizlemesi.
+ *
+ * STANDART İSTİSNALARI (gerekçeli, sahip kararları K3–K5):
+ * - YÖN SABİT (K3): her yüzeyin tek anlamlı yönü var (cuma/camiye gitme "vakit GİRMEDEN
+ *   önce", yatış "yatıştan önce", takvim "etkinlikten önce"); seçici yerine
+ *   `yonSabitGerekcesi` ekranda yazılır.
+ * - TON YOK (K4): her adım nazik, acil kanal yok (Rahatsız Etmeyin delinmez).
+ * - ANONS METNİ yazılmaz (K5): muhafız şablonları `{vakit}` + "vakit çıkıyor" dilinde;
+ *   cümle bağlamdan üretilir, `anonsOrnegiOlustur` "Telefonunuz şöyle okur" gösterir.
+ * - Ön plan banner'ı yok (olgu): ön plan muhafızı yalnız farz izler.
+ */
+export function ekHatirlatmaPencereTanimi(secenekler: {
+    kaynak: string;
+    baslik: string;
+    baslikKucuk: string;
+    ikon: string;
+    /** Metin çözümü için vakit kimliği (cuma: 'ogle' — "Cuma" salt görünüm). */
+    vakit: MuhafizVakti;
+    yonSabitGerekcesi: string;
+    adimSayisi: number;
+    maksAdim: number;
+    esikSinirlari: EsikSinirlari;
+    esikAdimDk: number;
+    tekrarMinDk: number;
+    tekrarMaxDk: number;
+    varsayilanTekrarDk: number;
+    esikBasligi?: string;
+    esikAciklamasi?: string;
+    esikErisimAdi?: string;
+    esikBirimi?: string;
+    pencere?: { baslangic: Date; bitis: Date };
+    seritGunEtiketi?: string;
+    yetenekler?: PlatformYetenekleri;
+    anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+}): PencereTanimi {
+    const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
+    const pencereUzunluguDk = secenekler.pencere
+        ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
+        : undefined;
+    const renk = SEVIYE_BILGILERI.nazik.renk;
+    const adimBilgileri: AdimBilgisi[] =
+        secenekler.adimSayisi > 1
+            ? Array.from({ length: secenekler.maksAdim }, (_, i) => ({ baslik: `${i + 1}. hatırlatma`, ikon: 'bell', renk }))
+            : [{ baslik: 'Hatırlatma', ikon: 'bell', renk }];
+    return {
+        ...platformaGoreStandart(yetenekler),
+        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (K3–K5).
+        yonSecilebilir: false,
+        yonSabitGerekcesi: secenekler.yonSabitGerekcesi,
+        tonSecilebilir: false,
+        anonsMetniDuzenlenebilir: false,
+        onPlanBanneriVar: false,
+        kaynak: secenekler.kaynak,
+        baslik: secenekler.baslik,
+        baslikKucuk: secenekler.baslikKucuk,
+        ikon: secenekler.ikon,
+        vakit: secenekler.vakit,
+        yon: 'cikisaDogru',
+        maksAdim: secenekler.maksAdim,
+        pencereUzunluguDk,
+        adimBilgileri,
+        anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        yetenekler,
+        esikAdimDk: secenekler.esikAdimDk,
+        tekrarMinDk: secenekler.tekrarMinDk,
+        tekrarMaxDk: secenekler.tekrarMaxDk,
+        varsayilanTekrarDk: secenekler.varsayilanTekrarDk,
+        esikSinirlari: secenekler.esikSinirlari,
+        esikBasligi: secenekler.esikBasligi,
+        esikAciklamasi: secenekler.esikAciklamasi,
+        esikErisimAdi: secenekler.esikErisimAdi,
+        esikBirimi: secenekler.esikBirimi,
+        pencere: secenekler.pencere,
+        seritGunEtiketi: secenekler.seritGunEtiketi,
     };
 }
 

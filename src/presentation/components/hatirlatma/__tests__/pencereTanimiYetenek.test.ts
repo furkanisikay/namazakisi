@@ -15,6 +15,7 @@ import {
     vakitPencereTanimi,
     cumaPencereTanimi,
     nafilePencereTanimi,
+    ekHatirlatmaPencereTanimi,
     STANDART_YETENEKLER,
     type PencereTanimi,
 } from '../pencereTanimi';
@@ -150,3 +151,55 @@ describe('YETENEK STANDARDI', () => {
         expect(n.tonSecilebilir).toBe(false);
     });
 });
+
+/**
+ * EK HATIRLATMA YÜZEYLERİ (plan §3.3): teslimciden geçen yüzeyde istisna YALNIZ yön, ton
+ * ve anons metni olabilir; yön sabitse gerekçesi ekranda yazılır (sessiz istisna yok).
+ */
+describe('YETENEK STANDARDI — ek hatırlatma yüzeyi', () => {
+    const ek = (yetenekler: PlatformYetenekleri = ANDROID_YETENEKLERI) =>
+        ekHatirlatmaPencereTanimi({
+            kaynak: 'cuma',
+            baslik: 'Cuma namazı',
+            baslikKucuk: 'cuma namazı',
+            ikon: 'mosque',
+            vakit: 'ogle',
+            yonSabitGerekcesi: 'Hatırlatma öğle vaktinden ÖNCE gelir.',
+            adimSayisi: 1,
+            maksAdim: 3,
+            esikSinirlari: { min: 15, max: 180 },
+            esikAdimDk: 15,
+            tekrarMinDk: 5,
+            tekrarMaxDk: 60,
+            varsayilanTekrarDk: 15,
+            yetenekler,
+        });
+    const EK_ISTISNALARI = new Set<string>(['yonSecilebilir', 'anonsMetniDuzenlenebilir']);
+    const ANAHTARLAR = Object.keys(STANDART_YETENEKLER) as (keyof typeof STANDART_YETENEKLER)[];
+
+    test.each([
+        ['Android', ANDROID_YETENEKLERI],
+        ['iOS', iosYetenekleri(false)],
+    ] as const)('%s: muhafız vaktiyle AYNI yetenekler (yalnız yön/ton/anons istisna)', (_ad, y) => {
+        const muhafiz = vakitPencereTanimi('ogle', 'cikisaDogru', 120, y);
+        const t = ek(y);
+        for (const anahtar of ANAHTARLAR) {
+            if (EK_ISTISNALARI.has(anahtar)) continue;
+            expect([anahtar, t[anahtar]]).toEqual([anahtar, muhafiz[anahtar]]);
+        }
+        expect(t.tonSecilebilir).toBe(false);
+        expect(t.onPlanBanneriVar).toBe(false);
+    });
+
+    test('yön sabitse gerekçe DOLU olmalı — teslimciden geçen her tanımda', () => {
+        const tanimlar: PencereTanimi[] = [
+            ek(),
+            vakitPencereTanimi('ogle'),
+            nafilePencereTanimi({ kaynak: 'nafile:kusluk', baslik: 'K', baslikKucuk: 'k', ikon: 'sun', yon: 'girisindenItibaren', adimSayisi: 1 }),
+        ];
+        for (const t of tanimlar) {
+            if (!t.yonSecilebilir) expect([t.kaynak, (t.yonSabitGerekcesi ?? '').length > 0]).toEqual([t.kaynak, true]);
+        }
+    });
+});
+
