@@ -348,6 +348,15 @@ export interface PencereTanimi {
      */
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
     /**
+     * "Akışı önizle"de bir tetiğin GERÇEK metni (ek hatırlatma yüzeyleri, nafile). Verilmezse
+     * muhafızın vakit metinleri (`basligiOlustur` / `bildirimGovdesiOlustur` + anons şablonu)
+     * kullanılır — nafile/cuma için yanlış olurdu ("Öğle · 25 dk kaldı"). `ilk`: adımın ilk
+     * tetiği (nass yalnız ilkinde). `anons` = duyulacak cümle; yoksa `null`.
+     */
+    onizlemeMetni?: (adim: UyariPlani, ilk: boolean) => { baslik: string; govde: string; anons: string | null };
+    /** Önizleme başlığının alt satırı (adet → cümle). Verilmezse vakit dili. */
+    onizlemeOzeti?: (adet: number) => string;
+    /**
      * Uygulama açıkken ekranda banner çıkıyor mu? (yetenek değil, OLGU:) Nafilenin
      * ön plan banner'ı yoktur → giriş yönündeki "anons bir dakika sonra duyulur"
      * notu yanlış olurdu.
@@ -676,6 +685,8 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
     seritGunEtiketi?: string;
     yetenekler?: PlatformYetenekleri;
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    onizlemeMetni?: PencereTanimi['onizlemeMetni'];
+    onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
 }): PencereTanimi {
     const yetenekler = secenekler.yetenekler ?? ANDROID_YETENEKLERI;
     const pencereUzunluguDk = secenekler.pencere
@@ -704,6 +715,8 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         pencereUzunluguDk,
         adimBilgileri,
         anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
         esikAdimDk: secenekler.esikAdimDk,
         tekrarMinDk: secenekler.tekrarMinDk,
@@ -766,6 +779,8 @@ export function nafilePencereTanimi(secenekler: {
     pencere?: { baslangic: Date; bitis: Date };
     yetenekler?: PlatformYetenekleri;
     anonsOrnegiOlustur?: (seviye: SeviyeAyari) => string;
+    onizlemeMetni?: PencereTanimi['onizlemeMetni'];
+    onizlemeOzeti?: PencereTanimi['onizlemeOzeti'];
 }): PencereTanimi {
     const pencereUzunluguDk = secenekler.pencere
         ? Math.round((secenekler.pencere.bitis.getTime() - secenekler.pencere.baslangic.getTime()) / 60000)
@@ -799,6 +814,8 @@ export function nafilePencereTanimi(secenekler: {
         pencereUzunluguDk,
         adimBilgileri,
         anonsOrnegiOlustur: secenekler.anonsOrnegiOlustur,
+        onizlemeMetni: secenekler.onizlemeMetni,
+        onizlemeOzeti: secenekler.onizlemeOzeti,
         yetenekler,
         esikAdimDk: ESIK_ADIM_DK,
         tekrarMinDk: NAFILE_TEKRAR_MIN_DK,

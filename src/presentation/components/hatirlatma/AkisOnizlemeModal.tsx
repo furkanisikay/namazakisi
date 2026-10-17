@@ -107,7 +107,21 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
         [ayar, yon, pencereUzunluguDk]
     );
 
-    const sesliAdimVar = adimlar.some((a) => a.sesliAnons && a.anonsMetni.trim().length > 0);
+    // Ek yüzey (nafile, cuma): her tetiğin GERÇEK metni tanımdan; adımın ilk tetiği nass taşır.
+    const ozelMetinler = useMemo(() => {
+        const uret = tanim.onizlemeMetni;
+        if (!uret) return null;
+        const goruldu = new Set<number>();
+        return adimlar.map((a) => {
+            const ilk = !goruldu.has(a.adimIndeks);
+            goruldu.add(a.adimIndeks);
+            return uret(a, ilk);
+        });
+    }, [adimlar, tanim.onizlemeMetni]);
+
+    const sesliAdimVar = ozelMetinler
+        ? ozelMetinler.some((m, i) => adimlar[i].sesliAnons && !!m.anons)
+        : adimlar.some((a) => a.sesliAnons && a.anonsMetni.trim().length > 0);
     const sertAdimVar = adimlar.some((a) => a.seviye === 3);
 
     return (
@@ -149,7 +163,9 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                     {tanim.baslik} akışı
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                    {adimlar.length > 0
+                                    {adimlar.length > 0 && tanim.onizlemeOzeti
+                                        ? tanim.onizlemeOzeti(adimlar.length)
+                                        : adimlar.length > 0
                                         ? girisYonu
                                             ? `Vakit girdikten sonra ${adimlar.length} hatırlatma alırsınız`
                                             : `Vakit çıkmadan önce ${adimlar.length} hatırlatma alırsınız`
@@ -220,7 +236,8 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                             </View>
                         ) : (
                             <View className="mt-3">
-                                {adimlar.map((adim) => {
+                                {adimlar.map((adim, sira) => {
+                                    const ozelMetin = ozelMetinler?.[sira] ?? null;
                                     const kademe = SEVIYE_KADEMELERI[adim.seviye - 1];
                                     const bilgi = tanim.adimBilgileri[adim.seviye - 1] ?? tanim.adimBilgileri[0];
                                     // Issue #274: ton sırayı ima etmez → "N. hatırlatma · Ton".
@@ -228,10 +245,13 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
                                         ? `${adim.adimIndeks + 1}. hatırlatma · ${TON_ETIKETLERI[kademe]}`
                                         : bilgi.baslik;
                                     const seviye = adim.seviye as MuhafizSeviye;
-                                    const anonsMetni =
-                                        adim.sesliAnons && adim.anonsMetni.trim().length > 0
-                                            ? anonsMetniniCoz(adim.anonsMetni, tanim.vakit, adim.olcuDk, tanim.yon)
-                                            : null;
+                                    const anonsMetni = ozelMetin
+                                        ? adim.sesliAnons
+                                            ? ozelMetin.anons
+                                            : null
+                                        : adim.sesliAnons && adim.anonsMetni.trim().length > 0
+                                          ? anonsMetniniCoz(adim.anonsMetni, tanim.vakit, adim.olcuDk, tanim.yon)
+                                          : null;
                                     // Duyulacak bir sey var mi? (metinsiz 'sesli' adim sessiz kalir)
                                     const dinlenebilir = bildirimSesiGerekliMi(adim.kanallar) || !!anonsMetni;
                                     // GERCEK ALARM (issue #74): planin isaretledigi tetik (ilk ya da
@@ -305,10 +325,12 @@ export const AkisOnizlemeModal: React.FC<AkisOnizlemeModalProps> = ({
 
                                             {/* Bildirim onizlemesi (adim kapali olamaz — plan kapalilari elemistir) */}
                                             <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>
-                                                {basligiOlustur(tanim.vakit, seviye, adim.olcuDk, tanim.yon)}
+                                                {ozelMetin
+                                                    ? ozelMetin.baslik
+                                                    : basligiOlustur(tanim.vakit, seviye, adim.olcuDk, tanim.yon)}
                                             </Text>
                                             <Text className="text-xs mt-1 leading-4" style={{ color: renkler.metinIkincil }}>
-                                                {bildirimGovdesiOlustur(seviye, tanim.yon, adim.olcuDk)}
+                                                {ozelMetin ? ozelMetin.govde : bildirimGovdesiOlustur(seviye, tanim.yon, adim.olcuDk)}
                                             </Text>
 
                                             {/* Ayar ozeti (kanallar · ses) */}

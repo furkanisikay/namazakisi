@@ -35,6 +35,7 @@ import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
 import { Anahtar } from '../components/common/Anahtar';
 import { PencereKarti } from '../components/hatirlatma/PencereKarti';
 import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
+import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
 import { nafilePencereTanimi, type PencereTanimi } from '../components/hatirlatma/pencereTanimi';
 import { SesliOnayModal } from './MuhafizAyarlari/SesliOnayModal';
 import type { ButceOnerisi } from '../../core/bildirim/butceOnerileri';
@@ -56,7 +57,7 @@ import {
     nafileYonunuDegistir,
     nafileYukuArtiyorMu,
 } from '../../core/nafile/nafileAdimlari';
-import { NAFILE_ACIKLAMALARI } from '../../core/nafile/nafileMetinleri';
+import { NAFILE_ACIKLAMALARI, nafileAnonsMetni, nafileBildirimMetni } from '../../core/nafile/nafileMetinleri';
 import { nafileAnonsOrnegi, nafilePencereUzunluguDk } from '../../core/nafile/nafilePlani';
 import { teheccudPenceresiniUygula, type NafilePencere } from '../../core/nafile/nafileVakitleri';
 
@@ -107,6 +108,8 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     const ttsDestekli = useTurkceTtsDestegi();
     const [detay, setDetay] = useState<{ tur: NafileTuru; indeks: number } | null>(null);
     const [sesliBekleyen, setSesliBekleyen] = useState<SesliBekleyen | null>(null);
+    /** "Akışı önizle" (her hatırlatma yüzeyinde ortak) — gerçek bildirim GÖNDERMEZ. */
+    const [onizleme, setOnizleme] = useState<NafileTuru | null>(null);
     const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
 
     /**
@@ -175,6 +178,8 @@ export const NafileAyarlariSayfasi: React.FC = () => {
             const p = pencereAl(k.tur);
             const pencere = p ? { baslangic: p.baslangic, bitis: p.bitis } : undefined;
             const uzunluk = pencere ? nafilePencereUzunluguDk(pencere) : undefined;
+            const teheccudPenceresi = k.tur === 'teheccud' ? ayarlar.teheccud.pencere : undefined;
+            const uyandirma = k.tur === 'teheccud' && ayarlar.teheccud.uyandirma;
             sonuc[k.tur] = nafilePencereTanimi({
                 kaynak: `nafile:${k.tur}`,
                 baslik: NAFILE_ADLARI[k.tur],
@@ -187,8 +192,22 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                 anonsOrnegiOlustur: (s) =>
                     nafileAnonsOrnegi(k.tur, ayar.yon, s.esikDk, {
                         pencereUzunluguDk: uzunluk,
-                        teheccudPenceresi: k.tur === 'teheccud' ? ayarlar.teheccud.pencere : undefined,
+                        teheccudPenceresi,
                     }),
+                // Önizlemede nafilenin GERÇEK metni (plan üreticisiyle aynı kaynak).
+                onizlemeMetni: (adim, ilk) => {
+                    const girdi = {
+                        tur: k.tur,
+                        son: pencere?.bitis ?? new Date(),
+                        yon: ayar.yon,
+                        ilk,
+                        kalanDk: adim.kalanDk,
+                        teheccudPenceresi,
+                        uyandirma,
+                    };
+                    return { ...nafileBildirimMetni(girdi), anons: nafileAnonsMetni(girdi) };
+                },
+                onizlemeOzeti: (adet) => `Bugün ${NAFILE_ADLARI_KUCUK[k.tur]} için ${adet} hatırlatma alırsınız`,
             });
         }
         return sonuc;
@@ -425,6 +444,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                             onAdimSec={(indeks) => setDetay({ tur: k.tur, indeks })}
                             onAdimEkle={() => adimEkle(k.tur)}
                             onYonDegistir={(yon) => yonDegistir(k.tur, yon)}
+                            onAkisiOnizle={() => setOnizleme(k.tur)}
                             stil="gomulu"
                         />
                         {k.tur === 'teheccud' && uyandirmaSatiri()}
@@ -491,6 +511,16 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                         // birbirini ezerdi. Rıza o yazımla BİRLİKTE gider (`adimDegistir`).
                         alarmOnayiBekliyor.current = true;
                     }}
+                />
+            )}
+
+            {onizleme && (
+                <AkisOnizlemeModal
+                    gorunur
+                    tanim={tanimlar[onizleme]}
+                    ayar={vakitAyari(nafileAyariniAl(ayarlar, onizleme))}
+                    ttsDestekli={ttsDestekli}
+                    onKapat={() => setOnizleme(null)}
                 />
             )}
 

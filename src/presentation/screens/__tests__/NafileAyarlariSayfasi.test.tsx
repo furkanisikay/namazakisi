@@ -141,6 +141,15 @@ describe('NafileAyarlariSayfasi', () => {
         expect(ekran.getByLabelText('Kuşluk vaktine hatırlatma ekleyin')).toBeTruthy();
     });
 
+    it('"Akışı önizle" nafilenin GERÇEK metnini gösterir (muhafız vakit dili DEĞİL)', () => {
+        const ekran = kur(eski({ hatirlatmalar: { kusluk: { aktif: true, ofsetDk: 5 }, evvabin: { aktif: false, ofsetDk: 15 } } }));
+        fireEvent.press(ekran.getByLabelText('Kuşluk akışını önizleyin'));
+        expect(ekran.getByText('Kuşluk akışı')).toBeTruthy();
+        expect(ekran.getByText(/kuşluk için \d+ hatırlatma alırsınız/)).toBeTruthy();
+        // Muhafız başlığı ("Öğle · 25 dk kaldı") nafile önizlemesine sızmaz.
+        expect(ekran.queryByText(/^Öğle ·/)).toBeNull();
+    });
+
     it('adım ekleme yeni adımı yazar ve en fazla 3 adıma izin verir', () => {
         const kusluk = { aktif: true, yon: 'girisindenItibaren' as const, adimlar: [nafileAdimi(20), nafileAdimi(40), nafileAdimi(60)] };
         const ekran = kur({ ...VARSAYILAN_NAFILE_AYARLARI, hatirlatmalar: { ...VARSAYILAN_NAFILE_AYARLARI.hatirlatmalar, kusluk } });
