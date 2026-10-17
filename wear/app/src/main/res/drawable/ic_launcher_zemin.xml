@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Saat simgesinin zemin katmanı: telefon simgesindeki yeşil karonun gradyanı (renkler
+  telefonun ön katmanından örneklendi). Beyaz zeminli eski tek parça simge Wear
+  başlatıcısının daire maskesinde beyaz köşeler bırakıyordu.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <gradient
+        android:angle="315"
+        android:startColor="#2FBA52"
+        android:endColor="#0A7F51"
+        android:type="linear" />
+</shape>

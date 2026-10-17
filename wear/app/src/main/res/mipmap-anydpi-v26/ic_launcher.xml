@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Saat simgesi (adaptive): telefon simgesiyle aynı kimlik — yeşil zemin + alev/cami amblemi.
+  Ön katman yalnız amblemdir (saydam), 66dp güvenli dairenin içinde kalır; Wear başlatıcısı
+  daire maskeler. Monokrom katman telefondakinin aynısıdır (temalı simgeler).
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_zemin" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>
