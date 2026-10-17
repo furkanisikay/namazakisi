@@ -8,9 +8,6 @@ import androidx.wear.watchface.complications.data.GoalProgressComplicationData
 import androidx.wear.watchface.complications.data.RangedValueComplicationData
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.data.WeightedElementsComplicationData
-import androidx.wear.watchface.complications.datasource.ComplicationDataTimeline
-import androidx.wear.watchface.complications.datasource.ComplicationRequest
-import androidx.wear.watchface.complications.datasource.SuspendingTimelineComplicationDataSourceService
 import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
@@ -29,31 +26,37 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
  * her veri kaynağının bir "Yedek" ikizi vardır, manifestte `@bool/api33_alti` ile
  * yalnız eski sistemde etkinleşir ve yalnız eski türleri bildirir.
  */
-abstract class GunDurumuKomplikasyonu : SuspendingTimelineComplicationDataSourceService() {
+abstract class GunDurumuKomplikasyonu : GuvenliKomplikasyonServisi() {
 
     protected abstract fun veri(tur: ComplicationType, ozet: GunDurumu.Ozet): ComplicationData?
 
-    override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationDataTimeline? {
+    override fun araliklar(tur: ComplicationType): List<Triple<Long, Long, ComplicationData?>> {
         val depo = YukDeposu(this)
-        val yuk = depo.yuk()
-        val simdi = System.currentTimeMillis()
-        val araliklar = if (yuk == null) emptyList()
-        else GunDurumu.cizelge(yuk, simdi, depo.bekleyenler(), { VakitHesabi.tarih(it) })
-        return KomplikasyonOrtak.cizelge(
-            araliklar.map { a -> Triple(a.baslangic, a.bitis, veri(request.complicationType, a.ozet)) }
-        )
+        val yuk = depo.yuk() ?: return emptyList()
+        return GunDurumu.cizelge(yuk, System.currentTimeMillis(), depo.bekleyenler(), { VakitHesabi.tarih(it) })
+            .map { a -> Triple(a.baslangic, a.bitis, veri(tur, a.ozet)) }
     }
 
+    /**
+     * Veri yokken / çizelge tükenince: sönük dilimler + "—". "0/5" YAZILMAZ — kullanıcı
+     * "hiç kılmamışım" diye okurdu; durum bilinmiyor demektir.
+     */
+    override fun varsayilan(tur: ComplicationType): ComplicationData? = veri(tur, BOS)
+
     /** Önizleme: öğleden sonra, üç vakit kılınmış, ikindi bekliyor. */
-    override fun getPreviewData(type: ComplicationType): ComplicationData? = veri(type, ORNEK)
+    override fun onizleme(type: ComplicationType): ComplicationData? = veri(type, ORNEK)
 
     protected fun aciklama(ozet: GunDurumu.Ozet): String {
+        if (ozet === BOS) return "Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın"
         val kalan = ozet.satirlar.filter { GunDurumu.halBul(it) == GunDurumu.Hal.KALAN }.joinToString(", ") { it.ad }
         val temel = "Bugün ${GunDurumu.FARZ_SAYISI} vakitten ${ozet.kilinanSayisi} kılındı"
         return if (kalan.isEmpty()) temel else "$temel; kılınmamış: $kalan"
     }
 
-    protected fun oran(ozet: GunDurumu.Ozet) = "${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}"
+    protected fun oran(ozet: GunDurumu.Ozet) =
+        if (ozet === BOS) "—" else "${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}"
+
+    protected fun noktalar(ozet: GunDurumu.Ozet) = if (ozet === BOS) "—" else GunDurumu.noktalar(ozet)
 
     companion object {
         const val YESIL = 0xFF4CAF50.toInt()
@@ -66,6 +69,16 @@ abstract class GunDurumuKomplikasyonu : SuspendingTimelineComplicationDataSource
                 VakitHesabi.Satir(
                     tarih = "", vakit = v, ad = VakitHesabi.ADLAR.getValue(v), ms = 0L,
                     girdi = i <= 2, kilindi = i <= 1, esitleniyor = false, isaretlenebilir = i == 2,
+                )
+            },
+        )
+
+        private val BOS = GunDurumu.Ozet(
+            "",
+            listOf("imsak", "ogle", "ikindi", "aksam", "yatsi").map { v ->
+                VakitHesabi.Satir(
+                    tarih = "", vakit = v, ad = VakitHesabi.ADLAR.getValue(v), ms = 0L,
+                    girdi = false, kilindi = false, esitleniyor = false, isaretlenebilir = false,
                 )
             },
         )
@@ -140,7 +153,7 @@ open class GunDagilimiKomplikasyonServisi : GunDurumuKomplikasyonu() {
         }
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
-                ShortTextComplicationData.Builder(duz(GunDurumu.noktalar(ozet)), aciklama)
+                ShortTextComplicationData.Builder(duz(noktalar(ozet)), aciklama)
                     .setTitle(duz(oran(ozet)))
                     .setTapAction(dokunus)
                     .build()

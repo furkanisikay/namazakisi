@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.saat.komplikasyon
 
 import androidx.wear.watchface.complications.data.ComplicationData
+import androidx.wear.watchface.complications.data.ComplicationText
 import androidx.wear.watchface.complications.data.ComplicationType
 import androidx.wear.watchface.complications.data.CountDownTimeReference
 import androidx.wear.watchface.complications.data.LongTextComplicationData
@@ -10,9 +11,8 @@ import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.data.SmallImageComplicationData
 import androidx.wear.watchface.complications.data.TimeDifferenceComplicationText
 import androidx.wear.watchface.complications.data.TimeDifferenceStyle
-import androidx.wear.watchface.complications.datasource.ComplicationDataTimeline
-import androidx.wear.watchface.complications.datasource.ComplicationRequest
-import androidx.wear.watchface.complications.datasource.SuspendingTimelineComplicationDataSourceService
+import com.furkanisikay.namazakisi.saat.R
+import com.furkanisikay.namazakisi.saat.cekirdek.KalanSure
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.ZamanCizelgesi
 import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak.duz
@@ -21,28 +21,28 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 /**
- * Kadran komplikasyonu (issue #269): sıradaki vakit + CANLI geri sayım.
+ * Kadran komplikasyonu (issue #269): VAKTİN ÇIKIŞINA kalan süre, CANLI.
  *
  * Geri sayım `TimeDifferenceComplicationText` ile SİSTEM tarafından çizilir —
- * uygulama her dakika uyanmaz. Vakit sınırlarında zaman çizelgesi bir sonraki
- * girdiye geçer. RANGED_VALUE ilerlemesi girdiler arasında statiktir (dinamik
- * değer API 34+; bilinçli bedel).
+ * uygulama her dakika uyanmaz; vakit sınırlarında zaman çizelgesi bir sonraki
+ * girdiye geçer. Etiketler `KalanSure`'den: farz vakti sürüyorsa başlık o vaktin
+ * adıdır ("Öğle" + kalan), güneş→öğle arasında "Öğleye".
  *
- * Issue #281: SMALL_IMAGE + MONOCHROMATIC_IMAGE (yalnız ikon kabul eden kadran
- * yuvaları) ve metin türlerine sıradaki vaktin tek renkli simgesi eklendi.
+ *  - SHORT_TEXT: kronometre ("1:12" / son saatte "12:34" dk:sn) + kısa ad.
+ *  - RANGED_VALUE: aynı metin ana öğe; halka vaktin geçen kısmıdır (ikincil, girdiler
+ *    arasında statik — dinamik değer API 34+, bilinçli bedel).
+ *  - LONG_TEXT: "Öğle · 1 sa 12 dk kaldı" + başlıkta sıradaki vaktin saati.
+ *  - MONOCHROMATIC_IMAGE / SMALL_IMAGE: yalnız ikon kabul eden yuvalar (issue #281).
  */
-class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService() {
+class VakitKomplikasyonServisi : GuvenliKomplikasyonServisi() {
 
-    override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationDataTimeline? {
-        val yuk = YukDeposu(this).yuk()
-        val simdi = System.currentTimeMillis()
-        val araliklar = if (yuk == null) emptyList() else ZamanCizelgesi.araliklar(yuk, simdi)
-        return KomplikasyonOrtak.cizelge(
-            araliklar.map { a -> Triple(a.baslangic, a.bitis, veri(request.complicationType, a, a.baslangic)) }
-        )
+    override fun araliklar(tur: ComplicationType): List<Triple<Long, Long, ComplicationData?>> {
+        val yuk = YukDeposu(this).yuk() ?: return emptyList()
+        return ZamanCizelgesi.araliklar(yuk, System.currentTimeMillis())
+            .map { a -> Triple(a.baslangic, a.bitis, veri(tur, a, a.baslangic)) }
     }
 
-    override fun getPreviewData(type: ComplicationType): ComplicationData? {
+    override fun onizleme(type: ComplicationType): ComplicationData? {
         val simdi = System.currentTimeMillis()
         val ornek = ZamanCizelgesi.Aralik(
             simdi,
@@ -53,34 +53,67 @@ class VakitKomplikasyonServisi : SuspendingTimelineComplicationDataSourceService
         return veri(type, ornek, simdi)
     }
 
-    private fun veri(tur: ComplicationType, a: ZamanCizelgesi.Aralik, an: Long): ComplicationData? {
-        val geriSayim = TimeDifferenceComplicationText.Builder(
-            TimeDifferenceStyle.SHORT_DUAL_UNIT,
-            CountDownTimeReference(Instant.ofEpochMilli(a.siradaki.ms)),
-        ).setMinimumTimeUnit(TimeUnit.MINUTES).build()
-        val aciklama = duz("Sıradaki vakit ${a.siradaki.ad}, ${VakitHesabi.saat(a.siradaki.ms)}")
+    /** Telefon henüz veri göndermediyse ya da çizelge tükendiyse: "—", geri sayım YOK. */
+    override fun varsayilan(tur: ComplicationType): ComplicationData? {
+        val aciklama = duz("Vakit bilgisi bekleniyor; telefonda Namaz Akışı'nı açın")
+        val ikon = KomplikasyonOrtak.monokrom(this, R.drawable.ic_vakit)
         val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
-        val ikon = KomplikasyonOrtak.vakitIkonu(a.siradaki.vakit)
         return when (tur) {
             ComplicationType.SHORT_TEXT ->
-                ShortTextComplicationData.Builder(geriSayim, aciklama)
-                    .setTitle(duz(a.siradaki.ad))
+                ShortTextComplicationData.Builder(duz("—"), aciklama)
+                    .setTitle(duz("Vakit")).setMonochromaticImage(ikon).setTapAction(dokunus).build()
+            ComplicationType.LONG_TEXT ->
+                LongTextComplicationData.Builder(duz("Vakitler bekleniyor"), aciklama)
+                    .setMonochromaticImage(ikon).setTapAction(dokunus).build()
+            ComplicationType.RANGED_VALUE ->
+                RangedValueComplicationData.Builder(0f, 0f, 1f, aciklama)
+                    .setText(duz("—")).setMonochromaticImage(ikon).setTapAction(dokunus).build()
+            ComplicationType.MONOCHROMATIC_IMAGE ->
+                MonochromaticImageComplicationData.Builder(ikon, aciklama).setTapAction(dokunus).build()
+            ComplicationType.SMALL_IMAGE ->
+                SmallImageComplicationData.Builder(KomplikasyonOrtak.kucukIkon(this, R.drawable.ic_vakit), aciklama)
+                    .setTapAction(dokunus).build()
+            else -> null
+        }
+    }
+
+    private fun sayac(hedefMs: Long, stil: TimeDifferenceStyle, sablon: String? = null): ComplicationText =
+        TimeDifferenceComplicationText.Builder(stil, CountDownTimeReference(Instant.ofEpochMilli(hedefMs)))
+            .apply { if (sablon != null) setText(sablon) }
+            // Kronometre son saatte saniyeyi de gösterir; diğer stiller dakikada durur.
+            .apply { if (stil != TimeDifferenceStyle.STOPWATCH) setMinimumTimeUnit(TimeUnit.MINUTES) }
+            .build()
+
+    private fun veri(tur: ComplicationType, a: ZamanCizelgesi.Aralik, an: Long): ComplicationData? {
+        val bitis = a.siradaki.ms
+        val saat = VakitHesabi.saat(bitis)
+        val g = KalanSure.gosterim(a.onceki?.vakit, a.siradaki.vakit, saat)
+        val aciklama = duz(g.aciklama)
+        val dokunus = KomplikasyonOrtak.uygulamayiAc(this)
+        // İkon: sayılan şeyin vakti (çıkışta şu anki vakit, girişte gelecek vakit).
+        val ikonVakti = if (g.mod == KalanSure.Mod.CIKIS) a.onceki?.vakit ?: a.siradaki.vakit else a.siradaki.vakit
+        val ikon = KomplikasyonOrtak.vakitIkonu(ikonVakti)
+        val kronometre = sayac(bitis, TimeDifferenceStyle.STOPWATCH)
+        return when (tur) {
+            ComplicationType.SHORT_TEXT ->
+                ShortTextComplicationData.Builder(kronometre, aciklama)
+                    .setTitle(duz(g.kisaBaslik))
                     .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.LONG_TEXT ->
-                LongTextComplicationData.Builder(geriSayim, aciklama)
-                    .setTitle(duz("${a.siradaki.ad} ${VakitHesabi.saat(a.siradaki.ms)}"))
+                LongTextComplicationData.Builder(sayac(bitis, TimeDifferenceStyle.SHORT_DUAL_UNIT, g.uzunSablon), aciklama)
+                    .setTitle(duz("${KalanSure.kisaAd(a.siradaki.vakit)} $saat"))
                     .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()
             ComplicationType.RANGED_VALUE -> {
                 val bas = a.onceki?.ms ?: a.baslangic
-                val uzunluk = (a.siradaki.ms - bas).coerceAtLeast(1L).toFloat()
+                val uzunluk = (bitis - bas).coerceAtLeast(1L).toFloat()
                 val deger = ((an - bas) / uzunluk).coerceIn(0f, 1f)
                 RangedValueComplicationData.Builder(deger, 0f, 1f, aciklama)
-                    .setText(geriSayim)
-                    .setTitle(duz(a.siradaki.ad))
+                    .setText(kronometre)
+                    .setTitle(duz(g.kisaBaslik))
                     .setMonochromaticImage(KomplikasyonOrtak.monokrom(this, ikon))
                     .setTapAction(dokunus)
                     .build()

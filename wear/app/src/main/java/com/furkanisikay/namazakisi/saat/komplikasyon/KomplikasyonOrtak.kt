@@ -4,19 +4,13 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
-import androidx.wear.watchface.complications.data.ComplicationData
 import androidx.wear.watchface.complications.data.ComplicationText
 import androidx.wear.watchface.complications.data.MonochromaticImage
-import androidx.wear.watchface.complications.data.NoDataComplicationData
 import androidx.wear.watchface.complications.data.PlainComplicationText
 import androidx.wear.watchface.complications.data.SmallImage
 import androidx.wear.watchface.complications.data.SmallImageType
-import androidx.wear.watchface.complications.datasource.ComplicationDataTimeline
-import androidx.wear.watchface.complications.datasource.TimeInterval
-import androidx.wear.watchface.complications.datasource.TimelineEntry
 import com.furkanisikay.namazakisi.saat.R
 import com.furkanisikay.namazakisi.saat.ui.AnaAktivite
-import java.time.Instant
 
 /**
  * Komplikasyon servislerinin ortak parçaları (issue #281).
@@ -48,21 +42,4 @@ object KomplikasyonOrtak {
         context, 0, Intent(context, AnaAktivite::class.java),
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
-
-    /**
-     * Her aralık AÇIK geçerlilikli bir girdidir; varsayılan "veri yok"tur. Çizelge
-     * tükenirse (telefon günlerce veri göndermedi) yuva eski bir durumda donmaz, boşalır.
-     * Girdinin verisi türü desteklemiyorsa da "veri yok"tur (zaman çizelgesi tüm
-     * girdilerin aynı türde ya da NoData olmasını şart koşar).
-     */
-    fun cizelge(girdiler: List<Triple<Long, Long, ComplicationData?>>): ComplicationDataTimeline =
-        ComplicationDataTimeline(
-            NoDataComplicationData(),
-            girdiler.map { (bas, bitis, veri) ->
-                TimelineEntry(
-                    TimeInterval(Instant.ofEpochMilli(bas), Instant.ofEpochMilli(bitis)),
-                    veri ?: NoDataComplicationData(),
-                )
-            },
-        )
 }
