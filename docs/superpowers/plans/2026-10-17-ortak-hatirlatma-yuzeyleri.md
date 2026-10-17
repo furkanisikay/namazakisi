@@ -8,6 +8,10 @@
 > PR-0 (nafile göstergesi + "Neler Yeni" + bu plan) bu dalda TAMAMLANDI.
 > PR-B (camiye gitme + yatış) uygulandı: §5.3'teki "her tetiğin içeriği tetik anında" ile "tekrar =
 > aynı içerik" çelişkisi İÇERİK GÜNDE BİR KEZ (kaymış ilk tetikte) seçilerek çözüldü (AGENTS.md yatış bölümü).
+> PR-C (takvim) uygulandı: §4.2'deki takvim pencere sonu "etkinlik başı" yerine `max(blok başı,
+> vakit girişi)` alındı — `kapliyor`da tetik `giriş − 60`'a kenetlenip blok başını geçebiliyor,
+> alarm doğduğu an "vakit çıktı" diye atlanırdı. Gerçek alarm kuran tetiğin metni adsız üretilir
+> (§5.4 gizlilik); duyuru kimliği `ek-hatirlatmalar-ortak-takvim` (v0.37.0) olarak yenilendi.
 
 ## 0. Özet
 
