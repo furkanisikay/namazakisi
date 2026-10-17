@@ -19,6 +19,7 @@
  */
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { camiyeGitTeslimcisiniAl, camiyeGitTeslimcisiniAyarla } from '../CamiyeGitHatirlatmaServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CamiyeGitHatirlatmaServisi } from '../CamiyeGitHatirlatmaServisi';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
@@ -137,11 +138,15 @@ describe('CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı
     describe.each(['android', 'ios'] as const)('%s', (platform) => {
         beforeEach(() => {
             jest.replaceProperty(Platform, 'OS', platform);
+            // Önbellekteki teslimci sıfırlanır: aksi halde iOS turu Android teslimcisiyle ölçülürdü.
+            camiyeGitTeslimcisiniAyarla(null);
         });
 
         it.each(SENARYOLAR)('$ad', async ({ kayit, cuma }) => {
             const plan = await oynat(kayit, cuma, platform);
             expect(plan.length).toBeGreaterThan(0);
+            // Kanıt: ölçülen yol GERÇEKTEN o platformun teslimcisi (jest varsayılanı iOS).
+            expect(camiyeGitTeslimcisiniAl().ad).toBe(platform);
             expect(plan).toMatchSnapshot();
         });
     });

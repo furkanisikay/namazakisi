@@ -18,6 +18,7 @@
  */
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
+import { yatisTeslimcisiniAl, yatisTeslimcisiniAyarla } from '../YatisHatirlatmaServisi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 jest.mock('../../../core/utils/Logger', () => ({
@@ -138,11 +139,15 @@ describe('YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı pla
     describe.each(['android', 'ios'] as const)('%s', (platform) => {
         beforeEach(() => {
             jest.replaceProperty(Platform, 'OS', platform);
+            // Önbellekteki teslimci sıfırlanır: aksi halde iOS turu Android teslimcisiyle ölçülürdü.
+            yatisTeslimcisiniAyarla(null);
         });
 
         it.each(SENARYOLAR)('$ad', async ({ kayit, kilinan }) => {
             const plan = await oynat(kayit, kilinan, platform);
             expect(plan.length).toBeGreaterThan(0);
+            // Kanıt: ölçülen yol GERÇEKTEN o platformun teslimcisi (jest varsayılanı iOS).
+            expect(yatisTeslimcisiniAl().ad).toBe(platform);
             expect(plan).toMatchSnapshot();
         });
     });

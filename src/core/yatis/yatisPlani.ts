@@ -433,9 +433,18 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         }
         if (kaymis.length === 0) continue;
         kaymis.sort((x, y) => x.zaman.getTime() - y.zaman.getTime());
-        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, kaymis[0].zaman.getTime(), ayarlar, g.otomatikKaza ?? null);
+        // İçerik günde BİR KEZ seçilir (tekrarlar aynı içeriği taşır, kimlik kökü sabit), ama
+        // İÇERİK ÜRETEN İLK tetikte: yalnız muhasebe açıkken ilk tetikte yatsı henüz girmemiş ve
+        // eksik yoksa içerik null olur; ilk tetiğe bakıp günü atlamak sonraki (yatsı girdikten
+        // sonraki) hatırlatmaları da sessizce düşürürdü. İçeriksiz erken tetikler kurulmaz.
+        let icerik: ReturnType<typeof yatisIcerigiOlustur> = null;
+        let baslangic = 0;
+        for (; baslangic < kaymis.length; baslangic++) {
+            icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, kaymis[baslangic].zaman.getTime(), ayarlar, g.otomatikKaza ?? null);
+            if (icerik) break;
+        }
         if (!icerik) continue;
-        for (const t of kaymis) {
+        for (const t of kaymis.slice(baslangic)) {
             plan.push({
                 ...icerik,
                 kimlik: t.sira === 0 ? icerik.kimlik : `${icerik.kimlik}_${t.uyari.kalanDk}`,

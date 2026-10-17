@@ -270,6 +270,35 @@ describe('yatış yatsı girişinden ÖNCE (yaz fikstürü)', () => {
         expect(k.baslik).toBe('Bugün 3/5 · akşam işaretlenmemiş');
     });
 
+    it('REGRESYON: yalnız muhasebe + çok adım — ilk tetik içeriksizse sonraki (yatsı girdikten sonraki) tetik YİNE kurulur', () => {
+        // Yatış yatsıdan 60 dk sonra; adımlar 120 dk önce (yatsı girmeden → eksik yok, içerik null)
+        // ve 30 dk önce (yatsı girmiş → yatsı eksik). Eskiden ilk tetiğe bakıp günü atlıyordu.
+        const gec = new Date(v.yatsi.giris.getTime() + 60 * 60_000);
+        const ayarlar = yatisAyarlariniNormalize({
+            ...ayar,
+            saat: gec.getHours(),
+            dakika: gec.getMinutes(),
+            yatsiHatirlatmasi: false,
+            muhasebe: true,
+            adimlar: [
+                { esikDk: 120, siklik: 'birkez', kanallar: { bildirim: true } },
+                { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true } },
+            ],
+        } as Partial<YatisAyarlari>);
+        const kayitlar = yatisPlaniOlustur({
+            koordinat: ISTANBUL,
+            ayarlar,
+            simdi,
+            gunSayisi: 1,
+            kilinanlar: () => ['imsak', 'ogle', 'ikindi', 'aksam'],
+        });
+        expect(kayitlar).toHaveLength(1);
+        // Kurulan tek tetik 30 dk'lık adımdır: yatsı girdikten SONRA (eksik = yatsı).
+        expect(kayitlar[0].zaman.getTime()).toBeGreaterThan(v.yatsi.giris.getTime());
+        expect(kayitlar[0].kalanDk).toBe(30);
+        expect(kayitlar[0].tur).toBe('muhasebeTek');
+    });
+
     it('ekran bilgisi: tetik yatsıdan önceyse yatsı girişini, değilse null döner', () => {
         expect(yatsiOncesiTetikBilgisi(ISTANBUL, ayar, simdi)).toEqual({ yatsiGiris: v.yatsi.giris });
         const gec = new Date(v.yatsi.giris.getTime() + 90 * 60_000);
