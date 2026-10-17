@@ -5,6 +5,7 @@ import {
     nativeSahipEslesir,
     onekSahipligi,
     sahipligiEslestir,
+    gosterimGrubu,
 } from '../teslimSahipligi';
 import { yatisKimligiMi } from '../../yatis/yatisPlani';
 
@@ -35,5 +36,25 @@ describe('teslimSahipligi — Kotlin ikiziyle ortak örnek', () => {
     it('önekli sahiplik: boş önek hiçbir şeyle eşleşmez', () => {
         expect(sahipligiEslestir(onekSahipligi(''))('cuma_hatirlatma_x')).toBe(false);
         expect(sahipligiEslestir(onekSahipligi('cuma_hatirlatma_'))('cuma_hatirlatma_x')).toBe(true);
+    });
+});
+
+describe('gosterimGrubu — bildirim merkezi gruplaması (plan §4.5)', () => {
+    it('muhafız plan + erteleme vakit önekinde birleşir', () => {
+        expect(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_seviye_1_dk_45')).toBe('muhafiz_2026-10-13_vakit_yatsi');
+        expect(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_ertele')).toBe('muhafiz_2026-10-13_vakit_yatsi');
+    });
+
+    it('yatış/muhasebe KENDİ grubunda; tekrar eki soyulur, muhafız grubuna KARIŞMAZ', () => {
+        const yatis = gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_yatis');
+        expect(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_yatis_20')).toBe(yatis);
+        expect(yatis).not.toBe(gosterimGrubu('muhafiz_2026-10-13_vakit_yatsi_seviye_1_dk_45'));
+        expect(gosterimGrubu('muhasebe_2026-10-13_10')).toBe(gosterimGrubu('muhasebe_2026-10-13'));
+        expect(gosterimGrubu('muhafiz_2026-10-13_vakit_ogle_muhasebe_5')).toBe(gosterimGrubu('muhafiz_2026-10-13_vakit_ogle_muhasebe'));
+    });
+
+    it('gruplanmayanlar null', () => {
+        expect(gosterimGrubu('cuma_hatirlatma_2026-10-16')).toBeNull();
+        expect(gosterimGrubu('vakit_sayac_v2_2026-10-13_ogle')).toBeNull();
     });
 });

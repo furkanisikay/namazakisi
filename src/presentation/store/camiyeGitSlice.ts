@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
 import { CamiyeGitHatirlatmaServisi } from '../../domain/services/CamiyeGitHatirlatmaServisi';
 import {
-    VARSAYILAN_CAMIYE_GIT_AYARLARI,
+    camiyeGitAyarlariniBirlestir,
+    varsayilanCamiyeGitAyarlari,
     type CamiyeGitAyarlari,
 } from '../../core/camiyeGit/camiyeGitAyarlari';
 import type { RootState } from './store';
@@ -14,7 +15,7 @@ interface CamiyeGitState {
 }
 
 const initialState: CamiyeGitState = {
-    ayarlar: { ...VARSAYILAN_CAMIYE_GIT_AYARLARI, vakitler: { ...VARSAYILAN_CAMIYE_GIT_AYARLARI.vakitler } },
+    ayarlar: varsayilanCamiyeGitAyarlari(),
     yukleniyor: false,
     hata: null,
 };
@@ -26,19 +27,16 @@ export const camiyeGitAyarlariniYukle = createAsyncThunk('camiyeGit/yukle', asyn
 /**
  * Ayarı kaydeder ve hatırlatmaları YENİDEN PLANLAR (issue #292).
  * Koordinat store'dan okunup servise PARAMETRE geçilir (cuma deseni).
+ *
+ * Kısmi değişiklik `camiyeGitAyarlariniBirlestir`'den geçer: yürüme/hazırlık değişince
+ * adımların TÜMÜ aynı farkla kayar (plan §5.2), rıza alanları (`sesliOnayi`, `alarmOnayi`)
+ * yalnız ekranın açıkça geçtiği değerle değişir.
  */
 export const camiyeGitAyariniGuncelle = createAsyncThunk(
     'camiyeGit/guncelle',
     async (degisiklik: Partial<CamiyeGitAyarlari>, { getState }) => {
         const state = getState() as RootState;
-        const mevcut = state.camiyeGit.ayarlar;
-        const yeni: CamiyeGitAyarlari = {
-            ...mevcut,
-            ...degisiklik,
-            vakitler: { ...mevcut.vakitler, ...(degisiklik.vakitler ?? {}) },
-        };
-        // Tahmin değilse cami adı taşınmaz (normalize de düşürür; burada açıkça).
-        if (yeni.yurumeKaynagi !== 'tahmin') delete yeni.camiAdi;
+        const yeni = camiyeGitAyarlariniBirlestir(state.camiyeGit.ayarlar, degisiklik);
 
         const kaydedildi = await LocalCamiyeGitServisi.saveAyarlar(yeni);
         if (!kaydedildi) throw new Error('Camiye gitme hatırlatması kaydedilemedi');

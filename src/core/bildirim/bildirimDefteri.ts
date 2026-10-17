@@ -53,6 +53,7 @@ import { YATIS_PLAN_GUN_SAYISI, yatisPlaniOlustur, type YatisAyarlari } from '..
 import { muhafizUyarilanVakitleriBul, sayacBaslangicEsikleriHesapla } from '../utils/vakitSayacYardimcisi';
 import { cumaPlaniOlustur, type CumaPlanAyarlari } from './cumaPlani';
 import { ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hatirlatma/ekPlan';
+import type { UyariPlani } from '../muhafiz/motorAdaptoru';
 import { camiyeGitPlaniOlustur, CAMIYE_GIT_PLAN_GUN_SAYISI, type CamiyeGitPlanAyarlari } from './camiyeGitPlani';
 import { sayacPlaniOlustur } from './sayacPlani';
 import { takvimCakismaPlaniOlustur, TAKVIM_CAKISMA_PLAN_GUN_SAYISI, type TakvimEtkinligi } from './takvimCakismaPlani';
@@ -62,7 +63,11 @@ import {
     ANDROID_MUHAFIZ_PAYI,
     ANDROID_NAFILE_PAYI,
     ANDROID_CUMA_PAYI,
+    ANDROID_CAMIYE_GIT_PAYI,
+    ANDROID_YATIS_PAYI,
     IOS_ALARMKIT_CUMA_PAYI,
+    IOS_ALARMKIT_CAMIYE_GIT_PAYI,
+    IOS_ALARMKIT_YATIS_PAYI,
     IOS_ALARMKIT_MUHAFIZ_PAYI,
     IOS_ALARMKIT_NAFILE_PAYI,
     ANDROID_UYARI_ESIGI,
@@ -243,29 +248,40 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
         });
     }
 
+    /**
+     * Ek hatırlatma yüzeyinin (cuma, camiye gitme, yatış) tetikleri — muhafız/nafile ile AYNI
+     * kural: Android'de gerçek alarm o tetiğin bildirimi + anonsunun YERİNE tek alarm; iOS'ta
+     * AlarmKit izinliyse (ve yüzeyin payı dolmadıysa) alarm (64 sınırına sayılmaz), değilse
+     * bildirim. Alarm/anons kayıtlarının payı yüzeyindir (`pay`), muhafızın 360'ına sayılmaz.
+     */
+    const ekYuzeyiSay = (
+        kaynak: DefterKaynagi,
+        plan: readonly { zaman: Date; uyari: UyariPlani }[],
+        iosAlarmKitPayi: number
+    ) => {
+        let iosAlarm = 0;
+        for (const k of plan) {
+            const iosAlarmKurulur = !android && g.iosAlarmKit === true && iosAlarm < iosAlarmKitPayi;
+            if ((android || iosAlarmKurulur) && ekAlarmKurarMi(k)) {
+                if (!android) iosAlarm++;
+                ekle('alarm', k.zaman.getTime(), 'alarm', false, kaynak);
+                continue;
+            }
+            ekle(kaynak, k.zaman.getTime());
+            if (android && ekAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, kaynak);
+        }
+    };
+
     // ── Cuma ── (servisle AYNI üretici + seçenekler; ortak hatırlatma yüzeyleri plan §5.1)
     if (koordinat && g.cuma?.aktif) {
         const ayar = g.cuma;
         guvenli(() => {
             const plan = cumaPlaniOlustur(koordinat, ayar, g.simdi, ozelGundeMi, android ? { alarmButcesi: ANDROID_CUMA_PAYI } : {});
-            let iosAlarm = 0;
-            for (const k of plan) {
-                // Gerçek alarm (#74): muhafız/nafile ile AYNI kural — Android'de bildirim +
-                // anonsun YERİNE tek alarm; iOS'ta AlarmKit izinliyse (ve cuma payı dolmadıysa).
-                const iosAlarmKurulur = !android && g.iosAlarmKit === true && iosAlarm < IOS_ALARMKIT_CUMA_PAYI;
-                if ((android || iosAlarmKurulur) && ekAlarmKurarMi(k)) {
-                    if (!android) iosAlarm++;
-                    // Payı cumanın (`ANDROID_CUMA_PAYI`), muhafızın 360'ına sayılmaz.
-                    ekle('alarm', k.zaman.getTime(), 'alarm', false, 'cuma');
-                    continue;
-                }
-                ekle('cuma', k.zaman.getTime());
-                if (android && ekAnonsAlarmiKurarMi(k)) ekle('anons', k.zaman.getTime(), 'alarm', false, 'cuma');
-            }
+            ekYuzeyiSay('cuma', plan, IOS_ALARMKIT_CUMA_PAYI);
         });
     }
 
-    // ── "Camide kılacağım" (servisle AYNI seçenekler) ──
+    // ── "Camide kılacağım" ── (servisle AYNI üretici + seçenekler; plan §5.2)
     if (koordinat && g.camiyeGit?.aktif) {
         const ayar = g.camiyeGit;
         guvenli(() => {
@@ -273,8 +289,9 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 gunSayisi: CAMIYE_GIT_PLAN_GUN_SAYISI[g.platform],
                 gunAtlanirMi: ozelGundeMi,
                 cumaHatirlatmasiAcik: g.cuma?.aktif === true,
+                ...(android ? { alarmButcesi: ANDROID_CAMIYE_GIT_PAYI } : {}),
             });
-            for (const k of plan) ekle('camiyeGit', k.zaman.getTime());
+            ekYuzeyiSay('camiyeGit', plan, IOS_ALARMKIT_CAMIYE_GIT_PAYI);
         });
     }
 
@@ -334,8 +351,10 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 gunSayisi: YATIS_PLAN_GUN_SAYISI[g.platform],
                 kilinanlar: (gun) => g.kilinan?.[gun] ?? [],
                 gunAtlanirMi: ozelGundeMi,
+                ...(android ? { alarmButcesi: ANDROID_YATIS_PAYI } : {}),
             });
-            for (const k of plan) ekle('yatis', k.zaman.getTime());
+            // Servisle AYNI üretici + seçenekler (plan §5.3); alarm/anons payı yatışın.
+            ekYuzeyiSay('yatis', plan, IOS_ALARMKIT_YATIS_PAYI);
         });
     }
 

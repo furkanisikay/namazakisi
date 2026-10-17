@@ -858,6 +858,22 @@ describe('BildirimServisi', () => {
       expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(1);
     });
 
+    it('NOBETCI (plan §4.5): yatis tekrari muhafizin AYNI gunku yatsi uyarisini KAPATMAZ (ve tersi)', async () => {
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_seviye_1_dk_45'),
+        sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_yatis'),
+      ]);
+      await yakalananHandleNotification({ request: { identifier: 'muhafiz_2026-02-13_vakit_yatsi_yatis_20' } });
+      let kapatilan = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls.map((c: unknown[]) => c[0]);
+      // Yatisin onceki tetigi yerini yeniye birakir; muhafizin yatsi uyarisi DURUR.
+      expect(kapatilan).toEqual(['muhafiz_2026-02-13_vakit_yatsi_yatis']);
+
+      (Notifications.dismissNotificationAsync as jest.Mock).mockClear();
+      await yakalananHandleNotification({ request: { identifier: 'muhafiz_2026-02-13_vakit_yatsi_seviye_2_dk_25' } });
+      kapatilan = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls.map((c: unknown[]) => c[0]);
+      expect(kapatilan).toEqual(['muhafiz_2026-02-13_vakit_yatsi_seviye_1_dk_45']);
+    });
+
     it('muhafiz olmayan bir bildirimde temizleme YAPMAZ (getPresentedNotificationsAsync cagrilmaz)', async () => {
       // muhafiz_ onekiyle baslamayan bir bildirim -> oncekiMuhafizBildirimleriniTemizle atlanir
       const sonuc = await yakalananHandleNotification({
@@ -906,6 +922,20 @@ describe('BildirimServisi', () => {
       expect(dismissCalls).toContain('muhafiz_2026-02-13_vakit_ogle_seviye_3_dk_15');
       expect(dismissCalls).toContain('muhafiz_2026-02-13_vakit_ogle_seviye_2_dk_30');
       expect(Notifications.dismissNotificationAsync).toHaveBeenCalledTimes(2);
+    });
+
+    it('yatis/muhasebe KENDI grubunda: muhafizin yatsi grubunu bolmez; yatis tekrarlari tek kalir', async () => {
+      const muhafiz = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_seviye_1_dk_45'), date: 100 };
+      const yatis1 = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_yatis'), date: 200 };
+      const yatis2 = { ...sunulanBildirimOlustur('muhafiz_2026-02-13_vakit_yatsi_yatis_20'), date: 300 };
+      const coklu1 = { ...sunulanBildirimOlustur('muhasebe_2026-02-13'), date: 210 };
+      const coklu2 = { ...sunulanBildirimOlustur('muhasebe_2026-02-13_10'), date: 310 };
+      (Notifications.getPresentedNotificationsAsync as jest.Mock).mockResolvedValue([muhafiz, yatis2, yatis1, coklu2, coklu1]);
+
+      await servis.sunulanEskiMuhafizBildirimleriniTemizle();
+
+      const kapatilan = (Notifications.dismissNotificationAsync as jest.Mock).mock.calls.map((c: unknown[]) => c[0]);
+      expect(kapatilan.sort()).toEqual(['muhafiz_2026-02-13_vakit_yatsi_yatis', 'muhasebe_2026-02-13']);
     });
 
     it('farkli vakitleri ayri gruplar; tek elemanli gruba ve muhafiz olmayana dokunmaz', async () => {

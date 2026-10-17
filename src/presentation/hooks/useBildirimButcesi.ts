@@ -10,6 +10,8 @@
  * kopmuş demektir).
  */
 import type { CumaPlanAyarlari } from '../../core/bildirim/cumaPlani';
+import type { CamiyeGitPlanAyarlari } from '../../core/bildirim/camiyeGitPlani';
+import type { YatisAyarlari } from '../../core/yatis/yatisAyarlari';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { useAppSelector } from '../store/hooks';
@@ -41,6 +43,10 @@ export interface DefterDegisikligi {
     nafile?: NafileAyarlari;
     /** Cuma (ortak hatırlatma yüzeyi) — ekleme anı simülasyonu. */
     cuma?: CumaPlanAyarlari;
+    /** "Camide kılacağım" (ortak hatırlatma yüzeyi). */
+    camiyeGit?: CamiyeGitPlanAyarlari;
+    /** Yatış + gün sonu muhasebesi (ortak hatırlatma yüzeyi). */
+    yatis?: YatisAyarlari;
 }
 
 export interface BildirimButcesi {
@@ -74,6 +80,8 @@ export function butceNesnesiOlustur(
                 muhafiz: d.matris && girdi.muhafiz ? { ...girdi.muhafiz, matris: d.matris } : girdi.muhafiz,
                 nafile: d.nafile ?? girdi.nafile,
                 cuma: d.cuma ?? girdi.cuma,
+                camiyeGit: d.camiyeGit ?? girdi.camiyeGit,
+                yatis: d.yatis ?? girdi.yatis,
             }
             : null;
     return {

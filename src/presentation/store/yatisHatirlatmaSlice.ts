@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 import { YatisHatirlatmaServisi } from '../../domain/services/YatisHatirlatmaServisi';
-import { YATIS_VARSAYILAN_AYARLARI, type YatisAyarlari } from '../../core/yatis/yatisPlani';
+import {
+    varsayilanYatisAyarlari,
+    yatisAyarlariniBirlestir,
+    type YatisAyarlari,
+} from '../../core/yatis/yatisAyarlari';
 import type { RootState } from './store';
 
 /**
@@ -16,7 +20,7 @@ interface YatisHatirlatmaState {
 
 const initialState: YatisHatirlatmaState = {
     // VARSAYILAN KAPALI: yatış saati kişiseldir, ayardan açılır.
-    ayarlar: { ...YATIS_VARSAYILAN_AYARLARI },
+    ayarlar: varsayilanYatisAyarlari(),
     yukleniyor: false,
     hata: null,
 };
@@ -27,13 +31,15 @@ export const yatisHatirlatmaAyarlariniYukle = createAsyncThunk('yatisHatirlatma/
 
 /**
  * Ayarı kaydeder ve hatırlatmaları YENİDEN PLANLAR (koordinat store'dan).
- * Disk yazımı başarısızsa planlamaya devam edilmez (cuma deseni).
+ * Disk yazımı başarısızsa planlamaya devam edilmez (cuma deseni). Kısmi değişiklik
+ * (adımlar, rızalar ya da eski `onceDk`) `yatisAyarlariniBirlestir`'den geçer: türev alan
+ * adımlardan yeniden yazılır, rızalar yalnız ekranın açıkça geçtiği değerle değişir.
  */
 export const yatisHatirlatmaAyariniGuncelle = createAsyncThunk(
     'yatisHatirlatma/guncelle',
     async (degisiklik: Partial<YatisAyarlari>, { getState }) => {
         const state = getState() as RootState;
-        const yeni: YatisAyarlari = { ...state.yatisHatirlatma.ayarlar, ...degisiklik };
+        const yeni: YatisAyarlari = yatisAyarlariniBirlestir(state.yatisHatirlatma.ayarlar, degisiklik);
         const kaydedildi = await LocalYatisHatirlatmaServisi.saveAyarlar(yeni);
         if (!kaydedildi) throw new Error('Yatış hatırlatması ayarı kaydedilemedi');
 

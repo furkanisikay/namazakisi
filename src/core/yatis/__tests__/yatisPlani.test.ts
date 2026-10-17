@@ -11,6 +11,7 @@ import {
     yatisKimligiMi,
     yatisPlaniOlustur,
     yatisTetikAni,
+    yatsiHatirlatmaTetigi,
     yatsiOncesiTetikBilgisi,
     otomatikKazaSatiri,
     type FarzVakit,
@@ -19,6 +20,9 @@ import {
     type YatisAyarlari,
 } from '../yatisPlani';
 import { muhafizPlanKimligiMi } from '../../muhafiz/erteleme';
+import { yatisAyarlariniNormalize } from '../yatisAyarlari';
+import { tarihiISOFormatinaCevir } from '../../utils/TarihYardimcisi';
+import type { VakitAdi } from '../../types';
 
 const ISTANBUL = { lat: 41.0082, lng: 28.9784 };
 const AYAR: YatisAyarlari = { ...YATIS_VARSAYILAN_AYARLARI, aktif: true };
@@ -266,6 +270,35 @@ describe('yatış yatsı girişinden ÖNCE (yaz fikstürü)', () => {
         expect(k.baslik).toBe('Bugün 3/5 · akşam işaretlenmemiş');
     });
 
+    it('REGRESYON: yalnız muhasebe + çok adım — ilk tetik içeriksizse sonraki (yatsı girdikten sonraki) tetik YİNE kurulur', () => {
+        // Yatış yatsıdan 60 dk sonra; adımlar 120 dk önce (yatsı girmeden → eksik yok, içerik null)
+        // ve 30 dk önce (yatsı girmiş → yatsı eksik). Eskiden ilk tetiğe bakıp günü atlıyordu.
+        const gec = new Date(v.yatsi.giris.getTime() + 60 * 60_000);
+        const ayarlar = yatisAyarlariniNormalize({
+            ...ayar,
+            saat: gec.getHours(),
+            dakika: gec.getMinutes(),
+            yatsiHatirlatmasi: false,
+            muhasebe: true,
+            adimlar: [
+                { esikDk: 120, siklik: 'birkez', kanallar: { bildirim: true } },
+                { esikDk: 30, siklik: 'birkez', kanallar: { bildirim: true } },
+            ],
+        } as Partial<YatisAyarlari>);
+        const kayitlar = yatisPlaniOlustur({
+            koordinat: ISTANBUL,
+            ayarlar,
+            simdi,
+            gunSayisi: 1,
+            kilinanlar: () => ['imsak', 'ogle', 'ikindi', 'aksam'],
+        });
+        expect(kayitlar).toHaveLength(1);
+        // Kurulan tek tetik 30 dk'lık adımdır: yatsı girdikten SONRA (eksik = yatsı).
+        expect(kayitlar[0].zaman.getTime()).toBeGreaterThan(v.yatsi.giris.getTime());
+        expect(kayitlar[0].kalanDk).toBe(30);
+        expect(kayitlar[0].tur).toBe('muhasebeTek');
+    });
+
     it('ekran bilgisi: tetik yatsıdan önceyse yatsı girişini, değilse null döner', () => {
         expect(yatsiOncesiTetikBilgisi(ISTANBUL, ayar, simdi)).toEqual({ yatsiGiris: v.yatsi.giris });
         const gec = new Date(v.yatsi.giris.getTime() + 90 * 60_000);
@@ -274,5 +307,155 @@ describe('yatış yatsı girişinden ÖNCE (yaz fikstürü)', () => {
         ).toBeNull();
         expect(yatsiOncesiTetikBilgisi(null, ayar, simdi)).toBeNull();
         expect(yatsiOncesiTetikBilgisi({ lat: 0, lng: 0 }, ayar, simdi)).toBeNull();
+    });
+});
+
+/**
+ * DONDURULMUŞ eski üretici (refactor öncesi, tek ofset `onceDk`). İçerik üretimi
+ * (`yatisIcerigiOlustur`) ve kayma (`yatsiHatirlatmaTetigi`) değişmedi; değişen yalnız
+ * tetiklerin kurulması → eski döngü burada aynen tutulur.
+ */
+function eskiYatisPlani(g: {
+    koordinat: { lat: number; lng: number };
+    ayarlar: Omit<YatisAyarlari, 'adimlar'>;
+    simdi: Date;
+    gunSayisi: number;
+    kilinanlar?: (gun: string) => readonly VakitAdi[];
+}) {
+    const { ayarlar, simdi } = g;
+    if (!ayarlar.aktif || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return [];
+    const kilinanlar = g.kilinanlar ?? (() => []);
+    const gunKaydir = (taban: Date, gun: number) => new Date(taban.getFullYear(), taban.getMonth(), taban.getDate() + gun);
+    const bugun = gunKaydir(simdi, 0);
+    const adaylar: Array<{ gun: string; gunTarih: Date; zaman: Date }> = [];
+    for (let k = -1; k <= g.gunSayisi; k++) {
+        const gunTarih = gunKaydir(bugun, k);
+        const zaman = yatisTetikAni(gunTarih, ayarlar);
+        if (zaman.getTime() <= simdi.getTime()) continue;
+        adaylar.push({ gun: tarihiISOFormatinaCevir(gunTarih), gunTarih, zaman });
+    }
+    const plan: Array<{ kimlik: string; zaman: Date; kategori: string; baslik: string; govde: string; data: unknown }> = [];
+    for (const a of adaylar.sort((x, y) => x.zaman.getTime() - y.zaman.getTime()).slice(0, g.gunSayisi)) {
+        const vakitler = namazGunuVakitleri(g.koordinat, a.gunTarih);
+        if (a.zaman.getTime() >= vakitler.yatsi.cikis.getTime()) continue;
+        const kilinan = kilinanlar(a.gun);
+        const zaman = yatsiHatirlatmaTetigi(a.zaman, vakitler, kilinan, ayarlar);
+        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, zaman.getTime(), ayarlar, null);
+        if (icerik) {
+            plan.push({ kimlik: icerik.kimlik, zaman, kategori: icerik.kategori, baslik: icerik.baslik, govde: icerik.govde, data: icerik.data });
+        }
+    }
+    return plan;
+}
+
+describe('yatisPlaniOlustur — GÖÇ: eski kayıt BİREBİR aynı plan (dondurulmuş eski üretici)', () => {
+    const KAYITLAR = [
+        { aktif: true, saat: 23, dakika: 0, onceDk: 30, yatsiHatirlatmasi: true, muhasebe: true },
+        { aktif: true, saat: 20, dakika: 30, onceDk: 30, yatsiHatirlatmasi: true, muhasebe: true },
+        { aktif: true, saat: 0, dakika: 45, onceDk: 60, yatsiHatirlatmasi: true, muhasebe: false },
+        { aktif: true, saat: 2, dakika: 55, onceDk: 120, yatsiHatirlatmasi: false, muhasebe: true },
+    ];
+    const KILINANLAR: ((gun: string) => readonly VakitAdi[])[] = [
+        () => [],
+        (gun) => (gun === GUN ? ['ogle', 'ikindi', 'aksam', 'yatsi'] : []),
+        (gun) => (gun === GUN ? ['aksam', 'yatsi'] : ['imsak']),
+    ];
+    it.each(KAYITLAR)('%o', (kayit) => {
+        for (const kilinanlar of KILINANLAR) {
+            for (const simdi of [t(13, 9), t(13, 23, 50), new Date(2026, 5, 20, 1, 0), new Date(2026, 11, 31, 22, 0)]) {
+                const eski = eskiYatisPlani({ koordinat: ISTANBUL, ayarlar: kayit, simdi, gunSayisi: 7, kilinanlar });
+                const yeni = yatisPlaniOlustur({
+                    koordinat: ISTANBUL,
+                    ayarlar: yatisAyarlariniNormalize(kayit),
+                    simdi,
+                    gunSayisi: 7,
+                    kilinanlar,
+                }).map(({ kimlik, zaman, kategori, baslik, govde, data }) => ({ kimlik, zaman, kategori, baslik, govde, data }));
+                expect(yeni).toEqual(eski);
+            }
+        }
+    });
+});
+
+describe('yatisPlaniOlustur — adım dizisi (plan §5.3)', () => {
+    const cokAdim = (ek: Partial<YatisAyarlari> = {}): YatisAyarlari =>
+        yatisAyarlariniNormalize({
+            ...AYAR,
+            adimlar: [
+                { esikDk: 60, siklik: { herDk: 20 }, kanallar: { bildirim: true, sesli: true } },
+                { esikDk: 10, kanallar: { bildirim: true } },
+            ],
+            ...ek,
+        });
+
+    it('ilk tetik tarihsel kimlik, tekrarlar `_<kalanDk>`; günün TÜM tetikleri aynı içerik', () => {
+        const plan = yatisPlaniOlustur({ koordinat: ISTANBUL, ayarlar: cokAdim(), simdi: t(13, 9), gunSayisi: 1 });
+        expect(plan.map((k) => k.kimlik)).toEqual([
+            'muhafiz_2026-10-13_vakit_yatsi_yatis',
+            'muhafiz_2026-10-13_vakit_yatsi_yatis_40',
+            'muhafiz_2026-10-13_vakit_yatsi_yatis_20',
+            'muhafiz_2026-10-13_vakit_yatsi_yatis_10',
+        ]);
+        expect(new Set(plan.map((k) => k.baslik)).size).toBe(1);
+        expect(plan.every((k) => yatisKimligiMi(k.kimlik) && !muhafizPlanKimligiMi(k.kimlik))).toBe(true);
+        expect(plan[0].uyari.anonsMetni).toBe('Yatmadan önce yatsıyı kıl.');
+        // Pencere sonu = namaz gününün sonu (ertesi imsak).
+        expect(plan[0].cikis.getTime()).toBe(namazGunuVakitleri(ISTANBUL, t(13, 0)).yatsi.cikis.getTime());
+    });
+
+    it('KAYMA her tetiğe uygulanır; aynı ana düşenler TEK kazanana iner', () => {
+        // Saat diliminden bağımsız (CI UTC'de koşar): yatış saati 20:00–02:55'e sıkıştırıldığı
+        // için yerel yatsı İstanbul'unkiyle aynı olmalı → boylam, makinenin UTC farkına göre
+        // kaydırılır (İstanbul UTC+3). Yatış = yatsı + 25 dk → tetikler giriş −35/−15/+5/+15;
+        // girişten öncekiler giriş + pay'a kayar ve TEK ana iner.
+        const yerelFark = -t(13, 0).getTimezoneOffset() / 60;
+        const koord = { lat: ISTANBUL.lat, lng: ISTANBUL.lng + (yerelFark - 3) * 15 };
+        const giris = namazGunuVakitleri(koord, t(13, 0)).yatsi.giris;
+        const yatis = new Date(Math.ceil(giris.getTime() / 60_000) * 60_000 + 25 * 60_000);
+        const plan = yatisPlaniOlustur({
+            koordinat: koord,
+            ayarlar: cokAdim({ saat: yatis.getHours(), dakika: yatis.getMinutes() }),
+            simdi: t(13, 9),
+            gunSayisi: 1,
+        });
+        const zamanlar = plan.map((k) => k.zaman.getTime());
+        expect(new Set(zamanlar).size).toBe(zamanlar.length);
+        const yatsiGiris = giris.getTime();
+        expect(Math.min(...zamanlar)).toBe(yatsiGiris + YATIS_YATSI_GIRIS_PAYI_DK * 60_000);
+        expect(plan.length).toBeLessThan(4);
+    });
+
+    it('muhasebe içeriği tekrarlarda da aynı; çoklu muhasebe kimliği `muhasebe_<gün>_<k>`', () => {
+        const plan = yatisPlaniOlustur({
+            koordinat: ISTANBUL,
+            ayarlar: cokAdim(),
+            simdi: t(13, 9),
+            gunSayisi: 1,
+            kilinanlar: () => ['aksam', 'yatsi'],
+        });
+        expect(plan.map((k) => k.kimlik)).toEqual([
+            'muhasebe_2026-10-13',
+            'muhasebe_2026-10-13_40',
+            'muhasebe_2026-10-13_20',
+            'muhasebe_2026-10-13_10',
+        ]);
+        expect(plan.every((k) => k.kategori === MUHASEBE_KATEGORILERI.COKLU)).toBe(true);
+        expect(plan[0].uyari.anonsMetni).toBe('Bugün 3 vakit işaretlenmemiş görünüyor.');
+    });
+
+    it('Android alarm payı KRONOLOJİK keser', () => {
+        const tam = yatisPlaniOlustur({ koordinat: ISTANBUL, ayarlar: cokAdim(), simdi: t(13, 9), gunSayisi: 7 });
+        const kesik = yatisPlaniOlustur({ koordinat: ISTANBUL, ayarlar: cokAdim(), simdi: t(13, 9), gunSayisi: 7, alarmButcesi: 9 });
+        expect(kesik.length).toBeGreaterThan(0);
+        expect(kesik).toEqual(tam.slice(0, kesik.length));
+        expect(kesik.length).toBeLessThan(tam.length);
+    });
+
+    it('anons metinleri: fıkıh/dil nöbetçisi (secde, terk, küfür yok)', () => {
+        for (const kilinan of [[], ['yatsi'], ['aksam', 'yatsi'], ['imsak', 'ogle', 'ikindi', 'yatsi']] as VakitAdi[][]) {
+            const icerik = yatisIcerigiOlustur(GUN, VAKITLER, kilinan, TETIK, AYAR);
+            if (!icerik) continue;
+            expect(icerik.anons.toLocaleLowerCase('tr-TR')).not.toMatch(/secde|terk|küfr/);
+        }
     });
 });

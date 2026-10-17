@@ -110,23 +110,8 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
 
     depo.tema_tercihleri = JSON.stringify({ mod: tema, paletId: 'zumrut' });
     depo.nafile_ayarlari = JSON.stringify(nafileAyarlari(yogun));
-    depo.yatis_hatirlatma_ayarlari = JSON.stringify({
-        aktif: true,
-        saat: 23,
-        dakika: 0,
-        onceDk: 30,
-        yatsiHatirlatmasi: true,
-        muhasebe: true,
-    });
-    depo.camiye_git_ayarlari = JSON.stringify({
-        aktif: true,
-        vakitler: { imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true },
-        yurumeDk: 12,
-        hazirlikDk: 5,
-        yurumeKaynagi: 'elle',
-    });
-    // Cuma ortak hatirlatma modelinde (plan 5.1): adim dizisi + TUREV `oncedenDk`/`siklik`
-    // (ilk adimdan). Sekil uygulamanin normalize ciktisiyla AYNI (nobetci ozellikTohumu.test).
+    // Ek hatirlatma yuzeyleri ortak modelde (plan 5.1-5.3): adim dizisi. Sekil uygulamanin
+    // normalize ciktisiyla AYNI (nobetci ozellikTohumu.test); cumada TUREV `oncedenDk`/`siklik`.
     const cumaAdimi = (esikDk, siklik) => ({
         kademe: 'nazik',
         kanallar: { bildirim: true },
@@ -135,6 +120,23 @@ function ozellikTohumVerisi({ varyant = 'ozellik', tema = 'acik' } = {}) {
         bildirimSesi: 'varsayilan',
         acilKanal: false,
         anonsMetni: '',
+    });
+    depo.yatis_hatirlatma_ayarlari = JSON.stringify({
+        aktif: true,
+        saat: 23,
+        dakika: 0,
+        yatsiHatirlatmasi: true,
+        muhasebe: true,
+        adimlar: [cumaAdimi(45, { herDk: 15 }), cumaAdimi(10, 'birkez')],
+        onceDk: 45,
+    });
+    depo.camiye_git_ayarlari = JSON.stringify({
+        aktif: true,
+        vakitler: { imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true },
+        yurumeDk: 12,
+        hazirlikDk: 5,
+        yurumeKaynagi: 'elle',
+        adimlar: [cumaAdimi(30, { herDk: 10 }), cumaAdimi(17, 'birkez')],
     });
     depo.cuma_hatirlatma_ayarlari = JSON.stringify(
         yogun

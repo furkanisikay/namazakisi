@@ -1,19 +1,29 @@
 /**
- * "Camide kılacağım" hatırlatma PLANI — SAF (issue #292).
+ * "Camide kılacağım" hatırlatma PLANI — SAF (issue #292; ortak hatırlatma yüzeyleri
+ * plan §5.2'de adım dizisine geçti).
  *
  * `CamiyeGitHatirlatmaServisi` ve bildirim defteri (issue #298) AYNI listeyi
  * kullanır: servise eklenen her eleme kuralı BURAYA eklenir, yoksa rehber ekranı
  * "sığıyor" derken cihaz keser.
  *
+ * AYRI PLAN MOTORU YAZILMAZ: her seçili vaktin penceresi (girişine kadar) muhafızın bir
+ * vakti gibi `vakitUyariPlaniOlustur`'a verilir — eşik, sıklık, plan bütçesi, kanallar,
+ * gerçek alarm anı muhafızla BİREBİR aynı motordan gelir. Yön SABİT: ölçü daima vaktin
+ * GİRİŞİNE (ezana) kalan süredir.
+ *
  * Kurallar:
- *  - Seçili her vakit için vaktin GİRİŞİNDEN (ezandan) `yürüme + hazırlık` dk
- *    önce TEK bildirim. Vakit hesabı GÜN BAZINDA (her gün ayrı `PrayerTimes`).
+ *  - Vakit hesabı GÜN BAZINDA (her gün ayrı `PrayerTimes`).
  *  - Ufuk platforma göre: Android 7 / iOS 3 gün (iOS 64 bekleyen bildirim
  *    bütçesi muhafızla paylaşılır — gün sonu hatırlatmasıyla aynı ufuk).
  *  - Özel gün kapısı (issue #272) VAKTİN GÜNÜNE uygulanır; ufuk kaymaz.
  *  - ÇAKIŞMA: cuma hatırlatması AÇIKSA cuma günü öğle için bu hatırlatma
  *    kurulmaz (cuma kendi hatırlatmasını zaten gönderir).
  *  - Kılınmışlık kontrolü YOKTUR: hatırlatma ezandan ÖNCEdir, vakit henüz girmemiştir.
+ *  - Android alarm payı (`alarmButcesi`) KRONOLOJİK keser (ortak `alarmPayinaSigdir`).
+ *
+ * KİMLİK: bir vaktin İLK tetiği TARİHSEL kimliği (`camiye_git_<gün>_<vakit>`) korur — göçten
+ * gelen tek adımlı kayıt birebir aynı kimlikleri üretir; diğerleri `_<kalanDk>` ekiyle
+ * ayrışır (bir dakikada tek tetik → tekil).
  *
  * Metin serviste DEĞİL burada üretilir (saf, testli): `camiyeGitMetniOlustur`.
  */
@@ -21,11 +31,13 @@ import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { BildirimPlatformu } from './butceSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
-import { cumaMi } from '../utils/cumaYardimcisi';
+import { cumaMi, sureMetniOlustur } from '../utils/cumaYardimcisi';
 import { VAKIT_ADLARI } from '../utils/muhafizMetinYardimcisi';
+import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
+import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
+import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
 import {
     CAMIYE_GIT_VAKITLERI,
-    camiyeGitOncedenDk,
     type CamiyeGitAyarlari,
     type CamiyeGitVakti,
 } from '../camiyeGit/camiyeGitAyarlari';
@@ -36,7 +48,11 @@ export const CAMIYE_GIT_ID_ONEKI = 'camiye_git_';
 /** Kaç gün ileri planlanır (bugün dahil). */
 export const CAMIYE_GIT_PLAN_GUN_SAYISI: Record<BildirimPlatformu, number> = { android: 7, ios: 3 };
 
-export type CamiyeGitPlanAyarlari = Pick<CamiyeGitAyarlari, 'aktif' | 'vakitler' | 'yurumeDk' | 'hazirlikDk'>;
+/** Bir vaktin tüm hatırlatmalarının öneki (`camiye_git_<gün>_<vakit>` + ek) — iptal için. */
+export const camiyeGitKimlikOneki = (tarih: string, vakit: CamiyeGitVakti): string =>
+    `${CAMIYE_GIT_ID_ONEKI}${tarih}_${vakit}`;
+
+export type CamiyeGitPlanAyarlari = Pick<CamiyeGitAyarlari, 'aktif' | 'vakitler' | 'yurumeDk' | 'hazirlikDk' | 'adimlar'>;
 
 export interface CamiyeGitPlanSecenekleri {
     gunSayisi: number;
@@ -44,6 +60,8 @@ export interface CamiyeGitPlanSecenekleri {
     gunAtlanirMi?: (iso: string) => boolean;
     /** Cuma hatırlatması açık mı? Açıksa cuma günü öğle atlanır. */
     cumaHatirlatmasiAcik?: boolean;
+    /** Android alarm payı (bildirim + anons alarmı, kronolojik). Verilmezse kesilmez. */
+    alarmButcesi?: number;
 }
 
 export interface CamiyeGitPlanKaydi {
@@ -53,8 +71,14 @@ export interface CamiyeGitPlanKaydi {
     tarih: string;
     /** Bildirim anı. */
     zaman: Date;
-    /** Ezandan kaç dk önce (metin bunu yazar). */
+    /** Ezana kaç dk kala (metin bunu yazar). */
     oncedenDk: number;
+    /** Vaktin GİRİŞİ — pencerenin sonu (gerçek alarm geç tetikte burada atlar). */
+    giris: Date;
+    baslik: string;
+    govde: string;
+    /** Motorun uyarısı — kanallar, gerçek alarm anı; `anonsMetni` ÇÖZÜLMÜŞ cümledir. */
+    uyari: UyariPlani;
 }
 
 const gunVakitleri = (pt: PrayerTimes): Record<CamiyeGitVakti, Date> => ({
@@ -65,6 +89,8 @@ const gunVakitleri = (pt: PrayerTimes): Record<CamiyeGitVakti, Date> => ({
     yatsi: pt.isha,
 });
 
+const adimlarGecerliMi = (adimlar: unknown): adimlar is SeviyeAyari[] => Array.isArray(adimlar) && adimlar.length > 0;
+
 /** Önümüzdeki `gunSayisi` günün hatırlatmaları (kronolojik). */
 export function camiyeGitPlaniOlustur(
     koordinat: { lat: number; lng: number },
@@ -72,12 +98,16 @@ export function camiyeGitPlaniOlustur(
     simdi: Date,
     secenekler: CamiyeGitPlanSecenekleri
 ): CamiyeGitPlanKaydi[] {
-    if (!ayarlar.aktif) return [];
+    if (!ayarlar.aktif || !adimlarGecerliMi(ayarlar.adimlar)) return [];
     if (!CAMIYE_GIT_VAKITLERI.some((v) => ayarlar.vakitler[v])) return [];
     const gunAtlanirMi = secenekler.gunAtlanirMi ?? (() => false);
     const coordinates = new Coordinates(koordinat.lat, koordinat.lng);
     const params = turkiyeHesapParametreleri();
-    const oncedenDk = camiyeGitOncedenDk(ayarlar);
+
+    // Tarama en uzak eşikten başlar (çıkış yönü: ölçü azalarak ezana yaklaşır). Motor
+    // çıktısı kalanDk'ya göre AZALAN = kronolojik; ilk = vaktin ilk tetiği.
+    const enBuyukEsik = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
+    const adimPlani = vakitUyariPlaniOlustur({ yon: 'cikisaDogru', seviyeler: ayarlar.adimlar }, enBuyukEsik);
 
     const plan: CamiyeGitPlanKaydi[] = [];
     for (let i = 0; i < secenekler.gunSayisi; i++) {
@@ -91,35 +121,70 @@ export function camiyeGitPlaniOlustur(
             if (vakit === 'ogle' && secenekler.cumaHatirlatmasiAcik && cumaMi(gun)) continue;
             const giris = vakitler[vakit];
             if (!giris) continue;
-            const zaman = new Date(giris.getTime() - oncedenDk * 60_000);
-            if (zaman.getTime() <= simdi.getTime()) continue;
-            plan.push({ id: `${CAMIYE_GIT_ID_ONEKI}${tarih}_${vakit}`, vakit, tarih, zaman, oncedenDk });
+            for (const [sira, uyari] of adimPlani.entries()) {
+                const zaman = new Date(giris.getTime() - uyari.kalanDk * 60_000);
+                if (zaman.getTime() <= simdi.getTime()) continue;
+                const onek = camiyeGitKimlikOneki(tarih, vakit);
+                plan.push({
+                    id: sira === 0 ? onek : `${onek}_${uyari.kalanDk}`,
+                    vakit,
+                    tarih,
+                    zaman,
+                    oncedenDk: uyari.kalanDk,
+                    giris,
+                    ...camiyeGitMetniOlustur(vakit, uyari.kalanDk, ayarlar),
+                    uyari: { ...uyari, anonsMetni: camiyeGitAnonsMetni(vakit, uyari.kalanDk, ayarlar) },
+                });
+            }
         }
     }
-    return plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
+    plan.sort((a, b) => a.zaman.getTime() - b.zaman.getTime());
+    return alarmPayinaSigdir(plan, secenekler.alarmButcesi);
 }
+
+/**
+ * Yola çıkmadan önce kaç dk hazırlık kaldığı: `kalanDk − yürüme`. Hazırlık payı yoksa ya da
+ * kişinin artık doğrudan yola çıkması gerekiyorsa `0`.
+ */
+const hazirlikKalanDk = (kalanDk: number, a: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>): number =>
+    a.hazirlikDk > 0 ? Math.max(0, kalanDk - a.yurumeDk) : 0;
 
 /**
  * Bildirim metni. İBADETE ÇAĞRI kaydıdır ("sen" + emir kipi — arayüz dili DEĞİL;
  * AGENTS.md istisnası). Vakte özgü nass YOK (cuma'nın 62/9'u yalnız cuma bildiriminde).
- * Hazırlık payı varsa kişiye ne zaman yola çıkacağı da söylenir.
+ * Hazırlık payı varsa ve yürüme süresinden fazla vakit kaldıysa kişiye ne zaman yola
+ * çıkacağı da söylenir. Göçten gelen kayıtta `kalanDk = yürüme + hazırlık` → eski metin
+ * BİREBİR.
  */
 export function camiyeGitMetniOlustur(
     vakit: CamiyeGitVakti,
+    kalanDk: number,
     ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
 ): { baslik: string; govde: string } {
-    const toplam = camiyeGitOncedenDk(ayarlar);
     const ad = VAKIT_ADLARI[vakit];
-    if (ayarlar.hazirlikDk > 0) {
+    const sonra = hazirlikKalanDk(kalanDk, ayarlar);
+    if (sonra > 0) {
         // Önden okunur (issue #287): vakit + ezana kalan süre başta — bileklikler
         // başlığın yalnız ilk ~16 karakterini gösterir.
         return {
-            baslik: `${ad} · ezana ${toplam} dk · camiye hazırlan`,
-            govde: `${ad} namazına camide yetişmek için hazırlan, ${ayarlar.hazirlikDk} dk sonra yola çık — ezana ${toplam} dk.`,
+            baslik: `${ad} · ezana ${kalanDk} dk · camiye hazırlan`,
+            govde: `${ad} namazına camide yetişmek için hazırlan, ${sonra} dk sonra yola çık — ezana ${kalanDk} dk.`,
         };
     }
     return {
-        baslik: `${ad} · ezana ${toplam} dk · camiye yola çık`,
-        govde: `${ad} namazına camide yetişmek için yola çık — ezana ${toplam} dk.`,
+        baslik: `${ad} · ezana ${kalanDk} dk · camiye yola çık`,
+        govde: `${ad} namazına camide yetişmek için yola çık — ezana ${kalanDk} dk.`,
     };
+}
+
+/**
+ * Sesli anons metni (ibadete çağrı — "sen"). Nass OKUNMAZ; çözülmüş cümle (yer tutucu yok).
+ */
+export function camiyeGitAnonsMetni(
+    vakit: CamiyeGitVakti,
+    kalanDk: number,
+    ayarlar: Pick<CamiyeGitAyarlari, 'yurumeDk' | 'hazirlikDk'>
+): string {
+    const giris = `${VAKIT_ADLARI[vakit]} vaktine ${sureMetniOlustur(kalanDk)} kaldı.`;
+    return hazirlikKalanDk(kalanDk, ayarlar) > 0 ? `${giris} Hazırlan, camiye yola çık.` : `${giris} Camiye yola çık.`;
 }

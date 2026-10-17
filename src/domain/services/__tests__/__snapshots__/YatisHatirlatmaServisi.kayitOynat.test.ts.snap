@@ -1,0 +1,1972 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android 00:30 yatis — ertesi takvim gunu 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-12 00:00",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android 20:30 yatis — tetik yatsi girisinden ONCE (kayma) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-5 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 21:05",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android onceDk alani yok (en eski kayit, varsayilana duser) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-5 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 21:45",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android uzun once (120 dk) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-5 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 23:00",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android varsayilan 23:00 / 30 dk, hicbiri kilinmamis (yatsi + muhasebe satiri) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android yalniz muhasebe — yatsi tek eksik ve suruyor (muhasebeTek, muhafiz kategorisi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Bugün 4/5 · yatsı işaretlenmemiş",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_muhasebe",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-06",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-06",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-07",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-07",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-08",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-08",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-09",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-09",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-10",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-10",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-11",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-11",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android yalniz yatsi hatirlatmasi 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android yatsi kilinmis + birden fazla eksik (muhasebe_<gun>, Inceleyin) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+        ],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 2/5 · sabah, öğle, ikindi işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-05",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android yatsi kilinmis + sabah eksik (muhasebeTek, Kazaya ekle kategorisi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.",
+      "categoryIdentifier": "muhasebe_tek_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+        ],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Bugün 4/5 · sabah işaretlenmemiş",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_imsak_muhasebe",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-08",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-08_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-8 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-09",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-09_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-9 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-10",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-10_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-10 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-11",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-11_vakit_yatsi_yatis",
+    "trigger": {
+      "channelId": "muhafiz",
+      "type": "date",
+      "zaman": "2026-8-11 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios 00:30 yatis — ertesi takvim gunu 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 00:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-8 00:00",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios 20:30 yatis — tetik yatsi girisinden ONCE (kayma) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 21:05",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 21:05",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios onceDk alani yok (en eski kayit, varsayilana duser) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 21:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 21:45",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios uzun once (120 dk) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 23:00",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 23:00",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios varsayilan 23:00 / 30 dk, hicbiri kilinmamis (yatsi + muhasebe satiri) 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios yalniz muhasebe — yatsi tek eksik ve suruyor (muhasebeTek, muhafiz kategorisi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Bugün 4/5 · yatsı işaretlenmemiş",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_muhasebe",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-06",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-06",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+          "aksam",
+        ],
+        "tarih": "2026-08-07",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 0/5 · sabah, öğle, ikindi, akşam, yatsı işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-07",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios yalniz yatsi hatirlatmasi 1`] = `
+[
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-05",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios yatsi kilinmis + birden fazla eksik (muhasebe_<gun>, Inceleyin) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.",
+      "categoryIdentifier": "muhasebe_coklu_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+          "ogle",
+          "ikindi",
+        ],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+      },
+      "sound": true,
+      "title": "Bugün 2/5 · sabah, öğle, ikindi işaretlenmemiş",
+    },
+    "identifier": "muhasebe_2026-08-05",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+]
+`;
+
+exports[`YatisHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios yatsi kilinmis + sabah eksik (muhasebeTek, Kazaya ekle kategorisi) 1`] = `
+[
+  {
+    "content": {
+      "body": "Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.",
+      "categoryIdentifier": "muhasebe_tek_category",
+      "data": {
+        "kazayaEklenebilir": [
+          "imsak",
+        ],
+        "tarih": "2026-08-05",
+        "tip": "muhasebe",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Bugün 4/5 · sabah işaretlenmemiş",
+    },
+    "identifier": "muhafiz_2026-08-05_vakit_imsak_muhasebe",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-06",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-06_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 22:30",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.
+Bugün 0/5 · sabah, öğle, ikindi, akşam işaretlenmemiş.",
+      "categoryIdentifier": "muhafiz_category",
+      "data": {
+        "kazayaEklenebilir": [],
+        "tarih": "2026-08-07",
+        "tip": "yatis",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · yatmadan önce kıl 🌙",
+    },
+    "identifier": "muhafiz_2026-08-07_vakit_yatsi_yatis",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 22:30",
+    },
+  },
+]
+`;

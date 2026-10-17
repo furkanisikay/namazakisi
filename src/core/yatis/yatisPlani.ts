@@ -36,43 +36,26 @@ import { turkiyeHesapParametreleri } from '../vakit/hesapParametreleri';
 import type { VakitAdi } from '../types';
 import { BILDIRIM_SABITLERI } from '../constants/UygulamaSabitleri';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
+import type { YatisAyarlari } from './yatisAyarlari';
+import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
+import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
 
 export type FarzVakit = Exclude<VakitAdi, 'gunes'>;
 export const FARZ_VAKITLER: readonly FarzVakit[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
 
-export interface YatisAyarlari {
-    /** Özelliğin ana anahtarı — VARSAYILAN KAPALI. */
-    aktif: boolean;
-    /** Her zamanki yatış saati (0–23) ve dakikası. */
-    saat: number;
-    dakika: number;
-    /** Yatıştan kaç dk önce. */
-    onceDk: number;
-    /** Yatsı kılınmadıysa hatırlat. */
-    yatsiHatirlatmasi: boolean;
-    /** Gün sonu muhasebesi (eksik vakitler). */
-    muhasebe: boolean;
-}
-
-export const YATIS_VARSAYILAN_AYARLARI: YatisAyarlari = {
-    aktif: false,
-    saat: 23,
-    dakika: 0,
-    onceDk: 30,
-    yatsiHatirlatmasi: true,
-    muhasebe: true,
-};
-
-export const YATIS_ONCE_MIN_DK = 5;
-export const YATIS_ONCE_MAX_DK = 120;
-export const YATIS_ONCE_ADIM_DK = 5;
-export const YATIS_DAKIKA_ADIM = 5;
-
-/**
- * Seçilebilir yatış saatleri: 20:00 – 02:55. Daha geç saat TR yazında imsağı
- * (~03:15) geçebilir; o anda "yatsıyı kıl" demek yanlıştır (vakit çıkmıştır).
- */
-export const YATIS_SAATLERI: readonly number[] = [20, 21, 22, 23, 0, 1, 2];
+export {
+    YATIS_ADIM_KISITLARI,
+    YATIS_DAKIKA_ADIM,
+    YATIS_ONCE_ADIM_DK,
+    YATIS_ONCE_MAX_DK,
+    YATIS_ONCE_MIN_DK,
+    YATIS_SAATLERI,
+    YATIS_TEKRAR_MAX_DK,
+    YATIS_TEKRAR_MIN_DK,
+    YATIS_VARSAYILAN_AYARLARI,
+    YATIS_VARSAYILAN_TEKRAR_DK,
+    type YatisAyarlari,
+} from './yatisAyarlari';
 
 /**
  * Yatış tetiği yatsı GİRİŞİNDEN önceyse (yazın 20:30 yatış, yatsı ~22:00) yatsı
@@ -123,12 +106,27 @@ export interface YatisIcerigi {
     baslik: string;
     govde: string;
     data: YatisBildirimVerisi;
+    /**
+     * Sesli anons cümlesi (çözülmüş, yer tutucusuz). Yatsı hatırlatması ibadete çağrıdır
+     * ("sen" + emir); muhasebe uygulama dilidir (kibar, nötr). Bildirim gövdesinden AYRI:
+     * kısa tutulur, liste okunmaz.
+     */
+    anons: string;
 }
 
 export interface YatisPlanKaydi extends YatisIcerigi {
     /** Namaz günü */
     gun: string;
     zaman: Date;
+    /** Yatışa kalan dk (kaymadan ÖNCE — kimlik eki bunu taşır). */
+    kalanDk: number;
+    /**
+     * Pencerenin sonu = namaz gününün sonu (yatsı çıkışı / ertesi imsak). Gerçek alarm geç
+     * tetikte burada atlar; muhasebedeki vaktin KENDİ çıkışı DEĞİL (o çoktan geçmiş olabilir).
+     */
+    cikis: Date;
+    /** Motorun uyarısı — kanallar, gerçek alarm anı; `anonsMetni` ÇÖZÜLMÜŞ cümledir. */
+    uyari: UyariPlani;
 }
 
 export interface VakitPenceresi {
@@ -252,6 +250,7 @@ export function yatisIcerigiOlustur(
             baslik: 'Yatsı · yatmadan önce kıl 🌙',
             govde: `Yatsı vakti hâlâ sürüyor; uykuya dalmadan namaza dur.${satir}`,
             data: { tip: 'yatis', tarih: gun, vakit: 'yatsi', kazayaEklenebilir: [] },
+            anons: 'Yatmadan önce yatsıyı kıl.',
         };
     }
 
@@ -276,6 +275,7 @@ export function yatisIcerigiOlustur(
                   ? 'Kıldıysanız işaretleyin; kılamadıysanız kaza defterinize ekleyin.'
                   : 'Kıldıysanız işaretleyin. Vakit hâlâ sürüyor.',
             data: { tip: 'muhasebe', tarih: gun, vakit: v, kazayaEklenebilir: kaza ? [v] : [] },
+            anons: `Bugün ${VAKIT_KUCUK[v]} vakti işaretlenmemiş görünüyor.`,
         };
     }
 
@@ -288,7 +288,27 @@ export function yatisIcerigiOlustur(
             ? `Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin. ${otoSatiri}`
             : 'Kıldıklarınızı işaretlemek için uygulamayı açıp inceleyin.',
         data: { tip: 'muhasebe', tarih: gun, kazayaEklenebilir: eksikler.filter(cikmisMi) },
+        anons: `Bugün ${eksikler.length} vakit işaretlenmemiş görünüyor.`,
     };
+}
+
+/**
+ * Ekran örneği (akış önizlemesi, "Telefonunuz şöyle okur"): ayarın hangi içeriği ürettiğini
+ * GERÇEK içerik üreticisinden gösterir (ayrı örnek metin yazılmaz — ayrışmasın). Yatsı
+ * hatırlatması açıksa yatsı (muhasebe açıksa satırıyla), değilse tek eksikli muhasebe.
+ * Sabit sentetik bir günle çalışır (konum gerekmez). İkisi de kapalıysa `null`.
+ */
+export function yatisOrnekIcerigi(ayarlar: Pick<YatisAyarlari, 'yatsiHatirlatmasi' | 'muhasebe'>): YatisIcerigi | null {
+    const t = (gun: number, saat: number, dk = 0) => new Date(2026, 0, gun, saat, dk);
+    const vakitler: Record<FarzVakit, VakitPenceresi> = {
+        imsak: { giris: t(10, 6, 40), cikis: t(10, 8, 10) },
+        ogle: { giris: t(10, 13, 10), cikis: t(10, 15, 40) },
+        ikindi: { giris: t(10, 15, 40), cikis: t(10, 18, 0) },
+        aksam: { giris: t(10, 18, 0), cikis: t(10, 19, 25) },
+        yatsi: { giris: t(10, 19, 25), cikis: t(11, 6, 40) },
+    };
+    const kilinan: VakitAdi[] = ayarlar.yatsiHatirlatmasi ? ['imsak', 'ikindi', 'aksam'] : ['imsak', 'ikindi', 'aksam', 'yatsi'];
+    return yatisIcerigiOlustur('2026-01-10', vakitler, kilinan, t(10, 22, 30).getTime(), ayarlar);
 }
 
 /** Otomatik kaza ekleme açıksa muhasebe satırı için gereken bilgi (Kaza Defteri 2.0). */
@@ -327,14 +347,38 @@ export interface YatisPlanGirdisi {
     gunAtlanirMi?: (gun: string) => boolean;
     /** Otomatik kaza ekleme açıksa (Kaza Defteri 2.0); muhasebe metnine satır ekler. */
     otomatikKaza?: OtomatikKazaBilgisi | null;
+    /** Android alarm payı (bildirim + anons alarmı, kronolojik). Verilmezse kesilmez. */
+    alarmButcesi?: number;
 }
 
 function koordinatGecerli(k: { lat: number; lng: number } | null | undefined): k is { lat: number; lng: number } {
     return !!k && Number.isFinite(k.lat) && Number.isFinite(k.lng) && !(k.lat === 0 && k.lng === 0);
 }
 
+/** Namaz günü `gun` için yatış anı (saat < 12 → ertesi takvim günü). */
+export function yatisAni(gun: Date, ayarlar: Pick<YatisAyarlari, 'saat' | 'dakika'>): Date {
+    return yatisTetikAni(gun, { saat: ayarlar.saat, dakika: ayarlar.dakika, onceDk: 0 });
+}
+
+const adimlarGecerliMi = (adimlar: unknown): adimlar is YatisAyarlari['adimlar'] =>
+    Array.isArray(adimlar) && adimlar.length > 0;
+
+type YatisTetigi = { sira: number; uyari: UyariPlani; zaman: Date };
+
 /**
  * Önümüzdeki `gunSayisi` namaz gününün yatış bildirimleri (kronolojik).
+ *
+ * AYRI PLAN MOTORU YAZILMAZ: her namaz gününün penceresi (yatışa kadar) muhafızın bir vakti
+ * gibi `vakitUyariPlaniOlustur`'a verilir (eşik, sıklık, kanallar, gerçek alarm anı aynı
+ * motordan). Kurallar:
+ *   - Yatsı girişi KAYMASI (`yatsiHatirlatmaTetigi`) HER tetiğe uygulanır; kaymayla aynı
+ *     ana düşen tetikler TEK kazanana indirgenir (ilki kalır).
+ *   - İÇERİK günde BİR KEZ, (kaymış) İLK tetiğin anında seçilir ve o günün TÜM tetikleri
+ *     aynı içeriği (kimlik kökü, kategori, `data`) taşır: tekrar = aynı uyarının yeniden
+ *     teslimi. Böylece kimlik kökü sabit kalır — native "Kıldım" (`muhafiz_<gün>_vakit_<v>`
+ *     öneki) ve gösterim grubu bütün tekrarları kapsar, "Kıldım hangi vakti işaretler"
+ *     kararı saf çekirdekte kalır. Kayıt değişince servis zaten yeniden planlar.
+ *   - KİMLİK: günün İLK tetiği (motor sırası) tarihsel kimliği korur; diğerleri `_<kalanDk>`.
  *
  * Konum yoksa plan BOŞTUR (vakitler bilinmeden "yatsı sürüyor" denemez).
  * Ufuk özel günden bağımsız seçilir, sonra özel günler elenir (gün sonu
@@ -343,23 +387,32 @@ function koordinatGecerli(k: { lat: number; lng: number } | null | undefined): k
 export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
     const { ayarlar, simdi } = g;
     if (!ayarlar.aktif || (!ayarlar.yatsiHatirlatmasi && !ayarlar.muhasebe)) return [];
+    if (!adimlarGecerliMi(ayarlar.adimlar)) return [];
     if (!koordinatGecerli(g.koordinat) || !gecerliTarih(simdi) || !(g.gunSayisi > 0)) return [];
     const koordinat = g.koordinat;
     const kilinanlar = g.kilinanlar ?? (() => []);
     const gunAtlanirMi = g.gunAtlanirMi ?? (() => false);
 
+    // Motor çıktısı kalanDk'ya göre AZALAN = kronolojik (çıkış yönü, yatışa yaklaşır).
+    const enBuyukEsik = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
+    const adimPlani = vakitUyariPlaniOlustur({ yon: 'cikisaDogru', seviyeler: ayarlar.adimlar }, enBuyukEsik);
+
     const bugun = gunKaydir(simdi, 0);
-    const adaylar: Array<{ gun: string; gunTarih: Date; zaman: Date }> = [];
+    const adaylar: Array<{ gun: string; gunTarih: Date; tetikler: YatisTetigi[] }> = [];
     // k = -1: gece yarısından sonra (imsak öncesi) hâlâ DÜNÜN namaz günü sürüyor.
     for (let k = -1; k <= g.gunSayisi; k++) {
         const gunTarih = gunKaydir(bugun, k);
-        const zaman = yatisTetikAni(gunTarih, ayarlar);
-        if (!gecerliTarih(zaman) || zaman.getTime() <= simdi.getTime()) continue;
-        adaylar.push({ gun: tarihiISOFormatinaCevir(gunTarih), gunTarih, zaman });
+        const yatis = yatisAni(gunTarih, ayarlar);
+        if (!gecerliTarih(yatis)) continue;
+        const tetikler = adimPlani
+            .map((uyari, sira) => ({ sira, uyari, zaman: new Date(yatis.getTime() - uyari.kalanDk * 60_000) }))
+            .filter((t) => t.zaman.getTime() > simdi.getTime());
+        if (tetikler.length > 0) adaylar.push({ gun: tarihiISOFormatinaCevir(gunTarih), gunTarih, tetikler });
     }
 
     const plan: YatisPlanKaydi[] = [];
-    for (const a of adaylar.sort((x, y) => x.zaman.getTime() - y.zaman.getTime()).slice(0, g.gunSayisi)) {
+    const ilkTetikMs = (a: { tetikler: YatisTetigi[] }) => a.tetikler[0].zaman.getTime();
+    for (const a of adaylar.sort((x, y) => ilkTetikMs(x) - ilkTetikMs(y)).slice(0, g.gunSayisi)) {
         if (gunAtlanirMi(a.gun)) continue;
         let vakitler: Record<FarzVakit, VakitPenceresi>;
         try {
@@ -367,13 +420,42 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
         } catch {
             continue;
         }
-        // Namaz günü ertesi imsakta biter: yatış ondan sonraysa o gün atlanır.
-        if (a.zaman.getTime() >= vakitler.yatsi.cikis.getTime()) continue;
+        const cikis = vakitler.yatsi.cikis;
         const kilinan = kilinanlar(a.gun);
+        // Namaz günü ertesi imsakta biter: yatış ondan sonraysa o tetik (ve gün) atlanır.
         // Yatış yatsı girişinden önceyse yatsı hatırlatması yatsı girdikten sonraya kayar.
-        const zaman = yatsiHatirlatmaTetigi(a.zaman, vakitler, kilinan, ayarlar);
-        const icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, zaman.getTime(), ayarlar, g.otomatikKaza ?? null);
-        if (icerik) plan.push({ ...icerik, gun: a.gun, zaman });
+        const kaymis: YatisTetigi[] = [];
+        for (const t of a.tetikler) {
+            if (t.zaman.getTime() >= cikis.getTime()) continue;
+            const zaman = yatsiHatirlatmaTetigi(t.zaman, vakitler, kilinan, ayarlar);
+            if (kaymis.some((k) => k.zaman.getTime() === zaman.getTime())) continue;
+            kaymis.push({ ...t, zaman });
+        }
+        if (kaymis.length === 0) continue;
+        kaymis.sort((x, y) => x.zaman.getTime() - y.zaman.getTime());
+        // İçerik günde BİR KEZ seçilir (tekrarlar aynı içeriği taşır, kimlik kökü sabit), ama
+        // İÇERİK ÜRETEN İLK tetikte: yalnız muhasebe açıkken ilk tetikte yatsı henüz girmemiş ve
+        // eksik yoksa içerik null olur; ilk tetiğe bakıp günü atlamak sonraki (yatsı girdikten
+        // sonraki) hatırlatmaları da sessizce düşürürdü. İçeriksiz erken tetikler kurulmaz.
+        let icerik: ReturnType<typeof yatisIcerigiOlustur> = null;
+        let baslangic = 0;
+        for (; baslangic < kaymis.length; baslangic++) {
+            icerik = yatisIcerigiOlustur(a.gun, vakitler, kilinan, kaymis[baslangic].zaman.getTime(), ayarlar, g.otomatikKaza ?? null);
+            if (icerik) break;
+        }
+        if (!icerik) continue;
+        for (const t of kaymis.slice(baslangic)) {
+            plan.push({
+                ...icerik,
+                kimlik: t.sira === 0 ? icerik.kimlik : `${icerik.kimlik}_${t.uyari.kalanDk}`,
+                gun: a.gun,
+                zaman: t.zaman,
+                kalanDk: t.uyari.kalanDk,
+                cikis,
+                uyari: { ...t.uyari, anonsMetni: icerik.anons },
+            });
+        }
     }
-    return plan;
+    plan.sort((x, y) => x.zaman.getTime() - y.zaman.getTime());
+    return alarmPayinaSigdir(plan, g.alarmButcesi);
 }

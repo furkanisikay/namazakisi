@@ -33,7 +33,12 @@ import {
     type YatisAyarlari,
     type YatisPlanKaydi,
 } from '../../core/yatis/yatisPlani';
+import { ANDROID_YATIS_PAYI, IOS_ALARMKIT_YATIS_PAYI } from '../../core/bildirim/butceSabitleri';
+import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
 import { bildirimKategorileriniGarantile } from './bildirimKategorileri';
+import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
+import { sahipliYanKanallariIptalEt } from './MuhafizAlarmKoprusu';
+import { NATIVE_SAHIP } from '../../core/muhafiz/teslimSahipligi';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 import {
     kayitDegistiDinleyicisiEkle,
@@ -60,6 +65,53 @@ const NAMAZDAN_VAKTE: Partial<Record<string, VakitAdi>> = {
 
 const koordinatGecerli = (k: YatisKoordinat | null | undefined): k is YatisKoordinat =>
     !!k && Number.isFinite(k.lat) && Number.isFinite(k.lng) && !(k.lat === 0 && k.lng === 0);
+
+/**
+ * YATIŞ TESLİMCİSİ — muhafızla AYNI teslim katmanı, AYRI örnek (plan §3.2, §4.1). Kanal
+ * uzayı, titreşim, sesli anons (Android TTS alarmı / iOS anons klibi), gerçek alarm ve ses
+ * seçimi AYNI koddan gelir. SAHİPLİK `{ tur: 'yatis' }`: yatış/muhasebe kimlikleri
+ * muhafızın `muhafiz_` uzayındadır (native "Kıldım" o önekle hepsini kapsar) → önek
+ * yetmez; önceki turun anons/alarmları native `sahipliIptalEt('yatis')` ile silinir, muhafız
+ * turu da yatışınkileri plan kimliği seçicisiyle KORUR.
+ * - Android: kanal hazırlığı KİMLİK (çöp toplama muhafızın işi; `ekHatirlatmaKaynaklari`
+ *   korur), pay `ANDROID_YATIS_PAYI` (asıl kesme üreticide).
+ * - iOS: bütçe ölçümü "yatış dışı" bekleyenleri sayar, anons sesi matrissiz hazırlanır,
+ *   AlarmKit payı `IOS_ALARMKIT_YATIS_PAYI`.
+ *
+ * Seçim ENJEKTE EDİLEBİLİR (jest varsayılan platformu iOS'tur — AGENTS.md).
+ */
+let _teslimci: MuhafizTeslimcisi | null = null;
+
+export function yatisTeslimcisiniAl(): MuhafizTeslimcisi {
+    if (_teslimci) return _teslimci;
+    if (Platform.OS === 'ios') {
+        const { IosMuhafizTeslimcisi } =
+            require('./IosMuhafizTeslimcisi') as typeof import('./IosMuhafizTeslimcisi');
+        _teslimci = new IosMuhafizTeslimcisi({
+            sahiplik: { tur: 'yatis' },
+            matrissizAnons: true,
+            alarmDestegi: true,
+            alarmKitPayi: IOS_ALARMKIT_YATIS_PAYI,
+        });
+    } else {
+        const { AndroidMuhafizTeslimcisi } =
+            require('./AndroidMuhafizTeslimcisi') as typeof import('./AndroidMuhafizTeslimcisi');
+        _teslimci = new AndroidMuhafizTeslimcisi({
+            alarmButcesi: ANDROID_YATIS_PAYI,
+            kanalHazirligi: async (m) => m,
+            sahiplik: { tur: 'yatis' },
+            // Gerçek alarm STANDART yetenek; alarm KANALLARINI muhafız toplar.
+            alarmDestegi: true,
+            alarmKanalTemizligi: false,
+        });
+    }
+    return _teslimci;
+}
+
+/** Test / özel senaryo: teslimciyi ayarla (`null` → platformdan yeniden türet). */
+export function yatisTeslimcisiniAyarla(teslimci: MuhafizTeslimcisi | null): void {
+    _teslimci = teslimci;
+}
 
 /** Platforma göre plan ufku. */
 export const yatisPlanGunSayisi = (): number =>
@@ -117,9 +169,19 @@ export class YatisHatirlatmaServisi {
         verilenAyarlar: YatisAyarlari | undefined,
         simdi: Date
     ): Promise<void> {
-        const ayarlar = verilenAyarlar ?? (await LocalYatisHatirlatmaServisi.getAyarlar());
+        const okunan = verilenAyarlar ?? (await LocalYatisHatirlatmaServisi.getAyarlar());
+        // Özel sesler DOĞRULANIR (Android; cuma ile aynı gerekçe — id paritesi).
+        const ayarlar = await this.sesleriDogrula(okunan);
+        const teslimci = yatisTeslimcisiniAl();
         if (!ayarlar.aktif) {
-            await this.mevcutlariTemizle();
+            await this.mevcutlariTemizle(teslimci);
+            // Bekleyen GERÇEK ALARMLAR expo listesinde yoktur: teslimcinin hazırlığı önceki
+            // turunkileri YATIŞ sahipliğiyle siler (muhafızınkilere dokunmaz).
+            try {
+                await teslimci.hazirla();
+            } finally {
+                await teslimci.tamamla?.();
+            }
             return;
         }
         const koordinat = verilenKoordinat === undefined ? await this.koordinatOku() : verilenKoordinat;
@@ -129,6 +191,10 @@ export class YatisHatirlatmaServisi {
             Logger.warn('YatisHatirlatma', 'Konum yok, mevcut plan korunuyor');
             return;
         }
+
+        // Muhasebe "Kıldım / Kazaya ekle" düğmeleri kategoriye bağlı; muhafız kapalıyken
+        // kategori kaydını başka kimse garanti etmez (plan §4.5 — teslimciye geçince KORUNUR).
+        await bildirimKategorileriniGarantile();
 
         const gunSayisi = yatisPlanGunSayisi();
         const [kilinanlar, ozelGundeMi, otomatikKaza] = await Promise.all([
@@ -144,11 +210,20 @@ export class YatisHatirlatmaServisi {
             kilinanlar: (gun) => kilinanlar[gun] ?? [],
             gunAtlanirMi: ozelGundeMi,
             otomatikKaza,
+            ...(Platform.OS === 'android' ? { alarmButcesi: ANDROID_YATIS_PAYI } : {}),
         });
 
-        await this.mevcutlariTemizle();
-        for (const kayit of plan) {
-            await this.planla(kayit);
+        // Kanallar planlamadan ÖNCE (Android 8+ var olmayan kanala gideni göstermez).
+        await this.kanallariHazirla(ayarlar);
+        await this.mevcutlariTemizle(teslimci);
+        try {
+            await teslimci.hazirla();
+            // KRONOLOJİK sıra: iOS bütçesi sayaçla keser, ters sıra yakın uyarıları atardı.
+            for (const kayit of plan) {
+                await this.planla(teslimci, kayit);
+            }
+        } finally {
+            await teslimci.tamamla?.();
         }
     }
 
@@ -194,29 +269,39 @@ export class YatisHatirlatmaServisi {
         return sonuc;
     }
 
-    private async planla(kayit: YatisPlanKaydi): Promise<void> {
-        // Muhasebe "Kıldım / Kazaya ekle" düğmeleri kategoriye bağlı; muhafız
-        // kapalıyken kategori kaydını başka kimse garanti etmez.
-        await bildirimKategorileriniGarantile();
+    /** Tek bildirimi teslimciye verir. Biri patlarsa KALANLAR yine kurulur. */
+    private async planla(teslimci: MuhafizTeslimcisi, kayit: YatisPlanKaydi): Promise<void> {
+        const vakit = kayit.data.vakit ?? 'yatsi';
         try {
-            await Notifications.scheduleNotificationAsync({
-                identifier: kayit.kimlik,
-                content: {
-                    title: kayit.baslik,
-                    body: kayit.govde,
-                    sound: true,
-                    categoryIdentifier: kayit.kategori,
-                    data: kayit.data,
-                },
-                trigger: {
-                    type: Notifications.SchedulableTriggerInputTypes.DATE,
-                    date: kayit.zaman,
-                    // Yatsı hatırlatması muhafızın taban kanalından (yüksek önem,
-                    // heads-up); muhasebe sakin vakit kanalından. Yeni kanal AÇILMAZ.
-                    channelId:
+            await teslimci.uyariPlanla({
+                id: kayit.kimlik,
+                baslik: kayit.baslik,
+                mesaj: kayit.govde,
+                zaman: kayit.zaman,
+                // `anonsMetni` ÇÖZÜLMÜŞ cümledir (yer tutucu içermez).
+                uyari: kayit.uyari,
+                vakit,
+                muhafizVakti: vakit,
+                tarih: kayit.gun,
+                yon: 'cikisaDogru',
+                // Pencere sonu = namaz gününün sonu: gerçek alarm geç tetiklenirse çalmaz.
+                cikis: kayit.cikis,
+                ozel: {
+                    // Yatış/muhasebe yükü — "Kıldım"/"Kazaya ekle" bunu okur (tarihsel biçim).
+                    veri: kayit.data,
+                    // Kategori yüzeyin KENDİSİNDEN (Kıldım / Kazaya ekle / İnceleyin).
+                    kategori: kayit.kategori,
+                    // Göçten gelen (varsayılan ses, titreşimsiz) adım bugünkü kanalda kalır:
+                    // yatsı muhafızın taban kanalı (heads-up), muhasebe sakin vakit kanalı.
+                    varsayilanKanalId:
                         kayit.tur === 'yatsi'
                             ? BILDIRIM_SABITLERI.KANALLAR.MUHAFIZ
                             : BILDIRIM_SABITLERI.KANALLAR.VAKIT_BILDIRIM,
+                    varsayilanSistemSesi: true,
+                    alarmAdi: kayit.tur === 'muhasebeCoklu' ? 'Gün sonu' : VAKIT_ADLARI[vakit],
+                    // Yatsı / tek eksik: VAKİT alarmı ("Kıldım" o farzı işaretler — native kimlikten
+                    // çözer); çoklu muhasebe vakte bağlı değildir → BİLGİ (yalnız "Kapat").
+                    alarmTuru: kayit.tur === 'muhasebeCoklu' ? 'bilgi' : 'vakit',
                 },
             });
         } catch (e) {
@@ -225,7 +310,36 @@ export class YatisHatirlatmaServisi {
         }
     }
 
-    private async mevcutlariTemizle(): Promise<void> {
+    /** `MuhafizKanalServisi.adimSesleriniDogrula` — tembel (köprü grafiği testlere sızmasın). */
+    private async sesleriDogrula(ayarlar: YatisAyarlari): Promise<YatisAyarlari> {
+        if (Platform.OS !== 'android') return ayarlar;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            return await MuhafizKanalServisi.adimSesleriniDogrula(ayarlar);
+        } catch (e) {
+            Logger.error('YatisHatirlatma', 'Sesler dogrulanamadi', e);
+            return ayarlar;
+        }
+    }
+
+    /** Ortak muhafız kanal uzayındaki kanalları oluşturur (çöp toplamaz). */
+    private async kanallariHazirla(ayarlar: YatisAyarlari): Promise<void> {
+        if (Platform.OS !== 'android') return;
+        try {
+            const { MuhafizKanalServisi } =
+                require('./MuhafizKanalServisi') as typeof import('./MuhafizKanalServisi');
+            await MuhafizKanalServisi.ekKanallariHazirla([{ yon: 'cikisaDogru', seviyeler: ayarlar.adimlar }]);
+        } catch (e) {
+            Logger.error('YatisHatirlatma', 'Kanallar hazirlanamadi', e);
+        }
+    }
+
+    /**
+     * Bekleyen yatış bildirimleri (yalnız `yatisKimligiMi`) + Android sesli anons alarmları
+     * (yatış SAHİPLİĞİYLE — muhafızın `muhafiz_` uzayındaki plan anonslarına dokunmaz).
+     */
+    private async mevcutlariTemizle(teslimci: MuhafizTeslimcisi): Promise<void> {
         try {
             const tumu = await Notifications.getAllScheduledNotificationsAsync();
             for (const b of tumu) {
@@ -235,6 +349,23 @@ export class YatisHatirlatmaServisi {
             }
         } catch (e) {
             Logger.error('YatisHatirlatma', 'Temizlik hatasi', e);
+        }
+        await this.anonslariIptalEt(teslimci);
+    }
+
+    /**
+     * Önceki turun sesli anons alarmları — yatış SAHİPLİĞİYLE ve BEKLENEREK (Android): ateşle-
+     * unut iptal ayrı köprü kuyruğunda yeni kurulan anonslarla yarışıp onları silebilirdi.
+     * Köprü yoksa (eski ikili / test) teslimcinin yoluna düşülür; o yol yatışta önek
+     * kullanmaz (önek muhafızın anonslarını da silerdi).
+     */
+    private async anonslariIptalEt(teslimci: MuhafizTeslimcisi): Promise<void> {
+        if (Platform.OS !== 'android') return;
+        try {
+            if (await sahipliYanKanallariIptalEt(NATIVE_SAHIP.YATIS, { anons: true, alarm: false })) return;
+            teslimci.tumYanKanallariIptalEt();
+        } catch (e) {
+            Logger.error('YatisHatirlatma', 'Anons temizligi hatasi', e);
         }
     }
 

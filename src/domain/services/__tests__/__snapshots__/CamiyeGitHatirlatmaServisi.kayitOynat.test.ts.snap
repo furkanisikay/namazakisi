@@ -1,0 +1,2910 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android alt kume vakitler + tahmin kaynagi 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 19:13",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android cuma hatirlatmasi ACIK (cuma gunu ogle atlanir) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 20:43",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android hazirlik payi yok (metin dali degisir) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-08_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-08_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-08_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-08_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-09_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-09_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-09_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-09_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-10_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-10_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-10_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-10_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-10_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-11_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-11_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-11_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-11_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-11_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 20:40",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) android varsayilan bes vakit (yurume 10 + hazirlik 5) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-5 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-6 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-7 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-08",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-08_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-8 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-09",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-09_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-9 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-10",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-10_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-10 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_imsak",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_ogle",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_ikindi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_aksam",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-11",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-11_yatsi",
+    "trigger": {
+      "channelId": "vakit_bildirim",
+      "type": "date",
+      "zaman": "2026-8-11 20:45",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios alt kume vakitler + tahmin kaynagi 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 10 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 19:13",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios cuma hatirlatmasi ACIK (cuma gunu ogle atlanir) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 20:43",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 04:43",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 16:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 19:13",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 17 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 17 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 20:43",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios hazirlik payi yok (metin dali degisir) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 20:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 04:40",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 12:40",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 16:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 19:10",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için yola çık — ezana 20 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 20 dk · camiye yola çık",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 20:40",
+    },
+  },
+]
+`;
+
+exports[`CamiyeGitHatirlatmaServisi — kayıt-oynat (eski ayar BİREBİR aynı plan) ios varsayilan bes vakit (yurume 10 + hazirlik 5) 1`] = `
+[
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-05",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-05_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-5 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-06",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-06_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-6 20:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Sabah namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "imsak",
+      },
+      "sound": true,
+      "title": "Sabah · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_imsak",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 04:45",
+    },
+  },
+  {
+    "content": {
+      "body": "Öğle namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ogle",
+      },
+      "sound": true,
+      "title": "Öğle · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ogle",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 12:45",
+    },
+  },
+  {
+    "content": {
+      "body": "İkindi namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "ikindi",
+      },
+      "sound": true,
+      "title": "İkindi · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_ikindi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 16:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Akşam namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "aksam",
+      },
+      "sound": true,
+      "title": "Akşam · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_aksam",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 19:15",
+    },
+  },
+  {
+    "content": {
+      "body": "Yatsı namazına camide yetişmek için hazırlan, 5 dk sonra yola çık — ezana 15 dk.",
+      "data": {
+        "tarih": "2026-08-07",
+        "tip": "camiye_git",
+        "vakit": "yatsi",
+      },
+      "sound": true,
+      "title": "Yatsı · ezana 15 dk · camiye hazırlan",
+    },
+    "identifier": "camiye_git_2026-08-07_yatsi",
+    "trigger": {
+      "type": "date",
+      "zaman": "2026-8-7 20:45",
+    },
+  },
+]
+`;

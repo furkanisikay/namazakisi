@@ -10,8 +10,19 @@ import { Platform } from 'react-native';
 jest.mock('../../../core/utils/Logger', () => ({
     Logger: { warn: jest.fn(), error: jest.fn(), info: jest.fn(), debug: jest.fn() },
 }));
+// Android teslimcisi native TTS köprüsünü import eder (jest'te yok — AGENTS.md).
+const mockOnekliAnons = jest.fn((_o: string) => true);
+jest.mock('../../../../modules/expo-countdown-notification/src', () => ({
+    planlaAnons: jest.fn(),
+    iptalEtAnons: jest.fn(),
+    iptalEtTumAnonslar: jest.fn(),
+    iptalEtOnekliAnonslar: (o: string) => mockOnekliAnons(o),
+    muhafizKanaliniGarantile: jest.fn(),
+    muhafizKanallariniTemizle: jest.fn(),
+}));
 
-import { YatisHatirlatmaServisi } from '../YatisHatirlatmaServisi';
+import { NativeModules } from 'react-native';
+import { YatisHatirlatmaServisi, yatisTeslimcisiniAl, yatisTeslimcisiniAyarla } from '../YatisHatirlatmaServisi';
 import { YATIS_VARSAYILAN_AYARLARI } from '../../../core/yatis/yatisPlani';
 import { DEPOLAMA_ANAHTARLARI } from '../../../core/constants/UygulamaSabitleri';
 import * as LocalNamazServisi from '../../../data/local/LocalNamazServisi';
@@ -28,6 +39,9 @@ let servis: YatisHatirlatmaServisi;
 
 beforeEach(async () => {
     jest.clearAllMocks();
+    // Teslimci `Date.now()` ile geçmiş tetiği atar → saat SIMDI'ye sabitlenir (zamanlayıcılar gerçek).
+    jest.useFakeTimers({ now: SIMDI, doNotFake: ['setTimeout', 'clearTimeout', 'setImmediate', 'nextTick', 'queueMicrotask'] });
+    yatisTeslimcisiniAyarla(null);
     await AsyncStorage.clear();
     (Notifications.getAllScheduledNotificationsAsync as jest.Mock).mockResolvedValue([]);
     (Notifications.scheduleNotificationAsync as jest.Mock).mockResolvedValue('id');
@@ -37,7 +51,12 @@ beforeEach(async () => {
     servis.__testIcinSifirla();
 });
 
-afterEach(() => jest.restoreAllMocks());
+afterEach(() => {
+    jest.useRealTimers();
+    jest.restoreAllMocks();
+});
+
+afterAll(() => yatisTeslimcisiniAyarla(null));
 
 describe('YatisHatirlatmaServisi', () => {
     it('Android: 7 namaz günü planlar; yatsı bildirimi muhafızın taban kanalından', async () => {
@@ -91,5 +110,47 @@ describe('YatisHatirlatmaServisi', () => {
         await new Promise((r) => setTimeout(r, 50));
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalled();
         LocalNamazServisi.kayitDegistiDinleyicisiEkle('yatis', null);
+    });
+
+    it('teslim muhafızın teslim katmanından, YATIŞ sahipli kendi örneğiyle; kategori ve yük korunur', async () => {
+        await servis.hatirlatmalariGuncelle(ISTANBUL, AYAR, SIMDI);
+        expect(yatisTeslimcisiniAl().ad).toBe('android');
+        const p = planlanan()[0];
+        expect(p.content.data).toMatchObject({ tip: 'yatis', vakit: 'yatsi' });
+        // Önek yolu ÇAĞRILMAZ: `muhafiz_` öneki muhafızın anonslarını da silerdi.
+        expect(mockOnekliAnons).not.toHaveBeenCalled();
+    });
+
+    it('önceki turun anons + alarmları YATIŞ sahipliğiyle silinir (native sahipliIptalEt)', async () => {
+        const sahipliIptalEt = jest.fn().mockResolvedValue(undefined);
+        (NativeModules as Record<string, unknown>).MuhafizAlarm = {
+            sahipliIptalEt,
+            onekliIptalEt: jest.fn().mockResolvedValue(0),
+            kanallariTemizle: jest.fn(),
+            planla: jest.fn().mockResolvedValue(true),
+        };
+        try {
+            await servis.hatirlatmalariGuncelle(ISTANBUL, AYAR, SIMDI);
+            expect(sahipliIptalEt).toHaveBeenCalledWith('yatis', true, false);
+            expect(sahipliIptalEt).toHaveBeenCalledWith('yatis', false, true);
+            expect(sahipliIptalEt).not.toHaveBeenCalledWith('muhafiz_plan', expect.anything(), expect.anything());
+        } finally {
+            delete (NativeModules as Record<string, unknown>).MuhafizAlarm;
+        }
+    });
+
+    it('çok adım + tekrar: ilk tetik tarihsel kimlik, tekrarlar `_<kalanDk>`; hepsi aynı içerik', async () => {
+        const ayar = {
+            ...AYAR,
+            adimlar: [{ ...AYAR.adimlar[0], esikDk: 60, siklik: { herDk: 20 } as const }],
+        };
+        await servis.hatirlatmalariGuncelle(ISTANBUL, ayar, SIMDI);
+        const bugun = planlanan().filter((p) => String(p.identifier).startsWith('muhafiz_2026-10-13_vakit_yatsi_yatis'));
+        expect(bugun.map((p) => p.identifier)).toEqual([
+            'muhafiz_2026-10-13_vakit_yatsi_yatis',
+            'muhafiz_2026-10-13_vakit_yatsi_yatis_40',
+            'muhafiz_2026-10-13_vakit_yatsi_yatis_20',
+        ]);
+        expect(new Set(bugun.map((p) => p.content.title)).size).toBe(1);
     });
 });

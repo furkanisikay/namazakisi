@@ -547,51 +547,6 @@ export function vakitPencereTanimi(
 }
 
 /**
- * Yatış hatırlatması (issue #290) için pencere tanımı — cuma deseni.
- *
- * STANDART İSTİSNALARI (teknik gerekçeli): yatış hatırlatması bir PENCERE değil
- * TEK bir andır (yatıştan X dk önce) ve içeriği tetik anındaki kayıttan üretilen
- * "muhasebe"dir — tekrar etmesi, yönü ya da adım dizisi yoktur. Kanalı içerik
- * belirler (yatsı hatırlatması muhafızın taban kanalı, muhasebe vakit kanalı);
- * `YatisHatirlatmaServisi` teslimciden geçmediği için kanal/ses/titreşim/alarm
- * anahtarları ekranda çalışmayan seçenek olurdu.
- */
-export function yatisPencereTanimi(secenekler: { esikSinirlari: EsikSinirlari; esikAdimDk: number }): PencereTanimi {
-    return {
-        ...STANDART_YETENEKLER,
-        // İSTİSNALAR — gerekçe fonksiyonun belgesinde (tek an, içerik kayıttan).
-        yonSecilebilir: false,
-        kanalSecimiVar: false,
-        sesSecimiVar: false,
-        siklikSecimiVar: false,
-        alarmSecilebilir: false,
-        kapaliCipiVar: false,
-        anonsMetniDuzenlenebilir: false,
-        titresimSecilebilir: false,
-        kaynak: 'yatis',
-        baslik: 'Yatış hatırlatması',
-        baslikKucuk: 'yatış hatırlatması',
-        ikon: 'bed',
-        // Kimlik yatsıdır; anons kullanılmaz, değer tip sözleşmesini doldurur.
-        vakit: 'yatsi',
-        yon: 'cikisaDogru',
-        maksAdim: 1,
-        onPlanBanneriVar: false,
-        adimBilgileri: [{ baslik: 'Hatırlatma', ikon: 'bed', renk: SEVIYE_BILGILERI.nazik.renk }],
-        yetenekler: ANDROID_YETENEKLERI,
-        esikAdimDk: secenekler.esikAdimDk,
-        tekrarMinDk: TEKRAR_MIN_DK,
-        tekrarMaxDk: TEKRAR_MAX_DK,
-        varsayilanTekrarDk: VARSAYILAN_TEKRAR_DK,
-        esikSinirlari: secenekler.esikSinirlari,
-        esikBasligi: 'NE KADAR ÖNCE',
-        esikAciklamasi: 'Yatış saatinize',
-        esikErisimAdi: 'Yatıştan kaç dk önce',
-        esikBirimi: 'dk kala',
-    };
-}
-
-/**
  * EK HATIRLATMA YÜZEYİ (cuma; sonra camiye gitme, yatış, takvim) için pencere tanımı —
  * ortak hatırlatma yüzeyleri plan §3.3.
  *

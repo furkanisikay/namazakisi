@@ -121,5 +121,5 @@ export const ANDROID_NAFILE_PAYI = 60;
  */
 export const ANDROID_CUMA_PAYI = 60;
 export const ANDROID_CAMIYE_GIT_PAYI = 50;
-export const ANDROID_YATIS_PAYI = 21;
+export const ANDROID_YATIS_PAYI = 35;
 export const ANDROID_TAKVIM_CAKISMA_PAYI = 35;
