@@ -656,6 +656,10 @@ jobs:
 
       - name: 🚀 TV → tv:${{ inputs.saat_tv_kanal }}
         if: inputs.saat_tv == 'tv' || inputs.saat_tv == 'ikisi'
+        # TV form faktörünün özel kanalı Play Console'da açılmadıysa ("Track not found")
+        # saat gönderimi ve iş yine başarılı sayılsın; özet uyarıyı yazar.
+        id: tv_yukle
+        continue-on-error: true
         env:
           GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
         run: |
@@ -676,4 +680,8 @@ jobs:
             case "${{ inputs.saat_tv }}" in tv|ikisi) echo "| 📺 Android TV | \`${{ steps.vc.outputs.tv }}\` | \`tv:${{ inputs.saat_tv_kanal }}\` |";; esac
             echo ""
             echo "Sürüm adı: \`${{ steps.vc.outputs.surum }}\` · iş sonucu: ${{ job.status }}"
+            if [ "${{ steps.tv_yukle.outcome }}" = "failure" ]; then
+              echo ""
+              echo "⚠️ TV yüklenemedi (ör. Play Console'da Android TV özel kanalı açık değil). Saat gönderimi etkilenmedi."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
