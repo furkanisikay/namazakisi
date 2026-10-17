@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.37.0] - 2026-10-17
+
+### Eklendi
+- [takvim] ekran ortak hatırlatma kartıyla — tüm yetenekler
+- [takvim] ortak model — adım dizisi, şekilden göç, teslim muhafız katmanından
+
+### Düzeltildi
+- [alarm] takvim gerçek alarmı native "Kıldım" sonrası çalmaz
+- [takvim] kılınmışlık iptali planlama turlarıyla aynı sıradan geçer
+- [takvim] aynı ana düşen adımlar birleşir — güçlü kanal (gerçek alarm) düşmesin
+
 ## [0.36.0] - 2026-10-17
 
 ### Eklendi
