@@ -22,9 +22,12 @@ import { basligiOlustur } from '../utils/muhafizMetinYardimcisi';
 import type { MuhafizMatrisi, MuhafizVakti } from '../muhafiz/matrisTipleri';
 import {
     muhafizAcilKanalMi,
+    sesliAnonsGerekliMi,
     titresimGerekliMi,
     vakitUyariPlaniOlustur,
+    type UyariPlani,
 } from '../muhafiz/motorAdaptoru';
+import { anonsMetniniCoz } from '../muhafiz/anonsMetni';
 import { VARSAYILAN_PENCERE_YONU } from '../muhafiz/pencereTipleri';
 import { pencereUzunluguDkHesapla } from '../muhafiz/pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from '../muhafiz/anonsKimligi';
@@ -59,6 +62,13 @@ export interface WearMuhafizKaydi {
      * eski saat yok sayar.
      */
     adim: number;
+    /**
+     * ÇÖZÜLMÜŞ sesli anons cümlesi (saat W3, fikir 9) — yalnız adımın sesli kanalı
+     * açıkken ve metin boş değilken. Saat telefon yanında değilken (ya da kullanıcı
+     * "saatte" seçtiyse) bunu kendi hoparlöründen okur. `olcuDk` ile çözülür (AGENTS:
+     * üçüncü argüman `kalanDk` DEĞİL). Eklemeli opsiyonel alan: sürüm artmaz.
+     */
+    anons?: string;
 }
 
 export interface VakitPenceresi {
@@ -124,6 +134,17 @@ export function pencereninKayitlari(
     pencere: VakitPenceresi,
     matris: MuhafizMatrisi
 ): WearMuhafizKaydi[] {
+    return pencereninUyarilari(pencere, matris).map((u) => u.kayit);
+}
+
+/**
+ * Kayıtlar, motorun HAM uyarısıyla birlikte — uyandırma listesi (`wearUyandirma`)
+ * gerçek alarm bayrağını (`UyariPlani.alarm`) buradan okur; ikinci bir tarama yok.
+ */
+export function pencereninUyarilari(
+    pencere: VakitPenceresi,
+    matris: MuhafizMatrisi
+): { kayit: WearMuhafizKaydi; uyari: UyariPlani }[] {
     const vakitAyari = matris[pencere.vakit];
     if (!vakitAyari) return [];
     const yon = vakitAyari.yon ?? VARSAYILAN_PENCERE_YONU;
@@ -137,7 +158,11 @@ export function pencereninKayitlari(
     const cikisMs = pencere.cikis.getTime();
     return plan.map((u) => {
         const id = muhafizBildirimIdOlustur(pencere.vakit, u.seviye, pencere.tarih, u.kalanDk);
-        return {
+        const anons =
+            sesliAnonsGerekliMi(u.kanallar) && u.anonsMetni.trim().length > 0
+                ? anonsMetniniCoz(u.anonsMetni, pencere.vakit, u.olcuDk, yon)
+                : undefined;
+        const kayit: WearMuhafizKaydi = {
             id,
             ms: cikisMs - u.kalanDk * DK_MS,
             tarih: pencere.tarih,
@@ -148,7 +173,9 @@ export function pencereninKayitlari(
             titresim: titresimGerekliMi(u.kanallar),
             acil: muhafizAcilKanalMi(u.seviye, u.bildirimSesi, u.acilKanal),
             adim: u.adimIndeks,
+            ...(anons ? { anons } : {}),
         };
+        return { kayit, uyari: u };
     });
 }
 

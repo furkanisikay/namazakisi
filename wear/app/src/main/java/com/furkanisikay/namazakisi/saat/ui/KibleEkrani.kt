@@ -23,7 +23,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.semantics
 import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.ButtonDefaults
+import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
@@ -71,7 +74,14 @@ const val KIBLE_SENSOR_YOK_METNI =
  * ikisi de eylem yeşili olur ve ortada "Kıble yönündesiniz" yazar. Kibar "siz".
  */
 @Composable
-fun KibleEkrani(g: KibleGorunumu) {
+fun KibleEkrani(
+    g: KibleGorunumu,
+    /** Titreşimle yönlendirme (saat W3, fikir 6) açık mı? */
+    yonlendirme: Boolean = false,
+    onYonlendirme: (() -> Unit)? = null,
+    /** "Telefonda açın" (saat W3, fikir 4) — ayrıntılı kıble/harita telefonda. */
+    onTelefondaAc: (() -> Unit)? = null,
+) {
     SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
@@ -81,15 +91,43 @@ fun KibleEkrani(g: KibleGorunumu) {
                     KibleGorunumu.KonumYok -> Mesaj(
                         "Kıble için telefonunuzda konumu açın. Namaz Akışı güncel değilse güncelleyin.",
                     )
-                    is KibleGorunumu.SensorYok -> Mesaj(
-                        KIBLE_SENSOR_YOK_METNI,
-                        alt = "Kıble ${derece(g.kibleAcisi)}° (kuzeyden) · ${g.konumAdi}",
-                    )
+                    is KibleGorunumu.SensorYok -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Mesaj(
+                            KIBLE_SENSOR_YOK_METNI,
+                            alt = "Kıble ${derece(g.kibleAcisi)}° (kuzeyden) · ${g.konumAdi}",
+                        )
+                        if (onTelefondaAc != null) {
+                            CompactButton(
+                                onClick = onTelefondaAc,
+                                colors = ButtonDefaults.filledTonalButtonColors(),
+                                modifier = Modifier.padding(top = 6.dp).semantics { contentDescription = "Kıbleyi telefonunuzda açın" },
+                                label = { Text("Telefonda açın") },
+                            )
+                        }
+                    }
                     is KibleGorunumu.Olculuyor -> {
                         Halka(yonCizim = 0.0, hedefCizim = null, hizali = false)
                         Mesaj("Yön ölçülüyor…", alt = "Kıble ${derece(g.kibleAcisi)}° · ${g.konumAdi}")
                     }
                     is KibleGorunumu.Pusula -> PusulaIcerigi(g)
+                }
+                // Titreşimle yönlendirme anahtarı — yalnız pusula çalışırken (sensör varken).
+                if (onYonlendirme != null && (g is KibleGorunumu.Pusula || g is KibleGorunumu.Olculuyor)) {
+                    CompactButton(
+                        onClick = onYonlendirme,
+                        colors = ButtonDefaults.filledTonalButtonColors(),
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 4.dp)
+                            .semantics {
+                                contentDescription = if (yonlendirme) {
+                                    "Titreşimle yönlendirme açık. Kapatmak için dokunun"
+                                } else {
+                                    "Titreşimle yönlendirme kapalı. Açmak için dokunun"
+                                }
+                            },
+                        label = { Text(if (yonlendirme) "Titreşim açık" else "Titreşim kapalı") },
+                    )
                 }
             }
         }

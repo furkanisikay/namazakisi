@@ -17,6 +17,7 @@ import {
     type NafileBildirimPlani,
 } from '../../core/nafile/nafilePlani';
 import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 
 /**
  * Plan üretici SAF modüldedir (`core/nafile/nafilePlani.ts`): bildirim
@@ -107,6 +108,21 @@ function anonslariOnekleIptalEt(onek: string): void {
  * kayıt/puan/seri TUTMAZ. Native Kıldım yolu (#299) yalnız `muhafiz_` kimlikleri
  * içindir — nafile yanıtı JS'e (`BildirimServisi`) düşer ve buraya gelir.
  */
+/**
+ * Saatin uyandırma listesi (saat W3) teheccüd ayarından/kılınmışlığından türer → nafile
+ * planı değişince saat yükü de tazelenir. TEMBEL `require` (saat köprüsü native) ve
+ * yalnız Android; gönderim içerik aynıysa yazmaz, asla fırlatmaz.
+ */
+function saatiTazele(): void {
+    if (Platform.OS !== 'android') return;
+    try {
+        const { WearSenkronServisi } = require('./WearSenkronServisi') as typeof import('./WearSenkronServisi');
+        WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+    } catch (e) {
+        Logger.warn('NafileHatirlatma', 'Saat tazelenemedi', e);
+    }
+}
+
 export class NafileHatirlatmaServisi {
     private static instance: NafileHatirlatmaServisi;
 
@@ -137,6 +153,7 @@ export class NafileHatirlatmaServisi {
 
     public async hatirlatmalariGuncelle(koordinatlar: NafileKoordinat | null): Promise<void> {
         await this.siraya(() => this.planlamayiCalistir(koordinatlar));
+        saatiTazele();
     }
 
     /**
@@ -177,6 +194,8 @@ export class NafileHatirlatmaServisi {
             }
             Logger.info('NafileHatirlatma', `Kildim: ${tur} (${tarih}) kalan hatirlatmalari iptal edildi`);
         });
+        // Saatin teheccüd uyandırması (saat W3) da düşsün.
+        saatiTazele();
     }
 
     /**
@@ -243,12 +262,15 @@ export class NafileHatirlatmaServisi {
         // hatırlatmaları kurulmaz; eski plan az önce temizlendi.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
         const kilinan = await LocalNafileServisi.getKilinanlar();
+        // Saat iş bölümü (saat W3): uyandırma saatteyse teheccüd uyandırması telefonda yedek.
+        const saat = await LocalSaatAyarlariServisi.teslimBaglaminiOku();
 
         const simdi = new Date();
         const secenekler = {
             ...nafilePlanSecenekleri(ayarlar),
             ...(Platform.OS === 'android' ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
             kilindiMi: (iso: string, tur: NafileTuru) => (kilinan[iso] ?? []).includes(tur),
+            saat,
         };
         const planlar = nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi, secenekler);
 

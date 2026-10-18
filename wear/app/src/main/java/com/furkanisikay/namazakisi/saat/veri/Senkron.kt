@@ -6,7 +6,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.wear.tiles.TileService
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
+import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
+import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
+import com.furkanisikay.namazakisi.saat.telefon.CamideBildirimi
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.komplikasyon.GunDagilimiKomplikasyonServisi
@@ -97,9 +100,26 @@ object Senkron {
             } finally {
                 tampon.release()
             }
+            // Camideyim durumu (saat W3) — saat kapalıyken gelmiş olabilir.
+            val cami = Wearable.getDataClient(context)
+                .getDataItems(Uri.parse("wear://*${TelefonKomutu.CAMI_DURUM_YOLU}"))
+                .await()
+            try {
+                for (oge in cami) {
+                    DataMapItem.fromDataItem(oge).dataMap.getString("durum")?.let { camiDurumuGeldi(context, it) }
+                }
+            } finally {
+                cami.release()
+            }
         } catch (e: Exception) {
             Log.w(TAG, "Son yuk cekilemedi", e)
         }
+    }
+
+    /** Camideyim / Namaz modu gösterimi geldi (saat W3): önbellek + kadran simgesi. */
+    fun camiDurumuGeldi(context: Context, json: String) {
+        val depo = CamiDurumDeposu(context)
+        if (depo.kaydet(json)) CamideBildirimi.guncelle(context, depo.durum())
     }
 
     /**

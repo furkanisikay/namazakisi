@@ -79,7 +79,8 @@
       "govde": "Hemen namaza dur — sonra kaza etmek zorunda kalırsın.",
       "titresim": true,
       "acil": true,
-      "adim": 3
+      "adim": 3,
+      "anons": "İkindi vaktinin çıkmasına 3 dakika kaldı. Hemen namaza dur."
     }
   ],
   "canli": {
@@ -110,5 +111,26 @@
         "vakit": "ogle"
       }
     ]
-  }
+  },
+  "uyandirma": [
+    {
+      "id": "nafile_2026-10-12_teheccud_45",
+      "ms": 1791856620000,
+      "sonMs": 1791859320000,
+      "tarih": "2026-10-12",
+      "tur": "teheccud",
+      "baslik": "Teheccüd vakti",
+      "govde": "Kalk, gecenin son üçte biri."
+    },
+    {
+      "id": "muhafiz_2026-10-13_vakit_imsak_seviye_2_dk_34",
+      "ms": 1791862320000,
+      "sonMs": 1791864360000,
+      "tarih": "2026-10-13",
+      "tur": "imsak",
+      "baslik": "Sabah · 34 dk kaldı ⏰",
+      "govde": "Sabah namazı vakti, kalk."
+    }
+  ],
+  "anonsYeri": "otomatik"
 }

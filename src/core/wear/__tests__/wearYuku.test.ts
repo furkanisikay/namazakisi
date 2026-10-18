@@ -145,6 +145,8 @@ describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
             kilinanlar: {},
             canli: ornek.canli,
             kibleKonumu: true,
+            uyandirma: ornek.uyandirma,
+            anonsYeri: ornek.anonsYeri,
         });
         expect(Object.keys(uretilen).sort()).toEqual(Object.keys(ornek).sort());
         // `canli` EKLEMELİ OPSİYONEL alandır: verilmezse yükte hiç yer almaz (eski saat birebir).
@@ -265,5 +267,76 @@ describe('canli (Now Bar seçimi, issue #282) — eklemeli opsiyonel alan', () =
 
     test("sürüm ARTIRILMADI (eski saat SurumYeni'ye düşmesin)", () => {
         expect(WEAR_YUK_SURUMU).toBe(2);
+    });
+});
+
+describe('saat W3 alanları (uyandirma, anonsYeri, kayıt anons) — eklemeli opsiyonel', () => {
+    const ornek = JSON.parse(fs.readFileSync(ORNEK, 'utf8'));
+
+    test('örnek geçerli; alanlar yoksa (eski telefon) de geçerli', () => {
+        expect(wearYukuGecerliMi(ornek)).toBe(true);
+        const eski = JSON.parse(JSON.stringify(ornek));
+        delete eski.uyandirma;
+        delete eski.anonsYeri;
+        delete eski.muhafiz[1].anons;
+        expect(wearYukuGecerliMi(eski)).toBe(true);
+    });
+
+    test('bozuk değer TÜM yükü reddeder (Kotlin YukCozucuTest ile aynı liste)', () => {
+        type Kayit = Record<string, unknown>;
+        type Ornek = { anonsYeri?: string; muhafiz: Kayit[]; uyandirma: Kayit[] | string };
+        const u = (o: Ornek) => o.uyandirma as Kayit[];
+        const bozuklar: ((o: Ornek) => void)[] = [
+            (o) => (o.anonsYeri = 'ikisi'),
+            (o) => (o.muhafiz[0].anons = 5),
+            (o) => (u(o)[0].tur = 'kusluk'),
+            (o) => (u(o)[0].sonMs = 1),
+            (o) => (u(o)[1].tarih = '13.10.2026'),
+            (o) => (o.uyandirma = 'x'),
+        ];
+        for (const boz of bozuklar) {
+            const o = JSON.parse(JSON.stringify(ornek));
+            boz(o);
+            expect(wearYukuGecerliMi(o)).toBe(false);
+        }
+    });
+
+    test('NÖBETÇİ (inceleme bulgusu 9): sınır uyandırma listesini ve anons metinlerini de ÖLÇER', () => {
+        const uyandirma = Array.from({ length: 6 }, (_, i) => ({
+            id: `muhafiz_${BUGUN}_vakit_imsak_seviye_2_dk_${25 + i}`,
+            ms: IMSAK_ONCESI + i * 60_000,
+            sonMs: IMSAK_ONCESI + 60 * 60_000,
+            tarih: BUGUN,
+            tur: 'imsak' as const,
+            baslik: 'Sabah · uyanın',
+            govde: 'x'.repeat(400),
+        }));
+        const temel = { koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {}, uyandirma };
+        const tam = wearYukuOlustur(temel);
+        const tamBayt = utf8BaytUzunlugu(JSON.stringify(tam));
+        // Muhafız planı olmasa da sınır uygulanır: en UZAK uyandırmalar düşer, en yakın kalır.
+        const kisa = wearYukuOlustur({ ...temel, baytSiniri: tamBayt - 500 });
+        expect(utf8BaytUzunlugu(JSON.stringify(kisa))).toBeLessThanOrEqual(tamBayt - 500);
+        expect(kisa.uyandirma!.length).toBeLessThan(uyandirma.length);
+        expect(kisa.uyandirma![0].id).toBe(uyandirma[0].id);
+        expect(wearYukuGecerliMi(kisa)).toBe(true);
+        // Muhafız planı varken önce plan düşer (anons metinleri dahil ölçülür), uyandırma korunur.
+        const planli = wearYukuOlustur({
+            ...temel,
+            muhafiz: { aktif: true, matris: yogunMatris(), simdiMs: IMSAK_ONCESI, kilinanlar: {} },
+            baytSiniri: tamBayt + 2_000,
+        });
+        expect(utf8BaytUzunlugu(JSON.stringify(planli))).toBeLessThanOrEqual(tamBayt + 2_000);
+        expect(planli.uyandirma).toHaveLength(uyandirma.length);
+        // Hiçbiri sığmazsa alan tümden düşer (vakitler yine gider).
+        const hic = wearYukuOlustur({ ...temel, baytSiniri: 100 });
+        expect('uyandirma' in hic).toBe(false);
+        expect(hic.gunler).toHaveLength(WEAR_GUN_SAYISI);
+    });
+
+    test('alan verilmezse yükte HİÇ yer almaz (eski saat birebir)', () => {
+        const y = wearYukuOlustur({ koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} });
+        expect('uyandirma' in y).toBe(false);
+        expect('anonsYeri' in y).toBe(false);
     });
 });

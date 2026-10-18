@@ -247,7 +247,21 @@
         <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
         <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/kildim"/>
       </intent-filter>
+      <!-- Saat W3: saattan RPC komutları (Namaz modu, Camideyim cevabı, uyandırma kapandı).
+           Yollar SaatKomutKurallari ile AYNI; filtrede olmayan yol servisi uyandırmaz. -->
+      <intent-filter>
+        <action android:name="com.google.android.gms.wearable.REQUEST_RECEIVED"/>
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/namazmodu"/>
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/cami/cevap"/>
+        <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/uyandirma/kapandi"/>
+      </intent-filter>
     </service>
+    <!-- Saat W3: Camideyim modülünün paket-kapsamlı "durum değişti" yayını → saate durum. Dışa kapalı. -->
+    <receiver android:name=".wear.SaatDurumAlicisi" android:exported="false">
+      <intent-filter>
+        <action android:name="com.furkanisikay.namazakisi.SAAT_DURUMU"/>
+      </intent-filter>
+    </receiver>
     <!-- Gerçek alarm (issue #74): setAlarmClock tetiği, bildirim düğmeleri, susturma ve
          yeniden başlatmada geri kurulum. Dışa kapalı; çağrılar açık bileşenle. -->
     <receiver android:name=".alarm.MuhafizAlarmAlici" android:exported="false">

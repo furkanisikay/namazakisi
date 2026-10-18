@@ -97,6 +97,41 @@ class YukCozucuTest {
     }
 
     @Test
+    fun saatW3AlanlariOpsiyonelVeKatiDogrulanir() {
+        val yuk = (YukCozucu.coz(ornek()) as CozumSonucu.Basarili).yuk
+        // Anons (fikir 9): yalnız sesli adımda; diğer kayıtta yok.
+        assertEquals(listOf(null, "İkindi vaktinin çıkmasına 3 dakika kaldı. Hemen namaza dur."), yuk.plan.map { it.anons })
+        assertEquals(AnonsYerleri.OTOMATIK, yuk.anonsYeri)
+        // Uyandırma (fikir 2): kronolojik, tür ayrımı.
+        assertEquals(listOf("teheccud", "imsak"), yuk.uyandirma.map { it.tur })
+        assertTrue(yuk.uyandirma[0].nafile && !yuk.uyandirma[1].nafile)
+
+        // Eski telefon: üç alan da yok → yük geçerli, saat eski davranışta.
+        val eski = org.json.JSONObject(ornek())
+        eski.remove("uyandirma")
+        eski.remove("anonsYeri")
+        eski.getJSONArray("muhafiz").getJSONObject(1).remove("anons")
+        val e = (YukCozucu.coz(eski.toString()) as CozumSonucu.Basarili).yuk
+        assertEquals(emptyList<UyandirmaKaydi>(), e.uyandirma)
+        assertEquals(null, e.anonsYeri)
+
+        // Bozuk değerler TÜM yükü reddeder (JS ile aynı katılık).
+        val bozuklar = listOf<(org.json.JSONObject) -> Unit>(
+            { it.put("anonsYeri", "ikisi") },
+            { it.getJSONArray("muhafiz").getJSONObject(0).put("anons", 5) },
+            { it.getJSONArray("uyandirma").getJSONObject(0).put("tur", "kusluk") },
+            { it.getJSONArray("uyandirma").getJSONObject(0).put("sonMs", 1L) },
+            { it.getJSONArray("uyandirma").getJSONObject(1).put("tarih", "13.10.2026") },
+            { it.put("uyandirma", "x") },
+        )
+        for ((i, boz) in bozuklar.withIndex()) {
+            val o = org.json.JSONObject(ornek())
+            boz(o)
+            assertEquals("bozuk #$i", CozumSonucu.Gecersiz, YukCozucu.coz(o.toString()))
+        }
+    }
+
+    @Test
     fun v1YukuOkunmayaDevamEderPlaniBosSayilir() {
         val s = YukCozucu.coz(ornek("ornek-yuk-v1.json"))
         assertTrue(s is CozumSonucu.Basarili)

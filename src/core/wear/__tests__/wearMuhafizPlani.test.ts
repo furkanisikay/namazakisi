@@ -192,3 +192,25 @@ describe('utf8BaytUzunlugu', () => {
         expect(utf8BaytUzunlugu('⏰')).toBe(3);
     });
 });
+
+describe('anons alanı (saat W3, fikir 9)', () => {
+    it('yalnız SESLİ adımda yazılır ve olcuDk + yön ile çözülür (yer tutucu kalmaz)', () => {
+        const m = varsayilanMatris();
+        m.ogle = {
+            ...m.ogle,
+            seviyeler: m.ogle.seviyeler.map((s, i) =>
+                i === 3 ? { ...s, kanallar: { bildirim: true, sesli: true }, anonsMetni: '{vakit} için {süre} dakika {yön}.' } : s
+            ),
+        };
+        const kayitlar = pencereninKayitlari(bugunOgle, m);
+        const sesli = kayitlar.filter((k) => k.anons !== undefined);
+        expect(sesli.length).toBeGreaterThan(0);
+        expect(sesli.every((k) => k.adim === 3)).toBe(true);
+        const son = sesli[sesli.length - 1];
+        const kalanDk = Math.round((bugunOgle.cikis.getTime() - son.ms) / 60_000);
+        expect(son.anons).toMatch(new RegExp(`${kalanDk} dakika kaldı\.$`));
+        expect(son.anons).not.toMatch(/[{}]/);
+        // Sessiz adımlar alanı HİÇ taşımaz (yük boyutu + eski saat birebir).
+        expect(kayitlar.filter((k) => k.adim !== 3).every((k) => !('anons' in k))).toBe(true);
+    });
+});

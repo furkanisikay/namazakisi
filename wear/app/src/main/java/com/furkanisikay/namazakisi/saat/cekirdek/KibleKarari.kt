@@ -53,6 +53,24 @@ object KibleKarari {
     data class Hiza(val hizali: Boolean, val titret: Boolean)
 
     /**
+     * Titreşimle yönlendirme (saat W3, fikir 6): kıbleye YAKLAŞTIKÇA kısa tıklar
+     * sıklaşır; ekrana bakmadan, karanlıkta yön bulunur. Hizadayken null — W2'nin
+     * tek onay titreşimi (`hiza.titret`) korunur, hizada sürekli tıklama olmaz.
+     * Aralıklar ms; sensör olayı geldikçe `simdi − sonTik >= aralık` ise tıklanır.
+     */
+    fun yonlendirmeAraligiMs(hedef: Double, hizali: Boolean): Long? {
+        if (hizali) return null
+        val s = sapma(hedef)
+        return when {
+            s <= 25.0 -> 250L
+            s <= 45.0 -> 450L
+            s <= 90.0 -> 800L
+            s <= 135.0 -> 1_200L
+            else -> 1_600L
+        }
+    }
+
+    /**
      * Histerezisli hizalama: girişte < 10°, çıkışta > 15°. `titret` yalnız hizaya
      * GİRİŞ anında true — hizadayken tekrar etmez, çıkıp yeniden girmeden titremez.
      */

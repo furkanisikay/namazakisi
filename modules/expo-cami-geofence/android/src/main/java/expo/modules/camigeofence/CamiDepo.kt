@@ -221,6 +221,7 @@ object CamiDepo {
         val e = prefs(ctx).edit()
         if (s == null) e.remove(SORU) else e.putString(SORU, s.json().toString())
         e.apply()
+        SaatDurumYayini.yay(ctx)
     }
 
     /** Geçerli (süresi dolmamış) bekleyen soru; süresi dolmuşsa siler ve null döner. */
@@ -301,6 +302,7 @@ object CamiDepo {
         val s = ctx.getSharedPreferences(SESSIZ_DOSYA, Context.MODE_PRIVATE).edit()
         if (c != null && sessiz) s.putLong(SESSIZ_BITIS_ANAHTARI, c.bitisMs) else s.remove(SESSIZ_BITIS_ANAHTARI)
         s.apply()
+        SaatDurumYayini.yay(ctx)
     }
 
     /** Muhafız sessizliğinin bittiği an (ms) ya da 0. JS teslimcisi okur. */

@@ -3,6 +3,8 @@ package com.furkanisikay.namazakisi.saat.ui
 import android.hardware.GeomagneticField
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
+import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -39,6 +41,9 @@ class KibleAktivite : ComponentActivity() {
     private var kibleAcisi = 0.0
     private var sapma = 0.0
     private var hizali = false
+    /** Titreşimle yönlendirme (saat W3, fikir 6) — kalıcı tercih, varsayılan kapalı. */
+    private var yonlendirme by mutableStateOf(false)
+    private var sonTikMs = 0L
 
     private var ekran by mutableStateOf<KibleGorunumu>(KibleGorunumu.Bekleniyor)
 
@@ -51,7 +56,18 @@ class KibleAktivite : ComponentActivity() {
             getSystemService(Vibrator::class.java)
         }
         pusula = KiblePusulasi(this, ::okumaGeldi)
-        setContent { KibleEkrani(ekran) }
+        yonlendirme = tercihler().getBoolean(YONLENDIRME, false)
+        setContent {
+            KibleEkrani(
+                ekran,
+                yonlendirme = yonlendirme,
+                onYonlendirme = {
+                    yonlendirme = !yonlendirme
+                    tercihler().edit().putBoolean(YONLENDIRME, yonlendirme).apply()
+                },
+                onTelefondaAc = { TelefondaAc.ac(this, TelefondaAc.KIBLE) },
+            )
+        }
     }
 
     override fun onResume() {
@@ -92,7 +108,10 @@ class KibleAktivite : ComponentActivity() {
         // Dönüşte eski yön süzgece karışmasın; hizaya ilk girişte yine tek tık gelsin.
         suzgec.sifirla()
         hizali = false
+        sonTikMs = 0L
     }
+
+    private fun tercihler() = getSharedPreferences(PREFS, MODE_PRIVATE)
 
     private fun okumaGeldi(o: KiblePusulasi.Okuma) {
         val konumAdi = when (val e = ekran) {
@@ -105,6 +124,15 @@ class KibleAktivite : ComponentActivity() {
         val hiza = KibleKarari.hiza(hizali, hedef)
         hizali = hiza.hizali
         if (hiza.titret) titret()
+        // Yalnız ekran açık ve RESUMED iken buraya gelinir (sensör onPause'da bırakılır).
+        if (yonlendirme) {
+            val aralik = KibleKarari.yonlendirmeAraligiMs(hedef, hiza.hizali)
+            val simdi = SystemClock.elapsedRealtime()
+            if (aralik != null && simdi - sonTikMs >= aralik) {
+                sonTikMs = simdi
+                tikla()
+            }
+        }
         val onceki = ekran as? KibleGorunumu.Pusula
         ekran = KibleGorunumu.Pusula(
             kibleAcisi = kibleAcisi,
@@ -117,6 +145,17 @@ class KibleAktivite : ComponentActivity() {
             egimIpucu = KibleKarari.egimIpucu(o.egim),
             kalibrasyon = o.kalibrasyon,
         )
+    }
+
+    /** Yönlendirme tıkı: hizalama onayından (CLICK) ayırt edilsin diye hafif TICK. */
+    private fun tikla() {
+        val v = titresim?.takeIf { it.hasVibrator() } ?: return
+        v.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK))
+    }
+
+    private companion object {
+        const val PREFS = "saat_kible"
+        const val YONLENDIRME = "titresim_yonlendirme"
     }
 
     /** Hizaya GİRİŞTE tek kısa tık; hizadayken tekrar etmez (karar `KibleKarari.hiza`). */

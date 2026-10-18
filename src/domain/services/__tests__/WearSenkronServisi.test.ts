@@ -82,6 +82,35 @@ describe('gonder', () => {
         expect(yuk.konum).toEqual({ lat: 41, lng: 29 });
     });
 
+    it('saat W3: anons yeri yüke gider (varsayılan otomatik); uyandırma YALNIZ saat seçiliyken', async () => {
+        konumKur();
+        await servis.gonder();
+        expect(gonderilenYuk().anonsYeri).toBe('otomatik');
+        expect('uyandirma' in gonderilenYuk()).toBe(false);
+
+        servis.__testIcinSifirla();
+        const taban = (AsyncStorage.getItem as jest.Mock).getMockImplementation()!;
+        (AsyncStorage.getItem as jest.Mock).mockImplementation(async (k: string) =>
+            k === DEPOLAMA_ANAHTARLARI.SAAT_AYARLARI
+                ? JSON.stringify({ uyandirmaYeri: 'saat', anonsYeri: 'saat' })
+                : taban(k)
+        );
+        await servis.gonder();
+        expect(gonderilenYuk(1).anonsYeri).toBe('saat');
+        // Muhafız/teheccüd kapalı → liste boş ama alan var (saat seçildi).
+        expect(gonderilenYuk(1).uyandirma).toEqual([]);
+    });
+
+    it('saat W3: Camideyim durumu her gönderimde native tarafa tazelettirilir (yük aynı olsa da)', async () => {
+        const tazele = jest.fn(() => Promise.resolve());
+        (NativeModules as Record<string, unknown>).WearSenkron = { ...modul, camiDurumunuTazele: tazele };
+        konumKur();
+        await servis.gonder();
+        await servis.gonder();
+        expect(tazele).toHaveBeenCalledTimes(2);
+        expect(modul.durumGonder).toHaveBeenCalledTimes(1);
+    });
+
     it('içerik aynıysa ikinci kez yazmaz', async () => {
         konumKur();
         await servis.gonder();

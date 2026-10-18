@@ -93,9 +93,13 @@ export function namazModuPlaniOlustur(
         .sort((a, b) => a.bas - b.bas);
 }
 
-/** Tur kimliğinden namaz (tarih + vakit) — "Kıldım deyince kapansın" kontrolü için. */
+/**
+ * Tur kimliğinden namaz (tarih + vakit) — "Kıldım deyince kapansın" kontrolü için.
+ * `saat:` = bilekten açılan mod (saat W3, `SaatKomutKurallari.namazModuIstegi`); o da
+ * vaktin "Kıldım"ıyla kapanır. `saat:<gün>_serbest` (vakit bilinmiyor) namaza ÇÖZÜLMEZ.
+ */
 export function turdanNamaz(tur: string): { tarih: string; vakit: FarzVakit } | null {
-    const m = /^(cuma|vakit|cami):(\d{4}-\d{2}-\d{2})(?:_([a-z]+))?$/.exec(tur);
+    const m = /^(cuma|vakit|cami|saat):(\d{4}-\d{2}-\d{2})(?:_([a-z]+))?$/.exec(tur);
     if (!m) return null;
     const vakit = (m[1] === 'cuma' ? 'ogle' : m[3]) as FarzVakit | undefined;
     if (!vakit || !(FARZ_VAKITLER as readonly string[]).includes(vakit)) return null;

@@ -58,6 +58,9 @@ describe('turdanNamaz', () => {
         ['vakit:2026-10-15_ikindi', { tarih: '2026-10-15', vakit: 'ikindi' }],
         ['cami:2026-10-15_yatsi', { tarih: '2026-10-15', vakit: 'yatsi' }],
         ['cami:?_serbest', null],
+        // NÖBETÇİ (inceleme bulgusu 3): bilekten açılan mod da "Kıldım" ile kapanır.
+        ['saat:2026-10-15_imsak', { tarih: '2026-10-15', vakit: 'imsak' }],
+        ['saat:2026-10-15_serbest', null],
         // Vakit kapısı kapalıyken native `IzlemeKarari.camiTuru` biçimi: vakit
         // bilinmediği için namaza ÇÖZÜLMEZ (yanlış namazın "kıldım"ı modu kapatmasın).
         ['cami:2026-10-15_serbest_osm:n123', null],

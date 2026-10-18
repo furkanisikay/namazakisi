@@ -19,6 +19,7 @@ import { LocalVakitBildirimServisi } from '../../data/local/LocalVakitBildirimSe
 import { LocalCumaHatirlatmaServisi } from '../../data/local/LocalCumaHatirlatmaServisi';
 import { LocalYatisHatirlatmaServisi } from '../../data/local/LocalYatisHatirlatmaServisi';
 import { LocalCamiyeGitServisi } from '../../data/local/LocalCamiyeGitServisi';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 import { localSeriAyarlariniGetir } from '../../data/local/LocalSeriServisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunSuzgeciniOku } from '../../data/local/LocalOzelGunOkuyucu';
@@ -39,6 +40,7 @@ export type DefterDisGirdisi = Pick<
     | 'kilinan'
     | 'ozelGundeMi'
     | 'iosAlarmKit'
+    | 'saat'
 >;
 
 const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> => {
@@ -53,7 +55,7 @@ const guvenli = async <T>(ad: string, is: () => Promise<T>): Promise<T | null> =
 export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
     const bugun = bugunuAl();
     const dun = dunuAl();
-    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis, alarmKit] = await Promise.all([
+    const [vakitBildirimi, cuma, camiyeGit, seri, kilinanBugun, kilinanDun, ozelGundeMi, yatis, alarmKit, saat] = await Promise.all([
         guvenli('vakit bildirimi', () => LocalVakitBildirimServisi.getAyarlar()),
         guvenli('cuma', () => LocalCumaHatirlatmaServisi.getAyarlar()),
         guvenli('camiye git', () => LocalCamiyeGitServisi.getAyarlar()),
@@ -67,6 +69,8 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         guvenli('yatis', () => LocalYatisHatirlatmaServisi.getAyarlar()),
         // iOS gerçek alarm (AlarmKit, #74): teslimci de aynı durumu `hazirla`da okur.
         guvenli('alarmkit', () => alarmKitDurumu()),
+        // Saat iş bölümü (saat W3): muhafız/nafile servisleriyle AYNI kayıt.
+        guvenli('saat', () => LocalSaatAyarlariServisi.teslimBaglaminiOku()),
     ]);
     // Takvim çakışması (issue #291): yalnız AÇIKKEN takvim okunur; servisle AYNI
     // okuyucu + süzgeç. İzin yoksa servis de hiçbir şey kurmaz → null.
@@ -93,6 +97,7 @@ export async function defterDisGirdisiniOku(): Promise<DefterDisGirdisi> {
         kilinan,
         ozelGundeMi: ozelGundeMi ?? undefined,
         iosAlarmKit: Platform.OS === 'ios' && alarmKit === 'izinli',
+        saat,
     };
 }
 

@@ -11,6 +11,18 @@ import androidx.core.content.edit
 import androidx.wear.phone.interactions.notifications.BridgingConfig
 import androidx.wear.phone.interactions.notifications.BridgingManager
 import com.furkanisikay.namazakisi.saat.cekirdek.AlarmKurucu
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsKarari
+import com.furkanisikay.namazakisi.saat.cekirdek.PlanKaydi
+import com.furkanisikay.namazakisi.saat.cekirdek.UyandirmaZinciri
+import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
+import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
+import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import com.furkanisikay.namazakisi.saat.cekirdek.AlarmZinciri
 import com.furkanisikay.namazakisi.saat.cekirdek.CanliGosterim
 import com.furkanisikay.namazakisi.saat.cekirdek.KopruKarari
@@ -36,35 +48,68 @@ object Hatirlatici {
             val yuk = depo.yuk()
             val bekleyen = depo.bekleyenler()
             val simdi = System.currentTimeMillis()
-            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, simdi, CanliGosterim.sonrakiSinir(yuk, simdi))
+            val uyandirma = UyandirmaDeposu(app)
+            uyandirma.ayikla(yuk)
+            ZincirYoneticisi(AndroidAlarmKurucu(app)).yenidenKur(yuk, bekleyen, simdi, ekSinir(yuk, bekleyen, uyandirma, simdi))
+            // Kapatılan / kılınan uyandırmanın titreşen bildirimi de kalksın.
+            val gecerli = UyandirmaZinciri.adaylar(yuk, bekleyen, uyandirma.durum(yuk)).mapTo(HashSet()) { it.kayit.id }
+            yuk?.uyandirma?.filter { it.id !in gecerli }?.forEach { UyandirmaBildirimi.kaldir(app, it.id) }
             // Son dakikalar sayacı (issue #281): kılındıysa/pencere dışındaysa kalkar.
             SonDakikalarBildirimi.guncelle(app, yuk, bekleyen, simdi)
             if (yuk != null) {
                 MuhafizBildirimci.kilinmislariKaldir(app) { t, v -> AlarmZinciri.kilinmisMi(yuk, bekleyen, t, v) }
             }
-            KopruAyari.uygula(app, KopruKarari.muhafizKoprusuDislansinMi(yuk, MuhafizBildirimci.bildirimIzniVar(app)))
+            KopruAyari.uygula(
+                app,
+                KopruKarari.muhafizKoprusuDislansinMi(yuk, MuhafizBildirimci.bildirimIzniVar(app), SarjDurumu.sarjdaMi(app)),
+            )
         } catch (e: Exception) {
             Log.w(TAG, "Hatirlatmalar tazelenemedi", e)
         }
     }
 
-    /** Zincirdeki alarm çaldı: gerekiyorsa göster, sonrakini kur. */
-    fun tetiklendi(context: Context) {
+    /**
+     * Zincirdeki alarm çaldı: gerekiyorsa göster, sonrakini kur.
+     * @return gösterilen kayıt (sesli anons kararı için) ya da null
+     */
+    fun tetiklendi(context: Context): PlanKaydi? {
         val app = context.applicationContext
+        var gosterilen: PlanKaydi? = null
         try {
             val depo = YukDeposu(app)
-            val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs)
+            // Şarjdayken (saat W3) saat çalmaz; köprü de o anki duruma göre güncellenir —
+            // takma anı ayrıca duyulmadığı için karar her tetikte yeniden okunur.
+            val sarjda = SarjDurumu.sarjdaMi(app)
+            KopruAyari.uygula(
+                app,
+                KopruKarari.muhafizKoprusuDislansinMi(depo.yuk(), MuhafizBildirimci.bildirimIzniVar(app), sarjda),
+            )
+            val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs, sarjda)
             // Sonraki alarm, gösterim patlasa bile kurulmalı: zincir koparsa telefon
             // uzaktayken (özelliğin varlık sebebi) bir sonraki yüke kadar hiç uyarı olmaz.
             try {
                 karar.goster?.let {
                     MuhafizBildirimci.goster(app, it)
                     depo.sonGosterilenMs = it.ms
+                    gosterilen = it
                 }
             } finally {
                 // Canlı sayaç sınırı (issue #282) plan kaydından önceyse zincir oraya kurulur.
                 val simdi = System.currentTimeMillis()
-                ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki, CanliGosterim.sonrakiSinir(depo.yuk(), simdi))
+                // Sessiz uyandırma (saat W3): zamanı geldiyse çal — muhafız kaydından ÖNCELİKLİ
+                // (aynı kimlikli muhafız kaydı zaten bastırıldı). Şarjdayken çalmaz.
+                val uyandirma = UyandirmaDeposu(app)
+                val yuk = depo.yuk()
+                val bekleyen = depo.bekleyenler()
+                try {
+                    UyandirmaZinciri.calacak(yuk, bekleyen, uyandirma.durum(yuk), simdi, sarjda)?.let {
+                        UyandirmaBildirimi.cal(app, it.kayit, simdi)
+                        uyandirma.calindi(it.kayit.id, it.ms)
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Uyandirma calinamadi", e)
+                }
+                ZincirYoneticisi(AndroidAlarmKurucu(app)).kur(karar.sonraki, ekSinir(yuk, bekleyen, uyandirma, simdi))
                 // Son dakikalar penceresi daima bir plan kaydının anında açılır (bkz.
                 // `SonDakikalar`) → sayaç tam bu tetikte kadrana çıkar.
                 try {
@@ -77,7 +122,18 @@ object Hatirlatici {
             Log.w(TAG, "Tetik islenemedi, zincir yeniden kuruluyor", e)
             tazele(app)
         }
+        return gosterilen
     }
+
+    /**
+     * Zincirin ek sınırı: canlı sayaç dilimi (issue #282) ya da sıradaki sessiz uyandırma
+     * (saat W3) — hangisi erkense. Aynı anda yine TEK alarm.
+     */
+    private fun ekSinir(yuk: Yuk?, bekleyen: Set<String>, uyandirma: UyandirmaDeposu, simdi: Long): Long? =
+        listOfNotNull(
+            CanliGosterim.sonrakiSinir(yuk, simdi),
+            UyandirmaZinciri.siradaki(yuk, bekleyen, uyandirma.durum(yuk), simdi)?.ms,
+        ).minOrNull()
 
     /**
      * Saat geri alındıysa (NTP/telefon düzeltmesi) gelecekte kalmış "son gösterilen"
@@ -129,10 +185,38 @@ class AndroidAlarmKurucu(private val context: Context) : AlarmKurucu {
     }
 }
 
-/** Zincirdeki alarm. Hızlı iş (prefs + bildirim) → `goAsync` gerekmez. */
+/**
+ * Zincirdeki alarm. Gösterim hızlıdır; yalnız SESLİ ANONS (saat W3, fikir 9) gerekiyorsa
+ * `goAsync` açılır (yakında telefon yoklaması + TTS, en fazla ≈12 sn; alarm yayını arka
+ * plan kuyruğundadır).
+ */
 class MuhafizAlarmAlicisi : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Hatirlatici.tetiklendi(context)
+        val metin = Hatirlatici.tetiklendi(context)?.anons ?: return
+        val yer = YukDeposu(context).yuk()?.anonsYeri
+        // Camideyken / Namaz modu açıkken saat de susar (telefondaki camide kapısının ikizi).
+        val sessiz = try {
+            AnonsKarari.sessizMi(CamiDurumDeposu(context).durum(), System.currentTimeMillis())
+        } catch (_: Exception) {
+            false
+        }
+        val sorulmali = AnonsKarari.telefonSorulmaliMi(yer, metin, sessiz)
+        // Konuşma ihtimali yoksa (telefon seçili / eski telefon / camide) hiç bekletme.
+        if (!sorulmali && !AnonsKarari.saatKonusurMu(yer, metin, yakindaTelefon = false, hoparlor = true, sessiz = sessiz)) return
+        val app = context.applicationContext
+        val sonuc = goAsync()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try {
+                val yakinda = sorulmali && TelefonIstemcisi.yakindaTelefonVarMi(app)
+                if (AnonsKarari.saatKonusurMu(yer, metin, yakinda, SaatAnonsu.hoparlorVarMi(app), sessiz)) {
+                    suspendCancellableCoroutine { devam -> SaatAnonsu.konus(app, metin) { if (devam.isActive) devam.resume(Unit) } }
+                }
+            } catch (e: Exception) {
+                Log.w("MuhafizAlarm", "Saat anonsu yapilamadi", e)
+            } finally {
+                sonuc.finish()
+            }
+        }
     }
 
     companion object {

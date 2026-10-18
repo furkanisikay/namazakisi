@@ -1,0 +1,28 @@
+{
+  "aciklama": "Saat W3: saat (TelefonKomutu.kt) ile telefon (SaatKomutKurallari.kt) ayni dosyayi kabul eder. simdiMs ornek-yuk.json'daki 2026-10-12 ogle vaktinin icindedir.",
+  "simdiMs": 1791800000000,
+  "takvimGunu": "2026-10-12",
+  "namazModu": [
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791801800000 }, "tur": "saat:2026-10-12_ogle", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791900000000 }, "tur": "saat:2026-10-12_ogle", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "bitisMs": 1791801800000 }, "tur": "saat:2026-10-12_serbest", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "gunes" }, "tur": "saat:2026-10-12_serbest", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791799999999 }, "gecersiz": true },
+    { "istek": { "islem": "kapat" }, "kapat": true },
+    { "istek": { "islem": "sil" }, "gecersiz": true }
+  ],
+  "telefondaKapandiYolu": "/namazakisi/uyandirma/telefondaKapandi",
+  "yedekGecikmesiDk": 3,
+  "yedekSonPayiMs": 30000,
+  "uyandirma": [
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "ertele", "hedefMs": 1791800600000, "sonMs": 1791801500000, "yedekMs": 1791800780000 },
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "ertele", "hedefMs": 1791801400000, "sonMs": 1791801500000, "yedekMs": 1791801470000 },
+    { "id": "nafile_2026-10-12_teheccud_120", "islem": "kildim", "sonMs": 1791810000000 },
+    { "id": "muhafiz_2026-10-12_vakit_imsak_seviye_2_dk_25", "islem": "kapat", "sonMs": 1791801500000 }
+  ],
+  "durum": {
+    "camide": { "yerId": "osm:n123", "ad": "Fatih Camii", "bitisMs": 1791805000000 },
+    "soru": null,
+    "modBitisMs": 1791805000000
+  }
+}

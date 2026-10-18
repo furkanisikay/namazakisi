@@ -21,7 +21,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.furkanisikay.namazakisi.saat.BuildConfig
+import android.view.KeyEvent
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
+import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
+import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
+import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
+import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
+import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsYerleri
+import com.furkanisikay.namazakisi.saat.hatirlatma.SaatAnonsu
+import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.veri.Senkron
@@ -45,6 +54,8 @@ class AnaAktivite : ComponentActivity() {
     private var onPlanda by mutableStateOf(false)
     private var ambient by mutableStateOf<AmbientDurumu?>(null)
     private var simdi by mutableLongStateOf(System.currentTimeMillis())
+    /** Bilek jesti isteği (saat W3, fikir 7) — `sira` 0 iken hiçbir şey yapılmaz. */
+    private var jest by mutableStateOf(BilekJesti.Istek(0, 0))
 
     /**
      * Ekran görüntüsü hattı (`scripts/saat-kare-hatti.sh`) `uiautomator dump` ile dolaşır;
@@ -89,6 +100,14 @@ class AnaAktivite : ComponentActivity() {
         izniYenile()
     }
 
+    /** Bilek bükme → vakit listesinde sonraki/önceki öğe (ambient'te liste yok). */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val yon = BilekJesti.yon(keyCode)
+        if (yon == null || ambient != null) return super.onKeyDown(keyCode, event)
+        jest = BilekJesti.Istek(yon, jest.sira + 1)
+        return true
+    }
+
     override fun onPause() {
         super.onPause()
         onPlanda = false
@@ -97,6 +116,7 @@ class AnaAktivite : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val depo = YukDeposu(this)
+        val camiDepo = CamiDurumDeposu(this)
         lifecycle.addObserver(AmbientLifecycleObserver(this, ambientGeriCagrisi))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -129,6 +149,17 @@ class AnaAktivite : ComponentActivity() {
                 }
             }
 
+            // Camideyim / Namaz modu gösterimi (saat W3): telefon yazınca ve yarım dakikada bir
+            // (bitişler geçince gösterim kalksın) yeniden okunur.
+            var camiSurum by remember { mutableIntStateOf(0) }
+            DisposableEffect(Unit) {
+                val dinleyici = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> camiSurum++ }
+                camiDepo.dinle(dinleyici)
+                onDispose { camiDepo.birak(dinleyici) }
+            }
+            val cami = remember(camiSurum, simdi / 30_000) { camiDepo.durum(simdi) }
+            var istekSuruyor by remember { mutableStateOf(false) }
+
             // `surum` değişince depo yeniden okunur (her saniye değil — yalnız veri değişince).
             val yuk = remember(surum) { depo.yuk() }
             val bekleyen = remember(surum) { depo.bekleyenler() }
@@ -151,11 +182,49 @@ class AnaAktivite : ComponentActivity() {
                     simdi = simdi,
                     bugun = bugun,
                     saniyeGoster = !dondur,
+                    jest = jest,
                     onKildim = { tarih, vakit ->
                         kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
                     },
                     onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
                     onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
+                    onTelefondaAc = { TelefondaAc.ac(this@AnaAktivite, it) },
+                    cami = cami,
+                    turkceSesYok = remember(surum) {
+                        val yer = yuk?.anonsYeri
+                        (yer == AnonsYerleri.OTOMATIK || yer == AnonsYerleri.SAAT) && SaatAnonsu.turkceYok(this@AnaAktivite)
+                    },
+                    istekSuruyor = istekSuruyor,
+                    onNamazModu = {
+                        if (!istekSuruyor) {
+                            istekSuruyor = true
+                            val acik = cami?.modBitisMs != null
+                            val govde = if (acik) TelefonKomutu.namazModuKapat() else TelefonKomutu.namazModuAc(yuk, System.currentTimeMillis())
+                            kapsam.launch {
+                                val s = TelefonIstemcisi.gonder(this@AnaAktivite, TelefonKomutu.NAMAZ_MODU_YOLU, govde)
+                                istekSuruyor = false
+                                TelefondaAc.onay(
+                                    this@AnaAktivite,
+                                    s.sonuc == "acildi" || s.sonuc == "kapandi",
+                                    TelefonKomutu.modMetni(s.sonuc, s.bitisMs?.let { VakitHesabi.saat(it) }),
+                                )
+                            }
+                        }
+                    },
+                    onCamiCevap = { cevap, yerId ->
+                        if (!istekSuruyor) {
+                            istekSuruyor = true
+                            kapsam.launch {
+                                val s = TelefonIstemcisi.gonder(
+                                    this@AnaAktivite,
+                                    TelefonKomutu.CAMI_CEVAP_YOLU,
+                                    TelefonKomutu.camiCevap(cevap, yerId),
+                                )
+                                istekSuruyor = false
+                                TelefondaAc.onay(this@AnaAktivite, s.sonuc == "tamam", TelefonKomutu.camiMetni(cevap, s.sonuc))
+                            }
+                        }
+                    },
                 )
             }
         }

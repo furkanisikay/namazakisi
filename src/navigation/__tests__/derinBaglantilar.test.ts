@@ -37,4 +37,16 @@ describe('ekran eşlemesi', () => {
     it('ana → MainTabs > AnaSayfa', () => {
         expect(durum('ana')?.routes[0].state?.routes[0].name).toBe('AnaSayfa');
     });
+
+    it('ayarlar → MainTabs > Ayarlar > AyarlarAna (saat W3 "Telefonda açın")', () => {
+        const sekme = durum('ayarlar')?.routes[0].state?.routes[0];
+        expect(sekme?.name).toBe('Ayarlar');
+        expect(sekme?.state?.routes.map((r) => r.name)).toEqual(['AyarlarAna']);
+    });
+
+    it('camideyim → Ayarlar yığını, altında AyarlarAna (geri tuşu boşa düşmez)', () => {
+        const sekme = durum('camideyim')?.routes[0].state?.routes[0];
+        expect(sekme?.name).toBe('Ayarlar');
+        expect(sekme?.state?.routes.map((r) => r.name)).toEqual(['AyarlarAna', 'CamideyimAyarlari']);
+    });
 });

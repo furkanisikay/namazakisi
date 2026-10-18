@@ -31,6 +31,7 @@ import {
   NowBarAyarlariSayfasi,
   CamideyimAyarlariSayfasi,
   NamazModuAyarlariSayfasi,
+  SaatAyarlariSayfasi,
   KildimUygulamalariSayfasi,
   OtomasyonRehberiSayfasi,
   DebugLogsSayfasi,
@@ -123,6 +124,8 @@ const AYARLAR_EKRAN_TANIMLARI: Record<
   },
   CamideyimAyarlari: { component: CamideyimAyarlariSayfasi, options: { title: 'Camideyim' } },
   NamazModuAyarlari: { component: NamazModuAyarlariSayfasi, options: { title: 'Namaz Modu' } },
+  // Wear OS saati ile iş bölümü (saat W3) — listede yalnız Android'de görünür.
+  SaatAyarlari: { component: SaatAyarlariSayfasi, options: { title: 'Saat' } },
   KildimUygulamalari: { component: KildimUygulamalariSayfasi, options: { title: 'Kıldım İşaretleyen Uygulamalar' } },
   OtomasyonRehberi: { component: OtomasyonRehberiSayfasi, options: { title: 'Otomasyonlarla Kullanın' } },
   DebugLogs: { component: DebugLogsSayfasi, options: { title: 'Debug Logları' } },

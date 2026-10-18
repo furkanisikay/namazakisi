@@ -24,10 +24,12 @@ object AlarmZinciri {
     }
 
     /** Kurulacak sıradaki kayıt: `simdi`den SONRA ve kılınmamış vakte ait en erken uyarı. */
-    fun siradaki(yuk: Yuk?, bekleyen: Set<String>, simdi: Long): PlanKaydi? =
-        yuk?.plan
-            ?.filter { it.ms > simdi && !kilinmisMi(yuk, bekleyen, it.tarih, it.vakit) }
+    fun siradaki(yuk: Yuk?, bekleyen: Set<String>, simdi: Long): PlanKaydi? {
+        val bastir = UyandirmaZinciri.bastirilanlar(yuk)
+        return yuk?.plan
+            ?.filter { it.ms > simdi && it.id !in bastir && !kilinmisMi(yuk, bekleyen, it.tarih, it.vakit) }
             ?.minByOrNull { it.ms }
+    }
 
     data class TetikKarari(
         /** Gösterilecek bildirim (yoksa null — kılındı, çok eski ya da zaten gösterildi). */
@@ -41,12 +43,26 @@ object AlarmZinciri {
      * EN SONUNCUSU (en güncel/en sert) gösterilir — eskileri peş peşe çalmak bilekte
      * gürültüdür. `sonGosterilenMs` aynı kaydın (ör. yeniden başlatma sonrası) ikinci
      * kez gösterilmesini engeller.
+     *
+     * Saat ŞARJDAYSA (saat W3, fikir 3) hiçbir şey gösterilmez ama zincir İLERLER:
+     * komodindeki saat boşa titremez, telefon esas olur (köprü de açılır —
+     * `KopruKarari`). Gösterilmeyen kayıt "gösterildi" sayılmaz.
      */
-    fun tetiklendi(yuk: Yuk?, bekleyen: Set<String>, simdi: Long, sonGosterilenMs: Long): TetikKarari {
+    fun tetiklendi(
+        yuk: Yuk?,
+        bekleyen: Set<String>,
+        simdi: Long,
+        sonGosterilenMs: Long,
+        sarjda: Boolean = false,
+    ): TetikKarari {
         if (yuk == null) return TetikKarari(null, null)
+        if (sarjda) return TetikKarari(null, siradaki(yuk, bekleyen, simdi))
+        // Sessiz uyandırmaya dönüşen kayıt (saat W3) muhafız bildirimi olarak ÇALMAZ.
+        val bastir = UyandirmaZinciri.bastirilanlar(yuk)
         val goster = yuk.plan
             .filter {
-                it.ms <= simdi &&
+                it.id !in bastir &&
+                    it.ms <= simdi &&
                     it.ms > sonGosterilenMs &&
                     simdi - it.ms <= GECIKME_TOLERANSI_MS &&
                     !kilinmisMi(yuk, bekleyen, it.tarih, it.vakit)
@@ -106,8 +122,12 @@ class ZincirYoneticisi(private val kurucu: AlarmKurucu) {
  * Etiketi yalnız yeni telefon sürümü bastığı için eski telefonla dışlamanın etkisi yoktur.
  */
 object KopruKarari {
-    fun muhafizKoprusuDislansinMi(yuk: Yuk?, bildirimIzni: Boolean): Boolean =
+    /**
+     * @param sarjda saat şarjdayken (saat W3, fikir 3) kendi zinciri ÇALMAZ → dışlama
+     *   kalkar, telefonun bildirimi olağan köprü yolunu izler (telefon esas olur).
+     */
+    fun muhafizKoprusuDislansinMi(yuk: Yuk?, bildirimIzni: Boolean, sarjda: Boolean = false): Boolean =
         // Plan BOŞSA çoğaltacak bir şey yok: köprü kalmalı, yoksa telefon muhafızı açıkken
         // (plan okunamayıp boş gönderildiyse) bilekte hiç uyarı kalmaz (Fable incelemesi).
-        bildirimIzni && yuk != null && yuk.surum >= 2 && yuk.plan.isNotEmpty()
+        bildirimIzni && !sarjda && yuk != null && yuk.surum >= 2 && yuk.plan.isNotEmpty()
 }

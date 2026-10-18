@@ -322,6 +322,18 @@ export const AyarlarSayfasi: React.FC = () => {
                     işaretleyebilen uygulamalar" (#299) bu listede AYRI satır DEĞİLDİR: güven
                     listesi otomasyonun bir parçasıdır ve yalnız rehber sayfasından açılır
                     (rota korunur — "Neler Yeni" ve izin sorusu oraya gider). */}
+                {/* Wear OS saati (saat W3) — yalnız Android (Wear OS yalnız Android telefonla eşleşir). */}
+                {Platform.OS === 'android' && (
+                  <AyarSatiri
+                    key="saat"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="clock" size={20} color={ikonRengi} />}
+                    baslik="Saat"
+                    ozet="Uyandırma ve sesli anons nerede"
+                    yeniRozetGoster={sayfaOkunmamisMi('SaatAyarlari')}
+                    onPress={() => menuyeGit('SaatAyarlari')}
+                  />
+                )}
                 {kildimGuvenVar && (
                   <AyarSatiri
                     key="otomasyon-rehberi"
