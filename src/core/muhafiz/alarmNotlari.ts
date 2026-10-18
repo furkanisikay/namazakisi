@@ -32,7 +32,7 @@ export interface AlarmNotuGirdisi {
     /**
      * iOS ana sürümü (`core/cihaz/surum`). AlarmKit `desteklenmiyor` üç durumu tek kovaya
      * atar: iOS < 26, modül yok ve geçici HATA. "iOS 26'ya güncelleyin" yalnız sürüm
-     * GERÇEKTEN 26'nın altındaysa söylenir; iOS 26+ ya da bilinmeyen sürümde SUS.
+     * GERÇEKTEN 26'nın altındaysa söylenir; iOS 26+ ya da bilinmeyen sürümde nötr satır.
      */
     iosSurum?: number | null;
 }
@@ -47,6 +47,9 @@ export const ALARMKIT_IOS_SURUMU = 26;
 export function iosAlarmsizNotu(iosSurum: number): string {
     return `Gerçek alarm iOS ${ALARMKIT_IOS_SURUMU} ve üzerinde çalışır. Bu iPhone iOS ${iosSurum}; bu adım uzun sesli bir bildirimle gelir ve sessiz anahtarı açıkken duyulmaz.`;
 }
+
+/** AlarmKit `desteklenmiyor` ama sürüm eski DEĞİL ya da bilinmiyor: sürüm iddiasız satır. */
+export const IOS_ALARM_NOTR_NOTU = 'Bu adım şu an bildirimle gelir.';
 
 /**
  * AlarmKit `desteklenmiyor` iken sürüme göre karar: iOS < 26 → sürüm (not yazılır);
@@ -98,8 +101,11 @@ function iosNotlari(durum: AlarmKitDurumu | null | undefined, iosSurum: number |
                 },
             ];
         case 'desteklenmiyor': {
+            // Sürüm cümlesi yalnız sürüm GERÇEKTEN eskiyse. iOS 26+'da (geçici hata, modülsüz
+            // build) ya da sürüm bilinmiyorken nötr satır: sürüm iddiası yok, ama adımın
+            // bildirimle geldiği her durumda doğru (sessiz sapma da yok).
             const surum = iosAlarmKitYokNedeni(iosSurum);
-            return surum === null ? [] : [{ tip: 'bilgi', metin: iosAlarmsizNotu(surum) }];
+            return [{ tip: 'bilgi', metin: surum === null ? IOS_ALARM_NOTR_NOTU : iosAlarmsizNotu(surum) }];
         }
         default:
             // Bilinmiyor (durum henüz okunmadı): yanlış bilgi vermektense satır yok.

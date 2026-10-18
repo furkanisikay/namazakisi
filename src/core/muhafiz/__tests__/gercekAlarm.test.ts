@@ -290,14 +290,15 @@ describe('alarm notları — sessiz sapma yok', () => {
         expect(metin).toContain('Odak filtresi');
         expect(metin).not.toContain('plan yenilenene kadar');
     });
-    test('iOS desteklenmiyor: "iOS 26" cümlesi YALNIZ sürüm gerçekten eskiyse (26+ ya da bilinmeyende SUS)', () => {
+    test('iOS desteklenmiyor: "iOS 26" cümlesi YALNIZ sürüm gerçekten eskiyse; 26+ ya da bilinmeyende sürüm iddiasız nötr satır', () => {
         const oku = (iosSurum: number | null | undefined) =>
             alarmNotlariniOlustur({ platform: 'ios', tamEkran: null, tamAlarm: null, alarmKit: 'desteklenmiyor', iosSurum });
         expect(oku(18)[0].metin).toContain('iOS 26 ve üzerinde');
-        expect(oku(26)).toEqual([]);
-        expect(oku(27)).toEqual([]);
-        expect(oku(null)).toEqual([]);
-        expect(oku(undefined)).toEqual([]);
+        for (const iosSurum of [26, 27, null, undefined]) {
+            const n = oku(iosSurum);
+            expect(n).toEqual([{ tip: 'bilgi', metin: 'Bu adım şu an bildirimle gelir.' }]);
+            expect(n[0].metin).not.toMatch(/iOS|güncelle/i);
+        }
     });
     test('Android: izinler bilinmiyorsa (null) uyarı YOK', () => {
         expect(alarmNotlariniOlustur({ platform: 'android', tamEkran: null, tamAlarm: null })).toEqual([]);

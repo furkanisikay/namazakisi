@@ -66,6 +66,19 @@ export function alarmOnayMaddeleri(
             },
         ];
     }
+    if (platform === 'ios' && alarmKit === null) {
+        // Durum henüz okunmadı: iki olasılık da SÖYLENİR, hiçbiri kesin vaat edilmez.
+        return [
+            {
+                ikon: 'clock',
+                metin: "iPhone'unuz destekliyorsa ilk hatırlatmada alarm çalar; desteklemiyorsa zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir.",
+            },
+            {
+                ikon: 'info-circle',
+                metin: 'Alarm desteklenmiyorsa sessiz anahtarı açıkken ses duyulmaz.',
+            },
+        ];
+    }
     if (platform === 'ios') {
         return [
             {
@@ -81,7 +94,12 @@ export function alarmOnayMaddeleri(
                         ? `iPhone'da sessiz anahtarı açıkken ses duyulmaz. Gerçek alarm iOS ${ALARMKIT_IOS_SURUMU} ve üzerinde çalışır; bu iPhone iOS ${secenek.iosSurum}.`
                         : "iPhone'da sessiz anahtarı açıkken ses duyulmaz.",
             },
-            ortak,
+            {
+                // Bu dalda alarm ekranı YOK: "alarm ekranından Kıldım/ertele" yalan olurdu.
+                // Bildirim düğmeleri yüzeye göre değişir (cuma/takvimde Kıldım yok) → kesin yazılmaz.
+                ikon: 'bell',
+                metin: 'Alarm ekranı açılmaz; hatırlatma bildirim olarak gelir, dokunarak uygulamayı açabilirsiniz.',
+            },
         ];
     }
     return [
@@ -99,6 +117,13 @@ export function alarmOnayMaddeleri(
         ortak,
         { ikon: 'mosque', metin: 'Camideyken alarm çalmaz; hatırlatma sessiz bildirim olarak gelir.' },
     ];
+}
+
+/** Başlığın alt satırı: AlarmKit durumu okunmadıysa (`null`) kesin bir vaat yok. */
+export function alarmOnayAltBasligi(platform: MuhafizPlatformu, alarmKit: AlarmKitDurumu | null = null): string {
+    if (platform !== 'ios' || iosAlarmKitVarMi(alarmKit)) return 'Telefonunuzun alarm uygulaması gibi çalar';
+    if (alarmKit === null) return "iPhone'unuzun desteğine göre alarm ya da uzun sesli bildirim";
+    return "Bu iPhone'da uzun sesli bildirim olarak gelir";
 }
 
 export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
@@ -144,9 +169,7 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
                                 Gerçek alarm açılsın mı?
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {platform === 'ios' && !iosAlarmKitVarMi(alarmKit)
-                                    ? 'Bu iPhone\'da uzun sesli bildirim olarak gelir'
-                                    : 'Telefonunuzun alarm uygulaması gibi çalar'}
+                                {alarmOnayAltBasligi(platform, alarmKit)}
                             </Text>
                         </View>
                     </View>
