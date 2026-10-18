@@ -542,7 +542,7 @@ export const CamideyimAyarlariSayfasi: React.FC = () => {
                         <AyarKutusu
                             ikon="moon"
                             baslik="Namaz moduna geçin"
-                            aciklama={'Telefonunuzun Modlar ekranındaki "Namaz" modu açılır'}
+                            aciklama={'Telefonunuzun Rahatsız Etmeyin/mod ayarlarındaki "Namaz" kuralı açılır'}
                             deger={ayarlar.namazModu}
                             onDegis={(v) => c.guncelle({ namazModu: v })}
                         />

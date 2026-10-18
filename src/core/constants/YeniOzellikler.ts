@@ -584,9 +584,9 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         tarih: '2026-10-13',
         baslik: 'Telefonunuza "Namaz" Modu',
         aciklama:
-            'Telefonunuzun Modlar listesine "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır.',
+            'Telefonunuzun Rahatsız Etmeyin/mod ayarlarına "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır.',
         detayAciklama:
-            'Aramaların, bildirimlerin ve ekranın namazda ne yapacağını telefonunuzun kendi Modlar ekranında siz seçersiniz; Namaz Akışı yalnız ne zaman açılacağını söyler. "Kıldım" dediğinizde mod kapanır. Modu elle kapatırsanız o vakit için yeniden açılmaz.',
+            'Aramaların, bildirimlerin ve ekranın namazda ne yapacağını telefonunuzun kendi ayarlarında siz seçersiniz; Namaz Akışı yalnız ne zaman açılacağını söyler. "Kıldım" dediğinizde mod kapanır. Modu elle kapatırsanız o vakit için yeniden açılmaz.',
         ikon: 'moon',
         hedefSayfa: 'NamazModuAyarlari',
         ctaEtiketi: 'Namaz modunu açın',
