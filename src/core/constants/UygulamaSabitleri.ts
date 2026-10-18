@@ -247,6 +247,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu
   TAKVIM_AYARLARI: '@namaz_akisi/takvim_ayarlari',
+  // Son başarılı "Takvime ekleyin"deki ayarların özeti (`core/takvim/aktarimOzeti`) —
+  // "bekleyen değişiklik" bandı için. Cihaza özgü (takvim etkinlikleri bu cihazda) →
+  // yedeklemeye GİRMEZ.
+  TAKVIM_SON_AKTARIM: '@namaz_akisi/takvim_son_aktarim',
   // Yeni özellik duyuruları (görülen/kapatılan)
   GORULEN_OZELLIKLER: '@namaz_akisi/gorulen_ozellikler',
   // Puan defteri (karma türev/defter modeli) — yol-bağımlı bonus puanı kalıcı tutulur.
