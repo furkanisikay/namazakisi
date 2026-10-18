@@ -80,6 +80,12 @@ data class CanliSecim(
     val pencereler: List<CanliPencere>,
 )
 
+/**
+ * Kıble için YAKLAŞIK konum (saat yenileme W2). Telefon 1 ondalığa yuvarlar (≈ 11 km;
+ * kıbleye etkisi ≈ 0,1°). EKLEMELİ opsiyonel alan: eski telefonda yoktur, sürüm 2 kalır.
+ */
+data class Konum(val lat: Double, val lng: Double)
+
 data class Yuk(
     val surum: Int,
     val konumAdi: String,
@@ -89,6 +95,8 @@ data class Yuk(
     val plan: List<PlanKaydi> = emptyList(),
     /** Now Bar seçimi (opsiyonel, issue #282). */
     val canli: CanliSecim? = null,
+    /** Kıble konumu (opsiyonel; bozuksa yalnız bu alan null — bkz. `YukCozucu.konumCoz`). */
+    val konum: Konum? = null,
 )
 
 sealed class CozumSonucu {
@@ -124,10 +132,29 @@ object YukCozucu {
             }.sortedBy { it.tarih }
             val plan = if (surum >= 2) planiCoz(o.getJSONArray("muhafiz")) else emptyList()
             val canli = if (o.has("canli")) canliCoz(o.getJSONObject("canli")) else null
-            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli))
+            CozumSonucu.Basarili(Yuk(surum, o.getString("konumAdi"), kerahat, gunler, plan, canli, konumCoz(o.opt("konum"))))
         } catch (_: Exception) {
             CozumSonucu.Gecersiz
         }
+    }
+
+    /**
+     * GEVŞEK doğrulama (bilinçli, JS `wearKonumuCoz` ile AYNI kural): `konum` bozuksa
+     * YÜK reddedilmez, yalnız konum null olur — kıble ikincildir, vakit gösterimi
+     * bir yan alan yüzünden kaybolmamalı (`canli`'nin katılığının tersine).
+     */
+    fun konumCoz(deger: Any?): Konum? {
+        val o = deger as? JSONObject ?: return null
+        val lat = o.opt("lat")
+        val lng = o.opt("lng")
+        // JS `typeof === 'number'`: dize "41" sayı DEĞİL (org.json opt* onu çevirirdi).
+        if (lat !is Number || lng !is Number) return null
+        val enlem = lat.toDouble()
+        val boylam = lng.toDouble()
+        if (!enlem.isFinite() || !boylam.isFinite()) return null
+        if (enlem !in -90.0..90.0 || boylam !in -180.0..180.0) return null
+        if (enlem == 0.0 && boylam == 0.0) return null
+        return Konum(enlem, boylam)
     }
 
     private val CANLI_VAKITLERI = listOf("imsak", "ogle", "ikindi", "aksam", "yatsi")

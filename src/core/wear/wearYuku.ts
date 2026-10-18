@@ -97,6 +97,44 @@ export interface WearYuku {
     muhafiz: WearMuhafizKaydi[];
     /** Now Bar seçimi (opsiyonel, issue #282). */
     canli?: WearCanli;
+    /** Kıble için YAKLAŞIK konum (opsiyonel, saat yenileme W2) — bkz. `wearKonumuOlustur`. */
+    konum?: WearKonum;
+}
+
+/**
+ * Saatin kıble pusulası için konum. EKLEMELİ OPSİYONEL alan (sürüm 2 kalır).
+ * 1 ONDALIĞA yuvarlanır (≈ 11 km): kıble açısına etkisi ihmal edilir (≈ 0,1°),
+ * kişisel konum saate tam hassasiyetle gitmez (AGENTS güvenlik kuralı: koordinat en
+ * fazla `toFixed(1)`) ve kayan nokta gürültüsü her gönderimi "yeni" yapmaz.
+ */
+export interface WearKonum {
+    lat: number;
+    lng: number;
+}
+
+/** Yuvarlama tek kaynak: yük ve saat tohumu aynı kuralı kullanır. */
+export function wearKonumuOlustur(k: NafileKoordinat): WearKonum | undefined {
+    // `{0,0}` "henüz yapılandırılmadı" nöbetçisidir → alan HİÇ yazılmaz.
+    if (!Number.isFinite(k.lat) || !Number.isFinite(k.lng) || (k.lat === 0 && k.lng === 0)) return undefined;
+    const lat = Math.round(k.lat * 10) / 10;
+    const lng = Math.round(k.lng * 10) / 10;
+    return wearKonumuCoz({ lat, lng }) ?? undefined;
+}
+
+/**
+ * GEVŞEK doğrulama (bilinçli): `konum` bozuksa YÜK geçerli kalır, yalnız kıble düşer
+ * (vakit gösterimi ikincil bir alan yüzünden kaybolmasın). Kotlin `YukCozucu.konumCoz`
+ * AYNI kuralı uygular.
+ */
+export function wearKonumuCoz(k: unknown): WearKonum | null {
+    if (!k || typeof k !== 'object') return null;
+    const o = k as Record<string, unknown>;
+    const { lat, lng } = o;
+    if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+    if (lat === 0 && lng === 0) return null;
+    return { lat, lng };
 }
 
 export interface WearMuhafizYukGirdisi {
@@ -126,6 +164,11 @@ export interface WearYukGirdisi {
     baytSiniri?: number;
     /** Now Bar seçimi ve öne çıkan dilimler (`CanliSayacPlanlayici` saat payı). */
     canli?: WearCanli;
+    /**
+     * Saatin kıble pusulası için yaklaşık konum eklensin mi? Yalnız Wear OS (kıble
+     * orada). Apple Watch'a gönderilmez: kullanılmayan konum cihazdan çıkmasın.
+     */
+    kibleKonumu?: boolean;
 }
 
 export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
@@ -157,6 +200,8 @@ export function wearYukuOlustur(g: WearYukGirdisi): WearYuku {
         muhafiz: [],
         ...(g.canli ? { canli: g.canli } : {}),
     };
+    const konum = g.kibleKonumu ? wearKonumuOlustur(g.koordinat) : undefined;
+    if (konum) taban.konum = konum;
     if (!g.muhafiz) return taban;
 
     const gruplar = wearMuhafizPlaniOlustur({ koordinat: g.koordinat, bugunIso: g.bugunIso, ...g.muhafiz });

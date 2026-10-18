@@ -78,6 +78,8 @@ describe('gonder', () => {
         expect(yuk.konumAdi).toBe('Fatih, İstanbul');
         expect(yuk.gunler[0].kilinan).toEqual(['yatsi']);
         expect(yuk.gunler[1].kilinan).toEqual(['imsak']);
+        // Kıble (saat W2): 1 ondalığa yuvarlanmış YAKLAŞIK konum (≈ 11 km).
+        expect(yuk.konum).toEqual({ lat: 41, lng: 29 });
     });
 
     it('içerik aynıysa ikinci kez yazmaz', async () => {
@@ -127,6 +129,8 @@ describe('gonder', () => {
             expect(yuk.konumAdi).toBe('Fatih, İstanbul');
             expect(yuk.gunler).toHaveLength(31);
             expect(yuk.gunler[1].kilinan).toEqual(['imsak']);
+            // Apple Watch'ta kıble yok → konum cihazdan çıkmaz.
+            expect('konum' in yuk).toBe(false);
         });
 
         it('muhafız AÇIK olsa da plan ve Now Bar payı GİTMEZ (iPhone bildirimi saate yansır — çift bildirim yok)', async () => {

@@ -159,6 +159,8 @@ export class WearSenkronServisi {
                     // Apple Watch: hatırlatmayı iPhone bildirimi verir (saate yansır) → plan yok.
                     muhafiz: wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined,
                     canli: wear ? await this.canliPayiniOku() : undefined,
+                    // Kıble yalnız Wear OS saatte; Apple Watch'a konum gitmez (kullanılmayan veri).
+                    kibleKonumu: wear,
                 })
             );
             if (json === this.sonGonderilen) return;

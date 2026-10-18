@@ -11,6 +11,8 @@ import {
     WEAR_YUK_BAYT_SINIRI,
     WEAR_YUK_SURUMU,
     canliGecerliMi,
+    wearKonumuCoz,
+    wearKonumuOlustur,
     wearYukuGecerliMi,
     wearYukuOlustur,
 } from '../wearYuku';
@@ -94,6 +96,43 @@ describe('wearYukuOlustur', () => {
     });
 });
 
+describe('kıble konumu (saat W2) — EKLEMELİ OPSİYONEL, gevşek doğrulama', () => {
+    const taban = { koordinat: ISTANBUL, bugunIso: BUGUN, konumAdi: 'x', kilinanlar: {} };
+
+    it('1 ondalığa yuvarlanır (≈ 11 km); istenmezse (Apple Watch) hiç yazılmaz', () => {
+        expect(wearYukuOlustur({ ...taban, kibleKonumu: true }).konum).toEqual({ lat: 41, lng: 29 });
+        expect('konum' in wearYukuOlustur(taban)).toBe(false);
+        expect(wearKonumuOlustur({ lat: 39.9055, lng: 41.2658 })).toEqual({ lat: 39.9, lng: 41.3 });
+        expect(wearKonumuOlustur({ lat: -33.8688, lng: 151.2093 })).toEqual({ lat: -33.9, lng: 151.2 });
+    });
+
+    it('`{0,0}` nöbetçisi ve sonlu olmayan değer → alan yazılmaz', () => {
+        expect(wearKonumuOlustur({ lat: 0, lng: 0 })).toBeUndefined();
+        expect(wearKonumuOlustur({ lat: Number.NaN, lng: 29 })).toBeUndefined();
+        expect('konum' in wearYukuOlustur({ ...taban, koordinat: { lat: 0, lng: 0 }, kibleKonumu: true })).toBe(false);
+    });
+
+    it('aynı girdi aynı yük (gürültü her gönderimi "yeni" yapmaz)', () => {
+        const a = wearYukuOlustur({ ...taban, koordinat: { lat: 41.00821, lng: 28.97841 }, kibleKonumu: true });
+        const b = wearYukuOlustur({ ...taban, koordinat: { lat: 41.00829, lng: 28.97849 }, kibleKonumu: true });
+        expect(JSON.stringify(a)).toBe(JSON.stringify(b));
+    });
+
+    it('bozuk konum YÜKÜ düşürmez; yalnız konum çözülemez (Kotlin YukCozucu ile aynı)', () => {
+        const ornek = JSON.parse(fs.readFileSync(ORNEK, 'utf8'));
+        expect(wearKonumuCoz(ornek.konum)).toEqual({ lat: 41, lng: 29 });
+        for (const bozuk of [{ lat: '41', lng: 29 }, { lat: 91, lng: 29 }, { lat: 41, lng: 181 }, { lat: 0, lng: 0 }, { lat: 41 }, 'x', null]) {
+            const y = { ...ornek, konum: bozuk };
+            expect(wearYukuGecerliMi(y)).toBe(true);
+            expect(wearKonumuCoz(y.konum)).toBeNull();
+        }
+        const konumsuz = { ...ornek };
+        delete konumsuz.konum;
+        expect(wearYukuGecerliMi(konumsuz)).toBe(true);
+        expect(wearKonumuCoz(undefined)).toBeNull();
+    });
+});
+
 describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
     const ornek = JSON.parse(fs.readFileSync(ORNEK, 'utf8'));
 
@@ -105,6 +144,7 @@ describe('ORTAK ÖRNEK DOSYA (Kotlin YukCozucuTest ile aynı)', () => {
             konumAdi: 'x',
             kilinanlar: {},
             canli: ornek.canli,
+            kibleKonumu: true,
         });
         expect(Object.keys(uretilen).sort()).toEqual(Object.keys(ornek).sort());
         // `canli` EKLEMELİ OPSİYONEL alandır: verilmezse yükte hiç yer almaz (eski saat birebir).
