@@ -53,7 +53,8 @@ Sayaç bileşeni (`VakitYayi`):
 - `Canvas` + `drawArc`: iz 30°–330° (tepede `TimeText` boşluğu), parlak kısım kalan oran, baştaki nokta "şimdi". Saat yönünde boşalır.
 - Orta: vakit adı (vakit renginde) · `S:DD` iri, `:ss` küçük ve soluk · "vaktin çıkmasına" / mod GİRİŞ'te "girmesine". Altında "Kıldım" (`Button`, eylem yeşili) ve beş nokta — noktalar **`GunDurumu.ozet`'ten** (`GunDurumu.noktalar` ile aynı veri; ikinci sayım YOK).
 - Son 15 dk: yay, ad ve saniye acil rengine geçer (bir kez, 450 ms). İkindinin son `gurubDk` dakikasında yayın dışında kesikli kerahat bandı.
-- Saniye döngüsü: `LaunchedEffect` + `repeatOnLifecycle(RESUMED)`, bir sonraki saniye sınırına hizalı `delay` — yalnız etkileşimli modda. Ambient'te koşmaz.
+- Saniye döngüsü: bir sonraki saniye sınırına hizalı `delay`; anahtarı açıkça (ambient, RESUMED) olan TEK `LaunchedEffect` — yalnız etkileşimli + ön planda koşar. RESUMED bilgisi `onResume`/`onPause`'da yazılan durumdan gelir (`repeatOnLifecycle`'a bağımlılık eklenmez). Eski 30 sn `while(true)` döngüsü kalkar: ambient'te zamanı `onUpdateAmbient` (dakikada bir) ilerletir, duraklatılmışken hiçbir döngü koşmaz.
+- **İnceleme düzeltmesi — saniyelik sayaç ekran görüntüsü hattını kırar:** `scripts/saat-kare-hatti.sh` dolaşmayı `uiautomator dump` ile yapar ve dump ekran ~1 sn boşta kalmazsa BOŞ döner (telefondaki geri sayım dersi). Çözüm: YALNIZ debug derlemede (`BuildConfig.DEBUG`; `buildFeatures.buildConfig = true`) okunan `ekran_goruntusu=true` intent ekstrası saniye döngüsünü dondurur (dakikalık tazeleme sürer); hat ana aktiviteyi `--ez ekran_goruntusu true` ile açar. Release davranışı değişmez.
 - Açılış: tek `Animatable` 0 → oran, 600 ms. Vakit sınırında ad/renk 450 ms geçiş, yay yeniden çizilir.
 
 Ambient (yeni iş): `AnaAktivite`'ye `AmbientLifecycleObserver` bağlanır (tesbihattaki desen). Ambient görünüm: siyah zemin, yalnız ince yay izi + dış hatlı rakam, saniye yok, renk yok (acil/kerahat dahil), `onUpdateAmbient` ile dakikada bir tazelenir. Burn-in kaydırması `cekirdek/TesbihatAmbient`'in kaydırma kuralıyla — ortaklaştırılırsa `cekirdek/AmbientKaydirma.kt`'a taşınır ve tesbihat oradan okur (davranış aynı, `TesbihatAmbientTest` nöbetçi); **API 36+'da uygulama kaydırmaz** (sistem kaydırır — mevcut kural). Etkileşimli ağaç ambient'te kompozisyondan çıkar.
@@ -62,17 +63,17 @@ Kare / yuvarlak: `LocalConfiguration.current.isScreenRound`. Karede saat üstte 
 
 ### A3. Günün vakitleri
 
-- `TransformingLazyColumn` (1.6.2'de varlığı **ilk derlemede doğrulanır**; yoksa mevcut `ScalingLazyColumn(initialCenterItemIndex = 0)` korunur — kare saatte TimeText altında kalma dersi).
+- `TransformingLazyColumn` — 1.6.2 kaynaklarında **doğrulandı** (`wear-compose-foundation`): `rememberTransformingLazyColumnState()` varsayılanı (`initialAnchorItemIndex = -1`) ilk öğeyi tepeye sabitler (kare saatte TimeText altında kalma dersi kendiliğinden çözülür); `ScreenScaffold(scrollState: TransformingLazyColumnState)` aşırı yüklemesi var. Kenar dönüşümü (`SurfaceTransformation(rememberTransformationSpec())` + `transformedHeight`) yalnız vakit satırlarına uygulanır; **tam ekran ilk öğeye UYGULANMAZ** (sayaç kaydırılırken küçülmesin).
 - Satır: solda sabit genişlikte saat, ortada ad, sağda durum (kılındı = dolu yeşil daire, şu anki = solda vakit renginde şerit + "1:58 kaldı", güneş zeminsiz/soluk/dokunulmaz). Veri `VakitHesabi.satirlar`'dan aynen.
 - "Dokunarak işaretleyin" talimatı kalkar; satıra dokunmak A4'teki aynı onayı açar.
-- Rotary (taç): her listede `ScreenScaffold(scrollState)` + liste durumu bağlı olmalı; 1.6.2'de liste bileşenlerinin varsayılan rotary davranışı (`rotaryScrollableBehavior`) **ilk derlemede doğrulanır** — yoksa açıkça verilir. Emülatörde `adb shell input rotaryencoder scroll` ile denenir.
+- Rotary (taç): her listede `ScreenScaffold(scrollState)` + liste durumu bağlı olmalı; 1.6.2'de `TransformingLazyColumn`'ın `rotaryScrollableBehavior` varsayılanı `RotaryScrollableDefaults.behavior(state)` (**doğrulandı**) — taç ek kodsuz çalışır. Emülatörde `adb shell input rotaryencoder scroll` ile denenir.
 
 ### A4. "Kıldım" — kenar düğmeli onay + aynı katmanda sonuç
 
-- İlk dokunuş (ana ekran düğmesi ya da satır) katmanı açar: "Öğle'yi kıldınız mı?" + alt kenara yaslı onay düğmesi (`EdgeButton` / `AlertDialog`'un kenar düğmeli biçimi — **1.6.2'deki tam adlar ilk derlemede doğrulanır**; yoksa `Box` içinde alt hizalı özel düğme).
+- İlk dokunuş (ana ekran düğmesi ya da satır) katmanı açar: "Öğle'yi kıldınız mı?" + alt kenara yaslı onay düğmesi (`EdgeButton`, 1.6.2'de **doğrulandı**). **İnceleme düzeltmesi:** `AlertDialog` (kenar düğmeli biçimi dahil) ayrı, opak bir pencere açar → "aynı katmanda dönüşüm + arkadaki yay yeşile döner" onunla yapılamaz. Onay, ana ekranın üstünde özel bir `Box` katmanıdır: aynı yayı kendi zemininde çizer, kenarda `EdgeButton`; geri tuşu `BackHandler` ile, kaydırarak kapatma elle (`pointerInput` yatay sürükleme).
 - Kerahat vaktinde soru altında kerahat rengiyle bir satır: uyarır, **engellemez** (telefon kuralı #82).
 - İkinci dokunuş: düğme 180 ms daralır → 300 ms onay işaretine dönüşür + arkadaki yay yeşile döner → 450 ms katman kapanır; ana ekranda "Kılındı" kalır, ilgili nokta dolar. `HapticFeedbackType.Confirm`. `ConfirmationDialog` KULLANILMAZ (ekranı değiştirir).
-- Vazgeç: küçük düğme + kaydırarak kapatma (`SwipeToDismissBox` davranışı). Geri tuşu = vazgeç.
+- Vazgeç: küçük düğme + sağa kaydırarak kapatma (elle; sistemin pencere düzeyindeki kaydırarak-kapatması önce yakalarsa aktivite kapanır — kayıt yazılmaz, zararsız; cihazda doğrulanacak). Geri tuşu = vazgeç.
 - Onay anında karar yeniden doğrulanır (vakit değiştiyse işaretlemez — mevcut `onKildim` öncesi kontrol korunur). İyimser bekleyen (`bekleyen`) mantığı değişmez.
 
 ### A5. Tesbihat (`TesbihatEkrani.kt`, `TesbihatAmbientEkrani.kt`)
@@ -87,7 +88,7 @@ Kare / yuvarlak: `LocalConfiguration.current.isScreenRound`. Karede saat üstte 
 
 - **"Bugün"** (`BugunTileServisi`): beş dilimli yay halkanın tamamına (kılınan yeşil, şu anki vakit renginde ve `sayilanAn` oranında dolu, gelecek koyu); ortada şu anki vakit + dakikalık kalan + tek "Kıldım". Ortadaki beş daire kalkar. İki dokunuş/"Tekrar" (`BugunTileKarari`) aynen; tesbihat kısayolunun ipucu satırı yeri (`tesbihatKisayoluGoster`) aynen.
 - **"Sıradaki vakit"** (`VakitTileServisi`): giriş saati en büyük öğe, üstünde ad (vakit renginde), altında "ne kadar sonra"; altta günün kalan iki vakti; konum kalkar.
-- Zaman çizelgesi ufku ve girdileri değişmez (yükün tamamı; sınırlarda girdi). Tile önizleme drawable'ları (`tile_onizleme`, `bugun_tile_onizleme`) yeni görünümle yeniden üretilir.
+- Zaman çizelgesi ufku ve girdileri değişmez (yükün tamamı; sınırlarda girdi). **İnceleme düzeltmesi — dakikalık kalan süre ve dilim doluluğu girdiler arasında DONMAZ:** protolayout 1.4.2'de (doğrulandı) `DynamicInstant.platformTimeWithSecondsPrecision().durationUntil(hedef)` → `toIntMinutes`/`div`/`rem`/`format`/`concat`/`onCondition` ile dinamik metin, `DegreesProp.setDynamicValue` ile dinamik yay uzunluğu kurulur (şema 1.2). Eski çizici yalnız STATİK değeri okur: metinde yedek "çıkış SS:DD" (asla bayatlamaz), yayda girdinin başındaki oran. Dinamik metne en geniş kalıp `setLayoutConstraintsForDynamicText` ile verilir (metin titremesin/kırpılmasın). Girdi sayısı ve alarm bütçesi değişmez. Tile önizleme drawable'ları (`tile_onizleme`, `bugun_tile_onizleme`) yeni görünümle yeniden üretilir.
 
 ### A7. Komplikasyonlar
 
@@ -206,6 +207,8 @@ Sensör yalnız ekran açık + etkileşimli + RESUMED iken. Ekranın kendi zaman
 | `04-tesbihat` | aynı | Üç yay |
 | `05-tile-bugun`, `06-tile-vakit` | aynı | Yeni düzen |
 | **yeni** `07-ana-ambient` | `adb shell input keyevent KEYCODE_SLEEP` sonrası (ambient emülatörde destekleniyorsa; desteklenmezse `UYARI` ile atlanır) | W1 |
+
+**Hat sözleşmesi (inceleme düzeltmesi):** ana aktivite `--ez ekran_goruntusu true` ile açılır (yalnız debug derlemede saniye döngüsünü dondurur, bkz. A2). Desenler Kotlin'deki açıklamalarla AYNI kalır: sayaç düğümü "<Vakit> vaktinin çıkmasına|girmesine …", ana ekran düğmesi "<Vakit> vaktini kıldım olarak işaretleyin", onay katmanı kenar düğmesi "Kıldım".
 | **yeni** `08-kible` | `am start … .ui.KibleAktivite`, `adb emu sensor set magnetic-field …` + `acceleration 0:0:9.8` | W2 |
 
 `scripts/cihaz-kare-ozeti.js` beklenen listeyi betikteki `NN-ad` adlarından çıkarır → yeni kareler kendiliğinden beklenir. **Emülatörün dönme vektörü sensörü sunup sunmadığı DOĞRULANMADI:** sunmazsa `08-kible` B4'teki ivme+manyetik yedek yoluyla çizilir; o da yoksa kare "pusula sensörü bulunmuyor" durumunu çeker — özet adımı bunu `UYARI` olarak yazmalı, mağaza karesi olarak kullanılmaz. Gerekirse yedek: yalnız `BuildConfig.DEBUG`'da sabit yön veren bir intent ekstrası (release'e girmez) — ancak sensör emülasyonu başarısız olursa eklenir.
@@ -254,7 +257,7 @@ Doğrulama: W1'dekiler + `npm run verify` + Linux `swiftc` ile `targets/saat/tes
 ## F) Riskler, doğrulanamayanlar, açık kararlar
 
 **Riskler**
-- 1.6.2'de `TransformingLazyColumn`, `EdgeButton`, `AlertDialog` kenar düğmesi yuvası ve liste rotary varsayılanının adları — ilk derlemede doğrulanır; yoksa A3/A4'teki yedekler.
+- ~~1.6.2 API adları~~ — kaynaklardan doğrulandı (A3/A4). Kalan risk: elle kaydırarak-kapatmanın sistemin pencere düzeyindeki kaydırmasıyla çakışması (A4).
 - Ucuz saatlerde manyetometre yok ya da kötü: B4 mesajı ve yedek zinciri; kullanıcıya telefonun pusulası önerilir.
 - Metal kordon/kasa manyetik sapması: kalibrasyon bandı yalnız sensör doğruluğuna bakar, sabit sapmayı yakalayamaz — ekranda "yaklaşık" dili ("Kıble yönündesiniz" ± 5°) ve telefonla karşılaştırma ipucu.
 - Kare hattı içerik açıklamalarına bağımlı: yeni metinler sözleşme gibi davranır (D tablosu).
