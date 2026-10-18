@@ -20,9 +20,9 @@ import {
 import type { RootStackParamList } from '../../navigation/AppNavigator';
 import { Logger } from '../../core/utils/Logger';
 
-/** Intent'in yazabileceği ekran adları → kök yığın rotası. */
-const SIRI_EKRANLARI: Readonly<Record<string, 'KibleSayfasi'>> = {
-    kible: 'KibleSayfasi',
+/** Intent'in yazabileceği ekran adları → alt sekme (Kıble Dalga 4'ten beri sekmedir). */
+const SIRI_EKRANLARI: Readonly<Record<string, 'Kible'>> = {
+    kible: 'Kible',
 };
 
 /** @returns `NavigationContainer.onReady`'ye verilecek geri çağrı. */
@@ -36,7 +36,7 @@ export function useSiriEkranIstegi(
         siriEkranIstegiAl()
             .then((ekran) => {
                 const rota = ekran ? SIRI_EKRANLARI[ekran] : undefined;
-                if (rota && navRef.isReady()) navRef.navigate(rota);
+                if (rota && navRef.isReady()) navRef.navigate('MainTabs', { screen: rota });
             })
             .catch((e) => Logger.warn('SiriEkranIstegi', 'Ekran istegi islenemedi', e));
     }, [etkin, navRef]);

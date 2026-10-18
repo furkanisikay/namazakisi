@@ -24,7 +24,7 @@ describe('useSiriEkranIstegi', () => {
         kopru.siriEkranIstegiAl.mockResolvedValueOnce('kible');
         const nav = navKur();
         renderHook(() => useSiriEkranIstegi(true, nav as never));
-        await waitFor(() => expect(nav.navigate).toHaveBeenCalledWith('KibleSayfasi'));
+        await waitFor(() => expect(nav.navigate).toHaveBeenCalledWith('MainTabs', { screen: 'Kible' }));
     });
 
     it('gezinme hazır DEĞİLKEN istek TÜKETİLMEZ (onReady yeniden dener)', async () => {
@@ -35,7 +35,7 @@ describe('useSiriEkranIstegi', () => {
         nav.isReady.mockReturnValue(true);
         kopru.siriEkranIstegiAl.mockResolvedValueOnce('kible');
         result.current();
-        await waitFor(() => expect(nav.navigate).toHaveBeenCalledWith('KibleSayfasi'));
+        await waitFor(() => expect(nav.navigate).toHaveBeenCalledWith('MainTabs', { screen: 'Kible' }));
     });
 
     it('uygulama açıkken gelen "ekran" olayı isteği işler', async () => {

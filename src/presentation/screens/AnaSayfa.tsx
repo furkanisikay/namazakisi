@@ -103,7 +103,6 @@ export const AnaSayfa: React.FC = () => {
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
   const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
-  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
   const handleToparlanmaModalGoster = useCallback(() => setToparlanmaModalGorunur(true), []);
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
@@ -992,7 +991,6 @@ export const AnaSayfa: React.FC = () => {
         aktifGunMu={mevcutTarih === aktifGun}
         onTarihTikla={handleTarihTikla}
         onSeriTikla={handleSeriTikla}
-        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />

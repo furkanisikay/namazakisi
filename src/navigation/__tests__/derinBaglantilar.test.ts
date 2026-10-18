@@ -24,8 +24,14 @@ describe('kildimBaglantisiMi', () => {
 });
 
 describe('ekran eşlemesi', () => {
-    it('kible → KibleSayfasi', () => {
-        expect(durum('kible')?.routes[0].name).toBe('KibleSayfasi');
+    it('kible → MainTabs > Kible (Dalga 4: Kıble sekmedir)', () => {
+        const kok = durum('kible')?.routes[0];
+        expect(kok?.name).toBe('MainTabs');
+        expect(kok?.state?.routes[0].name).toBe('Kible');
+    });
+
+    it.each(['ilerleme', 'seri', 'istatistik', 'rozetler'])('%s → MainTabs > Ilerleme (eski adlar yeni yere)', (yol) => {
+        expect(durum(yol)?.routes[0].state?.routes[0].name).toBe('Ilerleme');
     });
 
     it('kaza → MainTabs > KazaDefteri', () => {

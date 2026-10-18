@@ -16,9 +16,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AnaSayfa,
-  IstatistikSayfasi,
+  IlerlemeSayfasi,
   AyarlarSayfasi,
-  RozetlerSayfasi,
   MuhafizAyarlariSayfasi,
   GorunumAyarlariSayfasi,
   HatirlatmalarSayfasi,
@@ -92,7 +91,6 @@ export type RootStackParamList = {
   KurulumSihirbazi: undefined;
   /** Parametre yalnız derin bağlantı içindir (`namazakisi://kaza`, issue #276). */
   MainTabs: NavigatorScreenParams<AnaSekmeParamList> | undefined;
-  KibleSayfasi: undefined;
 };
 
 /** Navigation prop type for screens inside root stack. */
@@ -237,7 +235,10 @@ const KazaStack: React.FC = () => {
 };
 
 /**
- * Ana Tab Navigasyonu
+ * Ana Tab Navigasyonu — sade tasarım (Dalga 4): Bugün · Kıble · Kaza · İlerleme · Ayarlar.
+ * Kıble kök yığından sekmeye taşındı (eski `KibleSayfasi` rotası yok; Siri ve
+ * `namazakisi://kible` sekmeyi açar). Rozetler + İstatistik + Seri tek "İlerleme"
+ * sekmesinde.
  */
 const MainTabs: React.FC = () => {
   const renkler = useRenkler();
@@ -297,23 +298,24 @@ const MainTabs: React.FC = () => {
         component={AnaSayfa}
         options={{
           title: 'Namaz Akışı',
-          tabBarLabel: 'Ana Sayfa',
+          // Rota adı `AnaSayfa` KALIR (derin bağlantı `ana`, testler); görünen ad "Bugün".
+          tabBarLabel: 'Bugün',
           headerShown: false,
           ...(sade.etkin ? { tabBarStyle: { display: 'none' as const } } : {}),
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="mosque" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
         }}
       />
       <Tab.Screen
-        name="Rozetler"
-        component={RozetlerSayfasi}
+        name="Kible"
+        component={KibleSayfasi}
         options={{
-          title: 'Rozetler',
-          tabBarLabel: 'Rozetler',
+          title: 'Kıble',
+          tabBarLabel: 'Kıble',
           headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesome5 name="trophy" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5 name="compass" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
         }}
       />
@@ -330,14 +332,14 @@ const MainTabs: React.FC = () => {
         }}
       />
       <Tab.Screen
-        name="Istatistikler"
-        component={IstatistikSayfasi}
+        name="Ilerleme"
+        component={IlerlemeSayfasi}
         options={{
-          title: 'İstatistikler',
-          tabBarLabel: 'İstatistik',
+          title: 'İlerleme',
+          tabBarLabel: 'İlerleme',
           headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => (
-            <FontAwesome5 name="chart-bar" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5 name="star" solid size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
         }}
       />
@@ -359,7 +361,7 @@ const MainTabs: React.FC = () => {
             alignSelf: 'center',
             marginTop: 4,
           },
-          tabBarIcon: ({ focused, color, size }) => (
+          tabBarIcon: ({ focused }) => (
             <FontAwesome5 name="cog" size={20} color={focused ? renkler.birincil : renkler.metinIkincil} />
           ),
         }}
@@ -406,7 +408,6 @@ export const AppNavigator: React.FC = () => {
         >
           <RootStack.Screen name="KurulumSihirbazi" component={KurulumSihirbaziSayfasi} />
           <RootStack.Screen name="MainTabs" component={MainTabs} />
-          <RootStack.Screen name="KibleSayfasi" component={KibleSayfasi} />
         </RootStack.Navigator>
       </ErrorBoundary>
       <ErrorBoundary name="GuncellemeBoundary">

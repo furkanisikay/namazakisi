@@ -8,8 +8,7 @@ export { KurulumSihirbaziSayfasi } from './KurulumSihirbaziSayfasi';
 
 // Ana sayfalar
 export { AnaSayfa } from './AnaSayfa';
-export { IstatistikSayfasi } from './IstatistikSayfasi';
-export { RozetlerSayfasi } from './RozetlerSayfasi';
+export { IlerlemeSayfasi } from './Ilerleme/IlerlemeSayfasi';
 export { KibleSayfasi } from './KibleSayfasi/KibleSayfasi';
 export { KazaDefteriSayfasi } from './KazaDefteriSayfasi';
 
