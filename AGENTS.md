@@ -87,7 +87,7 @@ Geçmiyorsa iş **bitmemiştir** — düzelt, çözemiyorsan açıkça raporla. 
 - CI: `ci.yml` üst seviye `contents: read`; yazma izni yalnız `auto-release` işinde.
 
 ## Reçete — Yeni özellik duyurusu ("Neler Yeni")
-Tek yer `src/core/constants/YeniOzellikler.ts`; rozet, tanıtım kartı ve "Neler Yeni" sayfası kendiliğinden beslenir.
+Tek yer `src/core/constants/YeniOzellikler.ts`; rozet, tanıtım kartı ve "Neler Yeni" sayfası kendiliğinden beslenir. README'nin "Son eklenenler" listesi de oradan üretilir.
 - **Bir özellik = bir öğe.** Özellik henüz mağazaya (production) çıkmadıysa ya da sonradan değiştiyse **YENİ öğe ekleme**: mevcut öğenin metnini bugünkü hâle getir, `surum`/`tarih`'i son değişikliğin değeriyle güncelle. Görülme `<id>@<surum>` anahtarıyla tutulur (`core/utils/yeniOzellikGorulme.ts`) → yükseltilen `surum` duyuruyu yeniden "yeni" gösterir. Öğe birleştirirken en eski `id`'yi koru, diğerlerini `oncekiIdler`'e yaz; `id` asla değişmez.
 - **`platformlar` ZORUNLU** (`['android']` / `['ios']` / ikisi). Bir madde yalnız bazı cihazlarda geçerliyse maddeyi çıkar ya da öğeyi `yetenek` ile süz (`presentation/hooks/yeniOzellikYetenegi.ts`; ölçülemiyorsa gösterme). `PlatformYetenekleri`'ne bağlı özellik (iOS'ta ses seçici/titreşim yok) iki platforma işaretlenmez.
 - **Metin:** kibar "siz", özelliğin bugünkü hâli (tarihçe yok), teknik terim yok (kanal/TTS/API → "sesli okuma", "bildirim"), **işletim sistemi sürümü ve izin şartı yok** (nöbetçi: `yeniOzellikYetenegi.test.ts`).
@@ -104,6 +104,7 @@ Proje **GPL-3.0 + LICENSE'taki GPLv3 §7 ek izni** (App Store/Google Play). Ek i
 - Katkı lisans maddesi `LICENSE`, `README.md`, `CONTRIBUTING.md`'de aynı olmalı (telif devri yok). AGPL'e geçme.
 
 ## Bilgi tabanını güncel tutma
+- **README.md / docs/index.md'deki `<!-- OTOMATIK:BASLA ad -->…<!-- OTOMATIK:BITIR ad -->` bölgelerini ve `docs/ekran-goruntuleri/`'ni ELLE DÜZENLEME** — kaynağı değiştir (`package.json`, `app.json`, `YeniOzellikler.ts`, mağaza kayıtları); `belgeler.yml` her release ve ekran görüntüsü koşusundan sonra yeniler. Ayrıntı: [ci-ve-yayin](docs/ajan/ci-ve-yayin.md).
 - Her iş alanına özgü kalıcı bilgi (tuzak, reçete, nöbetçi test, kararın nedeni) ilgili `docs/ajan/<konu>.md`'ye; yalnız her alanda geçerli kural bu dosyaya. Yeni alan belgesi açarsan konu dizinine ekle.
 - Biçim: **kural önce**, gerekçe tek cümle (hikâye değil), varsa `Nöbetçi: <test>`. Mevcut maddeyi güncelle/sil, şişirme; spekülasyon yazma ("cihazda doğrulanmadı" diye işaretle); sır/kişisel veri yazma.
 

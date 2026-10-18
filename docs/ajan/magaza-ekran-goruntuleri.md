@@ -4,6 +4,8 @@ Ne zaman okunur: `ios-ekran-goruntuleri.yml`, `android-ekran-goruntuleri.yml`, `
 
 Katmanlar: workflow (`tur: magaza|ozellik|ikisi|saat|tv|cihazlar`) → tohum (`scripts/simulator-tohumla.js`, `scripts/magaza-tohum-verisi.js`, `scripts/ozellik-tohum-verisi.js`, `scripts/saat/saat-tohum-yuku.js`) → dolaşma (iOS `idb` betikleri, Android Maestro akışları) → özet (`scripts/ozellik-kare-ozeti.js`, `scripts/cihaz-kare-ozeti.js`) → artifact.
 
+**README de bu hatlardan beslenir:** artifact adları ve iç klasörleri (`android-ozellik-kareleri/telefon-acik/NN-ad.png` gibi) `scripts/belge-gorsel-gruplari.js` ile sözleşmedir — adı/yeri değiştirirsen oradaki grubu da güncelle; yoksa README sessizce eski karede kalır. README'ye yalnız master'a girmiş başarılı koşunun kareleri alınır (ayrıntı: `docs/ajan/ci-ve-yayin.md`).
+
 Genel ilke: **bu hatlardaki tuzakların hepsi SESSİZDİR** — adım "başarılı" görünür, sonuç yanlış/eksik çıkar. Her adımın sonunda çıktıyı (`.app` varlığı, `manifest.json` anahtar sayısı, kare listesi, logda `UYARI`/`FAILED`) doğrula. Kareler önce artifact olur; ASC'ye yükleme `asc_yukle: true` ile ayrı adımdır (gözden geçirilmemiş kare Apple'a gitmesin). Apple simülatör görüntülerini kabul eder; iPhone Pro Max simülatörü **1320×2868** verir.
 
 ## iOS (iPhone) hattı — `ios-ekran-goruntuleri.yml` + `scripts/simulator-{tohumla,ekranlari-cek}.js`

@@ -1,12 +1,12 @@
 # Katkı Rehberi
 
-Namaz Akışı React Native projesine katkı yaptığınız için teşekkürler! 🎉
+Namaz Akışı projesine katkı yaptığınız için teşekkürler! 🎉
 
 ## 🚀 Nasıl Katkı Yapabilirim?
 
 ### Hata Bildirimi
 
-1. Önceki [Issues](https://github.com/furkanisikay/NamazAkisiRN/issues) bölümünü kontrol edin.
+1. Önceki [Issues](https://github.com/furkanisikay/namazakisi/issues) bölümünü kontrol edin.
 2. Yeni bir issue açın ve şu bilgileri ekleyin:
    - Hata açıklaması
    - Tekrar etme adımları
@@ -16,7 +16,7 @@ Namaz Akışı React Native projesine katkı yaptığınız için teşekkürler!
 
 ### Özellik İsteği
 
-1. [Discussions](https://github.com/furkanisikay/NamazAkisiRN/discussions) bölümünde tartışmaya açın.
+1. [Discussions](https://github.com/furkanisikay/namazakisi/discussions) bölümünde tartışmaya açın.
 2. Özelliğin neden gerekli olduğunu açıklayın.
 3. Topluluk geri bildirimi bekleyin.
 

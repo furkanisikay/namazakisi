@@ -1,0 +1,163 @@
+name: 📝 Belgeleri Güncelle
+
+# README ve docs/ altındaki kullanıcıya dönük sayfaları kaynakla eşit tutar:
+#   - Ekran görüntüleri: mağazadaki CANLI kareler (App Store lookup + Play API) ve
+#     ekran görüntüsü hatlarının artifact'ları (yalnız master'a girmiş başarılı koşu)
+#     → docs/ekran-goruntuleri/ (scripts/belge-gorselleri.js)
+#   - Metin bölgeleri (sürüm, mağaza bağlantıları, cihazlar, özellikler, teknolojiler)
+#     → README.md, docs/index.md, docs/ekran-goruntuleri/README.md
+#     (scripts/belgeleri-guncelle.js)
+#
+# Değişiklik varsa YALNIZ README.md + docs/** commit'lenir ve master'a doğrudan
+# push edilir. Release TETİKLENMEZ: ci.yml `paths-ignore` README/docs'u dışlar, commit
+# `[skip ci]` taşır ve GITHUB_TOKEN ile yapılan push zaten başka workflow tetiklemez.
+#
+# Tetikleyiciler:
+#   - CI (master push) bittiğinde → release commit'i (sürüm) atıldıktan SONRA koşar;
+#     uçuştaki release'le yarışmaz. CI başka bir koşu sürerken push etmez (o koşu
+#     bitince bu iş yeniden tetiklenir).
+#   - Ekran görüntüsü hatları / Play mağaza işi master'da başarıyla bitince.
+#   - Haftalık güvenlik ağı (mağazada elle yapılan değişiklikler, kaçan tetikler).
+#   - PR'da yalnız NÖBETÇİ: bölge işaretleri bozuksa ya da betik patlıyorsa kırmızı;
+#     içerik farkı yalnız uyarıdır (otomasyon kapatır).
+
+on:
+  workflow_run:
+    workflows: ['CI', '📸 Android Ekran Görüntüleri', '📸 iOS Ekran Görüntüleri', '🏪 Play Mağaza Kaydı']
+    types: [completed]
+    branches: [master]
+  schedule:
+    - cron: '17 4 * * 1' # Pazartesi 07:17 (TR)
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'README.md'
+      - 'docs/index.md'
+      - 'docs/ekran-goruntuleri/**'
+      - 'scripts/belgeleri-guncelle.js'
+      - 'scripts/belge-gorsel*.js'
+      - 'src/core/constants/YeniOzellikler.ts'
+      - 'app.json'
+      - '.github/workflows/belgeler.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  kontrol:
+    name: 🔎 Otomatik bölgeler (nöbetçi)
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+      # YeniOzellikler.ts typescript ile okunur; yama/derleme gerekmez.
+      - run: npm ci --ignore-scripts
+      - run: node scripts/belgeleri-guncelle.js --kontrol
+
+  guncelle:
+    name: 📝 README ve görselleri güncelle
+    if: >-
+      github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' &&
+       (github.event.workflow_run.name != 'CI' || github.event.workflow_run.event == 'push'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Kendi grubu: ci-* grubuna katılmak (cancel-in-progress) CI'ı iptal ederdi.
+    concurrency:
+      group: belgeler-master
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      actions: read
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # workflow_run.head_sha DEĞİL master'ın ucu: sürüm artışı release commit'indedir.
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Bağımlılıklar (typescript) + webp
+        run: |
+          npm ci --ignore-scripts
+          sudo apt-get update -qq && sudo apt-get install -y -qq webp >/dev/null
+          cwebp -version
+
+      - name: 🏪 Play mağaza kareleri (salt okur)
+        env:
+          GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+        # Servis hesabı yoksa/yetkisizse telefon kareleri herkese açık sayfadan okunur.
+        run: |
+          node scripts/play-magaza.js gorseller --json "$RUNNER_TEMP/play.json" \
+            || echo "UYARI — Play API okunamadı, açık sayfaya düşülecek"
+
+      - name: 🖼️ Ekran görüntülerini eşitle
+        run: node scripts/belge-gorselleri.js --play-json "$RUNNER_TEMP/play.json" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: ✍️ Metin bölgelerini üret
+        run: node scripts/belgeleri-guncelle.js | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: 📤 Commit ve push
+        run: |
+          set -eo pipefail
+          git add -A README.md docs
+          # Bu iş YALNIZ README.md ve docs/** yazar; başka bir dosya değiştiyse dur.
+          DISARI=$(git status --porcelain | grep -v -E '^.. "?(README\.md|docs/)' || true)
+          if [ -n "$DISARI" ]; then
+            echo "Beklenmeyen değişiklik (README.md/docs dışı):"; echo "$DISARI"; exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok — commit atılmadı." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git diff --cached --stat | tail -5 | tee -a "$GITHUB_STEP_SUMMARY"
+
+          # Uçuştaki release'e push atma: master'da CI sürüyorsa o bitince bu iş
+          # yeniden tetiklenir (workflow_run) ve aynı değişikliği o zaman yazar.
+          AKTIF=$(gh run list --workflow ci.yml --branch master --limit 10 --json status --jq '[.[] | select(.status != "completed")] | length')
+          if [ "$AKTIF" != "0" ]; then
+            echo "master'da CI/release sürüyor ($AKTIF koşu); push ertelendi." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "docs(otomatik): README ve ekran görüntülerini güncelle [skip ci]"
+
+          for DENEME in 1 2 3; do
+            if ! git pull --rebase origin master; then
+              git rebase --abort || true
+              echo "Rebase çakıştı (README/docs aynı anda elle değişmiş); bir sonraki tetiklemede yeniden denenecek."
+              exit 1
+            fi
+            if git push origin HEAD:master; then
+              echo "master'a push edildi." | tee -a "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((DENEME * 15))
+          done
+
+          # Doğrudan push reddedildi (ileride dal koruması gelirse): PR + otomatik birleştirme.
+          DAL="otomatik/belgeler"
+          git push --force origin "HEAD:refs/heads/$DAL"
+          PR=$(gh pr list --head "$DAL" --base master --state open --json number --jq '.[0].number // empty')
+          if [ -z "$PR" ]; then
+            gh pr create --head "$DAL" --base master \
+              --title "docs(otomatik): README ve ekran görüntülerini güncelle" \
+              --body "Otomatik üretildi (.github/workflows/belgeler.yml). Yalnız README.md ve docs/** değişir; release tetiklemez."
+          fi
+          gh pr merge "$DAL" --auto --merge --subject "docs(otomatik): README ve ekran görüntülerini güncelle [skip ci]" \
+            || echo "UYARI: otomatik birleştirme açılamadı (repo ayarı: Allow auto-merge). PR açık bekliyor." | tee -a "$GITHUB_STEP_SUMMARY"

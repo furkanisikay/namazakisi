@@ -6,6 +6,11 @@
  *   node scripts/play-magaza.js oku
  *   node scripts/play-magaza.js yaz [--gorseller <klasor>]
  *   node scripts/play-magaza.js aab-yukle --dosya <aab> --kanal <kanal> [--ad <surum adi>]
+ *   node scripts/play-magaza.js gorseller --json <dosya>
+ *
+ * `gorseller`: SALT OKUR. Magazadaki CANLI kareleri (telefon, Wear OS, TV, one cikan
+ * gorsel) ve kanallardaki surumleri JSON'a yazar; README'deki kareler bununla
+ * magazayla esit tutulur (scripts/belge-gorselleri.js). Edit acilir, okunur, silinir.
  *
  * `aab-yukle`: saat (Wear OS) ve TV paketlerini AYNI uygulama kaydinin form faktoru
  * kanallarina yukler. Kanal adi `<onek>:<kanal>` bicimindedir (Play Developer API,
@@ -191,16 +196,16 @@ function playMetinleri() {
 
 (async () => {
     const mod = process.argv[2];
-    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle'];
+    const MODLAR = ['oku', 'yaz', 'surumler', 'uretime-al', 'aab-yukle', 'cihaz-kareleri', 'tv-ekle', 'gorseller'];
     if (!MODLAR.includes(mod)) {
-        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
+        console.error('Kullanim: play-magaza.js <oku|yaz|surumler|uretime-al|aab-yukle|cihaz-kareleri|tv-ekle|gorseller> [--gorseller <klasor>] [--surum X.Y.Z] [--oran 0.2] [--dosya x.aab --kanal wear:internal]');
         process.exit(1);
     }
     const arg = (ad) => {
         const i = process.argv.indexOf('--' + ad);
         return i >= 0 ? process.argv[i + 1] : null;
     };
-    const saltOkur = mod === 'oku' || mod === 'surumler';
+    const saltOkur = mod === 'oku' || mod === 'surumler' || mod === 'gorseller';
     api.jeton = await jeton();
 
     const ekle = await api('POST', '/edits');
@@ -224,6 +229,26 @@ function playMetinleri() {
                 console.log('GORSEL ' + tur + ': ' + im.length + ' adet');
                 im.forEach((x) => console.log('  ' + x.url));
             }
+            return;
+        }
+
+        if (mod === 'gorseller') {
+            const hedef = arg('json');
+            if (!hedef) throw new Error('--json <dosya> gerekli');
+            const sonuc = { gorseller: {}, kanallar: [] };
+            for (const tur of ['phoneScreenshots', 'wearScreenshots', 'tvScreenshots', 'featureGraphic']) {
+                const g = await api('GET', '/edits/' + editId + '/listings/' + DIL + '/' + tur);
+                if (g.kod >= 300) throw new Error(tur + ' okunamadi: ' + g.kod);
+                sonuc.gorseller[tur] = ((g.j && g.j.images) || []).map((x) => ({ id: x.id, url: x.url, sha256: x.sha256 }));
+            }
+            const t = await api('GET', '/edits/' + editId + '/tracks');
+            for (const kanal of (t.j && t.j.tracks) || []) {
+                for (const r of kanal.releases || []) {
+                    sonuc.kanallar.push({ kanal: kanal.track, ad: r.name || null, durum: r.status });
+                }
+            }
+            fs.writeFileSync(hedef, JSON.stringify(sonuc, null, 2));
+            console.log('GORSELLER yazildi: ' + hedef + ' | ' + Object.entries(sonuc.gorseller).map(([k, v]) => k + '=' + v.length).join(', '));
             return;
         }
 
