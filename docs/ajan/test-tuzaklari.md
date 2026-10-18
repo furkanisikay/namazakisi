@@ -36,6 +36,11 @@ Ne zaman okunur: test yazarken/düzeltirken, "yerelde geçti, CI'da patladı" ya
 ## Lint
 - **Kullanılmayan `catch` parametresi warning'dir; `argsIgnorePattern: '^_'` ona işlemez** (`eslint.config.js`'te `caughtErrorsIgnorePattern` yok). Kullanmayacaksan `catch { }`, kullanacaksan `catch (error)` + `Logger`.
 
+## Cihaz durumu ve ortak bileşenler (sade tasarım)
+- **`CihazDurumOkuyucu` / `useCihazDurumu` / `DurumEylemleri` her native modülü fonksiyon İÇİNDE `require` eder.** Tek bir statik native import (expo-location, notifee, köprü) kancayı kullanan HER ekran testini `requireNativeModule` tuzağına düşürür. Ekran testlerinde kancayı `jest.mock('…/hooks/useCihazDurumu', () => ({ useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }) }))` ile besle.
+- **Saf bir fonksiyonu test ederken bile, onu dışa veren modal native köprü grafiği çekiyorsa köprüyü mock'la.** `SesliOnayMaddeleri.test.ts` tek başına geçti, tam suite'te sıraya bağlı olarak düştü (`SesliOnayModal` → `OnizlemeSesServisi` → countdown köprüsü).
+- **Asenkron okuma yapan kancalar değer DEĞİŞMEDİYSE setState çağırmamalı** (`useHareketAzalt`, `useCihazDurumu`: ref ile karşılaştır). Aynı değerle setState de "not wrapped in act" uyarısı üretir; fonksiyonel güncelleyici (`setX(o => o)`) bile uyarıyı önlemez.
+
 ## Test dışı ama aynı turda öğrenilen
 - **`.github/workflows` içinde `ios/*/Info.plist` glob'u KULLANMA:** prebuild uzantı/saat hedefleri birden çok Info.plist üretir; ana plist `ios/<xcodeproj adı>/Info.plist` (`ios-siri-derleme.yml` deseni).
 - **TV JVM testleri JDK 21 ister** (adhan2/kotlinx-datetime; JDK 17'de `UnsupportedClassVersionError`).

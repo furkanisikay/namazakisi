@@ -6,6 +6,9 @@ Katmanlar: `core/muhafiz/{motorAdaptoru.alarmAniMi, alarmYuku, alarmNotlari}` �
 
 Ek yüzeylerdeki alarm TÜRÜ (`vakit`/`nafile`/`bilgi`) ve takvimin kılınmışlığa bağlı alarmı: [hatirlatma-yuzeyleri.md](hatirlatma-yuzeyleri.md).
 
+## AlarmKit "desteklenmiyor" üç durumdur
+- **`alarmKitDurumu()` `desteklenmiyor`u iOS < 26, modül yok ve geçici HATA için birlikte döner.** "iOS 26'ya güncelleyin" yalnız sürüm gerçekten eskiyse söylenir; ayrım SAF katmanda (`alarmNotlari` / `alarmOnayMaddeleri`'ne `iosSurum` enjekte edilir, `iosAlarmKitYokNedeni`). Modülün durum birliğini GENİŞLETME: `usePlatformYetenekleri` ve teslimci aynı değeri okur, yeni değer motoru etkiler. iOS 26+ ya da bilinmeyen sürümde not yok (sus).
+
 ## Model ve ortak kurallar
 
 - **`UyariKanallari.alarm` bağımsız bir kanaldır; ekranda çip değil `AdimDetayModal`'da ayrı anahtar** (`PencereTanimi.alarmSecilebilir`; standart yetenek → tüm yüzeylerde). Alan yoksa kapalı → göç yok; `adimKapaliMi` alarmı da "açık" sayar (`KANAL_ADLARI`).
