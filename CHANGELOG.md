@@ -5,6 +5,19 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.40.0] - 2026-10-18
+
+### Eklendi
+- [hatirlatma] sesli okuma metni her yüzeyde düzenlenir; Neler Yeni duyurusu
+- [hatirlatma] adım detayı yeniden düzenlendi — iki kanal anahtarı, Gelişmiş bölümü, sesli okuma editörü
+
+### Düzeltildi
+- [hatirlatma] inceleme düzeltmeleri — sesli okuma süresi, birleşme, eşik kilidi
+
+### Değiştirildi
+- [hatirlatma] tek modül — HatirlatmaModulu + useHatirlatmaDuzenleyici, altı yüzey geçti
+- [hatirlatma] sesli okuma metni normalize'dan sağ çıkar, planlayıcılar kullanıcı metnini okur
+
 ## [0.39.0] - 2026-10-18
 
 ### Eklendi
