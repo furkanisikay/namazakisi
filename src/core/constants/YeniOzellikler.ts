@@ -73,7 +73,7 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
-    // Sade tasarım (Dalga 2 + 3). Bugünkü kullanıcıya anlamlı olanı söyler.
+    // Sade tasarım (Dalga 2 + 3 + 4). Bugünkü kullanıcıya anlamlı olanı söyler.
     {
         id: 'sade-kurulum-ve-ana-ekran',
         platformlar: ['android', 'ios'],
@@ -81,9 +81,9 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         tarih: '2026-10-18',
         baslik: 'Daha sade uygulama',
         aciklama:
-            'Tüm hatırlatmalar tek sayfada, ayarlar görevlere göre gruplandı; ana ekranda tek uyarı ve tek düğme: "Kıldım".',
+            'Yeni sekmeler: Bugün, Kıble, Kaza, İlerleme, Ayarlar. Tüm hatırlatmalar tek sayfada; ana ekranda tek düğme: "Kıldım".',
         detayAciklama:
-            'Ayarlar artık ne yapmak istediğinize göre sıralı: Hatırlatmalar, Namaz vakitleri, Görünüm, Saat ve widget, Yedek, Yardım. Hatırlatmalar sayfasında en üstte "Ne kadar hatırlatalım?" sorusu var; altında her hatırlatma tek satır ve bir anahtar: vakit girince, vakit çıkmadan, cuma, camiye gitme vakti, yatmadan önce, toplantı çakışırsa, nafile, Ramazan, günü tamamlamadıysam ve özel gün. Ayrıntılı ayar "Kendim ayarlayayım" altında durur. Sesli okuma ve alarm izni bir kez sorulur, tüm hatırlatmalarda geçerlidir. Ana ekranda uyarılar üst üste yığılmaz; vakit kartındaki "Kıldım" düğmesi "Kılındı"ya dönüşür.',
+            'Ayarlar artık ne yapmak istediğinize göre sıralı: Hatırlatmalar, Namaz vakitleri, Görünüm, Saat ve widget, Yedek, Yardım. Hatırlatmalar sayfasında en üstte "Ne kadar hatırlatalım?" sorusu var; altında her hatırlatma tek satır ve bir anahtar: vakit girince, vakit çıkmadan, cuma, camiye gitme vakti, yatmadan önce, toplantı çakışırsa, nafile, Ramazan, günü tamamlamadıysam ve özel gün. Ayrıntılı ayar "Kendim ayarlayayım" altında durur. Sesli okuma ve alarm izni bir kez sorulur, tüm hatırlatmalarda geçerlidir. Ana ekranda uyarılar üst üste yığılmaz; vakit kartındaki "Kıldım" düğmesi "Kılındı"ya dönüşür. Alttaki sekmeler de sadeleşti: Kıble artık kendi sekmesinde; seri, kılma oranı ve rozetler tek "İlerleme" sekmesinde. Kaza defterinde kalan sayı ve vakit satırları öne çıktı; hedef, tempo, yeniden hesaplama ve geçmiş "Diğer" menüsünde. Vakitleri takvime eklerken ayar değiştirirseniz "Şimdi aktarın" bandı çıkar.',
         detaylar: [
             'Tüm hatırlatmalar tek sayfada, her biri tek satır',
             'Sesli okuma ve alarm izni bir kez, her hatırlatmada geçerli',
@@ -92,7 +92,10 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
             'Ana ekranda tek uyarı alanı ve tek düğme: "Kıldım" → "Kılındı"',
             'Durum adları her yerde aynı: Kılındı, Kılınmadı, Vakti geldi, Henüz girmedi',
             'Gün batarken bugünün ikindisini henüz kılmadıysanız bunu hatırlatır',
-            'Ayarlarınız aynen korundu',
+            'Kıble kendi sekmesinde; seri, kılma oranı ve rozetler "İlerleme"de',
+            'Kaza Defteri sade: kalan, vakit satırları ve "Kıldım"; gerisi "Diğer"de',
+            'Takvime eklenmeyi bekleyen değişiklik varsa ekranda söylenir',
+            'Ayarlarınız ve kayıtlarınız aynen korundu',
         ],
         ikon: 'leaf',
         hedefSayfa: 'Hatirlatmalar',
