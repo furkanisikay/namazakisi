@@ -31,6 +31,10 @@ Namaz vakitleri bulunduğunuz yerin enlem ve boylamından hesaplanır. Konumunuz
   aktarılır (cihazlar Bluetooth ile bağlı değilken bu eşitleme Google'ın altyapısı
   üzerinden geçebilir); geliştiriciye ulaşmaz, saat konum izni istemez ve bu bilgi
   saatten de hiçbir yere gönderilmez,
+- Apple Watch uygulamasını kullanıyorsanız, saatinize konumunuz **gönderilmez**;
+  yalnızca hesaplanmış vakit saatleri, kıldığınız vakitler ve konumunuzun adı
+  (ilçe/şehir) Apple'ın iPhone ile Apple Watch arasındaki eşitlemesiyle **yalnızca
+  kendi saatinize** gider ve geliştiriciye ulaşmaz,
 - Camideyim'i kullanıyorsanız, camide olduğunuz bilgisi (caminin adı, durumun bitiş
   saati ve "Camide misiniz?" sorusu) ile Namaz modunun bitiş saati de aynı yolla
   **yalnızca kendi saatinize** gider; saatten verdiğiniz cevap ("Burası cami değil")
