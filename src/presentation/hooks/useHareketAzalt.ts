@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo } from 'react-native';
 
 /**
@@ -8,14 +8,20 @@ import { AccessibilityInfo } from 'react-native';
  */
 export function useHareketAzalt(): boolean {
   const [azalt, setAzalt] = useState(false);
+  // Değer değişmediyse setState çağrılmaz: her ekran açılışında gereksiz çizim (ve
+  // testlerde act gürültüsü) olmasın.
+  const son = useRef(false);
   useEffect(() => {
     let iptal = false;
+    const yaz = (d: boolean) => {
+      if (iptal || d === son.current) return;
+      son.current = d;
+      setAzalt(d);
+    };
     AccessibilityInfo.isReduceMotionEnabled?.()
-      .then((d) => {
-        if (!iptal) setAzalt(d === true);
-      })
+      .then((d) => yaz(d === true))
       .catch(() => undefined);
-    const abonelik = AccessibilityInfo.addEventListener?.('reduceMotionChanged', (d: boolean) => setAzalt(d === true));
+    const abonelik = AccessibilityInfo.addEventListener?.('reduceMotionChanged', (d: boolean) => yaz(d === true));
     return () => {
       iptal = true;
       abonelik?.remove?.();

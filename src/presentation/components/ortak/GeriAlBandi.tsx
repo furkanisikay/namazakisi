@@ -1,0 +1,127 @@
+/**
+ * "Geri al" bandı — şaşırtabilecek ama geri alınabilir eylemler için (onay modalı DEĞİL).
+ *
+ * Kullanım (çağıranın React ağacında olması gerekmez; host `App.tsx` kökünde BİR kez):
+ *   geriAlBandiGoster({ mesaj: 'Hatırlatma silindi', geriAl: () => eskiyiYaz(yedek) });
+ *
+ * Kurallar (plan §7.4): ekranın altında, sekme çubuğunun üstünde hap; 6 sn; ekran
+ * okuyucuya duyurulur; "Geri al" dokunma hedefi ≥ 44 dp; AYNI ANDA TEK bant — yeni
+ * çağrı öncekinin yerine geçer (önceki geri alınamaz hâle gelir, eylemi zaten yapılmıştır).
+ * Geri al = önceki durumu BİREBİR geri yaz (çağıranın sorumluluğu). Geri alınamayan
+ * işlemde bant yerine önizleme + onay kullanın.
+ */
+import * as React from 'react';
+import { AccessibilityInfo, Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useRenkler } from '../../../core/theme';
+import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { EGRI, SURE } from '../hareket/sureler';
+
+export const GERI_AL_SURESI_MS = 6000;
+
+export interface GeriAlIstegi {
+    mesaj: string;
+    geriAl: () => void | Promise<unknown>;
+    ikon?: string;
+    /** Varsayılan 6 sn. */
+    sureMs?: number;
+}
+
+type Dinleyici = (istek: GeriAlIstegi | null) => void;
+const dinleyiciler = new Set<Dinleyici>();
+
+export function geriAlBandiGoster(istek: GeriAlIstegi): void {
+    dinleyiciler.forEach((d) => d(istek));
+}
+
+/** Bandı hemen kapatır (ör. ekran değişti, işlem artık geri alınamaz). */
+export function geriAlBandiniKapat(): void {
+    dinleyiciler.forEach((d) => d(null));
+}
+
+export const GeriAlBandiKatmani: React.FC = () => {
+    const renkler = useRenkler();
+    const azalt = useHareketAzalt();
+    const [istek, setIstek] = React.useState<GeriAlIstegi | null>(null);
+    const gorunum = React.useRef(new Animated.Value(0)).current;
+    const zamanlayici = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    React.useEffect(() => {
+        const dinleyici: Dinleyici = (yeni) => {
+            if (zamanlayici.current) clearTimeout(zamanlayici.current);
+            if (!yeni) {
+                setIstek(null);
+                gorunum.setValue(0);
+                return;
+            }
+            setIstek(yeni);
+            AccessibilityInfo.announceForAccessibility?.(`${yeni.mesaj}. Geri almak için bandı kullanın.`);
+            if (azalt) gorunum.setValue(1);
+            else {
+                gorunum.setValue(0);
+                Animated.timing(gorunum, { toValue: 1, duration: SURE.giris, easing: EGRI.giris, useNativeDriver: true }).start();
+            }
+            zamanlayici.current = setTimeout(() => setIstek(null), yeni.sureMs ?? GERI_AL_SURESI_MS);
+        };
+        dinleyiciler.add(dinleyici);
+        return () => {
+            dinleyiciler.delete(dinleyici);
+            if (zamanlayici.current) clearTimeout(zamanlayici.current);
+        };
+    }, [azalt, gorunum]);
+
+    if (!istek) return null;
+
+    const geriAl = () => {
+        if (zamanlayici.current) clearTimeout(zamanlayici.current);
+        const yapilacak = istek.geriAl;
+        setIstek(null);
+        void Promise.resolve()
+            .then(yapilacak)
+            .then(() => AccessibilityInfo.announceForAccessibility?.('Geri alındı'))
+            .catch(() => undefined);
+    };
+
+    return (
+        <Animated.View
+            pointerEvents="box-none"
+            style={[
+                styles.kap,
+                {
+                    opacity: gorunum,
+                    transform: [{ translateY: gorunum.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
+                },
+            ]}
+        >
+            <View
+                accessibilityLiveRegion="polite"
+                style={[styles.hap, { backgroundColor: renkler.metin }]}
+            >
+                <FontAwesome5 name={istek.ikon ?? 'undo'} size={13} color={renkler.arkaplan} style={{ marginRight: 10 }} />
+                <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: renkler.arkaplan }}>{istek.mesaj}</Text>
+                <TouchableOpacity
+                    onPress={geriAl}
+                    accessibilityRole="button"
+                    accessibilityLabel="Geri al"
+                    style={{ minHeight: 44, minWidth: 44, paddingHorizontal: 12, justifyContent: 'center' }}
+                >
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: renkler.arkaplan, textDecorationLine: 'underline' }}>Geri al</Text>
+                </TouchableOpacity>
+            </View>
+        </Animated.View>
+    );
+};
+
+const styles = StyleSheet.create({
+    kap: { position: 'absolute', left: 16, right: 16, bottom: 104, alignItems: 'center' },
+    hap: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: 480,
+        borderRadius: 20,
+        paddingLeft: 16,
+        paddingRight: 4,
+        minHeight: 52,
+    },
+});
