@@ -45,6 +45,10 @@ export const GeriAlBandiKatmani: React.FC = () => {
     const [istek, setIstek] = React.useState<GeriAlIstegi | null>(null);
     const gorunum = React.useRef(new Animated.Value(0)).current;
     const zamanlayici = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    // `azalt` ref ile okunur: etkiye bağımlılık olsaydı, bant açıkken "Animasyonları azalt"
+    // değişince temizlik zamanlayıcıyı siler ve bant hiç kendiliğinden kapanmazdı.
+    const azaltRef = React.useRef(azalt);
+    azaltRef.current = azalt;
 
     React.useEffect(() => {
         const dinleyici: Dinleyici = (yeni) => {
@@ -56,7 +60,7 @@ export const GeriAlBandiKatmani: React.FC = () => {
             }
             setIstek(yeni);
             AccessibilityInfo.announceForAccessibility?.(`${yeni.mesaj}. Geri almak için bandı kullanın.`);
-            if (azalt) gorunum.setValue(1);
+            if (azaltRef.current) gorunum.setValue(1);
             else {
                 gorunum.setValue(0);
                 Animated.timing(gorunum, { toValue: 1, duration: SURE.giris, easing: EGRI.giris, useNativeDriver: true }).start();
@@ -68,7 +72,7 @@ export const GeriAlBandiKatmani: React.FC = () => {
             dinleyiciler.delete(dinleyici);
             if (zamanlayici.current) clearTimeout(zamanlayici.current);
         };
-    }, [azalt, gorunum]);
+    }, [gorunum]);
 
     if (!istek) return null;
 

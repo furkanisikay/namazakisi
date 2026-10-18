@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import { BOS_CIHAZ_DURUMU, type CihazDurumu } from '../../core/cihaz/durumNotlari';
-import { cihazDurumunuOku, surumuOku, TUM_CIHAZ_ALANLARI, type CihazAlani } from '../../domain/services/CihazDurumOkuyucu';
+import { cihazDurumunuOku, surumuOku, type CihazAlani } from '../../domain/services/CihazDurumOkuyucu';
 
 export interface CihazDurumuSonucu {
     durum: CihazDurumu;
@@ -21,7 +21,14 @@ export interface CihazDurumuSonucu {
     yenile: () => Promise<CihazDurumu>;
 }
 
-export function useCihazDurumu(alanlar: readonly CihazAlani[] = TUM_CIHAZ_ALANLARI, etkin = true): CihazDurumuSonucu {
+/**
+ * @param alanlar Ekranın İHTİYAÇ DUYDUĞU alanlar — ZORUNLU ve modül düzeyinde sabit bir
+ *   dizi olmalı (`const ALANLAR = ['samsung'] as const`). Hepsini okumak (`TUM_CIHAZ_ALANLARI`)
+ *   konum/takvim/bildirim/alarm köprülerinin tamamını uyandırır; yalnız tanı ekranı gibi
+ *   gerçekten hepsine bakan yer kullanmalı.
+ * @param etkin false iken hiç okunmaz (ör. iOS'ta Android'e özgü alan).
+ */
+export function useCihazDurumu(alanlar: readonly CihazAlani[], etkin = true): CihazDurumuSonucu {
     // Sürüm senkron: ilk çizimde bilinir (sürüme bağlı metin titremesin).
     const [durum, setDurum] = useState<CihazDurumu>(() => ({ ...BOS_CIHAZ_DURUMU, surum: surumuOku() }));
     const anahtar = alanlar.join(',');
