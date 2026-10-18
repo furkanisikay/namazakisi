@@ -1,10 +1,10 @@
 # CLAUDE.md — Namaz Akışı
 
-> Tüm proje kuralları, komutlar, mimari, gotcha'lar ve sınırlar **[AGENTS.md](./AGENTS.md)**'dedir — tek doğru kaynak. Aşağıdaki içe aktarma onu bu bağlama yükler.
+> Proje kuralları, komutlar, mimari ve genel tuzaklar **[AGENTS.md](./AGENTS.md)**'dedir — tek doğru kaynak. Alan bilgisi `docs/ajan/` altındadır; AGENTS.md sonundaki konu dizininden dokunduğun alanın belgesini işe başlamadan oku.
 
 @AGENTS.md
 
 ## Claude'a özel
-- **Tek doğrulama kapısı:** Bir işi bitirmeden önce `npm run verify` çalıştır ve geçir (typecheck + lint + test).
-- **Bilgi tabanını güncel tut:** Çalışırken öğrendiğin kalıcı bilgiyi (tekrar düşmemen gereken tuzak/çözüm, yeni reçete, komut, konvansiyon, kararın *nedeni*) proaktif olarak — kullanıcı istemeden — **`AGENTS.md`**'ye ekle, aynı commit içinde. Kurallar: kısa ve eyleme dönük yaz; mevcut bölüme ekle, yenisini ancak gerekiyorsa aç; sır/token/kişisel veri YAZMA; spekülasyon değil yalnızca doğrulanmış bilgi; dosyayı şişirme (eskiyen maddeyi güncelle/sil).
+- **Tek doğrulama kapısı:** bir işi bitirmeden önce `npm run verify` çalıştır ve geçir (typecheck + lint + test).
+- **Bilgi tabanını güncel tut:** çalışırken öğrendiğin kalıcı bilgiyi (tekrar düşmemen gereken tuzak/çözüm, reçete, komut, kararın *nedeni*) kullanıcı istemeden, aynı commit içinde yaz. Her alanda geçerli kural → `AGENTS.md`; bir özelliğe/alana özgü bilgi → ilgili `docs/ajan/<konu>.md` (yoksa aç ve AGENTS.md konu dizinine ekle). Kural önce, gerekçe tek cümle; mevcut maddeyi güncelle ya da eskiyeni sil, şişirme; yalnız doğrulanmış bilgi; sır/token/kişisel veri yazma. AGENTS.md'de alan dosyalarını `@` ile içe aktarma (her oturumda yüklenir) — düz bağlantı kullan.
 - Kullanıcıyla **daima Türkçe** konuş.

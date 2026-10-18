@@ -1,0 +1,64 @@
+# Mağaza ekran görüntüleri — simülatör/emülatör hatları
+
+Ne zaman okunur: `ios-ekran-goruntuleri.yml`, `android-ekran-goruntuleri.yml`, `scripts/simulator-*`, `scripts/maestro/*`, tohum betikleri ya da kare özeti betiklerine dokunuyorsan.
+
+Katmanlar: workflow (`tur: magaza|ozellik|ikisi|saat|tv|cihazlar`) → tohum (`scripts/simulator-tohumla.js`, `scripts/magaza-tohum-verisi.js`, `scripts/ozellik-tohum-verisi.js`, `scripts/saat/saat-tohum-yuku.js`) → dolaşma (iOS `idb` betikleri, Android Maestro akışları) → özet (`scripts/ozellik-kare-ozeti.js`, `scripts/cihaz-kare-ozeti.js`) → artifact.
+
+Genel ilke: **bu hatlardaki tuzakların hepsi SESSİZDİR** — adım "başarılı" görünür, sonuç yanlış/eksik çıkar. Her adımın sonunda çıktıyı (`.app` varlığı, `manifest.json` anahtar sayısı, kare listesi, logda `UYARI`/`FAILED`) doğrula. Kareler önce artifact olur; ASC'ye yükleme `asc_yukle: true` ile ayrı adımdır (gözden geçirilmemiş kare Apple'a gitmesin). Apple simülatör görüntülerini kabul eder; iPhone Pro Max simülatörü **1320×2868** verir.
+
+## iOS (iPhone) hattı — `ios-ekran-goruntuleri.yml` + `scripts/simulator-{tohumla,ekranlari-cek}.js`
+
+- **`runs-on: macos-26` ZORUNLU:** `idb-companion` o macOS'un en yeni Xcode'unu ister (macos-15'te `A full installation of Xcode.app 26.0 is required`); kareler TestFlight build'iyle aynı Xcode 26 görünümünü yansıtır. Homebrew tap'i açıkça güvenilir ister: `brew trust facebook/fb`.
+- **Şema adını `*.xcodeproj`'den al;** `xcodebuild -list` alfabetik ve Pods şemalarını içerir (`schemes[0]` = `EXApplication` → pod derlenir, `.app` üretilmez ama `xcodebuild` başarılı döner). Derleme adımının sonunda `.app` varlığını orada doğrula.
+- **AsyncStorage yolu `Library/Application Support/<bundleId>/RCTAsyncLocalStorage_V1/manifest.json`, `Documents/` DEĞİL** (`RNCAsyncStorage.mm > RCTCreateStorageDirectoryPath`). Yanlış yol hata vermez, uygulama sihirbazda açılır → tohumdan sonra anahtar sayısını yazdır.
+- **`idb`'de `--udid` alt komut düzeyindedir:** `idb ui describe-all --json --udid <UDID>` (başta `invalid choice` verir; yutulursa ağaç boş gelir).
+- **İlk `describe-all` companion ısınırken BOŞ döner → ağaç dolana kadar bekle;** yoksa bildirim izni uyarısı kapatılmaz, ağaç yalnız onun 5 öğesini gösterir ve sonraki tüm adımlar "bulunamadı" der.
+- **iOS sekme etiketine `", tab, N of 5"` ekler** (`"Ayarlar, tab, 5 of 5"`) → `/^Ayarlar$/` gibi tam-dize çapası tutmaz.
+- **`idb ui tap` UISwitch'i TOGGLE ETMEZ** → anahtarla açılacak ayarı (ör. `muhafiz_ayarlari.aktif`) diskten tohumla; tohum açıkken anahtara dokunmak onu KAPATIR. Alarm onay modalı için anahtar önce dokunulur, olmazsa SÜRÜKLENİR.
+- **Genişleyen/alt kenardaki içerik erişilebilirlik ağacına girmez:** son kartı (Yatsı) değil ilk kartı (Sabah) aç ve açtıktan SONRA kaydır; yoksa dokunuş sekme çubuğuna düşer ve iki kare birebir aynı çıkar (md5 ile yakalandı).
+- **Simülatör saat dilimi UTC → iş düzeyi `env`'de `SIMCTL_CHILD_TZ: Europe/Istanbul`** (`simctl launch` `SIMCTL_CHILD_` önekini uygulamaya geçirir); yoksa vakitler UTC çizilir (öğle "09:55").
+- **İzinleri baştan ver:** `simctl privacy <udid> grant location <bundle>` + `simctl location <udid> set <lat>,<lng>` (Kıble konum uyarısı sayfayı bloklar).
+- **`simctl spawn <udid> defaults write -g AppleLanguages` KULLANMA** — cfprefsd'yi bekleyip adımı süresiz kilitler; betik izin diyaloğunun iki dilini de tanısın.
+- **Kırılgan adımlar (Kıble) SONA ve uygulama yeniden başlatılarak:** açık bottom-sheet sekme çubuğunu erişilemez yapar; aksaklıkta yalnız o kare kaybedilir.
+
+## Apple Watch hattı — `tur: saat` → `saat-kareler` işi, artifact `ios-saat-kareleri`, `scripts/simulator-saat-cek.sh`
+
+- **Yalnız saat hedefi derlenir:** `xcodebuild -project … -target NamazSaat -sdk watchsimulator` (pod install ve iPhone derlemesi yok; saat hedefleri pod'a/RN'e bağlı değil) → ~1 dk. `-target` ile `-sdk watchsimulator` güvenlidir.
+- **Veri WatchConnectivity'den değil başlatma ortamından:** `targets/saat/SaatSimulatorTohumu.swift` yalnız `#if targetEnvironment(simulator)` içinde `NAMAZ_SAAT_TOHUM_YUK` (Wear yük JSON'u, `scripts/saat-tohum-yuku.js`), `NAMAZ_SAAT_TOHUM_TESBIHAT`, `NAMAZ_SAAT_EKRAN` (`ana|vakitler|onay|tesbihat`) okur; cihaz ikilisinde `acilisEkrani` daima nil.
+- **Saat dilimi hilesi:** simülatör saati değiştirilemez → üretici İstanbul'un gerçek vakitlerini, şu anki an öğle penceresinin ortasına (±30 dk) düşecek bir `Etc/GMT±N` dilimine taşır; dilim hem uygulamaya (`SIMCTL_CHILD_TZ`) hem Mac'e (`sudo ln -sf /usr/share/zoneinfo/<tz> /etc/localtime`, yalnız CI) verilir — watchOS simülatörü saati Mac'ten alır, `simctl status_bar override` watchOS'ta ÇALIŞMAZ. `Etc/GMT` işaretleri TERSTİR (UTC+5 = `Etc/GMT-5`).
+- **Türkçe bölge + 24 saat:** `.GlobalPreferences.plist`'e (`AppleLanguages`, `AppleLocale`, `AppleICUForce24HourTime`) simülatör KAPALIYKEN yazılır ve dosya ilk açılışta oluşur → aç, kapat, yaz, yeniden aç. Hiç açılmamış cihaza `data/Library/Preferences`'ı elle kurmak cihazı bozar (`FBSOpenApplicationServiceErrorDomain code=4`).
+- **Kare boyutu:** Ultra 3 simülatöründe **422×514** (kabul edilenler 422×514, 410×502, 416×496, 396×484, 368×448, 312×390), alfasız (JPEG'den geçirilir). Saat simülatörü açılışı ~4 dk. Komplikasyonlu kadran ve iPhone kilit ekranı widget'ları ÇEKİLEMEZ (programla düzenlenemez).
+
+## Android telefon hattı — `android-ekran-goruntuleri.yml` + `scripts/maestro/*.yaml`
+
+- **`uiautomator dump` bu uygulamada KULLANILAMAZ:** arayüzün 1 sn sessiz kalmasını bekler, saniyelik geri sayım yüzünden `ERROR: could not get idle state.` ile boş döner. Dolaşma **Maestro** ile (boşta-durum zaman aşımını hata saymaz); zaman şeridi `scrollUntilVisible … centerElement: true` ile ortalanır.
+- **Sistem ANR penceresi ("Pixel Launcher isn't responding") tüm akışları düşürür** (uygulama ağaçtan kaybolur, akışlar `_acilis.yaml`'daki "Kıble yönünü bul" beklemesinde düşer, artifact boş): hat `settings put global hide_error_dialogs 1` yazar, `_acilis.yaml` pencere görünürse "Wait"e basar.
+- **Emülatör UTC → `emulator-options`'a `-timezone Europe/Istanbul`** (iOS `SIMCTL_CHILD_TZ` ikizi).
+- **`scrollUntilVisible`'a `waitToSettleTimeoutMs: 1500` ver;** yoksa her kaydırmada ~90 sn durulma beklenir ve Ayarlar'ın alt satırları hiç bulunamaz. Yüklü runner'da kaydırma ~35 sn → özellik akışlarında `timeout: 300000`, Ayarlar sonuna (Hakkında, Neler yeni) giden akışlarda ayrıca `speed: 80`.
+- **Maestro `takeScreenshot` kareyi `~/.maestro/tests/<zaman>/<akış>/takeScreenshot/<yol>.png`'ye yazar** (çalışma dizinine göre değil) → oradan kopyala. Çalışma alanı dışı yolu artifact'a eklemek ortak kökü `/home/runner`'a çeker ve `kareler/*.png` bulunamaz → kareleri ve hata ayıklama çıktısını AYRI artifact yap.
+- **Debug APK bilinçli** (`run-as` yalnız debuggable build'de; AsyncStorage'ı tohumlamanın tek yolu); JS Metro'dan gelir → APK yalnız native değişince yenilenir, `apk_run_id` ile 17 dk'lık Gradle atlanır. **Dev mode KAPALI** olmalı (`shared_prefs/<paket>_preferences.xml` > `js_dev_mode_debug=false`), yoksa "Open debugger…" balonu sekme ikonlarını örter.
+- **AsyncStorage Android'de SQLite (API 28+ WAL):** `RKStorage` ile `-wal`/`-shm`'yi de çek, tohumlayıcı `wal_checkpoint(TRUNCATE)` + `journal_mode=DELETE` ile indirsin. **Tabloyu önce BOŞALT** — yalnız `INSERT OR REPLACE` ilk açılış kalıntılarını (ör. `toplam_kililan_namaz = 0`) bırakır, puan göçü bozulur ve "Seviye Atladın" modalı çıkar.
+- **Tohuma taze "güncelleme yok" önbelleği konur (`@namaz_akisi/guncelleme_durumu`):** yeniden kullanılan APK son release'ten eskidir; önbellek yoksa açılıştan saniyeler sonra "Yeni Sürüm Mevcut" penceresi kareyi örter ve dokunuşları yutar (`GuncellemeServisi` 6 saatlik önbellek geçerliyken ağa çıkmaz).
+- **Bugünün namaz kaydı SAATE göre tohumlanır** (`magaza-tohum-verisi.js > bugunKilinanlar`, adhan + `CalculationMethod.Turkey()`, tohum konumu): yalnız vakti girmiş adaylar işaretlenir. **Seviye ve bonus puan da tohumlanır** (yoksa 1. seviyeden başlayıp kutlama modalı açılır); tohum seviye tablosunun kopyasını taşır. Nöbetçi: `src/core/types/__tests__/magazaTohumSeviyeleri.test.ts`.
+- **Hat "success" der ama kare eksik olabilir:** betik akış hatasını `UYARI: … tamamlanamadi` diye yazıp sürer → kare listesini ve logda `UYARI`/`FAILED`'ı kontrol et. Maestro'da `scroll` argüman ALMAZ (`direction` `Unknown Property` ile tüm akışı düşürür) — yön için `scrollUntilVisible`.
+- **`reactivecircus/android-emulator-runner` `script`'in her satırını ayrı `sh` (dash) ile koşar** (`pipefail` patlar, değişkenler kaybolur) → adımlar tek bash betiğinde (`android-kare-hatti.sh`).
+- **Play telefon karesi en-boy en fazla 2:1** (1080×2400 reddedilir) → `pixel_2` (1080×1920). Durum çubuğu SystemUI demo moduyla; `network … -e fully true` olmadan Wi-Fi yanında "!" çıkar.
+
+## Özellik turu (mağazadan AYRI) — `tur: ozellik|ikisi`
+
+Yeni ekranların karelerini çeker; `tur: magaza` varsayılanı eski çıktıyı birebir verir. Kareler `kareler-ozellik/<profil>-<tema>/` → artifact `android-ozellik-kareleri` / `ios-ozellik-kareleri`; eksikler adım özetinde `UYARI` (`scripts/ozellik-kare-ozeti.js`, beklenen liste akışlardan çıkarılır).
+
+- **Her akıştan ÖNCE uygulama durdurulup YENİDEN tohumlanır** (`android-ozellik-hatti.sh > tohumla`, iOS `simulator-ozellik-cek.js > temizAcilis`); varyant akış dosyasının başındaki `# tohum: ozellik|sade|butce` satırından. `scripts/ozellik-tohum-verisi.js` mağaza tohumunun ÜSTÜNE kurulur; tema `tema_tercihleri` ile açıkça yazılır. Şekil/anahtar ayrışması sessizdir (uygulama varsayılana düşer) → nöbetçi `src/core/types/__tests__/ozellikTohumu.test.ts` her değeri uygulamanın kendi okuma yolundan geçirir.
+- **Android bildirim sınırı kartı yalnız 400+ BEKLEYEN bildirimde görünür** ve sayı saate bağlıdır → `butce` tohumu saatten bağımsız taban kurar (periyodik cuma 4 hafta, nafile, camiye gitme) + yoğun muhafız; kart yine çıkmazsa o akış düşer, diğerleri sürer.
+- **Maestro'da anahtarları metinle değil `testID` ile seç** (`adim-alarm-anahtari`, `adim-titresim-anahtari`): aynı `accessibilityLabel` hem etiket `Text`'inde hem `Switch`'te durur. Muhafız adım satırı `"1. hatırlatma, <ton> ton — düzenleyin. …"`; aynı satırdaki `"… — açın veya kapatın"` anahtardır, ona basmak adımı KAPATIR.
+- **`_` ile başlayan akış (`_acilis.yaml`, `_ayarlar.yaml`) `runFlow` parçasıdır,** hat onu tek başına koşmaz.
+
+## Wear OS saat + Android TV kareleri — `tur: saat|tv|cihazlar`
+
+Aynı workflow'da AYRI işler (`saat`, `tv`; telefon APK'sı derlenmez) → `kareler-saat/<yuvarlak|kare>/` (artifact `android-saat-kareleri`), `kareler-tv/` (`android-tv-kareleri`); özet `scripts/cihaz-kare-ozeti.js` (beklenen liste hat betiğindeki `NN-ad` adlarından, Play boyut denetimiyle). **Yeni workflow dosyası AÇMA:** dalda olup master'da olmayan workflow dispatch edilemez (404).
+
+- **Saatin verisi tohumlanır, koda alıcı eklenmez:** `scripts/saat/saat-tohum-yuku.js` telefonun yük sözleşmesini (adhan `Turkey()`, Fatih/İstanbul, 31 gün, şu anki vakit kılınmamış, muhafız planı BOŞ) üretir; `run-as` ile `shared_prefs/saat_veri.xml > yuk` (`YukDeposu`) yazılır. Nöbetçi: `src/core/wear/__tests__/saatTohumYuku.test.ts` (`wearYukuGecerliMi` + `gunVakitleriniHesapla`). TV'de tek ayar `namazakisi_tv.xml > il_plaka`.
+- **swiftshader Wear emülatöründe soğuk açılışın "Starting..." ekranı bir dokunma gelene dek kalkmaz** (`am start -W` dönse de) → hat listeyi kısa kaydırarak dürter (`hazir_bekle`); sabit `sleep` açılış ekranını çeker.
+- **`show-tile` `DEBUG_SYSUI` eylemidir, `add-tile` `DEBUG_SURFACE`** (yanlışında "Unrecognized operation show-tile"). Kadranda HOME uygulama listesini açar → çıkış `force-stop` ile.
+- **Kadranda komplikasyon karesi alınamıyor:** API 34 `android-wear` imajının tek kadranı (Orbita) yuvaları kapalı getirir (`set-complication` → "Complication slot is not enabled").
+- **Boyutlar:** `wearos_square` 360×360'tır (Play en az 384×384) → `-skin 384x384`; `wearos_large_round` 454×454; `android-tv` API 34'te yalnız **x86** (`tv_1080p` → 1920×1080). Saat ana ekranı 30 sn'de bir çizildiği için `uiautomator dump` çalışır; TV panosu saniyede bir çizilir → TV'de yalnız D-pad tuşları.

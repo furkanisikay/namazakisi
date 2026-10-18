@@ -1,0 +1,77 @@
+# Kaza defteri, seri ve puanlama
+
+Ne zaman okunur: namaz kaydı depolaması, puan/seviye, seri ve toparlanma, seri sekmesi (SVG), seri sayacı ya da kaza defteri koduna dokunurken.
+
+Katmanlar: depolama `src/data/local/Depolama.ts` + `LocalNamazServisi` · puan/seri `SeriHesaplayiciServisi` + `seriSlice` · kaza `core/kaza/*` → `LocalKazaServisi` → `KazaDefteriServisi` → `kazaSlice` → `KazaDefteriSayfasi` + `screens/Kaza/*`.
+
+## Depolama
+
+- **Namaz kaydı gün-bazlıdır (`namaz_gun_<tarih>` → `{namazAdi: bool}`) ve tüm AsyncStorage erişimi `Depolama.ts`'ten geçer.** Anahtar-bazlı atomik yazma kuyruğu (`guncelle` = atomik read-modify-write) lost-update'i genel olarak önler.
+- **Eski blob → gün anahtarı göçü `LocalNamazServisi.migrasyonyiGarantile` ile idempotenttir, eski blob SİLİNMEZ.** Sıfır veri kaybı: blob bayatlar ve yok sayılır.
+- **Göç eşzamanlılığı: bellek-içi in-flight kilit (`migrasyonKilidi`) + `finally`-temizle; kalıcı önbellek YOK.** Eşzamanlı açılış çağrıları tek göçü paylaşır; asıl idempotency muhafızı bayraktır, "yalnız hatada temizle" göçü kalıcı atlardı.
+- **`onEkiOlanAnahtarlar(önek)` kullanan yeni anahtar öneki çakıştırmamalı** (ör. göç bayrağı ayrı `@namaz_akisi/...` önekinde).
+- **Aralık okuması `cogunuOku` (multiGet) ile tek turdur ama HAM string döner → `JSON.parse` yerine `hamGunVerisiniCoz`.** `JSON.parse('null')`/`('42')` nesne-dışı sonuç verir ve downstream `gun[ad]`/`Object.entries(gun)` çöker.
+
+## Puanlama (türev/defter modeli)
+
+- **`toplamKilinanNamaz`, `mukemmelGunSayisi` (eşik `tamGunEsigi` 3/4/5) ve `tabanPuan` (kılınan × 5) kayıtlardan `puanlamayiYenidenHesapla` (reconcile) ile TÜRETİLİR; olay-tetiklemeli sayaç artırma YAPMA.** "Kıldım/kılmadım" toggle'ı sayacı şişirir.
+- **Yol-bağımlı `bonusPuan` (tam gün/seri/toparlanma/rozet) kalıcıdır; `toplamPuan = tabanPuan + bonusPuan`.**
+- **TEK YAZICI: `seviyeDurumu`'nu yalnız reconcile yazar; yazım yolları `seriKontrolet → reconcile` SIRALI zincirlenir.** Paralel dispatch yarış ve veri kaybı üretir.
+- **`bonusPuan` açılışta diskten okunmalı; göç (`eski toplamPuan − eski taban`) `seriVerileriniYukle` içinde, reconcile/seriKontrolet'ten ÖNCE.** Aksi halde bayat 0 üzerine yazılır, meşru bonus kalıcı silinir. Tasarım: `docs/superpowers/specs/2026-06-14-puan-defteri-ve-veri-butunlugu-design.md`.
+
+## Seri ve toparlanma
+
+- **Aynı-gün geri-alma snapshot'ı (`bugunOncesi`) GÜNE bağlıdır: `bugunSnapshotunuYaz` hem toparlanma hem normal mod yolunda yazar; geri-alma yalnız `bugunOncesi.tarih === bugun` iken uygulanır, alan yoksa (eski kayıt) snapshot bayattır.** Toparlanma dalı snapshot yazmadan dönüyordu; dünün snapshot'ı uygulanıp toparlanma siliniyor, yenisi açılıp ilerleme ve hedef değişiyordu. Nöbetçi: `SeriHesaplayiciServisi.test.ts > Toparlanmada ayni-gun geri-alimi`.
+- **Toparlanma bitince seri `oncekiSeri + toparlanmada kılınan TÜM günler` olur (`kurtarilanSeri + yeniTamamlanan`), `+1` değil.** O günler gerçekten tam kılındı (22 + 2 = 24).
+- **Biten toparlanma geri alınırsa `toparlanmaSayisi` da geri alınır: `seriHesapla` `toparlanmaGeriAlindi` bildirir → `seriKontrolet` `localToparlanmaSayisiniAzalt` (alt sınır 0).** Sayaç olay-tetiklemeli ve kalıcıdır (`localToparlanmaSayisiniArttir`, rozet `toparlanma_ustasi` = 3); geri sarılmazsa işaretle/geri-al döngüsüyle rozet farm edilir. Nöbetçiler: `SeriHesaplayiciServisi.test.ts > BITEN toparlanma geri alininca`, `seriSlice.test.ts > toparlanma sayaci da geri alinir`.
+- **`toparlanmaGunSayisi` kullanıcı ayarı değil uygulama kuralıdır (bugün 2): `localSeriAyarlariniGetir` diskteki değeri yok sayıp `VARSAYILAN_SERI_AYARLARI` değerini yazar (eksik alanları da tamamlar), `localSeriDurumunuGetir` süren toparlanmanın hedefini `toparlanmaHedefiniNormalize` (`core/seri/toparlanmaHedefi.ts`) ile çeker.** Kural 5 → 3 → 2 değişti, eski cihazda değer bayattır. Normalize hedefi asla YÜKSELTMEZ ve `tamamlananGun + 1`'in altına indirmez; aksi halde kart "2/2" der ama seri kurtarılmamış olur.
+- **Seri günü takvim günü DEĞİL, ERTESİ İMSAK'ta biter (`namazGunuHesapla`); takvim/harita/etiket üreten her tüketici aynı kaynağı kullanır.** Aksi halde gece 02:00'de bugün "gelecek" görünür. Ayrıntılar:
+  - Kayma çift yönlüdür (yazın imsak ~03:30 → 04:00 BUGÜN; kışın ~06:40 → 05:30 DÜN); iki mevsim de test edilmeli.
+  - İmsak kaynağı `NamazVaktiHesaplayiciServisi`'dir; `KonumYoneticiServisi`'ye bağlanma — onun koordinatları üretimde hiç doldurulmaz (`koordinatlarAyarla`/`durumYukle` yalnız testlerden çağrılır), bağımlılık sessizce ölü doğar. `{lat:0,lng:0}` "yapılandırılmadı" nöbetçisidir.
+  - Kaynak yoksa `SeriAyarlari.gunBitisSaati` (05:00) yedeğidir (alan deprecated değil). Sağlayıcı `namazGunuHesapla`'nın 3. parametresiyle enjekte edilir. `sonTamGun`/`bugunOncesi.tarih` düz ISO dizesi olduğu için sınır kayınca kayıt bozulmaz.
+- **Gün sınırını render'da singleton'dan okuma, state'te tut (`useSeriAyi`): ilk değer `useState`'te imsak kaynağına bakmadan (yedekle) üretilir, yeniden çözme `useEffect`'te `konum.koordinatlar` tetiğiyle yapılır, `setBugun` yalnız değer değişince.** İmsak kaynağı açılışta geç dolar, her render'da hesaplamak değeri zıplatır. Bağımlılık dizisini atlama (`exhaustive-deps` warning'i).
+- **Gün tamlığı tek kaynak: `core/seri/gunTamMi.ts` (`SeriHesaplayiciServisi` oraya delege eder).** Harita gün-bazlı gerçeği, başlık motorun sayısını (toparlanma dahil) gösterir; çelişebilmeleri bilinçli kapsam dışıdır.
+- **Özel gün (dondurma) bir ARALIKTIR: tarih kümesine genişletirken `aktifOzelGun` yalnız `ozelGunModuAktif` iken, `gecmisKayitlar` koşulsuz sayılır (`core/seri/ozelGunKumesi.ts`).** Özel günün hatırlatmaları susturması (`ozelGunKapisi`) ve gün sonu seri hatırlatması için bkz. [hatirlatma-yuzeyleri.md](hatirlatma-yuzeyleri.md).
+
+## Seri sayacı (gün sonu geri sayım bildirimi)
+
+`SeriSayacBildirimServisi` + `themeType: 'seri'`, native chronometer.
+
+- **Hedef "şu andan sonraki İLK imsak"tır (`core/seri/seriGunSonu.ts > sonrakiImsakVaktiBul`), yarınınki değil.** 02:00'de seri gününün sonu bugünün imsağıdır; kaynak `NamazVaktiHesaplayiciServisi`, `KonumYoneticiServisi`'ye bağımlılık EKLEME (bkz. yukarı).
+- **Chronometer hedefte DURMAZ → `CountdownConfig.autoDismissAtTarget` native `setTimeoutAfter` kurar (varsayılan `false`, diğer sayaçlar etkilenmez).**
+- **`ArkaplanGorevServisi` tazelemesi ZORUNLU ve muhafız erken dönüşlerinden ÖNCE.** `startCountdown` yalnız JS'ten çağrılabilir; pencere (imsak−2 sa) kullanıcının uygulamayı açmadığı saattir. Girdiler ham depolamadan hazırlanır (`SeriSayacHazirlayici`, arka planda Redux yok), servis store'suzdur. Gün zaten tamsa sayaç çıkmaz; "gün" = `namazGunuHesapla` seri günü.
+
+## Seri sekmesi (react-native-svg)
+
+- **`jest.mock` fabrikasında `React.createElement` ÇAĞIRMA; bileşenleri düz string'e indir (`Svg: 'Svg'`).** nativewind `jsxImportSource` cssInterop yardımcısını kapsam dışı değişken yapar, jest-hoist reddeder ("module factory ... out-of-scope variables"); her `jest.mock` için geçerli. Örnek: `screens/Seri/__tests__/GokPaneli.test.tsx`.
+- **Yeni SVG yüzeyi cihazda ayrıca doğrulanır.** `react-native-svg` (SDK 57'de 15.15.4) `src/`'de ilk kez Seri sekmesinde kullanıldı; `verify` runtime/Fabric davranışını göstermez.
+- **Yol uzunluğunu JS'te hesapla (`core/seri/gokGeometrisi.ts`; düz: Öklid, kübik: 16 adım örnekleme).** `getTotalLength()` var ama imperatif ref + native çağrı ister, mount öncesi ve jest'te kullanılamaz.
+- **Parlama için `FeGaussianBlur` değil `RadialGradient` dolgulu daire kullan.** Android'de blur yaklaşıktır (deprecated RenderScript, yarıçap 25'e sabit); düz düşük opaklıklı daire sert kenarlı görünür.
+- **Koyu sahne panelinde kontrastı zeminin EN AÇIK noktasına göre ölç (`core/utils/kontrastOrani.ts`; nöbetçi `screens/Seri/__tests__/sabitler.test.ts`).** Panel radyaldir (`#080B16`→`#1B2440`); yalnız koyu uca bakılınca gün numaraları 3.17:1'de kalmıştı. `screens/Seri/sabitler.ts` sahne tonları "hardcoded renk yok" kuralının tek bilinçli istisnasıdır; listeyi değiştirmek spec değişikliğidir.
+
+## Kaza Defteri 2.0 — değişmez hareket defteri
+
+Durum değil HAREKET saklanır; görünen her sayı türetilir. Katmanlar: saf `core/kaza/{kazaHareketi,kazaDefteriHesabi}.ts` → `LocalKazaServisi` → `KazaDefteriServisi` (girdiyi diskten kurar, önizlemeler) → `kazaSlice` → `KazaDefteriSayfasi` + `screens/Kaza/*` (yığın `navigation/kazaEkranlari.ts`). Sahip kararları: `docs/superpowers/plans/2026-10-15-kullanici-geri-bildirimi-yol-haritasi.md > Kararlar`.
+
+- **Tek yazıcı `hareketleriEkle` (`Depolama.hamGuncelle` atomik, "kimlik yoksa ekle" = G-Set); anahtar `kaza_hareket_<UTC ayı>`, bu önekle başka anahtar AÇMA.** Bozuk ay atlanır ve üstüne yazılmaz, yeni hareket `_k<n>` kardeş anahtarına gider.
+- **Hareket silinmez/değişmez: silme = `temizlik` (gizler), geri alma = `temizlikGeriAl`. Yeni hareketin zamanı `yeniHareketTemeli`'nden (süreç içinde KESİN ARTAN).** Aynı milisaniyedeki "borç ekle" + "kıldım" ters katlanıp fazlaya giderdi.
+- **Fold KRONOLOJİKTİR, fazla AYRI akümülatördür.** En son `taban` t=0'da mutlak başlangıçtır; eklemeler (elle, bildirim, otomatik — sözde anı ertesi gün 00:00 UTC, +düzeltme) ve kılınanlar sırayla uygulanır; kalanı aşan kılınan `fazla`ya gider ve SONRA eklenen borçtan düşülmez. −düzeltme yalnız fazlayı düşer; kalanı azaltan düzeltme yok (yanlış kayıt gizlenir). Tek `ham` + sonda `max(0, ham)` bu kuralı bozar. Nöbetçi: `kazaDefteriHesabi.test.ts`.
+- **Otomatik kaza SAKLANMAZ, izdüşümdür: kapanmış namaz günü (`namazGunuHesapla`) × işaretsiz farz → `oto:<gün>_<vakit>`.** Kaynak namaz kaydı ∪ muhafız kılınmışlığı; okunamazsa (`izdusumKapali`) borç uydurulmaz. Hariç: özel gün (geçmiş dahil), "bana sorun" bekleyeni, temizlik, aynı referanslı `bildirim`; vitir yalnız ortak mezhep Hanefî iken. Toggle olayı saklanmaz (union eşitlemesinde cihazlar ayrışırdı). `tarama` hareketleri yalnız geçmiş ekranını besler, sayıya girmez. Otomatik başlangıç en fazla `GECMIS_TARAMA_AZAMI_GUN` (366) geri gider; izdüşüm yaşa göre KIRPILMAZ.
+- **Göç: eski `KAZA_DURUMU` → `goc-<fnv(içerik)>` taban + kılındı (görünen kalan birebir), bayrak `KAZA_DEFTERI_GOCU`, bellek-içi kilit; eski kayıt SİLİNMEZ.** JSON `null` BOŞ kayıttır; yalnız ayrıştırılamayan metin `eskiKayitBozuk`.
+- **İki cihazlı göç kuralı fold'dadır (`tabanSec`, sıradan bağımsız): göç-OLMAYAN taban varsa en sonuncusu kazanır; birden çok göç grubunda yalnız İLK göç edenin kılınanları sayılır.** İçe aktarma/eşitleme/açılış birleştirmeden önce `defteriOku → gocuGarantile` koştuğu için her cihaz kendi eskisini göç ettirir; "defter doluysa göç etme" tek başına yetmez. `defterOzeti` damgalı eski kayıt yeni defterin türetilmiş görüntüsüdür: `goct-` grubu + `turetilmisKadar` ile göç eder, yalnız gerçek göç grubu ve o ana kadar başka dolu hareket/`otoAyar` yokken sayılır; eski sürümdeki değişim `eskiGorunum` ile taşınır. Nöbetçi: `kazaDefteriHesabi.test.ts > iki cihazlı göç birleşimi`.
+- **İleri uyumluluk: `hareketNormalize`'dan geçmeyen ama yapısal geçerli (id + zaman + kaynak) öğe diskte/yedekte/bulutta AYNEN korunur ve eşitleme özetine girer (`hareketleriAyristir`, `bilinmeyenleriBirlestir`).** Atılsaydı eski sürüm yeni sürümün hareketini silerdi; yeni `kaynak` eklerken şemayı sürümleme.
+- **Yedek/eşitleme yükü `kazaHareketleri` (tanınan + çözülemeyen) VE `defterOzeti` damgalı eski şekilli `kaza` görüntüsünü (`eskiAnlikGoruntuUret`) taşır; birleştirme kimliğe göredir.** Hareket alanı olmayan yük = eski sürüm: defter boşsa göç, doluysa yalnız `eskiGorunum` (vakit başına MAKSİMUM, içerikten kimlik); borç yönü bilinçli alınmaz, kendi değişmemiş görüntümüz `defterOzeti` ile tanınıp alınmaz. `eskiGorunum` temizlikle gizlenebilir (`GIZLENEBILIR_KAYNAKLAR`). `icerikNormalizeEt` alan yoksa `kazaHareketleri`'ni `undefined` bırakır (boş dizi eski cihazı tanınmaz yapar). Özet hareket kimliklerine bakar.
+- **Karışık sürüm ping-pong'u: `esitlemeTuru` eski yükü uyguladıktan sonra `eskiSurumeYuklemeGerekliMi` (kimliksiz görünüm farklı ya da yerel `toplamTamamlanan` büyük) değilse YÜKLEMEZ, uzak etiket + yerel özeti saklar.** Eski yükte kimlik olmadığı için özetler buluşmaz, iki cihaz her turda birbirine yüklüyordu. Nöbetçi: `EsitlemeServisi.test.ts > karışık sürüm eşitlemesi`.
+- **Mezhep ortak ayardır (`core/mezhep/mezhepAyari.ts`, `MEZHEP_AYARI`, yedeklenir): seferîlik kartı + vitir otomatiği; vakit hesabına DOKUNMAZ (nöbetçi `mezhepAyari.test.ts`).** Okuma varsayılanı (Hanefî) kalıcı YAZILMAZ — yazılsaydı geri yüklenen eski yedeğin `seferilik.mezhep`'i ulaşamaz, vitir her gün borca eklenirdi. "Üzerine yaz" eski yedekteki seferîlik mezhebini ortak ayara yazar ama ekrandan seçilmiş (`secildi: true`, yalnız `LocalMezhepServisi.yaz`) ayarı ezmez.
+- **Ekranlar: kök `KazaDefteriAna` (kendi başlığı) + `KazaGecmisi`, `KazaOtomatikAyar`, `KazaTemizlik`, `KazaYenidenHesapla` (başlık yalnız header'da).** Sihirbazın son adımı önizlemedir (`yeniTabanOnizlemesiHesapla`, yazmaz); uygulama anında diskten yeniden kurulur. Hareket ayrıntısında önerilen yol namaz kaydını düzeltmektir, ikincisi temizlik. Ekran testleri slice'ı MOCK'LAMAZ (olmayan thunk'ı çağıran ekran mock'lu testte yeşil kalmıştı).
+- **Kaza okuma ASLA reddetmez: bozuk ay `bozukAylar`'a (ekranda bant), okunamayan eski kayıt `eskiKayitBozuk`'a yazılır; ikisinin ham değerinin üstüne yazılmaz.** Eskiden ret yolu `KazaDefteriSayfasi`'nı sonsuz "Yükleniyor..."da bırakıyordu. Genel desen: render kapısı `yukleniyor || !veri` olan her sayfada, thunk'ın ret yolu da `veri`yi doldurmalı ya da hata/yeniden-dene göstermeli. Her yazım defterin tek kapısından geçip görünümü DİSKTEN türetir.
+- **Gün sonu muhasebesi (#290) satırı ileriye dönüktür: "eklenecek" denir, "eklendi" denmez; "bana sorun"da hiç işaretsiz gün için "size sorulacak".** Tetik anında gün henüz kapanmamıştır.
+
+## "Her farzla bir kaza" önerisi (issue #294)
+
+Karar saf `core/kaza/farzSonrasiKazaOnerisi.ts`, orkestrasyon `hooks/useFarzSonrasiKazaOnerisi`, UI `KazaOneriModal`.
+
+- **Yalnız uygulama içi "kıldım"da (AnaSayfa `namazIsaretle`) sorulur; bildirim/widget/saat "Kıldım"ı soru açmaz.**
+- **Kapılar: işaretleme yönü · gösterilen gün = aktif gün · işaretlenen = o anki vakit · kerahat yok (tek kaynak `mekruhVakitKontrolEt`; konum yoksa "bilinmiyor" = SORMA) · ayar açık · defterde borç · hafıza (aynı gün aynı vakit bir kez, soru AÇILIRKEN yazılır; "Şimdi değil"/geri tuşu = o gün hiç).** Kerahatte önce `KerahatOnayModal` çıkar, öneri açılmaz (iki modal çakışmaz).
+- **Borç kararı için `kazaVerileriniYukle` ile diski TAZE oku; ayar da karar anında diskten okunur.** Ana ekranda kaza slice'ı hidrate değildir. `kazaTamamla` yalnız bir `kilindi` hareketi ekler, store'u diske yazmaz.
+- **Ayar `KAZA_ONERI_AYARLARI` YEDEKLENİR (beyaz listenin üç yeri); sorulma hafızası `KAZA_ONERI_KAYDI` cihaza özgüdür.**
