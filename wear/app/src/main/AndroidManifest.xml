@@ -233,5 +233,27 @@
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="0" />
         </service>
+
+        <!--
+          Kıble (saat yenileme W2): kuzeye göre statik açı + pusula simgesi; dokunuş
+          KibleAktivite'yi açar. Değer yalnız konumla değişir → zaman çizelgesi yok,
+          UPDATE_PERIOD 0; yeni yük gelince Senkron.yuzeyleriTazele tazeler.
+        -->
+        <service
+            android:name=".komplikasyon.KibleKomplikasyonServisi"
+            android:exported="true"
+            android:icon="@drawable/ic_kible"
+            android:label="@string/kible_komplikasyon_adi"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT,MONOCHROMATIC_IMAGE,SMALL_IMAGE" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
     </application>
 </manifest>
