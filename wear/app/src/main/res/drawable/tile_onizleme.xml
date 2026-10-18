@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tile seçicide gösterilen önizleme (Wear kalite yönergesi WO-V10). -->
+<!-- "Sıradaki vakit" tile seçici önizlemesi (Wear kalite yönergesi WO-V10; yeniden
+     tasarım W1): vakit adı kendi tonunda, iri giriş saati, "ne kadar sonra", altta iki
+     vakit. Renkler cekirdek/SaatPaleti ile aynı. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="192dp" android:height="192dp"
     android:viewportWidth="192" android:viewportHeight="192">
     <path android:fillColor="#FF000000" android:pathData="M96,0a96,96 0,1 0,0.1 0z" />
-    <path android:fillColor="#FFBDBDBD" android:pathData="M66,62h60v6h-60z" />
-    <path android:fillColor="#FF4CAF50" android:pathData="M52,80h88v22h-88z" />
-    <path android:fillColor="#FFFFFFFF" android:pathData="M74,112h44v10h-44z" />
-    <path android:fillColor="#FFBDBDBD" android:pathData="M70,132h52v5h-52z" />
+    <path android:fillColor="#FFFFB37A" android:pathData="M78,48h36v9h-36z" />
+    <path android:fillColor="#FFF2F5F2" android:pathData="M50,64h92v28h-92z" />
+    <path android:fillColor="#FFA9B5AC" android:pathData="M68,100h56v6h-56z" />
+    <path android:fillColor="#FFA9B5AC" android:pathData="M64,120h28v5h-28z" />
+    <path android:fillColor="#FFF2F5F2" android:pathData="M104,120h24v5h-24z" />
+    <path android:fillColor="#FFA9B5AC" android:pathData="M64,132h28v5h-28z" />
+    <path android:fillColor="#FFF2F5F2" android:pathData="M104,132h24v5h-24z" />
 </vector>

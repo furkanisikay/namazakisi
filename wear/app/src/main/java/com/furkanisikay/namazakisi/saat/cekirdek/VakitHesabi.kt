@@ -56,6 +56,64 @@ object VakitHesabi {
         return ((simdi - bas.ms) / uzunluk).coerceIn(0f, 1f)
     }
 
+    /**
+     * Ekranın sorusu: "içinde bulunduğum vakit ne zaman çıkıyor?" — ana ekran yayı ve
+     * sayacı, "Bugün" tile'ı, vakit listesi şeridi ve komplikasyonlar YALNIZ bunu okur.
+     *
+     * Mod kuralı TEK yerde (`KalanSure.mod`): farz vakti sürüyorsa o vaktin ÇIKIŞINA,
+     * güneş→öğle arasında (farz yok) öğlenin GİRİŞİNE sayılır; önceki vakit bilinmiyorsa
+     * (yükün ilk anı) sıradakinin girişine.
+     */
+    data class SayilanAn(
+        val mod: KalanSure.Mod,
+        /** Sayılan vakit: çıkışta şu anki vakit, girişte gelecek vakit. */
+        val vakit: String,
+        /** Sayılan vaktin günü — gece yarısından sonra süren yatsı DÜNE aittir. */
+        val tarih: String,
+        /** Aralığın başı; yükün ilk anında bilinmez (null). */
+        val baslangic: Long?,
+        /** Sayılan an (çıkışta sıradakinin girişi = bu vaktin çıkışı). */
+        val hedef: Long,
+        val siradaki: VakitAni,
+    ) {
+        val ad: String get() = ADLAR[vakit] ?: vakit
+
+        fun kalanMs(simdi: Long): Long = (hedef - simdi).coerceAtLeast(0L)
+
+        /** Kalan kısım [0,1]; başlangıç bilinmiyorsa 1 (yay dolu). */
+        fun kalanOran(simdi: Long): Float {
+            val bas = baslangic ?: return 1f
+            val uzunluk = (hedef - bas).toFloat()
+            if (uzunluk <= 0f) return 0f
+            return ((hedef - simdi) / uzunluk).coerceIn(0f, 1f)
+        }
+
+        /** Vaktin son `SaatPaleti.ACIL_ESIK_DK` dakikası (yalnız çıkışa sayarken). */
+        fun acilMi(simdi: Long): Boolean =
+            mod == KalanSure.Mod.CIKIS && hedef - simdi <= SaatPaleti.ACIL_ESIK_DK * DK
+    }
+
+    fun sayilanAn(onceki: VakitAni?, siradaki: VakitAni): SayilanAn =
+        when (KalanSure.mod(onceki?.vakit)) {
+            KalanSure.Mod.CIKIS -> SayilanAn(KalanSure.Mod.CIKIS, onceki!!.vakit, onceki.tarih, onceki.ms, siradaki.ms, siradaki)
+            KalanSure.Mod.GIRIS -> SayilanAn(KalanSure.Mod.GIRIS, siradaki.vakit, siradaki.tarih, onceki?.ms, siradaki.ms, siradaki)
+        }
+
+    /** Yük bittiyse (sıradaki vakit yok) null → "telefonunuzda açın" durumu. */
+    fun sayilanAn(yuk: Yuk, simdi: Long): SayilanAn? {
+        val siradaki = siradaki(yuk, simdi) ?: return null
+        return sayilanAn(simdiki(yuk, simdi), siradaki)
+    }
+
+    /**
+     * İkindinin son `gurubDk` dakikası (gurub kerahati) — yalnız ikindinin ÇIKIŞINA
+     * sayarken; `kerahatMi` ile aynı kaynak (akşam − gurub). Kerahat UYARIDIR, engel değil.
+     */
+    fun kerahatBandi(yuk: Yuk, s: SayilanAn): Pair<Long, Long>? {
+        if (s.mod != KalanSure.Mod.CIKIS || s.vakit != "ikindi" || yuk.kerahat.gurubDk <= 0) return null
+        return (s.hedef - yuk.kerahat.gurubDk * DK) to s.hedef
+    }
+
     fun aktifGun(yuk: Yuk, simdi: Long, bugun: String): String {
         val idx = yuk.gunler.indexOfFirst { it.tarih == bugun }
         if (idx < 0) return bugun
@@ -127,6 +185,21 @@ object VakitHesabi {
             else -> "$sa sa $kalanDk dk"
         }
     }
+
+    /** Ekran okuyucu için uzun biçim: "1 saat 58 dakika" / "58 dakika" / "1 dakikadan az". */
+    fun kalanSesliMetni(ms: Long): String {
+        val dk = ms / DK
+        if (dk < 1) return "1 dakikadan az"
+        val sa = dk / 60
+        val kalanDk = dk % 60
+        return when {
+            sa == 0L -> "$kalanDk dakika"
+            kalanDk == 0L -> "$sa saat"
+            else -> "$sa saat $kalanDk dakika"
+        }
+    }
+
+    private const val DK = 60_000L
 
     /** Bekleyen kimlik ("<tarih>_<vakit>") */
     fun kimlik(tarih: String, vakit: String) = "${tarih}_$vakit"

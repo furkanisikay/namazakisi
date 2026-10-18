@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- "Bugün" tile seçici önizlemesi (Wear kalite yönergesi WO-V10): üstte beş dilimli
-     yay, ortada 3 + 2 vakit dairesi. -->
+<!-- "Bugün" tile seçici önizlemesi (Wear kalite yönergesi WO-V10; yeniden tasarım W1):
+     halkanın tamamına beş dilim (kılınan yeşil, şu anki vakit tonunda kalan kısmı kadar
+     dolu, gelecek koyu), ortada vakit adı, kalan süre ve "Kıldım" hapı.
+     Renkler cekirdek/SaatPaleti ile aynı. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="192dp" android:height="192dp"
     android:viewportWidth="192" android:viewportHeight="192">
     <path android:fillColor="#FF000000" android:pathData="M96,0a96,96 0,1 0,0.1 0z" />
-    <path android:strokeColor="#FF4CAF50" android:strokeWidth="5" android:pathData="M38,40A78,78 0,0 1,62 22" />
-    <path android:strokeColor="#FF4CAF50" android:strokeWidth="5" android:pathData="M68,19A78,78 0,0 1,90 14" />
-    <path android:strokeColor="#FFFFC107" android:strokeWidth="5" android:pathData="M96,14A78,78 0,0 1,120 18" />
-    <path android:strokeColor="#FF424242" android:strokeWidth="5" android:pathData="M126,20A78,78 0,0 1,148 33" />
-    <path android:strokeColor="#FF424242" android:strokeWidth="5" android:pathData="M152,37A78,78 0,0 1,166 54" />
-    <path android:fillColor="#FFBDBDBD" android:pathData="M76,44h40v8h-40z" />
-    <path android:fillColor="#FF4CAF50" android:pathData="M50,84a20,20 0,1 0,0.1 0z" />
-    <path android:fillColor="#FF4CAF50" android:pathData="M96,84a20,20 0,1 0,0.1 0z" />
-    <path android:fillColor="#FF202020" android:strokeColor="#FF4CAF50" android:strokeWidth="2.5"
-        android:pathData="M142,84a20,20 0,1 0,0.1 0z" />
-    <path android:fillColor="#FF303030" android:pathData="M73,128a20,20 0,1 0,0.1 0z" />
-    <path android:fillColor="#FF303030" android:pathData="M119,128a20,20 0,1 0,0.1 0z" />
+    <path android:strokeColor="#FF66BB6A" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M99.1,8.1A88,88 0,0 1,178.7 65.9" />
+    <path android:strokeColor="#FF66BB6A" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M180.6,71.7A88,88 0,0 1,150.2 165.3" />
+    <path android:strokeColor="#FF1E2A21" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M145.2,169.0A88,88 0,0 1,46.8 169.0" />
+    <path android:strokeColor="#FFFFE07A" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M111.6,182.6A88,88 0,0 1,46.8 169.0" />
+    <path android:strokeColor="#FF1E2A21" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M41.8,165.3A88,88 0,0 1,11.4 71.7" />
+    <path android:strokeColor="#FF1E2A21" android:strokeWidth="6" android:strokeLineCap="round" android:pathData="M13.3,65.9A88,88 0,0 1,92.9 8.1" />
+    <path android:fillColor="#FFA9B5AC" android:pathData="M80,52h32v6h-32z" />
+    <path android:fillColor="#FFFFE07A" android:pathData="M76,66h40v12h-40z" />
+    <path android:fillColor="#FFF2F5F2" android:pathData="M68,84h56v10h-56z" />
+    <path android:fillColor="#FFA9B5AC" android:pathData="M74,100h44v5h-44z" />
+    <path android:fillColor="#FF66BB6A" android:pathData="M78,114h36a10,10 0,0 1,0 20h-36a10,10 0,0 1,0 -20z" />
 </vector>

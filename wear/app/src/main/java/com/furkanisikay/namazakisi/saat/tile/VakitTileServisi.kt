@@ -2,10 +2,8 @@ package com.furkanisikay.namazakisi.saat.tile
 
 import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.wear.protolayout.ActionBuilders
-import androidx.wear.protolayout.ColorBuilders.argb
-import androidx.wear.protolayout.DimensionBuilders.expand
-import androidx.wear.protolayout.DimensionBuilders.sp
 import androidx.wear.protolayout.DimensionBuilders.dp
+import androidx.wear.protolayout.DimensionBuilders.expand
 import androidx.wear.protolayout.LayoutElementBuilders
 import androidx.wear.protolayout.ModifiersBuilders
 import androidx.wear.protolayout.ResourceBuilders
@@ -13,6 +11,7 @@ import androidx.wear.protolayout.TimelineBuilders
 import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.TileService
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.cekirdek.ZamanCizelgesi
@@ -21,12 +20,15 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
 /**
- * "Sıradaki vakit" tile'ı (issue #269).
+ * "Sıradaki vakit" tile'ı (issue #269; yeniden tasarım W1): "ne zaman giriyor?"
+ * (ana ekran "ne zaman çıkıyor?" sorusunu cevaplar; ikisi aynı sayıyı tekrarlamaz).
  *
- * Kalan süre tile'da CANLI SAYILMAZ (zaman çizelgesi girdileri statik metindir;
- * dinamik ifade eski Wear OS 3 renderer'ında desteklenmez) — bu yüzden tile vakit
- * adı + saatini gösterir, canlı geri sayım komplikasyondadır. Her vakit sınırında
- * zaman çizelgesi kendiliğinden bir sonraki girdiye geçer (uyandırma yok).
+ * Giriş saati en büyük öğe, üstünde vaktin adı kendi tonunda, altında "ne kadar sonra";
+ * altta sıradaki iki vakit. Konum kalktı (ana ekranda ve telefonda var).
+ *
+ * Saniye YOK (karar 5). Dakikalık "ne kadar sonra" çizicide dinamik (şema 1.2,
+ * `TileOrtak`); eski çizici statik yedeği ("Sıradaki vakit") gösterir. Her vakit
+ * sınırında zaman çizelgesi kendiliğinden bir sonraki girdiye geçer (uyandırma yok).
  */
 class VakitTileServisi : TileService() {
 
@@ -47,17 +49,17 @@ class VakitTileServisi : TileService() {
     private fun tileOlustur(yuk: Yuk?, simdi: Long): TileBuilders.Tile {
         val cizelge = TimelineBuilders.Timeline.Builder()
         // GEÇERLİLİK SÜRESİZ YEDEK GİRDİ: yük yoksa ya da zaman çizelgesindeki tüm
-        // girdiler geçmişte kaldıysa (telefon günlerce veri göndermedi) tile boş
-        // kalmaz, kullanıcıyı telefona yönlendirir.
+        // girdiler geçmişte kaldıysa tile boş kalmaz. Yük varken girdiler ancak tavan
+        // (≈4 gün) boyunca tazelik gelmezse biter → uygulamaya yönlendirir.
         cizelge.addTimelineEntry(
             TimelineBuilders.TimelineEntry.Builder()
-                .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(
-                    duzen("Namaz Akışı", "Telefonunuzda uygulamayı açın", null)
-                ))
+                .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(bosDuzen(yuk != null)))
                 .build()
         )
         if (yuk != null) {
-            for (a in ZamanCizelgesi.araliklar(yuk, simdi)) {
+            val tum = VakitHesabi.tumVakitler(yuk)
+            for (a in ZamanCizelgesi.araliklar(yuk, simdi, maksGirdi = ZamanCizelgesi.TILE_MAKS_GIRDI)) {
+                val sonrakiler = tum.drop(tum.indexOf(a.siradaki) + 1).take(SONRAKI_SAYISI)
                 cizelge.addTimelineEntry(
                     TimelineBuilders.TimelineEntry.Builder()
                         .setValidity(
@@ -66,9 +68,7 @@ class VakitTileServisi : TileService() {
                                 .setEndMillis(a.bitis)
                                 .build()
                         )
-                        .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(
-                            duzen(a.siradaki.ad, VakitHesabi.saat(a.siradaki.ms), yuk.konumAdi)
-                        ))
+                        .setLayout(LayoutElementBuilders.Layout.fromLayoutElement(duzen(a.siradaki, sonrakiler)))
                         .build()
                 )
             }
@@ -76,23 +76,55 @@ class VakitTileServisi : TileService() {
         return TileBuilders.Tile.Builder()
             .setResourcesVersion(KAYNAK_SURUMU)
             .setTileTimeline(cizelge.build())
-            // Asıl yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); 12 saatlik
-            // tazelik yalnız güvenlik ağıdır (çizelge yeniden kurulur, pil maliyeti ihmal edilebilir).
-            .setFreshnessIntervalMillis(TAZELIK_MS)
+            // Asıl yenilemeyi telefon verisi tetikler (Senkron.yuzeyleriTazele); tazelik
+            // girdi tavanının ufkunu diskteki yükle kaydırır (telefon susarken de dolu kalır).
+            .setFreshnessIntervalMillis(ZamanCizelgesi.TILE_TAZELIK_MS)
             .build()
     }
 
-    private fun duzen(baslik: String, alt: String, konum: String?): LayoutElementBuilders.LayoutElement {
+    private fun bosDuzen(yukVar: Boolean): LayoutElementBuilders.LayoutElement =
+        kutu(
+            LayoutElementBuilders.Column.Builder()
+                .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
+                .addContent(TileOrtak.metin("Namaz Akışı", 18f, SaatPaleti.METIN, true))
+                .addContent(
+                    TileOrtak.metin(
+                        if (yukVar) "Vakitler için dokunun" else "Telefonunuzda uygulamayı açın",
+                        13f,
+                        SaatPaleti.METIN2,
+                    )
+                )
+                .build(),
+            "Namaz Akışı'nı açın",
+        )
+
+    private fun duzen(siradaki: VakitHesabi.VakitAni, sonrakiler: List<VakitHesabi.VakitAni>): LayoutElementBuilders.LayoutElement {
+        val saat = VakitHesabi.saat(siradaki.ms)
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-            .addContent(metin("Sıradaki vakit", 13f, IKINCIL, false))
-            .addContent(metin(baslik, 30f, BIRINCIL, true))
-            .addContent(metin(alt, 18f, METIN, false))
-        if (konum != null) {
-            sutun.addContent(LayoutElementBuilders.Spacer.Builder().setHeight(dp(6f)).build())
-            sutun.addContent(metin(konum, 12f, IKINCIL, false))
+            .addContent(TileOrtak.metin(siradaki.ad, 16f, SaatPaleti.vakitRengi(siradaki.vakit), true))
+            .addContent(TileOrtak.metin(saat, 40f, SaatPaleti.METIN, true))
+            .addContent(
+                TileOrtak.dinamikMetin(TileOrtak.kalanMetni(siradaki.ms, " sonra", "Sıradaki vakit"), 13f, SaatPaleti.METIN2)
+            )
+        if (sonrakiler.isNotEmpty()) {
+            sutun.addContent(LayoutElementBuilders.Spacer.Builder().setHeight(dp(8f)).build())
+            for (v in sonrakiler) sutun.addContent(sonrakiSatiri(v))
         }
-        return LayoutElementBuilders.Box.Builder()
+        return kutu(sutun.build(), "Sıradaki vakit ${siradaki.ad}, giriş $saat. Uygulamayı açın")
+    }
+
+    /** "İkindi   15:56": ad solda ikincil, saat sağda birincil. */
+    private fun sonrakiSatiri(v: VakitHesabi.VakitAni): LayoutElementBuilders.LayoutElement =
+        LayoutElementBuilders.Row.Builder()
+            .setVerticalAlignment(LayoutElementBuilders.VERTICAL_ALIGN_CENTER)
+            .addContent(TileOrtak.metin(v.ad, 12f, SaatPaleti.METIN2))
+            .addContent(LayoutElementBuilders.Spacer.Builder().setWidth(dp(10f)).build())
+            .addContent(TileOrtak.metin(VakitHesabi.saat(v.ms), 12f, SaatPaleti.METIN))
+            .build()
+
+    private fun kutu(icerik: LayoutElementBuilders.LayoutElement, aciklama: String): LayoutElementBuilders.LayoutElement =
+        LayoutElementBuilders.Box.Builder()
             .setWidth(expand())
             .setHeight(expand())
             .setModifiers(
@@ -112,33 +144,14 @@ class VakitTileServisi : TileService() {
                             )
                             .build()
                     )
+                    .setSemantics(ModifiersBuilders.Semantics.Builder().setContentDescription(aciklama).build())
                     .build()
             )
-            .addContent(sutun.build())
-            .build()
-    }
-
-    private fun metin(yazi: String, boyut: Float, renk: Int, kalin: Boolean): LayoutElementBuilders.Text =
-        LayoutElementBuilders.Text.Builder()
-            .setText(yazi)
-            .setMaxLines(1)
-            .setFontStyle(
-                LayoutElementBuilders.FontStyle.Builder()
-                    .setSize(sp(boyut))
-                    .setColor(argb(renk))
-                    .setWeight(
-                        if (kalin) LayoutElementBuilders.FONT_WEIGHT_BOLD else LayoutElementBuilders.FONT_WEIGHT_NORMAL
-                    )
-                    .build()
-            )
+            .addContent(icerik)
             .build()
 
     companion object {
         private const val KAYNAK_SURUMU = "1"
-        private const val TAZELIK_MS = 12L * 60 * 60 * 1000
-        // Telefon temasının birincil yeşili (#4CAF50) — saat siyah zemininde.
-        private const val BIRINCIL = 0xFF4CAF50.toInt()
-        private const val METIN = 0xFFFFFFFF.toInt()
-        private const val IKINCIL = 0xFFBDBDBD.toInt()
+        private const val SONRAKI_SAYISI = 2
     }
 }

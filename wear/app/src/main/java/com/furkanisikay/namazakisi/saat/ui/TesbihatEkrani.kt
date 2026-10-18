@@ -32,12 +32,26 @@ import androidx.wear.compose.material3.AlertDialog
 import androidx.wear.compose.material3.AlertDialogDefaults
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.material3.Button
-import androidx.wear.compose.material3.CircularProgressIndicator
-import androidx.wear.compose.material3.CircularProgressIndicatorDefaults
 import androidx.wear.compose.material3.CompactButton
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
+import android.os.SystemClock
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.font.FontWeight
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
+import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatYaylari
+import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.min
+import kotlin.math.sin
 import com.furkanisikay.namazakisi.saat.cekirdek.TacBiriktirici
 import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 
@@ -70,7 +84,7 @@ fun TesbihatEkrani(
         "${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}. Toplam ${durum.toplam} / ${Tesbihat.TOPLAM}"
     }
 
-    MaterialTheme {
+    SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -94,10 +108,7 @@ fun TesbihatEkrani(
                         liveRegion = LiveRegionMode.Polite
                     },
             ) {
-                CircularProgressIndicator(
-                    progress = { durum.fazIlerlemesi },
-                    modifier = Modifier.fillMaxSize().padding(CircularProgressIndicatorDefaults.FullScreenPadding),
-                )
+                TesbihatHalkasi(durum)
                 if (durum.tamamMi) {
                     TamamIcerigi(onYenidenBasla = onSifirla)
                 } else {
@@ -143,12 +154,15 @@ private fun SayimIcerigi(durum: Tesbihat.Durum, onGeriAl: () -> Unit) {
             Text(durum.faz.ad, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
             Text(
                 durum.fazSayisi.toString(),
-                style = MaterialTheme.typography.numeralLarge,
-                color = MaterialTheme.colorScheme.primary,
+                style = RAKAM,
+                fontSize = sabitBoyut(0.24f),
+                fontWeight = FontWeight.SemiBold,
+                color = renk(SaatPaleti.METIN),
             )
         }
+        // Fazın hedefi; toplam 100 halkadan okunur (üç yay).
         Text(
-            "${durum.toplam} / ${Tesbihat.TOPLAM}",
+            if (durum.faz == Tesbihat.Faz.TEHLIL) "${durum.toplam} / ${Tesbihat.TOPLAM}" else "/ ${durum.faz.hedef}",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -171,9 +185,10 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
     ) {
         Text("Tamamlandı", style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         Text(
-            "33 · 33 · 33 + 1",
+            Tesbihat.Faz.TEHLIL.ad,
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
         )
         Text(
             Tesbihat.KAYNAK,
@@ -182,5 +197,75 @@ private fun TamamIcerigi(onYenidenBasla: () -> Unit) {
         )
         Spacer(Modifier.height(8.dp))
         Button(onClick = onYenidenBasla, label = { Text("Yeniden başlayın") })
+    }
+}
+
+/** Üç yayın her biri 300°'lik çerçevede (ana ekran yayıyla aynı; tepe sistem saatine). */
+private const val YAY_ARASI = 8f
+private const val YAY_UZUNLUGU = (YAY_TARAMA - YAY_ARASI * (TesbihatYaylari.YAY_SAYISI - 1)) / TesbihatYaylari.YAY_SAYISI
+private const val ILERLEME_MS = 120
+private const val PARLAMA_MS = 300
+
+/**
+ * Üç yay: her çentikte biten kısım 120 ms'de ilerler; hızlı çevirmede (bir öncekinden
+ * < 120 ms) animasyon atlanır, sayı anında yazılır. 33/66/99'da biten yay, 100'de üçü
+ * 300 ms bir kez parlar (titreşimi `TesbihatHissi` verir). Dekoratiftir — sayı ve faz
+ * ekranın tek düğümlü açıklamasında okunur.
+ */
+@Composable
+private fun TesbihatHalkasi(durum: Tesbihat.Durum) {
+    val azalt = hareketAzaltilmis()
+    val hedefler = TesbihatYaylari.doluluk(durum)
+    val doluluk = remember { List(TesbihatYaylari.YAY_SAYISI) { Animatable(hedefler[it]) } }
+    val parlama = remember { Animatable(0f) }
+    var parlayan by remember { mutableStateOf<Int?>(null) }
+    val parlamaSahibi = remember { arrayOfNulls<Any>(1) }
+    val son = remember { longArrayOf(0L, durum.toplam.toLong()) }
+    LaunchedEffect(durum.toplam) {
+        val an = SystemClock.uptimeMillis()
+        val hizli = azalt || an - son[0] < ILERLEME_MS
+        val biten = TesbihatYaylari.parlayan(son[1].toInt(), durum.toplam)
+        son[0] = an
+        son[1] = durum.toplam.toLong()
+        hedefler.forEachIndexed { i, h ->
+            launch { if (hizli) doluluk[i].snapTo(h) else doluluk[i].animateTo(h, tween(ILERLEME_MS)) }
+        }
+        if (biten != null && !azalt) {
+            // Hızlı çevirmede bir sonraki sayım bu effect'i iptal eder: `finally` olmadan
+            // `parlayan` kalır ve yay kalın donardı. Kalınlık `parlayan == null` iken
+            // kullanılmaz; değer de sonraki parlamanın başında sıfırlanır. Sahiplik
+            // belirteci: iptal edilen eski parlamanın `finally`'si, yerine başlamış YENİ
+            // parlamayı silmesin.
+            val bu = Any()
+            parlamaSahibi[0] = bu
+            try {
+                parlayan = biten
+                parlama.snapTo(0f)
+                parlama.animateTo(1f, tween(PARLAMA_MS))
+            } finally {
+                if (parlamaSahibi[0] === bu) parlayan = null
+            }
+        }
+    }
+    val iz = renk(SaatPaleti.IZ)
+    val dolu = renk(SaatPaleti.EYLEM)
+    Canvas(Modifier.fillMaxSize().clearAndSetSemantics { }) {
+        val k = 6.dp.toPx()
+        val pay = 5.dp.toPx() + k * 2.2f
+        val cap = min(size.width, size.height) - pay * 2
+        if (cap <= 0f) return@Canvas
+        val solUst = Offset((size.width - cap) / 2, (size.height - cap) / 2)
+        val boyut = Size(cap, cap)
+        for (i in 0 until TesbihatYaylari.YAY_SAYISI) {
+            val bas = YAY_BASLANGIC + i * (YAY_UZUNLUGU + YAY_ARASI)
+            val p = parlayan
+            val parliyor = p != null && (p == i || p == TesbihatYaylari.HEPSI)
+            val kalinlik = if (parliyor) k * (1f + 0.6f * sin(PI.toFloat() * parlama.value)) else k
+            drawArc(iz, bas, YAY_UZUNLUGU, false, solUst, boyut, style = Stroke(k, cap = StrokeCap.Round))
+            val oran = doluluk[i].value
+            if (oran > 0f) {
+                drawArc(dolu, bas, YAY_UZUNLUGU * oran, false, solUst, boyut, style = Stroke(kalinlik, cap = StrokeCap.Round))
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.saat.ui
 
 import android.os.Build
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.Tesbihat
 import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatAmbient
 
@@ -37,9 +40,10 @@ import com.furkanisikay.namazakisi.saat.cekirdek.TesbihatAmbient
 fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
     val icerik = TesbihatAmbient.icerik(durum)
     val kaydirma = TesbihatAmbient.kaydirma(ambient.adim, ambient.burnInKorumasi, Build.VERSION.SDK_INT)
-    val ikincil = if (ambient.dusukBit) Color.White else Color(0xFFB0B0B0)
+    val ikincil = if (ambient.dusukBit) Color.White else renk(SaatPaleti.AMBIENT_IKINCIL)
+    val iz = if (ambient.dusukBit) Color.White else renk(SaatPaleti.AMBIENT_IZ)
 
-    MaterialTheme {
+    SaatTemasi {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
@@ -52,6 +56,10 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                 modifier = Modifier.fillMaxSize().offset(kaydirma.xDp.dp, kaydirma.yDp.dp),
             ) {
                 TimeText()
+                // Dolgu yok: yalnız üç yayın ince izi (nerede kalındığı rakamda).
+                Canvas(Modifier.fillMaxSize()) {
+                    vakitYayiCiz(kalanOran = 0f, renk = iz, iz = iz, kalinlik = 1.dp, noktaGoster = false)
+                }
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -66,11 +74,13 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
                         maxLines = 2,
                     )
                     icerik.sayi?.let {
+                        // Dış hatlı rakam: yanan piksel az (düşük güç).
                         Text(
                             it,
-                            style = MaterialTheme.typography.numeralLarge,
-                            fontWeight = FontWeight.Thin,
-                            color = Color.White,
+                            style = RAKAM.copy(drawStyle = Stroke(width = 2f)),
+                            fontSize = sabitBoyut(0.24f),
+                            fontWeight = FontWeight.Medium,
+                            color = renk(SaatPaleti.AMBIENT_METIN),
                         )
                     }
                     Text(

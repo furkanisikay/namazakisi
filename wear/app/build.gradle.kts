@@ -77,6 +77,9 @@ android {
     }
     buildFeatures {
         compose = true
+        // BuildConfig.DEBUG: ekran görüntüsü hattının saniye döngüsünü dondurma ekstrası
+        // yalnız debug derlemede okunur (AnaAktivite) — release davranışı değişmez.
+        buildConfig = true
     }
     testOptions {
         unitTests.isReturnDefaultValues = true

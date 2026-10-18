@@ -4,11 +4,10 @@ import android.content.Intent
 import androidx.concurrent.futures.CallbackToFutureAdapter
 import androidx.core.content.edit
 import androidx.wear.protolayout.ActionBuilders
-import androidx.wear.protolayout.ColorBuilders.argb
+import androidx.wear.protolayout.DimensionBuilders
 import androidx.wear.protolayout.DimensionBuilders.degrees
 import androidx.wear.protolayout.DimensionBuilders.dp
 import androidx.wear.protolayout.DimensionBuilders.expand
-import androidx.wear.protolayout.DimensionBuilders.sp
 import androidx.wear.protolayout.LayoutElementBuilders
 import androidx.wear.protolayout.ModifiersBuilders
 import androidx.wear.protolayout.ResourceBuilders
@@ -16,8 +15,11 @@ import androidx.wear.protolayout.TimelineBuilders
 import androidx.wear.tiles.RequestBuilders
 import androidx.wear.tiles.TileBuilders
 import androidx.wear.tiles.TileService
+import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.BugunTileKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.GunDurumu
+import com.furkanisikay.namazakisi.saat.cekirdek.KalanSure
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.hatirlatma.KildimAlicisi
@@ -27,13 +29,15 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
 /**
- * "Bugün" tile'ı (issue #281): aktif günün beş vakti + iki dokunuşla "Kıldım".
+ * "Bugün" tile'ı (issue #281; yeniden tasarım W1): aktif günün beş vakti + iki
+ * dokunuşla "Kıldım".
  *
- * Tasarım (telefona benzemek zorunda değil): siyah zemin, kenarda beş dilimli yay
- * (günün tek bakışta özeti), ortada 3 + 2 dizilmiş 48 dp'lik vakit daireleri.
- * Kılınan dolu yeşil + ✓; vakti girmiş kılınmamış yeşil çerçeveli (dokunulabilir);
- * henüz girmemiş sönük + saati. Renk tek başına durumu taşımaz: ✓/saat ikinci satırı
- * ve ekran okuyucu açıklaması da aynı bilgiyi verir.
+ * Halkanın tamamına beş dilimli yay (kılınan eylem yeşili, şu anki vakit kendi tonunda
+ * ve KALAN kısmı kadar dolu, vakti geçmiş kılınmamış vaktin tonunda, gelecek koyu);
+ * ortada şu anki vakit (`VakitHesabi.sayilanAn` — ana ekranla aynı kural), dakikalık
+ * kalan süre ve tek "Kıldım". Kalan süre ve dilim doluluğu çizicide dinamik (bkz.
+ * `TileOrtak`); renkler `SaatPaleti`'nden. Renk tek başına durumu taşımaz: düğme metni
+ * ("✓ Kılındı") ve ekran okuyucu açıklaması aynı bilgiyi verir.
  *
  * Dokunuş `LoadAction`'dır; karar `BugunTileKarari`'nda (saf, testli). İlk dokunuş
  * 8 sn geçerli bir "Tekrar" girdisi üretir — zaman çizelgesinde en KISA geçerlilikli
@@ -147,16 +151,19 @@ class BugunTileServisi : TileService() {
             .addContent(
                 LayoutElementBuilders.Column.Builder()
                     .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                    .addContent(metin("Bugün", 16f, BEYAZ, true))
+                    .addContent(TileOrtak.metin("Bugün", 16f, SaatPaleti.METIN, true))
                     .addContent(bosluk(6f))
-                    .addContent(metin("Telefonunuzda", 13f, GRI, false))
-                    .addContent(metin("uygulamayı açın", 13f, GRI, false))
+                    .addContent(TileOrtak.metin("Telefonunuzda", 13f, SaatPaleti.METIN2))
+                    .addContent(TileOrtak.metin("uygulamayı açın", 13f, SaatPaleti.METIN2))
                     .build()
             )
             .build()
 
     /**
-     * @param an bu girdinin başladığı an (vakit girdi mi, saat metinleri ona göre)
+     * Halkanın tamamına beş dilim (kılınan yeşil, şu anki vakit tonunda ve KALAN kısmı
+     * kadar dolu, gelecek koyu); ortada şu anki vakit + dakikalık kalan + tek "Kıldım".
+     *
+     * @param an bu girdinin başladığı an (sayılan an ve statik yedekler ona göre)
      * @param uretim kimlik nonce'u: her çizimde değişir (tekrar koruması, bkz. `BugunTileKarari`)
      */
     private fun duzen(
@@ -166,119 +173,112 @@ class BugunTileServisi : TileService() {
         uretim: Long,
         onay: BugunTileKarari.Karar.OnayBekle?,
     ): LayoutElementBuilders.LayoutElement {
-        val daireler = ozet.satirlar.map { s ->
-            val kimlik = VakitHesabi.kimlik(s.tarih, s.vakit)
-            daire(s, GunDurumu.halBul(s), uretim, onay?.takeIf { it.kimlik == kimlik })
+        val sayilan = VakitHesabi.sayilanAn(yuk, an)
+        val aktif = sayilan?.takeIf { it.mod == KalanSure.Mod.CIKIS }?.let { s ->
+            ozet.satirlar.indexOfFirst { it.tarih == s.tarih && it.vakit == s.vakit }.takeIf { it >= 0 }
         }
-        val ipucu = when {
-            onay != null && VakitHesabi.kerahatMi(yuk, an) -> "Kerahat vakti · onay için tekrar"
-            onay != null -> "Onaylamak için tekrar dokunun"
-            ozet.kilinanSayisi == GunDurumu.FARZ_SAYISI -> "Bugünün namazları tamam"
-            ozet.haller.contains(GunDurumu.Hal.KALAN) -> "Kıldığınıza dokunun"
-            else -> ozet.satirlar.firstOrNull { !it.girdi }?.let { "Sıradaki ${it.ad} · ${VakitHesabi.saat(it.ms)}" } ?: ""
-        }
+        val aktifSatir = aktif?.let { ozet.satirlar[it] }
+        val kalanVar = ozet.haller.contains(GunDurumu.Hal.KALAN)
+
         val sutun = LayoutElementBuilders.Column.Builder()
             .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
             .addContent(
                 LayoutElementBuilders.Box.Builder()
                     .setModifiers(tiklanabilir(UYGULAMAYI_AC, uygulamayiAc(), "Bugün ${ozet.kilinanSayisi} vakit kılındı. Uygulamayı açın"))
-                    .addContent(metin("Bugün  ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}", 15f, BEYAZ, true))
+                    .addContent(TileOrtak.metin("Bugün ${ozet.kilinanSayisi}/${GunDurumu.FARZ_SAYISI}", 12f, SaatPaleti.METIN2))
                     .build()
             )
-            .addContent(bosluk(6f))
-            .addContent(satir(daireler.take(3)))
-            .addContent(bosluk(6f))
-            .addContent(satir(daireler.drop(3)))
-            .addContent(bosluk(6f))
-            .addContent(
-                // Yapılacak iş yokken ipucu satırı tesbihat kısayoluna döner (issue #293).
-                if (BugunTileKarari.tesbihatKisayoluGoster(onay != null, ozet.haller.contains(GunDurumu.Hal.KALAN))) {
-                    tesbihatKisayolu()
-                } else {
-                    metin(ipucu, 11f, if (onay != null) AMBER else GRI, false)
-                }
+        if (sayilan != null) {
+            val girisMi = sayilan.mod == KalanSure.Mod.GIRIS
+            sutun.addContent(TileOrtak.metin(sayilan.ad, 20f, SaatPaleti.vakitRengi(sayilan.vakit), true))
+            sutun.addContent(
+                TileOrtak.dinamikMetin(
+                    TileOrtak.kalanMetni(
+                        sayilan.hedef,
+                        "",
+                        "${if (girisMi) "giriş" else "çıkış"} ${VakitHesabi.saat(sayilan.hedef)}",
+                    ),
+                    15f, SaatPaleti.METIN, true,
+                )
             )
-            .build()
-        return LayoutElementBuilders.Box.Builder()
-            .setWidth(expand()).setHeight(expand())
-            .addContent(yay(ozet))
-            .addContent(sutun)
-            .build()
-    }
-
-    /** İmza öğesi: kenarda beş dilimli yay — günün özeti tek bakışta. */
-    private fun yay(ozet: GunDurumu.Ozet): LayoutElementBuilders.LayoutElement {
-        val yay = LayoutElementBuilders.Arc.Builder()
-            .setAnchorAngle(degrees(0f))
-            .setAnchorType(LayoutElementBuilders.ARC_ANCHOR_CENTER)
-        ozet.haller.forEachIndexed { i, hal ->
-            if (i > 0) yay.addContent(LayoutElementBuilders.ArcSpacer.Builder().setLength(degrees(4f)).build())
-            yay.addContent(
-                LayoutElementBuilders.ArcLine.Builder()
-                    .setLength(degrees(22f))
-                    .setThickness(dp(4f))
-                    .setColor(argb(halRengi(hal)))
-                    .build()
-            )
+            sutun.addContent(TileOrtak.metin(AnaEkranKarari.altYazi(sayilan.mod), 11f, SaatPaleti.METIN2))
         }
-        return LayoutElementBuilders.Box.Builder()
-            .setWidth(expand()).setHeight(expand())
-            .setModifiers(
-                ModifiersBuilders.Modifiers.Builder()
-                    .setPadding(ModifiersBuilders.Padding.Builder().setAll(dp(4f)).build())
-                    .build()
-            )
-            .addContent(yay.build())
-            .build()
-    }
-
-    private fun satir(ogeler: List<LayoutElementBuilders.LayoutElement>): LayoutElementBuilders.LayoutElement {
-        val r = LayoutElementBuilders.Row.Builder().setVerticalAlignment(LayoutElementBuilders.VERTICAL_ALIGN_CENTER)
-        ogeler.forEachIndexed { i, o ->
-            if (i > 0) r.addContent(LayoutElementBuilders.Spacer.Builder().setWidth(dp(6f)).build())
-            r.addContent(o)
+        sutun.addContent(bosluk(6f))
+        val dugme = aktifSatir?.let { s ->
+            kildimDugmesi(s, uretim, onay?.takeIf { it.kimlik == VakitHesabi.kimlik(s.tarih, s.vakit) })
         }
-        return r.build()
+        if (dugme != null) {
+            sutun.addContent(dugme)
+            sutun.addContent(bosluk(4f))
+        }
+        sutun.addContent(
+            // Yapılacak iş yokken ipucu satırı tesbihat kısayoluna döner (issue #293).
+            if (BugunTileKarari.tesbihatKisayoluGoster(onay != null, kalanVar)) {
+                tesbihatKisayolu()
+            } else {
+                TileOrtak.metin(
+                    ipucu(yuk, ozet, an, onay, aktif), 11f,
+                    if (onay != null) SaatPaleti.KERAHAT else SaatPaleti.METIN2,
+                )
+            }
+        )
+        val kutu = LayoutElementBuilders.Box.Builder()
+            .setWidth(expand()).setHeight(expand())
+            .addContent(dilimler(ozet, aktif))
+        if (aktif != null) kutu.addContent(aktifDolgu(sayilan, aktif, an))
+        return kutu.addContent(sutun.build()).build()
     }
 
-    private fun daire(
+    private fun ipucu(
+        yuk: Yuk,
+        ozet: GunDurumu.Ozet,
+        an: Long,
+        onay: BugunTileKarari.Karar.OnayBekle?,
+        aktif: Int?,
+    ): String = when {
+        onay != null && VakitHesabi.kerahatMi(yuk, an) -> "Kerahat vakti · onay için tekrar"
+        onay != null -> "Onaylamak için tekrar dokunun"
+        ozet.kilinanSayisi == GunDurumu.FARZ_SAYISI -> "Bugünün namazları tamam"
+        else -> ozet.satirlar.withIndex()
+            .firstOrNull { (i, s) -> i != aktif && GunDurumu.halBul(s) == GunDurumu.Hal.KALAN }
+            ?.let { "${it.value.ad} kılınmadı" }
+            ?: ozet.satirlar.firstOrNull { !it.girdi }?.let { "Sıradaki ${it.ad} · ${VakitHesabi.saat(it.ms)}" }
+            ?: ""
+    }
+
+    /** "Kıldım" (iki dokunuş) / "Tekrar dokunun" / "✓ Kılındı". Yalnız şu anki vakit. */
+    private fun kildimDugmesi(
         s: VakitHesabi.Satir,
-        hal: GunDurumu.Hal,
         uretim: Long,
         onay: BugunTileKarari.Karar.OnayBekle?,
-    ): LayoutElementBuilders.LayoutElement {
+    ): LayoutElementBuilders.LayoutElement? {
+        val hal = GunDurumu.halBul(s)
         val kimlik = VakitHesabi.kimlik(s.tarih, s.vakit)
-        val saat = VakitHesabi.saat(s.ms)
-        val (zemin, cerceve, yazi, alt) = when {
-            onay != null -> Gorunum(AMBER, null, SIYAH, "Tekrar")
-            hal == GunDurumu.Hal.KILINDI -> Gorunum(YESIL_KOYU, null, BEYAZ, "✓")
-            hal == GunDurumu.Hal.KALAN -> Gorunum(KOYU, YESIL, BEYAZ, saat)
-            else -> Gorunum(SONUK, null, GRI, saat)
+        val g = when {
+            onay != null -> Gorunum(SaatPaleti.KERAHAT, SaatPaleti.ZEMIN, "Tekrar dokunun", "Onaylamak için tekrar dokunun")
+            hal == GunDurumu.Hal.KILINDI -> Gorunum(
+                SaatPaleti.YUZEY2, SaatPaleti.EYLEM, "✓ Kılındı",
+                if (s.esitleniyor) "${s.ad} kılındı, eşitleniyor" else "${s.ad} kılındı",
+            )
+            s.isaretlenebilir -> Gorunum(SaatPaleti.EYLEM, SaatPaleti.EYLEM_USTU, "Kıldım", AnaEkranKarari.dugmeAciklamasi(s.ad))
+            else -> return null
         }
-        val durum = when {
-            onay != null -> "onaylamak için tekrar dokunun"
-            hal == GunDurumu.Hal.KILINDI -> if (s.esitleniyor) "kılındı, eşitleniyor" else "kılındı"
-            hal == GunDurumu.Hal.KALAN -> "kılmadınız, işaretlemek için dokunun"
-            else -> "vakti henüz girmedi"
-        }
-        val arkaplan = ModifiersBuilders.Background.Builder()
-            .setColor(argb(zemin))
-            .setCorner(ModifiersBuilders.Corner.Builder().setRadius(dp(DAIRE_DP / 2)).build())
-            .build()
         val belirtec = ModifiersBuilders.Modifiers.Builder()
-            .setBackground(arkaplan)
+            .setBackground(
+                ModifiersBuilders.Background.Builder()
+                    .setColor(TileOrtak.renk(g.zemin))
+                    .setCorner(ModifiersBuilders.Corner.Builder().setRadius(dp(DUGME_YUKSEKLIK_DP / 2)).build())
+                    .build()
+            )
+            .setPadding(ModifiersBuilders.Padding.Builder().setStart(dp(16f)).setEnd(dp(16f)).build())
             .setSemantics(
                 ModifiersBuilders.Semantics.Builder()
-                    .setContentDescription("${s.ad}, $saat, $durum")
+                    .setContentDescription(g.aciklama)
                     .setRole(ModifiersBuilders.SEMANTICS_ROLE_BUTTON)
                     .build()
             )
-        if (cerceve != null) {
-            belirtec.setBorder(ModifiersBuilders.Border.Builder().setWidth(dp(2f)).setColor(argb(cerceve)).build())
-        }
         // Yalnız işaretlenebilir vakit tıklanabilir; yükleme eylemi tile'ı yeniden ister.
-        val tiklanabilirMi = onay != null || hal == GunDurumu.Hal.KALAN
-        if (tiklanabilirMi && s.isaretlenebilir) {
+        if (onay != null || (hal != GunDurumu.Hal.KILINDI && s.isaretlenebilir)) {
             val id = if (onay != null) BugunTileKarari.onayKimligi(kimlik, onay.secimMs)
             else BugunTileKarari.secKimligi(kimlik, uretim)
             belirtec.setClickable(
@@ -289,25 +289,82 @@ class BugunTileServisi : TileService() {
             )
         }
         return LayoutElementBuilders.Box.Builder()
-            .setWidth(dp(DAIRE_DP)).setHeight(dp(DAIRE_DP))
+            .setHeight(dp(DUGME_YUKSEKLIK_DP))
             .setModifiers(belirtec.build())
-            .addContent(
-                LayoutElementBuilders.Column.Builder()
-                    .setHorizontalAlignment(LayoutElementBuilders.HORIZONTAL_ALIGN_CENTER)
-                    .addContent(metin(s.ad, 11f, yazi, true))
-                    .addContent(metin(alt, 10f, yazi, false))
-                    .build()
-            )
+            .addContent(TileOrtak.metin(g.etiket, 14f, g.yazi, true))
             .build()
     }
 
-    private data class Gorunum(val zemin: Int, val cerceve: Int?, val yazi: Int, val alt: String)
+    private data class Gorunum(val zemin: Long, val yazi: Long, val etiket: String, val aciklama: String)
 
-    private fun halRengi(hal: GunDurumu.Hal) = when (hal) {
-        GunDurumu.Hal.KILINDI -> YESIL
-        GunDurumu.Hal.KALAN -> AMBER
-        GunDurumu.Hal.GIRMEDI -> SONUK_YAY
+    private fun dilimRengi(s: VakitHesabi.Satir, hal: GunDurumu.Hal, aktifMi: Boolean): Long = when {
+        hal == GunDurumu.Hal.KILINDI -> SaatPaleti.EYLEM
+        // Şu anki dilimin zemini iz; kalan kısmı üstteki dinamik yayla dolar.
+        aktifMi -> SaatPaleti.IZ
+        // Vakti geçmiş, kılınmamış: vaktin tonunda (gelecekten ayrışır).
+        hal == GunDurumu.Hal.KALAN -> SaatPaleti.vakitRengi(s.vakit)
+        else -> SaatPaleti.IZ
     }
+
+    /** İmza öğesi: halkanın tamamına beş dilim — günün özeti tek bakışta. */
+    private fun dilimler(ozet: GunDurumu.Ozet, aktif: Int?): LayoutElementBuilders.LayoutElement {
+        val yay = yayKurucu()
+        ozet.satirlar.forEachIndexed { i, s ->
+            if (i > 0) yay.addContent(LayoutElementBuilders.ArcSpacer.Builder().setLength(degrees(DILIM_ARASI)).build())
+            yay.addContent(
+                LayoutElementBuilders.ArcLine.Builder()
+                    .setLength(degrees(DILIM))
+                    .setThickness(dp(YAY_KALINLIK_DP))
+                    .setColor(TileOrtak.renk(dilimRengi(s, GunDurumu.halBul(s), i == aktif)))
+                    .build()
+            )
+        }
+        return yayKutusu(yay.build())
+    }
+
+    /**
+     * Şu anki dilimin KALAN kısmı (ana ekran yayı gibi saat yönünde boşalır): dilimin
+     * sonuna yaslı, uzunluğu çizicide dinamik. Eski çizici statik değeri (girdinin
+     * başındaki oran) çizer.
+     */
+    private fun aktifDolgu(sayilan: VakitHesabi.SayilanAn, aktif: Int, an: Long): LayoutElementBuilders.LayoutElement {
+        val toplam = sayilan.hedef - (sayilan.baslangic ?: an)
+        val uzunluk = DimensionBuilders.DegreesProp.Builder(DILIM * sayilan.kalanOran(an))
+            .setDynamicValue(TileOrtak.kalanDerece(sayilan.hedef, toplam, DILIM))
+            .build()
+        val yay = yayKurucu()
+        if (aktif > 0) {
+            yay.addContent(LayoutElementBuilders.ArcSpacer.Builder().setLength(degrees(aktif * (DILIM + DILIM_ARASI))).build())
+        }
+        yay.addContent(
+            LayoutElementBuilders.ArcLine.Builder()
+                .setLength(uzunluk)
+                .setLayoutConstraintsForDynamicLength(
+                    DimensionBuilders.AngularLayoutConstraint.Builder(DILIM)
+                        .setAngularAlignment(LayoutElementBuilders.ANGULAR_ALIGNMENT_END)
+                        .build()
+                )
+                .setThickness(dp(YAY_KALINLIK_DP))
+                .setColor(TileOrtak.renk(SaatPaleti.vakitRengi(sayilan.vakit)))
+                .build()
+        )
+        return yayKutusu(yay.build())
+    }
+
+    private fun yayKurucu() = LayoutElementBuilders.Arc.Builder()
+        .setAnchorAngle(degrees(DILIM_ARASI / 2))
+        .setAnchorType(LayoutElementBuilders.ARC_ANCHOR_START)
+
+    private fun yayKutusu(yay: LayoutElementBuilders.Arc): LayoutElementBuilders.LayoutElement =
+        LayoutElementBuilders.Box.Builder()
+            .setWidth(expand()).setHeight(expand())
+            .setModifiers(
+                ModifiersBuilders.Modifiers.Builder()
+                    .setPadding(ModifiersBuilders.Padding.Builder().setAll(dp(4f)).build())
+                    .build()
+            )
+            .addContent(yay)
+            .build()
 
     private fun tiklanabilir(id: String, eylem: ActionBuilders.Action, aciklama: String) =
         ModifiersBuilders.Modifiers.Builder()
@@ -344,17 +401,16 @@ class BugunTileServisi : TileService() {
                     )
                     .setBackground(
                         ModifiersBuilders.Background.Builder()
-                            .setColor(argb(KOYU))
+                            .setColor(TileOrtak.renk(SaatPaleti.YUZEY2))
                             .setCorner(ModifiersBuilders.Corner.Builder().setRadius(dp(KISAYOL_YUKSEKLIK_DP / 2)).build())
                             .build()
                     )
-                    .setBorder(ModifiersBuilders.Border.Builder().setWidth(dp(1f)).setColor(argb(YESIL)).build())
                     .setPadding(
                         ModifiersBuilders.Padding.Builder().setStart(dp(10f)).setEnd(dp(10f)).build()
                     )
                     .build()
             )
-            .addContent(metin("Tesbihat", 11f, BEYAZ, false))
+            .addContent(TileOrtak.metin("Tesbihat", 11f, SaatPaleti.METIN))
             .build()
 
     private fun uygulamayiAc(): ActionBuilders.Action =
@@ -369,21 +425,6 @@ class BugunTileServisi : TileService() {
 
     private fun bosluk(yukseklik: Float) = LayoutElementBuilders.Spacer.Builder().setHeight(dp(yukseklik)).build()
 
-    private fun metin(yazi: String, boyut: Float, renk: Int, kalin: Boolean): LayoutElementBuilders.Text =
-        LayoutElementBuilders.Text.Builder()
-            .setText(yazi)
-            .setMaxLines(1)
-            .setFontStyle(
-                LayoutElementBuilders.FontStyle.Builder()
-                    .setSize(sp(boyut))
-                    .setColor(argb(renk))
-                    .setWeight(
-                        if (kalin) LayoutElementBuilders.FONT_WEIGHT_BOLD else LayoutElementBuilders.FONT_WEIGHT_NORMAL
-                    )
-                    .build()
-            )
-            .build()
-
     companion object {
         private const val KAYNAK_SURUMU = "1"
         private const val PREFS = "saat_bugun_tile"
@@ -395,10 +436,13 @@ class BugunTileServisi : TileService() {
 
         /**
          * Kısayol hapı ipucu satırından (11 sp ≈ 15 dp) yalnız birkaç dp yüksek: küçük
-         * yuvarlak ekranda vakit daireleri kenara itilmesin. Dokunma hedefi 48 dp'nin
-         * altındadır — tile'ın birincil eylemi değil, uygulamada da aynı giriş var.
+         * yuvarlak ekranda düzen kenara itilmesin. Dokunma hedefi 48 dp'nin altındadır —
+         * tile'ın birincil eylemi değil, uygulamada da aynı giriş var.
          */
         private const val KISAYOL_YUKSEKLIK_DP = 22f
+
+        /** "Kıldım" hapı: tile'ın birincil eylemi, dokunma hedefi 48 dp (Wear yönergesi). */
+        private const val DUGME_YUKSEKLIK_DP = 48f
 
         /**
          * Girdi tavanı: her girdi tam bir düzen taşır (yük 31 gün ≈ 186 sınır).
@@ -407,17 +451,10 @@ class BugunTileServisi : TileService() {
          */
         private const val MAKS_GIRDI = 60
         private const val TAZELIK_MS = 6L * 60 * 60 * 1000
-        private const val DAIRE_DP = 48f
 
-        // Saat siyah zemini için sabit palet (telefon temasının birincil yeşili #4CAF50).
-        private const val YESIL = 0xFF4CAF50.toInt()
-        private const val YESIL_KOYU = 0xFF2E7D32.toInt()
-        private const val AMBER = 0xFFFFC107.toInt()
-        private const val KOYU = 0xFF1C1C1C.toInt()
-        private const val SONUK = 0xFF262626.toInt()
-        private const val SONUK_YAY = 0xFF424242.toInt()
-        private const val BEYAZ = 0xFFFFFFFF.toInt()
-        private const val SIYAH = 0xFF000000.toInt()
-        private const val GRI = 0xFFBDBDBD.toInt()
+        // Halka: beş dilim + beş ara (son dilimle ilki arasında da boşluk) = 360°.
+        private const val DILIM_ARASI = 4f
+        private const val DILIM = (360f - GunDurumu.FARZ_SAYISI * DILIM_ARASI) / GunDurumu.FARZ_SAYISI
+        private const val YAY_KALINLIK_DP = 5f
     }
 }

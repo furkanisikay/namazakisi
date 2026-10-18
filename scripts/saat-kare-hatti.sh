@@ -10,8 +10,15 @@
 # gonderecegi yukun aynisi `scripts/saat/saat-tohum-yuku.js` ile uretilip saatin kendi
 # deposuna (`saat_veri.xml`) `run-as` ile yazilir — saat koduna tohum alicisi YOK.
 #
-# DOLASMA: `uiautomator dump` + koordinat. Telefon ekraninin aksine saatin ana ekrani
-# 30 sn'de bir cizilir, dump'in bekledigi "idle" durumu olusur (Maestro gerekmez).
+# DOLASMA: `uiautomator dump` + koordinat. Dump ekranin ~1 sn bosta kalmasini bekler;
+# saatin ana ekrani saniyelik sayac cizdigi icin uygulama `--ez ekran_goruntusu true`
+# ile acilir: YALNIZ debug derlemede saniye dongusu donar (dakikalik tazeleme surer),
+# "idle" durumu olusur (Maestro gerekmez). Release davranisi degismez.
+#
+# ICERIK ACIKLAMASI SOZLESMESI (Kotlin'de AnaEkranKarari / KildimOnayi ile ayni):
+#   sayac dugumu   "<Vakit> vaktinin cikmasina|girmesine ..."
+#   ana ekran Kildim  "<Vakit> vaktini kildim olarak isaretleyin"
+#   onay katmani      kenar dugmesi "Kıldım"
 set -euo pipefail
 
 ETIKET="${1:?profil etiketi (yuvarlak|kare) gerekli}"
@@ -115,16 +122,18 @@ bul_ve_dokun() {
   return 1
 }
 
+ana_ac() {
+  adb shell am start -S -W -n "$PAKET/$SINIF.ui.AnaAktivite" --ez ekran_goruntusu true
+  hazir_bekle 'çıkmasına|girmesine|telefonunuzda' || true
+}
+
 # --- 01 / 02: ana ekran + vakit listesi ---
-adb shell am start -W -n "$PAKET/$SINIF.ui.AnaAktivite"
-hazir_bekle 'Sıradaki|Dokunarak|Kıldınız' || true
+ana_ac
 kare 01-ana-ekran 2 || true
-# Iki adim: vakit satirlari ekranin ortasina gelsin (tek adimda baslik TimeText'in
-# altinda yarim kaliyordu). Kare ekranda satirlar gorece buyuk → bir kisa adim daha.
+# Ilk oge TAM EKRAN sayactir: uc kisa adim (her biri ekranin ~1/3'u) vakit satirlarini
+# ekrana getirir. Kare ekranda satirlar gorece buyuk → bir kisa adim daha.
 yukari_kaydir
 yukari_kaydir
-# Liste ilk ogeyle acildigi icin (initialCenterItemIndex = 0) bir adim daha: aktif
-# vakit satiri altta yarim kalmasin.
 yukari_kaydir
 if [ "$ETIKET" = kare ]; then
   adb shell input swipe $((G / 2)) $((Y / 2)) $((G / 2)) $((Y / 3)) 600
@@ -132,11 +141,29 @@ if [ "$ETIKET" = kare ]; then
 fi
 kare 02-vakitler 1 || true
 
-# --- 03: "Kıldım" onayi (su anki vakit kilinmamis tohumlandi) ---
-if bul_ve_dokun 'Dokunarak işaretleyin'; then
+# --- 03: "Kıldım" onayi (su anki vakit kilinmamis tohumlandi) — ana ekran dugmesinden ---
+ana_ac
+if bul_ve_dokun 'kıldım olarak işaretleyin'; then
   kare 03-kildim-onayi 2 || true
   adb shell input keyevent KEYCODE_BACK
 fi
+
+# --- 07: ana ekran ambient (always-on) ---
+# Emulatorde ambient destegi DOGRULANMADI: ekran tumden kapanirsa kare siyah cikar →
+# UYARI ile atlanir (magazaya konmaz; yalniz gorunum denetimi icin).
+ana_ac
+adb shell settings put global ambient_enabled 1 || true
+adb shell input keyevent KEYCODE_SLEEP
+sleep 4
+if kare 07-ana-ambient 1; then
+  # Siyah PNG ~2-3 KB; ambient icerigi (yay izi + rakam) belirgin daha buyuk.
+  if [ "$(stat -c %s "$CIKIS/07-ana-ambient.png")" -lt 6000 ]; then
+    echo "UYARI: 07-ana-ambient siyah (emulator ambient'e gecmedi)"
+    rm -f "$CIKIS/07-ana-ambient.png"
+  fi
+fi
+adb shell input keyevent KEYCODE_WAKEUP
+sleep 2
 
 # --- 04: tesbihat sayaci (gercek dokunuslarla) ---
 adb shell am force-stop "$PAKET"

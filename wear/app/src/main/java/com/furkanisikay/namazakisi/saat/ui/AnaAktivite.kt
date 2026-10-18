@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.furkanisikay.namazakisi.saat.BuildConfig
+import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.veri.Senkron
@@ -27,10 +30,51 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-/** Saat uygulamasının tek ekranı: bugünün vakitleri + sıradaki vakit + "Kıldım". */
+/**
+ * Saat uygulamasının ana ekranı: vakit yayı + sayaç + "Kıldım" + günün vakitleri.
+ *
+ * Zaman (`simdi`) üç kaynaktan ilerler, hepsi açıkça duruma bağlı:
+ *  - Etkileşimli + ön planda (RESUMED): saniye sınırına hizalı döngü.
+ *  - Ambient: `onUpdateAmbient` (≈ dakikada bir) — döngü KOŞMAZ.
+ *  - Duraklatılmış: hiçbir döngü koşmaz (ekran görünmüyor).
+ * Ekranı açık tutmaz (`FLAG_KEEP_SCREEN_ON` YOK); ambient tesbihattaki desenle.
+ */
 class AnaAktivite : ComponentActivity() {
     /** Bildirim izni (Wear OS 4+'ta kurulumda kapalı gelir) — yoksa ekranda kibar uyarı. */
     private var bildirimIzni by mutableStateOf(true)
+    private var onPlanda by mutableStateOf(false)
+    private var ambient by mutableStateOf<AmbientDurumu?>(null)
+    private var simdi by mutableLongStateOf(System.currentTimeMillis())
+
+    /**
+     * Ekran görüntüsü hattı (`scripts/saat-kare-hatti.sh`) `uiautomator dump` ile dolaşır;
+     * dump ekran ~1 sn boşta kalmazsa BOŞ döner → saniyelik sayaç hattı kırardı. YALNIZ
+     * debug derlemede bu ekstra saniye döngüsünü dondurur (dakikalık tazeleme sürer).
+     */
+    private val ekranGoruntusuKipi: Boolean
+        get() = BuildConfig.DEBUG && intent?.getBooleanExtra(EKRAN_GORUNTUSU, false) == true
+
+    private val ambientGeriCagrisi = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
+        override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
+            simdi = System.currentTimeMillis()
+            ambient = AmbientDurumu(
+                burnInKorumasi = ambientDetails.burnInProtectionRequired,
+                dusukBit = ambientDetails.deviceHasLowBitAmbient,
+                adim = 0,
+            )
+        }
+
+        // ≈ dakikada bir: sayaç dakikası + burn-in kaydırması ilerler.
+        override fun onUpdateAmbient() {
+            simdi = System.currentTimeMillis()
+            ambient = ambient?.let { it.copy(adim = it.adim + 1) }
+        }
+
+        override fun onExitAmbient() {
+            ambient = null
+            simdi = System.currentTimeMillis()
+        }
+    }
 
     private fun izniYenile() {
         bildirimIzni = MuhafizBildirimci.bildirimIzniVar(this)
@@ -40,12 +84,20 @@ class AnaAktivite : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        onPlanda = true
+        simdi = System.currentTimeMillis()
         izniYenile()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onPlanda = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val depo = YukDeposu(this)
+        lifecycle.addObserver(AmbientLifecycleObserver(this, ambientGeriCagrisi))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -55,7 +107,6 @@ class AnaAktivite : ComponentActivity() {
         }
         setContent {
             var surum by remember { mutableIntStateOf(0) }
-            var simdi by remember { mutableLongStateOf(System.currentTimeMillis()) }
             val kapsam = rememberCoroutineScope()
 
             // Depo değişince (telefondan yük / saatte işaret) yeniden çiz.
@@ -64,12 +115,17 @@ class AnaAktivite : ComponentActivity() {
                 depo.dinle(dinleyici)
                 onDispose { depo.birak(dinleyici) }
             }
-            // Geri sayım dakikalık; saniyelik çizim saatte pil israfıdır.
-            LaunchedEffect(Unit) {
-                Senkron.sonYukuCek(this@AnaAktivite)
+            LaunchedEffect(Unit) { Senkron.sonYukuCek(this@AnaAktivite) }
+            // Saniye döngüsü YALNIZ etkileşimli + ön planda; ambient'e girince ya da
+            // duraklayınca anahtar değişir, döngü iptal olur (boşta sıfır iş).
+            val saniyeli = ambient == null && onPlanda
+            val dondur = ekranGoruntusuKipi
+            LaunchedEffect(saniyeli, dondur) {
+                if (!saniyeli) return@LaunchedEffect
                 while (true) {
-                    simdi = System.currentTimeMillis()
-                    delay(30_000L)
+                    val an = System.currentTimeMillis()
+                    simdi = an
+                    delay(if (dondur) DONDURULMUS_ARALIK_MS else SANIYE_MS - an % SANIYE_MS)
                 }
             }
 
@@ -77,22 +133,39 @@ class AnaAktivite : ComponentActivity() {
             val yuk = remember(surum) { depo.yuk() }
             val bekleyen = remember(surum) { depo.bekleyenler() }
             val guncellemeGerekli = remember(surum) { depo.guncellemeGerekli }
-            AnaEkran(
-                yuk = yuk,
-                bekleyen = bekleyen,
-                guncellemeGerekli = guncellemeGerekli,
-                bildirimIzni = bildirimIzni,
-                simdi = simdi,
-                bugun = LocalDate.now().toString(),
-                onKildim = { tarih, vakit ->
-                    kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
-                },
-                onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
-            )
+            val bugun = LocalDate.now().toString()
+            val ambientDurumu = ambient
+            if (ambientDurumu != null) {
+                // Etkileşimli ağaç ambient'te tümden çıkar; dönüşte yeniden kurulur.
+                AnaAmbientEkrani(
+                    g = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen) },
+                    bilgi = "Vakitleri görmek için telefonunuzda Namaz Akışı'nı açın.",
+                    ambient = ambientDurumu,
+                )
+            } else {
+                AnaEkran(
+                    yuk = yuk,
+                    bekleyen = bekleyen,
+                    guncellemeGerekli = guncellemeGerekli,
+                    bildirimIzni = bildirimIzni,
+                    simdi = simdi,
+                    bugun = bugun,
+                    saniyeGoster = !dondur,
+                    onKildim = { tarih, vakit ->
+                        kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
+                    },
+                    onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
+                )
+            }
         }
     }
 
-    private companion object {
-        const val IZIN_ISTEGI = 280
+    companion object {
+        private const val IZIN_ISTEGI = 280
+        private const val SANIYE_MS = 1_000L
+        private const val DONDURULMUS_ARALIK_MS = 30_000L
+
+        /** Yalnız debug derlemede okunur (bkz. `ekranGoruntusuKipi`); hat `--ez` ile verir. */
+        const val EKRAN_GORUNTUSU = "ekran_goruntusu"
     }
 }
