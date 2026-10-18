@@ -13,6 +13,11 @@ jest.mock('@expo/vector-icons/FontAwesome5', () => {
     return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 
+const mockCihaz: { samsung: boolean | null } = { samsung: null };
+jest.mock('../../../hooks/useCihazDurumu', () => ({
+    useCihazDurumu: () => ({ durum: mockCihaz, yenile: jest.fn() }),
+}));
+
 const RENKLER = {
     birincil: '#4CAF50',
     birincilMetin: '#FFFFFF',
@@ -44,6 +49,18 @@ describe('BileklikRehberKarti', () => {
         // Dürüstlük: kanal bazında süzme yok, sessiz kanal "çoğu" bantta aynalanmaz.
         expect(ekran.getByText(/uygulama bazında seçer/)).toBeTruthy();
         expect(ekran.getByText(/çoğu bilekliğe aktarılmaz/)).toBeTruthy();
+    });
+
+    it('Samsung Rutinler maddesi yalnız Samsung’da (bilinmiyorsa kalır)', () => {
+        jest.replaceProperty(Platform, 'OS', 'android');
+        mockCihaz.samsung = false;
+        const ekran = render(<BileklikRehberKarti />);
+        fireEvent.press(ekran.getByTestId('bileklik-rehberi-baslik'));
+        expect(ekran.queryByText(/Samsung Rutinler/)).toBeNull();
+        mockCihaz.samsung = null;
+        const ikinci = render(<BileklikRehberKarti />);
+        fireEvent.press(ikinci.getAllByTestId('bileklik-rehberi-baslik')[0]);
+        expect(ikinci.getByText(/Samsung Rutinler/)).toBeTruthy();
     });
 
     it('düğme uygulamanın bildirim kategorileri ekranını açar', async () => {
