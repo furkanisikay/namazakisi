@@ -52,7 +52,7 @@ fun AnaEkran(
     val liste = rememberScalingLazyListState(initialCenterItemIndex = 0)
     var onayBekleyen by remember { mutableStateOf<VakitHesabi.Satir?>(null) }
 
-    MaterialTheme {
+    SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
             ScreenScaffold(scrollState = liste) { icBosluk ->
                 ScalingLazyColumn(

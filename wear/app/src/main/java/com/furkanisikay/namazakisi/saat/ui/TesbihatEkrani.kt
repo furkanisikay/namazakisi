@@ -70,7 +70,7 @@ fun TesbihatEkrani(
         "${durum.faz.ad}, ${durum.fazSayisi} / ${durum.faz.hedef}. Toplam ${durum.toplam} / ${Tesbihat.TOPLAM}"
     }
 
-    MaterialTheme {
+    SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
             Box(
                 contentAlignment = Alignment.Center,

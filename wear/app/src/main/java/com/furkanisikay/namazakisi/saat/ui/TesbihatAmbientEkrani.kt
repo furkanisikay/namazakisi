@@ -39,7 +39,7 @@ fun TesbihatAmbientEkrani(durum: Tesbihat.Durum, ambient: AmbientDurumu) {
     val kaydirma = TesbihatAmbient.kaydirma(ambient.adim, ambient.burnInKorumasi, Build.VERSION.SDK_INT)
     val ikincil = if (ambient.dusukBit) Color.White else Color(0xFFB0B0B0)
 
-    MaterialTheme {
+    SaatTemasi {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
