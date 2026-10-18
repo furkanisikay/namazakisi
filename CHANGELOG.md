@@ -5,6 +5,18 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.41.0] - 2026-10-18
+
+### Eklendi
+- [wear] bilekten Namaz modu, Camideyim, sessiz uyandırma ve saat anonsu
+- [saat] saatten gelen komutlar ve saate Camideyim/Namaz modu durumu
+- [wear] şarjdayken telefona devret, bilek jestleri, kıble titreşimi, telefonda açın
+- [saat] telefonda Saat ayarları; uyandırma yedeği ve anons yeri üreticide
+- [wear] yüke opsiyonel uyandırma listesi, anons yeri ve çözülmüş anons
+
+### Düzeltildi
+- [wear] saat iş bölümü inceleme düzeltmeleri — erteleme, yedek, mod kapanışı
+
 ## [0.40.0] - 2026-10-18
 
 ### Eklendi
