@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.41.1-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.42.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.42.0** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -80,8 +80,6 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/06-muhafiz.webp" width="160" alt="Muhafız" title="Muhafız">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/07-muhafiz-zaman-seridi.webp" width="160" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/08-adim-detay.webp" width="160" alt="Adım detay" title="Adım detay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/09-adim-detay-anahtarlar.webp" width="160" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/10-alarm-onay.webp" width="160" alt="Alarm onay" title="Alarm onay">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
@@ -95,12 +93,12 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-acik/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
+  <img src="docs/ekran-goruntuleri/uygulama/android-acik/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-acik/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
 </p>
 
@@ -118,8 +116,6 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/06-muhafiz.webp" width="160" alt="Muhafız" title="Muhafız">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/07-muhafiz-zaman-seridi.webp" width="160" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/08-adim-detay.webp" width="160" alt="Adım detay" title="Adım detay">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/09-adim-detay-anahtarlar.webp" width="160" alt="Adım detay anahtarlar" title="Adım detay anahtarlar">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/10-alarm-onay.webp" width="160" alt="Alarm onay" title="Alarm onay">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/11-muhafiz-butce-karti.webp" width="160" alt="Muhafız bütçe kartı" title="Muhafız bütçe kartı">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/12-bildirim-siniri-rehberi.webp" width="160" alt="Bildirim sınırı rehberi" title="Bildirim sınırı rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/13-bildirim-ayarlari.webp" width="160" alt="Bildirim ayarları" title="Bildirim ayarları">
@@ -133,12 +129,12 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/21-now-bar-alt.webp" width="160" alt="Now bar alt" title="Now bar alt">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/22-otomasyon-rehberi.webp" width="160" alt="Otomasyon rehberi" title="Otomasyon rehberi">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/23-otomasyon-rehberi-alt.webp" width="160" alt="Otomasyon rehberi alt" title="Otomasyon rehberi alt">
-  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/24-kildim-uygulamalari.webp" width="160" alt="Kıldım uygulamaları" title="Kıldım uygulamaları">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/25-camideyim-ayarlar.webp" width="160" alt="Camideyim ayarlar" title="Camideyim ayarlar">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/26-camideyim-harita.webp" width="160" alt="Camideyim harita" title="Camideyim harita">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/27-camideyim-nasil.webp" width="160" alt="Camideyim nasıl" title="Camideyim nasıl">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/28-kaza.webp" width="160" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/29-kaza-her-farzla.webp" width="160" alt="Kaza her farzla" title="Kaza her farzla">
+  <img src="docs/ekran-goruntuleri/uygulama/android-koyu/30-neler-yeni.webp" width="160" alt="Neler yeni" title="Neler yeni">
   <img src="docs/ekran-goruntuleri/uygulama/android-koyu/31-seferilik.webp" width="160" alt="Seferîlik" title="Seferîlik">
 </p>
 
@@ -288,13 +284,13 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
-- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.41.0</sub>
-- **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar, sesli okuma ve gerçek alarm. <sub>Android · iOS · 0.40.0</sub>
+- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.42.0</sub>
+- **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
 - **Camiye Zamanında Yetişin** — Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım. <sub>Android · iOS · 0.37.0</sub>
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
-- **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma ve gerçek alarm kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
+- **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 
 <details>
@@ -312,7 +308,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Bildirim Sınırı Rehberi** — Telefonunuzun bekletebildiği bildirim sayısı sınırlıdır; uygulama sınıra yaklaştığınızda sizi önceden uyarır ve yer açmanın en kolay yollarını önerir. <sub>Android · iOS · 0.31.0</sub>
 - **Her Vakte Kendi Hatırlatma Akışı** — Namaz Muhafızı'nda her vakit için 1 ile 6 arasında hatırlatma kurar; ne zaman başlayacağını, tonunu ve sesli okunup okunmayacağını vakit vakit seçersiniz. <sub>Android · iOS · 0.31.0</sub>
 - **Camideyim: Camiye Girince Telefonunuz Anlar** — Hangi camiye giderseniz gidin, vakit yakınında birkaç dakika kaldığınızda Namaz modu kendiliğinden açılır; emin olunamayan durumlarda önce size sorulur. <sub>Android · 0.31.0</sub>
-- **Telefonunuza "Namaz" Modu** — Telefonunuzun Modlar listesine "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır. <sub>Android · 0.31.0</sub>
+- **Telefonunuza "Namaz" Modu** — Telefonunuzun Rahatsız Etmeyin/mod ayarlarına "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır. <sub>Android · 0.31.0</sub>
 - **Özel Günlerde Hatırlatmalar Durur** — Özel gün modu açıkken seçtiğiniz tarihler boyunca namaz hatırlatmaları da durur; tarihler bitince kendiliğinden geri gelir. <sub>Android · iOS · 0.31.0</sub>
 - **Katlanabilir ve Tablet Ekranlara Uygun Düzen** — Tabletlerde ve katlanabilir telefonların iç ekranında ana ekran iki sütunda açılır; yarı açık katlanabilir telefonda üst yarıda büyük bir geri sayım görürsünüz. <sub>Android · 0.31.0</sub>
 - **Widget ve Tek Dokunuşla "Kıldım"** — Ana ekran widget'ından, hızlı ayarlar kutusundan ya da uygulama kısayolundan, uygulamayı açmadan vakti görüp "Kıldım" diyebilirsiniz. <sub>Android · 0.31.0</sub>

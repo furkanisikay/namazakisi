@@ -13,7 +13,7 @@ Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı.
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.42.0** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## Ekran görüntüleri
@@ -70,13 +70,13 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
 ## Özellikler
 
 <!-- OTOMATIK:BASLA yenilikler -->
-- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.41.0</sub>
-- **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar, sesli okuma ve gerçek alarm. <sub>Android · iOS · 0.40.0</sub>
+- **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.42.0</sub>
+- **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
 - **Camiye Zamanında Yetişin** — Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım. <sub>Android · iOS · 0.37.0</sub>
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
-- **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma ve gerçek alarm kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
+- **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
 - **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 
 <details>
@@ -94,7 +94,7 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App 
 - **Bildirim Sınırı Rehberi** — Telefonunuzun bekletebildiği bildirim sayısı sınırlıdır; uygulama sınıra yaklaştığınızda sizi önceden uyarır ve yer açmanın en kolay yollarını önerir. <sub>Android · iOS · 0.31.0</sub>
 - **Her Vakte Kendi Hatırlatma Akışı** — Namaz Muhafızı'nda her vakit için 1 ile 6 arasında hatırlatma kurar; ne zaman başlayacağını, tonunu ve sesli okunup okunmayacağını vakit vakit seçersiniz. <sub>Android · iOS · 0.31.0</sub>
 - **Camideyim: Camiye Girince Telefonunuz Anlar** — Hangi camiye giderseniz gidin, vakit yakınında birkaç dakika kaldığınızda Namaz modu kendiliğinden açılır; emin olunamayan durumlarda önce size sorulur. <sub>Android · 0.31.0</sub>
-- **Telefonunuza "Namaz" Modu** — Telefonunuzun Modlar listesine "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır. <sub>Android · 0.31.0</sub>
+- **Telefonunuza "Namaz" Modu** — Telefonunuzun Rahatsız Etmeyin/mod ayarlarına "Namaz" eklenir; cuma hutbesinde, vakit girince ya da camideyken kendiliğinden açılır. <sub>Android · 0.31.0</sub>
 - **Özel Günlerde Hatırlatmalar Durur** — Özel gün modu açıkken seçtiğiniz tarihler boyunca namaz hatırlatmaları da durur; tarihler bitince kendiliğinden geri gelir. <sub>Android · iOS · 0.31.0</sub>
 - **Katlanabilir ve Tablet Ekranlara Uygun Düzen** — Tabletlerde ve katlanabilir telefonların iç ekranında ana ekran iki sütunda açılır; yarı açık katlanabilir telefonda üst yarıda büyük bir geri sayım görürsünüz. <sub>Android · 0.31.0</sub>
 - **Widget ve Tek Dokunuşla "Kıldım"** — Ana ekran widget'ından, hızlı ayarlar kutusundan ya da uygulama kısayolundan, uygulamayı açmadan vakti görüp "Kıldım" diyebilirsiniz. <sub>Android · 0.31.0</sub>
