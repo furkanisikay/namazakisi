@@ -5,6 +5,23 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.45.0] - 2026-10-18
+
+### Eklendi
+- [takvim] açıklamalı izin, bekleyen değişiklik bandı, "Takvime ekle" hareketi
+- [konum] durum kartı + tek "Yenile"; mesafe ve koordinatlar Gelişmiş'te
+- [kaza] sade kök — büyük kalan, vakit satırları, tek "Diğer" menüsü
+- [kible] konum izni açıklamalı akıştan; ilk odakta diyalog açılmaz
+- [sekmeler] Bugün · Kıble · Kaza · İlerleme · Ayarlar
+
+### Düzeltildi
+- [sade] Opus incelemesi — takvim izin akışı, bekleyen bant, Diğer geçişi, seri durumu, çapa
+- [takvim] adım başlığı Yenile düğmesini düzleştirmesin; son aktarım Depolama'dan; aylık kare içeriği ortalar
+
+### Değiştirildi
+- [ana-ekran] Kıble kısayolu kalkınca kullanılmayan gezinme kancası silindi
+- [metin] Yedek, Ramazan, Canlı sayaçlar, Görünüm, Tanı sadeleşti
+
 ## [0.44.0] - 2026-10-18
 
 ### Eklendi
