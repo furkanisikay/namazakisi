@@ -6,6 +6,15 @@ import { Namaz } from '../../../core/types';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
 import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
 import { namazGorunenAdi } from '../../../core/utils/cumaYardimcisi';
+import { NAMAZ_DURUMLARI, namazDurumuSec, type NamazDurumu } from '../../../core/vakit/durumSozlugu';
+
+/** Ekran okuyucu etiketinde cümle içi küçük harf (`toLowerCase` Türkçe İ tuzağı → sabit harita). */
+const DURUM_KUCUK: Record<NamazDurumu, string> = {
+    kilindi: 'kılındı',
+    vaktiGeldi: 'vakti geldi',
+    girmedi: 'henüz girmedi',
+    gecti: 'kılınmadı',
+};
 import { vakitGectiMi } from '../../../core/utils/gunNavigasyonYardimcisi';
 import { ISOTarihiDateNesnesiNeCevir } from '../../../core/utils/TarihYardimcisi';
 import type { NafileZincirSatiri as NafileSatiri } from '../../../core/nafile/nafileZinciri';
@@ -92,7 +101,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                 </Text>
                 <View className="px-2 py-1 rounded" style={{ backgroundColor: renkler.arkaplan }}>
                     <Text className="text-xs font-bold" style={{ color: renkler.metinIkincil }}>
-                        {tamamlananSayisi} / {toplamSayi} Tamamlandı
+                        {tamamlananSayisi} / {toplamSayi} kılındı
                     </Text>
                 </View>
             </View>
@@ -129,7 +138,14 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     // SALT GORUNUM: kimlik (`namaz.namazAdi`) her yerde ayni kalir —
                     // key, aktif-vakit eslesmesi ve toggle ham adi kullanir.
                     const gorunenAd = namazGorunenAdi(namaz.namazAdi, gunTarihi, cumaEtiketi);
-                    const durumEtiketi = tamamlandi ? 'kılındı' : (aktifMi ? 'vakti geldi' : (pasifMi ? 'vakit girmedi' : 'vakti bekleniyor'));
+                    // Durum dili tek sözlükten (Kılındı / Vakti geldi / Henüz girmedi): vakti gelmemiş
+                    // ya da şu an kilitli (güneş → öğle) olan "henüz girmedi", girmiş/geçmiş olan "vakti geldi".
+                    // Vakti ÇIKMIŞ: geçmiş günün her vakti; aktif günde girişi geçmiş ama şu anki
+                    // olmayan vakit (ör. öğle sürerken sabah). → "Kılınmadı".
+                    const vaktiCikti = !aktifMi && (aktifGunMu ? gecmisMi : true);
+                    const durum = namazDurumuSec(tamamlandi, !pasifMi, vaktiCikti);
+                    const durumMetni = NAMAZ_DURUMLARI[durum].etiket;
+                    const durumEtiketi = DURUM_KUCUK[durum];
 
                     return (
                         <React.Fragment key={namaz.namazAdi}>
@@ -209,7 +225,7 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                                             style={{
                                                 color: pasifMi ? renkler.metinIkincil : (tamamlandi ? renkler.durum.basarili : (aktifMi ? renkler.birincil : renkler.metinIkincil))
                                             }}>
-                                            {pasifMi ? ((aktifMi && kilitli) ? 'Vakit Girmedi' : 'Vakti Bekleniyor') : (tamamlandi ? 'Kılındı' : (aktifMi ? 'Vakti Geldi • Şimdi Kıl' : 'Bekliyor'))}
+                                            {durumMetni}
                                         </Text>
                                     </View>
 
@@ -251,14 +267,6 @@ export const VakitAkisi = React.memo<VakitAkisiProps>(({
                     <FontAwesome5 name="trophy" size={14} color={renkler.durum.basarili} />
                     <Text className="text-sm font-bold" style={{ color: renkler.durum.basarili }}>
                         Tam gün bonusu kazanıldı! +{PUAN_DEGERLERI.tam_gun} puan
-                    </Text>
-                </View>
-            ) : toplamSayi > 0 ? (
-                <View className="flex-row items-center justify-center gap-2 mt-4 py-2 px-3 rounded-xl"
-                    style={{ backgroundColor: renkler.birincil + '08' }}>
-                    <FontAwesome5 name="trophy" size={12} color={renkler.metinIkincil} />
-                    <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                        Tüm namazları kılın, +{PUAN_DEGERLERI.tam_gun} bonus puan kazanın!
                     </Text>
                 </View>
             ) : null}

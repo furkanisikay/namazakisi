@@ -1,6 +1,7 @@
 /**
- * Ayarlar > Yolculuk bilgisi (issue #296): kart anahtarı, mezhep seçimi,
- * ikamet gösterimi ve Diyanet kaynakları.
+ * Ayarlar > Namaz vakitleri > Yolculuk bilgisi (issue #296): kart anahtarı,
+ * ikamet gösterimi ve Diyanet kaynakları. Mezhep seçimi Dalga 3'te Namaz vakitleri
+ * sayfasına taşındı (`NamazVakitleriSayfasi.test.tsx`).
  */
 import React from 'react';
 import { Linking } from 'react-native';
@@ -59,21 +60,17 @@ beforeEach(async () => {
 });
 
 describe('SeferilikAyarlariSayfasi', () => {
-  it('ikamet yerini ve şu anki uzaklığı gösterir; mezhebin vakit hesabını etkilemediğini söyler', async () => {
+  it('ikamet yerini ve şu anki uzaklığı gösterir; mezhebin nerede seçildiğini söyler', async () => {
     const { getByText } = kur();
     await waitFor(() => expect(getByText('Çankaya, Ankara')).toBeTruthy());
     await waitFor(() => expect(getByText(/kuş uçuşu yaklaşık \d+ km uzaktasınız/)).toBeTruthy());
-    expect(getByText(/namaz vakitlerinin hesabını etkilemez/)).toBeTruthy();
+    expect(getByText(/mezhebi Ayarlar › Namaz vakitleri'nden seçebilirsiniz/)).toBeTruthy();
   });
 
-  it('mezhep seçimi diske yazılır', async () => {
-    const { getByLabelText, store } = kur();
-    await waitFor(() => expect(store.getState().seferilik.sonKonum).not.toBeNull());
-    fireEvent.press(getByLabelText(/^Şâfiî\./));
-    await waitFor(async () =>
-      expect(JSON.parse((await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.SEFERILIK_AYARLARI)) ?? '{}').mezhep).toBe('safii'),
-    );
-    expect(getByLabelText(/^Şâfiî\./).props.accessibilityState).toMatchObject({ selected: true });
+  it('mezhep seçimi bu sayfada YOK (Namaz vakitleri sayfasına taşındı)', async () => {
+    const { queryByLabelText, store } = kur();
+    await waitFor(() => expect(store.getState().seferilik.yuklendi).toBe(true));
+    expect(queryByLabelText(/^Şâfiî/)).toBeNull();
   });
 
   it('"Şu anki konumu ikamet yeri yapın" diskteki konumu kullanıcı kaynağıyla kaydeder', async () => {

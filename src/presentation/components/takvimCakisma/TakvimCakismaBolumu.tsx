@@ -1,6 +1,6 @@
 /**
  * Takvim çakışması uyarısı ayar bölümü (issue #291; ortak hatırlatma yüzeyleri plan §5.4) —
- * Bildirim Ayarları'nda, "Camide kılacağım" kartının altında.
+ * Hatırlatmalar > "Toplantı çakışırsa" ayrıntı sayfasında.
  *
  * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): uyarının adımları
  * TEK `PencereKarti` (`stil="gomulu"`), adım detayı `AdimDetayModal`, önizleme
@@ -39,6 +39,7 @@ import { Anahtar } from '../common/Anahtar';
 import { BildirimModali } from '../common/BildirimModali';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
@@ -113,13 +114,23 @@ function ornekCakisma() {
     };
 }
 
-export const TakvimCakismaBolumu: React.FC = () => {
+export interface TakvimCakismaBolumuProps {
+    /**
+     * Hatırlatmalar sayfasındaki anahtar "açın" dediğinde (`ac` parametresi): bölüm açılır
+     * açılmaz açma akışı başlar — açıklama (rıza) modalı + sistem izni. Özellik rızasız
+     * AÇILAMAZ (normalize rızasız "açık"ı kapalı okur), bu yüzden anahtar doğrudan yazamaz.
+     */
+    acilistaAc?: boolean;
+}
+
+export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilistaAc = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const kayitli = useAppSelector((s) => s.takvimCakisma.ayarlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
 
     const [rizaAcik, setRizaAcik] = useState(false);
     const [izinHatasi, setIzinHatasi] = useState<IzinHatasi>(null);
@@ -191,7 +202,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -223,6 +234,14 @@ export const TakvimCakismaBolumu: React.FC = () => {
         },
         [butonTiklandiFeedback, yaz]
     );
+
+    // Hatırlatmalar sayfasından "aç" isteğiyle gelindiyse açıklamayı bir kez göster.
+    const acilisIstegiIslendi = useRef(false);
+    useEffect(() => {
+        if (!acilistaAc || acilisIstegiIslendi.current || ayarlar.aktif) return;
+        acilisIstegiIslendi.current = true;
+        setRizaAcik(true);
+    }, [acilistaAc, ayarlar.aktif]);
 
     /**
      * İzni ister; verilirse `verilince` çalışır, verilmezse doğru yolu gösterir.
@@ -336,9 +355,14 @@ export const TakvimCakismaBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: TakvimCakismaAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: TakvimCakismaAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
     const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
 
@@ -415,7 +439,7 @@ export const TakvimCakismaBolumu: React.FC = () => {
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
                                     bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir. Sesli
-                                    anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
+                                    okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
                                 </Text>
                             </View>
                             <Anahtar
@@ -435,8 +459,8 @@ export const TakvimCakismaBolumu: React.FC = () => {
                                 yaz={modulYaz}
                                 ttsDestekli={ttsDestekli}
                                 // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                                sesliOnayiVar={ayarlar.sesliOnayi === true}
-                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayiVar={genelRiza.sesli}
+                                alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
                                     altBaslik: 'Takvim çakışması uyarısında sesli okuma',
                                     kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

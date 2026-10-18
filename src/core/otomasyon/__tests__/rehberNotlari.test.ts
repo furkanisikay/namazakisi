@@ -6,10 +6,10 @@ describe('rutinOnkosulNotu — ölçerek konuşur', () => {
     });
     it('kapalı olan söylenir', () => {
         expect(rutinOnkosulNotu(false, true)).toBe(
-            'Vakit bildirimleri kapalı olduğu için "vakti girdi" tetiklenmez (Bildirim Ayarları\'ndan açabilirsiniz).',
+            'Vakit bildirimleri kapalı olduğu için "vakti girdi" tetiklenmez (Hatırlatmalar\'dan açabilirsiniz).',
         );
-        expect(rutinOnkosulNotu(true, false)).toBe('Camideyim kapalı olduğu için "Camidesiniz" tetiklenmez.');
-        expect(rutinOnkosulNotu(false, false)).toContain('; Camideyim kapalı');
+        expect(rutinOnkosulNotu(true, false)).toBe('"Camiye girince" kapalı olduğu için "Camidesiniz" tetiklenmez.');
+        expect(rutinOnkosulNotu(false, false)).toContain('; "Camiye girince" kapalı');
     });
     it('bilinmiyorsa (ve kapalı yoksa) genel cümle', () => {
         expect(rutinOnkosulNotu(null, null)).toBe(ONKOSUL_GENEL);

@@ -179,4 +179,16 @@ describe('vakitBildirimSlice', () => {
         const planlamaSirasi = mockYonetici.bildirimleriGuncelle.mock.invocationCallOrder[0];
         expect(yazmaSirasi).toBeLessThan(planlamaSirasi);
     });
+
+    it('NÖBETÇİ: saveAyarlar false dönerse toplu güncelleme REDDEDİLİR (sessiz kayıp yok), planlama yapılmaz', async () => {
+        (LocalVakitBildirimServisi.saveAyarlar as jest.Mock).mockResolvedValue(false);
+        const mockYonetici = { bildirimleriGuncelle: jest.fn().mockResolvedValue(undefined) };
+        (VakitBildirimYoneticiServisi.getInstance as jest.Mock).mockReturnValue(mockYonetici);
+
+        const sonuc = await store.dispatch(
+            tumVakitBildirimAyarlariniGuncelle({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true })
+        );
+        expect(tumVakitBildirimAyarlariniGuncelle.rejected.match(sonuc)).toBe(true);
+        expect(mockYonetici.bildirimleriGuncelle).not.toHaveBeenCalled();
+    });
 });

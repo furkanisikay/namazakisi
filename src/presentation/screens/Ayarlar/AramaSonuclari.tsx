@@ -89,7 +89,11 @@ export const AramaSonuclari: React.FC<AramaSonuclariProps> = ({ sonuclar }) => {
                 : undefined
             }
             onPress={() =>
-              navigation.navigate(kayit.sayfa, kayit.capa ? { vurgula: kayit.capa } : undefined)
+              // Rota birleşimi büyüyünce (35 ekran) TS aşırı yük çıkarımı bölünmüyor → tek imzaya indir.
+              (navigation.navigate as (ekran: string, params?: { vurgula?: string }) => void)(
+                kayit.sayfa,
+                kayit.capa ? { vurgula: kayit.capa } : undefined
+              )
             }
             activeOpacity={0.7}
             accessibilityRole="button"

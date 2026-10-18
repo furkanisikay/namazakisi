@@ -1,23 +1,22 @@
 /**
- * Ayarlar Sayfası (One UI esinli yeniden kurulum — Plan 1 + Plan 2 arama/başlık)
+ * Ayarlar kökü — görev bazlı gruplar (sade tasarım, Dalga 3).
  *
- * Dört grup: Namaz vakitleri · Hatırlatmalar · Uygulama · Veri ve destek.
- * Her satırın ikinci satırı `useAyarOzetleri` ile o ayarın MEVCUT değeridir;
- * en üstteki `KurulumSagligiKarti` ekranın tek imza öğesidir.
+ *   Namaz              · Hatırlatmalar · Namazda sessiz · Namaz vakitleri · Seri hedefi
+ *   Ekran ve cihazlar  · Görünüm · Saat ve widget · Dokunma titreşimi · Dokunma sesleri
+ *   Hesap              · Yedek ve eşitleme · Yardım
+ *
+ * Her satırın ikinci satırı o ayarın CANLI özetidir (`useAyarOzetleri`,
+ * `core/hatirlatma/hatirlatmaOzetleri`); en üstteki `KurulumSagligiKarti` durumu tek
+ * bakışta söyler. Taşınanlar (envanter 4.3): Bildirimler → Hatırlatmalar sayfasına
+ * dağıldı; Camideyim + Namaz modu → "Namazda sessiz"; mezhep → Namaz vakitleri; özel gün →
+ * Hatırlatmalar; kurulumu yeniden başlatma → Yardım; vakit sayacı, canlı sayaçlar,
+ * bileklik rehberi, otomasyon → Saat ve widget. Ayar verisi/anahtarları DEĞİŞMEDİ.
  *
  * Arama açıkken (sorgu boş değilken) gruplar ve sağlık kartı gizlenir, yalnız
- * `AramaSonuclari` görünür — sorgu temizlenince Plan 1 düzeni aynen döner.
- *
- * Yapışkanlık ↔ giriş animasyonu çatışması: `stickyHeaderIndices` yalnız
- * `ScrollView`'ün DOĞRUDAN çocuğuna işler. Bu yüzden yapışkan üst blok
- * (kompakt başlık + arama hapı) giriş animasyonu sarmalayıcısının DIŞINDA,
- * `ScrollView`'ün ilk çocuğu olarak durur; geri kalan içerik (büyük başlık +
- * kart/gruplar/sonuçlar) ikinci çocuktaki giriş animasyonunu KORUR.
- *
- * Büyük başlık → kompakt başlık geçişi `fontSize` ANİMASYONU YAPMAZ (native
- * driver'da çalışmaz) — iki ayrı `Text`, opacity+translateY çapraz geçişiyle.
- *
- * (Task 5 — spec: docs/superpowers/specs/2026-07-29-ayarlar-sayfasi-yeniden-kurulum-design.md)
+ * `AramaSonuclari` görünür. Yapışkan üst blok (kompakt başlık + arama) giriş
+ * animasyonu sarmalayıcısının DIŞINDA, `ScrollView`'ün ilk çocuğudur
+ * (`stickyHeaderIndices` yalnız doğrudan çocuğa işler). Büyük → kompakt başlık
+ * geçişi `fontSize` animasyonu yapmaz (native driver), iki ayrı `Text` çapraz geçer.
  */
 import * as React from 'react';
 import { useRef, useEffect, useState, useMemo } from 'react';
@@ -39,8 +38,9 @@ import { PilRehberModal } from '../components/pil/PilRehberi';
 import { alarmIzniAyariniAc } from '../../domain/services/SistemDurumuOkuyucu';
 import { useKonumYenile } from '../hooks/useKonumYenile';
 import { useSeferilik } from '../hooks/useSeferilik';
-import { seferilikOzeti } from '../../core/seferilik/seferilikMetni';
-import { KildimGuvenServisi } from '../../domain/services/KildimGuvenServisi';
+import { MEZHEP_ADLARI } from '../../core/seferilik/seferilikAyarlari';
+import { konumMetniHesapla } from '../../core/ayarlar/konumMetni';
+import { useAppSelector } from '../store/hooks';
 import { KonumYenileButonu } from '../components/common/KonumYenileButonu';
 import { YeniOzellikKarti } from '../components/YeniOzellikKarti';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
@@ -56,6 +56,40 @@ import type { Sorun } from '../../core/ayarlar/kurulumSagligi';
 /** Kompakt başlığın belirmeye başlayıp tamamen görünür olduğu kaydırma mesafesi (dp). */
 const KOMPAKT_BASLIK_GECIS_ARALIGI = 32;
 
+/**
+ * Bir kök satırın altında kalan sayfalar — "Yeni" rozeti ve görüldü işareti grup
+ * bazındadır (duyuru `hedefSayfa`sı alt sayfayı gösterebilir).
+ */
+const HATIRLATMA_SAYFALARI: readonly AyarlarEkranAdi[] = [
+  'Hatirlatmalar',
+  'BildirimAyarlari',
+  'MuhafizAyarlari',
+  'VakitGirinceAyarlari',
+  'CumaHatirlatmaAyarlari',
+  'CamiyeGitAyarlari',
+  'YatisHatirlatmaAyarlari',
+  'TakvimCakismaAyarlari',
+  'GunSonuAyarlari',
+  'OzelGunAyarlari',
+  'NafileAyarlari',
+  'RamazanAyarlari',
+];
+const SESSIZ_SAYFALARI: readonly AyarlarEkranAdi[] = ['CamideyimAyarlari', 'NamazModuAyarlari', 'Camilerim'];
+const VAKIT_SAYFALARI: readonly AyarlarEkranAdi[] = [
+  'NamazVakitleriAyarlari',
+  'KonumAyarlari',
+  'SeferilikAyarlari',
+  'TakvimAyarlari',
+];
+const CIHAZ_SAYFALARI: readonly AyarlarEkranAdi[] = [
+  'SaatVeWidgetAyarlari',
+  'SaatAyarlari',
+  'NowBarAyarlari',
+  'OtomasyonRehberi',
+  'KildimUygulamalari',
+];
+const YARDIM_SAYFALARI: readonly AyarlarEkranAdi[] = ['Yardim', 'TaniGeriBildirim', 'Hakkinda'];
+
 export const AyarlarSayfasi: React.FC = () => {
   const renkler = useRenkler();
   const navigation = useNavigation<NativeStackNavigationProp<AyarlarStackParamList>>();
@@ -65,14 +99,14 @@ export const AyarlarSayfasi: React.FC = () => {
   const sistem = useSistemDurumu();
   // Camideyim + Namaz modu (#297/#277): yalnız Android köprüsü varken satır çizilir.
   const camideyim = useCamideyimOzeti();
-  // Now Bar ve canlı sayaçlar (#282): yalnız Android.
+  // Now Bar ve canlı sayaçlar (#282): Android; iOS'ta canlı etkinlik taşıyan build.
   const nowBar = useNowBarOzeti();
-  const kildimGuvenVar = KildimGuvenServisi.kullanilabilirMi();
   const pilRehberi = usePilRehberi(sistem);
   const { ozetler, sorunlar, saglikOzetSatiri } = useAyarOzetleri(sistem);
   const konumYenile = useKonumYenile();
-  // Seferîlik bilgi kartı (#296): dilim yoksa (eski test mock'u) varsayılan özet.
+  // Mezhep (ortak ayar) seferîlik diliminde yaşar; dilim yoksa (eski test mock'u) Hanefî.
   const seferilik = useSeferilik().durum;
+  const konum = useAppSelector((s) => s.konum);
 
   const [sorgu, setSorgu] = useState('');
   const sorguTemiz = sorgu.trim();
@@ -122,8 +156,37 @@ export const AyarlarSayfasi: React.FC = () => {
   // "Neler yeni" hariç — o sayfanın kendi rozet semantiği var (okunmamisVarMi).
   const menuyeGit = (sayfa: AyarlarEkranAdi) => {
     if (sayfa !== 'NelerYeni') sayfayiGorulduIsaretle(sayfa);
-    navigation.navigate(sayfa);
+    // Rota birleşimi büyük (35 ekran): TS aşırı yük çıkarımı bölünmüyor → tek imza.
+    (navigation.navigate as (ekran: AyarlarEkranAdi) => void)(sayfa);
   };
+
+  /** Grup satırı: alt sayfaların duyurularını da görüldü sayar. */
+  const grubaGit = (sayfa: AyarlarEkranAdi, grup: readonly AyarlarEkranAdi[]) => {
+    grup.forEach((g) => sayfayiGorulduIsaretle(g));
+    menuyeGit(sayfa);
+  };
+  const grupOkunmamisMi = (grup: readonly AyarlarEkranAdi[]) => grup.some((g) => sayfaOkunmamisMi(g));
+
+  // ── Canlı özetler ──
+  const hatirlatmaOzeti = ozetler.hatirlatmalar;
+  const namazdaSessizOzeti =
+    camideyim.cami === 'Kapalı' && camideyim.namazModu === 'Kapalı'
+      ? 'Kapalı'
+      : camideyim.cami !== 'Kapalı'
+        ? `Camide: ${camideyim.cami}`
+        : `Vakitlerde: ${camideyim.namazModu}`;
+  const mezhep = seferilik?.ayarlar.mezhep ?? 'hanefi';
+  const namazVakitleriOzeti = `${konumMetniHesapla({
+    konumModu: konum.konumModu,
+    gpsAdres: konum.gpsAdres,
+    seciliIlceAdi: konum.seciliIlceAdi,
+    seciliIlAdi: konum.seciliIlAdi,
+  })} · ${MEZHEP_ADLARI[mezhep]}`;
+  // Saat ve widget: Android'de her zaman (saat, sayaç, bileklik); iOS'ta yalnız canlı
+  // etkinlik taşıyan build'de (başka bir şey yoksa sayfa "bu telefonda yok"tan ibaret olurdu).
+  const saatVeWidgetVar = Platform.OS === 'android' || nowBar.kullanilabilir;
+  const saatVeWidgetOzeti =
+    Platform.OS === 'android' ? 'Saat, canlı sayaç, bileklik' : `Canlı etkinlikler · ${nowBar.ozet ?? ''}`.replace(/ · $/, '');
 
   const saglikEylemi = (sorun: Sorun) => {
     if (sorun.eylem?.tip === 'sistemAyarlari') {
@@ -196,14 +259,34 @@ export const AyarlarSayfasi: React.FC = () => {
 
               <KurulumSagligiKarti sorunlar={sorunlar} onEylem={saglikEylemi} ozetSatiri={saglikOzetSatiri} />
 
-              <AyarGrubu baslik="Namaz vakitleri">
+              <AyarGrubu baslik="Namaz">
+                <AyarSatiri
+                  varyant="navigasyon"
+                  ikon={<FontAwesome5 name="bell" size={20} color={ikonRengi} solid />}
+                  baslik="Hatırlatmalar"
+                  ozet={hatirlatmaOzeti}
+                  yeniRozetGoster={grupOkunmamisMi(HATIRLATMA_SAYFALARI)}
+                  onPress={() => grubaGit('Hatirlatmalar', HATIRLATMA_SAYFALARI)}
+                />
+                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
+                {camideyim.kullanilabilir && [
+                  <AyarSatiri
+                    key="namazda-sessiz"
+                    varyant="navigasyon"
+                    ikon={<FontAwesome5 name="volume-mute" size={20} color={ikonRengi} solid />}
+                    baslik="Namazda sessiz"
+                    ozet={namazdaSessizOzeti}
+                    yeniRozetGoster={grupOkunmamisMi(SESSIZ_SAYFALARI)}
+                    onPress={() => grubaGit('CamideyimAyarlari', SESSIZ_SAYFALARI)}
+                  />,
+                ]}
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="map-marker-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Konum"
-                  ozet={ozetler.konum}
-                  yeniRozetGoster={sayfaOkunmamisMi('KonumAyarlari')}
-                  onPress={() => menuyeGit('KonumAyarlari')}
+                  baslik="Namaz vakitleri"
+                  ozet={namazVakitleriOzeti}
+                  yeniRozetGoster={grupOkunmamisMi(VAKIT_SAYFALARI)}
+                  onPress={() => grubaGit('NamazVakitleriAyarlari', VAKIT_SAYFALARI)}
                   // Otomatik modda konum bayat kalabilir (bölge olayı düşmemişse);
                   // sayfaya girmeden tek dokunuşla tazelenebilsin.
                   ekEylem={
@@ -217,99 +300,15 @@ export const AyarlarSayfasi: React.FC = () => {
                 />
                 <AyarSatiri
                   varyant="navigasyon"
-                  ikon={<FontAwesome5 name="calendar-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Takvim entegrasyonu"
-                  ozet={ozetler.takvim}
-                  yeniRozetGoster={sayfaOkunmamisMi('TakvimAyarlari')}
-                  onPress={() => menuyeGit('TakvimAyarlari')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="route" size={20} color={ikonRengi} solid />}
-                  baslik="Yolculuk bilgisi"
-                  ozet={seferilikOzeti(seferilik?.ayarlar.kartAcik ?? true, seferilik?.ayarlar.mezhep ?? 'hanefi')}
-                  yeniRozetGoster={sayfaOkunmamisMi('SeferilikAyarlari')}
-                  onPress={() => menuyeGit('SeferilikAyarlari')}
-                />
-              </AyarGrubu>
-
-              <AyarGrubu baslik="Hatırlatmalar">
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="shield-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Namaz muhafızı"
-                  ozet={ozetler.muhafiz}
-                  yeniRozetGoster={sayfaOkunmamisMi('MuhafizAyarlari')}
-                  onPress={() => menuyeGit('MuhafizAyarlari')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="bell" size={20} color={ikonRengi} solid />}
-                  baslik="Bildirimler"
-                  ozet={ozetler.bildirim}
-                  yeniRozetGoster={sayfaOkunmamisMi('BildirimAyarlari')}
-                  onPress={() => menuyeGit('BildirimAyarlari')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
                   ikon={<FontAwesome5 name="bullseye" size={20} color={ikonRengi} solid />}
-                  baslik="Seri ve hedefler"
+                  baslik="Seri hedefi"
                   ozet={ozetler.seri}
                   yeniRozetGoster={sayfaOkunmamisMi('SeriHedefAyarlari')}
                   onPress={() => menuyeGit('SeriHedefAyarlari')}
                 />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="moon" size={20} color={ikonRengi} solid />}
-                  baslik="Ramazan özel"
-                  ozet={ozetler.ramazan}
-                  yeniRozetGoster={sayfaOkunmamisMi('RamazanAyarlari')}
-                  onPress={() => menuyeGit('RamazanAyarlari')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="star-and-crescent" size={20} color={ikonRengi} solid />}
-                  baslik="Nafile namazlar"
-                  ozet={ozetler.nafile}
-                  yeniRozetGoster={sayfaOkunmamisMi('NafileAyarlari')}
-                  onPress={() => menuyeGit('NafileAyarlari')}
-                />
-                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
-                {nowBar.kullanilabilir && [
-                  <AyarSatiri
-                    key="now-bar"
-                    varyant="navigasyon"
-                    ikon={<FontAwesome5 name="stopwatch" size={20} color={ikonRengi} solid />}
-                    baslik={Platform.OS === 'ios' ? 'Canlı etkinlikler' : 'Now Bar ve canlı sayaçlar'}
-                    ozet={nowBar.ozet ?? ''}
-                    yeniRozetGoster={sayfaOkunmamisMi('NowBarAyarlari')}
-                    onPress={() => menuyeGit('NowBarAyarlari')}
-                  />,
-                ]}
-                {/* Dizi (Fragment değil): AyarGrubu ayraçları Children.toArray ile sayar. */}
-                {camideyim.kullanilabilir && [
-                  <AyarSatiri
-                    key="camideyim"
-                    varyant="navigasyon"
-                    ikon={<FontAwesome5 name="mosque" size={20} color={ikonRengi} solid />}
-                    baslik="Camideyim"
-                    ozet={camideyim.cami}
-                    yeniRozetGoster={sayfaOkunmamisMi('CamideyimAyarlari')}
-                    onPress={() => menuyeGit('CamideyimAyarlari')}
-                  />,
-                  <AyarSatiri
-                    key="namaz-modu"
-                    varyant="navigasyon"
-                    ikon={<FontAwesome5 name="moon" size={20} color={ikonRengi} />}
-                    baslik="Namaz modu"
-                    ozet={camideyim.namazModu}
-                    yeniRozetGoster={sayfaOkunmamisMi('NamazModuAyarlari')}
-                    onPress={() => menuyeGit('NamazModuAyarlari')}
-                  />,
-                ]}
               </AyarGrubu>
 
-              <AyarGrubu baslik="Uygulama">
+              <AyarGrubu baslik="Ekran ve cihazlar">
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="palette" size={20} color={ikonRengi} solid />}
@@ -318,83 +317,51 @@ export const AyarlarSayfasi: React.FC = () => {
                   yeniRozetGoster={sayfaOkunmamisMi('GorünumAyarlari')}
                   onPress={() => menuyeGit('GorünumAyarlari')}
                 />
-                {/* Otomasyon rehberi (issue #278) — yalnız Android (köprü varsa). "Kıldım
-                    işaretleyebilen uygulamalar" (#299) bu listede AYRI satır DEĞİLDİR: güven
-                    listesi otomasyonun bir parçasıdır ve yalnız rehber sayfasından açılır
-                    (rota korunur — "Neler Yeni" ve izin sorusu oraya gider). */}
-                {/* Wear OS saati (saat W3) — yalnız Android (Wear OS yalnız Android telefonla eşleşir). */}
-                {Platform.OS === 'android' && (
+                {saatVeWidgetVar && [
                   <AyarSatiri
-                    key="saat"
+                    key="saat-widget"
                     varyant="navigasyon"
                     ikon={<FontAwesome5 name="clock" size={20} color={ikonRengi} />}
-                    baslik="Saat"
-                    ozet="Uyandırma ve sesli anons nerede"
-                    yeniRozetGoster={sayfaOkunmamisMi('SaatAyarlari')}
-                    onPress={() => menuyeGit('SaatAyarlari')}
-                  />
-                )}
-                {kildimGuvenVar && (
-                  <AyarSatiri
-                    key="otomasyon-rehberi"
-                    varyant="navigasyon"
-                    ikon={<FontAwesome5 name="magic" size={20} color={ikonRengi} solid />}
-                    baslik="Otomasyonlarla kullanın"
-                    ozet="Samsung Rutinler, Tasker, MacroDroid"
-                    yeniRozetGoster={sayfaOkunmamisMi('OtomasyonRehberi') || sayfaOkunmamisMi('KildimUygulamalari')}
-                    onPress={() => menuyeGit('OtomasyonRehberi')}
-                  />
-                )}
+                    baslik="Saat ve widget"
+                    ozet={saatVeWidgetOzeti}
+                    yeniRozetGoster={grupOkunmamisMi(CIHAZ_SAYFALARI)}
+                    onPress={() => grubaGit('SaatVeWidgetAyarlari', CIHAZ_SAYFALARI)}
+                  />,
+                ]}
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<MaterialIcons name="vibration" size={22} color={ikonRengi} />}
-                  baslik="Titreşim"
-                  ozet="Etkileşimlerde telefon titrer."
+                  baslik="Dokunma titreşimi"
+                  ozet="Dokununca telefon hafifçe titrer"
                   deger={ayarlar.titresimAktif}
                   onDegistir={titresimDurumunuDegistir}
                 />
                 <AyarSatiri
                   varyant="toggle"
                   ikon={<FontAwesome5 name="volume-up" size={20} color={ikonRengi} solid />}
-                  baslik="Ses efektleri"
-                  ozet="Etkileşimlerde ses efektleri verir."
+                  baslik="Dokunma sesleri"
+                  ozet="Dokununca kısa bir ses çıkar"
                   deger={ayarlar.sesAktif}
                   onDegistir={sesDurumunuDegistir}
                 />
               </AyarGrubu>
 
-              <AyarGrubu baslik="Veri ve destek">
+              <AyarGrubu baslik="Hesap">
                 <AyarSatiri
                   varyant="navigasyon"
                   ikon={<FontAwesome5 name="cloud-download-alt" size={20} color={ikonRengi} solid />}
-                  baslik="Yedekleme ve aktarım"
+                  baslik="Yedek ve eşitleme"
                   ozet={ozetler.yedekleme}
                   yeniRozetGoster={sayfaOkunmamisMi('YedeklemeAktarim')}
                   onPress={() => menuyeGit('YedeklemeAktarim')}
                 />
                 <AyarSatiri
                   varyant="navigasyon"
-                  ikon={<FontAwesome5 name="comment-dots" size={20} color={ikonRengi} solid />}
-                  baslik="Tanı ve geri bildirim"
-                  ozet="Sorun bildirin, tanı raporu gönderin"
-                  yeniRozetGoster={sayfaOkunmamisMi('TaniGeriBildirim')}
-                  onPress={() => menuyeGit('TaniGeriBildirim')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="gift" size={20} color={ikonRengi} solid />}
-                  baslik="Neler yeni"
-                  ozet="Uygulamaya eklenen yeni özellikler"
+                  ikon={<FontAwesome5 name="life-ring" size={20} color={ikonRengi} solid />}
+                  baslik="Yardım"
+                  ozet="Sorun bildirin, neler yeni"
                   yeniRozetGoster={okunmamisVarMi}
-                  onPress={() => menuyeGit('NelerYeni')}
-                />
-                <AyarSatiri
-                  varyant="navigasyon"
-                  ikon={<FontAwesome5 name="info-circle" size={20} color={ikonRengi} solid />}
-                  baslik="Hakkında"
-                  ozet={ozetler.hakkinda}
-                  yeniRozetGoster={sayfaOkunmamisMi('Hakkinda')}
-                  onPress={() => menuyeGit('Hakkinda')}
+                  onPress={() => grubaGit('Yardim', YARDIM_SAYFALARI)}
                 />
               </AyarGrubu>
             </>

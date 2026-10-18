@@ -1,13 +1,10 @@
 /**
  * KurulumSihirbazi ekranı ve adım bileşenleri arasında paylaşılan tipler.
  */
-export type BildirimAyarlari = {
-  imsak: boolean;
-  ogle: boolean;
-  ikindi: boolean;
-  aksam: boolean;
-  yatsi: boolean;
-};
 
-export type MuhafizYogunluk = 'hafif' | 'normal' | 'yogun' | 'ozel';
-export type KonumDurumu = 'bekliyor' | 'gpsAliniyor' | 'gpsBasarili' | 'gpsReddedildi';
+/** Beş adım (sade tasarım, Dalga 2). Sıra = ekrandaki "Adım N / 5". */
+export const KURULUM_ADIMLARI = ['hosgeldiniz', 'konum', 'bildirim', 'duzey', 'hazir'] as const;
+export type KurulumAdimi = (typeof KURULUM_ADIMLARI)[number];
+
+/** Konum adımının durumu. `manuel` = il listesi açık (izin yok ya da kullanıcı seçti). */
+export type KonumDurumu = 'bekliyor' | 'aliniyor' | 'alindi' | 'manuel';

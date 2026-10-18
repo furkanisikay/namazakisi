@@ -40,6 +40,7 @@ import { CamiyeGitHatirlatmaServisi } from './src/domain/services/CamiyeGitHatir
 import { camiyeGitAyarlariniYukle } from './src/presentation/store/camiyeGitSlice';
 import { TakvimCakismaServisi } from './src/domain/services/TakvimCakismaServisi';
 import { nafileAyarlariniYukle } from './src/presentation/store/nafileSlice';
+import { hatirlatmaRizalariniYukle } from './src/presentation/store/hatirlatmaRizaSlice';
 import { NafileHatirlatmaServisi } from './src/domain/services/NafileHatirlatmaServisi';
 import { NamazVaktiHesaplayiciServisi } from './src/domain/services/NamazVaktiHesaplayiciServisi';
 import { muhafizAyarlariniYukle } from './src/presentation/store/muhafizSlice';
@@ -203,6 +204,9 @@ const arkaplanMuhafiziBildirimleriniPlanla = async () => {
       // Ana ekran nafile şeridi bu slice'ı okur → açılışta HİDRATE edilmeli
       // (AGENTS.md: "HER slice açılışta yüklenmez").
       store.dispatch(nafileAyarlariniYukle()),
+      // TEK RIZA (Dalga 3): onay modalı ikinci kez sorulmasın diye açılışta hidrate
+      // edilir (eski yüzey onayları da bu okumada bir kez ortak kayda göç eder).
+      store.dispatch(hatirlatmaRizalariniYukle()),
       kurulumTamamlandi ? BildirimServisi.getInstance().izinIste() : Promise.resolve(),
     ]);
 

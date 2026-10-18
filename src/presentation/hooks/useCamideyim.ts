@@ -85,8 +85,23 @@ export function useCamideyim(): CamideyimDurumu {
         return () => abonelik.remove();
     }, [yenile]);
 
+    /**
+     * Native'deki EN SON kaydın üstüne değişikliği uygular ve yazar. Kancanın birden çok
+     * örneği yaşar (Namazda sessiz + Camilerim alt sayfası; ayrıca bildirimden gelen
+     * "Burası cami değil" doğrudan native'e yazar) → bellekteki kopya bayat olabilir.
+     * Bayat kopyayla bütün kaydı yazmak öteki örneğin favori/kendi yer/"cami değil"
+     * değişikliklerini EZERDİ (Opus incelemesi). Okuma başarısızsa bellekteki kopyaya düşülür.
+     */
     const yaz = useCallback(
-        async (yeni: CamideyimAyarlari): Promise<string> => {
+        async (degistir: (a: CamideyimAyarlari) => CamideyimAyarlari): Promise<string> => {
+            let taban = ayarlarRef.current;
+            try {
+                taban = camideyimAyarlariniNormalize(await kopru.ayarlariAl());
+            } catch {
+                // bellekteki kopya
+            }
+            const yeni = degistir(taban);
+            ayarlarRef.current = yeni;
             setAyarlar(yeni);
             const sonuc = await kopru.ayarlariYaz(yeni, merkez);
             await CamideyimServisi.getInstance().planlariGonder(merkez);
@@ -97,40 +112,41 @@ export function useCamideyim(): CamideyimDurumu {
     );
 
     const guncelle = useCallback(
-        (d: Partial<CamideyimAyarlari>) => yaz({ ...ayarlarRef.current, ...d }),
+        (d: Partial<CamideyimAyarlari>) => yaz((a) => ({ ...a, ...d })),
         [yaz]
     );
 
     const yerGuncelle = useCallback(
         async (id: string, d: Partial<YerKaydi>) => {
-            const a = ayarlarRef.current;
-            await yaz({ ...a, yerler: yerDurumunuAyarla(a.yerler, id, d) });
+            await yaz((a) => ({ ...a, yerler: yerDurumunuAyarla(a.yerler, id, d) }));
         },
         [yaz]
     );
 
     const yerSil = useCallback(
         async (id: string) => {
-            const a = ayarlarRef.current;
-            const yerler = { ...a.yerler };
-            delete yerler[id];
-            await yaz({ ...a, yerler });
+            await yaz((a) => {
+                const yerler = { ...a.yerler };
+                delete yerler[id];
+                return { ...a, yerler };
+            });
         },
         [yaz]
     );
 
     const yerEkle = useCallback(
         async (yer: { lat: number; lng: number; ad?: string }): Promise<string> => {
-            const a = ayarlarRef.current;
-            const sayi = Object.values(a.yerler).filter((y) => y.kendi).length + 1;
             const id = kullaniciYeriKimligi(Date.now());
-            const ad = yer.ad?.trim() || (sayi === 1 ? 'Eklediğim yer' : `Eklediğim yer ${sayi}`);
-            await yaz({
-                ...a,
-                yerler: {
-                    ...a.yerler,
-                    [id]: { durum: 'normal', kendi: true, ad, lat: yer.lat, lng: yer.lng, alanM: KULLANICI_YERI_ALAN_M },
-                },
+            await yaz((a) => {
+                const sayi = Object.values(a.yerler).filter((y) => y.kendi).length + 1;
+                const ad = yer.ad?.trim() || (sayi === 1 ? 'Eklediğim yer' : `Eklediğim yer ${sayi}`);
+                return {
+                    ...a,
+                    yerler: {
+                        ...a.yerler,
+                        [id]: { durum: 'normal', kendi: true, ad, lat: yer.lat, lng: yer.lng, alanM: KULLANICI_YERI_ALAN_M },
+                    },
+                };
             });
             return id;
         },

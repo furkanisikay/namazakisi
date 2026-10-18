@@ -2,18 +2,18 @@
 # Bildirim siniri karti + rehber sheet'i. Android'de kart YALNIZ 400+ bekleyen
 # bildirimde gorunur; yogun tohum bunu gunun cogunda saglar ama sayi gunun
 # saatine baglidir (gecen vakitler sayilmaz). Kart cikmazsa akis burada duser
-# (UYARI satiri); kartsiz muhafiz ekrani zaten 04 akisinda cekiliyor.
+# (UYARI satiri); kart Hatirlatmalar sayfasinin ustunde (tek kart).
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Namaz muhafızı\\..*"
+      text: "Hatırlatmalar\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Namaz muhafızı\\..*"
+    text: "Hatırlatmalar\\..*"
 # Defter diskten okunup hesaplanana kadar kart cizilmez.
 - extendedWaitUntil:
     visible:

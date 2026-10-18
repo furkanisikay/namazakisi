@@ -235,6 +235,10 @@ jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
   return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+  const { Text } = require('react-native');
+  return (props: { name: string }) => <Text>{props.name}</Text>;
+});
 
 // ── Domain servisleri (native köprü / yan etki yok) ──────────────────────────
 const mockVakitBilgisi: {
@@ -258,12 +262,13 @@ jest.mock('../../../domain/services/NamazVaktiHesaplayiciServisi', () => ({
     }),
   },
 }));
+const mockMuhafizBaslat = jest.fn();
 jest.mock('../../../domain/services/NamazMuhafiziServisi', () => ({
   NamazMuhafiziServisi: {
     getInstance: () => ({
       yapilandir: jest.fn(),
       acilistaKilinanlariYukle: jest.fn().mockResolvedValue(undefined),
-      baslat: jest.fn(),
+      baslat: (...a: unknown[]) => mockMuhafizBaslat(...a),
       durdur: jest.fn(),
       namazKilindiIsaretle: jest.fn(),
       namazKilindiTemizle: jest.fn(),
@@ -346,7 +351,7 @@ describe('AnaSayfa', () => {
    * bir state nesnesi kullanılmalı: her render'da yeni nesne dönerse
    * `konum.koordinatlar` referansı değişir ve effect'ler sonsuz döngüye girer.
    */
-  const stateOlustur = (mevcutTarih: string) =>
+  const stateOlustur = (mevcutTarih: string, ek: { muhafizAktif?: boolean; ikindiKilindi?: boolean } = {}) =>
     Object.freeze({
       namaz: {
         mevcutTarih,
@@ -357,7 +362,7 @@ describe('AnaSayfa', () => {
           namazlar: [
             { namazAdi: 'Sabah', tamamlandi: false },
             { namazAdi: 'Öğle', tamamlandi: false },
-            { namazAdi: 'İkindi', tamamlandi: false },
+            { namazAdi: 'İkindi', tamamlandi: !!ek.ikindiKilindi },
             { namazAdi: 'Akşam', tamamlandi: false },
             { namazAdi: 'Yatsı', tamamlandi: false },
           ],
@@ -365,7 +370,12 @@ describe('AnaSayfa', () => {
       },
       // sonYukleme null → seri/puanlama senkron effect'i çalışmaz (bu testlerin konusu değil)
       seri: { ozelGunAyarlari: null, sonYukleme: null, seriDurumu: null, migreEdildi: false },
-      muhafiz: { aktif: false, yogunluk: 'normal' },
+      muhafiz: {
+        aktif: !!ek.muhafizAktif,
+        yogunluk: 'normal',
+        esikler: { seviye1: 45, seviye2: 25, seviye3: 10, seviye4: 3 },
+        sikliklar: { seviye1: 45, seviye2: 10, seviye3: 5, seviye4: 3 },
+      },
       konum: {
         konumModu: 'manuel',
         koordinatlar: { lat: 41.0082, lng: 28.9784 },
@@ -383,8 +393,8 @@ describe('AnaSayfa', () => {
    * hidrasyonu) test gövdesi bittikten sonra çözülüp "not wrapped in act(...)"
    * uyarısı üretmesin diye mikro görevler act içinde boşaltılır.
    */
-  const kur = async (mevcutTarih: string) => {
-    const state = stateOlustur(mevcutTarih);
+  const kur = async (mevcutTarih: string, ek: { muhafizAktif?: boolean; ikindiKilindi?: boolean } = {}) => {
+    const state = stateOlustur(mevcutTarih, ek);
     (useAppSelector as unknown as jest.Mock).mockImplementation(
       (selector: (s: typeof state) => unknown) => selector(state)
     );
@@ -681,6 +691,102 @@ describe('AnaSayfa', () => {
     });
   });
 
+  // ── Tek durum alanı + Kıldım (sade tasarım, Dalga 2) ──────────────────────
+  describe('Tek durum alanı', () => {
+    it('kerahat + toparlanma birlikteyken YALNIZ kerahat görünür, diğeri "+1 daha" arkasında', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      const { seriOzetiSelector } = jest.requireMock('../../store/seriSlice');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      (seriOzetiSelector as jest.Mock).mockReturnValue({
+        mevcutSeri: 0,
+        enUzunSeri: 0,
+        toparlanmaModu: true,
+        toparlanmaIlerleme: { tamamlanan: 1, hedef: 2 },
+      });
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        const ekran = await kur(bugunuAl());
+        expect(ekran.getByTestId('durum-kerahat')).toBeTruthy();
+        expect(ekran.queryByTestId('durum-toparlanma')).toBeNull();
+        fireEvent.press(ekran.getByText('+1 daha'));
+        expect(ekran.getByTestId('durum-toparlanma')).toBeTruthy();
+        expect(ekran.getByText('Toparlanma · 1/2 gün')).toBeTruthy();
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+        (seriOzetiSelector as jest.Mock).mockReturnValue({ mevcutSeri: 0, enUzunSeri: 0, toparlanmaModu: false });
+      }
+    });
+
+    const GURUB = { mekruhMu: true, tur: 'gurub', aciklama: 'Güneş batış vaktidir (gurub). Bu vakitte namaz kılınması mekruhtur. Akşam ezanını bekleyiniz.' };
+
+    it('NÖBETÇİ: gurubda bugünün ikindisi kılınmadıysa "bekleyiniz" DEMEZ; kerahat onayı da aynı metni taşır', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue(GURUB);
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        const ekran = await kur(bugunuAl());
+        expect(ekran.getByText(/Bugünün ikindisini henüz kılmadıysanız şimdi kılabilirsiniz/)).toBeTruthy();
+        expect(ekran.queryByText(/bekleyiniz/)).toBeNull();
+        const modal = mockKerahatModalProplari[mockKerahatModalProplari.length - 1] as unknown as { aciklama: string };
+        expect(modal.aciklama).toMatch(/şimdi kılabilirsiniz/);
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+
+    it('gurubda ikindi kılındıysa servisin metni ("bekleyiniz") kalır', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue(GURUB);
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        const ekran = await kur(bugunuAl(), { ikindiKilindi: true });
+        expect(ekran.getByText(/Akşam ezanını bekleyiniz/)).toBeTruthy();
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+
+    it('NÖBETÇİ: muhafız + kerahat birlikteyse muhafız ÖNDE, kerahat aynı kartta not (gizlenmez)', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue(GURUB);
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        const ekran = await kur(bugunuAl(), { muhafizAktif: true });
+        await waitFor(() => expect(mockMuhafizBaslat).toHaveBeenCalled());
+        const geriCagri = mockMuhafizBaslat.mock.calls[mockMuhafizBaslat.mock.calls.length - 1][0] as (m: string, s: number) => void;
+        await act(async () => geriCagri('İkindi vaktinin çıkmasına 10 dk kaldı', 3));
+        expect(ekran.getByTestId('durum-muhafiz')).toBeTruthy();
+        expect(ekran.getByTestId('durum-muhafiz-kerahat-notu')).toBeTruthy();
+        expect(ekran.queryByTestId('durum-kerahat')).toBeNull();
+        expect(ekran.queryByTestId('durum-alani-daha')).toBeNull();
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+      }
+    });
+
+    it('hiç uyarı yokken durum alanı çizilmez', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('durum-alani')).toBeNull();
+    });
+
+    it('vakit kartının "Kıldım" geri çağrısı saniyelik çizimde AYNI REFERANS kalır', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      const ilk = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      const sayi = mockVakitKartiProplari.length;
+      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      expect(son.onTamamla).toBe(ilk.onTamamla);
+    });
+  });
+
   // ── Sade görünüm (issue #295) ─────────────────────────────────────────────
   describe('Sade görünüm seçim dalı', () => {
     const sadeAcik = (ek: Record<string, unknown> = {}) => {
@@ -746,9 +852,10 @@ describe('AnaSayfa', () => {
       expect(mockPagerProplari.length).toBe(0);
     });
 
-    it('geçici çıkışta normal ekran + "Sade görünüme dönün" düğmesi', async () => {
+    it('geçici çıkışta normal ekran + kalıcı "Sade görünüme dönün" bağlantısı (durum alanında DEĞİL)', async () => {
       gunduzSenaryosu();
       sadeAcik({ geciciCikis: true });
+      // Sayfa içeriği çizilmese de bağlantı görünür: uyarılar arasında kaybolmaz.
       const ekran = await kur(bugunuAl());
       expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
       expect(mockPagerProplari.length).toBeGreaterThan(0);

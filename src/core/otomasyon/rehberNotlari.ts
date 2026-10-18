@@ -10,15 +10,15 @@ import { turkceBuyukHarf } from '../utils/turkceHarf';
 
 /** Genel (durum bilinmiyorken) cümle. */
 export const ONKOSUL_GENEL =
-    '"vakti girdi" için Bildirim Ayarları\'nda vakit bildirimleri, "Camidesiniz" için Camideyim açık olmalı.';
+    '"vakti girdi" için Hatırlatmalar\'da "Vakit girince", "Camidesiniz" için Namazda sessiz\'de "Camiye girince" açık olmalı.';
 
 export function rutinOnkosulNotu(vakitBildirimiAcik: boolean | null, camideyimAcik: boolean | null): string | null {
     if (vakitBildirimiAcik === true && camideyimAcik === true) return null;
     const parcalar: string[] = [];
     if (vakitBildirimiAcik === false) {
-        parcalar.push('vakit bildirimleri kapalı olduğu için "vakti girdi" tetiklenmez (Bildirim Ayarları\'ndan açabilirsiniz)');
+        parcalar.push('vakit bildirimleri kapalı olduğu için "vakti girdi" tetiklenmez (Hatırlatmalar\'dan açabilirsiniz)');
     }
-    if (camideyimAcik === false) parcalar.push('Camideyim kapalı olduğu için "Camidesiniz" tetiklenmez');
+    if (camideyimAcik === false) parcalar.push('"Camiye girince" kapalı olduğu için "Camidesiniz" tetiklenmez');
     if (parcalar.length === 0) return ONKOSUL_GENEL;
     const cumle = parcalar.join('; ');
     return `${turkceBuyukHarf(cumle.charAt(0))}${cumle.slice(1)}.`;

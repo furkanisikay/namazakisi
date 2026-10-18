@@ -284,6 +284,28 @@ describe('YedekBirlestirmeServisi — eski yedeğin seferîlik mezhebi ortak aya
   });
 });
 
+describe('YedekBirlestirmeServisi — tek rıza BİRLEŞİR, üzerine yazılmaz (Dalga 3)', () => {
+  it('cihazdaki sesli onay, yalnız alarm onayı taşıyan yedekle SİLİNMEZ; ikisi birleşir', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, hatirlatmaRizalari: { sesliOnayi: true } } });
+    const gelen = payloadKur({ ayarlar: { ...bosAyarlar, hatirlatmaRizalari: { alarmOnayi: true } } });
+    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('uzerineYaz'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI]).toEqual({ sesliOnayi: true, alarmOnayi: true });
+  });
+
+  it('boş rıza kaydı taşıyan yedek cihazdaki onayı geri almaz', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, hatirlatmaRizalari: { sesliOnayi: true, alarmOnayi: true } } });
+    const gelen = payloadKur({ ayarlar: { ...bosAyarlar, hatirlatmaRizalari: {} } });
+    const plan = birlestirmePlaniOlustur(mevcut, gelen, secimler('uzerineYaz'));
+    expect(plan[DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI]).toEqual({ sesliOnayi: true, alarmOnayi: true });
+  });
+
+  it('rıza alanı olmayan eski yedek anahtara hiç dokunmaz', () => {
+    const mevcut = payloadKur({ ayarlar: { ...bosAyarlar, hatirlatmaRizalari: { sesliOnayi: true } } });
+    const plan = birlestirmePlaniOlustur(mevcut, payloadKur({ ayarlar: { ...bosAyarlar } }), secimler('uzerineYaz'));
+    expect(plan).not.toHaveProperty(DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI);
+  });
+});
+
 describe('YedekBirlestirmeServisi — "camide kılacağım" ayarı geri yüklenir (issue #292)', () => {
   it('uzerineYaz: gelen camiyeGit alt-ayarı CAMIYE_GIT_AYARLARI anahtarına yazılır', () => {
     const plan = birlestirmePlaniOlustur(

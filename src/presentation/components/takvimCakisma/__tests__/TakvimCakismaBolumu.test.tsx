@@ -69,16 +69,17 @@ jest.mock('../../../../domain/services/TakvimEtkinlikOkuyucu', () => ({
 }));
 
 import { TakvimCakismaBolumu, TAKVIM_CAKISMA_YON_GEREKCESI } from '../TakvimCakismaBolumu';
+import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 
 const KONUM = { lat: 41.0, lng: 29.0 };
 
-const kur = () => {
+const kur = (props: { acilistaAc?: boolean } = {}) => {
     const store = configureStore({
-        reducer: { takvimCakisma: takvimCakismaReducer, konum: () => ({ koordinatlar: KONUM }) },
+        reducer: { takvimCakisma: takvimCakismaReducer, hatirlatmaRiza: rizaReducer, konum: () => ({ koordinatlar: KONUM }) },
     });
     const ekran = render(
         <Provider store={store}>
-            <TakvimCakismaBolumu />
+            <TakvimCakismaBolumu {...props} />
         </Provider>
     );
     return { store, ...ekran };
@@ -107,6 +108,19 @@ describe('TakvimCakismaBolumu', () => {
         expect(mockIzinIste).toHaveBeenCalledTimes(1);
         expect(store.getState().takvimCakisma.ayarlar.rizaZamani).toEqual(expect.any(String));
         expect(mockPlanla).toHaveBeenCalledWith(KONUM);
+    });
+
+    it('Hatırlatmalar sayfasından "aç" isteğiyle gelinince açıklama kendiliğinden açılır; yine rızasız AÇILMAZ', async () => {
+        const { findByText, store } = kur({ acilistaAc: true });
+        expect(await findByText('Takviminiz okunsun mu?')).toBeTruthy();
+        expect(store.getState().takvimCakisma.ayarlar.aktif).toBe(false);
+        expect(mockIzinIste).not.toHaveBeenCalled();
+    });
+
+    it('açma isteği olmadan açıklama kendiliğinden açılmaz', async () => {
+        const { queryByText } = kur();
+        await waitFor(() => expect(mockIzinDurumu).toHaveBeenCalled());
+        expect(queryByText('Takviminiz okunsun mu?')).toBeNull();
     });
 
     it('vazgeçilirse hiçbir şey yazılmaz ve izin istenmez', async () => {
@@ -167,13 +181,13 @@ describe('TakvimCakismaBolumu', () => {
         const ekran = kur();
         expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
         expect(ekran.getByText(TAKVIM_CAKISMA_YON_GEREKCESI)).toBeTruthy();
-        expect(ekran.getByText(/Sesli anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
+        expect(ekran.getByText(/Sesli okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
         expect(ekran.getByText(/ilk uyarı etkinlikten 30 dk önce gelir/)).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Takvim çakışması akışını önizleyin'));
         expect(ekran.getByText('Takvim çakışması akışı')).toBeTruthy();
     });
 
-    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza KENDİ alanına, adsız örnekle', async () => {
+    it('STANDART yetenekler adım detayında: iki kanal anahtarı + GERÇEK ALARM; sesli rıza ORTAK kayda (tek rıza), adsız örnekle', async () => {
         mockDisk = takvimCakismaAyarlariniNormalize({ aktif: true, rizaZamani: '2026-10-01T00:00:00.000Z' });
         mockIzinDurumu.mockResolvedValue('verildi');
         const ekran = kur();
@@ -183,11 +197,12 @@ describe('TakvimCakismaBolumu', () => {
         fireEvent.press(ekran.getByTestId('adim-gelismis'));
         expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-        expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+        expect(ekran.getByText('Sesli okuma açılsın mı?')).toBeTruthy();
         expect(ekran.getAllByText(/Takviminizdeki bir etkinlik öğle vaktine denk geliyor/).length).toBeGreaterThan(0);
-        fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
-        await waitFor(() => expect(mockDisk.sesliOnayi).toBe(true));
-        expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
+        fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
+        await waitFor(() => expect(mockDisk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true }));
+        expect(ekran.store.getState().hatirlatmaRiza.kayit.sesliOnayi).toBe(true);
+        expect(mockDisk.sesliOnayi).toBeUndefined();
         // Takvim rızası korunur (sesli rızası ayrı alan).
         expect(mockDisk.rizaZamani).toBe('2026-10-01T00:00:00.000Z');
         expect(mockDisk.aktif).toBe(true);

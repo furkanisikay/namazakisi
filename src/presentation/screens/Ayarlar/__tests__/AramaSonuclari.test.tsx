@@ -63,7 +63,7 @@ describe('AramaSonuclari', () => {
 
     fireEvent.press(getByText(kayit.baslik));
 
-    expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari', { vurgula: 'vakitBildirimleri' });
+    expect(navigateMock).toHaveBeenCalledWith('VakitGirinceAyarlari', { vurgula: 'vakitBildirimleri' });
   });
 
   it('çapasız bir kayda (nav satırı) dokununca ikinci argüman undefined gider', () => {
@@ -76,12 +76,19 @@ describe('AramaSonuclari', () => {
   });
 
   it('çapalı kayıt bağlamı "üst grup › alt grup" biçiminde birleşir', () => {
-    // vakitBildirimleri: sayfa=BildirimAyarlari, capa grubu='Bildirimler';
-    // BildirimAyarlari'nin nav kaydındaki (sayfa-bildirim) grup='Hatırlatmalar'.
+    // vakitSayaci: sayfa=SaatVeWidgetAyarlari, capa grubu='Saat ve widget';
+    // o sayfanın nav kaydındaki grup='Ekran ve cihazlar'.
+    const kayit = kaydiBul('vakitSayaci');
+    const { getByText } = render(<AramaSonuclari sonuclar={[kayit]} />);
+
+    expect(getByText('Ekran ve cihazlar › Saat ve widget')).toBeTruthy();
+  });
+
+  it('çapalı kaydın grubu nav grubuyla aynıysa bağlam tek kez yazılır', () => {
     const kayit = kaydiBul('vakitBildirimleri');
     const { getByText } = render(<AramaSonuclari sonuclar={[kayit]} />);
 
-    expect(getByText('Hatırlatmalar › Bildirimler')).toBeTruthy();
+    expect(getByText('Hatırlatmalar')).toBeTruthy();
   });
 
   it('çapasız (nav) kayıt bağlamı yalnız kendi grubunu gösterir', () => {

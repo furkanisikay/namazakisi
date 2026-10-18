@@ -97,7 +97,7 @@ describe('useAyarOzetleri', () => {
     expect(result.current.ozetler.takvim).toBe('Açık');
     expect(result.current.ozetler.muhafiz).toBe('Açık · normal yoğunluk');
     expect(result.current.ozetler.bildirim).toBe('2 vakit · cuma hatırlatması açık');
-    expect(result.current.ozetler.seri).toBe('Tam gün: 4 namaz · gün sonu açık');
+    expect(result.current.ozetler.seri).toBe('Tam gün: 4 namaz');
     expect(result.current.ozetler.ramazan).toBe('İftar sayacı açık');
     expect(result.current.ozetler.gorunum).toBe('Açık tema · Zümrüt');
     expect(result.current.ozetler.hakkinda).toMatch(/^Sürüm .+ · güncel$/);
@@ -137,12 +137,12 @@ describe('useAyarOzetleri', () => {
     });
   });
 
-  it('saglikOzetSatiri "Kurulumunuz eksiksiz · <konum> · muhafız açık|kapalı" biçimindedir (mod eki YOK)', async () => {
+  it('saglikOzetSatiri "Kurulumunuz eksiksiz · <konum> · vakit çıkmadan hatırlatma açık|kapalı" biçimindedir (mod eki YOK)', async () => {
     selectorlaKur();
     const { result } = renderHook(() => useAyarOzetleri());
 
     expect(result.current.saglikOzetSatiri).toBe(
-      'Kurulumunuz eksiksiz · Kadıköy, İstanbul · muhafız açık'
+      'Kurulumunuz eksiksiz · Kadıköy, İstanbul · vakit çıkmadan hatırlatma açık'
     );
 
     await act(async () => {
@@ -150,11 +150,11 @@ describe('useAyarOzetleri', () => {
     });
   });
 
-  it('muhafiz kapalıyken saglikOzetSatiri "muhafız kapalı" der', async () => {
+  it('muhafiz kapalıyken saglikOzetSatiri "vakit çıkmadan hatırlatma kapalı" der', async () => {
     selectorlaKur({ muhafiz: { aktif: false, yogunluk: 'normal' } });
     const { result } = renderHook(() => useAyarOzetleri());
 
-    expect(result.current.saglikOzetSatiri).toContain('muhafız kapalı');
+    expect(result.current.saglikOzetSatiri).toContain('vakit çıkmadan hatırlatma kapalı');
 
     await act(async () => {
       await Promise.resolve();

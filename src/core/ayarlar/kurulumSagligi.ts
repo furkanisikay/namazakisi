@@ -104,9 +104,9 @@ export function kurulumSagligi(g: SaglikGirdisi): Sorun[] {
       id: 'hatirlatmaYok',
       seviye: 'uyari',
       baslik: 'Vakit hatırlatmaları kapalı',
-      aciklama: 'Ne muhafız ne de vakit bildirimleri açık.',
+      aciklama: 'Vakit girince de çıkmadan da hatırlatma yok.',
       eylemEtiketi: 'Hatırlatmaları açın',
-      eylem: { tip: 'sayfa', sayfa: 'MuhafizAyarlari' },
+      eylem: { tip: 'sayfa', sayfa: 'Hatirlatmalar' },
     });
   }
 

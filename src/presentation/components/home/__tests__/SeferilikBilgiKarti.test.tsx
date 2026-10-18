@@ -31,7 +31,7 @@ jest.mock('../../../../core/theme', () => ({
 jest.mock('../../common/KisaBildirim', () => ({ kisaBildirimGoster: jest.fn() }));
 
 import seferilikReducer, { type SeferilikState } from '../../../store/seferilikSlice';
-import { SeferilikBilgiKarti } from '../SeferilikBilgiKarti';
+import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../SeferilikBilgiKarti';
 import { DEPOLAMA_ANAHTARLARI } from '../../../../core/constants/UygulamaSabitleri';
 import { SEFERILIK_KAYNAKLARI } from '../../../../core/seferilik/seferilikMetni';
 import { kisaBildirimGoster } from '../../common/KisaBildirim';
@@ -155,7 +155,16 @@ describe('SeferilikBilgiKarti', () => {
       durumKur({ ayarlar: { kartAcik: true, mezhep: 'hanefi', ikamet: null }, sonKonum: null, yuklendi: false }),
       { koordinatlar: ISTANBUL },
     );
-    ciz(store);
+    // İşleme kartta değil, ana ekranda koşulsuz çalışan kancadadır (tek durum alanı).
+    const Kanca = () => {
+      useSeferilikKartiGorunur();
+      return null;
+    };
+    render(
+      <Provider store={store}>
+        <Kanca />
+      </Provider>,
+    );
     await waitFor(() => expect(store.getState().seferilik.ayarlar.ikamet).not.toBeNull());
     expect(store.getState().seferilik.ayarlar.ikamet).toMatchObject({ ...ESKISEHIR, kaynak: 'ilkKonum' });
     expect(store.getState().seferilik.sonKonum).toEqual(ESKISEHIR);

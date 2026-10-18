@@ -35,6 +35,8 @@ export interface NamazModuEkranDurumu {
     erisimAyariniAc: () => Promise<void>;
     modAyarlariniAc: () => Promise<void>;
     guncelle: (d: Partial<NamazModuAyarlari>) => Promise<void>;
+    /** Native'den yeniden oku (başka ekrandan dönünce). */
+    yenile: () => Promise<kopru.NamazModuDurumu | null>;
 }
 
 export function useNamazModu(): NamazModuEkranDurumu {
@@ -137,5 +139,6 @@ export function useNamazModu(): NamazModuEkranDurumu {
         erisimAyariniAc,
         modAyarlariniAc,
         guncelle: useCallback((d: Partial<NamazModuAyarlari>) => yaz({ ...ayarlarRef.current, ...d }), [yaz]),
+        yenile,
     };
 }

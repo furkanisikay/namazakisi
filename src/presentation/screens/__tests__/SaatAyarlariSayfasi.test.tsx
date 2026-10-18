@@ -40,7 +40,7 @@ describe('SaatAyarlariSayfasi', () => {
 
     it('NÖBETÇİ (bulgu 5): "yalnız saatte" anonsun ne zaman hiç duyulmayacağını söyler', () => {
         const { getByText } = render(<SaatAyarlariSayfasi />);
-        expect(getByText(/Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa anons hiç duyulmaz/)).toBeTruthy();
+        expect(getByText(/Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa okuma hiç duyulmaz/)).toBeTruthy();
     });
 
     it('camide / Namaz modunda saatin de susacağını söyler (bulgu 4)', () => {

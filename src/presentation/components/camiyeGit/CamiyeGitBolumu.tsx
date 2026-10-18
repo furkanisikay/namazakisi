@@ -1,6 +1,6 @@
 /**
  * "Camide kılacağım" ayar bölümü (issue #292; ortak hatırlatma yüzeyleri plan §5.2) —
- * Bildirim Ayarları sayfasında, cuma kartının hemen altında.
+ * Hatırlatmalar > "Camiye gitme vakti" ayrıntı sayfasında.
  *
  * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): beş vakit TEK
  * adım dizisini paylaşır → TEK `PencereKarti` (`stil="gomulu"`), adım detayı
@@ -38,6 +38,7 @@ import { Anahtar } from '../common/Anahtar';
 import { SayisalSecici } from '../common/SayisalSecici';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { ekHatirlatmaPencereTanimi, VAKIT_ADLARI_KUCUK } from '../hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
@@ -137,6 +138,7 @@ export const CamiyeGitBolumu: React.FC = () => {
     const koordinat = useAppSelector((s) => s.konum.koordinatlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
     const lat = koordinat?.lat ?? 0;
     const lng = koordinat?.lng ?? 0;
 
@@ -205,7 +207,7 @@ export const CamiyeGitBolumu: React.FC = () => {
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -321,7 +323,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                 kaynak: 'camiyeGit',
                 yuzey: 'camiyeGit',
                 anonsVakitAdi: VAKIT_ADLARI[ornekVakit],
-                baslik: 'Camide kılacağım',
+                baslik: 'Camiye gitme vakti',
                 baslikKucuk: 'camiye gitme',
                 ikon: 'walking',
                 vakit: ornekVakit,
@@ -354,9 +356,14 @@ export const CamiyeGitBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: CamiyeGitAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: CamiyeGitAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
     const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
 
@@ -372,7 +379,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                     </View>
                     <View className="flex-1">
                         <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                            Camide kılacağım
+                            Camiye gitme vakti
                         </Text>
                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                             Ezandan, camiye yürüme süreniz kadar önce hatırlatalım
@@ -383,7 +390,7 @@ export const CamiyeGitBolumu: React.FC = () => {
                         onValueChange={anaAnahtar}
                         trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                         thumbColor={ayarlar.aktif ? renkler.birincil : '#f4f3f4'}
-                        accessibilityLabel="Camide kılacağım hatırlatması"
+                        accessibilityLabel="Camiye gitme vakti hatırlatması"
                     />
                 </View>
 
@@ -502,8 +509,8 @@ export const CamiyeGitBolumu: React.FC = () => {
                                 yaz={modulYaz}
                                 ttsDestekli={ttsDestekli}
                                 // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                                sesliOnayiVar={ayarlar.sesliOnayi === true}
-                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayiVar={genelRiza.sesli}
+                                alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
                                     altBaslik: 'Camiye gitme hatırlatmasında sesli okuma',
                                     kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

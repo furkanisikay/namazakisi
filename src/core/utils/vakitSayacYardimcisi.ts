@@ -10,7 +10,7 @@
  * Faz 3: esikler artik GLOBAL degil VAKIT BAZLI -> her vakit icin ayri deger
  * doner. (Kullanici Ogle'ye 45 dk, Ikindi'ye 20 dk verebilir.)
  *
- * TEK KAYNAK: App.tsx, AnaSayfa.tsx ve BildirimAyarlariSayfasi ayni eslemeyi
+ * TEK KAYNAK: App.tsx, AnaSayfa.tsx ve VakitSayaciBolumu (Saat ve widget) ayni eslemeyi
  * kullanir. (Onceden App/AnaSayfa `esikler.seviye1`'e sabitti -> kullanicinin
  * sectigi baslangic seviyesi yok sayiliyordu; #90 review bulgusu.)
  */

@@ -11,6 +11,19 @@
  */
 export const AYARLAR_EKRANLARI = [
   'AyarlarAna',
+  // Sade tasarım (Dalga 3): görev bazlı yeni sayfalar
+  'Hatirlatmalar',
+  'VakitGirinceAyarlari',
+  'CumaHatirlatmaAyarlari',
+  'CamiyeGitAyarlari',
+  'YatisHatirlatmaAyarlari',
+  'TakvimCakismaAyarlari',
+  'GunSonuAyarlari',
+  'OzelGunAyarlari',
+  'NamazVakitleriAyarlari',
+  'SaatVeWidgetAyarlari',
+  'Yardim',
+  'Camilerim',
   'KonumAyarlari',
   'GorünumAyarlari',
   'BildirimAyarlari',
@@ -37,5 +50,8 @@ export const AYARLAR_EKRANLARI = [
 
 export type AyarlarEkranAdi = (typeof AYARLAR_EKRANLARI)[number];
 
-/** `vurgula` çapası olan HER hedef sayfaya gidebilir (vurgu altyapısı sonraki görevde). */
-export type AyarlarStackParamList = Record<AyarlarEkranAdi, { vurgula?: string } | undefined>;
+/**
+ * `vurgula` çapası olan HER hedef sayfaya gidebilir. `ac`: Hatırlatmalar'daki anahtar
+ * ayrıntıda açma akışını başlatsın (rıza isteyen takvim çakışması).
+ */
+export type AyarlarStackParamList = Record<AyarlarEkranAdi, { vurgula?: string; ac?: boolean } | undefined>;

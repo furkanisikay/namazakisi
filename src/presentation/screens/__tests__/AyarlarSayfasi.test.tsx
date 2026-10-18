@@ -124,26 +124,32 @@ describe('AyarlarSayfasi', () => {
     selectorlaKur();
   });
 
-  it('dört grup başlığı render edilir', async () => {
-    const { getByText } = render(<AyarlarSayfasi />);
+  it('üç görev grubu render edilir (Namaz · Ekran ve cihazlar · Hesap)', async () => {
+    const { getByRole, getByText } = render(<AyarlarSayfasi />);
 
-    expect(getByText('Namaz vakitleri')).toBeTruthy();
-    expect(getByText('Hatırlatmalar')).toBeTruthy();
-    expect(getByText('Uygulama')).toBeTruthy();
-    expect(getByText('Veri ve destek')).toBeTruthy();
+    expect(getByRole('header', { name: 'Namaz' })).toBeTruthy();
+    expect(getByRole('header', { name: 'Ekran ve cihazlar' })).toBeTruthy();
+    expect(getByRole('header', { name: 'Hesap' })).toBeTruthy();
+    for (const satir of ['Hatırlatmalar', 'Namaz vakitleri', 'Seri hedefi', 'Görünüm', 'Yedek ve eşitleme', 'Yardım']) {
+      expect(getByText(satir)).toBeTruthy();
+    }
 
     await act(async () => {
       await Promise.resolve();
     });
   });
 
-  it('NÖBETÇİ: "Kıldım işaretleyebilen uygulamalar" ana listede YOK, yalnız otomasyon rehberinden açılır', async () => {
+  it('NÖBETÇİ: Otomasyon ve "Kıldım işaretleyen uygulamalar" kökte YOK (Saat ve widget > Gelişmiş)', async () => {
     const spy = jest.spyOn(KildimGuvenServisi, 'kullanilabilirMi').mockReturnValue(true);
     try {
-      const { getByText, queryByText } = render(<AyarlarSayfasi />);
+      const { queryByText } = render(<AyarlarSayfasi />);
 
-      expect(getByText('Otomasyonlarla kullanın')).toBeTruthy();
-      expect(queryByText('Kıldım işaretleyebilen uygulamalar')).toBeNull();
+      expect(queryByText('Otomasyonlarla kullanın')).toBeNull();
+      expect(queryByText(/Kıldım işaret/)).toBeNull();
+      // Taşınan diğer ayarlar da kökte yok: Bildirimler, Camideyim, Neler yeni, Hakkında.
+      expect(queryByText('Bildirimler')).toBeNull();
+      expect(queryByText('Neler yeni')).toBeNull();
+      expect(queryByText('Hakkında')).toBeNull();
 
       await act(async () => {
         await Promise.resolve();
@@ -153,23 +159,24 @@ describe('AyarlarSayfasi', () => {
     }
   });
 
-  it('muhafiz satırı dinamik özeti gösterir ("Açık · normal yoğunluk")', async () => {
-    const { getByText } = render(<AyarlarSayfasi />);
+  it('Hatırlatmalar satırı canlı özeti gösterir (düzey + açık diğer hatırlatmalar)', async () => {
+    const { getByLabelText } = render(<AyarlarSayfasi />);
 
-    expect(getByText('Açık · normal yoğunluk')).toBeTruthy();
+    expect(getByLabelText(/^Hatırlatmalar\. Normal düzey · \d+ hatırlatma daha$/)).toBeTruthy();
 
     await act(async () => {
       await Promise.resolve();
     });
   });
 
-  it('Konum satırına dokununca "KonumAyarlari" ile navigate çağrılır', async () => {
-    const { getByText } = render(<AyarlarSayfasi />);
+  it('Namaz vakitleri satırı konum + mezhebi özetler ve kendi sayfasına gider', async () => {
+    const { getByText, getByLabelText } = render(<AyarlarSayfasi />);
 
-    fireEvent.press(getByText('Konum'));
+    expect(getByLabelText('Namaz vakitleri. Kadıköy, İstanbul · Hanefî')).toBeTruthy();
+    fireEvent.press(getByText('Namaz vakitleri'));
 
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith('KonumAyarlari');
+      expect(navigateMock).toHaveBeenCalledWith('NamazVakitleriAyarlari');
     });
   });
 
@@ -205,7 +212,7 @@ describe('AyarlarSayfasi', () => {
   it('NÖBETÇİ: satır rozeti (YeniRozet) okunmamış özellik için hâlâ render edilir', async () => {
     const { getAllByText } = render(<AyarlarSayfasi />);
 
-    // BildirimAyarlari satırı (hedefSayfa eşleşmesi) rozet taşır.
+    // Hatırlatmalar satırı (alt sayfaların hedefSayfa eşleşmesi) rozet taşır.
     expect(getAllByText('Yeni').length).toBeGreaterThan(0);
 
     await act(async () => {
@@ -216,24 +223,22 @@ describe('AyarlarSayfasi', () => {
   it('bir satıra dokununca ilgili özellik görüldü işaretlenir (dispatch çağrılır)', async () => {
     const { getByText } = render(<AyarlarSayfasi />);
 
-    fireEvent.press(getByText('Bildirimler'));
+    fireEvent.press(getByText('Hatırlatmalar'));
 
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari');
+      expect(navigateMock).toHaveBeenCalledWith('Hatirlatmalar');
     });
     expect(dispatchMock).toHaveBeenCalled();
   });
 
-  it('NÖBETÇİ: "Neler yeni" satırına dokununca navigate edilir ama görüldü-işaretleme dispatch EDİLMEZ', async () => {
+  it('Yardım satırı Yardım sayfasına gider (Neler yeni, Hakkında, kurulum orada)', async () => {
     const { getByText } = render(<AyarlarSayfasi />);
 
-    dispatchMock.mockClear();
-    fireEvent.press(getByText('Neler yeni'));
+    fireEvent.press(getByText('Yardım'));
 
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith('NelerYeni');
+      expect(navigateMock).toHaveBeenCalledWith('Yardim');
     });
-    expect(dispatchMock).not.toHaveBeenCalled();
   });
 
   it('sağlık kartı: sorun varken kartın başlığı görünür (muhafiz kapalı + tüm vakit bildirimleri kapalı)', async () => {
@@ -280,7 +285,7 @@ describe('AyarlarSayfasi', () => {
   it('Titreşim satırındaki toggle useFeedback.titresimDurumunuDegistir çağırır', async () => {
     const { getByRole } = render(<AyarlarSayfasi />);
 
-    const anahtarlar = getByRole('switch', { name: /Titreşim/ });
+    const anahtarlar = getByRole('switch', { name: /Dokunma titreşimi/ });
     fireEvent(anahtarlar, 'valueChange', false);
 
     await waitFor(() => {
@@ -291,7 +296,7 @@ describe('AyarlarSayfasi', () => {
   it('Ses efektleri satırındaki toggle useFeedback.sesDurumunuDegistir çağırır', async () => {
     const { getByRole } = render(<AyarlarSayfasi />);
 
-    const anahtarlar = getByRole('switch', { name: /Ses efektleri/ });
+    const anahtarlar = getByRole('switch', { name: /Dokunma sesleri/ });
     fireEvent(anahtarlar, 'valueChange', true);
 
     await waitFor(() => {
@@ -304,22 +309,23 @@ describe('AyarlarSayfasi', () => {
       const { getByLabelText, getByText, queryByRole, queryByText } = render(<AyarlarSayfasi />);
 
       await waitFor(() => {
-        expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeTruthy();
+        expect(queryByRole('header', { name: 'Namaz' })).toBeTruthy();
       });
 
       fireEvent.changeText(getByLabelText('Ayarlarda arayın'), 'muhafız');
 
       // Grup başlıkları (accessibilityRole="header") kaybolur — bağlam
       // metni ("Hatırlatmalar") sonuç kartında geçebilir, o AYRI bir Text'tir.
-      expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeNull();
-      expect(queryByRole('header', { name: 'Hatırlatmalar' })).toBeNull();
+      expect(queryByRole('header', { name: 'Namaz' })).toBeNull();
+      expect(queryByRole('header', { name: 'Hesap' })).toBeNull();
       expect(queryByText(/Kurulumunuz eksiksiz/)).toBeNull();
-      expect(getByText('Namaz muhafızı')).toBeTruthy();
+      // "muhafız" eski adla da bulunur (anahtar kelime) — yeni adı "Vakit çıkmadan".
+      expect(getByText('Vakit çıkmadan')).toBeTruthy();
 
       fireEvent.press(getByLabelText('Aramayı temizle'));
 
       await waitFor(() => {
-        expect(queryByRole('header', { name: 'Namaz vakitleri' })).toBeTruthy();
+        expect(queryByRole('header', { name: 'Namaz' })).toBeTruthy();
       });
     });
 
@@ -339,12 +345,12 @@ describe('AyarlarSayfasi', () => {
       fireEvent.changeText(getByLabelText('Ayarlarda arayın'), 'cuma');
 
       await waitFor(() => {
-        expect(getByText('Cuma hatırlatması')).toBeTruthy();
+        expect(getByText('Cuma namazı')).toBeTruthy();
       });
-      fireEvent.press(getByText('Cuma hatırlatması'));
+      fireEvent.press(getByText('Cuma namazı'));
 
       await waitFor(() => {
-        expect(navigateMock).toHaveBeenCalledWith('BildirimAyarlari', { vurgula: 'cumaHatirlatmasi' });
+        expect(navigateMock).toHaveBeenCalledWith('CumaHatirlatmaAyarlari', { vurgula: 'cumaHatirlatmasi' });
       });
     });
   });

@@ -1,653 +1,502 @@
 /**
- * Kurulum Sihirbazi
- * 9 adimli profesyonel ilk kurulum deneyimi
- * Adimlar: Hosgeldiniz → Bildirim İzni → Konum → Tema → Vakit Bildirimleri
- *          → Muhafız Tanıtım → Muhafız Yoğunluk → Özel Gün → Hazır
+ * Kurulum sihirbazı — 5 adım (sade tasarım, Dalga 2; sahip onaylı):
+ *   Hoş geldiniz · Konum · Bildirim · Hatırlatma düzeyi (+ sade görünüm) · Hazır.
+ *
+ * Kaldırılan adımlar (tema, vakit bildirimi seçimi, muhafız tanıtımı, özel gün, pil)
+ * VARSAYILANLARIYLA yazılır ya da sonradan bağlamında sorulur (pil: kurulum sağlığı
+ * kartı). Kurallar:
+ *  - Tema token'larıyla çizilir (sabit beyaz/degrade yok); koyu temada koyudur.
+ *  - İzin ÖNCE okunur: zaten verilmişse soru sorulmaz, adım "✓ … verildi" durumuyla geçer.
+ *    İzin akışı `useIzinAkisi` (istek → durum YENİDEN okunur → verildi / tekrarDene / ayarlar).
+ *  - Otomatik ilerleme YOK: her adımdan kullanıcı "Devam edin" ile çıkar.
+ *  - Konum kendi adımında (alınınca/seçilince) yazılır; geri kalan ayarlar son düğmede.
+ *    Yalnız `ILK_KURULUM_TAMAMLANDI` yazımı ölümcüldür (hata ekranda, "Tekrar deneyin");
+ *    vakit bildirimi ve sade görünüm yazımı başarısızsa loglanıp geçilir — kullanıcı
+ *    kurulumda takılı kalmasın. "Kaydedildi" denmez, kayıt bitince ana ekrana geçilir.
+ *  - Sesli okuma rızası (`sesliOnayi`) yalnız bilgilendirme maddesi EKRANDA
+ *    gösterildiyse yazılır (`sesliBilgiGosterildiMi`; `presetAyarlariniOlustur` sözleşmesi).
  */
-
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Animated,
-  AppState,
-  Linking,
-  Dimensions,
-  StatusBar,
-  ActivityIndicator,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { styles } from './KurulumSihirbazi/stiller';
-import { BildirimAyarlari, MuhafizYogunluk, KonumDurumu } from './KurulumSihirbazi/tipler';
-import { HosgeldinizAdimi, BildirimIzniAdimi, KonumAdimi, TemaAdimi, VakitBildirimAdimi, MuhafizTanitimAdimi, MuhafizYogunlukAdimi, OzelGunAdimi, HazirAdimi, PilAdimi } from './KurulumSihirbazi/adimlar';
-import { pilDurumunuOku, pilAyarlariniAc } from '../../domain/services/SistemDurumuOkuyucu';
-import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
-import { Logger } from '../../core/utils/Logger';
 import * as Notifications from 'expo-notifications';
 import { useDispatch } from 'react-redux';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useTema } from '../../core/theme';
+import { useRenkler, useTema } from '../../core/theme';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+import { Logger } from '../../core/utils/Logger';
 import { tumVakitBildirimAyarlariniGuncelle } from '../store/vakitBildirimSlice';
 import { muhafizAyarlariniGuncelle, presetAyarlariniOlustur } from '../store/muhafizSlice';
 import { konumAyarlariniGuncelle } from '../store/konumSlice';
+import { hatirlatmaRizasiVer } from '../store/hatirlatmaRizaSlice';
+import { sadeGorunumuAyarla } from '../store/sadeGorunumSlice';
 import type { AppDispatch } from '../store/store';
 import type { RootStackParamList } from '../../navigation/AppNavigator';
-import { TurkiyeKonumServisi } from '../../domain/services/TurkiyeKonumServisi';
 import type { Il } from '../../domain/services/TurkiyeKonumServisi';
-import { KonumIzniDisclosureModali } from '../components/KonumIzniDisclosureModali';
+import { alaniOku } from '../../domain/services/CihazDurumOkuyucu';
+import { useIzinAkisi } from '../components/ortak';
+import { EGRI, SURE } from '../components/hareket';
+import { useHareketAzalt } from '../hooks/useHareketAzalt';
+import { useDonanimGeriTusu } from '../hooks/useDonanimGeriTusu';
+import { sesliBilgiGosterildiMi, type HatirlatmaDuzeyi } from '../components/hatirlatma/DuzeySecici';
+import { KURULUM_ADIMLARI, type KonumDurumu, type KurulumAdimi } from './KurulumSihirbazi/tipler';
+import { BildirimAdimi, DuzeyAdimi, HazirAdimi, HosgeldinizAdimi, KonumAdimi } from './KurulumSihirbazi/adimlar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
-const { width: EKRAN_GENISLIGI } = Dimensions.get('window');
-const TOPLAM_ADIM = 10;
+const TOPLAM = KURULUM_ADIMLARI.length;
+const KAYMA = 16;
+/** GPS bu sürede yanıt vermezse şehir listesine düşülür (kapalı alanda sonsuz bekleme yok). */
+export const GPS_ZAMAN_ASIMI_MS = 15000;
 
-// Adım sabitleri — okunabilirlik için. PIL koşulludur: yalnız Samsung'da ve
-// uygulama henüz "Kısıtlanmamış" değilse gösterilir, aksi halde atlanır.
-const ADIM = {
-  HOSGELDINIZ: 0,
-  BILDIRIM_IZNI: 1,
-  KONUM: 2,
-  TEMA: 3,
-  VAKIT_BILDIRIM: 4,
-  MUHAFIZ_TANITIM: 5,
-  MUHAFIZ_YOGUNLUK: 6,
-  PIL: 7,
-  OZEL_GUN: 8,
-  HAZIR: 9,
-} as const;
+export function zamanAsimiyla<T>(is: Promise<T>, ms: number): Promise<T> {
+    return new Promise<T>((coz, reddet) => {
+        const z = setTimeout(() => reddet(new Error('zaman aşımı')), ms);
+        is.then(
+            (d) => {
+                clearTimeout(z);
+                coz(d);
+            },
+            (e) => {
+                clearTimeout(z);
+                reddet(e);
+            },
+        );
+    });
+}
 
-
-// ─── Ana Bileşen ─────────────────────────────────────────────────────────────
+const konumIzniOku = () => alaniOku('konumIzni');
+const konumIzniIste = () => Location.requestForegroundPermissionsAsync();
+const bildirimIzniOku = () => alaniOku('bildirimIzni');
+const bildirimIzniIste = () => Notifications.requestPermissionsAsync();
 
 export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { paletiDegistir, moduDegistir, palet, mod } = useTema();
+    const dispatch = useDispatch<AppDispatch>();
+    const renkler = useRenkler();
+    const { koyuMu } = useTema();
+    const azalt = useHareketAzalt();
 
-  const [adim, setAdim] = useState(0);
-  const [yukleniyor, setYukleniyor] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
-  const slideAnim = useRef(new Animated.Value(0)).current;
+    const [adimNo, setAdimNo] = useState(0);
+    const adim: KurulumAdimi = KURULUM_ADIMLARI[adimNo];
 
-  // Bildirim izni
-  const [bildirimIzni, setBildirimIzni] = useState<'bekliyor' | 'isteniyor' | 'verildi' | 'reddedildi'>('bekliyor');
+    // Konum
+    const konumIzin = useIzinAkisi({ oku: konumIzniOku, iste: konumIzniIste, kapanisBeklemeMs: 0 });
+    const [konumDurumu, setKonumDurumu] = useState<KonumDurumu>('bekliyor');
+    const [konumBilgi, setKonumBilgi] = useState('');
+    const [konumHata, setKonumHata] = useState<string | null>(null);
+    const [manuelIl, setManuelIl] = useState<Il | null>(null);
 
-  // Konum
-  const [konumDurumu, setKonumDurumu] = useState<KonumDurumu>('bekliyor');
-  // Ölçebildiğini sorma: izin bu adımlara gelmeden ZATEN verilmiş olabilir (yeniden
-  // kurulum, Android 12 ve öncesi, iOS'ta daha önce verilmiş). Okunur, soru sorulmaz.
-  const [bildirimZatenVar, setBildirimZatenVar] = useState(false);
-  const [bildirimKaliciRed, setBildirimKaliciRed] = useState(false);
-  const [konumIzniZatenVar, setKonumIzniZatenVar] = useState(false);
-  const [konumBilgi, setKonumBilgi] = useState<string>('');
-  const [manuelIl, setManuelIl] = useState<Il | null>(null);
+    // Bildirim
+    const bildirimIzin = useIzinAkisi({ oku: bildirimIzniOku, iste: bildirimIzniIste, kapanisBeklemeMs: 0 });
+    /** İlk okuma bitmeden "İzin verin" düğmesi çizilmez (izni olan kişi yanlış düğme görmesin). */
+    const [bildirimOkundu, setBildirimOkundu] = useState(false);
+    const [konumOkundu, setKonumOkundu] = useState(false);
 
-  // Vakit bildirimleri
-  const [bildirimler, setBildirimler] = useState<BildirimAyarlari>({
-    imsak: true,
-    ogle: true,
-    ikindi: true,
-    aksam: true,
-    yatsi: true,
-  });
+    // Düzey + sade görünüm
+    const [duzey, setDuzey] = useState<HatirlatmaDuzeyi>('normal');
+    const [sade, setSade] = useState(false);
 
-  // Muhafız
-  const [muhafizAktif, setMuhafizAktif] = useState(true);
-  const [muhafizYogunluk, setMuhafizYogunluk] = useState<MuhafizYogunluk>('normal');
+    // Kayıt
+    const [kaydediliyor, setKaydediliyor] = useState(false);
+    const [kayitHatasi, setKayitHatasi] = useState<string | null>(null);
 
-  // Pil (Samsung uyutma) adımı — durum okunamazsa adım GÖSTERİLMEZ (yanlış alarm yok).
-  const [pilAdimiGerekli, setPilAdimiGerekli] = useState(false);
-  const [pilTamam, setPilTamam] = useState(false);
-  const pilDonusBekleniyor = useRef(false);
+    const { yenidenOku: konumYenidenOku } = konumIzin;
+    const { yenidenOku: bildirimYenidenOku } = bildirimIzin;
+    useEffect(() => {
+        let iptal = false;
+        konumYenidenOku().finally(() => !iptal && setKonumOkundu(true));
+        bildirimYenidenOku().finally(() => !iptal && setBildirimOkundu(true));
+        return () => {
+            iptal = true;
+        };
+    }, [konumYenidenOku, bildirimYenidenOku]);
 
-  // Konum izni disclosure modal
-  const [disclosureGorunur, setDisclosureGorunur] = useState(false);
-  const disclosureKabulRef = useRef<(() => void) | null>(null);
+    // ─── Adım geçişi: opaklık + 16 dp kayma (ileri sağdan, geri soldan) ─────────
+    const opaklik = useRef(new Animated.Value(1)).current;
+    const kayma = useRef(new Animated.Value(0)).current;
+    const gec = useCallback(
+        (hedef: number) => {
+            if (hedef < 0 || hedef >= TOPLAM) return;
+            if (azalt) {
+                setAdimNo(hedef);
+                return;
+            }
+            const yon = hedef > adimNo ? 1 : -1;
+            Animated.parallel([
+                Animated.timing(opaklik, { toValue: 0, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
+                Animated.timing(kayma, { toValue: -KAYMA * yon, duration: 120, easing: EGRI.cikis, useNativeDriver: true }),
+            ]).start(() => {
+                setAdimNo(hedef);
+                kayma.setValue(KAYMA * yon);
+                Animated.parallel([
+                    Animated.timing(opaklik, { toValue: 1, duration: SURE.giris, easing: EGRI.giris, useNativeDriver: true }),
+                    Animated.timing(kayma, { toValue: 0, duration: SURE.giris, easing: EGRI.giris, useNativeDriver: true }),
+                ]).start();
+            });
+        },
+        [adimNo, azalt, opaklik, kayma],
+    );
+    const ilerle = useCallback(() => gec(adimNo + 1), [gec, adimNo]);
+    const geriDon = useCallback(() => gec(adimNo - 1), [gec, adimNo]);
 
-  // ─── Geçiş Animasyonu ────────────────────────────────────────────────────
+    // Konum alınırken geri yerine "Vazgeçin" (aşağıda); donanım geri tuşu da vazgeçer.
+    const konumTuru = useRef(0);
+    const konumVazgec = useCallback(() => {
+        konumTuru.current += 1;
+        setKonumHata(null);
+        setKonumDurumu('manuel');
+    }, []);
+    const geriGoster = adimNo > 0 && konumDurumu !== 'aliniyor' && !kaydediliyor;
+    const donanimGeri = useCallback(() => {
+        if (konumDurumu === 'aliniyor') konumVazgec();
+        else if (geriGoster) geriDon();
+    }, [konumDurumu, konumVazgec, geriGoster, geriDon]);
+    useDonanimGeriTusu(adimNo > 0, donanimGeri);
 
-  const gecisYap = useCallback((hedefAdim: number) => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 0, duration: 160, useNativeDriver: true }),
-      Animated.timing(slideAnim, { toValue: -28, duration: 160, useNativeDriver: true }),
-    ]).start(() => {
-      setAdim(hedefAdim);
-      slideAnim.setValue(28);
-      Animated.parallel([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-        Animated.timing(slideAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
-      ]).start();
-    });
-  }, [fadeAnim, slideAnim]);
-
-  const adimGosterilirMi = useCallback(
-    (a: number) => a !== ADIM.PIL || pilAdimiGerekli,
-    [pilAdimiGerekli]
-  );
-
-  const ilerle = useCallback(() => {
-    let hedef = adim + 1;
-    while (hedef < TOPLAM_ADIM - 1 && !adimGosterilirMi(hedef)) hedef++;
-    if (hedef <= TOPLAM_ADIM - 1) gecisYap(hedef);
-  }, [adim, gecisYap, adimGosterilirMi]);
-
-  const geriDon = useCallback(() => {
-    let hedef = adim - 1;
-    while (hedef > 0 && !adimGosterilirMi(hedef)) hedef--;
-    if (hedef >= 0) gecisYap(hedef);
-  }, [adim, gecisYap, adimGosterilirMi]);
-
-  // ─── Pil (Samsung) ───────────────────────────────────────────────────────
-
-  useEffect(() => {
-    let iptal = false;
-    pilDurumunuOku().then((p) => {
-      if (!iptal) setPilAdimiGerekli(p.samsung === true && p.muaf === false);
-    });
-    return () => {
-      iptal = true;
-    };
-  }, []);
-
-  // Ayar ekranından dönüşte doğrula; "Kısıtlanmamış" olduysa kısa onay → ilerle.
-  useEffect(() => {
-    const abonelik = AppState.addEventListener('change', async (durum) => {
-      if (durum !== 'active' || !pilDonusBekleniyor.current) return;
-      pilDonusBekleniyor.current = false;
-      const p = await pilDurumunuOku();
-      if (p.muaf === true) {
-        setPilTamam(true);
-        setTimeout(() => ilerle(), 1400);
-      }
-    });
-    return () => abonelik.remove();
-  }, [ilerle]);
-
-  const pilAyarlariniAcVeBekle = useCallback(async () => {
-    pilDonusBekleniyor.current = true;
-    if (!(await pilAyarlariniAc())) {
-      pilDonusBekleniyor.current = false;
-      ilerle();
-    }
-  }, [ilerle]);
-
-  // ─── Bildirim İzni ───────────────────────────────────────────────────────
-
-  useEffect(() => {
-    if (adim !== ADIM.BILDIRIM_IZNI || bildirimIzni !== 'bekliyor') return;
-    let iptal = false;
-    Notifications.getPermissionsAsync()
-      .then((d) => {
-        if (iptal) return;
-        if (d.status === 'granted') {
-          setBildirimZatenVar(true);
-          setBildirimIzni('verildi');
-        } else if (d.status === 'denied' && d.canAskAgain === false) {
-          setBildirimKaliciRed(true);
-          setBildirimIzni('reddedildi');
+    // ─── Konum ───────────────────────────────────────────────────────────────
+    const konumuAl = useCallback(async () => {
+        setKonumHata(null);
+        setKonumDurumu('aliniyor');
+        const tur = ++konumTuru.current;
+        try {
+            const konum = await zamanAsimiyla(
+                Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
+                GPS_ZAMAN_ASIMI_MS,
+            );
+            if (tur !== konumTuru.current) return; // Kullanıcı vazgeçti.
+            const { latitude: lat, longitude: lng } = konum.coords;
+            let gpsAdres = { il: '', ilce: '', semt: '' };
+            try {
+                const g = (await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng }))[0];
+                if (g) gpsAdres = { il: g.city || g.region || '', ilce: g.district || g.subregion || '', semt: g.street || '' };
+            } catch (error) {
+                // Ters geocode isteğe bağlı; koordinat yine kullanılır.
+                Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
+            }
+            if (tur !== konumTuru.current) return;
+            dispatch(
+                konumAyarlariniGuncelle({
+                    konumModu: 'oto',
+                    koordinatlar: { lat, lng },
+                    gpsAdres,
+                    sonGpsGuncellemesi: new Date().toISOString(),
+                }),
+            );
+            setKonumBilgi(gpsAdres.ilce || gpsAdres.il || 'Bulunduğunuz yer');
+            setKonumDurumu('alindi');
+        } catch (error) {
+            if (tur !== konumTuru.current) return;
+            Logger.warn('KurulumSihirbazi', 'Konum alınamadı', error);
+            setKonumHata('Konumunuz bulunamadı. Şehrinizi seçin.');
+            setKonumDurumu('manuel');
         }
-      })
-      .catch(() => undefined);
-    return () => {
-      iptal = true;
-    };
-  }, [adim, bildirimIzni]);
+    }, [dispatch]);
 
-  useEffect(() => {
-    if (adim !== ADIM.KONUM || konumDurumu !== 'bekliyor') return;
-    let iptal = false;
-    Location.getForegroundPermissionsAsync()
-      .then((d) => {
-        if (!iptal && d.status === 'granted') setKonumIzniZatenVar(true);
-      })
-      .catch(() => undefined);
-    return () => {
-      iptal = true;
-    };
-  }, [adim, konumDurumu]);
-
-  // Kalıcı red: kullanıcı Ayarlar'dan dönünce izni yeniden oku.
-  useEffect(() => {
-    if (!bildirimKaliciRed || adim !== ADIM.BILDIRIM_IZNI) return;
-    const abonelik = AppState.addEventListener('change', (durum) => {
-      if (durum !== 'active') return;
-      Notifications.getPermissionsAsync()
-        .then((d) => {
-          if (d.status === 'granted') {
-            setBildirimKaliciRed(false);
-            setBildirimZatenVar(true);
-            setBildirimIzni('verildi');
-          }
-        })
-        .catch(() => undefined);
-    });
-    return () => abonelik.remove();
-  }, [bildirimKaliciRed, adim]);
-
-  const bildirimIzniIste = useCallback(async () => {
-    setBildirimIzni('isteniyor');
-    const { status } = await Notifications.requestPermissionsAsync();
-    if (status === 'granted') {
-      setBildirimIzni('verildi');
-      setTimeout(() => ilerle(), 1400);
-    } else {
-      setBildirimIzni('reddedildi');
-    }
-  }, [ilerle]);
-
-  // ─── Konum İzni + GPS ────────────────────────────────────────────────────
-
-  const konumIzniIsteInternal = useCallback(async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setKonumDurumu('gpsReddedildi');
-        return;
-      }
-      setKonumDurumu('gpsAliniyor');
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
-      const { latitude: lat, longitude: lng } = location.coords;
-
-      let gpsAdres = { il: '', ilce: '', semt: '' };
-      try {
-        const geo = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng });
-        const g = geo[0];
-        if (g) {
-          gpsAdres = {
-            il: g.city || g.region || '',
-            ilce: g.district || g.subregion || '',
-            semt: g.street || '',
-          };
+    const { istekBaslat: konumIstekBaslat, durum: konumIzinDurumu } = konumIzin;
+    const konumBul = useCallback(async () => {
+        // Kalıcı red: sistem diyaloğu zaten açılmaz → boş istek turu yapma, listeye geç.
+        if (konumIzinDurumu === 'reddedildi') {
+            setKonumDurumu('manuel');
+            return;
         }
-      } catch (error) {
-        // Ters geocode opsiyonel; başarısız olsa da koordinatlar kullanılır.
-        Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
-      }
+        if (konumIzinDurumu !== 'verildi') {
+            const sonuc = await konumIstekBaslat();
+            if (sonuc === null) {
+                // Durum okunamadı: sessiz kalma, yedek yolu söyle.
+                setKonumHata('Konum izni okunamadı. Şehrinizi seçin.');
+                setKonumDurumu('manuel');
+                return;
+            }
+            if (sonuc !== 'verildi') {
+                // Kalıcı red: il listesi + "Ayarları açın". Tekrar sorulabilirse ekranda kalır.
+                if (sonuc === 'ayarlar') setKonumDurumu('manuel');
+                return;
+            }
+        }
+        await konumuAl();
+    }, [konumIzinDurumu, konumIstekBaslat, konumuAl]);
 
-      dispatch(konumAyarlariniGuncelle({
-        konumModu: 'oto',
-        koordinatlar: { lat, lng },
-        gpsAdres,
-        sonGpsGuncellemesi: new Date().toISOString(),
-      }));
+    const manuelKonumKaydet = useCallback(() => {
+        if (!manuelIl) return;
+        dispatch(
+            konumAyarlariniGuncelle({
+                konumModu: 'manuel',
+                seciliIlId: manuelIl.id,
+                seciliIlAdi: manuelIl.ad,
+                seciliSehirId: String(manuelIl.id),
+                koordinatlar: { lat: manuelIl.lat, lng: manuelIl.lng },
+                seciliIlceId: null,
+                seciliIlceAdi: '',
+            }),
+        );
+        setKonumBilgi(manuelIl.ad);
+        ilerle();
+    }, [manuelIl, dispatch, ilerle]);
 
-      setKonumBilgi(gpsAdres.ilce || gpsAdres.il || 'Konum alındı');
-      setKonumDurumu('gpsBasarili');
-      setTimeout(() => ilerle(), 1400);
-    } catch {
-      setKonumDurumu('gpsReddedildi');
-    }
-  }, [dispatch, ilerle]);
+    // ─── Tamamla ─────────────────────────────────────────────────────────────
+    const kurulumuTamamla = useCallback(async () => {
+        setKaydediliyor(true);
+        setKayitHatasi(null);
+        // Kaldırılan "vakit bildirimleri" adımının varsayılanı: beş vakit açık. Ölümcül DEĞİL:
+        // yazılamazsa uygulama varsayılanla açılır, kullanıcı kurulumda döngüye girmez.
+        try {
+            await dispatch(
+                tumVakitBildirimAyarlariniGuncelle({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true }),
+            ).unwrap();
+        } catch (error) {
+            Logger.error('KurulumSihirbazi', 'Vakit bildirimi ayarı yazılamadı', error);
+        }
+        try {
+            if (duzey === 'kapali') {
+                // Kapalı seçen kişi sesli okuma maddesini HİÇ görmez → rıza yazılmaz.
+                dispatch(
+                    muhafizAyarlariniGuncelle({
+                        aktif: false,
+                        yogunluk: 'normal',
+                        gelismisMod: false,
+                        ...presetAyarlariniOlustur('normal', false),
+                    }),
+                );
+            } else {
+                dispatch(
+                    muhafizAyarlariniGuncelle({
+                        aktif: true,
+                        yogunluk: duzey,
+                        gelismisMod: false,
+                        ...presetAyarlariniOlustur(duzey, sesliBilgiGosterildiMi(duzey)),
+                    }),
+                );
+            }
+            // TEK RIZA (Dalga 3): bilgi maddesi ekranda gösterildiyse onay ORTAK kayda da
+            // yazılır (muhafızın kendi alanı geriye uyum için `presetAyarlariniOlustur`'da kalır).
+            if (duzey !== 'kapali' && sesliBilgiGosterildiMi(duzey)) {
+                dispatch(hatirlatmaRizasiVer({ sesliOnayi: true }));
+            }
+            if (sade) {
+                try {
+                    await dispatch(sadeGorunumuAyarla(true)).unwrap();
+                } catch (error) {
+                    // Ölümcül değil: Ayarlar > Görünüm'den yeniden açılabilir.
+                    Logger.error('KurulumSihirbazi', 'Sade görünüm ayarı yazılamadı', error);
+                }
+            }
+            // Bayrak EN SON: yarıda kalan kurulum bir sonraki açılışta yeniden sorulsun.
+            await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');
+            navigation.replace('MainTabs');
+        } catch (error) {
+            Logger.error('KurulumSihirbazi', 'Kurulum tamamlanamadı', error);
+            setKayitHatasi('Ayarlar kaydedilemedi. Tekrar deneyin.');
+            setKaydediliyor(false);
+        }
+    }, [dispatch, duzey, sade, navigation]);
 
-  const konumIzniIste = useCallback(async () => {
-    const { status } = await Location.getForegroundPermissionsAsync();
-    if (status === 'granted') {
-      await konumIzniIsteInternal();
-      return;
-    }
-    disclosureKabulRef.current = () => { void konumIzniIsteInternal(); };
-    setDisclosureGorunur(true);
-  }, [konumIzniIsteInternal]);
-
-  const disclosureKabulEt = useCallback(() => {
-    setDisclosureGorunur(false);
-    const cb = disclosureKabulRef.current;
-    disclosureKabulRef.current = null;
-    if (cb) cb();
-  }, []);
-
-  const disclosureReddet = useCallback(() => {
-    setDisclosureGorunur(false);
-    disclosureKabulRef.current = null;
-    setKonumDurumu('gpsReddedildi');
-  }, []);
-
-  const manuelKonumKaydet = useCallback(() => {
-    if (!manuelIl) return;
-    dispatch(konumAyarlariniGuncelle({
-      konumModu: 'manuel',
-      seciliIlId: manuelIl.id,
-      seciliIlAdi: manuelIl.ad,
-      seciliSehirId: String(manuelIl.id),
-      koordinatlar: { lat: manuelIl.lat, lng: manuelIl.lng },
-      seciliIlceId: null,
-      seciliIlceAdi: '',
-    }));
-    ilerle();
-  }, [manuelIl, dispatch, ilerle]);
-
-  // ─── Tamamla ─────────────────────────────────────────────────────────────
-
-  const kurulumTamamla = useCallback(async () => {
-    setYukleniyor(true);
-    try {
-      await dispatch(tumVakitBildirimAyarlariniGuncelle(bildirimler));
-      if (muhafizAktif && muhafizYogunluk !== 'ozel') {
-        await dispatch(muhafizAyarlariniGuncelle({
-          aktif: true,
-          yogunluk: muhafizYogunluk,
-          gelismisMod: false,
-          ...presetAyarlariniOlustur(muhafizYogunluk),
-        }));
-      } else if (muhafizAktif && muhafizYogunluk === 'ozel') {
-        await dispatch(muhafizAyarlariniGuncelle({
-          aktif: true,
-          yogunluk: 'ozel',
-          gelismisMod: true,
-          ...presetAyarlariniOlustur('normal'), // Ozel baslangic olarak normal preset
-        }));
-      } else {
-        // Muhafızı kapatan kullanıcı yoğunluk adımının sesli anons bilgi kutusunu
-        // HİÇ görmez (o kutu yalnız `muhafizAktif` dalında render edilir) →
-        // `sesliOnayi` YAZILMAZ. Aksi halde sonradan muhafızı açıp preset seçtiğinde
-        // `SesliOnayModal` atlanır ve sessiz modu delen TTS bilgilendirmesiz açılır.
-        await dispatch(muhafizAyarlariniGuncelle({
-          aktif: false,
-          yogunluk: 'normal',
-          gelismisMod: false,
-          ...presetAyarlariniOlustur('normal', false),
-        }));
-      }
-      await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');
-      navigation.replace('MainTabs');
-    } catch (error) {
-      Logger.error('KurulumSihirbazi', 'Kurulum tamamlanamadı', error);
-      setYukleniyor(false);
-    }
-  }, [bildirimler, muhafizAktif, muhafizYogunluk, dispatch, navigation]);
-
-  // ─── İlerleme Noktaları ──────────────────────────────────────────────────
-
-  const renderNoktalar = () => (
-    <View style={styles.noktaKapsayici}>
-      {Array.from({ length: TOPLAM_ADIM })
-        .map((_, i) => i)
-        .filter(adimGosterilirMi)
-        .map((i) => (
-          <View
-            key={i}
-            style={[
-              styles.nokta,
-              i === adim && styles.noktaAktif,
-              i < adim && styles.noktaTamamlandi,
-            ]}
-          />
-        ))}
-    </View>
-  );
-
-  // ─── Adım Render ─────────────────────────────────────────────────────────
-
-  const renderAdim = () => {
-    switch (adim) {
-      case ADIM.HOSGELDINIZ: return <HosgeldinizAdimi />;
-      case ADIM.BILDIRIM_IZNI: return (
-        <BildirimIzniAdimi bildirimIzni={bildirimIzni} zatenVar={bildirimZatenVar} kaliciRed={bildirimKaliciRed} />
-      );
-      case ADIM.KONUM: return (
-        <KonumAdimi
-          konumDurumu={konumDurumu}
-          konumBilgi={konumBilgi}
-          manuelIl={manuelIl}
-          setManuelIl={setManuelIl}
-          onIzinIste={konumIzniIste}
-          onAtla={ilerle}
-          onManuelKaydet={manuelKonumKaydet}
-          izinZatenVar={konumIzniZatenVar}
-        />
-      );
-      case ADIM.TEMA: return (
-        <TemaAdimi
-          palet={palet}
-          mod={mod}
-          paletiDegistir={paletiDegistir}
-          moduDegistir={moduDegistir}
-        />
-      );
-      case ADIM.VAKIT_BILDIRIM: return (
-        <VakitBildirimAdimi bildirimler={bildirimler} onToggle={v => setBildirimler(p => ({ ...p, [v]: !p[v] }))} />
-      );
-      case ADIM.MUHAFIZ_TANITIM: return (
-        <MuhafizTanitimAdimi muhafizAktif={muhafizAktif} setMuhafizAktif={setMuhafizAktif} />
-      );
-      case ADIM.MUHAFIZ_YOGUNLUK: return (
-        <MuhafizYogunlukAdimi
-          yogunluk={muhafizYogunluk}
-          setYogunluk={setMuhafizYogunluk}
-          muhafizAktif={muhafizAktif}
-        />
-      );
-      case ADIM.PIL: return <PilAdimi tamam={pilTamam} />;
-      case ADIM.OZEL_GUN: return <OzelGunAdimi />;
-      case ADIM.HAZIR: return <HazirAdimi />;
-      default: return null;
-    }
-  };
-
-  // ─── Buton Render ────────────────────────────────────────────────────────
-
-  const renderButon = () => {
-    if (adim === ADIM.HOSGELDINIZ) {
-      return (
+    // ─── Düğmeler ────────────────────────────────────────────────────────────
+    const birincil = (etiket: string, ikon: string, onPress: () => void, testID?: string, mesgul = false, kapali = false) => (
         <TouchableOpacity
-          style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-          onPress={ilerle}
-          accessibilityRole="button"
+            testID={testID}
+            onPress={onPress}
+            disabled={mesgul || kapali}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel={etiket}
+            accessibilityState={{ disabled: mesgul || kapali, busy: mesgul }}
+            style={{
+                minHeight: 52,
+                borderRadius: 18,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 18,
+                backgroundColor: renkler.birincil,
+                opacity: mesgul ? 0.7 : kapali ? 0.45 : 1,
+            }}
         >
-          <Text style={styles.butonMetin}>Kuruluma Başla</Text>
-          <FontAwesome5 name="arrow-right" size={16} color="#fff" />
+            {mesgul ? (
+                <ActivityIndicator color={renkler.birincilMetin} />
+            ) : (
+                <>
+                    <FontAwesome5 name={ikon} size={15} color={renkler.birincilMetin} solid style={{ marginRight: 10 }} />
+                    <Text style={{ fontSize: 17, fontWeight: '700', color: renkler.birincilMetin }}>{etiket}</Text>
+                </>
+            )}
         </TouchableOpacity>
-      );
-    }
-    if (adim === ADIM.BILDIRIM_IZNI) {
-      if (bildirimIzni === 'verildi' && bildirimZatenVar) {
-        // İzin zaten vardı: otomatik ilerleme yok, kullanıcı kendisi devam eder.
-        return (
-          <TouchableOpacity
-            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-            onPress={ilerle}
-            accessibilityRole="button"
-          >
-            <Text style={styles.butonMetin}>Devam edin</Text>
-            <FontAwesome5 name="arrow-right" size={16} color="#fff" />
-          </TouchableOpacity>
-        );
-      }
-      if (bildirimIzni === 'isteniyor' || bildirimIzni === 'verildi') return null;
-      if (bildirimIzni === 'reddedildi') {
-        return (
-          <>
-          {bildirimKaliciRed && (
-            <TouchableOpacity
-              style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-              onPress={() => void Linking.openSettings().catch(() => undefined)}
-              accessibilityRole="button"
-            >
-              <FontAwesome5 name="cog" size={16} color="#fff" />
-              <Text style={styles.butonMetin}>Ayarları açın</Text>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-            onPress={ilerle}
-            accessibilityRole="button"
-          >
-            <FontAwesome5 name="arrow-right" size={16} color="#fff" />
-            <Text style={styles.butonMetin}>Şimdilik Geç</Text>
-          </TouchableOpacity>
-          </>
-        );
-      }
-      return (
-        <>
-          <TouchableOpacity
-            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-            onPress={bildirimIzniIste}
-            accessibilityRole="button"
-          >
-            <FontAwesome5 name="bell" size={16} color="#fff" />
-            <Text style={styles.butonMetin}>Bildirimlere İzin Ver</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.atlaButon} onPress={ilerle} accessibilityRole="button">
-            <Text style={styles.atlaButonMetin}>Şimdilik geç</Text>
-          </TouchableOpacity>
-        </>
-      );
-    }
-    if (adim === ADIM.KONUM) {
-      if (konumDurumu === 'bekliyor') {
-        return (
-          <>
-            <TouchableOpacity
-              style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-              onPress={konumIzniIste}
-              accessibilityRole="button"
-            >
-              <FontAwesome5 name={konumIzniZatenVar ? 'crosshairs' : 'map-marker-alt'} size={16} color="#fff" />
-              <Text style={styles.butonMetin}>{konumIzniZatenVar ? 'Konumumu Kullan' : 'Konum İznini Ver'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.atlaButon} onPress={() => setKonumDurumu('gpsReddedildi')} accessibilityRole="button">
-              <Text style={styles.atlaButonMetin}>Manuel seçeceğim</Text>
-            </TouchableOpacity>
-          </>
-        );
-      }
-      if (konumDurumu === 'gpsReddedildi') {
-        return (
-          <TouchableOpacity
-            style={[styles.buton, styles.butonBirincil, { backgroundColor: manuelIl ? palet.birincil : '#9ca3af' }]}
-            onPress={manuelKonumKaydet}
-            disabled={!manuelIl}
-            accessibilityRole="button"
-          >
-            <FontAwesome5 name="check" size={16} color="#fff" />
-            <Text style={styles.butonMetin}>
-              {manuelIl ? `${manuelIl.ad} ile Devam Et` : 'Şehir Seçin'}
-            </Text>
-          </TouchableOpacity>
-        );
-      }
-      if (konumDurumu === 'gpsAliniyor' || konumDurumu === 'gpsBasarili') {
-        return null; // auto-advance
-      }
-    }
-    if (adim === ADIM.PIL) {
-      if (pilTamam) return null; // auto-advance
-      return (
-        <>
-          <TouchableOpacity
-            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-            onPress={pilAyarlariniAcVeBekle}
-            accessibilityRole="button"
-          >
-            <FontAwesome5 name="shield-alt" size={16} color="#fff" />
-            <Text style={styles.butonMetin}>Şimdi Ayarlayın</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.atlaButon} onPress={ilerle} accessibilityRole="button">
-            <Text style={styles.atlaButonMetin}>Daha sonra</Text>
-          </TouchableOpacity>
-        </>
-      );
-    }
-    if (adim === ADIM.HAZIR) {
-      return (
+    );
+    const ikincil = (etiket: string, onPress: () => void, testID?: string) => (
         <TouchableOpacity
-          style={[styles.buton, styles.butonYesil]}
-          onPress={kurulumTamamla}
-          disabled={yukleniyor}
-          accessibilityRole="button"
+            testID={testID}
+            onPress={onPress}
+            accessibilityRole="button"
+            accessibilityLabel={etiket}
+            style={{ minHeight: 48, alignItems: 'center', justifyContent: 'center', marginTop: 6 }}
         >
-          {yukleniyor
-            ? <ActivityIndicator color="#fff" />
-            : <><FontAwesome5 name="check" size={16} color="#fff" /><Text style={styles.butonMetin}>Uygulamayı Kullanmaya Başla</Text></>
-          }
+            <Text style={{ fontSize: 16, fontWeight: '600', color: renkler.birincil }}>{etiket}</Text>
         </TouchableOpacity>
-      );
-    }
-    return (
-      <TouchableOpacity
-        style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
-        onPress={ilerle}
-        accessibilityRole="button"
-      >
-        <Text style={styles.butonMetin}>Devam Et</Text>
-        <FontAwesome5 name="arrow-right" size={16} color="#fff" />
-      </TouchableOpacity>
     );
-  };
+    const devam = () => birincil('Devam edin', 'arrow-right', ilerle, 'devam');
 
-  const geriGoster = adim > 0 && adim < ADIM.HAZIR
-    && konumDurumu !== 'gpsAliniyor' && konumDurumu !== 'gpsBasarili';
+    const dugmeler = (): React.ReactNode => {
+        switch (adim) {
+            case 'hosgeldiniz':
+                return birincil('Başlayın', 'arrow-right', ilerle, 'basla');
+            case 'konum': {
+                if (konumDurumu === 'alindi') return devam();
+                if (konumDurumu === 'aliniyor') {
+                    return (
+                        <>
+                            {birincil('Konum bulunuyor', 'map-marker-alt', () => undefined, 'konum-bul', true)}
+                            {ikincil('Vazgeçin, şehrimi seçeceğim', konumVazgec, 'konum-vazgec')}
+                        </>
+                    );
+                }
+                if (konumDurumu === 'manuel') {
+                    return (
+                        <>
+                            {manuelIl
+                                ? birincil(`${manuelIl.ad} ile devam edin`, 'check', manuelKonumKaydet, 'manuel-devam')
+                                : birincil('Şehir seçin', 'city', () => undefined, 'manuel-devam', false, true)}
+                            {konumIzin.durum === 'verildi'
+                                ? ikincil('Konumumu bulun', () => void konumBul(), 'konum-bul')
+                                : konumIzin.sonuc === 'ayarlar' || konumIzin.durum === 'reddedildi'
+                                  ? ikincil('Ayarları açın', () => void konumIzin.ayarlariAc(), 'konum-ayarlar')
+                                  : null}
+                        </>
+                    );
+                }
+                if (!konumOkundu) return null;
+                return (
+                    <>
+                        {birincil(
+                            konumIzin.durum === 'verildi' ? 'Konumumu kullanın' : 'Konumumu bulun',
+                            'crosshairs',
+                            () => void konumBul(),
+                            'konum-bul',
+                            konumIzin.istiyor,
+                        )}
+                        {ikincil('Şehrimi kendim seçeceğim', () => setKonumDurumu('manuel'), 'konum-manuel')}
+                    </>
+                );
+            }
+            case 'bildirim': {
+                if (!bildirimOkundu) return null;
+                if (bildirimIzin.durum === 'verildi') return devam();
+                const kalici = bildirimIzin.sonuc === 'ayarlar' || bildirimIzin.durum === 'reddedildi';
+                return (
+                    <>
+                        {kalici
+                            ? birincil('Ayarları açın', 'cog', () => void bildirimIzin.ayarlariAc(), 'bildirim-ayarlar')
+                            : birincil(
+                                  bildirimIzin.sonuc === 'tekrarDene' ? 'Tekrar deneyin' : 'Bildirimlere izin verin',
+                                  'bell',
+                                  () => void bildirimIzin.istekBaslat(),
+                                  'bildirim-izin',
+                                  bildirimIzin.istiyor,
+                              )}
+                        {ikincil('Şimdilik geçin', ilerle, 'bildirim-gec')}
+                    </>
+                );
+            }
+            case 'duzey':
+                return devam();
+            case 'hazir':
+                return birincil(kayitHatasi ? 'Tekrar deneyin' : 'Başlayın', 'check', () => void kurulumuTamamla(), 'tamamla', kaydediliyor);
+        }
+    };
 
-  // ─── Özel Ekranlar (gradient arka plan) ──────────────────────────────────
-
-  if (adim === ADIM.HOSGELDINIZ) {
-    return (
-      <LinearGradient colors={['#1a1a2e', '#16213e', '#0f3460']} style={styles.tamEkran}>
-        <StatusBar barStyle="light-content" />
-        <Animated.View style={[styles.gradientKapsayici, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          <HosgeldinizAdimi />
-          <View style={styles.gradientButonAlani}>
-            {renderNoktalar()}
-            {renderButon()}
-          </View>
-        </Animated.View>
-      </LinearGradient>
+    const hazirOzeti = useMemo(
+        () => ({ konum: konumBilgi, bildirim: bildirimIzin.durum === 'verildi', duzey, sade }),
+        [konumBilgi, bildirimIzin.durum, duzey, sade],
     );
-  }
 
-  if (adim === ADIM.HAZIR) {
+    const icerik = (): React.ReactNode => {
+        switch (adim) {
+            case 'hosgeldiniz':
+                return <HosgeldinizAdimi />;
+            case 'konum':
+                return (
+                    <KonumAdimi
+                        durum={konumDurumu}
+                        konumBilgi={konumBilgi}
+                        izin={konumIzin.durum}
+                        izinSonucu={konumIzin.sonuc}
+                        hata={konumHata}
+                        manuelIl={manuelIl}
+                        onIlSec={setManuelIl}
+                    />
+                );
+            case 'bildirim':
+                return <BildirimAdimi izin={bildirimIzin.durum} izinSonucu={bildirimIzin.sonuc} />;
+            case 'duzey':
+                return <DuzeyAdimi duzey={duzey} onDuzey={setDuzey} sade={sade} onSade={setSade} />;
+            case 'hazir':
+                return <HazirAdimi ozet={hazirOzeti} hata={kayitHatasi} />;
+        }
+    };
+
+    // Liste (il seçimi) kendi kayar; diğer adımlar tek ScrollView.
+    const listeli = adim === 'konum' && konumDurumu === 'manuel';
+
     return (
-      <LinearGradient colors={['#064e3b', '#065f46', '#059669']} style={styles.tamEkran}>
-        <StatusBar barStyle="light-content" />
-        <Animated.View style={[styles.gradientKapsayici, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          <HazirAdimi />
-          <View style={styles.gradientButonAlani}>
-            {renderNoktalar()}
-            {renderButon()}
-          </View>
-        </Animated.View>
-      </LinearGradient>
+        <SafeAreaView style={{ flex: 1, backgroundColor: renkler.arkaplan }} edges={['top', 'bottom', 'left', 'right']}>
+            <StatusBar barStyle={koyuMu ? 'light-content' : 'dark-content'} backgroundColor={renkler.arkaplan} />
+
+            {/* Üst bar: geri + ilerleme ("Adım 2 / 5") */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingTop: 8, minHeight: 56 }}>
+                {geriGoster ? (
+                    <TouchableOpacity
+                        onPress={geriDon}
+                        accessibilityRole="button"
+                        accessibilityLabel="Önceki adım"
+                        testID="geri"
+                        style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        <FontAwesome5 name="arrow-left" size={17} color={renkler.metin} />
+                    </TouchableOpacity>
+                ) : (
+                    <View style={{ width: 44, height: 44 }} />
+                )}
+                <View
+                    style={{ flex: 1, marginHorizontal: 8 }}
+                    accessible
+                    accessibilityRole="progressbar"
+                    accessibilityLabel={`Adım ${adimNo + 1} / ${TOPLAM}`}
+                    accessibilityValue={{ min: 1, max: TOPLAM, now: adimNo + 1 }}
+                    testID="ilerleme"
+                >
+                    <View style={{ flexDirection: 'row', gap: 6 }}>
+                        {KURULUM_ADIMLARI.map((a, i) => (
+                            <View
+                                key={a}
+                                style={{
+                                    flex: 1,
+                                    height: 6,
+                                    borderRadius: 3,
+                                    backgroundColor: i <= adimNo ? renkler.birincil : renkler.sinir,
+                                }}
+                            />
+                        ))}
+                    </View>
+                    <Text style={{ marginTop: 6, fontSize: 13, textAlign: 'center', color: renkler.metinIkincil }}>
+                        Adım {adimNo + 1} / {TOPLAM}
+                    </Text>
+                </View>
+                <View style={{ width: 44, height: 44 }} />
+            </View>
+
+            <Animated.View style={{ flex: 1, opacity: opaklik, transform: [{ translateX: kayma }] }}>
+                {listeli ? (
+                    <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 8 }}>{icerik()}</View>
+                ) : (
+                    <ScrollView contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 8, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+                        {icerik()}
+                    </ScrollView>
+                )}
+            </Animated.View>
+
+            <View style={{ paddingHorizontal: 20, paddingTop: 8, paddingBottom: 12 }}>{dugmeler()}</View>
+        </SafeAreaView>
     );
-  }
-
-  // ─── Standart Sayfa ───────────────────────────────────────────────────────
-
-  return (
-    <View style={styles.tamEkran}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
-      <View style={styles.ustBar}>
-        {geriGoster
-          ? <TouchableOpacity onPress={geriDon} style={styles.geriButon} accessibilityRole="button" accessibilityLabel="Geri">
-              <FontAwesome5 name="arrow-left" size={16} color="#6b7280" />
-            </TouchableOpacity>
-          : <View style={styles.geriButon} />}
-        {renderNoktalar()}
-        <View style={styles.geriButon} />
-      </View>
-
-      <Animated.View style={[styles.icerikAlani, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-        {renderAdim()}
-      </Animated.View>
-
-      <View style={styles.butonAlani}>
-        {renderButon()}
-      </View>
-
-      <KonumIzniDisclosureModali
-        gorunur={disclosureGorunur}
-        tip="onPlan"
-        onKabul={disclosureKabulEt}
-        onReddet={disclosureReddet}
-      />
-    </View>
-  );
 };
-

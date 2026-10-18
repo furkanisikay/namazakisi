@@ -17,15 +17,27 @@ export { KazaDefteriSayfasi } from './KazaDefteriSayfasi';
 export { AyarlarSayfasi } from './AyarlarSayfasi';
 export { KonumAyarlariSayfasi } from './KonumAyarlariSayfasi';
 export { GorunumAyarlariSayfasi } from './GorunumAyarlariSayfasi';
-export { BildirimAyarlariSayfasi } from './BildirimAyarlariSayfasi';
+export { HatirlatmalarSayfasi } from './Hatirlatmalar/HatirlatmalarSayfasi';
+export {
+  VakitGirinceSayfasi,
+  CumaHatirlatmaSayfasi,
+  CamiyeGitSayfasi,
+  YatisHatirlatmaSayfasi,
+  TakvimCakismaSayfasi,
+  GunSonuSayfasi,
+  OzelGunSayfasi,
+} from './Hatirlatmalar/HatirlatmaAyrintiSayfalari';
+export { NamazVakitleriSayfasi } from './NamazVakitleriSayfasi';
+export { SaatVeWidgetSayfasi } from './SaatVeWidgetSayfasi';
+export { YardimSayfasi } from './YardimSayfasi';
+export { CamilerimSayfasi } from './CamilerimSayfasi';
 export { SeriHedefAyarlariSayfasi } from './SeriHedefAyarlariSayfasi';
 export { MuhafizAyarlariSayfasi } from './MuhafizAyarlariSayfasi';
 export { HakkindaSayfasi } from './HakkindaSayfasi';
 export { RamazanAyarlariSayfasi } from './RamazanAyarlariSayfasi';
 export { NafileAyarlariSayfasi } from './NafileAyarlariSayfasi';
 export { NowBarAyarlariSayfasi } from './NowBarAyarlariSayfasi';
-export { CamideyimAyarlariSayfasi } from './CamideyimAyarlariSayfasi';
-export { NamazModuAyarlariSayfasi } from './NamazModuAyarlariSayfasi';
+export { NamazdaSessizSayfasi } from './NamazdaSessizSayfasi';
 export { SeferilikAyarlariSayfasi } from './SeferilikAyarlariSayfasi';
 export { KildimUygulamalariSayfasi } from './KildimUygulamalariSayfasi';
 export { OtomasyonRehberiSayfasi } from './OtomasyonRehberiSayfasi';

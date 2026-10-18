@@ -1,44 +1,59 @@
 # tohum: ozellik
-# Bildirim Ayarlari: cuma, yatis, camide kilacagim bolumleri + bileklik karti
-# (bileklik yalniz Android). Hepsi tohumda ACIK.
+# Hatirlatmalar sayfasi (duzey secici + satirlar) ve ayrinti sayfalari: cuma,
+# yatis, camiye gitme. Bileklik rehberi artik "Saat ve widget"te (yalniz Android).
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Bildirimler\\..*"
+      text: "Hatırlatmalar\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Bildirimler\\..*"
+    text: "Hatırlatmalar\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/13-bildirim-ayarlari
-- scrollUntilVisible:
-    element:
-      text: "Cuma hatırlatması"
-    direction: DOWN
-    centerElement: true
-    timeout: 300000
-    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "satir-cuma"
+- waitForAnimationToEnd:
+    timeout: 3000
 - takeScreenshot: ozk/14-cuma
+- back
 - scrollUntilVisible:
     element:
-      text: "YATIŞ HATIRLATMASI"
+      id: "satir-yatis"
     direction: DOWN
-    centerElement: true
     timeout: 300000
     waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "satir-yatis"
+- waitForAnimationToEnd:
+    timeout: 3000
 - takeScreenshot: ozk/15-yatis
+- back
 - scrollUntilVisible:
     element:
-      text: "CAMİYE GİTMEK"
+      id: "satir-camiye-git"
     direction: DOWN
-    centerElement: true
     timeout: 300000
     waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "satir-camiye-git"
+- waitForAnimationToEnd:
+    timeout: 3000
 - takeScreenshot: ozk/16-camiye-git
+- back
+- back
+- scrollUntilVisible:
+    element:
+      text: "Saat ve widget\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Saat ve widget\\..*"
 - scrollUntilVisible:
     element:
       text: "Bilekliğinize yalnız namaz hatırlatmalarını gönderin"

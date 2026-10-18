@@ -1,6 +1,6 @@
 /**
  * Cuma namazı hatırlatması bölümü (issue #173; ortak hatırlatma yüzeyleri plan §5.1) —
- * Bildirim Ayarları'nda, yatış hatırlatmasının üstünde.
+ * Hatırlatmalar > "Cuma namazı" ayrıntı sayfasında.
  *
  * BİRLEŞİK HATIRLATMA MODÜLÜ (`HatirlatmaModulu` + `useHatirlatmaDuzenleyici`; AGENTS.md:
  * "yeni hatırlatma yüzeyi için ayrı ekran YAZMA") — muhafız ve nafileyle AYNI yetenekler:
@@ -30,6 +30,7 @@ import { Anahtar } from '../common/Anahtar';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
@@ -92,13 +93,19 @@ function buCumaninPenceresi(
 /** Cumanın adım dönüşümleri (kısıtlarıyla) — modül düzeyinde, referans sabit. */
 const CUMA_ISLEMLERI = ekAdimIslemleri<CumaHatirlatmaAyarlari>(CUMA_ADIM_KISITLARI);
 
-export const CumaHatirlatmaBolumu: React.FC = () => {
+export interface CumaHatirlatmaBolumuProps {
+    /** Ayrıntı sayfasında başlık header'dadır (AGENTS.md: başlık TEK yerde). */
+    baslikGizle?: boolean;
+}
+
+export const CumaHatirlatmaBolumu: React.FC<CumaHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const kayitli = useAppSelector((s) => s.cumaHatirlatma.ayarlar);
     const koordinat = useAppSelector((s) => s.konum?.koordinatlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
 
     // ── Taslak + debounce'lu yazma ──
     const [taslak, setTaslak] = useState<CumaHatirlatmaAyarlari | null>(null);
@@ -151,7 +158,7 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -205,16 +212,23 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: CumaHatirlatmaAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: CumaHatirlatmaAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
 
     return (
         <View className="mb-6">
-            <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                CUMA NAMAZI
-            </Text>
+            {!baslikGizle && (
+                <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+                    CUMA NAMAZI
+                </Text>
+            )}
 
             <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
                 <View className="flex-row items-center p-4">
@@ -252,8 +266,8 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                             yaz={modulYaz}
                             ttsDestekli={ttsDestekli}
                             // Rızalar cumanın KENDİ kaydı (muhafızınki taşınmaz).
-                            sesliOnayiVar={ayarlar.sesliOnayi === true}
-                            alarmOnayiVar={ayarlar.alarmOnayi === true}
+                            sesliOnayiVar={genelRiza.sesli}
+                            alarmOnayiVar={genelRiza.alarm}
                             sesliOnayMetinleri={{
                                 altBaslik: 'Cuma hatırlatmasında sesli okuma',
                                 kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

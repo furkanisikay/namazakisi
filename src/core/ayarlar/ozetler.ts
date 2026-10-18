@@ -74,10 +74,12 @@ export interface SeriOzetiGirdisi {
   gunSonuBildirimAktif: boolean;
 }
 
-/** Seri/puanlama ayarları satırının özeti. */
+/**
+ * Seri hedefi satırının özeti. Gün sonu hatırlatması Dalga 3'te Hatırlatmalar'a
+ * taşındı (`gunSonuBildirimAktif` artık burada gösterilmez; alan geriye uyum için kalır).
+ */
 export function seriOzeti(g: SeriOzetiGirdisi): string {
-  const gunSonu = g.gunSonuBildirimAktif ? 'gün sonu açık' : 'gün sonu kapalı';
-  return `Tam gün: ${g.tamGunEsigi} namaz · ${gunSonu}`;
+  return `Tam gün: ${g.tamGunEsigi} namaz`;
 }
 
 /** Nafile namazlar satırının özeti (issue #77). */

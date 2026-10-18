@@ -6,6 +6,14 @@ appId: com.furkanisikay.namazakisi
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
+      text: "Namaz vakitleri\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Namaz vakitleri\\..*"
+- scrollUntilVisible:
+    element:
       text: "Yolculuk bilgisi\\..*"
     direction: DOWN
     timeout: 300000

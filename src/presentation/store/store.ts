@@ -18,6 +18,7 @@ import takvimCakismaReducer from './takvimCakismaSlice';
 import nafileReducer from './nafileSlice';
 import nowBarReducer from './nowBarSlice';
 import sadeGorunumReducer from './sadeGorunumSlice';
+import hatirlatmaRizaReducer from './hatirlatmaRizaSlice';
 import seferilikReducer from './seferilikSlice';
 import vakitSayacReducer from './vakitSayacSlice';
 import iftarSayacReducer from './iftarSayacSlice';
@@ -44,6 +45,7 @@ export const store = configureStore({
     nafile: nafileReducer,
     nowBar: nowBarReducer,
     sadeGorunum: sadeGorunumReducer,
+    hatirlatmaRiza: hatirlatmaRizaReducer,
     seferilik: seferilikReducer,
     vakitSayac: vakitSayacReducer,
     iftarSayac: iftarSayacReducer,

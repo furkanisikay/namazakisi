@@ -77,6 +77,7 @@ jest.mock('../../../../core/yatis/yatisPlani', () => ({
 }));
 
 import reducer from '../../../store/yatisHatirlatmaSlice';
+import rizaReducer from '../../../store/hatirlatmaRizaSlice';
 import {
     YatisHatirlatmaBolumu,
     YATIS_YON_GEREKCESI,
@@ -89,7 +90,11 @@ const kur = (ayarlar: Partial<YatisAyarlari> = {}) => {
     const baslangic = { ...YATIS_VARSAYILAN_AYARLARI, ...ayarlar };
     mockDisk = baslangic;
     const store = configureStore({
-        reducer: { yatisHatirlatma: reducer, konum: () => ({ koordinatlar: { lat: 41, lng: 29 } }) },
+        reducer: {
+            yatisHatirlatma: reducer,
+            hatirlatmaRiza: rizaReducer,
+            konum: () => ({ koordinatlar: { lat: 41, lng: 29 } }),
+        },
         preloadedState: { yatisHatirlatma: { ayarlar: baslangic, yukleniyor: false, hata: null } },
     });
     const ekran = render(
@@ -201,7 +206,7 @@ describe('YatisHatirlatmaBolumu', () => {
             expect(ekran.getAllByText(/^Yatsı · yatmadan önce kıl/).length).toBeGreaterThan(0);
         });
 
-        it('STANDART yetenekler: iki kanal anahtarı + gerçek alarm; sesli rıza YATIŞIN kendi alanına adımla birlikte yazılır', async () => {
+        it('STANDART yetenekler: iki kanal anahtarı + gerçek alarm; sesli rıza ORTAK kayda (tek rıza) yazılır', async () => {
             const ekran = kur({ aktif: true });
             fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
             // Birleşik modül: iki ANA anahtar + "Gelişmiş" bölümünde gerçek alarm.
@@ -210,10 +215,11 @@ describe('YatisHatirlatmaBolumu', () => {
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(mockKaydet).not.toHaveBeenCalled();
-            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
             await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));
             const kayit = mockKaydet.mock.calls[0][0];
-            expect(kayit.sesliOnayi).toBe(true);
+            expect(kayit.sesliOnayi).toBeUndefined();
+            expect(ekran.store.getState().hatirlatmaRiza.kayit.sesliOnayi).toBe(true);
             expect(kayit.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 

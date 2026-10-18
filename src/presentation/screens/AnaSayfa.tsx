@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, TouchableOpacity, StatusBar, AppState, AppStateStatus, StyleSheet } from 'react-native';
+import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -24,7 +25,10 @@ import { useSadeGorunum } from '../hooks/useSadeGorunum';
 import { SadeGorunum } from '../components/sade/SadeGorunum';
 import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
 import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
-import { SeferilikBilgiKarti } from '../components/home/SeferilikBilgiKarti';
+import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../components/home/SeferilikBilgiKarti';
+import { DurumAlani, DurumSeridi, type DurumAlaniOgesi } from '../components/home/DurumAlani';
+import { durumlariBirlestir } from '../../core/anaEkran/durumAlani';
+import { kerahatMetniSec, type KerahatTuru } from '../../core/anaEkran/kerahatNotu';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
 import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
@@ -49,11 +53,8 @@ import { store } from '../store/store';
 import { HaptikServisi } from '../../core/feedback/HaptikServisi';
 import { OnizlemeSesServisi } from '../../domain/services/OnizlemeSesServisi';
 import { VARSAYILAN_SES } from '../../core/muhafiz/matrisTipleri';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { SERI_RENKLERI } from '../../core/constants/UygulamaSabitleri';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { turkiyeHesapParametreleri } from '../../core/vakit/hesapParametreleri';
-import { Namaz } from '../../core/types';
 import { Logger } from '../../core/utils/Logger';
 
 // Baslangic sayfasi
@@ -84,7 +85,7 @@ export const AnaSayfa: React.FC = () => {
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
-  const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null }>({
+  const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null; tur?: KerahatTuru }>({
     mekruhMu: false,
     aciklama: null,
   });
@@ -95,6 +96,9 @@ export const AnaSayfa: React.FC = () => {
   const kazaOnerisi = useFarzSonrasiKazaOnerisi();
   // Sade görünüm (issue #295): açıksa ana ekranın yerine tek ekran çizilir (aşağıda seçim dalı).
   const sade = useSadeGorunum();
+  // Seferîlik kartı (issue #296) tek durum alanında yalnız "kazanan" uyarıyken çizilir;
+  // diskteki konumu işleme (ilk ikamet / eve dönüş) bu kancada KOŞULSUZ sürer.
+  const seferilikGorunur = useSeferilikKartiGorunur();
 
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
@@ -550,7 +554,7 @@ export const AnaSayfa: React.FC = () => {
       const { lat, lng } = konumAyarlari.koordinatlar || {};
       if (lat && lng) {
         const sonuc = mekruhVakitKontrolEt(lat, lng, 'farz');
-        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama });
+        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama, tur: sonuc.tur });
       }
     };
     kontrol();
@@ -672,15 +676,96 @@ export const AnaSayfa: React.FC = () => {
     }
   };
 
-  // Sade görünüm "Kıldım"ı (React.memo'lu bileşen için referans-kararlı): AYNI yol —
+  // "Kıldım" (vakit kartı + sade görünüm; ikisi de React.memo'lu düğme) için
+  // referans-kararlı geri çağrı: ekran saniyede bir çizilir. AYNI yol —
   // suankiVakitTamamla → namazToggle → kerahat onay modalı.
   const suankiVakitTamamlaRef = useRef(suankiVakitTamamla);
   suankiVakitTamamlaRef.current = suankiVakitTamamla;
-  const handleSadeKildim = useCallback(() => suankiVakitTamamlaRef.current(), []);
+  const handleSuankiKildim = useCallback(() => suankiVakitTamamlaRef.current(), []);
 
   // Toplu islemler gunlukNamazlar'i degistirir -> useEffect (seriKontrolet -> reconcile) otomatik kosar
   const tumunuTamamla = () => dispatch(tumNamazlariTamamla({ tarih: mevcutTarih }));
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
+
+  // Tek durum alanının adayları (öncelik sırasını DurumAlani verir). Kerahat, muhafız ve
+  // seferîlik yalnız aktif günde anlamlıdır; toparlanma her günde.
+  // Renkler dekoratif token (kenar çizgisi + ikon çipi); metin daima tema metni.
+  const toparlanma = seriOzeti?.toparlanmaModu ? seriOzeti.toparlanmaIlerleme : undefined;
+  // Kerahat metni duruma göre (saf karar): gurubda bugünün ikindisi kılınmadıysa
+  // "bekleyin" değil "şimdi kılabilirsiniz" (core/anaEkran/kerahatNotu). Kayıt aktif güne
+  // ait değilse ikindi durumu bilinmiyor sayılır (servisin metni kalır).
+  const ikindiKilindi =
+    gunlukNamazlar && gunlukNamazlar.tarih === aktifGun
+      ? !!gunlukNamazlar.namazlar.find((n) => n.namazAdi === NamazAdi.Ikindi)?.tamamlandi
+      : null;
+  const kerahatMetni = kerahatMetniSec({ aciklama: mekruhBilgi.aciklama, tur: mekruhBilgi.tur, ikindiKilindi });
+  const durumOgeleriOlustur = (aktifGunKontrol: boolean, suankiTamamlandi: boolean): DurumAlaniOgesi[] => {
+    const ogeler: DurumAlaniOgesi[] = [];
+    const kerahatEtkin = aktifGunKontrol && mekruhBilgi.mekruhMu && !!kerahatMetni;
+    const muhafizEtkin = aktifGunKontrol && muhafizDurumu.seviye > 0 && !suankiTamamlandi;
+    // İkisi birlikteyse TEK kart: muhafız önde, kerahat altında kısa not.
+    const { muhafizKerahatNotu } = durumlariBirlestir([
+      ...(kerahatEtkin ? (['kerahat'] as const) : []),
+      ...(muhafizEtkin ? (['muhafiz'] as const) : []),
+    ]);
+    if (kerahatEtkin && !muhafizKerahatNotu) {
+      ogeler.push({
+        anahtar: 'kerahat',
+        ozet: 'kerahat vakti',
+        dugum: <DurumSeridi testID="durum-kerahat" ikon="hourglass-half" renk={renkler.dikkat} baslik="Kerahat vakti" metin={kerahatMetni} />,
+      });
+    }
+    if (muhafizEtkin) {
+      // Mesaj servisten gelir ve ibadete çağrı kaydındadır ("sen" dili BİLİNÇLİ) — dokunulmaz.
+      const sert = muhafizDurumu.seviye >= 3;
+      ogeler.push({
+        anahtar: 'muhafiz',
+        ozet: 'vakit çıkıyor',
+        dugum: (
+          <DurumSeridi
+            testID="durum-muhafiz"
+            ikon="exclamation-triangle"
+            renk={sert ? renkler.hata : renkler.dikkat}
+            baslik={sert ? 'Şeytanla mücadele modu' : 'Vakit çıkıyor'}
+            metin={muhafizDurumu.mesaj}
+            alt={
+              muhafizKerahatNotu ? (
+                <View testID="durum-muhafiz-kerahat-notu" style={{ flexDirection: 'row', marginTop: 6 }}>
+                  <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metin }}>{`Kerahat vakti: ${kerahatMetni}`}</Text>
+                </View>
+              ) : undefined
+            }
+          />
+        ),
+      });
+    }
+    if (toparlanma) {
+      const oran = toparlanma.hedef > 0 ? Math.min(1, toparlanma.tamamlanan / toparlanma.hedef) : 0;
+      ogeler.push({
+        anahtar: 'toparlanma',
+        ozet: 'toparlanma',
+        dugum: (
+          <DurumSeridi
+            testID="durum-toparlanma"
+            ikon="bolt"
+            renk={renkler.birincil}
+            baslik={`Toparlanma · ${toparlanma.tamamlanan}/${toparlanma.hedef} gün`}
+            onPress={handleToparlanmaModalGoster}
+            erisimEtiketi={`Toparlanma, ${toparlanma.tamamlanan} / ${toparlanma.hedef} gün tamamlandı. Ayrıntılar için dokunun`}
+            alt={
+              <View style={{ height: 4, marginTop: 8, borderRadius: 2, backgroundColor: renkler.sinir, overflow: 'hidden' }}>
+                <View style={{ height: 4, width: `${oran * 100}%`, backgroundColor: renkler.birincil }} />
+              </View>
+            }
+          />
+        ),
+      });
+    }
+    if (aktifGunKontrol && seferilikGorunur) {
+      ogeler.push({ anahtar: 'seferilik', ozet: 'yolculuk bilgisi', dugum: <SeferilikBilgiKarti /> });
+    }
+    return ogeler;
+  };
 
   // Sayfa içeriği render
   const sayfaIcerigiOlustur = (sayfaIndeksi: number) => {
@@ -719,7 +804,6 @@ export const AnaSayfa: React.FC = () => {
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
       if (suankiNamaz) {
         suankiVakitTamamlandi = suankiNamaz.tamamlandi;
-
         const suankiIndex = uiNamazlar.findIndex(n => n.namazAdi === suankiVakitAdi);
         const sonrakiNamaz = uiNamazlar[suankiIndex + 1];
 
@@ -747,32 +831,9 @@ export const AnaSayfa: React.FC = () => {
       <>
         <KutlamaAnimasyonu gorunsun={kutlamaGoster} boyut={300} animasyonBittiCallback={() => setKutlamaGoster(false)} />
 
-        {/* Muhafiz Uyarı Kartı - Güneş (Kerahat) vaktinde muhafız uyarıları gizlenmeli mi? Genelde hayır, sabah namazını kaçırdıysa uyarabilir. */}
-        {aktifGunKontrol && muhafizDurumu.seviye > 0 && !suankiVakitTamamlandi && (
-          <View className="mb-4 p-4 rounded-xl flex-row items-center gap-3 shadow-sm"
-            style={{ backgroundColor: muhafizDurumu.seviye >= 3 ? '#FEE2E2' : '#FFEDD5' }}>
-            <FontAwesome5 name="exclamation-triangle" size={24} color={muhafizDurumu.seviye >= 3 ? '#DC2626' : '#EA580C'} />
-            <View className="flex-1">
-              <Text className="font-bold text-sm" style={{ color: muhafizDurumu.seviye >= 3 ? '#991B1B' : '#9A3412' }}>
-                {muhafizDurumu.seviye >= 3 ? "⚠️ ŞEYTANLA MÜCADELE MODU" : "⚠️ VAKİT ÇIKIYOR"}
-              </Text>
-              <Text className="text-xs mt-1" style={{ color: muhafizDurumu.seviye >= 3 ? '#7F1D1D' : '#7C2D12' }}>
-                {muhafizDurumu.mesaj}
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {/* Kerahat Vakti Uyarı Bannerı */}
-        {aktifGunKontrol && mekruhBilgi.mekruhMu && mekruhBilgi.aciklama && (
-          <View className="mb-4 p-3 rounded-xl flex-row items-start gap-3 border"
-            style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}>
-            <FontAwesome5 name="exclamation-triangle" size={14} color={renkler.metinIkincil} style={{ marginTop: 2 }} />
-            <Text className="flex-1 text-xs leading-5 font-medium" style={{ color: renkler.metinIkincil }}>
-              {mekruhBilgi.aciklama}
-            </Text>
-          </View>
-        )}
+        {/* TEK durum alanı (sade tasarım, Dalga 2): aynı anda yalnız en önemli uyarı,
+            diğerleri "+N daha" arkasında. Öncelik: core/anaEkran/durumAlani. */}
+        <DurumAlani ogeler={durumOgeleriOlustur(aktifGunKontrol, suankiVakitTamamlandi)} />
       </>
     );
 
@@ -801,7 +862,8 @@ export const AnaSayfa: React.FC = () => {
             suankiVakitAdi={suankiVakitAdi}
             vakitAraligi={vakitAraligi}
             tamamlandi={suankiVakitTamamlandi}
-            onTamamla={suankiVakitTamamla}
+            kayitHazir={gunlukNamazlar.tarih === sayfaTarihi}
+            onTamamla={handleSuankiKildim}
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
             konumMetni={konumMetni}
@@ -813,8 +875,6 @@ export const AnaSayfa: React.FC = () => {
           gecmisGunKarti
         )}
 
-        {/* Seferîlik bilgi kartı (issue #296): ≈90 km'den uzakta, hüküm değil bilgi */}
-        {aktifGunKontrol && <SeferilikBilgiKarti />}
       </>
     );
 
@@ -862,12 +922,7 @@ export const AnaSayfa: React.FC = () => {
           ustBolum={ustBolum}
           akis={akis}
           masaustuUst={masaustuUst}
-          masaustuBantlar={
-            <>
-              {bantlar}
-              {aktifGunKontrol && <SeferilikBilgiKarti />}
-            </>
-          }
+          masaustuBantlar={bantlar}
           mentese={katlanmaPosturu.mentese}
         />
       );
@@ -898,7 +953,7 @@ export const AnaSayfa: React.FC = () => {
           kayitHazir={sadeKayitHazir}
           mekruhMu={mekruhBilgi.mekruhMu}
           cumaEtiketi={cumaEtiketi}
-          onKildim={handleSadeKildim}
+          onKildim={handleSuankiKildim}
           onTumUygulama={sade.tumUygulamayiAc}
         />
         <KutlamaModal kutlama={ilkKutlama} gorunur={!!ilkKutlama} onKapat={() => dispatch(kutlamayiKaldir())} />
@@ -913,7 +968,7 @@ export const AnaSayfa: React.FC = () => {
         />
         <KerahatOnayModal
           gorunur={kerahatOnayBekleyen !== null}
-          aciklama={mekruhBilgi.aciklama}
+          aciklama={kerahatMetni}
           namazAdi={kerahatOnayBekleyen ?? ''}
           onOnayla={kerahatOnayla}
           onVazgec={kerahatVazgec}
@@ -942,46 +997,18 @@ export const AnaSayfa: React.FC = () => {
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
 
-      {/* Sade görünümden bu oturum için çıkıldıysa tek dokunuşla geri dönüş (issue #295) */}
+      {/* Sade görünümden bu oturum için çıkıldıysa geri dönüş (issue #295). Uyarı değil,
+          kalıcı küçük bağlantı: durum alanında "+N daha" arkasında kaybolmasın. */}
       {sade.geciciCikista && (
         <TouchableOpacity
           onPress={sade.sadeyeDon}
           accessibilityRole="button"
           accessibilityLabel="Sade görünüme dönün"
-          className="flex-row items-center justify-center mx-3 mb-1 rounded-xl border"
-          style={{ minHeight: 44, backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+          testID="sade-donus-baglantisi"
+          style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', minHeight: 44, paddingHorizontal: 16 }}
         >
-          <FontAwesome5 name="compress-alt" size={14} color={renkler.birincil} style={{ marginRight: 8 }} />
-          <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Sade görünüme dönün</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Toparlanma Banner */}
-      {seriOzeti?.toparlanmaModu && seriOzeti.toparlanmaIlerleme && (
-        <TouchableOpacity
-          style={[
-            anaSayfaStilleri.toparlanmaBanner,
-            { backgroundColor: koyuMu ? '#78350f30' : '#fef3c7', borderColor: '#f59e0b' },
-          ]}
-          onPress={handleToparlanmaModalGoster}
-          activeOpacity={0.8}
-          accessibilityLabel="Toparlanma modu detayı için dokun"
-          accessibilityRole="button"
-        >
-          <Text style={{ color: '#92400e', fontWeight: '700', fontSize: 13, flex: 1 }}>
-            ⚡ Toparlanma Modu — {seriOzeti.toparlanmaIlerleme.tamamlanan}/{seriOzeti.toparlanmaIlerleme.hedef} gün tamamlandı
-          </Text>
-          <View style={anaSayfaStilleri.bannerProgressArkaplan}>
-            <View
-              style={[
-                anaSayfaStilleri.bannerProgressDolgu,
-                {
-                  width: `${seriOzeti.toparlanmaIlerleme.hedef > 0 ? (seriOzeti.toparlanmaIlerleme.tamamlanan / seriOzeti.toparlanmaIlerleme.hedef) * 100 : 0}%`,
-                },
-              ]}
-            />
-          </View>
-          <FontAwesome5 name="chevron-right" size={12} color="#92400e" style={{ marginLeft: 8 }} />
+          <FontAwesome5 name="compress-alt" size={12} color={renkler.birincil} style={{ marginRight: 6 }} />
+          <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>Sade görünüme dönün</Text>
         </TouchableOpacity>
       )}
 
@@ -1052,7 +1079,7 @@ export const AnaSayfa: React.FC = () => {
 
       <KerahatOnayModal
         gorunur={kerahatOnayBekleyen !== null}
-        aciklama={mekruhBilgi.aciklama}
+        aciklama={kerahatMetni}
         namazAdi={kerahatOnayBekleyen ?? ''}
         onOnayla={kerahatOnayla}
         onVazgec={kerahatVazgec}
@@ -1077,28 +1104,3 @@ export const AnaSayfa: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const anaSayfaStilleri = StyleSheet.create({
-  toparlanmaBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderRadius: 12,
-    marginHorizontal: 12,
-    marginBottom: 4,
-  },
-  bannerProgressArkaplan: {
-    height: 3,
-    backgroundColor: '#f59e0b40',
-    borderRadius: 2,
-    width: 60,
-    overflow: 'hidden',
-  },
-  bannerProgressDolgu: {
-    height: '100%',
-    backgroundColor: '#f59e0b',
-    borderRadius: 2,
-  },
-});

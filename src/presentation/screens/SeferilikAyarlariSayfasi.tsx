@@ -1,9 +1,9 @@
 /**
  * Yolculuk (seferîlik) bilgisi ayarları (issue #296).
  *
- * Kart HÜKÜM VERMEZ; bu sayfa yalnız kartı açar/kapatır, kart içeriğinin
- * mezhebini seçtirir ve ikamet yerini gösterir/değiştirir. Mezhep seçimi namaz
- * vakti hesabını ETKİLEMEZ (bunu sayfada açıkça söyleriz).
+ * Kart HÜKÜM VERMEZ; bu sayfa yalnız kartı açar/kapatır ve ikamet yerini
+ * gösterir/değiştirir. Mezhep (ortak ayar) Dalga 3'te "Namaz vakitleri" sayfasına
+ * taşındı; kart içeriği o seçime göre değişir.
  */
 import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Linking } from 'react-native';
@@ -14,7 +14,6 @@ import { useSeferilik } from '../hooks/useSeferilik';
 import { AyarGrubu } from './Ayarlar/AyarGrubu';
 import { AyarSatiri } from './Ayarlar/AyarSatiri';
 import { kisaBildirimGoster } from '../components/common/KisaBildirim';
-import { MEZHEPLER, MEZHEP_ADLARI, type Mezhep } from '../../core/seferilik/seferilikAyarlari';
 import {
   SEFER_MESAFESI_KM,
   ikametUzakligiKm,
@@ -26,14 +25,9 @@ import {
   type KaynakBaglantisi,
 } from '../../core/seferilik/seferilikMetni';
 
-const MEZHEP_ACIKLAMALARI: Record<Mezhep, string> = {
-  hanefi: '≈90 km · gidilen yerde 15 günden az kalış',
-  safii: '≈90 km · giriş-çıkış hariç 4 günden az kalış',
-};
-
 export const SeferilikAyarlariSayfasi: React.FC = () => {
   const renkler = useRenkler();
-  const { durum, kartAcikAyarla, mezhepAyarla, konumuIsle, buradaIkametEt } = useSeferilik();
+  const { durum, kartAcikAyarla, konumuIsle, buradaIkametEt } = useSeferilik();
 
   // Sayfa açılınca diskteki konumu işle: "Burası evim" güncel konumu kaydetsin.
   useEffect(() => {
@@ -84,39 +78,8 @@ export const SeferilikAyarlariSayfasi: React.FC = () => {
           />
         </AyarGrubu>
 
-        <AyarGrubu baslik="Mezhep (ortak ayar)">
-          {MEZHEPLER.map((mezhep) => {
-            const secili = ayarlar.mezhep === mezhep;
-            return (
-              <TouchableOpacity
-                key={mezhep}
-                onPress={() => mezhepAyarla(mezhep)}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: secili, checked: secili }}
-                accessibilityLabel={`${MEZHEP_ADLARI[mezhep]}. ${MEZHEP_ACIKLAMALARI[mezhep]}`}
-                className="flex-row items-center px-4 py-3"
-                style={{ minHeight: 56 }}
-              >
-                <View className="flex-1">
-                  <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                    {MEZHEP_ADLARI[mezhep]}
-                  </Text>
-                  <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                    {MEZHEP_ACIKLAMALARI[mezhep]}
-                  </Text>
-                </View>
-                <FontAwesome5
-                  name={secili ? 'dot-circle' : 'circle'}
-                  size={20}
-                  color={secili ? renkler.birincil : renkler.metinIkincil}
-                />
-              </TouchableOpacity>
-            );
-          })}
-        </AyarGrubu>
         <Text className="text-xs leading-5 mx-4 -mt-4 mb-6" style={{ color: renkler.metinIkincil }}>
-          Mezhep uygulamanın ortak ayarıdır: yolculuk kartının içeriğini ve Kaza Defteri'nde vitir namazının otomatik
-          eklenip eklenmeyeceğini belirler; namaz vakitlerinin hesabını etkilemez.
+          Kartın içeriği mezhebinize göredir; mezhebi Ayarlar › Namaz vakitleri'nden seçebilirsiniz.
         </Text>
 
         <AyarGrubu baslik="İkamet yeri">

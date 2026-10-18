@@ -13,14 +13,31 @@ appId: com.furkanisikay.namazakisi
       - tapOn: "Devam Et"
 
 - tapOn: "Ayarlar"
-# 1080x1920'de muhafiz satiri listenin altinda kaliyor.
+# Ayarlar > Hatirlatmalar > Vakit cikmadan; vakit vakit ayar "Kendim ayarlayayim" katinda.
 - scrollUntilVisible:
     element:
-      text: "Namaz muhafızı\\..*"
+      text: "Hatırlatmalar\\..*"
     direction: DOWN
     timeout: 20000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Namaz muhafızı\\..*"
+    text: "Hatırlatmalar\\..*"
+- scrollUntilVisible:
+    element:
+      text: "Vakit çıkmadan\\..*"
+    direction: DOWN
+    timeout: 20000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Vakit çıkmadan\\..*"
+- scrollUntilVisible:
+    element:
+      id: "kendim-ayarlayayim"
+    direction: DOWN
+    timeout: 20000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "kendim-ayarlayayim"
 
 # SABAH: listenin son karti acilinca icerik ekran disinda kalir.
 - tapOn:
@@ -44,9 +61,9 @@ appId: com.furkanisikay.namazakisi
     id: "adim-sesli-anahtari"
 - runFlow:
     when:
-      visible: "Sesli anonsu açın"
+      visible: "Sesli okumayı açın"
     commands:
-      - tapOn: "Sesli anonsu açın"
+      - tapOn: "Sesli okumayı açın"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: kareler/03-adim-detay

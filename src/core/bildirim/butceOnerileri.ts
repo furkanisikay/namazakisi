@@ -136,7 +136,7 @@ function kademeliDene(
 }
 
 const tonMetni = (tonlar: readonly SeviyeKademe[]): string =>
-    tonlar.length > 1 ? 'Nazik ve uyarı tonundaki' : 'Nazik tonlu';
+    tonlar.length > 1 ? 'Nazik ve uyarı düzeyindeki' : 'Nazik';
 
 /**
  * Önerileri üret (sabit sıra). Yalnız sayıyı GERÇEKTEN düşürenler döner.
@@ -181,7 +181,7 @@ export function butceOnerileriOlustur(g: DefterGirdisi): ButceOnerisi[] {
                     tur: 'tekKez',
                     ikon: 'dot-circle',
                     baslik: 'Nazik hatırlatmalar bir kez çalsın',
-                    aciklama: 'Nazik tonlu hatırlatmalar tekrarlamaz; sonraki hatırlatmalar aynen kalır.',
+                    aciklama: 'Nazik hatırlatmalar tekrarlamaz; sonraki hatırlatmalar aynen kalır.',
                     girdi,
                 },
                 defterOzetiHesapla(girdi)

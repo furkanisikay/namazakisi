@@ -5,12 +5,20 @@ appId: com.furkanisikay.namazakisi
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Now Bar ve canlı sayaçlar\\..*"
+      text: "Saat ve widget\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Now Bar ve canlı sayaçlar\\..*"
+    text: "Saat ve widget\\..*"
+- scrollUntilVisible:
+    element:
+      text: "Canlı sayaçlar\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Canlı sayaçlar\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/20-now-bar

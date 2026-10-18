@@ -198,15 +198,19 @@ export const AnonsMetniEditoru: React.FC<AnonsMetniEditoruProps> = ({ tanim, sev
                             : `Otomatik cümle: ${otomatikMetin}`
                     }
                 />
-                {sablonlar.map((sablon) => (
-                    <Cip
-                        key={sablon}
-                        etiket={sablon}
-                        secili={taslak === sablon}
-                        onPress={() => sablonSec(sablon)}
-                        erisim={`Hazır cümle: ${sablon}`}
-                    />
-                ))}
+                {sablonlar.map((sablon) => {
+                    // Çipte ham yer tutucu ({süre}…) değil, bu adımda okunacak cümle görünür.
+                    const gorunen = tanim.anonsCoz(sablon, seviye) || sablon;
+                    return (
+                        <Cip
+                            key={sablon}
+                            etiket={gorunen}
+                            secili={taslak === sablon}
+                            onPress={() => sablonSec(sablon)}
+                            erisim={`Hazır cümle: ${gorunen}`}
+                        />
+                    );
+                })}
             </View>
 
             {/* Gerçek okunuş + Dinle */}

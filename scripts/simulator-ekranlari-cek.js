@@ -12,8 +12,9 @@
  * Etiketler kodda dogrulandi:
  *   - Kible dugmesi   "Kıble yönünü bul"            (HomeHeader)
  *   - Seri ekrani     "İstatistik" sekmesi          (IstatistikSayfasi acilista Seri alt sekmesinde)
- *   - Muhafiz satiri  "Namaz muhafızı"              (AyarlarSayfasi)
- *   - Ana anahtar     "Namaz Muhafızı" (Switch)     (MuhafizAyarlariSayfasi)
+ *   - Hatirlatmalar   "Hatırlatmalar. …"            (AyarlarSayfasi)
+ *   - Muhafiz satiri  "Vakit çıkmadan. …"           (HatirlatmalarSayfasi)
+ *   - Vakit kartlari  "Kendim ayarlayayım" katinda  (MuhafizAyarlariSayfasi, testID kendim-ayarlayayim)
  *   - Vakit karti     "… vakti hatırlatma ayarları" (PencereKarti)
  *   - Adim satiri     "1. hatırlatma, … — düzenleyin" (PencereKarti)
  *
@@ -267,7 +268,12 @@ function cek(ad) {
     a = await agac('ayarlar-oncesi');
     if (await dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 })) {
         a = await agac('ayarlar');
-        if (await dokun(a, /namaz muhafızı/i, 'muhafiz satiri', { bekle: 3000 })) {
+        // Ayarlar > Hatirlatmalar > Vakit cikmadan > "Kendim ayarlayayim" (vakit kartlari).
+        const muhafizaGit =
+            (await dokun(a, /^Hatırlatmalar\./i, 'hatirlatmalar satiri', { bekle: 3000 })) &&
+            (await dokun(await agac('hatirlatmalar'), /^Vakit çıkmadan\./i, 'vakit cikmadan satiri', { bekle: 3000 })) &&
+            (await dokun(await agac('muhafiz'), /kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', { bekle: 2000 }));
+        if (muhafizaGit) {
             // Muhafiz DISKTEN acik tohumlanir (simulator-tohumla.js). Anahtara
             // DOKUNMA: `idb ui tap` UISwitch'i toggle etmiyor, ustelik acik
             // gelen anahtara dokunmak onu KAPATIR.

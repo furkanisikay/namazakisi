@@ -82,6 +82,23 @@ describe('AnahtarSatiri', () => {
         fireEvent(getByRole('switch'), 'valueChange', true);
         expect(onDegistir).toHaveBeenCalledWith(true);
     });
+    it('testID ERİŞİLEBİLİR öğede: dokunulabilir satırda (iOS simülatör seçicisi bulsun)', () => {
+        const onPress = jest.fn();
+        const { getByTestId } = render(
+            <AnahtarSatiri ikon="bell" baslik="Cuma namazı" ozet="Kapalı" deger={false} onDegistir={jest.fn()} onPress={onPress} testID="satir-cuma" />,
+        );
+        const oge = getByTestId('satir-cuma');
+        expect(oge.props.accessibilityLabel).toBe('Cuma namazı. Kapalı');
+        expect(oge.props.accessibilityRole).toBe('button');
+        fireEvent.press(oge);
+        expect(onPress).toHaveBeenCalled();
+    });
+    it('dokunulabilir satır yoksa testID anahtarın kendisinde', () => {
+        const { getByTestId } = render(
+            <AnahtarSatiri ikon="bell" baslik="Özel gün" deger={false} onDegistir={jest.fn()} testID="ozel-gun-anahtari" />,
+        );
+        expect(getByTestId('ozel-gun-anahtari').props.accessibilityRole).toBe('switch');
+    });
     it('kapalıyken -slash ikonu (renk tek başına durum taşımaz)', () => {
         const { getByText } = render(<AnahtarSatiri ikon="bell" kapaliIkon="bell-slash" baslik="B" deger={false} onDegistir={jest.fn()} />);
         expect(getByText('ikon:bell-slash', { includeHiddenElements: true })).toBeTruthy();

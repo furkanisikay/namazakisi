@@ -171,7 +171,7 @@ export function gelismisAcikBaslarMi(
     );
 }
 
-/** "Gelişmiş" başlığının özeti ("her 5 dk · Uyarı tonu · Gerçek alarm açık"); hepsi varsayılansa ''. */
+/** "Gelişmiş" başlığının özeti ("her 5 dk · sertlik: Uyarı · Gerçek alarm açık"); hepsi varsayılansa ''. */
 export function gelismisOzetiOlustur(
     seviye: SeviyeAyari,
     tanim: Pick<PencereTanimi, 'tonSecilebilir' | 'yon'>
@@ -180,7 +180,7 @@ export function gelismisOzetiOlustur(
     if (seviye.siklik !== 'birkez') parcalar.push(`her ${seviye.siklik.herDk} dk`);
     if (tanim.tonSecilebilir === true) {
         const ton = etkinKademe(seviye, tanim.yon);
-        if (ton !== 'nazik') parcalar.push(`${TON_ETIKETLERI[ton]} tonu`);
+        if (ton !== 'nazik') parcalar.push(`sertlik: ${TON_ETIKETLERI[ton]}`);
     }
     if (kanalAcikMi(seviye.kanallar, 'alarm')) parcalar.push('Gerçek alarm açık');
     return parcalar.join(' · ');
@@ -488,7 +488,7 @@ export const YON_SECENEKLERI: {
  * acikken banner ile ses bir dakikaya kadar ayrisabilir. Bu sessiz birakilamaz.
  */
 export const GIRIS_SESLI_GECIKME_NOTU =
-    'Uygulama açıkken sesli anons, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
+    'Uygulama açıkken sesli okuma, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
 
 /**
  * Bir adimin gorunumu (renk/ikon) — ton secilebilen pencerede adimin ETKIN
@@ -520,8 +520,8 @@ export const tonGeriNotuOlustur = (numara: number): string =>
 /** Acil ton cipi devre disiyken altindaki aciklama. */
 export const acilTonKisitNotu = (yon: PencereYonu): string =>
     yon === 'girisindenItibaren'
-        ? '“Vakit girer girmez” seçeneğinde acil ton kullanılmaz.'
-        : `Acil ton yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
+        ? '“Vakit girer girmez” seçeneğinde “Acil” seçilemez.'
+        : `“Acil” yalnız vaktin son ${ACIL_TON_UST_DK} dakikasında seçilebilir.`;
 
 /** Ekleme sinirina ulasildiginda dugmenin yerine cikan metin. */
 export const adimSiniriNotu = (maksAdim: number): string =>

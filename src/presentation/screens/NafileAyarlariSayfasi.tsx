@@ -10,9 +10,10 @@
  * Bildirim + Sesli okuma anahtarları, titreşim ve sesli okuma METNİ (`{vakit}` = nafilenin
  * adı). Teheccüd ayrıca pencere (son üçte bir / yatsıdan) ve uyandırma sesi taşır.
  *
- * SESLİ OKUMA RIZASI (`NafileAyarlari.sesliOnayi`, muhafızınkinden AYRI): bir adımda sesli
- * okuma İLK kez açılırken adım detayının içinde `SesliOnayModal`; reddedilirse adım
- * kurulu kanallarıyla kalır, geri tuşu hiçbir şey yazmaz.
+ * SESLİ OKUMA / ALARM RIZASI — TEK RIZA (sade tasarım, Dalga 3): bir hatırlatmada verilen
+ * onay hepsinde geçerlidir (`useGenelRiza`; eski `NafileAyarlari.sesliOnayi` okunur, yeni
+ * onay ortak kayda yazılır). Onay yoksa adım detayının içinde `SesliOnayModal`; reddedilirse
+ * adım kurulu kanallarıyla kalır, geri tuşu hiçbir şey yazmaz.
  */
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
@@ -30,6 +31,7 @@ import { useBildirimButcesi } from '../hooks/useBildirimButcesi';
 import { useButceRehberi } from '../hooks/useButceRehberi';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../hooks/useTurkceTtsDestegi';
+import { useGenelRiza } from '../hooks/useGenelRiza';
 import { useNafilePencereleri } from '../hooks/useNafilePencereleri';
 import { BildirimButceKarti } from '../components/bildirim/BildirimButceKarti';
 import { Anahtar } from '../components/common/Anahtar';
@@ -114,6 +116,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
     const { pencereler } = useNafilePencereleri();
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
     const navigation = useNavigation() as unknown as AyarNavigasyonu | undefined;
 
     /**
@@ -136,7 +139,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
         {
             oneriFiltresi: yalnizNafileOnerisi,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -408,11 +411,16 @@ export const NafileAyarlariSayfasi: React.FC = () => {
                             deger={ayar}
                             islemler={islemler[k.tur]}
                             // Rıza adım yazımıyla BİRLİKTE (iki eşzamanlı thunk birbirini ezerdi).
-                            yaz={(yeni, riza: AdimRizasi) => ayariYaz(k.tur, yeni, riza)}
+                            yaz={(yeni, riza: AdimRizasi) => {
+                                // TEK RIZA (Dalga 3): onay nafilenin alanına değil ORTAK kayda.
+                                const yazildi = ayariYaz(k.tur, yeni);
+                                if (yazildi) genelRiza.ver(riza);
+                                return yazildi;
+                            }}
                             ttsDestekli={ttsDestekli}
                             // Rızalar nafilenin KENDİ kaydı (muhafızınki taşınmaz).
-                            sesliOnayiVar={ayarlar.sesliOnayi === true}
-                            alarmOnayiVar={ayarlar.alarmOnayi === true}
+                            sesliOnayiVar={genelRiza.sesli}
+                            alarmOnayiVar={genelRiza.alarm}
                             sesliOnayMetinleri={{
                                 altBaslik: 'Nafile hatırlatmasında sesli okuma',
                                 kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

@@ -57,7 +57,10 @@ export const vakitBildirimAyariniGuncelle = createAsyncThunk(
 export const tumVakitBildirimAyarlariniGuncelle = createAsyncThunk(
     'vakitBildirim/topluGuncelle',
     async (ayarlar: VakitBildirimAyarlari) => {
-        await LocalVakitBildirimServisi.saveAyarlar(ayarlar);
+        // `saveAyarlar` hatayı yutup `false` döner: sessiz kayıp yerine gerçek hata.
+        if (!(await LocalVakitBildirimServisi.saveAyarlar(ayarlar))) {
+            throw new Error('Vakit bildirim ayarları kaydedilemedi');
+        }
 
         const yonetici = VakitBildirimYoneticiServisi.getInstance();
         await yonetici.bildirimleriGuncelle();

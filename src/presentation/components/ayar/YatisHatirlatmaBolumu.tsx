@@ -1,5 +1,5 @@
 /**
- * Bildirim Ayarları > "Yatış hatırlatması" bölümü (issue #290; ortak hatırlatma yüzeyleri
+ * Hatırlatmalar > "Yatmadan önce" ayrıntısı (eski Bildirim Ayarları bölümü) (issue #290; ortak hatırlatma yüzeyleri
  * plan §5.3).
  *
  * Kullanıcı her zamanki yatış saatini girer; yatıştan önce hatırlatma: yatsı kılınmadıysa
@@ -31,6 +31,7 @@ import { yatisHatirlatmaAyariniGuncelle } from '../../store/yatisHatirlatmaSlice
 import { Anahtar } from '../common/Anahtar';
 import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
+import { useGenelRiza } from '../../hooks/useGenelRiza';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
@@ -95,7 +96,12 @@ function buGecePenceresi(a: Pick<YatisAyarlari, 'saat' | 'dakika'>, simdi: Date)
     return { baslangic: new Date(yatis.getTime() - YATIS_ONCE_MAX_DK * 60000), bitis: yatis };
 }
 
-export const YatisHatirlatmaBolumu: React.FC = () => {
+export interface YatisHatirlatmaBolumuProps {
+    /** Ayrıntı sayfasında başlık header'dadır (AGENTS.md: başlık TEK yerde). */
+    baslikGizle?: boolean;
+}
+
+export const YatisHatirlatmaBolumu: React.FC<YatisHatirlatmaBolumuProps> = ({ baslikGizle = false }) => {
     const renkler = useRenkler();
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
@@ -103,6 +109,7 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
     const koordinat = useAppSelector((s) => s.konum.koordinatlar);
     const yetenekler = usePlatformYetenekleri();
     const ttsDestekli = useTurkceTtsDestegi();
+    const genelRiza = useGenelRiza();
 
     // ── Taslak + debounce'lu yazma ──
     const [taslak, setTaslak] = useState<YatisAyarlari | null>(null);
@@ -154,7 +161,7 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
@@ -246,9 +253,14 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
 
     /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
     const modulYaz = useCallback(
-        (yeni: YatisAyarlari, riza: AdimRizasi): boolean =>
-            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
-        [guncelle]
+        (yeni: YatisAyarlari, riza: AdimRizasi): boolean => {
+            const rizaVar = riza.sesliOnayi === true || riza.alarmOnayi === true;
+            const yazildi = guncelle(yeni, {}, rizaVar);
+            // TEK RIZA (Dalga 3): onay yüzeyin kendi alanına değil ORTAK kayda yazılır.
+            if (yazildi && rizaVar) genelRiza.ver(riza);
+            return yazildi;
+        },
+        [guncelle, genelRiza]
     );
     const saatMetni = `${ikiHane(ayarlar.saat)}:${ikiHane(ayarlar.dakika)}`;
 
@@ -315,9 +327,11 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
 
     return (
         <View className="mb-6">
-            <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
-                YATIŞ HATIRLATMASI
-            </Text>
+            {!baslikGizle && (
+                <Text className="text-xs font-bold tracking-wider mb-3" style={{ color: renkler.metinIkincil }}>
+                    YATIŞ HATIRLATMASI
+                </Text>
+            )}
 
             <View className="rounded-xl overflow-hidden shadow-sm" style={{ backgroundColor: renkler.kartArkaplan }}>
                 <View className="flex-row items-center p-4">
@@ -390,8 +404,8 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                                 yaz={modulYaz}
                                 ttsDestekli={ttsDestekli}
                                 // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                                sesliOnayiVar={ayarlar.sesliOnayi === true}
-                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayiVar={genelRiza.sesli}
+                                alarmOnayiVar={genelRiza.alarm}
                                 sesliOnayMetinleri={{
                                     altBaslik: 'Yatış hatırlatmasında sesli okuma',
                                     kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',

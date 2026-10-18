@@ -34,6 +34,7 @@ import {
 } from '../../core/kaza/kazaHareketi';
 import { defterDoluMu, eskiDurumdanHareketler, eskiGorunumHareketi } from '../../core/kaza/kazaDefteriHesabi';
 import { mezhepSecildiMi, seferilikMezhebi } from '../../core/mezhep/mezhepAyari';
+import { rizaEkle, rizaKaydiniNormalize } from '../../core/hatirlatma/rizalar';
 
 /** Kılınan-vakitler anahtar öneki: `${MUHAFIZ_AYARLARI}_kilinan_<tarih>`. */
 const KILINAN_VAKIT_ONEK = `${DEPOLAMA_ANAHTARLARI.MUHAFIZ_AYARLARI}_kilinan_`;
@@ -60,6 +61,7 @@ const AYAR_ANAHTARLARI: Record<string, string> = {
   takvimCakisma: DEPOLAMA_ANAHTARLARI.TAKVIM_CAKISMA_AYARLARI,
   kazaAyarlari: DEPOLAMA_ANAHTARLARI.KAZA_AYARLARI,
   mezhep: DEPOLAMA_ANAHTARLARI.MEZHEP_AYARI,
+  hatirlatmaRizalari: DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI,
 };
 
 /**
@@ -368,6 +370,15 @@ const ayarPlaniEkle = (
     if (deger !== null && deger !== undefined) {
       plan[anahtar] = deger;
     }
+  }
+  // TEK RIZA BİRLEŞİR, ÜZERİNE YAZILMAZ: cihazda verilmiş sesli okuma / alarm onayı,
+  // onu içermeyen (eski) bir yedek yüklenince sessizce geri alınmasın. Rıza yalnız
+  // EKLENİR (iki taraftan birinde verildiyse verilmiştir); yedek uydurmaz, taşır.
+  if (ayarlar.hatirlatmaRizalari !== null && ayarlar.hatirlatmaRizalari !== undefined) {
+    plan[DEPOLAMA_ANAHTARLARI.HATIRLATMA_RIZALARI] = rizaEkle(
+      rizaKaydiniNormalize(mevcut.ayarlar?.hatirlatmaRizalari),
+      rizaKaydiniNormalize(ayarlar.hatirlatmaRizalari)
+    );
   }
   // ESKİ YEDEK (ortak mezhep anahtarından önce): mezhep yalnız seferîlik kaydında.
   // Ortak ayar ona taşınmazsa açılışta yazılmış ortak ayar kazanır ve Şâfiî

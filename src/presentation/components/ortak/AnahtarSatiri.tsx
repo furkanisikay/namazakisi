@@ -67,9 +67,13 @@ export const AnahtarSatiri: React.FC<AnahtarSatiriProps> = ({
     );
 
     return (
-        <View testID={testID} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}>
+        // testID ERİŞİLEBİLİR öğede durur (dokunulabilir satır; yoksa anahtar): iOS
+        // erişilebilirlik ağacı (idb/XCUITest) erişilebilir olmayan sarmalayıcı View'u
+        // göstermez → `satir-cuma` gibi seçiciler simülatörde bulunamazdı.
+        <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingVertical: 10 }}>
             {onPress ? (
                 <TouchableOpacity
+                    testID={testID}
                     style={{ flex: 1, flexDirection: 'row', alignItems: 'center', minHeight: 44 }}
                     onPress={onPress}
                     activeOpacity={0.7}
@@ -83,6 +87,7 @@ export const AnahtarSatiri: React.FC<AnahtarSatiriProps> = ({
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>{icerik}</View>
             )}
             <Anahtar
+                testID={onPress || !testID ? undefined : testID}
                 value={deger}
                 onValueChange={onDegistir}
                 disabled={devreDisi}

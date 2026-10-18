@@ -21,6 +21,12 @@ jest.mock('../../store/nafileSlice', () => ({
     nafileAyariniGuncelle: jest.fn((d: unknown) => ({ type: 'nafile/guncelle', payload: d })),
     nafileAyarlariniBirlestir: jest.requireActual('../../store/nafileSlice').nafileAyarlariniBirlestir,
 }));
+// TEK RIZA (Dalga 3): onay ORTAK kayda yazılır.
+jest.mock('../../store/hatirlatmaRizaSlice', () => ({
+    hatirlatmaRizalariniYukle: jest.fn(() => ({ type: 'riza/yukle' })),
+    hatirlatmaRizasiVer: jest.fn((d: unknown) => ({ type: 'riza/ver', payload: d })),
+}));
+const { hatirlatmaRizasiVer: rizaVerMock } = jest.requireMock('../../store/hatirlatmaRizaSlice');
 const mockNavigate = jest.fn();
 jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
 // Bildirim sınırı rehberi (issue #298) ayrı testlerde; burada defter "hazır değil"
@@ -196,7 +202,7 @@ describe('NafileAyarlariSayfasi', () => {
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
         });
 
-        it('gerçek alarm ilk kez açılırken NAFİLENİN kendi rızası sorulur; onay rızayı ANAHTARLA BİRLİKTE yazar', async () => {
+        it('gerçek alarm ilk kez açılırken rıza sorulur; onay ORTAK kayda, anahtar nafileye yazılır', async () => {
             const ekran = ac(KUSLUK);
             fireEvent.press(ekran.getByTestId('adim-gelismis'));
             fireEvent(ekran.getByTestId('adim-alarm-anahtari'), 'valueChange', true);
@@ -206,7 +212,8 @@ describe('NafileAyarlariSayfasi', () => {
             await waitFor(() => expect(nafileAyariniGuncelle).toHaveBeenCalledTimes(1));
             // TEK yazım: iki eşzamanlı thunk aynı eski durumu birleştirip birbirini ezerdi.
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
-            expect(d.alarmOnayi).toBe(true);
+            expect(d.alarmOnayi).toBeUndefined();
+            expect(rizaVerMock).toHaveBeenCalledWith({ alarmOnayi: true });
             expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, alarm: true });
         });
 
@@ -214,26 +221,27 @@ describe('NafileAyarlariSayfasi', () => {
             const ekran = ac(KUSLUK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
-            expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+            expect(ekran.getByText('Sesli okuma açılsın mı?')).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
             // Adım kurulu kanallarıyla kalır (yalnız bildirim) — yazılacak bir değişiklik yok.
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
             expect(ekran.getByTestId('adim-sesli-anahtari').props.value).toBe(false);
         });
 
-        it('onaylanınca adım sesli olur ve rıza AYRI (nafile) kaydına yazılır', () => {
+        it('onaylanınca adım sesli olur ve rıza ORTAK kayda (tek rıza) yazılır', () => {
             const ekran = ac(KUSLUK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
-            expect(d.sesliOnayi).toBe(true);
+            expect(d.sesliOnayi).toBeUndefined();
+            expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
             expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 
         it('rıza zaten varsa doğrudan yazılır', () => {
             const ekran = ac({ ...KUSLUK, sesliOnayi: true });
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-            expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
+            expect(ekran.queryByText('Sesli okuma açılsın mı?')).toBeNull();
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
             expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
@@ -270,7 +278,7 @@ describe('NafileAyarlariSayfasi — bildirim sınırı rehberi (issue #298)', ()
         fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
         expect(ekran.getByTestId('oneri-nafileGunuGunune')).toBeTruthy();
         expect(ekran.queryByTestId('oneri-seyreklestir')).toBeNull();
-        fireEvent.press(ekran.getByLabelText('Namaz Muhafızı ayarlarında yer açın'));
+        fireEvent.press(ekran.getByLabelText('"Vakit çıkmadan" ayarlarında yer açın'));
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
     });
 
