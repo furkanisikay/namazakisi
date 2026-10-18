@@ -58,6 +58,31 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Saat W3 (Wear OS): saat ile telefonun iş bölümü. Yalnız Android — Wear OS saati yalnız
+    // Android telefonla eşleşir; Apple Watch tarafı bu özellikleri taşımaz.
+    {
+        id: 'saat-is-bolumu',
+        platformlar: ['android'],
+        surum: '0.41.0',
+        tarih: '2026-10-18',
+        baslik: 'Saatiniz ve Telefonunuz Artık İşleri Bölüşüyor',
+        aciklama:
+            'Galaxy Watch gibi Wear OS saatinizden Namaz modunu açabilir, sabah ve teheccüd için yalnız bileğinizi titreten sessiz uyandırma seçebilir, Camideyim sorusunu bilekten cevaplayabilirsiniz.',
+        detayAciklama:
+            "Ayarlar > Saat'ten uyandırmanın ve sesli anonsun nerede duyulacağını seçersiniz. Uyandırmayı saate verirseniz yanınızda uyuyan uyanmaz; saatte kapatmazsanız telefonunuz 3 dakika sonra yedek olarak çalar, saatiniz şarjdayken de telefon çalar. Sesli anonsu telefonunuz yanınızda değilken saatiniz okuyabilir; iki cihaz aynı cümleyi birlikte okumaz.",
+        detaylar: [
+            'Saatteki düğmeyle Namaz modu: vaktin sonuna, en fazla 30 dakika',
+            'Camideyken bilekte durum çipi; "Burası cami değil" ve "Camide misiniz?" bilekten',
+            'Kaza Defteri, Camideyim ve ayarlar için "Telefonda açın"',
+            'Kıble pusulasında yaklaştıkça sıklaşan titreşimle yön bulma',
+            'Bileği bükerek vakit listesinde gezinme',
+            'Saat şarjdayken hatırlatmaları telefon üstlenir',
+        ],
+        ikon: 'clock',
+        hedefSayfa: 'SaatAyarlari',
+        ctaEtiketi: 'Saat ayarlarını açın',
+        kartGoster: true,
+    },
     // Birleşik hatırlatma modülü (plan 2026-10-18): her yüzeyde aynı düzen + sesli okuma metni.
     // İki platformda var; bildirim sesi ve titreşim seçimi iOS'ta yok (yetenek kuralı) → metin
     // onları yalnız Android'e atfeder.
