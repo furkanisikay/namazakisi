@@ -181,7 +181,7 @@ describe('TakvimCakismaBolumu', () => {
         const ekran = kur();
         expect(await ekran.findByTestId('yon-sabit-gerekcesi')).toBeTruthy();
         expect(ekran.getByText(TAKVIM_CAKISMA_YON_GEREKCESI)).toBeTruthy();
-        expect(ekran.getByText(/Sesli anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
+        expect(ekran.getByText(/Sesli okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz/)).toBeTruthy();
         expect(ekran.getByText(/ilk uyarı etkinlikten 30 dk önce gelir/)).toBeTruthy();
         fireEvent.press(ekran.getByLabelText('Takvim çakışması akışını önizleyin'));
         expect(ekran.getByText('Takvim çakışması akışı')).toBeTruthy();

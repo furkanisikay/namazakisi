@@ -439,7 +439,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     Kapalıyken "Takvimindeki bir etkinlik" yazar. Açarsanız ad, kilit ekranında ve
                                     bildirimleri aynalayan saat ya da bileklik uygulamalarında da görünebilir. Sesli
-                                    anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
+                                    okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz.
                                 </Text>
                             </View>
                             <Anahtar

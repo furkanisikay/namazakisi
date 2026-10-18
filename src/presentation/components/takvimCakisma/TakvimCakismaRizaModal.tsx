@@ -40,7 +40,7 @@ const MADDELER: Madde[] = [
     {
         ikon: 'eye-slash',
         metin:
-            'Etkinlik adı varsayılan olarak bildirimde yer almaz; "Takvimindeki bir etkinlik" yazar. Adı göstermeyi siz açabilirsiniz; açarsanız ad, bildirimle birlikte kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da benzeri uygulamalarda da görünebilir. Sesli anonsta ve gerçek alarm ekranında ad hiçbir zaman yer almaz.',
+            'Etkinlik adı varsayılan olarak bildirimde yer almaz; "Takvimindeki bir etkinlik" yazar. Adı göstermeyi siz açabilirsiniz; açarsanız ad, bildirimle birlikte kilit ekranında ve bildirimleri aynalayan saat, bileklik ya da benzeri uygulamalarda da görünebilir. Sesli okumada ve gerçek alarm ekranında ad hiçbir zaman yer almaz.',
     },
     {
         ikon: 'mobile-alt',

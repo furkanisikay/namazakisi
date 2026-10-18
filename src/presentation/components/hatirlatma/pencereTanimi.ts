@@ -488,7 +488,7 @@ export const YON_SECENEKLERI: {
  * acikken banner ile ses bir dakikaya kadar ayrisabilir. Bu sessiz birakilamaz.
  */
 export const GIRIS_SESLI_GECIKME_NOTU =
-    'Uygulama açıkken sesli anons, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
+    'Uygulama açıkken sesli okuma, ekrandaki uyarıdan en fazla bir dakika sonra duyulur.';
 
 /**
  * Bir adimin gorunumu (renk/ikon) — ton secilebilen pencerede adimin ETKIN

@@ -50,14 +50,14 @@ const ANONS_SECENEKLERI: Secenek<AnonsYeri>[] = [
         deger: 'otomatik',
         ikon: 'exchange-alt',
         baslik: 'Telefonda, uzaktaysa saatte',
-        aciklama: 'Telefonunuz yanınızda değilken sesli anonsu saatiniz okur.',
+        aciklama: 'Telefonunuz yanınızda değilken sesli okumayı saatiniz yapar.',
     },
     {
         deger: 'saat',
         ikon: 'clock',
         baslik: 'Yalnız saatte',
         aciklama:
-            'Anonsu her zaman saatiniz okur, telefonunuz konuşmaz. Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa anons hiç duyulmaz; bunu istemiyorsanız ilk seçeneği kullanın.',
+            'Sesli okumayı her zaman saatiniz yapar, telefonunuz konuşmaz. Saatiniz şarjdayken, telefonunuzla bağlantısı yokken ya da saatte Namaz Akışı yoksa okuma hiç duyulmaz; bunu istemiyorsanız ilk seçeneği kullanın.',
     },
     {
         deger: 'telefon',
@@ -144,7 +144,7 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                 {gecisDugmesi('Nafile namaz ayarlarını açın', 'NafileAyarlari', 'star-and-crescent')}
 
                 <View className="h-6" />
-                <AyarGrubu baslik="Sesli anons nerede okunsun?">
+                <AyarGrubu baslik="Sesli okuma nerede yapılsın?">
                     {ANONS_SECENEKLERI.map((s) =>
                         secenekSatiri(s, ayarlar.anonsYeri === s.deger, () => {
                             void guncelle({ anonsYeri: s.deger });

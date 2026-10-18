@@ -226,7 +226,7 @@ export function olaySatiriOlustur(o: HamOlay): OlaySatiri | null {
                       ? 'Namaz modunu bu vakit için kapatmıştınız.'
                       : o.mod === 'erisimYok'
                         ? 'Rahatsız Etmeyin erişimi olmadığı için Namaz modu açılamadı.'
-                        : 'Hatırlatmalar sessiz gelir; kurulu sesli anonslar konuşmaz.';
+                        : 'Hatırlatmalar sessiz gelir; sesli okumalar duyulmaz.';
             return { zamanMs: t, ikon: 'mosque', baslik: `Camidesiniz · ${yer}`, aciklama: mod, ton: 'iyi' };
         }
         case 'cikis':
