@@ -67,6 +67,8 @@ android_crash.txt
 
 # Expo Module Build Outputs
 modules/expo-countdown-notification/android/build/
+# Diğer yerel modüllerin Gradle çıktıları (yerel `:app:testDebugUnitTest` üretir).
+/modules/*/android/build/
 android/.kotlin/
 
 # iOS native dizini git'te TUTULMAZ (Android'in aksine — hibrit CNG).
