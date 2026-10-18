@@ -1,28 +1,35 @@
 # tohum: ozellik
-# Camideyim (yalniz Android): uc sekme (testID `sekme-<deger>`). Harita karolari
-# agdan (OpenFreeMap) iner; `waitForAnimationToEnd` ekran duragan olana kadar
-# bekler, zaman asimi hata DEGILDIR.
+# Namazda sessiz (yalniz Android): Camideyim + Namaz modu tek sayfa; ayrintilar
+# katli (testID `sessiz-ayrintilar`), harita "Camilerim" alt sayfasinda. Harita
+# karolari agdan (OpenFreeMap) iner; `waitForAnimationToEnd` zaman asimi hata DEGILDIR.
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Camideyim\\..*"
+      text: "Namazda sessiz\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Camideyim\\..*"
+    text: "Namazda sessiz\\..*"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/25-camideyim-ayarlar
 - tapOn:
-    id: "sekme-harita"
+    id: "camilerim"
 - waitForAnimationToEnd:
     timeout: 15000
 - takeScreenshot: ozk/26-camideyim-harita
+- back
+- scrollUntilVisible:
+    element:
+      id: "sessiz-ayrintilar"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
 - tapOn:
-    id: "sekme-nasil"
+    id: "sessiz-ayrintilar"
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: ozk/27-camideyim-nasil

@@ -71,6 +71,19 @@ async function ayarlaraGit() {
     return dokun(a, SEKME('Ayarlar'), 'ayarlar sekmesi', { bekle: 2500 });
 }
 
+/** Ayarlar > Hatirlatmalar (tek hatirlatma sayfasi). */
+async function hatirlatmalaraGit(etiket) {
+    if (!(await ayarlaraGit())) return false;
+    return kaydirarakDokun(/^Hatırlatmalar\./i, 'hatirlatmalar satiri', etiket, { bekle: 3000 });
+}
+
+/** Temiz acilis + Hatirlatmalar + bir satirin ayrinti sayfasi (testID). */
+async function ayrintiyaGit(testId, etiket) {
+    await temizAcilis('ozellik');
+    if (!(await hatirlatmalaraGit(`${etiket}-hub`))) return false;
+    return kaydirarakDokun(new RegExp(testId), `${etiket} satiri`, etiket, { bekle: 3000 });
+}
+
 /** Bolumu calistirir; hata digerlerini durdurmaz. */
 async function bolum(ad, fn) {
     console.log(`\n=== ${ad} ===`);
@@ -99,16 +112,18 @@ async function bolum(ad, fn) {
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
         cek('04-ayarlar');
-        await asagiKaydir();
-        await asagiKaydir();
+        // Ayarlar koku artik kisa; "alt" karesi Yardim sayfasidir.
+        if (!(await kaydirarakDokun(/^Yardım\./i, 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
         cek('05-ayarlar-alt');
     });
 
     await bolum('muhafiz', async () => {
         await temizAcilis('ozellik');
-        if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Namaz muhafızı\./i, 'muhafiz satiri', 'muhafiz-satiri', { bekle: 3000 }))) return;
+        if (!(await hatirlatmalaraGit('muhafiz-hub'))) return;
+        if (!(await kaydirarakDokun(/^Vakit çıkmadan\./i, 'vakit cikmadan satiri', 'muhafiz-satiri', { bekle: 3000 }))) return;
         cek('06-muhafiz');
+        // Vakit vakit ayar "Kendim ayarlayayim" katinda.
+        if (!(await kaydirarakDokun(/kendim-ayarlayayim|^Kendim ayarlayayım/i, 'kendim ayarlayayim', 'kendim', { bekle: 2000 }))) return;
         let a = await agac('muhafiz');
         if (!(await dokun(a, /sabah vakti hatırlatma/i, 'sabah vakit karti', { bekle: 2500 }))) return;
         if (await getir(/ilk hatırlatma/i, 'serit', { ust: 0.3, alt: 0.55 })) cek('07-muhafiz-zaman-seridi');
@@ -137,8 +152,7 @@ async function bolum(ad, fn) {
 
     await bolum('bildirim siniri', async () => {
         await temizAcilis('butce');
-        if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Namaz muhafızı\./i, 'muhafiz satiri', 'butce-muhafiz', { bekle: 3500 }))) return;
+        if (!(await hatirlatmalaraGit('butce-hub'))) return;
         const kart = await getir(/bildirim-butce-karti/, 'butce-karti', { ust: 0.1, alt: 0.6 });
         cek('11-muhafiz-butce-karti');
         if (!kart) return;
@@ -148,18 +162,19 @@ async function bolum(ad, fn) {
     });
 
     await bolum('bildirim ayarlari', async () => {
+        // Hatirlatmalar sayfasi + ayrinti sayfalari; her ayrinti temiz acilistan
+        // (geri gezinmeye guvenmeden).
         await temizAcilis('ozellik');
-        if (!(await ayarlaraGit())) return;
-        if (!(await kaydirarakDokun(/^Bildirimler\./i, 'bildirimler satiri', 'bildirimler', { bekle: 3000 }))) return;
+        if (!(await hatirlatmalaraGit('hatirlatmalar'))) return;
         cek('13-bildirim-ayarlari');
-        if (await getir(/^Cuma hatırlatması$/i, 'cuma', { ust: 0.15, alt: 0.4 })) cek('14-cuma');
-        if (await getir(/^Yatış hatırlatması(?: \||$)/i, 'yatis', { ust: 0.15, alt: 0.4 })) cek('15-yatis');
-        if (await getir(/^Camide kılacağım hatırlatması(?: \||$)/i, 'camiye-git', { ust: 0.15, alt: 0.4 })) cek('16-camiye-git');
+        if (await ayrintiyaGit('satir-cuma', 'cuma')) cek('14-cuma');
+        if (await ayrintiyaGit('satir-yatis', 'yatis')) cek('15-yatis');
+        if (await ayrintiyaGit('satir-camiye-git', 'camiye-git')) cek('16-camiye-git');
     });
 
     await bolum('nafile', async () => {
         await temizAcilis('ozellik');
-        if (!(await ayarlaraGit())) return;
+        if (!(await hatirlatmalaraGit('nafile-hub'))) return;
         if (!(await kaydirarakDokun(/^Nafile namazlar\./i, 'nafile satiri', 'nafile', { bekle: 3000 }))) return;
         cek('17-nafile');
         if (await getir(/nafile-kart-teheccud|^Teheccüd hatırlatması(?: \||$)/i, 'teheccud', { ust: 0.15, alt: 0.45 })) {
@@ -178,6 +193,7 @@ async function bolum(ad, fn) {
     await bolum('neler yeni', async () => {
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
+        if (!(await kaydirarakDokun(/^Yardım\./i, 'yardim satiri', 'yardim', { bekle: 3000 }))) return;
         if (!(await kaydirarakDokun(/^Neler yeni\./i, 'neler yeni satiri', 'neler-yeni', { bekle: 3000 }))) return;
         cek('21-neler-yeni');
     });
@@ -185,6 +201,7 @@ async function bolum(ad, fn) {
     await bolum('seferilik', async () => {
         await temizAcilis('ozellik');
         if (!(await ayarlaraGit())) return;
+        if (!(await kaydirarakDokun(/^Namaz vakitleri\./i, 'namaz vakitleri satiri', 'namaz-vakitleri', { bekle: 3000 }))) return;
         if (!(await kaydirarakDokun(/^Yolculuk bilgisi\./i, 'yolculuk satiri', 'seferilik', { bekle: 3000 }))) return;
         cek('22-seferilik');
     });

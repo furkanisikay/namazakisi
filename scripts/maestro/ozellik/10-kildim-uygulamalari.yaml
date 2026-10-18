@@ -6,12 +6,28 @@ appId: com.furkanisikay.namazakisi
 - runFlow: _ayarlar.yaml
 - scrollUntilVisible:
     element:
-      text: "Kıldım işaretleyebilen uygulamalar\\..*"
+      text: "Saat ve widget\\..*"
     direction: DOWN
     timeout: 300000
     waitToSettleTimeoutMs: 1500
 - tapOn:
-    text: "Kıldım işaretleyebilen uygulamalar\\..*"
+    text: "Saat ve widget\\..*"
+- scrollUntilVisible:
+    element:
+      id: "saat-gelismis"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    id: "saat-gelismis"
+- scrollUntilVisible:
+    element:
+      text: "Kıldım işaretleyen uygulamalar\\..*"
+    direction: DOWN
+    timeout: 300000
+    waitToSettleTimeoutMs: 1500
+- tapOn:
+    text: "Kıldım işaretleyen uygulamalar\\..*"
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/24-kildim-uygulamalari
