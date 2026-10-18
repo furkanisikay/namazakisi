@@ -37,7 +37,7 @@ import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 
 /**
  * Ana ekran (yeniden tasarım W1): ilk öğe TAM EKRAN vakit yayı + sayaç; aşağı kaydırınca
- * günün vakitleri, en altta konum adı ve tesbihat girişi.
+ * günün vakitleri, en altta konum adı, tesbihat ve kıble girişleri.
  *
  * Ekran metinleri arayüz dilidir: kibar "siz" (AGENTS.md). Dokunma hedefleri ≥48 dp
  * (CompactButton görünürde 32 dp, dokunma payıyla 48 dp). Taç: `TransformingLazyColumn`'ın
@@ -56,6 +56,7 @@ fun AnaEkran(
     saniyeGoster: Boolean,
     onKildim: (tarih: String, vakit: String) -> Unit,
     onTesbihat: () -> Unit,
+    onKible: () -> Unit,
 ) {
     val liste = rememberTransformingLazyColumnState()
     val donusum = rememberTransformationSpec()
@@ -140,6 +141,15 @@ fun AnaEkran(
                             colors = ButtonDefaults.filledTonalButtonColors(),
                             modifier = Modifier.semantics { contentDescription = "Tesbihat sayacını açın" },
                             label = { Text("Tesbihat") },
+                        )
+                    }
+                    // Kıble (saat W2): yük/konum yoksa ekran kendisi yönlendirir.
+                    item(key = "kible") {
+                        CompactButton(
+                            onClick = onKible,
+                            colors = ButtonDefaults.filledTonalButtonColors(),
+                            modifier = Modifier.semantics { contentDescription = "Kıble pusulasını açın" },
+                            label = { Text("Kıble") },
                         )
                     }
                 }

@@ -62,6 +62,17 @@
             android:launchMode="singleTop"
             android:taskAffinity="" />
 
+        <!--
+          Kıble pusulası (saat yenileme W2). exported: kıble komplikasyonunun dokunuşu
+          kadrandan (SysUI) başlatılır. Filtre yok. Konum telefondan gelir → izin YOK.
+        -->
+        <activity
+            android:name=".ui.KibleAktivite"
+            android:exported="true"
+            android:label="@string/kible_adi"
+            android:launchMode="singleTop"
+            android:taskAffinity="" />
+
         <service
             android:name=".veri.TelefonDinleyiciServisi"
             android:exported="true">
