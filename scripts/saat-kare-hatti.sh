@@ -185,6 +185,8 @@ adb shell am force-stop "$PAKET"
 adb shell am start -W -n "$PAKET/$SINIF.ui.KibleAktivite"
 hazir_bekle 'Kıble|kıble|sensörü' || true
 if kare 08-kible 3; then
+  # Onceki ekranin dokumu kalmasin: dump basarisizsa bayat metinle karar verilmez.
+  rm -f /tmp/saat-ui.xml
   dump_al
   if grep -q 'sensörü bulunmuyor' /tmp/saat-ui.xml; then
     echo "UYARI: 08-kible pusula sensoru yok (emulator) — kare silindi"
