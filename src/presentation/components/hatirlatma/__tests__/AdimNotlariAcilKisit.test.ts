@@ -1,5 +1,5 @@
 /**
- * Acil ton kisiti notu (issue #274, Fable incelemesi): son 15 dk disindaki ya da
+ * Acil kisiti notu (issue #274, Fable incelemesi): son 15 dk disindaki ya da
  * giris yonlu acil adim SERT konusur ve Rahatsiz Etmeyin'i delmez. Bu bilincli
  * urun karari mevcut kayitlarin davranisini degistirdi → ekranda soylenmeli.
  */
@@ -28,7 +28,7 @@ const notlar = (seviye: SeviyeAyari, yon: PencereYonu = 'cikisaDogru') =>
 describe('AdimNotlari — acil ton kısıtı', () => {
     it('çıkışta 15 dk üstü acil adım: sert tonda çalıştığı söylenir', () => {
         expect(notlar(adim({ esikDk: 40, acilKanal: true }))).toContain(
-            'Bu adım vaktin son 15 dakikası dışında olduğu için sert tonda çalışır; Rahatsız Etmeyin’i delmez'
+            'Bu adım vaktin son 15 dakikası dışında olduğu için “Sert” olarak çalışır; Rahatsız Etmeyin’i delmez'
         );
     });
 

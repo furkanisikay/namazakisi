@@ -36,13 +36,13 @@ describe('AdimNotlari — platform notlari', () => {
      */
     it('iOS + sesli adim: sessiz modda duyulmayacagi soylenir', () => {
         expect(notlar(iosYetenekleri(false))).toContain(
-            'iPhone’da sesli anons bildirim sesi olarak çalar; sessiz moddayken duyulmaz'
+            'iPhone’da sesli okuma bildirim sesi olarak çalar; sessiz moddayken duyulmaz'
         );
     });
 
     it('iOS + AlarmKit: sesli anons notu YINE CIKAR (anons bildirim sesidir, alarm degil)', () => {
         expect(notlar(iosYetenekleri(true))).toContain(
-            'iPhone’da sesli anons bildirim sesi olarak çalar; sessiz moddayken duyulmaz'
+            'iPhone’da sesli okuma bildirim sesi olarak çalar; sessiz moddayken duyulmaz'
         );
     });
 

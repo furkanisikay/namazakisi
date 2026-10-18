@@ -127,10 +127,10 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                         </View>
                         <View className="flex-1">
                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                Sesli anons açılsın mı?
+                                Sesli okuma açılsın mı?
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {altBaslik ?? `${yogunlukEtiketi ?? ''} yoğunluğu sesli anons içerir`}
+                                {altBaslik ?? `${yogunlukEtiketi ?? ''} düzey sesli okuma içerir`}
                             </Text>
                         </View>
                     </View>
@@ -169,15 +169,19 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                                 kanallar={{ sesli: true }}
                                 bildirimSesi=""
                                 cozulmusMetin={ornekMetin}
-                                erisimEtiketi="Sesli anonsu dinleyin"
+                                erisimEtiketi="Sesli okumayı dinleyin"
                             />
                         </View>
                     </View>
 
                     <TurkceTtsUyarisi destekli={ttsDestekli} />
 
-                    <Text className="text-xs leading-4 mt-3" style={{ color: renkler.metinIkincil }}>
-                        {kapatmaNotu ?? 'Dilediğiniz zaman her vaktin adımlarından kapatabilirsiniz.'}
+                    {/* TEK RIZA (Dalga 3): bir kez sorulur, tüm hatırlatmalarda geçerli. */}
+                    <Text className="text-sm leading-5 mt-3" style={{ color: renkler.metin }}>
+                        Bu izin bir kez sorulur, tüm hatırlatmalarda geçerlidir.
+                    </Text>
+                    <Text className="text-xs leading-4 mt-1" style={{ color: renkler.metinIkincil }}>
+                        {kapatmaNotu ?? 'Dilediğiniz zaman her hatırlatmanın ayarından kapatabilirsiniz.'}
                     </Text>
 
                     {/* Butonlar */}
@@ -206,11 +210,11 @@ export const SesliOnayModal: React.FC<SesliOnayModalProps> = ({
                             onPress={onOnayla}
                             activeOpacity={0.85}
                             accessibilityRole="button"
-                            accessibilityLabel="Sesli anonsu açın"
+                            accessibilityLabel="Sesli okumayı açın"
                         >
                             <FontAwesome5 name="check" size={13} color="#FFF" style={{ marginRight: 8 }} />
                             <Text className="text-sm font-bold" style={{ color: '#FFF' }}>
-                                Sesli anonsu açın
+                                Sesli okumayı açın
                             </Text>
                         </TouchableOpacity>
                     </View>

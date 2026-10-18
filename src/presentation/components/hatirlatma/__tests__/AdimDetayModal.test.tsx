@@ -199,7 +199,7 @@ describe('AdimDetayModal — sesli rıza (modal ağacının içinde)', () => {
         expect(onDegistir).not.toHaveBeenCalled();
 
         fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-        fireEvent.press(ekran.getByLabelText(/^Sesli okumayı açın|^Sesli anonsu açın|Onayla/i));
+        fireEvent.press(ekran.getByLabelText(/^Sesli okumayı açın|^Sesli okumayı açın|Onayla/i));
         expect(onDegistir).toHaveBeenCalledWith(
             expect.objectContaining({ kanallar: { bildirim: true, sesli: true } }),
             { sesliOnayi: true }
@@ -223,12 +223,12 @@ describe('AdimDetayModal — GELİŞMİŞ', () => {
         expect(ekran.getByText('her 15 dk · Gerçek alarm açık')).toBeTruthy();
     });
 
-    test('muhafızda nazik olmayan ton Gelişmiş\'i açar ve özetlenir; ton yalnız muhafızda', () => {
+    test('muhafızda nazik olmayan ton Gelişmiş\'i açar ve özetlenir; sertlik yalnız muhafızda', () => {
         const { ekran } = kur(MUHAFIZ, adim({ bildirim: true }, { kademe: 'uyari', esikDk: 25 }));
-        expect(ekran.getByText('Uyarı tonu')).toBeTruthy();
-        expect(ekran.getByLabelText('Uyarı ton')).toBeTruthy();
+        expect(ekran.getByText('sertlik: Uyarı')).toBeTruthy();
+        expect(ekran.getByLabelText('Sertlik: Uyarı')).toBeTruthy();
         const cuma = kur(CUMA, adim({ bildirim: true }, { siklik: { herDk: 15 } }));
-        expect(cuma.ekran.queryByLabelText('Uyarı ton')).toBeNull();
+        expect(cuma.ekran.queryByLabelText('Sertlik: Uyarı')).toBeNull();
     });
 
     test('Tekrarla anahtarı tek atış ↔ tekrar yazar', () => {

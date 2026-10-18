@@ -221,7 +221,7 @@ describe('NafileAyarlariSayfasi', () => {
             const ekran = ac(KUSLUK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
-            expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
+            expect(ekran.getByText('Sesli okuma açılsın mı?')).toBeTruthy();
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
             // Adım kurulu kanallarıyla kalır (yalnız bildirim) — yazılacak bir değişiklik yok.
             expect(nafileAyariniGuncelle).not.toHaveBeenCalled();
@@ -231,7 +231,7 @@ describe('NafileAyarlariSayfasi', () => {
         it('onaylanınca adım sesli olur ve rıza ORTAK kayda (tek rıza) yazılır', () => {
             const ekran = ac(KUSLUK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
             expect(d.sesliOnayi).toBeUndefined();
             expect(rizaVerMock).toHaveBeenCalledWith({ sesliOnayi: true });
@@ -241,7 +241,7 @@ describe('NafileAyarlariSayfasi', () => {
         it('rıza zaten varsa doğrudan yazılır', () => {
             const ekran = ac({ ...KUSLUK, sesliOnayi: true });
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-            expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
+            expect(ekran.queryByText('Sesli okuma açılsın mı?')).toBeNull();
             const d = (nafileAyariniGuncelle as unknown as jest.Mock).mock.calls[0][0];
             expect(d.hatirlatmalar.kusluk.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });

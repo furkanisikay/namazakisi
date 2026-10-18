@@ -215,7 +215,7 @@ describe('YatisHatirlatmaBolumu', () => {
             expect(ekran.getByTestId('adim-alarm-anahtari')).toBeTruthy();
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(mockKaydet).not.toHaveBeenCalled();
-            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
             await waitFor(() => expect(mockKaydet).toHaveBeenCalledTimes(1));
             const kayit = mockKaydet.mock.calls[0][0];
             expect(kayit.sesliOnayi).toBeUndefined();

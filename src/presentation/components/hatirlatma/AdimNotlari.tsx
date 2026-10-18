@@ -119,7 +119,7 @@ export function adimNotlariniOlustur(
     ) {
         notlar.push({
             tip: 'bilgi',
-            metin: 'iPhone’da sesli anons bildirim sesi olarak çalar; sessiz moddayken duyulmaz',
+            metin: 'iPhone’da sesli okuma bildirim sesi olarak çalar; sessiz moddayken duyulmaz',
         });
     }
     if (!yetenekler.sessizligiDelebilir && seviye.acilKanal === true) {
@@ -149,8 +149,8 @@ export function adimNotlariniOlustur(
 /** Acil ton kisitina takilan adimin bilgi satiri (kibar "siz" dili). */
 export function acilKisitNotu(yon: PencereYonu): string {
     return yon === 'girisindenItibaren'
-        ? 'Vakit girer girmez çalışan adımlarda acil ton kullanılmaz; bu adım sert tonda çalışır ve Rahatsız Etmeyin’i delmez'
-        : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için sert tonda çalışır; Rahatsız Etmeyin’i delmez`;
+        ? 'Vakit girer girmez çalışan adımlar “Acil” olamaz; bu adım “Sert” olarak çalışır ve Rahatsız Etmeyin’i delmez'
+        : `Bu adım vaktin son ${ACIL_TON_UST_DK} dakikası dışında olduğu için “Sert” olarak çalışır; Rahatsız Etmeyin’i delmez`;
 }
 
 /**

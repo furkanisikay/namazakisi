@@ -455,7 +455,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                 </Text>
                                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
                                     {tanim.tonSecilebilir
-                                        ? `${tanim.baslik} vakti · ${TON_ETIKETLERI[etkinTon]} ton`
+                                        ? `${tanim.baslik} vakti · ${TON_ETIKETLERI[etkinTon]}`
                                         : tanim.baslik}
                                 </Text>
                             </View>
@@ -646,7 +646,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                             GELİŞMİŞ
                                         </Text>
                                         <Text className="text-xs mt-0.5" style={{ color: renkler.metin }}>
-                                            {gelismisOzeti || (tanim.tonSecilebilir ? 'Tekrar, ton, gerçek alarm' : 'Tekrar, gerçek alarm')}
+                                            {gelismisOzeti || (tanim.tonSecilebilir ? 'Tekrar, sertlik, gerçek alarm' : 'Tekrar, gerçek alarm')}
                                         </Text>
                                     </View>
                                 </TouchableOpacity>
@@ -696,7 +696,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                     className="text-[11px] font-semibold tracking-wider mb-2 mt-2"
                                                     style={{ color: renkler.metinIkincil }}
                                                 >
-                                                    TON
+                                                    SERTLİK
                                                 </Text>
                                                 <View className="flex-row gap-1.5">
                                                     {SEVIYE_KADEMELERI.map((kademe) => {
@@ -719,7 +719,7 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
                                                                 activeOpacity={0.7}
                                                                 accessibilityRole="button"
                                                                 accessibilityState={{ selected: secili, disabled: devreDisi }}
-                                                                accessibilityLabel={`${TON_ETIKETLERI[kademe]} ton`}
+                                                                accessibilityLabel={`Sertlik: ${TON_ETIKETLERI[kademe]}`}
                                                             >
                                                                 <FontAwesome5
                                                                     name={tonBilgi.ikon}

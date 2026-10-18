@@ -140,8 +140,8 @@ describe('CumaHatirlatmaBolumu', () => {
             const ekran = ac(ACIK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             expect(guncelleMock).not.toHaveBeenCalled();
-            expect(ekran.getByText('Sesli anons açılsın mı?')).toBeTruthy();
-            fireEvent.press(ekran.getByLabelText('Sesli anonsu açın'));
+            expect(ekran.getByText('Sesli okuma açılsın mı?')).toBeTruthy();
+            fireEvent.press(ekran.getByLabelText('Sesli okumayı açın'));
             expect(guncelleMock).toHaveBeenCalledTimes(1);
             const d = guncelleMock.mock.calls[0][0];
             expect(d.sesliOnayi).toBeUndefined();
@@ -227,7 +227,7 @@ describe('CumaHatirlatmaBolumu — TEK RIZA (Dalga 3)', () => {
         const ekran = render(<CumaHatirlatmaBolumu />);
         fireEvent.press(ekran.getByLabelText(/^Hatırlatma — düzenleyin/));
         fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
-        expect(ekran.queryByText('Sesli anons açılsın mı?')).toBeNull();
+        expect(ekran.queryByText('Sesli okuma açılsın mı?')).toBeNull();
         ekran.unmount();
         const d = guncelleMock.mock.calls.at(-1)[0];
         expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });

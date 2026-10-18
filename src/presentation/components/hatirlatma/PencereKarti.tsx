@@ -272,7 +272,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                 onPress={() => onAdimSec(indeks)}
                                 activeOpacity={0.7}
                                 accessibilityRole="button"
-                                accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi} ton` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
+                                accessibilityLabel={`${adimBasligi}${tonEtiketi ? `, ${tonEtiketi}` : ''} — düzenleyin. ${ozetMetni}${notMetni ? `. ${notMetni}` : ''}`}
                             >
                                 <View
                                     className="w-9 h-9 rounded-xl items-center justify-center mr-3"
@@ -527,7 +527,7 @@ export const PencereKarti: React.FC<PencereKartiProps> = ({
                                         {
                                             tip: 'uyari',
                                             metin:
-                                                'Kendi yazdığınız anons metni bu seçenekte ters okunabilir; adımın detayından güncelleyebilirsiniz.',
+                                                'Kendi yazdığınız sesli okuma metni bu seçenekte ters okunabilir; adımın ayrıntısından güncelleyebilirsiniz.',
                                         },
                                     ]}
                                 />
