@@ -1,5 +1,9 @@
 jest.mock('../../../../core/theme', () => ({ useRenkler: () => ({}) }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
+// Native köprü grafiği (AGENTS: requireNativeModule tuzağı) — maddeler saf, köprüye gerek yok.
+jest.mock('../../../../../modules/expo-countdown-notification/src', () => ({}));
+jest.mock('../../../../domain/services/OnizlemeSesServisi', () => ({}));
+jest.mock('../../../../domain/services/AnonsOnizlemeServisi', () => ({ adimiOnizle: jest.fn() }));
 
 import { sesliOnayMaddeleri } from '../SesliOnayModal';
 
