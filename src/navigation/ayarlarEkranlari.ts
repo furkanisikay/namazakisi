@@ -22,6 +22,7 @@ export const AYARLAR_EKRANLARI = [
   'NowBarAyarlari',
   'CamideyimAyarlari',
   'NamazModuAyarlari',
+  'SaatAyarlari',
   'KildimUygulamalari',
   'OtomasyonRehberi',
   'DebugLogs',

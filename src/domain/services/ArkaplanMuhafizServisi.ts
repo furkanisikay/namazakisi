@@ -37,6 +37,8 @@ import {
 import { muhafizPlaniDegistiBildir } from './muhafizPlaniGozlemcisi';
 import { bildirimKategorileriniKaydet } from './bildirimKategorileri';
 import { alarmErtelemeleriniOku } from './muhafizErtelemeDurumu';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
+import type { SaatAyarlari } from '../../core/saat/saatAyarlari';
 
 /**
  * Muhafiz ayarlari arayuzu
@@ -66,6 +68,8 @@ export class ArkaplanMuhafizServisi {
     private ertelemeler: Record<string, number> = {};
     /** Bildirim kategorileri bu süreçte kaydedildi mi (L7 — düğmesiz bildirim olmasın). */
     private kategorilerKayitli = false;
+    /** Bu turun saat iş bölümü ayarı (saat W3) — üreticiye geçer (defterle parite). */
+    private saatAyarlari: SaatAyarlari | undefined;
 
     private constructor() { }
 
@@ -180,6 +184,9 @@ export class ArkaplanMuhafizServisi {
         // sonraki yatsi DUNE aittir). Bes tuketici de bu fonksiyondan gectigi
         // icin kapi burada TEK yerde durur.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
+        // Saat iş bölümü (saat W3): sabah uyandırması saatteyse telefonda yedek, anons
+        // "yalnız saatte" ise telefon TTS planlamaz. Okuyucu asla fırlatmaz.
+        this.saatAyarlari = await LocalSaatAyarlariServisi.oku();
 
         const planGirdisi = {
             matris: this.ayarlar.matris,
@@ -227,7 +234,7 @@ export class ArkaplanMuhafizServisi {
         // geri getirmemeli. Ertelenen kopya hedef aninda kendisi gelir.
         // Kural TEK kaynaktan (`ertelemeSusturuyorMu`): on plan banner'i ve saatin
         // plani da ayni fonksiyondan gecer.
-        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date()).filter(
+        const adaylar = vakitTeslimAdaylari(this.ayarlar.matris, vakit, new Date(), this.saatAyarlari).filter(
             (a) => !ertelemeSusturuyorMu(this.ertelemeler, vakit.tarih, vakit.vakit, a.zaman.getTime())
         );
         for (const aday of adaylar) {

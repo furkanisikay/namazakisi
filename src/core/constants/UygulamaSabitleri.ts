@@ -232,6 +232,9 @@ export const DEPOLAMA_ANAHTARLARI = {
   // cihaza özgü → yedeklemeye GİRMEZ.
   SEFERILIK_AYARLARI: 'seferilik_ayarlari',
   SEFERILIK_KART_HAFIZASI: '@namaz_akisi/seferilik_kart_hafizasi',
+  // Saat (Wear OS) iş bölümü (saat W3): uyandırma ve sesli anons NEREDE — saat
+  // eşleşmesine bağlı, cihaza özgü → yedeklemeye GİRMEZ (Camideyim gibi).
+  SAAT_AYARLARI: '@namaz_akisi/saat_ayarlari',
   // Kurulum sihirbazi
   ILK_KURULUM_TAMAMLANDI: '@namaz_akisi/ilk_kurulum_tamamlandi',
   // Takvim entegrasyonu

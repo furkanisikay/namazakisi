@@ -5,12 +5,15 @@
  * - `namazakisi://kible` → Kıble ekranı
  * - `namazakisi://kaza`  → Kaza defteri sekmesi
  * - `namazakisi://ana`   → Ana sayfa
+ * - `namazakisi://ayarlar`   → Ayarlar (saat W3: saatteki "Telefonda açın")
+ * - `namazakisi://camideyim` → Ayarlar > Camideyim (saat W3; yığının altında Ayarlar
+ *   kökü durur ki geri tuşu boşa düşmesin)
  * - `namazakisi://kildim` → bir EKRAN değil, EYLEMDİR: içinde bulunulan vakti kılındı
  *   olarak işaretler. Navigasyondan `filter` ile dışlanır, `useKildimDerinBaglantisi`
  *   işler. Android kısayolu ise uygulamayı hiç açmadan native `KildimKisayolActivity`
  *   ile işaretler; bu yol iOS ve elle açılan bağlantı içindir.
  */
-import type { LinkingOptions, NavigatorScreenParams } from '@react-navigation/native';
+import type { LinkingOptions, NavigatorScreenParams, PathConfig } from '@react-navigation/native';
 import type { KazaStackParamList } from './kazaEkranlari';
 
 export const DERIN_BAGLANTI_ONEKLERI = ['namazakisi://'];
@@ -22,7 +25,14 @@ export type AnaSekmeParamList = {
     /** Kaza Defteri 2.0'dan beri iç yığındır; `namazakisi://kaza` kökünü açar. */
     KazaDefteri: NavigatorScreenParams<KazaStackParamList> | undefined;
     Istatistikler: undefined;
-    Ayarlar: undefined;
+    /** İç yığın; `namazakisi://ayarlar` kökünü, `namazakisi://camideyim` Camideyim'i açar. */
+    Ayarlar: NavigatorScreenParams<AyarlarDerinParamList> | undefined;
+};
+
+/** Ayarlar yığınının derin bağlantıyla açılan ekranları (`ayarlarEkranlari` alt kümesi). */
+type AyarlarDerinParamList = {
+    AyarlarAna: undefined;
+    CamideyimAyarlari: undefined;
 };
 
 /** Derin bağlantının ihtiyaç duyduğu kök yığın şekli (`RootStackParamList` ile uyumlu). */
@@ -30,6 +40,15 @@ export type DerinBaglantiKokParamList = {
     KurulumSihirbazi: undefined;
     MainTabs: NavigatorScreenParams<AnaSekmeParamList> | undefined;
     KibleSayfasi: undefined;
+};
+
+/** `namazakisi://camideyim` yığını Ayarlar kökünün ÜSTÜNE kurar (geri tuşu çalışsın). */
+const AYARLAR_YOLLARI: PathConfig<AyarlarDerinParamList> = {
+    initialRouteName: 'AyarlarAna',
+    screens: {
+        AyarlarAna: 'ayarlar',
+        CamideyimAyarlari: 'camideyim',
+    },
 };
 
 const KILDIM_DESENI = /^namazakisi:\/\/kildim\/?(?:[?#].*)?$/i;
@@ -46,6 +65,9 @@ export const derinBaglantiYapilandirmasi: LinkingOptions<DerinBaglantiKokParamLi
                 screens: {
                     AnaSayfa: 'ana',
                     KazaDefteri: 'kaza',
+                    // Tip bilinçli olarak AYRI sabitte kontrol edilir: iç içe `NavigatorScreenParams`
+                    // birleşiminden TS ParamList'i `{}` çıkarıyor ve `initialRouteName`'i reddediyor.
+                    Ayarlar: AYARLAR_YOLLARI as PathConfig<object>,
                 },
             },
             KibleSayfasi: 'kible',

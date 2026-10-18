@@ -21,6 +21,13 @@ import { vakitUyariPlaniOlustur, type UyariPlani } from './motorAdaptoru';
 import { VARSAYILAN_PENCERE_YONU, olcuDkHesapla, type PencereYonu } from './pencereTipleri';
 import { pencereUzunluguDkHesapla } from './pencereUzunlugu';
 import { muhafizBildirimIdOlustur } from './anonsKimligi';
+import {
+    SAAT_YEDEK_GECIKMESI_DK,
+    telefonAnonsuKonusurMu,
+    telefonYedegiGecikirMi,
+    type SaatAyarlari,
+} from '../saat/saatAyarlari';
+import { muhafizUyandirmasiMi } from '../saat/uyandirmaKapisi';
 
 /** Bir vaktin bugünkü penceresi. `tarih` vaktin AİT OLDUĞU gündür (yatsı dün olabilir). */
 export interface MuhafizVakitZamani {
@@ -165,6 +172,11 @@ export function muhafizVakitleriniHesapla(
 
 export interface MuhafizPlanGirdisi {
     matris: MuhafizMatrisi;
+    /**
+     * Saat iş bölümü (saat W3). Verilmezse bugünkü davranış: telefon uyandırır ve konuşur.
+     * Servis ve bildirim defteri AYNI değeri geçer (parite) — bkz. `vakitTeslimAdaylari`.
+     */
+    saat?: SaatAyarlari;
     vakitler: MuhafizVakitZamani[];
     simdi: Date;
     /** Vaktin kendi gününe göre kılınmış mı? (`kilinanVakitleriAl` ile beslenir) */
@@ -187,7 +199,8 @@ export function planlanacakMuhafizVakitleri(girdi: MuhafizPlanGirdisi): MuhafizV
 export function vakitTeslimAdaylari(
     matris: MuhafizMatrisi,
     vakit: MuhafizVakitZamani,
-    simdi: Date
+    simdi: Date,
+    saat?: SaatAyarlari
 ): MuhafizTeslimAdayi[] {
     const cikisMs = vakit.cikis.getTime();
     if (cikisMs <= simdi.getTime()) return [];
@@ -207,10 +220,21 @@ export function vakitTeslimAdaylari(
     );
 
     const adaylar: MuhafizTeslimAdayi[] = [];
-    for (const uyari of vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk })) {
-        const zaman = new Date(cikisMs - uyari.kalanDk * 60 * 1000);
+    const anonsKonusur = telefonAnonsuKonusurMu(saat);
+    const yedekGecikir = telefonYedegiGecikirMi(saat);
+    for (const ham of vakitUyariPlaniOlustur(vakitAyari, suankiOlcu, { pencereUzunluguDk })) {
+        let zaman = new Date(cikisMs - ham.kalanDk * 60 * 1000);
         // Geçmişe düşen (dakika yuvarlaması) atlanır.
         if (zaman.getTime() <= simdi.getTime()) continue;
+        // Saat W3 — anons "yalnız saatte": telefon TTS planlamaz (çift konuşma yok).
+        // Bayrak burada kapanır ki teslimci, ön plan ve defter AYNI cevabı görsün.
+        const uyari = anonsKonusur || !ham.sesliAnons ? ham : { ...ham, sesliAnons: false };
+        // Saat W3 — uyandırma "saatte": sabahın gerçek alarmı telefonda YEDEKTİR, birkaç
+        // dakika SONRA çalar (saatte kapatılınca kimlikle iptal edilir). Kimlik DEĞİŞMEZ
+        // (kalanDk'dan türer); vakit çıkışını geçmez (çıkıştan sonra alarm zaten çalmaz).
+        if (yedekGecikir && muhafizUyandirmasiMi(vakit.vakit, ham)) {
+            zaman = new Date(Math.min(zaman.getTime() + SAAT_YEDEK_GECIKMESI_DK * 60 * 1000, cikisMs - 30 * 1000));
+        }
         adaylar.push({
             id: muhafizBildirimIdOlustur(vakit.vakit, uyari.seviye, vakit.tarih, uyari.kalanDk),
             zaman,
@@ -225,7 +249,9 @@ export function vakitTeslimAdaylari(
 
 /** Bütün turun teslim adayları, teslimcinin göreceği SIRAYLA. */
 export function muhafizTeslimPlaniOlustur(girdi: MuhafizPlanGirdisi): MuhafizTeslimAdayi[] {
-    return planlanacakMuhafizVakitleri(girdi).flatMap((v) => vakitTeslimAdaylari(girdi.matris, v, girdi.simdi));
+    return planlanacakMuhafizVakitleri(girdi).flatMap((v) =>
+        vakitTeslimAdaylari(girdi.matris, v, girdi.simdi, girdi.saat)
+    );
 }
 
 /**

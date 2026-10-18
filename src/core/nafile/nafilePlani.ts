@@ -26,6 +26,8 @@ import { alarmPayinaSigdir, ekAlarmKurarMi, ekAnonsAlarmiKurarMi } from '../hati
 import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 import { teheccudPenceresiniUygula, type NafilePencere } from './nafileVakitleri';
 import { nafileAnonsMetni, nafileBildirimMetni } from './nafileMetinleri';
+import { SAAT_YEDEK_GECIKMESI_DK, telefonYedegiGecikirMi, type SaatAyarlari } from '../saat/saatAyarlari';
+import { nafileUyandirmasiMi } from '../saat/uyandirmaKapisi';
 import {
     NAFILE_ADLARI,
     nafileAyariniAl,
@@ -74,6 +76,11 @@ export interface NafilePlanSecenekleri {
     alarmButcesi?: number;
     /** "Kıldım" denmiş (gün, tür) — o günün o nafilesi planlanmaz (#273). */
     kilindiMi?: (gunIso: string, tur: NafileTuru) => boolean;
+    /**
+     * Saat iş bölümü (saat W3). Uyandırma "saatte" ise teheccüd uyandırması telefonda
+     * YEDEKTİR ve `SAAT_YEDEK_GECIKMESI_DK` sonra çalar. Servis ve defter aynı değeri geçer.
+     */
+    saat?: SaatAyarlari;
 }
 
 /** Ayarın plan ufku — tek kaynak (servis ve defter bunu kullanır). */
@@ -119,6 +126,15 @@ export interface PencereTetigi {
     uyari: UyariPlani;
     /** Adımın ilk tetiği mi (tekrar değil)? Nass yalnız ilk tetikte. */
     ilk: boolean;
+}
+
+/**
+ * Saat W3 yedeği: uyandırma saatteyken telefonun tetiği birkaç dakika SONRA çalar
+ * (kimlik değişmez); pencere sonunu geçmez.
+ */
+function yedekZamani(zaman: Date, son: Date, kaydir: boolean): Date {
+    if (!kaydir) return zaman;
+    return new Date(Math.min(zaman.getTime() + SAAT_YEDEK_GECIKMESI_DK * DK, son.getTime() - 30 * 1000));
 }
 
 /** Pencere uzunluğu (dk) — motorun dakika tamsayısı. */
@@ -174,6 +190,7 @@ export function nafilePlaniOlustur(
 ): NafileBildirimPlani[] {
     const { gunduzGunSayisi, teheccudGeceSayisi, alarmButcesi } = secenekler;
     const kilindiMi = secenekler.kilindiMi ?? (() => false);
+    const yedekGecikir = telefonYedegiGecikirMi(secenekler.saat);
     const planlar: NafileBildirimPlani[] = [];
 
     // Dün (gece yarısı sonrası teheccüd) → bugün + teheccudGeceSayisi - 1
@@ -213,7 +230,7 @@ export function nafilePlaniOlustur(
                     id: `${nafileKimlikOneki(iso, p.tur)}${t.uyari.kalanDk}`,
                     tur: p.tur,
                     tarih: iso,
-                    zaman: t.zaman,
+                    zaman: yedekZamani(t.zaman, p.bitis, yedekGecikir && nafileUyandirmasiMi({ tur: p.tur, uyandirma, uyari: t.uyari })),
                     ...nafileBildirimMetni(girdi),
                     uyandirma,
                     yon: ayar.yon,

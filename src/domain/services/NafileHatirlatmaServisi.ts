@@ -17,6 +17,7 @@ import {
     type NafileBildirimPlani,
 } from '../../core/nafile/nafilePlani';
 import type { MuhafizTeslimcisi } from './MuhafizTeslimcisi';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
 
 /**
  * Plan üretici SAF modüldedir (`core/nafile/nafilePlani.ts`): bildirim
@@ -243,12 +244,15 @@ export class NafileHatirlatmaServisi {
         // hatırlatmaları kurulmaz; eski plan az önce temizlendi.
         const ozelGundeMi = await ozelGunSuzgeciniOku();
         const kilinan = await LocalNafileServisi.getKilinanlar();
+        // Saat iş bölümü (saat W3): uyandırma saatteyse teheccüd uyandırması telefonda yedek.
+        const saat = await LocalSaatAyarlariServisi.oku();
 
         const simdi = new Date();
         const secenekler = {
             ...nafilePlanSecenekleri(ayarlar),
             ...(Platform.OS === 'android' ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
             kilindiMi: (iso: string, tur: NafileTuru) => (kilinan[iso] ?? []).includes(tur),
+            saat,
         };
         const planlar = nafilePlaniOlustur(koordinatlar, ayarlar, simdi, bugunuAl(), ozelGundeMi, secenekler);
 

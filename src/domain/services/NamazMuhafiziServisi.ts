@@ -4,6 +4,8 @@ import { Logger } from '../../core/utils/Logger';
 import { bugunuAl, dunuAl } from '../../core/utils/TarihYardimcisi';
 import { kilinanVakitleriAl } from '../../data/local/LocalNamazServisi';
 import { ozelGunKapisiniOku } from '../../data/local/LocalOzelGunOkuyucu';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
+import { telefonAnonsuKonusurMu, type SaatAyarlari } from '../../core/saat/saatAyarlari';
 import { ozelGunAktifMi, type OzelGunKapisiGirdisi } from '../../core/seri/ozelGunKapisi';
 import type { VakitAdi } from '../../core/types';
 import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
@@ -86,6 +88,14 @@ export class NamazMuhafiziServisi {
     private ozelGun: OzelGunKapisiGirdisi | null = null;
 
     /**
+     * Saat iş bölümü (saat W3): kullanıcı anonsu "yalnız saatte" seçtiyse telefon ön
+     * planda da KONUŞMAZ (çift konuşma yok). BELLEK-İÇİ önbellek (`kontrolEt` senkron);
+     * açılışta ve ayar değişince (`saatAyarlariniYukle`) doldurulur. Bilinmiyorken
+     * (null) varsayılan = telefon konuşur (bugünkü davranış).
+     */
+    private saatAyarlari: SaatAyarlari | null = null;
+
+    /**
      * Etkin ERTELEMELER (issue #289): `<namaz günü>_<vakit>` → hedef ms. BELLEK-İÇİ
      * önbellek (`kontrolEt` senkron koşar). Kaynak bekleyen bildirimlerdeki ertelenen
      * kopyadır; doldurulan yollar: açılış hidrasyonu, her tick başında arka planda
@@ -141,6 +151,7 @@ export class NamazMuhafiziServisi {
         this.kilinanVakitler = {};
         this.temizlenenVakitler = {};
         this.ozelGun = null;
+        this.saatAyarlari = null;
         this.ertelemeler = {};
         this.ertelemeTazelemesi = null;
         this.matris = VARSAYILAN_MATRIS;
@@ -188,6 +199,7 @@ export class NamazMuhafiziServisi {
         // açılışta banner/ses/anons çıkardı (kılınmışlık #92 dersinin ikizi).
         // Okuyucu asla fırlatmaz.
         this.ozelGun = await ozelGunKapisiniOku();
+        await this.saatAyarlariniYukle();
         // Ertelemeler de (issue #289): ertelendikten sonra uygulama açılınca ilk
         // `kontrolEt` banner/ses/anons çıkarmasın. Okuyucu asla fırlatmaz.
         await this.ertelemeleriTazele(true);
@@ -224,6 +236,11 @@ export class NamazMuhafiziServisi {
      * (özel gün başlatılınca açık bir banner bir dakika daha beklemesin).
      * Asla fırlatmaz.
      */
+    /** Saat iş bölümü ayarını diskten tazeler (okuyucu asla fırlatmaz). */
+    public async saatAyarlariniYukle(): Promise<void> {
+        this.saatAyarlari = await LocalSaatAyarlariServisi.oku();
+    }
+
     public async ozelGunDurumunuYukle(): Promise<void> {
         this.ozelGun = await ozelGunKapisiniOku();
         if (this.intervalId) this.kontrolEt();
@@ -451,6 +468,8 @@ export class NamazMuhafiziServisi {
         if (Platform.OS === 'ios') return;
         if (!sesliAnonsGerekliMi(seviye.kanallar)) return;
         if (!seviye.anonsMetni || seviye.anonsMetni.trim().length === 0) return;
+        // Saat W3: "yalnız saatte" → telefon konuşmaz (arka plan üreticisiyle AYNI kapı).
+        if (!telefonAnonsuKonusurMu(this.saatAyarlari ?? undefined)) return;
 
         try {
             const simdi = new Date();

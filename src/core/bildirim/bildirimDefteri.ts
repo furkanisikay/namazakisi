@@ -47,6 +47,7 @@ import {
 import { kullanilabilirSlotHesapla, yedekKapasitesiHesapla } from '../muhafiz/ios/bildirimButcesi';
 import { nafileAlarmKurarMi, nafileAnonsAlarmiKurarMi, nafilePlaniOlustur, nafilePlanSecenekleri } from '../nafile/nafilePlani';
 import type { NafileAyarlari } from '../nafile/nafileTipleri';
+import type { SaatAyarlari } from '../saat/saatAyarlari';
 import { gunSonuPlaniOlustur, GUN_SONU_PLAN_GUN_SAYISI, type GunSonuPlanAyarlari } from '../seri/gunSonuPlani';
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { YATIS_PLAN_GUN_SAYISI, yatisPlaniOlustur, type YatisAyarlari } from '../yatis/yatisPlani';
@@ -171,6 +172,11 @@ export interface DefterGirdisi {
      * kurulur ve 64 bekleyen bildirim sınırına SAYILMAZ (issue #74). Verilmezse bildirim.
      */
     iosAlarmKit?: boolean;
+    /**
+     * Saat iş bölümü (saat W3): uyandırma yedeği gecikir, anons "yalnız saatte" ise telefon
+     * TTS planlamaz. Servislerle AYNI değer (üreticilere geçer) — parite.
+     */
+    saat?: SaatAyarlari | null;
 }
 
 const koordinatGecerli = (k: DefterKoordinat | null | undefined): k is DefterKoordinat =>
@@ -229,6 +235,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
                 simdi: g.simdi,
                 kilindiMi,
                 ozelGundeMi,
+                saat: g.saat ?? undefined,
             })) {
                 // Gerçek alarm (issue #74) Android'de o tetiğin bildirimi + anonsunun
                 // YERİNE geçer → tek alarm sayılır. iOS'ta AlarmKit izinliyse yine alarm
@@ -309,6 +316,7 @@ export function bildirimDefteriOlustur(g: DefterGirdisi): DefterKaydi[] {
             const secenekler = {
                 ...nafilePlanSecenekleri(ayar),
                 ...(android ? { alarmButcesi: ANDROID_NAFILE_PAYI } : {}),
+                saat: g.saat ?? undefined,
             };
             const plan = nafilePlaniOlustur(koordinat, ayar, g.simdi, tarihiISOFormatinaCevir(g.simdi), ozelGundeMi, secenekler);
             let iosAlarm = 0;
