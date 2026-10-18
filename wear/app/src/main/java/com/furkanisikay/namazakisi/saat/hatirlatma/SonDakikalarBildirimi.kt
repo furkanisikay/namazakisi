@@ -14,6 +14,7 @@ import com.furkanisikay.namazakisi.saat.R
 import android.os.Build
 import android.os.Bundle
 import com.furkanisikay.namazakisi.saat.cekirdek.CanliGosterim
+import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.cekirdek.Yuk
 import com.furkanisikay.namazakisi.saat.komplikasyon.KomplikasyonOrtak
@@ -99,6 +100,9 @@ object SonDakikalarBildirimi {
         val govde = if (p.sonDakikalar) "Çıkış: ${VakitHesabi.saat(p.bitis)}" else "Bitiş: ${VakitHesabi.saat(p.bitis)}"
         val bildirim = NotificationCompat.Builder(context, KANAL)
             .setSmallIcon(ikon)
+            // Vurgu rengi vaktin tonu (SaatPaleti — ana ekranla aynı dil). Renklendirme
+            // (setColorized) YOK: Live Update şartı.
+            .setColor(SaatPaleti.int(SaatPaleti.vakitRengi(p.vakit ?: OGE_IKON_VAKTI[p.oge])))
             .setContentTitle(baslik)
             .setContentText(govde)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
