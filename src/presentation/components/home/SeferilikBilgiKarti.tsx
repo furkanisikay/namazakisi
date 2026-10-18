@@ -25,27 +25,45 @@ const KONUM_ISLEME_GECIKMESI_MS = 1500;
  * kendi dilimi ya da konum değişince yeniden çizilir. Seferîlik dilimi store'da
  * yoksa (eski test mock'ları) hiçbir şey çizmez.
  */
-function SeferilikBilgiKartiIc() {
-  const renkler = useRenkler();
-  const { durum, kartiKapat, konumuIsle, buradaIkametEt } = useSeferilik();
+function useSeferilikSonucu(durum: ReturnType<typeof useSeferilik>['durum']) {
+  const ayarlar = durum?.ayarlar;
+  const hafiza = durum?.hafiza;
+  const sonKonum = durum?.sonKonum;
+  return useMemo(
+    () => (ayarlar && hafiza ? seferilikDurumunuHesapla({ ayarlar, hafiza, konum: sonKonum }) : null),
+    [ayarlar, hafiza, sonKonum],
+  );
+}
+
+/**
+ * Kart bu an gösterilmeli mi? + DİSKTEKİ KONUMU İŞLER (açılış + konum değişimi:
+ * ilk ikamet, eve dönüşte kapatma hafızasının sıfırlanması).
+ *
+ * Ana ekranın tek durum alanı (Dalga 2) kartı yalnız "kazanan" uyarıyken çizer; bu
+ * yüzden işleme kartın İÇİNDE değil, AnaSayfa'da koşulsuz çalışan bu kancadadır —
+ * kart çizilmezken de ikamet/eve dönüş işlenmeye devam eder.
+ */
+export function useSeferilikKartiGorunur(): boolean {
+  const { durum, konumuIsle } = useSeferilik();
   const lat = useAppSelector((s) => (s as { konum?: { koordinatlar?: { lat?: number } } }).konum?.koordinatlar?.lat);
   const lng = useAppSelector((s) => (s as { konum?: { koordinatlar?: { lng?: number } } }).konum?.koordinatlar?.lng);
   const dilimVar = durum !== null;
 
-  // Açılışta ve konum her değiştiğinde diskteki konumu işle (ilk ikamet / eve dönüş).
   useEffect(() => {
     if (!dilimVar) return undefined;
     const zamanlayici = setTimeout(konumuIsle, KONUM_ISLEME_GECIKMESI_MS);
     return () => clearTimeout(zamanlayici);
   }, [dilimVar, konumuIsle, lat, lng]);
 
+  const sonuc = useSeferilikSonucu(durum);
+  return !!durum?.ayarlar && !!sonuc?.kartGoster && sonuc.mesafeKm !== null;
+}
+
+function SeferilikBilgiKartiIc() {
+  const renkler = useRenkler();
+  const { durum, kartiKapat, buradaIkametEt } = useSeferilik();
   const ayarlar = durum?.ayarlar;
-  const hafiza = durum?.hafiza;
-  const sonKonum = durum?.sonKonum;
-  const sonuc = useMemo(
-    () => (ayarlar && hafiza ? seferilikDurumunuHesapla({ ayarlar, hafiza, konum: sonKonum }) : null),
-    [ayarlar, hafiza, sonKonum],
-  );
+  const sonuc = useSeferilikSonucu(durum);
 
   if (!ayarlar || !sonuc?.kartGoster || sonuc.mesafeKm === null) return null;
   const metin = seferilikKartMetniOlustur(ayarlar.mezhep, sonuc.mesafeKm);

@@ -101,7 +101,7 @@ describe('VakitAkisi Bileşeni', () => {
 
     // Yatsı DIŞINDAKİ dört vakit de tıklanabilmeli (bug'da hepsi disabled'dı).
     for (const ad of [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam]) {
-      const satir = getByLabelText(`${ad} vakti, ${SAATLER[ad]}, vakti bekleniyor`);
+      const satir = getByLabelText(`${ad} vakti, ${SAATLER[ad]}, vakti geldi`);
       fireEvent.press(satir);
     }
     expect(onVakitTikla).toHaveBeenCalledTimes(4);
@@ -125,7 +125,7 @@ describe('VakitAkisi Bileşeni', () => {
       />
     );
 
-    const yatsi = getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakit girmedi`);
+    const yatsi = getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, henüz girmedi`);
     fireEvent.press(yatsi);
     expect(onVakitTikla).not.toHaveBeenCalled();
   });
@@ -145,7 +145,7 @@ describe('VakitAkisi Bileşeni', () => {
       />
     );
 
-    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakti bekleniyor`));
+    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakti geldi`));
     expect(onVakitTikla).toHaveBeenCalledWith(NamazAdi.Yatsi, true);
   });
 
@@ -163,7 +163,7 @@ describe('VakitAkisi Bileşeni', () => {
       for (const saat of Object.values(SAATLER)) {
         expect(getByText(saat)).toBeTruthy();
       }
-      expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, vakti bekleniyor`)).toBeTruthy();
+      expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, vakti geldi`)).toBeTruthy();
     });
 
     it('saat bilinmiyorsa etikette boş virgül kalmaz', () => {
@@ -173,7 +173,7 @@ describe('VakitAkisi Bileşeni', () => {
         <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
           suankiVakitAdi="" gunTarihiIso={dun} />
       );
-      expect(getByLabelText(`${NamazAdi.Sabah} vakti, vakti bekleniyor`)).toBeTruthy();
+      expect(getByLabelText(`${NamazAdi.Sabah} vakti, vakti geldi`)).toBeTruthy();
     });
 
     it('bağlantı yalnız kılınan vakitten ulaşılan vakte kadar dolar, iki yarısı aynı renktir', () => {

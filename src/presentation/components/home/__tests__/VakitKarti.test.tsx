@@ -1,9 +1,10 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import { PUAN_DEGERLERI } from '../../../../core/types/SeriTipleri';
 
 // @expo/vector-icons'i sade string'e indir (render sırasında native font yüklemesini engeller)
 jest.mock('@expo/vector-icons', () => ({ FontAwesome5: 'FontAwesome5' }));
+jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
+jest.mock('../../../hooks/useHareketAzalt', () => ({ useHareketAzalt: () => true }));
 
 // Tema renklerini deterministik sabit bir palete sabitle (üretim renk seçimine bağımlı değiliz)
 jest.mock('../../../../core/theme', () => ({
@@ -11,11 +12,12 @@ jest.mock('../../../../core/theme', () => ({
     kartArkaplan: '#FFFFFF',
     sinir: '#E0E0E0',
     birincil: '#4CAF50',
+    birincilMetin: '#FFFFFF',
+    basarili: '#4CAF50',
     vurgu: '#00BFA5',
     metin: '#212121',
     metinIkincil: '#757575',
     durum: { basarili: '#4CAF50' },
-    devredisi: '#BDBDBD',
   }),
 }));
 
@@ -31,10 +33,6 @@ describe('VakitKarti Bileşeni', () => {
     onTamamla: jest.fn(),
   };
 
-  // +N puan rozetindeki N, üretimle AYNI kaynaktan (PUAN_DEGERLERI) türetilir;
-  // sabit değişirse test de değişen değeri bekler (totoloji değil, tek-kaynak doğrulaması).
-  const puanMetni = `+${PUAN_DEGERLERI.namaz_kilindi} puan`;
-
   // @expo/vector-icons mock'u FontAwesome5'i 'FontAwesome5' adlı host bileşenine indirdiğinden
   // ağaçtaki tüm ikonların `name` prop'unu toplayabiliriz (ikon eşlemesini doğrulamak için).
   const ikonAdlariniTopla = (root: ReturnType<typeof render>['root']): string[] =>
@@ -42,111 +40,58 @@ describe('VakitKarti Bileşeni', () => {
       .findAll((dugum) => (dugum.type as unknown as string) === 'FontAwesome5')
       .map((dugum) => dugum.props.name as string);
 
-  it('aktif vakitte sözleşmeyi (badge, başlık, aralık, sayaç, buton, puan) render eder', () => {
-    const { getByText } = render(<VakitKarti {...varsayilanProps} kilitli={false} />);
-
-    // Aktif vakit rozeti — kilitli DEĞİL
-    expect(getByText('ŞU ANKİ VAKİT')).toBeTruthy();
-    // Başlık ve aralık prop'tan birebir gelmeli
+  it('aktif vakitte durum "Vakti geldi", başlık, aralık, sayaç ve TEK eylem "Kıldım"', () => {
+    const { getByText, getByLabelText, queryByText } = render(<VakitKarti {...varsayilanProps} kilitli={false} />);
+    expect(getByLabelText('Vakti geldi')).toBeTruthy();
     expect(getByText('Öğle')).toBeTruthy();
     expect(getByText('13:00 - 16:30')).toBeTruthy();
-    // Kalan süre sayacı prop'tan birebir gelmeli
     expect(getByText('01:30:00')).toBeTruthy();
-    expect(getByText('Kalan Süre')).toBeTruthy();
-    // Aktif buton metni
-    expect(getByText('Kılındı Olarak İşaretle')).toBeTruthy();
-    // Puan teşvik rozeti yalnızca aktif (tamamlanmamış + kilitsiz) durumda görünür
-    expect(getByText(puanMetni)).toBeTruthy();
-    expect(getByText('Serinizi koruyun! 🔥')).toBeTruthy();
+    expect(getByText('Kalan süre')).toBeTruthy();
+    expect(getByLabelText('Öğle — Kıldım')).toBeTruthy();
+    // Oyunlaştırma metni ana eylemin dibinden kalktı.
+    expect(queryByText(/puan/)).toBeNull();
+    expect(queryByText(/Serinizi/)).toBeNull();
   });
 
   it('konumMetni verilince konum rozetini gösterir, verilmeyince göstermez', () => {
-    const { queryByText, rerender } = render(
-      <VakitKarti {...varsayilanProps} kilitli={false} />
-    );
-    // konumMetni yokken rozet render edilmemeli
+    const { queryByText, rerender } = render(<VakitKarti {...varsayilanProps} />);
     expect(queryByText('Nilüfer, Bursa')).toBeNull();
-
-    rerender(
-      <VakitKarti {...varsayilanProps} kilitli={false} konumModu="oto" konumMetni="Nilüfer, Bursa" />
-    );
+    rerender(<VakitKarti {...varsayilanProps} konumMetni="Nilüfer, Bursa" />);
     expect(queryByText('Nilüfer, Bursa')).toBeTruthy();
   });
 
-  it('aktif butona basınca onTamamla bir kez çağrılır (buton etkin)', () => {
+  it('"Kıldım"a basınca onTamamla bir kez çağrılır', () => {
     const onTamamla = jest.fn();
-    const { getByText } = render(
-      <VakitKarti {...varsayilanProps} onTamamla={onTamamla} kilitli={false} />
-    );
-
-    fireEvent.press(getByText('Kılındı Olarak İşaretle'));
+    const { getByLabelText } = render(<VakitKarti {...varsayilanProps} onTamamla={onTamamla} kilitli={false} />);
+    fireEvent.press(getByLabelText('Öğle — Kıldım'));
     expect(onTamamla).toHaveBeenCalledTimes(1);
   });
 
-  it('kilitli modda SIRADAKİ VAKİT gösterir, butonu devre dışı bırakır ve puan rozetini gizler', () => {
+  it('kilitli (vakit girmedi) modda "Henüz girmedi" der ve işaretleme düğmesi çizmez', () => {
+    const { getByLabelText, queryByLabelText, getByText } = render(<VakitKarti {...varsayilanProps} kilitli={true} />);
+    expect(getByLabelText('Henüz girmedi')).toBeTruthy();
+    expect(getByText('Vakti girince işaretleyebilirsiniz')).toBeTruthy();
+    expect(queryByLabelText('Öğle — Kıldım')).toBeNull();
+  });
+
+  it('kılındığında durum "Kılındı" olur ve düğme tekrar işaretlemez', () => {
     const onTamamla = jest.fn();
-    const { getByText, queryByText } = render(
-      <VakitKarti {...varsayilanProps} onTamamla={onTamamla} kilitli={true} />
+    const { getAllByLabelText, getByLabelText } = render(
+      <VakitKarti {...varsayilanProps} tamamlandi={true} onTamamla={onTamamla} kilitli={false} />,
     );
-
-    // Rozet metni 'SIRADAKİ VAKİT' olmalı, aktif metin 'ŞU ANKİ VAKİT' GÖRÜNMEMELİ
-    expect(getByText('SIRADAKİ VAKİT')).toBeTruthy();
-    expect(queryByText('ŞU ANKİ VAKİT')).toBeNull();
-
-    // Kilitli buton metni
-    expect(getByText('Vakit Girmedi')).toBeTruthy();
-
-    // Puan teşvik rozeti kilitli modda render EDİLMEMELİ
-    expect(queryByText(puanMetni)).toBeNull();
-    expect(queryByText('Serinizi koruyun! 🔥')).toBeNull();
-
-    // Disabled buton: press handler tetiklenmemeli (üretim satır 128: disabled={tamamlandi || kilitli})
-    fireEvent.press(getByText('Vakit Girmedi'));
+    expect(getAllByLabelText('Kılındı').length).toBeGreaterThan(0);
+    const dugme = getByLabelText('Öğle — Kılındı');
+    expect(dugme.props.accessibilityState).toMatchObject({ checked: true, disabled: true });
+    fireEvent.press(dugme);
     expect(onTamamla).not.toHaveBeenCalled();
   });
 
-  it('tamamlandığında buton "Kılındı" olur, devre dışı kalır ve puan rozeti gizlenir', () => {
-    const onTamamla = jest.fn();
-    const { getByText, queryByText } = render(
-      <VakitKarti {...varsayilanProps} onTamamla={onTamamla} tamamlandi={true} kilitli={false} />
+  it('gösterilen ad (cuma) başlıkta ve düğme etiketinde kullanılır', () => {
+    const { getByText, getByLabelText } = render(
+      <VakitKarti {...varsayilanProps} gorunenVakitAdi="Cuma" kilitli={false} />,
     );
-
-    expect(getByText('Kılındı')).toBeTruthy();
-    // Tamamlanmış durumda da teşvik rozeti gizli (üretim: !tamamlandi && !kilitli)
-    expect(queryByText(puanMetni)).toBeNull();
-
-    // Tamamlanmış buton disabled: tekrar tamamla çağrılmamalı
-    fireEvent.press(getByText('Kılındı'));
-    expect(onTamamla).not.toHaveBeenCalled();
-  });
-
-  it('tamamlandığında buton check-circle ikonunu gösterir (pray/clock değil)', () => {
-    // Buton ikonu üretim satır 131: tamamlandi -> "check-circle" (kilitli "clock", aksi "pray")
-    const { root } = render(
-      <VakitKarti {...varsayilanProps} tamamlandi={true} kilitli={false} />
-    );
-
-    const ikonlar = ikonAdlariniTopla(root);
-    expect(ikonlar).toContain('check-circle');
-    expect(ikonlar).not.toContain('pray');
-    expect(ikonlar).not.toContain('clock');
-  });
-
-  it('aktif (tamamlanmamış, kilitsiz) durumda buton "pray" ikonunu gösterir', () => {
-    // tamamlandi=false && kilitli=false -> üretim satır 131: "pray"
-    const { root } = render(<VakitKarti {...varsayilanProps} kilitli={false} />);
-    const ikonlar = ikonAdlariniTopla(root);
-    expect(ikonlar).toContain('pray');
-    expect(ikonlar).not.toContain('check-circle');
-    expect(ikonlar).not.toContain('clock');
-  });
-
-  it('kilitli durumda buton "clock" ikonunu gösterir', () => {
-    // kilitli=true -> üretim satır 131: "clock"
-    const { root } = render(<VakitKarti {...varsayilanProps} kilitli={true} />);
-    const ikonlar = ikonAdlariniTopla(root);
-    expect(ikonlar).toContain('clock');
-    expect(ikonlar).not.toContain('pray');
+    expect(getByText('Cuma')).toBeTruthy();
+    expect(getByLabelText('Cuma — Kıldım')).toBeTruthy();
   });
 
   // getVakitIkonu eşlemesi (üretim satır 21-32) — vakit adına göre ana ikon seçimi.

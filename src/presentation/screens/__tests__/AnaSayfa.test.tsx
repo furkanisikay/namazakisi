@@ -235,6 +235,10 @@ jest.mock('@expo/vector-icons', () => {
   const { Text } = require('react-native');
   return { FontAwesome5: (props: { name: string }) => <Text>{props.name}</Text> };
 });
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+  const { Text } = require('react-native');
+  return (props: { name: string }) => <Text>{props.name}</Text>;
+});
 
 // ── Domain servisleri (native köprü / yan etki yok) ──────────────────────────
 const mockVakitBilgisi: {
@@ -681,6 +685,52 @@ describe('AnaSayfa', () => {
     });
   });
 
+  // ── Tek durum alanı + Kıldım (sade tasarım, Dalga 2) ──────────────────────
+  describe('Tek durum alanı', () => {
+    it('kerahat + toparlanma birlikteyken YALNIZ kerahat görünür, diğeri "+1 daha" arkasında', async () => {
+      const { mekruhVakitKontrolEt } = jest.requireMock('../../../domain/services/KazaHesaplayiciServisi');
+      const { seriOzetiSelector } = jest.requireMock('../../store/seriSlice');
+      (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: true, aciklama: 'gurub' });
+      (seriOzetiSelector as jest.Mock).mockReturnValue({
+        mevcutSeri: 0,
+        enUzunSeri: 0,
+        toparlanmaModu: true,
+        toparlanmaIlerleme: { tamamlanan: 1, hedef: 2 },
+      });
+      try {
+        gunduzSenaryosu();
+        mockPagerCocuklari.ciz = true;
+        const ekran = await kur(bugunuAl());
+        expect(ekran.getByTestId('durum-kerahat')).toBeTruthy();
+        expect(ekran.queryByTestId('durum-toparlanma')).toBeNull();
+        fireEvent.press(ekran.getByText('+1 daha'));
+        expect(ekran.getByTestId('durum-toparlanma')).toBeTruthy();
+        expect(ekran.getByText('Toparlanma · 1/2 gün')).toBeTruthy();
+      } finally {
+        (mekruhVakitKontrolEt as jest.Mock).mockReturnValue({ mekruhMu: false, aciklama: null });
+        (seriOzetiSelector as jest.Mock).mockReturnValue({ mevcutSeri: 0, enUzunSeri: 0, toparlanmaModu: false });
+      }
+    });
+
+    it('hiç uyarı yokken durum alanı çizilmez', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      const ekran = await kur(bugunuAl());
+      expect(ekran.queryByTestId('durum-alani')).toBeNull();
+    });
+
+    it('vakit kartının "Kıldım" geri çağrısı saniyelik çizimde AYNI REFERANS kalır', async () => {
+      gunduzSenaryosu();
+      mockPagerCocuklari.ciz = true;
+      await kur(bugunuAl());
+      const ilk = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      const sayi = mockVakitKartiProplari.length;
+      await waitFor(() => expect(mockVakitKartiProplari.length).toBeGreaterThan(sayi));
+      const son = mockVakitKartiProplari[mockVakitKartiProplari.length - 1] as { onTamamla?: unknown };
+      expect(son.onTamamla).toBe(ilk.onTamamla);
+    });
+  });
+
   // ── Sade görünüm (issue #295) ─────────────────────────────────────────────
   describe('Sade görünüm seçim dalı', () => {
     const sadeAcik = (ek: Record<string, unknown> = {}) => {
@@ -746,9 +796,11 @@ describe('AnaSayfa', () => {
       expect(mockPagerProplari.length).toBe(0);
     });
 
-    it('geçici çıkışta normal ekran + "Sade görünüme dönün" düğmesi', async () => {
+    it('geçici çıkışta normal ekran + "Sade görünüme dönün" (tek durum alanında)', async () => {
       gunduzSenaryosu();
       sadeAcik({ geciciCikis: true });
+      // Dönüş satırı artık gün sayfasının durum alanında → sayfa içeriği çizilmeli.
+      mockPagerCocuklari.ciz = true;
       const ekran = await kur(bugunuAl());
       expect(ekran.queryByTestId('sade-gorunum')).toBeNull();
       expect(mockPagerProplari.length).toBeGreaterThan(0);

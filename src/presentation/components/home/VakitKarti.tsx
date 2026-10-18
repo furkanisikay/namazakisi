@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useRenkler } from '../../../core/theme';
 import { VakitBilgisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 import { NamazAdi } from '../../../core/constants/UygulamaSabitleri';
-import { PUAN_DEGERLERI } from '../../../core/types/SeriTipleri';
+import { namazDurumuSec } from '../../../core/vakit/durumSozlugu';
+import { DurumRozeti } from '../ortak/DurumRozeti';
+import { KildimDugmesi } from '../hareket/KildimDugmesi';
 
 interface VakitKartiProps {
     vakitBilgisi: VakitBilgisi | null;
@@ -82,20 +84,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
             <View className="p-6 text-center items-center">
                 {/* Badge Satırı: Şu Anki Vakit + Konum */}
                 <View className="flex-row items-center gap-2 mb-4">
-                    <View className="flex-row items-center gap-2 px-3 py-1 rounded-full"
-                        style={{ backgroundColor: kilitli ? renkler.metinIkincil + '15' : renkler.birincil + '15' }}>
-                        {!kilitli && (
-                            <View className="relative flex h-2 w-2">
-                                <View className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                                    style={{ backgroundColor: renkler.birincil }} />
-                                <View className="relative inline-flex rounded-full h-2 w-2"
-                                    style={{ backgroundColor: renkler.birincil }} />
-                            </View>
-                        )}
-                        <Text className="text-xs font-bold" style={{ color: kilitli ? renkler.metinIkincil : renkler.birincil }}>
-                            {kilitli ? 'SIRADAKİ VAKİT' : 'ŞU ANKİ VAKİT'}
-                        </Text>
-                    </View>
+                    {/* Durum dili tek sözlükten: Kılındı / Vakti geldi / Henüz girmedi. */}
+                    <DurumRozeti durum={namazDurumuSec(tamamlandi, !kilitli)} />
 
                     {konumMetni && (() => {
                         const cipIcerigi = (
@@ -166,45 +156,24 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     <Text className="text-5xl font-mono font-bold tracking-tighter tabular-nums" style={{ color: renkler.metin }}>
                         {kalanSureStr}
                     </Text>
-                    <Text className="text-xs font-semibold uppercase tracking-widest mt-2" style={{ color: renkler.metinIkincil }}>
-                        Kalan Süre
+                    <Text className="text-sm font-semibold mt-2" style={{ color: renkler.metinIkincil }}>
+                        Kalan süre
                     </Text>
                 </View>
 
-                {/* Buton */}
-                <TouchableOpacity
-                    className="w-full py-4 px-6 rounded-2xl shadow-md flex-row items-center justify-center gap-3 active:scale-95 transition-transform"
-                    style={{
-                        backgroundColor: tamamlandi ? renkler.durum.basarili : (kilitli ? renkler.metinIkincil : renkler.birincil),
-                        opacity: kilitli ? 0.7 : 1
-                    }}
-                    onPress={onTamamla}
-                    disabled={tamamlandi || kilitli}
-                    accessibilityRole="button"
-                    accessibilityLabel={tamamlandi ? "Namaz kılındı" : (kilitli ? "Vakit girmedi" : "Kılındı olarak işaretle")}
-                >
-                    <FontAwesome5
-                        name={tamamlandi ? "check-circle" : (kilitli ? "clock" : "pray")}
-                        size={20}
-                        color="#fff"
-                    />
-                    <Text className="text-white font-bold text-lg">
-                        {tamamlandi ? "Kılındı" : (kilitli ? "Vakit Girmedi" : "Kılındı Olarak İşaretle")}
+                {/* Tek eylem: "Kıldım" → (dönüşerek) "Kılındı". Vakit girmediyse düğme yok. */}
+                {kilitli ? (
+                    <Text className="text-sm text-center" style={{ color: renkler.metin }}>
+                        Vakti girince işaretleyebilirsiniz
                     </Text>
-                </TouchableOpacity>
-
-                {!tamamlandi && !kilitli && (
-                    <View className="flex-row items-center justify-center mt-4 gap-3">
-                        <View className="flex-row items-center gap-1 px-2 py-1 rounded-full"
-                            style={{ backgroundColor: renkler.birincil + '10' }}>
-                            <FontAwesome5 name="star" size={10} color={renkler.birincil} />
-                            <Text className="text-xs font-bold" style={{ color: renkler.birincil }}>
-                                +{PUAN_DEGERLERI.namaz_kilindi} puan
-                            </Text>
-                        </View>
-                        <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            Serinizi koruyun! 🔥
-                        </Text>
+                ) : (
+                    <View style={{ alignSelf: 'stretch' }}>
+                        <KildimDugmesi
+                            kilindi={tamamlandi}
+                            onKildim={onTamamla}
+                            vakitAdi={baslikAdi}
+                            testID="vakit-karti-kildim"
+                        />
                     </View>
                 )}
             </View>
