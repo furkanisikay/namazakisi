@@ -60,6 +60,10 @@ export function useIzinAkisi({ oku, iste, kapanisBeklemeMs = MODAL_KAPANIS_BEKLE
     const [istiyor, setIstiyor] = useState(false);
     const bagli = useRef(true);
     const bekleyen = useRef<(() => void) | null>(null);
+    // Modal kapanış beklemesinin zamanlayıcısı ve "vazgeçildi" çözücüsü: unmount'ta
+    // temizlenir, yoksa ekrandan çıkmış bir akış sonradan sistem diyaloğunu açardı.
+    const zamanlayici = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const iptalEt = useRef<(() => void) | null>(null);
     const okuRef = useRef(oku);
     okuRef.current = oku;
     const isteRef = useRef(iste);
@@ -88,6 +92,12 @@ export function useIzinAkisi({ oku, iste, kapanisBeklemeMs = MODAL_KAPANIS_BEKLE
         return () => {
             bagli.current = false;
             abonelik.remove();
+            if (zamanlayici.current) clearTimeout(zamanlayici.current);
+            zamanlayici.current = null;
+            bekleyen.current = null;
+            const iptal = iptalEt.current;
+            iptalEt.current = null;
+            iptal?.();
         };
     }, [yenidenOku]);
 
@@ -101,16 +111,20 @@ export function useIzinAkisi({ oku, iste, kapanisBeklemeMs = MODAL_KAPANIS_BEKLE
         setIstiyor(true);
         try {
             // Modal kapanışını bekle: zamanlayıcı ya da iOS onDismiss (hangisi önce).
-            await new Promise<void>((coz) => {
-                const zamanlayici = setTimeout(() => {
+            // Bileşen bu arada ayrılırsa (`iptalEt`) istek HİÇ yapılmaz.
+            const devam = await new Promise<boolean>((coz) => {
+                const bitir = (sonuc: boolean) => {
+                    if (zamanlayici.current) clearTimeout(zamanlayici.current);
+                    zamanlayici.current = null;
                     bekleyen.current = null;
-                    coz();
-                }, Math.max(0, kapanisBeklemeMs));
-                bekleyen.current = () => {
-                    clearTimeout(zamanlayici);
-                    coz();
+                    iptalEt.current = null;
+                    coz(sonuc);
                 };
+                zamanlayici.current = setTimeout(() => bitir(true), Math.max(0, kapanisBeklemeMs));
+                bekleyen.current = () => bitir(true);
+                iptalEt.current = () => bitir(false);
             });
+            if (!devam || !bagli.current) return null;
             try {
                 await isteRef.current();
             } catch {
