@@ -108,6 +108,21 @@ function anonslariOnekleIptalEt(onek: string): void {
  * kayıt/puan/seri TUTMAZ. Native Kıldım yolu (#299) yalnız `muhafiz_` kimlikleri
  * içindir — nafile yanıtı JS'e (`BildirimServisi`) düşer ve buraya gelir.
  */
+/**
+ * Saatin uyandırma listesi (saat W3) teheccüd ayarından/kılınmışlığından türer → nafile
+ * planı değişince saat yükü de tazelenir. TEMBEL `require` (saat köprüsü native) ve
+ * yalnız Android; gönderim içerik aynıysa yazmaz, asla fırlatmaz.
+ */
+function saatiTazele(): void {
+    if (Platform.OS !== 'android') return;
+    try {
+        const { WearSenkronServisi } = require('./WearSenkronServisi') as typeof import('./WearSenkronServisi');
+        WearSenkronServisi.getInstance().gonder().catch(() => undefined);
+    } catch (e) {
+        Logger.warn('NafileHatirlatma', 'Saat tazelenemedi', e);
+    }
+}
+
 export class NafileHatirlatmaServisi {
     private static instance: NafileHatirlatmaServisi;
 
@@ -138,6 +153,7 @@ export class NafileHatirlatmaServisi {
 
     public async hatirlatmalariGuncelle(koordinatlar: NafileKoordinat | null): Promise<void> {
         await this.siraya(() => this.planlamayiCalistir(koordinatlar));
+        saatiTazele();
     }
 
     /**
@@ -178,6 +194,8 @@ export class NafileHatirlatmaServisi {
             }
             Logger.info('NafileHatirlatma', `Kildim: ${tur} (${tarih}) kalan hatirlatmalari iptal edildi`);
         });
+        // Saatin teheccüd uyandırması (saat W3) da düşsün.
+        saatiTazele();
     }
 
     /**

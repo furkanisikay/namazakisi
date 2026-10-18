@@ -4,6 +4,8 @@ import android.util.Log
 import com.furkanisikay.namazakisi.cekirdek.KildimKuyruguKurallari
 import com.furkanisikay.namazakisi.kildim.KildimKuyrugu
 import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
@@ -29,6 +31,18 @@ class WearDinleyiciServisi : WearableListenerService() {
     companion object {
         private const val TAG = "WearDinleyici"
         const val KILDIM_YOLU_ONEKI = "/namazakisi/kildim/"
+    }
+
+    /**
+     * Saat → telefon KOMUTLARI (saat W3): Namaz modu, Camideyim cevabı, uyandırma kapandı.
+     * RPC (`MessageClient.sendRequest`): cevap aynı turda saate döner. Yollar manifest
+     * filtresinde (`REQUEST_RECEIVED`) AYRICA listelidir; kurallar `SaatKomutKurallari`'nda.
+     */
+    override fun onRequest(nodeId: String, path: String, request: ByteArray): Task<ByteArray>? {
+        val cevap = SaatKomutIsleyici.isle(this, path, request)
+        // Durum değiştiyse saatteki çip hemen tazelensin (modül yayını da gelir; içerik aynıysa yazılmaz).
+        SaatDurumu.gonder(this)
+        return Tasks.forResult(cevap.toByteArray(Charsets.UTF_8))
     }
 
     override fun onDataChanged(dataEvents: DataEventBuffer) {

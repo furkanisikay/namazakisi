@@ -37,6 +37,13 @@ object MuhafizAlarmTemizligi {
     fun onekliSustur(context: Context, onek: String): Int =
         if (onek.isEmpty()) 0 else sustur(context, MuhafizAlarmKurallari.onekEslestirici(onek))
 
+    /**
+     * TEK bir kimliğin alarmı (bekleyen + çalan) — saatte kapatılan uyandırmanın telefondaki
+     * YEDEĞİ (saat W3, fikir 2). Önek değil TAM eşleşme: `…_dk_1` önekiyle `…_dk_15` de susardı.
+     */
+    fun kimlikSustur(context: Context, kimlik: String): Int =
+        if (kimlik.isEmpty()) 0 else sustur(context) { it == kimlik }
+
     private fun sustur(context: Context, esles: (String) -> Boolean): Int {
         val bekleyen = try {
             MuhafizAlarmZamanlayici.eslesenleriIptalEt(context, esles).size

@@ -1,0 +1,19 @@
+{
+  "aciklama": "Saat W3: saat (TelefonKomutu.kt) ile telefon (SaatKomutKurallari.kt) ayni dosyayi kabul eder. simdiMs ornek-yuk.json'daki 2026-10-12 ogle vaktinin icindedir.",
+  "simdiMs": 1791800000000,
+  "takvimGunu": "2026-10-12",
+  "namazModu": [
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791801800000 }, "tur": "saat:2026-10-12_ogle", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791900000000 }, "tur": "saat:2026-10-12_ogle", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "bitisMs": 1791801800000 }, "tur": "saat:2026-10-12_serbest", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "gunes" }, "tur": "saat:2026-10-12_serbest", "bitisMs": 1791801800000 },
+    { "istek": { "islem": "ac", "tarih": "2026-10-12", "vakit": "ogle", "bitisMs": 1791799999999 }, "gecersiz": true },
+    { "istek": { "islem": "kapat" }, "kapat": true },
+    { "istek": { "islem": "sil" }, "gecersiz": true }
+  ],
+  "durum": {
+    "camide": { "yerId": "osm:n123", "ad": "Fatih Camii", "bitisMs": 1791805000000 },
+    "soru": null,
+    "modBitisMs": 1791805000000
+  }
+}

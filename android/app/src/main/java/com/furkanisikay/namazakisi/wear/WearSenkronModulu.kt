@@ -73,6 +73,16 @@ class WearSenkronModulu(reactContext: ReactApplicationContext) : ReactContextBas
         }
     }
 
+    /**
+     * Camideyim / Namaz modu durumunu saate yeniden yaz (saat W3). JS her saat gönderiminde
+     * çağırır (açılış, konum yayması, 15 dk görevi): modül yayını kaçırıldıysa (süreç
+     * ölüydü) durum yine yakalanır. İçerik aynıysa native yazmaz.
+     */
+    @ReactMethod
+    fun camiDurumunuTazele(promise: Promise) {
+        SaatDurumu.gonder(reactApplicationContext) { promise.resolve(null) }
+    }
+
     @ReactMethod
     fun bekleyenleriAl(promise: Promise) {
         promise.resolve(KildimKuyrugu.tumu(reactApplicationContext))

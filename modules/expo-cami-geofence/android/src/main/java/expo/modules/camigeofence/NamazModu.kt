@@ -154,7 +154,11 @@ object NamazModu {
     private fun kaynaklar(ctx: Context): JSONObject =
         try { JSONObject(prefs(ctx).getString(KAYNAKLAR, "{}") ?: "{}") } catch (_: Exception) { JSONObject() }
 
-    private fun kaynaklariYaz(ctx: Context, o: JSONObject) = prefs(ctx).edit().putString(KAYNAKLAR, o.toString()).apply()
+    private fun kaynaklariYaz(ctx: Context, o: JSONObject) {
+        prefs(ctx).edit().putString(KAYNAKLAR, o.toString()).apply()
+        // Saat W3 (fikir 1/5): bilekteki "Namaz modu" durumu tazelensin.
+        SaatDurumYayini.yay(ctx)
+    }
 
     private fun kapatilanlar(ctx: Context): MutableList<String> =
         (prefs(ctx).getString(KAPATILAN, "") ?: "").split('\n').filter { it.isNotEmpty() }.toMutableList()
@@ -211,19 +215,33 @@ object NamazModu {
     }
 
     /**
-     * [kaynak] ("cami" | "plan") [tur] için modu [bitisMs]'ye kadar açar
+     * Etkin kaynakların EN GEÇ bitişi (ms) ya da null — saat yalnız gösterir
+     * ("Namaz modu 13:40'a kadar"; saat W3). Süresi geçenler önce düşer.
+     */
+    @Synchronized
+    fun aktifBitisMs(ctx: Context): Long? {
+        suresiGecenleriTemizle(ctx)
+        val k = kaynaklar(ctx)
+        return k.keys().asSequence().mapNotNull { bitisAl(k, it) }.maxOrNull()
+    }
+
+    /**
+     * [kaynak] ("cami" | "plan" | "saat") [tur] için modu [bitisMs]'ye kadar açar
      * (`ModKaynagi.AZAMI_SURE_MS` tavanıyla). Bitişi geçmiş istek modu açmaz.
+     * [kullaniciIstegi]: kişi modu AÇIKÇA istedi (saatteki düğme, saat W3) → bu turda daha
+     * önce elle kapatmış olsa bile açılır ("elle kapattı → yeniden açma" kuralı OTOMATİK
+     * açılışlar içindir; kişinin yeni isteğini yutmaz).
      * @return "acildi" | "kapali" | "kullaniciKapatti" | "erisimYok" | "hata"
      */
     @Synchronized
-    fun ac(ctx: Context, kaynak: String, tur: String, bitisMs: Long): String {
+    fun ac(ctx: Context, kaynak: String, tur: String, bitisMs: Long, kullaniciIstegi: Boolean = false): String {
         suresiGecenleriTemizle(ctx)
         if (!ayarlar(ctx).etkin) return "kapali"
         val simdi = System.currentTimeMillis()
         val bitis = ModKaynagi.bitisHesapla(simdi, bitisMs)
         if (!ModKaynagi.gecerliMi(simdi, bitis)) return "kapali"
         kullaniciKapatmasiniYakala(ctx)
-        if (tur in kapatilanlar(ctx)) return "kullaniciKapatti"
+        if (!kullaniciIstegi && tur in kapatilanlar(ctx)) return "kullaniciKapatti"
         val kural = kuraliGarantile(ctx)
         if (kural != "tamam") return kural
         val k = kaynaklar(ctx).put(kaynak, JSONObject().put("tur", tur).put("bitisMs", bitis))

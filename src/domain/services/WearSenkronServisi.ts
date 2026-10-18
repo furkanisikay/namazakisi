@@ -40,9 +40,15 @@ import { muhafizPlaniDinleyicisiniAyarla, type MuhafizPlaniDurumu } from './muha
 import { canliSaatDinleyicisiniAyarla } from './canliSaatGozlemcisi';
 import { bekleyenErtelemeleriOku, ertelemeDinleyicisiEkle } from './muhafizErtelemeDurumu';
 import { saatKoprusu } from '../../../modules/expo-siri-kisayollari/src';
+import { LocalSaatAyarlariServisi } from '../../data/local/LocalSaatAyarlariServisi';
+import { LocalNafileServisi } from '../../data/local/LocalNafileServisi';
+import { saatUyandiriyorMu } from '../../core/saat/saatAyarlari';
+import { wearUyandirmaListesiOlustur, type WearUyandirmaKaydi } from '../../core/wear/wearUyandirma';
 
 interface WearSenkronModulu {
     durumGonder(json: string): Promise<void>;
+    /** Camideyim / Namaz modu durumunu saate yeniden yaz (saat W3; yalnız Wear OS, eski ikilide yok). */
+    camiDurumunuTazele?(): Promise<void>;
 }
 
 const NAMAZ_VAKIT: Partial<Record<string, VakitAdi>> = {
@@ -150,6 +156,13 @@ export class WearSenkronServisi {
                 }
             }
 
+            // Saat iş bölümü (saat W3): uyandırma listesi ve anons yeri (yalnız Wear OS).
+            const saat = wear ? await LocalSaatAyarlariServisi.oku() : null;
+            const muhafiz = wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined;
+            const uyandirma =
+                saat && saatUyandiriyorMu(saat)
+                    ? await this.uyandirmaListesiniHazirla(konum.koordinat, bugun, muhafiz)
+                    : undefined;
             const json = JSON.stringify(
                 wearYukuOlustur({
                     koordinat: konum.koordinat,
@@ -157,12 +170,17 @@ export class WearSenkronServisi {
                     konumAdi: konum.ad,
                     kilinanlar,
                     // Apple Watch: hatırlatmayı iPhone bildirimi verir (saate yansır) → plan yok.
-                    muhafiz: wear ? await this.muhafizGirdisiniHazirla(bugun, dun, kilinanlar) : undefined,
+                    muhafiz,
                     canli: wear ? await this.canliPayiniOku() : undefined,
                     // Kıble yalnız Wear OS saatte; Apple Watch'a konum gitmez (kullanılmayan veri).
                     kibleKonumu: wear,
+                    uyandirma,
+                    anonsYeri: saat?.anonsYeri,
                 })
             );
+            // Camideyim/Namaz modu durumu AYRI küçük DataItem'dır (native yazar, içerik
+            // aynıysa yazmaz) — ana yükün tekilleştirmesinden ÖNCE: durum yük değişmeden de değişir.
+            if (wear) await h.modul.camiDurumunuTazele?.().catch(() => undefined);
             if (json === this.sonGonderilen) return;
             await h.modul.durumGonder(json);
             this.sonGonderilen = json;
@@ -210,6 +228,38 @@ export class WearSenkronServisi {
         // planı ve ön planıyla AYNI. Okunamazsa boş (plan süzülmeden gider).
         const ertelemeler = durum.aktif ? await bekleyenErtelemeleriOku() : {};
         return { aktif: durum.aktif, matris: durum.matris, simdiMs: Date.now(), kilinanlar, ozelGundeMi, ertelemeler };
+    }
+
+    /**
+     * Saatin sessiz uyandırma listesi (saat W3, fikir 2) — telefonun kendi üreticilerinden
+     * (muhafız imsak alarmı + teheccüd uyandırması), özgün zamanlarla. Okunamazsa boş liste
+     * DEĞİL `undefined` (alan gitmez → saat çalmaz, telefon zaten çalar).
+     */
+    private async uyandirmaListesiniHazirla(
+        koordinat: { lat: number; lng: number },
+        bugun: string,
+        muhafiz: WearYukGirdisi['muhafiz']
+    ): Promise<WearUyandirmaKaydi[] | undefined> {
+        try {
+            const [nafileAyarlari, nafileKilinan] = await Promise.all([
+                LocalNafileServisi.getAyarlar(),
+                LocalNafileServisi.getKilinanlar(),
+            ]);
+            return wearUyandirmaListesiOlustur({
+                koordinat,
+                bugunIso: bugun,
+                simdiMs: Date.now(),
+                muhafiz,
+                nafile: {
+                    ayarlar: nafileAyarlari,
+                    kilindiMi: (iso, tur) => (nafileKilinan[iso] ?? []).includes(tur),
+                    ozelGundeMi: muhafiz?.ozelGundeMi,
+                },
+            });
+        } catch (e) {
+            Logger.warn('WearSenkron', 'Uyandirma listesi hazirlanamadi', e);
+            return undefined;
+        }
     }
 
     /**
