@@ -41,6 +41,40 @@ describe('GeriAlBandi', () => {
         expect(queryByText('İki')).toBeNull();
     });
 
+    it('Android çift duyuru yok: canlı bölge YOK, yalnız announceForAccessibility (bir kez)', () => {
+        const duyuru = jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => undefined);
+        duyuru.mockClear(); // önayarda zaten jest.fn: kayıt önceki testlerden taşınır
+        const { getByTestId } = render(<GeriAlBandiKatmani />);
+        act(() => geriAlBandiGoster({ mesaj: 'Silindi', geriAl: jest.fn() }));
+        expect(getByTestId('geri-al-bandi').props.accessibilityLiveRegion).toBeUndefined();
+        expect(duyuru).toHaveBeenCalledTimes(1);
+        act(() => geriAlBandiniKapat());
+    });
+
+    it('RN Modal içinden: en son bağlanan (modaldaki) host gösterir, kök göstermez; modal kapanınca kök devralır', () => {
+        const kok = render(<GeriAlBandiKatmani />);
+        const modal = render(<GeriAlBandiKatmani altBosluk={24} />);
+        act(() => geriAlBandiGoster({ mesaj: 'Modalda', geriAl: jest.fn() }));
+        expect(modal.queryByText('Modalda')).toBeTruthy();
+        expect(kok.queryByText('Modalda')).toBeNull();
+        modal.unmount();
+        act(() => geriAlBandiGoster({ mesaj: 'Kökte', geriAl: jest.fn() }));
+        expect(kok.queryByText('Kökte')).toBeTruthy();
+        act(() => geriAlBandiniKapat());
+    });
+
+    it('yeni istek üstteki hosta giderken alttakinin açık bandı kapanır (ekranda tek bant)', () => {
+        const kok = render(<GeriAlBandiKatmani />);
+        act(() => geriAlBandiGoster({ mesaj: 'Eski', geriAl: jest.fn() }));
+        expect(kok.queryByText('Eski')).toBeTruthy();
+        const modal = render(<GeriAlBandiKatmani altBosluk={24} />);
+        act(() => geriAlBandiGoster({ mesaj: 'Yeni', geriAl: jest.fn() }));
+        expect(kok.queryByText('Eski')).toBeNull();
+        expect(modal.queryByText('Yeni')).toBeTruthy();
+        act(() => geriAlBandiniKapat());
+        modal.unmount();
+    });
+
     it('süre dolunca kendiliğinden kapanır', async () => {
         const { queryByText } = render(<GeriAlBandiKatmani />);
         act(() => geriAlBandiGoster({ mesaj: 'Kısa', geriAl: jest.fn(), sureMs: 20 }));
@@ -79,6 +113,27 @@ describe('useIzinAkisi', () => {
         expect(sonuc).toBe('verildi');
         expect(result.current.sonuc).toBe('verildi');
         expect(sira.slice(-2)).toEqual(['iste', 'oku']);
+    });
+
+    it('bekleme sürerken bileşen ayrılırsa zamanlayıcı temizlenir ve sistem diyaloğu AÇILMAZ', async () => {
+        jest.useFakeTimers();
+        try {
+            const oku = jest.fn(async (): Promise<IzinDurumu> => 'sorulabilir');
+            const iste = jest.fn(async () => undefined);
+            const { result, unmount } = renderHook(() => useIzinAkisi({ oku, iste, kapanisBeklemeMs: 400 }));
+            let vaat: Promise<unknown> = Promise.resolve();
+            act(() => {
+                vaat = result.current.istekBaslat();
+            });
+            unmount();
+            await act(async () => {
+                jest.advanceTimersByTime(1000);
+                await vaat;
+            });
+            expect(iste).not.toHaveBeenCalled();
+        } finally {
+            jest.useRealTimers();
+        }
     });
 
     it('kalıcı red → ayarlar; iOS onDismiss beklemeyi kısaltır', async () => {

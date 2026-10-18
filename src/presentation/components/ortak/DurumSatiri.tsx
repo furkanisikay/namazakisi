@@ -12,6 +12,11 @@
  * Düğme varsayılan olarak `durumEylemiUygula` ile sistem ekranını açar; dönüşte
  * `useCihazDurumu` zaten yeniden okur (AppState), `onSonra` izin diyaloğu gibi aynı
  * ekranda biten eylemlerden hemen sonra tazelemek içindir.
+ *
+ * KONUM İZNİ AÇIKLAMASIZ İSTENMEZ: `konumIzni` eylemi sistem diyaloğunu doğrudan açmaz;
+ * önce Prominent Disclosure (`KonumIzniDisclosureModali`, sihirbazla aynı metin)
+ * gösterilir, kabul edilirse `useIzinAkisi` şablonu modal kapandıktan sonra ister ve
+ * durumu yeniden okur. Vazgeç/geri tuşu = hiçbir şey istenmez.
  */
 import * as React from 'react';
 import { Text, TouchableOpacity, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -19,6 +24,34 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { EYLEM_ETIKETLERI, type DurumEylemi, type DurumNotu } from '../../../core/cihaz/durumNotlari';
 import { kisaBildirimGoster } from '../common/KisaBildirim';
+import { KonumIzniDisclosureModali } from '../KonumIzniDisclosureModali';
+import { useIzinAkisi } from './useIzinAkisi';
+import type { IzinDurumu } from '../../../core/cihaz/durumNotlari';
+
+const konumIzniOku = async (): Promise<IzinDurumu | null> => {
+    const { alaniOku } = require('../../../domain/services/CihazDurumOkuyucu') as typeof import('../../../domain/services/CihazDurumOkuyucu');
+    return alaniOku('konumIzni');
+};
+const konumIzniIste = async (): Promise<void> => {
+    const { konumIzniIste: iste } = require('../../../domain/services/DurumEylemleri') as typeof import('../../../domain/services/DurumEylemleri');
+    await iste();
+};
+
+/** Açıklama (rıza) adımı + izin akışı şablonu; yalnız konum izni satırında bağlanır. */
+const KonumIzniAkisi: React.FC<{ gorunur: boolean; onKapat: () => void; onSonra?: () => void }> = ({ gorunur, onKapat, onSonra }) => {
+    const izin = useIzinAkisi({ oku: konumIzniOku, iste: konumIzniIste });
+    return (
+        <KonumIzniDisclosureModali
+            gorunur={gorunur}
+            tip="onPlan"
+            onKabul={() => {
+                onKapat();
+                void izin.istekBaslat().then(() => onSonra?.());
+            }}
+            onReddet={onKapat}
+        />
+    );
+};
 
 export interface CihazdaYok {
     yok: true;
@@ -45,6 +78,7 @@ const yokMu = (d: DurumSatiriDurumu): d is CihazdaYok => (d as CihazdaYok).yok =
 export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonra, style, testID }) => {
     const renkler = useRenkler();
     const [mesgul, setMesgul] = React.useState(false);
+    const [aciklamaAcik, setAciklamaAcik] = React.useState(false);
     if (!durum) return null;
 
     if (yokMu(durum)) {
@@ -69,8 +103,15 @@ export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonr
     const eylem = durum.eylem;
     const etiket = eylem ? (durum.eylemEtiketi ?? EYLEM_ETIKETLERI[eylem]) : null;
 
+    // Konum izni (sorulabilir) özel yol: önce açıklama, sonra şablonla istek.
+    const aciklamaliIzin = eylem === 'konumIzni' && !onEylem;
+
     const bas = async () => {
         if (!eylem || mesgul) return;
+        if (aciklamaliIzin) {
+            setAciklamaAcik(true);
+            return;
+        }
         setMesgul(true);
         try {
             if (onEylem) {
@@ -118,6 +159,7 @@ export const DurumSatiri: React.FC<DurumSatiriProps> = ({ durum, onEylem, onSonr
                     <Text style={{ fontSize: 14, fontWeight: '700', color: renkler.birincilMetin }}>{etiket}</Text>
                 </TouchableOpacity>
             ) : null}
+            {aciklamaliIzin ? <KonumIzniAkisi gorunur={aciklamaAcik} onKapat={() => setAciklamaAcik(false)} onSonra={onSonra} /> : null}
         </View>
     );
 };

@@ -38,17 +38,51 @@ async function niyetAc(niyet: string): Promise<boolean> {
 const kopru = () =>
     require('../../../modules/expo-countdown-notification/src') as typeof import('../../../modules/expo-countdown-notification/src');
 
+/** Uygulama kimliği (`BileklikRehberKarti` ile aynı sabit). */
+const ANDROID_PAKET_ADI = 'com.furkanisikay.namazakisi';
+/** Bildirim izni çalışma zamanı izni olarak Android 13 (API 33) ile geldi. */
+export const ANDROID_BILDIRIM_IZNI_API = 33;
+
+/**
+ * Android ≤ 12'de bildirim izni diyalogu YOKTUR (`requestPermissionsAsync` hiçbir şey
+ * göstermeden "reddedildi" döner, düğme ölü kalırdı): kapalı bildirimler yalnız sistemin
+ * uygulama bildirim ayarlarından açılır.
+ */
+async function bildirimAyarlariniAc(): Promise<boolean> {
+    try {
+        await Linking.sendIntent('android.settings.APP_NOTIFICATION_SETTINGS', [
+            { key: 'android.provider.extra.APP_PACKAGE', value: ANDROID_PAKET_ADI },
+            { key: 'app_package', value: ANDROID_PAKET_ADI },
+        ]);
+        return true;
+    } catch {
+        return ayarlariAc();
+    }
+}
+
+/**
+ * Konum izni SİSTEM DİYALOĞU — yalnız açıklama (Prominent Disclosure) görüldükten SONRA
+ * çağrılır (`DurumSatiri` → `KonumIzniDisclosureModali` → `useIzinAkisi`). Doğrudan bir
+ * durum düğmesinden çağrılması Play politikasını (önce açıklama) atlardı.
+ */
+export async function konumIzniIste(): Promise<void> {
+    const L = require('expo-location') as typeof import('expo-location');
+    await L.requestForegroundPermissionsAsync();
+}
+
 const EYLEMLER: Record<DurumEylemi, () => Promise<boolean>> = {
     bildirimIzni: async () => {
+        if (Platform.OS === 'android' && Number(Platform.Version) < ANDROID_BILDIRIM_IZNI_API) {
+            return bildirimAyarlariniAc();
+        }
         const N = require('expo-notifications') as typeof import('expo-notifications');
         await N.requestPermissionsAsync();
         return true;
     },
-    konumIzni: async () => {
-        const L = require('expo-location') as typeof import('expo-location');
-        await L.requestForegroundPermissionsAsync();
-        return true;
-    },
+    // Açıklamasız doğrudan istek YOK: bu eşleme yalnız açıklama akışını taşımayan bir
+    // çağıranın son çaresidir ve sistem diyaloğunu AÇMAZ — kullanıcı izni uygulama
+    // ayarlarından kendisi verir. Asıl yol `DurumSatiri`'nın açıklama + izin akışıdır.
+    konumIzni: ayarlariAc,
     takvimIzni: async () => {
         const C = require('expo-calendar/legacy') as typeof import('expo-calendar/legacy');
         await C.requestCalendarPermissionsAsync();
