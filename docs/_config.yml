@@ -5,6 +5,7 @@ description: Gizlilik odaklı, tamamen çevrimdışı ibadet asistanı
 theme: jekyll-theme-minimal
 exclude:
   - superpowers/
+  - ajan/
   - tasarim/
   - repo-denetim-2026-06-06.md
   - app-store/magaza-metinleri.md

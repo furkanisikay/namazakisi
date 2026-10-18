@@ -114,7 +114,7 @@ Bu proje topluluk katkılarına açıktır! Bir hata bulduysanız veya özellik 
 
 ### Geliştirici Notları
 *   **Doğrulama kapısı:** PR açmadan önce `npm run verify` (typecheck + lint + test) çalıştırın; üçü de geçmelidir. Pre-push hook bunu otomatik kontrol eder.
-*   **Proje kuralları & mimari:** Tüm konvansiyonlar, mimari kararlar ve tuzaklar **[AGENTS.md](./AGENTS.md)**'de toplanmıştır — hem insan hem yapay zekâ katkıcılar için tek doğru kaynak.
+*   **Proje kuralları & mimari:** Tüm konvansiyonlar, mimari kararlar ve tuzaklar **[AGENTS.md](./AGENTS.md)**'de toplanmıştır — hem insan hem yapay zekâ katkıcılar için tek doğru kaynak. Alanlara özgü ayrıntılar (muhafız, hatırlatmalar, Wear OS, iOS…) [`docs/ajan/`](./docs/ajan/) altındadır; AGENTS.md sonundaki konu dizini yol gösterir.
 *   Kod isimleri Türkçe; kullanıcıya görünen tüm metin kibar "siz" dilindedir.
 
 *Not: Gönderdiğiniz kodların GNU GPLv3 (veya sonrası) kapsamında açık kaynak olacağını ve [LICENSE](LICENSE) dosyasındaki **uygulama mağazası ek izninin** katkınız için de geçerli olduğunu kabul etmiş olursunuz. Bu ek izin, projenin App Store ve Google Play üzerinden dağıtılabilmesi için gereklidir.*

@@ -93,18 +93,52 @@ describe('yeni özellik platformu', () => {
   });
 
   it('iOS yetenekli duyurular yalnız iOS\'a işaretlidir', () => {
-    for (const o of YENI_OZELLIKLER.filter((x) => x.yetenek)) {
+    for (const o of YENI_OZELLIKLER.filter((x) => x.yetenek === 'iosWidget' || x.yetenek === 'appleWatch')) {
       expect(o.platformlar).toEqual(['ios']);
     }
   });
 
   it('platforma özgü bilinen duyurular doğru işaretli', () => {
     const bul = (id: string) => YENI_OZELLIKLER.find((o) => o.id === id)!.platformlar;
-    expect(bul('gercek-alarm-iphone')).toEqual(['ios']);
     expect(bul('ios-siri-kisayollar-odak')).toEqual(['ios']);
-    expect(bul('gercek-alarm')).toEqual(['android']);
+    expect(bul('gercek-alarm')).toEqual(['android', 'ios']);
     expect(bul('camideyim')).toEqual(['android']);
-    expect(bul('wear-tesbihat')).toEqual(['android']);
+    expect(bul('wear-kadran-yuzeyleri')).toEqual(['android']);
+    expect(bul('katlanabilir-tablet-duzeni')).toEqual(['android']);
     expect(bul('sade-gorunum')).toEqual(['android', 'ios']);
+  });
+});
+
+describe('yeni özellik yeteneği — gerçek alarm (#74)', () => {
+  const alarm = YENI_OZELLIKLER.find((o) => o.id === 'gercek-alarm')!;
+
+  it('Android\'de her cihazda görünür', () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    expect(yeniOzellikGorunurMu(alarm)).toBe(true);
+  });
+
+  it('iPhone\'da yalnız sistem alarmını destekleyen sürümde (26+) görünür', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    const surum = jest.spyOn(Platform, 'Version', 'get');
+    surum.mockReturnValue('18.5');
+    expect(yeniOzellikGorunurMu(alarm)).toBe(false);
+    surum.mockReturnValue('26.0');
+    expect(yeniOzellikGorunurMu(alarm)).toBe(true);
+    surum.mockRestore();
+  });
+});
+
+describe('Neler Yeni kopya kuralları', () => {
+  it('duyuru metninde işletim sistemi sürümü yazılmaz', () => {
+    const surumIfadesi = /(iOS|Android)\s*\d+/;
+    for (const o of YENI_OZELLIKLER) {
+      const metin = [o.baslik, o.aciklama, o.detayAciklama ?? '', ...(o.detaylar ?? [])].join(' ');
+      expect({ id: o.id, eslesme: metin.match(surumIfadesi)?.[0] ?? null }).toEqual({ id: o.id, eslesme: null });
+    }
+  });
+
+  it('kimlikler ve birleştirilmiş eski kimlikler tekildir', () => {
+    const hepsi = YENI_OZELLIKLER.flatMap((o) => [o.id, ...(o.oncekiIdler ?? [])]);
+    expect(new Set(hepsi).size).toBe(hepsi.length);
   });
 });
