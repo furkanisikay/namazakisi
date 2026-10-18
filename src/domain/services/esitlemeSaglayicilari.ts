@@ -10,22 +10,18 @@ import { Platform } from 'react-native';
 import { EsitlemeSaglayicisi, SaglayiciKimligi } from '../../core/esitleme/esitlemeTipleri';
 import { GoogleDriveSaglayicisi } from './GoogleDriveSaglayicisi';
 import { IcloudSaglayicisi } from './IcloudSaglayicisi';
-import {
-  googleDriveIstemciKimligi,
-  googleYonlendirmeAdresi,
-  icloudEsitlemeEtkinMi,
-} from './esitlemeYapilandirmasi';
+import { icloudEsitlemeEtkinMi } from './esitlemeYapilandirmasi';
 
 let kayit: EsitlemeSaglayicisi[] | null = null;
 
-const varsayilanSaglayicilar = (): EsitlemeSaglayicisi[] => {
-  const istemci = googleDriveIstemciKimligi(Platform.OS);
-  const drive = new GoogleDriveSaglayicisi(
-    istemci,
-    istemci ? googleYonlendirmeAdresi(istemci, Platform.OS) : null
-  );
-  return [drive, new IcloudSaglayicisi(icloudEsitlemeEtkinMi(Platform.OS))];
-};
+/**
+ * Drive yalnız Android'de (yerleşik Authorization API + Play hizmetleri) kullanılabilir;
+ * iOS'ta eşitleme iCloud iledir.
+ */
+const varsayilanSaglayicilar = (): EsitlemeSaglayicisi[] => [
+  new GoogleDriveSaglayicisi(),
+  new IcloudSaglayicisi(icloudEsitlemeEtkinMi(Platform.OS)),
+];
 
 /** Bilinen tüm sağlayıcılar (yapılandırılmamışlar dahil). */
 export function tumSaglayicilar(): EsitlemeSaglayicisi[] {

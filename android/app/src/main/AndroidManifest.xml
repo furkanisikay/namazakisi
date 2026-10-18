@@ -79,16 +79,6 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="namazakisi"/>
       </intent-filter>
-      <!-- Cihazlar arası eşitleme (issue #288): Google OAuth (PKCE) yönlendirmesi
-           `com.furkanisikay.namazakisi:/oauth2redirect`. Custom Tab dönüşü buraya düşer;
-           expo-web-browser yanıtı JS'te yakalar (state doğrulanır). Google Cloud'daki
-           Android OAuth istemcisinde "Özel URI şeması" açık olmalı. -->
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.furkanisikay.namazakisi"/>
-      </intent-filter>
       <!-- Hızlı ayarlar kutusuna uzun basış uygulamayı açar (issue #276) -->
       <intent-filter>
         <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>

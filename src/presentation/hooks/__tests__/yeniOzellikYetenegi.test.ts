@@ -34,6 +34,32 @@ describe('yeni özellik yeteneği (#295)', () => {
   });
 });
 
+describe('yeni özellik yeteneği — Google Drive eşitlemesi (#288)', () => {
+  const drive = YENI_OZELLIKLER.find((o) => o.id === 'cihazlar-arasi-esitleme-drive')!;
+  const googleYetki = require('../../../../modules/expo-google-yetki/src') as {
+    googleYetkisiKullanilabilirMi: jest.Mock;
+  };
+  afterEach(() => googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(false));
+
+  it('duyuru Drive yeteneğine bağlı', () => {
+    expect(drive.yetenek).toBe('googleDrive');
+  });
+
+  it('Android\'de yalnız Google Play hizmetleri varken görünür (Huawei vb. cihazda duyuru yok)', () => {
+    jest.replaceProperty(Platform, 'OS', 'android');
+    googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(false);
+    expect(yeniOzellikGorunurMu(drive)).toBe(false);
+    googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(drive)).toBe(true);
+  });
+
+  it('iOS\'ta görünmez', () => {
+    jest.replaceProperty(Platform, 'OS', 'ios');
+    googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(true);
+    expect(yeniOzellikGorunurMu(drive)).toBe(false);
+  });
+});
+
 describe('yeni özellik yeteneği — Apple Watch (#285)', () => {
   const saat = YENI_OZELLIKLER.find((o) => o.id === 'apple-watch-uygulamasi')!;
   afterEach(() => siri.saatUygulamasiDestekli.mockReturnValue(false));

@@ -5,19 +5,25 @@
  * (`drive.appdata` kapsamı: uygulama yalnız KENDİ klasörünü görür, kullanıcının
  * dosyalarına erişemez; klasör Drive arayüzünde görünmez). Geliştiricinin sunucusu YOK.
  *
- * Giriş: native Google Sign-In kütüphanesi EKLENMEDİ (Play Services auth + ayrı
- * yapılandırma). Yerine OAuth 2.0 yetkilendirme kodu + PKCE (RFC 7636, istemci sırrı
- * YOK — kurulu uygulama istemcisi) `expo-web-browser.openAuthSessionAsync` ile yürür;
- * belirteç değişimi/yenilemesi düz `fetch`. Yenileme belirteci güvenli depoda, erişim
- * belirteci yalnız bellekte.
+ * Yetki: YALNIZ ANDROID, Google Identity Services **Authorization API** (yerel modül
+ * `modules/expo-google-yetki`). İstemci kimliği ve yönlendirme adresi GEREKMEZ: Google,
+ * uygulamanın paket adı + imza SHA-1'ini Cloud projesindeki Android OAuth istemcileriyle
+ * eşler. Eski tarayıcı + özel URI şemalı PKCE akışı KALDIRILDI — Google yeni Android
+ * istemcilerinde "Özel URI şeması"nı artık sunmuyor, o akış bu istemcilerle çalışmaz.
+ * iOS'ta eşitleme iCloud iledir; Drive iOS'ta sunulmaz (`yapilandirildiMi() === false`).
+ *
+ * Belirteç yalnız ERİŞİM belirtecidir ve yalnız bellekte tutulur; yenileme belirteci
+ * YOK — Play hizmetleri belirteci önbellekler ve `authorize()` kullanıcıya sormadan
+ * tazesini verir. Cihazda yalnız "bağlandı" işareti saklanır (`oturumVarMi` ağa çıkmaz).
  *
  * Hata eşlemesi (`EsitlemeHatasi`): ağ hatası / zaman aşımı / 429 / 5xx → `agYok`
- * (geçici, sessiz); yenileme reddedildi (`invalid_grant`) ya da ikinci 401 → `yetkiYok`
- * (kullanıcı yeniden bağlanmalı). 401 bir kez belirteç yenilenip YENİDEN denenir.
+ * (geçici, sessiz); izin geri alındı (sessiz yetki onay istiyor) ya da ikinci 401 →
+ * `yetkiYok` (kullanıcı yeniden bağlanmalı). 401'de bayat belirteç Play hizmetlerinin
+ * önbelleğinden SİLİNİR, sessizce yenisi alınıp BİR KEZ yeniden denenir (silinmeden
+ * `authorize()` aynı bayat belirteci döndürürdü).
  */
 
 import naclUtil from 'tweetnacl-util';
-import { sha256 } from '@noble/hashes/sha2';
 import {
   EsitlemeHatasi,
   EsitlemeSaglayicisi,
@@ -25,6 +31,14 @@ import {
   UzakMeta,
 } from '../../core/esitleme/esitlemeTipleri';
 import { GuvenliDepo } from '../../data/local/GuvenliDepo';
+import { Logger } from '../../core/utils/Logger';
+import {
+  GoogleYetkiSonucu,
+  googleBelirteciTemizle,
+  googleErisimiGeriAl,
+  googleYetkiAl,
+  googleYetkisiKullanilabilirMi,
+} from '../../../modules/expo-google-yetki/src';
 /**
  * CSPRNG (expo-crypto) TEMBEL yüklenir: sağlayıcı kaydı Yedekleme ekranından da
  * okunur ("sağlayıcı var mı?") ve native köprüyü modül yükünde çekmek o ekranın
@@ -35,103 +49,83 @@ const rastgeleBaytlar = (uzunluk: number): Uint8Array =>
 
 export const DRIVE_DOSYA_ADI = 'namaz-akisi-esitleme.json';
 export const DRIVE_KAPSAMI = 'https://www.googleapis.com/auth/drive.appdata';
-const YETKI_ADRESI = 'https://accounts.google.com/o/oauth2/v2/auth';
-const BELIRTEC_ADRESI = 'https://oauth2.googleapis.com/token';
 const IPTAL_ADRESI = 'https://oauth2.googleapis.com/revoke';
 const DOSYA_API = 'https://www.googleapis.com/drive/v3/files';
 const YUKLEME_API = 'https://www.googleapis.com/upload/drive/v3/files';
-export const YENILEME_BELIRTECI_ANAHTARI = 'namaz_esitleme_drive_yenileme';
+/** "Hesap bağlandı" işareti (belirteç DEĞİL; ağa çıkmadan `oturumVarMi` cevabı). */
+export const BAGLANTI_ANAHTARI = 'namaz_esitleme_drive_bagli';
+/** Eski PKCE akışının yenileme belirteci — bağlan/bağlantıyı kes sırasında temizlenir. */
+export const ESKI_YENILEME_BELIRTECI_ANAHTARI = 'namaz_esitleme_drive_yenileme';
 const ISTEK_ZAMAN_ASIMI_MS = 20_000;
-/** Erişim belirteci bitimine bu kadar kala yenilenir (saat kayması payı). */
-const BITIS_PAYI_MS = 60_000;
+/**
+ * Bellekteki erişim belirteci bu kadar süre kullanılır, sonra Play hizmetlerinden
+ * yeniden istenir (Google erişim belirteçleri ~60 dk yaşar; önbellekten almak ucuzdur).
+ */
+const BELLEK_OMRU_MS = 45 * 60_000;
+/** Play hizmetleri `CommonStatusCodes.SIGN_IN_REQUIRED`. Native de `cozumGerekli`e çevirir; bu ikinci emniyet. */
+const OTURUM_GEREKLI_KODU = 4;
 
-/** Tarayıcı oturumu (test için enjekte edilebilir). */
-export type YetkiOturumu = (
-  url: string,
-  yonlendirme: string
-) => Promise<{ type: string; url?: string }>;
+/** Yetki köprüsü (test için enjekte edilebilir). */
+export interface DriveYetkiKaynagi {
+  /** Bu cihazda kullanılabilir mi? (Android + köprü + Play hizmetleri) */
+  kullanilabilirMi(): boolean;
+  yetkiAl(etkilesimli: boolean): Promise<GoogleYetkiSonucu>;
+  belirteciTemizle(belirtec: string): Promise<boolean>;
+  erisimiGeriAl(): Promise<boolean>;
+}
+
+/** Varsayılan kaynak: `modules/expo-google-yetki` (yalnız Android). */
+export const androidYetkiKaynagi: DriveYetkiKaynagi = {
+  kullanilabilirMi: googleYetkisiKullanilabilirMi,
+  yetkiAl: (etkilesimli) => googleYetkiAl([DRIVE_KAPSAMI], etkilesimli),
+  belirteciTemizle: googleBelirteciTemizle,
+  erisimiGeriAl: () => googleErisimiGeriAl([DRIVE_KAPSAMI]),
+};
 
 export interface GoogleDriveBagimliliklari {
+  yetki?: DriveYetkiKaynagi;
   istek?: typeof fetch;
-  yetkiOturumu?: YetkiOturumu;
   simdi?: () => number;
 }
 
-/** Base64url (dolgu yok) — PKCE ve state için. */
+/** Base64url (dolgu yok) — çok parçalı yükleme sınırı için. */
 const base64Url = (baytlar: Uint8Array): string =>
   naclUtil.encodeBase64(baytlar).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-/** `a=b&c=d` gövdesi (form-urlencoded). */
-const formGovdesi = (alanlar: Record<string, string>): string =>
-  Object.entries(alanlar)
-    .map(([a, d]) => `${encodeURIComponent(a)}=${encodeURIComponent(d)}`)
-    .join('&');
-
-/**
- * Yönlendirme adresinin sorgu parametreleri. RN'in `URLSearchParams`'ı eksik
- * uygulandığı için elle ayrıştırılır (`?` ile `#` arası).
- */
-export const sorguParametreleri = (adres: string): Record<string, string> => {
-  const sonuc: Record<string, string> = {};
-  const soru = adres.indexOf('?');
-  if (soru < 0) return sonuc;
-  const kare = adres.indexOf('#', soru);
-  const sorgu = adres.slice(soru + 1, kare < 0 ? undefined : kare);
-  for (const parca of sorgu.split('&')) {
-    if (!parca) continue;
-    const esit = parca.indexOf('=');
-    const coz = (x: string) => {
-      try {
-        return decodeURIComponent(x.replace(/\+/g, ' '));
-      } catch {
-        return x;
-      }
-    };
-    const ad = coz(esit < 0 ? parca : parca.slice(0, esit));
-    sonuc[ad] = esit < 0 ? '' : coz(parca.slice(esit + 1));
-  }
-  return sonuc;
-};
-
-const varsayilanYetkiOturumu: YetkiOturumu = async (url, yonlendirme) => {
-  const tarayici = require('expo-web-browser') as typeof import('expo-web-browser');
-  return tarayici.openAuthSessionAsync(url, yonlendirme);
-};
+/** Verilen kapsamlar Drive kapsamını içeriyor mu? (Ayrıntılı onayda işaret kaldırılabilir.) */
+const driveKapsamiVerildiMi = (kapsamlar: string[]): boolean => kapsamlar.includes(DRIVE_KAPSAMI);
 
 export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
   readonly kimlik = 'googleDrive' as const;
   readonly ad = 'Google Drive';
 
   private erisimBelirteci: string | null = null;
-  private erisimBitisMs = 0;
+  private erisimAlinmaMs = 0;
   private dosyaKimligi: string | null = null;
+  private readonly yetki: DriveYetkiKaynagi;
   private readonly istek: typeof fetch;
-  private readonly yetkiOturumu: YetkiOturumu;
   private readonly simdi: () => number;
 
-  constructor(
-    private readonly istemciKimligi: string | null,
-    private readonly yonlendirme: string | null,
-    bagimliliklar: GoogleDriveBagimliliklari = {}
-  ) {
+  constructor(bagimliliklar: GoogleDriveBagimliliklari = {}) {
+    this.yetki = bagimliliklar.yetki ?? androidYetkiKaynagi;
     this.istek = bagimliliklar.istek ?? ((...a: Parameters<typeof fetch>) => fetch(...a));
-    this.yetkiOturumu = bagimliliklar.yetkiOturumu ?? varsayilanYetkiOturumu;
     this.simdi = bagimliliklar.simdi ?? Date.now;
   }
 
   yapilandirildiMi(): boolean {
-    return !!this.istemciKimligi && !!this.yonlendirme;
+    try {
+      return this.yetki.kullanilabilirMi();
+    } catch {
+      return false;
+    }
   }
 
   async oturumVarMi(): Promise<boolean> {
-    return (await GuvenliDepo.oku(YENILEME_BELIRTECI_ANAHTARI)) !== null;
+    return (await GuvenliDepo.oku(BAGLANTI_ANAHTARI)) === '1';
   }
 
-  private istemci(): { kimlik: string; yonlendirme: string } {
-    if (!this.istemciKimligi || !this.yonlendirme) {
-      throw new EsitlemeHatasi('yapilandirilmamis');
-    }
-    return { kimlik: this.istemciKimligi, yonlendirme: this.yonlendirme };
+  private yapilandirmaKapisi(): void {
+    if (!this.yapilandirildiMi()) throw new EsitlemeHatasi('yapilandirilmamis');
   }
 
   /** Zaman aşımlı `fetch`; ağ hatası `agYok`'a çevrilir. */
@@ -147,110 +141,121 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
     }
   }
 
-  /** Belirteç uç noktası yanıtını işler; yenileme belirteci geldiyse saklar. */
-  private async belirtecYanitiniIsle(yanit: Response): Promise<string> {
-    if (yanit.status >= 500 || yanit.status === 429) throw new EsitlemeHatasi('agYok');
-    let govde: { access_token?: unknown; expires_in?: unknown; refresh_token?: unknown } = {};
-    try {
-      govde = await yanit.json();
-    } catch {
-      govde = {};
-    }
-    if (!yanit.ok || typeof govde.access_token !== 'string') {
-      throw new EsitlemeHatasi('yetkiYok');
-    }
-    if (typeof govde.refresh_token === 'string') {
-      await GuvenliDepo.yaz(YENILEME_BELIRTECI_ANAHTARI, govde.refresh_token);
-    }
-    const sureSn = typeof govde.expires_in === 'number' ? govde.expires_in : 3600;
-    this.erisimBelirteci = govde.access_token;
-    this.erisimBitisMs = this.simdi() + sureSn * 1000 - BITIS_PAYI_MS;
-    return govde.access_token;
+  private belirteciBellegeAl(belirtec: string): string {
+    this.erisimBelirteci = belirtec;
+    this.erisimAlinmaMs = this.simdi();
+    return belirtec;
+  }
+
+  private bellegiTemizle(): void {
+    this.erisimBelirteci = null;
+    this.erisimAlinmaMs = 0;
+  }
+
+  /** Oturum düştü (izin geri alındı): yerel işareti sil, `yetkiYok`. */
+  private async oturumuDusur(): Promise<never> {
+    await GuvenliDepo.sil(BAGLANTI_ANAHTARI);
+    this.bellegiTemizle();
+    throw new EsitlemeHatasi('yetkiYok');
   }
 
   async baglan(): Promise<boolean> {
-    const { kimlik, yonlendirme } = this.istemci();
-    const dogrulayici = base64Url(rastgeleBaytlar(32));
-    const meydanOkuma = base64Url(sha256(naclUtil.decodeUTF8(dogrulayici)));
-    const durum = base64Url(rastgeleBaytlar(16));
-    const adres =
-      `${YETKI_ADRESI}?` +
-      formGovdesi({
-        client_id: kimlik,
-        redirect_uri: yonlendirme,
-        response_type: 'code',
-        scope: DRIVE_KAPSAMI,
-        code_challenge: meydanOkuma,
-        code_challenge_method: 'S256',
-        state: durum,
-        access_type: 'offline',
-        prompt: 'consent',
-      });
-
-    const sonuc = await this.yetkiOturumu(adres, yonlendirme);
-    if (sonuc.type !== 'success' || !sonuc.url) return false;
-    const parametreler = sorguParametreleri(sonuc.url);
-    // CSRF: dönen state bizim ürettiğimiz olmalı.
-    if (parametreler.state !== durum || !parametreler.code) return false;
-
-    const yanit = await this.getir(BELIRTEC_ADRESI, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formGovdesi({
-        client_id: kimlik,
-        code: parametreler.code,
-        code_verifier: dogrulayici,
-        grant_type: 'authorization_code',
-        redirect_uri: yonlendirme,
-      }),
-    });
-    await this.belirtecYanitiniIsle(yanit);
-    return true;
+    this.yapilandirmaKapisi();
+    const sonuc = await this.yetki.yetkiAl(true);
+    switch (sonuc.durum) {
+      case 'izin':
+        // Kullanıcı ayrıntılı onayda Drive işaretini kaldırdıysa bağlanmış sayılmaz.
+        if (!driveKapsamiVerildiMi(sonuc.kapsamlar)) return false;
+        this.belirteciBellegeAl(sonuc.belirtec);
+        await GuvenliDepo.yaz(BAGLANTI_ANAHTARI, '1');
+        await GuvenliDepo.sil(ESKI_YENILEME_BELIRTECI_ANAHTARI);
+        return true;
+      case 'agYok':
+        throw new EsitlemeHatasi('agYok');
+      case 'hata':
+        // Tipik neden: paket + SHA-1 Cloud projesindeki Android istemcileriyle eşleşmiyor
+        // (DEVELOPER_ERROR = 10). Ayrıntı tanı loguna; kullanıcıya genel hata.
+        Logger.warn('GoogleDriveSaglayicisi', `Drive yetkisi alınamadı (kod=${sonuc.kod ?? '-'})`);
+        throw new EsitlemeHatasi('bilinmiyor');
+      default:
+        // iptal / mesgul / cozumGerekli (onay ekranı açılamadı)
+        return false;
+    }
   }
 
   async baglantiyiKes(): Promise<void> {
-    const yenileme = await GuvenliDepo.oku(YENILEME_BELIRTECI_ANAHTARI);
-    if (yenileme) {
-      // En iyi çaba: Google tarafında da izni geri al (ağ yoksa yerel silme yeter).
-      try {
-        await this.getir(IPTAL_ADRESI, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formGovdesi({ token: yenileme }),
-        });
-      } catch {
-        // Yerel kimlik bilgisi yine silinir.
+    // En iyi çaba: Google tarafında da izni geri al (ağ yoksa yerel silme yeter).
+    try {
+      if (this.yapilandirildiMi()) {
+        // Belirteç izin geri alınmadan ÖNCE alınır: geri almadan sonra sessiz yetki
+        // `cozumGerekli` döner ve HTTP iptali + `clearToken` için belirteç kalmazdı.
+        let belirtec = this.erisimBelirteci;
+        if (!belirtec) {
+          const sessiz = await this.yetki.yetkiAl(false);
+          belirtec = sessiz.durum === 'izin' ? sessiz.belirtec : null;
+        }
+        const geriAlindi = await this.yetki.erisimiGeriAl();
+        if (belirtec) {
+          if (!geriAlindi) {
+            // Native geri alma başaramadıysa: erişim belirtecini iptal etmek ona bağlı
+            // izni de geri alır.
+            await this.getir(IPTAL_ADRESI, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: `token=${encodeURIComponent(belirtec)}`,
+            });
+          }
+          await this.yetki.belirteciTemizle(belirtec);
+        }
       }
+    } catch {
+      // Yerel işaret yine silinir.
     }
-    await GuvenliDepo.sil(YENILEME_BELIRTECI_ANAHTARI);
-    this.erisimBelirteci = null;
-    this.erisimBitisMs = 0;
+    await GuvenliDepo.sil(BAGLANTI_ANAHTARI);
+    await GuvenliDepo.sil(ESKI_YENILEME_BELIRTECI_ANAHTARI);
+    this.bellegiTemizle();
     this.dosyaKimligi = null;
   }
 
-  /** Geçerli erişim belirteci; gerekiyorsa yenileme belirteciyle tazeler. */
-  private async belirtec(zorla = false): Promise<string> {
-    if (!zorla && this.erisimBelirteci && this.simdi() < this.erisimBitisMs) {
+  /**
+   * Geçerli erişim belirteci. Bellekte taze değilse Play hizmetlerinden SESSİZCE
+   * (onay ekranı açmadan) istenir — arka plan turunda da güvenlidir.
+   */
+  private async belirtec(): Promise<string> {
+    if (this.erisimBelirteci && this.simdi() - this.erisimAlinmaMs < BELLEK_OMRU_MS) {
       return this.erisimBelirteci;
     }
-    const { kimlik } = this.istemci();
-    const yenileme = await GuvenliDepo.oku(YENILEME_BELIRTECI_ANAHTARI);
-    if (!yenileme) throw new EsitlemeHatasi('yetkiYok');
-    const yanit = await this.getir(BELIRTEC_ADRESI, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formGovdesi({ client_id: kimlik, refresh_token: yenileme, grant_type: 'refresh_token' }),
-    });
-    try {
-      return await this.belirtecYanitiniIsle(yanit);
-    } catch (hata) {
-      if (hata instanceof EsitlemeHatasi && hata.kod === 'yetkiYok') {
-        // Yenileme reddedildi (izin geri alındı / parola değişti): oturum yok say.
-        await GuvenliDepo.sil(YENILEME_BELIRTECI_ANAHTARI);
-        this.erisimBelirteci = null;
-      }
-      throw hata;
+    this.yapilandirmaKapisi();
+    if (!(await this.oturumVarMi())) throw new EsitlemeHatasi('yetkiYok');
+    const sonuc = await this.yetki.yetkiAl(false);
+    switch (sonuc.durum) {
+      case 'izin':
+        if (!driveKapsamiVerildiMi(sonuc.kapsamlar)) return this.oturumuDusur();
+        return this.belirteciBellegeAl(sonuc.belirtec);
+      case 'cozumGerekli':
+        // Sessiz yetki onay istiyor = kullanıcı izni Google hesabından geri aldı.
+        return this.oturumuDusur();
+      case 'agYok':
+      case 'mesgul':
+        throw new EsitlemeHatasi('agYok');
+      case 'iptal':
+        // Sessiz kipte ekran açılmadığı için kullanıcı iptali olamaz; geçici sayılır,
+        // bağlantı işareti SİLİNMEZ (yanlışlıkla "yeniden bağlanın" dedirtmesin).
+        throw new EsitlemeHatasi('bilinmiyor');
+      default:
+        // SIGN_IN_REQUIRED (4): hesap çıkışı / izin yok → kullanıcı yeniden bağlanmalı.
+        if (sonuc.kod === OTURUM_GEREKLI_KODU) return this.oturumuDusur();
+        Logger.warn('GoogleDriveSaglayicisi', `Drive belirteci yenilenemedi (kod=${sonuc.kod ?? '-'})`);
+        throw new EsitlemeHatasi('bilinmiyor');
     }
+  }
+
+  /** 401: bayat belirteci Play hizmetlerinin önbelleğinden siler, yenisini ister. */
+  private async belirteciYenile(): Promise<string> {
+    const eski = this.erisimBelirteci;
+    this.bellegiTemizle();
+    if (eski) await this.yetki.belirteciTemizle(eski);
+    return this.belirtec();
   }
 
   /** Yetkili istek: 401'de belirteci bir kez yenileyip yeniden dener. */
@@ -262,7 +267,7 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
       });
     let yanit = await gonder(await this.belirtec());
     if (yanit.status === 401) {
-      yanit = await gonder(await this.belirtec(true));
+      yanit = await gonder(await this.belirteciYenile());
       if (yanit.status === 401) throw new EsitlemeHatasi('yetkiYok');
     }
     if (yanit.status === 429 || yanit.status >= 500) throw new EsitlemeHatasi('agYok');
@@ -271,7 +276,15 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
       const metin = await yanit.text().catch(() => '');
       if (/RateLimit|rateLimitExceeded/i.test(metin)) throw new EsitlemeHatasi('agYok');
       if (/storageQuotaExceeded/i.test(metin)) throw new EsitlemeHatasi('boyutAsimi');
-      throw new EsitlemeHatasi('yetkiYok');
+      // Yalnız kapsam eksikliği kullanıcının yeniden bağlanmasıyla düzelir. Proje tarafı
+      // kalıcı hatalar (accessNotConfigured = Drive API kapalı, vb.) `yetkiYok` sayılsaydı
+      // kullanıcı her bağlanışta aynı hataya düşüp sonsuz "yeniden bağlanın" döngüsüne girerdi.
+      if (/insufficientPermissions|insufficientScopes|ACCESS_TOKEN_SCOPE_INSUFFICIENT/i.test(metin)) {
+        throw new EsitlemeHatasi('yetkiYok');
+      }
+      const neden = /"reason"\s*:\s*"([A-Za-z]+)"/.exec(metin)?.[1] ?? 'bilinmiyor';
+      Logger.warn('GoogleDriveSaglayicisi', `Drive 403 (neden=${neden})`);
+      throw new EsitlemeHatasi('bilinmiyor');
     }
     return yanit;
   }
