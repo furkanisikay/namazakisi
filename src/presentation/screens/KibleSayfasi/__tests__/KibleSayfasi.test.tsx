@@ -3,7 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { KibleSayfasi } from '../KibleSayfasi';
 import { guvenilirKibleHostuMu, disaAktarilabilirUrlMu } from '../WebPusulaView';
 import { useKible } from '../../../hooks/useKible';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useRenkler } from '../../../../core/theme';
 
 // Mocklar
@@ -25,6 +25,10 @@ jest.mock('@expo/vector-icons', () => {
   return {
     FontAwesome5: (props: any) => <Text>{props.name}</Text>,
   };
+});
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+  const { Text } = require('react-native');
+  return (props: { name: string }) => <Text>{props.name}</Text>;
 });
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children, ...props }: any) => {
@@ -64,6 +68,7 @@ describe('KibleSayfasi', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useNavigation as jest.Mock).mockReturnValue(mockNavigation);
+    (useIsFocused as jest.Mock).mockReturnValue(true);
     (useRenkler as jest.Mock).mockReturnValue(mockRenkler);
     (useKible as jest.Mock).mockReturnValue({
       kibleAcisi: 150,
@@ -77,14 +82,30 @@ describe('KibleSayfasi', () => {
 
   it('sayfa hatasız render olmalıdır', () => {
     const { getByText } = render(<KibleSayfasi />);
-    expect(getByText('Kıbleyi Bul')).toBeTruthy();
+    expect(getByText('Kıble')).toBeTruthy();
   });
 
-  it('geri butonuna basıldığında navigation.goBack çağrılmalıdır', () => {
-    const { getByTestId } = render(<KibleSayfasi />);
-    const backButton = getByTestId('back-button');
-    fireEvent.press(backButton);
-    expect(mockNavigation.goBack).toHaveBeenCalledTimes(1);
+  it('sekme kökü: geri düğmesi YOK, iki modun farkı tek cümleyle yazılır', () => {
+    const { queryByTestId, getByTestId } = render(<KibleSayfasi />);
+    expect(queryByTestId('back-button')).toBeNull();
+    expect(getByTestId('kible-mod-aciklamasi').props.children).toMatch(/Telefonu düz tutun/);
+  });
+
+  it('sekme odakta değilken pusula ÇİZİLMEZ (algılayıcı ve WebView arka planda çalışmasın)', () => {
+    (useIsFocused as jest.Mock).mockReturnValue(false);
+    const { queryByText } = render(<KibleSayfasi />);
+    expect(queryByText('Kıble Yönü')).toBeNull();
+    expect(useKible).not.toHaveBeenCalled();
+  });
+
+  it('konum izni kapalıysa açıklamalı izin satırı çıkar (diyalog doğrudan açılmaz)', () => {
+    (useKible as jest.Mock).mockReturnValue({
+      kibleAcisi: 0, pusulaYonelimi: 0, hedefAcisi: 0, izinVerildi: false, yukleniyor: false,
+      hata: 'Kıble yönünü bulmak için konum izni gerekiyor.', izinTekrarSorulabilir: true, izinIste: jest.fn(),
+    });
+    const { getByTestId, getByLabelText } = render(<KibleSayfasi />);
+    expect(getByTestId('kible-izin-satiri')).toBeTruthy();
+    expect(getByLabelText('İzin verin')).toBeTruthy();
   });
 
   it('varsayılan olarak Native Pusula (offline) modu açılmalıdır', () => {
@@ -98,7 +119,7 @@ describe('KibleSayfasi', () => {
     const { getByText, getByTestId, queryByText } = render(<KibleSayfasi />);
 
     // Web sekmesine tıkla
-    const webTab = getByText('Google AR');
+    const webTab = getByText('Kamera');
     fireEvent.press(webTab);
 
     // Native view gitmeli, Web view gelmeli

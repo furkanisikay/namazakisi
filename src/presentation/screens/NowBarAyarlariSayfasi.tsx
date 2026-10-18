@@ -218,9 +218,10 @@ export const NowBarAyarlariSayfasi: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Text className="text-sm mb-5" style={{ color: renkler.metinIkincil }}>
+        {/* İki kısa cümle (öncelik sırası listesi kalktı — metin bütçesi). */}
         {ios
-          ? 'Kilit ekranında ve Dinamik Ada\'da hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri görünür: vakit çıkışı, cuma, nafile sırasıyla.'
-          : `${cihaz.samsung === true ? "Durum çubuğunda ve Now Bar'da" : 'Durum çubuğunda'} hangi geri sayımın görüneceğini seçebilirsiniz. Aynı anda yalnız biri öne çıkar: vakit çıkışı, iftar, sahur, cuma, nafile, seri sırasıyla.`}
+          ? "Kilit ekranında ve Dinamik Ada'da görünecek geri sayımı seçin. Aynı anda biri görünür."
+          : `${cihaz.samsung === true ? "Durum çubuğunda ve Now Bar'da" : 'Durum çubuğunda'} görünecek geri sayımı seçin. Aynı anda biri öne çıkar.`}
       </Text>
 
       {/* Durum kartı + çip önizlemesi (imza öğesi) */}

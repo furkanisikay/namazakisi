@@ -1,6 +1,10 @@
 /**
- * Ramazan Ayarları Sayfası
- * İftar sayacı toggle ve bilgi
+ * Ramazan Ayarları Sayfası — iftar ve sahur geri sayımı.
+ *
+ * Sade tasarım Dalga 4: dekoratif başlık kartı kalktı (sayfa başlığı header'da);
+ * bölüm başlıkları `BolumBasligi`; açıklamalar tek cümle (≤ 12 kelime, 14 pt);
+ * oruç uyarısı kısa ve ikonu tema tokenı (`dikkat`, yalnız dekoratif). İftar/sahur
+ * vurgu renkleri KASTEN sabit (temada karşılığı yok; yalnız ikon/anahtar — metin değil).
  */
 
 import * as React from 'react';
@@ -28,6 +32,7 @@ import { useRamazanSayaclari } from '../hooks/useRamazanSayaclari';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { BolumBasligi } from '../components/ortak/BolumBasligi';
 
 /**
  * Ramazan Ayarlari Sayfasi
@@ -81,9 +86,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
   };
 
   const iftarRenk = '#E65100';
-  const iftarRenkAcik = '#FFF3E0';
   const sahurRenk = '#3F51B5'; // İftar turuncu, Sahur lacivert/mavi
-  const sahurRenkAcik = '#E8EAF6';
 
   return (
     <ScrollView
@@ -94,45 +97,9 @@ const RamazanAyarlariIcerik: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       <Animated.View style={{ opacity: fadeAnim }}>
-        {/* Ramazan Başlık Kartı */}
-        <View
-          className="rounded-2xl overflow-hidden mb-6"
-          style={{
-            backgroundColor: iftarRenkAcik,
-            borderWidth: 1,
-            borderColor: `${iftarRenk}20`,
-          }}
-        >
-          <View
-            style={{
-              height: 4,
-              backgroundColor: iftarRenk,
-            }}
-          />
-          <View className="p-5 items-center">
-            <View
-              className="w-16 h-16 rounded-full items-center justify-center mb-3"
-              style={{ backgroundColor: `${iftarRenk}15` }}
-            >
-              <FontAwesome5 name="moon" size={28} color={iftarRenk} solid />
-            </View>
-            <Text
-              className="text-xs text-center"
-              style={{ color: renkler.metinIkincil }}
-            >
-              Ramazan ayına özel iftar geri sayım bildirimi
-            </Text>
-          </View>
-        </View>
-
         {/* İftar Sayacı Ayarı */}
         <View className="mb-6">
-          <Text
-            className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            İFTAR SAYACI
-          </Text>
+          <BolumBasligi metin="İftar" ikon="moon" />
 
           <AyarCapasi id="iftarSayaci">
           <View
@@ -160,10 +127,10 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   İftar Sayacı
                 </Text>
                 <Text
-                  className="text-xs mt-0.5"
+                  className="text-sm mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Bildirimlerde iftara kalan süreyi görürsünüz
+                  Sabahtan akşama iftara kalan süre görünür
                 </Text>
               </View>
               <Anahtar
@@ -174,6 +141,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   true: `${iftarRenk}60`,
                 }}
                 thumbColor={ayarlar.aktif ? iftarRenk : '#f4f3f4'}
+                accessibilityLabel="İftar sayacı"
               />
             </View>
 
@@ -191,12 +159,10 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     style={{ marginTop: 2 }}
                   />
                   <Text
-                    className="text-xs flex-1"
+                    className="text-sm flex-1"
                     style={{ color: renkler.metinIkincil }}
                   >
-                    Sabah namazından sonra bildirim menüsünde aktif olur ve
-                    akşam namazı vaktine kalan süreyi gösterir. Vakit girdikten
-                    10 dakika sonra otomatik kaybolur.
+                    Akşam girdikten 10 dakika sonra kendiliğinden kalkar.
                   </Text>
                 </View>
                 <CanliGuncellemeBilgisi />
@@ -208,12 +174,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
 
         {/* Sahur Sayacı Ayarı */}
         <View className="mb-6">
-          <Text
-            className="text-xs font-bold tracking-wider mb-3"
-            style={{ color: renkler.metinIkincil }}
-          >
-            SAHUR SAYACI
-          </Text>
+          <BolumBasligi metin="Sahur" ikon="utensils" />
 
           <AyarCapasi id="sahurSayaci">
           <View
@@ -241,10 +202,10 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   Sahur Sayacı
                 </Text>
                 <Text
-                  className="text-xs mt-0.5"
+                  className="text-sm mt-0.5"
                   style={{ color: renkler.metinIkincil }}
                 >
-                  Gece boyunca bildirimlerde sahura kalan süreyi görürsünüz
+                  Yatsıdan imsaka sahura kalan süre görünür
                 </Text>
               </View>
               <Anahtar
@@ -255,6 +216,7 @@ const RamazanAyarlariIcerik: React.FC = () => {
                   true: `${sahurRenk}60`,
                 }}
                 thumbColor={sahurAyarlar.aktif ? sahurRenk : '#f4f3f4'}
+                accessibilityLabel="Sahur sayacı"
               />
             </View>
 
@@ -272,12 +234,10 @@ const RamazanAyarlariIcerik: React.FC = () => {
                     style={{ marginTop: 2 }}
                   />
                   <Text
-                    className="text-xs flex-1"
+                    className="text-sm flex-1"
                     style={{ color: renkler.metinIkincil }}
                   >
-                    Yatsı vaktinden sonra bildirim menüsünde aktif olur ve
-                    imsak (sahur bitiş) vaktine kalan süreyi gösterir. İmsak girdikten
-                    10 dakika sonra otomatik kaybolur.
+                    İmsak girdikten 10 dakika sonra kendiliğinden kalkar.
                   </Text>
                 </View>
                 <CanliGuncellemeBilgisi />
@@ -294,21 +254,19 @@ const RamazanAyarlariIcerik: React.FC = () => {
         >
           <View
             className="w-8 h-8 rounded-full items-center justify-center mr-3"
-            style={{ backgroundColor: '#FF980015' }}
+            style={{ backgroundColor: `${renkler.dikkat}20` }}
           >
             <FontAwesome5
               name="exclamation-triangle"
               size={14}
-              color="#FF9800"
+              color={renkler.dikkat}
             />
           </View>
           <Text
-            className="flex-1 text-xs leading-4"
-            style={{ color: renkler.metinIkincil }}
+            className="flex-1 text-sm leading-5"
+            style={{ color: renkler.metin }}
           >
-            Bu sayaç tahmini hesaplamaya dayanmaktadır. Lütfen ezanı duymadan
-            orucunuzu açmayınız. Ezan saatleri için Diyanet İşleri Başkanlığı
-            verilerini esas alınız.
+            Sayaç hesaplamaya dayanır; orucunuzu ezanla açın. Esas olan Diyanet takvimidir.
           </Text>
         </View>
       </Animated.View>

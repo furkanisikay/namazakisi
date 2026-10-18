@@ -41,13 +41,13 @@ describe('useKible Hook', () => {
   });
 
   it('baslangicta yukleniyor durumunda olmalidir', () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockReturnValue(new Promise(() => { })); // Asili kalsin
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockReturnValue(new Promise(() => { })); // Asili kalsin
     const { result } = renderHook(() => useKible());
     expect(result.current.yukleniyor).toBe(true);
   });
 
   it('konum izni verilmezse hata dondurmelidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied' });
 
     const { result } = renderHook(() => useKible());
 
@@ -60,7 +60,7 @@ describe('useKible Hook', () => {
   });
 
   it('izin verilip konum alindiginda izinVerildi true, hata null olmali ve kible acisi hesaplanmalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: {
         latitude: 21.4225,
@@ -85,7 +85,7 @@ describe('useKible Hook', () => {
   });
 
   it('Istanbul icin kible acisini dogru hesaplamalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: {
         latitude: 41.0082,
@@ -105,7 +105,7 @@ describe('useKible Hook', () => {
   });
 
   it('Berlin icin kible acisini dogru hesaplamalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 52.52, longitude: 13.405 },
     });
@@ -123,7 +123,7 @@ describe('useKible Hook', () => {
   });
 
   it('Sydney icin kible acisini dogru hesaplamalidir (guney yarimkure, Mekke batida)', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: -33.8688, longitude: 151.2093 },
     });
@@ -141,7 +141,7 @@ describe('useKible Hook', () => {
   });
 
   it('heading verisi geldiginde pusula yonelimini guncellemelidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 41, longitude: 29 },
     });
@@ -164,7 +164,7 @@ describe('useKible Hook', () => {
   });
 
   it('trueHeading negatifse magHeading kullanilmalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 41, longitude: 29 },
     });
@@ -186,7 +186,7 @@ describe('useKible Hook', () => {
   });
 
   it('hedefAcisi cihaz-goreli aciyi (kibleAcisi - pusulaYonelimi) dogru hesaplamalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 41.0082, longitude: 28.9784 },
     });
@@ -213,7 +213,7 @@ describe('useKible Hook', () => {
   });
 
   it('hedefAcisi negatif olunca 0-360 araligina normalize edilmelidir (wraparound)', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 41.0082, longitude: 28.9784 },
     });
@@ -242,7 +242,7 @@ describe('useKible Hook', () => {
   });
 
   it('konum servisi kullanilamiyorsa ozel kullanici mesaji dondurmelidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(
       new Error('Current location is unavailable. Make sure that location services are enabled.'),
     );
@@ -263,7 +263,7 @@ describe('useKible Hook', () => {
   });
 
   it('genel bir hatada (konum servisi disi) genel kible hata mesaji dondurmelidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(
       new Error('beklenmedik bir sorun olustu'),
     );
@@ -279,7 +279,7 @@ describe('useKible Hook', () => {
   });
 
   it('unmount sonrasi gelen heading callback state guncellememeli ve remove cagrilmalidir', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
     (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({
       coords: { latitude: 41.0082, longitude: 28.9784 },
     });
@@ -322,12 +322,12 @@ describe('useKible Hook', () => {
       return { remove: jest.fn() };
     }) as never);
     try {
-      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
       (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
       const { result } = renderHook(() => useKible());
       await waitFor(() => expect(result.current.yukleniyor).toBe(false));
       await waitFor(() => expect(handlerlar.length).toBeGreaterThan(0));
-      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+      // Dalga 4: açılışta da diyalog açılmaz — izin yalnız okunur.
+      expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
 
       // Reddedilmişken öne geliş: yalnız OKU, diyalog açma.
       await act(async () => {
@@ -335,11 +335,10 @@ describe('useKible Hook', () => {
         await Promise.resolve();
       });
       expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
-      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+      expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
 
       // Ayarlar'dan izin verip dönen kullanıcı: servis yeniden başlar.
       (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
-      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
       (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
       await act(async () => {
         handlerlar[handlerlar.length - 1]('active');
@@ -351,8 +350,21 @@ describe('useKible Hook', () => {
     }
   });
 
+  it('izinIste diyalog AÇMAZ, durumu yeniden okur (istek ekrandaki açıklamalı akıştadır)', async () => {
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+    await act(async () => {
+      await result.current.izinIste();
+    });
+    await waitFor(() => expect(result.current.izinVerildi).toBe(true));
+    expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
+  });
+
   it('izin reddinde tekrar sorulabilirlik açığa çıkar (düğme "İzin verin" / "Ayarları açın")', async () => {
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
+    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
     const { result } = renderHook(() => useKible());
     await waitFor(() => expect(result.current.yukleniyor).toBe(false));
     expect(result.current.izinTekrarSorulabilir).toBe(false);
@@ -362,7 +374,7 @@ describe('useKible Hook', () => {
     let simdi = 1_000_000;
     const saat = jest.spyOn(Date, 'now').mockImplementation(() => simdi);
     try {
-      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
       (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
       const { result } = renderHook(() => useKible());
       await waitFor(() => expect(headingCallback).not.toBeNull());

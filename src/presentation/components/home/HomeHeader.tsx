@@ -15,16 +15,16 @@ interface HomeHeaderProps {
     aktifGunMu?: boolean;
     onTarihTikla: () => void;
     onSeriTikla?: () => void;
-    onKibleTikla?: () => void;
     toparlanmaModu?: boolean;
     toparlanmaIlerleme?: { tamamlanan: number; hedef: number } | null;
 }
 
 /**
  * Home page header component.
- * Displays current date, streak counter, and qibla shortcut button.
+ * Displays current date and streak counter (Kıble Dalga 4'ten beri kendi sekmesinde;
+ * header'daki kısayol kaldırıldı).
  * @param {HomeHeaderProps} props - Component props.
- * @returns {React.JSX.Element} Header with date info, qibla and streak buttons.
+ * @returns {React.JSX.Element} Header with date info and streak button.
  */
 export const HomeHeader = React.memo<HomeHeaderProps>(({
     tarih,
@@ -33,7 +33,6 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
     aktifGunMu,
     onTarihTikla,
     onSeriTikla,
-    onKibleTikla,
     toparlanmaModu,
     toparlanmaIlerleme,
 }) => {
@@ -103,22 +102,6 @@ export const HomeHeader = React.memo<HomeHeaderProps>(({
             </TouchableOpacity>
 
             <View className="flex-row items-center gap-2">
-                {/* Kıble Butonu */}
-                <TouchableOpacity
-                    className="flex-row items-center gap-2 px-3 py-1.5 rounded-full border"
-                    style={{
-                        backgroundColor: renkler.birincil + '15',
-                        borderColor: renkler.birincil + '50'
-                    }}
-                    onPress={onKibleTikla}
-                    activeOpacity={0.7}
-                    accessibilityLabel="Kıble yönünü bul"
-                    accessibilityRole="button"
-                >
-                    <FontAwesome5 name="compass" size={14} color={renkler.birincil} />
-                    <Text className="font-bold text-sm" style={{ color: renkler.birincil }}>Kıble</Text>
-                </TouchableOpacity>
-
                 {/* Seri Butonu */}
                 <TouchableOpacity
                     className="items-center px-3 py-1.5 rounded-full border"

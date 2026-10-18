@@ -113,14 +113,22 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
   };
 
   it('hatasız render olur', async () => {
-    const { getByText } = SayfaYukle();
-    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+    const { getByTestId } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
+  });
+
+  it('sade tasarım: koordinatlar "Gelişmiş" katında, varsayılan kapalı', async () => {
+    const { getByTestId, queryByText, getByLabelText, findByText } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
+    expect(queryByText('Enlem')).toBeNull();
+    fireEvent.press(getByLabelText('Gelişmiş'));
+    expect(await findByText('Enlem')).toBeTruthy();
   });
 
   it('takip başlatılamazsa "İzin Gerekli" onay modalı (Alert DEĞİL) gösterilir', async () => {
     servisMock.baslat.mockResolvedValue(false);
-    const { getByText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+    const { getByText, getByTestId, UNSAFE_getByType } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
 
     // Seyahatte otomatik güncelleme switch'ini AÇ
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
@@ -133,8 +141,8 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
 
   it('"Ayarlara Git"e basınca Linking.openSettings çağrılır', async () => {
     servisMock.baslat.mockResolvedValue(false);
-    const { getByText, getByLabelText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+    const { getByText, getByTestId, getByLabelText, UNSAFE_getByType } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
 
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
     await waitFor(() => expect(getByText('Ayarlara Git')).toBeTruthy());
@@ -146,8 +154,8 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
   it('takip başlatma hata fırlatırsa tema-uyumlu hata modalı gösterilir', async () => {
     servisMock.baslat.mockRejectedValue(new Error('boom'));
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const { getByText, UNSAFE_getByType } = SayfaYukle();
-    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+    const { getByText, getByTestId, UNSAFE_getByType } = SayfaYukle();
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
 
     fireEvent(UNSAFE_getByType(Switch), 'valueChange', true);
 
@@ -169,9 +177,9 @@ describe('KonumAyarlariSayfasi — izin/hata bildirim modalı', () => {
     it('vurgula parametresiyle açılınca sayfa çökmeden render olur', async () => {
       (useRoute as jest.Mock).mockReturnValue({ params: { vurgula: 'konumModu' } });
 
-      const { getByText } = SayfaYukle();
+      const { getByTestId } = SayfaYukle();
 
-      await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+      await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
     });
 
     it('çapalanan kontrol vurgu parametresiyle de görünür kalır', async () => {
@@ -239,9 +247,9 @@ describe('KonumAyarlariSayfasi — konum değişince bildir anahtarı', () => {
 
   it('iOS: anahtar çizilmez (arka plan konum takibi yok, bildirim hiç gitmez)', async () => {
     jest.replaceProperty(Platform, 'OS', 'ios');
-    const { queryByLabelText, getByText } = kur();
+    const { queryByLabelText, getByTestId } = kur();
 
-    await waitFor(() => expect(getByText('Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin')).toBeTruthy());
+    await waitFor(() => expect(getByTestId('konum-durum-karti')).toBeTruthy());
     expect(queryByLabelText('Konum değişince bildir')).toBeNull();
   });
 });

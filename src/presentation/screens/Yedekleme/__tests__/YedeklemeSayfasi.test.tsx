@@ -28,6 +28,14 @@ jest.mock('@expo/vector-icons', () => {
     FontAwesome5: (props: any) => <Text>{props.name}</Text>,
   };
 });
+jest.mock('@expo/vector-icons/FontAwesome5', () => {
+  const { Text } = require('react-native');
+  return (props: { name: string }) => <Text>{props.name}</Text>;
+});
+// Durum kartı son dışa aktarma damgasını okur (sade tasarım Dalga 4).
+jest.mock('../../../../data/local/Depolama', () => ({
+  Depolama: { oku: jest.fn(async () => null) },
+}));
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: ({ children, ...props }: any) => {
     const { View } = require('react-native');
@@ -68,13 +76,13 @@ describe('YedeklemeSayfasi', () => {
 
   it('sayfa hatasız render olmalıdır', () => {
     const { getByText } = render(<YedeklemeSayfasi />);
-    expect(getByText('Yedek oluştur')).toBeTruthy();
-    expect(getByText('İçe aktar / Geri yükle')).toBeTruthy();
+    expect(getByText('Yedek oluşturun')).toBeTruthy();
+    expect(getByText('Yedekten geri yükleyin')).toBeTruthy();
   });
 
   it('"Yedek oluştur"a basınca yedeginiPaylas çağrılmalıdır', async () => {
     const { getByText } = render(<YedeklemeSayfasi />);
-    fireEvent.press(getByText('Yedek oluştur'));
+    fireEvent.press(getByText('Yedek oluşturun'));
     await waitFor(() => {
       expect(yedeginiPaylas).toHaveBeenCalledTimes(1);
     });
@@ -82,7 +90,7 @@ describe('YedeklemeSayfasi', () => {
 
   it('"İçe aktar"a basınca IceAktarmaSihirbazi rotasına gitmelidir', async () => {
     const { getByText } = render(<YedeklemeSayfasi />);
-    fireEvent.press(getByText('İçe aktar / Geri yükle'));
+    fireEvent.press(getByText('Yedekten geri yükleyin'));
     await waitFor(() => {
       expect(mockNavigation.navigate).toHaveBeenCalledWith('IceAktarmaSihirbazi');
     });
@@ -94,7 +102,7 @@ describe('YedeklemeSayfasi', () => {
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const { getByText } = render(<YedeklemeSayfasi />);
-    fireEvent.press(getByText('Yedek oluştur'));
+    fireEvent.press(getByText('Yedek oluşturun'));
     await waitFor(() => {
       expect(mockFeedback.hataFeedback).toHaveBeenCalledTimes(1);
     });
@@ -104,7 +112,7 @@ describe('YedeklemeSayfasi', () => {
       expect(getByText('Yedek oluşturulamadı')).toBeTruthy();
     });
     // "Tekrar dene" birincil eylemi sunulmalı
-    expect(getByText('Tekrar dene')).toBeTruthy();
+    expect(getByText('Tekrar deneyin')).toBeTruthy();
 
     errSpy.mockRestore();
   });
@@ -114,13 +122,13 @@ describe('YedeklemeSayfasi', () => {
     const errSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     const { getByText } = render(<YedeklemeSayfasi />);
-    fireEvent.press(getByText('Yedek oluştur'));
+    fireEvent.press(getByText('Yedek oluşturun'));
     await waitFor(() => {
-      expect(getByText('Tekrar dene')).toBeTruthy();
+      expect(getByText('Tekrar deneyin')).toBeTruthy();
     });
     expect(yedeginiPaylas).toHaveBeenCalledTimes(1);
 
-    fireEvent.press(getByText('Tekrar dene'));
+    fireEvent.press(getByText('Tekrar deneyin'));
     await waitFor(() => {
       expect(yedeginiPaylas).toHaveBeenCalledTimes(2);
     });

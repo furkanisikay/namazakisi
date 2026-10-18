@@ -108,26 +108,50 @@ beforeEach(() => {
 });
 
 describe('KazaDefteriSayfasi (ana sayfa)', () => {
-  it('render olur; günlük hedefe geçersiz değer girilince tema-uyumlu hata modalı açılır', async () => {
-    const { getByText, getByPlaceholderText, store } = await ciz(anaSayfa());
+  it('render olur; "Diğer" > Günlük hedef → geçersiz değer girilince tema-uyumlu hata modalı açılır', async () => {
+    const { getByText, getByLabelText, getByPlaceholderText, store } = await ciz(anaSayfa());
     expect(getByText('Kaza Defteri')).toBeTruthy();
-    fireEvent.press(getByText('edit'));
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
+    fireEvent.press(getByLabelText(/^Günlük hedef./));
+    // Menü kapanır, hedef modalı kapanış bittikten sonra açılır (iOS iki modalı üst üste sunamaz).
     fireEvent.changeText(await waitFor(() => getByPlaceholderText('Örn: 3')), 'abc');
     fireEvent.press(getByText('Kaydet'));
     await waitFor(() => expect(getByText('Geçerli bir sayı giriniz (0 = hedefsiz).')).toBeTruthy());
     expect(store.getState().kaza.kazaDurumu!.gunlukHedef).not.toBe(Number.NaN);
   });
 
+  it('sade kök: hedef, tempo, sihirbaz, ayar ve bağlantı satırları kökte DEĞİL, "Diğer"de', async () => {
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 10 }));
+    const { queryByText, queryByLabelText, getByLabelText, getByTestId } = await ciz(anaSayfa(), store);
+    expect(queryByText('Hesaplama sihirbazı ile başlayın')).toBeNull();
+    expect(queryByLabelText('Her farzdan sonra kaza önerin')).toBeNull();
+    expect(queryByText(/Henüz günlük hedef belirlenmedi/)).toBeNull();
+    expect(queryByText('Toplu Tamamla')).toBeNull();
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
+    expect(getByTestId('kaza-tempo')).toBeTruthy();
+  });
+
   it('REGRESYON: sihirbazın son adımı ÇÖKMEZ, önizleme ekranına girdiyle gider', async () => {
     const { getByText, getByPlaceholderText, getByLabelText } = await ciz(anaSayfa());
-    fireEvent.press(getByText('Hesaplama sihirbazı ile başlayın'));
-    fireEvent.changeText(getByPlaceholderText('Örn: 1995'), '1990');
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
+    fireEvent.press(getByLabelText(/^Kazamı hesaplayın\./));
+    fireEvent.changeText(await waitFor(() => getByPlaceholderText('Örn: 1995')), '1990');
     fireEvent.press(getByLabelText('İleri'));
     fireEvent.press(getByLabelText('İleri'));
     fireEvent.press(getByText('Önizleyin'));
     expect(mockNavigate).toHaveBeenCalledWith('KazaYenidenHesapla', {
       girdi: { dogumTarihi: '1990-01-01', ergenlikYasi: 14, kildigiTahminiYuzdesi: 0 },
     });
+  });
+
+  it('vakit satırında tek eylem adı "Kıldım"; uzun basış sayı sorar, onay da "Kıldım"', async () => {
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 3 }));
+    const { getByLabelText, getAllByText, findByText } = await ciz(anaSayfa(), store);
+    fireEvent(getByLabelText('Sabah kazasını kıldım olarak işaretleyin'), 'longPress');
+    expect(await findByText('Kıldım — Sabah')).toBeTruthy();
+    expect(getAllByText('Kıldım').length).toBeGreaterThan(0);
   });
 
   it('kaynak özeti ve fazla kılınan gösterilir; "Sıfırlayın" fazlayı kaldırır, kalanı değiştirmez', async () => {
@@ -166,20 +190,29 @@ describe('KazaDefteriSayfasi (ana sayfa)', () => {
     expect(getByTestId('kaza-bozuk-ay-bandi')).toBeTruthy();
   });
 
-  it('otomatik ekleme çipi ve defter bağlantıları alt ekranlara gider', async () => {
+  it('"Diğer" menüsündeki satırlar alt ekranlara gider', async () => {
     const { getByLabelText } = await ciz(anaSayfa());
-    fireEvent.press(getByLabelText('Otomatik ekleme kapalı. Ayarı açın'));
-    fireEvent.press(getByLabelText('Hareket geçmişini açın'));
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
+    fireEvent.press(getByLabelText('Kaza ayarları. Otomatik ekleme kapalı'));
+    // Sayfa geçişi menü KAPANDIKTAN sonra (modal kapanış beklemesi) — anında değil.
+    expect(mockNavigate).not.toHaveBeenCalled();
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
+    fireEvent.press(getByLabelText('Hareket geçmişi'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(2));
+    fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
     fireEvent.press(getByLabelText('Kayıtları temizleyin'));
-    expect(mockNavigate.mock.calls.map((c) => c[0])).toEqual(['KazaOtomatikAyar', 'KazaGecmisi', 'KazaTemizlik']);
+    await waitFor(() =>
+      expect(mockNavigate.mock.calls.map((c) => c[0])).toEqual(['KazaOtomatikAyar', 'KazaGecmisi', 'KazaTemizlik'])
+    );
   });
 });
 
-describe('KazaDefteriSayfasi — "Her farzla bir kaza" anahtarı (issue #294)', () => {
-  it('borç varken görünür ve kapatınca ayarı diske yazar', async () => {
-    const store = storeKur();
-    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 1 }));
-    const { findByLabelText } = await ciz(anaSayfa(), store);
+describe('Kaza ayarları — "Her farzla bir kaza" anahtarı (issue #294; Dalga 4: kökten buraya taşındı)', () => {
+  const ayarSayfasi = () => require('../Kaza/KazaOtomatikAyarSayfasi').KazaOtomatikAyarSayfasi as React.ComponentType;
+
+  it('kapatınca ayarı diske yazar (yol değişmedi: KAZA_ONERI_AYARLARI)', async () => {
+    const { findByLabelText } = await ciz(ayarSayfasi());
     const anahtar = await findByLabelText('Her farzdan sonra kaza önerin');
     await act(async () => {
       fireEvent(anahtar, 'valueChange', false);
@@ -189,8 +222,10 @@ describe('KazaDefteriSayfasi — "Her farzla bir kaza" anahtarı (issue #294)', 
     );
   });
 
-  it('borç yoksa hiç görünmez', async () => {
-    const { queryByLabelText } = await ciz(anaSayfa());
+  it('kaza kökünde artık görünmez', async () => {
+    const store = storeKur();
+    await store.dispatch(borcEkle({ namazAdi: 'Sabah', sayi: 1 }));
+    const { queryByLabelText } = await ciz(anaSayfa(), store);
     expect(queryByLabelText('Her farzdan sonra kaza önerin')).toBeNull();
   });
 });

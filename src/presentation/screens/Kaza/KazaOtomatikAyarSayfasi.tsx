@@ -1,5 +1,12 @@
 /**
- * Otomatik kaza ekleme ayarı (Kaza Defteri 2.0, ekran 3).
+ * Kaza ayarları (Kaza Defteri 2.0, ekran 3 — rota adı `KazaOtomatikAyar` korunur).
+ *
+ * Sade tasarım Dalga 4: kökteki "Her farzla bir kaza" anahtarı buraya taşındı (kaza
+ * kökü yalnız kalan + vakit satırları taşır). Ayar yolu DEĞİŞMEDİ:
+ * `kazaOneriAyarlariniYukle` / `kazaOneriAyarlariniGuncelle` (`KAZA_ONERI_AYARLARI`).
+ * Eskiden yalnız borç varken görünürdü; artık ayar sayfasında her zaman görünür.
+ *
+ * Otomatik kaza ekleme:
  *
  * Varsayılan KAPALI. Açıldığı günden önceye kendiliğinden GİTMEZ; geçmişe dönük
  * tarama ayrı bir düğme ve ÖNİZLEME ister (en fazla `GECMIS_TARAMA_AZAMI_GUN`).
@@ -13,7 +20,12 @@ import { useNavigation } from '@react-navigation/native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { kazaVerileriniYukle, otomatikAyarla } from '../../store/kazaSlice';
+import {
+  kazaVerileriniYukle,
+  otomatikAyarla,
+  kazaOneriAyarlariniYukle,
+  kazaOneriAyarlariniGuncelle,
+} from '../../store/kazaSlice';
 import * as KazaDefteri from '../../../domain/services/KazaDefteriServisi';
 import { LocalMezhepServisi } from '../../../data/local/LocalMezhepServisi';
 import { MEZHEP_ADLARI, vitirOtomatikEklenirMi, type Mezhep } from '../../../core/mezhep/mezhepAyari';
@@ -43,10 +55,17 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const kazaDurumu = useAppSelector((s) => s.kaza.kazaDurumu);
+  // "Her farzdan sonra kaza önerin" (issue #294) — eski test/mock state'inde alan olmayabilir.
+  const oneriAyarlari = useAppSelector((s) => s.kaza.oneriAyarlari);
+  const oneriAyarlariYuklendi = useAppSelector((s) => s.kaza.oneriAyarlariYuklendi);
   const [mezhep, setMezhep] = useState<Mezhep | null>(null);
   const [taramaGun, setTaramaGun] = useState<number | null>(null);
   const [onizleme, setOnizleme] = useState<KazaDefteri.GecmisTaramaOnizlemesi | null>(null);
   const [mesgul, setMesgul] = useState(false);
+
+  useEffect(() => {
+    dispatch(kazaOneriAyarlariniYukle());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!kazaDurumu) dispatch(kazaVerileriniYukle());
@@ -149,7 +168,31 @@ export const KazaOtomatikAyarSayfasi: React.FC = () => {
           </View>
         </KazaKart>
 
-        <BolumBasligi>Nasıl çalışır</BolumBasligi>
+        <BolumBasligi>Her farzla bir kaza</BolumBasligi>
+        <KazaKart>
+          <View style={stiller.anahtarSatiri}>
+            <IkonCipi ikon="link" renk={renkler.birincil} />
+            <View style={stiller.esnek}>
+              <Text style={[stiller.baslik, { color: renkler.metin }]}>Farzdan sonra kaza önerin</Text>
+              <Text style={[stiller.alt, { color: renkler.metinIkincil }]}>
+                Ana ekranda bir farzı "Kıldım" deyince bir kaza önerir. Kerahat vaktinde sorulmaz.
+              </Text>
+            </View>
+            {oneriAyarlariYuklendi && oneriAyarlari ? (
+              <Anahtar
+                value={oneriAyarlari.farzSonrasiOner}
+                onValueChange={(acik) => {
+                  dispatch(kazaOneriAyarlariniGuncelle({ farzSonrasiOner: acik }));
+                }}
+                trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
+                thumbColor={oneriAyarlari.farzSonrasiOner ? renkler.birincil : renkler.kartArkaplan}
+                accessibilityLabel="Her farzdan sonra kaza önerin"
+              />
+            ) : null}
+          </View>
+        </KazaKart>
+
+        <BolumBasligi>Otomatik eklemede ne olur</BolumBasligi>
         <KazaKart>
           {NASIL_CALISIR.map((a, i) => (
             <View key={a.metin} style={[stiller.adim, i > 0 && stiller.adimAra]}>

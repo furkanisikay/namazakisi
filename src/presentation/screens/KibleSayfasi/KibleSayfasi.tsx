@@ -1,42 +1,51 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import { NativePusulaView } from './NativePusulaView';
 import { WebPusulaView } from './WebPusulaView';
 import { useRenkler } from '../../../core/theme';
-import { useNavigation } from '@react-navigation/native';
 
-/** Tab konfigurasyonlari */
+/**
+ * İki mod, farkı TEK cümle (sade tasarım Dalga 4). "Google AR" teknik addı → "Kamera".
+ * Etiketler ekranda görünenle birebir (Maestro/simülatör betikleri metinle seçer).
+ */
 const TABS = [
-  { key: 'native' as const, label: 'Pusula', a11yLabel: 'Pusula modu' },
-  { key: 'web' as const, label: 'Google AR', a11yLabel: 'Google AR modu' },
+  {
+    key: 'native' as const,
+    label: 'Pusula',
+    a11yLabel: 'Pusula modu',
+    aciklama: 'Telefonu düz tutun; Kâbe işareti yukarıyı gösterince kıble yönündesiniz.',
+  },
+  {
+    key: 'web' as const,
+    label: 'Kamera',
+    a11yLabel: 'Kamera modu',
+    aciklama: "Google'ın kıble bulucusu kamerada ve haritada Kâbe yönünü gösterir; internet gerekir.",
+  },
 ];
 
 /**
- * Qibla finder screen component.
- * Provides two modes: native compass view and Google AR WebView.
- * @returns {React.JSX.Element} Screen with tab switcher between native compass and web view.
+ * Kıble sekmesi (Dalga 4'ten beri alt sekme; eskiden kök yığında, ana ekran header'ından
+ * açılan ekrandı). Sekme kökü kendi başlığını taşır, geri düğmesi YOK.
+ *
+ * ODAK KAPISI: sekmeler `detachInactiveScreens={false}` ile mount kalır. Pusula
+ * (konum + yön aboneliği) ve WebView YALNIZ sekme odaktayken çizilir; başka sekmeye
+ * geçince söner — yoksa algılayıcı ve WebView arka planda pil tüketirdi. İlk odakta
+ * pusula başlar (konum izni orada okunur, açıklamasız İSTENMEZ — bkz. `useKible`).
  */
 export const KibleSayfasi = () => {
   const [aktifMod, setAktifMod] = useState<'native' | 'web'>('native');
   const renkler = useRenkler();
-  const navigation = useNavigation();
+  const odakta = useIsFocused();
+  const aktif = TABS.find((t) => t.key === aktifMod) ?? TABS[0];
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: renkler.arkaplan }]} edges={['top', 'left', 'right']}>
       <View style={[styles.header, { borderBottomColor: renkler.sinir }]}>
-        <TouchableOpacity
-          testID="back-button"
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-          accessibilityLabel="Geri dön"
-          accessibilityRole="button"
-        >
-          <FontAwesome5 name="arrow-left" size={20} color={renkler.metin} />
-        </TouchableOpacity>
-        <Text style={[styles.title, { color: renkler.metin }]}>Kıbleyi Bul</Text>
-        <View style={styles.headerSpacer} />
+        <Text style={[styles.title, { color: renkler.metin }]} accessibilityRole="header">
+          Kıble
+        </Text>
       </View>
 
       <View style={styles.tabWrapper}>
@@ -64,10 +73,17 @@ export const KibleSayfasi = () => {
             </TouchableOpacity>
           ))}
         </View>
+        <Text testID="kible-mod-aciklamasi" style={[styles.modAciklama, { color: renkler.metinIkincil }]}>
+          {aktif.aciklama}
+        </Text>
       </View>
 
       <View style={styles.content}>
-        {aktifMod === 'native' ? <NativePusulaView onHaritaModu={() => setAktifMod('web')} /> : <WebPusulaView />}
+        {!odakta ? null : aktifMod === 'native' ? (
+          <NativePusulaView onHaritaModu={() => setAktifMod('web')} />
+        ) : (
+          <WebPusulaView />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -80,16 +96,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
     borderBottomWidth: 1,
   },
-  backButton: {
-    padding: 8,
-  },
-  headerSpacer: {
-    width: 20,
+  modAciklama: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 10,
   },
   title: {
     fontSize: 18,
@@ -107,6 +121,7 @@ const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     paddingVertical: 10,
+    minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },

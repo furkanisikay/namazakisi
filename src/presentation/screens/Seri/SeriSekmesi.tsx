@@ -1,13 +1,16 @@
 /**
- * SeriSekmesi — İstatistikler ekranının dördüncü sekmesi.
+ * SeriSekmesi — İlerleme sekmesinin üst bölümü (sade tasarım Dalga 4; eskiden
+ * İstatistik ekranının dördüncü alt sekmesiydi).
  *
  * Başlık (mevcut seri + rekor) -> `Tesbih` (sıradaki rozet ilerlemesi) ->
  * `GokPaneli` (bugünü içeren ayın takımyıldızı). Tüm veri `useSeriAyi`'den
  * gelir; bu bileşen yalnız görüntüler ve hata/yükleniyor kapılarını yönetir.
  *
- * Bu sekme react-navigation sekmesi DEĞİLDİR — `IstatistikSayfasi` yerel
- * `useState` ile koşullu render eder, yani sekmeye her girişte bu bileşen
- * YENİDEN MOUNT olur (`useFocusEffect` KULLANILMAZ, gerek yok).
+ * `IlerlemeSayfasi` bunu YALNIZ sekme odaktayken çizer (`useIsFocused`): sekmeler
+ * mount kalır ve gök panelindeki parıltı/nabız döngüleri görünmezken de koşardı
+ * ("boşta sıfır hareket"). Böylece sekmeye her girişte bileşen YENİDEN MOUNT olur ve
+ * açılış animasyonu yeniden oynar. `gomulu` verilince kendi ScrollView'ını taşımaz
+ * (dış sayfa tek kaydırmalıdır; iç içe ScrollView hareket çakışması yapar).
  *
  * HATA YOLU ZORUNLU (AGENTS.md'nin yaşanmış "sessiz sonsuz spinner" dersi):
  * `useSeriAyi().hata` doluysa kibar bir mesaj + "Yeniden deneyin" gösterilir,
@@ -52,10 +55,14 @@ function hedefAdiniSecCumleDurumu(hedef: SeriHedefi | null): string | undefined 
   return HEDEF_ADI_CUMLE_DURUMU[hedef.rozetId] ?? hedef.ad;
 }
 
-export const SeriSekmesi: React.FC = () => {
+export const SeriSekmesi: React.FC<{ gomulu?: boolean }> = ({ gomulu = false }) => {
   const renkler = useRenkler();
   const enUzunSeri = useAppSelector((s) => s.seri.seriDurumu?.enUzunSeri ?? 0);
   const { yukleniyor, hata, izgara, zincirler, ayAdi, bugun, tamGunEsigi, mevcutSeri, yenidenDene } = useSeriAyi();
+
+  // Gömülüyken dış ScrollView'da `flex-1` sıfır yüksekliğe iner → "Yeniden deneyin"
+  // görünmezdi. İçerik yüksekliği + alt sınır kullanılır.
+  const durumKabi = gomulu ? { minHeight: 240 } : { flex: 1 };
 
   if (hata) {
     // TEK mesaj gösterilir — `useSeriAyi` her zaman aynı sabit, kibar metni
@@ -64,7 +71,7 @@ export const SeriSekmesi: React.FC = () => {
     // cümleyi taşıdığı için ekranda aynı mesaj iki kez görünüyordu (inceleme
     // bulgusu); tek mesaja indirildi.
     return (
-      <View className="flex-1 items-center justify-center p-8">
+      <View testID="seri-hata" className="items-center justify-center p-8" style={durumKabi}>
         <FontAwesome5 name="exclamation-triangle" size={28} color={renkler.durum.hata} />
         <Text className="text-base font-semibold mt-4 text-center" style={{ color: renkler.metin }}>
           {hata}
@@ -86,14 +93,17 @@ export const SeriSekmesi: React.FC = () => {
   }
 
   if (yukleniyor) {
-    return <YuklemeGostergesi mesaj="Seri verileriniz yükleniyor..." />;
+    return (
+      <View testID="seri-yukleniyor" style={durumKabi}>
+        <YuklemeGostergesi mesaj="Seri verileriniz yükleniyor..." />
+      </View>
+    );
   }
 
   const sonrakiHedef = sonrakiHedefiBul(mevcutSeri);
 
-  return (
-    <ScrollView className="flex-1">
-      <View className="p-4 pb-10">
+  const govde = (
+      <View className={gomulu ? '' : 'p-4 pb-10'}>
         <View className="flex-row items-end mb-3">
           <View>
             <Text style={{ fontSize: 40, fontWeight: '700', color: renkler.metin, letterSpacing: -1 }}>
@@ -143,6 +153,7 @@ export const SeriSekmesi: React.FC = () => {
           </View>
         </View>
       </View>
-    </ScrollView>
   );
+
+  return gomulu ? govde : <ScrollView className="flex-1">{govde}</ScrollView>;
 };

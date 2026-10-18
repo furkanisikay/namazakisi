@@ -5,8 +5,10 @@ appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
     stopApp: false
+# Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
+# beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "Kıble yönünü bul"
+    visible: "(Seri|Toparlanma modu): .*"
     timeout: 90000
 # Acilista kutlama/duyuru modali cikarsa kapat (tohum bunu onlemeli; guvenlik agi).
 - repeat:
@@ -16,8 +18,9 @@ appId: com.furkanisikay.namazakisi
       - tapOn: "Devam Et"
 - takeScreenshot: kareler/01-ana-ekran
 
-# Istatistik sekmesi acilista Seri alt sekmesinde durur.
-- tapOn: "İstatistik"
+# Ilerleme sekmesi: seri gok paneli sayfanin en ustunde (Dalga 4: Rozetler +
+# Istatistik + Seri tek sekme).
+- tapOn: "İlerleme"
 # Gok panelindeki yildizlar sirayla belirir; erken cekilen kare haritayi yarim
 # gosterir (iOS'ta yasandi). Parilti animasyonu surekli oldugu icin bu adim
 # zaman asimiyla biter; amac beklemek.

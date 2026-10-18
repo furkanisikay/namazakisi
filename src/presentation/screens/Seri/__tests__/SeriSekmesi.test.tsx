@@ -162,6 +162,16 @@ describe('SeriSekmesi', () => {
     expect(kart.props.accessibilityLabel).toContain('Buhârî');
   });
 
+  test('gömülüyken hata ve yükleniyor görünümü sıfır yüksekliğe inmez ("Yeniden deneyin" görünür kalır)', () => {
+    useSeriAyiMock.mockReturnValue({ ...VARSAYILAN_HOOK_SONUCU, hata: 'Seri verileriniz okunamadı.' });
+    const hataAgaci = render(<SeriSekmesi gomulu />);
+    const hataKabi = hataAgaci.root.findByProps({ testID: 'seri-hata' });
+    expect(hataKabi.props.style).toEqual({ minHeight: 240 });
+    useSeriAyiMock.mockReturnValue({ ...VARSAYILAN_HOOK_SONUCU, yukleniyor: true });
+    const yukAgaci = render(<SeriSekmesi gomulu />);
+    expect(yukAgaci.root.findByProps({ testID: 'seri-yukleniyor' }).props.style).toEqual({ minHeight: 240 });
+  });
+
   test('hata durumunda söz kartı gösterilmez (tek mesaj kuralı)', () => {
     useSeriAyiMock.mockReturnValue({ ...VARSAYILAN_HOOK_SONUCU, hata: 'Seri verileriniz okunamadı.' });
     const tree = render(<SeriSekmesi />);

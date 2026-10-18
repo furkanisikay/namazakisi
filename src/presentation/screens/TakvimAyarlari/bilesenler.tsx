@@ -8,6 +8,9 @@ import { useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, Easing, Platform, Linking } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { useHareketAzalt } from '../../hooks/useHareketAzalt';
+import { BasariIsareti } from '../../components/hareket/hareketler';
+import { TakvimeEkleHareketi } from './TakvimeEkleHareketi';
 
 export interface OzetSatir {
     ikon: string;
@@ -38,7 +41,7 @@ interface BildirimBanneriProps {
 
 export const BildirimBanneri: React.FC<BildirimBanneriProps> = ({ mesaj, tip, onKapat }) => {
     const renkler = useRenkler();
-    const renk = tip === 'basari' ? '#22C55E' : tip === 'hata' ? '#EF4444' : renkler.birincil;
+    const renk = tip === 'basari' ? renkler.basarili : tip === 'hata' ? renkler.hata : renkler.birincil;
     const ikon = tip === 'basari' ? 'check-circle' : tip === 'hata' ? 'exclamation-circle' : 'info-circle';
 
     return (
@@ -50,7 +53,9 @@ export const BildirimBanneri: React.FC<BildirimBanneriProps> = ({ mesaj, tip, on
             <Text className="flex-1 text-sm leading-5" style={{ color: renkler.metin }}>{mesaj}</Text>
             <TouchableOpacity
                 onPress={onKapat}
-                hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
+                accessibilityRole="button"
+                accessibilityLabel="Bildirimi kapatın"
+                style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', marginRight: -10 }}
             >
                 <FontAwesome5 name="times" size={13} color={renkler.metinIkincil} />
             </TouchableOpacity>
@@ -65,18 +70,18 @@ export const OzellikBilgi: React.FC = () => {
     const ozellikler = [
         {
             ikon: 'sliders-h',
-            baslik: 'Vakit Başına Özelleştirme',
-            aciklama: 'Her namaz için etkinlik süresi, başlangıç ve ofset ayrı ayrı ayarlanır.',
+            baslik: 'Vakit vakit ayar',
+            aciklama: 'Her namazın etkinlik saati ve süresi ayrı ayarlanır.',
         },
         {
             ikon: 'calendar-check',
-            baslik: 'Anlık Önizleme',
-            aciklama: 'Bugün için hesaplanan saatleri kaydetmeden önce ekranda görebilirsiniz.',
+            baslik: 'Önce görün',
+            aciklama: 'Bugünkü etkinlik saatlerini takvime eklemeden önce görürsünüz.',
         },
         {
             ikon: 'trash-alt',
-            baslik: 'Seçici Temizleme',
-            aciklama: 'Takvim, zaman aralığı ve vakit seçerek etkinlikleri istediğiniz gibi silebilirsiniz.',
+            baslik: 'Kolayca silin',
+            aciklama: 'Silinecek etkinlikleri önce listede görür, sonra silersiniz.',
         },
     ];
 
@@ -95,8 +100,8 @@ export const OzellikBilgi: React.FC = () => {
                 <Text className="text-base font-bold text-center" style={{ color: renkler.metin }}>
                     Namaz vakitlerini takviminize ekleyin
                 </Text>
-                <Text className="text-xs text-center mt-2 leading-5" style={{ color: renkler.metinIkincil }}>
-                    Seçtiğiniz vakitler için cihaz takvimine ileriye dönük etkinlikler otomatik oluşturulur.
+                <Text className="text-sm text-center mt-2 leading-5" style={{ color: renkler.metinIkincil }}>
+                    Seçtiğiniz vakitler takviminize etkinlik olarak eklenir.
                 </Text>
             </View>
 
@@ -112,7 +117,7 @@ export const OzellikBilgi: React.FC = () => {
                         <Text className="text-sm font-semibold mb-0.5" style={{ color: renkler.metin }}>
                             {o.baslik}
                         </Text>
-                        <Text className="text-xs leading-4" style={{ color: renkler.metinIkincil }}>
+                        <Text className="text-sm leading-5" style={{ color: renkler.metinIkincil }}>
                             {o.aciklama}
                         </Text>
                     </View>
@@ -124,7 +129,7 @@ export const OzellikBilgi: React.FC = () => {
                 style={{ backgroundColor: `${renkler.birincil}10` }}
             >
                 <FontAwesome5 name="arrow-up" size={11} color={renkler.birincil} />
-                <Text className="text-xs font-medium" style={{ color: renkler.birincil }}>
+                <Text className="text-sm font-medium" style={{ color: renkler.birincil }}>
                     Başlamak için yukarıdaki anahtarı açın
                 </Text>
             </View>
@@ -138,82 +143,51 @@ interface BasariIcerigiProps {
     baslik: string;
     altBaslik: string;
     satirlar: OzetSatir[];
+    /** Oluşturmada eklenen etkinlik sayısı ("Takvime ekle" sahnesinin sayacı). */
+    sayi?: number;
     onTakvimiAc: () => void;
     onKapat: () => void;
 }
 
+/**
+ * Başarı sheet'inin içeriği. Sade tasarım Dalga 4: sonsuz "nabız" halkası kalktı
+ * (boşta sıfır hareket). Oluşturmada "Takvime ekle" sahnesi (`TakvimeEkleHareketi`),
+ * temizlemede tek seferlik ✓ (`BasariIsareti`); içerik bir kez kayarak gelir,
+ * "Animasyonları azalt" açıksa son karede doğar.
+ */
 export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
-    tip, baslik, altBaslik, satirlar, onTakvimiAc, onKapat,
+    tip, baslik, altBaslik, satirlar, sayi = 0, onTakvimiAc, onKapat,
 }) => {
     const renkler = useRenkler();
-    const renk = tip === 'olusturma' ? '#22C55E' : '#EF4444';
+    const azalt = useHareketAzalt();
+    const renk = tip === 'olusturma' ? renkler.basarili : renkler.hata;
 
-    const ikonScale = useRef(new Animated.Value(0)).current;
-    const halkaScale = useRef(new Animated.Value(0)).current;
-    const halkaOpacity = useRef(new Animated.Value(0.45)).current;
-    const icerikOpacity = useRef(new Animated.Value(0)).current;
-    const icerikY = useRef(new Animated.Value(14)).current;
+    const icerikOpacity = useRef(new Animated.Value(azalt ? 1 : 0)).current;
+    const icerikY = useRef(new Animated.Value(azalt ? 0 : 14)).current;
+    const [basariGoster, setBasariGoster] = React.useState(false);
 
     useEffect(() => {
-        Animated.sequence([
-            Animated.spring(ikonScale, {
-                toValue: 1, friction: 5, tension: 140, useNativeDriver: true,
-            }),
-        ]).start();
-
-        Animated.loop(
-            Animated.parallel([
-                Animated.timing(halkaScale, {
-                    toValue: 1, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true,
-                }),
-                Animated.timing(halkaOpacity, {
-                    toValue: 0, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true,
-                }),
-            ])
-        ).start();
-
+        setBasariGoster(true);
+        if (azalt) return;
         Animated.parallel([
             Animated.timing(icerikOpacity, {
-                toValue: 1, duration: 320, delay: 140, useNativeDriver: true,
+                toValue: 1, duration: 240, delay: 140, useNativeDriver: true,
             }),
             Animated.timing(icerikY, {
-                toValue: 0, duration: 320, delay: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true,
+                toValue: 0, duration: 240, delay: 140, easing: Easing.out(Easing.cubic), useNativeDriver: true,
             }),
         ]).start();
-    }, []);
+    }, [azalt, icerikOpacity, icerikY]);
 
     return (
         <View className="px-6 pt-2 pb-1 items-center">
-            {/* Animasyonlu ikon + pulse halka */}
-            <View className="items-center justify-center mb-4" style={{ width: 96, height: 96 }}>
-                <Animated.View
-                    style={{
-                        position: 'absolute',
-                        width: 96, height: 96, borderRadius: 48,
-                        backgroundColor: renk,
-                        opacity: halkaOpacity,
-                        transform: [{ scale: halkaScale.interpolate({ inputRange: [0, 1], outputRange: [0.7, 1.35] }) }],
-                    }}
-                />
-                <Animated.View
-                    style={{
-                        width: 76, height: 76, borderRadius: 38,
-                        backgroundColor: `${renk}1A`,
-                        alignItems: 'center', justifyContent: 'center',
-                        transform: [{ scale: ikonScale }],
-                    }}
-                >
-                    <View
-                        style={{
-                            width: 52, height: 52, borderRadius: 26,
-                            backgroundColor: renk,
-                            alignItems: 'center', justifyContent: 'center',
-                        }}
-                    >
-                        <FontAwesome5 name="check" size={24} color={renkler.birincilMetin} />
-                    </View>
-                </Animated.View>
-            </View>
+            {tip === 'olusturma' && sayi > 0 ? (
+                <TakvimeEkleHareketi sayi={sayi} />
+            ) : (
+                <View className="mb-4">
+                    <BasariIsareti goster={basariGoster} boyut={64} renk={renk} />
+                </View>
+            )}
 
             <Animated.View
                 style={{ opacity: icerikOpacity, transform: [{ translateY: icerikY }], alignSelf: 'stretch' }}
@@ -261,10 +235,12 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                     style={{ backgroundColor: renkler.birincil }}
                     onPress={onTakvimiAc}
                     activeOpacity={0.85}
+                    accessibilityRole="button"
+                    accessibilityLabel="Takvim uygulamasını açın"
                 >
                     <FontAwesome5 name="external-link-alt" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
                     <Text className="text-base font-semibold" style={{ color: renkler.birincilMetin }}>
-                        Takvim Uygulamasını Aç
+                        Takvim uygulamasını açın
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -272,6 +248,7 @@ export const BasariIcerigi: React.FC<BasariIcerigiProps> = ({
                     style={{ backgroundColor: renkler.arkaplan, borderWidth: 1, borderColor: renkler.sinir }}
                     onPress={onKapat}
                     activeOpacity={0.7}
+                    accessibilityRole="button"
                 >
                     <Text className="text-sm font-semibold" style={{ color: renkler.metinIkincil }}>
                         Tamam

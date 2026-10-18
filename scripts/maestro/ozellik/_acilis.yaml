@@ -12,8 +12,10 @@ appId: com.furkanisikay.namazakisi
       visible: ".*isn't responding.*"
     commands:
       - tapOn: "Wait"
+# Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
+# beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "Kıble yönünü bul"
+    visible: "(Seri|Toparlanma modu): .*"
     timeout: 90000
 # Yedek: hide_error_dialogs tutmazsa sistem ANR penceresini "Wait" ile kapat
 # (pencere acikken uygulama erisilebilirlik agacinda gorunmez).

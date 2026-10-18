@@ -6,8 +6,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
-import { useNavigation } from '@react-navigation/native';
-import type { RootNavigationProp } from '../../navigation/AppNavigator';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { namazlariYukle, namazDurumunuDegistir, tumNamazlariTamamla, tumNamazlariSifirla, tarihiDegistir } from '../store/namazSlice';
 import { seriVerileriniYukle, seriKontrolet, puanlamayiYenidenHesapla, kutlamayiKaldir, seriOzetiSelector, ilkKutlamaSelector } from '../store/seriSlice';
@@ -65,7 +63,6 @@ const BASLANGIC_SAYFA_INDEKSI = GECMIS_GUN_SAYISI; // bugun
 const SAYFA_INDEKSLERI = Array.from({ length: TOPLAM_SAYFA_SAYISI }, (_, i) => i);
 
 export const AnaSayfa: React.FC = () => {
-  const navigation = useNavigation<RootNavigationProp>();
   const dispatch = useAppDispatch();
   const pagerRef = useRef<PagerView>(null);
   const renkler = useRenkler();
@@ -103,7 +100,6 @@ export const AnaSayfa: React.FC = () => {
   // Stabil callbackler (gereksiz re-render önlemek için)
   const handleTarihTikla = useCallback(() => setTarihSeciciGorunur(true), []);
   const handleSeriTikla = useCallback(() => setSeriModalGorunur(true), []);
-  const handleKibleTikla = useCallback(() => navigation?.navigate('KibleSayfasi'), [navigation]);
   const handleToparlanmaModalGoster = useCallback(() => setToparlanmaModalGorunur(true), []);
 
   const { mevcutTarih, gunlukNamazlar, yukleniyor, hata } = useAppSelector(state => state.namaz);
@@ -992,7 +988,6 @@ export const AnaSayfa: React.FC = () => {
         aktifGunMu={mevcutTarih === aktifGun}
         onTarihTikla={handleTarihTikla}
         onSeriTikla={handleSeriTikla}
-        onKibleTikla={handleKibleTikla}
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />

@@ -2,9 +2,11 @@
  * Derin bağlantılar `namazakisi://…` (issue #276) — uygulama kısayolları, Samsung
  * Rutinler ve otomasyon uygulamaları bunlarla açar.
  *
- * - `namazakisi://kible` → Kıble ekranı
+ * - `namazakisi://kible` → Kıble sekmesi (Dalga 4'ten beri sekme; eskiden kök yığın ekranı)
  * - `namazakisi://kaza`  → Kaza defteri sekmesi
- * - `namazakisi://ana`   → Ana sayfa
+ * - `namazakisi://ana`   → Bugün (ana sayfa)
+ * - `namazakisi://ilerleme` → İlerleme sekmesi (eski adlar `seri`, `istatistik`,
+ *   `rozetler` de buraya düşer — üç yüzey tek sekmede birleşti)
  * - `namazakisi://ayarlar`   → Ayarlar (saat W3: saatteki "Telefonda açın")
  * - `namazakisi://camideyim` → Ayarlar > Camideyim (saat W3; yığının altında Ayarlar
  *   kökü durur ki geri tuşu boşa düşmesin)
@@ -21,10 +23,11 @@ export const DERIN_BAGLANTI_ONEKLERI = ['namazakisi://'];
 /** Alt sekmeler — `AppNavigator > MainTabs` ile AYNI adlar. */
 export type AnaSekmeParamList = {
     AnaSayfa: undefined;
-    Rozetler: undefined;
+    Kible: undefined;
     /** Kaza Defteri 2.0'dan beri iç yığındır; `namazakisi://kaza` kökünü açar. */
     KazaDefteri: NavigatorScreenParams<KazaStackParamList> | undefined;
-    Istatistikler: undefined;
+    /** Seri gök paneli + kılma oranı + rozetler (eski Rozetler ve İstatistik sekmeleri). */
+    Ilerleme: undefined;
     /** İç yığın; `namazakisi://ayarlar` kökünü, `namazakisi://camideyim` Camideyim'i açar. */
     Ayarlar: NavigatorScreenParams<AyarlarDerinParamList> | undefined;
 };
@@ -39,7 +42,6 @@ type AyarlarDerinParamList = {
 export type DerinBaglantiKokParamList = {
     KurulumSihirbazi: undefined;
     MainTabs: NavigatorScreenParams<AnaSekmeParamList> | undefined;
-    KibleSayfasi: undefined;
 };
 
 /** `namazakisi://camideyim` yığını Ayarlar kökünün ÜSTÜNE kurar (geri tuşu çalışsın). */
@@ -64,13 +66,14 @@ export const derinBaglantiYapilandirmasi: LinkingOptions<DerinBaglantiKokParamLi
             MainTabs: {
                 screens: {
                     AnaSayfa: 'ana',
+                    Kible: 'kible',
                     KazaDefteri: 'kaza',
+                    Ilerleme: { path: 'ilerleme', alias: ['seri', 'istatistik', 'rozetler'] },
                     // Tip bilinçli olarak AYRI sabitte kontrol edilir: iç içe `NavigatorScreenParams`
                     // birleşiminden TS ParamList'i `{}` çıkarıyor ve `initialRouteName`'i reddediyor.
                     Ayarlar: AYARLAR_YOLLARI as PathConfig<object>,
                 },
             },
-            KibleSayfasi: 'kible',
         },
     },
 };

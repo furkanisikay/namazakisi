@@ -42,6 +42,12 @@ const { agac, dokun, getir, kaydirarakDokun, asagiKaydir, bul, bekle, cek } = s;
 
 const KAPATILACAK =
     /^(İzin Ver|Allow|Allow While Using App|Uygulamayı Kullanırken İzin Ver|Allow Once|Bir Kez İzin Ver|Devam Et|Kapat|Tamam|Anladım|OK)$/i;
+/**
+ * Ana ekran capasi — Maestro akislariyla AYNI: header'daki seri dugmesi ("Seri: N gün";
+ * toparlanma modunda "Toparlanma modu: …"). Kible Dalga 4'ten beri sekmedir.
+ */
+const ANA_EKRAN_CAPASI = /^(Seri|Toparlanma modu): /i;
+
 const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
 
 /** Uygulamayi kapat → tohumu yaz → ac → acilis katmanlarini kapat. */
@@ -63,6 +69,10 @@ async function temizAcilis(varyant) {
     for (let tur = 0; tur < 4; tur++) {
         const katman = await agac(`${varyant}-katman-${tur}`);
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
+    }
+    // Sade gorunumde seri dugmesi (ve sekme cubugu) yoktur → capa beklenmez.
+    if (varyant !== 'sade') {
+        for (let i = 0; i < 10 && !bul(await agac(`${varyant}-capa-${i}`), ANA_EKRAN_CAPASI); i++) await bekle(1500);
     }
 }
 
@@ -187,6 +197,9 @@ async function bolum(ad, fn) {
         const a = await agac('kaza-oncesi');
         if (!(await dokun(a, SEKME('Kaza'), 'kaza sekmesi', { bekle: 3000 }))) return;
         cek('19-kaza');
+        // "Her farzla bir kaza" Dalga 4'ten beri kokte degil: Diger > Kaza ayarlari.
+        if (!(await dokun(await agac('kaza-diger'), /^Diğer: hedef/i, 'kaza diger menusu', { bekle: 2000 }))) return;
+        if (!(await dokun(await agac('kaza-diger-acik'), /^Kaza ayarları/i, 'kaza ayarlari', { bekle: 3000 }))) return;
         if (await getir(/^Her farzdan sonra kaza önerin(?: \||$)/i, 'her-farzla', { ust: 0.3, alt: 0.65 })) cek('20-kaza-her-farzla');
     });
 

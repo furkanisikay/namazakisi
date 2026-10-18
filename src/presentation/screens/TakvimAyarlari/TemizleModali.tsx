@@ -44,7 +44,12 @@ interface TemizleModaliProps {
     secilenTakvimId: string | null;
     secilenTakvimAdi: string | null;
     cihazTakvimleri: Array<{ id: string; title: string; color: string }>;
+    /** Silme başarılı olunca (bekleyen değişiklik özetini temizlemek için). */
+    onSilindi?: () => void;
 }
+
+/** Silme akışının üç adımı (tarama ikinci adımın parçası). */
+const ADIM_ADLARI = ['Seçin', 'Gözden geçirin', 'Tamam'] as const;
 
 const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
     { gun: 7,  etiket: '7 Gün',  aciklama: 'Bu hafta' },
@@ -54,7 +59,7 @@ const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
 
 export const TemizleModali: React.FC<TemizleModaliProps> = ({
     gorunur, onKapat,
-    secilenTakvimId, secilenTakvimAdi, cihazTakvimleri,
+    secilenTakvimId, secilenTakvimAdi, cihazTakvimleri, onSilindi,
 }) => {
     const renkler = useRenkler();
 
@@ -68,9 +73,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
     const [bulunanEtkinlikler, setBulunanEtkinlikler] = useState<BulunanEtkinlik[]>([]);
     const [siliniyor, setSiliniyor] = useState(false);
     const [silinenSayi, setSilinenSayi] = useState(0);
+    const [hata, setHata] = useState<string | null>(null);
 
     useEffect(() => {
         if (!gorunur) {
+            setHata(null);
             setAdim('kriter');
             setTakvimMod('secili');
             setAralikGun(30);
@@ -127,14 +134,18 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
             );
 
             setBulunanEtkinlikler(etkinlikler);
+            setHata(null);
             setAdim('onay');
         } catch (error) {
             Logger.error('TakvimAyarlari', 'Etkinlikler getirilemedi', error);
+            // Hata YUTULMAZ: kriter adımına dönülür ve sebep yazılır.
+            setHata('Etkinlikler okunamadı. Tekrar deneyin.');
             setAdim('kriter');
         }
     };
 
     const handleSil = async () => {
+        setHata(null);
         setSiliniyor(true);
         try {
             const ids = bulunanEtkinlikler.map(e => e.id);
@@ -142,9 +153,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
             setSilinenSayi(silinen);
             setSiliniyor(false);
             setAdim('tamamlandi');
+            onSilindi?.();
         } catch (error) {
             Logger.error('TakvimAyarlari', 'Etkinlikler silinemedi', error);
             setSiliniyor(false);
+            setHata('Etkinlikler silinemedi. Tekrar deneyin.');
         }
     };
 
@@ -190,6 +203,8 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
         </View>
     );
 
+    const adimNo = adim === 'kriter' ? 1 : adim === 'tamamlandi' ? 3 : 2;
+
     const taraButonuAktif = takvimMod === 'secili' ? !!secilenTakvimId : cihazTakvimleri.length > 0;
 
     // Android donanim geri tusu + backdrop dokunusu: adima gore akilli davranis
@@ -227,6 +242,37 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                 />
                             </View>
 
+                            {/* Aşama göstergesi: kaç adım kaldığı görünür (tarama ikinci adımın parçası) */}
+                            <View
+                                testID="temizle-adim-gostergesi"
+                                accessible
+                                accessibilityLabel={`Adım ${adimNo} / 3: ${ADIM_ADLARI[adimNo - 1]}`}
+                                className="flex-row items-center justify-center mb-3"
+                            >
+                                {ADIM_ADLARI.map((ad, i) => (
+                                    <View key={ad} className="flex-row items-center">
+                                        <View
+                                            style={{
+                                                width: i + 1 === adimNo ? 22 : 8,
+                                                height: 8,
+                                                borderRadius: 4,
+                                                backgroundColor: i + 1 <= adimNo ? renkler.hata : renkler.sinir,
+                                                marginHorizontal: 3,
+                                            }}
+                                        />
+                                    </View>
+                                ))}
+                                <Text className="text-xs ml-2" style={{ color: renkler.metinIkincil }}>
+                                    {`Adım ${adimNo} / 3 · ${ADIM_ADLARI[adimNo - 1]}`}
+                                </Text>
+                            </View>
+                            {hata && (
+                                <View className="flex-row items-center mx-5 mb-3 p-3" style={{ borderRadius: 12, borderLeftWidth: 3, borderLeftColor: renkler.hata, backgroundColor: renkler.arkaplan }}>
+                                    <FontAwesome5 name="exclamation-circle" size={13} color={renkler.hata} style={{ marginRight: 8 }} />
+                                    <Text className="flex-1 text-sm" style={{ color: renkler.metin }}>{hata}</Text>
+                                </View>
+                            )}
+
                             {/* ── Aşama 1: Kriter Seçimi ── */}
                             {adim === 'kriter' && (
                                 <ScrollView
@@ -237,16 +283,16 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     <View className="flex-row items-center mb-4">
                                         <View
                                             className="w-10 h-10 rounded-xl items-center justify-center mr-3"
-                                            style={{ backgroundColor: '#EF444415' }}
+                                            style={{ backgroundColor: `${renkler.hata}15` }}
                                         >
-                                            <FontAwesome5 name="broom" size={16} color="#EF4444" />
+                                            <FontAwesome5 name="broom" size={16} color={renkler.hata} />
                                         </View>
                                         <View className="flex-1">
                                             <Text className="text-base font-bold" style={{ color: renkler.metin }}>
-                                                Etkinlikleri Temizle
+                                                Etkinlikleri silin
                                             </Text>
                                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                                Hangi etkinliklerin silineceğini seç
+                                                Silmeden önce listede göreceksiniz
                                             </Text>
                                         </View>
                                     </View>
@@ -334,10 +380,10 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                     onPress={() => { setAralikGun(gun); setOzelAralikAktif(false); }}
                                                     activeOpacity={0.7}
                                                 >
-                                                    <Text className="text-sm font-bold" style={{ color: secili ? '#FFF' : renkler.metin }}>
+                                                    <Text className="text-sm font-bold" style={{ color: secili ? renkler.birincilMetin : renkler.metin }}>
                                                         {etiket}
                                                     </Text>
-                                                    <Text className="text-xs mt-0.5" style={{ color: secili ? 'rgba(255,255,255,0.75)' : renkler.metinIkincil }}>
+                                                    <Text className="text-xs mt-0.5" style={{ color: secili ? `${renkler.birincilMetin}C0` : renkler.metinIkincil }}>
                                                         {aciklama}
                                                     </Text>
                                                 </TouchableOpacity>
@@ -359,11 +405,11 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             }}
                                             activeOpacity={0.7}
                                         >
-                                            <Text className="text-sm font-bold" style={{ color: ozelAralikAktif ? '#FFF' : renkler.metin }}>
+                                            <Text className="text-sm font-bold" style={{ color: ozelAralikAktif ? renkler.birincilMetin : renkler.metin }}>
                                                 Özel
                                             </Text>
-                                            <Text className="text-xs mt-0.5" style={{ color: ozelAralikAktif ? 'rgba(255,255,255,0.75)' : renkler.metinIkincil }}>
-                                                Gün gir
+                                            <Text className="text-xs mt-0.5" style={{ color: ozelAralikAktif ? `${renkler.birincilMetin}C0` : renkler.metinIkincil }}>
+                                                Gün girin
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
@@ -378,6 +424,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                                 birim="gün"
                                                 onChange={setAralikGun}
                                                 renk={renkler.birincil}
+                                                aciklama="Silinecek gün aralığı"
                                             />
                                         </View>
                                     )}
@@ -437,7 +484,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                     <TouchableOpacity
                                         className="flex-row items-center justify-center p-4 rounded-2xl"
                                         style={{
-                                            backgroundColor: taraButonuAktif ? '#EF4444' : renkler.sinir,
+                                            backgroundColor: taraButonuAktif ? renkler.hata : renkler.sinir,
                                         }}
                                         onPress={handleTara}
                                         disabled={!taraButonuAktif}
@@ -460,7 +507,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                             {/* ── Aşama: Taranıyor ── */}
                             {adim === 'taraniyor' && (
                                 <View className="items-center justify-center py-16">
-                                    <ActivityIndicator size="large" color="#EF4444" />
+                                    <ActivityIndicator size="large" color={renkler.hata} />
                                     <Text className="text-sm mt-4" style={{ color: renkler.metinIkincil }}>
                                         Etkinlikler taranıyor…
                                     </Text>
@@ -478,9 +525,9 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                             </Text>
                                             <View
                                                 className="ml-2 px-2 py-0.5 rounded-full"
-                                                style={{ backgroundColor: bulunanEtkinlikler.length > 0 ? '#EF444420' : `${renkler.birincil}20` }}
+                                                style={{ backgroundColor: bulunanEtkinlikler.length > 0 ? `${renkler.hata}20` : `${renkler.birincil}20` }}
                                             >
-                                                <Text className="text-xs font-bold" style={{ color: bulunanEtkinlikler.length > 0 ? '#EF4444' : renkler.birincil }}>
+                                                <Text className="text-xs font-bold" style={{ color: bulunanEtkinlikler.length > 0 ? renkler.hata : renkler.birincil }}>
                                                     {bulunanEtkinlikler.length}
                                                 </Text>
                                             </View>
@@ -531,7 +578,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
                                         <TouchableOpacity
                                             className="flex-[2] flex-row items-center justify-center py-3.5 rounded-2xl"
                                             style={{
-                                                backgroundColor: bulunanEtkinlikler.length > 0 ? '#EF4444' : renkler.sinir,
+                                                backgroundColor: bulunanEtkinlikler.length > 0 ? renkler.hata : renkler.sinir,
                                             }}
                                             onPress={handleSil}
                                             disabled={siliniyor || bulunanEtkinlikler.length === 0}

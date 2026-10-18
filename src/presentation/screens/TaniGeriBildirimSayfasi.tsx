@@ -68,7 +68,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
               className="text-base font-bold ml-2"
               style={{ color: renkler.birincilMetin ?? '#FFFFFF' }}
             >
-              Sorun Bildir
+              Sorun bildirin
             </Text>
           </TouchableOpacity>
         </View>
@@ -102,13 +102,13 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Sorun algılandığında hatırlat
+                Sorun olunca hatırlatın
               </Text>
               <Text
-                className="text-xs mt-0.5"
+                className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Hata tespit edilince bildirim gösterir
+                Bir hata olursa bildirimle sorar
               </Text>
             </View>
             <Anahtar
@@ -129,7 +129,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
             ARAÇLAR
           </Text>
 
-          {/* Gönderilecek bilgiyi önizle */}
+          {/* Gönderilecek bilgiyi görün */}
           <TouchableOpacity
             accessibilityRole="button"
             onPress={() => setOnizleme(true)}
@@ -152,13 +152,13 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Gönderilecek bilgiyi önizle
+                Gönderilecek bilgiyi görün
               </Text>
               <Text
-                className="text-xs mt-0.5"
+                className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Ne gönderileceğini görmek için inceleyin
+                Göndermeden önce tamamını görürsünüz
               </Text>
             </View>
             <FontAwesome5
@@ -168,7 +168,7 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
             />
           </TouchableOpacity>
 
-          {/* Tanı kayıtlarını görüntüle */}
+          {/* Tanı kayıtlarını açın */}
           <TouchableOpacity
             accessibilityRole="button"
             onPress={() => navigation.navigate('DebugLogs' as never)}
@@ -191,13 +191,13 @@ export const TaniGeriBildirimSayfasi: React.FC = () => {
                 className="text-base font-semibold"
                 style={{ color: renkler.metin }}
               >
-                Tanı kayıtlarını görüntüle
+                Tanı kayıtlarını açın
               </Text>
               <Text
-                className="text-xs mt-0.5"
+                className="text-sm mt-0.5"
                 style={{ color: renkler.metinIkincil }}
               >
-                Hata ayıklama loglarını inceleyin
+                Uygulamanın teknik günlüğü
               </Text>
             </View>
             <FontAwesome5

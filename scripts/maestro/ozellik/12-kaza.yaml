@@ -1,5 +1,5 @@
 # tohum: ozellik
-# Kaza defteri: borc magaza tohumunda, "Her farzla bir kaza" acik.
+# Kaza defteri: borc magaza tohumunda, "Her farzla bir kaza" acik (Kaza ayarlarinda).
 appId: com.furkanisikay.namazakisi
 ---
 - runFlow: _acilis.yaml
@@ -7,6 +7,11 @@ appId: com.furkanisikay.namazakisi
 - waitForAnimationToEnd:
     timeout: 3000
 - takeScreenshot: ozk/28-kaza
+# "Her farzla bir kaza" Dalga 4'ten beri Kaza kokunde degil: Diger > Kaza ayarlari.
+- tapOn:
+    id: "kaza-diger-dugmesi"
+- tapOn:
+    text: "Kaza ayarları.*"
 - scrollUntilVisible:
     element:
       text: "Her farzdan sonra kaza önerin"
