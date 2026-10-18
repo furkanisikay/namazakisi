@@ -17,6 +17,21 @@ sonraki sürümde üslup kayar.
 
 ## Google Play
 
+#### 0.42.0
+
+Üretimdeki önceki sürüm 0.30.1; not 0.31.0 ile 0.42.0 arasını kapsar.
+
+```
+- Wear OS saat uygulaması: vakitler, kalan süre, kıble ve tesbihat bileğinizde. Android TV için vakit panosu.
+- Cuma, camiye gitme, yatış ve toplantı hatırlatmaları. Sesli okuma metnini siz yazın.
+- Nafile namaz vakitleri ve isteğe bağlı gerçek alarm.
+- Camideyim: camide telefonunuz sessize alınır.
+- Kaza Defteri yenilendi.
+- Widget ve hızlı ayardan tek dokunuşla "Kıldım".
+- Hatırlatmayı erteleyin, özel günlerde durdurun.
+- Sade görünüm.
+```
+
 #### 0.30.1
 
 Üretimdeki önceki sürüm 0.28.2; not 0.28.3 ile 0.30.1 arasını kapsar.
