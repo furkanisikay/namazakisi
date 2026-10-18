@@ -5,6 +5,17 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.43.0] - 2026-10-18
+
+### Eklendi
+- [esitleme] Drive yetkisi yerleşik Google Authorization API'ye geçti
+
+### Düzeltildi
+- [esitleme] Drive yetkisi inceleme düzeltmeleri
+
+### Değiştirildi
+- [esitleme] Play hizmetleri sorgusu süreç başına bir kez
+
 ## [0.42.0] - 2026-10-18
 
 ### Eklendi
