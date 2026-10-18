@@ -206,7 +206,7 @@ describe('CumaHatirlatmaBolumu', () => {
         const ekran = kur(dolu);
         fireEvent(ekran.getByLabelText('Cuma hatırlatması'), 'valueChange', true);
         // Rehber açılır: bu bölüm muhafız/nafile önerisi UYGULAMAZ, yer açma için yönlendirir.
-        fireEvent.press(ekran.getByText('Namaz Muhafızı ayarlarında yer açın'));
+        fireEvent.press(ekran.getByText('"Vakit çıkmadan" ayarlarında yer açın'));
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
         ekran.unmount();
         expect(guncelleMock).not.toHaveBeenCalled();

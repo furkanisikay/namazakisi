@@ -20,7 +20,13 @@ jest.mock('../../store/hooks');
 jest.mock('../../../core/theme', () => ({ useRenkler: jest.fn(), useTema: () => ({ koyuMu: false }) }));
 jest.mock('../../hooks/useDonanimGeriTusu', () => ({ useDonanimGeriTusu: jest.fn() }));
 const mockNavigate = jest.fn();
-jest.mock('@react-navigation/native', () => ({ useNavigation: () => ({ navigate: mockNavigate }) }));
+jest.mock('@react-navigation/native', () => ({
+    useNavigation: () => ({ navigate: mockNavigate }),
+    useFocusEffect: (cb: () => void | (() => void)) => {
+        const R = require('react');
+        R.useEffect(cb, [cb]);
+    },
+}));
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
     return (props: { name: string }) => <Text>{props.name}</Text>;
@@ -34,6 +40,7 @@ jest.mock('../../../domain/services/CamideyimServisi', () => ({
     CamideyimServisi: { getInstance: () => ({ planlariGonder: jest.fn(() => Promise.resolve()) }) },
 }));
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NamazdaSessizSayfasi } from '../NamazdaSessizSayfasi';
 import { CamilerimSayfasi } from '../CamilerimSayfasi';
 
@@ -72,8 +79,9 @@ const NATIVE_DURUM = {
     namazModu: MOD_DURUMU,
 };
 
-beforeEach(() => {
+beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
     (useRenkler as jest.Mock).mockReturnValue(RENKLER);
     (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
         sec({ konum: { koordinatlar: { lat: 41.01, lng: 28.97 } } })
@@ -197,6 +205,38 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         await waitFor(() => expect(k.soruyuCevapla).toHaveBeenCalledWith(true));
     });
 
+    it('NÖBETÇİ (veri kaybı): yazım native\'deki EN SON kaydın üstüne yapılır — başka örnekte (Camilerim) yazılan "cami değil" EZİLMEZ', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        const e = render(<NamazdaSessizSayfasi />);
+        await ayrintilariAc(e);
+        await waitFor(() => expect(e.getByTestId('acilis-sorarak')).toBeTruthy());
+        // Camilerim alt sayfası (kancanın AYRI örneği) bu arada native'e yazdı:
+        k.ayarlariAl.mockResolvedValue({ aktif: true, yerler: { 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } } });
+        fireEvent.press(e.getByTestId('acilis-sorarak'));
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        const yazilan = k.ayarlariYaz.mock.calls[0][0] as { acilisBicimi: string; yerler: Record<string, unknown> };
+        expect(yazilan.acilisBicimi).toBe('sorarak');
+        expect(yazilan.yerler).toEqual({ 'osm:w1': { durum: 'haric', ad: 'Kare Camii' } });
+    });
+
+    it('"Camiye girince" kapanınca zamanlı tetiği olmayan Namaz modu "etkin" kalmaz', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, namazModu: true });
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, ayarlar: { ...MOD_DURUMU.ayarlar, etkin: true, cuma: false, vakit: false } });
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('camilerim')).toBeTruthy());
+        fireEvent(e.getByLabelText('Camiye girince'), 'valueChange', false);
+        await waitFor(() => expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: false })));
+    });
+
+    it('"Camiye girince" kapanınca zamanlı tetikli mod AÇIK kalır', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true, namazModu: true });
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByTestId('camilerim')).toBeTruthy());
+        fireEvent(e.getByLabelText('Camiye girince'), 'valueChange', false);
+        await waitFor(() => expect(k.ayarlariYaz).toHaveBeenCalled());
+        expect(k.namazModuAyarlariniYaz).not.toHaveBeenCalled();
+    });
+
     it('"Camilerim" satırı yalnız açıkken görünür ve harita alt sayfasına gider', async () => {
         const kapali = render(<NamazdaSessizSayfasi />);
         await bosalt();
@@ -308,6 +348,25 @@ describe('NamazdaSessizSayfasi — Namaz vakitlerinde', () => {
         fireEvent(e.getByLabelText('Namaz vakitlerinde'), 'valueChange', true);
         await waitFor(() =>
             expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: true, cuma: true }))
+        );
+    });
+
+    it('NÖBETÇİ: "Namaz vakitlerinde" kapatıp açınca önceki tetik seçimi geri gelir', async () => {
+        k.namazModuDurumu.mockResolvedValue({ ...MOD_DURUMU, ayarlar: { ...MOD_DURUMU.ayarlar, etkin: true, cuma: false, vakit: true } });
+        const e = render(<NamazdaSessizSayfasi />);
+        await waitFor(() => expect(e.getByLabelText('Namaz vakitlerinde').props.value).toBe(true));
+        // Kapatma sonrası native artık tetiksiz, etkin değil:
+        const kapali = { ...MOD_DURUMU, ayarlar: { ...MOD_DURUMU.ayarlar, etkin: false, cuma: false, vakit: false } };
+        k.namazModuDurumu.mockResolvedValue(kapali);
+        fireEvent(e.getByLabelText('Namaz vakitlerinde'), 'valueChange', false);
+        await waitFor(() =>
+            expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: false, cuma: false, vakit: false }))
+        );
+        await waitFor(() => expect(e.getByLabelText('Namaz vakitlerinde').props.value).toBe(false));
+        k.namazModuAyarlariniYaz.mockClear();
+        fireEvent(e.getByLabelText('Namaz vakitlerinde'), 'valueChange', true);
+        await waitFor(() =>
+            expect(k.namazModuAyarlariniYaz).toHaveBeenCalledWith(expect.objectContaining({ etkin: true, cuma: false, vakit: true }))
         );
     });
 

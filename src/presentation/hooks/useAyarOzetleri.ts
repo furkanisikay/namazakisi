@@ -187,7 +187,7 @@ export function useAyarOzetleri(sistem?: Pick<SistemDurumu, 'pil' | 'tamAlarm'>)
   };
 
   const saglikOzetSatiri =
-    `Kurulumunuz eksiksiz · ${konumMetniHesapla(konumGirdisi)} · muhafız ${muhafizAktif ? 'açık' : 'kapalı'}`;
+    `Kurulumunuz eksiksiz · ${konumMetniHesapla(konumGirdisi)} · vakit çıkmadan hatırlatma ${muhafizAktif ? 'açık' : 'kapalı'}`;
 
   return { ozetler, sorunlar, saglikOzetSatiri };
 }

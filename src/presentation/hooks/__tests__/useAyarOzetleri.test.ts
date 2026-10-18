@@ -137,12 +137,12 @@ describe('useAyarOzetleri', () => {
     });
   });
 
-  it('saglikOzetSatiri "Kurulumunuz eksiksiz · <konum> · muhafız açık|kapalı" biçimindedir (mod eki YOK)', async () => {
+  it('saglikOzetSatiri "Kurulumunuz eksiksiz · <konum> · vakit çıkmadan hatırlatma açık|kapalı" biçimindedir (mod eki YOK)', async () => {
     selectorlaKur();
     const { result } = renderHook(() => useAyarOzetleri());
 
     expect(result.current.saglikOzetSatiri).toBe(
-      'Kurulumunuz eksiksiz · Kadıköy, İstanbul · muhafız açık'
+      'Kurulumunuz eksiksiz · Kadıköy, İstanbul · vakit çıkmadan hatırlatma açık'
     );
 
     await act(async () => {
@@ -150,11 +150,11 @@ describe('useAyarOzetleri', () => {
     });
   });
 
-  it('muhafiz kapalıyken saglikOzetSatiri "muhafız kapalı" der', async () => {
+  it('muhafiz kapalıyken saglikOzetSatiri "vakit çıkmadan hatırlatma kapalı" der', async () => {
     selectorlaKur({ muhafiz: { aktif: false, yogunluk: 'normal' } });
     const { result } = renderHook(() => useAyarOzetleri());
 
-    expect(result.current.saglikOzetSatiri).toContain('muhafız kapalı');
+    expect(result.current.saglikOzetSatiri).toContain('vakit çıkmadan hatırlatma kapalı');
 
     await act(async () => {
       await Promise.resolve();

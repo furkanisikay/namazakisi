@@ -137,10 +137,10 @@ export const SaatAyarlariSayfasi: React.FC = () => {
                     )}
                 </AyarGrubu>
                 <Text className="text-xs leading-5 mx-4 -mt-4 mb-2" style={{ color: renkler.metinIkincil }}>
-                    Uyandırma, Namaz Muhafızı'nda sabah vaktine açtığınız gerçek alarm ve Nafile Namazlar'da açtığınız
+                    Uyandırma, "Vakit çıkmadan" hatırlatmasında sabah vaktine açtığınız gerçek alarm ve Nafile Namazlar'da açtığınız
                     teheccüd uyandırmasıdır. Saatiniz şarjdayken çalmaz; o zaman telefonunuz çalar.
                 </Text>
-                {gecisDugmesi('Namaz Muhafızı ayarlarını açın', 'MuhafizAyarlari', 'shield-alt')}
+                {gecisDugmesi('"Vakit çıkmadan" ayarlarını açın', 'MuhafizAyarlari', 'shield-alt')}
                 {gecisDugmesi('Nafile namaz ayarlarını açın', 'NafileAyarlari', 'star-and-crescent')}
 
                 <View className="h-6" />

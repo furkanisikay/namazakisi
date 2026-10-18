@@ -28,15 +28,21 @@ export const OzelGunBolumu: React.FC = () => {
     const ozelGun = useAppSelector((s) => s.seri.ozelGunAyarlari);
     const [takvim, setTakvim] = useState(false);
 
-    const baslat = (baslangic: Date, bitis: Date) => {
-        dispatch(
+    // Onay ancak kayıt GERÇEKTEN bittikten sonra söylenir: yazım reddedilirse "başladı"
+    // demek kullanıcıyı korumasız bırakırdı (hatırlatmalar susmaz).
+    const baslat = async (baslangic: Date, bitis: Date) => {
+        setTakvim(false);
+        const sonuc = await dispatch(
             ozelGunBaslat({
                 baslangicTarihi: tarihiISOFormatinaCevir(baslangic),
                 bitisTarihi: tarihiISOFormatinaCevir(bitis),
             })
         );
-        setTakvim(false);
-        kisaBildirimGoster('Özel gün başladı; hatırlatmalar bu günlerde durur.');
+        if (ozelGunBaslat.fulfilled.match(sonuc)) {
+            kisaBildirimGoster('Özel gün başladı; hatırlatmalar bu günlerde durur.');
+        } else {
+            kisaBildirimGoster('Özel gün başlatılamadı. Lütfen tekrar deneyin.', true);
+        }
     };
 
     return (
@@ -98,7 +104,7 @@ export const OzelGunBolumu: React.FC = () => {
 
             <NotSatiri metin="Bu günlerde seri bozulmaz, hiçbir hatırlatma gelmez." style={{ marginTop: 12 }} />
 
-            <OzelGunTakvimi gorunur={takvim} onKapat={() => setTakvim(false)} onBaslat={baslat} />
+            <OzelGunTakvimi gorunur={takvim} onKapat={() => setTakvim(false)} onBaslat={(b, s) => void baslat(b, s)} />
         </View>
     );
 };

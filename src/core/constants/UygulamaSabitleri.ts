@@ -231,6 +231,10 @@ export const DEPOLAMA_ANAHTARLARI = {
   // hatırlatmalar için. Eski yüzey kayıtlarından bir kez göç eder (`core/hatirlatma/rizalar`).
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde).
   HATIRLATMA_RIZALARI: 'hatirlatma_rizalari',
+  // Tek anahtarla kapatılan hatırlatmanın kapatılmadan ÖNCEKİ seçimi (sade tasarım,
+  // Dalga 3): açınca geri gelsin. Ekran hafızası, cihaza özgü → yedeklemeye GİRMEZ.
+  // `vakitGirince`: beş vakit seçimi; `namazVakitlerinde`: Namaz modu cuma/vakit tetikleri.
+  KAPATMA_ONCESI_SECIM: '@namaz_akisi/kapatma_oncesi_secim',
   // Seferîlik bilgi kartı (issue #296) — ayar (kart açık, mezhep, ikamet yeri)
   // YEDEKLENİR (beyaz listenin ÜÇ yerinde); "bu yolculukta kapattım" hafızası
   // cihaza özgü → yedeklemeye GİRMEZ.

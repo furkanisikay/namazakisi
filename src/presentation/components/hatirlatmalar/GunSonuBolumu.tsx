@@ -14,7 +14,7 @@ import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { seriAyarlariniGuncelle } from '../../store/seriSlice';
 import type { BildirimGunSecimi, GunSonuBildirimModu, SeriAyarlari } from '../../../core/types/SeriTipleri';
-import { KonumYoneticiServisi } from '../../../domain/services/KonumYoneticiServisi';
+import { NamazVaktiHesaplayiciServisi } from '../../../domain/services/NamazVaktiHesaplayiciServisi';
 import { AnahtarSatiri } from '../ortak/AnahtarSatiri';
 import { BolumBasligi } from '../ortak/BolumBasligi';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
@@ -31,6 +31,23 @@ const GUNLER: readonly Secenek<BildirimGunSecimi>[] = [
     { deger: 'ertesiGun', etiket: 'Ertesi gün' },
 ];
 
+/**
+ * Bugünün yatsısı + yarının imsağı. Kaynak `NamazVaktiHesaplayiciServisi`'dir —
+ * `KonumYoneticiServisi` üretimde HİÇ doldurulmaz (AGENTS.md), ona bağlı sınır daima
+ * yedek saatte kalırdı. `{0,0}` "yapılandırılmadı" nöbetçisidir → null (yedek sınır).
+ */
+export function gunSonuSinirVakitleri(simdi: Date = new Date()): { yatsi: Date | null; imsak: Date | null } {
+    const servis = NamazVaktiHesaplayiciServisi.getInstance();
+    const konfig = servis.getKonfig();
+    if (!konfig || (konfig.latitude === 0 && konfig.longitude === 0)) return { yatsi: null, imsak: null };
+    const yarin = new Date(simdi);
+    yarin.setDate(yarin.getDate() + 1);
+    return {
+        yatsi: servis.getGunlukVakitler(simdi)?.yatsi ?? null,
+        imsak: servis.getGunlukVakitler(yarin)?.imsak ?? null,
+    };
+}
+
 const saatYazisi = (t: Date | null | undefined) =>
     t ? `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}` : null;
 
@@ -42,9 +59,7 @@ export const GunSonuBolumu: React.FC = () => {
 
     const yaz = (degisiklik: Partial<SeriAyarlari>) => dispatch(seriAyarlariniGuncelle({ ayarlar: degisiklik }));
 
-    const konum = KonumYoneticiServisi.getInstance();
-    const imsak = useMemo(() => konum.sonrakiGunImsakVaktiGetir(), [konum]);
-    const yatsi = useMemo(() => konum.bugunYatsiVaktiGetir(), [konum]);
+    const { yatsi, imsak } = useMemo(() => gunSonuSinirVakitleri(), []);
 
     const ayniGun = ayarlar.bildirimGunSecimi === 'ayniGun';
     const saatMin = ayniGun ? (yatsi ? yatsi.getHours() : 18) : 0;

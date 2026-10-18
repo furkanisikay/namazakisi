@@ -202,7 +202,7 @@ export const TakvimCakismaBolumu: React.FC<TakvimCakismaBolumuProps> = ({ acilis
         {
             oneriFiltresi: oneriUygulanmaz,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );

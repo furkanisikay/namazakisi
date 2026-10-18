@@ -70,6 +70,8 @@ jest.mock('../../../hooks/useRamazanSayaclari', () => ({
 }));
 jest.mock('../../../hooks/useCihazDurumu', () => ({ useCihazDurumu: () => ({ durum: {}, yenile: jest.fn() }) }));
 jest.mock('../../../components/bildirim/BildirimButceKarti', () => ({ BildirimButceKarti: () => null }));
+const mockGeriAl = jest.fn();
+jest.mock('../../../components/ortak/GeriAlBandi', () => ({ geriAlBandiGoster: (...a: unknown[]) => mockGeriAl(...a) }));
 
 // Thunk'lar: yalnız hangi yazma yolunun hangi argümanla çağrıldığı ölçülür.
 jest.mock('../../../store/vakitBildirimSlice', () => ({
@@ -100,6 +102,7 @@ jest.mock('../../../store/hooks', () => ({
     useAppSelector: (sec: (s: unknown) => unknown) => sec(mockState),
 }));
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HatirlatmalarSayfasi } from '../HatirlatmalarSayfasi';
 
 const durumKur = (ust: Record<string, unknown> = {}) => {
@@ -121,8 +124,9 @@ const durumKur = (ust: Record<string, unknown> = {}) => {
     };
 };
 
-beforeEach(() => {
+beforeEach(async () => {
     jest.clearAllMocks();
+    await AsyncStorage.clear();
     mockDegisikligiDene.mockReturnValue(true);
     durumKur();
 });
@@ -163,13 +167,51 @@ describe('HatirlatmalarSayfasi', () => {
         expect(mockNavigate).toHaveBeenCalledWith(ekran, undefined);
     });
 
-    it('"Vakit girince" anahtarı beş vakti birlikte açar/kapatır', () => {
+    it('"Vakit girince" kapatılınca beş vakit kapanır ve "Geri al" bandı önceki seçimi geri yazar', async () => {
         const e = render(<HatirlatmalarSayfasi />);
         fireEvent(e.getByLabelText('Vakit girince'), 'valueChange', false);
+        await waitFor(() =>
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'vb/tum',
+                payload: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false },
+            })
+        );
+        expect(mockGeriAl).toHaveBeenCalledWith(expect.objectContaining({ mesaj: expect.any(String) }));
+        mockDispatch.mockClear();
+        mockGeriAl.mock.calls[0][0].geriAl();
         expect(mockDispatch).toHaveBeenCalledWith({
             type: 'vb/tum',
-            payload: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false },
+            payload: { imsak: true, ogle: false, ikindi: false, aksam: true, yatsi: false },
         });
+    });
+
+    it('NÖBETÇİ: kapatıp açınca kullanıcının VAKİT SEÇİMİ geri gelir (beşi değil)', async () => {
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent(e.getByLabelText('Vakit girince'), 'valueChange', false);
+        await waitFor(() => expect(tipler()).toContain('vb/tum'));
+
+        durumKur({ vakitBildirim: { ayarlar: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false } } });
+        mockDispatch.mockClear();
+        e.rerender(<HatirlatmalarSayfasi />);
+        fireEvent(e.getByLabelText('Vakit girince'), 'valueChange', true);
+        await waitFor(() =>
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'vb/tum',
+                payload: { imsak: true, ogle: false, ikindi: false, aksam: true, yatsi: false },
+            })
+        );
+    });
+
+    it('önceki seçim yoksa açmak beş vakti açar', async () => {
+        durumKur({ vakitBildirim: { ayarlar: { imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false } } });
+        const e = render(<HatirlatmalarSayfasi />);
+        fireEvent(e.getByLabelText('Vakit girince'), 'valueChange', true);
+        await waitFor(() =>
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: 'vb/tum',
+                payload: { imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true },
+            })
+        );
     });
 
     it('"Vakit çıkmadan" anahtarı düzey kancasının ana anahtarını kullanır', () => {

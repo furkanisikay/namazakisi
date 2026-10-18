@@ -18,11 +18,12 @@
  * modun kendisini AÇIK bırakır (camide sessize alma çalışmaya devam etsin).
  */
 import * as React from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import * as Location from 'expo-location';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { LocalKapatmaOncesiSecim } from '../../data/local/LocalKapatmaOncesiSecim';
 import { useRenkler } from '../../core/theme';
 import { SayisalSecici } from '../components/common/SayisalSecici';
 import { BildirimModali } from '../components/common/BildirimModali';
@@ -125,6 +126,23 @@ export const NamazdaSessizSayfasi: React.FC = () => {
     const [ekleniyor, setEkleniyor] = useState(false);
     const [ayrinti, setAyrinti] = useState(false);
 
+    // Camilerim alt sayfası kancanın AYRI bir örneğini kullanır (favori/kendi yer/"cami
+    // değil" orada yazılır) → geri dönünce native'den tazele; bellekteki bayat kopya
+    // hem ekranda yanlış görünür hem de bir sonraki yazımın tabanı olurdu.
+    const ilkOdak = useRef(true);
+    const camiYenile = c.yenile;
+    const modYenile = m.yenile;
+    useFocusEffect(
+        useCallback(() => {
+            if (ilkOdak.current) {
+                ilkOdak.current = false;
+                return;
+            }
+            void camiYenile().catch(() => undefined);
+            void modYenile().catch(() => undefined);
+        }, [camiYenile, modYenile])
+    );
+
     const aktiflestir = useCallback(async () => {
         const sonuc = await c.guncelle({ aktif: true });
         if (sonuc === 'izinYok') setIzinUyarisi(true);
@@ -134,6 +152,9 @@ export const NamazdaSessizSayfasi: React.FC = () => {
         async (v: boolean) => {
             if (!v) {
                 await c.guncelle({ aktif: false });
+                // İki tetik de kapalıyken mod kuralı "etkin" kalmasın (zamanlı tetiği olmayan
+                // etkin mod yalnız camide işe yarıyordu).
+                if (m.ayarlar.etkin && !m.ayarlar.cuma && !m.ayarlar.vakit) await m.guncelle({ etkin: false });
                 return;
             }
             const arka = await Location.getBackgroundPermissionsAsync().catch(() => null);
@@ -143,7 +164,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                 setDisclosure(true);
             }
         },
-        [c, aktiflestir]
+        [c, m, aktiflestir]
     );
 
     const disclosureKabul = useCallback(async () => {
@@ -170,12 +191,24 @@ export const NamazdaSessizSayfasi: React.FC = () => {
     const vakitlerdeAcik = mod.etkin && (mod.cuma || mod.vakit);
     const camideModKullanilir = ayarlar.aktif && ayarlar.namazModu;
     const namazVakitlerinde = useCallback(
-        (v: boolean) => {
+        async (v: boolean) => {
             if (v) {
-                void m.guncelle({ etkin: true, ...(!mod.cuma && !mod.vakit ? { cuma: true } : {}) });
+                // Kapatmadan önceki tetik seçimi geri gelir; hiç yoksa cuma hutbesiyle başlar.
+                const once = await LocalKapatmaOncesiSecim.oku('namazVakitlerinde');
+                const tetik =
+                    once && (once.cuma || once.vakit)
+                        ? { cuma: once.cuma, vakit: once.vakit }
+                        : mod.cuma || mod.vakit
+                          ? { cuma: mod.cuma, vakit: mod.vakit }
+                          : { cuma: true, vakit: false };
+                await m.guncelle({ etkin: true, ...tetik });
                 return;
             }
-            void m.guncelle(camideModKullanilir ? { cuma: false, vakit: false } : { etkin: false });
+            await LocalKapatmaOncesiSecim.yaz('namazVakitlerinde', { cuma: mod.cuma, vakit: mod.vakit });
+            // Camide mod kullanılıyorsa kural etkin kalır, yalnız zamanlı tetikler kapanır;
+            // değilse tümden kapanır (tetikler de sıfırlanır: sonradan "Camiye girince" modu
+            // açarsa eski cuma/vakit tetikleri kendiliğinden dirilmesin).
+            await m.guncelle(camideModKullanilir ? { cuma: false, vakit: false } : { etkin: false, cuma: false, vakit: false });
         },
         [m, mod.cuma, mod.vakit, camideModKullanilir]
     );
@@ -427,7 +460,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                             baslik="Namaz vakitlerinde"
                             ozet={vakitlerdeOzet}
                             deger={vakitlerdeAcik}
-                            onDegistir={namazVakitlerinde}
+                            onDegistir={(v) => void namazVakitlerinde(v)}
                             testID="namaz-modu-ana"
                         />
                     </View>

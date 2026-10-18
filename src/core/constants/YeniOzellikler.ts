@@ -213,7 +213,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Camide kılmak istediğiniz vakitleri seçin; ezandan, camiye yürüme süreniz kadar önce hatırlatalım.',
         detayAciklama:
-            `Bildirim ayarlarındaki "Camide kılacağım" bölümünden vakitleri tek tek seçebilir, yürüme süresini ve abdest için hazırlık payını belirleyebilirsiniz. En fazla üç hatırlatma kurabilirsiniz; yürüme ya da hazırlık sürenizi değiştirdiğinizde hepsi aynı farkla kayar. Cuma hatırlatmanız açıksa cuma günü öğle için ayrıca hatırlatılmazsınız.`,
+            `Ayarlar › Hatırlatmalar › "Camiye gitme vakti" bölümünden vakitleri tek tek seçebilir, yürüme süresini ve abdest için hazırlık payını belirleyebilirsiniz. En fazla üç hatırlatma kurabilirsiniz; yürüme ya da hazırlık sürenizi değiştirdiğinizde hepsi aynı farkla kayar. Cuma hatırlatmanız açıksa cuma günü öğle için ayrıca hatırlatılmazsınız.`,
         ikon: 'walking',
         hedefSayfa: 'CamiyeGitAyarlari',
         ctaEtiketi: 'Vakitlerinizi seçin',
@@ -256,7 +256,7 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         aciklama:
             'Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım.',
         detayAciklama:
-            'Bildirim ayarlarındaki "Takvim çakışması uyarısı"nı açtığınızda, bir etkinlik bittiğinde vaktin çıkmasına 10 dakikadan az kalıyorsa etkinlikten önce uyarılırsınız; vakti baştan sona kaplayan etkinliklerde ara verip kılmayı planlamanız için haber verilir. En fazla üç hatırlatma kurabilir, etkinlik başlayana kadar tekrarlatabilirsiniz; namazı kıldığınızda kalanlar iptal edilir. Özellik varsayılan olarak kapalıdır ve açarken nelerin okunduğunu açıkça gösteririz: takviminiz yalnızca bu cihazda okunur, hiçbir yere gönderilmez ve saklanmaz.',
+            'Ayarlar › Hatırlatmalar › "Toplantı çakışırsa"yı açtığınızda, bir etkinlik bittiğinde vaktin çıkmasına 10 dakikadan az kalıyorsa etkinlikten önce uyarılırsınız; vakti baştan sona kaplayan etkinliklerde ara verip kılmayı planlamanız için haber verilir. En fazla üç hatırlatma kurabilir, etkinlik başlayana kadar tekrarlatabilirsiniz; namazı kıldığınızda kalanlar iptal edilir. Özellik varsayılan olarak kapalıdır ve açarken nelerin okunduğunu açıkça gösteririz: takviminiz yalnızca bu cihazda okunur, hiçbir yere gönderilmez ve saklanmaz.',
         ikon: 'calendar-times',
         hedefSayfa: 'TakvimCakismaAyarlari',
         ctaEtiketi: 'İnceleyin',

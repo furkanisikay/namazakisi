@@ -278,7 +278,7 @@ describe('NafileAyarlariSayfasi — bildirim sınırı rehberi (issue #298)', ()
         fireEvent.press(ekran.getByTestId('bildirim-butce-karti'));
         expect(ekran.getByTestId('oneri-nafileGunuGunune')).toBeTruthy();
         expect(ekran.queryByTestId('oneri-seyreklestir')).toBeNull();
-        fireEvent.press(ekran.getByLabelText('Namaz Muhafızı ayarlarında yer açın'));
+        fireEvent.press(ekran.getByLabelText('"Vakit çıkmadan" ayarlarında yer açın'));
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
     });
 

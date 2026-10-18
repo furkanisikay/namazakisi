@@ -233,7 +233,7 @@ describe('CamiyeGitBolumu', () => {
         const ekran = kur();
         await waitFor(() => expect(ekran.store.getState().camiyeGit.ayarlar.adimlar[0].esikDk).toBe(180));
         fireEvent(ekran.getByLabelText('Camiye gitme vakti hatırlatması'), 'valueChange', true);
-        fireEvent.press(await ekran.findByText('Namaz Muhafızı ayarlarında yer açın'));
+        fireEvent.press(await ekran.findByText('"Vakit çıkmadan" ayarlarında yer açın'));
         expect(mockNavigate).toHaveBeenCalledWith('MuhafizAyarlari');
         ekran.unmount();
         expect(mockDisk.aktif).toBe(false);

@@ -60,6 +60,8 @@ import { VurguSaglayici } from '../../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../../components/ayar/AyarCapasi';
 import { OZEL_GUN_RENGI } from '../../../core/constants/OzelGunRengi';
+import { LocalKapatmaOncesiSecim } from '../../../data/local/LocalKapatmaOncesiSecim';
+import { geriAlBandiGoster } from '../../components/ortak/GeriAlBandi';
 
 type Navigasyon = { navigate: (ekran: string, params?: Record<string, unknown>) => void };
 
@@ -180,10 +182,32 @@ const HatirlatmalarIcerik: React.FC = () => {
 
     // ── Anahtarlar ──
     const vakitGirinceAcik = Object.values(vakitBildirim).some(Boolean);
-    const vakitGirinceDegistir = (v: boolean) => {
+    const vakitGirinceDegistir = async (v: boolean) => {
         void butonTiklandiFeedback();
-        // Tek anahtar: açmak BEŞ vakti açar, kapatmak hepsini kapatır (seçim ayrıntıda).
-        dispatch(tumVakitBildirimAyarlariniGuncelle({ imsak: v, ogle: v, ikindi: v, aksam: v, yatsi: v }));
+        // Tek anahtar: kapatmak hepsini kapatır ama kullanıcının VAKİT SEÇİMİNİ silmez —
+        // önceki seçim saklanır, açınca geri gelir (yoksa beş vakit). Seçim ayrıntıda.
+        if (!v) {
+            const once = {
+                imsak: vakitBildirim.imsak === true,
+                ogle: vakitBildirim.ogle === true,
+                ikindi: vakitBildirim.ikindi === true,
+                aksam: vakitBildirim.aksam === true,
+                yatsi: vakitBildirim.yatsi === true,
+            };
+            await LocalKapatmaOncesiSecim.yaz('vakitGirince', once);
+            dispatch(tumVakitBildirimAyarlariniGuncelle({ imsak: false, ogle: false, ikindi: false, aksam: false, yatsi: false }));
+            geriAlBandiGoster({
+                mesaj: 'Vakit girince hatırlatması kapatıldı',
+                geriAl: () => dispatch(tumVakitBildirimAyarlariniGuncelle(once)),
+            });
+            return;
+        }
+        const once = await LocalKapatmaOncesiSecim.oku('vakitGirince');
+        const geri =
+            once && Object.values(once).some(Boolean)
+                ? once
+                : { imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true };
+        dispatch(tumVakitBildirimAyarlariniGuncelle(geri));
     };
 
     const cumaDegistir = (v: boolean) => {
@@ -268,7 +292,7 @@ const HatirlatmalarIcerik: React.FC = () => {
                             baslik="Vakit girince"
                             ozet={vakitGirinceOzeti(vakitBildirim)}
                             deger={vakitGirinceAcik}
-                            onDegistir={vakitGirinceDegistir}
+                            onDegistir={(v) => void vakitGirinceDegistir(v)}
                             onPress={() => git('VakitGirinceAyarlari')}
                             testID="satir-vakit-girince"
                         />

@@ -3,7 +3,7 @@
  * Yazma yolları eski sayfalarla AYNI thunk'lar (Bildirimler / Seri ve hedefler'den taşındı).
  */
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -21,14 +21,24 @@ jest.mock('../../../../core/theme', () => ({
     }),
 }));
 jest.mock('../../../../core/feedback', () => ({ useFeedback: () => ({ butonTiklandiFeedback: jest.fn(() => Promise.resolve()) }) }));
-jest.mock('../../common/KisaBildirim', () => ({ kisaBildirimGoster: jest.fn() }));
-jest.mock('../../OzelGunTakvimi', () => ({ OzelGunTakvimi: () => null }));
+const mockKisaBildirim = jest.fn();
+jest.mock('../../common/KisaBildirim', () => ({ kisaBildirimGoster: (...a: unknown[]) => mockKisaBildirim(...a) }));
+let mockTakvim: { onBaslat: (b: Date, s: Date) => void } | null = null;
+jest.mock('../../OzelGunTakvimi', () => ({
+    OzelGunTakvimi: (p: { onBaslat: (b: Date, s: Date) => void }) => {
+        mockTakvim = p;
+        return null;
+    },
+}));
 jest.mock('../../../store/vakitBildirimSlice', () => ({
     vakitBildirimAyarlariniYukle: jest.fn(() => ({ type: 'vb/yukle' })),
     vakitBildirimAyariniGuncelle: jest.fn((a) => ({ type: 'vb/guncelle', payload: a })),
 }));
 jest.mock('../../../store/seriSlice', () => ({
-    ozelGunBaslat: jest.fn((a) => ({ type: 'seri/ozelBaslat', payload: a })),
+    ozelGunBaslat: Object.assign(
+        jest.fn((a) => ({ type: 'seri/ozelBaslat', payload: a })),
+        { fulfilled: { match: (x: { type?: string }) => x?.type === 'seri/ozelBaslat/fulfilled' } }
+    ),
     ozelGunModuDurumunuGuncelle: jest.fn((a) => ({ type: 'seri/ozelMod', payload: a })),
 }));
 
@@ -41,6 +51,8 @@ jest.mock('../../../store/hooks', () => ({
 
 import { VakitGirinceBolumu } from '../VakitGirinceBolumu';
 import { OzelGunBolumu } from '../OzelGunBolumu';
+import { gunSonuSinirVakitleri } from '../GunSonuBolumu';
+import { NamazVaktiHesaplayiciServisi } from '../../../../domain/services/NamazVaktiHesaplayiciServisi';
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -79,6 +91,21 @@ describe('OzelGunBolumu', () => {
         expect(e.getByLabelText('Özel günü başlatın')).toBeTruthy();
     });
 
+    it('NÖBETÇİ: "Özel gün başladı" yalnız kayıt BAŞARIYLA bitince söylenir', async () => {
+        mockState = { ...mockState, seri: { ozelGunAyarlari: { ozelGunModuAktif: true, aktifOzelGun: null } } };
+        render(<OzelGunBolumu />);
+        mockDispatch.mockResolvedValueOnce({ type: 'seri/ozelBaslat/rejected' });
+        await act(async () => mockTakvim!.onBaslat(new Date(2026, 9, 18), new Date(2026, 9, 22)));
+        await waitFor(() => expect(mockKisaBildirim).toHaveBeenCalled());
+        expect(mockKisaBildirim).not.toHaveBeenCalledWith(expect.stringMatching(/başladı/));
+        expect(mockKisaBildirim).toHaveBeenCalledWith(expect.stringMatching(/başlatılamadı/), true);
+
+        mockKisaBildirim.mockClear();
+        mockDispatch.mockResolvedValueOnce({ type: 'seri/ozelBaslat/fulfilled' });
+        await act(async () => mockTakvim!.onBaslat(new Date(2026, 9, 18), new Date(2026, 9, 22)));
+        await waitFor(() => expect(mockKisaBildirim).toHaveBeenCalledWith(expect.stringMatching(/Özel gün başladı/)));
+    });
+
     it('sürerken tarih aralığı gösterilir', () => {
         mockState = {
             ...mockState,
@@ -92,5 +119,23 @@ describe('OzelGunBolumu', () => {
         const e = render(<OzelGunBolumu />);
         expect(e.getByTestId('ozel-gun-suruyor')).toBeTruthy();
         expect(e.queryByLabelText('Özel günü başlatın')).toBeNull();
+    });
+});
+
+describe('GunSonuBolumu — saat sınırları', () => {
+    it('vakitler NamazVaktiHesaplayiciServisi\'nden gelir (KonumYoneticiServisi üretimde boş)', () => {
+        NamazVaktiHesaplayiciServisi.getInstance().yapilandir({ latitude: 41.01, longitude: 28.97 });
+        const simdi = new Date(2026, 5, 15, 12, 0);
+        const { yatsi, imsak } = gunSonuSinirVakitleri(simdi);
+        expect(yatsi).not.toBeNull();
+        expect(imsak).not.toBeNull();
+        expect(yatsi!.getDate()).toBe(15);
+        expect(imsak!.getDate()).toBe(16);
+        expect(imsak!.getTime()).toBeGreaterThan(yatsi!.getTime());
+    });
+
+    it('konum yapılandırılmadıysa ({0,0}) yedek sınıra düşülür', () => {
+        NamazVaktiHesaplayiciServisi.getInstance().yapilandir({ latitude: 0, longitude: 0 });
+        expect(gunSonuSinirVakitleri(new Date(2026, 5, 15, 12, 0))).toEqual({ yatsi: null, imsak: null });
     });
 });

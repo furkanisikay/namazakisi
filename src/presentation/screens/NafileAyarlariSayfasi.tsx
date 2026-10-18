@@ -139,7 +139,7 @@ export const NafileAyarlariSayfasi: React.FC = () => {
         {
             oneriFiltresi: yalnizNafileOnerisi,
             ekYol: navigation
-                ? { etiket: 'Namaz Muhafızı ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
+                ? { etiket: '"Vakit çıkmadan" ayarlarında yer açın', onPress: () => navigation.navigate('MuhafizAyarlari') }
                 : undefined,
         }
     );
