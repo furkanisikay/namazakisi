@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
 import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
+import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
 import com.furkanisikay.namazakisi.saat.cekirdek.KalanSure
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
@@ -63,6 +64,16 @@ fun AnaEkran(
     onKible: () -> Unit,
     /** "Telefonda açın" (saat W3, fikir 4): `TelefondaAc` bağlantısı. */
     onTelefondaAc: (String) -> Unit = {},
+    /** Telefondan gelen Camideyim / Namaz modu gösterimi (saat W3); bitişler süzülmüş. */
+    cami: TelefonKomutu.CamiDurumu? = null,
+    /** Namaz modu aç/kapat (saat W3, fikir 1) — telefona RPC. */
+    onNamazModu: () -> Unit = {},
+    /** Camideyim cevabı (saat W3, fikir 5): "evet" | "hayir" | "camiDegil". */
+    onCamiCevap: (cevap: String, yerId: String) -> Unit = { _, _ -> },
+    /** Telefona istek sürüyor (düğmeler kilitli, çift dokunuş olmasın). */
+    istekSuruyor: Boolean = false,
+    /** Saat anons edecekken Türkçe ses bulunamadı (saat W3, fikir 9) — kibar bilgi satırı. */
+    turkceSesYok: Boolean = false,
 ) {
     val liste = rememberTransformingLazyColumnState()
     val donusum = rememberTransformationSpec()
@@ -121,8 +132,51 @@ fun AnaEkran(
                             }
                         }
                     }
+                    // Camideyim (saat W3, fikir 5): soru ve camide hâli telefonun kararıdır.
+                    cami?.soru?.let { soru ->
+                        item(key = "cami_soru") {
+                            CamiSatiri(
+                                baslik = "Camide misiniz?",
+                                alt = soru.ad,
+                                dugmeler = listOf(
+                                    Triple("Evet", "Evet, camideyim. Namaz modunu açar") { onCamiCevap("evet", soru.yerId) },
+                                    Triple("Hayır", "Hayır, camide değilim") { onCamiCevap("hayir", soru.yerId) },
+                                ),
+                                kilitli = istekSuruyor,
+                            )
+                        }
+                    }
+                    cami?.camide?.let { yer ->
+                        item(key = "cami_camide") {
+                            CamiSatiri(
+                                baslik = "Camidesiniz",
+                                alt = yer.ad,
+                                dugmeler = listOf(
+                                    Triple("Burası cami değil", "Burası cami değil. Bu yer bir daha cami sayılmaz") {
+                                        onCamiCevap("camiDegil", yer.yerId)
+                                    },
+                                ),
+                                kilitli = istekSuruyor,
+                            )
+                        }
+                    }
+                    // Namaz modu bilekten (saat W3, fikir 1). Durum telefondan gelir; telefon yoksa
+                    // düğme yine çizilir, basınca "Telefonunuza ulaşılamadı" denir.
+                    item(key = "namaz_modu") {
+                        val bitis = cami?.modBitisMs
+                        NamazModuSatiri(
+                            acikBitis = bitis?.let { VakitHesabi.saat(it) },
+                            kilitli = istekSuruyor,
+                            onDokun = onNamazModu,
+                        )
+                    }
                     if (yuk != null && guncellemeGerekli) {
                         item(key = "guncelleme") { BilgiMetni(GUNCELLEME_METNI) }
+                    }
+                    if (turkceSesYok) {
+                        item(key = "turkce_ses") {
+                            BilgiMetni("Saatinizde Türkçe ses yok; sesli anonslar yalnız titreşimle bildirilir.")
+                        }
                     }
                     if (yuk != null && !bildirimIzni) {
                         item(key = "izin") {

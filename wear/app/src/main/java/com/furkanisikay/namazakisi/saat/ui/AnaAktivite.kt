@@ -25,6 +25,12 @@ import android.view.KeyEvent
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
 import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
+import com.furkanisikay.namazakisi.saat.telefon.CamiDurumDeposu
+import com.furkanisikay.namazakisi.saat.telefon.TelefonIstemcisi
+import com.furkanisikay.namazakisi.saat.cekirdek.TelefonKomutu
+import com.furkanisikay.namazakisi.saat.cekirdek.AnonsYerleri
+import com.furkanisikay.namazakisi.saat.hatirlatma.SaatAnonsu
+import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.veri.Senkron
@@ -110,6 +116,7 @@ class AnaAktivite : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val depo = YukDeposu(this)
+        val camiDepo = CamiDurumDeposu(this)
         lifecycle.addObserver(AmbientLifecycleObserver(this, ambientGeriCagrisi))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -142,6 +149,17 @@ class AnaAktivite : ComponentActivity() {
                 }
             }
 
+            // Camideyim / Namaz modu gösterimi (saat W3): telefon yazınca ve yarım dakikada bir
+            // (bitişler geçince gösterim kalksın) yeniden okunur.
+            var camiSurum by remember { mutableIntStateOf(0) }
+            DisposableEffect(Unit) {
+                val dinleyici = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> camiSurum++ }
+                camiDepo.dinle(dinleyici)
+                onDispose { camiDepo.birak(dinleyici) }
+            }
+            val cami = remember(camiSurum, simdi / 30_000) { camiDepo.durum(simdi) }
+            var istekSuruyor by remember { mutableStateOf(false) }
+
             // `surum` değişince depo yeniden okunur (her saniye değil — yalnız veri değişince).
             val yuk = remember(surum) { depo.yuk() }
             val bekleyen = remember(surum) { depo.bekleyenler() }
@@ -171,6 +189,42 @@ class AnaAktivite : ComponentActivity() {
                     onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
                     onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
                     onTelefondaAc = { TelefondaAc.ac(this@AnaAktivite, it) },
+                    cami = cami,
+                    turkceSesYok = remember(surum) {
+                        val yer = yuk?.anonsYeri
+                        (yer == AnonsYerleri.OTOMATIK || yer == AnonsYerleri.SAAT) && SaatAnonsu.turkceYok(this@AnaAktivite)
+                    },
+                    istekSuruyor = istekSuruyor,
+                    onNamazModu = {
+                        if (!istekSuruyor) {
+                            istekSuruyor = true
+                            val acik = cami?.modBitisMs != null
+                            val govde = if (acik) TelefonKomutu.namazModuKapat() else TelefonKomutu.namazModuAc(yuk, System.currentTimeMillis())
+                            kapsam.launch {
+                                val s = TelefonIstemcisi.gonder(this@AnaAktivite, TelefonKomutu.NAMAZ_MODU_YOLU, govde)
+                                istekSuruyor = false
+                                TelefondaAc.onay(
+                                    this@AnaAktivite,
+                                    s.sonuc == "acildi" || s.sonuc == "kapandi",
+                                    TelefonKomutu.modMetni(s.sonuc, s.bitisMs?.let { VakitHesabi.saat(it) }),
+                                )
+                            }
+                        }
+                    },
+                    onCamiCevap = { cevap, yerId ->
+                        if (!istekSuruyor) {
+                            istekSuruyor = true
+                            kapsam.launch {
+                                val s = TelefonIstemcisi.gonder(
+                                    this@AnaAktivite,
+                                    TelefonKomutu.CAMI_CEVAP_YOLU,
+                                    TelefonKomutu.camiCevap(cevap, yerId),
+                                )
+                                istekSuruyor = false
+                                TelefondaAc.onay(this@AnaAktivite, s.sonuc == "tamam", TelefonKomutu.camiMetni(cevap, s.sonuc))
+                            }
+                        }
+                    },
                 )
             }
         }

@@ -49,11 +49,21 @@ object TelefondaAc {
     }
 
     private fun goster(activity: Activity, tamam: Boolean) {
+        onay(activity, tamam, if (tamam) "Telefonunuzda açıldı" else "Telefonunuza ulaşılamadı", telefonda = tamam)
+    }
+
+    /** Sistem onay animasyonu (saat komutlarının sonucu da bununla gösterilir). */
+    fun onay(activity: Activity, tamam: Boolean, mesaj: CharSequence, telefonda: Boolean = false) {
         if (activity.isFinishing || activity.isDestroyed) return
-        // CharSequence aşırı yüklemesi (String olanı kullanımdan kalktı).
-        val mesaj: CharSequence = if (tamam) "Telefonunuzda açıldı" else "Telefonunuza ulaşılamadı"
         ConfirmationOverlay()
-            .setType(if (tamam) ConfirmationOverlay.OPEN_ON_PHONE_ANIMATION else ConfirmationOverlay.FAILURE_ANIMATION)
+            .setType(
+                when {
+                    !tamam -> ConfirmationOverlay.FAILURE_ANIMATION
+                    telefonda -> ConfirmationOverlay.OPEN_ON_PHONE_ANIMATION
+                    else -> ConfirmationOverlay.SUCCESS_ANIMATION
+                },
+            )
+            // CharSequence aşırı yüklemesi (String olanı kullanımdan kalktı).
             .setMessage(mesaj)
             .showOn(activity)
     }

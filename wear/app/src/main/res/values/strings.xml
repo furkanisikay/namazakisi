@@ -16,4 +16,8 @@
     <string name="tesbihat_kanal_aciklama">Yarım kalan tesbihata kadrandan dönmek için sessiz simge</string>
     <string name="kible_adi">Kıble</string>
     <string name="kible_komplikasyon_adi">Kıble</string>
+    <string name="camideyim_kanal_adi">Camideyim</string>
+    <string name="camideyim_kanal_aciklama">Telefonunuz camide olduğunuzu bildirince kadranda sessiz simge</string>
+    <string name="uyandirma_kanal_adi">Sessiz uyandırma</string>
+    <string name="uyandirma_kanal_aciklama">Sabah ve teheccüd için yalnız titreşimle uyandırır</string>
 </resources>

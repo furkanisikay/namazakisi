@@ -73,17 +73,32 @@
             android:launchMode="singleTop"
             android:taskAffinity="" />
 
+        <!--
+          Saat W3 (fikir 2): sessiz uyandırma ekranı — bildirime dokununca açılır, kilit
+          ekranının üstünde. Dışa kapalı; tam ekran amacı KULLANILMAZ (izin gerektirir).
+        -->
+        <activity
+            android:name=".ui.UyandirmaAktivite"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="" />
+
         <service
             android:name=".veri.TelefonDinleyiciServisi"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/durum" />
+                <!-- Saat W3: Camideyim / Namaz modu gösterimi (telefon SaatDurumu). -->
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/namazakisi/camidurum" />
             </intent-filter>
         </service>
 
         <receiver android:name=".hatirlatma.MuhafizAlarmAlicisi" android:exported="false" />
         <receiver android:name=".hatirlatma.KildimAlicisi" android:exported="false" />
+        <!-- Saat W3 (fikir 2): sessiz uyandırma düğmeleri (Kapat / 10 dk ertele / Kıldım). -->
+        <receiver android:name=".hatirlatma.UyandirmaAlicisi" android:exported="false" />
         <!-- Android yeniden başlatmada tüm alarmları siler; saat/saat dilimi değişimi sıradakini kaydırır. -->
         <receiver android:name=".hatirlatma.YenidenKurAlicisi" android:exported="false">
             <intent-filter>
