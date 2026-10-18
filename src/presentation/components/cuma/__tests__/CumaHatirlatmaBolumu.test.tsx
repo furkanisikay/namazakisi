@@ -142,14 +142,14 @@ describe('CumaHatirlatmaBolumu', () => {
             expect(d.adimlar[0].kanallar).toEqual({ bildirim: true, sesli: true });
         });
 
-        it('"Sesli olmadan" adımı bildirimle bırakır ve rıza YAZMAZ', () => {
+        it('"Sesli olmadan" HİÇBİR ŞEY yazmaz: adım bildirimle kalır, rıza yazılmaz', () => {
             const ekran = ac(ACIK);
             fireEvent(ekran.getByTestId('adim-sesli-anahtari'), 'valueChange', true);
             fireEvent.press(ekran.getByLabelText('Sesli olmadan uygula'));
+            // Adım kurulu kanallarıyla kalır (yalnız bildirim) — yazılacak bir değişiklik yok.
+            expect(ekran.getByTestId('adim-sesli-anahtari').props.value).toBe(false);
             ekran.unmount();
-            const d = guncelleMock.mock.calls[0][0];
-            expect(d.adimlar[0].kanallar).toEqual({ bildirim: true });
-            expect(d).not.toHaveProperty('sesliOnayi');
+            expect(guncelleMock).not.toHaveBeenCalled();
         });
 
         it('gerçek alarm İLK kez: cumanın kendi rızası; onay ANAHTARLA BİRLİKTE yazılır', async () => {

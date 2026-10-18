@@ -37,11 +37,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { takvimCakismaAyariniGuncelle, takvimCakismaAyarlariniYukle } from '../../store/takvimCakismaSlice';
 import { Anahtar } from '../common/Anahtar';
 import { BildirimModali } from '../common/BildirimModali';
-import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
+import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
-import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
@@ -63,9 +61,7 @@ import {
     takvimCakismaAnonsMetni,
     takvimCakismaMetniOlustur,
 } from '../../../core/bildirim/takvimCakismaPlani';
-import { adimEkle, adimGuncelle, adimSil, adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
-import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
-import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
+import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import {
     takvimIzinDurumunuOku,
     takvimIzniIste,
@@ -93,10 +89,8 @@ type AyarNavigasyonu = { navigate: (ekran: string) => void };
 /** Bu bölüm yalnız takvim çakışmasını yazar → muhafız/nafile önerisi burada UYGULANMAZ (cuma deseni). */
 const oneriUygulanmaz = (): boolean => false;
 
-const vakitAyari = (a: Pick<TakvimCakismaAyarlari, 'adimlar'>): VakitMuhafizAyari => ({
-    yon: 'cikisaDogru',
-    seviyeler: a.adimlar,
-});
+/** Adım dönüşümleri (yüzey kısıtlarıyla) — modül düzeyinde, referans sabit. */
+const TAKVIM_CAKISMA_ISLEMLERI = ekAdimIslemleri<TakvimCakismaAyarlari>(TAKVIM_CAKISMA_ADIM_KISITLARI);
 
 /**
  * ÖRNEK çakışma (önizleme ve "Telefonunuz şöyle okur"): öğle vaktine denk gelen tek bir
@@ -337,64 +331,12 @@ export const TakvimCakismaBolumu: React.FC = () => {
         [ayarlar.adimlar.length, ornek, ornekAnons, yetenekler]
     );
 
-    // ── Adım işlemleri (camiye gitme deseni) ──
-    const [detay, setDetay] = useState<number | null>(null);
-    const [onizleme, setOnizleme] = useState(false);
-    const [sesliBekleyen, setSesliBekleyen] = useState<{ indeks: number; seviye: SeviyeAyari } | null>(null);
-    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
-    const alarmOnayiBekliyor = useRef(false);
-
-    const kisit = TAKVIM_CAKISMA_ADIM_KISITLARI;
-
-    const adimEkleyin = () => {
-        const yeni = adimEkle(ayarlar, 'cikisaDogru', kisit);
-        if (yeni === ayarlar || !guncelle(yeni)) return;
-        const eskiEsikler = new Set(ayarlar.adimlar.map((a) => a.esikDk));
-        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
-        if (indeks >= 0) setDetay(indeks);
-    };
-
-    const adimAcKapa = (indeks: number, acik: boolean) => {
-        const mevcut = ayarlar.adimlar[indeks];
-        if (!mevcut) return;
-        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru', false) : seviyeyiKapat(mevcut);
-        if (seviye === mevcut) return;
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit));
-    };
-
-    const adimDegistir = (indeks: number, seviye: SeviyeAyari) => {
-        const eski = ayarlar.adimlar[indeks];
-        if (!eski) return;
-        if (alarmOnayiBekliyor.current) {
-            alarmOnayiBekliyor.current = false;
-            guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit), { alarmOnayi: true }, true);
-            return;
-        }
-        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
-        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
-            setSesliBekleyen({ indeks, seviye });
-            return;
-        }
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit));
-    };
-
-    const sesliOnayla = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', kisit), { sesliOnayi: true }, true);
-    };
-
-    /** "Sesli olmadan": adım bildirimle kalır (titreşim/alarm korunur). */
-    const sesliOlmadan = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
-        guncelle(adimGuncelle(ayarlar, indeks, { ...seviye, kanallar }, 'cikisaDogru', kisit));
-    };
-
-    const detaySeviyesi = detay !== null ? ayarlar.adimlar[detay] : undefined;
+    /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
+    const modulYaz = useCallback(
+        (yeni: TakvimCakismaAyarlari, riza: AdimRizasi): boolean =>
+            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
+        [guncelle]
+    );
     const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
 
     return (
@@ -483,13 +425,22 @@ export const TakvimCakismaBolumu: React.FC = () => {
                         </View>
 
                         <View className="mt-4">
-                            <PencereKarti
+                            <HatirlatmaModulu<TakvimCakismaAyarlari>
                                 tanim={tanim}
-                                ayar={vakitAyari(ayarlar)}
-                                onAdimSec={(indeks) => setDetay(indeks)}
-                                onAdimEkle={adimEkleyin}
-                                onAdimAcKapa={ayarlar.adimlar.length > 1 ? adimAcKapa : undefined}
-                                onAkisiOnizle={() => setOnizleme(true)}
+                                deger={ayarlar}
+                                islemler={TAKVIM_CAKISMA_ISLEMLERI}
+                                yaz={modulYaz}
+                                ttsDestekli={ttsDestekli}
+                                // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
+                                sesliOnayiVar={ayarlar.sesliOnayi === true}
+                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayMetinleri={{
+                                    altBaslik: 'Takvim çakışması uyarısında sesli okuma',
+                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                }}
+                                silinebilirMi={(a) => a.adimlar.length > 1}
+                                // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
+                                onDetayKapandi={hemenYaz}
                                 stil="gomulu"
                             />
                         </View>
@@ -508,57 +459,6 @@ export const TakvimCakismaBolumu: React.FC = () => {
                     </View>
                 )}
             </View>
-
-            {detay !== null && detaySeviyesi && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={tanim}
-                    seviyeler={ayarlar.adimlar}
-                    indeks={detay}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
-                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
-                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
-                        adimDegistir(detay, s);
-                    }}
-                    onSil={
-                        ayarlar.adimlar.length > 1
-                            ? () => {
-                                guncelle(adimSil(ayarlar, detay));
-                                setDetay(null);
-                            }
-                            : undefined
-                    }
-                    onKapat={() => {
-                        setDetay(null);
-                        // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
-                        hemenYaz();
-                    }}
-                    // Gerçek alarm rızası (#74) — bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                    alarmOnayiVar={ayarlar.alarmOnayi === true}
-                />
-            )}
-
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={tanim}
-                    ayar={vakitAyari(ayarlar)}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(false)}
-                />
-            )}
-
-            <SesliOnayModal
-                gorunur={sesliBekleyen !== null}
-                altBaslik="Takvim çakışması uyarısında sesli anons"
-                kapatmaNotu="Anons etkinliğin adını hiçbir zaman okumaz. Dilediğiniz zaman uyarının ayarından kapatabilirsiniz."
-                ornekMetin={sesliBekleyen ? ornekAnons : ''}
-                ttsDestekli={ttsDestekli}
-                onOnayla={sesliOnayla}
-                onSessizUygula={sesliOlmadan}
-                onIptal={() => setSesliBekleyen(null)}
-            />
 
             <TakvimCakismaRizaModal
                 gorunur={rizaAcik}

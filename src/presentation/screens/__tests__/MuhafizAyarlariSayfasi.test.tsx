@@ -336,7 +336,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   it('kanal değişikliği yoğunluğu "ozel" YAPMAZ (zamanlama ekseni değil)', async () => {
-    const { getByText, getByLabelText, getByTestId } = await kur();
+    const { getByText, getByLabelText, getByTestId } = await kur({ sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
@@ -349,6 +349,33 @@ describe('MuhafizAyarlariSayfasi', () => {
     // emeğidir; yedeklenmezse sonraki preset dokunuşu onu UYARISIZ siler ve "Özel"
     // seçeneği görünmediği için geri dönüş kalmaz.
     expect(ozelMatrisYedegiGuncelle).toHaveBeenCalledWith(yeni);
+  });
+
+  it('BİRLEŞİK MODÜL: adımda sesli okuma İLK kez açılırken muhafızın rızası sorulur; onay adımla BİRLİKTE yazılır', async () => {
+    const { getByText, getByLabelText, getByTestId, queryByText } = await kur();
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+    // Rıza yokken hiçbir şey yazılmaz; "Sesli olmadan" da yazmaz.
+    expect(getByText('Sesli anons açılsın mı?')).toBeTruthy();
+    expect(matrisiGuncelle).not.toHaveBeenCalled();
+    fireEvent.press(getByLabelText('Sesli olmadan uygula'));
+    expect(queryByText('Sesli anons açılsın mı?')).toBeNull();
+    expect(matrisiGuncelle).not.toHaveBeenCalled();
+
+    fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);
+    fireEvent.press(getByLabelText('Sesli anonsu açın'));
+    expect(muhafizAyarlariniGuncelle).toHaveBeenCalledWith({ sesliOnayi: true });
+    const yeni: MuhafizMatrisi = (matrisiGuncelle as unknown as jest.Mock).mock.calls[0][0];
+    expect(yeni.ogle.seviyeler[0].kanallar).toEqual({ bildirim: true, sesli: true });
+  });
+
+  it('BİRLEŞİK MODÜL: "Hatırlatma ekleyin" yeni adımın detayını açar', async () => {
+    const { getByText, getByLabelText, getByTestId } = await kur();
+    fireEvent.press(getByText('Öğle'));
+    fireEvent.press(getByLabelText('Öğle vaktine hatırlatma ekleyin'));
+    expect(matrisiGuncelle).toHaveBeenCalledTimes(1);
+    expect(getByTestId('adim-bildirim-anahtari')).toBeTruthy();
   });
 
   // ── Adım aç/kapa anahtarı (Katman 2) ──────────────────────────────────────
@@ -436,7 +463,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   it('sesli okumayı açmak AÇIK titreşimi korur (bağımsız eksen)', async () => {
     const matris = varsayilanMatris();
     matris.ogle.seviyeler[0].kanallar = { bildirim: true, titresim: true };
-    const { getByText, getByLabelText, getByTestId } = await kur({ matris });
+    const { getByText, getByLabelText, getByTestId } = await kur({ matris, sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
 
@@ -501,7 +528,7 @@ describe('MuhafizAyarlariSayfasi', () => {
   });
 
   it('sesli okumaya geçince anons metni boş bırakılmaz (şablonla ön-doldurulur)', async () => {
-    const { getByText, getByLabelText, getByTestId } = await kur();
+    const { getByText, getByLabelText, getByTestId } = await kur({ sesliOnayi: true });
     fireEvent.press(getByText('Öğle'));
     fireEvent.press(getByLabelText(/1\. hatırlatma, Nazik ton — düzenleyin/));
     fireEvent(getByTestId('adim-sesli-anahtari'), 'valueChange', true);

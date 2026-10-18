@@ -2,12 +2,11 @@
  * Cuma namazı hatırlatması bölümü (issue #173; ortak hatırlatma yüzeyleri plan §5.1) —
  * Bildirim Ayarları'nda, yatış hatırlatmasının üstünde.
  *
- * ORTAK BİLEŞEN (AGENTS.md: "yeni hatırlatma yüzeyi için ayrı ekran YAZMA"): kart
- * `PencereKarti` (`stil="gomulu"`), adım detayı `AdimDetayModal`, önizleme
- * `AkisOnizlemeModal`, tanım `ekHatirlatmaPencereTanimi` — muhafız ve nafileyle AYNI
- * yetenekler: 1–3 adım, kanal çipleri (bildirim / sesli anons / ikisi / kapalı), ses,
- * titreşim, gerçek alarm + kapsamı, tekrar, akış önizlemesi, zaman şeridi (bu cumanın
- * öğlesi). İstisnalar (gerekçe kartta yazılı): yön sabit, ton yok, anons metni bağlamdan.
+ * BİRLEŞİK HATIRLATMA MODÜLÜ (`HatirlatmaModulu` + `useHatirlatmaDuzenleyici`; AGENTS.md:
+ * "yeni hatırlatma yüzeyi için ayrı ekran YAZMA") — muhafız ve nafileyle AYNI yetenekler:
+ * 1–3 adım, Bildirim + Sesli okuma anahtarları, ses, titreşim, sesli okuma METNİ (`{vakit}` =
+ * Cuma), gerçek alarm + kapsamı, tekrar, akış önizlemesi, zaman şeridi (bu cumanın öğlesi).
+ * İstisnalar (gerekçe kartta yazılı): yön sabit, ton yok.
  *
  * YAZMA DEBOUNCE'LU: stepper'a arka arkaya basmak TEK yazmaya/planlamaya inmeli (her
  * dispatch diske yazıp dört cumayı yeniden planlar). UI yerel taslaktan çizilir; ekrandan
@@ -28,11 +27,9 @@ import { useRenkler } from '../../../core/theme';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { cumaHatirlatmaAyariniGuncelle } from '../../store/cumaHatirlatmaSlice';
 import { Anahtar } from '../common/Anahtar';
-import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
-import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
+import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
@@ -48,11 +45,10 @@ import {
     cumaAyarlariniBirlestir,
     type CumaHatirlatmaAyarlari,
 } from '../../../core/cuma/cumaAyarlari';
-import { adimEkle, adimGuncelle, adimSil, adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
-import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { cumaAnonsMetni, cumaBildirimMetni, cumaMi, sonrakiCumalar } from '../../../core/utils/cumaYardimcisi';
 import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
-import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
+
 
 /** Taslağın diske yazılmadan önce beklediği süre (stepper → tek yazma). */
 export const CUMA_YAZMA_GECIKMESI_MS = 1200;
@@ -93,10 +89,8 @@ function buCumaninPenceresi(
     return undefined;
 }
 
-const vakitAyari = (a: Pick<CumaHatirlatmaAyarlari, 'adimlar'>): VakitMuhafizAyari => ({
-    yon: 'cikisaDogru',
-    seviyeler: a.adimlar,
-});
+/** Cumanın adım dönüşümleri (kısıtlarıyla) — modül düzeyinde, referans sabit. */
+const CUMA_ISLEMLERI = ekAdimIslemleri<CumaHatirlatmaAyarlari>(CUMA_ADIM_KISITLARI);
 
 export const CumaHatirlatmaBolumu: React.FC = () => {
     const renkler = useRenkler();
@@ -209,62 +203,12 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
         [ayarlar.adimlar.length, pencere, yetenekler]
     );
 
-    // ── Adım işlemleri ──
-    const [detay, setDetay] = useState<number | null>(null);
-    const [onizleme, setOnizleme] = useState(false);
-    const [sesliBekleyen, setSesliBekleyen] = useState<{ indeks: number; seviye: SeviyeAyari } | null>(null);
-    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
-    const alarmOnayiBekliyor = useRef(false);
-
-    const adimEkleyin = () => {
-        const yeni = adimEkle(ayarlar, 'cikisaDogru', CUMA_ADIM_KISITLARI);
-        if (yeni === ayarlar || !guncelle(yeni)) return;
-        const eskiEsikler = new Set(ayarlar.adimlar.map((a) => a.esikDk));
-        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
-        if (indeks >= 0) setDetay(indeks);
-    };
-
-    const adimAcKapa = (indeks: number, acik: boolean) => {
-        const mevcut = ayarlar.adimlar[indeks];
-        if (!mevcut) return;
-        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru', false) : seviyeyiKapat(mevcut);
-        if (seviye === mevcut) return;
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CUMA_ADIM_KISITLARI));
-    };
-
-    const adimDegistir = (indeks: number, seviye: SeviyeAyari) => {
-        const eski = ayarlar.adimlar[indeks];
-        if (!eski) return;
-        if (alarmOnayiBekliyor.current) {
-            alarmOnayiBekliyor.current = false;
-            guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CUMA_ADIM_KISITLARI), { alarmOnayi: true }, true);
-            return;
-        }
-        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
-        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
-            setSesliBekleyen({ indeks, seviye });
-            return;
-        }
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CUMA_ADIM_KISITLARI));
-    };
-
-    const sesliOnayla = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CUMA_ADIM_KISITLARI), { sesliOnayi: true }, true);
-    };
-
-    /** "Sesli olmadan": adım bildirimle kalır (titreşim/alarm korunur). */
-    const sesliOlmadan = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
-        guncelle(adimGuncelle(ayarlar, indeks, { ...seviye, kanallar }, 'cikisaDogru', CUMA_ADIM_KISITLARI));
-    };
-
-    const detaySeviyesi = detay !== null ? ayarlar.adimlar[detay] : undefined;
+    /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
+    const modulYaz = useCallback(
+        (yeni: CumaHatirlatmaAyarlari, riza: AdimRizasi): boolean =>
+            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
+        [guncelle]
+    );
 
     return (
         <View className="mb-6">
@@ -301,13 +245,22 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
 
                 {ayarlar.aktif && (
                     <View className="px-4 pb-4 pt-3 border-t" style={{ borderTopColor: `${renkler.sinir}50` }}>
-                        <PencereKarti
+                        <HatirlatmaModulu<CumaHatirlatmaAyarlari>
                             tanim={tanim}
-                            ayar={vakitAyari(ayarlar)}
-                            onAdimSec={(indeks) => setDetay(indeks)}
-                            onAdimEkle={adimEkleyin}
-                            onAdimAcKapa={ayarlar.adimlar.length > 1 ? adimAcKapa : undefined}
-                            onAkisiOnizle={() => setOnizleme(true)}
+                            deger={ayarlar}
+                            islemler={CUMA_ISLEMLERI}
+                            yaz={modulYaz}
+                            ttsDestekli={ttsDestekli}
+                            // Rızalar cumanın KENDİ kaydı (muhafızınki taşınmaz).
+                            sesliOnayiVar={ayarlar.sesliOnayi === true}
+                            alarmOnayiVar={ayarlar.alarmOnayi === true}
+                            sesliOnayMetinleri={{
+                                altBaslik: 'Cuma hatırlatmasında sesli okuma',
+                                kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                            }}
+                            silinebilirMi={(a) => a.adimlar.length > 1}
+                            // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
+                            onDetayKapandi={hemenYaz}
                             stil="gomulu"
                         />
 
@@ -321,57 +274,6 @@ export const CumaHatirlatmaBolumu: React.FC = () => {
                     </View>
                 )}
             </View>
-
-            {detay !== null && detaySeviyesi && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={tanim}
-                    seviyeler={ayarlar.adimlar}
-                    indeks={detay}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
-                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
-                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
-                        adimDegistir(detay, s);
-                    }}
-                    onSil={
-                        ayarlar.adimlar.length > 1
-                            ? () => {
-                                guncelle(adimSil(ayarlar, detay));
-                                setDetay(null);
-                            }
-                            : undefined
-                    }
-                    onKapat={() => {
-                        setDetay(null);
-                        // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
-                        hemenYaz();
-                    }}
-                    // Gerçek alarm rızası (#74) — cumanın KENDİ kaydı (muhafızınki taşınmaz).
-                    alarmOnayiVar={ayarlar.alarmOnayi === true}
-                />
-            )}
-
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={tanim}
-                    ayar={vakitAyari(ayarlar)}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(false)}
-                />
-            )}
-
-            <SesliOnayModal
-                gorunur={sesliBekleyen !== null}
-                altBaslik="Cuma hatırlatmasında sesli anons"
-                kapatmaNotu="Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz."
-                ornekMetin={sesliBekleyen ? cumaAnonsMetni(sesliBekleyen.seviye.esikDk) : ''}
-                ttsDestekli={ttsDestekli}
-                onOnayla={sesliOnayla}
-                onSessizUygula={sesliOlmadan}
-                onIptal={() => setSesliBekleyen(null)}
-            />
 
             {rehber.ogeler}
         </View>

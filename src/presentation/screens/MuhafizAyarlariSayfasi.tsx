@@ -28,7 +28,7 @@ import {
 import { useFeedback } from '../../core/feedback';
 import { useKonumMetni } from '../hooks/useKonumMetni';
 import { BildirimModali } from '../components/common/BildirimModali';
-import type { MuhafizMatrisi, MuhafizVakti, SeviyeAyari } from '../../core/muhafiz/matrisTipleri';
+import type { MuhafizMatrisi, MuhafizVakti, VakitMuhafizAyari } from '../../core/muhafiz/matrisTipleri';
 import { MUHAFIZ_VAKITLERI } from '../../core/muhafiz/matrisTipleri';
 import {
     tumVakitlereUygula,
@@ -38,7 +38,7 @@ import {
 } from '../../core/muhafiz/matrisIslemleri';
 import { eskidenMatriseGoc } from '../../core/muhafiz/muhafizGoc';
 import { matrisGecerliMi } from '../../core/muhafiz/motorAdaptoru';
-import { seviyeyiAc, seviyeyiKapat } from '../../core/muhafiz/seviyeAcKapa';
+import { adimKapaliMi } from '../../core/muhafiz/kanalKumesi';
 import { adimEkle, adimSil, adimSilinebilirMi } from '../../core/muhafiz/adimDuzenleme';
 import { ANONS_SABLONLARI, anonsMetniniCoz } from '../../core/muhafiz/anonsMetni';
 import { VAKIT_ADLARI } from '../../core/utils/muhafizMetinYardimcisi';
@@ -51,9 +51,9 @@ import { ArkaplanMuhafizServisi } from '../../domain/services/ArkaplanMuhafizSer
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { VakitSayacBildirimServisi } from '../../domain/services/VakitSayacBildirimServisi';
 import { Logger } from '../../core/utils/Logger';
-import { PencereKarti } from '../components/hatirlatma/PencereKarti';
-import { AdimDetayModal } from '../components/hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../components/hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu } from '../components/hatirlatma/HatirlatmaModulu';
+import type { AdimRizasi } from '../components/hatirlatma/AdimDetayModal';
+import type { HatirlatmaIslemleri } from '../hooks/useHatirlatmaDuzenleyici';
 import { vakitPencereTanimi } from '../components/hatirlatma/pencereTanimi';
 import { usePlatformYetenekleri } from '../hooks/usePlatformYetenekleri';
 import { vaktinYonunuDegistir } from '../../core/muhafiz/matrisIslemleri';
@@ -124,11 +124,9 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     const konumMetni = useKonumMetni(konumAyarlari);
 
     const [acikVakit, setAcikVakit] = useState<MuhafizVakti | null>(null);
-    const [detay, setDetay] = useState<{ vakit: MuhafizVakti; indeks: number } | null>(null);
     const [presetOnayi, setPresetOnayi] = useState<PresetYogunlugu | null>(null);
     const [sesliOnayi, setSesliOnayi] = useState<PresetYogunlugu | null>(null);
     const [tumuneOnayi, setTumuneOnayi] = useState<MuhafizVakti | null>(null);
-    const [onizleme, setOnizleme] = useState<MuhafizVakti | null>(null);
     /** Adım detayı açılırken matris + yoğunluk (kapanışta sığma simülasyonu için). */
     const detayOncesiRef = useRef<{
         matris: MuhafizMatrisi;
@@ -336,33 +334,6 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         },
     });
 
-    const seviyeGuncelle = useCallback(
-        (vakit: MuhafizVakti, indeks: number, yeniSeviye: SeviyeAyari) => {
-            matrisiYaz({
-                ...matris,
-                [vakit]: {
-                    // `...matris[vakit]` ŞART: vaktin `yon` alanı burada yazılmıyor ama
-                    // taşınıyor. Yalnız `seviyeler` yazılsaydı bir adımı düzenlemek
-                    // yönü SESSİZCE varsayılana (çıkışa doğru) döndürürdü.
-                    ...matris[vakit],
-                    seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeniSeviye : s)),
-                },
-            });
-        },
-        [matris, matrisiYaz]
-    );
-
-    /**
-     * Bir adımı tek dokunuşla açar/kapatır.
-     *
-     * Kapatma tüm kanalları kapatır (motorun tek doğruluk kaynağı `kanallar`), ama
-     * kapatma anındaki kümeyi `oncekiKanallar`'da saklar; açınca kullanıcının
-     * kurduğu küme geri gelir. Yol `seviyeGuncelle` → `matrisiYaz` olduğu için özel
-     * yedek ve plan tazeleme (debounce'lu yapilandirVePlanla) kendiliğinden çalışır
-     * — aksi halde kapatılan adımın O GÜN İÇİN ÖNCEDEN PLANLANMIŞ bildirimi yine
-     * çalardı. Kanal değişikliği zamanlama değişikliği DEĞİLDİR → yoğunluk 'ozel'e
-     * düşmez.
-     */
     /**
      * Yön değişiminin SONUCU (saf — dispatch yok). Hem gerçek değişim hem de "?"
      * modalının diğer yönü önizlemesi AYNI hesaptan geçer; ayrışırlarsa modal,
@@ -418,45 +389,65 @@ const MuhafizAyarlariIcerik: React.FC = () => {
     );
 
     /**
-     * Hatırlatma ekle / sil (issue #274). İkisi de `matrisiYaz`'dan geçer:
-     * adım sayısı değişimi ZAMANLAMA değişikliğidir (`zamanlamaDegistiMi`) →
-     * yoğunluk 'ozel' olur, özel yedek yazılır, plan debounce'la tazelenir.
+     * Vaktin adım dönüşümleri — birleşik hatırlatma modülü (`useHatirlatmaDuzenleyici`) bunları
+     * çağırır. Ekle / sil (issue #274) ZAMANLAMA değişikliğidir (`zamanlamaDegistiMi`) →
+     * `matrisiYaz` yoğunluğu 'ozel' yapar, özel yedeği yazar, planı debounce'la tazeler.
+     * `guncelle` vaktin `yon` alanını TAŞIR (`...v`): yalnız `seviyeler` yazılsaydı bir adımı
+     * düzenlemek yönü SESSİZCE varsayılana döndürürdü.
      */
-    const adimEkleVakte = useCallback(
-        (vakit: MuhafizVakti) => {
-            const yeni = adimEkle(matris[vakit], vakitPencereleri[vakit]);
-            if (yeni === matris[vakit]) return; // sınırda — eklenecek yer yok
-            const yeniMatris = { ...matris, [vakit]: yeni };
-            // EKLEME ANINDA SİMÜLASYON (issue #298): sığmayacak hatırlatma
-            // EKLENMEZ — rehber nedenini ve yer açma yollarını gösterir.
-            if (!rehber.degisikligiDene({ matris: yeniMatris })) return;
-            matrisiYaz(yeniMatris);
-        },
-        [matris, matrisiYaz, vakitPencereleri, rehber]
-    );
-
-    /** Adım detayını aç — kapanışta sığma simülasyonu için önceki hâli sakla. */
-    const detayiAc = useCallback(
-        (vakit: MuhafizVakti, indeks: number) => {
-            detayOncesiRef.current = {
-                matris,
-                yogunluk: muhafizAyarlari.yogunluk,
-                ozelMatrisYedegi: muhafizAyarlari.ozelMatrisYedegi,
+    const vakitIslemleri = useMemo(() => {
+        const sonuc = {} as Record<MuhafizVakti, HatirlatmaIslemleri<VakitMuhafizAyari>>;
+        for (const vakit of MUHAFIZ_VAKITLERI) {
+            sonuc[vakit] = {
+                adimlar: (v) => v.seviyeler,
+                ekle: (v) => adimEkle(v, vakitPencereleri[vakit]),
+                guncelle: (v, i, seviye) => ({ ...v, seviyeler: v.seviyeler.map((x, j) => (j === i ? seviye : x)) }),
+                sil: (v, i) => adimSil(v, i),
             };
-            setDetay({ vakit, indeks });
-        },
-        [matris, muhafizAyarlari.yogunluk, muhafizAyarlari.ozelMatrisYedegi]
-    );
+        }
+        return sonuc;
+    }, [vakitPencereleri]);
 
     /**
-     * Detay kapanışı = planlama anı. Modalda yapılan değişiklik (ör. tekrarı
-     * sıklaştırmak) sınırı aşırıyorsa geri alınır ve rehber açılır; öneriyle
-     * yer açılınca değişiklik öneriyle birlikte yazılır.
+     * Modülün yazıcısı. YAPISAL ARTIŞ (adım ekleme, kapalı adımı açma — liste anahtarı ya da
+     * detaydaki "Açın") ANINDA sığma simülasyonundan geçer (issue #298): sığmayan hatırlatma
+     * EKLENMEZ, rehber nedenini gösterir. Detaydaki diğer değişiklikler (ör. tekrarı
+     * sıklaştırmak) kapanışta simüle edilir (`detayKapandi`). Kanal değişikliği zamanlama
+     * değildir → yoğunluk 'ozel'e düşmez (`matrisiYaz` karar verir). Rıza (sesli / alarm)
+     * yalnız onay modalında verilir ve `muhafizSlice`'a yazılır.
      */
-    const detayiKapat = useCallback(() => {
+    const vakitYaz = useCallback(
+        (vakit: MuhafizVakti, yeni: VakitMuhafizAyari, riza: AdimRizasi): boolean => {
+            const eski = matris[vakit].seviyeler;
+            const artis =
+                yeni.seviyeler.length > eski.length ||
+                yeni.seviyeler.some((x, i) => !!eski[i] && adimKapaliMi(eski[i].kanallar) && !adimKapaliMi(x.kanallar));
+            const yeniMatris = { ...matris, [vakit]: yeni };
+            if (artis && !rehber.degisikligiDene({ matris: yeniMatris })) return false;
+            if (riza.alarmOnayi) dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }));
+            if (riza.sesliOnayi) dispatch(muhafizAyarlariniGuncelle({ sesliOnayi: true }));
+            matrisiYaz(yeniMatris);
+            return true;
+        },
+        [matris, matrisiYaz, rehber, dispatch]
+    );
+
+    /** Adım detayı açıldı — kapanışta sığma simülasyonu için önceki hâli sakla. */
+    const detayAcildi = useCallback(() => {
+        detayOncesiRef.current = {
+            matris,
+            yogunluk: muhafizAyarlari.yogunluk,
+            ozelMatrisYedegi: muhafizAyarlari.ozelMatrisYedegi,
+        };
+    }, [matris, muhafizAyarlari.yogunluk, muhafizAyarlari.ozelMatrisYedegi]);
+
+    /**
+     * Detay kapanışı = planlama anı. Modalda yapılan değişiklik sınırı aşırıyorsa geri alınır
+     * ve rehber açılır; öneriyle yer açılınca değişiklik öneriyle birlikte yazılır.
+     */
+    const detayKapandi = useCallback(() => {
         const once = detayOncesiRef.current;
         detayOncesiRef.current = null;
-        setDetay(null);
         if (!once || once.matris === matris) return;
         const sigdi = rehber.degisikligiDene(
             { matris },
@@ -472,39 +463,6 @@ const MuhafizAyarlariIcerik: React.FC = () => {
         }
         planlamayiKuyrugaAl();
     }, [matris, rehber, dispatch, muhafizAyarlari.yogunluk, planlamayiKuyrugaAl]);
-
-    const adimSilVakitten = useCallback(
-        (vakit: MuhafizVakti, indeks: number) => {
-            const yeni = adimSil(matris[vakit], indeks);
-            detayOncesiRef.current = null;
-            setDetay(null);
-            if (yeni === matris[vakit]) return; // son hatırlatma silinmez
-            matrisiYaz({ ...matris, [vakit]: yeni });
-        },
-        [matris, matrisiYaz]
-    );
-
-    const seviyeAcKapa = useCallback(
-        (vakit: MuhafizVakti, indeks: number, acik: boolean) => {
-            const mevcut = matris[vakit].seviyeler[indeks];
-            // Geri açılan adımın BOŞ anons kutusu yön-uygun şablonla dolar.
-            const yeni = acik ? seviyeyiAc(mevcut, matris[vakit].yon) : seviyeyiKapat(mevcut);
-            if (yeni === mevcut) return; // Zaten istenen durumda — gereksiz yazma yok.
-            // Adımı AÇMAK da hatırlatma eklemektir → aynı sığma simülasyonu (issue #298).
-            if (acik) {
-                const yeniMatris = {
-                    ...matris,
-                    [vakit]: {
-                        ...matris[vakit],
-                        seviyeler: matris[vakit].seviyeler.map((s, i) => (i === indeks ? yeni : s)),
-                    },
-                };
-                if (!rehber.degisikligiDene({ matris: yeniMatris })) return;
-            }
-            seviyeGuncelle(vakit, indeks, yeni);
-        },
-        [matris, seviyeGuncelle, rehber]
-    );
 
     /**
      * Preset'i yazar. `sesliIzinVar` false ise SESLİ kanal kapanır (bildirim kanalı
@@ -831,7 +789,7 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                         </Text>
 
                         {MUHAFIZ_VAKITLERI.map((vakit) => (
-                            <PencereKarti
+                            <HatirlatmaModulu<VakitMuhafizAyari>
                                 key={vakit}
                                 tanim={vakitPencereTanimi(
                                     vakit,
@@ -840,14 +798,20 @@ const MuhafizAyarlariIcerik: React.FC = () => {
                                     yetenekler,
                                     vakitPencereAnlari[vakit]
                                 )}
-                                ayar={matris[vakit]}
+                                deger={matris[vakit]}
+                                islemler={vakitIslemleri[vakit]}
+                                yaz={(yeni, riza) => vakitYaz(vakit, yeni, riza)}
+                                ttsDestekli={ttsDestekli}
+                                sesliOnayiVar={muhafizAyarlari.sesliOnayi === true}
+                                alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
+                                sesliOnayMetinleri={{ altBaslik: `${VAKIT_ADLARI[vakit]} vaktinde sesli okuma` }}
+                                silinebilirMi={adimSilinebilirMi}
+                                adimAnahtari="herZaman"
+                                onDetayAcildi={detayAcildi}
+                                onDetayKapandi={detayKapandi}
                                 acikMi={acikVakit === vakit}
                                 onAcKapa={() => setAcikVakit((onceki) => (onceki === vakit ? null : vakit))}
-                                onAdimSec={(indeks) => detayiAc(vakit, indeks)}
-                                onAdimAcKapa={(indeks, acik) => seviyeAcKapa(vakit, indeks, acik)}
-                                onAdimEkle={() => adimEkleVakte(vakit)}
                                 onTumPencerelereUygula={() => setTumuneOnayi(vakit)}
-                                onAkisiOnizle={() => setOnizleme(vakit)}
                                 onYonDegistir={(yon) => yonDegistir(vakit, yon)}
                                 // Yalnız AÇIK kart için hesaplanır (tek kart açık olabilir).
                                 karsiYonAyari={
@@ -867,52 +831,6 @@ const MuhafizAyarlariIcerik: React.FC = () => {
 
                 <View className="h-10" />
             </ScrollView>
-
-            {/* ── Katman 3 ── */}
-            {detay && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={vakitPencereTanimi(
-                        detay.vakit,
-                        matris[detay.vakit].yon,
-                        vakitPencereleri[detay.vakit],
-                        yetenekler,
-                        vakitPencereAnlari[detay.vakit]
-                    )}
-                    seviyeler={matris[detay.vakit].seviyeler}
-                    indeks={detay.indeks}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(yeniSeviye, riza) => {
-                        // Gerçek alarm rızası (issue #74) — yalnız onay modalında verilir.
-                        if (riza?.alarmOnayi) dispatch(muhafizAyarlariniGuncelle({ alarmOnayi: true }));
-                        seviyeGuncelle(detay.vakit, detay.indeks, yeniSeviye);
-                    }}
-                    onKapat={detayiKapat}
-                    onSil={
-                        adimSilinebilirMi(matris[detay.vakit])
-                            ? () => adimSilVakitten(detay.vakit, detay.indeks)
-                            : undefined
-                    }
-                    alarmOnayiVar={muhafizAyarlari.alarmOnayi === true}
-                />
-            )}
-
-            {/* Akışı önizle (spec 3.4) — gerçek bildirim göndermez */}
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={vakitPencereTanimi(
-                        onizleme,
-                        matris[onizleme].yon,
-                        vakitPencereleri[onizleme],
-                        yetenekler,
-                        vakitPencereAnlari[onizleme]
-                    )}
-                    ayar={matris[onizleme]}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(null)}
-                />
-            )}
 
             {/* Preset onayı — elle ayarlanmış zamanlama bu hazır yoğunluğa döner, ama
                 kaybolmaz: yedeklenir ve "Özel"e dönünce geri gelir. */}

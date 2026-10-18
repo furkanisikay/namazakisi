@@ -36,11 +36,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { camiyeGitAyariniGuncelle, camiyeGitAyarlariniYukle } from '../../store/camiyeGitSlice';
 import { Anahtar } from '../common/Anahtar';
 import { SayisalSecici } from '../common/SayisalSecici';
-import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
+import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { ekHatirlatmaPencereTanimi, VAKIT_ADLARI_KUCUK } from '../hatirlatma/pencereTanimi';
-import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
@@ -65,13 +63,11 @@ import {
     type CamiyeGitVakti,
 } from '../../../core/camiyeGit/camiyeGitAyarlari';
 import { camiyeGitAnonsMetni, camiyeGitMetniOlustur } from '../../../core/bildirim/camiyeGitPlani';
-import { adimEkle, adimGuncelle, adimSil, adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
-import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import { enYakinFavoriCami, type FavoriCami } from '../../../core/camiyeGit/yurumeSuresi';
 import { camideyimAyarlariniNormalize } from '../../../core/cami/camideyimAyarlari';
 import { turkiyeHesapParametreleri } from '../../../core/vakit/hesapParametreleri';
 import { VAKIT_ADLARI } from '../../../core/utils/muhafizMetinYardimcisi';
-import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
 import * as camiKoprusu from '../../../../modules/expo-cami-geofence/src';
 
 /** Stepper'a arka arkaya basmak TEK yazmaya insin (cuma bölümüyle aynı gerekçe). */
@@ -89,10 +85,8 @@ const oneriUygulanmaz = (): boolean => false;
 const mesafeMetni = (m: number): string =>
     m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1).replace('.', ',')} km`;
 
-const vakitAyari = (a: Pick<CamiyeGitAyarlari, 'adimlar'>): VakitMuhafizAyari => ({
-    yon: 'cikisaDogru',
-    seviyeler: a.adimlar,
-});
+/** Adım dönüşümleri (yüzey kısıtlarıyla) — modül düzeyinde, referans sabit. */
+const CAMIYE_GIT_ISLEMLERI = ekAdimIslemleri<CamiyeGitAyarlari>(CAMIYE_GIT_ADIM_KISITLARI);
 
 /**
  * Zaman şeridinin penceresi: girişi henüz gelmemiş İLK seçili vakit (bugün, yoksa yarın),
@@ -358,62 +352,12 @@ export const CamiyeGitBolumu: React.FC = () => {
         [ayarlar.adimlar.length, ornekVakit, pencere, sure, yetenekler]
     );
 
-    // ── Adım işlemleri (cuma deseni) ──
-    const [detay, setDetay] = useState<number | null>(null);
-    const [onizleme, setOnizleme] = useState(false);
-    const [sesliBekleyen, setSesliBekleyen] = useState<{ indeks: number; seviye: SeviyeAyari } | null>(null);
-    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
-    const alarmOnayiBekliyor = useRef(false);
-
-    const adimEkleyin = () => {
-        const yeni = adimEkle(ayarlar, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI);
-        if (yeni === ayarlar || !guncelle(yeni)) return;
-        const eskiEsikler = new Set(ayarlar.adimlar.map((a) => a.esikDk));
-        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
-        if (indeks >= 0) setDetay(indeks);
-    };
-
-    const adimAcKapa = (indeks: number, acik: boolean) => {
-        const mevcut = ayarlar.adimlar[indeks];
-        if (!mevcut) return;
-        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru', false) : seviyeyiKapat(mevcut);
-        if (seviye === mevcut) return;
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI));
-    };
-
-    const adimDegistir = (indeks: number, seviye: SeviyeAyari) => {
-        const eski = ayarlar.adimlar[indeks];
-        if (!eski) return;
-        if (alarmOnayiBekliyor.current) {
-            alarmOnayiBekliyor.current = false;
-            guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI), { alarmOnayi: true }, true);
-            return;
-        }
-        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
-        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
-            setSesliBekleyen({ indeks, seviye });
-            return;
-        }
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI));
-    };
-
-    const sesliOnayla = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI), { sesliOnayi: true }, true);
-    };
-
-    /** "Sesli olmadan": adım bildirimle kalır (titreşim/alarm korunur). */
-    const sesliOlmadan = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
-        guncelle(adimGuncelle(ayarlar, indeks, { ...seviye, kanallar }, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI));
-    };
-
-    const detaySeviyesi = detay !== null ? ayarlar.adimlar[detay] : undefined;
+    /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
+    const modulYaz = useCallback(
+        (yeni: CamiyeGitAyarlari, riza: AdimRizasi): boolean =>
+            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
+        [guncelle]
+    );
     const enErkenDk = Math.max(...ayarlar.adimlar.map((a) => a.esikDk));
 
     return (
@@ -551,13 +495,22 @@ export const CamiyeGitBolumu: React.FC = () => {
                         </Text>
 
                         <View className="mt-4">
-                            <PencereKarti
+                            <HatirlatmaModulu<CamiyeGitAyarlari>
                                 tanim={tanim}
-                                ayar={vakitAyari(ayarlar)}
-                                onAdimSec={(indeks) => setDetay(indeks)}
-                                onAdimEkle={adimEkleyin}
-                                onAdimAcKapa={ayarlar.adimlar.length > 1 ? adimAcKapa : undefined}
-                                onAkisiOnizle={() => setOnizleme(true)}
+                                deger={ayarlar}
+                                islemler={CAMIYE_GIT_ISLEMLERI}
+                                yaz={modulYaz}
+                                ttsDestekli={ttsDestekli}
+                                // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
+                                sesliOnayiVar={ayarlar.sesliOnayi === true}
+                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayMetinleri={{
+                                    altBaslik: 'Camiye gitme hatırlatmasında sesli okuma',
+                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                }}
+                                silinebilirMi={(a) => a.adimlar.length > 1}
+                                // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
+                                onDetayKapandi={hemenYaz}
                                 stil="gomulu"
                             />
                         </View>
@@ -576,57 +529,6 @@ export const CamiyeGitBolumu: React.FC = () => {
                     </View>
                 )}
             </View>
-
-            {detay !== null && detaySeviyesi && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={tanim}
-                    seviyeler={ayarlar.adimlar}
-                    indeks={detay}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
-                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
-                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
-                        adimDegistir(detay, s);
-                    }}
-                    onSil={
-                        ayarlar.adimlar.length > 1
-                            ? () => {
-                                guncelle(adimSil(ayarlar, detay));
-                                setDetay(null);
-                            }
-                            : undefined
-                    }
-                    onKapat={() => {
-                        setDetay(null);
-                        // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
-                        hemenYaz();
-                    }}
-                    // Gerçek alarm rızası (#74) — bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
-                    alarmOnayiVar={ayarlar.alarmOnayi === true}
-                />
-            )}
-
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={tanim}
-                    ayar={vakitAyari(ayarlar)}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(false)}
-                />
-            )}
-
-            <SesliOnayModal
-                gorunur={sesliBekleyen !== null}
-                altBaslik="Camiye gitme hatırlatmasında sesli anons"
-                kapatmaNotu="Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz."
-                ornekMetin={sesliBekleyen ? camiyeGitAnonsMetni(ornekVakit, sesliBekleyen.seviye.esikDk, sure) : ''}
-                ttsDestekli={ttsDestekli}
-                onOnayla={sesliOnayla}
-                onSessizUygula={sesliOlmadan}
-                onIptal={() => setSesliBekleyen(null)}
-            />
 
             {rehber.ogeler}
         </View>

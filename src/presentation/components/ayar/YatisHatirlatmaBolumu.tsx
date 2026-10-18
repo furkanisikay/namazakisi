@@ -29,18 +29,14 @@ import { useFeedback } from '../../../core/feedback';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { yatisHatirlatmaAyariniGuncelle } from '../../store/yatisHatirlatmaSlice';
 import { Anahtar } from '../common/Anahtar';
-import { PencereKarti } from '../hatirlatma/PencereKarti';
-import { AdimDetayModal, type AdimRizasi } from '../hatirlatma/AdimDetayModal';
-import { AkisOnizlemeModal } from '../hatirlatma/AkisOnizlemeModal';
+import { HatirlatmaModulu, ekAdimIslemleri } from '../hatirlatma/HatirlatmaModulu';
+import type { AdimRizasi } from '../hatirlatma/AdimDetayModal';
 import { ekHatirlatmaPencereTanimi } from '../hatirlatma/pencereTanimi';
-import { SesliOnayModal } from '../../screens/MuhafizAyarlari/SesliOnayModal';
 import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 import { useTurkceTtsDestegi } from '../../hooks/useTurkceTtsDestegi';
 import { useBildirimButcesi } from '../../hooks/useBildirimButcesi';
 import { useButceRehberi } from '../../hooks/useButceRehberi';
-import type { SeviyeAyari, VakitMuhafizAyari } from '../../../core/muhafiz/matrisTipleri';
-import { adimEkle, adimGuncelle, adimSil, adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
-import { seviyeyiAc, seviyeyiKapat } from '../../../core/muhafiz/seviyeAcKapa';
+import { adimYukuArtiyorMu } from '../../../core/hatirlatma/adimDizisi';
 import {
     YATIS_ADIM_KISITLARI,
     YATIS_DAKIKA_ADIM,
@@ -83,10 +79,8 @@ type AyarNavigasyonu = { navigate: (ekran: string) => void };
 /** Bu bölüm yalnız yatışı yazar → muhafız/nafile önerisi burada UYGULANMAZ (cuma deseni). */
 const oneriUygulanmaz = (): boolean => false;
 
-const vakitAyari = (a: Pick<YatisAyarlari, 'adimlar'>): VakitMuhafizAyari => ({
-    yon: 'cikisaDogru',
-    seviyeler: a.adimlar,
-});
+/** Adım dönüşümleri (yüzey kısıtlarıyla) — modül düzeyinde, referans sabit. */
+const YATIS_ISLEMLERI = ekAdimIslemleri<YatisAyarlari>(YATIS_ADIM_KISITLARI);
 
 /** Bu gecenin (yatışı henüz geçmemiş ilk namaz günü) penceresi: [yatış − 120 dk, yatış]. */
 function buGecePenceresi(a: Pick<YatisAyarlari, 'saat' | 'dakika'>, simdi: Date): { baslangic: Date; bitis: Date } {
@@ -248,62 +242,12 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
         [ayarlar.adimlar.length, ornek, pencere, yetenekler]
     );
 
-    // ── Adım işlemleri (cuma deseni) ──
-    const [detay, setDetay] = useState<number | null>(null);
-    const [onizleme, setOnizleme] = useState(false);
-    const [sesliBekleyen, setSesliBekleyen] = useState<{ indeks: number; seviye: SeviyeAyari } | null>(null);
-    /** `AlarmOnayModal` onaylandı; rıza bir sonraki adım yazımıyla birlikte kaydedilir. */
-    const alarmOnayiBekliyor = useRef(false);
-
-    const adimEkleyin = () => {
-        const yeni = adimEkle(ayarlar, 'cikisaDogru', YATIS_ADIM_KISITLARI);
-        if (yeni === ayarlar || !guncelle(yeni)) return;
-        const eskiEsikler = new Set(ayarlar.adimlar.map((a) => a.esikDk));
-        const indeks = yeni.adimlar.findIndex((a) => !eskiEsikler.has(a.esikDk));
-        if (indeks >= 0) setDetay(indeks);
-    };
-
-    const adimAcKapa = (indeks: number, acik: boolean) => {
-        const mevcut = ayarlar.adimlar[indeks];
-        if (!mevcut) return;
-        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru', false) : seviyeyiKapat(mevcut);
-        if (seviye === mevcut) return;
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', YATIS_ADIM_KISITLARI));
-    };
-
-    const adimDegistir = (indeks: number, seviye: SeviyeAyari) => {
-        const eski = ayarlar.adimlar[indeks];
-        if (!eski) return;
-        if (alarmOnayiBekliyor.current) {
-            alarmOnayiBekliyor.current = false;
-            guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', YATIS_ADIM_KISITLARI), { alarmOnayi: true }, true);
-            return;
-        }
-        const sesliAciliyor = seviye.kanallar?.sesli === true && eski.kanallar?.sesli !== true;
-        if (sesliAciliyor && ayarlar.sesliOnayi !== true) {
-            setSesliBekleyen({ indeks, seviye });
-            return;
-        }
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', YATIS_ADIM_KISITLARI));
-    };
-
-    const sesliOnayla = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', YATIS_ADIM_KISITLARI), { sesliOnayi: true }, true);
-    };
-
-    /** "Sesli olmadan": adım bildirimle kalır (titreşim/alarm korunur). */
-    const sesliOlmadan = () => {
-        if (!sesliBekleyen) return;
-        const { indeks, seviye } = sesliBekleyen;
-        setSesliBekleyen(null);
-        const kanallar = { ...seviye.kanallar, sesli: false, bildirim: true };
-        guncelle(adimGuncelle(ayarlar, indeks, { ...seviye, kanallar }, 'cikisaDogru', YATIS_ADIM_KISITLARI));
-    };
-
-    const detaySeviyesi = detay !== null ? ayarlar.adimlar[detay] : undefined;
+    /** Modülün yazıcısı: rıza İLK kez verildiyse adımla BİRLİKTE ve hemen yazılır. */
+    const modulYaz = useCallback(
+        (yeni: YatisAyarlari, riza: AdimRizasi): boolean =>
+            guncelle(yeni, riza, riza.sesliOnayi === true || riza.alarmOnayi === true),
+        [guncelle]
+    );
     const saatMetni = `${ikiHane(ayarlar.saat)}:${ikiHane(ayarlar.dakika)}`;
 
     // Yazın erken yatış (20:30) yatsı girişinden (~22:00) önce düşer: yatsı
@@ -437,13 +381,22 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                         )}
 
                         <View className="mt-4">
-                            <PencereKarti
+                            <HatirlatmaModulu<YatisAyarlari>
                                 tanim={tanim}
-                                ayar={vakitAyari(ayarlar)}
-                                onAdimSec={(indeks) => setDetay(indeks)}
-                                onAdimEkle={adimEkleyin}
-                                onAdimAcKapa={ayarlar.adimlar.length > 1 ? adimAcKapa : undefined}
-                                onAkisiOnizle={() => setOnizleme(true)}
+                                deger={ayarlar}
+                                islemler={YATIS_ISLEMLERI}
+                                yaz={modulYaz}
+                                ttsDestekli={ttsDestekli}
+                                // Rızalar bu yüzeyin KENDİ kaydı (muhafızınki taşınmaz).
+                                sesliOnayiVar={ayarlar.sesliOnayi === true}
+                                alarmOnayiVar={ayarlar.alarmOnayi === true}
+                                sesliOnayMetinleri={{
+                                    altBaslik: 'Yatış hatırlatmasında sesli okuma',
+                                    kapatmaNotu: 'Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz.',
+                                }}
+                                silinebilirMi={(a) => a.adimlar.length > 1}
+                                // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
+                                onDetayKapandi={hemenYaz}
                                 stil="gomulu"
                             />
                         </View>
@@ -468,57 +421,6 @@ export const YatisHatirlatmaBolumu: React.FC = () => {
                     </View>
                 )}
             </View>
-
-            {detay !== null && detaySeviyesi && (
-                <AdimDetayModal
-                    gorunur
-                    tanim={tanim}
-                    seviyeler={ayarlar.adimlar}
-                    indeks={detay}
-                    ttsDestekli={ttsDestekli}
-                    onDegistir={(s: SeviyeAyari, riza?: AdimRizasi) => {
-                        // Gerçek alarm rızası (#74) adım yazımıyla BİRLİKTE kaydedilir.
-                        if (riza?.alarmOnayi) alarmOnayiBekliyor.current = true;
-                        adimDegistir(detay, s);
-                    }}
-                    onSil={
-                        ayarlar.adimlar.length > 1
-                            ? () => {
-                                guncelle(adimSil(ayarlar, detay));
-                                setDetay(null);
-                            }
-                            : undefined
-                    }
-                    onKapat={() => {
-                        setDetay(null);
-                        // Modal kapanışında bekleyen yazma hemen uygulanır (planlama gecikmesin).
-                        hemenYaz();
-                    }}
-                    // Gerçek alarm rızası (#74) — yatışın KENDİ kaydı (muhafızınki taşınmaz).
-                    alarmOnayiVar={ayarlar.alarmOnayi === true}
-                />
-            )}
-
-            {onizleme && (
-                <AkisOnizlemeModal
-                    gorunur
-                    tanim={tanim}
-                    ayar={vakitAyari(ayarlar)}
-                    ttsDestekli={ttsDestekli}
-                    onKapat={() => setOnizleme(false)}
-                />
-            )}
-
-            <SesliOnayModal
-                gorunur={sesliBekleyen !== null}
-                altBaslik="Yatış hatırlatmasında sesli anons"
-                kapatmaNotu="Dilediğiniz zaman hatırlatmanın ayarından kapatabilirsiniz."
-                ornekMetin={ornek?.anons ?? ''}
-                ttsDestekli={ttsDestekli}
-                onOnayla={sesliOnayla}
-                onSessizUygula={sesliOlmadan}
-                onIptal={() => setSesliBekleyen(null)}
-            />
 
             {rehber.ogeler}
         </View>
