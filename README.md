@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.42.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.42.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -259,7 +259,7 @@ Kareler mağazadaki listelerle (Google Play, App Store) ve uygulamanın ekran g�
 |---|---|
 | 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) · 0.30.1 |
 | 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.30.1 |
-| ⌚ Wear OS saat | Google Play kapalı test (telefon uygulamasıyla birlikte) |
+| ⌚ Wear OS saat | Google Play'de yayında (telefon uygulamasıyla birlikte) |
 | 📺 Android TV | Google Play |
 | ⌚ Apple Watch | Geliştiriliyor — henüz mağazada değil |
 | 🔒 iPhone kilit ekranı, widget ve Dinamik Ada | Geliştiriliyor — henüz mağazada değil |
