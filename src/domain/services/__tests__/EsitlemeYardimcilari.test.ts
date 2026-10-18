@@ -20,11 +20,7 @@ jest.mock('expo-constants', () => ({
 }));
 
 import naclUtil from 'tweetnacl-util';
-import {
-  googleDriveIstemciKimligi,
-  googleYonlendirmeAdresi,
-  icloudEsitlemeEtkinMi,
-} from '../esitlemeYapilandirmasi';
+import { icloudEsitlemeEtkinMi } from '../esitlemeYapilandirmasi';
 import { kullanilabilirSaglayicilar, saglayicilariAyarla, saglayiciAl } from '../esitlemeSaglayicilari';
 import { ICLOUD_BOYUT_SINIRI, IcloudSaglayicisi } from '../IcloudSaglayicisi';
 import { EsitlemeAnahtarDeposu } from '../EsitlemeAnahtarDeposu';
@@ -33,31 +29,11 @@ import { KdfParametreleri } from '../../../core/esitleme/anahtarTuretme';
 
 const icloud = require('../../../../modules/expo-icloud-esitleme/src');
 const secureStore = require('expo-secure-store');
-const ISTEMCI = '123-abc.apps.googleusercontent.com';
+const googleYetki = require('../../../../modules/expo-google-yetki/src');
 
 describe('esitlemeYapilandirmasi', () => {
   afterEach(() => {
     mockEkstra.deger = {};
-  });
-
-  it('istemci kimliği yoksa / geçersizse null (sağlayıcı GÖRÜNMEZ)', () => {
-    expect(googleDriveIstemciKimligi('android')).toBeNull();
-    mockEkstra.deger = { googleDriveIstemciKimligi: 'gecersiz' };
-    expect(googleDriveIstemciKimligi('android')).toBeNull();
-  });
-
-  it('dize yalnız Android içindir; nesne platform başına', () => {
-    mockEkstra.deger = { googleDriveIstemciKimligi: ISTEMCI };
-    expect(googleDriveIstemciKimligi('android')).toBe(ISTEMCI);
-    expect(googleDriveIstemciKimligi('ios')).toBeNull();
-    mockEkstra.deger = { googleDriveIstemciKimligi: { ios: ISTEMCI } };
-    expect(googleDriveIstemciKimligi('android')).toBeNull();
-    expect(googleDriveIstemciKimligi('ios')).toBe(ISTEMCI);
-  });
-
-  it('yönlendirme: Android paket şeması, iOS ters istemci kimliği', () => {
-    expect(googleYonlendirmeAdresi(ISTEMCI, 'android')).toBe('com.furkanisikay.namazakisi:/oauth2redirect');
-    expect(googleYonlendirmeAdresi(ISTEMCI, 'ios')).toBe('com.googleusercontent.apps.123-abc:/oauth2redirect');
   });
 
   it('iCloud yalnız iOS + bayrakla', () => {
@@ -79,6 +55,17 @@ describe('esitlemeSaglayicilari', () => {
     expect(kullanilabilirSaglayicilar()).toEqual([]);
     expect(saglayiciAl(null)).toBeNull();
     expect(saglayiciAl('googleDrive')?.yapilandirildiMi()).toBe(false);
+  });
+
+  it('Drive istemci kimliği İSTEMEZ: köprü + Play hizmetleri varsa listede', () => {
+    googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(true);
+    try {
+      saglayicilariAyarla(null);
+      expect(kullanilabilirSaglayicilar().map((s) => s.kimlik)).toEqual(['googleDrive']);
+    } finally {
+      googleYetki.googleYetkisiKullanilabilirMi.mockReturnValue(false);
+      saglayicilariAyarla(null);
+    }
   });
 });
 

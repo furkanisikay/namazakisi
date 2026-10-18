@@ -73,6 +73,30 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
+    // Cihazlar arası eşitleme (#288). Yalnız Android: Drive yetkisi yerleşik Google
+    // hesabı onayıyla alınır. iOS'ta iCloud yolu ayrı bayrağa bağlı ve henüz açık değil.
+    {
+        id: 'cihazlar-arasi-esitleme-drive',
+        platformlar: ['android'],
+        surum: '0.42.0',
+        tarih: '2026-10-18',
+        baslik: 'Verileriniz Tüm Cihazlarınızda',
+        aciklama:
+            'Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir.',
+        detayAciklama:
+            'Google hesabınızı bir dokunuşla bağlarsınız; uygulama yalnız Drive\'daki kendi gizli klasörünü görür, dosyalarınıza erişemez. Verileriniz telefondan çıkmadan önce sizin parolanızla şifrelenir; parolayı biz de bilmeyiz, bu yüzden unutmamanız önemlidir. Eşitleme uygulamayı açtığınızda ve arka planda kendiliğinden yapılır; iki cihazda işaretlediğiniz namazlar birleştirilir, hiçbiri silinmez.',
+        detaylar: [
+            'Google hesabıyla tek dokunuşta bağlanma',
+            'Uçtan uca şifreleme: parola yalnız sizde',
+            'Drive\'da görünmeyen, yalnız uygulamaya ait klasör',
+            'Kılınan namazlar, seri ve kaza defteri birleştirilir',
+            'İstediğiniz an bağlantıyı kesebilirsiniz',
+        ],
+        ikon: 'sync-alt',
+        hedefSayfa: 'EsitlemeAyarlari',
+        ctaEtiketi: 'Eşitlemeyi açın',
+        kartGoster: true,
+    },
     // Wear OS saati (#281, #293, saat iş bölümü). Yalnız Android: Wear OS saati yalnız
     // Android telefonla eşleşir; Apple Watch ayrı duyurudur (yetenekli).
     {

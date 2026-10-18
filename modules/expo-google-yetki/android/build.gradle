@@ -1,0 +1,91 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
+
+group = 'expo.modules.googleyetki'
+version = '0.1.0'
+
+buildscript {
+  def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+  if (expoModulesCorePlugin.exists()) {
+    apply from: expoModulesCorePlugin
+    applyKotlinExpoModulesCorePlugin()
+  }
+
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23")
+  }
+}
+
+afterEvaluate {
+  publishing {
+    publications {
+      release(MavenPublication) {
+        from components.release
+      }
+    }
+    repositories {
+      maven {
+        url = mavenLocal().url
+      }
+    }
+  }
+}
+
+android {
+  namespace 'expo.modules.googleyetki'
+  compileSdkVersion safeExtGet("compileSdkVersion", 36)
+
+  defaultConfig {
+    minSdkVersion safeExtGet("minSdkVersion", 24)
+    targetSdkVersion safeExtGet("targetSdkVersion", 36)
+  }
+
+  publishing {
+    singleVariant("release") {
+      withSourcesJar()
+    }
+  }
+
+  lintOptions {
+    abortOnError false
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_17.majorVersion
+  }
+}
+
+repositories {
+  mavenCentral()
+  google()
+}
+
+dependencies {
+  implementation project(':expo-modules-core')
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.23"
+  // Google Identity Services — Authorization API (cihazlar arası eşitleme, issue #288).
+  // Lisans: "Android Software Development Kit License" (tüm com.google.android.gms
+  // artefaktları gibi; Apache-2.0 DEĞİL). Emsal: play-services-wearable (android/app)
+  // ve play-services-location (expo-cami-geofence) zaten aynı lisansla doğrudan bağımlı.
+  // 21.4.0 AAR metadata'sı: minCompileSdk 1, AGP >= 1.0.0, minSdk 21 → SDK 57
+  // (compileSdk 36, AGP 8.12, minSdk 24) ile uyumlu. ClearTokenRequest +
+  // RevokeAccessRequest bu sürümde VAR. AAR manifestleri (auth, auth-base, fido,
+  // auth-api-phone) uses-permission EKLEMEZ; yalnız SignInHubActivity ve gms imza
+  // izniyle korunan RevocationBoundService birleşir. 21.5+ kotlinx-coroutines-play-services
+  // gibi ek bağımlılık çeker, gerekmedi.
+  implementation "com.google.android.gms:play-services-auth:21.4.0"
+}
+
+def safeExtGet(prop, fallback) {
+  rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}

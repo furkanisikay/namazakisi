@@ -110,7 +110,9 @@ eşitleme hizmeti etkinse görünür. Siz açarsanız:
   şifrelenir (uçtan uca şifreleme). Ne biz ne de bulut hizmeti içeriği okuyabilir.
 - Ayarlarınız ve **konumunuz eşitlenmez**; her cihazda ayrı kalır.
 - Google Drive'da uygulama yalnızca kendi gizli klasörüne erişir (`drive.appdata`
-  izni); diğer dosyalarınızı göremez.
+  izni); diğer dosyalarınızı göremez. Google hesabınız telefonunuzdaki Google Play
+  hizmetlerinin onay ekranıyla bağlanır; uygulama Google parolanızı görmez ve izni
+  Google hesap ayarlarınızdan istediğiniz an geri alabilirsiniz.
 - Parolanız yalnızca o cihazın güvenli anahtar deposunda tutulur ve yedeklere girmez.
   Parolanızı unutursanız buluttaki veri **kurtarılamaz**; cihazlarınızdaki kayıtlar
   yerinde kalır.
