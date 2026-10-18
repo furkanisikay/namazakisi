@@ -4,7 +4,7 @@
 
 <!-- OTOMATIK bölgeler (OTOMATIK:BASLA … OTOMATIK:BITIR) scripts/belgeleri-guncelle.js ile kaynaktan üretilir; elle düzenlemeyin. -->
 <!-- OTOMATIK:BASLA rozetler -->
-![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.42.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
+![Sürüm](https://img.shields.io/badge/s%C3%BCr%C3%BCm-0.43.0-2e7d32.svg) ![Lisans](https://img.shields.io/badge/license-GPLv3-blue.svg) ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Wear%20OS-lightgrey.svg) ![Çevrimdışı](https://img.shields.io/badge/mode-Offline%20First-green.svg)
 <!-- OTOMATIK:BITIR rozetler -->
 
 Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini takip etmenizi, kaza namazlarınızı kaydetmenizi ve ibadet istikrarınızı korumanızı sağlayan modern, açık kaynaklı bir mobil uygulamadır.
@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.42.0** · Mağazada: Google Play: **0.42.0** · App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.43.0** · Mağazada: Google Play: **0.42.0** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -284,6 +284,7 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 ### 🆕 Son Eklenenler
 
 <!-- OTOMATIK:BASLA yenilikler -->
+- **Verileriniz Tüm Cihazlarınızda** — Kıldığınız namazları, seri ve kaza defterinizi kendi Google Drive alanınızda saklayıp diğer telefonunuz ya da tabletinizle eşitleyebilirsiniz. Veriler sizin belirlediğiniz parolayla şifrelenir. <sub>Android · 0.42.0</sub>
 - **Wear OS Saatinizde Namaz Akışı** — Galaxy Watch gibi Wear OS saatinizde vakti ve kalan süreyi kadranda görür, bilekten "Kıldım" der, tesbihat sayarsınız. Uyandırmanın ve sesli okumanın saatte mi telefonda mı olacağını siz seçersiniz. <sub>Android · 0.42.0</sub>
 - **Tüm Hatırlatmalar Aynı Ekranda** — Namaz muhafızı, nafile, cuma, camiye gitme, yatış ve takvim hatırlatmaları aynı ekranı ve aynı seçenekleri kullanır: birden çok hatırlatma, tekrar ve sesli okuma. <sub>Android · iOS · 0.40.0</sub>
 - **Cuma Namazı Hatırlatması** — Her cuma, öğle vaktinden istediğiniz kadar önce hatırlatalım — camiye rahatça yetişin. <sub>Android · iOS · 0.37.0</sub>
@@ -291,11 +292,11 @@ Bu proje, ticari bir kaygı güdülmeden, **"Sadaka-i Cariye"** niyetiyle geliş
 - **Yatmadan Önce Hatırlatma** — Her zamanki yatış saatinizi girin; yatsıyı işaretlemediyseniz uyumadan önce hatırlatalım, gün sonunda eksik vakitlerinizi tek bildirimde görün. <sub>Android · iOS · 0.37.0</sub>
 - **Toplantı Vakte Denk Gelirse Haber Verelim** — Takviminizdeki bir etkinlik bir namaz vaktinin sonunu kaplıyorsa, etkinlik başlamadan önce "toplantıdan önce kılın" diye uyaralım. <sub>Android · iOS · 0.37.0</sub>
 - **Nafile Namaz Vakitleri** — Kuşluk, evvâbîn ve teheccüd vakitlerini ana ekranda görebilir, namaz hatırlatmasındaki gibi birden çok hatırlatma kurabilirsiniz. <sub>Android · iOS · 0.34.0</sub>
-- **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 
 <details>
-<summary>Diğer 24 özellik</summary>
+<summary>Diğer 25 özellik</summary>
 
+- **Hatırlatmalarda Gerçek Alarm** — İstediğiniz hatırlatma adımında "Gerçek alarm"ı açın: o adımda telefonunuzun alarmı çalar, sessiz moddayken de duyulur. <sub>Android · iOS · 0.34.0</sub>
 - **Kaza Defteri Her Hareketi Hatırlıyor** — Eklediğiniz, kıldığınız ve bildirimden gelen her kaza ayrı bir satır olarak saklanır; yeniden hesapladığınızda emeğiniz kaybolmaz. İsterseniz kılınmayan farzlar namaz günü bitince kendiliğinden eklenir. <sub>Android · iOS · 0.33.0</sub>
 - **Yolculukta Bilgi Kartı** — İkamet yerinizden yaklaşık 90 km uzaklaştığınızda ana ekranda, Diyanet'in yolculuk (seferîlik) fetvalarını mezhebinize göre özetleyen kısa bir bilgi kartı görürsünüz. <sub>Android · iOS · 0.31.0</sub>
 - **Bilekliğinizde Tek Bakışta Okunur** — Hatırlatma başlıkları vakit adı ve kalan süreyle başlar: "Yatsı · 25 dk kaldı". Galaxy Fit, Mi Band gibi küçük ekranlarda bile önemli kısım görünür. <sub>Android · 0.31.0</sub>
