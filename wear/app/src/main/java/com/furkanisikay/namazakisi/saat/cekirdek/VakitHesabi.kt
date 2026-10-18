@@ -35,7 +35,7 @@ object VakitHesabi {
         val kilindi: Boolean,
         /** Saatte işaretlendi, telefondan onay bekleniyor */
         val esitleniyor: Boolean,
-        /** İşaretlenebilir mi? (güneş hiçbir zaman) */
+        /** İşaretlenebilir mi? (vakti girdi, kılınmadı, onay beklemiyor) */
         val isaretlenebilir: Boolean,
     )
 
@@ -44,6 +44,18 @@ object VakitHesabi {
             .sortedBy { it.ms }
 
     fun siradaki(yuk: Yuk, simdi: Long): VakitAni? = tumVakitler(yuk).firstOrNull { it.ms > simdi }
+
+    /**
+     * GÜNEŞ NAMAZ DEĞİLDİR, sabahın ÇIKIŞ sınırıdır. Sınır olarak zaman çizelgesinde,
+     * sayılan anda (sabah güneşe doğru sayar) ve kerahatte kalır; "sıradaki namaz", vakit
+     * listesi, Kıldım ve gün sayımı gibi NAMAZ soran her yüzeyden düşer. Telefonun
+     * `aktifVakitBul` kararıyla aynı: güneş→öğle arasında sıradaki ÖĞLEDİR.
+     */
+    fun namazMi(vakit: String): Boolean = vakit != "gunes"
+
+    /** Şu andan sonraki ilk NAMAZ vakti (güneş atlanır) — "Sıradaki vakit" tile'ı bunu okur. */
+    fun siradakiNamaz(yuk: Yuk, simdi: Long): VakitAni? =
+        tumVakitler(yuk).firstOrNull { it.ms > simdi && namazMi(it.vakit) }
 
     fun simdiki(yuk: Yuk, simdi: Long): VakitAni? = tumVakitler(yuk).lastOrNull { it.ms <= simdi }
 
@@ -134,13 +146,13 @@ object VakitHesabi {
     }
 
     /**
-     * Aktif günün altı satırı. `bekleyen` = saatte işaretlenip telefonda henüz
+     * Aktif günün BEŞ NAMAZ satırı (güneş namaz değildir, listede yok). `bekleyen` = saatte işaretlenip telefonda henüz
      * onaylanmamış "<tarih>_<vakit>" kimlikleri (iyimser gösterim).
      */
     fun satirlar(yuk: Yuk, simdi: Long, bugun: String, bekleyen: Set<String>): List<Satir> {
         val tarih = aktifGun(yuk, simdi, bugun)
         val gun = yuk.gunler.firstOrNull { it.tarih == tarih } ?: return emptyList()
-        return VAKITLER.map { v ->
+        return VAKITLER.filter { namazMi(it) }.map { v ->
             val ms = gun.vakitler.getValue(v)
             val kilindiTelefonda = v in gun.kilinan
             val bekliyor = !kilindiTelefonda && "${tarih}_$v" in bekleyen
@@ -152,7 +164,7 @@ object VakitHesabi {
                 girdi = ms <= simdi,
                 kilindi = kilindiTelefonda || bekliyor,
                 esitleniyor = bekliyor,
-                isaretlenebilir = v != "gunes" && ms <= simdi && !kilindiTelefonda && !bekliyor,
+                isaretlenebilir = ms <= simdi && !kilindiTelefonda && !bekliyor,
             )
         }
     }

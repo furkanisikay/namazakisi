@@ -1,6 +1,7 @@
 package com.furkanisikay.namazakisi.saat.cekirdek
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -131,6 +132,16 @@ class KomplikasyonCizelgesiTest {
         assertEquals(KalanSure.Mod.GIRIS, g.mod)
         assertEquals("Öğleye", g.kisaBaslik)
         assertEquals("Öğleye ^1", g.uzunSablon)
+        assertEquals("Öğle 13:05", g.uzunBaslik)
+    }
+
+    @Test
+    fun uzunBaslikta_gunesNamazAdiGibiGorunmez() {
+        // Sabah vakti güneşte çıkar; başlık "Güneş 07:01" değil "çıkış 07:01".
+        val sabah = KalanSure.gosterim("imsak", "gunes", "07:01")
+        assertEquals("çıkış 07:01", sabah.uzunBaslik)
+        assertFalse(sabah.aciklama.contains("Güneş"))
+        assertEquals("çıkış 15:42", KalanSure.gosterim("ogle", "ikindi", "15:42").uzunBaslik)
     }
 
     @Test

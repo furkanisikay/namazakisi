@@ -1,5 +1,8 @@
 package com.furkanisikay.namazakisi.saat.ui
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -145,7 +150,7 @@ private fun PusulaIcerigi(g: KibleGorunumu.Pusula) {
                 contentDescription = "${g.erisim}. Kıble ${derece(g.kibleAcisi)} derece, ${g.konumAdi}"
             },
     ) {
-        Halka(yonCizim = g.yonCizim, hedefCizim = g.hedefCizim, hizali = g.hizali)
+        Halka(yonCizim = g.yonCizim, hedefCizim = g.hedefCizim, hizali = g.hizali, vurgu = hizaVurgusu(g.hizali))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -218,7 +223,7 @@ private fun Mesaj(metin: String, alt: String? = null) {
  * `PusulaIcerigi`'nin tek erişim düğümünde.
  */
 @Composable
-private fun Halka(yonCizim: Double, hedefCizim: Double?, hizali: Boolean) {
+private fun Halka(yonCizim: Double, hedefCizim: Double?, hizali: Boolean, vurgu: Float = 0f) {
     val iz = renk(SaatPaleti.IZ)
     val ikincil = renk(SaatPaleti.METIN2)
     val metin = renk(SaatPaleti.METIN)
@@ -228,6 +233,11 @@ private fun Halka(yonCizim: Double, hedefCizim: Double?, hizali: Boolean) {
         val merkez = center
         val kalinlik = 6.dp.toPx()
         drawCircle(iz, radius = r - kalinlik / 2f, style = Stroke(kalinlik))
+        // Hizaya giriş vurgusu: yeşil halka bir kez dolup içe doğru söner (0 ve 1'de çizim yok).
+        if (vurgu > 0f && vurgu < 1f) {
+            val kalin = kalinlik * (1f + 2f * (1f - vurgu))
+            drawCircle(eylem.copy(alpha = 1f - vurgu), radius = r - kalin / 2f, style = Stroke(kalin))
+        }
         // Dünya sabit işaretler: 30°'de bir çentik, kuzeyde belirgin üçgen.
         rotate(-yonCizim.toFloat(), merkez) {
             for (i in 0 until 12) {
@@ -265,6 +275,28 @@ private fun Halka(yonCizim: Double, hedefCizim: Double?, hizali: Boolean) {
         }
     }
 }
+
+/**
+ * Hizaya GİRİŞTE tek seferlik vurgu (titreşimle aynı an): 0→1, 700 ms, sonra sus.
+ * Hizadan çıkışta hiçbir şey oynamaz; azaltılmış harekette hiç oynamaz (metin + renk
+ * zaten "Kıble yönündesiniz" der — bilgi yalnız hareketle verilmez).
+ */
+@Composable
+private fun hizaVurgusu(hizali: Boolean): Float {
+    val azalt = hareketAzaltilmis()
+    val vurgu = remember { Animatable(0f) }
+    LaunchedEffect(hizali) {
+        if (hizali && !azalt) {
+            vurgu.snapTo(0f)
+            vurgu.animateTo(1f, tween(HIZA_VURGU_MS, easing = FastOutSlowInEasing))
+        } else {
+            vurgu.snapTo(0f)
+        }
+    }
+    return vurgu.value
+}
+
+private const val HIZA_VURGU_MS = 700
 
 /** Merkezden `yaricap` uzaklıkta, kuzeyden saat yönünde `aci` (radyan) noktası. */
 private fun nokta(merkez: Offset, yaricap: Float, aci: Double): Offset =

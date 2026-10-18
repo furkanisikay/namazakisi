@@ -1,5 +1,6 @@
 package com.furkanisikay.namazakisi.saat.ui
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -169,14 +170,18 @@ fun VakitSayaci(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.clearAndSetSemantics { contentDescription = g.aciklama },
             ) {
-                Text(
-                    g.adSatiri,
-                    color = renk,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
+                // Vakit değişince (ya da son dakikalar başlayınca) ad yumuşakça yer değiştirir;
+                // olay tetikli, 300 ms, boşta hareket yok. Azaltılmış harekette anında.
+                Crossfade(targetState = g.adSatiri, animationSpec = tween(if (azalt) 0 else 300), label = "vakitAdi") { ad ->
+                    Text(
+                        ad,
+                        color = renk,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                    )
+                }
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
                         g.sayac.ana,
@@ -206,7 +211,10 @@ fun VakitSayaci(
                 )
             }
             Spacer(Modifier.height(4.dp))
-            KildimDugmesi(g, onKildim)
+            // "Kıldım" → "✓ Kılındı" dönüşümü de aynı yumuşak geçişle (onay katmanı kapanınca).
+            Crossfade(targetState = g.dugme, animationSpec = tween(if (azalt) 0 else 300), label = "kildimDugmesi") { d ->
+                KildimDugmesi(d, g, onKildim)
+            }
             if (g.noktalar.isNotEmpty()) {
                 Spacer(Modifier.height(4.dp))
                 GunNoktalari(g.noktalar, g.aktifNokta, renk)
@@ -216,8 +224,8 @@ fun VakitSayaci(
 }
 
 @Composable
-private fun KildimDugmesi(g: AnaEkranKarari.Gorunum, onKildim: () -> Unit) {
-    when (g.dugme) {
+private fun KildimDugmesi(dugme: AnaEkranKarari.Dugme, g: AnaEkranKarari.Gorunum, onKildim: () -> Unit) {
+    when (dugme) {
         AnaEkranKarari.Dugme.ISARETLE -> CompactButton(
             onClick = onKildim,
             colors = ButtonDefaults.buttonColors(
@@ -237,7 +245,7 @@ private fun KildimDugmesi(g: AnaEkranKarari.Gorunum, onKildim: () -> Unit) {
                 .clearAndSetSemantics { },
         ) {
             Text(
-                if (g.dugme == AnaEkranKarari.Dugme.ESITLENIYOR) "✓ Kılındı · eşitleniyor" else "✓ Kılındı",
+                if (dugme == AnaEkranKarari.Dugme.ESITLENIYOR) "✓ Kılındı · eşitleniyor" else "✓ Kılındı",
                 color = renk(SaatPaleti.EYLEM),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,

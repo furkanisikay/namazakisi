@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
@@ -65,6 +66,7 @@ import androidx.wear.compose.material3.Text
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
@@ -76,7 +78,8 @@ import kotlin.math.roundToInt
  *
  *  - İlk dokunuş bu katmanı açar (ana ekran düğmesi ya da liste satırı).
  *  - İkinci dokunuş: titreşim (`Confirm`) + `onOnayla` HEMEN (iyimser bekleyen yazılır,
- *    kuyruk yolu değişmez) → düğme 180 ms daralır → 300 ms onay işareti çizilir, yay
+ *    kuyruk yolu değişmez) → düğme 180 ms daralır → 300 ms onay işareti çizilir, dairenin
+ *    dışına bir halka BİR KEZ yayılıp söner (520 ms), yay
  *    yeşile döner → 450 ms sonra katman kapanır. Toplam ≈ 1,1 sn.
  *  - Kerahat vaktinde soru altında uyarı satırı: UYARIR, ENGELLEMEZ (telefon kuralı #82).
  *  - Vazgeç: küçük düğme, geri tuşu (`BackHandler`) ya da sağa kaydırma (elle; sistemin
@@ -112,6 +115,8 @@ fun KildimOnayi(
 
     // Sonuç: aynı katmanda dönüşüm, sonra kapanış.
     val tik = remember { Animatable(0f) }
+    // Tek seferlik vurgu: daire oturunca dışına bir halka bir kez yayılıp söner.
+    val halka = remember { Animatable(0f) }
     LaunchedEffect(onaylandi) {
         if (!onaylandi) return@LaunchedEffect
         if (azalt) {
@@ -119,6 +124,7 @@ fun KildimOnayi(
             delay(400)
         } else {
             delay(180)
+            launch { halka.animateTo(1f, tween(HALKA_MS, easing = CubicBezierEasing(0.2f, 0f, 0f, 1f))) }
             tik.animateTo(1f, tween(300, easing = LinearEasing))
             delay(450)
         }
@@ -221,7 +227,7 @@ fun KildimOnayi(
                     Text("Kıldım", fontWeight = FontWeight.Bold)
                 }
             } else if (onaylandi) {
-                OnayIsareti(dugmeGenislik, tik.value)
+                OnayIsareti(dugmeGenislik, tik.value, halka.value)
             }
         }
     }
@@ -229,7 +235,7 @@ fun KildimOnayi(
 
 /** Daralmış düğme: yeşil daire + çizilen onay işareti (dekoratif; sonuç ana ekranda okunur). */
 @Composable
-private fun OnayIsareti(genislik: Dp, ilerleme: Float) {
+private fun OnayIsareti(genislik: Dp, ilerleme: Float, halka: Float) {
     val yesil = renk(SaatPaleti.EYLEM)
     val ust = renk(SaatPaleti.EYLEM_USTU)
     Box(
@@ -237,6 +243,16 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float) {
         modifier = Modifier
             .padding(bottom = 14.dp)
             .size(width = genislik, height = 56.dp)
+            .drawBehind {
+                // 0 ve 1'de çizilmez: halka yalnız sahne sürerken vardır (boşta sıfır çizim).
+                if (halka > 0f && halka < 1f) {
+                    drawCircle(
+                        yesil.copy(alpha = 1f - halka),
+                        radius = size.minDimension / 2f + 22.dp.toPx() * halka,
+                        style = Stroke(width = 3.dp.toPx() * (1f - halka * 0.5f)),
+                    )
+                }
+            }
             .background(yesil, CircleShape)
             .clearAndSetSemantics { contentDescription = "Kılındı" },
     ) {
@@ -256,3 +272,4 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float) {
 
 private const val KAPATMA_ORANI = 0.3f
 private const val RED_GOSTERIM_MS = 1600L
+private const val HALKA_MS = 520

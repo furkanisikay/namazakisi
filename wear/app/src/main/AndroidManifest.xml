@@ -156,8 +156,10 @@
             </intent-filter>
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="SHORT_TEXT,LONG_TEXT,RANGED_VALUE,MONOCHROMATIC_IMAGE,SMALL_IMAGE" />
-            <!-- 0: periyodik güncelleme YOK — zaman çizelgesi + telefon verisi tetikler. -->
+                android:value="SHORT_TEXT,LONG_TEXT,MONOCHROMATIC_IMAGE,SMALL_IMAGE" />
+            <!-- Yalnız metin + ikon: RANGED_VALUE KASITLI YOK (kadran halka çizerdi; kalan süre
+                 düz okunmalı). Halka isteyen "Günlük ilerleme" kaynağını seçer.
+                 0: periyodik güncelleme YOK — zaman çizelgesi + telefon verisi tetikler. -->
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="0" />
