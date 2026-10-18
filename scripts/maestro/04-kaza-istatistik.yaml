@@ -32,6 +32,14 @@ appId: com.furkanisikay.namazakisi
     timeout: 120000
     waitToSettleTimeoutMs: 1500
 - tapOn: "Aylık"
+# Aylik icerik secicinin ALTINDA: "Vakit vakit" kartini ortala (sabit metin; ay adi degisken).
+- scrollUntilVisible:
+    element:
+      text: "Vakit vakit"
+    direction: DOWN
+    centerElement: true
+    timeout: 120000
+    waitToSettleTimeoutMs: 1500
 - waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: kareler/08-istatistik

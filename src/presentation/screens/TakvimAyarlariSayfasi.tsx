@@ -55,7 +55,7 @@ import { TemizleModali } from './TakvimAyarlari/TemizleModali';
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Depolama } from '../../data/local/Depolama';
 import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
 import { aktarimOzeti, bekleyenDegisiklikVarMi } from '../../core/takvim/aktarimOzeti';
 import { RizaModali } from '../components/ortak/RizaModali';
@@ -77,7 +77,7 @@ const takvimIzniIste = async (): Promise<void> => {
 const AdimBasligi: React.FC<{ no: number; metin: string; tamam?: boolean; sag?: React.ReactNode }> = ({ no, metin, tamam, sag }) => {
     const renkler = useRenkler();
     return (
-        <View className="flex-row items-center mb-3" accessibilityRole="header" accessible accessibilityLabel={`Adım ${no}: ${metin}`}>
+        <View className="flex-row items-center mb-3">
             <View
                 className="w-6 h-6 rounded-full items-center justify-center mr-2"
                 style={{ backgroundColor: tamam ? renkler.birincil : `${renkler.birincil}20` }}
@@ -88,7 +88,16 @@ const AdimBasligi: React.FC<{ no: number; metin: string; tamam?: boolean; sag?: 
                     <Text style={{ fontSize: 12, fontWeight: '700', color: renkler.birincil }}>{no}</Text>
                 )}
             </View>
-            <Text className="flex-1 text-sm font-bold" style={{ color: renkler.metin }}>{metin}</Text>
+            {/* Başlık rolü ve etiket YALNIZ metinde: satırı `accessible` yapmak sağdaki
+                "Yenile" düğmesini tek düğüme düzleştirir, TalkBack odaklanamazdı. */}
+            <Text
+                className="flex-1 text-sm font-bold"
+                style={{ color: renkler.metin }}
+                accessibilityRole="header"
+                accessibilityLabel={`Adım ${no}: ${metin}${tamam ? ', tamam' : ''}`}
+            >
+                {metin}
+            </Text>
             {sag}
         </View>
     );
@@ -501,7 +510,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
 
     useEffect(() => {
         let iptal = false;
-        AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM)
+        Depolama.ham(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM)
             .then((d) => { if (!iptal) setSonAktarim(d); })
             .catch(() => undefined);
         return () => { iptal = true; };
@@ -562,7 +571,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
         if (takvimOlaylariniOlustur.fulfilled.match(result)) {
             setOlusturmaSonucu({ sayi: result.payload.olusturulanSayi });
             setSonAktarim(aktarilan);
-            AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM, aktarilan).catch(() => undefined);
+            Depolama.hamYaz(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM, aktarilan).catch(() => undefined);
         } else {
             bildirimGoster(String(result.payload) || 'Etkinlikler oluşturulurken hata oluştu.', 'hata');
         }

@@ -212,6 +212,26 @@ async function seridiHizala() {
  * Alt kenardaki oge sekme cubugunun arkasinda kalabildigi icin yalnizca
  * bulunmasi yetmez (Android hattinda da ayni ders).
  */
+/**
+ * Ogeyi ekranin orta bandina getirir (dokunmaz). Bulunamazsa sessizce vazgecer;
+ * kare yine cekilir (yalniz ust kisim gorunur).
+ */
+async function ortayaGetir(kalip, ad) {
+    for (let i = 0; i < 6; i++) {
+        const a = await agac(`${ad}-${i}`);
+        const kok = a.find((o) => String(o.type || '') === 'Application');
+        const yuk = kok ? cerceve(kok).h : 956;
+        const o = bul(a, kalip);
+        if (o) {
+            const y = cerceve(o).y + cerceve(o).h / 2;
+            if (y > yuk * 0.25 && y < yuk * 0.6) return true;
+        }
+        idb('ui', 'swipe', '220', String(Math.round(yuk * 0.72)), '220', String(Math.round(yuk * 0.45)), '--duration', '1.0');
+        await bekle(1500);
+    }
+    return false;
+}
+
 async function kaydirarakDokun(kalip, aciklama, ad, secenek = {}) {
     for (let i = 0; i < 6; i++) {
         const a = await agac(`${ad}-${i}`);
@@ -336,6 +356,8 @@ function cek(ad) {
         // gorunuyordu. Kılma oranı seri panelinin ALTINDA → kaydirarak bulunur.
         // Etiket ", Aylık": ikonun bos etiketi virgulle eklenebiliyor.
         if (await kaydirarakDokun(/(^|, )Aylık$/, 'aylik secici', 'aylik', { bekle: 4000 })) {
+            // Aylik icerik secicinin ALTINDA: "Vakit vakit" kartini orta banda getir.
+            await ortayaGetir(/^Vakit vakit$/, 'vakit-vakit');
             await agac('aylik');
             cek('08-istatistik');
         }
