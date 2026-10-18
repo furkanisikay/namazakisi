@@ -91,7 +91,7 @@ interface CountdownNativeModule {
     /** Yeni köprü (issue #273) — eski native'de yoktur, opsiyonel tiplenir. */
     iptalEtOnekliAnonslar?(onek: string): number;
     bekleyenAnonsSayisi?(): Promise<number | null>;
-    trDestekleniyorMu(): Promise<boolean>;
+    trDestekleniyorMu(): Promise<boolean | null>;
     sesSecAsync(
         mevcutUri: string | null,
         baslik: string
@@ -115,7 +115,7 @@ interface CountdownNativeModule {
     canliAyarlariniAc?(): Promise<string | null>;
     pilOptimizasyonuMuafMi(): Promise<boolean | null>;
     pilAyarlariniAc(): Promise<string | null>;
-    samsungMu(): boolean;
+    samsungMu(): boolean | null;
     /** Sade tasarım (Dalga 1) — eski native ikili TAŞIMAZ (opsiyonel). */
     androidTamSurum?(): number | null;
     alarmSesDuzeyi?(): Promise<number>;
@@ -387,13 +387,19 @@ export async function pilAyarlariniAc(): Promise<AcilanPilEkrani | null> {
     }
 }
 
-/** Cihaz Samsung mu? Android disinda/eski build'de `false`. */
-export function samsungMu(): boolean {
-    if (Platform.OS !== 'android' || !ExpoCountdownNotification?.samsungMu) return false;
+/**
+ * Cihaz Samsung mu? Android disinda `false` (KESIN: iPhone Samsung degildir).
+ * Android'de modul yok / eski build / hata → `null` (BILINMIYOR): "Samsung degil" demek
+ * Samsung kullanicisina ozel rehberi (Rutinler, uyku listesi) yanlislikla gizlerdi.
+ */
+export function samsungMu(): boolean | null {
+    if (Platform.OS !== 'android') return false;
+    if (!ExpoCountdownNotification?.samsungMu) return null;
     try {
-        return ExpoCountdownNotification.samsungMu() === true;
+        const deger = ExpoCountdownNotification.samsungMu();
+        return typeof deger === 'boolean' ? deger : null;
     } catch {
-        return false;
+        return null;
     }
 }
 
@@ -426,15 +432,18 @@ export async function alarmSesiAcikMi(): Promise<boolean | null> {
 }
 
 /**
- * Cihazda Turkce TTS dil verisi kurulu mu?
- * Android disinda ve hata durumunda `false` doner (asla firlatmaz).
+ * Cihazda Turkce TTS dil verisi kurulu mu? UC DURUMLU, asla firlatmaz:
+ *   `true`  → kurulu, `false` → motor dili GERCEKTEN desteklemiyor (uyari gosterilir),
+ *   `null`  → bilinmiyor: Android disi, modul yok, native zaman asimi / motor acilamadi /
+ *             hata. "Yok" demek, yavas acilan TTS motorunda yanlis uyari yakardi.
  */
-export async function trDestekleniyorMu(): Promise<boolean> {
-    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return false;
+export async function trDestekleniyorMu(): Promise<boolean | null> {
+    if (Platform.OS !== 'android' || !ExpoCountdownNotification) return null;
     try {
-        return (await ExpoCountdownNotification.trDestekleniyorMu()) === true;
+        const deger = await ExpoCountdownNotification.trDestekleniyorMu();
+        return typeof deger === 'boolean' ? deger : null;
     } catch {
-        return false;
+        return null;
     }
 }
 

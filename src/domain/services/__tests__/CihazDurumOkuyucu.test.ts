@@ -48,4 +48,10 @@ describe('cihazDurumunuOku', () => {
         await expect(alaniOku('alarmSesiAcik')).resolves.toBeNull();
         await expect(alaniOku('widgetEkli')).resolves.toBeNull();
     });
+
+    it('Android köprüsüz: Samsung ve Türkçe ses BİLİNMİYOR (null) — "değil/yok" uydurulmaz', async () => {
+        jest.replaceProperty(Platform, 'OS', 'android');
+        await expect(alaniOku('samsung')).resolves.toBeNull();
+        await expect(alaniOku('turkceTts')).resolves.toBeNull();
+    });
 });

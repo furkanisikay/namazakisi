@@ -146,7 +146,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     let iptal = false;
     pilDurumunuOku().then((p) => {
-      if (!iptal) setPilAdimiGerekli(p.samsung && p.muaf === false);
+      if (!iptal) setPilAdimiGerekli(p.samsung === true && p.muaf === false);
     });
     return () => {
       iptal = true;

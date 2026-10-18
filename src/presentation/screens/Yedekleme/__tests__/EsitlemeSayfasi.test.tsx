@@ -133,6 +133,33 @@ describe('EsitlemeSayfasi', () => {
     ic.icloudModuluVarMi.mockReturnValue(false);
   });
 
+  it('iCloud hesabı BİLİNMİYORSA (köprü hatası → null) engel yazılmaz, iCloud seçilebilir', async () => {
+    const ic = require('../../../../../modules/expo-icloud-esitleme/src');
+    ic.icloudModuluVarMi.mockReturnValue(true);
+    ic.icloudHesapVarMi.mockResolvedValue(null);
+    mockKanca.saglayicilar = [
+      { kimlik: 'googleDrive', ad: 'Google Drive' },
+      { kimlik: 'icloud', ad: 'iCloud' },
+    ];
+    try {
+      const { getByLabelText, getByText, queryByText } = render(<EsitlemeSayfasi />);
+      fireEvent(getByLabelText('Cihazlar arası eşitleme'), 'valueChange', true);
+      fireEvent.press(getByText('Anladım, devam edin'));
+      await waitFor(() => expect(ic.icloudHesapVarMi).toHaveBeenCalled());
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(queryByText(/iCloud'a giriş yapılmamış/)).toBeNull();
+      await act(async () => {
+        fireEvent.press(getByText('iCloud'));
+      });
+      expect(mockKanca.baglan).toHaveBeenCalledWith('icloud');
+    } finally {
+      ic.icloudModuluVarMi.mockReturnValue(false);
+      ic.icloudHesapVarMi.mockResolvedValue(false);
+    }
+  });
+
   it('kısa parola kabul edilmez', async () => {
     const { getByLabelText, getByText, findByText } = render(<EsitlemeSayfasi />);
     fireEvent(getByLabelText('Cihazlar arası eşitleme'), 'valueChange', true);

@@ -63,7 +63,8 @@ export const EsitlemeSayfasi: React.FC = () => {
       const ic = require('../../../../modules/expo-icloud-esitleme/src') as typeof import('../../../../modules/expo-icloud-esitleme/src');
       if (ic.icloudModuluVarMi()) {
         void ic.icloudHesapVarMi().then((var_) => {
-          if (!iptal) setIcloudEngeli(var_ ? null : "Bu cihazda iCloud'a giriş yapılmamış. Ayarlar'dan giriş yapıp yeniden deneyin.");
+          // Yalnız KESİN "yok" engel yazar; bilinmiyor (`null`, köprü hatası) → sus.
+          if (!iptal) setIcloudEngeli(var_ === false ? "Bu cihazda iCloud'a giriş yapılmamış. Ayarlar'dan giriş yapıp yeniden deneyin." : null);
         });
       }
     }

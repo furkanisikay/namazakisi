@@ -31,7 +31,8 @@ export interface Sorun {
  */
 export interface PilDurumu {
   muaf: boolean | null;
-  samsung: boolean;
+  /** `null` = bilinmiyor (Android ama köprü yok/hata) → genel metin. */
+  samsung: boolean | null;
 }
 
 export interface SaglikGirdisi {

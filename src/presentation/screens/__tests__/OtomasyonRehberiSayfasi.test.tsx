@@ -74,6 +74,13 @@ describe('OtomasyonRehberiSayfasi', () => {
         expect(ekran.queryByText('Öğle vakti girdi')).toBeNull();
     });
 
+    it('Samsung olup olmadığı BİLİNMİYORSA (null) Rutinler sekmesi gizlenmez', () => {
+        mockCihaz.samsung = null;
+        const ekran = kur();
+        expect(ekran.getByTestId('rehber-sekme-rutinler')).toBeTruthy();
+        expect(ekran.getByText('Öğle vakti girdi')).toBeTruthy();
+    });
+
     it('güven listesine götürür', () => {
         const ekran = kur();
         fireEvent.press(ekran.getByTestId('rehber-guven-listesi'));

@@ -22,12 +22,18 @@ export function icloudModuluVarMi(): boolean {
     return Platform.OS === 'ios' && ExpoIcloudEsitleme !== null;
 }
 
-export async function icloudHesapVarMi(): Promise<boolean> {
+/**
+ * iCloud hesabi acik mi? Modul yoksa `false` (bu ortamda iCloud yok). Kopru HATASI
+ * `null` (bilinmiyor): "giris yapilmamis" demek, girisli kullaniciya yanlis engel
+ * gosterirdi. Cagiran `=== true` / `=== false` ile ayirir.
+ */
+export async function icloudHesapVarMi(): Promise<boolean | null> {
     if (!icloudModuluVarMi() || !ExpoIcloudEsitleme) return false;
     try {
-        return await ExpoIcloudEsitleme.hesapVarMi();
+        const var_ = await ExpoIcloudEsitleme.hesapVarMi();
+        return typeof var_ === 'boolean' ? var_ : null;
     } catch {
-        return false;
+        return null;
     }
 }
 

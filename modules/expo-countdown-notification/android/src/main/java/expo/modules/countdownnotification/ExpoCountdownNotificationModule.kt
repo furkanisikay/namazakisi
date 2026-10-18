@@ -391,11 +391,15 @@ class ExpoCountdownNotificationModule : Module() {
             promise.resolve(duzey)
         }
 
-        /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */
+        /**
+         * Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.)
+         * Uc durum: true / false (gercekten yok) / null (bilinmiyor: baglam yok, zaman
+         * asimi, hata). JS yalniz `false`ta uyari gosterir.
+         */
         AsyncFunction("trDestekleniyorMu") { promise: Promise ->
             val context = appContext.reactContext
             if (context == null) {
-                promise.resolve(false)
+                promise.resolve(null)
             } else {
                 try {
                     AnonsKonusucu.turkceDestekleniyorMu(context.applicationContext) { destekleniyor ->
@@ -403,7 +407,7 @@ class ExpoCountdownNotificationModule : Module() {
                     }
                 } catch (e: Exception) {
                     Log.e("CountdownModule", "TTS dil sorgusu basarisiz: ${e.message}")
-                    promise.resolve(false)
+                    promise.resolve(null)
                 }
             }
         }
