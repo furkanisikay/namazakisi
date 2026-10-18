@@ -5,6 +5,26 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.44.0] - 2026-10-18
+
+### Eklendi
+- [neler-yeni] "Daha sade uygulama" duyurusu; hedef sayfalar yeni rotalara
+- [ayarlar] tek Hatırlatmalar sayfası, görev gruplu Ayarlar kökü, Namazda sessiz
+- [muhafiz] düzey seçici ortak kancada, vakit vakit ayar "Kendim ayarlayayım" katında
+- [riza] sesli okuma ve gerçek alarm onayı tüm hatırlatmalar için tek
+- [ana-ekran] tek durum alanı, dönüşen Kıldım, tek durum dili
+- [kurulum] sihirbaz 5 adıma iner, temaya uyar, izni önce okur
+
+### Düzeltildi
+- [camideyim] master'ın "sessiz gelsin" düzeltmesi Namazda sessiz'e taşındı
+- [sade] Opus incelemesi — Camilerim veri kaybı, kapatma öncesi seçim, rıza birleşimi
+- [sade] Opus incelemesi — kerahat/muhafız, kurulum kaydı, Kılınmadı durumu
+- [kurulum] adım sonucu VoiceOver'a da duyurulur
+
+### Değiştirildi
+- [metin] kalan "sesli anons" ve ham yer tutucu ekrandan kalktı
+- [metin] ekranda teknik terim kalmasın — ton yerine sertlik, anons yerine sesli okuma
+
 ## [0.43.0] - 2026-10-18
 
 ### Eklendi
