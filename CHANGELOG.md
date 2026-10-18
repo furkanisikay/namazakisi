@@ -5,6 +5,25 @@ Bu dosyada projenin tüm önemli değişiklikleri belgelenmiştir.
 Format [Keep a Changelog](https://keepachangelog.com/tr/1.0.0/) standardına dayanmaktadır.
 [Semantik Sürümleme](https://semver.org/lang/tr/) kullanılmaktadır.
 
+## [0.38.0] - 2026-10-18
+
+### Eklendi
+- [wear] kare hattı yeni ekrana uyarlandı, 07-ana-ambient; AGENTS.md
+- [wear] tile'lar yeni düzende, dakikalık kalan süre dinamik
+- [wear] tesbihat üç yay, faz parlaması ve 100. sayım
+- [wear] vakit yayı ana ekranı, vakit listesi, Kıldım onayı ve ambient
+- [wear] ana ekran görünüm kararı ve ortak ambient kaydırması
+- [wear] sayılan an tek kural (VakitHesabi.sayilanAn)
+- [wear] tek renk kaynağı SaatPaleti ve saat teması
+
+### Düzeltildi
+- [wear] Sıradaki vakit tile'ı 24 girdiyle sınırlı (~215 KB -> ~29 KB)
+- [wear] tesbihat parlaması iptal edilince yay kalın kalmaz
+- [wear] reddedilen Kıldım onayı başarı göstermez, katman TalkBack için modal
+- [wear] Kıldım hapı 48 dp, onay açıkken taç arkadaki listeyi kaydırmaz
+- [wear] komplikasyon eklenince uygulama açılmıyordu; vaktin çıkışına kalan süre
+- [wear] saat simgesi adaptive, beyaz köşeler kalktı
+
 ## [0.37.0] - 2026-10-17
 
 ### Eklendi
