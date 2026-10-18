@@ -77,6 +77,23 @@ describe('VakitAkisi Bileşeni', () => {
     }
   });
 
+  it('NÖBETÇİ: aktif günde çıkmış ve kılınmamış vakit "Kılınmadı" der, "Vakti geldi" DEMEZ', () => {
+    // Saat sahtelenmez: "giriş geçti mi" kararını doğrudan veriyoruz (deterministik).
+    jest.spyOn(gunNavigasyon, 'vakitGectiMi').mockImplementation((saat: string) => saat <= '17:05');
+    const { getByLabelText } = render(
+      <VakitAkisi
+        {...varsayilanProps}
+        namazlar={namazUret(bugunuAl(), SAATLER)}
+        suankiVakitAdi={NamazAdi.Ikindi}
+        gunTarihiIso={bugunuAl()}
+      />
+    );
+    expect(getByLabelText(`${NamazAdi.Sabah} vakti, 04:30, kılınmadı`)).toBeTruthy();
+    expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, kılınmadı`)).toBeTruthy();
+    expect(getByLabelText(`${NamazAdi.Ikindi} vakti, 17:05, vakti geldi`)).toBeTruthy();
+    expect(getByLabelText(`${NamazAdi.Aksam} vakti, 20:10, henüz girmedi`)).toBeTruthy();
+  });
+
   it('REGRESYON (gece yarısı): aktif gün DÜN iken dünün tüm vakitleri işaretlenebilir', () => {
     // Yaşanmış bug: gece yarısından sonra yatsı sürerken aktif gün dündür ve ekran
     // dünün saatlerini listeler. "Vakit geçti mi" hesabı saati BUGÜNÜN takvim gününe
@@ -101,7 +118,7 @@ describe('VakitAkisi Bileşeni', () => {
 
     // Yatsı DIŞINDAKİ dört vakit de tıklanabilmeli (bug'da hepsi disabled'dı).
     for (const ad of [NamazAdi.Sabah, NamazAdi.Ogle, NamazAdi.Ikindi, NamazAdi.Aksam]) {
-      const satir = getByLabelText(`${ad} vakti, ${SAATLER[ad]}, vakti geldi`);
+      const satir = getByLabelText(`${ad} vakti, ${SAATLER[ad]}, kılınmadı`);
       fireEvent.press(satir);
     }
     expect(onVakitTikla).toHaveBeenCalledTimes(4);
@@ -145,7 +162,7 @@ describe('VakitAkisi Bileşeni', () => {
       />
     );
 
-    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, vakti geldi`));
+    fireEvent.press(getByLabelText(`${NamazAdi.Yatsi} vakti, 23:59, kılınmadı`));
     expect(onVakitTikla).toHaveBeenCalledWith(NamazAdi.Yatsi, true);
   });
 
@@ -163,7 +180,7 @@ describe('VakitAkisi Bileşeni', () => {
       for (const saat of Object.values(SAATLER)) {
         expect(getByText(saat)).toBeTruthy();
       }
-      expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, vakti geldi`)).toBeTruthy();
+      expect(getByLabelText(`${NamazAdi.Ogle} vakti, 13:15, kılınmadı`)).toBeTruthy();
     });
 
     it('saat bilinmiyorsa etikette boş virgül kalmaz', () => {
@@ -173,7 +190,7 @@ describe('VakitAkisi Bileşeni', () => {
         <VakitAkisi {...varsayilanProps} aktifGunMu={false} namazlar={namazlar}
           suankiVakitAdi="" gunTarihiIso={dun} />
       );
-      expect(getByLabelText(`${NamazAdi.Sabah} vakti, vakti geldi`)).toBeTruthy();
+      expect(getByLabelText(`${NamazAdi.Sabah} vakti, kılınmadı`)).toBeTruthy();
     });
 
     it('bağlantı yalnız kılınan vakitten ulaşılan vakte kadar dolar, iki yarısı aynı renktir', () => {

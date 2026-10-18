@@ -203,6 +203,8 @@ export interface MekruhVakitBilgisi {
   mekruhMu: boolean;
   aciklama: string | null;
   bitis: Date | null; // mekruh bitiş zamanı
+  /** Hangi kerahat (yalnız `mekruhMu` iken): metni duruma göre seçmek için (`core/anaEkran/kerahatNotu`). */
+  tur?: 'suruk' | 'istiva' | 'gurub';
 }
 
 /**
@@ -243,6 +245,7 @@ export const mekruhVakitKontrolEt = (
         aciklama:
           `Güneş doğuş vaktidir (şuruk). Bu vakitte ${namazTuru} kılınması mekruhtur. Güneş iyice yükselene kadar bekleyiniz.`,
         bitis: surukBitis,
+        tur: 'suruk',
       };
     }
 
@@ -254,6 +257,7 @@ export const mekruhVakitKontrolEt = (
         aciklama:
           `Güneş tam tepede (istiwa vakti). Bu vakitte ${namazTuru} kılınması mekruhtur. Öğle ezanını bekleyiniz.`,
         bitis: dhuhr,
+        tur: 'istiva',
       };
     }
 
@@ -270,6 +274,7 @@ export const mekruhVakitKontrolEt = (
         aciklama:
           `Güneş batış vaktidir (gurub). Bu vakitte ${namazTuru} kılınması mekruhtur. Akşam ezanını bekleyiniz.`,
         bitis: sunset,
+        tur: 'gurub',
       };
     }
 

@@ -5,10 +5,10 @@ describe('durumSec', () => {
         expect(durumSec([])).toEqual({ birincil: null, gizlenenler: [] });
     });
 
-    it('kerahat > muhafız > toparlanma > seferîlik > diğer; girdi sırası önemsiz', () => {
-        expect(durumSec(['sadeDonus', 'seferilik', 'toparlanma', 'muhafiz', 'kerahat'])).toEqual({
+    it('kerahat > muhafız > toparlanma > seferîlik; girdi sırası önemsiz', () => {
+        expect(durumSec(['seferilik', 'toparlanma', 'muhafiz', 'kerahat'])).toEqual({
             birincil: 'kerahat',
-            gizlenenler: ['muhafiz', 'toparlanma', 'seferilik', 'sadeDonus'],
+            gizlenenler: ['muhafiz', 'toparlanma', 'seferilik'],
         });
         expect(durumSec(['seferilik', 'toparlanma'])).toEqual({ birincil: 'toparlanma', gizlenenler: ['seferilik'] });
     });

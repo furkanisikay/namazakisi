@@ -14,6 +14,13 @@ interface VakitKartiProps {
     suankiVakitAdi: string; // "İkindi"
     vakitAraligi: string; // "15:15 - 17:42"
     tamamlandi: boolean;
+    /**
+     * Namaz kaydı GÖSTERİLEN güne ait mi? Değilse (gün değişirken bayat kayıt) Kıldım
+     * düğmesi HİÇ doğmaz: bayat "kılınmadı" ile doğup kayıt gelince "Kılındı"ya geçseydi
+     * dönüşüm animasyonu ve "Kılındı" duyurusu yanlış yere oynardı (sade görünümdeki
+     * `kayitHazir` deseni). Varsayılan `true`.
+     */
+    kayitHazir?: boolean;
     onTamamla: () => void;
     kilitli?: boolean;
     konumModu?: 'oto' | 'manuel';
@@ -53,6 +60,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
     suankiVakitAdi,
     vakitAraligi,
     tamamlandi,
+    kayitHazir = true,
     onTamamla,
     kilitli = false,
     konumModu,
@@ -166,6 +174,8 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                     <Text className="text-sm text-center" style={{ color: renkler.metin }}>
                         Vakti girince işaretleyebilirsiniz
                     </Text>
+                ) : !kayitHazir ? (
+                    <View testID="vakit-karti-kayit-bekleniyor" style={{ alignSelf: 'stretch', height: 48 }} />
                 ) : (
                     <View style={{ alignSelf: 'stretch' }}>
                         <KildimDugmesi

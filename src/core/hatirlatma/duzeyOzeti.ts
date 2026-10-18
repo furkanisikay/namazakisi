@@ -53,8 +53,20 @@ export function duzeyiOlc(seviyeler: PresetSeviyeleri): DuzeyOlcusu {
 /** Seçicinin altındaki tek cümle (≤ 12 kelime). */
 export function duzeyCumlesi(duzey: HatirlatmaDuzeyi, olcu: DuzeyOlcusu | null): string {
     if (duzey === 'kapali' || !olcu) return 'Vakit çıkmadan hatırlatma gelmez.';
-    const ses = olcu.sesli ? 'Son dakikada sesli okur.' : 'Hepsi sessiz bildirim.';
+    const ses = olcu.sesli ? 'Son dakikada sesli okur.' : 'Sesli okuma yok.';
     return `Çıkmadan ${olcu.ilkDk} dk önce başlar, ${olcu.uyariSayisi} uyarı. ${ses}`;
+}
+
+/**
+ * Sesli düzeyin rıza maddesi — PLATFORMA GÖRE DOĞRU olmak zorunda (rıza bunun
+ * gösterildiğine dayanır). Android'de anons alarm sesiyle konuşur: sessiz mod ve
+ * Rahatsız Etmeyin'i deler. iPhone'da bildirim sesidir: sessiz anahtar açıkken duyulmaz
+ * (`PlatformYetenekleri.sessizligiDelebilir`).
+ */
+export function sesliBilgiMetni(sessizligiDelebilir: boolean): string {
+    return sessizligiDelebilir
+        ? "Sesli okuma alarm gibidir: sessiz modda ve Rahatsız Etmeyin'de de duyulur."
+        : 'Sesli okuma bildirim sesiyle çalar; telefon sessizdeyken duyulmaz.';
 }
 
 /** Seçenek kartındaki kısa açıklama (≤ 6 kelime). */

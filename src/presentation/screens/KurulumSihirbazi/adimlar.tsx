@@ -172,7 +172,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin,
             <View style={{ flex: 1 }}>
                 <AdimBasligi baslik="Şehrinizi seçin" alt="Vakitler seçtiğiniz ile göre hesaplanır." />
                 {hata ? <SonucSatiri tip="uyari" metin={hata} testID="konum-hata" /> : null}
-                {izinSonucu === 'ayarlar' ? (
+                {izinSonucu === 'ayarlar' || izin === 'reddedildi' ? (
                     <SonucSatiri tip="uyari" metin="Konum izni kapalı. Ayarlardan açabilir ya da şehir seçebilirsiniz." />
                 ) : null}
                 <View
@@ -235,7 +235,7 @@ export const KonumAdimi: React.FC<KonumAdimiProps> = ({ durum, konumBilgi, izin,
         <View>
             <Illustrasyon ikon="map-marker-alt" rozet="compass" />
             <AdimBasligi baslik="Konumunuz" alt="Namaz vakitleri ve kıble yönü konumunuza göre hesaplanır." />
-            <Madde ikon="mobile-alt" metin="Konum yalnız bu telefonda işlenir, hiçbir yere gönderilmez." />
+            <Madde ikon="mobile-alt" metin="Konumunuz sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz." />
             <Madde ikon="ban" metin="Reklam ya da takip için kullanılmaz." />
             {durum === 'aliniyor' ? <SonucSatiri tip="basari" metin="Konumunuz bulunuyor…" testID="konum-aliniyor" /> : null}
             {durum === 'alindi' ? <SonucSatiri tip="basari" metin={`Konum alındı · ${konumBilgi}`} testID="konum-alindi" /> : null}

@@ -9,8 +9,10 @@
  *  - İzin ÖNCE okunur: zaten verilmişse soru sorulmaz, adım "✓ … verildi" durumuyla geçer.
  *    İzin akışı `useIzinAkisi` (istek → durum YENİDEN okunur → verildi / tekrarDene / ayarlar).
  *  - Otomatik ilerleme YOK: her adımdan kullanıcı "Devam edin" ile çıkar.
- *  - Ayarlar YALNIZ son düğmede yazılır; hata ekranda gösterilir, "kaydedildi" denmez —
- *    kayıt bitince doğrudan ana ekrana geçilir.
+ *  - Konum kendi adımında (alınınca/seçilince) yazılır; geri kalan ayarlar son düğmede.
+ *    Yalnız `ILK_KURULUM_TAMAMLANDI` yazımı ölümcüldür (hata ekranda, "Tekrar deneyin");
+ *    vakit bildirimi ve sade görünüm yazımı başarısızsa loglanıp geçilir — kullanıcı
+ *    kurulumda takılı kalmasın. "Kaydedildi" denmez, kayıt bitince ana ekrana geçilir.
  *  - Sesli okuma rızası (`sesliOnayi`) yalnız bilgilendirme maddesi EKRANDA
  *    gösterildiyse yazılır (`sesliBilgiGosterildiMi`; `presetAyarlariniOlustur` sözleşmesi).
  */
@@ -47,6 +49,24 @@ type Props = NativeStackScreenProps<RootStackParamList, 'KurulumSihirbazi'>;
 
 const TOPLAM = KURULUM_ADIMLARI.length;
 const KAYMA = 16;
+/** GPS bu sürede yanıt vermezse şehir listesine düşülür (kapalı alanda sonsuz bekleme yok). */
+export const GPS_ZAMAN_ASIMI_MS = 15000;
+
+export function zamanAsimiyla<T>(is: Promise<T>, ms: number): Promise<T> {
+    return new Promise<T>((coz, reddet) => {
+        const z = setTimeout(() => reddet(new Error('zaman aşımı')), ms);
+        is.then(
+            (d) => {
+                clearTimeout(z);
+                coz(d);
+            },
+            (e) => {
+                clearTimeout(z);
+                reddet(e);
+            },
+        );
+    });
+}
 
 const konumIzniOku = () => alaniOku('konumIzni');
 const konumIzniIste = () => Location.requestForegroundPermissionsAsync();
@@ -122,18 +142,31 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const ilerle = useCallback(() => gec(adimNo + 1), [gec, adimNo]);
     const geriDon = useCallback(() => gec(adimNo - 1), [gec, adimNo]);
 
+    // Konum alınırken geri yerine "Vazgeçin" (aşağıda); donanım geri tuşu da vazgeçer.
+    const konumTuru = useRef(0);
+    const konumVazgec = useCallback(() => {
+        konumTuru.current += 1;
+        setKonumHata(null);
+        setKonumDurumu('manuel');
+    }, []);
     const geriGoster = adimNo > 0 && konumDurumu !== 'aliniyor' && !kaydediliyor;
     const donanimGeri = useCallback(() => {
-        if (geriGoster) geriDon();
-    }, [geriGoster, geriDon]);
+        if (konumDurumu === 'aliniyor') konumVazgec();
+        else if (geriGoster) geriDon();
+    }, [konumDurumu, konumVazgec, geriGoster, geriDon]);
     useDonanimGeriTusu(adimNo > 0, donanimGeri);
 
     // ─── Konum ───────────────────────────────────────────────────────────────
     const konumuAl = useCallback(async () => {
         setKonumHata(null);
         setKonumDurumu('aliniyor');
+        const tur = ++konumTuru.current;
         try {
-            const konum = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            const konum = await zamanAsimiyla(
+                Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced }),
+                GPS_ZAMAN_ASIMI_MS,
+            );
+            if (tur !== konumTuru.current) return; // Kullanıcı vazgeçti.
             const { latitude: lat, longitude: lng } = konum.coords;
             let gpsAdres = { il: '', ilce: '', semt: '' };
             try {
@@ -143,6 +176,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 // Ters geocode isteğe bağlı; koordinat yine kullanılır.
                 Logger.warn('KurulumSihirbazi', 'Ters geocode başarısız', error);
             }
+            if (tur !== konumTuru.current) return;
             dispatch(
                 konumAyarlariniGuncelle({
                     konumModu: 'oto',
@@ -154,6 +188,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             setKonumBilgi(gpsAdres.ilce || gpsAdres.il || 'Bulunduğunuz yer');
             setKonumDurumu('alindi');
         } catch (error) {
+            if (tur !== konumTuru.current) return;
             Logger.warn('KurulumSihirbazi', 'Konum alınamadı', error);
             setKonumHata('Konumunuz bulunamadı. Şehrinizi seçin.');
             setKonumDurumu('manuel');
@@ -162,8 +197,19 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
     const { istekBaslat: konumIstekBaslat, durum: konumIzinDurumu } = konumIzin;
     const konumBul = useCallback(async () => {
+        // Kalıcı red: sistem diyaloğu zaten açılmaz → boş istek turu yapma, listeye geç.
+        if (konumIzinDurumu === 'reddedildi') {
+            setKonumDurumu('manuel');
+            return;
+        }
         if (konumIzinDurumu !== 'verildi') {
             const sonuc = await konumIstekBaslat();
+            if (sonuc === null) {
+                // Durum okunamadı: sessiz kalma, yedek yolu söyle.
+                setKonumHata('Konum izni okunamadı. Şehrinizi seçin.');
+                setKonumDurumu('manuel');
+                return;
+            }
             if (sonuc !== 'verildi') {
                 // Kalıcı red: il listesi + "Ayarları açın". Tekrar sorulabilirse ekranda kalır.
                 if (sonuc === 'ayarlar') setKonumDurumu('manuel');
@@ -194,11 +240,16 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
     const kurulumuTamamla = useCallback(async () => {
         setKaydediliyor(true);
         setKayitHatasi(null);
+        // Kaldırılan "vakit bildirimleri" adımının varsayılanı: beş vakit açık. Ölümcül DEĞİL:
+        // yazılamazsa uygulama varsayılanla açılır, kullanıcı kurulumda döngüye girmez.
         try {
-            // Kaldırılan "vakit bildirimleri" adımının varsayılanı: beş vakit açık.
             await dispatch(
                 tumVakitBildirimAyarlariniGuncelle({ imsak: true, ogle: true, ikindi: true, aksam: true, yatsi: true }),
             ).unwrap();
+        } catch (error) {
+            Logger.error('KurulumSihirbazi', 'Vakit bildirimi ayarı yazılamadı', error);
+        }
+        try {
             if (duzey === 'kapali') {
                 // Kapalı seçen kişi sesli okuma maddesini HİÇ görmez → rıza yazılmaz.
                 dispatch(
@@ -219,7 +270,14 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                     }),
                 );
             }
-            if (sade) await dispatch(sadeGorunumuAyarla(true)).unwrap();
+            if (sade) {
+                try {
+                    await dispatch(sadeGorunumuAyarla(true)).unwrap();
+                } catch (error) {
+                    // Ölümcül değil: Ayarlar > Görünüm'den yeniden açılabilir.
+                    Logger.error('KurulumSihirbazi', 'Sade görünüm ayarı yazılamadı', error);
+                }
+            }
             // Bayrak EN SON: yarıda kalan kurulum bir sonraki açılışta yeniden sorulsun.
             await AsyncStorage.setItem(DEPOLAMA_ANAHTARLARI.ILK_KURULUM_TAMAMLANDI, 'true');
             navigation.replace('MainTabs');
@@ -280,7 +338,14 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                 return birincil('Başlayın', 'arrow-right', ilerle, 'basla');
             case 'konum': {
                 if (konumDurumu === 'alindi') return devam();
-                if (konumDurumu === 'aliniyor') return birincil('Konum bulunuyor', 'map-marker-alt', () => undefined, 'konum-bul', true);
+                if (konumDurumu === 'aliniyor') {
+                    return (
+                        <>
+                            {birincil('Konum bulunuyor', 'map-marker-alt', () => undefined, 'konum-bul', true)}
+                            {ikincil('Vazgeçin, şehrimi seçeceğim', konumVazgec, 'konum-vazgec')}
+                        </>
+                    );
+                }
                 if (konumDurumu === 'manuel') {
                     return (
                         <>
@@ -289,7 +354,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
                                 : birincil('Şehir seçin', 'city', () => undefined, 'manuel-devam', false, true)}
                             {konumIzin.durum === 'verildi'
                                 ? ikincil('Konumumu bulun', () => void konumBul(), 'konum-bul')
-                                : konumIzin.sonuc === 'ayarlar'
+                                : konumIzin.sonuc === 'ayarlar' || konumIzin.durum === 'reddedildi'
                                   ? ikincil('Ayarları açın', () => void konumIzin.ayarlariAc(), 'konum-ayarlar')
                                   : null}
                         </>

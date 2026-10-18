@@ -73,22 +73,22 @@ export interface YeniOzellik {
 }
 
 export const YENI_OZELLIKLER: YeniOzellik[] = [
-    // Sade tasarım, Dalga 2: 5 adımlı kurulum + ana ekranda tek durum alanı.
+    // Sade tasarım (Dalga 2; Dalga 3 genişletecek). Bugünkü kullanıcıya anlamlı olanı söyler.
     {
         id: 'sade-kurulum-ve-ana-ekran',
         platformlar: ['android', 'ios'],
         surum: '0.42.0',
         tarih: '2026-10-18',
-        baslik: 'Daha sade kurulum ve ana ekran',
+        baslik: 'Daha sade uygulama',
         aciklama:
-            'Ana ekranda aynı anda tek uyarı görünür; vakit kartında tek düğme var: "Kıldım". Kurulum beş adıma indi.',
+            'Ana ekranda aynı anda tek uyarı görünür; vakit kartında tek düğme var: "Kıldım".',
         detayAciklama:
-            'Kerahat, vakit çıkıyor, toparlanma ve yolculuk uyarıları artık vakit kartının üstünde üst üste yığılmaz: en önemlisi görünür, diğerlerine "+1 daha" ile ulaşırsınız. Vakit kartındaki "Kıldım" düğmesine dokunduğunuzda düğme "Kılındı"ya dönüşür. Vaktin durumu her yerde aynı adla yazılır: Kılındı, Vakti geldi, Henüz girmedi. Yeni kurulum beş adımdır: konum, bildirim izni ve hatırlatma düzeyi (Kapalı, Hafif, Normal, Yoğun); tema ve diğer ayarları istediğiniz zaman Ayarlar\'dan değiştirebilirsiniz.',
+            'Kerahat, vakit çıkıyor, toparlanma ve yolculuk uyarıları artık vakit kartının üstünde üst üste yığılmaz: en önemlisi görünür, diğerlerine "+1 daha" ile ulaşırsınız. Vakit çıkmak üzereyken kerahat vakti de başladıysa ikisi tek kartta görünür. Vakit kartındaki "Kıldım" düğmesine dokunduğunuzda düğme "Kılındı"ya dönüşür. Vaktin durumu her yerde aynı adla yazılır: Kılındı, Kılınmadı, Vakti geldi, Henüz girmedi.',
         detaylar: [
             'Ana ekranda tek uyarı alanı, diğerleri "+1 daha" ile',
             'Tek düğme: "Kıldım" → "Kılındı"',
-            'Durum adları her yerde aynı: Kılındı, Vakti geldi, Henüz girmedi',
-            'Beş adımlı kurulum, koyu temaya uyar',
+            'Durum adları her yerde aynı: Kılındı, Kılınmadı, Vakti geldi, Henüz girmedi',
+            'Gün batarken bugünün ikindisini henüz kılmadıysanız bunu hatırlatır',
         ],
         ikon: 'leaf',
     },

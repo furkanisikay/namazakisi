@@ -35,6 +35,17 @@ describe('DurumAlani', () => {
         expect(queryByText('Yolculuk')).toBeNull();
     });
 
+    it('öne çıkan uyarı değişince açık liste kapanır', () => {
+        const { getByText, queryByText, rerender } = render(
+            <DurumAlani ogeler={[oge('muhafiz', 'Vakit çıkıyor'), oge('seferilik', 'Yolculuk')]} />,
+        );
+        fireEvent.press(getByText('+1 daha'));
+        expect(getByText('Yolculuk')).toBeTruthy();
+        rerender(<DurumAlani ogeler={[oge('kerahat', 'Kerahat'), oge('seferilik', 'Yolculuk')]} />);
+        expect(getByText('Kerahat')).toBeTruthy();
+        expect(queryByText('Yolculuk')).toBeNull();
+    });
+
     it('tek uyarıda "+N daha" düğmesi çıkmaz', () => {
         const { queryByTestId } = render(<DurumAlani ogeler={[oge('muhafiz', 'Vakit çıkıyor')]} />);
         expect(queryByTestId('durum-alani-daha')).toBeNull();

@@ -8,13 +8,15 @@
  *
  * SESLİ OKUMA RIZASI: sesli içeren bir düzey seçiliyken seçicinin HEMEN ALTINDA tek
  * bir bilgilendirme maddesi görünür (`testID="duzey-sesli-bilgi"`). Çağıran rıza
- * kaydını (`sesliOnayi`) ancak bu madde ekranda gösterildiyse yazar — bunu
+ * kaydını (`sesliOnayi`) ancak bu madde ekranda gösterildiyse yazar. Madde platforma
+ * göre doğru cümleyi söyler (`sesliBilgiMetni`) ve göründüğü an ekran okuyucuya da
+ * DUYURULUR (rıza yazılmadan önce gerçekten bildirilmiş olsun) — bunu
  * `sesliBilgiGosterildiMi(secili, sesliBilgiGoster)` ile sorar. Madde kapatılırsa
  * (`sesliBilgiGoster={false}`, ör. rızası zaten olan kullanıcı) rıza buradan
  * TÜRETİLMEZ.
  */
 import * as React from 'react';
-import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { AccessibilityInfo, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
 import { SecenekListesi, type Secenek } from '../ortak/SecenekListesi';
@@ -25,10 +27,12 @@ import {
     duzeyCumlesi,
     duzeyiOlc,
     duzeyKisaAciklamasi,
+    sesliBilgiMetni,
     type DuzeyOlcusu,
     type HatirlatmaDuzeyi,
 } from '../../../core/hatirlatma/duzeyOzeti';
 import { HATIRLATMA_PRESETLERI } from '../../store/muhafizSlice';
+import { usePlatformYetenekleri } from '../../hooks/usePlatformYetenekleri';
 
 export type { HatirlatmaDuzeyi };
 
@@ -56,8 +60,7 @@ export function sesliBilgiGosterildiMi(duzey: HatirlatmaDuzeyi, sesliBilgiGoster
     return sesliBilgiGoster && duzeySesliMi(duzey);
 }
 
-/** Bilgilendirme maddesinin metni (≤ 12 kelime). */
-export const SESLI_BILGI_METNI = 'Sesli okuma alarm gibidir: telefon sessizdeyken de duyulur.';
+export { sesliBilgiMetni };
 
 export interface DuzeySeciciProps {
     secili: HatirlatmaDuzeyi;
@@ -89,6 +92,11 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
     );
     const cumle = duzeyCumlesi(secili, o[secili]);
     const sesliBilgi = sesliBilgiGosterildiMi(secili, sesliBilgiGoster);
+    const bilgiMetni = sesliBilgiMetni(usePlatformYetenekleri().sessizligiDelebilir);
+    // Madde göründüğü/değiştiği an ekran okuyucuya söylenir (yalnız görsel kalmasın).
+    React.useEffect(() => {
+        if (sesliBilgi) AccessibilityInfo.announceForAccessibility?.(bilgiMetni);
+    }, [sesliBilgi, secili, bilgiMetni]);
 
     return (
         <View style={style} testID={testID}>
@@ -105,10 +113,11 @@ export const DuzeySecici: React.FC<DuzeySeciciProps> = React.memo(function Duzey
             {sesliBilgi ? (
                 <View
                     testID="duzey-sesli-bilgi"
+                    accessibilityLiveRegion="polite"
                     style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 8, paddingHorizontal: 4 }}
                 >
                     <FontAwesome5 name="volume-up" size={13} color={renkler.birincil} solid style={{ width: 22, marginTop: 3 }} />
-                    <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: renkler.metin }}>{SESLI_BILGI_METNI}</Text>
+                    <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: renkler.metin }}>{bilgiMetni}</Text>
                 </View>
             ) : null}
         </View>

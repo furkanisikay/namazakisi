@@ -3,7 +3,7 @@
  * (rıza kaydının "görüldü" şartı buna bağlıdır).
  */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render } from '@testing-library/react-native';
 
 jest.mock('@expo/vector-icons/FontAwesome5', () => {
     const { Text } = require('react-native');
@@ -14,6 +14,7 @@ jest.mock('../../../../core/theme', () => ({
 }));
 jest.mock('../../../hooks/useHareketAzalt', () => ({ useHareketAzalt: () => true }));
 
+import { AccessibilityInfo } from 'react-native';
 import { DuzeySecici, sesliBilgiGosterildiMi, duzeySesliMi } from '../DuzeySecici';
 
 describe('DuzeySecici', () => {
@@ -24,7 +25,7 @@ describe('DuzeySecici', () => {
         fireEvent.press(getByLabelText(/^Yoğun\./));
         expect(onSec).toHaveBeenCalledWith('yogun');
         rerender(<DuzeySecici secili="hafif" onSec={onSec} />);
-        expect(getByText('Çıkmadan 30 dk önce başlar, 4 uyarı. Hepsi sessiz bildirim.')).toBeTruthy();
+        expect(getByText('Çıkmadan 30 dk önce başlar, 4 uyarı. Sesli okuma yok.')).toBeTruthy();
         expect(getByLabelText(/^Hafif\./).props.accessibilityState).toMatchObject({ selected: true });
     });
 
@@ -35,6 +36,23 @@ describe('DuzeySecici', () => {
         expect(queryByTestId('duzey-sesli-bilgi')).toBeNull();
         rerender(<DuzeySecici secili="normal" onSec={jest.fn()} sesliBilgiGoster={false} />);
         expect(queryByTestId('duzey-sesli-bilgi')).toBeNull();
+    });
+
+    it('NÖBETÇİ: sesli bilgi göründüğü an ekran okuyucuya duyurulur; iPhone metni "sessizde duyulmaz" der', async () => {
+        const duyur = jest.spyOn(AccessibilityInfo, 'announceForAccessibility').mockImplementation(() => undefined);
+        const { rerender, getByText } = render(<DuzeySecici secili="hafif" onSec={jest.fn()} />);
+        // Önceki testlerin bekleyen işleri (platform yeteneği okuması) boşalsın.
+        await act(async () => {
+            await Promise.resolve();
+        });
+        duyur.mockClear();
+        rerender(<DuzeySecici secili="hafif" onSec={jest.fn()} />);
+        expect(duyur).not.toHaveBeenCalledWith(expect.stringMatching(/Sesli okuma/));
+        rerender(<DuzeySecici secili="yogun" onSec={jest.fn()} />);
+        // jest varsayılan platformu iOS → bildirim sesi metni.
+        expect(duyur).toHaveBeenCalledWith('Sesli okuma bildirim sesiyle çalar; telefon sessizdeyken duyulmaz.');
+        expect(getByText('Sesli okuma bildirim sesiyle çalar; telefon sessizdeyken duyulmaz.')).toBeTruthy();
+        duyur.mockRestore();
     });
 
     it('rıza yardımcısı ekranla aynı kuralı verir', () => {

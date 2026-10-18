@@ -86,6 +86,17 @@ describe('VakitKarti Bileşeni', () => {
     expect(onTamamla).not.toHaveBeenCalled();
   });
 
+  it('NÖBETÇİ: kayıt gösterilen güne ait değilse Kıldım düğmesi DOĞMAZ (bayat veriyle animasyon/duyuru yok)', () => {
+    const { queryByLabelText, getByTestId, rerender } = render(
+      <VakitKarti {...varsayilanProps} kilitli={false} kayitHazir={false} />,
+    );
+    expect(queryByLabelText('Öğle — Kıldım')).toBeNull();
+    expect(getByTestId('vakit-karti-kayit-bekleniyor')).toBeTruthy();
+    // Kayıt gelince düğme DOĞRU değerle doğar (kılınmışsa doğrudan "Kılındı", geçişsiz).
+    rerender(<VakitKarti {...varsayilanProps} kilitli={false} kayitHazir tamamlandi />);
+    expect(queryByLabelText('Öğle — Kılındı')).toBeTruthy();
+  });
+
   it('gösterilen ad (cuma) başlıkta ve düğme etiketinde kullanılır', () => {
     const { getByText, getByLabelText } = render(
       <VakitKarti {...varsayilanProps} gorunenVakitAdi="Cuma" kilitli={false} />,

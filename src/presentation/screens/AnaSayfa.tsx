@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useCallback, useRef, useState, useMemo } from 'react';
-import { View, Text, Platform, StatusBar, AppState, AppStateStatus } from 'react-native';
+import { View, Text, Platform, StatusBar, AppState, AppStateStatus, TouchableOpacity } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PagerView from 'react-native-pager-view';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -26,6 +27,8 @@ import { GunSayfasiDuzeni } from '../components/home/GunSayfasiDuzeni';
 import { MasaustuGeriSayim } from '../components/home/MasaustuGeriSayim';
 import { SeferilikBilgiKarti, useSeferilikKartiGorunur } from '../components/home/SeferilikBilgiKarti';
 import { DurumAlani, DurumSeridi, type DurumAlaniOgesi } from '../components/home/DurumAlani';
+import { durumlariBirlestir } from '../../core/anaEkran/durumAlani';
+import { kerahatMetniSec, type KerahatTuru } from '../../core/anaEkran/kerahatNotu';
 import { useEkranSinifi } from '../hooks/useEkranSinifi';
 import { useKatlanmaPosturu } from '../hooks/useKatlanmaPosturu';
 import { gunDuzeniSec } from '../../core/utils/katlanmaPosturu';
@@ -82,7 +85,7 @@ export const AnaSayfa: React.FC = () => {
   const [muhafizDurumu, setMuhafizDurumu] = useState<{ mesaj: string, seviye: number }>({ mesaj: '', seviye: 0 });
   const [vakitBilgisi, setVakitBilgisi] = useState<VakitBilgisi | null>(null);
   const [kalanSureStr, setKalanSureStr] = useState("00:00:00");
-  const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null }>({
+  const [mekruhBilgi, setMekruhBilgi] = useState<{ mekruhMu: boolean; aciklama: string | null; tur?: KerahatTuru }>({
     mekruhMu: false,
     aciklama: null,
   });
@@ -551,7 +554,7 @@ export const AnaSayfa: React.FC = () => {
       const { lat, lng } = konumAyarlari.koordinatlar || {};
       if (lat && lng) {
         const sonuc = mekruhVakitKontrolEt(lat, lng, 'farz');
-        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama });
+        setMekruhBilgi({ mekruhMu: sonuc.mekruhMu, aciklama: sonuc.aciklama, tur: sonuc.tur });
       }
     };
     kontrol();
@@ -685,19 +688,34 @@ export const AnaSayfa: React.FC = () => {
   const tumunuSifirla = () => dispatch(tumNamazlariSifirla({ tarih: mevcutTarih }));
 
   // Tek durum alanının adayları (öncelik sırasını DurumAlani verir). Kerahat, muhafız ve
-  // seferîlik yalnız aktif günde anlamlıdır; toparlanma ve sade görünüme dönüş her günde.
+  // seferîlik yalnız aktif günde anlamlıdır; toparlanma her günde.
   // Renkler dekoratif token (kenar çizgisi + ikon çipi); metin daima tema metni.
   const toparlanma = seriOzeti?.toparlanmaModu ? seriOzeti.toparlanmaIlerleme : undefined;
+  // Kerahat metni duruma göre (saf karar): gurubda bugünün ikindisi kılınmadıysa
+  // "bekleyin" değil "şimdi kılabilirsiniz" (core/anaEkran/kerahatNotu). Kayıt aktif güne
+  // ait değilse ikindi durumu bilinmiyor sayılır (servisin metni kalır).
+  const ikindiKilindi =
+    gunlukNamazlar && gunlukNamazlar.tarih === aktifGun
+      ? !!gunlukNamazlar.namazlar.find((n) => n.namazAdi === NamazAdi.Ikindi)?.tamamlandi
+      : null;
+  const kerahatMetni = kerahatMetniSec({ aciklama: mekruhBilgi.aciklama, tur: mekruhBilgi.tur, ikindiKilindi });
   const durumOgeleriOlustur = (aktifGunKontrol: boolean, suankiTamamlandi: boolean): DurumAlaniOgesi[] => {
     const ogeler: DurumAlaniOgesi[] = [];
-    if (aktifGunKontrol && mekruhBilgi.mekruhMu && mekruhBilgi.aciklama) {
+    const kerahatEtkin = aktifGunKontrol && mekruhBilgi.mekruhMu && !!kerahatMetni;
+    const muhafizEtkin = aktifGunKontrol && muhafizDurumu.seviye > 0 && !suankiTamamlandi;
+    // İkisi birlikteyse TEK kart: muhafız önde, kerahat altında kısa not.
+    const { muhafizKerahatNotu } = durumlariBirlestir([
+      ...(kerahatEtkin ? (['kerahat'] as const) : []),
+      ...(muhafizEtkin ? (['muhafiz'] as const) : []),
+    ]);
+    if (kerahatEtkin && !muhafizKerahatNotu) {
       ogeler.push({
         anahtar: 'kerahat',
         ozet: 'kerahat vakti',
-        dugum: <DurumSeridi testID="durum-kerahat" ikon="hourglass-half" renk={renkler.dikkat} baslik="Kerahat vakti" metin={mekruhBilgi.aciklama} />,
+        dugum: <DurumSeridi testID="durum-kerahat" ikon="hourglass-half" renk={renkler.dikkat} baslik="Kerahat vakti" metin={kerahatMetni} />,
       });
     }
-    if (aktifGunKontrol && muhafizDurumu.seviye > 0 && !suankiTamamlandi) {
+    if (muhafizEtkin) {
       // Mesaj servisten gelir ve ibadete çağrı kaydındadır ("sen" dili BİLİNÇLİ) — dokunulmaz.
       const sert = muhafizDurumu.seviye >= 3;
       ogeler.push({
@@ -710,6 +728,13 @@ export const AnaSayfa: React.FC = () => {
             renk={sert ? renkler.hata : renkler.dikkat}
             baslik={sert ? 'Şeytanla mücadele modu' : 'Vakit çıkıyor'}
             metin={muhafizDurumu.mesaj}
+            alt={
+              muhafizKerahatNotu ? (
+                <View testID="durum-muhafiz-kerahat-notu" style={{ flexDirection: 'row', marginTop: 6 }}>
+                  <Text style={{ fontSize: 13, lineHeight: 18, color: renkler.metin }}>{`Kerahat vakti: ${kerahatMetni}`}</Text>
+                </View>
+              ) : undefined
+            }
           />
         ),
       });
@@ -738,21 +763,6 @@ export const AnaSayfa: React.FC = () => {
     }
     if (aktifGunKontrol && seferilikGorunur) {
       ogeler.push({ anahtar: 'seferilik', ozet: 'yolculuk bilgisi', dugum: <SeferilikBilgiKarti /> });
-    }
-    if (sade.geciciCikista) {
-      ogeler.push({
-        anahtar: 'sadeDonus',
-        ozet: 'sade görünüme dönüş',
-        dugum: (
-          <DurumSeridi
-            testID="durum-sade-donus"
-            ikon="compress-alt"
-            renk={renkler.birincil}
-            baslik="Sade görünüme dönün"
-            onPress={sade.sadeyeDon}
-          />
-        ),
-      });
     }
     return ogeler;
   };
@@ -794,7 +804,6 @@ export const AnaSayfa: React.FC = () => {
       const suankiNamaz = uiNamazlar.find(n => n.namazAdi === suankiVakitAdi);
       if (suankiNamaz) {
         suankiVakitTamamlandi = suankiNamaz.tamamlandi;
-
         const suankiIndex = uiNamazlar.findIndex(n => n.namazAdi === suankiVakitAdi);
         const sonrakiNamaz = uiNamazlar[suankiIndex + 1];
 
@@ -853,6 +862,7 @@ export const AnaSayfa: React.FC = () => {
             suankiVakitAdi={suankiVakitAdi}
             vakitAraligi={vakitAraligi}
             tamamlandi={suankiVakitTamamlandi}
+            kayitHazir={gunlukNamazlar.tarih === sayfaTarihi}
             onTamamla={handleSuankiKildim}
             kilitli={kilitli}
             konumModu={konumAyarlari.konumModu}
@@ -958,7 +968,7 @@ export const AnaSayfa: React.FC = () => {
         />
         <KerahatOnayModal
           gorunur={kerahatOnayBekleyen !== null}
-          aciklama={mekruhBilgi.aciklama}
+          aciklama={kerahatMetni}
           namazAdi={kerahatOnayBekleyen ?? ''}
           onOnayla={kerahatOnayla}
           onVazgec={kerahatVazgec}
@@ -986,6 +996,21 @@ export const AnaSayfa: React.FC = () => {
         toparlanmaModu={seriOzeti?.toparlanmaModu}
         toparlanmaIlerleme={seriOzeti?.toparlanmaIlerleme}
       />
+
+      {/* Sade görünümden bu oturum için çıkıldıysa geri dönüş (issue #295). Uyarı değil,
+          kalıcı küçük bağlantı: durum alanında "+N daha" arkasında kaybolmasın. */}
+      {sade.geciciCikista && (
+        <TouchableOpacity
+          onPress={sade.sadeyeDon}
+          accessibilityRole="button"
+          accessibilityLabel="Sade görünüme dönün"
+          testID="sade-donus-baglantisi"
+          style={{ alignSelf: 'flex-end', flexDirection: 'row', alignItems: 'center', minHeight: 44, paddingHorizontal: 16 }}
+        >
+          <FontAwesome5 name="compress-alt" size={12} color={renkler.birincil} style={{ marginRight: 6 }} />
+          <Text style={{ fontSize: 14, fontWeight: '600', color: renkler.birincil }}>Sade görünüme dönün</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Pager */}
       <PagerView
@@ -1054,7 +1079,7 @@ export const AnaSayfa: React.FC = () => {
 
       <KerahatOnayModal
         gorunur={kerahatOnayBekleyen !== null}
-        aciklama={mekruhBilgi.aciklama}
+        aciklama={kerahatMetni}
         namazAdi={kerahatOnayBekleyen ?? ''}
         onOnayla={kerahatOnayla}
         onVazgec={kerahatVazgec}

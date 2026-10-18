@@ -8,7 +8,7 @@
  * Renk asla tek başına bilgi taşımaz: her durumun kendi İKONU (şekli) ve METNİ vardır.
  */
 
-export type NamazDurumu = 'kilindi' | 'vaktiGeldi' | 'girmedi';
+export type NamazDurumu = 'kilindi' | 'vaktiGeldi' | 'girmedi' | 'gecti';
 
 export interface NamazDurumuTanimi {
     /** Kullanıcıya görünen ad (sentence case). */
@@ -23,16 +23,20 @@ export const NAMAZ_DURUMLARI: Record<NamazDurumu, NamazDurumuTanimi> = {
     kilindi: { etiket: 'Kılındı', ikon: 'check-circle', renk: 'basarili' },
     vaktiGeldi: { etiket: 'Vakti geldi', ikon: 'bell', renk: 'birincil' },
     girmedi: { etiket: 'Henüz girmedi', ikon: 'hourglass-start', renk: 'metinIkincil' },
+    /** Vakti çıktı ve işaretlenmedi (geçmiş gün ya da bugünün çıkmış vakti). */
+    gecti: { etiket: 'Kılınmadı', ikon: 'minus-circle', renk: 'metinIkincil' },
 };
 
 /** Tek eylem adı: düğme "Kıldım", sonuç "Kılındı" (aksiyon adı akış boyunca sabit). */
 export const NAMAZ_EYLEMI = { kildim: 'Kıldım', kilindi: 'Kılındı' } as const;
 
 /**
- * Bir vaktin görünen durumu: kılındıysa `kilindi`; vakti girmişse (ya da geçmişse)
- * `vaktiGeldi`; girmemişse `girmedi`.
+ * Bir vaktin görünen durumu: kılındıysa `kilindi`; vakti ÇIKMIŞSA (geçmiş gün ya da
+ * bugünün geçmiş vakti) `gecti` ("Kılınmadı"); vakti girmiş ve sürüyorsa `vaktiGeldi`;
+ * girmemişse `girmedi`. Çıkmış vakte "Vakti geldi" demek yanıltıcıydı.
  */
-export function namazDurumuSec(kilindi: boolean, vaktiGirdi: boolean): NamazDurumu {
+export function namazDurumuSec(kilindi: boolean, vaktiGirdi: boolean, vaktiCikti = false): NamazDurumu {
     if (kilindi) return 'kilindi';
+    if (vaktiCikti) return 'gecti';
     return vaktiGirdi ? 'vaktiGeldi' : 'girmedi';
 }

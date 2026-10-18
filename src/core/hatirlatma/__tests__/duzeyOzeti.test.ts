@@ -2,7 +2,7 @@
  * Düzey özeti motorun gerçek planından ölçülür — elle yazılmış sayı yok.
  * Nöbetçi: preset değişirse (muhafizSlice) kullanıcıya görünen cümle de değişmeli.
  */
-import { duzeyCumlesi, duzeyiOlc, duzeyKisaAciklamasi } from '../duzeyOzeti';
+import { duzeyCumlesi, duzeyiOlc, duzeyKisaAciklamasi, sesliBilgiMetni } from '../duzeyOzeti';
 import { HATIRLATMA_PRESETLERI } from '../../../presentation/store/muhafizSlice';
 
 describe('duzeyiOlc', () => {
@@ -17,7 +17,7 @@ describe('duzeyCumlesi', () => {
     it('ölçüden tek cümle üretir', () => {
         const olcu = duzeyiOlc(HATIRLATMA_PRESETLERI.normal.seviyeler);
         expect(duzeyCumlesi('normal', olcu)).toBe('Çıkmadan 45 dk önce başlar, 6 uyarı. Son dakikada sesli okur.');
-        expect(duzeyCumlesi('hafif', duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler))).toContain('sessiz');
+        expect(duzeyCumlesi('hafif', duzeyiOlc(HATIRLATMA_PRESETLERI.hafif.seviyeler))).toBe('Çıkmadan 30 dk önce başlar, 4 uyarı. Sesli okuma yok.');
         expect(duzeyCumlesi('kapali', null)).toBe('Vakit çıkmadan hatırlatma gelmez.');
     });
 
@@ -25,6 +25,15 @@ describe('duzeyCumlesi', () => {
         for (const y of ['hafif', 'normal', 'yogun'] as const) {
             const c = duzeyCumlesi(y, duzeyiOlc(HATIRLATMA_PRESETLERI[y].seviyeler));
             expect(c.trim().split(/\s+/).length).toBeLessThanOrEqual(12);
+        }
+    });
+
+    it('NÖBETÇİ: sesli bilgi platforma göre doğru — Android DND der, iPhone "sessizde duyulur" DEMEZ', () => {
+        expect(sesliBilgiMetni(true)).toMatch(/Rahatsız Etmeyin/);
+        expect(sesliBilgiMetni(false)).toMatch(/sessizdeyken duyulmaz/);
+        expect(sesliBilgiMetni(false)).not.toMatch(/sessiz modda.*de duyulur/);
+        for (const m of [sesliBilgiMetni(true), sesliBilgiMetni(false)]) {
+            expect(m.trim().split(/\s+/).length).toBeLessThanOrEqual(12);
         }
     });
 

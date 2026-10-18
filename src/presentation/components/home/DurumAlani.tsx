@@ -27,6 +27,8 @@ export const DurumAlani: React.FC<{ ogeler: readonly DurumAlaniOgesi[] }> = ({ o
     const renkler = useRenkler();
     const [acik, setAcik] = React.useState(false);
     const secim = durumSec(ogeler.map((o) => o.anahtar));
+    // Öne çıkan uyarı değişince açık liste kapanır (eski açıklık yeni duruma taşınmasın).
+    React.useEffect(() => setAcik(false), [secim.birincil]);
     const bul = (a: DurumAnahtari) => ogeler.find((o) => o.anahtar === a);
 
     if (!secim.birincil) return null;

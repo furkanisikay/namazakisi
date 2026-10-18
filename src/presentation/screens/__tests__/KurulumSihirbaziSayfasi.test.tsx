@@ -41,7 +41,7 @@ jest.mock('../../../domain/services/CihazDurumOkuyucu', () => ({ alaniOku: (a: s
 jest.mock('../../../core/utils/Logger', () => ({ Logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() } }));
 jest.mock('../../store/sadeGorunumSlice', () => ({ sadeGorunumuAyarla: (a: boolean) => ({ type: 'test/sade', payload: a }) }));
 
-import { KurulumSihirbaziSayfasi } from '../KurulumSihirbaziSayfasi';
+import { KurulumSihirbaziSayfasi, zamanAsimiyla, GPS_ZAMAN_ASIMI_MS } from '../KurulumSihirbaziSayfasi';
 
 const izinler: Record<string, string | null> = {};
 const navigation = { replace: jest.fn() };
@@ -216,5 +216,92 @@ describe('KurulumSihirbaziSayfasi', () => {
         await waitFor(() => e.getByTestId('kurulum-hata'));
         expect(navigation.replace).not.toHaveBeenCalled();
         expect(e.getByText('Tekrar deneyin')).toBeTruthy();
+    });
+
+    it('NÖBETÇİ: vakit bildirimi yazımı başarısızsa kurulum yine TAMAMLANIR (döngü yok)', async () => {
+        mockDispatch.mockImplementation((a: unknown) => ({
+            unwrap: () => (typeof a === 'function' ? Promise.reject(new Error('disk')) : Promise.resolve()),
+        }));
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent.press(e.getByTestId('devam'));
+        await waitFor(() => e.getByTestId('tamamla'));
+        fireEvent.press(e.getByTestId('tamamla'));
+        await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith('MainTabs'));
+        expect(AsyncStorage.setItem).toHaveBeenCalledWith('@namaz_akisi/ilk_kurulum_tamamlandi', 'true');
+    });
+
+    it('NÖBETÇİ: sade görünüm yazımı başarısızsa kurulum yine TAMAMLANIR', async () => {
+        mockDispatch.mockImplementation((a: unknown) => ({
+            unwrap: () =>
+                (a as { type?: string })?.type === 'test/sade' ? Promise.reject(new Error('disk')) : Promise.resolve(),
+        }));
+        const e = await kur();
+        await duzeyeGit(e);
+        fireEvent(e.getByRole('switch'), 'valueChange', true);
+        fireEvent.press(e.getByTestId('devam'));
+        await waitFor(() => e.getByTestId('tamamla'));
+        fireEvent.press(e.getByTestId('tamamla'));
+        await waitFor(() => expect(navigation.replace).toHaveBeenCalledWith('MainTabs'));
+    });
+
+    it('konum alınırken "Vazgeçin" şehir listesine geçer; geç gelen GPS sonucu yok sayılır', async () => {
+        let coz: (v: unknown) => void = () => undefined;
+        (Location.getCurrentPositionAsync as jest.Mock).mockReturnValue(new Promise((c) => (coz = c)));
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByTestId('konum-bul'));
+        fireEvent.press(e.getByTestId('konum-bul'));
+        await waitFor(() => e.getByTestId('konum-vazgec'));
+        fireEvent.press(e.getByTestId('konum-vazgec'));
+        await waitFor(() => e.getByLabelText('Şehir arayın'));
+        await act(async () => {
+            coz({ coords: { latitude: 1, longitude: 2 } });
+            await Promise.resolve();
+        });
+        expect(e.getByLabelText('Şehir arayın')).toBeTruthy();
+        const oto = mockDispatch.mock.calls.map((c) => c[0] as { payload?: { konumModu?: string } }).find((a) => a?.payload?.konumModu === 'oto');
+        expect(oto).toBeUndefined();
+    });
+
+    it('konum izni kalıcı reddedilmişse boş istek turu yapılmaz, liste + nedeni gösterilir', async () => {
+        izinler.konumIzni = 'reddedildi';
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByTestId('konum-bul'));
+        fireEvent.press(e.getByTestId('konum-bul'));
+        await waitFor(() => e.getByLabelText('Şehir arayın'));
+        expect(Location.requestForegroundPermissionsAsync).not.toHaveBeenCalled();
+        expect(e.getByText('Konum izni kapalı. Ayarlardan açabilir ya da şehir seçebilirsiniz.')).toBeTruthy();
+        expect(e.getByTestId('konum-ayarlar')).toBeTruthy();
+    });
+
+    it('konum izni okunamazsa (null) kullanıcıya söylenir ve listeye geçilir', async () => {
+        izinler.konumIzni = null;
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByTestId('konum-bul'));
+        fireEvent.press(e.getByTestId('konum-bul'));
+        await waitFor(() => e.getByText('Konum izni okunamadı. Şehrinizi seçin.'));
+    });
+
+    it('konum açıklaması yanlış vaat vermez ("hiçbir yere gönderilmez" DEMEZ)', async () => {
+        const e = await kur();
+        fireEvent.press(e.getByTestId('basla'));
+        await waitFor(() => e.getByText('Konumunuz sunucularımıza gönderilmez, üçüncü taraflarla paylaşılmaz.'));
+        expect(e.queryByText(/hiçbir yere gönderilmez/)).toBeNull();
+    });
+});
+
+describe('zamanAsimiyla (GPS)', () => {
+    afterEach(() => jest.useRealTimers());
+    it(`${GPS_ZAMAN_ASIMI_MS} ms içinde yanıt yoksa reddeder`, async () => {
+        jest.useFakeTimers();
+        const p = zamanAsimiyla(new Promise(() => undefined), GPS_ZAMAN_ASIMI_MS);
+        jest.advanceTimersByTime(GPS_ZAMAN_ASIMI_MS);
+        await expect(p).rejects.toThrow('zaman aşımı');
+    });
+    it('zamanında gelen sonucu geçirir', async () => {
+        await expect(zamanAsimiyla(Promise.resolve(5), 1000)).resolves.toBe(5);
     });
 });
