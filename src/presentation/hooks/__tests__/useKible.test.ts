@@ -1,4 +1,5 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { AppState } from 'react-native';
 import { BOS_DOGRULUK_IZI, DOGRULUK_KARARLI_MS, dogrulukAdimi, kalibrasyonIpucu, useKible } from '../useKible';
 import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
@@ -6,6 +7,7 @@ import { Magnetometer } from 'expo-sensors';
 // Mocklar
 jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn(),
+  getForegroundPermissionsAsync: jest.fn(),
   getCurrentPositionAsync: jest.fn(),
   watchHeadingAsync: jest.fn(),
   Accuracy: {
@@ -311,6 +313,42 @@ describe('useKible Hook', () => {
 
     // Pusula hala baslangic degerinde (0) kalmali; gec callback ezmemeli.
     expect(result.current.pusulaYonelimi).toBe(0);
+  });
+
+  it('öne gelişte izin İSTENMEZ, yalnız okunur; verildiyse servis yeniden başlar (izin penceresi döngüsü yok)', async () => {
+    const handlerlar: Array<(d: string) => void> = [];
+    const ekle = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_t: string, h: (d: string) => void) => {
+      handlerlar.push(h);
+      return { remove: jest.fn() };
+    }) as never);
+    try {
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
+      const { result } = renderHook(() => useKible());
+      await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+      await waitFor(() => expect(handlerlar.length).toBeGreaterThan(0));
+      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+
+      // Reddedilmişken öne geliş: yalnız OKU, diyalog açma.
+      await act(async () => {
+        handlerlar[handlerlar.length - 1]('active');
+        await Promise.resolve();
+      });
+      expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
+      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+
+      // Ayarlar'dan izin verip dönen kullanıcı: servis yeniden başlar.
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+      await act(async () => {
+        handlerlar[handlerlar.length - 1]('active');
+        await Promise.resolve();
+      });
+      await waitFor(() => expect(result.current.izinVerildi).toBe(true));
+    } finally {
+      ekle.mockRestore();
+    }
   });
 
   it('izin reddinde tekrar sorulabilirlik açığa çıkar (düğme "İzin verin" / "Ayarları açın")', async () => {

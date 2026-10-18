@@ -187,18 +187,34 @@ export const useKible = (): UseKibleSonuc => {
     };
   }, [deneme]);
 
-  // Ayarlar'dan dönen kullanıcı izni vermiş olabilir: izin hatasındayken yeniden dene.
+  // Ayarlar'dan dönen kullanıcı izni vermiş olabilir. Öne gelişte izin yalnız OKUNUR
+  // (`getForegroundPermissionsAsync`, diyalog açmaz) ve ancak VERİLMİŞSE servis yeniden
+  // başlatılır. Eskiden doğrudan `setDeneme` çağrılıyordu → servis `request…` ile sistem
+  // diyaloğunu açıyor, diyalog kapanınca uygulama yine 'active' oluyor ve pencere döngüye
+  // giriyordu (reddeden kullanıcı izin penceresinden çıkamıyordu).
   useEffect(() => {
     if (izinVerildi || izinTekrarSorulabilir === null) return;
+    let iptal = false;
     let abonelik: { remove(): void } | undefined;
     try {
       abonelik = AppState.addEventListener('change', (d) => {
-        if (d === 'active') setDeneme((n) => n + 1);
+        if (d !== 'active') return;
+        void (async () => {
+          try {
+            const izin = await Location.getForegroundPermissionsAsync();
+            if (!iptal && izin?.status === 'granted') setDeneme((n) => n + 1);
+          } catch {
+            // Okunamadı → hiçbir şey yapma (diyalog açmak yok).
+          }
+        })();
       });
     } catch {
       // AppState'siz ortam
     }
-    return () => abonelik?.remove();
+    return () => {
+      iptal = true;
+      abonelik?.remove();
+    };
   }, [izinVerildi, izinTekrarSorulabilir]);
 
   const izinIste = useCallback(async () => {
