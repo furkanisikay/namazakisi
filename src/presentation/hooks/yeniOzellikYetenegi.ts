@@ -10,6 +10,7 @@
 import { Platform } from 'react-native';
 import type { YeniOzellik, YeniOzellikYetenegi } from '../../core/constants/YeniOzellikler';
 import { canliEtkinlikDestekli, saatUygulamasiDestekli } from '../../../modules/expo-siri-kisayollari/src';
+import { googleYetkisiKullanilabilirMi } from '../../../modules/expo-google-yetki/src';
 
 const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   // iOS widget uzantısı + canlı etkinlik (#295): yalnız uzantıyı taşıyan iOS build'i.
@@ -24,6 +25,8 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
     const ana = parseInt(String(Platform.Version), 10);
     return Number.isFinite(ana) && ana >= 26;
   },
+  // Drive eşitlemesi (#288): yalnız köprüyü taşıyan Android build'i + Google Play hizmetleri.
+  googleDrive: () => Platform.OS === 'android' && googleYetkisiKullanilabilirMi(),
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {

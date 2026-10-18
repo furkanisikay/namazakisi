@@ -84,6 +84,8 @@ dependencies {
   // izniyle korunan RevocationBoundService birleşir. 21.5+ kotlinx-coroutines-play-services
   // gibi ek bağımlılık çeker, gerekmedi.
   implementation "com.google.android.gms:play-services-auth:21.4.0"
+  // Saf çekirdek (`cekirdek/`) JVM birim testleri.
+  testImplementation "junit:junit:4.13.2"
 }
 
 def safeExtGet(prop, fallback) {

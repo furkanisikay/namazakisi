@@ -2,6 +2,7 @@ package expo.modules.googleyetki
 
 import android.app.Activity
 import android.content.Context
+import android.os.SystemClock
 import android.util.Log
 import com.google.android.gms.auth.api.identity.AuthorizationRequest
 import com.google.android.gms.auth.api.identity.AuthorizationResult
@@ -11,8 +12,8 @@ import com.google.android.gms.auth.api.identity.RevokeAccessRequest
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Scope
+import expo.modules.googleyetki.cekirdek.YetkiKurallari
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -50,6 +51,9 @@ class ExpoGoogleYetkiModule : Module() {
      */
     @Volatile
     private var bekleyenYetki: Promise? = null
+
+    /** Slotun dolduğu an (`elapsedRealtime`); yalnız [kilit] altında okunur/yazılır. */
+    private var bekleyenZamanMs = 0L
     private val kilit = Any()
 
     private fun baglam(): Context? =
@@ -207,13 +211,30 @@ class ExpoGoogleYetkiModule : Module() {
                 return
             }
             // YENİDEN-GİRİŞ: tek slot ikinci çağrıyla ezilirse İLK promise asla çözülmez
-            // ve üst üste iki onay ekranı açılır.
+            // ve üst üste iki onay ekranı açılır. BAYAT SLOT: onay ekranının sonucu hiç
+            // gelmezse (süreç öldürülüp geri yüklendi, sistem sonucu yuttu) slot sonsuza
+            // dek dolu kalır ve her yeni bağlanma `mesgul` döner → kullanıcı Drive'ı bir
+            // daha bağlayamaz. 10 dk'dan eski slot `iptal` ile kapatılıp devralınır
+            // (`YetkiKurallari.slotDevralinabilirMi`).
+            var bayat: Promise? = null
             val kabul = synchronized(kilit) {
-                if (bekleyenYetki != null) {
+                val simdi = SystemClock.elapsedRealtime()
+                val mevcut = bekleyenYetki
+                if (!YetkiKurallari.slotDevralinabilirMi(mevcut != null, simdi - bekleyenZamanMs)) {
                     false
                 } else {
+                    bayat = mevcut
                     bekleyenYetki = promise
+                    bekleyenZamanMs = simdi
                     true
+                }
+            }
+            bayat?.let {
+                Log.w(ETIKET, "Bayat onay slotu devralindi")
+                try {
+                    it.resolve(mapOf("durum" to "iptal"))
+                } catch (e: Exception) {
+                    Log.w(ETIKET, "Bayat promise cozulemedi: ${e.message}")
                 }
             }
             if (!kabul) {
@@ -223,7 +244,7 @@ class ExpoGoogleYetkiModule : Module() {
             try {
                 aktivite.startIntentSenderForResult(niyet.intentSender, ISTEK_KODU, null, 0, 0, 0)
             } catch (e: Exception) {
-                synchronized(kilit) { bekleyenYetki = null }
+                synchronized(kilit) { if (bekleyenYetki === promise) bekleyenYetki = null }
                 promise.resolve(hataSonucu(e))
             }
         } catch (e: Exception) {
@@ -246,16 +267,11 @@ class ExpoGoogleYetkiModule : Module() {
 
     private fun hataSonucu(e: Exception): Map<String, Any> {
         val kod = (e as? ApiException)?.statusCode
-        return when (kod) {
-            CommonStatusCodes.CANCELED -> mapOf("durum" to "iptal")
-            CommonStatusCodes.NETWORK_ERROR,
-            CommonStatusCodes.TIMEOUT,
-            CommonStatusCodes.INTERRUPTED -> mapOf("durum" to "agYok")
-            else -> {
-                Log.w(ETIKET, "Yetki alinamadi (kod=$kod): ${e.message}")
-                hata(kod, e.message)
-            }
-        }
+        // SIGN_IN_REQUIRED → `cozumGerekli` (ekran "Yeniden bağlanın" gösterir); kural saf çekirdekte.
+        val durum = YetkiKurallari.durumKodu(kod)
+        if (durum != null) return mapOf("durum" to durum)
+        Log.w(ETIKET, "Yetki alinamadi (kod=$kod): ${e.message}")
+        return hata(kod, e.message)
     }
 
     private fun hata(kod: Int?, mesaj: String?): Map<String, Any> {

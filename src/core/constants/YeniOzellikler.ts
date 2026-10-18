@@ -28,7 +28,7 @@
  * Duyurunun yalnız özelliği taşıyan cihazda görünmesi için yetenek anahtarı.
  * Çözümü sunum katmanındadır (`presentation/hooks/yeniOzellikYetenegi.ts`).
  */
-export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm';
+export type YeniOzellikYetenegi = 'iosWidget' | 'appleWatch' | 'gercekAlarm' | 'googleDrive';
 
 /** Duyurunun görüneceği platformlar. */
 export type YeniOzellikPlatformu = 'android' | 'ios';
@@ -96,6 +96,8 @@ export const YENI_OZELLIKLER: YeniOzellik[] = [
         hedefSayfa: 'EsitlemeAyarlari',
         ctaEtiketi: 'Eşitlemeyi açın',
         kartGoster: true,
+        // Google Play hizmetleri olmayan cihazda (Huawei vb.) Drive kartı görünmez → duyuru da yok.
+        yetenek: 'googleDrive',
     },
     // Wear OS saati (#281, #293, saat iş bölümü). Yalnız Android: Wear OS saati yalnız
     // Android telefonla eşleşir; Apple Watch ayrı duyurudur (yetenekli).

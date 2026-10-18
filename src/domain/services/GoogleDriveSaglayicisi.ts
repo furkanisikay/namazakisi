@@ -62,6 +62,8 @@ const ISTEK_ZAMAN_ASIMI_MS = 20_000;
  * yeniden istenir (Google erişim belirteçleri ~60 dk yaşar; önbellekten almak ucuzdur).
  */
 const BELLEK_OMRU_MS = 45 * 60_000;
+/** Play hizmetleri `CommonStatusCodes.SIGN_IN_REQUIRED`. Native de `cozumGerekli`e çevirir; bu ikinci emniyet. */
+const OTURUM_GEREKLI_KODU = 4;
 
 /** Yetki köprüsü (test için enjekte edilebilir). */
 export interface DriveYetkiKaynagi {
@@ -185,12 +187,14 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
     // En iyi çaba: Google tarafında da izni geri al (ağ yoksa yerel silme yeter).
     try {
       if (this.yapilandirildiMi()) {
-        const geriAlindi = await this.yetki.erisimiGeriAl();
+        // Belirteç izin geri alınmadan ÖNCE alınır: geri almadan sonra sessiz yetki
+        // `cozumGerekli` döner ve HTTP iptali + `clearToken` için belirteç kalmazdı.
         let belirtec = this.erisimBelirteci;
         if (!belirtec) {
           const sessiz = await this.yetki.yetkiAl(false);
           belirtec = sessiz.durum === 'izin' ? sessiz.belirtec : null;
         }
+        const geriAlindi = await this.yetki.erisimiGeriAl();
         if (belirtec) {
           if (!geriAlindi) {
             // Native geri alma başaramadıysa: erişim belirtecini iptal etmek ona bağlı
@@ -239,6 +243,8 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
         // bağlantı işareti SİLİNMEZ (yanlışlıkla "yeniden bağlanın" dedirtmesin).
         throw new EsitlemeHatasi('bilinmiyor');
       default:
+        // SIGN_IN_REQUIRED (4): hesap çıkışı / izin yok → kullanıcı yeniden bağlanmalı.
+        if (sonuc.kod === OTURUM_GEREKLI_KODU) return this.oturumuDusur();
         Logger.warn('GoogleDriveSaglayicisi', `Drive belirteci yenilenemedi (kod=${sonuc.kod ?? '-'})`);
         throw new EsitlemeHatasi('bilinmiyor');
     }
@@ -270,7 +276,15 @@ export class GoogleDriveSaglayicisi implements EsitlemeSaglayicisi {
       const metin = await yanit.text().catch(() => '');
       if (/RateLimit|rateLimitExceeded/i.test(metin)) throw new EsitlemeHatasi('agYok');
       if (/storageQuotaExceeded/i.test(metin)) throw new EsitlemeHatasi('boyutAsimi');
-      throw new EsitlemeHatasi('yetkiYok');
+      // Yalnız kapsam eksikliği kullanıcının yeniden bağlanmasıyla düzelir. Proje tarafı
+      // kalıcı hatalar (accessNotConfigured = Drive API kapalı, vb.) `yetkiYok` sayılsaydı
+      // kullanıcı her bağlanışta aynı hataya düşüp sonsuz "yeniden bağlanın" döngüsüne girerdi.
+      if (/insufficientPermissions|insufficientScopes|ACCESS_TOKEN_SCOPE_INSUFFICIENT/i.test(metin)) {
+        throw new EsitlemeHatasi('yetkiYok');
+      }
+      const neden = /"reason"\s*:\s*"([A-Za-z]+)"/.exec(metin)?.[1] ?? 'bilinmiyor';
+      Logger.warn('GoogleDriveSaglayicisi', `Drive 403 (neden=${neden})`);
+      throw new EsitlemeHatasi('bilinmiyor');
     }
     return yanit;
   }

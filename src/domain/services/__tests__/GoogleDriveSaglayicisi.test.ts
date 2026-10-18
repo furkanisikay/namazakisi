@@ -221,6 +221,25 @@ describe('GoogleDriveSaglayicisi', () => {
       expect(await saglayici.oturumVarMi()).toBe(true);
     });
 
+    it('sessiz yetki SIGN_IN_REQUIRED (4) → yetkiYok + işaret silinir ("Yeniden bağlanın")', async () => {
+      yetki.yetkiAl.mockResolvedValueOnce({ durum: 'hata', kod: 4 });
+      expect(await kod(saglayici.meta())).toBe('yetkiYok');
+      expect(await saglayici.oturumVarMi()).toBe(false);
+    });
+
+    it('kalıcı proje 403 (accessNotConfigured) yetkiYok DEĞİL bilinmiyor: yeniden bağlanma döngüsü olmaz', async () => {
+      istek.mockResolvedValueOnce(
+        yanit(403, '{"error":{"errors":[{"reason":"accessNotConfigured"}]}}')
+      );
+      expect(await kod(saglayici.meta())).toBe('bilinmiyor');
+      expect(await saglayici.oturumVarMi()).toBe(true);
+    });
+
+    it('kapsam eksik 403 → yetkiYok', async () => {
+      istek.mockResolvedValueOnce(yanit(403, '{"error":{"errors":[{"reason":"insufficientPermissions"}]}}'));
+      expect(await kod(saglayici.meta())).toBe('yetkiYok');
+    });
+
     it('ağ hatası / 5xx / 429 → agYok (geçici, sessiz)', async () => {
       istek.mockRejectedValueOnce(new TypeError('Network request failed'));
       expect(await kod(saglayici.meta())).toBe('agYok');
@@ -251,21 +270,49 @@ describe('GoogleDriveSaglayicisi', () => {
       await secureStore.setItemAsync(BAGLANTI_ANAHTARI, '1');
     });
 
-    it('izni native geri alır, belirteci temizler, yerel işareti siler (HTTP iptali gerekmez)', async () => {
+    /**
+     * Gerçekçi sahte: izin geri alındıktan SONRA sessiz yetki artık belirteç vermez
+     * (`cozumGerekli`). Belirteç geri almadan önce alınmazsa temizlenecek belirteç kalmaz.
+     */
+    const geriAlinincaCozumGerekli = (geriAlmaSonucu: boolean) => {
+      let geriAlindi = false;
+      yetki.erisimiGeriAl.mockImplementation(async () => {
+        geriAlindi = true;
+        return geriAlmaSonucu;
+      });
+      yetki.yetkiAl.mockImplementation(async () =>
+        geriAlindi ? { durum: 'cozumGerekli' } : izin('SESSIZ')
+      );
+    };
+
+    it('bellek boşken belirteci geri almadan ÖNCE sessizce alır; geri alır, belirteci temizler, işareti siler', async () => {
+      geriAlinincaCozumGerekli(true);
       await saglayici.baglantiyiKes();
-      expect(yetki.erisimiGeriAl).toHaveBeenCalled();
-      expect(yetki.belirteciTemizle).toHaveBeenCalledWith('ERISIM');
+      expect(yetki.yetkiAl.mock.invocationCallOrder[0]).toBeLessThan(
+        yetki.erisimiGeriAl.mock.invocationCallOrder[0]
+      );
+      expect(yetki.belirteciTemizle).toHaveBeenCalledWith('SESSIZ');
       expect(istek).not.toHaveBeenCalled();
       expect(await saglayici.oturumVarMi()).toBe(false);
     });
 
-    it('native geri alma başaramazsa erişim belirteci HTTP ile iptal edilir', async () => {
-      yetki.erisimiGeriAl.mockResolvedValueOnce(false);
+    it('native geri alma başaramazsa ÖNCEDEN alınan belirteç HTTP ile iptal edilir', async () => {
+      geriAlinincaCozumGerekli(false);
       istek.mockResolvedValueOnce(yanit(200));
       await saglayici.baglantiyiKes();
       expect(String(istek.mock.calls[0][0])).toContain('revoke');
-      expect(String(istek.mock.calls[0][1].body)).toBe('token=ERISIM');
+      expect(String(istek.mock.calls[0][1].body)).toBe('token=SESSIZ');
+      expect(yetki.belirteciTemizle).toHaveBeenCalledWith('SESSIZ');
       expect(await saglayici.oturumVarMi()).toBe(false);
+    });
+
+    it('bellekte belirteç varsa sessiz yetki hiç istenmez', async () => {
+      istek.mockResolvedValueOnce(yanit(200, { files: [] }));
+      await saglayici.meta(); // belirteç belleğe alınır
+      yetki.yetkiAl.mockClear();
+      await saglayici.baglantiyiKes();
+      expect(yetki.yetkiAl).not.toHaveBeenCalled();
+      expect(yetki.belirteciTemizle).toHaveBeenCalledWith('ERISIM');
     });
 
     it('ağ yokken de yerel işaret silinir', async () => {
