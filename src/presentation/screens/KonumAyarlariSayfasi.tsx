@@ -1,8 +1,13 @@
 /**
- * Konum Ayarları Sayfası
- * Kullanıcının konumunu GPS veya manuel seçim ile belirlemesini sağlar
- * 
- * NativeWind + Expo Vector Icons ile güncellenmiş versiyon
+ * Konum Ayarları Sayfası — konumu GPS (otomatik) ya da il/ilçe (manuel) ile belirler.
+ *
+ * Sade tasarım Dalga 4:
+ *   - Gövdedeki tanıtım kartı kalktı; sayfanın kahramanı DURUM KARTI: konum ne, ne zaman
+ *     güncellendi, tek "Yenile" (otomatik modda; `useKonumYenile` — metinler tek yerde).
+ *   - Takip hassasiyeti ve koordinatlar "Gelişmiş" katında (varsayılan kapalı).
+ *   - Damga bayatlığı "konumunuz eski" DEĞİLDİR (nabız konum almadan tazeler; bayatlık
+ *     arka plan görevinin koşmadığını gösterir) → kartta yalnız zaman yazılır, "konumunuzu
+ *     yenileyin" uyarısı ÜRETİLMEZ.
  */
 
 import * as React from 'react';
@@ -25,7 +30,7 @@ import { useRenkler } from '../../core/theme';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { konumAyarlariniGuncelle, GpsAdres } from '../store/konumSlice';
 import type { TakipHassasiyeti } from '../store/konumSlice';
-import { TAKIP_PROFILLERI, VARSAYILAN_TAKIP_HASSASIYETI } from '../../core/constants/UygulamaSabitleri';
+import { VARSAYILAN_TAKIP_HASSASIYETI } from '../../core/constants/UygulamaSabitleri';
 import { NamazVaktiHesaplayiciServisi } from '../../domain/services/NamazVaktiHesaplayiciServisi';
 import { Il, Ilce } from '../../domain/services/TurkiyeKonumServisi';
 import { KonumTakipServisi } from '../../domain/services/KonumTakipServisi';
@@ -39,6 +44,8 @@ import { BildirimModali, BildirimTipi } from '../components/common/BildirimModal
 import { VurguSaglayici } from '../components/ayar/VurguSaglayici';
 import { useVurguKurulumu } from '../components/ayar/useVurguKurulumu';
 import { AyarCapasi } from '../components/ayar/AyarCapasi';
+import { useKonumYenile } from '../hooks/useKonumYenile';
+import { BolumBasligi } from '../components/ortak/BolumBasligi';
 
 /**
  * Bildirim modalı durumu — Alert.alert yerine tema-uyumlu BildirimModali ile gösterilir.
@@ -78,6 +85,8 @@ const KonumAyarlariIcerik: React.FC = () => {
     const dispatch = useAppDispatch();
     const { butonTiklandiFeedback } = useFeedback();
     const konumAyarlari = useAppSelector((state) => state.konum);
+    const konumYenile = useKonumYenile();
+    const [gelismisAcik, setGelismisAcik] = useState(false);
     const konumMetni = useKonumMetni(konumAyarlari);
     const [yukleniyor, setYukleniyor] = useState(false);
     const [takipDurumuYukleniyor, setTakipDurumuYukleniyor] = useState(false);
@@ -326,26 +335,11 @@ const KonumAyarlariIcerik: React.FC = () => {
     return (
         <>
         <ScrollView ref={scrollRef} className="flex-1 p-4" style={{ backgroundColor: renkler.arkaplan }}>
-            {/* Baslik Karti */}
+            {/* DURUM KARTI — konum ne, ne zaman güncellendi, tek "Yenile" */}
             <View
-                className="items-center p-6 rounded-2xl border mb-4 mt-2"
-                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
-            >
-                <View
-                    className="w-16 h-16 rounded-full items-center justify-center mb-3"
-                    style={{ backgroundColor: `${renkler.birincil}15` }}
-                >
-                    <FontAwesome5 name="map-marker-alt" size={28} color={renkler.birincil} solid />
-                </View>
-                <Text className="text-sm text-center leading-5" style={{ color: renkler.metinIkincil }}>
-                    Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin
-                </Text>
-            </View>
-
-            {/* Mevcut Konum Gosterimi */}
-            <View
-                className="p-4 rounded-2xl border mb-4"
-                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+                testID="konum-durum-karti"
+                className="p-4 border mb-4 mt-2"
+                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
             >
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center flex-1">
@@ -362,7 +356,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                         </View>
                         <View className="flex-1">
                             <Text className="text-xs font-medium mb-0.5" style={{ color: renkler.metinIkincil }}>
-                                Mevcut Konum
+                                Vakitler bu konuma göre
                             </Text>
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
                                 {konumMetni}
@@ -377,16 +371,37 @@ const KonumAyarlariIcerik: React.FC = () => {
                             className="text-xs font-bold"
                             style={{ color: konumAyarlari.konumModu === 'oto' ? renkler.durum.basarili : renkler.durum.bilgi }}
                         >
-                            {konumAyarlari.konumModu === 'oto' ? 'GPS' : 'Manuel'}
+                            {konumAyarlari.konumModu === 'oto' ? 'Otomatik' : 'Elle'}
                         </Text>
                     </View>
                 </View>
-                {sonGuncellemeMetni && (
+                {(sonGuncellemeMetni || konumYenile.yenilenebilir) && (
                     <View className="flex-row items-center mt-3 pt-3 border-t" style={{ borderTopColor: renkler.sinir }}>
                         <FontAwesome5 name="clock" size={12} color={renkler.metinIkincil} />
-                        <Text className="text-sm ml-1.5" style={{ color: renkler.metinIkincil }}>
-                            {sonGuncellemeMetni}
+                        <Text className="text-sm ml-1.5 flex-1" style={{ color: renkler.metinIkincil }}>
+                            {sonGuncellemeMetni ?? 'Henüz güncellenmedi'}
                         </Text>
+                        {konumYenile.yenilenebilir && (
+                            <TouchableOpacity
+                                testID="konum-yenile"
+                                onPress={konumYenile.yenile}
+                                disabled={konumYenile.yenileniyor}
+                                accessibilityRole="button"
+                                accessibilityLabel="Konumu yenileyin"
+                                accessibilityState={{ disabled: konumYenile.yenileniyor, busy: konumYenile.yenileniyor }}
+                                className="flex-row items-center px-4 rounded-2xl"
+                                style={{ minHeight: 44, backgroundColor: `${renkler.birincil}15` }}
+                            >
+                                {konumYenile.yenileniyor ? (
+                                    <ActivityIndicator size="small" color={renkler.birincil} />
+                                ) : (
+                                    <FontAwesome5 name="sync-alt" size={13} color={renkler.birincil} />
+                                )}
+                                <Text className="text-sm font-semibold ml-2" style={{ color: renkler.birincil }}>
+                                    Yenile
+                                </Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 )}
             </View>
@@ -504,10 +519,10 @@ const KonumAyarlariIcerik: React.FC = () => {
                     <View className="flex-row items-center justify-between">
                         <View className="flex-1 mr-3">
                             <Text className="text-base font-semibold" style={{ color: renkler.metin }}>
-                                Şehir Değiştikçe Vakitleri Güncelle
+                                Yolculukta vakitleri güncelleyin
                             </Text>
-                            <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {`${(TAKIP_PROFILLERI[seciliHassasiyet].mesafe / 1000).toFixed(0)} km'den uzun bir mesafe katettiğinizde namaz vakitleri yeni konumunuza göre güncellenir`}
+                            <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                Şehir değişince vakitler kendiliğinden yeni konuma göre hesaplanır
                             </Text>
                         </View>
                         {takipDurumuYukleniyor ? (
@@ -515,6 +530,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                         ) : (
                             <Anahtar
                                 value={takipAktif}
+                                accessibilityLabel="Yolculukta vakitleri güncelleyin"
                                 onValueChange={handleAkilliTakipDegistir}
                                 trackColor={{ false: renkler.sinir, true: `${renkler.birincil}60` }}
                                 thumbColor={takipAktif ? renkler.birincil : '#f4f3f4'}
@@ -524,113 +540,6 @@ const KonumAyarlariIcerik: React.FC = () => {
 
                     {takipAktif && (
                         <>
-                            <View
-                                className="flex-row items-center mt-3 p-2.5 rounded-lg border"
-                                style={{ backgroundColor: `${renkler.durum.basarili}15`, borderColor: renkler.durum.basarili }}
-                            >
-                                <FontAwesome5 name="check-circle" size={14} color={renkler.durum.basarili} solid />
-                                <Text className="text-sm font-medium ml-2" style={{ color: renkler.durum.basarili }}>
-                                    Seyahatte otomatik güncelleme etkin
-                                </Text>
-                            </View>
-
-                            {/* Takip Hassasiyeti Secici */}
-                            <View className="mt-4 pt-4 border-t" style={{ borderTopColor: renkler.sinir }}>
-                                <View className="flex-row items-center mb-3">
-                                    <FontAwesome5 name="sliders-h" size={14} color={renkler.metinIkincil} />
-                                    <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                                        TAKİP HASSASİYETİ
-                                    </Text>
-                                </View>
-
-                                {/* Pil Dostu */}
-                                <TouchableOpacity
-                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
-                                    style={{
-                                        backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}10` : 'transparent',
-                                        borderColor: seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.sinir,
-                                    }}
-                                    onPress={() => handleHassasiyetDegistir('pil_dostu')}
-                                    activeOpacity={0.7}
-                                    accessibilityRole="button"
-                                    accessibilityLabel={seciliHassasiyet === 'pil_dostu' ? 'Pil Dostu hassasiyet seçili' : 'Pil Dostu hassasiyet seç'}
-                                >
-                                    <View
-                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}20` : renkler.sinir }}
-                                    >
-                                        <FontAwesome5 name="battery-full" size={16} color={seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.metinIkincil} />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Pil Dostu</Text>
-                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            10 km - Şehirler arası yolculuk için
-                                        </Text>
-                                    </View>
-                                    {seciliHassasiyet === 'pil_dostu' && (
-                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.basarili} solid />
-                                    )}
-                                </TouchableOpacity>
-
-                                {/* Dengeli */}
-                                <TouchableOpacity
-                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
-                                    style={{
-                                        backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}10` : 'transparent',
-                                        borderColor: seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.sinir,
-                                    }}
-                                    onPress={() => handleHassasiyetDegistir('dengeli')}
-                                    activeOpacity={0.7}
-                                    accessibilityRole="button"
-                                    accessibilityLabel={seciliHassasiyet === 'dengeli' ? 'Dengeli hassasiyet seçili' : 'Dengeli hassasiyet seç'}
-                                >
-                                    <View
-                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}20` : renkler.sinir }}
-                                    >
-                                        <FontAwesome5 name="balance-scale" size={16} color={seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.metinIkincil} />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Dengeli</Text>
-                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            5 km - Çoğu kullanıcı için ideal
-                                        </Text>
-                                    </View>
-                                    {seciliHassasiyet === 'dengeli' && (
-                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.bilgi} solid />
-                                    )}
-                                </TouchableOpacity>
-
-                                {/* Hassas */}
-                                <TouchableOpacity
-                                    className="flex-row items-center p-3 rounded-xl border-2"
-                                    style={{
-                                        backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}10` : 'transparent',
-                                        borderColor: seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.sinir,
-                                    }}
-                                    onPress={() => handleHassasiyetDegistir('hassas')}
-                                    activeOpacity={0.7}
-                                    accessibilityRole="button"
-                                    accessibilityLabel={seciliHassasiyet === 'hassas' ? 'Hassas hassasiyet seçili' : 'Hassas hassasiyet seç'}
-                                >
-                                    <View
-                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
-                                        style={{ backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}20` : renkler.sinir }}
-                                    >
-                                        <FontAwesome5 name="crosshairs" size={16} color={seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.metinIkincil} />
-                                    </View>
-                                    <View className="flex-1">
-                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Hassas</Text>
-                                        <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            2 km - Sık hareket edenler için
-                                        </Text>
-                                    </View>
-                                    {seciliHassasiyet === 'hassas' && (
-                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.uyari} solid />
-                                    )}
-                                </TouchableOpacity>
-                            </View>
-
                             {/* Konum değişince bildir — yalnız Android: arka plan takibi (ve
                                 dolayısıyla otomatik algılama) iOS'ta yok. */}
                             {Platform.OS === 'android' && (
@@ -661,17 +570,120 @@ const KonumAyarlariIcerik: React.FC = () => {
                 </AyarCapasi>
             )}
 
-            {/* Koordinat Bilgisi */}
-            <View
-                className="p-4 rounded-2xl border"
-                style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir }}
+            {/* GELİŞMİŞ — takip mesafesi ve koordinatlar (varsayılan kapalı) */}
+            <TouchableOpacity
+                testID="konum-gelismis"
+                onPress={() => setGelismisAcik((a) => !a)}
+                accessibilityRole="button"
+                accessibilityLabel="Gelişmiş"
+                accessibilityState={{ expanded: gelismisAcik }}
+                className="flex-row items-center justify-between px-4 border"
+                style={{ minHeight: 52, backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
             >
-                <View className="flex-row items-center mb-3">
-                    <FontAwesome5 name="globe" size={14} color={renkler.metinIkincil} />
-                    <Text className="text-xs font-semibold tracking-wider ml-2" style={{ color: renkler.metinIkincil }}>
-                        KOORDINATLAR
-                    </Text>
-                </View>
+                <Text className="text-base font-semibold" style={{ color: renkler.metin }}>Gelişmiş</Text>
+                <FontAwesome5 name={gelismisAcik ? 'chevron-up' : 'chevron-down'} size={13} color={renkler.metinIkincil} />
+            </TouchableOpacity>
+            {gelismisAcik && (
+                <View
+                    className="p-4 border mt-2"
+                    style={{ backgroundColor: renkler.kartArkaplan, borderColor: renkler.sinir, borderRadius: 24 }}
+                >
+                    {/* Takip mesafesi: yalnız otomatik modda ve yolculuk takibi açıkken anlamlı. */}
+                    {konumAyarlari.konumModu === 'oto' && takipAktif && (
+                            <View className="mb-4">
+                                <BolumBasligi metin="Ne kadar uzaklaşınca" ikon="sliders-h" />
+
+                                {/* Pil Dostu */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('pil_dostu')}
+                                    activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'pil_dostu' ? 'Pil Dostu hassasiyet seçili' : 'Pil Dostu hassasiyeti seçin'}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'pil_dostu' ? `${renkler.durum.basarili}20` : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="battery-full" size={16} color={seciliHassasiyet === 'pil_dostu' ? renkler.durum.basarili : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Pil Dostu</Text>
+                                        <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            10 km · şehirler arası yolculuk
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'pil_dostu' && (
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.basarili} solid />
+                                    )}
+                                </TouchableOpacity>
+
+                                {/* Dengeli */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2 mb-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('dengeli')}
+                                    activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'dengeli' ? 'Dengeli hassasiyet seçili' : 'Dengeli hassasiyeti seçin'}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'dengeli' ? `${renkler.durum.bilgi}20` : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="balance-scale" size={16} color={seciliHassasiyet === 'dengeli' ? renkler.durum.bilgi : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Dengeli</Text>
+                                        <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            5 km · çoğu kişi için uygun
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'dengeli' && (
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.bilgi} solid />
+                                    )}
+                                </TouchableOpacity>
+
+                                {/* Hassas */}
+                                <TouchableOpacity
+                                    className="flex-row items-center p-3 rounded-xl border-2"
+                                    style={{
+                                        backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}10` : 'transparent',
+                                        borderColor: seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.sinir,
+                                    }}
+                                    onPress={() => handleHassasiyetDegistir('hassas')}
+                                    activeOpacity={0.7}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={seciliHassasiyet === 'hassas' ? 'Hassas hassasiyet seçili' : 'Hassas hassasiyeti seçin'}
+                                >
+                                    <View
+                                        className="w-10 h-10 rounded-lg items-center justify-center mr-3"
+                                        style={{ backgroundColor: seciliHassasiyet === 'hassas' ? `${renkler.durum.uyari}20` : renkler.sinir }}
+                                    >
+                                        <FontAwesome5 name="crosshairs" size={16} color={seciliHassasiyet === 'hassas' ? renkler.durum.uyari : renkler.metinIkincil} />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Hassas</Text>
+                                        <Text className="text-sm mt-0.5" style={{ color: renkler.metinIkincil }}>
+                                            2 km · sık yer değiştirenler
+                                        </Text>
+                                    </View>
+                                    {seciliHassasiyet === 'hassas' && (
+                                        <FontAwesome5 name="check-circle" size={16} color={renkler.durum.uyari} solid />
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+
+                    )}
+                    <BolumBasligi metin="Koordinatlar" ikon="globe" />
+                    <View>
                 <View className="flex-row items-center">
                     <View className="flex-1 items-center">
                         <Text className="text-xs mb-1" style={{ color: renkler.metinIkincil }}>Enlem</Text>
@@ -688,6 +700,9 @@ const KonumAyarlariIcerik: React.FC = () => {
                     </View>
                 </View>
             </View>
+
+                </View>
+            )}
 
             <View className="h-10" />
         </ScrollView>
