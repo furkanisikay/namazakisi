@@ -539,6 +539,18 @@ describe('AndroidMuhafizTeslimcisi — alarm butcesi (500 alarm tavani)', () => 
         expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
     });
 
+    test('NÖBETÇİ (birleşik hatırlatma modülü §3.4): MUHAFIZDA boş metinli sesli adım SESSİZDİR', async () => {
+        // Ek yüzeylerde boş metin "otomatik cümle"dir (planlayıcı doldurur); muhafızda
+        // teslimci boş/boşluk metinde TTS planlamaz — elle kutuyu silen kullanıcı konuşmaya başlamaz.
+        const t = new AndroidMuhafizTeslimcisi();
+        await t.hazirla(BOS_MATRIS);
+        for (const anonsMetni of ['', '   ']) {
+            await t.uyariPlanla(teslimKur({ sesliAnons: true, anonsMetni, kanallar: { bildirim: true, sesli: true } }));
+        }
+        expect(mockPlanlaAnons).not.toHaveBeenCalled();
+        expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(2);
+    });
+
     test('NÖBETÇİ: butce tavanin altinda kalir (diger bildirimlere pay)', () => {
         expect(ANDROID_MUHAFIZ_ALARM_BUTCESI).toBeLessThanOrEqual(400);
     });

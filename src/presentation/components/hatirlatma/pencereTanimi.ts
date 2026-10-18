@@ -302,6 +302,14 @@ export interface PencereTanimi {
      */
     anonsMetniDuzenlenebilir: boolean;
     /**
+     * BOŞ sesli okuma metninin anlamı (birleşik hatırlatma modülü §3.4):
+     * - `true` (ek yüzeyler + nafile): boş = OTOMATİK cümle (yüzeyin bağlamsal cümlesi);
+     *   sesli kanal açılırken kutu BOŞ bırakılır.
+     * - `false` (muhafız): boş = SESSİZ (teslimci boş metinde TTS planlamaz) → sesli kanal
+     *   açılırken kutu yön-uygun şablonla DOLDURULUR (eski davranış birebir).
+     */
+    bosMetinOtomatik: boolean;
+    /**
      * Titresim anahtari gosterilsin mi?
      *
      * iOS'ta HAYIR: bildirim haptigi sistem ayarina baglidir, uygulama adim
@@ -534,6 +542,7 @@ export function vakitPencereTanimi(
         yon,
         maksAdim: MUHAFIZ_MAKS_ADIM,
         tonSecilebilir: true,
+        bosMetinOtomatik: false,
         onPlanBanneriVar: true,
         pencereUzunluguDk,
         adimBilgileri: MUHAFIZ_ADIM_BILGILERI,
@@ -605,6 +614,7 @@ export function ekHatirlatmaPencereTanimi(secenekler: {
         yonSabitGerekcesi: secenekler.yonSabitGerekcesi,
         tonSecilebilir: false,
         anonsMetniDuzenlenebilir: false,
+        bosMetinOtomatik: true,
         onPlanBanneriVar: false,
         kaynak: secenekler.kaynak,
         baslik: secenekler.baslik,
@@ -702,6 +712,7 @@ export function nafilePencereTanimi(secenekler: {
         // İSTİSNALAR — gerekçe fonksiyonun belgesinde.
         tonSecilebilir: false,
         anonsMetniDuzenlenebilir: false,
+        bosMetinOtomatik: true,
         onPlanBanneriVar: false,
         kaynak: secenekler.kaynak,
         baslik: secenekler.baslik,

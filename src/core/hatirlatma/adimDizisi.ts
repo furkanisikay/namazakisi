@@ -24,6 +24,7 @@ import type { PencereYonu } from '../muhafiz/pencereTipleri';
 import { kronolojikSirala } from '../muhafiz/aktifSeviye';
 import { ESIK_GUVENLIK_TAVANI, ESIK_MUTLAK_MIN } from '../muhafiz/esikSinirlari';
 import { yeniAdimEsigi } from '../muhafiz/adimDuzenleme';
+import { ANONS_METIN_UST_SINIRI } from '../muhafiz/ios/anonsKlibi';
 
 /** Bir yüzeyin adım kısıtları. */
 export interface AdimKisitlari {
@@ -112,9 +113,15 @@ export const siklikNormalize = (ham: unknown, k: Pick<AdimKisitlari, 'tekrarMinD
 };
 
 /**
- * Tek bir adımı yüzey kısıtlarına çeker; çözülemezse `null`. Ton/aciliyet/anons
- * metni ZORLANIR; kullanıcının seçtikleri (kanallar, bildirim sesi + adı, kapalı
+ * Tek bir adımı yüzey kısıtlarına çeker; çözülemezse `null`. Ton/aciliyet ZORLANIR;
+ * kullanıcının seçtikleri (kanallar, bildirim sesi + adı, sesli okuma METNİ, kapalı
  * adımın kanal hafızası, alarm kapsamı) KORUNUR.
+ *
+ * SESLİ OKUMA METNİ (birleşik hatırlatma modülü §4.1): eskiden burada zorla boşaltılıyordu
+ * (metin bağlamdan üretiliyordu) — kullanıcı her yüzeyde metin yazabildiğinden artık
+ * KIRPILMADAN taşınır; yalnız `ANONS_METIN_UST_SINIRI` (iOS klip sınırıyla tek kaynak)
+ * uygulanır. Boş metin = yüzeyin otomatik cümlesi (planlayıcı karar verir) → diskte metni
+ * hep boş olan eski kayıtlar birebir aynı planı üretir.
  */
 export function adimNormalize(ham: unknown, k: AdimKisitlari): SeviyeAyari | null {
     if (!nesneMi(ham) || typeof ham.esikDk !== 'number' || !Number.isFinite(ham.esikDk)) return null;
@@ -134,6 +141,7 @@ export function adimNormalize(ham: unknown, k: AdimKisitlari): SeviyeAyari | nul
     if (hafiza) adim.oncekiKanallar = hafiza;
     // Alarm kapsamı (#74): yalnız "Her uyarıda" yazılır; yokluğu "yalnız ilk" demektir.
     if (ham.alarmKapsami === 'hepsi') adim.alarmKapsami = 'hepsi';
+    if (typeof ham.anonsMetni === 'string') adim.anonsMetni = ham.anonsMetni.slice(0, ANONS_METIN_UST_SINIRI);
     return adim;
 }
 

@@ -213,7 +213,9 @@ export const AdimDetayModal: React.FC<AdimDetayModalProps> = ({
 
         // Sesli kanal acilirken bos anons kutusu birakma (spec 7): YON-UYGUN
         // sablonla on-doldur (giris yonune cikis dilli metin yazilmasin).
-        const sesliyeGecis = sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni;
+        // Yalnız MUHAFIZDA: orada boş metin SESSİZDİR. Ek yüzeylerde/nafilede boş metin
+        // OTOMATİK cümledir — muhafız şablonu yazılsaydı cumada "Öğle vakti çıkıyor" okunurdu.
+        const sesliyeGecis = !tanim.bosMetinOtomatik && sesliAnonsGerekliMi(kanallar) && !seviye.anonsMetni;
         const anonsMetni = sesliyeGecis ? varsayilanAnonsMetni(tanim.yon) : seviye.anonsMetni;
         if (sesliyeGecis) setMetinTaslak(anonsMetni);
         // Kapaliliktan CIKISTA kanal hafizasi bayat kalmamali ("oncekiKanallar var

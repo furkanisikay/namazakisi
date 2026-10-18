@@ -39,6 +39,7 @@ import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import type { YatisAyarlari } from './yatisAyarlari';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir } from '../hatirlatma/ekPlan';
+import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 
 export type FarzVakit = Exclude<VakitAdi, 'gunes'>;
 export const FARZ_VAKITLER: readonly FarzVakit[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -448,6 +449,7 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
             if (icerik) break;
         }
         if (!icerik) continue;
+        const otomatikAnons = icerik.anons;
         for (const t of kaymis.slice(baslangic)) {
             plan.push({
                 ...icerik,
@@ -456,7 +458,16 @@ export function yatisPlaniOlustur(g: YatisPlanGirdisi): YatisPlanKaydi[] {
                 zaman: t.zaman,
                 kalanDk: t.uyari.kalanDk,
                 cikis,
-                uyari: { ...t.uyari, anonsMetni: icerik.anons },
+                // Kullanıcının sesli okuma metni YALNIZ yatsı hatırlatmasında okunur: muhasebe
+                // (yatsı kılınmışken de gelir) daima otomatik cümledir — "yatsıyı kıl" diye
+                // yazılmış bir metin kılınmış yatsıda okunmasın (editör bunu söyler).
+                uyari: {
+                    ...t.uyari,
+                    anonsMetni:
+                        icerik.tur === 'yatsi'
+                            ? adimAnonsMetni(t.uyari.anonsMetni, { vakit: 'Yatsı', sureDk: t.uyari.kalanDk }, () => otomatikAnons)
+                            : icerik.anons,
+                },
             });
         }
     }

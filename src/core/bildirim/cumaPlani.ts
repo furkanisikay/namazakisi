@@ -21,6 +21,7 @@ import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptor
 import { tarihiISOFormatinaCevir } from '../utils/TarihYardimcisi';
 import { cumaAnonsMetni, cumaBildirimMetni, hatirlatmaZamaniHesapla, sonrakiCumalar } from '../utils/cumaYardimcisi';
 import { alarmPayinaSigdir } from '../hatirlatma/ekPlan';
+import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 
 /** Bildirim id öneki — temizlik bu önekle SÜZER, başka sistemlere dokunmaz. */
 export const CUMA_ID_ONEKI = 'cuma_hatirlatma_';
@@ -101,7 +102,14 @@ export function cumaPlaniOlustur(
                 tarih: iso,
                 ogle,
                 ...metin,
-                uyari: { ...uyari, anonsMetni: cumaAnonsMetni(uyari.kalanDk) },
+                // Kullanıcının sesli okuma metni (yer tutucuları cumaya göre çözülür); boşsa
+                // bugünkü otomatik cuma cümlesi (eski kayıtlar birebir).
+                uyari: {
+                    ...uyari,
+                    anonsMetni: adimAnonsMetni(uyari.anonsMetni, { vakit: 'Cuma', sureDk: uyari.kalanDk }, () =>
+                        cumaAnonsMetni(uyari.kalanDk)
+                    ),
+                },
             });
         }
     }

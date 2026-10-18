@@ -18,7 +18,7 @@ const CUMA_GIBI: AdimKisitlari = {
 };
 
 describe('adimDizisi — ortak ek hatırlatma adımları', () => {
-    it('normalize: ton/aciliyet ZORLANIR, kullanıcı seçimleri KORUNUR', () => {
+    it('normalize: ton/aciliyet ZORLANIR, kullanıcı seçimleri (metin dahil) KORUNUR', () => {
         const [a] = adimlariNormalize(
             [{ kademe: 'acil', acilKanal: true, esikDk: 60, siklik: { herDk: 2 }, kanallar: { titresim: true, alarm: true }, bildirimSesi: 'content://x', sesAdi: 'Ezan', alarmKapsami: 'hepsi', anonsMetni: 'yaz' }],
             'cikisaDogru',
@@ -27,7 +27,8 @@ describe('adimDizisi — ortak ek hatırlatma adımları', () => {
         );
         expect(a.kademe).toBe('nazik');
         expect(a.acilKanal).toBe(false);
-        expect(a.anonsMetni).toBe('');
+        // Sesli okuma metni artık KORUNUR (birleşik hatırlatma modülü §4.1).
+        expect(a.anonsMetni).toBe('yaz');
         expect(a.siklik).toEqual({ herDk: 5 });
         // Titreşim/alarm tek başına konuşmaz → bildirim de açılır.
         expect(a.kanallar).toEqual({ bildirim: true, titresim: true, alarm: true });

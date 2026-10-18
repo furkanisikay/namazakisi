@@ -74,6 +74,7 @@ import { UYGULAMA_TAKVIM_NOTU, type TakvimCakismaAyarlari } from '../takvimCakis
 import type { SeviyeAyari } from '../muhafiz/matrisTipleri';
 import { vakitUyariPlaniOlustur, type UyariPlani } from '../muhafiz/motorAdaptoru';
 import { alarmPayinaSigdir, ayniAnaDusenleriBirlestir, ekAlarmKurarMi } from '../hatirlatma/ekPlan';
+import { adimAnonsMetni } from '../hatirlatma/anonsYerTutucu';
 
 export type CakismaVakti = Exclude<VakitAdi, 'gunes'>;
 export const CAKISMA_VAKITLERI: readonly CakismaVakti[] = ['imsak', 'ogle', 'ikindi', 'aksam', 'yatsi'];
@@ -330,7 +331,17 @@ export function takvimCakismaPlaniOlustur(g: TakvimCakismaPlanGirdisi): TakvimCa
                 else anlar.set(zamanMs, { sira, uyari });
             }
             for (const [zamanMs, { sira, uyari }] of anlar) {
-                const adimUyarisi: UyariPlani = { ...uyari, anonsMetni: anons };
+                // Kullanıcının metni: `{süre}` etkinliğe (çapaya) GERÇEKTEN kalan dakika
+                // (tabana kenetlenen tetikte eşik değil). Bağlamda etkinlik ADI YOKTUR —
+                // tip taşımaz, ad hiçbir yer tutucuyla okunamaz (gizlilik). Boşsa otomatik.
+                const adimUyarisi: UyariPlani = {
+                    ...uyari,
+                    anonsMetni: adimAnonsMetni(
+                        uyari.anonsMetni,
+                        { vakit: VAKIT_ADLARI[vakit], sureDk: Math.round((capaMs - zamanMs) / DK) },
+                        () => anons
+                    ),
+                };
                 // Gerçek alarm tam ekran kilit ekranında açılır → ad ASLA (baslikGoster olsa bile).
                 const adGosterilir = baslikGoster && !ekAlarmKurarMi({ uyari: adimUyarisi });
                 plan.push({

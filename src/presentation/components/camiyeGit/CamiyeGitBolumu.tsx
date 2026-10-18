@@ -374,7 +374,7 @@ export const CamiyeGitBolumu: React.FC = () => {
     const adimAcKapa = (indeks: number, acik: boolean) => {
         const mevcut = ayarlar.adimlar[indeks];
         if (!mevcut) return;
-        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru') : seviyeyiKapat(mevcut);
+        const seviye = acik ? seviyeyiAc(mevcut, 'cikisaDogru', false) : seviyeyiKapat(mevcut);
         if (seviye === mevcut) return;
         guncelle(adimGuncelle(ayarlar, indeks, seviye, 'cikisaDogru', CAMIYE_GIT_ADIM_KISITLARI));
     };
