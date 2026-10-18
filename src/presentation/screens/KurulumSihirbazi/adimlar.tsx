@@ -66,7 +66,11 @@ export const HosgeldinizAdimi: React.FC = () => {
 
 export const BildirimIzniAdimi: React.FC<{
   bildirimIzni: 'bekliyor' | 'isteniyor' | 'verildi' | 'reddedildi';
-}> = ({ bildirimIzni }) => {
+  /** İzin bu adıma gelmeden ZATEN verilmişti (yeniden kurulum, Android 12-): soru sorulmaz. */
+  zatenVar?: boolean;
+  /** Kalıcı red: sistem diyaloğu bir daha açılmaz, yol Ayarlar'dır. */
+  kaliciRed?: boolean;
+}> = ({ bildirimIzni, zatenVar = false, kaliciRed = false }) => {
   const bellAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.6)).current;
 
@@ -108,11 +112,13 @@ export const BildirimIzniAdimi: React.FC<{
         <Animated.View style={[styles.buyukIkonCember, { backgroundColor: '#fef3c720', transform: [{ scale: scaleAnim }] }]}>
           <FontAwesome5 name="check-circle" size={52} color="#10b981" />
         </Animated.View>
-        <Text style={styles.adimBaslik}>Bildirimler Açık!</Text>
+        <Text style={styles.adimBaslik}>{zatenVar ? 'Bildirim izni açık' : 'Bildirimler Açık!'}</Text>
         <Text style={styles.adimAltBaslik}>Namaz vakitleri yaklaştığında sizi bilgilendireceğiz.</Text>
-        <Text style={{ color: '#9ca3af', fontSize: 13, textAlign: 'center', marginTop: 8 }}>
-          Bir sonraki adıma geçiliyor...
-        </Text>
+        {!zatenVar && (
+          <Text style={{ color: '#9ca3af', fontSize: 13, textAlign: 'center', marginTop: 8 }}>
+            Bir sonraki adıma geçiliyor...
+          </Text>
+        )}
       </View>
     );
   }
@@ -132,7 +138,9 @@ export const BildirimIzniAdimi: React.FC<{
         <View style={[styles.bilgiKutu, { marginTop: 16 }]}>
           <FontAwesome5 name="info-circle" size={14} color="#3b82f6" />
           <Text style={styles.bilgiKutuMetin}>
-            Bildirimleri açmak için telefonunuzun uygulama ayarlarından izin verebilirsiniz.
+            {kaliciRed
+              ? 'Bildirim izni kapalı. Aşağıdaki "Ayarları açın" düğmesiyle açabilirsiniz.'
+              : 'Bildirimleri açmak için telefonunuzun uygulama ayarlarından izin verebilirsiniz.'}
           </Text>
         </View>
       </View>
@@ -192,7 +200,9 @@ export const KonumAdimi: React.FC<{
   onIzinIste: () => void;
   onAtla: () => void;
   onManuelKaydet: () => void;
-}> = ({ konumDurumu, konumBilgi, manuelIl, setManuelIl }) => {
+  /** Konum izni bu adıma gelmeden zaten verilmiş: "izin" değil yalnız "konumu al" kalır. */
+  izinZatenVar?: boolean;
+}> = ({ konumDurumu, konumBilgi, manuelIl, setManuelIl, izinZatenVar = false }) => {
 
   if (konumDurumu === 'gpsAliniyor') {
     return (
@@ -273,7 +283,9 @@ export const KonumAdimi: React.FC<{
       </View>
       <Text style={styles.adimBaslik}>Konumunuz</Text>
       <Text style={styles.adimAltBaslik}>
-        Namaz vakitleri ve kıble yönünün doğru hesaplanabilmesi için konum bilginize ihtiyacımız var
+        {izinZatenVar
+          ? 'Konum izni açık. Tek dokunuşla bulunduğunuz yeri alın.'
+          : 'Namaz vakitleri ve kıble yönünün doğru hesaplanabilmesi için konum bilginize ihtiyacımız var'}
       </Text>
 
       <InfoKutu ikon="clock" renk="#10b981" baslik="Namaz Vakitleri" aciklama="Konum verisi yalnızca namaz vakitlerini hesaplamak için kullanılır. Coğrafi konuma göre vakitler farklılık gösterir." />

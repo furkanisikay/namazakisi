@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Animated,
   AppState,
+  Linking,
   Dimensions,
   StatusBar,
   ActivityIndicator,
@@ -77,6 +78,11 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
 
   // Konum
   const [konumDurumu, setKonumDurumu] = useState<KonumDurumu>('bekliyor');
+  // Ölçebildiğini sorma: izin bu adımlara gelmeden ZATEN verilmiş olabilir (yeniden
+  // kurulum, Android 12 ve öncesi, iOS'ta daha önce verilmiş). Okunur, soru sorulmaz.
+  const [bildirimZatenVar, setBildirimZatenVar] = useState(false);
+  const [bildirimKaliciRed, setBildirimKaliciRed] = useState(false);
+  const [konumIzniZatenVar, setKonumIzniZatenVar] = useState(false);
   const [konumBilgi, setKonumBilgi] = useState<string>('');
   const [manuelIl, setManuelIl] = useState<Il | null>(null);
 
@@ -170,6 +176,57 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   }, [ilerle]);
 
   // ─── Bildirim İzni ───────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (adim !== ADIM.BILDIRIM_IZNI || bildirimIzni !== 'bekliyor') return;
+    let iptal = false;
+    Notifications.getPermissionsAsync()
+      .then((d) => {
+        if (iptal) return;
+        if (d.status === 'granted') {
+          setBildirimZatenVar(true);
+          setBildirimIzni('verildi');
+        } else if (d.status === 'denied' && d.canAskAgain === false) {
+          setBildirimKaliciRed(true);
+          setBildirimIzni('reddedildi');
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      iptal = true;
+    };
+  }, [adim, bildirimIzni]);
+
+  useEffect(() => {
+    if (adim !== ADIM.KONUM || konumDurumu !== 'bekliyor') return;
+    let iptal = false;
+    Location.getForegroundPermissionsAsync()
+      .then((d) => {
+        if (!iptal && d.status === 'granted') setKonumIzniZatenVar(true);
+      })
+      .catch(() => undefined);
+    return () => {
+      iptal = true;
+    };
+  }, [adim, konumDurumu]);
+
+  // Kalıcı red: kullanıcı Ayarlar'dan dönünce izni yeniden oku.
+  useEffect(() => {
+    if (!bildirimKaliciRed || adim !== ADIM.BILDIRIM_IZNI) return;
+    const abonelik = AppState.addEventListener('change', (durum) => {
+      if (durum !== 'active') return;
+      Notifications.getPermissionsAsync()
+        .then((d) => {
+          if (d.status === 'granted') {
+            setBildirimKaliciRed(false);
+            setBildirimZatenVar(true);
+            setBildirimIzni('verildi');
+          }
+        })
+        .catch(() => undefined);
+    });
+    return () => abonelik.remove();
+  }, [bildirimKaliciRed, adim]);
 
   const bildirimIzniIste = useCallback(async () => {
     setBildirimIzni('isteniyor');
@@ -330,7 +387,9 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
   const renderAdim = () => {
     switch (adim) {
       case ADIM.HOSGELDINIZ: return <HosgeldinizAdimi />;
-      case ADIM.BILDIRIM_IZNI: return <BildirimIzniAdimi bildirimIzni={bildirimIzni} />;
+      case ADIM.BILDIRIM_IZNI: return (
+        <BildirimIzniAdimi bildirimIzni={bildirimIzni} zatenVar={bildirimZatenVar} kaliciRed={bildirimKaliciRed} />
+      );
       case ADIM.KONUM: return (
         <KonumAdimi
           konumDurumu={konumDurumu}
@@ -340,6 +399,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
           onIzinIste={konumIzniIste}
           onAtla={ilerle}
           onManuelKaydet={manuelKonumKaydet}
+          izinZatenVar={konumIzniZatenVar}
         />
       );
       case ADIM.TEMA: return (
@@ -386,9 +446,33 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
       );
     }
     if (adim === ADIM.BILDIRIM_IZNI) {
+      if (bildirimIzni === 'verildi' && bildirimZatenVar) {
+        // İzin zaten vardı: otomatik ilerleme yok, kullanıcı kendisi devam eder.
+        return (
+          <TouchableOpacity
+            style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
+            onPress={ilerle}
+            accessibilityRole="button"
+          >
+            <Text style={styles.butonMetin}>Devam edin</Text>
+            <FontAwesome5 name="arrow-right" size={16} color="#fff" />
+          </TouchableOpacity>
+        );
+      }
       if (bildirimIzni === 'isteniyor' || bildirimIzni === 'verildi') return null;
       if (bildirimIzni === 'reddedildi') {
         return (
+          <>
+          {bildirimKaliciRed && (
+            <TouchableOpacity
+              style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
+              onPress={() => void Linking.openSettings().catch(() => undefined)}
+              accessibilityRole="button"
+            >
+              <FontAwesome5 name="cog" size={16} color="#fff" />
+              <Text style={styles.butonMetin}>Ayarları açın</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[styles.buton, styles.butonBirincil, { backgroundColor: palet.birincil }]}
             onPress={ilerle}
@@ -397,6 +481,7 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
             <FontAwesome5 name="arrow-right" size={16} color="#fff" />
             <Text style={styles.butonMetin}>Şimdilik Geç</Text>
           </TouchableOpacity>
+          </>
         );
       }
       return (
@@ -424,8 +509,8 @@ export const KurulumSihirbaziSayfasi: React.FC<Props> = ({ navigation }) => {
               onPress={konumIzniIste}
               accessibilityRole="button"
             >
-              <FontAwesome5 name="map-marker-alt" size={16} color="#fff" />
-              <Text style={styles.butonMetin}>Konum İznini Ver</Text>
+              <FontAwesome5 name={konumIzniZatenVar ? 'crosshairs' : 'map-marker-alt'} size={16} color="#fff" />
+              <Text style={styles.butonMetin}>{konumIzniZatenVar ? 'Konumumu Kullan' : 'Konum İznini Ver'}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.atlaButon} onPress={() => setKonumDurumu('gpsReddedildi')} accessibilityRole="button">
               <Text style={styles.atlaButonMetin}>Manuel seçeceğim</Text>
