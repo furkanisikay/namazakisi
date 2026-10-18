@@ -63,6 +63,29 @@ Kayıt için (üretimdeki not, mağazadan okundu).
 
 ## App Store
 
+#### 0.41.1
+
+Yayındaki önceki sürüm 0.30.1. Ana ekran widget'ı, canlı etkinlik ve Apple Watch
+bu build'de kapalı (bayrak arkasında) olduğu için nota girmedi; Android'e özgü
+özellikler (Camideyim, Namaz modu, otomasyon, widget) de girmez. Gerçek alarm
+yalnız iOS 26 ve sonrasında çalıştığı için öyle yazıldı.
+
+```
+- Her vakit için kendi hatırlatma akışınızı kurabilirsiniz: 1 ile 6 arası hatırlatma, her biri için bildirim ya da sesli anons.
+- Hatırlatmayı 10 ya da 20 dakika erteleyebilirsiniz.
+- iOS 26 ve sonrasında seçtiğiniz hatırlatma adımı gerçek bir alarm olarak çalabilir.
+- Cuma namazı, camiye zamanında yetişme ve yatmadan önce hatırlatma eklendi.
+- Takviminizdeki bir toplantı vaktin sonuna denk gelirse önceden haber veriyoruz. Takviminiz yalnız telefonunuzda okunur.
+- Kuşluk, evvâbîn ve teheccüd vakitleri ana ekranda; dilerseniz hatırlatma da alırsınız.
+- Tüm hatırlatmalar aynı düzenle tek ekranda.
+- Sade görünüm: yalnız şu anki vakit, kalan süre ve büyük bir "Kıldım" düğmesi.
+- Siri'ye sıradaki namazı sorabilir, kıldığınız vakti sesinizle işaretleyebilir, Odak'ta hatırlatmaları sessize alabilirsiniz.
+- Kaza defteri her eklemeyi ve kılınanı ayrı satır olarak saklar; kaza borcunuz varsa her farzdan sonra bir kaza önerilir.
+- Özel gün modunda hatırlatmalar da durur.
+- Yolculukta ikamet yerinizden yaklaşık 90 km uzaklaşınca bilgi kartı görünür.
+- Bildirim sınırına yaklaştığınızda sizi önceden uyarıyoruz.
+```
+
 #### 0.30.1
 
 Yayındaki önceki sürüm 0.28.2 (ilk App Store sürümü). Konum değişikliği bildirimi Android'e özgü olduğu için yok.

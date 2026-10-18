@@ -18,6 +18,12 @@ name: 📸 iOS Ekran Görüntüleri
 #   saat    — YALNIZ Apple Watch kareleri (ayri is `saat-kareler`; artifact
 #           `ios-saat-kareleri`). iPhone isi bu degerde HIC kosmaz; saat hedefi
 #           (`NAMAZ_IOS_SAAT=1`) yalniz bu yolda acilir. ASC'ye GONDERILMEZ.
+#   asc     — KARE CEKILMEZ; App Store Connect surum islemi (`asc_islem`), ubuntu
+#           uzerinde `scripts/app-store-surum.js`. ASC anahtari (issuer dahil)
+#           yalniz GitHub secret'larinda oldugu icin API isleri buradan yurur.
+#           Sira: durum -> surum-hazirla -> ekran-yukle (istege bagli) ->
+#           build-bagla -> incelemeye-gonder. Gonderim bilincli olarak ayri
+#           bir dispatch'tir.
 
 on:
   workflow_dispatch:
@@ -32,7 +38,7 @@ on:
         required: false
         default: false
       tur:
-        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch)'
+        description: 'Hangi kareler: magaza (App Store kareleri) | ozellik (yeni ekranlar turu) | ikisi | saat (Apple Watch) | asc (kare yok, App Store Connect işlemi)'
         type: choice
         required: false
         default: 'magaza'
@@ -41,6 +47,26 @@ on:
           - ozellik
           - ikisi
           - saat
+          - asc
+      asc_islem:
+        description: 'tur=asc için: durum | surum-hazirla | ekran-yukle | build-bagla | incelemeye-gonder'
+        type: choice
+        required: false
+        default: 'durum'
+        options:
+          - durum
+          - surum-hazirla
+          - ekran-yukle
+          - build-bagla
+          - incelemeye-gonder
+      asc_surum:
+        description: 'tur=asc için sürüm (boş = app.json)'
+        required: false
+        default: ''
+      asc_kare_run_id:
+        description: 'ekran-yukle için mağaza karelerini üreten iOS Ekran Görüntüleri çalışma kimliği'
+        required: false
+        default: ''
       ozellik_koyu:
         description: 'Özellik turunu koyu temada da çek'
         type: boolean
@@ -53,8 +79,8 @@ permissions:
 jobs:
   kareler:
     name: 📸 Simülatörde kare çek
-    # Apple Watch turu ayri istedir (asagida); iPhone hatti o degerde kosmaz.
-    if: ${{ inputs.tur != 'saat' }}
+    # Apple Watch turu ve ASC islemi ayri istir (asagida); iPhone hatti o degerlerde kosmaz.
+    if: ${{ inputs.tur != 'saat' && inputs.tur != 'asc' }}
     # macos-26 (Xcode 26) BILINCLI: (a) idb-companion formulasi o macOS'un en yeni
     # Xcode'unu sart kosuyor — macos-15/Xcode 16.4'te "Xcode.app 26.0 is required"
     # ile reddediliyor; (b) TestFlight build'lerimiz zaten Xcode 26 SDK ile
@@ -349,3 +375,49 @@ jobs:
           path: kareler-saat/
           retention-days: 14
           if-no-files-found: warn
+
+  # --- APP STORE CONNECT ISLEMI — kare cekilmez, yalniz `tur: asc` ---
+  asc:
+    name: 🏪 App Store Connect (${{ inputs.asc_islem }})
+    if: ${{ inputs.tur == 'asc' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_KEY_ISSUER_ID: ${{ secrets.ASC_KEY_ISSUER_ID }}
+      ASC_API_KEY: ${{ secrets.ASC_API_KEY }}
+    steps:
+      - name: 📥 Kodu çek
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      - name: 🖼️ Mağaza karelerini indir
+        if: ${{ inputs.asc_islem == 'ekran-yukle' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: ios-ekran-goruntuleri
+          path: indirilen
+          run-id: ${{ inputs.asc_kare_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏪 İşlem
+        env:
+          ISLEM: ${{ inputs.asc_islem }}
+          SURUM: ${{ inputs.asc_surum }}
+        run: |
+          set -eo pipefail
+          if [ "$ISLEM" = "ekran-yukle" ]; then
+            # --degistir: settekiler once silinir; yoksa yeni kareler arkaya eklenir.
+            node scripts/app-store-ekran-goruntuleri.js indirilen/mockup --degistir
+          elif [ -n "$SURUM" ]; then
+            node scripts/app-store-surum.js "$ISLEM" --surum "$SURUM"
+          else
+            node scripts/app-store-surum.js "$ISLEM"
+          fi

@@ -25,9 +25,12 @@ Gizlilik politikası: <https://furkanisikay.github.io/namazakisi/app-store/gizli
 
 ## Kalanlar
 
-Yalnızca **gönderim kararı** kaldı: App Store Connect'te *Add for Review* →
-*Submit to App Review*. Bu adım bilinçli olarak otomatikleştirilmedi — uygulamayı
-Apple incelemesine göndermek geri alınması zor bir adımdır.
+Sonraki sürümler `ios-ekran-goruntuleri.yml` içindeki `tur=asc` işiyle
+hazırlanır (`scripts/app-store-surum.js`; adımlar `docs/ajan/ios.md`).
+İncelemeye gönderim (`asc_islem=incelemeye-gonder`) bilinçli olarak ayrı bir
+dispatch'tir: geri alınması zor bir adımdır. **Veri Gizliliği beyanı API'den
+yazılamaz**; yeni bir veri türü okunmaya başlarsa (ör. 0.37'de takvim,
+yalnız cihazda) ASC web arayüzünde kontrol edilir.
 
 ## Ekran görüntüleri nasıl üretiliyor
 
