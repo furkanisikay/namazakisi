@@ -17,7 +17,7 @@ Namaz Akışı, internet bağlantısına ihtiyaç duymadan namaz vakitlerini tak
   <a href="https://apps.apple.com/tr/app/id6813061360"><img alt="App Store'dan indirin" height="40" src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/tr-tr"></a>
 </p>
 
-Kaynak koddaki sürüm: **0.41.1** · Mağazada: App Store: **0.30.1**
+Kaynak koddaki sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**
 <!-- OTOMATIK:BITIR magaza -->
 
 ## 📸 Ekran Görüntüleri
@@ -47,6 +47,25 @@ Kaynak koddaki sürüm: **0.41.1** · Mağazada: App Store: **0.30.1**
   <img src="docs/ekran-goruntuleri/magaza/ios/06-akis-onizleme.webp" width="180" alt="Akış önizleme" title="Akış önizleme">
   <img src="docs/ekran-goruntuleri/magaza/ios/07-kaza.webp" width="180" alt="Kaza" title="Kaza">
   <img src="docs/ekran-goruntuleri/magaza/ios/08-istatistik.webp" width="180" alt="İstatistik" title="İstatistik">
+</p>
+
+**Google Play — Wear OS**
+
+<p>
+  <img src="docs/ekran-goruntuleri/magaza/wear/01.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 1" title="Google Play — Wear OS ekran görüntüsü 1">
+  <img src="docs/ekran-goruntuleri/magaza/wear/02.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 2" title="Google Play — Wear OS ekran görüntüsü 2">
+  <img src="docs/ekran-goruntuleri/magaza/wear/03.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 3" title="Google Play — Wear OS ekran görüntüsü 3">
+  <img src="docs/ekran-goruntuleri/magaza/wear/04.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 4" title="Google Play — Wear OS ekran görüntüsü 4">
+  <img src="docs/ekran-goruntuleri/magaza/wear/05.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 5" title="Google Play — Wear OS ekran görüntüsü 5">
+  <img src="docs/ekran-goruntuleri/magaza/wear/06.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 6" title="Google Play — Wear OS ekran görüntüsü 6">
+</p>
+
+**Google Play — Android TV**
+
+<p>
+  <img src="docs/ekran-goruntuleri/magaza/tv/01.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 1" title="Google Play — Android TV ekran görüntüsü 1">
+  <img src="docs/ekran-goruntuleri/magaza/tv/02.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 2" title="Google Play — Android TV ekran görüntüsü 2">
+  <img src="docs/ekran-goruntuleri/magaza/tv/03.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 3" title="Google Play — Android TV ekran görüntüsü 3">
 </p>
 
 <details>
@@ -242,9 +261,9 @@ Kareler mağazadaki listelerle (Google Play, App Store) ve uygulamanın ekran g�
 <!-- OTOMATIK:BASLA platformlar -->
 | Cihaz | Durum |
 |---|---|
-| 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) |
+| 📱 Android telefon, tablet ve katlanabilir | [Google Play](https://play.google.com/store/apps/details?id=com.furkanisikay.namazakisi) · 0.30.1 |
 | 🍏 iPhone | [App Store](https://apps.apple.com/tr/app/id6813061360) · 0.30.1 |
-| ⌚ Wear OS saat | Google Play (telefon uygulamasıyla birlikte) |
+| ⌚ Wear OS saat | Google Play kapalı test (telefon uygulamasıyla birlikte) |
 | 📺 Android TV | Google Play |
 | ⌚ Apple Watch | Geliştiriliyor — henüz mağazada değil |
 | 🔒 iPhone kilit ekranı, widget ve Dinamik Ada | Geliştiriliyor — henüz mağazada değil |

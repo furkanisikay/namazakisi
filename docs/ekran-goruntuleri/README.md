@@ -2,7 +2,7 @@
 
 <!-- Bu sayfa scripts/belgeleri-guncelle.js ile üretilir; elle düzenlemeyin (kaynak: scripts/belge-gorsel-gruplari.js + manifest.json). -->
 
-Güncel sürüm: **0.41.1** · Mağazada: App Store: **0.30.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
+Güncel sürüm: **0.41.1** · Mağazada: Google Play: **0.30.1** · App Store: **0.30.1**. Mağaza kareleri Google Play ve App Store'daki güncel listelerden, diğerleri uygulamanın ekran görüntüsü hatlarından (yalnız ana dala girmiş sürümler) gelir.
 
 ## Mağazalarda
 
@@ -18,6 +18,20 @@ Güncel sürüm: **0.41.1** · Mağazada: App Store: **0.30.1**. Mağaza kareler
 <table>
   <tr><td align="center"><img src="./magaza/ios/01-ana-ekran.webp" width="180" alt="Ana ekran" title="Ana ekran"><br><sub>Ana ekran</sub></td><td align="center"><img src="./magaza/ios/02-muhafiz-zaman-seridi.webp" width="180" alt="Muhafız zaman şeridi" title="Muhafız zaman şeridi"><br><sub>Muhafız zaman şeridi</sub></td><td align="center"><img src="./magaza/ios/03-adim-detay.webp" width="180" alt="Adım detay" title="Adım detay"><br><sub>Adım detay</sub></td><td align="center"><img src="./magaza/ios/04-seri.webp" width="180" alt="Seri" title="Seri"><br><sub>Seri</sub></td></tr>
   <tr><td align="center"><img src="./magaza/ios/05-kible.webp" width="180" alt="Kıble" title="Kıble"><br><sub>Kıble</sub></td><td align="center"><img src="./magaza/ios/06-akis-onizleme.webp" width="180" alt="Akış önizleme" title="Akış önizleme"><br><sub>Akış önizleme</sub></td><td align="center"><img src="./magaza/ios/07-kaza.webp" width="180" alt="Kaza" title="Kaza"><br><sub>Kaza</sub></td><td align="center"><img src="./magaza/ios/08-istatistik.webp" width="180" alt="İstatistik" title="İstatistik"><br><sub>İstatistik</sub></td></tr>
+</table>
+
+### Google Play — Wear OS
+
+<table>
+  <tr><td align="center"><img src="./magaza/wear/01.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 1" title="Google Play — Wear OS ekran görüntüsü 1"></td><td align="center"><img src="./magaza/wear/02.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 2" title="Google Play — Wear OS ekran görüntüsü 2"></td><td align="center"><img src="./magaza/wear/03.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 3" title="Google Play — Wear OS ekran görüntüsü 3"></td><td align="center"><img src="./magaza/wear/04.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 4" title="Google Play — Wear OS ekran görüntüsü 4"></td></tr>
+  <tr><td align="center"><img src="./magaza/wear/05.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 5" title="Google Play — Wear OS ekran görüntüsü 5"></td><td align="center"><img src="./magaza/wear/06.webp" width="150" alt="Google Play — Wear OS ekran görüntüsü 6" title="Google Play — Wear OS ekran görüntüsü 6"></td></tr>
+</table>
+
+### Google Play — Android TV
+
+<table>
+  <tr><td align="center"><img src="./magaza/tv/01.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 1" title="Google Play — Android TV ekran görüntüsü 1"></td><td align="center"><img src="./magaza/tv/02.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 2" title="Google Play — Android TV ekran görüntüsü 2"></td></tr>
+  <tr><td align="center"><img src="./magaza/tv/03.webp" width="320" alt="Google Play — Android TV ekran görüntüsü 3" title="Google Play — Android TV ekran görüntüsü 3"></td></tr>
 </table>
 
 ## Uygulamanın tüm ekranları

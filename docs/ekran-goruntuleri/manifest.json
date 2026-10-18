@@ -4,42 +4,46 @@
     "appStore": {
       "surum": "0.30.1"
     },
-    "googlePlay": null
+    "googlePlay": {
+      "uretim": "0.30.1",
+      "wear": "test",
+      "tv": null
+    }
   },
   "gruplar": {
     "magaza-android": {
       "ogeler": [
         {
           "dosya": "01.webp",
-          "kimlik": "360:GEZ-okzt5P8S4jyY-AidksXmg6auMDBBDhv9hgkN8Ns9fP7WKKfR76VBU4TBtn4ITluCOQMAlVaYdbNj_hteaA"
+          "kimlik": "360:5ca654a0ee317c1a85026bab6a68e1f6a4459e76f6c15caa3f738181122c582f"
         },
         {
           "dosya": "02.webp",
-          "kimlik": "360:uAYQE_TYNeUvPXmgA9J-pT_4N9JMJ9pLvBU83yvhWmQlJG-NszvQU9xsphn0c_hvN2sAdrswwHPNvJDyQ5L1EQ"
+          "kimlik": "360:9bd560345e9df211a0644f25296042b84cd7d27177b62dfaa40bf9290d7fae3b"
         },
         {
           "dosya": "03.webp",
-          "kimlik": "360:0o3z0g99ppniOyFt-bt7bcZsGEPJy1XeM4OccNuibswdlBaXmIZsURk3XQ4fNJtrdr5Qz6r_mZwfrWunyKfER9E"
+          "kimlik": "360:a999b68a755c83200b0436d214aa5e08f87aeb177fa1992b663badbef08cce26"
         },
         {
           "dosya": "04.webp",
-          "kimlik": "360:k5T3GFrWsEeqOLE4YI6cko9OKavtGVZ72Z4RoABlGiUzzNoxQP0vjQ-QQOqKRGG8NQCr_l7oSpPNGcruy_9z"
+          "kimlik": "360:94c0c0bb15d2c3b5885165c915c2341f42e7c5f4fedf7a3955d64342846b9cc7"
         },
         {
           "dosya": "05.webp",
-          "kimlik": "360:wCH_8a-JAqeORqP0M24d_SMDYz4YKze_lCXo_EBOhqll1xuBFg4oFBvdj9lwNvxiPXpxRT-NAebZc6p0U0PcVw"
+          "kimlik": "360:4959e68cad3b9e2c5fbd0dd2af1387f7b0faa3b0360b52006f51cea7f6cbfd23"
         },
         {
           "dosya": "06.webp",
-          "kimlik": "360:ucxZ4zVzOKm-_k0sb0sQHshRgBVcWDUBNY31GTZ53MTybK3PXT8kpbCEp8TilNqYtn41ZnU7O2eDIxYoNfwF"
+          "kimlik": "360:f4d113c9d7910a49145abcb33f01db58996aff2acee2735154d35eaa7cfa688a"
         },
         {
           "dosya": "07.webp",
-          "kimlik": "360:-jSClLSpVvyort6n4euOV7Blc49ySRfCgFgq6TEF6vAOUoRRzjG8mySRlTYkBVzJlZOxfanJGKC0zjxkOvtiBw"
+          "kimlik": "360:5c683c5fdddad624070ed8c67c814f205d621d72db6f3af31b7d9bfaaaa29fed"
         },
         {
           "dosya": "08.webp",
-          "kimlik": "360:gmHGB3Ya1g7-4pNbBzw9u932hOPQMVw83ecrGVELcmbamyAUGYEeWkVeIfUSxZ_HhPOhJVqS5DCA1oJB0g4yoQ"
+          "kimlik": "360:e69eac41664d0b4b201f173ae50a21ea6eae0561417985ce99b3f8fbde4e0155"
         }
       ]
     },
@@ -76,6 +80,50 @@
         {
           "dosya": "08-istatistik.webp",
           "kimlik": "360:/image/thumb/PurpleSource211/v4/62/a2/5d/62a25d38-a07b-1811-2333-c548502eaf31/08-istatistik.png"
+        }
+      ]
+    },
+    "magaza-wear": {
+      "ogeler": [
+        {
+          "dosya": "01.webp",
+          "kimlik": "240:14e3165a623eeade2c9c6908e7c7e953d54a8bd5ced9b2be1f4ace414c0d6548"
+        },
+        {
+          "dosya": "02.webp",
+          "kimlik": "240:5af6494f93fa1e76020d2e13dd89301f45edca896bc101e096292acffed8d2df"
+        },
+        {
+          "dosya": "03.webp",
+          "kimlik": "240:fa126e9996e5db8fb602b4e488af02f702ce1b8f93ce963dd19ee2136f8ca97c"
+        },
+        {
+          "dosya": "04.webp",
+          "kimlik": "240:a57f7c55c943d3343323ec8680c97c0538e0160071d5f04cf3ea0573d3f2413a"
+        },
+        {
+          "dosya": "05.webp",
+          "kimlik": "240:d23bb825072de06312addcbc3d09668f2f04d176e2d6a852077ee19a6c41fa98"
+        },
+        {
+          "dosya": "06.webp",
+          "kimlik": "240:dd19fd6c82b9f9f5065c845a1efdb4e186f0503562e7c96e7208edafeaa11f08"
+        }
+      ]
+    },
+    "magaza-tv": {
+      "ogeler": [
+        {
+          "dosya": "01.webp",
+          "kimlik": "640:b1563a59ea6aa7608dd4ddd24c7e7b41ddb82075395268704e6a3e5fc88b8018"
+        },
+        {
+          "dosya": "02.webp",
+          "kimlik": "640:af517b3367009e3fb10b409c460b57ffc6d7f13a0c7dc5b95a9f51d450b8cb1d"
+        },
+        {
+          "dosya": "03.webp",
+          "kimlik": "640:5b6c10b7dd6a502baf3319e1b8a2277f98f89f77c1b7f0f0a09554055b1bcbfd"
         }
       ]
     },
