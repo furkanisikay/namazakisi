@@ -41,9 +41,20 @@ object AlarmZinciri {
      * EN SONUNCUSU (en güncel/en sert) gösterilir — eskileri peş peşe çalmak bilekte
      * gürültüdür. `sonGosterilenMs` aynı kaydın (ör. yeniden başlatma sonrası) ikinci
      * kez gösterilmesini engeller.
+     *
+     * Saat ŞARJDAYSA (saat W3, fikir 3) hiçbir şey gösterilmez ama zincir İLERLER:
+     * komodindeki saat boşa titremez, telefon esas olur (köprü de açılır —
+     * `KopruKarari`). Gösterilmeyen kayıt "gösterildi" sayılmaz.
      */
-    fun tetiklendi(yuk: Yuk?, bekleyen: Set<String>, simdi: Long, sonGosterilenMs: Long): TetikKarari {
+    fun tetiklendi(
+        yuk: Yuk?,
+        bekleyen: Set<String>,
+        simdi: Long,
+        sonGosterilenMs: Long,
+        sarjda: Boolean = false,
+    ): TetikKarari {
         if (yuk == null) return TetikKarari(null, null)
+        if (sarjda) return TetikKarari(null, siradaki(yuk, bekleyen, simdi))
         val goster = yuk.plan
             .filter {
                 it.ms <= simdi &&
@@ -106,8 +117,12 @@ class ZincirYoneticisi(private val kurucu: AlarmKurucu) {
  * Etiketi yalnız yeni telefon sürümü bastığı için eski telefonla dışlamanın etkisi yoktur.
  */
 object KopruKarari {
-    fun muhafizKoprusuDislansinMi(yuk: Yuk?, bildirimIzni: Boolean): Boolean =
+    /**
+     * @param sarjda saat şarjdayken (saat W3, fikir 3) kendi zinciri ÇALMAZ → dışlama
+     *   kalkar, telefonun bildirimi olağan köprü yolunu izler (telefon esas olur).
+     */
+    fun muhafizKoprusuDislansinMi(yuk: Yuk?, bildirimIzni: Boolean, sarjda: Boolean = false): Boolean =
         // Plan BOŞSA çoğaltacak bir şey yok: köprü kalmalı, yoksa telefon muhafızı açıkken
         // (plan okunamayıp boş gönderildiyse) bilekte hiç uyarı kalmaz (Fable incelemesi).
-        bildirimIzni && yuk != null && yuk.surum >= 2 && yuk.plan.isNotEmpty()
+        bildirimIzni && !sarjda && yuk != null && yuk.surum >= 2 && yuk.plan.isNotEmpty()
 }

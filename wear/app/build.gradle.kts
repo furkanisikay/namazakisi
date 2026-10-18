@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.complications.data.source.ktx)
     implementation(libs.play.services.wearable)
     implementation(libs.wear.phone.interactions)
+    implementation(libs.wear.remote.interactions)
     implementation(libs.wear.ongoing)
     implementation(libs.wear.ambient)
     implementation(libs.concurrent.futures)

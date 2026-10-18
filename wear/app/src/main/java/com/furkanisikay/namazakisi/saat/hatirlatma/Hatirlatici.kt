@@ -42,7 +42,10 @@ object Hatirlatici {
             if (yuk != null) {
                 MuhafizBildirimci.kilinmislariKaldir(app) { t, v -> AlarmZinciri.kilinmisMi(yuk, bekleyen, t, v) }
             }
-            KopruAyari.uygula(app, KopruKarari.muhafizKoprusuDislansinMi(yuk, MuhafizBildirimci.bildirimIzniVar(app)))
+            KopruAyari.uygula(
+                app,
+                KopruKarari.muhafizKoprusuDislansinMi(yuk, MuhafizBildirimci.bildirimIzniVar(app), SarjDurumu.sarjdaMi(app)),
+            )
         } catch (e: Exception) {
             Log.w(TAG, "Hatirlatmalar tazelenemedi", e)
         }
@@ -53,7 +56,14 @@ object Hatirlatici {
         val app = context.applicationContext
         try {
             val depo = YukDeposu(app)
-            val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs)
+            // Şarjdayken (saat W3) saat çalmaz; köprü de o anki duruma göre güncellenir —
+            // takma anı ayrıca duyulmadığı için karar her tetikte yeniden okunur.
+            val sarjda = SarjDurumu.sarjdaMi(app)
+            KopruAyari.uygula(
+                app,
+                KopruKarari.muhafizKoprusuDislansinMi(depo.yuk(), MuhafizBildirimci.bildirimIzniVar(app), sarjda),
+            )
+            val karar = AlarmZinciri.tetiklendi(depo.yuk(), depo.bekleyenler(), System.currentTimeMillis(), depo.sonGosterilenMs, sarjda)
             // Sonraki alarm, gösterim patlasa bile kurulmalı: zincir koparsa telefon
             // uzaktayken (özelliğin varlık sebebi) bir sonraki yüke kadar hiç uyarı olmaz.
             try {

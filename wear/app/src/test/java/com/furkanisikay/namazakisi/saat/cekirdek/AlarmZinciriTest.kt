@@ -149,5 +149,18 @@ class AlarmZinciriTest {
         assertFalse(KopruKarari.muhafizKoprusuDislansinMi(null, bildirimIzni = true))
         // Plan boşsa (telefon planı okuyamadı) köprü dışlanmaz: bilek uyarısız kalmasın.
         assertFalse(KopruKarari.muhafizKoprusuDislansinMi(yuk(emptyList()), bildirimIzni = true))
+        // Şarjdayken (saat W3) saat çalmaz → köprü dışlanmaz, telefon esas olur.
+        assertFalse(KopruKarari.muhafizKoprusuDislansinMi(yuk(plan), bildirimIzni = true, sarjda = true))
+    }
+
+    @Test
+    fun sarjdaykenGosterilmezAmaZincirIlerler() {
+        val y = yuk(plan)
+        val ilk = plan.minBy { it.ms }
+        val karar = AlarmZinciri.tetiklendi(y, emptySet(), ilk.ms, 0L, sarjda = true)
+        assertEquals(null, karar.goster)
+        assertEquals(AlarmZinciri.siradaki(y, emptySet(), ilk.ms), karar.sonraki)
+        // Şarjdan çıkınca aynı tetik (tolerans içinde) yine gösterilebilir.
+        assertEquals(ilk, AlarmZinciri.tetiklendi(y, emptySet(), ilk.ms, 0L).goster)
     }
 }

@@ -29,7 +29,10 @@ import androidx.wear.compose.material3.Text
 import androidx.wear.compose.material3.TimeText
 import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
+import androidx.compose.runtime.LaunchedEffect
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
+import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
+import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
 import com.furkanisikay.namazakisi.saat.cekirdek.KalanSure
 import com.furkanisikay.namazakisi.saat.cekirdek.SaatPaleti
 import com.furkanisikay.namazakisi.saat.cekirdek.VakitHesabi
@@ -54,9 +57,12 @@ fun AnaEkran(
     simdi: Long,
     bugun: String,
     saniyeGoster: Boolean,
+    jest: BilekJesti.Istek,
     onKildim: (tarih: String, vakit: String) -> Unit,
     onTesbihat: () -> Unit,
     onKible: () -> Unit,
+    /** "Telefonda açın" (saat W3, fikir 4): `TelefondaAc` bağlantısı. */
+    onTelefondaAc: (String) -> Unit = {},
 ) {
     val liste = rememberTransformingLazyColumnState()
     val donusum = rememberTransformationSpec()
@@ -67,6 +73,12 @@ fun AnaEkran(
     val gorunum = yuk?.let { AnaEkranKarari.kur(it, simdi, bugun, bekleyen) }
     val satirlar = yuk?.let { VakitHesabi.satirlar(it, simdi, bugun, bekleyen) } ?: emptyList()
     val sayilan = gorunum?.sayilan
+
+    // Bilek jesti (saat W3): merkezdeki öğeden bir adım; ilk kompozisyonda (sira 0) yok.
+    LaunchedEffect(jest.sira) {
+        if (jest.sira == 0) return@LaunchedEffect
+        liste.animateScrollToItem(BilekJesti.hedef(liste.anchorItemIndex, liste.layoutInfo.totalItemsCount, jest.yon))
+    }
 
     SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
@@ -152,6 +164,18 @@ fun AnaEkran(
                             label = { Text("Kıble") },
                         )
                     }
+                    // Saate sığmayan ekranlar telefonda açılır (yalnız gezinme bağlantıları).
+                    item(key = "telefonda") { BilgiMetni("Telefonda açın", Modifier.padding(top = 8.dp)) }
+                    for ((anahtar, etiket, baglanti) in TELEFON_EKRANLARI) {
+                        item(key = anahtar) {
+                            CompactButton(
+                                onClick = { onTelefondaAc(baglanti) },
+                                colors = ButtonDefaults.filledTonalButtonColors(),
+                                modifier = Modifier.semantics { contentDescription = "$etiket ekranını telefonunuzda açın" },
+                                label = { Text(etiket) },
+                            )
+                        }
+                    }
                 }
             }
 
@@ -185,3 +209,9 @@ fun AnaEkran(
  * uygulamasıdır (eski metin telefonu işaret ediyordu).
  */
 private const val GUNCELLEME_METNI = "Saatinizdeki Namaz Akışı'nı güncelleyin."
+
+private val TELEFON_EKRANLARI = listOf(
+    Triple("tel_kaza", "Kaza Defteri", TelefondaAc.KAZA),
+    Triple("tel_cami", "Camideyim", TelefondaAc.CAMIDEYIM),
+    Triple("tel_ayar", "Ayarlar", TelefondaAc.AYARLAR),
+)

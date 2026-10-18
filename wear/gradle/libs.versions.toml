@@ -19,6 +19,9 @@ wearOngoing = "1.1.0"
 # wear-phone-interactions 1.2.0'i ceker; 1.3.0 onu yukseltir. Compose'un AmbientModeManager'i
 # (wear-compose-foundation) Wear SDK'ya (com.google.wear.Sdk, yalniz Wear OS 6+) dayanir → KULLANILMAZ.
 wear = "1.3.0"
+# Saat W3 (fikir 4): "Telefonda açın" — RemoteActivityHelper. Apache-2.0; AAR manifesti taranır
+# (bkz. AGENTS.md Wear bölümü — izin eklemez).
+remoteInteractions = "1.1.0"
 playServicesWearable = "20.0.1"
 activityCompose = "1.12.0"
 concurrentFutures = "1.2.0"
@@ -36,6 +39,7 @@ wear-protolayout-expression = { group = "androidx.wear.protolayout", name = "pro
 complications-data-source-ktx = { group = "androidx.wear.watchface", name = "watchface-complications-data-source-ktx", version.ref = "complications" }
 wear-ambient = { group = "androidx.wear", name = "wear", version.ref = "wear" }
 wear-ongoing = { group = "androidx.wear", name = "wear-ongoing", version.ref = "wearOngoing" }
+wear-remote-interactions = { group = "androidx.wear", name = "wear-remote-interactions", version.ref = "remoteInteractions" }
 wear-phone-interactions = { group = "androidx.wear", name = "wear-phone-interactions", version.ref = "phoneInteractions" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 concurrent-futures = { group = "androidx.concurrent", name = "concurrent-futures", version.ref = "concurrentFutures" }

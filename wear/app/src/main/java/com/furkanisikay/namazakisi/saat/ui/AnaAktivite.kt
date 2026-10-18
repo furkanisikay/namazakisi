@@ -21,7 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.furkanisikay.namazakisi.saat.BuildConfig
+import android.view.KeyEvent
 import com.furkanisikay.namazakisi.saat.cekirdek.AnaEkranKarari
+import com.furkanisikay.namazakisi.saat.cekirdek.BilekJesti
+import com.furkanisikay.namazakisi.saat.telefon.TelefondaAc
 import com.furkanisikay.namazakisi.saat.hatirlatma.Hatirlatici
 import com.furkanisikay.namazakisi.saat.hatirlatma.MuhafizBildirimci
 import com.furkanisikay.namazakisi.saat.veri.Senkron
@@ -45,6 +48,8 @@ class AnaAktivite : ComponentActivity() {
     private var onPlanda by mutableStateOf(false)
     private var ambient by mutableStateOf<AmbientDurumu?>(null)
     private var simdi by mutableLongStateOf(System.currentTimeMillis())
+    /** Bilek jesti isteği (saat W3, fikir 7) — `sira` 0 iken hiçbir şey yapılmaz. */
+    private var jest by mutableStateOf(BilekJesti.Istek(0, 0))
 
     /**
      * Ekran görüntüsü hattı (`scripts/saat-kare-hatti.sh`) `uiautomator dump` ile dolaşır;
@@ -87,6 +92,14 @@ class AnaAktivite : ComponentActivity() {
         onPlanda = true
         simdi = System.currentTimeMillis()
         izniYenile()
+    }
+
+    /** Bilek bükme → vakit listesinde sonraki/önceki öğe (ambient'te liste yok). */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val yon = BilekJesti.yon(keyCode)
+        if (yon == null || ambient != null) return super.onKeyDown(keyCode, event)
+        jest = BilekJesti.Istek(yon, jest.sira + 1)
+        return true
     }
 
     override fun onPause() {
@@ -151,11 +164,13 @@ class AnaAktivite : ComponentActivity() {
                     simdi = simdi,
                     bugun = bugun,
                     saniyeGoster = !dondur,
+                    jest = jest,
                     onKildim = { tarih, vakit ->
                         kapsam.launch { Senkron.kildimGonder(this@AnaAktivite, tarih, vakit) }
                     },
                     onTesbihat = { startActivity(Intent(this@AnaAktivite, TesbihatAktivite::class.java)) },
                     onKible = { startActivity(Intent(this@AnaAktivite, KibleAktivite::class.java)) },
+                    onTelefondaAc = { TelefondaAc.ac(this@AnaAktivite, it) },
                 )
             }
         }

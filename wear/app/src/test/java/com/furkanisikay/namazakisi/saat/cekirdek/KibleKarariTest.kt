@@ -97,4 +97,14 @@ class KibleKarariTest {
         assertEquals(-1.0, KibleKarari.enKisaYol(1.0, 359.0), 1e-9)
         assertEquals(730.0, KibleKarari.enKisaYol(720.0, 10.0), 1e-9)
     }
+
+    @Test
+    fun yonlendirmeYaklastikcaSiklasirHizadaSusar() {
+        val uzak = KibleKarari.yonlendirmeAraligiMs(170.0, hizali = false)!!
+        val orta = KibleKarari.yonlendirmeAraligiMs(60.0, hizali = false)!!
+        val yakin = KibleKarari.yonlendirmeAraligiMs(350.0, hizali = false)!! // 10° solda
+        org.junit.Assert.assertTrue(uzak > orta && orta > yakin)
+        // Hizada W2'nin tek onayı korunur: sürekli tık YOK.
+        org.junit.Assert.assertNull(KibleKarari.yonlendirmeAraligiMs(3.0, hizali = true))
+    }
 }
