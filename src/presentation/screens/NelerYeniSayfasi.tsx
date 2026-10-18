@@ -17,6 +17,7 @@ import { useRenkler } from '../../core/theme';
 import { useAppDispatch } from '../store/hooks';
 import { ozellikGorulduIsaretle } from '../store/ozelliklerSlice';
 import { YENI_OZELLIKLER, type YeniOzellik } from '../../core/constants/YeniOzellikler';
+import { gorulmeAnahtari } from '../../core/utils/yeniOzellikGorulme';
 import { yeniOzellikGorunurMu } from '../hooks/yeniOzellikYetenegi';
 import { useFeedback } from '../../core/feedback';
 
@@ -170,7 +171,7 @@ export const NelerYeniSayfasi: React.FC<any> = ({ navigation }) => {
 
     useEffect(() => {
         // Sayfayı görünce tüm özellikler okundu sayılır → rozetler kalkar
-        dispatch(ozellikGorulduIsaretle(YENI_OZELLIKLER.map(o => o.id)));
+        dispatch(ozellikGorulduIsaretle(YENI_OZELLIKLER.map(gorulmeAnahtari)));
 
         Animated.parallel([
             Animated.timing(fadeAnim, { toValue: 1, duration: 350, useNativeDriver: true }),

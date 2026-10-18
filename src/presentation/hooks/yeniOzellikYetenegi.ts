@@ -16,6 +16,14 @@ const YETENEKLER: Record<YeniOzellikYetenegi, () => boolean> = {
   iosWidget: () => Platform.OS === 'ios' && canliEtkinlikDestekli(),
   // Apple Watch (#285): yalnız saat hedefini taşıyan iOS build'i (iPad'de de görünmez).
   appleWatch: () => Platform.OS === 'ios' && saatUygulamasiDestekli(),
+  // Gerçek alarm (#74): Android'de her cihazda; iPhone'da sistem alarmı yalnız iOS 26+ (AlarmKit).
+  // Sürüm okunamazsa gösterilmez.
+  gercekAlarm: () => {
+    if (Platform.OS === 'android') return true;
+    if (Platform.OS !== 'ios') return false;
+    const ana = parseInt(String(Platform.Version), 10);
+    return Number.isFinite(ana) && ana >= 26;
+  },
 };
 
 export function yeniOzellikGorunurMu(ozellik: YeniOzellik): boolean {

@@ -16,6 +16,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import { Logger } from '../../core/utils/Logger';
+import { versiyonKarsilastir } from '../../core/utils/versiyonKarsilastir';
 import {
   UYGULAMA,
   GUNCELLEME_SABITLERI,
@@ -598,34 +599,8 @@ export class GuncellemeServisi {
 
 // ==================== YARDIMCI FONKSIYONLAR ====================
 
-/**
- * Semantik versiyon karsilastirma
- *
- * @returns pozitif: v1 > v2, negatif: v1 < v2, sifir: esit
- */
-export function versiyonKarsilastir(v1: string, v2: string): number {
-  const parcala = (v: string): number[] => {
-    return v
-      .replace(/^v/, '')
-      .split('.')
-      .map(p => {
-        const sayi = parseInt(p, 10);
-        return isNaN(sayi) ? 0 : sayi;
-      });
-  };
-
-  const p1 = parcala(v1);
-  const p2 = parcala(v2);
-  const uzunluk = Math.max(p1.length, p2.length);
-
-  for (let i = 0; i < uzunluk; i++) {
-    const a = p1[i] || 0;
-    const b = p2[i] || 0;
-    if (a !== b) return a - b;
-  }
-
-  return 0;
-}
+// Saf sürüm karşılaştırıcı çekirdekte yaşar (Neler Yeni de kullanır); eski içe aktarma yolu korunur.
+export { versiyonKarsilastir };
 
 /** Guncelleme indirme baglantilari icin guvenilir domainler */
 const GUVENILIR_DOMAINLER = [
