@@ -23,14 +23,19 @@ interface GoogleYetkiNativeModulu {
 
 const modul = requireOptionalNativeModule<GoogleYetkiNativeModulu>('ExpoGoogleYetki');
 
+/** Play hizmetleri varlığı süreç ömrü boyunca değişmez → senkron köprü bir kez sorulur. */
+let kullanilabilirOnbellek: boolean | null = null;
+
 /** Köprü bu build'de var mı ve cihazda Google Play hizmetleri kullanılabilir mi? */
 export function googleYetkisiKullanilabilirMi(): boolean {
     if (Platform.OS !== 'android' || !modul) return false;
+    if (kullanilabilirOnbellek !== null) return kullanilabilirOnbellek;
     try {
-        return modul.playHizmetleriVarMi() === true;
+        kullanilabilirOnbellek = modul.playHizmetleriVarMi() === true;
     } catch {
-        return false;
+        kullanilabilirOnbellek = false;
     }
+    return kullanilabilirOnbellek;
 }
 
 /** Erişim belirteci ister. Fırlatmaz; köprü yoksa `hata`. */

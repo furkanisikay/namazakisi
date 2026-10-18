@@ -54,6 +54,8 @@ module.exports = {
     // Google Drive yetkisi (Authorization API, Android native). Varsayılan: modül yok.
     "expo-google-yetki/src$": "<rootDir>/__mocks__/expo-google-yetki.js",
     "^expo-secure-store$": "<rootDir>/__mocks__/expo-secure-store.js",
+    // expo-web-browser kodda artık kullanılmıyor (Drive yetkisi yerleşik Authorization API);
+    // paket kaldırılana dek mock eşlemesi zararsız kalır.
     "^expo-web-browser$": "<rootDir>/__mocks__/expo-web-browser.js",
     // Camideyim haritası (MapLibre) Fabric native bileşenleri; jest'te yok.
     "^@maplibre/maplibre-react-native$": "<rootDir>/__mocks__/maplibre-react-native.js",
