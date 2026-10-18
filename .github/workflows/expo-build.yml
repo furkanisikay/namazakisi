@@ -270,7 +270,9 @@ jobs:
         run: |
           echo "📦 AAB build başlatılıyor (production, versionCode ${{ steps.vc.outputs.code }})..."
           # Cikti dosyaya da yazilir: EAS ucretsiz plan kotasi dolunca build EAS'te
-          # HIC OLUSMAZ ve tek iz bu mesajdir (asagida aranir). pipefail varsayilan.
+          # HIC OLUSMAZ ve tek iz bu mesajdir (asagida aranir). `shell:` verilmeyen
+          # adimda varsayilan `bash -e` pipefail ICERMEZ → tee hatayi yutardi.
+          set -o pipefail
           eas build \
             --platform android \
             --profile production \
