@@ -34,7 +34,8 @@ object GunDurumu {
     }
 
     fun ozet(yuk: Yuk, simdi: Long, bugun: String, bekleyen: Set<String>): Ozet? {
-        val satirlar = VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen).filter { it.vakit != "gunes" }
+        // `satirlar` zaten yalnız namaz döner (güneş `VakitHesabi.namazMi` ile düşer).
+        val satirlar = VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen)
         if (satirlar.size != FARZ_SAYISI) return null
         return Ozet(satirlar.first().tarih, satirlar)
     }

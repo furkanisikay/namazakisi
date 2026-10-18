@@ -37,10 +37,43 @@ class VakitHesabiTest {
         val satirlar = VakitHesabi.satirlar(yuk, an, bugun.tarih, emptySet()).associateBy { it.vakit }
         assertTrue(satirlar.getValue("imsak").kilindi)
         assertFalse(satirlar.getValue("imsak").isaretlenebilir)
-        assertFalse(satirlar.getValue("gunes").isaretlenebilir)
         assertTrue(satirlar.getValue("ogle").isaretlenebilir)
         assertFalse(satirlar.getValue("ikindi").isaretlenebilir)
         assertFalse(satirlar.getValue("ikindi").girdi)
+    }
+
+    @Test
+    fun gunesNamazDegil_listedeYokSiradakiNamazOgle() {
+        // Sabah vakti sürerken: liste beş namaz, güneş satırı yok.
+        val sabah = v(bugun, "imsak") + 10 * dk
+        val satirlar = VakitHesabi.satirlar(yuk, sabah, bugun.tarih, emptySet())
+        assertEquals(listOf("imsak", "ogle", "ikindi", "aksam", "yatsi"), satirlar.map { it.vakit })
+        // Sıradaki NAMAZ öğledir; sıradaki SINIR hâlâ güneştir (sabahın çıkışı).
+        assertEquals("ogle", VakitHesabi.siradakiNamaz(yuk, sabah)!!.vakit)
+        assertEquals("gunes", VakitHesabi.siradaki(yuk, sabah)!!.vakit)
+        // Güneş→öğle arasında da sıradaki namaz öğle.
+        assertEquals("ogle", VakitHesabi.siradakiNamaz(yuk, v(bugun, "gunes") + dk)!!.vakit)
+        assertFalse(VakitHesabi.namazMi("gunes"))
+        assertTrue(VakitHesabi.namazMi("imsak"))
+    }
+
+    @Test
+    fun sabahGunesteCikar_sayilanAnDegismez() {
+        val s = VakitHesabi.sayilanAn(yuk, v(bugun, "imsak") + 10 * dk)!!
+        assertEquals(KalanSure.Mod.CIKIS, s.mod)
+        assertEquals("imsak", s.vakit)
+        assertEquals(v(bugun, "gunes"), s.hedef)
+    }
+
+    @Test
+    fun yalnizNamazCizelgesiGunesiAtlar() {
+        val an = v(bugun, "imsak") + 10 * dk
+        val namaz = ZamanCizelgesi.araliklar(yuk, an, yalnizNamaz = true)
+        assertEquals("ogle", namaz.first().siradaki.vakit)
+        assertEquals("imsak", namaz.first().onceki!!.vakit)
+        assertTrue(namaz.none { it.siradaki.vakit == "gunes" || it.onceki?.vakit == "gunes" })
+        // Varsayılan çizelge (kalan süre) güneşte bölünmeye devam eder.
+        assertEquals("gunes", ZamanCizelgesi.araliklar(yuk, an).first().siradaki.vakit)
     }
 
     @Test

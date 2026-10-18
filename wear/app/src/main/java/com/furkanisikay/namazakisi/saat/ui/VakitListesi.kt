@@ -48,23 +48,20 @@ fun VakitSatiri(
     onSec: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val gunes = satir.vakit == "gunes"
     val vakitRengi = renk(SaatPaleti.vakitRengi(satir.vakit))
     val saat = VakitHesabi.saat(satir.ms)
     val durum = when {
         satir.esitleniyor -> "kılındı, eşitleniyor"
         satir.kilindi -> "kılındı"
-        gunes -> "güneş doğuşu"
         !satir.girdi -> "vakti henüz girmedi"
         aktif -> "şu anki vakit${kalanMetni?.let { ", $it" } ?: ""}, işaretlemek için dokunun"
         else -> "kılınmadı, işaretlemek için dokunun"
     }
     val zemin = when {
-        gunes -> Color.Transparent
         aktif -> renk(SaatPaleti.YUZEY2)
         else -> renk(SaatPaleti.YUZEY)
     }
-    val yazi = if (gunes || !satir.girdi && !satir.kilindi) renk(SaatPaleti.METIN2) else renk(SaatPaleti.METIN)
+    val yazi = if (!satir.girdi && !satir.kilindi) renk(SaatPaleti.METIN2) else renk(SaatPaleti.METIN)
     val sekil = RoundedCornerShape(24.dp)
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -114,7 +111,7 @@ fun VakitSatiri(
                 )
             }
         }
-        if (!gunes) DurumDairesi(satir.kilindi, if (aktif) vakitRengi else renk(SaatPaleti.IZ))
+        DurumDairesi(satir.kilindi, if (aktif) vakitRengi else renk(SaatPaleti.IZ))
     }
 }
 

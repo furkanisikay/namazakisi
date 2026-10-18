@@ -28,9 +28,18 @@ object ZamanCizelgesi {
      * [maksGirdi]: girdi başına tam düzen taşıyan tile'lar için tavan (yanıt boyutu).
      * Tavanlı çağıran, tavanı tazelik aralığının ÇOK üstünde tutmalıdır: her tazelikte
      * çizelge diskteki yükten yeniden kurulur, ufuk kayar.
+     *
+     * [yalnizNamaz]: sınırlar yalnız NAMAZ vakitleri (güneş atlanır) — "sıradaki namaz"
+     * soran yüzeyler için. Kalan süre (sabahın çıkışı = güneş) VARSAYILANI kullanır.
      */
-    fun araliklar(yuk: Yuk, simdi: Long, ufukMs: Long = Long.MAX_VALUE, maksGirdi: Int = Int.MAX_VALUE): List<Aralik> {
-        val tum = VakitHesabi.tumVakitler(yuk)
+    fun araliklar(
+        yuk: Yuk,
+        simdi: Long,
+        ufukMs: Long = Long.MAX_VALUE,
+        maksGirdi: Int = Int.MAX_VALUE,
+        yalnizNamaz: Boolean = false,
+    ): List<Aralik> {
+        val tum = VakitHesabi.tumVakitler(yuk).filter { !yalnizNamaz || VakitHesabi.namazMi(it.vakit) }
         val sonuc = mutableListOf<Aralik>()
         var onceki: VakitHesabi.VakitAni? = tum.lastOrNull { it.ms <= simdi }
         var bas = simdi

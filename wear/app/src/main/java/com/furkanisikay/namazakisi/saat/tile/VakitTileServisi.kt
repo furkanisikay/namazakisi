@@ -20,7 +20,8 @@ import com.furkanisikay.namazakisi.saat.veri.YukDeposu
 import com.google.common.util.concurrent.ListenableFuture
 
 /**
- * "Sıradaki vakit" tile'ı (issue #269; yeniden tasarım W1): "ne zaman giriyor?"
+ * "Sıradaki vakit" tile'ı (issue #269; yeniden tasarım W1): "sıradaki NAMAZ ne zaman giriyor?"
+ * Güneş namaz değildir: sabah vaktinde sıradaki Öğle'dir (`ZamanCizelgesi` `yalnizNamaz`).
  * (ana ekran "ne zaman çıkıyor?" sorusunu cevaplar; ikisi aynı sayıyı tekrarlamaz).
  *
  * Giriş saati en büyük öğe, üstünde vaktin adı kendi tonunda, altında "ne kadar sonra";
@@ -57,8 +58,9 @@ class VakitTileServisi : TileService() {
                 .build()
         )
         if (yuk != null) {
-            val tum = VakitHesabi.tumVakitler(yuk)
-            for (a in ZamanCizelgesi.araliklar(yuk, simdi, maksGirdi = ZamanCizelgesi.TILE_MAKS_GIRDI)) {
+            // Güneş namaz değildir: sıradaki ve alttaki iki satır yalnız NAMAZ vakitleri.
+            val tum = VakitHesabi.tumVakitler(yuk).filter { VakitHesabi.namazMi(it.vakit) }
+            for (a in ZamanCizelgesi.araliklar(yuk, simdi, maksGirdi = ZamanCizelgesi.TILE_MAKS_GIRDI, yalnizNamaz = true)) {
                 val sonrakiler = tum.drop(tum.indexOf(a.siradaki) + 1).take(SONRAKI_SAYISI)
                 cizelge.addTimelineEntry(
                     TimelineBuilders.TimelineEntry.Builder()

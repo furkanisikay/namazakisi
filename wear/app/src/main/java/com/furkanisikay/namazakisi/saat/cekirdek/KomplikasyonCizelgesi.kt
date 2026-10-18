@@ -58,10 +58,16 @@ object KalanSure {
 
     data class Gosterim(
         val mod: Mod,
-        /** SHORT_TEXT / RANGED_VALUE başlığı (≤ 6 karakter) */
+        /** SHORT_TEXT başlığı (≤ 6 karakter) */
         val kisaBaslik: String,
         /** LONG_TEXT şablonu — `^1` sistemin çizdiği süredir */
         val uzunSablon: String,
+        /**
+         * LONG_TEXT başlığı: çıkışa sayarken "çıkış 06:45", girişe sayarken "Öğle 12:58".
+         * Çıkışta sıradaki vaktin ADI yazılmaz — sabahta o ad "Güneş" olurdu ve güneş
+         * namaz değildir, yalnız sabahın çıkış sınırıdır.
+         */
+        val uzunBaslik: String,
         /** Ekran okuyucu açıklaması (süre hariç) */
         val aciklama: String,
     )
@@ -95,15 +101,15 @@ object KalanSure {
         return if (mod(simdikiVakit) == Mod.CIKIS) {
             val ad = kisaAd(simdikiVakit!!)
             Gosterim(
-                Mod.CIKIS, ad, "$ad · ^1 kaldı",
-                "$ad vaktinin çıkmasına kalan süre; ${kisaAd(siradakiVakit)} $bitisSaati",
+                Mod.CIKIS, ad, "$ad · ^1 kaldı", "çıkış $bitisSaati",
+                "$ad vaktinin çıkmasına kalan süre; çıkış $bitisSaati",
             )
         } else {
             val yonelme = YONELME[siradakiVakit] ?: kisaAd(siradakiVakit)
             // "İkindiye"/"Yatsıya" 6 karakteri aşar → kısa başlıkta yalnız ad.
             val kisa = if (yonelme.length <= 6) yonelme else kisaAd(siradakiVakit)
             Gosterim(
-                Mod.GIRIS, kisa, "$yonelme ^1",
+                Mod.GIRIS, kisa, "$yonelme ^1", "${kisaAd(siradakiVakit)} $bitisSaati",
                 "${kisaAd(siradakiVakit)} vaktine kalan süre, giriş $bitisSaati",
             )
         }
