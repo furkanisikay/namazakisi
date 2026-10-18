@@ -9,6 +9,15 @@
  * çağrı öncekinin yerine geçer (önceki geri alınamaz hâle gelir, eylemi zaten yapılmıştır).
  * Geri al = önceki durumu BİREBİR geri yaz (çağıranın sorumluluğu). Geri alınamayan
  * işlemde bant yerine önizleme + onay kullanın.
+ *
+ * RN `<Modal>` ayrı bir pencerede çizilir; kökteki host onun ALTINDA kalır ve bant
+ * görünmez. Modal içinden çağrılacaksa modalın ağacına yerel bir host koyun:
+ *   <Modal …>…<GeriAlBandiKatmani altBosluk={24} /></Modal>
+ * Hostlar YIĞIN olarak tutulur: istek yalnız EN SON bağlanan hosta gider (modal açıkken
+ * modalınki, kapanınca kökünki); diğerleri bandını kapatır → ekranda daima tek bant.
+ *
+ * Erişilebilirlik: bant `announceForAccessibility` ile BİR KEZ duyurulur; canlı bölge
+ * (`accessibilityLiveRegion`) bilinçli olarak YOK — Android ikisini birden okurdu.
  */
 import * as React from 'react';
 import { AccessibilityInfo, Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -28,10 +37,12 @@ export interface GeriAlIstegi {
 }
 
 type Dinleyici = (istek: GeriAlIstegi | null) => void;
-const dinleyiciler = new Set<Dinleyici>();
+/** Bağlanma sırasıyla hostlar; sonuncusu (en üstteki pencere) istekleri alır. */
+const dinleyiciler: Dinleyici[] = [];
 
 export function geriAlBandiGoster(istek: GeriAlIstegi): void {
-    dinleyiciler.forEach((d) => d(istek));
+    const ust = dinleyiciler[dinleyiciler.length - 1];
+    dinleyiciler.forEach((d) => d(d === ust ? istek : null));
 }
 
 /** Bandı hemen kapatır (ör. ekran değişti, işlem artık geri alınamaz). */
@@ -39,7 +50,12 @@ export function geriAlBandiniKapat(): void {
     dinleyiciler.forEach((d) => d(null));
 }
 
-export const GeriAlBandiKatmani: React.FC = () => {
+export interface GeriAlBandiKatmaniProps {
+    /** Alttan boşluk (dp). Kök: sekme çubuğunun üstü (104); modal içinde daha az. */
+    altBosluk?: number;
+}
+
+export const GeriAlBandiKatmani: React.FC<GeriAlBandiKatmaniProps> = ({ altBosluk = 104 }) => {
     const renkler = useRenkler();
     const azalt = useHareketAzalt();
     const [istek, setIstek] = React.useState<GeriAlIstegi | null>(null);
@@ -67,9 +83,10 @@ export const GeriAlBandiKatmani: React.FC = () => {
             }
             zamanlayici.current = setTimeout(() => setIstek(null), yeni.sureMs ?? GERI_AL_SURESI_MS);
         };
-        dinleyiciler.add(dinleyici);
+        dinleyiciler.push(dinleyici);
         return () => {
-            dinleyiciler.delete(dinleyici);
+            const i = dinleyiciler.indexOf(dinleyici);
+            if (i >= 0) dinleyiciler.splice(i, 1);
             if (zamanlayici.current) clearTimeout(zamanlayici.current);
         };
     }, [gorunum]);
@@ -92,15 +109,13 @@ export const GeriAlBandiKatmani: React.FC = () => {
             style={[
                 styles.kap,
                 {
+                    bottom: altBosluk,
                     opacity: gorunum,
                     transform: [{ translateY: gorunum.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }],
                 },
             ]}
         >
-            <View
-                accessibilityLiveRegion="polite"
-                style={[styles.hap, { backgroundColor: renkler.metin }]}
-            >
+            <View testID="geri-al-bandi" style={[styles.hap, { backgroundColor: renkler.metin }]}>
                 <FontAwesome5 name={istek.ikon ?? 'undo'} size={13} color={renkler.arkaplan} style={{ marginRight: 10 }} />
                 <Text style={{ flex: 1, fontSize: 14, fontWeight: '500', color: renkler.arkaplan }}>{istek.mesaj}</Text>
                 <TouchableOpacity
@@ -117,7 +132,7 @@ export const GeriAlBandiKatmani: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    kap: { position: 'absolute', left: 16, right: 16, bottom: 104, alignItems: 'center' },
+    kap: { position: 'absolute', left: 16, right: 16, alignItems: 'center' },
     hap: {
         flexDirection: 'row',
         alignItems: 'center',

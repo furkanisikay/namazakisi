@@ -11,6 +11,6 @@ export { DurumSatiri, type CihazdaYok, type DurumSatiriDurumu } from './DurumSat
 export { useIzinAkisi, sonucCoz, MODAL_KAPANIS_BEKLEMESI_MS, type IzinAkisi, type IzinSonucu } from './useIzinAkisi';
 export { RizaModali, RIZA_AZAMI_MADDE, type RizaMaddesi } from './RizaModali';
 export { DurumRozeti } from './DurumRozeti';
-export { GeriAlBandiKatmani, geriAlBandiGoster, geriAlBandiniKapat, GERI_AL_SURESI_MS, type GeriAlIstegi } from './GeriAlBandi';
+export { GeriAlBandiKatmani, geriAlBandiGoster, geriAlBandiniKapat, GERI_AL_SURESI_MS, type GeriAlIstegi, type GeriAlBandiKatmaniProps } from './GeriAlBandi';
 export { KaydedildiIsareti, useKaydedildi, KAYDEDILDI_METNI } from './Kaydedildi';
 export { BosDurum, Yukleniyor } from './BosDurum';
