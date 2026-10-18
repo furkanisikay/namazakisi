@@ -26,10 +26,6 @@ export const CANLI_GUNCELLEME_TEMALARI: readonly SayacTemasi[] = ['vakit', 'ifta
 /** Sahur ilerleme çubuğunda vurgulanan son bölüm: imsaktan önceki bu kadar dakika. */
 export const SAHUR_VURGU_DK = 60;
 
-/** Ayar sayfalarındaki bilgi satırı (kibar "siz" — arayüz metni). */
-export const CANLI_GUNCELLEME_BILGI_METNI =
-  "Android 16+ cihazlarda sayaç durum çubuğunda ve Now Bar'da görünür.";
-
 export function canliGuncellemeyeUygunMu(tema: SayacTemasi): boolean {
   return CANLI_GUNCELLEME_TEMALARI.includes(tema);
 }

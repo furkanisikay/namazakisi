@@ -123,7 +123,7 @@ export function useNamazModu(): NamazModuEkranDurumu {
 
     const modAyarlariniAc = useCallback(async () => {
         const acildi = await kopru.modAyarlariniAc();
-        if (!acildi) kisaBildirimGoster('Modlar ekranı açılamadı; telefonunuzun Ayarlar > Modlar bölümünden açabilirsiniz.', true);
+        if (!acildi) kisaBildirimGoster('Ayar ekranı açılamadı; telefonunuzun Rahatsız Etmeyin/mod ayarlarından açabilirsiniz.', true);
     }, []);
 
     return {

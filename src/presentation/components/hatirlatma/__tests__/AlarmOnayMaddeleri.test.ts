@@ -5,17 +5,36 @@
 jest.mock('../../../../core/theme', () => ({ useRenkler: () => ({}) }));
 jest.mock('@expo/vector-icons/FontAwesome5', () => 'FontAwesome5');
 
-import { alarmOnayMaddeleri, iosAlarmKitVarMi } from '../AlarmOnayModal';
+import { alarmOnayAltBasligi, alarmOnayMaddeleri, iosAlarmKitVarMi } from '../AlarmOnayModal';
 
 const metin = (m: { metin: string }[]) => m.map((x) => x.metin).join(' ');
 
 describe('alarmOnayMaddeleri', () => {
-    it('iOS + AlarmKit yok/bilinmiyor: uzun sesli bildirim ve sessiz anahtar uyarısı', () => {
-        for (const durum of ['desteklenmiyor', null] as const) {
-            const m = metin(alarmOnayMaddeleri('ios', durum));
-            expect(m).toContain('30 saniyelik');
-            expect(m).toContain('sessiz anahtarı açıkken ses duyulmaz');
-        }
+    it('iOS + AlarmKit yok: uzun sesli bildirim ve sessiz anahtar uyarısı', () => {
+        const m = metin(alarmOnayMaddeleri('ios', 'desteklenmiyor'));
+        expect(m).toContain('30 saniyelik');
+        expect(m).toContain('sessiz anahtarı açıkken ses duyulmaz');
+    });
+
+    it('iOS + AlarmKit yok: alarm ekranı VAADİ yok (orada alarm ekranı açılmaz)', () => {
+        const m = metin(alarmOnayMaddeleri('ios', 'desteklenmiyor', { iosSurum: 18 }));
+        expect(m).not.toContain('Alarm ekranından');
+        expect(m).not.toMatch(/10 dakika erteleyebilirsiniz/);
+        expect(m).toContain('Alarm ekranı açılmaz');
+    });
+
+    it('iOS + AlarmKit durumu henüz okunmadı (null): iki olasılık da hedgeli, kesin vaat yok', () => {
+        const m = metin(alarmOnayMaddeleri('ios', null));
+        expect(m).toContain('destekliyorsa');
+        expect(m).toContain('desteklemiyorsa');
+        expect(m).not.toContain('Alarm ekranından');
+    });
+
+    it('alt başlık: null iken kesin "uzun sesli bildirim olarak gelir" DENMEZ', () => {
+        expect(alarmOnayAltBasligi('ios', null)).not.toContain('olarak gelir');
+        expect(alarmOnayAltBasligi('ios', 'desteklenmiyor')).toContain('uzun sesli bildirim olarak gelir');
+        expect(alarmOnayAltBasligi('ios', 'izinli')).toContain('alarm uygulaması gibi');
+        expect(alarmOnayAltBasligi('android', null)).toContain('alarm uygulaması gibi');
     });
 
     it('iOS + AlarmKit izin bekliyor: gerçek alarm + izin isteneceği söylenir', () => {
@@ -25,12 +44,26 @@ describe('alarmOnayMaddeleri', () => {
         expect(m).not.toContain('30 saniyelik');
     });
 
+    it('iOS + AlarmKit yok: sürüm cümlesi yalnız gerçekten eski sürümde', () => {
+        expect(metin(alarmOnayMaddeleri('ios', 'desteklenmiyor', { iosSurum: 18 }))).toContain('bu iPhone iOS 18');
+        for (const iosSurum of [26, null]) {
+            const m = metin(alarmOnayMaddeleri('ios', 'desteklenmiyor', { iosSurum }));
+            expect(m).not.toContain('iOS 26');
+            expect(m).not.toMatch(/güncelle/i);
+        }
+    });
+
+    it('Android: tam ekran izni kapalıysa "tam ekran açılır" vaadi yerine izin şartı', () => {
+        expect(metin(alarmOnayMaddeleri('android', null, { tamEkran: false }))).toContain('ayrıca izin vermeniz gerekir');
+        expect(metin(alarmOnayMaddeleri('android', null, { tamEkran: true }))).toContain('tam ekran açılır');
+    });
+
     it('iOS + izin reddedilmiş: Ayarlar yönlendirmesi', () => {
         expect(metin(alarmOnayMaddeleri('ios', 'reddedildi'))).toContain('Ayarlar');
     });
 
     it('iOS maddelerinde ikonlar tekil (liste anahtarı) ve "sen" dili yok', () => {
-        for (const durum of ['belirsiz', 'izinli', 'reddedildi', 'desteklenmiyor'] as const) {
+        for (const durum of ['belirsiz', 'izinli', 'reddedildi', 'desteklenmiyor', null] as const) {
             const m = alarmOnayMaddeleri('ios', durum);
             expect(new Set(m.map((x) => x.ikon)).size).toBe(m.length);
             for (const x of m) expect(x.metin).not.toMatch(/\b(sen|senin)\b/i);

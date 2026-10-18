@@ -696,7 +696,9 @@ describe('MuhafizAyarlariSayfasi', () => {
       await act(async () => { fireEvent.press(getByLabelText(/^Normal yoğunluk/)); });
 
       expect(getByText('Sesli anons açılsın mı?')).toBeTruthy();
-      expect(getByText(/Rahatsız Etmeyin/)).toBeTruthy();
+      // Jest varsayılan platformu iOS: iPhone'da anons bildirim sesidir, sessiz anahtarı
+      // açıkken duyulmaz (Android'deki "Rahatsız Etmeyin'de de duyulur" cümlesi iPhone'da yanlıştı).
+      expect(getByText(/sessiz anahtarı açıkken duyulmaz/)).toBeTruthy();
       expect(matrisiGuncelle).not.toHaveBeenCalled();
       expect(muhafizAyarlariniGuncelle).not.toHaveBeenCalled();
     });

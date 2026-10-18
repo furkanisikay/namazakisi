@@ -94,6 +94,11 @@ describe('IcloudSaglayicisi', () => {
     icloud.icloudHesapVarMi.mockResolvedValue(false);
   });
 
+  it('hesap durumu bilinmiyorsa (köprü hatası → null) oturum sayılmaz, boolean döner', async () => {
+    icloud.icloudHesapVarMi.mockResolvedValue(null);
+    await expect(new IcloudSaglayicisi(true).oturumVarMi()).resolves.toBe(false);
+  });
+
   it('bayrak kapalıyken ya da köprü yokken yapılandırılmamış', async () => {
     expect(new IcloudSaglayicisi(false).yapilandirildiMi()).toBe(false);
     icloud.icloudModuluVarMi.mockReturnValue(false);

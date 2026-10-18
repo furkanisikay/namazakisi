@@ -339,7 +339,7 @@ export const RozetlerSayfasi: React.FC = () => {
                 className="text-sm mt-2"
                 style={{ color: renkler.metinIkincil }}
               >
-                Bu kategoride rozet bulunamadi
+                Bu kategoride henüz rozet yok
               </Text>
             </View>
           ) : (

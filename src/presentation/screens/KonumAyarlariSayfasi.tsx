@@ -337,9 +337,6 @@ const KonumAyarlariIcerik: React.FC = () => {
                 >
                     <FontAwesome5 name="map-marker-alt" size={28} color={renkler.birincil} solid />
                 </View>
-                <Text className="text-xl font-bold mb-2" style={{ color: renkler.metin }}>
-                    Konum Ayarları
-                </Text>
                 <Text className="text-sm text-center leading-5" style={{ color: renkler.metinIkincil }}>
                     Namaz vakitlerinin doğru hesaplanabilmesi için konumunuzu belirleyin
                 </Text>
@@ -567,7 +564,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Pil Dostu</Text>
                                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            10km / 30dk - Şehirler arası yolculuk için
+                                            10 km - Şehirler arası yolculuk için
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'pil_dostu' && (
@@ -596,7 +593,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Dengeli</Text>
                                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            5km / 15dk - Çoğu kullanıcı için ideal
+                                            5 km - Çoğu kullanıcı için ideal
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'dengeli' && (
@@ -625,7 +622,7 @@ const KonumAyarlariIcerik: React.FC = () => {
                                     <View className="flex-1">
                                         <Text className="text-sm font-semibold" style={{ color: renkler.metin }}>Hassas</Text>
                                         <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                            2km / 5dk - Sık hareket edenler için
+                                            2 km - Sık hareket edenler için
                                         </Text>
                                     </View>
                                     {seciliHassasiyet === 'hassas' && (

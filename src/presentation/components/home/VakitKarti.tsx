@@ -203,7 +203,7 @@ export const VakitKarti: React.FC<VakitKartiProps> = ({
                             </Text>
                         </View>
                         <Text className="text-xs" style={{ color: renkler.metinIkincil }}>
-                            Seriyi bozma! 🔥
+                            Serinizi koruyun! 🔥
                         </Text>
                     </View>
                 )}

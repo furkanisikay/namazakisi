@@ -71,12 +71,12 @@ export const OzellikBilgi: React.FC = () => {
         {
             ikon: 'calendar-check',
             baslik: 'Anlık Önizleme',
-            aciklama: 'Bugün için hesaplanan saatleri kaydetmeden önce ekranda görebilirsin.',
+            aciklama: 'Bugün için hesaplanan saatleri kaydetmeden önce ekranda görebilirsiniz.',
         },
         {
             ikon: 'trash-alt',
             baslik: 'Seçici Temizleme',
-            aciklama: 'Takvim, zaman aralığı ve vakit seçerek etkinlikleri istediğin gibi silebilirsin.',
+            aciklama: 'Takvim, zaman aralığı ve vakit seçerek etkinlikleri istediğiniz gibi silebilirsiniz.',
         },
     ];
 
@@ -93,10 +93,10 @@ export const OzellikBilgi: React.FC = () => {
                     <FontAwesome5 name="calendar-alt" size={36} color={renkler.birincil} solid />
                 </View>
                 <Text className="text-base font-bold text-center" style={{ color: renkler.metin }}>
-                    Namaz Vakitlerini Takvimine Ekle
+                    Namaz vakitlerini takviminize ekleyin
                 </Text>
                 <Text className="text-xs text-center mt-2 leading-5" style={{ color: renkler.metinIkincil }}>
-                    Seçtiğin vakitler için cihaz takvimine ileriye dönük etkinlikler otomatik oluşturulur.
+                    Seçtiğiniz vakitler için cihaz takvimine ileriye dönük etkinlikler otomatik oluşturulur.
                 </Text>
             </View>
 
@@ -125,7 +125,7 @@ export const OzellikBilgi: React.FC = () => {
             >
                 <FontAwesome5 name="arrow-up" size={11} color={renkler.birincil} />
                 <Text className="text-xs font-medium" style={{ color: renkler.birincil }}>
-                    Başlamak için yukarıdaki düğmeyi aktif edin
+                    Başlamak için yukarıdaki anahtarı açın
                 </Text>
             </View>
         </View>

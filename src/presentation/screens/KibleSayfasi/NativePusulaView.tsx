@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { useKible } from '../../hooks/useKible';
+import { kalibrasyonIpucu, useKible } from '../../hooks/useKible';
 import { useRenkler } from '../../../core/theme';
 
 /** Kible hizalama hassasiyet esigi (derece cinsinden) */
@@ -14,8 +14,9 @@ const KIBLE_HIZALAMA_ESIGI = 10;
  * and shows the Kaaba direction indicator.
  * @returns {React.JSX.Element} Animated compass view with Qibla indicator.
  */
-export const NativePusulaView = () => {
-  const { kibleAcisi, pusulaYonelimi, hedefAcisi, yukleniyor, hata, izinVerildi } = useKible();
+export const NativePusulaView: React.FC<{ onHaritaModu?: () => void }> = ({ onHaritaModu }) => {
+  const { kibleAcisi, pusulaYonelimi, hedefAcisi, yukleniyor, hata, izinVerildi, izinTekrarSorulabilir, pusulaDogrulugu, pusulaVar, izinIste } =
+    useKible();
   const renkler = useRenkler();
   const { width } = useWindowDimensions();
   const PUSULA_BOYUT = width * 0.75;
@@ -56,15 +57,49 @@ export const NativePusulaView = () => {
   if (hata) {
     return (
       <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
-        <Text style={[styles.hataMetni, { color: renkler.hata }]}>{hata}</Text>
-        {!izinVerildi && (
-          <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>
-            Ayarlardan konum izni vermeniz gerekmektedir.
-          </Text>
+        <Text style={[styles.hataMetni, { color: renkler.metin }]}>{hata}</Text>
+        {!izinVerildi && izinTekrarSorulabilir !== null && (
+          <TouchableOpacity
+            onPress={() => void izinIste()}
+            accessibilityRole="button"
+            accessibilityLabel={izinTekrarSorulabilir ? 'Konum izni verin' : 'Ayarları açın'}
+            style={[styles.dugme, { backgroundColor: renkler.birincil }]}
+          >
+            <FontAwesome5 name={izinTekrarSorulabilir ? 'map-marker-alt' : 'cog'} size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+            <Text style={[styles.dugmeMetni, { color: renkler.birincilMetin }]}>
+              {izinTekrarSorulabilir ? 'Konum izni verin' : 'Ayarları açın'}
+            </Text>
+          </TouchableOpacity>
         )}
       </View>
     );
   }
+
+  // Manyetometre yok: pusula hiç dönmez — bunu söyle ve harita moduna yönlendir.
+  if (pusulaVar === false) {
+    return (
+      <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
+        <FontAwesome5 name="compass" size={32} color={renkler.metinIkincil} />
+        <Text style={[styles.hataMetni, { color: renkler.metin, marginTop: 12 }]}>Bu telefonda pusula algılayıcısı yok.</Text>
+        <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>
+          Kıble açısı {Math.round(kibleAcisi)}°. Harita modunda yönü haritada görebilirsiniz.
+        </Text>
+        {onHaritaModu && (
+          <TouchableOpacity
+            onPress={onHaritaModu}
+            accessibilityRole="button"
+            accessibilityLabel="Harita moduna geçin"
+            style={[styles.dugme, { backgroundColor: renkler.birincil }]}
+          >
+            <FontAwesome5 name="map" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
+            <Text style={[styles.dugmeMetni, { color: renkler.birincilMetin }]}>Harita moduna geçin</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  }
+
+  const ipucu = kalibrasyonIpucu(pusulaDogrulugu);
 
   // Kible hizalama gostergesi
   const hizalandiMi = hedefAcisi < KIBLE_HIZALAMA_ESIGI || hedefAcisi > (360 - KIBLE_HIZALAMA_ESIGI);
@@ -127,14 +162,50 @@ export const NativePusulaView = () => {
         </Animated.View>
       </View>
 
-      <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
-        Telefonunuzu düz bir zemine koyun ve kalibrasyon için 8 çizer gibi hareket ettirin.
-      </Text>
+      {/* Kalibrasyon ipucu pusula doğruluğuna bağlı: düşükse belirgin, iyiyse yok. */}
+      {ipucu === 'belirgin' && (
+        <View
+          testID="kible-kalibrasyon-belirgin"
+          accessible
+          accessibilityLabel="Pusula doğruluğu düşük. Telefonunuzu havada 8 çizer gibi birkaç kez hareket ettirin."
+          style={[styles.uyariKutusu, { borderLeftColor: renkler.dikkat, backgroundColor: renkler.kartArkaplan }]}
+        >
+          <FontAwesome5 name="sync-alt" size={14} color={renkler.dikkat} style={{ marginRight: 10 }} />
+          <Text style={{ flex: 1, fontSize: 14, color: renkler.metin }}>
+            Pusula doğruluğu düşük. Telefonunuzu havada 8 çizer gibi birkaç kez hareket ettirin.
+          </Text>
+        </View>
+      )}
+      {ipucu === 'sonuk' && (
+        <Text style={[styles.bilgi, { color: renkler.metinIkincil }]}>
+          Yön kayıyorsa telefonunuzu havada 8 çizer gibi hareket ettirin.
+        </Text>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  dugme: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 48,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    marginTop: 16,
+  },
+  dugmeMetni: { fontSize: 15, fontWeight: '700' },
+  uyariKutusu: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderLeftWidth: 3,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginHorizontal: 24,
+    marginTop: 12,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

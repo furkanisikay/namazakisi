@@ -16,6 +16,8 @@ export interface AlarmBilgiSatirlariProps {
     onIzinAyari: () => void;
     /** iOS: sistem alarm izni penceresini açar (AlarmKit, iOS 26). */
     onAlarmIzni?: () => void;
+    /** Android: "Alarmlar ve hatırlatıcılar" (tam alarm) izin ekranını açar. */
+    onTamAlarm?: () => void;
 }
 
 /** Eylem düğmesinin görünüşü — metin ve ikon eyleme göre. */
@@ -23,9 +25,10 @@ const EYLEM_DUGMELERI: Record<NonNullable<AlarmNotu['eylem']>, { ikon: string; m
     tamEkranIzni: { ikon: 'unlock-alt', metin: 'İzni açın', etiket: 'Tam ekran iznini açın' },
     ayarlar: { ikon: 'cog', metin: 'Ayarları açın', etiket: 'Alarm iznini Ayarlar’dan açın' },
     alarmIzni: { ikon: 'clock', metin: 'İzin verin', etiket: 'Alarm iznini verin' },
+    tamAlarm: { ikon: 'stopwatch', metin: 'İzni açın', etiket: 'Tam saatinde alarm iznini açın' },
 };
 
-export const AlarmBilgiSatirlari: React.FC<AlarmBilgiSatirlariProps> = ({ notlar, onIzinAyari, onAlarmIzni }) => {
+export const AlarmBilgiSatirlari: React.FC<AlarmBilgiSatirlariProps> = ({ notlar, onIzinAyari, onAlarmIzni, onTamAlarm }) => {
     const renkler = useRenkler();
     if (notlar.length === 0) return null;
     return (
@@ -45,11 +48,15 @@ export const AlarmBilgiSatirlari: React.FC<AlarmBilgiSatirlariProps> = ({ notlar
                             <Text className="text-xs leading-4" style={{ color: renkler.metinIkincil }}>
                                 {not.metin}
                             </Text>
-                            {not.eylem && (not.eylem !== 'alarmIzni' || onAlarmIzni) && (
+                            {not.eylem &&
+                                (not.eylem !== 'alarmIzni' || onAlarmIzni) &&
+                                (not.eylem !== 'tamAlarm' || onTamAlarm) && (
                                 <TouchableOpacity
                                     className="self-start flex-row items-center justify-center rounded-2xl mt-2 px-4"
                                     style={{ minHeight: 44, backgroundColor: renkler.birincil }}
-                                    onPress={not.eylem === 'alarmIzni' ? onAlarmIzni : onIzinAyari}
+                                    onPress={
+                                        not.eylem === 'alarmIzni' ? onAlarmIzni : not.eylem === 'tamAlarm' ? onTamAlarm : onIzinAyari
+                                    }
                                     activeOpacity={0.85}
                                     accessibilityRole="button"
                                     accessibilityLabel={EYLEM_DUGMELERI[not.eylem].etiket}

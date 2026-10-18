@@ -170,15 +170,18 @@ object AnonsKonusucu {
 
     /**
      * Cihazda Turkce TTS verisi kurulu mu? JS tarafi bunu sorup ekranda uyari
-     * gosterebilsin diye. Hata/zaman asiminda `false` doner (asla firlatmaz).
+     * gosterebilsin diye. Hata/zaman asiminda `null` (bilinmiyor) doner (asla firlatmaz).
      */
-    fun turkceDestekleniyorMu(context: Context, sonucaVar: (Boolean) -> Unit) {
+    fun turkceDestekleniyorMu(context: Context, sonucaVar: (Boolean?) -> Unit) {
         val uygulama = context.applicationContext
         val isleyici = Handler(Looper.getMainLooper())
         val bitti = AtomicBoolean(false)
         var motor: TextToSpeech? = null
 
-        fun bildir(deger: Boolean) {
+        // Uc durum: true (kurulu), false (motor dili GERCEKTEN desteklemiyor), null
+        // (bilinmiyor: zaman asimi, motor acilamadi, sorgu hatasi). Yalniz false uyari yakar;
+        // yavas acilan motorda zaman asimini "yok" saymak yanlis uyari uretiyordu.
+        fun bildir(deger: Boolean?) {
             if (!bitti.compareAndSet(false, true)) return
             isleyici.post {
                 try { motor?.shutdown() } catch (_: Exception) { /* yok sayilir */ }
@@ -187,25 +190,25 @@ object AnonsKonusucu {
             }
         }
 
-        isleyici.postDelayed({ bildir(false) }, SORGU_ZAMAN_ASIMI_MS)
+        isleyici.postDelayed({ bildir(null) }, SORGU_ZAMAN_ASIMI_MS)
 
         try {
             motor = TextToSpeech(uygulama) { durum ->
                 if (durum != TextToSpeech.SUCCESS) {
-                    bildir(false)
+                    bildir(null)
                     return@TextToSpeech
                 }
-                val kod = try {
-                    motor?.isLanguageAvailable(Locale.forLanguageTag("tr-TR")) ?: TextToSpeech.LANG_NOT_SUPPORTED
+                val kod: Int? = try {
+                    motor?.isLanguageAvailable(Locale.forLanguageTag("tr-TR"))
                 } catch (e: Exception) {
                     Log.w(ETIKET, "Dil sorgusu basarisiz: ${e.message}")
-                    TextToSpeech.LANG_NOT_SUPPORTED
+                    null
                 }
-                bildir(kod >= TextToSpeech.LANG_AVAILABLE)
+                bildir(kod?.let { it >= TextToSpeech.LANG_AVAILABLE })
             }
         } catch (e: Exception) {
             Log.e(ETIKET, "TTS motoru olusturulamadi: ${e.message}")
-            bildir(false)
+            bildir(null)
         }
     }
 }

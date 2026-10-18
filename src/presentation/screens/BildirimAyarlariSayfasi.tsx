@@ -305,7 +305,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                     Namaz Vakti Bildirimleri
                   </Text>
                   <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                    Vakit girdiğinde ayet ve hadislerle hatırlatma al
+                    Vakit girince ayet ve hadisle hatırlatılırsınız
                   </Text>
                 </View>
               </View>
@@ -368,7 +368,7 @@ const BildirimAyarlariIcerik: React.FC<any> = ({ navigation }) => {
                   Vakit Sayacı
                 </Text>
                 <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                  Vakit çıkmadan önce bildirimde dk:sn geri sayım göster
+                  Vakit çıkmadan önce bildirimde geri sayımı görürsünüz
                 </Text>
               </View>
               <Anahtar

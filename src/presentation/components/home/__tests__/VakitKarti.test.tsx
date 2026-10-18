@@ -57,7 +57,7 @@ describe('VakitKarti Bileşeni', () => {
     expect(getByText('Kılındı Olarak İşaretle')).toBeTruthy();
     // Puan teşvik rozeti yalnızca aktif (tamamlanmamış + kilitsiz) durumda görünür
     expect(getByText(puanMetni)).toBeTruthy();
-    expect(getByText('Seriyi bozma! 🔥')).toBeTruthy();
+    expect(getByText('Serinizi koruyun! 🔥')).toBeTruthy();
   });
 
   it('konumMetni verilince konum rozetini gösterir, verilmeyince göstermez', () => {
@@ -98,7 +98,7 @@ describe('VakitKarti Bileşeni', () => {
 
     // Puan teşvik rozeti kilitli modda render EDİLMEMELİ
     expect(queryByText(puanMetni)).toBeNull();
-    expect(queryByText('Seriyi bozma! 🔥')).toBeNull();
+    expect(queryByText('Serinizi koruyun! 🔥')).toBeNull();
 
     // Disabled buton: press handler tetiklenmemeli (üretim satır 128: disabled={tamamlandi || kilitli})
     fireEvent.press(getByText('Vakit Girmedi'));

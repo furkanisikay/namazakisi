@@ -84,14 +84,16 @@ describe('Sesli anons koprusu — Android', () => {
     await expect(trDestekleniyorMu()).resolves.toBe(false);
   });
 
-  test('trDestekleniyorMu: native HATA verirse firlatmaz, false doner', async () => {
+  test('trDestekleniyorMu: native HATA verirse firlatmaz, null (bilinmiyor) doner', async () => {
     mockTrDestekleniyorMu.mockRejectedValue(new Error('native yok'));
-    await expect(trDestekleniyorMu()).resolves.toBe(false);
+    await expect(trDestekleniyorMu()).resolves.toBeNull();
   });
 
-  test('trDestekleniyorMu: boolean olmayan cevap false sayilir', async () => {
+  test('trDestekleniyorMu: boolean olmayan cevap (native zaman asimi null dahil) bilinmiyor sayilir', async () => {
     mockTrDestekleniyorMu.mockResolvedValue('evet');
-    await expect(trDestekleniyorMu()).resolves.toBe(false);
+    await expect(trDestekleniyorMu()).resolves.toBeNull();
+    mockTrDestekleniyorMu.mockResolvedValue(null);
+    await expect(trDestekleniyorMu()).resolves.toBeNull();
   });
 });
 
@@ -115,8 +117,8 @@ describe('Sesli anons koprusu — Android disi (no-op)', () => {
     expect(mockIptalEtTumAnonslar).not.toHaveBeenCalled();
   });
 
-  test('trDestekleniyorMu native sormadan false doner', async () => {
-    await expect(trDestekleniyorMu()).resolves.toBe(false);
+  test('trDestekleniyorMu native sormadan null (bilinmiyor) doner', async () => {
+    await expect(trDestekleniyorMu()).resolves.toBeNull();
     expect(mockTrDestekleniyorMu).not.toHaveBeenCalled();
   });
 });

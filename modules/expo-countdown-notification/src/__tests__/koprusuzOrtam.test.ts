@@ -76,8 +76,12 @@ describe('Kopru — native modul YOK (iOS)', () => {
     }
   );
 
-  test('trDestekleniyorMu false doner — "bilinmiyor" degil, sorgulanamadi', async () => {
-    await expect(kopru.trDestekleniyorMu()).resolves.toBe(false);
+  test('trDestekleniyorMu null doner — sorgulanamadi = bilinmiyor (yanlis uyari yok)', async () => {
+    await expect(kopru.trDestekleniyorMu()).resolves.toBeNull();
+  });
+
+  test('samsungMu iOS\'ta KESIN false (iPhone Samsung degildir)', () => {
+    expect(kopru.samsungMu()).toBe(false);
   });
 
   test('sesSec null doner (secici acilamaz)', async () => {
@@ -120,7 +124,7 @@ describe('Kopru — Android ama native modul YOK (ikinci savunma)', () => {
   );
 
   test('async fonksiyonlar guvenli varsayilanla doner', async () => {
-    await expect(kopru.trDestekleniyorMu()).resolves.toBe(false);
+    await expect(kopru.trDestekleniyorMu()).resolves.toBeNull();
     await expect(kopru.sesSec(null, 'Ses secin')).resolves.toBeNull();
     await expect(kopru.sesAdiAl('content://ses/1')).resolves.toBe('');
     await expect(kopru.onizlemeCaliyorMu()).resolves.toBe(false);
@@ -129,7 +133,8 @@ describe('Kopru — Android ama native modul YOK (ikinci savunma)', () => {
   test('pil fonksiyonlari "bilinmiyor" doner — yanlis pil uyarisi cikmaz', async () => {
     await expect(kopru.pilOptimizasyonuMuafMi()).resolves.toBeNull();
     await expect(kopru.pilAyarlariniAc()).resolves.toBeNull();
-    expect(kopru.samsungMu()).toBe(false);
+    // Android'de modul yoksa Samsung olup olmadigi BILINMIYOR (false = "kesin degil" olurdu).
+    expect(kopru.samsungMu()).toBeNull();
   });
 
   test('bekleyen anons sayisi "bilinmiyor" doner (issue #298 tani olcumu)', async () => {

@@ -7,7 +7,7 @@
  */
 
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -49,6 +49,38 @@ export const EsitlemeSayfasi: React.FC = () => {
       yenile();
     }, [yenile])
   );
+
+  // Sağlayıcı seçimi açıkken ÖNCEDEN ölç (dokunup başarısız olduktan SONRA değil):
+  // iCloud'a giriş yapılmış mı, cihaz çevrimiçi mi. Okunamayan durumda sus.
+  const [icloudEngeli, setIcloudEngeli] = useState<string | null>(null);
+  const [cevrimdisi, setCevrimdisi] = useState<boolean | null>(null);
+  const saglayiciAdimi = adim?.tur === 'saglayici';
+  useEffect(() => {
+    if (!saglayiciAdimi) return;
+    let iptal = false;
+    let abonelik: (() => void) | undefined;
+    if (e.saglayicilar.some((s) => s.kimlik === 'icloud')) {
+      const ic = require('../../../../modules/expo-icloud-esitleme/src') as typeof import('../../../../modules/expo-icloud-esitleme/src');
+      if (ic.icloudModuluVarMi()) {
+        void ic.icloudHesapVarMi().then((var_) => {
+          // Yalnız KESİN "yok" engel yazar; bilinmiyor (`null`, köprü hatası) → sus.
+          if (!iptal) setIcloudEngeli(var_ === false ? "Bu cihazda iCloud'a giriş yapılmamış. Ayarlar'dan giriş yapıp yeniden deneyin." : null);
+        });
+      }
+    }
+    try {
+      const NetInfo = (require('@react-native-community/netinfo') as typeof import('@react-native-community/netinfo')).default;
+      abonelik = NetInfo.addEventListener((d) => {
+        if (!iptal) setCevrimdisi(d.isConnected === false ? true : d.isConnected === true ? false : null);
+      });
+    } catch {
+      // Ağ durumu okunamıyor → sus.
+    }
+    return () => {
+      iptal = true;
+      abonelik?.();
+    };
+  }, [saglayiciAdimi, e.saglayicilar]);
 
   const adimaGec = (yeni: EsitlemeAkisAdimi | null) => {
     setAkisHatasi(null);
@@ -282,6 +314,8 @@ export const EsitlemeSayfasi: React.FC = () => {
         hata={akisHatasi}
         onRizaVer={rizaVer}
         onSaglayiciSec={saglayiciSec}
+        saglayiciEngelleri={icloudEngeli ? { icloud: icloudEngeli } : undefined}
+        cevrimdisi={cevrimdisi}
         onParola={parolaGir}
         onUnuttum={() => adimaGec({ tur: 'unuttum' })}
         onSifirlaOnay={() => adimaGec({ tur: 'parola', kip: 'sifirla' })}

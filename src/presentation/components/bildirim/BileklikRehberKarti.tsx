@@ -17,6 +17,7 @@ import * as React from 'react';
 import { Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRenkler } from '../../../core/theme';
+import { useCihazDurumu } from '../../hooks/useCihazDurumu';
 
 /** Uygulama kimliği (shortcuts.xml `targetPackage` gibi sabittir). */
 const ANDROID_PAKET_ADI = 'com.furkanisikay.namazakisi';
@@ -47,12 +48,20 @@ const NOTLAR = [
   'Sessiz bildirimler çoğu bilekliğe aktarılmaz; bu davranış marka ve modele göre değişebilir.',
   'Başlıklar küçük ekranlara göre düzenlendi: vakit adı ve kalan süre en başta görünür (ör. “Yatsı · 25 dk kaldı”).',
   '“Kıldım” düğmesinin bileklikte görünüp görünmediği modele göre değişir.',
-  'Samsung Rutinler’de “vakti girdi” ile kurduğunuz bir rutin varsa vakit bildirimlerini sessize almayın; rutin tetiklenmeyebilir.',
 ];
+
+/** Yalnız Samsung'da anlamlı (Rutinler başka telefonda yok). */
+const SAMSUNG_NOTU =
+  'Samsung Rutinler’de “vakti girdi” ile kurduğunuz bir rutin varsa vakit bildirimlerini sessize almayın; rutin tetiklenmeyebilir.';
+
+const CIHAZ_ALANLARI = ['samsung'] as const;
 
 export const BileklikRehberKarti: React.FC = () => {
   const renkler = useRenkler();
   const [acik, setAcik] = React.useState(false);
+  // Samsung DEĞİL ise Rutinler maddesi çıkar; bilinmiyorsa (null) kalır.
+  const { durum: cihaz } = useCihazDurumu(CIHAZ_ALANLARI, Platform.OS === 'android' && acik);
+  const notlar = cihaz.samsung === false ? NOTLAR : [...NOTLAR, SAMSUNG_NOTU];
 
   if (Platform.OS !== 'android') return null;
 
@@ -131,7 +140,7 @@ export const BileklikRehberKarti: React.FC = () => {
           </TouchableOpacity>
 
           <View style={{ gap: 6 }}>
-            {NOTLAR.map((n) => (
+            {notlar.map((n) => (
               <Text key={n} className="text-xs" style={{ color: renkler.metinIkincil }}>
                 {'• '}
                 {n}

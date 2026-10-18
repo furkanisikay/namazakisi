@@ -137,6 +137,16 @@ describe('Neler Yeni kopya kuralları', () => {
     }
   });
 
+  it('"gerçek alarm" yalnız gercekAlarm yetenekli duyuruda geçer (iPhone < 26 görmesin)', () => {
+    // iPhone'da gerçek alarm yalnız AlarmKit'li sürümde var; yeteneksiz bir iOS duyurusu
+    // bu özelliği andığında desteklemeyen cihaza yanlış vaat verirdi.
+    for (const o of YENI_OZELLIKLER) {
+      if (o.yetenek === 'gercekAlarm' || !o.platformlar.includes('ios')) continue;
+      const metin = [o.baslik, o.aciklama, o.detayAciklama ?? '', ...(o.detaylar ?? [])].join(' ');
+      expect({ id: o.id, anar: /gerçek alarm/i.test(metin) }).toEqual({ id: o.id, anar: false });
+    }
+  });
+
   it('kimlikler ve birleştirilmiş eski kimlikler tekildir', () => {
     const hepsi = YENI_OZELLIKLER.flatMap((o) => [o.id, ...(o.oncekiIdler ?? [])]);
     expect(new Set(hepsi).size).toBe(hepsi.length);

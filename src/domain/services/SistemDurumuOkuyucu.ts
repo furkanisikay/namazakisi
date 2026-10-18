@@ -26,7 +26,7 @@ export async function pilDurumunuOku(): Promise<PilDurumu> {
         const kopru = kopruYukle();
         return { muaf: await kopru.pilOptimizasyonuMuafMi(), samsung: kopru.samsungMu() };
     } catch {
-        return { muaf: null, samsung: false };
+        return { muaf: null, samsung: null };
     }
 }
 

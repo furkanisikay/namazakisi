@@ -288,6 +288,27 @@ export const NOW_BAR_OGE_BILGILERI: Record<NowBarOgesi, NowBarOgeBilgisi> = {
   },
 };
 
+/**
+ * "Sayaçla" seçili VAKİT öğesinin altındaki satır — ölçerek konuşur (sade tasarım).
+ * Eskiden her vakitte sabit bir paragraf ("…Bildirimler > Vakit sayacı…; muhafızın
+ * uyardığı vakitte sayaç çıkmaz…") yazıyordu; doğru olan tek cümle seçilir:
+ *   - vakit sayacı KAPALI → "Sayaçla" hiç görünmez, bunu söyle;
+ *   - muhafız bu vakti uyarıyor → o vakitte sayaç çıkmaz, bunu söyle;
+ *   - sorun yok ya da durum bilinmiyor → `null` (satır yok).
+ */
+export function vakitSayacGereksinimNotu(
+  sayacAktif: boolean | null,
+  muhafizBuVaktiUyariyor: boolean | null,
+): string | null {
+  if (sayacAktif === false) {
+    return 'Vakit sayacı kapalı olduğu için "Sayaçla" görünmez. Bildirimler bölümünden açabilir ya da "Vakit girince"yi seçebilirsiniz.';
+  }
+  if (muhafizBuVaktiUyariyor === true) {
+    return 'Namaz Muhafızı bu vakti uyardığı için sayaç çıkmaz; görmek için "Vakit girince" ya da "Son dakikalar"ı seçin.';
+  }
+  return null;
+}
+
 /** Ekrandaki zorunlu uyarı satırı (sahibin isteği; metin değişirse test de değişmeli). */
 export const NOW_BAR_POLITIKA_UYARISI =
   'Google sürekli açık kartları önermez; telefonunuz öne çıkarmayı geri çekebilir.';

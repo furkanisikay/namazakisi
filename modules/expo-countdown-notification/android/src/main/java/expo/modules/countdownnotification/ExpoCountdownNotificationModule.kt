@@ -8,6 +8,8 @@ import android.os.Build
 import android.content.Context
 import android.util.Log
 import expo.modules.countdownnotification.cekirdek.CanliGuncellemeKurallari
+import expo.modules.countdownnotification.cekirdek.CihazKurallari
+import android.media.AudioManager
 
 class ExpoCountdownNotificationModule : Module() {
 
@@ -362,11 +364,42 @@ class ExpoCountdownNotificationModule : Module() {
             PilAyarlari.samsungMu()
         }
 
-        /** Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.) */
+        /**
+         * Android tam surumu (`Build.VERSION.SDK_INT_FULL`: ana x 100000 + alt; QPR2 = 3600001).
+         * Alan API 36'da geldi: eski calisma zamaninda statik alan erisimi `NoSuchFieldError`
+         * atar → SDK kapisi + `CihazKurallari.tamSurum` icindeki yakalama. Bilinmiyorsa `null`.
+         */
+        Function("androidTamSurum") {
+            if (Build.VERSION.SDK_INT >= CihazKurallari.TAM_SURUM_API) {
+                CihazKurallari.tamSurum(Build.VERSION.SDK_INT) { tamSurumOku() }
+            } else {
+                null
+            }
+        }
+
+        /**
+         * Alarm ses duzeyi (`STREAM_ALARM`). Izin GEREKMEZ. Okunamazsa -1 (JS: bilinmiyor).
+         * Teheccud uyandirmasi alarm sesiyle calar; duzey 0 ise duyulmaz.
+         */
+        AsyncFunction("alarmSesDuzeyi") { promise: Promise ->
+            val ses = appContext.reactContext?.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            val duzey = try {
+                ses?.getStreamVolume(AudioManager.STREAM_ALARM) ?: -1
+            } catch (_: Throwable) {
+                -1
+            }
+            promise.resolve(duzey)
+        }
+
+        /**
+         * Cihazda Turkce TTS verisi kurulu mu? (Ekran uyari gosterebilsin diye.)
+         * Uc durum: true / false (gercekten yok) / null (bilinmiyor: baglam yok, zaman
+         * asimi, hata). JS yalniz `false`ta uyari gosterir.
+         */
         AsyncFunction("trDestekleniyorMu") { promise: Promise ->
             val context = appContext.reactContext
             if (context == null) {
-                promise.resolve(false)
+                promise.resolve(null)
             } else {
                 try {
                     AnonsKonusucu.turkceDestekleniyorMu(context.applicationContext) { destekleniyor ->
@@ -374,7 +407,7 @@ class ExpoCountdownNotificationModule : Module() {
                     }
                 } catch (e: Exception) {
                     Log.e("CountdownModule", "TTS dil sorgusu basarisiz: ${e.message}")
-                    promise.resolve(false)
+                    promise.resolve(null)
                 }
             }
         }
@@ -406,4 +439,7 @@ class ExpoCountdownNotificationModule : Module() {
         }
         return null
     }
+
+    @androidx.annotation.RequiresApi(36)
+    private fun tamSurumOku(): Int = Build.VERSION.SDK_INT_FULL
 }

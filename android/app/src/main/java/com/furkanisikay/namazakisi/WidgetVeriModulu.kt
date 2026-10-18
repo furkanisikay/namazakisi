@@ -1,10 +1,14 @@
 package com.furkanisikay.namazakisi
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.util.Log
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.furkanisikay.namazakisi.cekirdek.CihazDurumKurallari
 import com.furkanisikay.namazakisi.widget.WidgetGuncelleyici
 import com.furkanisikay.namazakisi.widget.WidgetVeriDeposu
 
@@ -36,6 +40,26 @@ class WidgetVeriModulu(reactContext: ReactApplicationContext) :
     @ReactMethod
     fun kilinanlarKaydet(json: String) {
         yazVeTazele(WidgetVeriDeposu.KEY_KILINAN, json)
+    }
+
+    /**
+     * Ana ekrana (ya da kilit ekranına/kapak ekranına) en az bir uygulama widget'ı
+     * eklenmiş mi? "Nasıl eklenir" anlatımı yalnız eklememiş kişiye gösterilsin.
+     * İzin gerekmez. Okunamazsa `null`.
+     */
+    @ReactMethod
+    fun widgetEkliMi(promise: Promise) {
+        try {
+            val context = reactApplicationContext
+            val yonetici = AppWidgetManager.getInstance(context)
+            val sayilar = WidgetGuncelleyici.SAGLAYICILAR.map { sinif ->
+                yonetici.getAppWidgetIds(ComponentName(context, sinif)).size
+            }
+            promise.resolve(CihazDurumKurallari.widgetEkliMi(sayilar))
+        } catch (e: Throwable) {
+            Log.w(TAG, "Widget sayisi okunamadi", e)
+            promise.resolve(null)
+        }
     }
 
     private fun yazVeTazele(anahtar: String, deger: String) {

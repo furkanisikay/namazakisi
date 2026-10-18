@@ -23,6 +23,8 @@ import {
     VAKIT_SURE_MIN_DK,
 } from '../../core/namazModu/namazModuPlani';
 import type { AyarlarStackParamList } from '../../navigation/ayarlarEkranlari';
+import { namazModuMetni } from '../../core/namazModu/namazModuMetni';
+import { surumuOku } from '../../domain/services/CihazDurumOkuyucu';
 
 export const NamazModuAyarlariSayfasi: React.FC = () => {
     const renkler = useRenkler();
@@ -30,6 +32,9 @@ export const NamazModuAyarlariSayfasi: React.FC = () => {
     const m = useNamazModu();
     const { ayarlar, durum } = m;
     const eskiSurum = durum?.destek === 'filtre';
+    // Kuralın telefonda NEREYE eklendiği sürüme bağlı (Modlar yalnız Android 15+).
+    const surum = React.useMemo(() => surumuOku(), []);
+    const metin = namazModuMetni(surum?.platform === 'android' ? surum.ana : null, durum?.destek);
     const erisimYok = ayarlar.etkin && durum != null && !durum.erisim;
 
     const bolum = (metin: string) => (
@@ -57,8 +62,7 @@ export const NamazModuAyarlariSayfasi: React.FC = () => {
             showsVerticalScrollIndicator={false}
         >
             <Text className="text-sm mb-4" style={{ color: renkler.metinIkincil }}>
-                Telefonunuzun kendi Modlar özelliğiyle çalışır. Hatırlatmalarınız iptal edilmez; modda nasıl görüneceklerini
-                telefonunuzun ayarlarında siz seçersiniz.
+                {metin.giris}
             </Text>
 
             <View className="p-3 overflow-hidden" style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24 }}>
@@ -66,11 +70,7 @@ export const NamazModuAyarlariSayfasi: React.FC = () => {
                     testID="namaz-modu-ana"
                     ikon="moon"
                     baslik="Namaz modunu kullanın"
-                    aciklama={
-                        eskiSurum
-                            ? 'Namaz vaktinde telefonunuzun Rahatsız Etmeyin modu açılır'
-                            : 'Ayarlar → Modlar listesine "Namaz" eklenir; ne yapacağını orada siz seçersiniz'
-                    }
+                    aciklama={metin.anahtar}
                     deger={ayarlar.etkin}
                     onDegis={(v) => m.guncelle({ etkin: v })}
                 />

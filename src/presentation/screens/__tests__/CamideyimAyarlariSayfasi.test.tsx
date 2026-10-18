@@ -114,6 +114,18 @@ describe('CamideyimAyarlariSayfasi', () => {
         expect(k.ayarlariYaz.mock.calls[0][1]).toEqual({ lat: 41.01, lng: 28.97 });
     });
 
+    it('"Hatırlatmalar sessiz gelsin" açıklaması muhafız KAPALIYKEN de görünür ve ek hatırlatmaları da söyler', async () => {
+        k.ayarlariAl.mockResolvedValue({ aktif: true });
+        (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
+            sec({ konum: { koordinatlar: { lat: 41.01, lng: 28.97 } }, muhafiz: { aktif: false } })
+        );
+        const e = render(<CamideyimAyarlariSayfasi />);
+        await waitFor(() => expect(e.getByText('Hatırlatmalar sessiz gelsin')).toBeTruthy());
+        const aciklama = e.getByText(/gelmeye devam eder; sesli okuma ve gerçek alarm susar/);
+        expect(aciklama.props.children).toMatch(/cuma/);
+        expect(aciklama.props.children).toMatch(/nafile/);
+    });
+
     it('yakın cami listesi: "Cami değil" hariç kaydı yazar', async () => {
         k.ayarlariAl.mockResolvedValue({ aktif: true });
         k.yakinCamiler.mockResolvedValue([

@@ -64,6 +64,13 @@ describe('useTurkceTtsDestegi', () => {
       await waitFor(() => expect(result.current).toBe(false));
     });
 
+    test('kopru BILINMIYOR (null: zaman asimi / motor acilamadi) derse null kalir — uyari yok', async () => {
+      mockTrDestekleniyorMu.mockResolvedValue(null);
+      const { result } = renderHook(() => useTurkceTtsDestegi());
+      await waitFor(() => expect(mockTrDestekleniyorMu).toHaveBeenCalled());
+      await waitFor(() => expect(result.current).toBeNull());
+    });
+
     test('sorgu patlarsa null kalir — YANLIS ALARM YOK', async () => {
       mockTrDestekleniyorMu.mockRejectedValue(new Error('native yok'));
       const { result } = renderHook(() => useTurkceTtsDestegi());

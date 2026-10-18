@@ -21,8 +21,49 @@ import {
     EKLENTI_DEGISKENLERI,
     RUTIN_ANAHTAR_KELIMELERI,
 } from '../../core/otomasyon/anahtarKelimeler';
+import { ONE_UI_NOTU, rutinOnkosulNotu } from '../../core/otomasyon/rehberNotlari';
+import { useCihazDurumu } from '../hooks/useCihazDurumu';
+import { DEPOLAMA_ANAHTARLARI } from '../../core/constants/UygulamaSabitleri';
+
+/**
+ * Vakit bildirimleri ve Camideyim açık mı? Diskten/köprüden SALT okunur (bu ekran store'a
+ * bağlı değil; vakit bildirimi dilimi açılışta yüklenmez). Okunamazsa `null` = bilinmiyor.
+ */
+function useRutinOnkosullari(): { vakit: boolean | null; cami: boolean | null } {
+    const [durum, setDurum] = React.useState<{ vakit: boolean | null; cami: boolean | null }>({ vakit: null, cami: null });
+    React.useEffect(() => {
+        let iptal = false;
+        void (async () => {
+            let vakit: boolean | null = null;
+            let cami: boolean | null = null;
+            try {
+                const AsyncStorage = (require('@react-native-async-storage/async-storage') as typeof import('@react-native-async-storage/async-storage')).default;
+                const ham = await AsyncStorage.getItem(DEPOLAMA_ANAHTARLARI.VAKIT_BILDIRIM_AYARLARI);
+                vakit = ham ? Object.values(JSON.parse(ham) as Record<string, unknown>).some((v) => v === true) : false;
+            } catch {
+                vakit = null;
+            }
+            try {
+                const kopru = require('../../../modules/expo-cami-geofence/src') as typeof import('../../../modules/expo-cami-geofence/src');
+                if (kopru.camiModuluVarMi()) {
+                    const a = (await kopru.ayarlariAl()) as { aktif?: unknown } | null;
+                    cami = typeof a?.aktif === 'boolean' ? a.aktif : null;
+                }
+            } catch {
+                cami = null;
+            }
+            if (!iptal && (vakit !== null || cami !== null)) setDurum({ vakit, cami });
+        })();
+        return () => {
+            iptal = true;
+        };
+    }, []);
+    return durum;
+}
 
 type Sekme = 'rutinler' | 'eklenti';
+
+const CIHAZ_ALANLARI = ['samsung'] as const;
 
 type Renkler = ReturnType<typeof useRenkler>;
 
@@ -101,7 +142,7 @@ const Notlar: React.FC<{ renkler: Renkler; notlar: string[] }> = ({ renkler, not
     </View>
 );
 
-const RutinlerRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
+const RutinlerRehberi: React.FC<{ renkler: Renkler; onkosul: string | null }> = ({ renkler, onkosul }) => (
     <View style={{ gap: 16 }}>
         <Kart renkler={renkler} ikon="bell" baslik="Vakit girince bir şey yapın" testID="rehber-rutin-tetik">
             <Adimlar
@@ -144,8 +185,8 @@ const RutinlerRehberi: React.FC<{ renkler: Renkler }> = ({ renkler }) => (
             renkler={renkler}
             notlar={[
                 'Namaz Akışı bildirimlerini ya da ilgili bildirim kategorisini sessize alırsanız rutin tetiklenmez.',
-                '"vakti girdi" için Bildirim Ayarları\'nda vakit bildirimleri, "Camidesiniz" için Camideyim açık olmalı.',
-                'One UI 8\'de aynı anda yalnız bir bildirimle tetiklenen rutinin çalıştığı bildiriliyor. Birden çok rutin kurduysanız tek rutinde birleştirmeyi deneyin.',
+                ...(onkosul ? [onkosul] : []),
+                ONE_UI_NOTU,
             ]}
         />
     </View>
@@ -202,6 +243,12 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
     const renkler = useRenkler();
     const navigation = useNavigation<{ navigate: (ad: string) => void }>();
     const [sekme, setSekme] = React.useState<Sekme>('rutinler');
+    // Samsung Rutinler yalnız Samsung'da var: Samsung DEĞİLSE sekme seçici gizlenir,
+    // yalnız eklenti rehberi kalır. Bilinmiyorsa bugünkü düzen (iki sekme).
+    const { durum: cihaz } = useCihazDurumu(CIHAZ_ALANLARI, Platform.OS === 'android');
+    const samsungDegil = cihaz.samsung === false;
+    const onkosullar = useRutinOnkosullari();
+    const etkinSekme: Sekme = samsungDegil ? 'eklenti' : sekme;
 
     if (Platform.OS !== 'android') {
         return (
@@ -226,43 +273,49 @@ export const OtomasyonRehberiSayfasi: React.FC = () => {
                 işaretlemek için Namaz Akışı&apos;nı otomasyon uygulamalarıyla kullanabilirsiniz.
             </Text>
 
-            <View
-                className="flex-row p-1 mb-4"
-                accessibilityRole="tablist"
-                style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, borderWidth: 1, borderColor: renkler.sinir }}
-            >
-                {SEKMELER.map((s) => {
-                    const secili = s.id === sekme;
-                    return (
-                        <TouchableOpacity
-                            key={s.id}
-                            testID={`rehber-sekme-${s.id}`}
-                            accessibilityRole="tab"
-                            accessibilityState={{ selected: secili }}
-                            accessibilityLabel={s.etiket}
-                            onPress={() => setSekme(s.id)}
-                            className="flex-1 flex-row items-center justify-center rounded-2xl px-2"
-                            style={{ minHeight: 44, backgroundColor: secili ? renkler.birincil : 'transparent' }}
-                        >
-                            <FontAwesome5
-                                name={s.ikon}
-                                size={13}
-                                color={secili ? renkler.birincilMetin : renkler.metinIkincil}
-                                solid
-                            />
-                            <Text
-                                className="ml-2 text-sm font-semibold"
-                                numberOfLines={1}
-                                style={{ color: secili ? renkler.birincilMetin : renkler.metin }}
+            {!samsungDegil && (
+                <View
+                    className="flex-row p-1 mb-4"
+                    accessibilityRole="tablist"
+                    style={{ backgroundColor: renkler.kartArkaplan, borderRadius: 24, borderWidth: 1, borderColor: renkler.sinir }}
+                >
+                    {SEKMELER.map((s) => {
+                        const secili = s.id === etkinSekme;
+                        return (
+                            <TouchableOpacity
+                                key={s.id}
+                                testID={`rehber-sekme-${s.id}`}
+                                accessibilityRole="tab"
+                                accessibilityState={{ selected: secili }}
+                                accessibilityLabel={s.etiket}
+                                onPress={() => setSekme(s.id)}
+                                className="flex-1 flex-row items-center justify-center rounded-2xl px-2"
+                                style={{ minHeight: 44, backgroundColor: secili ? renkler.birincil : 'transparent' }}
                             >
-                                {s.etiket}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+                                <FontAwesome5
+                                    name={s.ikon}
+                                    size={13}
+                                    color={secili ? renkler.birincilMetin : renkler.metinIkincil}
+                                    solid
+                                />
+                                <Text
+                                    className="ml-2 text-sm font-semibold"
+                                    numberOfLines={1}
+                                    style={{ color: secili ? renkler.birincilMetin : renkler.metin }}
+                                >
+                                    {s.etiket}
+                                </Text>
+                            </TouchableOpacity>
+                        );
+                    })}
+                </View>
+            )}
 
-            {sekme === 'rutinler' ? <RutinlerRehberi renkler={renkler} /> : <EklentiRehberi renkler={renkler} />}
+            {etkinSekme === 'rutinler' ? (
+                <RutinlerRehberi renkler={renkler} onkosul={rutinOnkosulNotu(onkosullar.vakit, onkosullar.cami)} />
+            ) : (
+                <EklentiRehberi renkler={renkler} />
+            )}
 
             {/* "Kıldım işaretleyebilen uygulamalar" (#299) Ayarlar ana listesinde DEĞİL, yalnız
                 burada: güven listesi otomasyonun parçasıdır; ana listeyi kalabalıklaştırıyordu. */}

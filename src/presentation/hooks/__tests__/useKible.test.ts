@@ -1,11 +1,13 @@
 import { renderHook, act, waitFor } from '@testing-library/react-native';
-import { useKible } from '../useKible';
+import { AppState } from 'react-native';
+import { BOS_DOGRULUK_IZI, DOGRULUK_KARARLI_MS, dogrulukAdimi, kalibrasyonIpucu, useKible } from '../useKible';
 import * as Location from 'expo-location';
 import { Magnetometer } from 'expo-sensors';
 
 // Mocklar
 jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn(),
+  getForegroundPermissionsAsync: jest.fn(),
   getCurrentPositionAsync: jest.fn(),
   watchHeadingAsync: jest.fn(),
   Accuracy: {
@@ -311,5 +313,107 @@ describe('useKible Hook', () => {
 
     // Pusula hala baslangic degerinde (0) kalmali; gec callback ezmemeli.
     expect(result.current.pusulaYonelimi).toBe(0);
+  });
+
+  it('öne gelişte izin İSTENMEZ, yalnız okunur; verildiyse servis yeniden başlar (izin penceresi döngüsü yok)', async () => {
+    const handlerlar: Array<(d: string) => void> = [];
+    const ekle = jest.spyOn(AppState, 'addEventListener').mockImplementation(((_t: string, h: (d: string) => void) => {
+      handlerlar.push(h);
+      return { remove: jest.fn() };
+    }) as never);
+    try {
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: true });
+      const { result } = renderHook(() => useKible());
+      await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+      await waitFor(() => expect(handlerlar.length).toBeGreaterThan(0));
+      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+
+      // Reddedilmişken öne geliş: yalnız OKU, diyalog açma.
+      await act(async () => {
+        handlerlar[handlerlar.length - 1]('active');
+        await Promise.resolve();
+      });
+      expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
+      expect(Location.requestForegroundPermissionsAsync).toHaveBeenCalledTimes(1);
+
+      // Ayarlar'dan izin verip dönen kullanıcı: servis yeniden başlar.
+      (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+      await act(async () => {
+        handlerlar[handlerlar.length - 1]('active');
+        await Promise.resolve();
+      });
+      await waitFor(() => expect(result.current.izinVerildi).toBe(true));
+    } finally {
+      ekle.mockRestore();
+    }
+  });
+
+  it('izin reddinde tekrar sorulabilirlik açığa çıkar (düğme "İzin verin" / "Ayarları açın")', async () => {
+    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'denied', canAskAgain: false });
+    const { result } = renderHook(() => useKible());
+    await waitFor(() => expect(result.current.yukleniyor).toBe(false));
+    expect(result.current.izinTekrarSorulabilir).toBe(false);
+  });
+
+  it('pusula doğruluğu başlık okumasından gelir — yalnız KARARLI olunca; ilk 0 okumaları ipucunu yakıp söndürmez', async () => {
+    let simdi = 1_000_000;
+    const saat = jest.spyOn(Date, 'now').mockImplementation(() => simdi);
+    try {
+      (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: 'granted' });
+      (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue({ coords: { latitude: 41, longitude: 29 } });
+      const { result } = renderHook(() => useKible());
+      await waitFor(() => expect(headingCallback).not.toBeNull());
+      const oku = (accuracy: number, ilerleMs: number) =>
+        act(() => {
+          simdi += ilerleMs;
+          headingCallback?.({ trueHeading: 10, magHeading: 10, accuracy });
+        });
+      // Açılış patlaması: art arda 0'lar (300 ms) → kabul EDİLMEZ, ipucu sönük kalır.
+      for (let i = 0; i < 4; i++) oku(0, 100);
+      expect(result.current.pusulaDogrulugu).toBeNull();
+      // Gerçek değer oturur ve 1 sn boyunca sürer → kabul edilir.
+      oku(3, 100);
+      oku(3, 500);
+      expect(result.current.pusulaDogrulugu).toBeNull();
+      oku(3, 600);
+      expect(result.current.pusulaDogrulugu).toBe(3);
+      // Tek bir anlık 0 kabul edilen değeri BOZMAZ.
+      oku(0, 100);
+      oku(3, 100);
+      expect(result.current.pusulaDogrulugu).toBe(3);
+    } finally {
+      saat.mockRestore();
+    }
+  });
+});
+
+describe('dogrulukAdimi (saf)', () => {
+  it('aynı değer hem birkaç okuma hem kısa süre boyunca sürmeden kararlı sayılmaz', () => {
+    let iz = BOS_DOGRULUK_IZI;
+    const adim = (okuma: number, ms: number) => {
+      const r = dogrulukAdimi(iz, okuma, ms);
+      iz = r.iz;
+      return r.kararli;
+    };
+    expect(adim(1, 0)).toBeNull();
+    expect(adim(1, 2000)).toBeNull(); // süre yetti ama yalnız 2 okuma
+    expect(adim(1, 2001)).toBe(1); // 3. okuma
+    expect(adim(2, 2002)).toBeNull(); // değer değişti → sayaç baştan
+    expect(adim(2, 2003)).toBeNull();
+    expect(adim(2, 2004)).toBeNull(); // 3 okuma ama süre yetmedi
+    expect(adim(2, 2002 + DOGRULUK_KARARLI_MS)).toBe(2);
+  });
+});
+
+describe('kalibrasyonIpucu', () => {
+  it('doğruluğa bağlı: düşük → belirgin, iyi → yok, bilinmiyor → sönük', () => {
+    expect(kalibrasyonIpucu(0)).toBe('belirgin');
+    expect(kalibrasyonIpucu(1)).toBe('belirgin');
+    expect(kalibrasyonIpucu(2)).toBeNull();
+    expect(kalibrasyonIpucu(3)).toBeNull();
+    expect(kalibrasyonIpucu(null)).toBe('sonuk');
   });
 });

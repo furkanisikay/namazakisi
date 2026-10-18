@@ -67,7 +67,7 @@ export const KibleSayfasi = () => {
       </View>
 
       <View style={styles.content}>
-        {aktifMod === 'native' ? <NativePusulaView /> : <WebPusulaView />}
+        {aktifMod === 'native' ? <NativePusulaView onHaritaModu={() => setAktifMod('web')} /> : <WebPusulaView />}
       </View>
     </SafeAreaView>
   );

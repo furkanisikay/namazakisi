@@ -16,12 +16,17 @@ import { useDonanimGeriTusu } from '../../hooks/useDonanimGeriTusu';
 import { ALARM_CALMA_SURESI_DK } from '../../../core/muhafiz/alarmYuku';
 import type { MuhafizPlatformu } from '../../../core/muhafiz/ios/platformYetenekleri';
 import type { AlarmKitDurumu } from '../../../core/muhafiz/ios/alarmKit';
+import { ALARMKIT_IOS_SURUMU, iosAlarmKitYokNedeni } from '../../../core/muhafiz/alarmNotlari';
 
 export interface AlarmOnayModalProps {
     gorunur: boolean;
     platform: MuhafizPlatformu;
     /** iOS AlarmKit durumu (iOS 26) — maddeler buna göre; `null` bilinmiyor. */
     alarmKit?: AlarmKitDurumu | null;
+    /** iOS ana sürümü; `null` bilinmiyor (sürüm cümlesi SÖYLENMEZ). */
+    iosSurum?: number | null;
+    /** Android tam ekran izni; `false` ise "tam ekran açılır" yerine izin şartı söylenir. */
+    tamEkran?: boolean | null;
     onOnayla: () => void;
     /** Geri tuşu / backdrop / "Vazgeç": HİÇBİR ŞEY yazılmaz. */
     onIptal: () => void;
@@ -34,7 +39,8 @@ export const iosAlarmKitVarMi = (alarmKit: AlarmKitDurumu | null | undefined): b
 /** Maddeler platforma göre — iPhone'da ne olacağı AlarmKit durumuna bağlı (sessiz sapma yok). */
 export function alarmOnayMaddeleri(
     platform: MuhafizPlatformu,
-    alarmKit: AlarmKitDurumu | null = null
+    alarmKit: AlarmKitDurumu | null = null,
+    secenek: { iosSurum?: number | null; tamEkran?: boolean | null } = {}
 ): { ikon: string; metin: string }[] {
     const ortak = {
         ikon: 'check-circle',
@@ -60,6 +66,19 @@ export function alarmOnayMaddeleri(
             },
         ];
     }
+    if (platform === 'ios' && alarmKit === null) {
+        // Durum henüz okunmadı: iki olasılık da SÖYLENİR, hiçbiri kesin vaat edilmez.
+        return [
+            {
+                ikon: 'clock',
+                metin: "iPhone'unuz destekliyorsa ilk hatırlatmada alarm çalar; desteklemiyorsa zamana duyarlı bir bildirim ve yaklaşık 30 saniyelik bir sesle gelir.",
+            },
+            {
+                ikon: 'info-circle',
+                metin: 'Alarm desteklenmiyorsa sessiz anahtarı açıkken ses duyulmaz.',
+            },
+        ];
+    }
     if (platform === 'ios') {
         return [
             {
@@ -68,9 +87,19 @@ export function alarmOnayMaddeleri(
             },
             {
                 ikon: 'info-circle',
-                metin: 'iPhone\'da sessiz anahtarı açıkken ses duyulmaz. iOS 26\'ya güncellediğinizde gerçek alarm olarak çalar.',
+                // Sürüm cümlesi yalnız sürüm GERÇEKTEN eskiyse: iOS 26+ cihazda "desteklenmiyor"
+                // geçici bir hata demektir ve "güncelleyin" demek yalan olurdu.
+                metin:
+                    iosAlarmKitYokNedeni(secenek.iosSurum) !== null
+                        ? `iPhone'da sessiz anahtarı açıkken ses duyulmaz. Gerçek alarm iOS ${ALARMKIT_IOS_SURUMU} ve üzerinde çalışır; bu iPhone iOS ${secenek.iosSurum}.`
+                        : "iPhone'da sessiz anahtarı açıkken ses duyulmaz.",
             },
-            ortak,
+            {
+                // Bu dalda alarm ekranı YOK: "alarm ekranından Kıldım/ertele" yalan olurdu.
+                // Bildirim düğmeleri yüzeye göre değişir (cuma/takvimde Kıldım yok) → kesin yazılmaz.
+                ikon: 'bell',
+                metin: 'Alarm ekranı açılmaz; hatırlatma bildirim olarak gelir, dokunarak uygulamayı açabilirsiniz.',
+            },
         ];
     }
     return [
@@ -80,14 +109,32 @@ export function alarmOnayMaddeleri(
         },
         {
             ikon: 'bell-slash',
-            metin: 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir, kilit ekranında tam ekran açılır.',
+            metin:
+                secenek.tamEkran === false
+                    ? 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir. Kilit ekranında tam ekran açılması için ayrıca izin vermeniz gerekir.'
+                    : 'Alarm gibi davranır: telefonunuz sessizde veya Rahatsız Etmeyin modundayken de duyulabilir, kilit ekranında tam ekran açılır.',
         },
         ortak,
         { ikon: 'mosque', metin: 'Camideyken alarm çalmaz; hatırlatma sessiz bildirim olarak gelir.' },
     ];
 }
 
-export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({ gorunur, platform, alarmKit = null, onOnayla, onIptal }) => {
+/** Başlığın alt satırı: AlarmKit durumu okunmadıysa (`null`) kesin bir vaat yok. */
+export function alarmOnayAltBasligi(platform: MuhafizPlatformu, alarmKit: AlarmKitDurumu | null = null): string {
+    if (platform !== 'ios' || iosAlarmKitVarMi(alarmKit)) return 'Telefonunuzun alarm uygulaması gibi çalar';
+    if (alarmKit === null) return "iPhone'unuzun desteğine göre alarm ya da uzun sesli bildirim";
+    return "Bu iPhone'da uzun sesli bildirim olarak gelir";
+}
+
+export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({
+    gorunur,
+    platform,
+    alarmKit = null,
+    iosSurum = null,
+    tamEkran = null,
+    onOnayla,
+    onIptal,
+}) => {
     const renkler = useRenkler();
     useDonanimGeriTusu(gorunur, onIptal);
 
@@ -122,14 +169,12 @@ export const AlarmOnayModal: React.FC<AlarmOnayModalProps> = ({ gorunur, platfor
                                 Gerçek alarm açılsın mı?
                             </Text>
                             <Text className="text-xs mt-0.5" style={{ color: renkler.metinIkincil }}>
-                                {platform === 'ios' && !iosAlarmKitVarMi(alarmKit)
-                                    ? 'iPhone\'da şimdilik uzun sesli bildirim olarak gelir'
-                                    : 'Telefonunuzun alarm uygulaması gibi çalar'}
+                                {alarmOnayAltBasligi(platform, alarmKit)}
                             </Text>
                         </View>
                     </View>
 
-                    {alarmOnayMaddeleri(platform, alarmKit).map(({ ikon, metin }) => (
+                    {alarmOnayMaddeleri(platform, alarmKit, { iosSurum, tamEkran }).map(({ ikon, metin }) => (
                         <View key={ikon} className="flex-row items-start mb-2.5">
                             <FontAwesome5
                                 name={ikon}

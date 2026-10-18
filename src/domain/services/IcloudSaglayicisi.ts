@@ -55,7 +55,9 @@ export class IcloudSaglayicisi implements EsitlemeSaglayicisi {
   }
 
   async oturumVarMi(): Promise<boolean> {
-    return this.yapilandirildiMi() && (await icloudHesapVarMi());
+    // Bilinmiyor (`null`, köprü hatası) oturum SAYILMAZ: bağlanma denemesi başarısız
+    // sonuçlanır, ama ekran engel cümlesini yalnız kesin `false`ta yazar.
+    return this.yapilandirildiMi() && (await icloudHesapVarMi()) === true;
   }
 
   async baglan(): Promise<boolean> {
