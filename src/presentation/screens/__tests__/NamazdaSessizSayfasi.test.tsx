@@ -140,7 +140,8 @@ describe('NamazdaSessizSayfasi — Camiye girince', () => {
         (useAppSelector as jest.Mock).mockImplementation((sec: (s: unknown) => unknown) =>
             sec({ konum: { koordinatlar: { lat: 41.01, lng: 28.97 } }, muhafiz: { aktif: false } })
         );
-        const e = render(<CamideyimAyarlariSayfasi />);
+        const e = render(<NamazdaSessizSayfasi />);
+        await ayrintilariAc(e);
         await waitFor(() => expect(e.getByText('Hatırlatmalar sessiz gelsin')).toBeTruthy());
         const aciklama = e.getByText(/gelmeye devam eder; sesli okuma ve gerçek alarm susar/);
         expect(aciklama.props.children).toMatch(/cuma/);

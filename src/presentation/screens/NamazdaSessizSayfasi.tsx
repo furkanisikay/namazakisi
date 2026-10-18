@@ -611,7 +611,7 @@ export const NamazdaSessizSayfasi: React.FC = () => {
                                     <AyarKutusu
                                         ikon="volume-mute"
                                         baslik="Hatırlatmalar sessiz gelsin"
-                                        aciklama="Tüm hatırlatmalar gelir; sesli okuma ve gerçek alarm susar"
+                                        aciklama="Tüm hatırlatmalar (vakit, cuma, nafile, yatış, takvim) gelmeye devam eder; sesli okuma ve gerçek alarm susar"
                                         deger={ayarlar.sessiz}
                                         onDegis={(v) => c.guncelle({ sessiz: v })}
                                     />
