@@ -4,10 +4,10 @@ appId: com.furkanisikay.namazakisi
 ---
 - launchApp:
     stopApp: true
-# Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"). Kıble Dalga 4'ten
+# Ana ekran capasi: header'daki seri dugmesi ("Seri: N gün"; toparlanmada "Toparlanma modu: …"). Kıble Dalga 4'ten
 # beri sekmedir; header'daki "Kıble yönünü bul" kisayolu kalkti.
 - extendedWaitUntil:
-    visible: "Seri: .*"
+    visible: "(Seri|Toparlanma modu): .*"
     timeout: 90000
 - repeat:
     while:

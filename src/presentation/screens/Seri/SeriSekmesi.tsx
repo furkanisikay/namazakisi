@@ -60,6 +60,10 @@ export const SeriSekmesi: React.FC<{ gomulu?: boolean }> = ({ gomulu = false }) 
   const enUzunSeri = useAppSelector((s) => s.seri.seriDurumu?.enUzunSeri ?? 0);
   const { yukleniyor, hata, izgara, zincirler, ayAdi, bugun, tamGunEsigi, mevcutSeri, yenidenDene } = useSeriAyi();
 
+  // Gömülüyken dış ScrollView'da `flex-1` sıfır yüksekliğe iner → "Yeniden deneyin"
+  // görünmezdi. İçerik yüksekliği + alt sınır kullanılır.
+  const durumKabi = gomulu ? { minHeight: 240 } : { flex: 1 };
+
   if (hata) {
     // TEK mesaj gösterilir — `useSeriAyi` her zaman aynı sabit, kibar metni
     // döndürür (ham teknik hata Logger'a gider). Önceden burada AYRICA sabit
@@ -67,7 +71,7 @@ export const SeriSekmesi: React.FC<{ gomulu?: boolean }> = ({ gomulu = false }) 
     // cümleyi taşıdığı için ekranda aynı mesaj iki kez görünüyordu (inceleme
     // bulgusu); tek mesaja indirildi.
     return (
-      <View className="flex-1 items-center justify-center p-8">
+      <View testID="seri-hata" className="items-center justify-center p-8" style={durumKabi}>
         <FontAwesome5 name="exclamation-triangle" size={28} color={renkler.durum.hata} />
         <Text className="text-base font-semibold mt-4 text-center" style={{ color: renkler.metin }}>
           {hata}
@@ -89,7 +93,11 @@ export const SeriSekmesi: React.FC<{ gomulu?: boolean }> = ({ gomulu = false }) 
   }
 
   if (yukleniyor) {
-    return <YuklemeGostergesi mesaj="Seri verileriniz yükleniyor..." />;
+    return (
+      <View testID="seri-yukleniyor" style={durumKabi}>
+        <YuklemeGostergesi mesaj="Seri verileriniz yükleniyor..." />
+      </View>
+    );
   }
 
   const sonrakiHedef = sonrakiHedefiBul(mevcutSeri);

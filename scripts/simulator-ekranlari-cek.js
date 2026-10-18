@@ -178,6 +178,12 @@ async function yenidenBaslat() {
  * iOS sekme dugmesinin erisilebilirlik etiketine ", tab, N of 5" ekler
  * ("Ayarlar, tab, 5 of 5") — tam-dize capasi (`/^Ayarlar$/`) TUTMAZ.
  */
+/**
+ * Ana ekran capasi — Maestro akislariyla AYNI: header'daki seri dugmesi ("Seri: N gün";
+ * toparlanma modunda "Toparlanma modu: …"). Kible Dalga 4'ten beri sekmedir.
+ */
+const ANA_EKRAN_CAPASI = /^(Seri|Toparlanma modu): /i;
+
 const SEKME = (ad) => new RegExp(`^${ad}(,|$)`, 'i');
 
 /**
@@ -270,6 +276,7 @@ function cek(ad) {
         if (!(await dokun(katman, KAPATILACAK, `acilis katmani ${tur + 1}`, { bekle: 2000 }))) break;
     }
 
+    for (let i = 0; i < 10 && !bul(await agac(`ana-ekran-capa-${i}`), ANA_EKRAN_CAPASI); i++) await bekle(1500);
     await agac('ana-ekran');
     cek('01-ana-ekran');
     let a;

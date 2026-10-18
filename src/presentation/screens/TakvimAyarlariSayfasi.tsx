@@ -522,21 +522,55 @@ const TakvimAyarlariIcerik: React.FC = () => {
         if (ayarlar.aktif && izin.durum === 'verildi') takvimleriniYenile();
     }, [ayarlar.aktif, izin.durum]);
 
-    /** Ana anahtar: açarken izin yoksa önce açıklama (rıza) modalı. */
-    const anaAnahtariDegistir = (acik: boolean) => {
-        if (acik && izin.durum !== 'verildi') {
-            setRizaAcik(true);
+    // İzin ilk okunuşu bitti mi? (`izin.durum === null` hem "okunuyor" hem "okunamadı"
+    // demek; ikisini ayırmak için kendi okumamız.)
+    const [izinOkundu, setIzinOkundu] = useState(false);
+    const { yenidenOku: izinYenidenOku } = izin;
+    const izinOku = useCallback(async () => {
+        const d = await izinYenidenOku();
+        setIzinOkundu(true);
+        return d;
+    }, [izinYenidenOku]);
+    useEffect(() => {
+        void izinOku();
+    }, [izinOku]);
+
+    /**
+     * Ana anahtar. Açarken izin durumu önce OKUNUR (henüz okunmadıysa):
+     *   verildi → doğrudan açılır · sorulabilir/bilinmiyor → açıklama (rıza) modalı ·
+     *   kalıcı red → Ayarlar açılır, anahtar KAPALI kalır (izin satırı görünür).
+     * `aktif: true` YALNIZ izin verilmişse yazılır.
+     */
+    const anaAnahtariDegistir = async (acik: boolean) => {
+        if (!acik) {
+            dispatch(takvimAyarlariniGuncelle({ aktif: false }));
             return;
         }
-        dispatch(takvimAyarlariniGuncelle({ aktif: acik }));
+        const d = izin.durum ?? (await izinOku());
+        if (d === 'verildi') {
+            dispatch(takvimAyarlariniGuncelle({ aktif: true }));
+        } else if (d === 'reddedildi') {
+            void izin.ayarlariAc();
+        } else {
+            setRizaAcik(true);
+        }
     };
 
-    const rizaOnayla = () => {
+    const rizaOnayla = async () => {
         setRizaAcik(false);
-        dispatch(takvimAyarlariniGuncelle({ aktif: true }));
         // Sistem diyaloğu modal TAMAMEN kapandıktan sonra açılır (şablon bekler).
-        void izin.istekBaslat();
+        const sonuc = await izin.istekBaslat();
+        if (sonuc === 'verildi') dispatch(takvimAyarlariniGuncelle({ aktif: true }));
     };
+
+    // Ayarlar'dan izin verip dönen kullanıcı: anahtarı açmak için tekrar dokunur (kendiliğinden
+    // açılmaz — kullanıcının niyeti Ayarlar'a gitmekti, takvime yazmak değil).
+
+    /** Silme sonrası: silinmiş etkinlikleri "güncellemeye" çağıran bant kalmasın. */
+    const etkinliklerSilindi = useCallback(() => {
+        setSonAktarim(null);
+        Depolama.sil(DEPOLAMA_ANAHTARLARI.TAKVIM_SON_AKTARIM).catch(() => undefined);
+    }, []);
 
     const takvimleriniYenile = async () => {
         setTakvimYukleniyor(true);
@@ -566,7 +600,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
             return;
         }
 
-        const aktarilan = aktarimOzeti(ayarlar);
+        const aktarilan = aktarimOzeti(ayarlar, koordinatlar);
         const result = await dispatch(takvimOlaylariniOlustur({ ayarlar, koordinatlar }));
         if (takvimOlaylariniOlustur.fulfilled.match(result)) {
             setOlusturmaSonucu({ sayi: result.payload.olusturulanSayi });
@@ -609,11 +643,15 @@ const TakvimAyarlariIcerik: React.FC = () => {
     const sonucModaliniKapat = useCallback(() => setOlusturmaSonucu(null), []);
     useDonanimGeriTusu(olusturmaSonucu !== null, sonucModaliniKapat);
 
-    const bekleyenDegisiklik = bekleyenDegisiklikVarMi(sonAktarim, ayarlar);
+    const bekleyenDegisiklik = bekleyenDegisiklikVarMi(sonAktarim, ayarlar, koordinatlar);
     const izinNotu =
         izin.durum === 'sorulabilir' || izin.durum === 'reddedildi'
             ? durumNotu('takvimIzni', { ...BOS_CIHAZ_DURUMU, takvimIzni: izin.durum })
             : null;
+    // Okuma bitti ama durum bilinmiyor → kart BOŞ kalmaz: sebep + "Tekrar deneyin".
+    const izinOkunamadi = izinOkundu && izin.durum === null;
+    // Anahtar kapalıyken son isteğin sonucu red ise izin satırı pasif görünümde de çıkar.
+    const pasifIzinNotu = !ayarlar.aktif && (izin.sonuc === 'tekrarDene' || izin.sonuc === 'ayarlar') ? izinNotu : null;
 
     const olusturButonuMesaji = !ayarlar.takvimId
         ? 'Takvim seçilmedi'
@@ -636,7 +674,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                     <TouchableOpacity
                         className="flex-row items-center p-4 rounded-2xl mb-4"
                         style={{ backgroundColor: ayarlar.aktif ? renkler.birincil : renkler.kartArkaplan }}
-                        onPress={() => anaAnahtariDegistir(!ayarlar.aktif)}
+                        onPress={() => void anaAnahtariDegistir(!ayarlar.aktif)}
                         activeOpacity={0.8}
                         accessibilityRole="switch"
                         accessibilityState={{ checked: ayarlar.aktif }}
@@ -663,7 +701,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                         </View>
                         <Anahtar
                             value={ayarlar.aktif}
-                            onValueChange={anaAnahtariDegistir}
+                            onValueChange={(v) => void anaAnahtariDegistir(v)}
                             trackColor={{ false: renkler.sinir, true: `${renkler.birincilMetin}66` }}
                             thumbColor={renkler.birincilMetin}
                             accessibilityLabel="Takvime ekleme"
@@ -672,6 +710,14 @@ const TakvimAyarlariIcerik: React.FC = () => {
                     </AyarCapasi>
 
                     {/* ── Pasif ── */}
+                    {pasifIzinNotu && (
+                        <DurumSatiri
+                            testID="takvim-izin-satiri"
+                            style={{ marginBottom: 16 }}
+                            durum={pasifIzinNotu}
+                            onEylem={(e) => (e === 'takvimIzni' ? setRizaAcik(true) : izin.ayarlariAc())}
+                        />
+                    )}
                     {!ayarlar.aktif && <OzellikBilgi />}
 
                     {/* ── Aktif ── */}
@@ -734,6 +780,21 @@ const TakvimAyarlariIcerik: React.FC = () => {
                                         durum={izinNotu}
                                         onEylem={(e) => (e === 'takvimIzni' ? setRizaAcik(true) : izin.ayarlariAc())}
                                     />
+                                ) : izinOkunamadi ? (
+                                    <View testID="takvim-izin-okunamadi" className="flex-row items-center py-2">
+                                        <Text className="flex-1 text-sm" style={{ color: renkler.metin }}>
+                                            Takvim izni okunamadı.
+                                        </Text>
+                                        <TouchableOpacity
+                                            onPress={() => void izinOku()}
+                                            accessibilityRole="button"
+                                            accessibilityLabel="Tekrar deneyin"
+                                            className="px-4 rounded-2xl items-center justify-center"
+                                            style={{ minHeight: 44, backgroundColor: renkler.birincil }}
+                                        >
+                                            <Text className="text-sm font-bold" style={{ color: renkler.birincilMetin }}>Tekrar deneyin</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 ) : izin.durum !== 'verildi' ? null : cihazTakvimleri.length === 0 ? (
                                     <View className="items-center py-5">
                                         <FontAwesome5 name="calendar-times" size={28} color={renkler.metinIkincil} />
@@ -982,6 +1043,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                 secilenTakvimId={ayarlar.takvimId}
                 secilenTakvimAdi={ayarlar.takvimAdi}
                 cihazTakvimleri={cihazTakvimleri}
+                onSilindi={etkinliklerSilindi}
             />
 
             {/* İzin açıklaması (rıza) — kabulde sistem diyaloğu modal kapandıktan SONRA açılır */}
@@ -996,7 +1058,7 @@ const TakvimAyarlariIcerik: React.FC = () => {
                 ]}
                 onaylaEtiketi="Devam edin"
                 vazgecEtiketi="Şimdi değil"
-                onOnayla={rizaOnayla}
+                onOnayla={() => void rizaOnayla()}
                 onVazgec={() => setRizaAcik(false)}
                 onKapandi={izin.modalKapandi}
                 testID="takvim-riza-modali"

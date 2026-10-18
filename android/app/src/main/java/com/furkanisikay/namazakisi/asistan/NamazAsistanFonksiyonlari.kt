@@ -113,7 +113,7 @@ class NamazAsistanFonksiyonlari {
     companion object {
         private const val TAG = "NamazAsistan"
 
-        /** Kıble derin bağlantısı — `src/navigation/derinBaglantilar.ts > KibleSayfasi`. */
+        /** Kıble derin bağlantısı — `src/navigation/derinBaglantilar.ts > MainTabs > Kible` (sekme). */
         const val KIBLE_BAGLANTISI = "namazakisi://kible"
         private const val KIBLE_ISTEK_KODU = 0x4B42 // "KB"
         /** Sınıf adı (applicationId DEĞİL): derleme zamanı bağı kurmadan açık bileşen. */

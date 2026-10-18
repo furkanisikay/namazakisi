@@ -194,11 +194,17 @@ describe('KazaDefteriSayfasi (ana sayfa)', () => {
     const { getByLabelText } = await ciz(anaSayfa());
     fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
     fireEvent.press(getByLabelText('Kaza ayarları. Otomatik ekleme kapalı'));
+    // Sayfa geçişi menü KAPANDIKTAN sonra (modal kapanış beklemesi) — anında değil.
+    expect(mockNavigate).not.toHaveBeenCalled();
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
     fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
     fireEvent.press(getByLabelText('Hareket geçmişi'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(2));
     fireEvent.press(getByLabelText('Diğer: hedef, geçmiş, ayarlar'));
     fireEvent.press(getByLabelText('Kayıtları temizleyin'));
-    expect(mockNavigate.mock.calls.map((c) => c[0])).toEqual(['KazaOtomatikAyar', 'KazaGecmisi', 'KazaTemizlik']);
+    await waitFor(() =>
+      expect(mockNavigate.mock.calls.map((c) => c[0])).toEqual(['KazaOtomatikAyar', 'KazaGecmisi', 'KazaTemizlik'])
+    );
   });
 });
 

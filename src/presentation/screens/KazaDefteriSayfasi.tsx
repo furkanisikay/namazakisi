@@ -320,9 +320,12 @@ export const KazaDefteriSayfasi: React.FC = () => {
   }
 
   // "Diğer" menüsü: en sık kullanılan üstte, geri dönüşlü işlem (temizlik) en altta.
+  // Sayfa geçişi de menü TAMAMEN kapandıktan sonra (açık modal üstüne itilen ekran iOS'ta
+  // modalın arkasında kalabiliyor / geri dönüşte menü yeniden görünüyordu).
   const sayfayaGit = (ad: 'KazaGecmisi' | 'KazaOtomatikAyar' | 'KazaTemizlik') => {
     setAktifModal(null);
-    navigation.navigate(ad);
+    if (menuZamanlayici.current) clearTimeout(menuZamanlayici.current);
+    menuZamanlayici.current = setTimeout(() => navigation.navigate(ad), MENU_KAPANIS_MS);
   };
   const digerSatirlari: KazaDigerSatiri[] = [
     {

@@ -7,6 +7,7 @@
  */
 import React from 'react';
 import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
+import { Linking } from 'react-native';
 import { aktarimOzeti } from '../../../core/takvim/aktarimOzeti';
 import { VARSAYILAN_TAKVIM_AYARLARI } from '../../store/takvimSlice';
 
@@ -15,13 +16,16 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
   __esModule: true,
   default: {
     getItem: jest.fn(async (k: string) => mockDepo.get(k) ?? null),
+    removeItem: jest.fn(async (k: string) => {
+      mockDepo.delete(k);
+    }),
     setItem: jest.fn(async (k: string, v: string) => {
       mockDepo.set(k, v);
     }),
   },
 }));
 
-const mockIzin = { durum: 'verildi' as 'verildi' | 'sorulabilir' | 'reddedildi' };
+const mockIzin = { durum: 'verildi' as 'verildi' | 'sorulabilir' | 'reddedildi' | null };
 const mockIste = jest.fn(async () => ({ status: 'granted' }));
 jest.mock('../../../domain/services/CihazDurumOkuyucu', () => ({
   alaniOku: jest.fn(async () => mockIzin.durum),
@@ -112,6 +116,58 @@ describe('TakvimAyarlariSayfasi — izin akışı', () => {
   });
 });
 
+describe('TakvimAyarlariSayfasi — izin akışı (inceleme düzeltmeleri)', () => {
+  const ac = async (r: ReturnType<typeof render>) => {
+    await waitFor(() => expect(r.getAllByLabelText('Takvime ekleme').length).toBeGreaterThan(0));
+    await act(async () => {
+      fireEvent.press(r.getAllByLabelText('Takvime ekleme')[0]);
+      await Promise.resolve();
+    });
+  };
+
+  it('izin VERİLMİŞSE anahtar modal açmadan doğrudan açılır', async () => {
+    mockIzin.durum = 'verildi';
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    await ac(r);
+    await waitFor(() => expect(mockDispatch).toHaveBeenCalledWith({ type: 'takvim/guncelle', payload: { aktif: true } }));
+    expect(r.queryByTestId('takvim-riza-modali')).toBeNull();
+  });
+
+  it('kalıcı redde anahtar Ayarları açar, anahtar KAPALI kalır (aktif yazılmaz)', async () => {
+    mockIzin.durum = 'reddedildi';
+    const ayarlar = jest.spyOn(Linking, 'openSettings').mockResolvedValue(undefined);
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    await ac(r);
+    await waitFor(() => expect(ayarlar).toHaveBeenCalled());
+    expect(mockDispatch).not.toHaveBeenCalledWith({ type: 'takvim/guncelle', payload: { aktif: true } });
+    ayarlar.mockRestore();
+  });
+
+  it('rıza sonrası izin VERİLMEZSE aktif yazılmaz, izin satırı görünür', async () => {
+    mockIzin.durum = 'sorulabilir';
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    await ac(r);
+    await act(async () => {
+      fireEvent.press(r.getByLabelText('Devam edin'));
+    });
+    await waitFor(() => expect(mockIste).toHaveBeenCalled());
+    expect(await r.findByTestId('takvim-izin-satiri')).toBeTruthy();
+    expect(mockDispatch).not.toHaveBeenCalledWith({ type: 'takvim/guncelle', payload: { aktif: true } });
+  });
+
+  it('izin okunamazsa kart boş kalmaz: sebep + "Tekrar deneyin"', async () => {
+    mockIzin.durum = null;
+    mockState.takvim.ayarlar = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true };
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    expect(await r.findByTestId('takvim-izin-okunamadi')).toBeTruthy();
+    expect(r.getByLabelText('Tekrar deneyin')).toBeTruthy();
+  });
+});
+
 describe('TakvimAyarlariSayfasi — bekleyen değişiklik', () => {
   it('hiç aktarılmadıysa bant yok', async () => {
     mockState.takvim.ayarlar = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1' };
@@ -123,7 +179,7 @@ describe('TakvimAyarlariSayfasi — bekleyen değişiklik', () => {
 
   it('son aktarımdan beri ayar değiştiyse kalıcı bant + "Şimdi aktarın"', async () => {
     const eski = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1' };
-    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(eski));
+    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(eski, mockState.konum.koordinatlar));
     mockState.takvim.ayarlar = { ...eski, kaciGunIlerisi: 14 };
     const Sayfa = sayfa();
     const { findByTestId, getByLabelText } = render(<Sayfa />);
@@ -131,9 +187,33 @@ describe('TakvimAyarlariSayfasi — bekleyen değişiklik', () => {
     expect(getByLabelText('Şimdi aktarın')).toBeTruthy();
   });
 
+  it('konum değişince (etkinlik saatleri değişir) bant çıkar', async () => {
+    const ayar = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1' };
+    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(ayar, { lat: 39.93, lng: 32.86 }));
+    mockState.takvim.ayarlar = ayar;
+    const Sayfa = sayfa();
+    const { findByTestId } = render(<Sayfa />);
+    expect(await findByTestId('takvim-bekleyen-degisiklik')).toBeTruthy();
+  });
+
+  it('etkinlikler silinince son aktarım temizlenir, bant kalkar', async () => {
+    const eski = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1' };
+    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(eski, mockState.konum.koordinatlar));
+    mockState.takvim.ayarlar = { ...eski, kaciGunIlerisi: 14 };
+    const Sayfa = sayfa();
+    const r = render(<Sayfa />);
+    expect(await r.findByTestId('takvim-bekleyen-degisiklik')).toBeTruthy();
+    const { TemizleModali } = require('../TakvimAyarlari/TemizleModali');
+    await act(async () => {
+      r.UNSAFE_getByType(TemizleModali).props.onSilindi();
+    });
+    await waitFor(() => expect(r.queryByTestId('takvim-bekleyen-degisiklik')).toBeNull());
+    await waitFor(() => expect(mockDepo.has('@namaz_akisi/takvim_son_aktarim')).toBe(false));
+  });
+
   it('ayar son aktarımla aynıysa bant yok', async () => {
     const ayar = { ...VARSAYILAN_TAKVIM_AYARLARI, aktif: true, takvimId: 'k1' };
-    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(ayar));
+    mockDepo.set('@namaz_akisi/takvim_son_aktarim', aktarimOzeti(ayar, mockState.konum.koordinatlar));
     mockState.takvim.ayarlar = ayar;
     const Sayfa = sayfa();
     const { queryByTestId, findByText } = render(<Sayfa />);

@@ -18,6 +18,13 @@ describe('aktarimOzeti / bekleyenDegisiklikVarMi', () => {
         expect(bekleyenDegisiklikVarMi(ozet, ayar({ vakitAyarlari: { ogle: vakit(false), imsak: vakit(true) } }))).toBe(false);
     });
 
+    it('konum değişince bekleyen var; ~1 km altı titreme bant çıkarmaz', () => {
+        const ist = { lat: 41.0082, lng: 28.9784 };
+        const ozet = aktarimOzeti(ayar(), ist);
+        expect(bekleyenDegisiklikVarMi(ozet, ayar(), { lat: 41.0083, lng: 28.9786 })).toBe(false);
+        expect(bekleyenDegisiklikVarMi(ozet, ayar(), { lat: 39.9334, lng: 32.8597 })).toBe(true);
+    });
+
     it.each([
         ['takvim', { takvimId: 'k2' }],
         ['gün sayısı', { kaciGunIlerisi: 14 }],

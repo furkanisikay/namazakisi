@@ -44,6 +44,8 @@ interface TemizleModaliProps {
     secilenTakvimId: string | null;
     secilenTakvimAdi: string | null;
     cihazTakvimleri: Array<{ id: string; title: string; color: string }>;
+    /** Silme başarılı olunca (bekleyen değişiklik özetini temizlemek için). */
+    onSilindi?: () => void;
 }
 
 /** Silme akışının üç adımı (tarama ikinci adımın parçası). */
@@ -57,7 +59,7 @@ const ARALIK_PRESETLER: { gun: number; etiket: string; aciklama: string }[] = [
 
 export const TemizleModali: React.FC<TemizleModaliProps> = ({
     gorunur, onKapat,
-    secilenTakvimId, secilenTakvimAdi, cihazTakvimleri,
+    secilenTakvimId, secilenTakvimAdi, cihazTakvimleri, onSilindi,
 }) => {
     const renkler = useRenkler();
 
@@ -151,6 +153,7 @@ export const TemizleModali: React.FC<TemizleModaliProps> = ({
             setSilinenSayi(silinen);
             setSiliniyor(false);
             setAdim('tamamlandi');
+            onSilindi?.();
         } catch (error) {
             Logger.error('TakvimAyarlari', 'Etkinlikler silinemedi', error);
             setSiliniyor(false);
