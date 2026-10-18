@@ -91,4 +91,21 @@ class AnaEkranKarariTest {
         assertEquals("Öğle vaktini kıldım olarak işaretleyin", AnaEkranKarari.dugmeAciklamasi("Öğle"))
         assertEquals("İkindi namazını kıldınız mı?", AnaEkranKarari.onaySorusu("İkindi"))
     }
+
+    @Test
+    fun onayAcikkenImsakGirerseYatsiIsaretlenmez() {
+        // 05:14:50'de yatsı onayı açıldı, 05:15'te imsak girdi, 05:15:05'te basıldı.
+        val yarin = yuk.gunler[2]
+        val imsak = yarin.vakitler.getValue("imsak")
+        assertTrue(AnaEkranKarari.onayGecerliMi(yuk, imsak - 10_000L, yarin.tarih, emptySet(), bugun.tarih, "yatsi"))
+        assertFalse(AnaEkranKarari.onayGecerliMi(yuk, imsak + 5_000L, yarin.tarih, emptySet(), bugun.tarih, "yatsi"))
+    }
+
+    @Test
+    fun onayAcikkenIsaretlenenVakitYenidenYazilmaz() {
+        val an = v("ogle") + 10 * dk
+        assertTrue(AnaEkranKarari.onayGecerliMi(yuk, an, bugun.tarih, emptySet(), bugun.tarih, "ogle"))
+        val bekleyen = setOf(VakitHesabi.kimlik(bugun.tarih, "ogle"))
+        assertFalse(AnaEkranKarari.onayGecerliMi(yuk, an, bugun.tarih, bekleyen, bugun.tarih, "ogle"))
+    }
 }

@@ -140,4 +140,16 @@ object AnaEkranKarari {
      * Onay sorusu. Vakit adına hal eki ÜRETİLMEZ (Türkçe ek uyumu tuzağı): "Öğle namazını".
      */
     fun onaySorusu(ad: String): String = "$ad namazını kıldınız mı?"
+
+    /**
+     * Onay dokunuşu anındaki YENİDEN doğrulama: katman açıkken vakit değiştiyse (ör. 05:14:50
+     * yatsı onayı açıldı, 05:15'te imsak girdi) ya da telefon arada işaretlediyse yazılmaz.
+     * Sonuç `false` ise onay katmanı başarı GÖSTERMEZ, [VAKIT_DEGISTI] yazar.
+     */
+    fun onayGecerliMi(yuk: Yuk, simdi: Long, bugun: String, bekleyen: Set<String>, tarih: String, vakit: String): Boolean =
+        VakitHesabi.satirlar(yuk, simdi, bugun, bekleyen)
+            .any { it.tarih == tarih && it.vakit == vakit && it.isaretlenebilir }
+
+    /** Onay reddedildiğinde katmanın kısa süre gösterdiği metin (arayüz dili: kibar "siz"). */
+    const val VAKIT_DEGISTI = "Vakit değişti, işaretlenmedi."
 }

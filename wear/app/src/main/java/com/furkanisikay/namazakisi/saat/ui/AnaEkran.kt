@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -68,7 +69,14 @@ fun AnaEkran(
 
     SaatTemasi {
         AppScaffold(timeText = { TimeText() }) {
-            ScreenScaffold(scrollState = liste, contentPadding = PaddingValues(bottom = 36.dp)) { icBosluk ->
+            // Onay katmanı açıkken alttaki ekran erişilebilirlik ağacından çıkar: katman
+            // görsel olarak modal, TalkBack için de modal olmalı.
+            val katmanAcik = onay != null && yuk != null
+            ScreenScaffold(
+                scrollState = liste,
+                contentPadding = PaddingValues(bottom = 36.dp),
+                modifier = if (katmanAcik) Modifier.clearAndSetSemantics { } else Modifier,
+            ) { icBosluk ->
                 TransformingLazyColumn(
                     state = liste,
                     contentPadding = icBosluk,
@@ -148,11 +156,12 @@ fun AnaEkran(
                     kerahat = VakitHesabi.kerahatMi(yuk, simdi),
                     onOnayla = {
                         // Karar dokunuş anında YENİDEN doğrulanır: arada telefon işaretlediyse
-                        // ya da vakit değiştiyse yazılmaz.
-                        val anlik = System.currentTimeMillis()
-                        val hala = VakitHesabi.satirlar(yuk, anlik, bugun, bekleyen)
-                            .any { it.tarih == secili.tarih && it.vakit == secili.vakit && it.isaretlenebilir }
+                        // ya da vakit değiştiyse yazılmaz ve katman başarı göstermez.
+                        val hala = AnaEkranKarari.onayGecerliMi(
+                            yuk, System.currentTimeMillis(), bugun, bekleyen, secili.tarih, secili.vakit,
+                        )
                         if (hala) onKildim(secili.tarih, secili.vakit)
+                        hala
                     },
                     onKapat = { onay = null },
                 )

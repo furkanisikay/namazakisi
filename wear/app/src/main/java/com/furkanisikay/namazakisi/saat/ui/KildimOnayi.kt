@@ -44,9 +44,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -80,6 +82,9 @@ import kotlin.math.roundToInt
  *  - Vazgeç: küçük düğme, geri tuşu (`BackHandler`) ya da sağa kaydırma (elle; sistemin
  *    pencere düzeyindeki kaydırması önce yakalarsa aktivite kapanır — kayıt yazılmaz).
  *  - "Animasyonları kaldır" açıksa dönüşüm atlanır, katman kısa bir beklemeyle kapanır.
+ *  - `onOnayla` dokunuş anında yeniden doğrular ve `false` dönebilir (katman açıkken vakit
+ *    değişti, telefon işaretledi): o zaman başarı ÇİZİLMEZ — `Reject` titreşimi, kısa
+ *    "Vakit değişti" metni, katman kapanır.
  */
 @Composable
 fun KildimOnayi(
@@ -87,17 +92,19 @@ fun KildimOnayi(
     vakitRengi: Long,
     kalanOran: Float,
     kerahat: Boolean,
-    onOnayla: () -> Unit,
+    onOnayla: () -> Boolean,
     onKapat: () -> Unit,
 ) {
     val azalt = hareketAzaltilmis()
     val titresim = LocalHapticFeedback.current
     var onaylandi by remember { mutableStateOf(false) }
+    var reddedildi by remember { mutableStateOf(false) }
     var surukleme by remember { mutableFloatStateOf(0f) }
     val kapat by rememberUpdatedState(onKapat)
     val genislikDp = LocalConfiguration.current.screenWidthDp
 
-    BackHandler(enabled = !onaylandi) { kapat() }
+    val bitti = onaylandi || reddedildi
+    BackHandler(enabled = !bitti) { kapat() }
 
     // Taç olayları odaklı öğeye gider: katman açıkken arkadaki liste kaymasın.
     val odak = remember { FocusRequester() }
@@ -117,6 +124,11 @@ fun KildimOnayi(
         }
         kapat()
     }
+    LaunchedEffect(reddedildi) {
+        if (!reddedildi) return@LaunchedEffect
+        delay(RED_GOSTERIM_MS)
+        kapat()
+    }
     val yayRengi by animateColorAsState(
         renk(if (onaylandi) SaatPaleti.EYLEM else vakitRengi),
         tween(if (azalt) 0 else 300),
@@ -133,8 +145,8 @@ fun KildimOnayi(
         modifier = Modifier
             .fillMaxSize()
             .background(renk(SaatPaleti.ZEMIN))
-            .pointerInput(onaylandi) {
-                if (onaylandi) return@pointerInput
+            .pointerInput(bitti) {
+                if (bitti) return@pointerInput
                 detectHorizontalDragGestures(
                     onDragEnd = {
                         if (surukleme > size.width * KAPATMA_ORANI) kapat()
@@ -161,13 +173,15 @@ fun KildimOnayi(
             modifier = Modifier.padding(start = 30.dp, end = 30.dp, bottom = 56.dp),
         ) {
             Text(
-                AnaEkranKarari.onaySorusu(ad),
+                if (reddedildi) AnaEkranKarari.VAKIT_DEGISTI else AnaEkranKarari.onaySorusu(ad),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 color = renk(SaatPaleti.METIN),
+                // Ret metni ekran okuyucuya kendiliğinden okunur.
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
             )
-            if (kerahat) {
+            if (kerahat && !reddedildi) {
                 Text(
                     "Kerahat vaktindesiniz.",
                     style = MaterialTheme.typography.labelSmall,
@@ -176,7 +190,7 @@ fun KildimOnayi(
                 )
             }
             Spacer(Modifier.height(6.dp))
-            if (!onaylandi) {
+            if (!bitti) {
                 CompactButton(
                     onClick = kapat,
                     colors = ButtonDefaults.filledTonalButtonColors(),
@@ -185,12 +199,17 @@ fun KildimOnayi(
             }
         }
         Box(Modifier.align(Alignment.BottomCenter)) {
-            if (!onaylandi) {
+            // Reddedildiyse düğme alanı boş kalır (bilgi metni yukarıda).
+            if (!bitti) {
                 EdgeButton(
                     onClick = {
-                        titresim.performHapticFeedback(HapticFeedbackType.Confirm)
-                        onaylandi = true
-                        onOnayla()
+                        if (onOnayla()) {
+                            titresim.performHapticFeedback(HapticFeedbackType.Confirm)
+                            onaylandi = true
+                        } else {
+                            titresim.performHapticFeedback(HapticFeedbackType.Reject)
+                            reddedildi = true
+                        }
                     },
                     buttonSize = EdgeButtonSize.Medium,
                     colors = ButtonDefaults.buttonColors(
@@ -201,7 +220,7 @@ fun KildimOnayi(
                 ) {
                     Text("Kıldım", fontWeight = FontWeight.Bold)
                 }
-            } else {
+            } else if (onaylandi) {
                 OnayIsareti(dugmeGenislik, tik.value)
             }
         }
@@ -236,3 +255,4 @@ private fun OnayIsareti(genislik: Dp, ilerleme: Float) {
 }
 
 private const val KAPATMA_ORANI = 0.3f
+private const val RED_GOSTERIM_MS = 1600L
