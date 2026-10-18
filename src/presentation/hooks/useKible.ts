@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { AppState, Linking } from 'react-native';
+import { AppState } from 'react-native';
 import * as Location from 'expo-location';
 import { Coordinates, Qibla } from 'adhan';
 import { Logger } from '../../core/utils/Logger';
@@ -33,7 +33,11 @@ interface UseKibleSonuc {
   pusulaDogrulugu: number | null;
   /** Cihazda manyetometre var mı? `false` → pusula hiç çalışmaz (harita modu önerilir). */
   pusulaVar: boolean | null;
-  /** İzni yeniden ister (sorulabiliyorsa diyalog, değilse uygulama ayarları). */
+  /**
+   * İzin durumunu YENİDEN OKUR ve verildiyse pusulayı başlatır. Diyalog AÇMAZ: izin
+   * isteği ekrandaki `DurumSatiri` (açıklama → sistem diyaloğu, `useIzinAkisi`)
+   * üzerinden yapılır, bu çağrı onun `onSonra`'sıdır. (Ad geriye uyumluluk için.)
+   */
   izinIste: () => Promise<void>;
 }
 
@@ -115,8 +119,10 @@ export const useKible = (): UseKibleSonuc => {
 
     const servisiBaslat = async () => {
       try {
-        // Konum izinlerini kontrol et
-        const izin = await Location.requestForegroundPermissionsAsync();
+        // Konum izni yalnız OKUNUR (sade tasarım Dalga 4): Kıble artık bir sekme ve ilk
+        // odakta açıklamasız sistem diyaloğu fırlatmak Play'in "önce açıklama" kuralına
+        // aykırıdır. İzin yoksa ekran `DurumSatiri` ile açıklama → istek akışını sunar.
+        const izin = await Location.getForegroundPermissionsAsync();
         if (izin.status !== 'granted') {
           if (isMounted) {
             setIzinTekrarSorulabilir(typeof izin.canAskAgain === 'boolean' ? izin.canAskAgain : null);
@@ -218,18 +224,10 @@ export const useKible = (): UseKibleSonuc => {
   }, [izinVerildi, izinTekrarSorulabilir]);
 
   const izinIste = useCallback(async () => {
-    if (izinTekrarSorulabilir === false) {
-      try {
-        await Linking.openSettings();
-      } catch {
-        // açılamadı
-      }
-      return;
-    }
     setYukleniyor(true);
     setHata(null);
     setDeneme((n) => n + 1);
-  }, [izinTekrarSorulabilir]);
+  }, []);
 
   // Hedef acisi: Kullanicinin telefonunu cevirmesi gereken yon
   // Pusula Yonelimi: Gercek kuzey (0) ne tarafta (heading)

@@ -4,6 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { FontAwesome5 } from '@expo/vector-icons';
 import { kalibrasyonIpucu, useKible } from '../../hooks/useKible';
 import { useRenkler } from '../../../core/theme';
+import { DurumSatiri } from '../../components/ortak/DurumSatiri';
 
 /** Kible hizalama hassasiyet esigi (derece cinsinden) */
 const KIBLE_HIZALAMA_ESIGI = 10;
@@ -57,42 +58,45 @@ export const NativePusulaView: React.FC<{ onHaritaModu?: () => void }> = ({ onHa
   if (hata) {
     return (
       <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
-        <Text style={[styles.hataMetni, { color: renkler.metin }]}>{hata}</Text>
+        {izinVerildi || izinTekrarSorulabilir === null ? (
+          <Text style={[styles.hataMetni, { color: renkler.metin }]}>{hata}</Text>
+        ) : null}
         {!izinVerildi && izinTekrarSorulabilir !== null && (
-          <TouchableOpacity
-            onPress={() => void izinIste()}
-            accessibilityRole="button"
-            accessibilityLabel={izinTekrarSorulabilir ? 'Konum izni verin' : 'Ayarları açın'}
-            style={[styles.dugme, { backgroundColor: renkler.birincil }]}
-          >
-            <FontAwesome5 name={izinTekrarSorulabilir ? 'map-marker-alt' : 'cog'} size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-            <Text style={[styles.dugmeMetni, { color: renkler.birincilMetin }]}>
-              {izinTekrarSorulabilir ? 'Konum izni verin' : 'Ayarları açın'}
-            </Text>
-          </TouchableOpacity>
+          // İzin akışı şablonu: sorulabiliyorsa açıklama → sistem diyaloğu (modal kapanınca)
+          // → durum yeniden okunur; kalıcı redde Ayarlar. Dönüşte `useKible` kendiliğinden okur.
+          <DurumSatiri
+            testID="kible-izin-satiri"
+            style={{ marginTop: 16, alignSelf: 'stretch' }}
+            durum={{
+              tip: 'uyari',
+              metin: 'Konum izni kapalı; yönü bulmak için konumunuz gerekiyor.',
+              eylem: izinTekrarSorulabilir ? 'konumIzni' : 'uygulamaAyarlari',
+            }}
+            onSonra={() => void izinIste()}
+          />
         )}
       </View>
     );
   }
 
-  // Manyetometre yok: pusula hiç dönmez — bunu söyle ve harita moduna yönlendir.
+  // Manyetometre yok: pusula hiç dönmez — bunu söyle ve kamera (harita) moduna yönlendir.
   if (pusulaVar === false) {
     return (
       <View style={[styles.container, { backgroundColor: renkler.arkaplan }]}>
         <FontAwesome5 name="compass" size={32} color={renkler.metinIkincil} />
         <Text style={[styles.hataMetni, { color: renkler.metin, marginTop: 12 }]}>Bu telefonda pusula algılayıcısı yok.</Text>
         <Text style={[styles.bilgiMetni, { color: renkler.metinIkincil }]}>
-          Kıble açısı {Math.round(kibleAcisi)}°. Harita modunda yönü haritada görebilirsiniz.
+          Kıble açısı {Math.round(kibleAcisi)}°. Kamera modunda yönü haritada da görebilirsiniz.
         </Text>
         {onHaritaModu && (
           <TouchableOpacity
             onPress={onHaritaModu}
             accessibilityRole="button"
-            accessibilityLabel="Harita moduna geçin"
+            accessibilityLabel="Kamera moduna geçin"
             style={[styles.dugme, { backgroundColor: renkler.birincil }]}
           >
             <FontAwesome5 name="map" size={14} color={renkler.birincilMetin} style={{ marginRight: 8 }} />
-            <Text style={[styles.dugmeMetni, { color: renkler.birincilMetin }]}>Harita moduna geçin</Text>
+            <Text style={[styles.dugmeMetni, { color: renkler.birincilMetin }]}>Kamera moduna geçin</Text>
           </TouchableOpacity>
         )}
       </View>
