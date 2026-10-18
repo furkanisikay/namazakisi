@@ -35,6 +35,9 @@ describe('durumNotu — ölçebildiğini sorma', () => {
         expect(durumNotu('turkceTts', android({ turkceTts: false }))?.eylem).toBe('ttsIndir');
         const i = durumNotu('turkceTts', ios({ turkceTts: false }));
         expect(i?.eylem).toBeUndefined();
+        // iOS: menü yolu sürüme göre değişir → tam yol ("A > B > C") YAZILMAZ.
+        expect(i?.metin).toContain('Erişilebilirlik ayarlarından Türkçe ses indirin.');
+        expect(i?.metin).not.toContain('>');
         expect(durumNotu('turkceTts', android({ turkceTts: true }))).toBeNull();
     });
 

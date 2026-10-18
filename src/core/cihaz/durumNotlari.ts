@@ -162,7 +162,9 @@ export function durumNotu(kosul: DurumKosulu, d: CihazDurumu): DurumNotu | null 
                 ? { tip: 'uyari', metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir.', eylem: 'ttsIndir' }
                 : {
                       tip: 'uyari',
-                      metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir. Ayarlar > Erişilebilirlik > Seslendirme bölümünden indirebilirsiniz.',
+                      // Tam menü yolu iOS sürümüne göre değişir (Seslendirme / Konuşulan İçerik…)
+                      // → yol yazılmaz, yalnız bölüm adı.
+                      metin: 'Türkçe konuşma paketi bulunamadı; sesli okuma duyulmayabilir. Erişilebilirlik ayarlarından Türkçe ses indirin.',
                   };
         case 'alarmSesi':
             return android && d.alarmSesiAcik === false
